@@ -8,11 +8,11 @@ The host drops an intent while an event holds input (`TL.holding()`, lvgl-switch
 
 ## Library (`library.mjs`)
 
-Targets are `frame.<SNN>` only; the host sets `ui.lib.i` from the face's `focus` message (`focus(h, target)`). On the spread (`ui.lib.f === "spread"`): ✓ focuses the frame, then a found frame opens its Book (`openBook`: `lib.f = "book"`, which the host draws as "not built yet"), a met frame says `spread.strings.met` and an unmet frame `spread.strings.unmet`; ← sets Home's ring on the Library module and goes Home. In the Book: ← is the spread with the ring on that species. Habitat's species word opens the Book's guide (`openBook(h, id); lib.f = "guide"`).
+Targets are `frame.<SNN>` only; the host sets `ui.lib.i` from the face's `focus` message (`focus(h, target)`). On the spread (`ui.lib.f === "spread"`): ✓ focuses the frame, then a found frame opens its Book once `doorOpen("book")` (`openBook`: `lib.f = "book"`, which the host draws as "not built yet"), a found frame before slot 8, a met frame and an unmet frame do nothing (no plate: fix 8); ← sets Home's ring on the Library module and goes Home. In the Book: ← is the spread with the ring on that species. Habitat's species word opens the Book's guide (`openBook(h, id); lib.f = "guide"`).
 
 ## Probe bench (`bench.mjs`)
 
-Targets: `plates`, `switch`, `slot`; the host sets `ui.bench.f` from the face's `focus` message (`focus(h, target)`). Any key but ✓ clears the arm (`ui.bench.arm`). ← is Home with the ring on the Probe module.
+Targets: `plates`, `switch`, `slot`; the host sets `ui.bench.f` from the face's `focus` message (`focus(h, target)`). ✓ on the slot opens the Fit the upgrade? panel (`intents/bench.mjs` `fitNow` is its Fit it card). ← is Home with the ring on the Probe module.
 
 | ✓ on | Does | Plays (numbers from `bench.json` `events`) |
 | --- | --- | --- |

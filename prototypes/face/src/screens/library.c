@@ -43,14 +43,16 @@ static void build_frame(int page, int k) {
   const char *sid = v_pstr(v_fmt("%s.id", it)), *status = v_pstr(v_fmt("%s.status", it)); int found = strcmp(status, "found") == 0, met = strcmp(status, "met") == 0, known = found || met;
   char id[48]; const char *pic = v_pstr(v_fmt("%s.picture", it)), *roundel = v_pstr(v_fmt("%s.roundel", it)), *clan = v_pstr(v_fmt("%s.clan", it)), *name = v_pstr(v_fmt("%s.name", it));
   int px = f[0] + lk("spread.item.plate.at", 0), py = f[1] + lk("spread.item.plate.at", 1);
+  /* the focused frame's picture lifts `spread.item.lift` px in its mat (the frame is printed and the ring stays) */
+  { char fid[48], c[48]; snprintf(fid, sizeof fid, "frame.%s", sid); snprintf(c, sizeof c, "%s", cur()); if (!strcmp(c, fid)) py -= li("spread.item.lift", 0); }   /* copies: cur() and v_pstr share buffers */
   /* the plate (found) or the study (met), in the 8 px mat */
   snprintf(id, sizeof id, "frame.%s.picture", sid); v_name(reg);
   if (known && has(pic)) v_sprite(id, pic, px, py, lk("spread.item.plate.at", 2), lk("spread.item.plate.at", 3)); else hidden_sprite(id, px, py);
   /* the clan's flat ink rule over the frame, and its roundel before it */
   int rx = f[0] + lk("spread.item.clanRule.at", 0), ry = f[1] + lk("spread.item.clanRule.at", 1), rw = lk("spread.item.clanRule.at", 2), rh = lk("spread.item.clanRule.at", 3);
   snprintf(id, sizeof id, "frame.%s.rule", sid); v_region(reg, LAYER_CHROME);
-  /* a frame that shows no rule is a rect of no size: its colour (the ring's, a stand-in) is never drawn */
-  v_rect(id, rx, ry, known && *clan ? rw : 0, known && *clan ? rh : 0, known && *clan ? lcol(v_fmt("spread.clanColours.%s", clan)) : lcol("spread.colours.ring"));
+  /* a frame that shows no rule is a rect of no size: its colour (a stand-in) is never drawn */
+  v_rect(id, rx, ry, known && *clan ? rw : 0, known && *clan ? rh : 0, known && *clan ? lcol(v_fmt("spread.clanColours.%s", clan)) : lcol("spread.colours.nameFound"));
   int qx = f[0] + lk("spread.item.roundel.at", 0), qy = f[1] + lk("spread.item.roundel.at", 1);
   snprintf(id, sizeof id, "frame.%s.roundel", sid); v_name(reg);
   if (known && has(roundel)) v_sprite(id, roundel, qx, qy, lk("spread.item.roundel.at", 2), lk("spread.item.roundel.at", 3)); else hidden_sprite(id, qx, qy);
@@ -99,7 +101,7 @@ static void build_ring(void) {
   focus_target_t t[40]; char gk[32]; int n = library_focus(t, 40, gk, sizeof gk), box[4] = { 0, 0, 0, 0 };
   for (int i = 0; i < n; i++) if (strcmp(t[i].id, c) == 0) { box[0] = t[i].x; box[1] = t[i].y; box[2] = t[i].w; box[3] = t[i].h; }
   if (box[2] <= 0) return;
-  v_region("focus", LAYER_CHROME); word_focusRing("focus", box, S, "spread.focus.targets.frame.ring", fcol("focus.ring.onPaper"));
+  v_region("focus", LAYER_CHROME); word_focusRing("focus", S, "spread.focus.targets.frame", box);
 }
 void library_words(void) { build_stage(); build_pages(); build_ring(); }
 

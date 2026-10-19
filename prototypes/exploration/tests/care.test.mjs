@@ -229,7 +229,7 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 function ending(S, ex, reason = "home") {
   const t = vm.createContext({ console, S, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 6,
     reachCounts: () => ({ surveyed: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { S.turn++; S.expN++; return ["The world turned."]; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
+    worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]] }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
   const names = ["endExpedition", "exploredAny", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
   vm.runInContext(names.map(source).join("\n") + "\n;endExpedition(" + JSON.stringify(reason) + ");", Object.assign(t, { __ex: ex }));
 }

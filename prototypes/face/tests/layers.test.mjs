@@ -71,14 +71,14 @@ test("the placed masters of the kin ring, the hatch and the differs lamp are off
   for (const id of Object.keys(MASTERS)) { const m = realMaster(id); let off = 0; for (let i = 0; i < m.data.length; i += 4) if (m.data[i + 3] > 0 && !inPalette.has(hex(m.data[i], m.data[i + 1], m.data[i + 2]))) off++; assert.ok(off > 0, `${id} is on the palette; it could be art`); }
   const ov = cases.find((c) => c.state === "overview" && /identified pod with kin/.test(c.name)), cmp = cases.find((c) => c.state === "compare");
   // Compare with a difference lamp: the first cell of page A differs, the lamp is the placed master
-  const lamp = JSON.parse(JSON.stringify(cmp)); lamp.props.regions.pageA.differs = "frame-lamp-12-amber:12x12"; lamp.props.regions.pageA.cells[0].diff = true; lamp.pictures.push({ id: "frame-lamp-12-amber:12x12", w: 12, h: 12 });
+  const lamp = JSON.parse(JSON.stringify(cmp)); lamp.props.regions.pageA.plate = lamp.props.regions.pageB.plate = "";   /* fix 2: no plate stand-in under the lamp, whose pixels would hide it (a plate is off the palette too) */ lamp.props.regions.pageA.differs = "frame-lamp-12-amber:12x12"; lamp.props.regions.pageA.cells[0].diff = true; lamp.pictures.push({ id: "frame-lamp-12-amber:12x12", w: 12, h: 12 });
   for (const c of [ov, lamp]) {
     const f = await setup(c); assert.equal(f.props(c.props), 0, f.errors().join("; ")); frames(f);
     f.pass(2); assert.equal(f.offPalette(), 0, c.name + ": pass 2"); f.pass(3); assert.ok(f.offPalette() > 0);
   }
   const f = await setup(lamp); f.props(lamp.props); frames(f); f.pass(3); const withLamp = f.offPalette();
   const g = await setup({ ...lamp, pictures: lamp.pictures.filter((p) => p.id !== "frame-lamp-12-amber:12x12") }); g.props(lamp.props); frames(g); g.pass(3);
-  assert.ok(withLamp > g.offPalette(), "the lamp is drawn in Compare");
+  assert.notEqual(f.hash(), g.hash(), "the lamp is drawn in Compare");   /* the frame itself, not the off-palette count: the page cell's painted crop already covers the lamp's pixels with off-palette ones (fix 2 took the pane away) */ void withLamp;
 });
 
 test("the kin ring and the hatch switch layer with their master: art while a placeholder (it shows on pass 2), painted once its signed master is placed (it does not), with no change in C", { skip }, async () => {

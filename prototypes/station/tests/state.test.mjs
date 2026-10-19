@@ -137,7 +137,7 @@ test("reads: 1 Data a trait, the first read ever free, half rounded up once the 
   st.d = 1; assert.equal(S.read(st, t, "face", settings).ok, false);
   assert.match(S.readBlock(st, t, "face", settings), /needs ◆ 2 more/);
   assert.equal(S.readBlock(st, { ...t, idd: 0 }, "face", settings), "identify it first");
-  assert.equal(S.progress(a, settings), 3 / 5);
+  assert.equal(S.progress(a, settings), 4 / 6);   // the Loika at frame version 4 (T-20261016-200): Coat holds Colour and Markings, so Coat and Face read are 4 of its 6 traits
   assert.equal(S.readCost(st, a, "face", { ...settings, economy: "free" }), 0);
 });
 
@@ -217,7 +217,7 @@ test("need: crates, then new pods, then glints, then unread pods", () => {
   st.e = 5; S.identify(st, st.tray[0], settings);
   assert.match(S.need(st, sv, settings).text, /Loika pod waits/);
   S.skipRead(st, st.tray[0], settings);
-  assert.match(S.need(st, sv, settings).text, /could grow/);
+  assert.match(S.need(st, sv, settings).text, /pod, ready to incubate/);
 });
 
 test("developer seeds go through the same rules: a seeded crate arrives at the dock, a pasted genome is checked whole", () => {
@@ -275,8 +275,7 @@ test("Grow: validated and paid once; the first bud ever five minutes, then twent
   // the second founder: 2 Energy 4 Essence, twenty-one minutes with one shaped trait, and instant grow for a price
   const r2 = S.grow(st, b, { markings: 2 }, settings, 2000); assert.equal(r2.ok, true); assert.equal(st.e, 16); assert.equal(st.s, 16); assert.equal(st.bud.minutes, 21);
   assert.equal(S.budReady(st, settings, 2000 + 60000), false);
-  const ig = S.instantGrow(st, settings, 2000 + 60000); assert.equal(ig.ok, true); assert.equal(st.s, 16 - 10, "20 minutes left: 10 Essence, no Energy, no Data"); assert.equal(st.e, 16); assert.equal(S.budReady(st, settings, 2000 + 60001), true);
-  assert.equal(S.openBud(st, null, settings, 2000 + 60001).mibi.bay, 1);
+  const ig = S.instantGrow(st, settings, 2000 + 60000); assert.equal(ig.ok, true); assert.equal(st.s, 16 - 10, "20 minutes left: 10 Essence, no Energy, no Data"); assert.equal(st.e, 16); assert.equal(st.bud, null, "Hatch now hatches it"); assert.equal(ig.mibi.bay, 1);
 });
 
 test("six bays: a full vivarium refuses Grow before payment and Open until one is returned; a returned mibi is released, +2 Essence, never bonded or juvenile or with you", () => {
@@ -319,7 +318,7 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.deepEqual(S.crossPartners(st, null, a, settings).map((m) => m.id), [b.id]);
   assert.equal(S.kinshipOf(st, a, b), 0, "two founders are unrelated");
   const fc = S.forecastOf(st, a, b, settings);
-  assert.equal(fc.kinship, 0); assert.equal(fc.traits.length, 5);
+  assert.equal(fc.kinship, 0); assert.equal(fc.traits.length, 6);   // the Loika at frame version 4 (T-20261016-200): six traits
   for (const t of fc.traits) { if (t.kind === "switch") { assert.equal(t.seeds.length, 4); assert.ok(Math.abs(t.seeds.reduce((s2, x) => s2 + x.weight, 0) - 1) < 1e-6); } else { assert.equal(t.kind, "blend"); assert.ok(t.range[0] <= t.range[1]); assert.equal(t.firm, false); } }
   const e0 = st.e, s0 = st.s;
   let seed = 7; const rng = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x80000000; };
@@ -386,14 +385,16 @@ test("a starting mibi reads every open chapter, never a shut sealed one: its sta
   assert.ok(!back.read.includes(sealed.id));
 });
 
-test("a mibi keeps the frame version it was born with: a v2-born genome stamps S1v2 after the registry moved to v3", () => {
-  const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born3 = podGenome(fr, 4242), born2 = { ...born3, frameVersion: 2 };
-  assert.equal(born3.frameVersion, 3, "a genome sampled now is born at the current frame version");
-  assert.equal(stampFrameOf(fr, born2).version, 2); assert.equal(stampFrameOf(fr, born3).version, 3);
-  assert.equal(stampGenome(fr, born2, []).version, 2); assert.equal(stampGenome(fr, born3, []).version, 3);
+test("a mibi keeps the frame version it was born with: v2- and v3-born genomes stamp S1v2 and S1v3 after the Loika moved to v4", () => {
+  // the Loika at frame version 4 (T-20261016-200): a genome sampled now is born at v4; an older one keeps its own version on its stamp
+  const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born4 = podGenome(fr, 4242), born3 = { ...born4, frameVersion: 3 }, born2 = { ...born4, frameVersion: 2 };
+  assert.equal(born4.frameVersion, 4, "a genome sampled now is born at the Loika's current frame version");
+  assert.equal(stampFrameOf(fr, born2).version, 2); assert.equal(stampFrameOf(fr, born3).version, 3); assert.equal(stampFrameOf(fr, born4).version, 4);
+  assert.equal(stampGenome(fr, born2, []).version, 2); assert.equal(stampGenome(fr, born3, []).version, 3); assert.equal(stampGenome(fr, born4, []).version, 4);
   assert.match(S.stampCodeOf({ species: fr.species.id, genome: born2, read: [] }) ?? "", /^S1v2-/);
   assert.match(S.stampCodeOf({ species: fr.species.id, genome: born3, read: [] }) ?? "", /^S1v3-/);
-  assert.equal(stampFrameOf(fr).version, 3, "with no genome the current version stands");
+  assert.match(S.stampCodeOf({ species: fr.species.id, genome: born4, read: [] }) ?? "", /^S1v4-/);
+  assert.equal(stampFrameOf(fr).version, 4, "with no genome the frame's own version stands");
 });
 
 test("p.first: written once per trait at read time, only when the look is new; an older save loads with none and shows no mark", () => {
@@ -452,7 +453,7 @@ test("nav fix: the developer panel blurs a button once it has acted", () => {
   assert.match(readFileSync(path.join(here, "../src/dev.mjs"), "utf8"), /addEventListener\("click"[^\n]*\.blur\(\)/);
 });
 
-test("Grow now costs 1 Essence per 2 minutes left on the bud, rounded up, and nothing else; the price falls as the bud grows; ready buds and the free preset cost nothing", () => {
+test("Hatch now costs 1 Essence per 2 minutes left on the bud, rounded up, and nothing else; the price falls as the bud grows; ready buds and the free preset cost nothing", () => {
   const st = S.freshSt("w1", 0, 1000); S.normalize(st); const at = (min, minutes, extra = {}) => { st.bud = { start: 0, minutes, early: false }; return S.instantGrowCost(st, { ...settings, ...extra }, min * 60000); };
   assert.deepEqual(at(0, 5), { e: 0, d: 0, s: 3 }, "the first bud ever, 5 minutes: 3"); assert.deepEqual(at(0, 20), { e: 0, d: 0, s: 10 }, "a full 20-minute bud: 10"); assert.deepEqual(at(0, 21), { e: 0, d: 0, s: 11 }, "a shaped bud: 11");
   assert.equal(at(19.5, 20).s, 1, "a bud nearly done: 1"); assert.equal(at(1, 20).s, 10); assert.equal(at(2, 20).s, 9); assert.equal(at(3, 20).s, 9, "17 minutes left rounds up to 9");
@@ -460,8 +461,7 @@ test("Grow now costs 1 Essence per 2 minutes left on the bud, rounded up, and no
   assert.equal(at(0, 20, { economy: "free" }).s, 0, "the free economy");
   st.bud = null; assert.deepEqual(S.instantGrowCost(st, settings, 0), { e: 0, d: 0, s: 0 });
   // the rule pays it: refused when the Essence is short, taken when it is not
-  st.bud = { start: 0, minutes: 20, early: false, species: "S01" }; st.e = 5; st.d = 5; st.s = 9; const no = S.instantGrow(st, settings, 0); assert.equal(no.ok, false); assert.match(no.msg, /Grow now/); assert.equal(st.s, 9);
-  st.s = 10; assert.equal(S.instantGrow(st, settings, 0).ok, true); assert.deepEqual([st.e, st.d, st.s], [5, 5, 0]); assert.equal(st.bud.early, true);
+  st.bud = { start: 0, minutes: 20, early: false, species: "S01" }; st.e = 5; st.d = 5; st.s = 9; const no = S.instantGrow(st, settings, 0); assert.equal(no.ok, false); assert.match(no.msg, /^Hatch now · /); assert.equal(st.s, 9); assert.notEqual(st.bud, null, "a refused press hatches nothing");
 });
 
 // ---- the care save shape: the carried set, the dock merge, the stage, the migration step (Station side) ----

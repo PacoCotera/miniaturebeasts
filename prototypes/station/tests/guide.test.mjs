@@ -54,9 +54,9 @@ test("the face spread's clarity line: 'A typical Belatz, not one of yours.', the
   m.released = true; assert.equal(L.faceLine(w.st, "S09"), `${m.name} sat for this, now in the wild.`); assert.equal(L.visitFace(w.st, "S09"), null, "a face in the wild: no ✓");
 });
 
-test("the spec data the guide rests on: the strings, the jumps, the ring on paper and the species' wireframes", () => {
-  const pods = specs("pods.json"), frame = specs("frame.json"), lib = specs("library.json"); assert.equal(pods.strings.thisPod, "this pod"); assert.equal(pods.strings.theSpecies, "the species"); assert.equal(pods.strings.openGuide, "Open the guide"); assert.equal(pods.strings.legsTail.heading, "Legs & Tail");
+test("the spec data the guide rests on: the strings, the jumps, the one cased ring and the species' wireframes", () => {
+  const pods = specs("pods.json"), frame = specs("frame.json"), lib = specs("library.json"); assert.equal(pods.strings.thisPod, "this pod"); assert.equal(pods.strings.theSpecies, "every {species}"); assert.equal(pods.strings.openGuide, "Open the guide"); assert.equal(pods.strings.legsTail.heading, "Legs & Tail");
   assert.ok(frame.navigation.jumps.some((j) => j.from === "pods.overview" && j.to === "book" && j.spread === "guide")); assert.ok(frame.navigation.jumps.some((j) => j.from === "habitat" && j.to === "book" && j.spread === "guide")); assert.equal(frame.navigation.screens.book.back, "Library");
-  assert.equal(frame.focus.ring.onPaper, "rust"); assert.deepEqual([frame.focus.ring.width, frame.focus.ring.outside, frame.focus.ring.radius], [2, 4, 6]);
+  assert.deepEqual(frame.focus.ring.colours, { default: { core: "focus", key: "void" } }, "one form: no paper ground"); assert.deepEqual([frame.focus.ring.gap, frame.focus.ring.reach, ...frame.focus.ring.bands.map((b) => b.w)], [1, 5, 1, 2, 1]);
   assert.equal(lib.regions.faceSpread.visit, "derived.faceVisit"); assert.deepEqual(lib.regions.faceSpread.stamp.rect, [832, 112, 120, 120]); assert.deepEqual(lib.regions.detail.carried.names.capTops, [124, 144]);
 });

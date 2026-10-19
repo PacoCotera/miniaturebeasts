@@ -6,10 +6,16 @@ import { PB, C, RGB, art, fromRGBA, cropPB, scalePB, flipPB, upPB, bay, lite, sh
 import { buildIndividual, shapeTrait, genomeDigest, stampGenome, stampFrameOf } from "./genome.mjs";
 import { fitCamera, resolveCamera, VIEWS } from "../../workbench/framework/raster.mjs";
 import { plainRender, BG } from "../../workbench/framework/plain.mjs";
+import { resolveIndividual } from "../../workbench/framework/resolve.mjs";
+import { buildBody } from "../../workbench/framework/rig.mjs";
+import { validateBody } from "../../workbench/framework/validate.mjs";
+import { LOCI } from "../../workbench/framework/catalogue.mjs";
+import { treat } from "./unknown.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
   { id: "mibi", what: "every mibi and founder: the placeholder of the plain renderer (flat slots, outline, no face, no material), quantised to the palette; on Home a resident (144×152 or 104×112) and a sleeper (fitted in 96×88) are the same stand-in, standing and never mirrored, with no nap pose; a juvenile shows the art director's signed juvenile stand-in at its size (mibi-juvenile-<species>-<w>x<h>, masters-pods be36e701) and an adult or elder its species' signed adult stand when placed (mibi-adult-<species>-<w>x<h>, the adult plan), so this placeholder is Create's founder, and any mibi whose stand-in is not placed", until: "the Grow painting lands (M3), and the rig's own placeholder brief is finished" },
+  { id: "stand-layers", what: "the layered Loika stands (S01 adult at 304×312, 144×152 and 48×48; juvenile at 304×312, 104×112 and 48×48), composed per mibi from its drawn looks (looks.mjs, layered-stand.mjs): the signed version 4 bare base key (anchor), the crest overlay, the patches and the stripes layers (ui/assets/stands, cut by tools/make-stand-layers.py). Stand-ins: the 16 eye-ring overlays (thin, wide; ui/assets/stands/index.json standIns, from layers/register.json) draw as the base's \"between\" rings; colour is the charcoal base until the ramps", until: "the eye-ring overlays (hand cut) and the colour ramps (T-20261016-203)" },
   { id: "pod", what: "the pod placeholder sprites: hand-drawn, per size class and state, coloured per species by remap (prototypes/ui/assets/placeholders/pod)", until: "the pod renderer's masters (research-loop.md §6)" },
   { id: "trait-picture", what: "a trait's picture: a close-up of this pod's mibi in the placeholder, cropped around the part the trait names", until: "the Grow painting's close-ups" },
   { id: "seed", what: "the misty seed: the hidden look as a frosted close-up in a pearl", until: "the seed master" },
@@ -18,15 +24,15 @@ export const PLACEHOLDERS = [
   { id: "chapter-emblem", what: "one 16 px emblem per chapter", until: "the chapter rail master" },
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
   { id: "home-glass-by-light", what: "Home's glass (640×488, home-glass-<light>) and Idle's Vivarium (1024×568, idle-vivarium-<light>) and the with-you bed (192×56, home-bed-<light>): one slot a light (dawn, day, dusk, night) from frame.json light and the picture maps; the flat plates of the colours show only while a light's slot is empty (all four lights have their masters today)", until: "the masters of a light, if one is not placed" },
-  { id: "home-rack-pod-24x32", what: "a pod in the Pods module's rack: a PH plate at well + (4,0); the 32×32 wells are left empty", until: "the rack pod and the well master" },
   { id: "library-stage-spread-1024x522", what: "the Library spread's stage, 1024×522 at (0, 40): flat: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat, the caption rules in clay; the marker and the margin bands are not drawn (fix 6)", until: "the spread stage master" },
   { id: "spread-plate-S01..S16-80x96", what: "a found species' plate, 80×96: the code rig's type specimen (speciesArt), for all sixteen", until: "the sixteen spread plate masters" },
   { id: "spread-study-S01..S16-80x96", what: "a met species' study, 80×96: the same specimen reduced to its 1 px outline in stone, transparent inside", until: "the sixteen spread study masters" },
   { id: "spread-gilt-corner-16x16", what: "the gilt corner of a portrayed species: a 16×16 clay L, 4 px thick, along the top and right edges", until: "the gilt corner master" },
   { id: "spread-seal-16x16", what: "the seal of a complete guide: a 16×16 sand disc with a 1 px bark edge", until: "the seal master" },
-  { id: "home-journal", what: "the Library module's journal, 104×72: no master, nothing is drawn", until: "the journal master" },
-  { id: "cargo-bay-992x320", what: "Cargo's bay, 992×320, open and shut: the panel component (panel fill, a bevel top, a hairline edge, a ground inside, no rim and no seals drawn); shut, a PH plate (cargo-bay-shut-976x304) over its inside with no label", until: "the bay masters (open and shut)" },
-  { id: "cargo-well-96x128", what: "a rack well, 96×128: a PH hollow, the pod 88×112 at well + (4,8) over it", until: "the rack well master" },
+  { id: "cargo-bay-992x320", what: "Cargo's painted bay 992×320 (open) and its door cargo-bay-shut-976x304: placed 1:1; drawn in every state, the door by what the bay holds. A master missing draws nothing (never code-drawn)", until: "the art director's 1× sign in Cargo's whole-screen captures (placed, status new)" },
+  { id: "cargo-rack-992x168", what: "Cargo's rack insert 992×168 at (16, 384): the sage strip with six fitted wells, placed 1:1; a master missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
+  { id: "cargo-report-plate-560x{128..288}", what: "the report plate set into the bay's door, 21 exact heights (128 to 288 by 8), placed 1:1; a height missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
+  { id: "crate-shadow-256x24, crate-shadow-432x24, cargo-store-shadow-72x21", what: "the contact shadows under the bay's crates, the opening's closer and the haul's containers, placed 1:1; a master missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
   { id: "founder-304x312", what: "Create's founder, 304×312: the plain renderer's placeholder (the stylised rig pass), frosted where a chapter is unread; with nothing read the whole of it on its own outline; the roll's dither is composed from two of them", until: "the Grow painting and the rig's own placeholder brief" },
   { id: "roll-128x72", what: "the roll's pictures, roll-{species}-{trait}-{look}-128x72: one PH plate for each look; the ring, the notches and the order are the real ones", until: "the roll close-ups cut from the paintings" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
@@ -50,16 +56,46 @@ export const baseArt = () => art("base", () => { const pb = new PB(70, 10); pb.r
 
 // ---------- The mibi placeholder: the plain renderer on the genome, quantised ----------
 const BUILT = new Map();
-export function builtOf(frame, genome) {
-  const k = genomeDigest(genome); let b = BUILT.get(k);
-  if (!b) { try { b = buildIndividual(frame, genome); } catch (e) { b = { error: e.message }; } BUILT.set(k, b); }
+// `read`: the chapter ids read so far (a Set or an array), or undefined for every chapter read, the mibi's own values. While Glow is unread its emission is drawn at none, and while Charge is unread its phase at
+// the look "solid"; once read, the mibi's own value. The genome is never changed: the override is on the resolved values the rig draws from.
+export function builtOf(frame, genome, read) {
+  const hide = hiddenOf(frame, read), k = genomeDigest(genome) + (hide.length ? "~" + hide.join("+") : ""); let b = BUILT.get(k);
+  if (!b) {
+    try {
+      if (!hide.length) b = buildIndividual(frame, genome);
+      else {
+        const resolved = resolveIndividual(frame, genome), v = resolved.values; resolved.species = frame.species.id;
+        if (hide.includes("glow") && "appearance.emission-brightness" in v) v["appearance.emission-brightness"] = 0;
+        if (hide.includes("charge") && "physiology.phase" in v) v["physiology.phase"] = LOCI.get("physiology.phase").alleles.find((a) => a.id === "solid").value;
+        const scene = buildBody(resolved); b = { resolved, scene, validation: validateBody(scene) };
+      }
+    } catch (e) { b = { error: e.message }; }
+    BUILT.set(k, b);
+  }
   return b;
 }
+const has = (read, id) => (read instanceof Set ? read.has(id) : read.includes(id));
+// the chapters whose effect is not drawn yet: Glow and Charge, while the frame has them and they are unread
+const hiddenOf = (frame, read) => (read === undefined ? [] : ["glow", "charge"].filter((id) => frame.chapters.some((c) => c.id === id) && !has(read, id)));
+// the genome as drawn: its digest, with the unread Glow and Charge marked (their emission and phase are not the mibi's own while unread)
+export const drawnDigest = (frame, genome, read) => { const hide = hiddenOf(frame, read); return genomeDigest(genome) + (hide.length ? "~" + hide.map((c) => c[0]).join("") : ""); };
 // The cast shadow of the plain pass lies on the segment from the ground to its shade; those pixels are cleared.
 const isShadow = (r, g, b) => { const t = (BG[0] - r) / 50; return t > 0.02 && t < 1 && Math.abs(g - (BG[1] - 55 * t)) <= 3 && Math.abs(b - (BG[2] - 60 * t)) <= 3; };
 function renderPB(scene, camera, device) {
   const img = plainRender(scene, camera, { device, palette: RGB }), pb = fromRGBA(img, { transparent: BG, tol: 1 });
   for (let i = 0; i < pb.p.length; i++) if (pb.p[i] >= 0 && isShadow(img.data[i * 4], img.data[i * 4 + 1], img.data[i * 4 + 2])) pb.p[i] = -1;
+  return pb;
+}
+// Fix 6 N4: the founder carries no ink outside its body's own connected silhouette. The plain pass's cast shadow is cleared by colour tolerance, and the pixels that miss it are left as isolated dots on the shadow's ellipse; a component of fewer than
+// `min` opaque pixels (8-connected) is residue and goes. Applied to the founder's picture only (founderArt), so no other picture of the rig moves.
+export function dropSpecks(pb, min = 8) {
+  const { w, h, p } = pb, seen = new Uint8Array(w * h), stack = [];
+  for (let s0 = 0; s0 < w * h; s0++) {
+    if (seen[s0] || p[s0] < 0) continue;
+    const comp = []; seen[s0] = 1; stack.push(s0);
+    while (stack.length) { const q = stack.pop(); comp.push(q); const x = q % w, y = (q - x) / w; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue; const n = ny * w + nx; if (!seen[n] && p[n] >= 0) { seen[n] = 1; stack.push(n); } } }
+    if (comp.length < min) for (const q of comp) p[q] = -1;
+  }
   return pb;
 }
 const blobArt = (w, h) => { const pb = new PB(w, h); pb.ell(w / 2, h / 2, w * 0.4, h * 0.4, C.frostD, { sh: [C.frost, C.frostS] }); pb.outline(() => C.stone); return pb; };
@@ -104,6 +140,26 @@ const PART_OF = [
   [/leg|feet|foot|stride|pace|gait|waddle|turning|weave/, ["leg", "ray", "foot-skirt"]], [/tail/, ["tail", "tail-bulb"]], [/wing|fin|flap/, ["flap", "fin"]], [/cap/, ["cap"]], [/shell/, ["shell", "wing-case"]],
 ];
 const partsFor = (traitId) => (PART_OF.find(([re]) => re.test(traitId)) || [null, null])[1];
+// Where an unread chapter shows on the founder (technical, Fix 1b part 2): "body" the whole body; a list of groups, each a list of part names (a part matches itself and its "-" children: "tail" covers tail-bulb; S14's
+// foot-skirt is Shape, not the leg group); null a chapter that draws nothing (the doings, and Glow and Charge, which change the emission and the phase instead). An unknown chapter id throws, as policyOf does.
+export const UNREAD_REGION = { coat: "body", shape: "body", face: [["head", "muzzle", "beak", "eye", "ear", "crown", "horn", "antenna"]], "legs-tail": [["leg", "ray"], ["tail"]], movement: null, stamina: null, character: null, glow: null, charge: null };
+const regionOf = (id) => { if (!Object.hasOwn(UNREAD_REGION, id)) throw new Error(`chapter ${id} is in no unread-region row (station/src/art.mjs UNREAD_REGION): the programme lead places a new chapter`); return UNREAD_REGION[id]; };
+// How a founder is drawn for the chapters read so far: "ghost" when nothing is read; "veil" over the unread looks: Coat unread the whole body in its luma (id group coat, which wins a tie with Shape), Shape unread the whole body (body); the whole body
+// absorbs the part groups, so a group is never named beside it; otherwise the part groups of the unread looks (face, leg, tail) in their declared order, not the frame's chapter order. Otherwise "clear" (only doings, Glow or Charge unread). `boxes` are what
+// to veil: [{ whole: true }] for the body, else [{ parts }] per group. With the drawn body's `scene` a group with no part on it leaves the id (S07 and S15 have no tail, S01 no tail part), and with no group left the treatment is clear. It draws nothing.
+const PART_GROUPS = [["face", UNREAD_REGION.face[0]], ["leg", UNREAD_REGION["legs-tail"][0]], ["tail", UNREAD_REGION["legs-tail"][1]]];   // the part groups' tokens and parts, in the order the id names them
+const hasPart = (scene, parts) => scene.nodes.some((n) => { const q = n.part ?? n.id; return parts.some((p) => q === p || q.startsWith(p + "-")); });
+export function treatmentOf(frame, read, scene = null) {
+  const ids = frame.chapters.map((c) => c.id), readIds = [...read];
+  for (const id of [...ids, ...readIds]) regionOf(id);
+  if (!readIds.length) return { mode: "ghost", boxes: [], groups: [], luma: false };
+  const unreadIds = ids.filter((id) => !readIds.includes(id)), unread = unreadIds.map(regionOf).filter(Boolean);
+  if (!unread.length) return { mode: "clear", boxes: [], groups: [], luma: false };
+  if (unread.includes("body")) { const luma = unreadIds.includes("coat"); return { mode: "veil", boxes: [{ whole: true }], groups: [luma ? "coat" : "body"], luma }; }   // Coat wins a tie with Shape: its colour is never drawn
+  const wanted = new Set(unread.flat().map((g) => PART_GROUPS.find(([, parts]) => parts.join() === g.join())[0])), groups = PART_GROUPS.filter(([tok, parts]) => wanted.has(tok) && (!scene || hasPart(scene, parts)));
+  if (!groups.length) return { mode: "clear", boxes: [], groups: [], luma: false };
+  return { mode: "veil", boxes: groups.map(([, parts]) => ({ parts })), groups: groups.map(([tok]) => tok), luma: false };
+}
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 // The box (in image pixels) the named parts occupy under a camera; the whole body when none match.
 function partBox(scene, camera, parts) {
@@ -267,20 +323,16 @@ export function vivArt(w, h) { return art("viv" + w + "x" + h, () => {
 export const twinkle = () => (motion() ? Math.floor(clock.now / 300) % 3 : 0);
 export { upPB };
 
-// ---------- The founder on Create: the placeholder, misty wherever a chapter is unread ----------
-// Frost covers the parts the unread traits name; a whole-body trait unread frosts the whole body lightly.
-export function mistyArt(frame, genome, mistyTraitIds, w, h) {
-  const key = "mist" + genomeDigest(genome) + ":" + [...mistyTraitIds].sort().join(",") + ":" + w + "x" + h;
+// ---------- The founder on Create: its own colours, calm where a chapter is unread (Fix 1b part 1, unknown.mjs) ----------
+// The rig at the picture's size with Glow's emission and Charge's phase as the unread chapters leave them, then the treatment treatmentOf names: clear (the picture, palette art), a veil over the unread looks' parts or the whole body, or the
+// ghost of nothing read. A part group with no part on this body veils nothing.
+export function founderArt(frame, genome, read, w, h, painted = null) {   // painted: the species' placed adult master at this size (Create founder A, interim): the one flat picture in place of the rig render, under the same treatment
+  const b = builtOf(frame, genome, read), ok = !b.error && b.validation.status === "valid", t = treatmentOf(frame, read, ok ? b.scene : null), key = "fd" + drawnDigest(frame, genome, read) + ":" + t.mode + ":" + t.groups.join("+") + ":" + w + "x" + h + (painted ? ":painted" : "");
   return art(key, () => {
-    const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p);
-    if (!mistyTraitIds.length) return pb;
-    const b = builtOf(frame, genome); if (b.error || b.validation.status !== "valid") return pb;
-    const camera = fitCamera(b.scene, "portrait", [w, h], 0.06), boxes = mistyTraitIds.map((id) => partBox(b.scene, camera, partsFor(id)));
-    const whole = boxes.some((bx) => bx.whole);
-    pb.map((c, x, y) => { const inBox = boxes.some((bx) => !bx.whole && x >= bx.x0 - 4 && x <= bx.x1 + 4 && y >= bx.y0 - 4 && y <= bx.y1 + 4);
-      if (inBox) return bay(x, y) < 7 ? C.frost : bay(x, y) < 14 ? C.frostD : C.frostS;
-      if (whole && bay(x, y) < 4) return C.frostD; return c; });
-    return pb;
+    const camera = ok ? fitCamera(b.scene, "portrait", [w, h], 0.06) : null, base = painted ?? (ok ? dropSpecks(renderPB(b.scene, camera, "station")) : blobArt(w, h));
+    if (t.mode === "clear") return base;
+    const boxes = t.boxes[0]?.whole ? "body" : !ok ? [] : t.boxes.map(({ parts }) => { const bx = partBox(b.scene, camera, parts); return [Math.max(0, Math.floor(bx.x0)), Math.max(0, Math.floor(bx.y0)), Math.min(w - 1, Math.ceil(bx.x1) - 1), Math.min(h - 1, Math.ceil(bx.y1) - 1)]; });
+    return treat({ w, h, rgba: () => base.rgba() }, { mode: t.mode, boxes, luma: t.luma });
   });
 }
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
@@ -288,8 +340,6 @@ export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb
 
 export const waitLamp = () => art("waitlamp", () => { const pb = new PB(10, 10); pb.ell(5, 5, 4, 4, C.sky); pb.ell(3.5, 3.5, 1.3, 1.3, C.ice); pb.outline(() => C.deep); return pb; });
 
-// A whole body under frost: the child to be on the Cross screen, never a promise.
-export function ghostArt(frame, genome, w, h) { return art("ghost" + genomeDigest(genome) + ":" + w + "x" + h, () => { const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p); return pb.frost(); }); }
 
 // A cool beam from above on the specimen stage: a flat cone of one colour, no grain (chrome is crisp). 
 export function beamArt(w, h) { return art("beam" + w + "x" + h, () => { const pb = new PB(w, h);

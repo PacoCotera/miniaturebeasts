@@ -2,104 +2,116 @@
  "_note": "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "home-fresh": {
-   "hash": "50a8bc2f",
+   "hash": "257ea874",
    "png": "home-fresh.png"
   },
   "home-docked": {
-   "hash": "01c74cda",
+   "hash": "216af380",
    "png": "home-docked.png"
   },
+  "home-docked-dawn": {
+   "hash": "a62a03f5",
+   "png": "home-docked-dawn.png"
+  },
+  "home-docked-dusk": {
+   "hash": "a94f688d",
+   "png": "home-docked-dusk.png"
+  },
+  "home-docked-night": {
+   "hash": "e9230ee7",
+   "png": "home-docked-night.png"
+  },
   "home-goal-docked": {
-   "hash": "a0010aa2",
+   "hash": "644069b2",
    "png": "home-goal-docked.png"
   },
   "home-goal-away": {
-   "hash": "b0f99002",
+   "hash": "6e8a0d11",
    "png": "home-goal-away.png"
   },
   "home-away": {
-   "hash": "d8aa0a0a",
+   "hash": "e46af7b3",
    "png": "home-away.png"
   },
   "home-waiting": {
-   "hash": "40bf55eb",
+   "hash": "da1938ab",
    "png": "home-waiting.png"
   },
   "home-bed-none": {
-   "hash": "621f768e",
+   "hash": "169237fc",
    "png": "home-bed-none.png"
   },
   "home-cargo-empty": {
-   "hash": "917e8bdc",
+   "hash": "c792755d",
    "png": "home-cargo-empty.png"
   },
   "home-incubator-empty": {
-   "hash": "1143d955",
+   "hash": "672bf52b",
    "png": "home-incubator-empty.png"
   },
   "home-incubator-growing": {
-   "hash": "04d4c2f0",
+   "hash": "6570f3ad",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-ready": {
-   "hash": "2d2d0089",
+   "hash": "bb3d449b",
    "png": "home-incubator-ready.png"
   },
   "home-probe-docked": {
-   "hash": "38327491",
+   "hash": "b662f327",
    "png": "home-probe-docked.png"
   },
   "home-probe-away": {
-   "hash": "87a2f5d9",
+   "hash": "996b1c8f",
    "png": "home-probe-away.png"
   },
   "home-probe-sitting": {
-   "hash": "2e52e603",
+   "hash": "3af6a79f",
    "png": "home-probe-sitting.png"
   },
   "home-library-empty": {
-   "hash": "53e8798c",
+   "hash": "047a7028",
    "png": "home-library-empty.png"
   },
   "home-library-pages": {
-   "hash": "108a22c8",
+   "hash": "0da1aeda",
    "png": "home-library-pages.png"
   },
   "home-knob-rest": {
-   "hash": "35c9c1ab",
+   "hash": "c0e1dca6",
    "png": "home-knob-rest.png"
   },
   "home-knob-focused": {
-   "hash": "3fc18e6f",
+   "hash": "e6bc9846",
    "png": "home-knob-focused.png"
   },
   "home-vivarium-focused": {
-   "hash": "2fb87a18",
+   "hash": "a1b72ce1",
    "png": "home-vivarium-focused.png"
   },
   "home-resident-focused": {
-   "hash": "8d95b394",
+   "hash": "797fadc2",
    "png": "home-resident-focused.png"
   },
   "home-sleeper-focused": {
-   "hash": "2abc0931",
+   "hash": "3a1ecaa2",
    "png": "home-sleeper-focused.png"
   },
   "home-moving-asleep": {
-   "hash": "777b6a8a",
+   "hash": "a37ce448",
    "png": "home-moving-asleep.png"
   },
   "home-knob-pressed": {
-   "hash": "92128dc4",
+   "hash": "f565b7c1",
    "png": "home-knob-pressed.png"
   },
   "home-walk-8000ms": {
-   "hash": "2029a451",
+   "hash": "490dd568",
    "png": "home-walk-8000ms.png"
   },
-  "home-crates-arriving": {
-   "hash": "47c8efe0",
-   "png": "home-crates-arriving.png"
+  "home-sendoff-800": {
+   "hash": "29cac10e",
+   "png": "home-sendoff-800.png"
   }
  }
 }

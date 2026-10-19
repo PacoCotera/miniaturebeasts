@@ -19,9 +19,22 @@ export function slantTabs(rail, n, open = 0, where = "pods") {
 export const slantAt = (rail, r) => Math.floor((rail.slant * (r + 0.5)) / rail.h);
 
 // The page's size by its trait count: the spec's table (page.sizeByCount, [w, h] by count 1 to 8), else the region's own rectangle.
+// Compare's pane (fix 5): the rectangle's width, and the height the open chapter's count gives (page.heightByCount).
 export function pageSize(page, n) {
-  const t = page.sizeByCount; if (!t) return page.rect.slice(2);
+  const t = page.sizeByCount, h = page.heightByCount;
+  if (!t && h) return [page.rect[2], h[String(Math.max(1, Math.min(n, Object.keys(h).length)))]];
+  if (!t) return page.rect.slice(2);
   return t[String(Math.max(1, Math.min(n, Object.keys(t).length)))].slice();
+}
+// The chapter page's frame (fix 5 P4): the largest grid over the pod's chapters, given each chapter's trait count (a sealed chapter counts 1).
+export function pageFrame(counts) {
+  const colsOf = (n) => (n <= 4 ? n : n <= 6 ? 3 : 4), ns = counts.length ? counts : [1];
+  return { cols: Math.max(1, ...ns.map(colsOf)), rows: ns.some((n) => n >= 5) ? 2 : 1 };
+}
+// The chapter page's origin by its frame (page.originX by the columns, page.originY by the rows); a frame the table does not hold takes the nearest.
+export function pageOrigin(page, cols, rows) {
+  const pick = (t, k) => { const ks = Object.keys(t).map(Number); return t[String(Math.max(Math.min(...ks), Math.min(k, Math.max(...ks))))]; };
+  return [pick(page.originX, cols), pick(page.originY, rows)];
 }
 // The chapter page's grid by the focused chapter's trait count: the spec's grid table names the cells and the picture size per count ("1", "2", "3-4", "5-6"); more than the table holds comes back to the UI designer (overflow).
 export function pageGrid(page, n) {
@@ -48,11 +61,19 @@ export function railGrounds(rail) {
   for (const st of ["unread", "read", "sealed"]) for (const [kind, w] of [["full", rail.full], ["compact", rail.compact]]) out.push(`rail-tab-fill-${st}-${kind}-${w + S}x${rail.h}`);
   out.push(`rail-tab-fill-open-full-${rail.full + S}x${rail.h}`); return out;
 }
+// The rail's well (fix 2 F11): plate-rail-well-<run + 16>x48 for every run the rail can take, 1 to max tabs with one open and, past fullUpTo, with none open (all compact); run = the tabs' widths + the slant.
+export function railWells(rail) {
+  const ws = new Set(); for (let n = 1; n <= rail.max; n++) for (const open of n > rail.fullUpTo ? [true, false] : [true]) {
+    const compact = n > rail.fullUpTo, total = rail.slant + (compact ? (open ? rail.full + (n - 1) * rail.compact : n * rail.compact) : n * rail.full); ws.add(total + 16);
+  }
+  return [...ws].sort((a, b) => a - b).map((w) => `plate-rail-well-${w}x48`);
+}
 // Every picture the host sends at boot, after the specs and before the first props, and never drops: the name plates and the rail tab grounds, with their sizes.
 export function pinnedPictures(pods, frame) {
   const seen = new Set(), out = [];
   for (const r of Object.values(pods.regions)) if (r?.name?.plate?.series) for (const id of plateSeries(r.name)) if (!seen.has(id)) { seen.add(id); out.push({ id, w: +id.match(/-(\d+)x\d+$/)[1], h: r.name.plate.h }); }
   for (const id of railGrounds(frame.regions.rail)) out.push({ id, w: +id.match(/-(\d+)x\d+$/)[1], h: frame.regions.rail.h });
+  for (const id of railWells(frame.regions.rail)) out.push({ id, w: +id.match(/-(\d+)x\d+$/)[1], h: 48 });
   return out;
 }
 // The message plate: centred on x 512, at most 640 wide, 16 + 20 px a line tall, its bottom edge at y 550, or its top at y 112 when that would cover the screen's focal box.
@@ -73,6 +94,7 @@ export function evaluate(rule, node, args) {
     case "slantTabs": { const r = slantTabs(node, args[0], args[1], args[2] ? "centred" : "pods"); out.push(+r.overflow, r.run, typeof r.x0 === "number" ? r.x0 : 0, r.tabs.length); for (const t of r.tabs) out.push(...t.rect, +t.full); break; }
     case "slantAt": out.push(slantAt(node, args[0])); break;
     case "pageSize": out.push(...pageSize(node, args[0])); break;
+    case "pageOrigin": out.push(...pageOrigin(node, args[0], args[1])); break;
     case "pageGrid": { const g = pageGrid(node, args[0]); out.push(+g.overflow, g.cells.length); for (const c of g.cells) out.push(...c); out.push(...(g.picture ?? [0, 0])); break; }
     case "placeRect": out.push(...placeRect(node, args[0])); break;
     case "kinRect": out.push(...kinRect(node, args[0])); break;
@@ -143,3 +165,19 @@ export function chapterPlan(traits, spec) {
   const rows = traits.map((t) => { const h = T.h + T.perLocus * Math.max(0, t.loci - 1), r = { id: t.id, y, h, loci: t.loci }; y += h; return r; });
   return { rows, height: y - top, fits: y - top <= spec.regions.chapter.rows[3] };
 }
+
+// A creature's footprint (fix 14, FR4): measured on the alpha of the picture as drawn, in integers. The feet band is the lowest `band` rows (default 6) holding a pixel of alpha >= `alpha` (default 128)
+// in the cell [cellX, cellX + cellW) of `pic` (anything with w, h and rgba() or data: RGBA bytes, straight alpha); `feetY` is the row under the lowest of them; `x` is the band's leftmost ink column and `w`
+// its ink width (leftmost to rightmost ink column). Returns [x, feetY, w] relative to the cell, or null when the cell has no ink. frame.json focus.ring.shapes.footprint carries band and alpha.
+export function footprintOf(pic, cellX = 0, cellW = pic.w, { band = 6, alpha = 128 } = {}) {
+  if (![pic.w, pic.h, cellX, cellW, band, alpha].every(Number.isInteger) || cellX < 0 || cellW < 1 || cellX + cellW > pic.w || band < 1) throw new Error(`footprintOf refused: ${pic.w}x${pic.h} cell ${cellX}+${cellW}`);
+  const px = typeof pic.rgba === "function" ? pic.rgba() : pic.data, ink = (x, y) => px[4 * (y * pic.w + cellX + x) + 3] >= alpha;
+  let low = -1;
+  for (let y = pic.h - 1; y >= 0 && low < 0; y--) for (let x = 0; x < cellW; x++) if (ink(x, y)) { low = y; break; }
+  if (low < 0) return null;
+  let lo = cellW, hi = -1;
+  for (let y = Math.max(0, low - band + 1); y <= low; y++) for (let x = 0; x < cellW; x++) if (ink(x, y)) { if (x < lo) lo = x; if (x > hi) hi = x; }
+  return [lo, low + 1, hi - lo + 1];
+}
+// The footprint ring's height (Q3): 2 * round(w / 12), held between `hMin` and `hMax`; in integers 2 * floor((w + 6) / 12). So fh + 10 is even.
+export const footprintHeight = (w, { hMin = 6, hMax = 16 } = {}) => Math.min(hMax, Math.max(hMin, 2 * Math.floor((w + 6) / 12)));

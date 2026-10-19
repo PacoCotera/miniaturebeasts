@@ -27,3 +27,13 @@ test("the Companion's 48 are the signed palette, unchanged: names and hexes in o
   assert.equal(companion.count, 48);
   assert.deepEqual(P.colours.slice(0, 48), companion.colours.map((c) => [c.name, c.hex]));
 });
+
+// the rack pod's ramp (home.json regions.pods.pod.layers.ramp): light and shade are A's neighbours; the outline is the last colour of A's darker chain before `ink` or `void`, `ink` where that would be `night`; never `void`
+import { rampOf } from "../../station/src/pixels.mjs";
+test("rampOf: the outline of each ramp the rack pod can take, and never void or night", () => {
+  const want = { slate: "ink", coral: "ink", teal: "tealD", rust: "soil", amber: "soil", sea: "deep", leaf: "pine", plum: "plumD", lilac: "plumD", stone: "ink", paper: "soil", mist: "ink", fog: "ink" };
+  for (const [a, o] of Object.entries(want)) { const r = rampOf(a); assert.equal(r.outline, o, a); assert.equal(r.light, P.lighter[a]); assert.equal(r.shade, P.darker[a]); }
+  const chips = JSON.parse(readFileSync(path.join(here, "../specs/station/cross.json"), "utf8")).colours.pigmentChips, grey = ["slate", "stone", "mist", "fog", "bone", "white", "ink", "night", "void"];
+  for (const n of names) assert.ok(rampOf(n).outline !== "void" && rampOf(n).outline !== "night", `${n}: the outline is ${rampOf(n).outline}`);
+  for (const [pig, n] of Object.entries(chips)) if (pig !== "_note" && !grey.includes(n)) assert.notEqual(rampOf(n).outline, n, `${pig} (${n}): no non-grey outline equals A`);
+});

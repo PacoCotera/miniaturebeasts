@@ -19,7 +19,9 @@ export const SCHEMA = "mb-species-frame/2";
 // The frame version a genome is built against: 2 since catalogue 8 (the tiny head alleles); 3 since the
 // sixteen species glyphs were redrawn as abstract marks (2026-10-08, the owner's decision; the stamp
 // carries a glyph, so a changed glyph is a new frame). A saved mibi keeps the version it was born with.
-export const FRAME_VERSION = 3;
+export const FRAME_VERSION = 4;   // 4: catalogue 10 (ash), the Loika fine-tuned (T-20261016-200)
+// A frame's own version: the registry's FRAME_VERSION, or a later one where a species' frame changed (S01 at 4, T-20261016-200). A genome is born on its frame's version and keeps it.
+export const frameVersionOf = (frame) => frame?.frameVersion ?? FRAME_VERSION;
 export const RING = ["coat", "face", "shape", "legs-tail", "movement", "stamina", "character", "glow", "charge"];
 export const CHAPTER_NAMES = { coat: "Coat", face: "Face", shape: "Shape", "legs-tail": "Legs & tail", movement: "Movement", stamina: "Stamina", character: "Character", glow: "Glow", charge: "Charge" };
 export const WHEEL = ["marigold", "coral", "raspberry", "plum", "periwinkle", "cobalt", "lagoon", "jade", "russet", "charcoal"];
@@ -87,7 +89,7 @@ export const VOCAB = [
   ["shape", "leaves", "Leaves", ["growth.leaf-count", "growth.leaf-length-ratio"], ["few short", "between", "many long"]],
   ["shape", "shell", "Shell", ["growth.shell-dome-ratio"], ["low", "between", "high dome"]],
   ["legs-tail", "legs", "Legs", ["growth.support-drop-ratio", "growth.support-radius-ratio", "growth.support-splay-ratio"], ["short, fine", "between", "long, stout"]],
-  ["legs-tail", "feet", "Feet", ["anatomy.contact-terminal-form", "growth.terminal-length-ratio", "growth.terminal-depth-ratio"], ["round feet", "pads", "digging wedges"]],
+  ["legs-tail", "feet", "Feet", ["anatomy.contact-terminal-form", "growth.terminal-length-ratio", "growth.terminal-depth-ratio"], ["round feet", "padded feet", "digging wedges"]],
   ["legs-tail", "feelers", "Feelers", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.free-radius-ratio"], ["short, fine", "between", "long, thick"]],
   ["legs-tail", "rays", "Rays", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.support-radius-ratio"], ["short, fine", "between", "long, stout"]],
   ["legs-tail", "tail", "Tail", ["growth.axial-tail-length-ratio", "growth.axial-tail-width-ratio"], ["short, thin", "between", "long, thick"]],
@@ -110,6 +112,22 @@ export const VOCAB = [
   ["charge", "phase", "Phase", ["physiology.phase"], ["solid", "between", "faint"]],
   ["charge", "pull", "Pull", ["physiology.pull"], ["weak", "between", "strong"]],
 ];
+// The self-changing traits (creatures-and-genomics, Self-changing traits; the owner's third kind of locus, 2026-10-09):
+// the mibi changes them within its own life, never the player and never a cross. Each names the end its mark moves
+// toward and what moves it: the places a partner enters on an expedition (the Station's place ids), or a storm passing
+// over the partner (the trip's storm flag). The mark is kept beside the copies, never in them (SELF_MARK).
+export const SELF_CHANGING = {
+  glow: { toward: "bright", places: ["cave", "wood"], storm: false },
+  "light-feeding": { toward: "high", places: ["meadow", "pond", "rock"], storm: false },
+  phase: { toward: "solid", places: [], storm: true },
+};
+// The mark's rules: a step is 1/16 of the species' pool range, at most one a dock when the trigger was met, up to four
+// steps, only toward the trait's end; three partner expeditions in a row without the trigger take one step back (never below
+// none), and that count restarts at a step up and after each fall. A trip the mibi rode on but did not lead counts for
+// nothing. Only the partner changes; a child starts at none.
+export const SELF_MARK = { stepOf: 16, maxSteps: 4, fadeAfter: 3 };
+// Who changes a locus (the owner's kinds): the species (locked), the player (a configurable look), breeding only, or the mibi itself.
+export const changedByOf = (row, trait) => (row.kind === "locked" ? "species" : SELF_CHANGING[trait?.id] ? "self" : trait?.shapeable ?? row.shapeable ? "player" : "breeding");
 const vocabTrait = (id) => { const t = VOCAB.find((v) => v[1] === id); if (!t) throw new Error(`vocabulary has no trait ${id}`); return { chapter: t[0], id: t[1], name: t[2], loci: t[3], looks: t[4] }; };
 
 // --- the frame -------------------------------------------------------------------------------------
@@ -204,6 +222,7 @@ export function buildFrame(spec, options = {}) {
     if (p.every((x) => pools[id].includes(x))) typical[id] = p;
   }
   const frame = {
+    ...(spec.frameVersion ? { frameVersion: spec.frameVersion } : {}),
     schema: SCHEMA,
     species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "" },
     taxonomy: { ...spec.taxonomy, clan: spec.clan, planKey: spec.plan.key, planCode: plan.code, rig: plan.rig, tier: spec.tier ?? "authored", seed: spec.seed ?? null, states: plan.states },
@@ -228,10 +247,23 @@ export function buildFrame(spec, options = {}) {
       if (b.validation.status === "valid") constructed++; else failures.push(b.validation.problems[0]);
     } catch (e) { failures.push(e.message); }
   }
-  frame.viability = { sampled: samples, constructed, failures: [...new Set(failures)].slice(0, 5), rule: "random copies from the species pools at every open locus; built by the rig and validated against the compositional contract" };
+  // Crossed children too (T-20261016-185): a child's blends land on steps between the named alleles,
+  // which pool samples never try; every cross of two members must build, as every member must.
+  const members = [];
+  for (let i = 0; members.length < 24 && i < 96; i++) { const g = sampleIndividual(frame, sampleRng); try { if (buildIndividual(frame, g).validation.status === "valid") members.push(g); } catch { /* not a member */ } }
+  let crossed = 0, crossedBuilt = 0;
+  for (let i = 0; i < samples && members.length > 1; i++) {
+    const a = members[Math.floor(sampleRng() * members.length)], b = members[Math.floor(sampleRng() * members.length)];
+    if (a === b) continue;
+    const g = cross(frame, { id: 1, genome: a }, { id: 2, genome: b }, { rng: sampleRng, kinship: 0 });
+    crossed++;
+    try { const c = buildIndividual(frame, g); if (c.validation.status === "valid") crossedBuilt++; else failures.push(`a crossed child: ${c.validation.problems[0]}`); }
+    catch (e) { failures.push(`a crossed child: ${e.message}`); }
+  }
+  frame.viability = { sampled: samples, constructed, crossed, crossedBuilt, failures: [...new Set(failures)].slice(0, 5), rule: "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract" };
   frame.typeSpecimen = { genome: specimen, rule: "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele", brief: brief(built.scene, frame), bounds: built.scene.bounds, counts: built.validation.counts };
-  if (constructed !== samples) {
-    const err = new Error(`${spec.id}: ${samples - constructed} of ${samples} individuals do not build: ${frame.viability.failures.join("; ")}`);
+  if (constructed !== samples || crossedBuilt !== crossed) {
+    const err = new Error(`${spec.id}: ${samples - constructed} of ${samples} individuals and ${crossed - crossedBuilt} of ${crossed} crossed children do not build: ${frame.viability.failures.join("; ")}`);
     err.frame = frame;
     throw err;
   }
@@ -239,6 +271,15 @@ export function buildFrame(spec, options = {}) {
 }
 
 function shuffle(r, list) { const a = [...list]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+// A self-changing trait's entry in a frame: its rule, with the end it moves toward checked against the species' pool
+// (a frame whose pool does not hold that end cannot carry the trait as self-changing: the build stops, nothing is guessed).
+function selfChangingOf(t, pools) {
+  const rule = SELF_CHANGING[t.id], pool = pools[t.loci[0]] ?? [];
+  if (t.loci.length !== 1) throw new Error(`self-changing trait ${t.id} must be one locus, has ${t.loci.length}`);
+  if (!pool.includes(rule.toward)) throw new Error(`self-changing trait ${t.id}: its end "${rule.toward}" is not in the pool [${pool.join(", ")}]`);
+  return { toward: rule.toward, places: [...rule.places], storm: rule.storm, ...SELF_MARK };
+}
 
 function finishFrame(frame, spec) {
   const { _pools: pools, _locked: locked, _traits: traits, _sealed: sealed, _typical: typical = {} } = frame;
@@ -264,15 +305,17 @@ function finishFrame(frame, spec) {
       const t = traitOf[id];
       const [onNow] = ownerOn(id, vOn), [offNow] = ownerOn(id, vOff);
       if (!onNow) throw new Error(`${frame.species.id}: open locus ${id} is switched off by the frame (an invisible trait)`);
-      const shapeable = t.shapeable ?? nature === "look";
+      const shapeable = SELF_CHANGING[t.id] ? false : t.shapeable ?? nature === "look";
       const kind = t.chapter in sealed ? "sealed" : !offNow && !isPartSwitch(id) ? "sleeping" : `heritable-${nature}`;
       row.kind = kind; row.nature = nature; row.chapter = t.chapter; row.trait = t.id; row.shapeable = shapeable; row.alleles = pools[id]; row.looks = looksFor(locus, pools[id]);
       row.guard = kind === "sleeping" ? `asleep in any individual whose ${t.loci.find((x) => isPartSwitch(x)) ?? "owner switch"} is off; drawn when it is on` : locus.consumer;
+      row.changedBy = changedByOf(row, { id: t.id, shapeable });
+      if (spec.legacy?.[id]) row.legacy = [...spec.legacy[id]];   // alleles a living line may still carry from an earlier frame version: legal, never drawn for a new pod
       if (typical[id]) row.typical = typical[id];
     } else {
       row.kind = "locked"; row.lockReason = isPartSwitch(id) ? "switch" : "fixed"; row.chapter = null; row.trait = null; row.shapeable = false;
       row.copies = locked[id]; row.looks = looksFor(locus, [locked[id][0]]); row.guard = locus.consumer;
-      row.nature = nature;
+      row.nature = nature; row.changedBy = "species";
     }
     rows.push(row);
   }
@@ -282,14 +325,14 @@ function finishFrame(frame, spec) {
     const ts = traits.filter((t) => t.chapter === ch);
     if (!ts.length) continue;
     chapters.push({ id: ch, name: CHAPTER_NAMES[ch], sealed: ch in sealed, ...(ch in sealed ? { opensWith: sealed[ch], findKind: findKindOf(sealed[ch]) } : {}),
-      traits: ts.map((t) => ({ id: t.id, name: t.name, loci: t.loci, looks: t.looks ?? looksFor(LOCI.get(t.loci[0]), pools[t.loci[0]]), nature: isDoing(t.loci[0]) ? "doing" : "look", shapeable: t.shapeable ?? !isDoing(t.loci[0]), ...(t.override ? { override: t.override } : {}), verdict: t.verdict ?? null })) });
+      traits: ts.map((t) => ({ id: t.id, name: t.name, loci: t.loci, looks: t.looks ?? looksFor(LOCI.get(t.loci[0]), pools[t.loci[0]]), nature: isDoing(t.loci[0]) ? "doing" : "look", shapeable: SELF_CHANGING[t.id] ? false : t.shapeable ?? !isDoing(t.loci[0]), ...(t.override ? { override: t.override } : {}), ...(SELF_CHANGING[t.id] ? { selfChanging: selfChangingOf(t, pools) } : {}), verdict: t.verdict ?? null })) });
   }
   frame.chapters = chapters;
   const count = (p) => rows.filter(p).length;
   frame.counts = {
     carried: rows.length, trunk: count((x) => x.scope === "trunk"), branch: count((x) => x.scope === "branch"), absent: frame.absent.length,
     locked: count((x) => x.kind === "locked"), lockedBy: { switch: count((x) => x.lockReason === "switch"), fixed: count((x) => x.lockReason === "fixed") },
-    heritableLook: count((x) => x.kind === "heritable-look"), heritableDoing: count((x) => x.kind === "heritable-doing"), sleeping: count((x) => x.kind === "sleeping"), sealed: count((x) => x.kind === "sealed"),
+    heritableLook: count((x) => x.kind === "heritable-look"), heritableDoing: count((x) => x.kind === "heritable-doing"), selfChanging: count((x) => x.changedBy === "self"), sleeping: count((x) => x.kind === "sleeping"), sealed: count((x) => x.kind === "sealed"),
     open: count((x) => x.kind !== "locked"), traits: traits.length,
     byChapter: Object.fromEntries(chapters.map((c) => [c.name, { loci: c.traits.reduce((s, t) => s + t.loci.length, 0), traits: c.traits.length }])),
     fieldGuideLooks: rows.filter((x) => x.kind !== "locked").reduce((s, x) => s + x.looks.length, 0),
@@ -325,12 +368,12 @@ export function typeSpecimen(frame) {
     const op = LOCI.get(l.id).operator;
     loci[l.id] = op === "copy-mean" && l.alleles.length > 1 ? [l.alleles[0], l.alleles.at(-1)] : [l.alleles[0], l.alleles[0]];
   }
-  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin: { kind: "type-specimen" } };
+  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin: { kind: "type-specimen" } };
 }
 export function sampleIndividual(frame, r, origin = { kind: "random" }) {
   const loci = {};
   for (const l of frame.loci) loci[l.id] = l.kind === "locked" ? [...l.copies] : [pick(r, l.alleles), pick(r, l.alleles)];
-  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: FRAME_VERSION, loci, origin };
+  return { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin };
 }
 // The cross (the-cross.md, decided 2026-10-08) lives in cross.mjs: blends for continuous loci,
 // Mendelian switches with sleeping parts riding along, independent per locus, pedigree kinship and
@@ -357,7 +400,7 @@ export function checkGenome(frame, genome) {
     if (l.kind === "locked" && !samePair(c, l.copies)) problems.push(`${l.id}: locked copies differ from the frame (not this species)`);
     if (l.kind !== "locked") {
       const locus = LOCI.get(l.id);
-      const inPool = (a) => typeof a === "number" ? isContinuous(locus) && (([lo, hi]) => a >= lo - 1e-9 && a <= hi + 1e-9)(valueRange(locus, l.alleles)) : l.alleles.includes(a);
+      const inPool = (a) => typeof a === "number" ? isContinuous(locus) && (([lo, hi]) => a >= lo - 1e-9 && a <= hi + 1e-9)(valueRange(locus, l.alleles)) : l.alleles.includes(a) || !!l.legacy?.includes(a);
       if (!c.every(inPool)) problems.push(`${l.id}: a copy outside the species pool`);
     }
   }

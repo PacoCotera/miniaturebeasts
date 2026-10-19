@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, frameIds, podGenome, traitState, chapterLooks } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
-import { traitLooks } from "../../workbench/framework/describe.mjs";
+import { traitLooks, currentLooks } from "../../workbench/framework/describe.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -28,7 +28,7 @@ test("every look a pod can carry is among the looks the guide could still lack, 
 // The looks a field guide counts are the frame's own player words (research-loop.md §4, game design 2026-10-09): a blend's bins, "between" one look, never the catalogue's pair
 // labels. Two frames still name fewer looks than their pool can show, which the copywriter fills; they are listed here so a third cannot arrive unseen, and so each one is
 // removed from the list the day it is fixed.
-const FRAME_GAPS = { "S03:feet": "the frame names 3 of the 6 foot forms its pool can carry", "S11:head": "the frame names 3 looks for a pool of 4 head sizes" };
+const FRAME_GAPS = {};   // none left: S11 Head binned (T-20261016-193), S03 Claws narrowed to its three words (T-20261016-194)
 test("each species' look count matches its frame: every trait enumerates to the frame's own looks, bar the two listed gaps", () => {
   const seen = new Set(); let total = 0;
   for (const id of frameIds()) {
@@ -165,4 +165,39 @@ test("W4 to W6: a shut sealed chapter is unmarked (marked when sealedOpen), a re
   const look = chapterLooks(f2, sealed, x.genome).find(([tt]) => tt === pick.id)[1][0]; s2.wish.S02 = { [pick.id]: look };
   assert.deepEqual(L.wishMarks(s2, x, { ...settings, sealedOpen: false }), [], "shut"); assert.ok(L.wishMarks(s2, x, { ...settings, sealedOpen: true }).some((q) => q.chapter === sealed.id), "open");
   void hidden;
+});
+
+// T-20261016-204: the guide counts the frame's current looks only; a legacy look is found once seen, never counted, never an empty frame.
+const allTraits = (fr) => fr.chapters.flatMap((c) => c.traits);
+const fillCurrent = (st, id) => { const fr = frameOf(id); for (const t of allTraits(fr)) S.guideAdd(st, id, t.id, currentLooks(fr, t)); };
+const markings = (fr) => allTraits(fr).find((t) => traitLooks(fr, t).includes("plain"));
+test("a version-4-only Loika save with every current look seen is complete; plain is never unseen", () => {
+  const st = fresh(); st.knownIds.push("S01"); const fr = frameOf("S01"), t = markings(fr);
+  assert.ok(t && !currentLooks(fr, t).includes("plain"), "plain is a legacy look of the Loika");
+  fillCurrent(st, "S01");
+  const fg = L.fieldGuide(st, "S01", settings); assert.equal(fg.unseen, 0); assert.ok(fg.complete); assert.ok(S.guideComplete(st, "S01", settings));
+  const ft = fg.chapters.flatMap((c) => c.traits).find((x) => x.id === t.id); assert.ok(!ft.possible.includes("plain")); assert.deepEqual(ft.legacy, []);
+  assert.equal(fg.chapters.flatMap((c) => c.traits).reduce((n, x) => n + x.possible.length, 0), 20, "S01 counts 20 looks, not 21");
+  const bare = fresh(); bare.knownIds.push("S01"); const f0 = L.fieldGuide(bare, "S01", settings);
+  assert.ok(f0.chapters.flatMap((c) => c.traits).every((x) => !x.possible.includes("plain")), "unseen plain is never listed as unseen");
+});
+test("the same save plus a seen plain still reads complete, and lists plain as found and legacy; a wish can pin it only once seen", () => {
+  const st = fresh(); st.knownIds.push("S01"); const fr = frameOf("S01"), t = markings(fr);
+  fillCurrent(st, "S01"); assert.match(L.wishPinBlock(st, "S01", t.id, "plain"), /field guide/, "unseen legacy: no pin");
+  S.guideAdd(st, "S01", t.id, ["plain"]);
+  const fg = L.fieldGuide(st, "S01", settings), ft = fg.chapters.flatMap((c) => c.traits).find((x) => x.id === t.id);
+  assert.ok(fg.complete && fg.unseen === 0 && S.guideComplete(st, "S01", settings)); assert.ok(ft.found.includes("plain")); assert.deepEqual(ft.legacy, ["plain"]); assert.ok(!ft.possible.includes("plain"));
+  assert.equal(L.wishPinBlock(st, "S01", t.id, "plain"), ""); assert.ok(L.wishPin(st, "S01", t.id, "plain").ok);
+});
+test("the Tuikis: the three digging feet complete Claws, a seen hoof lists as found and legacy", () => {
+  const st = fresh(); st.knownIds.push("S03"); const fr = frameOf("S03"), t = allTraits(fr).find((x) => x.id.includes("claw") || /claw/i.test(x.name));
+  const cur = currentLooks(fr, t); assert.equal(cur.length, 3); assert.ok(!cur.some((l) => /hoof|web|root/i.test(l)));
+  fillCurrent(st, "S03"); assert.ok(L.fieldGuide(st, "S03", settings).complete);
+  const legacyLook = traitLooks(fr, t).concat(["hoof"]).find((l) => !cur.includes(l)) ?? "hoof";
+  S.guideAdd(st, "S03", t.id, [legacyLook]);
+  const fg = L.fieldGuide(st, "S03", settings), ft = fg.chapters.flatMap((c) => c.traits).find((x) => x.id === t.id);
+  assert.ok(fg.complete); assert.ok(ft.found.includes(legacyLook)); assert.deepEqual(ft.legacy, [legacyLook]); assert.equal(ft.unseen, 0);
+});
+test("every other species' guide count is unchanged: current looks equal the frame's looks outside S01", () => {
+  for (const id of frameIds()) { if (id === "S01") continue; const fr = frameOf(id); for (const t of allTraits(fr)) assert.deepEqual(L.possibleLooks(fr, t), traitLooks(fr, t), id + " " + t.id); }
 });

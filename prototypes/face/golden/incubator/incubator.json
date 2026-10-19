@@ -1,77 +1,105 @@
 {
- "_note": "The Incubator's goldens: empty, growing (early, late), ready, the hatch at seven instants and growNow at two: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "_note": "The Incubator's goldens: empty, growing (early, late), ready, the hatch at seven instants, growNow at two, and the frame after ✓ Skip: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "incubator-empty": {
-   "hash": "2c617f46",
+   "hash": "7ad6519c",
    "png": "incubator-empty.png"
   },
   "incubator-growing": {
-   "hash": "f25a2bef",
+   "hash": "98b7f4a9",
    "png": "incubator-growing.png"
   },
   "incubator-growing-late": {
-   "hash": "6e82481a",
+   "hash": "54d6477c",
    "png": "incubator-growing-late.png"
   },
   "incubator-ready": {
-   "hash": "3532ec3b",
+   "hash": "313dd903",
    "png": "incubator-ready.png"
   },
-  "incubator-hatch-100": {
-   "hash": "dd1fa29c",
-   "png": "incubator-hatch-100.png"
+  "incubator-panel-grownow": {
+   "hash": "29a804d1",
+   "png": "incubator-panel-grownow.png"
+  },
+  "incubator-panel-wait": {
+   "hash": "1474ac56",
+   "png": "incubator-panel-wait.png"
+  },
+  "incubator-growing-half": {
+   "hash": "9feced4f",
+   "png": "incubator-growing-half.png"
+  },
+  "incubator-growing-start": {
+   "hash": "d642b54f",
+   "png": "incubator-growing-start.png"
+  },
+  "incubator-cross-growing": {
+   "hash": "367fe2d4",
+   "png": "incubator-cross-growing.png"
+  },
+  "incubator-incubate-100": {
+   "hash": "4ad0f473",
+   "png": "incubator-incubate-100.png"
+  },
+  "incubator-incubate-1290": {
+   "hash": "8becc4be",
+   "png": "incubator-incubate-1290.png"
   },
   "incubator-hatch-300": {
-   "hash": "dd1fa29c",
+   "hash": "3fc10e92",
    "png": "incubator-hatch-300.png"
   },
   "incubator-hatch-650": {
-   "hash": "d65d37fd",
+   "hash": "c4106902",
    "png": "incubator-hatch-650.png"
   },
-  "incubator-hatch-850": {
-   "hash": "ad0f35f1",
-   "png": "incubator-hatch-850.png"
+  "incubator-hatch-1000": {
+   "hash": "c4106902",
+   "png": "incubator-hatch-1000.png"
   },
-  "incubator-hatch-1100": {
-   "hash": "f975eb50",
-   "png": "incubator-hatch-1100.png"
+  "incubator-hatch-1090": {
+   "hash": "77d16bf6",
+   "png": "incubator-hatch-1090.png"
+  },
+  "incubator-hatch-1400": {
+   "hash": "d3c28cc8",
+   "png": "incubator-hatch-1400.png"
   },
   "incubator-hatch-1500": {
-   "hash": "1bc14f3d",
+   "hash": "7fb51fd6",
    "png": "incubator-hatch-1500.png"
   },
   "incubator-hatch-2000": {
-   "hash": "8062be6d",
+   "hash": "a6703d9c",
    "png": "incubator-hatch-2000.png"
   },
-  "incubator-hatch-moving-1090": {
-   "hash": "f4ae6f98",
-   "png": "incubator-hatch-moving-1090.png"
-  },
-  "incubator-hatch-moving-2500": {
-   "hash": "f26ba559",
-   "png": "incubator-hatch-moving-2500.png"
-  },
-  "incubator-hatch-moving-5440": {
-   "hash": "d63777f8",
-   "png": "incubator-hatch-moving-5440.png"
-  },
-  "incubator-hatch-moving-5840": {
-   "hash": "9ecf40b5",
-   "png": "incubator-hatch-moving-5840.png"
-  },
-  "incubator-hatch-moving-2720": {
-   "hash": "9ecf40b5",
-   "png": "incubator-hatch-moving-2720.png"
+  "incubator-growNow-0": {
+   "hash": "576933e7",
+   "png": "incubator-grownow-0.png"
   },
   "incubator-growNow-200": {
-   "hash": "9c124104",
+   "hash": "6af8cc8b",
    "png": "incubator-grownow-200.png"
   },
-  "incubator-growNow-420": {
-   "hash": "acf9f7ec",
-   "png": "incubator-grownow-420.png"
+  "incubator-growNow-400": {
+   "hash": "65435790",
+   "png": "incubator-grownow-400.png"
+  },
+  "incubator-growNow-500": {
+   "hash": "014065b4",
+   "png": "incubator-grownow-500.png"
+  },
+  "incubator-panel-dither-90": {
+   "hash": "56e64601",
+   "png": "incubator-panel-dither-90.png"
+  },
+  "incubator-panel-grownow-200": {
+   "hash": "0c204112",
+   "png": "incubator-panel-grownow-200.png"
+  },
+  "incubator-hatch-skip": {
+   "hash": "632bb686",
+   "png": "incubator-hatch-skip.png"
   }
  }
 }

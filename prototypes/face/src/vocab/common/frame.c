@@ -32,6 +32,32 @@ void word_panel(const char *id, int x, int y, int w, int h, const char *fill, co
 }
 void word_hairline(const char *id, int x, int y, int len, const char *c, int vertical) { if (vertical) v_rect(id, x, y, 1, len, c); else v_rect(id, x, y, len, 1, c); }
 
+/* A face's holder ring until its picture is painted (the top bar's Companion face, Habitat's cross faces): the ellipse op on the art layer, in the placing spec's colours.faceRing (away: colours.faceRingAway),
+   frame.json regions.marks.face.ringWidth wide. The caller names its own region. Not a focus mark (FR8). */
+void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, int away) {
+  char c[24], b[96]; int width = spec_int(F, "regions.marks.face.ringWidth", 0);
+  if (spec_str(spec, away ? "colours.faceRingAway" : "colours.faceRing", c, sizeof c) <= 0 || !c[0]) { snprintf(b, sizeof b, "v_faceHolder: %.24s has no colours.faceRing%s", spec, away ? "Away" : ""); v_error(b); return; }
+  if (width < 1) { v_error("v_faceHolder: frame.json regions.marks.face.ringWidth is missing"); return; }
+  v_layer(LAYER_ART); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", w, h, width, c);
+  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", b); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);
+}
+/* The centre of a counter's icon in the top bar (i: 0 Energy, 1 Data, 2 Essence), as word_topBar lays them out (the figures as shown now, a tick counting up included): the place a Cargo material travels to. 1 when the bar has the props, else 0. */
+int frame_material_centre(int i, int out[2]) {
+  if (i < 0 || i > 2 || !spec_has(P) || !spec_has(F)) return 0;
+  static const char K[3] = { 'e', 'd', 's' };
+  int M_icon = fi("regions.materials.icon"), M_gap = fi("regions.materials.gap"), M_px = fi("regions.materials.px"), M_between = fi("regions.materials.between"), M_centre = fi("regions.materials.centre"), mrect[4]; rect_of("regions.materials.rect", mrect);
+  int widths[3], total = 0;
+  for (int q = 0; q < 3; q++) {
+    char a[48], txt[16]; snprintf(a, sizeof a, "frame.top.materials.%c", K[q]); int shown = spec_int(P, a, 0);
+    anim_state_t t; char who[2] = { K[q], 0 };
+    if (anim_get(ANIM_TICK, who, &t) && t.to > t.from) { int n = t.to - t.from, steps = t.elapsed / 70 + 1; if (steps > n) steps = n; shown = t.from + steps; }
+    snprintf(txt, sizeof txt, "%d", shown); widths[q] = M_icon + M_gap + v_measure(txt, M_px); total += widths[q];
+  }
+  total += M_between * 2;
+  int mx = M_centre - (total + 1) / 2;
+  for (int q = 0; q < i; q++) mx += widths[q] + M_between;
+  out[0] = mx + M_icon / 2; out[1] = mrect[1] + 4 + M_icon / 2; return 1;
+}
 void word_topBar(void) {
   char c[24], a[96], b[96], s[V_STR]; int r[4], rr[4];
   rect_of("regions.top.rect", r);
@@ -62,6 +88,7 @@ void word_topBar(void) {
     { /* a counter counts up toward its value one unit every 70 ms, the first at once, with a 240 ms tick behind the figure that changed (a `tick` event: from, to) */
       anim_state_t t; char who[2] = { K[i], 0 };
       if (anim_get(ANIM_TICK, who, &t) && t.to > t.from) { int n = t.to - t.from, steps = t.elapsed / 70 + 1; if (steps > n) steps = n; shown = t.from + steps; if (t.elapsed - (steps - 1) * 70 < 240) fl[i] = 1; }
+      if (anim_get(ANIM_FLASH, who, &t) && t.elapsed < spec_int(F, "regions.materials.flashMs", 240)) fl[i] = 1;   /* the materials answer (Cargo's opening, build spec 4): a `flash` event on a counter lights its figure for the event's 240 ms without changing it */
     }
     snprintf(txt[i], sizeof txt[i], "%d", shown);
     widths[i] = M_icon + M_gap + v_measure(txt[i], M_px); total += widths[i];
@@ -90,10 +117,7 @@ void word_topBar(void) {
   char mibi[48]; spec_str(P, "frame.top.companion.withMibi", mibi, sizeof mibi);
   if (!*mibi) fs("regions.marks.face.empty", a, sizeof a);
   else { char t[96]; fs(docked ? "regions.marks.face.docked" : "regions.marks.face.away", t, sizeof t); char *at = strstr(t, "{mibi}"); if (at) snprintf(a, sizeof a, "%.*s%s%s", (int)(at - t), t, mibi, at + 6); else snprintf(a, sizeof a, "%s", t); }
-  if (!mark("top.face", a, face)) {   /* until the face is painted, the ring alone: the ellipse op in the face-ring role */
-    v_layer(LAYER_ART); colour(docked ? "faceRing" : "faceRingAway", c); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", face[2], face[3], fi("focus.ring.width"), c);
-    snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", b); prim_node(v_id("top.face.ring"), FN_COMPOSED, face[0], face[1], face[2], face[3], 0, 0, 0);
-  }
+  if (!mark("top.face", a, face)) v_faceHolder("top.face.ring", F, face[0], face[1], face[2], face[3], !docked);   /* until the face is painted, the ring alone */
   /* when: the sun mark, then the turn's figure, right-aligned to 1008 */
   int W_px = fi("regions.time.px"), W_right = fi("regions.time.right"), W_gap = fi("regions.time.gap"), tr[4], mk[2]; rect_of("regions.time.rect", tr);
   mk[0] = spec_int(F, "regions.time.mark.0", 16); mk[1] = spec_int(F, "regions.time.mark.1", 16);
@@ -138,8 +162,9 @@ void word_bottomLine(void) {
     v_region("action", LAYER_TYPE);
     snprintf(a, sizeof a, "line.a.%d", k++); colour(dim || blocked ? "dim" : "verb", c); ax = v_run(a, s, ax, ty, A_px, c, V_ALIGN_LEFT).end;
     if (spec_str(P, "frame.line.price", t, sizeof t) > 0) {   /* the price: each material's icon and figure (the figure amber when short), the nodes the same whichever materials it names */
-      ax += A_gap; char cb[3][24], co[24]; const char *cols[3]; static const char *GLYPH[3] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86" };
-      for (int g = 0; g < 3; g++) { colour(blocked ? "dim" : (shorts[0] && strstr(shorts, GLYPH[g])) ? "need" : "price", cb[g]); cols[g] = cb[g]; }
+      ax += A_gap; char cb[V_PRICE_N][24], co[24]; const char *cols[V_PRICE_N]; static const char *GLYPH[V_PRICE_N] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86", "\xe2\xa7\x97" };
+      for (int g = 0; g < V_PRICE_N; g++) { int wait = g == V_PRICE_N - 1; colour(blocked ? "dim" : (!wait && shorts[0] && strstr(shorts, GLYPH[g])) ? "need" : "price", cb[g]); cols[g] = cb[g]; }   /* the wait is never short: its figure is price, dim only when the action is blocked */
+      if (shorts[0] && strstr(shorts, GLYPH[V_PRICE_N - 1])) v_error("word: frame.line.short names the wait, which is never short");
       colour(blocked ? "dim" : "price", co); snprintf(a, sizeof a, "line.a.%d", k++); v_price(a, t, ax, ty, A_px, cols, co);
     }
   }

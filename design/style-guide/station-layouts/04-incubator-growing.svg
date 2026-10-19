@@ -21,13 +21,14 @@
 <rect x="658.5" y="43.5" width="23" height="23" fill="#fff" stroke="#bbb" stroke-width="1"/>
 <text x="690" y="60" font-size="11" fill="#8d8aa6">Stamina</text>
 <rect x="719.5" y="71.5" width="5" height="5" fill="#fff" stroke="#8d8aa6" stroke-width="1"/>
-<rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
-<text x="844" y="310" font-size="10" fill="#222">STAMP label 120</text>
-<text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
-<text x="844" y="334" font-size="9" fill="#777">176 from the window</text>
-<rect x="808.5" y="424.5" width="183" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
-<text x="900" y="460" font-size="9" fill="#777" text-anchor="middle">code 808,424 184×24</text>
+<rect x="804.5" y="232.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="808" y="246" font-size="10" fill="#222">STAMP label 120</text>
+<text x="808" y="257" font-size="9" fill="#777">804,232 120×120</text>
+<text x="808" y="270" font-size="9" fill="#777">140 from the window</text>
+<rect x="776.5" y="357.5" width="175" height="24" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="792" y1="381.5" x2="936" y2="381.5" stroke="#3c4b57" stroke-width="1"/>
+<text x="864" y="373" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
+<text x="864" y="392" font-size="9" fill="#777" text-anchor="middle">code 776,357 176×25 · rule 792–936</text>
 <rect x="256.5" y="88.5" width="511" height="215" fill="none" stroke="#9cc08f" stroke-width="1" stroke-dasharray="4 3"/>
 <text x="260" y="100" font-size="9" fill="#5d7a5f">leaves 256,88 512×216</text>
 <path d="M 302 301 C 296 296, 297 286, 302 282.5 C 307 286, 308 296, 302 301 Z" transform="rotate(40 302 292)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
@@ -59,11 +60,11 @@
 <text x="368" y="452" font-size="9" fill="#777">chamber window 360,200 304×272 · ink inside the arch, top 202, r152 on 512,354 · placeholder</text>
 <rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
 <text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
-<rect x="344.5" y="456.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
-<text x="352" y="472" font-size="9" fill="#555">base 344,456 336×96 · placeholder</text>
-<rect x="448.5" y="496.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
-<rect x="352.5" y="547.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
-<text x="672" y="544" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
+<rect x="344.5" y="440.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+<text x="352" y="456" font-size="9" fill="#555">base 344,440 336×96 · block 463–529 · placeholder</text>
+<rect x="448.5" y="480.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<rect x="352.5" y="531.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
+<text x="672" y="528" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
 <rect x="448.5" y="264.5" width="127" height="159" fill="#ffe2c4" stroke="#c45f12" stroke-width="2"/>
 <text x="452" y="280" font-size="10" fill="#222">BUD 128×160</text>
 <text x="452" y="291" font-size="9" fill="#777">448,264 128×160</text>
@@ -73,7 +74,7 @@
 <line x1="616" y1="440" x2="668" y2="420" stroke="#7d5435" stroke-width="1"/>
 <text x="672" y="418" font-size="9" fill="#7d5435">nestFront 408,400 208×48:</text>
 <text x="672" y="429" font-size="9" fill="#7d5435">rim fibres, over the bud</text>
-<text x="512" y="517" font-size="13" fill="#c6c4d8" text-anchor="middle">growing</text>
+<text x="512" y="501" font-size="13" fill="#c6c4d8" text-anchor="middle">growing</text>
 <text x="24" y="96" font-size="10" fill="#2b6cb0">Leaves (the word leaves, rule</text>
 <text x="24" y="109" font-size="10" fill="#2b6cb0">leafArc): one a minute; inner</text>
 <text x="24" y="122" font-size="10" fill="#2b6cb0">arc r216 first (to 20), then</text>
@@ -123,4 +124,25 @@
 <circle cx="951" cy="582" r="8" fill="#5d5974"/>
 <text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
 <text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+<defs><pattern id="pz" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ffffff" fill-opacity="0"/><path d="M0 0H0V6" stroke="#5d7a5f" stroke-width="1" stroke-opacity="0.55"/></pattern></defs>
+<rect x="88.5" y="104.5" width="143" height="295" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="92" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">L zone 88,104 144×296</text>
+<rect x="792.5" y="104.5" width="143" height="111" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="796" y="115" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">R zone 792,104 144×112</text>
+<rect x="248.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="252" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">LM 248,336 80×64</text>
+<rect x="696.5" y="336.5" width="79" height="63" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="700" y="347" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">RM 696,336 80×64</text>
+<rect x="88.5" y="464.5" width="71" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="92" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GL 88,464 72×66</text>
+<rect x="784.5" y="464.5" width="151" height="65" fill="url(#pz)" stroke="#5d7a5f" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="788" y="475" font-size="8" fill="#3f5a41" font-family="DejaVu Sans Mono, ui-monospace, monospace">GR 784,464 152×66</text>
+<line x1="88" y1="530.5" x2="936" y2="530.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="6 3"/>
+<text x="936" y="542" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">bottom line 530: base block, gauges · bezel 548: 18</text>
+<line x1="88" y1="103.5" x2="936" y2="103.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="80" y="98" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">104</text>
+<line x1="88.5" y1="104" x2="88.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+<line x1="935.5" y1="104" x2="935.5" y2="530" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="86" y="300" font-size="8" fill="#c45f12" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
+<text x="940" y="300" font-size="8" fill="#c45f12" font-family="DejaVu Sans Mono, ui-monospace, monospace">17</text>
 </svg>

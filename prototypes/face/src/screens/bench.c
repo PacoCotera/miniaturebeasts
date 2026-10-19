@@ -59,6 +59,15 @@ static void build_cradle(void) {
   pic("cradle", "cradle.picture", p, r[0], r[1], r[2], r[3], p);
 }
 
+/* ---- the plate strip (fix 5 P3): the tier's painted foam strip under the plates in both states, at the spec's rectangle for the tier; away its slots show empty; the install cuts t1 to t2 at 300 ---- */
+static void build_strip(void) {
+  int tier = v_pint("regions.strip.tier", 1); char p[96]; ps("regions.strip.picture", p);
+  anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t);
+  if (inst >= 0 && inst < 300) { tier = 1; bs("regions.strip.slices.1", p); }   /* the tier-1 strip stays on the face until the install cuts at 300, as the cradle's picture */
+  int r[4]; brect(v_fmt("regions.strip.byTier.%d", tier), r);
+  v_region("strip", LAYER_PAINTED); pic("strip", "plates.strip", p, r[0], r[1], r[2], r[3], p);
+}
+
 /* ---- shieldPlates: one sprite a place, the places a table by the tier, read as written ---- */
 static void build_plates(int docked, const char *cur) {
   int most = longest(NULL); char sw[96], sg[96]; bs("regions.plates.slices.whole", sw); bs("regions.plates.slices.gone", sg);
@@ -119,7 +128,7 @@ static void build_slot(const char *cur) {
   int r[4]; brect("regions.slot.rect", r); int dy = -lift_of("slot", cur), mx = r[0], my = r[1] + dy;
   char state[96], lamp[96]; ps("regions.slot.state", state); ps("regions.slot.lamp", lamp);
   anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t), drop = 0;
-  int fitted = strcmp(state, "fitted") == 0, armed = strcmp(state, "armed") == 0, dim = strcmp(state, "dim") == 0, level = fitted ? -2 : -1;   /* the adds: plain once fitted, else the `-new` slice on the one each adds */
+  int fitted = strcmp(state, "fitted") == 0, armed = 0, dim = strcmp(state, "dim") == 0, level = fitted ? -2 : -1;   /* the adds: plain once fitted, else the `-new` slice on the one each adds */
   if (inst >= 0) {   /* the install: the armed part drops, then cuts to the fitted one; the adds settle last */
     if (inst < 300) { fitted = 0; armed = 1; drop = 8 * inst / 300; level = -1; } else if (inst < 600) { fitted = 1; level = -1; } else { fitted = 1; level = 16 * (inst - 600) / 300; }
   }
@@ -151,19 +160,25 @@ int bench_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
   return k;
 }
 
-/* the ring on the focused target: its region's box lifted by the target's lift (the box [x, y − 2, w, h]), the ring 4 px outside it; it is drawn through the bench's holds, where it is */
+/* the ring on the focused target, round the object as drawn: its region's rect lifted by the target's lift (the plates: the union of the drawn plates, lifted); it is drawn through the bench's holds, where it is */
 static void build_ring(const char *cur) {
-  if (!cur[0]) return;
-  int box[4]; brect(v_fmt("regions.%s.rect", cur), box); if (box[2] <= 0) return; box[1] -= lift_of(cur, cur);
-  char form[96]; snprintf(form, sizeof form, "focus.targets.%s.ring", cur);
-  v_region("focus", LAYER_CHROME); word_focusRing("focus", box, S, form, fcol("colours.ring"));
+  if (!cur[0] || spec_len("props", "overlay") >= 0) return;   /* the decision panel is open: its ring is the only one */
+  int box[4]; brect(v_fmt("regions.%s.rect", cur), box); if (box[2] <= 0) return;
+  if (strcmp(cur, "plates") == 0) {   /* the drawn plates' union: the places of the tier, each plate-sized */
+    char tp[48]; snprintf(tp, sizeof tp, "regions.plates.places.%d", v_pint("regions.plates.tier", 1)); int n = spec_len(S, tp); if (n <= 0) return;
+    int pw = bk("regions.plates.plate", 0), ph = bk("regions.plates.plate", 1), x0 = 1 << 30, y0 = 1 << 30, x1 = -(1 << 30), y1 = -(1 << 30);
+    for (int i = 0; i < n; i++) { int px = spec_int(S, v_fmt("%s.%d.0", tp, i), 0), py = spec_int(S, v_fmt("%s.%d.1", tp, i), 0); if (px < x0) x0 = px; if (py < y0) y0 = py; if (px + pw > x1) x1 = px + pw; if (py + ph > y1) y1 = py + ph; }
+    box[0] = x0; box[1] = y0; box[2] = x1 - x0; box[3] = y1 - y0;
+  }
+  box[1] -= lift_of(cur, cur);
+  v_region("focus", LAYER_CHROME); word_focusRing("focus", S, v_fmt("focus.targets.%s", cur), box);
 }
 
 void bench_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   int docked = strcmp(v_pstr("state"), "docked") == 0;
   int cap = longest(NULL); { anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t); if (inst >= 0 && inst < 300) cap = spec_len(S, "regions.plates.places.1"); }   /* the meaning picture's count cuts 3 → 4 at 300 */
-  build_stage(); build_cradle(); build_plates(docked, cur); build_switch(cur, cap); build_slot(cur); build_ring(cur);
+  build_stage(); build_cradle(); build_strip(); build_plates(docked, cur); build_switch(cur, cap); build_slot(cur); build_ring(cur);
 }
 
 /* a key on the bench: ✓ ← and the room keys say an intent on the focused target; the pad moves the ring by bench.json focus.graph (the hold, in screens_key, lets only a room key through) */

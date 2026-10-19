@@ -40,6 +40,7 @@
   "regions": {
    "type": "object",
    "required": [
+    "panel",
     "field",
     "say",
     "keys",
@@ -51,14 +52,30 @@
    ],
    "additionalProperties": false,
    "properties": {
+    "panel": {
+     "type": "object",
+     "required": [
+      "plate"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      }
+     }
+    },
     "field": {
      "type": "object",
      "required": [
+      "plate",
       "name",
       "state"
      ],
      "additionalProperties": false,
      "properties": {
+      "plate": {
+       "type": "string"
+      },
       "name": {
        "type": "string",
        "maxLength": 10

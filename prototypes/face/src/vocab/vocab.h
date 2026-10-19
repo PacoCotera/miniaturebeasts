@@ -22,20 +22,27 @@ void v_text(const char *id, const char *s, int x, int y, int w, int px, const ch
 /* A picture placed 1:1 by its asset id; 1 when it was drawn, 0 when the host has not sent it (a mark whose master is not placed draws nothing and the layout does not move). */
 /* A name plate of the series the spec names (`<path>.plate.series`), the width the face chose, shown 1:1; the host sends the whole series at boot. A plate that is not on the face is an error and a refused node. */
 void v_plate(const char *id, const char *namePath, int w, int x, int y);
+void v_plate_in(const char *spec, const char *id, const char *namePath, int w, int x, int y);   /* v_plate with the spec that names the plate series (Pods: "pods"; Create's tag: "create") */
+int v_silhouette_box(const char *from, const char *to, int out[4]);   /* the pictures' boxes by id: 0, or -1 when either is not on the face or they differ in size (prim.h) */
+int v_change_box(const char *from, const char *to, int out[4]);
 int v_sprite(const char *id, const char *asset, int x, int y, int w, int h);
+int v_asset_size(const char *asset, int out[2]);   /* a picture's own size: 0, or -1 when the host has not sent it (a word that places a picture at its own size, 1:1) */
 int v_sprite_window(const char *id, const char *asset, int sx, int sy, int x, int y, int w, int h);   /* a w x h window of a larger picture, its source origin (sx, sy), drawn 1:1 at (x, y): 0 when the asset was not sent; at (0, 0) it is v_sprite */
 /* The same picture's node with no size: a slot kept for a step that has not come, so showing it later never adds a node and never changes the order of the screen's nodes (§2.2). 1 when the node was sent, 0 when the host has not sent the picture. */
 int v_sprite_hidden(const char *id, const char *asset, int x, int y);
+/* A picture nine-sliced over a w x h box: the asset's own insets and tile when the host sent them (a `slice`), else the insets l, t, r, b given; 0 when the host has not sent it. */
+int v_nine(const char *id, const char *asset, int x, int y, int w, int h, const int insets[4]);
 /* A cross-dither between two pictures of one size (a `dither` event's frame, lvgl-switch.md §2.7): the pixels of `toAsset` where the Bayer cell at the screen position is below `level` (0..16), else those of `fromAsset`, one composed picture at (x, y), on the layer of `toAsset`. 1 when drawn, 0 when the host has not sent one of them. */
 int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h);
 /* The same between two w x h windows (atlas cells, M1 §2.1): `fromAsset`'s at (fsx, fsy) and `toAsset`'s at (tsx, tsy); `fromAsset` NULL or "" is clear (a dither-in), `toAsset` NULL or "" is clear (a dither-out, keeping the pixels a dither-in at the same level leaves); never both. */
 int v_dither_window(const char *id, const char *fromAsset, int fsx, int fsy, const char *toAsset, int tsx, int tsy, int level, int x, int y, int w, int h);
-/* A run: text pieces and the material icons inline (⚡ ◆ ❀ ✕ as 16 px sprites, 2 px either side), laid left to right; align moves the whole run about x. */
+/* A run: text pieces and the material icons inline (⚡ ◆ ❀ ✕ ⧗ as 16 px sprites, 2 px either side), laid left to right; align moves the whole run about x. */
 typedef struct { int width, end; } v_run_t;
 int v_run_width(const char *s, int px);
 v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *colour, int align);
-/* A price run with stable nodes: Energy, Essence and Data each have an icon and a figure node (no size when the price does not name it); `cols` is the figure's colour for each, `other` the colour of a price with no material ("free"). Returns the end x. */
-int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[3], const char *other);
+/* A price run with stable nodes: Energy, Essence, Data and the bud's wait (⧗, icon-wait-16) each have an icon and a figure node (no size when the price does not name it); `cols` is the figure's colour for each, `other` the colour of a price with no group ("free"). Returns the end x. */
+#define V_PRICE_N 4   /* the groups of a price, a closed table (vocab.c PRICE): ⚡ ❀ ◆ ⧗ */
+int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[V_PRICE_N], const char *other);
 /* Words wrapped to a width; the lines are written NUL-separated into buf and their count returned (at most max). */
 int v_wrap(const char *s, int maxw, int px, char *buf, int cap, int max);
 /* A string cut to a width with an ellipsis. */

@@ -39,14 +39,14 @@ const TRIP = ["TRIP_KINDS", "tripPlace", "tripRecord", "tripsWith"];
 const LAND = ["groundName"];
 
 // endExpedition with the world stubbed: `explored` decides the branch, worldTurn moves the counter as the page does.
-function ending({ explored, trips, ex }) {
+function ending({ explored, trips, ex, world = { lines: [], ev: [] } }) {
   const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [], mibis: [], carried: [] };
   const turned = [];
   const t = load(["endExpedition", "holdEmpty", ...TRIP], {
     S, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3,
     carriedMibis: () => [], exploredAny: () => explored, reachCounts: () => ({ surveyed: explored ? 1 : 0, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { turned.push(S.expN); S.turn++; S.expN++; return []; },
+    worldTurn: () => { turned.push(S.expN); S.turn++; S.expN++; return world; },
     logEv: () => {}, transition: () => {}, save: () => {},
   });
   t.endExpedition(ex.reason || "home");
@@ -62,6 +62,14 @@ test("a trip is recorded only when the world turns", () => {
   const none = ending({ explored: false, trips: [], ex: expedition({ tripPlaces: ["wood"] }) });
   assert.equal(none.turned.length, 0);
   assert.deepEqual(plain(none.S.trips), [], "nothing explored: no record");
+});
+
+test("the sealed crate carries the world's events beside its lines (specs/world-events.md); the Companion's report keeps its lines", () => {
+  const world = { lines: ["Fruit is back on one bush.", "A quiet turn."], ev: [["fruit", "wood", null, 1], ["quiet", null, null, 0]] };
+  const { S } = ending({ explored: true, trips: [], ex: expedition({ cargo: { e: 1, d: 0, s: 0, pods: [] } }), world });
+  assert.equal(S.bay.length, 1); assert.deepEqual(plain(S.bay[0].lines), world.lines);
+  assert.deepEqual(plain(S.bay[0].world), { v: 1, turn: 4, ev: world.ev }, "turn is the crate's own turn, after the world turned");
+  assert.equal(S.bay[0].world.turn, S.bay[0].turn); assert.deepEqual(plain(S.report.lines), world.lines);
 });
 
 test("a Probe break that explored is a trip", () => {
@@ -168,7 +176,7 @@ test("End expedition while docked at the start", () => {
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
     CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ surveyed: 1, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},
-    worldTurn: () => { S.turn++; S.expN++; return []; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
+    worldTurn: () => { S.turn++; S.expN++; return { lines: [], ev: [] }; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
   });
   // start an expedition, undocked
   writeSt(); t.save();

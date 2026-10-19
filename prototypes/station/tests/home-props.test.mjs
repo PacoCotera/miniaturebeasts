@@ -89,7 +89,7 @@ test("the lamps: Cargo needs you with crates, Pods with a new pod; amber on one 
 
 test("the notice and the line spell the counts and read home.json's strings", () => {
   const sc = scenes(), c = build(sc.crates.st, sc.crates.sv);
-  assert.equal(c.line.need, "two crates wait in the bay"); assert.equal(c.line.ok, "Open Cargo"); assert.equal(c.line.back, null); assert.equal(c.line.subject, "");
+  assert.equal(c.line.need, "two crates wait in the bay"); assert.equal(c.line.ok, "Open the bay"); assert.equal(c.line.back, null); assert.equal(c.line.subject, "");
   assert.equal(build(sc.crates.st, sc.crates.sv, { focus: "cargo" }).line.subject, "two sealed crates");
   assert.equal(build(sc.crates.st, { ...sc.crates.sv, bay: [crate(1)] }).line.need, "a crate waits in the bay");
   const d = scenes().docked; const m = d.st.mibis[2];
@@ -147,7 +147,7 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
   const grown = ids(build(st, sv));
   // every id has the stage swapped; a resident's size is its stage's (home.json sizes: a juvenile's 104×112, an adult's 144×152), the sleepers' and the tiles' size does not change with it
   assert.deepEqual(grown.map((id) => id.replace(/:adult:\d+x\d+$/, "")), young.map((id) => id.replace(/:juvenile:\d+x\d+$/, "")));
-  assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":96x88")), young.join(" ")); grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
+  assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":48x48") || id.endsWith(":104x112")), young.join(" ")); grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
 });
 
 // ---- Station M1 §2.6, the game designer's R1: the rest, a household function of the Station time ----
@@ -190,7 +190,7 @@ test("the goal: a soft need gives its notice to the goal, the room's ✓ keeps t
   assert.equal(S.needKey(st, sv0(), settings, {}).key, "couldGrow", "needKey is unchanged");
   // a new pod (first group): the notice as now, no goal
   const st2 = world(); dock(st2); S.seedAdults(st2, "S01", 5, 1, settings); pod(st2, "S01", 5, false);
-  const c = build(st2, sv0()); assert.equal(c.line.need, "a new pod waits"); assert.equal(c.line.goal, undefined);
+  const c = build(st2, sv0()); assert.equal(c.line.need, "a new pod in the rack"); assert.equal(c.line.goal, undefined);
   // no goal: the soft need as now (two adults, the guide complete, a bud growing)
   const st3 = world(); dock(st3); S.seedAdults(st3, "S01", 5, 2, settings); { const fr = frameOf("S01"); st3.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st3, "S01", t.id, traitLooks(fr, t)); } st3.bud = { kind: "founder", species: "S03", start: Date.now(), minutes: 5 };
   st3.probe = { tier: 2, shield: 3, smax: 3 }; const d = build(st3, sv0()); assert.equal(S.goalKey(st3, sv0()), null); assert.equal(d.line.need, "a bud is growing"); assert.equal(d.line.goal, undefined);
@@ -228,11 +228,11 @@ test("a new pod is firm until Pods has drawn it: firm, the goal is absent; seen,
   const st = world(); dock(st); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
   const p1 = pod(st, "S01", 5, false);
   let b = build(st, sv0());
-  assert.equal(b.line.need, "a new pod waits"); assert.equal(b.line.goal, undefined, "firm: no goal"); assert.equal(b.props.regions.pods.lamp, "needsYou");
+  assert.equal(b.line.need, "a new pod in the rack"); assert.equal(b.line.goal, undefined, "firm: no goal"); assert.equal(b.props.regions.pods.lamp, "needsYou");
   p1.seen = 1; b = build(st, sv0());
   assert.equal(b.line.need, ""); assert.ok(b.line.goal, "soft: the goal takes the notice"); assert.equal(b.line.ok, "Look at the pods"); assert.equal(b.props.regions.pods.lamp, "well");
   const p2 = pod(st, "S01", 6, false); assert.ok(!p2.seen); b = build(st, sv0());
-  assert.equal(b.line.need, "a new pod waits", "one unseen pod: one"); assert.equal(b.line.goal, undefined); assert.equal(b.props.regions.pods.lamp, "needsYou");
+  assert.equal(b.line.need, "a new pod in the rack", "one unseen pod: one"); assert.equal(b.line.goal, undefined); assert.equal(b.props.regions.pods.lamp, "needsYou");
 });
 
 test("a waiting pod in the bay is a first-group need ahead of a seen unidentified pod's soft notice: amber, the Pods lamp amber, no goal; with it gone the goal takes the zone and the lamp is well", () => {
@@ -256,4 +256,34 @@ test("a picture id is keyed by the genome, not the mibi id: two worlds with the 
   const a = mk(5), b = mk(6), c = mk(5), ids = (st) => build(st, sv0({ carried: [st.mibis[0].id] })).requests.filter((r) => r.kind === "mibi").map((r) => r.id);
   assert.equal(a.mibis[0].id, b.mibis[0].id); assert.notEqual(a.mibis[0].genome && JSON.stringify(a.mibis[0].genome.loci), JSON.stringify(b.mibis[0].genome.loci));
   assert.notDeepEqual(ids(a), ids(b)); assert.deepEqual(ids(a), ids(c));
+});
+
+test("fix 7: at day the residents' and sleepers' picture ids are today's; at dawn, dusk and night every one carries its light (id ends :<light>, request carries light), the count equals day's, and the walk, nap and close atlases name the light but the shadows never; the tiles and the bed take none", () => {
+  const st = world(); dock(st); S.seedAdults(st, "S01", 5, 4, settings); for (const m of st.mibis) { m.paint = { state: "landed" }; m.born = st.turn; }
+  const sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] }), mibiReqs = (light) => build(st, sv, { light }).requests.filter((r) => r.kind === "mibi"), day = mibiReqs("day");
+  assert.ok(day.length >= 4 && day.every((r) => !("light" in r) && !/:(dawn|dusk|night)$/.test(r.id)));
+  for (const light of ["dawn", "dusk", "night"]) {
+    const got = mibiReqs(light); assert.equal(got.length, day.length); assert.ok(got.every((r) => r.light === light && r.id.endsWith(":" + light)), light);
+    assert.deepEqual(got.map((r) => r.id.replace(":" + light, "")), day.map((r) => r.id), "only the suffix differs");
+    const mv = build(st, sv, { light, motionSets: true }).requests.filter((r) => r.kind === "moving"); assert.ok(mv.length > 0);
+    for (const r of mv) assert.equal(/:shadow:/.test(r.id), !r.id.endsWith(":" + light), r.id);
+  }
+});
+
+// the rack pod is the host-composed rackpod:<species> picture (home.json regions.pods.pod.picture), never a PH plate
+test("an identified pod in the rack asks for rackpod:S01, an unidentified one for rackpod:unknown; no home-rack-pod-24x32 and no ph request for a pod", () => {
+  const st = world(); dock(st); pod(st, "S01"); pod(st, "S02", 6, false);   // S01 is known; S02's pod is not identified and its species not yet known
+  const b = build(st, sv0()), picks = b.props.regions.pods.wells.map((w) => w.pod).filter(Boolean), reqs = new Map(b.requests.map((r) => [r.id, r]));
+  assert.deepEqual(picks, ["rackpod:S01", "rackpod:unknown"]);
+  for (const id of picks) assert.equal(reqs.get(id).kind, "rackpod");
+  assert.equal(reqs.get("rackpod:S01").species, "S01"); assert.deepEqual(reqs.get("rackpod:S01").size, spec.regions.pods.pod.size); assert.equal(reqs.get("rackpod:unknown").species, null);
+  assert.ok(!b.requests.some((r) => r.id === "home-rack-pod-24x32" || (r.kind === "ph" && /rack-pod/.test(r.id))), "no PH plate for a rack pod");
+});
+
+test("the goal sentence names no species before it is known: identify a pod (fresh game), identify the Loika pod once Loikas are known; no warning words for an unknown species", () => {
+  const sv = sv0({ carried: [] }), st = world(); st.dock = { docked: false, at: T0 }; pod(st, "S01", 5, false); assert.deepEqual(st.knownIds, []);
+  const g = S.goalKey(st, sv, settings); assert.equal(g.step.key, "identify"); assert.equal(g.step.species, null);
+  const w = goalWords(g, false, frameSpec); assert.equal(w.text ?? w.step ?? JSON.stringify(w), JSON.stringify(w).includes("identify a pod") ? (w.text ?? w.step ?? JSON.stringify(w)) : "identify a pod", JSON.stringify(w)); assert.ok(JSON.stringify(w).includes("identify a pod") && !/Loika/.test(JSON.stringify(w)), JSON.stringify(w));
+  assert.equal(frameSpec.strings.goal.step.identifyAny, "identify a pod"); assert.equal(frameSpec.strings.goal.step.identify, "identify the {species} pod");
+  st.knownIds.push("S01"); st.tray.length = 0; pod(st, "S01", 6, false); const g2 = S.goalKey(st, sv, settings); assert.equal(g2.step.species, "S01"); assert.ok(/identify the Loika pod/.test(JSON.stringify(goalWords(g2, false, frameSpec))));
 });

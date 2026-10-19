@@ -18,49 +18,9 @@
      "choices": [],
      "grown": false
     },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
-     }
-    ],
-    "screen": "create",
-    "create": {
-     "f": 1,
-     "choices": [],
-     "grown": false
-    },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
-     }
-    ],
-    "screen": "create",
-    "create": {
-     "f": 2,
-     "choices": [],
-     "grown": false
-    },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "two chapters unread"
    },
    {
     "key": "down",
@@ -74,15 +34,15 @@
     ],
     "screen": "create",
     "create": {
-     "f": 2,
+     "f": 0,
      "choices": [
-      "eye-rings"
+      "colour"
      ],
      "grown": false
     },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ◆ 1",
-    "subject": "two surprises to come"
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
+    "subject": "two chapters unread"
    },
    {
     "key": "research",
@@ -96,7 +56,7 @@
     ],
     "screen": "pods",
     "create": null,
-    "ok": "Open",
+    "ok": "Look at this pod",
     "price": null,
     "subject": "sealed until identified"
    },
@@ -116,49 +76,9 @@
      "choices": [],
      "grown": false
     },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
-     }
-    ],
-    "screen": "create",
-    "create": {
-     "f": 1,
-     "choices": [],
-     "grown": false
-    },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "create",
-      "target": "roll",
-      "verb": "step:right"
-     }
-    ],
-    "screen": "create",
-    "create": {
-     "f": 2,
-     "choices": [],
-     "grown": false
-    },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4",
-    "subject": "two surprises to come"
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "two chapters unread"
    },
    {
     "key": "down",
@@ -172,15 +92,15 @@
     ],
     "screen": "create",
     "create": {
-     "f": 2,
+     "f": 0,
      "choices": [
-      "eye-rings"
+      "colour"
      ],
      "grown": false
     },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ◆ 1",
-    "subject": "two surprises to come"
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
+    "subject": "two chapters unread"
    }
   ],
   "create-grow": [
@@ -195,16 +115,34 @@
      }
     ],
     "screen": "create",
+    "panel": "incubate",
+    "ring": "card.incubate",
+    "ok": "Incubate",
+    "e": 32,
+    "d": 22,
+    "s": 57
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.incubate",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "create",
     "create": {
-     "f": 2,
+     "f": 0,
      "choices": [
-      "eye-rings"
+      "colour"
      ],
      "grown": true
     },
-    "ok": "Grow it",
-    "price": "⚡ 2 ❀ 4 ◆ 1",
-    "subject": "two surprises to come"
+    "ok": null,
+    "price": null,
+    "subject": "it goes to the Incubator"
    },
    {
     "held": [

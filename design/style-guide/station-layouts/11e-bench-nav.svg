@@ -84,9 +84,9 @@
 <text x="664" y="406" font-size="9" fill="#222" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace"></text>
 <text x="736" y="406" font-size="9" fill="#333" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">rise 2 px; ring 4 px outside</text>
 <text x="664" y="420" font-size="9" fill="#222" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">rings</text>
-<text x="736" y="420" font-size="9" fill="#333" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">plates 188,410 216×88</text>
+<text x="736" y="420" font-size="9" fill="#333" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">plates 364,458 216×72</text>
 <text x="664" y="434" font-size="9" fill="#222" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace"></text>
-<text x="736" y="434" font-size="9" fill="#333" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">switch 580,98 392×136</text>
+<text x="736" y="434" font-size="9" fill="#333" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">switch 620,90 320×136</text>
 <text x="664" y="448" font-size="9" fill="#222" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace"></text>
-<text x="736" y="448" font-size="9" fill="#333" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">slot 580,242 392×256</text>
+<text x="736" y="448" font-size="9" fill="#333" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">slot 620,266 320×256</text>
 </svg>

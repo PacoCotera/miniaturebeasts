@@ -1,7 +1,8 @@
-// The Library's intents: ✓ on a found frame of the spread opens its Book, ✓ on a met or an unmet frame shows a plate and opens nothing, ← goes up (the Book to the spread, the spread Home). The spread's pad moves are the face's:
+// The Library's intents: ✓ on a found frame of the spread opens its Book once the door is open; ✓ on a met or unmet frame, or a found one before slot 8, does nothing (no plate: fix 8), ← goes up (the Book to the spread, the spread Home). The spread's pad moves are the face's:
 // the host passes the ring's frame in through `focus`. The Book is a state of the library screen (`ui.lib.f`: "book", later "guide"), not a screen of its own; until slot 8 it draws "not built yet".
 import * as Lib from "../library.mjs";
 import { frameIds } from "../genome.mjs";
+import { doorOpen } from "../nav.mjs";
 
 // The book of a species (a new species at Identify opens its page); the ring's frame follows it, so ← from the Book lands on that species.
 export function openBook(h, id) { const l = h.ui.lib, i = frameIds().indexOf(id); if (i >= 0) { l.page = Math.floor(i / 16); l.i = i % 16; } l.sp = id; l.f = "book"; }
@@ -20,8 +21,7 @@ export function intent(h, target, verb) {
   }
   if (verb === "back") { h.ui.home.f = "library"; h.goto("home"); return; }
   if (verb !== "confirm" || typeof target !== "string" || !target.startsWith("frame.")) return;
-  const id = target.slice(6), Sg = h.specs.library.spread.strings, status = Lib.speciesStatus(h.st, id);
+  const id = target.slice(6), status = Lib.speciesStatus(h.st, id);
   focus(h, target);
-  if (status === "found") openBook(h, id);
-  else h.say(status === "met" ? Sg.met : Sg.unmet);
+  if (status === "found" && doorOpen("book")) openBook(h, id);
 }

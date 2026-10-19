@@ -223,7 +223,7 @@
     "ring": "act.done",
     "field": "|empty",
     "page": "letters",
-    "ok": "Name it ",
+    "ok": null,
     "back": "Bean"
    },
    {
@@ -277,7 +277,7 @@
     "ring": "act.done",
     "field": "|empty",
     "page": "letters",
-    "ok": "Name it ",
+    "ok": null,
     "back": "Bean"
    },
    {
@@ -382,9 +382,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": "Open the guide",
+    "ok": null,
     "price": null,
-    "subject": "every Loika",
+    "subject": "the guide is not open yet",
     "back": "Vivarium"
    },
    {
@@ -468,9 +468,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": "Open the guide",
+    "ok": null,
     "price": null,
-    "subject": "every Loika",
+    "subject": "the guide is not open yet",
     "back": "Vivarium"
    },
    {
@@ -685,9 +685,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": "Open the guide",
+    "ok": null,
     "price": null,
-    "subject": "every Loika",
+    "subject": "the guide is not open yet",
     "back": "Vivarium"
    },
    {
@@ -736,9 +736,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "cross",
-    "ok": "Cross Tuft",
+    "ok": null,
     "price": null,
-    "subject": "two Loika to pair with",
+    "subject": "crossing is not open yet",
     "back": "Vivarium"
    },
    {
@@ -771,18 +771,29 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": "Again: return Tuft",
+    "ok": "Release Tuft",
     "price": "❀ +2",
-    "subject": "never taken back",
-    "back": "Vivarium"
+    "subject": "",
+    "back": "Back"
+   },
+   {
+    "key": "left",
+    "said": [],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Release Tuft",
+    "price": "❀ +2",
+    "subject": "",
+    "back": "Back"
    },
    {
     "key": "confirm",
     "said": [
      {
       "t": "intent",
-      "screen": "habitat",
-      "target": "wild",
+      "screen": "panel",
+      "target": "card.return",
       "verb": "confirm"
      }
     ],
@@ -1005,7 +1016,7 @@
     ],
     "screen": "home",
     "focus": "vivarium",
-    "ok": "Open the Vivarium",
+    "ok": "Go to the Vivarium",
     "subject": "the mibis at home",
     "back": null
    },
@@ -1021,8 +1032,24 @@
    {
     "key": "dock",
     "said": [],
+    "screen": "cargo",
+    "focus": "vivarium",
+    "ok": null,
+    "subject": "the bay is empty",
+    "back": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
     "screen": "vivarium",
-    "focus": "tile.1",
+    "focus": "resident.1",
     "ok": "Look at Dot",
     "subject": "an adult Loika, asleep",
     "back": "Home"

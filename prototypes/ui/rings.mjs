@@ -1,3 +1,4 @@
+import { footprintHeight } from "./specs/derive.mjs";
 // The focus ring's pixels (lvgl-switch.md §2.2), the oracle of the face's `ring` op (prototypes/face/src/prim/ring.c) and the generator of tests/vectors/rings.json. Integers only: a pixel (i, j)
 // has the doubled centre X = 2i + 1, Y = 2j + 1, and every comparison is on integers (products stay far inside 2^53), so JavaScript, WebAssembly, x86-64 and aarch64 cannot round differently.
 // A rounded rectangle or an ellipse `width` thick, returned as an alpha mask (0 or 255), w*h. Pure. Refuses (throws) what the op refuses.
@@ -60,4 +61,83 @@ export function tabRingMask(w, spec) {
     if (inside(X, Y, 0, r) && !inside(X, Y, width, Math.max(0, r - width))) m[r0 * W + c] = 255;
   }
   return { mask: m, w: W, h: H };
+}
+
+// The footprint ring's box: (w + 10) x (fh + 10) at (bx + x - 5, by + feetY - (fh + 10) / 2), b the drawn (unlifted) box; a mirrored cell's x is cellW - x - w. Every coordinate is an integer.
+export function footprintRing(foot, drawn, mirrored = false, cellW = drawn[2], tokens = {}) {
+  const [fx, feetY, w] = foot, x = mirrored ? cellW - fx - w : fx, fh = footprintHeight(w, tokens);
+  return [drawn[0] + x - 5, drawn[1] + feetY - (fh + 10) / 2, w + 10, fh + 10];
+}
+
+// ---- fix 14: the focus ring as the face composes it (lvgl-switch.md §2.2): three bands (key, core, key) outside the object, each band's outer shape the previous band's inner shape ----
+// `T` is frame.json focus.ring. `drawn` is the object's rect as the screen drew it (lifted where it lifts); `o`: { foot: [x, feetY, w] and mirrored for a footprint, light: the footprint's light weight, tabTop }.
+// Returns { x, y, w, h, kind, ops, nine? }: the ring's box and its bands as ops { band: "key" | "core", shape: "round" | "ellipse" | "tab", x, y, w, h, width, radius, ... } in the ring's own pixels. Pure, integers only.
+export function focusRingOps(shape, drawn, T, o = {}) {
+  const b = T.bands.map((k) => k.w), reach = T.reach, ground = "default", hasKey = T.colours[ground].key != null, ins = [0, b[0], b[0] + b[1]], band = (k) => (k === 1 ? "core" : "key");
+  const ellipse = (x, y, w, h, insets = ins, widths = b) => ({ x, y, w, h, kind: "composed", ops: [0, 1, 2].filter((k) => k === 1 || hasKey).map((k) => ({ band: band(k), shape: "ellipse", x: insets[k], y: insets[k], w: w - 2 * insets[k], h: h - 2 * insets[k], width: widths[k], radius: 0 })) });
+  if (shape === "oval") return ellipse(drawn[0] - reach, drawn[1] - reach, drawn[2] + 2 * reach, drawn[3] + 2 * reach);
+  if (shape === "footprint") {
+    const [fx, feetY, w] = o.foot, x = o.mirrored ? drawn[2] - fx - w : fx, fh = footprintHeight(w, T.shapes.footprint), W = w + 10, H = fh + 10;
+    return o.light ? ellipse(drawn[0] + x - 5, drawn[1] + feetY - H / 2, W, H, T.shapes.footprint.light.insets, T.shapes.footprint.light.widths) : ellipse(drawn[0] + x - 5, drawn[1] + feetY - H / 2, W, H);
+  }
+  if (shape === "tab") {
+    const t = T.shapes.tab, tabTop = o.tabTop ?? 40, body = drawn[2], W = body + 2 * t.outside[0] + t.slant, H = t.bottom[0] - t.top[0];
+    return { x: drawn[0] - t.outside[0], y: t.top[0], w: W, h: H, kind: "composed", ops: [0, 1, 2].filter((k) => k === 1 || hasKey).map((k) => ({ band: band(k), shape: "tab", x: t.outside[0] - t.outside[k], y: t.top[k] - t.top[0], body, width: b[k], slant: t.slant, outside: t.outside[k], top: t.top[k], slantTo: t.slantTo, bottom: t.bottom[k], radius: t.radius[k], tabTop })) };
+  }
+  if (shape.circle !== undefined) {
+    const c = shape.circle, rho = c === "box" ? (drawn[2] >> 1) + reach : c.r + reach, ox = c === "box" ? drawn[0] + (drawn[2] >> 1) : drawn[0] + c.centre[0], oy = c === "box" ? drawn[1] + (drawn[3] >> 1) : drawn[1] + c.centre[1];
+    return ellipse(ox - rho, oy - rho, 2 * rho, 2 * rho);
+  }
+  const r = shape.rect, chip = shape.chip ?? 0, R = r + reach, S = 2 * R + 4, x = drawn[0] - chip - reach, y = drawn[1] - reach, w = drawn[2] + 2 * chip + 2 * reach, h = drawn[3] + 2 * reach;
+  if (w < 2 * R || h < 2 * R) throw new Error(`focus ring refused: a ring box ${w}x${h} under 2R (${2 * R}) on an axis`);
+  return { x, y, w, h, kind: "nine", R, S, ops: [0, 1, 2].filter((k) => k === 1 || hasKey).map((k) => ({ band: band(k), shape: "round", x: ins[k], y: ins[k], w: S - 2 * ins[k], h: S - 2 * ins[k], width: b[k], radius: R - ins[k] })) };
+}
+// A ring's pixels: an array w*h of 0 (none), 1 (key) or 2 (core), the bands drawn in order. A nine-slice is its S x S source expanded (corners 1:1, the middle tiled).
+export function ringRaster(ring) {
+  const paint = (px, W, H, op) => {
+    let m, ox = op.x, oy = op.y, mw = op.w, mh = op.h;
+    if (op.shape === "tab") { const t = tabRingMask(op.body, { tab: { slant: op.slant, outside: op.outside, top: op.top, slantTo: op.slantTo, bottom: op.bottom, radiusBottom: op.radius }, width: op.width, tabTop: op.tabTop }); m = t.mask; mw = t.w; mh = t.h; }
+    else m = ringMask(op.w, op.h, op.width, op.radius, op.shape);
+    for (let y = 0; y < mh; y++) for (let x = 0; x < mw; x++) if (m[y * mw + x] && ox + x < W && oy + y < H) px[(oy + y) * W + ox + x] = op.band === "core" ? 2 : 1;
+  };
+  if (ring.kind === "nine") {
+    const { S, R, w, h } = ring, src = new Uint8Array(S * S); for (const op of ring.ops) paint(src, S, S, op);
+    const px = new Uint8Array(w * h), mid = S - 2 * R;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const sx = x < R ? x : x >= w - R ? S - (w - x) : R + ((x - R) % mid), sy = y < R ? y : y >= h - R ? S - (h - y) : R + ((y - R) % mid); px[y * w + x] = src[sy * S + sx]; }
+    return px;
+  }
+  const px = new Uint8Array(ring.w * ring.h); for (const op of ring.ops) paint(px, ring.w, ring.h, op); return px;
+}
+
+// ---- the 2 px floor (spec §14.4): the ground under a creature's ring, per light ----
+// A creature ring's key reaches 3:1 on ground at or above luminance keyFrom = 3 (L(void) + 0.05) − 0.05, its core on ground at or below coreTo = (L(focus) + 0.05) / 3 − 0.05; the thresholds come from the palette. The ring zones are
+// where a footprint ring can lie, in screen pixels (the walk's feet range ± half the ring's tallest height, its x range ± 5), over the painting under each at the position the face draws it; the stand-in shadow ink is composited as the worst case.
+import { decodePNG } from "./png.mjs";
+export const luminance = (hex) => { const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+export const floorThresholds = (palette) => { const L = (n) => luminance(palette.colours.find(([k]) => k === n)[1]); return { keyFrom: 3 * (L("void") + 0.05) - 0.05, coreTo: (L("focus") + 0.05) / 3 - 0.05 }; };
+export const FLOOR_SCENES = [{ name: "the Vivarium's whole", file: (l) => `idle-vivarium-${l}-1024x568`, at: [0, -80], zone: [11, 283, 1013, 479] }, { name: "Habitat up close", file: (l) => `vivarium-near-${l}-544x408`, at: [24, 56], zone: [139, 291, 453, 405] },
+  { name: "Home", file: (l) => `home-glass-${l}-640x488`, at: [24, 56], zone: [27, 287, 661, 543] }];
+export const STAND_IN_SHADOW = { rgb: "#1e1a22", alpha: 110 };
+// the darkest and brightest ground of a scene's ring zone in a light: { darkest, brightest, at }, from the painting's PNG bytes
+export function zoneRange(pngBytes, scene, shadow = STAND_IN_SHADOW) {
+  const png = decodePNG(pngBytes), sh = [1, 3, 5].map((i) => parseInt(shadow.rgb.slice(i, i + 2), 16)), a = shadow.alpha / 255; let darkest = 9, brightest = -1, at = null;
+  for (let y = scene.zone[1]; y <= scene.zone[3]; y++) for (let x = scene.zone[0]; x <= scene.zone[2]; x++) {
+    const px = x - scene.at[0], py = y - scene.at[1]; if (px < 0 || py < 0 || px >= png.width || py >= png.height) continue;
+    const i = 4 * (py * png.width + px), c = [0, 1, 2].map((k) => Math.round(png.data[i + k] * (1 - a) + sh[k] * a)), L = luminance("#" + c.map((v) => v.toString(16).padStart(2, "0")).join(""));
+    if (L < darkest) { darkest = L; at = [x, y]; } const L0 = luminance("#" + [0, 1, 2].map((k) => png.data[i + k].toString(16).padStart(2, "0")).join("")); if (L0 > brightest) brightest = L0;
+  }
+  return { darkest, brightest, at };
+}
+
+// ---- rule 1 (fix 14, one focus form), on the test-mode region log: the log has one entry per region and layer, and `ring: n` counts the entry's shown nodes whose picture holds a ring or tabRing op (a composed node, or a nine-slice
+// or sprite of a face-owned source composed with one). Allowed: `focus` / chrome with n = 1 when no hold that drops the ring is on (`hold`: only on Home and Habitat chrome targets, tiles and the namer; the Probe's ring stays through its mend and install and every creature footprint ring stays, as on main) and the state has a focus target; `companion` / art with n <= 1 (the top bar's holder); `cross` / art with n <= `faces`
+// (Habitat's holders). Rule 4's source scan pins the only two writers of a ring op (focusRing.c, v_faceHolder), so the region level cannot be fooled. Returns the departures.
+export function ringDepartures(log, { hold = false, faces = 0, focusTarget = true } = {}) {
+  const out = [];
+  for (const e of log.regions ?? []) {
+    const n = e.ring ?? 0; if (!n) continue;
+    const ok = e.id === "focus" && e.layer === "chrome" ? n === 1 && !hold && focusTarget : e.id === "companion" && e.layer === "art" ? n <= 1 : e.id === "cross" && e.layer === "art" ? n <= faces : false;
+    if (!ok) out.push(`a non-standard focus form in ${e.id}/${e.layer} (${n})`);
+  }
+  return out;
 }

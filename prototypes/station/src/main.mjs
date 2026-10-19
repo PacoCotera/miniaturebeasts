@@ -5,7 +5,7 @@
 import { PALETTE, clock, motion } from "./pixels.mjs";
 import { ICON } from "./art.mjs";
 import { stationSeconds } from "./game.mjs";
-import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, LAYER } from "./game.mjs";
+import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, saveSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, LAYER } from "./game.mjs";
 import * as S from "./state.mjs";
 import * as Lib from "./library.mjs";
 import { lightAt } from "./views/home-props.mjs";
@@ -14,10 +14,13 @@ import { startScene, endScene, sceneTick, sceneTime, sceneBeat, SCENE_MS } from 
 import { setFrames, frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
-import { watch as watchHabitat } from "./intents/habitat.mjs";
+import { watch as watchHabitat, openCross as openCrossAt } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
-import { loadMasters } from "./masters.mjs";
+import { loadMasters, loadStandLayers } from "./masters.mjs";
+import { setStandSizes } from "./layered-stand.mjs";
+import { setStandLooks } from "./looks.mjs";
+import { injectPortraitSource } from "./portrait-source.mjs";
 import { bootFace } from "./face-lvgl.mjs";
 import * as cargo from "./intents/cargo.mjs";
 import * as create from "./intents/create.mjs";
@@ -28,6 +31,7 @@ import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL } from "..
 const $ = (id) => document.getElementById(id);
 const vis = $("screen"); let vctx = null;   // the page's screen: the face copies what it redrew onto it (face.display)
 const stampEl = $("stamp"), bootEl = $("boot");
+if (new URLSearchParams(location.search).has("dev")) { stampEl.hidden = false; $("devBtn").hidden = false; }   // the build stamp and the Developer tools button are for ?dev only (the Shift+T key stays on the play page)
 
 // --- the frames, fetched beside the page (the sandbox publishes prototypes/* side by side) ---
 async function loadFrames() {
@@ -40,7 +44,7 @@ async function loadFrames() {
 
 // --- the face ---
 let dockElsewhere = false;   // ?embed: the play page's Dock control asked while another device had the keys (frame.json navigation.dock); never set standalone
-let FACE = null, H = null, lastLog = null, lastProps = null, msgSent = -1, lastLight = null, movingHeld = new Set(), movingPrev = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
+let FACE = null, H = null, lastLog = null, lastProps = null, msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
 const renderErrors = [];   // every error the face or a frame raised, kept for the checks to read
 const said = [];   // the focus and the intents the face said, for the journey's golden (window.__st.said() takes and clears them)
 const faceErrors = [];
@@ -55,13 +59,14 @@ function pump() {
 }
 // The screen's props, when they changed: the pictures first (the face takes a picture once, by id), then the props.
 function syncProps() {
-  if (msgSent !== FX.msgAt) { msgSent = FX.msgAt; if (FX.msg) H.play({ kind: "plate", target: "msg", ms: 4000 }); }
+  if (msgSent !== FX.msgAt) { msgSent = FX.msgAt; if (FX.msg) H.play({ kind: "plate", target: "msg", ms: FX.msgMs || 4000 }); }
   for (const e of LAYER.presenter.events(topValues())) H.play(e);
   const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
   if (key === lastProps) return;
   { FACE.beginScene(); for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());
-  else { const light = p.light ?? lastLight; if (lastLight && lastLight !== light) for (const id of lightIds(lastLight)) FACE.drop(id); lastLight = light;   // one light's pictures in memory, plus one frame of the next
+  else { const light = p.light ?? lastLight; if (lastLight && lastLight !== light) for (const id of lightIds(lastLight)) FACE.drop(id); if (lastLight && lastLight !== light) for (const id of litHeld) if (!p.ids.includes(id)) { FACE.drop(id); litHeld.delete(id); } for (const id of p.lit ?? []) litHeld.add(id); lastLight = light;   // fix 7: at a light change the graded residents the new props do not name go with the old light
+  // one light's pictures in memory, plus one frame of the next
     const now = new Set(p.ids.filter((id) => id.startsWith("moving:"))); for (const id of movingHeld) if (!now.has(id) && !movingPrev.has(id)) { FACE.drop(id); movingHeld.delete(id); } for (const id of now) movingHeld.add(id); movingPrev = now; }   // a moving atlas neither these props nor the previous screen's ask for is dropped (architecture.md §3: the main.mjs gap)
   lastProps = key;   // set once the props are sent: a throw above leaves it unset, so the next frame tries again (and the error is kept)
 }
@@ -92,7 +97,7 @@ export function act(k) {
   syncProps();
   if (k === "dock") { dockKey(); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
-  if (k !== "confirm") H.disarm();
+  if (k !== "back") UI.arrival = null;   // the Incubator's ← returns to Pods only until another key (the arrival mode of the jump flag)
   FACE.key(k); pump();
 }
 const stationEl = $("station");
@@ -140,14 +145,16 @@ const caddyEl = $("caddy"), dockCtl = $("dockCtl"), dockMark = $("dockMark"), do
 let caddyKey = "";
 const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
 // The Caddy's state as the control and the play page's shell take it (frame.json navigation.dock; the shell never reads the save): canDock is the exact condition state.mjs refuses a dock on
-const caddyState = () => ({ canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(H && H.pendingDock) });
+// opened: what the last opening brought, until the next dock or lift; partner: the Companion's partner (its lead if carried and grown, else the first grown mibi with it), for the Caddy's lines (play/src/caddy.mjs)
+const partnerName = () => { const p = S.partnerOf(G.st, G.sv, G.settings); return p ? p.name : null; };
+const caddyState = () => ({ canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(H && H.pendingDock), opened: UI.caddyOpened ?? null, partner: partnerName() });
 let lastPosted = "";
 function postCaddy(force = false) {
   const m = caddyState(), k = JSON.stringify(m); if (!force && k === lastPosted) return; lastPosted = k;
   if (parent !== window) parent.postMessage({ t: "mb-caddy", ...m }, location.origin);
 }
 function updateCaddy() {
-  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock; if (key === caddyKey) return; caddyKey = key;
+  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner; if (key === caddyKey) return; caddyKey = key;
   if (EMBED) { postCaddy(); return; }
   caddyEl.classList.toggle("lifted", !d);
   dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";
@@ -185,12 +192,13 @@ const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the
 bootText("loading the species frames…");
 const TEST = new URLSearchParams(location.search).has("test");
 const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]; if (!hex) throw new Error("no palette colour " + name); return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)); };
-// The spec files the face takes (frame, pods, home, cargo, create, incubator, vivarium, habitat, namer and library), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
+// The spec files the face takes (frame, pods, home, cargo, create, incubator, vivarium, habitat, namer, library, bench and cross: the rack pod reads its pigment chips), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 const bootAssets = async () => {
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
-  for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench"]) SPECS[k] = await spec(k + ".json");
+  for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "panel", "library", "bench", "cross"]) SPECS[k] = await spec(k + ".json");
   { const ix = await spec("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = await spec(`moving/${id}.json`); SPECS.moving = sets; setMoving(sets); }   // the moving sets (Station M1 §2.2): one file a species, one spec on the face
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
+  setStandLooks(await spec("stand-looks.json")); setStandSizes(await spec("stand-sizes.json")); await loadStandLayers(new URL("../../ui/assets/stands/", import.meta.url));   // each mibi drawn as itself: the unread default looks and the layered stands' cut-outs (looks.mjs, layered-stand.mjs)
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   setEnv({ rgb: rgbOfName });
 };
@@ -207,6 +215,7 @@ const faceBoot = async () => {
 const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
   await faceBoot();
   loadSettings(); load();
+  { const j = new URLSearchParams(location.search).get("jump"); if (j === "arrival" || j === "fork") saveSettings({ jump: j }); }   // the jump test (decision panel spec Part 3): the play page's ?jump= is saved with the settings
   UI.lastInput = performance.now(); G.ready = true;
   buildDevPanel((inShell && parent.document.getElementById("devStation")) || $("devPanel"), { changed: refreshDev, openCrates: () => { H.goto("cargo"); cargo.openBay(H); }, motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()) });
   caddy.startClient();
@@ -220,9 +229,9 @@ const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
 const sceneHost = () => ({ act, goto: (s) => H.goto(s), settings: G.settings, intent: (m) => onFaceMessage(H, { t: "intent", seq: 0, ...m }), now: () => clock.now });
 // Test hooks (not part of play). `openBay` is the rule alone, for the tests that need pods in the wells at once; Cargo plays the opening through its own ✓.
 const podsGo = (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if (ci != null) u.ci = ci; u.view = view ?? (f.startsWith("rail.") ? "chapter" : f.startsWith("place.") ? "collection" : "overview"); if (f.startsWith("rail.")) u.ci = +f.slice(5); u.cmp = null; u.focusView = null; u.focus.set(f); if (UI.screen !== "pods") H.goto("pods"); };
-window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), pendingRoom: () => H.pendingRoom ?? null, get props() { return lastProps ? JSON.parse(lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
+window.__st = { ready, renderErrors, portraitSource: (digest, rgba) => { const r = injectPortraitSource(digest, rgba); if (r.error) renderErrors.push("portrait " + digest + ": " + r.error); return r; }, faceErrors, said: () => said.splice(0), pendingRoom: () => H.pendingRoom ?? null, get props() { return lastProps ? JSON.parse(lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   say: (t) => msg(t), act: (k) => act(k), press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(H, fromIdle), openBay: () => { const r = S.openBay(G.st, G.sv, G.settings, Date.now()); save(); return r; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => H.goto(s),
-  get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel, invOverflows: () => FACE.invOverflows(), invCap: () => FACE.invCap(), pass: FACE.pass, offPalette: FACE.offPalette, forceFull: FACE.forceFull, errors: faceErrors.slice(), log: () => lastLog } : null; },
+  get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel, invOverflows: () => FACE.invOverflows(), invCap: () => FACE.invCap(), pass: FACE.pass, hide: FACE.hide, offPalette: FACE.offPalette, forceFull: FACE.forceFull, errors: faceErrors.slice(), log: () => lastLog } : null; },
   // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, and with `capture` the PNG.
   snapshot: ({ capture = false } = {}) => { const f = FACE, out = { hash: f.hash(), errors: faceErrors.slice(), refused: f.refused() }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },
   get msg() { return FX.msg; }, capture: () => vis.toDataURL("image/png"), holding: () => H.holding(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, frameOf, frameIds, podById, genomesText, podGenome, genomeSha, nameCode,
@@ -232,6 +241,7 @@ window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), pen
   forecastOf: (aId, bId) => S.forecastOf(G.st, mibiById(aId), mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),
   isAdult: (m) => S.isAdult(G.st, m, G.settings), budKnown: (c) => S.budChapterKnown(G.st, c, G.settings, Date.now()), benchToday: () => S.benchToday(G.st, Date.now(), G.settings), podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
   doCross: (aId, bId) => { const r = S.doCross(G.st, G.sv, mibiById(aId), mibiById(bId), G.settings, Date.now()); if (r.ok) { UI.cross = null; save(); H.goto("incubator"); if (G.st.outbox?.length) caddy.flush().catch(() => {}); } return r; },
+  openCross: (aId) => openCrossAt(H, mibiById(aId)),   // the test hook: the Cross screen is not reachable by a press while its door is shut (doorOpen(cross))
   podsGo, intent: (m) => { onFaceMessage(H, { t: "intent", seq: 0, ...m }); },
   motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()), scene: () => ({ t: sceneTime(clock.now), beat: sceneBeat(clock.now), ms: SCENE_MS }),
   redraw: () => { const M = FACE.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let px = 0; for (let i = 0; i < n; i++) px += a[i * 4 + 2] * a[i * 4 + 3]; let trav = 0, air = 0; for (let i = 0; i < 12; i++) { const s = M._face_test_state(i); if (s >= 0) { if (s & 16) trav++; if (s & 32) air++; } } return { px, areas: n, tick: M._face_test_tick_area(), deferred: M._face_test_deferred(), travelling: trav, airborne: air, steps: M._face_test_steps() }; },   // the motion proof's CSV: the last frame's redraw
@@ -245,7 +255,7 @@ window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), pen
 function checkSnapshot() {
   const pod = podById(UI.pods.cur), fr = pod ? frameOf(S.speciesOf(pod)) : null, f = FACE;
   const pr = lastProps ? JSON.parse(lastProps) : null;
-  return { screen: UI.screen, idle: UI.idle, homeFocus: pr?.state === "home" ? pr.focus.cur : null, viv: pr?.screen === "vivarium" ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length } : null, bench: pr?.screen === "bench" ? { props: pr, cur: pr.focus.cur } : null, lib: pr?.screen === "library" && pr.state === "spread" ? { props: pr, cur: pr.focus.cur } : null, hab: pr?.screen === "habitat" && pr.regions ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, open: !!pr.overlay } : null, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null) }, cells: pr?.regions?.page?.cells?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: lastLog, refused: f.refused(), objects: f.objects(), errors: faceErrors.slice(),
+  return { screen: UI.screen, idle: UI.idle, homeFocus: pr?.state === "home" ? pr.focus.cur : null, viv: pr?.screen === "vivarium" ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, figs: pr.regions.residents.map((r) => ({ stage: r.stage, figure: r.figure ?? null })) } : null, bench: pr?.screen === "bench" ? { props: pr, cur: pr.focus.cur } : null, lib: pr?.screen === "library" && pr.state === "spread" ? { props: pr, cur: pr.focus.cur } : null, hab: pr?.screen === "habitat" && pr.regions ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, open: pr.overlay?.id === "namer" } : null, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null), overlay: pr.overlay?.id ?? null }, cells: pr?.regions?.page?.cells?.length ?? null, frame: pr?.regions?.page?.frame ?? null, cmpCells: pr?.regions?.pageA?.cells?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: lastLog, refused: f.refused(), objects: f.objects(), errors: faceErrors.slice(),
     pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null,
     placeholders: manifestOf().filter((e) => NOT_FINAL.includes(e.status)).length };
 }

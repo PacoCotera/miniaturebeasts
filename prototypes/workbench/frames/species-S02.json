@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 9,
+  "version": 10,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -382,7 +382,8 @@
     "marigold and plum",
     "plum"
    ],
-   "guard": "sketch: the body pigment slot"
+   "guard": "sketch: the body pigment slot",
+   "changedBy": "player"
   },
   {
    "id": "appearance.marking-switch",
@@ -404,7 +405,8 @@
     "off/on",
     "on"
    ],
-   "guard": "sketch: the marking field"
+   "guard": "sketch: the marking field",
+   "changedBy": "player"
   },
   {
    "id": "appearance.marking-layout",
@@ -426,7 +428,8 @@
     "bands-and-patches",
     "patches"
    ],
-   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on"
+   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on",
+   "changedBy": "player"
   },
   {
    "id": "appearance.marking-extent",
@@ -448,7 +451,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on"
+   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on",
+   "changedBy": "player"
   },
   {
    "id": "appearance.marking-scale",
@@ -470,7 +474,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on"
+   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on",
+   "changedBy": "player"
   },
   {
    "id": "appearance.marking-orientation",
@@ -492,7 +497,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on"
+   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on",
+   "changedBy": "player"
   },
   {
    "id": "appearance.marking-contrast",
@@ -514,7 +520,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on"
+   "guard": "asleep in any individual whose appearance.marking-switch is off; drawn when it is on",
+   "changedBy": "player"
   },
   {
    "id": "appearance.surface-texture",
@@ -535,7 +542,8 @@
     "smooth"
    ],
    "guard": "sketch: fine ridges as a surface grain",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "movement.cycle-rate",
@@ -557,7 +565,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "behaviour: carried, weighed by the state machine"
+   "guard": "behaviour: carried, weighed by the state machine",
+   "changedBy": "breeding"
   },
   {
    "id": "movement.turn-control",
@@ -579,7 +588,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "behaviour: carried, weighed by the state machine"
+   "guard": "behaviour: carried, weighed by the state machine",
+   "changedBy": "breeding"
   },
   {
    "id": "movement.axial-amplitude",
@@ -601,7 +611,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "behaviour: carried, weighed by the state machine"
+   "guard": "behaviour: carried, weighed by the state machine",
+   "changedBy": "breeding"
   },
   {
    "id": "movement.axial-phase",
@@ -623,7 +634,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "behaviour: carried, weighed by the state machine"
+   "guard": "behaviour: carried, weighed by the state machine",
+   "changedBy": "breeding"
   },
   {
    "id": "movement.membrane-stroke",
@@ -644,7 +656,8 @@
     "low"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "movement.membrane-coordination",
@@ -665,7 +678,8 @@
     "high"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "energy.actuator-capacity",
@@ -686,7 +700,8 @@
     "low"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "energy.reserve-capacity",
@@ -707,7 +722,8 @@
     "high"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "energy.action-efficiency",
@@ -728,7 +744,8 @@
     "low"
    ],
    "guard": "behaviour: carried, weighed by the state machine",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "anatomy.exterior-eye-presence",
@@ -749,7 +766,8 @@
     "on"
    ],
    "guard": "rig: modules.exteriorEyePair",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.core-half-length",
@@ -770,7 +788,8 @@
     "large"
    ],
    "guard": "rig: core.rx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.head-length-ratio",
@@ -791,7 +810,8 @@
     "small"
    ],
    "guard": "rig: head.rxOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.head-width-ratio",
@@ -812,7 +832,8 @@
     "low"
    ],
    "guard": "rig: head.ryOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.head-depth-ratio",
@@ -833,7 +854,8 @@
     "low"
    ],
    "guard": "rig: head.rzOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.head-lift-ratio",
@@ -854,7 +876,8 @@
     "low"
    ],
    "guard": "rig: head.centerLiftOverCoreRx",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.exterior-eye-size-ratio",
@@ -875,7 +898,8 @@
     "large"
    ],
    "guard": "rig: eye.radiusOverHeadMinYZ",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.exterior-eye-spacing-ratio",
@@ -896,7 +920,8 @@
     "wide"
    ],
    "guard": "rig: eye.anchorYOverHeadRy",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.wing-span-ratio",
@@ -918,7 +943,8 @@
     "between short and long",
     "long"
    ],
-   "guard": "rig: wing.outwardSpanOverCoreRx"
+   "guard": "rig: wing.outwardSpanOverCoreRx",
+   "changedBy": "player"
   },
   {
    "id": "growth.wing-chord-ratio",
@@ -940,7 +966,8 @@
     "between narrow and wide",
     "wide"
    ],
-   "guard": "rig: wing.longitudinalChordOverCoreRx"
+   "guard": "rig: wing.longitudinalChordOverCoreRx",
+   "changedBy": "player"
   },
   {
    "id": "growth.wing-sweep-ratio",
@@ -961,7 +988,8 @@
     "low"
    ],
    "guard": "rig: wing.posteriorSweepOverSpan",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "growth.radial-cross-radius",
@@ -983,7 +1011,8 @@
     "between slender and broad",
     "broad"
    ],
-   "guard": "rig: region.radialCrossRadiusOverAnchorRx"
+   "guard": "rig: region.radialCrossRadiusOverAnchorRx",
+   "changedBy": "player"
   },
   {
    "id": "anatomy.region-longitudinal-form",
@@ -1006,7 +1035,8 @@
     "barrel",
     "tapered"
    ],
-   "guard": "rig: region.longitudinalForm"
+   "guard": "rig: region.longitudinalForm",
+   "changedBy": "player"
   },
   {
    "id": "appearance.fur-length",
@@ -1028,7 +1058,8 @@
     "between short and long",
     "long"
    ],
-   "guard": "rig: fur.lengthOverMinTransverseRadius"
+   "guard": "rig: fur.lengthOverMinTransverseRadius",
+   "changedBy": "player"
   },
   {
    "id": "appearance.fur-flow",
@@ -1050,7 +1081,8 @@
     "between axial and oblique",
     "oblique"
    ],
-   "guard": "rig: fur.tangentAngleRadians"
+   "guard": "rig: fur.tangentAngleRadians",
+   "changedBy": "player"
   },
   {
    "id": "cognition.exploration-tendency",
@@ -1072,7 +1104,8 @@
     "intermediate",
     "seeking"
    ],
-   "guard": "rig: innate.explorationClass"
+   "guard": "rig: innate.explorationClass",
+   "changedBy": "breeding"
   },
   {
    "id": "cognition.arousal-threshold",
@@ -1094,7 +1127,8 @@
     "between low and high",
     "high"
    ],
-   "guard": "rig: innate.arousalThreshold"
+   "guard": "rig: innate.arousalThreshold",
+   "changedBy": "breeding"
   },
   {
    "id": "appearance.fur-reach",
@@ -1115,7 +1149,8 @@
     "ears"
    ],
    "guard": "sketch: the fur material on the tail and the ears too",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "appearance.flap-marking",
@@ -1136,7 +1171,8 @@
     "bars"
    ],
    "guard": "sketch: marking field on thin surfaces",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "appearance.flap-translucency",
@@ -1157,7 +1193,8 @@
     "opaque"
    ],
    "guard": "sketch: thin-surface opacity (the transparency draft, validated for flaps)",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "appearance.sheen",
@@ -1178,7 +1215,8 @@
     "glossy"
    ],
    "guard": "sketch: specular highlight strength (surface texture's first consumer)",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "appearance.emission-brightness",
@@ -1199,7 +1237,8 @@
     "dim"
    ],
    "guard": "behaviour: dusk glow strength; sketch: the emission slot's intensity",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "appearance.emission-length",
@@ -1220,7 +1259,8 @@
     "short"
    ],
    "guard": "behaviour: how long the glow lasts",
-   "nature": "doing"
+   "nature": "doing",
+   "changedBy": "species"
   },
   {
    "id": "anatomy.top-cap-sheet",
@@ -1242,7 +1282,8 @@
     "on"
    ],
    "guard": "rig: one dorsal sheet replaces the radial flap triple",
-   "nature": "look"
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "appearance.cap-palette",
@@ -1274,7 +1315,8 @@
     "marigold and plum",
     "plum"
    ],
-   "guard": "sketch: the cap's own pigment slot"
+   "guard": "sketch: the cap's own pigment slot",
+   "changedBy": "player"
   },
   {
    "id": "appearance.cap-spots",
@@ -1296,7 +1338,8 @@
     "none",
     "spots"
    ],
-   "guard": "sketch: a spot field on the cap"
+   "guard": "sketch: a spot field on the cap",
+   "changedBy": "player"
   }
  ],
  "absent": [
@@ -1701,6 +1744,7 @@
   },
   "heritableLook": 10,
   "heritableDoing": 4,
+  "selfChanging": 0,
   "sleeping": 5,
   "sealed": 2,
   "open": 21,
@@ -1750,7 +1794,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S02",
-   "frameVersion": 3,
+   "frameVersion": 4,
    "loci": {
     "appearance.body-palette": [
      "coral",
@@ -1952,8 +1996,10 @@
  "viability": {
   "sampled": 200,
   "constructed": 200,
+  "crossed": 192,
+  "crossedBuilt": 192,
   "failures": [],
-  "rule": "random copies from the species pools at every open locus; built by the rig and validated against the compositional contract"
+  "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },
  "pools": {
   "appearance.body-palette": [

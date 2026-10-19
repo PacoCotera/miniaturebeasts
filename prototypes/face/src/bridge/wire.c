@@ -122,6 +122,15 @@ static int on_spec(const msg_t *m) {
 int wire_asset_slot(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
 static int g_slice[256][4], g_tile[256], g_has_slice[256];
 int wire_asset_nine(int slot, int insets[4], int *tile) { if (slot < 0 || slot >= 256 || !g_has_slice[slot]) return 0; memcpy(insets, g_slice[slot], sizeof g_slice[slot]); if (tile) *tile = g_tile[slot]; return 1; }
+/* a creature picture's footprint (fix 14, FR4): [x, feetY, w] relative to the picture, or { stand?, curl?, shadow? } each [x, feetY, w] relative to its cell, as the host measured it (derive.mjs footprintOf) */
+static int g_foot[256][4][3], g_has_foot[256][4];
+static const char *FOOT_CELL[4] = { "", "stand", "curl", "shadow" };
+int wire_asset_foot(int slot, int cell, int out[3]) { if (slot < 0 || slot >= 256 || cell < 0 || cell > 3 || !g_has_foot[slot][cell]) return 0; memcpy(out, g_foot[slot][cell], sizeof g_foot[slot][cell]); return 1; }
+static int read_foot(const msg_t *m, int t, int cellw, int h, int out[3]) {   /* t an array of three integers inside the cell */
+  if (t < 0 || m->tok[t].type != JSMN_ARRAY || m->tok[t].size != 3) return 0;
+  for (int k = 0; k < 3; k++) if (!num(m, t + 1 + k, &out[k])) return 0;
+  return out[0] >= 0 && out[2] >= 1 && out[0] + out[2] <= cellw && out[1] >= 1 && out[1] <= h;
+}
 static int slot_of(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
 static int on_asset(const msg_t *m) {
   char id[96]; int w = 0, h = 0, drop = flag(m, key(m, "drop"));
@@ -136,7 +145,7 @@ static int on_asset(const msg_t *m) {
   if (strncmp(id, "moving:", 7) == 0) { char b[200]; if (moving_vet_atlas(id, w, h, b, sizeof b) < 0) return fail(b); }   /* an atlas of a moving set: 1 + n·w wide (M1 §2.2) */
   strcpy(g_ids[slot], id);
   if (!prim_asset(slot, w, h)) { g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: %dx%d is refused", id, w, h); return fail(b); }
-  g_has_slice[slot] = 0; g_tile[slot] = 0;
+  g_has_slice[slot] = 0; g_tile[slot] = 0; memset(g_has_foot[slot], 0, sizeof g_has_foot[slot]);
   { /* every picture names the layer it shows on, and what it is: policy "art" (palette-exact) or "painted"; status "placeholder" or "master" (lvgl-switch.md §2.1). A picture without them is refused, never guessed. */
     char pol[12], stat[16];
     if (!str(m, key(m, "policy"), pol, sizeof pol) || (strcmp(pol, "art") && strcmp(pol, "painted"))) { prim_asset_free(slot); g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: policy is \"art\" or \"painted\"", id); return fail(b); }
@@ -150,6 +159,18 @@ static int on_asset(const msg_t *m) {
     g_has_slice[slot] = 1;
   }
   int tl = key(m, "tile"); if (tl >= 0) { int v; if (!num(m, tl, &v) || v < 0 || v > 1024) { prim_asset_free(slot); g_ids[slot][0] = 0; return fail("asset: tile is an integer from 0 to 1024"); } g_tile[slot] = v; }
+  int fo = key(m, "foot");
+  if (fo >= 0) {   /* optional: a creature picture's footprint; one outside its picture or cell, or not integers, is refused whole */
+    int cw = w; if (strncmp(id, "moving:", 7) == 0) { char stg[12], sid[8], part[12]; int c = 0, hh = 0; if (sscanf(id, "moving:%11[a-z]:%7[A-Z0-9]:%11[a-z]:%dx%d", stg, sid, part, &c, &hh) == 5 && c > 0) cw = c; }   /* an atlas's cells are cw wide; its ids may carry a hash and a light after the size */
+    int ok = 1;
+    if (m->tok[fo].type == JSMN_ARRAY) ok = read_foot(m, fo, w, h, g_foot[slot][0]) && (g_has_foot[slot][0] = 1);
+    else if (m->tok[fo].type == JSMN_OBJECT) {
+      if (m->tok[fo].size < 1) ok = 0;
+      int k = fo + 1; for (int c = m->tok[fo].size; c > 0 && ok; c--) { int cell = 0; for (int q = 1; q < 4; q++) if ((int)strlen(FOOT_CELL[q]) == m->tok[k].end - m->tok[k].start && strncmp(m->js + m->tok[k].start, FOOT_CELL[q], strlen(FOOT_CELL[q])) == 0) cell = q;
+        if (!cell || g_has_foot[slot][cell] || !read_foot(m, k + 1, cw, h, g_foot[slot][cell])) ok = 0; else g_has_foot[slot][cell] = 1; k = skip(m, k + 1); }
+    } else ok = 0;
+    if (!ok) { memset(g_has_foot[slot], 0, sizeof g_has_foot[slot]); prim_asset_free(slot); g_ids[slot][0] = 0; char b[260]; snprintf(b, sizeof b, "asset %s: foot is [x, feetY, w] inside its picture, or { stand, curl, shadow } each inside its cell", id); return fail(b); }
+  }
   g_last_asset = slot; return 0;
 }
 static int on_event(const msg_t *m) {
@@ -171,7 +192,10 @@ static int on_event(const msg_t *m) {
   int cut = 0;
   if (key(m, "cut") >= 0) { int c = key(m, "cut"), len = m->tok[c].end - m->tok[c].start; const char *p = m->js + m->tok[c].start;
     if (m->tok[c].type != JSMN_PRIMITIVE || !((len == 4 && strncmp(p, "true", 4) == 0) || (len == 5 && strncmp(p, "false", 5) == 0))) return fail("event: cut is true or false"); cut = len == 4; }
-  if (anim_add(kind, target, ms, hold, cut, from, to, from_id[0] ? from_id : NULL, spec_bool("props", "motion", 1)) < 0) return fail("event: the face holds 24 events at once");
+  int skip = 0;   /* a skippable hold (§2.1): ✓ ends it and its hold */
+  if (key(m, "skip") >= 0) { int c = key(m, "skip"), len = m->tok[c].end - m->tok[c].start; const char *p = m->js + m->tok[c].start;
+    if (m->tok[c].type != JSMN_PRIMITIVE || !((len == 4 && strncmp(p, "true", 4) == 0) || (len == 5 && strncmp(p, "false", 5) == 0))) return fail("event: skip is true or false"); skip = len == 4; }
+  if (anim_add(kind, target, ms, hold, cut, skip, from, to, from_id[0] ? from_id : NULL, spec_bool("props", "motion", 1)) < 0) return fail("event: the face holds 24 events at once");
   g_nevents++; g_dirty_log = 1; screens_redraw(); return 0;
 }
 static const struct { const char *name; int code; } KEYS[] = { { "up", 17 }, { "down", 18 }, { "right", 19 }, { "left", 20 }, { "confirm", 10 }, { "back", 27 }, { "home", 2 }, { "research", 114 }, { "library", 108 }, { "habitat", 98 }, { "dock", 100 } };
