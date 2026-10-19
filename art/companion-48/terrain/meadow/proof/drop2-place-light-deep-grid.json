@@ -1,0 +1,1136 @@
+{
+ "layout": [
+  "..................",
+  "...1111111........",
+  "..111111111....11.",
+  "..111111111...111.",
+  "..FF1111111...FFF.",
+  "..FF1111111...FFF.",
+  "....11111FF.......",
+  "....FFFFF.........",
+  "....FFFFF.....www.",
+  "..........wwwwwww.",
+  ".....ssss.wwwwwww.",
+  ".....ssssswwwwwww."
+ ],
+ "levelTone": [
+  "dark",
+  "none",
+  "light"
+ ],
+ "cells": {
+  "0,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "0,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "0,2": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "0,3": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "0,4": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "0,5": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "0,6": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "0,7": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "0,8": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "0,9": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "0,10": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "0,11": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "0,12": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "0,13": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "0,14": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "0,15": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "0,16": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "0,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "1,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "1,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "1,2": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "1,3": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "1,4": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "1,5": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "1,6": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "1,7": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "1,8": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "1,9": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "1,10": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": "e"
+  },
+  "1,11": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "1,12": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "1,13": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "1,14": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "1,15": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "1,16": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "1,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "2,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "2,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "2,2": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "2,3": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "2,4": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "2,5": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "2,6": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "2,7": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "2,8": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "2,9": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "2,10": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "2,11": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": "e"
+  },
+  "2,12": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "2,13": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "2,14": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "2,15": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "2,16": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "2,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": "e"
+  },
+  "3,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "3,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "3,2": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "3,3": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "3,4": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "3,5": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "3,6": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "3,7": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "3,8": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "3,9": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "3,10": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "3,11": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": "e"
+  },
+  "3,12": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "3,13": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "3,14": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "3,15": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "3,16": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "3,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": "e"
+  },
+  "4,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "4,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "4,2": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "4,3": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "4,4": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "4,5": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "4,6": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "4,7": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "4,8": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "4,9": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "4,10": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "4,11": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": "e"
+  },
+  "4,12": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "4,13": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "4,14": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "4,15": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "4,16": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "4,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": "e"
+  },
+  "5,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "5,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "5,2": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "5,3": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "5,4": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "5,5": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "5,6": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "5,7": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "5,8": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "5,9": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "5,10": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "5,11": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": "e"
+  },
+  "5,12": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "5,13": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "5,14": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "5,15": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "5,16": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "5,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": "e"
+  },
+  "6,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "6,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "6,2": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": "s"
+  },
+  "6,3": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": "s"
+  },
+  "6,4": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "6,5": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "6,6": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "6,7": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "6,8": {
+   "cell": "1",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "6,9": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "6,10": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "6,11": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": "e"
+  },
+  "6,12": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "6,13": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "6,14": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": "s"
+  },
+  "6,15": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": "s"
+  },
+  "6,16": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": "s"
+  },
+  "6,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": "c"
+  },
+  "7,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "7,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "7,2": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "7,3": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "7,4": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "7,5": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "7,6": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "7,7": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "7,8": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "7,9": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": "es"
+  },
+  "7,10": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": "s"
+  },
+  "7,11": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": "c"
+  },
+  "7,12": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "7,13": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "7,14": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "7,15": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "7,16": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "7,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "8,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "8,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "8,2": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "8,3": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "8,4": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "8,5": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "8,6": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "8,7": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "8,8": {
+   "cell": "F",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "8,9": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": "e"
+  },
+  "8,10": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "8,11": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "8,12": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "8,13": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "8,14": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "8,15": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "8,16": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "8,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "9,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "9,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "9,2": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "9,3": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "9,4": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": "s"
+  },
+  "9,5": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": "s"
+  },
+  "9,6": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": "s"
+  },
+  "9,7": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": "s"
+  },
+  "9,8": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": "s"
+  },
+  "9,9": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": "c"
+  },
+  "9,10": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "9,11": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "9,12": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "9,13": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "9,14": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "9,15": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "9,16": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "9,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "10,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "10,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "10,2": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "10,3": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "10,4": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "10,5": {
+   "cell": "s",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "10,6": {
+   "cell": "s",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "10,7": {
+   "cell": "s",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "10,8": {
+   "cell": "s",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "10,9": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "10,10": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "10,11": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "10,12": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "10,13": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "10,14": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "10,15": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "10,16": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "10,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "11,0": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "11,1": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "11,2": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "11,3": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "11,4": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "11,5": {
+   "cell": "s",
+   "lawn": "meadow/ground/lawn-6",
+   "shadow": null
+  },
+  "11,6": {
+   "cell": "s",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "11,7": {
+   "cell": "s",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "11,8": {
+   "cell": "s",
+   "lawn": "meadow/ground/lawn-5",
+   "shadow": null
+  },
+  "11,9": {
+   "cell": "s",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "11,10": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "11,11": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "11,12": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "11,13": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-4",
+   "shadow": null
+  },
+  "11,14": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "11,15": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-3",
+   "shadow": null
+  },
+  "11,16": {
+   "cell": "w",
+   "lawn": "meadow/ground/lawn-1",
+   "shadow": null
+  },
+  "11,17": {
+   "cell": ".",
+   "lawn": "meadow/ground/lawn-2",
+   "shadow": null
+  },
+  "light": [
+   "2,5",
+   "2,6",
+   "2,7",
+   "2,8",
+   "3,5",
+   "3,6",
+   "3,7",
+   "3,8"
+  ],
+  "core": [
+   "10,11",
+   "10,12",
+   "10,13",
+   "10,14",
+   "10,15",
+   "11,11",
+   "11,12",
+   "11,13",
+   "11,14",
+   "11,15",
+   "9,15"
+  ]
+ },
+ "macros": [
+  "10,10",
+  "10,11",
+  "8,15",
+  "8,16",
+  "9,10",
+  "9,11",
+  "9,15",
+  "9,16"
+ ]
+}

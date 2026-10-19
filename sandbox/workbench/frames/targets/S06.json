@@ -1,0 +1,29 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S06",
+ "name": "Pesko",
+ "resembles": "a raccoon",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "a stout arched body, a head with a short muzzle and small round ears, short legs, a thick ringed tail carried low",
+ "shapes": [
+  {"ellipse":[48,62,26,15,-5],"part":"body"},
+  {"ellipse":[74,52,11,9],"part":"head"},
+  {"ellipse":[84,56,5,4],"part":"muzzle"},
+  {"ellipse":[68,42,4,4],"part":"ear"},
+  {"ellipse":[79,42,4,4],"part":"ear"},
+  {"capsule":[62,70,64,90,4],"part":"leg"},
+  {"capsule":[68,70,70,90,4],"part":"leg"},
+  {"capsule":[34,70,32,90,4],"part":"leg"},
+  {"capsule":[40,70,42,90,4],"part":"leg"},
+  {"ellipse":[32,90,6,3],"part":"leg"},
+  {"ellipse":[42,90,6,3],"part":"leg"},
+  {"ellipse":[64,90,6,3],"part":"leg"},
+  {"ellipse":[70,90,6,3],"part":"leg"},
+  {"capsule":[24,64,6,74,6,4],"part":"tail"}
+ ]
+}

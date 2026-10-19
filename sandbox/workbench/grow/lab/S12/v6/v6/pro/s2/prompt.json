@@ -1,0 +1,309 @@
+{
+ "species": "S12",
+ "variant": {
+  "id": "v6",
+  "name": "v6 baseline",
+  "change": "The v6 art direction (1B with 1G's coat paragraph folded in, the style statement, the light paragraph, the colour key as the authority on colour) and the v6 Loika notes.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "The v6 art direction (1B with 1G's coat paragraph folded in, the style statement, the light paragraph, the colour key as the authority on colour) and the v6 Loika notes.",
+ "step1": {
+  "callId": "090aaeb2-eaaf-4f0b-a962-4bf6a790cdf6",
+  "status": "ok",
+  "seconds": 18.3,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.675,
+   "silhouetteIoUInPlace": 0.669,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.843
+    },
+    "antenna": {
+     "span": 0.973,
+     "coverage": 0.968
+    },
+    "leg-0": {
+     "span": 0.665,
+     "coverage": 0.985
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "leg-2": {
+     "span": 1.0,
+     "coverage": 0.996
+    },
+    "flap": {
+     "span": 0.98,
+     "coverage": 0.991
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.313,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.252,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.301,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.528,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.266,
+     "ok": true
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.291,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.538,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.996,
+     "median": "#e7b43f",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.766,
+     "median": "#e5b541",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.996,
+     "median": "#e6b43f",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.925,
+     "median": "#fcedb7",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.94,
+     "median": "#fdedb8",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-2": {
+     "agreement": 0.911,
+     "median": "#fcedb7",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.896,
+     "median": "#fcecb7",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.073,
+   "missing": 0.003,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.937,
+   "passed": true,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "af34008d-f68a-47de-9f32-b4f8759245c6",
+  "status": "ok",
+  "seconds": 18.6,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.924,
+   "silhouetteIoUInPlace": 0.936,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.902
+    },
+    "antenna": {
+     "span": 0.986,
+     "coverage": 0.995
+    },
+    "leg-0": {
+     "span": 0.669,
+     "coverage": 1.0
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "leg-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "flap": {
+     "span": 0.984,
+     "coverage": 0.989
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.278,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.243,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.266,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.53,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.266,
+     "ok": true
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.282,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.54,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.999,
+     "median": "#d2932d",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.944,
+     "median": "#c38a31",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.983,
+     "median": "#df9c35",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.8,
+     "median": "#ecd090",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.693,
+     "median": "#e9c687",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@leg-2": {
+     "agreement": 0.765,
+     "median": "#c4af7a",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.957,
+     "median": "#eddba1",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.0,
+   "missing": 0.001,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.93,
+   "passed": true,
+   "gated": false
+  }
+ }
+}

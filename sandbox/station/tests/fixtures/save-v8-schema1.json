@@ -1,0 +1,238 @@
+{
+ "v": 8,
+ "seed": 123456,
+ "wid": "w2n9c",
+ "turn": 4,
+ "phase": "setup",
+ "tier": 1,
+ "shield": 2,
+ "with": 1,
+ "bay": [
+  {
+   "id": "xw2n9c-5",
+   "n": 5,
+   "turn": 4,
+   "at": 1,
+   "e": 3,
+   "d": 2,
+   "s": 3,
+   "pods": [
+    {
+     "id": "q9",
+     "sp": 0,
+     "g": "meadow",
+     "how": "shake",
+     "gs": 987654321,
+     "k": "44"
+    }
+   ],
+   "met": [
+    0,
+    2
+   ],
+   "explored": 7,
+   "of": 21,
+   "lines": [
+    "The pond edge filled with rain"
+   ]
+  }
+ ],
+ "mibis": [
+  {
+   "id": 1,
+   "name": "Dot",
+   "sp": 0,
+   "born": 1,
+   "from": 2,
+   "bonded": false,
+   "mem": "meadow",
+   "outings": 1,
+   "notches": 1
+  }
+ ],
+ "known": [
+  0,
+  1
+ ],
+ "hold": null,
+ "walkTurn": -1,
+ "withSeen": 1,
+ "probeSeen": 2,
+ "retSeen": [],
+ "dockSeen": 2,
+ "cr": [],
+ "pods": [],
+ "st": {
+  "wid": "w2n9c",
+  "at": 5,
+  "turn": 4,
+  "e": 4,
+  "d": 3,
+  "s": 6,
+  "tray": [
+   {
+    "id": "xw2n9c-3:q1",
+    "sp": 0,
+    "g": "wood",
+    "how": "calm",
+    "gs": 1111,
+    "k": "12",
+    "n": 3,
+    "idd": 0,
+    "st": [],
+    "fresh": 1,
+    "al": [
+     [
+      0,
+      1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   {
+    "id": "xw2n9c-4:q5",
+    "sp": 1,
+    "g": "rock",
+    "how": "slab",
+    "gs": 2222,
+    "k": "20",
+    "n": 4,
+    "idd": 1,
+    "st": [
+     1,
+     0,
+     0,
+     0
+    ],
+    "al": [
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      1
+     ]
+    ]
+   }
+  ],
+  "waiting": [],
+  "accepted": [
+   "xw2n9c-3",
+   "xw2n9c-4"
+  ],
+  "known": [
+   0,
+   1
+  ],
+  "met": [
+   0,
+   1,
+   2
+  ],
+  "seen": {
+   "1:0": [
+    0,
+    1
+   ]
+  },
+  "studiedW": {
+   "1:0": 1
+  },
+  "studyPaid": {
+   "1": 1
+  },
+  "mibis": [
+   {
+    "id": 1,
+    "name": "Dot",
+    "sp": 0,
+    "gs": 3333,
+    "born": 1,
+    "from": {
+     "n": 2,
+     "g": "meadow",
+     "how": "shake",
+     "podId": "xw2n9c-2:q3"
+    },
+    "mem": "meadow",
+    "outings": 1,
+    "notches": 1,
+    "bonded": false,
+    "al": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "code": "ABCDEFGHJ",
+    "known": [
+     "studied",
+     "grown",
+     "grown"
+    ],
+    "hid": [
+     true,
+     false,
+     false
+    ],
+    "changed": []
+   }
+  ],
+  "nextMibi": 2,
+  "nameN": 1,
+  "inc": null,
+  "dock": {
+   "docked": false,
+   "at": 5
+  },
+  "dockN": 2,
+  "withReq": {
+   "id": 1,
+   "seq": 1
+  },
+  "probe": {
+   "shield": 3,
+   "smax": 3,
+   "tier": 1,
+   "seq": 2
+  },
+  "mendFull": true,
+  "freeId": true,
+  "returned": [
+   {
+    "id": "xw2n9c-2:q4",
+    "sp": 2,
+    "g": "pond",
+    "k": "31"
+   }
+  ],
+  "firstMibi": false,
+  "log": [
+   "T4 \u00b7 Companion docked"
+  ]
+ }
+}

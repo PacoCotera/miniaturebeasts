@@ -1,0 +1,23 @@
+Image 1 is the HiBit drawing: structure, proportion, pose, colour and eye placement only, never the finish. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light.
+
+Paint it in the house rendering, which every species obeys whatever its material:
+
+Light: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.
+
+Shading: soft volume shading: a lit tone, two shadow steps, one soft specular on the highest lit form; occlusion where parts meet.
+
+Contour: no ink outline of any colour; edges are value: the form against the ground, and the rim.
+
+Eyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.
+
+Surface: the material in the two or three touches the species notes name, where the light falls; elsewhere smooth value, never texture noise.
+
+Finish: a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm; never clay, glossy plastic, paper or brushwork.
+
+Framing: the whole creature, wings and antennae included, spans four fifths of the frame at its larger dimension, centred, feet on a ground line one tenth above the bottom.
+
+Ground: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.
+
+Change only the rendering; add nothing.
+
+Not: strand-by-strand texture, panels, vignettes, scene, text.

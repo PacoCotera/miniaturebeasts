@@ -1,0 +1,303 @@
+{
+ "$comment": "The props of the Vivarium's whole (lvgl-switch.md §2.1): what views/vivarium-props.mjs gives the face, beside the frame's. Props name what, never where: ids, strings, states, seeds, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from vivarium.json and the palette). Pictures are ids; the window's is a slot (empty until the whole's painting is placed, then the plates stand).",
+ "$defs": {
+  "person": {
+   "type": "object",
+   "required": [
+    "id",
+    "name",
+    "stage",
+    "picture",
+    "waiting",
+    "seed"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "stage": {
+     "enum": [
+      "juvenile",
+      "adult",
+      "elder"
+     ]
+    },
+    "picture": {
+     "type": "string"
+    },
+    "waiting": {
+     "type": "boolean"
+    },
+    "curl": {
+     "type": "string",
+     "description": "T-20261018-235: the sleeping resident's curl picture, set while its rest is asleep and it has a curl"
+    },
+    "curlFigure": {
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 4,
+     "maxItems": 4,
+     "description": "[dx, dy, W, H] of the curl in its picture: the ring and the tag of a sleeping resident are measured from it"
+    },
+    "seed": {
+     "type": "integer"
+    },
+    "moving": {
+     "oneOf": [
+      {
+       "enum": [
+        ""
+       ]
+      },
+      {
+       "type": "object",
+       "required": [
+        "set",
+        "walk",
+        "shadow"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "set": {
+         "type": "string"
+        },
+        "walk": {
+         "type": "string"
+        },
+        "shadow": {
+         "type": "string"
+        }
+       }
+      },
+      {
+       "type": "object",
+       "required": [
+        "set",
+        "nap"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "set": {
+         "type": "string"
+        },
+        "nap": {
+         "type": "string"
+        }
+       }
+      }
+     ],
+     "description": "Station M1 §2.2: \"\" (a still, main's walk) or the atlases of its moving set (the walk and its shadow; a bed sleeper its nap); the face never makes an id"
+    },
+    "rest": {
+     "enum": [
+      "awake",
+      "asleep"
+     ],
+     "description": "Station M1 §2.6: by restOf (the rest stagger) from the Station time"
+    },
+    "figure": {
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 4,
+     "maxItems": 4,
+     "description": "T-20261018-235: [dx, dy, W, H], the drawn bbox of the figure (ink alpha >= 128, its contact shadow left out) in its picture; the geometry of the ring, the tag, the walk and the keep-out is measured from it. Absent: the picture is the figure"
+    }
+   }
+  },
+  "tile": {
+   "type": "object",
+   "required": [
+    "id",
+    "state",
+    "picture",
+    "well"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "state": {
+     "enum": [
+      "housed",
+      "out",
+      "free"
+     ]
+    },
+    "picture": {
+     "type": "string"
+    },
+    "well": {
+     "type": "string"
+    }
+   }
+  },
+  "target": {
+   "type": "object",
+   "required": [
+    "id",
+    "group"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "group": {
+     "enum": [
+      "resident",
+      "tile"
+     ]
+    },
+    "enabled": {
+     "type": "boolean"
+    }
+   }
+  }
+ },
+ "type": "object",
+ "required": [
+  "state",
+  "regions",
+  "focus"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "state": {
+   "enum": [
+    "rest",
+    "empty"
+   ]
+  },
+  "regions": {
+   "type": "object",
+   "required": [
+    "window",
+    "residents",
+    "bed",
+    "strip",
+    "tiles"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "window": {
+     "type": "object",
+     "required": [
+      "picture"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "picture": {
+       "type": "string"
+      }
+     }
+    },
+    "residents": {
+     "type": "array",
+     "maxItems": 12,
+     "items": {
+      "$ref": "person"
+     }
+    },
+    "bed": {
+     "type": "object",
+     "required": [
+      "state",
+      "picture",
+      "mark",
+      "sleepers"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "state": {
+       "enum": [
+        "docked",
+        "away",
+        "none"
+       ]
+      },
+      "picture": {
+       "type": "string"
+      },
+      "mark": {
+       "type": "string"
+      },
+      "sleepers": {
+       "type": "array",
+       "maxItems": 3,
+       "items": {
+        "$ref": "person"
+       }
+      }
+     }
+    },
+    "tiles": {
+     "type": "object",
+     "required": [
+      "glyph",
+      "items"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "glyph": {
+       "type": "string"
+      },
+      "items": {
+       "type": "array",
+       "maxItems": 12,
+       "items": {
+        "$ref": "tile"
+       }
+      }
+     }
+    },
+    "strip": {
+     "type": "object",
+     "required": [
+      "plate"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "focus": {
+   "type": "object",
+   "required": [
+    "cur",
+    "targets",
+    "resolve"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "cur": {
+     "type": "string"
+    },
+    "targets": {
+     "type": "array",
+     "items": {
+      "$ref": "target"
+     }
+    },
+    "resolve": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}

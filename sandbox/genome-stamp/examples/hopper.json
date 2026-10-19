@@ -1,0 +1,32 @@
+{
+ "species": 11,
+ "version": 1,
+ "read": [
+  "Coat",
+  "Face",
+  "Movement",
+  "Stamina"
+ ],
+ "copies": {
+  "appearance.marking-switch": [
+   "off",
+   "off"
+  ],
+  "anatomy.crown-presence": [
+   "on",
+   "on"
+  ],
+  "growth.exterior-eye-size-ratio": [
+   "small",
+   "small"
+  ],
+  "movement.cycle-rate": [
+   "high",
+   "high"
+  ],
+  "energy.action-efficiency": [
+   "low",
+   "low"
+  ]
+ }
+}

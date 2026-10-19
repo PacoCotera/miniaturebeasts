@@ -1,0 +1,482 @@
+{
+ "_note": "The Probe bench, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and the focus and intents the face said, the screen, the state, the ring, the line and the counters after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "probe-bench": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "companion",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "plates",
+    "ok": "Mend a plate",
+    "price": "⚡ 1",
+    "subject": "Shield takes three strikes",
+    "back": "Home",
+    "e": 14,
+    "d": 6,
+    "tier": 1,
+    "whole": 2,
+    "mend": "off"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "plates",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "plates",
+    "ok": null,
+    "price": null,
+    "subject": "every plate whole",
+    "back": "Home",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "off"
+   },
+   {
+    "key": "right",
+    "said": [],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "plates",
+    "ok": null,
+    "price": null,
+    "subject": "every plate whole",
+    "back": "Home",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "off"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "plates",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "plates",
+    "ok": null,
+    "price": null,
+    "subject": "every plate whole",
+    "back": "Home",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "off"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "bench",
+      "target": "slot"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": "Fit the upgrade",
+    "price": "⚡ 12 ◆ 4",
+    "subject": "the Probe reaches further",
+    "back": "Home",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "off"
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "bench",
+      "target": "switch"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "switch",
+    "ok": "Switch on",
+    "price": null,
+    "subject": "the dock mends two, free",
+    "back": "Home",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "off"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "switch",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "switch",
+    "ok": "Switch off",
+    "price": null,
+    "subject": "two free, the rest ⚡ 1 each",
+    "back": "Home",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "on"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "bench",
+      "target": "slot"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": "Fit the upgrade",
+    "price": "⚡ 12 ◆ 4",
+    "subject": "the Probe reaches further",
+    "back": "Home",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "on"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "slot",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": "Fit it",
+    "price": "⚡ 12 ◆ 4",
+    "subject": "",
+    "back": "Back",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "on"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.fit",
+      "verb": "back"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": "Fit the upgrade",
+    "price": "⚡ 12 ◆ 4",
+    "subject": "the Probe reaches further",
+    "back": "Home",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "on"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "slot",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": "Fit it",
+    "price": "⚡ 12 ◆ 4",
+    "subject": "",
+    "back": "Back",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "on"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "panel",
+      "target": "card.later"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": "Not now",
+    "price": null,
+    "subject": "",
+    "back": "Back",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "on"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.later",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": "Fit the upgrade",
+    "price": "⚡ 12 ◆ 4",
+    "subject": "the Probe reaches further",
+    "back": "Home",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "on"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "slot",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": "Fit it",
+    "price": "⚡ 12 ◆ 4",
+    "subject": "",
+    "back": "Back",
+    "e": 13,
+    "d": 6,
+    "tier": 1,
+    "whole": 3,
+    "mend": "on"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.fit",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": null,
+    "price": null,
+    "subject": "the upgrade is fitted",
+    "back": "Home",
+    "e": 1,
+    "d": 2,
+    "tier": 2,
+    "whole": 4,
+    "mend": "on"
+   },
+   {
+    "key": "up",
+    "said": [],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": null,
+    "price": null,
+    "subject": "the upgrade is fitted",
+    "back": "Home",
+    "e": 1,
+    "d": 2,
+    "tier": 2,
+    "whole": 4,
+    "mend": "on"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "slot",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "slot",
+    "ok": null,
+    "price": null,
+    "subject": "the upgrade is fitted",
+    "back": "Home",
+    "e": 1,
+    "d": 2,
+    "tier": 2,
+    "whole": 4,
+    "mend": "on"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "slot",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "focus": "companion",
+    "armed": null,
+    "ok": null,
+    "price": null,
+    "subject": null,
+    "back": null,
+    "e": 1,
+    "d": 2,
+    "tier": null,
+    "whole": null,
+    "mend": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "companion",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "docked",
+    "focus": "switch",
+    "ok": "Switch off",
+    "price": null,
+    "subject": "two free, the rest ⚡ 1 each",
+    "back": "Home",
+    "e": 1,
+    "d": 2,
+    "tier": 2,
+    "whole": 4,
+    "mend": "on"
+   },
+   {
+    "lifted": true,
+    "state": "away",
+    "focus": "switch",
+    "plates": null,
+    "slot": "fitted",
+    "docked": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "switch",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "state": "away",
+    "focus": "switch",
+    "ok": "Switch on",
+    "price": null,
+    "subject": "the dock mends two, free",
+    "back": "Home",
+    "e": 1,
+    "d": 2,
+    "tier": null,
+    "whole": null,
+    "mend": "off"
+   },
+   {
+    "key": "research",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "switch",
+      "verb": "room:research"
+     }
+    ],
+    "screen": "pods",
+    "state": "collection",
+    "focus": "companion",
+    "armed": null,
+    "ok": "Look at this pod",
+    "price": null,
+    "subject": "sealed until identified",
+    "back": "Home",
+    "e": 1,
+    "d": 2,
+    "tier": null,
+    "whole": null,
+    "mend": null
+   }
+  ]
+ }
+}

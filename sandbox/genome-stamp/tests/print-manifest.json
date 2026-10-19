@@ -1,0 +1,3705 @@
+[
+ {
+  "n": 1,
+  "mm": 20,
+  "kind": "colour",
+  "role": null,
+  "cells": 17,
+  "species": "Loika",
+  "genome": {
+   "species": 1,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Movement",
+    "Stamina"
+   ],
+   "copies": {
+    "appearance.marking-switch": [
+     "on",
+     "off"
+    ],
+    "anatomy.crown-presence": [
+     "on",
+     "off"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "large",
+     "large"
+    ],
+    "movement.cycle-rate": [
+     "low",
+     "low"
+    ],
+    "energy.action-efficiency": [
+     "low",
+     "high"
+    ]
+   }
+  },
+  "code": "S1v3-0F-FAC7-86A577"
+ },
+ {
+  "n": 2,
+  "mm": 20,
+  "kind": "colour",
+  "role": null,
+  "cells": 25,
+  "species": "Tuikis",
+  "genome": {
+   "species": 3,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Character",
+    "Glow"
+   ],
+   "copies": {
+    "appearance.body-palette": [
+     "marigold",
+     "periwinkle"
+    ],
+    "appearance.underside-palette": [
+     "slate",
+     "ice"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "off"
+    ],
+    "appearance.marking-layout": [
+     "patches",
+     "bands"
+    ],
+    "appearance.marking-extent": [
+     "high",
+     "low"
+    ],
+    "appearance.marking-scale": [
+     "low",
+     "high"
+    ],
+    "appearance.marking-orientation": [
+     "low",
+     "low"
+    ],
+    "appearance.marking-contrast": [
+     "low",
+     "high"
+    ],
+    "appearance.anatomical-covering-extent": [
+     "long",
+     "short"
+    ],
+    "appearance.anatomical-scale-size": [
+     "fine",
+     "coarse"
+    ],
+    "growth.crown-height-ratio": [
+     "low",
+     "low"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "huge",
+     "small"
+    ],
+    "growth.exterior-eye-spacing-ratio": [
+     "wide",
+     "wide"
+    ],
+    "growth.muzzle-projection-ratio": [
+     "stub",
+     "stub"
+    ],
+    "growth.muzzle-width-ratio": [
+     "low",
+     "low"
+    ],
+    "growth.core-width-ratio": [
+     "high",
+     "low"
+    ],
+    "growth.core-depth-ratio": [
+     "high",
+     "deep"
+    ],
+    "growth.region-taper": [
+     "gentle",
+     "gentle"
+    ],
+    "growth.region-bend": [
+     "up",
+     "up"
+    ],
+    "growth.support-drop-ratio": [
+     "short",
+     "short"
+    ],
+    "growth.support-radius-ratio": [
+     "slender",
+     "stout"
+    ],
+    "anatomy.contact-terminal-form": [
+     "pad",
+     "webbed"
+    ],
+    "growth.terminal-length-ratio": [
+     "narrow",
+     "broad"
+    ],
+    "growth.terminal-depth-ratio": [
+     "high",
+     "small"
+    ],
+    "growth.axial-tail-length-ratio": [
+     "short",
+     "long"
+    ],
+    "growth.axial-tail-width-ratio": [
+     "fine",
+     "broad"
+    ],
+    "growth.axial-tail-bend": [
+     "down",
+     "up"
+    ],
+    "movement.cycle-rate": [
+     "high",
+     "low"
+    ],
+    "movement.stride-preference": [
+     "low",
+     "low"
+    ],
+    "movement.contact-phase": [
+     "low",
+     "low"
+    ],
+    "movement.axial-amplitude": [
+     "high",
+     "high"
+    ],
+    "movement.axial-phase": [
+     "low",
+     "low"
+    ],
+    "movement.turn-control": [
+     "high",
+     "high"
+    ],
+    "energy.actuator-capacity": [
+     "high",
+     "high"
+    ],
+    "energy.reserve-capacity": [
+     "low",
+     "high"
+    ],
+    "energy.action-efficiency": [
+     "high",
+     "low"
+    ],
+    "cognition.exploration-tendency": [
+     "seeking",
+     "reserved"
+    ],
+    "cognition.arousal-threshold": [
+     "high",
+     "high"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "long"
+    ]
+   }
+  },
+  "code": "S3v3-FF-30E1-8CCD4C"
+ },
+ {
+  "n": 3,
+  "mm": 20,
+  "kind": "colour",
+  "role": "postmark",
+  "cells": 29,
+  "species": "Tuikis",
+  "genome": {
+   "species": 3,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Character",
+    "Glow"
+   ],
+   "copies": {
+    "appearance.body-palette": [
+     "periwinkle",
+     "lagoon"
+    ],
+    "appearance.underside-palette": [
+     "slate",
+     "cream"
+    ],
+    "appearance.marking-switch": [
+     "off",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "patches",
+     "bands"
+    ],
+    "appearance.marking-extent": [
+     "high",
+     "low"
+    ],
+    "appearance.marking-scale": [
+     "high",
+     "low"
+    ],
+    "appearance.marking-orientation": [
+     "low",
+     "low"
+    ],
+    "appearance.marking-contrast": [
+     "low",
+     "low"
+    ],
+    "appearance.anatomical-covering-extent": [
+     "short",
+     "short"
+    ],
+    "appearance.anatomical-scale-size": [
+     "fine",
+     "coarse"
+    ],
+    "growth.crown-height-ratio": [
+     "low",
+     "low"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "huge",
+     "huge"
+    ],
+    "growth.exterior-eye-spacing-ratio": [
+     "close",
+     "close"
+    ],
+    "growth.muzzle-projection-ratio": [
+     "long",
+     "long"
+    ],
+    "growth.muzzle-width-ratio": [
+     "low",
+     "high"
+    ],
+    "growth.core-width-ratio": [
+     "low",
+     "high"
+    ],
+    "growth.core-depth-ratio": [
+     "high",
+     "low"
+    ],
+    "growth.region-taper": [
+     "gentle",
+     "strong"
+    ],
+    "growth.region-bend": [
+     "up",
+     "down"
+    ],
+    "growth.support-drop-ratio": [
+     "short",
+     "short"
+    ],
+    "growth.support-radius-ratio": [
+     "slender",
+     "stout"
+    ],
+    "anatomy.contact-terminal-form": [
+     "root",
+     "rounded"
+    ],
+    "growth.terminal-length-ratio": [
+     "narrow",
+     "broad"
+    ],
+    "growth.terminal-depth-ratio": [
+     "low",
+     "small"
+    ],
+    "growth.axial-tail-length-ratio": [
+     "short",
+     "long"
+    ],
+    "growth.axial-tail-width-ratio": [
+     "broad",
+     "broad"
+    ],
+    "growth.axial-tail-bend": [
+     "down",
+     "up"
+    ],
+    "movement.cycle-rate": [
+     "high",
+     "high"
+    ],
+    "movement.stride-preference": [
+     "low",
+     "low"
+    ],
+    "movement.contact-phase": [
+     "low",
+     "high"
+    ],
+    "movement.axial-amplitude": [
+     "high",
+     "low"
+    ],
+    "movement.axial-phase": [
+     "high",
+     "high"
+    ],
+    "movement.turn-control": [
+     "low",
+     "low"
+    ],
+    "energy.actuator-capacity": [
+     "low",
+     "high"
+    ],
+    "energy.reserve-capacity": [
+     "high",
+     "low"
+    ],
+    "energy.action-efficiency": [
+     "low",
+     "high"
+    ],
+    "cognition.exploration-tendency": [
+     "seeking",
+     "reserved"
+    ],
+    "cognition.arousal-threshold": [
+     "high",
+     "high"
+    ],
+    "appearance.emission-brightness": [
+     "bright",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "long",
+     "short"
+    ]
+   },
+   "postmark": "5eed0f00d1e5a1ad"
+  },
+  "code": "S3v3-FF-07AF-701225"
+ },
+ {
+  "n": 4,
+  "mm": 20,
+  "kind": "colour",
+  "role": null,
+  "cells": 37,
+  "species": "Future, 150 open loci",
+  "genome": {
+   "species": 22,
+   "version": 1,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Nature",
+    "Glow"
+   ],
+   "copies": {
+    "future.coat-1": [
+     "a4",
+     "a7"
+    ],
+    "future.coat-2": [
+     "a5",
+     "a1"
+    ],
+    "future.coat-3": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-4": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-5": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-6": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-7": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-8": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-9": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-10": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-11": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-12": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-13": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-14": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-15": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-16": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-17": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-18": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-19": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-20": [
+     "a2",
+     "a2"
+    ],
+    "future.coat-21": [
+     "a0",
+     "a2"
+    ],
+    "future.coat-22": [
+     "a2",
+     "a2"
+    ],
+    "future.coat-23": [
+     "a2",
+     "a0"
+    ],
+    "future.coat-24": [
+     "a2",
+     "a1"
+    ],
+    "future.coat-25": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-26": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-27": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-28": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-29": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-30": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-31": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-32": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-33": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-34": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-35": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-36": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-37": [
+     "a1",
+     "a1"
+    ],
+    "future.face-1": [
+     "a1",
+     "a0"
+    ],
+    "future.face-2": [
+     "a7",
+     "a3"
+    ],
+    "future.face-3": [
+     "a2",
+     "a1"
+    ],
+    "future.face-4": [
+     "a0",
+     "a0"
+    ],
+    "future.face-5": [
+     "a1",
+     "a0"
+    ],
+    "future.face-6": [
+     "a1",
+     "a0"
+    ],
+    "future.face-7": [
+     "a1",
+     "a0"
+    ],
+    "future.face-8": [
+     "a0",
+     "a0"
+    ],
+    "future.face-9": [
+     "a0",
+     "a1"
+    ],
+    "future.face-10": [
+     "a0",
+     "a1"
+    ],
+    "future.face-11": [
+     "a0",
+     "a0"
+    ],
+    "future.face-12": [
+     "a0",
+     "a1"
+    ],
+    "future.face-13": [
+     "a0",
+     "a1"
+    ],
+    "future.face-14": [
+     "a1",
+     "a1"
+    ],
+    "future.face-15": [
+     "a1",
+     "a0"
+    ],
+    "future.face-16": [
+     "a0",
+     "a0"
+    ],
+    "future.face-17": [
+     "a0",
+     "a1"
+    ],
+    "future.face-18": [
+     "a1",
+     "a1"
+    ],
+    "future.shape-1": [
+     "a0",
+     "a1"
+    ],
+    "future.shape-2": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-3": [
+     "a2",
+     "a2"
+    ],
+    "future.shape-4": [
+     "a0",
+     "a1"
+    ],
+    "future.shape-5": [
+     "a2",
+     "a2"
+    ],
+    "future.shape-6": [
+     "a1",
+     "a1"
+    ],
+    "future.shape-7": [
+     "a0",
+     "a1"
+    ],
+    "future.shape-8": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-9": [
+     "a1",
+     "a1"
+    ],
+    "future.shape-10": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-11": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-12": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-13": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-14": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-15": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-1": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-2": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-3": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-4": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-5": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-6": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-7": [
+     "a3",
+     "a9"
+    ],
+    "future.legs-tail-8": [
+     "a2",
+     "a4"
+    ],
+    "future.legs-tail-9": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-10": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-11": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-12": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-13": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-14": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-15": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-16": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-17": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-18": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-19": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-20": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-21": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-22": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-23": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-24": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-25": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-26": [
+     "a2",
+     "a2"
+    ],
+    "future.legs-tail-27": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-28": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-29": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-1": [
+     "a0",
+     "a2"
+    ],
+    "future.movement-2": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-3": [
+     "a0",
+     "a1"
+    ],
+    "future.movement-4": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-5": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-6": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-7": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-8": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-9": [
+     "a0",
+     "a1"
+    ],
+    "future.movement-10": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-11": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-12": [
+     "a0",
+     "a1"
+    ],
+    "future.movement-13": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-14": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-15": [
+     "a0",
+     "a1"
+    ],
+    "future.movement-16": [
+     "a5",
+     "a6"
+    ],
+    "future.movement-17": [
+     "a0",
+     "a1"
+    ],
+    "future.movement-18": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-19": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-20": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-21": [
+     "a0",
+     "a1"
+    ],
+    "future.movement-22": [
+     "a1",
+     "a0"
+    ],
+    "future.stamina-1": [
+     "a1",
+     "a0"
+    ],
+    "future.stamina-2": [
+     "a0",
+     "a0"
+    ],
+    "future.stamina-3": [
+     "a1",
+     "a1"
+    ],
+    "future.stamina-4": [
+     "a1",
+     "a1"
+    ],
+    "future.stamina-5": [
+     "a1",
+     "a0"
+    ],
+    "future.stamina-6": [
+     "a0",
+     "a0"
+    ],
+    "future.stamina-7": [
+     "a0",
+     "a1"
+    ],
+    "future.stamina-8": [
+     "a1",
+     "a1"
+    ],
+    "future.stamina-9": [
+     "a0",
+     "a0"
+    ],
+    "future.stamina-10": [
+     "a0",
+     "a1"
+    ],
+    "future.stamina-11": [
+     "a1",
+     "a1"
+    ],
+    "future.nature-1": [
+     "a1",
+     "a1"
+    ],
+    "future.nature-2": [
+     "a1",
+     "a0"
+    ],
+    "future.nature-3": [
+     "a1",
+     "a0"
+    ],
+    "future.nature-4": [
+     "a1",
+     "a2"
+    ],
+    "future.nature-5": [
+     "a0",
+     "a2"
+    ],
+    "future.nature-6": [
+     "a1",
+     "a0"
+    ],
+    "future.nature-7": [
+     "a0",
+     "a0"
+    ],
+    "future.glow-1": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-2": [
+     "a1",
+     "a1"
+    ],
+    "future.glow-3": [
+     "a1",
+     "a1"
+    ],
+    "future.glow-4": [
+     "a0",
+     "a0"
+    ],
+    "future.glow-5": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-6": [
+     "a0",
+     "a0"
+    ],
+    "future.glow-7": [
+     "a0",
+     "a0"
+    ],
+    "future.glow-8": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-9": [
+     "a1",
+     "a1"
+    ],
+    "future.glow-10": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-11": [
+     "a0",
+     "a1"
+    ]
+   }
+  },
+  "code": "S22v1-FF-6B99-E6DB57"
+ },
+ {
+  "n": 5,
+  "mm": 30,
+  "kind": "colour",
+  "role": null,
+  "cells": 25,
+  "species": "Tuikis",
+  "genome": {
+   "species": 3,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Character",
+    "Glow"
+   ],
+   "copies": {
+    "appearance.body-palette": [
+     "periwinkle",
+     "periwinkle"
+    ],
+    "appearance.underside-palette": [
+     "slate",
+     "cream"
+    ],
+    "appearance.marking-switch": [
+     "off",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "bands",
+     "patches"
+    ],
+    "appearance.marking-extent": [
+     "low",
+     "high"
+    ],
+    "appearance.marking-scale": [
+     "low",
+     "low"
+    ],
+    "appearance.marking-orientation": [
+     "high",
+     "low"
+    ],
+    "appearance.marking-contrast": [
+     "high",
+     "low"
+    ],
+    "appearance.anatomical-covering-extent": [
+     "long",
+     "short"
+    ],
+    "appearance.anatomical-scale-size": [
+     "coarse",
+     "coarse"
+    ],
+    "growth.crown-height-ratio": [
+     "high",
+     "high"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "huge",
+     "huge"
+    ],
+    "growth.exterior-eye-spacing-ratio": [
+     "close",
+     "close"
+    ],
+    "growth.muzzle-projection-ratio": [
+     "long",
+     "long"
+    ],
+    "growth.muzzle-width-ratio": [
+     "high",
+     "low"
+    ],
+    "growth.core-width-ratio": [
+     "high",
+     "low"
+    ],
+    "growth.core-depth-ratio": [
+     "deep",
+     "low"
+    ],
+    "growth.region-taper": [
+     "strong",
+     "gentle"
+    ],
+    "growth.region-bend": [
+     "down",
+     "down"
+    ],
+    "growth.support-drop-ratio": [
+     "short",
+     "medium"
+    ],
+    "growth.support-radius-ratio": [
+     "stout",
+     "stout"
+    ],
+    "anatomy.contact-terminal-form": [
+     "pad",
+     "rounded"
+    ],
+    "growth.terminal-length-ratio": [
+     "small",
+     "broad"
+    ],
+    "growth.terminal-depth-ratio": [
+     "low",
+     "low"
+    ],
+    "growth.axial-tail-length-ratio": [
+     "long",
+     "short"
+    ],
+    "growth.axial-tail-width-ratio": [
+     "fine",
+     "fine"
+    ],
+    "growth.axial-tail-bend": [
+     "up",
+     "down"
+    ],
+    "movement.cycle-rate": [
+     "high",
+     "low"
+    ],
+    "movement.stride-preference": [
+     "low",
+     "high"
+    ],
+    "movement.contact-phase": [
+     "low",
+     "high"
+    ],
+    "movement.axial-amplitude": [
+     "low",
+     "low"
+    ],
+    "movement.axial-phase": [
+     "high",
+     "high"
+    ],
+    "movement.turn-control": [
+     "high",
+     "low"
+    ],
+    "energy.actuator-capacity": [
+     "high",
+     "high"
+    ],
+    "energy.reserve-capacity": [
+     "low",
+     "low"
+    ],
+    "energy.action-efficiency": [
+     "low",
+     "low"
+    ],
+    "cognition.exploration-tendency": [
+     "seeking",
+     "seeking"
+    ],
+    "cognition.arousal-threshold": [
+     "low",
+     "low"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "dim"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "long"
+    ]
+   }
+  },
+  "code": "S3v3-FF-E18A-CF0093"
+ },
+ {
+  "n": 6,
+  "mm": 16,
+  "kind": "colour",
+  "role": null,
+  "cells": 17,
+  "species": "Loika",
+  "genome": {
+   "species": 1,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Movement",
+    "Stamina"
+   ],
+   "copies": {
+    "appearance.marking-switch": [
+     "off",
+     "on"
+    ],
+    "anatomy.crown-presence": [
+     "off",
+     "on"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "huge",
+     "huge"
+    ],
+    "movement.cycle-rate": [
+     "low",
+     "high"
+    ],
+    "energy.action-efficiency": [
+     "low",
+     "low"
+    ]
+   }
+  },
+  "code": "S1v3-0F-5543-4B4BFC"
+ },
+ {
+  "n": 7,
+  "mm": 16,
+  "kind": "colour",
+  "role": null,
+  "cells": 37,
+  "species": "Future, 150 open loci",
+  "genome": {
+   "species": 22,
+   "version": 1,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Nature",
+    "Glow"
+   ],
+   "copies": {
+    "future.coat-1": [
+     "a1",
+     "a2"
+    ],
+    "future.coat-2": [
+     "a2",
+     "a5"
+    ],
+    "future.coat-3": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-4": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-5": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-6": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-7": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-8": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-9": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-10": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-11": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-12": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-13": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-14": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-15": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-16": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-17": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-18": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-19": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-20": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-21": [
+     "a2",
+     "a2"
+    ],
+    "future.coat-22": [
+     "a2",
+     "a0"
+    ],
+    "future.coat-23": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-24": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-25": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-26": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-27": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-28": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-29": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-30": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-31": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-32": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-33": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-34": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-35": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-36": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-37": [
+     "a0",
+     "a0"
+    ],
+    "future.face-1": [
+     "a0",
+     "a0"
+    ],
+    "future.face-2": [
+     "a2",
+     "a7"
+    ],
+    "future.face-3": [
+     "a4",
+     "a5"
+    ],
+    "future.face-4": [
+     "a0",
+     "a0"
+    ],
+    "future.face-5": [
+     "a0",
+     "a0"
+    ],
+    "future.face-6": [
+     "a1",
+     "a1"
+    ],
+    "future.face-7": [
+     "a1",
+     "a1"
+    ],
+    "future.face-8": [
+     "a1",
+     "a1"
+    ],
+    "future.face-9": [
+     "a1",
+     "a0"
+    ],
+    "future.face-10": [
+     "a0",
+     "a1"
+    ],
+    "future.face-11": [
+     "a0",
+     "a1"
+    ],
+    "future.face-12": [
+     "a1",
+     "a0"
+    ],
+    "future.face-13": [
+     "a1",
+     "a1"
+    ],
+    "future.face-14": [
+     "a1",
+     "a0"
+    ],
+    "future.face-15": [
+     "a0",
+     "a0"
+    ],
+    "future.face-16": [
+     "a1",
+     "a1"
+    ],
+    "future.face-17": [
+     "a1",
+     "a1"
+    ],
+    "future.face-18": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-1": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-2": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-3": [
+     "a2",
+     "a1"
+    ],
+    "future.shape-4": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-5": [
+     "a2",
+     "a2"
+    ],
+    "future.shape-6": [
+     "a1",
+     "a2"
+    ],
+    "future.shape-7": [
+     "a0",
+     "a2"
+    ],
+    "future.shape-8": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-9": [
+     "a1",
+     "a1"
+    ],
+    "future.shape-10": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-11": [
+     "a1",
+     "a1"
+    ],
+    "future.shape-12": [
+     "a1",
+     "a1"
+    ],
+    "future.shape-13": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-14": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-15": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-1": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-2": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-3": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-4": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-5": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-6": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-7": [
+     "a2",
+     "a2"
+    ],
+    "future.legs-tail-8": [
+     "a3",
+     "a0"
+    ],
+    "future.legs-tail-9": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-10": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-11": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-12": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-13": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-14": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-15": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-16": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-17": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-18": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-19": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-20": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-21": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-22": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-23": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-24": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-25": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-26": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-27": [
+     "a1",
+     "a2"
+    ],
+    "future.legs-tail-28": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-29": [
+     "a0",
+     "a2"
+    ],
+    "future.movement-1": [
+     "a2",
+     "a0"
+    ],
+    "future.movement-2": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-3": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-4": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-5": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-6": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-7": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-8": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-9": [
+     "a0",
+     "a1"
+    ],
+    "future.movement-10": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-11": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-12": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-13": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-14": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-15": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-16": [
+     "a9",
+     "a8"
+    ],
+    "future.movement-17": [
+     "a3",
+     "a3"
+    ],
+    "future.movement-18": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-19": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-20": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-21": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-22": [
+     "a0",
+     "a0"
+    ],
+    "future.stamina-1": [
+     "a0",
+     "a1"
+    ],
+    "future.stamina-2": [
+     "a1",
+     "a0"
+    ],
+    "future.stamina-3": [
+     "a1",
+     "a0"
+    ],
+    "future.stamina-4": [
+     "a1",
+     "a0"
+    ],
+    "future.stamina-5": [
+     "a1",
+     "a1"
+    ],
+    "future.stamina-6": [
+     "a0",
+     "a1"
+    ],
+    "future.stamina-7": [
+     "a1",
+     "a1"
+    ],
+    "future.stamina-8": [
+     "a0",
+     "a0"
+    ],
+    "future.stamina-9": [
+     "a1",
+     "a0"
+    ],
+    "future.stamina-10": [
+     "a1",
+     "a1"
+    ],
+    "future.stamina-11": [
+     "a0",
+     "a1"
+    ],
+    "future.nature-1": [
+     "a1",
+     "a1"
+    ],
+    "future.nature-2": [
+     "a0",
+     "a1"
+    ],
+    "future.nature-3": [
+     "a2",
+     "a2"
+    ],
+    "future.nature-4": [
+     "a1",
+     "a2"
+    ],
+    "future.nature-5": [
+     "a1",
+     "a2"
+    ],
+    "future.nature-6": [
+     "a1",
+     "a2"
+    ],
+    "future.nature-7": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-1": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-2": [
+     "a1",
+     "a0"
+    ],
+    "future.glow-3": [
+     "a1",
+     "a1"
+    ],
+    "future.glow-4": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-5": [
+     "a0",
+     "a0"
+    ],
+    "future.glow-6": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-7": [
+     "a1",
+     "a0"
+    ],
+    "future.glow-8": [
+     "a0",
+     "a0"
+    ],
+    "future.glow-9": [
+     "a1",
+     "a1"
+    ],
+    "future.glow-10": [
+     "a1",
+     "a1"
+    ],
+    "future.glow-11": [
+     "a1",
+     "a0"
+    ]
+   }
+  },
+  "code": "S22v1-FF-C469-03D4DB"
+ },
+ {
+  "n": 8,
+  "mm": 20,
+  "kind": "colour",
+  "role": null,
+  "cells": 25,
+  "species": "Tuikis",
+  "genome": {
+   "species": 3,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Movement",
+    "Stamina",
+    "Glow"
+   ],
+   "copies": {
+    "appearance.body-palette": [
+     "jade",
+     "periwinkle"
+    ],
+    "appearance.underside-palette": [
+     "ice",
+     "slate"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "patches",
+     "patches"
+    ],
+    "appearance.marking-extent": [
+     "high",
+     "low"
+    ],
+    "appearance.marking-scale": [
+     "low",
+     "low"
+    ],
+    "appearance.marking-orientation": [
+     "low",
+     "high"
+    ],
+    "appearance.marking-contrast": [
+     "low",
+     "high"
+    ],
+    "appearance.anatomical-covering-extent": [
+     "short",
+     "short"
+    ],
+    "appearance.anatomical-scale-size": [
+     "fine",
+     "fine"
+    ],
+    "growth.crown-height-ratio": [
+     "low",
+     "low"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "small",
+     "huge"
+    ],
+    "growth.exterior-eye-spacing-ratio": [
+     "close",
+     "wide"
+    ],
+    "growth.muzzle-projection-ratio": [
+     "stub",
+     "short"
+    ],
+    "growth.muzzle-width-ratio": [
+     "low",
+     "high"
+    ],
+    "growth.core-width-ratio": [
+     "wide",
+     "wide"
+    ],
+    "growth.core-depth-ratio": [
+     "high",
+     "deep"
+    ],
+    "growth.region-taper": [
+     "strong",
+     "strong"
+    ],
+    "growth.region-bend": [
+     "down",
+     "down"
+    ],
+    "growth.support-drop-ratio": [
+     "short",
+     "short"
+    ],
+    "growth.support-radius-ratio": [
+     "stout",
+     "stout"
+    ],
+    "anatomy.contact-terminal-form": [
+     "hoof",
+     "webbed"
+    ],
+    "growth.terminal-length-ratio": [
+     "broad",
+     "small"
+    ],
+    "growth.terminal-depth-ratio": [
+     "high",
+     "small"
+    ],
+    "growth.axial-tail-length-ratio": [
+     "long",
+     "long"
+    ],
+    "growth.axial-tail-width-ratio": [
+     "broad",
+     "broad"
+    ],
+    "growth.axial-tail-bend": [
+     "up",
+     "down"
+    ],
+    "movement.cycle-rate": [
+     "low",
+     "high"
+    ],
+    "movement.stride-preference": [
+     "low",
+     "low"
+    ],
+    "movement.contact-phase": [
+     "low",
+     "high"
+    ],
+    "movement.axial-amplitude": [
+     "low",
+     "high"
+    ],
+    "movement.axial-phase": [
+     "low",
+     "low"
+    ],
+    "movement.turn-control": [
+     "high",
+     "low"
+    ],
+    "energy.actuator-capacity": [
+     "high",
+     "low"
+    ],
+    "energy.reserve-capacity": [
+     "low",
+     "high"
+    ],
+    "energy.action-efficiency": [
+     "high",
+     "low"
+    ],
+    "cognition.exploration-tendency": [
+     "seeking",
+     "seeking"
+    ],
+    "cognition.arousal-threshold": [
+     "low",
+     "low"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "long",
+     "long"
+    ]
+   }
+  },
+  "code": "S3v3-B7-5094-514B4B"
+ },
+ {
+  "n": 9,
+  "mm": 20,
+  "kind": "caddy",
+  "role": null,
+  "cells": 17,
+  "species": "Loika",
+  "genome": {
+   "species": 1,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Movement",
+    "Stamina"
+   ],
+   "copies": {
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "anatomy.crown-presence": [
+     "off",
+     "on"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "huge",
+     "large"
+    ],
+    "movement.cycle-rate": [
+     "high",
+     "high"
+    ],
+    "energy.action-efficiency": [
+     "high",
+     "low"
+    ]
+   }
+  },
+  "code": "S1v3-0F-4BF3-EBEB5F"
+ },
+ {
+  "n": 10,
+  "mm": 20,
+  "kind": "caddy",
+  "role": null,
+  "cells": 25,
+  "species": "Tuikis",
+  "genome": {
+   "species": 3,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Character",
+    "Glow"
+   ],
+   "copies": {
+    "appearance.body-palette": [
+     "lagoon",
+     "periwinkle"
+    ],
+    "appearance.underside-palette": [
+     "milk-mint",
+     "ice"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "patches",
+     "patches"
+    ],
+    "appearance.marking-extent": [
+     "high",
+     "high"
+    ],
+    "appearance.marking-scale": [
+     "high",
+     "low"
+    ],
+    "appearance.marking-orientation": [
+     "high",
+     "high"
+    ],
+    "appearance.marking-contrast": [
+     "high",
+     "low"
+    ],
+    "appearance.anatomical-covering-extent": [
+     "short",
+     "short"
+    ],
+    "appearance.anatomical-scale-size": [
+     "coarse",
+     "coarse"
+    ],
+    "growth.crown-height-ratio": [
+     "low",
+     "high"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "huge",
+     "small"
+    ],
+    "growth.exterior-eye-spacing-ratio": [
+     "wide",
+     "close"
+    ],
+    "growth.muzzle-projection-ratio": [
+     "long",
+     "stub"
+    ],
+    "growth.muzzle-width-ratio": [
+     "full",
+     "low"
+    ],
+    "growth.core-width-ratio": [
+     "high",
+     "wide"
+    ],
+    "growth.core-depth-ratio": [
+     "deep",
+     "low"
+    ],
+    "growth.region-taper": [
+     "strong",
+     "gentle"
+    ],
+    "growth.region-bend": [
+     "up",
+     "up"
+    ],
+    "growth.support-drop-ratio": [
+     "short",
+     "short"
+    ],
+    "growth.support-radius-ratio": [
+     "stout",
+     "slender"
+    ],
+    "anatomy.contact-terminal-form": [
+     "hoof",
+     "pad"
+    ],
+    "growth.terminal-length-ratio": [
+     "small",
+     "narrow"
+    ],
+    "growth.terminal-depth-ratio": [
+     "high",
+     "low"
+    ],
+    "growth.axial-tail-length-ratio": [
+     "long",
+     "long"
+    ],
+    "growth.axial-tail-width-ratio": [
+     "fine",
+     "broad"
+    ],
+    "growth.axial-tail-bend": [
+     "up",
+     "down"
+    ],
+    "movement.cycle-rate": [
+     "high",
+     "high"
+    ],
+    "movement.stride-preference": [
+     "low",
+     "high"
+    ],
+    "movement.contact-phase": [
+     "high",
+     "low"
+    ],
+    "movement.axial-amplitude": [
+     "high",
+     "high"
+    ],
+    "movement.axial-phase": [
+     "high",
+     "high"
+    ],
+    "movement.turn-control": [
+     "high",
+     "high"
+    ],
+    "energy.actuator-capacity": [
+     "high",
+     "high"
+    ],
+    "energy.reserve-capacity": [
+     "low",
+     "low"
+    ],
+    "energy.action-efficiency": [
+     "high",
+     "low"
+    ],
+    "cognition.exploration-tendency": [
+     "seeking",
+     "seeking"
+    ],
+    "cognition.arousal-threshold": [
+     "high",
+     "high"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "short"
+    ]
+   }
+  },
+  "code": "S3v3-FF-87D9-52B5BA"
+ },
+ {
+  "n": 11,
+  "mm": 20,
+  "kind": "caddy",
+  "role": null,
+  "cells": 37,
+  "species": "Future, 150 open loci",
+  "genome": {
+   "species": 22,
+   "version": 1,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Nature",
+    "Glow"
+   ],
+   "copies": {
+    "future.coat-1": [
+     "a2",
+     "a1"
+    ],
+    "future.coat-2": [
+     "a4",
+     "a1"
+    ],
+    "future.coat-3": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-4": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-5": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-6": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-7": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-8": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-9": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-10": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-11": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-12": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-13": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-14": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-15": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-16": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-17": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-18": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-19": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-20": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-21": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-22": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-23": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-24": [
+     "a2",
+     "a0"
+    ],
+    "future.coat-25": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-26": [
+     "a0",
+     "a0"
+    ],
+    "future.coat-27": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-28": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-29": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-30": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-31": [
+     "a1",
+     "a1"
+    ],
+    "future.coat-32": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-33": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-34": [
+     "a1",
+     "a0"
+    ],
+    "future.coat-35": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-36": [
+     "a0",
+     "a1"
+    ],
+    "future.coat-37": [
+     "a0",
+     "a0"
+    ],
+    "future.face-1": [
+     "a0",
+     "a1"
+    ],
+    "future.face-2": [
+     "a8",
+     "a6"
+    ],
+    "future.face-3": [
+     "a2",
+     "a2"
+    ],
+    "future.face-4": [
+     "a1",
+     "a1"
+    ],
+    "future.face-5": [
+     "a1",
+     "a0"
+    ],
+    "future.face-6": [
+     "a1",
+     "a1"
+    ],
+    "future.face-7": [
+     "a1",
+     "a0"
+    ],
+    "future.face-8": [
+     "a0",
+     "a1"
+    ],
+    "future.face-9": [
+     "a1",
+     "a0"
+    ],
+    "future.face-10": [
+     "a0",
+     "a0"
+    ],
+    "future.face-11": [
+     "a1",
+     "a1"
+    ],
+    "future.face-12": [
+     "a1",
+     "a1"
+    ],
+    "future.face-13": [
+     "a0",
+     "a1"
+    ],
+    "future.face-14": [
+     "a0",
+     "a0"
+    ],
+    "future.face-15": [
+     "a0",
+     "a1"
+    ],
+    "future.face-16": [
+     "a0",
+     "a0"
+    ],
+    "future.face-17": [
+     "a1",
+     "a1"
+    ],
+    "future.face-18": [
+     "a0",
+     "a1"
+    ],
+    "future.shape-1": [
+     "a0",
+     "a1"
+    ],
+    "future.shape-2": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-3": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-4": [
+     "a2",
+     "a2"
+    ],
+    "future.shape-5": [
+     "a0",
+     "a2"
+    ],
+    "future.shape-6": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-7": [
+     "a2",
+     "a2"
+    ],
+    "future.shape-8": [
+     "a0",
+     "a0"
+    ],
+    "future.shape-9": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-10": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-11": [
+     "a0",
+     "a1"
+    ],
+    "future.shape-12": [
+     "a0",
+     "a1"
+    ],
+    "future.shape-13": [
+     "a0",
+     "a1"
+    ],
+    "future.shape-14": [
+     "a1",
+     "a0"
+    ],
+    "future.shape-15": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-1": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-2": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-3": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-4": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-5": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-6": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-7": [
+     "a5",
+     "a2"
+    ],
+    "future.legs-tail-8": [
+     "a0",
+     "a2"
+    ],
+    "future.legs-tail-9": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-10": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-11": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-12": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-13": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-14": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-15": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-16": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-17": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-18": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-19": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-20": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-21": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-22": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-23": [
+     "a0",
+     "a1"
+    ],
+    "future.legs-tail-24": [
+     "a0",
+     "a0"
+    ],
+    "future.legs-tail-25": [
+     "a1",
+     "a0"
+    ],
+    "future.legs-tail-26": [
+     "a2",
+     "a0"
+    ],
+    "future.legs-tail-27": [
+     "a2",
+     "a1"
+    ],
+    "future.legs-tail-28": [
+     "a1",
+     "a1"
+    ],
+    "future.legs-tail-29": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-1": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-2": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-3": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-4": [
+     "a0",
+     "a1"
+    ],
+    "future.movement-5": [
+     "a0",
+     "a1"
+    ],
+    "future.movement-6": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-7": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-8": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-9": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-10": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-11": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-12": [
+     "a1",
+     "a1"
+    ],
+    "future.movement-13": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-14": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-15": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-16": [
+     "a8",
+     "a9"
+    ],
+    "future.movement-17": [
+     "a4",
+     "a2"
+    ],
+    "future.movement-18": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-19": [
+     "a1",
+     "a0"
+    ],
+    "future.movement-20": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-21": [
+     "a0",
+     "a0"
+    ],
+    "future.movement-22": [
+     "a0",
+     "a1"
+    ],
+    "future.stamina-1": [
+     "a0",
+     "a0"
+    ],
+    "future.stamina-2": [
+     "a0",
+     "a1"
+    ],
+    "future.stamina-3": [
+     "a1",
+     "a1"
+    ],
+    "future.stamina-4": [
+     "a0",
+     "a1"
+    ],
+    "future.stamina-5": [
+     "a0",
+     "a0"
+    ],
+    "future.stamina-6": [
+     "a1",
+     "a0"
+    ],
+    "future.stamina-7": [
+     "a1",
+     "a1"
+    ],
+    "future.stamina-8": [
+     "a1",
+     "a0"
+    ],
+    "future.stamina-9": [
+     "a0",
+     "a1"
+    ],
+    "future.stamina-10": [
+     "a1",
+     "a0"
+    ],
+    "future.stamina-11": [
+     "a1",
+     "a0"
+    ],
+    "future.nature-1": [
+     "a0",
+     "a0"
+    ],
+    "future.nature-2": [
+     "a1",
+     "a2"
+    ],
+    "future.nature-3": [
+     "a2",
+     "a0"
+    ],
+    "future.nature-4": [
+     "a1",
+     "a0"
+    ],
+    "future.nature-5": [
+     "a2",
+     "a2"
+    ],
+    "future.nature-6": [
+     "a0",
+     "a2"
+    ],
+    "future.nature-7": [
+     "a1",
+     "a1"
+    ],
+    "future.glow-1": [
+     "a1",
+     "a1"
+    ],
+    "future.glow-2": [
+     "a1",
+     "a1"
+    ],
+    "future.glow-3": [
+     "a0",
+     "a0"
+    ],
+    "future.glow-4": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-5": [
+     "a1",
+     "a0"
+    ],
+    "future.glow-6": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-7": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-8": [
+     "a1",
+     "a0"
+    ],
+    "future.glow-9": [
+     "a1",
+     "a0"
+    ],
+    "future.glow-10": [
+     "a0",
+     "a1"
+    ],
+    "future.glow-11": [
+     "a1",
+     "a0"
+    ]
+   }
+  },
+  "code": "S22v1-FF-1CF2-5686B1"
+ },
+ {
+  "n": 12,
+  "mm": 16,
+  "kind": "caddy",
+  "role": null,
+  "cells": 17,
+  "species": "Loika",
+  "genome": {
+   "species": 1,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Movement",
+    "Stamina"
+   ],
+   "copies": {
+    "appearance.marking-switch": [
+     "on",
+     "off"
+    ],
+    "anatomy.crown-presence": [
+     "on",
+     "on"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "huge",
+     "large"
+    ],
+    "movement.cycle-rate": [
+     "low",
+     "low"
+    ],
+    "energy.action-efficiency": [
+     "low",
+     "low"
+    ]
+   }
+  },
+  "code": "S1v3-0F-009B-6A7C53"
+ },
+ {
+  "n": 13,
+  "mm": 20,
+  "kind": "colour",
+  "role": "mother",
+  "cells": 25,
+  "species": "Tuikis",
+  "genome": {
+   "species": 3,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Character",
+    "Glow"
+   ],
+   "copies": {
+    "appearance.body-palette": [
+     "jade",
+     "lagoon"
+    ],
+    "appearance.underside-palette": [
+     "ice",
+     "cream"
+    ],
+    "appearance.marking-switch": [
+     "off",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "patches",
+     "patches"
+    ],
+    "appearance.marking-extent": [
+     "low",
+     "low"
+    ],
+    "appearance.marking-scale": [
+     "high",
+     "high"
+    ],
+    "appearance.marking-orientation": [
+     "low",
+     "high"
+    ],
+    "appearance.marking-contrast": [
+     "low",
+     "low"
+    ],
+    "appearance.anatomical-covering-extent": [
+     "short",
+     "short"
+    ],
+    "appearance.anatomical-scale-size": [
+     "fine",
+     "coarse"
+    ],
+    "growth.crown-height-ratio": [
+     "high",
+     "low"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "small",
+     "small"
+    ],
+    "growth.exterior-eye-spacing-ratio": [
+     "close",
+     "close"
+    ],
+    "growth.muzzle-projection-ratio": [
+     "short",
+     "short"
+    ],
+    "growth.muzzle-width-ratio": [
+     "full",
+     "high"
+    ],
+    "growth.core-width-ratio": [
+     "high",
+     "high"
+    ],
+    "growth.core-depth-ratio": [
+     "low",
+     "low"
+    ],
+    "growth.region-taper": [
+     "gentle",
+     "strong"
+    ],
+    "growth.region-bend": [
+     "up",
+     "down"
+    ],
+    "growth.support-drop-ratio": [
+     "medium",
+     "medium"
+    ],
+    "growth.support-radius-ratio": [
+     "slender",
+     "slender"
+    ],
+    "anatomy.contact-terminal-form": [
+     "pad",
+     "hoof"
+    ],
+    "growth.terminal-length-ratio": [
+     "small",
+     "broad"
+    ],
+    "growth.terminal-depth-ratio": [
+     "small",
+     "high"
+    ],
+    "growth.axial-tail-length-ratio": [
+     "short",
+     "long"
+    ],
+    "growth.axial-tail-width-ratio": [
+     "fine",
+     "fine"
+    ],
+    "growth.axial-tail-bend": [
+     "down",
+     "up"
+    ],
+    "movement.cycle-rate": [
+     "high",
+     "low"
+    ],
+    "movement.stride-preference": [
+     "low",
+     "high"
+    ],
+    "movement.contact-phase": [
+     "low",
+     "high"
+    ],
+    "movement.axial-amplitude": [
+     "low",
+     "low"
+    ],
+    "movement.axial-phase": [
+     "low",
+     "low"
+    ],
+    "movement.turn-control": [
+     "high",
+     "high"
+    ],
+    "energy.actuator-capacity": [
+     "high",
+     "high"
+    ],
+    "energy.reserve-capacity": [
+     "high",
+     "high"
+    ],
+    "energy.action-efficiency": [
+     "low",
+     "low"
+    ],
+    "cognition.exploration-tendency": [
+     "seeking",
+     "seeking"
+    ],
+    "cognition.arousal-threshold": [
+     "low",
+     "low"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "dim"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "short"
+    ]
+   }
+  },
+  "code": "S3v3-FF-7978-56EA1E"
+ },
+ {
+  "n": 14,
+  "mm": 20,
+  "kind": "colour",
+  "role": "child",
+  "cells": 25,
+  "species": "Tuikis",
+  "genome": {
+   "species": 3,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Character",
+    "Glow"
+   ],
+   "copies": {
+    "appearance.body-palette": [
+     "jade",
+     "jade"
+    ],
+    "appearance.underside-palette": [
+     "cream",
+     "cream"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "patches",
+     "bands"
+    ],
+    "appearance.marking-extent": [
+     "low",
+     "low"
+    ],
+    "appearance.marking-scale": [
+     "high",
+     "low"
+    ],
+    "appearance.marking-orientation": [
+     "low",
+     "low"
+    ],
+    "appearance.marking-contrast": [
+     "low",
+     "low"
+    ],
+    "appearance.anatomical-covering-extent": [
+     "short",
+     "long"
+    ],
+    "appearance.anatomical-scale-size": [
+     "coarse",
+     "fine"
+    ],
+    "growth.crown-height-ratio": [
+     "high",
+     "high"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "small",
+     "small"
+    ],
+    "growth.exterior-eye-spacing-ratio": [
+     "close",
+     "close"
+    ],
+    "growth.muzzle-projection-ratio": [
+     "short",
+     "stub"
+    ],
+    "growth.muzzle-width-ratio": [
+     "full",
+     "high"
+    ],
+    "growth.core-width-ratio": [
+     "high",
+     "wide"
+    ],
+    "growth.core-depth-ratio": [
+     "low",
+     "deep"
+    ],
+    "growth.region-taper": [
+     "strong",
+     "gentle"
+    ],
+    "growth.region-bend": [
+     "down",
+     "down"
+    ],
+    "growth.support-drop-ratio": [
+     "medium",
+     "short"
+    ],
+    "growth.support-radius-ratio": [
+     "slender",
+     "slender"
+    ],
+    "anatomy.contact-terminal-form": [
+     "pad",
+     "wedge"
+    ],
+    "growth.terminal-length-ratio": [
+     "broad",
+     "narrow"
+    ],
+    "growth.terminal-depth-ratio": [
+     "small",
+     "low"
+    ],
+    "growth.axial-tail-length-ratio": [
+     "short",
+     "short"
+    ],
+    "growth.axial-tail-width-ratio": [
+     "fine",
+     "broad"
+    ],
+    "growth.axial-tail-bend": [
+     "down",
+     "down"
+    ],
+    "movement.cycle-rate": [
+     "high",
+     "high"
+    ],
+    "movement.stride-preference": [
+     "low",
+     "low"
+    ],
+    "movement.contact-phase": [
+     "low",
+     "low"
+    ],
+    "movement.axial-amplitude": [
+     "low",
+     "high"
+    ],
+    "movement.axial-phase": [
+     "low",
+     "low"
+    ],
+    "movement.turn-control": [
+     "high",
+     "low"
+    ],
+    "energy.actuator-capacity": [
+     "high",
+     "high"
+    ],
+    "energy.reserve-capacity": [
+     "high",
+     "high"
+    ],
+    "energy.action-efficiency": [
+     "low",
+     "low"
+    ],
+    "cognition.exploration-tendency": [
+     "seeking",
+     "seeking"
+    ],
+    "cognition.arousal-threshold": [
+     "low",
+     "high"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "long"
+    ]
+   }
+  },
+  "code": "S3v3-FF-DB2C-C3F0EC"
+ },
+ {
+  "n": 15,
+  "mm": 20,
+  "kind": "colour",
+  "role": "father",
+  "cells": 25,
+  "species": "Tuikis",
+  "genome": {
+   "species": 3,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Character",
+    "Glow"
+   ],
+   "copies": {
+    "appearance.body-palette": [
+     "marigold",
+     "jade"
+    ],
+    "appearance.underside-palette": [
+     "cream",
+     "ice"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "bands",
+     "bands"
+    ],
+    "appearance.marking-extent": [
+     "low",
+     "high"
+    ],
+    "appearance.marking-scale": [
+     "low",
+     "low"
+    ],
+    "appearance.marking-orientation": [
+     "low",
+     "high"
+    ],
+    "appearance.marking-contrast": [
+     "high",
+     "low"
+    ],
+    "appearance.anatomical-covering-extent": [
+     "long",
+     "short"
+    ],
+    "appearance.anatomical-scale-size": [
+     "fine",
+     "coarse"
+    ],
+    "growth.crown-height-ratio": [
+     "low",
+     "high"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "large",
+     "small"
+    ],
+    "growth.exterior-eye-spacing-ratio": [
+     "wide",
+     "close"
+    ],
+    "growth.muzzle-projection-ratio": [
+     "long",
+     "stub"
+    ],
+    "growth.muzzle-width-ratio": [
+     "high",
+     "high"
+    ],
+    "growth.core-width-ratio": [
+     "wide",
+     "wide"
+    ],
+    "growth.core-depth-ratio": [
+     "low",
+     "deep"
+    ],
+    "growth.region-taper": [
+     "gentle",
+     "gentle"
+    ],
+    "growth.region-bend": [
+     "down",
+     "down"
+    ],
+    "growth.support-drop-ratio": [
+     "medium",
+     "short"
+    ],
+    "growth.support-radius-ratio": [
+     "slender",
+     "slender"
+    ],
+    "anatomy.contact-terminal-form": [
+     "wedge",
+     "rounded"
+    ],
+    "growth.terminal-length-ratio": [
+     "narrow",
+     "small"
+    ],
+    "growth.terminal-depth-ratio": [
+     "low",
+     "low"
+    ],
+    "growth.axial-tail-length-ratio": [
+     "short",
+     "short"
+    ],
+    "growth.axial-tail-width-ratio": [
+     "broad",
+     "fine"
+    ],
+    "growth.axial-tail-bend": [
+     "up",
+     "down"
+    ],
+    "movement.cycle-rate": [
+     "high",
+     "high"
+    ],
+    "movement.stride-preference": [
+     "low",
+     "high"
+    ],
+    "movement.contact-phase": [
+     "low",
+     "high"
+    ],
+    "movement.axial-amplitude": [
+     "high",
+     "high"
+    ],
+    "movement.axial-phase": [
+     "high",
+     "low"
+    ],
+    "movement.turn-control": [
+     "low",
+     "low"
+    ],
+    "energy.actuator-capacity": [
+     "high",
+     "low"
+    ],
+    "energy.reserve-capacity": [
+     "high",
+     "low"
+    ],
+    "energy.action-efficiency": [
+     "low",
+     "low"
+    ],
+    "cognition.exploration-tendency": [
+     "seeking",
+     "reserved"
+    ],
+    "cognition.arousal-threshold": [
+     "high",
+     "high"
+    ],
+    "appearance.emission-brightness": [
+     "bright",
+     "dim"
+    ],
+    "appearance.emission-length": [
+     "long",
+     "long"
+    ]
+   }
+  },
+  "code": "S3v3-FF-33D2-1DBC16"
+ },
+ {
+  "n": 16,
+  "mm": 16,
+  "kind": "caddy",
+  "role": null,
+  "cells": 25,
+  "species": "Tuikis",
+  "genome": {
+   "species": 3,
+   "version": 3,
+   "read": [
+    "Coat",
+    "Face",
+    "Shape",
+    "Legs & tail",
+    "Movement",
+    "Stamina",
+    "Character",
+    "Glow"
+   ],
+   "copies": {
+    "appearance.body-palette": [
+     "jade",
+     "periwinkle"
+    ],
+    "appearance.underside-palette": [
+     "milk-mint",
+     "milk-mint"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "bands",
+     "patches"
+    ],
+    "appearance.marking-extent": [
+     "low",
+     "high"
+    ],
+    "appearance.marking-scale": [
+     "high",
+     "high"
+    ],
+    "appearance.marking-orientation": [
+     "high",
+     "high"
+    ],
+    "appearance.marking-contrast": [
+     "low",
+     "low"
+    ],
+    "appearance.anatomical-covering-extent": [
+     "long",
+     "long"
+    ],
+    "appearance.anatomical-scale-size": [
+     "fine",
+     "fine"
+    ],
+    "growth.crown-height-ratio": [
+     "low",
+     "high"
+    ],
+    "growth.exterior-eye-size-ratio": [
+     "large",
+     "small"
+    ],
+    "growth.exterior-eye-spacing-ratio": [
+     "wide",
+     "close"
+    ],
+    "growth.muzzle-projection-ratio": [
+     "short",
+     "stub"
+    ],
+    "growth.muzzle-width-ratio": [
+     "low",
+     "high"
+    ],
+    "growth.core-width-ratio": [
+     "high",
+     "low"
+    ],
+    "growth.core-depth-ratio": [
+     "deep",
+     "high"
+    ],
+    "growth.region-taper": [
+     "gentle",
+     "gentle"
+    ],
+    "growth.region-bend": [
+     "up",
+     "up"
+    ],
+    "growth.support-drop-ratio": [
+     "long",
+     "short"
+    ],
+    "growth.support-radius-ratio": [
+     "stout",
+     "stout"
+    ],
+    "anatomy.contact-terminal-form": [
+     "wedge",
+     "wedge"
+    ],
+    "growth.terminal-length-ratio": [
+     "narrow",
+     "narrow"
+    ],
+    "growth.terminal-depth-ratio": [
+     "high",
+     "low"
+    ],
+    "growth.axial-tail-length-ratio": [
+     "long",
+     "long"
+    ],
+    "growth.axial-tail-width-ratio": [
+     "broad",
+     "broad"
+    ],
+    "growth.axial-tail-bend": [
+     "down",
+     "up"
+    ],
+    "movement.cycle-rate": [
+     "low",
+     "high"
+    ],
+    "movement.stride-preference": [
+     "low",
+     "high"
+    ],
+    "movement.contact-phase": [
+     "high",
+     "low"
+    ],
+    "movement.axial-amplitude": [
+     "low",
+     "high"
+    ],
+    "movement.axial-phase": [
+     "high",
+     "high"
+    ],
+    "movement.turn-control": [
+     "high",
+     "low"
+    ],
+    "energy.actuator-capacity": [
+     "high",
+     "high"
+    ],
+    "energy.reserve-capacity": [
+     "low",
+     "high"
+    ],
+    "energy.action-efficiency": [
+     "high",
+     "low"
+    ],
+    "cognition.exploration-tendency": [
+     "seeking",
+     "reserved"
+    ],
+    "cognition.arousal-threshold": [
+     "high",
+     "high"
+    ],
+    "appearance.emission-brightness": [
+     "dim",
+     "bright"
+    ],
+    "appearance.emission-length": [
+     "short",
+     "long"
+    ]
+   }
+  },
+  "code": "S3v3-FF-1014-82780D"
+ }
+]

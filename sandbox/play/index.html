@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Miniature Beasts: play</title>
+<meta name="color-scheme" content="dark">
+<style>
+/* The play page: the Station and the Companion as same-origin frames (stacked, or side by side when the window is wide), each with its key tray, the page's bar and the Dock control. Page chrome only; every device draws itself.
+   The faces and their shells are in lp: one lp is --f CSS px (shell.mjs sets it), so every edge lands on a whole physical pixel. The chrome (bar, keys, trays, text) is in CSS px. Colours are the Station's 14 (frame.json colours). */
+@font-face{font-family:"Inter";font-weight:500;src:url("../ui/fonts/inter/src/Inter-Medium-tnum.ttf") format("truetype");font-display:block}
+:root{color-scheme:dark; --f:1; --void:#0c0a12; --bar:#23292f; --panel:#2b3038; --hairline:#3d434b; --bevel:#565c63; --ground:#1d232b; --bone:#f1ebdf; --fog:#c6c4d8; --mist:#8d8aa6; --stone:#5d5974; --focus:#ffe6ad; --mint:#adf6e0; --amber:#ffa83f}
+*{box-sizing:border-box}
+html,body{margin:0; height:100%; background:var(--void); color:var(--fog); font:500 16px/1 "Inter",system-ui,sans-serif; overflow:hidden}
+button{font:inherit; color:inherit; appearance:none; margin:0; cursor:pointer}
+#stage{position:fixed; left:0; right:0; top:40px; bottom:0; overflow:auto; scrollbar-gutter:stable}   /* the page scrolls under the fixed bar */
+#spacer{position:absolute; left:0; width:1px; height:1px; visibility:hidden}
+.abs{position:absolute}
+iframe{border:0; display:block; background:var(--void)}
+.shell{position:absolute; background:var(--panel); box-shadow:inset 0 0 0 calc(var(--f) * 1px) var(--hairline); border-radius:calc(var(--f) * 12px) calc(var(--f) * 12px) 0 0}
+.shell iframe{position:absolute}
+/* the key tray: joined to the bottom of its shell, as wide as the shell, in the shell's colour; 72 CSS px a row of keys */
+.row{position:absolute; background:var(--panel); box-shadow:inset 0 0 0 calc(var(--f) * 1px) var(--hairline); border-radius:0 0 calc(var(--f) * 12px) calc(var(--f) * 12px); z-index:3}
+#ring{position:absolute; border:calc(var(--f) * 3px) solid var(--focus); border-radius:calc(var(--f) * 15px); pointer-events:none; z-index:5}
+#bar{position:fixed; left:0; top:0; right:0; height:40px; background:var(--bar); border-bottom:calc(var(--f) * 1px) solid var(--hairline); z-index:20}
+.ctl{position:absolute; background:var(--ground); border:calc(var(--f) * 1px) solid var(--hairline); border-radius:6px; color:var(--fog); padding:0; z-index:21; white-space:nowrap; overflow:hidden; text-align:center}
+.ctl:hover{border-color:var(--bevel)}
+.ctl:active,.ctl.pressed{background:var(--void)}
+.ctl:active>*,.ctl.pressed>*{transform:translateY(calc(var(--f) * 1px))}
+.ctl:focus-visible{outline:calc(var(--f) * 2px) solid var(--focus); outline-offset:calc(var(--f) * 2px)}
+.ctl.on{background:var(--hairline); border-color:var(--bevel); color:var(--bone)}
+#dockCtl{text-align:left}
+#dockCtl .mark{position:absolute; image-rendering:pixelated}
+#dockCtl .word{position:absolute}
+#dockCtl .hint{position:absolute; color:var(--mist); font-size:12px}
+#dockCtl .dot{position:absolute; border-radius:50%; background:var(--amber)}
+#dockCtl .dot[hidden]{display:none}
+#dockCtl[aria-disabled="true"]{cursor:default}
+#dockCtl[aria-disabled="true"] .word,#dockCtl[aria-disabled="true"] .hint{color:var(--stone)}
+#dockCtl[aria-disabled="true"]:hover{border-color:var(--hairline)}
+#dockCtl[aria-disabled="true"]:active{background:var(--ground)}
+#dockCtl[aria-disabled="true"]:active>*{transform:none}
+#note{position:absolute; color:var(--mist); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; z-index:21}
+#live{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.hidden{display:none !important}
+/* the cradle and the seat: the front, no words */
+#cradle{position:absolute; background:var(--bar); border-top:calc(var(--f) * 1px) solid var(--bevel); border-radius:0 0 calc(var(--f) * 8px) calc(var(--f) * 8px); cursor:pointer; z-index:4}
+#cradle.off{cursor:default}
+#slot{position:absolute; background:var(--void)}
+#lamp{position:absolute; image-rendering:pixelated}
+/* drawn keys: a key presses exactly as the keyboard does; no words and no letters, the name is the aria-label (the sizes are CSS px: 56, the Confirm 64) */
+.k{position:absolute; border:0; padding:0; outline:none; touch-action:none; -webkit-tap-highlight-color:transparent; display:grid; place-items:center; overflow:visible}
+.k svg{position:relative; fill:#f4f1ec; width:20px; height:20px}
+.k img{position:relative; display:block; width:var(--mark,24px); height:var(--mark,24px); image-rendering:pixelated; pointer-events:none}
+.row .k.pad{border-radius:calc(var(--f) * 8px); background:linear-gradient(135deg,#303439,#24262a); box-shadow:0 calc(var(--f) * 4px) 0 #191a1d, inset 0 0 0 calc(var(--f) * 1px) #141618}
+.row .k.pad.dn{transform:translateY(calc(var(--f) * 2px)); box-shadow:0 calc(var(--f) * 2px) 0 #191a1d, inset 0 0 0 calc(var(--f) * 1px) #141618, inset 0 calc(var(--f) * 2px) calc(var(--f) * 3px) rgba(0,0,0,.5)}
+.row .k.cpad{border-radius:calc(var(--f) * 8px); background:linear-gradient(180deg,#3a3d42,#2f3236); box-shadow:0 calc(var(--f) * 3px) 0 #17181a, inset 0 calc(var(--f) * 1px) 0 rgba(255,255,255,.12)}
+.row .k.cpad svg{fill:#9a9ea6}
+.row .k.cpad.dn{transform:translateY(calc(var(--f) * 2px)); box-shadow:0 calc(var(--f) * 1px) 0 #17181a, inset 0 calc(var(--f) * 2px) calc(var(--f) * 3px) rgba(0,0,0,.5)}
+.row .k.room{border-radius:calc(var(--f) * 8px); overflow:hidden; background:linear-gradient(135deg,var(--tl),var(--br)); box-shadow:0 calc(var(--f) * 5px) 0 var(--wall), inset 0 0 0 calc(var(--f) * 1px) var(--rim)}
+.row .k.room.dn{transform:translateY(calc(var(--f) * 3px)); box-shadow:0 calc(var(--f) * 2px) 0 var(--wall), inset 0 0 0 calc(var(--f) * 1px) var(--rim), inset 0 calc(var(--f) * 2px) calc(var(--f) * 4px) rgba(0,0,0,.35)}
+.room.home{--tl:#f8bd30; --br:#b98d24; --rim:#685014; --wall:#806119}
+.room.vivarium{--tl:#64b050; --br:#4a833c; --rim:#2a4a22; --wall:#335b29}
+.room.research{--tl:#3287e6; --br:#2564ab; --rim:#153961; --wall:#194576}
+.room.library{--tl:#814398; --br:#603271; --rim:#361c40; --wall:#43224e}
+.row .k.round{border-radius:50%; overflow:hidden}
+.row .k.back{background:linear-gradient(135deg,#36393e,#282a2e); box-shadow:0 calc(var(--f) * 5px) 0 #1c1d20, inset 0 0 0 calc(var(--f) * 1px) #16181a}
+.row .k.back svg{fill:none; stroke:#f4f1ec; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round}
+.row .k.back.dn{transform:translateY(calc(var(--f) * 3px)); box-shadow:0 calc(var(--f) * 2px) 0 #1c1d20, inset 0 0 0 calc(var(--f) * 1px) #16181a, inset 0 calc(var(--f) * 2px) calc(var(--f) * 4px) rgba(0,0,0,.5)}
+.row .k.cback{background:radial-gradient(circle at 40% 30%,#5d6167,#3a3d42); box-shadow:0 calc(var(--f) * 4px) 0 #1d1f22, inset 0 calc(var(--f) * 1px) 0 rgba(255,255,255,.15)}
+.row .k.cback svg{fill:none; stroke:#e9e6df; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round}
+.row .k.cback.dn{transform:translateY(calc(var(--f) * 3px)); box-shadow:0 calc(var(--f) * 1px) 0 #1d1f22}
+.row .k.call{background:radial-gradient(circle at 40% 30%,rgba(255,255,255,.28),rgba(255,255,255,0) 45%),repeating-radial-gradient(circle at 50% 50%,#26b5a4 0 3px,#178a7d 3px 4px,#1fa293 4px 6px); box-shadow:0 calc(var(--f) * 4px) 0 #0c4f48, inset 0 calc(var(--f) * 1px) 0 rgba(255,255,255,.25), inset 0 0 0 calc(var(--f) * 2px) #14786d}
+.row .k.call svg{fill:none; stroke:#eafff9; stroke-width:2.6; stroke-linecap:round; width:24px; height:24px}
+.row .k.call.dn{transform:translateY(calc(var(--f) * 3px)); box-shadow:0 calc(var(--f) * 1px) 0 #0c4f48}
+.row .k.confirm{background:radial-gradient(circle at 40% 30%,#ff8a45,#f0661a 55%,#c94f0d); box-shadow:0 calc(var(--f) * 5px) 0 #8c3608, inset 0 calc(var(--f) * 1px) 0 rgba(255,255,255,.35)}
+.row .k.confirm svg{fill:none; stroke:#fff8ef; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; width:24px; height:24px}
+.row .k.confirm.dn{transform:translateY(calc(var(--f) * 3px)); box-shadow:0 calc(var(--f) * 2px) 0 #8c3608, inset 0 calc(var(--f) * 2px) calc(var(--f) * 5px) rgba(0,0,0,.35)}
+.row .k.band::before,.row .k.room::before,.row .k.back::before,.row .k.confirm::before,.row .k.pad::before{content:""; position:absolute; left:5.5%; right:5.5%; top:3.3%; height:20%; border-radius:calc(var(--f) * 6px); background:rgba(255,255,255,.27); filter:blur(calc(var(--f) * 2px)); pointer-events:none}
+/* the Caddy's screen: the 792 × 272 lp view in an 8 lp bezel, 808 × 288 lp, always shown */
+#caddySheet{position:absolute; background:var(--bar); box-shadow:inset 0 calc(var(--f) * 1px) 0 var(--bevel); border-radius:calc(var(--f) * 8px); overflow:hidden; z-index:2}
+#caddyView{position:absolute; image-rendering:pixelated; display:block}
+/* the developer drawer or column: the Station's own panel, restyled in the Station palette */
+#dev{position:fixed; background:var(--bar); border:1px solid var(--hairline); z-index:15; padding:16px; overflow:auto; color:var(--fog); --panel:#23292f; --line:#3d434b; --ink:#c6c4d8; --muted:#8d8aa6; --chip:#1d232b; --bg-2:#1d232b}
+#dev.column{border-radius:8px}
+#dev .dev-group{border-top:1px solid var(--line); padding:6px 0}
+#dev .dev-group summary{cursor:pointer; font:500 15px/1.4 system-ui,sans-serif}
+#dev .dev-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:6px 0; font-size:14px}
+#dev .dev-row input[type=number]{width:80px} #dev .dev-row textarea{width:min(520px,100%); font:12px/1.4 ui-monospace,Menlo,Consolas,monospace}
+#dev .dev-row select,#dev .dev-row input{font:inherit; color:inherit; background:var(--chip); border:1px solid var(--line); border-radius:6px; padding:3px 6px}
+#dev .dev-note{margin:4px 0 2px; color:var(--muted); font-size:13px}
+#dev .dev-lede{margin:0 0 8px; color:var(--muted); font-size:13px}
+#dev button{background:var(--chip); color:var(--ink); border:1px solid var(--line); border-radius:6px; padding:4px 8px; font:14px system-ui,sans-serif}
+#devStationOut{font:12.5px/1.45 ui-monospace,Menlo,Consolas,monospace; background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:10px 12px; white-space:pre-wrap; color:var(--ink); max-height:320px; overflow:auto; margin:8px 0 0}
+#observer{margin:12px 0 0; color:var(--mist); font-size:12px; line-height:1.4}
+/* Keys ? */
+#keysPanel{position:fixed; background:var(--bar); border:1px solid var(--hairline); border-radius:8px; z-index:30; padding:16px; overflow:auto; color:var(--fog)}
+#keysPanel h2{margin:0 0 6px; font-weight:500; font-size:16px; color:var(--bone)}
+#keysPanel p{margin:0 0 10px; color:var(--mist); font-size:12px}
+#keysPanel h3{margin:10px 0 4px; font-weight:500; font-size:12px; color:var(--bone)}
+#keysPanel dl{margin:0; display:grid; grid-template-columns:max-content 1fr; gap:2px 12px; font-size:12px}
+#keysPanel dt{color:var(--mist)} #keysPanel dd{margin:0}
+#stamp{margin-top:12px; color:var(--mist); font-size:12px}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="shell" id="shStation"><iframe id="fStation" title="Station screen" allow="" loading="eager"></iframe></div>
+  <div class="row" id="rowStation"></div>
+  <div class="shell" id="shCompanion"><iframe id="fCompanion" title="Companion screen" allow="" loading="eager"></iframe></div>
+  <div class="row" id="rowCompanion"></div>
+  <div id="caddySheet" aria-label="The Caddy's screen" role="img"><canvas id="caddyView" width="792" height="272"></canvas></div>
+  <div id="spacer"></div>
+  <div id="cradle" title="Dock the Companion in the Caddy"><div id="slot"></div><img id="lamp" alt="" src="../ui/assets/masters/pods/frame-lamp-8-stone.png" width="8" height="8"></div>
+  <div id="ring"></div>
+</div>
+  <iframe id="fBench" title="Bench" class="hidden" allow=""></iframe>   <!-- the workbench is hidden on the play page (an outdated tool): never loaded -->
+  <div id="dev" class="hidden"><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
+<div id="bar">
+  <button type="button" class="ctl" id="tabStation">Station</button>
+  <button type="button" class="ctl" id="tabCompanion">Companion</button>
+  <button type="button" class="ctl hidden" id="tabBench">Bench</button>
+  <button type="button" class="ctl" id="dockCtl" aria-label="Dock the Companion in the Caddy" title="Dock the Companion in the Caddy"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint" id="dockHint">⇧D</span></button>
+  <button type="button" class="ctl" id="keysBtn">Keys ?</button>
+  <button type="button" class="ctl hidden" id="devBtn" aria-pressed="false">Developer tools</button>
+  <div id="note">One device at a time: ` switches. Both show from 1064 wide.</div>
+  <div id="live" aria-live="polite"></div>
+</div>
+<div id="keysPanel" class="hidden" role="dialog" aria-label="Keys">
+  <h2>Keys</h2>
+  <p>Only the device with the keys hears them. Shift keys belong to the page.</p>
+  <h3>Page (any device, not while typing)</h3>
+  <dl><dt>`</dt><dd>Next device</dd><dt>Shift+`</dt><dd>Previous device</dd><dt>Shift+D</dt><dd>Dock or lift the Companion</dd><dt class="hidden" id="helpDevK">Shift+T</dt><dd class="hidden" id="helpDevD">Developer tools</dd><dt>Shift+/ (?)</dt><dd>This panel; Esc or ? closes it</dd></dl>
+  <h3>Station</h3>
+  <dl><dt>← ↑ → ↓</dt><dd>Move the ring</dd><dt>Enter, Space</dt><dd>✓, what the bottom line names</dd><dt>Esc, Backspace</dt><dd>← Back one view</dd><dt>H</dt><dd>Home; Home again: rest</dd><dt>B</dt><dd>Vivarium</dd><dt>R</dt><dd>Research</dd><dt>L</dt><dd>Library</dd></dl>
+  <h3>Companion</h3>
+  <dl><dt>← ↑ → ↓ or W A S D</dt><dd>Tap to step, hold to walk</dd><dt>Enter, Space</dt><dd>✓ Confirm</dd><dt>Esc, Backspace</dt><dd>← Back</dd><dt>C</dt><dd>))) Call</dd></dl>
+  <div id="stamp" class="hidden">build …</div>
+</div>
+<script type="module" src="src/shell.mjs"></script>
+</body>
+</html>

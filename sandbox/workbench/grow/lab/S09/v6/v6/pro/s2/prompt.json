@@ -1,0 +1,306 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "v6",
+  "name": "v6 baseline",
+  "change": "The v6 art direction (1B with 1G's coat paragraph folded in, the style statement, the light paragraph, the colour key as the authority on colour) and the v6 Loika notes.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "The v6 art direction (1B with 1G's coat paragraph folded in, the style statement, the light paragraph, the colour key as the authority on colour) and the v6 Loika notes.",
+ "step1": {
+  "callId": "6be83f67-81ca-45f5-bb56-a87ff1ec7ff2",
+  "status": "ok",
+  "seconds": 18.7,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.465,
+   "silhouetteIoUInPlace": 0.322,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.87
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.262
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.988
+    },
+    "beak": {
+     "span": 0.779,
+     "coverage": 0.845
+    },
+    "crown": {
+     "span": 0.76,
+     "coverage": 0.061
+    },
+    "leg-0": {
+     "span": 0.825,
+     "coverage": 0.565
+    },
+    "flap": {
+     "span": 0.857,
+     "coverage": 0.759
+    },
+    "tail": {
+     "span": 0.843,
+     "coverage": 0.853
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.43,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.331,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.405,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.436,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.398,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.421,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.655,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.52,
+     "median": "#669c94",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.704,
+     "median": "#6198a2",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.632,
+     "median": "#62a1c0",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.679,
+     "median": "#60a0a0",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.612,
+     "median": "#4e666b",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.222,
+     "median": "#8599a5",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.762,
+     "median": "#ecd495",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (28% of the body beyond a 20 px band): a part was added, moved or re-laid"
+   ],
+   "outside": 0.281,
+   "missing": 0.017,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.576,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "20dfc226-d1fd-4578-ad2a-26bf51567d9e",
+  "status": "ok",
+  "seconds": 16.8,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.476,
+   "silhouetteIoUInPlace": 0.336,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.864
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.211
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.987
+    },
+    "beak": {
+     "span": 0.792,
+     "coverage": 0.856
+    },
+    "crown": {
+     "span": 0.727,
+     "coverage": 0.031
+    },
+    "leg-0": {
+     "span": 0.847,
+     "coverage": 0.585
+    },
+    "flap": {
+     "span": 0.844,
+     "coverage": 0.741
+    },
+    "tail": {
+     "span": 0.843,
+     "coverage": 0.848
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.425,
+     "ok": false
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.327,
+     "ok": false
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.4,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.431,
+     "ok": false
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.394,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.414,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.644,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.491,
+     "median": "#726a62",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.559,
+     "median": "#758ea0",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.633,
+     "median": "#395a84",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.652,
+     "median": "#557393",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.729,
+     "median": "#8892c3",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.681,
+     "median": "#cfaa6f",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.816,
+     "median": "#d3aa5c",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (25% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "the proportions are off: the region-0 is larger than drawn (0.42 of the body against 0.30), the region-1 is larger than drawn (0.33 of the body against 0.21), the neck is larger than drawn (0.40 of the body against 0.28), the head is larger than drawn (0.43 of the body against 0.31)"
+   ],
+   "outside": 0.247,
+   "missing": 0.02,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.626,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

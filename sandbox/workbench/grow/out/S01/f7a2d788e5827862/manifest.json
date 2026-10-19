@@ -1,0 +1,578 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3-pro-image",
+ "promptVersion": 5,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "c1c14e66-642e-4316-8a7f-b529dcb6a446",
+     "step": 1,
+     "status": "ok",
+     "seconds": 19.2,
+     "checks": {
+      "silhouetteIoU": 0.909,
+      "silhouetteIoUInPlace": 0.892,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "muzzle": {
+        "span": 0.957,
+        "coverage": 0.961
+       },
+       "eye": {
+        "span": 1.0,
+        "coverage": 0.796
+       },
+       "crown": {
+        "span": 0.989,
+        "coverage": 0.999
+       },
+       "leg-0": {
+        "span": 0.843,
+        "coverage": 0.997
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.989
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.565,
+        "painted": 0.643,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.433,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.234,
+        "painted": 0.264,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.377,
+        "painted": 0.373,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.526,
+        "painted": 0.569,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.238,
+        "painted": 0.319,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.92,
+        "median": "#475256",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.808,
+        "median": "#475356",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@region-0": {
+        "agreement": 0.861,
+        "median": "#c0b09b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.911,
+        "median": "#c6b498",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.763,
+        "median": "#bcaa91",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "leaf@crown": {
+        "agreement": 0.982,
+        "median": "#589b5b",
+        "nearest": "#5aa65c",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.725,
+        "median": "#c7b69b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@muzzle": {
+        "agreement": 0.899,
+        "median": "#dfd0aa",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.005,
+      "missing": 0.005,
+      "bandTolerancePx": 20,
+      "tolerances": {
+       "bandMax": 0.18,
+       "partMin": 0.5,
+       "proportion": 0.25
+      },
+      "slotAgreement": 0.865,
+      "passed": true,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "j53HaprIHrbV-sAPuLzOqA8",
+     "checksAsRun": {
+      "silhouetteIoU": 0.909,
+      "silhouetteIoUInPlace": 0.892,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "muzzle": {
+        "span": 0.957,
+        "coverage": 0.961
+       },
+       "eye": {
+        "span": 1.0,
+        "coverage": 0.796
+       },
+       "crown": {
+        "span": 0.989,
+        "coverage": 0.999
+       },
+       "leg-0": {
+        "span": 0.843,
+        "coverage": 0.997
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.989
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.565,
+        "painted": 0.643,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.433,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.234,
+        "painted": 0.264,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.377,
+        "painted": 0.373,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.526,
+        "painted": 0.569,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.238,
+        "painted": 0.319,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.92,
+        "median": "#475256",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.808,
+        "median": "#475356",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@region-0": {
+        "agreement": 0.861,
+        "median": "#c0b09b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.911,
+        "median": "#c6b498",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.763,
+        "median": "#bcaa91",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "leaf@crown": {
+        "agreement": 0.982,
+        "median": "#589b5b",
+        "nearest": "#5aa65c",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.725,
+        "median": "#c7b69b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@muzzle": {
+        "agreement": 0.899,
+        "median": "#dfd0aa",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.005,
+      "missing": 0.005,
+      "bandTolerancePx": 20,
+      "tolerances": {
+       "bandMax": 0.18,
+       "partMin": 0.5,
+       "proportion": 0.25
+      },
+      "slotAgreement": 0.865,
+      "passed": true,
+      "proportionTolerance": 0.25
+     }
+    },
+    {
+     "callId": "98944d34-7804-478c-b799-ead979e62015",
+     "step": 2,
+     "status": "ok",
+     "seconds": 21.1,
+     "checks": {
+      "silhouetteIoU": 0.911,
+      "silhouetteIoUInPlace": 0.892,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "muzzle": {
+        "span": 0.957,
+        "coverage": 0.951
+       },
+       "eye": {
+        "span": 1.0,
+        "coverage": 0.879
+       },
+       "crown": {
+        "span": 0.989,
+        "coverage": 0.998
+       },
+       "leg-0": {
+        "span": 0.843,
+        "coverage": 0.998
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.984
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.565,
+        "painted": 0.644,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.434,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.234,
+        "painted": 0.265,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.377,
+        "painted": 0.374,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.526,
+        "painted": 0.572,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.238,
+        "painted": 0.319,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.924,
+        "median": "#465458",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.828,
+        "median": "#485458",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@region-0": {
+        "agreement": 0.831,
+        "median": "#bdad98",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.885,
+        "median": "#c5b297",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.717,
+        "median": "#baa890",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "leaf@crown": {
+        "agreement": 0.975,
+        "median": "#5c9d5b",
+        "nearest": "#5aa65c",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.733,
+        "median": "#c5b398",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@muzzle": {
+        "agreement": 0.89,
+        "median": "#ddcea7",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.004,
+      "missing": 0.003,
+      "bandTolerancePx": 20,
+      "tolerances": {
+       "bandMax": 0.1,
+       "partMin": 0.6,
+       "proportion": 0.15
+      },
+      "slotAgreement": 0.86,
+      "passed": true,
+      "gated": false
+     },
+     "responseId": "vp3Hat_GBpHf-sAPws2aKA",
+     "checksAsRun": {
+      "silhouetteIoU": 0.911,
+      "silhouetteIoUInPlace": 0.892,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "muzzle": {
+        "span": 0.957,
+        "coverage": 0.951
+       },
+       "eye": {
+        "span": 1.0,
+        "coverage": 0.879
+       },
+       "crown": {
+        "span": 0.989,
+        "coverage": 0.998
+       },
+       "leg-0": {
+        "span": 0.843,
+        "coverage": 0.998
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.984
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.565,
+        "painted": 0.644,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.434,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.234,
+        "painted": 0.265,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.377,
+        "painted": 0.374,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.526,
+        "painted": 0.572,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.238,
+        "painted": 0.319,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.924,
+        "median": "#465458",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.828,
+        "median": "#485458",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@region-0": {
+        "agreement": 0.831,
+        "median": "#bdad98",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.885,
+        "median": "#c5b297",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.717,
+        "median": "#baa890",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "leaf@crown": {
+        "agreement": 0.975,
+        "median": "#5c9d5b",
+        "nearest": "#5aa65c",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.733,
+        "median": "#c5b398",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@muzzle": {
+        "agreement": 0.89,
+        "median": "#ddcea7",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.004,
+      "missing": 0.003,
+      "bandTolerancePx": 20,
+      "tolerances": {
+       "bandMax": 0.1,
+       "partMin": 0.6,
+       "proportion": 0.15
+      },
+      "slotAgreement": 0.86,
+      "passed": true,
+      "gated": false
+     }
+    }
+   ],
+   "steps": [],
+   "servedBy": "step 2",
+   "rechecked": "2026-10-08T13:46:45Z"
+  }
+ },
+ "species": "S01",
+ "name": "Loika",
+ "level": "species",
+ "genomeDigest": "S01-45ff1025",
+ "genomeSha256": "f7a2d788e5827862dad88cc4cf68708f900a69bf626cddd3ed46a8944df26686",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 9,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T13:41:33Z",
+ "outputs": {
+  "station-portrait-600x620.png": "98fe3801db20cd000fa934025685fbb7da8a76034145c748c650835da02168f7",
+  "station-portrait-300x310.png": "2be570fe09daa76dbadf88c78387496f81142a76479c09d50386993a1cd2d5ee",
+  "companion-280x300.png": "fbd166aeba442398036f14eae9b0b15c37505d25befed28607b0c97f130f9a41",
+  "token-48.png": "a8cf98ad0983e6babf5ac75160c250d34e4a9c1a2ac964a3a8549bcd183dde6d"
+ },
+ "calls": 2,
+ "seconds": 40.3,
+ "finishedAt": "2026-10-08T13:43:12Z",
+ "rechecked": "2026-10-08T13:46:46Z",
+ "checksVersion": "mb-grow-checks/3"
+}

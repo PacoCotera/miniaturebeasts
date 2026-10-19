@@ -1,0 +1,186 @@
+{
+ "screen": "frame",
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md#shared-frame-and-rules",
+ "status": "fix 14: one cased ring outside the object, parallel to its outline",
+ "size": [1024, 600],
+ "grid": 8,
+ "regions": {
+  "top": { "rect": [0, 0, 1024, 40], "component": "topBar", "rule": "bottom", "slice": "frame-top-bar-1024x40", "painted": "the bar 1:1 at the rect; the zones, the top rules and the marks over it; while the bar is not on the face, the code panel (colours.chrome) and the rule (colours.rule)" },
+  "title": { "rect": [16, 8, 232, 24], "turnPx": 16, "mark": [16, 8, 24, 24], "text": [48, 8, 200, 24], "px": 20, "weight": 500, "words": 1, "case": "title", "marks": { "home": "Home", "cargo": "Home", "pods": "Research", "create": "Research", "incubator": "Research", "probe": "Research", "bench": "Research", "library": "Library", "book": "Library", "vivarium": "Vivarium", "habitat": "Vivarium", "cross": "Vivarium", "sitting": "Vivarium" }, "marksRule": "the mark is the icon of the coloured key that leads there: Home (with Cargo), Vivarium, Research, Library. `habitat` is the screen id of one mibi up close, a level of the Vivarium", "fadeMs": 200 },
+  "materials": { "rect": [384, 8, 256, 24], "centre": 512, "icon": 16, "gap": 4, "between": 24, "px": 16, "flashMs": 240 },
+  "companion": { "rect": [816, 8, 64, 24], "right": 880, "lamp": 8, "px": 16, "glyph": [816, 8, 16, 24], "lampAt": [836, 16, 8, 8], "face": [856, 8, 24, 24], "words": 0, "liftMs": 200, "lift": 2 },
+  "time": { "rect": [904, 8, 104, 24], "right": 1008, "mark": [16, 16], "gap": 4, "px": 16 },
+  "topRules": { "x": [256, 888], "y0": 8, "y1": 32 },
+  "stage": { "rect": [0, 40, 1024, 522] },
+  "line": { "rect": [0, 562, 1024, 38], "component": "bottomLine", "rule": "top", "slice": "frame-bottom-line-1024x38", "painted": "the bar 1:1 at the rect; the zones, the separators and the marks over it; while the bar is not on the face, the code panel (colours.chrome) and the rule (colours.rule)" },
+  "action": { "rect": [16, 570, 376, 24], "px": 16, "gap": 24, "capGap": 4, "cap": [16, 574, 16, 16], "capSize": [16, 16], "verbWords": 4, "backMoved": "regions.back", "wait": { "token": "⧗", "icon": "icon-wait-16", "size": [16, 16], "order": "after ⚡ ❀ ◆", "colour": "price", "never": "need", "screens": ["create"], "note": "the bud's wait as a price group (fix 6 N1a; game designer, 2026-10-15)" } },
+  "subject": { "rect": [408, 570, 208, 24], "centre": 512, "px": 16, "words": 6, "shrinks": true },
+  "need": { "rect": [624, 570, 272, 24], "right": 896, "px": 16, "lamp": [12, 12], "lampGap": 4, "words": 6, "slideMs": 200 },
+  "back": { "rect": [920, 570, 88, 24], "right": 1008, "px": 16, "cap": [16, 16], "capGap": 4, "words": 1, "gapBefore": 24, "room": 68, "roomRule": "the word's room is the slot less the cap and its gap, 88 − 16 − 4; a wider word reads \"Back\". The longest title word, \"Vivarium\" (66 px), fits" },
+  "separators": { "x": [404, 620], "y0": 571, "y1": 591 },
+  "marks": { "room": { "home": "frame-room-home-24", "research": "frame-room-research-24", "library": "frame-room-library-24", "vivarium": "frame-room-vivarium-24", "size": [24, 24] }, "companion": { "docked": "frame-companion-solid-16x24", "away": "frame-companion-outline-16x24" }, "lamp8": { "docked": "frame-lamp-8-mint", "away": "frame-lamp-8-stone" }, "lamp12": { "off": "home-lamp-hairline-12x12", "well": "home-lamp-sprout-12x12", "waiting": "home-lamp-sky-12x12", "needsYou": "home-lamp-amber-12x12" }, "sun": "frame-sun-16", "capShape": "disc", "capConfirm": "frame-cap-confirm-16", "capConfirmDim": "frame-cap-confirm-16-dim", "capBack": "frame-cap-back-16", "face": { "ringWidth": 2, "docked": "face-{mibi}-24", "away": "face-{mibi}-24-away", "empty": "face-24-empty" }, "faceNote": "a Station master painted at 24, never a scaled Companion face", "faceRule": "the one face place names one carried mibi: the Companion's lead when it is carried (grown or not), else the first id in carried order (state.carriedIds, the set as it is, never a waiting request); none carried: face-24-empty. K4's partner is the Companion's and is never shown here. Until the three face places of station-layouts.md (the top bar's Companion zone, faces at 800, 828 and 856, 8, 24×24, in carried order) replace it", "scale": "never" },
+  "stampSlot": { "label": [804, 400, 120, 120], "axis": 864, "code": { "rect": [776, 525, 176, 25], "lineTop": 525, "baseline": 541, "rule": { "y": 549, "h": 1, "x": [776, 952] } }, "screens": { "pods": "overview: the label at the slot, its case (788, 384, 152, 152); no code", "create": "the slot, label and code", "incubator": "label (804, 232, 120, 120), code (776, 357, 176, 25), baseline 373, rule 381 from x 792 to 936: the slot raised 168, the right column's label place under the R machinery", "habitat": "the card's own (872, 64, 120, 120); no code line under it (the code is the card's line at 608, 160)", "library": "the Book keeps the page's label (832, 112, 120, 120); outside fix 4" }, "look": { "hook": "stampCase", "owner": "art director", "status": "signed (art director, masters-pods 001bcd51)", "holds": "the label's case: its fill, edge, light and glass, and the code's ink and rule; never a white card, no beam, glow or lamp of its own", "values": "the label's plate (the interim bone) and the stamp are multiplied in linear light by K × WARM (1.00, 0.93, 0.80) when the label is rasterised, a picture placed 1:1, never an overlay: K 0.20 on Create, the Incubator and the Habitat card, except the Incubator's plate, which is the painted master `stamp-plate-120x120` placed 1:1 with its own edge (no K × WARM, no hairline); the Incubator's stamp still takes K 0.20 × WARM (CD ruling, specs/station-stamp-plate-ruling.md), K 0.75 on Pods, whose label stands in the case (room-stamp-case-152x152 behind it and room-stamp-case-152x152-front, the ground at 48 %, over it, both at 788, 384); a 1 px `hairline` edge on the label; the code in `mist` at 16 px over a 1 px `hairline` rule" }, "brightness": { "rule": "never the brightest element on screen", "check": "at 1x, the label rect's mean and 95th-percentile relative luminance are each below the same measures of the state's main object (station-layouts.md, Every state composed, 1)", "measured": "main 0a46bf1c: label mean 59 to 76 %, p95 100 %; main object mean 20 to 34 %, p95 40 to 80 % (Create, Incubator, Pods overview, Habitat): the brightest thing on every screen" }, "note": "UI/UX designer, 2026-10-11 23:59, fix 4 of the Station global fix plan: one label slot for the specimen screens, so the label is not found fresh on each; reads fifth or later" },
+  "rail": { "y": 40, "h": 40, "slant": 16, "full": 136, "compact": 56, "fullUpTo": 6, "max": 12, "pip": { "size": 6, "pitch": 8, "draw": "none on Pods, the Incubator and Compare (fix 11, GB1: the word's colour says read); Create draws one 12×12 mark per tab (create.json regions.rail.mark)" }, "full_layout": { "emblem": [24, 24], "gap": 8, "labelY": 43, "labelCentre": 74, "pipsY": 71, "pipsCentre": 82, "pipsUnder": "label" }, "compact_layout": { "emblemY": 43, "emblemCentre": 34, "pipsY": 71, "pipsCentre": 42 }, "gap": 0, "grid": 8, "case": "every word capitalised", "states": { "unread": { "fill": "panel", "word": "mist", "pip": "mist" }, "read": { "fill": "panel", "word": "bone", "pip": "bone" }, "open": { "fill": "hairline", "word": "ink", "pip": "ink" }, "sealed": { "fill": "panel", "slats": "bar", "word": "mist", "pip": null }, "focused": { "same": "its state", "ring": "focus" }, "edge": "bevel" }, "glint": { "size": 12, "below": 2 }, "pods": { "x": "centred" }, "centred": { "on": 512, "snap": 8 }, "slideMs": 300, "well": { "id": "plate-rail-well-{w}x48", "x": "x0 − 8", "y": 40, "w": "run + 16", "h": 48, "top": "open: it hangs from the top bar's rule", "layer": "painted", "order": "before the tabs", "empty": "no tabs: no size (F5)", "widths": "run = the sum of the tabs' widths + 16 (the slant); 1 to 6 full tabs 168, 304, 440, 576, 712, 848; 7 to 12 tabs with one open 504 to 784 by 56; 7 to 12 compact with none open 424 to 704 by 56" }, "note": "The shared chapter rail (station-layouts.md, The chapter rail): tabs are parallelograms hanging from the top bar's rule (y 40 to 80), both sides leaning 16 px right over the height, touching along their slants (pitch = width, run = sum of widths + 16). One to six chapters: full tabs of 136. Seven to twelve: compact tabs of 56 and the open chapter's tab full. Every bench screen centres the run on x 512, snapped down to the grid (Pods since its three states, 2026-10-09). A hanging tab does not lift. The rail sits in its well, cut into the housing's top bezel (fix 2 F11)." },
+  "panel": {"note": "The decision panel (specs/station-decision-panel-spec.md, Part 1, T-20261016-59): one component, an overlay over the screen that opens it. Drawn in code from the message plate's roles until the art director's masters land (T-47): the ground stageGround, the edge plateEdge, the cards as wells in chrome, never the cream. The overlay's own spec is panel.json.", "veil": {"rect": [0, 40, 1024, 522], "levels": 8, "of": 16, "toward": "stageGround", "note": "the screen under the panel, a Bayer lattice of 8 of 16 levels, one cut; the top bar and the bottom line are not veiled"}, "rect": [92, 80, 840, 440], "radius": 12, "ground": "stageGround", "edge": "plateEdge", "title": {"rect": [124, 96, 776, 36], "px": 28, "weight": 600, "words": 4, "lineTop": 96, "colour": "title", "align": "centre"}, "cards": {"x": 124, "y": 152, "h": 288, "gap": 16, "width": 776, "max": 3, "well": "chrome", "edge": "hairline", "radius": 12}, "card": {"picture": {"at": [16, 16], "h": 160, "floor": 168, "note": "the outcome as the thing itself, 1:1, never scaled, bottom-centred on the slot's floor"}, "mark": {"at": ["w-40", 16], "size": [24, 24]}, "name": {"at": [16, 184], "h": 28, "px": 20, "weight": 500, "words": 3, "colour": "bone", "colourDim": "dim"}, "costs": {"at": [16, 216], "h": 20, "px": 16, "icon": 16, "gap": 4, "between": 8, "groups": 4, "price": "price", "gain": "turn", "short": "need"}, "line": {"at": [16, 244], "h": 20, "px": 16, "weight": 400, "words": 6, "colour": "subject", "colourLoss": "need", "colourDim": "dim"}}, "limits": {"3": {"card": 248, "text": 216, "picture": [216, 160]}, "2": {"card": 380, "text": 348, "picture": [348, 160]}, "1": {"card": 776, "text": 744, "picture": [744, 160]}}, "art": {"note": "T-20261016-103: the panel is drawn from the passed masters (T-47, T-70), placed 1:1 or nine-sliced, in the composite rule of T-70: glow (or the wild scene), stage, contact shadow, the picture with its feet line on y + 168, light; the code-drawn plate is the fallback while a master is not placed", "housing": "panel-housing-840x440", "veil": "panel-veil-1024x522", "card": "panel-card-{w}x288", "focused": "panel-card-{w}x288-focused", "stage": {"id": "panel-stage-{pw}x48", "at": [16, 136]}, "glow": {"id": "panel-glow-{pw}x160", "at": [16, 16]}, "light": {"id": "panel-light-{pw}x160", "at": [16, 16]}, "scene": {"id": "panel-scene-wild-{pw}x152", "at": [16, 16], "shift": 72, "note": "the Return outcome's ground, in place of the glow; the subject stands 72 px right of centre, facing the light (T-20261016-70)"}, "shadow": {"id": "panel-contact-shadow-128x16", "h": 16, "ends": 32, "stretch": 16}, "chip": {"id": "panel-chip-40x20", "h": 20, "pad": 6, "between": 8}, "feet": {"alpha": 128, "rows": 4, "line": 168}, "pw": "the card's width less 32 (the picture slot)"}, "strip": {"rect": [92, 376, 840, 160], "radius": 12, "form": "strip", "note": "T-20261016-48 §2, the decision panel's strip form for a choice that belongs under what it is about: no title, picture or question, no veil, the stage above stays visible; the panel's look, never the cream plate (the code-drawn plate and wells while no 840 × 160 master is placed)", "cards": {"x": 108, "y": 392, "w": 396, "h": 128, "gap": 16, "max": 2, "well": "chrome", "edge": "hairline", "radius": 12}, "picture": {"at": [16, 16], "size": [96, 96], "crops": {"open": {"master": "crate-open-432x272", "of": [432, 272], "at": [150, 110]}, "sealed": {"master": "crate-sitting-80x56", "of": [80, 56], "at": [-8, -20]}}, "note": "T-20261016-161: each card's crate is a 96 × 96 window of a placed crate master at `at`, taken 1:1 (never scaled), transparent where the window passes the master: the open crate's well and rim, the whole sealed crate sitting"}, "name": {"at": [128, 16], "h": 28, "px": 20, "words": 3, "max": 252, "colour": "bone", "colourDim": "dim"}, "costs": {"at": [128, 52], "h": 20, "px": 16, "icon": 16, "gap": 4, "between": 8, "groups": 4, "price": "price", "gain": "turn", "short": "need"}, "line": {"at": [128, 80], "h": 20, "px": 16, "words": 6, "max": 252, "colour": "subject", "colourDim": "dim"}}, "ring": {"rect": 10, "out": 4, "lift": 0}, "back": "Back", "keys": {"left": "the previous card, stopping at the ends", "right": "the next card, stopping at the ends", "up": "nothing", "down": "nothing", "confirm": "does the focused card (a dimmed card: the warn words on the message plate, nothing spent)", "back": "closes with nothing spent", "room": "closes with nothing spent, then acts as everywhere"}, "dirty": {"open": "the whole stage once (the veil), a screen change", "focus": "the two cards' boxes, at most 2 x 256 x 296 = 151,552 px (≤ 153,600)"}},
+  "plate": { "centre": 512, "maxWidth": 640, "pad": 16, "line": 20, "lead": 16, "bottom": 550, "topOverFocal": 112, "showMs": 4000, "px": 16 }
+ },
+ "type": { "body": 16, "title": 20, "name": 28, "pitch": { "16": 20, "20": 28, "28": 36 }, "weight": { "16": 400, "20": 500, "28": 600 } },
+ "focus": { "ring": {
+   "line": "solid", "gap": 1, "bands": [{ "w": 1, "role": "key" }, { "w": 2, "role": "core" }, { "w": 1, "role": "key" }], "reach": 5,
+   "radius": "the object's radius + the band's outer offset (5, 4, 2)",
+   "colours": { "default": { "core": "focus", "key": "void" } },
+   "shapes": {
+    "rect": "{ \"rect\": r }: a rounded rectangle, the object's drawn rect grown by `reach`, outer radius r + reach; a ring box under 2R on an axis is refused",
+    "chip": "{ \"rect\": 0, \"chip\": 4 }: a target that is text: the drawn extent plus `chip` px each side, then as rect 0",
+    "oval": "the ellipse through the drawn rect grown by `reach`",
+    "circle": "{ \"circle\": { \"centre\": [dx, dy], \"r\": r } }: a circle of radius r + reach round (x + dx, y + dy); or { \"circle\": \"box\" }: radius (w >> 1) + reach round the box's centre",
+    "footprint": { "band": 6, "alpha": 128, "shadowAlpha": 1, "hDiv": 12, "hMin": 6, "hMax": 16,
+     "weight": { "dawn": "default", "day": "default", "dusk": "default", "night": "default" },
+     "floor": { "px": 2, "ratio": 3 },
+     "light": { "insets": [1, 2, 3], "widths": [1, 1, 1], "roles": ["key", "core", "key"] },
+     "note": "the lowest `band` rows of the picture at alpha >= `alpha`; the ellipse (w + 10) x (fh + 10), fh = 2 * floor((w + 6) / hDiv) held between hMin and hMax; night is always default" },
+    "tab": { "slant": 16, "slantTo": 80, "outside": [5, 4, 2], "top": [41, 42, 44], "bottom": [85, 84, 82], "radius": [7, 6, 4], "radiusTab": 2, "lift": 0 }
+   },
+   "motion": "a cut in and out, no travel; identical with reduced motion",
+   "where": "each target's `shape` (and `ground`); any other key is refused when the spec loads" },
+  "lift": { "chrome": 2, "creature": 4, "ms": 200 } },
+ "colours": {
+  "chrome": "ground", "rule": "void", "title": "bone", "turn": "bone", "sun": "yellow", "figure": "bone", "flash": "amber", "flashInk": "ink",
+  "companion": "fog", "companionDocked": "mint", "lampOn": "mint", "lampOff": "stone", "faceRing": "teal", "faceRingAway": "stone", "topRule": "hairline",
+  "tick": "orange", "capConfirm": "orange", "capBack": "stone", "verb": "orange", "dim": "mist", "price": "focus", "dot": "hairline", "back": "fog", "subject": "mist", "need": "amber",
+  "plate": "bar", "plateEdge": "sand", "plateShadow": "void", "plateText": "bone",
+  "stageGround": "ground"
+ },
+ "strings": { "goal": { "rule": "The goal (station-x10-economy.md ruling 4, goalKey): the next thing the player works toward. Home's notice zone shows it in mist with no lamp when no first-group need holds, and the Cargo report's last row; never on Idle. {icons} are the materials a short step lacks, drawn as 16 px icons after the words (gap 4, pitch 20); {name} is the goal's first living mibi (lowest id). A key with {name} has a nameless sibling the face draws when the filled line and its icons pass the room.",
+  "step": { "goOut": "go out with the Companion", "findPod": "find {a} {species} pod", "identify": "identify the {species} pod", "identifyAny": "identify a pod", "grow": "incubate the {species} pod", "openBay": "open the bay", "noBay": "free a bay in the Vivarium", "bud": "wait for the bud", "cross": "cross {name}", "read": "read {name}'s chapters",
+  "readPod": "read {chapter} on the {species} pod", "blocked": "the pair cannot cross yet", "fit": "fit the Probe upgrade",
+   "short": { "field": "go out for more {icons}", "bench": "watch your mibis for more {icons}", "fieldOrPod": "go out or return pods for {icons}", "fieldAndBench": "go out and watch for more {icons}" },
+   "growUp": { "one": "one more walk grows the pair", "more": "more walks grow the pair", "care": "{name} grows with care", "careNoName": "the young mibi grows with care" },
+   "readNoName": "read the new mibi's chapters" },
+  "aim": { "firstPod": "find a first pod", "firstMibi": "grow a first mibi", "pair": "a partner for {name}", "growUp": "walks grow {name} up", "cross": "cross {name} next", "readChild": "read {name}'s chapters", "guide": "fill the {species} field guide",
+  "probe": "save up for the Probe upgrade", "growUpNoName": "walks grow the pair up", "readChildNoName": "read the new mibi's chapters" } },
+ "goalWarn": { "rule": "The pre-spend warning (goalSpendWarn): one line in the notice zone, amber as needMore, before ✓ pays a price that would leave the goal's next price short. {icons} are what would then be short.", "identify": "then the {species} pod needs {icons}", "grow": "then the {species} pod needs {icons}", "cross": "then the pair needs {icons}", "read": "then the next read needs {icons}", "fit": "then the upgrade needs {icons}" },
+ "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "cargo": "Bay", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "vivarium": "Vivarium", "habitat": "Vivarium", "cross": "Cross" , "bench": "Probe", "sitting": "Sitting" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
+ "light": { "from": [[6, "dawn"], [7, "day"], [18, "dusk"], [20, "night"]], "rule": "the Station's local hour; a light runs until the next start, the last wraps midnight", "bed": { "dawn": "home-bed-dawn", "day": "home-bed-day", "dusk": "home-bed-dusk", "night": "home-bed-night" } },
+ "idle": {
+  "light": { "pictures": { "dawn": "idle-vivarium-dawn", "day": "idle-vivarium-day", "dusk": "idle-vivarium-dusk", "night": "idle-vivarium-night" } },
+  "spec": "design/style-guide/station-layouts.md#idle",
+  "status": "Idle is the Vivarium's whole without the frame: one painting, the whole's window a 1:1 part of it; the idle timer, the wake, what moves and the line; wireframe station-layouts/10-idle.svg",
+  "purpose": "a living view the Station can show permanently, all day: the Vivarium with its residents awake and moving, in full light. Never a screen off, a sleep, a dimmed or blanked screen",
+  "state": "props.idle = true: the whole 1024×600 is Idle's composition. The top bar, the bottom line, the message plate and the focus ring are not drawn, and the screen under Idle keeps its state and focus unseen",
+  "regions": {
+   "vivarium": { "rect": [0, 0, 1024, 568], "component": "livingWindow", "part": "inside", "frame": false, "ground": [0, 376, 1024, 176], "foot": [0, 552, 1024, 16], "theWhole": { "rows": [120, 560], "at": [0, 40, 1024, 440], "rule": "the Vivarium's whole shows rows 120 to 560 of this painting in its window (0, 40, 1024, 440), 1:1: a resident at y on Idle stands at y − 80 on the whole, and its ground band (0, 296, 1024, 176) is this band. One painting a light (dawn, day, dusk, night), never cropped and enlarged" } },
+   "resident": { "component": "livingWindow", "part": "residents", "clip": "vivarium", "order": "draw order of the residents and the bed: by their feet's y, lower in front (drawn later), left first on a tie; the bed, its mark and its sleepers sort as one, at the bed's foot (y 552)", "adult": [144, 152], "juvenile": [104, 112], "walk": { "ground": [16, 376, 992, 176], "box": "box.x 16..1008−w, feetY 376..551", "keepOut": [792, 448, 192, 104], "step": "2 px along the major axis (Bresenham), at t = 80m + 40·(k mod 2) ms, k the props index; t on the walk's clock; one group tick a frame at most: a frame later than 40 ms after the last steps the next group only and the walk's clock drops the time past that tick, so at most 6 of 12 change in any frame", "idle": "25 + (r mod 38) steps (2000..4960 ms)", "waypoint": "box.x 16 + r mod (993 − w), feetY 376 + r mod 176; rejected if max(|dx|,|dy|) < 32 or the path meets keepOut; after 8 rejections, idle again", "start": "the same draw, the point only; fallback box.x 16", "facing": "sign of dx, kept at 0; initial r & 1; a mibi picture is never mirrored: facing is tracked for the walk frames to come, the picture drawn as is", "motion": "false: stands at its start", "lcg": "s·1664525 + 1013904223 mod 2^32, r = s >> 16", "dirty": "at most 25% of the screen (153,600 px) per refresh; worst measured 21.5%" }, "lamp": [12, 12], "lift": 0, "focus": null, "moves": "awake: each walks, rests and plays its species' idle on the seed the face steps, as on Home and the whole", "asleep": { "when": "clip curl, asleep or stir; walker form in wake, breathe, hop, walk; a one-shot under way when focus lands shows its end state's form", "ink": [96, 88], "inkBox": "[x + w/2 − 48, feet − 88, 96, 88], last ink row feet − 3", "ring": "feet form on the ink box: [x + w/2 − 56, feet − 12, 112, 24]", "tag": "over the ink: top feet − 120, centred on x + w/2, slid 8 px inside the window, no lift", "lamp": "[x + w/2 + 36, feet − 88, 12, 12]", "target": "the resident's box [x, feet − h, w, h], unchanged", "lift": 0, "order": "by feet as a walker; in the slot: shadow, ring, picture, dither, lamp", "spot": "[x + w/2 − 56, feet − 12, 112, 24]: no other resident's waypoint or start point has its ground point in it", "focus": "no curl, wake, stir or wander begins while focused; a due change starts when focus leaves" } },
+   "bed": { "rect": [792, 496, 192, 56], "component": "livingWindow", "build": "withYouBed", "clip": "vivarium", "mark": [16, 24], "markAt": [88, 16], "markRect": [880, 512, 16, 24], "markPicture": "home-bed-mark-16x24", "sleepers": { "max": 3, "pose": "nap", "pitch": 48, "footY": 536, "centre": 888, "places": { "1": [888], "2": [864, 912], "3": [840, 888, 936] }, "adult": { "size": [144, 152], "box": "[footX − 72, 384, 144, 152]" }, "juvenile": { "size": [104, 112], "box": "[footX − 52, 424, 104, 112]" }, "ink": { "max": [96, 88], "rule": "the nap pose's ink is at most 96 wide and 88 tall, centred on footX and bottom-aligned on footY in its box: at most [footX − 48, 448, 96, 88]; three sit on the 192 px bed", "rects": { "3": [[792, 448, 96, 88], [840, 448, 96, 88], [888, 448, 96, 88]] } }, "mark": null, "markNote": "no mark on a sleeper: the nap pose says it", "lift": 0, "moves": "the nap pose breathing, nothing else" }, "states": { "docked": "the carried set asleep, one to three, in carried order", "away": "the bed empty, its mark (home-bed-mark-16x24) 1:1 at markRect over it; docked and none: no mark", "none": "the nest alone" } },
+   "strip": { "rect": [0, 568, 1024, 32], "component": "panel", "build": "idleLine", "rule": "top", "binding": "idleLine is a composition in the frame's binding table, not a word" },
+   "line": { "rect": [16, 568, 992, 32], "component": "text", "build": "idleLine", "props": "props.frame.idle.line, one string", "px": 16, "weight": 400, "align": "centre", "centre": 512, "middle": 584, "lines": 1, "words": 6, "noDigits": true }
+  },
+  "moves": "the residents and the sleepers, and the light, which follows the time of day; nothing blinks, nothing counts down, the line changes only when what it says changes (a cut). The waiting lamp may show on a resident, steady",
+  "colours": { "strip": "ground", "rule": "void", "line": "mist", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil", "bed": { "rim": "bark", "hollow": "soil", "light": "sand", "mark": "mist", "note": "UI designer, 2026-10-10 02:29: the Vivarium's whole's bed roles (vivarium.json colours.bed), one bed in one painting" } },
+  "enter": { "from": ["the rest knob's ✓ on Home (home.json events.rest)", "the idle timer: 60 s without a press on any screen, counted from the later of the last press and the end of a hold, an arrival or Cargo's report card; never during one"], "transition": { "kind": "dither", "ms": 180, "levels": 16 }, "hold": 180 },
+  "keys": {
+   "any": "the first press sends `wake` and nothing else: no ring moves, nothing opens, nothing is spent",
+   "rest": "a room key pressed during the rest's hold (home.json events.rest, 380 ms) is dropped: Idle shows and stays; the next press is the wake, and only the press after it opens a section",
+   "dock": "the Caddy's Dock is a world event, never a Station key: it wakes, docks and lands on Home with the ring on the room, then the crates slide into the Cargo module (home.json events.crateIn); lifting the Companion from Idle wakes and lifts, and the screen under Idle shows"
+  },
+  "wake": { "to": "the screen under Idle, its focus as it was", "transition": { "kind": "dither", "ms": 180, "levels": 16 }, "hold": 180 },
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): the dither to Idle and the wake are cuts, so the host sends hold 0 with them (enter.hold and wake.hold are 180 with motion on); the first press still only wakes; with reduced motion the rest holds 0 and Idle comes on the frame of the key, so any later key is on Idle and only wakes. Nothing on Idle cuts (habitat.json notes.cut)",
+  "strings": { "line": "one sentence, six words or fewer, no digits", "order": ["crates", "budReady", "budGrowing", "out"], "orderRule": "the first that holds shows; none: the line is empty; never a demand, nothing nags. `out` only while the Companion is away with mibis carried; docked, nothing about them", "crates": { "1": "a crate waits in the bay", "2": "two crates wait in the bay", "3": "three crates wait in the bay", "many": "crates wait in the bay" }, "budReady": "the bud is ready", "budGrowing": "a bud is growing", "out": { "1": "{name} is out with the Companion", "2": "two mibis are with the Companion", "3": "three mibis are with the Companion" }, "none": "" }
+ },
+ "notBuilt": {
+  "doors": "no target in play opens a not-built screen: a door to one is shut in place, with no ✓ cap and its screen's shut line (habitat.json strings.shut). The composition stays for a screen reached any other way (a developer jump, the journey's not-built steps)",
+  "spec": "design/style-guide/station-layouts.md#not-built-yet",
+  "status": "the composition a screen shows while the face has no binding table for it; wireframes station-layouts/13-not-built.svg (on Home) and 13b-not-built-idle.svg (Idle)",
+  "purpose": "say plainly that this screen is not built yet, keep the frame and navigation working, and promise nothing the screen cannot do",
+  "when": "a screen with no binding table in the face's screens/ (props.state = \"notBuilt\"); Idle (props.idle) with no Idle binding",
+  "boot": "home",
+  "frame": { "screen": true, "idle": false },
+  "draws": "the frame as on every screen (the title from strings.titles, the counters, the Companion mark, the turn, the bottom line, the message plate), the frame's stage part with no slice in colours.stageGround, and the line; no picture, no targets, no focus ring",
+  "regions": {
+   "line": { "rect": [16, 280, 992, 32], "component": "text", "build": "notBuilt", "px": 20, "weight": 500, "align": "centre", "centre": 512, "middle": 296, "capTop": 288, "baseline": 303, "lines": 1, "words": 6, "noDigits": true, "binding": "notBuilt is a composition in the frame's binding table, as idleLine is; it adds no word and no layout rule" },
+   "ground": { "rect": [0, 0, 1024, 600], "component": "panel", "build": "notBuilt", "on": "idle", "rule": null, "edge": null, "note": "Idle only: the whole screen in the ground, under the line; on a framed screen the frame's stage part is the ground" }
+  },
+  "colours": { "line": "fog", "ground": "ground" },
+  "bottomLine": {
+   "action": "empty: no ✓ cap, no verb, no price",
+   "subject": "empty",
+   "need": "the frame's notice as on every screen (the line's need left null, so the default notice shows), amber, with its 12×12 lamp",
+   "back": "the ← cap and the parent's word from navigation.screens; none on Home"
+  },
+  "keys": {
+   "confirm": "nothing: no intent acted on, no plate",
+   "pad": "nothing: there are no targets and no ring",
+   "back": "to the parent in navigation.screens (the stack rule); on Home nothing",
+   "room": "as navigation.roomKeys, from every not-built screen",
+   "dock": "as on every screen: docks or lifts the Companion and lands on Home; with Home not built no arrival plays and nothing is held: the counters and the turn take their new values at once, and the notice names the crates",
+   "idle": "the idle timer runs on every not-built screen; Idle not built draws ground and line only, and the first press sends wake and nothing else, back to the screen under it (180 ms dither, held)"
+  },
+  "strings": { "line": "this screen is not built yet", "subject": "", "rule": "one sentence in lower case, as the frame's notices and Idle's line, a name keeping its capital; no digits, no full stop; on a framed screen the name is the top bar's title, never repeated in the line; Idle has no title, so its line names it" }
+ },
+ "navigation": {
+  "dock": {
+   "rule": "the Caddy's Dock, a world event. Pressed while the Station has the keys: no navigation (each screen's own cut; Home and Cargo no plate, elsewhere the rule's plate). While another device has the keys, the Station takes the keys and behaves as if it had them; the arrival plays over its screen, and Later returns there; Create or Cross with an unpaid choice, the namer and the Sitting stay, with the plate. Lift never navigates.",
+   "stays": ["home", "cargo", "create", "cross", "sitting"],
+   "namerStays": true, "arrival": "the Companion's dock plays the arrival (cargo.json regions.arrival) over the screen the player is on, over Home from Idle; mid-decision (frame.json stays other than Home and Cargo with an open choice, the namer, a decision panel) it waits: the plate says \"The Companion is home\" for 2000 ms and the show plays after the next screen change; Home and Cargo are in stays only for navigation", "plates": { "ms": 2000, "crates": "the crates went out with the Companion", "goes": "{Name} goes at the next dock" }
+  },
+  "spec": "design/style-guide/station-screens.md#keys-and-navigation",
+  "map": "design/style-guide/station-layouts/nav-map.png",
+  "rule": "Home is the hub; Incubator and Probe under Home with the Research mark; a room key always opens its room's top; stack navigation (← to the parent of the screen you are on, never to the history); the first press on Idle only wakes; a room key pressed on Create or Cross drops the unpaid choices, and coming back starts fresh",
+  "keys": {
+   "pad": "moves the ring inside this screen (on Create and Cross, the focused choice); never leaves the screen, never spends",
+   "confirm": "does the bottom line's action exactly; no ✓ cap, nothing happens",
+   "back": "goes to this screen's parent, and the way back names it with this screen's back word; no parent, no ← cap and nothing happens",
+   "room": "opens the room's top screen from anywhere, even from inside the room; never spends"
+  },
+  "roomKeys": {
+   "home": {"screen": "home", "focus": "room"},
+   "research": {"screen": "pods", "state": "collection", "focus": "the pod that most needs the player"},
+   "library": {"screen": "library", "state": "spread", "focus": "the current frame"},
+   "habitat": {"screen": "vivarium", "focus": "vivarium.json focus.entry.vivariumKey"}
+  },
+  "screens": {
+   "home": {"parent": null, "back": null},
+   "cargo": {"parent": "home", "back": "Home", "states": ["bay", "opening", "end", "arrival"], "spec": "cargo.json"},
+   "pods.collection": {"parent": "home", "back": "Home"},
+   "pods.overview": {"parent": "pods.collection", "back": "Pods"},
+   "pods.chapter": {"parent": "pods.overview", "back": "{pod}"},
+   "pods.compare": {"parent": "pods.overview", "back": "{pod}"},
+   "create": {"parent": "pods.overview", "back": "{pod}"},
+   "incubator": {"parent": "home", "back": "Home"},
+   "probe": {"parent": "home", "back": "Home", "states": ["docked", "away"], "spec": "bench.json"},
+   "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
+   "library": {"parent": "home", "back": "Home", "states": ["spread"], "spec": "library.json"},
+   "book": {"parent": "library", "back": "Library", "spreads": ["face", "guide"], "turn": "◀ ▶ past the spread's edge; ← reads Library on both (library.json spreads)"},
+   "vivarium": {"parent": "home", "back": "Home", "spec": "vivarium.json"},
+   "habitat": {"parent": "vivarium", "back": "Vivarium"},
+   "cross": {"parent": "habitat", "back": "{name}"},
+   "sitting": {"parent": "habitat", "back": "{name}", "steps": "inside the sitting ← goes back a step (place to pose, look and confirm to place); from the pose step it goes to the Vivarium (sitting.json keys.back)"}
+  },
+  "podBack": "{pod} is the pod's label (\"Loika\"); a name wider than the way back's 68 px for its word reads \"Back\"",
+  "nameBack": "{name} is the shown mibi's name; a name wider than the way back's 68 px for its word reads \"Back\"",
+  "jumps": [
+   {"from": "cargo", "state": "end", "action": "Look at the pods", "to": "pods", "view": "collection", "focus": "the newest pod", "when": "a new pod landed in a well"},
+   {"from": "create", "action": "Incubate", "to": "incubator"},
+   {"from": "cross", "action": "Cross them", "to": "incubator"},
+   {"from": "incubator", "action": "Open", "to": "habitat", "state": "meet", "focus": "the resident: the new mibi"},
+   {"from": "incubator", "state": "empty", "action": "Choose a pod", "to": "pods", "view": "collection", "focus": "the first identified pod in rack order, else the first pod", "when": "the rack holds a pod and a bay is free"},
+   {"from": "book", "action": "Visit {mibi}", "to": "habitat"},
+   {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "slot 8", "shut": "until slot 8: not a target (pods.json regions.overview.figure.target); the figure is drawn and the pod's ▶ goes to kin.first"},
+   {"from": "habitat", "target": "the card's species word", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "slot 8", "shut": "until slot 8: no ✓ cap (habitat.json bottomLine.species.shut)"}
+  ],
+  "jumpRule": "stack navigation: after a jump, ← goes to the parent of the screen you are on in this tree, never back along the way you came",
+  "homePad": {
+   "order": "fixed, not spatial",
+   "column": ["cargo", "pods", "incubator", "probe", "library", "rest"],
+   "upDown": "walk the instrument column; among the residents, the nearest one that way",
+   "leftRight": "cross between the vivarium's residents and the instrument column, landing on the row nearest the ring",
+   "fromRoom": {"right": "cargo", "left": "the nearest resident", "up": "the vivarium panel"},
+   "homeKeyOnHome": "the ring back on the room, where ✓ does what needs the player"
+  },
+  "leaving": {
+   "create": "a room key drops the unpaid choices; coming back starts fresh",
+   "cross": "a room key drops the unpaid choices; coming back starts fresh"
+  }
+ }
+}

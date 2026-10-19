@@ -1,0 +1,580 @@
+{
+ "$comment": "The props of one mibi up close (lvgl-switch.md §2.1): what views/habitat-props.mjs gives the face, beside the frame's. Props name what, never where: ids, strings, states, counts, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from habitat.json and the palette). Pictures are ids; a master not yet signed is an empty slot or a labelled placeholder the host registers. `overlay` is the namer's props (namer.props.json) while it is open, absent otherwise.",
+ "$defs": {
+  "target": {
+   "type": "object",
+   "required": [
+    "id",
+    "group",
+    "enabled"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "group": {
+     "enum": [
+      "resident",
+      "name",
+      "species",
+      "plate",
+      "top",
+      "low",
+      "tile"
+     ]
+    },
+    "enabled": {
+     "type": "boolean"
+    }
+   }
+  },
+  "tile": {
+   "type": "object",
+   "required": [
+    "id",
+    "state",
+    "shown",
+    "picture",
+    "well"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "state": {
+     "enum": [
+      "housed",
+      "out",
+      "free"
+     ]
+    },
+    "shown": {
+     "type": "boolean"
+    },
+    "picture": {
+     "type": "string"
+    },
+    "well": {
+     "type": "string"
+    }
+   }
+  },
+  "plate": {
+   "type": "object",
+   "required": [
+    "id",
+    "state",
+    "ground",
+    "emblem"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "state": {
+     "enum": [
+      "read",
+      "unread",
+      "sealed"
+     ]
+    },
+    "ground": {
+     "type": "string"
+    },
+    "emblem": {
+     "type": "string"
+    }
+   }
+  },
+  "place": {
+   "type": "object",
+   "required": [
+    "picture",
+    "waiting",
+    "well"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "picture": {
+     "type": "string"
+    },
+    "waiting": {
+     "type": "boolean"
+    },
+    "well": {
+     "type": "string"
+    }
+   }
+  },
+  "face": {
+   "type": "object",
+   "required": [
+    "picture",
+    "away"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "picture": {
+     "type": "string"
+    },
+    "away": {
+     "type": "boolean"
+    }
+   }
+  }
+ },
+ "type": "object",
+ "required": [
+  "state",
+  "regions",
+  "focus"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "state": {
+   "enum": [
+    "rest",
+    "meet",
+    "out"
+   ]
+  },
+  "regions": {
+   "type": "object",
+   "required": [
+    "stage",
+    "glass",
+    "resident",
+    "nameTag",
+    "meetRibbon",
+    "card",
+    "plates",
+    "door",
+    "portrait",
+    "cross",
+    "wild",
+    "strip",
+    "tiles"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "stage": {
+     "type": "object",
+     "required": [
+      "room"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "room": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       },
+       "maxItems": 2
+      }
+     }
+    },
+    "glass": {
+     "type": "object",
+     "required": [
+      "picture"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "picture": {
+       "type": "string"
+      }
+     }
+    },
+    "resident": {
+     "type": "object",
+     "required": [
+      "id",
+      "name",
+      "stage",
+      "picture",
+      "waiting",
+      "out"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "stage": {
+       "enum": [
+        "juvenile",
+        "adult",
+        "elder"
+       ]
+      },
+      "picture": {
+       "type": "string"
+      },
+      "waiting": {
+       "type": "boolean"
+      },
+      "out": {
+       "type": "string"
+      },
+      "seed": {
+       "type": "integer",
+       "description": "Station M1 §2.4: the up-close tick's seeded phase"
+      },
+      "moving": {
+       "oneOf": [
+        {
+         "enum": [
+          ""
+         ]
+        },
+        {
+         "type": "object",
+         "required": [
+          "set",
+          "close",
+          "shadow"
+         ],
+         "additionalProperties": false,
+         "properties": {
+          "set": {
+           "type": "string"
+          },
+          "close": {
+           "type": "string"
+          },
+          "shadow": {
+           "type": "string"
+          }
+         }
+        }
+       ],
+       "description": "Station M1 §2.2: \"\" or the close atlas of its moving set and its shadow"
+      },
+      "rest": {
+       "enum": [
+        "awake",
+        "asleep"
+       ],
+       "description": "Station M1 §2.6: by restOf (the rest stagger) from the Station time"
+      }
+     }
+    },
+    "nameTag": {
+     "type": "object",
+     "required": [
+      "text"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "text": {
+       "type": "string"
+      }
+     }
+    },
+    "meetRibbon": {
+     "type": "object",
+     "required": [
+      "text"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "text": {
+       "type": "string"
+      }
+     }
+    },
+    "card": {
+     "type": "object",
+     "required": [
+      "plate",
+      "heart",
+      "notches",
+      "species",
+      "story",
+      "code",
+      "stamp"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "heart": {
+       "type": "string"
+      },
+      "notches": {
+       "type": "object",
+       "required": [
+        "count",
+        "picture"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "count": {
+         "type": "integer"
+        },
+        "picture": {
+         "type": "string"
+        }
+       }
+      },
+      "species": {
+       "type": "object",
+       "required": [
+        "text",
+        "mark"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "text": {
+         "type": "string"
+        },
+        "mark": {
+         "type": "string"
+        }
+       }
+      },
+      "story": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       },
+       "maxItems": 3
+      },
+      "code": {
+       "type": "string"
+      },
+      "stamp": {
+       "type": "object",
+       "required": [
+        "size",
+        "N",
+        "cell",
+        "plate",
+        "asset"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "size": {
+         "type": "integer"
+        },
+        "N": {
+         "type": "integer"
+        },
+        "cell": {
+         "type": "integer"
+        },
+        "plate": {
+         "type": "string"
+        },
+        "asset": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    "plates": {
+     "type": "object",
+     "required": [
+      "items"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "items": {
+       "type": "array",
+       "items": {
+        "$ref": "plate"
+       },
+       "maxItems": 8
+      }
+     }
+    },
+    "door": {
+     "type": "object",
+     "required": [
+      "plate",
+      "state",
+      "glyph",
+      "places",
+      "lamp"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "state": {
+       "enum": [
+        "docked",
+        "away",
+        "none"
+       ]
+      },
+      "glyph": {
+       "type": "string"
+      },
+      "places": {
+       "type": "array",
+       "items": {
+        "$ref": "place"
+       },
+       "maxItems": 3
+      },
+      "lamp": {
+       "type": "string"
+      }
+     }
+    },
+    "portrait": {
+     "type": "object",
+     "required": [
+      "plate",
+      "state",
+      "frame",
+      "picture"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "state": {
+       "enum": [
+        "none",
+        "held",
+        "painting",
+        "portrayed"
+       ]
+      },
+      "frame": {
+       "type": "string"
+      },
+      "picture": {
+       "type": "string"
+      }
+     }
+    },
+    "cross": {
+     "type": "object",
+     "required": [
+      "plate",
+      "state",
+      "faces"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "state": {
+       "enum": [
+        "adult",
+        "away",
+        "out",
+        "alone",
+        "young"
+       ]
+      },
+      "faces": {
+       "type": "array",
+       "items": {
+        "$ref": "face"
+       },
+       "maxItems": 11
+      }
+     }
+    },
+    "wild": {
+     "type": "object",
+     "required": [
+      "plate",
+      "state",
+      "gate"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "state": {
+       "enum": [
+        "shut"
+       ]
+      },
+      "gate": {
+       "type": "string"
+      }
+     }
+    },
+    "tiles": {
+     "type": "object",
+     "required": [
+      "glyph",
+      "items"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "glyph": {
+       "type": "string"
+      },
+      "items": {
+       "type": "array",
+       "items": {
+        "$ref": "tile"
+       },
+       "maxItems": 12
+      }
+     }
+    },
+    "strip": {
+     "type": "object",
+     "required": [
+      "plate"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "focus": {
+   "type": "object",
+   "required": [
+    "cur",
+    "targets",
+    "resolve"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "cur": {
+     "type": "string"
+    },
+    "targets": {
+     "type": "array",
+     "items": {
+      "$ref": "target"
+     }
+    },
+    "resolve": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "overlay": {
+   "$ref": "namer.props.json"
+  }
+ }
+}

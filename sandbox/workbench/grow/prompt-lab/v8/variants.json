@@ -1,0 +1,17 @@
+[
+ {
+  "id": "v8",
+  "name": "v8: the house rendering with the naturalist's finish (v7 + 7D), the service's prompt",
+  "change": "The owner-approved Grow painting prompt: v7's house rendering in both steps with 7D's Finish line (a naturalist's study of a small living animal, the Miniature Lives finish) in place of the vinyl collectible; the species notes as v7 wrote them; no species reference image in either step: the part map and the colour key, then the drawing and the colour key. gemini-3-pro-image.",
+  "imageOrder1": [
+   "index",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key"
+  ],
+  "step1": "{artDirection1}\n\n{species}\n\n{description}",
+  "step2": "{artDirection2}\n\n{species}\n\n{description}"
+ }
+]
