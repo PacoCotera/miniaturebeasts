@@ -127,7 +127,7 @@ This is for the build ticket after T-236, on `prototypes/play/` (`index.html`, `
 
 ### 6.4 Units of the thresholds
 
-- **All the thresholds (1064, 1878, 800) are CSS px:** `innerWidth` and `innerHeight`, after the bar. They are never lp.
+- **All the thresholds (1064, 1878, 800) are CSS px:** `innerWidth` and `innerHeight` of the window, the bar included. They are never lp.
 - 1440 × 900 is Stack at every dpr. The shells shrink in CSS px as the dpr rises, but the thresholds don't move, so a high-dpr window simply has more room around the column.
 
 ### 6.5 The Station row's side margin
