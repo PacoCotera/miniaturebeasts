@@ -204,7 +204,7 @@ Nothing is red or negative, and there is never a third line.
   - Bay: Cargo.
 - **The line** names each verb ("✓ Open the Bay").
 - **← on Home** does nothing.
-- **Room keys:** Home, the ring back to rest; Vivarium, the Vivarium full screen; Library, the Library full screen; Research, Pods.
+- **Room keys:** Home with a ring on Home, the ring back to rest; **Home at rest, the Station rests: Idle** (today's `events.rest`, 200 ms then the 180 ms dither to Idle; Idle wakes as it does now); Vivarium, the Vivarium full screen; Library, the Library full screen; Research, Pods. From any other screen, Home opens Home at rest, so a second press rests.
 - **Dock:** as `frame.json` `navigation.dock` (the arrival plays, then Later returns here).
 
 ## 6. Full screen (H1)
@@ -242,7 +242,7 @@ Nothing is red or negative, and there is never a third line.
   - every focus on a mibi.
 - **The old Cargo slide:** the `crateIn` slide.
 
-**One open question for the lead:** the rest knob was Home's way to send the Station to Idle. If Idle has no other way in (a timeout), it needs a place. My proposal is the Home room key pressed at rest.
+**Idle (ruled):** with the rest knob gone, Idle is reached by the Home room key pressed at rest (§5). The keys list (`Keys ?` and the Station key sheet) names it: "Home again: rest".
 
 ## 9. Masters
 
