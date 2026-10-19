@@ -12,7 +12,7 @@ export function focus(h, target) { h.ui.bench.f = target; }
 // `target`: plates | switch | slot.
 export function intent(h, target, verb) {
   const b = h.ui.bench, Sg = h.specs.bench.strings;
-  if (verb === "back") { h.ui.home.f = "probe"; h.goto("home"); return; }
+  if (verb === "back") { h.ui.home.f = "companion"; h.goto("home"); return; }
   if (verb !== "confirm") return;
   b.f = target;
   const docked = S.docked(h.st);

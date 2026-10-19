@@ -208,13 +208,14 @@ function tween(from, to, ms, set, done) {
 }
 // when a device takes the keys the page scrolls it fully into view, its tray included (160 ms eased, a cut under reduced motion); a device already wholly in view does not move the page
 let scrollTween = null;
-function reveal(d) {
+function reveal(d, cut) {
   const g = geom[d]; if (!g) return;
   const st = stage.scrollTop, ch = stage.clientHeight, top = g.y, bot = g.y + g.h; let t = st;
   if (bot - top + 2 * TOP > ch) t = bot - ch;   // the block and its margins do not fit: the tray's bottom meets the window's bottom, the block alone (the keys never leave the view)
   else if (top < st) t = top - TOP; else if (bot > st + ch) t = bot + TOP - ch;
   t = Math.max(0, Math.min(t, stage.scrollHeight - ch)); if (Math.abs(t - st) < 0.5) return;
   if (scrollTween) scrollTween.cancel();
+  if (cut) { stage.scrollTop = Math.round(t); return; }   // the opening: a cut, no motion
   scrollTween = tween(st, t, SEAT_MS, (v) => { stage.scrollTop = Math.round(v); }, () => { scrollTween = null; });
 }
 
@@ -319,6 +320,6 @@ fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw 
   const short = j.short || String(j.commit || "").slice(0, 7), d = new Date(j.built); let t = ""; if (!isNaN(d)) t = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Mexico_City", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
   $("stamp").textContent = short ? "build " + short + (t ? " · " + t : "") : "local build";
 }).catch(() => { $("stamp").textContent = "local build"; });
-layout();
+layout(); reveal(owner, true);   // the page opens revealed for the device with the keys (the Station on a fresh load); no scroll position is restored
 // for the play-page journey: read-only views of the shell's state
 window.__play = { get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get tier() { return tier; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get awaiting() { return awaiting; }, get pressed() { return pressed; }, get caddySheet() { return { up: tier !== "narrow", lines: paper.lines, refreshes: paper.refreshes, note: noteCaddy }; }, rects, frames };

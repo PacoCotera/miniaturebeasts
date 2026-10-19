@@ -4,7 +4,7 @@
 //   events   the presenter's ticks and flashes, the plate, the screen change's dither
 //   faces    the intents and the focus the face sends, turned into the rules (intents/*) and the screens' state (UI)
 // The rules are state.mjs's, the screens' state is game.mjs's UI, and the key's rule call is intents/*: nothing here decides a rule or a layout.
-import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, podById, mibiById, onScreenChange } from "./game.mjs";
+import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, podById, mibiById, onScreenChange, stationDate } from "./game.mjs";
 import * as S from "./state.mjs";
 import { frameOf, genomeDigest } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
@@ -110,7 +110,7 @@ const living = () => ({ time: timeNow(), restRules: SPECS.vivarium?.rules?.rest,
 // ---- Home ----
 // Keep Home's focus valid (the ring on a target present, else on the room) and return its props body. The pad is the face's; the host keeps what the face says in UI.home.f.
 export function homeBody(light = lightNow()) {
-  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, light, ...living() });
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, time: timeNow(), date: stationDate(), now: Date.now(), place: "", light, restRules: SPECS.vivarium?.rules?.rest, motionSets: !!G.settings.motionSets });   // place: the save has no place name yet
   const body = homeBuild(model(), SPECS.home, SPECS.frame);
   if (body.props.focus.cur === "room") UI.home.f = "room";
   return body;
@@ -211,13 +211,14 @@ export function screenProps(plate) {
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
+  if (screen === "home") return { msg: { screen, ...body.props, frame: { plate: pl } }, ids: [...ids], light, lit: litOf(reqs) };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
   return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids], light, lit: litOf(reqs) };
 }
 let shownLight = null;   // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
 const litOf = (reqs) => reqs.filter((r) => r.kind === "mibi" && r.light).map((r) => r.id);   // the graded residents the props name
 // The pictures a light puts on the face, by their ids (their sizes from the specs that place them): the host drops them once props with the next light are taken.
-export const lightIds = (light) => { const v = SPECS.frame.idle.regions.vivarium.rect, g = SPECS.home.regions.glass.rect, b = SPECS.frame.idle.regions.bed.rect; return [`idle-vivarium-${light}:${v[2]}x${v[3]}`, `home-glass-${light}:${g[2]}x${g[3]}`, `home-bed-${light}-${b[2]}x${b[3]}`, ...(SPECS.habitat?.light ? [`${SPECS.habitat.light.pictures[light]}-${SPECS.habitat.light.size.join("x")}`] : [])]; };   // and one mibi up close's near Vivarium
+export const lightIds = (light) => { const v = SPECS.frame.idle.regions.vivarium.rect, b = SPECS.frame.idle.regions.bed.rect; return [`idle-vivarium-${light}:${v[2]}x${v[3]}`, `home-bed-${light}-${b[2]}x${b[3]}`, ...(SPECS.habitat?.light ? [`${SPECS.habitat.light.pictures[light]}-${SPECS.habitat.light.size.join("x")}`] : [])]; };   // and one mibi up close's near Vivarium
 // The pictures of the frame and the Companion's face, the same on every screen.
 export function frameIds() {
   const ids = new Set(); walk(SPECS.frame.regions, ids); for (const id of companionIds()) if (assetEntry(id)) ids.add(id);

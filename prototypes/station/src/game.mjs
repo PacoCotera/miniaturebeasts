@@ -115,3 +115,8 @@ export function stationSeconds() {
   const t = G.settings.stationTime; if (t && /^\d{2}:\d{2}$/.test(t)) { const [hh, mm] = t.split(":").map(Number); return hh * 3600 + mm * 60; }
   const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds();
 }
+// The Station's date, for Home's top bar: the developer's "Station date" (yyyy-mm-dd) or the device's calendar day.
+export function stationDate() {
+  const t = G.settings.stationDate; if (t && /^\d{4}-\d{2}-\d{2}$/.test(t)) { const [y, m, d] = t.split("-").map(Number); return { y, m: m - 1, d }; }
+  const n = new Date(); return { y: n.getFullYear(), m: n.getMonth(), d: n.getDate() };
+}

@@ -19,7 +19,7 @@ test("a composed pod takes the least final status of its three layers; a figure 
   for (const id of ["pod-tc-shade", "pod-tc-mask-body", "pod-tc-mask-accent", "mibi-halo-T-128x160-mist", "mibi-halo-T-128x160-clear"]) dropAsset(id);
 });
 
-// the rack pod from the placed hand layers (home.json regions.pods.pod.layers): S01 to S16 and the unknown pod, each pixel by its layer's rule, every opaque pixel on the palette
+// the rack pod from the placed hand layers (home.json regions.rackPod.layers): S01 to S16 and the unknown pod, each pixel by its layer's rule, every opaque pixel on the palette
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,7 +28,7 @@ import { rackPodFromLayers, rackBase, rackPatternId } from "../src/podmasters.mj
 import { rampOf, RGB, C } from "../src/pixels.mjs";
 import { patternLayer } from "../../ui/podlayers.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), specsDir = path.resolve(here, "../../ui/specs/station"), J = (f) => JSON.parse(readFileSync(path.join(specsDir, f), "utf8"));
-const P = J("home.json").regions.pods.pod, chips = J("cross.json").colours.pigmentChips, patterns = J("pods.json").podLayers.patterns, L = P.layers, [W, H] = P.size;
+const P = J("home.json").regions.rackPod, chips = J("cross.json").colours.pigmentChips, patterns = J("pods.json").podLayers.patterns, L = P.layers, [W, H] = P.size;
 const masterDir = path.resolve(here, "../../ui/assets/masters/pods"), loaded = [];
 const place = (id, status = "master") => { const p = decodePNG(readFileSync(path.join(masterDir, id + ".png"))); placeMaster({ id, w: p.width, h: p.height, file: "pods/" + id + ".png", hash: "ab", status }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); loaded.push(id); return p; };
 const frames = readdirSync(path.resolve(here, "../../workbench/frames")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames", f), "utf8")));
