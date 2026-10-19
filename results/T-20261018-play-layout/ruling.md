@@ -165,3 +165,8 @@ The shells sit 8 left of the window's centre because the page keeps a stable scr
 | 10 | bench JS and CSS removed; hidden `#fBench` and `#tabBench` kept for the journey | OK |
 
 **Note for the art director, not blocking:** the Caddy screen is drawn on pure white with system type, which reads as unstyled at this size. An e-paper ground and ink belong to its own look.
+
+## 8. Follow-ups after the T-240 review
+
+1. **Where the page opens:** the page opens already revealed for the device that holds the keys (the Station on a fresh load), by §4's reveal rule and §7.1.2's alignment. It opens as a cut, with no scroll motion. At 1280 × 720 the Station's tray bottom sits at the window's bottom and the face is whole. A device already wholly in view at scrollTop 0 opens at 0. A reload keeps no scroll position: the reveal rule decides.
+2. **The Keys ? panel: remove the Bench section.** A key list for a tool the page never shows teaches keys that do nothing. If the bench returns, its section returns with it. The rest of the panel is unchanged, apart from listing only the keys the page acts on.
