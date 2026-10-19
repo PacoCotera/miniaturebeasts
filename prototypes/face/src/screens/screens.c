@@ -41,7 +41,9 @@ static void frame_words(void) {
 static void stage_dither(void) {
   static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
   anim_state_t t; if (!anim_get(ANIM_DITHER, "stage", &t)) return;
-  int level = t.to > t.from ? t.from + ((t.to - t.from) * t.elapsed) / t.ms : 16 - (16 * t.elapsed) / t.ms, r[4];   /* from < to: the dither closes over the stage (Home's rest to Idle) */ if (level <= 0 || !v_spec_rect("frame", "regions.stage.rect", r)) return;
+  int level = t.to > t.from ? t.from + ((t.to - t.from) * t.elapsed) / t.ms : 16 - (16 * t.elapsed) / t.ms, r[4];   /* from < to: the dither closes over the stage (Home's rest to Idle) */ if (level <= 0) return;
+  { char sc[32]; spec_str("props", "screen", sc, sizeof sc);   /* Home has no bottom line: its stage runs to the foot of the screen, and so does the dither (home.json regions.stage) */
+    if (!(strcmp(sc, "home") == 0 && spec_has("home") && v_spec_rect("home", "regions.stage.rect", r)) && !v_spec_rect("frame", "regions.stage.rect", r)) return; }
   if (level > 16) level = 16;
   char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);
   for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
@@ -125,7 +127,7 @@ static void draw(void) {
     if (strcmp(screen, "habitat") != 0 || spec_bool("props", "idle", 0)) habitat_hidden();   /* one mibi up close's own tick starts again from its first frame when it shows again */
     if (spec_bool("props", "idle", 0) && spec_len("props", "regions") >= 0) idle_words();
     else if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
-    else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();
+    else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) { home_hidden(); home_words(); }
     else if (strcmp(screen, "vivarium") == 0 && spec_has("vivarium") && spec_len("props", "regions") >= 0) vivarium_words();
     else if (strcmp(screen, "habitat") == 0 && spec_has("habitat") && spec_len("props", "regions") >= 0) { home_hidden(); habitat_words(); }
     else if (strcmp(screen, "library") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_words(); }

@@ -1,6 +1,5 @@
-/* Home's binding table (lvgl-switch.md §2.2, L2.2): the words that draw Home from the `home` spec and the props' regions, in draw order, then the focus ring; the frame's words follow (screens.c).
-   The living window: the glass, the residents walking (a pure function of their seed and the face's clock, stepped so that no more than half of them change in one step), the with-you bed and its sleepers,
-   the name tag of the focused one; the rest knob; the column of five modules with their objects and lamps. Home's focus is `focus.graph` of home.json on the boxes this file drew. */
+/* The living window's code (lvgl-switch.md §2.2): the residents walking (a pure function of their seed and the face's clock, stepped so that no more than half of them change in one step), the with-you bed and its sleepers
+   and the name tag of the focused one, on the rectangles of the spec it is drawing for: Idle's painting (frame.json idle) and the Vivarium's whole (vivarium.json). Home's own words are screens/home_frame.c. */
 #include "screens.h"
 #include "../vocab/vocab.h"
 #include "../vocab/words.h"
@@ -17,7 +16,7 @@
 #define H "home"
 #define MAXR 12
 #define MAXS 3
-/* The living window is Home's glass and Idle's painting (frame.json idle): the same code reads the regions of the spec it is drawing for. On Idle (g_idle) `regions.glass` is `idle.regions.vivarium` and every other `regions.` is
+/* The living window is Idle's painting (frame.json idle) and the Vivarium's whole: the same code reads the regions of the spec it is drawing for. On Idle (g_idle) `regions.glass` is `idle.regions.vivarium` and every other `regions.` is
    `idle.regions.`, in the frame spec: the residents, the bed and the walk are the same rules on the other rectangles. */
 static int g_idle, g_viv;   /* g_viv: the Vivarium's whole (vivarium.json): `regions.glass` is `regions.window`; every other region keeps its name */
 static const char *hp(const char *p) { if (g_viv) return strncmp(p, "regions.glass", 13) == 0 ? v_fmt("regions.window%s", p + 13) : p; if (!g_idle) return p; if (strncmp(p, "regions.glass", 13) == 0) return v_fmt("idle.regions.vivarium%s", p + 13); if (strncmp(p, "regions.", 8) == 0) return v_fmt("idle.regions.%s", p + 8); return p; }
@@ -36,16 +35,15 @@ static int g_kx, g_ky, g_xlo, g_xhi, g_flo, g_fn;   /* home.json regions.residen
 static int g_pn, g_pdy, g_px[8], g_pt[8];   /* the ground profile: band starts of F.x and the lowest feetY of each (vivarium.json regions.resident.walk.profile), g_pdy added */
 static int ground_top(int fx) { int t = g_pt[0]; for (int i = 0; i < g_pn; i++) if (fx >= g_px[i]) t = g_pt[i]; return t + g_pdy; }
 static void walk_load(void) {
-  int glass[4]; hrect("regions.glass.rect", glass);
   if (g_viv) {   /* the whole (vivarium.json regions.resident.walk): the box.x range is the walk ground's, 16..1008, and the keep-out is the spec's */
     g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1);
     g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
   } else if (g_idle) {   /* Idle (frame.json idle.regions.resident.walk): the box.x range is the walk ground's own, 16..1008, and the keep-out is the spec's, never derived from the window's rectangle */
     g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1);
     g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
-  } else { g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1); g_xlo = glass[0] + 8; g_xhi = glass[0] + glass[2] - 8; }
+  }
   g_flo = hk("regions.resident.walk.ground", 1); g_fn = hk("regions.resident.walk.ground", 3);
-  /* the ground profile, the whole's and Idle's, 80 px lower on Idle; Home keeps its band */
+  /* the ground profile, the whole's and Idle's, 80 px lower on Idle */
   g_pn = 0;
   if (g_viv || g_idle) { g_pdy = g_idle ? spec_int("vivarium", "regions.resident.walk.profile.idle", 80) : 0;
     int n = spec_len("vivarium", "regions.resident.walk.profile.x"); if (n > 8) n = 8;
@@ -53,7 +51,7 @@ static void walk_load(void) {
 typedef struct { char id[24]; unsigned seed, s; int w, h, x, feet, facing, walking, idle, wx, wy, x0, y0, nstep, step; long done; int live; } wk_t;
 static wk_t g_w[MAXR]; static int g_nw; static uint32_t g_t0; static int g_have_t0;
 static long g_wticks;   /* the walk's group ticks applied since its origin g_t0: tick j is at 40 j ms and steps group j mod 2 */
-static int g_ctx = -1;   /* the walk's last context (0 Home, 1 Idle): it starts again from the seeds when the other shows */
+static int g_ctx = -1;   /* the walk's last context (0 none, 1 Idle, 2 the Vivarium's whole): it starts again from the seeds when the other shows */
 void home_hidden(void) { g_have_t0 = 0; g_ctx = -1; }   /* the moving household starts again from the seeds too (No replay) */
 static unsigned wr(wk_t *k) { k->s = k->s * 1664525u + 1013904223u; return k->s >> 16; }
 static int meets_k(int x, int feet, int w) { return x + w > g_kx && feet > g_ky; }
@@ -570,128 +568,10 @@ static void glass_group(const char *cur) {
   }
 }
 
-/* ---- the modules' objects (each at the spec's rectangle, lifted with the module) ---- */
-static void put(const char *id, const char *asset, const char *r, int dy) { int b[4]; hrect(r, b); v_sprite(id, asset, b[0], b[1] + dy, b[2], b[3]); }
-static int ease_out(int p) { return 1000 - (1000 - p) * (1000 - p) / 1000; }   /* p, e in 0..1000 */
-static void cargo_objects(int dy) {
-  const char *state = v_pstr("regions.cargo.state"); int n = v_pint("regions.cargo.crates", 0), max = hi("regions.cargo.max", 3); if (n > max) n = max;
-  v_name("cargo");
-  int cr[4], bay[4]; hrect("regions.cargo.rect", cr); bay[0] = cr[0] + hk("regions.cargo.bay", 0); bay[1] = cr[1] + hk("regions.cargo.bay", 1) + dy; bay[2] = hk("regions.cargo.bay", 2); bay[3] = hk("regions.cargo.bay", 3);   /* the bay: 800, 56, 176, 72 */
-  v_sprite("cargo.bay", v_pstr("regions.cargo.bay"), bay[0], bay[1], bay[2], bay[3]);
-  anim_state_t t; int arriving = anim_get(ANIM_ARRIVAL, "cargo", &t), each = hi("events.crateIn.each.ms", 500), stagger = hi("events.crateIn.each.stagger", 250), from = spec_int(H, "events.crateIn.each.from.1", -40);
-  int drawn = 0, ys[8], shown[8];
-  for (int i = 0; i < n; i++) {
-    int r[4]; hrect(v_fmt("regions.cargo.crateRects.%d", i), r); int y = r[1] + dy; shown[i] = 1;
-    if (arriving) { int e = t.elapsed - i * stagger; if (e < 0) shown[i] = 0; else { int p = e >= each ? 1000 : e * 1000 / each; y = r[1] + dy + (from * (1000 - ease_out(p)) - (from < 0 ? 500 : -500)) / 1000; if (p == 1000) y = r[1] + dy; } }
-    ys[i] = y; if (has(v_pstr("regions.cargo.crate"))) drawn++;
-  }
-  if (drawn) {   /* a crate that has not slid in yet is its node with a window of no size, so the clip's children and the nodes after it never change as the crates arrive */
-    prim_node(v_id("cargo.clip"), FN_CLIP, bay[0], bay[1], bay[2], bay[3], 0, drawn, 0);
-    for (int i = 0; i < n; i++) { int r[4]; hrect(v_fmt("regions.cargo.crateRects.%d", i), r); if (shown[i]) v_sprite(v_fmt("cargo.crate.%d", i), v_pstr("regions.cargo.crate"), r[0], ys[i], r[2], r[3]); else v_sprite_hidden(v_fmt("cargo.crate.%d", i), v_pstr("regions.cargo.crate"), r[0], ys[i]); }
-  }
-  if (strcmp(state, "waiting") == 0) put("cargo.waiting", v_pstr("regions.cargo.waiting"), "regions.cargo.waiting.rect", dy);
-}
-static void pods_objects(int dy) {
-  v_name("pods");
-  int ws = hk("regions.pods.wells.size", 0), wh = hk("regions.pods.wells.size", 1), pw = hk("regions.pods.pod.size", 0), ph = hk("regions.pods.pod.size", 1), sw = hk("regions.pods.star", 0), sh = hk("regions.pods.star", 1);
-  for (int i = 0; i < 6; i++) {
-    int r[4]; hrect(v_fmt("regions.pods.wells.rects.%d", i), r); (void)ws; (void)wh;
-    v_sprite(v_fmt("pods.well.%d", i), v_pstr("regions.pods.well"), r[0], r[1] + dy, r[2], r[3]);
-    const char *pod = v_pstr(v_fmt("regions.pods.wells.%d.pod", i)); if (*pod) v_sprite(v_fmt("pods.pod.%d", i), pod, r[0] + hk("regions.pods.pod.at", 0), r[1] + hk("regions.pods.pod.at", 1) + dy, pw, ph);
-    const char *glint = v_pstr(v_fmt("regions.pods.wells.%d.glint", i)); if (*glint) v_sprite(v_fmt("pods.glint.%d", i), glint, r[0] + hk("regions.pods.starAt", 0), r[1] + hk("regions.pods.starAt", 1) + dy, sw, sh);
-  }
-}
-/* Home's Incubator station (T-20261016-222; build spec section 5): the painted capsule at x0.137, 56 x 86, the state only: the interior, the relit pod (growing and ready), the glass (growing), the shell, the door (empty and ready) and the bar (lit while growing and ready, never a fraction) */
-static void incubator_objects(int dy) {
-  const char *state = v_pstr("regions.incubator.state"); int growing = strcmp(state, "growing") == 0, ready = strcmp(state, "ready") == 0, r[4];
-  v_name("incubator"); hrect("regions.incubator.capsuleRect", r);
-  { const char *a = v_pstr("regions.incubator.capsule.interior"); if (*a) v_sprite("incubator.interior", a, r[0], r[1] + dy, r[2], r[3]); }
-  { const char *pod = v_pstr("regions.incubator.capsule.pod"); int w = v_pint("regions.incubator.capsule.podSize.0", 0), h = v_pint("regions.incubator.capsule.podSize.1", 0), ax = v_pint("regions.incubator.capsule.podAnchor.0", 0), ay = v_pint("regions.incubator.capsule.podAnchor.1", 0);
-    if (*pod && w > 0 && (growing || ready)) v_sprite("incubator.pod", pod, r[0] + hk("regions.incubator.capsuleFoot", 0) - ax, r[1] + hk("regions.incubator.capsuleFoot", 1) + dy - ay, w, h); }
-  { const char *a = v_pstr("regions.incubator.capsule.glass"); if (*a && growing) v_sprite("incubator.glass", a, r[0], r[1] + dy, r[2], r[3]); }
-  { const char *a = v_pstr("regions.incubator.capsule.shell"); if (*a) v_sprite("incubator.shell", a, r[0], r[1] + dy, r[2], r[3]); }
-  { const char *a = v_pstr("regions.incubator.capsule.door"); if (*a && !growing) v_sprite("incubator.door", a, r[0], r[1] + dy, r[2], r[3]); }
-  { const char *a = v_pstr("regions.incubator.capsule.bar"); if (*a && (growing || ready)) v_sprite("incubator.bar", a, r[0], r[1] + dy, r[2], r[3]); }
-}
-static void probe_objects(int dy) {
-  v_name("probe");
-  put("probe.cradle", v_pstr("regions.probe.cradle"), "regions.probe.cradleRect", dy);
-  int n = v_pint("regions.probe.shields.count", 0), whole = v_pint("regions.probe.shields.whole", 0);
-  for (int i = 0; i < n && i < 4; i++) { int r[4]; hrect(v_fmt("regions.probe.shields.rects.%d", i), r); v_sprite(v_fmt("probe.shield.%d", i), v_pstr(i < whole ? "regions.probe.shields.wholePicture" : "regions.probe.shields.gonePicture"), r[0], r[1] + dy, r[2], r[3]); }
-  const char *frame = v_pstr("regions.probe.frame"); if (*frame) put("probe.frame", frame, "regions.probe.slotRect", dy);
-}
-static void library_objects(int dy) { v_name("library"); put("library.journal", v_pstr("regions.library.journal"), "regions.library.journalRect", dy); }
-
-static const char *MODULES[5] = { "cargo", "pods", "incubator", "probe", "library" };
-static void module_objects(const char *key, int dy) {
-  if (strcmp(key, "cargo") == 0) cargo_objects(dy); else if (strcmp(key, "pods") == 0) pods_objects(dy); else if (strcmp(key, "incubator") == 0) incubator_objects(dy);
-  else if (strcmp(key, "probe") == 0) probe_objects(dy); else library_objects(dy);
-}
-
-/* ---- the ring on the focused target ---- */
-static void ring(const char *cur) {
-  if (!cur[0] || strcmp(cur, "room") == 0 || anim_holding()) return;   /* the ring goes when the rest begins and stays away while it holds */
-  int box[4];
-  v_region("focus", LAYER_CHROME);
-  if (strcmp(cur, "vivarium") == 0) { hrect("regions.bezel.rect", box); word_focusRing("focus", "home", "focus.targets.vivarium", box); return; }
-  if (strncmp(cur, "resident.", 9) == 0) return;   /* a resident's ring is in the glass, under it */
-  if (strcmp(cur, "knob") == 0) { for (int k = 0; k < 4; k++) box[k] = hk("regions.knob.states.focused.rect", k); word_focusRing("focus", "home", "focus.targets.knob", box); return; }   /* the knob as drawn, lifted: 32 x 6, not its 40 x 16 hit box */
-  for (int m = 0; m < 5; m++) if (strcmp(cur, MODULES[m]) == 0) { hrect(v_fmt("regions.%s.rect", cur), box); box[1] -= hi(v_fmt("focus.targets.%s.lift", cur), 2); word_focusRing("focus", "home", v_fmt("focus.targets.%s", cur), box); return; }
-}
-
-void home_words(void) {
-  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
-  ent_load(cur);
-  { int st[4]; char ground[24]; spec_str("frame", "colours.stageGround", ground, sizeof ground);   /* the stage's ground under the bezel and the column, the frame's (as every screen's stage) */
-    if (v_spec_rect("frame", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
-  word_livingWindow("home", "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"), 0, 0);
-  glass_group(cur);
-  for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) ent_tag(&g_e[i], "regions.glass");
-  build_restKnob(strcmp(cur, "knob") == 0);
-  for (int m = 0; m < 5; m++) {
-    int dy = strcmp(cur, MODULES[m]) == 0 ? -hi(v_fmt("focus.targets.%s.lift", MODULES[m]), 2) : 0;
-    build_module(H, MODULES[m], dy, v_pstr(v_fmt("regions.%s.lamp", MODULES[m])));
-    module_objects(MODULES[m], dy);
-  }
-  ring(cur);
-}
-
-/* the targets as the words drew them, in the props' order, with the graph's key */
-int home_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
-  snprintf(graph_key, (size_t)gcap, "graph");
-  int n = v_plen("focus.targets"); if (n > cap) n = cap;
-  for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[i]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
-    t->enabled = v_pbool(v_fmt("focus.targets.%d.enabled", i), 1);
-    int r[4] = { 0, 0, 0, 0 };
-    if (strcmp(t->id, "vivarium") == 0) hrect("regions.bezel.rect", r);
-    else if (strcmp(t->id, "knob") == 0) for (int k = 0; k < 4; k++) r[k] = hk("focus.targets.knob.box", k);
-    else if (strncmp(t->id, "resident.", 9) == 0) { for (int e = 0; e < g_ne; e++) if (strcmp(g_e[e].id, t->id + 9) == 0) memcpy(r, g_e[e].box, sizeof r); }
-    else hrect(v_fmt("regions.%s.rect", t->id), r);
-    t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3];
-  }
-  return n;
-}
-
-/* a key on Home: ✓ and the room keys say an intent on the focused target (the room when the ring is on nothing); ← does nothing (Home is the top); the pad moves the ring by home.json focus.graph */
-void home_key(int code) {
-  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0]) snprintf(cur, sizeof cur, "room");
-  const char *verb = code == 10 ? "confirm" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) { screens_say("intent", cur, verb); return; }
-  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
-  focus_target_t t[40]; char gkey[24]; int n = home_focus(t, 40, gkey, sizeof gkey);
-  int glen; const char *graph = spec_raw(H, "focus.graph", &glen); char err[200];
-  focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
-  int roomAt[4]; hrect("focus.roomAt", roomAt);
-  char to[48]; int step = focus_move(g, t, n, cur, dir, NULL, 0, roomAt, to, sizeof to); focus_graph_free(g);
-  if (step || strcmp(to, cur) == 0) return;
-  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
-}
-
 /* a step of the residents' walk is due (the redraw every STEP_MS while any resident walks) */
 int home_tick(uint32_t now) {
   int idle = v_pbool("idle", 0);
-  if ((strcmp(v_pstr("screen"), "home") != 0 && strcmp(v_pstr("screen"), "vivarium") != 0 && !idle) || !spec_has(idle ? "frame" : strcmp(v_pstr("screen"), "vivarium") == 0 ? "vivarium" : H) || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
+  if ((strcmp(v_pstr("screen"), "vivarium") != 0 && !idle) || !spec_has(idle ? "frame" : "vivarium") || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
   if (!g_have_t0) return 0;
   if (!((long)((now - g_t0) / STEP_MS) + 1 > g_wticks)) return 0;   /* no group tick is due that the walk has not applied */
   if (g_nw > 0 || !(g_nm || g_nnap)) return 1;   /* a still walks: every tick draws, as before */
@@ -709,7 +589,7 @@ int home_test_mv(int i, int field) {   /* 0 x, 1 feet, 2 facing, 3 lift, 4 dy, 5
 int home_test_nap(int i) { return i >= 0 && i < g_nnap ? g_nap[i].cell : -1; }
 
 /* ---- Idle (frame.json idle, station-layouts.md Idle): the whole 1024 x 600 with no frame: the Vivarium's painting (until its master the flat plates of idle.colours), the residents walking, the bed and the carried set asleep,
-   and the one line on its strip. The same living-window code as Home's glass, on the frame spec's rectangles. ---- */
+   and the one line on its strip. The same living-window code as the Vivarium's whole, on the frame spec's rectangles. ---- */
 void idle_words(void) {
   g_idle = 1; ent_load("");
   word_livingWindow("frame", "vivarium", NULL, "idle.regions.vivarium", "idle.colours", v_pstr("regions.vivarium.picture"), 0, 0);

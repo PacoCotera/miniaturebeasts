@@ -1016,8 +1016,8 @@
     ],
     "screen": "home",
     "focus": "vivarium",
-    "ok": "Go to the Vivarium",
-    "subject": "the mibis at home",
+    "ok": null,
+    "subject": null,
     "back": null
    },
    {

@@ -165,9 +165,9 @@ test("✓ Skip: the current crate's end state at once (the counters, the turn, i
   INTENTS.cargo.intent(h, "room", "confirm"); INTENTS.cargo.intent(h, "room", "confirm"); assert.equal(h.ui.cargo.state, "end", "Skip on the last crate goes to the end"); assert.equal(st.accepted.length, 3); assert.equal(h.ui.cargo.shown, null);
   runTo(h, 1e9); assert.equal(h.ui.cargo.state, "end", "the old timers did nothing after the skip"); assert.equal(st.accepted.length, 3);
 });
-test("← during the opening: the current crate finishes as a cut, no further crate opens, and Home shows with the ring on the Bay module; the crates not yet opened stay sealed in the bay (Home's lamp stays amber)", () => {
+test("← during the opening: the current crate finishes as a cut, no further crate opens, and Home shows with the ring on the Bay station; the crates not yet opened stay sealed in the bay (Home's lamp stays amber)", () => {
   const st = world(), sv = sv0([crate(1, 1), crate(2, 1), crate(3, 1)]), h = opened(st, sv); runTo(h, 500);
-  INTENTS.cargo.intent(h, "room", "back"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, ["home"]); assert.equal(h.ui.home.f, "cargo", "the ring on the Bay module");
+  INTENTS.cargo.intent(h, "room", "back"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, ["home"]); assert.equal(h.ui.home.f, "bay", "the ring on the Bay station");
   assert.equal(st.accepted.length, 1, "only the crate that was open"); assert.deepEqual(S.bayCrates(st, sv).map((c) => c.id), ["c2", "c3"], "the others are still sealed in the bay"); assert.equal(T.bayState(st, sv, settings, T0).amber, true, "Home's lamp stays amber");
   assert.equal(st.tray.length, 1, "its pod is in a well"); assert.equal(h.ui.cargo.run, null); assert.equal(h.ui.cargo.shown, null); runTo(h, 1e9); assert.equal(st.accepted.length, 1, "the old timers did nothing");
   assert.deepEqual(build(st, sv, h.ui).props.regions.berths.list.map((b) => !!b.crate), [true, true, false], "the next visit opens the two");

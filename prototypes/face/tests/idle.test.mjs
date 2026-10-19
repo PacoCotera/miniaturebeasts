@@ -177,8 +177,8 @@ test("asleep spots (UI/UX item 11): at night no sleeper's ground point lies in a
   runFrames(f, 400000, { cadence: [40, 0, 0], each: () => { for (let i = 0; i < 10; i++) { const s = STATE(M._face_test_state(i)); if (!s.travelling && !s.wanderer) continue; if (s.clip !== CLIP.hop && s.clip !== CLIP.walk) continue; const gx = M._face_test_mv(i, 8) + w(i) / 2, gf = M._face_test_mv(i, 9);
     for (let j = 0; j < 10; j++) if (j !== i && [CLIP.asleep, CLIP.curl, CLIP.stir, CLIP.wake].includes(STATE(M._face_test_state(j)).clip)) { const p = spot(j); assert.ok(!(gx >= p[0] && gx < p[0] + p[2] && gf >= p[1] && gf < p[1] + p[3]), `resident ${i}'s waypoint lands in ${j}'s spot`); } } } });
 });
-test("no stir begins on a focused sleeper (game designer R4; the living window's code on Home's glass, where the ring is)", { skip }, async () => {
-  const f = await bootScene(movingScene("home", { adults: 3, time: 23 * 3600, focus: "resident:0" })); let s1 = 0; const p = [0, 0, 0];
+test("no stir begins on a focused sleeper (game designer R4; the living window's code in the Vivarium's whole, where the ring is)", { skip }, async () => {
+  const f = await bootScene(movingScene("vivarium", { adults: 3, time: 23 * 3600, focus: "resident:0" })); let s1 = 0; const p = [0, 0, 0];
   runFrames(f, 90000, { each: () => { const a = STATE(f.M._face_test_state(0)); assert.notEqual(a.clip, CLIP.stir, "the focused sleeper never stirs"); for (const i of [1, 2]) { const b = STATE(f.M._face_test_state(i)); if (b.clip === CLIP.stir && p[i] !== CLIP.stir) s1++; p[i] = b.clip; } } });
   assert.ok(s1 >= 2, "the stirs went to the others: " + s1);
 });
