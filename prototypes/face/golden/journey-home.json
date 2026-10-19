@@ -63,6 +63,12 @@
     "bay": {
      "state": "waiting",
      "berths": 3,
+     "crates": 2,
+     "pictures": {
+      "shut": "berth-shut-26x24:26x24",
+      "crate": "berth-crate-26x24:26x24",
+      "portrait": "berth-portrait-18x24:18x24"
+     },
      "line1": "2 crates in",
      "line2": "from the last trip",
      "lamp": "needsYou"
@@ -72,7 +78,14 @@
      "line1": "Dot at home",
      "line2": "",
      "lamp": "off",
-     "name": "Dot"
+     "name": "Dot",
+     "picture": "companion-upright-docked-28x46:28x46",
+     "plates": {
+      "count": 3,
+      "whole": 3,
+      "wholePicture": "home-shield-whole-12x24:12x24",
+      "lostPicture": "home-shield-lost-12x24:12x24"
+     }
     },
     "line": {
      "needs": [
