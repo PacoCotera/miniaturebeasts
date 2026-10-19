@@ -396,3 +396,23 @@ There is no subject on a focus. The station's own lines already say its state. *
 2. **"The six with the most recent activity":** the mibi with a pending meet is always in. The rest fill by the newest life event (born or grown up), newest first, with ties in bay order. That is the builder's rule, with grown up added. **The game designer has confirmed it:** born and grown up are the only dated events the Station records for a mibi. "Visited" and "fed" are not recorded, and "back from a walk" has no per-mibi turn yet.
 3. **"Back from a trip" is dropped from the event tag.** No event marks it, and the dock's arrival already shows who came home. The tag stays for grown up and born (the `meet` need).
 4. **A species with no layered stand:** its whole picture, bottom-centred and clipped to the away frame, is fine until its stand exists. Only S01 has stands, and it is unaffected.
+
+## 14. Gate of H3, the console's pictures (f271ea88, stills on work-queue 12b7363b)
+
+**PASS, with one added golden.** The four stations match §4.3 and §11.4 in every state captured:
+- Pods: full, partly full, and empty slots;
+- the capsule: empty, growing and ready;
+- the Companion: docked, with the Probe's plates, and away, in outline;
+- the berths: shut, with crates, and with the portrait berth;
+- the lamps, and the 20 and 16 px fallback.
+
+**The added golden:** `incubator-growing` captures the bar at 0, so it doesn't show "lit to progress". Add a golden at about half, so the clip is seen.
+
+**The five gaps:**
+1. **The glint over the pod's top-right corner** (`[12, 0]` in the slot) is right. The glint marks the pod itself, as on the crates.
+2. **The bar:** a progress-clipped window of the capsule's lit-bar layer, from its first pixel, and whole when ready. The window [10, 71, 34, 10] is taken from the layer's alpha. It changes in whole pixels and redraws only when it changes.
+3. **The Probe's plates:** 12 × 24, 4 apart, from (12, 64), one for each plate the Probe has (whole or lost). They are line 2 of the docked Companion, in the text column.
+4. **The five new pictures in the ART family:** the art director's to confirm. They're palette-exact by their maker, and the layer check finds no off-palette pixels.
+5. **Berth order:** waiting crates first, then shut berths, then the portrait berth last, as the art director's proof shows. **An unidentified pod** shows the sealed generic shell (`rackpod:unknown`), as the T-236 ruling requires.
+
+The 5 px gap before the portrait berth (T-198) builds with that ticket.
