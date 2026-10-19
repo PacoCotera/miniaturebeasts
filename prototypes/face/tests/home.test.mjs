@@ -366,7 +366,7 @@ test("Pods: the case's six slots 2 apart in 2 rows of 3 (76 x 66, 8 in, centred)
   const gb = homeBuild({ st: g.st, sv: g.sv, settings, docked: true, ui: {}, focus: null, time: 0, date: { y: 2026, m: 9, d: 17 }, now: Date.now() }, homeSpec, frameSpec), fg = await start(gb, { dir: node });
   const n = gb.props.regions.pods.wells.filter((w) => w.glint).length; assert.ok(n >= 1 && gb.props.regions.pods.lamp === "needsYou", "a glinting pod, and the lamp turns amber");
   for (let i = 0; i < 6; i++) { const w = gb.props.regions.pods.wells[i], star = box(fg, `pods.glint.${i}`); if (!w.glint) { assert.equal(star, null, `slot ${i}: no glint`); continue; } const sl = box(fg, `pods.slot.${i}`);
-    assert.deepEqual([star[2], star[3], star[0] - sl[0], star[1] - sl[1]], [12, 12, ...R.pods.glint.at], `slot ${i}: the glint (its place is an open question)`); assert.ok(inside(star, R.pods.rect)); }
+    assert.deepEqual([star[2], star[3], star[0] - sl[0], star[1] - sl[1]], [12, 12, ...R.pods.glint.at], `slot ${i}: the glint (its place is ruled in build spec section 14)`); assert.ok(inside(star, R.pods.rect)); }
 });
 test("Incubator: the painted capsule 56 x 86 (8 in, centred) in its layers by the state, the bar lit to the bud's progress from its first pixel and whole when ready, nothing red and no minutes", { skip }, async () => {
   const S = R.incubator.rect, x0 = S[0] + S[2] - 8 - 56, y0 = S[1] + (S[3] - 86) / 2, C = R.incubator.capsule, layersOf = (b, f) => ["interior", "pod", "glass", "shell", "door", "bar"].filter((k) => box(f, `incubator.${k}`)).join();
@@ -416,4 +416,11 @@ test("the console's changes redraw at most 153,600 px a frame: a crate arriving,
   await to({ carry: [0], pods: 3, away: true }, "the Companion goes away"); await to({ carry: [0], pods: 3 }, "the Companion docks");
   for (const k of ["pods", "incubator", "companion", "bay", "pods"]) { const b = scene({ adults: 3, carry: [0], pods: 3, crates: 2, bud: 5, focus: k }); resend(f, b, 1); const d = dirty(f); seen.push([`ring on ${k}`, d]); assert.ok(d <= 153600, `ring to ${k}: ${d} px`); }
   console.log(`# Home's console, px redrawn (the bound is 153,600): ${seen.map(([n, d]) => `${n} ${d}`).join(", ")}`);
+});
+
+test("the Companion's line 1 names the carried mibi in every scene that carries one (the lead, else the first carried), and reads 'at home' or 'on a trip' alone only when none is carried", { skip }, async () => {
+  for (const [name, o] of Object.entries(SCENES)) {
+    const b = scene(o), c = b.props.regions.companion, carried = S.carriedIds(b.st, b.sv), mb = carried.length ? S.mibiById(b.st, b.sv.lead != null && carried.includes(b.sv.lead) ? b.sv.lead : carried[0]) : null;
+    if (mb) { assert.ok(c.line1.startsWith(mb.name + " "), `${name}: "${c.line1}" must name ${mb.name}`); assert.equal(c.name, mb.name); } else assert.match(c.line1, /^(at home|on a trip)$/, `${name}: no one carried`);
+  }
 });

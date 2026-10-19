@@ -27,6 +27,7 @@ export const SCENES = {
   "incubator-empty":     { f: "room", set: (w) => { w.adults(2); } },
   "incubator-can":       { f: "room", set: (w) => { w.adults(2); w.pods(1); w.seen(); w.identified(1); w.readOne(); } },   // a pod can incubate
   "incubator-growing":   { f: "room", set: (w) => { w.adults(2); w.bud(false); } },
+  "incubator-half":     { f: "room", set: (w) => { w.adults(2); w.bud(false, 0.5); } },   // the bud at about half: the lit bar's clip is seen (build spec section 14)
   "incubator-ready":     { f: "room", set: (w) => { w.adults(2); w.bud(true); } },
   "bay-waiting":         { f: "room", set: (w) => { w.adults(2); w.crates(3); } },
   "bay-portrait":        { f: "room", set: (w) => { w.adults(2); w.crates(2); w.portrait(); } },
@@ -54,7 +55,7 @@ export const WORLD = () => ({
   portrait() { const st = window.__st.ST; st.sittingCrates.push({ id: "sit1", mibiId: st.mibis[0].id, pose: "stand", place: "meadow", start: 0, source: "x", painted: true, opened: false }); },   // a sitting crate that is ready
   pods(n) { const S = window.__st; for (let i = 0; i < n; i++) S.seedPod("S01", 3 + i); },
   seen() { for (const p of window.__st.ST.tray) p.seen = 1; },   // Pods has drawn them: only a glint or a waiting pod would need the player
-  bud(ready) { const S = window.__st, st = S.ST, gs = 5, genome = S.podGenome(S.frameOf("S01"), gs), sha = S.genomeSha(genome); st.bud = { kind: "founder", species: "S01", sp: 0, gs, genome, sha, code: S.nameCode(sha), start: Date.now() - (ready ? 1e8 : 1000), minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: [], early: false }; },
+  bud(ready, frac) { const S = window.__st, st = S.ST, gs = 5, genome = S.podGenome(S.frameOf("S01"), gs), sha = S.genomeSha(genome); st.bud = { kind: "founder", species: "S01", sp: 0, gs, genome, sha, code: S.nameCode(sha), start: Date.now() - (ready ? 1e8 : frac ? frac * 20 * 60000 : 1000), minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: [], early: false }; },
   identified(n) { const S = window.__st; for (const p of S.ST.tray.slice(0, n)) S.readSome(p.id, 0); },
   readOne() { const S = window.__st; for (const p of S.ST.tray.slice(0, 1)) S.readSome(p.id, 1); },
 });
