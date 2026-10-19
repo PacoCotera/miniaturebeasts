@@ -289,8 +289,8 @@ Nothing is red or negative, and there is never a third line.
   | # | Need | Action (first) | Notice (second) |
   | --- | --- | --- | --- |
   | 1 | `crates` | "Open the Bay" | "{count} crates wait in the Bay" / "a crate waits in the Bay" |
-  | 2 | `budReady` | "Open the Incubator" | "the bud is ready" |
-  | 3 | `portrait` (a sitting crate in the bay; new) | "Open the Bay" | "a portrait has come" |
+  | 2 | `budReady` | "Open the bud" if ✓ opens it in one press (as Home's ✓ does today), else "Go to the Incubator" | "the bud is ready" |
+  | 3 | `portrait` (a sitting crate in the bay; new) | "Open the Bay" | "{name}'s portrait has come" (the name in orange); "a portrait has come" only with no name |
   | 4 | `meet` (a mibi grew up or was born) | "Meet {name}" | "meet {name}" |
   | 5 | `newPods` | "Look at the pods" | "{count} new pods in the case" / "a new pod in the case" |
   | 6 | `glints` | "Look at the pods" | as now |
@@ -299,22 +299,22 @@ Nothing is red or negative, and there is never a third line.
 
 - **"A chapter cleared" waits for the Library build.** No such event exists yet, so it is not in the line, and the Library spec adds it.
 - **`toRead`, `budGrowing` and `couldGrow`'s "short" variant are no longer needs on Home.** They light nothing, at rest ✓ does nothing for them, and the line shows the goal.
-- **Home says "case", not "rack"**, in its own strings, as the Pods station does.
+- **"Case", not "rack", Station-wide** in every player-facing string, Cargo's "two crates to the case" included (the game designer). Internal `rack` identifiers stay.
 - The lamp and ✓ glyphs before the line are as built.
 
 ### 11.2 ✓ with a target focused
 
 | Target | The line |
 | --- | --- |
-| Vivarium | "✓ Open the Vivarium" |
-| Library | "✓ Open the Library" |
-| Pods | "✓ Open Pods" |
-| Incubator | "✓ Open the Incubator" |
-| Companion, docked | "✓ Open the Probe bench" |
+| Vivarium | "✓ Go to the Vivarium" |
+| Library | "✓ Go to the Library" |
+| Pods | "✓ Go to Pods" |
+| Incubator | "✓ Go to the Incubator" |
+| Companion, docked | "✓ Go to the Probe bench" |
 | Companion, away | no ✓; "the Companion is on a trip", in `mist` (as built) |
 | Bay | "✓ Open the Bay" |
 
-There is no subject on a focus. The station's own lines already say its state.
+There is no subject on a focus. The station's own lines already say its state. **"Open" is only for opening a thing (the Bay, the bud); going somewhere says where** (the decision points' "one verb, one act", per the game designer).
 
 ### 11.3 The top bar
 - **Left:** with no place name in the save, the bar reads "Station" alone. The place-name slot waits for a save field.
@@ -361,7 +361,7 @@ There is no subject on a focus. The station's own lines already say its state.
 - **Companion's {name}:** the lead mibi, else the first carried. With none, line 1 reads "the Companion at home" or "the Companion on a trip" (16 px, by 11.4).
 - **"At home"** = housed minus away. Confirmed.
 - **"{n} trips"** = the distinct turns the waiting crates came from. Confirmed.
-- **The Bay with only a portrait crate:** line 1 "a portrait in", line 2 "from the last trip", the three berths shut plus the portrait berth, and the lamp amber. It never reads "berths clear" while anything waits.
+- **The Bay with only a portrait crate:** line 1 "a portrait in", line 2 "{name}'s portrait" (or "from a sitting" with no name; a sitting crate is never a trip's), the three berths shut plus the portrait berth, and the lamp amber. It never reads "berths clear" while anything waits.
 - **The bevel** is the first row inside the edge. Confirmed.
 - **The expand mark** is four L ticks with 4 px arms. Confirmed.
 - **The windows have square corners.** The bezel carries the rounding, and the window's radius 6 is dropped to keep the face's last source slot free.
