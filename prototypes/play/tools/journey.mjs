@@ -199,6 +199,15 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
     const { ctx, page, st, mb } = await open(1440, 900, { motion, query: "?test&seed=3" });
     const tag = "ST" + (motion ? " (eased scroll)" : "");
     eq(await page.evaluate(() => __play.tier), "stack", tag + ": the layout at 1440 × 900");
+    if (!motion) {
+      eq((await page.evaluate(() => __play.scroll))[0], 0, "ST: a device already wholly in view opens at scrollTop 0 (1440 × 900)");
+      await page.reload({ waitUntil: "load" }); await page.waitForFunction(() => window.__play && window.__play.frames.station.contentWindow && window.__play.frames.station.contentWindow.__st, null, { timeout: 30000 }); await st().evaluate(() => window.__st.ready); await mb().waitForFunction(() => window.__mb && window.__mb.S, null, { timeout: 30000 }); await page.waitForTimeout(600);
+      eq((await page.evaluate(() => __play.scroll))[0], 0, "ST: a reload opens at scrollTop 0 again");
+      await page.keyboard.press("Shift+Slash"); await page.waitForTimeout(150);
+      const keysText = await page.evaluate(() => document.getElementById("keysPanel").innerText);
+      expect(!/bench/i.test(keysText) && !/\bLoci\b|\bTrait\b|\bCompare\b|\bCross\b|Export frame/.test(keysText) && /Station/.test(keysText) && /Companion/.test(keysText), "ST: Keys ? lists no bench keys: " + keysText.replace(/\s+/g, " ").slice(0, 120));
+      await page.keyboard.press("Shift+Slash"); await page.waitForTimeout(100);
+    }
     eq([await box(page, "#shStation"), await box(page, "#rowStation"), await box(page, "#shCompanion")], [[192, 56, 1040, 616], [192, 672, 1040, 72], [479, 768, 466, 616]], tag + ": the column: the Station shell, its tray, the Companion shell under it, both centred (the tray joined, 24 between the blocks)");
     const [sc, ch, sh] = await page.evaluate(() => __play.scroll); eq([sh + 40, sc], [1812, 0], tag + ": the column is 1,812 tall and starts at the top");
     await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(500);
@@ -230,6 +239,8 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   // the Stack at 1280 x 720 (the owner's window): the page scrolls, and one dock
   const { ctx, page, st, mb } = await open(1280, 720);
   eq(await page.evaluate(() => __play.tier), "stack", "S: the layout at 1280 × 720");
+  { const tr = await box(page, "#rowStation"), fr = await box(page, "#fStation"), sc = await page.evaluate(() => __play.scroll);
+    near(tr[1] + tr[3], 720, "S: the page opens with the Station's tray bottom at the window's bottom", 0.51); expect(fr[1] >= 40 - 0.5 && fr[1] + fr[3] <= 720, "S: and the Station's face whole"); expect(sc[0] > 0, "S: opened scrolled (a cut), scrollTop " + sc[0]); }
   const sb = await box(page, "#fStation"); eq([sb[2], sb[3]], [1024, 600], "S: the Station frame is 1:1");
   const sImg = rd(await page.screenshot({ clip: { x: sb[0], y: sb[1], width: 1024, height: 600 } })), sCap = dataPng(await st().evaluate(() => window.__st.capture()));
   expect(sameImage(sImg, sCap), "S: the Station frame is pixel-equal to its capture");
