@@ -137,24 +137,49 @@ static void slot_outline(const char *id, int x, int y, int w, int h, int rad, co
 static void station_words(const char *key) {
   int r[4]; hrect(v_fmt("regions.%s.rect", key), r);
   int rad = hi("regions.station.radius", 8), inset = hi("regions.station.pictureInset", 8), gap = hi("regions.station.columnGap", 8), x1 = hk("regions.station.line1", 0), left = 0, lineRight = r[2] - x1;
-  char f[24], e[24]; spec_str(H, "regions.station.placeholder.fill", f, sizeof f); spec_str(H, "regions.station.placeholder.edge", e, sizeof e);
   v_region(key, LAYER_CHROME);
   build_roundPanel(v_fmt("%s.panel", key), r[0], r[1], r[2], r[3], rad, hcol("regions.station.fill"), hcol("regions.station.edge"));
   v_rect(v_fmt("%s.bevel", key), r[0] + rad, r[1] + 1, r[2] - 2 * rad, 1, hcol("regions.station.bevel"));   /* the bevel line on top */
-  /* the picture: right-aligned `inset` in, vertically centred (the Bay's berths stand in line 1's row); the text column runs from x 12 to `gap` short of its left edge */
+  /* the picture: right-aligned `inset` in, vertically centred (the Bay's berths stand in line 1's row); the text column runs from x 12 to `gap` short of its left edge. The pictures are the host's: a picture the face has not been sent is nothing drawn. */
+  int px0 = 0, py0 = 0;   /* the picture's top left, on the screen */
   if (strcmp(key, "bay") == 0) {
-    int bw = hk("regions.bay.picture.berth", 0), bh = hk("regions.bay.picture.berth", 1), bg = hi("regions.bay.picture.gap", 2), n = v_pint("regions.bay.berths", hi("regions.bay.picture.berths", 3)), nmax = hi("regions.bay.picture.withPortrait", 4);
-    int total = n * bw + (n - 1) * bg, x0 = r[0] + r[2] - inset - total, y0 = r[1] + hi("regions.bay.picture.top", 32); left = x0 - r[0];
-    for (int i = 0; i < nmax; i++) word_panel(v_fmt("%s.berth.%d", key, i), x0 + i * (bw + bg), y0, i < n ? bw : 0, i < n ? bh : 0, f, e);   /* the portrait berth is the same nodes with no size while no portrait crate is in */
+    int bw = hk("regions.bay.picture.berth", 0), bh = hk("regions.bay.picture.berth", 1), pw = hk("regions.bay.picture.portrait", 0), bg = hi("regions.bay.picture.gap", 2), n = v_pint("regions.bay.berths", hi("regions.bay.picture.berths", 3)), nmax = hi("regions.bay.picture.withPortrait", 4), crates = v_pint("regions.bay.crates", 0);
+    int total = (n > 3 ? 3 * bw + pw : n * bw) + (n - 1) * bg, x0 = r[0] + r[2] - inset - total, y0 = r[1] + hi("regions.bay.picture.top", 32); left = x0 - r[0]; px0 = x0; py0 = y0;
+    v_region(v_fmt("%s.picture", key), LAYER_ART);
+    const char *shut = v_pstr("regions.bay.pictures.shut"), *crate = v_pstr("regions.bay.pictures.crate"), *portrait = v_pstr("regions.bay.pictures.portrait"); int x = x0;
+    for (int i = 0; i < nmax; i++) {   /* the crates first, then the shut berths, the portrait berth last; the portrait berth is the same node of no size while no portrait crate is in */
+      int w = i < 3 ? bw : pw; const char *a = i < crates ? crate : i < 3 ? shut : portrait;
+      if (i < n) { v_sprite(v_fmt("%s.berth.%d", key, i), a, x, y0, w, bh); x += w + bg; } else v_sprite_hidden(v_fmt("%s.berth.%d", key, i), portrait, 0, 0);
+    }
   } else if (strcmp(key, "pods") == 0) {
     int sw = hk("regions.pods.slots.size", 0), sh = hk("regions.pods.slots.size", 1), sg = hi("regions.pods.slots.gap", 2), cols = hi("regions.pods.slots.cols", 3), rows = hi("regions.pods.slots.rows", 2), pw = hk("regions.pods.picture", 0), ph = hk("regions.pods.picture", 1);
-    int x0 = r[0] + r[2] - inset - pw, y0 = r[1] + (r[3] - ph) / 2, filled = v_pint("regions.pods.slots", 0); left = x0 - r[0];
-    for (int i = 0; i < cols * rows; i++) { int sx = x0 + (i % cols) * (sw + sg), sy = y0 + (i / cols) * (sh + sg);
-      if (i < filled) word_panel(v_fmt("%s.slot.%d", key, i), sx, sy, sw, sh, f, e); else slot_outline(v_fmt("%s.slot.%d", key, i), sx, sy, sw, sh, hi("regions.station.slot.radius", 6), hcol("regions.station.slot.edge")); }
-  } else {
-    int pw = hk(v_fmt("regions.%s.picture", key), 0), ph = hk(v_fmt("regions.%s.picture", key), 1);
-    word_panel(v_fmt("%s.picture", key), r[0] + r[2] - inset - pw, r[1] + (r[3] - ph) / 2, pw, ph, f, e); left = r[2] - inset - pw;
+    int x0 = r[0] + r[2] - inset - pw, y0 = r[1] + (r[3] - ph) / 2; left = x0 - r[0]; px0 = x0; py0 = y0;
+    int gw = hk("regions.pods.glint.size", 0), gh = hk("regions.pods.glint.size", 1);
+    for (int i = 0; i < cols * rows; i++) { int sx = x0 + (i % cols) * (sw + sg), sy = y0 + (i / cols) * (sh + sg); const char *pod = v_pstr(v_fmt("regions.pods.wells.%d.pod", i));   /* the slot holds its rack pod or, empty, a hairline outline */
+      if (*pod) { v_region(v_fmt("%s.picture", key), LAYER_ART); v_sprite(v_fmt("%s.slot.%d", key, i), pod, sx, sy, sw, sh); }
+      else { v_region(key, LAYER_CHROME); slot_outline(v_fmt("%s.slot.%d", key, i), sx, sy, sw, sh, hi("regions.station.slot.radius", 6), hcol("regions.station.slot.edge")); } }
+    v_region(v_fmt("%s.picture", key), LAYER_ART);
+    for (int i = 0; i < cols * rows; i++) { const char *g = v_pstr(v_fmt("regions.pods.wells.%d.glint", i)); if (*g) v_sprite(v_fmt("%s.glint.%d", key, i), g, x0 + (i % cols) * (sw + sg) + hk("regions.pods.glint.at", 0), y0 + (i / cols) * (sh + sg) + hk("regions.pods.glint.at", 1), gw, gh); }
+  } else if (strcmp(key, "incubator") == 0) {
+    int cw = hk("regions.incubator.capsule.size", 0), ch = hk("regions.incubator.capsule.size", 1), x0 = r[0] + r[2] - inset - cw, y0 = r[1] + (r[3] - ch) / 2; left = x0 - r[0]; px0 = x0; py0 = y0;
+    const char *st = v_pstr("regions.incubator.state"); int growing = strcmp(st, "growing") == 0, ready = strcmp(st, "ready") == 0;
+    v_region(v_fmt("%s.picture", key), LAYER_PAINTED);   /* the studio's capsule masters and the relit pod are painted art */
+    { const char *a = v_pstr("regions.incubator.capsule.interior"); if (*a) v_sprite("incubator.interior", a, x0, y0, cw, ch); }
+    { const char *pod = v_pstr("regions.incubator.capsule.pod"); int w = v_pint("regions.incubator.capsule.podSize.0", 0), h = v_pint("regions.incubator.capsule.podSize.1", 0), ax = v_pint("regions.incubator.capsule.podAnchor.0", 0), ay = v_pint("regions.incubator.capsule.podAnchor.1", 0);
+      if (*pod && w > 0 && (growing || ready)) v_sprite("incubator.pod", pod, x0 + hk("regions.incubator.capsule.foot", 0) - ax, y0 + hk("regions.incubator.capsule.foot", 1) - ay, w, h); }
+    { const char *a = v_pstr("regions.incubator.capsule.glass"); if (*a && growing) v_sprite("incubator.glass", a, x0, y0, cw, ch); }
+    { const char *a = v_pstr("regions.incubator.capsule.shell"); if (*a) v_sprite("incubator.shell", a, x0, y0, cw, ch); }
+    { const char *a = v_pstr("regions.incubator.capsule.door"); if (*a && !growing) v_sprite("incubator.door", a, x0, y0, cw, ch); }
+    { const char *a = v_pstr("regions.incubator.capsule.bar"); int px = v_pint("regions.incubator.capsule.barPx", 0), bx = hk("regions.incubator.capsule.bar.rect", 0), by = hk("regions.incubator.capsule.bar.rect", 1), bh = hk("regions.incubator.capsule.bar.rect", 3);
+      if (*a && (growing || ready) && px > 0) v_sprite_window("incubator.bar", a, bx, by, x0 + bx, y0 + by, px, bh); }   /* the lit bar's window, from its left, `barPx` wide */
+  } else {   /* the Companion */
+    int pw = hk(v_fmt("regions.%s.picture", key), 0), ph = hk(v_fmt("regions.%s.picture", key), 1), x0 = r[0] + r[2] - inset - pw, y0 = r[1] + (r[3] - ph) / 2; left = x0 - r[0]; px0 = x0; py0 = y0;
+    v_region(v_fmt("%s.picture", key), LAYER_ART); const char *a = v_pstr(v_fmt("regions.%s.picture", key)); if (*a) v_sprite(v_fmt("%s.picture", key), a, x0, y0, pw, ph);
+    int n = v_pint("regions.companion.plates.count", 0), whole = v_pint("regions.companion.plates.whole", 0), tw = hk("regions.companion.plates.size", 0), th = hk("regions.companion.plates.size", 1);   /* docked: the Probe's plates as line 2 */
+    v_region("companion.plates", LAYER_ART);
+    for (int i = 0; i < n && i < hi("regions.companion.plates.max", 4); i++) v_sprite(v_fmt("%s.plate.%d", key, i), v_pstr(i < whole ? "regions.companion.plates.wholePicture" : "regions.companion.plates.lostPicture"), r[0] + hk("regions.companion.plates.at", 0) + i * (tw + hi("regions.companion.plates.gap", 4)), r[1] + hk("regions.companion.plates.at", 1), tw, th);
   }
+  (void)px0; (void)py0;
   int col = left - gap - x1;
   v_region(key, LAYER_ART);
   if (!v_sprite(v_fmt("%s.lamp", key), home_lamp_pic(strcmp(v_pstr(v_fmt("regions.%s.lamp", key)), "needsYou") == 0 ? "needsYou" : "off"), r[0] + hk("regions.station.lamp", 0), r[1] + hk("regions.station.lamp", 1), 12, 12)) v_error("word: a station's lamp is not on the face");

@@ -28,6 +28,11 @@ export function departures(log, spec, frame, cur = "room") {
     for (const r of regions.filter((x) => x.id === k)) must(within(r.rect, S), `${k} (${r.layer}) ${r.rect} leaves its station ${S}`);
     const chrome = got(k, "chrome"); must(chrome.length === 1 && eq(chrome[0].rect, S), `${k}'s panel ${chrome[0]?.rect} is not ${S}`);
     const art = got(k, "art"); must(art.length === 1 && eq(art[0].rect, lamp), `${k}'s lamp ${art[0]?.rect} is not ${lamp}`);
+    // its picture (build spec 4.3, 11.4): right-aligned 8 in and vertically centred (the Bay's berths in line 1's row), the Probe's plates under line 1 on the left of the Companion's column
+    const P = R[k].picture, pw = Array.isArray(P) ? P[0] : 3 * P.berth[0] + P.portrait[0] + 3 * P.gap, ph = Array.isArray(P) ? P[1] : P.berth[1], px = S[0] + S[2] - R.station.pictureInset - pw, py = Array.isArray(P) ? S[1] + Math.floor((S[3] - ph) / 2) : S[1] + P.top, pic = [px, py, pw, ph];
+    for (const r of regions.filter((x) => x.id === k + ".picture")) must(within(r.rect, pic), `${k}'s picture (${r.layer}) ${r.rect} leaves its place ${pic}`);
+    if (k === "incubator") for (const r of regions.filter((x) => x.id === "incubator.picture")) must(r.layer === "painted", `the capsule is drawn on the ${r.layer} layer, not painted`);
+    if (k === "companion") { const pl = R.companion.plates, box = [S[0] + pl.at[0], S[1] + pl.at[1], pl.max * pl.size[0] + (pl.max - 1) * pl.gap, pl.size[1]]; for (const r of regions.filter((x) => x.id === "companion.plates")) must(within(r.rect, box), `the plates ${r.rect} leave their place ${box}`); }
   }
   for (const r of got("focus")) must(within(r.rect, [0, 0, 1024, 600]), `the ring ${r.rect} leaves the screen`);
   // the ring is the object as drawn grown by 5 (frame.json focus.ring.reach), on a target only; at rest none

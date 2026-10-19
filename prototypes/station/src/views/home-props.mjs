@@ -12,6 +12,7 @@ import { keyToken } from "../looks.mjs";
 import { goalWords } from "./goal-words.mjs";
 import { readyCrates, bayState } from "../sitting.mjs";
 import { paintingOf } from "./idle-props.mjs";
+import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const COUNT = ["", "a", "two", "three", "four", "five", "six"];
@@ -170,23 +171,28 @@ export function homeBuild(m, spec, frame) {
   const { st, sv, settings } = m, now = m.now ?? Date.now(), Sg = spec.strings, T = Sg.stations, docked = !!m.docked, fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
   const needs = homeNeeds(st, sv, settings, m.ui ?? {}, now), requests = [];
   // the stations: the lines and the lamp
+  const req = (r) => { requests.push(r); return r.id; }, slot = (master, size) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: "its master (build spec section 9)" });
   const pods = (() => {
     const n = st.tray.length, seen = new Set(st.tray.filter((q) => q.idd || st.knownIds.includes(S.speciesOf(q))).map((q) => S.speciesOf(q))), k = seen.size;
     const amber = st.tray.some((p) => !p.idd && !p.seen) || st.tray.some((p) => S.podGlints(st, p));
-    return { line1: n ? fill(T.pods.count, { n }) : T.pods.empty, line2: n && k >= 2 ? fill(T.pods.kinds, { k }) : "", lamp: amber ? "needsYou" : "off", slots: Math.min(n, 6) };
+    const podSize = spec.regions.rackPod.size;   // the case's six slots: a pod in a slot is its layered rack pod (a species not yet known shows the unknown pod); a glint on a pod that has one
+    const wells = Array.from({ length: 6 }, (_, i) => { const q = st.tray[i]; if (!q) return { pod: "", glint: "" }; const sp = q.idd || st.knownIds.includes(S.speciesOf(q)) ? S.speciesOf(q) : null;
+      return { pod: req({ kind: "rackpod", id: `rackpod:${sp ?? "unknown"}`, species: sp, size: podSize }), glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : "" }; });
+    return { line1: n ? fill(T.pods.count, { n }) : T.pods.empty, line2: n && k >= 2 ? fill(T.pods.kinds, { k }) : "", lamp: amber ? "needsYou" : "off", slots: Math.min(n, 6), wells };
   })();
   const incubator = (() => {
     const bud = st.bud, ready = S.budReady(st, settings), state = !bud ? "empty" : ready ? "ready" : "growing", name = bud ? S.spName(bud) : "", I = T.incubator, grow = !bud && couldIncubate(st, settings);
-    return { state, line1: state === "empty" ? I.empty : state === "growing" ? I.growing : I.ready, line2: state === "empty" ? (grow ? I.canIncubate : "") : fill(I.species, { a: S.aAn(name).split(" ")[0], Species: name }), lamp: ready ? "needsYou" : "off" };
+    return { state, line1: state === "empty" ? I.empty : state === "growing" ? I.growing : I.ready, line2: state === "empty" ? (grow ? I.canIncubate : "") : fill(I.species, { a: S.aAn(name).split(" ")[0], Species: name }), lamp: ready ? "needsYou" : "off", capsule: capsuleOf(req, spec.regions.incubator.capsule, state, bud, ready ? 1 : S.budProgress(st, settings, now)) };
   })();
   const companion = (() => {
-    const c = S.carriedIds(st, sv), id = c.includes(sv?.lead) ? sv.lead : c[0] ?? null, mb = id == null ? null : S.mibiById(st, id), C = T.companion;
-    return { state: docked ? "docked" : "away", line1: mb ? fill(docked ? C.docked : C.away, { name: mb.name }) : docked ? C.dockedNoName : C.awayNoName, line2: "", lamp: "off", ...(mb ? { name: mb.name } : {}) };
+    const c = S.carriedIds(st, sv), id = c.includes(sv?.lead) ? sv.lead : c[0] ?? null, mb = id == null ? null : S.mibiById(st, id), C = T.companion, P = spec.regions.companion.plates, pr = docked ? S.probeNow(st, sv) : null;
+    const plates = pr ? { count: Math.min(pr.smax, P.max), whole: Math.min(pr.shield, pr.smax, P.max), wholePicture: slot(P.pictures.whole, P.size), lostPicture: slot(P.pictures.lost, P.size) } : null;   // docked only: the Probe's plates, whole then lost
+    return { state: docked ? "docked" : "away", line1: mb ? fill(docked ? C.docked : C.away, { name: mb.name }) : docked ? C.dockedNoName : C.awayNoName, line2: "", lamp: "off", ...(mb ? { name: mb.name } : {}), picture: slot(`companion-upright-${docked ? "docked" : "away"}-28x46`, spec.regions.companion.picture), ...(plates ? { plates } : {}) };
   })();
   const bay = (() => {
     const cs = docked ? S.bayCrates(st, sv) : [], bs = bayState(st, sv, settings, now), B = T.bay, trips = new Set(cs.map((c) => c.turn)).size;   // bayState: the walk crates while docked and the portrait crates that are ready; amber when anything waits
     const waiting = cs.length > 0 || bs.sitting > 0, rc0 = readyCrates(st, settings, now)[0], pname = rc0 ? S.mibiById(st, rc0.mibiId)?.name ?? "" : "";
-    return { state: waiting ? "waiting" : "clear", berths: bs.sitting ? 4 : 3, line1: cs.length ? fill(cs.length === 1 ? B.waitingOne : B.waiting, { n: cs.length }) : bs.sitting ? B.portrait : B.clear, line2: cs.length ? (trips <= 1 ? B.lastTrip : fill(B.trips, { n: trips })) : bs.sitting ? (pname ? fill(B.portraitName, { name: pname }) : B.portraitNoName) : "", lamp: bs.amber ? "needsYou" : "off" };
+    return { state: waiting ? "waiting" : "clear", berths: bs.sitting ? 4 : 3, crates: Math.min(cs.length, 3), pictures: { shut: slot("berth-shut-26x24", [26, 24]), crate: slot("berth-crate-26x24", [26, 24]), portrait: slot("berth-portrait-18x24", [18, 24]) }, line1: cs.length ? fill(cs.length === 1 ? B.waitingOne : B.waiting, { n: cs.length }) : bs.sitting ? B.portrait : B.clear, line2: cs.length ? (trips <= 1 ? B.lastTrip : fill(B.trips, { n: trips })) : bs.sitting ? (pname ? fill(B.portraitName, { name: pname }) : B.portraitNoName) : "", lamp: bs.amber ? "needsYou" : "off" };
   })();
   // the windows: the Vivarium's readout (each part only when non-zero; "all on a trip" when nobody is home)
   const housed = S.housed(st), onTrip = housed.filter((mb) => S.isAway(st, sv, mb)).length, atHome = housed.length - onTrip, R = Sg.readout;
@@ -212,4 +218,12 @@ function lineOf(m, spec, frame, v) {
   }
   if (cur === "companion" && !v.docked) return { note: Sg.notes.companionAway };
   return { verb: Sg.actions[cur] };
+}
+
+// The Incubator station's capsule (build spec section 4.3 and 11.4): the painted capsule at 56 x 86, its layers by the state (the interior and the shell always; the bud's relit pod inside while growing or ready; the glass while growing; the door
+// open while it is not growing; the bar lit to the bud's progress, from its first pixel, the whole bar when ready). The places are home.json regions.incubator.capsule.
+function capsuleOf(req, C, state, bud, progress) {
+  const L = layers(req, C.size, ["interior-day", "shell", "door-open", "bar-lit", "glass-closed"]), area = podArea(C.podHeight), out = { interior: L["interior-day"], shell: L.shell, door: L["door-open"], bar: L["bar-lit"], glass: L["glass-closed"], barPx: state === "empty" ? 0 : Math.max(1, Math.floor(C.bar.max * progress)) };
+  if (bud) Object.assign(out, { pod: relitPod(req, { species: bud.species, variant: "pod", light: "day", h: C.podHeight, area, bg: bgOf({ id: L["interior-day"], at: [0, 0] }, C.foot, area.anchor) }), podSize: area.size, podAnchor: area.anchor });
+  return out;
 }
