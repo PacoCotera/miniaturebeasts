@@ -17,6 +17,7 @@ let dpr = 1, k = 1, f = 1, CW = 1920, CH = 1080, tier = "row";   // tier: "stack
 function metrics() {
   dpr = window.devicePixelRatio || 1; k = Math.max(1, Math.floor(dpr)); f = k / dpr; CW = innerWidth; CH = innerHeight;
   document.documentElement.style.setProperty("--f", String(f));
+  document.documentElement.style.setProperty("--mark", (24 * Math.max(1, Math.round(dpr))) / dpr + "px");   // the 24 px room marks at 24 × n device px, nearest-neighbour: never smoothed, never a fractional step
   tier = CW < 1064 ? "narrow" : CW >= 1878 && CH >= 800 ? "row" : "stack";
 }
 const px = (lp) => Math.round(lp * k) / dpr + "px";
@@ -96,7 +97,7 @@ function groupOf(dev, n) {
 function trayPlan(dev, T) {
   const gs = GROUPS[dev].map((n) => groupOf(dev, n)), by = Object.fromEntries(gs.map((g) => [g.n, g]));
   const need = (list, g, m) => list.reduce((a, x) => a + x.w, 0) + (list.length - 1) * g + 2 * m;
-  const pos = {}, put = (grp, x, row) => { for (const [id, o] of Object.entries(grp.off)) pos[id] = [S(x + o), 4 + row * ROWH]; };
+  const sizeOf = Object.fromEntries(KEYS[dev].map((d) => [d.id, d.s])), pos = {}, put = (grp, x, row) => { for (const [id, o] of Object.entries(grp.off)) pos[id] = [S(x + o), S(row * ROWH + (ROWH - sizeOf[id]) / 2)]; };
   const gm = (list) => { for (let i = 0; i < 2; i++) if (need(list, GAP[i], MARGIN[i]) <= T) return i; return -1; };
   const one = gm(gs);
   if (one >= 0) {   // one row: the D-pad at the left, the rooms centred (kept clear of both neighbours), the actions at the right
@@ -210,7 +211,7 @@ let scrollTween = null;
 function reveal(d) {
   const g = geom[d]; if (!g) return;
   const st = stage.scrollTop, ch = stage.clientHeight, top = g.y, bot = g.y + g.h; let t = st;
-  if (bot - top + 2 * TOP > ch) t = bot + (bot - top < ch ? TOP : 0) - ch;   // taller than the window: the keys are what must show
+  if (bot - top + 2 * TOP > ch) t = bot - ch;   // the block and its margins do not fit: the tray's bottom meets the window's bottom, the block alone (the keys never leave the view)
   else if (top < st) t = top - TOP; else if (bot > st + ch) t = bot + TOP - ch;
   t = Math.max(0, Math.min(t, stage.scrollHeight - ch)); if (Math.abs(t - st) < 0.5) return;
   if (scrollTween) scrollTween.cancel();

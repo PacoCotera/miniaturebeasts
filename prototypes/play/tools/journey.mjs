@@ -133,6 +133,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   eq([s.word, s.mark.includes("solid"), s.dot], ["Lift", true, false], "B2: the control reads Lift with the solid mark and no dot");
   await lampIs(page, "mint", "B2");
   near((await box(page, "#fCompanion"))[1], 72, "B2: the Companion frame is at y 72 (seated)");
+  eq(await page.evaluate(() => { const t = document.getElementById("rowCompanion").getBoundingClientRect(); const e = document.elementFromPoint(t.left + 3, t.top + 2); return e && e.closest("#rowCompanion") ? "tray" : e && e.id; }), "tray", "B2: seated, the tray draws over the shell (only the shell's bottom border goes under it)");
   const ring = await page.evaluate(() => __play.rects().ring), sh = await box(page, "#shStation"); expect(ring[0] < sh[0] && ring[1] < sh[1], "B2: the ring is on the Station shell");
   eq(s.active, "fStation", "B2: the keys went to the Station"); eq(s.live, "Companion docked", "B2: the live region");
   eq(await mb().evaluate(() => window.__mb.isDocked()), true, "B2: the Companion frame sees the dock");
@@ -181,6 +182,8 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   eq([await vis("shStation"), await vis("shCompanion"), await st().evaluate(() => window.__st.ST.dock.docked)], ["hidden", "visible", false], "C: Lift shows the Companion");
   // the bench is hidden in narrow too: no tab, no sheet, the stage stays live
   eq(await page.evaluate(() => [getComputedStyle(document.getElementById("tabBench")).display, document.getElementById("stage").hasAttribute("inert")]), ["none", false], "C: no Bench tab, the stage is live");
+  const ctls = await page.evaluate(() => [...document.querySelectorAll("#bar .ctl:not(.hidden)")].map((c) => { const r = c.getBoundingClientRect(); return [c.id, r.width, r.height]; }));
+  expect(ctls.length >= 4 && ctls.every((c) => c[2] === 40), "C: every control in the bar is 40 tall " + JSON.stringify(ctls)); const dk = ctls.find((c) => c[0] === "dockCtl"); expect(dk && dk[1] >= 40 && dk[2] >= 40, "C: the icon Dock is at least 40 × 40");
   await page.click("#tabCompanion"); await page.waitForTimeout(300);
   eq(await page.evaluate(() => [__play.owner, document.getElementById("stage").hasAttribute("inert"), document.getElementById("note").classList.contains("hidden")]), ["companion", false, false], "C: the Companion tab has the keys and the note shows");
   // the hidden frame's storage path: the Station is hidden, a crate arrives, the control's dot changes within 600 ms
@@ -238,7 +241,8 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   const cb2 = await box(page, "#fCompanion"); eq([cb2[2], cb2[3]], [450, 600], "S: the Companion frame is 1:1");
   const cImg = rd(await page.screenshot({ clip: { x: cb2[0], y: cb2[1], width: 450, height: 600 } })), cCap = dataPng(await mb().evaluate(() => window.__mb.capture()));
   expect(sameImage(cImg, cCap), "S: the Companion frame, scrolled into view, is pixel-equal to its capture");
-  const keys = await box(page, "#rowCompanion"); expect(keys[1] + keys[3] <= 720 + 0.5, "S: its key tray is in view too");
+  const keys = await box(page, "#rowCompanion"); near(keys[1] + keys[3], 720, "S: the tray's bottom meets the window's bottom (the block alone, no margin)", 0.51);
+  const cs = await box(page, "#shCompanion"); expect(cs[1] >= 40 - 8 - 0.5, "S: at most the shell's 8 lp top border is out of view (the Companion is seated, 8 lower: " + cs[1] + ")"); expect(cb2[1] >= 40 - 0.5, "S: the face is whole");
   await clip(page, "play-stack-720-companion.png");
   await ctx.close();
 }
@@ -253,15 +257,18 @@ const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Res
     const m = await page.evaluate(() => {
       const r = (s) => { const b = document.querySelector(s).getBoundingClientRect(); return [b.left, b.top, b.width, b.height]; };
       const stage = document.getElementById("stage");
-      return { tier: __play.tier, dpr: devicePixelRatio, keys: [...document.querySelectorAll(".k")].map((k) => { const b = k.getBoundingClientRect(), t = k.parentElement.getBoundingClientRect(); return { dev: k.closest("#rowStation") ? "station" : "companion", name: k.getAttribute("aria-label"), w: b.width, h: b.height, l: b.left - t.left, r: t.right - b.right, top: b.top - t.top, bot: t.bottom - b.bottom }; }),
+      return { tier: __play.tier, dpr: devicePixelRatio, marks: [...document.querySelectorAll(".k.room img")].map((i) => { const b = i.getBoundingClientRect(), kb = i.parentElement.getBoundingClientRect(); return { w: b.width, h: b.height, dx: (b.left + b.width / 2) - (kb.left + kb.width / 2), dy: (b.top + b.height / 2) - (kb.top + kb.height / 2), px: getComputedStyle(i).imageRendering }; }),
+        keys: [...document.querySelectorAll(".k")].map((k) => { const b = k.getBoundingClientRect(), t = k.parentElement.getBoundingClientRect(); return { dev: k.closest("#rowStation") ? "station" : "companion", name: k.getAttribute("aria-label"), w: b.width, h: b.height, l: b.left - t.left, r: t.right - b.right, top: b.top - t.top, bot: t.bottom - b.bottom }; }),
         trays: { station: r("#rowStation"), companion: r("#rowCompanion") }, shells: { station: r("#shStation"), companion: r("#shCompanion") }, rows: __play.geom.rows,
         bar: { height: r("#bar")[3], tabs: [r("#tabStation"), r("#tabCompanion")], dock: r("#dockCtl"), keysBtn: r("#keysBtn") }, sw: stage.scrollWidth, cw: stage.clientWidth, sh: stage.scrollHeight, ch: stage.clientHeight, caddy: r("#caddySheet"), cradle: r("#cradle"), inner: [innerWidth, innerHeight] };
     });
     const e = 1 / m.dpr + 1e-6;   // a CSS px size is whole physical pixels: never more than one device pixel over the minimum
     eq(m.tier, layout, tag + ": the layout");
     for (const kk of m.keys) { const min = MIN[kk.name]; expect(kk.w >= min - 1e-6 && kk.w <= min + e && kk.h >= min - 1e-6 && kk.h <= min + e, `${tag}: ${kk.dev} ${kk.name} is ${kk.w} × ${kk.h} CSS px, wanted ${min} × ${min}`); }
+    { const n = Math.max(1, Math.round(dsf)); expect(m.marks.length === 4 && m.marks.every((q) => Math.abs(q.w * dsf - 24 * n) < 0.02 && Math.abs(q.h * dsf - 24 * n) < 0.02 && q.px === "pixelated" && Math.abs(q.dx) <= 1 / dsf + 0.01 && Math.abs(q.dy) <= 1 / dsf + 0.01), `${tag}: each room mark is drawn at 24 × ${n} device px, pixelated, centred in its key (${JSON.stringify(m.marks[0])})`); }
     eq(m.keys.length, 17, tag + ": 10 Station keys and 7 Companion keys");
-    expect(m.keys.every((kk) => kk.top >= 3.9 && kk.bot >= 3.9), tag + ": each key is inside its tray's rows, 4 from the row's top");
+    expect(m.keys.every((kk) => { const s = MIN[kk.name], row = Math.round((kk.top - (72 - s) / 2) / 72); return row >= 0 && row < 2 && Math.abs(kk.top - row * 72 - (72 - s) / 2) <= 1 / m.dpr + 0.01; }), tag + ": each key is centred in its row: a 56 key 8 from the row's top, a 64 key 4");
+    expect(["station", "companion"].every((d) => { const c = m.keys.filter((kk) => kk.dev === d).map((kk) => kk.top + kk.h / 2 - Math.floor((kk.top + kk.h / 2) / 72) * 72); return c.every((v) => Math.abs(v - 36) <= 1 / m.dpr + 0.01); }), tag + ": all the key centres in a row share one line");
     eq(m.rows, { station: dsf === 1.75 ? 2 : 1, companion: dsf === 1 ? 1 : 2 }, tag + ": the rows in each tray (ruling 6.1)");
     for (const d of ["station", "companion"]) { near(m.trays[d][2], m.shells[d][2], tag + ": the " + d + " tray is as wide as its shell", 1 / 64 + 0.01); near(m.trays[d][3], 72 * m.rows[d], tag + ": the " + d + " tray is 72 CSS px a row", 1 / 64 + 0.01); }
     near(m.trays.station[1], m.shells.station[1] + m.shells.station[3], tag + ": the Station tray is joined to its shell", 1 / 64 + 0.01);

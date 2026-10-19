@@ -51,7 +51,7 @@ iframe{border:0; display:block; background:var(--void)}
 /* drawn keys: a key presses exactly as the keyboard does; no words and no letters, the name is the aria-label (the sizes are CSS px: 56, the Confirm 64) */
 .k{position:absolute; border:0; padding:0; outline:none; touch-action:none; -webkit-tap-highlight-color:transparent; display:grid; place-items:center; overflow:visible}
 .k svg{position:relative; fill:#f4f1ec; width:20px; height:20px}
-.k img{position:relative; display:block; width:28px; height:28px; image-rendering:pixelated; pointer-events:none}
+.k img{position:relative; display:block; width:var(--mark,24px); height:var(--mark,24px); image-rendering:pixelated; pointer-events:none}
 .row .k.pad{border-radius:calc(var(--f) * 8px); background:linear-gradient(135deg,#303439,#24262a); box-shadow:0 calc(var(--f) * 4px) 0 #191a1d, inset 0 0 0 calc(var(--f) * 1px) #141618}
 .row .k.pad.dn{transform:translateY(calc(var(--f) * 2px)); box-shadow:0 calc(var(--f) * 2px) 0 #191a1d, inset 0 0 0 calc(var(--f) * 1px) #141618, inset 0 calc(var(--f) * 2px) calc(var(--f) * 3px) rgba(0,0,0,.5)}
 .row .k.cpad{border-radius:calc(var(--f) * 8px); background:linear-gradient(180deg,#3a3d42,#2f3236); box-shadow:0 calc(var(--f) * 3px) 0 #17181a, inset 0 calc(var(--f) * 1px) 0 rgba(255,255,255,.12)}
