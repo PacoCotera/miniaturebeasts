@@ -412,7 +412,7 @@ There is no subject on a focus. The station's own lines already say its state. *
 1. **The glint over the pod's top-right corner** (`[12, 0]` in the slot) is right. The glint marks the pod itself, as on the crates.
 2. **The bar:** a progress-clipped window of the capsule's lit-bar layer, from its first pixel, and whole when ready. The window [10, 71, 34, 10] is taken from the layer's alpha. It changes in whole pixels and redraws only when it changes.
 3. **The Probe's plates:** 12 × 24, 4 apart, from (12, 64), one for each plate the Probe has (whole or lost). They are line 2 of the docked Companion, in the text column.
-4. **The five new pictures in the ART family:** the art director's to confirm. They're palette-exact by their maker, and the layer check finds no off-palette pixels.
+4. **The five new pictures in the ART family: confirmed** (the art director), and the two T-198 owed edges join them. They are pixel art in the Station colours only, flat, with no partial alpha. **A docs line for H3** in the station-screens guide's art-layer paragraph: "its only warm colours are signals (the focus ring's cream, the amber lamp and Confirm's orange) and the small drawn pictures of warm objects: the Companion's housing, a crate, the gilt frame."
 5. **Berth order:** waiting crates first, then shut berths, then the portrait berth last, as the art director's proof shows. **An unidentified pod** shows the sealed generic shell (`rackpod:unknown`), as the T-236 ruling requires.
 
 The 5 px gap before the portrait berth (T-198) builds with that ticket.
