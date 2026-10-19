@@ -1,0 +1,281 @@
+# Home: the build spec (UI/UX, 2026-10-18 20:35)
+
+This replaces Home's right-hand column of five modules and its bottom line with the approved layout:
+- **a top bar**, which carries the line;
+- **two windows:** the Vivarium (left, large) and the Library (right);
+- **one console** of four stations, Pods, Incubator, Companion and Bay, whose order tells the sequence.
+
+**What Home is for:** in two seconds it answers "who is here, and what is new in my research?" (the two windows) and "what needs me now?" (the lamps and the line). Detail is always one press away, at full screen.
+
+**The owner's rulings folded in:**
+- no loop arrows, circuit, travelling light or ports;
+- mibis tiny everywhere, so an adult stands 54 px tall in Home's window;
+- the Library's Home module is the specimen, in the Home module's tone;
+- the Incubator is the painted capsule;
+- Create's verb is Incubate;
+- the Probe is drawn upright;
+- major features first.
+
+**Scope:** `home.json`, `home.c`, `home-props.mjs` and the Home goldens.
+- Idle and the Vivarium's whole share `home.c`, and they are unchanged.
+- Every other screen keeps its top bar and bottom line.
+
+All rects are `[x, y, w, h]` at 1× on 1024 × 600, and every picture is drawn 1:1. The faces have Inter at 16, 20 and 28 only.
+
+## 0. Tickets (about 4 hours each)
+
+| Ticket | Contents | Needs |
+| --- | --- | --- |
+| **H1: the frame** | §1 layout, §2 top bar and the line, §5 keys and focus, §6 full screen, §8 removals; the stations and windows drawn with their words, but with placeholder pictures | nothing new: it starts at once |
+| **H2: the Vivarium window** | §3 | H1; no new masters |
+| **H3: the console's pictures** | §4.3 | H1; two new masters from the art director (§9) |
+| **H4: the Library module** | §4.2 | H1; the specimen renderer brought into the public build (§4.2), and the art director's sign-off on its Home tone |
+
+H2 and H3 can run side by side. H4 waits on its art.
+
+## 1. Layout
+
+| Region | Rect | Drawn as |
+| --- | --- | --- |
+| Top bar | [0, 0, 1024, 40] | the shared `frame-top-bar-1024x40`, with Home's own words (§2) |
+| Vivarium bezel | [16, 48, 620, 400] | a panel: radius 10, 1 px `hairline` edge, 1 px `bevel` line on top, header 30 |
+| Vivarium window | [24, 78, 604, 362] | radius 6, inner shade (§3) |
+| Library bezel | [648, 48, 360, 400] | the same panel |
+| Library window | [656, 78, 344, 362] | the specimen (§4.2) |
+| Console | [16, 460, 992, 132] | `bar` ground, radius 10, 1 px `hairline` edge |
+| Stations | 226 × 98 at y 477; x 32 (Pods), 270 (Incubator), 528 (Companion), 766 (Bay) | panel, radius 8, `bevel` line on top |
+
+- **Gaps:** 12 between the bezels, 12 above the console, 8 at the foot. There is no bottom line on Home.
+- **Panels, edges and bevels** are drawn by the face's own rect primitives, palette-exact, the same way the focus ring is. No masters are needed for them. If a radius can't be drawn palette-exact, the art director cuts corner pieces instead.
+- **The bezel header:** the title (16, `bone`) at (x + 12, y + 7), then at most one readout (16, `fog`) 8 after it.
+- **The expand mark:** four 4 px corner ticks in a 14 px square, `mist`, at (right − 30, y + 8). It is not a focus target.
+
+## 2. The top bar and the line
+
+- **Left:**
+  - "Station" (20, `bone`) at x 16;
+  - then the station's place name (16, `mist`), 12 after it, when the save has one.
+- **Right:**
+  - the date (16, `mist`), as "Sat 17 Oct";
+  - the clock (20, `bone`), right edge at 1008;
+  - both from the device clock.
+  - The material counters and the Companion mark are not on Home's bar; they stay on every other screen.
+- **Centre: the line**, in [320, 8, 520, 24], centred. It takes over the job of the bottom line:
+  - **At rest (no ring):**
+    - **With needs:** at most two needs, joined by " · ", in `amber`, with the 12 × 12 `home-lamp-amber` before them. The first carries the ✓ cap: "✓ Open the Bay · the bud is ready".
+    - **With none:** the goal (`frame.json` `strings.goal`), in `mist`, with no lamp and no cap.
+  - **With a target focused:** what ✓ does there, with its cap: "✓ Open the Bay". Its subject, if it has one, follows in `mist` after " · ".
+  - The line never wraps. Only a subject may end in "…", and only at the zone's edge.
+- **Needs, in this order** (the existing `strings.needs` and `needKey`, reordered):
+  1. crates wait;
+  2. the bud is ready;
+  3. a portrait has come;
+  4. a chapter cleared;
+  5. a mibi grew up or was born (its name tag, §3);
+  6. new or glinting pods;
+  7. pods waiting for a well;
+  8. a pod could be incubated.
+
+  A need lights its station's lamp (§4.3) and clears when it is acted on.
+
+## 3. The Vivarium window (H2)
+
+**The picture:**
+- **A 1:1 crop of the same Idle painting the Vivarium uses** (`idle-vivarium-{dawn,day,dusk,night}-1024x568`, by the light), so a Home mibi and a Vivarium mibi are the same size in the same world, with no new master.
+- **The crop:** painting rows 194 to 555 (362 rows) and columns cx to cx + 603. **cx = 0** shows the burrow, the open floor and the start of the ridge.
+- The art director may move cx, in whole pixels. Everything below follows it.
+- The crop is cut in the logic process and cached per light.
+- The old `home-glass-*-640x488` masters go.
+
+**Residents:**
+- **Up to six adults and juveniles at home walk** (stand sizes: home 54 and 40, as now). Each is drawn with its contact shadow as in the Vivarium.
+- More than six: the readout counts them, and the window shows the six with the most recent activity.
+
+**Ground:** the Vivarium's ground profile, moved to this crop, with no new measurement:
+- groundTop_home(x) = groundTop_viv(x − 24 + cx) − 36;
+- the window's foot is at feetY 435;
+- F.x is held to 32 + ⌊W/2⌋ … 620 − ⌈W/2⌉.
+
+This settles Home's profile, which the Vivarium spec had left to be measured.
+
+**Ring and tags:**
+- **On Home they are not focus targets.** The way down is the full-screen Vivarium (§6).
+- **The event tag:** grown up, born, or back from a trip. It is the house name tag, on that mibi only, until the player visits it. It uses the Vivarium spec's rules (top at feetY + 16, flipped over the figure past the window's foot), and it carries no lift.
+
+**Readout:** "{n} at home · {m} on a trip", with each part shown only when non-zero, and "all on a trip" when nobody is home.
+
+**The away frame:**
+- **Placement:** 64 × 64 at (556, 352), with a 1 px `hairline` edge and a `panel` ground.
+- **The figure:** the first mibi out on a trip, at its world size (54 adult, 40 juvenile), composed from its stand and bottom-centred.
+- **The caption:** "away" (16, `frost`), centred under the frame at y 418.
+- **Walkers keep out of [548, 344, 80, 96]** while the frame shows.
+
+**Sleepers:**
+- The with-you bed and its sleepers leave Home. The bed is the Vivarium's.
+- The Companion station says "{name} at home" (§4.3).
+
+## 4. The Library module (H4) and the console (H3)
+
+### 4.2 The Library module
+
+**The picture:**
+- **The specimen for the chosen species, at the Home module's tone**:
+  - the radial form grown from the species' genome;
+  - found looks as filled beads in their own colour;
+  - unknown looks as open rings;
+  - sealed chapters veiled, drawn with no beads;
+  - a warm, deep ground, with print grain and no starfield.
+- It fills the window at 344 × 362.
+
+**How it is made:**
+- **The renderer:** the team's specimen generator, brought into the public build as a module of the logic process (the Node side, as `layered-stand.mjs` is). It is ported as-is, not redrawn.
+- **The output:** palette-exact pixels (no anti-aliasing outside the palette), plus a list of bead centres.
+- **Caching:** the result is cached by a digest of the species' found looks, and it is re-rendered only when a look is found.
+- **Print** the render time.
+
+**The species:**
+- the pinned wish's species;
+- with no wish, the species with the fewest looks still unfound, ties going to the most recently active;
+- never a species with nothing found.
+
+**Words:**
+- **Header:** "Library" alone, with **no count**. The beads show progress, and numbers are only for prices and supplies.
+- **Captions:**
+  - "{n} new" (16, `gold`), at the lower left (x 668, y 412), hidden at 0;
+  - "{Species} genome" (16, `mist`), right-aligned at x 988, y 412.
+
+**The new-look glint:**
+- `glint-star-12x12`, centred on each bead of a look found since the Library was last opened full screen.
+- It stays until seen, and nothing expires it.
+- It fades on the 16-level stage dither, in and out over 2 s.
+- At most 8 are drawn; more than 8 still count in "{n} new".
+
+**The slow breathing:**
+- **Four pre-rendered brightness levels** of the picture, made by the renderer with the main one.
+- One whole-picture swap every 2 s, cycling 1 2 3 4 3 2.
+- A swap is 124,528 px. On a swap frame the residents don't step (the scheduler skips them for that frame), so the frame stays under 153,600.
+- Under reduced motion there is no breathing and no fade: the glints simply show.
+
+**Counts:**
+- Every trait's current looks count: 20 for the version-4 Loika.
+- A plain look shows as a found bead once seen, and never counts toward "{n} new".
+
+### 4.3 The console's stations
+
+**Every station:**
+- its name (16, `fog`) at (12, 8);
+- the lamp at its top right (the existing 12 × 12 `home-lamp-hairline` off, `home-lamp-amber` when it needs the player);
+- **line 1** (20, `bone`, at most 4 words) at (12, 34);
+- **line 2** (16, `mist`, at most 4 words) at (12, 64);
+- its picture, right-aligned 12 in and vertically centred.
+
+Nothing is red or negative, and there is never a third line.
+
+| Station | Picture | Line 1 / line 2 | Amber when |
+| --- | --- | --- | --- |
+| **Pods** | the case's **six wells**, 2 rows of 3, 32 × 32 `home-well` at a 4 px gap; a pod in a well is its layered rack pod (`home-rack-pod-*-24x32`); a glint `glint-star-12x12` on a pod with one | "{n} in the case" / "{k} kinds" (k ≥ 2); "the case is empty" when empty | a pod has a glint, or new pods are unread |
+| **Incubator** | **the painted capsule** at 56 × 86 (`masters/capsule/*-56x86`: shell, glass, door, interior, and the bar lit to progress), with the bud's pod inside, as Home's Incubator module already draws it. No minutes on Home: the bar carries the progress | empty: "empty" / "a pod can incubate" (only when one can); growing: "a bud growing" / "a {Species}"; ready: "the bud is ready" / "a {Species}" | the bud is ready; the bar stays as it is, and only the lamp turns |
+| **Companion** | **the Companion, upright** (screen at the top, grip below), docked and away states; **new master, §9** | away: "{name} on a trip", with no line 2, no progress and no ETA; docked: "{name} at home", and as line 2 the Probe's plates as up to 4 `home-shield-{whole,lost}-12x24` | never: the dock lights the Bay |
+| **Bay** | **three berths**, plus a fourth, frame-shaped one while a portrait crate is in. A berth is shut and slatted, holds a waiting crate (a closed hatch with an amber underline), or holds the portrait frame; **new masters, §9** | waiting: "{n} crates in" / "from the last trip" or "from {n} trips"; clear: "berths clear", with no line 2 | crates are unopened, or a portrait crate has come |
+
+- **The Probe has no station.** Its plates show on the Companion station when docked. Mending and upgrading are reached through the Companion station.
+- **After a dock:** once the arrival's Later lands on Home, the Bay's berths show the crates by a cut. The old `crateIn` slide into the Cargo module goes with the module.
+
+## 5. Keys and focus (H1)
+
+- **Targets:** the two bezels and the four stations. The house ring (2 px, 4 out) follows each outline: radius 14 on a bezel, 12 on a station.
+- **At rest** there is no ring. ✓ does the first need in the line. With no need, ✓ does nothing.
+
+| From | ◀ | ▶ | ▲ | ▼ |
+| --- | --- | --- | --- | --- |
+| rest | — | — | Vivarium | Pods |
+| Vivarium | — | Library | — | Pods |
+| Library | Vivarium | — | — | Bay |
+| Pods | — | Incubator | Vivarium | — |
+| Incubator | Pods | Companion | Vivarium | — |
+| Companion | Incubator | Bay | Vivarium | — |
+| Bay | Companion | — | Library | — |
+
+- **✓ on a bezel** opens it full screen (§6).
+- **✓ on a station** opens its room:
+  - Pods: the collection;
+  - Incubator: the Incubator;
+  - Companion: the Probe bench while docked, otherwise nothing, and the line says "the Companion is on a trip";
+  - Bay: Cargo.
+- **The line** names each verb ("✓ Open the Bay").
+- **← on Home** does nothing.
+- **Room keys:** Home, the ring back to rest; Vivarium, the Vivarium full screen; Library, the Library full screen; Research, Pods.
+- **Dock:** as `frame.json` `navigation.dock` (the arrival plays, then Later returns here).
+
+## 6. Full screen (H1)
+
+- **Open:** ✓ on a focused bezel, or the room key, goes to the Vivarium's whole (today's `vivarium.json`, with mibis focusable) or to the Library.
+  - Until the Library build lands, the Library goes to today's Library screen.
+- **The change is the 180 ms stage dither** (16 levels). Nothing scales.
+- **Close:** ← from the Vivarium's whole or the Library returns to Home, with the ring on that bezel.
+
+## 7. Budgets (asserted by the tests, as on the other screens)
+
+- **Objects:** at most 400 on Home (the table holds 1,024). Estimate:
+  - frame and words about 30;
+  - window about 20;
+  - Library 12;
+  - stations about 50;
+  - total about 110.
+- **Props:** at most 32 KiB. Estimate about 4 KiB.
+- **Dirty area:** at most 153,600 px per frame.
+  - **Print:** a walk step with six residents, a breathing swap (residents held), a glint fade step, a lamp change, and the ring moving between a bezel and a station.
+- `tickBudget` 148,000, as the Vivarium.
+
+## 8. Gone from Home (H1)
+
+- **Layout and words:**
+  - the column of five modules and its `plate-device-320x88` use;
+  - the Probe module;
+  - the bottom line;
+  - the material counters on Home's bar;
+  - the old `home-glass-*` masters.
+- **The Vivarium window's old pieces:**
+  - the walk band and keepOut;
+  - the with-you bed, its mark and the sendoff hops;
+  - the rest knob;
+  - every focus on a mibi.
+- **The old Cargo slide:** the `crateIn` slide.
+
+**One open question for the lead:** the rest knob was Home's way to send the Station to Idle. If Idle has no other way in (a timeout), it needs a place. My proposal is the Home room key pressed at rest.
+
+## 9. Masters
+
+| Master | On the gate? |
+| --- | --- |
+| `idle-vivarium-{dawn,day,dusk,night}-1024x568` (the window's crop) | exists |
+| S01 stands and contact shadows (`prototypes/ui/assets/stands/`) | exist |
+| `home-well` 32 × 32, `home-rack-pod-*-24x32`, `glint-star-12x12` | exist |
+| the capsule set at 56 × 86 (`masters/capsule/`) | exists |
+| `home-shield-{whole,lost}-12x24`, `home-lamp-{amber,hairline}-12x12` | exist |
+| `frame-top-bar-1024x40` | exists |
+| panels, edges, ring, expand ticks | drawn in code, no master |
+| **the Companion, upright, for a station** (about 28 × 46, docked and away) | **missing:** art director |
+| **Bay berths for a station** (about 26 × 24: shut and slatted, a waiting crate with its amber underline, the portrait frame) | **missing:** art director |
+| **the specimen at the Home tone**: the renderer in the public build, and the art director's sign-off on its tone at 344 × 362 | **missing from the public build:** H4 |
+
+## 10. Checks
+
+- **Goldens:**
+  - rest, with nothing needed (the goal in the line);
+  - rest with two needs;
+  - each station focused, and each bezel focused;
+  - all home, some away, none home;
+  - an event tag;
+  - each Incubator state;
+  - the Bay waiting, with a portrait;
+  - the Companion docked and away;
+  - the Library with 0 and 3 new;
+  - each light.
+- **Tests:**
+  - the focus graph above;
+  - the need order;
+  - the line's width never overflows;
+  - walkers on the moved profile, never in the away frame's keep-out;
+  - the budgets in §7.
+- **Journeys:** `home-dock-arrival` keeps its arrival steps. Its Home asserts become the Bay station's state and the Companion station's "at home", not the bed.
