@@ -49,7 +49,7 @@ This part is built on the game designer's rule (`specs/sittings-never-lost.md`, 
 
 | State | The portrait berth | Lamp, words |
 | --- | --- | --- |
-| a sitting held | `berth-portrait-18x24`, the lit gilt frame | no amber. Line 2, when the walk berths are clear: "a sitting held" (the game designer to confirm). Line 1 as the walk crates say |
+| a sitting held | `berth-portrait-18x24`, the lit gilt frame | no amber and **no words**: lines 1 and 2 as the walk crates say ("berths clear" stays true, because nothing in the Bay waits to be opened). The held sitting is spent from the mibi (✓ Portray), not at the Bay, so the frame alone says it (the game designer) |
 | held, and one or more owed | the same, with **the edge of one unlit frame behind it**, offset −3, −3 | as held. The owed ones add no word, number or amber |
 | a sitting begun (painting) | the berth shut, as its walk neighbours | the crate's wait as the portrait spec says (no clock); no amber |
 | a portrait crate in | the portrait crate (Home spec §11.5) | amber; "a portrait in" / "{name}'s portrait" |
@@ -57,7 +57,7 @@ This part is built on the game designer's rule (`specs/sittings-never-lost.md`, 
 | none of these | no fourth berth | — |
 
 - **When the held sitting is begun:** the frame goes by a cut (the berth shuts). If one is owed, the one behind becomes the held frame on the next draw, lit, and the edge stays while still more are owed. The berth is 18 × 24 and the station sits in a quiet console, so there is no slide.
-- **The new master:** `berth-portrait-owed-18x24`, the unlit edge (darker gilt, no shadow), from the art director. Without it, H3 draws only the held frame.
+- **The master:** `berth-portrait-owed-18x24`, signed by the art director (work-queue `results/T-20261016-198/art/`): the held frame one step down its palette ramp, the whole frame drawn behind.
 
 ### In the Habitat: the Portrait plate (`regions.portrait`)
 
@@ -65,10 +65,10 @@ This part is built on the game designer's rule (`specs/sittings-never-lost.md`, 
 - **Owed:** while the plate shows a held frame and one or more sittings are owed, **the edge of one unlit frame behind it**, at [912, 308] (−4, −4), inside the plate's own rect.
   - The plate's words don't change. "Portray {name}" stays, and the owed ones add nothing.
 - **Painting, portrayed and none:** these states are about this mibi, so they show no edge.
-- **The new master:** `sitting-frame-owed-48x40`, from the art director, the same edge at the plate's size.
+- **The master:** `sitting-frame-owed-48x40`, signed by the art director, in the same folder. The proof is `owed-proof-4x.png`.
 
 ### Words, everywhere
 
 - **Every "use your sitting first" goes:** the held frame's pulse, the price line's warning, and every screen's.
 - **Nothing anywhere counts the owed sittings.**
-- **The game designer rewrites** the portrait document's §7.2 (a sitting earned while one is held: it waits behind it, never lost) and the second rule of §8 (a moment while one is held: given, and it waits).
+- **The game designer has rewritten** the portrait document's §7.2 and the second rule of §8 (on the game design guideline branch, 3df1acf0): given, it waits behind the held one, oldest first, kept in the save, never trimmed, and with no warning.
