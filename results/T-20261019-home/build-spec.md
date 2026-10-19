@@ -421,3 +421,33 @@ The 5 px gap before the portrait berth (T-198) builds with that ticket.
 - **Line 1 beside the 102 row** (two crates and the portrait) is 16 px, by §11.4's rule. The column ends 8 short of the first berth (96 wide), and "2 crates in" at 20 px is about 99, so it drops to 16. The rule stands as written, and the stills are right.
 - **The Companion's line 1 without a name** ("at home") is right only when no mibi is carried. The builder checks the fixtures: a still meant to show a carried mibi must show its name, as "Dot at home" does.
 - **§4.3's "12 in"** is now 8, as §11.4 and the build have it.
+
+## 15. Gate of H4, the Library specimen (c2debf73, stills on work-queue de4f62bf)
+
+**PASS, with one fix.**
+- **Checked:**
+  - the specimen fills the window at the art director's fit (late: x 21–323.5, y 29–331.5, inside the 12 px test);
+  - early, mid, late and new read as growth;
+  - "{n} new" and "{Species} genome" sit where §4.2 puts them;
+  - breathing and the full-screen open work.
+- **The art director** re-checks this first public render, with the same stills.
+
+**The fix: nothing found anywhere.** The H1 placeholder (the flat box) must not ship, because a fresh save sees it on its first day. Draw the generator's own ground with its finish (grain 4, vignette 0.45), with no form, no captions and no glints, so the window reads as an empty dark field waiting to grow. The header stays "Library".
+
+**Rulings on the builder's readings:**
+1. **Species with several wishes** (the game designer's order, which replaces the builder's reading):
+   1. a wished species with a bud in the Incubator;
+   2. otherwise, the species of the newest mibi, by the highest mibi id (not `born`, which many share);
+   3. species with no mibi, in the order they were learnt.
+
+   The same proxy serves "ties go to the most recently active" in the no-wish rule.
+2. **"New":**
+   - A current look found since the Library was last opened full screen (the new save field, set on entering the Library) is right.
+   - Migration is right too: a fresh save counts all it finds as new, and an old save counts all it knows as seen.
+   - The caption counts the shown species only, so it always matches the glints on screen.
+   - The glints go on the first 8 new beads in chapter order.
+3. **Breathing levels** at ×1.04, 1.08 and 1.12 brightness are provisional. The amount is the art director's, and the cycle starting at Home's first draw is fine.
+4. **The glint fade** is a triangle, 1 s in and 1 s out, all glints in phase. That's right.
+5. **Nothing found:** see the fix above.
+6. **Sealed chapters:** drawn with no beads while shut, and normal once opened. That's right.
+7. **Glints on near-white beads read poorly:** this goes to the art director (the star's colour or outline).
