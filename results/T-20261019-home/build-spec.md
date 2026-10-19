@@ -82,8 +82,8 @@ H2 and H3 can run side by side. H4 waits on its art.
 
 **The picture:**
 - **A 1:1 crop of the same Idle painting the Vivarium uses** (`idle-vivarium-{dawn,day,dusk,night}-1024x568`, by the light), so a Home mibi and a Vivarium mibi are the same size in the same world, with no new master.
-- **The crop:** painting rows 194 to 555 (362 rows) and columns cx to cx + 603. **cx = 0** shows the burrow, the open floor and the start of the ridge.
-- The art director may move cx, in whole pixels. Everything below follows it.
+- **The crop:** painting rows 194 to 555 (362 rows) and columns cx to cx + 603. **cx = 64** (the art director, `art/window-cx-proof-day.png`): the wall and pipe drop out, the burrow stays whole, and the view closes on the ridge and the pond.
+- Everything below follows cx. The art director has checked the ground formula.
 - The crop is cut in the logic process and cached per light.
 - The old `home-glass-*-640x488` masters go.
 
@@ -129,7 +129,7 @@ This settles Home's profile, which the Vivarium spec had left to be measured.
 
 **How it is made:**
 - **The renderer:** the team's specimen generator, brought into the public build as a module of the logic process (the Node side, as `layered-stand.mjs` is). It is ported as-is, not redrawn.
-- **The output:** palette-exact pixels (no anti-aliasing outside the palette), plus a list of bead centres.
+- **The output:** a painted RGB picture, ported as-is and **not** snapped to the palette (snapping turns the ground cold and the russet orange), plus a list of bead centres. It is treated as painted art, like the Idle painting. The window's inner shade (§1) replaces the generator's own edge gradient.
 - **Caching:** the result is cached by a digest of the species' found looks, and it is re-rendered only when a look is found.
 - **Print** the render time.
 
@@ -175,8 +175,8 @@ Nothing is red or negative, and there is never a third line.
 | --- | --- | --- | --- |
 | **Pods** | the case's **six wells**, 2 rows of 3, 32 × 32 `home-well` at a 4 px gap; a pod in a well is its layered rack pod (`home-rack-pod-*-24x32`); a glint `glint-star-12x12` on a pod with one | "{n} in the case" / "{k} kinds" (k ≥ 2); "the case is empty" when empty | a pod has a glint, or new pods are unread |
 | **Incubator** | **the painted capsule** at 56 × 86 (`masters/capsule/*-56x86`: shell, glass, door, interior, and the bar lit to progress), with the bud's pod inside, as Home's Incubator module already draws it. No minutes on Home: the bar carries the progress | empty: "empty" / "a pod can incubate" (only when one can); growing: "a bud growing" / "a {Species}"; ready: "the bud is ready" / "a {Species}" | the bud is ready; the bar stays as it is, and only the lamp turns |
-| **Companion** | **the Companion, upright** (screen at the top, grip below), docked and away states; **new master, §9** | away: "{name} on a trip", with no line 2, no progress and no ETA; docked: "{name} at home", and as line 2 the Probe's plates as up to 4 `home-shield-{whole,lost}-12x24` | never: the dock lights the Bay |
-| **Bay** | **three berths**, plus a fourth, frame-shaped one while a portrait crate is in. A berth is shut and slatted, holds a waiting crate (a closed hatch with an amber underline), or holds the portrait frame; **new masters, §9** | waiting: "{n} crates in" / "from the last trip" or "from {n} trips"; clear: "berths clear", with no line 2 | crates are unopened, or a portrait crate has come |
+| **Companion** | `companion-upright-docked-28x46` (the device in its cradle, screen lit) or `companion-upright-away-28x46` (the empty cradle, the mark in line) | away: "{name} on a trip", with no line 2, no progress and no ETA; docked: "{name} at home", and as line 2 the Probe's plates as up to 4 `home-shield-{whole,lost}-12x24` | never: the dock lights the Bay |
+| **Bay** | **three berths, 2 px apart**: `berth-shut-26x24` (slats) or `berth-crate-26x24` (a waiting crate with its 2 px amber underline); plus `berth-portrait-18x24`, the gilt frame, as a fourth while a portrait crate is in. Four come to 102 wide, inside line 1's room | waiting: "{n} crates in" / "from the last trip" or "from {n} trips"; clear: "berths clear", with no line 2 | crates are unopened, or a portrait crate has come |
 
 - **The Probe has no station.** Its plates show on the Companion station when docked. Mending and upgrading are reached through the Companion station.
 - **After a dock:** once the arrival's Later lands on Home, the Bay's berths show the crates by a cut. The old `crateIn` slide into the Cargo module goes with the module.
@@ -255,9 +255,9 @@ Nothing is red or negative, and there is never a third line.
 | `home-shield-{whole,lost}-12x24`, `home-lamp-{amber,hairline}-12x12` | exist |
 | `frame-top-bar-1024x40` | exists |
 | panels, edges, ring, expand ticks | drawn in code, no master |
-| **the Companion, upright, for a station** (about 28 × 46, docked and away) | **missing:** art director |
-| **Bay berths for a station** (about 26 × 24: shut and slatted, a waiting crate with its amber underline, the portrait frame) | **missing:** art director |
-| **the specimen at the Home tone**: the renderer in the public build, and the art director's sign-off on its tone at 344 × 362 | **missing from the public build:** H4 |
+| `companion-upright-{docked,away}-28x46` | **signed** (the art director): work-queue `results/T-20261019-home/art/`, moved into `prototypes/ui/assets/masters/home/` by H3 |
+| `berth-shut-26x24`, `berth-crate-26x24`, `berth-portrait-18x24` | **signed**, as above (proof `art/console-proof-3x.png`) |
+| the specimen at the Home tone, 344 × 362 | **tone signed** for the generator's own render. The generator is not yet in the public build (H4 brings it), and the art director re-checks its first public render |
 
 ## 10. Checks
 
