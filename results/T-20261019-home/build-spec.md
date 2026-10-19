@@ -435,7 +435,12 @@ The 5 px gap before the portrait berth (T-198) builds with that ticket.
 **The fix: nothing found anywhere.** The H1 placeholder (the flat box) must not ship, because a fresh save sees it on its first day. Draw the generator's own ground with its finish (grain 4, vignette 0.45), with no form, no captions and no glints, so the window reads as an empty dark field waiting to grow. The header stays "Library".
 
 **Rulings on the builder's readings:**
-1. **Species with several wishes:** the most recently active of them. "Most recently active" is read as the newest mibi born of the species, then the order the species was learnt. This is the game designer's to confirm, and I've asked them.
+1. **Species with several wishes** (the game designer's order, which replaces the builder's reading):
+   1. a wished species with a bud in the Incubator;
+   2. otherwise, the species of the newest mibi, by the highest mibi id (not `born`, which many share);
+   3. species with no mibi, in the order they were learnt.
+
+   The same proxy serves "ties go to the most recently active" in the no-wish rule.
 2. **"New":**
    - A current look found since the Library was last opened full screen (the new save field, set on entering the Library) is right.
    - Migration is right too: a fresh save counts all it finds as new, and an old save counts all it knows as seen.
