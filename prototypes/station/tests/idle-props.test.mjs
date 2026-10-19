@@ -10,11 +10,11 @@ import { fileURLToPath } from "node:url";
 import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { idleBuild, idleLine } from "../src/views/idle-props.mjs";
-import { homeBuild } from "../src/views/home-props.mjs";
+import { vivariumBuild } from "../src/views/vivarium-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), frame = J("frame.json"), home = J("home.json"), schema = J("idle.props.json");
+const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), frame = J("frame.json"), home = J("home.json"), vivSpec = J("vivarium.json"), schema = J("idle.props.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
 
 function validate(v, sc, at = "$", out = []) {
@@ -43,9 +43,9 @@ test("Idle's props validate against idle.props.json, name no rectangle, carry th
     assert.deepEqual(Object.keys(b.props.frame), ["idle"]); assert.equal(b.props.idle, true);
   }
 });
-test("the living window is Home's: the same residents with the same seeds, the same bed and sleepers", () => {
-  const st = world(); adults(st, 5); const sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] }), h = homeBuild({ st, sv, settings, docked: true, ui: {}, focus: null, light: "day" }, home, frame).props.regions, i = build(st, sv).props.regions;
-  assert.deepEqual(i.residents, h.residents); assert.deepEqual(i.bed, h.bed); assert.equal(i.bed.state, "docked"); assert.equal(i.bed.sleepers.length, 2);
+test("the living window is the Vivarium's whole's: the same residents with the same seeds, the same bed and sleepers", () => {
+  const st = world(); adults(st, 5); const sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] }), v = vivariumBuild({ st, sv, settings, docked: true, light: "day", focus: null, seen: null }, vivSpec, frame, home).props.regions, i = build(st, sv).props.regions;
+  assert.deepEqual(i.residents, v.residents); assert.deepEqual(i.bed, v.bed); assert.equal(i.bed.state, "docked"); assert.equal(i.bed.sleepers.length, 2);
   assert.equal(i.vivarium.picture, "idle-vivarium-day:1024x568");
 });
 test("the line: the first that holds of crates (docked), the bud ready, the bud growing, out with the Companion (away, mibis carried); none, empty; six words or fewer and no digits", () => {

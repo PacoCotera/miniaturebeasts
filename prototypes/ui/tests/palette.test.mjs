@@ -28,7 +28,7 @@ test("the Companion's 48 are the signed palette, unchanged: names and hexes in o
   assert.deepEqual(P.colours.slice(0, 48), companion.colours.map((c) => [c.name, c.hex]));
 });
 
-// the rack pod's ramp (home.json regions.pods.pod.layers.ramp): light and shade are A's neighbours; the outline is the last colour of A's darker chain before `ink` or `void`, `ink` where that would be `night`; never `void`
+// the rack pod's ramp (home.json regions.rackPod.layers.ramp): light and shade are A's neighbours; the outline is the last colour of A's darker chain before `ink` or `void`, `ink` where that would be `night`; never `void`
 import { rampOf } from "../../station/src/pixels.mjs";
 test("rampOf: the outline of each ramp the rack pod can take, and never void or night", () => {
   const want = { slate: "ink", coral: "ink", teal: "tealD", rust: "soil", amber: "soil", sea: "deep", leaf: "pine", plum: "plumD", lilac: "plumD", stone: "ink", paper: "soil", mist: "ink", fog: "ink" };

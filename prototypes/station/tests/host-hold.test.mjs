@@ -42,12 +42,12 @@ test("during a hold every intent is dropped but the last room key, which is disp
   onFaceMessage(h, room("room:library")); onFaceMessage(h, room("room:research")); assert.equal(h.pendingRoom, "research", "the last room key is kept");
   at(1999); assert.equal(UI.screen, "home"); at(2000); assert.equal(UI.screen, "pods", "dispatched once the hold is over"); assert.equal(h.pendingRoom, null);
 });
-test("Home's rest: a room key during the hold is dropped, the rest ends on Idle at 380 ms, the next key only wakes", () => {
-  const { h, sent, at } = rig(); at(1000); UI.home.f = "knob"; INTENTS.home.intent(h, "knob", "confirm");
-  assert.deepEqual([sent.at(-1).kind, sent.at(-1).ms, sent.at(-1).hold], ["rest", 200, 380]); assert.equal(UI.resting, true);
+test("Home's rest: the Home key at rest rests; a room key during the hold is dropped, the rest ends on Idle at 380 ms, the next key only wakes", () => {
+  const { h, sent, at } = rig(); at(1000); UI.home.f = "room"; onFaceMessage(h, { t: "intent", seq: 1, screen: "home", target: "room", verb: "room:home" });
+  assert.deepEqual([sent.at(-1).kind, sent.at(-1).target, sent.at(-1).ms, sent.at(-1).hold], ["rest", "home", 200, 380]); assert.equal(UI.resting, true);
   at(1100); onFaceMessage(h, room("room:research")); assert.equal(h.pendingRoom ?? null, null, "dropped, never kept");
   at(1200); assert.deepEqual([sent.at(-1).kind, sent.at(-1).from, sent.at(-1).to], ["dither", 0, 16], "the transition to Idle begins at 200");
-  at(1379); assert.equal(UI.idle, false); at(1380); assert.equal(UI.idle, true); assert.equal(UI.resting, false); assert.equal(UI.screen, "home"); assert.equal(UI.home.f, "knob"); assert.equal(h.pendingRoom ?? null, null);
+  at(1379); assert.equal(UI.idle, false); at(1380); assert.equal(UI.idle, true); assert.equal(UI.resting, false); assert.equal(UI.screen, "home"); assert.equal(UI.home.f, "room"); assert.equal(h.pendingRoom ?? null, null);
   at(1400); assert.equal(UI.screen, "home", "nothing was dispatched after the hold");
   onFaceMessage(h, { t: "intent", seq: 2, screen: "idle", target: "idle", verb: "wake" }); assert.equal(UI.idle, false, "the next key only wakes"); assert.equal(UI.screen, "home"); assert.deepEqual([sent.at(-1).kind, sent.at(-1).ms, sent.at(-1).hold], ["dither", 180, 180]);
 });
@@ -84,7 +84,7 @@ test("Cargo's opening on the host: a one-crate opening of materials only is 700 
   { const { h, at } = mk(); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); at(500);
     onFaceMessage(h, { t: "intent", seq: 3, screen: "cargo", target: "room", verb: "room:research" }); assert.equal(UI.screen, "pods", "a room key during the hold ends the opening and opens its section at once"); assert.equal(UI.cargo.state, "bay"); assert.equal(h.pendingRoom ?? null, null); assert.equal(h.holding(), false); assert.equal(G.st.accepted.length, 1, "the crate that was open is taken in"); }
   { const { h, at } = mk(); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); at(500); onFaceMessage(h, { t: "intent", seq: 4, screen: "cargo", target: "room", verb: "back" });
-    assert.deepEqual([UI.screen, UI.cargo.state, UI.home.f], ["home", "bay", "cargo"], "← finishes the crate as a cut and goes Home, the ring on the Bay module"); assert.equal(h.holding(), false); }
+    assert.deepEqual([UI.screen, UI.cargo.state, UI.home.f], ["home", "bay", "bay"], "← finishes the crate as a cut and goes Home, the ring on the Bay station"); assert.equal(h.holding(), false); }
 });
 
 test("the Dock during a hold: kept and acting when the hold ends, before a kept room key; two presses cancel; during Home's rest it wakes onto Home with the dock applied", () => {
@@ -92,7 +92,7 @@ test("the Dock during a hold: kept and acting when the hold ends, before a kept 
   { const { h, at } = mk(); at(0); h.play({ kind: "seal", target: "p", ms: 1000, hold: 1000 }); h.pendingDock = !h.pendingDock; assert.equal(G.st.dock.docked, false); at(999); assert.equal(G.st.dock.docked, false); at(1000); assert.equal(G.st.dock.docked, true, "the Dock acts at the hold's end"); }
   { const { h, at } = mk(); at(0); h.play({ kind: "seal", target: "p", ms: 1000, hold: 1000 }); h.pendingDock = !h.pendingDock; h.pendingDock = !h.pendingDock; at(1000); assert.equal(G.st.dock.docked, false, "two presses cancel"); }
   { const { h, at } = mk(); at(0); h.play({ kind: "seal", target: "p", ms: 1000, hold: 1000 }); h.pendingDock = true; onFaceMessage(h, { t: "intent", seq: 1, screen: "pods", target: "room", verb: "room:library" }); at(1000); assert.equal(G.st.dock.docked, true); assert.equal(UI.screen, "cargo", "the arrival plays over Pods and holds"); at(3500); assert.equal(UI.screen, "library", "the kept room key follows the arrival's end (an empty trip closes at 2500, then the key acts)"); }
-  { const r = rig({ onDock: (h) => { const was = UI.idle; UI.idle = false; INTENTS.frame.dock(h, was); } }); G.sv.mibis = []; G.st.dock = { docked: false, at: 0 }; const { h, at } = r; UI.screen = "pods"; UI.home.f = "knob"; at(0); UI.idle = true; h.play({ kind: "rest", target: "knob", ms: 200, hold: 380 }); h.pendingDock = true; at(380); assert.equal(G.st.dock.docked, true, "the Dock kept through Home's rest acts at its end"); assert.equal(UI.screen, "cargo", "the arrival over Home"); assert.equal(UI.cargo.arrival.from, "home"); }
+  { const r = rig({ onDock: (h) => { const was = UI.idle; UI.idle = false; INTENTS.frame.dock(h, was); } }); G.sv.mibis = []; G.st.dock = { docked: false, at: 0 }; const { h, at } = r; UI.screen = "pods"; UI.home.f = "room"; at(0); UI.idle = true; h.play({ kind: "rest", target: "home", ms: 200, hold: 380 }); h.pendingDock = true; at(380); assert.equal(G.st.dock.docked, true, "the Dock kept through Home's rest acts at its end"); assert.equal(UI.screen, "cargo", "the arrival over Home"); assert.equal(UI.cargo.arrival.from, "home"); }
 });
 test("two Dock presses during Cargo's opening leave the dock unchanged at its end (1920 ms); a Dock on Cargo leaves no plate", () => {
   const { h, at } = rig(); const crate = { id: "c1", n: 1, turn: 2, at: 0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] };

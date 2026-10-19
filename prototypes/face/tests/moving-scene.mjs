@@ -61,10 +61,9 @@ export function sendRequests(f, requests, opts = {}) { for (const r of requests)
 export const STATE = (v) => ({ clip: v & 15, travelling: !!(v & 16), airborne: !!(v & 32), asleep: !!(v & 64), wanderer: !!(v & 128), focused: !!(v & 256), phase: (v >> 12) & 15 });
 export const CLIP = { rest: 0, hop: 1, walk: 2, curl: 3, asleep: 4, wake: 5, stir: 6, ack: 7 };
 
-// ---- the three living-window screens with a moving household, booted on the WebAssembly face ----
+// ---- the two living-window screens (the Vivarium's whole and Idle) with a moving household, booted on the WebAssembly face ----
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { vivariumBuild } from "../../station/src/views/vivarium-props.mjs";
-import { homeBuild } from "../../station/src/views/home-props.mjs";
 import { idleBuild } from "../../station/src/views/idle-props.mjs";
 const here2 = path.dirname(fileURLToPath(import.meta.url)), specDir = path.resolve(here2, "../../ui/specs/station");
 export const SPEC = (n) => JSON.parse(readFileSync(path.join(specDir, n + ".json"), "utf8"));
@@ -73,11 +72,11 @@ export const DIST = path.resolve(here2, "../dist"), BUILT = existsSync(path.join
 import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 const frameTop = (screen) => ({ top: { screen, title: screen === "home" ? "Home" : "Vivarium", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: screen === "home" ? null : "Home", need: "" }, plate: { text: "" } });
-// screen: "vivarium" | "home" | "idle"; o: household's options plus { sleepers (count), focus ("tile:<i>" | "resident:<i>" | "room" | null) }
+// screen: "vivarium" | "idle"; o: household's options plus { sleepers (count), focus ("tile:<i>" | "resident:<i>" | "room" | null) }
 export function movingScene(screen, o = {}) {
   const hh = household(o), { st } = hh, frame = SPEC("frame"), viv = o.vivSpec ?? SPEC("vivarium"), home = SPEC("home");
   const focusOf = (f) => (!f ? null : f === "room" ? "room" : f.replace(/^(\w+):(\d+)$/, (_, k, i) => k + "." + st.mibis[+i].id));
-  const build = (m) => (screen === "vivarium" ? vivariumBuild({ ...m, focus: focusOf(o.focus ?? "tile:0"), seen: null }, viv, frame, home) : screen === "home" ? homeBuild({ ...m, ui: {}, focus: focusOf(o.focus) }, home, frame) : idleBuild(m, frame));
+  const build = (m) => (screen === "vivarium" ? vivariumBuild({ ...m, focus: focusOf(o.focus ?? "tile:0"), seen: null }, viv, frame, home) : idleBuild(m, frame));
   const b = build(hh.m), requests = [...b.requests];
   if (o.sleepers) { const s = sleepersOf(build, o.sleepers); b.props.regions.bed.sleepers = s.sleepers; b.props.regions.bed.state = "docked"; requests.push(...s.requests); }
   const props = screen === "idle" ? { screen: "home", ...b.props } : { screen, ...b.props, frame: { ...frameTop(screen), line: { ...frameTop(screen).line, ...(b.line ?? {}) } } };

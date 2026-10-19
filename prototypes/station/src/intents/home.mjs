@@ -1,6 +1,7 @@
-// Home's intents (home.json: the keys, the line): the rule calls behind ✓ on the room, the Vivarium, a resident, a module of the column and the rest knob. The pad is the face's (focus.graph); ← does nothing on Home.
+// Home's intents (home.json: the keys, the line): the rule calls behind ✓ on the room (the first need in the line), on a bezel and on a station, and the rest. The pad is the face's (focus.graph); ← does nothing on Home.
 import * as S from "../state.mjs";
 import { openBay } from "./cargo.mjs";
+import { homeNeeds } from "../views/home-props.mjs";
 import { intent as incubatorIntent } from "./incubator.mjs";
 
 export const toPods = (h, id = null) => { const p = id != null && S.podById(h.st, id) ? S.podById(h.st, id) : S.neediestPod(h.st); if (p) h.ui.pods.cur = p.id; h.ui.pods.view = "collection"; h.ui.pods.focus.set(null); h.goto("pods"); };
@@ -14,25 +15,26 @@ export function doNeed(h, nd) {
   else if (nd.act === "meet") { toVivarium(h, h.ui.meet); }
   else if (nd.act === "pods") toPods(h);
 }
-// ✓ on a target of Home: room | vivarium | resident.<mibi id> | cargo | pods | incubator | probe | library | knob. `back` does nothing on Home (the top).
+// ✓ on a target of Home: room | vivarium | library | pods | incubator | companion | bay. A bezel opens full screen, a station opens its room; the Companion opens the Probe bench while docked and does nothing away (the line says it is on a trip).
+// `back` does nothing on Home (the top).
 export function intent(h, target, verb) {
   if (verb !== "confirm") return;
   const ui = h.ui;
-  if (target === "room") doNeed(h, S.needKey(h.st, h.sv, h.settings, ui));
-  else if (target === "vivarium") h.goto("vivarium");   // the whole: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.homePanel)
-  else if (typeof target === "string" && target.startsWith("resident.")) toVivarium(h, +target.slice(9));
-  else if (target === "cargo") h.goto("cargo");
+  if (target === "room") doNeed(h, homeNeeds(h.st, h.sv, h.settings, ui, h.now())[0]);   // at rest ✓ does the first need in the line, and nothing when there is none
+  else if (target === "vivarium") h.goto("vivarium");   // the Vivarium's whole: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.homePanel)
+  else if (target === "library") toLibrary(h);
   else if (target === "pods") toPods(h);
   else if (target === "incubator") h.goto("incubator");
-  else if (target === "probe") { ui.bench.f = null; h.goto("bench"); }
-  else if (target === "library") toLibrary(h);
-  else if (target === "knob") {   // the rest: the knob settles (ms 200), the stage dithers to Idle (the second step), and the hold (380) ends on Idle; with reduced motion the event is a cut and Idle comes on the frame of the key
-    h.pendingRoom = null;   // a room key kept during an earlier wake never fires at the end of this rest
-    const ev = h.specs.home.events.rest, step = ev.steps[1];
-    if (h.motion ? h.motion() : true) {
-      ui.resting = true; h.play({ kind: "rest", target: "knob", ms: ev.ms, hold: ev.hold });
-      h.at(step.at, () => h.play({ kind: "dither", target: "stage", ms: step.ms, from: 0, to: 16 }));
-      h.at(ev.hold, () => { ui.resting = false; ui.idle = true; h.pendingRoom = null; });   // Idle: where the first press only wakes; a room key pressed in the hold was dropped (events.rest.keys)
-    } else ui.idle = true;
-  }
+  else if (target === "companion") { if (S.docked(h.st)) { ui.bench.f = null; h.goto("bench"); } }
+  else if (target === "bay") h.goto("cargo");
+}
+// The Home room key pressed at rest: the Station rests (events.rest: the ring is already gone, then the 180 ms dither to Idle, which holds 380); with reduced motion it is a cut and Idle shows on the frame of the key.
+export function rest(h) {
+  const ui = h.ui, ev = h.specs.home.events.rest, step = ev.steps[1];
+  h.pendingRoom = null;   // a room key kept during an earlier wake never fires at the end of this rest
+  if (h.motion ? h.motion() : true) {
+    ui.resting = true; h.play({ kind: "rest", target: ev.target, ms: ev.ms, hold: ev.hold });
+    h.at(step.at, () => h.play({ kind: "dither", target: "stage", ms: step.ms, from: 0, to: 16 }));
+    h.at(ev.hold, () => { ui.resting = false; ui.idle = true; h.pendingRoom = null; });   // Idle: where the first press only wakes; a room key pressed in the hold was dropped (events.rest.keys)
+  } else ui.idle = true;
 }

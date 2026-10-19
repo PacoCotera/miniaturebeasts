@@ -21,7 +21,7 @@ export function podFromLayers(cls, pair, shellPattern, patterns, sealed) {
   return { w: a.w, h: a.h, rgba };
 }
 
-// The rack pod (home.json regions.pods.pod.layers): the signed 1-bit layers of the 24×32 pod, each filled from the species' colour pair through cross.json pigmentChips and A's ramp, in the spec's order, never scaled.
+// The rack pod (home.json regions.rackPod.layers): the signed 1-bit layers of the 24×32 pod, each filled from the species' colour pair through cross.json pigmentChips and A's ramp, in the spec's order, never scaled.
 // spec: the `layers` block; chips: cross.json colours.pigmentChips; patterns: pods.json podLayers.patterns; size: [w, h]. A pigment not listed draws `mist`; a pod of no known species (frame null) is A `stone`, B `fog`, no pattern.
 const layerId = (spec, layer) => spec.id.replace("{layer}", layer);
 export const rackBase = (spec) => spec.order.filter((l) => l !== "pattern").map((l) => layerId(spec, l));

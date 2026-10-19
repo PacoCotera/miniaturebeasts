@@ -5,6 +5,7 @@ import * as T from "../sitting.mjs";
 import { roomTop, ROOM_KEYS } from "../nav.mjs";
 import { leaveCargo } from "./cargo.mjs";
 import { arrive, later, endArrival } from "./arrival.mjs";
+import * as home from "./home.mjs";
 
 const SCREEN_OF = { home: "home", research: "pods", library: "library", habitat: "vivarium" };
 // A room key: the unpaid choices of Create and Cross are dropped, and the room's own top opens (Pods: the collection with the ring on the pod that most needs the player; Library: the spread; Vivarium: the whole, the ring per vivarium.json focus.entry.vivariumKey).
@@ -13,7 +14,7 @@ export function roomKey(h, key) {
   const ui = h.ui; ui.create = null; ui.cross = null; ui.hab.namer = null; ui.panel = null;   // a room key closes the namer and a panel, writing nothing
   leaveCargo(h);    // a room key on Cargo finishes an opening as a cut, or closes the end, and opens its section
   endArrival(h);    // a room key on the arrival is Later, and then it acts
-  if (key === "home") ui.home.f = "room";
+  if (key === "home") { if (ui.screen === "home" && !ui.idle) { if (ui.home.f !== "room") ui.home.f = "room"; else { home.rest(h); return true; } return true; } ui.home.f = "room"; }   // Home with the ring on Home: the ring back to rest; at rest, the Station rests; from any other screen Home opens at rest, so a second press rests
   else if (key === "research") { const p = ui.pods; p.cmp = null; const q = S.neediestPod(h.st); if (q) p.cur = q.id; p.view = "collection"; p.focusView = "collection"; p.focus.set(q ? "place." + Math.max(0, h.st.tray.findIndex((x) => x.id === q.id)) : null); }
   else if (key === "library") ui.lib.f = "spread";
   else if (key === "habitat") { ui.viv.f = null; }   // the Vivarium key: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.vivariumKey)
@@ -35,11 +36,11 @@ export function dock(h, fromIdle = false, keysElsewhere = false) {
   if (h.ui.screen === "bench") { const b = h.ui.bench; if (!r.docked && b.f === "plates") b.f = "switch"; }   // a cut to the new state: lifted, the plates are gone from the bench and the ring moves to the switch; docked, the ring stays
   h.save(); return r;
 }
-// The lift's send-off (home.json events.sendoff; frame.json navigation.dock.plates; specs/station-dock-arrival-spec.md §4): the frame and the living window only, the screen never changes. On Home and Idle the sleepers on the bed wake, hop and dither out;
+// The lift's send-off (home.json events.sendoff; frame.json navigation.dock.plates; specs/station-dock-arrival-spec.md §4): the frame and the living window only, the screen never changes. On Idle the sleepers on the bed wake, hop and dither out;
 // the plate says what went unfinished: the crates that went out unopened, a Take or Bring asked and not yet done.
 export function sendOff(h) {
   const ev = h.specs.home.events.sendoff, P = h.specs.frame.navigation.dock.plates, motion = h.motion ? h.motion() : true;
-  if (motion && (h.ui.screen === "home" || h.ui.idle) && S.carriedIds(h.st, h.sv).length) {
+  if (motion && h.ui.idle && S.carriedIds(h.st, h.sv).length) {
     h.ui.sendoff = true; h.play({ kind: ev.kind, target: ev.target, ms: ev.ms, hold: ev.hold }); h.at(ev.ms, () => { h.ui.sendoff = false; });
   }
   const lines = [];

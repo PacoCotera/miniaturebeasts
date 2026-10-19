@@ -102,7 +102,7 @@ export function leaveCargo(h) { const c = h.ui.cargo; if (c.state === "opening")
 // The keys the face says while the opening holds (build spec 8.4): ✓ is Skip, ← ends the run and goes Home, a room key does what ← does and then opens its room. Called by the host before its hold drops the key.
 export function held(h, verb, roomKey) {
   if (verb === "confirm") return skipCrate(h);
-  if (verb === "back") { abortRun(h); h.ui.home.f = "cargo"; h.goto("home"); return true; }
+  if (verb === "back") { abortRun(h); h.ui.home.f = "bay"; h.goto("home"); return true; }
   if (verb && verb.startsWith("room:")) { abortRun(h); return roomKey(h, verb.slice(5)); }
   return false;
 }
@@ -111,14 +111,14 @@ export function held(h, verb, roomKey) {
 export function intent(h, target, verb) {
   const c = h.ui.cargo;
   if (c.state === "arrival") { skipShow(h); return; }   // a key in the show (reduced motion, or after the face's hold): the show cuts to its choice
-  if (c.state === "opening") { if (verb === "confirm") skipCrate(h); else if (verb === "back") { abortRun(h); h.ui.home.f = "cargo"; h.goto("home"); } return; }   // the face says ✓ and ← on the room while the opening holds; the pad does nothing
+  if (c.state === "opening") { if (verb === "confirm") skipCrate(h); else if (verb === "back") { abortRun(h); h.ui.home.f = "bay"; h.goto("home"); } return; }   // the face says ✓ and ← on the room while the opening holds; the pad does nothing
   if (c.state === "end") {   // any key does what it does, and then the bay shows again: ✓ follows the bottom line, ← is Home, the pad only closes it
     const run = c.run, newest = run?.newest ?? null, came = run ? run.items.some((it) => it.pods.some((p) => p.well >= 0)) : false;
     closeEnd(h);
     if (verb === "confirm" && came) toPods(h, newest);
-    else if (verb === "back") { h.ui.home.f = "cargo"; h.goto("home"); }
+    else if (verb === "back") { h.ui.home.f = "bay"; h.goto("home"); }
     return;
   }
-  if (verb === "back") { h.ui.home.f = "cargo"; h.goto("home"); return; }   // ← Home, the ring on the Bay module
+  if (verb === "back") { h.ui.home.f = "bay"; h.goto("home"); return; }   // ← Home, the ring on the Bay module
   if (verb === "confirm" && readyCount(h)) return openBay(h);
 }

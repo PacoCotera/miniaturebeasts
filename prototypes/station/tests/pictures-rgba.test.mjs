@@ -13,7 +13,8 @@ import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { standLook, juvenileSize } from "../src/stands.mjs";
 import { treat, UNKNOWN } from "../src/unknown.mjs";
-import { homeBuild, mibiPictureOf } from "../src/views/home-props.mjs";
+import { mibiPictureOf } from "../src/views/home-props.mjs";
+import { idleBuild } from "../src/views/idle-props.mjs";
 import { habitatBuild } from "../src/views/habitat-props.mjs";
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
 
@@ -262,13 +263,13 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
 
     test("Home and the Vivarium whole: an S04 adult is its juvenile 104×112 (a resident) and, with no nap picture, a sleeper that sleeps as that standing figure (never at the old 96×88), an S03 adult its own stand; the drawn stage follows", () => {
       const st = world(); S.seedAdults(st, "S04", 5, 1, settings); S.seedAdults(st, "S03", 9, 1, settings); const [s4, s3] = st.mibis;
-      const b = homeBuild({ st, sv: sv0({ carried: [s4.id] }), settings, docked: true, ui: {}, focus: null, light: "day" }, home, frameSpec), R = b.props.regions;
+      const b = idleBuild({ st, sv: sv0({ carried: [s4.id] }), settings, docked: true, light: "day" }, frameSpec), R = b.props.regions;
       const res = (m) => R.residents.find((r) => r.id === String(m.id)), slp = R.bed.sleepers[0];
       assert.equal(res(s3).stage, "adult"); assert.equal(res(s3).picture, `mibi:${genomeDigest(s3.genome)}:adult:144x152`);
       const r4 = b.requests.find((r) => r.id === `mibi:${genomeDigest(s4.genome)}:juvenile:104x112`); assert.ok(r4, "the sleeper asks for the juvenile standing, at 104×112"); assert.deepEqual([r4.size, r4.stage, r4.species], [[104, 112], "juvenile", "S04"]);
       assert.equal(slp.stage, "juvenile");
       const w = world(); S.seedAdults(w, "S04", 5, 1, settings); const m = w.mibis[0];
-      const b2 = homeBuild({ st: w, sv: sv0(), settings, docked: true, ui: {}, focus: null, light: "day" }, home, frameSpec), p = b2.props.regions.residents[0];
+      const b2 = idleBuild({ st: w, sv: sv0(), settings, docked: true, light: "day" }, frameSpec), p = b2.props.regions.residents[0];
       assert.deepEqual([p.stage, p.picture], ["juvenile", `mibi:${genomeDigest(m.genome)}:juvenile:104x112`]);
       assert.deepEqual(pics(b2).find((r) => r.id === p.picture).size, [104, 112]);
       assert.equal(S.mibiStage(w, m, settings), "adult", "the mibi itself is still an adult");
@@ -276,7 +277,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
 
     test("growing up is not staged: a juvenile S04 and the same mibi grown up are the same picture at the same size", () => {
       const w = world(); S.seedAdults(w, "S04", 5, 1, settings); const m = w.mibis[0], adultBorn = m.born; m.born = w.turn;
-      const at = () => { const b = homeBuild({ st: w, sv: sv0(), settings, docked: true, ui: {}, focus: null, light: "day" }, home, frameSpec); return b.props.regions.residents[0]; };
+      const at = () => { const b = idleBuild({ st: w, sv: sv0(), settings, docked: true, light: "day" }, frameSpec); return b.props.regions.residents[0]; };
       assert.equal(S.mibiStage(w, m, settings), "juvenile"); const young = at(); m.born = adultBorn; assert.equal(S.mibiStage(w, m, settings), "adult"); const grown = at();
       assert.deepEqual([grown.stage, grown.picture], [young.stage, young.picture]);
     });

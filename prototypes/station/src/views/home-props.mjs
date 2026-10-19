@@ -1,7 +1,6 @@
-// The Home props (lvgl-switch.md §2.1, §4 L2.2): pure selectors from the state, the focus and the presentation to the props of the face's Home words. Props name *what*, never *where*: strings, states, counts,
-// asset ids, flags, seeds and the focus targets by id; no rectangle, no measure, no layout rule (the words place everything from home.json). The output is plain JSON:
-// { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props), need (the notice's key and its action) }.
-// Runs in Node, tested there (tests/home-props.test.mjs); the shape is home.props.json. Sitting crates and the Cargo screen are L2.2's second PR (cargo.json); here the bay's crates are the walk crates.
+// The Home props (lvgl-switch.md §2.1): pure selectors from the state, the focus and the presentation to the props of the face's Home words (screens/home_frame.c). Props name *what*, never *where*: strings, states, counts, flags and the
+// focus targets by id; no rectangle, no measure, no layout rule (the words place everything from home.json). The output is plain JSON: { props (state, regions, focus), requests (none: Home draws no host picture), needs (the needs that hold, in
+// their order), targets }. The living window's shared selectors (livingOf, restOf, lightAt, the figure and picture ids) are Idle's and the Vivarium's whole, and stay here.
 import * as S from "../state.mjs";
 import { frameOf, genomeDigest } from "../genome.mjs";
 import { movingIds, playable, movingFigure } from "../moving.mjs";
@@ -11,7 +10,7 @@ import { drawnLooks } from "../looks.mjs";
 import { layeredStand, standPictureId, standFigure, curlFactor, curlPicture } from "../layered-stand.mjs";
 import { keyToken } from "../looks.mjs";
 import { goalWords } from "./goal-words.mjs";
-import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
+import { readyCrates, bayState } from "../sitting.mjs";
 
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const COUNT = ["", "a", "two", "three", "four", "five", "six"];
@@ -93,14 +92,6 @@ export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
   const out = { set: sp }; for (const k of parts) out[k] = req({ kind: "moving", id: I[k] }); return out;
 }
 
-// Home's Incubator station: the painted capsule at x0.137, 56 x 86, the state only (build spec section 5): the glass with the pod (growing), the door open with the pod (ready), the door open and empty (empty); the bar is lit or off, never a fraction.
-// The pod is 27 tall, relit like the others. The places are home.json regions.incubator.capsule*.
-function capsuleOf(req, I, state, bud) {
-  const size = I.capsule.slice(2), L = layers(req, size, ["interior-day", "shell", "door-open", "bar-lit", "glass-closed"]), at = I.capsuleRect.slice(0, 2), foot = [at[0] + I.capsuleFoot[0], at[1] + I.capsuleFoot[1]], area = podArea(I.capsulePodHeight);
-  const out = { interior: L["interior-day"], shell: L.shell, door: L["door-open"], bar: L["bar-lit"], glass: L["glass-closed"] };
-  if (bud) Object.assign(out, { pod: relitPod(req, { species: bud.species, variant: "pod", light: "day", h: I.capsulePodHeight, area, bg: bgOf({ id: L["interior-day"], at }, foot, area.anchor) }), podSize: area.size, podAnchor: area.anchor });
-  return out;
-}
 export function livingOf(m, R, req, ph, L) {
   const { st, sv, settings } = m, docked = !!m.docked || !!m.sendoff, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);   // the lift's send-off keeps the bed docked until it ends (m.sendoff: home.json events.sendoff)
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
@@ -129,98 +120,76 @@ export function livingOf(m, R, req, ph, L) {
   return { residents, sleepers, bed };
 }
 
-export function homeBuild(m, spec, frame) {
-  const { st, sv, settings } = m, requests = [], req = (r) => { requests.push(r); return r.id; };
-  const R = spec.regions, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
-  const plate = () => slot("plate-device-320x88", [320, 88], "the device plate (fix 2: the module's plate, placed 1:1)");   // each module's plate: a slot, drawn once the master is placed and nothing before (rule 4, F6)
-  const slot = (master, size, until) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: until || "the Home masters (station-layouts.md, Home, Cargo and Idle: the masters)" });
-  // a PH plate or hollow (home.json placeholders): a picture of the register, status placeholder, until its master
-  const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (home.json placeholders)" });
-  const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod && !need.soft ? "needsYou" : null);
 
-  // the living window: the glass's master of the light, the residents at home walking, the bed with the carried set asleep
-  const lw = livingOf({ st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets, sendoff: m.sendoff }, R, req, ph, frame.light);
-  const { residents, sleepers, bed } = lw;
-  // the modules
-  const crates = docked ? S.bayCrates(st, sv).length : 0;
-  const cargoState = !docked ? "away" : crates ? "crates" : st.waiting.length ? "waiting" : "empty";
-  const cargo = {
-    plate: plate(), state: cargoState, crates: Math.min(crates, R.cargo.max), lamp: lampOf("cargo") ?? "off",
-    bay: slot(`home-bay-${cargoState === "away" ? "shut" : "open"}-176x72`, R.cargo.bay.slice(2)),
-    crate: ph(`home-crate-${R.cargo.crate.join("x")}`, R.cargo.crate), waiting: cargoState === "waiting" ? req({ kind: "waiting", id: "waiting:24" }) : "",
-  };
-  const rackSize = R.pods.wells.slots, podSize = R.pods.pod.size;
-  const wells = Array.from({ length: rackSize }, (_, i) => {
-    const q = st.tray[i];
-    if (!q) return { pod: "", glint: "" };
-    const sp = q.idd || st.knownIds.includes(S.speciesOf(q)) ? S.speciesOf(q) : null;
-    return { pod: req({ kind: "rackpod", id: `rackpod:${sp ?? "unknown"}`, species: sp, size: podSize }), glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : "" };
-  });
-  const pods = { plate: plate(), lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well-32x32", R.pods.wells.size), wells };
-  const bud = st.bud, ready = S.budReady(st, settings);
-  const incState = !bud ? "empty" : ready ? "ready" : "growing";
-  const incubator = {
-    plate: plate(), state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : "off"),
-    capsule: capsuleOf(req, R.incubator, incState, bud),
-  };
-  const pr = docked ? S.probeNow(st, sv) : null;
-  const held = !!st.sitting;
-  const probe = {
-    plate: plate(), state: docked ? "docked" : "away", lamp: lampOf("probe") ?? (docked ? "well" : "off"),
-    cradle: slot(`home-cradle-${docked ? "full" : "empty"}-96x72`, R.probe.cradle.slice(2)),
-    shields: { count: pr ? Math.min(pr.smax, R.probe.shields.count) : 0, whole: pr ? Math.min(pr.shield, pr.smax) : 0, wholePicture: ph(R.probe.shields.pictures.whole, R.probe.shields.size), gonePicture: ph(R.probe.shields.pictures.gone, R.probe.shields.size, true) },
-    frame: held ? ph(R.probe.slotPicture, R.probe.slot.slice(2)) : "",
-  };
-  const found = st.knownIds.length;
-  const library = { plate: plate(), state: found ? "pages" : "empty", lamp: lampOf("library") ?? (found ? "well" : "off"), journal: slot("home-journal-104x72", R.library.journal.slice(2)) };
+// ---- Home: the top bar's words, the line, the two windows and the four stations ----
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// The bar's date and clock from the device's: date { y, m (0 to 11), d }, seconds of the day. "Sat 17 Oct" and "09:41".
+export const dateWords = ({ y, m, d }) => `${DAYS[new Date(Date.UTC(y, m, d)).getUTCDay()]} ${d} ${MONTHS[m]}`;
+export const clockWords = (secs) => { const h = Math.floor(secs / 3600) % 24, mm = Math.floor(secs / 60) % 60; return String(h).padStart(2, "0") + ":" + String(mm).padStart(2, "0"); };
 
-  const regions = { glass: { picture: req({ kind: "slot", id: `home-glass-${m.light}:${R.glass.rect[2]}x${R.glass.rect[3]}`, master: `${spec.light.pictures[m.light]}-${R.glass.rect[2]}x${R.glass.rect[3]}`, size: [R.glass.rect[2], R.glass.rect[3]], until: "the Home masters (the glass by the light)" }) }, residents, bed, cargo, pods, incubator, probe, library };
-
-  // the focus: the targets present, in the spec's group order; the ring is on `cur` or nowhere ("room")
-  const targets = [{ id: "vivarium", group: "vivarium" }];
-  for (const r of residents) targets.push({ id: "resident." + r.id, group: "resident" });
-  for (const r of sleepers) targets.push({ id: "resident." + r.id, group: "resident" });
-  for (const k of ["cargo", "pods", "incubator", "probe", "library", "knob"]) targets.push({ id: k, group: "column" });
-  const cur = m.focus && targets.some((t) => t.id === m.focus) ? m.focus : "room";
-  const focus = { cur, targets };
-
-  const line = lineOf(m, spec, { frame, cur, residents, sleepers, here, cargoState, crates, pods, incubator, probe, library, need });
-  return { props: { state: "home", regions, focus }, line, requests, need, targets };
+// The needs that hold, in the order of home.json strings.line.order (the facts of state.needKey's, one each; a soft need is not a need: the goal takes the line). portrait: a sitting crate is ready.
+export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
+  const out = [], cs = S.bayCrates(st, sv), art = (w) => S.aAn(w).split(" ")[0];
+  if (S.docked(st) && cs.length) out.push({ key: "crates", n: cs.length, max: 3, act: "cargo" });
+  if (S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });
+  { const rc = readyCrates(st, settings, now)[0]; if (rc) out.push({ key: "portrait", act: "cargo", name: S.mibiById(st, rc.mibiId)?.name ?? "" }); }
+  const meet = ui.meet != null ? S.mibiById(st, ui.meet) : null; if (meet) out.push({ key: "meet", name: meet.name, act: "meet" });
+  const unseen = st.tray.filter((p) => !p.idd && !p.seen); if (unseen.length) out.push({ key: "newPods", n: unseen.length, max: 6, act: "pods" });
+  const glint = st.tray.filter((p) => S.podGlints(st, p)); if (glint.length) out.push({ key: "glints", n: glint.length, max: 6, act: "pods" });
+  if (st.waiting.length) out.push({ key: "waitingPods", n: st.waiting.length, max: 6, act: "pods" });
+  const grow = couldIncubate(st, settings); if (grow) out.push({ key: "couldGrow", species: S.spName(grow), a: art(S.spName(grow)), act: "pods" });
+  return out;
+}
+// The pod that could be incubated now (read, a bay free, the price in hand), or null: needKey's couldGrow with no short.
+function couldIncubate(st, settings) {
+  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud); if (!grown.length || S.bayFull(st, settings)) return null;
+  const c = S.growCost(st, {}, settings); return S.canPay(st, c.e, 0, c.s) ? grown[0] : null;
 }
 
-// ---- the bottom line for the focus (home.json line) ----
-function lineOf(m, spec, v) {
-  const { st } = m, Sg = spec.strings, { notice, action } = wordsOf(v.need, spec), cur = v.cur;
-  const spelled = (n) => SPELL[n] ?? "many", plural = (t, n, key) => fill(n === 1 && t[key + "One"] ? t[key + "One"] : t[key], { count: spelled(n) });
-  // the notice zone: the first-group need as now (amber, its lamp, the goal does not show); else the goal (mist, no lamp); else the soft need (couldGrow short, toRead, budGrowing) as now. needKey and the room's ✓ are unchanged.
-  const goal = S.goalKey(st, m.sv, m.settings), first = v.need && ((["crates", "budReady", "meet", "newPods", "glints", "waitingPods"].includes(v.need.key) && !v.need.soft) || (v.need.key === "couldGrow" && !v.need.short));
-  const goalWords_ = !first && goal ? goalWords(goal, !!m.docked, v.frame) : null;
-  const base = { back: null, need: goalWords_ ? "" : notice, ...(goalWords_ ? { goal: goalWords_ } : {}) };
-  if (cur === "room") return { ...base, ok: action, subject: "" };
-  if (cur === "vivarium") {
-    const n = v.residents.length + v.sleepers.length, S0 = Sg.subjects.vivarium;   // the mibis in the window: the residents and, docked, the sleepers on the bed
-    return { ...base, ok: Sg.actions.vivarium, subject: n === 0 ? S0.none : n === 1 ? S0.one : n <= 6 ? fill(S0.few, { count: spelled(n) }) : S0.many };
+// m: { st, sv, settings, docked, ui, focus: id | null, time (seconds of the day), date { y, m, d }, now (ms), place, spec home.json, frame frame.json }
+export function homeBuild(m, spec, frame) {
+  const { st, sv, settings } = m, now = m.now ?? Date.now(), Sg = spec.strings, T = Sg.stations, docked = !!m.docked, fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
+  const needs = homeNeeds(st, sv, settings, m.ui ?? {}, now);
+  // the stations: the lines and the lamp
+  const pods = (() => {
+    const n = st.tray.length, seen = new Set(st.tray.filter((q) => q.idd || st.knownIds.includes(S.speciesOf(q))).map((q) => S.speciesOf(q))), k = seen.size;
+    const amber = st.tray.some((p) => !p.idd && !p.seen) || st.tray.some((p) => S.podGlints(st, p));
+    return { line1: n ? fill(T.pods.count, { n }) : T.pods.empty, line2: n && k >= 2 ? fill(T.pods.kinds, { k }) : "", lamp: amber ? "needsYou" : "off", slots: Math.min(n, 6) };
+  })();
+  const incubator = (() => {
+    const bud = st.bud, ready = S.budReady(st, settings), state = !bud ? "empty" : ready ? "ready" : "growing", name = bud ? S.spName(bud) : "", I = T.incubator, grow = !bud && couldIncubate(st, settings);
+    return { state, line1: state === "empty" ? I.empty : state === "growing" ? I.growing : I.ready, line2: state === "empty" ? (grow ? I.canIncubate : "") : fill(I.species, { a: S.aAn(name).split(" ")[0], Species: name }), lamp: ready ? "needsYou" : "off" };
+  })();
+  const companion = (() => {
+    const c = S.carriedIds(st, sv), id = c.includes(sv?.lead) ? sv.lead : c[0] ?? null, mb = id == null ? null : S.mibiById(st, id), C = T.companion;
+    return { state: docked ? "docked" : "away", line1: mb ? fill(docked ? C.docked : C.away, { name: mb.name }) : docked ? C.dockedNoName : C.awayNoName, line2: "", lamp: "off", ...(mb ? { name: mb.name } : {}) };
+  })();
+  const bay = (() => {
+    const cs = docked ? S.bayCrates(st, sv) : [], bs = bayState(st, sv, settings, now), B = T.bay, trips = new Set(cs.map((c) => c.turn)).size;   // bayState: the walk crates while docked and the portrait crates that are ready; amber when anything waits
+    const waiting = cs.length > 0 || bs.sitting > 0, rc0 = readyCrates(st, settings, now)[0], pname = rc0 ? S.mibiById(st, rc0.mibiId)?.name ?? "" : "";
+    return { state: waiting ? "waiting" : "clear", berths: bs.sitting ? 4 : 3, line1: cs.length ? fill(cs.length === 1 ? B.waitingOne : B.waiting, { n: cs.length }) : bs.sitting ? B.portrait : B.clear, line2: cs.length ? (trips <= 1 ? B.lastTrip : fill(B.trips, { n: trips })) : bs.sitting ? (pname ? fill(B.portraitName, { name: pname }) : B.portraitNoName) : "", lamp: bs.amber ? "needsYou" : "off" };
+  })();
+  // the windows: the Vivarium's readout (each part only when non-zero; "all on a trip" when nobody is home)
+  const housed = S.housed(st), onTrip = housed.filter((mb) => S.isAway(st, sv, mb)).length, atHome = housed.length - onTrip, R = Sg.readout;
+  const readout = !housed.length ? "" : atHome === 0 ? R.allTrip : [atHome ? fill(R.home, { n: atHome }) : "", onTrip ? fill(R.trip, { m: onTrip }) : ""].filter(Boolean).join(R.sep);
+  // the focus: the six targets, the ring on `cur` or nowhere
+  const targets = ["vivarium", "library", "pods", "incubator", "companion", "bay"].map((id) => ({ id, group: id }));
+  const cur = m.focus && targets.some((t) => t.id === m.focus) ? m.focus : "room";
+  const line = lineOf(m, spec, frame, { cur, needs, docked, companion });
+  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: {}, pods, incubator, companion, bay };
+  return { props: { state: "home", regions, focus: { cur, targets } }, requests: [], needs, targets };
+}
+
+// ---- the line (home.json strings.line) ----
+// At rest: the needs (at most two: the first by its action with the ✓ cap, the second by its notice), else the goal. On a target: its verb, and its subject if it has one. The Companion away has no verb: it says it is on a trip.
+function lineOf(m, spec, frame, v) {
+  const Sg = spec.strings, { cur } = v;
+  if (cur === "room") {
+    const W = { strings: { needs: Sg.line.needs } };   // Home's own table: each need's action (the first) and notice (the second), the counts spelled
+    if (v.needs.length) return { needs: v.needs.slice(0, spec.regions.line.needs).map((nd, i) => { const w = wordsOf(nd, W); return i === 0 ? w.action : nd.key === "portrait" && !nd.name ? Sg.line.needs.portrait.noticeNoName : w.notice; }), ...(v.needs.slice(1, 2)[0]?.key === "portrait" && v.needs[1].name && spec.regions.line.needs > 1 ? { name: v.needs[1].name } : {}) };   // name: drawn in orange inside the portrait notice
+    const goal = S.goalKey(m.st, m.sv, m.settings), g = goal && goalWords(goal, !!m.docked, frame);
+    return g ? { goal: g } : {};
   }
-  if (cur.startsWith("resident.")) {
-    const id = +cur.slice(9), mb = S.mibiById(st, id), asleep = v.sleepers.some((s) => +s.id === id);
-    if (!mb) return { ...base, ok: null, subject: "" };
-    const stage = WORD_STAGE(spec, S.mibiStage(st, mb, m.settings)), sp = S.spName(mb);
-    return { ...base, ok: fill(Sg.actions.resident, { name: mb.name }), subject: fill(asleep ? Sg.subjects.sleeper : Sg.subjects.resident, { a: S.aAn(stage).split(" ")[0], stage, species: sp }) };
-  }
-  const S1 = Sg.subjects;
-  if (cur === "cargo") {
-    const n = v.crates, w = st.waiting.length;
-    return { ...base, ok: Sg.actions.cargo, subject: v.cargoState === "away" ? S1.cargo.away : n ? (n === 1 ? S1.cargo.one : fill(S1.cargo.few, { count: spelled(n) })) : w ? (w === 1 ? S1.cargo.waitingOne : fill(S1.cargo.waiting, { count: spelled(w) })) : S1.cargo.empty };
-  }
-  if (cur === "pods") { const n = st.tray.length; return { ...base, ok: Sg.actions.pods, subject: n === 0 ? S1.pods.empty : n === 1 ? S1.pods.one : fill(S1.pods.few, { count: spelled(n) }) }; }
-  if (cur === "incubator") {
-    const B = st.bud, sp = B ? S.spName(B) : "";
-    return { ...base, ok: Sg.actions.incubator, subject: !B ? S1.incubator.empty : fill(v.incubator.state === "ready" ? S1.incubator.ready : S1.incubator.growing, { species: sp }) };
-  }
-  // the Probe's context follows the Probe goal wherever it comes from: the second goal beside a rung, or the goal itself
-  const pk = goal && (goal.probe ? goal.probe.key : goal.key === "probe" ? (goal.step.key === "fit" ? "fit" : "save") : null);
-  if (cur === "probe") return { ...base, ok: Sg.actions.probe, subject: v.probe.state === "docked" ? (pk === "fit" ? S1.probe.fit : pk === "save" ? S1.probe.save : S1.probe.docked) : S1.probe.away };
-  if (cur === "library") return { ...base, ok: Sg.actions.library, subject: v.library.state === "pages" ? S1.library.pages : S1.library.empty };
-  if (cur === "knob") return { ...base, ok: Sg.actions.knob, subject: S1.knob };
-  return base;
+  if (cur === "companion" && !v.docked) return { note: Sg.notes.companionAway };
+  return { verb: Sg.actions[cur] };
 }

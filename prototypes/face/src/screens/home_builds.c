@@ -1,4 +1,4 @@
-/* Home's compositions (lvgl-switch.md §2.2: a composition is a build of words in the screen's binding table, never a word): the module (a panel, its engraved word, its lamp), the name tag (a panel and text) and the rest knob, and the
+/* Home's compositions (lvgl-switch.md §2.2: a composition is a build of words in the screen's binding table, never a word): the module (a panel, its engraved word, its lamp), the name tag (a panel and text), the rounded panel and the
    lamps they use. Spec: the `home` spec. A picture the host has not sent is a slot not yet filled: nothing is drawn. A flat plate is drawn only where the spec itself names the colours (the lamps, the knob, the name tag). */
 #include "screens.h"
 #include "../vocab/vocab.h"
@@ -11,10 +11,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define H "home"
-static int hk(const char *base, int k) { return spec_int(H, v_fmt("%s.%d", base, k), 0); }
-static void hrect(const char *p, int r[4]) { if (!v_spec_rect(H, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
-static const char *colr(const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(H, p, o, 24); return o; }
 /* the same, in the spec of the screen a composition is drawn for (the name tag and the bay strip serve Home and the Vivarium's whole) */
 static int si(const char *sp, const char *p, int d) { return spec_int(sp, p, d); }
 static int sk(const char *sp, const char *base, int k) { return spec_int(sp, v_fmt("%s.%d", base, k), 0); }
@@ -86,19 +82,6 @@ void build_nameTagAt(const char *sp, const char *glass, const char *name, int fx
   v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), y + 5, tw, px, ink);
 }
 
-/* the rest knob on the bezel's bottom rail: 32 x 6, at rest at y 546, lifted to 544 while focused; settling from the lift while the `rest` event plays. A flat plate in the knob's three roles. */
-void build_restKnob(int focused) {
-  int r[4]; hrect("regions.knob.rect", r); int drawn_w = hk("regions.knob.drawn", 0), drawn_h = hk("regions.knob.drawn", 1);
-  int y = hk("regions.knob.states.focused.rect", 1) ? hk("regions.knob.states.focused.rect", 1) : r[1];
-  int rest_y = hk("regions.knob.states.rest.rect", 1);
-  anim_state_t t; int lifted = focused && !anim_holding();   /* a rest holding: the knob stays settled */
-  if (anim_get(ANIM_REST, "knob", &t)) { lifted = 0; y = t.elapsed < 100 ? y : t.elapsed < 200 ? y + 1 : rest_y; }   /* the knob settles from its lift in the first 200 ms */
-  else y = lifted ? y : rest_y;
-  v_region("knob", LAYER_CHROME);
-  v_rect("knob.light", r[0], y, drawn_w, 1, colr("colours.knob.light")); v_rect("knob.body", r[0], y + 1, drawn_w, drawn_h - 2, colr("colours.knob.fill")); v_rect("knob.shade", r[0], y + drawn_h - 1, drawn_w, 1, colr("colours.knob.shade"));
-}
-
-
 /* The bay strip (vivarium.json regions.strip and tiles; the composition `bayStrip`, rule `listPitch`): the strip's panel and a tile a bay, the housed mibis in bay order then the free bays, the tiles by the rule's form for the count. Every tile is the same
    four nodes whichever it is, so a mibi going out or a bay filling never changes the order of the screen's nodes: a panel rect (none for a free bay), the thumbnail (a housed mibi's 48 x 48), the outline glyph (a mibi out with the Companion, centred where the
    thumbnail stands) and the dash outline (a free bay: 1 px `hairline`, 2 on 2 off, a composed picture with no ops while the bay is not free). A hidden node is the glyph's picture with a window of no size. `focus` is the tile the ring is on, lifted by the spec's
@@ -128,4 +111,16 @@ void build_bayStrip(const char *sp, const char *cur, int box[4]) {
     snprintf(nm, sizeof nm, "tile.%d.free", i);   /* a free bay draws nothing: the node keeps its box with no ops (fix 6, N7) */
     snprintf(prim_ops(), (size_t)prim_ops_size(), "[]"); prim_node(v_id(nm), FN_COMPOSED, x, y, w, h, 0, 0, 0);
   }
+}
+
+/* A rounded panel drawn by the face's own primitives, palette-exact: a nine-slice of a face-owned source (corners 1:1, the straight parts tiled, never scaled), the way the focus ring is. The source is a box of 2r + 4 on a side with corners of radius r (r >= 1), its whole
+   in `fill` and a 1 px `edge` on its outline; the node is the w x h panel at (x, y) (each at least 2r). `edge` NULL leaves the outline out. */
+void build_roundPanel(const char *id, int x, int y, int w, int h, int r, const char *fill, const char *edge) {
+  int S = 2 * r + 4; char ops[160];
+  if (w < 2 * r || h < 2 * r || r < 1) { v_error("build_roundPanel: a panel under 2r on an axis, or a radius under 1, cannot be drawn"); return; }
+  snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"%s\"]]", S, S, r, fill, edge ? edge : "");
+  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
+  int src = prim_source(prim_ops(), S, S);
+  if (src < 0) { v_error("build_roundPanel: the panel's source picture is refused"); return; }
+  prim_node(v_id(id), FN_NINE, x, y, w, h, ((uint32_t)r << 24) | ((uint32_t)r << 16) | ((uint32_t)r << 8) | (uint32_t)r, src, 0);
 }
