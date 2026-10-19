@@ -45,11 +45,21 @@ const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt
 function standIn(id, [w, h]) { const d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
 const MARKS = [[frameSpec.regions.top.slice, [1024, 40]], ...Object.values(frameSpec.regions.marks.lamp12).map((id) => [id, [12, 12]]), [frameSpec.regions.marks.capConfirm, [16, 16]]];
 
+// the stations' pictures, as the host sends them: each id of the props at its size (a master's size is in its id; the rack pod and the glint are the spec's; the relit pod is the capsule's podSize)
+function stationPictures(b) {
+  const R = b.props.regions, out = new Map(), add = (id, size) => { if (id) out.set(id, size); }, sized = (id) => { const m = /(\d+)x(\d+)$/.exec(id); return [+m[1], +m[2]]; };
+  for (const w of R.pods.wells) { add(w.pod, homeSpec.regions.rackPod.size); add(w.glint, [12, 12]); }
+  const c = R.incubator.capsule; for (const k of ["interior", "shell", "door", "bar", "glass"]) add(c[k], sized(c[k])); add(c.pod, c.podSize);
+  add(R.companion.picture, sized(R.companion.picture)); if (R.companion.plates) { add(R.companion.plates.wholePicture, [12, 24]); add(R.companion.plates.lostPicture, [12, 24]); }
+  for (const id of Object.values(R.bay.pictures)) add(id, sized(id));
+  return out;
+}
 async function start(b, { motion = true, t0 = 0, dir = dist } = {}) {
   const f = await bootFace(pathToFileURL(dir + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   for (const [id, size] of MARKS) f.handleOf(id, withPolicy((i) => standIn(i, size)));
+  for (const [id, size] of stationPictures(b)) f.handleOf(id, withPolicy((i) => standIn(i, size)));
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "home", ...b.props, motion, frame: frameProps() }), 0, f.errors().join("; ")); frames(f); return f;
 }
@@ -331,4 +341,79 @@ test("a lamp change and the ring moving between a bezel and a station stay insid
   const moves = []; let prev = "room";
   for (const to of ["vivarium", "library", "bay", "vivarium", "pods", "vivarium", "room"]) { sc.props.focus.cur = to; f.props({ ...sc.props, motion: false }); f.frame((f.t += 16)); moves.push([`${prev} to ${to}`, dirty(f)]); prev = to; }
   for (const [n, d] of moves) assert.ok(d > 0 && d <= 153600, `${n}: ${d} px`); console.log(`# Home's ring with the window, px: ${moves.map(([n, d]) => `${n} ${d}`).join(", ")}`);
+});
+
+// ---- the console's pictures (build spec 4.3, 11.4, H3): the signed masters 1:1 through the picture table, the case, the capsule, the Companion and the berths, and the budgets ----
+import { createHash } from "node:crypto";
+const StateRules = S;
+const mastersDir = path.resolve(here, "../../ui/assets/masters"), mastersIndex = JSON.parse(readFileSync(path.join(mastersDir, "index.json"), "utf8")).masters;
+const SIGNED_H3 = { "companion-upright-docked-28x46": [28, 46], "companion-upright-away-28x46": [28, 46], "berth-shut-26x24": [26, 24], "berth-crate-26x24": [26, 24], "berth-portrait-18x24": [18, 24] };
+test("the five signed masters are placed unchanged in masters/home, at their own sizes, with their hashes in the index", () => {
+  for (const [id, [w, h]] of Object.entries(SIGNED_H3)) {
+    const e = mastersIndex[id]; assert.ok(e, `${id} is in the index`); assert.deepEqual([e.file, e.w, e.h], [`home/${id}.png`, w, h]);
+    const buf = readFileSync(path.join(mastersDir, e.file)); assert.equal(createHash("sha256").update(buf).digest("hex"), e.sha256, `${id}: the file is its hash`); assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [w, h]);
+  }
+});
+const picOf = (f, id) => { const r = box(f, id); return r && r.length ? r : null; };
+test("Pods: the case's six slots 2 apart in 2 rows of 3 (76 x 66, 8 in, centred), a rack pod 24 x 32 in each slot that holds one and a hairline outline in the rest; a glint on a pod that has one", { skip }, async () => {
+  const b = scene({ adults: 2, pods: 4 }), f = await start(b, { dir: node }), S = R.pods.rect, x0 = S[0] + S[2] - 8 - 76, y0 = S[1] + (S[3] - 66) / 2;
+  assert.equal(b.props.regions.pods.wells.length, 6);
+  for (let i = 0; i < 6; i++) { const r = box(f, `pods.slot.${i}`); assert.deepEqual(r, [x0 + (i % 3) * 26, y0 + Math.floor(i / 3) * 34, 24, 32], `slot ${i}`); assert.equal(!!b.props.regions.pods.wells[i].pod, i < 4, `slot ${i} holds a pod only when there is one`); }
+  assert.equal(b.props.regions.pods.wells.filter((w) => w.pod).length, 4); assert.ok(b.props.regions.pods.wells.filter((w) => w.pod).every((w) => w.pod.startsWith("rackpod:")));
+  // a glint: a pod identified whose chapter the player has read before and whose looks are not yet seen (state.mjs podGlints); the star is 12 x 12 over the slot's top right, at the spec's value
+  const g = scene({ adults: 2, pods: 2 }); g.st.readOnce = { S01: frameOf("S01").chapters.map((c) => c.id) }; for (const p of g.st.tray) p.read = [];
+  assert.ok(g.st.tray.some((p) => StateRules.podGlints(g.st, p)), "the scene glints");
+  const gb = homeBuild({ st: g.st, sv: g.sv, settings, docked: true, ui: {}, focus: null, time: 0, date: { y: 2026, m: 9, d: 17 }, now: Date.now() }, homeSpec, frameSpec), fg = await start(gb, { dir: node });
+  const n = gb.props.regions.pods.wells.filter((w) => w.glint).length; assert.ok(n >= 1 && gb.props.regions.pods.lamp === "needsYou", "a glinting pod, and the lamp turns amber");
+  for (let i = 0; i < 6; i++) { const w = gb.props.regions.pods.wells[i], star = box(fg, `pods.glint.${i}`); if (!w.glint) { assert.equal(star, null, `slot ${i}: no glint`); continue; } const sl = box(fg, `pods.slot.${i}`);
+    assert.deepEqual([star[2], star[3], star[0] - sl[0], star[1] - sl[1]], [12, 12, ...R.pods.glint.at], `slot ${i}: the glint (its place is an open question)`); assert.ok(inside(star, R.pods.rect)); }
+});
+test("Incubator: the painted capsule 56 x 86 (8 in, centred) in its layers by the state, the bar lit to the bud's progress from its first pixel and whole when ready, nothing red and no minutes", { skip }, async () => {
+  const S = R.incubator.rect, x0 = S[0] + S[2] - 8 - 56, y0 = S[1] + (S[3] - 86) / 2, C = R.incubator.capsule, layersOf = (b, f) => ["interior", "pod", "glass", "shell", "door", "bar"].filter((k) => box(f, `incubator.${k}`)).join();
+  const empty = scene({ adults: 2 }), fe = await start(empty, { dir: node }); assert.equal(layersOf(empty, fe), "interior,shell,door", "empty: the interior, the shell, the door open"); assert.equal(empty.props.regions.incubator.capsule.barPx, 0);
+  const grow = scene({ adults: 2, bud: 5 }), fg = await start(grow, { dir: node }); assert.equal(layersOf(grow, fg), "interior,pod,glass,shell,bar", "growing: the pod inside, the glass, the shell, the bar");
+  const ready = scene({ adults: 2, bud: 1e8 / 60000 }), fr = await start(ready, { dir: node }); assert.equal(layersOf(ready, fr), "interior,pod,shell,door,bar", "ready: the door open, the bar whole");
+  assert.equal(ready.props.regions.incubator.capsule.barPx, C.bar.max, "ready: the whole bar");
+  for (const k of ["interior", "shell"]) assert.deepEqual(box(fg, `incubator.${k}`), [x0, y0, 56, 86], k);
+  const bg = box(fg, "incubator.bar"), px = grow.props.regions.incubator.capsule.barPx; assert.ok(px >= 1 && px < C.bar.max, `${px} px of ${C.bar.max}`); assert.deepEqual(bg, [x0 + C.bar.rect[0], y0 + C.bar.rect[1], px, C.bar.rect[3]], "the bar's window from its left");
+  const early = scene({ adults: 2, bud: 0 }); assert.ok(early.props.regions.incubator.capsule.barPx < grow.props.regions.incubator.capsule.barPx || early.props.regions.incubator.capsule.barPx === 1, "the bar grows with the progress");
+  for (const [b, f] of [[empty, fe], [grow, fg], [ready, fr]]) { assert.deepEqual(f.errors(), []); for (const t of typeIn(logOf(f), "incubator")) assert.ok(!/\d+\s*(min|m\b)/.test(t.text), `no minutes on Home: "${t.text}"`); void b; }
+});
+test("Companion: the upright picture 28 x 46 (8 in, centred), docked or away; docked, the Probe's plates as line 2, up to four, whole then lost, 12 x 24 at (12, 64); away, no plates", { skip }, async () => {
+  const S = R.companion.rect, docked = scene({ adults: 2, carry: [0] }), fd = await start(docked, { dir: node });
+  assert.equal(docked.props.regions.companion.picture, "companion-upright-docked-28x46:28x46"); assert.deepEqual(box(fd, "companion.picture"), [S[0] + S[2] - 8 - 28, S[1] + 26, 28, 46]);
+  const pl = docked.props.regions.companion.plates; assert.ok(pl.count >= 1 && pl.count <= 4 && pl.whole <= pl.count, JSON.stringify(pl));
+  for (let i = 0; i < pl.count; i++) assert.deepEqual(box(fd, `companion.plate.${i}`), [S[0] + 12 + i * 16, S[1] + 64, 12, 24], `plate ${i}`);
+  assert.equal(box(fd, `companion.plate.${pl.count}`), null, "no more plates than the Probe has");
+  const lost = scene({ adults: 2, carry: [0] }); lost.sv.shield = 1; const hb = homeBuild({ st: lost.st, sv: lost.sv, settings, docked: true, ui: {}, time: 0, date: { y: 2026, m: 9, d: 17 }, now: Date.now() }, homeSpec, frameSpec); assert.equal(hb.props.regions.companion.plates.whole, 1, "a lost plate is the lost picture");
+  const away = scene({ adults: 2, carry: [0], away: true }), fa = await start(away, { dir: node });
+  assert.equal(away.props.regions.companion.picture, "companion-upright-away-28x46:28x46"); assert.equal(away.props.regions.companion.plates, undefined); assert.equal(box(fa, "companion.plate.0"), null); assert.deepEqual(box(fa, "companion.picture"), box(fd, "companion.picture"));
+});
+test("Bay: three berths 2 apart in line 1's row (y 32), the crates first then shut, the portrait berth last: 82 wide, 102 with the portrait, 8 in from the right edge", { skip }, async () => {
+  const S = R.bay.rect;
+  for (const [o, crates, n, name] of [[{}, 0, 3, "clear"], [{ crates: 1 }, 1, 3, "one"], [{ crates: 2 }, 2, 3, "two"], [{ crates: 5 }, 3, 3, "five crates: three berths"], [{ crates: 2, portrait: true }, 2, 4, "two and a portrait"], [{ portrait: true }, 0, 4, "a portrait alone: three shut and the frame"]]) {
+    const b = scene({ adults: 2, ...o }), f = await start(b, { dir: node }), r = b.props.regions.bay, W = n === 4 ? 102 : 82; assert.deepEqual([r.crates, r.berths], [crates, n], name);
+    const boxes = [0, 1, 2, 3].map((i) => box(f, `bay.berth.${i}`)); assert.equal(boxes.filter((x) => x && x[2] > 0).length, n, name);
+    let x = S[0] + S[2] - 8 - W; for (let i = 0; i < n; i++) { const w = i < 3 ? 26 : 18; assert.deepEqual(boxes[i], [x, S[1] + 32, w, 24], `${name}: berth ${i}`); x += w + 2; }
+    assert.equal(r.pictures.crate, "berth-crate-26x24:26x24"); assert.equal(r.pictures.shut, "berth-shut-26x24:26x24"); assert.equal(r.pictures.portrait, "berth-portrait-18x24:18x24");
+    const col = box(f, "bay.line1"); assert.ok(col[0] + col[2] <= boxes[0][0] - 8, `${name}: line 1 stays clear of the berths`);
+  }
+});
+// every state of the console at once: the budgets of section 7 (objects, props, pictures), asserted on the full scene and on each station state
+const FULL_SCENES = { "all stations full": { adults: 6, pods: 6, bud: 1e8 / 60000, carry: [0], crates: 3, portrait: true, ui: {} }, "growing, away, clear": { adults: 3, pods: 3, bud: 5, carry: [0], away: true }, "empty": { adults: 1 } };
+test("budgets (section 7) with the console's pictures: at most 400 objects, props at most 32 KiB, the picture table well inside its 1,024; printed per state", { skip }, async () => {
+  for (const [name, o] of Object.entries(FULL_SCENES)) {
+    const b = scene(o), f = await start(b, { dir: node }), st = f.stats(), props = JSON.stringify(b.props).length;
+    assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0); assert.ok(f.objects() <= 400, `${name}: ${f.objects()} objects`); assert.ok(st.pictures <= 1024, `${name}: ${st.pictures} pictures`); assert.ok(props <= 32 * 1024, `${name}: props ${props} B`);
+    console.log(`# Home, ${name}: ${f.objects()} objects (limit 400), ${st.pictures} pictures (table 1,024), props ${props} B (limit 32,768)`);
+  }
+});
+test("the console's changes redraw at most 153,600 px a frame: a crate arriving, the bud growing then ready, a pod added, the Companion going away and docking, a lamp, and the ring over every station", { skip }, async () => {
+  const f = await start(scene({ adults: 3, carry: [0], pods: 2 }), { t0: 1000 }); logOf(f); dirty(f); const seen = [];
+  const to = async (o, name) => { const b = scene({ adults: 3, ...o }); for (const [id, size] of stationPictures(b)) f.handleOf(id, withPolicy((i) => standIn(i, size))); resend(f, b, 1); const d = dirty(f); seen.push([name, d]); assert.deepEqual(f.errors(), []); assert.ok(d <= 153600, `${name}: ${d} px`); };
+  await to({ carry: [0], pods: 2, crates: 1 }, "a crate arrives"); await to({ carry: [0], pods: 2, crates: 3, portrait: true }, "more crates and a portrait"); await to({ carry: [0], pods: 3, crates: 3 }, "a pod added");
+  await to({ carry: [0], pods: 3, bud: 5 }, "the bud grows"); await to({ carry: [0], pods: 3, bud: 10 }, "the bar advances"); await to({ carry: [0], pods: 3, bud: 1e8 / 60000 }, "the bud is ready");
+  await to({ carry: [0], pods: 3, away: true }, "the Companion goes away"); await to({ carry: [0], pods: 3 }, "the Companion docks");
+  for (const k of ["pods", "incubator", "companion", "bay", "pods"]) { const b = scene({ adults: 3, carry: [0], pods: 3, crates: 2, bud: 5, focus: k }); resend(f, b, 1); const d = dirty(f); seen.push([`ring on ${k}`, d]); assert.ok(d <= 153600, `ring to ${k}: ${d} px`); }
+  console.log(`# Home's console, px redrawn (the bound is 153,600): ${seen.map(([n, d]) => `${n} ${d}`).join(", ")}`);
 });

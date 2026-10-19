@@ -110,25 +110,34 @@
    "rect": [32,477,226,98],
    "build": "station",
    "picture": [76,66],
-   "slots": {"size":[24,32],"gap":2,"cols":3,"rows":2}
+   "slots": {"size":[24,32],"gap":2,"cols":3,"rows":2},
+   "glint": {"size":[12,12],"at":[12,0],"note": "OPEN QUESTION for UI/UX (section 4.3 gives no place): the glint star on a pod with one, over the pod's top right corner, 12 x 12 at the slot's (12, 0); the one value to change"}
   },
   "incubator": {
    "offGrid": "the build spec's numbers: 226 by 98 at y 477",
    "rect": [270,477,226,98],
    "build": "station",
-   "picture": [56,86]
+   "picture": [56,86],
+   "capsule": {
+    "size": [56,86],
+    "foot": [27,63],
+    "podHeight": 27,
+    "bar": {"rect": [10,71,34,10], "max": 34, "note": "OPEN QUESTION for UI/UX: section 4.3 says the bar is lit to progress; the old Home module drew it lit or off, never a fraction. Built as the literal reading: the lit bar's window of the 56 x 86 layer (the alpha's extent, x 10 to 43, y 71 to 80), 34 px at most, from its first pixel, whole when ready"},
+    "note": "the painted capsule (masters/capsule/*-56x86): the interior, the bud's pod, the glass (growing), the shell, the door (not growing) and the bar. foot and podHeight are the old Home module's: the pod 27 tall, its foot 27 px in and 63 down"
+   }
   },
   "companion": {
    "offGrid": "the build spec's numbers: 226 by 98 at y 477",
    "rect": [528,477,226,98],
    "build": "station",
-   "picture": [28,46]
+   "picture": [28,46],
+   "plates": {"size":[12,24],"gap":4,"at":[12,64],"max":4,"pictures":{"whole":"home-shield-whole-12x24","lost":"home-shield-lost-12x24"},"note": "OPEN QUESTION for UI/UX (section 4.3 gives no gap or place): the Probe's plates as line 2, docked, up to 4, 12 x 24, 4 apart (the old module's pitch 16) from (12, 64); a plate is whole or lost"}
   },
   "bay": {
    "offGrid": "the build spec's numbers: 226 by 98 at y 477",
    "rect": [766,477,226,98],
    "build": "station",
-   "picture": {"berth":[26,24],"gap":2,"berths":3,"withPortrait":4,"top":32}
+   "picture": {"berth":[26,24],"portrait":[18,24],"gap":2,"berths":3,"withPortrait":4,"top":32,"note": "the crates come first (up to three), then shut berths, the portrait berth last; 82 wide, 102 with the portrait"}
   },
   "window": {
    "rect": [24,78,604,362],
