@@ -61,3 +61,16 @@ They are drawn the same way, in the Cargo room's colours:
 
 - The S01 curl build still.
 - T-20261016-230's wording, once applied.
+
+## 4b. The specimen on the v3 rules (re-check)
+
+UI/UX reads the owner's ruling as: Home uses the specimen3 rules, so that the Loika matches the Library's first level. I re-rendered the same four states on specimen3.js with the same finish (grain 4, vignette 0.45, the generator's own ground).
+
+- **Tone: signed again.** The ground, grain and light are the same as on v2, and the render sits beside the Idle crop as v2 did.
+- **Fit: not at v2's numbers.**
+  - At scale 1.08, centred at (W/2, H/2 + 4), the v3 arch reaches x 4 and a bottom of y 342 in the latest state (late).
+  - That puts beads against the window's left edge, inside its radius-6 inner shade.
+- **Set:** scale **1.0**, centre **(W/2 + 5, H/2 + 4)**.
+  - Measured over early, mid, late, new and the whole-collection state, the form's extent then keeps at least 21 px from every edge (late: x 22 to 322, y 29 to 330).
+  - The hub stays a little above centre, with the arch's weight low and left.
+- **For the H4 test:** assert, for every state fixture, that the render's drawn extent keeps 12 px from each edge of the 344 × 362 window. A species whose found looks reach further fails the test rather than clipping on screen.
