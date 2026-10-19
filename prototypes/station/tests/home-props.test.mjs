@@ -253,8 +253,13 @@ test("the Vivarium window's props (build spec 3): the painting of the light, the
   for (const light of ["dawn", "day", "dusk", "night"]) assert.equal(W(sc.docked, { light }).glass.picture, `idle-vivarium-${light}:1024x568`, "the Idle painting the Vivarium uses: no new master");
   assert.equal(W(sc.docked).residents.length, 4, "docked: the carried two are at home and walk"); assert.equal(W(sc.docked).glass.away, undefined, "docked: no away frame");
   assert.equal(W(sc.away).residents.length, 2, "one of three is out on the trip"); const a = W(sc.away).glass.away; assert.ok(a && /^mibi:/.test(a.picture) && a.figure.length === 4, "the first mibi out, its stand and its figure");
-  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 9, settings); const r = build(st, sv0()).props.regions; assert.equal(r.residents.length, 6, "nine at home: six show"); assert.match(r.vivarium.readout, /^9 at home$/, "the readout counts all nine"); assert.deepEqual(r.residents.map((p) => p.id), st.mibis.slice(3).map((m) => String(m.id)), "the most recently born six, in bay order"); }
+  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 9, settings); const r = build(st, sv0()).props.regions; assert.equal(r.residents.length, 6, "nine at home: six show"); assert.match(r.vivarium.readout, /^9 at home$/, "the readout counts all nine"); assert.deepEqual(r.residents.map((p) => p.id), st.mibis.slice(0, 6).map((m) => String(m.id)), "every life event the same turn: ties in bay order"); }
   { const { st, sv } = sc.docked, id = st.mibis[2].id; assert.equal(W({ st, sv }, { ui: { meet: id } }).glass.tag, String(id)); assert.equal(W({ st, sv }).glass.tag, undefined, "no event, no tag"); }
   assert.ok(!("bed" in W(sc.docked)), "the bed leaves Home");
   assert.deepEqual(W(sc.empty).residents, []);
+  // the newest life event, born or grown up (born + adultTurns): a mibi that grew up recently outranks one born more recently that has not grown up yet
+  { const st = world(); dock(st); st.turn = 5; S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis; a.born = 3; b.born = 4; a.bay = 1; b.bay = 0;   // a grew up at turn 5 (3 + 2), b, born later, is still a juvenile (4 + 2 = 6)
+    const one = JSON.parse(JSON.stringify(spec)); one.regions.resident.max = 1; const ids = (sp, over = {}) => homeBuild({ st, sv: sv0(), settings, docked: true, ui: over, focus: null, time: 43200, date: { y: 2026, m: 9, d: 17 }, now: Date.now(), place: "" }, sp, frameSpec).props.regions.residents.map((p) => p.id);
+    assert.deepEqual(ids(one), [String(a.id)], "grown up at 5 outranks born at 4"); assert.deepEqual(ids(one, { meet: b.id }), [String(b.id)], "the mibi being met first");
+    b.born = 2; assert.deepEqual(ids(one), [String(a.id)], "born 2, grown up 4: a still first"); b.born = 3; assert.deepEqual(ids(one), [String(b.id)], "the same event turn: bay order (b is in bay 0)"); }
 });

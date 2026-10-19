@@ -147,14 +147,16 @@ function couldIncubate(st, settings) {
   const c = S.growCost(st, {}, settings); return S.canPay(st, c.e, 0, c.s) ? grown[0] : null;
 }
 
-// The Vivarium window's people (build spec section 3): the residents at home that walk, at most six (more: the six with the most recent activity, here the latest born; the mibi with an event, ui.meet, always among them),
+// The Vivarium window's people (build spec section 3): the residents at home that walk, at most six (more: the mibi being met, ui.meet, first, then the newest of born and grown up, ties in bay order),
 // in bay order; the picture of the light; the one event tag (ui.meet: born or grown up); the first mibi out on a trip in the away frame, its stand's figure at its world size.
 function glassOf(m, spec, frame, housed, requests) {
   const { st, sv, settings } = m, R = spec.regions, light = m.light ?? "day", docked = !!m.docked, req = (r) => { requests.push(r); return r.id; };
   const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (station-layouts.md, The Vivarium: the whole)" });
   const lw = livingOf({ st, sv, settings, docked, light, view: "home", noBed: true, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, { resident: R.resident, bed: { sleepers: { ink: { max: R.resident.asleep.ink } } } }, req, ph, frame.light);
-  const meet = m.ui?.meet != null ? String(m.ui.meet) : null, bayOf = new Map(housed.map((mb) => [String(mb.id), mb.bay])), bornOf = new Map(housed.map((mb) => [String(mb.id), mb.born ?? 0]));
-  const rank = (p) => (p.id === meet ? Infinity : bornOf.get(p.id) ?? 0), keep = new Set(lw.residents.slice().sort((a, b) => rank(b) - rank(a) || Number(b.id) - Number(a.id)).slice(0, R.resident.max).map((p) => p.id));
+  const meet = m.ui?.meet != null ? String(m.ui.meet) : null, bayOf = new Map(housed.map((mb) => [String(mb.id), mb.bay]));
+  // the newest life event: born, or grown up (born + adultTurns, derived: no field stores it) once that has come; the mibi being met always first; ties in bay order
+  const aT = settings.adultTurns ?? S.JUVENILE_TURNS, lifeOf = new Map(housed.map((mb) => [String(mb.id), (mb.born ?? 0) + aT <= st.turn ? (mb.born ?? 0) + aT : (mb.born ?? 0)]));
+  const rank = (p) => (p.id === meet ? Infinity : lifeOf.get(p.id) ?? 0), keep = new Set(lw.residents.slice().sort((a, b) => rank(b) - rank(a) || bayOf.get(a.id) - bayOf.get(b.id)).slice(0, R.resident.max).map((p) => p.id));
   const residents = lw.residents.filter((p) => keep.has(p.id)).sort((a, b) => bayOf.get(a.id) - bayOf.get(b.id));
   const glass = { picture: paintingOf(req, frame, light) };
   if (meet != null && residents.some((p) => p.id === meet)) glass.tag = meet;

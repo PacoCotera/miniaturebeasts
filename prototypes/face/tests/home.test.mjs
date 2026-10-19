@@ -282,7 +282,7 @@ test("the window is the 1:1 crop at (64, 194) of Idle's painting of the light, 6
 });
 test("the window shows at most six of the mibis at home, the ones with the most recent activity, in bay order; none at home shows none; the residents are never focus targets", { skip }, async () => {
   const sc = homeScene({ adults: 8 }), ids = sc.props.regions.residents.map((p) => p.id), all = sc.st.mibis.map((m) => String(m.id));
-  assert.equal(ids.length, 6); assert.deepEqual(ids, all.filter((i) => ids.includes(i)), "bay order"); assert.deepEqual(ids, all.slice(2), "the latest born: the two oldest are left out here");
+  assert.equal(ids.length, 6); assert.deepEqual(ids, all.filter((i) => ids.includes(i)), "bay order"); assert.deepEqual(ids, all.slice(0, 6), "every life event the same turn: ties in bay order");
   assert.equal(homeScene({ adults: 3, carry: [0, 1, 2], docked: false }).props.regions.residents.length, 0, "all on a trip: nobody walks");
   assert.equal(homeScene({ adults: 3, carry: [0], docked: true }).props.regions.residents.length, 3, "docked, the carried one is at home and walks (the bed is the Vivarium's)");
   assert.ok(!sc.props.focus.targets.some((t) => /resident/.test(t.id)));
@@ -295,7 +295,7 @@ test("the walkers keep to the moved ground profile, x 32 to 620, feet to 435, an
     let moved = 0; const seen = new Set();
     runFrames(f, 60000, { each: () => { res.forEach((p, i) => { let x = M._face_test_mv(i, 0), feet = M._face_test_mv(i, 1); if (x < -1000) { const b = box(f, `g.${p.id}`); x = b[0] + WIN.rect[0]; feet = b[1] + b[3] + WIN.rect[1]; }   /* a still: its picture box (the clip's own coordinates), the feet its bottom edge */ const W = fig[i][2], fx = x + Math.floor(W / 2); seen.add(i);
       assert.ok(x >= RW.ground[0] && x + W <= RW.ground[0] + RW.ground[2], `${name}: ${p.id} x ${x} + ${W} leaves 32 .. 620`); assert.ok(feet <= 435, `${p.id} feet ${feet} below the foot 435`);
-      assert.ok(feet >= groundTopHome(fx) - (name === "moving" ? 3 : 0), `${name}: ${p.id} feet ${feet} above the profile ${groundTopHome(fx)} at ${fx}`);
+      assert.ok(feet >= groundTopHome(fx), `${name}: ${p.id} feet ${feet} above the profile ${groundTopHome(fx)} at ${fx}`);
       if (away) assert.ok(!(x + W > RW.keepOut[0] && feet >= RW.keepOut[1]), `${name}: ${p.id} at (${x}, ${feet}) meets the away frame's keep-out`); moved++; }); } });
     assert.ok(moved > 0 && seen.size === 6, `${name}: all six walked and were read`); assert.deepEqual(f.errors(), []);
   }
