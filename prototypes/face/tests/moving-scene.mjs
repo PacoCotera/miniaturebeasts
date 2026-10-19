@@ -33,7 +33,7 @@ setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f)
 setMoving(MOVING);
 export const T0 = 1_000_000;
 export const VIV_RULES = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station/vivarium.json"), "utf8")).rules;
-// o: { adults, juveniles, s05, sleepers, time (seconds of the day), docked, motionSets }; returns { st, sv, settings, m } for a view
+// o: { adults, juveniles, s05, sleepers, time (seconds of the day), docked, motionSets, carry, ui }; returns { st, sv, settings, m } for a view
 export function household(o = {}) {
   const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: o.docked ?? true, at: T0 };
   if (o.adults) S.seedAdults(st, "S01", 5, o.adults, settings);
@@ -42,8 +42,8 @@ export function household(o = {}) {
   if (n5) S.seedAdults(st, "S05", 9, n5, settings);
   for (const m of st.mibis) m.paint = { state: "landed" };
   for (const m of st.mibis.slice(o.adults ?? 0)) m.born = st.turn;   // the juveniles
-  const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3 };
-  return { st, sv, settings, m: { st, sv, settings, docked: o.docked ?? true, light: o.light ?? "day", time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: o.motionSets ?? true } };
+  const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };   // carry: the indexes of the mibis with the Companion
+  return { st, sv, settings, m: { st, sv, settings, ui: o.ui ?? {}, docked: o.docked ?? true, light: o.light ?? "day", time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: o.motionSets ?? true } };
 }
 // the bed's sleepers of a second world (3 juveniles carried), with their requests, spliced into a view's props
 export function sleepersOf(build, n = 3) {
@@ -61,11 +61,11 @@ export function sendRequests(f, requests, opts = {}) { for (const r of requests)
 export const STATE = (v) => ({ clip: v & 15, travelling: !!(v & 16), airborne: !!(v & 32), asleep: !!(v & 64), wanderer: !!(v & 128), focused: !!(v & 256), phase: (v >> 12) & 15 });
 export const CLIP = { rest: 0, hop: 1, walk: 2, curl: 3, asleep: 4, wake: 5, stir: 6, ack: 7 };
 
-// ---- the three living-window screens with a moving household, booted on the WebAssembly face ----
+// ---- the two living-window screens (the Vivarium's whole and Idle) with a moving household, booted on the WebAssembly face ----
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { vivariumBuild } from "../../station/src/views/vivarium-props.mjs";
-import { homeBuild } from "../../station/src/views/home-props.mjs";
 import { idleBuild } from "../../station/src/views/idle-props.mjs";
+import { homeBuild } from "../../station/src/views/home-props.mjs";
 const here2 = path.dirname(fileURLToPath(import.meta.url)), specDir = path.resolve(here2, "../../ui/specs/station");
 export const SPEC = (n) => JSON.parse(readFileSync(path.join(specDir, n + ".json"), "utf8"));
 const palette = JSON.parse(readFileSync(path.resolve(here2, "../../ui/palettes/station.json"), "utf8")).colours;
@@ -73,19 +73,19 @@ export const DIST = path.resolve(here2, "../dist"), BUILT = existsSync(path.join
 import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 const frameTop = (screen) => ({ top: { screen, title: screen === "home" ? "Home" : "Vivarium", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: screen === "home" ? null : "Home", need: "" }, plate: { text: "" } });
-// screen: "vivarium" | "home" | "idle"; o: household's options plus { sleepers (count), focus ("tile:<i>" | "resident:<i>" | "room" | null) }
+// screen: "home" | "vivarium" | "idle"; o: household's options plus { sleepers (count), focus ("tile:<i>" | "resident:<i>" | "room" | null) }
 export function movingScene(screen, o = {}) {
   const hh = household(o), { st } = hh, frame = SPEC("frame"), viv = o.vivSpec ?? SPEC("vivarium"), home = SPEC("home");
   const focusOf = (f) => (!f ? null : f === "room" ? "room" : f.replace(/^(\w+):(\d+)$/, (_, k, i) => k + "." + st.mibis[+i].id));
-  const build = (m) => (screen === "vivarium" ? vivariumBuild({ ...m, focus: focusOf(o.focus ?? "tile:0"), seen: null }, viv, frame, home) : screen === "home" ? homeBuild({ ...m, ui: {}, focus: focusOf(o.focus) }, home, frame) : idleBuild(m, frame));
+  const build = (m) => (screen === "home" ? homeBuild({ ...m, date: { y: 2026, m: 9, d: 17 }, now: Date.now() }, home, frame) : screen === "vivarium" ? vivariumBuild({ ...m, focus: focusOf(o.focus ?? "tile:0"), seen: null }, viv, frame, home) : idleBuild(m, frame));
   const b = build(hh.m), requests = [...b.requests];
   if (o.sleepers) { const s = sleepersOf(build, o.sleepers); b.props.regions.bed.sleepers = s.sleepers; b.props.regions.bed.state = "docked"; requests.push(...s.requests); }
-  const props = screen === "idle" ? { screen: "home", ...b.props } : { screen, ...b.props, frame: { ...frameTop(screen), line: { ...frameTop(screen).line, ...(b.line ?? {}) } } };
+  const props = screen === "home" ? { screen: "home", ...b.props, frame: { plate: { text: "" } } } : screen === "idle" ? { screen: "home", ...b.props } : { screen, ...b.props, frame: { ...frameTop(screen), line: { ...frameTop(screen).line, ...(b.line ?? {}) } } };
   return { props, requests, st, hh, specs: { frame, vivarium: viv, home }, screen };
 }
-export async function bootScene(sc, { motion = true, moving = MOVING, atlas = {}, t = 5000 } = {}) {
+export async function bootScene(sc, { motion = true, moving = MOVING, atlas = {}, t = 5000, dir = DIST } = {}) {   // dir: the test build (dist/node) can name a node by its id (nodeBox)
   atlas = { sets: moving, ...atlas };
-  const f = await bootFace(pathToFileURL(DIST + "/"), { test: true });
+  const f = await bootFace(pathToFileURL(dir + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette });
   for (const [n, j] of Object.entries(sc.specs)) if (f.send({ t: "spec", screen: n, json: j }) < 0) throw new Error("spec " + n + ": " + f.errors().join("; "));
   if (sendMoving(f, moving) < 0) throw new Error("moving: " + f.errors().join("; "));

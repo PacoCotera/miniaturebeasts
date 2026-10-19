@@ -13,7 +13,8 @@ import { layeredStand, setStandSizes, fitDown, layersFor, composeStand, standPic
 import { loadStandLayersFs, loadStandLooksFs, unloadStands, STANDS_DIR } from "../tools/stand-layers-fs.mjs";
 import { standLooks, PODS } from "../tools/make-stand-looks.mjs";
 import { registerPictures } from "../src/pictures.mjs";
-import { homeBuild, mibiPictureOf } from "../src/views/home-props.mjs";
+import { mibiPictureOf } from "../src/views/home-props.mjs";
+import { idleBuild } from "../src/views/idle-props.mjs";
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
 import { habitatBuild } from "../src/views/habitat-props.mjs";
 import { asset as assetOf, assetEntry, dropAsset, manifest, placeholders } from "../../ui/assets.mjs";
@@ -179,8 +180,8 @@ describe("four Loikas, four stands", () => {
 
   test("the search found four mibis whose looks differ", () => { assert.equal(FOUR.length, 4); });
 
-  test("Home's glass: four pods with different read looks give four different stands (four ids, four different pictures), each named by its drawn looks", () => {
-    const st = world(), b = homeBuild({ st, sv: sv0(), settings, docked: true, ui: {}, focus: null, light: "day" }, home, frameSpec), R = b.props.regions;
+  test("the living window: four pods with different read looks give four different stands (four ids, four different pictures), each named by its drawn looks", () => {
+    const st = world(), b = idleBuild({ st, sv: sv0(), settings, docked: true, light: "day" }, frameSpec), R = b.props.regions;
     assert.equal(R.residents.length, 4);
     const ids = R.residents.map((r) => r.picture); assert.equal(new Set(ids).size, 4, "four ids");
     for (const r of reqs(b)) assert.deepEqual(r.looks, drawnLooks(fr, st.mibis.find((m) => m.id === r.mibi)), "the request carries the mibi's own drawn looks");
@@ -225,7 +226,7 @@ describe("four Loikas, four stands", () => {
   test("a light grades the composed stand as it grades a master: dawn, dusk and night are derived from the day's picture", () => {
     const st = world(), m = st.mibis[0], day = mibiPictureOf(st, m, [144, 152], settings, "day", "home"), night = mibiPictureOf(st, m, [144, 152], settings, "night", "home");
     assert.equal(night.id, day.id + ":night");
-    const b = homeBuild({ st, sv: sv0(), settings, docked: true, ui: {}, focus: null, light: "night" }, home, frameSpec);
+    const b = idleBuild({ st, sv: sv0(), settings, docked: true, light: "night" }, frameSpec);
     registerPictures(b.requests, { ...env, mibiGenome: (id) => S.mibiById(st, id)?.genome });
     const d = assetOf(day.id).rgba(), n = assetOf(night.id).rgba(); let darker = 0; for (let i = 0; i < d.length; i += 4) { if (d[i + 3] !== n[i + 3]) assert.fail("alpha is the picture's"); if (d[i + 3] && n[i] < d[i]) darker++; }
     assert.ok(darker > 1000, "night is the day's picture in the night's light");

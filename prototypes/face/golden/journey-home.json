@@ -24,7 +24,7 @@
     "screen": "cargo",
     "focus": "room",
     "ok": "Open the bay",
-    "subject": "two crates to the rack",
+    "subject": "two crates to the case",
     "idle": false
    },
    {
@@ -54,33 +54,107 @@
     ],
     "screen": "home",
     "focus": "room",
-    "ok": "Open the bay",
+    "ok": "Open the Bay",
     "subject": "",
     "idle": false
    },
    {
     "arrival": true,
-    "crates": 2,
-    "cargoLamp": "needsYou",
-    "bed": "docked",
-    "notice": "two crates wait in the bay",
+    "bay": {
+     "state": "waiting",
+     "berths": 3,
+     "crates": 2,
+     "pictures": {
+      "shut": "berth-shut-26x24:26x24",
+      "crate": "berth-crate-26x24:26x24",
+      "portrait": "berth-portrait-18x24:18x24"
+     },
+     "line1": "2 crates in",
+     "line2": "from the last trip",
+     "lamp": "needsYou"
+    },
+    "companion": {
+     "state": "docked",
+     "line1": "Dot at home",
+     "line2": "",
+     "lamp": "off",
+     "name": "Dot",
+     "picture": "companion-upright-docked-28x46:28x46",
+     "plates": {
+      "count": 3,
+      "whole": 3,
+      "wholePicture": "home-shield-whole-12x24:12x24",
+      "lostPicture": "home-shield-lost-12x24:12x24"
+     }
+    },
+    "line": {
+     "needs": [
+      "Open the Bay",
+      "a new pod in the case"
+     ]
+    },
     "plate": ""
    }
   ],
   "home-bay": [
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "pods"
+     }
+    ],
+    "screen": "home",
+    "focus": "pods",
+    "ok": "Go to Pods",
+    "subject": "",
+    "idle": false
+   },
    {
     "key": "right",
     "said": [
      {
       "t": "focus",
       "screen": "home",
-      "target": "cargo"
+      "target": "incubator"
      }
     ],
     "screen": "home",
-    "focus": "cargo",
-    "ok": "Go to Cargo",
-    "subject": "two sealed crates",
+    "focus": "incubator",
+    "ok": "Go to the Incubator",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "companion"
+     }
+    ],
+    "screen": "home",
+    "focus": "companion",
+    "ok": "Go to the Probe bench",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "bay"
+     }
+    ],
+    "screen": "home",
+    "focus": "bay",
+    "ok": "Open the Bay",
+    "subject": "",
     "idle": false
    },
    {
@@ -89,12 +163,12 @@
      {
       "t": "intent",
       "screen": "home",
-      "target": "cargo",
+      "target": "bay",
       "verb": "confirm"
      }
     ],
     "screen": "cargo",
-    "focus": "cargo",
+    "focus": "bay",
     "ok": "Open them all",
     "subject": "",
     "idle": false
@@ -103,7 +177,7 @@
     "key": "down",
     "said": [],
     "screen": "cargo",
-    "focus": "cargo",
+    "focus": "bay",
     "ok": "Open them all",
     "subject": "",
     "idle": false
@@ -119,9 +193,9 @@
      }
     ],
     "screen": "home",
-    "focus": "cargo",
-    "ok": "Go to Cargo",
-    "subject": "two sealed crates",
+    "focus": "bay",
+    "ok": "Open the Bay",
+    "subject": "",
     "idle": false
    },
    {
@@ -130,12 +204,12 @@
      {
       "t": "intent",
       "screen": "home",
-      "target": "cargo",
+      "target": "bay",
       "verb": "confirm"
      }
     ],
     "screen": "cargo",
-    "focus": "cargo",
+    "focus": "bay",
     "ok": "Open them all",
     "subject": "",
     "idle": false
@@ -151,7 +225,7 @@
      }
     ],
     "screen": "cargo",
-    "focus": "cargo",
+    "focus": "bay",
     "ok": "Skip",
     "subject": "",
     "idle": false
@@ -160,7 +234,7 @@
     "key": "down",
     "said": [],
     "screen": "cargo",
-    "focus": "cargo",
+    "focus": "bay",
     "ok": "Skip",
     "subject": "",
     "idle": false
@@ -194,7 +268,7 @@
      }
     ],
     "screen": "pods",
-    "focus": "cargo",
+    "focus": "bay",
     "ok": "Look at this pod",
     "subject": "sealed until identified",
     "idle": false
@@ -210,75 +284,30 @@
      }
     ],
     "screen": "home",
-    "focus": "cargo",
-    "ok": "Go to Cargo",
-    "subject": "the bay is empty",
+    "focus": "bay",
+    "ok": "Open the Bay",
+    "subject": "",
     "idle": false
    }
   ],
   "home-pad": [
    {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "vivarium"
+     }
+    ],
+    "screen": "home",
+    "focus": "vivarium",
+    "ok": "Go to the Vivarium",
+    "subject": "",
+    "idle": false
+   },
+   {
     "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "cargo"
-     }
-    ],
-    "screen": "home",
-    "focus": "cargo",
-    "ok": "Go to Cargo",
-    "subject": "the bay is empty",
-    "idle": false
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "pods"
-     }
-    ],
-    "screen": "home",
-    "focus": "pods",
-    "ok": "Look at the pods",
-    "subject": "four pods in the rack",
-    "idle": false
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "incubator"
-     }
-    ],
-    "screen": "home",
-    "focus": "incubator",
-    "ok": "Go to the Incubator",
-    "subject": "the Incubator is empty",
-    "idle": false
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "probe"
-     }
-    ],
-    "screen": "home",
-    "focus": "probe",
-    "ok": "Go to the Probe",
-    "subject": "the Probe in its cradle",
-    "idle": false
-   },
-   {
-    "key": "down",
     "said": [
      {
       "t": "focus",
@@ -289,7 +318,16 @@
     "screen": "home",
     "focus": "library",
     "ok": "Go to the Library",
-    "subject": "the field journal",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "right",
+    "said": [],
+    "screen": "home",
+    "focus": "library",
+    "ok": "Go to the Library",
+    "subject": "",
     "idle": false
    },
    {
@@ -298,22 +336,13 @@
      {
       "t": "focus",
       "screen": "home",
-      "target": "knob"
+      "target": "bay"
      }
     ],
     "screen": "home",
-    "focus": "knob",
-    "ok": "Rest",
-    "subject": "the Vivarium plays alone",
-    "idle": false
-   },
-   {
-    "key": "down",
-    "said": [],
-    "screen": "home",
-    "focus": "knob",
-    "ok": "Rest",
-    "subject": "the Vivarium plays alone",
+    "focus": "bay",
+    "ok": "Open the Bay",
+    "subject": "",
     "idle": false
    },
    {
@@ -322,13 +351,52 @@
      {
       "t": "focus",
       "screen": "home",
-      "target": "resident.1"
+      "target": "companion"
      }
     ],
     "screen": "home",
-    "focus": "resident.1",
-    "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "focus": "companion",
+    "ok": "Go to the Probe bench",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "incubator"
+     }
+    ],
+    "screen": "home",
+    "focus": "incubator",
+    "ok": "Go to the Incubator",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "pods"
+     }
+    ],
+    "screen": "home",
+    "focus": "pods",
+    "ok": "Go to Pods",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "left",
+    "said": [],
+    "screen": "home",
+    "focus": "pods",
+    "ok": "Go to Pods",
+    "subject": "",
     "idle": false
    },
    {
@@ -343,22 +411,22 @@
     "screen": "home",
     "focus": "vivarium",
     "ok": "Go to the Vivarium",
-    "subject": "one mibi at home",
+    "subject": "",
     "idle": false
    },
    {
-    "key": "right",
+    "key": "down",
     "said": [
      {
       "t": "focus",
       "screen": "home",
-      "target": "cargo"
+      "target": "pods"
      }
     ],
     "screen": "home",
-    "focus": "cargo",
-    "ok": "Go to Cargo",
-    "subject": "the bay is empty",
+    "focus": "pods",
+    "ok": "Go to Pods",
+    "subject": "",
     "idle": false
    },
    {
@@ -367,13 +435,13 @@
      {
       "t": "intent",
       "screen": "home",
-      "target": "cargo",
+      "target": "pods",
       "verb": "room:home"
      }
     ],
     "screen": "home",
     "focus": "room",
-    "ok": "Look at the pods",
+    "ok": null,
     "subject": "",
     "idle": false
    },
@@ -382,44 +450,12 @@
     "said": [],
     "screen": "home",
     "focus": "room",
-    "ok": "Look at the pods",
+    "ok": null,
     "subject": "",
     "idle": false
    }
   ],
   "home-rack": [
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "cargo",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "cargo",
-    "focus": "cargo",
-    "ok": null,
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "cargo",
-      "target": "room",
-      "verb": "back"
-     }
-    ],
-    "screen": "home",
-    "focus": "cargo",
-    "ok": "Go to Cargo",
-    "subject": "the bay is empty",
-    "idle": false
-   },
    {
     "key": "confirm",
     "said": [
@@ -449,39 +485,7 @@
     "screen": "home",
     "focus": "incubator",
     "ok": "Go to the Incubator",
-    "subject": "the Incubator is empty",
-    "idle": false
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "probe",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "bench",
-    "focus": "probe",
-    "ok": "Switch off",
-    "subject": "two free, the rest ⚡ 1 each",
-    "idle": false
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "bench",
-      "target": "switch",
-      "verb": "back"
-     }
-    ],
-    "screen": "home",
-    "focus": "probe",
-    "ok": "Go to the Probe",
-    "subject": "the Probe in its cradle",
+    "subject": "",
     "idle": false
    },
    {
@@ -513,7 +517,7 @@
     "screen": "home",
     "focus": "library",
     "ok": "Go to the Library",
-    "subject": "the field journal",
+    "subject": "",
     "idle": false
    },
    {
@@ -522,14 +526,14 @@
      {
       "t": "intent",
       "screen": "home",
-      "target": "resident.1",
+      "target": "bay",
       "verb": "confirm"
      }
     ],
-    "screen": "habitat",
-    "focus": "resident.1",
-    "ok": "Greet Dot",
-    "subject": "an adult Loika",
+    "screen": "cargo",
+    "focus": "bay",
+    "ok": null,
+    "subject": "",
     "idle": false
    },
    {
@@ -537,15 +541,79 @@
     "said": [
      {
       "t": "intent",
-      "screen": "habitat",
-      "target": "resident",
+      "screen": "cargo",
+      "target": "room",
       "verb": "back"
      }
     ],
+    "screen": "home",
+    "focus": "bay",
+    "ok": "Open the Bay",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "companion",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "focus": "companion",
+    "ok": "Switch off",
+    "subject": "two free, the rest ⚡ 1 each",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "switch",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "companion",
+    "ok": "Go to the Probe bench",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "vivarium",
+      "verb": "confirm"
+     }
+    ],
     "screen": "vivarium",
-    "focus": "resident.1",
+    "focus": "vivarium",
     "ok": "Look at Dot",
     "subject": "an adult Loika, asleep",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "resident.1",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "vivarium",
+    "ok": "Go to the Vivarium",
+    "subject": "",
     "idle": false
    },
    {
@@ -576,24 +644,24 @@
     ],
     "screen": "home",
     "focus": "pods",
-    "ok": "Look at the pods",
-    "subject": "four pods in the rack",
+    "ok": "Go to Pods",
+    "subject": "",
     "idle": false
    }
   ],
   "home-lamp": [
    {
-    "key": "confirm",
+    "key": "home",
     "said": [
      {
       "t": "intent",
       "screen": "home",
-      "target": "knob",
-      "verb": "confirm"
+      "target": "room",
+      "verb": "room:home"
      }
     ],
     "screen": "home",
-    "focus": "knob",
+    "focus": "room",
     "ok": null,
     "subject": null,
     "idle": true
@@ -609,27 +677,27 @@
      }
     ],
     "screen": "home",
-    "focus": "knob",
-    "ok": "Rest",
-    "subject": "the Vivarium plays alone",
+    "focus": "room",
+    "ok": null,
+    "subject": "",
     "idle": false
    }
   ],
   "home-rest-hold": [
    {
-    "key": "confirm",
+    "key": "home",
     "said": [
      {
       "t": "intent",
       "screen": "home",
-      "target": "knob",
-      "verb": "confirm"
+      "target": "room",
+      "verb": "room:home"
      }
     ],
     "screen": "home",
-    "focus": "knob",
-    "ok": "Rest",
-    "subject": "the Vivarium plays alone",
+    "focus": "room",
+    "ok": null,
+    "subject": "",
     "idle": false
    },
    {
@@ -638,14 +706,14 @@
      {
       "t": "intent",
       "screen": "home",
-      "target": "knob",
+      "target": "room",
       "verb": "room:research"
      }
     ],
     "screen": "home",
-    "focus": "knob",
-    "ok": "Rest",
-    "subject": "the Vivarium plays alone",
+    "focus": "room",
+    "ok": null,
+    "subject": "",
     "idle": false
    },
    {
@@ -659,9 +727,9 @@
      }
     ],
     "screen": "home",
-    "focus": "knob",
-    "ok": "Rest",
-    "subject": "the Vivarium plays alone",
+    "focus": "room",
+    "ok": null,
+    "subject": "",
     "idle": false
    },
    {
@@ -670,12 +738,12 @@
      {
       "t": "intent",
       "screen": "home",
-      "target": "knob",
+      "target": "room",
       "verb": "room:research"
      }
     ],
     "screen": "pods",
-    "focus": "knob",
+    "focus": "room",
     "ok": "Look at this pod",
     "subject": "sealed until identified",
     "idle": false
@@ -694,7 +762,7 @@
     ],
     "screen": "home",
     "focus": "room",
-    "ok": "Look at the pods",
+    "ok": null,
     "subject": "",
     "idle": false
    },
@@ -728,7 +796,7 @@
     ],
     "screen": "home",
     "focus": "room",
-    "ok": "Look at the pods",
+    "ok": null,
     "subject": "",
     "idle": false
    },
@@ -737,7 +805,7 @@
     "said": [],
     "screen": "home",
     "focus": "room",
-    "ok": "Look at the pods",
+    "ok": null,
     "subject": "",
     "idle": false
    }

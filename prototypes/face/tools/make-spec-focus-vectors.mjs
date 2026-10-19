@@ -9,9 +9,11 @@ import { fileURLToPath } from "node:url";
 import { listPitch } from "../../ui/specs/derive.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), file = path.resolve(here, "../tests/vectors/focus.json"), specs = path.resolve(here, "../../ui/specs/station");
-const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["create", "incubator", "vivarium", "habitat", "namer", "library", "bench"];
+const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["home", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench"];
 const V = JSON.parse(readFileSync(file, "utf8")), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8"));
 const TARGETS = {
+  // Home: the six targets in the order the view lists them (the two bezels, then the four stations), each on its region's rectangle; the room (no ring at rest) is a vector's from, never a listed target
+  home: (state, spec) => spec.focus.targets ? Object.entries(spec.focus.targets).map(([id, t]) => ({ id, rect: spec.regions[id].rect, group: t.group })) : [],
   incubator: (state, spec) => [{ id: "room", rect: spec.focus.roomAt, group: "room" }],   // one subject: the room, no ring drawn
   // the wireframe 18's targets (focus.layout), in the order the view lists them: the residents, then the tiles; a mibi `away` (out with the Companion) is a tile and no resident
   vivarium: (state, spec, v) => (state === "empty" ? [] : Object.entries(spec.focus.layout).filter(([id]) => !(id.startsWith("resident.") && (v.away ?? []).includes(id.slice(9)))).filter(([id]) => id !== "note").map(([id, rect]) => ({ id, rect, group: id.slice(0, id.indexOf(".")), ...(id.startsWith("tile.") ? { index: Object.keys(spec.focus.layout).filter((k) => k.startsWith("tile.")).indexOf(id) } : {}) }))),
@@ -44,6 +46,7 @@ for (const screen of screens) {
       if (v.from.startsWith("resident.")) resolve["tile.of"] = "tile." + v.from.slice(9); if (v.from.startsWith("tile.")) resolve["resident.of"] = here("resident." + v.from.slice(5)) ? "resident." + v.from.slice(5) : "";
       if (Object.keys(resolve).length) c.resolve = resolve; if (v.from === "room") c.roomAt = F.roomAt;
     }
+    if (screen === "home") { c.roomAt = F.roomAt; c.name = `home: ${v.from} ${v.key} is ${v.to}`; }   // the ring at rest is on the room: its point is roomAt
     if (screen === "habitat") {   // the symbolic tiles: the first tile, a tile, the shown one (t2); the selector the view gives
       const sym = (id) => (id === "tile.first" ? "tile.t0" : id === "a tile" || id === "tile.shown" ? "tile.t2" : id); c.from = sym(v.from); c.to = sym(v.to); c.resolve = { "tile.shown": "tile.t2" };
       c.name = `habitat: ${v.state ? v.state + ", " : ""}${v.from} ${v.key}${v.chapters ? " (" + v.chapters + " chapters)" : ""}${v.intent ? " says " + v.intent : ""}`;

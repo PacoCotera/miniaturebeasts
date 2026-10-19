@@ -68,12 +68,15 @@ for (const s of rec.shots) {
   const one = (layer, id, want, what) => { for (const r of got(layer, id)) must(eq(r.rect, want), `${what ?? id} ${r.rect} is not ${want}`); };
   const inside = (layer, id, box) => { for (const r of got(layer, id)) must(within(r.rect, box), `${id} ${r.rect} is not inside ${box}`); };
   if (c.idle) { for (const m of idleDepartures(lg, frame)) must(false, m); regionsChecked += lg.regions.length; must(got("chrome", "idle.strip").length === 1 && got("chrome", "vivarium").length + got("painted", "vivarium").length >= 1, "Idle draws the Vivarium (its plates, or the light's painting) and the strip"); continue; }   // Idle: every region of the face's log against frame.json idle (face/tools/idle-regions.mjs)
-  one("painted", "top", F.top.rect, "top bar"); one("painted", "line", F.line.rect, "bottom line");   // the signed bars 1:1 (frame.json top.slice, line.slice); the code panel and rule are nodes of no size while they are on the face
-  for (const id of ["top", "line"]) must(got("painted", id).length === 1 && got("chrome", id).every((r) => !eq(r.rect, F[id].rect)), `${id}: one painted bar, and no full-width code panel beside it: ` + JSON.stringify(got("chrome", id).map((r) => r.rect)));
+  const homeScreen = c.screen === "home" && c.props?.state === "home";   // Home's top bar is its own (home.json regions.bar) and it has no bottom line
+  if (!homeScreen) { one("painted", "top", F.top.rect, "top bar"); one("painted", "line", F.line.rect, "bottom line");   // the signed bars 1:1 (frame.json top.slice, line.slice); the code panel and rule are nodes of no size while they are on the face
+    for (const id of ["top", "line"]) must(got("painted", id).length === 1 && got("chrome", id).every((r) => !eq(r.rect, F[id].rect)), `${id}: one painted bar, and no full-width code panel beside it: ` + JSON.stringify(got("chrome", id).map((r) => r.rect))); }
   for (const r of got("chrome", "plate")) { const w = r.rect[2], cx = r.rect[0] + w / 2; must(Math.abs(cx - F.plate.centre) <= 1 && w <= F.plate.maxWidth && (r.rect[1] + r.rect[3] - 3 === F.plate.bottom || r.rect[1] === F.plate.topOverFocal), `message plate ${r.rect}`); }
   if (c.screen === "home" && c.props?.state === "home") {   // Home: every region of the face's log against home.json (face/tools/home-regions.mjs): zero departures; the strings are Inter at their sizes
     const d = departures(lg, home, frame, c.homeFocus ?? "room"); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
-    must(got("chrome", "glass").length + got("painted", "glass").length === 1 && got("chrome", "bezel").length === 1 && MODULES.every((m) => got("painted", m + ".plate").filter((r) => r.rect[2] === home.regions[m].rect[2] && r.rect[3] === home.regions[m].rect[3]).length === 1 && !got("chrome", m).length), "Home draws the bezel, the glass and the five modules once each");
+    must(got("painted", "bar").length === 1 && eq(got("painted", "bar")[0].rect, home.regions.bar.rect) && got("chrome", "bar").every((r) => !eq(r.rect, home.regions.bar.rect)), "Home draws the shared bar's picture once, 1:1, and no full-width code panel beside it: " + JSON.stringify([got("painted", "bar").map((r) => r.rect), got("chrome", "bar").map((r) => r.rect)]));
+    must(!got("painted", "line").length && !got("chrome", "line").length && !got("painted", "top").length, "Home has no bottom line and no frame top bar");
+    must(["vivarium", "library", "console", "pods", "incubator", "companion", "bay"].every((id) => got("chrome", id).length === 1), "Home draws its two bezels, its console and its four stations once each");
   } else if (c.screen === "create" && c.props?.state !== "notBuilt") {   // Create: every region of the face's log against create.json (face/tools/create-regions.mjs): zero departures; the roll, the founder and the stamp label are drawn
     const d = keep(createDepartures(lg, createSpec, frame, c.props.state)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
     if (got("chrome", "panelGround").length) {   // the Incubate | Keep shaping panel: Create is a snapshot picture under it, so its words are not drawn; the panel's verbs, price and rows (two bezels, two windows, the snapshot) are
@@ -122,10 +125,10 @@ for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name
 for (const screen of ["cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
 if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) fail("no screenshot point records Idle");
 for (const [pt, state] of [["page-bench", "docked"], ["page-bench-panel-upgrade", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "spread"], ["page-library-spread", "spread"], ["page-vivarium", "rest"], ["page-vivarium-away", "rest"], ["page-vivarium-away-night", "rest"], ["page-mibi-out", "rest"], ["page-vivarium-empty", "empty"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
-// the moving sets (Station M1 §3, vivarium-regions): every resident's drawn box, at every cell's lift and dy (the hop's lift, a pass's rise, the crouch lowered 2 px), stays inside its window on the whole, Home's glass and Idle; up close and in the hatch
+// the moving sets (vivarium-regions): every resident's drawn box, at every cell's lift and dy (the hop's lift, a pass's rise, the crouch lowered 2 px), stays inside its window on the whole and Idle; up close and in the hatch
 // the up-close hop scales down to fit when the rect leaves less above the figure, so it never clips (the animator's closeHop note)
 { const MV = path.join(ui, "specs/station/moving"), ix = JSON.parse(readFileSync(path.join(MV, "index.json"), "utf8")), sets = Object.fromEntries(ix.sets.map((id) => [id, JSON.parse(readFileSync(path.join(MV, id + ".json"), "utf8"))]));
-  const windows = [["the whole", vivariumSpec.regions.resident, vivariumSpec.regions.window.rect], ["Home's glass", home.regions.resident, home.regions.glass.rect], ["Idle", frame.idle.regions.resident, frame.idle.regions.vivarium.rect]];
+  const windows = [["the whole", vivariumSpec.regions.resident, vivariumSpec.regions.window.rect], ["Idle", frame.idle.regions.resident, frame.idle.regions.vivarium.rect]];
   let n = 0;
   for (const [sid, set] of Object.entries(sets)) for (const stage of ["juvenile", "adult", "elder"]) {
     const s = stage === "elder" ? (set.elder ? { ...set.adult, hop: { ...set.adult.hop, lift: set.elder.lift ?? set.adult.hop?.lift } } : null) : set[stage]; if (!s) continue;
@@ -150,6 +153,12 @@ console.log("== ink against the frame spec");
   for (const s of rec.shots.filter((x) => x.png && !x.check.idle)) {
     const d = decodePNG(Buffer.from(s.png, "base64")).data, says = new Set(s.check.log.type.map((t) => t.region));   // what the face set in each slot
     const px = (i, j) => [d[(j * 1024 + i) * 4], d[(j * 1024 + i) * 4 + 1], d[(j * 1024 + i) * 4 + 2]];
+    if (s.check.screen === "home" && s.check.props?.state === "home") {   // Home: the shared bar's rows over its own words, no bottom line (home.json regions.bar): the title's ink starts at x 16 and the clock's ends at 1008, each inside the bar's rows
+      if (!eq(px(200, 20), rgbOf("bar")) || !eq(px(500, 39), rgbOf("hairline")) || !eq(px(500, 0), rgbOf("bevel"))) fail(`${s.name}: Home's bar is \`bar\` with a \`bevel\` row on top and a \`hairline\` row at the foot`);
+      const t = ink(d, [8, 4, 200, 32]), c = ink(d, [940, 4, 76, 32]); n += 2;
+      if (!t || Math.abs(t[0] - home.regions.bar.title.x) > 3) fail(`${s.name}: the title's ink ${t} does not start at x ${home.regions.bar.title.x}`);
+      if (!c || Math.abs(c[0] + c[2] - home.regions.bar.clock.right) > 3) fail(`${s.name}: the clock's ink ${c} does not end at x ${home.regions.bar.clock.right}`);
+      continue; }
     if (!eq(px(300, 20), rgbOf("bar")) || !eq(px(500, 39), rgbOf("hairline")) || !eq(px(500, 562), rgbOf("hairline")) || !eq(px(500, 563), rgbOf("bevel")) || !eq(px(500, 0), rgbOf("bevel"))) fail(`${s.name}: the signed bars: the top bar is \`bar\` with a \`bevel\` row on top and a \`hairline\` row at the foot, the bottom line a \`hairline\` row then a \`bevel\` row on its top edge`);
     for (const x of F.separators.x) if (!eq(px(x, 580), rgbOf(C.dot))) fail(`${s.name}: no 1 px separator at x ${x}`);
     for (const [name, r] of Object.entries(regions)) {

@@ -8,7 +8,7 @@
      {
       "t": "intent",
       "screen": "home",
-      "target": "probe",
+      "target": "companion",
       "verb": "confirm"
      }
     ],
@@ -387,11 +387,11 @@
     ],
     "screen": "home",
     "state": "home",
-    "focus": "probe",
+    "focus": "companion",
     "armed": null,
-    "ok": "Go to the Probe",
+    "ok": null,
     "price": null,
-    "subject": "the Probe in its cradle",
+    "subject": null,
     "back": null,
     "e": 1,
     "d": 2,
@@ -405,7 +405,7 @@
      {
       "t": "intent",
       "screen": "home",
-      "target": "probe",
+      "target": "companion",
       "verb": "confirm"
      }
     ],
@@ -465,7 +465,7 @@
     ],
     "screen": "pods",
     "state": "collection",
-    "focus": "probe",
+    "focus": "companion",
     "armed": null,
     "ok": "Look at this pod",
     "price": null,

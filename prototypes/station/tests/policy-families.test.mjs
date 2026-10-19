@@ -14,7 +14,7 @@ import { registerPictures, iconRequests } from "../src/pictures.mjs";
 import { SPECS } from "../src/game.mjs";
 import { assetEntry, placeMaster, dropAsset } from "../../ui/assets.mjs";
 import { policyOf } from "../../ui/asset-policy.mjs";
-import { homeBuild } from "../src/views/home-props.mjs";
+import { idleBuild } from "../src/views/idle-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -108,7 +108,7 @@ test("fix 7: a resident master's grade is painted at either status; <master>:day
   const w = S.freshSt("w1", 3, 1000); S.normalize(w); S.seedAdults(w, "S01", 5, 3, settings); for (const m of w.mibis) m.paint = { state: "landed" }; w.dock = { docked: true, at: 1000 };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [w.mibis[0].id], tier: 1, shield: 3 }, homeSpec = J("home.json");
   for (const light of ["dawn", "day", "dusk", "night"]) {
-    const b = homeBuild({ st: w, sv, settings, docked: true, ui: {}, focus: null, light, motionSets: true }, homeSpec, frameSpec), mibi = b.requests.filter((r) => r.kind === "mibi" || r.kind === "moving");
+    const b = idleBuild({ st: w, sv, settings, docked: true, light, motionSets: true }, frameSpec), mibi = b.requests.filter((r) => r.kind === "mibi" || r.kind === "moving");
     registerPictures(b.requests, { podById: () => null, frameOf, mibiGenome: (id) => w.mibis.find((m) => m.id === id)?.genome }); assert.ok(mibi.length >= 2, String(mibi.length));
     for (const r of mibi) { const e = assetEntry(r.id); assert.ok(e, r.id); assert.ok(["art", "painted"].includes(policyOf(r.id, e.status === "master" ? "master" : "placeholder")), r.id); }
   }

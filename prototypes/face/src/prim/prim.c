@@ -17,9 +17,12 @@ extern const lv_font_t face_inter_16, face_inter_20, face_inter_28;
 #define MAX_REGION 96
 #define OPS_CAP (128 * 1024)
 #define NINE_PARTS 9
+#define RING_PARTS 8
+static const int RING_JK[RING_PARTS][2] = { { 0, 0 }, { 0, 2 }, { 2, 0 }, { 2, 2 }, { 0, 1 }, { 2, 1 }, { 1, 0 }, { 1, 2 } };   /* the corners first, then the edges: top, bottom, left, right (row j, column k of the nine) */
 typedef struct {
   uint32_t id, parent;          /* parent: the id of the clip this node sits in, 0 at the root */
   lv_obj_t *obj; lv_obj_t *part[NINE_PARTS];
+  int ringed; lv_obj_t *rp[RING_PARTS];   /* ringed: a nine-slice of a ring's source: no container and no middle, eight border parts that are siblings on the node's parent (obj is the first of them) */
   int kind, seen, fresh, born, layer, region, child_k, nchild;
   int x, y, w, h; uint32_t rgb; int a, b;
   lv_image_dsc_t crop;
@@ -55,7 +58,7 @@ int prim_unknown(void) { return g_unknown; }
 void prim_refuse(void) { g_unknown++; }
 int prim_asset_limit(void) { return MAX_ASSET; }
 int prim_object_limit(void) { return MAX_OBJ; }
-int prim_lvgl_objects(void) { int n = g_n; for (int i = 0; i < g_n; i++) if (g_o[i].kind == FN_NINE) n += NINE_PARTS; return n; }
+int prim_lvgl_objects(void) { int n = g_n; for (int i = 0; i < g_n; i++) if (g_o[i].kind == FN_NINE) n += g_o[i].ringed ? RING_PARTS - 1 : NINE_PARTS; return n; }
 /* A painted picture of the scene covering a pixel, whatever pass is showing: the test's pass 1 and 2 hide the painted layer, and a painting that carries a whole region (the light's painting under Home's and Idle's living window) leaves no chrome under it by design, so its pixels are not off-palette findings (face_test_offpalette). */
 int prim_painted_at(int x, int y) {
   if (g_pass >= 3) return 0;   /* the painted layer shows: its pixels are counted like any other */
@@ -307,7 +310,10 @@ static lv_obj_t *make(node_t *n, int a, lv_obj_t *parent) {
   lv_obj_t *o;
   if (n->kind == FN_TEXT) { o = lv_label_create(parent); plain(o); lv_label_set_long_mode(o, LV_LABEL_LONG_MODE_CLIP); lv_obj_set_style_text_font(o, font_of(a), 0); }
   else if (n->kind == FN_SPRITE || n->kind == FN_COMPOSED) { o = lv_image_create(parent); plain(o); }
-  else if (n->kind == FN_NINE) {
+  else if (n->kind == FN_NINE && n->ringed) {   /* a ring: eight strips on the parent, no container that would invalidate the box it encloses (they are made on the nursery with the node and join its screen together) */
+    for (int i = 0; i < RING_PARTS; i++) { n->rp[i] = lv_image_create(parent); plain(n->rp[i]); lv_image_set_inner_align(n->rp[i], LV_IMAGE_ALIGN_TILE); }
+    o = n->rp[0];
+  } else if (n->kind == FN_NINE) {
     o = lv_obj_create(parent); plain(o);
     for (int i = 0; i < NINE_PARTS; i++) { n->part[i] = lv_image_create(o); plain(n->part[i]); lv_image_set_inner_align(n->part[i], LV_IMAGE_ALIGN_TILE); }
   } else { o = lv_obj_create(parent); plain(o); }   /* a rectangle, or a clip: an object whose bounds cut its children (LVGL's default) */
@@ -315,7 +321,8 @@ static lv_obj_t *make(node_t *n, int a, lv_obj_t *parent) {
 }
 /* The node moved into a removed node's place keeps its image pointing at its own descriptor: a composed picture's `cdsc` and a cropped sprite's `crop` live in the node, and the node has moved. */
 static void remove_at(int i) {
-  lv_obj_delete(g_o[i].obj); free(g_o[i].composed);
+  if (g_o[i].ringed) for (int k = 0; k < RING_PARTS; k++) lv_obj_delete(g_o[i].rp[k]); else lv_obj_delete(g_o[i].obj);
+  free(g_o[i].composed);
   int last = --g_n; if (i == last) return;
   g_o[i] = g_o[last]; node_t *m = &g_o[i];
   if (m->kind == FN_COMPOSED && m->composed) lv_image_set_src(m->obj, &m->cdsc);
@@ -334,7 +341,7 @@ void prim_tag(int layer, const char *region) {
 }
 void prim_begin(void) { for (int i = 0; i < g_n; i++) g_o[i].seen = 0; g_unknown = 0; g_nseq = 0; g_clip_left = 0; g_clip_id = 0; g_nreg = 1; g_region = 0; g_layer = LAYER_CHROME; }
 static uint32_t hash_str(const char *s) { uint32_t h = 2166136261u; for (; *s; s++) { h ^= (uint8_t)*s; h *= 16777619u; } return h ? h : 1; }
-static void show(node_t *n) { lv_obj_set_hidden(n->obj, n->layer > (g_pass >= 3 ? LAYER_TYPE : g_pass - 1) || (g_hide >= 0 && n->region == g_hide)); }   /* pass 1 shows chrome, 2 adds art, 3 everything */
+static void show(node_t *n) { int hide = n->layer > (g_pass >= 3 ? LAYER_TYPE : g_pass - 1) || (g_hide >= 0 && n->region == g_hide); if (n->ringed) for (int k = 0; k < RING_PARTS; k++) lv_obj_set_hidden(n->rp[k], hide); else lv_obj_set_hidden(n->obj, hide); }   /* pass 1 shows chrome, 2 adds art, 3 everything */
 void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) {
   /* the clip's bookkeeping comes first: a node sent while a clip is open counts against it whether or not it is drawn, so a refused child never leaves the next root node inside the clip;
      a refused clip refuses the children it announced. A clip does not hold a clip. */
@@ -354,11 +361,12 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   int nl = (int)(rgb >> 24), nt = (int)((rgb >> 16) & 255), nr = (int)((rgb >> 8) & 255), nb = (int)(rgb & 255);   /* a nine-slice: its insets l, t, r, b in rgb, its tile in b */
   if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET + MAX_SRC || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) REFUSE();
   if (kind == FN_COMPOSED && (w <= 0 || h <= 0 || (long)w * h > 1024L * 600)) REFUSE();
+  int want_ring = kind == FN_NINE && !parent && a >= 0 && a < MAX_ASSET + MAX_SRC && g_a[a].ring;   /* a ring's nine-slice is built as eight strips (RING_PARTS) */
   int i = find(id);
-  if (i >= 0 && (g_o[i].kind != kind || g_o[i].parent != parent)) { drop(i); i = -1; }
+  if (i >= 0 && (g_o[i].kind != kind || g_o[i].parent != parent || (kind == FN_NINE && g_o[i].ringed != want_ring))) { drop(i); i = -1; }
   if (i < 0) {
     if (g_n >= MAX_OBJ) REFUSE();
-    i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].born = 1; g_o[i].obj = make(&g_o[i], a, nursery());   /* a clip's child too: made on the nursery and moved into its clip at the end of the frame, so its birth invalidates nothing at the clip's origin */
+    i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].born = 1; g_o[i].ringed = want_ring; g_o[i].obj = make(&g_o[i], a, nursery());   /* a clip's child too: made on the nursery and moved into its clip at the end of the frame, so its birth invalidates nothing at the clip's origin */
   }
   node_t *n = &g_o[i]; lv_obj_t *o = n->obj; n->seen = 1; g_seq[g_nseq++] = id; n->layer = g_layer; n->region = g_region;
   if ((kind == FN_SPRITE || kind == FN_NINE) && a >= 0 && a < MAX_ASSET && g_a[a].layer) n->layer = g_a[a].layer;   /* a picture takes its layer from its asset (lvgl-switch.md §2.1); words choose a layer only for rects, text and composed pictures */
@@ -369,12 +377,18 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
     if (strcmp(lv_label_get_text(o), g_text) != 0) lv_label_set_text(o, g_text);
     if (n->a != a) lv_obj_set_style_text_font(o, f, 0);
   }
-  if (n->fresh || n->x != px || n->y != py) { if (n->born && in_clip) lv_obj_set_pos(o, x, y); else lv_obj_set_pos(o, px, py); }   /* a clip's child born this frame stands on the nursery at its screen place, so moving it into its clip invalidates its own box, not the box at its clip-relative place */
-  if (n->fresh || n->w != w || n->h != h) {
+  if (!n->ringed && (n->fresh || n->x != px || n->y != py)) { if (n->born && in_clip) lv_obj_set_pos(o, x, y); else lv_obj_set_pos(o, px, py); }   /* a clip's child born this frame stands on the nursery at its screen place, so moving it into its clip invalidates its own box, not the box at its clip-relative place */
+  if (!n->ringed && (n->fresh || n->w != w || n->h != h)) {
     if (kind == FN_TEXT) lv_obj_set_size(o, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
     else lv_obj_set_size(o, w, h);
   }
-  if (kind == FN_NINE && (n->fresh || n->w != w || n->h != h || n->a != a || n->b != b || n->rgb != rgb)) {
+  if (kind == FN_NINE && n->ringed && (n->fresh || n->x != px || n->y != py || n->w != w || n->h != h || n->a != a || n->b != b || n->rgb != rgb)) {
+    asset_t *s = &g_a[a]; views_of(s, nl, nt, nr, nb, b);
+    const int xs[3] = { 0, nl, w - nr }, ys[3] = { 0, nt, h - nb }, ws[3] = { nl, w - nl - nr, nr }, hs[3] = { nt, h - nt - nb, nb };
+    for (int q = 0; q < RING_PARTS; q++) { int j = RING_JK[q][0], k = RING_JK[q][1]; lv_obj_t *p = n->rp[q]; lv_image_set_src(p, &s->view[j * 3 + k]);
+      lv_obj_set_pos(p, px + xs[k], py + ys[j]); lv_obj_set_size(p, ws[k] > 0 ? ws[k] : 1, hs[j] > 0 ? hs[j] : 1); }
+  }
+  if (kind == FN_NINE && !n->ringed && (n->fresh || n->w != w || n->h != h || n->a != a || n->b != b || n->rgb != rgb)) {
     asset_t *s = &g_a[a]; views_of(s, nl, nt, nr, nb, b);
     const int xs[3] = { 0, nl, w - nr }, ys[3] = { 0, nt, h - nb }, ws[3] = { nl, w - nl - nr, nr }, hs[3] = { nt, h - nt - nb, nb };
     for (int j = 0; j < 3; j++) for (int k = 0; k < 3; k++) {
@@ -420,15 +434,16 @@ static void move_to(lv_obj_t *obj, int32_t idx) {
 void prim_end(void) {
   for (int again = 1; again;) { again = 0; for (int i = 0; i < g_n; i++) if (!g_o[i].seen) { drop(i); again = 1; break; } }
   { int any = 0; for (int i = 0; i < g_n; i++) if (g_o[i].born) any = 1;   /* the new root nodes have their places and sizes: they join the screen, and only now is anything invalidated */
-    if (any) { lv_obj_update_layout(nursery()); for (int i = 0; i < g_n; i++) if (g_o[i].born) { node_t *c = g_o[i].parent ? find_node(g_o[i].parent) : NULL; lv_obj_set_parent(g_o[i].obj, c ? c->obj : lv_screen_active()); if (c) lv_obj_set_pos(g_o[i].obj, g_o[i].x, g_o[i].y); g_o[i].born = 0; } } }
+    if (any) { lv_obj_update_layout(nursery()); for (int i = 0; i < g_n; i++) if (g_o[i].born) { node_t *c = g_o[i].parent ? find_node(g_o[i].parent) : NULL; if (g_o[i].ringed) { for (int k = 0; k < RING_PARTS; k++) lv_obj_set_parent(g_o[i].rp[k], lv_screen_active()); } else { lv_obj_set_parent(g_o[i].obj, c ? c->obj : lv_screen_active()); if (c) lv_obj_set_pos(g_o[i].obj, g_o[i].x, g_o[i].y); } g_o[i].born = 0; } } }
   /* draw order is child order: put each object at its place in the sequence the page sent, among its siblings (the screen's, or its clip's) */
   int root = 0; for (int i = 0; i < g_n; i++) g_o[i].child_k = 0;
   for (int k = 0; k < g_nseq; k++) {
     node_t *n = find_node(g_seq[k]); if (!n) continue;
     int idx;
     if (n->parent) { node_t *c = find_node(n->parent); if (!c) continue; idx = c->child_k++; } else idx = root++;
-    /* a nine-slice's own parts are not siblings: they are not in the sequence */
-    if ((int)lv_obj_get_index(n->obj) != idx) move_to(n->obj, idx);
+    /* a nine-slice's own parts are not siblings: they are not in the sequence; a ring's eight strips are: they sit together at the node's place, in order */
+    if (n->ringed) { for (int q = 0; q < RING_PARTS; q++) if ((int)lv_obj_get_index(n->rp[q]) != idx + q) move_to(n->rp[q], idx + q); root += n->parent ? 0 : RING_PARTS - 1; }
+    else if ((int)lv_obj_get_index(n->obj) != idx) move_to(n->obj, idx);
   }
 }
 

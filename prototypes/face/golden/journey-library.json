@@ -32,8 +32,8 @@
     "screen": "home",
     "state": "home",
     "focus": "library",
-    "ok": "Go to the Library",
-    "subject": "the journal is empty",
+    "ok": null,
+    "subject": null,
     "back": null
    }
   ],
@@ -254,8 +254,8 @@
     "screen": "home",
     "state": "home",
     "focus": "library",
-    "ok": "Go to the Library",
-    "subject": "the field journal",
+    "ok": null,
+    "subject": null,
     "back": null
    },
    {
@@ -451,8 +451,8 @@
     "screen": "home",
     "state": "home",
     "focus": "library",
-    "ok": "Go to the Library",
-    "subject": "the field journal",
+    "ok": null,
+    "subject": null,
     "back": null
    }
   ]

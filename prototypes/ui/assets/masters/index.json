@@ -134,6 +134,13 @@
    "sha256": "49942512dfb4a7f287a003b6ef8356ed96fd5f2839cbbdb754164b8805c962e3",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
   },
+  "berth-crate-26x24": {
+   "file": "home/berth-crate-26x24.png",
+   "w": 26,
+   "h": 24,
+   "sha256": "ca4002a32aa918e076302ef498dd644501e07960b27a44fd2c4a490b50c25df5",
+   "signed": "art director, signed on work-queue results/T-20261019-home/art (console-proof-3x.png)"
+  },
   "berth-edge-190x294": {
    "file": "pods/berth-edge-190x294.png",
    "w": 190,
@@ -154,6 +161,13 @@
    "h": 302,
    "sha256": "6a5a5bfc2b28f0b58b41c53de1e8e03730b63caf4cc193b4db22cb3af0185571",
    "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "berth-portrait-18x24": {
+   "file": "home/berth-portrait-18x24.png",
+   "w": 18,
+   "h": 24,
+   "sha256": "54f178659b890a311f4356d82f4baa59868fb0d0c7dfaf7752b3cc09fdefcbe2",
+   "signed": "art director, signed on work-queue results/T-20261019-home/art (console-proof-3x.png)"
   },
   "berth-recess-188x292": {
    "file": "pods/berth-recess-188x292.png",
@@ -182,6 +196,13 @@
    "h": 292,
    "sha256": "b1c37713b2d2b5e22a1aa30c87751f00525944f52892a3bcdd91a58581e0c6d9",
    "signed": "masters-pods 10f46a5a (status new or derived-from-concept; the art director signs at 1x in the Cargo captures)"
+  },
+  "berth-shut-26x24": {
+   "file": "home/berth-shut-26x24.png",
+   "w": 26,
+   "h": 24,
+   "sha256": "28a44b535101fe59685ceb6872031eeda31df331dd4020206bcc6107a3062576",
+   "signed": "art director, signed on work-queue results/T-20261019-home/art (console-proof-3x.png)"
   },
   "bud-crack-1-128x160": {
    "file": "pods/bud-crack-1-128x160.png",
@@ -882,6 +903,20 @@
    "h": 16,
    "sha256": "4c5b2eabaeab12fb3d153dbc3c6ee0f0b1726e18c5162dffea6c187ab0b6c6d3",
    "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "companion-upright-away-28x46": {
+   "file": "home/companion-upright-away-28x46.png",
+   "w": 28,
+   "h": 46,
+   "sha256": "a97247c1d4a6862394194b85533b78a3268cbb24231bc9cf75c0f771261be184",
+   "signed": "art director, signed on work-queue results/T-20261019-home/art (console-proof-3x.png)"
+  },
+  "companion-upright-docked-28x46": {
+   "file": "home/companion-upright-docked-28x46.png",
+   "w": 28,
+   "h": 46,
+   "sha256": "67f2e28475dcc2f2d0e242e0c704c89544b9fe5680fa669b8c42f332227d0849",
+   "signed": "art director, signed on work-queue results/T-20261019-home/art (console-proof-3x.png)"
   },
   "crate-lifting-176x138": {
    "file": "pods/crate-lifting-176x138.png",
