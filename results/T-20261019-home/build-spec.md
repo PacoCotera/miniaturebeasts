@@ -279,3 +279,93 @@ Nothing is red or negative, and there is never a third line.
   - walkers on the moved profile, never in the away frame's keep-out;
   - the budgets in §7.
 - **Journeys:** `home-dock-arrival` keeps its arrival steps. Its Home asserts become the Bay station's state and the Companion station's "at home", not the bed.
+
+## 11. Addendum (2026-10-18 22:22): rulings on the H1 build (8471d2cd, stills on work-queue b8bf8f4e)
+
+### 11.1 The line at rest
+- **The first need shows by its action, with the ✓ cap. The second shows by its notice.** For example: "✓ Open the Bay · the bud is ready". The builder's reading is right.
+- **The needs, in order, with their action and notice** (Home's `strings.needs`):
+
+  | # | Need | Action (first) | Notice (second) |
+  | --- | --- | --- | --- |
+  | 1 | `crates` | "Open the Bay" | "{count} crates wait in the Bay" / "a crate waits in the Bay" |
+  | 2 | `budReady` | "Open the Incubator" | "the bud is ready" |
+  | 3 | `portrait` (a sitting crate in the bay; new) | "Open the Bay" | "a portrait has come" |
+  | 4 | `meet` (a mibi grew up or was born) | "Meet {name}" | "meet {name}" |
+  | 5 | `newPods` | "Look at the pods" | "{count} new pods in the case" / "a new pod in the case" |
+  | 6 | `glints` | "Look at the pods" | as now |
+  | 7 | `waitingPods` | "Look at the pods" | as now |
+  | 8 | `couldGrow`, while it can be paid | "Look at the pods" | "{a} {Species} pod, ready to incubate" |
+
+- **"A chapter cleared" waits for the Library build.** No such event exists yet, so it is not in the line, and the Library spec adds it.
+- **`toRead`, `budGrowing` and `couldGrow`'s "short" variant are no longer needs on Home.** They light nothing, at rest ✓ does nothing for them, and the line shows the goal.
+- **Home says "case", not "rack"**, in its own strings, as the Pods station does.
+- The lamp and ✓ glyphs before the line are as built.
+
+### 11.2 ✓ with a target focused
+
+| Target | The line |
+| --- | --- |
+| Vivarium | "✓ Open the Vivarium" |
+| Library | "✓ Open the Library" |
+| Pods | "✓ Open Pods" |
+| Incubator | "✓ Open the Incubator" |
+| Companion, docked | "✓ Open the Probe bench" |
+| Companion, away | no ✓; "the Companion is on a trip", in `mist` (as built) |
+| Bay | "✓ Open the Bay" |
+
+There is no subject on a focus. The station's own lines already say its state.
+
+### 11.3 The top bar
+- **Left:** with no place name in the save, the bar reads "Station" alone. The place-name slot waits for a save field.
+- **Right:** the 24-hour clock and the 12 px gap from the date are confirmed.
+- **Not drawn on Home:** the bar's rules at x 256 and 888.
+
+### 11.4 The stations' inner layout (this replaces §4.3's offsets; **this was blocking H3**)
+
+**The lamp** moves to the left of the name: 12 × 12 at (12, 10), with the name at (30, 8).
+
+**The picture:** right-aligned 8 in from the station's right edge, and vertically centred in the 98, except where this table says otherwise.
+
+| Station | Picture | Size |
+| --- | --- | --- |
+| Pods | 2 rows of 3 slots, 2 apart. A slot holds its rack pod (`home-rack-pod-*-24x32`), or, if empty, a 24 × 32 slot drawn as a 1 px `hairline` rounded outline (radius 6), with no well master | 76 × 66 |
+| Incubator | the capsule | 56 × 86 |
+| Companion | `companion-upright-*` | 28 × 46 |
+| Bay | **in line 1's row** (top at y 32), 2 apart: three berths, plus the portrait berth while one is in | 82 × 24, or 102 × 24 |
+
+**The text column** runs from x 12 to 8 short of the picture's left edge.
+
+**Line 1** (at y 34):
+- It is 20 px if it fits the column, else 16 px.
+- If it still doesn't fit, only a name in it is cut with "…".
+
+**Line 2** (16, at y 64):
+- It is held to the column in Pods, Incubator and Companion.
+- In the Bay, it runs to x 214, because the berths sit in line 1's row.
+
+**Measured** (column width, with what fits):
+
+| Station | Column | Line 1 |
+| --- | --- | --- |
+| Pods | 124 | "6 in the case" 121 at 20 |
+| Incubator | 142 | "the bud is ready" 121 at 16 |
+| Companion | 170 | "Pip on a trip" 112 at 20; "Maraschino at home" 154 at 16 |
+| Bay | 96 (with the portrait) | "3 crates in" 79 at 16 |
+
+### 11.5 Fills
+- **Bay, line 1:** "a crate in" when there is one (spelled), "{n} crates in" otherwise.
+- **Pods:**
+  - empty, line 1 is "empty", with no line 2;
+  - "{k} kinds" counts known species only, and shows only at k ≥ 2.
+- **Companion's {name}:** the lead mibi, else the first carried. With none, line 1 reads "the Companion at home" or "the Companion on a trip" (16 px, by 11.4).
+- **"At home"** = housed minus away. Confirmed.
+- **"{n} trips"** = the distinct turns the waiting crates came from. Confirmed.
+- **The Bay with only a portrait crate:** line 1 "a portrait in", line 2 "from the last trip", the three berths shut plus the portrait berth, and the lamp amber. It never reads "berths clear" while anything waits.
+- **The bevel** is the first row inside the edge. Confirmed.
+- **The expand mark** is four L ticks with 4 px arms. Confirmed.
+- **The windows have square corners.** The bezel carries the rounding, and the window's radius 6 is dropped to keep the face's last source slot free.
+- **The window's inner shade** is 2 px of `shadow` along the inside top and left edges, drawn as rects. It is required from H2 (the painting) and H4 (the specimen), and omitted on placeholders.
+- **The berths are 2 apart**, as the art director ruled (§4.3).
+- **The Companion placeholder** is 28 × 46. Confirmed.
+- The ring's dirty-area overrun on the large windows is the architect's.
