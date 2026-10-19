@@ -1,6 +1,6 @@
 # Review: T-236 release readiness — build/t-236-release-ready @ bb99fc54
 
-Base: station-gate 0199563d. Eleven commits, all by Paco Cotera <paco@cotera.org>, no trailers or model/session names in any message. I built wasm and native face in fresh worktrees of head and base and ran everything myself at the final head: station, ui and the full face suite, both guards, place-masters, the all-screens goldens check, **both journeys** (the Station's and the play page's), `checks.mjs`, `layer-check.mjs`, the metrics vectors check, and the guard in tree mode and against main. I also ran the same set at the intermediate heads (96316446 and 2aa5556f) as the lead's notes arrived.
+Base: station-gate 0199563d. Twelve commits, all by Paco Cotera <paco@cotera.org>, no trailers or model/session names in any message. I built wasm and native face in fresh worktrees of head and base and ran everything myself at the final head: station, ui and the full face suite, both guards, place-masters, the all-screens goldens check, **both journeys** (the Station's and the play page's), `checks.mjs`, `layer-check.mjs`, the metrics vectors check, and the guard in tree mode and against main. I also ran the same set at the intermediate heads (96316446 and 2aa5556f) as the lead's notes arrived.
 
 ## Verdict: PASS
 
