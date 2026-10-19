@@ -163,9 +163,9 @@ This settles Home's profile, which the Vivarium spec had left to be measured.
 ### 4.3 The console's stations
 
 **Every station:**
-- its name (16, `fog`) at (12, 8);
-- the lamp at its top right (the existing 12 × 12 `home-lamp-hairline` off, `home-lamp-amber` when it needs the player);
-- **line 1** (20, `bone`, at most 4 words) at (12, 34);
+- its name (16, `fog`) at (30, 8) (§11.4);
+- the lamp at (12, 10), left of the name (the existing 12 × 12 `home-lamp-hairline` off, `home-lamp-amber` when it needs the player);
+- **line 1** (20, or 16 when 20 does not fit the column, `bone`, at most 4 words) at (12, 34);
 - **line 2** (16, `mist`, at most 4 words) at (12, 64);
 - its picture, right-aligned 8 in (§11.4 gives each station's size and row).
 
