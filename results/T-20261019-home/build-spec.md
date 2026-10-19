@@ -379,3 +379,20 @@ There is no subject on a focus. The station's own lines already say its state. *
   - the verb cap of 5 words ("Go to the Probe bench");
   - the line-width test on pairs in need order (only the first two ever show; the widest is 461 of 484);
   - the Companion's no-name lines are now 2 words, so their 5-word allowance is moot.
+
+## 13. Gate of H2, the Vivarium window (2866bf68, stills on work-queue ed82b323)
+
+**PASS.** I checked these against the stills:
+- the crop at cx 64 in all four lights;
+- the world-size walkers and their shadows;
+- the night curls, which follow the Vivarium's night rule (sleepers curl where they rest);
+- the event tag at feetY + 16;
+- the away frame and its caption;
+- the readout;
+- the inner shade.
+
+**The four gaps:**
+1. **The inner shade's colour is `void`.** "`shadow`" in §11.5 meant the darkest palette ink, and the palette's name for it is `void`.
+2. **"The six with the most recent activity":** the mibi with a pending meet is always in. The rest fill by the newest life event (born or grown up), newest first, with ties in bay order. That is the builder's rule, with grown up added. The game designer confirms what counts as activity, and their answer replaces this.
+3. **"Back from a trip" is dropped from the event tag.** No event marks it, and the dock's arrival already shows who came home. The tag stays for grown up and born (the `meet` need).
+4. **A species with no layered stand:** its whole picture, bottom-centred and clipped to the away frame, is fine until its stand exists. Only S01 has stands, and it is unaffected.
