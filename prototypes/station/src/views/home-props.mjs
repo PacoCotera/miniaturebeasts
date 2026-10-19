@@ -11,6 +11,7 @@ import { layeredStand, standPictureId, standFigure, curlFactor, curlPicture } fr
 import { keyToken } from "../looks.mjs";
 import { goalWords } from "./goal-words.mjs";
 import { readyCrates, bayState } from "../sitting.mjs";
+import { paintingOf } from "./idle-props.mjs";
 
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const COUNT = ["", "a", "two", "three", "four", "five", "six"];
@@ -93,7 +94,7 @@ export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
 }
 
 export function livingOf(m, R, req, ph, L) {
-  const { st, sv, settings } = m, docked = !!m.docked || !!m.sendoff, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);   // the lift's send-off keeps the bed docked until it ends (m.sendoff: home.json events.sendoff)
+  const { st, sv, settings } = m, docked = !!m.docked || !!m.sendoff, carried = S.carriedIds(st, sv), here = m.noBed ? S.housed(st).filter((mb) => !S.isAway(st, sv, mb)) : S.homeMibis(st, sv);   // Home's window (noBed): everyone at home walks, the carried set too while docked (it has no bed there)   // the lift's send-off keeps the bed docked until it ends (m.sendoff: home.json events.sendoff)
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings, m.light, m.view ?? "home");
@@ -110,8 +111,8 @@ export function livingOf(m, R, req, ph, L) {
   const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m); if (mv) { p.moving = mv; const mf = movingFigure(mv.walk); if (mf) p.figure = mf; else delete p.figure; } /* a moving resident's figure is its atlas's (measured once), not its stand's */ if (rest) p.rest = rest[String(mb.id)];
     if (p.rest === "asleep" && !mv && standOf(mb)) { const c = curlOfMibi(st, mb, R.bed.sleepers.ink.max, sizeOf(mb), settings, m.light ?? "day", m.view ?? "home"); if (c) { p.curl = req(c.request); p.curlFigure = c.figure; } }   // a sleeping resident with a curl draws it in place, its foot on its feet line; on waking it cuts back to its stand
     return p; });
-  const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m, ["nap"]), p = person(mb, { seed: hash(mb.id), nap: true, noCurl: !!mv }); if (mv) p.moving = mv; if (m.sendoff) p.stand = pic(mb, sizeOf(mb)); return p; }) : [];
-  const bed = {
+  const sleepers = docked && !m.noBed ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m, ["nap"]), p = person(mb, { seed: hash(mb.id), nap: true, noCurl: !!mv }); if (mv) p.moving = mv; if (m.sendoff) p.stand = pic(mb, sizeOf(mb)); return p; }) : [];
+  const bed = m.noBed ? null : {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
     picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state
     mark: docked ? "" : ph(R.bed.markPicture, R.bed.mark),   // away only: the Companion's mark (home-bed-mark-16x24), 1:1 over the bed
@@ -146,10 +147,26 @@ function couldIncubate(st, settings) {
   const c = S.growCost(st, {}, settings); return S.canPay(st, c.e, 0, c.s) ? grown[0] : null;
 }
 
+// The Vivarium window's people (build spec section 3): the residents at home that walk, at most six (more: the six with the most recent activity, here the latest born; the mibi with an event, ui.meet, always among them),
+// in bay order; the picture of the light; the one event tag (ui.meet: born or grown up); the first mibi out on a trip in the away frame, its stand's figure at its world size.
+function glassOf(m, spec, frame, housed, requests) {
+  const { st, sv, settings } = m, R = spec.regions, light = m.light ?? "day", docked = !!m.docked, req = (r) => { requests.push(r); return r.id; };
+  const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (station-layouts.md, The Vivarium: the whole)" });
+  const lw = livingOf({ st, sv, settings, docked, light, view: "home", noBed: true, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, { resident: R.resident, bed: { sleepers: { ink: { max: R.resident.asleep.ink } } } }, req, ph, frame.light);
+  const meet = m.ui?.meet != null ? String(m.ui.meet) : null, bayOf = new Map(housed.map((mb) => [String(mb.id), mb.bay])), bornOf = new Map(housed.map((mb) => [String(mb.id), mb.born ?? 0]));
+  const rank = (p) => (p.id === meet ? Infinity : bornOf.get(p.id) ?? 0), keep = new Set(lw.residents.slice().sort((a, b) => rank(b) - rank(a) || Number(b.id) - Number(a.id)).slice(0, R.resident.max).map((p) => p.id));
+  const residents = lw.residents.filter((p) => keep.has(p.id)).sort((a, b) => bayOf.get(a.id) - bayOf.get(b.id));
+  const glass = { picture: paintingOf(req, frame, light) };
+  if (meet != null && residents.some((p) => p.id === meet)) glass.tag = meet;
+  const out = housed.slice().sort((a, b) => a.bay - b.bay).find((mb) => S.isAway(st, sv, mb));
+  if (out) { const size = R.resident[S.mibiStage(st, out, settings) === "juvenile" ? "juvenile" : "adult"], p = mibiPictureOf(st, out, size, settings, light, "home"), fig = figureOf(st, out, size, settings, "home"); glass.away = { picture: mibiReq(req, st, out, size, settings, light, "home"), figure: fig ?? [0, 0, ...p.size] }; }
+  return { glass, residents };
+}
+
 // m: { st, sv, settings, docked, ui, focus: id | null, time (seconds of the day), date { y, m, d }, now (ms), place, spec home.json, frame frame.json }
 export function homeBuild(m, spec, frame) {
   const { st, sv, settings } = m, now = m.now ?? Date.now(), Sg = spec.strings, T = Sg.stations, docked = !!m.docked, fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
-  const needs = homeNeeds(st, sv, settings, m.ui ?? {}, now);
+  const needs = homeNeeds(st, sv, settings, m.ui ?? {}, now), requests = [];
   // the stations: the lines and the lamp
   const pods = (() => {
     const n = st.tray.length, seen = new Set(st.tray.filter((q) => q.idd || st.knownIds.includes(S.speciesOf(q))).map((q) => S.speciesOf(q))), k = seen.size;
@@ -173,11 +190,12 @@ export function homeBuild(m, spec, frame) {
   const housed = S.housed(st), onTrip = housed.filter((mb) => S.isAway(st, sv, mb)).length, atHome = housed.length - onTrip, R = Sg.readout;
   const readout = !housed.length ? "" : atHome === 0 ? R.allTrip : [atHome ? fill(R.home, { n: atHome }) : "", onTrip ? fill(R.trip, { m: onTrip }) : ""].filter(Boolean).join(R.sep);
   // the focus: the six targets, the ring on `cur` or nowhere
+  const living = glassOf(m, spec, frame, housed, requests);
   const targets = ["vivarium", "library", "pods", "incubator", "companion", "bay"].map((id) => ({ id, group: id }));
   const cur = m.focus && targets.some((t) => t.id === m.focus) ? m.focus : "room";
   const line = lineOf(m, spec, frame, { cur, needs, docked, companion });
-  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: {}, pods, incubator, companion, bay };
-  return { props: { state: "home", regions, focus: { cur, targets } }, requests: [], needs, targets };
+  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: {}, glass: living.glass, residents: living.residents, pods, incubator, companion, bay };
+  return { props: { state: "home", regions, focus: { cur, targets } }, requests, needs, targets };
 }
 
 // ---- the line (home.json strings.line) ----

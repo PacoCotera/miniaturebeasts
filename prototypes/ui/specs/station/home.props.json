@@ -2,6 +2,7 @@
  "$comment": "The props of Home (lvgl-switch.md §2.1): what views/home-props.mjs gives the face. Props name what, never where: strings, states, counts, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from home.json and the palette). Home draws no host picture: the top bar's picture, the lamps and the cap are the frame's. Checked by prototypes/station/tests/home-props.test.mjs (a JSON-Schema subset: type, properties, required, additionalProperties, items, enum, oneOf).",
  "$defs": {
   "lamp": { "enum": ["off", "needsYou"] },
+  "person": {"type": "object", "required": ["id", "name", "stage", "picture", "waiting", "seed"], "additionalProperties": false, "properties": {"id": {"type": "string"}, "name": {"type": "string"}, "stage": {"enum": ["juvenile", "adult", "elder"]}, "picture": {"type": "string"}, "waiting": {"type": "boolean"}, "curl": {"type": "string", "description": "T-20261018-235: the sleeping resident's curl picture, set while its rest is asleep and it has a curl"}, "curlFigure": {"type": "array", "items": {"type": "integer"}, "minItems": 4, "maxItems": 4, "description": "[dx, dy, W, H] of the curl in its picture: the ring and the tag of a sleeping resident are measured from it"}, "seed": {"type": "integer"}, "moving": {"oneOf": [{"enum": [""]}, {"type": "object", "required": ["set", "walk", "shadow"], "additionalProperties": false, "properties": {"set": {"type": "string"}, "walk": {"type": "string"}, "shadow": {"type": "string"}}}, {"type": "object", "required": ["set", "nap"], "additionalProperties": false, "properties": {"set": {"type": "string"}, "nap": {"type": "string"}}}], "description": "Station M1 \u00a72.2: \"\" (a still, main's walk) or the atlases of its moving set (the walk and its shadow; a bed sleeper its nap); the face never makes an id"}, "rest": {"enum": ["awake", "asleep"], "description": "Station M1 \u00a72.6: by restOf (the rest stagger) from the Station time"}, "figure": {"type": "array", "items": {"type": "integer"}, "minItems": 4, "maxItems": 4, "description": "T-20261018-235: [dx, dy, W, H], the drawn bbox of the figure (ink alpha >= 128, its contact shadow left out) in its picture; the geometry of the ring, the tag, the walk and the keep-out is measured from it. Absent: the picture is the figure"}}},
   "station": { "type": "object", "required": ["line1", "line2", "lamp"], "additionalProperties": false, "properties": { "line1": { "type": "string" }, "line2": { "type": "string" }, "lamp": { "$ref": "lamp" }, "state": { "enum": ["empty", "growing", "ready", "docked", "away", "waiting", "clear"] }, "berths": { "enum": [3, 4] }, "name": { "type": "string" }, "slots": { "type": "integer" } } },
   "goal": { "type": "object", "required": ["text", "icons", "plain"], "additionalProperties": false, "properties": { "text": { "type": "string" }, "icons": { "type": "string" }, "plain": { "type": "string" } } },
   "target": { "type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": { "id": { "enum": ["vivarium", "library", "pods", "incubator", "companion", "bay"] }, "group": { "enum": ["vivarium", "library", "pods", "incubator", "companion", "bay"] }, "enabled": { "type": "boolean" } } }
@@ -9,7 +10,7 @@
  "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
  "properties": {
   "state": { "enum": ["home"] },
-  "regions": { "type": "object", "required": ["bar", "line", "vivarium", "library", "pods", "incubator", "companion", "bay"], "additionalProperties": false, "properties": {
+  "regions": { "type": "object", "required": ["bar", "line", "vivarium", "library", "glass", "residents", "pods", "incubator", "companion", "bay"], "additionalProperties": false, "properties": {
    "bar": { "type": "object", "required": ["place", "date", "clock"], "additionalProperties": false, "properties": { "place": { "type": "string" }, "date": { "type": "string" }, "clock": { "type": "string" } } },
    "line": { "oneOf": [
     { "type": "object", "required": ["needs"], "additionalProperties": false, "properties": { "needs": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 2 }, "name": { "type": "string" } } },
@@ -19,6 +20,9 @@
     { "type": "object", "additionalProperties": false, "properties": {} } ] },
    "vivarium": { "type": "object", "required": ["readout"], "additionalProperties": false, "properties": { "readout": { "type": "string" } } },
    "library": { "type": "object", "additionalProperties": false, "properties": {} },
+   "glass": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "tag": { "type": "string" }, "away": { "type": "object", "required": ["picture", "figure"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "figure": { "type": "array", "items": { "type": "integer" }, "minItems": 4, "maxItems": 4 } } } } },
+   "residents": { "type": "array", "maxItems": 6, "items": { "$ref": "person" } },
+   
    "pods": { "$ref": "station" },
    "incubator": { "$ref": "station" },
    "companion": { "$ref": "station" },

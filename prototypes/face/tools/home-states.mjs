@@ -18,6 +18,11 @@ export const SCENES = {
   "focus-bay":         { f: "bay", set: (w) => { w.adults(3); w.crates(2); } },
   "vivarium-all-home":   { f: "room", set: (w) => { w.adults(4); w.young(2); } },
   "vivarium-some-away":  { f: "room", set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.away(); } },
+  "window-dawn":         { f: "room", light: "dawn", time: "06:30", set: (w) => { w.adults(4); w.young(2); } },   // the window in each light (day is the scenes above)
+  "window-dusk":         { f: "room", light: "dusk", time: "18:30", set: (w) => { w.adults(4); w.young(2); } },
+  "window-night":        { f: "room", light: "night", time: "23:30", set: (w) => { w.adults(4); w.young(2); } },   // the residents asleep in place
+  "window-six-of-eight": { f: "room", set: (w) => { w.adults(5); w.young(3); } },   // eight at home: the window shows six
+  "event-tag":           { f: "room", set: (w) => { w.adults(3); w.young(1); w.meet(3); } },   // a mibi grew up: its name tag until the player visits it
   "vivarium-none-home":  { f: "room", set: (w) => { w.adults(2); w.carry([0, 1]); w.away(); } },
   "incubator-empty":     { f: "room", set: (w) => { w.adults(2); } },
   "incubator-can":       { f: "room", set: (w) => { w.adults(2); w.pods(1); w.seen(); w.identified(1); w.readOne(); } },   // a pod can incubate
@@ -34,9 +39,10 @@ export const SCENES = {
 export const WORLD = () => ({
   // the Companion's part of the save is re-read from storage on every save: an edit to it is written there at once
   persist() { const S = window.__st; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); },
-  reset() { const S = window.__st, st = S.ST, sv = S.SV; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; st.sittingCrates = []; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.nameN = 0; st.namesUsed = []; st.knownIds = []; S.UI.meet = null; S.UI.home.f = "room"; this.persist(); },
+  reset() { const S = window.__st, st = S.ST, sv = S.SV; S.UI.meet = null; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; st.sittingCrates = []; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.nameN = 0; st.namesUsed = []; st.knownIds = []; S.UI.meet = null; S.UI.home.f = "room"; this.persist(); },
   adults(n) { const st = window.__st.ST, k = st.mibis.length; window.__st.seedAdults("S01", 5, n); for (const m of st.mibis.slice(k)) m.paint = { state: "landed" }; },
   young(n) { const st = window.__st.ST; const k = st.mibis.length; window.__st.seedAdults("S01", 77, n); for (const m of st.mibis.slice(k)) { m.born = st.turn; m.paint = { state: "landed" }; } },
+  meet(i) { const S = window.__st; S.UI.meet = S.ST.mibis[i].id; },
   carry(ix) { const st = window.__st.ST; window.__st.SV.carried = ix.map((i) => st.mibis[i].id); this.persist(); },
   away() { window.__st.ST.dock = { docked: false, at: 1 }; },
   crates(n) { window.__st.SV.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 0, at: 1, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] })); this.persist(); },
@@ -56,10 +62,10 @@ export const WORLD = () => ({
 export async function homeStates(visit, { motion = false } = {}) {
   const { page, fails, fail, close } = await openStation({ motion });
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
-  const apply = (sc) => page.evaluate(([setSrc, f]) => {
+  const apply = (sc) => page.evaluate(([setSrc, f, lt, tm]) => {
     const w = window.__world; w.reset(); eval(`(${setSrc})`)(w);
-    const S = window.__st; S.settings.light = "day"; S.settings.stationTime = "12:00"; S.settings.stationDate = "2026-10-17"; S.UI.home.f = f; S.UI.idle = false; S.goto("home");
-  }, [sc.set.toString(), sc.f]);
+    const S = window.__st; S.settings.light = lt; S.settings.stationTime = tm; S.settings.stationDate = "2026-10-17"; S.UI.home.f = f; S.UI.idle = false; S.goto("home");
+  }, [sc.set.toString(), sc.f, sc.light ?? "day", sc.time ?? "12:00"]);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
       await apply(sc); await page.waitForTimeout(600);

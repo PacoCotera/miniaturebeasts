@@ -117,7 +117,9 @@ static void bezel_words(const char *key) {
   build_roundPanel(v_fmt("%s.panel", key), r[0], r[1], r[2], r[3], rad, hcol("regions.bezel.fill"), hcol("regions.bezel.edge"));
   v_rect(v_fmt("%s.bevel", key), r[0] + rad, r[1] + 1, r[2] - 2 * rad, 1, hcol("regions.bezel.bevel"));   /* the bevel line on top: the first row inside the edge, between the corners */
   { char f[24], e[24]; spec_str(H, v_fmt("regions.%s.placeholder.fill", key), f, sizeof f); spec_str(H, v_fmt("regions.%s.placeholder.edge", key), e, sizeof e);
-    word_panel(v_fmt("%s.window", key), win[0], win[1], win[2], win[3], f, e); }   /* the window: a placeholder until its picture lands */
+    int gone = strcmp(key, "vivarium") == 0 && home_window_painted();   /* the Vivarium's window is its painting once that is on the face: the placeholder stays as a node of no size */
+    word_panel(v_fmt("%s.window", key), win[0], win[1], gone ? 0 : win[2], gone ? 0 : win[3], f, e); }   /* the window: a placeholder until its picture lands */
+  if (strcmp(key, "vivarium") == 0) home_window();
   expand_mark(v_fmt("%s.expand", key), r[0] + r[2] - hk("regions.bezel.expand.at", 0), r[1] + hk("regions.bezel.expand.at", 1), hi("regions.bezel.expand.size", 14), hi("regions.bezel.expand.tick", 4), hcol("regions.bezel.expandColour"));
   v_region(key, LAYER_TYPE);
   char title[40], readout[V_STR]; spec_str(H, v_fmt("strings.titles.%s", key), title, sizeof title); snprintf(readout, sizeof readout, "%s", v_pstr(v_fmt("regions.%s.readout", key)));

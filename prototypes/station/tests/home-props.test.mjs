@@ -60,7 +60,7 @@ test("Home's props validate against home.props.json in every scene, name no rect
     assert.deepEqual(bad, [], `${name}: ${bad.slice(0, 3).join("; ")}`);
     const json = JSON.stringify(b.props);
     assert.ok(!/"(x|y|w|h|rect|at|size|box|pitch)"\s*:/.test(json), `${name}: props name what, never where`);
-    assert.ok(json.length < 8 * 1024, `${name}: ${json.length} bytes`); assert.deepEqual(b.requests, [], "Home asks the host for no picture: the bar, the lamps and the cap are the frame's");
+    assert.ok(json.length < 8 * 1024, `${name}: ${json.length} bytes`); assert.ok(b.requests.some((r) => r.id === b.props.regions.glass.picture), "the window's painting of the light is asked for; the bar, the lamps and the cap are the frame's"); const ids = new Set(b.requests.map((r) => r.id)); for (const p of b.props.regions.residents) assert.ok(ids.has(p.picture), `${name}: ${p.id}'s picture is asked for`);
   }
 });
 
@@ -246,4 +246,15 @@ test("the goal sentence names no species before it is known: identify a pod (fre
   const w = goalWords(g, false, frameSpec); assert.ok(JSON.stringify(w).includes("identify a pod") && !/Loika/.test(JSON.stringify(w)), JSON.stringify(w));
   assert.equal(frameSpec.strings.goal.step.identifyAny, "identify a pod"); assert.equal(frameSpec.strings.goal.step.identify, "identify the {species} pod");
   st.knownIds.push("S01"); st.tray.length = 0; pod(st, "S01", 6, false); const g2 = S.goalKey(st, sv, settings); assert.equal(g2.step.species, "S01"); assert.ok(/identify the Loika pod/.test(JSON.stringify(goalWords(g2, false, frameSpec))));
+});
+
+test("the Vivarium window's props (build spec 3): the painting of the light, the residents at home (at most six, the carried too while docked), the event tag on the mibi to meet, the first mibi out in the away frame; nothing names a rectangle", () => {
+  const sc = scenes(), W = (x, over) => build(x.st, x.sv, over).props.regions;
+  for (const light of ["dawn", "day", "dusk", "night"]) assert.equal(W(sc.docked, { light }).glass.picture, `idle-vivarium-${light}:1024x568`, "the Idle painting the Vivarium uses: no new master");
+  assert.equal(W(sc.docked).residents.length, 4, "docked: the carried two are at home and walk"); assert.equal(W(sc.docked).glass.away, undefined, "docked: no away frame");
+  assert.equal(W(sc.away).residents.length, 2, "one of three is out on the trip"); const a = W(sc.away).glass.away; assert.ok(a && /^mibi:/.test(a.picture) && a.figure.length === 4, "the first mibi out, its stand and its figure");
+  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 9, settings); const r = build(st, sv0()).props.regions; assert.equal(r.residents.length, 6, "nine at home: six show"); assert.match(r.vivarium.readout, /^9 at home$/, "the readout counts all nine"); assert.deepEqual(r.residents.map((p) => p.id), st.mibis.slice(3).map((m) => String(m.id)), "the most recently born six, in bay order"); }
+  { const { st, sv } = sc.docked, id = st.mibis[2].id; assert.equal(W({ st, sv }, { ui: { meet: id } }).glass.tag, String(id)); assert.equal(W({ st, sv }).glass.tag, undefined, "no event, no tag"); }
+  assert.ok(!("bed" in W(sc.docked)), "the bed leaves Home");
+  assert.deepEqual(W(sc.empty).residents, []);
 });

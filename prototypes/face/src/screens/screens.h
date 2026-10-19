@@ -18,6 +18,8 @@ void screens_redraw(void);
 void screens_key(int code);
 /* Home (screens/home.c): its words, the targets as they drew them, its keys, and whether a step of the residents' walk is due at `now` */
 void home_words(void);
+void home_window(void);   /* Home's Vivarium window: the painting, the residents, the tag and the away frame (home.c) */
+int home_window_painted(void);
 void vivarium_words(void);   /* the Vivarium's whole: the living window on vivarium.json, the bays along the foot (screens/home.c) */
 int vivarium_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 void vivarium_key(int code);
