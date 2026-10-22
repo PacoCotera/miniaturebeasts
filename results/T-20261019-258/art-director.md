@@ -76,3 +76,12 @@ Because the second star didn't turn, the build's check must measure differently 
 - **The test:** print each glint's chosen spot and its clearance for the late state with 3 new. Every clearance must be ≥ 3, or the glint must be marked as the fallback.
 
 Re-check: the same still, plus that printed list.
+
+## Round 4 (build e7e76385): pass
+
+- **The 3 new:** the stars clear at 4.15, 11.52 and 3.52 px. In the retaken still each one reads at once as its own bead's.
+- **All 18 late beads** (`glint-clearances.txt`): 17 clear at ≥ 3.52 px. The one fallback is efficiency|ordinary at 2.04 px.
+- **The fallback is accepted.** Its spot is 10.1 px from its own bead and 14.3 px from the nearest other bead (charcoal and ash). It still points at its own bead, and the arm tips that come close are the star's faintest pixels.
+- **Keep it as a rule in the test:** a fallback is allowed only while its spot is nearer its own bead than any other bead. Otherwise the test fails.
+
+**T-258 passes for art.** The Library window, its glints, the breathing and the empty save are signed.
