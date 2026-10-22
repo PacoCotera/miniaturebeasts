@@ -23,8 +23,8 @@ void word_leavesArc(const char *spec, const char *region, const char *emptyPic, 
   for (int i = 0; i < max; i++) {
     int on = i < n, p = !on ? 0 : i < full ? lh : (i == full && rows > 0 && rows < lh) ? rows : 0, x = on ? boxes[i][0] : 0, y = on ? boxes[i][1] : 0, w = on ? boxes[i][2] : 0;
     v_name("leaves");
-    if (on) v_sprite(v_fmt("leaf.%d", i), emptyPic, x, y, w, lh); else v_sprite_hidden(v_fmt("leaf.%d", i), emptyPic, 0, 0);
+    v_slot(v_fmt("leaf.%d", i), emptyPic, NULL, x, y, w, lh, on);
     prim_node(v_id(v_fmt("leaf.%d.clip", i)), FN_CLIP, x, y + lh - p, on ? w : 0, p, 0, 1, 0);
-    if (on) v_sprite(v_fmt("leaf.%d.full", i), fullPic, x, y, w, lh); else v_sprite_hidden(v_fmt("leaf.%d.full", i), fullPic, 0, 0);
+    v_slot(v_fmt("leaf.%d.full", i), fullPic, NULL, x, y, w, lh, on);
   }
 }

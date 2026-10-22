@@ -118,7 +118,7 @@ int g_mv_offgroup, g_mv_deferred, g_mv_tick_area, g_mv_worst_tick;   /* test hoo
 static int g_mv_motion = 1;
 static unsigned mr(mv_t *m) { m->s = m->s * 1664525u + 1013904223u; return m->s >> 16; }
 static unsigned hr(void) { g_hh.s = g_hh.s * 1664525u + 1013904223u; return g_hh.s >> 16; }
-static int vrule(const char *p, int d) { return spec_int("vivarium", p, d); }   /* the numbers live in vivarium.json rules.travel, rules.night, rules.tickBudget: one place for the three screens (game-design.md §1.5) */
+/* the numbers live in vivarium.json rules.travel, rules.night, rules.tickBudget: one place for the three screens */
 static int t80(int ms) { return ms / 80 > 0 ? ms / 80 : 1; }
 static int loop_period(const mv_loop_t *l) { int p = 0; for (int i = 0; i < l->n; i++) p += t80(l->ms[i]); return p > 0 ? p : 1; }
 static int loop_cell(const mv_loop_t *l, int ct) { int p = loop_period(l), t = ct % p; for (int i = 0; i < l->n; i++) { int d = t80(l->ms[i]); if (t < d) return l->cell[i]; t -= d; } return l->cell[0]; }
@@ -220,7 +220,7 @@ static void mv_step(mv_t *m, long j, int air_ok) {
     if (m->phase == 0) { if (++m->pt > 4) { m->phase = 1; m->pt = 1; m->dl = 0; m->cell = cr; m->dy = 2; } else m->dl = 4 * m->pt; return; }
     if (++m->pt > t80(S->wake_crouch)) {   /* stand, risen to its line; then breathe from b0 */
       mv_to_rest(m, 1);
-      if (m->wander) { m->wander_wps = 1 + (int)(mr(m) % 2u); if (!mv_trip(m, vrule("rules.night.reach", 200))) m->wander_wps = 0; else m->wander_wps--; }
+      if (m->wander) { m->wander_wps = 1 + (int)(mr(m) % 2u); if (!mv_trip(m, v_si("vivarium", "rules.night.reach", 200))) m->wander_wps = 0; else m->wander_wps--; }
     }
     return;
   case C_STIR:
@@ -249,14 +249,14 @@ static int mv_class(const mv_t *o, const mv_t *n) {
 }
 /* the household tick j (group j mod 2): the night's choices, the trip starts (G10), every changed resident by class inside the budget; returns the changes applied */
 static int mv_household(long j) {
-  int grp = (int)(j & 1), budget = vrule("rules.tickBudget", 148000), fdiv = vrule("rules.travel.floorDiv", 3), cmin = vrule("rules.travel.capMin", 4), cdiv = vrule("rules.travel.capDiv", 2), amax = vrule("rules.travel.airborne", 2), minrest = vrule("rules.travel.minRest", 25);
+  int grp = (int)(j & 1), budget = v_si("vivarium", "rules.tickBudget", 148000), fdiv = v_si("vivarium", "rules.travel.floorDiv", 3), cmin = v_si("vivarium", "rules.travel.capMin", 4), cdiv = v_si("vivarium", "rules.travel.capDiv", 2), amax = v_si("vivarium", "rules.travel.airborne", 2), minrest = v_si("vivarium", "rules.travel.minRest", 25);
   int N = 0, trav = 0, air = 0, asleepN = 0, wanderUp = 0, allAsleep = g_nm > 0, settling = 0;
   for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (m->wander && !m->want && (m->clip == C_REST || m->clip == C_HOP || m->clip == C_WALK)) m->wander = 0;   /* a wanderer whose own rest flips to awake joins N where it stands */
     if (m->pending_stir && m->focus) { m->pending_stir = 0; g_hh.next_stir = j; }   /* a due stir never lands on a focused sleeper: it goes to another */ }
   for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (mv_awake(m) && !m->focus && !m->wander) N++; if (mv_travelling(m)) trav++; if (mv_airborne(m)) air++; if (m->clip == C_ASLEEP) asleepN++; if (m->wander) wanderUp = 1; if (!m->want) allAsleep = 0; if (m->clip != C_ASLEEP && m->want) settling = 1; }
   for (int i = 0, n = v_plen("regions.residents"); i < n; i++) if (strcmp(v_pstr(v_fmt("regions.residents.%d.rest", i)), "asleep") != 0) allAsleep = 0;   /* every resident at home asleep (a still has no rest: it is awake) */
   /* G7: the stir, one every 250–500 ticks across the household while one is asleep (none while one wanders, never a focused sleeper, never in the 20 s after its own curl, never the last one twice) */
-  int s_lo = vrule("rules.night.stir.0", 250), s_hi = vrule("rules.night.stir.1", 500), w_lo = vrule("rules.night.wander.0", 3000), w_hi = vrule("rules.night.wander.1", 4500), after = vrule("rules.night.afterCurl", 250);
+  int s_lo = v_si("vivarium", "rules.night.stir.0", 250), s_hi = v_si("vivarium", "rules.night.stir.1", 500), w_lo = v_si("vivarium", "rules.night.wander.0", 3000), w_hi = v_si("vivarium", "rules.night.wander.1", 4500), after = v_si("vivarium", "rules.night.afterCurl", 250);
   if (!asleepN || wanderUp) { if (!asleepN) g_hh.next_stir = -1; }
   else {
     if (g_hh.next_stir < 0) g_hh.next_stir = j + 2L * (s_lo + (long)(hr() % (unsigned)(s_hi - s_lo + 1)));
@@ -274,7 +274,7 @@ static int mv_household(long j) {
       for (int pass = 0; pass < 2 && !ne; pass++) { n2 = 0; for (int i = 0; i < g_nm; i++) if (g_m[i].stage == pass && g_m[i].clip == C_ASLEEP) n2++;
         for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (m->stage == pass && m->clip == C_ASLEEP && !m->focus && !(n2 >= 2 && !strcmp(m->id, g_hh.last_wander))) el[ne++] = i; } }
       if (ne) { mv_t *m = &g_m[el[hr() % (unsigned)ne]]; m->wander = 1; m->pending_stir = 0; snprintf(g_hh.last_wander, sizeof g_hh.last_wander, "%s", m->id);
-        m->wander_until = j + 2L * (vrule("rules.night.awake.0", 250) + (long)(mr(m) % (unsigned)(vrule("rules.night.awake.1", 750) - vrule("rules.night.awake.0", 250) + 1)));
+        m->wander_until = j + 2L * (v_si("vivarium", "rules.night.awake.0", 250) + (long)(mr(m) % (unsigned)(v_si("vivarium", "rules.night.awake.1", 750) - v_si("vivarium", "rules.night.awake.0", 250) + 1)));
         mv_wake_begin(m); g_hh.all_asleep = 0; }
     }
   } else if (!allAsleep) g_hh.all_asleep = 0;
@@ -287,7 +287,7 @@ static int mv_household(long j) {
     mv_t *m = &g_m[i]; if (m->group != grp) continue;
     mv_t c = *m; int leaving = mv_airborne(m) && m->pt >= m->S->hop_nlift; if (leaving) air--;
     int ok = air < amax; int wasAir = mv_airborne(&c); mv_step(&c, j, ok); if (!wasAir && mv_airborne(&c)) air++;
-    if (c.clip == C_REST && m->wander && c.wander && m->clip != C_REST) { /* arrived on a wanderer's waypoint: the next, or rest */ if (c.wander_wps > 0 && mv_trip(&c, vrule("rules.night.reach", 200))) c.wander_wps--; }
+    if (c.clip == C_REST && m->wander && c.wander && m->clip != C_REST) { /* arrived on a wanderer's waypoint: the next, or rest */ if (c.wander_wps > 0 && mv_trip(&c, v_si("vivarium", "rules.night.reach", 200))) c.wander_wps--; }
     at[i] = np; pr[np].i = i; pr[np].n = c; np++;
   }
   trav = 0; for (int i = 0; i < g_nm; i++) if (at[i] >= 0 ? mv_travelling(&pr[at[i]].n) : mv_travelling(&g_m[i])) trav++;

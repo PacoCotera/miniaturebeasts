@@ -181,7 +181,7 @@ void create_words(void) {
   { char u[8]; if (spec_str(C, "regions.cradleFront.until", u, sizeof u) <= 0) picture("cradleFront", "cradleFront", "regions.cradleFront.rect", v_pstr("regions.cradle.front")); }   /* the dish's near lip over the pod, drawn once Create's own stage lands (the spec drops `until`) */
   build_origin();
   picture("chamber", "chamber", "regions.chamber.rect", v_pstr("regions.chamber.back"));
-  { int r[4]; v_srect(C, "regions.founderShadow.rect", r); const char *sp = v_pstr("regions.founderShadow.picture"); v_region("founderShadow", LAYER_PAINTED); if (has(sp)) v_sprite("founderShadow", sp, r[0], r[1], r[2], r[3]); else v_sprite_hidden("founderShadow", sp, r[0], r[1]); }   /* the painted contact shadow under the founder (fix 6 A2): after the chamber, before the founder; no size until its picture is on the face */
+  { int r[4]; v_srect(C, "regions.founderShadow.rect", r); const char *sp = v_pstr("regions.founderShadow.picture"); v_region("founderShadow", LAYER_PAINTED); v_slot("founderShadow", sp, NULL, r[0], r[1], r[2], r[3], 1); }   /* the painted contact shadow under the founder (fix 6 A2): after the chamber, before the founder; no size until its picture is on the face */
   build_founder();
   picture("chamberFront", "chamberFront", "regions.chamberFront.rect", v_pstr("regions.chamberFront.picture"));   /* the tray's rim and floor, over the founder: its ink is rows 310 to 319 only */
   build_roll();

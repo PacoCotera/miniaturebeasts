@@ -19,7 +19,6 @@
 #define S "bench"
 static int has(const char *id) { return id && *id && wire_has_asset(id); }
 /* a spec string kept in the caller's own buffer: the toolbox's rings are reused by the next call */
-static void bs(const char *path, char out[96]) { out[0] = 0; spec_str(S, path, out, 96); }
 static void ps(const char *path, char out[96]) { snprintf(out, 96, "%s", v_pstr(path)); }
 /* how far an event on `target` has got (-1: not playing, or motion off: the end state shows) */
 static int played(int kind, const char *target, anim_state_t *t) { return v_pbool("motion", 1) && anim_get(kind, target, t) && t->ms > 0 ? t->elapsed : -1; }
@@ -46,7 +45,7 @@ static void build_stage(void) {
 static void build_cradle(void) {
   int r[4]; v_srect(S, "regions.cradle.rect", r); v_set_focal(r);
   char p[96]; ps("regions.cradle.picture", p);
-  anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t); if (inst >= 0 && inst < 300) bs("regions.cradle.pictures.tier1", p);
+  anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t); if (inst >= 0 && inst < 300) snprintf(p, 96, "%s", v_sstr(S, "regions.cradle.pictures.tier1"));
   v_name("cradle"); v_slot("cradle.picture", p, p, r[0], r[1], r[2], r[3], 1);
 }
 
@@ -54,14 +53,14 @@ static void build_cradle(void) {
 static void build_strip(void) {
   int tier = v_pint("regions.strip.tier", 1); char p[96]; ps("regions.strip.picture", p);
   anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t);
-  if (inst >= 0 && inst < 300) { tier = 1; bs("regions.strip.slices.1", p); }   /* the tier-1 strip stays on the face until the install cuts at 300, as the cradle's picture */
+  if (inst >= 0 && inst < 300) { tier = 1; snprintf(p, 96, "%s", v_sstr(S, "regions.strip.slices.1")); }   /* the tier-1 strip stays on the face until the install cuts at 300, as the cradle's picture */
   int r[4]; v_srect(S, v_fmt("regions.strip.byTier.%d", tier), r);
   v_region("strip", LAYER_PAINTED); v_name("strip"); v_slot("plates.strip", p, p, r[0], r[1], r[2], r[3], 1);
 }
 
 /* ---- shieldPlates: one sprite a place, the places a table by the tier, read as written ---- */
 static void build_plates(int docked, const char *cur) {
-  int most = longest(NULL); char sw[96], sg[96]; bs("regions.plates.slices.whole", sw); bs("regions.plates.slices.gone", sg);
+  int most = longest(NULL); char sw[96], sg[96]; snprintf(sw, 96, "%s", v_sstr(S, "regions.plates.slices.whole")); snprintf(sg, 96, "%s", v_sstr(S, "regions.plates.slices.gone"));
   if (!docked) { for (int i = 0; i < most; i++) hidden_plate(i, 0, sw); return; }   /* away: no plates drawn, every node kept (hidden, not destroyed) */
   int tier = v_pint("regions.plates.tier", 1), whole = v_pint("regions.plates.whole", 0), seat = -1, level = 16;
   anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t), mend = played(ANIM_MEND, "plates", &t);
@@ -94,7 +93,7 @@ static void build_switch(const char *cur, int cnt_cap) {
   }
   build_module(S, "switch", dy, lamp);
   char tk[96], kn[96], dk[96], ws[96], gs[96];
-  bs(on ? "regions.switch.toggle.track.on" : "regions.switch.toggle.track.off", tk); bs("regions.switch.toggle.knob.slice", kn); bs("regions.switch.meaning.dock.slice", dk); bs("regions.switch.meaning.plates.whole", ws); bs("regions.switch.meaning.plates.gone", gs);
+  snprintf(tk, 96, "%s", v_sstr(S, on ? "regions.switch.toggle.track.on" : "regions.switch.toggle.track.off")); snprintf(kn, 96, "%s", v_sstr(S, "regions.switch.toggle.knob.slice")); snprintf(dk, 96, "%s", v_sstr(S, "regions.switch.meaning.dock.slice")); snprintf(ws, 96, "%s", v_sstr(S, "regions.switch.meaning.plates.whole")); snprintf(gs, 96, "%s", v_sstr(S, "regions.switch.meaning.plates.gone"));
   int tx = mx + v_sk(S, "regions.switch.toggle.at", 0), ty = my + v_sk(S, "regions.switch.toggle.at", 1);
   v_name("switch"); v_slot("switch.track", tk, tk, tx, ty, v_sk(S, "regions.switch.toggle.size", 0), v_sk(S, "regions.switch.toggle.size", 1), 1);
   v_name("switch"); v_slot("switch.knob", kn, kn, mx + kx, my + v_si(S, "regions.switch.toggle.knob.y", 56), v_sk(S, "regions.switch.toggle.knob.size", 0), v_sk(S, "regions.switch.toggle.knob.size", 1), 1);
@@ -109,7 +108,7 @@ static void build_switch(const char *cur, int cnt_cap) {
 
 /* ---- the Upgrade module: the socket, the part, and what the upgrade adds ---- */
 static void add_piece(const char *id, const char *key, int x, int y, int w, int h, int isNew, int level) {   /* level: -2 plain (fitted); -1 the `-new` slice settled; 0..16 the dither from the `-new` slice to the plain one */
-  char plain[96], nw[96]; bs(v_fmt("regions.slot.adds.%s.slice", key), plain); bs(v_fmt("regions.slot.adds.%s.newSlice", key), nw);
+  char plain[96], nw[96]; snprintf(plain, 96, "%s", v_sstr(S, v_fmt("regions.slot.adds.%s.slice", key))); snprintf(nw, 96, "%s", v_sstr(S, v_fmt("regions.slot.adds.%s.newSlice", key)));
   if (!isNew || level == -2) { v_name("slot"); v_slot(id, plain, plain, x, y, w, h, 1); return; }
   if (level == -1) { v_name("slot"); v_slot(id, nw, plain, x, y, w, h, 1); return; }
   v_name("slot"); if (has(plain)) v_sprite_hidden(id, plain, x, y);   /* the settled piece's node stays, no size, while the dither draws */
@@ -124,8 +123,8 @@ static void build_slot(const char *cur) {
     if (inst < 300) { fitted = 0; armed = 1; drop = 8 * inst / 300; level = -1; } else if (inst < 600) { fitted = 1; level = -1; } else { fitted = 1; level = 16 * (inst - 600) / 300; }
   }
   build_module(S, "slot", dy, lamp);
-  char sk[96], pt[96]; bs("regions.slot.socket.slice", sk);
-  bs(fitted ? "regions.slot.part.slices.fitted" : dim ? "regions.slot.part.slices.dim" : "regions.slot.part.slices.ready", pt);
+  char sk[96], pt[96]; snprintf(sk, 96, "%s", v_sstr(S, "regions.slot.socket.slice"));
+  snprintf(pt, 96, "%s", v_sstr(S, fitted ? "regions.slot.part.slices.fitted" : dim ? "regions.slot.part.slices.dim" : "regions.slot.part.slices.ready"));
   v_name("slot"); v_slot("slot.socket", sk, sk, mx + v_sk(S, "regions.slot.socket.at", 0), my + v_sk(S, "regions.slot.socket.at", 1), v_sk(S, "regions.slot.socket.size", 0), v_sk(S, "regions.slot.socket.size", 1), 1);
   int py = armed ? v_sk(S, "regions.slot.part.armedAt", 1) + drop : v_sk(S, "regions.slot.part.at", 1);   /* armed: 8 px out of the socket; fitted and the rest: seated */
   v_name("slot"); v_slot("slot.part", pt, pt, mx + v_sk(S, "regions.slot.part.at", 0), my + py, v_sk(S, "regions.slot.part.size", 0), v_sk(S, "regions.slot.part.size", 1), 1);

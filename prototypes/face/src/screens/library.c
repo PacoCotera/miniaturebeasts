@@ -15,7 +15,6 @@
 
 #define S "library"
 #define PAGE_ITEMS 8
-static const char *lstr(const char *p) { static char b[8][96]; static int k; char *o = b[k++ & 7]; spec_str(S, p, o, 96); return o; }
 static int has(const char *id) { return id && *id && wire_has_asset(id); }
 static const char *cur(void) { return v_focus_cur_at("focus.cur"); }
 
@@ -56,18 +55,18 @@ static void build_frame(int page, int k) {
   snprintf(id, sizeof id, "frame.%s.name", sid); v_region(reg, LAYER_TYPE);
   v_text(id, known ? name : "", bx + v_half(bw - nw), by + v_fdiv(bh - v_cap(npx), 2), nw, npx, v_scol(S, found ? "spread.colours.nameFound" : "spread.colours.nameMet"));
   /* the gilt corner of a portrayed species */
-  int gx = f[0] + v_sk(S, "spread.item.gilt.at", 0), gy = f[1] + v_sk(S, "spread.item.gilt.at", 1); const char *gp = lstr("spread.item.gilt.slice");
+  int gx = f[0] + v_sk(S, "spread.item.gilt.at", 0), gy = f[1] + v_sk(S, "spread.item.gilt.at", 1); const char *gp = v_sstr(S, "spread.item.gilt.slice");
   snprintf(id, sizeof id, "frame.%s.gilt", sid); v_name(reg);
   v_slot(id, gp, v_pstr("regions.stage.picture"), gx, gy, v_sk(S, "spread.item.gilt.at", 2), v_sk(S, "spread.item.gilt.at", 3), found && v_pbool(v_fmt("%s.portrayed", it), 0));
   /* the progress: four seeds, the first `progress` full, the rest empty (found only) */
-  int progress = v_pint(v_fmt("%s.progress", it), 0), nseed = v_si(S, "spread.item.progress.count", 4); const char *full = lstr("spread.item.progress.slices.full"), *empty = lstr("spread.item.progress.slices.empty");
+  int progress = v_pint(v_fmt("%s.progress", it), 0), nseed = v_si(S, "spread.item.progress.count", 4); const char *full = v_sstr(S, "spread.item.progress.slices.full"), *empty = v_sstr(S, "spread.item.progress.slices.empty");
   for (int s = 0; s < nseed; s++) {
     int sx = f[0] + spec_int(S, v_fmt("spread.item.progress.places.%d.0", s), 0), sy = f[1] + spec_int(S, v_fmt("spread.item.progress.places.%d.1", s), 0); const char *sp = s < progress ? full : empty;
     snprintf(id, sizeof id, "frame.%s.seed.%d", sid, s); v_name(reg);
     v_slot(id, sp, v_pstr("regions.stage.picture"), sx, sy, v_sk(S, "spread.item.progress.seed", 0), v_sk(S, "spread.item.progress.seed", 1), found && progress > 0);
   }
   /* the seal of a complete guide */
-  int zx = f[0] + v_sk(S, "spread.item.seal.at", 0), zy = f[1] + v_sk(S, "spread.item.seal.at", 1); const char *zp = lstr("spread.item.seal.slice");
+  int zx = f[0] + v_sk(S, "spread.item.seal.at", 0), zy = f[1] + v_sk(S, "spread.item.seal.at", 1); const char *zp = v_sstr(S, "spread.item.seal.slice");
   snprintf(id, sizeof id, "frame.%s.seal", sid); v_name(reg);
   v_slot(id, zp, v_pstr("regions.stage.picture"), zx, zy, v_sk(S, "spread.item.seal.at", 2), v_sk(S, "spread.item.seal.at", 3), found && v_pbool(v_fmt("%s.complete", it), 0));
 }

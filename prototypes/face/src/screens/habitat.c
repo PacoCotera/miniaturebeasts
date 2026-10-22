@@ -174,7 +174,7 @@ static void build_speciesLine(void) {
   int r[4]; v_srect(S, "regions.speciesLine.rect", r); const char *text = v_pstr("regions.card.species.text"), *mark = v_pstr("regions.card.species.mark"); int px = v_si(S, "regions.speciesLine.px", 16), w = v_measure(text, px);
   v_region("speciesLine", LAYER_TYPE); v_text("speciesLine.text", text, r[0], v_si(S, "regions.speciesLine.lineTop", 66) + v_fdiv(20 - v_cap(px), 2), w, px, v_scol(S, "colours.card.species"));
   int mw = v_sk(S, "regions.speciesLine.mark.size", 0), mh = v_sk(S, "regions.speciesLine.mark.size", 1);
-  v_name("speciesLine"); if (has(mark)) v_sprite("speciesLine.mark", mark, r[0] + w + v_si(S, "regions.speciesLine.mark.gap", 4), r[1] + v_fdiv(r[3] - mh, 2), mw, mh); else v_sprite_hidden("speciesLine.mark", v_pstr("regions.glass.picture"), 0, 0);   /* 4 px after the line's last word, on its centre */
+  v_name("speciesLine"); v_slot_at("speciesLine.mark", mark, v_pstr("regions.glass.picture"), r[0] + w + v_si(S, "regions.speciesLine.mark.gap", 4), r[1] + v_fdiv(r[3] - mh, 2), mw, mh, 1, 0, 0);   /* 4 px after the line's last word, on its centre */
 }
 static void build_story(void) {
   v_region("story", LAYER_TYPE); int px = v_si(S, "regions.story.px", 16);
@@ -206,9 +206,9 @@ static void build_chapterPlates(const char *cur) {
     int focused = i < n && strncmp(cur, "plate.", 6) == 0 && atoi(cur + 6) == i, lift = focused ? v_si(S, "focus.targets.plate.lift", 2) : 0;
     const char *ground = i < n ? v_pstr(v_fmt("regions.plates.items.%d.ground", i)) : "", *emb = i < n ? v_pstr(v_fmt("regions.plates.items.%d.emblem", i)) : "";
     char id[24]; snprintf(id, sizeof id, "plate.%d", i); v_name("plates");
-    if (has(ground)) v_sprite(id, ground, b[0], b[1] - lift, b[2], b[3]); else v_sprite_hidden(id, v_pstr("regions.glass.picture"), b[0], b[1]);
+    v_slot_at(id, ground, v_pstr("regions.glass.picture"), b[0], b[1] - lift, b[2], b[3], 1, b[0], b[1]);
     snprintf(id, sizeof id, "plate.%d.emblem", i); v_name("plates");
-    if (has(emb)) v_sprite(id, emb, b[0] + ex, b[1] + ey - lift, 24, 24); else v_sprite_hidden(id, v_pstr("regions.glass.picture"), b[0], b[1]);
+    v_slot_at(id, emb, v_pstr("regions.glass.picture"), b[0] + ex, b[1] + ey - lift, 24, 24, 1, b[0], b[1]);
   }
 }
 
@@ -219,23 +219,23 @@ static void free_node(const char *id, int x, int y, int w, int h) {   /* a free 
 static void door_objects(int dy) {
   int r[4]; v_srect(S, "regions.door.rect", r); int pw = v_sk(S, "regions.door.places.size", 0), ph = v_sk(S, "regions.door.places.size", 1), gx = v_sk(S, "regions.door.glyph.at", 0), gy = v_sk(S, "regions.door.glyph.at", 1), gw = v_sk(S, "regions.door.glyph.size", 0), gh = v_sk(S, "regions.door.glyph.size", 1);
   const char *glyph = v_pstr("regions.door.glyph"), *lampPic = v_pstr("regions.door.lamp");
-  v_name("door"); if (has(glyph)) v_sprite("door.glyph", glyph, r[0] + gx, r[1] + dy + gy, gw, gh); else v_sprite_hidden("door.glyph", v_pstr("regions.glass.picture"), r[0], r[1]);
+  v_name("door"); v_slot_at("door.glyph", glyph, v_pstr("regions.glass.picture"), r[0] + gx, r[1] + dy + gy, gw, gh, 1, r[0], r[1]);
   for (int i = 0; i < 3; i++) {
     int x = r[0] + v_sk(S, v_fmt("regions.door.places.at.%d", i), 0), y = r[1] + dy + v_sk(S, v_fmt("regions.door.places.at.%d", i), 1);
     char P[48]; snprintf(P, sizeof P, "regions.door.places.%d", i); int some = spec_len("props", P) >= 0 && v_pstr(v_fmt("%s.picture", P))[0];
     const char *pic = some ? v_pstr(v_fmt("%s.picture", P)) : "";
     { const char *wl = v_pstr(v_fmt("%s.well", P)); v_region("door", LAYER_PAINTED); if (*wl) v_sprite(v_fmt("door.recess.%d", i), wl, x, y, pw, ph); }   /* the place is its well in every state (fix 2 F4): the mibi stands in it, or the well alone */
     v_name("door"); v_slot(v_fmt("door.place.%d", i), pic, glyph[0] ? glyph : v_pstr("regions.glass.picture"), x, y, pw, ph, 1);
-    v_name("door"); if (some && v_pbool(v_fmt("%s.waiting", P), 0) && has(lampPic)) v_sprite(v_fmt("door.lamp.%d", i), lampPic, x + v_sk(S, "regions.door.places.lampAt", 0), y + v_sk(S, "regions.door.places.lampAt", 1), 8, 8); else v_sprite_hidden(v_fmt("door.lamp.%d", i), v_pstr("regions.glass.picture"), x, y);
+    v_name("door"); v_slot_at(v_fmt("door.lamp.%d", i), lampPic, v_pstr("regions.glass.picture"), x + v_sk(S, "regions.door.places.lampAt", 0), y + v_sk(S, "regions.door.places.lampAt", 1), 8, 8, some && v_pbool(v_fmt("%s.waiting", P), 0), x, y);
     v_region("door", LAYER_CHROME); free_node(v_fmt("door.free.%d", i), x, y, pw, ph);
   }
 }
 static void portrait_objects(int dy) {
   int r[4]; v_srect(S, "regions.portrait.rect", r); const char *f = v_pstr("regions.portrait.frame"); int fx = v_sk(S, "regions.portrait.frame.at", 0), fy = v_sk(S, "regions.portrait.frame.at", 1), fw = v_sk(S, "regions.portrait.frame.size", 0), fh = v_sk(S, "regions.portrait.frame.size", 1);
-  v_name("portrait"); if (has(f)) v_sprite("portrait.frame", f, r[0] + fx, r[1] + dy + fy, fw, fh); else v_sprite_hidden("portrait.frame", v_pstr("regions.glass.picture"), r[0], r[1]);
+  v_name("portrait"); v_slot_at("portrait.frame", f, v_pstr("regions.glass.picture"), r[0] + fx, r[1] + dy + fy, fw, fh, 1, r[0], r[1]);
   /* its picture, over the frame's window (frame.picture: at and size from the spec, 1:1): painted from the asset; not landed (""), a 0x0 window that draws nothing and the frame master's own window shows */
   const char *p = v_pstr("regions.portrait.picture"); int px = v_sk(S, "regions.portrait.frame.picture.at", 0), py = v_sk(S, "regions.portrait.frame.picture.at", 1), pw = v_sk(S, "regions.portrait.frame.picture.size", 0), ph = v_sk(S, "regions.portrait.frame.picture.size", 1);
-  v_name("portrait"); if (has(p)) v_sprite("portrait.picture", p, r[0] + fx + px, r[1] + dy + fy + py, pw, ph); else v_sprite_hidden("portrait.picture", has(f) ? f : v_pstr("regions.glass.picture"), r[0], r[1]);
+  v_name("portrait"); v_slot_at("portrait.picture", p, has(f) ? f : v_pstr("regions.glass.picture"), r[0] + fx + px, r[1] + dy + fy + py, pw, ph, 1, r[0], r[1]);
 }
 static void cross_objects(int dy) {
   int r[4]; v_srect(S, "regions.cross.rect", r); int n = v_plen("regions.cross.faces"); if (n > MAXF) n = MAXF; if (n < 0) n = 0;
@@ -251,7 +251,7 @@ static void cross_objects(int dy) {
 }
 static void wild_objects(int dy) {
   int r[4]; v_srect(S, "regions.wild.rect", r); const char *g = v_pstr("regions.wild.gate"); int gx = v_sk(S, "regions.wild.gate.at", 0), gy = v_sk(S, "regions.wild.gate.at", 1), gw = v_sk(S, "regions.wild.gate.size", 0), gh = v_sk(S, "regions.wild.gate.size", 1);
-  v_name("wild"); if (has(g)) v_sprite("wild.gate", g, r[0] + gx, r[1] + dy + gy, gw, gh); else v_sprite_hidden("wild.gate", v_pstr("regions.glass.picture"), r[0], r[1]);
+  v_name("wild"); v_slot_at("wild.gate", g, v_pstr("regions.glass.picture"), r[0] + gx, r[1] + dy + gy, gw, gh, 1, r[0], r[1]);
 }
 static const char *MODS[4] = { "door", "portrait", "cross", "wild" };
 static void build_modules(const char *cur) {

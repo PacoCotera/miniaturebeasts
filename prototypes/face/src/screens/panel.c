@@ -96,12 +96,12 @@ static void build_card(int i, int n, int focused) {
     int px0 = slotX + v_half(pw - pwid) + shift, py0 = r[1] + v_si(F, RP ".art.feet.line", 168) - feet[0];
     { const char *sh = v_pstr("overlay.regions.art.shadow"); int span = feet[2] - feet[1] + 1 + v_si(F, RP ".art.shadow.stretch", 16), ends = v_si(F, RP ".art.shadow.ends", 32), sh_h = v_si(F, RP ".art.shadow.h", 16); if (span < 2 * ends) span = 2 * ends;
       const int caps[4] = { ends, 0, ends, 0 }; v_region("cardStage", LAYER_PAINTED); if (hd >= 0) v_nine(v_fmt("card.%d.shadow", i), sh, px0 + (feet[1] + feet[2] + 1) / 2 - span / 2, r[1] + v_si(F, RP ".art.feet.line", 168) - sh_h / 2, span, sh_h, caps); }
-    v_name("cardPictures"); if (hd >= 0 && pwid > 0 && ph > 0) v_sprite(v_fmt("card.%d.picture", i), pic, px0, py0, pwid, ph); else v_sprite_hidden(v_fmt("card.%d.picture", i), pic, r[0], r[1]); }
+    v_name("cardPictures"); v_slot_at(v_fmt("card.%d.picture", i), pic, NULL, px0, py0, pwid, ph, pwid > 0 && ph > 0, r[0], r[1]); }
   /* the light: over the picture, the pool lighting the subject from below */
   v_region("cardStage", LAYER_PAINTED); v_sprite(v_fmt("card.%d.light", i), v_pstr(v_fmt("%s.light", base)), slotX, r[1] + v_sk(F, RP ".art.light.at", 1), pw, 160);
   /* the destination mark: the title bar's mark of the room it lands in, over the picture's top right; staying here: none */
   { const char *mk = v_pstr(v_fmt("overlay.regions.cards.%d.mark", i)); int ms = v_sk(F, RP ".card.mark.size", 0); if (ms <= 0) ms = 24;
-    v_name("cardMarks"); if (*mk) v_sprite(v_fmt("card.%d.mark", i), mk, r[0] + w - 40, r[1] + v_sk(F, RP ".card.mark.at", 1), ms, ms); else v_sprite_hidden(v_fmt("card.%d.mark", i), mk, r[0] + w - 40, r[1] + 16); }
+    v_name("cardMarks"); v_slot_at(v_fmt("card.%d.mark", i), mk, NULL, r[0] + w - 40, r[1] + v_sk(F, RP ".card.mark.at", 1), ms, ms, 1, r[0] + w - 40, r[1] + 16); }
   /* the name: 20, the option's verb */
   { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = v_si(F, RP ".card.name.px", 20), sw = v_measure(s, px);
     v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.name", i), s, r[0] + v_sk(F, RP ".card.name.at", 0), cap_top(px, r[1] + v_sk(F, RP ".card.name.at", 1), 28), sw, px, rcol(dim ? "card.name.colourDim" : "card.name.colour")); }
@@ -130,7 +130,7 @@ static void build_strip(int n) {
     char well[24], wedge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(wedge, sizeof wedge, "%s", rcol("cards.edge"));
     v_region("cards", LAYER_CHROME); word_panel(v_fmt("card.%d.well", i), c[0], c[1], c[2], c[3], well, wedge);
     { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pw = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0);
-      v_name("cardPictures"); if (pw > 0 && ph > 0 && v_sprite(v_fmt("card.%d.picture", i), pic, c[0] + v_sk(F, RP ".strip.picture.at", 0), c[1] + v_sk(F, RP ".strip.picture.at", 1), pw, ph)) {} else v_sprite_hidden(v_fmt("card.%d.picture", i), pic, c[0], c[1]); }
+      v_name("cardPictures"); v_slot_at(v_fmt("card.%d.picture", i), pic, NULL, c[0] + v_sk(F, RP ".strip.picture.at", 0), c[1] + v_sk(F, RP ".strip.picture.at", 1), pw, ph, pw > 0 && ph > 0, c[0], c[1]); }
     { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = v_si(F, RP ".strip.name.px", 20); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
       v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.name", i), fit, tx, cap_top(px, c[1] + v_sk(F, RP ".strip.name.at", 1), v_si(F, RP ".strip.name.h", 28)), v_measure(fit, px), px, rcol(dim ? "strip.name.colourDim" : "strip.name.colour")); }
     { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = v_si(F, RP ".strip.line.px", 16); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);

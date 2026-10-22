@@ -69,8 +69,8 @@ static void line_words(void) {
     { int tx = x0 + lamp + lampGap + cap + capGap; char who[V_STR]; snprintf(who, sizeof who, "%s", v_pstr("regions.line.name")); const char *at = who[0] ? strstr(full, who) : NULL;
       if (at) {   /* a name in the notice (a portrait's) is in the verb colour, the rest in the need colour */
         char pre[V_STR * 2], suf[V_STR * 2]; snprintf(pre, sizeof pre, "%.*s", (int)(at - full), full); snprintf(suf, sizeof suf, "%s", at + strlen(who));
-        v_run_t a = v_run("line.needs.a", pre, tx, ty, px, v_scol("frame", v_fmt("colours.%s", "need")), V_ALIGN_LEFT); v_run_t b = v_run("line.needs.b", who, a.end, ty, px, v_scol("frame", v_fmt("colours.%s", "verb")), V_ALIGN_LEFT); v_run("line.needs.c", suf, b.end, ty, px, v_scol("frame", v_fmt("colours.%s", "need")), V_ALIGN_LEFT);
-      } else v_run("line.needs", full, tx, ty, px, v_scol("frame", v_fmt("colours.%s", "need")), V_ALIGN_LEFT); }
+        v_run_t a = v_run("line.needs.a", pre, tx, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT); v_run_t b = v_run("line.needs.b", who, a.end, ty, px, v_scol("frame", "colours.verb"), V_ALIGN_LEFT); v_run("line.needs.c", suf, b.end, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT);
+      } else v_run("line.needs", full, tx, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT); }
     return;
   }
   if (verb[0]) {
@@ -79,18 +79,18 @@ static void line_words(void) {
     int W = cap + capGap + v_run_width(verb, px) + (hasSub ? sepW + v_run_width(clipped, px) : 0), x0 = centre - (W + 1) / 2;
     v_region("line", LAYER_ART); v_sprite("line.cap", capPic, x0, z[1] + 4, cap, cap);
     v_region("line", LAYER_TYPE);
-    v_run_t run = v_run("line.verb", verb, x0 + cap + capGap, ty, px, v_scol("frame", v_fmt("colours.%s", "verb")), V_ALIGN_LEFT);
-    if (hasSub) { run = v_run("line.sep", sep, run.end, ty, px, v_scol("frame", v_fmt("colours.%s", "subject")), V_ALIGN_LEFT); v_run("line.subject", clipped, run.end, ty, px, v_scol("frame", v_fmt("colours.%s", "subject")), V_ALIGN_LEFT); }
+    v_run_t run = v_run("line.verb", verb, x0 + cap + capGap, ty, px, v_scol("frame", "colours.verb"), V_ALIGN_LEFT);
+    if (hasSub) { run = v_run("line.sep", sep, run.end, ty, px, v_scol("frame", "colours.subject"), V_ALIGN_LEFT); v_run("line.subject", clipped, run.end, ty, px, v_scol("frame", "colours.subject"), V_ALIGN_LEFT); }
     return;
   }
   v_region("line", LAYER_TYPE);
-  if (note[0]) { v_run("line.note", note, centre, ty, px, v_scol("frame", v_fmt("colours.%s", "subject")), V_ALIGN_CENTRE); return; }
+  if (note[0]) { v_run("line.note", note, centre, ty, px, v_scol("frame", "colours.subject"), V_ALIGN_CENTRE); return; }
   if (goal[0]) {
     char icons[24] = "", plain[V_STR] = ""; snprintf(icons, sizeof icons, "%s", v_pstr("regions.line.goal.icons")); snprintf(plain, sizeof plain, "%s", v_pstr("regions.line.goal.plain"));
     int ni = 0; for (const char *q = icons; *q; q++) if ((unsigned char)*q == 0xe2) ni++;   /* each icon is one three-byte sequence beginning 0xe2 */
     const char *use = (v_run_width(goal, px) + 20 * ni > z[2] && plain[0]) ? plain : goal;
     snprintf(full, sizeof full, "%s%s%s", use, ni ? " " : "", ni ? icons : "");
-    v_run("line.goal", full, centre, ty, px, v_scol("frame", v_fmt("colours.%s", "subject")), V_ALIGN_CENTRE);
+    v_run("line.goal", full, centre, ty, px, v_scol("frame", "colours.subject"), V_ALIGN_CENTRE);
   }
 }
 
@@ -198,7 +198,7 @@ static void station_words(const char *key) {
     const char *shut = v_pstr("regions.bay.pictures.shut"), *crate = v_pstr("regions.bay.pictures.crate"), *portrait = v_pstr("regions.bay.pictures.portrait"); int x = x0;
     for (int i = 0; i < nmax; i++) {   /* the crates first, then the shut berths, the portrait berth last; the portrait berth is the same node of no size while no portrait crate is in */
       int w = i < 3 ? bw : pw; const char *a = i < crates ? crate : i < 3 ? shut : portrait;
-      if (i < n) { v_sprite(v_fmt("%s.berth.%d", key, i), a, x, y0, w, bh); x += w + bg; } else v_sprite_hidden(v_fmt("%s.berth.%d", key, i), portrait, 0, 0);
+      v_slot_at(v_fmt("%s.berth.%d", key, i), a, portrait, x, y0, w, bh, i < n, 0, 0); if (i < n) x += w + bg;
     }
   } else if (strcmp(key, "pods") == 0) {
     int sw = v_sk(H, "regions.pods.slots.size", 0), sh = v_sk(H, "regions.pods.slots.size", 1), sg = v_si(H, "regions.pods.slots.gap", 2), cols = v_si(H, "regions.pods.slots.cols", 3), rows = v_si(H, "regions.pods.slots.rows", 2), pw = v_sk(H, "regions.pods.picture", 0), ph = v_sk(H, "regions.pods.picture", 1);

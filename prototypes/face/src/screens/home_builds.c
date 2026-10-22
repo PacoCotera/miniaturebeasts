@@ -14,9 +14,7 @@
 /* the same, in the spec of the screen a composition is drawn for (the name tag and the bay strip serve Home and the Vivarium's whole) */
 
 /* a lamp: the signed 12 × 12 picture of the state (off, well, waiting, needsYou), the ids are one table, frame.json regions.marks.lamp12; one node whichever state it is. A picture the host has not sent leaves a node of no size. */
-const char *home_lamp_pic(const char *state) {
-  static char b[4][96]; static int k; char *o = b[k++ & 3]; spec_str("frame", v_fmt("regions.marks.lamp12.%s", *state ? state : "off"), o, 96); return o;
-}
+const char *home_lamp_pic(const char *state) { return v_sstr("frame", v_fmt("regions.marks.lamp12.%s", *state ? state : "off")); }
 static void lamp(const char *id, int x, int y, const char *state) {
   const char *pic = home_lamp_pic(state);
   v_slot(id, pic, home_lamp_pic("off"), x, y, 12, 12, *pic);
@@ -31,7 +29,7 @@ void build_waitingLamp(const char *id, int x, int y, int shown) {
 /* the module of the screen whose spec is `sp`: its device plate (fix 2: a painted picture placed 1:1, no fill, edge or bevel row), its engraved word at the spec's offset and its lamp (a module whose spec says `"lamp": null` has none, and no lamp node); the objects are the screen's. `dy` is the
    focused module's lift (negative). Draws region `key`. Home's and one mibi up close's modules are this one build. */
 void build_module(const char *sp, const char *key, int dy, const char *lampState) {
-  int r[4], word[2], lampAt[2] = { 0, 0 }; char p[64]; snprintf(p, sizeof p, "regions.%s.rect", key); if (!v_spec_rect(sp, p, r)) r[0] = r[1] = r[2] = r[3] = 0;
+  int r[4], word[2], lampAt[2] = { 0, 0 }; char p[64]; snprintf(p, sizeof p, "regions.%s.rect", key); v_srect(sp, p, r);
   word[0] = v_sk(sp, v_fmt("regions.%s.word", key), 0); word[1] = v_sk(sp, v_fmt("regions.%s.word", key), 1);
   const char *lraw = spec_raw(sp, v_fmt("regions.%s.lamp", key), NULL); int hasLamp = lraw && lraw[0] == '[';
   if (hasLamp) { lampAt[0] = v_sk(sp, v_fmt("regions.%s.lamp", key), 0); lampAt[1] = v_sk(sp, v_fmt("regions.%s.lamp", key), 1); }
@@ -84,7 +82,7 @@ void build_nameTagAt(const char *sp, const char *glass, const char *name, int fx
    thumbnail stands) and the dash outline (a free bay: 1 px `hairline`, 2 on 2 off, a composed picture with no ops while the bay is not free). A hidden node is the glyph's picture with a window of no size. `focus` is the tile the ring is on, lifted by the spec's
    tile lift. Writes the focused tile's box to box. */
 void build_bayStrip(const char *sp, const char *cur, int box[4]) {
-  int r[4], n = v_plen("regions.tiles.items"); if (!v_spec_rect(sp, "regions.strip.rect", r)) r[0] = r[1] = r[2] = r[3] = 0; if (box) box[0] = box[1] = box[2] = box[3] = 0;
+  int r[4], n = v_plen("regions.tiles.items"); v_srect(sp, "regions.strip.rect", r); if (box) box[0] = box[1] = box[2] = box[3] = 0;
   int any = 0; for (int i = 0; i < n; i++) { const char *st = v_pstr(v_fmt("regions.tiles.items.%d.state", i)); if (strcmp(st, "housed") == 0 || strcmp(st, "out") == 0) any = 1; }
   v_region("strip", LAYER_PAINTED); { const char *pl = v_pstr("regions.strip.plate"); v_slot("strip", pl, v_pstr("regions.tiles.glyph"), r[0], r[1], r[2], r[3], any && *pl); }   /* fix 2 F1/F5: the strip's plate, 1:1; no housed or out tile: no plate (Every state composed, rule 2: no bare panel) */
   char fk[48]; if (n > 12 || layout_list_form(sp, "regions.tiles", n, fk, sizeof fk) < 0) { v_error("word: the bay strip holds twelve bays at most, and its forms must hold this many"); return; }
@@ -104,7 +102,7 @@ void build_bayStrip(const char *sp, const char *cur, int box[4]) {
     v_name(reg); snprintf(nm, sizeof nm, "tile.%d.thumb", i);
     v_slot(nm, pic, glyph, x + tx, y + ty, tw, th, housed && *pic);
     snprintf(nm, sizeof nm, "tile.%d.glyph", i);
-    if (out) v_sprite(nm, glyph, x + tx + (tw - gw) / 2, y + ty + (th - gh) / 2, gw, gh); else v_sprite_hidden(nm, glyph, x + tx, y + ty);
+    v_slot_at(nm, glyph, NULL, x + tx + (tw - gw) / 2, y + ty + (th - gh) / 2, gw, gh, out, x + tx, y + ty);
     snprintf(nm, sizeof nm, "tile.%d.free", i);   /* a free bay draws nothing: the node keeps its box with no ops (fix 6, N7) */
     v_composed(nm, x, y, w, h, "[]");
   }
