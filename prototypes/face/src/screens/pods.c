@@ -11,7 +11,6 @@
 #include <string.h>
 
 #define S "pods"
-static int sa(const char *base, const char *key, int k) { return spec_int(S, v_fmt("%s.%s.%d", base, key, k), 0); }
 /* the pod's box: bottom-centred on its axis and feet line at its size class */
 static int pod_box(const char *base, int box[4]) {
   int sz[2], w, h; if (!word_pod_size(sz) || !*v_pstr("regions.specimen.pod.sealed")) return 0; w = sz[0]; h = sz[1];
@@ -29,7 +28,7 @@ static void focus_ring(const char *state, const char *base) {
   if (strcmp(group, "place") == 0) layout_place_rect(S, "regions.collection", atoi(cur + 6), box);
   else if (strcmp(group, "kin") == 0) layout_kin_rect(S, v_fmt("%s.kin", base), atoi(cur + 4), box);
   else if (strcmp(group, "pod") == 0) { if (!pod_box(base, box)) return; }
-  else if (strcmp(group, "hatch") == 0) { for (int k = 0; k < 4; k++) box[k] = sa(base, "hatch.rect", k); }
+  else if (strcmp(group, "hatch") == 0) { for (int k = 0; k < 4; k++) box[k] = v_sk(S, v_fmt("%s.%s", base, "hatch.rect"), k); }
   else return;
   word_focusRingFor("focus", box, group);
 }
@@ -48,7 +47,7 @@ int pods_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
     else if (strncmp(t->id, "kin.", 4) == 0) layout_kin_rect(S, v_fmt("%s.kin", base), k, r);
     else if (strncmp(t->id, "rail.", 5) == 0) { if (k < nt) { r[0] = tabs[k].x; r[1] = tabs[k].y; r[2] = tabs[k].w; r[3] = tabs[k].h; } }
     else if (strcmp(t->id, "pod") == 0) pod_box(base, r);
-    else if (strcmp(t->id, "hatch") == 0) for (int q = 0; q < 4; q++) r[q] = sa(base, "hatch.rect", q);
+    else if (strcmp(t->id, "hatch") == 0) for (int q = 0; q < 4; q++) r[q] = v_sk(S, v_fmt("%s.%s", base, "hatch.rect"), q);
     t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3];
   }
   return n;

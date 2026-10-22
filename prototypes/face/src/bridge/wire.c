@@ -119,7 +119,7 @@ static int on_spec(const msg_t *m) {
   { char why[200]; if (screens_vet_spec(screen, why, sizeof why) < 0) { spec_drop(screen); return fail(why); } }   /* a spec that names a word wrongly is refused whole, never improvised */
   return 0;
 }
-int wire_asset_slot(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
+int wire_asset_slot(const char *id) { if (!id || !id[0]) return -1; /* "" marks a free slot of the table (a drop clears the id to it): no picture binds under it */ for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
 static int g_slice[256][4], g_tile[256], g_has_slice[256];
 int wire_asset_nine(int slot, int insets[4], int *tile) { if (slot < 0 || slot >= 256 || !g_has_slice[slot]) return 0; memcpy(insets, g_slice[slot], sizeof g_slice[slot]); if (tile) *tile = g_tile[slot]; return 1; }
 /* a creature picture's footprint (fix 14, FR4): [x, feetY, w] relative to the picture, or { stand?, curl?, shadow? } each [x, feetY, w] relative to its cell, as the host measured it (derive.mjs footprintOf) */

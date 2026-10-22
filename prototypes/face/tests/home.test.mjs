@@ -465,7 +465,10 @@ test("the glint stands beside its bead: its centre 8 px from the bead's, along t
   // the late state with 3 new: each glint's spot and clearance, printed; each at least 3, or the fallback
   { const r = renderSpecimen(frameOf("S01"), JSON.parse(readFileSync(path.resolve(here, "../../station/tests/fixtures/specimen/states/late.json"), "utf8"))), rows = [];
     const fresh = r.beads;
-    for (const b of fresh) { const g = glintSpot(b, r.beads, r.rays); rows.push(`${b.trait}|${b.look} bead (${b.x.toFixed(1)}, ${b.y.toFixed(1)}) spot (${g.x}, ${g.y}) clearance ${g.clearance.toFixed(2)}${g.fallback ? " FALLBACK" : ""}`); assert.ok(g.clearance >= 3 || g.fallback, rows.at(-1)); }
+    for (const b of fresh) { const g = glintSpot(b, r.beads, r.rays), own = Math.hypot(g.x - b.x, g.y - b.y), other = Math.min(Infinity, ...r.beads.filter((o) => o !== b).map((o) => Math.hypot(g.x - o.x, g.y - o.y)));
+      rows.push(`${b.trait}|${b.look} bead (${b.x.toFixed(1)}, ${b.y.toFixed(1)}) spot (${g.x}, ${g.y}) clearance ${g.clearance.toFixed(2)}${g.fallback ? ` FALLBACK own bead ${own.toFixed(2)}, nearest other bead ${other.toFixed(2)}` : ""}`);
+      assert.ok(g.clearance >= 3 || g.fallback, rows.at(-1));
+      if (g.fallback) assert.ok(own < other, `a fallback passes only while its spot is nearer its own bead than any other bead: ${rows.at(-1)}`); }
     console.log("# glint spots, late state (every bead, as if new):\n#   " + rows.join("\n#   ")); }
   assert.deepEqual(glintAt({ x: 20, y: 185 }), [18, 185]); assert.deepEqual(glintAt({ x: 177, y: 350 }), [177, 344]);
 });

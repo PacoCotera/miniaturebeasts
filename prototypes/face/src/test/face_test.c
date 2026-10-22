@@ -7,6 +7,8 @@
 #include "../prim/ring.h"
 #include "../prim/prim.h"
 #include "../vocab/vocab.h"
+#include "../bridge/wire.h"
+#include "../face.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -223,6 +225,19 @@ static void layout_vectors(const char *dir, const char *specs) {
     spec_load("arclong", LONG, sizeof LONG - 1); check(layout_leaf_arc("arclong", "r", 3, box) == -1, "leafArc: a long inner table is refused", "accepted");
   }
 }
+/* No picture binds under the empty id: "" marks a free slot of the picture table (a dropped picture leaves it), so a lookup of "" finds nothing, and v_sprite and v_sprite_hidden with "" make no node. */
+static int table_nodes(void) { static char b[65536]; int n = prim_log_json(b, (int)sizeof b); const char *p = n > 0 ? strstr(b, "\"table\":") : NULL; return p ? atoi(p + 8) : -1; }
+static void empty_id(void) {
+  face_init(); { const char *hi = "{\"t\":\"hello\",\"contract\":1}"; check(wire_send(hi, (int)strlen(hi)) == 0, "empty id: hello", ""); }
+  const char *up = "{\"t\":\"asset\",\"id\":\"empty-id-probe\",\"w\":4,\"h\":4,\"policy\":\"art\",\"status\":\"placeholder\"}", *down = "{\"t\":\"asset\",\"id\":\"empty-id-probe\",\"drop\":true}";
+  check(wire_send(up, (int)strlen(up)) == 0 && wire_asset_slot("empty-id-probe") >= 0, "empty id: a picture is loaded", "");
+  check(wire_send(down, (int)strlen(down)) == 0 && wire_asset_slot("empty-id-probe") < 0, "empty id: the picture is dropped", "");
+  check(wire_asset_slot("") < 0 && wire_asset_slot(NULL) < 0, "empty id: the free slot the drop left is not found under \"\" or NULL", "");
+  prim_begin(); int before = table_nodes();
+  check(v_sprite("empty.id.sprite", "", 0, 0, 4, 4) == 0 && v_sprite_hidden("empty.id.hidden", "", 0, 0) == 0, "empty id: v_sprite and v_sprite_hidden with \"\" return 0", "");
+  check(table_nodes() == before, "empty id: and make no node", "");
+  prim_end();
+}
 int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";
   focus_vectors(dir);
@@ -230,6 +245,7 @@ int main(int argc, char **argv) {
   metrics_vectors(dir);
   ring_vectors(dir);
   price_width();
+  empty_id();
   layout_vectors(dir, argc > 2 ? argv[2] : "../ui/specs/station");
   printf("face_test: %d checks, %d failed\n", checks, fails);
   return fails ? 1 : 0;

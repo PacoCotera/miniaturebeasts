@@ -19,17 +19,42 @@ int v_measure(const char *s, int px);                  /* the width of a string 
 void v_rect(const char *id, int x, int y, int w, int h, const char *colour);
 /* One string of Inter, the cap top on y. */
 void v_text(const char *id, const char *s, int x, int y, int w, int px, const char *colour);
-/* A picture placed 1:1 by its asset id; 1 when it was drawn, 0 when the host has not sent it (a mark whose master is not placed draws nothing and the layout does not move). */
 /* A name plate of the series the spec names (`<path>.plate.series`), the width the face chose, shown 1:1; the host sends the whole series at boot. A plate that is not on the face is an error and a refused node. */
 void v_plate(const char *id, const char *namePath, int w, int x, int y);
 void v_plate_in(const char *spec, const char *id, const char *namePath, int w, int x, int y);   /* v_plate with the spec that names the plate series (Pods: "pods"; Create's tag: "create") */
 int v_silhouette_box(const char *from, const char *to, int out[4]);   /* the pictures' boxes by id: 0, or -1 when either is not on the face or they differ in size (prim.h) */
 int v_change_box(const char *from, const char *to, int out[4]);
+/* A picture placed 1:1 by its asset id; 1 when it was drawn, 0 when the host has not sent it (a mark whose master is not placed draws nothing and the layout does not move). */
 int v_sprite(const char *id, const char *asset, int x, int y, int w, int h);
 int v_asset_size(const char *asset, int out[2]);   /* a picture's own size: 0, or -1 when the host has not sent it (a word that places a picture at its own size, 1:1) */
 int v_sprite_window(const char *id, const char *asset, int sx, int sy, int x, int y, int w, int h);   /* a w x h window of a larger picture, its source origin (sx, sy), drawn 1:1 at (x, y): 0 when the asset was not sent; at (0, 0) it is v_sprite */
 /* The same picture's node with no size: a slot kept for a step that has not come, so showing it later never adds a node and never changes the order of the screen's nodes (§2.2). 1 when the node was sent, 0 when the host has not sent the picture. */
 int v_sprite_hidden(const char *id, const char *asset, int x, int y);
+/* ---- K1: the spec accessors, the composed node and the picture-or-slot (UI kit K1, section 3.1) ---- */
+/* v_si / v_sk / v_srect / v_scol: a screen's or word's reads of a spec by dotted path; each replaces a file's private copy.
+   v_si(spec, path, d): the integer at `path` of the spec `spec` ("home", "frame", ...), d when absent or not a number. Reads the spec only; draws nothing; no node.
+   v_sk(spec, base, k): the integer at "<base>.<k>" (an array element or a numbered key), 0 when absent. Reads the spec only; no node.
+   v_srect(spec, path, r): the [x, y, w, h] at `path` into r; all four 0 when it is not a 4-array. Reads the spec only; no node.
+   v_scol(spec, path): the string at `path` (a palette name; "" when absent), copied to a ring of 16 buffers of 24 bytes, valid for the next 15 calls. Reads the spec only; no node.
+   v_sstr(spec, path): the string at `path` ("" when absent; a picture id, a template), copied to a ring of 16 buffers of 96 bytes (the size of an id on the wire), valid for the next 15 calls. Reads the spec only; no node. */
+int v_si(const char *spec, const char *path, int d);
+int v_sk(const char *spec, const char *base, int k);
+void v_srect(const char *spec, const char *path, int r[4]);
+const char *v_scol(const char *spec, const char *path);
+const char *v_sstr(const char *spec, const char *path);
+/* v_composed(id, x, y, w, h, ops): one composed picture of the ops string (the JSON ops list of prim.h) at (x, y), w x h, in the current region and layer. Reads nothing; node id v_id(id), one node, always sent; returns void. `ops` may be the prim_ops() buffer itself (a caller that wrote its ops there). */
+/* `ops` must not be NULL. */
+void v_composed(const char *id, int x, int y, int w, int h, const char *ops);
+/* v_slot(id, asset, fallback, x, y, w, h, shown): a picture, else the same node with no size, so showing it later never adds a node or changes the order of the screen's nodes (section 2.2).
+   Reads the host's pictures (the picture table): "has" means one thing, the picture's id is not empty and the host has sent it. When `shown` and the host has sent `asset`, a 1:1 sprite of w x h at (x, y), return 1.
+   Otherwise the node of no size at (x, y) over `fallback` (over `asset` when fallback is NULL or empty), return 0; when the host has sent neither, no node is made (as v_sprite and v_sprite_hidden alone).
+   Node id: v_id(id), at most one. The region and layer are the caller's (v_name / v_region). */
+int v_slot(const char *id, const char *asset, const char *fallback, int x, int y, int w, int h, int shown);
+/* v_slot_at(id, asset, fallback, x, y, w, h, shown, hx, hy): v_slot with the zero-size node at (hx, hy) instead of (x, y), for a slot whose hidden node has always sat elsewhere than its picture.
+   Reads the host's pictures; "has" as v_slot. When `shown` and the host has sent `asset`: a 1:1 sprite of w x h at (x, y), return 1. Otherwise the node of no size at (hx, hy) over `fallback`
+   (over `asset` when fallback is NULL or empty: with an empty fallback and a sent asset the hidden node is the asset itself), return 0; when the host has sent neither, no node.
+   Node id: v_id(id), at most one. The region and layer are the caller's. */
+int v_slot_at(const char *id, const char *asset, const char *fallback, int x, int y, int w, int h, int shown, int hx, int hy);
 /* A picture nine-sliced over a w x h box: the asset's own insets and tile when the host sent them (a `slice`), else the insets l, t, r, b given; 0 when the host has not sent it. */
 int v_nine(const char *id, const char *asset, int x, int y, int w, int h, const int insets[4]);
 /* A cross-dither between two pictures of one size (a `dither` event's frame, lvgl-switch.md §2.7): the pixels of `toAsset` where the Bayer cell at the screen position is below `level` (0..16), else those of `fromAsset`, one composed picture at (x, y), on the layer of `toAsset`. 1 when drawn, 0 when the host has not sent one of them. */

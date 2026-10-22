@@ -47,6 +47,19 @@ int v_sprite_hidden(const char *id, const char *asset, int x, int y) {
   prim_node(v_id(id), FN_SPRITE, x, y, 0, 0, 1u << 16, hd, 0); return 1;   /* a window of no size at source x 1: it draws nothing and counts for nothing, and is the same node as the shown one */
 }
 
+int v_si(const char *spec, const char *path, int d) { return spec_int(spec, path, d); }
+int v_sk(const char *spec, const char *base, int k) { return spec_int(spec, v_fmt("%s.%d", base, k), 0); }
+void v_srect(const char *spec, const char *path, int r[4]) { if (!v_spec_rect(spec, path, r)) r[0] = r[1] = r[2] = r[3] = 0; }
+const char *v_scol(const char *spec, const char *path) { static char b[16][24]; static unsigned k; char *o = b[k++ & 15]; spec_str(spec, path, o, 24); return o; }
+const char *v_sstr(const char *spec, const char *path) { static char b[16][96]; static unsigned k; char *o = b[k++ & 15]; spec_str(spec, path, o, 96); return o; }
+void v_composed(const char *id, int x, int y, int w, int h, const char *ops) { if (ops != prim_ops()) snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); }
+int v_slot_at(const char *id, const char *asset, const char *fallback, int x, int y, int w, int h, int shown, int hx, int hy) {
+  if (!asset) asset = "";
+  if (shown && *asset && v_sprite(id, asset, x, y, w, h)) return 1;   /* an empty id is no picture, whatever the table holds under it */
+  { const char *under = fallback && *fallback ? fallback : asset; if (*under) v_sprite_hidden(id, under, hx, hy); } return 0;
+}
+int v_slot(const char *id, const char *asset, const char *fallback, int x, int y, int w, int h, int shown) { return v_slot_at(id, asset, fallback, x, y, w, h, shown, x, y); }
+
 int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h) {
   int fh = wire_asset_slot(fromAsset), th = wire_asset_slot(toAsset); if (fh < 0 || th < 0) return 0;
   snprintf(prim_ops(), (size_t)prim_ops_size(), "[[\"bayerPick\",%d,%d,%d,%d,%d]]", fh, th, level, x, y);
@@ -169,9 +182,9 @@ int v_spec_rect(const char *screen, const char *path, int r[4]) {
 int v_fdiv(int a, int b) { int q = a / b; return (a % b != 0 && ((a < 0) != (b < 0))) ? q - 1 : q; }
 int v_half(int a) { return v_fdiv(a + 1, 2); }
 const char *v_fmt(const char *fmt, ...) {
-  static char ring[32][160]; static int k; char *b = ring[k++ & 31]; va_list ap; va_start(ap, fmt); vsnprintf(b, 160, fmt, ap); va_end(ap); return b;
+  static char ring[32][160]; static unsigned k; char *b = ring[k++ & 31]; va_list ap; va_start(ap, fmt); vsnprintf(b, 160, fmt, ap); va_end(ap); return b;
 }
-const char *v_pstr(const char *path) { static char ring[32][V_STR]; static int k; char *b = ring[k++ & 31]; spec_str("props", path, b, V_STR); return b; }
+const char *v_pstr(const char *path) { static char ring[32][V_STR]; static unsigned k; char *b = ring[k++ & 31]; spec_str("props", path, b, V_STR); return b; }
 int v_pint(const char *path, int dflt) { return spec_int("props", path, dflt); }
 int v_pbool(const char *path, int dflt) { return spec_bool("props", path, dflt); }
 int v_plen(const char *path) { return spec_len("props", path); }
