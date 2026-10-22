@@ -38,3 +38,18 @@ The three questions in Home spec §15:
   - Caption: "Loika genome"; "{n} new" hidden.
 - **No new art:** it is the same generator with an empty state, at the same scale and centre.
 - The rule "never a species with nothing found" still picks the species whenever anything is found. This case only applies when nothing is.
+
+## Round 2 (build 1d62807c): pass on breathing and the empty save; the glints need one rule
+
+- **Breathing: pass.**
+  - The gain is now on the light only. The form's mean goes from 137.5 to 145.1 at the brightest level.
+  - The ground changes only in the bloom halo: at most 6 levels, 95% of it within 13 px of the form. Of the ground more than 20 px from the form, 0.1% changes.
+  - That is the bloom breathing with the form, as asked. The open field holds still.
+  - **Test:** my round-1 wording ("ground identical") is too strict once the bloom breathes. Use instead: the ground more than 20 px from any form pixel is identical across the four levels.
+- **Empty save: pass.** The Loika's core with its dormant rings, captioned "Loika genome", with no "new". It reads as a genome waiting to be found.
+- **Glints: one rule needed.**
+  - Outward by 8 px works where beads are apart (the left glint reads at once).
+  - In the dense lower-left cluster, one star lands between the pink and cyan beads, touching the cyan one. With "3 new", the star must name its bead, so touching another bead mislabels it.
+  - **Set the nudge:** if the outward spot's star (radius 6) comes within 3 px of another bead or ray, turn the offset around its own bead in ±30° steps (+30, −30, +60, −60 … up to ±150) and take the first clear spot. If none is clear, keep the outward spot.
+  - The offset stays at 8 px, and stars stay clamped to the 12 px margin.
+- **Re-check:** `home-library-3-new.png` only. When its stars each sit clear of every bead but their own, this ticket passes.
