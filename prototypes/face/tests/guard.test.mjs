@@ -37,6 +37,8 @@ test("the canvas is touched only by the face's present and the named decoders", 
   assert.match(fails({ "prototypes/ui/tools/x.mjs": "cv.getContext('2d');" }).join("\n"), /ui\/tools\/x\.mjs:1/);
   assert.match(fails({ "prototypes/station/src/face-lvgl.mjs": "ctx.putImageData(a, 0, 0);" }).join("\n"), /face-lvgl\.mjs:1 uses the canvas/, "only the marked lines of face-lvgl are exempt");
   assert.deepEqual(fails({ "prototypes/station/src/face-lvgl.mjs": "// guard:canvas begin\nctx.putImageData(a, 0, 0);\n// guard:canvas end\nexport const a = 1;", "prototypes/station/src/masters.mjs": 'document.createElement("canvas").getContext("2d");', "prototypes/station/src/art.mjs": "// a canvas in a comment\nexport const a = 1;" }), []);
+  assert.deepEqual(fails({ "prototypes/station/src/paint2d.mjs": "const c = createCanvas(1, 1); c.getContext('2d').getImageData(0, 0, 1, 1);", "prototypes/station/src/specimen.mjs": "const o = out.getContext('2d'); o.putImageData(img, 0, 0);" }), [], "the specimen's painter and its port: a canvas subset on a Float32Array, no DOM");
+  assert.match(fails({ "prototypes/station/src/specimen-cache.mjs": "const c = cv.getContext('2d');" }).join("\n"), /specimen-cache\.mjs:1 uses the canvas/, "only the two named files");
 });
 test("JavaScript outside face/tests may not name an export of the node path", () => {
   assert.match(fails({ "prototypes/station/src/face-lvgl.mjs": "M._face_scene_begin();" }).join("\n"), /names an export of the node path/);

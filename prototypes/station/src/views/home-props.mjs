@@ -14,6 +14,11 @@ import { readyCrates, bayState } from "../sitting.mjs";
 import { paintingOf } from "./idle-props.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 
+// The Library module's region and the request that makes its specimen (build spec 4.2) come from the specimen painter (views/specimen-props.mjs), which the host registers here: the painter stays out of what the intents import
+// (they are DOM-free and run as a Node program, intents.test.mjs), and a build with none registered shows the Library's placeholder.
+let library = () => ({ region: {}, request: null });
+export const setLibrary = (fn) => { library = fn; };
+
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const COUNT = ["", "a", "two", "three", "four", "five", "six"];
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
@@ -199,10 +204,11 @@ export function homeBuild(m, spec, frame) {
   const readout = !housed.length ? "" : atHome === 0 ? R.allTrip : [atHome ? fill(R.home, { n: atHome }) : "", onTrip ? fill(R.trip, { m: onTrip }) : ""].filter(Boolean).join(R.sep);
   // the focus: the six targets, the ring on `cur` or nowhere
   const living = glassOf(m, spec, frame, housed, requests);
+  const lib = library(st, settings, spec); if (lib.request) { requests.push(lib.request); requests.push({ kind: "star", id: "star:12" }); }   // the Library's specimen (build spec 4.2) and the glint on a bead found since it was last opened
   const targets = ["vivarium", "library", "pods", "incubator", "companion", "bay"].map((id) => ({ id, group: id }));
   const cur = m.focus && targets.some((t) => t.id === m.focus) ? m.focus : "room";
   const line = lineOf(m, spec, frame, { cur, needs, docked, companion });
-  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: {}, glass: living.glass, residents: living.residents, pods, incubator, companion, bay };
+  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: lib.region, glass: living.glass, residents: living.residents, pods, incubator, companion, bay };
   return { props: { state: "home", regions, focus: { cur, targets } }, requests, needs, targets };
 }
 

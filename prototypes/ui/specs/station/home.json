@@ -70,7 +70,17 @@
    "component": "panel",
    "build": "bezel",
    "window": [656,78,344,362],
-   "placeholder": {"fill":"stone","edge":"mist"}
+   "placeholder": {"fill":"stone","edge":"mist"},
+   "specimen": {
+    "size": [344,362],
+    "shade": {"px": 2, "colour": "void", "edges": ["top","left"], "note": "build spec 11.5: the window's inner shade replaces the generator's edge gradient, 2 px along the inside top and left edges, drawn as rects; omitted on the placeholder"},
+    "breath": {"ms": 2000, "cycle": [0,1,2,3,2,1], "note": "build spec 4.2: four pre-rendered brightness levels of the picture and one whole-picture swap every 2 s, cycling levels 1 2 3 4 3 2 (the main one is level 1); a swap frame is 124,528 px, and the residents do not step on it. Reduced motion: no breathing, level 1 only"},
+    "glint": {"size": [12,12], "max": 8, "ms": 2000, "levels": 16, "note": "build spec 4.2: glint-star-12x12 centred on each bead of a look found since the Library was last opened full screen, at most 8 drawn; it fades in and out on the 16-level stage dither over 2 s (in for the first half, out for the second, then again); reduced motion: no fade, the glints simply show"},
+    "captions": {
+     "new": {"at": [668,412], "px": 16, "colour": "gold", "note": "{n} new, at the lower left, hidden at 0"},
+     "genome": {"right": 988, "y": 412, "px": 16, "colour": "mist", "note": "{Species} genome, right-aligned"}
+    }
+   }
   },
   "console": {
    "rect": [16,460,992,132],
@@ -305,6 +315,7 @@
    "bay": "Open the Bay"
   },
   "away": "away",
+  "library": {"new": "{n} new", "genome": "{Species} genome"},
   "notes": {"companionAway":"the Companion is on a trip"},
   "readout": {"home":"{n} at home","trip":"{m} on a trip","allTrip":"all on a trip","sep":" · "},
   "stations": {

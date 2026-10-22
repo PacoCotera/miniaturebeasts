@@ -57,7 +57,7 @@ typedef struct { char id[24]; unsigned seed, s; int w, h, x, feet, facing, walki
 static wk_t g_w[MAXR]; static int g_nw; static uint32_t g_t0; static int g_have_t0;
 static long g_wticks;   /* the walk's group ticks applied since its origin g_t0: tick j is at 40 j ms and steps group j mod 2 */
 static int g_ctx = -1;   /* the walk's last context (0 none, 1 Idle, 2 the Vivarium's whole): it starts again from the seeds when the other shows */
-void home_hidden(void) { g_have_t0 = 0; g_ctx = -1; }   /* the moving household starts again from the seeds too (No replay) */
+void home_hidden(void) { g_have_t0 = 0; g_ctx = -1; library_reset(); }   /* the moving household starts again from the seeds too (No replay) */
 static unsigned wr(wk_t *k) { k->s = k->s * 1664525u + 1013904223u; return k->s >> 16; }
 static int meets_k(int x, int feet, int w) { return x + w > g_kx && feet > g_ky; }
 /* a figure box at x (its left) with width w and its feet row is walkable when the feet are at or below the ground profile at F.x = x + w/2 (always, with no profile) */
@@ -337,6 +337,7 @@ int g_home_steps;   /* test hook: the residents that stepped since face_frame be
 
 /* the walk's clock: at most one group tick a frame (a late frame steps the next group only and the time past that tick is dropped by moving the walk's origin later in whole ticks); the moving household runs on the tick it applies */
 static int walk_clock(uint32_t now) {
+  if (library_swap_pending(now)) return 0;   /* the Library's breathing swap is 124,528 px: the residents do not step on its frame (build spec 4.2), and take their tick on the next */
   long due = (long)((now - g_t0) / STEP_MS) + 1;
   if (due > g_wticks + 1) { g_t0 += (uint32_t)(due - g_wticks - 1) * STEP_MS; due = g_wticks + 1; }
   if (due <= g_wticks) return 0;
@@ -407,7 +408,7 @@ static int ent_load(const char *cur) {
     wk_t *old = NULL; for (int j = 0; j < g_nw; j++) if (strcmp(g_w[j].id, e->id) == 0 && g_w[j].seed == e->seed && g_w[j].w == fig[2]) old = &g_w[j];
     if (old) kept[nk] = *old; else wk_init(&kept[nk], e->id, e->seed, fig[2], fig[3]);
     wk_t *k = &kept[nk++];
-    if (motion && rel >= 40u * (unsigned)(i & 1)) {
+    if (motion && !library_swap_pending(now) && rel >= 40u * (unsigned)(i & 1)) {   /* not on the frame the Library's breathing swap lands on (build spec 4.2): it takes its steps on the next */
       long due = (long)((rel - 40u * (unsigned)(i & 1)) / 80u) + 1;
       if (due - k->done > 4000) k->done = due - 4000;   /* a long gap: catch up no further than the route repeats */
       int frozen = ent_focused(e, cur) || asleepStill, x0 = k->x, f0 = k->feet;   /* a sleeping resident stays where it is */
@@ -575,13 +576,14 @@ static void glass_group(const char *cur) {
 
 /* a step of the residents' walk is due (the redraw every STEP_MS while any resident walks) */
 int home_tick(uint32_t now) {
+  int lib = library_tick(now);   /* the Library's swap or glint step is due: Home is drawn again, the residents held on a swap frame (walk_clock) */
   int idle = v_pbool("idle", 0);
   int home = strcmp(v_pstr("screen"), "home") == 0;
-  if ((strcmp(v_pstr("screen"), "vivarium") != 0 && !idle && !home) || !spec_has(idle ? "frame" : home ? "home" : "vivarium") || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
-  if (!g_have_t0) return 0;
-  if (!((long)((now - g_t0) / STEP_MS) + 1 > g_wticks)) return 0;   /* no group tick is due that the walk has not applied */
+  if ((strcmp(v_pstr("screen"), "vivarium") != 0 && !idle && !home) || !spec_has(idle ? "frame" : home ? "home" : "vivarium") || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return lib;
+  if (!g_have_t0) return lib;
+  if (!((long)((now - g_t0) / STEP_MS) + 1 > g_wticks)) return lib;   /* no group tick is due that the walk has not applied */
   if (g_nw > 0 || !(g_nm || g_nnap)) return 1;   /* a still walks: every tick draws, as before */
-  return walk_clock(now) > 0;   /* only moving residents: the tick is applied here and a frame asked only when something changed (§2.3 item 10: a night Idle of sleepers draws a few times a second, not 25) */
+  return walk_clock(now) > 0 || lib;   /* only moving residents: the tick is applied here and a frame asked only when something changed (§2.3 item 10: a night Idle of sleepers draws a few times a second, not 25) */
 }
 /* test hooks (face.c): a moving resident by its index among the props' residents */
 static const mv_t *mv_at(int i) { for (int k = 0; k < g_nm; k++) if (g_m[k].idx == i) return &g_m[k]; return NULL; }
@@ -597,7 +599,7 @@ int home_test_nap(int i) { return i >= 0 && i < g_nnap ? g_nap[i].cell : -1; }
 /* ---- Idle (frame.json idle, station-layouts.md Idle): the whole 1024 x 600 with no frame: the Vivarium's painting (until its master the flat plates of idle.colours), the residents walking, the bed and the carried set asleep,
    and the one line on its strip. The same living-window code as the Vivarium's whole, on the frame spec's rectangles. ---- */
 void idle_words(void) {
-  g_idle = 1; ent_load("");
+  g_idle = 1; library_reset(); ent_load("");   /* Idle has no Library module: Home's clock starts again when Home shows */
   word_livingWindow("frame", "vivarium", NULL, "idle.regions.vivarium", "idle.colours", v_pstr("regions.vivarium.picture"), 0, 0);
   glass_group("");
   g_idle = 0;

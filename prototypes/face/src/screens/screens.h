@@ -20,6 +20,9 @@ void screens_key(int code);
 void home_words(void);
 void home_window(void);   /* Home's Vivarium window: the painting, the residents, the tag and the away frame (home.c) */
 int home_window_painted(void);
+void library_reset(void);   /* Home's Library module: its clock starts again when Home shows again (home_frame.c) */
+int library_swap_pending(uint32_t now);   /* a breathing swap is due this frame: the residents do not step on it (home.c walk_clock) */
+int library_tick(uint32_t now);   /* a breathing swap or a glint step is due: Home is drawn again (home.c home_tick) */
 void vivarium_words(void);   /* the Vivarium's whole: the living window on vivarium.json, the bays along the foot (screens/home.c) */
 int vivarium_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 void vivarium_key(int code);

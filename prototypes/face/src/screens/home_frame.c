@@ -110,6 +110,58 @@ static void expand_mark(const char *id, int x, int y, int size, int tick, const 
   snprintf(ops + n, sizeof ops - (size_t)n, "]"); snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
   prim_node(v_id(id), FN_COMPOSED, x, y, size, size, 0, 0, 0);
 }
+
+/* ---- the Library's window: the specimen (build spec 4.2) ----
+   The picture is the generator's painted RGB, one of four brightness levels the logic process made; the window's 2 px inner shade lies along its top and left; a glint on each bead of a look found since the Library was last opened full screen
+   (at most 8) fades in and out on the 16-level stage dither over `glint.ms`; the picture breathes by a whole-picture swap every `breath.ms` through `breath.cycle`. Under reduced motion there is neither: level 1 and the glints solid.
+   The swap is 124,528 px, so the residents do not step on the frame it lands on (walk_clock asks library_swap_pending). The clock is the face's own, from the frame Home's Library module was first drawn in. */
+static uint32_t g_lib_t0; static int g_lib_have, g_lib_level = -1, g_lib_glint = -1;
+void library_reset(void) { g_lib_have = 0; g_lib_level = -1; g_lib_glint = -1; }
+static int lib_motion(void) { return v_pbool("motion", 1); }
+static int lib_breath_level(uint32_t now) {   /* the level (0 to 3) the cycle has reached */
+  int n = spec_len(H, "regions.library.specimen.breath.cycle"), ms = hi("regions.library.specimen.breath.ms", 2000);
+  if (!lib_motion() || n <= 0 || ms <= 0) return 0;
+  return hk("regions.library.specimen.breath.cycle", (int)(((now - g_lib_t0) / (uint32_t)ms) % (uint32_t)n));
+}
+static int lib_glint_level(uint32_t now) {   /* the dither level (0 to 16): in over the first half of the period, out over the second */
+  int ms = hi("regions.library.specimen.glint.ms", 2000), top = hi("regions.library.specimen.glint.levels", 16);
+  if (!lib_motion() || ms <= 1) return top;
+  int ph = (int)((now - g_lib_t0) % (uint32_t)ms), half = ms / 2, up = ph < half ? ph : ms - ph; return top * up / half;
+}
+static int lib_on_home(void) { return strcmp(v_pstr("screen"), "home") == 0 && !v_pbool("idle", 0) && spec_has(H); }   /* Idle is a screen of "home" props too: the Library has no part in it */
+int library_swap_pending(uint32_t now) { return lib_on_home() && lib_motion() && g_lib_have && g_lib_level >= 0 && lib_breath_level(now) != g_lib_level; }
+int library_tick(uint32_t now) {   /* a swap or a glint step is due that the last draw did not show */
+  if (!lib_on_home() || !lib_motion() || !g_lib_have) return 0;
+  if (lib_breath_level(now) != g_lib_level) return 1;
+  return v_plen("regions.library.glints") > 0 && lib_glint_level(now) != g_lib_glint;
+}
+static int lib_painted(void) { const char *pic = v_pstr("regions.library.picture"); return pic && *pic && wire_asset_slot(pic) >= 0; }
+static void library_window(void) {
+  int g[4]; hrect("regions.library.window", g);
+  int painted = lib_painted(); uint32_t now = anim_now();
+  if (!g_lib_have) { g_lib_have = 1; g_lib_t0 = now; }
+  int lvl = lib_breath_level(now); g_lib_level = lvl;
+  char pic[96]; snprintf(pic, sizeof pic, "%s", v_pstr(v_fmt("regions.library.levels.%d", lvl))); if (!pic[0] || wire_asset_slot(pic) < 0) snprintf(pic, sizeof pic, "%s", v_pstr("regions.library.picture"));
+  v_region("library.window", LAYER_PAINTED);
+  if (painted) { v_name("library.window"); v_sprite("library.picture", pic, g[0], g[1], g[2], g[3]); }
+  { char shade[24]; spec_str(H, "regions.library.specimen.shade.colour", shade, sizeof shade); int sp2 = hi("regions.library.specimen.shade.px", 2);
+    v_region("library.window", LAYER_CHROME);
+    v_rect("library.shade.t", g[0], g[1], painted ? g[2] : 0, painted ? sp2 : 0, shade); v_rect("library.shade.l", g[0], g[1], painted ? sp2 : 0, painted ? g[3] : 0, shade); }   /* omitted on the placeholder: nodes of no size */
+  v_region("library.window", LAYER_ART);
+  const char *star = v_pstr("regions.library.star"); int ng = v_plen("regions.library.glints"), mx = hi("regions.library.specimen.glint.max", 8), gw = hk("regions.library.specimen.glint.size", 0), gh = hk("regions.library.specimen.glint.size", 1);
+  int gl = lib_glint_level(now); g_lib_glint = gl; if (ng > mx) ng = mx;
+  if (painted && star && *star) for (int i = 0; i < ng; i++) {
+    int x = v_pint(v_fmt("regions.library.glints.%d.0", i), 0), y = v_pint(v_fmt("regions.library.glints.%d.1", i), 0);
+    v_dither_window(v_fmt("library.glint.%d", i), NULL, 0, 0, star, 0, 0, gl, g[0] + x - gw / 2, g[1] + y - gh / 2, gw, gh);   /* centred on the bead; level 0 draws nothing, level 16 the whole star */
+  }
+}
+static void library_captions(void) {
+  if (!lib_painted()) return;
+  v_region("library.window", LAYER_TYPE);
+  const char *nw = v_pstr("regions.library.new"), *gn = v_pstr("regions.library.genome");
+  if (nw && *nw) text_at("library.new", nw, hk("regions.library.specimen.captions.new.at", 0), hk("regions.library.specimen.captions.new.at", 1), hi("regions.library.specimen.captions.new.px", 16), hcol("regions.library.specimen.captions.new.colour"));   /* hidden at 0 */
+  if (gn && *gn) { int px = hi("regions.library.specimen.captions.genome.px", 16), w = v_measure(gn, px); text_at("library.genome", gn, hi("regions.library.specimen.captions.genome.right", 988) - w, hi("regions.library.specimen.captions.genome.y", 412), px, hcol("regions.library.specimen.captions.genome.colour")); }
+}
 static void bezel_words(const char *key) {
   int r[4], win[4]; hrect(v_fmt("regions.%s.rect", key), r); hrect(v_fmt("regions.%s.window", key), win);
   int rad = hi("regions.bezel.radius", 10);
@@ -117,15 +169,18 @@ static void bezel_words(const char *key) {
   build_roundPanel(v_fmt("%s.panel", key), r[0], r[1], r[2], r[3], rad, hcol("regions.bezel.fill"), hcol("regions.bezel.edge"));
   v_rect(v_fmt("%s.bevel", key), r[0] + rad, r[1] + 1, r[2] - 2 * rad, 1, hcol("regions.bezel.bevel"));   /* the bevel line on top: the first row inside the edge, between the corners */
   { char f[24], e[24]; spec_str(H, v_fmt("regions.%s.placeholder.fill", key), f, sizeof f); spec_str(H, v_fmt("regions.%s.placeholder.edge", key), e, sizeof e);
-    int gone = strcmp(key, "vivarium") == 0 && home_window_painted();   /* the Vivarium's window is its painting once that is on the face: the placeholder stays as a node of no size */
+    int gone = (strcmp(key, "vivarium") == 0 && home_window_painted()) || (strcmp(key, "library") == 0 && lib_painted());   /* a window is its picture once that is on the face: the placeholder stays as a node of no size */
     word_panel(v_fmt("%s.window", key), win[0], win[1], gone ? 0 : win[2], gone ? 0 : win[3], f, e); }   /* the window: a placeholder until its picture lands */
   if (strcmp(key, "vivarium") == 0) home_window();
+  if (strcmp(key, "library") == 0) library_window();
+  v_region(key, LAYER_CHROME);
   expand_mark(v_fmt("%s.expand", key), r[0] + r[2] - hk("regions.bezel.expand.at", 0), r[1] + hk("regions.bezel.expand.at", 1), hi("regions.bezel.expand.size", 14), hi("regions.bezel.expand.tick", 4), hcol("regions.bezel.expandColour"));
   v_region(key, LAYER_TYPE);
   char title[40], readout[V_STR]; spec_str(H, v_fmt("strings.titles.%s", key), title, sizeof title); snprintf(readout, sizeof readout, "%s", v_pstr(v_fmt("regions.%s.readout", key)));
   int x = r[0] + hk("regions.bezel.title", 0), y = r[1] + hk("regions.bezel.title", 1);
   int tw = text_at(v_fmt("%s.title", key), title, x, y, hi("regions.bezel.titlePx", 16), hcol("regions.bezel.titleColour"));
   if (readout[0]) text_at(v_fmt("%s.readout", key), readout, x + tw + hi("regions.bezel.readoutGap", 8), y, hi("regions.bezel.readoutPx", 16), hcol("regions.bezel.readoutColour"));
+  if (strcmp(key, "library") == 0) library_captions();
 }
 
 /* ---- the console and its stations ---- */

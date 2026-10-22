@@ -21,6 +21,10 @@ export function departures(log, spec, frame, cur = "room") {
     for (const r of got(k, "type")) must(within(r.rect, H), `${k}'s words ${r.rect} leave its header ${H}`);
     must(within(R[k].window, B), `${k}'s window leaves its bezel`);
   }
+  // the Library's window (build spec 4.2): its picture is the window 1:1, the shade, the glints and the captions inside it
+  { const W = R.library.window, pic = got("library.window", "painted"); must(pic.length <= 1 && pic.every((r) => eq(r.rect, W)), `the Library's specimen ${pic[0]?.rect} is not the window ${W}`);
+    for (const r of got("library.window")) must(within(r.rect, W), `the Library's window (${r.layer}) ${r.rect} leaves ${W}`);
+    for (const r of got("library.window", "art")) must(r.rect[2] <= W[2] && r.rect[3] <= W[3], `the Library's glints ${r.rect}`); }
   { const c = got("console", "chrome"); must(c.length === 1 && eq(c[0].rect, R.console.rect), `the console ${c[0]?.rect} is not ${R.console.rect}`); }
   // the stations: everything of a station inside its rectangle; its lamp where the spec puts it; its words in the box left of the picture
   for (const k of STATIONS) {

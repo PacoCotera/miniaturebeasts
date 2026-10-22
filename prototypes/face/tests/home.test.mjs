@@ -12,7 +12,10 @@ import { withPolicy, installScene } from "./node-scene.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { setFrames, frameOf, podGenome } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
-import { homeBuild, homeNeeds, wordsOf } from "../../station/src/views/home-props.mjs";
+import { homeBuild, homeNeeds, wordsOf, setLibrary } from "../../station/src/views/home-props.mjs";
+import { libraryOf, warmLibrary, glintAt, glintSpot, GLINT_TURNS } from "../../station/src/views/specimen-props.mjs";
+import { renderSpecimen } from "../../station/src/specimen.mjs";
+setLibrary(libraryOf);   // the host registers it; Home's Library module is the specimen (build spec 4.2)
 import { departures, TARGETS } from "../tools/home-regions.mjs";
 import { dirty } from "./dirty.mjs";
 
@@ -35,6 +38,7 @@ function scene(o = {}) {
   if (o.away) st.dock = { docked: false, at: T0 };
   if (o.bud) st.bud = { kind: "founder", species: "S01", sp: 0, gs: 5, genome: st.mibis[0].genome, sha: "bud", code: "BUD", start: Date.now() - o.bud * 60000, minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: [], early: false };
   if (o.portrait) st.sittingCrates.push({ id: "sit1", mibiId: st.mibis[0].id, pose: "stand", place: "meadow", start: 0, source: "x", painted: true, opened: false });
+  warmLibrary(st, settings);
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: Array.from({ length: o.crates ?? 0 }, (_, i) => crate(i + 1, o.trips ? i % o.trips : 0)), mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
   return { ...homeBuild({ st, sv, settings, docked: S.docked(st), ui: o.ui ?? {}, focus: o.focus ?? null, time: 12 * 3600 + 41 * 60, date: { y: 2026, m: 9, d: 17 }, now: Date.now() + 1000, place: o.place ?? "" }, homeSpec, frameSpec), st, sv };
 }
@@ -50,6 +54,7 @@ function stationPictures(b) {
   const R = b.props.regions, out = new Map(), add = (id, size) => { if (id) out.set(id, size); }, sized = (id) => { const m = /(\d+)x(\d+)$/.exec(id); return [+m[1], +m[2]]; };
   for (const w of R.pods.wells) { add(w.pod, homeSpec.regions.rackPod.size); add(w.glint, [12, 12]); }
   const c = R.incubator.capsule; for (const k of ["interior", "shell", "door", "bar", "glass"]) add(c[k], sized(c[k])); add(c.pod, c.podSize);
+  for (const id of R.library.levels ?? []) add(id, [344, 362]); add(R.library.star, [12, 12]);   // the Library's specimen: its four levels and the glint
   add(R.companion.picture, sized(R.companion.picture)); if (R.companion.plates) { add(R.companion.plates.wholePicture, [12, 24]); add(R.companion.plates.lostPicture, [12, 24]); }
   for (const id of Object.values(R.bay.pictures)) add(id, sized(id));
   return out;
@@ -104,7 +109,7 @@ test("the departure check bites: a station's lamp, the line and the panel of a b
 test("the pad is home.json's graph on the boxes the words drew: every vector of the spec is played on the face, and the focus is said on the frame of the key", { skip }, async () => {
   assert.equal(homeSpec.focus.vectors.length, 28, "seven places, four keys each");
   for (const v of homeSpec.focus.vectors) {
-    const f = await start(scene({ adults: 2, focus: v.from === "room" ? null : v.from })), before = f.hash(), out = key(f, v.key);
+    const f = await start(scene({ adults: 2, focus: v.from === "room" ? null : v.from }), { motion: false }), before = f.hash(), out = key(f, v.key);   /* reduced motion: the Library's glints and breathing are time, and a key that moves nothing must change no pixel */
     if (v.to === v.from) { assert.deepEqual(out, [], `${v.from} ${v.key} stays`); assert.equal(f.hash(), before, `${v.from} ${v.key}: nothing redrawn`); }
     else { assert.equal(out.length, 1, `${v.from} ${v.key}`); assert.deepEqual([out[0].t, out[0].screen, out[0].target], ["focus", "home", v.to], `${v.from} ${v.key}`); assert.notEqual(f.hash(), before, `${v.from} ${v.key}: the ring moves in the same frame`); }
   }
@@ -287,7 +292,7 @@ test("the window is the 1:1 crop at (64, 194) of Idle's painting of the light, 6
     assert.equal(sc.props.regions.glass.picture, `idle-vivarium-${light}:1024x568`, "the same painting the Vivarium uses, by the light: no new master");
     assert.deepEqual(f.errors(), []); assert.deepEqual(box(f, "vivarium.glass"), [24, 78, 604, 362]);
     assert.deepEqual(box(f, "vivarium.shade.t"), [24, 78, 604, 2]); assert.deepEqual(box(f, "vivarium.shade.l"), [24, 78, 2, 362]);
-    assert.deepEqual(box(f, "vivarium.window").slice(2), [0, 0], "no placeholder under the painting"); assert.deepEqual(box(f, "library.window").slice(2), [344, 362], "the Library is still its placeholder");
+    assert.deepEqual(box(f, "vivarium.window").slice(2), [0, 0], "no placeholder under the painting"); assert.deepEqual(box(f, "library.window").slice(2), sc.props.regions.library.picture ? [0, 0] : [344, 362], "the Library is its placeholder only while no species has a look found");
   }
 });
 test("the window shows at most six of the mibis at home, the ones with the most recent activity, in bay order; none at home shows none; the residents are never focus targets", { skip }, async () => {
@@ -422,5 +427,90 @@ test("the Companion's line 1 names the carried mibi in every scene that carries 
   for (const [name, o] of Object.entries(SCENES)) {
     const b = scene(o), c = b.props.regions.companion, carried = S.carriedIds(b.st, b.sv), mb = carried.length ? S.mibiById(b.st, b.sv.lead != null && carried.includes(b.sv.lead) ? b.sv.lead : carried[0]) : null;
     if (mb) { assert.ok(c.line1.startsWith(mb.name + " "), `${name}: "${c.line1}" must name ${mb.name}`); assert.equal(c.name, mb.name); } else assert.match(c.line1, /^(at home|on a trip)$/, `${name}: no one carried`);
+  }
+});
+
+// ---- the Library module (build spec 4.2, H4): the specimen in the window, its words, the glints and the breathing ----
+import { flatPicture } from "./moving-scene.mjs";
+const L = homeSpec.regions.library, LS = L.specimen;
+const rgbOf = (id) => [...flatPicture(id, [1, 1]).data.slice(0, 3)];
+const same = (a, b) => a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
+test("the Library's window is the specimen 344 x 362 at (656, 78), its 2 px inner shade on the top and left, the placeholder gone; the header is 'Library' alone; the captions '{n} new' (gold, hidden at 0) and '{Species} genome' (mist, right-aligned at x 988), both at y 412", { skip }, async () => {
+  assert.deepEqual([L.window, LS.shade.px, LS.shade.colour, LS.captions.new.at, LS.captions.new.colour, LS.captions.genome.right, LS.captions.genome.y, LS.captions.genome.colour], [[656, 78, 344, 362], 2, "void", [668, 412], "gold", 988, 412, "mist"]);
+  for (const n of [0, 3]) {
+    const sc = homeScene({ adults: 3, libNew: n, motionSets: false }), R = sc.props.regions.library, f = await bootScene(sc, { motion: false, dir: node }), lg = logOf(f);
+    assert.deepEqual(f.errors(), []); assert.equal(R.picture, R.levels[0]); assert.equal(new Set(R.levels).size, 4); assert.match(R.picture, /^specimen:S01:[0-9a-f]{8}:v\d+$/); assert.deepEqual(R.levels.slice(1).map((id) => id.slice(R.picture.length)), [":b2", ":b3", ":b4"]);
+    assert.deepEqual(box(f, "library.picture"), [656, 78, 344, 362]); assert.deepEqual(box(f, "library.shade.t"), [656, 78, 344, 2]); assert.deepEqual(box(f, "library.shade.l"), [656, 78, 2, 362]); assert.deepEqual(box(f, "library.window").slice(2), [0, 0], "no placeholder under the specimen");
+    assert.deepEqual(typeIn(lg, "library").map((t) => t.text), ["Library"], "the header is the title alone: no count");
+    assert.equal(R.genome, "Loika genome"); const gn = box(f, "library.genome"); assert.ok(gn && Math.abs(gn[0] + gn[2] - 988) <= 1 && gn[1] >= 412 && gn[1] < 412 + 20, `the genome caption ${gn}`);
+    assert.deepEqual(typeIn(lg, "library.window").map((t) => [t.text, t.px]), n ? [[`${n} new`, 16], ["Loika genome", 16]] : [["Loika genome", 16]]);
+    if (n) { const c = box(f, "library.new"); assert.ok(c && c[0] === 668 && c[1] >= 412 && c[1] < 412 + 20, `the new caption ${c}`); assert.equal(R.new, `${n} new`); } else { assert.equal(R.new, undefined); assert.equal(box(f, "library.new"), null, "hidden at 0"); }
+    assert.equal(R.glints.length, n, `${n} glints`);
+    R.glints.forEach(([x, y], i) => { const g = box(f, `library.glint.${i}`); assert.deepEqual(g, [656 + x - 6, 78 + y - 6, 12, 12], `glint ${i} is where the props put it`); assert.ok(x >= 18 && x <= 326 && y >= 18 && y <= 344, "inside the 12 px margin"); });
+  }
+});
+test("with nothing found anywhere the window shows the starter's form in its empty state (every look a dormant open ring), captioned 'Loika genome', with no '{n} new' and no glint", { skip }, async () => {
+  const sc = homeScene({ adults: 0 }), R = sc.props.regions.library, f = await bootScene(sc, { motion: false, dir: node }); assert.equal(R.species, "S01"); assert.equal(R.genome, "Loika genome"); assert.equal(R.new, undefined); assert.deepEqual(R.glints, []);
+  assert.deepEqual(box(f, "library.picture"), [656, 78, 344, 362]); assert.deepEqual(box(f, "library.window").slice(2), [0, 0], "no placeholder"); assert.equal(box(f, "library.new"), null); assert.ok(box(f, "library.genome")); assert.deepEqual(f.errors(), []);
+});
+test("the glint stands beside its bead: its centre 8 px from the bead's, along the ray from the form's hub, outward, and kept inside the window's margin", () => {
+  const hub = [177, 185];
+  for (const b of [{ x: 100, y: 185 }, { x: 177, y: 40 }, { x: 250, y: 300 }]) { const [x, y] = glintAt(b), d = Math.hypot(x - b.x, y - b.y), out = Math.hypot(x - hub[0], y - hub[1]) - Math.hypot(b.x - hub[0], b.y - hub[1]); assert.ok(Math.abs(d - 8) <= 1, `8 px off: ${d}`); assert.ok(out > 6, "outward"); }
+  // a neighbour bead at the outward spot turns the offset around its bead (or moves out to 10 or 12); with no spot clear the one with the largest clearance is taken, never the outward spot by default
+  { const b = { x: 100, y: 185, r: 4.3 }, out = glintSpot(b, [b], []), nb = { x: out.x, y: out.y, r: 4.3 }, t = glintSpot(b, [b, nb], []);
+    assert.equal(out.clearance, Infinity); assert.ok(!t.fallback && t.clearance >= 3, `clearance ${t.clearance}`); assert.ok(Math.hypot(t.x - nb.x, t.y - nb.y) >= 6 + 5.3 + 3 - 1, "clear of the neighbour's edge");
+    const ring = []; for (const d of [8, 10, 12]) for (let a = 0; a < 360; a += 15) ring.push({ x: b.x + d * Math.cos(a * Math.PI / 180), y: b.y + d * Math.sin(a * Math.PI / 180), r: 4.3 });
+    const f = glintSpot(b, [b, ...ring], []); assert.ok(f.fallback && f.clearance < 3, "nothing clears: flagged as the fallback");
+    for (const q of [8, 10, 12]) for (const turn of GLINT_TURNS) { const a = Math.atan2(0, -1) + turn * Math.PI / 180, x = Math.round(b.x + q * Math.cos(a)), y = Math.round(b.y + q * Math.sin(a)), c = Math.min(...ring.map((o) => Math.hypot(x - o.x, y - o.y) - 6 - 5.3)); assert.ok(c <= f.clearance + 1e-9, `the fallback has the largest clearance: ${c} against ${f.clearance}`); } }
+  // the late state with 3 new: each glint's spot and clearance, printed; each at least 3, or the fallback
+  { const r = renderSpecimen(frameOf("S01"), JSON.parse(readFileSync(path.resolve(here, "../../station/tests/fixtures/specimen/states/late.json"), "utf8"))), rows = [];
+    const fresh = r.beads;
+    for (const b of fresh) { const g = glintSpot(b, r.beads, r.rays); rows.push(`${b.trait}|${b.look} bead (${b.x.toFixed(1)}, ${b.y.toFixed(1)}) spot (${g.x}, ${g.y}) clearance ${g.clearance.toFixed(2)}${g.fallback ? " FALLBACK" : ""}`); assert.ok(g.clearance >= 3 || g.fallback, rows.at(-1)); }
+    console.log("# glint spots, late state (every bead, as if new):\n#   " + rows.join("\n#   ")); }
+  assert.deepEqual(glintAt({ x: 20, y: 185 }), [18, 185]); assert.deepEqual(glintAt({ x: 177, y: 350 }), [177, 344]);
+});
+test("more than eight new looks: eight glints are drawn and the caption counts them all", { skip }, async () => {
+  const sc = homeScene({ adults: 3, motionSets: false }), R = sc.props.regions.library, f = await bootScene(sc, { motion: false, dir: node });   // nothing opened yet: every look found is new
+  const n = +/^(\d+) new$/.exec(R.new)[1]; assert.ok(n > 8, `${n} new`); assert.equal(R.glints.length, LS.glint.max); assert.equal(LS.glint.max, 8);
+  for (let i = 0; i < 8; i++) assert.ok(box(f, `library.glint.${i}`)); assert.equal(box(f, "library.glint.8"), null);
+});
+test("reduced motion: no breathing and no fade, the glints simply show and the picture never changes", { skip }, async () => {
+  const sc = homeScene({ adults: 3, libNew: 3, motionSets: true }), R = sc.props.regions.library, f = await bootScene(sc, { motion: false, dir: node }), star = rgbOf(R.star), main = rgbOf(R.levels[0]), seen = new Set();
+  const glintPx = () => { let n = 0; for (const [x, y] of R.glints) for (let j = -6; j < 6; j++) for (let i = -6; i < 6; i++) if (same(f.pixel(656 + x + i, 78 + y + j), star)) n++; return n; };
+  for (let t = 0; t < 7000; t += 400) { f.frame((f.t += 400)); seen.add(f.pixel(990, 120).join(",")); assert.equal(glintPx(), 3 * 144, "every glint whole"); }
+  assert.deepEqual([...seen], [main.join(",")], "level 1 only"); assert.deepEqual(f.errors(), []);
+});
+test("the breathing: one whole-picture swap every 2 s through levels 1 2 3 4 3 2; a swap frame redraws the picture (124,528 px) and the residents do not step on it, so no frame passes 153,600 px (stills and moving sets, six residents walking)", { skip }, async () => {
+  assert.deepEqual([LS.breath.ms, LS.breath.cycle], [2000, [0, 1, 2, 3, 2, 1]]);
+  for (const [name, o] of [["stills", { motionSets: false }], ["moving", { motionSets: true }]]) {
+    const sc = homeScene({ adults: 5, juveniles: 3, libNew: 0, ...o }), R = sc.props.regions.library, f = await bootScene(sc, { motion: true, dir: node }), cols = R.levels.map(rgbOf);
+    assert.equal(new Set(cols.map((c) => c.join(","))).size, 4); assert.equal(R.glints.length, 0, "no glint to add to the swap");
+    let prev = -1, t0 = null; const swaps = [], seq = []; let stepsAway = 0, worst = 0;
+    const r = runFrames(f, 14500, { cadence: [16, 0, 0], top: false, each: (t, area) => {
+      const lvl = cols.findIndex((c) => same(c, f.pixel(990, 120))), steps = f.M._face_test_steps(); assert.ok(lvl >= 0, "a level's picture is drawn");
+      if (lvl !== prev) { if (prev >= 0) { swaps.push([t, area, steps]); seq.push(lvl); } else { seq.push(lvl); t0 = t; } prev = lvl; } else stepsAway += steps; worst = Math.max(worst, area);
+    } });
+    const C = LS.breath.cycle, k0 = C.findIndex((v, i) => v === seq[0] && C[(i + 1) % 6] === seq[1]);   // the clock starts when Home is first drawn, so the run starts anywhere in the cycle: it goes round it in order
+    assert.ok(k0 >= 0, `${name}: levels ${seq}`); assert.ok(seq.length >= 7, `${name}: ${seq.length} levels`); assert.deepEqual(seq, Array.from({ length: seq.length }, (_, i) => C[(k0 + i) % 6]), `${name}: the levels in order`);
+    swaps.forEach(([t, area, steps], k) => { assert.ok(area >= 344 * 362 && area <= 153600, `${name}: swap ${k + 1} redrew ${area} px`); assert.equal(steps, 0, `${name}: swap ${k + 1}: the residents stepped on the swap frame`); if (k) assert.ok(Math.abs(t - swaps[k - 1][0] - 2000) <= 16, `${name}: swaps ${t - swaps[k - 1][0]} ms apart`); });
+    assert.ok(stepsAway > 0, `${name}: the residents walk between the swaps`); assert.ok(swaps.length >= 6, `${name}: ${swaps.length} swaps in 14.5 s`); assert.ok(r.worst <= 153600 && r.worstTick <= 148000, `${name}: a frame redrew ${r.worst} px, a tick ${r.worstTick}`); assert.equal(r.overflows, 0); assert.deepEqual(f.errors(), []);
+    console.log(`# Home's Library breathing (${name}): swap frames ${swaps.slice(0, 6).map(([, a]) => a).join(", ")} px with the residents held (${f.objects()} objects), worst frame ${r.worst} px, worst household tick ${r.worstTick} px`);
+  }
+});
+test("the glints fade in and out on the 16-level stage dither over 2 s: whole stars at the half, none at the turn, in steps of the sixteen levels", { skip }, async () => {
+  const sc = homeScene({ adults: 3, libNew: 3, motionSets: false }), R = sc.props.regions.library, f = await bootScene(sc, { motion: true, dir: node }), star = rgbOf(R.star);
+  f.frame((f.t = 6000)); const t0 = f.t;   // the Library's clock began when Home was first drawn (the face's clock was 0 then): 6,000 ms is the start of a 2 s period
+  const count = () => { let n = 0; for (const [x, y] of R.glints) for (let j = -6; j < 6; j++) for (let i = -6; i < 6; i++) if (same(f.pixel(656 + x + i, 78 + y + j), star)) n++; return n; };
+  const series = []; for (let t = 16; t <= 2000; t += 16) { f.frame((f.t = t0 + t)); series.push([t, count()]); }
+  const at = (ms) => series.find(([t]) => t >= ms)[1];   // frames every 16 ms: 1,000 is the frame at the half assert.equal(at(1000), 3 * 144, `whole at the half: ${series.filter((_, i) => i % 6 === 0).map(([t, n]) => t + ":" + n)}`); assert.ok(at(16) < 3 * 144 / 4 && at(500) > 0 && at(500) < 3 * 144, `in: ${at(16)}, ${at(500)}`); assert.equal(series.at(-1)[1], 0, "none at the turn");
+  const up = series.filter(([t]) => t <= 1000).map(([, n]) => n), down = series.filter(([t]) => t >= 1000).map(([, n]) => n);
+  assert.ok(up.every((n, i) => !i || n >= up[i - 1]), "fading in never goes back"); assert.ok(down.every((n, i) => !i || n <= down[i - 1]), "fading out never goes back");
+  assert.ok(new Set(series.map(([, n]) => n)).size <= 17 + 1, "at most the sixteen levels and none"); assert.deepEqual(f.errors(), []);
+});
+test("the budgets of section 7 with the Library's module: at most 400 objects and 12 for the module, props at most 32 KiB, a glint step a small area, the picture table inside 1,024", { skip }, async () => {
+  for (const o of [{ adults: 0 }, { adults: 6, juveniles: 2, libNew: 0 }, { adults: 6, juveniles: 2 }]) {
+    const sc = homeScene({ motionSets: false, ...o }), f = await bootScene(sc, { motion: true, dir: node }), pr = JSON.stringify(sc.props).length;
+    assert.ok(f.objects() <= 400, `${f.objects()} objects`); assert.ok(pr <= 32 * 1024, `props ${pr} B`); assert.ok(f.stats().pictures <= 1024);
+    if (sc.props.regions.library.glints?.length) { dirty(f); f.frame((f.t += 64)); const d = dirty(f); assert.ok(d > 0 && d <= 153600, `a glint step redrew ${d} px`); console.log(`# Home's Library glint step: ${d} px, ${f.objects()} objects, props ${pr} B`); }
   }
 });

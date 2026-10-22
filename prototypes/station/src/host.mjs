@@ -8,7 +8,9 @@ import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, p
 import * as S from "./state.mjs";
 import { frameOf, genomeDigest } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
-import { homeBuild, mibiPictureOf } from "./views/home-props.mjs";
+import { homeBuild, mibiPictureOf, setLibrary } from "./views/home-props.mjs";
+import { libraryOf } from "./views/specimen-props.mjs";
+setLibrary(libraryOf);   // Home's Library module: the specimen of the species with something found (build spec 4.2)
 import { dropLight } from "./light-grade.mjs";
 import { vivariumBuild } from "./views/vivarium-props.mjs";
 import { habitatBuild } from "./views/habitat-props.mjs";

@@ -17,6 +17,7 @@ import { stampGenome, stampSizing } from "./genome.mjs";
 import { dimPicture, labelPlate } from "./stamplook.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { relit } from "./relight.mjs";
+import { specimenFor } from "./specimen-cache.mjs";
 
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
@@ -125,6 +126,11 @@ export function registerPictures(reqs, env) {
         if (!m) { put(r.id, w, h, r.until, () => { const pb = new PB(w, h); pb.rect(0, 0, w, h, C.stone); return pb; }); break; }
         registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => { if (data) return data; const s = assetOf(r.master).rgba(), W = r.of[0], H = r.of[1]; data = new Uint8ClampedArray(w * h * 4);
           for (let y = 0; y < h; y++) { const sy = y0 + y; if (sy < 0 || sy >= H) continue; for (let x = 0; x < w; x++) { const sx = x0 + x; if (sx < 0 || sx >= W) continue; data.set(s.subarray((sy * W + sx) * 4, (sy * W + sx) * 4 + 4), (y * w + x) * 4); } } return data; } }; } });
+        break;
+      }
+      case "specimen": {   // the Library module's specimen (build spec 4.2): the generator's painted RGB picture of the species' found looks and its three brighter levels, made in the logic process once (specimen-cache.mjs) and named by their ids; every level is an opaque picture of the window's size, painted art, never snapped to the palette
+        const [w, h] = r.size, frame = env.frameOf(r.species);
+        r.levels.forEach((id, k) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => data ?? (data = specimenFor(frame, r.found, r.species, r.shut).levels[k]) }; } }); });
         break;
       }
       case "ph": put(r.id, r.size[0], r.size[1], r.until, () => { const pb = new PB(r.size[0], r.size[1]), [w, h] = r.size; const edge = r.hollow ? C.stone : C.mist; if (!r.hollow) pb.rect(0, 0, w, h, C.stone); pb.rect(0, 0, w, 1, edge); pb.rect(0, h - 1, w, 1, edge); pb.rect(0, 0, 1, h, edge); pb.rect(w - 1, 0, 1, h, edge); return pb; }); break;   // the PH look: a stone plate with a 1 px mist edge inside, or a 1 px stone edge with no fill

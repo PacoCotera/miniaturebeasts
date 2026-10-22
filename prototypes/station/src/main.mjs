@@ -9,6 +9,7 @@ import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, saveSettings,
 import * as S from "./state.mjs";
 import * as Lib from "./library.mjs";
 import { lightAt } from "./views/home-props.mjs";
+import { warmLibrary } from "./views/specimen-props.mjs";
 import { setMoving } from "./moving.mjs";
 import { startScene, endScene, sceneTick, sceneTime, sceneBeat, SCENE_MS } from "./motion-scene.mjs";
 import { setFrames, frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode } from "./genome.mjs";
@@ -58,10 +59,18 @@ function pump() {
   }
 }
 // The screen's props, when they changed: the pictures first (the face takes a picture once, by id), then the props.
+// The Library's specimen is rendered here, never on a sync (build spec 4.2: about a second, and the logic thread answers nothing during it). Home's props show the last specimen (or the starter's empty form) until it is made. It is asked for after the sync
+// that found the state wanting it, once the frame is out, and not while an event holds input (an opening's steps are sent first); the first frame at boot asks too.
+let warmAt = null;
+function queueWarm() {
+  if (warmAt != null || !G.ready) return;
+  warmAt = setTimeout(() => { warmAt = null; if (H && H.holding()) return; try { warmLibrary(G.st, G.settings); } catch (e) { renderErrors.push("specimen: " + e.message); } }, 30);
+}
 function syncProps() {
   if (msgSent !== FX.msgAt) { msgSent = FX.msgAt; if (FX.msg) H.play({ kind: "plate", target: "msg", ms: FX.msgMs || 4000 }); }
   for (const e of LAYER.presenter.events(topValues())) H.play(e);
   const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
+  queueWarm();   // after the props are built, before the early return: a warm that was held waits for the hold, not for a change of props
   if (key === lastProps) return;
   { FACE.beginScene(); for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());

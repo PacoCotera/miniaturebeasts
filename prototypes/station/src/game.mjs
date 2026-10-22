@@ -92,6 +92,7 @@ export function goScreen(name) {
   UI.screen = name;
   if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
   if (SCREENS[name]?.enter) SCREENS[name].enter();
+  if (fresh && name === "library") { S.libOpened(G.st); save(); }   // the Library opened full screen: what it holds is no longer new (Home's Library module, build spec 4.2)
   if (fresh && name === "vivarium") UI.viv.f = null;   // the way in puts the ring on the mibi last seen up close (vivarium.json focus.entry)
   if (fresh) { UI.panel = null; UI.arrival = null; }   // a panel closes with its screen, nothing spent; the arrival's ← lasts only on the screen it landed on
   if (fresh && name !== "habitat") { UI.hab.namer = null; UI.hab.prev = null; }   // the namer closes with the level (writing nothing)
