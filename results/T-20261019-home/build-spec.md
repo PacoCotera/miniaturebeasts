@@ -450,4 +450,8 @@ The 5 px gap before the portrait berth (T-198) builds with that ticket.
 4. **The glint fade** is a triangle, 1 s in and 1 s out, all glints in phase. That's right.
 5. **Nothing found:** see the fix above.
 6. **Sealed chapters:** drawn with no beads while shut, and normal once opened. That's right.
-7. **Glints** (the art director, §1): **beside the bead, not on it.** The star's centre goes 8 px from the bead's centre, along the ray, outward (away from the hub), clamped inside the window's 12 px margin. **Nudge** (the art director, round 2): if the star (r 6) at the outward spot comes within 3 px of another bead or ray, turn the offset around its own bead in ±30° steps (+30, −30, +60, −60, … up to ±150) and take the first clear spot. If none is clear, keep the outward spot. There is no outline and no new colour, and the fade, the cap of 8 and "until seen" are unchanged.
+7. **Glints** (the art director, §1): **beside the bead, not on it.** The star's centre goes 8 px from the bead's centre, along the ray, outward (away from the hub), clamped inside the window's 12 px margin. **Nudge** (the art director, round 3, exact):
+  - **Clearance** is measured from the star's arm tips (r 6) to any other bead's edge (bead r + 1) and to any other ray's centreline, and must be at least 3. The bead's own ray is excluded.
+  - **Search** at distance 8 through 0, ±30, ±60, ±90, ±120 and ±150°, then the same at distance 10, then at 12. Take the first clear spot.
+  - **If nothing clears,** take the spot with the largest clearance, never "outward by default".
+  - **Test:** print each glint's spot and clearance for late with 3 new. Each must be at least 3, or flagged as the fallback. There is no outline and no new colour, and the fade, the cap of 8 and "until seen" are unchanged.
