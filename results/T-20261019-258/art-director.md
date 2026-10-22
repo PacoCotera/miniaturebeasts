@@ -53,3 +53,26 @@ The three questions in Home spec §15:
   - **Set the nudge:** if the outward spot's star (radius 6) comes within 3 px of another bead or ray, turn the offset around its own bead in ±30° steps (+30, −30, +60, −60 … up to ±150) and take the first clear spot. If none is clear, keep the outward spot.
   - The offset stays at 8 px, and stars stay clamped to the 12 px margin.
 - **Re-check:** `home-library-3-new.png` only. When its stars each sit clear of every bead but their own, this ticket passes.
+
+## Round 3 (build 6e7dc0f2): the cluster's two stars still miss; the rule made exact
+
+Measured on the retaken `home-library-3-new.png`, to about ±1 px (I don't have the bead centres):
+
+| Star | Its bead | Nearest other thing | Clearance |
+| --- | --- | --- | --- |
+| lower right of the rose bead (not turned) | rose | the cyan bead, and the cyan ray | about 2 px to the bead; about 1 px to the ray |
+| between the grey beads (turned) | grey-rose | the cyan bead | about 1–2 px |
+
+The upper-left star is clean.
+
+Because the second star didn't turn, the build's check must measure differently from the rule, probably from the star's bright core rather than its arm tips. The rule, exactly:
+
+- **Clearance** is measured from the star's arm tips (radius 6 from its centre) to:
+  - another bead's drawn edge, including its ring and halo (bead radius + 1);
+  - the centreline of any ray except the bead's own.
+- It must be ≥ 3 px.
+- **The search:** distance 8 at angles 0, +30, −30, +60, −60, +90, −90, +120, −120, +150, −150 (0 = outward); then the same angles at distance 10, then at 12. Take the first clear spot.
+- **The fallback:** if nothing clears, use the spot with the largest clearance. Never keep a spot just because it is outward.
+- **The test:** print each glint's chosen spot and its clearance for the late state with 3 new. Every clearance must be ≥ 3, or the glint must be marked as the fallback.
+
+Re-check: the same still, plus that printed list.
