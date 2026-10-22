@@ -15,7 +15,6 @@
 
 #define S "pods"
 static int has(const char *s) { return s && *s; }
-static int si(const char *base, const char *key, int dflt) { return spec_int(S, v_fmt("%s.%s", base, key), dflt); }
 static int sa(const char *base, const char *key, int k, int dflt) { return spec_int(S, v_fmt("%s.%s.%d", base, key, k), dflt); }
 static int sexists(const char *base, const char *key) { return spec_raw(S, v_fmt("%s.%s", base, key), NULL) != NULL; }
 static void colour(const char *name, char *out, int cap) { spec_str(S, v_fmt("colours.page.%s", name), out, cap); }
@@ -49,7 +48,7 @@ void word_page(const char *key) {
   if (sexists(base, "rule") && spec_len("props", v_fmt("%s.heading", P)) >= 0 && !has(pod)) {
     int cc[LAYOUT_CELLS][4], pp[2], g = layout_page_grid_at(S, base, rx, ry, n > 1 ? n : 1, cc, pp), right = 0; for (int i = 0; i < g; i++) if (cc[i][0] > right) right = cc[i][0];
     right += pp[0]; int rule_x = rx + sa(base, twoRows && sexists(base, "ruleTwo") ? "ruleTwo" : "rule.at", 0, 0);
-    v_region("page.rule", LAYER_CHROME); v_rect(v_fmt("%s.rule", key), rule_x, ry + sa(base, twoRows && sexists(base, "ruleTwo") ? "ruleTwo" : "rule.at", 1, 0), right - rule_x, si(base, "rule.h", 1), ruleC);
+    v_region("page.rule", LAYER_CHROME); v_rect(v_fmt("%s.rule", key), rule_x, ry + sa(base, twoRows && sexists(base, "ruleTwo") ? "ruleTwo" : "rule.at", 1, 0), right - rule_x, v_si(S, v_fmt("%s.%s", base, "rule.h"), 1), ruleC);
   }
   if (v_pbool(v_fmt("%s.sealedFind", P), 0) && sexists(base, "sealedFind")) {   /* a shut chapter: the one picture of the find that opens it (it carries its own ground: no flat tone behind it, and nothing at all until it is painted) */
     int fx = sa(base, "sealedFind", 0, 0), fy = sa(base, "sealedFind", 1, 0), fw = sa(base, "sealedFind", 2, 0), fh = sa(base, "sealedFind", 3, 0);   /* absolute (GB1 D1) */
@@ -57,9 +56,9 @@ void word_page(const char *key) {
     v_region("page.seal", LAYER_CHROME); layer(v_fmt("%s.findpic", key), fx, fy, fw, fh, v_pstr(v_fmt("%s.sealedPicture", P)));
     return;
   }
-  int gap = sexists(base, "cell") ? si(base, "cell.gap", 0) : si(base, "nameGap", 0), line = sexists(base, "cell") ? si(base, "cell.name.line", 20) : si(base, "nameLine", 20);
+  int gap = sexists(base, "cell") ? v_si(S, v_fmt("%s.%s", base, "cell.gap"), 0) : v_si(S, v_fmt("%s.%s", base, "nameGap"), 0), line = sexists(base, "cell") ? v_si(S, v_fmt("%s.%s", base, "cell.name.line"), 20) : v_si(S, v_fmt("%s.%s", base, "nameLine"), 20);
   int hasCell = sexists(base, "cell"), hasLM = sexists(base, "lineMarks"), nmW = sa(base, "newMark", 0, 0);
-  int newSize0 = sa(base, "newMark.size", 0, 0), newSize1 = sa(base, "newMark.size", 1, 0), newGapAfter = si(base, "newMark.gapAfterName", 0), lmGap = si(base, "lineMarks.gap", 0); (void)nmW;
+  int newSize0 = sa(base, "newMark.size", 0, 0), newSize1 = sa(base, "newMark.size", 1, 0), newGapAfter = v_si(S, v_fmt("%s.%s", base, "newMark.gapAfterName"), 0), lmGap = v_si(S, v_fmt("%s.%s", base, "lineMarks.gap"), 0); (void)nmW;
   char newMark[96]; snprintf(newMark, sizeof newMark, "%s", v_pstr(v_fmt("%s.newMark", P))); char differs[96]; snprintf(differs, sizeof differs, "%s", v_pstr(v_fmt("%s.differs", P)));
   int pw = pic[0], ph = pic[1];
   for (int i = 0; i < ncell; i++) {
@@ -96,7 +95,7 @@ void word_page(const char *key) {
       }
       if (hasNew) { x += lmGap; layer(v_fmt("%s.new", cid), x, ny + spec_int(S, v_fmt("%s.lineMarks.glyphs.new.top", base), 0), newSize0, newSize1, newMark); }
       if (v_pbool(v_fmt("%s.doing", C), 0) && sexists(base, "cell.doingLine") && v_plen(v_fmt("%s.lines", C)) > 0) {   /* a read doing: its value in words under the name, centred, wrapped at the name line's reach, two lines at most (P7) */
-        const char *text = v_pstr(v_fmt("%s.lines.0", C)); int px = si(base, "cell.doingLine.px", 16), pitch = si(base, "cell.doingLine.line", 20), wrap = si(base, "cell.doingLine.wrap", 140), maxl = si(base, "cell.doingLine.lines", 2);
+        const char *text = v_pstr(v_fmt("%s.lines.0", C)); int px = v_si(S, v_fmt("%s.%s", base, "cell.doingLine.px"), 16), pitch = v_si(S, v_fmt("%s.%s", base, "cell.doingLine.line"), 20), wrap = v_si(S, v_fmt("%s.%s", base, "cell.doingLine.wrap"), 140), maxl = v_si(S, v_fmt("%s.%s", base, "cell.doingLine.lines"), 2);
         char wrapped[V_STR * 3]; int nl = has(text) ? v_wrap(text, wrap, px, wrapped, sizeof wrapped, 8) : 0; const char *l = wrapped; v_region(cellReg, LAYER_TYPE);
         for (int j = 0; j < nl && j < maxl; j++) {
           char t[V_STR * 3]; snprintf(t, sizeof t, "%s", l); l += strlen(l) + 1;
@@ -105,7 +104,7 @@ void word_page(const char *key) {
         }
       }
     } else {
-      int lamp = diff && has(differs) && sexists(base, "differs") ? sa(base, "differs.size", 0, 0) + si(base, "differs.gapAfterLamp", 0) : 0, dot = hasNew ? newSize0 + newGapAfter : 0;
+      int lamp = diff && has(differs) && sexists(base, "differs") ? sa(base, "differs.size", 0, 0) + v_si(S, v_fmt("%s.%s", base, "differs.gapAfterLamp"), 0) : 0, dot = hasNew ? newSize0 + newGapAfter : 0;
       int nx = (hasCell ? cx + v_half(pw - nw - dot) : cx) + lamp;
       v_region(cellReg, LAYER_TYPE); v_text(v_fmt("%s.name", cid), nm, nx, ny, nw, 16, nameC);
       v_name(cellReg);

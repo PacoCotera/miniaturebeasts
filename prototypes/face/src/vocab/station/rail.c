@@ -30,7 +30,7 @@ static void rail_mark(const char *spec, const char *id, int x, int y, const char
         n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[\"h\",%d,%d,%d,\"%s\"]", first ? "" : ",", c, r, e - c + 1, red); first = 0; c = e + 1; }
     }
   }
-  snprintf(ops + n, sizeof ops - (size_t)n, "]"); snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, 12, 12, 0, 0, 0);
+  snprintf(ops + n, sizeof ops - (size_t)n, "]"); v_composed(id, x, y, 12, 12, ops);
 }
 
 void word_rail(const char *marksSpec) {

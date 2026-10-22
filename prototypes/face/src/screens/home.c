@@ -21,9 +21,6 @@
 static int g_idle, g_viv, g_home;   /* g_home: Home's Vivarium window (home.json regions.glass and regions.resident): the same code on a 604 x 362 crop of Idle's painting */   /* g_viv: the Vivarium's whole (vivarium.json): `regions.glass` is `regions.window`; every other region keeps its name */
 static const char *hp(const char *p) { if (g_home) return strncmp(p, "regions.glass", 13) == 0 ? v_fmt("regions.window%s", p + 13) : p; if (g_viv) return strncmp(p, "regions.glass", 13) == 0 ? v_fmt("regions.window%s", p + 13) : p; if (!g_idle) return p; if (strncmp(p, "regions.glass", 13) == 0) return v_fmt("idle.regions.vivarium%s", p + 13); if (strncmp(p, "regions.", 8) == 0) return v_fmt("idle.regions.%s", p + 8); return p; }
 static const char *sp(void) { return g_viv ? "vivarium" : g_idle ? "frame" : H; }
-static int hi(const char *p, int d) { return spec_int(sp(), hp(p), d); }
-static int hk(const char *base, int k) { return spec_int(sp(), v_fmt("%s.%d", hp(base), k), 0); }
-static void hrect(const char *p, int r[4]) { if (!v_spec_rect(sp(), hp(p), r)) r[0] = r[1] = r[2] = r[3] = 0; }
 static int has(const char *asset) { return asset && *asset && wire_has_asset(asset); }
 
 #define STEP_MS 40
@@ -36,21 +33,21 @@ static int g_pn, g_pdx, g_pdy, g_px[8], g_pt[8];   /* the ground profile: band s
 static int ground_top(int fx) { int t = g_pt[0]; for (int i = 0; i < g_pn; i++) if (fx + g_pdx >= g_px[i]) t = g_pt[i]; return t + g_pdy; }   /* Home reads the whole's profile at x + dx, dy higher: groundTop_home(x) = groundTop_viv(x - 24 + cx) - 36 */
 static void walk_load(void) {
   if (g_viv) {   /* the whole (vivarium.json regions.resident.walk): the box.x range is the walk ground's, 16..1008, and the keep-out is the spec's */
-    g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1);
-    g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
+    g_kx = v_sk(sp(), hp("regions.resident.walk.keepOut"), 0); g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1);
+    g_xlo = v_sk(sp(), hp("regions.resident.walk.ground"), 0); g_xhi = g_xlo + v_sk(sp(), hp("regions.resident.walk.ground"), 2);
   } else if (g_idle) {   /* Idle (frame.json idle.regions.resident.walk): the box.x range is the walk ground's own, 16..1008, and the keep-out is the spec's, never derived from the window's rectangle */
-    g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1);
-    g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
+    g_kx = v_sk(sp(), hp("regions.resident.walk.keepOut"), 0); g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1);
+    g_xlo = v_sk(sp(), hp("regions.resident.walk.ground"), 0); g_xhi = g_xlo + v_sk(sp(), hp("regions.resident.walk.ground"), 2);
   }
   else if (g_home) {   /* Home's window (home.json regions.resident.walk): the box.x range 32 .. 620, the keep-out only while the away frame shows (the corner's feet row is the rect's top less one: the feet reach it) */
     int away = *v_pstr("regions.glass.away.picture") != 0;
-    g_kx = away ? hk("regions.resident.walk.keepOut", 0) : 1 << 20; g_ky = hk("regions.resident.walk.keepOut", 1) - 1;
-    g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
+    g_kx = away ? v_sk(sp(), hp("regions.resident.walk.keepOut"), 0) : 1 << 20; g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1) - 1;
+    g_xlo = v_sk(sp(), hp("regions.resident.walk.ground"), 0); g_xhi = g_xlo + v_sk(sp(), hp("regions.resident.walk.ground"), 2);
   }
-  g_flo = hk("regions.resident.walk.ground", 1); g_fn = hk("regions.resident.walk.ground", 3);
+  g_flo = v_sk(sp(), hp("regions.resident.walk.ground"), 1); g_fn = v_sk(sp(), hp("regions.resident.walk.ground"), 3);
   /* the ground profile, the whole's and Idle's, 80 px lower on Idle */
   g_pn = 0; g_pdx = 0; g_pdy = 0;
-  if (g_viv || g_idle || g_home) { g_pdy = g_idle ? spec_int("vivarium", "regions.resident.walk.profile.idle", 80) : g_home ? hi("regions.resident.walk.profile.dy", 0) : 0; if (g_home) g_pdx = hi("regions.resident.walk.profile.dx", 0);
+  if (g_viv || g_idle || g_home) { g_pdy = g_idle ? spec_int("vivarium", "regions.resident.walk.profile.idle", 80) : g_home ? v_si(sp(), hp("regions.resident.walk.profile.dy"), 0) : 0; if (g_home) g_pdx = v_si(sp(), hp("regions.resident.walk.profile.dx"), 0);
     int n = spec_len("vivarium", "regions.resident.walk.profile.x"); if (n > 8) n = 8;
     for (int i = 0; i < n; i++) { g_px[i] = spec_int("vivarium", v_fmt("regions.resident.walk.profile.x.%d", i), 0); g_pt[i] = spec_int("vivarium", v_fmt("regions.resident.walk.profile.top.%d", i), 0); g_pn = i + 1; } }}
 typedef struct { char id[24]; unsigned seed, s; int w, h, x, feet, facing, walking, idle, wx, wy, x0, y0, nstep, step; long done; int live; } wk_t;
@@ -370,7 +367,7 @@ static int ent_load(const char *cur) {
     ent_t *e = &g_e[g_ne]; char P[64]; snprintf(P, sizeof P, "regions.residents.%d", i);
     snprintf(e->id, sizeof e->id, "%s", v_pstr(v_fmt("%s.id", P))); snprintf(e->name, sizeof e->name, "%s", v_pstr(v_fmt("%s.name", P))); snprintf(e->pic, sizeof e->pic, "%s", v_pstr(v_fmt("%s.picture", P)));
     e->juvenile = strcmp(v_pstr(v_fmt("%s.stage", P)), "juvenile") == 0; e->waiting = v_pbool(v_fmt("%s.waiting", P), 0); e->sleeper = 0; e->seed = (unsigned)v_pint(v_fmt("%s.seed", P), 0); e->mv = -1; e->nap = -1; e->asleep = 0;
-    const char *sz = e->juvenile ? "regions.resident.juvenile" : "regions.resident.adult"; int w = hk(sz, 0), h = hk(sz, 1);
+    const char *sz = e->juvenile ? "regions.resident.juvenile" : "regions.resident.adult"; int w = v_sk(sp(), hp(sz), 0), h = v_sk(sp(), hp(sz), 1);
     /* a moving set (M1 §2.2): { set, walk, shadow } with the set loaded, its stage present at this size and its walk atlas sent; else a still */
     char mset[8], mwalk[96], mshadow[96]; snprintf(mset, sizeof mset, "%s", v_pstr(v_fmt("%s.moving.set", P))); snprintf(mwalk, sizeof mwalk, "%s", v_pstr(v_fmt("%s.moving.walk", P))); snprintf(mshadow, sizeof mshadow, "%s", v_pstr(v_fmt("%s.moving.shadow", P)));
     const char *stg = v_pstr(v_fmt("%s.stage", P)); int stage = !strcmp(stg, "juvenile") ? MV_JUV : !strcmp(stg, "elder") ? MV_ELDER : MV_ADULT;
@@ -436,9 +433,9 @@ static int ent_load(const char *cur) {
     snprintf(e->id, sizeof e->id, "%s", v_pstr(v_fmt("%s.id", P))); snprintf(e->name, sizeof e->name, "%s", v_pstr(v_fmt("%s.name", P))); snprintf(e->pic, sizeof e->pic, "%s", v_pstr(v_fmt("%s.picture", P)));
     e->juvenile = strcmp(v_pstr(v_fmt("%s.stage", P)), "juvenile") == 0; e->waiting = v_pbool(v_fmt("%s.waiting", P), 0); e->sleeper = 1; e->seed = (unsigned)v_pint(v_fmt("%s.seed", P), 0); e->mv = -1; e->nap = -1; e->asleep = 0;
     snprintf(e->stand, sizeof e->stand, "%s", v_pstr(v_fmt("%s.stand", P))); e->rank = ns - 1 - i;   /* the send-off: the resident's own standing painting, and the order out (rightmost first) */
-    int foot = hk(v_fmt("regions.bed.sleepers.places.%d", ns), i), bw = hk("regions.bed.sleepers.ink.max", 0), bh = hk("regions.bed.sleepers.ink.max", 1), footY = hi("regions.bed.sleepers.footY", 512);
-    if (e->juvenile) { e->box[0] = foot - hi("regions.bed.sleepers.juvenile.size.0", 104) / 2; e->box[1] = footY - hk("regions.bed.sleepers.juvenile.size", 1); e->box[2] = hk("regions.bed.sleepers.juvenile.size", 0); e->box[3] = hk("regions.bed.sleepers.juvenile.size", 1); }
-    else { e->box[0] = foot - hk("regions.bed.sleepers.adult.size", 0) / 2; e->box[1] = footY - hk("regions.bed.sleepers.adult.size", 1); e->box[2] = hk("regions.bed.sleepers.adult.size", 0); e->box[3] = hk("regions.bed.sleepers.adult.size", 1); }
+    int foot = v_sk(sp(), hp(v_fmt("regions.bed.sleepers.places.%d", ns)), i), bw = v_sk(sp(), hp("regions.bed.sleepers.ink.max"), 0), bh = v_sk(sp(), hp("regions.bed.sleepers.ink.max"), 1), footY = v_si(sp(), hp("regions.bed.sleepers.footY"), 512);
+    if (e->juvenile) { e->box[0] = foot - v_si(sp(), hp("regions.bed.sleepers.juvenile.size.0"), 104) / 2; e->box[1] = footY - v_sk(sp(), hp("regions.bed.sleepers.juvenile.size"), 1); e->box[2] = v_sk(sp(), hp("regions.bed.sleepers.juvenile.size"), 0); e->box[3] = v_sk(sp(), hp("regions.bed.sleepers.juvenile.size"), 1); }
+    else { e->box[0] = foot - v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 0) / 2; e->box[1] = footY - v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 1); e->box[2] = v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 0); e->box[3] = v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 1); }
     e->draw[0] = foot - bw / 2; e->draw[1] = footY - bh; e->draw[2] = bw; e->draw[3] = bh;   /* the stand-in fitted in the nap pose's ink, centred on the foot, its bottom on the foot's y */
     memcpy(e->sbox, e->box, sizeof e->sbox); e->hasfig = 0;
     { int ps[2], sl = wire_asset_slot(e->pic);   /* the world-size curl: the picture is as its host made it, its drawn bbox [dx, dy, W, H] sits on the foot (F.x = the place, the last ink row on the row above footY) */
@@ -516,7 +513,7 @@ static void sleeper_draw(const ent_t *e, int t) {
 
 /* the focused one's name tag: below the ring at feetY + 16 and, past the window's foot, over the figure at feetY − H − 32 less the lift; a sleeper's, or one asleep in place, is always over its ink, 32 above its top, with no lift */
 static void ent_tag(const ent_t *e, const char *glass) {
-  int tag[4], below = hi("regions.nameTag.below", 16), over = hi("regions.nameTag.over", 32), lift = hi("regions.resident.lift", 4);
+  int tag[4], below = v_si(sp(), hp("regions.nameTag.below"), 16), over = v_si(sp(), hp("regions.nameTag.over"), 32), lift = v_si(sp(), hp("regions.resident.lift"), 4);
   if (e->sleeper || e->curled) { const int *b = e->hasfig ? e->box : e->draw; build_nameTagAt(sp(), glass, e->name, b[0] + b[2] / 2, 0, b[1] - over, 1, tag); }
   else if (e->asleep) build_nameTagAt(sp(), glass, e->name, e->ink[0] + e->ink[2] / 2, 0, e->ink[1] - over, 1, tag);
   else { int feetY = e->box[1] + e->box[3] - 1; build_nameTagAt(sp(), glass, e->name, e->box[0] + e->box[2] / 2, feetY + below, feetY - e->box[3] - over - lift, 0, tag); }
@@ -525,20 +522,20 @@ static void ent_tag(const ent_t *e, const char *glass) {
 /* ---- the glass: residents and the bed in the order of their feet, clipped to the glass; the focused one last: its feet ring, then it ---- */
 typedef struct { int kind; int ent; } item_t;   /* kind 0: a resident; 1: the bed group (the bed, then its sleepers right to left); 2: the focused resident or sleeper, drawn last under its ring */
 static void glass_group(const char *cur) {
-  int glass[4], bed[4]; hrect("regions.glass.rect", glass); hrect("regions.bed.rect", bed);
+  int glass[4], bed[4]; v_srect(sp(), hp("regions.glass.rect"), glass); v_srect(sp(), hp("regions.bed.rect"), bed);
   item_t it[MAXR + 2]; int ni = 0, focused = -1;
   for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) focused = i;
   for (int i = 0; i < g_ne; i++) if (!g_e[i].sleeper && i != focused) it[ni++] = (item_t){ 0, i };
   if (!g_home) it[ni++] = (item_t){ 1, -1 };   /* Home has no bed: the bed and its sleepers are the Vivarium's */
   /* by the feet's y, lower in front (later), left first on a tie; the bed group sorts at the bed's foot */
-  int bedFoot = hk("regions.glass.foot", 1);
+  int bedFoot = v_sk(sp(), hp("regions.glass.foot"), 1);
   for (int a = 1; a < ni; a++) { item_t t = it[a]; int b = a - 1;
     int fa = t.kind ? bedFoot : g_e[t.ent].box[1] + g_e[t.ent].box[3], xa = t.kind ? bed[0] : g_e[t.ent].box[0];
     while (b >= 0) { int fb = it[b].kind ? bedFoot : g_e[it[b].ent].box[1] + g_e[it[b].ent].box[3], xb = it[b].kind ? bed[0] : g_e[it[b].ent].box[0]; if (fb < fa || (fb == fa && xb <= xa)) break; it[b + 1] = it[b]; b--; }
     it[b + 1] = t; }
   if (focused >= 0) it[ni++] = (item_t){ 2, focused };
   /* the nodes inside the clip, counted before they are sent */
-  int count = 0, lift = hi("regions.resident.lift", 4);
+  int count = 0, lift = v_si(sp(), hp("regions.resident.lift"), 4);
   int bedPic = g_home ? 0 : has(v_pstr("regions.bed.picture")), lampN = wire_has_asset(home_lamp_pic("waiting")) ? 1 : 0;   /* a waiting lamp is one node (its picture, or the same node with no size) when the host has sent the picture */
   const char *mk = v_pstr("regions.bed.mark"); int markN = (mk && *mk) ? wire_has_asset(mk) : bedPic;   /* the bed's mark: its picture away, else a node of no size on the bed's own picture */
   for (int k = 0; k < ni; k++) {
@@ -565,8 +562,8 @@ static void glass_group(const char *cur) {
       v_name(e->sleeper ? "bed.lamp" : "resident.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, ly, e->waiting);
     } else {
       v_name("bed"); v_sprite("g.bed", v_pstr("regions.bed.picture"), bed[0], bed[1], bed[2], bed[3]);
-      { int mk[4]; hrect("regions.bed.markRect", mk); const char *mp = v_pstr("regions.bed.mark"); v_name("bed");   /* away only: the Companion's mark, 1:1 over the bed, a stable node (no size when it is not shown) */
-        if (mp && *mp) v_sprite("g.bed.mark", mp, mk[0], mk[1], mk[2], mk[3]); else v_sprite_hidden("g.bed.mark", v_pstr("regions.bed.picture"), mk[0], mk[1]); }
+      { int mk[4]; v_srect(sp(), hp("regions.bed.markRect"), mk); const char *mp = v_pstr("regions.bed.mark"); v_name("bed");   /* away only: the Companion's mark, 1:1 over the bed, a stable node (no size when it is not shown) */
+        v_slot("g.bed.mark", mp, v_pstr("regions.bed.picture"), mk[0], mk[1], mk[2], mk[3], mp && *mp); }
       for (int i = g_ne - 1; i >= 0; i--) if (g_e[i].sleeper && i != focused) {   /* right to left: the first carried is drawn last, in front */
         sleeper_draw(&g_e[i], sendoff_t());
       }
@@ -611,7 +608,7 @@ static int home_painted(void) { const char *pic = v_pstr("regions.glass.picture"
 int home_window_painted(void) { return home_painted(); }
 static void away_frame(void) {
   const char *pic = v_pstr("regions.glass.away.picture"); if (!*pic) return;
-  int r[4]; hrect("regions.away.rect", r);
+  int r[4]; v_srect(sp(), hp("regions.away.rect"), r);
   char fill[24], edge[24], cap[40], col[24]; spec_str(H, "regions.away.fill", fill, sizeof fill); spec_str(H, "regions.away.edge", edge, sizeof edge); spec_str(H, "regions.away.caption.colour", col, sizeof col); spec_str(H, "strings.away", cap, sizeof cap);
   v_region("away", LAYER_CHROME);
   v_rect("away.fill", r[0], r[1], r[2], r[3], fill);
@@ -623,13 +620,13 @@ static void away_frame(void) {
     v_name("away.figure"); v_sprite_window("away.figure", pic, f[0], f[1], dx, dy, f[2], f[3]);
   }
   v_region("away", LAYER_TYPE);
-  { int px = hi("regions.away.caption.px", 16), w = v_measure(cap, px), cx = hi("regions.away.caption.centre", 588), y = hi("regions.away.caption.y", 418);
+  { int px = v_si(sp(), hp("regions.away.caption.px"), 16), w = v_measure(cap, px), cx = v_si(sp(), hp("regions.away.caption.centre"), 588), y = v_si(sp(), hp("regions.away.caption.y"), 418);
     v_text("away.caption", cap, cx - (w + 1) / 2, y + (px == 16 ? 4 : 5), w, px, col); }   /* y is the line box's top: the cap top 4 under it at 16 px */
 }
 void home_window(void) {
   g_home = 1; ent_load("");
-  int g[4]; hrect("regions.window.rect", g); char shade[24]; spec_str(H, "regions.window.shade.colour", shade, sizeof shade);
-  int painted = home_painted(), sx = hk("regions.window.painting.at", 0), sy = hk("regions.window.painting.at", 1), sp2 = hi("regions.window.shade.px", 2);
+  int g[4]; v_srect(sp(), hp("regions.window.rect"), g); char shade[24]; spec_str(H, "regions.window.shade.colour", shade, sizeof shade);
+  int painted = home_painted(), sx = v_sk(sp(), hp("regions.window.painting.at"), 0), sy = v_sk(sp(), hp("regions.window.painting.at"), 1), sp2 = v_si(sp(), hp("regions.window.shade.px"), 2);
   v_region("vivarium", LAYER_CHROME);
   if (painted) { v_name("vivarium"); v_sprite_window("vivarium.glass", v_pstr("regions.glass.picture"), sx, sy, g[0], g[1], g[2], g[3]); }
   v_rect("vivarium.shade.t", g[0], g[1], painted ? g[2] : 0, painted ? sp2 : 0, shade); v_rect("vivarium.shade.l", g[0], g[1], painted ? sp2 : 0, painted ? g[3] : 0, shade);   /* omitted on a placeholder: nodes of no size */
@@ -683,7 +680,7 @@ void vivarium_key(int code) {
   focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
   focus_resolve_t r[8]; int nr = 0;
   for (int i = 0, m = spec_len("props", "focus.resolve"); i < m && nr < 8; i++) { if (spec_member("props", "focus.resolve", i, r[nr].sel, sizeof r[nr].sel, r[nr].id, sizeof r[nr].id)) nr++; }
-  int roomAt[4]; g_viv = 1; hrect("focus.roomAt", roomAt); g_viv = 0;
+  int roomAt[4]; g_viv = 1; v_srect(sp(), hp("focus.roomAt"), roomAt); g_viv = 0;
   char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, roomAt, to, sizeof to); focus_graph_free(g);
   if (step || strcmp(to, cur) == 0) return;
   v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);

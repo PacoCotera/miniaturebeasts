@@ -21,10 +21,6 @@
 #include <stdint.h>
 
 #define I "incubator"
-static int ci(const char *p, int d) { return spec_int(I, p, d); }
-static int ck(const char *base, int k) { return spec_int(I, v_fmt("%s.%d", base, k), 0); }
-static void crect(const char *p, int r[4]) { if (!v_spec_rect(I, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
-static const char *colr(const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(I, p, o, 24); return o; }
 static int has(const char *id) { return id && *id; }
 static int in_state(const char *s) { return strcmp(v_pstr("state"), s) == 0; }
 static int clampi(int v, int lo, int hi) { return v < lo ? lo : v > hi ? hi : v; }
@@ -95,13 +91,13 @@ static void go_out(const char *id, const char *a, int n, const int r[4]) {
 
 /* the bar's window of its layer: lit from the left, `px` wide from the layer's x 89 (screen 433); the whole bar with its glow at 158 px */
 static void bar_window(int px, int out[4]) {
-  int max = ci("regions.capsule.bar.max", 158), h = ci("regions.capsule.bar.h", 34), x0 = ck("regions.capsule.bar.litFrom", 0), y0 = ck("regions.capsule.bar.litFrom", 1);
-  if (px >= max) { out[0] = ck("regions.capsule.bar.full", 0); out[1] = ck("regions.capsule.bar.full", 1); out[2] = ck("regions.capsule.bar.full", 2); out[3] = ck("regions.capsule.bar.full", 3); return; }
+  int max = v_si(I, "regions.capsule.bar.max", 158), h = v_si(I, "regions.capsule.bar.h", 34), x0 = v_sk(I, "regions.capsule.bar.litFrom", 0), y0 = v_sk(I, "regions.capsule.bar.litFrom", 1);
+  if (px >= max) { out[0] = v_sk(I, "regions.capsule.bar.full", 0); out[1] = v_sk(I, "regions.capsule.bar.full", 1); out[2] = v_sk(I, "regions.capsule.bar.full", 2); out[3] = v_sk(I, "regions.capsule.bar.full", 3); return; }
   out[0] = x0; out[1] = y0; out[2] = px; out[3] = h;
 }
 static void bar(const char *a, int px, int level_in) {   /* level_in: the dither in from clear (16: no dither) */
   if (px <= 0 || !has(a)) return;
-  int cr[4], w[4]; crect("regions.capsule.rect", cr); bar_window(px, w); v_name("bar");
+  int cr[4], w[4]; v_srect(I, "regions.capsule.rect", cr); bar_window(px, w); v_name("bar");
   if (level_in <= 0) return;
   if (level_in >= 16) { v_sprite_window("bar", a, w[0], w[1], cr[0] + w[0], cr[1] + w[1], w[2], w[3]); return; }
   v_region("bar", LAYER_PAINTED); v_dither_window("bar.dither", NULL, 0, 0, a, w[0], w[1], level_in, cr[0] + w[0], cr[1] + w[1], w[2], w[3]);
@@ -109,13 +105,13 @@ static void bar(const char *a, int px, int level_in) {   /* level_in: the dither
 
 /* ---- the picture of the room as one view of the capsule: layers by look ---- */
 static void build_stage(void) {
-  int r[4]; crect("regions.bench.rect", r); char g[24]; spec_str("frame", "colours.stageGround", g, sizeof g);
+  int r[4]; v_srect(I, "regions.bench.rect", r); char g[24]; spec_str("frame", "colours.stageGround", g, sizeof g);
   v_region("bench", LAYER_CHROME); v_rect("bench", r[0], r[1], r[2], r[3], g);
 }
 /* the draw: t_inc, t_gn and t_h are the clocks of the three moments (-1: not playing) */
 static void build_capsule(int t_inc, int t_gn, int t_h) {
   int st_empty = in_state("empty"), st_growing = in_state("growing"), st_hatch = in_state("hatch");
-  int room[4], cap[4], ins[4]; crect("regions.room.rect", room); crect("regions.capsule.rect", cap); crect("regions.inside.rect", ins);
+  int room[4], cap[4], ins[4]; v_srect(I, "regions.room.rect", room); v_srect(I, "regions.capsule.rect", cap); v_srect(I, "regions.inside.rect", ins);
   /* the light: the incubate moment is dusk until 1200, dithers to day to 1380 (level n of 16 toward day) */
   int dn = 16; if (t_inc >= 0) dn = t_inc < 1200 ? 0 : level_at(t_inc, 1200);
   int sealed_t = t_inc >= 0 && t_inc < 1200;   /* the seal ring is on until 1200, out by 1380 */
@@ -145,7 +141,7 @@ static void build_capsule(int t_inc, int t_gn, int t_h) {
     /* the juvenile: its own picture, feet on (532, 415) (the picture's anchor on the foot), dithering in from clear at 1000, stepping out at 1400 and 1800 */
     if (st_hatch && juv_n > 0) {
       const char *pic = v_pstr("regions.juvenile.picture"); int w = v_pint("regions.juvenile.size.0", 0), h = v_pint("regions.juvenile.size.1", 0), ax = v_pint("regions.juvenile.anchor.0", 0), ay = v_pint("regions.juvenile.anchor.1", 0);
-      int fx = ck("regions.juvenile.foot", 0), fy = ck("regions.juvenile.foot", 1), up = 0, sat[4], sms[4], table, ns = lift_steps(sat, sms, &table, 4);
+      int fx = v_sk(I, "regions.juvenile.foot", 0), fy = v_sk(I, "regions.juvenile.foot", 1), up = 0, sat[4], sms[4], table, ns = lift_steps(sat, sms, &table, 4);
       for (int i = 0; i < ns; i++) if (t_h >= sat[i] && t_h < sat[i] + sms[i]) up = step_lift(table, t_h - sat[i]);
       int r[4] = { fx - ax, fy - ay - up, w, h };
       if (w > 0 && h > 0) come_in("juvenile", pic, juv_n, r);
@@ -158,7 +154,7 @@ static void build_capsule(int t_inc, int t_gn, int t_h) {
   { const char *dr = v_pstr("regions.capsule.door"); if (dither_open) come_in("door", dr, door_level, cap); else { v_name("door"); if (open_look && has(dr)) put_box("door", dr, cap); } }
   /* the bar: empty off; the incubate moment off until 1200, then from its first pixel; growing at its width, Hatch now filling it in 8 cuts; ready and the hatch full */
   {
-    const char *b = v_pstr("regions.capsule.bar"); int max = ci("regions.capsule.bar.max", 158), px = v_pint("regions.capsule.barPx", 0);
+    const char *b = v_pstr("regions.capsule.bar"); int max = v_si(I, "regions.capsule.bar.max", 158), px = v_pint("regions.capsule.barPx", 0);
     if (st_empty) {}
     else if (st_hatch || in_state("ready")) bar(b, max, 16);
     else if (t_gn >= 0) { int w0 = px, k = t_gn < 0 ? 0 : (t_gn / 50) + 1; if (k > 8) k = 8; bar(b, k <= 0 ? w0 : w0 + (max - w0) * k / 8, 16); }
@@ -173,19 +169,19 @@ static void build_capsule(int t_inc, int t_gn, int t_h) {
 static void build_column(int t_inc) {
   int st_empty = in_state("empty"); if (st_empty || (t_inc >= 0 && t_inc < 1200)) return;
   if (spec_len("props", "regions.stamp") >= 0) {
-    int r[4]; crect("regions.stamp.rect", r); const char *a = v_pstr("regions.stamp.asset"); int size = v_pint("regions.stamp.size", 0);
+    int r[4]; v_srect(I, "regions.stamp.rect", r); const char *a = v_pstr("regions.stamp.asset"); int size = v_pint("regions.stamp.size", 0);
     word_stampCase(I, "regions", 0);
-    v_region("stamp.plate", LAYER_PAINTED); { const char *pl = v_pstr("regions.stamp.plate"); if (has(pl)) { if (has(a) && size) v_sprite("stamp.plate", pl, r[0], r[1], r[2], r[3]); else v_sprite_hidden("stamp.plate", pl, r[0], r[1]); } }
+    v_region("stamp.plate", LAYER_PAINTED); { const char *pl = v_pstr("regions.stamp.plate"); if (has(pl)) v_slot("stamp.plate", pl, NULL, r[0], r[1], r[2], r[3], has(a) && size); }
     v_region("stamp", LAYER_PAINTED); if (has(a) && size) { v_name("stamp"); v_sprite("stamp.stamp", a, r[0] + v_half(r[2] - size), r[1] + v_half(r[3] - size), size, size); }
     word_stampCase(I, "regions", 1);   /* the case's front veil: the art director's recut, alpha 0 over the 120 x 120 plate (UI/UX round 2, E2) */
   }
-  { const char *code = v_pstr("regions.code"); if (has(code)) { int px = ci("regions.code.px", 16), cx = ci("regions.code.centre", 152), w = v_measure(code, px); v_region("code", LAYER_TYPE); v_text("code", code, cx - v_half(w), ci("regions.code.lineTop", 344) + v_fdiv(20 - v_cap(px), 2), w, px, colr("colours.code")); } }
-  { const char *s = v_pstr("regions.readyIn"); if (has(s) && in_state("growing")) { int px = ci("regions.readyIn.px", 16), cx = ci("regions.readyIn.centre", 152), w = v_measure(s, px); v_region("readyIn", LAYER_TYPE); v_text("readyIn", s, cx - v_half(w), ci("regions.readyIn.lineTop", 384) + v_fdiv(20 - v_cap(px), 2), w, px, colr("colours.readyIn")); } }
+  { const char *code = v_pstr("regions.code"); if (has(code)) { int px = v_si(I, "regions.code.px", 16), cx = v_si(I, "regions.code.centre", 152), w = v_measure(code, px); v_region("code", LAYER_TYPE); v_text("code", code, cx - v_half(w), v_si(I, "regions.code.lineTop", 344) + v_fdiv(20 - v_cap(px), 2), w, px, v_scol(I, "colours.code")); } }
+  { const char *s = v_pstr("regions.readyIn"); if (has(s) && in_state("growing")) { int px = v_si(I, "regions.readyIn.px", 16), cx = v_si(I, "regions.readyIn.centre", 152), w = v_measure(s, px); v_region("readyIn", LAYER_TYPE); v_text("readyIn", s, cx - v_half(w), v_si(I, "regions.readyIn.lineTop", 384) + v_fdiv(20 - v_cap(px), 2), w, px, v_scol(I, "colours.readyIn")); } }
 }
 static void build_ribbon(int t) {
   if (!in_state("hatch")) return;
-  int r[4]; crect("regions.ribbon.rect", r); int at = ci("events.hatch.steps.3.at", 1200); const char *words = v_pstr("regions.ribbon");
-  v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= at ? words : "", ci("regions.ribbon.px", 20), ci("regions.ribbon.pad", 0), colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text"));
+  int r[4]; v_srect(I, "regions.ribbon.rect", r); int at = v_si(I, "events.hatch.steps.3.at", 1200); const char *words = v_pstr("regions.ribbon");
+  v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= at ? words : "", v_si(I, "regions.ribbon.px", 20), v_si(I, "regions.ribbon.pad", 0), v_scol(I, "colours.ribbon.fill"), v_scol(I, "colours.ribbon.edge"), v_scol(I, "colours.ribbon.text"));
 }
 
 int incubator_tick(uint32_t now) { (void)now; return 0; }   /* the moments are events: their frames are drawn while they play */

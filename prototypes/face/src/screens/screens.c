@@ -48,8 +48,7 @@ static void stage_dither(void) {
   char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);
   for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
   snprintf(ops + n, sizeof ops - (size_t)n, "],\"void\"]]");
-  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
-  v_region("stage", LAYER_ART); prim_node(v_id("stage.dither"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
+  v_region("stage", LAYER_ART); v_composed("stage.dither", r[0], r[1], r[2], r[3], ops);
 }
 /* a target's ring shape (lvgl-switch.md §2.6; fix 14): "oval", "footprint", "tab", { "rect": r >= 0 [, "chip": n >= 0] }, { "circle": "box" } or { "circle": { "centre": [x, y], "r": r > 0 } }, and nothing else;
    its `ground`, when present, is "default" (the paper ground is retired); the old `ring` key is refused */

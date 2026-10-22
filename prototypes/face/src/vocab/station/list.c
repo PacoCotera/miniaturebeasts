@@ -12,7 +12,6 @@
 
 #define S "pods"
 #define C "regions.collection"
-static int si(const char *path, int dflt) { return spec_int(S, path, dflt); }
 static int sa(const char *base, int k, int dflt) { char p[128]; snprintf(p, sizeof p, "%s.%d", base, k); return spec_int(S, p, dflt); }
 
 /* the bench: the stage's ground and the room master over it (the first of the candidates the face holds) */
@@ -28,7 +27,7 @@ void word_list(void) {
   char name[24]; spec_str(S, "colours.name", name, sizeof name);
   int n = v_plen("regions.list.places");
   int slice[4]; for (int k = 0; k < 4; k++) slice[k] = sa(C ".ring.slice", k, 0);
-  int podW = sa(C ".pod.size", 0, 0), podH = sa(C ".pod.size", 1, 0), npx = si(C ".name.px", 20), nh = si(C ".name.h", 24);
+  int podW = sa(C ".pod.size", 0, 0), podH = sa(C ".pod.size", 1, 0), npx = v_si(S, C ".name.px", 20), nh = v_si(S, C ".name.h", 24);
   for (int i = 0; i < n; i++) {
     int r[4]; layout_place_rect(S, C, i, r);
     const char *pre = v_fmt("regions.list.places.%d", i); char P[96]; snprintf(P, sizeof P, "%s", pre);

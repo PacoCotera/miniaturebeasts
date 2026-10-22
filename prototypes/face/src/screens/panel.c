@@ -19,30 +19,22 @@
 #define F "frame"
 #define RP "regions.panel"
 #define MAXCARDS 3
-static int fi(const char *p, int d) { return spec_int(F, v_fmt(RP ".%s", p), d); }
-static int fk(const char *p, int k) { return spec_int(F, v_fmt(RP ".%s.%d", p, k), 0); }
-static void frect(const char *p, int r[4]) { if (!v_spec_rect(F, v_fmt(RP ".%s", p), r)) r[0] = r[1] = r[2] = r[3] = 0; }
 /* a colour: a frame role (colours.<name>) when there is one, else the palette name as written */
 static const char *col(const char *name) { static char b[8][24]; static int k; char *o = b[k++ & 7]; if (spec_str(F, v_fmt("colours.%s", name), o, 24) <= 0) snprintf(o, 24, "%s", name); return o; }
 static const char *rcol(const char *path) { char s[24]; if (spec_str(F, v_fmt(RP ".%s", path), s, sizeof s) <= 0) snprintf(s, sizeof s, "bone"); return col(s); }
 /* the strip form (frame.json regions.panel.strip; specs/station-dock-arrival-spec.md, the strip form): the dock arrival's choice, two cards in a plate under what they are about, no title, picture or veil */
 static int strip(void) { return strcmp(v_pstr("overlay.form"), "strip") == 0; }
-static int si(const char *p, int d) { return spec_int(F, v_fmt(RP ".strip.%s", p), d); }
-static int sk(const char *p, int k) { return spec_int(F, v_fmt(RP ".strip.%s.%d", p, k), 0); }
 /* the Incubate | Keep shaping form (T-20261016-222; build spec section 6a; panel.json `incubate`): two bezels over the device ground, each with a header (the verb; Incubate's price and the founder's pod) and a window: the sealed capsule with this founder's pod, and Create as it stood when it was left (the face's snapshot) */
 static int incubate_form(void) { return strcmp(v_pstr("overlay.form"), "incubate") == 0; }
 static int hatchnow_form(void) { return strcmp(v_pstr("overlay.form"), "hatchnow") == 0; }   /* the Hatch now | Wait form: the same frame (bezels, windows, header, focus) as the Incubate form, with the Incubator's day looks in the windows */
 #define PN "panel"
-static int pi_(const char *p, int d) { return spec_int(PN, v_fmt("incubate.%s", p), d); }
-static int pk_(const char *p, int k) { return spec_int(PN, v_fmt("incubate.%s.%d", p, k), 0); }
-static void prect(const char *p, int r[4]) { if (!v_spec_rect(PN, v_fmt("incubate.%s", p), r)) r[0] = r[1] = r[2] = r[3] = 0; }
 static const char *pcol(const char *p) { char s[24]; static char b[8][24]; static int k; char *o = b[k++ & 7]; if (spec_str(PN, v_fmt("incubate.%s", p), s, sizeof s) <= 0) snprintf(s, sizeof s, "bone"); snprintf(o, 24, "%s", col(s)); return o; }
 static int ncards(void) { int n = v_plen("overlay.regions.cards"); return n < 0 ? 0 : n > MAXCARDS ? MAXCARDS : n; }
 static void card_rect(int i, int n, int r[4]) {
-  if (incubate_form() || hatchnow_form()) { prect(i == 0 ? "bezels.incubate" : "bezels.keep", r); (void)n; return; }
-  if (strip()) { int gap = si("cards.gap", 16), w = si("cards.w", 396); r[0] = si("cards.x", 108) + i * (w + gap); r[1] = si("cards.y", 392); r[2] = w; r[3] = si("cards.h", 128); (void)n; return; }
-  int gap = fi("cards.gap", 16), total = fi("cards.width", 776), w = (total - gap * (n - 1)) / n;
-  r[0] = fi("cards.x", 124) + i * (w + gap); r[1] = fi("cards.y", 152); r[2] = w; r[3] = fi("cards.h", 288);
+  if (incubate_form() || hatchnow_form()) { v_srect(PN, v_fmt("incubate.%s", i == 0 ? "bezels.incubate" : "bezels.keep"), r); (void)n; return; }
+  if (strip()) { int gap = v_si(F, RP ".strip.cards.gap", 16), w = v_si(F, RP ".strip.cards.w", 396); r[0] = v_si(F, RP ".strip.cards.x", 108) + i * (w + gap); r[1] = v_si(F, RP ".strip.cards.y", 392); r[2] = w; r[3] = v_si(F, RP ".strip.cards.h", 128); (void)n; return; }
+  int gap = v_si(F, RP ".cards.gap", 16), total = v_si(F, RP ".cards.width", 776), w = (total - gap * (n - 1)) / n;
+  r[0] = v_si(F, RP ".cards.x", 124) + i * (w + gap); r[1] = v_si(F, RP ".cards.y", 152); r[2] = w; r[3] = v_si(F, RP ".cards.h", 288);
 }
 static const char *card_id(int i) { return v_pstr(v_fmt("overlay.regions.cards.%d.id", i)); }
 static int cap_top(int px, int y, int pitch) { return y + v_fdiv(pitch - v_cap(px), 2); }
@@ -50,30 +42,29 @@ static int cap_top(int px, int y, int pitch) { return y + v_fdiv(pitch - v_cap(p
 /* the veil: the stage under the panel, 8 of 16 Bayer levels toward stageGround, one composed picture (a cut) */
 static void build_veil(void) {
   static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
-  int r[4]; frect("veil.rect", r); int level = fi("veil.levels", 8); if (r[2] <= 0) return;
+  int r[4]; v_srect(F, RP ".veil.rect", r); int level = v_si(F, RP ".veil.levels", 8); if (r[2] <= 0) return;
   v_region("veil", LAYER_CHROME);
   if (v_sprite("panel.veil", v_pstr("overlay.regions.art.veil"), r[0], r[1], r[2], r[3])) return;   /* the veil master: a flat layer, never dithered */
   char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);   /* until it is placed: a Bayer lattice of 8 of 16 levels toward stageGround */
   for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
   snprintf(ops + n, sizeof ops - (size_t)n, "],\"%s\"]]", col("stageGround"));
-  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
-  prim_node(v_id("panel.veil"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
+  v_composed("panel.veil", r[0], r[1], r[2], r[3], ops);
 }
 static void build_plate(void) {
-  int r[4]; frect("rect", r);
+  int r[4]; v_srect(F, RP ".rect", r);
   v_region("panel", LAYER_CHROME);
   if (v_sprite("panel.plate", v_pstr("overlay.regions.art.housing"), r[0], r[1], r[2], r[3])) return;   /* the housing master, 1:1 */
   char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", rcol("ground")); snprintf(edge, sizeof edge, "%s", rcol("edge"));
   word_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge);
 }
 static void build_title(void) {
-  int r[4]; frect("title.rect", r); const char *t = v_pstr("overlay.regions.title"); int px = fi("title.px", 28), w = v_measure(t, px);
-  v_region("panelTitle", LAYER_TYPE); v_text("panel.title", t, r[0] + v_half(r[2] - w), cap_top(px, fi("title.lineTop", r[1]), 36), w, px, rcol("title.colour"));
+  int r[4]; v_srect(F, RP ".title.rect", r); const char *t = v_pstr("overlay.regions.title"); int px = v_si(F, RP ".title.px", 28), w = v_measure(t, px);
+  v_region("panelTitle", LAYER_TYPE); v_text("panel.title", t, r[0] + v_half(r[2] - w), cap_top(px, v_si(F, RP ".title.lineTop", r[1]), 36), w, px, rcol("title.colour"));
 }
 static const char *GLYPH[4] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86", "\xe2\xa7\x97" };   /* ⚡ ❀ ◆ ⧗, the price's closed table (vocab.c PRICE) */
 /* the cost groups on rubber chips: each "glyph figure" of the price string on a chip nine-sliced round it (6 px in, 8 between groups); a short figure in `need`, a gain in `turn` */
 static void build_costs(int i, int x, int y, const char *cost, const char *shorts, int gain) {
-  const char *chip = v_pstr("overlay.regions.art.chip"); int pad = fi("art.chip.pad", 6), between = fi("art.chip.between", 8), ch = fi("art.chip.h", 20), px = fi("card.costs.px", 16), k = 0;
+  const char *chip = v_pstr("overlay.regions.art.chip"); int pad = v_si(F, RP ".art.chip.pad", 6), between = v_si(F, RP ".art.chip.between", 8), ch = v_si(F, RP ".art.chip.h", 20), px = v_si(F, RP ".card.costs.px", 16), k = 0;
   static const int CAPS[4] = { 10, 0, 10, 0 };
   for (const char *p = cost; *p;) {
     int g = -1; for (int j = 0; j < 4; j++) if (strncmp(p, GLYPH[j], strlen(GLYPH[j])) == 0) g = j;
@@ -88,98 +79,97 @@ static void build_costs(int i, int x, int y, const char *cost, const char *short
 }
 static void build_card(int i, int n, int focused) {
   int r[4]; card_rect(i, n, r);
-  int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), loss = v_pbool(v_fmt("overlay.regions.cards.%d.loss", i), 0), w = r[2], tw = w - 32, pw = w - 32, slotX = r[0] + fk("card.picture.at", 0);
+  int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), loss = v_pbool(v_fmt("overlay.regions.cards.%d.loss", i), 0), w = r[2], tw = w - 32, pw = w - 32, slotX = r[0] + v_sk(F, RP ".card.picture.at", 0);
   const char *base = v_fmt("overlay.regions.cards.%d.art", i);
   /* the well: the master (the focused one a step up; the ring is over it), else the code-drawn well */
   { const char *id = v_pstr(v_fmt("%s.%s", base, focused ? "focused" : "well")); v_region("cards", LAYER_PAINTED);
     if (!v_sprite(v_fmt("card.%d.well", i), id, r[0], r[1], w, r[3])) { char well[24], edge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(edge, sizeof edge, "%s", rcol("cards.edge")); v_region("cards", LAYER_CHROME); word_panel(v_fmt("card.%d.well", i), r[0], r[1], w, r[3], well, edge); } }
   /* the glow and the stage: under the picture (the stage at the slot's foot) */
   v_region("cardStage", LAYER_PAINTED);
-  const char *scene = v_pstr(v_fmt("%s.scene", base)); int shift = *scene ? fi("art.scene.shift", 0) : 0;   /* the Return outcome: its place's scene stands in the glow's place and the subject stands right of centre, facing the light */
-  v_sprite(v_fmt("card.%d.glow", i), v_pstr(v_fmt("%s.glow", base)), slotX, r[1] + fk("art.glow.at", 1), pw, 160);
-  if (*scene) v_sprite(v_fmt("card.%d.scene", i), scene, slotX, r[1] + fk("art.scene.at", 1), pw, 152);
-  v_sprite(v_fmt("card.%d.stage", i), v_pstr(v_fmt("%s.stage", base)), slotX, r[1] + fk("art.stage.at", 1), pw, 48);
+  const char *scene = v_pstr(v_fmt("%s.scene", base)); int shift = *scene ? v_si(F, RP ".art.scene.shift", 0) : 0;   /* the Return outcome: its place's scene stands in the glow's place and the subject stands right of centre, facing the light */
+  v_sprite(v_fmt("card.%d.glow", i), v_pstr(v_fmt("%s.glow", base)), slotX, r[1] + v_sk(F, RP ".art.glow.at", 1), pw, 160);
+  if (*scene) v_sprite(v_fmt("card.%d.scene", i), scene, slotX, r[1] + v_sk(F, RP ".art.scene.at", 1), pw, 152);
+  v_sprite(v_fmt("card.%d.stage", i), v_pstr(v_fmt("%s.stage", base)), slotX, r[1] + v_sk(F, RP ".art.stage.at", 1), pw, 48);
   /* the picture, 1:1, centred, its feet line (its lowest row of alpha >= 128) on y + 168; its contact shadow across the feet's span plus 16 under it */
   { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pwid = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0), hd = *pic ? wire_asset_slot(pic) : -1;
-    int feet[3] = { ph - 1, 0, pwid - 1 }; if (hd >= 0 && prim_asset_feet(hd, fi("art.feet.alpha", 128), fi("art.feet.rows", 4), feet) < 0) { feet[0] = ph - 1; feet[1] = 0; feet[2] = pwid - 1; }
-    int px0 = slotX + v_half(pw - pwid) + shift, py0 = r[1] + fi("art.feet.line", 168) - feet[0];
-    { const char *sh = v_pstr("overlay.regions.art.shadow"); int span = feet[2] - feet[1] + 1 + fi("art.shadow.stretch", 16), ends = fi("art.shadow.ends", 32), sh_h = fi("art.shadow.h", 16); if (span < 2 * ends) span = 2 * ends;
-      const int caps[4] = { ends, 0, ends, 0 }; v_region("cardStage", LAYER_PAINTED); if (hd >= 0) v_nine(v_fmt("card.%d.shadow", i), sh, px0 + (feet[1] + feet[2] + 1) / 2 - span / 2, r[1] + fi("art.feet.line", 168) - sh_h / 2, span, sh_h, caps); }
+    int feet[3] = { ph - 1, 0, pwid - 1 }; if (hd >= 0 && prim_asset_feet(hd, v_si(F, RP ".art.feet.alpha", 128), v_si(F, RP ".art.feet.rows", 4), feet) < 0) { feet[0] = ph - 1; feet[1] = 0; feet[2] = pwid - 1; }
+    int px0 = slotX + v_half(pw - pwid) + shift, py0 = r[1] + v_si(F, RP ".art.feet.line", 168) - feet[0];
+    { const char *sh = v_pstr("overlay.regions.art.shadow"); int span = feet[2] - feet[1] + 1 + v_si(F, RP ".art.shadow.stretch", 16), ends = v_si(F, RP ".art.shadow.ends", 32), sh_h = v_si(F, RP ".art.shadow.h", 16); if (span < 2 * ends) span = 2 * ends;
+      const int caps[4] = { ends, 0, ends, 0 }; v_region("cardStage", LAYER_PAINTED); if (hd >= 0) v_nine(v_fmt("card.%d.shadow", i), sh, px0 + (feet[1] + feet[2] + 1) / 2 - span / 2, r[1] + v_si(F, RP ".art.feet.line", 168) - sh_h / 2, span, sh_h, caps); }
     v_name("cardPictures"); if (hd >= 0 && pwid > 0 && ph > 0) v_sprite(v_fmt("card.%d.picture", i), pic, px0, py0, pwid, ph); else v_sprite_hidden(v_fmt("card.%d.picture", i), pic, r[0], r[1]); }
   /* the light: over the picture, the pool lighting the subject from below */
-  v_region("cardStage", LAYER_PAINTED); v_sprite(v_fmt("card.%d.light", i), v_pstr(v_fmt("%s.light", base)), slotX, r[1] + fk("art.light.at", 1), pw, 160);
+  v_region("cardStage", LAYER_PAINTED); v_sprite(v_fmt("card.%d.light", i), v_pstr(v_fmt("%s.light", base)), slotX, r[1] + v_sk(F, RP ".art.light.at", 1), pw, 160);
   /* the destination mark: the title bar's mark of the room it lands in, over the picture's top right; staying here: none */
-  { const char *mk = v_pstr(v_fmt("overlay.regions.cards.%d.mark", i)); int ms = fk("card.mark.size", 0); if (ms <= 0) ms = 24;
-    v_name("cardMarks"); if (*mk) v_sprite(v_fmt("card.%d.mark", i), mk, r[0] + w - 40, r[1] + fk("card.mark.at", 1), ms, ms); else v_sprite_hidden(v_fmt("card.%d.mark", i), mk, r[0] + w - 40, r[1] + 16); }
+  { const char *mk = v_pstr(v_fmt("overlay.regions.cards.%d.mark", i)); int ms = v_sk(F, RP ".card.mark.size", 0); if (ms <= 0) ms = 24;
+    v_name("cardMarks"); if (*mk) v_sprite(v_fmt("card.%d.mark", i), mk, r[0] + w - 40, r[1] + v_sk(F, RP ".card.mark.at", 1), ms, ms); else v_sprite_hidden(v_fmt("card.%d.mark", i), mk, r[0] + w - 40, r[1] + 16); }
   /* the name: 20, the option's verb */
-  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = fi("card.name.px", 20), sw = v_measure(s, px);
-    v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.name", i), s, r[0] + fk("card.name.at", 0), cap_top(px, r[1] + fk("card.name.at", 1), 28), sw, px, rcol(dim ? "card.name.colourDim" : "card.name.colour")); }
+  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = v_si(F, RP ".card.name.px", 20), sw = v_measure(s, px);
+    v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.name", i), s, r[0] + v_sk(F, RP ".card.name.at", 0), cap_top(px, r[1] + v_sk(F, RP ".card.name.at", 1), 28), sw, px, rcol(dim ? "card.name.colourDim" : "card.name.colour")); }
   /* the costs, on their chips; free: nothing drawn */
-  build_costs(i, r[0] + fk("card.costs.at", 0), r[1] + fk("card.costs.at", 1), v_pstr(v_fmt("overlay.regions.cards.%d.cost", i)), v_pstr(v_fmt("overlay.regions.cards.%d.short", i)), v_pbool(v_fmt("overlay.regions.cards.%d.gain", i), 0));
+  build_costs(i, r[0] + v_sk(F, RP ".card.costs.at", 0), r[1] + v_sk(F, RP ".card.costs.at", 1), v_pstr(v_fmt("overlay.regions.cards.%d.cost", i)), v_pstr(v_fmt("overlay.regions.cards.%d.short", i)), v_pbool(v_fmt("overlay.regions.cards.%d.gain", i), 0));
   /* the line: the one thing the picture cannot say, 16; a loss shows it in `need` */
-  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = fi("card.line.px", 16), sw = v_measure(s, px); (void)tw;
-    v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.line", i), s, r[0] + fk("card.line.at", 0), cap_top(px, r[1] + fk("card.line.at", 1), 20), *s ? sw : 0, px, rcol(dim ? "card.line.colourDim" : loss ? "card.line.colourLoss" : "card.line.colour")); }
+  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = v_si(F, RP ".card.line.px", 16), sw = v_measure(s, px); (void)tw;
+    v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.line", i), s, r[0] + v_sk(F, RP ".card.line.at", 0), cap_top(px, r[1] + v_sk(F, RP ".card.line.at", 1), 20), *s ? sw : 0, px, rcol(dim ? "card.line.colourDim" : loss ? "card.line.colourLoss" : "card.line.colour")); }
 }
 /* the ring: the focused card's rect, the frame ring { rect: 10 } 4 px out (the ring reaches 5 from the rect it is given, so the rect is drawn 1 px in); no lift */
 static void build_ring(int n) {
   const char *c = v_focus_cur_at("overlay.focus.cur"); if (!*c) return;
   for (int i = 0; i < n; i++) if (strcmp(c, v_fmt("card.%s", card_id(i))) == 0) {
-    int r[4], box[4]; card_rect(i, n, r); int in = incubate_form() || hatchnow_form() ? 0 : spec_int(F, "focus.ring.reach", 5) - fi("ring.out", 4); if (in < 0) in = 0;
+    int r[4], box[4]; card_rect(i, n, r); int in = incubate_form() || hatchnow_form() ? 0 : spec_int(F, "focus.ring.reach", 5) - v_si(F, RP ".ring.out", 4); if (in < 0) in = 0;
     box[0] = r[0] + in; box[1] = r[1] + in; box[2] = r[2] - 2 * in; box[3] = r[3] - 2 * in;
     v_region("focus", LAYER_CHROME); word_focusRing("focus", "panel", "focus.targets.card", box); return;
   }
 }
 /* the strip: the plate (the code-drawn ground and edge while no master is placed), then each card: its well, its 96 × 96 picture, the name, the costs and the one line */
 static void build_strip(int n) {
-  int r[4]; frect("strip.rect", r); char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", rcol("ground")); snprintf(edge, sizeof edge, "%s", rcol("edge"));
+  int r[4]; v_srect(F, RP ".strip.rect", r); char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", rcol("ground")); snprintf(edge, sizeof edge, "%s", rcol("edge"));
   v_region("panel", LAYER_CHROME); word_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge);
   const char *cur = v_focus_cur_at("overlay.focus.cur");
   for (int i = 0; i < n; i++) {
-    int c[4]; card_rect(i, n, c); int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), tx = c[0] + sk("name.at", 0), maxw = si("line.max", 252);
+    int c[4]; card_rect(i, n, c); int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), tx = c[0] + v_sk(F, RP ".strip.name.at", 0), maxw = v_si(F, RP ".strip.line.max", 252);
     char well[24], wedge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(wedge, sizeof wedge, "%s", rcol("cards.edge"));
     v_region("cards", LAYER_CHROME); word_panel(v_fmt("card.%d.well", i), c[0], c[1], c[2], c[3], well, wedge);
     { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pw = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0);
-      v_name("cardPictures"); if (pw > 0 && ph > 0 && v_sprite(v_fmt("card.%d.picture", i), pic, c[0] + sk("picture.at", 0), c[1] + sk("picture.at", 1), pw, ph)) {} else v_sprite_hidden(v_fmt("card.%d.picture", i), pic, c[0], c[1]); }
-    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = si("name.px", 20); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
-      v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.name", i), fit, tx, cap_top(px, c[1] + sk("name.at", 1), si("name.h", 28)), v_measure(fit, px), px, rcol(dim ? "strip.name.colourDim" : "strip.name.colour")); }
-    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = si("line.px", 16); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
-      v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.line", i), fit, tx, cap_top(px, c[1] + sk("line.at", 1), si("line.h", 20)), *fit ? v_measure(fit, px) : 0, px, rcol(dim ? "strip.line.colourDim" : "strip.line.colour")); }
+      v_name("cardPictures"); if (pw > 0 && ph > 0 && v_sprite(v_fmt("card.%d.picture", i), pic, c[0] + v_sk(F, RP ".strip.picture.at", 0), c[1] + v_sk(F, RP ".strip.picture.at", 1), pw, ph)) {} else v_sprite_hidden(v_fmt("card.%d.picture", i), pic, c[0], c[1]); }
+    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = v_si(F, RP ".strip.name.px", 20); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
+      v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.name", i), fit, tx, cap_top(px, c[1] + v_sk(F, RP ".strip.name.at", 1), v_si(F, RP ".strip.name.h", 28)), v_measure(fit, px), px, rcol(dim ? "strip.name.colourDim" : "strip.name.colour")); }
+    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = v_si(F, RP ".strip.line.px", 16); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
+      v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.line", i), fit, tx, cap_top(px, c[1] + v_sk(F, RP ".strip.line.at", 1), v_si(F, RP ".strip.line.h", 20)), *fit ? v_measure(fit, px) : 0, px, rcol(dim ? "strip.line.colourDim" : "strip.line.colour")); }
     (void)cur;
   }
 }
 
 /* ---- the Incubate | Keep shaping form ---- */
-static void composed_box(const char *id, int x, int y, int w, int h, const char *ops) { snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); }
 /* a bezel: fill `panel`, radius 10, a 1 px `hairline` edge, the bevel (a 1 px `fog` line at y + 1 from x + 10 to x + w - 10) */
 static void build_bezel(int i, const int r[4], const char *verb) {
-  int rad = pi_("bezels.radius", 10); char ops[320];
-  snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"%s\"],[\"h\",%d,%d,%d,\"%s\"]]", r[2], r[3], rad, pcol("bezels.fill"), pcol("bezels.edge"), pi_("bezels.bevel.inset", 10), pi_("bezels.bevel.dy", 1), r[2] - 2 * pi_("bezels.bevel.inset", 10), pcol("bezels.bevel.colour"));
-  v_region(v_fmt("panelBezel.%d", i), LAYER_CHROME); composed_box(v_fmt("panel.bezel.%d", i), r[0], r[1], r[2], r[3], ops);
+  int rad = v_si(PN, "incubate.bezels.radius", 10); char ops[320];
+  snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"%s\"],[\"h\",%d,%d,%d,\"%s\"]]", r[2], r[3], rad, pcol("bezels.fill"), pcol("bezels.edge"), v_si(PN, "incubate.bezels.bevel.inset", 10), v_si(PN, "incubate.bezels.bevel.dy", 1), r[2] - 2 * v_si(PN, "incubate.bezels.bevel.inset", 10), pcol("bezels.bevel.colour"));
+  v_region(v_fmt("panelBezel.%d", i), LAYER_CHROME); v_composed(v_fmt("panel.bezel.%d", i), r[0], r[1], r[2], r[3], ops);
   /* the header: the verb, Inter 16 (the spec says 15 medium; the face has 16, 20 and 28), its baseline at y + 20, from x + 12 */
-  int px = pi_("header.px", 16), base = pi_("header.baseline", 20); v_region("panelHeader", LAYER_TYPE);
-  v_text(v_fmt("panel.verb.%d", i), verb, r[0] + pi_("header.x", 12), r[1] + base - v_cap(px), v_measure(verb, px), px, pcol("header.colour"));
+  int px = v_si(PN, "incubate.header.px", 16), base = v_si(PN, "incubate.header.baseline", 20); v_region("panelHeader", LAYER_TYPE);
+  v_text(v_fmt("panel.verb.%d", i), verb, r[0] + v_si(PN, "incubate.header.x", 12), r[1] + base - v_cap(px), v_measure(verb, px), px, pcol("header.colour"));
 }
 /* Incubate's price, right-aligned to x + w - 12: the figures (icon before figure), then the founder's pod (16 x 20, its top at y + 5), which is part of the price: it becomes the mibi */
 static void build_price(const int r[4]) {
-  const char *cost = v_pstr("overlay.regions.price"), *pod = v_pstr("overlay.regions.pod"); int right = r[0] + r[2] - pi_("price.right", 12), pw = pk_("price.pod.size", 0), ph = pk_("price.pod.size", 1), px = pi_("header.px", 16), base = pi_("header.baseline", 20);
+  const char *cost = v_pstr("overlay.regions.price"), *pod = v_pstr("overlay.regions.pod"); int right = r[0] + r[2] - v_si(PN, "incubate.price.right", 12), pw = v_sk(PN, "incubate.price.pod.size", 0), ph = v_sk(PN, "incubate.price.pod.size", 1), px = v_si(PN, "incubate.header.px", 16), base = v_si(PN, "incubate.header.baseline", 20);
   if (!*pod) pw = 0;   /* Hatch now's price has no pod behind it */
-  v_region("panelPrice", LAYER_PAINTED); if (*pod && pw > 0) v_sprite("panel.price.pod", pod, right - pw, r[1] + pi_("price.pod.top", 5), pw, ph);
-  int endx = *pod ? right - pw - pi_("price.gap", 12) : right;
+  v_region("panelPrice", LAYER_PAINTED); if (*pod && pw > 0) v_sprite("panel.price.pod", pod, right - pw, r[1] + v_si(PN, "incubate.price.pod.top", 5), pw, ph);
+  int endx = *pod ? right - pw - v_si(PN, "incubate.price.gap", 12) : right;
   if (*cost) { v_region("panelPrice", LAYER_TYPE); v_run("panel.price", cost, endx, r[1] + base - v_cap(px), px, pcol("price.colour"), V_ALIGN_RIGHT); }
 }
 /* a window's frame over its picture: the corners outside the radius 6 in the bezel's colour, then a 1 px `void` inner edge on the radius */
 static void build_window_frame(int i, const int w[4]) {
-  int rad = pi_("windows.radius", 6); char ops[300];
+  int rad = v_si(PN, "incubate.windows.radius", 6); char ops[300];
   snprintf(ops, sizeof ops, "[[\"rcorners\",0,0,%d,%d,%d,\"%s\"],[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]]", w[2], w[3], rad, pcol("bezels.fill"), w[2], w[3], rad, pcol("windows.edge"));
-  v_region(v_fmt("panelWindow.%d", i), LAYER_CHROME); composed_box(v_fmt("panel.window.%d", i), w[0], w[1], w[2], w[3], ops);
+  v_region(v_fmt("panelWindow.%d", i), LAYER_CHROME); v_composed(v_fmt("panel.window.%d", i), w[0], w[1], w[2], w[3], ops);
 }
 static void build_incubate_left(const int w[4]) {
   const char *room = v_pstr("overlay.regions.left.room"), *interior = v_pstr("overlay.regions.left.interior"), *pod = v_pstr("overlay.regions.left.pod"), *glass = v_pstr("overlay.regions.left.glass"), *shell = v_pstr("overlay.regions.left.shell"), *seal = v_pstr("overlay.regions.left.seal");
-  int iw = v_pint("overlay.regions.left.layerSize.0", 0), ih = v_pint("overlay.regions.left.layerSize.1", 0), ax = pk_("left.layers", 0), ay = pk_("left.layers", 1);
+  int iw = v_pint("overlay.regions.left.layerSize.0", 0), ih = v_pint("overlay.regions.left.layerSize.1", 0), ax = v_sk(PN, "incubate.left.layers", 0), ay = v_sk(PN, "incubate.left.layers", 1);
   v_region("panelRoom", LAYER_PAINTED); if (*room) v_sprite("panel.left.room", room, w[0], w[1], w[2], w[3]);
   if (*interior && iw > 0) v_sprite("panel.left.interior", interior, ax, ay, iw, ih);
   { int pw = v_pint("overlay.regions.left.podSize.0", 0), ph = v_pint("overlay.regions.left.podSize.1", 0), anx = v_pint("overlay.regions.left.podAnchor.0", 0), any = v_pint("overlay.regions.left.podAnchor.1", 0);
-    if (*pod && pw > 0) v_sprite("panel.left.pod", pod, pk_("left.foot", 0) - anx, pk_("left.foot", 1) - any, pw, ph); }
+    if (*pod && pw > 0) v_sprite("panel.left.pod", pod, v_sk(PN, "incubate.left.foot", 0) - anx, v_sk(PN, "incubate.left.foot", 1) - any, pw, ph); }
   if (*glass && iw > 0) v_sprite("panel.left.glass", glass, ax, ay, iw, ih);
   if (*shell && iw > 0) v_sprite("panel.left.shell", shell, ax, ay, iw, ih);
   if (*seal && iw > 0) v_sprite("panel.left.seal", seal, ax, ay, iw, ih);
@@ -190,38 +180,36 @@ static void build_incubate_right(const int w[4]) {
   if (h >= 0) { prim_tag(LAYER_PAINTED, "panelSnapshot"); prim_node(v_id("panel.right.snapshot"), FN_SPRITE, w[0], w[1], w[2], w[3], 0, h, 0); }
 }
 /* ---- the Hatch now | Wait form (panel.json `hatchnow`) ---- */
-static int hi_(const char *p, int d) { return spec_int(PN, v_fmt("hatchnow.%s", p), d); }
-static int hk_(const char *p, int k) { return spec_int(PN, v_fmt("hatchnow.%s.%d", p, k), 0); }
 /* the bar's window of its layer: lit from the left, `px` wide from litFrom; the whole bar with its glow at the full width */
 static void hn_bar(const char *id, const char *a, int ox, int oy, int px) {
   if (px <= 0 || !*a) return;
-  int max = hi_("bar.max", 137), x = hk_("bar.litFrom", 0), y = hk_("bar.litFrom", 1), w = px, h = hi_("bar.h", 29);
-  if (px >= max) { x = hk_("bar.full", 0); y = hk_("bar.full", 1); w = hk_("bar.full", 2); h = hk_("bar.full", 3); }
+  int max = v_si(PN, "hatchnow.bar.max", 137), x = v_sk(PN, "hatchnow.bar.litFrom", 0), y = v_sk(PN, "hatchnow.bar.litFrom", 1), w = px, h = v_si(PN, "hatchnow.bar.h", 29);
+  if (px >= max) { x = v_sk(PN, "hatchnow.bar.full", 0); y = v_sk(PN, "hatchnow.bar.full", 1); w = v_sk(PN, "hatchnow.bar.full", 2); h = v_sk(PN, "hatchnow.bar.full", 3); }
   v_sprite_window(id, a, x, y, ox + x, oy + y, w, h);
 }
 /* the hatched look: the room, the interior, the opened pod, the juvenile it becomes, the shell, the open door clipped by the window, the bar full */
 static void build_hatched(const int w[4]) {
-  const char *P = "overlay.regions.left."; int lw = v_pint(v_fmt("%slayerSize.0", P), 0), ax = hk_("left.layers", 0), ay = hk_("left.layers", 1);
+  const char *P = "overlay.regions.left."; int lw = v_pint(v_fmt("%slayerSize.0", P), 0), ax = v_sk(PN, "hatchnow.left.layers", 0), ay = v_sk(PN, "hatchnow.left.layers", 1);
   v_region("panelHatched", LAYER_PAINTED);
   { const char *a = v_pstr(v_fmt("%sroom", P)); if (*a) v_sprite("panel.hatched.room", a, w[0], w[1], w[2], w[3]); }
   { const char *a = v_pstr(v_fmt("%sinterior", P)); if (*a && lw > 0) v_sprite("panel.hatched.interior", a, ax, ay, lw, v_pint(v_fmt("%slayerSize.1", P), 0)); }
   { const char *a = v_pstr(v_fmt("%sopened", P)); int pw = v_pint(v_fmt("%sopenedSize.0", P), 0), ph = v_pint(v_fmt("%sopenedSize.1", P), 0);
-    if (*a && pw > 0) v_sprite("panel.hatched.opened", a, hk_("left.foot", 0) - v_pint(v_fmt("%sopenedAnchor.0", P), 0), hk_("left.foot", 1) - v_pint(v_fmt("%sopenedAnchor.1", P), 0), pw, ph); }
+    if (*a && pw > 0) v_sprite("panel.hatched.opened", a, v_sk(PN, "hatchnow.left.foot", 0) - v_pint(v_fmt("%sopenedAnchor.0", P), 0), v_sk(PN, "hatchnow.left.foot", 1) - v_pint(v_fmt("%sopenedAnchor.1", P), 0), pw, ph); }
   { const char *a = v_pstr(v_fmt("%sjuvenile", P)); int pw = v_pint(v_fmt("%sjuvenileSize.0", P), 0), ph = v_pint(v_fmt("%sjuvenileSize.1", P), 0);
-    if (*a && pw > 0) v_sprite("panel.hatched.juvenile", a, hk_("left.juvenile.foot", 0) - v_pint(v_fmt("%sjuvenileAnchor.0", P), 0), hk_("left.juvenile.foot", 1) - v_pint(v_fmt("%sjuvenileAnchor.1", P), 0), pw, ph); }
+    if (*a && pw > 0) v_sprite("panel.hatched.juvenile", a, v_sk(PN, "hatchnow.left.juvenile.foot", 0) - v_pint(v_fmt("%sjuvenileAnchor.0", P), 0), v_sk(PN, "hatchnow.left.juvenile.foot", 1) - v_pint(v_fmt("%sjuvenileAnchor.1", P), 0), pw, ph); }
   { const char *a = v_pstr(v_fmt("%sshell", P)); if (*a && lw > 0) v_sprite("panel.hatched.shell", a, ax, ay, lw, v_pint(v_fmt("%slayerSize.1", P), 0)); }
-  { const char *a = v_pstr(v_fmt("%sdoor", P)); int clip = w[0] + w[2] - ax, r0 = hk_("left.door.rows", 0), rh = hk_("left.door.rows", 1);   /* the window clips the door's far edge; a window at source (0, 0) is the whole picture, so it starts at the first row with any ink */
+  { const char *a = v_pstr(v_fmt("%sdoor", P)); int clip = w[0] + w[2] - ax, r0 = v_sk(PN, "hatchnow.left.door.rows", 0), rh = v_sk(PN, "hatchnow.left.door.rows", 1);   /* the window clips the door's far edge; a window at source (0, 0) is the whole picture, so it starts at the first row with any ink */
     if (*a && clip > 0) v_sprite_window("panel.hatched.door", a, 0, r0, ax, ay + r0, clip, rh); }
-  hn_bar("panel.hatched.bar", v_pstr(v_fmt("%sbar", P)), ax, ay, hi_("bar.max", 137));
+  hn_bar("panel.hatched.bar", v_pstr(v_fmt("%sbar", P)), ax, ay, v_si(PN, "hatchnow.bar.max", 137));
 }
 /* the growing look: the room, the interior, the sealed pod, the closed glass, the shell, the bar lit to its progress; the window carries no text */
 static void build_growing(const int w[4]) {
-  const char *P = "overlay.regions.right."; int lw = v_pint(v_fmt("%slayerSize.0", P), 0), lh = v_pint(v_fmt("%slayerSize.1", P), 0), ax = hk_("right.layers", 0), ay = hk_("right.layers", 1);
+  const char *P = "overlay.regions.right."; int lw = v_pint(v_fmt("%slayerSize.0", P), 0), lh = v_pint(v_fmt("%slayerSize.1", P), 0), ax = v_sk(PN, "hatchnow.right.layers", 0), ay = v_sk(PN, "hatchnow.right.layers", 1);
   v_region("panelGrowing", LAYER_PAINTED);
   { const char *a = v_pstr(v_fmt("%sroom", P)); if (*a) v_sprite("panel.growing.room", a, w[0], w[1], w[2], w[3]); }
   { const char *a = v_pstr(v_fmt("%sinterior", P)); if (*a && lw > 0) v_sprite("panel.growing.interior", a, ax, ay, lw, lh); }
   { const char *a = v_pstr(v_fmt("%spod", P)); int pw = v_pint(v_fmt("%spodSize.0", P), 0), ph = v_pint(v_fmt("%spodSize.1", P), 0);
-    if (*a && pw > 0) v_sprite("panel.growing.pod", a, hk_("right.foot", 0) - v_pint(v_fmt("%spodAnchor.0", P), 0), hk_("right.foot", 1) - v_pint(v_fmt("%spodAnchor.1", P), 0), pw, ph); }
+    if (*a && pw > 0) v_sprite("panel.growing.pod", a, v_sk(PN, "hatchnow.right.foot", 0) - v_pint(v_fmt("%spodAnchor.0", P), 0), v_sk(PN, "hatchnow.right.foot", 1) - v_pint(v_fmt("%spodAnchor.1", P), 0), pw, ph); }
   { const char *a = v_pstr(v_fmt("%sglass", P)); if (*a && lw > 0) v_sprite("panel.growing.glass", a, ax, ay, lw, lh); }
   { const char *a = v_pstr(v_fmt("%sshell", P)); if (*a && lw > 0) v_sprite("panel.growing.shell", a, ax, ay, lw, lh); }
   hn_bar("panel.growing.bar", v_pstr(v_fmt("%sbar", P)), ax, ay, v_pint("overlay.regions.barPx", 1));
@@ -229,12 +217,12 @@ static void build_growing(const int w[4]) {
 static void build_hatchnow(void) {
   int stage[4]; if (!v_spec_rect("frame", "regions.stage.rect", stage)) return;
   v_region("panelGround", LAYER_CHROME); v_rect("panel.ground", stage[0], stage[1], stage[2], stage[3], pcol("ground"));
-  int l[4], r[4], wl[4], wr[4]; card_rect(0, 2, l); card_rect(1, 2, r); prect("windows.left", wl); prect("windows.right", wr);
+  int l[4], r[4], wl[4], wr[4]; card_rect(0, 2, l); card_rect(1, 2, r); v_srect(PN, "incubate.windows.left", wl); v_srect(PN, "incubate.windows.right", wr);
   build_bezel(0, l, v_pstr("overlay.regions.verbs.grow")); build_bezel(1, r, v_pstr("overlay.regions.verbs.wait"));
   build_price(l);
-  { const char *t = v_pstr("overlay.regions.caption"); int px = hi_("caption.px", 16); static char cc[24]; char s[24];   /* Wait's readout: "ready in about N min", right-aligned in its header as Hatch now's price is in its own */
+  { const char *t = v_pstr("overlay.regions.caption"); int px = v_si(PN, "hatchnow.caption.px", 16); static char cc[24]; char s[24];   /* Wait's readout: "ready in about N min", right-aligned in its header as Hatch now's price is in its own */
     if (*t) { spec_str(PN, "hatchnow.caption.colour", s, sizeof s); snprintf(cc, sizeof cc, "%s", col(s)); int tw = v_measure(t, px);
-      v_region("panelCaption", LAYER_TYPE); v_text("panel.caption", t, r[0] + r[2] - pi_("price.right", 12) - tw, r[1] + pi_("header.baseline", 20) - v_cap(px), tw, px, cc); } }
+      v_region("panelCaption", LAYER_TYPE); v_text("panel.caption", t, r[0] + r[2] - v_si(PN, "incubate.price.right", 12) - tw, r[1] + v_si(PN, "incubate.header.baseline", 20) - v_cap(px), tw, px, cc); } }
   build_hatched(wl); build_window_frame(0, wl);
   build_growing(wr); build_window_frame(1, wr);
   { anim_state_t t; if (!anim_get(ANIM_DITHER, "stage", &t)) build_ring(2); }
@@ -242,7 +230,7 @@ static void build_hatchnow(void) {
 static void build_incubate(void) {
   int stage[4]; if (!v_spec_rect("frame", "regions.stage.rect", stage)) return;
   v_region("panelGround", LAYER_CHROME); v_rect("panel.ground", stage[0], stage[1], stage[2], stage[3], pcol("ground"));
-  int l[4], r[4], wl[4], wr[4]; card_rect(0, 2, l); card_rect(1, 2, r); prect("windows.left", wl); prect("windows.right", wr);
+  int l[4], r[4], wl[4], wr[4]; card_rect(0, 2, l); card_rect(1, 2, r); v_srect(PN, "incubate.windows.left", wl); v_srect(PN, "incubate.windows.right", wr);
   build_bezel(0, l, v_pstr("overlay.regions.verbs.incubate")); build_bezel(1, r, v_pstr("overlay.regions.verbs.keep"));
   build_price(l);
   build_incubate_left(wl); build_window_frame(0, wl);

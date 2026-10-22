@@ -13,7 +13,6 @@
 
 #define F "frame"
 #define P "props"
-static int fi(const char *path) { return spec_int(F, path, 0); }
 static void fs(const char *path, char *buf, int cap) { spec_str(F, path, buf, cap); }
 /* a colour of the frame's table: its palette name */
 static void colour(const char *key, char *buf) { char p[64]; snprintf(p, sizeof p, "colours.%s", key); spec_str(F, p, buf, 24); }
@@ -39,13 +38,13 @@ void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, 
   if (spec_str(spec, away ? "colours.faceRingAway" : "colours.faceRing", c, sizeof c) <= 0 || !c[0]) { snprintf(b, sizeof b, "v_faceHolder: %.24s has no colours.faceRing%s", spec, away ? "Away" : ""); v_error(b); return; }
   if (width < 1) { v_error("v_faceHolder: frame.json regions.marks.face.ringWidth is missing"); return; }
   v_layer(LAYER_ART); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", w, h, width, c);
-  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", b); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);
+  v_composed(id, x, y, w, h, b);
 }
 /* The centre of a counter's icon in the top bar (i: 0 Energy, 1 Data, 2 Essence), as word_topBar lays them out (the figures as shown now, a tick counting up included): the place a Cargo material travels to. 1 when the bar has the props, else 0. */
 int frame_material_centre(int i, int out[2]) {
   if (i < 0 || i > 2 || !spec_has(P) || !spec_has(F)) return 0;
   static const char K[3] = { 'e', 'd', 's' };
-  int M_icon = fi("regions.materials.icon"), M_gap = fi("regions.materials.gap"), M_px = fi("regions.materials.px"), M_between = fi("regions.materials.between"), M_centre = fi("regions.materials.centre"), mrect[4]; rect_of("regions.materials.rect", mrect);
+  int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_px = v_si(F, "regions.materials.px", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = v_si(F, "regions.materials.centre", 0), mrect[4]; rect_of("regions.materials.rect", mrect);
   int widths[3], total = 0;
   for (int q = 0; q < 3; q++) {
     char a[48], txt[16]; snprintf(a, sizeof a, "frame.top.materials.%c", K[q]); int shown = spec_int(P, a, 0);
@@ -67,7 +66,7 @@ void word_topBar(void) {
   colour("chrome", c); word_panel("top", r[0], r[1], bar ? 0 : r[2], bar ? 0 : r[3], c, NULL);
   colour("rule", c); v_rect("top.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], bar ? 0 : 1, c);
   colour("topRule", c);
-  for (int i = 0; i < spec_len(F, "regions.topRules.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.topRules.x.%d", i); snprintf(id, sizeof id, "top.sep.%d", i); int y0 = fi("regions.topRules.y0"), y1 = fi("regions.topRules.y1"); v_rect(id, fi(p), y0, 1, y1 - y0, c); }
+  for (int i = 0; i < spec_len(F, "regions.topRules.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.topRules.x.%d", i); snprintf(id, sizeof id, "top.sep.%d", i); int y0 = v_si(F, "regions.topRules.y0", 0), y1 = v_si(F, "regions.topRules.y1", 0); v_rect(id, v_si(F, p, 0), y0, 1, y1 - y0, c); }
   /* where you are: the room's mark, then the one word */
   v_name("title");   /* the top bar's marks (room, companion, face, sun): each picture's layer is its asset's */
   char screen[32], room[24]; spec_str(P, "frame.top.screen", screen, sizeof screen);
@@ -76,10 +75,10 @@ void word_topBar(void) {
   if (*room) { lower(room); snprintf(a, sizeof a, "regions.marks.room.%s", room); fs(a, b, sizeof b); mark("top.room", b, rr); }
   v_region("title", LAYER_TYPE);
   spec_str(P, "frame.top.title", s, sizeof s); colour("title", c);
-  v_run("top.title", s, fi("regions.title.text.0"), fi("regions.title.text.1") + 2, fi("regions.title.px"), c, V_ALIGN_LEFT);
+  v_run("top.title", s, v_si(F, "regions.title.text.0", 0), v_si(F, "regions.title.text.1", 0) + 2, v_si(F, "regions.title.px", 0), c, V_ALIGN_LEFT);
   /* what you hold, centred on 512 */
   static const char K[3] = { 'e', 'd', 's' }; static const char *ICON[3] = { "energy", "data", "essence" };
-  int M_icon = fi("regions.materials.icon"), M_gap = fi("regions.materials.gap"), M_px = fi("regions.materials.px"), M_between = fi("regions.materials.between"), M_centre = fi("regions.materials.centre");
+  int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_px = v_si(F, "regions.materials.px", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = v_si(F, "regions.materials.centre", 0);
   int mrect[4]; rect_of("regions.materials.rect", mrect);
   int widths[3], total = 0; char txt[3][16], fl[3];
   for (int i = 0; i < 3; i++) {
@@ -119,7 +118,7 @@ void word_topBar(void) {
   else { char t[96]; fs(docked ? "regions.marks.face.docked" : "regions.marks.face.away", t, sizeof t); char *at = strstr(t, "{mibi}"); if (at) snprintf(a, sizeof a, "%.*s%s%s", (int)(at - t), t, mibi, at + 6); else snprintf(a, sizeof a, "%s", t); }
   if (!mark("top.face", a, face)) v_faceHolder("top.face.ring", F, face[0], face[1], face[2], face[3], !docked);   /* until the face is painted, the ring alone */
   /* when: the sun mark, then the turn's figure, right-aligned to 1008 */
-  int W_px = fi("regions.time.px"), W_right = fi("regions.time.right"), W_gap = fi("regions.time.gap"), tr[4], mk[2]; rect_of("regions.time.rect", tr);
+  int W_px = v_si(F, "regions.time.px", 0), W_right = v_si(F, "regions.time.right", 0), W_gap = v_si(F, "regions.time.gap", 0), tr[4], mk[2]; rect_of("regions.time.rect", tr);
   mk[0] = spec_int(F, "regions.time.mark.0", 16); mk[1] = spec_int(F, "regions.time.mark.1", 16);
   char tmpl[24], fig[48]; fs("strings.turn", tmpl, sizeof tmpl);
   char num[16]; snprintf(num, sizeof num, "%d", spec_int(P, "frame.top.turn", 0));
@@ -141,10 +140,10 @@ void word_bottomLine(void) {
   colour("chrome", c); word_panel("line", r[0], r[1], bar ? 0 : r[2], bar ? 0 : r[3], c, NULL);
   colour("rule", c); v_rect("line.rule", r[0], r[1], bar ? 0 : r[2], bar ? 0 : 1, c);
   colour("dot", c);
-  for (int i = 0; i < spec_len(F, "regions.separators.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.separators.x.%d", i); snprintf(id, sizeof id, "line.sep.%d", i); int y0 = fi("regions.separators.y0"); v_rect(id, fi(p), y0, 1, fi("regions.separators.y1") - y0, c); }
+  for (int i = 0; i < spec_len(F, "regions.separators.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.separators.x.%d", i); snprintf(id, sizeof id, "line.sep.%d", i); int y0 = v_si(F, "regions.separators.y0", 0); v_rect(id, v_si(F, p, 0), y0, 1, v_si(F, "regions.separators.y1", 0) - y0, c); }
   int ok = spec_str(P, "frame.line.ok", s, sizeof s) > 0, dim = spec_bool(P, "frame.line.dim", 0);
   /* the action: the cap, the verb, then the price */
-  int A_px = fi("regions.action.px"), A_gap = fi("regions.action.gap"), A_capGap = fi("regions.action.capGap"), A_capW = fi("regions.action.capSize.0"), cap[4];
+  int A_px = v_si(F, "regions.action.px", 0), A_gap = v_si(F, "regions.action.gap", 0), A_capGap = v_si(F, "regions.action.capGap", 0), A_capW = v_si(F, "regions.action.capSize.0", 0), cap[4];
   rect_of("regions.action.rect", r2); rect_of("regions.action.cap", cap);
   int ax = r2[0], ty = r2[1] + 2, k = 0;
   /* `short`: null, or the icons of the materials the price is short of, space-separated ("◆", "⚡ ◆"): only the figure after each named icon is `need`; `blocked`: an action that cannot be taken, no cap (its room stays empty, so the verb stays where it was),
@@ -171,22 +170,22 @@ void word_bottomLine(void) {
   /* the context, centred on 512, clipped with an ellipsis to its zone */
   if (spec_str(P, "frame.line.subject", s, sizeof s) > 0) {
     int sr[4]; rect_of("regions.subject.rect", sr); v_region("subject", LAYER_TYPE);
-    v_clip(s, sr[2], fi("regions.subject.px"), t, sizeof t); colour("subject", c);
-    v_run("line.subject", t, fi("regions.subject.centre"), sr[1] + 2, fi("regions.subject.px"), c, V_ALIGN_CENTRE);
+    v_clip(s, sr[2], v_si(F, "regions.subject.px", 0), t, sizeof t); colour("subject", c);
+    v_run("line.subject", t, v_si(F, "regions.subject.centre", 0), sr[1] + 2, v_si(F, "regions.subject.px", 0), c, V_ALIGN_CENTRE);
   }
   /* the notice: the sentence right-aligned to 904 with its lamp 4 px to its left */
   if (spec_str(P, "frame.line.need", s, sizeof s) > 0) {
-    int nr[4]; rect_of("regions.need.rect", nr); int right = fi("regions.need.right"), px = fi("regions.need.px");
+    int nr[4]; rect_of("regions.need.rect", nr); int right = v_si(F, "regions.need.right", 0), px = v_si(F, "regions.need.px", 0);
     v_region("need", LAYER_TYPE); colour("need", c); v_run_t run = v_run("line.need", s, right, nr[1] + 2, px, c, V_ALIGN_RIGHT);
     int lw = spec_int(F, "regions.need.lamp.0", 12), lh = spec_int(F, "regions.need.lamp.1", 12);
-    int lamp[4] = { right - run.width - fi("regions.need.lampGap") - lw, nr[1] + (nr[3] - lh + 1) / 2, lw, lh };
+    int lamp[4] = { right - run.width - v_si(F, "regions.need.lampGap", 0) - lw, nr[1] + (nr[3] - lh + 1) / 2, lw, lh };
     v_name("need"); fs("regions.marks.lamp12.needsYou", a, sizeof a);
     mark("line.need.lamp", a, lamp);   /* the signed amber lamp (home-lamp-amber-12x12), 1:1; no code-drawn lamp */
   } else if (spec_str(P, "frame.line.goal.text", s, sizeof s) > 0) {
     /* the goal (frame.json strings.goal): in the notice zone, mist, no lamp, when no need holds. The words, then the materials a short step lacks (20 px each); a name too wide for the zone with its icons falls back to `plain`
        (the key's nameless sibling), the face's own sum. */
     char icons[24] = "", plain[V_STR] = ""; spec_str(P, "frame.line.goal.icons", icons, sizeof icons); spec_str(P, "frame.line.goal.plain", plain, sizeof plain);
-    int nr[4]; rect_of("regions.need.rect", nr); int right = fi("regions.need.right"), px = fi("regions.need.px"), ni = 0;
+    int nr[4]; rect_of("regions.need.rect", nr); int right = v_si(F, "regions.need.right", 0), px = v_si(F, "regions.need.px", 0), ni = 0;
     for (const char *q = icons; *q; q++) if ((unsigned char)*q == 0xe2) ni++;   /* the three icons are each one three-byte sequence beginning 0xe2 */
     const char *words = (v_run_width(s, px) + 20 * ni > nr[2] && plain[0]) ? plain : s;
     char full[V_STR + 32]; snprintf(full, sizeof full, "%s%s%s", words, ni ? " " : "", ni ? icons : "");
@@ -195,10 +194,10 @@ void word_bottomLine(void) {
   /* the way back: its cap, then one word, right-aligned to 1008 */
   if (spec_str(P, "frame.line.back", s, sizeof s) > 0) {
     int br[4], bcap[2]; rect_of("regions.back.rect", br); bcap[0] = spec_int(F, "regions.back.cap.0", 16); bcap[1] = spec_int(F, "regions.back.cap.1", 16);
-    int right = fi("regions.back.right"), px = fi("regions.back.px"), room = br[2] - bcap[0] - fi("regions.back.capGap");
+    int right = v_si(F, "regions.back.right", 0), px = v_si(F, "regions.back.px", 0), room = br[2] - bcap[0] - v_si(F, "regions.back.capGap", 0);
     v_region("back", LAYER_TYPE); colour("back", c);
     v_run_t run = v_run("line.back", v_run_width(s, px) > room ? "Back" : s, right, br[1] + 2, px, c, V_ALIGN_RIGHT);
-    v_region("back", LAYER_ART); int cr[4] = { right - run.width - fi("regions.back.capGap") - bcap[0], cap[1], bcap[0], bcap[1] };
+    v_region("back", LAYER_ART); int cr[4] = { right - run.width - v_si(F, "regions.back.capGap", 0) - bcap[0], cap[1], bcap[0], bcap[1] };
     fs("regions.marks.capBack", a, sizeof a); mark("line.cap.back", a, cr);
   }
   (void)b;
@@ -208,11 +207,11 @@ void word_messagePlate(void) {
   char s[V_STR], c[24], c2[24];
   if (spec_str(P, "frame.plate.text", s, sizeof s) <= 0) return;
   if (spec_bool(P, "frame.plate.timed", 0) && !anim_get(ANIM_PLATE, "msg", NULL)) return;   /* a timed plate is shown while its `plate` event plays (4 s) */
-  int maxW = fi("regions.plate.maxWidth"), pad = fi("regions.plate.pad"), px = fi("regions.plate.px"), centre = fi("regions.plate.centre"), lead = fi("regions.plate.lead"), line = fi("regions.plate.line");
+  int maxW = v_si(F, "regions.plate.maxWidth", 0), pad = v_si(F, "regions.plate.pad", 0), px = v_si(F, "regions.plate.px", 0), centre = v_si(F, "regions.plate.centre", 0), lead = v_si(F, "regions.plate.lead", 0), line = v_si(F, "regions.plate.line", 0);
   char buf[V_STR * 4]; int n = v_wrap(s, maxW - 2 * pad, px, buf, sizeof buf, 8), widest = 0; const char *l = buf;
   for (int i = 0; i < n; i++) { int w = v_run_width(l, px); if (w > widest) widest = w; l += strlen(l) + 1; }
   int focal[4], hasf = spec_len(P, "frame.plate.focal") == 4; for (int i = 0; i < 4 && hasf; i++) { char p[40]; snprintf(p, sizeof p, "frame.plate.focal.%d", i); focal[i] = spec_int(P, p, 0); }
-  int rc[4]; layout_plate_position(maxW, pad, lead, line, centre, fi("regions.plate.bottom"), fi("regions.plate.topOverFocal"), n, widest, hasf ? focal : v_focal(), rc);   /* the props may name a box; else the screen's own focal region */
+  int rc[4]; layout_plate_position(maxW, pad, lead, line, centre, v_si(F, "regions.plate.bottom", 0), v_si(F, "regions.plate.topOverFocal", 0), n, widest, hasf ? focal : v_focal(), rc);   /* the props may name a box; else the screen's own focal region */
   v_region("plate", LAYER_CHROME);
   colour("plateShadow", c); v_rect("plate.shadow", rc[0], rc[1] + 3, rc[2], rc[3], c);
   colour("plate", c); colour("plateEdge", c2); word_panel("plate", rc[0], rc[1], rc[2], rc[3], c, c2);

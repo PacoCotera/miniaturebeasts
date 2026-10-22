@@ -20,6 +20,23 @@ void v_rect(const char *id, int x, int y, int w, int h, const char *colour);
 /* One string of Inter, the cap top on y. */
 void v_text(const char *id, const char *s, int x, int y, int w, int px, const char *colour);
 /* A picture placed 1:1 by its asset id; 1 when it was drawn, 0 when the host has not sent it (a mark whose master is not placed draws nothing and the layout does not move). */
+/* ---- K1: the spec accessors, the composed node and the picture-or-slot (face-ui-kit.md section 3.1) ---- */
+/* v_si / v_sk / v_srect / v_scol: a screen's or word's reads of a spec by dotted path; each replaces a file's private copy.
+   v_si(spec, path, d): the integer at `path` of the spec `spec` ("home", "frame", ...), d when absent or not a number. Reads the spec only; draws nothing; no node.
+   v_sk(spec, base, k): the integer at "<base>.<k>" (an array element or a numbered key), 0 when absent. Reads the spec only; no node.
+   v_srect(spec, path, r): the [x, y, w, h] at `path` into r; all four 0 when it is not a 4-array. Reads the spec only; no node.
+   v_scol(spec, path): the string at `path` (a palette name; "" when absent), copied to a ring of 16 buffers of 24 bytes, valid for the next 15 calls. Reads the spec only; no node. */
+int v_si(const char *spec, const char *path, int d);
+int v_sk(const char *spec, const char *base, int k);
+void v_srect(const char *spec, const char *path, int r[4]);
+const char *v_scol(const char *spec, const char *path);
+/* v_composed(id, x, y, w, h, ops): one composed picture of the ops string (the JSON ops list of prim.h) at (x, y), w x h, in the current region and layer. Reads nothing; node id v_id(id), one node, always sent; returns void. `ops` may be the prim_ops() buffer itself (a caller that wrote its ops there). */
+void v_composed(const char *id, int x, int y, int w, int h, const char *ops);
+/* v_slot(id, asset, fallback, x, y, w, h, shown): a picture, else the same node with no size, so showing it later never adds a node or changes the order of the screen's nodes (section 2.2).
+   Reads the host's pictures (the picture table): "has" means one thing, the picture's id is not empty and the host has sent it. When `shown` and the host has sent `asset`, a 1:1 sprite of w x h at (x, y), return 1.
+   Otherwise the node of no size at (x, y) over `fallback` (over `asset` when fallback is NULL or empty), return 0; when the host has sent neither, no node is made (as v_sprite and v_sprite_hidden alone).
+   Node id: v_id(id), at most one. The region and layer are the caller's (v_name / v_region). */
+int v_slot(const char *id, const char *asset, const char *fallback, int x, int y, int w, int h, int shown);
 /* A name plate of the series the spec names (`<path>.plate.series`), the width the face chose, shown 1:1; the host sends the whole series at boot. A plate that is not on the face is an error and a refused node. */
 void v_plate(const char *id, const char *namePath, int w, int x, int y);
 void v_plate_in(const char *spec, const char *id, const char *namePath, int w, int x, int y);   /* v_plate with the spec that names the plate series (Pods: "pods"; Create's tag: "create") */
