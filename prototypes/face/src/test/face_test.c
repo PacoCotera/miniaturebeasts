@@ -231,6 +231,15 @@ static void empty_id(void) {
   face_init(); { const char *hi = "{\"t\":\"hello\",\"contract\":1}"; check(wire_send(hi, (int)strlen(hi)) == 0, "empty id: hello", ""); }
   const char *up = "{\"t\":\"asset\",\"id\":\"empty-id-probe\",\"w\":4,\"h\":4,\"policy\":\"art\",\"status\":\"placeholder\"}", *down = "{\"t\":\"asset\",\"id\":\"empty-id-probe\",\"drop\":true}";
   check(wire_send(up, (int)strlen(up)) == 0 && wire_asset_slot("empty-id-probe") >= 0, "empty id: a picture is loaded", "");
+  { /* an asset message with an empty id is refused, with or without drop, and changes no slot */
+    int pslot = wire_asset_slot("empty-id-probe");
+    const char *e1 = "{\"t\":\"asset\",\"id\":\"\",\"w\":4,\"h\":4,\"policy\":\"art\",\"status\":\"placeholder\"}", *e2 = "{\"t\":\"asset\",\"id\":\"\",\"drop\":true}", *nx = "{\"t\":\"asset\",\"id\":\"empty-id-next\",\"w\":4,\"h\":4,\"policy\":\"art\",\"status\":\"placeholder\"}", *nd = "{\"t\":\"asset\",\"id\":\"empty-id-next\",\"drop\":true}";
+    check(wire_send(e1, (int)strlen(e1)) == -1, "empty id: a load under \"\" is refused", "");
+    check(wire_send(e2, (int)strlen(e2)) == -1, "empty id: a drop of \"\" is refused", "");
+    check(wire_asset_slot("empty-id-probe") == pslot && wire_asset_slot("") < 0, "empty id: the refused messages changed no slot", "");
+    check(wire_send(nx, (int)strlen(nx)) == 0 && wire_asset_slot("empty-id-next") == pslot + 1, "empty id: and took none (the next picture takes the next slot)", "");
+    wire_send(nd, (int)strlen(nd));
+  }
   check(wire_send(down, (int)strlen(down)) == 0 && wire_asset_slot("empty-id-probe") < 0, "empty id: the picture is dropped", "");
   check(wire_asset_slot("") < 0 && wire_asset_slot(NULL) < 0, "empty id: the free slot the drop left is not found under \"\" or NULL", "");
   prim_begin(); int before = table_nodes();
