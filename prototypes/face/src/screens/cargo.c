@@ -388,8 +388,6 @@ void cargo_words(void) {
 
 /* a key on Cargo: no target, so a key says an intent on "room". The bay: ✓ and ← and the room keys; the pad does nothing. The end: any key (the pad as `pad`) says it, and the host does what the key does and shows the bay again. */
 void cargo_key(int code) {
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  int pad = code == 17 || code == 18 || code == 19 || code == 20;
-  if (!verb && pad && (strcmp(v_pstr("state"), "end") == 0 || strcmp(v_pstr("state"), "arrival") == 0)) verb = "pad";
-  if (verb) screens_say("intent", "room", verb);
+  if ((code == 17 || code == 18 || code == 19 || code == 20) && (strcmp(v_pstr("state"), "end") == 0 || strcmp(v_pstr("state"), "arrival") == 0)) { screens_say("intent", "room", "pad"); return; }
+  screens_key_graph(code, "cargo", NULL, NULL, "room", &(screens_keys_t){ 0 });
 }

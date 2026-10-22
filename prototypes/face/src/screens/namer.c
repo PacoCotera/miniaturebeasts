@@ -79,8 +79,8 @@ void namer_words(void) { build_panel(); build_field(); build_say(); build_keys()
 int namer_focus(focus_target_t *out, int cap) {
   int n = v_plen("overlay.focus.targets"); if (n > cap) n = cap;
   for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[i]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("overlay.focus.targets.%d.id", i))); t->enabled = v_pbool(v_fmt("overlay.focus.targets.%d.enabled", i), 1); t->index = i;
-    int r[4]; target_rect(t->id, r); t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3];
+    focus_target_t *t = &out[i]; focus_fill(t, "overlay.focus.targets", i, NULL);
+    int r[4]; target_rect(t->id, r); focus_fill(t, "overlay.focus.targets", i, r);
   }
   return n;
 }

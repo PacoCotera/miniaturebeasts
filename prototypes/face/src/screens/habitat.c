@@ -263,20 +263,18 @@ static void build_modules(const char *cur) {
 }
 
 /* ---- the targets as the words drew them, in the props' order ---- */
-int habitat_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
-  snprintf(graph_key, (size_t)gcap, "graph");
+int habitat_focus(focus_target_t *out, int cap) {
   int n = v_plen("focus.targets"); if (n > cap) n = cap; int np = v_plen("regions.plates.items"), nt = v_plen("regions.tiles.items"); if (nt > 12) return 0;
   int have = nt > 0 && layout_list_form(S, "regions.tiles", nt, NULL, 0) >= 0, k = 0;
   for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[k]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
-    t->enabled = v_pbool(v_fmt("focus.targets.%d.enabled", i), 1); t->index = i; int r[4] = { 0, 0, 0, 0 };
+    focus_target_t *t = &out[k]; focus_fill(t, "focus.targets", i, NULL); int r[4] = { 0, 0, 0, 0 }, ix = i;
     if (strcmp(t->id, "resident") == 0) v_srect(S, "regions.resident.rect", r);
     else if (strcmp(t->id, "name") == 0) memcpy(r, g_tag, sizeof r);
     else if (strcmp(t->id, "species") == 0) v_srect(S, "regions.speciesLine.rect", r);
     else if (strncmp(t->id, "plate.", 6) == 0) { int j = atoi(t->id + 6); if (j >= 0 && j < np) plate_rect(np, j, r); }
-    else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int q = 0; q < nt; q++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", q)), t->id + 5) == 0) layout_list_pitch(S, "regions.tiles", nt, q, r); t->index = 0; for (int q = 0; q < k; q++) if (strncmp(out[q].id, "tile.", 5) == 0) t->index++; }
+    else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int q = 0; q < nt; q++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", q)), t->id + 5) == 0) layout_list_pitch(S, "regions.tiles", nt, q, r); ix = 0; for (int q = 0; q < k; q++) if (strncmp(out[q].id, "tile.", 5) == 0) ix++; }
     else v_srect(S, v_fmt("regions.%s.rect", t->id), r);
-    t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3]; k++;
+    focus_fill(t, "focus.targets", i, r); t->index = ix; k++;
   }
   return k;
 }
@@ -288,20 +286,22 @@ static void build_ring_under(const char *cur) {
   if (S0) { char at[96]; snprintf(at, sizeof at, "%s", v_pstr("regions.resident.moving.close")); close_t f; close_now(S0, r, &f); word_focusRingFootprint("focus", S, "focus.targets.resident", at, strncmp(f.cell, "curl", 4) == 0 ? "curl" : f.sh75 ? "shadow" : "stand", r);   /* shadow: a hop's air tick that shows shadow-75 */ }
   else { char pic[96]; snprintf(pic, sizeof pic, "%s", v_pstr("regions.resident.picture")); word_focusRingFootprint("focus", S, "focus.targets.resident", pic, "", r); }
 }
-/* the ring on the focused target (the resident's is under the creature, drawn before it): a plate or a module lifted 2 px, a tile in its form, the name and the species word round */
+/* the ring on the focused target (the resident's is under the creature, drawn before it): a plate or a module lifted 2 px, a tile in its form, the name and the species word round. The box is the focus table's. */
 static void build_ring(const char *cur) {
   if (!cur[0] || strcmp(cur, "resident") == 0 || spec_len("props", "overlay") >= 0 || anim_holding()) return;
+  focus_target_t t[40]; int n = habitat_focus(t, 40), at = -1; for (int i = 0; i < n; i++) if (strcmp(t[i].id, cur) == 0) at = i;
   int box[4] = { 0, 0, 0, 0 }; char target[96];
   v_region("focus", LAYER_CHROME);
-  if (strcmp(cur, "name") == 0) { memcpy(box, g_tag, sizeof box); snprintf(target, sizeof target, "focus.targets.name"); }
+  if (strncmp(cur, "tile.", 5) == 0 || at < 0) return;   /* the strip's own ring (build_bayStrip's box) */
+  box[0] = t[at].x; box[1] = t[at].y; box[2] = t[at].w; box[3] = t[at].h;
+  if (strcmp(cur, "name") == 0) snprintf(target, sizeof target, "focus.targets.name");
   else if (strcmp(cur, "species") == 0) {   /* the line's text and guide mark as drawn: the word adds the chip's 4 px each side */
-    int r[4]; v_srect(S, "regions.speciesLine.rect", r); const char *text = v_pstr("regions.card.species.text"); char tx[96]; snprintf(tx, sizeof tx, "%s", text); const char *mark = v_pstr("regions.card.species.mark");
+    int r[4] = { box[0], box[1], box[2], box[3] }; const char *text = v_pstr("regions.card.species.text"); char tx[96]; snprintf(tx, sizeof tx, "%s", text); const char *mark = v_pstr("regions.card.species.mark");
     int w = v_measure(tx, v_si(S, "regions.speciesLine.px", 16)); if (has(mark)) w += v_si(S, "regions.speciesLine.mark.gap", 4) + v_sk(S, "regions.speciesLine.mark.size", 0);
     box[0] = r[0]; box[1] = r[1] + v_fdiv(r[3] - 24, 2); box[2] = w; box[3] = 24; snprintf(target, sizeof target, "focus.targets.species");
   }
-  else if (strncmp(cur, "plate.", 6) == 0) { int n = v_plen("regions.plates.items"), i = atoi(cur + 6); if (i < 0 || i >= n) return; plate_rect(n, i, box); box[1] -= v_si(S, "focus.targets.plate.lift", 2); snprintf(target, sizeof target, "focus.targets.plate"); }
-  else if (strncmp(cur, "tile.", 5) == 0) return;   /* the strip's own ring (build_bayStrip's box) */
-  else { v_srect(S, v_fmt("regions.%s.rect", cur), box); box[1] -= v_si(S, v_fmt("focus.targets.%s.lift", cur), 2); snprintf(target, sizeof target, "focus.targets.%s", cur); }
+  else if (strncmp(cur, "plate.", 6) == 0) { box[1] -= v_si(S, "focus.targets.plate.lift", 2); snprintf(target, sizeof target, "focus.targets.plate"); }
+  else { box[1] -= v_si(S, v_fmt("focus.targets.%s.lift", cur), 2); snprintf(target, sizeof target, "focus.targets.%s", cur); }
   if (box[2] > 0) word_focusRing("focus", S, target, box);
 }
 
@@ -321,18 +321,4 @@ void habitat_words(void) {
 }
 
 /* a key on one mibi up close: ✓ ← and the room keys say an intent on the focused target; the pad moves the ring by habitat.json focus.graph (the host's selector `tile.shown` in focus.resolve) */
-void habitat_key(int code) {
-  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0]) snprintf(cur, sizeof cur, "resident");
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) { screens_say("intent", cur, verb); return; }
-  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
-  focus_target_t t[40]; char gkey[24]; int n = habitat_focus(t, 40, gkey, sizeof gkey);
-  int glen; const char *graph = spec_raw(S, "focus.graph", &glen); char err[200];
-  focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
-  focus_resolve_t r[8]; int nr = 0;
-  for (int i = 0, m = spec_len("props", "focus.resolve"); i < m && nr < 8; i++) { if (spec_member("props", "focus.resolve", i, r[nr].sel, sizeof r[nr].sel, r[nr].id, sizeof r[nr].id)) nr++; }
-  int roomAt[4] = { 0, 0, 0, 0 };
-  char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, roomAt, to, sizeof to); focus_graph_free(g);
-  if (step || strcmp(to, cur) == 0) return;
-  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
-}
+void habitat_key(int code) { screens_key_graph(code, S, "focus.graph", habitat_focus, "resident", &(screens_keys_t){ .resolve = 1 }); }
