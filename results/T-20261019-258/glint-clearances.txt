@@ -1,0 +1,19 @@
+Late state, every bead as if new (e7e76385). The stills scene's 3 new are rows 3-5.
+colour|charcoal bead (79.8, 298.0) spot (75, 304) clearance 11.82
+colour|russet bead (66.2, 278.6) spot (60, 284) clearance 12.96
+colour|charcoal and russet bead (98.0, 301.8) spot (95, 295) clearance 4.15
+colour|charcoal and ash bead (58.7, 254.1) spot (52, 258) clearance 11.52
+colour|russet and ash bead (115.7, 303.0) spot (121, 311) clearance 3.52
+markings|stripes bead (28.3, 195.1) spot (20, 196) clearance 12.90
+markings|patches bead (40.2, 209.4) spot (32, 211) clearance 5.03
+markings|stripes and patches bead (49.4, 165.9) spot (42, 165) clearance 14.18
+crown|bare head bead (174.2, 36.0) spot (174, 28) clearance 27.46
+crown|leaf crest bead (198.7, 57.8) spot (200, 50) clearance 18.06
+eye-rings|thin rings bead (287.1, 84.6) spot (293, 79) clearance 27.63
+eye-rings|between bead (247.9, 65.5) spot (252, 59) clearance 29.29
+eye-rings|wide pale rings bead (286.9, 117.5) spot (294, 113) clearance 17.90
+drive|steady bead (305.1, 261.1) spot (312, 265) clearance 49.80
+drive|between bead (315.9, 191.0) spot (324, 191) clearance 51.96
+efficiency|thrifty bead (100.8, 313.1) spot (97, 320) clearance 6.93
+efficiency|between bead (171.0, 323.9) spot (171, 332) clearance 51.11
+efficiency|ordinary bead (74.3, 263.0) spot (73, 253) clearance 2.04 FALLBACK
