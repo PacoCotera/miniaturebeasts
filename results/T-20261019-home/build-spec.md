@@ -432,7 +432,7 @@ The 5 px gap before the portrait berth (T-198) builds with that ticket.
   - breathing and the full-screen open work.
 - **The art director** re-checks this first public render, with the same stills.
 
-**The fix: nothing found anywhere.** The H1 placeholder (the flat box) must not ship, because a fresh save sees it on its first day. Draw the generator's own ground with its finish (grain 4, vignette 0.45), with no form, no captions and no glints, so the window reads as an empty dark field waiting to grow. The header stays "Library".
+**The fix: nothing found anywhere** (the art director's ruling, `results/T-20261019-258/art-director.md` §3, which replaces my "ground only"). The H1 placeholder must not ship, and a bare ground would read as a window that failed to load. Draw **the starter species (the Loika) in its empty state**: the core with every look as a dormant open ring, at the same fit, captioned "Loika genome", with "{n} new" hidden. This is the one exception to §4.2's "never a species with nothing found".
 
 **Rulings on the builder's readings:**
 1. **Species with several wishes** (the game designer's order, which replaces the builder's reading):
@@ -446,8 +446,8 @@ The 5 px gap before the portrait berth (T-198) builds with that ticket.
    - Migration is right too: a fresh save counts all it finds as new, and an old save counts all it knows as seen.
    - The caption counts the shown species only, so it always matches the glints on screen.
    - The glints go on the first 8 new beads in chapter order.
-3. **Breathing levels** at ×1.04, 1.08 and 1.12 brightness are provisional. The amount is the art director's, and the cycle starting at Home's first draw is fine.
+3. **Breathing** (the art director, §2): ×1.00, 1.04, 1.08 and 1.12, cycling 1 2 3 4 3 2, **applied to the form's light canvas only, before the finish.** The ground, grain and vignette are the same pixels at every level. **Test:** the ground's pixels outside the form's light are identical across the four levels. The cycle starts at Home's first draw.
 4. **The glint fade** is a triangle, 1 s in and 1 s out, all glints in phase. That's right.
 5. **Nothing found:** see the fix above.
 6. **Sealed chapters:** drawn with no beads while shut, and normal once opened. That's right.
-7. **Glints on near-white beads read poorly:** this goes to the art director (the star's colour or outline).
+7. **Glints** (the art director, §1): **beside the bead, not on it.** The star's centre goes 8 px from the bead's centre, along the ray, outward (away from the hub), clamped inside the window's 12 px margin. There is no outline and no new colour, and the fade, the cap of 8 and "until seen" are unchanged.
