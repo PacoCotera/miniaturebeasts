@@ -29,3 +29,9 @@ A refactor must not change any node record it emits (kind, x, y, w, h, asset); l
 
 ## 5. v_scol's 16-slot ring: fine
 Checked pointers held across calls (create.c:109, namer.c:31, home_builds.c:77): safe. In K1.1 make the ring counters `static unsigned` in v_scol and v_sstr (and v_fmt, v_pstr if free): a signed counter overflows on a long-running device.
+
+# Re-gate (architect, 2026-10-22 14:52 Mexico City), head 6b18d684
+- **K1 (K1 + K1.1): PASS.** Every K1.1 item done; node records identical on all 181 golden states. Accepted behaviour changes (one definition of "has", none on a golden scene): a zero-size node for an unsent named picture at home_builds lamp, strip, tiles, home.c g.bed.mark, leaves.c, home_frame berth; no hidden node for an empty id at panel card mark, cargo, create, habitat. Still open as ruled: panel col/rcol/pcol and cargo fcol → K4 (v_scol_or, v_token); page.c, specimen.c, rail.c when next touched; hidden-only dither/timing sites → K8.
+- **Note for K7:** guard rule 7 must define "static spec accessor" exactly. cargo.c `well_centre`, incubator.c `stage_top`, moving.c `num` and screens.c props reads (`is_not_built`, `incubate_open`, `hatchnow_open`) call spec_* but are computations, not copies; K7 exempts that shape or rewrites them, never fails on them by surprise.
+- **T-266: PASS.** wire_asset_slot returns -1 for NULL or "" (wire.c:122); face_test drops a picture and checks "" and NULL find nothing and make no node.
+- **New: T-20261022-267.** In `on_asset`, refuse an empty id: `fail("asset: id is required")` before the drop branch (also stops slot_of("") matching). Today an empty-id message loads into a free slot that stays "free", unreachable, overwritten by the next load. Proof: a face_test case (empty id, with or without drop, refused, no slot changed); journeys show no new host-side error; node records unchanged. wire.c and face_test.c only; may run alongside K2.
