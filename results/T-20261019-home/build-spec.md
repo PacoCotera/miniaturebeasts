@@ -454,4 +454,11 @@ The 5 px gap before the portrait berth (T-198) builds with that ticket.
   - **Clearance** is measured from the star's arm tips (r 6) to any other bead's edge (bead r + 1) and to any other ray's centreline, and must be at least 3. The bead's own ray is excluded.
   - **Search** at distance 8 through 0, ±30, ±60, ±90, ±120 and ±150°, then the same at distance 10, then at 12. Take the first clear spot.
   - **If nothing clears,** take the spot with the largest clearance, never "outward by default".
-  - **Test:** print each glint's spot and clearance for late with 3 new. Each must be at least 3, or flagged as the fallback. There is no outline and no new colour, and the fade, the cap of 8 and "until seen" are unchanged.
+  - **Test:** print each glint's spot and clearance for late with 3 new. Each must be at least 3, or flagged as the fallback. **A fallback passes only while its spot is nearer its own bead than any other bead** (the art director, round 4). There is no outline and no new colour, and the fade, the cap of 8 and "until seen" are unchanged.
+
+**H4 closed (round 4, build e7e76385).**
+- **UI/UX:** PASS.
+- **The art director:** PASS for art, sent to UI/UX by message, because their filed note couldn't land.
+  - The three new stars clear at 4.15, 11.52 and 3.52 px, each reading as its own bead's.
+  - The one fallback (efficiency|ordinary, 2.04 px) is accepted: its spot is 10.1 px from its own bead and 14.3 px from the nearest other.
+  - The test gains the line above.
