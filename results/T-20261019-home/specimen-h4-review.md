@@ -34,3 +34,15 @@ Each set compares 373,584 channel values. Values over 24 number at most 11 per s
 - **paint2d.mjs and specimen.mjs on the rule-3 allow list: PASS.** Both files are named; the rule is not a pattern. Rule 3 exists to keep drawing off DOM canvases, and these draw on a Float32Array. The port's test already fails on any `document`, `window` or `OffscreenCanvas` in specimen.mjs. Add the same check for paint2d.mjs, in one line, so the allow-list entry cannot cover a real canvas later.
 - **`specimen:` ids in the PAINTED family: PASS.** The pattern is anchored and covers the four levels only. Painted, unsnapped RGB is the art director's ruling.
 - **`setLibrary` registered by host.mjs: PASS.** It keeps the painter out of the intents' import graph, and with nothing registered, Home shows the placeholder. That makes it a seam, not a hidden dependency.
+
+## Fix round, 1d62807c (architect, 2026-10-21 23:50): PASS
+
+- **Oracle:** the over-24 count is in, with a bar of 64. The printed counts (S01 1/11, S09 2/2, S15 1/8) match my measurement.
+- **The probe hook: PASS.** It is a read-only callback inside `finish` and changes nothing it draws. The main picture's digests in specimen-golden.json are unchanged; only the recipe line moved to v2.
+  - The level path does repeat finish's print tone, grain and vignette.
+  - The new levels test already pins that copy: every ground pixel, recomputed by the level path, must equal the finished picture byte for byte. So a drift between the two fails there.
+  - No further test is needed.
+- **The warm timer: PASS, as equivalent to the ruling.** A sync only queues the timer. The render runs only on a cache miss, and it is skipped while an event holds input. A miss happens only when the shown species or its looks change, or at boot. Home's cold build takes 2.3 ms with no render, which meets the 50 ms bar.
+- **A blank window at the very first boot:** allowed by the ruling (the placeholder).
+- **Warm render 487–547 ms:** within the 1 s budget on the development machine. The Pi figure is still owed at P1. If it is over budget, the worker-thread step in Fix 2 applies.
+- **paint2d in the no-document check:** done.
