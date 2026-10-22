@@ -1,6 +1,6 @@
 // The Library specimen generator on the Station's own canvas (specimen.mjs on paint2d.mjs; build spec 4.2 and the architect's ruling): the port draws what the original specimen3.js draws (a Playwright oracle in Chromium, CI only: mean
 // absolute difference at most 2 and at most 24 a channel, every bead centre equal), the same looks give the same bytes and a new look a new id, the drawn form keeps 12 px clear of every edge of the window in each signed state,
-// the four breathing levels, the render time (printed; at most 1 s), and the subset: the port calls nothing the canvas does not have.
+// the four breathing levels, the render time (printed against the 1 s budget of the development machine; the test fails only past 3 s), and the subset: the port calls nothing the canvas does not have.
 //   node --test prototypes/station/tests/specimen.test.mjs        (the oracle needs playwright: PW_DIR=/path/with/node_modules/playwright, else it is skipped)
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -47,11 +47,13 @@ test("the same looks give the same bytes, and a different look set gives a diffe
   assert.equal(foundDigest({ b: ["y", "x"], a: ["z"] }), foundDigest({ a: ["z"], b: ["y", "x"] }), "the traits sorted");
   assert.notEqual(foundDigest({ a: ["x", "y"] }), foundDigest({ a: ["y", "x"] }), "the order of discovery is in the picture, so it is in the digest");
 });
-test("the render is cached by its id: a second call is the same object, and the render time of each state is printed (at most 1 s, the best of three on a warm engine)", () => {
+test("the render is cached by its id: a second call is the same object, and the render time of each state is printed against the 1 s budget (best of three on a warm engine; the test fails only past 3 s, a gross regression)", () => {
+  const BUDGET = 1000, CEILING = 3000;   // the architect, 2026-10-22: the 1 s budget is the development machine's and is read from the printed figure; the shared CI runner is too noisy for it, so the assertion is a 3x tripwire
   const times = {};
   for (const n of ["late", "mid", "early", "new"]) { let best = Infinity; for (let k = 0; k < 3; k++) best = Math.min(best, renderSpecimen(S01, stateOf(n)).ms); times[n] = best; }
-  console.log(`# specimen render time (ms, best of three): ${Object.entries(times).map(([n, t]) => `${n} ${t.toFixed(0)}`).join(", ")}`);
-  for (const [n, t] of Object.entries(times)) assert.ok(t <= 1000, `${n}: ${t.toFixed(0)} ms`);
+  const over = Object.entries(times).filter(([, t]) => t > BUDGET).map(([n]) => n);
+  console.log(`# specimen render time (ms, best of three; budget ${BUDGET} on the development machine): ${Object.entries(times).map(([n, t]) => `${n} ${t.toFixed(0)}`).join(", ")}${over.length ? ` (over the budget: ${over.join(", ")})` : ""}`);
+  for (const [n, t] of Object.entries(times)) assert.ok(t <= CEILING, `${n}: ${t.toFixed(0)} ms, past the ${CEILING} ms ceiling (budget ${BUDGET} ms)`);
   const x = specimenFor(S01, stateOf("early").S01, "S01"), y = specimenFor(S01, stateOf("early").S01, "S01"); assert.equal(x, y); assert.equal(x.id, specimenId("S01", stateOf("early").S01));
 });
 test("the four breathing levels breathe the form's light: the main one first, each brighter where the form is, and the ground, the grain and the vignette the same pixels at every level", () => {
