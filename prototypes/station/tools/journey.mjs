@@ -58,21 +58,21 @@ mkdirSync(path.join(here, "../img"), { recursive: true });
 const checks = { shots: [], textApiCalls: 0 };
 const record = async (name, ink) => {
   const check = await page.evaluate(() => window.__st.check()), snap = await page.evaluate(() => window.__st.snapshot({ capture: false }));
-  if (check.log) { const key = (r) => JSON.stringify(r); check.log.type = (check.log.type ?? []).slice().sort((x, y) => key(x) < key(y) ? -1 : 1); check.log.regions = (check.log.regions ?? []).slice().sort((x, y) => key(x) < key(y) ? -1 : 1); }
+  if (check.log) { const order = (list) => (list ?? []).map((r) => [JSON.stringify(r), r]).sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0).map((e) => e[1]); check.log.type = order(check.log.type); check.log.regions = order(check.log.regions); }
   const s = { name, check, snap: { pass1: snap.pass1, pass2: snap.pass2, errors: snap.errors, refused: snap.refused } };
   if (ink) s.png = (await page.evaluate(() => window.__st.capture())).split(",")[1];
   checks.shots.push(s);
 };
 // A canvas capture at 1×: the 1024×600 frame itself, as the face drew it (prototypes/station/img/pods-*.png).
 // A shot is taken on the page's held clock after frames have run until the words on screen stop changing (the bar's counters, the dithers and the codes that come in late), and the log is recorded in a fixed order (the face lists its text slots in the order it first met them, which follows the frames it happened to draw), so what is recorded does not depend on the real time the shot came at and two runs give the same type log (T-20261023-273). A shot taken while the journey itself holds the clock leaves that hold alone.
-const textsOf = async () => JSON.stringify(((await page.evaluate(() => window.__st.check())).log?.type ?? []).map((r) => r.region + "=" + r.text).sort());
-const settled = async (fn) => {
+const textsOf = async () => JSON.stringify(((await page.evaluate(() => window.__st.check())).log?.type ?? []).map((r) => r.region + "=" + r.text + "@" + r.px).sort());
+const settled = async (name, fn) => {
   const was = await page.evaluate(() => window.__isHeld());
-  if (!was) { await hold(); let prev = null, same = 0; for (let i = 0; i < 60 && same < 3; i++) { await stepClock(100); const now = await textsOf(); same = now === prev ? same + 1 : 0; prev = now; } }   // 100 ms of frames at a time until the words have not changed for 300 ms
+  if (!was) { const where = async () => JSON.stringify([(await ui()).screen, (await props()).state ?? null]), at = await where(); await hold(); let prev = null, same = 0; for (let i = 0; i < 60 && same < 3; i++) { await stepClock(100); const now = await textsOf(); same = now === prev ? same + 1 : 0; prev = now; } if (same < 3) fail(`${name}: the words did not settle in 6 s of held frames`); const now = await where(); if (now !== at) fail(`${name}: the settle carried the shot from ${at} to ${now}`); }   // 100 ms of frames at a time until the words have not changed for 300 ms
   try { return await fn(); } finally { if (!was) await release(); }
 };
-const frameShot = (name, ink = false) => settled(async () => { await record(name, ink); const url = await page.evaluate(() => window.__st.capture()); writeFileSync(path.join(here, `../img/${name}.png`), Buffer.from(url.split(",")[1], "base64")); });
-const shot = (name, ink = false) => settled(async () => { await record(name, ink); return page.screenshot({ path: path.join(here, `../img/${name}.png`), fullPage: false }); });
+const frameShot = (name, ink = false) => settled(name, async () => { await record(name, ink); const url = await page.evaluate(() => window.__st.capture()); writeFileSync(path.join(here, `../img/${name}.png`), Buffer.from(url.split(",")[1], "base64")); });
+const shot = (name, ink = false) => settled(name, async () => { await record(name, ink); return page.screenshot({ path: path.join(here, `../img/${name}.png`), fullPage: false }); });
 const fixture = readFileSync(path.join(here, "../tests/fixtures/save-v8-schema1.json"), "utf8");
 const companionBefore = JSON.stringify({ ...JSON.parse(fixture), st: undefined });
 await page.addInitScript(() => { window.__fillTextCalls = 0; for (const f of ["fillText", "strokeText", "measureText"]) { const o = CanvasRenderingContext2D.prototype[f]; CanvasRenderingContext2D.prototype[f] = function (...a) { window.__fillTextCalls++; return o.apply(this, a); }; } });
