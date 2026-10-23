@@ -171,6 +171,21 @@ static void bezel_words(const char *key) {
 }
 
 /* ---- the console and its stations ---- */
+/* the Pods station's slots (3 x 2 on the spec's form): the slot holds its rack pod or, empty, a hairline outline; the glint star over a pod's top right corner is the second pass */
+static void pod_slot(int i, const int b[4], void *ctx) {
+  const char *key = ctx, *pod = v_pstr(v_fmt("regions.pods.wells.%d.pod", i));
+  if (*pod) { v_region(v_fmt("%s.picture", key), LAYER_ART); v_sprite(v_fmt("%s.slot.%d", key, i), pod, b[0], b[1], b[2], b[3]); }
+  else { v_region(key, LAYER_CHROME); kit_windowFrame(v_fmt("%s.slot.%d", key, i), b[0], b[1], b[2], b[3], v_si(H, "regions.station.slot.radius", 6), NULL, v_scol(H, "regions.station.slot.edge"));   /* the empty slot of the case: a 24 x 32 outline of radius 6 in `hairline`, no fill */ }
+}
+static void pod_glint(int i, const int b[4], void *ctx) {
+  const char *key = ctx, *g = v_pstr(v_fmt("regions.pods.wells.%d.glint", i));
+  if (*g) v_sprite(v_fmt("%s.glint.%d", key, i), g, b[0] + v_sk(H, "regions.pods.glint.at", 0), b[1] + v_sk(H, "regions.pods.glint.at", 1), v_sk(H, "regions.pods.glint.size", 0), v_sk(H, "regions.pods.glint.size", 1));
+}
+typedef struct { const char *key; int whole; } plates_t;
+static void comp_plate(int i, const int b[4], void *ctx) {   /* the Probe's plates as line 2: whole ones first, then lost */
+  const plates_t *p = ctx; v_sprite(v_fmt("%s.plate.%d", p->key, i), v_pstr(i < p->whole ? "regions.companion.plates.wholePicture" : "regions.companion.plates.lostPicture"), b[0], b[1], b[2], b[3]);
+}
+
 static void station_words(const char *key) {
   int r[4]; v_srect(H, v_fmt("regions.%s.rect", key), r);
   int rad = v_si(H, "regions.station.radius", 8), inset = v_si(H, "regions.station.pictureInset", 8), gap = v_si(H, "regions.station.columnGap", 8), x1 = v_sk(H, "regions.station.line1", 0), left = 0, lineRight = r[2] - x1;
@@ -188,14 +203,11 @@ static void station_words(const char *key) {
       v_slot_at(v_fmt("%s.berth.%d", key, i), a, portrait, x, y0, w, bh, i < n, 0, 0); if (i < n) x += w + bg;
     }
   } else if (strcmp(key, "pods") == 0) {
-    int sw = v_sk(H, "regions.pods.slots.size", 0), sh = v_sk(H, "regions.pods.slots.size", 1), sg = v_si(H, "regions.pods.slots.gap", 2), cols = v_si(H, "regions.pods.slots.cols", 3), rows = v_si(H, "regions.pods.slots.rows", 2), pw = v_sk(H, "regions.pods.picture", 0), ph = v_sk(H, "regions.pods.picture", 1);
+    int cols = v_si(H, "regions.pods.slots.cols", 3), rows = v_si(H, "regions.pods.slots.rows", 2), pw = v_sk(H, "regions.pods.picture", 0), ph = v_sk(H, "regions.pods.picture", 1);
     int x0 = r[0] + r[2] - inset - pw, y0 = r[1] + (r[3] - ph) / 2; left = x0 - r[0]; px0 = x0; py0 = y0;
-    int gw = v_sk(H, "regions.pods.glint.size", 0), gh = v_sk(H, "regions.pods.glint.size", 1);
-    for (int i = 0; i < cols * rows; i++) { int sx = x0 + (i % cols) * (sw + sg), sy = y0 + (i / cols) * (sh + sg); const char *pod = v_pstr(v_fmt("regions.pods.wells.%d.pod", i));   /* the slot holds its rack pod or, empty, a hairline outline */
-      if (*pod) { v_region(v_fmt("%s.picture", key), LAYER_ART); v_sprite(v_fmt("%s.slot.%d", key, i), pod, sx, sy, sw, sh); }
-      else { v_region(key, LAYER_CHROME); kit_windowFrame(v_fmt("%s.slot.%d", key, i), sx, sy, sw, sh, v_si(H, "regions.station.slot.radius", 6), NULL, v_scol(H, "regions.station.slot.edge"));   /* the empty slot of the case: a 24 x 32 outline of radius 6 in `hairline`, no fill */ } }
+    kit_tiles(H, "regions.pods.slots", cols * rows, pod_slot, (void *)key, NULL);
     v_region(v_fmt("%s.picture", key), LAYER_ART);
-    for (int i = 0; i < cols * rows; i++) { const char *g = v_pstr(v_fmt("regions.pods.wells.%d.glint", i)); if (*g) v_sprite(v_fmt("%s.glint.%d", key, i), g, x0 + (i % cols) * (sw + sg) + v_sk(H, "regions.pods.glint.at", 0), y0 + (i / cols) * (sh + sg) + v_sk(H, "regions.pods.glint.at", 1), gw, gh); }
+    kit_tiles(H, "regions.pods.slots", cols * rows, pod_glint, (void *)key, NULL);
   } else if (strcmp(key, "incubator") == 0) {
     int cw = v_sk(H, "regions.incubator.capsule.size", 0), ch = v_sk(H, "regions.incubator.capsule.size", 1), x0 = r[0] + r[2] - inset - cw, y0 = r[1] + (r[3] - ch) / 2; left = x0 - r[0]; px0 = x0; py0 = y0;
     const char *st = v_pstr("regions.incubator.state"); int growing = strcmp(st, "growing") == 0, ready = strcmp(st, "ready") == 0;
@@ -211,9 +223,10 @@ static void station_words(const char *key) {
   } else {   /* the Companion */
     int pw = v_sk(H, v_fmt("regions.%s.picture", key), 0), ph = v_sk(H, v_fmt("regions.%s.picture", key), 1), x0 = r[0] + r[2] - inset - pw, y0 = r[1] + (r[3] - ph) / 2; left = x0 - r[0]; px0 = x0; py0 = y0;
     v_region(v_fmt("%s.picture", key), LAYER_ART); const char *a = v_pstr(v_fmt("regions.%s.picture", key)); if (*a) v_sprite(v_fmt("%s.picture", key), a, x0, y0, pw, ph);
-    int n = v_pint("regions.companion.plates.count", 0), whole = v_pint("regions.companion.plates.whole", 0), tw = v_sk(H, "regions.companion.plates.size", 0), th = v_sk(H, "regions.companion.plates.size", 1);   /* docked: the Probe's plates as line 2 */
+    int n = v_pint("regions.companion.plates.count", 0), whole = v_pint("regions.companion.plates.whole", 0);   /* docked: the Probe's plates as line 2 */
     v_region("companion.plates", LAYER_ART);
-    for (int i = 0; i < n && i < v_si(H, "regions.companion.plates.max", 4); i++) v_sprite(v_fmt("%s.plate.%d", key, i), v_pstr(i < whole ? "regions.companion.plates.wholePicture" : "regions.companion.plates.lostPicture"), r[0] + v_sk(H, "regions.companion.plates.at", 0) + i * (tw + v_si(H, "regions.companion.plates.gap", 4)), r[1] + v_sk(H, "regions.companion.plates.at", 1), tw, th);
+    if (n > v_si(H, "regions.companion.plates.max", 4)) n = v_si(H, "regions.companion.plates.max", 4);
+    plates_t pl = { key, whole }; kit_tiles(H, "regions.companion.plates", n, comp_plate, &pl, NULL);
   }
   (void)px0; (void)py0;
   int col = left - gap - x1;

@@ -49,7 +49,7 @@
   "switch": {
    "rect": [624, 96, 312, 128], "component": "panel", "build": "module", "word": [16, 12], "lamp": [284, 12, 12, 12],
    "toggle": { "at": [16, 56], "size": [80, 40], "track": { "off": "bench-switch-track-off-80x40", "on": "bench-switch-track-on-80x40" }, "knob": { "slice": "bench-switch-knob-40x40", "size": [40, 40], "x": { "off": 16, "on": 56 }, "y": 56, "move": "x 16 → 56 (and back) over 200 ms in whole pixels" } },
-   "meaning": { "dock": { "slice": "mark-dock-24x24", "at": [112, 64], "size": [24, 24] }, "plates": { "at": [152, 68], "icon": [16, 16], "pitch": 24, "count": "the tier's (3 or 4)", "whole": "icon-shield-16", "gone": "icon-shield-gone-16", "off": "the first two whole, the rest gone", "offWhole": 2, "on": "all whole" }, "rule": "the switch's meaning as a picture: the dock, then the plates it leaves whole" },
+   "meaning": { "dock": { "slice": "mark-dock-24x24", "at": [112, 64], "size": [24, 24] }, "plates": { "at": [152, 68], "icon": [16, 16], "pitch": 24, "forms": {"row": {"upTo": 4, "first": [776, 164, 16, 16], "pitch": [24, 0], "grid": [4, 1]}}, "count": "the tier's (3 or 4)", "whole": "icon-shield-16", "gone": "icon-shield-gone-16", "off": "the first two whole, the rest gone", "offWhole": 2, "on": "all whole" }, "rule": "the switch's meaning as a picture: the dock, then the plates it leaves whole" },
    "states": { "off": "the knob left, the lamp off", "on": "the knob right, the lamp well" }
   },
   "slot": {
@@ -57,8 +57,8 @@
    "socket": { "at": [16, 48], "size": [160, 160], "slice": "bench-socket-160" },
    "part": { "at": [32, 64], "size": [128, 128], "armedAt": [32, 56], "slices": { "dim": "bench-part-t2-dim-128", "ready": "bench-part-t2-ready-128", "fitted": "bench-part-t2-fitted-128" } },
    "adds": {
-    "pods": { "at": [200, 64], "icon": [16, 16], "pitch": 24, "count": 3, "new": 1, "slice": "icon-pod-16", "newSlice": "icon-pod-16-new" },
-    "plates": { "at": [200, 112], "icon": [16, 16], "pitch": 24, "count": 4, "new": 1, "slice": "icon-shield-16", "newSlice": "icon-shield-16-new" },
+    "pods": { "at": [200, 64], "icon": [16, 16], "pitch": 24, "count": 3, "forms": {"row": {"upTo": 3, "first": [824, 336, 16, 16], "pitch": [24, 0], "grid": [3, 1]}}, "new": 1, "slice": "icon-pod-16", "newSlice": "icon-pod-16-new" },
+    "plates": { "at": [200, 112], "icon": [16, 16], "pitch": 24, "count": 4, "forms": {"row": {"upTo": 4, "first": [824, 384, 16, 16], "pitch": [24, 0], "grid": [4, 1]}}, "new": 1, "slice": "icon-shield-16", "newSlice": "icon-shield-16-new" },
     "reach": { "at": [200, 160], "size": [40, 40], "slice": "bench-reach-t2-40", "newSlice": "bench-reach-t2-40-new" },
     "deep": { "at": [256, 160], "size": [40, 40], "slice": "bench-deep-t2-40", "newSlice": "bench-deep-t2-40-new" },
     "rule": "what the upgrade adds, as pictures with no digits: three pods carried, four Shield plates, a wider reach, the deep read; the one each adds over tier 1 drawn in its `new` slice; through the install they hold their `-new` slices until the 600 dither; dim, ready and armed draw the plain slices plus the `new` slice on the third pod, the fourth plate, reach and deep; fitted draws them all plain; the adds are never dimmed"

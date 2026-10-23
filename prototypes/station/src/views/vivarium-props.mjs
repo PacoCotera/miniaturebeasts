@@ -25,7 +25,7 @@ export function vivariumBuild(m, spec, frame, home) {
     tiles: { glyph: frame.regions.marks.companion.away, items: [] },   // an out mibi's tile shows the Companion's outline glyph (the top bar's away mark)
   };
   // a tile a bay: the housed mibis in bay order, then the free bays; a housed one shows its thumbnail, one out with the Companion its glyph
-  const n = S.bayCount(st, settings), tw = listForm(R.tiles, n).name === "full" ? 152 : 72, slot = slotOf(req, "the device plate (fix 2: placed 1:1)");
+  const n = S.bayCount(st, settings), tw = listForm(R.tiles, n).first[2], slot = slotOf(req, "the device plate (fix 2: placed 1:1)");
   const tiles = housed.slice(0, n).map((mb) => ({ id: String(mb.id), state: out(mb) ? "out" : "housed", picture: out(mb) ? "" : mibiReq(req, st, mb, [48, 48], settings), well: slot(`plate-well-${tw}x48`, [tw, 48]) }));   // fix 2 F4: the tile is its well by form; a free bay draws nothing
   while (tiles.length < n) tiles.push({ id: "", state: "free", picture: "", well: "" });
   regions.strip = { plate: n ? req(plateDevice(992, 64)) : "" };

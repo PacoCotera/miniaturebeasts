@@ -10,6 +10,12 @@ void kit_bezel(const char *id, int x, int y, int w, int h, int r, const char *fi
 void kit_bezelComposed(const char *id, int x, int y, int w, int h, int r, const char *fill, const char *edge, const char *bevel);   /* a rounded panel as one composed picture (rrect, then the bevel's h line when bevel is not NULL); no band */
 void kit_windowFrame(const char *id, int x, int y, int w, int h, int radius, const char *ground, const char *edge);   /* the corners outside the radius in ground (none when ground is NULL), then a 1 px edge on the radius: one composed picture */
 void kit_hairline(const char *id, int x, int y, int len, const char *colour, int vertical, const int dash[2]);   /* a 1 px rule; dash { on, off }: one composed picture of dashes (NULL: a solid rect) */
+typedef void (*kit_tile_fn)(int i, const int box[4], void *ctx);
+int kit_tiles(const char *spec, const char *list, int n, kit_tile_fn draw, void *ctx, int boxes[][4]);   /* n tiles on the list's forms (layout_list_pitch), draw(i, box, ctx) for each; boxes (or NULL) receives the boxes; the form's upTo, or -1 when refused (an error to the host, no tile drawn) */
+#define KIT_TAG_BELOW 0   /* the tag's top is yBelow */
+#define KIT_TAG_OVER 1    /* the tag's top is yOver */
+#define KIT_TAG_AUTO 2    /* yBelow, or yOver when the tag's bottom would pass 8 px above the window's bottom */
+void kit_nameTag(const char *spec, const char *glass, const char *name, const int anchor[4], int yBelow, int yOver, int rule, int slot, const char *fill, const char *edge, const char *ink, int out[4]);   /* a name on a panel centred on the anchor box, 8 px inside the window `glass`; slot: the same nodes with no size; out: the tag's box */
 /* The focus ring (fix 14): `target` is the path of the target's entry in `spec` (its `shape` and `ground` are read there, the bands, gap, reach and colours from frame.json focus.ring); `drawn` is the object's rect as the screen drew it this frame, lifted where it lifts; `id` is the ring's region id. */
 void word_focusRing(const char *id, const char *spec, const char *target, const int drawn[4]);
 /* A creature's ring: its footprint on the ground. `picture` is the creature's picture id as drawn (a still, a moving-set atlas or a nap), `cell` is "stand", "curl", "shadow" or "" (the whole picture), `drawn` is its box, not lifted. */

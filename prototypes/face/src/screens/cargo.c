@@ -104,6 +104,8 @@ static int hatch_open(void) {
   if (g_cur == g_n - 1 && g_lt >= g_len && any_pod_came()) return 1;   /* it stays open after the last crate if any pod came (build spec 6) */
   return 0;
 }
+/* the find strip's place `slotn` (regions.hatch.strip.find, the spec's form of its max places); a place past the strip is refused with an error and no size */
+static void find_box(int slotn, int b[4]) { if (layout_list_pitch(C, "regions.hatch.strip.find", v_si(C, "regions.hatch.strip.find.max", 7), slotn, b) < 0) v_error("cargo: a find's place is past the find strip"); }
 static void build_hatch(void) {
   int r[4]; v_srect(C, "regions.hatch.rect", r); hx = r[0]; hy = r[1]; int open = hatch_open();
   v_region("hatch", LAYER_ART); v_name("hatch");
@@ -120,10 +122,10 @@ static void build_hatch(void) {
     v_slot(v_fmt("hatch.pod.%d", i), pod, NULL, c[0] + ax, c[1] + ay, pw, ph, ph3 == 3);
   }
   /* the find strip: a find is its 16 × 16 picture, 20 apart, once it has landed */
-  int sx = v_sk(C, "regions.hatch.strip.find.at", 0), sy = v_sk(C, "regions.hatch.strip.find.at", 1), pitch = v_si(C, "regions.hatch.strip.find.pitch", 20), fw = v_sk(C, "regions.hatch.strip.find.size", 0), fh = v_sk(C, "regions.hatch.strip.find.size", 1);
   for (int k = 0; k < g_n; k++) for (int f = 0, nf = crate_nf(k); f < nf; f++) {
-    int slotn = v_pint(v_fmt("regions.opening.crates.%d.finds.%d.slot", k, f), 0), np = crate_np(k);
-    v_name("hatch.strip"); v_slot(v_fmt("hatch.find.%d", slotn), v_pstr(v_fmt("regions.opening.crates.%d.finds.%d.small", k, f)), NULL, sx + pitch * slotn, sy, fw, fh, item_phase(k, np + f) == 3);
+    int slotn = v_pint(v_fmt("regions.opening.crates.%d.finds.%d.slot", k, f), 0), np = crate_np(k), b[4];
+    find_box(slotn, b);
+    v_name("hatch.strip"); v_slot(v_fmt("hatch.find.%d", slotn), v_pstr(v_fmt("regions.opening.crates.%d.finds.%d.small", k, f)), NULL, b[0], b[1], b[2], b[3], item_phase(k, np + f) == 3);
   }
 }
 
@@ -260,9 +262,8 @@ static void build_travel(void) {
       fly(id, v_pstr(v_fmt("%s.pods.%d.big", K, j)), e->w, e->h, e->x, e->y, v_pstr(v_fmt("%s.pods.%d.small", K, j)), sx, sy, pw, ph, ph3, pod_start(j));
     } else if (e->kind == 1) {
       int f = e->idx, j = np + f, ph3 = phase(g_lt, pod_start(j)); if (ph3 != 1 && ph3 != 2) continue;
-      int slotn = v_pint(v_fmt("%s.finds.%d.slot", K, f), 0), fw = v_sk(C, "regions.hatch.strip.find.size", 0), fh = v_sk(C, "regions.hatch.strip.find.size", 1);
-      int sx = v_sk(C, "regions.hatch.strip.find.at", 0) + v_si(C, "regions.hatch.strip.find.pitch", 20) * slotn, sy = v_sk(C, "regions.hatch.strip.find.at", 1); snprintf(id, sizeof id, "t.find.%d", f);
-      fly(id, v_pstr(v_fmt("%s.finds.%d.big", K, f)), e->w, e->h, e->x, e->y, v_pstr(v_fmt("%s.finds.%d.small", K, f)), sx, sy, fw, fh, ph3, pod_start(j));
+      int slotn = v_pint(v_fmt("%s.finds.%d.slot", K, f), 0), fb[4]; find_box(slotn, fb); snprintf(id, sizeof id, "t.find.%d", f);
+      fly(id, v_pstr(v_fmt("%s.finds.%d.big", K, f)), e->w, e->h, e->x, e->y, v_pstr(v_fmt("%s.finds.%d.small", K, f)), fb[0], fb[1], fb[2], fb[3], ph3, pod_start(j));
     }
   }
 }
@@ -337,6 +338,7 @@ static void build_mibis(int t) {
   }
 }
 /* the band in the bay's top corners: the Probe's plates (whole ones from 1500, the mended turn whole one by one from 2500 with the words after) and who leaves (the mark and the faces, right-aligned) */
+static void leaving_face(int i, const int b[4], void *ctx) { (void)ctx; v_name("band.leaving"); v_slot(v_fmt("band.face.%d", i), v_pstr(v_fmt(ARR ".leaving.faces.%d", i)), NULL, b[0], b[1], b[2], b[3], 1); }
 static void build_band(int t) {
   int px0 = v_sk(C, ARR ".band.probe.at", 0), py0 = v_sk(C, ARR ".band.probe.at", 1), pitch = v_si(C, ARR ".band.probe.pitch", 20), isz = v_sk(C, ARR ".band.probe.size", 0), from = v_si(C, ARR ".band.probe.from", 1500), mend = v_si(C, ARR ".band.probe.mend.at", 2500), meach = v_si(C, ARR ".band.probe.mend.each", 120), wpx = v_si(C, ARR ".band.probe.words.px", 16), gap = v_si(C, ARR ".band.probe.words.gap", 8);
   int whole = v_pint(ARR ".plates.whole", 0), mended = v_pint(ARR ".plates.mended", 0); const char *icon = v_pstr(ARR ".plates.icon");
@@ -349,10 +351,10 @@ static void build_band(int t) {
   }
   int nf = v_plen(ARR ".leaving.faces"); if (nf > 3) nf = 3;
   if (nf > 0 && t >= v_si(C, ARR ".band.leaving.from", 1500)) {
-    int fw = v_sk(C, ARR ".band.leaving.faceSize", 0), mw = v_sk(C, ARR ".band.leaving.markSize", 0), lp = v_si(C, ARR ".band.leaving.pitch", 32), rx = v_si(C, ARR ".band.leaving.rightX", 984), ly = v_si(C, ARR ".band.leaving.y", 64), lg = v_si(C, ARR ".band.leaving.gap", 8);
-    int x0 = rx - (mw + lg + lp * nf - (lp - fw));
-    v_region("arrivalBand", LAYER_ART); v_name("band.leaving"); v_slot("band.mark", v_pstr(ARR ".leaving.mark"), NULL, x0, ly + v_half(fw - mw), mw, mw, 1);
-    for (int i = 0; i < nf; i++) { v_name("band.leaving"); v_slot(v_fmt("band.face.%d", i), v_pstr(v_fmt(ARR ".leaving.faces.%d", i)), NULL, x0 + mw + lg + lp * i, ly, fw, fw, 1); }
+    int fw = v_sk(C, ARR ".band.leaving.faceSize", 0), mw = v_sk(C, ARR ".band.leaving.markSize", 0), ly = v_si(C, ARR ".band.leaving.y", 64), lg = v_si(C, ARR ".band.leaving.gap", 8), f0[4];
+    layout_list_pitch(C, ARR ".band.leaving", nf, 0, f0);   /* the faces are right-aligned to the spec's x: the form for this many; the mark stands a gap before the first */
+    v_region("arrivalBand", LAYER_ART); v_name("band.leaving"); v_slot("band.mark", v_pstr(ARR ".leaving.mark"), NULL, f0[0] - mw - lg, ly + v_half(fw - mw), mw, mw, 1);
+    kit_tiles(C, ARR ".band.leaving", nf, leaving_face, NULL, NULL);
   }
 }
 static void build_arrival(int choice) {
@@ -360,7 +362,7 @@ static void build_arrival(int choice) {
   build_dockBay();
   if (!choice) { int r[4]; v_srect(C, ARR ".apron.rect", r); v_region("apron", LAYER_ART); v_name("apron"); v_sprite("apron", v_pstr(ARR ".apron"), r[0], r[1], r[2], r[3]); }
   { int r[4]; v_srect(C, "regions.dockRibbon.rect", r); const char *words = v_pstr(ARR ".ribbon"); int rpx = v_si(C, "regions.dockRibbon.px", 20), rpad = v_si(C, "regions.dockRibbon.pad", 16), rib = v_si(C, ARR ".crates.at", 500);
-    int w = ((v_measure(words, rpx) + 2 * rpad) + 7) / 8 * 8; if (w < 160) w = 160; if (w > r[2]) w = r[2]; r[0] = 512 - w / 2; r[2] = w;
+    int w = layout_plate_width(C, "regions.dockRibbon", v_measure(words, rpx)); r[0] = 512 - w / 2; r[2] = w;
     v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= rib ? words : "", rpx, rpad, v_scol(C, "colours.ribbon.fill"), v_scol(C, "colours.ribbon.edge"), v_scol(C, "colours.ribbon.text")); }
   build_light(t);
   build_crates_arrival(t);

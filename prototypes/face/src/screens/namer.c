@@ -9,13 +9,14 @@
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
+#include "../layout/layout.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define N "namer"
 #define KEYS 28
-static void key_rect(int i, int r[4]) { int cols = v_si(N, "regions.keys.columns", 7), pitch = v_si(N, "regions.keys.pitch", 48); r[0] = v_sk(N, "regions.keys.at", 0) + pitch * (i % cols); r[1] = v_sk(N, "regions.keys.at", 1) + pitch * (i / cols); r[2] = v_sk(N, "regions.keys.key", 0); r[3] = v_sk(N, "regions.keys.key", 1); }
+static void key_rect(int i, int r[4]) { layout_list_pitch(N, "regions.keys", KEYS, i, r); }   /* the key i of the grid: the spec's form of 28 places */
 static void target_rect(const char *id, int r[4]) {
   r[0] = r[1] = r[2] = r[3] = 0;
   if (strncmp(id, "key.", 4) == 0) key_rect(atoi(id + 4), r);
@@ -52,14 +53,13 @@ static void build_say(void) {
   int r[4]; v_srect(N, "regions.say.rect", r); const char *t = v_pstr("overlay.regions.say.text"); int px = v_si(N, "regions.say.px", 16);
   v_region("say", LAYER_TYPE); v_line_at("say.text", t, v_sk(N, "regions.say.at", 0), v_si(N, "regions.say.lineTop", 122), V_ANCHOR_LINE, px, v_scol(N, strcmp(v_pstr("overlay.regions.say.tone"), "refused") == 0 ? "colours.say.refused" : "colours.say.reason"), V_ALIGN_LEFT);
 }
-static void build_keys(void) {
-  const char *c = cur(); int dim = v_pbool("overlay.regions.keys.dim", 0);
-  for (int i = 0; i < KEYS; i++) {
-    const char *label = v_pstr(v_fmt("overlay.regions.keys.labels.%d", i)); if (!*label) continue;   /* not drawn on this page: no node, no target */
-    int r[4]; key_rect(i, r); char id[24]; snprintf(id, sizeof id, "key.%d", i);
-    key_face(id, "keys", r, strcmp(c, id) == 0, v_scol(N, "colours.key.fill"), label, v_scol(N, dim ? "colours.key.labelDim" : "colours.key.label"));
-  }
+typedef struct { const char *cur; int dim; } keys_t;
+static void key_tile(int i, const int r[4], void *ctx) {
+  const keys_t *k = ctx; const char *label = v_pstr(v_fmt("overlay.regions.keys.labels.%d", i)); if (!*label) return;   /* not drawn on this page: no node, no target */
+  char id[24]; snprintf(id, sizeof id, "key.%d", i);
+  key_face(id, "keys", r, strcmp(k->cur, id) == 0, v_scol(N, "colours.key.fill"), label, v_scol(N, k->dim ? "colours.key.labelDim" : "colours.key.label"));
 }
+static void build_keys(void) { keys_t k = { cur(), v_pbool("overlay.regions.keys.dim", 0) }; kit_tiles(N, "regions.keys", KEYS, key_tile, &k, NULL); }
 static void build_mods(void) {
   const char *c = cur(); int r[4], on = v_pbool("overlay.regions.shift.on", 0), full = v_pbool("overlay.regions.space.dim", 0), doneDim = v_pbool("overlay.regions.done.dim", 0); char s[40];
   v_srect(N, "regions.shift.rect", r); spec_str(N, "strings.keys.shift", s, sizeof s); key_face("shift", "shift", r, strcmp(c, "mod.shift") == 0, v_scol(N, on ? "colours.key.on" : "colours.key.fill"), s, v_scol(N, "colours.key.label"));

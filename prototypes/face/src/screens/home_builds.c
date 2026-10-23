@@ -40,43 +40,6 @@ void build_module(const char *sp, const char *key, int dy, const char *lampState
   v_region(key, LAYER_TYPE); v_text(v_fmt("%s.word", key), w, x + word[0], y + word[1] + 5, v_measure(w, 16), 16, v_scol(sp, "colours.module.word"));   /* a 24 px zone: the cap top 5 below its top */
 }
 
-int g_tagSlot;   /* the name tag is a slot (the meet ribbon stands in its place): the same nodes at the tag's place with no size */
-int g_tagFlash;
-int g_tagOver;   /* the name tag goes over the box whatever the window's bottom (a resident asleep in place: over its ink box, UI/UX Station M1 item 4) */   /* the name tag takes the frame's flash (the namer saved a name): the frame's `flash` fill and `flashInk` ink while set */
-/* the name tag, for the screen whose spec is `sp` and whose window (Home's glass, the whole's window) is the region `glass`: a panel and the name, h tall (regions.nameTag); its width the name's plus twice the pad rounded up to the 8 px grid, 48 at least,
-   the widest the spec's max; centred on the box, 12 px under the ring (top at feet + 24), over the box (top = box.y − lift − 8 − h) when its bottom would pass 8 px above the window's bottom, slid to stay 8 px inside the window. `lift`: the box is the resident's
-   as drawn (a sleeper does not lift). Returns the tag's rect in out. */
-void build_nameTag(const char *sp, const char *glass, const char *name, const int box[4], int lift, int out[4]) {
-  int h = v_si(sp, "regions.nameTag.h", 24), pad = v_si(sp, "regions.nameTag.pad", 8), px = v_si(sp, "regions.nameTag.px", 16), round = v_si(sp, "regions.nameTag.round", 8), mn = v_si(sp, "regions.nameTag.min", 48), mx = v_si(sp, "regions.nameTag.max", 1 << 20);
-  int tw = v_measure(name, px), w = tw + 2 * pad; w = (w + round - 1) / round * round; if (w < mn) w = mn; if (w > mx) w = mx;
-  int gx = v_sk(sp, v_fmt("%s.rect", glass), 0), gy = v_sk(sp, v_fmt("%s.rect", glass), 1), gw = v_sk(sp, v_fmt("%s.rect", glass), 2), gh = v_sk(sp, v_fmt("%s.rect", glass), 3);
-  int x = box[0] + v_half(box[2] - w), feet = box[1] + box[3], y = feet + 24;
-  if (y + h > gy + gh - 8 || g_tagOver) y = box[1] - lift - 8 - h;   /* the window's bottom less 8: below it the tag goes over the box; a resident asleep in place: always over its ink (UI/UX, M1) */
-  if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
-  out[0] = x; out[1] = y; out[2] = w; out[3] = h;
-  const char *ink = g_tagFlash ? v_scol("frame", "colours.flashInk") : v_scol(sp, "colours.nameTag.text");
-  if (g_tagSlot) { v_region("nameTag", LAYER_CHROME); kit_panel("nameTag", x, y, w, h, v_scol(sp, "colours.nameTag.fill"), NULL, 1); }
-  else { v_region("nameTag", LAYER_CHROME); kit_panel("nameTag", x, y, w, h, g_tagFlash ? v_scol("frame", "colours.flash") : v_scol(sp, "colours.nameTag.fill"), v_scol(sp, "colours.nameTag.edge"), 0); }
-  /* the name's cap top: 5 px under the tag's top (the 24 px tag), or from the spec's line top (regions.nameTag.lineTop in the tag's rectangle: one mibi up close's 32 px tag at 20 px) */
-  int lt = spec_int(sp, "regions.nameTag.lineTop", 0);
-  v_region("nameTag", LAYER_TYPE); v_line_at("nameTag.text", g_tagSlot ? "" : name, x + v_half(w - tw), lt > 0 ? y + (lt - v_sk(sp, "regions.nameTag.rect", 1)) : y + 5, lt > 0 ? V_ANCHOR_LINE : V_ANCHOR_CAP, px, ink, V_ALIGN_LEFT);
-}
-
-/* The living window's name tag (T-20261018-235): the same panel and name as build_nameTag, centred on the figure's feet point `fx`, its top at `yBelow` (feetY + 16), or at `yOver` (over the figure) when its bottom would pass
-   8 px inside the window or `forceOver` (a sleeper's tag is always over its curl); slid to stay 8 px inside the window. Returns the tag's rect in out. */
-void build_nameTagAt(const char *sp, const char *glass, const char *name, int fx, int yBelow, int yOver, int forceOver, int out[4]) {
-  int h = v_si(sp, "regions.nameTag.h", 24), pad = v_si(sp, "regions.nameTag.pad", 8), px = v_si(sp, "regions.nameTag.px", 16), round = v_si(sp, "regions.nameTag.round", 8), mn = v_si(sp, "regions.nameTag.min", 48), mx = v_si(sp, "regions.nameTag.max", 1 << 20);
-  int tw = v_measure(name, px), w = tw + 2 * pad; w = (w + round - 1) / round * round; if (w < mn) w = mn; if (w > mx) w = mx;
-  int gx = v_sk(sp, v_fmt("%s.rect", glass), 0), gy = v_sk(sp, v_fmt("%s.rect", glass), 1), gw = v_sk(sp, v_fmt("%s.rect", glass), 2), gh = v_sk(sp, v_fmt("%s.rect", glass), 3);
-  int x = fx - w / 2, y = yBelow;
-  if (y + h > gy + gh - 8 || forceOver) y = yOver;
-  if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
-  out[0] = x; out[1] = y; out[2] = w; out[3] = h;
-  const char *ink = v_scol(sp, "colours.nameTag.text");
-  v_region("nameTag", LAYER_CHROME); kit_panel("nameTag", x, y, w, h, v_scol(sp, "colours.nameTag.fill"), v_scol(sp, "colours.nameTag.edge"), 0);
-  v_region("nameTag", LAYER_TYPE); v_line_at("nameTag.text", name, x + v_half(w - tw), y + 5, V_ANCHOR_CAP, px, ink, V_ALIGN_LEFT);
-}
-
 /* The bay strip (vivarium.json regions.strip and tiles; the composition `bayStrip`, rule `listPitch`): the strip's panel and a tile a bay, the housed mibis in bay order then the free bays, the tiles by the rule's form for the count. Every tile is the same
    four nodes whichever it is, so a mibi going out or a bay filling never changes the order of the screen's nodes: a panel rect (none for a free bay), the thumbnail (a housed mibi's 48 x 48), the outline glyph (a mibi out with the Companion, centred where the
    thumbnail stands) and the dash outline (a free bay: 1 px `hairline`, 2 on 2 off, a composed picture with no ops while the bay is not free). A hidden node is the glyph's picture with a window of no size. `focus` is the tile the ring is on, lifted by the spec's

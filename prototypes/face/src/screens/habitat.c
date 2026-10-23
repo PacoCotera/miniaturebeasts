@@ -157,8 +157,9 @@ static void build_tag(void) {
   memset(g_tag, 0, sizeof g_tag);
   v_region("meetRibbon", LAYER_CHROME);
   word_ribbon("meetRibbon", rib, meet ? words : "", v_si(S, "regions.meetRibbon.px", 20), v_si(S, "regions.meetRibbon.pad", 0), flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.ribbon.fill"), v_scol(S, "colours.ribbon.edge"), flash ? v_scol("frame", "colours.flashInk") : v_scol(S, "colours.ribbon.text"));
-  if (!meet) { g_tagFlash = flash; build_nameTag(S, "regions.glass", name, box, v_si(S, "regions.resident.lift", 4), g_tag); g_tagFlash = 0; }
-  else { g_tagSlot = 1; build_nameTag(S, "regions.glass", name, box, v_si(S, "regions.resident.lift", 4), g_tag); g_tagSlot = 0; memset(g_tag, 0, sizeof g_tag); }   /* the same nodes with no size, at the tag's place: the opening redraws nothing at the origin */
+  int below = box[1] + box[3] + 24, over = box[1] - v_si(S, "regions.resident.lift", 4) - 8 - v_si(S, "regions.nameTag.h", 24);   /* 24 under the feet, or 8 above the lifted box when the tag's bottom would pass 8 above the glass's */
+  if (!meet) kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 0, flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), flash ? v_scol("frame", "colours.flashInk") : v_scol(S, "colours.nameTag.text"), g_tag);
+  else { kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 1, v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), v_scol(S, "colours.nameTag.text"), g_tag); memset(g_tag, 0, sizeof g_tag); }   /* the same nodes with no size, at the tag's place: the opening redraws nothing at the origin */
 }
 
 /* ---- the card ---- */
@@ -235,17 +236,15 @@ static void portrait_objects(int dy) {
   const char *p = v_pstr("regions.portrait.picture"); int px = v_sk(S, "regions.portrait.frame.picture.at", 0), py = v_sk(S, "regions.portrait.frame.picture.at", 1), pw = v_sk(S, "regions.portrait.frame.picture.size", 0), ph = v_sk(S, "regions.portrait.frame.picture.size", 1);
   v_name("portrait"); v_slot_at("portrait.picture", p, has(f) ? f : v_pstr("regions.glass.picture"), r[0] + fx + px, r[1] + dy + fy + py, pw, ph, 1, r[0], r[1]);
 }
+static void cross_face(int i, const int b[4], void *ctx) {
+  int dy = *(int *)ctx, x = b[0], y = b[1] + dy, w = b[2], h = b[3];   /* the module's lift moves the faces with it */
+  char id[32], P[48]; snprintf(P, sizeof P, "regions.cross.faces.%d", i); const char *pic = v_pstr(v_fmt("%s.picture", P)); int away = v_pbool(v_fmt("%s.away", P), 0);
+  snprintf(id, sizeof id, "cross.face.%d", i); v_name("cross");
+  if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_faceHolder(id, S, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
+}
 static void cross_objects(int dy) {
-  int r[4]; v_srect(S, "regions.cross.rect", r); int n = v_plen("regions.cross.faces"); if (n > MAXF) n = MAXF; if (n < 0) n = 0;
-  int w = v_sk(S, "regions.cross.faces.size", 0), h = v_sk(S, "regions.cross.faces.size", 1), pitch = v_si(S, "regions.cross.faces.pitch", 32), per = v_si(S, "regions.cross.faces.perRow", 7);
-  for (int i = 0; i < MAXF; i++) {
-    if (i >= n) continue;
-    char id[32], P[48]; int row = n > per ? i / per : 0, col = n > per ? i % per : i;
-    int x = r[0] + v_sk(S, n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 0) + col * pitch, y = r[1] + dy + v_sk(S, n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 1);
-    snprintf(P, sizeof P, "regions.cross.faces.%d", i); const char *pic = v_pstr(v_fmt("%s.picture", P)); int away = v_pbool(v_fmt("%s.away", P), 0);
-    snprintf(id, sizeof id, "cross.face.%d", i); v_name("cross");
-    if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_faceHolder(id, S, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
-  }
+  int n = v_plen("regions.cross.faces"); if (n > MAXF) n = MAXF; if (n < 0) n = 0;
+  kit_tiles(S, "regions.cross.faces", n, cross_face, &dy, NULL);   /* one row of up to seven, or two rows (the spec's forms) */
 }
 static void wild_objects(int dy) {
   int r[4]; v_srect(S, "regions.wild.rect", r); const char *g = v_pstr("regions.wild.gate"); int gx = v_sk(S, "regions.wild.gate.at", 0), gy = v_sk(S, "regions.wild.gate.at", 1), gw = v_sk(S, "regions.wild.gate.size", 0), gh = v_sk(S, "regions.wild.gate.size", 1);
