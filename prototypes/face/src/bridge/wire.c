@@ -134,7 +134,7 @@ static int read_foot(const msg_t *m, int t, int cellw, int h, int out[3]) {   /*
 static int slot_of(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
 static int on_asset(const msg_t *m) {
   char id[96]; int w = 0, h = 0, drop = flag(m, key(m, "drop"));
-  if (!str(m, key(m, "id"), id, sizeof id)) return fail("asset: id is required");
+  if (!str(m, key(m, "id"), id, sizeof id) || !id[0]) return fail("asset: id is required");   /* "" marks a free slot, so it names no picture */
   if (drop) { int s = slot_of(id); if (s >= 0) { prim_asset_free(s); g_ids[s][0] = 0; } return 0; }   /* a slot is released by name: the host recycles its least recently used picture this way */
   if (!num(m, key(m, "w"), &w) || !num(m, key(m, "h"), &h)) return fail("asset: w and h are required");
   char src[8]; if (!str(m, key(m, "src"), src, sizeof src)) strcpy(src, "heap");

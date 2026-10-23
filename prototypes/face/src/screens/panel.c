@@ -252,9 +252,8 @@ void panel_words(void) {
 int panel_focus(focus_target_t *out, int cap) {
   int n = v_plen("overlay.focus.targets"), nc = ncards(); if (n > cap) n = cap;
   for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[i]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("overlay.focus.targets.%d.id", i))); t->enabled = v_pbool(v_fmt("overlay.focus.targets.%d.enabled", i), 1); t->index = i;
-    snprintf(t->group, sizeof t->group, "card");
-    for (int k = 0; k < nc; k++) if (strcmp(t->id, v_fmt("card.%s", card_id(k))) == 0) { int r[4]; card_rect(k, nc, r); t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3]; }
+    focus_target_t *t = &out[i]; focus_fill(t, "overlay.focus.targets", i, NULL);   /* the group is the id's first part, "card" */
+    for (int k = 0; k < nc; k++) if (strcmp(t->id, v_fmt("card.%s", card_id(k))) == 0) { int r[4]; card_rect(k, nc, r); focus_fill(t, "overlay.focus.targets", i, r); }
   }
   return n;
 }

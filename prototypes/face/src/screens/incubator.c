@@ -196,7 +196,4 @@ void incubator_words(void) {
 }
 
 /* a key on the Incubator: ✓, ← and the room keys say an intent on the room; the pad does nothing (one subject, no ring) */
-void incubator_key(int code) {
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) screens_say("intent", "room", verb);
-}
+void incubator_key(int code) { screens_key_graph(code, "incubator", NULL, NULL, "room", &(screens_keys_t){ 0 }); }

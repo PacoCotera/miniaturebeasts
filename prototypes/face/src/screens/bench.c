@@ -139,13 +139,11 @@ static void build_slot(const char *cur) {
 }
 
 /* ---- the targets as the words drew them, in the props' order ---- */
-int bench_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
-  snprintf(graph_key, (size_t)gcap, "graph");
+int bench_focus(focus_target_t *out, int cap) {
   int n = v_plen("focus.targets"); if (n > cap) n = cap; int k = 0;
   for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[k]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
-    t->enabled = v_pbool(v_fmt("focus.targets.%d.enabled", i), 1); t->index = i; int r[4]; v_srect(S, v_fmt("regions.%s.rect", t->id), r);
-    t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3]; k++;
+    focus_target_t *t = &out[k]; focus_fill(t, "focus.targets", i, NULL); int r[4]; v_srect(S, v_fmt("regions.%s.rect", t->id), r);
+    focus_fill(t, "focus.targets", i, r); k++;
   }
   return k;
 }
@@ -172,16 +170,4 @@ void bench_words(void) {
 }
 
 /* a key on the bench: ✓ ← and the room keys say an intent on the focused target; the pad moves the ring by bench.json focus.graph (the hold, in screens_key, lets only a room key through) */
-void bench_key(int code) {
-  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0]) snprintf(cur, sizeof cur, "switch");
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) { screens_say("intent", cur, verb); return; }
-  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
-  focus_target_t t[8]; char gkey[24]; int n = bench_focus(t, 8, gkey, sizeof gkey);
-  int glen; const char *graph = spec_raw(S, "focus.graph", &glen); char err[200];
-  focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
-  int roomAt[4] = { 0, 0, 0, 0 }; char to[48];
-  int step = focus_move(g, t, n, cur, dir, NULL, 0, roomAt, to, sizeof to); focus_graph_free(g);
-  if (step || strcmp(to, cur) == 0) return;
-  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
-}
+void bench_key(int code) { screens_key_graph(code, S, "focus.graph", bench_focus, "switch", &(screens_keys_t){ 0 }); }

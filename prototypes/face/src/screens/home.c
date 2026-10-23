@@ -654,34 +654,19 @@ void vivarium_words(void) {
 }
 
 /* the targets as the words drew them, in the props' order: a resident's box where the face stepped it, a tile's rectangle in its form (not lifted) */
-int vivarium_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
-  snprintf(graph_key, (size_t)gcap, "graph"); g_viv = 1;
+int vivarium_focus(focus_target_t *out, int cap) {
+  g_viv = 1;
   int n = v_plen("focus.targets"); if (n > cap) n = cap; int nt = v_plen("regions.tiles.items"); if (nt > 12) { g_viv = 0; return 0; }   /* the strip refuses more than twelve bays: no targets */
   int have = nt > 0 && layout_list_form("vivarium", "regions.tiles", nt, NULL, 0) >= 0;
   for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[i]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
-    t->enabled = v_pbool(v_fmt("focus.targets.%d.enabled", i), 1); t->index = i;
-    int r[4] = { 0, 0, 0, 0 };
+    focus_target_t *t = &out[i]; focus_fill(t, "focus.targets", i, NULL);
+    int r[4] = { 0, 0, 0, 0 }, ix = i;
     if (strncmp(t->id, "resident.", 9) == 0) { for (int e = 0; e < g_ne; e++) if (strcmp(g_e[e].id, t->id + 9) == 0) memcpy(r, g_e[e].box, sizeof r); }
-    else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int k = 0; k < nt; k++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", k)), t->id + 5) == 0) layout_list_pitch("vivarium", "regions.tiles", nt, k, r); t->index = 0; for (int k = 0; k < i; k++) if (strncmp(out[k].id, "tile.", 5) == 0) t->index++; }
-    t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3];
+    else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int k = 0; k < nt; k++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", k)), t->id + 5) == 0) layout_list_pitch("vivarium", "regions.tiles", nt, k, r); ix = 0; for (int k = 0; k < i; k++) if (strncmp(out[k].id, "tile.", 5) == 0) ix++; }
+    focus_fill(t, "focus.targets", i, r); t->index = ix;
   }
   g_viv = 0; return n;
 }
 
 /* a key on the whole: ✓ says look on the focused resident or tile (nothing on the room), ← goes Home, the room keys; the pad moves the ring by vivarium.json focus.graph (the host's selectors in focus.resolve) */
-void vivarium_key(int code) {
-  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0]) snprintf(cur, sizeof cur, "room");
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) { screens_say("intent", cur, verb); return; }
-  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
-  focus_target_t t[40]; char gkey[24]; int n = vivarium_focus(t, 40, gkey, sizeof gkey);
-  int glen; const char *graph = spec_raw("vivarium", "focus.graph", &glen); char err[200];
-  focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
-  focus_resolve_t r[8]; int nr = 0;
-  for (int i = 0, m = spec_len("props", "focus.resolve"); i < m && nr < 8; i++) { if (spec_member("props", "focus.resolve", i, r[nr].sel, sizeof r[nr].sel, r[nr].id, sizeof r[nr].id)) nr++; }
-  int roomAt[4]; g_viv = 1; v_srect(sp(), hp("focus.roomAt"), roomAt); g_viv = 0;
-  char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, roomAt, to, sizeof to); focus_graph_free(g);
-  if (step || strcmp(to, cur) == 0) return;
-  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
-}
+void vivarium_key(int code) { screens_key_graph(code, "vivarium", "focus.graph", vivarium_focus, "room", &(screens_keys_t){ .resolve = 1, .room_at = "focus.roomAt" }); }

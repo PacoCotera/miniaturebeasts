@@ -78,21 +78,19 @@ static void build_pages(void) {
 }
 
 /* ---- the focus: sixteen targets `frame.<SNN>`, each its frame's place; the ring is the last thing drawn ---- */
-int library_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
-  snprintf(graph_key, (size_t)gcap, "spread.focus.graph");
+int library_focus(focus_target_t *out, int cap) {
   int n = v_plen("focus.targets"), k = 0; if (n > cap) n = cap;
   for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[k]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
-    t->enabled = v_pbool(v_fmt("focus.targets.%d.enabled", i), 1); t->index = i; int r[4] = { 0, 0, 0, 0 };
+    focus_target_t *t = &out[k]; focus_fill(t, "focus.targets", i, NULL); int r[4] = { 0, 0, 0, 0 };
     for (int page = 0; page < 2; page++) for (int j = 0, m = v_plen(v_fmt("regions.%s.items", page ? "rightPage" : "leftPage")); j < m && j < PAGE_ITEMS; j++)
       if (strncmp(t->id, "frame.", 6) == 0 && strcmp(t->id + 6, v_pstr(v_fmt("%s.id", item_path(page, j)))) == 0) frame_rect(page, j, r);
-    t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3]; k++;
+    focus_fill(t, "focus.targets", i, r); k++;
   }
   return k;
 }
 static void build_ring(void) {
   char c[48]; snprintf(c, sizeof c, "%s", cur()); if (!*c) return;   /* a copy: v_pstr below reuses the buffer */
-  focus_target_t t[40]; char gk[32]; int n = library_focus(t, 40, gk, sizeof gk), box[4] = { 0, 0, 0, 0 };
+  focus_target_t t[40]; int n = library_focus(t, 40), box[4] = { 0, 0, 0, 0 };
   for (int i = 0; i < n; i++) if (strcmp(t[i].id, c) == 0) { box[0] = t[i].x; box[1] = t[i].y; box[2] = t[i].w; box[3] = t[i].h; }
   if (box[2] <= 0) return;
   v_region("focus", LAYER_CHROME); word_focusRing("focus", S, "spread.focus.targets.frame", box);
@@ -100,14 +98,4 @@ static void build_ring(void) {
 void library_words(void) { build_stage(); build_pages(); build_ring(); }
 
 /* a key on the spread: ✓ ← and the room keys are intents on the focused frame; the pad moves the ring by spread.focus.graph and says `focus` */
-void library_key(int code) {
-  char c[48]; snprintf(c, sizeof c, "%s", cur());
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) { screens_say("intent", c, verb); return; }
-  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
-  focus_target_t t[40]; char gk[32]; int n = library_focus(t, 40, gk, sizeof gk); int glen; const char *graph = spec_raw(S, "spread.focus.graph", &glen); char err[200];
-  focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
-  int roomAt[4] = { 0, 0, 0, 0 }; char to[48]; int step = focus_move(g, t, n, c, dir, NULL, 0, roomAt, to, sizeof to); focus_graph_free(g);
-  if (step || strcmp(to, c) == 0) return;
-  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
-}
+void library_key(int code) { screens_key_graph(code, S, "spread.focus.graph", library_focus, NULL, &(screens_keys_t){ 0 }); }
