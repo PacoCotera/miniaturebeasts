@@ -171,16 +171,16 @@ static void build_card(void) {
   for (int i = 0; i < 3; i++) { int x = i < n ? v_sk(S, v_fmt("regions.card.notches.places.%d.%d", n, i), 0) : 0, y = i < n ? v_sk(S, v_fmt("regions.card.notches.places.%d.%d", n, i), 1) : 0; if (i < n) card_sprite(v_fmt("card.notch.%d", i), np, x, y, nw, nh); else card_sprite(v_fmt("card.notch.%d", i), "", 0, 0, 0, 0); }
 }
 static void build_speciesLine(void) {
-  int r[4]; v_srect(S, "regions.speciesLine.rect", r); const char *text = v_pstr("regions.card.species.text"), *mark = v_pstr("regions.card.species.mark"); v_region("speciesLine", LAYER_TYPE); int w = v_line("speciesLine.text", text, r[0], v_si(S, "regions.speciesLine.lineTop", 66), v_si(S, "regions.speciesLine.px", 16), v_scol(S, "colours.card.species"), V_ALIGN_LEFT);
+  int r[4]; v_srect(S, "regions.speciesLine.rect", r); const char *text = v_pstr("regions.card.species.text"), *mark = v_pstr("regions.card.species.mark"); v_region("speciesLine", LAYER_TYPE); int w = v_line_at("speciesLine.text", text, r[0], v_si(S, "regions.speciesLine.lineTop", 66), V_ANCHOR_LINE, v_si(S, "regions.speciesLine.px", 16), v_scol(S, "colours.card.species"), V_ALIGN_LEFT);
   int mw = v_sk(S, "regions.speciesLine.mark.size", 0), mh = v_sk(S, "regions.speciesLine.mark.size", 1);
   v_name("speciesLine"); v_slot_at("speciesLine.mark", mark, v_pstr("regions.glass.picture"), r[0] + w + v_si(S, "regions.speciesLine.mark.gap", 4), r[1] + v_fdiv(r[3] - mh, 2), mw, mh, 1, 0, 0);   /* 4 px after the line's last word, on its centre */
 }
 static void build_story(void) {
   v_region("story", LAYER_TYPE); int px = v_si(S, "regions.story.px", 16);
-  for (int i = 0; i < 3; i++) { const char *t = v_pstr(v_fmt("regions.card.story.%d", i)); v_line(v_fmt("story.%d", i), t, v_sk(S, "regions.story.rect", 0), v_sk(S, "regions.story.lineTops", i), px, v_scol(S, "colours.card.story"), V_ALIGN_LEFT); }
+  for (int i = 0; i < 3; i++) { const char *t = v_pstr(v_fmt("regions.card.story.%d", i)); v_line_at(v_fmt("story.%d", i), t, v_sk(S, "regions.story.rect", 0), v_sk(S, "regions.story.lineTops", i), V_ANCHOR_LINE, px, v_scol(S, "colours.card.story"), V_ALIGN_LEFT); }
 }
 static void build_code(void) {
-  const char *code = v_pstr("regions.card.code"); v_region("code", LAYER_TYPE); v_line("code", code, v_sk(S, "regions.code.rect", 0), v_si(S, "regions.code.lineTop", 162), v_si(S, "regions.code.px", 16), v_scol(S, "colours.card.code"), V_ALIGN_LEFT);
+  const char *code = v_pstr("regions.card.code"); v_region("code", LAYER_TYPE); v_line_at("code", code, v_sk(S, "regions.code.rect", 0), v_si(S, "regions.code.lineTop", 162), V_ANCHOR_LINE, v_si(S, "regions.code.px", 16), v_scol(S, "colours.card.code"), V_ALIGN_LEFT);
 }
 /* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows); no stamp: no label */
 static void build_stamp(void) {

@@ -15,9 +15,9 @@ static void not_built(void) {
   char c[24], s[V_STR]; int r[4];
   spec_str("frame", "colours.stageGround", c, sizeof c); if (v_spec_rect("frame", "regions.stage.rect", r)) { v_region("notBuilt.stage", LAYER_CHROME); v_rect("notBuilt.stage", r[0], r[1], r[2], r[3], c); }
   spec_str("frame", "notBuilt.strings.line", s, sizeof s);
-  int px = spec_int("frame", "notBuilt.regions.line.px", 20), w = v_measure(s, px), x = spec_int("frame", "notBuilt.regions.line.centre", 512) - v_half(w);
+  int px = spec_int("frame", "notBuilt.regions.line.px", 20);
   spec_str("frame", "notBuilt.colours.line", c, sizeof c);
-  v_region("notBuilt.line", LAYER_TYPE); v_text("notBuilt.line", s, x, spec_int("frame", "notBuilt.regions.line.capTop", 288), w, px, c);
+  v_region("notBuilt.line", LAYER_TYPE); v_line_at("notBuilt.line", s, spec_int("frame", "notBuilt.regions.line.centre", 512), spec_int("frame", "notBuilt.regions.line.capTop", 288), V_ANCHOR_CAP, px, c, V_ALIGN_CENTRE);
 }
 /* Idle's line (frame.json idle, the frame's binding table: a composition, not a word): the strip (`ground`, a 1 px `void` rule on its top row) and the one line in `mist`, centred on x 512 with its middle on y 584, 16 px; the line is props.frame.idle.line,
    and none (an empty string) sets no type: the strip and its rule stay. */
@@ -27,7 +27,7 @@ static void build_idleLine(void) {
   if (!v_spec_rect("frame", "idle.regions.strip.rect", s) || !v_spec_rect("frame", "idle.regions.line.rect", l)) return;
   v_region("idle.strip", LAYER_CHROME); v_rect("idle.strip", s[0], s[1], s[2], s[3], ground); v_rect("idle.strip.rule", s[0], s[1], s[2], 1, rule);
   const char *text = v_pstr("frame.idle.line"); int px = spec_int("frame", "idle.regions.line.px", 16);
-  if (*text) { int w = v_measure(text, px), mid = spec_int("frame", "idle.regions.line.middle", 584), cx = spec_int("frame", "idle.regions.line.centre", 512); v_region("idle.line", LAYER_TYPE); v_text("idle.line", text, cx - v_half(w), mid - v_half(v_cap(px)), w, px, line); }
+  if (*text) { v_region("idle.line", LAYER_TYPE); v_line_at("idle.line", text, spec_int("frame", "idle.regions.line.centre", 512), spec_int("frame", "idle.regions.line.middle", 584), V_ANCHOR_MID, px, line, V_ALIGN_CENTRE); }
 }
 static int is_not_built(void) { char st[24]; spec_str("props", "state", st, sizeof st); return strcmp(st, "notBuilt") == 0; }
 /* Which screens the face draws with words. */

@@ -72,7 +72,7 @@ void word_topBar(void) {
   if (*room) { lower(room); snprintf(a, sizeof a, "regions.marks.room.%s", room); snprintf(b, sizeof b, "%s", v_sstr(F, a)); mark("top.room", b, rr); }
   v_region("title", LAYER_TYPE);
   spec_str(P, "frame.top.title", s, sizeof s); snprintf(c, 24, "%s", v_scol(F, "colours.title"));
-  v_run("top.title", s, v_si(F, "regions.title.text.0", 0), v_si(F, "regions.title.text.1", 0) + 2, v_si(F, "regions.title.px", 0), c, V_ALIGN_LEFT);
+  v_run("top.title", s, v_si(F, "regions.title.text.0", 0), v_cap_top(v_si(F, "regions.title.text.1", 0) + 2, V_ANCHOR_CAP, v_si(F, "regions.title.px", 0)), v_si(F, "regions.title.px", 0), c, V_ALIGN_LEFT);
   /* what you hold, centred on 512 */
   static const char K[3] = { 'e', 'd', 's' }; static const char *ICON[3] = { "energy", "data", "essence" };
   int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_px = v_si(F, "regions.materials.px", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = v_si(F, "regions.materials.centre", 0);
@@ -142,7 +142,7 @@ void word_bottomLine(void) {
   /* the action: the cap, the verb, then the price */
   int A_px = v_si(F, "regions.action.px", 0), A_gap = v_si(F, "regions.action.gap", 0), A_capGap = v_si(F, "regions.action.capGap", 0), A_capW = v_si(F, "regions.action.capSize.0", 0), cap[4];
   v_srect(F, "regions.action.rect", r2); v_srect(F, "regions.action.cap", cap);
-  int ax = r2[0], ty = r2[1] + 2, k = 0;
+  int ax = r2[0], ty = v_cap_top(r2[1] + 2, V_ANCHOR_CAP, A_px), k = 0;
   /* `short`: null, or the icons of the materials the price is short of, space-separated ("◆", "⚡ ◆"): only the figure after each named icon is `need`; `blocked`: an action that cannot be taken, no cap (its room stays empty, so the verb stays where it was),
      the verb and the price in `dim`; blocked and dim together are refused */
   char shorts[32] = ""; { int sl; const char *sr = spec_raw(P, "frame.line.short", &sl);
@@ -168,12 +168,12 @@ void word_bottomLine(void) {
   if (spec_str(P, "frame.line.subject", s, sizeof s) > 0) {
     int sr[4]; v_srect(F, "regions.subject.rect", sr); v_region("subject", LAYER_TYPE);
     v_clip(s, sr[2], v_si(F, "regions.subject.px", 0), t, sizeof t); snprintf(c, 24, "%s", v_scol(F, "colours.subject"));
-    v_run("line.subject", t, v_si(F, "regions.subject.centre", 0), sr[1] + 2, v_si(F, "regions.subject.px", 0), c, V_ALIGN_CENTRE);
+    v_run("line.subject", t, v_si(F, "regions.subject.centre", 0), v_cap_top(sr[1] + 2, V_ANCHOR_CAP, v_si(F, "regions.subject.px", 0)), v_si(F, "regions.subject.px", 0), c, V_ALIGN_CENTRE);
   }
   /* the notice: the sentence right-aligned to 904 with its lamp 4 px to its left */
   if (spec_str(P, "frame.line.need", s, sizeof s) > 0) {
     int nr[4]; v_srect(F, "regions.need.rect", nr); int right = v_si(F, "regions.need.right", 0), px = v_si(F, "regions.need.px", 0);
-    v_region("need", LAYER_TYPE); snprintf(c, 24, "%s", v_scol(F, "colours.need")); v_run_t run = v_run("line.need", s, right, nr[1] + 2, px, c, V_ALIGN_RIGHT);
+    v_region("need", LAYER_TYPE); snprintf(c, 24, "%s", v_scol(F, "colours.need")); v_run_t run = v_run("line.need", s, right, v_cap_top(nr[1] + 2, V_ANCHOR_CAP, px), px, c, V_ALIGN_RIGHT);
     int lw = spec_int(F, "regions.need.lamp.0", 12), lh = spec_int(F, "regions.need.lamp.1", 12);
     int lamp[4] = { right - run.width - v_si(F, "regions.need.lampGap", 0) - lw, nr[1] + (nr[3] - lh + 1) / 2, lw, lh };
     v_name("need"); snprintf(a, sizeof a, "%s", v_sstr(F, "regions.marks.lamp12.needsYou"));
@@ -186,14 +186,14 @@ void word_bottomLine(void) {
     for (const char *q = icons; *q; q++) if ((unsigned char)*q == 0xe2) ni++;   /* the three icons are each one three-byte sequence beginning 0xe2 */
     const char *words = (v_run_width(s, px) + 20 * ni > nr[2] && plain[0]) ? plain : s;
     char full[V_STR + 32]; snprintf(full, sizeof full, "%s%s%s", words, ni ? " " : "", ni ? icons : "");
-    v_region("need", LAYER_TYPE); snprintf(c, 24, "%s", v_scol(F, "colours.subject")); v_run("line.goal", full, right, nr[1] + 2, px, c, V_ALIGN_RIGHT);
+    v_region("need", LAYER_TYPE); snprintf(c, 24, "%s", v_scol(F, "colours.subject")); v_run("line.goal", full, right, v_cap_top(nr[1] + 2, V_ANCHOR_CAP, px), px, c, V_ALIGN_RIGHT);
   }
   /* the way back: its cap, then one word, right-aligned to 1008 */
   if (spec_str(P, "frame.line.back", s, sizeof s) > 0) {
     int br[4], bcap[2]; v_srect(F, "regions.back.rect", br); bcap[0] = spec_int(F, "regions.back.cap.0", 16); bcap[1] = spec_int(F, "regions.back.cap.1", 16);
     int right = v_si(F, "regions.back.right", 0), px = v_si(F, "regions.back.px", 0), room = br[2] - bcap[0] - v_si(F, "regions.back.capGap", 0);
     v_region("back", LAYER_TYPE); snprintf(c, 24, "%s", v_scol(F, "colours.back"));
-    v_run_t run = v_run("line.back", v_run_width(s, px) > room ? "Back" : s, right, br[1] + 2, px, c, V_ALIGN_RIGHT);
+    v_run_t run = v_run("line.back", v_run_width(s, px) > room ? "Back" : s, right, v_cap_top(br[1] + 2, V_ANCHOR_CAP, px), px, c, V_ALIGN_RIGHT);
     v_region("back", LAYER_ART); int cr[4] = { right - run.width - v_si(F, "regions.back.capGap", 0) - bcap[0], cap[1], bcap[0], bcap[1] };
     snprintf(a, sizeof a, "%s", v_sstr(F, "regions.marks.capBack")); mark("line.cap.back", a, cr);
   }

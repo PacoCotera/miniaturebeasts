@@ -142,10 +142,10 @@ static void build_waiting(void) {
     v_name("waiting.pod"); natslot(v_fmt("waiting.shadow.%d", i), shadow, x + sdx, top + sdy, p3[i] >= 2);
     v_slot(v_fmt("waiting.pod.%d", i), v_pstr(v_fmt("regions.waiting.pods.%d.pod", i)), NULL, x, top, pw, ph, shown);
   }
-  { char more[16] = ""; int w = 0, px = v_si(C, "regions.waiting.pods.more.px", 16);
-    if (present > 3) { snprintf(more, sizeof more, "+%d", present - 3); w = v_measure(more, px); }
+  { char more[16] = ""; int px = v_si(C, "regions.waiting.pods.more.px", 16);
+    if (present > 3) snprintf(more, sizeof more, "+%d", present - 3);
     v_region("waitingMore", LAYER_TYPE);
-    v_text("waiting.more", more, v_si(C, "regions.waiting.pods.more.right", 180) - w, v_si(C, "regions.waiting.pods.more.centreY", 458) - v_cap(px) / 2, w, px, v_scol(C, "colours.display.more")); }
+    v_line_at("waiting.more", more, v_si(C, "regions.waiting.pods.more.right", 180), v_si(C, "regions.waiting.pods.more.centreY", 458), V_ANCHOR_MID, px, v_scol(C, "colours.display.more"), V_ALIGN_RIGHT); }
 }
 
 /* ---- the display row: the open crate's contents, in one row centred on x 600 (build spec 2) ---- */
@@ -179,7 +179,7 @@ static void layout_display(int k) {
   for (int q = 0; q < nmv && nE < MAXEL; q++) {
     el_t *e = &E[nE++]; memset(e, 0, sizeof *e); int px = small ? spx : bpx; e->kind = 2; e->idx = q; e->x = x; e->w = small ? sw : bw; e->h = small ? sh : bh;
     e->y = v_si(C, small ? "regions.display.material.small.top" : "regions.display.material.big.top", 124); snprintf(e->amt, sizeof e->amt, "%s", v_pstr(v_fmt("%s.mats.%d.amount", K, q))); e->apx = px;
-    e->ax = x + e->w + agap; e->ay = v_si(C, "regions.display.material.amount.centreY", 180) - v_cap(px) / 2;
+    e->ax = x + e->w + agap; e->ay = v_cap_top(v_si(C, "regions.display.material.amount.centreY", 180), V_ANCHOR_MID, px);
     x += e->w + agap + v_measure(e->amt, px) + (q + 1 < nmv ? within : 0);
   }
   g_small = small;

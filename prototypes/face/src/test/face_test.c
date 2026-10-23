@@ -257,19 +257,38 @@ static int type_x(const char *id) {
   const char *p = n > 0 ? strstr(b, key) : NULL; return p ? atoi(p + strlen(key)) : -9999;
 }
 static void line_words(void) {
-  int w = v_measure("Hello", 16), w28 = v_measure("Hello", 28);
+  int w = v_measure("Hello", 16), w28 = v_measure("Hello", 28), w22 = v_measure("Hello", 22);
   prim_begin();
-  v_region("vl.l", LAYER_TYPE); check(v_line("vl.l", "Hello", 100, 50, 16, "ink", V_ALIGN_LEFT) == w, "v_line: returns the width", "");
-  v_region("vl.c", LAYER_TYPE); v_line("vl.c", "Hello", 100, 50, 16, "ink", V_ALIGN_CENTRE);
-  v_region("vl.r", LAYER_TYPE); v_line("vl.r", "Hello", 100, 50, 16, "ink", V_ALIGN_RIGHT);
-  v_region("vl.t", LAYER_TYPE); v_line("vl.t", "Hello", 100, 50, 28, "ink", V_ALIGN_LEFT);
+  v_region("vl.l", LAYER_TYPE); check(v_line_at("vl.l", "Hello", 100, 50, V_ANCHOR_LINE, 16, "ink", V_ALIGN_LEFT) == w, "v_line_at: returns the width", "");
+  v_region("vl.c", LAYER_TYPE); v_line_at("vl.c", "Hello", 100, 50, V_ANCHOR_LINE, 16, "ink", V_ALIGN_CENTRE);
+  v_region("vl.r", LAYER_TYPE); v_line_at("vl.r", "Hello", 100, 50, V_ANCHOR_LINE, 16, "ink", V_ALIGN_RIGHT);
+  v_region("vl.t", LAYER_TYPE); v_line_at("vl.t", "Hello", 100, 50, V_ANCHOR_LINE, 28, "ink", V_ALIGN_LEFT);
   v_region("vl.e", LAYER_TYPE); v_text("vl.e", "Hello", 100, 50 + (20 - v_cap(16)) / 2, w, 16, "ink");
   v_region("vl.f", LAYER_TYPE); v_text("vl.f", "Hello", 100, 50 + (36 - v_cap(28)) / 2, w28, 28, "ink");
-  v_region("vl.n", LAYER_TYPE); check(v_line("vl.n", "Hello", 100, 50, 17, "ink", V_ALIGN_LEFT) == 0, "v_line: a px with no type.pitch draws nothing", "");
+  v_region("vl.n", LAYER_TYPE); check(v_line_at("vl.n", "Hello", 100, 50, V_ANCHOR_LINE, 17, "ink", V_ALIGN_LEFT) == 0, "v_line_at: a px with no type.pitch draws nothing", "");
+  v_region("vl.nc", LAYER_TYPE); check(v_line_in("vl.nc", "Hello", 100, 200, 50, V_ANCHOR_LINE, 17, "ink") == 0, "v_line_in: a px with no type.pitch draws nothing", "");
+  v_region("vl.a", LAYER_TYPE); v_line_at("vl.a", "Hello", 100, 50, V_ANCHOR_CAP, 16, "ink", V_ALIGN_LEFT);
+  v_region("vl.b", LAYER_TYPE); v_line_at("vl.b", "Hello", 100, 50, V_ANCHOR_BASE, 16, "ink", V_ALIGN_LEFT);
+  v_region("vl.m", LAYER_TYPE); v_line_at("vl.m", "Hello", 100, 50, V_ANCHOR_MID, 28, "ink", V_ALIGN_LEFT);
+  v_region("vl.q", LAYER_TYPE); v_line_at("vl.q", "Hello", 100, 50, V_ANCHOR_BASE, 22, "ink", V_ALIGN_LEFT);
+  v_region("vl.ar", LAYER_TYPE); v_text("vl.ar", "Hello", 100, 50, w, 16, "ink");
+  v_region("vl.br", LAYER_TYPE); v_text("vl.br", "Hello", 100, 50 - v_cap(16), w, 16, "ink");
+  v_region("vl.mr", LAYER_TYPE); v_text("vl.mr", "Hello", 100, 50 - v_fdiv(v_cap(28), 2), w28, 28, "ink");
+  v_region("vl.qr", LAYER_TYPE); v_text("vl.qr", "Hello", 100, 50 - v_cap(22), w22, 22, "ink");
+  v_region("vl.i", LAYER_TYPE); check(v_line_in("vl.i", "Hello", 100, 200, 50, V_ANCHOR_LINE, 16, "ink") == w, "v_line_in: returns the width", "");
   prim_end();
-  check(type_y("vl.l") == type_y("vl.e"), "v_line: 16 px puts its cap top (20 - cap) / 2 under the line top", "");
-  check(type_y("vl.t") == type_y("vl.f"), "v_line: 28 px puts its cap top (36 - cap) / 2 under the line top", "");
-  check(type_x("vl.l") == 100 && type_x("vl.c") == 100 - v_half(w) && type_x("vl.r") == 100 - w, "v_line: left, centre and right", "");
+  check(type_y("vl.l") == type_y("vl.e"), "v_line_at: 16 px puts its cap top (20 - cap) / 2 under the line top", "");
+  check(type_y("vl.t") == type_y("vl.f"), "v_line_at: 28 px puts its cap top (36 - cap) / 2 under the line top", "");
+  check(type_x("vl.l") == 100 && type_x("vl.c") == 100 - v_half(w) && type_x("vl.r") == 100 - w, "v_line_at: left, centre and right", "");
+  check(type_y("vl.a") == type_y("vl.ar"), "v_line_at: V_ANCHOR_CAP puts the cap top at y", "");
+  check(type_y("vl.b") == type_y("vl.br"), "v_line_at: V_ANCHOR_BASE puts the cap top a cap above y", "");
+  check(type_y("vl.m") == type_y("vl.mr"), "v_line_at: V_ANCHOR_MID puts the cap top half a cap (floor) above y", "");
+  check(type_y("vl.q") == type_y("vl.qr"), "v_line_at: a px with no type.pitch is drawn by the anchors that need none", "");
+  check(type_x("vl.i") == 100 + v_half(200 - w), "v_line_in: centred in the box", "");
+  check(type_y("vl.i") == type_y("vl.e"), "v_line_in: the cap top of the same anchor", "");
+  check(v_cap_top(50, V_ANCHOR_LINE, 16) == 50 + v_fdiv(20 - v_cap(16), 2) && v_cap_top(50, V_ANCHOR_LINE, 28) == 50 + v_fdiv(36 - v_cap(28), 2), "v_cap_top: the line anchor on the frame's pitch", "");
+  check(v_cap_top(50, V_ANCHOR_LINE, 17) == 50, "v_cap_top: a px with no type.pitch gives y back", "");
+  check(v_cap_top(50, V_ANCHOR_CAP, 22) == 50 && v_cap_top(50, V_ANCHOR_BASE, 22) == 50 - v_cap(22) && v_cap_top(50, V_ANCHOR_MID, 21) == 50 - v_fdiv(v_cap(21), 2), "v_cap_top: the other anchors take any px", "");
 }
 int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";

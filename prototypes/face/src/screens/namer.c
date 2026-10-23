@@ -32,7 +32,7 @@ static void key_face(const char *id, const char *region, const int r[4], int foc
   for (int j = 0; j < kh; j++) n += snprintf(o + n, (size_t)(cap - n), "%s[\"h\",0,%d,%d,\"%s\"]", j ? "," : "", j, kw, fill);
   snprintf(o + n, (size_t)(cap - n), ",[\"h\",0,0,%d,\"%s\"],[\"h\",0,%d,%d,\"%s\"],[\"v\",0,0,%d,\"%s\"],[\"v\",%d,0,%d,\"%s\"],[\"h\",1,1,%d,\"%s\"]]", kw, edge, kh - 1, kw, edge, kh, edge, kw - 1, kh, edge, kw - 2, top);
   v_region(region, LAYER_CHROME); v_composed(id, r[0], y, kw, kh, o);
-  v_region(region, LAYER_TYPE); v_line(v_fmt("%s.label", id), label, r[0] + v_half(r[2] - w), y + v_si(N, "regions.keys.label.lineTop", 10), px, ink, V_ALIGN_LEFT);
+  v_region(region, LAYER_TYPE); v_line_at(v_fmt("%s.label", id), label, r[0] + v_half(r[2] - w), y + v_si(N, "regions.keys.label.lineTop", 10), V_ANCHOR_LINE, px, ink, V_ALIGN_LEFT);
 }
 static void build_panel(void) {
   int r[4]; v_srect(N, "regions.panel.rect", r);
@@ -46,11 +46,11 @@ static void build_field(void) {
   v_region("field", LAYER_CHROME);
   v_rect("field.selection", x - 4, v_sk(N, "regions.field.nameAt", 1), selected ? tw + 8 : 0, selected ? v_si(N, "regions.field.line", 36) : 0, v_scol(N, "colours.field.selection"));
   v_rect("field.caret", cx, v_sk(N, "regions.field.nameAt", 1) + 4, caret ? 2 : 0, caret ? 28 : 0, v_scol(N, "colours.field.caret"));
-  v_region("field", LAYER_TYPE); v_text("field.name", name, x, v_si(N, "regions.field.lineTop", 70) + v_fdiv(v_si(N, "regions.field.line", 36) - v_cap(px), 2), tw, px, v_scol(N, "colours.field.name"));
+  v_region("field", LAYER_TYPE); v_line_at("field.name", name, x, v_si(N, "regions.field.lineTop", 70), V_ANCHOR_LINE, px, v_scol(N, "colours.field.name"), V_ALIGN_LEFT);
 }
 static void build_say(void) {
   int r[4]; v_srect(N, "regions.say.rect", r); const char *t = v_pstr("overlay.regions.say.text"); int px = v_si(N, "regions.say.px", 16);
-  v_region("say", LAYER_TYPE); v_line("say.text", t, v_sk(N, "regions.say.at", 0), v_si(N, "regions.say.lineTop", 122), px, v_scol(N, strcmp(v_pstr("overlay.regions.say.tone"), "refused") == 0 ? "colours.say.refused" : "colours.say.reason"), V_ALIGN_LEFT);
+  v_region("say", LAYER_TYPE); v_line_at("say.text", t, v_sk(N, "regions.say.at", 0), v_si(N, "regions.say.lineTop", 122), V_ANCHOR_LINE, px, v_scol(N, strcmp(v_pstr("overlay.regions.say.tone"), "refused") == 0 ? "colours.say.refused" : "colours.say.reason"), V_ALIGN_LEFT);
 }
 static void build_keys(void) {
   const char *c = cur(); int dim = v_pbool("overlay.regions.keys.dim", 0);

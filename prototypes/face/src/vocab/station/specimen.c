@@ -85,7 +85,7 @@ void word_specimen(const char *base) {
       snprintf(ostr, sizeof ostr, "%s", v_pstr(v_fmt("regions.specimen.origin.%d", i)));
       char wrapped[V_STR * 3]; int nl = v_wrap(ostr, orr[2], opx, wrapped, sizeof wrapped, 8); const char *l = wrapped;
       for (int j = 0; j < nl && line < maxLines; j++, line++) {
-        int tw = v_measure(l, opx); v_text(v_fmt("specimen.origin.%d", line), l, orr[0], cap_top(opx, orr[1] + pitch * line, pitch), tw, opx, origin); l += strlen(l) + 1;
+        v_line_at(v_fmt("specimen.origin.%d", line), l, orr[0], orr[1] + pitch * line, V_ANCHOR_LINE, opx, origin, V_ALIGN_LEFT); l += strlen(l) + 1;
       }
     }
   }

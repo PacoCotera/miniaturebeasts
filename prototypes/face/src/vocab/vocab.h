@@ -61,10 +61,19 @@ int v_nine(const char *id, const char *asset, int x, int y, int w, int h, const 
 int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h);
 /* The same between two w x h windows (atlas cells, M1 §2.1): `fromAsset`'s at (fsx, fsy) and `toAsset`'s at (tsx, tsy); `fromAsset` NULL or "" is clear (a dither-in), `toAsset` NULL or "" is clear (a dither-out, keeping the pixels a dither-in at the same level leaves); never both. */
 int v_dither_window(const char *id, const char *fromAsset, int fsx, int fsy, const char *toAsset, int tsx, int tsy, int level, int x, int y, int w, int h);
-/* v_line(id, s, x, lineTop, px, colour, align): a string of Inter at px in a line box whose top is `lineTop`, as one text node `id`. The cap top is (pitch - cap) / 2 under lineTop, the pitch being frame.json
-   type.pitch.<px> (16: 20, 20: 28, 28: 36; any other px is refused with an error and the line is not drawn). align: V_ALIGN_LEFT puts the line's left edge at x, V_ALIGN_CENTRE centres it on x (the left edge is x - v_half(width)),
-   V_ALIGN_RIGHT ends it at x. Reads: frame spec type.pitch. Region and layer: the caller's. Node id: v_id(id), one node, with the width of the string (no size when s is ""). Returns the width. */
-int v_line(const char *id, const char *s, int x, int lineTop, int px, const char *colour, int align);
+/* Where a line of text is anchored: the y given to v_cap_top, v_line_at and v_line_in names one of the line's rows, and the word turns it into the cap top the node is drawn at. */
+#define V_ANCHOR_LINE 0   /* y is the line box's top: cap top = y + v_fdiv(pitch - cap, 2), pitch = frame type.pitch.<px> */
+#define V_ANCHOR_CAP  1   /* y is the cap top */
+#define V_ANCHOR_BASE 2   /* y is the baseline: cap top = y - cap */
+#define V_ANCHOR_MID  3   /* y is the cap's middle: cap top = y - v_fdiv(cap, 2) */
+/* v_cap_top(y, anchor, px): the cap top of a line of Inter at px whose anchor row is at y, the one rule for it (cap = v_cap(px)). Only V_ANCHOR_LINE needs the frame's type.pitch.<px> (16: 20, 20: 28, 28: 36); a px with none is refused with an error and y is returned.
+   The other anchors take any px. Reads: the frame spec only. Draws no node. */
+int v_cap_top(int y, int anchor, int px);
+/* v_line_at(id, s, x, y, anchor, px, colour, align): a string of Inter at px as one text node `id`, its cap top v_cap_top(y, anchor, px). align: V_ALIGN_LEFT puts the line's left edge at x, V_ALIGN_CENTRE centres it on x (the left edge is x - v_half(width)),
+   V_ALIGN_RIGHT ends it at x. V_ANCHOR_LINE with a px that has no type.pitch is refused with an error and nothing is drawn (returns 0). Region and layer: the caller's. Node id: v_id(id), one node, with the width of the string (no size when s is ""). Returns the width. */
+int v_line_at(const char *id, const char *s, int x, int y, int anchor, int px, const char *colour, int align);
+/* v_line_in(id, s, bx, bw, y, anchor, px, colour): the same, centred in the box [bx, bx + bw): the left edge is bx + v_half(bw - width) (the box form V_ALIGN_CENTRE cannot fold). Returns the width. */
+int v_line_in(const char *id, const char *s, int bx, int bw, int y, int anchor, int px, const char *colour);
 /* A run: text pieces and the material icons inline (⚡ ◆ ❀ ✕ ⧗ as 16 px sprites, 2 px either side), laid left to right; align moves the whole run about x. */
 typedef struct { int width, end; } v_run_t;
 int v_run_width(const char *s, int px);
