@@ -4,8 +4,9 @@
 //   m: { st, sv, settings, docked }; spec: frame.json
 import * as S from "../state.mjs";
 import { livingOf } from "./home-props.mjs";
+import { fill } from "./words.mjs";
+import { req as reqOf, ph as phOf } from "./requests.mjs";
 
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
 // The line (frame.json idle.strings): the words of the one fact the rule gives (S.idleKey); none, empty. More than three crates read without a count; one mibi out is named, two or three are counted.
 export function idleLine(m, I) {
@@ -22,8 +23,8 @@ export function paintingOf(req, frame, light) {
 }
 
 export function idleBuild(m, frame) {
-  const I = frame.idle, R = I.regions, requests = [], req = (r) => { requests.push(r); return r.id; };
-  const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (station-layouts.md, Placeholders on Idle)" });
+  const I = frame.idle, R = I.regions, requests = [], req = reqOf(requests);
+  const ph = phOf(req, "its master (station-layouts.md, Placeholders on Idle)");
   const lw = livingOf({ ...m, view: "idle" }, R, req, ph, frame.light);
   const vivarium = { picture: paintingOf(req, frame, m.light) };
   return { props: { idle: true, regions: { vivarium, residents: lw.residents, bed: lw.bed }, frame: { idle: { line: idleLine(m, I) } } }, requests };
