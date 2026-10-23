@@ -53,7 +53,7 @@
    "words": "strings.refuse"
   },
   "keys": {
-   "rect": [636, 160, 328, 184], "offGrid": true, "component": "panel", "build": "keyGrid", "at": [636, 160], "key": [40, 40], "pitch": 48, "columns": 7, "rows": 4, "label": { "px": 16, "weight": 400, "align": "centre", "lineTop": 10 },
+   "rect": [636, 160, 328, 184], "offGrid": true, "component": "panel", "build": "keyGrid", "at": [636, 160], "key": [40, 40], "pitch": 48, "columns": 7, "rows": 4, "forms": { "grid": { "upTo": 28, "first": [636, 160, 40, 40], "pitch": [48, 48], "grid": [7, 4] } }, "label": { "px": 16, "weight": 400, "align": "centre", "lineTop": 10 },
    "ids": "key.0 to key.27, index = 7 × row + column; a key whose page has no character in that place is not drawn and is not a target",
    "rect of key i": "[636 + 48 × (i mod 7), 160 + 48 × floor(i / 7), 40, 40]"
   },

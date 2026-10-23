@@ -124,6 +124,7 @@
    "h": 24,
    "px": 16,
    "weight": 400,
+   "plate": {"min": 48, "max": 176, "pad": 8, "round": 8},
    "pad": 8,
    "round": 8,
    "min": 48,

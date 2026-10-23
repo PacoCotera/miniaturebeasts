@@ -80,7 +80,7 @@ test("the plates per tier: tier 1 on 408, 456, 504 and tier 2 on 384, 432, 480, 
 });
 
 test("the per-part check fails on a moved part: the plate, the knob, the part and a pod moved one pixel in the spec sent again, each named", { skip }, async () => {
-  const MOVES = [["plates.0", (s) => { s.regions.plates.places["1"][0][0] += 1; }], ["switch.knob", (s) => { s.regions.switch.toggle.knob.y += 1; }], ["slot.part", (s) => { s.regions.slot.part.at[0] += 1; }], ["slot.pod.1", (s) => { s.regions.slot.adds.pods.at[1] += 1; }]];
+  const MOVES = [["plates.0", (s) => { s.regions.plates.places["1"][0][0] += 1; }], ["switch.knob", (s) => { s.regions.switch.toggle.knob.y += 1; }], ["slot.part", (s) => { s.regions.slot.part.at[0] += 1; }], ["slot.pod.1", (s) => { s.regions.slot.adds.pods.forms.row.first[1] += 1; }]];   /* the face lays the pods by the spec's form (K5), which the checker's `at` must agree with */
   for (const [id, patch] of MOVES) {
     const b = scene({ f: "switch" }), f = await start(b); assert.deepEqual(partDepartures(boxOf(f), spec, b.props, "switch"), []);
     const moved = JSON.parse(JSON.stringify(spec)); patch(moved); assert.equal(f.send({ t: "spec", screen: "bench", json: moved }), 0);
