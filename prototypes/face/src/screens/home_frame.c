@@ -19,11 +19,11 @@ static const char *TARGETS[6] = { "vivarium", "library", "pods", "incubator", "c
 /* ---- the top bar and the line ---- */
 static void bar_words(void) {
   int r[4]; v_srect(H, "regions.bar.rect", r);
-  char slice[96], c[24]; spec_str(H, "regions.bar.slice", slice, sizeof slice); int bar = slice[0] && wire_asset_slot(slice) >= 0;   /* the bar is on the face: its picture carries the panel and its rule; the code panel and rule stay as the same nodes of no size */
+  char slice[96]; spec_str(H, "regions.bar.slice", slice, sizeof slice); int bar = slice[0] && wire_asset_slot(slice) >= 0;   /* the bar is on the face: its picture carries the panel and its rule; the code panel and rule stay as the same nodes of no size */
   if (bar) { v_region("bar", LAYER_PAINTED); v_sprite("bar.picture", slice, r[0], r[1], r[2], r[3]); }
   v_region("bar", LAYER_CHROME);
-  spec_str("frame", "colours.chrome", c, sizeof c); kit_panel("bar", r[0], r[1], r[2], r[3], c, NULL, bar);
-  spec_str("frame", "colours.rule", c, sizeof c); v_rect("bar.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], bar ? 0 : 1, c);
+  kit_panel("bar", r[0], r[1], r[2], r[3], v_scol("frame", "colours.chrome"), NULL, bar);
+  kit_hairline("bar.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], v_scol("frame", "colours.rule"), 0, NULL);
   v_region("bar", LAYER_TYPE);
   char title[40], place[V_STR], date[40], clock[16];
   spec_str(H, "strings.titles.bar", title, sizeof title);
@@ -157,7 +157,7 @@ static void bezel_words(const char *key) {
   kit_bezel(key, r[0], r[1], r[2], r[3], rad, v_scol(H, "regions.bezel.fill"), v_scol(H, "regions.bezel.edge"), v_scol(H, "regions.bezel.bevel"), NULL);   /* with the bevel line on top: the first row inside the edge, between the corners */
   { char f[24], e[24]; spec_str(H, v_fmt("regions.%s.placeholder.fill", key), f, sizeof f); spec_str(H, v_fmt("regions.%s.placeholder.edge", key), e, sizeof e);
     int gone = (strcmp(key, "vivarium") == 0 && home_window_painted()) || (strcmp(key, "library") == 0 && lib_painted());   /* a window is its picture once that is on the face: the placeholder stays as a node of no size */
-    kit_panel(v_fmt("%s.window", key), win[0], win[1], gone ? 0 : win[2], gone ? 0 : win[3], f, e, 0); }   /* the window: a placeholder until its picture lands */
+    kit_panel(v_fmt("%s.window", key), win[0], win[1], win[2], win[3], f, e, gone); }   /* the window: a placeholder until its picture lands */
   if (strcmp(key, "vivarium") == 0) home_window();
   if (strcmp(key, "library") == 0) library_window();
   v_region(key, LAYER_CHROME);
@@ -171,11 +171,6 @@ static void bezel_words(const char *key) {
 }
 
 /* ---- the console and its stations ---- */
-/* the empty slot of the case: a 24 x 32 outline of radius 6 in `hairline`, no fill, one composed picture */
-static void slot_outline(const char *id, int x, int y, int w, int h, int rad, const char *edge) {
-  char ops[120]; snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]]", w, h, rad, edge);
-  v_composed(id, x, y, w, h, ops);
-}
 static void station_words(const char *key) {
   int r[4]; v_srect(H, v_fmt("regions.%s.rect", key), r);
   int rad = v_si(H, "regions.station.radius", 8), inset = v_si(H, "regions.station.pictureInset", 8), gap = v_si(H, "regions.station.columnGap", 8), x1 = v_sk(H, "regions.station.line1", 0), left = 0, lineRight = r[2] - x1;
@@ -198,7 +193,7 @@ static void station_words(const char *key) {
     int gw = v_sk(H, "regions.pods.glint.size", 0), gh = v_sk(H, "regions.pods.glint.size", 1);
     for (int i = 0; i < cols * rows; i++) { int sx = x0 + (i % cols) * (sw + sg), sy = y0 + (i / cols) * (sh + sg); const char *pod = v_pstr(v_fmt("regions.pods.wells.%d.pod", i));   /* the slot holds its rack pod or, empty, a hairline outline */
       if (*pod) { v_region(v_fmt("%s.picture", key), LAYER_ART); v_sprite(v_fmt("%s.slot.%d", key, i), pod, sx, sy, sw, sh); }
-      else { v_region(key, LAYER_CHROME); slot_outline(v_fmt("%s.slot.%d", key, i), sx, sy, sw, sh, v_si(H, "regions.station.slot.radius", 6), v_scol(H, "regions.station.slot.edge")); } }
+      else { v_region(key, LAYER_CHROME); kit_windowFrame(v_fmt("%s.slot.%d", key, i), sx, sy, sw, sh, v_si(H, "regions.station.slot.radius", 6), NULL, v_scol(H, "regions.station.slot.edge"));   /* the empty slot of the case: a 24 x 32 outline of radius 6 in `hairline`, no fill */ } }
     v_region(v_fmt("%s.picture", key), LAYER_ART);
     for (int i = 0; i < cols * rows; i++) { const char *g = v_pstr(v_fmt("regions.pods.wells.%d.glint", i)); if (*g) v_sprite(v_fmt("%s.glint.%d", key, i), g, x0 + (i % cols) * (sw + sg) + v_sk(H, "regions.pods.glint.at", 0), y0 + (i / cols) * (sh + sg) + v_sk(H, "regions.pods.glint.at", 1), gw, gh); }
   } else if (strcmp(key, "incubator") == 0) {

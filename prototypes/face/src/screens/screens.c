@@ -25,7 +25,7 @@ static void build_idleLine(void) {
   char ground[24], rule[24], line[24]; int s[4], l[4];
   spec_str("frame", "idle.colours.strip", ground, sizeof ground); spec_str("frame", "idle.colours.rule", rule, sizeof rule); spec_str("frame", "idle.colours.line", line, sizeof line);
   if (!v_spec_rect("frame", "idle.regions.strip.rect", s) || !v_spec_rect("frame", "idle.regions.line.rect", l)) return;
-  v_region("idle.strip", LAYER_CHROME); v_rect("idle.strip", s[0], s[1], s[2], s[3], ground); v_rect("idle.strip.rule", s[0], s[1], s[2], 1, rule);
+  v_region("idle.strip", LAYER_CHROME); v_rect("idle.strip", s[0], s[1], s[2], s[3], ground); kit_hairline("idle.strip.rule", s[0], s[1], s[2], rule, 0, NULL);
   const char *text = v_pstr("frame.idle.line"); int px = spec_int("frame", "idle.regions.line.px", 16);
   if (*text) { v_region("idle.line", LAYER_TYPE); v_line_at("idle.line", text, spec_int("frame", "idle.regions.line.centre", 512), spec_int("frame", "idle.regions.line.middle", 584), V_ANCHOR_MID, px, line, V_ALIGN_CENTRE); }
 }

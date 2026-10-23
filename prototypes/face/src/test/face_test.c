@@ -343,6 +343,32 @@ static void kit_words(void) {
   n1 = table_nodes(); prim_end();
   check(n1 - n0 == 1 && kat("kw.a", FN_COMPOSED, 100, 50, 64, 48), "kit_windowFrame: one composed node of the box", "");
   check(strcmp(kw, "[[\"rcorners\",0,0,64,48,6,\"kitA\"],[\"rrect\",0,0,64,48,6,\"\",\"kitB\"]]") == 0, "kit_windowFrame: the corners op, then the edge op", kw);
+  prim_begin(); n0 = table_nodes();
+  v_region("kw.n", LAYER_CHROME); kit_windowFrame("kw.n", 100, 50, 24, 32, 6, NULL, "kitB"); char kn[300]; snprintf(kn, sizeof kn, "%s", prim_ops());
+  n1 = table_nodes(); prim_end();
+  check(n1 - n0 == 1 && kat("kw.n", FN_COMPOSED, 100, 50, 24, 32), "kit_windowFrame: ground NULL is still one composed node of the box", "");
+  check(strcmp(kn, "[[\"rrect\",0,0,24,32,6,\"\",\"kitB\"]]") == 0, "kit_windowFrame: ground NULL is the edge op alone, no corners op", kn);
+  /* kit_bezelComposed: one composed node, the rrect op, then the bevel's h op; no node when refused */
+  prim_begin(); n0 = table_nodes();
+  v_region("kc.a", LAYER_CHROME); kit_bezelComposed("kc.a", 40, 30, 200, 90, 10, "kitA", "kitB", "kitC"); char ca[300]; snprintf(ca, sizeof ca, "%s", prim_ops());
+  v_region("kc.b", LAYER_CHROME); kit_bezelComposed("kc.b", 40, 30, 200, 90, 10, "kitA", "kitB", NULL); char cb[300]; snprintf(cb, sizeof cb, "%s", prim_ops());
+  v_region("kc.c", LAYER_CHROME); kit_bezelComposed("kc.c", 40, 30, 200, 90, 10, "kitA", NULL, "kitC"); char cc[300]; snprintf(cc, sizeof cc, "%s", prim_ops());
+  v_region("kc.r", LAYER_CHROME); kit_bezelComposed("kc.r", 40, 30, 200, 90, 0, "kitA", "kitB", "kitC");
+  v_region("kc.w", LAYER_CHROME); kit_bezelComposed("kc.w", 40, 30, 19, 90, 10, "kitA", "kitB", "kitC");
+  v_region("kc.h", LAYER_CHROME); kit_bezelComposed("kc.h", 40, 30, 200, 19, 10, "kitA", "kitB", "kitC");
+  v_region("kc.ok", LAYER_CHROME); kit_bezelComposed("kc.ok", 40, 30, 20, 20, 10, "kitA", "kitB", "kitC");
+  n1 = table_nodes(); prim_end();
+  check(n1 - n0 == 4 && kat("kc.a", FN_COMPOSED, 40, 30, 200, 90) && kat("kc.b", FN_COMPOSED, 40, 30, 200, 90) && kat("kc.ok", FN_COMPOSED, 40, 30, 20, 20), "kit_bezelComposed: one composed node of the box", "");
+  check(strcmp(ca, "[[\"rrect\",0,0,200,90,10,\"kitA\",\"kitB\"],[\"h\",10,1,180,\"kitC\"]]") == 0, "kit_bezelComposed: the rrect op, then the bevel on row 1 from x r, w - 2r long", ca);
+  check(strcmp(cb, "[[\"rrect\",0,0,200,90,10,\"kitA\",\"kitB\"]]") == 0, "kit_bezelComposed: no bevel, the rrect op alone", cb);
+  check(strcmp(cc, "[[\"rrect\",0,0,200,90,10,\"kitA\",\"\"],[\"h\",10,1,180,\"kitC\"]]") == 0, "kit_bezelComposed: edge NULL is an empty edge", cc);
+  check(kabsent("kc.r") && kabsent("kc.w") && kabsent("kc.h"), "kit_bezelComposed: a radius under 1, a width under 2r and a height under 2r make no node", "");
+  /* v_scol_or and v_token */
+  { static const char KS[] = "{\"colours\":{\"chrome\":\"kitA\",\"blank\":\"\"},\"x\":{\"c\":\"kitB\",\"e\":\"\"}}";
+    spec_load("kcol", KS, sizeof KS - 1);
+    check(strcmp(v_scol_or("kcol", "x.c", "zz"), "kitB") == 0 && strcmp(v_scol_or("kcol", "x.none", "zz"), "zz") == 0 && strcmp(v_scol_or("kcol", "x.e", "zz"), "zz") == 0 && strcmp(v_scol_or("nospec", "x.c", "zz"), "zz") == 0, "v_scol_or: the string at the path; the default when it is absent or empty", "");
+    check(strcmp(v_token("kcol", "chrome"), "kitA") == 0 && strcmp(v_token("kcol", "kitC"), "kitC") == 0 && strcmp(v_token("kcol", "blank"), "blank") == 0, "v_token: a named role gives its colour, a bare name stands for itself, an empty role falls back to the name", "");
+    const char *k0 = v_scol_or("kcol", "x.c", "zz"); for (int i = 0; i < 15; i++) v_scol_or("kcol", "x.none", "yy"); check(strcmp(k0, "kitB") == 0, "v_scol_or: a result stays valid for the next 15 calls", ""); }
   /* kit_bezel: the nine-slice of the 2r + 4 source with a bevel line; h 0 is no band */
   static const kit_band_t B0 = { 0, 0, "kitC", "kitD" }, BT = { 0, 10, "kitC", "kitD" }, BB = { 1, 10, "kitC", NULL }, BX = { 0, 0, NULL, NULL };
   char s0[200], s1[200], sb[2000];
@@ -351,16 +377,26 @@ static void kit_words(void) {
   v_region("kb.nb", LAYER_CHROME); kit_bezel("kb.nb", 40, 30, 200, 90, 10, "kitA", "kitB", NULL, NULL);
   v_region("kb.z", LAYER_CHROME); kit_bezel("kb.z", 40, 30, 200, 90, 10, "kitA", "kitB", "kitC", &B0); snprintf(s1, sizeof s1, "%s", prim_ops());
   v_region("kb.x", LAYER_CHROME); kit_bezel("kb.x", 40, 30, 200, 90, 10, "kitA", "kitB", "kitC", &BX);
-  v_region("kb.t", LAYER_CHROME); kit_bezel("kb.t", 40, 30, 200, 90, 6, "kitA", "kitB", "kitC", &BT);
+  v_region("kb.t", LAYER_CHROME); kit_bezel("kb.t", 40, 30, 200, 90, 6, "kitA", "kitB", NULL, &BT);
   v_region("kb.b", LAYER_CHROME); kit_bezel("kb.b", 40, 30, 200, 90, 6, "kitA", "kitB", NULL, &BB); snprintf(sb, sizeof sb, "%s", prim_ops());
   v_region("kb.sm", LAYER_CHROME); kit_bezel("kb.sm", 40, 30, 200, 14, 6, "kitA", "kitB", NULL, &BT);
   v_region("kb.r0", LAYER_CHROME); kit_bezel("kb.r0", 40, 30, 200, 90, 0, "kitA", "kitB", NULL, NULL);
+  static const kit_band_t BS = { 1, 2, "kitC", NULL };
+  v_region("kb.tb", LAYER_CHROME); kit_bezel("kb.tb", 40, 30, 200, 90, 6, "kitA", "kitB", "kitC", &BT);   /* a top band takes the bevel's row */
+  v_region("kb.bb", LAYER_CHROME); kit_bezel("kb.bb", 40, 30, 200, 90, 6, "kitA", "kitB", "kitC", &BB);   /* a bottom band keeps the bevel */
+  v_region("kb.r1", LAYER_CHROME); kit_bezel("kb.r1", 40, 30, 200, 4, 1, "kitA", "kitB", "kitC", &BS);    /* r 1, h under the bottom inset + 2: the bevel's row is the band's */
+  v_region("kb.r1ok", LAYER_CHROME); kit_bezel("kb.r1ok", 40, 30, 200, 5, 1, "kitA", "kitB", "kitC", &BS);
+  v_region("kb.short", LAYER_CHROME); kit_bezel("kb.short", 40, 30, 200, 8, 6, "kitA", "kitB", "kitC", NULL);   /* shorter than 2r: no panel, the bevel is still drawn */
   n1 = table_nodes(); prim_end();
-  check(n1 - n0 == 2 + 1 + 2 + 2 + 2 + 1, "kit_bezel: the panel and its bevel, a band adds no node, a bezel under its insets or a radius under 1 makes none", "");
+  check(n1 - n0 == 2 + 1 + 2 + 2 + 1 + 1 + 0 + 0 + 0 + 2 + 0 + 2 + 1, "kit_bezel: the panel and its bevel, a band adds no node, a bezel under its insets or a radius under 1 makes none (its bevel stays), the band's bevel refusals make none", "");
+  check(kabsent("kb.tb.panel") && kabsent("kb.tb.bevel"), "kit_bezel: a top band with a bevel makes no node", "");
+  check(kat("kb.bb.panel", FN_NINE, 40, 30, 200, 90) && kat("kb.bb.bevel", FN_RECT, 46, 31, 188, 1), "kit_bezel: a bottom band with a bevel keeps <id>.bevel at x + r, y + 1, w - 2r long", "");
+  check(kabsent("kb.r1.panel") && kabsent("kb.r1.bevel") && kat("kb.r1ok.panel", FN_NINE, 40, 30, 200, 5) && kat("kb.r1ok.bevel", FN_RECT, 41, 31, 198, 1), "kit_bezel: at r 1 a bevel whose row is a band row is refused (h under bi + 2), a body row is drawn", "");
+  check(kabsent("kb.short.panel") && kat("kb.short.bevel", FN_RECT, 46, 31, 188, 1), "kit_bezel: a bezel shorter than its insets draws its bevel and no panel", "");
   check(kat("kb.a.panel", FN_NINE, 40, 30, 200, 90) && kat("kb.a.bevel", FN_RECT, 50, 31, 180, 1) && kabsent("kb.nb.bevel") && kat("kb.nb.panel", FN_NINE, 40, 30, 200, 90), "kit_bezel: <id>.panel and, with a bevel, <id>.bevel from x + r, y + 1, w - 2r long", "");
   check(strcmp(s0, "[[\"rrect\",0,0,24,24,10,\"kitA\",\"kitB\"]]") == 0, "kit_bezel: the source is a 2r + 4 box of the fill and edge", s0);
   check(strcmp(s0, s1) == 0 && kat("kb.z.panel", FN_NINE, 40, 30, 200, 90) && kat("kb.z.bevel", FN_RECT, 50, 31, 180, 1) && kat("kb.x.panel", FN_NINE, 40, 30, 200, 90), "kit_bezel: a band of h 0 is no band: the same source and nodes", "");
-  check(kat("kb.t.panel", FN_NINE, 40, 30, 200, 90) && kat("kb.t.bevel", FN_RECT, 46, 31, 188, 1) && kat("kb.b.panel", FN_NINE, 40, 30, 200, 90) && kabsent("kb.b.bevel") && kabsent("kb.sm.panel") && kabsent("kb.r0.panel"), "kit_bezel: a banded bezel is the same two nodes", "");
+  check(kat("kb.t.panel", FN_NINE, 40, 30, 200, 90) && kabsent("kb.t.bevel") && kat("kb.b.panel", FN_NINE, 40, 30, 200, 90) && kabsent("kb.b.bevel") && kabsent("kb.sm.panel") && kabsent("kb.r0.panel"), "kit_bezel: a banded bezel is the one panel node (a top band has no bevel)", "");
   { /* the band's pixels: the banded source against the plain one of the same size */
     int r = 6, W = 2 * r + 4, Ht = 12 + r + 4; char plain[200]; snprintf(plain, sizeof plain, "[[\"rrect\",0,0,%d,%d,%d,\"kitA\",\"kitB\"]]", W, Ht, r);
     uint8_t *pa = (uint8_t *)calloc((size_t)W * Ht * 4, 1), *pb = (uint8_t *)calloc((size_t)W * Ht * 4, 1); int c = W / 2;
