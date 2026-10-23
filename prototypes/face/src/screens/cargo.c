@@ -67,10 +67,9 @@ static int any_pod_came(void) { for (int i = 0, n = v_plen("regions.hatch.wells"
 
 /* ---- the bay window: one picture, radius 6, the frame's inner shade (the corners outside the radius in the stage ground, a 1 px void edge on the radius) ---- */
 static void build_bay(void) {
-  int r[4]; v_srect(C, "regions.bay.rect", r); int rad = v_si(C, "regions.bay.radius", 6); char ops[240], g[24], e[24]; spec_str(C, "regions.bay.corners", g, sizeof g); spec_str(C, "regions.bay.edge", e, sizeof e);
+  int r[4]; v_srect(C, "regions.bay.rect", r); int rad = v_si(C, "regions.bay.radius", 6); char g[24], e[24]; spec_str(C, "regions.bay.corners", g, sizeof g); spec_str(C, "regions.bay.edge", e, sizeof e);
   v_region("bay", LAYER_ART); v_name("bay"); v_sprite("bay", v_pstr("regions.bay.picture"), r[0], r[1], r[2], r[3]);
-  snprintf(ops, sizeof ops, "[[\"rcorners\",0,0,%d,%d,%d,\"%s\"],[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]]", r[2], r[3], rad, g, r[2], r[3], rad, e);
-  v_region("bayEdge", LAYER_CHROME); v_composed("bay.edge", r[0], r[1], r[2], r[3], ops);
+  v_region("bayEdge", LAYER_CHROME); kit_windowFrame("bay.edge", r[0], r[1], r[2], r[3], rad, g, e);
 }
 
 /* ---- the berths (build spec 3): three of 256, or four of 188 with the portrait crate in the fourth ---- */

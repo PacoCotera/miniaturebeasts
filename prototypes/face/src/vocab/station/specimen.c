@@ -73,7 +73,7 @@ void word_specimen(const char *base) {
   if (has(ribbon) && anim_get(ANIM_RIBBON, rpid, &ra_) && ra_.elapsed >= ra_.from) {   /* a ribbon in the origin's place, from `from` ms into its event */
     int rr[4]; srect(base, "ribbon.rect", rr); int rpx = si(base, "ribbon.px", 20); char fill[24], edge[24], rtext[24];
     colour("ribbonFill", fill, sizeof fill); colour("ribbonEdge", edge, sizeof edge); colour("ribbonText", rtext, sizeof rtext);
-    v_region("ribbon", LAYER_CHROME); word_panel("specimen.ribbon", rr[0], rr[1], rr[2], rr[3], fill, edge);
+    v_region("ribbon", LAYER_CHROME); kit_panel("specimen.ribbon", rr[0], rr[1], rr[2], rr[3], fill, edge, 0);
     v_region("ribbon", LAYER_TYPE); v_line_at("specimen.ribbon.text", ribbon, rr[0] + v_half(rr[2]), v_cap_in(rr[1], rr[3], rpx), V_ANCHOR_CAP, rpx, rtext, V_ALIGN_CENTRE);
   } else if (spec_len(S, v_fmt("%s.origin", base)) >= 0) {
     int orr[4]; srect(base, "origin.rect", orr); int opx = si(base, "origin.px", 16), pitch = si(base, "origin.pitch", 20), maxLines = si(base, "origin.lines", 2), line = 0;

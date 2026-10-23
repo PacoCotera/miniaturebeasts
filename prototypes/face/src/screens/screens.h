@@ -75,7 +75,6 @@ int home_test_cell(int i); int home_test_state(int i); int home_test_mv(int i, i
 void build_module(const char *spec, const char *key, int dy, const char *lamp);   /* the module of `spec`'s region `key` (a spec with "lamp": null has no lamp node) */
 void build_nameTag(const char *spec, const char *glass, const char *name, const int box[4], int lift, int out[4]);   /* the name tag for the screen of `spec`, over its window region `glass` */
 void build_nameTagAt(const char *spec, const char *glass, const char *name, int fx, int yBelow, int yOver, int forceOver, int out[4]);   /* the living window's name tag: centred on the feet point fx, top yBelow, or yOver when its bottom would pass 8 px inside the window or forceOver */
-void build_roundPanel(const char *id, int x, int y, int w, int h, int r, const char *fill, const char *edge);   /* a rounded panel: a nine-slice of a face-owned source, palette-exact (screens/home_builds.c) */
 extern int g_tagSlot;   /* set while the name tag is a slot: its nodes wait with no size at the tag's own place */
 extern int g_tagFlash;
 extern int g_tagOver;   /* set while the name tag of a resident asleep in place is drawn: over its ink */   /* set while the name tag flashes (the namer saved a name) */

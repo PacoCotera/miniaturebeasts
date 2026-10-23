@@ -54,7 +54,7 @@ static void build_plate(void) {
   v_region("panel", LAYER_CHROME);
   if (v_sprite("panel.plate", v_pstr("overlay.regions.art.housing"), r[0], r[1], r[2], r[3])) return;   /* the housing master, 1:1 */
   char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", rcol("ground")); snprintf(edge, sizeof edge, "%s", rcol("edge"));
-  word_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge);
+  kit_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge, 0);
 }
 static void build_title(void) {
   int r[4]; v_srect(F, RP ".title.rect", r); const char *t = v_pstr("overlay.regions.title"); int px = v_si(F, RP ".title.px", 28), w = v_measure(t, px);
@@ -82,7 +82,7 @@ static void build_card(int i, int n, int focused) {
   const char *base = v_fmt("overlay.regions.cards.%d.art", i);
   /* the well: the master (the focused one a step up; the ring is over it), else the code-drawn well */
   { const char *id = v_pstr(v_fmt("%s.%s", base, focused ? "focused" : "well")); v_region("cards", LAYER_PAINTED);
-    if (!v_sprite(v_fmt("card.%d.well", i), id, r[0], r[1], w, r[3])) { char well[24], edge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(edge, sizeof edge, "%s", rcol("cards.edge")); v_region("cards", LAYER_CHROME); word_panel(v_fmt("card.%d.well", i), r[0], r[1], w, r[3], well, edge); } }
+    if (!v_sprite(v_fmt("card.%d.well", i), id, r[0], r[1], w, r[3])) { char well[24], edge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(edge, sizeof edge, "%s", rcol("cards.edge")); v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), r[0], r[1], w, r[3], well, edge, 0); } }
   /* the glow and the stage: under the picture (the stage at the slot's foot) */
   v_region("cardStage", LAYER_PAINTED);
   const char *scene = v_pstr(v_fmt("%s.scene", base)); int shift = *scene ? v_si(F, RP ".art.scene.shift", 0) : 0;   /* the Return outcome: its place's scene stands in the glow's place and the subject stands right of centre, facing the light */
@@ -121,12 +121,12 @@ static void build_ring(int n) {
 /* the strip: the plate (the code-drawn ground and edge while no master is placed), then each card: its well, its 96 × 96 picture, the name, the costs and the one line */
 static void build_strip(int n) {
   int r[4]; v_srect(F, RP ".strip.rect", r); char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", rcol("ground")); snprintf(edge, sizeof edge, "%s", rcol("edge"));
-  v_region("panel", LAYER_CHROME); word_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge);
+  v_region("panel", LAYER_CHROME); kit_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge, 0);
   const char *cur = v_focus_cur_at("overlay.focus.cur");
   for (int i = 0; i < n; i++) {
     int c[4]; card_rect(i, n, c); int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), tx = c[0] + v_sk(F, RP ".strip.name.at", 0), maxw = v_si(F, RP ".strip.line.max", 252);
     char well[24], wedge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(wedge, sizeof wedge, "%s", rcol("cards.edge"));
-    v_region("cards", LAYER_CHROME); word_panel(v_fmt("card.%d.well", i), c[0], c[1], c[2], c[3], well, wedge);
+    v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), c[0], c[1], c[2], c[3], well, wedge, 0);
     { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pw = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0);
       v_name("cardPictures"); v_slot_at(v_fmt("card.%d.picture", i), pic, NULL, c[0] + v_sk(F, RP ".strip.picture.at", 0), c[1] + v_sk(F, RP ".strip.picture.at", 1), pw, ph, pw > 0 && ph > 0, c[0], c[1]); }
     { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = v_si(F, RP ".strip.name.px", 20); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
@@ -157,9 +157,8 @@ static void build_price(const int r[4]) {
 }
 /* a window's frame over its picture: the corners outside the radius 6 in the bezel's colour, then a 1 px `void` inner edge on the radius */
 static void build_window_frame(int i, const int w[4]) {
-  int rad = v_si(PN, "incubate.windows.radius", 6); char ops[300];
-  snprintf(ops, sizeof ops, "[[\"rcorners\",0,0,%d,%d,%d,\"%s\"],[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"]]", w[2], w[3], rad, pcol("bezels.fill"), w[2], w[3], rad, pcol("windows.edge"));
-  v_region(v_fmt("panelWindow.%d", i), LAYER_CHROME); v_composed(v_fmt("panel.window.%d", i), w[0], w[1], w[2], w[3], ops);
+  int rad = v_si(PN, "incubate.windows.radius", 6);
+  v_region(v_fmt("panelWindow.%d", i), LAYER_CHROME); kit_windowFrame(v_fmt("panel.window.%d", i), w[0], w[1], w[2], w[3], rad, pcol("bezels.fill"), pcol("windows.edge"));
 }
 static void build_incubate_left(const int w[4]) {
   const char *room = v_pstr("overlay.regions.left.room"), *interior = v_pstr("overlay.regions.left.interior"), *pod = v_pstr("overlay.regions.left.pod"), *glass = v_pstr("overlay.regions.left.glass"), *shell = v_pstr("overlay.regions.left.shell"), *seal = v_pstr("overlay.regions.left.seal");

@@ -3,8 +3,12 @@
 #ifndef WORDS_H
 #define WORDS_H
 /* common/ */
-void word_panel(const char *id, int x, int y, int w, int h, const char *fill, const char *edge);   /* a filled pane with a 1 px edge (edge NULL: none) */
-void word_hairline(const char *id, int x, int y, int len, const char *colour, int vertical);
+/* The UI kit's panels and rules (contract headers in common/panel.c, bezel.c, windowFrame.c and hairline.c) */
+void kit_panel(const char *id, int x, int y, int w, int h, const char *fill, const char *edge, int slot);   /* a filled pane with a 1 px edge (fill NULL: the four edge rects only; edge NULL: none; slot: the same nodes with no size at (x, y)) */
+typedef struct { int side; int h; const char *fill; const char *rule; } kit_band_t;   /* a band along a bezel's side: side 0 top, 1 bottom; h rows of fill, then a row of rule (NULL: none); h 0: no band */
+void kit_bezel(const char *id, int x, int y, int w, int h, int r, const char *fill, const char *edge, const char *bevel, const kit_band_t *band);   /* a rounded panel (a nine-slice of the face's own source), a bevel line on top (bevel NULL: none), a band (NULL: none) */
+void kit_windowFrame(const char *id, int x, int y, int w, int h, int radius, const char *ground, const char *edge);   /* the corners outside the radius in ground, then a 1 px edge on the radius: one composed picture */
+void kit_hairline(const char *id, int x, int y, int len, const char *colour, int vertical, const int dash[2]);   /* a 1 px rule; dash { on, off }: one composed picture of dashes (NULL: a solid rect) */
 /* The focus ring (fix 14): `target` is the path of the target's entry in `spec` (its `shape` and `ground` are read there, the bands, gap, reach and colours from frame.json focus.ring); `drawn` is the object's rect as the screen drew it this frame, lifted where it lifts; `id` is the ring's region id. */
 void word_focusRing(const char *id, const char *spec, const char *target, const int drawn[4]);
 /* A creature's ring: its footprint on the ground. `picture` is the creature's picture id as drawn (a still, a moving-set atlas or a nap), `cell` is "stand", "curl", "shadow" or "" (the whole picture), `drawn` is its box, not lifted. */
