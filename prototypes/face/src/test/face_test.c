@@ -275,6 +275,9 @@ static void line_words(void) {
   v_region("vl.br", LAYER_TYPE); v_text("vl.br", "Hello", 100, 50 - v_cap(16), w, 16, "ink");
   v_region("vl.mr", LAYER_TYPE); v_text("vl.mr", "Hello", 100, 50 - v_fdiv(v_cap(28), 2), w28, 28, "ink");
   v_region("vl.qr", LAYER_TYPE); v_text("vl.qr", "Hello", 100, 50 - v_cap(22), w22, 22, "ink");
+  v_region("vl.ci", LAYER_TYPE); v_line_at("vl.ci", "Hello", 100, v_cap_in(50, 20, 16), V_ANCHOR_CAP, 16, "ink", V_ALIGN_LEFT);
+  v_region("vl.cj", LAYER_TYPE); v_line_in("vl.cj", "Hello", 100, 200, v_cap_in(50, 25, 22), V_ANCHOR_CAP, 22, "ink");
+  v_region("vl.cr", LAYER_TYPE); v_text("vl.cr", "Hello", 100, 50 + (25 - v_cap(22)) / 2, w22, 22, "ink");
   v_region("vl.i", LAYER_TYPE); check(v_line_in("vl.i", "Hello", 100, 200, 50, V_ANCHOR_LINE, 16, "ink") == w, "v_line_in: returns the width", "");
   prim_end();
   check(type_y("vl.l") == type_y("vl.e"), "v_line_at: 16 px puts its cap top (20 - cap) / 2 under the line top", "");
@@ -287,6 +290,8 @@ static void line_words(void) {
   check(type_x("vl.i") == 100 + v_half(200 - w), "v_line_in: centred in the box", "");
   check(type_y("vl.i") == type_y("vl.e"), "v_line_in: the cap top of the same anchor", "");
   check(v_cap_top(50, V_ANCHOR_LINE, 16) == 50 + v_fdiv(20 - v_cap(16), 2) && v_cap_top(50, V_ANCHOR_LINE, 28) == 50 + v_fdiv(36 - v_cap(28), 2), "v_cap_top: the line anchor on the frame's pitch", "");
+  check(type_y("vl.ci") == type_y("vl.e") && type_y("vl.cj") == type_y("vl.cr"), "v_cap_in: a line at the cap top it gives sits where the centring puts it (any px, no type.pitch needed)", "");
+  check(v_cap_in(50, 24, 20) == 55 && v_cap_in(50, 25, 16) == 56 && v_cap_in(50, 13, 16) == 50 && v_cap_in(50, 10, 16) == 49 && v_cap_in(50, 20, 17) == 50 + v_fdiv(20 - v_cap(17), 2), "v_cap_in: top + floor((h - cap) / 2), a cap taller than the box a row above it", "");
   check(v_cap_top(50, V_ANCHOR_LINE, 17) == 50, "v_cap_top: a px with no type.pitch gives y back", "");
   check(v_cap_top(50, V_ANCHOR_CAP, 22) == 50 && v_cap_top(50, V_ANCHOR_BASE, 22) == 50 - v_cap(22) && v_cap_top(50, V_ANCHOR_MID, 21) == 50 - v_fdiv(v_cap(21), 2), "v_cap_top: the other anchors take any px", "");
 }

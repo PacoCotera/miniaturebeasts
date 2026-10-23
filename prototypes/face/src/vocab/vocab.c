@@ -25,13 +25,14 @@ void v_rect(const char *id, int x, int y, int w, int h, const char *colour) { pr
 void v_text(const char *id, const char *s, int x, int y, int w, int px, const char *colour) {
   settext(s); prim_node(v_id(id), FN_TEXT, x, y, w, px * 5 / 4, v_col(colour), px, v_cap(px));
 }
+int v_cap_in(int top, int h, int px) { return top + v_fdiv(h - v_cap(px), 2); }
 int v_cap_top(int y, int anchor, int px) {
   int cap = v_cap(px);
   switch (anchor) {
     case V_ANCHOR_LINE: {
       int pitch = v_si("frame", v_fmt("type.pitch.%d", px), 0);
       if (pitch <= 0) { char b[96]; snprintf(b, sizeof b, "word: the frame has no type.pitch.%d", px); v_error(b); return y; }
-      return y + v_fdiv(pitch - cap, 2);
+      return v_cap_in(y, pitch, px);
     }
     case V_ANCHOR_CAP: return y;
     case V_ANCHOR_BASE: return y - cap;

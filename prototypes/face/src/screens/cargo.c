@@ -347,7 +347,7 @@ static void build_band(int t) {
     v_region("arrivalBand", LAYER_ART);
     for (int q = 0; q < whole + mended; q++) { v_name("band.probe"); v_slot(v_fmt("band.plate.%d", q), icon, NULL, px0 + q * pitch, py0, isz, isz, q < shownN); }
     const char *words = v_pstr(ARR ".plates.words");
-    if (*words) { int tx = px0 + (whole + mended) * pitch + gap - (pitch - isz); v_region("arrivalBand", LAYER_TYPE); if (t >= mend) v_run("band.words", words, tx, py0 + v_fdiv(isz - v_cap(wpx), 2), wpx, fcol("subject"), V_ALIGN_LEFT); }
+    if (*words) { int tx = px0 + (whole + mended) * pitch + gap - (pitch - isz); v_region("arrivalBand", LAYER_TYPE); if (t >= mend) v_run("band.words", words, tx, v_cap_in(py0, isz, wpx), wpx, fcol("subject"), V_ALIGN_LEFT); }
   }
   int nf = v_plen(ARR ".leaving.faces"); if (nf > 3) nf = 3;
   if (nf > 0 && t >= v_si(C, ARR ".band.leaving.from", 1500)) {

@@ -46,7 +46,7 @@ void word_list(void) {
       if (strcmp(al, "centre") == 0) nx -= v_half(pw);
       if (strcmp(cl, "place") == 0) { if (nx + pw > r[0] + r[2]) nx = r[0] + r[2] - pw; if (nx < r[0]) nx = r[0]; } }
     v_region("place.name", LAYER_PAINTED); v_plate(v_fmt("%s.plate", pid), C ".name", pw, nx, ny);
-    v_region("place.name", LAYER_TYPE); v_text(v_fmt("%s.name", pid), text, nx + v_half(pw - tw), ny + v_fdiv(nh - v_cap(npx), 2), tw, npx, name);
+    v_region("place.name", LAYER_TYPE); v_line_in(v_fmt("%s.name", pid), text, nx, pw, v_cap_in(ny, nh, npx), V_ANCHOR_CAP, npx, name);
     const char *grow = v_pstr(v_fmt("%s.grow", P));
     if (*grow) { v_region("place", LAYER_ART); v_sprite(v_fmt("%s.grow", pid), grow, r[0] + v_si(S, v_fmt("%s.%d", C ".grow.at", 0), 0), r[1] + v_si(S, v_fmt("%s.%d", C ".grow.at", 1), 0), v_si(S, v_fmt("%s.%d", C ".grow.at", 2), 0), v_si(S, v_fmt("%s.%d", C ".grow.at", 3), 0)); }
     const char *glint = v_pstr(v_fmt("%s.glint", P));
