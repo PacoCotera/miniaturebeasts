@@ -1,0 +1,130 @@
+# K4 gate (architect, 2026-10-23 09:04 Mexico City), 8d651c92
+
+What I measured, on a detached worktree at 8d651c92 with a private FACE_BUILD_DIR (both removed afterwards):
+- `build.sh all`: layout 386 cases, 0 differ; face_test 14785 checks, 0 failed; native hash 47e09df8.
+- Node records on all 181 golden states, captured on an instrumented copy outside the clone (id, kind, layer, region, box and ops hash per node).
+- Goldens `--check`, layer-check, the Station journey written to a private record file, and checks.mjs on that record.
+- A planted band break in the copy's bezel.c (every band row moved one row inward).
+
+I compared these against the builder's baselines at ee794f78, which has the same tree as station-gate e45b02a1 (293a29b7).
+
+- **K4 (T-20261023-276) as built: PASS.**
+  - **The components match the ticket's contracts.** Each one has a contract header (props, region and layer, node ids, return), is declared in vocab/words.h and is in CMakeLists.
+    - kit_panel: `(id, x, y, w, h, fill, edge, slot)`. fill NULL draws only the four edge rects; slot puts every node at (x, y) with no size.
+    - kit_bezel: `(id, x, y, w, h, r, fill, edge, bevel, band)`. Its source is the old build_roundPanel source byte for byte when there is no band. The insets are packed l, t, r, b, which is prim's order.
+    - kit_windowFrame: one composed node with the corners op, then the rrect op.
+    - kit_hairline: `(id, x, y, len, colour, vertical, dash)`. Solid draws a rect; dashed draws one composed node; hidden-dashed keeps its box with ops [].
+    - word_panel, word_hairline and build_roundPanel are gone from the tree. No screen calls prim_source any more. library.c is untouched.
+  - **The conversions:**
+    - All 14 word_panel calls are converted.
+    - The ribbon's empty state is now the kit_panel slot.
+    - Home's two bezels, four stations and console use kit_bezel, with the bevel drawn by kit_hairline under the same ids.
+    - Cargo's bay edge and panel.c's window frames use kit_windowFrame, with the same ops strings.
+    - The slot flag replaces the `bar ? 0 :` pairs only where edge is NULL. That is correct: where there is an edge, a slot would move nodes (see 2f).
+  - **Node records:** 181 states, 15767 nodes, ops hash included; 0 differ as sets and 0 differ in order against the builder's base run 2.
+    - My capture is byte-identical to the builder's after-capture.
+    - The builder's "13 differ in order" is its base run 1 against run 2, which is capture order, as in K3.2.
+  - **Type log:** 44 shots, 0 differ.
+  - **layer-check:** output byte-identical to the base ("layer check ok").
+  - **checks.mjs:** identical with ` · placeholders registered N` stripped. The whole file differs only in that field, on the 10 shots from page-vivarium on (143 now, 140 in the base). That is the known variant, and the base has it.
+  - Goldens match on all 10 screens. The journey printed "journey ok" with 0 FAIL lines.
+  - **The proof is sufficient for K4.** The planted band break fails 4 face_test checks: inside-only, row order, corner arc and side 1.
+  - **The builder's numbers for the parked sites are corrected here** (my count on the same capture):
+    - away_frame is 20 nodes in 4 states, not 8.
+    - roll.clash is 60 nodes in 15 states, all of no size, not 30.
+    - livingWindow's bezel is 279 nodes in 31 states, 124 of them bezel.edge.*. Its glass edges are a further 124 nodes in 31 states, all of no size.
+    - slot_outline is 176 composed nodes in the 32 Home states.
+    - panel.c build_bezel is 14 nodes in 7 states.
+- **2. The parked sites.** Every ruling keeps the goldens unchanged. Those marked K4.1 go in one fix round on build/ui-kit (2h).
+  - **a. home.c away_frame: (c), K4.1.**
+    - The code becomes `kit_panel("away", r[0], r[1], r[2], r[3], fill, edge, 0)`.
+    - Id map: away.fill → away; away.edge.t / .b / .l / .r → away.et / .eb / .el / .er. Boxes and order are the same.
+    - home.test.mjs:322 and :326 read the new ids, with the same boxes.
+    - 20 records are renamed. The ratchet no longer counts these five v_rect calls.
+  - **b. livingWindow.c: (c), K4.1.** It is a word, so the K7 ratchet does not count it.
+    - **The bezel.** It becomes `kit_panel("bezel", b[0], b[1], b[2], b[3], fill, edge, 0)`, then four kit_hairline calls with the same ids:
+      - bezel.light.t (b0+1, b1+1, len b2-2, horizontal);
+      - bezel.light.l (b0+1, b1+1, len b3-2, vertical);
+      - bezel.shade.b (b0+1, b1+b3-2, len b2-2, horizontal);
+      - bezel.shade.r (b0+b2-2, b1+1, len b3-2, vertical).
+
+      Id map: bezel.edge.t / .b / .l / .r → bezel.et / .eb / .el / .er (124 records). The light and shade lines are a single-word look made of kit parts. They are not a kit_panel prop.
+    - **The glass edges.** They become `kit_panel(region, g[0], g[1], g[2], g[3], NULL, COL("edge"), painted)`, the outline-only form.
+      - Id map: `<region>.edge.t / .b / .l / .r` → `<region>.et / .eb / .el / .er` (124 records, all habitat "glass").
+      - Hidden, .eb and .er move from (g0, g1+g3-1) and (g0+g2-1, g1) to (g0, g1), still with no size (62 records).
+  - **c. create.c roll.clash: (a), it stays screen-specific.** It is a 2 px state marker with no fill, on one screen, with no named next user. It is not an F3 site from now on. The K7 ratchet counts it, as part of create.c's baseline (rect_or's v_rect calls). No prop is added.
+  - **d. panel.c build_bezel: (b), K4.1.**
+    - **Why not the nine-slice form.** Moving the panel bezels to kit_bezel's nine-slice form would change the layer-check objects figure, so it is not a refactor.
+    - **The new form.** bezel.c gains a composed form beside kit_bezel, with its own contract header and a declaration in words.h:
+      - Signature: `void kit_bezelComposed(const char *id, int x, int y, int w, int h, int r, const char *fill, const char *edge, const char *bevel);`
+      - It draws one composed node `<id>` at (x, y, w, h). Its ops are `[["rrect",0,0,w,h,r,"<fill>","<edge or empty>"]`, then `,["h",r,1,w-2r,"<bevel>"]` when bevel is not NULL, then `]`.
+      - No band: a band is the nine-slice form's.
+      - Refused with v_error, and no node, when r < 1, w < 2r or h < 2r.
+      - A site uses one form.
+    - **panel.c:**
+      - It calls `kit_bezelComposed(v_fmt("panel.bezel.%d", i), r[0], r[1], r[2], r[3], rad, <bezels.fill>, <bezels.edge>, <bezels.bevel.colour>)`.
+      - Before the call it adds `if (v_si(PN, "incubate.bezels.bevel.inset", rad) != rad || v_si(PN, "incubate.bezels.bevel.dy", 1) != 1) v_error("panel: the bezel's bevel is the kit's (inset = radius, dy 1)");`. The values today are 10, 10 and 1, so the ops string is unchanged.
+    - **face_test:** the exact ops with and without a bevel, and the three refusals.
+  - **e. home_frame.c slot_outline: (b), K4.1.**
+    - kit_windowFrame keeps its signature. `ground` NULL now means no corners op: the ops are `[["rrect",0,0,w,h,radius,"","<edge>"]]`. This is one sentence in the header, plus a face_test case with the exact string.
+    - slot_outline is deleted, and the call becomes `kit_windowFrame(v_fmt("%s.slot.%d", key, i), sx, sy, sw, sh, <slot.radius>, NULL, <slot.edge>)`.
+    - The ops string is byte-identical, so the 176 ops hashes are unchanged.
+  - **f. Not parked, but the same rule (K4.1).** home_frame.c bezel_words's window becomes `kit_panel(v_fmt("%s.window", key), win[0], win[1], win[2], win[3], f, e, gone)`.
+    - Today the "gone" form leaves .eb at y-1 and .er at x-1, with sizes 0×1 and 1×0.
+    - The slot is the kit's one hidden form. 256 records, all of no size, in all 32 Home states.
+  - **g. The mapped proof (test tooling).** setcmp.mjs gains a third argument, map.json: `{"ids": {"<old>": "<new>", …}, "zero": ["<new id>", …]}`.
+    - Ids are the FNV-1a hash of v_id: h = 2166136261; for each byte, h ^= byte, then h *= 16777619 (32 bit).
+    - Step 1: in the before file only, each record whose id is fnv(old) takes fnv(new).
+    - Step 2: on both sides, a record whose id is fnv(z) for any z in "zero", and whose w × h is 0, has x, y, w and h set to 0. A record with area on either side is not normalised, so a shown box can never be masked.
+    - Step 3: compare as sets, and print the number of records each entry touched.
+    - The zero list holds the new ids: glass.et/.eb/.el/.er; vivarium.window and library.window with .et/.eb/.el/.er; top.rule; line.rule; bar.rule; glass.groundTop, vivarium.groundTop and window.groundTop.
+    - Expected: 0 differ as sets. Renamed: 20 + 124 + 124. Normalised: 124 + 256 + top.rule 140 + line.rule 140 + bar.rule 32 + groundTop 54.
+    - Every other K4.1 proof is K4's set, unchanged:
+      - goldens `--check`;
+      - layer-check byte-identical;
+      - checks.mjs identical with the placeholders field stripped;
+      - the type log byte-identical;
+      - both journeys, face_test 0 failed, `node --test` 0 failed, and both guards.
+
+      Every other site must have 0 records changed.
+- **3. The builder's choices.**
+  - **(1) Band geometry: the structure is accepted as built.**
+    - The band is drawn into the nine-slice source and adds no node.
+    - That side's inset is max(r, h + 1 + rule), so the band is always in the part drawn 1:1, never tiled or scaled.
+    - h is at most 200, so every inset fits its byte.
+    - h 0 gives the same source as band NULL.
+    - No screen wires a band until UI/UX answers the question below. That does not block K5.
+    - **UI/UX (look):** should a band start on the first row inside the edge, run h rows that follow the corner arcs, and end with a 1 px rule on its inner side? On a top band, should the bevel line lie over the band's first row?
+  - **(2) Hairline hidden: accepted as built.** A dashed rule is hidden by colour NULL: the same box, ops []. A solid rule is hidden by len 0, as any rect of no size, and its colour stays a palette name, so v_rect never sees NULL. The header already says this; nothing changes.
+  - **(3) v_scol_or / v_token: K4.1.** The K1 gate assigned them to K4, and the ticket did not carry them over. Following the ticket was right.
+    - **The helpers** (contract headers in vocab.h beside v_scol):
+      - `const char *v_scol_or(const char *spec, const char *path, const char *d)`: the string at path, or d when it is absent or "". A ring of 16 × 24 with a static unsigned counter.
+      - `const char *v_token(const char *spec, const char *name)`: `v_scol_or(spec, v_fmt("colours.%s", name), name)`.
+    - **panel.c:** col(n) → `v_token(F, n)`; rcol(p) → `v_token(F, v_scol_or(F, v_fmt(RP ".%s", p), "bone"))`; pcol(p) → `v_token(F, v_scol_or(PN, v_fmt("incubate.%s", p), "bone"))`. The three statics are deleted, and their 21 call sites are written inline.
+    - **cargo.c:** fcol(n) → `v_token("frame", n)` (2 sites), and fcol is deleted.
+    - **face_test:** v_scol_or present, absent and ""; v_token for a named token and for a bare name.
+    - **Cosmetic, same records:** the lines K4 touched use v_scol instead of spec_str into a buffer. These are cargo.c build_bay's g/e (regions.bay.corners and .edge) and home_frame.c bar_words's colours.chrome and colours.rule.
+  - **(4) The plain 1 px rules: K4.1.** face-ui-kit.md §3.2 lists them as absorbed by kit_hairline. Each site keeps its id, its box when shown, and its order:
+    - frame.c: top.rule `kit_hairline("top.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], c, 0, NULL)`, and line.rule the same at r[1].
+    - frame.c: top.sep.N and line.sep.N use `kit_hairline(id, x, y0, y1 - y0, c, 1, NULL)`.
+    - home_frame.c: bar.rule, as top.rule.
+    - screens.c: idle.strip.rule.
+    - specimen.c: specimen.cut.
+    - livingWindow.c: `<region>.groundTop`, with `painted ? 0 : ground[2]`.
+    - When hidden, these go from 0×0 to 0×1 at the same (x, y). That is the zero rule in 2g.
+    - **page.c's rule stays as it is.** It reads its height from the spec (`rule.h`, 1). It becomes kit_hairline when page.c is next touched (K6 or the Library tickets, as the K1 gate set for page.c's accessors), and that ticket removes `rule.h`.
+- **4. Merge and K5.**
+  - **Nothing blocks merging K4 onto station-gate now.** The parent's tree equals e45b02a1's. The commit is by Paco Cotera <paco@cotera.org> with no trailers; it touches 15 files, +238 −53. All checks are green. The builder reported the public guard at exit=0; I did not rerun it.
+  - **K4.1** runs on build/ui-kit from the merged tree, one ticket by itself (2a, b, d, e, f, g; 3.3; 3.4), then gate again.
+  - **K5 needs K4.1 merged first.** K5 touches home_frame.c, cargo.c, panel.c and home_builds.c, which are K4.1's files.
+  - **K5's baselines are captured on that merged tree:**
+    - node records with ops hashes;
+    - the type log;
+    - layer-check;
+    - checks.mjs with the placeholders field stripped;
+    - goldens.
+  - K5 compares with the mapped setcmp and an empty map. Any entry K5 needs is ruled first.
+  - Regions are compared as sets without the three animated positions (t274-275-gate.md).
+  - kit_nameTag draws its plate with kit_panel: the filled form, and the slot when it is a slot, as build_nameTag does now.
+
+Cleanup: the worktree is removed and pruned, my build and capture directories are deleted, and the clone is unchanged (build/ui-kit at 8d651c92, clean). /tmp/bake-c-fb4cjQ (14:32 UTC) is from a `node --test` run I did not make, so I left it.
