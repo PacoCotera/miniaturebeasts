@@ -85,14 +85,4 @@ int namer_focus(focus_target_t *out, int cap) {
   return n;
 }
 /* a key while the namer is open: ✓ and ← and the room keys say an intent for the namer's target (screen "namer"); the pad moves the ring by namer.json focus.graph and says `focus` */
-void namer_key(int code) {
-  char c[48]; snprintf(c, sizeof c, "%s", cur());
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) { screens_say("intent", c, verb); return; }
-  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
-  focus_target_t t[40]; int n = namer_focus(t, 40); int glen; const char *graph = spec_raw(N, "focus.graph", &glen); char err[200];
-  focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
-  int roomAt[4] = { 0, 0, 0, 0 }; char to[48]; int step = focus_move(g, t, n, c, dir, NULL, 0, roomAt, to, sizeof to); focus_graph_free(g);
-  if (step || strcmp(to, c) == 0) return;
-  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
-}
+void namer_key(int code) { screens_key_graph(code, N, "focus.graph", namer_focus, NULL, &(screens_keys_t){ .cur_path = "overlay.focus.cur" }); }

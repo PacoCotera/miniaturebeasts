@@ -204,7 +204,7 @@ void focus_fill(focus_target_t *t, const char *path, int i, const int box[4]) {
   if (box) { t->x = box[0]; t->y = box[1]; t->w = box[2]; t->h = box[3]; }
 }
 void screens_key_graph(int code, const char *spec, const char *graph_path, screens_focus_fn focus_fn, const char *default_cur, const screens_keys_t *opts) {
-  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0] && default_cur) snprintf(cur, sizeof cur, "%s", default_cur);
+  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur_at(opts->cur_path ? opts->cur_path : "focus.cur")); if (!cur[0] && default_cur) snprintf(cur, sizeof cur, "%s", default_cur);
   const char *verb = key_verb(code, !opts->no_back);
   if (verb) { screens_say("intent", cur, verb); return; }
   int dir = key_dir(code); if (dir < 0 || !graph_path || !focus_fn) return;

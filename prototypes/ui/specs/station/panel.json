@@ -25,7 +25,11 @@
  ],
  "focus": {
   "initial": "the first card that is not dimmed (the option the player came for, on the left); if every card is dimmed, the way-out card",
-  "rule": "◀ ▶ the previous and next card, stopping at the ends; ▲ ▼ do nothing; the graph is not a spec graph: the face walks the props' targets in order",
+  "rule": "◀ ▶ the previous and next card, stopping at the ends; ▲ ▼ do nothing (the graph below)",
+  "graph": {
+   "fallback": "none",
+   "card": { "axis": "horizontal", "up": "none", "down": "none" }
+  },
   "targets": {
    "card": {
     "group": "card",

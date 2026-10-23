@@ -257,14 +257,5 @@ int panel_focus(focus_target_t *out, int cap) {
   }
   return n;
 }
-/* a key while the panel is open: ✓ and ← and the room keys say an intent for the focused card (screen "panel"); ◀ ▶ move to the previous and next card and stop at the ends (a dimmed card can be focused); ▲ ▼ do nothing */
-void panel_key(int code) {
-  char c[48]; snprintf(c, sizeof c, "%s", v_focus_cur_at("overlay.focus.cur"));
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) { screens_say("intent", c, verb); return; }
-  int step = code == 20 ? -1 : code == 19 ? 1 : 0; if (!step) return;
-  focus_target_t t[MAXCARDS + 1]; int n = panel_focus(t, MAXCARDS + 1), at = -1;
-  for (int i = 0; i < n; i++) if (strcmp(t[i].id, c) == 0) at = i;
-  int to = at + step; if (at < 0 || to < 0 || to >= n) return;
-  v_focus_set(t[to].id); screens_redraw(); screens_say("focus", t[to].id, NULL);
-}
+/* a key while the panel is open: ✓ and ← and the room keys say an intent for the focused card (screen "panel"); ◀ ▶ move to the previous and next card and stop at the ends (a dimmed card can be focused); ▲ ▼ do nothing: panel.json focus.graph */
+void panel_key(int code) { screens_key_graph(code, "panel", "focus.graph", panel_focus, NULL, &(screens_keys_t){ .cur_path = "overlay.focus.cur" }); }
