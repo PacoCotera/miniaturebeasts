@@ -42,7 +42,7 @@ void word_page(const char *key) {
   } else if (spec_len("props", v_fmt("%s.heading", P)) >= 0 && hasH) {
     char word[V_STR]; snprintf(word, sizeof word, "%s", v_pstr(v_fmt("%s.heading.word", P)));
     v_name(reg); layer(v_fmt("%s.emblem", key), rx + H0, ry + H1, 24, 24, v_pstr(v_fmt("%s.heading.emblem", P)));
-    int ww = v_measure(word, 20); v_region(reg, LAYER_TYPE); v_text(v_fmt("%s.word", key), word, rx + H0 + 32, ry + H1 + (24 - v_cap(20) + 2) / 2, ww, 20, heading);
+    v_region(reg, LAYER_TYPE); v_line_at(v_fmt("%s.word", key), word, rx + H0 + 32, v_cap_in(ry + H1, 24, 20), V_ANCHOR_CAP, 20, heading, V_ALIGN_LEFT);
   }
   int cells[LAYOUT_CELLS][4], pic[2], ncell = layout_page_grid_at(S, base, rx, ry, cells_n, cells, pic);
   if (sexists(base, "rule") && spec_len("props", v_fmt("%s.heading", P)) >= 0 && !has(pod)) {

@@ -10,10 +10,9 @@ void word_ribbon(const char *id, const int rect[4], const char *text, int px, in
   if (!*text) {   /* no words: the same two nodes stay, with no size (the text where the shown line stands, so the refresh that shows the ribbon is the panel's box), so showing the ribbon later never changes the order of the screen's nodes */
     v_layer(LAYER_CHROME); v_rect(pid, rect[0], rect[1], 0, 0, fill);
     { static const char *E[] = { "et", "eb", "el", "er" }; for (int i = 0; i < 4; i++) { char n[96]; snprintf(n, sizeof n, "%s.%s", pid, E[i]); v_rect(n, rect[0], rect[1], 0, 0, edge); } }   /* word_panel's five nodes, every one at the corner (word_panel's far edges would stand a pixel outside it) */
-    v_layer(LAYER_TYPE); v_text(tid, "", rect[0] + v_half(rect[2]), rect[1] + v_fdiv(rect[3] - v_cap(px), 2), 0, px, textColour); return;
+    v_layer(LAYER_TYPE); v_line_in(tid, "", rect[0], rect[2], v_cap_in(rect[1], rect[3], px), V_ANCHOR_CAP, px, textColour); return;
   }
   v_layer(LAYER_CHROME); word_panel(pid, rect[0], rect[1], rect[2], rect[3], fill, edge);
   v_clip(text, rect[2] - 2 * pad, px, fit, sizeof fit);
-  int tw = v_measure(fit, px);
-  v_layer(LAYER_TYPE); v_text(tid, fit, rect[0] + v_half(rect[2] - tw), rect[1] + v_fdiv(rect[3] - v_cap(px), 2), tw, px, textColour);
+  v_layer(LAYER_TYPE); v_line_in(tid, fit, rect[0], rect[2], v_cap_in(rect[1], rect[3], px), V_ANCHOR_CAP, px, textColour);
 }

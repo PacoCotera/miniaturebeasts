@@ -61,7 +61,7 @@ void word_rail(const char *marksSpec) {
       char text[V_STR]; snprintf(text, sizeof text, "%s", v_pstr(v_fmt("regions.rail.tabs.%d.word", i)));
       int ww = v_measure(text, 16), bw = em0 + gap + ww, bx = x + labelC - v_half(bw), wx = bx + em0 + gap;
       if (has(emblem)) v_sprite(v_fmt("%s.emblem", tid), emblem, bx, labelY, em0, em1);
-      v_region("rail.tab", LAYER_TYPE); v_text(v_fmt("%s.word", tid), text, wx, labelY + v_half(em1 - v_cap(16)), ww, 16, word);
+      v_region("rail.tab", LAYER_TYPE); v_line_at(v_fmt("%s.word", tid), text, wx, v_cap_in(labelY, em1, 16), V_ANCHOR_CAP, 16, word, V_ALIGN_LEFT);
       pipCx = x + pipsC;
     } else {
       if (has(emblem)) v_sprite(v_fmt("%s.emblem", tid), emblem, x + cEmC - em0 / 2, cEmY, em0, em1);

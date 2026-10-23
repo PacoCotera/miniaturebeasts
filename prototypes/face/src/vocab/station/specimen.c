@@ -21,9 +21,6 @@ static int has(const char *id) { return id && *id; }
 /* a layer of the room: the picture at its rectangle when the face has it */
 static void layer(const char *id, const int r[4], const char *asset) { if (has(asset)) v_sprite(id, asset, r[0], r[1], r[2], r[3]); }
 
-/* one line of text centred on x, its box the run's own; y is the cap top */
-static void centred(const char *id, const char *text, int cx, int y, int px, const char *col) { int w = v_measure(text, px); v_text(id, text, cx - v_half(w), y, w, px, col); }
-static int cap_top(int px, int y, int pitch) { return y + v_fdiv(pitch - v_cap(px), 2); }
 
 static int bench_present(void) { for (int i = 0; i < v_plen("regions.bench.room"); i++) if (wire_has_asset(v_pstr(v_fmt("regions.bench.room.%d", i)))) return 1; return 0; }
 
@@ -31,7 +28,7 @@ static int bench_present(void) { for (int i = 0; i < v_plen("regions.bench.room"
 static void caption(const char *region, const char *base, const char *key, const char *text) {
   char path[120]; snprintf(path, sizeof path, "%s.%s", base, key); int r[4], px = si(path, "px", 16); char col[24]; srect(path, "rect", r);
   spec_str(S, v_fmt("%s.colour", path), col, sizeof col);   /* a palette name */
-  v_region(region, LAYER_TYPE); centred(v_fmt("specimen.%s", region), text, r[0] + v_half(r[2]), cap_top(px, r[1], r[3]), px, col);
+  v_region(region, LAYER_TYPE); v_line_at(v_fmt("specimen.%s", region), text, r[0] + v_half(r[2]), v_cap_in(r[1], r[3], px), V_ANCHOR_CAP, px, col, V_ALIGN_CENTRE);
 }
 /* the pod's size: its class's box in the spec (classes.pod.<class>), the class named by the props */
 int word_pod_size(int out[2]) {
@@ -70,14 +67,14 @@ void word_specimen(const char *base) {
     char text[V_STR]; snprintf(text, sizeof text, "%s", nm); int npx = si(base, "name.px", 20), ncx = si(base, "name.centre", 256), plateH = si(base, "name.plate.h", 24);
     int tw = v_measure(text, npx), pw = layout_plate_width(S, v_fmt("%s.name", base), tw);
     v_region("name", LAYER_PAINTED); v_plate("specimen.plate", v_fmt("%s.name", base), pw, ncx - v_half(pw), nrect[1]); (void)plateH;
-    v_region("name", LAYER_TYPE); centred("specimen.name", text, ncx, cap_top(npx, nrect[1], nrect[3]), npx, name);
+    v_region("name", LAYER_TYPE); v_line_at("specimen.name", text, ncx, v_cap_in(nrect[1], nrect[3], npx), V_ANCHOR_CAP, npx, name, V_ALIGN_CENTRE);
   }
   const char *ribbon = v_pstr("regions.specimen.ribbon"); anim_state_t ra_; char rpid[48]; snprintf(rpid, sizeof rpid, "%s", v_pstr("regions.specimen.pod.id"));
   if (has(ribbon) && anim_get(ANIM_RIBBON, rpid, &ra_) && ra_.elapsed >= ra_.from) {   /* a ribbon in the origin's place, from `from` ms into its event */
     int rr[4]; srect(base, "ribbon.rect", rr); int rpx = si(base, "ribbon.px", 20); char fill[24], edge[24], rtext[24];
     colour("ribbonFill", fill, sizeof fill); colour("ribbonEdge", edge, sizeof edge); colour("ribbonText", rtext, sizeof rtext);
     v_region("ribbon", LAYER_CHROME); word_panel("specimen.ribbon", rr[0], rr[1], rr[2], rr[3], fill, edge);
-    v_region("ribbon", LAYER_TYPE); centred("specimen.ribbon.text", ribbon, rr[0] + v_half(rr[2]), rr[1] + v_fdiv(rr[3] - v_cap(rpx), 2), rpx, rtext);
+    v_region("ribbon", LAYER_TYPE); v_line_at("specimen.ribbon.text", ribbon, rr[0] + v_half(rr[2]), v_cap_in(rr[1], rr[3], rpx), V_ANCHOR_CAP, rpx, rtext, V_ALIGN_CENTRE);
   } else if (spec_len(S, v_fmt("%s.origin", base)) >= 0) {
     int orr[4]; srect(base, "origin.rect", orr); int opx = si(base, "origin.px", 16), pitch = si(base, "origin.pitch", 20), maxLines = si(base, "origin.lines", 2), line = 0;
     char ostr[V_STR]; v_region("origin", LAYER_TYPE);

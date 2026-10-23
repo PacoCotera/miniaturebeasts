@@ -69,6 +69,8 @@ int v_dither_window(const char *id, const char *fromAsset, int fsx, int fsy, con
 /* v_cap_top(y, anchor, px): the cap top of a line of Inter at px whose anchor row is at y, the one rule for it (cap = v_cap(px)). Only V_ANCHOR_LINE needs the frame's type.pitch.<px> (16: 20, 20: 28, 28: 36); a px with none is refused with an error and y is returned.
    The other anchors take any px. Reads: the frame spec only. Draws no node. */
 int v_cap_top(int y, int anchor, int px);
+/* v_cap_in(top, h, px): the cap top of a line of Inter at px centred in a box h tall whose top is `top`: top + v_fdiv(h - v_cap(px), 2) (the floor, so the same box and px always give the same row; a cap taller than the box gives a row above it). Any px. Reads nothing, draws nothing. The one rule for text centred in the box of the art it sits on (a plate, a ribbon, a tab, an icon), to be given to v_line_at or v_line_in with V_ANCHOR_CAP. */
+int v_cap_in(int top, int h, int px);
 /* v_line_at(id, s, x, y, anchor, px, colour, align): a string of Inter at px as one text node `id`, its cap top v_cap_top(y, anchor, px). align: V_ALIGN_LEFT puts the line's left edge at x, V_ALIGN_CENTRE centres it on x (the left edge is x - v_half(width)),
    V_ALIGN_RIGHT ends it at x. V_ANCHOR_LINE with a px that has no type.pitch is refused with an error and nothing is drawn (returns 0). Region and layer: the caller's. Node id: v_id(id), one node, with the width of the string (no size when s is ""). Returns the width. */
 int v_line_at(const char *id, const char *s, int x, int y, int anchor, int px, const char *colour, int align);

@@ -103,3 +103,13 @@ test("no page cell ends right of x 952 for any frame of S01 to S16, and every re
     void chapterIndex;
   }
 });
+
+test("the heading word's cap top is the middle of its 24 px box, on a one-row and a two-row page (v_cap_in(box top, 24, 20))", { skip }, async () => {
+  const LABEL_ABOVE_CAP = 7, CAP20 = 14, seen = new Set();   // a 20 px word's label box starts 7 px above its cap top; its cap is 14 px
+  for (const sp of SPECIES) for (let ci = 0; ci < frameOf(sp).chapters.length; ci++) {
+    const sc = scene(sp, { ci }), rows = podsProps(sc.m, podsSpec, frameSpec).props.regions.page.cells.length > 4 ? 2 : 1;
+    const { lg } = await draw(sc), emblem = at(lg, "page", "art")[0]?.rect, word = at(lg, "page", "type")[0]?.rect; if (!emblem || !word) continue;
+    assert.equal(word[1] + LABEL_ABOVE_CAP, emblem[1] + Math.floor((24 - CAP20) / 2), `${sp} chapter ${ci}, ${rows} row(s): the cap top is box top + 5 (box top ${emblem[1]})`); seen.add(rows);
+  }
+  assert.deepEqual([...seen].sort(), [1, 2], "the frames have both a one-row and a two-row chapter page");
+});
