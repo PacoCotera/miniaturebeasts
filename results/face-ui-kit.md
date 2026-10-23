@@ -90,6 +90,8 @@ A component never reads the save or another screen's spec, decides no content, a
 | `v_composed(id, x, y, w, h, ops)` | F5 |
 | `v_slot(id, asset, fallback, x, y, w, h, shown)`: a picture, else the same node with no size; "has" means the host has sent it, one definition | F7's 29 sites |
 | `v_line(id, s, x, lineTop, px, colour, align)` → width: the cap-top rule and the alignment, with the pitch read from a frame token `type.pitch.{16,20,28}` instead of literals | F6, and the code-line copies at create.c:156, incubator.c:182, habitat.c:188 |
+| `v_cap_top(y, anchor, px)`, `v_line_at(id, s, x, y, anchor, px, colour, align)`, `v_line_in(id, s, bx, bw, y, anchor, px, colour)` (amended at K3.1: `v_line` is gone; callers write `v_line_at(…, V_ANCHOR_LINE, …)`; anchors LINE, CAP, BASE, MID) | the cap-top arithmetic at ~45 sites |
+| `v_cap_in(top, h, px)` → `top + v_fdiv(h - v_cap(px), 2)` (amended at K3.2): the one rule for text centred in its art's box (a plate, a ribbon, a tab, an icon), given to `v_line_at`/`v_line_in` with `V_ANCHOR_CAP` | specimen.c `cap_top()`, the box-centring sites in list, ribbon, cargo, rail, page |
 | `v_anim_level(anim, ms)`, `v_lift_at(spec, path, ms)`, `v_loop_cell(spec, path, ms, minTick)`, `v_bayer_ops(...)` | F14. The `minTick` argument keeps habitat's present behaviour, so the change stays golden-neutral. Whether habitat should gain the one-tick minimum goes to UI/UX, not into the refactor |
 | `screens_key_graph(spec, graphPath, focusFn, defaultCur, opts)` and `focus_fill(t, path, i, box)` in `screens/screens.c` | F1, F2. Options: no back key (home_frame), focus.resolve, roomAt, steps on or off |
 
