@@ -7,7 +7,7 @@ import * as S from "../state.mjs";
 import { plateMasterReq, kPct } from "../stamplook.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
-import { slot } from "./pods-props.mjs";
+import { slotAt as slot } from "./requests.mjs";
 import { choosePod } from "../intents/incubator.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { relitJuvenile } from "./hatch-props.mjs";

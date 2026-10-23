@@ -10,15 +10,14 @@ import { wordsOf, mibiReq } from "./home-props.mjs";
 import { shellSpecies } from "./pods-props.mjs";
 import { readyList, MATS } from "../cargo-run.mjs";
 import { fill, spell, plural } from "./words.mjs";
-import { req as reqOf, slot as slotOf, ph as phOf } from "./requests.mjs";
+import { req as reqOf, slot as slotOf, ph as phOf, slotAt } from "./requests.mjs";
 
-const SPELL = ["no", "one", "two", "three", "four", "five", "six"];   // parked: a count above six reads "many" here, the shared spell gives its digits
 // The crates ready to open in the bay: the walk crates while docked.
 export const walkCrates = (st, sv, docked) => (docked ? S.bayCrates(st, sv) : []);
 
 export function cargoBuild(m, spec, home, frame) {
   const { st, sv, settings } = m, c = m.ui.cargo, requests = [], req = reqOf(requests);
-  const R = spec.regions, docked = !!m.docked, state = c.state, Sg = spec.strings, spelled = (n) => SPELL[n] ?? "many";
+  const R = spec.regions, docked = !!m.docked, state = c.state, Sg = spec.strings, spelled = (n) => spell(n, "many");
   const slot = slotOf(req, "the signed master or its cut (cargo.json, cargo-cuts.py)");
   const ph = phOf(req, "its master (cargo.json placeholders)");
   const sizeOfSlice = (id) => id.match(/(\d+)x(\d+)(?:-done)?$/).slice(1, 3).map(Number);
@@ -58,7 +57,7 @@ export function cargoBuild(m, spec, home, frame) {
   }
   if (sitting) {
     const mb = state === "bay" ? S.mibiById(st, sitting.sc.mibiId) : S.mibiById(st, sitting.portrait.mibi), dg = state === "bay" ? (mb && mb.portrait && mb.portrait.digest) : sitting.portrait.digest;
-    props.sittingCrate = { id: sitting.id, mibi: mb ? mb.id : (state === "bay" ? sitting.sc.mibiId : sitting.portrait.mibi), frame: req({ kind: "slot", id: "sitting-frame-portrait-48x40:48x40", master: "sitting-frame-portrait-48x40", size: R.display.portrait.frameSize, until: "the sitting frame master (AD)" }), picture: dg ? req({ kind: "portrait", id: `portrait:${String(dg).slice(0, 16)}:40x30`, digest: dg, size: R.display.portrait.picture }) : "" };
+    props.sittingCrate = { id: sitting.id, mibi: mb ? mb.id : (state === "bay" ? sitting.sc.mibiId : sitting.portrait.mibi), frame: slotAt(req, "sitting-frame-portrait-48x40", [0, 0, ...R.display.portrait.frameSize], "the sitting frame master (AD)"), picture: dg ? req({ kind: "portrait", id: `portrait:${String(dg).slice(0, 16)}:40x30`, digest: dg, size: R.display.portrait.picture }) : "" };
   }
   const geoSlices = { recess: pic(geo.recess), shut: pic(geo.shut), edge: pic(geo.edge.slice), gilt: four ? pic(B.four.portrait.gilt.slice) : "" };
   const regions = props.regions;
