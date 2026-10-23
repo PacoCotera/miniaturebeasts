@@ -12,6 +12,7 @@
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
+#include "../layout/layout.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -81,6 +82,12 @@ static void build_plates(int docked, const char *cur) {
 }
 
 /* ---- the Mend module: the switch (track, knob), the dock mark and the plates it leaves whole ---- */
+typedef struct { int count, whole, dy; const char *whole_pic, *gone_pic; } switch_t;
+static void switch_plate(int i, const int b[4], void *ctx) {   /* the Mend switch's meaning: the plates it leaves whole, then gone; a place the tier lacks keeps its node with no size */
+  const switch_t *s = ctx; char id[24]; snprintf(id, sizeof id, "switch.plate.%d", i); int y = b[1] + s->dy;
+  if (i >= s->count) { v_name("switch"); v_sprite_hidden(id, s->whole_pic, b[0], y); return; }
+  v_name("switch"); v_slot(id, i < s->whole ? s->whole_pic : s->gone_pic, s->whole_pic, b[0], y, b[2], b[3], 1);
+}
 static void build_switch(const char *cur, int cnt_cap) {
   int r[4]; v_srect(S, "regions.switch.rect", r); int dy = -lift_of("switch", cur), mx = r[0], my = r[1] + dy;
   char state[96], lamp[96]; ps("regions.switch.state", state); ps("regions.switch.lamp", lamp);
@@ -98,12 +105,8 @@ static void build_switch(const char *cur, int cnt_cap) {
   v_name("switch"); v_slot("switch.track", tk, tk, tx, ty, v_sk(S, "regions.switch.toggle.size", 0), v_sk(S, "regions.switch.toggle.size", 1), 1);
   v_name("switch"); v_slot("switch.knob", kn, kn, mx + kx, my + v_si(S, "regions.switch.toggle.knob.y", 56), v_sk(S, "regions.switch.toggle.knob.size", 0), v_sk(S, "regions.switch.toggle.knob.size", 1), 1);
   v_name("switch"); v_slot("switch.dock", dk, dk, mx + v_sk(S, "regions.switch.meaning.dock.at", 0), my + v_sk(S, "regions.switch.meaning.dock.at", 1), v_sk(S, "regions.switch.meaning.dock.size", 0), v_sk(S, "regions.switch.meaning.dock.size", 1), 1);
-  int ax = mx + v_sk(S, "regions.switch.meaning.plates.at", 0), ay = my + v_sk(S, "regions.switch.meaning.plates.at", 1), pitch = v_si(S, "regions.switch.meaning.plates.pitch", 24), iw = v_sk(S, "regions.switch.meaning.plates.icon", 0), ih = v_sk(S, "regions.switch.meaning.plates.icon", 1);
-  for (int i = 0, most = longest(NULL); i < most; i++) {
-    char id[24]; snprintf(id, sizeof id, "switch.plate.%d", i);
-    if (i >= count) { v_name("switch"); v_sprite_hidden(id, ws, ax + i * pitch, ay); continue; }
-    v_name("switch"); v_slot(id, i < whole ? ws : gs, ws, ax + i * pitch, ay, iw, ih, 1);
-  }
+  switch_t sp = { count, whole, dy, ws, gs };
+  kit_tiles(S, "regions.switch.meaning.plates", longest(NULL), switch_plate, &sp, NULL);
 }
 
 /* ---- the Upgrade module: the socket, the part, and what the upgrade adds ---- */
@@ -114,6 +117,8 @@ static void add_piece(const char *id, const char *key, int x, int y, int w, int 
   v_name("slot"); if (has(plain)) v_sprite_hidden(id, plain, x, y);   /* the settled piece's node stays, no size, while the dither draws */
   v_name("slot"); v_dither(v_fmt("%s.dither", id), nw, plain, level, x, y, w, h);
 }
+typedef struct { const char *key, *idp; int n, nw, dy, level; } adds_t;
+static void adds_piece(int i, const int b[4], void *ctx) { const adds_t *a = ctx; add_piece(v_fmt("%s.%d", a->idp, i), a->key, b[0], b[1] + a->dy, b[2], b[3], i >= a->n - a->nw, a->level); }
 static void build_slot(const char *cur) {
   int r[4]; v_srect(S, "regions.slot.rect", r); int dy = -lift_of("slot", cur), mx = r[0], my = r[1] + dy;
   char state[96], lamp[96]; ps("regions.slot.state", state); ps("regions.slot.lamp", lamp);
@@ -129,11 +134,10 @@ static void build_slot(const char *cur) {
   int py = armed ? v_sk(S, "regions.slot.part.armedAt", 1) + drop : v_sk(S, "regions.slot.part.at", 1);   /* armed: 8 px out of the socket; fitted and the rest: seated */
   v_name("slot"); v_slot("slot.part", pt, pt, mx + v_sk(S, "regions.slot.part.at", 0), my + py, v_sk(S, "regions.slot.part.size", 0), v_sk(S, "regions.slot.part.size", 1), 1);
   /* what it adds: the plain slices, the one each adds over tier 1 in its `-new` slice until it is fitted (the adds are never dimmed) */
-  int ax, ay, pitch, n, nw;
-  ax = mx + v_sk(S, "regions.slot.adds.pods.at", 0); ay = my + v_sk(S, "regions.slot.adds.pods.at", 1); pitch = v_si(S, "regions.slot.adds.pods.pitch", 24); n = v_si(S, "regions.slot.adds.pods.count", 3); nw = v_si(S, "regions.slot.adds.pods.new", 1);
-  for (int i = 0; i < n; i++) add_piece(v_fmt("slot.pod.%d", i), "pods", ax + i * pitch, ay, v_sk(S, "regions.slot.adds.pods.icon", 0), v_sk(S, "regions.slot.adds.pods.icon", 1), i >= n - nw, level);
-  ax = mx + v_sk(S, "regions.slot.adds.plates.at", 0); ay = my + v_sk(S, "regions.slot.adds.plates.at", 1); pitch = v_si(S, "regions.slot.adds.plates.pitch", 24); n = v_si(S, "regions.slot.adds.plates.count", 4); nw = v_si(S, "regions.slot.adds.plates.new", 1);
-  for (int i = 0; i < n; i++) add_piece(v_fmt("slot.plate.%d", i), "plates", ax + i * pitch, ay, v_sk(S, "regions.slot.adds.plates.icon", 0), v_sk(S, "regions.slot.adds.plates.icon", 1), i >= n - nw, level);
+  adds_t pods = { "pods", "slot.pod", v_si(S, "regions.slot.adds.pods.count", 3), v_si(S, "regions.slot.adds.pods.new", 1), dy, level };
+  kit_tiles(S, "regions.slot.adds.pods", pods.n, adds_piece, &pods, NULL);
+  adds_t plates = { "plates", "slot.plate", v_si(S, "regions.slot.adds.plates.count", 4), v_si(S, "regions.slot.adds.plates.new", 1), dy, level };
+  kit_tiles(S, "regions.slot.adds.plates", plates.n, adds_piece, &plates, NULL);
   add_piece("slot.reach", "reach", mx + v_sk(S, "regions.slot.adds.reach.at", 0), my + v_sk(S, "regions.slot.adds.reach.at", 1), v_sk(S, "regions.slot.adds.reach.size", 0), v_sk(S, "regions.slot.adds.reach.size", 1), 1, level);
   add_piece("slot.deep", "deep", mx + v_sk(S, "regions.slot.adds.deep.at", 0), my + v_sk(S, "regions.slot.adds.deep.at", 1), v_sk(S, "regions.slot.adds.deep.size", 0), v_sk(S, "regions.slot.adds.deep.size", 1), 1, level);
 }

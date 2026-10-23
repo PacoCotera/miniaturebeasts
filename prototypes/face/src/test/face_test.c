@@ -180,8 +180,8 @@ static void price_width(void) {
 /* the derived rules (layout.json, made from ui/specs/derive.mjs): the C rules give the same integers for every case */
 static void layout_vectors(const char *dir, const char *specs) {
   char path[512]; long len; char *js;
-  static const char *FILES[] = { "frame", "pods", "incubator", "vivarium", "habitat" };
-  for (int i = 0; i < 5; i++) {
+  static const char *FILES[] = { "frame", "pods", "incubator", "vivarium", "habitat", "home", "cargo", "namer", "bench" };
+  for (int i = 0; i < 9; i++) {
     snprintf(path, sizeof path, "%s/%s.json", specs, FILES[i]); js = slurp(path, &len);
     if (!js || spec_load(FILES[i], js, (size_t)len) < 0) { check(0, path, js ? spec_error() : "cannot read"); free(js); return; }
     free(js);
@@ -305,6 +305,9 @@ static uint32_t kpx(const uint8_t *px, int W, int x, int y) { const uint8_t *q =
 #define KB 0x00445566u
 #define KC 0x00778899u
 #define KD 0x00aabbccu
+typedef struct { int n; int i[8]; int b[8][4]; } kt_rec_t;
+static void kt_rec(int i, const int box[4], void *ctx) { kt_rec_t *r = ctx; if (r->n < 8) { r->i[r->n] = i; memcpy(r->b[r->n], box, 4 * sizeof(int)); } r->n++; }
+static int ktext(int x, int w) { int b[4]; return kbox("nameTag.text", b) == FN_TEXT && b[0] == x && b[2] == w; }   /* the name's node: its left edge and width (its height is the font's) */
 static void kit_words(void) {
   face_init(); prim_palette_add("kitA", KA); prim_palette_add("kitB", KB); prim_palette_add("kitC", KC); prim_palette_add("kitD", KD);
   /* kit_panel: the fill and the four edges, in that order, the edge rows inside the box */
@@ -363,6 +366,37 @@ static void kit_words(void) {
   check(strcmp(cb, "[[\"rrect\",0,0,200,90,10,\"kitA\",\"kitB\"]]") == 0, "kit_bezelComposed: no bevel, the rrect op alone", cb);
   check(strcmp(cc, "[[\"rrect\",0,0,200,90,10,\"kitA\",\"\"],[\"h\",10,1,180,\"kitC\"]]") == 0, "kit_bezelComposed: edge NULL is an empty edge", cc);
   check(kabsent("kc.r") && kabsent("kc.w") && kabsent("kc.h"), "kit_bezelComposed: a radius under 1, a width under 2r and a height under 2r make no node", "");
+  /* kit_tiles: the callback once for each tile in order at the list's box, the form that holds n, a refusal draws nothing */
+  { static const char KT[] = "{\"l\":{\"forms\":{\"a\":{\"upTo\":2,\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]},\"b\":{\"upTo\":4,\"first\":[0,0,4,8],\"pitch\":[5,0],\"grid\":[4,1]}}},\"p\":{\"first\":[1,2,3,4],\"pitch\":[10,20],\"grid\":[2,2]}}";
+    spec_load("ktile", KT, sizeof KT - 1);
+    kt_rec_t rec; int bx[8][4], r;
+    #define KT_RUN(list, cnt, boxes) (memset(&rec, 0, sizeof rec), r = kit_tiles("ktile", list, cnt, kt_rec, &rec, boxes))
+    KT_RUN("l", 2, bx); check(r == 2 && rec.n == 2 && rec.b[0][0] == 0 && rec.b[1][0] == 10 && rec.b[1][2] == 8 && bx[1][0] == 10 && bx[1][3] == 8, "kit_tiles: two tiles take the form of two, the boxes handed out as they are drawn", "");
+    KT_RUN("l", 3, NULL); check(r == 4 && rec.n == 3 && rec.b[0][2] == 4 && rec.b[2][0] == 10 && rec.i[0] == 0 && rec.i[1] == 1 && rec.i[2] == 2, "kit_tiles: three tiles take the form of four, called in order, a NULL boxes is allowed", "");
+    KT_RUN("l", 0, NULL); check(r == 2 && rec.n == 0, "kit_tiles: none is drawn and is not a refusal", "");
+    KT_RUN("l", 5, NULL); check(r == -1 && rec.n == 0, "kit_tiles: a count no form holds is refused and draws nothing", "");
+    KT_RUN("l", -1, NULL); check(r == -1 && rec.n == 0, "kit_tiles: a count below none is refused", "");
+    KT_RUN("p", 4, bx); check(r == 0 && rec.n == 4 && bx[3][0] == 11 && bx[3][1] == 22 && bx[3][2] == 3 && bx[3][3] == 4 && bx[2][0] == 1 && bx[2][1] == 22, "kit_tiles: a list with no forms is its own first, pitch and grid (a 2 x 2 grid, row-major)", "");
+    #undef KT_RUN
+  }
+  /* kit_nameTag: six nodes in a fixed order, centred on the anchor, 8 px inside the window, over the anchor by its rule, the width by the plate rule */
+  { static const char KG[] = "{\"regions\":{\"glass\":{\"rect\":[0,0,400,300]},\"nameTag\":{\"h\":24,\"px\":16,\"plate\":{\"min\":48,\"max\":96,\"pad\":8,\"round\":8}}}}";
+    spec_load("ktag", KG, sizeof KG - 1);
+    int tw = v_measure("Moss", 16), want = (tw + 16 + 7) / 8 * 8; if (want < 48) want = 48; if (want > 96) want = 96;
+    int a[4] = { 150, 100, 100, 60 }, al[4] = { -20, 100, 20, 60 }, ar[4] = { 390, 100, 20, 60 }, o[7][4], cnt = 0, okp = 0, oks = 0;
+    #define KTAG(k, anc, yb, yo, rl, sl) do { prim_begin(); n0 = table_nodes(); kit_nameTag("ktag", "regions.glass", "Moss", anc, yb, yo, rl, sl, "kitA", "kitB", "kitC", o[k]); n1 = table_nodes(); \
+      if (k == 0) { cnt = n1 - n0; okp = kat("nameTag", FN_RECT, o[0][0], 180, want, 24) && kat("nameTag.et", FN_RECT, o[0][0], 180, want, 1) && kat("nameTag.er", FN_RECT, o[0][0] + want - 1, 180, 1, 24) && ktext(o[0][0] + (want - tw + 1) / 2, tw); } \
+      if (k == 6) oks = n1 - n0 == 2 && kat("nameTag", FN_RECT, o[6][0], 180, 0, 0) && kabsent("nameTag.et") && ktext(o[6][0] + (want - tw + 1) / 2, 0); \
+      prim_end(); } while (0)
+    KTAG(6, a, 180, 60, KIT_TAG_AUTO, 1); KTAG(0, a, 180, 60, KIT_TAG_AUTO, 0); KTAG(1, a, 290, 60, KIT_TAG_AUTO, 0); KTAG(2, a, 180, 60, KIT_TAG_OVER, 0); KTAG(3, a, 290, 60, KIT_TAG_BELOW, 0);
+    KTAG(4, al, 180, 60, KIT_TAG_AUTO, 0); KTAG(5, ar, 180, 60, KIT_TAG_AUTO, 0);
+    #undef KTAG
+    check(cnt == 4 && okp, "kit_nameTag: the four edges join the slot's fill and name (six nodes in all), at the box the plate rule gives", "");
+    check(o[0][0] == 200 - want / 2 && o[0][1] == 180 && o[0][2] == want && o[0][3] == 24, "kit_nameTag: centred on the anchor, the top at yBelow", "");
+    check(o[1][1] == 60 && o[2][1] == 60 && o[3][1] == 290, "kit_nameTag: AUTO goes over when the bottom would pass 8 above the window's bottom, OVER always, BELOW never", "");
+    check(o[4][0] == 8 && o[5][0] + o[5][2] == 392, "kit_nameTag: slid to stay 8 px inside the window's left and right", "");
+    check(oks && o[6][0] == o[0][0] && o[6][1] == 180 && o[6][2] == want && o[6][3] == 24, "kit_nameTag: a slot is the fill and the name with no size at the tag's place (no edge nodes, as before), and returns the same box", "");
+  }
   /* v_scol_or and v_token */
   { static const char KS[] = "{\"colours\":{\"chrome\":\"kitA\",\"blank\":\"\"},\"x\":{\"c\":\"kitB\",\"e\":\"\"}}";
     spec_load("kcol", KS, sizeof KS - 1);

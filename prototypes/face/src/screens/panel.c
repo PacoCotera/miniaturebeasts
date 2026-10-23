@@ -12,6 +12,7 @@
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
+#include "../layout/layout.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,9 +29,8 @@ static int hatchnow_form(void) { return strcmp(v_pstr("overlay.form"), "hatchnow
 static int ncards(void) { int n = v_plen("overlay.regions.cards"); return n < 0 ? 0 : n > MAXCARDS ? MAXCARDS : n; }
 static void card_rect(int i, int n, int r[4]) {
   if (incubate_form() || hatchnow_form()) { v_srect(PN, v_fmt("incubate.%s", i == 0 ? "bezels.incubate" : "bezels.keep"), r); (void)n; return; }
-  if (strip()) { int gap = v_si(F, RP ".strip.cards.gap", 16), w = v_si(F, RP ".strip.cards.w", 396); r[0] = v_si(F, RP ".strip.cards.x", 108) + i * (w + gap); r[1] = v_si(F, RP ".strip.cards.y", 392); r[2] = w; r[3] = v_si(F, RP ".strip.cards.h", 128); (void)n; return; }
-  int gap = v_si(F, RP ".cards.gap", 16), total = v_si(F, RP ".cards.width", 776), w = (total - gap * (n - 1)) / n;
-  r[0] = v_si(F, RP ".cards.x", 124) + i * (w + gap); r[1] = v_si(F, RP ".cards.y", 152); r[2] = w; r[3] = v_si(F, RP ".cards.h", 288);
+  if (strip()) { layout_list_pitch(F, RP ".strip.cards", n, i, r); return; }   /* the strip's two cards, then the panel's one to three: the spec's forms */
+  layout_list_pitch(F, RP ".cards", n, i, r);
 }
 static const char *card_id(int i) { return v_pstr(v_fmt("overlay.regions.cards.%d.id", i)); }
 

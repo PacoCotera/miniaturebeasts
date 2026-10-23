@@ -89,7 +89,7 @@ export function habitatBuild(m, spec, frame, home) {
 
   // the strip: one tile a bay, the housed mibis in bay order then the free bays; the mibi up close is the shown tile
   const housed = S.housed(st).slice().sort((a, b) => a.bay - b.bay), n = S.bayCount(st, settings);
-  const form = listForm(R.tiles, n).name, tw = form === "full" ? 152 : 72;
+  const tw = listForm(R.tiles, n).first[2];   // the tile width of the form n bays take (vivarium.json tiles.forms)
   const tiles = housed.slice(0, n).map((mb) => { const away = S.isAway(st, sv, mb), isShown = mb.id === shown.id; return { id: String(mb.id), state: away ? "out" : "housed", shown: isShown, picture: away ? "" : mibiReq(req, st, mb, [48, 48], settings), well: well(`plate-well-${tw}x48${isShown ? "-shown" : ""}`) }; });
   while (tiles.length < n) tiles.push({ id: "", state: "free", shown: false, picture: "", well: "" });
   regions.strip = { plate: n ? plate(992, 64) : "" };
