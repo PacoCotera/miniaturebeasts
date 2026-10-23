@@ -19,22 +19,19 @@ void word_livingWindow(const char *spec, const char *region, const char *bezel, 
   if (bezel) {
     v_srect(g_spec, v_fmt("%s.rect", bezel), b);
     v_region("bezel", LAYER_CHROME);
-    v_rect("bezel", b[0], b[1], b[2], b[3], v_scol(g_spec, "colours.bezel.fill"));
-    v_rect("bezel.edge.t", b[0], b[1], b[2], 1, v_scol(g_spec, "colours.bezel.edge")); v_rect("bezel.edge.b", b[0], b[1] + b[3] - 1, b[2], 1, v_scol(g_spec, "colours.bezel.edge"));
-    v_rect("bezel.edge.l", b[0], b[1], 1, b[3], v_scol(g_spec, "colours.bezel.edge")); v_rect("bezel.edge.r", b[0] + b[2] - 1, b[1], 1, b[3], v_scol(g_spec, "colours.bezel.edge"));
-    v_rect("bezel.light.t", b[0] + 1, b[1] + 1, b[2] - 2, 1, v_scol(g_spec, "colours.bezel.light")); v_rect("bezel.light.l", b[0] + 1, b[1] + 1, 1, b[3] - 2, v_scol(g_spec, "colours.bezel.light"));
-    v_rect("bezel.shade.b", b[0] + 1, b[1] + b[3] - 2, b[2] - 2, 1, v_scol(g_spec, "colours.bezel.shade")); v_rect("bezel.shade.r", b[0] + b[2] - 2, b[1] + 1, 1, b[3] - 2, v_scol(g_spec, "colours.bezel.shade"));
+    kit_panel("bezel", b[0], b[1], b[2], b[3], v_scol(g_spec, "colours.bezel.fill"), v_scol(g_spec, "colours.bezel.edge"), 0);
+    kit_hairline("bezel.light.t", b[0] + 1, b[1] + 1, b[2] - 2, v_scol(g_spec, "colours.bezel.light"), 0, NULL); kit_hairline("bezel.light.l", b[0] + 1, b[1] + 1, b[3] - 2, v_scol(g_spec, "colours.bezel.light"), 1, NULL);
+    kit_hairline("bezel.shade.b", b[0] + 1, b[1] + b[3] - 2, b[2] - 2, v_scol(g_spec, "colours.bezel.shade"), 0, NULL); kit_hairline("bezel.shade.r", b[0] + b[2] - 2, b[1] + 1, b[3] - 2, v_scol(g_spec, "colours.bezel.shade"), 1, NULL);
   }
   int painted = glassPicture && *glassPicture && wire_asset_slot(glassPicture) >= 0;   /* the light's painting is on the face: the flat plates stand only while its slot is empty; painted, they are the same nodes with no size, so the node ids never change */
   v_region(region, LAYER_CHROME);
 #define NAME(s) (snprintf(id, sizeof id, "%s.%s", region, s), id)
 #define COL(s) (snprintf(p, sizeof p, "%s.%s", colours, s), v_scol(g_spec, p))
   v_rect(NAME("back"), g[0], g[1], painted ? 0 : g[2], painted ? 0 : g[3], COL("back"));
-  v_rect(NAME("ground"), ground[0], ground[1], painted ? 0 : ground[2], painted ? 0 : ground[3], COL("ground")); v_rect(NAME("groundTop"), ground[0], ground[1], painted ? 0 : ground[2], painted ? 0 : 1, COL("groundTop"));
+  v_rect(NAME("ground"), ground[0], ground[1], painted ? 0 : ground[2], painted ? 0 : ground[3], COL("ground")); kit_hairline(NAME("groundTop"), ground[0], ground[1], painted ? 0 : ground[2], COL("groundTop"), 0, NULL);
   v_rect(NAME("foot"), foot[0], foot[1], painted ? 0 : foot[2], painted ? 0 : foot[3], COL("foot"));
   if (bezel) {
-    v_rect(NAME("edge.t"), g[0], g[1], painted ? 0 : g[2], painted ? 0 : 1, COL("edge")); v_rect(NAME("edge.b"), g[0], g[1] + g[3] - 1, painted ? 0 : g[2], painted ? 0 : 1, COL("edge"));
-    v_rect(NAME("edge.l"), g[0], g[1], painted ? 0 : 1, painted ? 0 : g[3], COL("edge")); v_rect(NAME("edge.r"), g[0] + g[2] - 1, g[1], painted ? 0 : 1, painted ? 0 : g[3], COL("edge"));
+    kit_panel(region, g[0], g[1], g[2], g[3], NULL, COL("edge"), painted);   /* the glass edge: the outline-only form, the same four nodes with no size while the painting stands */
   }
   if (painted) { v_name(region); v_sprite_window(NAME("master"), glassPicture, sx, sy, g[0], g[1], g[2], g[3]); }
 #undef NAME

@@ -51,9 +51,9 @@ void word_topBar(void) {
   if (bar) { v_region("top", LAYER_PAINTED); v_sprite("top.bar", a, r[0], r[1], r[2], r[3]); }
   v_region("top", LAYER_CHROME);
   snprintf(c, 24, "%s", v_scol(F, "colours.chrome")); kit_panel("top", r[0], r[1], r[2], r[3], c, NULL, bar);
-  snprintf(c, 24, "%s", v_scol(F, "colours.rule")); v_rect("top.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], bar ? 0 : 1, c);
+  snprintf(c, 24, "%s", v_scol(F, "colours.rule")); kit_hairline("top.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], c, 0, NULL);
   snprintf(c, 24, "%s", v_scol(F, "colours.topRule"));
-  for (int i = 0; i < spec_len(F, "regions.topRules.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.topRules.x.%d", i); snprintf(id, sizeof id, "top.sep.%d", i); int y0 = v_si(F, "regions.topRules.y0", 0), y1 = v_si(F, "regions.topRules.y1", 0); v_rect(id, v_si(F, p, 0), y0, 1, y1 - y0, c); }
+  for (int i = 0; i < spec_len(F, "regions.topRules.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.topRules.x.%d", i); snprintf(id, sizeof id, "top.sep.%d", i); int y0 = v_si(F, "regions.topRules.y0", 0), y1 = v_si(F, "regions.topRules.y1", 0); kit_hairline(id, v_si(F, p, 0), y0, y1 - y0, c, 1, NULL); }
   /* where you are: the room's mark, then the one word */
   v_name("title");   /* the top bar's marks (room, companion, face, sun): each picture's layer is its asset's */
   char screen[32], room[24]; spec_str(P, "frame.top.screen", screen, sizeof screen);
@@ -125,9 +125,9 @@ void word_bottomLine(void) {
   if (bar) { v_region("line", LAYER_PAINTED); v_sprite("line.bar", a, r[0], r[1], r[2], r[3]); }
   v_region("line", LAYER_CHROME);
   snprintf(c, 24, "%s", v_scol(F, "colours.chrome")); kit_panel("line", r[0], r[1], r[2], r[3], c, NULL, bar);
-  snprintf(c, 24, "%s", v_scol(F, "colours.rule")); v_rect("line.rule", r[0], r[1], bar ? 0 : r[2], bar ? 0 : 1, c);
+  snprintf(c, 24, "%s", v_scol(F, "colours.rule")); kit_hairline("line.rule", r[0], r[1], bar ? 0 : r[2], c, 0, NULL);
   snprintf(c, 24, "%s", v_scol(F, "colours.dot"));
-  for (int i = 0; i < spec_len(F, "regions.separators.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.separators.x.%d", i); snprintf(id, sizeof id, "line.sep.%d", i); int y0 = v_si(F, "regions.separators.y0", 0); v_rect(id, v_si(F, p, 0), y0, 1, v_si(F, "regions.separators.y1", 0) - y0, c); }
+  for (int i = 0; i < spec_len(F, "regions.separators.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.separators.x.%d", i); snprintf(id, sizeof id, "line.sep.%d", i); int y0 = v_si(F, "regions.separators.y0", 0); kit_hairline(id, v_si(F, p, 0), y0, v_si(F, "regions.separators.y1", 0) - y0, c, 1, NULL); }
   int ok = spec_str(P, "frame.line.ok", s, sizeof s) > 0, dim = spec_bool(P, "frame.line.dim", 0);
   /* the action: the cap, the verb, then the price */
   int A_px = v_si(F, "regions.action.px", 0), A_gap = v_si(F, "regions.action.gap", 0), A_capGap = v_si(F, "regions.action.capGap", 0), A_capW = v_si(F, "regions.action.capSize.0", 0), cap[4];

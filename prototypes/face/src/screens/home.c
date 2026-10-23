@@ -611,8 +611,7 @@ static void away_frame(void) {
   int r[4]; v_srect(sp(), hp("regions.away.rect"), r);
   char fill[24], edge[24], cap[40], col[24]; spec_str(H, "regions.away.fill", fill, sizeof fill); spec_str(H, "regions.away.edge", edge, sizeof edge); spec_str(H, "regions.away.caption.colour", col, sizeof col); spec_str(H, "strings.away", cap, sizeof cap);
   v_region("away", LAYER_CHROME);
-  v_rect("away.fill", r[0], r[1], r[2], r[3], fill);
-  v_rect("away.edge.t", r[0], r[1], r[2], 1, edge); v_rect("away.edge.b", r[0], r[1] + r[3] - 1, r[2], 1, edge); v_rect("away.edge.l", r[0], r[1], 1, r[3], edge); v_rect("away.edge.r", r[0] + r[2] - 1, r[1], 1, r[3], edge);
+  kit_panel("away", r[0], r[1], r[2], r[3], fill, edge, 0);
   if (has(pic) && v_plen("regions.glass.away.figure") == 4) {   /* the figure of its stand at its world size, bottom-centred inside the edge: its window of the picture, clipped to the frame's inside */
     int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("regions.glass.away.figure.%d", q), 0);
     int ix = r[0] + 1, iy = r[1] + 1, iw = r[2] - 2, ih = r[3] - 2, dx = ix + (iw - f[2]) / 2, dy = iy + ih - f[3];

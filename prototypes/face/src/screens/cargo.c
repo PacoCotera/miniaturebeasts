@@ -67,9 +67,9 @@ static int any_pod_came(void) { for (int i = 0, n = v_plen("regions.hatch.wells"
 
 /* ---- the bay window: one picture, radius 6, the frame's inner shade (the corners outside the radius in the stage ground, a 1 px void edge on the radius) ---- */
 static void build_bay(void) {
-  int r[4]; v_srect(C, "regions.bay.rect", r); int rad = v_si(C, "regions.bay.radius", 6); char g[24], e[24]; spec_str(C, "regions.bay.corners", g, sizeof g); spec_str(C, "regions.bay.edge", e, sizeof e);
+  int r[4]; v_srect(C, "regions.bay.rect", r); int rad = v_si(C, "regions.bay.radius", 6);
   v_region("bay", LAYER_ART); v_name("bay"); v_sprite("bay", v_pstr("regions.bay.picture"), r[0], r[1], r[2], r[3]);
-  v_region("bayEdge", LAYER_CHROME); kit_windowFrame("bay.edge", r[0], r[1], r[2], r[3], rad, g, e);
+  v_region("bayEdge", LAYER_CHROME); kit_windowFrame("bay.edge", r[0], r[1], r[2], r[3], rad, v_scol(C, "regions.bay.corners"), v_scol(C, "regions.bay.edge"));
 }
 
 /* ---- the berths (build spec 3): three of 256, or four of 188 with the portrait crate in the fourth ---- */
@@ -293,7 +293,6 @@ static int arrival_time(void) {
   if (v_pbool("motion", 1)) { if (anim_get(ANIM_ARRIVAL, "show", &t)) return t.elapsed; return 1 << 20; }   /* an ended show is its last frame */
   return v_pint(ARR ".at", 0);
 }
-static const char *fcol(const char *name) { static char b[8][24]; static int k; char *o = b[k++ & 7]; if (spec_str("frame", v_fmt("colours.%s", name), o, 24) <= 0) snprintf(o, 24, "%s", name); return o; }
 /* the crates slide in from x −256: crate i from 500 + 333 i over 400 ms, whole pixels, clipped to the bay's inside; its shadow from the frame it has landed; its glint (a crate holding a new species) from its landing */
 static void build_crates_arrival(int t) {
   int n = v_plen("regions.dockCrates.places"), max = v_si(C, "regions.dockCrates.max", 3), in[4]; if (n > max) n = max; v_srect(C, "regions.dockBay.inside", in);
@@ -346,7 +345,7 @@ static void build_band(int t) {
     v_region("arrivalBand", LAYER_ART);
     for (int q = 0; q < whole + mended; q++) { v_name("band.probe"); v_slot(v_fmt("band.plate.%d", q), icon, NULL, px0 + q * pitch, py0, isz, isz, q < shownN); }
     const char *words = v_pstr(ARR ".plates.words");
-    if (*words) { int tx = px0 + (whole + mended) * pitch + gap - (pitch - isz); v_region("arrivalBand", LAYER_TYPE); if (t >= mend) v_run("band.words", words, tx, v_cap_in(py0, isz, wpx), wpx, fcol("subject"), V_ALIGN_LEFT); }
+    if (*words) { int tx = px0 + (whole + mended) * pitch + gap - (pitch - isz); v_region("arrivalBand", LAYER_TYPE); if (t >= mend) v_run("band.words", words, tx, v_cap_in(py0, isz, wpx), wpx, v_token("frame", "subject"), V_ALIGN_LEFT); }
   }
   int nf = v_plen(ARR ".leaving.faces"); if (nf > 3) nf = 3;
   if (nf > 0 && t >= v_si(C, ARR ".band.leaving.from", 1500)) {

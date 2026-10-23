@@ -36,11 +36,15 @@ int v_sprite_hidden(const char *id, const char *asset, int x, int y);
    v_sk(spec, base, k): the integer at "<base>.<k>" (an array element or a numbered key), 0 when absent. Reads the spec only; no node.
    v_srect(spec, path, r): the [x, y, w, h] at `path` into r; all four 0 when it is not a 4-array. Reads the spec only; no node.
    v_scol(spec, path): the string at `path` (a palette name; "" when absent), copied to a ring of 16 buffers of 24 bytes, valid for the next 15 calls. Reads the spec only; no node.
+   v_scol_or(spec, path, d): v_scol, but `d` when the string is absent or "" (copied to a ring of 16 buffers of 24 bytes, valid for the next 15 calls). Reads the spec only; no node.
+   v_token(spec, name): a colour role: the string at "colours.<name>" of the spec, else `name` itself (a palette name as written); v_scol_or(spec, "colours.<name>", name). Reads the spec only; no node.
    v_sstr(spec, path): the string at `path` ("" when absent; a picture id, a template), copied to a ring of 16 buffers of 96 bytes (the size of an id on the wire), valid for the next 15 calls. Reads the spec only; no node. */
 int v_si(const char *spec, const char *path, int d);
 int v_sk(const char *spec, const char *base, int k);
 void v_srect(const char *spec, const char *path, int r[4]);
 const char *v_scol(const char *spec, const char *path);
+const char *v_scol_or(const char *spec, const char *path, const char *d);
+const char *v_token(const char *spec, const char *name);
 const char *v_sstr(const char *spec, const char *path);
 /* v_composed(id, x, y, w, h, ops): one composed picture of the ops string (the JSON ops list of prim.h) at (x, y), w x h, in the current region and layer. Reads nothing; node id v_id(id), one node, always sent; returns void. `ops` may be the prim_ops() buffer itself (a caller that wrote its ops there). */
 /* `ops` must not be NULL. */
