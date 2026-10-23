@@ -1,0 +1,14 @@
+# The files and folders outside the build's own folders (website/, prototypes/, .github/, ops/, v1/native/vendor/) that the build reads.
+# One path a line; a line ending in / is a folder and covers everything under it. A change to a .md listed here, or under a listed folder, runs the full build.
+# The test in .github/roadmap.test.mjs scans the build's scripts for string literals that name such a path and fails when one is not covered here.
+art/companion-48/palette/palette.json
+art/companion-48/signs/sign-shelter-32.png
+art/companion-48/species/
+art/companion-48/terrain/
+art/device-buttons/caps/
+art/station-masters/pods/motion/proof/
+design/proposals/taxonomy.md
+design/proposals/ui-kit.md
+design/style-guide/station-layouts.md
+design/style-guide/station-layouts/
+v1/prototype/generator-workbench/
