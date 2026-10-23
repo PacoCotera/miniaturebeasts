@@ -1,8 +1,8 @@
 #include "ring.h"
 
 typedef int64_t i64;
-/* inR(x0, y0, x1, y1, r) on the doubled centre (X, Y) */
-static int in_round(i64 X, i64 Y, i64 x0, i64 y0, i64 x1, i64 y1, i64 r) {
+/* inR(x0, y0, x1, y1, r) on the doubled centre (X, Y): the one definition of the rounded box's shape, the ring's and the kit's bezel's */
+int ring_in_round(i64 X, i64 Y, i64 x0, i64 y0, i64 x1, i64 y1, i64 r) {
   i64 R = 2 * r;
   if (X < 2 * x0 || Y < 2 * y0 || X > 2 * x1 || Y > 2 * y1) return 0;
   i64 cx = X < 2 * x0 + R ? 2 * x0 + R : X > 2 * x1 - R ? 2 * x1 - R : X;
@@ -19,7 +19,7 @@ int ring_mask(uint8_t *m, int w, int h, int width, int radius, int ellipse) {
   for (int j = 0; j < h; j++) for (int i = 0; i < w; i++) {
     i64 X = 2 * i + 1, Y = 2 * j + 1; int on;
     if (ellipse) on = in_ell(X, Y, 0, 0, w, h) && !in_ell(X, Y, width, width, w - width, h - width);
-    else { i64 ri = radius - width > 0 ? radius - width : 0; on = in_round(X, Y, 0, 0, w, h, radius) && !in_round(X, Y, width, width, w - width, h - width, ri); }
+    else { i64 ri = radius - width > 0 ? radius - width : 0; on = ring_in_round(X, Y, 0, 0, w, h, radius) && !ring_in_round(X, Y, width, width, w - width, h - width, ri); }
     m[j * w + i] = on ? 255 : 0;
   }
   return 0;

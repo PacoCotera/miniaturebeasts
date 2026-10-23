@@ -19,16 +19,12 @@
 #define F "frame"
 #define RP "regions.panel"
 #define MAXCARDS 3
-/* a colour: a frame role (colours.<name>) when there is one, else the palette name as written */
-static const char *col(const char *name) { static char b[8][24]; static int k; char *o = b[k++ & 7]; if (spec_str(F, v_fmt("colours.%s", name), o, 24) <= 0) snprintf(o, 24, "%s", name); return o; }
-static const char *rcol(const char *path) { char s[24]; if (spec_str(F, v_fmt(RP ".%s", path), s, sizeof s) <= 0) snprintf(s, sizeof s, "bone"); return col(s); }
 /* the strip form (frame.json regions.panel.strip; specs/station-dock-arrival-spec.md, the strip form): the dock arrival's choice, two cards in a plate under what they are about, no title, picture or veil */
 static int strip(void) { return strcmp(v_pstr("overlay.form"), "strip") == 0; }
 /* the Incubate | Keep shaping form (T-20261016-222; build spec section 6a; panel.json `incubate`): two bezels over the device ground, each with a header (the verb; Incubate's price and the founder's pod) and a window: the sealed capsule with this founder's pod, and Create as it stood when it was left (the face's snapshot) */
 static int incubate_form(void) { return strcmp(v_pstr("overlay.form"), "incubate") == 0; }
 static int hatchnow_form(void) { return strcmp(v_pstr("overlay.form"), "hatchnow") == 0; }   /* the Hatch now | Wait form: the same frame (bezels, windows, header, focus) as the Incubate form, with the Incubator's day looks in the windows */
 #define PN "panel"
-static const char *pcol(const char *p) { char s[24]; static char b[8][24]; static int k; char *o = b[k++ & 7]; if (spec_str(PN, v_fmt("incubate.%s", p), s, sizeof s) <= 0) snprintf(s, sizeof s, "bone"); snprintf(o, 24, "%s", col(s)); return o; }
 static int ncards(void) { int n = v_plen("overlay.regions.cards"); return n < 0 ? 0 : n > MAXCARDS ? MAXCARDS : n; }
 static void card_rect(int i, int n, int r[4]) {
   if (incubate_form() || hatchnow_form()) { v_srect(PN, v_fmt("incubate.%s", i == 0 ? "bezels.incubate" : "bezels.keep"), r); (void)n; return; }
@@ -46,19 +42,19 @@ static void build_veil(void) {
   if (v_sprite("panel.veil", v_pstr("overlay.regions.art.veil"), r[0], r[1], r[2], r[3])) return;   /* the veil master: a flat layer, never dithered */
   char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);   /* until it is placed: a Bayer lattice of 8 of 16 levels toward stageGround */
   for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
-  snprintf(ops + n, sizeof ops - (size_t)n, "],\"%s\"]]", col("stageGround"));
+  snprintf(ops + n, sizeof ops - (size_t)n, "],\"%s\"]]", v_token(F, "stageGround"));
   v_composed("panel.veil", r[0], r[1], r[2], r[3], ops);
 }
 static void build_plate(void) {
   int r[4]; v_srect(F, RP ".rect", r);
   v_region("panel", LAYER_CHROME);
   if (v_sprite("panel.plate", v_pstr("overlay.regions.art.housing"), r[0], r[1], r[2], r[3])) return;   /* the housing master, 1:1 */
-  char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", rcol("ground")); snprintf(edge, sizeof edge, "%s", rcol("edge"));
+  char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", v_token(F, v_scol_or(F, RP ".ground", "bone"))); snprintf(edge, sizeof edge, "%s", v_token(F, v_scol_or(F, RP ".edge", "bone")));
   kit_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge, 0);
 }
 static void build_title(void) {
   int r[4]; v_srect(F, RP ".title.rect", r); const char *t = v_pstr("overlay.regions.title"); int px = v_si(F, RP ".title.px", 28), w = v_measure(t, px);
-  v_region("panelTitle", LAYER_TYPE); v_line_at("panel.title", t, r[0] + v_half(r[2] - w), v_si(F, RP ".title.lineTop", r[1]), V_ANCHOR_LINE, px, rcol("title.colour"), V_ALIGN_LEFT);
+  v_region("panelTitle", LAYER_TYPE); v_line_at("panel.title", t, r[0] + v_half(r[2] - w), v_si(F, RP ".title.lineTop", r[1]), V_ANCHOR_LINE, px, v_token(F, v_scol_or(F, RP ".title.colour", "bone")), V_ALIGN_LEFT);
 }
 static const char *GLYPH[4] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86", "\xe2\xa7\x97" };   /* ⚡ ❀ ◆ ⧗, the price's closed table (vocab.c PRICE) */
 /* the cost groups on rubber chips: each "glyph figure" of the price string on a chip nine-sliced round it (6 px in, 8 between groups); a short figure in `need`, a gain in `turn` */
@@ -70,7 +66,7 @@ static void build_costs(int i, int x, int y, const char *cost, const char *short
     if (g < 0) { p++; continue; }
     const char *q = p + strlen(GLYPH[g]); while (*q == ' ') q++; int n = 0; while (q[n] && q[n] != ' ') n++;
     char grp[48]; snprintf(grp, sizeof grp, "%s %.*s", GLYPH[g], n, q);
-    int rw = v_run_width(grp, px), cw = rw + 2 * pad; const char *colour = col(gain ? "turn" : (g < 3 && *shorts && strstr(shorts, GLYPH[g])) ? "need" : "price");
+    int rw = v_run_width(grp, px), cw = rw + 2 * pad; const char *colour = v_token(F, gain ? "turn" : (g < 3 && *shorts && strstr(shorts, GLYPH[g])) ? "need" : "price");
     v_region("cardChips", LAYER_PAINTED); if (*chip) v_nine(v_fmt("card.%d.chip.%d", i, k), chip, x, y, cw, ch, CAPS);
     v_region("cardText", LAYER_TYPE); v_run(v_fmt("card.%d.cost.%d", i, k), grp, x + pad, y, px, colour, V_ALIGN_LEFT);
     x += cw + between; k++; p = q + n;
@@ -82,7 +78,7 @@ static void build_card(int i, int n, int focused) {
   const char *base = v_fmt("overlay.regions.cards.%d.art", i);
   /* the well: the master (the focused one a step up; the ring is over it), else the code-drawn well */
   { const char *id = v_pstr(v_fmt("%s.%s", base, focused ? "focused" : "well")); v_region("cards", LAYER_PAINTED);
-    if (!v_sprite(v_fmt("card.%d.well", i), id, r[0], r[1], w, r[3])) { char well[24], edge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(edge, sizeof edge, "%s", rcol("cards.edge")); v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), r[0], r[1], w, r[3], well, edge, 0); } }
+    if (!v_sprite(v_fmt("card.%d.well", i), id, r[0], r[1], w, r[3])) { char well[24], edge[24]; snprintf(well, sizeof well, "%s", v_token(F, v_scol_or(F, RP ".cards.well", "bone"))); snprintf(edge, sizeof edge, "%s", v_token(F, v_scol_or(F, RP ".cards.edge", "bone"))); v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), r[0], r[1], w, r[3], well, edge, 0); } }
   /* the glow and the stage: under the picture (the stage at the slot's foot) */
   v_region("cardStage", LAYER_PAINTED);
   const char *scene = v_pstr(v_fmt("%s.scene", base)); int shift = *scene ? v_si(F, RP ".art.scene.shift", 0) : 0;   /* the Return outcome: its place's scene stands in the glow's place and the subject stands right of centre, facing the light */
@@ -102,12 +98,12 @@ static void build_card(int i, int n, int focused) {
   { const char *mk = v_pstr(v_fmt("overlay.regions.cards.%d.mark", i)); int ms = v_sk(F, RP ".card.mark.size", 0); if (ms <= 0) ms = 24;
     v_name("cardMarks"); v_slot_at(v_fmt("card.%d.mark", i), mk, NULL, r[0] + w - 40, r[1] + v_sk(F, RP ".card.mark.at", 1), ms, ms, 1, r[0] + w - 40, r[1] + 16); }
   /* the name: 20, the option's verb */
-  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.name", i), s, r[0] + v_sk(F, RP ".card.name.at", 0), r[1] + v_sk(F, RP ".card.name.at", 1), V_ANCHOR_LINE, v_si(F, RP ".card.name.px", 20), rcol(dim ? "card.name.colourDim" : "card.name.colour"), V_ALIGN_LEFT); }
+  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.name", i), s, r[0] + v_sk(F, RP ".card.name.at", 0), r[1] + v_sk(F, RP ".card.name.at", 1), V_ANCHOR_LINE, v_si(F, RP ".card.name.px", 20), v_token(F, v_scol_or(F, dim ? RP ".card.name.colourDim" : RP ".card.name.colour", "bone")), V_ALIGN_LEFT); }
   /* the costs, on their chips; free: nothing drawn */
   build_costs(i, r[0] + v_sk(F, RP ".card.costs.at", 0), r[1] + v_sk(F, RP ".card.costs.at", 1), v_pstr(v_fmt("overlay.regions.cards.%d.cost", i)), v_pstr(v_fmt("overlay.regions.cards.%d.short", i)), v_pbool(v_fmt("overlay.regions.cards.%d.gain", i), 0));
   /* the line: the one thing the picture cannot say, 16; a loss shows it in `need` */
   { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); (void)tw;
-    v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.line", i), s, r[0] + v_sk(F, RP ".card.line.at", 0), r[1] + v_sk(F, RP ".card.line.at", 1), V_ANCHOR_LINE, v_si(F, RP ".card.line.px", 16), rcol(dim ? "card.line.colourDim" : loss ? "card.line.colourLoss" : "card.line.colour"), V_ALIGN_LEFT); }
+    v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.line", i), s, r[0] + v_sk(F, RP ".card.line.at", 0), r[1] + v_sk(F, RP ".card.line.at", 1), V_ANCHOR_LINE, v_si(F, RP ".card.line.px", 16), v_token(F, v_scol_or(F, dim ? RP ".card.line.colourDim" : loss ? RP ".card.line.colourLoss" : RP ".card.line.colour", "bone")), V_ALIGN_LEFT); }
 }
 /* the ring: the focused card's rect, the frame ring { rect: 10 } 4 px out (the ring reaches 5 from the rect it is given, so the rect is drawn 1 px in); no lift */
 static void build_ring(int n) {
@@ -120,19 +116,19 @@ static void build_ring(int n) {
 }
 /* the strip: the plate (the code-drawn ground and edge while no master is placed), then each card: its well, its 96 × 96 picture, the name, the costs and the one line */
 static void build_strip(int n) {
-  int r[4]; v_srect(F, RP ".strip.rect", r); char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", rcol("ground")); snprintf(edge, sizeof edge, "%s", rcol("edge"));
+  int r[4]; v_srect(F, RP ".strip.rect", r); char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", v_token(F, v_scol_or(F, RP ".ground", "bone"))); snprintf(edge, sizeof edge, "%s", v_token(F, v_scol_or(F, RP ".edge", "bone")));
   v_region("panel", LAYER_CHROME); kit_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge, 0);
   const char *cur = v_focus_cur_at("overlay.focus.cur");
   for (int i = 0; i < n; i++) {
     int c[4]; card_rect(i, n, c); int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), tx = c[0] + v_sk(F, RP ".strip.name.at", 0), maxw = v_si(F, RP ".strip.line.max", 252);
-    char well[24], wedge[24]; snprintf(well, sizeof well, "%s", rcol("cards.well")); snprintf(wedge, sizeof wedge, "%s", rcol("cards.edge"));
+    char well[24], wedge[24]; snprintf(well, sizeof well, "%s", v_token(F, v_scol_or(F, RP ".cards.well", "bone"))); snprintf(wedge, sizeof wedge, "%s", v_token(F, v_scol_or(F, RP ".cards.edge", "bone")));
     v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), c[0], c[1], c[2], c[3], well, wedge, 0);
     { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pw = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0);
       v_name("cardPictures"); v_slot_at(v_fmt("card.%d.picture", i), pic, NULL, c[0] + v_sk(F, RP ".strip.picture.at", 0), c[1] + v_sk(F, RP ".strip.picture.at", 1), pw, ph, pw > 0 && ph > 0, c[0], c[1]); }
     { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = v_si(F, RP ".strip.name.px", 20); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
-      v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.name", i), fit, tx, c[1] + v_sk(F, RP ".strip.name.at", 1), V_ANCHOR_LINE, px, rcol(dim ? "strip.name.colourDim" : "strip.name.colour"), V_ALIGN_LEFT); }
+      v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.name", i), fit, tx, c[1] + v_sk(F, RP ".strip.name.at", 1), V_ANCHOR_LINE, px, v_token(F, v_scol_or(F, dim ? RP ".strip.name.colourDim" : RP ".strip.name.colour", "bone")), V_ALIGN_LEFT); }
     { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = v_si(F, RP ".strip.line.px", 16); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
-      v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.line", i), fit, tx, c[1] + v_sk(F, RP ".strip.line.at", 1), V_ANCHOR_LINE, px, rcol(dim ? "strip.line.colourDim" : "strip.line.colour"), V_ALIGN_LEFT); }
+      v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.line", i), fit, tx, c[1] + v_sk(F, RP ".strip.line.at", 1), V_ANCHOR_LINE, px, v_token(F, v_scol_or(F, dim ? RP ".strip.line.colourDim" : RP ".strip.line.colour", "bone")), V_ALIGN_LEFT); }
     (void)cur;
   }
 }
@@ -140,12 +136,12 @@ static void build_strip(int n) {
 /* ---- the Incubate | Keep shaping form ---- */
 /* a bezel: fill `panel`, radius 10, a 1 px `hairline` edge, the bevel (a 1 px `fog` line at y + 1 from x + 10 to x + w - 10) */
 static void build_bezel(int i, const int r[4], const char *verb) {
-  int rad = v_si(PN, "incubate.bezels.radius", 10); char ops[320];
-  snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"%s\"],[\"h\",%d,%d,%d,\"%s\"]]", r[2], r[3], rad, pcol("bezels.fill"), pcol("bezels.edge"), v_si(PN, "incubate.bezels.bevel.inset", 10), v_si(PN, "incubate.bezels.bevel.dy", 1), r[2] - 2 * v_si(PN, "incubate.bezels.bevel.inset", 10), pcol("bezels.bevel.colour"));
-  v_region(v_fmt("panelBezel.%d", i), LAYER_CHROME); v_composed(v_fmt("panel.bezel.%d", i), r[0], r[1], r[2], r[3], ops);
+  int rad = v_si(PN, "incubate.bezels.radius", 10);
+  if (v_si(PN, "incubate.bezels.bevel.inset", rad) != rad || v_si(PN, "incubate.bezels.bevel.dy", 1) != 1) v_error("panel: the bezel's bevel is the kit's (inset = radius, dy 1)");
+  v_region(v_fmt("panelBezel.%d", i), LAYER_CHROME); kit_bezelComposed(v_fmt("panel.bezel.%d", i), r[0], r[1], r[2], r[3], rad, v_token(F, v_scol_or(PN, "incubate.bezels.fill", "bone")), v_token(F, v_scol_or(PN, "incubate.bezels.edge", "bone")), v_token(F, v_scol_or(PN, "incubate.bezels.bevel.colour", "bone")));
   /* the header: the verb, Inter 16 (the spec says 15 medium; the face has 16, 20 and 28), its baseline at y + 20, from x + 12 */
   int px = v_si(PN, "incubate.header.px", 16), base = v_si(PN, "incubate.header.baseline", 20); v_region("panelHeader", LAYER_TYPE);
-  v_line_at(v_fmt("panel.verb.%d", i), verb, r[0] + v_si(PN, "incubate.header.x", 12), r[1] + base, V_ANCHOR_BASE, px, pcol("header.colour"), V_ALIGN_LEFT);
+  v_line_at(v_fmt("panel.verb.%d", i), verb, r[0] + v_si(PN, "incubate.header.x", 12), r[1] + base, V_ANCHOR_BASE, px, v_token(F, v_scol_or(PN, "incubate.header.colour", "bone")), V_ALIGN_LEFT);
 }
 /* Incubate's price, right-aligned to x + w - 12: the figures (icon before figure), then the founder's pod (16 x 20, its top at y + 5), which is part of the price: it becomes the mibi */
 static void build_price(const int r[4]) {
@@ -153,12 +149,12 @@ static void build_price(const int r[4]) {
   if (!*pod) pw = 0;   /* Hatch now's price has no pod behind it */
   v_region("panelPrice", LAYER_PAINTED); if (*pod && pw > 0) v_sprite("panel.price.pod", pod, right - pw, r[1] + v_si(PN, "incubate.price.pod.top", 5), pw, ph);
   int endx = *pod ? right - pw - v_si(PN, "incubate.price.gap", 12) : right;
-  if (*cost) { v_region("panelPrice", LAYER_TYPE); v_run("panel.price", cost, endx, v_cap_top(r[1] + base, V_ANCHOR_BASE, px), px, pcol("price.colour"), V_ALIGN_RIGHT); }
+  if (*cost) { v_region("panelPrice", LAYER_TYPE); v_run("panel.price", cost, endx, v_cap_top(r[1] + base, V_ANCHOR_BASE, px), px, v_token(F, v_scol_or(PN, "incubate.price.colour", "bone")), V_ALIGN_RIGHT); }
 }
 /* a window's frame over its picture: the corners outside the radius 6 in the bezel's colour, then a 1 px `void` inner edge on the radius */
 static void build_window_frame(int i, const int w[4]) {
   int rad = v_si(PN, "incubate.windows.radius", 6);
-  v_region(v_fmt("panelWindow.%d", i), LAYER_CHROME); kit_windowFrame(v_fmt("panel.window.%d", i), w[0], w[1], w[2], w[3], rad, pcol("bezels.fill"), pcol("windows.edge"));
+  v_region(v_fmt("panelWindow.%d", i), LAYER_CHROME); kit_windowFrame(v_fmt("panel.window.%d", i), w[0], w[1], w[2], w[3], rad, v_token(F, v_scol_or(PN, "incubate.bezels.fill", "bone")), v_token(F, v_scol_or(PN, "incubate.windows.edge", "bone")));
 }
 static void build_incubate_left(const int w[4]) {
   const char *room = v_pstr("overlay.regions.left.room"), *interior = v_pstr("overlay.regions.left.interior"), *pod = v_pstr("overlay.regions.left.pod"), *glass = v_pstr("overlay.regions.left.glass"), *shell = v_pstr("overlay.regions.left.shell"), *seal = v_pstr("overlay.regions.left.seal");
@@ -213,12 +209,12 @@ static void build_growing(const int w[4]) {
 }
 static void build_hatchnow(void) {
   int stage[4]; if (!v_spec_rect("frame", "regions.stage.rect", stage)) return;
-  v_region("panelGround", LAYER_CHROME); v_rect("panel.ground", stage[0], stage[1], stage[2], stage[3], pcol("ground"));
+  v_region("panelGround", LAYER_CHROME); v_rect("panel.ground", stage[0], stage[1], stage[2], stage[3], v_token(F, v_scol_or(PN, "incubate.ground", "bone")));
   int l[4], r[4], wl[4], wr[4]; card_rect(0, 2, l); card_rect(1, 2, r); v_srect(PN, "incubate.windows.left", wl); v_srect(PN, "incubate.windows.right", wr);
   build_bezel(0, l, v_pstr("overlay.regions.verbs.grow")); build_bezel(1, r, v_pstr("overlay.regions.verbs.wait"));
   build_price(l);
   { const char *t = v_pstr("overlay.regions.caption"); int px = v_si(PN, "hatchnow.caption.px", 16); static char cc[24]; char s[24];   /* Wait's readout: "ready in about N min", right-aligned in its header as Hatch now's price is in its own */
-    if (*t) { spec_str(PN, "hatchnow.caption.colour", s, sizeof s); snprintf(cc, sizeof cc, "%s", col(s));
+    if (*t) { spec_str(PN, "hatchnow.caption.colour", s, sizeof s); snprintf(cc, sizeof cc, "%s", v_token(F, s));
       v_region("panelCaption", LAYER_TYPE); v_line_at("panel.caption", t, r[0] + r[2] - v_si(PN, "incubate.price.right", 12), r[1] + v_si(PN, "incubate.header.baseline", 20), V_ANCHOR_BASE, px, cc, V_ALIGN_RIGHT); } }
   build_hatched(wl); build_window_frame(0, wl);
   build_growing(wr); build_window_frame(1, wr);
@@ -226,7 +222,7 @@ static void build_hatchnow(void) {
 }
 static void build_incubate(void) {
   int stage[4]; if (!v_spec_rect("frame", "regions.stage.rect", stage)) return;
-  v_region("panelGround", LAYER_CHROME); v_rect("panel.ground", stage[0], stage[1], stage[2], stage[3], pcol("ground"));
+  v_region("panelGround", LAYER_CHROME); v_rect("panel.ground", stage[0], stage[1], stage[2], stage[3], v_token(F, v_scol_or(PN, "incubate.ground", "bone")));
   int l[4], r[4], wl[4], wr[4]; card_rect(0, 2, l); card_rect(1, 2, r); v_srect(PN, "incubate.windows.left", wl); v_srect(PN, "incubate.windows.right", wr);
   build_bezel(0, l, v_pstr("overlay.regions.verbs.incubate")); build_bezel(1, r, v_pstr("overlay.regions.verbs.keep"));
   build_price(l);

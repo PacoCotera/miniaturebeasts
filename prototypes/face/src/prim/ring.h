@@ -4,6 +4,8 @@
 #ifndef RING_H
 #define RING_H
 #include <stdint.h>
+/* 1 when the rounded box [x0, x1] x [y0, y1] of radius r holds the pixel whose doubled centre is (X, Y), 0 when not: the shape ring_mask's outer and inner edges and the kit's bezel are drawn by. */
+int ring_in_round(int64_t X, int64_t Y, int64_t x0, int64_t y0, int64_t x1, int64_t y1, int64_t r);
 /* A w x h ring `width` thick: shape 0 a rounded rectangle of corner `radius`, shape 1 an ellipse (radius 0). mask: w*h bytes, 0 or 255. 0, or -1 when refused (width < 1, w or h < 1, radius < 0, an ellipse with a radius). */
 int ring_mask(uint8_t *mask, int w, int h, int width, int radius, int ellipse);
 typedef struct { int body, width, slant, outside, top, slantTo, bottom, radius, tabTop; } ring_tab_t;

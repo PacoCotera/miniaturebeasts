@@ -58,7 +58,7 @@ void word_specimen(const char *base) {
       v_region("specimen", LAYER_PAINTED);
       prim_node(v_id("specimen.id"), FN_CLIP, rect[0], rect[1], w, cut, 0, 1, 0);
       v_sprite("specimen.idpic", idpic, rect[0], rect[1], w, h);
-      if (cut > 0 && cut < h) { v_region("specimen", LAYER_CHROME); v_rect("specimen.cut", rect[0] + 4, rect[1] + cut, w - 8, 1, white); }
+      if (cut > 0 && cut < h) { v_region("specimen", LAYER_CHROME); kit_hairline("specimen.cut", rect[0] + 4, rect[1] + cut, w - 8, white, 0, NULL); }
     } else if (has(idpic)) { v_region("specimen", LAYER_PAINTED); v_sprite("specimen.idpic", idpic, rect[0], rect[1], w, h); }
   }
   v_region("specimen", LAYER_PAINTED); layer("specimen.cradleFront", front, v_pstr("regions.specimen.room.cradleFront"));
