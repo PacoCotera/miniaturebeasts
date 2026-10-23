@@ -1,0 +1,167 @@
+# K5 gate (architect, 2026-10-23 15:59 Mexico City), 06f6723c
+
+What I measured. I used a detached worktree at 06f6723c with a private FACE_BUILD_DIR, plus copies of 1ae5bb6a and 06f6723c made outside the clone with `git archive`. All of them are removed afterwards.
+- `build.sh all` at 06f6723c: layout 753 cases, 0 differ (386 at 1ae5bb6a); face_test 15177 checks, 0 failed (14799 at 1ae5bb6a); native hash 47e09df8 on both; 0 warnings in the build log.
+- The Station journey on each side, each written to its own private STATION_CHECKS file. I ran checks.mjs and layer-check on each side.
+- Also: goldens `--check`, `node --test` in two groups, the play journey, the face guard, place-masters `--check`, and the public guard against origin/station-gate (2559ff4e).
+- Node records on all 181 golden states, captured on an instrumented copy of each side. I read the builder's instr.py and nodes.mjs before running them. I compared the records with the K4.1 setcmp.mjs and an empty map, and against the builder's four captures.
+- Four faults planted in a copy of the after records.
+- The props record comparison (the K10 recorder): the builder's base views are byte-identical to 1ae5bb6a's views; I ran the after side again on the worktree.
+- I read the whole diff (29 files), both new components and their headers, and every converted site against the code it replaces. I checked by parsing that the seven spec files change by added keys only. I also searched the screens for pitch loops that are still left.
+
+- **K5 (T-20261023-279) as built: PASS.** Two small follow-ups go to K6 (section 4). They do not block the merge.
+  - **Components and contract headers.**
+    - `kit_tiles` (vocab/common/tiles.c): it takes spec, list, n, draw(i, box, ctx), ctx and boxes, as §3.2 says. It calls layout_list_form, then layout_list_pitch for each tile. It returns the form's upTo; it returns −1 and sends v_error, drawing nothing, when no form holds n or n < 0.
+    - `kit_nameTag` (vocab/common/nameTag.c): its width comes from `layout_plate_width` over `regions.nameTag.plate`. Its plate is kit_panel: the filled form, and the slot form (fill, no edge, no size) when it is a slot. This is exactly what build_nameTag did, as the K4.1 rule says.
+    - Both have a header (props, region and layer, node ids, return), a declaration in words.h and a CMake entry. face_test checks:
+      - kit_tiles: in order, with boxes or NULL, n 0, refused counts, and a list with no forms;
+      - kit_nameTag: six nodes, centring, the three y rules, both clamps, and the slot's two nodes with the same box.
+    - One header sentence is wrong (K6, line 6a). kit_tiles says the function "draws the same nodes for every i whether the tile is shown or not". The namer's key_tile draws no node for a key with no character on the page. That is the namer's ruled behaviour (namer.json regions.keys.ids), and it is unchanged.
+  - **Spec forms: the same values, old keys kept.**
+    - I parsed bench, cargo, frame, habitat, home, namer and vivarium at both commits. No key is removed or changed. The only additions are:
+      - 11 `forms` objects: keys, pods.slots, companion.plates, cross.faces, hatch.strip.find, band.leaving, switch.meaning.plates, adds.pods, adds.plates, panel.cards, strip.cards;
+      - 4 `plate` objects: the nameTag of home, vivarium and habitat, and dockRibbon.
+    - The first coordinates are absolute. That is the convention of the only forms that existed before (vivarium/habitat `tiles.forms`), and layout_list_pitch takes no origin.
+    - tiles.test.mjs works the old arithmetic out from the old keys and compares it with listPitch/plateWidth, for every count each screen can reach. The layout vectors run the same lists and plates in both implementations, 0 differ.
+  - **Conversions: every F12 and F13 site in §2 is converted or parked.**
+    - **F12:**
+      - build_nameTag and build_nameTagAt are gone (home_builds.c −37), and so are g_tagSlot, g_tagFlash and g_tagOver. g_tagOver was never set.
+      - habitat build_tag and home ent_tag (3 calls) now call kit_nameTag.
+      - Cargo's dock ribbon width is now layout_plate_width over dockRibbon.plate {160, 608, 16, 8}, which is the old 160 floor and the rect's width.
+    - **F13:**
+      - namer key_rect/build_keys;
+      - habitat cross_objects;
+      - home_frame pods slots, the glint pass and the companion plates (now clamped to max before the call, the same as `i < max` before);
+      - cargo find strip (find_box, also used by the travel find) and the leaving faces (the mark sits at the first face's x − mark − gap: the same value);
+      - bench switch plates and adds.pods/plates;
+      - panel card_rect.
+    - Searching the screens for `* pitch` and `x += w +` finds only the two parked sites and create.c:73, which is a text-line pitch, not F13.
+    - Every kit_tiles count is inside its forms: namer 28; cross ≤ MAXF 11; slots 6; companion ≤ max 4; switch longest() ≤ 4 (bench.json plates.places); adds 3 and 4; finds ≤ max 7; leaving 1–3; cards 1–3 and strip 2.
+    - The colours on these lines are v_scol or palette names passed through. There is no new colour helper and no spec_str colour buffer. library.c is not in the diff.
+  - **The props side:**
+    - vivarium-props:28 and habitat-props:92 now read `listForm(R.tiles, n).first[2]`. They keep words.mjs and requests.mjs, with no local fill, table, plural or request helper.
+    - habitat-props reads habitat.json's own `tiles.forms`, not vivarium.json's. The two have the same forms, and a builder reads its own screen's spec, so this is right; the ticket's wording was loose.
+    - By reading: `first[2]` is 152 for n 0–6 and 72 for 7–12, which is the old `name === "full"` choice; n > 12 throws on both sides.
+  - **The two changed tests: accepted.**
+    - specs.test.mjs compares `R.pods.slots` without `forms`. That only leaves the new key out of an equality.
+    - bench.test.mjs "slot.pod.1" moves `forms.row.first[1]`. The face now lays the pods by the form, so moving `at` would no longer move the drawn pod, and the test still proves that the per-part check names a moved pod.
+    - This shows that the face (forms) and bench-regions.mjs (the old `at`/`pitch`) now read different keys, which tiles.test.mjs keeps equal. See section 4.
+  - **Proof: sufficient.** Every K5 proof line in the ticket holds, and my captures and runs give the builder's figures.
+    - **Node records (empty map):**
+      - Mine: 181 states, 15767 nodes, 0 differ as sets. The base against the builder's base1 also gives 0 as sets.
+      - My after capture is byte-identical to the builder's work2, and my base differs from the builder's base2 in 0 states, even in order.
+      - With the literal-zero default (no map), the result is the same: 0.
+    - **The 10 states that differ in order are capture order.**
+      - They are all Pods states, from "chapter page, unread" on, and pods.c is not touched.
+      - The builder's base1 and base2 differ in order in 9 states, and work1 and work2 in 10.
+      - The record order is prim's table order, which changes as removed slots are reused. The drawing order is g_seq, which the record does not hold. The goldens and layer-check are unchanged.
+    - **Planted faults:**
+      - a shown nameTag moved 1 px (home-event-tag);
+      - a no-size switch.plate.3 moved (bench);
+      - the ops hash of a shown cross.face.0 changed (habitat-rest);
+      - a shown card.1.well 1 px narrower (pods panel, release).
+
+      The comparison reports 4 states that differ, each in its own state.
+    - **The other proofs:**
+      - checks.mjs is byte-identical, whole: mine base against mine after, and against the builder's base file.
+      - layer-check is byte-identical, mine base against mine after and against the builder's base file.
+      - Type log: 44 shots, 0 differ (every string, px, region).
+      - Regions as sets: 1 of 44 differs, page-meet's resident (y 73 against 72), which is an excluded animated site.
+      - Goldens match on all 10 screens.
+      - `node --test`: 588 tests, 588 pass; and 1015 tests, 1014 pass, 0 fail, 1 skipped. Together that is the builder's 1603.
+      - The Station journey printed "journey ok" and the play journey "play journey ok".
+      - Face guard ok; public guard ok, exit 0; masters 1006 placed, 0 problems.
+      - Props records: 21 files, 24494 records, 0 differ. Every test file has 0 failures.
+    - **Golden coverage of each converted site** (records with a size in the after capture):
+      - Shown in golden states:
+        - keys: 6 states;
+        - cross faces 0–10: 27 states, both rows;
+        - pods slots: 32;
+        - companion plates 0–2: 28;
+        - hatch.find.0: 2;
+        - band.face.0 and band.mark: 2;
+        - switch plates 0–3: 4;
+        - slot pods and plates: 4 each;
+        - the panel's 2-card form and the strip form: 4;
+        - nameTag: 39 shown, plus the slot form with no size in habitat-meet and incubator-hatch-skip, unchanged;
+        - dock ribbon: 10.
+      - Shown in no golden state, with the node test that checks each:
+        - the glints: home.test.mjs:373;
+        - the travel find t.find: cargo.test.mjs:243–245, the flight to its strip box;
+        - the panel's 1- and 3-card forms: panel.test.mjs:103, the cards at the spec's rectangles.
+
+      The builder named only the first of these three; these lines complete it.
+- **2. The two parked sites.**
+  - **(a) Cargo's band probe plates: the spec gains a bound and a form, and the site is drawn on kit_tiles in K6.**
+    - The count is whole + mended = the Probe's shield, which is at most smax. state.mjs TIER gives shields 3 and 4, so 4 is the bound. It already stands in bench.json (switch plates upTo 4) and home.json (companion plates max 4).
+    - A fifth plate would then be kit_tiles' refusal, so a new tier must add a form. That is the intended signal.
+    - Ticket-ready (K6):
+      - `cargo.json regions.arrival.band.probe gains "forms": {"row": {"upTo": 4, "first": [40, 68, 16, 16], "pitch": [20, 0], "grid": [4, 1]}} (spec-only; at, size and pitch kept).`
+      - `cargo.c build_band draws the Probe's plates with kit_tiles(C, ARR ".band.probe", whole + mended, ...): the callback draws band.plate.i with v_slot(icon, NULL, box, i < shownN) exactly as now; the words' x is the last box's x + w + gap (the same value as px0 + n·pitch + gap − (pitch − size)), read from kit_tiles' boxes.`
+      - `layout vectors gain listPitch on cargo regions.arrival.band.probe for n 0–5; tiles.test.mjs gains the case (old arithmetic, n 1–4). Shown in cargo-arrival-2200, cargo-arrival-choice and cargo-arrival-empty-trip.`
+  - **(b) Home's bay berths: they stay screen-specific (§3.3).**
+    - The row is right-aligned and has three 26-wide berths and an 18-wide portrait berth.
+    - All four nodes are always drawn (the hidden ones with no size, at the running x). The first x depends on how many are shown (902 for 3, 882 for 4).
+    - That is not a uniform list. A form would need a per-tile width and nodes beyond n, and no next screen needs that shape.
+    - It draws with v_slot_at, which the K7 ratchet does not count, so it is recorded by name instead. Ticket-ready (K7):
+      - `kit-ratchet.json carries "screenSpecific": [{"file": "home_frame.c", "what": "the bay's berths (home.json regions.bay.picture)", "ruling": "K5 gate 2b"}]; the guard test checks the list is present and each named file exists.`
+- **3. The builder's choices.**
+  - **(1) kit_nameTag takes the anchor box and the two candidate tops from the caller: accepted.**
+    - Home's three tops cannot come from one spec rule without changing values:
+      - awake: feetY + 16, or box.y − 33 − lift;
+      - sleeper: box.y − 32 with no lift;
+      - habitat: box bottom + 24, or box.y − lift − 32.
+    - The rule enum is §3.2's {below, over, auto}, and the rest of the signature is colours by palette name (slot, fill, edge, ink, out).
+    - Exact fix, in K6 (line 6b): habitat's two offsets were literals inside build_nameTag, and now they are literals in habitat.c. They go to the spec.
+  - **(2) Centring by Home's truncating rule (anchor x + aw/2 − w/2): accepted.**
+    - v_half is floor((a + 1) / 2). So habitat's old `box.x + v_half(box.w − w)` differs from it only when the anchor is odd and w is even. Habitat's anchor is regions.resident.rect, a fixed 304. Home's sites used this rule already.
+    - The header states it. No current input reaches the difference.
+  - **(3) The slot form has no edges: accepted.**
+    - It is the K4.1 rule ("the slot when it is a slot, as build_nameTag does now"), and the header declares it.
+    - Giving the slot edges with no size would add four objects in habitat-meet and incubator-hatch-skip. That changes the layer-check and checks.mjs figures, so it is not a refactor, and no one has asked for it.
+- **4. Old keys, K6, K7 and K10.1.**
+  - **The old keys stay through K6, K7 and K10.1.**
+    - They go in one later ticket, K5.1 "one source for the list numbers". It comes after K6 and K10.1 merge, and it can run beside the Library levels, because it touches no library file.
+    - The keys still have readers (grep at 06f6723c):
+      - bench-regions.mjs: switch and adds `at`/`pitch`/`icon`;
+      - habitat-regions.mjs: namer `keys.at`/`pitch`/`columns`, and nameTag `round`;
+      - vivarium-regions.mjs: nameTag;
+      - make-spec-focus-vectors.mjs;
+      - specs.test.mjs;
+      - panel-props.mjs:117: `cards.width`/`gap`;
+      - arrival.test, panel-props.test and cargo.test: the panel and strip cards.
+    - Some old keys are still read by the face itself, and those stay: slots cols/rows, plates.max, find.max, leaving faceSize/markSize/y/gap, nameTag h/px, dockRibbon pad.
+    - Until K5.1, tiles.test.mjs is what keeps the two sets of numbers equal.
+    - **UI/UX (not blocking):** the question is whether, from K5.1 on, the `forms` and `plate` objects are the specs' only statement of these numbers. The numbers do not change.
+    - Ticket-ready (K5.1):
+      - `bench-regions.mjs, habitat-regions.mjs, vivarium-regions.mjs, make-spec-focus-vectors.mjs and the station tests read the lists from forms (listPitch) and the plates from plate (plateWidth); then the duplicated keys go: namer keys at/key/pitch, home pods.slots size/gap and companion.plates size/gap/at, habitat cross.faces oneRow/twoRows/pitch/perRow/size, cargo hatch.strip.find at/pitch/size, band.leaving pitch/rightX, bench meaning.plates and adds.* at/pitch/icon, frame panel.cards x/y/h/gap/width and strip.cards x/y/w/h/gap, the nameTag min/max/pad/round of home, vivarium and habitat, dockRibbon fit.w; tiles.test.mjs keeps only the forms' own invariants; goldens, layer-check, checks.mjs, node records (empty map) and props records unchanged.`
+  - **K6 must carry these lines** (on top of k41-gate.md's and k10-gate.md's proof lines, which stand):
+    - `base: station-gate with K5 (build/ui-kit 06f6723c) merged; K6 starts from that merged tree.`
+    - `6a vocab/common/tiles.c header, node ids: "none of its own; the function names its nodes. kit_tiles calls it for every i < n in order; a function that draws the same nodes for every i keeps the screen's node order when what a tile shows changes. The namer's keys are the ruled exception: a key with no character on the page draws no node (namer.json regions.keys.ids)." Comment only.`
+    - `6b habitat.c build_tag reads the tag's two offsets from habitat.json regions.nameTag "under": 24 (the tag's top below the resident box's bottom) and "overGap": 8 (between the tag's bottom and the lifted box's top), added with these values (spec-only); no literal 24 or 8 remains in build_tag.`
+    - `6c Cargo's band probe plates as ruled in k5-gate.md 2a (forms, kit_tiles, words x from the last box, vectors, tiles.test.mjs).`
+    - `A list that kit_stage, kit_stamp or kit_pod lays out goes through kit_tiles on the spec's forms; a list with no forms gains one with the same numbers (spec-only, old keys kept, a tiles.test.mjs case of the old arithmetic, layout vectors in both implementations).`
+    - `Node-record order is not compared: two captures of one side already differ in order in 9–10 Pods states; compare as sets (empty map) and report the order figure only beside a same-side pair.`
+    - `For each converted site the proof says whether a golden state shows it, else names the node test that checks its shown box.`
+  - **K7 must carry these lines:**
+    - `base: station-gate with K5 merged (K6 too if it has merged; the ratchet's counts are taken on the tree K7 starts from and quoted per screen).`
+    - `kit-ratchet.json carries "screenSpecific" as ruled in k5-gate.md 2b; the guard test checks it.`
+    - `guard rule 8: every kit_* defined under vocab/ has a contract header naming its props, region and layer, node ids and return (the words Props, Region, Node ids, Returns); the guard test plants one header without "Node ids".`
+  - **K10.1 can start on build/props-words as soon as K5 merges.**
+    - build/props-words (664f9a16) has the tree of station-gate 2559ff4e (no diff).
+    - `git merge-tree` of 06f6723c with it is clean, exit 0.
+    - K5's props lines are vivarium-props:28 and habitat-props:92. K10.1 edits habitat-props 58–88 and does not edit vivarium-props, so every ruled K10.1 line stands.
+    - Two line changes for its ticket:
+      - `base: station-gate with K5 (build/ui-kit 06f6723c) merged; branch build/props-words. Station views only; library-props.mjs stays with the Library tickets.`
+      - `2j panel-props artOf: w = listForm(P.cards, n).first[2] (frame.json panel.cards.forms; 776, 380, 248 for n 1–3, the values of the present formula); pw = w − 32 as now; rule 5 "never a rect the spec holds". The props record comparison shows 0 differ on this line.` (This line is not trialled; the values are checked by hand for n 1–3.)
+  - **Nothing blocks merging K5 onto station-gate.**
+    - The parent 1ae5bb6a has the same tree as 2559ff4e (e07d515b), and origin/station-gate is still 2559ff4e.
+    - The commit's author and committer are both Paco Cotera <paco@cotera.org>, with no trailers. It touches 29 files, +617 −119.
+  - **UI/UX (look, not blocking; no site reaches either today):**
+    - On an anchor of odd width, the tag now sits on the truncating centre (half a pixel left).
+    - Home's tag stands 15 px under the box and 33 above it, and Habitat's 24 under and 32 above. Should the two screens share one offset?
+
+Cleanup:
+- The worktree is removed and pruned, and so are my build directories, the two instrumented copies, the base copy, the journey records, the node captures and the props records. With the worktree, free space on / went from 7.0 GB to 13 GB.
+- The clone is unchanged: build/ui-kit at 06f6723c, clean. /home/user/ds and /home/user/pw were not touched.
+- I deleted /tmp/bake-c-qdHjsF (138 MB). It was made at 21:36 UTC, during my face `node --test` run, when no other node process was running.
