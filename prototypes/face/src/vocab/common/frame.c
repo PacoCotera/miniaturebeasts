@@ -18,16 +18,6 @@ static void lower(char *s) { for (; *s; s++) if (*s >= 'A' && *s <= 'Z') *s = (c
 /* a mark whose master may not be placed: the picture when the face has it, else `standin` (a flat shape the frame draws until then) when there is one */
 static int mark(const char *id, const char *asset, const int r[4]) { return v_sprite(id, asset, r[0], r[1], r[2], r[3]); }
 
-void word_panel(const char *id, int x, int y, int w, int h, const char *fill, const char *edge) {
-  char n[96]; v_rect(id, x, y, w, h, fill);
-  if (!edge) return;
-  snprintf(n, sizeof n, "%s.et", id); v_rect(n, x, y, w, 1, edge);
-  snprintf(n, sizeof n, "%s.eb", id); v_rect(n, x, y + h - 1, w, 1, edge);
-  snprintf(n, sizeof n, "%s.el", id); v_rect(n, x, y, 1, h, edge);
-  snprintf(n, sizeof n, "%s.er", id); v_rect(n, x + w - 1, y, 1, h, edge);
-}
-void word_hairline(const char *id, int x, int y, int len, const char *c, int vertical) { if (vertical) v_rect(id, x, y, 1, len, c); else v_rect(id, x, y, len, 1, c); }
-
 /* A face's holder ring until its picture is painted (the top bar's Companion face, Habitat's cross faces): the ellipse op on the art layer, in the placing spec's colours.faceRing (away: colours.faceRingAway),
    frame.json regions.marks.face.ringWidth wide. The caller names its own region. Not a focus mark (FR8). */
 void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, int away) {
@@ -60,7 +50,7 @@ void word_topBar(void) {
   snprintf(a, sizeof a, "%s", v_sstr(F, "regions.top.slice")); int bar = a[0] && wire_asset_slot(a) >= 0;   /* the bar is on the face: its own picture carries the panel and its edge rows; the code panel and rule stay as the same nodes of no size */
   if (bar) { v_region("top", LAYER_PAINTED); v_sprite("top.bar", a, r[0], r[1], r[2], r[3]); }
   v_region("top", LAYER_CHROME);
-  snprintf(c, 24, "%s", v_scol(F, "colours.chrome")); word_panel("top", r[0], r[1], bar ? 0 : r[2], bar ? 0 : r[3], c, NULL);
+  snprintf(c, 24, "%s", v_scol(F, "colours.chrome")); kit_panel("top", r[0], r[1], r[2], r[3], c, NULL, bar);
   snprintf(c, 24, "%s", v_scol(F, "colours.rule")); v_rect("top.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], bar ? 0 : 1, c);
   snprintf(c, 24, "%s", v_scol(F, "colours.topRule"));
   for (int i = 0; i < spec_len(F, "regions.topRules.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.topRules.x.%d", i); snprintf(id, sizeof id, "top.sep.%d", i); int y0 = v_si(F, "regions.topRules.y0", 0), y1 = v_si(F, "regions.topRules.y1", 0); v_rect(id, v_si(F, p, 0), y0, 1, y1 - y0, c); }
@@ -134,7 +124,7 @@ void word_bottomLine(void) {
   snprintf(a, sizeof a, "%s", v_sstr(F, "regions.line.slice")); int bar = a[0] && wire_asset_slot(a) >= 0;   /* as the top bar's */
   if (bar) { v_region("line", LAYER_PAINTED); v_sprite("line.bar", a, r[0], r[1], r[2], r[3]); }
   v_region("line", LAYER_CHROME);
-  snprintf(c, 24, "%s", v_scol(F, "colours.chrome")); word_panel("line", r[0], r[1], bar ? 0 : r[2], bar ? 0 : r[3], c, NULL);
+  snprintf(c, 24, "%s", v_scol(F, "colours.chrome")); kit_panel("line", r[0], r[1], r[2], r[3], c, NULL, bar);
   snprintf(c, 24, "%s", v_scol(F, "colours.rule")); v_rect("line.rule", r[0], r[1], bar ? 0 : r[2], bar ? 0 : 1, c);
   snprintf(c, 24, "%s", v_scol(F, "colours.dot"));
   for (int i = 0; i < spec_len(F, "regions.separators.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.separators.x.%d", i); snprintf(id, sizeof id, "line.sep.%d", i); int y0 = v_si(F, "regions.separators.y0", 0); v_rect(id, v_si(F, p, 0), y0, 1, v_si(F, "regions.separators.y1", 0) - y0, c); }
@@ -211,7 +201,7 @@ void word_messagePlate(void) {
   int rc[4]; layout_plate_position(maxW, pad, lead, line, centre, v_si(F, "regions.plate.bottom", 0), v_si(F, "regions.plate.topOverFocal", 0), n, widest, hasf ? focal : v_focal(), rc);   /* the props may name a box; else the screen's own focal region */
   v_region("plate", LAYER_CHROME);
   snprintf(c, 24, "%s", v_scol(F, "colours.plateShadow")); v_rect("plate.shadow", rc[0], rc[1] + 3, rc[2], rc[3], c);
-  snprintf(c, 24, "%s", v_scol(F, "colours.plate")); snprintf(c2, 24, "%s", v_scol(F, "colours.plateEdge")); word_panel("plate", rc[0], rc[1], rc[2], rc[3], c, c2);
+  snprintf(c, 24, "%s", v_scol(F, "colours.plate")); snprintf(c2, 24, "%s", v_scol(F, "colours.plateEdge")); kit_panel("plate", rc[0], rc[1], rc[2], rc[3], c, c2, 0);
   v_region("plate", LAYER_TYPE); snprintf(c, 24, "%s", v_scol(F, "colours.plateText")); l = buf;
   for (int i = 0; i < n; i++) { char id[24]; snprintf(id, sizeof id, "plate.l%d", i); v_run(id, l, centre, rc[1] + lead / 2 + i * line, px, c, V_ALIGN_CENTRE); l += strlen(l) + 1; }
 }

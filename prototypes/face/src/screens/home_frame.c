@@ -22,7 +22,7 @@ static void bar_words(void) {
   char slice[96], c[24]; spec_str(H, "regions.bar.slice", slice, sizeof slice); int bar = slice[0] && wire_asset_slot(slice) >= 0;   /* the bar is on the face: its picture carries the panel and its rule; the code panel and rule stay as the same nodes of no size */
   if (bar) { v_region("bar", LAYER_PAINTED); v_sprite("bar.picture", slice, r[0], r[1], r[2], r[3]); }
   v_region("bar", LAYER_CHROME);
-  spec_str("frame", "colours.chrome", c, sizeof c); word_panel("bar", r[0], r[1], bar ? 0 : r[2], bar ? 0 : r[3], c, NULL);
+  spec_str("frame", "colours.chrome", c, sizeof c); kit_panel("bar", r[0], r[1], r[2], r[3], c, NULL, bar);
   spec_str("frame", "colours.rule", c, sizeof c); v_rect("bar.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], bar ? 0 : 1, c);
   v_region("bar", LAYER_TYPE);
   char title[40], place[V_STR], date[40], clock[16];
@@ -154,11 +154,10 @@ static void bezel_words(const char *key) {
   int r[4], win[4]; v_srect(H, v_fmt("regions.%s.rect", key), r); v_srect(H, v_fmt("regions.%s.window", key), win);
   int rad = v_si(H, "regions.bezel.radius", 10);
   v_region(key, LAYER_CHROME);
-  build_roundPanel(v_fmt("%s.panel", key), r[0], r[1], r[2], r[3], rad, v_scol(H, "regions.bezel.fill"), v_scol(H, "regions.bezel.edge"));
-  v_rect(v_fmt("%s.bevel", key), r[0] + rad, r[1] + 1, r[2] - 2 * rad, 1, v_scol(H, "regions.bezel.bevel"));   /* the bevel line on top: the first row inside the edge, between the corners */
+  kit_bezel(key, r[0], r[1], r[2], r[3], rad, v_scol(H, "regions.bezel.fill"), v_scol(H, "regions.bezel.edge"), v_scol(H, "regions.bezel.bevel"), NULL);   /* with the bevel line on top: the first row inside the edge, between the corners */
   { char f[24], e[24]; spec_str(H, v_fmt("regions.%s.placeholder.fill", key), f, sizeof f); spec_str(H, v_fmt("regions.%s.placeholder.edge", key), e, sizeof e);
     int gone = (strcmp(key, "vivarium") == 0 && home_window_painted()) || (strcmp(key, "library") == 0 && lib_painted());   /* a window is its picture once that is on the face: the placeholder stays as a node of no size */
-    word_panel(v_fmt("%s.window", key), win[0], win[1], gone ? 0 : win[2], gone ? 0 : win[3], f, e); }   /* the window: a placeholder until its picture lands */
+    kit_panel(v_fmt("%s.window", key), win[0], win[1], gone ? 0 : win[2], gone ? 0 : win[3], f, e, 0); }   /* the window: a placeholder until its picture lands */
   if (strcmp(key, "vivarium") == 0) home_window();
   if (strcmp(key, "library") == 0) library_window();
   v_region(key, LAYER_CHROME);
@@ -181,8 +180,7 @@ static void station_words(const char *key) {
   int r[4]; v_srect(H, v_fmt("regions.%s.rect", key), r);
   int rad = v_si(H, "regions.station.radius", 8), inset = v_si(H, "regions.station.pictureInset", 8), gap = v_si(H, "regions.station.columnGap", 8), x1 = v_sk(H, "regions.station.line1", 0), left = 0, lineRight = r[2] - x1;
   v_region(key, LAYER_CHROME);
-  build_roundPanel(v_fmt("%s.panel", key), r[0], r[1], r[2], r[3], rad, v_scol(H, "regions.station.fill"), v_scol(H, "regions.station.edge"));
-  v_rect(v_fmt("%s.bevel", key), r[0] + rad, r[1] + 1, r[2] - 2 * rad, 1, v_scol(H, "regions.station.bevel"));   /* the bevel line on top */
+  kit_bezel(key, r[0], r[1], r[2], r[3], rad, v_scol(H, "regions.station.fill"), v_scol(H, "regions.station.edge"), v_scol(H, "regions.station.bevel"), NULL);   /* with the bevel line on top */
   /* the picture: right-aligned `inset` in, vertically centred (the Bay's berths stand in line 1's row); the text column runs from x 12 to `gap` short of its left edge. The pictures are the host's: a picture the face has not been sent is nothing drawn. */
   int px0 = 0, py0 = 0;   /* the picture's top left, on the screen */
   if (strcmp(key, "bay") == 0) {
@@ -256,7 +254,7 @@ void home_words(void) {
   bezel_words("vivarium");
   bezel_words("library");
   { int c[4]; v_srect(H, "regions.console.rect", c); v_region("console", LAYER_CHROME);
-    build_roundPanel("console.panel", c[0], c[1], c[2], c[3], v_si(H, "regions.console.radius", 10), v_scol(H, "regions.console.fill"), v_scol(H, "regions.console.edge")); }
+    kit_bezel("console", c[0], c[1], c[2], c[3], v_si(H, "regions.console.radius", 10), v_scol(H, "regions.console.fill"), v_scol(H, "regions.console.edge"), NULL, NULL); }
   for (int i = 0; i < 4; i++) station_words(STATIONS[i]);
   ring(cur);
 }

@@ -7,6 +7,7 @@
 #include "../prim/ring.h"
 #include "../prim/prim.h"
 #include "../vocab/vocab.h"
+#include "../vocab/words.h"
 #include "../bridge/wire.h"
 #include "../face.h"
 #include <stdint.h>
@@ -295,6 +296,92 @@ static void line_words(void) {
   check(v_cap_top(50, V_ANCHOR_LINE, 17) == 50, "v_cap_top: a px with no type.pitch gives y back", "");
   check(v_cap_top(50, V_ANCHOR_CAP, 22) == 50 && v_cap_top(50, V_ANCHOR_BASE, 22) == 50 - v_cap(22) && v_cap_top(50, V_ANCHOR_MID, 21) == 50 - v_fdiv(v_cap(21), 2), "v_cap_top: the other anchors take any px", "");
 }
+/* The kit's panels and rules (K4): kit_panel, kit_hairline, kit_windowFrame and kit_bezel (with its band): the nodes they make, their boxes and ops, the forms (slot, outline only, dash, hidden, band). */
+static int kbox(const char *id, int b[4]) { return prim_node_box(v_id(id), b); }
+static int kat(const char *id, int kind, int x, int y, int w, int h) { int b[4]; return kbox(id, b) == kind && b[0] == x && b[1] == y && b[2] == w && b[3] == h; }
+static int kabsent(const char *id) { int b[4]; return kbox(id, b) < 0; }
+static uint32_t kpx(const uint8_t *px, int W, int x, int y) { const uint8_t *q = px + (y * W + x) * 4; return ((uint32_t)q[3] << 24) | ((uint32_t)q[2] << 16) | ((uint32_t)q[1] << 8) | q[0]; }
+#define KA 0x00112233u   /* the palette names kitA (fill), kitB (edge), kitC (bevel and band fill), kitD (the rule) */
+#define KB 0x00445566u
+#define KC 0x00778899u
+#define KD 0x00aabbccu
+static void kit_words(void) {
+  face_init(); prim_palette_add("kitA", KA); prim_palette_add("kitB", KB); prim_palette_add("kitC", KC); prim_palette_add("kitD", KD);
+  /* kit_panel: the fill and the four edges, in that order, the edge rows inside the box */
+  prim_begin(); int n0 = table_nodes();
+  v_region("kp.shown", LAYER_CHROME); kit_panel("kp.shown", 10, 20, 30, 40, "kitA", "kitB", 0);
+  v_region("kp.noedge", LAYER_CHROME); kit_panel("kp.noedge", 10, 20, 30, 40, "kitA", NULL, 0);
+  v_region("kp.outline", LAYER_CHROME); kit_panel("kp.outline", 10, 20, 30, 40, NULL, "kitB", 0);
+  v_region("kp.slot", LAYER_CHROME); kit_panel("kp.slot", 10, 20, 30, 40, "kitA", "kitB", 1);
+  v_region("kp.slotnoedge", LAYER_CHROME); kit_panel("kp.slotnoedge", 10, 20, 30, 40, "kitA", NULL, 1);
+  int n1 = table_nodes(); prim_end();
+  check(n1 - n0 == 5 + 1 + 4 + 5 + 1, "kit_panel: five nodes with an edge, one without, four for an outline only, the same five as a slot", "");
+  check(kat("kp.shown", FN_RECT, 10, 20, 30, 40) && kat("kp.shown.et", FN_RECT, 10, 20, 30, 1) && kat("kp.shown.eb", FN_RECT, 10, 59, 30, 1) && kat("kp.shown.el", FN_RECT, 10, 20, 1, 40) && kat("kp.shown.er", FN_RECT, 39, 20, 1, 40), "kit_panel: the fill is the box, the edges its four outer rows", "");
+  check(kat("kp.noedge", FN_RECT, 10, 20, 30, 40) && kabsent("kp.noedge.et") && kabsent("kp.noedge.er"), "kit_panel: edge NULL leaves the edges out", "");
+  check(kabsent("kp.outline") && kat("kp.outline.et", FN_RECT, 10, 20, 30, 1) && kat("kp.outline.eb", FN_RECT, 10, 59, 30, 1) && kat("kp.outline.el", FN_RECT, 10, 20, 1, 40) && kat("kp.outline.er", FN_RECT, 39, 20, 1, 40), "kit_panel: fill NULL draws the four edge rects only", "");
+  check(kat("kp.slot", FN_RECT, 10, 20, 0, 0) && kat("kp.slot.et", FN_RECT, 10, 20, 0, 0) && kat("kp.slot.eb", FN_RECT, 10, 20, 0, 0) && kat("kp.slot.el", FN_RECT, 10, 20, 0, 0) && kat("kp.slot.er", FN_RECT, 10, 20, 0, 0) && kat("kp.slotnoedge", FN_RECT, 10, 20, 0, 0) && kabsent("kp.slotnoedge.et"), "kit_panel: a slot is the same nodes, every one at (x, y) with no size", "");
+  /* kit_hairline: solid rect, dashed composed picture, hidden dashed keeps its box with no ops */
+  static const int D[2] = { 3, 2 };
+  prim_begin(); n0 = table_nodes();
+  v_region("kh.h", LAYER_CHROME); kit_hairline("kh.h", 5, 6, 24, "kitA", 0, NULL);
+  v_region("kh.v", LAYER_CHROME); kit_hairline("kh.v", 5, 6, 24, "kitA", 1, NULL);
+  v_region("kh.dh", LAYER_CHROME); kit_hairline("kh.dh", 5, 6, 24, "kitA", 0, D); char dh[200]; snprintf(dh, sizeof dh, "%s", prim_ops());
+  v_region("kh.dv", LAYER_CHROME); kit_hairline("kh.dv", 5, 6, 24, "kitA", 1, D); char dv[200]; snprintf(dv, sizeof dv, "%s", prim_ops());
+  v_region("kh.hid", LAYER_CHROME); kit_hairline("kh.hid", 5, 6, 24, NULL, 0, D); char hid[200]; snprintf(hid, sizeof hid, "%s", prim_ops());
+  v_region("kh.bad", LAYER_CHROME); kit_hairline("kh.bad", 5, 6, 24, "kitA", 0, (const int[2]){ 0, 2 });
+  n1 = table_nodes(); prim_end();
+  check(n1 - n0 == 5, "kit_hairline: one node each (a dash with on 0 is refused and makes none)", "");
+  check(kat("kh.h", FN_RECT, 5, 6, 24, 1) && kat("kh.v", FN_RECT, 5, 6, 1, 24), "kit_hairline: solid is a rect, len x 1 or 1 x len", "");
+  check(kat("kh.dh", FN_COMPOSED, 5, 6, 24, 1) && strcmp(dh, "[[\"dash\",0,0,24,\"h\",3,2,\"kitA\"]]") == 0, "kit_hairline: dashed is one composed picture with the dash op", dh);
+  check(kat("kh.dv", FN_COMPOSED, 5, 6, 1, 24) && strcmp(dv, "[[\"dash\",0,0,24,\"v\",3,2,\"kitA\"]]") == 0, "kit_hairline: a vertical dash runs down", dv);
+  check(kat("kh.hid", FN_COMPOSED, 5, 6, 24, 1) && strcmp(hid, "[]") == 0 && kabsent("kh.bad"), "kit_hairline: hidden keeps the box with the ops []", hid);
+  { uint8_t px[24 * 4]; memset(px, 0, sizeof px); check(prim_compose(px, 24, 1, "[[\"dash\",0,0,24,\"h\",3,2,\"kitA\"]]") >= 0, "kit_hairline: the ops compose", "");
+    int ok = 1; for (int i = 0; i < 24; i++) ok &= (i % 5 < 3) ? kpx(px, 24, i, 0) == (0xff000000u | KA) : kpx(px, 24, i, 0) == 0; check(ok, "kit_hairline: 3 on, 2 off, from the first pixel", ""); }
+  /* kit_windowFrame: the corners outside the radius in the ground, a 1 px edge on the radius */
+  prim_begin(); n0 = table_nodes();
+  v_region("kw.a", LAYER_CHROME); kit_windowFrame("kw.a", 100, 50, 64, 48, 6, "kitA", "kitB"); char kw[300]; snprintf(kw, sizeof kw, "%s", prim_ops());
+  n1 = table_nodes(); prim_end();
+  check(n1 - n0 == 1 && kat("kw.a", FN_COMPOSED, 100, 50, 64, 48), "kit_windowFrame: one composed node of the box", "");
+  check(strcmp(kw, "[[\"rcorners\",0,0,64,48,6,\"kitA\"],[\"rrect\",0,0,64,48,6,\"\",\"kitB\"]]") == 0, "kit_windowFrame: the corners op, then the edge op", kw);
+  /* kit_bezel: the nine-slice of the 2r + 4 source with a bevel line; h 0 is no band */
+  static const kit_band_t B0 = { 0, 0, "kitC", "kitD" }, BT = { 0, 10, "kitC", "kitD" }, BB = { 1, 10, "kitC", NULL }, BX = { 0, 0, NULL, NULL };
+  char s0[200], s1[200], sb[2000];
+  prim_begin(); n0 = table_nodes();
+  v_region("kb.a", LAYER_CHROME); kit_bezel("kb.a", 40, 30, 200, 90, 10, "kitA", "kitB", "kitC", NULL); snprintf(s0, sizeof s0, "%s", prim_ops());
+  v_region("kb.nb", LAYER_CHROME); kit_bezel("kb.nb", 40, 30, 200, 90, 10, "kitA", "kitB", NULL, NULL);
+  v_region("kb.z", LAYER_CHROME); kit_bezel("kb.z", 40, 30, 200, 90, 10, "kitA", "kitB", "kitC", &B0); snprintf(s1, sizeof s1, "%s", prim_ops());
+  v_region("kb.x", LAYER_CHROME); kit_bezel("kb.x", 40, 30, 200, 90, 10, "kitA", "kitB", "kitC", &BX);
+  v_region("kb.t", LAYER_CHROME); kit_bezel("kb.t", 40, 30, 200, 90, 6, "kitA", "kitB", "kitC", &BT);
+  v_region("kb.b", LAYER_CHROME); kit_bezel("kb.b", 40, 30, 200, 90, 6, "kitA", "kitB", NULL, &BB); snprintf(sb, sizeof sb, "%s", prim_ops());
+  v_region("kb.sm", LAYER_CHROME); kit_bezel("kb.sm", 40, 30, 200, 14, 6, "kitA", "kitB", NULL, &BT);
+  v_region("kb.r0", LAYER_CHROME); kit_bezel("kb.r0", 40, 30, 200, 90, 0, "kitA", "kitB", NULL, NULL);
+  n1 = table_nodes(); prim_end();
+  check(n1 - n0 == 2 + 1 + 2 + 2 + 2 + 1, "kit_bezel: the panel and its bevel, a band adds no node, a bezel under its insets or a radius under 1 makes none", "");
+  check(kat("kb.a.panel", FN_NINE, 40, 30, 200, 90) && kat("kb.a.bevel", FN_RECT, 50, 31, 180, 1) && kabsent("kb.nb.bevel") && kat("kb.nb.panel", FN_NINE, 40, 30, 200, 90), "kit_bezel: <id>.panel and, with a bevel, <id>.bevel from x + r, y + 1, w - 2r long", "");
+  check(strcmp(s0, "[[\"rrect\",0,0,24,24,10,\"kitA\",\"kitB\"]]") == 0, "kit_bezel: the source is a 2r + 4 box of the fill and edge", s0);
+  check(strcmp(s0, s1) == 0 && kat("kb.z.panel", FN_NINE, 40, 30, 200, 90) && kat("kb.z.bevel", FN_RECT, 50, 31, 180, 1) && kat("kb.x.panel", FN_NINE, 40, 30, 200, 90), "kit_bezel: a band of h 0 is no band: the same source and nodes", "");
+  check(kat("kb.t.panel", FN_NINE, 40, 30, 200, 90) && kat("kb.t.bevel", FN_RECT, 46, 31, 188, 1) && kat("kb.b.panel", FN_NINE, 40, 30, 200, 90) && kabsent("kb.b.bevel") && kabsent("kb.sm.panel") && kabsent("kb.r0.panel"), "kit_bezel: a banded bezel is the same two nodes", "");
+  { /* the band's pixels: the banded source against the plain one of the same size */
+    int r = 6, W = 2 * r + 4, Ht = 12 + r + 4; char plain[200]; snprintf(plain, sizeof plain, "[[\"rrect\",0,0,%d,%d,%d,\"kitA\",\"kitB\"]]", W, Ht, r);
+    uint8_t *pa = (uint8_t *)calloc((size_t)W * Ht * 4, 1), *pb = (uint8_t *)calloc((size_t)W * Ht * 4, 1); int c = W / 2;
+    /* BT: the top band, h 10, rule: the source is 12 + 6 + 4 tall. The banded ops are in prim_prim ops of the last top call, rebuilt here from the same call */
+    prim_begin(); v_region("kb.t2", LAYER_CHROME); kit_bezel("kb.t2", 0, 0, 200, 90, r, "kitA", "kitB", NULL, &BT); char top[2000]; snprintf(top, sizeof top, "%s", prim_ops()); prim_end();
+    check(prim_compose(pa, W, Ht, plain) >= 0 && prim_compose(pb, W, Ht, top) >= 0, "kit_bezel: both sources compose", "");
+    int shape = 1, edge = 1, inside = 1; for (int y = 0; y < Ht; y++) for (int x = 0; x < W; x++) {
+      uint32_t a = kpx(pa, W, x, y), b = kpx(pb, W, x, y);
+      if ((a >> 24) != (b >> 24)) shape = 0;              /* the same pixels are painted */
+      if ((a & 0xffffff) == KB && a >> 24 && b != a) edge = 0;   /* the edge stays the edge's */
+      if (y >= 12 && b != a) inside = 0;                  /* below the band's rows nothing changes */
+    }
+    check(shape && edge && inside, "kit_bezel: a band paints inside the outline only: the shape and the edge are the plain source's, nothing below the band changes", "");
+    check(kpx(pb, W, c, 0) == (0xff000000u | KB) && kpx(pb, W, c, 1) == (0xff000000u | KC) && kpx(pb, W, c, 10) == (0xff000000u | KC) && kpx(pb, W, c, 11) == (0xff000000u | KD) && kpx(pb, W, c, 12) == (0xff000000u | KA), "kit_bezel: the edge row, then h rows of the band's fill, then the rule, then the body", "");
+    check(kpx(pb, W, 1, 1) == kpx(pa, W, 1, 1) && kpx(pb, W, 1, 6) == (0xff000000u | KC) && kpx(pb, W, 1, 11) == (0xff000000u | KD), "kit_bezel: the band follows the corner arc (row 1 starts where the arc leaves the edge, row 6 and the rule reach the edge column)", "");
+    free(pa); free(pb);
+    int Hb = r + 11 + 4; uint8_t *pc = (uint8_t *)calloc((size_t)W * Hb * 4, 1); check(prim_compose(pc, W, Hb, sb) >= 0, "kit_bezel: the bottom source composes", "");
+    check(kpx(pc, W, c, Hb - 1) == (0xff000000u | KB) && kpx(pc, W, c, Hb - 2) == (0xff000000u | KC) && kpx(pc, W, c, Hb - 11) == (0xff000000u | KC) && kpx(pc, W, c, Hb - 12) == (0xff000000u | KA) && kpx(pc, W, c, 1) == (0xff000000u | KA), "kit_bezel: side 1 is the same from the bottom edge, and the rule NULL leaves no rule row", "");
+    free(pc);
+  }
+}
 int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";
   focus_vectors(dir);
@@ -305,6 +392,7 @@ int main(int argc, char **argv) {
   empty_id();
   layout_vectors(dir, argc > 2 ? argv[2] : "../ui/specs/station");
   line_words();
+  kit_words();
   printf("face_test: %d checks, %d failed\n", checks, fails);
   return fails ? 1 : 0;
 }

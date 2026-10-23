@@ -1,4 +1,4 @@
-/* Home's compositions (lvgl-switch.md §2.2: a composition is a build of words in the screen's binding table, never a word): the module (a panel, its engraved word, its lamp), the name tag (a panel and text), the rounded panel and the
+/* Home's compositions (lvgl-switch.md §2.2: a composition is a build of words in the screen's binding table, never a word): the module (a panel, its engraved word, its lamp), the name tag (a panel and text) and the
    lamps they use. Spec: the `home` spec. A picture the host has not sent is a slot not yet filled: nothing is drawn. A flat plate is drawn only where the spec itself names the colours (the lamps, the knob, the name tag). */
 #include "screens.h"
 #include "../vocab/vocab.h"
@@ -55,8 +55,8 @@ void build_nameTag(const char *sp, const char *glass, const char *name, const in
   if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
   const char *ink = g_tagFlash ? v_scol("frame", "colours.flashInk") : v_scol(sp, "colours.nameTag.text");
-  if (g_tagSlot) { v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, 0, 0, v_scol(sp, "colours.nameTag.fill"), NULL); }
-  else { v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, g_tagFlash ? v_scol("frame", "colours.flash") : v_scol(sp, "colours.nameTag.fill"), v_scol(sp, "colours.nameTag.edge")); }
+  if (g_tagSlot) { v_region("nameTag", LAYER_CHROME); kit_panel("nameTag", x, y, w, h, v_scol(sp, "colours.nameTag.fill"), NULL, 1); }
+  else { v_region("nameTag", LAYER_CHROME); kit_panel("nameTag", x, y, w, h, g_tagFlash ? v_scol("frame", "colours.flash") : v_scol(sp, "colours.nameTag.fill"), v_scol(sp, "colours.nameTag.edge"), 0); }
   /* the name's cap top: 5 px under the tag's top (the 24 px tag), or from the spec's line top (regions.nameTag.lineTop in the tag's rectangle: one mibi up close's 32 px tag at 20 px) */
   int lt = spec_int(sp, "regions.nameTag.lineTop", 0);
   v_region("nameTag", LAYER_TYPE); v_line_at("nameTag.text", g_tagSlot ? "" : name, x + v_half(w - tw), lt > 0 ? y + (lt - v_sk(sp, "regions.nameTag.rect", 1)) : y + 5, lt > 0 ? V_ANCHOR_LINE : V_ANCHOR_CAP, px, ink, V_ALIGN_LEFT);
@@ -73,7 +73,7 @@ void build_nameTagAt(const char *sp, const char *glass, const char *name, int fx
   if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
   const char *ink = v_scol(sp, "colours.nameTag.text");
-  v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, v_scol(sp, "colours.nameTag.fill"), v_scol(sp, "colours.nameTag.edge"));
+  v_region("nameTag", LAYER_CHROME); kit_panel("nameTag", x, y, w, h, v_scol(sp, "colours.nameTag.fill"), v_scol(sp, "colours.nameTag.edge"), 0);
   v_region("nameTag", LAYER_TYPE); v_line_at("nameTag.text", name, x + v_half(w - tw), y + 5, V_ANCHOR_CAP, px, ink, V_ALIGN_LEFT);
 }
 
@@ -108,14 +108,3 @@ void build_bayStrip(const char *sp, const char *cur, int box[4]) {
   }
 }
 
-/* A rounded panel drawn by the face's own primitives, palette-exact: a nine-slice of a face-owned source (corners 1:1, the straight parts tiled, never scaled), the way the focus ring is. The source is a box of 2r + 4 on a side with corners of radius r (r >= 1), its whole
-   in `fill` and a 1 px `edge` on its outline; the node is the w x h panel at (x, y) (each at least 2r). `edge` NULL leaves the outline out. */
-void build_roundPanel(const char *id, int x, int y, int w, int h, int r, const char *fill, const char *edge) {
-  int S = 2 * r + 4; char ops[160];
-  if (w < 2 * r || h < 2 * r || r < 1) { v_error("build_roundPanel: a panel under 2r on an axis, or a radius under 1, cannot be drawn"); return; }
-  snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"%s\"]]", S, S, r, fill, edge ? edge : "");
-  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
-  int src = prim_source(prim_ops(), S, S);
-  if (src < 0) { v_error("build_roundPanel: the panel's source picture is refused"); return; }
-  prim_node(v_id(id), FN_NINE, x, y, w, h, ((uint32_t)r << 24) | ((uint32_t)r << 16) | ((uint32_t)r << 8) | (uint32_t)r, src, 0);
-}
