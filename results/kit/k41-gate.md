@@ -1,0 +1,115 @@
+# K4.1 gate (architect, 2026-10-23 11:32 Mexico City), 2ddc2113
+
+What I measured. I used a detached worktree at 2ddc2113 with a private FACE_BUILD_DIR, plus copies of 91369ed4 and 2ddc2113 made outside the clone with `git archive`. All of them are removed afterwards.
+- `build.sh all` at 2ddc2113: layout 386 cases, 0 differ; face_test 14799 checks, 0 failed (14785 at 91369ed4); native hash 47e09df8; 0 warnings in the build log.
+- The Station journey on each side, each written to its own private STATION_CHECKS file. I ran checks.mjs on each of those records, and layer-check on each side.
+- Also: goldens `--check`, `node --test` in two groups, the play journey, the face guard, place-masters `--check`, and the public guard against origin/station-gate (b0fc6c77).
+- Node records on all 181 golden states, captured on an instrumented copy of each side. I read the builder's instr.py and nodes.mjs before running them. I compared the records four ways:
+  - with the builder's setcmp.mjs and map.json;
+  - with the gate's literal zero list;
+  - with an empty map;
+  - against the builder's own captures.
+- Four faults planted in a copy of the after records.
+
+- **K4.1 (T-20261023-277) as built: PASS.**
+  - **2a away_frame: as ruled.** The code is `kit_panel("away", r[0], r[1], r[2], r[3], fill, edge, 0)`. home.test.mjs:322 reads away, away.et and away.el with the same boxes, and :326 reads `away`. 20 records are renamed (5 ids in 4 states). Nothing else in the tests names the old ids (grep).
+  - **2b livingWindow.c: as ruled.**
+    - **The bezel:** kit_panel, then the four kit_hairline calls with the same ids, boxes and order. 124 bezel.edge.* records are renamed. bezel.light and bezel.shade are 124 records, unchanged.
+    - **The glass edges:** the outline-only kit_panel with slot = painted, and 124 records renamed.
+      - The glass is painted in all 31 states, so every glass edge record has no size.
+      - .eb and .er move to (g0, g1): 62 records. .et and .el are unchanged: 62 records.
+  - **2d kit_bezelComposed: as ruled.**
+    - Signature, ops, no band, and the three refusals with no node, as ruled.
+    - It has a contract header in bezel.c and a declaration in words.h.
+    - panel.c calls it, with the v_error check before the call. As ruled, the check does not return.
+    - panel.bezel.* is 14 records in 7 states, unchanged with the ops hash.
+    - face_test checks the ops with a bevel, without one, and with edge NULL; the three refusals; and that a 20 × 20 box at r 10 is drawn.
+  - **2e slot_outline: as ruled.**
+    - ground NULL gives `[["rrect",0,0,w,h,radius,"","<edge>"]]`. The header gives this in one sentence, and face_test checks the exact string.
+    - slot_outline is deleted. The 176 composed slot records in the 32 Home states are unchanged, ops hash included.
+  - **2f the window placeholder: as ruled.** It is now `kit_panel(..., win[2], win[3], f, e, gone)`. Both windows are gone in all 32 Home states, so the 8 edge ids make 256 records normalised. The two fills, vivarium.window and library.window, are unchanged.
+  - **2g the mapped proof: as ruled.**
+    - setcmp.mjs takes the third argument, uses FNV-1a 32 and renames in the before file only.
+    - It normalises only a record with w × h = 0, on either side, and compares as sets.
+    - It prints the number of records each entry touched. The zero list is covered under choice (1).
+  - **3.3 v_scol_or and v_token: as ruled.**
+    - Both are in vocab.c, with contract headers beside v_scol: a 16 × 24 ring and a static unsigned counter.
+    - **panel.c:** col, rcol and pcol are deleted. They had 25 call sites, not 21 (my count on 91369ed4: col 3, rcol 13, pcol 9). All 25 are now v_token, with v_scol_or where the gate said.
+    - **cargo.c:** fcol is deleted. It had one site (see choice 2).
+    - **The cosmetic lines are done:** build_bay's g/e, and bar_words's chrome/rule.
+    - **face_test:** v_scol_or present, absent, "" and with no spec; v_token for a named role, a bare name and an empty role; and that a result stays valid for 15 calls.
+  - **3.4 the plain rules: as ruled.** top.rule, line.rule, bar.rule, top.sep.N, line.sep.N (560 records), idle.strip.rule (9), specimen.cut and `<region>.groundTop` are now kit_hairline, each with the same id, the same box when shown and the same order. page.c is untouched.
+  - **The band refusals (band-ruling.md): as ruled.**
+    - Both v_error texts are verbatim. The checks sit with the band's other checks, before the source is made.
+    - face_test has the three cases: kb.tb makes no node; kb.bb keeps `.bevel` at (46, 31, 188, 1); kb.r1 is refused at h 4 and kb.r1ok is drawn at h 5.
+    - A bottom band is unchanged, and no screen wires a band.
+  - **Review note 1: done.** `ring_in_round` is exported from prim/ring.c and declared with a header in ring.h. Its body is the same as both old copies (compared line by line), and bezel.c's copy is gone.
+  - **Review note 3: done.** A bezel refused for its height still draws its bevel (face_test kb.short: no panel, bevel at (46, 31, 188, 1)).
+  - **Not touched, as the ticket says:** library.c, page.c and create.c (roll.clash, 2c). None of them is in the diff.
+- **The mapped proof is sound, and the counts are right.** My captures give the same numbers as the builder's.
+  - **Builder's setcmp and map:** 181 states, 15767 nodes, 0 differ as sets.
+    - Renamed: away 20, bezel 124, glass edges 124 (268 in all).
+    - Normalised, the same on both sides: glass edges 124, windows 256, top.rule 140, line.rule 140, bar.rule 32, groundTop 54 (glass 31, window 14, vivarium 9).
+  - **The 13 states that differ in order are capture order.**
+    - My base against the builder's base also differs in order in 13 states, and the builder's two base runs differ in 9.
+    - The builder's base run 2 against its after capture, mapped, differs in order in 0 states.
+    - My captures and the builder's differ in 0 as sets on each side.
+  - **The gate's literal list** (with vivarium.window and library.window): 0 differ, windows 320. The extra 64 are the two fills, which have no size and are unchanged on both sides. The expected 256 is the eight edge ids, so the list in 2g was the error, not the count (choice 1).
+  - **Empty map:** 181 states differ as sets. The map is needed for the result.
+  - **Planted faults:** I planted four:
+    - a shown away.eb moved 1 px;
+    - a hidden vivarium.window.eb given 1 × 1;
+    - a shown line.sep.0 shortened;
+    - an ops hash changed on bezel.light.t.
+
+    The comparison reports 4 states that differ, each in its own state, so a shown box cannot be masked.
+  - **Coverage (not blocking).** No golden state shows the glass edges, the window placeholders, top.rule, line.rule, bar.rule or groundTop: every record of those ids has no size. specimen.cut is in no golden state.
+    - Their shown boxes are checked by reading: the rects are the same as before, and the same kit_panel and kit_hairline forms are covered in face_test.
+    - home.test.mjs:295 checks the shown library.window.
+    - The journey's regions cover specimen.cut.
+  - **The other proofs:**
+    - Goldens match on all 10 screens.
+    - layer-check is byte-identical: my base against my after, and my base against the builder's base file.
+    - checks.mjs is byte-identical as a whole. This time the placeholders field does not differ either.
+    - Type log: the type arrays of all 44 shots are identical.
+    - **Regions as sets:** 2 of 44 shots differ, both at the excluded animated sites. In pods-identifying the specimen scan line is at y 293 in the base and 294 after; 294 is a new value, but specimen.cut is the same v_rect call as before. In page-hatch the juvenile is at 269 and 272. Beyond those, the whole records differ only in frameMs.
+    - `node --test`: 654 tests, 654 pass; and 931 tests, 930 pass, 0 fail, 1 skipped.
+    - The Station journey printed "journey ok" (0 FAIL lines), and the play journey "play journey ok".
+    - Face guard ok; public guard ok, exit 0; masters 1006 placed, 0 problems.
+  - **The builder's base checks and type log were read from the shared file.** Its base.sh ran checks.mjs at 91369ed4 without first running the journey there, so it read /tmp/mb-station-checks.json, which an unknown run had written.
+    - My own base journey gives the same checks output, byte for byte, so the result stands.
+    - The rule goes into K5 (section 4).
+- **3. The builder's six choices.**
+  - **(1) The zero list holds the edge ids only (256): accepted.**
+    - The list in 2g now reads: glass.et/.eb/.el/.er; vivarium.window.et/.eb/.el/.er; library.window.et/.eb/.el/.er; top.rule; line.rule; bar.rule; glass.groundTop, vivarium.groundTop, window.groundTop.
+    - The counts stand. A zero entry names only an id whose no-size records change.
+  - **(2) fcol has 1 call site, not 2: accepted.** At 91369ed4, cargo.c:349 is its only call. The gate's "2 sites" was wrong.
+  - **(3) The bevel is kept only on a bezel shorter than its two insets: accepted.**
+    - With no band the insets are 2r, which is the ticket's case exactly.
+    - When w < 2r the bevel would be w − 2r long, a negative length, and when r < 1 there are no corners, so both stay refused with no node.
+  - **(4) The bevel-row refusal applies only when the panel would be drawn: accepted.**
+    - A refused panel has no band row for the bevel to fall on, so the bevel is choice (3)'s.
+    - A top band with a bevel is checked first, and is refused in every case.
+  - **(5) face_test kb.t now passes bevel NULL: accepted.** Its old expectation, a bevel over a top band, is what band-ruling.md refuses. kb.t now checks the banded panel alone, and kb.tb checks the refusal.
+  - **(6) The three kit_bezelComposed texts were worded by the builder: accepted.** The gate gave no texts. Each text names the function and the bound, as kit_bezel's do.
+  - **UI/UX (look, not blocking; no site reaches it):** should a bezel too short for its panel still show its bevel line on its own? It does today, as before K4.
+- **4. Merge and K5.**
+  - **Nothing blocks merging K4.1 onto station-gate.**
+    - The parent 91369ed4 has the same tree as b0fc6c77 (bec20f7b), and origin/station-gate is still b0fc6c77.
+    - The commit's author and committer are both Paco Cotera <paco@cotera.org>, with no trailers. It touches 17 files, +134 −88.
+    - All the checks above are green.
+  - **K5's ticket must carry these lines:**
+    - `base: station-gate with K4.1 (build/ui-kit 2ddc2113) merged; K5 starts from that merged tree, on build/ui-kit.`
+    - `Baselines are captured on that merged tree: node records with ops hashes on all 181 golden states; the type log; layer-check; checks.mjs with " · placeholders registered N" stripped; goldens.`
+    - `Each side's checks.mjs and type log read the record written by that side's own Station journey run, with a private STATION_CHECKS file; never the shared /tmp/mb-station-checks.json.`
+    - `Node records are compared with the mapped setcmp.mjs (K4.1) and an empty map. Any id map or zero entry K5 needs is ruled by the architect first, and a zero entry names only ids whose no-size records change.`
+    - `Regions are compared as sets without the three animated sites (pods-identifying specimen scan line, page-meet resident, page-hatch juvenile; t274-275-gate.md).`
+    - `For each converted site the proof says whether a golden state shows it; a site no golden state shows names the node test that checks its shown box.`
+    - `kit_nameTag draws its plate with kit_panel: the filled form, and the slot when it is a slot, as build_nameTag does now.`
+    - `The lines K5 touches read colours with v_scol, v_scol_or or v_token; no new local colour helper, no spec_str colour buffer.`
+    - `A rounded panel is kit_bezel (nine-slice) or kit_bezelComposed (one composed picture), one form per site; a top band is passed with bevel NULL.`
+
+Cleanup:
+- The worktree is removed and pruned, and my copies, build directories and captures are deleted. The clone is unchanged: build/ui-kit at 2ddc2113, clean. /home/user/pw was not touched.
+- A `git fetch origin station-gate` I ran before the public guard wrote nothing: FETCH_HEAD and the remote ref are as they were.
+- The atlas-check-*, mb-caddy-*, placed-*, masters-* and playwright-artifacts-* directories in /tmp (about 38 MB) were left by `node --test` runs. Some may be from mine, but the other runs on this disk were testing at the same times, so I left them all.
