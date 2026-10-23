@@ -247,6 +247,30 @@ static void empty_id(void) {
   check(table_nodes() == before, "empty id: and make no node", "");
   prim_end();
 }
+/* v_line: the cap top is (pitch - cap) / 2 under the line top, the pitch is frame.json type.pitch.<px>; left, centre and right put the edge, the middle and the end of the string on x; a px with no pitch draws nothing and says so. */
+static int type_y(const char *id) {   /* the y of the type region `id` in the log */
+  static char b[65536]; int n = prim_log_json(b, (int)sizeof b); char key[96]; snprintf(key, sizeof key, "{\"id\":\"%s\",\"layer\":\"type\",\"rect\":[", id);
+  const char *p = n > 0 ? strstr(b, key) : NULL; if (!p) return -9999; p += strlen(key); while (*p != ',') p++; return atoi(p + 1);
+}
+static int type_x(const char *id) {
+  static char b[65536]; int n = prim_log_json(b, (int)sizeof b); char key[96]; snprintf(key, sizeof key, "{\"id\":\"%s\",\"layer\":\"type\",\"rect\":[", id);
+  const char *p = n > 0 ? strstr(b, key) : NULL; return p ? atoi(p + strlen(key)) : -9999;
+}
+static void line_words(void) {
+  int w = v_measure("Hello", 16), w28 = v_measure("Hello", 28);
+  prim_begin();
+  v_region("vl.l", LAYER_TYPE); check(v_line("vl.l", "Hello", 100, 50, 16, "ink", V_ALIGN_LEFT) == w, "v_line: returns the width", "");
+  v_region("vl.c", LAYER_TYPE); v_line("vl.c", "Hello", 100, 50, 16, "ink", V_ALIGN_CENTRE);
+  v_region("vl.r", LAYER_TYPE); v_line("vl.r", "Hello", 100, 50, 16, "ink", V_ALIGN_RIGHT);
+  v_region("vl.t", LAYER_TYPE); v_line("vl.t", "Hello", 100, 50, 28, "ink", V_ALIGN_LEFT);
+  v_region("vl.e", LAYER_TYPE); v_text("vl.e", "Hello", 100, 50 + (20 - v_cap(16)) / 2, w, 16, "ink");
+  v_region("vl.f", LAYER_TYPE); v_text("vl.f", "Hello", 100, 50 + (36 - v_cap(28)) / 2, w28, 28, "ink");
+  v_region("vl.n", LAYER_TYPE); check(v_line("vl.n", "Hello", 100, 50, 17, "ink", V_ALIGN_LEFT) == 0, "v_line: a px with no type.pitch draws nothing", "");
+  prim_end();
+  check(type_y("vl.l") == type_y("vl.e"), "v_line: 16 px puts its cap top (20 - cap) / 2 under the line top", "");
+  check(type_y("vl.t") == type_y("vl.f"), "v_line: 28 px puts its cap top (36 - cap) / 2 under the line top", "");
+  check(type_x("vl.l") == 100 && type_x("vl.c") == 100 - v_half(w) && type_x("vl.r") == 100 - w, "v_line: left, centre and right", "");
+}
 int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";
   focus_vectors(dir);
@@ -256,6 +280,7 @@ int main(int argc, char **argv) {
   price_width();
   empty_id();
   layout_vectors(dir, argc > 2 ? argv[2] : "../ui/specs/station");
+  line_words();
   printf("face_test: %d checks, %d failed\n", checks, fails);
   return fails ? 1 : 0;
 }

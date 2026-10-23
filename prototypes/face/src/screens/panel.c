@@ -59,7 +59,7 @@ static void build_plate(void) {
 }
 static void build_title(void) {
   int r[4]; v_srect(F, RP ".title.rect", r); const char *t = v_pstr("overlay.regions.title"); int px = v_si(F, RP ".title.px", 28), w = v_measure(t, px);
-  v_region("panelTitle", LAYER_TYPE); v_text("panel.title", t, r[0] + v_half(r[2] - w), cap_top(px, v_si(F, RP ".title.lineTop", r[1]), 36), w, px, rcol("title.colour"));
+  v_region("panelTitle", LAYER_TYPE); v_line("panel.title", t, r[0] + v_half(r[2] - w), v_si(F, RP ".title.lineTop", r[1]), px, rcol("title.colour"), V_ALIGN_LEFT);
 }
 static const char *GLYPH[4] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86", "\xe2\xa7\x97" };   /* ⚡ ❀ ◆ ⧗, the price's closed table (vocab.c PRICE) */
 /* the cost groups on rubber chips: each "glyph figure" of the price string on a chip nine-sliced round it (6 px in, 8 between groups); a short figure in `need`, a gain in `turn` */
@@ -103,13 +103,12 @@ static void build_card(int i, int n, int focused) {
   { const char *mk = v_pstr(v_fmt("overlay.regions.cards.%d.mark", i)); int ms = v_sk(F, RP ".card.mark.size", 0); if (ms <= 0) ms = 24;
     v_name("cardMarks"); v_slot_at(v_fmt("card.%d.mark", i), mk, NULL, r[0] + w - 40, r[1] + v_sk(F, RP ".card.mark.at", 1), ms, ms, 1, r[0] + w - 40, r[1] + 16); }
   /* the name: 20, the option's verb */
-  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = v_si(F, RP ".card.name.px", 20), sw = v_measure(s, px);
-    v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.name", i), s, r[0] + v_sk(F, RP ".card.name.at", 0), cap_top(px, r[1] + v_sk(F, RP ".card.name.at", 1), 28), sw, px, rcol(dim ? "card.name.colourDim" : "card.name.colour")); }
+  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); v_region("cardText", LAYER_TYPE); v_line(v_fmt("card.%d.name", i), s, r[0] + v_sk(F, RP ".card.name.at", 0), r[1] + v_sk(F, RP ".card.name.at", 1), v_si(F, RP ".card.name.px", 20), rcol(dim ? "card.name.colourDim" : "card.name.colour"), V_ALIGN_LEFT); }
   /* the costs, on their chips; free: nothing drawn */
   build_costs(i, r[0] + v_sk(F, RP ".card.costs.at", 0), r[1] + v_sk(F, RP ".card.costs.at", 1), v_pstr(v_fmt("overlay.regions.cards.%d.cost", i)), v_pstr(v_fmt("overlay.regions.cards.%d.short", i)), v_pbool(v_fmt("overlay.regions.cards.%d.gain", i), 0));
   /* the line: the one thing the picture cannot say, 16; a loss shows it in `need` */
-  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = v_si(F, RP ".card.line.px", 16), sw = v_measure(s, px); (void)tw;
-    v_region("cardText", LAYER_TYPE); v_text(v_fmt("card.%d.line", i), s, r[0] + v_sk(F, RP ".card.line.at", 0), cap_top(px, r[1] + v_sk(F, RP ".card.line.at", 1), 20), *s ? sw : 0, px, rcol(dim ? "card.line.colourDim" : loss ? "card.line.colourLoss" : "card.line.colour")); }
+  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); (void)tw;
+    v_region("cardText", LAYER_TYPE); v_line(v_fmt("card.%d.line", i), s, r[0] + v_sk(F, RP ".card.line.at", 0), r[1] + v_sk(F, RP ".card.line.at", 1), v_si(F, RP ".card.line.px", 16), rcol(dim ? "card.line.colourDim" : loss ? "card.line.colourLoss" : "card.line.colour"), V_ALIGN_LEFT); }
 }
 /* the ring: the focused card's rect, the frame ring { rect: 10 } 4 px out (the ring reaches 5 from the rect it is given, so the rect is drawn 1 px in); no lift */
 static void build_ring(int n) {

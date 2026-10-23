@@ -16,12 +16,6 @@
 static const char *STATIONS[4] = { "pods", "incubator", "companion", "bay" };
 static const char *TARGETS[6] = { "vivarium", "library", "pods", "incubator", "companion", "bay" };
 
-static int pitch_of(int px) { return px == 16 ? 20 : px == 20 ? 28 : 36; }   /* frame.json type.pitch */
-/* a string of Inter at px in a line box whose top-left is (x, y): the cap top is (pitch - cap) / 2 under the box's top. Returns the width. */
-static int text_at(const char *id, const char *s, int x, int y, int px, const char *colour) {
-  int w = v_measure(s, px); v_text(id, s, x, y + v_fdiv(pitch_of(px) - v_cap(px), 2), w, px, colour); return w;
-}
-
 /* ---- the top bar and the line ---- */
 static void bar_words(void) {
   int r[4]; v_srect(H, "regions.bar.rect", r);
@@ -153,8 +147,8 @@ static void library_captions(void) {
   if (!lib_painted()) return;
   v_region("library.window", LAYER_TYPE);
   const char *nw = v_pstr("regions.library.new"), *gn = v_pstr("regions.library.genome");
-  if (nw && *nw) text_at("library.new", nw, v_sk(H, "regions.library.specimen.captions.new.at", 0), v_sk(H, "regions.library.specimen.captions.new.at", 1), v_si(H, "regions.library.specimen.captions.new.px", 16), v_scol(H, "regions.library.specimen.captions.new.colour"));   /* hidden at 0 */
-  if (gn && *gn) { int px = v_si(H, "regions.library.specimen.captions.genome.px", 16), w = v_measure(gn, px); text_at("library.genome", gn, v_si(H, "regions.library.specimen.captions.genome.right", 988) - w, v_si(H, "regions.library.specimen.captions.genome.y", 412), px, v_scol(H, "regions.library.specimen.captions.genome.colour")); }
+  if (nw && *nw) v_line("library.new", nw, v_sk(H, "regions.library.specimen.captions.new.at", 0), v_sk(H, "regions.library.specimen.captions.new.at", 1), v_si(H, "regions.library.specimen.captions.new.px", 16), v_scol(H, "regions.library.specimen.captions.new.colour"), V_ALIGN_LEFT);   /* hidden at 0 */
+  if (gn && *gn) v_line("library.genome", gn, v_si(H, "regions.library.specimen.captions.genome.right", 988), v_si(H, "regions.library.specimen.captions.genome.y", 412), v_si(H, "regions.library.specimen.captions.genome.px", 16), v_scol(H, "regions.library.specimen.captions.genome.colour"), V_ALIGN_RIGHT);
 }
 static void bezel_words(const char *key) {
   int r[4], win[4]; v_srect(H, v_fmt("regions.%s.rect", key), r); v_srect(H, v_fmt("regions.%s.window", key), win);
@@ -172,8 +166,8 @@ static void bezel_words(const char *key) {
   v_region(key, LAYER_TYPE);
   char title[40], readout[V_STR]; spec_str(H, v_fmt("strings.titles.%s", key), title, sizeof title); snprintf(readout, sizeof readout, "%s", v_pstr(v_fmt("regions.%s.readout", key)));
   int x = r[0] + v_sk(H, "regions.bezel.title", 0), y = r[1] + v_sk(H, "regions.bezel.title", 1);
-  int tw = text_at(v_fmt("%s.title", key), title, x, y, v_si(H, "regions.bezel.titlePx", 16), v_scol(H, "regions.bezel.titleColour"));
-  if (readout[0]) text_at(v_fmt("%s.readout", key), readout, x + tw + v_si(H, "regions.bezel.readoutGap", 8), y, v_si(H, "regions.bezel.readoutPx", 16), v_scol(H, "regions.bezel.readoutColour"));
+  int tw = v_line(v_fmt("%s.title", key), title, x, y, v_si(H, "regions.bezel.titlePx", 16), v_scol(H, "regions.bezel.titleColour"), V_ALIGN_LEFT);
+  if (readout[0]) v_line(v_fmt("%s.readout", key), readout, x + tw + v_si(H, "regions.bezel.readoutGap", 8), y, v_si(H, "regions.bezel.readoutPx", 16), v_scol(H, "regions.bezel.readoutColour"), V_ALIGN_LEFT);
   if (strcmp(key, "library") == 0) library_captions();
 }
 
@@ -235,15 +229,15 @@ static void station_words(const char *key) {
   v_region(key, LAYER_TYPE);
   char name[40], l1[V_STR], l2[V_STR], who[V_STR]; spec_str(H, v_fmt("strings.titles.%s", key), name, sizeof name);
   snprintf(l1, sizeof l1, "%s", v_pstr(v_fmt("regions.%s.line1", key))); snprintf(l2, sizeof l2, "%s", v_pstr(v_fmt("regions.%s.line2", key))); snprintf(who, sizeof who, "%s", v_pstr(v_fmt("regions.%s.name", key)));
-  text_at(v_fmt("%s.name", key), name, r[0] + v_sk(H, "regions.station.name", 0), r[1] + v_sk(H, "regions.station.name", 1), v_si(H, "regions.station.namePx", 16), v_scol(H, "regions.station.nameColour"));
+  v_line(v_fmt("%s.name", key), name, r[0] + v_sk(H, "regions.station.name", 0), r[1] + v_sk(H, "regions.station.name", 1), v_si(H, "regions.station.namePx", 16), v_scol(H, "regions.station.nameColour"), V_ALIGN_LEFT);
   if (l1[0]) {   /* line 1 is 20 px if it fits the column, else 16; if it still does not fit, only a name in it is cut with an ellipsis */
     int px = v_measure(l1, v_si(H, "regions.station.line1Px", 20)) <= col ? v_si(H, "regions.station.line1Px", 20) : v_si(H, "regions.station.line1Px2", 16); char cut[V_STR * 3];
     const char *at = who[0] ? strstr(l1, who) : NULL;
     if (v_measure(l1, px) > col && at) { char pre[V_STR], suf[V_STR], nm[V_STR]; snprintf(pre, sizeof pre, "%.*s", (int)(at - l1), l1); snprintf(suf, sizeof suf, "%s", at + strlen(who));
       v_clip(who, col - v_measure(pre, px) - v_measure(suf, px), px, nm, sizeof nm); snprintf(cut, sizeof cut, "%s%s%s", pre, nm, suf); }
     else snprintf(cut, sizeof cut, "%s", l1);
-    text_at(v_fmt("%s.line1", key), cut, r[0] + x1, r[1] + v_sk(H, "regions.station.line1", 1), px, v_scol(H, "regions.station.line1Colour")); }
-  if (l2[0]) text_at(v_fmt("%s.line2", key), l2, r[0] + v_sk(H, "regions.station.line2", 0), r[1] + v_sk(H, "regions.station.line2", 1), v_si(H, "regions.station.line2Px", 16), v_scol(H, "regions.station.line2Colour"));
+    v_line(v_fmt("%s.line1", key), cut, r[0] + x1, r[1] + v_sk(H, "regions.station.line1", 1), px, v_scol(H, "regions.station.line1Colour"), V_ALIGN_LEFT); }
+  if (l2[0]) v_line(v_fmt("%s.line2", key), l2, r[0] + v_sk(H, "regions.station.line2", 0), r[1] + v_sk(H, "regions.station.line2", 1), v_si(H, "regions.station.line2Px", 16), v_scol(H, "regions.station.line2Colour"), V_ALIGN_LEFT);
   (void)lineRight;
 }
 

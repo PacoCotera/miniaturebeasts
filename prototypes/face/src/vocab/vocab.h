@@ -61,6 +61,10 @@ int v_nine(const char *id, const char *asset, int x, int y, int w, int h, const 
 int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h);
 /* The same between two w x h windows (atlas cells, M1 §2.1): `fromAsset`'s at (fsx, fsy) and `toAsset`'s at (tsx, tsy); `fromAsset` NULL or "" is clear (a dither-in), `toAsset` NULL or "" is clear (a dither-out, keeping the pixels a dither-in at the same level leaves); never both. */
 int v_dither_window(const char *id, const char *fromAsset, int fsx, int fsy, const char *toAsset, int tsx, int tsy, int level, int x, int y, int w, int h);
+/* v_line(id, s, x, lineTop, px, colour, align): a string of Inter at px in a line box whose top is `lineTop`, as one text node `id`. The cap top is (pitch - cap) / 2 under lineTop, the pitch being frame.json
+   type.pitch.<px> (16: 20, 20: 28, 28: 36; any other px is refused with an error and the line is not drawn). align: V_ALIGN_LEFT puts the line's left edge at x, V_ALIGN_CENTRE centres it on x (the left edge is x - v_half(width)),
+   V_ALIGN_RIGHT ends it at x. Reads: frame spec type.pitch. Region and layer: the caller's. Node id: v_id(id), one node, with the width of the string (no size when s is ""). Returns the width. */
+int v_line(const char *id, const char *s, int x, int lineTop, int px, const char *colour, int align);
 /* A run: text pieces and the material icons inline (⚡ ◆ ❀ ✕ ⧗ as 16 px sprites, 2 px either side), laid left to right; align moves the whole run about x. */
 typedef struct { int width, end; } v_run_t;
 int v_run_width(const char *s, int px);

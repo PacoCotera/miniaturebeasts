@@ -25,6 +25,13 @@ void v_rect(const char *id, int x, int y, int w, int h, const char *colour) { pr
 void v_text(const char *id, const char *s, int x, int y, int w, int px, const char *colour) {
   settext(s); prim_node(v_id(id), FN_TEXT, x, y, w, px * 5 / 4, v_col(colour), px, v_cap(px));
 }
+int v_line(const char *id, const char *s, int x, int lineTop, int px, const char *colour, int align) {
+  int pitch = v_si("frame", v_fmt("type.pitch.%d", px), 0);
+  if (pitch <= 0) { char b[96]; snprintf(b, sizeof b, "word: the frame has no type.pitch.%d", px); v_error(b); return 0; }
+  int w = v_measure(s, px);
+  v_text(id, s, align == V_ALIGN_CENTRE ? x - v_half(w) : align == V_ALIGN_RIGHT ? x - w : x, lineTop + v_fdiv(pitch - v_cap(px), 2), w, px, colour);
+  return w;
+}
 int v_asset_size(const char *asset, int out[2]) { out[0] = out[1] = 0; int hd = asset && *asset ? wire_asset_slot(asset) : -1; return hd < 0 ? -1 : prim_asset_size(hd, out); }
 int v_sprite(const char *id, const char *asset, int x, int y, int w, int h) {
   int hd = wire_asset_slot(asset); if (hd < 0) return 0;
