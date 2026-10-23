@@ -1,5 +1,5 @@
-/* The specimen word (the pod under the beam on its cradle; station-layouts.md, Pods §5), with the kin, the hatch and the stamp label beside it: ported from components/specimen.mjs, list.mjs
-   (kinHatch) and stampLabel.mjs. Spec: `pods` regions.<state> (overview or chapter). Props: regions.specimen { beam, room { cradleFront, shadow, plate (the series) }, pod { sizeClass, size,
+/* The specimen word (the pod under the beam on its cradle; station-layouts.md, Pods §5), with the kin, the hatch and the stamp's case beside it: ported from components/specimen.mjs, list.mjs
+   (kinHatch) and stampLabel.mjs (the label itself is kit_stamp). Spec: `pods` regions.<state> (overview or chapter). Props: regions.specimen { beam, room { cradleFront, shadow, plate (the series) }, pod { sizeClass, size,
    sealed, identified }, cut, name, origin [lines], ribbon, figure, who [ids], originPicture }, regions.kin [ { id, ring, pod } ], regions.hatch, regions.stamp { size, asset, case { back, front } }.
    The bench candidates are regions.bench.room. A picture the host has not sent draws nothing and the layout does not move. */
 #include "../vocab.h"
@@ -30,11 +30,6 @@ static void caption(const char *region, const char *base, const char *key, const
   spec_str(S, v_fmt("%s.colour", path), col, sizeof col);   /* a palette name */
   v_region(region, LAYER_TYPE); v_line_at(v_fmt("specimen.%s", region), text, r[0] + v_half(r[2]), v_cap_in(r[1], r[3], px), V_ANCHOR_CAP, px, col, V_ALIGN_CENTRE);
 }
-/* the pod's size: its class's box in the spec (classes.pod.<class>), the class named by the props */
-int word_pod_size(int out[2]) {
-  char cls[16]; snprintf(cls, sizeof cls, "%s", v_pstr("regions.specimen.pod.sizeClass")); if (!cls[0]) return 0;
-  out[0] = spec_int(S, v_fmt("classes.pod.%s.0", cls), 0); out[1] = spec_int(S, v_fmt("classes.pod.%s.1", cls), 0); return out[0] > 0 && out[1] > 0;
-}
 void word_specimen(const char *base) {
   char name[24], origin[24], white[24]; colour("name", name, sizeof name); colour("origin", origin, sizeof origin); snprintf(white, sizeof white, "white");
   int beam[4], front[4], nrect[4];
@@ -44,12 +39,13 @@ void word_specimen(const char *base) {
   v_region("specimen", LAYER_PAINTED);   /* the room's stages are painted masters (the art director's layer table) */
   /* the stage carries the dish and the shelf (room-bench-stage-overview, -chapter): only the dish's front lip is drawn, below */
   const char *sealed = v_pstr("regions.specimen.pod.sealed");
-  int axis = si(base, "pod.axis", 0), feet = si(base, "pod.feet", 0), psz[2] = { 0, 0 }; word_pod_size(psz); int w = psz[0], h = psz[1];
+  int axis = si(base, "pod.axis", 0), feet = si(base, "pod.feet", 0);
   if (has(sealed)) {
     char focus[40]; snprintf(focus, sizeof focus, "%s", v_focus_cur());
-    int lift = strcmp(focus, "pod") == 0 ? spec_int("frame", "focus.lift.creature", 4) : 0, rect[4] = { axis - v_half(w), feet - h - lift, w, h };
-    int sw = w + spec_int(S, "shadow.widen", 0), sh = spec_int(S, "shadow.h", 0);
-    int shadow[4] = { axis - v_half(sw), feet - v_half(sh), sw, sh }; layer("specimen.shadow", shadow, v_pstr("regions.specimen.room.shadow"));
+    int lift = strcmp(focus, "pod") == 0 ? spec_int("frame", "focus.lift.creature", 4) : 0, pb[4];
+    kit_podShadow_t shadow = { "specimen.shadow", "specimen", v_pstr("regions.specimen.room.shadow"), 1 };
+    kit_pod(S, v_pstr("regions.specimen.pod.sizeClass"), axis, feet, &shadow, pb);   /* the pod's box and its shadow: the shadow stays on the feet, the pod lifts with the focus */
+    int w = pb[2], h = pb[3], rect[4] = { pb[0], pb[1] - lift, w, h };
     v_region("pod", LAYER_PAINTED); v_sprite("specimen.pod", sealed, rect[0], rect[1], rect[2], rect[3]);
     const char *idpic = v_pstr("regions.specimen.pod.identified");
     anim_state_t sa_; char pid[48]; snprintf(pid, sizeof pid, "%s", v_pstr("regions.specimen.pod.id"));
@@ -109,18 +105,8 @@ void word_kin(const char *base) {
   if (has(hatch)) { int hr[4]; srect(base, "hatch.rect", hr); v_region("hatch", LAYER_PAINTED); v_sprite("kin.hatch", hatch, hr[0], hr[1], hr[2], hr[3]); }
 }
 
-/* the stamp label in its case (station-layouts.md, "The stamp label"): the case's back under it, the label's dimmed plate (120 x 120, a 1 px edge; stampCase, k × warm in linear light), the dimmed stamp centred on it, the case's front glass over it */
-/* the case's two layers (Pods' stampCase and stampCaseFront; Create's the same ids, fix 5 Create C1): the back before the label, the front after it. `spec` and `base` name the screen spec and the regions the rects are read from */
+/* the case's two layers (stampCase and stampCaseFront, drawn by kit_stamp): the back before the label, the front after it. `spec` and `base` name the screen spec and the regions the rects are read from */
 void word_stampCase(const char *spec, const char *base, int front) {
   int r[4]; for (int k = 0; k < 4; k++) r[k] = spec_int(spec, v_fmt("%s.%s.%d", base, front ? "stampCaseFront.rect" : "stampCase.rect", k), 0);
   v_region("stamp", LAYER_PAINTED); layer(front ? "stamp.front" : "stamp.case", r, v_pstr(front ? "regions.stamp.case.front" : "regions.stamp.case.back"));
-}
-void word_stamp(const char *base) {
-  if (spec_len("props", "regions.stamp") < 0) return;
-  int sr[4]; srect(base, "stamp.rect", sr);
-  int size = v_pint("regions.stamp.size", 0); char stamp[96]; snprintf(stamp, sizeof stamp, "%s", v_pstr("regions.stamp.asset"));
-  word_stampCase(S, base, 0);
-  { const char *plate = v_pstr("regions.stamp.plate"); if (has(plate)) { v_name("stamp"); v_sprite("stamp", plate, sr[0], sr[1], sr[2], sr[3]); } }
-  if (has(stamp) && size) { v_region("stamp.image", LAYER_PAINTED); v_sprite("stamp.stamp", stamp, sr[0] + v_half(sr[2] - size), sr[1] + v_half(sr[3] - size), size, size); }
-  word_stampCase(S, base, 1);
 }

@@ -104,10 +104,7 @@ static void bar(const char *a, int px, int level_in) {   /* level_in: the dither
 }
 
 /* ---- the picture of the room as one view of the capsule: layers by look ---- */
-static void build_stage(void) {
-  int r[4]; v_srect(I, "regions.bench.rect", r); char g[24]; spec_str("frame", "colours.stageGround", g, sizeof g);
-  v_region("bench", LAYER_CHROME); v_rect("bench", r[0], r[1], r[2], r[3], g);
-}
+static void build_stage(void) { kit_stage(I, "regions.bench.rect", v_scol("frame", "colours.stageGround"), "bench", "bench", NULL, NULL); }
 /* the draw: t_inc, t_gn and t_h are the clocks of the three moments (-1: not playing) */
 static void build_capsule(int t_inc, int t_gn, int t_h) {
   int st_empty = in_state("empty"), st_growing = in_state("growing"), st_hatch = in_state("hatch");
@@ -169,11 +166,8 @@ static void build_capsule(int t_inc, int t_gn, int t_h) {
 static void build_column(int t_inc) {
   int st_empty = in_state("empty"); if (st_empty || (t_inc >= 0 && t_inc < 1200)) return;
   if (spec_len("props", "regions.stamp") >= 0) {
-    int r[4]; v_srect(I, "regions.stamp.rect", r); const char *a = v_pstr("regions.stamp.asset"); int size = v_pint("regions.stamp.size", 0);
-    word_stampCase(I, "regions", 0);
-    v_region("stamp.plate", LAYER_PAINTED); { const char *pl = v_pstr("regions.stamp.plate"); if (has(pl)) v_slot("stamp.plate", pl, NULL, r[0], r[1], r[2], r[3], has(a) && size); }
-    v_region("stamp", LAYER_PAINTED); if (has(a) && size) { v_name("stamp"); v_sprite("stamp.stamp", a, r[0] + v_half(r[2] - size), r[1] + v_half(r[3] - size), size, size); }
-    word_stampCase(I, "regions", 1);   /* the case's front veil: the art director's recut, alpha 0 over the 120 x 120 plate (UI/UX round 2, E2) */
+    kit_stamp_t o = { "stamp.plate", "stamp.plate", "stamp", 0, I, "regions" };   /* the case's front veil is the art director's recut, alpha 0 over the 120 x 120 plate (UI/UX round 2, E2) */
+    kit_stamp(I, "regions.stamp.rect", v_pstr("regions.stamp.plate"), v_pstr("regions.stamp.asset"), v_pint("regions.stamp.size", 0), -1, &o);
   }
   { const char *code = v_pstr("regions.code"); if (has(code)) { v_region("code", LAYER_TYPE); v_line_at("code", code, v_si(I, "regions.code.centre", 152), v_si(I, "regions.code.lineTop", 344), V_ANCHOR_LINE, v_si(I, "regions.code.px", 16), v_scol(I, "colours.code"), V_ALIGN_CENTRE); } }
   { const char *s = v_pstr("regions.readyIn"); if (has(s) && in_state("growing")) { v_region("readyIn", LAYER_TYPE); v_line_at("readyIn", s, v_si(I, "regions.readyIn.centre", 152), v_si(I, "regions.readyIn.lineTop", 384), V_ANCHOR_LINE, v_si(I, "regions.readyIn.px", 16), v_scol(I, "colours.readyIn"), V_ALIGN_CENTRE); } }

@@ -255,8 +255,7 @@ static void ring(const char *cur) {
 
 void home_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
-  { int st[4]; v_srect(H, "regions.stage.rect", st); char ground[24]; spec_str("frame", "colours.stageGround", ground, sizeof ground);   /* the ground under the bezels and the console, down to the foot: there is no bottom line */
-    v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); }
+  kit_stage(H, "regions.stage.rect", v_scol("frame", "colours.stageGround"), "stage", "stage.ground", NULL, NULL);   /* the ground under the bezels and the console, down to the foot: there is no bottom line */
   bar_words();
   line_words();
   bezel_words("vivarium");

@@ -643,8 +643,7 @@ void vivarium_words(void) {
   g_viv = 1;
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   ent_load(cur);
-  { int st[4]; char ground[24]; spec_str("vivarium", "colours.stageGround", ground, sizeof ground);
-    if (v_spec_rect("vivarium", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
+  kit_stage("vivarium", "regions.stage.rect", v_scol("vivarium", "colours.stageGround"), "stage", "stage.ground", NULL, NULL);
   word_livingWindow("vivarium", "window", NULL, "regions.window", "colours.window", v_pstr("regions.window.picture"), 0, spec_int("vivarium", "regions.window.painting.rows.0", 0));   /* rows 120 to 560 of Idle's painting of the light, 1:1, at the window */
   glass_group(cur);   /* the bed in the empty state too (no resident, no sleeper): the nest, and its mark while away */
   for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) ent_tag(&g_e[i], "regions.window");

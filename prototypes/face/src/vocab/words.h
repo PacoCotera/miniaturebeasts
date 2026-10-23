@@ -3,6 +3,7 @@
 #ifndef WORDS_H
 #define WORDS_H
 /* common/ */
+int kit_stage(const char *spec, const char *rect, const char *ground, const char *region, const char *groundId, const char *roomId, const char *roomPath);   /* a screen's stage: the ground over the spec's rect, then the room master over it (the first of the props' candidates at roomPath the host has sent; roomId NULL: none); 0 when the spec holds no rect */
 /* The UI kit's panels and rules (contract headers in common/panel.c, bezel.c, windowFrame.c and hairline.c) */
 void kit_panel(const char *id, int x, int y, int w, int h, const char *fill, const char *edge, int slot);   /* a filled pane with a 1 px edge (fill NULL: the four edge rects only; edge NULL: none; slot: the same nodes with no size at (x, y)) */
 typedef struct { int side; int h; const char *fill; const char *rule; } kit_band_t;   /* a band along a bezel's side: side 0 top, 1 bottom; h rows of fill, then a row of rule (NULL: none); h 0: no band */
@@ -22,12 +23,13 @@ void word_focusRing(const char *id, const char *spec, const char *target, const 
 void word_focusRingFootprint(const char *id, const char *spec, const char *target, const char *picture, const char *cell, const int drawn[4]);
 void word_focusRingFigure(const char *id, const char *spec, const char *target, const char *picture, int fx, int feetY, int W);   /* a figure's ring: (W + 10) x (fh + 10) on its feet point */
 /* station/ */
-void word_bench(void);   /* Pods' stage: the ground and the room master over it */
+typedef struct { const char *plateId, *plateRegion, *imageRegion; int plateAlone; const char *caseSpec, *caseBase; } kit_stamp_t;   /* the stamp label's own ids and regions (the screens' names), whether the plate stands without a stamp, and the case (caseSpec NULL: none) */
+void kit_stamp(const char *spec, const char *rect, const char *plate, const char *asset, int size, int clipH, const kit_stamp_t *o);   /* the stamp label: the case's back, the plate (a slot), the stamp centred on it (cut to clipH rows when clipH >= 0), the case's front */
+typedef struct { const char *id, *region, *picture; int on; } kit_podShadow_t;   /* the pod's contact shadow: its node id, region and picture; on 0 keeps the node with no size */
+int kit_pod(const char *spec, const char *cls, int axis, int feet, const kit_podShadow_t *shadow, int box[4]);   /* the pod's box from its size class (bottom-centred on axis and feet), and its shadow when given; 1 when the class gives a box */
 void word_specimen(const char *base);   /* the pod under the beam on its cradle; base: the state's regions in the pods spec ("regions.overview" or "regions.chapter") */
-int word_pod_size(int out[2]);          /* the pod's box size from its class in the spec; 0 when the props name no class */
 void word_kin(const char *base);        /* the overview's kin rings and the hatch */
-void word_stamp(const char *base);      /* the overview's stamp label in its case */
-void word_stampCase(const char *spec, const char *base, int front);   /* the stamp case's back (front 0) or front glass (front 1): Pods' word_stamp and Create's stamp both call it */
+void word_stampCase(const char *spec, const char *base, int front);   /* the stamp case's back (front 0) or front glass (front 1): kit_stamp calls it */
 void word_page(const char *key);        /* the chapter page ("page") or one of Compare's two ("pageA", "pageB") */
 void word_list(void);    /* Pods' collection: the rack's places */
 /* the ring of the target whose `group` this is in the screen spec of the props (the rail's, Pods'), at the region id the caller names */
@@ -35,9 +37,6 @@ void word_focusRingFor(const char *id, const int drawn[4], const char *group);
 void word_rail(const char *marksSpec);    /* the chapter rail (frame spec) with the ring on its focused tab; `marksSpec` names the spec whose colours.rail the marked pips take (NULL: the screen has no marked pips) */
 /* station/ (Home) */
 void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture, int sx, int sy);   /* the living window (the picture is shown from source (sx, sy): the whole shows rows 120 to 560 of Idle's painting): the bezel (NULL: none, the part inside) and the glass, flat plates until the glass master, the master over them */
-void word_leaves(const char *spec, const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy, int slots, int filling);   /* the leaves word, grid form: the screen spec and the region's path in it; `filling`: rows 0 to 19 of the filling leaf, -1 for a screen whose leaves never fill */
-/* station/ (the Incubator) */
-void word_leavesArc(const char *spec, const char *region, const char *emptyPic, const char *fullPic, int total, int full, int rows);   /* the leaves word, arc form (leafArc): the filling leaf and growNow */
 /* common/ */
 void word_ribbon(const char *id, const int rect[4], const char *text, int px, int pad, const char *fill, const char *edge, const char *textColour);   /* the ribbon (pad: the room each side of the words): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
 void word_topBar(void);

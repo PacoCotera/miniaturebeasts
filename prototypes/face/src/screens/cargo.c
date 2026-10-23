@@ -30,10 +30,7 @@ static int ease_out(int p) { return 1000 - (1000 - p) * (1000 - p) / 1000; }
 static void str_of(const char *path, char *out, int cap) { snprintf(out, (size_t)cap, "%s", v_pstr(path)); }
 
 /* ---- the stage ---- */
-static void ground(void) {
-  int st[4]; char g[24]; spec_str("frame", "colours.stageGround", g, sizeof g);
-  if (v_spec_rect("frame", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], g); }
-}
+static void ground(void) { kit_stage("frame", "regions.stage.rect", v_scol("frame", "colours.stageGround"), "stage", "stage.ground", NULL, NULL); }
 
 /* ---- the time of the opening ---- */
 typedef struct { int display, dither, flash, mats, matEach, hatch, pods, podEach, travel, swap, tail, portrait; } steps_t;
@@ -339,15 +336,18 @@ static void build_mibis(int t) {
 }
 /* the band in the bay's top corners: the Probe's plates (whole ones from 1500, the mended turn whole one by one from 2500 with the words after) and who leaves (the mark and the faces, right-aligned) */
 static void leaving_face(int i, const int b[4], void *ctx) { (void)ctx; v_name("band.leaving"); v_slot(v_fmt("band.face.%d", i), v_pstr(v_fmt(ARR ".leaving.faces.%d", i)), NULL, b[0], b[1], b[2], b[3], 1); }
+typedef struct { const char *icon; int shown; int last[4]; } probe_t;
+static void probe_plate(int i, const int b[4], void *ctx) { probe_t *p = ctx; v_name("band.probe"); v_slot(v_fmt("band.plate.%d", i), p->icon, NULL, b[0], b[1], b[2], b[3], i < p->shown); memcpy(p->last, b, sizeof p->last); }
 static void build_band(int t) {
-  int px0 = v_sk(C, ARR ".band.probe.at", 0), py0 = v_sk(C, ARR ".band.probe.at", 1), pitch = v_si(C, ARR ".band.probe.pitch", 20), isz = v_sk(C, ARR ".band.probe.size", 0), from = v_si(C, ARR ".band.probe.from", 1500), mend = v_si(C, ARR ".band.probe.mend.at", 2500), meach = v_si(C, ARR ".band.probe.mend.each", 120), wpx = v_si(C, ARR ".band.probe.words.px", 16), gap = v_si(C, ARR ".band.probe.words.gap", 8);
+  int from = v_si(C, ARR ".band.probe.from", 1500), mend = v_si(C, ARR ".band.probe.mend.at", 2500), meach = v_si(C, ARR ".band.probe.mend.each", 120), wpx = v_si(C, ARR ".band.probe.words.px", 16), gap = v_si(C, ARR ".band.probe.words.gap", 8);
   int whole = v_pint(ARR ".plates.whole", 0), mended = v_pint(ARR ".plates.mended", 0); const char *icon = v_pstr(ARR ".plates.icon");
   if (t >= from) {
     int shownN = whole; for (int j = 0; j < mended; j++) if (t >= mend + meach * j) shownN = whole + j + 1;
+    probe_t pr = { icon, shownN, { 0, 0, 0, 0 } }; int n = whole + mended;
     v_region("arrivalBand", LAYER_ART);
-    for (int q = 0; q < whole + mended; q++) { v_name("band.probe"); v_slot(v_fmt("band.plate.%d", q), icon, NULL, px0 + q * pitch, py0, isz, isz, q < shownN); }
+    int ok = kit_tiles(C, ARR ".band.probe", n, probe_plate, &pr, NULL) >= 0;   /* the plates on the probe's form (the spec holds one for each count it can reach); a count none holds draws nothing */
     const char *words = v_pstr(ARR ".plates.words");
-    if (*words) { int tx = px0 + (whole + mended) * pitch + gap - (pitch - isz); v_region("arrivalBand", LAYER_TYPE); if (t >= mend) v_run("band.words", words, tx, v_cap_in(py0, isz, wpx), wpx, v_token("frame", "subject"), V_ALIGN_LEFT); }
+    if (*words && ok && n > 0) { v_region("arrivalBand", LAYER_TYPE); if (t >= mend) v_run("band.words", words, pr.last[0] + pr.last[2] + gap, v_cap_in(pr.last[1], pr.last[3], wpx), wpx, v_token("frame", "subject"), V_ALIGN_LEFT); }   /* the words stand a gap after the last plate */
   }
   int nf = v_plen(ARR ".leaving.faces"); if (nf > 3) nf = 3;
   if (nf > 0 && t >= v_si(C, ARR ".band.leaving.from", 1500)) {
