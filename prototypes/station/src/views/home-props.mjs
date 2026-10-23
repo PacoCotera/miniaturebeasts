@@ -13,15 +13,14 @@ import { goalWords } from "./goal-words.mjs";
 import { readyCrates, bayState } from "../sitting.mjs";
 import { paintingOf } from "./idle-props.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
+import { fill, count, plural } from "./words.mjs";
+import { req as reqOf, ph as phOf } from "./requests.mjs";
 
 // The Library module's region and the request that makes its specimen (build spec 4.2) come from the specimen painter (views/specimen-props.mjs), which the host registers here: the painter stays out of what the intents import
 // (they are DOM-free and run as a Node program, intents.test.mjs), and a build with none registered shows the Library's placeholder.
 let library = () => ({ region: {}, request: null });
 export const setLibrary = (fn) => { library = fn; };
 
-const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
-const COUNT = ["", "a", "two", "three", "four", "five", "six"];
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
 // A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<genome digest>:<juvenile|adult|elder>:<w>x<h>
 export const mibiPictureId = (digest, stage, [w, h], light = "day") => `mibi:${digest}:${stage}:${w}x${h}${light === "day" ? "" : ":" + light}`;   // fix 7: a graded resident names its light (dawn, dusk, night); at day the id is the master's own, unchanged
@@ -57,7 +56,7 @@ const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 // The notice and the action of a need, from strings.needs. A count is spelled to the picture's most; above it the count is dropped.
 export function wordsOf(need, spec) {
   if (!need) return { notice: "", action: null };
-  const N = spec.strings.needs[need.key], word = need.n != null && need.n >= 1 && need.n <= need.max ? COUNT[need.n] : "";
+  const N = spec.strings.needs[need.key], word = need.n != null && need.n >= 1 && need.n <= need.max ? count(need.n) : "";
   let notice = need.n === 1 && N.noticeOne ? N.noticeOne : N.notice;
   const vals = { count: word, name: need.name, a: need.a, species: need.species };
   if (need.short && N.short) notice = N.short;
@@ -156,8 +155,8 @@ function couldIncubate(st, settings) {
 // The Vivarium window's people (build spec section 3): the residents at home that walk, at most six (more: the mibi being met, ui.meet, first, then the newest of born and grown up, ties in bay order),
 // in bay order; the picture of the light; the one event tag (ui.meet: born or grown up); the first mibi out on a trip in the away frame, its stand's figure at its world size.
 function glassOf(m, spec, frame, housed, requests) {
-  const { st, sv, settings } = m, R = spec.regions, light = m.light ?? "day", docked = !!m.docked, req = (r) => { requests.push(r); return r.id; };
-  const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (station-layouts.md, The Vivarium: the whole)" });
+  const { st, sv, settings } = m, R = spec.regions, light = m.light ?? "day", docked = !!m.docked, req = reqOf(requests);
+  const ph = phOf(req, "its master (station-layouts.md, The Vivarium: the whole)");
   const lw = livingOf({ st, sv, settings, docked, light, view: "home", noBed: true, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, { resident: R.resident, bed: { sleepers: { ink: { max: R.resident.asleep.ink } } } }, req, ph, frame.light);
   const meet = m.ui?.meet != null ? String(m.ui.meet) : null, bayOf = new Map(housed.map((mb) => [String(mb.id), mb.bay]));
   // the newest life event: born, or grown up (born + adultTurns, derived: no field stores it) once that has come; the mibi being met always first; ties in bay order
@@ -176,7 +175,7 @@ export function homeBuild(m, spec, frame) {
   const { st, sv, settings } = m, now = m.now ?? Date.now(), Sg = spec.strings, T = Sg.stations, docked = !!m.docked, fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
   const needs = homeNeeds(st, sv, settings, m.ui ?? {}, now), requests = [];
   // the stations: the lines and the lamp
-  const req = (r) => { requests.push(r); return r.id; }, slot = (master, size) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: "its master (build spec section 9)" });
+  const req = reqOf(requests), slot = (master, size) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: "its master (build spec section 9)" });
   const pods = (() => {
     const n = st.tray.length, seen = new Set(st.tray.filter((q) => q.idd || st.knownIds.includes(S.speciesOf(q))).map((q) => S.speciesOf(q))), k = seen.size;
     const amber = st.tray.some((p) => !p.idd && !p.seen) || st.tray.some((p) => S.podGlints(st, p));
@@ -197,7 +196,7 @@ export function homeBuild(m, spec, frame) {
   const bay = (() => {
     const cs = docked ? S.bayCrates(st, sv) : [], bs = bayState(st, sv, settings, now), B = T.bay, trips = new Set(cs.map((c) => c.turn)).size;   // bayState: the walk crates while docked and the portrait crates that are ready; amber when anything waits
     const waiting = cs.length > 0 || bs.sitting > 0, rc0 = readyCrates(st, settings, now)[0], pname = rc0 ? S.mibiById(st, rc0.mibiId)?.name ?? "" : "";
-    return { state: waiting ? "waiting" : "clear", berths: bs.sitting ? 4 : 3, crates: Math.min(cs.length, 3), pictures: { shut: slot("berth-shut-26x24", [26, 24]), crate: slot("berth-crate-26x24", [26, 24]), portrait: slot("berth-portrait-18x24", [18, 24]) }, line1: cs.length ? fill(cs.length === 1 ? B.waitingOne : B.waiting, { n: cs.length }) : bs.sitting ? B.portrait : B.clear, line2: cs.length ? (trips <= 1 ? B.lastTrip : fill(B.trips, { n: trips })) : bs.sitting ? (pname ? fill(B.portraitName, { name: pname }) : B.portraitNoName) : "", lamp: bs.amber ? "needsYou" : "off" };
+    return { state: waiting ? "waiting" : "clear", berths: bs.sitting ? 4 : 3, crates: Math.min(cs.length, 3), pictures: { shut: slot("berth-shut-26x24", [26, 24]), crate: slot("berth-crate-26x24", [26, 24]), portrait: slot("berth-portrait-18x24", [18, 24]) }, line1: cs.length ? fill(plural(cs.length, B.waitingOne, B.waiting), { n: cs.length }) : bs.sitting ? B.portrait : B.clear, line2: cs.length ? (trips <= 1 ? B.lastTrip : fill(B.trips, { n: trips })) : bs.sitting ? (pname ? fill(B.portraitName, { name: pname }) : B.portraitNoName) : "", lamp: bs.amber ? "needsYou" : "off" };
   })();
   // the windows: the Vivarium's readout (each part only when non-zero; "all on a trip" when nobody is home)
   const housed = S.housed(st), onTrip = housed.filter((mb) => S.isAway(st, sv, mb)).length, atHome = housed.length - onTrip, R = Sg.readout;

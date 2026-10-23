@@ -3,8 +3,9 @@
 // Runs in Node, tested there (tests/namer-props.test.mjs); the shape is namer.props.json.
 //   m: { st, mibi (the mibi being named), ui: UI.hab.namer { mode: "meet" | "rename", text, fs: "selected" | "typed" | "empty", page: "letters" | "accents", shift, f, say: { text, tone } | null, sugg } }
 import * as S from "../state.mjs";
+import { fill } from "./words.mjs";
+import { req as reqOf, slot as slotOf, plateDevice } from "./requests.mjs";
 
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 export const MARKS = [" ", "-", "’"];
 // The grid's case: capitals while the field is empty or selected (a name starts with a capital), small letters after; Aa gives the next letter in the other case. The hyphen and ’ have no case.
 export const capsOf = (ui) => (ui.fs === "typed" ? !!ui.shift : true);
@@ -23,9 +24,9 @@ export function namerBuild(m, spec) {
   const problem = S.nameProblem(st, mibi, ui.text, true), species = S.spName(mibi);
   const reason = ui.say ? ui.say.text : reasonOf(spec, st, mibi, ui.text);
   const names = S.peekNames(st, mibi, 12), startOfName = ui.fs !== "typed";
-  const requests = [], slot = (id, size) => { requests.push({ kind: "slot", id, master: id, size, until: "the device plate (fix 2: placed 1:1)" }); return id; };
+  const requests = [], req = reqOf(requests), slot = slotOf(req, "the device plate (fix 2: placed 1:1)");
   const regions = {
-    panel: { plate: slot("plate-device-416x424", [416, 424]) },
+    panel: { plate: req(plateDevice(416, 424)) },
     field: { plate: slot("plate-well-328x48", [328, 48]), name: ui.text, state: ui.fs },
     say: { text: reason ?? "", tone: ui.say?.tone === "refused" ? "refused" : "reason" },
     keys: { page: ui.page, caps, dim: isFull, labels },

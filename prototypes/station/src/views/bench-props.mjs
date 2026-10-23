@@ -6,13 +6,14 @@
 import * as S from "../state.mjs";
 import { slot } from "./pods-props.mjs";
 import { warnWords } from "./goal-words.mjs";
+import { spell } from "./words.mjs";
+import { req as reqOf, ph as phOf } from "./requests.mjs";
 
 const fill = (t, o) => t.replace(/\{([^{}|]+)\|([^{}|]+)\}/g, (_, a, b) => (o.n === 1 ? a : b)).replace(/\{([^{}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
-const SPELL = ["no", "one", "two", "three", "four"];
 
 export function benchBuild(m, spec, frame) {
-  const { st, sv, settings, docked, ui } = m, R = spec.regions, Sg = spec.strings, requests = [], req = (r) => { requests.push(r); return r.id; };
-  const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (bench.json masters)" });
+  const { st, sv, settings, docked, ui } = m, R = spec.regions, Sg = spec.strings, requests = [], req = reqOf(requests);
+  const ph = phOf(req, "its master (bench.json masters)");
   const pr = S.probeNow(st, sv), tier = S.tierNow(st, sv), places = R.plates.places[tier] ?? [], count = S.TIER[tier].shield;
   const whole = Math.min(pr.shield, places.length), gone = !!st.probe && pr.shield < pr.smax;   // a plate is gone: the Probe was docked (it holds a Shield) and one is worn
 
@@ -49,7 +50,7 @@ export function benchBuild(m, spec, frame) {
   if (cur === "plates") {
     const cost = S.price(S.PRICE.mend, settings);
     if (docked && gone) {
-      const n = pr.smax - pr.shield; Object.assign(line, { ok: Sg.mend, price: cost ? S.priceText(cost, 0, 0) : "", subject: fill(Sg.mendOutcome, { "n in words": SPELL[pr.shield + 1] ?? String(pr.shield + 1), n: pr.shield + 1 }) });   // the plates whole after this press (T-50 amendment): the line says what the press buys
+      const n = pr.smax - pr.shield; Object.assign(line, { ok: Sg.mend, price: cost ? S.priceText(cost, 0, 0) : "", subject: fill(Sg.mendOutcome, { "n in words": spell(pr.shield + 1), n: pr.shield + 1 }) });   // the plates whole after this press (T-50 amendment): the line says what the press buys
       if (st.e < cost) { line.dim = true; line.short = S.shortIcons(st, cost, 0, 0); } else if (cost) line.need = warnWords(st, m.sv, settings, frame, { e: cost }, { key: "mend" }) ?? line.need;
     } else line.subject = Sg.whole;
   } else if (cur === "switch") {
