@@ -14,23 +14,23 @@ import { habitsOf, placesOf } from "../state.mjs";
 import { listForm } from "../../../ui/specs/derive.mjs";
 import { kPct } from "../stamplook.mjs";
 import { doorOpen } from "../nav.mjs";
+import { fill, spell } from "./words.mjs";
+import { req as reqOf, slot as slotOf, plateDevice } from "./requests.mjs";
 
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
-const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven"];
 // The species' face (the top bar's mark, frame.json regions.marks.face), docked or dimmed.
 const faceId = (frame, mb, away) => (away ? frame.regions.marks.face.away : frame.regions.marks.face.docked).replace("{mibi}", S.spName(mb).toLowerCase());
 
 export function habitatBuild(m, spec, frame, home) {
-  const { st, sv, settings } = m, requests = [], req = (r) => { requests.push(r); return r.id; };
+  const { st, sv, settings } = m, requests = [], req = reqOf(requests);
   const R = spec.regions, Sg = spec.strings, docked = !!m.docked;
   const shown = habitatShown(st, sv, m.habId); if (!shown) return null;
-  const slot = (id, size, until) => req({ kind: "slot", id, master: id, size, until: until || "its master (habitat.json masters)" });
+  const slot = slotOf(req, "its master (habitat.json masters)");
   const carried = S.carriedIds(st, sv), proj = S.projectCarried(st, sv), pend = S.pendingCarry(st, sv);
   const out = S.isAway(st, sv, shown), meet = !out && m.meetId != null && String(m.meetId) === String(shown.id);
   const state = out ? "out" : meet ? "meet" : "rest";
   const stage = S.mibiStage(st, shown, settings), stageWord = home.strings.stages[stage] ?? stage, species = S.spName(shown), fr = frameFor(shown), sid = String(shown.id);
   const waiting = false;
-  const plate = (w, h) => slot(`plate-device-${w}x${h}`, [w, h], "the device plate (fix 2: placed 1:1)");
+  const plate = (w, h) => req(plateDevice(w, h));
   const well = (name) => slot(name, name.match(/(\d+)x(\d+)/).slice(1).map(Number), "the device well (fix 2: placed 1:1)");
 
   const regions = {};
@@ -139,7 +139,7 @@ export function habitatBuild(m, spec, frame, home) {
     line = why ? { ok: null, subject: why, back: Sg.back, need: null } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext, back: Sg.back, need: null };
   } else if (id === "cross") {
     line = crossState === "adult" && !doorOpen("cross") ? { ok: null, subject: Sg.shut.cross }
-      : crossState === "adult" ? { ok: fill(Sg.cross, named), subject: fill(Sg.partners.replace("{n in words}", "{n}"), { n: WORDS[Math.min(pickable.length, 11)], Species: species }) }
+      : crossState === "adult" ? { ok: fill(Sg.cross, named), subject: fill(Sg.partners, { "n in words": spell(Math.min(pickable.length, 11)), Species: species }) }
       : { ok: null, subject: crossState === "out" ? Sg.crossOut : crossState === "away" ? Sg.crossAway : crossState === "alone" ? fill(Sg.noPartner, { Species: species }) : Sg.crossLater };
     line = { ...line, back: Sg.back, need: null };
   } else if (id === "wild") {

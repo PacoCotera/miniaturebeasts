@@ -5,6 +5,7 @@ import { frameOf, frameIds } from "../genome.mjs";
 import { fieldGuide, wishOf, possibleLooks } from "../library.mjs";
 import { specimenFor, specimenId, peekSpecimen } from "../specimen-cache.mjs";
 import { HARNESS, MARGIN } from "../specimen.mjs";
+import { fill } from "./words.mjs";
 
 // Where a shut sealed chapter is (library.mjs fieldGuide): sealed in the frame, not opened by a setting or by a read.
 const shutOf = (st, id, ch, settings) => !!ch.sealed && !settings.sealedOpen && !(st.readOnce[id] || []).includes(ch.id);
@@ -36,7 +37,6 @@ export function newLooksOf(st, id, settings) {
   for (const ch of frame.chapters) if (!shutOf(st, id, ch, settings)) for (const t of ch.traits) { const cur = possibleLooks(frame, t); for (const l of S.libNewLooks(st, id, t.id)) if (cur.includes(l)) out.add(`${t.id}|${l}`); }
   return out;
 }
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const LEVEL = (id, k) => (k ? `${id}:b${k + 1}` : id);
 // A glint stands beside its bead, not on it (the art director, exact): its centre 8 px from the bead's centre, along the ray from the form's hub outward, kept inside the window's margin. Clearance is measured from the star's arm tips (radius 6)
 // to any other bead's edge (its radius + 1) and to any other ray's centreline, and must be at least 3; the bead's own ray is left out. The search turns the offset about its own bead through 0, +-30, +-60, +-90, +-120 and +-150 degrees at 8 px,

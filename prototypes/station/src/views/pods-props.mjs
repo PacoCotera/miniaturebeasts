@@ -9,6 +9,8 @@ import { frameOf, traitState, genomeDigest, stampSizing } from "../genome.mjs";
 import { pageGrid } from "../../../ui/specs/derive.mjs";
 import { founderPicture } from "./create-props.mjs";
 import { plateReq, kPct } from "../stamplook.mjs";
+import { fill } from "./words.mjs";
+import { req as reqOf } from "./requests.mjs";
 
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
 const podFrame = (p) => frameOf(S.speciesOf(p));
@@ -29,7 +31,7 @@ export const inWords = (text) => (text || "").replace(/\d+(?! [⚡◆❀])/g, (n
 // Pods is three states (station-layouts.md, Pods): the collection, a pod's overview, a chapter's page; Compare is the overview's. The view reads `ui.view`.
 export function podsBuild(m, spec) {
   const { st, settings, ui } = m, requests = [], focus = m.focus ?? null;
-  const req = (r) => { requests.push(r); return r.id; };
+  const req = reqOf(requests);
   const cur = S.podById(st, ui.cur), view = { mode: ui.cmp ? "compare" : ui.view, cur: cur ? cur.id : null, requests, empty: !st.tray.length };
   const fr = cur && cur.idd ? podFrame(cur) : null, chapters = fr ? fr.chapters : [];
   const focusRail = focus && focus.startsWith("rail.") ? +focus.slice(5) : null;
@@ -188,7 +190,6 @@ function compareView(view, m, spec, req) {
 
 // The bottom line (station-layouts.md, "Words on Pods"): the left slot's action, its price as a number and an icon (nothing for free, and a half price is the lower number),
 // and where ← goes; the centre slot's short sentence on the focused thing, "<name> is <state>"; the right slot's one amber sentence about the pod on screen, `""` (empty) when it has none, so the host's station-wide notice never fills it (fix 5 P8).
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => o[k]);
 const iconsOf = (b) => [...new Set((b.match(/[⚡◆❀]/g) || []))].join(" ");
 // What a blocked action says on the right: a shortage as "needs more <icons>", any other reason as its own short words (no "·").
 const blockNeed = (b, strings) => (!b ? null : /^needs/.test(b) ? fill(strings.needMore, { icons: iconsOf(b) }) : b.replace(/ · /g, ", "));
