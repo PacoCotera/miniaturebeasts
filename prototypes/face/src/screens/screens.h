@@ -12,15 +12,17 @@ int pods_focus(focus_target_t *out, int cap);
    screens_key_graph: the whole of a key (`code`, the face's key codes) on a screen with a focus table. ✓, ← (unless opts.no_back) and the room keys say an intent on the focused target (`default_cur` when the props focus none; NULL: none). A direction moves the ring by
    the graph at `graph_path` in `spec`, over the targets `focus_fn` lists (`cap` as many as it is given), and says `focus` on the frame of the key. The ring stays and nothing is said when the move lands where it is,
    unless the key is a stepper key and opts.steps is set (then `intent` step:<up|down|left|right> on the focused target). `graph_path` or `focus_fn` NULL: the pad does nothing (the screen has no graph).
-   Reads: the props' `focus.cur` (or the ring the last key moved), and with opts.resolve the props' `focus.resolve` (the host's answers to the graph's selectors); with opts.room_at the rect at that path in `spec`
+   Reads: the props' `focus.cur`, or at opts->cur_path (or the ring the last key moved), and with opts.resolve the props' `focus.resolve` (the host's answers to the graph's selectors); with opts.room_at the rect at that path in `spec`
    (where the ring is drawn from the graph's roomKey). Says: `intent` and `focus` through screens_say. */
 typedef struct {
   int no_back;            /* 1: ← says nothing (Home is the top) */
   int resolve;            /* 1: the props' focus.resolve goes to the move */
   const char *room_at;    /* the spec path of the rect a move from the graph's roomKey starts at, or NULL */
   int steps;              /* 1: a stepper key says step:<key> on the focused target; 0: it says nothing */
+  const char *cur_path;   /* the props path of the focused target; NULL: "focus.cur" (an overlay's is "overlay.focus.cur") */
 } screens_keys_t;
 typedef int (*screens_focus_fn)(focus_target_t *out, int cap);
+/* `opts` is never NULL (pass a zero screens_keys_t for no options). At most 64 targets from focus_fn and 16 focus.resolve entries are read. */
 void screens_key_graph(int code, const char *spec, const char *graph_path, screens_focus_fn focus_fn, const char *default_cur, const screens_keys_t *opts);
 /* focus_fill: the target `t` of the props' list at `path` (a path to the list, "focus.targets"), entry `i`: its id, group, enabled (default 1) and index (default i) from the props, and `box` ({x, y, w, h}, NULL: zeros).
    A target whose box depends on its id is filled with NULL, its box found from t->id, and filled again with the box. Reads: the props at <path>.<i>.{id,group,enabled,index}. */

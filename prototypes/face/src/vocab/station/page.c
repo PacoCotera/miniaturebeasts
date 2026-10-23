@@ -86,7 +86,7 @@ void word_page(const char *key) {
       for (int k = 0; k < ng; k++) { char gk[24]; snprintf(gk, sizeof gk, "%s", v_pstr(v_fmt("%s.glyphs.%d.key", C, k))); total += lmGap + spec_int(S, v_fmt("%s.lineMarks.glyphs.%s.size.0", base, gk), 0); }
       if (hasNew) total += lmGap + newSize0;
       int x = cx + v_half(pw - total);
-      v_region(cellReg, LAYER_TYPE); v_text(v_fmt("%s.name", cid), nm, x, ny + v_fdiv(line - v_cap(16), 2), nw, 16, nameC); x += nw;
+      v_region(cellReg, LAYER_TYPE); v_line_at(v_fmt("%s.name", cid), nm, x, ny, V_ANCHOR_LINE, 16, nameC, V_ALIGN_LEFT); x += nw;
       v_name(cellReg);
       for (int k = 0; k < ng; k++) {
         char gk[24]; snprintf(gk, sizeof gk, "%s", v_pstr(v_fmt("%s.glyphs.%d.key", C, k))); const char *gb = v_fmt("%s.lineMarks.glyphs.%s", base, gk); char gbase[200]; snprintf(gbase, sizeof gbase, "%s", gb);
@@ -100,7 +100,7 @@ void word_page(const char *key) {
         for (int j = 0; j < nl && j < maxl; j++) {
           char t[V_STR * 3]; snprintf(t, sizeof t, "%s", l); l += strlen(l) + 1;
           { size_t len = strlen(t); while (len && t[len - 1] == ' ') t[--len] = 0; if (len >= 2 && (uint8_t)t[len - 2] == 0xc2 && (uint8_t)t[len - 1] == 0xb7) { t[len - 2] = 0; len -= 2; while (len && t[len - 1] == ' ') t[--len] = 0; } }   /* a break drops its trailing separator */
-          int tw = v_measure(t, px); v_text(v_fmt("%s.d%d", cid, j), t, cx + v_half(pw - tw), ny + pitch + j * pitch + v_fdiv(pitch - v_cap(px), 2), tw, px, lineC);
+          v_line_in(v_fmt("%s.d%d", cid, j), t, cx, pw, ny + pitch + j * pitch, V_ANCHOR_LINE, px, lineC);
         }
       }
     } else {

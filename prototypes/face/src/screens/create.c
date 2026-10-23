@@ -19,7 +19,6 @@
 
 #define C "create"
 static int has(const char *id) { return id && *id; }
-static int cap_top(int px, int y, int pitch) { return y + v_fdiv(pitch - v_cap(px), 2); }
 
 
 /* ---- the grow event: how far it has got (-1: not playing, the end state shows) ---- */
@@ -71,7 +70,7 @@ static void build_origin(void) {
   for (int i = 0, n = gone ? 0 : v_plen("regions.origin"); i < n && line < maxLines; i++) {
     char s[V_STR], buf[V_STR * 3]; snprintf(s, sizeof s, "%s", v_pstr(v_fmt("regions.origin.%d", i)));
     int nl = v_wrap(s, r[2], px, buf, sizeof buf, 8); const char *l = buf;
-    for (int j = 0; j < nl && line < maxLines; j++, line++) { int w = v_measure(l, px); v_text(v_fmt("origin.%d", line), l, cx - v_half(w), cap_top(px, r[1] + pitch * line, pitch), w, px, v_scol(C, "colours.origin")); l += strlen(l) + 1; }
+    for (int j = 0; j < nl && line < maxLines; j++, line++) { v_line_at(v_fmt("origin.%d", line), l, cx, r[1] + pitch * line, V_ANCHOR_LINE, px, v_scol(C, "colours.origin"), V_ALIGN_CENTRE); l += strlen(l) + 1; }
   }
 }
 /* The roll's gate (fix 5 Create C8; CD item 7, 07:10), computed here from the two founder pictures the face holds, in integers: the change dithers (16 Bayer levels) only when both the silhouette box (pixels clear in one picture and not the other)
@@ -127,9 +126,9 @@ static void build_traitLine(void) {
   int tw = changed ? layout_plate_width(C, "regions.traitLine.tag", v_measure(word, px)) : 0, lw = v_run_width(line, px), bw = doing ? v_sk(C, "regions.traitLine.breedMark.size", 0) : 0, bg = v_si(C, "regions.traitLine.breedMark.gap", 8);
   int total = (tw ? tw + gap : 0) + (cross ? ic : 0) + lw + (bw ? bg + bw : 0), x = cx - v_half(total), tx = r[1] + v_fdiv(r[3] - th, 2);
   v_region("traitLine", LAYER_PAINTED); if (tw > 0) v_plate_in(C, "traitLine.tag", "regions.traitLine.tag", tw, x, tx); else { char series[48], hid[96]; spec_str(C, "regions.traitLine.tag.plate.series", series, sizeof series); snprintf(hid, sizeof hid, "%s-%dx%d", series, v_si(C, "regions.traitLine.tag.plate.min", 80), th); v_sprite_hidden("traitLine.tag", hid, x, tx); }   /* the face picks the plate of the plate-name series (C9); no tag: the series' smallest, no size, the node kept */   /* the tag is the signed plate-name-88x24 on the painted layer, drawn at its width (the word's + 16 on the 8 px grid, 88 for "changed"), never stretched */
-  v_region("traitLine", LAYER_TYPE); v_text("traitLine.tag.word", tw ? word : "", x + v_half(tw - v_measure(word, px)), cap_top(px, tx + v_fdiv(th - 20, 2), 20), tw ? v_measure(word, px) : 0, px, v_scol(C, "colours.traitLine.tagWord")); if (tw) x += tw + gap;
+  v_region("traitLine", LAYER_TYPE); v_line_at("traitLine.tag.word", tw ? word : "", x + v_half(tw - v_measure(word, px)), v_si(C, "regions.traitLine.lineTop", 202), V_ANCHOR_LINE, px, v_scol(C, "colours.traitLine.tagWord"), V_ALIGN_LEFT); if (tw) x += tw + gap;
   v_name("traitLine"); v_slot("traitLine.cross", "icon-cross-16", NULL, x + 2, r[1] + v_fdiv(r[3] - 16, 2), px, px, cross); if (cross) x += ic;
-  v_region("traitLine", LAYER_TYPE); v_text("traitLine.text", line, x, v_si(C, "regions.traitLine.lineTop", 202) + v_fdiv(20 - v_cap(px), 2), lw, px, v_scol(C, clash ? "colours.traitLine.clash" : "colours.traitLine.line"));
+  v_region("traitLine", LAYER_TYPE); v_text("traitLine.text", line, x, v_cap_top(v_si(C, "regions.traitLine.lineTop", 202), V_ANCHOR_LINE, px), lw, px, v_scol(C, clash ? "colours.traitLine.clash" : "colours.traitLine.line"));
   v_name("traitLine"); v_slot("traitLine.breed", breed, NULL, x + lw + bg, r[1] + v_fdiv(r[3] - v_sk(C, "regions.traitLine.breedMark.size", 1), 2), bw ? bw : 28, v_sk(C, "regions.traitLine.breedMark.size", 1), bw);
 }
 /* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; in grow the stamp prints its cells row by row from the top over `steps.0.ms` (N + 2 rows of `cell` px, whole rows); nothing read: no label is drawn */
@@ -150,7 +149,7 @@ static void build_code(void) {
   int r[4]; v_srect(C, "regions.code.rect", r); const char *code = v_pstr("regions.code"); int t = grow_time(), at = v_si(C, "events.grow.steps.1.at", 300), px = v_si(C, "regions.code.px", 16), shown = *code && (t < 0 || t >= at), w = v_measure(code, px);
   v_region("code", LAYER_CHROME); rect_or("code.rule", shown, v_sk(C, "regions.code.rule.x", 0), v_si(C, "regions.code.rule.y", 505), v_sk(C, "regions.code.rule.x", 1) - v_sk(C, "regions.code.rule.x", 0), v_si(C, "regions.code.rule.h", 1), v_scol(C, "colours.code.rule"));   /* the rule and the code are one object: both have no size until grow 300 (fix 5 Create C4) */
   v_region("code", LAYER_TYPE);   /* the code's node is there in every state: until it prints it is the same node with no text and no width, so Grow changes a node and never adds one (§2.2) */
-  v_text("code", shown ? code : "", v_si(C, "regions.code.centre", 864) - v_half(w), v_si(C, "regions.code.baseline", 497) - v_cap(px), shown ? w : 0, px, v_scol(C, "colours.code.text"));
+  v_line_at("code", shown ? code : "", v_si(C, "regions.code.centre", 864) - v_half(w), v_si(C, "regions.code.baseline", 497), V_ANCHOR_BASE, px, v_scol(C, "colours.code.text"), V_ALIGN_LEFT);
 }
 
 /* ---- the targets as the words drew them, and the ring ---- */

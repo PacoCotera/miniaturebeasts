@@ -57,9 +57,9 @@ void build_nameTag(const char *sp, const char *glass, const char *name, const in
   const char *ink = g_tagFlash ? v_scol("frame", "colours.flashInk") : v_scol(sp, "colours.nameTag.text");
   if (g_tagSlot) { v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, 0, 0, v_scol(sp, "colours.nameTag.fill"), NULL); }
   else { v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, g_tagFlash ? v_scol("frame", "colours.flash") : v_scol(sp, "colours.nameTag.fill"), v_scol(sp, "colours.nameTag.edge")); }
-  /* the name's cap top: 5 px under the tag's top (the 24 px tag), or from the spec's line top (regions.nameTag.lineTop in the tag's rectangle: one mibi up close's 32 px tag at 20 px) on the type's line pitch (20 at 16, 28 at 20, 36 at 28) */
-  int ty = y + 5; if (spec_int(sp, "regions.nameTag.lineTop", 0) > 0) { int pitch = px == 16 ? 20 : px == 20 ? 28 : 36; ty = y + (spec_int(sp, "regions.nameTag.lineTop", 0) - v_sk(sp, "regions.nameTag.rect", 1)) + v_fdiv(pitch - v_cap(px), 2); }
-  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", g_tagSlot ? "" : name, x + v_half(w - tw), ty, g_tagSlot ? 0 : tw, px, ink);
+  /* the name's cap top: 5 px under the tag's top (the 24 px tag), or from the spec's line top (regions.nameTag.lineTop in the tag's rectangle: one mibi up close's 32 px tag at 20 px) */
+  int lt = spec_int(sp, "regions.nameTag.lineTop", 0);
+  v_region("nameTag", LAYER_TYPE); v_line_at("nameTag.text", g_tagSlot ? "" : name, x + v_half(w - tw), lt > 0 ? y + (lt - v_sk(sp, "regions.nameTag.rect", 1)) : y + 5, lt > 0 ? V_ANCHOR_LINE : V_ANCHOR_CAP, px, ink, V_ALIGN_LEFT);
 }
 
 /* The living window's name tag (T-20261018-235): the same panel and name as build_nameTag, centred on the figure's feet point `fx`, its top at `yBelow` (feetY + 16), or at `yOver` (over the figure) when its bottom would pass
@@ -74,7 +74,7 @@ void build_nameTagAt(const char *sp, const char *glass, const char *name, int fx
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
   const char *ink = v_scol(sp, "colours.nameTag.text");
   v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, v_scol(sp, "colours.nameTag.fill"), v_scol(sp, "colours.nameTag.edge"));
-  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), y + 5, tw, px, ink);
+  v_region("nameTag", LAYER_TYPE); v_line_at("nameTag.text", name, x + v_half(w - tw), y + 5, V_ANCHOR_CAP, px, ink, V_ALIGN_LEFT);
 }
 
 /* The bay strip (vivarium.json regions.strip and tiles; the composition `bayStrip`, rule `listPitch`): the strip's panel and a tile a bay, the housed mibis in bay order then the free bays, the tiles by the rule's form for the count. Every tile is the same

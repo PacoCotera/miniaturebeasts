@@ -175,8 +175,8 @@ static void build_column(int t_inc) {
     v_region("stamp", LAYER_PAINTED); if (has(a) && size) { v_name("stamp"); v_sprite("stamp.stamp", a, r[0] + v_half(r[2] - size), r[1] + v_half(r[3] - size), size, size); }
     word_stampCase(I, "regions", 1);   /* the case's front veil: the art director's recut, alpha 0 over the 120 x 120 plate (UI/UX round 2, E2) */
   }
-  { const char *code = v_pstr("regions.code"); if (has(code)) { int px = v_si(I, "regions.code.px", 16), cx = v_si(I, "regions.code.centre", 152), w = v_measure(code, px); v_region("code", LAYER_TYPE); v_text("code", code, cx - v_half(w), v_si(I, "regions.code.lineTop", 344) + v_fdiv(20 - v_cap(px), 2), w, px, v_scol(I, "colours.code")); } }
-  { const char *s = v_pstr("regions.readyIn"); if (has(s) && in_state("growing")) { int px = v_si(I, "regions.readyIn.px", 16), cx = v_si(I, "regions.readyIn.centre", 152), w = v_measure(s, px); v_region("readyIn", LAYER_TYPE); v_text("readyIn", s, cx - v_half(w), v_si(I, "regions.readyIn.lineTop", 384) + v_fdiv(20 - v_cap(px), 2), w, px, v_scol(I, "colours.readyIn")); } }
+  { const char *code = v_pstr("regions.code"); if (has(code)) { v_region("code", LAYER_TYPE); v_line_at("code", code, v_si(I, "regions.code.centre", 152), v_si(I, "regions.code.lineTop", 344), V_ANCHOR_LINE, v_si(I, "regions.code.px", 16), v_scol(I, "colours.code"), V_ALIGN_CENTRE); } }
+  { const char *s = v_pstr("regions.readyIn"); if (has(s) && in_state("growing")) { v_region("readyIn", LAYER_TYPE); v_line_at("readyIn", s, v_si(I, "regions.readyIn.centre", 152), v_si(I, "regions.readyIn.lineTop", 384), V_ANCHOR_LINE, v_si(I, "regions.readyIn.px", 16), v_scol(I, "colours.readyIn"), V_ALIGN_CENTRE); } }
 }
 static void build_ribbon(int t) {
   if (!in_state("hatch")) return;
