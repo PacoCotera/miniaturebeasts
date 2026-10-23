@@ -13,19 +13,19 @@ roadmap="$here/../website/roadmap.json"
 tab=$(printf '\t')
 input=$(cat)
 
-read_by_build() {   # $1 is a path: is it listed in build-reads.txt, or under a listed folder?
+read_by_build() {   # the argument is a path: is it listed in build-reads.txt, or under a listed folder?
   while IFS= read -r entry; do
     case $entry in ''|'#'*) continue ;; esac
     case $entry in
-      */) case $1 in "$entry"*) return 0 ;; esac ;;
-      *) [ "$1" = "$entry" ] && return 0 ;;
+      */) case ${1} in "$entry"*) return 0 ;; esac ;;
+      *) [ "${1}" = "$entry" ] && return 0 ;;
     esac
   done < "$reads"
   return 1
 }
 
-linked_by_roadmap() {   # $1 is a path: does roadmap.json link to it, or to a folder above it (a link may carry a #fragment)?
-  p=$1
+linked_by_roadmap() {   # the argument is a path: does roadmap.json link to it, or to a folder above it (a link may carry a #fragment)?
+  p=${1}
   grep -qF "\"$p\"" "$roadmap" && return 0
   grep -qF "\"$p#" "$roadmap" && return 0
   while :; do
