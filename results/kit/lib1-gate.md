@@ -50,7 +50,7 @@ All runs were in my own worktree under scratchpad/arch-lib1, with private FACE_B
 
 ## 3. The placement ruling
 
-**What the UI/UX source says about the readout.** Grepping "readout" finds it in the UI/UX Library design and words.md only. the UI/UX follow-ups and the UI/UX follow-ups have no readout line.
+**What the UI/UX source says about the readout.** Grepping "readout" finds it in the UI/UX Library design and the copywriter's words only; the UI/UX follow-ups have no readout line.
 - the UI/UX Library design: "drawn at 16 px in `mist`, starting at x = the title's end + 8, and clipped to end by x 248;"
 - the UI/UX Library design: "the mark (a 10×10 picture) 4 px before its word;"
 - The architect's K-order ruling and the copywriter's words give the same x figures (123, +14 with a mark, clip at 248) and no y.
