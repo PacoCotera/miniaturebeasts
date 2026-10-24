@@ -13,7 +13,7 @@ import * as T from "../src/sitting.mjs";
 import { G, UI, SPECS, FX } from "../src/game.mjs";
 import { dispatch } from "../src/intents/index.mjs";
 import { createHost, onFaceMessage, screenProps, sittingBody, enterSitting } from "../src/host.mjs";
-import { newSit, POSE_DITHER } from "../src/intents/sitting.mjs";
+import { newSit } from "../src/intents/sitting.mjs";
 import { isBuilt, DROPS_ON_ROOM_KEY } from "../src/nav.mjs";
 import { loadStandLayersFs, loadStandLooksFs } from "../tools/stand-layers-fs.mjs";
 import { injectPortraitSource, dropPortraitSources } from "../src/portrait-source.mjs";
@@ -118,7 +118,7 @@ test("events.backdrop.resident \"cut\": no resident dither; the window keeps the
 test("the pose step: a focus move to or from the curl cross-dithers the resident 16 levels over 180 ms, cut by the next press; a stand-to-stand move is a cut", () => {
   const { h, mb, focus, dithers, body } = rig(); enterSitting(h, mb); const o = offerOf(mb), at = (i) => "card." + i, curl = o.poses.indexOf("sleep-curled"), stands = o.poses.map((_, i) => i).filter((i) => i !== curl);
   focus(at(stands[0])); const a = body().props.regions.resident.picture; focus(at(curl)); const e = dithers("resident").at(-1);
-  assert.deepEqual([e.from, e.ms, e.levels, e.cut, e.hold], [a, POSE_DITHER.ms, 16, true, 0]); assert.equal(POSE_DITHER.ms, 180);
+  const P = SIT.events.pose; assert.deepEqual([e.kind, e.target, e.from, e.ms, e.levels, e.cut, e.hold], [P.kind, P.target, a, P.ms, P.levels, true, P.hold]); assert.deepEqual([P.ms, P.levels], [180, 16], "sitting.json events.pose: Habitat's 16 levels over 180 ms");
   const n = dithers("resident").length; focus(at(stands[0])); assert.equal(dithers("resident").length, n + 1, "from the curl: a dither too");
   focus(at(stands[1])); assert.equal(dithers("resident").length, n + 1, "stand to stand (shake and calm, or an owed habit's stand): a cut, whatever the picture");
 });

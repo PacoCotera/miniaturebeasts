@@ -33,6 +33,6 @@ Targets: `card.<i>` on the pose and place steps, `room` on the confirm step and 
 | ✓ on a place card | the place is chosen, the confirm step opens | none (cuts) |
 | ✓ on the confirm step | the first arms (the lit gilt); the second begins: `beginSitting` at the screen change, Habitat with the plate (`strings.beganPlate`) and the ring on Portrait | `dither` on `gilt` from the lit gilt (`events.begin.steps[0]`), held `events.begin.hold`; then the screen change at `steps[1].at` |
 | ← | a step back keeping the choice; from the pose step and the portrait, Habitat with the ring on Portrait | the backdrop's dither back on leaving the place step |
-| the pad on the pose step | (the face's) a change to or from the curl | `dither` on `resident`, 16 levels over 180 ms, cut by the next press |
+| the pad on the pose step | (the face's) a change to or from the curl | `dither` on `resident` (`events.pose`, 16 levels over 180 ms), cut by the next press |
 
 Reduced motion: every change is a cut and begin lands on Habitat on the frame of the key.
