@@ -3,7 +3,7 @@ Reads the masters from ../slices, the placed references from station-gate (SG, R
 import io, json, os
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from kitlib import SLICES, PROOF, IWQ, pal, sg_bytes, sg_image, sha, measures_update
+from kitlib import KIT, SLICES, PROOF, IWQ, pal, sg_bytes, sg_image, sha, measures_update
 
 P = pal()
 BAR = (35, 41, 47)
@@ -57,7 +57,7 @@ d = ImageDraw.Draw(c); text(d, (16, 13), f"sheet [16, 40, 664, 522] pasted back 
 text(d, (1056, 13), "the same, the sheet rect outlined 1 px outside (focus), for finding it")
 out(c, "ground-sheet-seam", x4=False)
 
-# 3. marks: the 16 species at 10 and 15 on libPanel, libQuiet and libGround, beside the placed mark-species-SNN-24x24
+# 3. marks: the 16 species at 10 and 15 on libPanel, libQuiet and libGround, beside the recut mark-species-SNN-24x24 (masters-pods slices/)
 surf = [("libPanel", P["libPanel"]), ("libQuiet", P["libQuiet"]), ("libGround", P["libGround"])]
 RH = 30; c = Image.new("RGB", (40 + 3 * 52 + 8 + 40, 22 + 16 * RH + 6), P["libWell"]); d = ImageDraw.Draw(c)
 for k, (n, col) in enumerate(surf): text(d, (40 + k * 52 + 2, 4), n, f=FONT_S)
@@ -70,7 +70,8 @@ for r in range(16):
         x = 40 + k * 52; d.rectangle([x, y, x + 47, y + RH - 3], fill=col)
         m10, m15 = sl(f"species-mark-{sid}-10"), sl(f"species-mark-{sid}-15")
         c.paste(m10, (x + 6, y + 8), m10); c.paste(m15, (x + 24, y + 6), m15)
-    im24, h24 = sg_image(f"prototypes/ui/assets/masters/pods/mark-species-{sid}-24x24.png"); im24 = im24.convert("RGBA"); placed[sid] = h24
+    p24 = os.path.join(KIT, "..", "slices", f"mark-species-{sid}-24x24.png")   # the recut 24s (AD 2026-10-23 23:46), masters-pods slices/
+    im24 = Image.open(p24).convert("RGBA"); placed[sid] = sha(open(p24, "rb").read())
     x = 40 + 3 * 52 + 8; d.rectangle([x - 2, y - 1, x + 25, y + 26], fill=P["libPanel"]); c.paste(im24, (x, y), im24)
 out(c, "marks")
 
@@ -125,6 +126,6 @@ out(c, "ring")
 
 measures_update("proofs", {"files": made, "ground_sheet_seam_px_differ": seam_diff,
     "render": "iwq results/T-20261017-library/art/library-all-v5.png", "render_sha256": sha(open(RENDER, "rb").read()),
-    "placed_marks_sha256": placed, "sitting_frame_held_48x40_sha256": hh, "berth_portrait_18x24_sha256": bh,
+    "recut_24_marks_sha256": placed, "sitting_frame_held_48x40_sha256": hh, "berth_portrait_18x24_sha256": bh,
     "berth_portrait_held_18x24": "derived in the proof by the art director's rule (ad-berth-curl 1a) from berth-portrait-18x24; equals the art director's review proof ad-berth/proof-berth-portrait-held-18x24.png: " + str(bph_equals_ad)})
 print(made, seam_diff, bph_equals_ad)

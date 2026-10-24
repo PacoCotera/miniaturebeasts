@@ -1,11 +1,11 @@
 """Pass 75 (redrawn in pass 81 after the art director's verdict): the Library field guide's small marks (origin/design-field-guide 2353443f, library.json masters), typed pixel by pixel, no image generator, no API call, never scaled from another size.
 Art layer: station.json colours only; the family of the signed line glyphs and the Cross glint.
   guide-pip-unseen-6x6   a dotted hollow pip in `clay` (a look not yet seen; the found pip is a plain 6x6 `bark` rect drawn by the build)
-  wish-mark-12           the pinned look's glint at 12 (the signed 12 px glint of the Cross wish: yellow, cream core, amber shade)
+  wish-mark-12-pass81    (retired: slices/retired/, superseded by library-kit wish-mark-12, AD 2026-10-23 23:28) the pinned look's glint at 12 (the signed 12 px glint of the Cross wish: yellow, cream core, amber shade)
   wish-mark-24           the same glint drawn again at 24 (the face spread's pinned wish corner): a width profile typed per row, then the core and the shade by rule
   mark-guide-16          an open book in `bone`, for chrome after the species word on Habitat's card
   guide-seal-32          the guide complete: a scalloped gold seal, a lit sand rim top left and a bark shade bottom right, a clay groove, the glint at its centre
-python3 -I tools/guidemarks.py -> slices/guide-*.png, wish-mark-*.png, mark-guide-16.png, marks/guide-marks-proof-1x.png and -4x.png"""
+python3 -I tools/guidemarks.py -> slices/guide-*.png, wish-mark-24.png, slices/retired/wish-mark-12-pass81.png, mark-guide-16.png, marks/guide-marks-proof-1x.png and -4x.png"""
 import os, json, hashlib
 from PIL import Image, ImageDraw, ImageFont
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
@@ -77,20 +77,22 @@ def seal32():
             else: c = "sand"
             im.putpixel((x, y), pal[c] + (255,))
     return im
-NAMES = {"guide-pip-unseen-6x6": spr(PIP, 6, 6, {"c": "clay"}, "pip"), "wish-mark-12": glint(PROFILE10, 2.5), "wish-mark-24": glint(PROFILE22, 5.5),
+NAMES = {"guide-pip-unseen-6x6": spr(PIP, 6, 6, {"c": "clay"}, "pip"), "wish-mark-12-pass81": glint(PROFILE10, 2.5), "wish-mark-24": glint(PROFILE22, 5.5),
          "mark-guide-16": book(), "guide-seal-32": seal32()}
 MADE = {"guide-pip-unseen-6x6": "a dotted hollow pip in `clay` (corners and the pairs at the middle of each side lit, nothing inside); the unseen look's pip",
-        "wish-mark-12": "the pinned look's glint: a 10x10 silhouette (yellow, cream core, `gold` shade lower right) inside a 1 px `bark` keyline, so 12x12; on a trait cell and its plate",
+        "wish-mark-12-pass81": "the pinned look's glint: a 10x10 silhouette (yellow, cream core, `gold` shade lower right) inside a 1 px `bark` keyline, so 12x12; on a trait cell and its plate",
         "wish-mark-24": "the pinned wish panel's corner on the face spread: the same glint drawn again at 22x22 inside a 1 px `bark` keyline, so 24x24, the horizontal arm 2 px thick to its tips; never scaled",
         "mark-guide-16": "an open book in `bone` for chrome: no feet, each page's top falling 1 px per 3 px towards a 1 px spine, the bottom edge curved to match, two text lines per page, `fog` shade on the right page, centred (rows 2 to 13)",
         "guide-seal-32": "the guide complete: a pressed paper seal, 12 even scallops typed as one quadrant and mirrored, a `sand` face, a 1 px `clay` groove ring, a `bark` keyline and a `bark` shade at the bottom right; no glint, no gold, no yellow"}
 man = json.load(open("slices/manifest.json"))
+OUT = {"wish-mark-12-pass81": "slices/retired/wish-mark-12-pass81.png"}   # never slices/wish-mark-12.png again: that id is the Library kit's star (AD 2026-10-23 23:46)
 for n, im in NAMES.items():
-    im.save(f"slices/{n}.png", optimize=True)
-    man[n] = {"size": list(im.size), "rect": None, "src": "typed by hand", "made": MADE[n] + " (pass 81, after the art director's verdict on pass 75)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
+    p = OUT.get(n, f"slices/{n}.png"); im.save(p, optimize=True)
+    # update the row, keeping its status fields (status, signed_in, status_note, file)
+    man.setdefault(n, {}).update({"size": list(im.size), "rect": None, "src": "typed by hand", "made": MADE[n] + " (pass 81, after the art director's verdict on pass 75)", "sha256": hashlib.sha256(open(p, "rb").read()).hexdigest()})
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
 # proof at 1x on the surfaces they sit on: the wish marks on a 56x56 look plate (top right, inset 2) and a `paper` ground, the seal on `paper`, the book on the chrome `panel` colour
 cv = Image.new("RGB", (330, 76), pal["paper"]); cv.paste(Image.open("slices/trait-S12-colour-marigold-56x56.png"), (8, 10)); cv.paste(Image.new("RGB", (80, 76), pal["panel"]), (250, 0))
-c4 = cv.convert("RGBA"); c4.alpha_composite(NAMES["wish-mark-12"], (8 + 56 - 12 - 2, 10 + 2)); c4.alpha_composite(NAMES["wish-mark-12"], (80, 20)); c4.alpha_composite(NAMES["wish-mark-24"], (110, 20))
+c4 = cv.convert("RGBA"); c4.alpha_composite(NAMES["wish-mark-12-pass81"], (8 + 56 - 12 - 2, 10 + 2)); c4.alpha_composite(NAMES["wish-mark-12-pass81"], (80, 20)); c4.alpha_composite(NAMES["wish-mark-24"], (110, 20))
 c4.alpha_composite(NAMES["guide-seal-32"], (160, 20)); c4.alpha_composite(NAMES["guide-pip-unseen-6x6"], (210, 33)); c4.alpha_composite(NAMES["mark-guide-16"], (275, 30))
 c4.convert("RGB").save("marks/guide-marks-proof-1x.png"); c4.convert("RGB").resize((330 * 4, 76 * 4), Image.NEAREST).save("marks/guide-marks-proof-4x.png")

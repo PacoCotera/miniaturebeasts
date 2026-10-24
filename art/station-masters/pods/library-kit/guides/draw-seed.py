@@ -1,11 +1,13 @@
 """M4: library-seed-24x24, the closed almond seed, opaque on libWell. Drawn by rule from the approved render's seedMark
-(iwq results/T-20261017-library/art/compose-all2-v3.js, guides/seed_rule.py), then finished by hand.
-Hand pass (HAND below, the top half; the bottom half is its 180-degree turn about (12, 12), so the seed stays one shape):
-  * the two tips: row 6 ends at x 10 (the rule's 11) and row 11 at x 15 (the rule's 16), and their turns, row 17 from x 13 and row 12 from x 8;
-    so each tip ends in a corner on the long axis instead of a flat run, and the axis stays the render's (36.7 against 36.0 degrees, by moments):
-    4 seed pixels go back to libWell (variants A, B, E, G, H were tried and leaned the axis or cut the shape more);
-  * the edge: the rule's 4-neighbour edge (32 px) breaks at its diagonal steps, so it is not a closed line; the edge is taken as every
-    seed pixel with any of its 8 neighbours outside, a closed 1 px line, 4-connected, with no doubled corner (each edge pixel has exactly two edge 4-neighbours).
+(iwq results/T-20261017-library/art/compose-all2.js, guides/seed_rule.py), then finished by hand.
+Hand pass (HAND below, the top half; the bottom half is its 180-degree turn about (12, 12), so the seed stays one shape).
+Redrawn at w 5.5, h 10.5 (AD sign-off 2026-10-23 23:46: the approved v5 is compose-all2.js's seed); the rule gives 160 px, x 5-18, y 4-19:
+  * the two tips: row 4 ends at x 9 (the rule's 10), rows 9 and 10 end at x 15 and 16 (the rule's 16 and 17), and their turns
+    (row 19 from x 14, rows 14 and 13 from x 8 and 7), so each tip ends in a corner on the long axis instead of a flat 5 px run,
+    and the axis by moments stays the rule's (38.5 against 38.1 degrees): 6 seed pixels go back to libWell
+    (variants A to F were tried and leaned the axis more or kept a flat tip);
+  * the edge: the rule's 4-neighbour edge breaks at its diagonal steps, so it is not a closed line; the edge is every seed pixel with any of its
+    8 neighbours outside, a closed 1 px line, 4-connected, with no doubled corner (each edge pixel has exactly two edge 4-neighbours; method accepted by the AD).
 No colour added, no partial alpha, no shadow, no lip. The tilt is the render's: upper left to lower right (never mirrored)."""
 import os
 import numpy as np
@@ -14,7 +16,7 @@ from scipy import ndimage
 from kitlib import pal, save, file_sha, iou, values, measures_update, IWQ, sha
 from seed_rule import rule, edge
 
-HAND = {6: (7, 10), 7: (7, 12), 8: (7, 14), 9: (7, 14), 10: (7, 15), 11: (7, 15)}   # row: (first x, last x), top half
+HAND = {4: (6, 9), 5: (5, 12), 6: (5, 13), 7: (5, 14), 8: (5, 15), 9: (5, 15), 10: (5, 16), 11: (6, 17)}   # row: (first x, last x), top half
 
 def hand_mask():
     m = np.zeros((24, 24), bool)
@@ -49,17 +51,17 @@ if __name__ == "__main__":
         if ax[1] < 0: ax = -ax
         return float(cx), float(cy), float(np.degrees(np.arctan2(ax[0], ax[1])))   # angle from straight down, toward +x
     cx, cy, tilt = axis(seed); _, _, rtilt = axis(R)
-    src = os.path.join(IWQ, "results/T-20261017-library/art/compose-all2-v3.js")
+    src = os.path.join(IWQ, "results/T-20261017-library/art/compose-all2.js")
     r = {"rule_seed": int(R.sum()), "rule_edge": int(edge(R).sum()), "rule_fill": int((R & ~edge(R)).sum()),
          "seed": int(seed.sum()), "edge": int(ed.sum()), "fill": int(inner.sum()),
          "mode": im.mode, "colours": sorted("#%02x%02x%02x" % c[:3] for c in values(im)),
          "edge_components_4conn": int(n_e), "edge_pixels_with_two_edge_4neighbours": int((nb == 2).sum()),
          "edge_closed": bool(n_e == 1 and (nb == 2).all() and n_in == 1),
-         "centre": [round(cx, 2), round(cy, 2)], "long_axis_from_vertical_deg": round(tilt, 1), "rule_long_axis_from_vertical_deg": round(rtilt, 1), "render_axis_deg": 36.0,
+         "centre": [round(cx, 2), round(cy, 2)], "long_axis_from_vertical_deg": round(tilt, 1), "rule_long_axis_from_vertical_deg": round(rtilt, 1), "render_axis_deg": 36.0, "rule_x": [int(np.where(R.any(0))[0].min()), int(np.where(R.any(0))[0].max())], "rule_y": [int(np.where(R.any(1))[0].min()), int(np.where(R.any(1))[0].max())],
          "long_axis_runs": "upper left to lower right" if tilt > 0 else "upper right to lower left",
          "hand_pixels_removed_from_rule": int((R & ~m).sum()), "hand_pixels_added": int((m & ~R).sum()),
          "iou_vs_rule": round(iou(seed, R), 3), "iou_note": "opaque master: the seed is every pixel that is not libWell, against the rule's raster",
-         "source": "iwq results/T-20261017-library/art/compose-all2-v3.js seedMark", "source_sha256": sha(open(src, "rb").read()),
+         "source": "iwq results/T-20261017-library/art/compose-all2.js seedMark (w 5.5, h 10.5)", "source_sha256": sha(open(src, "rb").read()),
          "sha256": file_sha(p), "script": "guides/draw-seed.py (guides/seed_rule.py)"}
     r["pass"] = (im.mode == "RGB" and len(r["colours"]) == 3 and r["edge_closed"] and r["iou_vs_rule"] >= 0.90 and tilt > 0)
     measures_update("M4_library_seed_24x24", r)

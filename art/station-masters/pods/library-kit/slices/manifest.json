@@ -11,7 +11,7 @@
    "source_sha256": "382cf3516a0bb89ecdc3990d3b0d8f491a9e68f832423622a098115a01ff282d",
    "script": "guides/make-ground.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "derived-from-concept"
  },
  "species-mark-S01-10": {
@@ -26,7 +26,7 @@
    "source_sha256": "2864cee6f21d1582dc334c157019ce5791d6c10c6ab6acaef4aea6afd49abb94",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S01-15": {
@@ -41,7 +41,7 @@
    "source_sha256": "2864cee6f21d1582dc334c157019ce5791d6c10c6ab6acaef4aea6afd49abb94",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S02-10": {
@@ -56,7 +56,7 @@
    "source_sha256": "1a06670bcc1c309ac5944a8b9d46ac2d0fd78f60d252f6093d2067496fa44f4e",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S02-15": {
@@ -71,7 +71,7 @@
    "source_sha256": "1a06670bcc1c309ac5944a8b9d46ac2d0fd78f60d252f6093d2067496fa44f4e",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S03-10": {
@@ -86,7 +86,7 @@
    "source_sha256": "06c763b399fd818b0363d188bd1a3815912a1bdfb10bca46605317a93d481bd6",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S03-15": {
@@ -101,7 +101,7 @@
    "source_sha256": "06c763b399fd818b0363d188bd1a3815912a1bdfb10bca46605317a93d481bd6",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S04-10": {
@@ -116,7 +116,7 @@
    "source_sha256": "65cb5f7ea69abca1db7dce6af1d7c416875ab701e68a73a24b5a50a8575f783d",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S04-15": {
@@ -131,7 +131,7 @@
    "source_sha256": "65cb5f7ea69abca1db7dce6af1d7c416875ab701e68a73a24b5a50a8575f783d",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S05-10": {
@@ -146,7 +146,7 @@
    "source_sha256": "fff394a4b955e984de5e7ebfe1e17a68e09deac2f83c13f0281aacb554061443",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S05-15": {
@@ -161,7 +161,7 @@
    "source_sha256": "fff394a4b955e984de5e7ebfe1e17a68e09deac2f83c13f0281aacb554061443",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S06-10": {
@@ -176,7 +176,7 @@
    "source_sha256": "eae240e4d4a47b29871387121ebaaf52403f8a5a200334519a07e62c86b3868a",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S06-15": {
@@ -191,7 +191,7 @@
    "source_sha256": "eae240e4d4a47b29871387121ebaaf52403f8a5a200334519a07e62c86b3868a",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S07-10": {
@@ -206,7 +206,7 @@
    "source_sha256": "ebd818d9c942c2e554413cc12e787bd8d370dda344730117bda25d75f07ea805",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S07-15": {
@@ -221,7 +221,7 @@
    "source_sha256": "ebd818d9c942c2e554413cc12e787bd8d370dda344730117bda25d75f07ea805",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S08-10": {
@@ -236,7 +236,7 @@
    "source_sha256": "0789557101c9f86a0e28df0966413c98ff95fd59b5860388ed339f1ad0503d13",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S08-15": {
@@ -251,7 +251,7 @@
    "source_sha256": "0789557101c9f86a0e28df0966413c98ff95fd59b5860388ed339f1ad0503d13",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S09-10": {
@@ -266,7 +266,7 @@
    "source_sha256": "3832d5ab35ed4210397234730c672b9451c7c85939a80ef9ce7779dff57d36f7",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S09-15": {
@@ -281,7 +281,7 @@
    "source_sha256": "3832d5ab35ed4210397234730c672b9451c7c85939a80ef9ce7779dff57d36f7",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S10-10": {
@@ -296,7 +296,7 @@
    "source_sha256": "572e8d2f43ea8125dd6daeeb098780f2cd38a69fc955471fc5159ac450afcc71",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S10-15": {
@@ -311,7 +311,7 @@
    "source_sha256": "572e8d2f43ea8125dd6daeeb098780f2cd38a69fc955471fc5159ac450afcc71",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S11-10": {
@@ -326,7 +326,7 @@
    "source_sha256": "01ab6dc706482e4fc0b5ddfaf4797676f0fe066ccf134c3dabeb4df1b9bbd8ce",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S11-15": {
@@ -341,7 +341,7 @@
    "source_sha256": "01ab6dc706482e4fc0b5ddfaf4797676f0fe066ccf134c3dabeb4df1b9bbd8ce",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S12-10": {
@@ -356,7 +356,7 @@
    "source_sha256": "2630e433df2550f60fb5941976c88cb3d0af2e433e4d05df974a82c518f53aaa",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S12-15": {
@@ -371,7 +371,7 @@
    "source_sha256": "2630e433df2550f60fb5941976c88cb3d0af2e433e4d05df974a82c518f53aaa",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S13-10": {
@@ -386,7 +386,7 @@
    "source_sha256": "0c5870f74731d937dd7bf45e5da446f7ec5214acf715c2eee0bf2051bc5b5c70",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S13-15": {
@@ -401,7 +401,7 @@
    "source_sha256": "0c5870f74731d937dd7bf45e5da446f7ec5214acf715c2eee0bf2051bc5b5c70",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S14-10": {
@@ -416,7 +416,7 @@
    "source_sha256": "f3816621c487aec02f3a8207d663fc32091ef5740f6037c1421d583007094065",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S14-15": {
@@ -431,7 +431,7 @@
    "source_sha256": "f3816621c487aec02f3a8207d663fc32091ef5740f6037c1421d583007094065",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S15-10": {
@@ -446,7 +446,7 @@
    "source_sha256": "a06340efc6cc45d63b381557889fb9dd968fd8df36e4eb51ee33ecefb0b68fff",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S15-15": {
@@ -461,7 +461,7 @@
    "source_sha256": "a06340efc6cc45d63b381557889fb9dd968fd8df36e4eb51ee33ecefb0b68fff",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S16-10": {
@@ -476,7 +476,7 @@
    "source_sha256": "8f35a24c8e90ceffbf1648ce4c9daec3232a6444dbd1d074f428a2854d864134",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "species-mark-S16-15": {
@@ -491,7 +491,7 @@
    "source_sha256": "8f35a24c8e90ceffbf1648ce4c9daec3232a6444dbd1d074f428a2854d864134",
    "script": "guides/cut-marks.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "library-seed-24x24": {
@@ -500,10 +500,10 @@
    24,
    24
   ],
-  "sha256": "2a858bb57639390d1fdcac798b431713c7217ce9e03a7075fa519f746622db1a",
+  "sha256": "80d853c0bbfe9d7e3bcfb7783ea917fada00224034ea9a073150e18f73737f63",
   "from": {
-   "source": "iwq results/T-20261017-library/art/compose-all2-v3.js seedMark",
-   "source_sha256": "049e4e2c474c245eaa56265335c7c6b5de6fe8b889f24cf642e63b1796026a70",
+   "source": "iwq results/T-20261017-library/art/compose-all2.js seedMark (w 5.5, h 10.5)",
+   "source_sha256": "66cce42e85ef015dcd0815989f35844972f15b1c276737385275e93fc7077bb1",
    "script": "guides/draw-seed.py (guides/seed_rule.py)"
   },
   "signed_in": null,
@@ -521,7 +521,7 @@
    "source_sha256": "89c89bea9b024835be4cf60d574d30c7a9974fd2f0eb49b3f5f54c8f3d7cda3b",
    "script": "guides/draw-star.py (guides/star_rule.py)"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "derived-from-concept"
  },
  "look-disc-open-16": {
@@ -536,7 +536,7 @@
    "source_sha256": null,
    "script": "guides/draw-ring.py"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  },
  "library-sitting-16x12": {
@@ -551,7 +551,7 @@
    "source_sha256": "80ba90b17fa0df1a87d974cbbd88ca2d78b7911d48cafe88a6a915efca039298",
    "script": "guides/sitting-16x12.py (the GRID typed by hand; the script writes and checks it)"
   },
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:46, b65117fb",
   "status": "new"
  }
 }

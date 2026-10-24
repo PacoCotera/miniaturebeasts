@@ -17,7 +17,10 @@ man = json.load(open("slices/manifest.json"))
 def save(name, im, rect, made, src):
     im = im.convert("RGBA"); im.save(f"slices/{name}.png", optimize=True)
     man[name] = {"size": list(im.size), "rect": rect, "src": src, "made": made, "sha256": hashlib.sha256(open(f"slices/{name}.png", "rb").read()).hexdigest()}
-frames = {f"S{i:02d}": json.load(open(os.path.join(REPO, f"prototypes/workbench/frames/species-S{i:02d}.json"))) for i in range(1, 17)}
+# the frames from station-gate (SG clone, REV default c4be3673), never this branch's stale prototypes/workbench/frames copy (the retired glyphs; AD 2026-10-23 23:46)
+import subprocess
+SG = os.environ.get("SG", "../station-gate"); REV = os.environ.get("REV", "c4be3673")
+frames = {f"S{i:02d}": json.loads(subprocess.run(["git", "-C", SG, "show", f"{REV}:prototypes/workbench/frames/species-S{i:02d}.json"], check=True, capture_output=True).stdout) for i in range(1, 17)}
 # species marks
 for sp, d in frames.items():
     rows = d["glyph"]; im = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
