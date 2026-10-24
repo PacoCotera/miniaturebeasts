@@ -4,7 +4,7 @@ Scope: game rules, what the player learns and when, and truth rules. Layout is U
 
 **What I read.**
 - Internal work-queue (/home/user/iwq): results/T-20261023-post-library/uiux-k5q-sitting-curl.md (B and C), results/T-20261017-library/art/sheet-art.md (§1), results/T-20261017-library/gd-followups.md, kit-map.md (C11), words.md (`sheet.readonce`), build-spec.md and structure.md (read once). iwq/MOVED.md says the queue moved to the public work-queue branch; these files were read as named in the brief.
-- /home/user/miniaturebeasts-internal/decisions.md: 2026-10-08 (the portrait), 2026-10-11 14:03 (5) (night; a carried mibi sleeps only while docked), 2026-10-18 22:45 (sittings are never lost).
+- The owner's decisions of 2026-10-08 (the portrait), 2026-10-11 14:03 (night; a carried mibi sleeps only while docked) and 2026-10-18 22:45 (sittings are never lost).
 - station-gate 95f9762a, read only with `git -C /home/user/sg show`: prototypes/station/src/sitting.mjs, state.mjs (readCost, read, readMibi, glint, hatchBud), views/home-props.mjs (restOf, bay), views/habitat-props.mjs, intents/habitat.mjs (Greet), host.mjs:135, tests/sitting.test.mjs; ui/specs/station/habitat.json (`events.moment`), vivarium.json (`rules.rest`, `regions.resident.asleep`, `regions.bed`); design/proposals/the-portrait.md; design/style-guide/README.md §6.
 - The T-198 record (work-queue branch in the same clone): results/T-20261016-198-game-design.md, specs/sittings-never-lost.md, results/T-20261016-198/ui-ux.md, and my rewrite of the-portrait.md at 3df1acf0 (§7.2, §8).
 
