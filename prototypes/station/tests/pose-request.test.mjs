@@ -29,18 +29,23 @@ after(() => { wipe(); unloadStands(); });
 
 describe("the stands index: the poses cut as the anchor", () => {
   const index = JSON.parse(readFileSync(path.join(STANDS_DIR, "index.json"), "utf8")), S01 = index.stands.S01;
-  test("each stage holds poses.anchor and poses.curl, each with its own figure and the 304x312 art; the anchor pose is the stage's own entry", () => {
+  test("each stage holds poses.anchor, curl, shake and calm, each with its own figure and the 304x312 art; the anchor pose is the stage's own entry", () => {
     for (const stage of ["adult", "juvenile"]) {
-      const set = S01[stage]; assert.deepEqual(Object.keys(set.poses), ["anchor", "curl"]);
+      const set = S01[stage]; assert.deepEqual(Object.keys(set.poses), ["anchor", "curl", "shake", "calm"]);
       assert.equal(set.pose, "anchor"); assert.deepEqual(set.poses.anchor.figure, set.figure); assert.deepEqual(set.poses.anchor.sizes, set.sizes);
-      const curl = set.poses.curl; assert.deepEqual(Object.keys(curl.sizes), ["304x312"]); assert.notDeepEqual(curl.figure, set.figure, "the curl's ink box is its own");
-      const sz = curl.sizes["304x312"]; assert.equal(Object.keys(sz.bases).length, 5, "the five recoloured bases");
-      assert.deepEqual(sz.layers.map((l) => [l.trait, l.order, l.op]), [["markings", 10, "over"], ["markings", 11, "over"], ["crown", 30, "over"]], "patches, stripes, crest; the curl's shadow stays in `curl`");
-      for (const f of [sz.base, ...Object.values(sz.bases), ...sz.layers.map((l) => l.file)]) { assert.ok(index.files[f], f); assert.match(f, /^S01-(adult|juvenile)-curl-304x312-/); }
+      for (const pose of ["curl", "shake", "calm"]) {
+        const art = set.poses[pose]; assert.deepEqual(Object.keys(art.sizes), ["304x312"]); assert.notDeepEqual(art.figure, set.figure, `the ${pose}'s ink box is its own`);
+        const sz = art.sizes["304x312"]; assert.equal(Object.keys(sz.bases).length, 5, "the five recoloured bases");
+        assert.deepEqual(sz.layers.map((l) => [l.trait, l.order, l.op]), [["markings", 10, "over"], ["markings", 11, "over"], ["crown", 30, "over"]], "patches, stripes, crest; the curl's shadow stays in `curl`");
+        for (const f of [sz.base, ...Object.values(sz.bases), ...sz.layers.map((l) => l.file)]) { assert.ok(index.files[f], f); assert.match(f, new RegExp(`^S01-${stage}-${pose}-304x312-`)); }
+      }
       assert.ok(set.curl.shadow, "today's curl shadow object is kept");
     }
   });
-  test("habits map a habit to its pose", () => assert.deepEqual(S01.habits, { "sleep-curled": "curl" }));
+  test("every file the index names is on disk as recorded (size and sha256)", () => {
+    for (const [name, e] of Object.entries(index.files)) { const buf = readFileSync(path.join(STANDS_DIR, name)); assert.equal(e.file, name); assert.equal(sha(buf), e.sha256, name); assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [e.w, e.h], name); }
+  });
+  test("habits map a habit to its pose", () => assert.deepEqual(S01.habits, { "sleep-curled": "curl", "shake-dry": "shake", "calm": "calm" }));
   test("places: 96x96 composes the whole art fitted (no view gives the default a figure height)", () => {
     const sizes = JSON.parse(readFileSync(SIZES_FILE, "utf8")); assert.ok(sizes.places.includes("96x96")); assert.equal(sizes.views.default, undefined);
   });
@@ -52,10 +57,18 @@ describe("poseFor(species, stage, habit)", () => {
     assert.deepEqual(poseFor("S01", "juvenile", "sleep-curled"), { pose: "curl", owed: null });
     assert.deepEqual(poseFor("S01", "elder", "sleep-curled"), { pose: "curl", owed: null }, "an elder takes the adult's stand");
   });
-  test("a habit with no signed key is the anchor, owed", () => assert.deepEqual(poseFor("S01", "adult", "shake-dry"), { pose: "anchor", owed: "habit key shake-dry" }));
+  test("shake-dry and calm map to their signed keys, nothing owed, in both stages", () => {
+    for (const stage of ["adult", "juvenile", "elder"]) {
+      assert.deepEqual(poseFor("S01", stage, "shake-dry"), { pose: "shake", owed: null }, stage);
+      assert.deepEqual(poseFor("S01", stage, "calm"), { pose: "calm", owed: null }, stage);
+    }
+  });
+  test("a habit with no signed key is the anchor, owed", () => assert.deepEqual(poseFor("S01", "adult", "watch"), { pose: "anchor", owed: "habit key watch" }));
   test("a species with no layered stand is owed", () => {
     assert.deepEqual(poseFor("S02", "adult", "sleep-curled"), { pose: "anchor", owed: "habit key sleep-curled" });
     assert.deepEqual(poseFor("S03", "juvenile", "calm"), { pose: "anchor", owed: "habit key calm" });
+    for (const species of ["S02", "S03"]) for (const stage of ["adult", "juvenile"]) for (const habit of ["shake-dry", "calm"])
+      assert.deepEqual(poseFor(species, stage, habit), { pose: "anchor", owed: `habit key ${habit}` }, `${species} ${stage} ${habit}`);
   });
 });
 
@@ -73,6 +86,23 @@ describe("layeredStand with a pose", () => {
       for (const looks of [{}, CREST]) assert.notEqual(standPictureId(c, looks), standPictureId(a, looks), `${stage} ${place}`);
       assert.notEqual(sha(composeStand(c, CREST).rgba()), sha(composeStand(a, CREST).rgba()), "the composed cache keeps the two apart");
     }
+  });
+  test("shake and calm are never the id of the stand or of the curl, nor of each other", () => {
+    for (const [stage, place, view] of [["adult", [304, 312], "habitat"], ["juvenile", [304, 312], "habitat"], ["adult", [96, 96], "default"], ["juvenile", [96, 96], "default"], ["adult", [48, 48], "default"], ["juvenile", [48, 48], "default"]]) {
+      const by = Object.fromEntries(["anchor", "curl", "shake", "calm"].map((p) => [p, layeredStand("S01", stage, place, view, p)]));
+      for (const pose of ["shake", "calm"]) { assert.equal(by[pose].pose, pose); assert.ok(standVariant(by[pose], CREST).key.endsWith("#" + pose)); }
+      for (const looks of [{}, CREST]) { const ids = Object.values(by).map((s) => standPictureId(s, looks)); assert.equal(new Set(ids).size, 4, `${stage} ${place}: ${ids}`); }
+      const px = Object.values(by).map((s) => sha(composeStand(s, CREST).rgba())); assert.equal(new Set(px).size, 4, "the composed cache keeps the four apart");
+    }
+  });
+  test("shake and calm are drawn at the stage's anchor factor: their figure W×H", () => {
+    const fig = (stage, place, view, pose) => wh(standFigure(layeredStand("S01", stage, place, view, pose), CREST));
+    assert.deepEqual(fig("adult", [304, 312], "habitat", "shake"), [147, 141]); assert.deepEqual(fig("adult", [304, 312], "habitat", "calm"), [135, 137]);
+    assert.deepEqual(fig("juvenile", [304, 312], "habitat", "shake"), [100, 118]); assert.deepEqual(fig("juvenile", [304, 312], "habitat", "calm"), [109, 106]);
+    assert.deepEqual(fig("adult", [96, 96], "default", "shake"), [87, 83], "the card"); assert.deepEqual(fig("adult", [96, 96], "default", "calm"), [81, 81], "the card");
+    assert.deepEqual(fig("juvenile", [96, 96], "default", "shake"), [53, 63], "the card"); assert.deepEqual(fig("juvenile", [96, 96], "default", "calm"), [58, 56], "the card");
+    assert.deepEqual(fig("adult", [48, 48], "default", "shake"), [43, 41], "the thumb"); assert.deepEqual(fig("adult", [48, 48], "default", "calm"), [40, 40], "the thumb");
+    assert.deepEqual(fig("juvenile", [48, 48], "default", "shake"), [27, 31], "the thumb"); assert.deepEqual(fig("juvenile", [48, 48], "default", "calm"), [29, 28], "the thumb");
   });
   test("the curl is drawn at the stage's anchor factor: its figure W×H", () => {
     const fig = (stage, place, view, pose) => wh(standFigure(layeredStand("S01", stage, place, view, pose), CREST));
