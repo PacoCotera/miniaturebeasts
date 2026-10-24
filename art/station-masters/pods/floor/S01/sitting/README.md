@@ -17,6 +17,7 @@ Built by `guides/compose-sit.py` at 0 MXN. The stage's canvas transform (crested
 | K2a, second reference | `guides/compose-sit-adult-bare-anchor-ref.png`: the signed bare anchor (7e52ae98…) at 304 × 312 flattened on #FF00FF | `3dd6e52e4a573ec3f64e61e64e0bd835b94ec75f64a5857666b3a6b1b0e4997d` |
 | K3a `sit-S01-adult-keys-patches-a` | `guides/compose-sit-adult-patches-in.png`: cell 1 the bare anchor + its round-2 patches (wq f1285a67), cells 2, 3, 5 the bare K2b takes (cell 6 empty: calm t2 dropped) | `8c1f3e9b7d45d7edb9843292014d0c96b5613b909c4c53d437479fccb21a08cd` |
 | K4a `sit-S01-adult-keys-stripes-a` | `guides/compose-sit-adult-stripes-in.png`: cell 1 the bare anchor + its stripes, the same takes | `b395716de1cb3e2fd7a7bc36aa226c4e8d7a3e89cc8376c32dc991adf05938ac` |
+| K1j `sit-S01-juvenile-keys-crested-a` | `guides/compose-sit-juvenile-crested.png`: the juvenile crested anchor (0644341d…) in cell 1, cells 2–6 empty | `7402764cdce42b50584ad5b33aaa61203231345815006c949f4d5e5e662f034e` |
 
 ## Requests
 

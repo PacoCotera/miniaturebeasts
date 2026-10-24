@@ -1,0 +1,16 @@
+[
+ {
+  "name": "sit-S01-juvenile-keys-crested-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/floor/S01/sitting/guides/compose-sit-juvenile-crested.png",
+    "Our signed juvenile creature (project-owned), standing in cell 1: the creature to repeat, exactly this one. Keep cell 1 exactly as it is."
+   ]
+  ],
+  "prompt": "Edit this key sheet. Cell 1 (top left) holds our creature standing. Keep cell 1 exactly as it is, unchanged in every pixel.\n\nIn cells 2, 3, 5 and 6, paint the SAME creature: the same species, face, eyes, eye rings, leaf crest as in cell 1, colours, proportions, size and matte painterly brush. Use the same three-quarter view as cell 1, facing the same way as cell 1: the snout and eyes toward the RIGHT edge of the sheet, the rump toward the left. Keep the same soft light from the top left. Each cell holds one full figure, the same size as cell 1, with its feet on the same ground line as cell 1 (20 px above the cell's bottom edge), centred, and clear of every cell edge by at least 20 px.\n\nCells 2 and 5: SHAKE-DRY, two different takes. The body is caught mid-shake, twisting through the shoulders, the coat flared out in soft tufts, the eyes squeezed shut, the crest leaves flung back. All four feet stay on the ground. Five or six small water droplets fly off the coat: pale blue-white rounded beads, each clearly separate, all close around the body, none on the coat and none below the feet.\n\nCells 3 and 6: CALM, two different takes. The body is sunk low and soft, the belly near the ground and the hind legs folded under, the eyes gently lidded (half closed), and one forepaw lifted a little off the ground. Nothing else.\n\nCell 4 (bottom left) stays empty magenta. Calm and natural, a grown-up naturalist painting, never a cartoon squash, never childish. Plain flat solid magenta (#FF00FF) everywhere around the figures: no cell borders, no text, numbers or labels, no props, no ground, no shadow, no glow."
+ }
+]

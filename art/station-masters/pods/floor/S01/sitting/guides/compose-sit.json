@@ -21,6 +21,28 @@
     1.3639705882352942,
     1.3630136986301369
    ]
+  },
+  "juvenile": {
+   "stage": "juvenile",
+   "proof_scale": 0.601,
+   "box": [
+    51,
+    115,
+    240,
+    308
+   ],
+   "size": [
+    314,
+    321
+   ],
+   "at_in_cell": [
+    53,
+    83
+   ],
+   "k": [
+    1.6613756613756614,
+    1.6632124352331605
+   ]
   }
  },
  "sheets": {
@@ -52,6 +74,11 @@
     "2": "floor/S01/keys/mibi-adult-S01-base-shake-t1-304x312.png",
     "3": "floor/S01/keys/mibi-adult-S01-base-calm-t1-304x312.png",
     "5": "floor/S01/keys/mibi-adult-S01-base-shake-t2-304x312.png"
+   }
+  },
+  "compose-sit-juvenile-crested.png": {
+   "cells": {
+    "1": "floor/S01/crested/mibi-juvenile-S01-anchor-304x312.png"
    }
   }
  }
