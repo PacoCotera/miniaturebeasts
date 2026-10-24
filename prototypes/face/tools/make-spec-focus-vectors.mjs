@@ -26,7 +26,7 @@ const TARGETS = {
     return out; },
   // the namer's targets on a page: the keys the page draws (key.<i> on the grid's rectangle), then shift, space, page, done, suggest
   namer: (state, spec, v) => { const R = spec.regions, K = R.keys, out = [];
-    spec.keys.pages[v.page ?? "letters"].forEach((c, i) => { if (c != null) out.push({ id: "key." + i, rect: [K.at[0] + K.pitch * (i % K.columns), K.at[1] + K.pitch * Math.floor(i / K.columns), K.key[0], K.key[1]], group: "key" }); });
+    spec.keys.pages[v.page ?? "letters"].forEach((c, i) => { if (c != null) out.push({ id: "key." + i, rect: listPitch(K, K.columns * K.rows, i), group: "key" }); });
     for (const [id, r, g] of [["mod.shift", R.shift.rect, "mod"], ["mod.space", R.space.rect, "mod"], ["mod.page", R.page.rect, "mod"], ["act.done", R.done.rect, "act"], ["act.suggest", R.suggest.rect, "act"]]) out.push({ id, rect: r, group: g });
     return out; },
   // the Library spread: sixteen frames, frame.S01 to S16 in frame order, the left page's eight then the right page's, each its place by listPitch with no forms (n = 8 a page)
