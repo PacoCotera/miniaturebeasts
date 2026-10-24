@@ -5461,5 +5461,22 @@
   "model": "gemini-3-pro-image",
   "http_status": 402,
   "usage": null
+ },
+ {
+  "tag": "sit-S01-adult-keys-crested-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.208346,
+  "mxn": 4.1669,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T04:16:30Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 673,
+   "candidatesTokenCount": 1396,
+   "thoughtsTokenCount": 329,
+   "totalTokenCount": 2398
+  }
  }
 ]
