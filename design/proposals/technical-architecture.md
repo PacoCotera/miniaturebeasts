@@ -283,7 +283,7 @@ Each milestone ships to the sandbox and plays from a fresh world. The save chang
 | Inter from LVGL's fonts reads differently from the browser's | The sandbox draws with LVGL's fonts, so the type judged in the sandbox is the type the device draws |
 | The device port differs from the sandbox's pixels | The same C face on both; golden framebuffer hashes equal on WebAssembly, native x86-64 and aarch64 |
 | Splitting the Companion breaks the playable page | C1 makes no visible change; the smoke and parse checks stay (the parse check reads module scripts with `node --check`); golden world vectors for each generator |
-| The Station palette moves while art and layouts settle (`ui/palettes/station.json`, 62 colours, painted art on top) | The renderer takes the palette as data (the `palette` message); the UI designer and the art director set it; the check follows |
+| The Station palette moves while art and layouts settle (`ui/palettes/station.json`, 68 colours, painted art on top) | The renderer takes the palette as data (the `palette` message); the UI designer and the art director set it; the check follows |
 
 ## 7. The device split in brief
 

@@ -46,7 +46,7 @@ None of them read as Miniature Lives.
 
 <img src="plates/02a-palette.png" width="1024" alt="Plate 02a: the palette by role">
 
-The exact values are in `prototypes/ui/palettes/station.json` (62 colours: the Companion's 48, then the instrument's 14). Each colour has one role, given below; a colour is never used outside its role.
+The exact values are in `prototypes/ui/palettes/station.json` (68 colours: the Companion's 48, then the instrument's 14). Each colour has one role, given below; a colour is never used outside its role.
 
 | Layer | Role | Colour | Value |
 | --- | --- | --- | --- |
@@ -56,6 +56,12 @@ The exact values are in `prototypes/ui/palettes/station.json` (62 colours: the C
 | | rubber: bumpers, bezel, seals | `deepTeal` | #2a2a2d |
 | | screws and fittings | `metal` | #8a947b |
 | **Display** (art layer) | the display field: the stage's ground behind every instrument | `ground` | #1d232b |
+| **Library** (art layer, L1–L3 only; never Home) | the stage ground | `libGround` | #211b1a |
+| | found cells, shelf and panel surfaces, sheet frames | `libPanel` | #342c29 |
+| | bands: name plates, panel and frame heads | `libHead` | #3a312c |
+| | met cells | `libQuiet` | #2a2320 |
+| | unmet cells; the rule under a band | `libWell` | #1a1514 |
+| | the bevel, slot outlines, portrait frames | `libLine` | #4a413c |
 | | the top bar and the bottom line | `bar` | #23292f |
 | | a pane, a card, a panel | `panel` | #2b3038 |
 | | an edge, a rule | `hairline` | #3d434b |
