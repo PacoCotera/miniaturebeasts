@@ -59,6 +59,10 @@ int v_slot(const char *id, const char *asset, const char *fallback, int x, int y
    (over `asset` when fallback is NULL or empty: with an empty fallback and a sent asset the hidden node is the asset itself), return 0; when the host has sent neither, no node.
    Node id: v_id(id), at most one. The region and layer are the caller's. */
 int v_slot_at(const char *id, const char *asset, const char *fallback, int x, int y, int w, int h, int shown, int hx, int hy);
+/* v_clip_box(id, x, y, w, h, count): a clip over the box (x, y, w, h) that holds the next `count` nodes the caller draws (prim_node FN_CLIP). Reads nothing. Node id: v_id(id), one node, always sent; the region and layer are the caller's. Returns void. */
+void v_clip_box(const char *id, int x, int y, int w, int h, int count);
+/* v_snapshot(id, x, y, w, h): the face's own snapshot (prim_snapshot), 1:1 as a sprite at (x, y), w x h. Reads the snapshot handle; no node when there is no snapshot. Node id: v_id(id), at most one; the region and layer are the caller's (v_region). Returns 1 when drawn, 0 when there is no snapshot. */
+int v_snapshot(const char *id, int x, int y, int w, int h);
 /* A picture nine-sliced over a w x h box: the asset's own insets and tile when the host sent them (a `slice`), else the insets l, t, r, b given; 0 when the host has not sent it. */
 int v_nine(const char *id, const char *asset, int x, int y, int w, int h, const int insets[4]);
 /* A cross-dither between two pictures of one size (a `dither` event's frame, lvgl-switch.md §2.7): the pixels of `toAsset` where the Bayer cell at the screen position is below `level` (0..16), else those of `fromAsset`, one composed picture at (x, y), on the layer of `toAsset`. 1 when drawn, 0 when the host has not sent one of them. */

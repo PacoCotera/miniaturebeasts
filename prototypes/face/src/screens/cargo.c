@@ -304,7 +304,7 @@ static void build_crates_arrival(int t) {
   }
   if (!sent) return;
   v_name("crates");
-  prim_node(v_id("crates.clip"), FN_CLIP, in[0], in[1], in[2], in[3], 0, sent, 0);
+  v_clip_box("crates.clip", in[0], in[1], in[2], in[3], sent);
   for (int i = 0; i < n; i++) {
     int r[4]; v_srect(C, v_fmt("regions.dockCrates.byCount.%d.%d", n, i), r);
     v_name("crates"); v_slot(v_fmt("crates.%d.shadow", i), shadow, NULL, r[0] + sx, r[1] + sy, sw, sh, landed[i]);
@@ -317,7 +317,7 @@ static void build_light(int t) {
   int r[4]; v_srect(C, ARR ".light.rect", r); int at = v_si(C, ARR ".light.at", 500), each = v_si(C, ARR ".light.each", 100), steps = v_si(C, ARR ".light.steps", 4), px = v_si(C, ARR ".light.stepPx", 244);
   int k = t < at ? -1 : (t - at) / each; if (k >= steps) k = steps - 1; int w = k < 0 ? 1 : (k + 1) * px; if (w > r[2]) w = r[2];
   const char *pic = v_pstr(ARR ".light"); if (!has(pic)) return;
-  v_region("arrivalLight", LAYER_ART); v_name("light"); prim_node(v_id("light.clip"), FN_CLIP, r[0], r[1], w, r[3], 0, 1, 0);
+  v_region("arrivalLight", LAYER_ART); v_name("light"); v_clip_box("light.clip", r[0], r[1], w, r[3], 1);
   v_slot("light", pic, NULL, r[0], r[1], r[2], r[3], k >= 0);
 }
 /* the mibis who came home: carried order, left to right, in front of the crates; mibi i dithers in at 1600 + 500 i over 300 ms, then one hop by the hatch's table (a cut each, whole pixels) */

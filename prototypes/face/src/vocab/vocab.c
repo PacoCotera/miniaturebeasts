@@ -83,6 +83,8 @@ const char *v_scol(const char *spec, const char *path) { static char b[16][24]; 
 const char *v_scol_or(const char *spec, const char *path, const char *d) { static char b[16][24]; static unsigned k; char *o = b[k++ & 15]; if (spec_str(spec, path, o, 24) <= 0) snprintf(o, 24, "%s", d); return o; }
 const char *v_token(const char *spec, const char *name) { return v_scol_or(spec, v_fmt("colours.%s", name), name); }
 const char *v_sstr(const char *spec, const char *path) { static char b[16][96]; static unsigned k; char *o = b[k++ & 15]; spec_str(spec, path, o, 96); return o; }
+void v_clip_box(const char *id, int x, int y, int w, int h, int count) { prim_node(v_id(id), FN_CLIP, x, y, w, h, 0, count, 0); }
+int v_snapshot(const char *id, int x, int y, int w, int h) { int s = prim_snapshot_handle(); if (s < 0) return 0; prim_node(v_id(id), FN_SPRITE, x, y, w, h, 0, s, 0); return 1; }
 void v_composed(const char *id, int x, int y, int w, int h, const char *ops) { if (ops != prim_ops()) snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); }
 int v_slot_at(const char *id, const char *asset, const char *fallback, int x, int y, int w, int h, int shown, int hx, int hy) {
   if (!asset) asset = "";

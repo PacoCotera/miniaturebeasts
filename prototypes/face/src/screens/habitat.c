@@ -184,7 +184,7 @@ static void build_stamp(void) {
   int rows = N + 2, shown = rows; anim_state_t t;
   if (v_pbool("motion", 1)) for (int i = 0, n = v_plen("regions.plates.items"); i < n; i++) if (anim_get(ANIM_READ, v_fmt("plate.%d", i), &t) && t.ms > 0) { shown = rows * t.elapsed / t.ms; break; }
   kit_stamp_t o = { "stamp", "stamp", "stamp", 0, NULL, NULL };
-  kit_stamp(S, "regions.stamp.rect", v_pstr("regions.card.stamp.plate"), has(a) ? a : "", size, shown * cell, &o);
+  kit_stamp(S, "regions.stamp.rect", v_pstr("regions.card.stamp.plate"), a, size, shown * cell, &o);
 }
 
 /* ---- the plates: one a chapter in ring order, left-aligned from x 608: the signed ground and the rail's 24 x 24 emblem at (8, 8) ---- */

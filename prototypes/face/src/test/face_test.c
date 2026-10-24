@@ -427,6 +427,20 @@ static void kit_words(void) {
     check(table_nodes() == 2 && kat("st.plate", FN_SPRITE, 100, 50, 120, 120) && kat("stamp.stamp", FN_SPRITE, 128, 78, 64, 64) && kabsent("stamp.clip") && kabsent("stamp.case") && kabsent("stamp.front"), "kit_stamp: no clip (clipH -1) and no case (caseSpec NULL) are not drawn, and the stamp stands at its own place", "");
     prim_begin(); kit_stamp("kst", "r.rect", "", "ks-stamp", 64, 0, &bare); prim_end();
     check(table_nodes() == 2 && kabsent("st.plate") && kat("stamp.clip", FN_CLIP, 128, 78, 64, 0), "kit_stamp: no plate picture draws no plate node, and a clipH of 0 is a clip of no height (the first row not yet printed)", "");
+    prim_begin(); kit_stamp("kst", "r.rect", "ks-plate", "ks-missing", 64, 20, &full); prim_end();
+    check(table_nodes() == 3 && kat("st.plate", FN_SPRITE, 100, 50, 0, 0) && kabsent("stamp.clip") && kabsent("stamp.stamp") && kat("stamp.front", FN_SPRITE, 96, 46, 128, 128),
+      "kit_stamp: a stamp named but not sent is no stamp (one meaning of \"has\"): the plate keeps its node with no size, no clip and no stamp", "");
+    /* v_clip_box and v_snapshot: a screen's clip and the face's own snapshot, drawn through the toolbox */
+    { int s0, s1;
+      prim_begin(); v_region("vk", LAYER_CHROME); v_clip_box("vk.clip", 10, 20, 30, 40, 1); v_rect("vk.in", 15, 25, 5, 5, "kitA"); prim_end();
+      check(table_nodes() == 2 && kat("vk.clip", FN_CLIP, 10, 20, 30, 40) && kat("vk.in", FN_RECT, 5, 5, 5, 5), "v_clip_box: a clip over the box that holds the next count nodes (the child placed from the clip's corner)", "");
+      prim_snapshot_free(); prim_begin(); s0 = v_snapshot("vk.snap", 0, 0, 40, 30); prim_end();
+      check(s0 == 0 && kabsent("vk.snap"), "v_snapshot: no snapshot, no node, returns 0", "");
+      prim_begin(); v_region("vk", LAYER_CHROME); v_rect("vk.ground", 0, 0, 40, 30, "kitA"); prim_end();
+      check(prim_snapshot(0, 0, 40, 30) >= 0, "v_snapshot: the face's snapshot is taken", "");
+      prim_begin(); v_region("vk", LAYER_PAINTED); s1 = v_snapshot("vk.snap", 50, 60, 40, 30); prim_end();
+      check(s1 == 1 && table_nodes() == 1 && kat("vk.snap", FN_SPRITE, 50, 60, 40, 30), "v_snapshot: the snapshot 1:1 as one sprite at its box, returns 1", "");
+      prim_snapshot_free(); }
     /* kit_pod: the class's box on the axis and feet, the shadow a slot under it, a refused class */
     { int b[4], bo[4], bn[4], bx[4], r1, r2, r3, r4, r5; kit_podShadow_t on = { "pd.shadow", "pd", "ks-shadow", 1 }, off = { "pd.off", "pd", "ks-shadow", 0 };
       prim_begin(); n0 = table_nodes();
