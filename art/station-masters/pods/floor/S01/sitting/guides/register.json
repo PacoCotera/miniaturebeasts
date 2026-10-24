@@ -129,105 +129,115 @@
   }
  },
  "adult-k2": {
-  "sheet": "source/raw/sit-S01-adult-keys-bare-a.jpg",
+  "sheet": "source/raw/sit-S01-adult-keys-bare-b.jpg",
   "takes": {
    "shake-t1": {
-    "despilled_px": 549,
+    "despilled_px": 948,
     "inner_cast_repainted_px": 0,
     "cell": 2,
+    "droplets_kept": 6,
     "move_px_from_twin": [
-     4,
-     1
+     0,
+     0
     ],
-    "outline_p95_px_outside_crest+10": 6.4,
-    "outline_max_px": 8.0,
-    "mean_rgb_diff_inside": 12.41,
+    "outline_p95_px_outside_crest+10": 3.61,
+    "outline_max_px": 5.1,
+    "mean_rgb_diff_inside": 3.53,
     "leaf_px_left": 0,
-    "droplets_twin": 6,
-    "droplets_bare": 3,
-    "droplet_moves_px": [
-     41.0,
-     76.5,
-     4.1,
-     3.8,
-     4.6,
-     122.7
+    "droplets_in_input_cell": 6,
+    "droplets_in_returned_cell": 6,
+    "droplet_moves_px_on_sheet": [
+     0.1,
+     0.0,
+     0.1,
+     0.0,
+     0.1,
+     139.9
     ]
    },
    "calm-t1": {
-    "despilled_px": 128,
+    "despilled_px": 102,
     "inner_cast_repainted_px": 0,
     "cell": 3,
-    "move_px_from_twin": [
-     2,
-     7
-    ],
-    "outline_p95_px_outside_crest+10": 8.66,
-    "outline_max_px": 10.44,
-    "mean_rgb_diff_inside": 23.68,
-    "leaf_px_left": 0,
-    "droplets_twin": 0,
-    "droplets_bare": 0,
-    "droplet_moves_px": []
-   },
-   "shake-t2": {
-    "despilled_px": 898,
-    "inner_cast_repainted_px": 0,
-    "cell": 5,
+    "droplets_kept": 0,
     "move_px_from_twin": [
      0,
-     1
+     0
     ],
-    "outline_p95_px_outside_crest+10": 4.0,
-    "outline_max_px": 6.08,
-    "mean_rgb_diff_inside": 5.75,
+    "outline_p95_px_outside_crest+10": 3.61,
+    "outline_max_px": 4.0,
+    "mean_rgb_diff_inside": 3.47,
     "leaf_px_left": 0,
-    "droplets_twin": 8,
-    "droplets_bare": 5,
-    "droplet_moves_px": [
-     52.8,
-     121.7,
-     0.8,
-     0.9,
-     1.0,
-     1.0,
-     1.0,
-     24.2
+    "droplets_in_input_cell": 1,
+    "droplets_in_returned_cell": 0,
+    "droplet_moves_px_on_sheet": [
+     null
+    ]
+   },
+   "shake-t2": {
+    "despilled_px": 1100,
+    "inner_cast_repainted_px": 0,
+    "cell": 5,
+    "droplets_kept": 8,
+    "move_px_from_twin": [
+     0,
+     0
+    ],
+    "outline_p95_px_outside_crest+10": 3.61,
+    "outline_max_px": 5.39,
+    "mean_rgb_diff_inside": 3.32,
+    "leaf_px_left": 0,
+    "droplets_in_input_cell": 8,
+    "droplets_in_returned_cell": 8,
+    "droplet_moves_px_on_sheet": [
+     0.1,
+     0.2,
+     0.2,
+     0.2,
+     0.2,
+     0.1,
+     0.2,
+     0.3
     ]
    },
    "calm-t2": {
-    "despilled_px": 176,
+    "despilled_px": 205,
     "inner_cast_repainted_px": 0,
     "cell": 6,
+    "droplets_kept": 0,
     "move_px_from_twin": [
-     4,
-     2
+     0,
+     0
     ],
-    "outline_p95_px_outside_crest+10": 6.0,
-    "outline_max_px": 7.28,
-    "mean_rgb_diff_inside": 14.07,
+    "outline_p95_px_outside_crest+10": 3.61,
+    "outline_max_px": 4.12,
+    "mean_rgb_diff_inside": 3.18,
     "leaf_px_left": 0,
-    "droplets_twin": 0,
-    "droplets_bare": 0,
-    "droplet_moves_px": []
+    "droplets_in_input_cell": 0,
+    "droplets_in_returned_cell": 0,
+    "droplet_moves_px_on_sheet": []
    }
   },
-  "cell4_non_magenta_px": 85022,
+  "cell4_non_magenta_px": 84871,
   "cell1": {
    "despilled_px": 91,
    "inner_cast_repainted_px": 0,
    "cell": 1,
+   "droplets_kept": 0,
    "move_px_from_twin": [
     0,
     0
    ],
    "outline_p95_px_outside_crest+10": 4.0,
-   "outline_max_px": 5.83,
-   "mean_rgb_diff_inside": 3.55,
+   "outline_max_px": 5.0,
+   "mean_rgb_diff_inside": 3.48,
    "leaf_px_left": 0,
-   "droplets_twin": 0,
-   "droplets_bare": 0,
-   "droplet_moves_px": [],
+   "droplets_in_input_cell": 2,
+   "droplets_in_returned_cell": 4,
+   "droplet_moves_px_on_sheet": [
+    0.2,
+    0.2
+   ],
    "head_vs_signed_bare_anchor_p95_px": 2.83,
    "head_vs_signed_bare_anchor_max_px": 3.0
   }

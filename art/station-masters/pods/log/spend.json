@@ -5614,5 +5614,22 @@
    "thoughtsTokenCount": 227,
    "totalTokenCount": 2245
   }
+ },
+ {
+  "tag": "sit-S01-adult-keys-bare-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.183302,
+  "mxn": 3.666,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T04:41:36Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 751,
+   "candidatesTokenCount": 1262,
+   "thoughtsTokenCount": 253,
+   "totalTokenCount": 2266
+  }
  }
 ]

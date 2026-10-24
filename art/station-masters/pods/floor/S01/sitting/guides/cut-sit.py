@@ -81,12 +81,12 @@ def k1(stage, sheet, mirror):
             pose, t = CELLS[c]; p = f'floor/S01/crested/mibi-{stage}-S01-{pose}-{t}-304x312.png'; Image.fromarray(out).save(p)
             Image.fromarray(np.where(sh > 0, sh, 0).astype(np.uint8)).save(f'floor/S01/sitting/guides/discard-shadow-{stage}-{pose}-{t}.png'); rep['takes'][f'{pose}-{t}'] = r
     return rep
-def key(q, M, r):
+def key(q, M, r, box=None):
     """The key-out of one cell (as given, after any mirror and droplet fix) onto the canvas, before the whole-pixel moves."""
     im, ground, cx, w, shad = cut(q[I:CH - I, I:CW - I])
     can = np.asarray(to_canvas(im, M, 'RGBA')).copy(); can[..., 3] = quant(can[..., 3]); sh = np.asarray(to_canvas(shad, M, 'L'))
     sol = can[..., 3] > 128; lab, n = nd.label(sol); sz = nd.sum(sol, lab, range(1, n + 1)); main = lab == (1 + int(np.argmax(sz)))
-    ys, xs = np.where(main); bx = (xs.min() - 16, xs.max() + 16, ys.min() - 16, ys.max() + 16)
+    ys, xs = np.where(main); bx = (xs.min() - 16, xs.max() + 16, ys.min() - 16, ys.max() + 16) if box is None else box   # a bare key takes its crested twin's box
     keep = main.copy(); nd_ = 0
     for i in range(1, n + 1):
         if i == 1 + int(np.argmax(sz)): continue
@@ -119,25 +119,33 @@ def islands(out, main):
     """Droplet islands (solid, off the body): their centroids."""
     sol = (out[..., 3] > 128) & ~nd.binary_dilation(main, iterations=2); lab, n = nd.label(sol)
     return [tuple(np.array(np.where(lab == i)).mean(1)[::-1]) for i in range(1, n + 1) if (lab == i).sum() >= 9]
+def sheet_drops(q):
+    """Droplets on a sheet cell: pale blue-white islands of >= 20 px clear of the coat (the ruling's colour test); their centroids."""
+    R, G, B = q[..., 0], q[..., 1], q[..., 2]; drop = (G > 150) & (B > 180) & (B >= R - 10) & (np.abs(q - [255, 0, 255]).sum(2) > 150)
+    lab, n = nd.label(drop); return [tuple(np.array(np.where(lab == i)).mean(1)[::-1]) for i in range(1, n + 1) if (lab == i).sum() >= 20]
 def k2(stage, sheet):
-    """K2 bare sheet: every cell cut with the same inverse transform, then given its crested twin's whole-pixel move, so it lands on its twin
-    (the brief's cut.py rule, placed by the twin). Measures checks 4 and 8."""
+    """K2 bare sheet: every cell cut with the same inverse transform. The composed input was built from the crested twins as already moved, so the
+    inverse alone lands each bare key on its twin (the brief's cut.py rule, placed by the twin); no further move. Measures checks 4 and 8."""
     M = J['maps'][stage]; A = np.asarray(Image.open(sheet).convert('RGB')).astype(float); R = json.load(open('floor/S01/sitting/guides/register.json'))[f'{stage}-k1']
     rep = {'sheet': sheet, 'takes': {}}
     q4 = A[CH:2 * CH, 0:CW][I:CH - I, I:CW - I]; rep['cell4_non_magenta_px'] = int((np.abs(q4 - [255, 0, 255]).sum(-1) > 90).sum())
     for c in [1] + list(CELLS):
         x0, y0 = ((c - 1) % 3) * CW, ((c - 1) // 3) * CH; q = A[y0:y0 + CH, x0:x0 + CW].copy(); r = {}
-        can, main, keep, nd_, sh = key(q, M, r)
+        if c == 1: name, twin = 'anchor', f'floor/S01/crested/mibi-{stage}-S01-anchor-304x312.png'
+        else: name = '-'.join(CELLS[c]); twin = f'floor/S01/crested/mibi-{stage}-S01-{name}-304x312.png'
+        tsol = np.asarray(Image.open(twin).convert('RGBA'))[..., 3] > 128; tl, _ = nd.label(tsol); tmain = tl == (np.bincount(tl.ravel())[1:].argmax() + 1); ty, tx = np.where(tmain)
+        can, main, keep, nd_, sh = key(q, M, r, (tx.min() - 16, tx.max() + 16, ty.min() - 16, ty.max() + 16))
         if c == 1: name, mv, twin = 'anchor', [0, 0], f'floor/S01/crested/mibi-{stage}-S01-anchor-304x312.png'
-        else: pose, t = CELLS[c]; name = f'{pose}-{t}'; mv = R['takes'][name]['move_px']; twin = f'floor/S01/crested/mibi-{stage}-S01-{name}-304x312.png'
+        else: pose, t = CELLS[c]; name = f'{pose}-{t}'; mv = [0, 0]; twin = f'floor/S01/crested/mibi-{stage}-S01-{name}-304x312.png'
         out = shift(can, *mv); tw = np.asarray(Image.open(twin).convert('RGBA'))
         a, b = out[..., 3] > 128, tw[..., 3] > 128; crest = green(tw); crest |= nd.binary_dilation(crest, iterations=30) & b & ~a; far = ~nd.binary_dilation(crest, iterations=10)   # the crest zone: the leaves and what the twin has beside them that the bare key has not (cut.py's rule)
         lab, n = nd.label(a); bm = lab == (np.bincount(lab.ravel())[1:].argmax() + 1); lab, n = nd.label(b); tm = lab == (np.bincount(lab.ravel())[1:].argmax() + 1)
         p95, mx = outline_p95(bm, tm, far)
         inside = bm & tm & far & ~nd.binary_dilation((bm & ~nd.binary_erosion(bm)) | (tm & ~nd.binary_erosion(tm)), iterations=2)
-        di, dt = islands(out, bm), islands(tw, tm); moved = [round(min(float(np.hypot(x - u, y - v)) for u, v in di), 1) if di else None for x, y in dt]
-        r.update({'cell': c, 'move_px_from_twin': mv, 'outline_p95_px_outside_crest+10': round(p95, 2), 'outline_max_px': round(mx, 2), 'mean_rgb_diff_inside': round(float(np.abs(out[..., :3].astype(float) - tw[..., :3].astype(float))[inside].mean()), 2),
-                  'leaf_px_left': int(green(out).sum()), 'droplets_twin': len(dt), 'droplets_bare': len(di), 'droplet_moves_px': moved})
+        Ain = np.asarray(Image.open(f'floor/S01/sitting/guides/compose-sit-{stage}-bare-in.png').convert('RGB')).astype(float)[y0:y0 + CH, x0:x0 + CW]
+        dt, di = sheet_drops(Ain), sheet_drops(q); moved = [round(min(float(np.hypot(x - u, y - v)) for u, v in di), 1) if di else None for x, y in dt]   # on the sheet, input cell against returned cell
+        r.update({'cell': c, 'droplets_kept': nd_, 'move_px_from_twin': mv, 'outline_p95_px_outside_crest+10': round(p95, 2), 'outline_max_px': round(mx, 2), 'mean_rgb_diff_inside': round(float(np.abs(out[..., :3].astype(float) - tw[..., :3].astype(float))[inside].mean()), 2),
+                  'leaf_px_left': int(green(out).sum()), 'droplets_in_input_cell': len(dt), 'droplets_in_returned_cell': len(di), 'droplet_moves_px_on_sheet': moved})
         if c == 1:
             ba = np.asarray(Image.open(f'floor/S01/keys/mibi-{stage}-S01-base-anchor-304x312.png').convert('RGBA')); bb = ba[..., 3] > 128
             head = np.zeros_like(bb); ys = np.where(bb.any(1))[0]; head[:ys.min() + 90] = True
