@@ -21,8 +21,8 @@
   "file": "sitting-backdrop-rock-544x408.png",
   "w": 544,
   "h": 408,
-  "sha256": "14293a31a3e09855028432a6ccb95d264c4dc8b41e6ba25af0109047e69fe032",
-  "from": "source/raw/sitting-backdrop-rock-near-b.jpg, centre-crop 1195x896, LANCZOS once (guides/cut-bd.py)",
+  "sha256": "6002595ff76392b4db30e698f391836e7d0b649652c637c855e7e265089c259c",
+  "from": "source/raw/sitting-backdrop-rock-near-c.jpg, centre-crop 1195x896, LANCZOS once (guides/cut-bd.py)",
   "signed_in": null,
   "status": "new"
  },

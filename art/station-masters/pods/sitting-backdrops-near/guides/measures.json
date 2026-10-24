@@ -130,8 +130,22 @@
    "tag_std": 4.8,
    "tag_p99": 150.0,
    "mxn": 4.0864,
-   "result": "fail: gate 10 (key 1.06 < 1.3: lit from the right/back, the light would flip), check 11 (zone 0.355 > 0.35), check 12 (feet band detail 9.5 < 11: soft strip below y 335); detail and saturation now pass",
+   "result": "fail: gate 10 (key 1.06 < 1.3: lit from the right/back, the light would flip), check 11 (zone 0.355 > 0.35), check 12 (feet band detail 9.5 < 11: soft strip below y 335); detail and saturation now pass; superseded in slices/ by rock-c",
    "measured": "2026-10-23 22:45"
+  },
+  "sitting-backdrop-rock-near-c": {
+   "file": "source/raw/sitting-backdrop-rock-near-c.jpg, cut to sitting-backdrops-near/slices/sitting-backdrop-rock-544x408.png",
+   "detail": 11.3,
+   "saturation": 118.6,
+   "spread": 43.1,
+   "key": 1.55,
+   "figure_zone_lum": 0.298,
+   "feet_band_detail": 13.0,
+   "tag_std": 12.3,
+   "tag_p99": 156.0,
+   "mxn": 4.3827,
+   "result": "pass (gates 10-13, check 13 at std <= 30); notes: a soft strip still runs below y ~345 under the tag rows (feet band 13.0 passes); the right slab reaches the figure zone edge at x 345-352",
+   "measured": "2026-10-23 23:03"
   }
  },
  "check13_limit": "tag rows grey std <= 30 (AD ruling 22:31; was 20), p99 <= 200"

@@ -50,3 +50,17 @@ First written 2026-10-23 22:23.
 Detail and saturation now pass. The key fails: the light falls from the back right, so the top-left quadrant is not brighter than the bottom-right (1.06 against 1.3), and the light would flip. The view also looks down onto the ground, and below y 335 a soft strip pulls the feet band to 9.5. Under the ruling ("If B3b fails gate 10 again, stop and report. A B3c is my call"), job 2 stops at 28.60 of 30 MXN. A B3c would also not fit: 28.60 + 4.80 is over 30.
 
 `slices/` holds rock-b (status new, failing); rock-a stays as its raw. The proofs are rebuilt.
+
+## B3c rock, under the art director's Round 2 (2026-10-23 23:03)
+
+The lead's go raised job 2's hard stop to 34 MXN (B3c only). The prompt is B3b's with the ruling's three changes: the light sentence, a sharp ground running to the bottom edge, and a mid-tone zone in light shade (`source/work/sitting-backdrop-rock-near-c.json`).
+
+| Request | Time | MXN | detail | sat | spread | key | zone | feet band | tag std / p99 | Result | Job 2 / 34 | Both / 77 | Day / 250 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| B3c rock-near-c | 23:02 | 4.38 | 11.3 | 118.6 | 43.1 | 1.55 | 0.298 | 13.0 | 12.3 / 156 | **pass**, gates 10–13 | 32.98 | 68.00 | 68.00 |
+
+The stones are lit on their top and left faces. Notes for you at 1×:
+- A soft strip still runs below about y 345, under the tag rows, despite the prompt line. The feet stand on sharp moss and grit, and the feet band is 13.0.
+- The right-hand slab reaches the figure zone's right edge at x 345–352.
+
+`slices/` now holds rock-c. Rock-a and rock-b stay as raws. The signed 10-09 rock in the top-level `slices/` is untouched until you sign. The proofs are rebuilt, and the adult `window-1x.png` now shows rock-c.

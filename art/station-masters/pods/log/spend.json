@@ -5733,5 +5733,22 @@
    "thoughtsTokenCount": 291,
    "totalTokenCount": 2214
   }
+ },
+ {
+  "tag": "sitting-backdrop-rock-near-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.219136,
+  "mxn": 4.3827,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T05:02:55Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1148,
+   "candidatesTokenCount": 1419,
+   "thoughtsTokenCount": 388,
+   "totalTokenCount": 2955
+  }
  }
 ]
