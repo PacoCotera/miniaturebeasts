@@ -1,22 +1,22 @@
 {
  "sitting-backdrop-meadow-544x408": {
   "status": "new",
-  "note": "near-treatment repaint from sitting-backdrop-meadow-near-a (gemini-3-pro-image); exit checks: pass; not signed"
+  "note": "near-treatment repaint from sitting-backdrop-meadow-near-a (gemini-3-pro-image); exit checks: pass; not signed; AD ruling 22:31: sign as cut"
  },
  "sitting-backdrop-pond-544x408": {
   "status": "new",
-  "note": "near-treatment repaint from sitting-backdrop-pond-near-b (gemini-3-pro-image); exit checks: fail: check 11 (figure zone mean luminance 0.412 > 0.35, bright haze); gate 10, checks 12 and 13 pass; not signed"
+  "note": "0 MXN fix per AD ruling 22:31; gates 10-13 pass after the fix; not signed"
  },
  "sitting-backdrop-rock-544x408": {
   "status": "new",
-  "note": "near-treatment repaint from sitting-backdrop-rock-near-a (gemini-3-pro-image); exit checks: fail: gate 10 (detail 8.9 < 11, saturation 79.2 < 90); not signed"
+  "note": "near-treatment repaint from sitting-backdrop-rock-near-a (gemini-3-pro-image); exit checks: fail: gate 10 (detail 8.9 < 11, saturation 79.2 < 90); not signed; AD ruling 22:31: retry B3b with a changed prompt"
  },
  "sitting-backdrop-wood-544x408": {
   "status": "new",
-  "note": "near-treatment repaint from sitting-backdrop-wood-near-a (gemini-3-pro-image); exit checks: pass; not signed"
+  "note": "near-treatment repaint from sitting-backdrop-wood-near-a (gemini-3-pro-image); exit checks: pass; not signed; AD ruling 22:31: sign as cut"
  },
  "sitting-backdrop-cave-544x408": {
   "status": "new",
-  "note": "near-treatment repaint from sitting-backdrop-cave-near-a (gemini-3-pro-image); exit checks: fail: gate 10 (saturation 82.7 < 90), check 13 (tag rows grey std 31.9 > 20: pebbles); not signed"
+  "note": "0 MXN fix per AD ruling 22:31; gates 10-13 pass after the fix; not signed"
  }
 }

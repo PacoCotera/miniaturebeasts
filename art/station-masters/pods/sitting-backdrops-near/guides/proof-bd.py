@@ -1,5 +1,5 @@
 """Sitting backdrops, near treatment: the 1x proofs (studio brief 2026-10-23 22:00, proofs 8-10). 0 MXN.
-Rows, top to bottom: meadow, pond-a (cut from its raw, not in slices/), pond-b (slices/), rock, wood, cave.
+Rows, top to bottom: meadow, pond, rock, wood, cave, as in slices/.
 beside-near-1x.png  near-Vivarium day | the repaint with the adult anchor in Dot's look | the same with the zones of checks 11 (figure, x 192-352 y 164-324) and 13 (tag rows, x 160-384 y 348-380) outlined
                     Dot's look = station-gate prototypes/ui/assets/stands S01-adult-304x312 base-charcoal-and-ash + patches + stripes + crest (the built anchor layers), fitted with LANCZOS
                     once to the Habitat factor (figure 136x149), its last solid row on glass y 324, figure axis on x 272
@@ -21,7 +21,7 @@ def cut_raw(job):
     im = Image.open(f'source/raw/{job}.jpg').convert('RGB'); w, h = im.size; x0 = (w - 1195) // 2
     return im.crop((x0, 0, x0 + 1195, 896)).resize((544, 408), Image.LANCZOS)
 S = lambda p: Image.open(f'sitting-backdrops-near/slices/sitting-backdrop-{p}-544x408.png').convert('RGB')
-ROWS = [('meadow', S('meadow')), ('pond', cut_raw('sitting-backdrop-pond-near-a')), ('pond', S('pond')), ('rock', S('rock')), ('wood', S('wood')), ('cave', S('cave'))]
+ROWS = [(p, S(p)) for p in ('meadow', 'pond', 'rock', 'wood', 'cave')]          # pond-a retired (ruling 22:31); pond and cave as fixed by fix-bd.py
 near = Image.open('slices/vivarium-near-day-544x408.png').convert('RGB'); G = 8
 def with_mibi(bd):
     c = bd.convert('RGBA'); c.alpha_composite(mibi, at); return c.convert('RGB')

@@ -30,4 +30,13 @@ Times are America/Mexico_City, 2026-10-23; Pacific day 10-23. MXN are from usage
 - `feet-x3.png`: x 160–384, y 270–372 of each, with the mibi, ×3.
 - `cards-pair-1x.png`: each repaint beside its 96 card.
 
-Written 2026-10-23 22:23.
+First written 2026-10-23 22:23.
+
+## Art director's ruling 22:31: fixes at 0 MXN (2026-10-23 22:38)
+
+- **Check 13's limit is now tag-row grey std ≤ 30** (it was 20). p99 ≤ 200 and the "holds an object" clause stand.
+- **Meadow and wood:** sign as cut.
+- **Pond (pond-b):** local burn with `guides/fix-bd.py`: linear light ×0.70 in x 150–394 × y 110–285, feathered σ 36. sha256 `3b59658f…b775`, matching the ruling's render. After the fix: detail 11.3, saturation 100.7, spread 45.6, key 2.10, zone 0.314, feet band 11.9, tag 19.0 / 162. It passes. Pond-a is retired; its raw stays.
+- **Cave:** cropped 1050 × 788 at (75, 108), LANCZOS once, Color 1.15, with `guides/fix-bd.py`. sha256 `df1ea304…65c3`, matching the ruling's render. After the fix: detail 14.2, saturation 98.0, spread 53.1, key 1.40, zone 0.318, feet band 17.9, tag 27.7 / 172. It passes.
+- **Rock:** retry B3b with the ruling's changed prompt (below, when run).
+- The proofs are rebuilt with pond-a gone. Rows: meadow, pond, rock, wood, cave.

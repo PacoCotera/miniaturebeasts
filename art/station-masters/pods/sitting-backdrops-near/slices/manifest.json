@@ -12,8 +12,8 @@
   "file": "sitting-backdrop-pond-544x408.png",
   "w": 544,
   "h": 408,
-  "sha256": "aafda1c89664e065c96034da7bc3816001889f1224a33bb2c17634cd45beafd9",
-  "from": "source/raw/sitting-backdrop-pond-near-b.jpg, centre-crop 1195x896, LANCZOS once (guides/cut-bd.py)",
+  "sha256": "3b59658feceb63f66cbbc7440e72ef7a9657db69d5e3928291fee815be47b775",
+  "from": "source/raw/sitting-backdrop-pond-near-b.jpg, centre-crop 1195x896, LANCZOS once, then the local burn of guides/fix-bd.py",
   "signed_in": null,
   "status": "new"
  },
@@ -39,8 +39,8 @@
   "file": "sitting-backdrop-cave-544x408.png",
   "w": 544,
   "h": 408,
-  "sha256": "127db01256e5ad9bb93fc34e4d9e0c92152dd6c66628585d09cad6c4e0a405fa",
-  "from": "source/raw/sitting-backdrop-cave-near-a.jpg, centre-crop 1195x896, LANCZOS once (guides/cut-bd.py)",
+  "sha256": "df1ea304309ee616bfddf0f0f7e158ee6f9d5b0b141cfa90f8a23f15c72c65c3",
+  "from": "source/raw/sitting-backdrop-cave-near-a.jpg, crop 1050x788 at (75,108), LANCZOS once, Color 1.15 (guides/fix-bd.py)",
   "signed_in": null,
   "status": "new"
  }
