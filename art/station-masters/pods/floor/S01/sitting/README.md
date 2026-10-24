@@ -108,7 +108,27 @@ The lead's go: job 1 ceiling 40 MXN, hard stop 43; job 2 (B3c only) ceiling 32.7
 - The window proof is at the Habitat factor 0.5192, feet on y 380, axis x 272, over near-day and the five near backdrops.
 - Every new file is in `floor/S01/manifest.json` (signed_in null, status new) and `status.json`.
 
-## Job 1 stopped at K3j (2026-10-23 23:02)
+## Art director's ruling Round 3 (23:07): adult signed, renamed (2026-10-23 23:11)
+
+**Signed:** adult shake t1 → `shake`, calm t1 → `calm`, signed_in "AD 2026-10-23 23:07, 74031d07". The final ids:
+- `keys/mibi-adult-S01-base-{shake,calm}-304x312`
+- `crested/mibi-adult-S01-{shake,calm}-304x312`
+- `overlays/mibi-adult-S01-{shake,calm}-crest-304x312`
+- `layers/mibi-adult-S01-{shake,calm}-{fur-mask,zone-mask,patches,stripes}-304x312`
+
+`manifest.json` and `status.json` carry the signature. Shake t2 is removed from `keys/`, `crested/`, `overlays/` and `layers/` (its raws stay). `guides/rename-signed.py` and `guides/rename.json` record the moves.
+
+**Shake t1's glints** are painted out from the neighbouring fur: 70 px at [[182, 129], [174, 160], [191, 162]] (x, y). The same edit is applied to the base and the crested file. `proof/adult/edge-1x.png` is rebuilt: 0 magenta-cast px, 0 px of alpha 1–59.
+
+**Recolour exit, amended (R3.1):** 0 changed px outside the fur mask dilated 3 px. Every take passes, and so does the signed anchor.
+
+**Window, rebuilt (R3.4):** `proof/adult/window-1x.png` now has two rows per key, Dot's look (charcoal and ash, stripes and patches, leaf crest) and the worst coat (charcoal, bare, no marks). It is at the Habitat factor 0.5192, feet on y 380, over near-day and the five signed backdrops. The other adult proofs are rebuilt on the final ids.
+
+**K3j accepted at 0 MXN (R3.2), under amended check 9, bullet 3.** That bullet is now measured on the cut layer over the base key: alpha 0 outside the fur mask, and base + layer differs from the base only inside the coat. Both juvenile layers pass (0 px outside the mask). The returned sheet's outside-coat difference (the 30 / 60 / 90 / 120 table above) stays as a note. Juvenile shake t1 carries one patch mass, against the anchor's two: a sign-off note. The K4j input was built on the K2j bare keys (sha above).
+
+**Juvenile calm (R3.3):** accepted as it is; the final call is at the juvenile sign-off.
+
+## (superseded by Round 3) Job 1 stopped at K3j (2026-10-23 23:02)
 
 K3j fails check 9, a failure that is neither a facing nor a cell-4 figure. Under the lead's go (no automatic retries; any other failure stops the job for the art director), K4j is not run and no K3j retry is made. Job 1 stands at 35.01 of 43 MXN.
 

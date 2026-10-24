@@ -7,7 +7,7 @@ All from the 304x312 files, LANCZOS once where a size changes (P0 not merged: th
                        in Dot's look (charcoal and ash, stripes and patches, leaf crest), the worst coat (charcoal, bare, no marks), russet + patches,
                        ash + stripes; anchor and curl first
   looks-1x.png         the 24 looks x crest / bare per take at the walk size (adult 144x152, juvenile 104x112), fitted, over vivarium-near-day's ground
-  window-1x.png        each take at the Habitat factor (the adult anchor's figure is 136x149 there; juvenile by the same scale), last solid row on y 380,
+  window-1x.png        two rows per key, Dot's look and the worst coat (charcoal, bare, no marks), each at the Habitat factor (the adult anchor's figure is 136x149 there; juvenile by the same scale), last solid row on y 380,
                        axis x 272 (juvenile: the adult factor x 0.733 / 0.601), over vivarium-near-day and the five near backdrops in sitting-backdrops-near/slices (ungraded)
   edge-1x.png          each take, bare + crest, over black, #1d232b and vivarium-near-night (crop as takes)
 Files land in floor/S01/sitting/proof/<stage>/.
@@ -19,7 +19,7 @@ from scipy import ndimage as nd
 stage, WQL = sys.argv[1:3]; RAMPS = json.load(open(f'{WQL}/ramps.json'))['ramps']
 exec(open('floor/S01/sitting/proof-looks.py').read())
 F = 'floor/S01'; LAY = f'{F}/layers'; OUT = f'{F}/sitting/proof/{stage}'; os.makedirs(OUT, exist_ok=True)
-TAKES = [t for t in ('shake-t1', 'shake-t2', 'calm-t1', 'calm-t2') if os.path.exists(f'{F}/keys/mibi-{stage}-S01-base-{t}-304x312.png')]
+TAKES = [t for t in ('shake', 'calm', 'shake-t1', 'shake-t2', 'calm-t1', 'calm-t2') if os.path.exists(f'{F}/keys/mibi-{stage}-S01-base-{t}-304x312.png')]   # final ids once signed and renamed
 ALL = ['anchor', 'curl'] + TAKES
 def rgba(p): return Image.open(p).convert('RGBA')
 def ldir(k): return WQL if k in ('anchor', 'curl') else LAY
@@ -94,10 +94,12 @@ Lk.convert('RGB').save(f'{OUT}/looks-1x.png')
 ad = over(rgba(f'{F}/keys/mibi-adult-S01-base-anchor-304x312.png'), rgba(f'{F}/overlays/mibi-adult-S01-anchor-crest-304x312.png')); ax0, ay0, ax1, ay1 = solid_box(ad)
 sc = 149 / (ay1 - ay0) * (1 if stage == 'adult' else 0.733 / 0.601)     # juvenile: the adult factor times the proof scales' ratio (the sheets draw both stages at one world scale); an assumption, see README
 bds = [near] + [Image.open(f'sitting-backdrops-near/slices/sitting-backdrop-{p}-544x408.png').convert('RGBA') for p in ('meadow', 'pond', 'rock', 'wood', 'cave')]
-Wn = bg((214, 206, 190, 255), 544 * len(bds), 408 * len(ALL))
+WL = [('charcoal and ash', 'stripes and patches', True), ('charcoal', 'none', False)]      # Dot's look and the worst coat (ruling Round 3, R3.4)
+Wn = bg((214, 206, 190, 255), 544 * len(bds), 408 * 2 * len(ALL))
 for r, k in enumerate(ALL):
-    im = over(P[k]['base'], P[k]['crest']); f = im.resize((round(304 * sc), round(312 * sc)), Image.LANCZOS); x0, y0, x1, y1 = solid_box(f)
-    for c, b in enumerate(bds): Wn.alpha_composite(over(b, f, (round(272 - (x0 + x1) / 2), 380 - (y1 - 1))), (c * 544, r * 408))
+    for li, (coat, marks, crest) in enumerate(WL):
+        im = look(P[k]['base'], ldir(k), k, stage, coat, marks, crest, P[k]); f = im.resize((round(304 * sc), round(312 * sc)), Image.LANCZOS); x0, y0, x1, y1 = solid_box(f)
+        for c, b in enumerate(bds): Wn.alpha_composite(over(b, f, (round(272 - (x0 + x1) / 2), 380 - (y1 - 1))), (c * 544, (r * 2 + li) * 408))
 Wn.convert('RGB').save(f'{OUT}/window-1x.png'); rep['window_scale'] = round(sc, 4)
 # 7 edge
 E = bg((0, 0, 0, 255), 304 * 3, 312 * len(TAKES)); rep['edge'] = {}

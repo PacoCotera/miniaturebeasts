@@ -1,0 +1,87 @@
+{
+ "adult": {
+  "glint_px_painted_out": 70,
+  "glints": [
+   [
+    182,
+    129
+   ],
+   [
+    174,
+    160
+   ],
+   [
+    191,
+    162
+   ]
+  ],
+  "renamed": [
+   [
+    "floor/S01/keys/mibi-adult-S01-base-shake-t1-304x312.png",
+    "floor/S01/keys/mibi-adult-S01-base-shake-304x312.png"
+   ],
+   [
+    "floor/S01/crested/mibi-adult-S01-shake-t1-304x312.png",
+    "floor/S01/crested/mibi-adult-S01-shake-304x312.png"
+   ],
+   [
+    "floor/S01/overlays/mibi-adult-S01-shake-t1-crest-304x312.png",
+    "floor/S01/overlays/mibi-adult-S01-shake-crest-304x312.png"
+   ],
+   [
+    "floor/S01/layers/mibi-adult-S01-shake-t1-fur-mask-304x312.png",
+    "floor/S01/layers/mibi-adult-S01-shake-fur-mask-304x312.png"
+   ],
+   [
+    "floor/S01/layers/mibi-adult-S01-shake-t1-zone-mask-304x312.png",
+    "floor/S01/layers/mibi-adult-S01-shake-zone-mask-304x312.png"
+   ],
+   [
+    "floor/S01/layers/mibi-adult-S01-shake-t1-patches-304x312.png",
+    "floor/S01/layers/mibi-adult-S01-shake-patches-304x312.png"
+   ],
+   [
+    "floor/S01/layers/mibi-adult-S01-shake-t1-stripes-304x312.png",
+    "floor/S01/layers/mibi-adult-S01-shake-stripes-304x312.png"
+   ],
+   [
+    "floor/S01/keys/mibi-adult-S01-base-calm-t1-304x312.png",
+    "floor/S01/keys/mibi-adult-S01-base-calm-304x312.png"
+   ],
+   [
+    "floor/S01/crested/mibi-adult-S01-calm-t1-304x312.png",
+    "floor/S01/crested/mibi-adult-S01-calm-304x312.png"
+   ],
+   [
+    "floor/S01/overlays/mibi-adult-S01-calm-t1-crest-304x312.png",
+    "floor/S01/overlays/mibi-adult-S01-calm-crest-304x312.png"
+   ],
+   [
+    "floor/S01/layers/mibi-adult-S01-calm-t1-fur-mask-304x312.png",
+    "floor/S01/layers/mibi-adult-S01-calm-fur-mask-304x312.png"
+   ],
+   [
+    "floor/S01/layers/mibi-adult-S01-calm-t1-zone-mask-304x312.png",
+    "floor/S01/layers/mibi-adult-S01-calm-zone-mask-304x312.png"
+   ],
+   [
+    "floor/S01/layers/mibi-adult-S01-calm-t1-patches-304x312.png",
+    "floor/S01/layers/mibi-adult-S01-calm-patches-304x312.png"
+   ],
+   [
+    "floor/S01/layers/mibi-adult-S01-calm-t1-stripes-304x312.png",
+    "floor/S01/layers/mibi-adult-S01-calm-stripes-304x312.png"
+   ]
+  ],
+  "removed": [
+   "floor/S01/keys/mibi-adult-S01-base-shake-t2-304x312.png",
+   "floor/S01/crested/mibi-adult-S01-shake-t2-304x312.png",
+   "floor/S01/overlays/mibi-adult-S01-shake-t2-crest-304x312.png",
+   "floor/S01/layers/mibi-adult-S01-shake-t2-fur-mask-304x312.png",
+   "floor/S01/layers/mibi-adult-S01-shake-t2-zone-mask-304x312.png",
+   "floor/S01/layers/mibi-adult-S01-shake-t2-patches-304x312.png",
+   "floor/S01/layers/mibi-adult-S01-shake-t2-stripes-304x312.png",
+   "floor/S01/sitting/guides/discard-shadow-adult-shake-t2.png"
+  ]
+ }
+}

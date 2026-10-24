@@ -209,216 +209,6 @@
   "signed_in": null,
   "status": "new"
  },
- "mibi-adult-S01-shake-t1-304x312": {
-  "file": "crested/mibi-adult-S01-shake-t1-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 94723,
-  "sha256": "8357918da934953696d608c1f62ce17fbfa304325b2f004b50994c98f890333b",
-  "from": "source/raw/sit-S01-adult-keys-crested-b.jpg cell 2, cut-sit.py k1 (mirrored, droplets on the fur painted out)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-base-shake-t1-304x312": {
-  "file": "keys/mibi-adult-S01-base-shake-t1-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 78841,
-  "sha256": "db0a60ec96eb0450e8b95f776780b7c91b4db519fed796fc4376bccd1cbe8b6f",
-  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 2, cut-sit.py k2 + restore-drop.py",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t1-crest-304x312": {
-  "file": "overlays/mibi-adult-S01-shake-t1-crest-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 24990,
-  "sha256": "54ba1aa6cb1787e13d6f4f1a788b621245205c4bb0f7b3521fbecde38ea0abe0",
-  "from": "source/raw/sit-S01-adult-keys-crested-b.jpg cell 2, layers-sit.py overlays (from the crested and bare keys)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t1-fur-mask-304x312": {
-  "file": "layers/mibi-adult-S01-shake-t1-fur-mask-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 2042,
-  "sha256": "b1ab631ed68c8a23a84404588271b0e4c033b464b7b3e62eee2e825c96246174",
-  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 2, layers-sit.py overlays (cut-layers.py fur_mask on the bare key)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t1-zone-mask-304x312": {
-  "file": "layers/mibi-adult-S01-shake-t1-zone-mask-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 3771,
-  "sha256": "7e93d4afb576bab508e0fc73445e4982f7d1a27fc99d922d677f6bad8e579626",
-  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 2, layers-sit.py overlays (cut-layers.py zone_mask)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t1-patches-304x312": {
-  "file": "layers/mibi-adult-S01-shake-t1-patches-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 117849,
-  "sha256": "880459a8dce6cf2aad8feb9522f0d85b261d4fc37244bb8e38d983224007811c",
-  "from": "source/raw/sit-S01-adult-keys-patches-a.jpg cell 2, layers-sit.py patches (mark_layer + heads-off)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t1-stripes-304x312": {
-  "file": "layers/mibi-adult-S01-shake-t1-stripes-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 121493,
-  "sha256": "4f4a0246093ce25cbdfa9a31bb40bf2608e1788ce45b250533c47738ec0ca33e",
-  "from": "source/raw/sit-S01-adult-keys-stripes-a.jpg cell 2, layers-sit.py stripes (mark_layer)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-calm-t1-304x312": {
-  "file": "crested/mibi-adult-S01-calm-t1-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 85496,
-  "sha256": "5022a860b83e03964474eb39b4a5d6835083c14a472e4cbba414e53c5f6209dc",
-  "from": "source/raw/sit-S01-adult-keys-crested-b.jpg cell 3, cut-sit.py k1 (mirrored, droplets on the fur painted out)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-base-calm-t1-304x312": {
-  "file": "keys/mibi-adult-S01-base-calm-t1-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 69213,
-  "sha256": "687ff3510e55ebe5bfce0aa7dbba8ccdcb29ec16c94e120fa693a0694d3a2a2e",
-  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 3, cut-sit.py k2",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-calm-t1-crest-304x312": {
-  "file": "overlays/mibi-adult-S01-calm-t1-crest-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 23014,
-  "sha256": "f91902af40315f1cbd418193c353c12e5b20ee6cc7b8146deb60516af6ab76e1",
-  "from": "source/raw/sit-S01-adult-keys-crested-b.jpg cell 3, layers-sit.py overlays (from the crested and bare keys)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-calm-t1-fur-mask-304x312": {
-  "file": "layers/mibi-adult-S01-calm-t1-fur-mask-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 1859,
-  "sha256": "24c5c719f7c7fa342d262184a1ebf13d635543c922f542921e2541fc8e4e3721",
-  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 3, layers-sit.py overlays (cut-layers.py fur_mask on the bare key)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-calm-t1-zone-mask-304x312": {
-  "file": "layers/mibi-adult-S01-calm-t1-zone-mask-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 3530,
-  "sha256": "7679d1c3d0383fbff1f32cde684cae42586a5f044cea08516154d43fe258a6e9",
-  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 3, layers-sit.py overlays (cut-layers.py zone_mask)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-calm-t1-patches-304x312": {
-  "file": "layers/mibi-adult-S01-calm-t1-patches-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 110112,
-  "sha256": "f06885f537e69c4b83588173e3ec08be67f4463a341143f8f73ef6226ae48129",
-  "from": "source/raw/sit-S01-adult-keys-patches-a.jpg cell 3, layers-sit.py patches (mark_layer + heads-off)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-calm-t1-stripes-304x312": {
-  "file": "layers/mibi-adult-S01-calm-t1-stripes-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 112276,
-  "sha256": "a6868d12239d24387218a9d3e82d67d7a7957c8e6da91d5f4720808d7d16d9e0",
-  "from": "source/raw/sit-S01-adult-keys-stripes-a.jpg cell 3, layers-sit.py stripes (mark_layer)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t2-304x312": {
-  "file": "crested/mibi-adult-S01-shake-t2-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 97001,
-  "sha256": "370f75d813249763b08a49850acfbe3ff35744471b7d5fe6cdff192d872d20ec",
-  "from": "source/raw/sit-S01-adult-keys-crested-b.jpg cell 5, cut-sit.py k1 (mirrored, droplets on the fur painted out)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-base-shake-t2-304x312": {
-  "file": "keys/mibi-adult-S01-base-shake-t2-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 81475,
-  "sha256": "10a956ed714b06dc791eed8d19be8cb8854fe4fa63a40411eb2c96f9027d270e",
-  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 5, cut-sit.py k2",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t2-crest-304x312": {
-  "file": "overlays/mibi-adult-S01-shake-t2-crest-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 25927,
-  "sha256": "323d7ade623d9c5070c91554029b661d03dc4afd56438a5fd6f8ae6c5bca668d",
-  "from": "source/raw/sit-S01-adult-keys-crested-b.jpg cell 5, layers-sit.py overlays (from the crested and bare keys)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t2-fur-mask-304x312": {
-  "file": "layers/mibi-adult-S01-shake-t2-fur-mask-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 2121,
-  "sha256": "48316681164714c3a6e1ef6ce3948e41446a451ad8403eaf0a04853e4d664f2b",
-  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 5, layers-sit.py overlays (cut-layers.py fur_mask on the bare key)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t2-zone-mask-304x312": {
-  "file": "layers/mibi-adult-S01-shake-t2-zone-mask-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 3771,
-  "sha256": "30f1cf179cdef61f5c35c3ff5976d3ef205ccfa6adaaca836850bb30ccd35a83",
-  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 5, layers-sit.py overlays (cut-layers.py zone_mask)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t2-patches-304x312": {
-  "file": "layers/mibi-adult-S01-shake-t2-patches-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 121109,
-  "sha256": "d3a49105d0f6d0bc0c7ff840d8bc52476956d2b4cbc473ffda73bf7b24d47153",
-  "from": "source/raw/sit-S01-adult-keys-patches-a.jpg cell 5, layers-sit.py patches (mark_layer + heads-off)",
-  "signed_in": null,
-  "status": "new"
- },
- "mibi-adult-S01-shake-t2-stripes-304x312": {
-  "file": "layers/mibi-adult-S01-shake-t2-stripes-304x312.png",
-  "w": 304,
-  "h": 312,
-  "bytes": 127276,
-  "sha256": "d2e9a1359b96a4200a71fbc1221e3205a84132d2d686c36ac3cfc0ea440e46fc",
-  "from": "source/raw/sit-S01-adult-keys-stripes-a.jpg cell 5, layers-sit.py stripes (mark_layer)",
-  "signed_in": null,
-  "status": "new"
- },
  "mibi-juvenile-S01-shake-t1-304x312": {
   "file": "crested/mibi-juvenile-S01-shake-t1-304x312.png",
   "w": 304,
@@ -538,5 +328,159 @@
   "from": "source/raw/sit-S01-juvenile-keys-patches-a.jpg cell 3, layers-sit.py patches (mark_layer + heads-off)",
   "signed_in": null,
   "status": "new"
+ },
+ "mibi-adult-S01-shake-304x312": {
+  "file": "crested/mibi-adult-S01-shake-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 94667,
+  "sha256": "69e9b868ab8dbc47ab632973b1ea9af3086788a40e6a3d5978d247fb1dc4a754",
+  "from": "source/raw/sit-S01-adult-keys-crested-b.jpg cell 2, cut-sit.py k1 (mirrored, droplets on the fur painted out) + rename-signed.py (glints painted out, 70 px)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "shake-t1"
+ },
+ "mibi-adult-S01-base-shake-304x312": {
+  "file": "keys/mibi-adult-S01-base-shake-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 78781,
+  "sha256": "a8fdc3a7536d1a5c037d91ceb1a7bcc8d7bc03a1f21728e55a0c70385155ccdb",
+  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 2, cut-sit.py k2 + restore-drop.py + rename-signed.py (glints painted out, 70 px)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "shake-t1"
+ },
+ "mibi-adult-S01-shake-crest-304x312": {
+  "file": "overlays/mibi-adult-S01-shake-crest-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 24990,
+  "sha256": "54ba1aa6cb1787e13d6f4f1a788b621245205c4bb0f7b3521fbecde38ea0abe0",
+  "from": "source/raw/sit-S01-adult-keys-crested-b.jpg cell 2, layers-sit.py overlays (from the crested and bare keys)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "shake-t1"
+ },
+ "mibi-adult-S01-shake-fur-mask-304x312": {
+  "file": "layers/mibi-adult-S01-shake-fur-mask-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 2042,
+  "sha256": "b1ab631ed68c8a23a84404588271b0e4c033b464b7b3e62eee2e825c96246174",
+  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 2, layers-sit.py overlays (cut-layers.py fur_mask on the bare key)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "shake-t1"
+ },
+ "mibi-adult-S01-shake-zone-mask-304x312": {
+  "file": "layers/mibi-adult-S01-shake-zone-mask-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 3771,
+  "sha256": "7e93d4afb576bab508e0fc73445e4982f7d1a27fc99d922d677f6bad8e579626",
+  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 2, layers-sit.py overlays (cut-layers.py zone_mask)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "shake-t1"
+ },
+ "mibi-adult-S01-shake-patches-304x312": {
+  "file": "layers/mibi-adult-S01-shake-patches-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 117849,
+  "sha256": "880459a8dce6cf2aad8feb9522f0d85b261d4fc37244bb8e38d983224007811c",
+  "from": "source/raw/sit-S01-adult-keys-patches-a.jpg cell 2, layers-sit.py patches (mark_layer + heads-off)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "shake-t1"
+ },
+ "mibi-adult-S01-shake-stripes-304x312": {
+  "file": "layers/mibi-adult-S01-shake-stripes-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 121493,
+  "sha256": "4f4a0246093ce25cbdfa9a31bb40bf2608e1788ce45b250533c47738ec0ca33e",
+  "from": "source/raw/sit-S01-adult-keys-stripes-a.jpg cell 2, layers-sit.py stripes (mark_layer)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "shake-t1"
+ },
+ "mibi-adult-S01-calm-304x312": {
+  "file": "crested/mibi-adult-S01-calm-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 85496,
+  "sha256": "5022a860b83e03964474eb39b4a5d6835083c14a472e4cbba414e53c5f6209dc",
+  "from": "source/raw/sit-S01-adult-keys-crested-b.jpg cell 3, cut-sit.py k1 (mirrored, droplets on the fur painted out)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "calm-t1"
+ },
+ "mibi-adult-S01-base-calm-304x312": {
+  "file": "keys/mibi-adult-S01-base-calm-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 69213,
+  "sha256": "687ff3510e55ebe5bfce0aa7dbba8ccdcb29ec16c94e120fa693a0694d3a2a2e",
+  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 3, cut-sit.py k2",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "calm-t1"
+ },
+ "mibi-adult-S01-calm-crest-304x312": {
+  "file": "overlays/mibi-adult-S01-calm-crest-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 23014,
+  "sha256": "f91902af40315f1cbd418193c353c12e5b20ee6cc7b8146deb60516af6ab76e1",
+  "from": "source/raw/sit-S01-adult-keys-crested-b.jpg cell 3, layers-sit.py overlays (from the crested and bare keys)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "calm-t1"
+ },
+ "mibi-adult-S01-calm-fur-mask-304x312": {
+  "file": "layers/mibi-adult-S01-calm-fur-mask-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 1859,
+  "sha256": "24c5c719f7c7fa342d262184a1ebf13d635543c922f542921e2541fc8e4e3721",
+  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 3, layers-sit.py overlays (cut-layers.py fur_mask on the bare key)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "calm-t1"
+ },
+ "mibi-adult-S01-calm-zone-mask-304x312": {
+  "file": "layers/mibi-adult-S01-calm-zone-mask-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 3530,
+  "sha256": "7679d1c3d0383fbff1f32cde684cae42586a5f044cea08516154d43fe258a6e9",
+  "from": "source/raw/sit-S01-adult-keys-bare-b.jpg cell 3, layers-sit.py overlays (cut-layers.py zone_mask)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "calm-t1"
+ },
+ "mibi-adult-S01-calm-patches-304x312": {
+  "file": "layers/mibi-adult-S01-calm-patches-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 110112,
+  "sha256": "f06885f537e69c4b83588173e3ec08be67f4463a341143f8f73ef6226ae48129",
+  "from": "source/raw/sit-S01-adult-keys-patches-a.jpg cell 3, layers-sit.py patches (mark_layer + heads-off)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "calm-t1"
+ },
+ "mibi-adult-S01-calm-stripes-304x312": {
+  "file": "layers/mibi-adult-S01-calm-stripes-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 112276,
+  "sha256": "a6868d12239d24387218a9d3e82d67d7a7957c8e6da91d5f4720808d7d16d9e0",
+  "from": "source/raw/sit-S01-adult-keys-stripes-a.jpg cell 3, layers-sit.py stripes (mark_layer)",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status": "new",
+  "take": "calm-t1"
  }
 }

@@ -2,45 +2,32 @@
  "adult": {
   "reads_apart": {
    "iou": {
-    "shake-t1": {
+    "shake": {
      "anchor": 0.742,
      "curl": 0.648
     },
-    "shake-t2": {
-     "anchor": 0.781,
-     "curl": 0.603
-    },
-    "calm-t1": {
+    "calm": {
      "anchor": 0.799,
      "curl": 0.716
     }
    },
    "pairs": {
-    "shake-t1xcalm-t1": 0.761,
-    "shake-t2xcalm-t1": 0.735
+    "shakexcalm": 0.761
    }
   },
   "base+crest_vs_crested_px_diff_alpha>128": {
-   "shake-t1": 1268,
-   "shake-t2": 1291,
-   "calm-t1": 766
+   "shake": 1268,
+   "calm": 766
   },
   "recolour_diff_outside_fur_mask": {
-   "shake-t1": {
+   "shake": {
     "russet": 3074,
     "ash": 3037,
     "charcoal and russet": 367,
     "charcoal and ash": 367,
     "russet and ash": 3074
    },
-   "shake-t2": {
-    "russet": 3011,
-    "ash": 2960,
-    "charcoal and russet": 318,
-    "charcoal and ash": 318,
-    "russet and ash": 3011
-   },
-   "calm-t1": {
+   "calm": {
     "russet": 2731,
     "ash": 2676,
     "charcoal and russet": 416,
@@ -57,15 +44,11 @@
   },
   "window_scale": 0.5192,
   "edge": {
-   "shake-t1": {
+   "shake": {
     "magenta_cast_px_on_2px_edge": 0,
     "alpha_1_59_px": 0
    },
-   "shake-t2": {
-    "magenta_cast_px_on_2px_edge": 0,
-    "alpha_1_59_px": 0
-   },
-   "calm-t1": {
+   "calm": {
     "magenta_cast_px_on_2px_edge": 0,
     "alpha_1_59_px": 0
    }
