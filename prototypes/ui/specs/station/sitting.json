@@ -119,7 +119,7 @@
  "masters": {
   "note": "every master the sitting names, at the size it is shown; none is drawn by the build",
   "list": ["sitting-backdrop-meadow-544x408", "sitting-backdrop-pond-544x408", "sitting-backdrop-rock-544x408", "sitting-backdrop-wood-544x408", "sitting-backdrop-cave-544x408", "sitting-gilt-560x424", "sitting-gilt-lit-560x424", "place-{place}-96x96", "place-{place}-48x48", "sitting-frame-portrait-48x40", "spread-gilt-corner-16x16", "plate-device-416x424", "plate-device-992x64", "plate-well-120x120", "plate-well-152x48", "plate-well-152x48-shown", "crate-sitting-48x40", "crate-sitting-256x176", "room-vivarium-stage-habitat 1024×522 (Habitat's)"],
-  "placeholders": {"rule": "a derived pose card or thumb whose habit has no signed key shows the derived stand and is a placeholder (\"habit key owed\"), never a delivery; no golden may show one", "today": ["S01 shake-dry", "S01 calm", "every S02 and S03 habit"]}
+  "placeholders": {"rule": "a derived pose card or thumb whose habit has no signed key shows the derived stand and is a placeholder (\"habit key owed\"), never a delivery; no golden may show one", "today": ["every S02 and S03 habit", "an S01 habit outside stands.S01.habits"]}
  },
  "strings": {
   "title": "Sitting",

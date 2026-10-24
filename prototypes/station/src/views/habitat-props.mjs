@@ -102,7 +102,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
   const unread = (p) => p.state === "unread", cost = (p) => S.mibiReadCost(st, shown, p.id, settings);
   const dKind = pend.find((r) => r.id === shown.id)?.op ?? (proj.includes(shown.id) ? "bring" : proj.length >= 3 ? "full" : "take");
   const sitting = pst === "held" && !(!docked && carried.includes(shown.id)) && habitsOf(shown).length && placesOf(shown).length;
-  const look = pst === "portrayed" && portraitOffered(shown) && doorOpen("sitting");   // portrayed and its picture held: ✓ opens the sitting's state portrait
+  const look = pst === "portrayed" && portraitOffered(shown) && doorOpen("sitting") && !S.isAway(st, sv, shown) && !!sittingSpec?.strings?.lookPortrait;   // portrayed and its picture held: ✓ opens the sitting's state portrait
   const targets = [];
   if (state !== "out") targets.push({ id: "resident", group: "resident", enabled: true });
   if (state !== "meet") targets.push({ id: "name", group: "name", enabled: true });
@@ -140,7 +140,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
     line = { ...line, back: Sg.back, need: null };
   } else if (id === "portrait") {
     const why = pst === "none" ? Sg.noSitting : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : !docked && carried.includes(shown.id) ? Sg.portraitOut : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : !doorOpen("sitting") ? Sg.shut.portrait : null;
-    line = look && sittingSpec?.strings?.lookPortrait ? { ok: sittingSpec.strings.lookPortrait, subject: Sg.portrayed, back: Sg.back, need: null }   // bottomLine.portrait.portrayed: ✓ strings.lookPortrait only while the picture is held
+    line = look ? { ok: sittingSpec.strings.lookPortrait, subject: Sg.portrayed, back: Sg.back, need: null }   // bottomLine.portrait.portrayed: ✓ strings.lookPortrait only while the picture is held
       : why ? { ok: null, subject: why, back: Sg.back, need: null } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext, back: Sg.back, need: null };
   } else if (id === "cross") {
     line = crossState === "adult" && !doorOpen("cross") ? { ok: null, subject: Sg.shut.cross }

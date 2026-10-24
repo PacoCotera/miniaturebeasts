@@ -203,3 +203,15 @@ test("the portrayed corner and ✓ Look at the portrait: the stamp label carries
   assert.equal(build(w, sv, { focus: "resident" }).props.regions.card.stamp.corner, P.slice, "the corner whatever the ring is on");
   dropPortraitSources();
 });
+
+test("✓ Look at the portrait is never a cap that does nothing: portrayed with its opening held but out with the Companion while it is away, or built without sitting.json, the Portrait target is disabled and the line is { ok null, strings.portrayed }", async () => {
+  const { injectPortraitSource, dropPortraitSources } = await import("../src/portrait-source.mjs");
+  const w = world(); dock(w.st); const m = mibis(w, 2), digest = "00112233445566778899aabbccddeeff"; m[0].portrait = { state: "delivered", digest };
+  const a = new Uint8ClampedArray(528 * 392 * 4); for (let i = 0; i < a.length; i += 4) { a[i] = 7; a[i + 1] = (i >> 2) & 255; a[i + 2] = 40; a[i + 3] = 255; } dropPortraitSources(); assert.equal(injectPortraitSource(digest, a).ok, true);
+  const off = (b) => { assert.equal(b.props.focus.targets.find((t) => t.id === "portrait").enabled, false); assert.deepEqual([b.line.ok, b.line.subject], [null, spec.strings.portrayed]); };
+  assert.equal(build(w, sv0(), { focus: "portrait" }).line.ok, sittingSpec.strings.lookPortrait, "docked: the cap");
+  w.st.dock = { docked: false, at: 1 }; const away = { ...sv0(), carried: [m[0].id] }; assert.ok(S.isAway(w.st, away, m[0]));
+  off(build(w, away, { focus: "portrait" }));
+  dock(w.st); off(habitatBuild({ st: w.st, sv: sv0(), settings: w.settings, docked: true, light: "day", focus: "portrait", habId: m[0].id, meetId: null, armed: false }, spec, frameSpec, home));
+  dropPortraitSources();
+});
