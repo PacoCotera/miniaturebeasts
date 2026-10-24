@@ -1,0 +1,16 @@
+[
+ {
+  "name": "sit-S01-adult-keys-patches-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/floor/S01/sitting/guides/compose-sit-adult-patches-in.png",
+    "The sheet to edit. Cell 1 already wears its pale cream patches; keep cell 1 exactly as it is."
+   ]
+  ],
+  "prompt": "Edit the reference sheet. Cell 1 already wears its pale cream patches. Keep cell 1 exactly as it is.\n\nEvery figure keeps its facing exactly as in the reference: the head toward the LEFT, the same as cell 1. Do not turn or mirror any figure.\n\nCell 4 (bottom left) stays empty, plain flat magenta: put nothing in it, and never a copy of a reference.\n\nPaint the SAME patches on the creature in every other filled cell: the same two large, rounded, irregular cream masses as cell 1, with soft painted edges, one on the back or shoulder behind the head and one on the haunch. Each follows the pose's body as it bends or twists. Each patch is one big rounded mass, at least 60 px across on this sheet. NO crescents, NO bands, NO stripes, NO small spots or specks, and no third patch. Use the cream of the belly, with the fur's soft shading and the light from the top left over them.\n\nPatches go only on the dark fur of the body: none on the head, face, eye rings, belly cream, toes, droplets or the legs below the thigh. Return the SAME sheet: every creature in exactly the same position, pose, size, outline, eyes, belly, toes, droplets and light, on the same flat magenta (#FF00FF). No new object, no text, no borders, no glow, no leaves, no crest."
+ }
+]

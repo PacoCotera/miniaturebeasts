@@ -1,0 +1,16 @@
+[
+ {
+  "name": "sit-S01-adult-keys-stripes-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/floor/S01/sitting/guides/compose-sit-adult-stripes-in.png",
+    "The sheet to edit. Cell 1 already wears its pale cream stripes; keep cell 1 exactly as it is."
+   ]
+  ],
+  "prompt": "Edit the reference sheet. Cell 1 already wears its pale cream stripes. Keep cell 1 exactly as it is.\n\nEvery figure keeps its facing exactly as in the reference: the head toward the LEFT, the same as cell 1. Do not turn or mirror any figure.\n\nCell 4 (bottom left) stays empty, plain flat magenta: put nothing in it, and never a copy of a reference.\n\nPaint the SAME stripes on the creature in every other filled cell: broad pale bands behind the shoulder, bowing back down the flank and tapering to a point, two or three on the visible flank, as in cell 1. They follow each pose's body as it bends or twists. Use the cream of the belly, with the fur's soft shading and the light from the top left.\n\nStripes go only on the dark fur of the body: NEVER on the head, face, eye rings, belly cream, toes, droplets or the lower legs. Return the SAME sheet: every creature in exactly the same position, pose, size, outline, eyes, belly, toes, droplets and light, on the same flat magenta (#FF00FF). No new object, no text, no borders, no glow, no leaves, no crest."
+ }
+]

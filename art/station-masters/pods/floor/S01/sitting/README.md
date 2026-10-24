@@ -15,6 +15,8 @@ Built by `guides/compose-sit.py` at 0 MXN. The stage's canvas transform (crested
 | K2a `sit-S01-adult-keys-bare-a` | `guides/compose-sit-adult-bare-in.png`: the crested anchor in cell 1, the four mirrored, droplet-fixed K1b takes in cells 2, 3, 5, 6 | `90995042e83688ceeed55f501a04da3a3d5fdac58a6396531b2e7090e7dedd37` |
 | K2b `sit-S01-adult-keys-bare-b` (the adult retry, checks 4 and 8) | the same two files | as K2a |
 | K2a, second reference | `guides/compose-sit-adult-bare-anchor-ref.png`: the signed bare anchor (7e52ae98…) at 304 × 312 flattened on #FF00FF | `3dd6e52e4a573ec3f64e61e64e0bd835b94ec75f64a5857666b3a6b1b0e4997d` |
+| K3a `sit-S01-adult-keys-patches-a` | `guides/compose-sit-adult-patches-in.png`: cell 1 the bare anchor + its round-2 patches (wq f1285a67), cells 2, 3, 5 the bare K2b takes (cell 6 empty: calm t2 dropped) | `8c1f3e9b7d45d7edb9843292014d0c96b5613b909c4c53d437479fccb21a08cd` |
+| K4a `sit-S01-adult-keys-stripes-a` | `guides/compose-sit-adult-stripes-in.png`: cell 1 the bare anchor + its stripes, the same takes | `b395716de1cb3e2fd7a7bc36aa226c4e8d7a3e89cc8376c32dc991adf05938ac` |
 
 ## Requests
 
@@ -57,6 +59,19 @@ Shake × calm pairs: shake-t1xcalm-t1 0.76, shake-t1xcalm-t2 0.75, shake-t2xcalm
 1. **Calm t2 fails reads-apart under the brief's method** (cut key, alpha > 128, droplets out, fitted into 48 bottom-centred): IoU against the anchor is 0.87, over 0.80. Calm t1 is 0.7995, on the line. The method reproduces the brief's reference values: crested stand 0.98, adult air 0.77, adult curl 0.67, juvenile curl 0.57. The ruling's `iou.py` reads 0.77 and 0.74. Its magenta test, `|R-B| < 45 & G < 80 & R > 80`, also takes in some dark charcoal coat, which thins its silhouettes. I followed the ruling and let all four takes ride, at no extra cost. Under the brief, calm t2 would be dropped; that is your call at sign-off.
 2. **Calm t1's feet moved 7 px down to row 303,** over the 6 px allowance. It is recorded here as a note to you.
 3. A few tiny pale glints are left on the shake coats, too small for the droplet test. They are a hand note if wanted.
+
+## Art director's ruling Round 2 (22:48), 0 MXN work (2026-10-23 22:51)
+
+The lead's go: job 1 ceiling 40 MXN, hard stop 43; job 2 (B3c only) ceiling 32.7, hard stop 34; both jobs 77. There are no automatic retries: a wrong facing or a figure in cell 4 is a 0 MXN fix, and any other failure stops the job for the art director.
+
+- **K2b is the sheet of record.** Its cell 4 figure lies inside x 28–392 × y 81–394 of the cell, with 0 px in the seam bands. It is cut away and noted.
+- **Check 4 now reads:** a figure in cell 4, or in a cell left empty in the input, is cut away and noted. It fails the sheet only if it comes within 12 px of a seam or changes a used cell.
+- **Checks 5 and 8, the outline:** measured outside the crest zone dilated 10 px, against the twin or the input put through the same key-out. Pass when p95 ≤ 4.0 px, max ≤ 6 px, centroid move ≤ 1 px, and mean RGB difference ≤ 8 inside the figure. Sign-off 3's "p95 ≤ 1 px" becomes this, plus "no visible step at 1×".
+- **One IoU method, the brief's:** the cut 304 × 312 key, alpha > 128, the largest island (droplets out), fitted into 48 and bottom-centred (`guides/measure-k1.py`). The ruling's round-1 `iou.py` is withdrawn.
+- **Calm t1 is the calm take** (IoU 0.799 against the anchor). Its 7 px feet move is accepted.
+- **Calm t2 is dropped.** It is removed from `keys/`, `crested/` and the discard shadows (the raw keeps it); cell 6 is empty in the K3a and K4a inputs.
+- **Shake t1's small droplet** (K2b cell x 59, y 291) is restored in the bare key from the crested twin's droplet at the twin's place: 23 px, `guides/restore-drop.py`.
+- **Prompts:** K3a and K4a carry the facing line and the cell-4 line after their first paragraph (`guides/jobs-sit.py`).
 
 ## Job 1 stopped again after K2b (2026-10-23 22:44)
 

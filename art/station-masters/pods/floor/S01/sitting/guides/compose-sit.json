@@ -37,6 +37,22 @@
     "5": "floor/S01/crested/mibi-adult-S01-shake-t2-304x312.png",
     "6": "floor/S01/crested/mibi-adult-S01-calm-t2-304x312.png"
    }
+  },
+  "compose-sit-adult-patches-in.png": {
+   "cells": {
+    "1": "keys/mibi-adult-S01-base-anchor + wq f1285a67:results/T-20261016-203/patches-r2/mibi-adult-S01-anchor-patches-304x312.png",
+    "2": "floor/S01/keys/mibi-adult-S01-base-shake-t1-304x312.png",
+    "3": "floor/S01/keys/mibi-adult-S01-base-calm-t1-304x312.png",
+    "5": "floor/S01/keys/mibi-adult-S01-base-shake-t2-304x312.png"
+   }
+  },
+  "compose-sit-adult-stripes-in.png": {
+   "cells": {
+    "1": "keys/mibi-adult-S01-base-anchor + wq f1285a67:results/T-20261016-200/layers/mibi-adult-S01-anchor-stripes-304x312.png",
+    "2": "floor/S01/keys/mibi-adult-S01-base-shake-t1-304x312.png",
+    "3": "floor/S01/keys/mibi-adult-S01-base-calm-t1-304x312.png",
+    "5": "floor/S01/keys/mibi-adult-S01-base-shake-t2-304x312.png"
+   }
   }
  }
 }
