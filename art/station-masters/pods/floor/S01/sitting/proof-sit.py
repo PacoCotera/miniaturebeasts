@@ -12,7 +12,7 @@ All from the 304x312 files, LANCZOS once where a size changes (P0 not merged: th
   edge-1x.png          each take, bare + crest, over black, #1d232b and vivarium-near-night (crop as takes)
 Files land in floor/S01/sitting/proof/<stage>/.
 Anchor and curl layers: work-queue f1285a67 results/T-20261016-200/layers (patches from round 2), unpacked to WQL.
-usage (from art/station-masters/pods): python3 -I floor/S01/sitting/proof-sit.py <stage> <WQL dir>"""
+usage (from art/station-masters/pods): python3 -I floor/S01/sitting/proof-sit.py <stage> <WQL dir> [window factor]"""
 import json, os, sys, numpy as np
 from PIL import Image, ImageDraw
 from scipy import ndimage as nd
@@ -92,7 +92,7 @@ rep['recolour_diff_outside_fur_mask']['anchor (reference)'] = recolour_exit(P['a
 Lk.convert('RGB').save(f'{OUT}/looks-1x.png')
 # 6 window
 ad = over(rgba(f'{F}/keys/mibi-adult-S01-base-anchor-304x312.png'), rgba(f'{F}/overlays/mibi-adult-S01-anchor-crest-304x312.png')); ax0, ay0, ax1, ay1 = solid_box(ad)
-sc = 149 / (ay1 - ay0) * (1 if stage == 'adult' else 0.733 / 0.601)     # juvenile: the adult factor times the proof scales' ratio (the sheets draw both stages at one world scale); an assumption, see README
+sc = float(sys.argv[3]) if len(sys.argv) > 3 else 149 / (ay1 - ay0) * (1 if stage == 'adult' else 0.733 / 0.601)   # a measured factor given as the third argument wins (juvenile 0.5822, the P1 build's)     # juvenile: the adult factor times the proof scales' ratio (the sheets draw both stages at one world scale); an assumption, see README
 bds = [near] + [Image.open(f'sitting-backdrops-near/slices/sitting-backdrop-{p}-544x408.png').convert('RGBA') for p in ('meadow', 'pond', 'rock', 'wood', 'cave')]
 WL = [('charcoal and ash', 'stripes and patches', True), ('charcoal', 'none', False)]      # Dot's look and the worst coat (ruling Round 3, R3.4)
 Wn = bg((214, 206, 190, 255), 544 * len(bds), 408 * 2 * len(ALL))

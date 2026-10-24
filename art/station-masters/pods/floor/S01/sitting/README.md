@@ -176,7 +176,7 @@ The adult keys were signed "AD 2026-10-23 23:07, 74031d07"; the juvenile "AD 202
 | Backdrops | meadow 4.18, pond-a 4.14, rock-a 4.07, wood 4.00, cave 4.23, pond-b 3.89, rock-b 4.09, rock-c 4.38 | **32.98 of 34, closed** |
 | Both | | **71.73 of 77**; Pacific day 71.73 of 250 |
 
-**Open item:** the juvenile window factor 0.6332 is assumed (the adult factor × 0.733 / 0.601). P1 confirms the station's juvenile Habitat factor. If it changes, `proof/juvenile/window-1x.png` is rebuilt at 0 MXN.
+**Juvenile window factor, settled (2026-10-24 08:10).** The P1 build measures 0.5822, each stage scaled by its own anchor figure; the adult is 0.5197. The earlier proof assumed 0.6332, which drew the juvenile about 8.8 % too large. `proof/juvenile/window-1x.png` is rebuilt at 0.5822 (0 MXN, `proof-sit.py juvenile <WQL> 0.5822`), in the same two-row form (Dot's look and the worst coat) over near-day and the five signed backdrops. The other juvenile proofs are unchanged.
 
 ## (superseded by Round 3) Job 1 stopped at K3j (2026-10-23 23:02)
 

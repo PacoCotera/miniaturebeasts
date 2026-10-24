@@ -102,25 +102,25 @@
  "juvenile": {
   "reads_apart": {
    "iou": {
-    "shake-t1": {
+    "shake": {
      "anchor": 0.76,
      "curl": 0.555
     },
-    "calm-t1": {
+    "calm": {
      "anchor": 0.733,
      "curl": 0.631
     }
    },
    "pairs": {
-    "shake-t1xcalm-t1": 0.635
+    "shakexcalm": 0.635
    }
   },
   "base+crest_vs_crested_px_diff_alpha>128": {
-   "shake-t1": 1126,
-   "calm-t1": 849
+   "shake": 1126,
+   "calm": 849
   },
   "recolour_diff_outside_fur_mask": {
-   "shake-t1": {
+   "shake": {
     "russet": {
      "outside_mask": 1144,
      "outside_mask+3": 0
@@ -142,7 +142,7 @@
      "outside_mask+3": 0
     }
    },
-   "calm-t1": {
+   "calm": {
     "russet": {
      "outside_mask": 1388,
      "outside_mask+3": 0
@@ -187,13 +187,13 @@
     }
    }
   },
-  "window_scale": 0.6332,
+  "window_scale": 0.5822,
   "edge": {
-   "shake-t1": {
+   "shake": {
     "magenta_cast_px_on_2px_edge": 0,
     "alpha_1_59_px": 0
    },
-   "calm-t1": {
+   "calm": {
     "magenta_cast_px_on_2px_edge": 0,
     "alpha_1_59_px": 0
    }
