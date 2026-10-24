@@ -44,10 +44,12 @@
    304,
    312
   ],
-  "sha256": "4f21c1460f490d8b086b6da33d0f2c4b9ffa2c4955f96e9773c5e39588879651",
+  "sha256": "862cb7d3d7556e1962ae978754a0684db1fd24ba35bdef5d6b9417b817f8eb9d",
   "from": "source/raw/floor-S01-adult-bare-b.jpg",
   "signed_in": null,
-  "status": "new"
+  "status": "new",
+  "sha256_before": "4f21c1460f490d8b086b6da33d0f2c4b9ffa2c4955f96e9773c5e39588879651",
+  "edit": "curl contact shadow taken out (alpha 0 outside the figure), 2026-10-24 09:56, floor/S01/sitting/guides/curl-shadow-off.py, 0 MXN"
  },
  "mibi-adult-S01-base-stand-304x312": {
   "size": [
@@ -94,10 +96,12 @@
    304,
    312
   ],
-  "sha256": "3084aadb608e2e99a2bfae01189c0d039b19a1c9e76a3805aa98ce6703524d54",
+  "sha256": "d410b26cdb7203db43f40f3b7c3e7c5d1674d45b21ee1ded43d75373ecb9a733",
   "from": "source/raw/floor-S01-juvenile-bare-b.jpg",
   "signed_in": null,
-  "status": "new"
+  "status": "new",
+  "sha256_before": "3084aadb608e2e99a2bfae01189c0d039b19a1c9e76a3805aa98ce6703524d54",
+  "edit": "curl contact shadow taken out (alpha 0 outside the figure), 2026-10-24 09:56, floor/S01/sitting/guides/curl-shadow-off.py, 0 MXN"
  },
  "mibi-juvenile-S01-base-stand-304x312": {
   "size": [
@@ -516,5 +520,29 @@
   "signed_in": "AD 2026-10-23 23:15, 763a2fad",
   "status": "new",
   "take": "calm-t1"
+ },
+ "mibi-adult-S01-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "file": "crested/mibi-adult-S01-curl-304x312.png",
+  "sha256": "c451eb9e3fc9efb425a25ea85cbd774e102f5ad594b9ad1cde4146c99db60e95",
+  "from": "guides/cut.py (the crested twin of keys/mibi-adult-S01-base-curl, cut from guides/compose-adult.png); first recorded here",
+  "signed_in": null,
+  "status": "new",
+  "edit": "curl contact shadow taken out (alpha 0 outside the figure), 2026-10-24 09:56, floor/S01/sitting/guides/curl-shadow-off.py, 0 MXN"
+ },
+ "mibi-juvenile-S01-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "file": "crested/mibi-juvenile-S01-curl-304x312.png",
+  "sha256": "4c4bb43ad96bea7b6baf6efafc9fa1755a568a42ad6d070604796bd4a9e7471f",
+  "from": "guides/cut.py (the crested twin of keys/mibi-juvenile-S01-base-curl, cut from guides/compose-juvenile.png); first recorded here",
+  "signed_in": null,
+  "status": "new",
+  "edit": "curl contact shadow taken out (alpha 0 outside the figure), 2026-10-24 09:56, floor/S01/sitting/guides/curl-shadow-off.py, 0 MXN"
  }
 }

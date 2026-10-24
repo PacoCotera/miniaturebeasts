@@ -209,3 +209,20 @@ Apart from cell 4, K2b reads well at 1×: `proof/k2b-crested-bare-1x.png` (crest
 Both adult K1 sheets came back with every take mirrored: the head to the right, against the brief's "adult head to the LEFT" that the prompt carries as written. The one adult retry is spent, so no adult take of either pose survives K1, and nothing was cut. Under the brief ("If no adult take of a pose survives K2–K4, stop and report. I decide before the juvenile spends"), K2a to K4a and the juvenile K1j to K4j are not run. The art director decides. The studio does not mirror a take by itself: mirroring flips the top-left light, and the facing is the art director's call. Job 1 stands at 8.49 of 39 MXN.
 
 The first send of K1a (22:09) was refused with HTTP 402 (prepaid credits depleted, 0 MXN). The owner topped them up and the lead resumed the brief at 22:12.
+
+## The curl's painted shadow taken out (art director's ruling via the lead, 0 MXN, 2026-10-24 09:57)
+
+The signed v4 curl keys carried their painted contact shadow inside the key. A shadow belongs on the stand's separate shadow layer, so alpha is set to 0 outside the figure: the largest island at alpha > 128 plus its fur edge (alpha > 0 within 2 px of the island, and not the cut's flat shadow colour 30, 26, 34). RGB is unchanged (`guides/curl-shadow-off.py`, `guides/curl-shadow-off.json`). No other key is touched.
+
+| File | Alpha px set to 0 | Edge px kept (alpha 1–128) | Alpha > 128 px changed | Check 5, after against before (p95 / max / mean RGB) | New sha256 |
+| --- | --- | --- | --- | --- | --- |
+| `keys/mibi-adult-S01-base-curl-304x312.png` | 2282 | 427 | 0 | 0.0 / 0.0 / 0.0 | `862cb7d3d7556e1962ae978754a0684db1fd24ba35bdef5d6b9417b817f8eb9d` |
+| `crested/mibi-adult-S01-curl-304x312.png` | 2165 | 502 | 0 | 0.0 / 0.0 / 0.0 | `c451eb9e3fc9efb425a25ea85cbd774e102f5ad594b9ad1cde4146c99db60e95` |
+| `keys/mibi-juvenile-S01-base-curl-304x312.png` | 2007 | 459 | 0 | 0.0 / 0.0 / 0.0 | `d410b26cdb7203db43f40f3b7c3e7c5d1674d45b21ee1ded43d75373ecb9a733` |
+| `crested/mibi-juvenile-S01-curl-304x312.png` | 1957 | 484 | 0 | 0.0 / 0.0 / 0.0 | `4c4bb43ad96bea7b6baf6efafc9fa1755a568a42ad6d070604796bd4a9e7471f` |
+
+**Check 8, bare against crested twin:** adult p95 1.0 / max 2.24 / mean 3.23 before, 1.0 / 2.24 / 3.23 after; juvenile p95 1.0 / max 1.0 / mean 2.57 before, 1.0 / 1.0 / 2.57 after. The figure is unchanged.
+
+**Manifest:** the two base-curl entries carry the new sha256, keeping the old as `sha256_before`. The two crested curls had no manifest entry and are now recorded.
+
+**Re-sign:** the adult and juvenile proofs are rebuilt with the curl for your re-sign at 1×, the juvenile window at 0.5822. See `proof/adult/window-1x.png` and `proof/juvenile/window-1x.png` (rows 3–4: the curl in Dot's look and the worst coat). `takes`, `layers` and `cards` also show the curl. The code repo's derived stands are re-derived later by a builder.
