@@ -555,30 +555,46 @@ static void glint_readout(void) {
 static void resident_window_corner(void) {
   face_init(); prim_palette_add("kitA", KA); prim_palette_add("kitB", KB); prim_palette_add("kitC", KC); prim_palette_add("kitD", KD);
   { const char *hi = "{\"t\":\"hello\",\"contract\":1}"; wire_send(hi, (int)strlen(hi)); }
-  static const struct { const char *id; int w, h; } PIC[] = { { "kr-pic", 30, 40 }, { "kr-from", 30, 40 }, { "kr-out", 10, 20 }, { "lw-pic", 40, 50 }, { "lw-from", 40, 50 }, { "kc-plate", 120, 120 }, { "kc-stamp", 64, 64 }, { "kc-corner", 16, 16 } };
-  for (int i = 0; i < 8; i++) { char m[160]; snprintf(m, sizeof m, "{\"t\":\"asset\",\"id\":\"%s\",\"w\":%d,\"h\":%d,\"policy\":\"art\",\"status\":\"placeholder\"}", PIC[i].id, PIC[i].w, PIC[i].h); check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot(PIC[i].id) >= 0, "kit_resident, livingWindow and the corner: a picture is loaded", PIC[i].id); }
-  static const char KRS[] = "{\"r\":{\"rect\":[100,50,30,40]},\"o\":{\"rect\":[110,70,10,20]},\"g\":{\"rect\":[10,20,40,30],\"ground\":[10,40,40,6],\"foot\":[10,46,40,4]},\"colours\":{\"g\":{\"back\":\"kitA\",\"ground\":\"kitB\",\"groundTop\":\"kitC\",\"foot\":\"kitD\"}},\"s\":{\"rect\":[872,64,120,120]}}";
+  static const struct { const char *id; int w, h; } PIC[] = { { "kr-pic", 30, 40 }, { "kr-from", 30, 40 }, { "kr-out", 10, 20 }, { "lw-pic", 40, 50 }, { "lw-from", 40, 50 }, { "kc-plate", 120, 120 }, { "kc-stamp", 64, 64 }, { "kc-corner", 16, 16 }, { "kf-pic", 304, 312 }, { "kf-from", 304, 312 } };
+  for (int i = 0; i < 10; i++) { char m[160]; snprintf(m, sizeof m, "{\"t\":\"asset\",\"id\":\"%s\",\"w\":%d,\"h\":%d,\"policy\":\"art\",\"status\":\"placeholder\"}", PIC[i].id, PIC[i].w, PIC[i].h); check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot(PIC[i].id) >= 0, "kit_resident, livingWindow and the corner: a picture is loaded", PIC[i].id); }
+  static const char KRS[] = "{\"f\":{\"rect\":[144,68,304,312],\"axis\":296,\"feet\":380},\"r\":{\"rect\":[100,50,30,40]},\"o\":{\"rect\":[110,70,10,20]},\"g\":{\"rect\":[10,20,40,30],\"ground\":[10,40,40,6],\"foot\":[10,46,40,4]},\"colours\":{\"g\":{\"back\":\"kitA\",\"ground\":\"kitB\",\"groundTop\":\"kitC\",\"foot\":\"kitD\"}},\"s\":{\"rect\":[872,64,120,120]}}";
   spec_load("krs", KRS, sizeof KRS - 1);
   int ret;
   /* kit_resident: the still, the slot, the out mark, the dither */
-  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 4, NULL, 0); prim_end();
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 4, NULL, 0, NULL, NULL, NULL); prim_end();
   check(ret == 1 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 46, 30, 40) && kabsent("kr.dither") && kat("kr.out", FN_SPRITE, 100, 50, 0, 0), "kit_resident: the still picture 1:1 at its box lifted, the out mark's node with no size at the box's corner, not lifted; returns 1", "");
-  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 0, "kr-missing", 8); prim_end();
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 0, "kr-missing", 8, NULL, NULL, NULL); prim_end();
   check(ret == 1 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 50, 30, 40) && kabsent("kr.dither"), "kit_resident: a from the host has not sent is no dither, the still as before", "");
-  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-missing", "", 4, "kr-from", 8); prim_end();
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-missing", "", 4, "kr-from", 8, NULL, NULL, NULL); prim_end();
   check(ret == 0 && table_nodes() == 0 && kabsent("kr.pic") && kabsent("kr.dither") && kabsent("kr.out"), "kit_resident: no picture sent and no out mark: no node, returns 0", "");
-  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "", "kr-out", 4, NULL, 0); prim_end();
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "", "kr-out", 4, NULL, 0, NULL, NULL, NULL); prim_end();
   check(ret == 0 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 46, 0, 0) && kabsent("kr.dither") && kat("kr.out", FN_SPRITE, 110, 70, 10, 20), "kit_resident: out with no picture: the picture's node with no size over the out mark, the mark 1:1 at its rect; returns 0", "");
-  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "kr-out", 0, NULL, 0); prim_end();
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "kr-out", 0, NULL, 0, NULL, NULL, NULL); prim_end();
   check(ret == 1 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 50, 30, 40) && kat("kr.out", FN_SPRITE, 110, 70, 10, 20), "kit_resident: the picture and the out mark both sent: both drawn", "");
   static const int LV[3] = { 1, 8, 15 };
   for (int i = 0; i < 3; i++) {
     char ops[200], want[200];
-    prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 4, "kr-from", LV[i]); snprintf(ops, sizeof ops, "%s", prim_ops()); prim_end();
+    prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 4, "kr-from", LV[i], NULL, NULL, NULL); snprintf(ops, sizeof ops, "%s", prim_ops()); prim_end();
     snprintf(want, sizeof want, "[[\"bayerPick\",%d,%d,%d,100,46,0,0,0,0]]", wire_asset_slot("kr-from"), wire_asset_slot("kr-pic"), LV[i]);
     check(ret == 1 && table_nodes() == 3 && kat("kr.pic", FN_SPRITE, 100, 46, 0, 0) && kat("kr.dither", FN_COMPOSED, 100, 46, 30, 40) && strcmp(ops, want) == 0 && kat("kr.out", FN_SPRITE, 100, 50, 0, 0),
       "kit_resident: dithering, the picture's node with no size, then the pick from `from` to the picture at the level over the lifted box (levels 1, 8, 15), then the out slot", ops);
   }
+  /* kit_resident with a figure: the picture's own size placed so the figure centres on the axis and its last solid row stands on the feet; NULL draws at the rect as before */
+  { static const struct { const char *what; int f[4]; } FIG[] = { { "the adult stand (anchor)", { 84, 190, 136, 118 } }, { "the adult curl", { 88, 212, 130, 95 } }, { "the juvenile curl", { 100, 226, 103, 79 } } };
+    for (int i = 0; i < 3; i++) {
+      const int *f = FIG[i].f; int b[4];
+      prim_begin(); ret = kit_resident("krs", "f.rect", "o.rect", "kr", "kf-pic", "", 0, NULL, 0, f, "f.axis", "f.feet"); prim_end();
+      int k = kbox("kr.pic", b);
+      check(ret == 1 && k == FN_SPRITE && table_nodes() == 2 && b[2] == 304 && b[3] == 312 && b[0] + f[0] + f[2] / 2 == 296 && b[1] + f[1] + f[3] - 1 == 380 && kat("kr.out", FN_SPRITE, b[0], b[1], 0, 0), "kit_resident: with a figure, the picture at its own size, the figure's centre on the axis (296) and its last solid row on the feet (380); the out slot at the same box", FIG[i].what);
+      prim_begin(); ret = kit_resident("krs", "f.rect", "o.rect", "kr", "kf-pic", "", 2, "kf-from", 8, f, "f.axis", "f.feet"); prim_end();
+      int d[4]; int kd = kbox("kr.dither", d);
+      check(ret == 1 && kd == FN_COMPOSED && d[0] == b[0] && d[1] == b[1] - 2 && d[2] == 304 && d[3] == 312 && kat("kr.pic", FN_SPRITE, b[0], b[1] - 2, 0, 0) && kat("kr.out", FN_SPRITE, b[0], b[1], 0, 0), "kit_resident: with a figure, the lift rides up from the figure's box, the dither over that box, the out slot unlifted at it", FIG[i].what);
+    }
+    prim_begin(); kit_resident("krs", "f.rect", "o.rect", "kr", "kf-pic", "", 4, "kf-from", 8, NULL, NULL, NULL); prim_end();
+    int nb[4]; kbox("kr.dither", nb);
+    check(table_nodes() == 3 && nb[0] == 144 && nb[1] == 64 && nb[2] == 304 && nb[3] == 312 && kat("kr.out", FN_SPRITE, 144, 68, 0, 0), "kit_resident: figure NULL draws at the rect, lifted, as before", "");
+    prim_begin(); kit_resident("krs", "f.rect", "o.rect", "kr", "kf-missing", "", 4, NULL, 0, FIG[1].f, "f.axis", "f.feet"); prim_end();
+    check(table_nodes() == 0, "kit_resident: a figure with no picture sent draws no node, as with none", ""); }
   /* word_livingWindow: no from draws as before; a sent from hides the master's node and dithers to it from the same windows */
   int g[4] = { 10, 20, 40, 30 };
   prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "lw-pic", 0, 10, NULL, 0); prim_end();
