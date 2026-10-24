@@ -5716,5 +5716,22 @@
    "thoughtsTokenCount": 245,
    "totalTokenCount": 2352
   }
+ },
+ {
+  "tag": "sit-S01-juvenile-keys-patches-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.194644,
+  "mxn": 3.8929,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T05:00:45Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 602,
+   "candidatesTokenCount": 1321,
+   "thoughtsTokenCount": 291,
+   "totalTokenCount": 2214
+  }
  }
 ]

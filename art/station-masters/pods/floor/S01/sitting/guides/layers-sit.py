@@ -16,7 +16,8 @@ exec(_cl)
 _cs = open('floor/S01/sitting/guides/cut-sit.py').read(); exec(_cs[_cs.index('KW, KH, CW, CH'):_cs.index('def drops_on_fur')]); exec(_cs[_cs.index('def to_canvas'):_cs.index('def quant')])
 TAKES = {2: 'shake-t1', 3: 'calm-t1', 5: 'shake-t2', 6: 'calm-t2'}
 HEADS = {  # (cx, cy, rx, ry) on the 304x312 canvas, drawn by hand per take from the bare keys (as heads-off.py's HEADS); marks inside are removed
- 'adult-shake-t1': (80, 160, 72, 68), 'adult-shake-t2': (95, 140, 75, 72), 'adult-calm-t1': (88, 150, 80, 70), 'adult-anchor': (105, 115, 82, 75)}
+ 'adult-shake-t1': (80, 160, 72, 68), 'adult-shake-t2': (95, 140, 75, 72), 'adult-calm-t1': (88, 150, 80, 70), 'adult-anchor': (105, 115, 82, 75),
+ 'juvenile-shake-t1': (190, 150, 55, 48), 'juvenile-calm-t1': (195, 160, 55, 48), 'juvenile-anchor': (196, 165, 52, 45)}
 L = 'floor/S01/layers'; G = 'floor/S01/sitting/guides'
 def rgba(p): return Image.open(p).convert('RGBA')
 def takes(stage): return [t for t in TAKES.values() if os.path.exists(f'floor/S01/keys/mibi-{stage}-S01-base-{t}-304x312.png')]

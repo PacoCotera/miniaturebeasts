@@ -36,6 +36,7 @@ Built by `guides/compose-sit.py` at 0 MXN. The stage's canvas transform (crested
 | K4a `sit-S01-adult-keys-stripes-a` | 2026-10-23 22:53 | **pass.** Check 3: border 10. Check 5: p95 2.24, max 5.0, centroid −0.54 / −0.16, mean 3.26. Check 9: stripes on every take, 0 stripe px inside the head ellipses (no face or rings), alpha 0 outside the fur mask, repainted outside the coat 0.07 % at most. Cells 4 and 6 empty | 3.68 | 23.20 | 51.79 | 51.79 (10-23) |
 | K1j `sit-S01-juvenile-keys-crested-a` | 2026-10-23 22:57 | **pass, with two takes dropped.** Every take faces right, as the juvenile anchor; no mirror. Check 5 (cell 1 against its input through the same key-out): p95 1.0, max 3.16, centroid [0.38, 0.13], mean 2.52. IoU against anchor / curl: shake t1 0.76 / 0.56, calm t1 0.73 / 0.63; pair 0.64. **Dropped:** shake t2 (check 7, a forepaw off the ground) and calm t2 (check 7, feet 6 canvas px, about 10 sheet px, off cell 1's line, over 8). Whole-pixel moves (x, y): shake t1 [7, 0], calm t1 [7, 4]. Shake t1 keeps 4 of its 6 droplets; the other 2 are under 9 px at 304 × 312 (the brief's droplet rule). Notes for you: the calm takes sit up on folded hind legs at 0.98 of the anchor's height, not sunk low as the new sentence asked. That reads as weak, not broken: they are seated, not standing, and they read apart (IoU 0.73) | 4.12 | 27.31 | 55.91 | 55.91 (10-23) |
 | K2j `sit-S01-juvenile-keys-bare-a` | 2026-10-23 22:58 | **pass.** Check 3: border 11. Cells 4–6 empty, 0 px in the seam bands. Check 8: crest gone (leaf px 0 on cell 1, and 4 and 8 stray px on the takes' cap edges, no leaf by eye); round heads at 1× (`proof/k2j-crested-bare-1x.png`); cell 1's head against the signed bare anchor p95 2.0, max 2.0. Outline against the crested twin: shake t1 p95 2.0 / max 3.16 / mean 2.96; calm t1 2.0 / 2.24 / 2.58; centroid move under the crest at most 1.0 px. Droplets: the 4 sheet droplets within 0.2 px, plus specks where the leaves were | 3.81 | 31.12 | 59.72 | 59.72 (10-23) |
+| K3j `sit-S01-juvenile-keys-patches-a` | 2026-10-23 23:00 | **failed, check 9 (repainted, not marked).** Outside the bare key's fur mask dilated 3 px, the returned takes differ from the base (sum \|ΔRGB\| > 60) on 2.46 % (shake t1) and 1.70 % (calm t1) of the figure, against the 0.5 % limit; mean difference 14.9 and 12.1. Cell 1, by contrast, is at 0.02 % (mean 6.5), and the adult K3a takes at 0.00 %. Where: the cream body's shading strokes on the haunch and legs came back softer (`guides/layers.json`; the layer itself is alpha 0 outside the coat). Passed: check 3 (border 12), check 5 (p95 1.41, max 2.0, centroid 0.40 / 0.08, mean 2.44), cells 4–6 empty, one cream mass per take (1471; 1307 + a 145 px fleck), heads-off applied (HEADS shake t1 (190, 150, 55, 48), calm t1 (195, 160, 55, 48)) | 3.89 | 35.01 | 63.61 | 63.61 (10-23) |
 
 ## Art director's ruling 22:31: K1b mirrored (0 MXN, 2026-10-23 22:37)
 
@@ -106,6 +107,22 @@ The lead's go: job 1 ceiling 40 MXN, hard stop 43; job 2 (B3c only) ceiling 32.7
 **Proofs** in `proof/adult/`: `takes-1x.png`, `reads-apart-48-1x.png`, `layers-1x.png`, `cards-1x.png`, `cards-x3.png`, `looks-1x.png`, `window-1x.png`, `edge-1x.png`.
 - The window proof is at the Habitat factor 0.5192, feet on y 380, axis x 272, over near-day and the five near backdrops.
 - Every new file is in `floor/S01/manifest.json` (signed_in null, status new) and `status.json`.
+
+## Job 1 stopped at K3j (2026-10-23 23:02)
+
+K3j fails check 9, a failure that is neither a facing nor a cell-4 figure. Under the lead's go (no automatic retries; any other failure stops the job for the art director), K4j is not run and no K3j retry is made. Job 1 stands at 35.01 of 43 MXN.
+
+The juvenile patches layers are cut for you to judge: `layers/mibi-juvenile-S01-{shake,calm}-t1-patches-304x312.png`, shown on the bare keys in `proof/k3j-patches-1x.png`. The repaint lies outside the coat and is not carried by the layer, so the layer may be usable; that is your call. The juvenile stripes (K4j: job and input built, not run) and the juvenile 1× proofs are left.
+
+The share of the figure differing outside the coat, at four thresholds of sum |ΔRGB| (30 / 60 / 90 / 120):
+
+| Key | 30 | 60 | 90 | 120 |
+| --- | --- | --- | --- | --- |
+| juvenile shake t1 | 6.97 % | 2.46 % | 0.98 % | 0.19 % |
+| juvenile calm t1 | 4.01 % | 1.70 % | 0.65 % | 0.21 % |
+| juvenile cell 1 | 0.34 % | 0.02 % | 0 | 0 |
+| adult shake t1 (K3a) | 0.08 % | 0 | 0 | 0 |
+| adult calm t1 (K3a) | 0.14 % | 0 | 0 | 0 |
 
 ## (superseded by Round 2) Job 1 stopped again after K2b (2026-10-23 22:44)
 
