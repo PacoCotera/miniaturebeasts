@@ -197,3 +197,30 @@ The rects are all as in the 19:09 pass §3. Below is only what shows.
 - **Node ids:** `glass`, `glass.dither`, `resident`, `resident.dither`, `nameTag.*` (kit), `portrait`, `gilt`, `deck`, `heading`, `card.<i>.well`, `card.<i>.pic`, `chosen.<i>.well`, `chosen.<i>.pic`, `stamp.case|clip|stamp|front|corner` (kit), `strip`, `step.<i>.well`, `step.<i>.word`, `step.<i>.thumb`, `step.2.frame`.
 - **The door:** `nav.mjs BUILT` gains `"sitting"` as entry 9. This is the last step, in S3, because it opens Habitat's door.
 
+
+## 4. Goldens (from the UI/UX design)
+
+**Yes, they change.** `portrait` is a new screen state, and no sitting golden exists at ae0afe65. The new folder is `prototypes/face/golden/sitting/`, with S01 adult "Dot", noon, reduced motion unless timed. No golden may show a placeholder: the pose goldens use `sleep-curled`, or wait for the signed shake-dry and calm keys.
+
+| Golden | Status | Shows |
+|---|---|---|
+| `sitting-pose` | new | ring on card.0; the window identical to Habitat's; derived cards |
+| `sitting-pose-curl` | new | ring on `sleep-curled`; the curl in the window, feet 380 |
+| `sitting-pose-one` | new | 1 habit (`sleep-curled`), one card |
+| `sitting-pose-juvenile` | **new today** | a juvenile's derived cards and window (GD answer 1) |
+| `sitting-place` | new | 2 places, ring card.1; the pond in day light; step 0 done with the derived 48 |
+| `sitting-place-night` | **new today** | the same scene at night: the pose glass would be night, the place step is day light and the resident ungraded (the light rule) |
+| `sitting-place-five` | new | 5 places, ring card.4 |
+| `sitting-confirm` | new | gilt at rest; the pair |
+| `sitting-confirm-armed` | new | lit gilt; `portrayAgain` |
+| `sitting-begin-150ms` | new | the gilt mid-dither |
+| `sitting-portrait` | new (new state) | the fixture 1:1; gilt at rest; the stamp **with the portrayed corner**; three steps done |
+| `sitting-portrait-long-name` | new | heading at 16 px in 248 |
+
+**Changed elsewhere:**
+- `habitat-portrait-portrayed` and `habitat-portrait-pictured`: the stamp label gains the corner at (976, 64). The pictured one also gains the ✓ `lookPortrait` cap.
+- A new `cargo-end-portrait` (the delivery shows the portrait full size first; taken in S4).
+- `journey-sitting.json` (new), as in the 19:09 pass §7.
+
+`habitat-rest` and `habitat-portrait` do not change, since their mibi is not portrayed. Regolden once, last, with the repainted backdrops and the signed keys in.
+
