@@ -92,8 +92,8 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
         { char gp[176]; int gl; snprintf(gp, sizeof gp, "focus.%s.graph", key); const char *own = spec_raw(screen, gp, &gl); if (own && own[0] == '{') { sg = own; sl = gl; snprintf(b, sizeof b, "focus.%.140s.graph", key); } }   /* a state that keeps its graph beside its targets (Create, Incubator): that graph */
         char why[160]; focus_graph_t *fg = focus_graph_parse(sg, sl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, b, why); return -1; } focus_graph_free(fg);
       } }
-  { int gl; const char *sg = spec_raw(screen, "spread.focus.graph", &gl);   /* a spec whose screen has a spread: its own graph is vetted too */
-    if (sg) { char why[160]; focus_graph_t *fg = focus_graph_parse(sg, gl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: spread.focus.graph: %s", screen, why); return -1; } focus_graph_free(fg); } }
+  { int gl; const char *sg = spec_raw(screen, "l1.focus.graph", &gl);   /* a spec whose screen has a Level 1 (the Library): its own graph is vetted too */
+    if (sg) { char why[160]; focus_graph_t *fg = focus_graph_parse(sg, gl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: l1.focus.graph: %s", screen, why); return -1; } focus_graph_free(fg); } }
   for (int i = 0, n = spec_len(screen, "regions"); i < n; i++) {
     char key[48], base[96], p[160], dummy[2]; if (!spec_member(screen, "regions", i, key, sizeof key, dummy, sizeof dummy)) continue;
     snprintf(base, sizeof base, "regions.%s.forms", key);   /* a list's forms (listPitch): a form with no upTo, two with one upTo or a grid shorter than its upTo is refused at load */
@@ -124,6 +124,7 @@ static void draw(void) {
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); /* a screen draws its words when the props carry its regions */
     if (strcmp(screen, "habitat") != 0 || spec_bool("props", "idle", 0)) habitat_hidden();   /* one mibi up close's own tick starts again from its first frame when it shows again */
+    if (strcmp(screen, "library") != 0 || spec_bool("props", "idle", 0)) library_hidden();   /* the Library's glints: their clock starts again when Level 1 shows again */
     if (spec_bool("props", "idle", 0) && spec_len("props", "regions") >= 0) idle_words();
     else if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
     else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();   /* Home has a living window: its walk lives while Home shows (home_hidden runs when another screen does) */
@@ -219,4 +220,4 @@ void screens_key_graph(int code, const char *spec, const char *graph_path, scree
   if (strcmp(to, cur) == 0) return;
   v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);   /* the ring moves on the frame of the key: the words are drawn again at once */
 }
-int screens_tick(uint32_t now) { return spec_has("props") && spec_has("frame") && (home_tick(now) || habitat_tick(now) || incubator_tick(now)); }
+int screens_tick(uint32_t now) { return spec_has("props") && spec_has("frame") && (home_tick(now) || habitat_tick(now) || incubator_tick(now) || library_l1_tick(now)); }

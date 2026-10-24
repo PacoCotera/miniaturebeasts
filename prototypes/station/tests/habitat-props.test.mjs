@@ -157,7 +157,7 @@ test("the bottom line: the resident greets (in the meet it names), the name rena
   const S0 = scenes(), m = S0.rest.w.st.mibis, L = (o, n = "rest") => build(S0[n].w, S0[n].sv, o).line;
   assert.deepEqual([L({ focus: "resident" }).ok, L({ focus: "resident" }).subject], [`Greet ${m[0].name}`, "an adult Loika"]); assert.equal(L({ focus: "resident" }).back, "Vivarium");
   assert.equal(L({ focus: "resident", ...S0.meet.over }, "meet").ok, `Name ${m[0].name}`, "in the meet the first ✓ names");
-  assert.equal(L({ focus: "name" }).ok, `Rename ${m[0].name}`); assert.deepEqual([L({ focus: "species" }).ok, L({ focus: "species" }).subject], [null, "the guide is not open yet"]);
+  assert.equal(L({ focus: "name" }).ok, `Rename ${m[0].name}`); assert.deepEqual([L({ focus: "species" }).ok, L({ focus: "species" }).subject], ["Open the guide", "every Loika"], "the species word opens the Library on its species");
   assert.equal(L({ focus: "tile." + m[2].id, habId: m[2].id }).ok, `Greet ${m[2].name}`); assert.match(L({ focus: "name" }, "bonded").subject, /^a bonded (young|adult|elder) Loika$/);
   assert.equal(L({ focus: "name" }, "out").subject, "out with the Companion");
 });

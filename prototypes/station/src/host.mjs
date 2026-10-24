@@ -8,9 +8,10 @@ import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, p
 import * as S from "./state.mjs";
 import { frameOf, genomeDigest } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
-import { homeBuild, mibiPictureOf, setLibrary } from "./views/home-props.mjs";
-import { libraryOf } from "./views/specimen-props.mjs";
+import { homeBuild, mibiPictureOf, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
+import { libraryOf, specimenSpecies, STARTER } from "./views/specimen-props.mjs";
 setLibrary(libraryOf);   // Home's Library module: the specimen of the species with something found (build spec 4.2)
+setLibrarySpecies((st, settings) => specimenSpecies(st, settings) ?? STARTER);   // the species it is for: where ✓ on its bezel puts the Library's ring
 import { dropLight } from "./light-grade.mjs";
 import { vivariumBuild } from "./views/vivarium-props.mjs";
 import { habitatBuild } from "./views/habitat-props.mjs";
@@ -153,8 +154,8 @@ export function benchBody() {
   return body;
 }
 
-// ---- The Library's spread ----
-// Sixteen frames, one a species in its own place; the ring is the face's (library.json spread.focus.graph) and the host keeps the frame it says in UI.lib.i (intents/library.mjs focus).
+// ---- The Library's Level 1 ----
+// Every species of the catalogue in its cell; the ring is the face's (library.json l1.focus.graph) and the host keeps the species it says in UI.lib.l1 (intents/library.mjs focus).
 export function libraryBody() {
   return libraryBuild({ st: G.st, settings: G.settings, ui: UI.lib }, SPECS.library, SPECS.frame);
 }
@@ -207,7 +208,7 @@ export function screenProps(plate) {
     return { msg: { screen, ...body.props }, ids: [...ids], light, lit: litOf(body.requests), owed: owedOf(body.requests) };
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
-  if (!isBuilt(screen) || (screen === "library" && UI.lib.f !== "spread")) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen === "library" ? "book" : screen), plate: pl } }, ids: [], light };   // the Book (and its guide) is a state of the library screen: not built yet, ← reads Library
+  if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
   const body = screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
@@ -215,6 +216,7 @@ export function screenProps(plate) {
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   if (screen === "home") return { msg: { screen, ...body.props, frame: { plate: pl } }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs) };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
+  if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
   return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs) };
 }
 let shownLight = null;   // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
@@ -303,7 +305,7 @@ export function onFaceMessage(h, m) {
     if (m.screen === "namer") { if (UI.screen === "habitat" && UI.hab.namer) UI.hab.namer.f = m.target; return; }   // a namer message after it closed is dropped
     if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
     if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
-    if (m.screen === "library") { if (UI.screen === "library" && UI.lib.f === "spread") INTENTS.library.focus(h, m.target); return; }
+    if (m.screen === "library") { if (UI.screen === "library") INTENTS.library.focus(h, m.target); return; }
     if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return;
   }
   if (m.t !== "intent") return;

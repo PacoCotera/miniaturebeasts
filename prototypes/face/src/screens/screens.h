@@ -58,10 +58,12 @@ void panel_words(void);
 int panel_focus(focus_target_t *out, int cap);
 void panel_key(int code);
 int screens_overlay_known(const char *id);
-/* The Library spread (screens/library.c): its words, the frames as they drew them, its keys */
+/* The Library's Level 1 (screens/library.c): its words, the cells as they drew them (the met and found ones), its keys; its glints' clock (again from the start when another screen shows) and its tick (a glint step is due) */
 void library_words(void);
 int library_focus(focus_target_t *out, int cap);
 void library_key(int code);
+void library_hidden(void);
+int library_l1_tick(uint32_t now);
 /* The Probe bench (screens/bench.c): its words, the targets as they drew them, its keys */
 void bench_words(void);
 int bench_focus(focus_target_t *out, int cap);

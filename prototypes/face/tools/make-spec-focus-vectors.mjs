@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The focus vectors a spec file carries (create.json and incubator.json `focus.vectors`; library.json `spread.focus.vectors`; a spec with one graph has vectors with no `state`), written into tests/vectors/focus.json as cases beside the others (lvgl-switch.md §2.6.1), so that ui/focus.mjs (focus.test.mjs) and the face's
+// The focus vectors a spec file carries (create.json and incubator.json `focus.vectors`; library.json `l1.focus.vectors`, none yet; a spec with one graph has vectors with no `state`), written into tests/vectors/focus.json as cases beside the others (lvgl-switch.md §2.6.1), so that ui/focus.mjs (focus.test.mjs) and the face's
 // C port (face_test) both play them. A case is the graph of the vector's state, the targets the view lists there (their boxes are the spec's, the chosen picture's for Create's roll), the ring's place and the key, and the id it must land on
 // (and `verb` when the key is a stepper's: the face says step:<key> and the ring stays). A vector with an `intent` and no move (✓, ←) is not a move and is not written. Cases named `<screen>: …` are replaced on each run.
 //   node prototypes/face/tools/make-spec-focus-vectors.mjs [--check] [create]
@@ -29,16 +29,16 @@ const TARGETS = {
     spec.keys.pages[v.page ?? "letters"].forEach((c, i) => { if (c != null) out.push({ id: "key." + i, rect: listPitch(K, K.columns * K.rows, i), group: "key" }); });
     for (const [id, r, g] of [["mod.shift", R.shift.rect, "mod"], ["mod.space", R.space.rect, "mod"], ["mod.page", R.page.rect, "mod"], ["act.done", R.done.rect, "act"], ["act.suggest", R.suggest.rect, "act"]]) out.push({ id, rect: r, group: g });
     return out; },
-  // the Library spread: sixteen frames, frame.S01 to S16 in frame order, the left page's eight then the right page's, each its place by listPitch with no forms (n = 8 a page)
-  library: (state, spec) => { const R = spec.spread.regions, out = []; [R.leftPage, R.rightPage].forEach((pg, p) => { for (let k = 0; k < 8; k++) out.push({ id: "frame.S" + String(p * 8 + k + 1).padStart(2, "0"), rect: listPitch(pg.places, 8, k), group: "frame" }); }); return out; },
+  // the Library's Level 1: sixteen cells, cell.S01 to S16 in species order, each its place on l1.grid's form for sixteen (a vector's `unmet` cells are not targets)
+  library: (state, spec, v) => { const F = spec.l1.grid.forms["16"], out = []; for (let k = 0; k < 16; k++) { const id = "cell.S" + String(k + 1).padStart(2, "0"); if (!(v.unmet ?? []).includes(id)) out.push({ id, rect: listPitch(F, 16, k), group: "cell" }); } return out; },
   // the Probe bench: the plates (docked only), then the switch and the slot, each its region's rectangle; one graph for both states
   bench: (state, spec) => { const R = spec.regions; return [...(state === "away" ? [] : [{ id: "plates", rect: R.plates.rect, group: "plates" }]), { id: "switch", rect: R.switch.rect, group: "module" }, { id: "slot", rect: R.slot.rect, group: "module" }]; },
   create: (state, spec) => (state === "shape" ? [{ id: "roll", rect: spec.regions.roll.forms.roll.pictures[1], group: "roll" }] : []),   // the chosen picture's rectangle: the middle one stands for it
 };
 const cases = [];
 for (const screen of screens) {
-  const spec = J(screen), F = screen === "library" ? spec.spread.focus : spec.focus;   // the spread keeps its focus under `spread`
-  for (const v of F.vectors) {
+  const spec = J(screen), F = screen === "library" ? spec.l1.focus : spec.focus;   // Level 1 keeps its focus under `l1`
+  for (const v of F.vectors ?? []) {
     if (v.intent && !/^step:/.test(v.intent)) continue;   // ✓ and ← are intents on the target, not moves
     const st = v.state && F[v.state]?.graph ? F[v.state] : F, c = { name: `${screen}: ${v.state ? v.state + ", " : ""}${v.from} ${v.key}${v.away ? " (away: " + v.away.join(", ") + ")" : ""}${v.intent ? " says " + v.intent : ""}`, graph: st.graph, targets: TARGETS[screen](v.state, spec, v), from: v.from, key: v.key, to: v.to };
     if (screen === "vivarium") {   // the view's selectors for the ring where it stands (views/vivarium-props.mjs): the focused resident's own tile; the focused tile's resident, null when it is out; the empty state's ring is on the room

@@ -217,6 +217,8 @@ export const guideLooks = (st, species, traitId) => st.guide[species]?.[traitId]
 // A look is new in the Library (build spec 4.2) when it was found since the Library was last opened full screen: libSeen holds the guide as it stood at that open, and opening it again takes it up to date.
 export const libSnapshot = (st) => JSON.parse(JSON.stringify(st.guide || {}));
 export const libOpened = (st) => { st.libSeen = libSnapshot(st); };
+// The Library's seen record is written when the player leaves the Library (game.mjs goScreen): `note` is { <species>: { <trait>: [looks] } } as taken on entry (library.mjs seenNote), added to st.libSeen look by look.
+export const libRecord = (st, note) => { if (!st.libSeen || typeof st.libSeen !== "object") st.libSeen = {}; for (const [sp, traits] of Object.entries(note || {})) { const g = st.libSeen[sp] || (st.libSeen[sp] = {}); for (const [t, looks] of Object.entries(traits)) { const a = g[t] || (g[t] = []); for (const l of looks) if (!a.includes(l)) a.push(l); } } };
 export const libNewLooks = (st, species, traitId) => { const seen = st.libSeen?.[species]?.[traitId] ?? []; return guideLooks(st, species, traitId).filter((l) => !seen.includes(l)); };
 
 // The band of a crate's reach (explored of the land, `of`): thirds of it, all of it, none for a crate with no map (cargo.json regions.report.reach.thresholds)

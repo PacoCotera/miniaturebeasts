@@ -25,11 +25,7 @@ export const PLACEHOLDERS = [
   { id: "chapter-emblem", what: "one 16 px emblem per chapter", until: "the chapter rail master" },
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
   { id: "home-glass-by-light", what: "Home's glass (640×488, home-glass-<light>) and Idle's Vivarium (1024×568, idle-vivarium-<light>) and the with-you bed (192×56, home-bed-<light>): one slot a light (dawn, day, dusk, night) from frame.json light and the picture maps; the flat plates of the colours show only while a light's slot is empty (all four lights have their masters today)", until: "the masters of a light, if one is not placed" },
-  { id: "library-stage-spread-1024x522", what: "the Library spread's stage, 1024×522 at (0, 40): flat: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat, the caption rules in clay; the marker and the margin bands are not drawn (fix 6)", until: "the spread stage master" },
-  { id: "spread-plate-S01..S16-80x96", what: "a found species' plate, 80×96: the code rig's type specimen (speciesArt), for all sixteen", until: "the sixteen spread plate masters" },
-  { id: "spread-study-S01..S16-80x96", what: "a met species' study, 80×96: the same specimen reduced to its 1 px outline in stone, transparent inside", until: "the sixteen spread study masters" },
-  { id: "spread-gilt-corner-16x16", what: "the gilt corner of a portrayed species: a 16×16 clay L, 4 px thick, along the top and right edges", until: "the gilt corner master" },
-  { id: "spread-seal-16x16", what: "the seal of a complete guide: a 16×16 sand disc with a 1 px bark edge", until: "the seal master" },
+  { id: "face:{mibi}:{size}", what: "the Library's face picture of a mibi whose species has no layered stand (or no face window): libGround, the 1 px libLine frame and its ticks round a flat stone square, at each size (18, 24, 40, 56, 64) and faded", until: "the species' layered stand and the art director's face window" },
   { id: "cargo-bay-992x320", what: "Cargo's painted bay 992×320 (open) and its door cargo-bay-shut-976x304: placed 1:1; drawn in every state, the door by what the bay holds. A master missing draws nothing (never code-drawn)", until: "the art director's 1× sign in Cargo's whole-screen captures (placed, status new)" },
   { id: "cargo-rack-992x168", what: "Cargo's rack insert 992×168 at (16, 384): the sage strip with six fitted wells, placed 1:1; a master missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
   { id: "cargo-report-plate-560x{128..288}", what: "the report plate set into the bay's door, 21 exact heights (128 to 288 by 8), placed 1:1; a height missing draws nothing", until: "the art director's 1× sign (placed, status new)" },
@@ -110,30 +106,6 @@ export function mibiArt(frame, genome, w, h, view = "portrait", flip = false) {
 // The species' face: its type specimen (the frame's typical body) in the placeholder.
 export function speciesArt(frame, w, h, view = "portrait") { return frame.typeSpecimen?.genome ? mibiArt(frame, frame.typeSpecimen.genome, w, h, view) : blobArt(w, h); }
 
-// ---------- The Library spread's placeholders (library.json spread.placeholders): the stage, the gilt corner, the seal and a species' study ----------
-// The stage, flat: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat and a paper inside, the caption rules in clay; the cloth marker and the margin bands are not drawn: the painted stage carries them (fix 6).
-// Coordinates are the spec's (library.json spread.regions.stage.parts, leftPage and rightPage places), taken off the stage's origin (0, 40).
-export function spreadStageArt(spec) {
-  const R = spec.spread.regions, oy = R.stage.rect[1], cl = spec.spread.colours, pb = new PB(R.stage.rect[2], R.stage.rect[3]), at = (r) => [r[0], r[1] - oy, r[2], r[3]], col = (n) => C[n];
-  const box = (x, y, w, h, c) => { pb.rect(x, y, w, 1, c); pb.rect(x, y + h - 1, w, 1, c); pb.rect(x, y, 1, h, c); pb.rect(x + w - 1, y, 1, h, c); };   // a solid 1 px edge
-  pb.rect(0, 0, pb.w, pb.h, col("ground")); { const [x, y, w, h] = at(R.stage.parts.boards); pb.rect(x, y, w, h, col(cl.placeholderBoards)); }
-  for (const pg of R.stage.parts.pages) { const [x, y, w, h] = at(pg); pb.rect(x, y, w, h, col(cl.placeholderPaper)); box(x, y, w, h, col(cl.placeholderEdge)); }
-  for (const key of ["leftPage", "rightPage"]) for (const r of R[key].rects) {
-    const [x, y, w, h] = at(r);
-    pb.rect(x, y, w, h, col(cl.placeholderMat)); pb.rect(x + 8, y + 8, 80, 96, col(cl.placeholderPaper)); box(x, y, w, h, col(cl.placeholderFrame));
-    pb.rect(x, y + 144, 96, 1, col(cl.placeholderEdge));   // the caption rule, 144 px under the frame's top (y 256 and 440 on the screen)
-  }
-  return pb;
-}
-// The gilt corner: a 16 × 16 clay L, 4 px thick, along the top and right edges. The seal: a 16 × 16 sand disc with a 1 px bark edge.
-export function spreadGiltArt(spec) { const pb = new PB(16, 16), c = C[spec.spread.colours.placeholderGilt]; pb.rect(0, 0, 16, 4, c); pb.rect(12, 0, 4, 16, c); return pb; }
-export function spreadSealArt(spec) { const pb = new PB(16, 16), cl = spec.spread.colours; pb.ell(8, 8, 8, 8, C[cl.placeholderFrame]); pb.ell(8, 8, 7, 7, C[cl.placeholderSeal]); return pb; }
-// A met species' study: the type specimen at 80 × 96 reduced to its 1 px outline in stone, transparent inside (a stray opaque pixel with no opaque neighbour is no outline and is left out).
-export function speciesStudyArt(frame, spec) {
-  return art("study" + frame.species.id + ":80x96", () => { const base = speciesArt(frame, 80, 96), pb = new PB(80, 96), stone = C[spec.spread.colours.placeholderStudy];
-    for (let y = 0; y < 96; y++) for (let x = 0; x < 80; x++) if (base.get(x, y) >= 0 && (base.get(x - 1, y) >= 0 || base.get(x + 1, y) >= 0 || base.get(x, y - 1) >= 0 || base.get(x, y + 1) >= 0) && (base.get(x - 1, y) < 0 || base.get(x + 1, y) < 0 || base.get(x, y - 1) < 0 || base.get(x, y + 1) < 0)) pb.set(x, y, stone);
-    return pb; });
-}
 
 // ---------- Trait pictures: a close-up of this pod's mibi around the part the trait names ----------
 const PART_OF = [

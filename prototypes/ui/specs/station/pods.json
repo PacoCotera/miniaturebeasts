@@ -269,7 +269,7 @@
      ]
     },
     "crossFade": "unknown: this pod's unread look chapters under the calm unknown (fix 1b part 1 B, by part 2's chapter groups); nothing read: C; doings: A; no dither, no blur",
-    "target": "until slot 8 (doorOpen(book) false) not a target: the figure and its caption are drawn, the pod's ▶ goes to kin.first, and nothing a player presses reaches the Book. From slot 8 it is a focus target once the pod is identified: ✓ Open the guide (strings.openGuide), subject strings.everySpecies, a jump to the Book's guide spread (frame.json navigation.jumps)",
+    "target": "not a target until its ring shape and graph edges are ruled: the figure and its caption are drawn and the pod's ▶ goes to kin.first. Once ruled it is a focus target once the pod is identified: ✓ Open the guide (strings.openGuide), subject strings.everySpecies, a jump to the Library's Level 1 with the ring on that species (frame.json navigation.jumps)",
     "caption": {
      "rect": [
       400,

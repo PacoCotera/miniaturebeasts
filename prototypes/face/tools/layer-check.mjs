@@ -105,7 +105,7 @@ const reading = (screen) => async (name, page, fail) => {
   }
   if (screen === "library") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, props: window.__st.props, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = keep(c.props?.state === "spread" ? libraryDepartures(c.log, library, c.props, c.props?.focus?.cur) : []); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const d = keep(c.props?.state === "all" ? libraryDepartures(c.log, library, c.props, c.props?.focus?.cur) : []); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   if (screen === "bench") {

@@ -500,8 +500,8 @@
     ],
     "screen": "library",
     "focus": "library",
-    "ok": null,
-    "subject": "Loika",
+    "ok": "Open Loika",
+    "subject": "new looks",
     "idle": false
    },
    {
@@ -510,7 +510,7 @@
      {
       "t": "intent",
       "screen": "library",
-      "target": "frame.S01",
+      "target": "cell.S01",
       "verb": "back"
      }
     ],

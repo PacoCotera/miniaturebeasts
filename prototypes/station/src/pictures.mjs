@@ -12,12 +12,14 @@ import { drawnLooks } from "./looks.mjs";
 import { portraitSource } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackPatternId, leastFinal } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
-import { emblemArt, ICON, beamArt, mibiArt, founderArt, speciesArt, speciesStudyArt, spreadStageArt, spreadGiltArt, spreadSealArt } from "./art.mjs";
+import { emblemArt, ICON, beamArt, mibiArt, founderArt, speciesArt } from "./art.mjs";
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { dimPicture, labelPlate } from "./stamplook.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { relit } from "./relight.mjs";
 import { specimenFor } from "./specimen-cache.mjs";
+import { renderCell } from "./specimen.mjs";
+import { facePicture } from "./face-pictures.mjs";
 
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
@@ -148,8 +150,19 @@ export function registerPictures(reqs, env) {
       }
       case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas (Station M1 §1.2): composed from its placed masters or §1.5's stand-ins
       case "icon": put(r.id, r.px, r.px, "the icon set", () => ICON[r.name](r.px)); break;
-      case "spread": putOrMaster(r.id, r.id, r.size[0], r.size[1], "the spread masters (library.json masters)", () => (r.part === "stage" ? spreadStageArt(SPECS.library) : r.part === "gilt" ? spreadGiltArt(SPECS.library) : spreadSealArt(SPECS.library))); break;   // the stage, the gilt corner, the seal: the signed master when placed, else the labelled stand-in
-      case "species": putOrMaster(r.id, r.id, r.size[0], r.size[1], "the spread's species masters (library.json masters)", () => (r.look === "plate" ? speciesArt(env.frameOf(r.species), r.size[0], r.size[1]) : speciesStudyArt(env.frameOf(r.species), SPECS.library))); break;   // a found plate (the type specimen) or a met study (its outline)
+      case "librarycell": {   // a Level 1 cell's picture (library.json l1.cell.picture): the specimen generator's cell harness (specimen.mjs renderCell), the found specimen or the met pencil study on its cell's flat ground; made once in the logic process, its time printed
+        const [w, h] = r.size; if (hasAsset(r.id)) break; const frame = env.frameOf(r.species), ground = RGB[C[r.ground]];
+        registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => { if (data) return data; const fr = r.shut?.length ? { ...frame, chapters: frame.chapters.map((ch) => ({ ...ch, sealed: r.shut.includes(ch.id) })) } : frame;
+          const p = renderCell(fr, { [r.species]: r.found ?? {} }, { pencil: r.status === "met", ground }); console.log(`# library cell ${r.id}: ${r.status}, rendered in ${p.ms.toFixed(0)} ms (${w} x ${h})`); return (data = p.rgba); } }; } });
+        break;
+      }
+      case "face": {   // a mibi's face for the Library (library.json faces, face-pictures.mjs): from its layered stand through the species' face window, at its size, on libGround; a labelled stand-in where the species has none; its time printed
+        const [w, h] = r.size; if (hasAsset(r.id)) break; const spec = SPECS.library.faces, rgb = (n) => RGB[C[n]];
+        const stand = !!spec.windows?.[r.species]?.[r.stage === "elder" ? "adult" : r.stage] && !!layeredStand(r.species, r.stage, [304, 312], "default");
+        registerAsset({ id: r.id, w, h, status: stand ? "derived" : "placeholder", until: stand ? null : "the species' layered stand and the art director's face window", build: () => { let data = null; return { w, h, rgba: () => { if (data) return data;
+          const p = facePicture({ species: r.species, stage: r.stage, looks: r.looks, size: w, faded: !!r.faded }, spec, rgb); console.log(`# face ${r.id}: rendered in ${p.ms.toFixed(0)} ms${p.standIn ? " (the stand-in)" : ""}`); return (data = p.rgba); } }; } });
+        break;
+      }
       default: throw new Error("unknown picture kind " + r.kind);
     }
   }

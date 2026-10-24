@@ -25,7 +25,7 @@ const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.a
 const home14 = ["cargo-empty", "incubator-empty", "incubator-growing", "incubator-ready", "probe-docked", "probe-away", "probe-sitting", "library-empty", "library-pages", "vivarium-focused", "knob-focused", "resident-focused", "sleeper-focused", "moving-asleep"].map((n) => "home-" + n);
 const viv14 = ["docked", "away", "mibi-out", "tile", "sleeper", "twelve", "docked-dawn", "docked-day", "docked-dusk", "docked-night", "walk-8000ms", "moving-8000ms"].map((n) => "vivarium-" + n);
 const create14 = ["shape", "shape-changed", "shape-clash", "shape-doing", "shape-onelook", "shape-short", "shape-busy", "shape-first", "roll-100", "grow", "grow-150", "grow-end"].map((n) => "create-" + n);
-export const EXPECTED = { home: home14, vivarium: viv14, create: create14, library: ["library-spread", "library-spread-empty", "library-spread-complete"], bench: ["bench", "bench-panel-upgrade", "bench-away", "bench-tier2"] };   // Habitat and Pods: all of theirs
+export const EXPECTED = { home: home14, vivarium: viv14, create: create14, library: ["library-l1-first", "library-l1-mid", "library-l1-new", "library-l1-roomkey"], bench: ["bench", "bench-panel-upgrade", "bench-away", "bench-tier2"] };   // Habitat and Pods: all of theirs
 
 // ---- the band the ring may change: the old ring (the forms of the head before) and the new one (focusRingOps), each grown by one pixel ----
 function oldRing(screen, cur, r) {
@@ -103,7 +103,7 @@ const CAPTURES = [
   ...LIGHTS.map((l) => ["vivarium-resident-focused-" + l, "Vivarium, painted creature", "a juvenile resident", l === "night" ? "footprint, default weight (night is pinned): the CD's frame" : "footprint"]),
   ["habitat-door", "Habitat", "door", "{ rect: 6 }"], ...LIGHTS.map((l) => ["habitat-resident-focused-" + l, "Habitat up close, painted creature", "resident (the close picture)", l === "night" ? "footprint, default weight (night is pinned)" : "footprint"]),
   ["habitat-namer", "Habitat, namer", "act.done (the namer's focus)", "{ rect: 0 }"], ["create-shape", "Create", "roll", "{ rect: 0 }"],
-  ["overview-identified-pod-focused", "Pods", "pod", "oval"], ["collection", "Pods", "place.<i>", "circle r 93"], ["chapter-page", "Pods", "rail.<i>", "tab"], ["bench", "Probe", "plates", "{ rect: 0 }, the drawn union"], ["library-spread", "Library", "frame.<i>", "{ rect: 0 }, paper (rust, no keys)"],
+  ["overview-identified-pod-focused", "Pods", "pod", "oval"], ["collection", "Pods", "place.<i>", "circle r 93"], ["chapter-page", "Pods", "rail.<i>", "tab"], ["bench", "Probe", "plates", "{ rect: 0 }, the drawn union"], ["library-l1-mid", "Library", "cell.<SNN>", "{ rect: 6 }"],
   ["cargo-bay", "Cargo", "the room", "none: room-only focus; captured to show no ring was added"], ["incubator-growing", "Incubator, painted creature (juvenile)", "the room", "none: room-only focus, no creature target; captured to show no ring was added"], ["idle-docked", "Idle, painted creature", "the room", "none: room-only focus, no creature target; captured to show no ring was added"]];
 async function writeCaptures(out, tmp) {
   mkdirSync(out, { recursive: true }); const info = JSON.parse(readFileSync(path.join(tmp, "states.json"), "utf8")), bySlug = Object.fromEntries(Object.keys(info).map((n) => [slug(n), n])), rows = [];
