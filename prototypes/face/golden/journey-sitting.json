@@ -1,0 +1,538 @@
+{
+ "_note": "The sitting, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and the focus and intents the face said, the screen, the state, the ring, the line and the choices after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "sitting-walk": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "portrait",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "pose",
+    "focus": "card.0",
+    "armed": null,
+    "ok": "Pick this pose",
+    "subject": "shaking itself dry",
+    "back": "Dot",
+    "pose": null,
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "sitting",
+      "target": "card.1"
+     }
+    ],
+    "screen": "sitting",
+    "state": "pose",
+    "focus": "card.1",
+    "armed": null,
+    "ok": "Pick this pose",
+    "subject": "calming a creature",
+    "back": "Dot",
+    "pose": null,
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "card.1",
+      "verb": "back"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "focus": "portrait",
+    "armed": null,
+    "ok": "Portray Dot",
+    "subject": "one sitting each, ever",
+    "back": "Vivarium",
+    "pose": null,
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "portrait",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "pose",
+    "focus": "card.0",
+    "armed": null,
+    "ok": "Pick this pose",
+    "subject": "shaking itself dry",
+    "back": "Dot",
+    "pose": null,
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "card.0",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "place",
+    "focus": "card.0",
+    "armed": null,
+    "ok": "Pick this place",
+    "subject": "the meadow",
+    "back": "Pose",
+    "pose": "shake-dry",
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "sitting",
+      "target": "card.1"
+     }
+    ],
+    "screen": "sitting",
+    "state": "place",
+    "focus": "card.1",
+    "armed": null,
+    "ok": "Pick this place",
+    "subject": "the pond edge",
+    "back": "Pose",
+    "pose": "shake-dry",
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "card.1",
+      "verb": "back"
+     }
+    ],
+    "screen": "sitting",
+    "state": "pose",
+    "focus": "card.0",
+    "armed": null,
+    "ok": "Pick this pose",
+    "subject": "shaking itself dry",
+    "back": "Dot",
+    "pose": "shake-dry",
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "sitting",
+      "target": "card.1"
+     }
+    ],
+    "screen": "sitting",
+    "state": "pose",
+    "focus": "card.1",
+    "armed": null,
+    "ok": "Pick this pose",
+    "subject": "calming a creature",
+    "back": "Dot",
+    "pose": "shake-dry",
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "card.1",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "place",
+    "focus": "card.0",
+    "armed": null,
+    "ok": "Pick this place",
+    "subject": "the meadow",
+    "back": "Pose",
+    "pose": "calm",
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "sitting",
+      "target": "card.1"
+     }
+    ],
+    "screen": "sitting",
+    "state": "place",
+    "focus": "card.1",
+    "armed": null,
+    "ok": "Pick this place",
+    "subject": "the pond edge",
+    "back": "Pose",
+    "pose": "calm",
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "card.1",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "confirm",
+    "focus": "room",
+    "armed": null,
+    "ok": "Portray Dot",
+    "subject": "one sitting each, ever",
+    "back": "Place",
+    "pose": "calm",
+    "place": "pond",
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "right",
+    "said": [],
+    "screen": "sitting",
+    "state": "confirm",
+    "focus": "room",
+    "armed": null,
+    "ok": "Portray Dot",
+    "subject": "one sitting each, ever",
+    "back": "Place",
+    "pose": "calm",
+    "place": "pond",
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "room",
+      "verb": "back"
+     }
+    ],
+    "screen": "sitting",
+    "state": "place",
+    "focus": "card.1",
+    "armed": null,
+    "ok": "Pick this place",
+    "subject": "the pond edge",
+    "back": "Pose",
+    "pose": "calm",
+    "place": "pond",
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "card.1",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "confirm",
+    "focus": "room",
+    "armed": null,
+    "ok": "Portray Dot",
+    "subject": "one sitting each, ever",
+    "back": "Place",
+    "pose": "calm",
+    "place": "pond",
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "home",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "room",
+      "verb": "room:home"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "focus": "portrait",
+    "armed": null,
+    "ok": null,
+    "subject": null,
+    "back": null,
+    "pose": null,
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "portrait",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "pose",
+    "focus": "card.0",
+    "armed": null,
+    "ok": "Pick this pose",
+    "subject": "shaking itself dry",
+    "back": "Dot",
+    "pose": null,
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "card.0",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "place",
+    "focus": "card.0",
+    "armed": null,
+    "ok": "Pick this place",
+    "subject": "the meadow",
+    "back": "Pose",
+    "pose": "shake-dry",
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "sitting",
+      "target": "card.1"
+     }
+    ],
+    "screen": "sitting",
+    "state": "place",
+    "focus": "card.1",
+    "armed": null,
+    "ok": "Pick this place",
+    "subject": "the pond edge",
+    "back": "Pose",
+    "pose": "shake-dry",
+    "place": null,
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "card.1",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "confirm",
+    "focus": "room",
+    "armed": null,
+    "ok": "Portray Dot",
+    "subject": "one sitting each, ever",
+    "back": "Place",
+    "pose": "shake-dry",
+    "place": "pond",
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "confirm",
+    "focus": "room",
+    "armed": "room",
+    "ok": "Again: portray Dot",
+    "subject": "one sitting each, ever",
+    "back": "Place",
+    "pose": "shake-dry",
+    "place": "pond",
+    "held": true,
+    "portrait": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "focus": "portrait",
+    "armed": null,
+    "ok": null,
+    "subject": "its portrait is on its way",
+    "back": "Vivarium",
+    "pose": null,
+    "place": null,
+    "held": false,
+    "portrait": "painting"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "portrait",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "portrait",
+    "focus": "room",
+    "armed": null,
+    "ok": null,
+    "subject": "painted and framed",
+    "back": "Dot",
+    "pose": null,
+    "place": null,
+    "held": false,
+    "portrait": "delivered"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "sitting",
+    "state": "portrait",
+    "focus": "room",
+    "armed": null,
+    "ok": null,
+    "subject": "painted and framed",
+    "back": "Dot",
+    "pose": null,
+    "place": null,
+    "held": false,
+    "portrait": "delivered"
+   },
+   {
+    "key": "down",
+    "said": [],
+    "screen": "sitting",
+    "state": "portrait",
+    "focus": "room",
+    "armed": null,
+    "ok": null,
+    "subject": "painted and framed",
+    "back": "Dot",
+    "pose": null,
+    "place": null,
+    "held": false,
+    "portrait": "delivered"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "sitting",
+      "target": "room",
+      "verb": "back"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "focus": "portrait",
+    "armed": null,
+    "ok": "Look at the portrait",
+    "subject": "already portrayed",
+    "back": "Vivarium",
+    "pose": null,
+    "place": null,
+    "held": false,
+    "portrait": "delivered"
+   }
+  ]
+ }
+}
