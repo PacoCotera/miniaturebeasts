@@ -148,6 +148,36 @@ The juvenile takes are shake t1 and calm t1, for your sign-off; they keep their 
 
 Job 1 closes at 38.75 of 43 MXN. Both jobs: 71.73 of 77.
 
+## Art director's ruling Round 4 (23:15): juvenile signed, renamed; both jobs closed (2026-10-23 23:17)
+
+**Signed:** juvenile shake t1 → `shake`, calm t1 → `calm`, signed_in "AD 2026-10-23 23:15, 763a2fad". Renamed with `git mv`, byte for byte: all 14 files (7 per pose) keep their sha256, and manifest.json checks each one. `from` still names the raw sheet, cell and script.
+
+**Final ids, both stages** (`<stage>` adult or juvenile), in `floor/S01/`:
+- `keys/mibi-<stage>-S01-base-{shake,calm}-304x312.png`
+- `crested/mibi-<stage>-S01-{shake,calm}-304x312.png`
+- `overlays/mibi-<stage>-S01-{shake,calm}-crest-304x312.png`
+- `layers/mibi-<stage>-S01-{shake,calm}-{fur-mask,zone-mask,patches,stripes}-304x312.png`
+
+The adult keys were signed "AD 2026-10-23 23:07, 74031d07"; the juvenile "AD 2026-10-23 23:15, 763a2fad".
+
+**Amended checks in force:**
+- **Check 4:** a figure in cell 4, or in a cell left empty in the input, is cut away and noted. It fails only within 12 px of a seam or if it changes a used cell.
+- **Checks 5 and 8:** outline outside the crest zone dilated 10 px, against the twin or the input through the same key-out. Pass when p95 ≤ 4.0 px, max ≤ 6 px, centroid move ≤ 1 px, and mean RGB ≤ 8.
+- **Check 7:** one IoU method. The cut key, alpha > 128, the largest island, fitted into 48 and bottom-centred.
+- **Check 9, bullet 3:** measured on the cut layer over the base key. Alpha is 0 outside the fur mask, and base + layer differs from the base only inside the coat. The returned sheet's outside-coat difference is a note.
+- **Recolour exit:** 0 changed px outside the fur mask dilated 3 px.
+- **Check 13 (backdrops):** tag-row grey std ≤ 30.
+
+**MXN (usageMetadata, Pacific day 10-23):**
+
+| Job | Requests (MXN) | Total |
+| --- | --- | --- |
+| Keys | K1a 0.00 (402), K1a 4.17, K1b 4.32, K2a 3.62, K2b 3.67, K3a 3.75, K4a 3.68, K1j 4.12, K2j 3.81, K3j 3.89, K4j 3.74 | **38.75 of 43, closed** |
+| Backdrops | meadow 4.18, pond-a 4.14, rock-a 4.07, wood 4.00, cave 4.23, pond-b 3.89, rock-b 4.09, rock-c 4.38 | **32.98 of 34, closed** |
+| Both | | **71.73 of 77**; Pacific day 71.73 of 250 |
+
+**Open item:** the juvenile window factor 0.6332 is assumed (the adult factor × 0.733 / 0.601). P1 confirms the station's juvenile Habitat factor. If it changes, `proof/juvenile/window-1x.png` is rebuilt at 0 MXN.
+
 ## (superseded by Round 3) Job 1 stopped at K3j (2026-10-23 23:02)
 
 K3j fails check 9, a failure that is neither a facing nor a cell-4 figure. Under the lead's go (no automatic retries; any other failure stops the job for the art director), K4j is not run and no K3j retry is made. Job 1 stands at 35.01 of 43 MXN.
