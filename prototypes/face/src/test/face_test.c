@@ -507,6 +507,50 @@ static void kit_words(void) {
     free(pc);
   }
 }
+/* kit_glint (Home's Library glints on it) and the top bar's readout after the title */
+static void glint_readout(void) {
+  static const char *GP = "regions.library.specimen.glint";
+  int ms = spec_int("home", "regions.library.specimen.glint.ms", 0), top = spec_int("home", "regions.library.specimen.glint.levels", 0);
+  check(ms == 2000 && top == 16, "kit_glint_level: home.json holds the period 2000 and 16 levels", "");
+  check(kit_glint_level("home", GP, 0, 1) == 0 && kit_glint_level("home", GP, (uint32_t)ms / 4, 1) == 8 && kit_glint_level("home", GP, (uint32_t)ms / 2, 1) == 16 && kit_glint_level("home", GP, (uint32_t)(3 * ms / 4), 1) == 8 && kit_glint_level("home", GP, (uint32_t)ms, 1) == 0,
+    "kit_glint_level: 0, 8, 16, 8, 0 at 0, ms/4, ms/2, 3ms/4 and ms (in over the first half, out over the second)", "");
+  check(kit_glint_level("home", GP, 0, 0) == 16 && kit_glint_level("home", GP, (uint32_t)ms / 4, 0) == 16 && kit_glint_level("home", GP, (uint32_t)ms / 2, 0) == 16 && kit_glint_level("home", GP, (uint32_t)(3 * ms / 4), 0) == 16 && kit_glint_level("home", GP, (uint32_t)ms, 0) == 16,
+    "kit_glint_level: motion 0 gives the top level at every time", "");
+  { const char *m = "{\"t\":\"asset\",\"id\":\"kg-star-12\",\"w\":12,\"h\":12,\"policy\":\"art\",\"status\":\"placeholder\"}"; check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot("kg-star-12") >= 0, "kit_glint: a picture is loaded", ""); }
+  int g[4], gw = v_sk("home", "regions.library.specimen.glint.size", 0), gh = v_sk("home", "regions.library.specimen.glint.size", 1), bx = 100, by = 60; v_srect("home", "regions.library.window", g);
+  char o0[160], o16[160];
+  prim_begin(); v_region("library.window", LAYER_ART); kit_glint("library.glint.0", "kg-star-12", g[0] + bx, g[1] + by, gw, gh, 0); snprintf(o0, sizeof o0, "%s", prim_ops()); prim_end();
+  check(table_nodes() == 1 && kat("library.glint.0", FN_COMPOSED, g[0] + bx - gw / 2, g[1] + by - gh / 2, gw, gh) && strstr(o0, "[[\"bayerPick\",-1,") == o0 && strstr(o0, ",0,") != NULL, "kit_glint: at level 0 one composed node, the bead's box as Home draws it (centred, glint.size), dithered in from clear", o0);
+  prim_begin(); v_region("library.window", LAYER_ART); kit_glint("library.glint.0", "kg-star-12", g[0] + bx, g[1] + by, gw, gh, top); snprintf(o16, sizeof o16, "%s", prim_ops()); prim_end();
+  { char want[160]; snprintf(want, sizeof want, "[[\"bayerPick\",-1,%d,16,%d,%d,0,0,0,0]]", wire_asset_slot("kg-star-12"), g[0] + bx - gw / 2, g[1] + by - gh / 2);
+    check(table_nodes() == 1 && kat("library.glint.0", FN_COMPOSED, g[0] + bx - gw / 2, g[1] + by - gh / 2, gw, gh) && strcmp(o16, want) == 0, "kit_glint: at the top level the same node and box, the whole star", o16); }
+  prim_begin(); kit_glint("library.glint.1", "kg-not-sent", 50, 50, 12, 12, 16); prim_end();
+  check(kabsent("library.glint.1"), "kit_glint: an asset the host has not sent makes no node", "");
+  /* the readout: "Library" (20 px) ends at x 115, the readout starts at 123 (137 for the text after a 10 px mark and 4 px), ending by x 248 */
+  { const char *m = "{\"t\":\"asset\",\"id\":\"kr-mark-10\",\"w\":10,\"h\":10,\"policy\":\"art\",\"status\":\"placeholder\"}"; check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot("kr-mark-10") >= 0, "readout: a mark is loaded", ""); }
+  static const char *PRS[] = {
+    "{\"frame\":{\"top\":{\"screen\":\"library\",\"title\":\"Library\",\"readout\":{\"text\":\"Untuva family\",\"mark\":\"kr-mark-10\"}}}}",
+    "{\"frame\":{\"top\":{\"screen\":\"library\",\"title\":\"Library\",\"readout\":{\"text\":\"All species\",\"mark\":null}}}}",
+    "{\"frame\":{\"top\":{\"screen\":\"library\",\"title\":\"Library\",\"readout\":{\"text\":\"Untuva family of the long hollow\",\"mark\":\"kr-mark-10\"}}}}",
+    "{\"frame\":{\"top\":{\"screen\":\"library\",\"title\":\"Library\"}}}" };
+  int tb[4], rb[4], mb[4], kt[4], km[4];
+  for (int i = 0; i < 4; i++) {
+    spec_drop("props"); spec_load("props", PRS[i], strlen(PRS[i]));
+    prim_begin(); word_topBar(); prim_end();
+    kbox("top.title.0", tb); kt[i] = kbox("top.readout.text", rb); km[i] = kbox("top.readout.mark", mb);
+    int tm[4]; kbox("top.m.e", tm);   /* the Energy figure: a 16 px word of the bar, cap top 12 on baseline 24 */
+    if (i == 0) {
+      check(tb[0] + tb[2] == 115, "readout: the title \"Library\" (20 px) ends at x 115", "");
+      check(km[i] == FN_SPRITE && mb[0] == 123 && mb[2] == 10 && mb[3] == 10 && mb[1] == 13 && rb[1] == tm[1], "readout: with a mark, the 10 x 10 mark at the title's end + 8 (x 123), y 13: centred on the text's cap, 12 to 24, on the title's baseline 24 as the counters", "");
+      check(kt[i] == FN_TEXT && rb[0] == 137 && rb[2] == v_measure("Untuva family", 16) && rb[2] == 103 && rb[0] + rb[2] <= 248, "readout: then 4 px, then the text at x 137, \"Untuva family\" (103 px) whole in the 111 px left", "");
+    }
+    if (i == 1) check(kabsent("top.readout.mark") && kt[i] == FN_TEXT && rb[0] == 123 && rb[1] == tm[1] && rb[2] == v_measure("All species", 16), "readout: without a mark, the text at the title's end + 8 (x 123) and no mark node", "");
+    if (i == 2) { char cut[V_STR + 4]; v_clip("Untuva family of the long hollow", 248 - 137, 16, cut, sizeof cut); size_t n = strlen(cut);
+      check(kt[i] == FN_TEXT && rb[0] == 137 && rb[2] == v_measure(cut, 16) && rb[0] + rb[2] <= 248 && n > 3 && strcmp(cut + n - 3, "\xe2\x80\xa6") == 0 && strlen(cut) < strlen("Untuva family of the long hollow"), "readout: a text too long is cut by v_clip to end by x 248, ending in the ellipsis", cut); }
+    if (i == 3) check(kabsent("top.readout.text") && kabsent("top.readout.mark") && tb[0] + tb[2] == 115, "readout: props without frame.top.readout draw no readout node", "");
+  }
+  spec_drop("props");
+}
 int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";
   focus_vectors(dir);
@@ -518,6 +562,7 @@ int main(int argc, char **argv) {
   layout_vectors(dir, argc > 2 ? argv[2] : "../ui/specs/station");
   line_words();
   kit_words();
+  glint_readout();
   printf("face_test: %d checks, %d failed\n", checks, fails);
   return fails ? 1 : 0;
 }
