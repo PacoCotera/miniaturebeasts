@@ -115,12 +115,12 @@ test("events.backdrop.resident \"cut\": no resident dither; the window keeps the
   } finally { SPECS.sitting = keep; }
 });
 
-test("the pose step: a focus move to or from the curl cross-dithers the resident 16 levels over 180 ms, cut by the next press; a stand-to-stand move (an owed habit's stand) is a cut", () => {
+test("the pose step: a focus move to or from the curl cross-dithers the resident 16 levels over 180 ms, cut by the next press; a stand-to-stand move is a cut", () => {
   const { h, mb, focus, dithers, body } = rig(); enterSitting(h, mb); const o = offerOf(mb), at = (i) => "card." + i, curl = o.poses.indexOf("sleep-curled"), stands = o.poses.map((_, i) => i).filter((i) => i !== curl);
   focus(at(stands[0])); const a = body().props.regions.resident.picture; focus(at(curl)); const e = dithers("resident").at(-1);
   assert.deepEqual([e.from, e.ms, e.levels, e.cut, e.hold], [a, POSE_DITHER.ms, 16, true, 0]); assert.equal(POSE_DITHER.ms, 180);
   const n = dithers("resident").length; focus(at(stands[0])); assert.equal(dithers("resident").length, n + 1, "from the curl: a dither too");
-  focus(at(stands[1])); assert.equal(dithers("resident").length, n + 1, "stand to stand: a cut"); assert.equal(body().props.regions.resident.picture, a, "the same stand");
+  focus(at(stands[1])); assert.equal(dithers("resident").length, n + 1, "stand to stand (shake and calm, or an owed habit's stand): a cut, whatever the picture");
 });
 
 test("sitting.json focus.vectors that leave the screen or arm: ← from the pose step and from the portrait go to Habitat with the ring on Portrait; ✓ on the confirm step arms the room", () => {
