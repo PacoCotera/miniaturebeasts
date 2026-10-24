@@ -11,6 +11,7 @@
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { blank } from "./blank.mjs";
 
 const SKIP = new Set(["node_modules", ".git", "dist", "golden", "img"]);
 function walk(dir, ext, out = []) {
@@ -22,8 +23,8 @@ function walk(dir, ext, out = []) {
   }
   return out;
 }
-// the code of a JavaScript file with its comments blanked (line and block), strings left as they are
-const code = (s) => s.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " ")).replace(/(^|[^:"'`\\])\/\/[^\n]*/g, (_, a) => a);
+// the code of a JavaScript file with its comments dropped (line and block), strings left as they are; one pass, so a comment marker in a string, a regex or a comment is not read as a comment (tools/blank.mjs)
+const code = (s) => blank(s);
 const CANVAS = /\b(canvas|getContext|putImageData|createImageData|getImageData|OffscreenCanvas|drawImage)\b/i;
 const CANVAS_OK = new Set(["station/src/masters.mjs", "station/src/podsprites.mjs", "station/src/paint2d.mjs", "station/src/specimen.mjs"]);   // the named decoders, until png.mjs decodes the masters and the sprite sheets; and the specimen's painter and its port (T-20261019-258, the architect's ruling): a pure-JavaScript Canvas 2D subset on a Float32Array and the generator that draws on it, which make a picture in the logic process and never touch the DOM, a browser canvas or the screen
 const FACE_LVGL = "station/src/face-lvgl.mjs";   // the face's own display() and present(): the lines between its guard:canvas markers, and no other
@@ -66,7 +67,7 @@ export function check(root) {
   // 6. LVGL objects are made in prim/ only
   for (const f of walk(path.join(proto, "face/src"), [".c", ".h"])) {
     const r = rel(f); if (r.startsWith("face/src/prim/") || r.startsWith("face/src/vendor/") || r.startsWith("face/src/fonts/")) continue;
-    readFileSync(f, "utf8").replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " ")).split("\n").forEach((l, i) => { for (const m of l.replace(/\/\/.*/, "").matchAll(LV_CREATE)) if (!LV_OK.has(m[0].replace(/\s*\($/, ""))) fails.push(`${r}:${i + 1} calls ${m[0].replace(/\s*\($/, "")} outside face/src/prim/`); });
+    blank(readFileSync(f, "utf8"), { js: false }).split("\n").forEach((l, i) => { for (const m of l.matchAll(LV_CREATE)) if (!LV_OK.has(m[0].replace(/\s*\($/, ""))) fails.push(`${r}:${i + 1} calls ${m[0].replace(/\s*\($/, "")} outside face/src/prim/`); });
   }
   return { fails, removed: removed.length, files: js.length + html.length };
 }

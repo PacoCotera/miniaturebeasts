@@ -2,11 +2,12 @@
 //   node --test prototypes/face/tests/guard.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { check } from "../tools/guard.mjs";
+import { blank } from "../tools/blank.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), real = path.resolve(here, "../../..");
 function tree(files) {
@@ -59,4 +60,48 @@ test("LVGL objects are made in face/src/prim/ only; the platform may make its di
   assert.match(fails({ "prototypes/face/src/vocab/x.c": "lv_obj_t *o = lv_label_create(parent);" }).join("\n"), /x\.c:1 calls lv_label_create outside face\/src\/prim\//);
   assert.match(fails({ "prototypes/face/src/face.c": "o = lv_image_create (scr);" }).join("\n"), /lv_image_create/);
   assert.deepEqual(fails({ "prototypes/face/src/prim/prim.c": "o = lv_obj_create(p);", "prototypes/face/src/platform/posix.c": "d = lv_display_create(1024, 600); i = lv_indev_create();", "prototypes/face/src/face.c": "/* lv_obj_create(x) in a comment */" }), []);
+});
+
+// The blanker reads the text once, so a comment marker inside a string, a regex or another comment hides nothing. Each case puts a canvas call after the marker, and the guard must still see it.
+const PLANT = 'document.createElement("canvas").getContext("2d");', CLOSE = "/* a later comment */";   // a later comment closes the opener a misreading would have left open
+test("a block-comment opener in a line comment hides nothing on the next line", () => {
+  assert.match(fails({ "prototypes/station/src/x.mjs": `// x /* y\n${PLANT}\n${CLOSE}\n` }).join("\n"), /x\.mjs:2 uses the canvas/);
+  assert.equal(blank("// x /* y\ncode();"), "\ncode();");
+});
+test("a block-comment opener in a string hides nothing after it", () => {
+  assert.match(fails({ "prototypes/station/src/x.mjs": `const t = "image/*";\n${PLANT}\n${CLOSE}\n` }).join("\n"), /x\.mjs:2 uses the canvas/);
+  assert.match(fails({ "prototypes/station/src/x.mjs": `const t = 'a/*';\nconst u = "//";\n${PLANT}\n${CLOSE}\n` }).join("\n"), /x\.mjs:3 uses the canvas/);
+});
+test("a regex holding quotes and a block-comment opener is one regex, and the code after it is seen", () => {
+  assert.match(fails({ "prototypes/station/src/x.mjs": `const r = /["'\`]\\/*[/]x/g;\n${PLANT}\n${CLOSE}\n` }).join("\n"), /x\.mjs:2 uses the canvas/);
+  assert.match(fails({ "prototypes/station/src/x.mjs": `const ok = s.replace(/'/g, "") + 1 / 2;\n${PLANT}\n${CLOSE}\n` }).join("\n"), /x\.mjs:2 uses the canvas/, "a division is not a regex");
+});
+test("a template holding ${} is read through, its braces and strings included, and the code after it is seen", () => {
+  assert.match(fails({ "prototypes/station/src/x.mjs": 'const t = `a ${ { k: "}" }.k + `n${1}` } /* b`;\n' + PLANT + "\n" + CLOSE + "\n" }).join("\n"), /x\.mjs:2 uses the canvas/);
+  assert.deepEqual(fails({ "prototypes/station/src/x.mjs": "const t = `// not a comment ${a}`;\n// a canvas in a comment\nconst u = 1;\n" }), []);
+  assert.equal(blank("a `x${ /* c */ 1 }y` b // z"), "a `x${  1 }y` b ");
+});
+test("the planted canvas call in a copy of the Station's main.mjs fails the guard", () => {
+  const lines = readFileSync(path.join(real, "prototypes/station/src/main.mjs"), "utf8").split("\n");
+  lines.splice(40, 0, PLANT);   // line 41
+  const f = fails({ "prototypes/station/src/main.mjs": lines.join("\n") });
+  assert.ok(f.some((m) => /^station\/src\/main\.mjs:41 uses the canvas/.test(m)), f.join("\n"));
+  assert.equal(f.length, 1, f.join("\n"));
+});
+test("the guard is ok on the tree", () => { assert.deepEqual(check(real).fails, []); });
+test("the C blanker keeps quotes and comments and nothing else: a lv_*_create call after a comment marker in a string or a line comment is seen", () => {
+  assert.match(fails({ "prototypes/face/src/x.c": 'const char *s = "a/*";\nlv_obj_t *o = lv_label_create(p);\n' }).join("\n"), /x\.c:2 calls lv_label_create/);
+  assert.match(fails({ "prototypes/face/src/x.c": "// x /* y\no = lv_obj_create(p);\n" }).join("\n"), /x\.c:2 calls lv_obj_create/);
+  assert.deepEqual(fails({ "prototypes/face/src/x.c": "/* lv_obj_create(p); */ // lv_obj_create(p);\nint a = 1;\n" }), []);
+  assert.equal(blank("a = `b` / c; // d", { js: false }), "a = `b` / c; ");
+});
+test("a block comment between two tokens does not glue them into one word the guard cannot see", () => {
+  assert.match(fails({ "prototypes/station/src/x.mjs": "var/**/canvas = document;\n" }).join("\n"), /x\.mjs:1 uses the canvas/);
+  assert.match(fails({ "prototypes/station/src/x.mjs": "x = a/**/getContext;\n" }).join("\n"), /x\.mjs:1 uses the canvas/);
+  assert.equal(blank("var/**/canvas"), "var canvas");
+});
+test("an import line with a trailing comment keeps its end: no space is left before the newline", () => {
+  assert.equal(blank("a;/* c */\nx;"), "a;\nx;");
+  assert.match(blank("import a from './w.mjs';/* c */\nx;"), /^import a from '\.\/w\.mjs';$/m);
+  assert.match(blank("import a from './w.mjs'; // c\nx;"), /^import a from '\.\/w\.mjs'; $/m);
 });

@@ -13,7 +13,7 @@ been built or measured yet.
 | --- | --- | --- | --- |
 | Role | Portable: explore (Probe mode), carry finds (Cargo), spend time with a travelling mibi (Companions) | Home: research, creation, incubation, residents, habitats, families | Shared dock: charging, quiet collection summaries, printing |
 | Software profile | 450×600 portrait, color | 1024×600 landscape, color | 792×272, four-gray e-paper |
-| Reference hardware (proposed) | Waveshare ESP32-S3 AMOLED 2.41" (8 MB PSRAM, 16 MB flash, Wi-Fi/BLE, motion sensor) | Raspberry Pi 4 with a 7" HDMI panel | ESP32-S3 module with a 5.79" e-paper panel, a 58 mm thermal printer, and per cradle a hall sensor (seat sensing) and an RGB lamp ([the cradles](#the-cradles-seat-sensing-and-lamps)) |
+| Reference hardware (proposed) | Waveshare ESP32-S3 AMOLED 2.41" (8 MB PSRAM, 16 MB flash, Wi-Fi/BLE, motion sensor) | Raspberry Pi 4 with a 7" HDMI panel | ESP32-S3 module with a Waveshare 5.79inch e-Paper panel ([the Caddy's panel](#the-caddys-panel)), a 58 mm thermal printer, and per cradle a hall sensor (seat sensing) and an RGB lamp ([the cradles](#the-cradles-seat-sensing-and-lamps)) |
 
 **Decided:**
 - **Software stack.** Station runs Linux on a Raspberry Pi; Companion and Caddy are
@@ -40,7 +40,7 @@ mibi or awards anything.
 
 **Who draws, who brokers** ([art pipeline](proposals/art-pipeline.md)). The Station draws every mibi from its species' painted keys and its trait layers, and derives the Companion and Caddy versions; the Companion never renders or calls out. The Caddy brokers a mibi's portrait, painted at its sitting, and keeps every portrait forever on its card (an SD card) and syncs it, so a sitting needs the Caddy reachable from the Station over Wi-Fi. Creature rendering runs on the Station only.
 
-**Open:** display technology, final controls, sensors, battery and charging, the
+**Open:** final controls, sensors, battery and charging, the
 printer, the reader (NFC, QR or none), dimensions and enclosures.
 
 
@@ -73,6 +73,17 @@ Each cradle gets seat sensing and a lamp; sound and haptics come later. The Cadd
 
 **Not measured:** none of this has run on a board. The magnet's field at the sensor, the sensor's behaviour beside a live charging coil, the lamp's look through the printed window and the 0.5 s from seat to Station are measured at gates 2–4.
 
+## The Caddy's panel
+
+The Caddy's reference panel is the [Waveshare 5.79inch e-Paper](https://www.waveshare.com/5.79inch-e-paper.htm): 792×272, 0.1755 mm pitch (144 dpi), two SSD1683 controllers in cascade, SPI. The module (SKU 26892) goes on the bench and the raw panel (SKU 26843) on the board. The second source is the Good Display GDEY0579T93, very probably the same glass.
+
+- **Four grays only on a full refresh.** The vendor's partial refresh takes a one-bit image, so everything repainted by a partial is black and white; the four grays come from a vendor waveform loaded for a full-screen refresh.
+- **Refresh.** Full about 3.5-4 s, with a flash; partial about 0.8 s. A full refresh after about 5 partials, and at least once a day. The picture stays with no power.
+- **No front light.** None exists for this panel; the cradle lamps carry the dock in the dark.
+- **Driver.** No ESP-IDF component exists; the vendor's [C driver](https://github.com/waveshareteam/e-Paper/blob/master/RaspberryPi_JetsonNano/c/lib/e-Paper/EPD_5in79.c) is ported behind an ESP-IDF SPI master and LVGL 9's flush.
+
+**Not measured:** these are vendor figures ([manual](https://files.waveshare.com/wiki/5.79inch-e-Paper-Module/5.79-inch-e-Paper-user-manual.pdf), [wiki and FAQ](https://www.waveshare.com/wiki/5.79inch_e-Paper_Module_Manual)). The four-gray full refresh time, ghosting after 5 and 10 partials, and the gray values at 15, 25 and 35 °C are measured at gate 2.
+
 ## Reference bill of parts
 
 Proposed: what the reference hardware is made of, by device, as far as it is chosen; quantities per kit. No prices here.
@@ -85,7 +96,7 @@ Proposed: what the reference hardware is made of, by device, as far as it is cho
 | Station | 7" HDMI panel, 1024×600 | 1 | Its screen |
 | Station | Neodymium disc magnet, about 6 × 2 mm, axially magnetised | 1 | Seat sensing in its Caddy cradle |
 | Caddy | ESP32-S3 module | 1 | Its service, Wi-Fi, BLE, sensing and lamps |
-| Caddy | 5.79" four-gray e-paper panel, 792×272 | 1 | Its screen |
+| Caddy | Waveshare 5.79inch e-Paper, 792×272 (module SKU 26892 for the bench, raw panel SKU 26843 for the board; second source Good Display GDEY0579T93) | 1 | Its screen |
 | Caddy | 58 mm thermal printer | 1 | Printing |
 | Caddy | SD card | 1 | Portraits and the service's data |
 | Caddy | TI DRV5033 omnipolar hall-effect switch, with its pull-up and decoupling | 2 | Seat sensing, one per cradle |

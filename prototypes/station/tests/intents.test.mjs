@@ -10,6 +10,7 @@ import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { createFocus } from "../../ui/focus.mjs";
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
+import { blank } from "../../face/tools/blank.mjs";
 import { openBay } from "../src/intents/cargo.mjs";
 import { arrivePending } from "../src/intents/arrival.mjs";
 
@@ -329,7 +330,7 @@ function graph(entry) {
   const seen = new Map(), todo = [entry];
   while (todo.length) {
     const f = todo.pop(); if (seen.has(f)) continue;
-    const src = rf2(f, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, ""); seen.set(f, src);
+    const src = blank(rf2(f, "utf8")); seen.set(f, src);
     for (const m of src.matchAll(/(?:from|import\()\s*"(\.[^"]+)"/g)) { const to = path.resolve(path.dirname(f), m[1]); if (/\.(mjs|js)$/.test(to) && ex2(to)) todo.push(to); }
   }
   return seen;
