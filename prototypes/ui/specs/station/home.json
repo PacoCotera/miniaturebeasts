@@ -120,7 +120,7 @@
    "rect": [32,477,226,98],
    "build": "station",
    "picture": [76,66],
-   "slots": {"size":[24,32],"gap":2,"cols":3,"rows":2,"forms":{"grid":{"upTo":6,"first":[174,493,24,32],"pitch":[26,34],"grid":[3,2]}}},
+   "slots": {"cols":3,"rows":2,"forms":{"grid":{"upTo":6,"first":[174,493,24,32],"pitch":[26,34],"grid":[3,2]}}},
    "glint": {"size":[12,12],"at":[12,0],"note": "ruled in build spec section 14: the glint star on a pod with one, over the pod's top right corner, 12 x 12 at the slot's (12, 0)"}
   },
   "incubator": {
@@ -175,7 +175,7 @@
    }
   },
   "nameTag": {
-   "build": "nameTag", "component": "panel", "h": 24, "px": 16, "pad": 8, "round": 8, "min": 48, "max": 176, "plate": {"min": 48, "max": 176, "pad": 8, "round": 8}, "below": 16, "over": 32,
+   "build": "nameTag", "component": "panel", "h": 24, "px": 16, "plate": {"min": 48, "max": 176, "pad": 8, "round": 8}, "below": 16, "over": 32,
    "note": "the Vivarium's tag (vivarium.json regions.nameTag), on the mibi that has an event, until the player visits it; no lift"
   },
   "away": {

@@ -13,6 +13,7 @@ import { panelBuild, initialFocus, growNowCards, dockCards } from "../src/views/
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { openPanel } from "../src/intents/panel.mjs";
 import { createMeasure } from "../../ui/specs/measure.mjs";
+import { listPitch } from "../../ui/specs/derive.mjs";
 import { validate } from "./habitat-props.test.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -41,10 +42,10 @@ function open(o = {}) {
 const view = (h) => panelBuild({ st: h.st, settings: h.settings, ui: h.ui, jump: h.settings.jump }, panelSpec, frameSpec, podsSpec);
 
 test("the geometry and the width limits: a card is 776, 380 or 248 wide for one, two or three; a name, line and cost fit the card less 32, measured, in the budgets (the two cards of the Hatch now? panel)", () => {
-  const w = (n) => (P.cards.width - P.cards.gap * (n - 1)) / n;
+  const w = (n) => listPitch(P.cards, n, 0)[2];
   assert.deepEqual([1, 2, 3].map(w), [776, 380, 248]); assert.deepEqual([1, 2, 3].map((n) => P.limits[n].card), [776, 380, 248]); assert.deepEqual([1, 2, 3].map((n) => P.limits[n].text), [744, 348, 216]);
   assert.deepEqual([1, 2, 3].map((n) => P.limits[n].picture), [[744, 160], [348, 160], [216, 160]]);
-  assert.deepEqual([P.rect, P.title.rect, P.cards.y, P.cards.h, P.card.picture.floor], [[92, 80, 840, 440], [124, 96, 776, 36], 152, 288, 168]);
+  assert.deepEqual([P.rect, P.title.rect, listPitch(P.cards, 1, 0)[1], listPitch(P.cards, 1, 0)[3], P.card.picture.floor], [[92, 80, 840, 440], [124, 96, 776, 36], 152, 288, 168]);
   const st = world(), p = (S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, T0), st.tray[0]); S.skipIdentify(st, p); assert.ok(S.grow(st, p, {}, settings, T0).ok);
   const cards = growNowCards({ st, settings, ui: {}, now: T0 }, panelSpec), limit = P.limits[2].text; assert.equal(cards.length, 2);
   for (const c of cards) {

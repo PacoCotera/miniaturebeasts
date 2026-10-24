@@ -22,7 +22,6 @@ for (const i of range(0, 5)) { add("placeRect", "pods", "regions.collection", [i
 for (const w of [...range(0, 40).map((i) => i * 7), 0, 56, 57, 200, 500, 80 - 25, 224 - 24, 224 - 23]) add("plateWidth", "pods", "regions.overview.name", [w]);
 for (const w of [0, 56, 57, 200, 500]) add("plateIndex", "pods", "regions.overview.name", [w]);   // the series id the width names: its place in the series and the series' length
 for (const lines of [0, 1, 2, 3]) for (const widest of [0, 90, 400, 700]) for (const focal of [null, [200, 400, 400, 150], [0, 0, 1024, 100], [900, 540, 100, 10]]) add("platePosition", "frame", "regions.plate", [lines, widest, focal ? 1 : 0, ...(focal ?? [0, 0, 0, 0])]);
-for (const n of [...range(0, 41), 45]) add("leafArc", "incubator", "regions.leaves", [n]);   // every run the arcs hold, and one over (refused)
 for (const spec2 of ["habitat", "vivarium"]) for (const n of [0, 1, 6, 7, 12, 13]) for (const i of new Set([0, n - 1])) add("listPitch", spec2, "regions.tiles", [n, i]);   // the bay strip's forms: both ends of each form, and 13 (refused)
 // K5: the name tags' plates (Home, the Vivarium, Habitat) and Cargo's dock ribbon, the widths round the step and at each end of the range
 for (const [name, p] of [["home", "regions.nameTag"], ["vivarium", "regions.nameTag"], ["habitat", "regions.nameTag"], ["cargo", "regions.dockRibbon"]]) for (const w of [0, 1, 40, 41, 57, 100, 150, 160, 200, 300, 500, 700]) add("plateWidth", name, p, [w]);

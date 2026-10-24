@@ -1,6 +1,6 @@
 // Check 1 for one mibi up close (lvgl-switch.md §4): every region the face's log says it drew, against the rectangles habitat.json gives it (and namer.json's while the namer is open). `departures` returns the list of departures, empty when none.
 // log: the face's `log` message { regions: [{ id, layer, rect }], type: [{ text, px, region, rect? }] }; spec: habitat.json; namer: namer.json; state: "rest" | "meet" | "out"; cur: the ring; n: the bays (the tiles drawn); open: the namer is open.
-import { listPitch } from "../../ui/specs/derive.mjs";
+import { listPitch, listForm } from "../../ui/specs/derive.mjs";
 import { footprintRing } from "../../ui/rings.mjs";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -24,7 +24,7 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
   // the name tag (rest, out) or the meet ribbon (meet), in the tag's slot; the tag's top is the feet + 24 and its bottom inside the glass by 16
   const tag = got("nameTag", "chrome").filter((r) => r.rect[2] > 2)[0], rib = got("meetRibbon", "chrome").filter((r) => r.rect[2] > 2)[0];
   must(state === "meet" ? !!rib && !tag : !!tag && !rib, `the ${state} state draws ${state === "meet" ? "the meet ribbon and no tag" : "the name tag and no ribbon"}`);
-  if (tag) { must(tag.rect[3] === R.nameTag.h && tag.rect[1] === box[1] + box[3] + 24, `the name tag ${tag.rect} is not ${R.nameTag.h} tall with its top at the feet + 24`); must(tag.rect[2] % R.nameTag.round === 0 && tag.rect[2] >= R.nameTag.min && tag.rect[2] <= R.nameTag.max, `the tag is ${tag.rect[2]} wide`); must(within(tag.rect, grow(glass, -8)) , `the tag ${tag.rect} is not 8 px inside the glass`); }
+  if (tag) { must(tag.rect[3] === R.nameTag.h && tag.rect[1] === box[1] + box[3] + 24, `the name tag ${tag.rect} is not ${R.nameTag.h} tall with its top at the feet + 24`); const TP = R.nameTag.plate; must(tag.rect[2] % TP.round === 0 && tag.rect[2] >= TP.min && tag.rect[2] <= TP.max, `the tag is ${tag.rect[2]} wide`); must(within(tag.rect, grow(glass, -8)) , `the tag ${tag.rect} is not 8 px inside the glass`); }
   if (rib) must(eq(rib.rect, R.meetRibbon.rect), `the meet ribbon ${rib.rect} is not ${R.meetRibbon.rect}`);
   // the card and what stands on it
   for (const r of got("card", "painted")) must(eq(r.rect, R.card.rect), `the card's plate ${r.rect} is not ${R.card.rect}`);   // fix 2 F1: the card is its plate, a painted node at the rect; no chrome fill
@@ -82,7 +82,7 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
     must(!got("panel", "chrome").length, "the namer's panel draws no fill, edge, bevel row or shadow (fix 2 F1, F8)");
     for (const id of ["field", "say"]) for (const r of regions.filter((x) => x.id === id && x.rect[2] > 0)) must(within(r.rect, N[id].rect), `the namer's ${id} (${r.layer}) ${r.rect} leaves ${N[id].rect}`);
     for (const [id, m] of [["shift", N.shift], ["space", N.space], ["page", N.page], ["suggest", N.suggest], ["done", N.done]]) for (const r of got(id, "chrome")) must(within(r.rect, [m.rect[0], m.rect[1] - 2, m.rect[2], m.rect[3] + 2]), `the namer's ${id} ${r.rect} leaves ${m.rect}`);
-    for (const r of got("keys", "chrome")) { const i = N.keys.columns * Math.round((r.rect[1] + (r.rect[1] % 2) - N.keys.at[1]) / N.keys.pitch) + Math.round((r.rect[0] - N.keys.at[0]) / N.keys.pitch); void i; must(within(r.rect, [N.keys.rect[0], N.keys.rect[1] - 2, N.keys.rect[2], N.keys.rect[3] + 2]), `a key ${r.rect} leaves the grid ${N.keys.rect} (lifted 2 px while the ring is on it)`); }
+    for (const r of got("keys", "chrome")) { const KF = listForm(N.keys, N.keys.columns * N.keys.rows), i = KF.grid[0] * Math.round((r.rect[1] + (r.rect[1] % 2) - KF.first[1]) / KF.pitch[1]) + Math.round((r.rect[0] - KF.first[0]) / KF.pitch[0]); void i; must(within(r.rect, [N.keys.rect[0], N.keys.rect[1] - 2, N.keys.rect[2], N.keys.rect[3] + 2]), `a key ${r.rect} leaves the grid ${N.keys.rect} (lifted 2 px while the ring is on it)`); }
     for (const r of got("focus")) must(within(r.rect, grow(P, 4)), `the ring ${r.rect} is not over the namer (habitat draws none while it is open)`);
   }
   for (const r of got("focus")) must(within(r.rect, [0, 0, 1024, 600]), `the ring ${r.rect} leaves the screen`);

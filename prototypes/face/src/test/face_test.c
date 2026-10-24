@@ -207,11 +207,7 @@ static void layout_vectors(const char *dir, const char *specs) {
   }
   printf("layout: %d cases, %d differ\n", n, bad);
   free(js);
-  {   /* leafArc: each arc's table holds 2·perArc − 1 slots, no other length (lvgl-switch.md §2.2) */
-    static const char GOOD[] = "{\"r\":{\"leaf\":[16,20],\"leafArc\":{\"perArc\":2,\"inner\":[[0,0],[1,0],[2,0]],\"outer\":[[0,1],[1,1],[2,1]]}}}";
-    static const char SHORT[] = "{\"r\":{\"leaf\":[16,20],\"leafArc\":{\"perArc\":2,\"inner\":[[0,0],[1,0],[2,0]],\"outer\":[[0,1],[1,1]]}}}";
-    static const char LONG[] = "{\"r\":{\"leaf\":[16,20],\"leafArc\":{\"perArc\":2,\"inner\":[[0,0],[1,0],[2,0],[3,0]],\"outer\":[[0,1],[1,1],[2,1]]}}}";
-    int box[LAYOUT_LEAVES][4];
+  {   /* listPitch: n takes the smallest form that holds it; a list of bad forms is refused at load */
     static const char TGOOD[] = "{\"regions\":{\"t\":{\"layout\":[\"listPitch\"],\"forms\":{\"a\":{\"upTo\":2,\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]},\"b\":{\"upTo\":4,\"first\":[0,0,4,8],\"pitch\":[5,0],\"grid\":[4,1]}}}}}";
     static const char TTWO[] = "{\"regions\":{\"t\":{\"layout\":[\"listPitch\"],\"forms\":{\"a\":{\"upTo\":2,\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]},\"b\":{\"upTo\":2,\"first\":[0,0,4,8],\"pitch\":[5,0],\"grid\":[4,1]}}}}}";
     static const char TNONE[] = "{\"regions\":{\"t\":{\"layout\":[\"listPitch\"],\"forms\":{\"a\":{\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]}}}}}";
@@ -221,9 +217,6 @@ static void layout_vectors(const char *dir, const char *specs) {
     spec_load("ttwo", TTWO, sizeof TTWO - 1); check(screens_vet_spec("ttwo", verr, sizeof verr) == -1, "listPitch: two forms with one upTo are refused at load", "accepted");
     spec_load("tnone", TNONE, sizeof TNONE - 1); check(screens_vet_spec("tnone", verr, sizeof verr) == -1, "listPitch: a form with no upTo is refused at load", "accepted");
     spec_load("tshort", TSHORT, sizeof TSHORT - 1); check(screens_vet_spec("tshort", verr, sizeof verr) == -1, "listPitch: a grid shorter than its upTo is refused at load", "accepted");
-    spec_load("arcgood", GOOD, sizeof GOOD - 1); check(layout_leaf_arc("arcgood", "r", 3, box) == 3, "leafArc: a table of 2·perArc − 1 slots", "refused");
-    spec_load("arcshort", SHORT, sizeof SHORT - 1); check(layout_leaf_arc("arcshort", "r", 3, box) == -1, "leafArc: a short outer table is refused", "accepted");
-    spec_load("arclong", LONG, sizeof LONG - 1); check(layout_leaf_arc("arclong", "r", 3, box) == -1, "leafArc: a long inner table is refused", "accepted");
   }
 }
 /* No picture binds under the empty id: "" marks a free slot of the picture table (a dropped picture leaves it), so a lookup of "" finds nothing, and v_sprite and v_sprite_hidden with "" make no node. */

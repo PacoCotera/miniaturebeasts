@@ -13,6 +13,7 @@ import { cargoBuild } from "../src/views/cargo-props.mjs";
 import { panelBuild } from "../src/views/panel-props.mjs";
 import { timesOf } from "../src/intents/arrival.mjs";
 import { createMeasure } from "../../ui/specs/measure.mjs";
+import { listPitch } from "../../ui/specs/derive.mjs";
 import { validate } from "./habitat-props.test.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -80,6 +81,6 @@ test("every string of the show at its longest, measured: the ribbon (words + 32 
   for (const t of [D.cards.open.name, D.cards.later.name]) assert.ok(words(t) <= 3 && measure(t, strip.name.px) <= strip.name.max, t);
   for (const t of [D.cards.open.line.replace("{n in words}", "three"), D.cards.open.line.replace("{n in words}", "twelve"), D.oneCrate, D.cards.later.line]) assert.ok(words(t) <= 6 && measure(t, strip.line.px) <= strip.line.max, `${t} (${measure(t, strip.line.px)} px)`);
   assert.ok(measure(P.crates, 16) <= 608, "the crates plate"); assert.ok(measure(P.goes.replace("{Name}", "Wwwwwwwwww"), 16) <= 608, "the name plate at ten of the widest letters"); assert.equal(Sg.ribbon, panel.strings.arrival.text === undefined ? Sg.ribbon : Sg.ribbon);
-  assert.equal(frame.regions.panel.strip.cards.w * 2 + frame.regions.panel.strip.cards.gap + 2 * 16, 840, "two cards fill the strip's 840");
+  const SC = [0, 1].map((i) => listPitch(frame.regions.panel.strip.cards, 2, i)); assert.equal(SC[1][0] + SC[1][2] - SC[0][0] + 2 * 16, 840, "two cards fill the strip's 840");
   assert.ok(words(Sg.ribbon) <= 6 && words(Sg.broken) <= 12); void SPELL;
 });

@@ -1,6 +1,6 @@
 // The spec files against the layout document's wireframes and the palette: the one home of the numbers must agree
 // with the measured wireframe (station-layouts/*.svg) and name only palette colours.
-import { pageSize } from "../specs/derive.mjs";
+import { pageSize, listPitch } from "../specs/derive.mjs";
 import { moveFocus, graphProblem } from "../focus.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -182,7 +182,7 @@ const frameRef = (ref) => ref.slice("frame.json ".length).split(".").reduce((o, 
 const paletteBad = (colours) => { const names = new Set(palette.colours.map(([n]) => n)), bad = []; (function walk(o, up = "") { for (const [k, v] of Object.entries(o)) { if (k === "note" || (k === "floor" && up === "plaque") || (k === "plate" && typeof v === "string" && v.startsWith("painted"))) continue; if (typeof v === "string") { if (!names.has(v) && !(/^frame\.json regions\.marks\./.test(v) && frameRef(v) !== undefined)) bad.push(v); }   /* a lamp is a signed picture of frame.json, named by its path there (it must resolve), not a colour */ else if (v && typeof v === "object") walk(v, k); } })(colours); return bad; };
 // the closed vocabulary and the closed list of derived rules (station-layouts.md, The vocabulary (closed); leaves and leafArc: architect, 2026-10-09 13:24)
 const WORDS = new Set(["frame", "topBar", "bottomLine", "messagePlate", "focusRing", "panel", "stampLabel", "chapterRail", "chapterPage", "list", "specimen", "livingWindow", "ribbon", "text", "leaves"]);
-const LAYOUT_RULES = new Set(["railCompaction", "slantTabs", "pageGrid", "platePosition", "listPitch", "splicePlan", "guideColumns", "pipGroups", "leafArc"]);
+const LAYOUT_RULES = new Set(["railCompaction", "slantTabs", "pageGrid", "platePosition", "listPitch", "splicePlan", "guideColumns", "pipGroups"]);
 const lintRegions = (spec) => { for (const [id, r] of Object.entries(spec.regions)) { assert.ok(r.component || r.build, `${spec.screen}.${id} names its word or composition`); if (r.component) assert.ok(WORDS.has(r.component), `${spec.screen}.${id}: ${r.component} is a word of the closed vocabulary`); for (const k of r.layout ?? []) assert.ok(LAYOUT_RULES.has(k), `${spec.screen}.${id}: ${k} is a closed rule`); if (id !== "bench" && id !== "stage" && !r.offGrid) assert.ok(r.rect.every((n) => n % 8 === 0), `${spec.screen}.${id} on the 8 px grid`); } };   // the bench and Home's stage are the frame's stage (40, 522)
 const STEP_KEYS = ["up", "down", "left", "right"];
 
@@ -229,27 +229,7 @@ test("the Create spec file agrees with the Create wireframes, region by region, 
   assert.deepEqual(paletteBad(cr.colours), []);
 });
 
-// The Incubator's leaf arcs: the slot tables rebuilt from the spec's own parameters (architect, 2026-10-09 13:24).
 const incSpec = () => rd("../specs/station/incubator.json");
-const arcTable = (L, r) => Array.from({ length: 2 * L.perArc - 1 }, (_, h) => { const a = ((L.span[0] + L.half * h) * Math.PI) / 180; return [Math.round(L.centre[0] + r * Math.sin(a)) + L.offset[0], Math.round(L.centre[1] - r * Math.cos(a)) + L.offset[1]]; });
-
-test("the Incubator's leafArc tables are rebuilt from the centre, the arcs, the span and the half pitch", () => {
-  const L = incSpec().regions.leaves.leafArc;
-  assert.equal(L.span[1] - L.span[0], L.half * 2 * (L.perArc - 1), "the span holds perArc leaves on the pitch"); assert.equal(L.pitch, 2 * L.half);
-  for (const k of ["inner", "outer"]) { assert.equal(L[k].length, 2 * L.perArc - 1); assert.deepEqual(L[k], arcTable(L, L.arcs[k]), k + " table"); }
-});
-
-const DERIVE = new URL("../specs/derive.mjs", import.meta.url);
-test("the leafArc oracle (ui/specs/derive.mjs) places every run of 1 to 40 leaves on the tables, centred, none overlapping", { skip: existsSync(DERIVE) ? false : "ui/specs/derive.mjs is the builder's to write at L2.4 (architect, 2026-10-09 13:24)" }, async () => {
-  const { leafArc } = await import(DERIVE.href), R = incSpec().regions.leaves, L = R.leafArc, [lw, lh] = R.leaf;
-  const slot = (k, i) => [...L[k][i], lw, lh];
-  for (let n = 1; n <= 2 * L.perArc; n++) {
-    const boxes = leafArc(R, n), a = Math.min(n, L.perArc), b = n - a;
-    assert.deepEqual(boxes, [...Array.from({ length: a }, (_, j) => slot("inner", 20 - a + 2 * j)), ...Array.from({ length: b }, (_, j) => slot("outer", 20 - b + 2 * j))], `${n} leaves: inner left to right, then outer, slot 20 − k + 2j`);
-    for (const [i, p] of boxes.entries()) { assert.ok(inside(p, R.rect)); for (const q of boxes.slice(i + 1)) assert.ok(apart(p, q), `${n} leaves: none overlaps`); }
-  }
-  assert.throws(() => leafArc(R, 2 * L.perArc + 1), "more than 2 × perArc is refused");
-});
 
 test("the Incubator spec file (T-20261016-222, the painted capsule) agrees with the build spec: the room crop, the capsule's layers at (344, 26), the moss line, the bar, the left column, the ribbon, the events", () => {
   const inc = incSpec(), R = inc.regions;
@@ -269,7 +249,7 @@ test("the Incubator spec file (T-20261016-222, the painted capsule) agrees with 
 // The namer: an overlay over Habitat's right column; its keys, its focus graph by lvgl-switch.md §2.6.1, and the name label's limit.
 const namerSpec = () => rd("../specs/station/namer.json");
 const namerTargets = (nm, page) => { const R = nm.regions, T = [];
-  nm.keys.pages[page].forEach((c, i) => { if (c) T.push({ id: "key." + i, rect: [R.keys.at[0] + R.keys.pitch * (i % 7), R.keys.at[1] + R.keys.pitch * Math.floor(i / 7), ...R.keys.key] }); });
+  nm.keys.pages[page].forEach((c, i) => { if (c) T.push({ id: "key." + i, rect: listPitch(R.keys, R.keys.columns * R.keys.rows, i) }); });
   for (const [id, k] of [["mod.shift", "shift"], ["mod.space", "space"], ["mod.page", "page"], ["act.done", "done"], ["act.suggest", "suggest"]]) T.push({ id, rect: R[k].rect });
   return T; };
 // §2.6.1's edge forms on doubled centres: a name, { nearestIn } (400 × across + |along|), { nearestIn, ahead } (along > 12, 5 × along + 11 × across), an ordered list with "none" last
@@ -293,8 +273,8 @@ test("the namer spec file agrees with its wireframes, names a word or compositio
   const rows = ["field", "say", "keys", "shift", "suggest"].map((k) => R[k].rect); for (let i = 1; i < rows.length; i++) assert.ok(rows[i - 1][1] + rows[i - 1][3] + 8 <= rows[i][1], "rows 8 px or more apart");
   const T = namerTargets(nm, "letters"); for (const [i, a] of T.entries()) for (const b of T.slice(i + 1)) assert.ok(apart(a.rect, b.rect), `${a.id} and ${b.id} apart`);
   for (const t of T) assert.ok(inside(t.rect, R.panel.rect) && t.rect.slice(1).every((n) => n % 8 === 0) && (t.rect[0] - nm.column.x) % 8 === 0, t.id + " on the grid (x on the inner column's), inside the panel");
-  assert.equal(R.keys.columns * R.keys.pitch - (R.keys.pitch - R.keys.key[0]), R.keys.rect[2], "seven keys fill the grid's width");
-  const col = (x) => (x - R.keys.at[0]) / R.keys.pitch; for (const k of ["shift", "space", "page"]) { const [x, , w] = R[k].rect; assert.ok(Number.isInteger(col(x)) && Number.isInteger((w + 8) / R.keys.pitch), k + " stands under whole columns"); }
+  const KF = R.keys.forms.grid; assert.equal(KF.grid[0] * KF.pitch[0] - (KF.pitch[0] - KF.first[2]), R.keys.rect[2], "seven keys fill the grid's width");
+  const col = (x) => (x - KF.first[0]) / KF.pitch[0]; for (const k of ["shift", "space", "page"]) { const [x, , w] = R[k].rect; assert.ok(Number.isInteger(col(x)) && Number.isInteger((w + 8) / KF.pitch[0]), k + " stands under whole columns"); }
   // every allowed character on one key: a to z, the 24 accented letters, the hyphen and ’ (capitals by the case rule, space on its own key)
   const set = "abcdefghijklmnopqrstuvwxyzáàâäéèêëíìîïóòôöúùûüñÿçœ", on = [...nm.keys.pages.letters, ...nm.keys.pages.accents].filter(Boolean);
   assert.equal(on.length, set.length + 2); for (const c of [...set, "-", "’"]) assert.equal(on.filter((p) => p === c).length, 1, c + " on one key");
@@ -364,7 +344,7 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
   assert.ok(R.resident.feet > R.glass.ground[1] && R.resident.feet < R.glass.ground[1] + R.glass.ground[3], "the feet on the ground band");
   assert.ok(R.nameTag.rect[1] >= R.resident.feet + 12 + 8, "the tag 8 px or more under the feet ring"); assert.ok(R.nameTag.rect[1] + R.nameTag.rect[3] + 8 <= glass[1] + glass[3], "the tag 8 px inside the glass");
   assert.ok(inside(R.nameTag.rect, R.meetRibbon.rect), "the ribbon in the tag's place"); assert.deepEqual([R.nameTag.px, R.nameTag.weight, R.nameTag.h], [frame.type.title, frame.type.weight[20], 32], "the tag at 20 px medium, 32 tall");
-  assert.equal(R.nameTag.max, 200 + 2 * R.nameTag.pad, "the tag holds ten of the widest letter at 20 px (200) and its pads"); assert.equal(R.nameTag.rect[2], R.nameTag.max); assert.equal(R.nameTag.rect[0] + R.nameTag.rect[2] / 2, R.resident.axis); assert.ok(R.nameTag.min % R.nameTag.round === 0 && R.nameTag.max % R.nameTag.round === 0);
+  const TP = R.nameTag.plate; assert.equal(TP.max, 200 + 2 * TP.pad, "the tag holds ten of the widest letter at 20 px (200) and its pads"); assert.equal(R.nameTag.rect[2], TP.max); assert.equal(R.nameTag.rect[0] + R.nameTag.rect[2] / 2, R.resident.axis); assert.ok(TP.min % TP.round === 0 && TP.max % TP.round === 0);
   assert.ok(hab.overlays.namer.panel[0] >= R.bezel.rect[0] + R.bezel.rect[2] + 8 && hab.overlays.namer.panel[0] === R.card.rect[0], "the living window left of the namer's panel"); assert.ok(inside(R.card.rect, hab.overlays.namer.panel) && ["door", "portrait", "cross", "wild"].every((k) => inside(R[k].rect, hab.overlays.namer.panel)), "the namer covers the card and the modules");
   assert.ok(inside(R.resident.lamp.rect, res) && R.resident.lamp.rect[0] + 12 === res[0] + res[2] && R.resident.lamp.rect[1] === res[1], "the lamp at the box's top right");
   assert.equal(hab.focus.targets.resident.shape, "footprint", "the resident wears its footprint (fix 14)");
@@ -378,9 +358,9 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
   for (const [i, m] of mods.entries()) {
     assert.ok(m.rect[0] >= 592 && m.rect[0] + m.rect[2] <= 1008 && m.rect[1] >= R.card.rect[1] + R.card.rect[3] + 16 && m.rect[1] + m.rect[3] <= 552, "the module in the column");
     for (const n of mods.slice(i + 1)) assert.ok(gapOk(m.rect, n.rect), "modules 8 px apart");
-    for (const o of [m.glyph, ...(m.places ? m.places.at.map((a) => ({ at: a, size: m.places.size })) : []), m.frame, m.gate, ...(m.faces ? [m.faces.oneRow, ...m.faces.twoRows].map((a) => ({ at: a, size: m.faces.size })) : [])].filter(Boolean)) { assert.ok(o.at[1] >= m.word[1] + 16 + 8, "8 px from the word's baseline to the object"); assert.ok(o.at[1] + o.size[1] <= m.rect[3], "the object inside its module"); }
+    for (const o of [m.glyph, ...(m.places ? m.places.at.map((a) => ({ at: a, size: m.places.size })) : []), m.frame, m.gate, ...(m.faces ? Object.values(m.faces.forms).flatMap((F) => Array.from({ length: F.grid[1] }, (_, r) => ({ at: [F.first[0] - m.rect[0], F.first[1] - m.rect[1] + F.pitch[1] * r], size: F.first.slice(2) }))) : [])].filter(Boolean)) { assert.ok(o.at[1] >= m.word[1] + 16 + 8, "8 px from the word's baseline to the object"); assert.ok(o.at[1] + o.size[1] <= m.rect[3], "the object inside its module"); }
   }
-  const FC = R.cross.faces; assert.ok(FC.oneRow[0] + FC.pitch * (FC.perRow - 1) + FC.size[0] <= R.cross.rect[2] - 16, "seven faces fit a row"); assert.ok(2 * FC.perRow >= FC.max && FC.max === 11, "two rows hold every partner a twelve-bay vivarium can give"); assert.ok(FC.twoRows[1][1] - FC.twoRows[0][1] >= FC.size[1], "the rows do not overlap");
+  const FC = R.cross.faces, F1 = FC.forms.oneRow, F2 = FC.forms.twoRows; assert.ok(F1.first[0] - R.cross.rect[0] + F1.pitch[0] * (F1.grid[0] - 1) + F1.first[2] <= R.cross.rect[2] - 16, "seven faces fit a row"); assert.ok(F2.grid[0] * F2.grid[1] >= FC.max && F2.upTo === FC.max && FC.max === 11, "two rows hold every partner a twelve-bay vivarium can give"); assert.ok(F2.pitch[1] >= F2.first[3], "the rows do not overlap");
   // the strip: one tile a bay, full to six and compact to twelve, inside the strip; the tiles in the wireframes
   const T = R.tiles.forms, ups = Object.values(T).map((f) => f.upTo); assert.equal(new Set(ups).size, ups.length, "one form an upTo"); assert.equal(Math.max(...ups), 12, "at most twelve bays"); assert.ok(Object.values(T).every((f) => f.grid[0] * f.grid[1] >= f.upTo && Object.keys(f).every((k) => ["upTo", "first", "pitch", "grid"].includes(k))), "a form is { upTo, first, pitch, grid }, its grid as long as its upTo");
   for (const [k, th] of Object.entries(R.tiles.tile.thumb)) assert.ok(inside(th, [0, 0, T[k].first[2], T[k].first[3]]), k + ": the thumbnail inside its tile"); assert.equal(R.tiles.tile.name, null, "thumbnails only");
@@ -469,11 +449,11 @@ test("the Probe bench spec file agrees with the bench wireframes, region by regi
   // the column: apart, inside the stage's content, objects 8 px under the word's baseline
   for (const k of ["switch", "slot"]) {
     const m = R[k]; assert.ok(apart(m.rect, R.cradle.rect) && m.rect[1] + m.rect[3] <= 552); is(atRect(m.rect, m.lamp), k + " lamp");
-    for (const o of [m.toggle, m.socket, m.meaning && m.meaning.dock, m.meaning && m.meaning.plates].filter(Boolean)) assert.ok(o.at[1] >= m.word[1] + 16 + 8, "8 px from the word's baseline");
+    for (const o of [m.toggle, m.socket, m.meaning && m.meaning.dock, m.meaning && { at: [0, listPitch(m.meaning.plates, 1, 0)[1] - m.rect[1]] }].filter(Boolean)) assert.ok(o.at[1] >= m.word[1] + 16 + 8, "8 px from the word's baseline");
   }
   assert.ok(gapOk(R.switch.rect, R.slot.rect, 16), "the modules 16 px apart"); assert.ok(R.cradle.rect[0] + R.cradle.rect[2] + 16 <= R.switch.rect[0]); assert.ok(R.cradle.rect[0] + R.cradle.rect[2] + 16 <= R.plates.rect[0] && R.plates.rect[0] + R.plates.rect[2] + 16 <= R.switch.rect[0], "three columns: the cradle, the plates' box, the column");
-  const K = R.switch.toggle.knob, TGL = R.switch.toggle, MN = R.switch.meaning; assert.ok(K.x.off === TGL.at[0] && K.x.on + K.size[0] === TGL.at[0] + TGL.size[0] && K.y === TGL.at[1], "the knob inside its track, x 16 to 56");
-  assert.ok(MN.dock.at[0] >= TGL.at[0] + TGL.size[0] + 16 && MN.plates.at[0] >= MN.dock.at[0] + MN.dock.size[0] + 16 && MN.plates.at[0] + MN.plates.pitch * 3 + MN.plates.icon[0] <= R.switch.rect[2] - 16 && MN.plates.at[1] + MN.plates.icon[1] <= R.switch.rect[3] - 16, "the switch's meaning picture inside the module");
+  const K = R.switch.toggle.knob, TGL = R.switch.toggle, MN = R.switch.meaning, MP0 = listPitch(MN.plates, 4, 0), MP3 = listPitch(MN.plates, 4, 3); assert.ok(K.x.off === TGL.at[0] && K.x.on + K.size[0] === TGL.at[0] + TGL.size[0] && K.y === TGL.at[1], "the knob inside its track, x 16 to 56");
+  assert.ok(MN.dock.at[0] >= TGL.at[0] + TGL.size[0] + 16 && MP0[0] - R.switch.rect[0] >= MN.dock.at[0] + MN.dock.size[0] + 16 && MP3[0] + MP3[2] - R.switch.rect[0] <= R.switch.rect[2] - 16 && MP0[1] + MP0[3] - R.switch.rect[1] <= R.switch.rect[3] - 16, "the switch's meaning picture inside the module");
   const AD = R.slot.adds; assert.ok(AD.deep.at[0] >= AD.reach.at[0] + AD.reach.size[0] + 16 && AD.deep.at[0] + AD.deep.size[0] <= R.slot.rect[2] - 16, "the deep beside the reach");
   const S = R.slot; assert.ok(inside([S.part.at[0], S.part.at[1], ...S.part.size], [S.socket.at[0], S.socket.at[1], ...S.socket.size])); assert.equal(S.part.at[1] - S.part.armedAt[1], 8, "the armed part lifted 8 px");
   // the focus graph and its vectors
@@ -566,7 +546,7 @@ test("the Home spec file is the build spec's frame: the top bar and its line, th
   is([R.bar.title.px, R.bar.place.px, R.bar.date.px, R.bar.clock.px, R.bar.clock.right, R.bar.title.x, R.bar.place.gap], [20, 16, 16, 20, 1008, 16, 12]); is([R.bar.title.colour, R.bar.place.colour, R.bar.date.colour, R.bar.clock.colour], ["bone", "mist", "mist", "bone"]);
   is([R.bezel.titlePx, R.bezel.title, R.bezel.titleColour, R.bezel.readoutPx, R.bezel.readoutGap, R.bezel.readoutColour, R.bezel.expand], [16, [12, 7], "bone", 16, 8, "fog", { size: 14, tick: 4, at: [30, 8] }]); assert.equal(R.bezel.expandColour, "mist");
   is([R.station.namePx, R.station.nameColour, R.station.name, R.station.line1Px, R.station.line1Colour, R.station.line1, R.station.line2Px, R.station.line2Colour, R.station.line2], [16, "fog", [30, 8], 20, "bone", [12, 34], 16, "mist", [12, 64]]); is([R.station.lamp, R.station.line1Px2, R.station.pictureInset, R.station.columnGap, R.station.bayLine2Right, R.station.slot], [[12, 10, 12, 12], 16, 8, 8, 214, { size: [24, 32], radius: 6, edge: "hairline" }], "section 11: the lamp, the name after it, line 1 at 20 or 16, the picture 8 in, a column 8 clear");
-  is([R.pods.picture, R.incubator.picture, R.companion.picture], [[76, 66], [56, 86], [28, 46]], "the pods' six slots 3 by 2; the capsule 56 by 86; the Companion about 28 by 46"); is({ ...R.pods.slots, forms: undefined }, { size: [24, 32], gap: 2, cols: 3, rows: 2, forms: undefined });   /* its `forms` (K5) are checked against these numbers in face/tests/tiles.test.mjs */ is({ ...R.bay.picture, note: undefined }, { berth: [26, 24], portrait: [18, 24], gap: 2, berths: 3, withPortrait: 4, top: 32, note: undefined });
+  is([R.pods.picture, R.incubator.picture, R.companion.picture], [[76, 66], [56, 86], [28, 46]], "the pods' six slots 3 by 2; the capsule 56 by 86; the Companion about 28 by 46"); is({ cols: R.pods.slots.cols, rows: R.pods.slots.rows, forms: R.pods.slots.forms }, { cols: 3, rows: 2, forms: { grid: { upTo: 6, first: [174, 493, 24, 32], pitch: [26, 34], grid: [3, 2] } } });   /* the slots 24 by 32, 2 apart (K5.1: the forms are their one statement) */ is({ ...R.bay.picture, note: undefined }, { berth: [26, 24], portrait: [18, 24], gap: 2, berths: 3, withPortrait: 4, top: 32, note: undefined });
   for (const k of ["pods", "incubator", "companion"]) assert.ok(R[k].picture[1] <= R.station.size[1] && R[k].picture[0] + 8 <= R.station.size[0]);
   is([R.incubator.capsule.size, R.incubator.capsule.foot, R.incubator.capsule.podHeight, R.incubator.capsule.bar.rect, R.incubator.capsule.bar.max, R.pods.glint.size, R.pods.glint.at, R.companion.plates.size, R.companion.plates.gap, R.companion.plates.at, R.companion.plates.max], [[56, 86], [27, 63], 27, [10, 71, 34, 10], 34, [12, 12], [12, 0], [12, 24], 4, [12, 64], 4], "H3: the capsule, its bar window, the glint and the plates (each ruled in build spec section 14)");
   for (const c of [R.bezel.fill, R.bezel.edge, R.bezel.bevel, R.station.fill, R.station.edge, R.station.bevel, R.console.fill, R.console.edge]) assert.ok(palette.colours.some(([n]) => n === c), c + " is a palette colour");
@@ -613,7 +593,7 @@ test("the Cargo spec file is the build spec's sections 1 to 6 (T-20261016-197): 
   assert.deepEqual(R.hatch.rect, [24, 150, 160, 260]); assert.deepEqual(R.hatch.slices, { shut: "hatch-shut-160x260", open: "pods-hatch-open-160x260" }); assert.deepEqual(R.hatch.ring, { slice: "ring-hatch-80x56", at: [64, 166], size: [80, 56], rule: R.hatch.ring.rule });
   assert.deepEqual(R.hatch.wells.centres, [[49, 60], [103, 58], [49, 120], [103, 119], [50, 180], [104, 182]]); assert.deepEqual(R.hatch.wells.pod, { class: "list", size: [40, 48], at: [-20, -26] }); assert.deepEqual([R.hatch.wells.lit.slice, R.hatch.wells.lit.size, R.hatch.wells.lit.at], ["well-lit-64x64", [64, 64], [-32, -32]]);
   for (const [cx, cy] of R.hatch.wells.centres) { assert.ok(inside([R.hatch.rect[0] + cx - 32, R.hatch.rect[1] + cy - 32, 64, 64], R.hatch.rect), "a lit well inside the hatch"); assert.ok(inside([R.hatch.rect[0] + cx - 20, R.hatch.rect[1] + cy - 26, 40, 48], R.hatch.rect)); }
-  assert.deepEqual(R.hatch.strip.rect, [32, 382, 144, 20]); assert.ok(inside(R.hatch.strip.rect, R.hatch.rect)); assert.deepEqual([R.hatch.strip.find.size, R.hatch.strip.find.at, R.hatch.strip.find.pitch], [[16, 16], [36, 384], 20]);
+  assert.deepEqual(R.hatch.strip.rect, [32, 382, 144, 20]); assert.ok(inside(R.hatch.strip.rect, R.hatch.rect)); assert.deepEqual([listPitch(R.hatch.strip.find, R.hatch.strip.find.max, 0), R.hatch.strip.find.forms.row.pitch], [[36, 384, 16, 16], [20, 0]]);
   assert.deepEqual(R.waiting.rect, [24, 424, 160, 80]); assert.deepEqual([R.waiting.pods.size, R.waiting.pods.top, R.waiting.pods.shadow.at, R.waiting.pods.shadow.slice], [[40, 48], 434, [-4, 40], "cargo-store-shadow-48x14"]);
   { const B = R.waiting.pods.byCount; assert.deepEqual(B, { 1: [84], 2: [60, 108], 3: [36, 84, 132] }); for (const xs of Object.values(B)) assert.equal(xs[0] + (xs.at(-1) + 40 - xs[0]) / 2, 104, "each row centred on x 104"); assert.deepEqual(R.hatch.frame, { slice: "hatch-frame-166x266", at: [21, 147], size: [166, 266], rule: R.hatch.frame.rule }, "the hatch frame is the hatch grown by 3"); assert.deepEqual(R.waiting.pods.moreX, [32, 80, 128]); assert.deepEqual([R.waiting.pods.more.right, R.waiting.pods.more.centreY], [180, 458]); assert.equal(R.waiting.pods.shadow.at[1] + R.waiting.pods.top, 474, "the shadow at y 474"); assert.ok(inside([R.waiting.pods.moreX[2], 434, 40, 48], R.waiting.rect)); }
   assert.deepEqual(R.display.rect, [200, 60, 800, 180]); assert.equal(R.display.centre, 600); assert.equal(R.display.feet, 220);
@@ -866,8 +846,8 @@ test("the Probe stands upright in three columns on the floor; each outer margin 
   assert.equal(R.switch.rect[1], 96, "the switch at y 96"); assert.equal(R.slot.rect[1] - (R.switch.rect[1] + R.switch.rect[3]), 48, "the modules 48 apart");
   assert.deepEqual([R.switch.rect, R.slot.rect], [[624, 96, 312, 128], [624, 272, 312, 248]]); assert.deepEqual([R.switch.lamp, R.slot.lamp], [[284, 12, 12, 12], [284, 12, 12, 12]]);
   // every module object ends at or before w - 16
-  const S = R.switch, L = R.slot, ends = [[S, S.toggle.at[0] + S.toggle.size[0]], [S, S.meaning.dock.at[0] + S.meaning.dock.size[0]], [S, S.meaning.plates.at[0] + 3 * S.meaning.plates.pitch + S.meaning.plates.icon[0]], [S, S.lamp[0] + S.lamp[2]],
-    [L, L.socket.at[0] + L.socket.size[0]], [L, L.part.at[0] + L.part.size[0]], [L, L.adds.pods.at[0] + (L.adds.pods.count - 1) * L.adds.pods.pitch + L.adds.pods.icon[0]], [L, L.adds.plates.at[0] + (L.adds.plates.count - 1) * L.adds.plates.pitch + L.adds.plates.icon[0]], [L, L.adds.reach.at[0] + L.adds.reach.size[0]], [L, L.adds.deep.at[0] + L.adds.deep.size[0]], [L, L.lamp[0] + L.lamp[2]]];
+  const S = R.switch, L = R.slot, ends = [[S, S.toggle.at[0] + S.toggle.size[0]], [S, S.meaning.dock.at[0] + S.meaning.dock.size[0]], [S, ((b) => b[0] + b[2] - S.rect[0])(listPitch(S.meaning.plates, 4, 3))], [S, S.lamp[0] + S.lamp[2]],
+    [L, L.socket.at[0] + L.socket.size[0]], [L, L.part.at[0] + L.part.size[0]], ...["pods", "plates"].map((k) => [L, ((b) => b[0] + b[2] - L.rect[0])(listPitch(L.adds[k], L.adds[k].count, L.adds[k].count - 1))]), [L, L.adds.reach.at[0] + L.adds.reach.size[0]], [L, L.adds.deep.at[0] + L.adds.deep.size[0]], [L, L.lamp[0] + L.lamp[2]]];
   for (const [m, end] of ends) assert.ok(end <= m.rect[2] - 16, `an object ends at ${end}, past ${m.rect[2] - 16}`);
   // the strips
   const TOOLS = { "tools zone": R.bench.tools }, P = R.plates;
