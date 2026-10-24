@@ -30,28 +30,18 @@ static const char *roll_path(void) { return strcmp(v_pstr("regions.roll.form"), 
 static void roll_rect(int i, int r[4]) { v_srect(C, v_fmt("%s.%d", roll_path(), i), r); }
 static int has_roll(void) { return spec_len("props", "regions.roll") >= 0; }
 
-/* ---- the pod: bottom-centred on its axis and feet by the size class of the species (pods.json classes.pod); it travels in grow ---- */
-static int pod_box(int box[4]) {
-  char cls[16]; snprintf(cls, sizeof cls, "%s", v_pstr("regions.pod.sizeClass")); if (!cls[0]) return 0;
-  int w = spec_int("pods", v_fmt("classes.pod.%s.0", cls), 0), h = spec_int("pods", v_fmt("classes.pod.%s.1", cls), 0); if (w <= 0 || h <= 0) return 0;
-  box[0] = v_si(C, "regions.pod.axis", 160) - v_half(w); box[1] = v_si(C, "regions.pod.feet", 408) - h; box[2] = w; box[3] = h; return 1;
-}
-
 /* the bench: the stage's ground (the frame's) and the room master over it */
-static void build_bench(void) {
-  int r[4]; v_srect(C, "regions.bench.rect", r); char g[24]; spec_str("frame", "colours.stageGround", g, sizeof g);
-  v_region("bench", LAYER_CHROME); v_rect("bench", r[0], r[1], r[2], r[3], g);
-  v_region("bench", LAYER_PAINTED);
-  for (int i = 0; i < v_plen("regions.bench.room"); i++) if (v_sprite("bench.room", v_pstr(v_fmt("regions.bench.room.%d", i)), r[0], r[1], r[2], r[3])) break;
-}
+static void build_bench(void) { kit_stage(C, "regions.bench.rect", v_scol("frame", "colours.stageGround"), "bench", "bench", "bench.room", "regions.bench.room"); }
 static void picture(const char *region, const char *id, const char *path, const char *asset) { int r[4]; v_srect(C, path, r); if (has(asset)) { v_name(region); v_sprite(id, asset, r[0], r[1], r[2], r[3]); } }
 
+/* ---- the pod: bottom-centred on its axis and feet by the size class of the species (pods.json classes.pod), with the contact shadow (kit_pod); it travels in grow ---- */
 static void build_pod(int grow) {
-  int b[4]; if (!pod_box(b)) return; const char *pic = v_pstr("regions.pod.picture"); if (!has(pic)) return;
-  int dx = 0, dy = 0, rest = 0;
-  {   /* the contact shadow (as on Pods, specimen.c): pods.json `shadow` widens the class's width by `widen`, `h` tall, centred on the axis and the feet, on the painted layer before the pod; it never travels: shown in shape and nothing read, and in grow until the travel starts (a cut to a zero-size node), never with reduced motion in grow */
-    int sw = b[2] + spec_int("pods", "shadow.widen", 0), sh = spec_int("pods", "shadow.h", 0), at = v_si(C, "events.grow.steps.2.at", 300), t = grow_time(), on = !grow || (t >= 0 && t < at);
-    v_region("podShadow", LAYER_PAINTED); v_slot("podShadow", v_pstr("regions.podShadow.picture"), NULL, v_si(C, "regions.pod.axis", 160) - v_half(sw), v_si(C, "regions.pod.feet", 408) - v_half(sh), sw, sh, on);
+  const char *pic = v_pstr("regions.pod.picture"); if (!has(pic)) return;
+  int dx = 0, dy = 0, rest = 0, b[4];
+  {   /* the contact shadow (as on Pods): pods.json `shadow` widens the class's width by `widen`, `h` tall, centred on the axis and the feet, on the painted layer before the pod; it never travels: shown in shape and nothing read, and in grow until the travel starts (a cut to a zero-size node), never with reduced motion in grow */
+    int at = v_si(C, "events.grow.steps.2.at", 300), t = grow_time();
+    kit_podShadow_t sh = { "podShadow", "podShadow", v_pstr("regions.podShadow.picture"), !grow || (t >= 0 && t < at) };
+    if (!kit_pod("pods", v_pstr("regions.pod.sizeClass"), v_si(C, "regions.pod.axis", 160), v_si(C, "regions.pod.feet", 408), &sh, b)) return;
   }
   if (grow) {   /* the pod travels from its box to the dome in a straight line, whole pixels, eased: from `travel.at` over `travel.ms`, feet (160, 408) to (864, 296) */
     int at = v_si(C, "events.grow.steps.2.at", 300), ms = v_si(C, "events.grow.steps.2.ms", 600), t = grow_time(), p = t < 0 || t >= at + ms ? 1000 : t <= at ? 0 : (t - at) * 1000 / ms, e = layout_ease_io(p);
@@ -133,17 +123,10 @@ static void build_traitLine(void) {
 }
 /* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; in grow the stamp prints its cells row by row from the top over `steps.0.ms` (N + 2 rows of `cell` px, whole rows); nothing read: no label is drawn */
 static void build_stamp(void) {
-  int r[4]; v_srect(C, "regions.stamp.rect", r); const char *pl = v_pstr("regions.stamp.plate");
-  const char *a = v_pstr("regions.stamp.asset"); int size = v_pint("regions.stamp.size", 0), N = v_pint("regions.stamp.N", 0), cell = v_pint("regions.stamp.cell", 0);
-  word_stampCase(C, "regions", 0);   /* the case the label is pressed into, drawn in every state (fix 5 Create C1; Pods' signed case, the same word's part) */
-  v_region("stamp.plate", LAYER_PAINTED); if (has(pl)) v_slot("stamp.plate", pl, NULL, r[0], r[1], r[2], r[3], has(a) && size);
-  v_region("stampImage", LAYER_PAINTED);   /* the stamp's own region (as Pods'), so the case's rectangle is not folded into it */
-  if (!has(a) || !size) { word_stampCase(C, "regions", 1); return; }
-  int x = r[0] + v_half(r[2] - size), y = r[1] + v_half(r[3] - size), rows = N + 2, shown = rows;
+  const char *a = v_pstr("regions.stamp.asset"); int size = v_pint("regions.stamp.size", 0), N = v_pint("regions.stamp.N", 0), cell = v_pint("regions.stamp.cell", 0), rows = N + 2, shown = rows;
   if (strcmp(v_pstr("state"), "grow") == 0) { int t = grow_time(), ms = v_si(C, "events.grow.steps.0.ms", 300); if (has_roll() && t >= 0 && t < ms) shown = rows * t / ms; }   /* nothing read (no roll): the stamp is a cut, the whole of it from 0 */
-  v_name("stampImage"); prim_node(v_id("stamp.clip"), FN_CLIP, x, y, size, shown * cell, 0, 1, 0);
-  v_sprite("stamp.stamp", a, x, y, size, size);
-  word_stampCase(C, "regions", 1);   /* the case's front glass over the label */
+  kit_stamp_t o = { "stamp.plate", "stamp.plate", "stampImage", 0, C, "regions" };   /* the case is drawn in every state (fix 5 Create C1); the stamp has its own region (as Pods'), so the case's rectangle is not folded into it */
+  kit_stamp(C, "regions.stamp.rect", v_pstr("regions.stamp.plate"), a, size, shown * cell, &o);
 }
 static void build_code(void) {
   int r[4]; v_srect(C, "regions.code.rect", r); const char *code = v_pstr("regions.code"); int t = grow_time(), at = v_si(C, "events.grow.steps.1.at", 300), px = v_si(C, "regions.code.px", 16), shown = *code && (t < 0 || t >= at), w = v_measure(code, px);

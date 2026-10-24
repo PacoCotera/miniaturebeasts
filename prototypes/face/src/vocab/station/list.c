@@ -13,15 +13,6 @@
 #define S "pods"
 #define C "regions.collection"
 
-/* the bench: the stage's ground and the room master over it (the first of the candidates the face holds) */
-void word_bench(void) {
-  int r[4]; if (!v_spec_rect(S, "regions.bench.rect", r)) return;
-  char ground[24]; spec_str(S, "colours.ground", ground, sizeof ground);
-  v_region("bench", LAYER_CHROME); v_rect("bench", r[0], r[1], r[2], r[3], ground);
-  v_region("bench", LAYER_PAINTED);   /* the room stage is a painted master */
-  for (int i = 0; i < v_plen("regions.bench.room"); i++) if (v_sprite("bench.room", v_pstr(v_fmt("regions.bench.room.%d", i)), r[0], r[1], r[2], r[3])) break;
-}
-
 void word_list(void) {
   char name[24]; spec_str(S, "colours.name", name, sizeof name);
   int n = v_plen("regions.list.places");

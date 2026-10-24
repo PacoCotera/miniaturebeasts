@@ -37,6 +37,16 @@ test("Cargo's arrival band: who leaves, right-aligned to x 984, the faces 32 apa
   const B = S("cargo").regions.arrival.band.leaving;
   for (let nf = 1; nf <= 3; nf++) same(B, nf, (i) => [B.rightX - (B.markSize[0] + B.gap + B.pitch * nf - (B.pitch - B.faceSize[0])) + B.markSize[0] + B.gap + B.pitch * i, B.y, B.faceSize[0], B.faceSize[0]], "leaving faces");
 });
+test("Cargo's arrival band: the Probe's plates, 20 apart from (40, 68), 16 x 16, up to four, and the words a gap after the last (the older keys' arithmetic)", () => {
+  const B = S("cargo").regions.arrival.band.probe, F = B.forms.row;
+  assert.equal(F.upTo, 4, "the Probe's shield is at most four plates (state.mjs TIER)");
+  for (let n = 1; n <= 4; n++) {
+    same(B, n, (i) => [B.at[0] + i * B.pitch, B.at[1], B.size[0], B.size[1]], "probe plates");
+    const last = listPitch(B, n, n - 1);
+    assert.equal(last[0] + last[2] + B.words.gap, B.at[0] + n * B.pitch + B.words.gap - (B.pitch - B.size[0]), `the words' x after ${n} plates`);
+  }
+  assert.throws(() => listPitch(B, 5, 0), /listPitch/, "a fifth plate is refused: a new tier must add a form");
+});
 test("the Probe bench: the switch's plates and what the upgrade adds, 24 apart from the module's corner and the spec's `at`", () => {
   const b = S("bench").regions, M = b.switch, A = b.slot;
   for (let n = 1; n <= 4; n++) same(M.meaning.plates, n, (i) => [M.rect[0] + M.meaning.plates.at[0] + i * M.meaning.plates.pitch, M.rect[1] + M.meaning.plates.at[1], ...M.meaning.plates.icon], "switch plates");

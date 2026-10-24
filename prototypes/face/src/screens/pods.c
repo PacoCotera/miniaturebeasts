@@ -13,8 +13,8 @@
 #define S "pods"
 /* the pod's box: bottom-centred on its axis and feet line at its size class */
 static int pod_box(const char *base, int box[4]) {
-  int sz[2], w, h; if (!word_pod_size(sz) || !*v_pstr("regions.specimen.pod.sealed")) return 0; w = sz[0]; h = sz[1];
-  box[0] = spec_int(S, v_fmt("%s.pod.axis", base), 0) - v_half(w); box[1] = spec_int(S, v_fmt("%s.pod.feet", base), 0) - h; box[2] = w; box[3] = h; return 1;
+  if (!*v_pstr("regions.specimen.pod.sealed")) return 0;
+  return kit_pod(S, v_pstr("regions.specimen.pod.sizeClass"), spec_int(S, v_fmt("%s.pod.axis", base), 0), spec_int(S, v_fmt("%s.pod.feet", base), 0), NULL, box);
 }
 /* the ring on the focused target, in the form of its group: a place and a kin wear the circle, the pod and the hatch the rounded rectangle; the rail's tabs carry their own. The box is the focus table's. */
 static void focus_ring(const char *state) {
@@ -27,6 +27,13 @@ static void focus_ring(const char *state) {
     int box[4] = { t[i].x, t[i].y, t[i].w, t[i].h };
     word_focusRingFor("focus", box, t[i].group); return;
   }
+}
+
+/* the overview's stamp label in its case (the props' regions.stamp): the case's back, the plate (which stands without a stamp), the stamp, the case's front */
+static void stamp_label(const char *base) {
+  if (spec_len("props", "regions.stamp") < 0) return;
+  kit_stamp_t o = { "stamp", "stamp", "stamp.image", 1, S, base };
+  kit_stamp(S, v_fmt("%s.stamp.rect", base), v_pstr("regions.stamp.plate"), v_pstr("regions.stamp.asset"), v_pint("regions.stamp.size", 0), -1, &o);
 }
 
 /* the targets as the words drew them, in the props' order */
@@ -50,13 +57,13 @@ int pods_focus(focus_target_t *out, int cap) {
 void pods_words(void) {
   char state[24]; snprintf(state, sizeof state, "%s", v_pstr("state"));
   const char *base = strcmp(state, "overview") == 0 ? "regions.overview" : strcmp(state, "chapter") == 0 ? "regions.chapter" : "regions.collection";
-  word_bench();
+  kit_stage(S, "regions.bench.rect", v_scol(S, "colours.ground"), "bench", "bench", "bench.room", "regions.bench.room");   /* the ground and the room master */
   if (strcmp(state, "collection") == 0) word_list();
   else if (strcmp(state, "compare") == 0) { word_rail(NULL); word_page("pageA"); word_page("pageB"); }
   else if (strcmp(state, "overview") == 0 || strcmp(state, "chapter") == 0) {
     int box[4]; if (pod_box(base, box)) v_set_focal(box);
     word_specimen(base);
-    if (strcmp(state, "overview") == 0) { word_kin(base); word_stamp(base); }
+    if (strcmp(state, "overview") == 0) { word_kin(base); stamp_label(base); }
     word_rail(NULL);
     if (strcmp(state, "chapter") == 0) word_page("page");
   }

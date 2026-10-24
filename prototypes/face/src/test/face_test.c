@@ -397,6 +397,54 @@ static void kit_words(void) {
     check(o[4][0] == 8 && o[5][0] + o[5][2] == 392, "kit_nameTag: slid to stay 8 px inside the window's left and right", "");
     check(oks && o[6][0] == o[0][0] && o[6][1] == 180 && o[6][2] == want && o[6][3] == 24, "kit_nameTag: a slot is the fill and the name with no size at the tag's place (no edge nodes, as before), and returns the same box", "");
   }
+  /* kit_stage, kit_stamp and kit_pod: the nodes and boxes they draw, the ids the caller names, the forms (no room master, none sent, no stamp, no case, no clip, a refused class) */
+  { static const struct { const char *id; int w, h; } PIC[] = { { "ks-room-b", 300, 200 }, { "ks-plate", 120, 120 }, { "ks-stamp", 64, 64 }, { "ks-case-b", 128, 128 }, { "ks-case-f", 128, 128 }, { "ks-shadow", 136, 14 }, { "ks-shadow-odd", 137, 14 } };   /* a picture is drawn 1:1, so each is loaded at the size it is drawn */
+    { const char *hi = "{\"t\":\"hello\",\"contract\":1}"; wire_send(hi, (int)strlen(hi)); }
+    for (int i = 0; i < 7; i++) { char m[160]; snprintf(m, sizeof m, "{\"t\":\"asset\",\"id\":\"%s\",\"w\":%d,\"h\":%d,\"policy\":\"art\",\"status\":\"placeholder\"}", PIC[i].id, PIC[i].w, PIC[i].h); check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot(PIC[i].id) >= 0, "kit_stage, kit_stamp and kit_pod: a picture is loaded", PIC[i].id); }
+    static const char PR[] = "{\"room\":[\"\",\"ks-missing\",\"ks-room-b\"],\"none\":[\"ks-missing\"],\"regions\":{\"stamp\":{\"case\":{\"back\":\"ks-case-b\",\"front\":\"ks-case-f\"}}}}";
+    static const char KST[] = "{\"regions\":{\"stage\":{\"rect\":[10,20,300,200]}},\"r\":{\"rect\":[100,50,120,120]},\"cs\":{\"stampCase\":{\"rect\":[96,46,128,128]},\"stampCaseFront\":{\"rect\":[96,46,128,128]}},\"classes\":{\"pod\":{\"medium\":[120,152],\"odd\":[121,150],\"flat\":[120,0]}},\"shadow\":{\"widen\":16,\"h\":14}}";
+    spec_load("props", PR, sizeof PR - 1); spec_load("kst", KST, sizeof KST - 1);
+    int ok1, ok2, ok3, ok4, cnt1;
+    prim_begin(); n0 = table_nodes();
+    ok1 = kit_stage("kst", "regions.stage.rect", "kitA", "ks", "ks.ground", "ks.room", "room");
+    n1 = table_nodes(); cnt1 = n1 - n0;
+    check(ok1 == 1 && cnt1 == 2 && kat("ks.ground", FN_RECT, 10, 20, 300, 200) && kat("ks.room", FN_SPRITE, 10, 20, 300, 200), "kit_stage: the ground over the rect, then the first candidate the host has sent (the unsent and the empty ones skipped) at the same rect", "");
+    ok2 = kit_stage("kst", "regions.stage.rect", "kitA", "ks", "ks.g2", NULL, NULL); ok3 = kit_stage("kst", "regions.stage.rect", "kitA", "ks", "ks.g3", "ks.r3", "none"); ok4 = kit_stage("kst", "regions.nowhere.rect", "kitA", "ks", "ks.g4", "ks.r4", "room");
+    check(ok2 == 1 && kat("ks.g2", FN_RECT, 10, 20, 300, 200) && ok3 == 1 && kat("ks.g3", FN_RECT, 10, 20, 300, 200) && kabsent("ks.r3"), "kit_stage: no room master named, or none of the candidates sent: the ground alone, and no room node", "");
+    check(ok4 == 0 && kabsent("ks.g4") && kabsent("ks.r4"), "kit_stage: a spec with no rectangle draws nothing and returns 0", "");
+    prim_end();
+    /* kit_stamp: the case's back, the plate, the clip, the stamp centred on the plate, the case's front, in this order. The ids of the stamp's own nodes are fixed, so each case is its own frame and is read after the frame ends (a node not drawn is dropped then). A node inside a clip is placed from the clip's corner. */
+    kit_stamp_t full = { "st.plate", "st", "st.img", 0, "kst", "cs" }, bare = { "st.plate", "st", "st.img", 0, NULL, NULL }, alone = { "st.plate", "st", "st.img", 1, "kst", "cs" };
+    prim_begin(); kit_stamp("kst", "r.rect", "ks-plate", "ks-stamp", 64, 20, &full); prim_end();
+    check(table_nodes() == 5 && kat("stamp.case", FN_SPRITE, 96, 46, 128, 128) && kat("st.plate", FN_SPRITE, 100, 50, 120, 120) && kat("stamp.clip", FN_CLIP, 128, 78, 64, 20) && kat("stamp.stamp", FN_SPRITE, 0, 0, 64, 64) && kat("stamp.front", FN_SPRITE, 96, 46, 128, 128),
+      "kit_stamp: the case's back, the plate, the clip cut to clipH rows at the stamp's place (half the room left, rounding up), the stamp in it, the case's front: five nodes", "");
+    prim_begin(); kit_stamp("kst", "r.rect", "ks-plate", "", 64, 20, &full); prim_end();
+    check(table_nodes() == 3 && kat("stamp.case", FN_SPRITE, 96, 46, 128, 128) && kat("st.plate", FN_SPRITE, 100, 50, 0, 0) && kabsent("stamp.clip") && kabsent("stamp.stamp") && kat("stamp.front", FN_SPRITE, 96, 46, 128, 128),
+      "kit_stamp: with no stamp the plate keeps its node with no size at the plate's corner, the stamp and the clip are not drawn, and the case's front stands", "");
+    prim_begin(); kit_stamp("kst", "r.rect", "ks-plate", "ks-stamp", 0, 20, &alone); prim_end();
+    check(table_nodes() == 3 && kat("st.plate", FN_SPRITE, 100, 50, 120, 120) && kabsent("stamp.stamp") && kabsent("stamp.clip"), "kit_stamp: a size of 0 is no stamp, and plateAlone keeps the plate shown without one", "");
+    prim_begin(); kit_stamp("kst", "r.rect", "ks-plate", "ks-stamp", 64, -1, &bare); prim_end();
+    check(table_nodes() == 2 && kat("st.plate", FN_SPRITE, 100, 50, 120, 120) && kat("stamp.stamp", FN_SPRITE, 128, 78, 64, 64) && kabsent("stamp.clip") && kabsent("stamp.case") && kabsent("stamp.front"), "kit_stamp: no clip (clipH -1) and no case (caseSpec NULL) are not drawn, and the stamp stands at its own place", "");
+    prim_begin(); kit_stamp("kst", "r.rect", "", "ks-stamp", 64, 0, &bare); prim_end();
+    check(table_nodes() == 2 && kabsent("st.plate") && kat("stamp.clip", FN_CLIP, 128, 78, 64, 0), "kit_stamp: no plate picture draws no plate node, and a clipH of 0 is a clip of no height (the first row not yet printed)", "");
+    /* kit_pod: the class's box on the axis and feet, the shadow a slot under it, a refused class */
+    { int b[4], bo[4], bn[4], bx[4], r1, r2, r3, r4, r5; kit_podShadow_t on = { "pd.shadow", "pd", "ks-shadow", 1 }, off = { "pd.off", "pd", "ks-shadow", 0 };
+      prim_begin(); n0 = table_nodes();
+      r1 = kit_pod("kst", "medium", 160, 408, &on, b); r2 = kit_pod("kst", "medium", 160, 408, &off, bo); r3 = kit_pod("kst", "odd", 160, 408, &(kit_podShadow_t){ "pd.odd", "pd", "ks-shadow-odd", 1 }, bn); r4 = kit_pod("kst", "medium", 160, 408, NULL, bx);
+      n1 = table_nodes();
+      check(r1 == 1 && b[0] == 100 && b[1] == 256 && b[2] == 120 && b[3] == 152, "kit_pod: the class's box, centred on the axis and standing on the feet", "");
+      check(kat("pd.shadow", FN_SPRITE, 92, 401, 136, 14), "kit_pod: the shadow is the box's width and shadow.widen by shadow.h, centred on the axis and the feet", "");
+      check(r2 == 1 && bo[0] == 100 && kat("pd.off", FN_SPRITE, 92, 401, 0, 0), "kit_pod: shadow off keeps the shadow's node with no size at the shadow's corner", "");
+      check(r3 == 1 && bn[0] == 99 && bn[1] == 258 && kat("pd.odd", FN_SPRITE, 160 - 69, 401, 137, 14), "kit_pod: an odd width centres by rounding the half up (the axis less 61 for 121, the shadow's less 69 for 137)", "");
+      check(r4 == 1 && bx[0] == 100 && bx[3] == 152 && n1 - n0 == 3, "kit_pod: no shadow (NULL) is the box alone and draws no node", "");
+      prim_end();
+      prim_begin(); n0 = table_nodes();
+      r5 = kit_pod("kst", "flat", 160, 408, &on, b); r1 = kit_pod("kst", "", 160, 408, &on, bo); r2 = kit_pod("kst", NULL, 160, 408, &on, bn); r3 = kit_pod("kst", "nothing", 160, 408, &on, bx); n1 = table_nodes();
+      check(r5 == 0 && r1 == 0 && r2 == 0 && r3 == 0 && n1 == n0 && bo[0] == 160 && bo[1] == 408 && bo[2] == 0 && bo[3] == 0 && b[2] == 120 && b[3] == 0, "kit_pod: a class with a side of 0, an empty, a NULL and an unknown class return 0, draw no shadow and give the box from what the spec holds (zero sides)", "");
+      prim_end();
+    }
+    spec_drop("kst"); spec_drop("props");   /* the spec table holds a fixed number of screens */
+  }
   /* v_scol_or and v_token */
   { static const char KS[] = "{\"colours\":{\"chrome\":\"kitA\",\"blank\":\"\"},\"x\":{\"c\":\"kitB\",\"e\":\"\"}}";
     spec_load("kcol", KS, sizeof KS - 1);

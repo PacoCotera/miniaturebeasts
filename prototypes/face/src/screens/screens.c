@@ -12,8 +12,8 @@
 
 /* The composition of a screen the face has no binding table for (frame.json notBuilt): the stage in colours.stageGround (Idle: the whole 1024x600 in notBuilt.colours.ground) and one line, centred. No picture, no target, no ring. */
 static void not_built(void) {
-  char c[24], s[V_STR]; int r[4];
-  spec_str("frame", "colours.stageGround", c, sizeof c); if (v_spec_rect("frame", "regions.stage.rect", r)) { v_region("notBuilt.stage", LAYER_CHROME); v_rect("notBuilt.stage", r[0], r[1], r[2], r[3], c); }
+  char c[24], s[V_STR];
+  kit_stage("frame", "regions.stage.rect", v_scol("frame", "colours.stageGround"), "notBuilt.stage", "notBuilt.stage", NULL, NULL);
   spec_str("frame", "notBuilt.strings.line", s, sizeof s);
   int px = spec_int("frame", "notBuilt.regions.line.px", 20);
   spec_str("frame", "notBuilt.colours.line", c, sizeof c);

@@ -23,12 +23,7 @@ static int has(const char *id) { return id && *id && wire_has_asset(id); }
 static int g_tag[4];   /* the name tag as drawn (the name target's box), zeros while the meet ribbon stands in its place */
 
 /* ---- the stage and the living window ---- */
-static void build_stage(void) {
-  int r[4]; v_srect(S, "regions.stage.rect", r);
-  v_region("stage", LAYER_CHROME); v_rect("stage.ground", r[0], r[1], r[2], r[3], v_scol("frame", "colours.stageGround"));
-  v_region("stage", LAYER_PAINTED);
-  for (int i = 0, n = v_plen("regions.stage.room"); i < n; i++) if (v_sprite("stage.room", v_pstr(v_fmt("regions.stage.room.%d", i)), r[0], r[1], r[2], r[3])) break;   /* the up-close stage master, until it is signed the ground alone */
-}
+static void build_stage(void) { kit_stage(S, "regions.stage.rect", v_scol("frame", "colours.stageGround"), "stage", "stage.ground", "stage.room", "regions.stage.room"); }   /* the up-close stage master, until it is signed the ground alone */
 
 /* ---- the resident ---- */
 /* the lift of the placeholder's hops (events.moment.placeholder): hop h begins at `hops[h]` ms of the moment and runs `ms`; `lift` is [ms into the hop, px above where the creature stands]; whole pixels, no ease */
@@ -157,7 +152,7 @@ static void build_tag(void) {
   memset(g_tag, 0, sizeof g_tag);
   v_region("meetRibbon", LAYER_CHROME);
   word_ribbon("meetRibbon", rib, meet ? words : "", v_si(S, "regions.meetRibbon.px", 20), v_si(S, "regions.meetRibbon.pad", 0), flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.ribbon.fill"), v_scol(S, "colours.ribbon.edge"), flash ? v_scol("frame", "colours.flashInk") : v_scol(S, "colours.ribbon.text"));
-  int below = box[1] + box[3] + 24, over = box[1] - v_si(S, "regions.resident.lift", 4) - 8 - v_si(S, "regions.nameTag.h", 24);   /* 24 under the feet, or 8 above the lifted box when the tag's bottom would pass 8 above the glass's */
+  int below = box[1] + box[3] + v_si(S, "regions.nameTag.under", 0), over = box[1] - v_si(S, "regions.resident.lift", 4) - v_si(S, "regions.nameTag.overGap", 0) - v_si(S, "regions.nameTag.h", 0);   /* the tag's top under the feet (nameTag.under), or its bottom a gap (nameTag.overGap) above the lifted box when it would pass the glass's bottom margin */
   if (!meet) kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 0, flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), flash ? v_scol("frame", "colours.flashInk") : v_scol(S, "colours.nameTag.text"), g_tag);
   else { kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 1, v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), v_scol(S, "colours.nameTag.text"), g_tag); memset(g_tag, 0, sizeof g_tag); }   /* the same nodes with no size, at the tag's place: the opening redraws nothing at the origin */
 }
@@ -185,14 +180,11 @@ static void build_code(void) {
 }
 /* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows); no stamp: no label */
 static void build_stamp(void) {
-  int r[4]; v_srect(S, "regions.stamp.rect", r); const char *pl = v_pstr("regions.card.stamp.plate");
   const char *a = v_pstr("regions.card.stamp.asset"); int size = v_pint("regions.card.stamp.size", 0), N = v_pint("regions.card.stamp.N", 0), cell = v_pint("regions.card.stamp.cell", 0);
-  v_region("stamp", LAYER_PAINTED); if (has(pl)) v_slot("stamp", pl, NULL, r[0], r[1], r[2], r[3], has(a) && size);
-  if (!has(a) || !size) return;
-  int x = r[0] + v_half(r[2] - size), y = r[1] + v_half(r[3] - size), rows = N + 2, shown = rows; anim_state_t t;
+  int rows = N + 2, shown = rows; anim_state_t t;
   if (v_pbool("motion", 1)) for (int i = 0, n = v_plen("regions.plates.items"); i < n; i++) if (anim_get(ANIM_READ, v_fmt("plate.%d", i), &t) && t.ms > 0) { shown = rows * t.elapsed / t.ms; break; }
-  v_name("stamp"); prim_node(v_id("stamp.clip"), FN_CLIP, x, y, size, shown * cell, 0, 1, 0);
-  v_sprite("stamp.stamp", a, x, y, size, size);
+  kit_stamp_t o = { "stamp", "stamp", "stamp", 0, NULL, NULL };
+  kit_stamp(S, "regions.stamp.rect", v_pstr("regions.card.stamp.plate"), has(a) ? a : "", size, shown * cell, &o);
 }
 
 /* ---- the plates: one a chapter in ring order, left-aligned from x 608: the signed ground and the rail's 24 x 24 emblem at (8, 8) ---- */

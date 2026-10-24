@@ -35,12 +35,7 @@ static void hidden_plate(int i, int dy, const char *asset) {   /* a place with n
 static int lift_of(const char *id, const char *cur) { return strcmp(id, cur) == 0 ? v_si(S, v_fmt("focus.targets.%s.lift", id), 2) : 0; }
 
 /* ---- the stage: the frame's ground, and the room master over it (the first of the props' candidates the host has sent) ---- */
-static void build_stage(void) {
-  int r[4]; v_srect(S, "regions.bench.rect", r);
-  v_region("bench", LAYER_CHROME); v_rect("bench", r[0], r[1], r[2], r[3], v_scol("frame", "colours.stageGround"));
-  v_region("bench", LAYER_PAINTED);
-  for (int i = 0; i < v_plen("regions.bench.room"); i++) if (v_sprite("bench.room", v_pstr(v_fmt("regions.bench.room.%d", i)), r[0], r[1], r[2], r[3])) break;
-}
+static void build_stage(void) { kit_stage(S, "regions.bench.rect", v_scol("frame", "colours.stageGround"), "bench", "bench", "bench.room", "regions.bench.room"); }
 
 /* ---- the cradle: one sprite at the spec's rectangle (the Probe of the tier; the empty cradle away; the tier-1 Probe until the install cuts at 300) ---- */
 static void build_cradle(void) {

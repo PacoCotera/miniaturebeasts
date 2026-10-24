@@ -123,6 +123,8 @@
    "min": 80,
    "max": 224,
    "plate": {"min": 80, "max": 224, "pad": 12, "round": 8},
+   "under": 24,
+   "overGap": 8,
    "lineTop": 418,
    "centre": 296,
    "w": "the name's width + 2 × pad (24), rounded up to `round` (8), at least `min` (80); the widest name (200 px at 20 px) gives `max` (224). Centred on x 296; the region is the slot it sits in",
