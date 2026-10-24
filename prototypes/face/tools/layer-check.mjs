@@ -114,7 +114,7 @@ const reading = (screen) => async (name, page, fail) => {
     const d = keep(benchDepartures(c.log, benchSpec, c.props, c.props?.focus?.cur)); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
-  if (screen === "sitting") {   // the sitting (ARCH-2): the scene under 400 objects, sitting.c's own nodes within 64 (the node table less the frame's own), the pictures within the face's budget (sitting-place-five holds every place's backdrop)
+  if (screen === "sitting") {   // the sitting: the scene under 400 objects, sitting.c's own nodes within 64 (the node table less the frame's own), the pictures within the face's budget (sitting-place-five holds every place's backdrop)
     const c = await page.evaluate(() => ({ size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures, table: window.__st.check().log?.table ?? null, frame: window.__st.face.frameTable() }));
     const own = c.table != null && c.frame != null ? c.table - c.frame : null; extra = ` · objects ${c.objects} · own ${own} · pictures ${c.pictures} · props ${c.size} B`;
     if (own == null || own > 64) fail(`${name}: ${own} own nodes (budget 64)`); if (c.objects >= 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
