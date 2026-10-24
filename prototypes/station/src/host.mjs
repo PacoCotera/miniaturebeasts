@@ -23,6 +23,8 @@ import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
 import { createBuild, createPod } from "./views/create-props.mjs";
 import { incubatorBuild } from "./views/incubator-props.mjs";
+import { sittingBuild } from "./views/sitting-props.mjs";
+import { newSit } from "./intents/sitting.mjs";
 import { incubatorTick } from "./intents/incubator.mjs";
 import { enter as enterHabitat, endMeet } from "./intents/habitat.mjs";
 import { cuttingHatch, landHatch } from "./intents/incubator.mjs";
@@ -194,6 +196,25 @@ export function incubatorBody() {
   return body;
 }
 
+// ---- the sitting ----
+// The ceremony on Habitat's shown mibi (UI.hab.id), its step and choices the UI's (UI.sit, intents/sitting.mjs); the ring is the face's on the cards (sitting.json focus.pose.graph) and the host keeps what the face says in UI.sit.focus.
+// While the resident's light change waits for the backdrop's end (events.backdrop.resident "cut") the window keeps the picture it had. Returns null with no visit, or in state portrait while its picture is not held.
+export function sittingBody(light = lightNow()) {
+  const s = UI.sit; if (!s) return null;
+  const body = sittingBuild({ st: G.st, sv: G.sv, settings: G.settings, light, mibiId: UI.hab.id, ui: s }, SPECS.sitting, SPECS.habitat); if (!body) return null;
+  s.focus = body.props.focus.cur;
+  const r = body.props.regions.resident; if (s.prev.cut && s.prev.resident && r.picture) r.picture = s.prev.resident;
+  return body;
+}
+// A way into the sitting (Habitat's Portrait ✓ and, later, Cargo's end): a fresh visit on mibi `m` in `state` ("pose", or "portrait" for the finished picture), never when the props builder has nothing to show (the portrait's
+// picture not held): then nothing changes and it returns false.
+export function enterSitting(h, m, { state = "pose", from = "habitat" } = {}) {
+  if (!m) return false;
+  const sit = newSit(from, state);
+  if (!sittingBuild({ st: G.st, sv: G.sv, settings: G.settings, light: lightNow(), mibiId: m.id, ui: sit }, SPECS.sitting, SPECS.habitat)) return false;
+  UI.hab.id = m.id; UI.sit = sit; h.goto("sitting"); return true;
+}
+
 // ---- the props of the screen on the page ----
 // { msg: the props message (without seq), ids: every picture the face needs before them, light, lit: the graded residents, owed: the ids of the requests that carry an owed habit key }
 export function screenProps(plate) {
@@ -209,11 +230,14 @@ export function screenProps(plate) {
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
-  const body = screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  if (screen === "sitting" && !UI.sit) { goScreen("habitat"); return screenProps(plate); }   // no visit to show: one mibi up close
+  const sat = screen === "sitting" ? sittingBody(light) : null; if (screen === "sitting" && !sat) { UI.sit = null; goScreen("habitat"); return screenProps(plate); }
+  const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
-  if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
+  if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);
+  if (screen === "sitting") for (const id of [UI.sit.prev.glass, UI.sit.prev.resident]) if (id) ids.add(id);   // the pictures the window's dithers start from stay on the face until their events end   // the founder the roll's dither starts from stays on the face until the event ends
   if (screen === "home") return { msg: { screen, ...body.props, frame: { plate: pl } }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs) };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
   if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
@@ -266,7 +290,7 @@ export function createHost({ send, nowMs, light, time = null, afterSave = () => 
   };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), motion, say: msg, play, at, skip, save: () => { save(); afterSave(); }, holding, arriving,
+    now: () => Date.now(), motion, say: msg, play, at, skip, save: () => { save(); afterSave(); }, holding, arriving, light: () => shownLight ?? lightNow(), enterSitting: (m, o) => enterSitting(h, m, o),
     // The frame loop's call: what was scheduled and is due runs, in order; then the room key kept through a hold is dispatched once the hold is over.
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
@@ -306,6 +330,7 @@ export function onFaceMessage(h, m) {
     if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
     if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
     if (m.screen === "library") { if (UI.screen === "library") INTENTS.library.focus(h, m.target); return; }
+    if (m.screen === "sitting") { if (UI.screen === "sitting") INTENTS.sitting.focus(h, m.target); return; }
     if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return;
   }
   if (m.t !== "intent") return;

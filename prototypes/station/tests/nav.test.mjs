@@ -30,11 +30,11 @@ test("the back words: Home none, the titles, the pod's label under the overview,
   for (const p of ["pods.chapter", "pods.compare", "create"]) { assert.equal(N.backWord(nav, p, "Loika"), "Loika", p); assert.equal(N.backWord(nav, p, "Wideishname", () => false), "Back", "wider than the room reads Back"); }
 });
 
-test("the room keys open the top of their room, Create and Cross are the places whose unpaid choices a room key drops", () => {
+test("the room keys open the top of their room, Create, Cross and the sitting are the places whose unpaid choices a room key drops", () => {
   assert.deepEqual(Object.keys(nav.roomKeys).sort(), Object.keys(N.ROOM_KEYS).sort());
   for (const k of Object.keys(nav.roomKeys)) assert.equal(N.roomTop(k), [nav.roomKeys[k].screen, nav.roomKeys[k].state].filter(Boolean).join("."), "the room key " + k + " opens what frame.json says");
   assert.equal(N.roomTop("research"), "pods.collection"); assert.equal(N.roomTop("library"), "library.all"); assert.equal(N.roomTop("habitat"), "vivarium"); assert.equal(N.roomTop("home"), "home"); assert.equal(N.roomTop("confirm"), null);
-  assert.deepEqual(N.DROPS_ON_ROOM_KEY, ["create", "cross"]);
+  assert.deepEqual(N.DROPS_ON_ROOM_KEY, ["create", "cross", "sitting"]);
 });
 
 test("the Book's Visit goes to a housed mibi of the species: its face if one is chosen, else the first, none when there is none", () => {

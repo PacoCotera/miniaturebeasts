@@ -47,7 +47,7 @@
  },
  "drawOrder": ["stage", "bezel", "glass", "resident", "nameTag", "portrait", "gilt", "deck", "heading", "cards", "chosen", "stamp", "stamp.portrayed", "strip", "steps", "ring", "frame (top bar, bottom line)", "message plate"],
  "events": {
-  "backdrop": { "kind": "dither", "target": "glass", "ms": 200, "hold": 0, "levels": 16, "do": "the place step: the ring moved to another place card; the backdrop cross-dithers to that place's (lvgl-switch.md §2.7). Entering the place step dithers from Habitat's vivarium-near-{light} to the focused place's backdrop, the resident from the hour's light to ungraded; going back to the pose step dithers to vivarium-near-{light}, the resident to the hour's light. The light never flips direction (every backdrop keeps the top-left key)", "resident": "cut", "load": "regions.glass.load" },
+  "backdrop": { "kind": "dither", "target": "glass", "ms": 200, "hold": 0, "levels": 16, "do": "the place step: the ring moved to another place card; the backdrop cross-dithers to that place's (lvgl-switch.md §2.7). Entering the place step dithers from Habitat's vivarium-near-{light} to the focused place's backdrop, the resident from the hour's light to ungraded; going back to the pose step dithers to vivarium-near-{light}, the resident to the hour's light. The light never flips direction (every backdrop keeps the top-left key)", "resident": "dither", "load": "regions.glass.load" },
   "step": { "kind": "step", "ms": 0, "hold": 0, "do": "✓ on a card or ← inside: the heading, the cards, the steps' tiles and the bottom line change on the frame of the key (cuts); the gilt frame shows on the confirm step (a cut); the resident's form follows the focused or chosen pose card on the same frame" },
   "begin": {
    "timeline": "begin, the host timeline", "ms": 480, "hold": 480, "presses": "the pad, ✓ and ← do nothing; a coloured key waits and acts when the hold ends (focus.held)",
@@ -132,8 +132,8 @@
   "habits": "the habit as its phrase in habitat.json strings.watchHabits (\"shaking itself dry\", \"calming a creature\", \"curled up asleep\", \"sniffing\", \"puffing out its down\", \"digging\", \"glowing\")",
   "places": "the place's word: \"the meadow\", \"the pond edge\", \"the rock field\", \"the wood\", \"the cave\"",
   "beganPlate": "{name}'s portrait is on its way",
-  "portraitContext": null,
-  "lookPortrait": null,
+  "portraitContext": "painted and framed",
+  "lookPortrait": "Look at the portrait",
   "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer for the action, a label of six words or fewer for the context; no dot-joined parts; \"Again: …\" is the arm's wording"
  },
  "home": {

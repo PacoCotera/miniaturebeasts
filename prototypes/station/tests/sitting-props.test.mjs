@@ -182,7 +182,7 @@ test("the portrait state is offered only while portraitOpening holds its digest:
   assert.equal(R.heading.text, "Dot's portrait"); assert.deepEqual(R.cards.items, []); assert.equal(R.chosen.items.length, 2);
   assert.equal(R.stamp.corner, "spread-gilt-corner-16x16"); assert.equal(R.stamp.plate, "plate-well-120x120"); assert.match(R.stamp.asset, /^stamp:/); assert.ok(R.stamp.size > 0 && R.stamp.size <= 104);
   assert.deepEqual(R.steps.items.map((i) => [i.state, i.frame]), [["done", ""], ["done", ""], ["done", "sitting-frame-portrait-48x40"]]); assert.equal(R.steps.items[2].picture, `portrait:${DIGEST.slice(0, 16)}:40x30`);
-  assert.deepEqual(b.props.focus, { cur: "room", targets: [], armed: null }); assert.deepEqual(b.line, { ok: null, subject: "", back: "Dot", need: null });
+  assert.deepEqual(b.props.focus, { cur: "room", targets: [], armed: null }); assert.deepEqual(b.line, { ok: null, subject: Sg.portraitContext, back: "Dot", need: null }); assert.equal(Sg.portraitContext, "painted and framed", "the context is the copywriter's (CW-2)");
   // the picture: derived from the kept opening, byte for byte; an empty slot once it is no longer kept
   registerPictures(b.requests.filter((r) => r.kind === "portrait"), {}); const e = assetEntry(R.portrait.picture);
   assert.deepEqual([e.status, e.w, e.h], ["derived", 528, 392]); assert.ok(Buffer.from(assetOf(R.portrait.picture).rgba()).equals(Buffer.from(ART(7))));
