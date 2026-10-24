@@ -107,7 +107,8 @@ def outline_p95(a, b, far):
     ea, eb = a & ~nd.binary_erosion(a), b & ~nd.binary_erosion(b); da, db = nd.distance_transform_edt(~ea), nd.distance_transform_edt(~eb)
     v = np.concatenate([da[eb & far], db[ea & far]]); return float(np.percentile(v, 95)), float(v.max())
 def green(a):
-    r, g, b = [a[..., i].astype(float) for i in range(3)]; return (a[..., 3] > 128) & (g > r + 8) & (g > b + 8)
+    """Leaf pixels: yellow-green, well above blue (so the juvenile's teal cap, where green is about equal to blue, is not a leaf)."""
+    r, g, b = [a[..., i].astype(float) for i in range(3)]; return (a[..., 3] > 128) & (g > r + 6) & (g > b + 25) & (g > 80)
 def check5(out, anc):
     a, b = out[..., 3] > 128, anc[..., 3] > 128; far = ~nd.binary_dilation(green(anc) | green(out), iterations=10)
     p95, mx = outline_p95(a, b, far); inside = a & b & ~nd.binary_dilation((a & ~nd.binary_erosion(a)) | (b & ~nd.binary_erosion(b)), iterations=2)
@@ -129,7 +130,7 @@ def k2(stage, sheet):
     M = J['maps'][stage]; A = np.asarray(Image.open(sheet).convert('RGB')).astype(float); R = json.load(open('floor/S01/sitting/guides/register.json'))[f'{stage}-k1']
     rep = {'sheet': sheet, 'takes': {}}
     q4 = A[CH:2 * CH, 0:CW][I:CH - I, I:CW - I]; rep['cell4_non_magenta_px'] = int((np.abs(q4 - [255, 0, 255]).sum(-1) > 90).sum())
-    for c in [1] + list(CELLS):
+    for c in [1] + [c for c in CELLS if os.path.exists(f'floor/S01/crested/mibi-{stage}-S01-{"-".join(CELLS[c])}-304x312.png')]:   # a dropped take has no twin and its cell is not cut
         x0, y0 = ((c - 1) % 3) * CW, ((c - 1) // 3) * CH; q = A[y0:y0 + CH, x0:x0 + CW].copy(); r = {}
         if c == 1: name, twin = 'anchor', f'floor/S01/crested/mibi-{stage}-S01-anchor-304x312.png'
         else: name = '-'.join(CELLS[c]); twin = f'floor/S01/crested/mibi-{stage}-S01-{name}-304x312.png'

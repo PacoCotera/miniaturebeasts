@@ -365,5 +365,72 @@
     0.13
    ]
   }
+ },
+ "juvenile-k2": {
+  "sheet": "source/raw/sit-S01-juvenile-keys-bare-a.jpg",
+  "takes": {
+   "shake-t1": {
+    "despilled_px": 764,
+    "inner_cast_repainted_px": 0,
+    "cell": 2,
+    "droplets_kept": 5,
+    "move_px_from_twin": [
+     0,
+     0
+    ],
+    "outline_p95_px_outside_crest+10": 2.0,
+    "outline_max_px": 3.16,
+    "mean_rgb_diff_inside": 2.96,
+    "leaf_px_left": 4,
+    "droplets_in_input_cell": 4,
+    "droplets_in_returned_cell": 9,
+    "droplet_moves_px_on_sheet": [
+     0.1,
+     0.2,
+     0.1,
+     0.2
+    ]
+   },
+   "calm-t1": {
+    "despilled_px": 178,
+    "inner_cast_repainted_px": 0,
+    "cell": 3,
+    "droplets_kept": 0,
+    "move_px_from_twin": [
+     0,
+     0
+    ],
+    "outline_p95_px_outside_crest+10": 2.0,
+    "outline_max_px": 2.24,
+    "mean_rgb_diff_inside": 2.58,
+    "leaf_px_left": 8,
+    "droplets_in_input_cell": 0,
+    "droplets_in_returned_cell": 0,
+    "droplet_moves_px_on_sheet": []
+   }
+  },
+  "cell4_non_magenta_px": 0,
+  "cell1": {
+   "despilled_px": 152,
+   "inner_cast_repainted_px": 0,
+   "cell": 1,
+   "droplets_kept": 0,
+   "move_px_from_twin": [
+    0,
+    0
+   ],
+   "outline_p95_px_outside_crest+10": 2.0,
+   "outline_max_px": 2.24,
+   "mean_rgb_diff_inside": 2.7,
+   "leaf_px_left": 0,
+   "droplets_in_input_cell": 2,
+   "droplets_in_returned_cell": 5,
+   "droplet_moves_px_on_sheet": [
+    2.1,
+    0.2
+   ],
+   "head_vs_signed_bare_anchor_p95_px": 2.0,
+   "head_vs_signed_bare_anchor_max_px": 2.0
+  }
  }
 }
