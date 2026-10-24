@@ -248,3 +248,11 @@ test("P8: a sealed chapter of a pod that glints on another chapter says glintPod
   st.readOnce.S02 = [fr.chapters[0].id]; st.guide.S02 = {}; assert.ok(S.podGlints(st, st.tray[0]), "the pod now glints on its first chapter");
   assert.equal(line().need, spec.strings.glintPod, "another chapter glints: glintPod");
 });
+
+test("the Pods guide target: an identified pod's figure is a target after the pod (✓ Open the guide, every {Species}, free); an unidentified pod's is none", () => {
+  const st = rich(["S01"]), b = bodyOf(open(st)), ids = b.props.focus.targets.map((t) => t.id);
+  assert.equal(ids[ids.indexOf("pod") + 1], "figure", "the figure right after the pod"); assert.equal(b.props.focus.targets.find((t) => t.id === "figure").group, "figure");
+  assert.deepEqual(lineOf(open(st, { focus: "figure" })), { ok: "Open the guide", back: "Pods", subject: "every Loika", need: "" }, "✓ Open the guide, free");
+  const raw = stock(["S01"]); assert.ok(!bodyOf(open(raw)).props.focus.targets.some((t) => t.id === "figure"), "an unidentified pod's figure is no target");
+  assert.deepEqual(validate(b.props, schema), []);
+});

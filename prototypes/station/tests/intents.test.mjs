@@ -438,3 +438,9 @@ test("T-50 cuts 1 and 2: Home's room ✓ opens the bay in one press (Cargo, then
   assert.equal(S.needKey(st3, h3.sv, settings, h3.ui).key, "budReady"); INTENTS.home.intent(h3, "room", "confirm");
   assert.deepEqual([h3.went.at(-1), h3.played.some((e) => e.kind === "hatch"), !!h3.ui.inc.hatch, st3.bud], ["incubator", true, true, null], "one ✓ on Home: the hatch plays");
 });
+
+test("Pods' figure: ✓ Open the guide on an identified pod opens the Library's Level 2 of its species; an unidentified pod's figure does nothing", () => {
+  const st = world(), p = pod(st, "S01", [], 3, true), h = host(st); h.specs.library = J("library"); h.ui.pods.view = "overview"; h.ui.pods.cur = p.id;
+  INTENTS.pods.intent(h, "figure", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.lib.species, h.ui.lib.state, h.ui.lib.l1], ["library.species", "S01", "sheet", "S01"]);
+  const q = pod(st, "S02", [], 3, false), h2 = host(st); h2.ui.pods.view = "overview"; h2.ui.pods.cur = q.id; INTENTS.pods.intent(h2, "figure", "confirm"); assert.deepEqual(h2.went, [], "not identified: no figure");
+});

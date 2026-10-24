@@ -9,8 +9,8 @@ import { fileURLToPath } from "node:url";
 import { listPitch } from "../../ui/specs/derive.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), file = path.resolve(here, "../tests/vectors/focus.json"), specs = path.resolve(here, "../../ui/specs/station");
-const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["home", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench"];
-const V = JSON.parse(readFileSync(file, "utf8")), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8"));
+const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["home", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench", "pods-overview"];
+const V = JSON.parse(readFileSync(file, "utf8")), J = (n) => JSON.parse(readFileSync(path.join(specs, n.replace(/-overview$/, "") + ".json"), "utf8"));   // pods-overview: pods.json's vectors (its hand-written cases are named "pods: ...")
 const TARGETS = {
   // Home: the six targets in the order the view lists them (the two bezels, then the four stations), each on its region's rectangle; the room (no ring at rest) is a vector's from, never a listed target
   home: (state, spec) => spec.focus.targets ? Object.entries(spec.focus.targets).map(([id, t]) => ({ id, rect: spec.regions[id].rect, group: t.group })) : [],
@@ -33,6 +33,11 @@ const TARGETS = {
   library: (state, spec, v) => { const F = spec.l1.grid.forms["16"], out = []; for (let k = 0; k < 16; k++) { const id = "cell.S" + String(k + 1).padStart(2, "0"); if (!(v.unmet ?? []).includes(id)) out.push({ id, rect: listPitch(F, 16, k), group: "cell" }); } return out; },
   // the Probe bench: the plates (docked only), then the switch and the slot, each its region's rectangle; one graph for both states
   bench: (state, spec) => { const R = spec.regions; return [...(state === "away" ? [] : [{ id: "plates", rect: R.plates.rect, group: "plates" }]), { id: "switch", rect: R.switch.rect, group: "module" }, { id: "slot", rect: R.slot.rect, group: "module" }]; },
+  // Pods' overview: the rail's open tab, the pod, the figure (an identified pod's), the kin (`kin` of them, 2 when absent) and the hatch, in the order the view lists them, each its region's rectangle
+  "pods-overview": (state, spec, v) => { const R = spec.regions.overview, k = R.kin, out = [{ id: "rail.0", rect: [R.rail.rect[0], R.rail.rect[1], 120, R.rail.rect[3]], group: "rail", index: 0 }, { id: "pod", rect: R.pod.rect, group: "pod" }];
+    if (v.figure !== false) out.push({ id: "figure", rect: R.figure.rect, group: "figure" });
+    for (let i = 0; i < (v.kin ?? 2); i++) out.push({ id: "kin." + i, rect: [k.first[0] + k.pitch[0] * i, k.first[1] + k.pitch[1] * i, k.first[2], k.first[3]], group: "kin", index: i });
+    out.push({ id: "hatch", rect: R.hatch.rect, group: "hatch" }); return out; },
   create: (state, spec) => (state === "shape" ? [{ id: "roll", rect: spec.regions.roll.forms.roll.pictures[1], group: "roll" }] : []),   // the chosen picture's rectangle: the middle one stands for it
 };
 const cases = [];
@@ -40,7 +45,7 @@ for (const screen of screens) {
   const spec = J(screen), F = screen === "library" ? spec.l1.focus : spec.focus;   // Level 1 keeps its focus under `l1`
   for (const v of F.vectors ?? []) {
     if (v.intent && !/^step:/.test(v.intent)) continue;   // ✓ and ← are intents on the target, not moves
-    const st = v.state && F[v.state]?.graph ? F[v.state] : F, c = { name: `${screen}: ${v.state ? v.state + ", " : ""}${v.from} ${v.key}${v.away ? " (away: " + v.away.join(", ") + ")" : ""}${v.intent ? " says " + v.intent : ""}`, graph: st.graph, targets: TARGETS[screen](v.state, spec, v), from: v.from, key: v.key, to: v.to };
+    const st = screen === "pods-overview" ? { graph: F[v.state] } : v.state && F[v.state]?.graph ? F[v.state] : F, c = { name: `${screen}: ${v.state ? v.state + ", " : ""}${v.from} ${v.key}${v.away ? " (away: " + v.away.join(", ") + ")" : ""}${v.intent ? " says " + v.intent : ""}`, graph: st.graph, targets: TARGETS[screen](v.state, spec, v), from: v.from, key: v.key, to: v.to };
     if (screen === "vivarium") {   // the view's selectors for the ring where it stands (views/vivarium-props.mjs): the focused resident's own tile; the focused tile's resident, null when it is out; the empty state's ring is on the room
       const resolve = {}, here = (id) => c.targets.some((t) => t.id === id);
       if (v.from.startsWith("resident.")) resolve["tile.of"] = "tile." + v.from.slice(9); if (v.from.startsWith("tile.")) resolve["resident.of"] = here("resident." + v.from.slice(5)) ? "resident." + v.from.slice(5) : "";
@@ -52,6 +57,7 @@ for (const screen of screens) {
       c.name = `habitat: ${v.state ? v.state + ", " : ""}${v.from} ${v.key}${v.chapters ? " (" + v.chapters + " chapters)" : ""}${v.intent ? " says " + v.intent : ""}`;
     }
     if (screen === "namer") c.name = `namer: ${v.page ? v.page + ", " : ""}${v.from} ${v.key}`;
+    if (screen === "pods-overview") { c.resolve = { "rail.last": "rail.0", "kin.first": (v.kin ?? 2) > 0 ? "kin.0" : "" }; c.name = `pods-overview: ${v.from} ${v.key}${v.kin === 0 ? " (no kin)" : ""}${v.figure === false ? " (no figure)" : ""}`; }
     if (v.intent) c.verb = v.intent; cases.push(c);
   }
 }

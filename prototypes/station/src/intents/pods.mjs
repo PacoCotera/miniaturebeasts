@@ -6,6 +6,7 @@ import { frameOf } from "../genome.mjs";
 import { compareBackFocus } from "../views/pods-props.mjs";
 import { openCreate } from "./create.mjs";
 import { openPanel } from "./panel.mjs";
+import { openSpecies } from "./library.mjs";
 
 export const ID_MS = 2000, READ_MS = 2000, RIBBON_MS = 6000;
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
@@ -40,6 +41,7 @@ const CONFIRM = {
   },
   kin: (h, q, id) => { const k = kinOf(h, q)[+id.slice(4)]; if (k) h.ui.pods.cmp = { a: q.id, b: k.id, ci: 0 }; },
   hatch: (h, q) => openPanel(h, "pods", "wildPod"),   // ✓ on the leaf plate opens the Return panel (decision panel spec §1.6); its Return card runs returnNow
+  figure: (h, q) => { if (q.idd) openSpecies(h, S.speciesOf(q)); },   // ✓ Open the guide on the identified pod's figure: the Library's Level 2 of its species (frame.json navigation.jumps)
 };
 // The Return card's act: the rule gives the pod back to the wild (+1 Essence), the collection shows without it.
 export function returnPodNow(h) {

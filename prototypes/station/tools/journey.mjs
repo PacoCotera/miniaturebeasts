@@ -302,7 +302,7 @@ l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 1", "a secon
 await press("confirm", 2400);
 // 5. Compare: from the second Loika's pod, → to its kin, ✓
 s = await st();
-await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika2.id); await page.waitForTimeout(300); await press("right", 300);   // the pod's overview: → to its kin
+await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika2.id); await page.waitForTimeout(300); await press("right", 300); await press("right", 300);   // the pod's overview: → to its figure, → to its kin
 l = await line(); expect(l.ok === "Compare", "compare offered on another Loika pod: " + JSON.stringify(l));
 await press("confirm", 400); await frameShot("page-compare");
 l = await line(); expect(l.back === "Loika", "Compare's way back names the pod: " + JSON.stringify(l));
@@ -332,7 +332,14 @@ const walk = async (keys, want, what) => { for (const k of keys) await press(k, 
 const viewNow = () => page.evaluate(() => window.__st.UI.pods.view);
 await walk(["up"], "rail.0", "▲ from the pod to the rail's last chapter looked at");
 await walk(["right", "right"], "rail.2", "▶ steps the chapters"); await walk(["down"], "pod", "▼ from the rail to the pod"); await walk(["up"], "rail.2", "▲ again: the last chapter looked at"); await walk(["down"], "pod", "▼ back to the pod");
-await walk(["right"], "hatch", "→ from the pod to the hatch when it has no kin"); await walk(["left"], "pod", "◀ from the hatch to the pod");
+await walk(["right"], "figure", "▶ from the identified pod to its figure"); l = await line(); expect(l.ok === "Open the guide" && l.subject === "every Untuva" && !l.price, "the figure: ✓ Open the guide, every Untuva, free: " + JSON.stringify(l));
+{ const ring = await page.evaluate(() => window.__st.check().log.regions.find((q) => q.id === "focus")?.rect ?? null); expect(ring && ring[1] + ring[3] <= 404, "the figure's footprint ring ends no lower than y 404, above the caption's text (UI/UX): " + JSON.stringify(ring)); console.log("# pods figure ring " + JSON.stringify(ring)); }
+await walk(["right"], "hatch", "▶ from the figure to the hatch when the pod has no kin"); await walk(["left"], "figure", "◀ from the hatch to the figure"); await walk(["left"], "pod", "◀ from the figure to the pod");
+// "Open the guide" on the figure: the Library's Level 2 of the pod's species; ← there is Level 1 with the ring on it; the Research key back to the pod
+await walk(["right"], "figure", "▶ to the figure again"); await press("confirm", 400);
+{ const g = await page.evaluate(() => ({ screen: window.__st.UI.screen, readout: window.__st.props?.frame?.top?.readout?.text, back: window.__st.props?.frame?.line?.back })); expect(g.screen === "library.species" && g.readout === "Untuva" && g.back === "Library", "✓ on the figure opens Level 2 of the Untuva: " + JSON.stringify(g)); }
+await press("back", 400); { const g = await page.evaluate(() => ({ screen: window.__st.UI.screen, cur: window.__st.props?.focus?.cur })); expect(g.screen === "library" && g.cur === "cell.S02", "← from the guide's Level 2 is Level 1 on the Untuva: " + JSON.stringify(g)); }
+await press("research", 300); await page.evaluate((id) => window.__st.podsGo(id, "pod"), untuva.id); await page.waitForTimeout(300);
 const idx = s.tray.findIndex((p) => p.id === untuva.id);
 await walk(["back"], "place." + idx, "← up to the collection, the ring on this pod"); expect((await viewNow()) === "collection", "← from the overview is the collection");
 await frameShot("pods-collection");
