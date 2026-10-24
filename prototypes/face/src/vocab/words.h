@@ -29,7 +29,6 @@ typedef struct { const char *id, *region, *picture; int on; } kit_podShadow_t;  
 int kit_pod(const char *spec, const char *cls, int axis, int feet, const kit_podShadow_t *shadow, int box[4]);   /* the pod's box from its size class (bottom-centred on axis and feet), and its shadow when given; 1 when the class gives a box */
 void word_specimen(const char *base);   /* the pod under the beam on its cradle; base: the state's regions in the pods spec ("regions.overview" or "regions.chapter") */
 void word_kin(const char *base);        /* the overview's kin rings and the hatch */
-void word_stampCase(const char *spec, const char *base, int front);   /* the stamp case's back (front 0) or front glass (front 1): kit_stamp calls it */
 void word_page(const char *key);        /* the chapter page ("page") or one of Compare's two ("pageA", "pageB") */
 void word_list(void);    /* Pods' collection: the rack's places */
 /* the ring of the target whose `group` this is in the screen spec of the props (the rail's, Pods'), at the region id the caller names */

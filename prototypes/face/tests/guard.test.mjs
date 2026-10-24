@@ -2,7 +2,7 @@
 //   node --test prototypes/face/tests/guard.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -104,4 +104,55 @@ test("an import line with a trailing comment keeps its end: no space is left bef
   assert.equal(blank("a;/* c */\nx;"), "a;\nx;");
   assert.match(blank("import a from './w.mjs';/* c */\nx;"), /^import a from '\.\/w\.mjs';$/m);
   assert.match(blank("import a from './w.mjs'; // c\nx;"), /^import a from '\.\/w\.mjs'; $/m);
+});
+
+// Rules 7a, 7b, the ratchet and 8: a screen is a binding table, and every kit component carries its contract header. Each planted tree is the real face's screens, vocab and kit-ratchet.json with one change.
+const faceSrc = path.join(real, "prototypes/face/src");
+function kitFiles(change = {}) {
+  const files = { "prototypes/face/kit-ratchet.json": readFileSync(path.join(real, "prototypes/face/kit-ratchet.json"), "utf8") };
+  for (const f of readdirSync(path.join(faceSrc, "screens"))) if (f.endsWith(".c")) files[`prototypes/face/src/screens/${f}`] = readFileSync(path.join(faceSrc, "screens", f), "utf8");
+  for (const d of ["common", "station"]) for (const f of readdirSync(path.join(faceSrc, "vocab", d))) if (f.endsWith(".c")) files[`prototypes/face/src/vocab/${d}/${f}`] = readFileSync(path.join(faceSrc, "vocab", d, f), "utf8");
+  return { ...files, ...change };
+}
+const screen = (f) => readFileSync(path.join(faceSrc, "screens", f), "utf8");
+const plant = (f, at, line) => { const l = screen(f).split("\n"); l.splice(at - 1, 0, line); return l.join("\n"); };   // `line` becomes line `at` of a copy of the screen
+test("the real screens, vocab and ratchet pass rules 7a, 7b, the ratchet and 8 as planted trees do", () => { assert.deepEqual(fails(kitFiles()), []); });
+test("rule 7a: a prim_node call in a screen fails; one in a comment does not, and a comment between the name and its bracket hides nothing", () => {
+  const f = fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '  prim_node(v_id("x"), FN_RECT, 0, 0, 1, 1, 0, 0, 0);') }));
+  assert.deepEqual(f, ["face/src/screens/bench.c:30 calls prim_node (rule 7a: a screen draws through v_* and the kit)"]);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '  /* prim_node(v_id("x"), FN_RECT, 0, 0, 1, 1, 0, 0, 0); */ // prim_node(1);') })), []);
+  assert.match(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '  prim_node/* c */(v_id("x"), FN_RECT, 0, 0, 1, 1, 0, 0, 0);') })).join("\n"), /bench\.c:30 calls prim_node/);
+  assert.match(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '  prim_node (v_id("x"), FN_RECT, 0, 0, 1, 1, 0, 0, 0);') })).join("\n"), /bench\.c:30 calls prim_node/);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '#define PN prim_node') })), ["face/src/screens/bench.c:30 calls prim_node (rule 7a: a screen draws through v_* and the kit)"], "a macro that names it");
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, "static void (*pn)(uint32_t, int, int, int, int, int, uint32_t, int, int) = prim_node;") })), ["face/src/screens/bench.c:30 calls prim_node (rule 7a: a screen draws through v_* and the kit)"], "a function pointer to it");
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '  (prim_node)(v_id("x"), FN_RECT, 0, 0, 1, 1, 0, 0, 0);') })), ["face/src/screens/bench.c:30 calls prim_node (rule 7a: a screen draws through v_* and the kit)"], "the name in brackets");
+});
+test("rule 7b: a static spec accessor in a screen fails; a computation over the spec does not", () => {
+  const f = fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 25, "static int cs(const char *path, int d) { return v_si(C, path, d); }") }));
+  assert.deepEqual(f, ["face/src/screens/cargo.c:25 defines the static spec accessor cs (rule 7b: one call of v_si on its path; use the v_* reader)"]);
+  assert.match(fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 25, 'static void cr(const char *k, int r[4])\n{\n  v_srect(C, v_fmt("regions.%s.rect", k), r);\n}') })).join("\n"), /cargo\.c:25 defines the static spec accessor cr \(rule 7b: one call of v_srect/);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 25, "static const char *pic(const char *path) { return v_sstr(C, path); }") })), ["face/src/screens/cargo.c:25 defines the static spec accessor pic (rule 7b: one call of v_sstr on its path; use the v_* reader)"], "a v_sstr accessor");
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 25, "static int cn(const char *const path) { return spec_int(C, path, 0); }") })), ["face/src/screens/cargo.c:25 defines the static spec accessor cn (rule 7b: one call of spec_int on its path; use the v_* reader)"], "a path written as a const pointer");
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 25, 'static int top(const char *k) { int r[4]; v_srect(C, k, r); return r[1] + r[3]; }\nstatic int fixed(void) { return v_si(C, "a.b", 0); }') })), []);
+});
+test("the ratchet: one more direct drawing call in a screen fails, and so does a screen it does not name that draws directly", () => {
+  const counts = JSON.parse(readFileSync(path.join(real, "prototypes/face/kit-ratchet.json"), "utf8")).counts;
+  const f = fails(kitFiles({ "prototypes/face/src/screens/habitat.c": plant("habitat.c", 40, '  /* v_rect("c", 0, 0, 1, 1, "x"); */ v_rect("x", 0, 0, 1, 1, "ink");') }));
+  assert.deepEqual(f, [`face/src/screens/habitat.c makes ${counts.habitat + 1} direct v_rect/v_text/v_sprite/v_sprite_window/v_sprite_hidden calls; the ratchet allows ${counts.habitat} (face/kit-ratchet.json)`]);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/fresh.c": 'void fresh(void) { v_text("t", "a", 0, 0, 10, 16, "ink"); }\n' })), ["face/src/screens/fresh.c makes 1 direct v_rect/v_text/v_sprite/v_sprite_window/v_sprite_hidden calls; the ratchet allows 0 (face/kit-ratchet.json)"]);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/fresh.c": 'void fresh(void) { v_slot("t", "a", NULL, 0, 0, 1, 1, 1); }\n' })), [], "a screen that draws through the toolbox's slot and the kit has nothing to count");
+});
+test("the ratchet carries screenSpecific: a missing list, or one that names a file that does not exist, fails", () => {
+  const r = JSON.parse(readFileSync(path.join(real, "prototypes/face/kit-ratchet.json"), "utf8"));
+  assert.ok(Array.isArray(r.screenSpecific) && r.screenSpecific.length > 0 && r.screenSpecific.every((s) => s.file && s.what && s.ruling));
+  const { screenSpecific, ...bare } = r;
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/kit-ratchet.json": JSON.stringify(bare) })), ['face/kit-ratchet.json has no "screenSpecific" list']);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/kit-ratchet.json": JSON.stringify({ ...r, screenSpecific: [...screenSpecific, { file: "nowhere.c", what: "x", ruling: "x" }] }) })), ["face/kit-ratchet.json screenSpecific names nowhere.c, which is not a file in face/src/screens/"]);
+});
+test("rule 8: a kit component with no contract header, or a header that lacks one of its parts, fails", () => {
+  const body = "void kit_probe(const char *id, int x) {\n  v_rect(id, x, 0, 1, 1, \"ink\");\n}\n";
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/vocab/common/probe.c": "/* a probe with no contract */\n#include \"../vocab.h\"\n" + body })), ['face/src/vocab/common/probe.c:3 defines kit_probe with no header comment beginning "/* kit_probe (" (rule 8)']);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/vocab/common/probe.c": "/* kit_probe (common/): a probe.\n   Props: id, x. Region and layer: the caller's. Node id: v_id(id). */\n" + body })), ["face/src/vocab/common/probe.c:3 kit_probe's header lacks Returns (rule 8)"]);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/vocab/common/probe.c": "/* kit_probe (common/): a probe.\n   Props: id, x. Region and layer: the caller's. Node ids: v_id(id). Returns nothing. */\n" + body })), []);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/vocab/common/probe.c": "void kit_probe(const char *id, int x);\nvoid other(void) { kit_probe(\"a\", 1); }\n" })), [], "a declaration and a call are not definitions");
 });
