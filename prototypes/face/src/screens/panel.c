@@ -169,8 +169,7 @@ static void build_incubate_left(const int w[4]) {
 }
 /* the right window: Create as it stood when it was left, the face's own snapshot of it (prim_snapshot), 1:1 */
 static void build_incubate_right(const int w[4]) {
-  int h = prim_snapshot_handle(); v_region("panelSnapshot", LAYER_PAINTED);
-  if (h >= 0) { prim_tag(LAYER_PAINTED, "panelSnapshot"); prim_node(v_id("panel.right.snapshot"), FN_SPRITE, w[0], w[1], w[2], w[3], 0, h, 0); }
+  v_region("panelSnapshot", LAYER_PAINTED); v_snapshot("panel.right.snapshot", w[0], w[1], w[2], w[3]);
 }
 /* ---- the Hatch now | Wait form (panel.json `hatchnow`) ---- */
 /* the bar's window of its layer: lit from the left, `px` wide from litFrom; the whole bar with its glow at the full width */

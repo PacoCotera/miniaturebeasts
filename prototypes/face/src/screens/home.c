@@ -547,7 +547,7 @@ static void glass_group(const char *cur) {
     else { int sot = sendoff_t(); count += bedPic + markN; for (int i = 0; i < g_ne; i++) if (g_e[i].sleeper && i != focused) count += sleeper_nodes(&g_e[i], sot) + lampN; }
   }
   if (count == 0) return;
-  prim_node(v_id("glass.clip"), FN_CLIP, glass[0], glass[1], glass[2], glass[3], 0, count, 0);
+  v_clip_box("glass.clip", glass[0], glass[1], glass[2], glass[3], count);
   /* the nodes are named by the mibi (g.<id>, g.<id>.lamp, g.bed, g.bed.mark): when two residents change places in depth the objects change places in the order and only where they overlap is redrawn
      (prim.c move_to), a resident that did not step is not redrawn */
   for (int k = 0; k < ni; k++) {
@@ -616,7 +616,7 @@ static void away_frame(void) {
   if (has(pic) && v_plen("regions.glass.away.figure") == 4) {   /* the figure of its stand at its world size, bottom-centred inside the edge: its window of the picture, clipped to the frame's inside */
     int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("regions.glass.away.figure.%d", q), 0);
     int ix = r[0] + 1, iy = r[1] + 1, iw = r[2] - 2, ih = r[3] - 2, dx = ix + (iw - f[2]) / 2, dy = iy + ih - f[3];
-    prim_node(v_id("away.clip"), FN_CLIP, ix, iy, iw, ih, 0, 1, 0);
+    v_clip_box("away.clip", ix, iy, iw, ih, 1);
     v_name("away.figure"); v_sprite_window("away.figure", pic, f[0], f[1], dx, dy, f[2], f[3]);
   }
   v_region("away", LAYER_TYPE);
