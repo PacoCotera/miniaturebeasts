@@ -20,6 +20,10 @@ import { req as reqOf, ph as phOf, slotAt } from "./requests.mjs";
 // (they are DOM-free and run as a Node program, intents.test.mjs), and a build with none registered shows the Library's placeholder.
 let library = () => ({ region: {}, request: null });
 export const setLibrary = (fn) => { library = fn; };
+// The species Home's Library module is for (specimen-props.mjs specimenSpecies, the starter's while nothing is found), which the host registers beside the painter; null with none registered: where ✓ on the Library bezel puts the Library's ring
+let speciesOfLibrary = () => null;
+export const setLibrarySpecies = (fn) => { speciesOfLibrary = fn; };
+export const librarySpecies = (st, settings) => speciesOfLibrary(st, settings);
 
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
 // A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<genome digest>:<juvenile|adult|elder>:<w>x<h>

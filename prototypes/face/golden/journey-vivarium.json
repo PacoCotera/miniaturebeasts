@@ -382,9 +382,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": null,
+    "ok": "Open the guide",
     "price": null,
-    "subject": "the guide is not open yet",
+    "subject": "every Loika",
     "back": "Vivarium"
    },
    {
@@ -468,9 +468,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": null,
+    "ok": "Open the guide",
     "price": null,
-    "subject": "the guide is not open yet",
+    "subject": "every Loika",
     "back": "Vivarium"
    },
    {
@@ -685,9 +685,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": null,
+    "ok": "Open the guide",
     "price": null,
-    "subject": "the guide is not open yet",
+    "subject": "every Loika",
     "back": "Vivarium"
    },
    {

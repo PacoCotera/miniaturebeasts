@@ -59,7 +59,7 @@ test("a species is unmet, met (a pencil study) or found (a plate); a mibi of it 
   st.metIds.push("S01"); assert.equal(L.speciesStatus(st, "S01"), "met");
   st.knownIds.push("S01"); assert.equal(L.speciesStatus(st, "S01"), "found");
   const st2 = fresh(); S.seedAdults(st2, "S03", 5, 1, settings); assert.equal(L.speciesStatus(st2, "S03"), "found", "a mibi of the species");
-  assert.deepEqual(L.spread(st, ["S01", "S02"]).map((x) => x.status), ["found", "unmet"]);
+  assert.deepEqual(["S01", "S02"].map((id) => L.speciesStatus(st, id)), ["found", "unmet"]);
   assert.equal(L.book(st, "S02").guide, null, "an unmet species has no guide to show");
 });
 

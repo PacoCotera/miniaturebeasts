@@ -1,183 +1,53 @@
 {
- "$comment": "The props of the Library spread (lvgl-switch.md §2.1, §4 L; library.json spread): what views/library-props.mjs gives the face, beside the frame's. Props name what, never where: ids, statuses, strings, clan ids, flags, picture ids and the focus targets by id; no rectangle, no colour (the words place and colour everything from library.json). The fixed pictures (the gilt corner, the seal, the progress seeds) and the clan colours are the spec's, read by the face.",
+ "$comment": "The props of the Library's Level 1 (library.json l1): what views/library-props.mjs gives the face, beside the frame's. Props name what, never where: the species' ids, states, names, picture ids and flags, and the focus targets by id; no rectangle, no colour (the face places and colours everything from library.json). The fixed pictures (the seed, the wish mark, the glint) are the spec's, read by the face. The props carry every species of the catalogue, in species order.",
  "$defs": {
-  "item": {
+  "cell": {
    "type": "object",
-   "required": [
-    "id",
-    "status",
-    "name",
-    "clan",
-    "portrayed",
-    "complete",
-    "progress",
-    "picture",
-    "roundel"
-   ],
+   "required": ["id", "status", "name", "picture", "mark", "face", "wish", "glint"],
    "additionalProperties": false,
    "properties": {
-    "id": {
-     "type": "string",
-     "pattern": "^S[0-9]{2}$"
-    },
-    "status": {
-     "enum": [
-      "found",
-      "met",
-      "unmet"
-     ]
-    },
-    "name": {
-     "type": [
-      "string",
-      "null"
-     ]
-    },
-    "clan": {
-     "type": [
-      "string",
-      "null"
-     ],
-     "pattern": "^C[0-9]{2}$"
-    },
-    "portrayed": {
-     "type": "boolean"
-    },
-    "complete": {
-     "type": "boolean"
-    },
-    "progress": {
-     "type": [
-      "integer",
-      "null"
-     ],
-     "minimum": 1,
-     "maximum": 4
-    },
-    "picture": {
-     "type": [
-      "string",
-      "null"
-     ]
-    },
-    "roundel": {
-     "type": [
-      "string",
-      "null"
-     ]
-    }
+    "id": { "type": "string", "pattern": "^S[0-9]{2}$" },
+    "status": { "enum": ["found", "met", "unmet"] },
+    "name": { "type": "string" },
+    "picture": { "type": "string", "pattern": "^$|^library-cell-S[0-9]{2}-[0-9a-f]{8}$" },
+    "mark": { "type": "string", "pattern": "^$|^species-mark-S[0-9]{2}-10$" },
+    "face": { "type": "string", "pattern": "^$|^face:[0-9]+:18(:faded)?$" },
+    "wish": { "type": "boolean" },
+    "glint": { "type": "boolean" }
    }
   },
   "target": {
    "type": "object",
-   "required": [
-    "id",
-    "group",
-    "enabled"
-   ],
+   "required": ["id", "group", "enabled"],
    "additionalProperties": false,
    "properties": {
-    "id": {
-     "type": "string",
-     "pattern": "^frame\\.S[0-9]{2}$"
-    },
-    "group": {
-     "const": "frame"
-    },
-    "enabled": {
-     "const": true
-    }
+    "id": { "type": "string", "pattern": "^cell\\.S[0-9]{2}$" },
+    "group": { "const": "cell" },
+    "enabled": { "const": true }
    }
   }
  },
  "type": "object",
- "required": [
-  "state",
-  "regions",
-  "focus"
- ],
+ "required": ["state", "regions", "focus"],
  "additionalProperties": false,
  "properties": {
-  "state": {
-   "const": "spread"
-  },
+  "state": { "const": "all" },
   "regions": {
    "type": "object",
-   "required": [
-    "stage",
-    "leftPage",
-    "rightPage"
-   ],
+   "required": ["stage", "cells"],
    "additionalProperties": false,
    "properties": {
-    "stage": {
-     "type": "object",
-     "required": [
-      "picture"
-     ],
-     "additionalProperties": false,
-     "properties": {
-      "picture": {
-       "type": "string"
-      }
-     }
-    },
-    "leftPage": {
-     "type": "object",
-     "required": [
-      "items"
-     ],
-     "additionalProperties": false,
-     "properties": {
-      "items": {
-       "type": "array",
-       "minItems": 8,
-       "maxItems": 8,
-       "items": {
-        "$ref": "item"
-       }
-      }
-     }
-    },
-    "rightPage": {
-     "type": "object",
-     "required": [
-      "items"
-     ],
-     "additionalProperties": false,
-     "properties": {
-      "items": {
-       "type": "array",
-       "minItems": 8,
-       "maxItems": 8,
-       "items": {
-        "$ref": "item"
-       }
-      }
-     }
-    }
+    "stage": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "type": "string" } } } },
+    "cells": { "type": "array", "minItems": 16, "maxItems": 16, "items": { "$ref": "cell" } }
    }
   },
   "focus": {
    "type": "object",
-   "required": [
-    "cur",
-    "targets"
-   ],
+   "required": ["cur", "targets"],
    "additionalProperties": false,
    "properties": {
-    "cur": {
-     "type": "string",
-     "pattern": "^frame\\.S[0-9]{2}$"
-    },
-    "targets": {
-     "type": "array",
-     "minItems": 16,
-     "maxItems": 16,
-     "items": {
-      "$ref": "target"
-     }
-    }
+    "cur": { "type": "string", "pattern": "^$|^cell\\.S[0-9]{2}$" },
+    "targets": { "type": "array", "minItems": 0, "maxItems": 16, "items": { "$ref": "target" } }
    }
   }
  }

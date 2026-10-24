@@ -1,43 +1,49 @@
-// The Library spread as props (lvgl-switch.md §2.1, §4 L; library.json spread): pure selectors from the state and the Library's UI to the props of the face's spread, beside the frame's. Props name *what*, never *where*: ids, statuses,
-// names, clan ids, flags, picture ids and the focus targets by id; no rectangle, no colour, no layout rule (the words place and colour everything from library.json). The output is plain JSON:
-// { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props) }.
-// Runs in Node, tested there (tests/library-props.test.mjs); the shape is library.props.json.
-//   m: { st, settings, ui (UI.lib: { page, i }) }
+// The Library's Level 1 as props (library.json l1): pure selectors from the state and the Library's UI to the props of the face's Level 1, beside the frame's. Props name *what*, never *where*: ids, statuses, names, flags, picture ids
+// and the focus targets by id; no rectangle, no colour, no layout rule (the face places and colours everything from library.json). The output is plain JSON:
+// { props (state, regions, focus), line (the bottom line, for the frame), top (the top bar's readout), requests (the pictures the host makes ready before the props) }. Runs in Node, tested there (tests/library-props.test.mjs);
+// the shape is library.props.json.
+//   m: { st, settings, ui (UI.lib: { l1 }) }
 import * as S from "../state.mjs";
 import * as Lib from "../library.mjs";
-import { doorOpen } from "../nav.mjs";
 import { frameIds, frameOf } from "../genome.mjs";
+import { drawnLooks, keyToken } from "../looks.mjs";
+import { specimenInput, newLooksOf } from "./specimen-props.mjs";
+import { fill, spell } from "./words.mjs";
+import { req as collector, slot as slotOf } from "./requests.mjs";
+import { faceId } from "../face-pictures.mjs";
 
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
-const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+// The subject of Level 1 (strings.subjects): n looks new this visit, across every species. One is "a new look"; two to six spell n; seven or more drop the count; none is empty; no species met is its own line.
+export function subjectOf(strings, n, anyMet) {
+  if (!anyMet) return strings.subjects.none;
+  if (n <= 0) return "";
+  if (n === 1) return strings.subjects.one;
+  return n <= 6 ? fill(strings.subjects.few, { n: spell(n) }) : strings.subjects.many;
+}
+// The cell picture's id: library-cell-{SNN}-{digest}, the digest of what it draws (the status, the found looks in the order found and the sealed chapters still shut).
+const cellPicture = (id, status, found, shut) => `library-cell-${id}-${keyToken(JSON.stringify([status, status === "found" ? Object.keys(found).sort().map((t) => [t, found[t]]) : [], status === "found" ? shut : []]))}`;
 
 export function libraryBuild(m, spec, frame) {
-  const { st, settings, ui } = m, SP = spec.spread, requests = [], req = (r) => { requests.push(r); return r.id; };
-  const page = ui?.page ?? 0, ids = frameIds().slice(16 * page, 16 * page + 16);
-  const slot = (id, size, until) => req({ kind: "slot", id, master: id, size, until: until || "its master (library.json masters)" });
-  const guideOf = (id) => Lib.fieldGuide(st, id, settings);
-  const items = Lib.spread(st, ids).map(({ id, status }) => {
-    const known = status !== "unmet", fr = known ? frameOf(id) : null, found = status === "found", g = found ? guideOf(id) : null;
-    const clan = fr?.taxonomy?.clan ?? null, cur = g ? g.foundCurrent : 0, denom = g ? cur + g.unseen : 0;   // current looks only: a seen legacy look moves nothing
-    return {
-      id, status, name: known ? fr.species.name : null, clan,
-      portrayed: found && st.mibis.some((x) => S.speciesOf(x) === id && x.portrait?.state === "delivered"),   // any delivered portrait of the species, a released mibi's included
-      complete: found && !!g.complete,
-      progress: found ? Math.min(4, Math.floor((4 * cur) / (denom || 1)) + 1) : null,   // integers only: a quarter, a half, three quarters, and four from there
-      picture: found ? req({ kind: "species", id: SP.item.plate.slice.replace("{SNN}", id), species: id, look: "plate", size: SP.item.plate.at.slice(2) }) : status === "met" ? req({ kind: "species", id: SP.item.study.slice.replace("{SNN}", id), species: id, look: "study", size: SP.item.study.at.slice(2) }) : null,
-      roundel: known && clan ? slot(SP.item.roundel.slice.replace("{Cnn}", clan), SP.item.roundel.at.slice(2)) : null,
-    };
+  const { st, settings, ui } = m, L = spec.l1, C = L.cell, requests = [], req = collector(requests, true), slot = slotOf(req, "its master (library.json l1)");
+  const ids = frameIds();
+  if (!L.grid.forms[String(ids.length)]) throw new Error(`Level 1 is built for the catalogue sizes library.json l1.grid.forms holds (${Object.keys(L.grid.forms).join(", ")}), not ${ids.length}: another size comes back to UI/UX`);
+  const ground = slot(L.stage.master, L.stage.rect.slice(2));
+  slot(C.seed.slice, C.seed.rect.slice(2)); slot(C.wish.slice, C.wish.rect.slice(2)); req({ kind: "star", id: C.glint.slice });   // the pictures every cell may name; the seed is also the hidden parts' slot
+  let fresh = 0;
+  const cells = ids.map((id) => {
+    const status = Lib.speciesStatus(st, id), known = status !== "unmet", fr = frameOf(id);
+    if (!known) return { id, status, name: "", picture: "", mark: "", face: "", wish: false, glint: false };
+    const inp = specimenInput(st, id, settings), found = status === "found" ? inp.found : {}, shut = status === "found" ? inp.shut : [];
+    const pic = cellPicture(id, status, found, shut), [pw, ph] = C.picture.rect.slice(2);
+    req({ kind: "librarycell", id: pic, species: id, status, found, shut, size: [pw, ph], ground: C.picture.ground[status] });
+    const mark = slot(C.mark.slice.replace("{SNN}", id), C.mark.rect.slice(2));
+    const n = status === "found" ? newLooksOf(st, id, settings).size : 0; fresh += n;
+    const fo = status === "found" ? Lib.faceOf(st, id) : null, fm = fo != null ? S.mibiById(st, fo) : null;
+    const face = fm ? req({ kind: "face", id: faceId(fm.id, C.face.size, !!fm.released), mibi: fm.id, species: id, stage: fm.stage ?? S.mibiStage(st, fm, settings), looks: drawnLooks(fr, fm), size: [C.face.size, C.face.size], faded: !!fm.released }) : "";
+    return { id, status, name: fr.species.name, picture: pic, mark, face, wish: Object.keys(Lib.wishOf(st, id)).length > 0, glint: n > 0 };
   });
-  // the fixed pictures: the stage, the gilt corner, the seal and the progress seeds (the face reads their ids from library.json)
-  const stage = req({ kind: "spread", id: SP.regions.stage.slice, part: "stage", size: SP.regions.stage.rect.slice(2) });
-  req({ kind: "spread", id: SP.item.gilt.slice, part: "gilt", size: SP.item.gilt.at.slice(2) }); req({ kind: "spread", id: SP.item.seal.slice, part: "seal", size: SP.item.seal.at.slice(2) });
-  slot(SP.item.progress.slices.full, SP.item.progress.seed); slot(SP.item.progress.slices.empty, SP.item.progress.seed);
-  const regions = { stage: { picture: stage }, leftPage: { items: items.slice(0, 8) }, rightPage: { items: items.slice(8, 16) } };
-  const targets = items.map((it) => ({ id: "frame." + it.id, group: "frame", enabled: true }));   // an unmet frame is a place too: all sixteen
-  const at = clamp(ui?.i ?? 0, 0, Math.max(0, items.length - 1)), cur = "frame." + items[at].id, it = items[at];
-  const Sg = SP.strings;
-  const line = it.status === "found" ? { ok: doorOpen("book") ? Sg.open : null, subject: fill(Sg.subjects.found, { species: it.name }), back: Sg.back, need: null }
-    : it.status === "met" ? { ok: null, subject: fill(Sg.subjects.met, { species: it.name }), back: Sg.back, need: null }
-    : { ok: null, subject: Sg.subjects.unmet, back: Sg.back, need: null };
-  return { props: { state: "spread", regions, focus: { cur, targets } }, line, requests };
+  const targets = cells.filter((c) => c.status !== "unmet").map((c) => ({ id: "cell." + c.id, group: "cell", enabled: true }));
+  const want = ui?.l1 ? "cell." + ui.l1 : null, cur = targets.some((t) => t.id === want) ? want : targets[0]?.id ?? "";
+  const on = cur ? cells.find((c) => "cell." + c.id === cur) : null, Sg = L.strings;
+  const line = { ok: on ? fill(Sg.open, { species: on.name }) : null, subject: subjectOf(Sg, fresh, targets.length > 0), back: Sg.back, need: null };
+  return { props: { state: L.initial, regions: { stage: { picture: [ground] }, cells }, focus: { cur, targets } }, line, top: { readout: { text: Sg.readout, mark: null } }, requests };
 }

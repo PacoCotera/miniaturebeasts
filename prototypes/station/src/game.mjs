@@ -3,6 +3,7 @@
 // the renderer reads (FX). Screens import this; the rules live in state.mjs.
 import * as S from "./state.mjs";
 import * as T from "./sitting.mjs";
+import * as Lib from "./library.mjs";
 import { clock } from "./pixels.mjs";
 import { createTimeline } from "../../ui/timeline.mjs";
 import { createFramePresenter } from "./present.mjs";
@@ -11,7 +12,7 @@ import { createFocus } from "../../ui/focus.mjs";
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
-  create: null, panel: null, arrival: null, cross: null, inc: {}, lib: { sp: null, f: "spread", page: 0, i: 0 }, hab: { id: null, f: "resident", namer: null, prev: null }, viv: { f: null }, bench: { f: null, install: false },
+  create: null, panel: null, arrival: null, cross: null, inc: {}, lib: { l1: null, pending: null }, hab: { id: null, f: "resident", namer: null, prev: null }, viv: { f: null }, bench: { f: null, install: false },
   cargo: { state: "bay", crate: 0, at: 0, run: null, shown: null, arrival: null }, pendingArrival: null, sendoff: false, meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
 export const TL = createTimeline();
@@ -63,8 +64,8 @@ export function save() {
 // The other page wrote the save: take its part, keep ours. A new world or a reset starts a fresh Station.
 export function storageChanged() {
   const cur = readStored();
-  if (!cur) { G.sv = { v: S.SAVE_V, wid: null, st: S.freshSt(null, 0) }; G.st = G.sv.st; goScreen("home"); changed(); return; }
-  if (cur.wid !== G.st.wid) { adopt(cur); goScreen("home"); save(); return; }
+  if (!cur) { G.sv = { v: S.SAVE_V, wid: null, st: S.freshSt(null, 0) }; G.st = G.sv.st; UI.lib.pending = null; goScreen("home"); changed(); return; }   // a new world drops the Library's visit note unrecorded
+  if (cur.wid !== G.st.wid) { adopt(cur); UI.lib.pending = null; goScreen("home"); save(); return; }
   const mine = G.st; G.sv = cur; G.sv.st = mine;
   if (S.docked(mine) && T.mergeHome(mine, cur).home.length) { save(); return; }   // docked: the care and the welcome; save() calls changed()
   changed();
@@ -87,12 +88,15 @@ export const onScreenChange = (fn) => screenListeners.add(fn);
 // A screen is a binding table on the face, never a drawing: registering one with a draw, nodes or faceNodes throws (the import guard checks the same, lvgl-switch.md §5.1).
 export const registerScreen = (name, screen) => { for (const k of ["draw", "nodes", "faceNodes"]) if (screen && k in screen) throw new Error(`registerScreen(${name}): ${k} is the removed JavaScript drawing layer; the face draws the screen`); SCREENS[name] = screen; };
 export const screenOf = (name) => SCREENS[name];
+// The Library is the screen `library` and its levels `library.*`: entering it from outside takes the visit note, leaving it records the note as seen (library.json seen).
+export const inLibrary = (name) => name === "library" || (typeof name === "string" && name.startsWith("library."));
 export function goScreen(name) {
-  const fresh = UI.screen !== name; if (fresh) FX.transAt = clock.now;
+  const fresh = UI.screen !== name, was = UI.screen; if (fresh) FX.transAt = clock.now;
   UI.screen = name;
+  if (fresh && inLibrary(name) && !inLibrary(was)) UI.lib.pending = Lib.seenNote(G.st, G.settings);   // entering: the looks the visit shows, noted, unsaved (a reload mid-visit loses it and the looks stay new)
+  if (fresh && !inLibrary(name) && inLibrary(was) && UI.lib.pending) { S.libRecord(G.st, UI.lib.pending); UI.lib.pending = null; save(); }   // leaving: the note is seen
   if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
   if (SCREENS[name]?.enter) SCREENS[name].enter();
-  if (fresh && name === "library") { S.libOpened(G.st); save(); }   // the Library opened full screen: what it holds is no longer new (Home's Library module, build spec 4.2)
   if (fresh && name === "vivarium") UI.viv.f = null;   // the way in puts the ring on the mibi last seen up close (vivarium.json focus.entry)
   if (fresh) { UI.panel = null; UI.arrival = null; }   // a panel closes with its screen, nothing spent; the arrival's ← lasts only on the screen it landed on
   if (fresh && name !== "habitat") { UI.hab.namer = null; UI.hab.prev = null; }   // the namer closes with the level (writing nothing)

@@ -8,7 +8,7 @@ The host drops an intent while an event holds input (`TL.holding()`, lvgl-switch
 
 ## Library (`library.mjs`)
 
-Targets are `frame.<SNN>` only; the host sets `ui.lib.i` from the face's `focus` message (`focus(h, target)`). On the spread (`ui.lib.f === "spread"`): ✓ focuses the frame, then a found frame opens its Book once `doorOpen("book")` (`openBook`: `lib.f = "book"`, which the host draws as "not built yet"), a found frame before slot 8, a met frame and an unmet frame do nothing (no plate: fix 8); ← sets Home's ring on the Library module and goes Home. In the Book: ← is the spread with the ring on that species. Habitat's species word opens the Book's guide (`openBook(h, id); lib.f = "guide"`).
+Targets are `cell.<SNN>` only, the met and found cells of Level 1; the host sets `ui.lib.l1` (the species of the ring) from the face's `focus` message (`focus(h, target)`). ✓ on a met or found cell opens that species, `library.species` (Level 2, which the frame draws as not built yet; its ← is Level 1 with the ring on that species); ✓ on anything else does nothing; ← sets Home's ring on the Library bezel and goes Home. `openAt(h, id)` is every way in that names a species: Home's Library bezel (the species its module is for) and Habitat's species word ("Open the guide").
 
 ## Probe bench (`bench.mjs`)
 

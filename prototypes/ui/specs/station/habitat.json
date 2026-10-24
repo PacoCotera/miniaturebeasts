@@ -418,7 +418,7 @@
    "hatch": "resident, the new mibi, in state meet (incubator.json handoff)",
    "homeMeet": "resident, the new mibi, in state meet (Home's ✓ Meet)",
    "homeResident": "resident, the mibi looked at (Home's ✓ Look at, straight to this level; ← then goes to the whole)",
-   "visit": "resident, the mibi visited (the Book's ✓ Visit, a jump)",
+   "visit": "resident, the mibi visited (a jump)",
    "backFromCross": "cross: the target that led there",
    "backFromSitting": "portrait: ← from the sitting's pose step (sitting.json keys.back)",
    "sittingBegun": "portrait: the sitting's begin lands here, the module in its painting state (sitting.json events.begin)",
@@ -469,7 +469,7 @@
     "present": "rest and out (in the meet the ribbon stands there and is not a target)",
     "enabled": "always: any housed mibi may be renamed, at home, bonded or out with the Companion; never a released one"
    },
-   "species": {"group": "species", "shape": { "rect": 0, "chip": 4 }, "box": "the line's text and guide mark as drawn", "lift": 0, "enabled": "doorOpen(book); until slot 8 read-only (no ✓ cap, bottomLine.species.shut)"},
+   "species": {"group": "species", "shape": { "rect": 0, "chip": 4 }, "box": "the line's text and guide mark as drawn", "lift": 0, "enabled": "always: ✓ Open the guide"},
    "plate": {
     "group": "plate",
     "id": "plate.<i>, i from 0 in ring order",
@@ -559,8 +559,7 @@
   },
   "name": {"action": "strings.rename", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); out, strings.out"},
   "tile": "as resident, for the tile's mibi",
-  "species": {"action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → book, spread guide; ← there reads Library",
-   "shut": {"action": null, "context": "strings.shut.guide", "when": "doorOpen(book) false (until slot 8)"}},
+  "species": {"action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → library, Level 1 with the ring on this species"},
   "plate": {
    "read": {"action": null, "context": "strings.plateRead"},
    "unread": {
@@ -690,7 +689,6 @@
   "shut": {
    "cross": "crossing is not open yet",
    "portrait": "portraits are not open yet",
-   "guide": "the guide is not open yet",
    "note": "context slot 208 px at 16, six words or fewer, no digits: 177, 182, 188 px; until slots 7, 8, 9 (doorOpen)"
   },
   "guide": "Open the guide",

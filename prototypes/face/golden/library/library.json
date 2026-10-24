@@ -1,21 +1,25 @@
 {
- "_note": "The Library spread: the wireframe scene (ring on a found frame), a fresh world, the ring over a portrayed and complete frame (gilt and seal), and the Book shut: ✓ on a found frame, the plate 400 ms into its 4 s event, motion on, virtual clock: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "_note": "The Library's Level 1: only the Loika met, a mid-game catalogue (the wish on a found species, a face chip), glints and three new looks, the room key (the ring on the last species visited), and the Home to Level 1 dither at its midpoint (motion on, virtual clock): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
-  "library-spread": {
-   "hash": "a9d5aa61",
-   "png": "library-spread.png"
+  "library-l1-first": {
+   "hash": "6ccb2114",
+   "png": "library-l1-first.png"
   },
-  "library-spread-empty": {
-   "hash": "6ce72361",
-   "png": "library-spread-empty.png"
+  "library-l1-mid": {
+   "hash": "4a061723",
+   "png": "library-l1-mid.png"
   },
-  "library-spread-complete": {
-   "hash": "f620bf04",
-   "png": "library-spread-complete.png"
+  "library-l1-new": {
+   "hash": "33145e22",
+   "png": "library-l1-new.png"
   },
-  "library-book-shut": {
-   "hash": "cabf11f7",
-   "png": "library-book-shut.png"
+  "library-l1-roomkey": {
+   "hash": "ef0b89a7",
+   "png": "library-l1-roomkey.png"
+  },
+  "library-l1-dither": {
+   "hash": "ed3294b5",
+   "png": "library-l1-dither.png"
   }
  }
 }

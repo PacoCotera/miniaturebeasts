@@ -13,7 +13,7 @@
 extern const lv_font_t face_inter_16, face_inter_20, face_inter_28;
 #define MAX_OBJ 1024            /* the table is larger than the 400-object budget so a breach is measured, not refused (lvgl-switch.md §2.2) */
 #define MAX_ASSET 256
-#define MAX_SRC 8          /* face-owned sources for nine-slices (the focus ring's 20 x 20), after the host's pictures in the same table */
+#define MAX_SRC 16         /* face-owned sources for nine-slices (the focus rings, the bezels: the Library's three cell bezels with the rest), after the host's pictures in the same table; kept for the session, so every screen's together */
 #define MAX_REGION 96
 #define OPS_CAP (128 * 1024)
 #define NINE_PARTS 9

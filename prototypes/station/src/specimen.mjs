@@ -400,3 +400,34 @@ export function renderSpecimen(frame, state, opts = {}) {
   });
   return { w: H.w, h: H.h, rgba, beads, rays, levels, lit, form, extent: { x0: x0 / ss, y0: y0 / ss, x1: (x1 + 1) / ss, y1: (y1 + 1) / ss }, ms: performance.now() - t0 };
 }
+
+// ---- the Library's Level 1 cell (library.json l1.cell.picture): a separate harness, default-neutral (the Home harness above, RECIPE and every Home picture are unchanged) ----
+// The approved Level 1 render's numbers for a 152 px cell with its 26 px plate: the form's radius 54 (half of 152 - 26, less 9) over the model's extent, its centre at (76, 64) of the cell, which is (70, 58) of the 140 x 114
+// picture at (6, 6); nodes up to 7, line widths at least 0.55; the found form's light and its bloom at 0.8 (blurs of 2.4, 8 and 24 px and the 20 px warm halation, at 1x), the met form as the pencil study at 0.95.
+// On the flat ground of its cell (libPanel found, libQuiet met): no grain, no paper, no vignette; the light alone takes the print tone, added to the exact ground, and every pixel nearer than 4 px to the picture's edge is the exact ground.
+export const CELL = { ss: 2, w: 140, h: 114, cx: 70, cy: 58, rad: 54, nodeR: 7, lw: 0.55, bloom: 0.8, pencil: 0.95, edge: 4 };
+// The cell picture of a species: { w, h, rgba (opaque), ms }. state: { <species id>: { <trait>: [looks, in the order found] } } (empty for a met species); pencil: the met study; ground: [r, g, b].
+export function renderCell(frame, state, { pencil = false, ground } = {}) {
+  const t0 = performance.now(), ss = CELL.ss, W = CELL.w * ss, Ht = CELL.h * ss;
+  const m = layout(model(frame, pencil ? {} : state)), s = CELL.rad / m.extent;
+  const g = { cx: CELL.cx * ss, cy: CELL.cy * ss, s: s * ss, lw: Math.max(CELL.lw, s) * ss };
+  const lightC = createCanvas(W, Ht), acc = createCanvas(W, Ht), a = acc.getContext('2d');
+  if (pencil) { const lc = lightC.getContext('2d'); lc.globalAlpha = CELL.pencil; drawForm(lc, g, m, { pencil: true }); a.globalCompositeOperation = 'lighter'; a.drawImage(lightC, 0, 0, W, Ht); }
+  else {
+    drawForm(lightC.getContext('2d'), g, m, { nodeR: CELL.nodeR });
+    a.globalCompositeOperation = 'lighter'; a.drawImage(lightC, 0, 0, W, Ht);
+    for (const [px, k] of [[1.2, 0.3], [4, 0.2], [12, 0.12]]) { a.filter = `blur(${px * 2 * ss}px)`; a.globalAlpha = k * CELL.bloom; a.drawImage(lightC, 0, 0, W, Ht); }
+    a.filter = `blur(${10 * 2 * ss}px) sepia(1) saturate(3) hue-rotate(-25deg)`; a.globalAlpha = 0.1 * CELL.bloom; a.drawImage(lightC, 0, 0, W, Ht);
+  }
+  const L = acc.data, rgba = new Uint8ClampedArray(CELL.w * CELL.h * 4);
+  for (let y = 0; y < CELL.h; y++) for (let x = 0; x < CELL.w; x++) {
+    const o = (y * CELL.w + x) * 4, edge = Math.min(x, y, CELL.w - 1 - x, CELL.h - 1 - y) < CELL.edge;
+    for (let c = 0; c < 3; c++) {
+      let t = 0; for (let j = 0; j < ss; j++) for (let i = 0; i < ss; i++) t += L[((y * ss + j) * W + x * ss + i) * 4 + c];
+      const v = t / (ss * ss), tone = v / (1 + 0.25 * v) * 1.18;
+      rgba[o + c] = edge ? ground[c] : Math.max(0, Math.min(255, Math.round(ground[c] + tone * 255)));
+    }
+    rgba[o + 3] = 255;
+  }
+  return { w: CELL.w, h: CELL.h, rgba, ms: performance.now() - t0 };
+}
