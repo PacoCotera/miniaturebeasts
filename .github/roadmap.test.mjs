@@ -61,8 +61,6 @@ const rootDir = fileURLToPath(root), script = fileURLToPath(at(".github/docs-onl
 const scope = (input) => execFileSync("sh", [script], { input, encoding: "utf8" }).trim();   // the script the workflow step runs, on a --name-status list
 const diff = (...lines) => lines.map((l) => l.replace(" ", "\t")).join("\n") + "\n";
 
-// the comments of a JavaScript file blanked (line and block), strings left as they are: the blanker of prototypes/face/tools/guard.mjs
-const code = (s) => s.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " ")).replace(/(^|[^:"'`\\])\/\/[^\n]*/g, (_, a) => a);
 const OWN = /^(prototypes|website|\.github|ops|v1\/native\/vendor)(\/|$)/, SKIP = new Set(["node_modules", ".git", "dist", "golden", "img"]);
 const buildReads = () => readFileSync(at(".github/build-reads.txt"), "utf8").split("\n").filter((l) => l && !l.startsWith("#"));
 const covers = (list, p) => list.some((e) => (e.endsWith("/") ? (p + "/").startsWith(e) : e === p));
@@ -76,25 +74,29 @@ function scripts(dir, ext, out = []) {
   return out;
 }
 
-// every string literal in the build's scripts that names a path under design/, art/, hardware/ or the root (outside the build's own folders), as a path from the root
+// every string literal in the build's scripts that names a document or a folder under design/, art/, hardware/ or the root (outside the build's own folders), as a path from the root.
+// The raw text is scanned, comments included: a quoted path in a comment is listed or reworded. A literal counts when it ends in .md, ends in /, or its last segment has no dot (a folder);
+// any other file never passes condition 1 of the scope rule. A bare literal naming a root .md other than README.md counts as a root read (a bare README.md names a folder's own).
 export function readsOf(files) {
   const tops = readdirSync(rootDir).filter((n) => !OWN.test(n) && n !== ".git" && n !== "node_modules");
   const found = new Map();
   for (const { file, text } of files) {   // file: the path from the root
-    for (const m of code(text).matchAll(/["'`](\.{1,2}\/[^"'`\s$\\]*|\/?[A-Za-z0-9_.-]+\/[^"'`\s$\\]*)/g)) {
-      const lit = m[1].replace(/[?#].*$/, "");
+    for (const m of text.matchAll(/["'`](?:(\.{1,2}\/[^"'`\s$\\]*|\/?[A-Za-z0-9_.-]+\/[^"'`\s$\\]*)|([A-Za-z0-9_.-]+\.md)(?=["'`]))/g)) {
+      const lit = (m[1] ?? m[2]).replace(/[?#].*$/, "");
       const r = /^\.\.?\//.test(lit) ? path.posix.normalize(path.posix.join(path.posix.dirname(file), lit)) : lit.replace(/^\//, "");
+      if (m[2] && (r === "README.md" || !tops.includes(r))) continue;
       if (r.startsWith("../") || OWN.test(r) || !tops.includes(r.split("/")[0]) || !(r.includes("/") || tops.includes(r))) continue;
+      if (!(r.endsWith(".md") || r.endsWith("/") || !path.posix.basename(r).includes("."))) continue;
       if (!found.has(r)) found.set(r, file);
     }
   }
   return found;
 }
-const buildScripts = () => [...scripts(fileURLToPath(at("prototypes")), /\.(mjs|js|html)$/), ...readdirSync(fileURLToPath(at(".github"))).filter((f) => f.endsWith(".mjs")).map((f) => path.join(rootDir, ".github", f))]
+const buildScripts = () => [...scripts(fileURLToPath(at("prototypes")), /\.(mjs|js|html|json|py|sh)$/), ...readdirSync(fileURLToPath(at(".github"))).filter((f) => f.endsWith(".mjs")).map((f) => path.join(rootDir, ".github", f))]
   .map((f) => ({ file: path.relative(rootDir, f).split(path.sep).join("/"), text: readFileSync(f, "utf8") }));
 const uncovered = (files, list) => [...readsOf(files)].filter(([r]) => !covers(list, r) && !covers(list, r + "/")).map(([r, f]) => `${r} (read in ${f})`);
 
-test("honesty: every path the build's scripts read outside its own folders is listed in .github/build-reads.txt", () => {
+test("honesty: every document or folder outside the build's own folders that the build's scripts name is listed in .github/build-reads.txt", () => {
   assert.deepEqual(uncovered(buildScripts(), buildReads()), []);
 });
 
@@ -111,7 +113,13 @@ test("honesty: a read that is not listed fails the scan (a planted read of a doc
     `${too} (read in .github/planted.mjs)`,
   ]);
   assert.deepEqual(uncovered(planted, [...buildReads(), note, folder, too]), []);
-  assert.deepEqual(uncovered([{ file: "prototypes/ui/tests/planted.test.mjs", text: `// ${note}\n/* "${at3("..", "..", "..", note)}" */ const a = "plain";` }], buildReads()), [], "comments are blanked");
+  const slash = at3("station-layouts", "*.svg"), inComment = at3("design", "proposals", "in-comment.md"), rootMd = "ROADMAP" + ".md", bare = "README" + ".md";
+  assert.deepEqual(uncovered([{ file: "prototypes/ui/tests/planted.test.mjs", text: `// see ${slash}\nreadFileSync("${at3("..", "..", "..", note)}");` }], buildReads()),
+    [`${note} (read in prototypes/ui/tests/planted.test.mjs)`], "a // comment holding /* does not hide the next line");
+  assert.deepEqual(uncovered([{ file: "prototypes/ui/tests/planted.test.mjs", text: `/* "${at3("..", "..", "..", inComment)}" */ const a = "plain";` }], buildReads()),
+    [`${inComment} (read in prototypes/ui/tests/planted.test.mjs)`], "a quoted path in a comment is reported");
+  assert.deepEqual(uncovered([{ file: "prototypes/ui/tests/planted.test.mjs", text: `readFileSync("${rootMd}"); readFileSync("${bare}");` }], buildReads()),
+    [`${rootMd} (read in prototypes/ui/tests/planted.test.mjs)`], "a bare literal naming a root .md other than README.md is a root read; a bare README.md is not");
 });
 
 test("the scope script, the eight cases (the step runs this script, so the table and the step cannot drift)", () => {
