@@ -3,7 +3,7 @@
 //   1. a path in removed.json exists again;
 //   2. anything imports a removed path (a static or dynamic import, a script tag; relative, or absolute under /sandbox/), in prototypes, .github and website;
 //   3. `canvas`, `getContext`, `putImageData` or another canvas call appears in code under station/src or ui/ (tests and tools too), except the face's own display() and present() (the lines between
-//      the guard:canvas markers in station/src/face-lvgl.mjs) and the named decoders of the placed masters and the pod sprites (station/src/masters.mjs, podsprites.mjs) until png.mjs decodes them, and the specimen's pure-JavaScript painter (station/src/paint2d.mjs, specimen.mjs), which draws a picture on a Float32Array and no canvas;
+//      the guard:canvas markers in station/src/face-lvgl.mjs) and the named decoders of the placed masters and the pod sprites (station/src/masters.mjs, podsprites.mjs) until png.mjs decodes them, and the specimen's pure-JavaScript painter (station/src/paint2d.mjs, specimen.mjs, and the Library sheet's library-sheet.mjs on it), which draws a picture on a Float32Array and no canvas;
 //   4. JavaScript outside face/tests names an export of the node path (the test build's `_face_scene_begin`, `_face_node`, `_face_text` and the rest);
 //   5. registerScreen is given a draw, nodes or faceNodes (a literal here; the function itself throws on any object that has one, so a variable cannot get past);
 //   6. an lv_*_create call appears in the face's C outside face/src/prim/ (the platform's lv_display_create and lv_indev_create excepted);
@@ -34,6 +34,7 @@ function walk(dir, ext, out = []) {
 const code = (s) => blank(s);
 const CANVAS = /\b(canvas|getContext|putImageData|createImageData|getImageData|OffscreenCanvas|drawImage)\b/i;
 const CANVAS_OK = new Set(["station/src/masters.mjs", "station/src/podsprites.mjs", "station/src/paint2d.mjs", "station/src/specimen.mjs"]);   // the named decoders, until png.mjs decodes the masters and the sprite sheets; and the specimen's painter and its port (T-20261019-258, the architect's ruling): a pure-JavaScript Canvas 2D subset on a Float32Array and the generator that draws on it, which make a picture in the logic process and never touch the DOM, a browser canvas or the screen
+CANVAS_OK.add("station/src/library-sheet.mjs");   // the Library sheet generator, for the same reason as specimen.mjs: a pure-JavaScript painter in the logic process on paint2d.mjs, never the DOM, a browser canvas or the screen
 const FACE_LVGL = "station/src/face-lvgl.mjs";   // the face's own display() and present(): the lines between its guard:canvas markers, and no other
 const marked = (raw) => { const ok = new Set(); let on = false; raw.split("\n").forEach((l, i) => { if (/guard:canvas end/.test(l)) on = false; if (on) ok.add(i); if (/guard:canvas begin/.test(l)) on = true; }); return ok; };
 const NODE_EXPORTS = /\b_?face_(scene_begin|scene_end|node|node_tag|text|text_size|ops|ops_size|measure|asset|background|region|selftest_scene)\b/;

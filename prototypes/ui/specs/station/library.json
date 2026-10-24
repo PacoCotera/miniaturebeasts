@@ -58,6 +58,38 @@
    "back": "Home"
   }
  },
+ "l2": {
+  "sheet": {
+   "rect": [16, 40, 664, 522],
+   "formRoom": [176, 44, 344, 414],
+   "plates": {
+    "size": [156, 70], "head": 26, "x": { "L": 16, "R": 524 },
+    "tops": { "2": [50, 380], "3": [50, 215, 380], "4": [50, 160, 270, 380], "5": [50, 132, 214, 296, 378] },
+    "slots": { "4": ["L1","R1","R2","L2"], "5": ["L2","L1","R1","R2","L3"], "6": ["L2","L1","R1","R2","R3","L3"],
+               "7": ["L2","L1","R1","R2","R3","R4","L3"], "8": ["L2","L1","R1","R2","R3","R4","L4","L3"] },
+    "num": { "x": 12, "baseline": 18 }, "name": { "x": 36, "baseline": 18, "room": 94 },
+    "index": { "x": 12, "baselines": [44, 59], "room": 132, "join": " · ", "lines": 2 },
+    "shut": { "x": 12, "baseline": 44, "room": 132 },
+    "anchor": { "L": [156, 35], "R": [-1, 35] },
+    "focus": { "shape": { "rect": 6 } }
+   },
+   "colours": { "rect": [16, 462, 212, 88],
+    "named": { "upTo": 3, "x0": 28, "pitch": 64, "y": 494, "size": [57, 23], "nameBaselines": [528, 543] },
+    "chips": { "from": 4, "x0": 28, "pitch": 37, "perRow": 5, "rows": [492, 520], "size": [32, 22] } },
+   "every": { "rect": [240, 462, 440, 88], "title": [252, 477], "x0": 252, "xMax": 668, "traitGap": 3,
+    "tiers": [ { "id": "L", "cell": 17, "pitch": 20, "rows": [502, 522] },
+               { "id": "S", "cell": 12, "pitch": 15, "rows": [489, 504, 519, 534] } ],
+    "pick": "the first tier whose rows hold every trait group, a group never split across rows" }
+  },
+  "page": {
+   "rect": [700, 50, 308, 500], "head": 26,
+   "num": { "x": 12, "baseline": 18 }, "name": { "x": 36, "baseline": 18, "room": 246 },
+   "trait": { "x": 12, "first": 44, "pitch": 62, "nameLine": 15,
+              "disc": { "size": 17, "pitch": 24, "dy": 9 }, "names": { "dy": 42, "room": 284 } },
+   "bottomPad": 12,
+   "focus": { "shape": { "circle": "box" } }
+  }
+ },
  "seen": "newLooksOf (specimen-props.mjs) is the one definition of a new look for Home and Level 1. Entering the Library (a library or library.* screen from outside) notes every species' guide looks in chapters not shut (ui.lib.pending, unsaved); leaving it (the first screen that is neither library nor library.*) adds the note to st.libSeen and saves. Nothing is recorded on entry or inside the Library",
  "faces": {
   "id": "face:{mibi}:{size}, with :faded when that mibi is released",
