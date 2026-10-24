@@ -5648,5 +5648,22 @@
    "thoughtsTokenCount": 238,
    "totalTokenCount": 2746
   }
+ },
+ {
+  "tag": "sit-S01-adult-keys-patches-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.187564,
+  "mxn": 3.7513,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T04:51:27Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 602,
+   "candidatesTokenCount": 1332,
+   "thoughtsTokenCount": 221,
+   "totalTokenCount": 2155
+  }
  }
 ]

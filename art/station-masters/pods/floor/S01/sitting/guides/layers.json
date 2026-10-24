@@ -1,0 +1,80 @@
+{
+ "adult-overlays": {
+  "shake-t1": {
+   "crest_px": 6542,
+   "band_px": 2248,
+   "diff_outside_mask": 0,
+   "fur_px": 29416,
+   "droplet_px_in_fur_mask": 0
+  },
+  "calm-t1": {
+   "crest_px": 7212,
+   "band_px": 1534,
+   "diff_outside_mask": 0,
+   "fur_px": 26030,
+   "droplet_px_in_fur_mask": 0
+  },
+  "shake-t2": {
+   "crest_px": 6578,
+   "band_px": 2648,
+   "diff_outside_mask": 0,
+   "fur_px": 27616,
+   "droplet_px_in_fur_mask": 0
+  }
+ },
+ "adult-patches": {
+  "anchor": {
+   "mark_px": 3292,
+   "masses_over_150px": 3,
+   "mass_sizes": [
+    2040,
+    629,
+    623
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 13,
+   "repainted_fraction_of_figure": 0.0003,
+   "anchor_layer_vs_signed_px_alpha>128_iou": null
+  },
+  "shake-t1": {
+   "mark_px": 5268,
+   "masses_over_150px": 3,
+   "mass_sizes": [
+    3095,
+    1325,
+    848
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 0,
+   "repainted_fraction_of_figure": 0.0
+  },
+  "calm-t1": {
+   "mark_px": 3604,
+   "masses_over_150px": 3,
+   "mass_sizes": [
+    2365,
+    725,
+    514
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 0,
+   "repainted_fraction_of_figure": 0.0
+  },
+  "shake-t2": {
+   "mark_px": 4793,
+   "masses_over_150px": 3,
+   "mass_sizes": [
+    2804,
+    1259,
+    730
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 0,
+   "repainted_fraction_of_figure": 0.0
+  },
+  "empty_cells": {
+   "4": 0,
+   "6": 68392
+  }
+ }
+}
