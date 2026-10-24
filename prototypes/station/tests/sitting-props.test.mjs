@@ -142,7 +142,8 @@ test("the resident: the focused card's habit on the pose step in the hour's ligh
   assert.deepEqual([pose.figure[2], pose.figure[3]], [130, 95], "the adult curl at the Habitat factor");
   const juv = build(dot({ juvenile: true }), { step: "place", pose: "sleep-curled" }).props.regions.resident; assert.equal(juv.stage, "juvenile"); assert.deepEqual([juv.figure[2], juv.figure[3]], [103, 79], "the juvenile curl");
   assert.equal(build(dot({ species: "S02" }), { step: "pose" }).props.regions.resident.figure, null, "S02 has no layered stand: no figure");
-  const t = build(w, { step: "pose", focus: "card.0" }).props.regions.resident; assert.equal(t.pose, "shake-dry"); assert.deepEqual(t.figure, build(dot(), { step: "place", pose: "nothing" }).props.regions.resident.figure, "an owed habit draws the stand (the anchor)");
+  const t = build(w, { step: "pose", focus: "card.0" }).props.regions.resident; assert.equal(t.pose, "shake-dry");
+  assert.deepEqual(t.figure, standFigure(layeredStand("S01", "adult", [304, 312], "habitat", "shake"), mibiReqs(build(w, { step: "pose", focus: "card.0" })).find((r) => r.size[0] === 304).looks), "shake-dry draws its signed key: the shake's own figure");
 });
 
 test("every mibi picture is mibiReq with poseFor's pose: a card's three requests (card 96, thumb 48, window 304 × 312) share one pose and one set of looks", () => {
@@ -154,11 +155,11 @@ test("every mibi picture is mibiReq with poseFor's pose: a card's three requests
   }
 });
 
-test("owed habit keys: Dot with sleep-curled alone owes nothing; with shake-dry, shake-dry's three requests carry owed; an S02's every pose is owed", () => {
+test("owed habit keys: Dot with sleep-curled alone owes nothing; with shake-dry, whose key is cut, nothing is owed and its three requests carry the shake; an S02's every pose is owed", () => {
   const curl = dot(); for (const b of Object.values(states(curl, "sleep-curled", "wood"))) for (const r of b.requests) assert.equal(r.owed, undefined, r.id);
   const both = dot({ habits: ["sleep-curled", "shake-dry"] }), pose = build(both, { step: "pose" }), cards = mibiReqs(pose).filter((r) => r.size[0] === 96);
-  assert.deepEqual(cards.map((r) => r.owed ?? null), ["habit key shake-dry", null], "the shake-dry card is owed, the curl's is not");
-  const sd = build(both, { step: "confirm", pose: "shake-dry", place: "wood" }); assert.deepEqual(mibiReqs(sd).map((r) => r.owed), ["habit key shake-dry", "habit key shake-dry", "habit key shake-dry"], "card, thumb and window");
+  assert.deepEqual(cards.map((r) => [r.pose, r.owed ?? null]), [["shake", null], ["curl", null]], "neither card is owed");
+  const sd = build(both, { step: "confirm", pose: "shake-dry", place: "wood" }); assert.deepEqual(mibiReqs(sd).map((r) => [r.pose, r.owed]), [["shake", undefined], ["shake", undefined], ["shake", undefined]], "card, thumb and window");
   const s02 = dot({ species: "S02", habits: ["sleep-curled", "sniff", "puff"] });
   for (const b of [build(s02, { step: "pose" }), build(s02, { step: "confirm", pose: "puff", place: "wood" })]) { const rs = mibiReqs(b); assert.ok(rs.length >= 3); for (const r of rs) assert.match(r.owed, /^habit key /); }
   assert.deepEqual(mibiReqs(build(s02, { step: "pose" })).filter((r) => r.size[0] === 96).map((r) => r.owed), ["habit key sniff", "habit key puff", "habit key sleep-curled"], "the S02 frame's order");
