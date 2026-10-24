@@ -1,6 +1,6 @@
 // The blanker of the face guard and of the tests that assert an absence in source: one pass over the text, so a comment marker inside a string, a regex or another comment is never read as a comment.
 // States: code; '…' and "…" (end at a newline); a template with ${} depth; a regex literal with [...] classes (ends at a newline); a line comment; a block comment.
-// Comments are dropped, everything else is kept as written, and every newline is kept, so a line number in the output is the line number in the source.
+// A block comment between two tokens leaves one space, so they do not glue into one word. Comments are dropped, everything else is kept as written, and every newline is kept, so a line number in the output is the line number in the source.
 //   blank(src)                              JavaScript
 //   blank(src, { js: false })               C: quotes and comments only (no template, no regex literal)
 const REGEX_AFTER_WORD = new Set(["return", "typeof", "instanceof", "in", "of", "new", "delete", "void", "throw", "case", "do", "else", "yield", "await"]);
@@ -24,7 +24,7 @@ export function blank(src, { js = true } = {}) {
   while (i < n) {
     const c = src[i], d = src[i + 1];
     if (c === "/" && d === "/") { while (i < n && src[i] !== "\n") i++; continue; }
-    if (c === "/" && d === "*") { i += 2; while (i < n && !(src[i] === "*" && src[i + 1] === "/")) { if (src[i] === "\n") emit("\n"); i++; } i += 2; continue; }
+    if (c === "/" && d === "*") { i += 2; while (i < n && !(src[i] === "*" && src[i + 1] === "/")) { if (src[i] === "\n") emit("\n"); i++; } i += 2; if (out && !/\s/.test(out[out.length - 1]) && i < n && !/\s/.test(src[i])) emit(" "); continue; }
     if (c === '"' || c === "'") {
       emit(c); i++;
       while (i < n && src[i] !== "\n") { const e = src[i]; emit(e); i++; if (e === "\\" && i < n && src[i] !== "\n") { emit(src[i]); i++; } else if (e === c) break; }

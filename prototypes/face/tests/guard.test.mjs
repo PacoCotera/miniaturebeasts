@@ -95,3 +95,13 @@ test("the C blanker keeps quotes and comments and nothing else: a lv_*_create ca
   assert.deepEqual(fails({ "prototypes/face/src/x.c": "/* lv_obj_create(p); */ // lv_obj_create(p);\nint a = 1;\n" }), []);
   assert.equal(blank("a = `b` / c; // d", { js: false }), "a = `b` / c; ");
 });
+test("a block comment between two tokens does not glue them into one word the guard cannot see", () => {
+  assert.match(fails({ "prototypes/station/src/x.mjs": "var/**/canvas = document;\n" }).join("\n"), /x\.mjs:1 uses the canvas/);
+  assert.match(fails({ "prototypes/station/src/x.mjs": "x = a/**/getContext;\n" }).join("\n"), /x\.mjs:1 uses the canvas/);
+  assert.equal(blank("var/**/canvas"), "var canvas");
+});
+test("an import line with a trailing comment keeps its end: no space is left before the newline", () => {
+  assert.equal(blank("a;/* c */\nx;"), "a;\nx;");
+  assert.match(blank("import a from './w.mjs';/* c */\nx;"), /^import a from '\.\/w\.mjs';$/m);
+  assert.match(blank("import a from './w.mjs'; // c\nx;"), /^import a from '\.\/w\.mjs'; $/m);
+});
