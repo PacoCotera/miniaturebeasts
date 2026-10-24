@@ -182,7 +182,7 @@ const frameRef = (ref) => ref.slice("frame.json ".length).split(".").reduce((o, 
 const paletteBad = (colours) => { const names = new Set(palette.colours.map(([n]) => n)), bad = []; (function walk(o, up = "") { for (const [k, v] of Object.entries(o)) { if (k === "note" || (k === "floor" && up === "plaque") || (k === "plate" && typeof v === "string" && v.startsWith("painted"))) continue; if (typeof v === "string") { if (!names.has(v) && !(/^frame\.json regions\.marks\./.test(v) && frameRef(v) !== undefined)) bad.push(v); }   /* a lamp is a signed picture of frame.json, named by its path there (it must resolve), not a colour */ else if (v && typeof v === "object") walk(v, k); } })(colours); return bad; };
 // the closed vocabulary and the closed list of derived rules (station-layouts.md, The vocabulary (closed); leaves and leafArc: architect, 2026-10-09 13:24)
 const WORDS = new Set(["frame", "topBar", "bottomLine", "messagePlate", "focusRing", "panel", "stampLabel", "chapterRail", "chapterPage", "list", "specimen", "livingWindow", "ribbon", "text", "leaves"]);
-const LAYOUT_RULES = new Set(["railCompaction", "slantTabs", "pageGrid", "platePosition", "listPitch", "splicePlan", "guideColumns", "pipGroups", "leafArc"]);
+const LAYOUT_RULES = new Set(["railCompaction", "slantTabs", "pageGrid", "platePosition", "listPitch", "splicePlan", "guideColumns", "pipGroups"]);
 const lintRegions = (spec) => { for (const [id, r] of Object.entries(spec.regions)) { assert.ok(r.component || r.build, `${spec.screen}.${id} names its word or composition`); if (r.component) assert.ok(WORDS.has(r.component), `${spec.screen}.${id}: ${r.component} is a word of the closed vocabulary`); for (const k of r.layout ?? []) assert.ok(LAYOUT_RULES.has(k), `${spec.screen}.${id}: ${k} is a closed rule`); if (id !== "bench" && id !== "stage" && !r.offGrid) assert.ok(r.rect.every((n) => n % 8 === 0), `${spec.screen}.${id} on the 8 px grid`); } };   // the bench and Home's stage are the frame's stage (40, 522)
 const STEP_KEYS = ["up", "down", "left", "right"];
 
@@ -229,27 +229,7 @@ test("the Create spec file agrees with the Create wireframes, region by region, 
   assert.deepEqual(paletteBad(cr.colours), []);
 });
 
-// The Incubator's leaf arcs: the slot tables rebuilt from the spec's own parameters (architect, 2026-10-09 13:24).
 const incSpec = () => rd("../specs/station/incubator.json");
-const arcTable = (L, r) => Array.from({ length: 2 * L.perArc - 1 }, (_, h) => { const a = ((L.span[0] + L.half * h) * Math.PI) / 180; return [Math.round(L.centre[0] + r * Math.sin(a)) + L.offset[0], Math.round(L.centre[1] - r * Math.cos(a)) + L.offset[1]]; });
-
-test("the Incubator's leafArc tables are rebuilt from the centre, the arcs, the span and the half pitch", () => {
-  const L = incSpec().regions.leaves.leafArc;
-  assert.equal(L.span[1] - L.span[0], L.half * 2 * (L.perArc - 1), "the span holds perArc leaves on the pitch"); assert.equal(L.pitch, 2 * L.half);
-  for (const k of ["inner", "outer"]) { assert.equal(L[k].length, 2 * L.perArc - 1); assert.deepEqual(L[k], arcTable(L, L.arcs[k]), k + " table"); }
-});
-
-const DERIVE = new URL("../specs/derive.mjs", import.meta.url);
-test("the leafArc oracle (ui/specs/derive.mjs) places every run of 1 to 40 leaves on the tables, centred, none overlapping", { skip: existsSync(DERIVE) ? false : "ui/specs/derive.mjs is the builder's to write at L2.4 (architect, 2026-10-09 13:24)" }, async () => {
-  const { leafArc } = await import(DERIVE.href), R = incSpec().regions.leaves, L = R.leafArc, [lw, lh] = R.leaf;
-  const slot = (k, i) => [...L[k][i], lw, lh];
-  for (let n = 1; n <= 2 * L.perArc; n++) {
-    const boxes = leafArc(R, n), a = Math.min(n, L.perArc), b = n - a;
-    assert.deepEqual(boxes, [...Array.from({ length: a }, (_, j) => slot("inner", 20 - a + 2 * j)), ...Array.from({ length: b }, (_, j) => slot("outer", 20 - b + 2 * j))], `${n} leaves: inner left to right, then outer, slot 20 − k + 2j`);
-    for (const [i, p] of boxes.entries()) { assert.ok(inside(p, R.rect)); for (const q of boxes.slice(i + 1)) assert.ok(apart(p, q), `${n} leaves: none overlaps`); }
-  }
-  assert.throws(() => leafArc(R, 2 * L.perArc + 1), "more than 2 × perArc is refused");
-});
 
 test("the Incubator spec file (T-20261016-222, the painted capsule) agrees with the build spec: the room crop, the capsule's layers at (344, 26), the moss line, the bar, the left column, the ribbon, the events", () => {
   const inc = incSpec(), R = inc.regions;
