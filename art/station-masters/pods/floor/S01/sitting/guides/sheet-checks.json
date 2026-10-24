@@ -40,5 +40,19 @@
   "seam_px_row": 0,
   "pass_5": true,
   "pass_3": true
+ },
+ "sit-S01-juvenile-keys-stripes-a.jpg": {
+  "check5_outline_p95_px": 1.41,
+  "check5_outline_max_px": 2.0,
+  "check5_mean_rgb_diff_inside": 2.44,
+  "centroid_move_px_xy": [
+   0.37,
+   0.12
+  ],
+  "border_median_from_magenta": 12.0,
+  "seam_px_cols": 0,
+  "seam_px_row": 0,
+  "pass_5": true,
+  "pass_3": true
  }
 }

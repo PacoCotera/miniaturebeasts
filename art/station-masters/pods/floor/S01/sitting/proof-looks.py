@@ -2,7 +2,7 @@
 from station-gate prototypes/station/tools/make-stand-layers.py (at /home/user/sg a9e24215). Their globals LAYERS (the folder holding the pose's fur and
 zone masks), POSE and RAMPS are set by the caller per take. Each take is composed in the six coats (charcoal and the five recolours), crest and bare,
 and none / patches / stripes / stripes and patches, in make-stand-layers.py's order (patches 10, stripes 11, crest 30).
-Exit: no recolour reaches belly, eyes, crest or droplets: a pixel diff of each recoloured base against the base, outside the fur mask, is 0.
+Exit (amended, ruling Round 3): a pixel diff of each recoloured base against the base, outside the fur mask dilated 3 px, is 0.
 usage: exec'd by floor/S01/sitting/guides/proof-sit.py"""
 import json, numpy as np
 from PIL import Image, ImageFilter
@@ -40,4 +40,6 @@ def look(base, layers_dir, pose, stage, coat, marks, crest, L):
 def recolour_exit(base, layers_dir, pose, stage):
     global LAYERS, POSE; LAYERS, POSE = layers_dir, pose
     m = np.asarray(Image.open(f'{layers_dir}/mibi-{stage}-S01-{pose}-fur-mask-304x312.png')) > 127; b = np.asarray(base)
-    return {c: int((np.asarray(recolour(base, stage, c)) != b).any(-1)[~m].sum()) for c in COATS}
+    from scipy import ndimage as nd
+    m3 = nd.binary_dilation(m, iterations=3)          # the amended exit (ruling Round 3, R3.1): 0 outside the fur mask dilated 3 px
+    return {c: {'outside_mask': int((np.asarray(recolour(base, stage, c)) != b).any(-1)[~m].sum()), 'outside_mask+3': int((np.asarray(recolour(base, stage, c)) != b).any(-1)[~m3].sum())} for c in COATS}

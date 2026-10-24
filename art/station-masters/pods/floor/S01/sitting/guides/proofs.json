@@ -21,25 +21,70 @@
   },
   "recolour_diff_outside_fur_mask": {
    "shake": {
-    "russet": 3074,
-    "ash": 3037,
-    "charcoal and russet": 367,
-    "charcoal and ash": 367,
-    "russet and ash": 3074
+    "russet": {
+     "outside_mask": 3074,
+     "outside_mask+3": 0
+    },
+    "ash": {
+     "outside_mask": 3037,
+     "outside_mask+3": 0
+    },
+    "charcoal and russet": {
+     "outside_mask": 367,
+     "outside_mask+3": 0
+    },
+    "charcoal and ash": {
+     "outside_mask": 367,
+     "outside_mask+3": 0
+    },
+    "russet and ash": {
+     "outside_mask": 3074,
+     "outside_mask+3": 0
+    }
    },
    "calm": {
-    "russet": 2731,
-    "ash": 2676,
-    "charcoal and russet": 416,
-    "charcoal and ash": 416,
-    "russet and ash": 2731
+    "russet": {
+     "outside_mask": 2731,
+     "outside_mask+3": 0
+    },
+    "ash": {
+     "outside_mask": 2676,
+     "outside_mask+3": 0
+    },
+    "charcoal and russet": {
+     "outside_mask": 416,
+     "outside_mask+3": 0
+    },
+    "charcoal and ash": {
+     "outside_mask": 416,
+     "outside_mask+3": 0
+    },
+    "russet and ash": {
+     "outside_mask": 2731,
+     "outside_mask+3": 0
+    }
    },
    "anchor (reference)": {
-    "russet": 2897,
-    "ash": 2803,
-    "charcoal and russet": 553,
-    "charcoal and ash": 553,
-    "russet and ash": 2897
+    "russet": {
+     "outside_mask": 2897,
+     "outside_mask+3": 0
+    },
+    "ash": {
+     "outside_mask": 2803,
+     "outside_mask+3": 0
+    },
+    "charcoal and russet": {
+     "outside_mask": 553,
+     "outside_mask+3": 0
+    },
+    "charcoal and ash": {
+     "outside_mask": 553,
+     "outside_mask+3": 0
+    },
+    "russet and ash": {
+     "outside_mask": 2897,
+     "outside_mask+3": 0
+    }
    }
   },
   "window_scale": 0.5192,
@@ -49,6 +94,106 @@
     "alpha_1_59_px": 0
    },
    "calm": {
+    "magenta_cast_px_on_2px_edge": 0,
+    "alpha_1_59_px": 0
+   }
+  }
+ },
+ "juvenile": {
+  "reads_apart": {
+   "iou": {
+    "shake-t1": {
+     "anchor": 0.76,
+     "curl": 0.555
+    },
+    "calm-t1": {
+     "anchor": 0.733,
+     "curl": 0.631
+    }
+   },
+   "pairs": {
+    "shake-t1xcalm-t1": 0.635
+   }
+  },
+  "base+crest_vs_crested_px_diff_alpha>128": {
+   "shake-t1": 1126,
+   "calm-t1": 849
+  },
+  "recolour_diff_outside_fur_mask": {
+   "shake-t1": {
+    "russet": {
+     "outside_mask": 1144,
+     "outside_mask+3": 0
+    },
+    "ash": {
+     "outside_mask": 1142,
+     "outside_mask+3": 0
+    },
+    "charcoal and russet": {
+     "outside_mask": 134,
+     "outside_mask+3": 0
+    },
+    "charcoal and ash": {
+     "outside_mask": 134,
+     "outside_mask+3": 0
+    },
+    "russet and ash": {
+     "outside_mask": 1144,
+     "outside_mask+3": 0
+    }
+   },
+   "calm-t1": {
+    "russet": {
+     "outside_mask": 1388,
+     "outside_mask+3": 0
+    },
+    "ash": {
+     "outside_mask": 1381,
+     "outside_mask+3": 0
+    },
+    "charcoal and russet": {
+     "outside_mask": 173,
+     "outside_mask+3": 0
+    },
+    "charcoal and ash": {
+     "outside_mask": 173,
+     "outside_mask+3": 0
+    },
+    "russet and ash": {
+     "outside_mask": 1388,
+     "outside_mask+3": 0
+    }
+   },
+   "anchor (reference)": {
+    "russet": {
+     "outside_mask": 1372,
+     "outside_mask+3": 0
+    },
+    "ash": {
+     "outside_mask": 1345,
+     "outside_mask+3": 0
+    },
+    "charcoal and russet": {
+     "outside_mask": 205,
+     "outside_mask+3": 0
+    },
+    "charcoal and ash": {
+     "outside_mask": 205,
+     "outside_mask+3": 0
+    },
+    "russet and ash": {
+     "outside_mask": 1372,
+     "outside_mask+3": 0
+    }
+   }
+  },
+  "window_scale": 0.6332,
+  "edge": {
+   "shake-t1": {
+    "magenta_cast_px_on_2px_edge": 0,
+    "alpha_1_59_px": 0
+   },
+   "calm-t1": {
     "magenta_cast_px_on_2px_edge": 0,
     "alpha_1_59_px": 0
    }

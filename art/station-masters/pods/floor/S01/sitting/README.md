@@ -37,6 +37,7 @@ Built by `guides/compose-sit.py` at 0 MXN. The stage's canvas transform (crested
 | K1j `sit-S01-juvenile-keys-crested-a` | 2026-10-23 22:57 | **pass, with two takes dropped.** Every take faces right, as the juvenile anchor; no mirror. Check 5 (cell 1 against its input through the same key-out): p95 1.0, max 3.16, centroid [0.38, 0.13], mean 2.52. IoU against anchor / curl: shake t1 0.76 / 0.56, calm t1 0.73 / 0.63; pair 0.64. **Dropped:** shake t2 (check 7, a forepaw off the ground) and calm t2 (check 7, feet 6 canvas px, about 10 sheet px, off cell 1's line, over 8). Whole-pixel moves (x, y): shake t1 [7, 0], calm t1 [7, 4]. Shake t1 keeps 4 of its 6 droplets; the other 2 are under 9 px at 304 × 312 (the brief's droplet rule). Notes for you: the calm takes sit up on folded hind legs at 0.98 of the anchor's height, not sunk low as the new sentence asked. That reads as weak, not broken: they are seated, not standing, and they read apart (IoU 0.73) | 4.12 | 27.31 | 55.91 | 55.91 (10-23) |
 | K2j `sit-S01-juvenile-keys-bare-a` | 2026-10-23 22:58 | **pass.** Check 3: border 11. Cells 4–6 empty, 0 px in the seam bands. Check 8: crest gone (leaf px 0 on cell 1, and 4 and 8 stray px on the takes' cap edges, no leaf by eye); round heads at 1× (`proof/k2j-crested-bare-1x.png`); cell 1's head against the signed bare anchor p95 2.0, max 2.0. Outline against the crested twin: shake t1 p95 2.0 / max 3.16 / mean 2.96; calm t1 2.0 / 2.24 / 2.58; centroid move under the crest at most 1.0 px. Droplets: the 4 sheet droplets within 0.2 px, plus specks where the leaves were | 3.81 | 31.12 | 59.72 | 59.72 (10-23) |
 | K3j `sit-S01-juvenile-keys-patches-a` | 2026-10-23 23:00 | **failed, check 9 (repainted, not marked).** Outside the bare key's fur mask dilated 3 px, the returned takes differ from the base (sum \|ΔRGB\| > 60) on 2.46 % (shake t1) and 1.70 % (calm t1) of the figure, against the 0.5 % limit; mean difference 14.9 and 12.1. Cell 1, by contrast, is at 0.02 % (mean 6.5), and the adult K3a takes at 0.00 %. Where: the cream body's shading strokes on the haunch and legs came back softer (`guides/layers.json`; the layer itself is alpha 0 outside the coat). Passed: check 3 (border 12), check 5 (p95 1.41, max 2.0, centroid 0.40 / 0.08, mean 2.44), cells 4–6 empty, one cream mass per take (1471; 1307 + a 145 px fleck), heads-off applied (HEADS shake t1 (190, 150, 55, 48), calm t1 (195, 160, 55, 48)) | 3.89 | 35.01 | 63.61 | 63.61 (10-23) |
+| K4j `sit-S01-juvenile-keys-stripes-a` | 2026-10-23 23:11 | **pass.** Check 3: border 12. Check 5: p95 1.41, max 2.0, centroid 0.37 / 0.12, mean 2.44. Cells 4–6 empty. Check 9: stripes on the cap behind the head, 0 stripe px inside the head ellipses, alpha 0 outside the fur mask, and the returned sheet differs outside the coat on 0 px (sum \|ΔRGB\| > 60) | 3.74 | 38.75 | 71.73 | 71.73 (10-23) |
 
 ## Art director's ruling 22:31: K1b mirrored (0 MXN, 2026-10-23 22:37)
 
@@ -127,6 +128,25 @@ The lead's go: job 1 ceiling 40 MXN, hard stop 43; job 2 (B3c only) ceiling 32.7
 **K3j accepted at 0 MXN (R3.2), under amended check 9, bullet 3.** That bullet is now measured on the cut layer over the base key: alpha 0 outside the fur mask, and base + layer differs from the base only inside the coat. Both juvenile layers pass (0 px outside the mask). The returned sheet's outside-coat difference (the 30 / 60 / 90 / 120 table above) stays as a note. Juvenile shake t1 carries one patch mass, against the anchor's two: a sign-off note. The K4j input was built on the K2j bare keys (sha above).
 
 **Juvenile calm (R3.3):** accepted as it is; the final call is at the juvenile sign-off.
+
+## Juvenile layers and 1× proofs (0 MXN, 2026-10-23 23:13)
+
+The juvenile takes are shake t1 and calm t1, for your sign-off; they keep their t1 ids until you sign. Every file is in `manifest.json` and `status.json` (status new, signed_in null).
+
+- **Overlays:** base + overlay equals the base outside mask and band, 0 differing px.
+- **Cap pixels in the overlays (R3.7):** 433 and 502 px in the overlays are cap-coloured (teal, not leaf). They are the 4 px root band plus the leaves' soft edge, by the overlays.py rule. The signed juvenile anchor overlay has 379 such px, and the curl 351. On a recoloured coat they show as a thin teal ring at the crest's root, as on the anchor. A note for you.
+- **Fur masks:** 0 droplet px.
+- **HEADS ellipses:** shake t1 (190, 150, 55, 48); calm t1 (195, 160, 55, 48).
+- **Recolour exit (amended):** 0 px outside the fur mask dilated 3 px, on every take and coat. The adult takes and both anchors are also 0.
+- **Edge:** 0 magenta-cast px and 0 px of alpha 1–59.
+- **Reads apart:**
+  - IoU against the anchor and the curl: shake t1 0.76 / 0.555; calm t1 0.733 / 0.631.
+  - Pair: 0.635.
+- **Window:** two rows per key (Dot's look and the worst coat), at factor 0.6332. That is the adult factor × 0.733 / 0.601, an assumption for P1 to confirm. Feet on y 380, over near-day and the five signed backdrops.
+
+**Proofs** in `proof/juvenile/`: `takes-1x.png`, `reads-apart-48-1x.png`, `layers-1x.png`, `cards-1x.png`, `cards-x3.png`, `looks-1x.png` (walk size 104 × 112), `window-1x.png`, `edge-1x.png`.
+
+Job 1 closes at 38.75 of 43 MXN. Both jobs: 71.73 of 77.
 
 ## (superseded by Round 3) Job 1 stopped at K3j (2026-10-23 23:02)
 

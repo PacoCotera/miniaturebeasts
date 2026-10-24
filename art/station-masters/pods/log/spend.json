@@ -5750,5 +5750,22 @@
    "thoughtsTokenCount": 388,
    "totalTokenCount": 2955
   }
+ },
+ {
+  "tag": "sit-S01-juvenile-keys-stripes-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.187114,
+  "mxn": 3.7423,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T05:12:03Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 557,
+   "candidatesTokenCount": 1327,
+   "thoughtsTokenCount": 223,
+   "totalTokenCount": 2107
+  }
  }
 ]

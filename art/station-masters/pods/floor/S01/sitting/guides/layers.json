@@ -191,5 +191,49 @@
    "5": 0,
    "6": 0
   }
+ },
+ "juvenile-stripes": {
+  "anchor": {
+   "mark_px": 528,
+   "masses_over_150px": 1,
+   "mass_sizes": [
+    381,
+    147
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 3,
+   "repainted_fraction_of_figure": 0.0002,
+   "anchor_layer_vs_signed_px_alpha>128_iou": null
+  },
+  "shake-t1": {
+   "mark_px": 554,
+   "masses_over_150px": 2,
+   "mass_sizes": [
+    357,
+    181,
+    15,
+    1
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 0,
+   "repainted_fraction_of_figure": 0.0
+  },
+  "calm-t1": {
+   "mark_px": 669,
+   "masses_over_150px": 2,
+   "mass_sizes": [
+    312,
+    288,
+    69
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 0,
+   "repainted_fraction_of_figure": 0.0
+  },
+  "empty_cells": {
+   "4": 0,
+   "5": 0,
+   "6": 0
+  }
  }
 }

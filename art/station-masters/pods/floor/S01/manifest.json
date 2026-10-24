@@ -482,5 +482,25 @@
   "signed_in": "AD 2026-10-23 23:07, 74031d07",
   "status": "new",
   "take": "calm-t1"
+ },
+ "mibi-juvenile-S01-shake-t1-stripes-304x312": {
+  "file": "layers/mibi-juvenile-S01-shake-t1-stripes-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 79160,
+  "sha256": "030199cb2a82f41bbae827894eb414dd4d50eb66dd77a2846934754be6fb65fc",
+  "from": "source/raw/sit-S01-juvenile-keys-stripes-a.jpg cell 2, layers-sit.py stripes (mark_layer)",
+  "signed_in": null,
+  "status": "new"
+ },
+ "mibi-juvenile-S01-calm-t1-stripes-304x312": {
+  "file": "layers/mibi-juvenile-S01-calm-t1-stripes-304x312.png",
+  "w": 304,
+  "h": 312,
+  "bytes": 78867,
+  "sha256": "1ec78c18d73819f4dd30987d0815d7a04112968f3607facce607a18d2c01ca25",
+  "from": "source/raw/sit-S01-juvenile-keys-stripes-a.jpg cell 3, layers-sit.py stripes (mark_layer)",
+  "signed_in": null,
+  "status": "new"
  }
 }

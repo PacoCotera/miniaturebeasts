@@ -116,5 +116,13 @@
   "status": "new",
   "signed_in": "AD 2026-10-23 23:07, 74031d07",
   "note": "sitting habit key take, from sit-S01-adult-keys-stripes-a.jpg cell 3 (layers-sit.py stripes (mark_layer)); not signed; signed by the art director (AD 2026-10-23 23:07, 74031d07) as calm (calm-t1); renamed 2026-10-23 23:10"
+ },
+ "mibi-juvenile-S01-shake-t1-stripes-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-stripes-a.jpg cell 2 (layers-sit.py stripes (mark_layer)); not signed"
+ },
+ "mibi-juvenile-S01-calm-t1-stripes-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-stripes-a.jpg cell 3 (layers-sit.py stripes (mark_layer)); not signed"
  }
 }
