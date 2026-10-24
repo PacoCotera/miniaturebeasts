@@ -84,6 +84,126 @@
       48
      ],
      "feetRow": 24
+    },
+    "poses": {
+     "anchor": {
+      "figure": [
+       21,
+       17,
+       282,
+       304
+      ],
+      "sizes": {
+       "304x312": {
+        "base": "S01-adult-304x312-base.png",
+        "bases": {
+         "russet": "S01-adult-304x312-base-russet.png",
+         "ash": "S01-adult-304x312-base-ash.png",
+         "charcoal and russet": "S01-adult-304x312-base-charcoal-and-russet.png",
+         "charcoal and ash": "S01-adult-304x312-base-charcoal-and-ash.png",
+         "russet and ash": "S01-adult-304x312-base-russet-and-ash.png"
+        },
+        "layers": [
+         {
+          "op": "under",
+          "order": 0,
+          "file": "S01-adult-304x48-shadow.png",
+          "views": [
+           "home",
+           "vivarium",
+           "idle"
+          ],
+          "size": [
+           304,
+           48
+          ],
+          "feetRow": 24,
+          "standFeet": 305
+         },
+         {
+          "trait": "markings",
+          "looks": [
+           "patches",
+           "stripes and patches"
+          ],
+          "order": 10,
+          "op": "over",
+          "file": "S01-adult-304x312-patches.png"
+         },
+         {
+          "trait": "markings",
+          "looks": [
+           "stripes",
+           "stripes and patches"
+          ],
+          "order": 11,
+          "op": "over",
+          "file": "S01-adult-304x312-stripes.png"
+         },
+         {
+          "trait": "crown",
+          "looks": [
+           "leaf crest"
+          ],
+          "order": 30,
+          "op": "over",
+          "file": "S01-adult-304x312-crest.png"
+         }
+        ]
+       }
+      }
+     },
+     "curl": {
+      "figure": [
+       29,
+       120,
+       276,
+       302
+      ],
+      "sizes": {
+       "304x312": {
+        "base": "S01-adult-curl-304x312-base.png",
+        "bases": {
+         "russet": "S01-adult-curl-304x312-base-russet.png",
+         "ash": "S01-adult-curl-304x312-base-ash.png",
+         "charcoal and russet": "S01-adult-curl-304x312-base-charcoal-and-russet.png",
+         "charcoal and ash": "S01-adult-curl-304x312-base-charcoal-and-ash.png",
+         "russet and ash": "S01-adult-curl-304x312-base-russet-and-ash.png"
+        },
+        "layers": [
+         {
+          "trait": "markings",
+          "looks": [
+           "patches",
+           "stripes and patches"
+          ],
+          "order": 10,
+          "op": "over",
+          "file": "S01-adult-curl-304x312-patches.png"
+         },
+         {
+          "trait": "markings",
+          "looks": [
+           "stripes",
+           "stripes and patches"
+          ],
+          "order": 11,
+          "op": "over",
+          "file": "S01-adult-curl-304x312-stripes.png"
+         },
+         {
+          "trait": "crown",
+          "looks": [
+           "leaf crest"
+          ],
+          "order": 30,
+          "op": "over",
+          "file": "S01-adult-curl-304x312-crest.png"
+         }
+        ]
+       }
+      }
+     }
     }
    },
    "juvenile": {
@@ -166,7 +286,130 @@
       48
      ],
      "feetRow": 24
+    },
+    "poses": {
+     "anchor": {
+      "figure": [
+       65,
+       116,
+       239,
+       304
+      ],
+      "sizes": {
+       "304x312": {
+        "base": "S01-juvenile-304x312-base.png",
+        "bases": {
+         "russet": "S01-juvenile-304x312-base-russet.png",
+         "ash": "S01-juvenile-304x312-base-ash.png",
+         "charcoal and russet": "S01-juvenile-304x312-base-charcoal-and-russet.png",
+         "charcoal and ash": "S01-juvenile-304x312-base-charcoal-and-ash.png",
+         "russet and ash": "S01-juvenile-304x312-base-russet-and-ash.png"
+        },
+        "layers": [
+         {
+          "op": "under",
+          "order": 0,
+          "file": "S01-juvenile-304x48-shadow.png",
+          "views": [
+           "home",
+           "vivarium",
+           "idle"
+          ],
+          "size": [
+           304,
+           48
+          ],
+          "feetRow": 24,
+          "standFeet": 305
+         },
+         {
+          "trait": "markings",
+          "looks": [
+           "patches",
+           "stripes and patches"
+          ],
+          "order": 10,
+          "op": "over",
+          "file": "S01-juvenile-304x312-patches.png"
+         },
+         {
+          "trait": "markings",
+          "looks": [
+           "stripes",
+           "stripes and patches"
+          ],
+          "order": 11,
+          "op": "over",
+          "file": "S01-juvenile-304x312-stripes.png"
+         },
+         {
+          "trait": "crown",
+          "looks": [
+           "leaf crest"
+          ],
+          "order": 30,
+          "op": "over",
+          "file": "S01-juvenile-304x312-crest.png"
+         }
+        ]
+       }
+      }
+     },
+     "curl": {
+      "figure": [
+       64,
+       165,
+       240,
+       300
+      ],
+      "sizes": {
+       "304x312": {
+        "base": "S01-juvenile-curl-304x312-base.png",
+        "bases": {
+         "russet": "S01-juvenile-curl-304x312-base-russet.png",
+         "ash": "S01-juvenile-curl-304x312-base-ash.png",
+         "charcoal and russet": "S01-juvenile-curl-304x312-base-charcoal-and-russet.png",
+         "charcoal and ash": "S01-juvenile-curl-304x312-base-charcoal-and-ash.png",
+         "russet and ash": "S01-juvenile-curl-304x312-base-russet-and-ash.png"
+        },
+        "layers": [
+         {
+          "trait": "markings",
+          "looks": [
+           "patches",
+           "stripes and patches"
+          ],
+          "order": 10,
+          "op": "over",
+          "file": "S01-juvenile-curl-304x312-patches.png"
+         },
+         {
+          "trait": "markings",
+          "looks": [
+           "stripes",
+           "stripes and patches"
+          ],
+          "order": 11,
+          "op": "over",
+          "file": "S01-juvenile-curl-304x312-stripes.png"
+         },
+         {
+          "trait": "crown",
+          "looks": [
+           "leaf crest"
+          ],
+          "order": 30,
+          "op": "over",
+          "file": "S01-juvenile-curl-304x312-crest.png"
+         }
+        ]
+       }
+      }
+     }
     }
+   },
+   "habits": {
+    "sleep-curled": "curl"
    }
   }
  },
@@ -329,6 +572,60 @@
    "h": 48,
    "sha256": "3088d47c79c9993339af094a412f2a5d90aae6ddfcb9e8f6b8f545e866faf2ca"
   },
+  "S01-adult-curl-304x312-base-ash.png": {
+   "file": "S01-adult-curl-304x312-base-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "cc2b3238eedaf50fb64bcaaf35f2863536fbde04dda0e3aaf3767efd69e39bff"
+  },
+  "S01-adult-curl-304x312-base-charcoal-and-ash.png": {
+   "file": "S01-adult-curl-304x312-base-charcoal-and-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b956b15dc23a2b46ce6e3ba9e09f65046ba66296b7b505618025fab539cb2840"
+  },
+  "S01-adult-curl-304x312-base-charcoal-and-russet.png": {
+   "file": "S01-adult-curl-304x312-base-charcoal-and-russet.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "da87de0072abc44146f6aadf33fdecaeb0b78df43f8f1187f3ab8f226aad817c"
+  },
+  "S01-adult-curl-304x312-base-russet-and-ash.png": {
+   "file": "S01-adult-curl-304x312-base-russet-and-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "da53075b4d2803d3dd360b23a6335744a095be2f7bc3c23b5dd64d4549847371"
+  },
+  "S01-adult-curl-304x312-base-russet.png": {
+   "file": "S01-adult-curl-304x312-base-russet.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "bf306bd94370098fe5bbf16e62a498f244e8fe569b11f3a6c5dc48784b2ec80b"
+  },
+  "S01-adult-curl-304x312-base.png": {
+   "file": "S01-adult-curl-304x312-base.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "75a242957a81f2a065b44eaedb3c76e06dbde9fc6c0a19fc0947c50559cf1cb2"
+  },
+  "S01-adult-curl-304x312-crest.png": {
+   "file": "S01-adult-curl-304x312-crest.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b004bb6537561a0da5b7229e30ce12ce1a7b2eddf70c61fa40713bda99270390"
+  },
+  "S01-adult-curl-304x312-patches.png": {
+   "file": "S01-adult-curl-304x312-patches.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "c7a4cd6fe4984a5ccf32c62021bffbbc710d2722acd73a1ea4a3f2ea39a74da0"
+  },
+  "S01-adult-curl-304x312-stripes.png": {
+   "file": "S01-adult-curl-304x312-stripes.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "231890fd43fa9e90b1599661f40f8c6c380d580151ec6ba1f6e03ab45393b519"
+  },
   "S01-adult-curl-304x48-shadow.png": {
    "file": "S01-adult-curl-304x48-shadow.png",
    "w": 304,
@@ -394,6 +691,60 @@
    "w": 304,
    "h": 48,
    "sha256": "8ce90de3633be90cb7f33a97afcf65b6b83f017dbc9716d5bfb0153b7c81dd7f"
+  },
+  "S01-juvenile-curl-304x312-base-ash.png": {
+   "file": "S01-juvenile-curl-304x312-base-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "25fb2a01d2d44127ff7eacb0407e71a321c3997e510ee6d92c2c77f3a5a15a1e"
+  },
+  "S01-juvenile-curl-304x312-base-charcoal-and-ash.png": {
+   "file": "S01-juvenile-curl-304x312-base-charcoal-and-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "7fd3d4b30c50279c7866e15e20351cd0618bdee6b10a42bfcc7094a90d9a7be2"
+  },
+  "S01-juvenile-curl-304x312-base-charcoal-and-russet.png": {
+   "file": "S01-juvenile-curl-304x312-base-charcoal-and-russet.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b042ea4aaf8e819977e0e665e74c12fec7f46a308aba9b377d75a51897803257"
+  },
+  "S01-juvenile-curl-304x312-base-russet-and-ash.png": {
+   "file": "S01-juvenile-curl-304x312-base-russet-and-ash.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "8117c4262503760b1ff25d0b62a8f8c6200e688352e1c97483b0e017bb2a57d3"
+  },
+  "S01-juvenile-curl-304x312-base-russet.png": {
+   "file": "S01-juvenile-curl-304x312-base-russet.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "d0fe59fc92e28377765ba96bbff0fb333c08bead055e09b2d2e92666130146fd"
+  },
+  "S01-juvenile-curl-304x312-base.png": {
+   "file": "S01-juvenile-curl-304x312-base.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "a10cf17dc4b4c98fdba0f3fd1ace956d77921301e84dab690a81ce0d6b73f668"
+  },
+  "S01-juvenile-curl-304x312-crest.png": {
+   "file": "S01-juvenile-curl-304x312-crest.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "ccfabdb313d07b223dda6804bd90ef4a5297159237552f68c0f32a355f8b9a14"
+  },
+  "S01-juvenile-curl-304x312-patches.png": {
+   "file": "S01-juvenile-curl-304x312-patches.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "76421531c7ec6478514123cd21e3c9de5306cfe0526a973c46ff39b118567bc6"
+  },
+  "S01-juvenile-curl-304x312-stripes.png": {
+   "file": "S01-juvenile-curl-304x312-stripes.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "60400c83cf3e2617692a7fc7ea7ba76592031a4edbf04b2a68356c23d6051288"
   },
   "S01-juvenile-curl-304x48-shadow.png": {
    "file": "S01-juvenile-curl-304x48-shadow.png",

@@ -38,6 +38,7 @@ for (const screen of run) {
     if (opts?.captureOnly) return;   // a capture state (fix 14), not a golden
     const a = await page.evaluate(() => window.__st.snapshot({ capture: true }));
     if (a.errors.length || a.refused) fail(name + ": errors " + a.errors.join("; ") + " refused " + a.refused);
+    if (a.owed?.length) fail(name + ": shows an owed habit key (" + a.owed.join(", ") + ")");   // a pose whose habit has no signed key draws the derived stand: never a golden
     if (screen === "pods" || !/pressed|arriving/.test(name)) { const b = await page.evaluate(() => window.__st.snapshot({ capture: true })); if (a.hash !== b.hash) fail(name + ": drawn twice, two hashes (" + a.hash + ", " + b.hash + "): the state is not deterministic"); }
     got[name] = { hash: a.hash, png: prefix + slug(name) + ".png" };
     if (name === "create-roll-100" || name === "create-shape-changed") pngs[name] = a.png;

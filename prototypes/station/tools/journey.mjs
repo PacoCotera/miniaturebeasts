@@ -59,7 +59,7 @@ const checks = { shots: [], textApiCalls: 0 };
 const record = async (name, ink) => {
   const check = await page.evaluate(() => window.__st.check()), snap = await page.evaluate(() => window.__st.snapshot({ capture: false }));
   if (check.log) { const order = (list) => (list ?? []).map((r) => [JSON.stringify(r), r]).sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0).map((e) => e[1]); check.log.type = order(check.log.type); check.log.regions = order(check.log.regions); }
-  const s = { name, check, snap: { pass1: snap.pass1, pass2: snap.pass2, errors: snap.errors, refused: snap.refused } };
+  const s = { name, check, snap: { pass1: snap.pass1, pass2: snap.pass2, errors: snap.errors, refused: snap.refused, owed: snap.owed } };
   if (ink) s.png = (await page.evaluate(() => window.__st.capture())).split(",")[1];
   checks.shots.push(s);
 };

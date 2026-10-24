@@ -114,7 +114,7 @@ for (const s of rec.shots) {
     // no digits where a picture does the job; the bottom line's subject is never clipped with an ellipsis
     for (const t of lg.type) { const flag = NO_DIGIT[t.region]?.(c); if (flag && /\d/.test(t.text)) must(false, `"${t.text}" in the region ${t.region} holds a digit, and the spec says it holds none`); if (t.region === "subject") must(!t.text.endsWith("…"), `the bottom line's subject "${t.text}" is clipped with "…"`); }
   }
-  console.log(`${s.name.padEnd(26)} ${lg.regions.length} drawn regions · ${c.screen}${c.mode ? "/" + c.mode : ""}${c.props?.state === "notBuilt" ? " (not built)" : ""} · placeholders registered ${c.placeholders}`);
+  console.log(`${s.name.padEnd(26)} ${lg.regions.length} drawn regions · ${c.screen}${c.mode ? "/" + c.mode : ""}${c.props?.state === "notBuilt" ? " (not built)" : ""} · placeholders registered ${c.placeholders}${s.snap.owed?.length ? ` · habit keys owed ${s.snap.owed.length}` : ""}`);
 }
 // every Pods state is recorded, with the regions it must draw
 { const need = { collection: [["painted", "place.pod"], ["type", "place.name"]], overview: [["painted", "pod"], ["type", "name"], ["painted", "hatch"]], chapter: [["painted", "pod"], ["type", "name"], ["chrome", "page.rule"], ["painted", "rail.tab"]], compare: [["painted", "pageA"], ["painted", "pageB"], ["painted", "rail.tab"]] };
