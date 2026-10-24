@@ -7,7 +7,7 @@
  "grid": 8,
  "regions": {
   "top": { "rect": [0, 0, 1024, 40], "component": "topBar", "rule": "bottom", "slice": "frame-top-bar-1024x40", "painted": "the bar 1:1 at the rect; the zones, the top rules and the marks over it; while the bar is not on the face, the code panel (colours.chrome) and the rule (colours.rule)", "readout": { "gap": 8, "markGap": 4, "px": 16, "colour": "mist", "end": 248, "mark": [10, 10] } },
-  "title": { "rect": [16, 8, 232, 24], "turnPx": 16, "mark": [16, 8, 24, 24], "text": [48, 8, 200, 24], "px": 20, "weight": 500, "words": 1, "case": "title", "marks": { "home": "Home", "cargo": "Home", "pods": "Research", "create": "Research", "incubator": "Research", "probe": "Research", "bench": "Research", "library": "Library", "library.species": "Library", "vivarium": "Vivarium", "habitat": "Vivarium", "cross": "Vivarium", "sitting": "Vivarium" }, "marksRule": "the mark is the icon of the coloured key that leads there: Home (with Cargo), Vivarium, Research, Library. `habitat` is the screen id of one mibi up close, a level of the Vivarium", "fadeMs": 200 },
+  "title": { "rect": [16, 8, 232, 24], "turnPx": 16, "mark": [16, 8, 24, 24], "text": [48, 8, 200, 24], "px": 20, "weight": 500, "words": 1, "case": "title", "marks": { "home": "Home", "cargo": "Home", "pods": "Research", "create": "Research", "incubator": "Research", "probe": "Research", "bench": "Research", "library": "Library", "library.species": "Library", "library.family": "Library", "vivarium": "Vivarium", "habitat": "Vivarium", "cross": "Vivarium", "sitting": "Vivarium" }, "marksRule": "the mark is the icon of the coloured key that leads there: Home (with Cargo), Vivarium, Research, Library. `habitat` is the screen id of one mibi up close, a level of the Vivarium", "fadeMs": 200 },
   "materials": { "rect": [384, 8, 256, 24], "centre": 512, "icon": 16, "gap": 4, "between": 24, "px": 16, "flashMs": 240 },
   "companion": { "rect": [816, 8, 64, 24], "right": 880, "lamp": 8, "px": 16, "glyph": [816, 8, 16, 24], "lampAt": [836, 16, 8, 8], "face": [856, 8, 24, 24], "words": 0, "liftMs": 200, "lift": 2 },
   "time": { "rect": [904, 8, 104, 24], "right": 1008, "mark": [16, 16], "gap": 4, "px": 16 },
@@ -61,7 +61,7 @@
   "aim": { "firstPod": "find a first pod", "firstMibi": "grow a first mibi", "pair": "a partner for {name}", "growUp": "walks grow {name} up", "cross": "cross {name} next", "readChild": "read {name}'s chapters", "guide": "fill the {species} field guide",
   "probe": "save up for the Probe upgrade", "growUpNoName": "walks grow the pair up", "readChildNoName": "read the new mibi's chapters" } },
  "goalWarn": { "rule": "The pre-spend warning (goalSpendWarn): one line in the notice zone, amber as needMore, before ✓ pays a price that would leave the goal's next price short. {icons} are what would then be short.", "identify": "then the {species} pod needs {icons}", "grow": "then the {species} pod needs {icons}", "cross": "then the pair needs {icons}", "read": "then the next read needs {icons}", "fit": "then the upgrade needs {icons}" },
- "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "cargo": "Bay", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "library.species": "Library", "vivarium": "Vivarium", "habitat": "Vivarium", "cross": "Cross" , "bench": "Probe", "sitting": "Sitting" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
+ "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "cargo": "Bay", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "library.species": "Library", "library.family": "Library", "vivarium": "Vivarium", "habitat": "Vivarium", "cross": "Cross" , "bench": "Probe", "sitting": "Sitting" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
  "light": { "from": [[6, "dawn"], [7, "day"], [18, "dusk"], [20, "night"]], "rule": "the Station's local hour; a light runs until the next start, the last wraps midnight", "bed": { "dawn": "home-bed-dawn", "day": "home-bed-day", "dusk": "home-bed-dusk", "night": "home-bed-night" } },
  "idle": {
   "light": { "pictures": { "dawn": "idle-vivarium-dawn", "day": "idle-vivarium-day", "dusk": "idle-vivarium-dusk", "night": "idle-vivarium-night" } },
@@ -151,7 +151,8 @@
    "probe": {"parent": "home", "back": "Home", "states": ["docked", "away"], "spec": "bench.json"},
    "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
    "library": {"parent": "home", "back": "Home", "states": ["all"], "spec": "library.json"},
-   "library.species": {"parent": "library", "back": "Library", "spec": "library.json: Level 2, not built yet (notBuilt); ← returns to Level 1 with the ring on that species"},
+   "library.species": {"parent": "library", "back": "Library", "states": ["sheet", "lit"], "spec": "library.json l2: Level 2, one species; ← in lit reads Clear (library.json l2.keys.back); ← in sheet returns to Level 1 with the ring on that species"},
+   "library.family": {"parent": "library.species", "back": "{Species}", "spec": "Level 3, not built yet (notBuilt); ← returns to Level 2 of that species; {Species} is the species' name, a name wider than the way back's 68 px for its word reads \"Back\""},
    "vivarium": {"parent": "home", "back": "Home", "spec": "vivarium.json"},
    "habitat": {"parent": "vivarium", "back": "Vivarium"},
    "cross": {"parent": "habitat", "back": "{name}"},
@@ -165,8 +166,11 @@
    {"from": "cross", "action": "Cross them", "to": "incubator"},
    {"from": "incubator", "action": "Open", "to": "habitat", "state": "meet", "focus": "the resident: the new mibi"},
    {"from": "incubator", "state": "empty", "action": "Choose a pod", "to": "pods", "view": "collection", "focus": "the first identified pod in rack order, else the first pod", "when": "the rack holds a pod and a bay is free"},
-   {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "library", "focus": "that species", "pending": "the figure's target", "shut": "not a target until the figure's ring shape and graph edges are ruled (pods.json regions.overview.figure.target); the figure is drawn and the pod's ▶ goes to kin.first"},
-   {"from": "habitat", "target": "the card's species word", "action": "Open the guide", "to": "library", "focus": "that species"}
+   {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "library.species", "focus": "that pod's species, Level 2"},
+   {"from": "habitat", "target": "the card's species word", "action": "Open the guide", "to": "library.species", "focus": "that species, Level 2"},
+   {"from": "library", "target": "a met or found cell", "action": "Open {species}", "to": "library.species", "focus": "that species, Level 2"},
+   {"from": "library.species", "target": "a family face", "action": "See the family", "to": "library.family", "focus": "that mibi"},
+   {"from": "library.species", "target": "the face", "action": "Look at {name}", "to": "habitat", "focus": "the resident: that mibi", "when": "the face is not released"}
   ],
   "jumpRule": "stack navigation: after a jump, ← goes to the parent of the screen you are on in this tree, never back along the way you came",
   "homePad": {

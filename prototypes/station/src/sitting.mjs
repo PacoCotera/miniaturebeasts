@@ -60,15 +60,19 @@ export function lineFounders(st, m, seen = new Set()) {
   seen.add(m.id); return [...new Set(m.parents.flatMap((p) => lineFounders(st, mibiById(st, p.id) || { id: p.id }, new Set(seen))))];
 }
 export const lineKey = (st, m) => "line:" + lineFounders(st, m).sort((x, y) => x - y).join("+");
+// A species' research moment keys: a sealed chapter opened, its field guide filled (one helper for the moments earned and the sittings counted).
+export const momentKey = { sealed: (id, chId) => "sealed:" + id + ":" + chId, guide: (id) => "guide:" + id };
 export function momentsEarned(st, settings = DEFAULT_SETTINGS) {
   const out = [];
   for (const id of new Set(st.knownIds)) {
-    for (const chId of st.readOnce[id] || []) { const ch = frameOf(id)?.chapters.find((c) => c.id === chId); if (ch && ch.sealed) out.push({ key: "sealed:" + id + ":" + chId, kind: "sealed", species: id, chapter: chId }); }
-    const fg = fieldGuide(st, id, settings); if (fg && fg.complete) out.push({ key: "guide:" + id, kind: "guide", species: id });
+    for (const chId of st.readOnce[id] || []) { const ch = frameOf(id)?.chapters.find((c) => c.id === chId); if (ch && ch.sealed) out.push({ key: momentKey.sealed(id, chId), kind: "sealed", species: id, chapter: chId }); }
+    const fg = fieldGuide(st, id, settings); if (fg && fg.complete) out.push({ key: momentKey.guide(id), kind: "guide", species: id });
   }
   for (const m of st.mibis) { const k = lineKey(st, m); if (lineDepth(st, m) >= DEEP_LINE && !out.some((o) => o.key === k)) out.push({ key: k, kind: "line", mibi: m.id }); }   // one moment a line
   return out;
 }
+// The research sittings a species has earned: its paid moments in the ledger (st.moments), a sealed chapter opened and the guide filled; a line or another species' moment is not its own.
+export const sittingsOf = (st, species) => Object.keys(st.moments ?? {}).filter((k) => k === momentKey.guide(species) || k.startsWith(momentKey.sealed(species, ""))).length;
 // Pay every moment not yet paid, in order; returns what happened to each. Behind the shut door nothing is paid: each moment stays earned.
 export function collectMoments(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.doorAt) return [];

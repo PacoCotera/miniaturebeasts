@@ -48,8 +48,8 @@ test("the pad: ▶ ◀ move across the columns that are not sealed, ▲ from the
   if (short > 0) { let k = tall; for (let i = 0; i < 8 && k.col < short; i++) k = guideMove(model, w.st, k, "right"); assert.ok(k.row <= lastRow(k.col), "the row is clamped to the column's last"); }
 });
 
-test("the spec data the guide's doors rest on: the strings, the jumps (to the Library's Level 1 on that species), the one cased ring", () => {
+test("the spec data the guide's doors rest on: the strings, the jumps (to the Library's Level 2 of that species), the one cased ring", () => {
   const pods = specs("pods.json"), frame = specs("frame.json"); assert.equal(pods.strings.thisPod, "this pod"); assert.equal(pods.strings.theSpecies, "every {species}"); assert.equal(pods.strings.openGuide, "Open the guide"); assert.equal(pods.strings.legsTail.heading, "Legs & Tail");
-  assert.ok(frame.navigation.jumps.some((j) => j.from === "pods.overview" && j.to === "library" && j.focus === "that species")); assert.ok(frame.navigation.jumps.some((j) => j.from === "habitat" && j.to === "library" && j.focus === "that species" && !j.shut)); assert.ok(!("book" in frame.navigation.screens), "the Book is retired");
+  assert.ok(frame.navigation.jumps.some((j) => j.from === "pods.overview" && j.to === "library.species" && !j.shut && !j.pending)); assert.ok(frame.navigation.jumps.some((j) => j.from === "habitat" && j.to === "library.species" && !j.shut)); assert.ok(!("book" in frame.navigation.screens), "the Book is retired");
   assert.deepEqual(frame.focus.ring.colours, { default: { core: "focus", key: "void" } }, "one form: no paper ground"); assert.deepEqual([frame.focus.ring.gap, frame.focus.ring.reach, ...frame.focus.ring.bands.map((b) => b.w)], [1, 5, 1, 2, 1]);
 });

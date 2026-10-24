@@ -185,16 +185,16 @@ test("the requests: library-sheet-{SNN}-{digest}, its -lit-{chapter} variant and
   assert.equal(sheetId(F.S01, found("S01", mid.S01, { fresh: ["colour|russet"], sig: ["seen", "wish"] })), r.sheet, "the looks new this visit set no pixel: the same picture");
   assert.equal(discReq(collector([]))("S01", "colour", "ash"), "look-disc-S01-colour-ash-16");
 });
-test("the cache keeps exactly the current sheet, one lit variant and one page; a newer request supersedes the older one of its kind; its bytes at RGB565", () => {
+test("the cache keeps exactly the current sheet, one lit variant and one page (and one quiet stand-in); a newer request supersedes the older one of its kind; its bytes at RGB565", () => {
   L.clearSheets(); const said = [], print = (s) => said.push(s), rq = [], A = found("S01", mid.S01), B = found("S01", { ...mid.S01, colour: [...mid.S01.colour, "ash"] });
   const ids = sheetReq(collector(rq))(F.S01, A, "coat"), n0 = L.sheetRenders();
   for (const r of rq) L.sheetPicture(F.S01, r, { print });
   for (const r of rq) L.sheetPicture(F.S01, r, { print });
   assert.equal(L.sheetRenders() - n0, 3, "each made once while kept");
-  assert.deepEqual(L.keptPictures(), { sheet: ids.sheet, lit: ids.lit, page: ids.page });
+  assert.deepEqual(L.keptPictures(), { sheet: ids.sheet, lit: ids.lit, page: ids.page, quiet: null });
   assert.equal(L.keptBytes(), (664 * 522 * 2 + 308 * 500) * 2);
   const rq2 = []; const ids2 = sheetReq(collector(rq2))(F.S01, B, null); L.sheetPicture(F.S01, rq2[0], { print });
-  assert.deepEqual(L.keptPictures(), { sheet: ids2.sheet, lit: ids.lit, page: ids.page }, "the newer sheet supersedes the older; the lit variant and the page stay until superseded");
+  assert.deepEqual(L.keptPictures(), { sheet: ids2.sheet, lit: ids.lit, page: ids.page, quiet: null }, "the newer sheet supersedes the older; the lit variant and the page stay until superseded");
   for (const s of said) console.log(s);
   assert.ok(said.every((s) => /rendered in \d+ ms/.test(s)));
 });

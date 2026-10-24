@@ -10,11 +10,11 @@ export function placeOf({ screen, podsView, compare }) {
   return SCREEN_PLACE[screen] || screen;
 }
 export const parentOf = (nav, place) => nav.screens[place]?.parent ?? null;
-// The word the way back carries (the parent's title), or null where there is none: Home has no way back. `label` is the pod's label ("Loika") for "{pod}" or the mibi's name for "{name}"; a name wider than the
-// way back's room reads "Back" (the caller measures; `fits` says whether it does).
+// The word the way back carries (the parent's title), or null where there is none: Home has no way back. `label` is the pod's label ("Loika") for "{pod}", the mibi's name for "{name}" or the species' name for "{Species}";
+// a name wider than the way back's room reads "Back" (the caller measures; `fits` says whether it does).
 export function backWord(nav, place, label = "", fits = () => true) {
   const w = nav.screens[place]?.back; if (w == null) return null;
-  if (w !== "{pod}" && w !== "{name}") return w;
+  if (w !== "{pod}" && w !== "{name}" && w !== "{Species}") return w;
   return label && fits(label) ? label : "Back";
 }
 // Up one level is the parent, never the history: after a jump the parent is still the parent in this tree.
@@ -22,7 +22,7 @@ export const upFrom = (nav, place) => parentOf(nav, place);
 
 // --- the doors -------------------------------------------------------------------------------------------------------------------
 // The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition (a developer jump and the journey's not-built steps reach it; no target in play does).
-export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium", "habitat", "library", "bench", "sitting"];
+export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium", "habitat", "library", "library.species", "bench", "sitting"];
 export const isBuilt = (screen) => BUILT.includes(screen);
 // A door is open when the screen it leads to is built: cross and sitting open when listed in BUILT. A shut door is shut in place (no ✓ cap, its screen's shut line).
 const DOOR_SCREEN = { cross: "cross", sitting: "sitting" };

@@ -33,7 +33,7 @@ function midGame(l1 = "S03") {
   S.seedAdults(st, "S01", 5, 1, settings); st.mibis[0].portrait = { state: "delivered" }; assert.ok(Lib.makeFace(st, st.mibis[0]).ok);
   st.knownIds = ["S01", "S02", "S03", "S07", "S09", "S12"]; st.metIds = ["S04", "S05", "S10", "S14"];
   for (const id of ["S02", "S03", "S07", "S09", "S12"]) findLooks(st, id, 4);
-  S.libOpened(st); findLooks(st, "S09", 2);
+  st.libSeen = S.libSnapshot(st); findLooks(st, "S09", 2);
   const tr = Object.keys(st.guide.S03)[0]; assert.ok(Lib.wishPin(st, "S03", tr, st.guide.S03[tr][0], settings).ok);
   return libraryBuild({ st, settings, ui: { l1 } }, spec, frameSpec);
 }

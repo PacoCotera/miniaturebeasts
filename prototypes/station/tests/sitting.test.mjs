@@ -61,6 +61,15 @@ test("one slot, one frame: a sitting is held, and a second earned meanwhile is g
   const d = world(1); assert.ok(T.devGrantSitting(d, T0).ok); assert.deepEqual(d.moments, {}, "the developer's sitting leaves the ledger alone"); assert.ok(!T.devGrantSitting(d, T0).ok);
 });
 
+test("the sittings a species has earned (the Library's shelf row): its paid sealed chapter and its paid guide count; a line's key and another species' keys do not", () => {
+  const st = world(1); assert.equal(T.sittingsOf(st, "S01"), 0, "nothing paid");
+  assert.ok(T.grantSitting(st, "moment", T.momentKey.sealed("S01", "face"), T0).ok); assert.ok(T.grantSitting(st, "moment", T.momentKey.guide("S01"), T0 + 1).ok);
+  assert.deepEqual(Object.keys(st.moments), ["sealed:S01:face", "guide:S01"], "the ledger's keys, as the moments earned name them"); assert.equal(T.sittingsOf(st, "S01"), 2);
+  for (const k of ["line:1+2", "sealed:S02:face", "guide:S02"]) assert.ok(T.grantSitting(st, "moment", k, T0 + 2).ok);
+  assert.equal(T.sittingsOf(st, "S01"), 2, "a line and another species' moments are not this species'"); assert.equal(T.sittingsOf(st, "S03"), 0, "a species with none paid");
+  const only = world(1); only.moments = { "line:1+2": T0, "guide:S02": T0, "sealed:S02:face": T0 }; assert.equal(T.sittingsOf(only, "S01"), 0, "a line's key and another species' keys count 0");
+});
+
 test("the research moments: a sealed chapter read, then the guide filled with the sealed chapter's looks, then a deep line; each found when true and paid once", () => {
   const id = ["S02", "S09", "S11", "S15", "S16"].find((s) => frameOf(s).chapters.some((c) => c.sealed)), fr = frameOf(id), sealed = fr.chapters.find((c) => c.sealed);
   const st = world(1); st.doorAt = T0; st.knownIds.push(id);

@@ -42,7 +42,7 @@ export function household(o = {}) {
   if (n5) S.seedAdults(st, "S05", 9, n5, settings);
   for (const m of st.mibis) m.paint = { state: "landed" };
   for (const m of st.mibis.slice(o.adults ?? 0)) m.born = st.turn;   // the juveniles
-  if (o.libNew != null) { S.libOpened(st); let k = o.libNew; for (const t of Object.keys(st.libSeen.S01 ?? {})) while (k > 0 && st.libSeen.S01[t].length > 1) { st.libSeen.S01[t].pop(); k--; } }   // the Library opened full screen, then libNew looks found since (the last found of the traits that have more than one)
+  if (o.libNew != null) { st.libSeen = S.libSnapshot(st); let k = o.libNew; for (const t of Object.keys(st.libSeen.S01 ?? {})) while (k > 0 && st.libSeen.S01[t].length > 1) { st.libSeen.S01[t].pop(); k--; } }   // the Library opened full screen, then libNew looks found since (the last found of the traits that have more than one)
   warmLibrary(st, settings);   // the host warms the specimen when a look is found; Home's props only read it
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };   // carry: the indexes of the mibis with the Companion
   return { st, sv, settings, m: { st, sv, settings, ui: o.ui ?? {}, docked: o.docked ?? true, light: o.light ?? "day", time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: o.motionSets ?? true } };

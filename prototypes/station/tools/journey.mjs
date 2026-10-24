@@ -302,7 +302,7 @@ l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 1", "a secon
 await press("confirm", 2400);
 // 5. Compare: from the second Loika's pod, → to its kin, ✓
 s = await st();
-await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika2.id); await page.waitForTimeout(300); await press("right", 300);   // the pod's overview: → to its kin
+await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika2.id); await page.waitForTimeout(300); await press("right", 300); await press("right", 300);   // the pod's overview: → to its figure, → to its kin
 l = await line(); expect(l.ok === "Compare", "compare offered on another Loika pod: " + JSON.stringify(l));
 await press("confirm", 400); await frameShot("page-compare");
 l = await line(); expect(l.back === "Loika", "Compare's way back names the pod: " + JSON.stringify(l));
@@ -332,7 +332,14 @@ const walk = async (keys, want, what) => { for (const k of keys) await press(k, 
 const viewNow = () => page.evaluate(() => window.__st.UI.pods.view);
 await walk(["up"], "rail.0", "▲ from the pod to the rail's last chapter looked at");
 await walk(["right", "right"], "rail.2", "▶ steps the chapters"); await walk(["down"], "pod", "▼ from the rail to the pod"); await walk(["up"], "rail.2", "▲ again: the last chapter looked at"); await walk(["down"], "pod", "▼ back to the pod");
-await walk(["right"], "hatch", "→ from the pod to the hatch when it has no kin"); await walk(["left"], "pod", "◀ from the hatch to the pod");
+await walk(["right"], "figure", "▶ from the identified pod to its figure"); l = await line(); expect(l.ok === "Open the guide" && l.subject === "every Untuva" && !l.price, "the figure: ✓ Open the guide, every Untuva, free: " + JSON.stringify(l));
+{ const ring = await page.evaluate(() => window.__st.check().log.regions.find((q) => q.id === "focus")?.rect ?? null); expect(ring && ring[1] + ring[3] <= 404, "the figure's footprint ring ends no lower than y 404, above the caption's text (UI/UX): " + JSON.stringify(ring)); console.log("# pods figure ring " + JSON.stringify(ring)); }
+await walk(["right"], "hatch", "▶ from the figure to the hatch when the pod has no kin"); await walk(["left"], "figure", "◀ from the hatch to the figure"); await walk(["left"], "pod", "◀ from the figure to the pod");
+// "Open the guide" on the figure: the Library's Level 2 of the pod's species; ← there is Level 1 with the ring on it; the Research key back to the pod
+await walk(["right"], "figure", "▶ to the figure again"); await press("confirm", 400);
+{ const g = await page.evaluate(() => ({ screen: window.__st.UI.screen, readout: window.__st.props?.frame?.top?.readout?.text, back: window.__st.props?.frame?.line?.back })); expect(g.screen === "library.species" && g.readout === "Untuva" && g.back === "Library", "✓ on the figure opens Level 2 of the Untuva: " + JSON.stringify(g)); }
+await press("back", 400); { const g = await page.evaluate(() => ({ screen: window.__st.UI.screen, cur: window.__st.props?.focus?.cur })); expect(g.screen === "library" && g.cur === "cell.S02", "← from the guide's Level 2 is Level 1 on the Untuva: " + JSON.stringify(g)); }
+await press("research", 300); await page.evaluate((id) => window.__st.podsGo(id, "pod"), untuva.id); await page.waitForTimeout(300);
 const idx = s.tray.findIndex((p) => p.id === untuva.id);
 await walk(["back"], "place." + idx, "← up to the collection, the ring on this pod"); expect((await viewNow()) === "collection", "← from the overview is the collection");
 await frameShot("pods-collection");
@@ -804,7 +811,9 @@ await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitFor
 // met and unmet cells: the pad walks l1.focus.graph over the met and found cells only, ✓ on a cell opens its species (Level 2, not built yet: ← Library), ← there is Level 1 with the ring on that species, ← on Level 1 is Home with the ring
 // on the Library bezel and records the visit as seen, the Library key lands where the ring was left, and the card's species word up close opens Level 1 on its species.
 // The focus the face says and the intents are held to prototypes/face/golden/journey-library.json (lvgl-switch.md §4, gate check 5).
-const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await page.waitForFunction(() => !window.__st.holding(), null, { timeout: 15000 }); const m = await said(), u = await ui(), p = await props(), l = p.frame?.line ?? {}; cur.push({ key: k, said: m, screen: u.screen, state: p.state ?? null, focus: u.screen === "library" && p.state === "all" ? p.focus.cur : u.screen === "home" ? u.home : null, ok: l.ok ?? null, subject: l.subject ?? null, back: l.back ?? null }); return { u, p, ring: p.focus?.cur }; };
+const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await page.waitForFunction(() => !window.__st.holding(), null, { timeout: 15000 }); const m = await said(), u = await ui(), p = await props(), l = p.frame?.line ?? {}; cur.push({ key: k, said: m, screen: u.screen, state: p.state ?? null, focus: (u.screen === "library" && p.state === "all") || u.screen === "library.species" ? p.focus.cur : u.screen === "home" ? u.home : null, ok: l.ok ?? null, subject: l.subject ?? null, back: l.back ?? null }); return { u, p, ring: p.focus?.cur }; };
+// Level 2's pictures are made off the open path, one a tick (P1): wait until the props name the one wanted, and say how long it took from the key (the swap-in time)
+const landed = async (what, test, from) => { await page.waitForFunction(test, null, { timeout: 20000 }).catch(() => fail("library-l2: " + what + " never landed")); const ms = Date.now() - from; console.log(`# library-l2: ${what} landed ${ms} ms after the key (the swap-in, on the page's own warm ticks)`); return ms; };
 { stepOf("library-l1");
   await page.evaluate(() => { const U = window.__st.UI; U.home.f = "library"; window.__st.goto("home"); }); await page.waitForTimeout(400);
   let r = await lpress("confirm", 500);
@@ -846,14 +855,35 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
   r = await lpress("left", 250); expect(r.ring === "cell.S01", "library-l1: ◀ from S09 is S01, the nearest ahead: " + r.ring);
   r = await lpress("up", 250); expect(r.ring === "cell.S01", "library-l1: ▲ from the top row stays: " + r.ring);
   r = await lpress("right", 250); r = await lpress("right", 250); expect(r.ring === "cell.S04" && r.p.frame.line.ok === "Open Hiljan", "library-l1: ▶ ▶ is the met S04, ✓ Open Hiljan: " + JSON.stringify([r.ring, r.p.frame.line]));
+  await page.evaluate(() => window.__st.libraryWarm()); await page.waitForTimeout(200);   // the cell pictures made (in play, off the open path)
   await frameShot("page-library-spread", true);
-  r = await lpress("confirm", 400); expect(r.u.screen === "library.species" && r.p.state === "notBuilt" && r.p.frame.line.back === "Library" && !r.p.frame.line.ok, "library-l1: ✓ opens the species, Level 2 not built yet, ← Library: " + JSON.stringify([r.u.screen, r.p.state, r.p.frame.line]));
+  r = await lpress("confirm", 400); expect(r.u.screen === "library.species" && r.p.state === "sheet" && r.p.regions.sheet.met && r.ring === "" && r.p.frame.line.back === "Library" && !r.p.frame.line.ok && r.p.frame.line.subject === "seen, no pod identified yet" && r.p.frame.top.readout?.text === "Hiljan", "library-l2: ✓ on a met cell opens its Level 2, met-only: no ring, no ✓, seen, no pod identified yet, ← Library: " + JSON.stringify([r.u.screen, r.p.state, r.ring, r.p.frame.line, r.p.frame.top.readout]));
+  r = await lpress("confirm", 300); expect(r.u.screen === "library.species" && r.p.state === "sheet", "library-l2: ✓ on met-only does nothing: " + JSON.stringify([r.u.screen, r.p.state]));
   r = await lpress("back", 400); expect(r.u.screen === "library" && r.ring === "cell.S04", "library-l1: ← from Level 2 is Level 1 with the ring on that species: " + JSON.stringify([r.u.screen, r.ring]));
+  r = await lpress("down", 250); expect(r.ring === "cell.S09", "library-l1: ▼ to the Belatz: " + r.ring);
+  { const t0 = Date.now(); r = await lpress("confirm", 400);
+    expect(r.u.screen === "library.species" && r.p.state === "sheet" && r.ring === "chapter.coat" && r.p.frame.line.ok === "Show Coat" && r.p.frame.line.back === "Library" && r.p.frame.top.readout?.text === "Belatz" && r.p.frame.top.readout?.mark === "species-mark-S09-10" && r.p.regions.sheet.glints.length > 0, "library-l2: ✓ on a found cell opens its Level 2 in sheet, the ring on the first open chapter, ✓ Show Coat, the readout the mark and the name, its new looks glint: " + JSON.stringify([r.u.screen, r.p.state, r.ring, r.p.frame.line, r.p.frame.top.readout]));
+    await landed("the Belatz sheet", () => /^library-sheet-S09-[0-9a-f]{8}$/.test(window.__st.props?.regions?.sheet?.picture ?? ""), t0); }
+  r = await lpress("right", 250); expect(r.ring !== "chapter.coat" && r.p.frame.line.ok?.startsWith("Show "), "library-l2: ▶ walks to another plate: " + JSON.stringify([r.ring, r.p.frame.line.ok]));
+  r = await lpress("left", 250); expect(r.ring === "chapter.coat", "library-l2: ◀ back to the Coat: " + r.ring);
+  { const t0 = Date.now(); r = await lpress("confirm", 300);
+    expect(r.p.state === "lit" && r.ring === "chapter.coat" && r.p.frame.line.ok === "Clear Coat" && r.p.frame.line.back === "Clear" && !r.p.regions.shelf.shown, "library-l2: ✓ Show Coat lights it at once: ✓ Clear Coat, ← Clear, the shelf gives way: " + JSON.stringify([r.p.state, r.ring, r.p.frame.line]));
+    await landed("the Coat's lit variant", () => /-lit-coat$/.test(window.__st.props?.regions?.sheet?.picture ?? ""), t0); await landed("the Coat's page", () => /^library-page-S09-coat-/.test(window.__st.props?.regions?.page?.picture ?? ""), t0); }
+  r = await lpress("right", 250); expect(r.ring?.startsWith("chapter.") || r.ring?.startsWith("look."), "library-l2: ▶ in lit: " + r.ring);
+  r = await lpress("back", 400); expect(r.u.screen === "library.species" && r.p.state === "sheet" && r.ring === "chapter.coat" && r.p.regions.shelf.shown, "library-l2: ← in lit is Clear, the ring on the lit chapter's plate, the shelf back: " + JSON.stringify([r.p.state, r.ring]));
+  r = await lpress("back", 400); expect(r.u.screen === "library" && r.ring === "cell.S09", "library-l2: ← in sheet is Level 1 with the ring on this species: " + JSON.stringify([r.u.screen, r.ring]));
+  r = await lpress("up", 250); expect(r.ring === "cell.S03", "library-l1: ▲ to the Tuikis: " + r.ring);
+  r = await lpress("confirm", 400); expect(r.u.screen === "library.species" && r.p.frame.top.readout?.text === "Tuikis", "library-l2: the Tuikis's Level 2: " + JSON.stringify(r.p.frame.top.readout));
+  r = await lpress("back", 400); expect(r.u.screen === "library" && r.ring === "cell.S03", "library-l2: ← is Level 1 on the Tuikis: " + r.ring);
+  r = await lpress("left", 250); r = await lpress("confirm", 400); expect(r.u.screen === "library.species" && r.p.frame.top.readout?.text === "Loika", "library-l2: the Loika's Level 2: " + JSON.stringify(r.p.frame.top.readout));
+  r = await lpress("back", 400); expect(r.u.screen === "library" && r.ring === "cell.S01", "library-l2: ← is Level 1 on the Loika: " + r.ring);
+  r = await lpress("right", 250); r = await lpress("right", 250); expect(r.ring === "cell.S04", "library-l1: the ring back on the Hiljan: " + r.ring);
   r = await lpress("back", 500); expect(r.u.screen === "home" && r.u.home === "library", "library-l1: ← on Level 1 is Home with the ring on the Library bezel: " + JSON.stringify([r.u.screen, r.u.home]));
-  r = await lpress("library", 500); expect(r.u.screen === "library" && r.ring === "cell.S04" && r.p.frame.line.subject === "" && !r.p.regions.cells.some((c) => c.glint), "library-l1: the Library key lands where the ring was left, and the last visit was recorded as seen: nothing glints: " + JSON.stringify([r.ring, r.p.frame.line.subject]));
+  r = await lpress("library", 500); expect(r.u.screen === "library" && r.ring === "cell.S04" && r.p.frame.line.subject === "" && !r.p.regions.cells.some((c) => c.glint), "library-l1: the Library key lands where the ring was left, and the species whose Level 2 was shown were recorded as seen: nothing glints: " + JSON.stringify([r.ring, r.p.frame.line.subject]));
   await page.evaluate(() => { const S = window.__st, m = S.ST.mibis.find((x) => (x.species ?? "S01") === "S01" && !x.released); S.UI.hab.id = m.id; S.UI.hab.f = "species"; S.goto("habitat"); }); await page.waitForTimeout(500);
   { const p = await props(); expect(p.screen === "habitat" && p.focus.cur === "species" && p.frame.line.ok === "Open the guide", "library-l1: the card's species word: ✓ Open the guide: " + JSON.stringify([p.screen, p.focus.cur, p.frame.line])); }
-  r = await lpress("confirm", 500); expect(r.u.screen === "library" && r.ring === "cell.S01", "library-l1: ✓ Open the guide opens Level 1 with the ring on that species: " + JSON.stringify([r.u.screen, r.ring]));
+  r = await lpress("confirm", 500); expect(r.u.screen === "library.species" && r.p.frame.top.readout?.text === "Loika" && r.ring === "chapter.coat", "library-l2: ✓ Open the guide opens Level 2 of that species: " + JSON.stringify([r.u.screen, r.ring, r.p.frame.top.readout]));
+  r = await lpress("back", 500); expect(r.u.screen === "library" && r.ring === "cell.S01", "library-l2: ← is Level 1 with the ring on that species: " + JSON.stringify([r.u.screen, r.ring]));
   r = await lpress("back", 500); expect(r.u.screen === "home" && r.u.home === "library", "library-l1: ← is Home: " + JSON.stringify([r.u.screen, r.u.home])); }
 { const file = path.resolve(here, "../../face/golden/journey-library.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("library-"))), json = JSON.stringify({ _note: "The Library's Level 1, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen, the state and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }

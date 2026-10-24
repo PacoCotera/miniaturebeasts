@@ -35,6 +35,8 @@ export const sheetId = (input, facts) => `library-sheet-${input.species}-${sheet
 export const litId = (input, facts, chapter) => `${sheetId(input, facts)}-lit-${chapter}`;
 export const pageId = (input, facts, chapter) => `library-page-${input.species}-${chapter}-${sheetDigest(input, facts)}`;
 export const discId = (species, trait, look) => `look-disc-${species}-${trait}-${look}-16`;
+// The quiet stand-in of a sheet (library-sheet.mjs renderSheet quiet: the ground, the surfaces, the type and the mosaic, no form), shown while the sheet is not made: library-quiet-{SNN}-{digest}, the sheet's digest.
+export const quietId = (input, facts) => `library-quiet-${input.species}-${sheetDigest(input, facts)}`;
 // sheet(req): the maker of the Level 2 sheet's requests for one builder. sheet(spec, input, facts, lit) requests the sheet ({ kind: "librarysheet", id, species, input, size: l2.sheet.rect's }) and, with a chapter that may be lit,
 // its lit variant ({ kind: "librarylit", id, chapter, ... }) and that chapter's page ({ kind: "librarypage", id, chapter, size: l2.page.rect's }). spec: library.json. Returns { sheet, lit, page }, the ids (lit and page null when none is made).
 export const sheet = (req) => (spec, input, facts, lit = null) => {
@@ -44,3 +46,5 @@ export const sheet = (req) => (spec, input, facts, lit = null) => {
 };
 // disc(req): the maker of a found look's 16 px disc request (the Level 2 shelf's wish pieces): disc(species, trait, look) requests { kind: "lookdisc", id: look-disc-{SNN}-{trait}-{look}-16, species, trait, look, size: [16, 16] } and returns the id.
 export const disc = (req) => (species, trait, look) => req({ kind: "lookdisc", id: discId(species, trait, look), species, trait, look, size: [16, 16] });
+// quiet(req): the maker of a sheet's quiet stand-in request: quiet(spec, input, facts) requests { kind: "libraryquiet", id: quietId, species, input, size: l2.sheet.rect's } and returns the id.
+export const quiet = (req) => (spec, input, facts) => req({ kind: "libraryquiet", id: quietId(input, facts), species: input.species, input, size: spec.l2.sheet.rect.slice(2) });

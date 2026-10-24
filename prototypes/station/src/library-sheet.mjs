@@ -192,6 +192,8 @@ function paper() {
   PAPER = { base, NZ, ms: performance.now() - t0 }; return PAPER;
 }
 export const paperMs = () => paper().ms;
+// The paper made now, off the open path (the host's boot idle): its time in ms, or 0 when it was made already.
+export const warmPaper = () => (PAPER ? 0 : paper().ms);
 // The sheet rect of a 2x screen picture, reduced 2 x 2 and rounded: RGB bytes, 664 x 522.
 function reduceRect(big, W, ss = FORM.ss) {
   const out = new Uint8Array(SW * SHH * 3);
@@ -243,18 +245,22 @@ function cropFinish(light, W, H, bloom, P) {
 
 // The sheet: { w: 664, h: 522, rgba, facts, ms }. input as above; lit: a chapter id for the lit variant, or null; ground: the ground master's pixels, or null; full: the form's finish over the whole screen (the reference
 // the crop is proved against); layers: also { form (the form on the ground, before the surfaces), reach (the pixels the light's composite reaches) }, for the tests.
-export function renderSheet(frame, input, { lit = null, ground = null, full = false, layers = false } = {}) {
+// quiet: the stand-in the face shows while a species' sheet is not made yet (the Library 3 gate's P1): the ground, the surfaces, the type and the mosaic, no form (no light, no ruler, no leaders); never lit.
+export function renderSheet(frame, input, { lit = null, ground = null, full = false, layers = false, quiet = false } = {}) {
   const t0 = performance.now(), met = input.mode === "met", f = speciesFacts(frame), m = modelOf(frame, input);
   if (lit && !canLight(input, lit)) throw new Error(`${frame.species.id}: chapter ${lit} cannot be lit (shut, or a met sheet)`);
-  // 1-2. the ground and the form: the ground passes through as it is, and the finish adds only the form's light and its bloom
-  const { px, reach } = formOnGround(m, f.sForm, met, lit, ground, { full }), layer = layers ? px.slice() : null;
+  if (quiet && lit) throw new Error(`${frame.species.id}: the quiet stand-in is never lit`);
+  // 1-2. the ground and the form: the ground passes through as it is, and the finish adds only the form's light and its bloom (the quiet stand-in: the ground alone)
+  const { px, reach } = quiet ? groundOnly(ground) : formOnGround(m, f.sForm, met, lit, ground, { full }), layer = layers ? px.slice() : null;
   const dim = (id) => (lit && id !== lit ? 0.3 : 1);
   // 3. the surfaces
   const plates = platesOf(m), cells = mosaicOf(m, f.tier), ct = met ? null : colourTrait(m), colours = ct ? ct.t.slots.filter((s) => s.found) : [];
   for (const p of plates) bezel(px, SW, SHH, p.x - SX, p.y - SY, p.w, p.h, PL.head - 1);
   if (colours.length) bezel(px, SW, SHH, CO.rect[0] - SX, CO.rect[1] - SY, CO.rect[2], CO.rect[3], 21);
   bezel(px, SW, SHH, EV.rect[0] - SX, EV.rect[1] - SY, EV.rect[2], EV.rect[3], 21);
-  // 4-5. the ruler arcs and ticks (0.6 px, bone 30 %), the leaders (1 px bone 42 %) and their dots (r 1.8, bone 90 %); a non-lit chapter's at alpha 0.3 over the ground
+  // 4-5. the ruler arcs and ticks (0.6 px, bone 30 %), the leaders (1 px bone 42 %) and their dots (r 1.8, bone 90 %); a non-lit chapter's at alpha 0.3 over the ground (none on the quiet stand-in)
+  const routes = plates.map((p) => ({ p, ...leaderOf(m, p) }));
+  if (!quiet) {
   const cv = createCanvas(SW, SHH), a = cv.getContext("2d"), img = a.createImageData(SW, SHH); img.data.set(px); a.putImageData(img, 0, 0);
   const ox = -SX, oy = -SY, { cx: CX, cy: CY } = FORM;
   a.lineWidth = 0.6;
@@ -262,11 +268,11 @@ export function renderSheet(frame, input, { lit = null, ground = null, full = fa
     for (let i = 0; i <= 30; i++) { const an = ch.a0 + (ch.a1 - ch.a0) * i / 30, x = CX + FORM.ruler * Math.cos(an) + ox, y = CY + FORM.ruler * Math.sin(an) + oy; i ? a.lineTo(x, y) : a.moveTo(x, y); }
     a.stroke();
     for (const t of ch.traits) for (const s of t.slots) { a.beginPath(); a.moveTo(CX + FORM.ruler * Math.cos(s.ang) + ox, CY + FORM.ruler * Math.sin(s.ang) + oy); a.lineTo(CX + FORM.tick * Math.cos(s.ang) + ox, CY + FORM.tick * Math.sin(s.ang) + oy); a.stroke(); } }
-  const routes = plates.map((p) => ({ p, ...leaderOf(m, p) }));
   for (const r of routes) { a.globalAlpha = dim(r.p.ch.id); a.fillStyle = rgba(TOK.bone, 0.42); for (const [x, y] of routePixels(r.pts)) a.fillRect(x + ox, y + oy, 1, 1);
     a.fillStyle = rgba(TOK.bone, 0.9); a.beginPath(); a.arc(r.dot[0] + 0.5 + ox, r.dot[1] + 0.5 + oy, 1.8, 0, TAU); a.fill(); }
   a.globalAlpha = 1;
   px.set(a.getImageData(0, 0, SW, SHH).data);
+  }
   // 6. type, mosaic cells and swatches
   for (const p of plates) { const ch = p.ch, k = dim(ch.id), x = p.x - SX, y = p.y - SY;
     print(px, SW, SHH, String(p.i + 1).padStart(2, "0"), x + PL.num.x, y + PL.num.baseline, "medium-14", premix(TOK.bone, TOK.libHead, k));
@@ -301,6 +307,13 @@ export function renderSheet(frame, input, { lit = null, ground = null, full = fa
   }
   const facts = sheetFacts(frame, input, lit);
   return { w: SW, h: SHH, rgba: px, facts, ...(layers ? { layers: { form: layer, reach } } : {}), routes: routes.map((r) => ({ chapter: r.p.ch.id, slot: r.p.slot, kind: r.kind, dot: r.dot, pts: r.pts })), ms: performance.now() - t0 };
+}
+
+// The quiet stand-in's ground: the ground master's pixels for the sheet rect (flat libGround until it is placed), opaque.
+function groundOnly(ground) {
+  const px = new Uint8ClampedArray(SW * SHH * 4);
+  for (let y = 0; y < SHH; y++) for (let x = 0; x < SW; x++) setPx(px, SW, x, y, groundAt(ground, SX + x, SY + y));
+  return { px, reach: null };
 }
 
 // ---- the chapter page ----
@@ -347,18 +360,22 @@ export function renderDisc(frame, traitId, look) {
   return { w: 16, h: 16, rgba: a.getImageData(0, 0, 16, 16).data, ms: performance.now() - t0 };
 }
 
-// ---- the cache: the current sheet, one lit variant and one page; a newer request supersedes an older one ----
-const KEPT = { sheet: null, lit: null, page: null };
+// ---- the cache: the current sheet, one lit variant, one page and one quiet stand-in; a newer request supersedes an older one ----
+const KEPT = { sheet: null, lit: null, page: null, quiet: null };
+const SLOT = { librarysheet: "sheet", librarylit: "lit", librarypage: "page", libraryquiet: "quiet" };
 let made = 0;
 export const sheetRenders = () => made;
 export const keptPictures = () => Object.fromEntries(Object.entries(KEPT).map(([k, v]) => [k, v ? v.id : null]));
 export const keptBytes = (bpp = 2) => Object.values(KEPT).reduce((n, v) => n + (v ? v.pic.w * v.pic.h * bpp : 0), 0);   // at RGB565, 2 bytes a pixel
-export const clearSheets = () => { KEPT.sheet = KEPT.lit = KEPT.page = null; };
-// The picture of a request ({ kind: "librarysheet" | "librarylit" | "librarypage", id, input, chapter }), made once while it is kept; its time printed.
+export const clearSheets = () => { KEPT.sheet = KEPT.lit = KEPT.page = KEPT.quiet = null; };
+// Whether the picture of an id is made and kept (the props name only what is: the Library 3 gate's P1); never renders.
+export const sheetKept = (id) => Object.values(KEPT).some((v) => v && v.id === id);
+// The picture of a request ({ kind: "librarysheet" | "librarylit" | "librarypage" | "libraryquiet", id, input, chapter }), made once while it is kept; its time printed.
 export function sheetPicture(frame, r, { ground = null, print: say = (s) => console.log(s) } = {}) {
-  const slot = r.kind === "librarysheet" ? "sheet" : r.kind === "librarylit" ? "lit" : "page", have = KEPT[slot];
+  const slot = SLOT[r.kind], have = KEPT[slot];
+  if (!slot) throw new Error(`sheetPicture: no kind ${r.kind}`);
   if (have && have.id === r.id) return have.pic;
-  const pic = slot === "page" ? renderPage(frame, r.input, r.chapter, { ground }) : renderSheet(frame, r.input, { lit: slot === "lit" ? r.chapter : null, ground });
+  const pic = slot === "page" ? renderPage(frame, r.input, r.chapter, { ground }) : renderSheet(frame, r.input, { lit: slot === "lit" ? r.chapter : null, ground, quiet: slot === "quiet" });
   made++; KEPT[slot] = { id: r.id, pic };
   say(`# library ${slot} ${r.id}: rendered in ${pic.ms.toFixed(0)} ms (${pic.w} x ${pic.h}); kept ${keptBytes()} bytes at RGB565`);
   return pic;
