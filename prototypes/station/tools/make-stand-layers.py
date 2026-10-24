@@ -9,6 +9,8 @@
   eyes   the ring overlays are not cut yet: thin and wide stand in with the base's "between" rings (the 16 stand-ins of layers/register.json are carried in the index)
 The anchor key is the standing pose every still picture takes; the other keys are the motion sets'. POSES lists the poses a still picture may take (the anchor, and the held keys a
 habit maps to: HABITS, written as stands.S01.habits); each is cut exactly as the anchor, from the same set under its own pose name, into stands.S01.<stage>.poses.<pose> = { figure, sizes }.
+The held keys the art director signed for the Sitting screen (SIGNED: shake and calm) are cut from their final ids only: the key, crest overlay and crested key under floor/S01, and their own fur mask, zone mask,
+patches and stripes from floor/S01/layers (not LAYERS_DIR); every one of those files is checked against floor/S01/manifest.json's sha256 before anything is written.
 The top-level entry of a stage stays the anchor's, and the contact shadows (the "under" layer and `curl.shadow`, written by place-stand-shadows.mjs) are carried over from the index as they are.
 Only the 304x312 canvas is cut. A stand at any smaller size is composed at that size in the logic process (layered-stand.mjs), so the size is a parameter of the picture, not of the art. Nothing is scaled up.
 
@@ -22,8 +24,18 @@ FLOOR, LAYERS = sys.argv[1:3]
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../..'))
 OUT = os.path.join(ROOT, 'prototypes/ui/assets/stands')
 CW, CH = 304, 312
-POSES = ['anchor', 'curl']   # the poses cut, the anchor first (a stage's top-level entry is the anchor's)
-HABITS = {'sleep-curled': 'curl'}   # a habit -> the pose its held key is
+POSES = ['anchor', 'curl', 'shake', 'calm']   # the poses cut, the anchor first (a stage's top-level entry is the anchor's)
+HABITS = {'sleep-curled': 'curl', 'shake-dry': 'shake', 'calm': 'calm'}   # a habit -> the pose its held key is
+SIGNED = ('shake', 'calm')   # the poses whose layers are the floor set's own (floor/S01/layers), each file checked against its manifest
+
+def layers_of(pose): return f'{FLOOR}/layers' if pose in SIGNED else LAYERS
+def signed_files(stage, pose):   # the signed final ids of a pose, relative to floor/S01
+    return [f'keys/mibi-{stage}-S01-base-{pose}-304x312.png', f'crested/mibi-{stage}-S01-{pose}-304x312.png', f'overlays/mibi-{stage}-S01-{pose}-crest-304x312.png',
+            *[f'layers/mibi-{stage}-S01-{pose}-{part}-304x312.png' for part in ('fur-mask', 'zone-mask', 'patches', 'stripes')]]
+MANIFEST = {e['file']: e['sha256'] for e in json.load(open(os.path.join(FLOOR, 'manifest.json'))).values() if isinstance(e, dict) and 'file' in e}
+bad = [f for st in ('adult', 'juvenile') for pose in SIGNED for f in signed_files(st, pose)
+       if f not in MANIFEST or hashlib.sha256(open(os.path.join(FLOOR, f), 'rb').read()).hexdigest() != MANIFEST[f]]
+if bad: sys.exit('not the signed files (sha256 against floor/S01/manifest.json): ' + ', '.join(bad))
 
 def rd(path): return Image.open(path).convert('RGBA')
 RAMPS = json.load(open(os.path.join(LAYERS, 'ramps.json')))['ramps']
@@ -37,12 +49,12 @@ def ramp_paint(a, m, ramp):      # make-window-masters.py, unchanged
 
 def recolour(base, stage, colour, pose):   # make-window-masters.py stand(), the coat part
     a = np.asarray(base, dtype=float).copy()
-    m = np.asarray(Image.open(f'{LAYERS}/mibi-{stage}-S01-{pose}-fur-mask-304x312.png')) > 127
+    m = np.asarray(Image.open(f'{layers_of(pose)}/mibi-{stage}-S01-{pose}-fur-mask-304x312.png')) > 127
     soft = np.asarray(Image.fromarray((m * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(.7)), float)[..., None] / 255
     pig = colour.split(' and ')
     cols = [a[..., :3] if p == 'charcoal' else ramp_paint(a, m, RAMPS[p][stage]) for p in pig]
     if len(cols) == 2:
-        z = np.asarray(Image.open(f'{LAYERS}/mibi-{stage}-S01-{pose}-zone-mask-304x312.png'), float)[..., None] / 255
+        z = np.asarray(Image.open(f'{layers_of(pose)}/mibi-{stage}-S01-{pose}-zone-mask-304x312.png'), float)[..., None] / 255
         col = cols[0] * (1 - z) + cols[1] * z
     else:
         col = cols[0]
@@ -69,8 +81,8 @@ def cut(stage, pose):   # one pose of a stage: { figure, sizes }, its files name
     src = {
         'base': rd(f'{FLOOR}/keys/mibi-{stage}-S01-base-{pose}-304x312.png'),
         'crest': rd(f'{FLOOR}/overlays/mibi-{stage}-S01-{pose}-crest-304x312.png'),
-        'patches': rd(f'{LAYERS}/mibi-{stage}-S01-{pose}-patches-304x312.png'),
-        'stripes': rd(f'{LAYERS}/mibi-{stage}-S01-{pose}-stripes-304x312.png'),
+        'patches': rd(f'{layers_of(pose)}/mibi-{stage}-S01-{pose}-patches-304x312.png'),
+        'stripes': rd(f'{layers_of(pose)}/mibi-{stage}-S01-{pose}-stripes-304x312.png'),
     }
     sizes = {}
     for (w, h) in [(CW, CH)]:
