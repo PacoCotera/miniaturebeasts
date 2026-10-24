@@ -5616,6 +5616,41 @@
    "sha256": "24672e5575e04e3388d0d1e48020363b824664c0ee88827f4fa15a99871815a9",
    "signed": "art director, original concept marks (#117)"
   },
+  "sitting-backdrop-cave-544x408": {
+   "file": "pods/sitting-backdrop-cave-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "df1ea304309ee616bfddf0f0f7e158ee6f9d5b0b141cfa90f8a23f15c72c65c3",
+   "signed": "AD 2026-10-23 23:07, 74031d07"
+  },
+  "sitting-backdrop-meadow-544x408": {
+   "file": "pods/sitting-backdrop-meadow-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "6117a4a4b9b7ed20b25406d3532399ba537b3865cd69e5ba95fde52e7118d28b",
+   "signed": "AD 2026-10-23 23:07, 74031d07"
+  },
+  "sitting-backdrop-pond-544x408": {
+   "file": "pods/sitting-backdrop-pond-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "3b59658feceb63f66cbbc7440e72ef7a9657db69d5e3928291fee815be47b775",
+   "signed": "AD 2026-10-23 23:07, 74031d07"
+  },
+  "sitting-backdrop-rock-544x408": {
+   "file": "pods/sitting-backdrop-rock-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "6002595ff76392b4db30e698f391836e7d0b649652c637c855e7e265089c259c",
+   "signed": "AD 2026-10-23 23:07, 74031d07"
+  },
+  "sitting-backdrop-wood-544x408": {
+   "file": "pods/sitting-backdrop-wood-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "c9380e4b2f0132bdd693ba86e9e5190fea72f6ee54399b8776d4c3b58de9b6e6",
+   "signed": "AD 2026-10-23 23:07, 74031d07"
+  },
   "sitting-frame-empty-48x40": {
    "file": "pods/sitting-frame-empty-48x40.png",
    "w": 48,
