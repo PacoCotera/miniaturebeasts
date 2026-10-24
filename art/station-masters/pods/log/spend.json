@@ -5495,5 +5495,90 @@
    "thoughtsTokenCount": 343,
    "totalTokenCount": 2462
   }
+ },
+ {
+  "tag": "sitting-backdrop-meadow-near-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.208848,
+  "mxn": 4.177,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T04:19:06Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 984,
+   "candidatesTokenCount": 1443,
+   "thoughtsTokenCount": 281,
+   "totalTokenCount": 2708
+  }
+ },
+ {
+  "tag": "sitting-backdrop-pond-near-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.20685,
+  "mxn": 4.137,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T04:19:37Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1005,
+   "candidatesTokenCount": 1425,
+   "thoughtsTokenCount": 282,
+   "totalTokenCount": 2712
+  }
+ },
+ {
+  "tag": "sitting-backdrop-rock-near-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.203566,
+  "mxn": 4.0713,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T04:20:05Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 983,
+   "candidatesTokenCount": 1375,
+   "thoughtsTokenCount": 305,
+   "totalTokenCount": 2663
+  }
+ },
+ {
+  "tag": "sitting-backdrop-wood-near-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.200098,
+  "mxn": 4.002,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T04:20:31Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 989,
+   "candidatesTokenCount": 1388,
+   "thoughtsTokenCount": 263,
+   "totalTokenCount": 2640
+  }
+ },
+ {
+  "tag": "sitting-backdrop-cave-near-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.211658,
+  "mxn": 4.2332,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T04:20:58Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1009,
+   "candidatesTokenCount": 1439,
+   "thoughtsTokenCount": 308,
+   "totalTokenCount": 2756
+  }
  }
 ]
