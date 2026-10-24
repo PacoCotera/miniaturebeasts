@@ -1,4 +1,4 @@
-// The sitting (M6): the held right, the research moments that earn it and their warnings, the welcome sitting at the first walk home, the ceremony, the crate and its timer,
+// The sitting (M6): the held right, the research moments that earn it, the welcome sitting at the first walk home, the ceremony, the crate and its timer,
 // the portrait that stays; and what the dock records (habits, places). Every transition and every refusal. Nothing here draws.   node --test prototypes/station/tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
