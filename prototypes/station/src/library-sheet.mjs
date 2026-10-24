@@ -24,7 +24,7 @@ const TAU = Math.PI * 2;
 
 // ---- the form: its centre, ruler, ticks, dots and the per-species scale ----
 export const FORM = { cx: 348, cy: 286, ruler: 156, tick: 160, dot: 164, keep: 168, max: 0.94, reach: 152, nodeR: 5.5, ss: 2 };
-// The finish of the sheet's form and ground: the approved Loika sheet's numbers (grain 4, vignette 0.22 over the 1024 x 600 screen, bloom 0.8; the met pencil study takes no bloom and no halation).
+// The finish of the sheet's form: the approved Loika sheet's numbers (grain 4, vignette 0.22 over the 1024 x 600 screen, bloom 0.8; the met pencil study takes no bloom and no halation). It adds the form's light to the ground; the ground itself passes through (formOnGround).
 export const FINISH = { grain: 4, vignette: 0.22, bloom: 0.8, screen: [1024, 600] };
 const LEGACY = (sid) => (sid === "S01" ? { markings: ["plain"] } : {});   // specimen.mjs model's legacy looks: shown once found, never a slot
 
@@ -146,7 +146,7 @@ function mosaicOf(m, tier) {
 }
 
 // ---- the input: what a sheet is made from ----
-// input: { species, mode: "found" | "met", found: { <trait>: [looks, in the order found] }, shut: [chapter ids still shut], fresh: ["<trait>|<look>", ...] (new this visit), readOnce, sealedOpen, sig (the rest of the props' signature) }
+// input: { species, mode: "found" | "met", found: { <trait>: [looks, in the order found] }, shut: [chapter ids still shut], fresh: ["<trait>|<look>", ...] (new this visit: the glints), readOnce, sealedOpen }
 const SPECIES = new Map();
 export function speciesFacts(frame) {
   const id = frame.species.id; let f = SPECIES.get(id);
@@ -176,23 +176,78 @@ export function sheetFacts(frame, input, lit = null) {
 // The ground under the sheet: the ground master's pixels for the rect (library-ground-1024x522, placed at the stage's [0, 40]), or flat libGround while it is not placed. ground: { w, h, rgba } or null.
 function groundAt(ground, x, y) { if (!ground) return TOK.libGround; const o = ((y - 40) * ground.w + x) * 4; return [ground.rgba[o], ground.rgba[o + 1], ground.rgba[o + 2]]; }
 
-// The sheet: { w: 664, h: 522, rgba, facts, ms }. input as above; lit: a chapter id for the lit variant, or null; ground: the ground master's pixels, or null.
-export function renderSheet(frame, input, { lit = null, ground = null } = {}) {
-  const t0 = performance.now(), met = input.mode === "met", f = speciesFacts(frame), m = modelOf(frame, input), ss = FORM.ss, [W, H] = FINISH.screen;
-  if (lit && !canLight(input, lit)) throw new Error(`${frame.species.id}: chapter ${lit} cannot be lit (shut, or a met sheet)`);
-  // 1-2. the ground and the form, with the finish (bloom, halation and grain belong to the form and the ground only)
-  const light = createCanvas(W * ss, H * ss);
-  drawForm(light.getContext("2d"), { cx: FORM.cx * ss, cy: FORM.cy * ss, s: f.sForm * ss, lw: FORM.max * ss }, m, { nodeR: FORM.nodeR, lit, pencil: met });
-  let under = null;
-  if (ground) { under = createCanvas(W * ss, H * ss); const u = under.getContext("2d"), img = u.createImageData(W * ss, H * ss);
-    for (let y = 0; y < H * ss; y++) for (let x = 0; x < W * ss; x++) { const X = x >> 1, Y = y >> 1, c = Y >= 40 && Y < 40 + ground.h ? groundAt(ground, X, Y) : TOK.libGround, o = (y * W * ss + x) * 4; img.data[o] = c[0]; img.data[o + 1] = c[1]; img.data[o + 2] = c[2]; img.data[o + 3] = 255; }
-    u.putImageData(img, 0, 0); }
-  const fin = createCanvas(W * ss, H * ss);
-  finish(fin, light, { bg: TOK.libGround, grain: FINISH.grain, vignette: FINISH.vignette, bloom: met ? 0 : FINISH.bloom, under });
-  const big = fin.getContext("2d").getImageData(0, 0, W * ss, H * ss).data, px = new Uint8ClampedArray(SW * SHH * 4);
-  for (let y = 0; y < SHH; y++) for (let x = 0; x < SW; x++) { const o = (y * SW + x) * 4;
-    for (let c = 0; c < 3; c++) { let t = 0; for (let j = 0; j < ss; j++) for (let i = 0; i < ss; i++) t += big[(((SY + y) * ss + j) * W * ss + (SX + x) * ss + i) * 4 + c]; px[o + c] = Math.round(t / (ss * ss)); }
+// The form on the ground (picture pixels, 664 x 522, opaque): out = G + F(bg + light) - F(bg), each F reduced 2 x 2 and rounded, clamped; F is specimen.mjs finish over the 1024 x 600 screen at 2x (bg libGround, the FINISH
+// numbers), G the ground's own pixels (groundAt). Where the form's light does not reach, F(bg + light) = F(bg) and the pixel is G exactly: the ground is never toned, vignetted or grained here (the master carries its own).
+// The paper and the vignette are fixed functions of position, so F(bg) and the finish's noise are made once per process; F(bg + light) is made only on a crop, the light's box plus CROP_PAD at 2x (more than the widest blur's
+// reach, its reduction blocks and its enlargement) on the reduction grid, clipped to the sheet: outside it the light and every blur of it are exactly 0. `full` makes F(bg + light) over the whole screen with finish itself (the reference).
+export const CROP_PAD = 176;
+let PAPER = null;
+function paper() {
+  if (PAPER) return PAPER;
+  const t0 = performance.now(), ss = FORM.ss, W = FINISH.screen[0] * ss, H = FINISH.screen[1] * ss, out = createCanvas(W, H); let probe = null;
+  finish(out, createCanvas(W, H), { bg: TOK.libGround, grain: FINISH.grain, vignette: FINISH.vignette, bloom: FINISH.bloom, probe: (p) => { probe = { md: p.md, seed: p.seed }; } });
+  const big = out.getContext("2d").getImageData(0, 0, W, H).data, base = reduceRect(big, W), x0 = SX * ss, y0 = SY * ss, w = SW * ss, h = SHH * ss, NZ = new Float64Array(w * h);
+  let sd = probe.seed; const rnd = () => ((sd = (sd * 1664525 + 1013904223) >>> 0) / 4294967296);   // the finish's own noise, in its order
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const n = (rnd() + rnd() - 1) * FINISH.grain + (probe.md[(y * W + x) * 4] - 128) * 0.09; if (x >= x0 && x < x0 + w && y >= y0 && y < y0 + h) NZ[(y - y0) * w + x - x0] = n; }
+  PAPER = { base, NZ, ms: performance.now() - t0 }; return PAPER;
+}
+export const paperMs = () => paper().ms;
+// The sheet rect of a 2x screen picture, reduced 2 x 2 and rounded: RGB bytes, 664 x 522.
+function reduceRect(big, W, ss = FORM.ss) {
+  const out = new Uint8Array(SW * SHH * 3);
+  for (let y = 0; y < SHH; y++) for (let x = 0; x < SW; x++) for (let c = 0; c < 3; c++) { let t = 0; for (let j = 0; j < ss; j++) for (let i = 0; i < ss; i++) t += big[(((SY + y) * ss + j) * W + (SX + x) * ss + i) * 4 + c]; out[(y * SW + x) * 3 + c] = Math.round(t / (ss * ss)); }
+  return out;
+}
+function formOnGround(m, sForm, met, lit, ground, { full = false } = {}) {
+  const ss = FORM.ss, W = FINISH.screen[0] * ss, H = FINISH.screen[1] * ss, P = paper(), bloom = met ? 0 : FINISH.bloom;
+  const light = createCanvas(W, H);
+  drawForm(light.getContext("2d"), { cx: FORM.cx * ss, cy: FORM.cy * ss, s: sForm * ss, lw: FORM.max * ss }, m, { nodeR: FORM.nodeR, lit, pencil: met });
+  let lifted;   // F(bg + light), reduced, over the sheet rect; null where it equals F(bg)
+  if (full) { const out = createCanvas(W, H); finish(out, light, { bg: TOK.libGround, grain: FINISH.grain, vignette: FINISH.vignette, bloom }); lifted = { rgb: reduceRect(out.getContext("2d").getImageData(0, 0, W, H).data, W), x0: 0, y0: 0, x1: SW, y1: SHH, w: SW }; }
+  else lifted = cropFinish(light, W, H, bloom, P);
+  const px = new Uint8ClampedArray(SW * SHH * 4);
+  for (let y = 0; y < SHH; y++) for (let x = 0; x < SW; x++) { const o = (y * SW + x) * 4, g = groundAt(ground, SX + x, SY + y), inC = lifted && x >= lifted.x0 && x < lifted.x1 && y >= lifted.y0 && y < lifted.y1;
+    for (let c = 0; c < 3; c++) px[o + c] = inC ? g[c] + lifted.rgb[((y - lifted.y0) * lifted.w + x - lifted.x0) * 3 + c] - P.base[(y * SW + x) * 3 + c] : g[c];
     px[o + 3] = 255; }
+  return { px, reach: lifted?.reach ?? null };
+}
+// The finish of the light on the crop only, byte for byte what finish gives there over the whole screen: the same composite and blurs (the blur radii from the screen's width), the same tone, vignette and noise.
+function cropFinish(light, W, H, bloom, P) {
+  const ss = FORM.ss, L = light.data, gx0 = SX * ss, gy0 = SY * ss, gx1 = (SX + SW) * ss, gy1 = (SY + SHH) * ss;
+  let bx0 = W, by0 = H, bx1 = -1, by1 = -1;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; if (L[i] || L[i + 1] || L[i + 2] || L[i + 3]) { if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; } }
+  if (bx1 < 0) return null;
+  // the crop on the screen's reduction grid (8 at 2x), clipped to the screen only, so its edges clamp where the screen's do
+  const al = 8, X0 = Math.max(0, Math.floor((bx0 - CROP_PAD) / al) * al), Y0 = Math.max(0, Math.floor((by0 - CROP_PAD) / al) * al), X1 = Math.min(W, Math.ceil((bx1 + 1 + CROP_PAD) / al) * al), Y1 = Math.min(H, Math.ceil((by1 + 1 + CROP_PAD) / al) * al), cw = X1 - X0, ch = Y1 - Y0;
+  const lc = createCanvas(cw, ch); for (let y = 0; y < ch; y++) lc.data.set(L.subarray(((Y0 + y) * W + X0) * 4, ((Y0 + y) * W + X1) * 4), y * cw * 4);
+  const oc = createCanvas(cw, ch), o = oc.getContext("2d");
+  o.fillStyle = `rgb(${TOK.libGround})`; o.fillRect(0, 0, cw, ch);   // finish's composite, at the screen's blur radii
+  o.globalCompositeOperation = "lighter"; o.drawImage(lc, 0, 0, cw, ch);
+  if (bloom) {   // at bloom 0 every bloom draw adds 0
+    for (const [r, a] of [[1.2, 0.3], [4, 0.2], [12, 0.12]]) { o.filter = `blur(${r * W / 1024 * 2}px)`; o.globalAlpha = a * bloom; o.drawImage(lc, 0, 0, cw, ch); }
+    o.filter = `blur(${10 * W / 1024 * 2}px) sepia(1) saturate(3) hue-rotate(-25deg)`; o.globalAlpha = 0.1 * bloom; o.drawImage(lc, 0, 0, cw, ch);
+  }
+  o.filter = "none"; o.globalAlpha = 1; o.globalCompositeOperation = "source-over";
+  const d = o.getImageData(0, 0, cw, ch).data, nw = SW * ss, vg = FINISH.vignette, bg = TOK.libGround;
+  const tx0 = Math.max(X0, gx0), ty0 = Math.max(Y0, gy0), tx1 = Math.min(X1, gx1), ty1 = Math.min(Y1, gy1);   // the part on the sheet
+  const reach = new Uint8Array(SW * SHH);   // the sheet pixels the light's composite reaches (the form, its bloom and halation), before the tone
+  for (let Y = ty0; Y < ty1; Y++) for (let X = tx0; X < tx1; X++) { const i = ((Y - Y0) * cw + X - X0) * 4; if (d[i] !== bg[0] || d[i + 1] !== bg[1] || d[i + 2] !== bg[2]) reach[((Y - gy0) >> 1) * SW + ((X - gx0) >> 1)] = 1; }
+  for (let Y = ty0; Y < ty1; Y++) for (let X = tx0; X < tx1; X++) {   // finish's print tone, vignette and noise at the screen position
+    const i = ((Y - Y0) * cw + X - X0) * 4, dx = X / W - 0.5, dy = Y / H - 0.5, v = 1 - vg * (dx * dx + dy * dy) * 2, n = P.NZ[(Y - gy0) * nw + X - gx0];
+    for (let c = 0; c < 3; c++) { let val = d[i + c] / 255; val = val / (1 + 0.25 * val) * 1.18; val = val * v; d[i + c] = Math.max(0, Math.min(255, val * 255 + n * (c === 2 ? 0.9 : 1))); }
+  }
+  const x0 = (tx0 - gx0) / ss, y0 = (ty0 - gy0) / ss, w = (tx1 - tx0) / ss, h = (ty1 - ty0) / ss, rgb = new Uint8Array(w * h * 3);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) for (let c = 0; c < 3; c++) { let t = 0; for (let j = 0; j < ss; j++) for (let i = 0; i < ss; i++) t += d[((ty0 - Y0 + y * ss + j) * cw + tx0 - X0 + x * ss + i) * 4 + c]; rgb[(y * w + x) * 3 + c] = Math.round(t / (ss * ss)); }
+  return { rgb, x0, y0, x1: x0 + w, y1: y0 + h, w, reach };
+}
+
+// The sheet: { w: 664, h: 522, rgba, facts, ms }. input as above; lit: a chapter id for the lit variant, or null; ground: the ground master's pixels, or null; full: the form's finish over the whole screen (the reference
+// the crop is proved against); layers: also { form (the form on the ground, before the surfaces), reach (the pixels the light's composite reaches) }, for the tests.
+export function renderSheet(frame, input, { lit = null, ground = null, full = false, layers = false } = {}) {
+  const t0 = performance.now(), met = input.mode === "met", f = speciesFacts(frame), m = modelOf(frame, input);
+  if (lit && !canLight(input, lit)) throw new Error(`${frame.species.id}: chapter ${lit} cannot be lit (shut, or a met sheet)`);
+  // 1-2. the ground and the form: the ground passes through as it is, and the finish adds only the form's light and its bloom
+  const { px, reach } = formOnGround(m, f.sForm, met, lit, ground, { full }), layer = layers ? px.slice() : null;
   const dim = (id) => (lit && id !== lit ? 0.3 : 1);
   // 3. the surfaces
   const plates = platesOf(m), cells = mosaicOf(m, f.tier), ct = met ? null : colourTrait(m), colours = ct ? ct.t.slots.filter((s) => s.found) : [];
@@ -220,8 +275,8 @@ export function renderSheet(frame, input, { lit = null, ground = null } = {}) {
     if (ch.sealed) { print(px, SW, SHH, "sealed", x + PL.shut.x, y + PL.shut.baseline, "regular-12", premix(TOK.fog, TOK.libPanel, k)); continue; }
     wrapJoined("regular-12", ch.traits.map((t) => t.name), PL.index.room, PL.index.join).slice(0, PL.index.lines).forEach((l, j) => print(px, SW, SHH, l, x + PL.index.x, y + PL.index.baselines[j], "regular-12", premix(TOK.fog, TOK.libPanel, k))); }
   if (colours.length) {
-    print(px, SW, SHH, `${ct.ch.name} colours found`, CO.rect[0] + 12 - SX, EV.title[1] - SY, "medium-12", TOK.fog);
     const k = dim(ct.ch.id), named = colours.length <= CO.named.upTo;
+    print(px, SW, SHH, `${ct.ch.name} colours found`, CO.rect[0] + 12 - SX, EV.title[1] - SY, "medium-12", premix(TOK.fog, TOK.libHead, k));   // the band's title dims with its chapter's content
     colours.forEach((s, j) => { const cols = lookColours(ct.t, s.look, s.idx).map((h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)));
       const [w, h] = named ? [CO.named.size[0] - 1, CO.named.size[1] - 1] : [CO.chips.size[0] - 1, CO.chips.size[1] - 1];
       const x0 = named ? CO.named.x0 + CO.named.pitch * j : CO.chips.x0 + CO.chips.pitch * (j % CO.chips.perRow), y0 = named ? CO.named.y : CO.chips.rows[Math.floor(j / CO.chips.perRow)];
@@ -245,7 +300,7 @@ export function renderSheet(frame, input, { lit = null, ground = null } = {}) {
     if (found && lit === c.ch.id) for (let q = -2; q <= cell + 1; q++) { setPx(px, SW, x0 + q, y0 - 2, TOK.bone); setPx(px, SW, x0 + q, y0 + cell + 1, TOK.bone); setPx(px, SW, x0 - 2, y0 + q, TOK.bone); setPx(px, SW, x0 + cell + 1, y0 + q, TOK.bone); }
   }
   const facts = sheetFacts(frame, input, lit);
-  return { w: SW, h: SHH, rgba: px, facts, routes: routes.map((r) => ({ chapter: r.p.ch.id, slot: r.p.slot, kind: r.kind, dot: r.dot, pts: r.pts })), ms: performance.now() - t0 };
+  return { w: SW, h: SHH, rgba: px, facts, ...(layers ? { layers: { form: layer, reach } } : {}), routes: routes.map((r) => ({ chapter: r.p.ch.id, slot: r.p.slot, kind: r.kind, dot: r.dot, pts: r.pts })), ms: performance.now() - t0 };
 }
 
 // ---- the chapter page ----

@@ -32,12 +32,12 @@ export function specimenInput(st, id, settings) {
   return { frame, found, shut };
 }
 // What the Level 2 sheet of a species is made from (library-sheet.mjs): its mode ("found", or "met": the pencil study with no words, the same for every player), the found looks and the chapters still shut
-// (specimenInput), the looks new this visit (newLooksOf, as "<trait>|<look>"), the chapters read once, sealedOpen, and the species' share of the rest of the window's signature (its seen looks and its wish). null for an unmet species.
+// (specimenInput), the looks new this visit (newLooksOf, as "<trait>|<look>"; for the glints, not the picture), the chapters read once and sealedOpen. null for an unmet species.
 export function sheetInput(st, id, settings) {
   const status = speciesStatus(st, id); if (status === "unmet" || !frameOf(id)) return null;
-  if (status !== "found") return { species: id, mode: "met", found: {}, shut: [], fresh: [], readOnce: [], sealedOpen: false, sig: null };
+  if (status !== "found") return { species: id, mode: "met", found: {}, shut: [], fresh: [], readOnce: [], sealedOpen: false };
   const { found, shut } = specimenInput(st, id, settings);
-  return { species: id, mode: "found", found, shut, fresh: [...newLooksOf(st, id, settings)], readOnce: (st.readOnce[id] || []).slice(), sealedOpen: !!settings.sealedOpen, sig: [st.libSeen?.[id] ?? {}, st.wish?.[id] ?? null] };
+  return { species: id, mode: "found", found, shut, fresh: [...newLooksOf(st, id, settings)], readOnce: (st.readOnce[id] || []).slice(), sealedOpen: !!settings.sealedOpen };
 }
 // The new looks of a species: its current looks (a legacy look, the Loika's plain, never counts) found since the Library was last opened full screen, as "<trait>|<look>".
 export function newLooksOf(st, id, settings) {

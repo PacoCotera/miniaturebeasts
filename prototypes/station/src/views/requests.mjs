@@ -21,11 +21,11 @@ export const slotAt = (req, master, rect, until) => { const size = rect.slice(2)
 
 // ---- the Level 2 sheet (library-sheet.mjs draws it; library.json l2) ----
 // input: specimen-props.mjs sheetInput; facts: library-sheet.mjs speciesFacts (S_form and the tier, facts of the species).
-// The digest of a sheet: the species facts, the mode and, on a found sheet, the guide looks, the chapters still shut, readOnce, sealedOpen, the colours found, the looks new this visit and the rest of the props' signature.
-// A met sheet's digest is the species facts and the mode alone: the same picture for every player.
+// The digest of a sheet names what sets its pixels: the species facts, the mode and, on a found sheet, the guide looks, the chapters still shut, readOnce, sealedOpen and the colours found. The looks new this visit
+// set no pixel (the glints are the face's, placed from library-sheet.mjs sheetFacts), so leaving the Library or a wish never makes a sheet again. A met sheet's digest is the species facts and the mode alone: the same picture for every player.
 export function sheetDigest(input, facts) {
   const sp = [facts.sForm, facts.tier.id], f = input.found ?? {};
-  const key = input.mode === "met" ? [sp, "met"] : [sp, "found", Object.keys(f).sort().map((t) => [t, f[t]]), input.shut ?? [], input.readOnce ?? [], !!input.sealedOpen, f.colour ?? [], input.fresh ?? [], input.sig ?? null];
+  const key = input.mode === "met" ? [sp, "met"] : [sp, "found", Object.keys(f).sort().map((t) => [t, f[t]]), input.shut ?? [], input.readOnce ?? [], !!input.sealedOpen, f.colour ?? []];
   return keyToken(JSON.stringify(key));
 }
 // Whether a chapter may be lit (a focus target that makes a lit variant and a page): never a shut chapter, never on a met sheet.

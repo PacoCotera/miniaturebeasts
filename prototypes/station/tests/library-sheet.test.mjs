@@ -1,6 +1,7 @@
 // The Library's Level 2 sheet generator (station/src/library-sheet.mjs, library.json l2), in Node: the geometry of all 16 species (plates per the slot table, the tier, S_form, the form's ink inside formRoom,
 // the leader routes and radii), the surfaces' pixels, the page heights, the met-only sheet, a shut plate, the Hiljan, the colour chips, the comma form and the wrap rule, the Loika's legacy "plain",
-// the layout facts, the requests and the cache (exactly the sheet, one lit variant and one page). Each render's time is printed.
+// the layout facts, the requests and the cache (exactly the sheet, one lit variant and one page); the ground passing through exactly, the crop of the finish byte-identical to the whole-screen reference on the eight
+// review states, and each render's time against its target (a sheet or lit variant 1.5 s, a met sheet 1.2 s on the development machine; the test fails only past 3 s).
 //   node --test prototypes/station/tests/library-sheet.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -44,7 +45,7 @@ test("plates follow the slot table in frame order; the Loika's Coat [16,50], Fac
     const rects = f.plates.map((p) => p.rect); for (let i = 0; i < rects.length; i++) for (let j = i + 1; j < rects.length; j++) { const [a, b] = [rects[i], rects[j]]; assert.ok(a[0] + a[2] <= b[0] || b[0] + b[2] <= a[0] || a[1] + a[3] <= b[1] || b[1] + b[3] <= a[1], `${id}: plates ${i} and ${j} overlap`); } }
   assert.deepEqual(L.speciesFacts(F.S01).plates.map((p) => [p.chapter, p.rect.slice(0, 2)]), [["coat", [16, 50]], ["face", [524, 50]], ["movement", [524, 380]], ["stamina", [16, 380]]]);
 });
-test("leaders: the routes in slot-table order per chapter count; every pixel at least 164 from the centre (within the half pixel the dot is rounded by); 0 crossings and 0 leaders through another plate", () => {
+test("leaders: the routes in slot-table order per chapter count; every pixel at least 163.5 from the centre (the dot on radius 164, rounded to a pixel centre); 0 crossings and 0 leaders through another plate", () => {
   for (const id of IDS) { const fr = F[id], m = layout(model(fr, {})), ps = L.platesOf(m), lead = ps.map((p) => L.leaderOf(m, p));
     assert.equal(lead.map((r) => r.kind).join(""), ROUTES[fr.chapters.length], id);
     const owner = new Map();
@@ -53,7 +54,7 @@ test("leaders: the routes in slot-table order per chapter count; every pixel at 
       assert.equal(r.pts[r.pts.length - 2][1], last[1], `${id}: the last segment is horizontal`);
       for (let i = 0; i + 1 < r.pts.length; i++) assert.ok(r.pts[i][0] === r.pts[i + 1][0] || r.pts[i][1] === r.pts[i + 1][1], `${id}: orthogonal only`);
       for (const [x, y] of px) {
-        assert.ok(Math.hypot(x - 348, y - 286) >= 164 - Math.SQRT1_2, `${id}: a leader pixel at ${x},${y} is inside 164`);
+        assert.ok(Math.hypot(x - 348, y - 286) >= 164 - 0.5, `${id}: a leader pixel at ${x},${y} is inside 164`);
         const key = x + "," + y; assert.ok(!owner.has(key) || owner.get(key) === k, `${id}: leaders cross at ${key}`); owner.set(key, k);
         ps.forEach((q, j) => assert.ok(j === k || !(x >= q.x && x < q.x + q.w && y >= q.y && y < q.y + q.h), `${id}: leader ${k} runs through plate ${j}`)); } });
   }
@@ -181,6 +182,7 @@ test("the requests: library-sheet-{SNN}-{digest}, its -lit-{chapter} variant and
   const r2 = sheetReq(collector([]))(F.S02, met("S02"), "coat"); assert.deepEqual([r2.lit, r2.page], [null, null]);
   assert.notEqual(sheetId(F.S01, found("S01", { ...mid.S01, colour: [...mid.S01.colour, "ash"] })), r.sheet);
   assert.notEqual(sheetId(F.S01, found("S01", mid.S01, { readOnce: ["coat"] })), r.sheet);
+  assert.equal(sheetId(F.S01, found("S01", mid.S01, { fresh: ["colour|russet"], sig: ["seen", "wish"] })), r.sheet, "the looks new this visit set no pixel: the same picture");
   assert.equal(discReq(collector([]))("S01", "colour", "ash"), "look-disc-S01-colour-ash-16");
 });
 test("the cache keeps exactly the current sheet, one lit variant and one page; a newer request supersedes the older one of its kind; its bytes at RGB565", () => {
@@ -195,4 +197,41 @@ test("the cache keeps exactly the current sheet, one lit variant and one page; a
   assert.deepEqual(L.keptPictures(), { sheet: ids2.sheet, lit: ids.lit, page: ids.page }, "the newer sheet supersedes the older; the lit variant and the page stay until superseded");
   for (const s of said) console.log(s);
   assert.ok(said.every((s) => /rendered in \d+ ms/.test(s)));
+});
+
+// ---- the ground passes through; the finish's crop; the times ----
+const G = tok("libGround"), near = (mask, w, h, r) => { const out = new Uint8Array(w * h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (mask[y * w + x]) for (let j = Math.max(0, y - r); j <= Math.min(h - 1, y + r); j++) for (let i = Math.max(0, x - r); i <= Math.min(w - 1, x + r); i++) out[j * w + i] = 1; return out; };
+const STATES = () => { const bh = belatzHalf(); return [
+  ["Loika mid", F.S01, found("S01", mid.S01), null], ["Loika Coat lit", F.S01, found("S01", mid.S01), "coat"], ["Belatz half found, Movement sealed", F.S09, bh, null],
+  ["Belatz Coat lit, complete", F.S09, found("S09", all(F.S09)), "coat"], ["Kilpo all found", F.S11, found("S11", all(F.S11)), null], ["Hiljan all found", F.S04, found("S04", all(F.S04)), null],
+  ["Blikur all found", F.S16, found("S16", all(F.S16)), null], ["Untuva met-only", F.S02, met("S02"), null]]; };
+test("the ground passes through: on the eight review states every sheet pixel more than 4 px from any ink (the form's light with its bloom, the surfaces, leaders, ruler, type and cells) is the ground exactly (flat libGround); the sheet's edges show no step", () => {
+  const w = 664, h = 522;
+  for (const [name, fr, inp, lit] of STATES()) {
+    const p = L.renderSheet(fr, inp, { lit, layers: true }), ink = new Uint8Array(w * h);
+    for (let i = 0; i < w * h; i++) { const o = i * 4; if ((p.layers.reach && p.layers.reach[i]) || p.rgba[o] !== p.layers.form[o] || p.rgba[o + 1] !== p.layers.form[o + 1] || p.rgba[o + 2] !== p.layers.form[o + 2]) ink[i] = 1; }
+    const nearInk = near(ink, w, h, 4); let off = 0, edge = 0, edgeOff = 0;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = y * w + x, c = at(p, x, y), isG = c[0] === G[0] && c[1] === G[1] && c[2] === G[2];
+      if (!nearInk[i] && !isG) off++;
+      if ((x < 4 || y < 4 || x >= w - 4 || y >= h - 4) && !ink[i]) { edge++; if (!isG) edgeOff++; } }
+    console.log(`# ${name}: ${off} pixels off the ground away from ink; the 4 px edge ring: ${edge} ground pixels, ${edgeOff} differ from flat libGround`);
+    assert.equal(off, 0, name); assert.equal(edgeOff, 0, name);
+  }
+});
+test("the finish's crop is byte-identical to the whole-screen reference (out = G + F(bg + light) - F(bg) with finish over 1024 x 600) on the eight review states; the times against their targets", () => {
+  console.log(`# the paper and the vignette, once per process: ${L.paperMs().toFixed(0)} ms`);
+  for (const [name, fr, inp, lit] of STATES()) {
+    const a = L.renderSheet(fr, inp, { lit }), b = L.renderSheet(fr, inp, { lit, full: true }), target = inp.mode === "met" ? 1200 : 1500;
+    let d = 0; for (let i = 0; i < a.rgba.length; i++) if (a.rgba[i] !== b.rgba[i]) d++;
+    console.log(`# ${name}: rendered in ${a.ms.toFixed(0)} ms (target ${target} ms; the whole-screen reference ${b.ms.toFixed(0)} ms), ${d} bytes differ`);
+    assert.equal(d, 0, name); assert.ok(a.ms < 3000, `${name}: ${a.ms.toFixed(0)} ms`);
+  }
+});
+test("the colours band's title dims with its chapter: premix(fog, libHead, 0.3) when the Coat is not lit, fog when it is or nothing is lit", () => {
+  const title = (p) => { let best = null, sum = -1; for (let y = 477 - 12 - SY; y <= 477 - SY; y++) for (let x = 28 - SX; x < 140 - SX; x++) { const c = at(p, x, y), s = c[0] + c[1] + c[2]; if (s > sum) { sum = s; best = c; } } return best; };
+  const fog = tok("fog"), head = tok("libHead"), dimmed = fog.map((v, i) => Math.round(0.3 * v + 0.7 * head[i]));
+  const face = pic("Loika Face lit", () => L.renderSheet(F.S01, found("S01", mid.S01), { lit: "face" }));
+  assert.deepEqual(title(face), dimmed, "Face lit: the title at 30 %");
+  assert.deepEqual(title(loikaMid()), fog, "nothing lit: the title in fog");
+  assert.deepEqual(title(pic("Loika Coat lit", () => L.renderSheet(F.S01, found("S01", mid.S01), { lit: "coat" }))), fog, "Coat lit: the title in fog");
 });
