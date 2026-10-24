@@ -1,0 +1,155 @@
+# K6 gate (architect, 2026-10-23 19:33 Mexico City), 0cd33136
+
+What I measured. I used a detached worktree at 0cd33136 with a private FACE_BUILD_DIR, STATION_CHECKS and TMPDIR, plus copies of 3d93b2bb and 0cd33136 made outside the clone with `git archive`. All of it is removed afterwards.
+- `build.sh all` at 0cd33136: layout 775 cases, 0 differ (753 at 3d93b2bb); face_test 15223 checks, 0 failed (15177 at 3d93b2bb); native hash 47e09df8 on both; 0 warnings in the build log.
+- The Station journey on each side, each written to its own private STATION_CHECKS file. I ran checks.mjs and layer-check on each side, and the K5 type-log and region comparisons over the two records.
+- Also, at 0cd33136: goldens `--check`, `node --test` in two groups, the face guard, place-masters `--check`, and the public guard against origin/station-gate (9fbfc9a9). I did not run the play journey. K6 touches nothing under play/, and the builder's run of it passed.
+- Node records on all 181 golden states, captured on an instrumented copy of each side. I used the builder's instr.py and nodes.mjs, which are byte-identical to the K5 tools I read at the K5 gate. I compared them with the K4.1 setcmp.mjs and an empty map, and against the builder's three captures.
+- The props records (the K10 recorder): the 19 views test files on each side.
+- A probe of my own: a copy of face cargo.test.mjs with one added test, run on both builds. It covers five arrival scenes at eight instants each, and records the band's plate and word boxes.
+- I read the whole diff (27 files), the three new components and their headers, and every converted site against the code it replaces. I checked by parsing that the two spec files change by added keys only.
+- `git merge-tree` and the tree and diff identities of 8bf55670; the direct-primitive and prim_node counts of screens/*.c at 3d93b2bb and 8bf55670 (comments and strings blanked); the kit_* contract headers under vocab/ at 8bf55670.
+
+- **1. K6 (T-20261023-281) as built: PASS.** One proof gap is closed by my probe, and its node test goes to K5.1 (section 4). Some leftovers go to K7 and K5.1. None of them blocks the merge.
+  - **Components and contract headers: as §3.2, with the builder's choices of section 2.**
+    - `kit_stage` (vocab/common/stage.c) takes spec, rect, ground, region, groundId, roomId and roomPath.
+      - It draws the ground on chrome, then the first room candidate the host has sent, on painted.
+      - It returns 0 and draws nothing when the spec holds no rect.
+    - `kit_stamp` (vocab/station/stamp.c) takes spec, rect, plate, asset, size, clipH and kit_stamp_t. It draws:
+      - the case's back;
+      - the plate as a slot;
+      - the clip and the stamp centred with v_half;
+      - the case's front.
+    - `kit_pod` (vocab/station/pod.c) takes spec, cls, axis, feet, kit_podShadow_t or NULL, and box.
+      - The box is bottom-centred on axis and feet.
+      - The shadow is a slot of w + widen by h, centred on the axis and the feet.
+      - It returns 0, with no node, when the class gives no box.
+    - Each has a header with props, region and layer, node ids and return, a declaration in words.h and a CMake entry.
+    - face_test has 43 new kit checks (+3 for the new metrics strings, 46 in all): kit_stage with a master, none named, none sent, and no rect; kit_stamp in five forms (full; no stamp; size 0 with plateAlone; no clip and no case; no plate with clipH 0); kit_pod with the shadow on and off, an odd width, NULL, and four refused classes.
+    - None of the three lays out a list, so the kit_tiles line has nothing to apply to.
+  - **6a, 6b, 6c: as ruled.**
+    - 6a: the tiles.c header is the ruled sentence, word for word. Comment only.
+    - 6b:
+      - habitat.json regions.nameTag gains `"under": 24` and `"overGap": 8`, and nothing else.
+      - build_tag reads them. No literal 24 or 8 is left in build_tag.
+    - 6c:
+      - cargo.json regions.arrival.band.probe gains exactly `"forms": {"row": {"upTo": 4, "first": [40, 68, 16, 16], "pitch": [20, 0], "grid": [4, 1]}}` and nothing else.
+      - build_band calls `kit_tiles(C, ARR ".band.probe", whole + mended, …)`. The callback draws band.plate.i with v_slot(icon, NULL, box, i < shownN).
+      - The words' x is the last box's x + w + gap.
+      - The layout vectors take n 0–5. tiles.test.mjs takes n 1–4 with the old arithmetic, and refuses n 5.
+  - **Conversions: every F9, F10 and F16 site in §2 is converted except library.c, as the ticket says.** Golden coverage of each, from the node records (records with a size in the after capture):
+    - **F9 stage (ground, plus the room master where there is one):**
+      - Shown in golden states: Pods bench and bench.room 13; Bench 4; Create 17; Incubator 21; Cargo 29; Home 32; Vivarium 14; Habitat's stage.ground 30.
+      - Shown in no golden state:
+        - Habitat's stage.room (its master is not signed). Habitat makes the same call as Pods, Bench and Create, and face_test's kit_stage case checks the room box.
+        - The not-built stage. notbuilt.test.mjs:31 checks its pixel.
+      - word_bench is gone.
+    - **F10 stamp label:**
+      - Pods: stamp, stamp.case, stamp.stamp and stamp.front, in 5 states.
+      - Create: with the clip, 17 states.
+      - Habitat: stamp, clip and stamp, 30 states.
+      - Incubator: 20 states.
+      - word_stamp is gone. pods.c gains `stamp_label`, a 5-line binding function.
+    - **F16 pod box and shadow:**
+      - Pods: specimen.shadow and specimen.pod, 11 states. pods.c pod_box gets its box from kit_pod, with NULL shadow, for the focal box and the focus table.
+      - Create: podShadow, shown in 15 of its 17 states (no size in grow after the travel starts, as before); the pod 17.
+      - word_pod_size and create.c pod_box are gone.
+    - **6c probe plates:** band.plate.0–2 are shown in the 3 arrival states.
+    - **The band words: shown in no golden state, and no face node test checks their box.** tiles.test.mjs checks the arithmetic in JavaScript, not the face's drawn node, so the builder's "cargo band words (tiles.test)" does not meet the proof line.
+      - My probe closes the gap. It runs five scenes (one mended; none; two mended; a broken Probe of three; one paid) at 1400, 1600, 2400, 2500, 2620, 2740, 3000 and 3400 ms.
+      - Base and after give byte-identical output, 40 lines. band.words.0 is at x 84 with two plates and x 104 with three, y 66, and band.plate.i at 40 + 20i.
+      - The node test goes to K5.1, which removes the old-arithmetic case (section 4).
+    - **Never drawn either side:** a sealed pod with no size class.
+      - Before, Pods drew a shadow `widen` wide for it. Now it draws none.
+      - pods-props.mjs:82 and create-props.mjs:83 always send a class (`?? "medium"`), so no state reaches it.
+  - **The leaves: deleted, which is right.**
+    - word_leaves and word_leavesArc had no caller.
+      - The Incubator's call went with the capsule rebuild (eec772a8).
+      - Home's and Create's leaf grids went at fix 6A (cee63ff5, cea7f95d).
+      - The Incubator object build spec (results/T-20261017-incubator-object/build-spec.md:67) lists `regions.leaves` as gone.
+    - Wiring them in would draw leaves where no state draws them. That retakes goldens, which a refactor cannot do.
+    - The two files, the words.h lines, CMake and the README row are gone. No `word_leaves`, `word_bench`, `word_stamp` or `word_pod_size` is left anywhere in the tree (grep, .md files included).
+    - **What is left (K5.1):**
+      - incubator.json regions.leaves;
+      - layout_leaf_arc and LAYOUT_LEAVES;
+      - derive.mjs leafArc and its 43 layout vectors;
+      - face_test's three leafArc cases;
+      - specs.test.mjs's leafArc test and its LAYOUT_RULES entry;
+      - three face README passages that still describe the leaves as drawn (the status paragraph's Incubator and Home sentences, Create's "the leaves the bud will take", and the create.c row's "the leaves word takes its spec and a count of slots").
+  - **Proof: sufficient, with my probe for the band words.** Every K6 proof line holds, and my runs give the builder's figures.
+    - **Node records (empty map):**
+      - Mine: 181 states, 15767 nodes, 0 differ as sets, and 0 differ in order.
+      - My base against the builder's base2 is 0 even in order, and against base1 it is 0 as sets, 9 in order.
+      - My after against the builder's after1 is 0 as sets, 10 in order. The builder's base1 and base2 differ in 9 states in order, so this is capture order.
+    - **The other proofs:**
+      - checks.mjs is byte-identical, whole, not stripped: mine base against mine after, and against the builder's base file. The same holds for layer-check.
+      - Type log: 44 shots, 0 differ (every string, px, region). Regions as sets: 44 shots, 0 differ.
+      - Goldens match on all 10 screens.
+      - `node --test`: face 589 tests, 589 pass; the rest 1015 tests, 1014 pass, 0 fail, 1 skipped. Together that is the builder's 1604.
+      - Props records: 19 files, 24492 records, every file byte-identical.
+      - The Station journey printed "journey ok".
+      - Face guard ok; public guard ok; masters 1006 placed, 0 problems.
+  - **Commit:** author and committer are both Paco Cotera <paco@cotera.org>, with no trailers. It touches 27 files, +216 −174. Its parent 3d93b2bb has station-gate 95f9762a's tree (2eeac47b).
+
+- **2. The builder's choices: all accepted. No fix line on 0cd33136.**
+  - **(1) The ids and regions are the caller's: accepted.** It is the only way the node records stay equal with an empty map.
+    - The screens' own names have no common `<id>.<part>` shape. The ground pairs are bench/bench.room, stage.ground/stage.room and notBuilt.stage.
+    - kit_stamp fixes four ids (stamp.case, stamp.clip, stamp.stamp, stamp.front), which all four screens already used. That allows one label per screen. A second label on one screen is a change to the contract, ruled when someone asks for it.
+  - **(2) kit_stage draws nothing when the spec has no rect: accepted.**
+    - Pods, Cargo, the Vivarium and the not-built screen already did this. Bench, Create, Habitat, Incubator and home_frame drew a zero box.
+    - Every spec holds its rect: each ground is shown in every golden state of its screen, and the records are equal.
+  - **(3) kit_pod draws the shadow and returns the box; the screen draws the pod: accepted.**
+    - F16 is "pod box and shadow". Which picture shows (sealed, identified, relit), Pods' focus lift and Create's travel are each screen's state.
+    - Amend §3.2's row to: `kit_pod | spec, class, axis, feet, shadow {id, region, picture, on} or NULL → box | station | word_pod_size + F16 | Pods, create`, with the note "the pod's picture is the caller's, drawn at the box".
+    - Amend the other two rows the same way:
+      - `kit_stage | spec, rect path, ground colour, region, ground id, room id or NULL, room candidates path | common | word_bench generalized (F9) | …`
+      - `kit_stamp | spec, plate rect path, plate, stamp id, size, clip rows or −1, {plate id, plate region, stamp region, plate alone, case spec and base or NULL} | station | word_stamp + the 3 copies (F10) | …`
+  - **(4) No shadow when the class gives no box: accepted.** No props builder sends that state (section 1).
+  - **(5) kit_stamp keeps word_stampCase: accepted for K6.** kit_stamp is its only caller (grep at 8bf55670), so it moves into stamp.c in K7.
+  - **(6) plateAlone for Pods: accepted.** It keeps Pods' plate standing without a stamp, as word_stamp drew it. The other three show the plate only with a stamp, as they did. Whether they should agree is a look question for UI/UX.
+  - **(7) The caller applies its own "sent" test: accepted for K6.** It is neutral by measurement:
+    - Habitat passes `has(a) ? a : ""`, which tests that the host has sent the picture.
+    - Create's and Incubator's `has`, and Pods' old word_stamp, only test that the id is not empty, and they still pass the raw id.
+    - So the stamp has two meanings of "has", against the K1 rule of one. K7 makes it one (section 4).
+  - **(8) The default of habitat `regions.nameTag.h` goes from 24 to 0: accepted.** habitat.json holds h 32, so the 24 was never the value used. A missing h now shows as no offset instead of a wrong one.
+  - **(9) metrics.json regenerated (+3 strings, "overGap" at 16, 20 and 28 px): accepted.** make-metrics-vectors.mjs writes it from the spec text. The metrics test (`--check`) passes.
+
+- **3. Nothing blocks merging 8bf55670 (K6 with K10.1) onto station-gate 9fbfc9a9.**
+  - The parents of 8bf55670 are 0cd33136 and 9fbfc9a9. origin/station-gate is 9fbfc9a9, so the merge is a fast-forward. origin/build/ui-kit is 8bf55670.
+  - `git diff 9fbfc9a9 8bf55670` is byte-identical to `git diff 3d93b2bb 0cd33136`: K6's 27 files and nothing else.
+  - The tree of 8bf55670 is 1314cad3, which is `merge-tree 0cd33136 9fbfc9a9`, exit 0. It is also the tree the K10.1 gate measured: props records 13184 with 0 differ, and 633 station, tiles and specs tests passing.
+  - 9fbfc9a9 has the tree of 3fe61bde (f0f303a3), the commit that K10.1's gate passed.
+  - 0cd33136 and 8bf55670 differ in 14 files, all under prototypes/station. So every face figure above holds for the merged tree.
+  - The merge commit's author and committer are Paco Cotera <paco@cotera.org>, with no trailers.
+  - The guards are run after the merge, as usual.
+
+- **4. K7 and K5.1.**
+  - **K7 must carry these lines.** They replace k5-gate.md §4's K7 lines.
+    - `base: station-gate with K6 (build/ui-kit 8bf55670) merged, and T-20261023-284 (build/face-guard, 313f892d or its gated successor) merged; branch build/face-guard; K7 starts after T-284 passes its gate. merge-tree 313f892d 8bf55670 is clean today (exit 0). The ratchet's counts are taken on that merged tree and quoted per screen.`
+    - `The guard and the ratchet read C through tools/blank.mjs blank(src, { js: false }) (T-284): a call in a comment is not counted (the guard test plants one); strings are kept by blank, and no string literal in screens/*.c holds a counted call name at 8bf55670 (measured 0).`
+    - `Guard rule 7a: no prim_node call in screens/*.c. At 8bf55670 there are five: cargo.c:307 crates.clip and :320 light.clip, home.c:550 glass.clip and :619 away.clip (FN_CLIP), panel.c:173 the right window's snapshot (FN_SPRITE on prim_snapshot_handle). vocab.c gains v_clip_box(id, x, y, w, h, count) (prim_node(v_id(id), FN_CLIP, x, y, w, h, 0, count, 0)) and v_snapshot(id, x, y, w, h) (the snapshot handle's sprite; no node when there is none; panel.c's extra prim_tag goes, v_region has set the same tag); the five sites call them. Other prim_* calls (asset queries, prim_ops, the dispatcher's prim_begin/end and snapshot) are not rule 7's. The guard test plants one prim_node in a copy of a screen.`
+    - `Guard rule 7b: no static spec accessor in screens/*.c: a static function that takes a path and whose body is one call of spec_int, spec_str, spec_len, spec_bool, v_si, v_sk, v_srect, v_scol or v_spec_rect on that path. 0 at 8bf55670 (create.c roll_rect and has_roll take no path). The guard test plants one.`
+    - `kit-ratchet.json: per screen, the count of direct v_rect, v_text, v_sprite, v_sprite_window and v_sprite_hidden calls in the blanked code; a test fails on any increase. At 8bf55670 (architect's count; K7 recounts on its start tree): bench 3, cargo 12, create 11, habitat 13, home 14, home_builds 3, home_frame 18, incubator 5, library 4, moving 0, namer 4, panel 28, pods 0, screens 1 (116; K6 took 14 off). library.c's entry is its baseline until Library ticket 2.`
+    - `kit-ratchet.json carries "screenSpecific" as ruled in k5-gate.md 2b; the guard test checks the list is present and each named file exists.`
+    - `Guard rule 8: every kit_* function defined under vocab/ has a header comment beginning "/* kit_<name> (" that holds Props, Region, Node id or Node ids, and Returns. At 8bf55670 that is 10 functions (kit_bezel, kit_bezelComposed, kit_hairline, kit_nameTag, kit_panel, kit_stage, kit_tiles, kit_windowFrame, kit_pod, kit_stamp), all passing; three use the singular "Node id". The guard test plants one header without it.`
+    - `specimen.c's private accessors si, sa, srect and colour become inline v_si/v_sk/v_srect/v_scol over v_fmt (k1-gate.md: "when the word is next touched (K6 or the Library tickets)"; K6 touched specimen.c, and its ticket did not carry the line). page.c and rail.c stay with the Library tickets.`
+    - `word_stampCase moves from specimen.c into stamp.c as a static function and leaves words.h (kit_stamp is its only caller).`
+    - `kit_stamp tests "sent" itself (asset non-empty, size not 0 and wire_has_asset), one meaning of "has" as K1 rules; Create, the Incubator, Pods and Habitat pass the raw id. Accepted behaviour change, as at K1: a named but unsent stamp keeps the plate with no size and draws no clip; the node records of the 181 golden states are unchanged.`
+    - `Proof: the guard test with one planted violation per rule (7a, 7b, the ratchet, screenSpecific, 8); node records (empty map) on all 181 golden states, 0 differ as sets; goldens --check; layer-check and checks.mjs with " · placeholders registered N" stripped, each side from its own Station journey with a private STATION_CHECKS; type log 44 of 44; node --test 0 failures; face and public guards exit 0.`
+  - **K5.1 must carry these lines.** They update k5-gate.md §4 for K6 and the K10.1 gate.
+    - `base: station-gate with K6 merged (8bf55670; K10.1 is on it as 9fbfc9a9); branch build/ui-kit. It touches face tools and tests, the specs and the station tests, and no views or library file. It can run beside K7: the two share only the face README.`
+    - `The readers move first: bench-regions.mjs, habitat-regions.mjs, vivarium-regions.mjs, make-spec-focus-vectors.mjs, specs.test.mjs, panel-props.test.mjs:44 (cards.width/gap) and :47 (cards.y/h), arrival.test.mjs:83 (strip.cards w/gap) and face cargo.test.mjs:366–367 (strip.cards x/y/w/h) read the lists from forms (listPitch) and the plates from plate (plateWidth). panel-props.mjs is no longer a reader (K10.1 2j).`
+    - `Then the duplicated keys go: namer keys at/key/pitch, home pods.slots size/gap and companion.plates size/gap/at, habitat cross.faces oneRow/twoRows/pitch/perRow/size, cargo hatch.strip.find at/pitch/size, band.leaving pitch/rightX, band.probe at/pitch (size stays: cargo-props.mjs:114 reads it; from, mend and words stay), bench meaning.plates and adds.* at/pitch/icon, frame panel.cards x/y/h/gap/width and strip.cards x/y/w/h/gap, the nameTag min/max/pad/round of home, vivarium and habitat, dockRibbon fit.w. tiles.test.mjs keeps only the forms' own invariants.`
+    - `Before tiles.test.mjs's probe case loses its old arithmetic, face cargo.test.mjs's beats test asserts the band's boxes: with one mended plate of two, at 2500 band.plate.0/1 at [40,68,16,16] and [60,68,16,16] and band.words.0 at x 84, y 66; a broken Probe of three, band.words.0 at x 104 (k6-gate.md 1; measured identical before and after K6).`
+    - `The retired leaves go, once UI/UX confirms in one line that the Incubator's leaf arc and Home's and Create's leaf grids are retired (the Incubator object build spec :67 lists regions.leaves as gone): incubator.json regions.leaves and every other leaves/leafArc key no reader is left for (grep), layout_leaf_arc and LAYOUT_LEAVES, derive.mjs leafArc, the leafArc layout vectors and make-layout-vectors' leafArc line, face_test's three leafArc cases, specs.test.mjs's leafArc test and its LAYOUT_RULES entry, and the face README's leaves passages (the status paragraph's Incubator and Home sentences, Create's "the leaves the bud will take", the create.c row's "the leaves word takes its spec and a count of slots"). Without that line from UI/UX, only the README passages go.`
+    - `Proof: goldens, layer-check, checks.mjs (stripped, private STATION_CHECKS each side), node records (empty map) and props records unchanged; layout vectors 0 differ in both implementations; node --test 0 failures; face and public guards exit 0.`
+  - **UI/UX (look, not blocking):**
+    - Pods' stamp plate stands with no stamp. Create's, Habitat's and the Incubator's plate has no size until there is a stamp. Should the four agree, and which way?
+    - Are the Incubator's leaf arc and the leaf pictures (leaf-empty-16x20, leaf-full-16x20) retired for good, as the Incubator object build spec says? K5.1's leaves line waits on this answer.
+
+Cleanup:
+- The worktree is removed and pruned, and so are both archive copies, the instrumented copy, the build directories, the journey records, the node captures, the props records and the probe's copies in the build trees.
+- The clone is unchanged: build/ui-kit at 8bf55670, clean. The builder's clone was not touched.
+- I created no /tmp/bake-* directory, so I deleted none. My TMPDIR was private, and its bake directories went with it.
+- Free space on / ran out once during my face `node --test` run, with several sessions writing at the same time. I deleted my two copies and reran; that run is the one quoted above. Free space is 6.8 GB after cleanup.
+- The scripts are kept, about 200 KB, in the lead's scratch: the probe test, count.py (the ratchet and prim_node count), cmp.py, and the text outputs.
