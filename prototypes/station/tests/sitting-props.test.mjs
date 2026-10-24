@@ -139,7 +139,7 @@ test("the resident: the focused card's habit on the pose step in the hour's ligh
     assert.equal(r.picture, pose.picture.slice(0, -(light.length + 1)), "the same composition, ungraded");
   }
   assert.deepEqual(pose.figure, standFigure(layeredStand("S01", "adult", [304, 312], "habitat", "curl"), mibiReqs(build(w, { step: "pose", focus: "card.1" }, light)).find((r) => r.size[0] === 304).looks), "the curl's own figure");
-  assert.deepEqual([pose.figure[2], pose.figure[3]], [130, 95], "the adult curl at the Habitat factor");
+  assert.deepEqual([pose.figure[2], pose.figure[3]], [129, 95], "the adult curl at the Habitat factor (the re-signed key, its painted contact shadow out)");
   const juv = build(dot({ juvenile: true }), { step: "place", pose: "sleep-curled" }).props.regions.resident; assert.equal(juv.stage, "juvenile"); assert.deepEqual([juv.figure[2], juv.figure[3]], [103, 79], "the juvenile curl");
   assert.equal(build(dot({ species: "S02" }), { step: "pose" }).props.regions.resident.figure, null, "S02 has no layered stand: no figure");
   const t = build(w, { step: "pose", focus: "card.0" }).props.regions.resident; assert.equal(t.pose, "shake-dry");

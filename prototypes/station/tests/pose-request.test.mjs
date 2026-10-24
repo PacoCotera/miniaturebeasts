@@ -106,9 +106,9 @@ describe("layeredStand with a pose", () => {
   });
   test("the curl is drawn at the stage's anchor factor: its figure W×H", () => {
     const fig = (stage, place, view, pose) => wh(standFigure(layeredStand("S01", stage, place, view, pose), CREST));
-    assert.deepEqual(fig("adult", [304, 312], "habitat", "curl"), [130, 95]);
+    assert.deepEqual(fig("adult", [304, 312], "habitat", "curl"), [129, 95]);   // the re-signed curl key (its painted contact shadow out)
     assert.deepEqual(fig("juvenile", [304, 312], "habitat", "curl"), [103, 79]);
-    assert.deepEqual(fig("adult", [96, 96], "default", "curl"), [77, 56], "the card");
+    assert.deepEqual(fig("adult", [96, 96], "default", "curl"), [76, 56], "the card");
     assert.deepEqual(fig("juvenile", [96, 96], "default", "curl"), [54, 41], "the card");
     assert.deepEqual(fig("adult", [48, 48], "default", "curl"), [39, 28], "the thumb");
     assert.deepEqual(fig("adult", [96, 96], "default", "anchor"), [81, 88], "the anchor at 96");
