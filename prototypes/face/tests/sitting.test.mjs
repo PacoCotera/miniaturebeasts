@@ -78,6 +78,7 @@ for (const [name, o] of Object.entries(SCENES)) {
     if (o.step === "portrait") assert.equal(box, undefined, "the resident is a slot in state portrait");
     else if (rs.figure) { const [x, y] = placed(rs.figure); assert.deepEqual(box.rect, [x, y, 304, 312], "the picture's top-left from its figure"); assert.equal(x + rs.figure[0] + Math.floor(rs.figure[2] / 2), 296); assert.equal(y + rs.figure[1] + rs.figure[3] - 1, 380, "the last solid row on the feet"); }
     else assert.deepEqual(box.rect, R.resident.rect, "no figure: at the rect");
+    if (o.step === "pose" && !o.name) { const tag = lg.regions.find((r) => r.id === "nameTag" && r.layer === "chrome"); assert.equal(tag.rect[2], 80, "Dot's tag: 20 px of name plus 24, rounded up to 8, at least 80"); assert.equal(tag.rect[0] + tag.rect[2] / 2, 296, "centred on 296"); assert.equal(tag.rect[1], 404, "its top at 404"); }
     console.log(`# ${name}: ${own} own nodes, ${objects} objects, ${f.stats().pictures} pictures; resident ${rs.picture ? rs.pose + " figure " + JSON.stringify(rs.figure) + " at " + JSON.stringify(box?.rect) : "a slot"}`);
   });
 }
