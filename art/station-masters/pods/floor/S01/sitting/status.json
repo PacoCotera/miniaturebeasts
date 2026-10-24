@@ -82,5 +82,53 @@
  "mibi-adult-S01-shake-t2-stripes-304x312": {
   "status": "new",
   "note": "sitting habit key take, from sit-S01-adult-keys-stripes-a.jpg cell 5 (layers-sit.py stripes (mark_layer)); not signed"
+ },
+ "mibi-juvenile-S01-shake-t1-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-crested-a.jpg cell 2 (cut-sit.py k1 (mirrored, droplets on the fur painted out)); not signed"
+ },
+ "mibi-juvenile-S01-base-shake-t1-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-bare-a.jpg cell 2 (cut-sit.py k2); not signed"
+ },
+ "mibi-juvenile-S01-shake-t1-crest-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-crested-a.jpg cell 2 (layers-sit.py overlays (from the crested and bare keys)); not signed"
+ },
+ "mibi-juvenile-S01-shake-t1-fur-mask-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-bare-a.jpg cell 2 (layers-sit.py overlays (cut-layers.py fur_mask on the bare key)); not signed"
+ },
+ "mibi-juvenile-S01-shake-t1-zone-mask-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-bare-a.jpg cell 2 (layers-sit.py overlays (cut-layers.py zone_mask)); not signed"
+ },
+ "mibi-juvenile-S01-shake-t1-patches-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-patches-a.jpg cell 2 (layers-sit.py patches (mark_layer + heads-off)); not signed"
+ },
+ "mibi-juvenile-S01-calm-t1-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-crested-a.jpg cell 3 (cut-sit.py k1 (mirrored, droplets on the fur painted out)); not signed"
+ },
+ "mibi-juvenile-S01-base-calm-t1-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-bare-a.jpg cell 3 (cut-sit.py k2); not signed"
+ },
+ "mibi-juvenile-S01-calm-t1-crest-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-crested-a.jpg cell 3 (layers-sit.py overlays (from the crested and bare keys)); not signed"
+ },
+ "mibi-juvenile-S01-calm-t1-fur-mask-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-bare-a.jpg cell 3 (layers-sit.py overlays (cut-layers.py fur_mask on the bare key)); not signed"
+ },
+ "mibi-juvenile-S01-calm-t1-zone-mask-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-bare-a.jpg cell 3 (layers-sit.py overlays (cut-layers.py zone_mask)); not signed"
+ },
+ "mibi-juvenile-S01-calm-t1-patches-304x312": {
+  "status": "new",
+  "note": "sitting habit key take, from sit-S01-juvenile-keys-patches-a.jpg cell 3 (layers-sit.py patches (mark_layer + heads-off)); not signed"
  }
 }
