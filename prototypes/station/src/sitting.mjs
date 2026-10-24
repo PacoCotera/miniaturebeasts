@@ -5,14 +5,15 @@
 // The save (all optional in an older save; normalize fills them):
 //   st.sitting        null, or the held sitting { source: "moment" | "welcome" | "dev", key, at }  (one slot, one frame)
 //   st.moments        the ledger of research moments already paid, so none pays twice: { "<key>": at }
-//   st.welcomeGiven   the welcome sitting is given once per player; st.welcomePending: it came while one was held and waits for the slot
+//   st.welcomeGiven   the welcome sitting is earned once per player (it is held at once, or joins st.owed when one is held)
 //   st.doorAt         null until the sitting's door first opens on this save; until then no moment is paid and none is lost (the-portrait.md §8, X21)
-//   st.owed           the moments earned before the door opened, paid into the ledger and waiting in earned order: [{ key, at }]; one comes into the slot whenever it is empty
+//   st.owed           the one queue of earned sittings waiting behind the held one, oldest first by when each was earned: [{ key, at, source }] (source "moment" or "welcome"; the welcome's key is null);
+//                     kept in the save, never trimmed, never expires; the head comes into the slot whenever it is empty
 //   st.sittingCrates  the crates of sittings begun: { id, mibiId, pose, place, start, source, painted, opened }
 //   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at, digest }; digest: the first 16 hex of the SHA-256 of the 528×392 RGBA of the portrait's opening, written only by a rule when the source lands (not yet written in play)
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
-import { frameOf, chapterLooks } from "./genome.mjs";
-import { mibiById, mergeCare, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, mibiStage, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";
+import { frameOf } from "./genome.mjs";
+import { mibiById, mergeCare, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, mibiStage, dockKey, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
 
 // What a mibi has done (state.mjs): habits watched, places been; re-exported here, where the sitting reads them.
@@ -22,19 +23,23 @@ export { recordHabit, recordWalk, habitsOf, placesOf, watchResident, WATCH_MS } 
 export const SITTING_WAIT_MS = { hours: 3 * 3600000, minute: 60000, now: 0 };
 export const DEEP_LINE = 4;   // generations of crosses in a mibi's recorded tree; a testing number, "tuned with the cross and the real economy" (the-portrait.md §8)
 export const LAMP_SHORT = 31 / 32;   // the lamp with the wait over and the crate not yet able to open: just short of full
-export const WARNING = "use your sitting first";
 export const sittingWaitMs = (settings = DEFAULT_SETTINGS) => SITTING_WAIT_MS[settings.sittingWait ?? "hours"] ?? SITTING_WAIT_MS.hours;
 
 // --- the held sitting ----------------------------------------------------------------------------------------------------------
 export const sittingHeld = (st) => !!st.sitting;
-// Grant one: refused while one is held ("a sitting earned while one is held is not given"), and a moment pays once. A moment that passes while one is held is
-// spent, its key stays in the ledger and it does not wait (the-portrait.md §8): hence the warnings before the act that pays it.
+// Grant one: a moment pays once (its key goes into the ledger when it is earned). With the slot empty it is held; with one held it joins the queue and waits behind it.
+// An earned sitting is never discarded.
 export function grantSitting(st, source, key, now = Date.now()) {
   if (key && st.moments[key]) return { ok: false, again: true };
   if (key) st.moments[key] = now;
-  if (st.sitting) { logEv(st, "A sitting was earned (" + key + ") while one is held · not given"); return { ok: false, lost: true, msg: "A sitting is held · " + WARNING }; }
+  if (st.sitting) { queueSitting(st, source, key || null, now); logEv(st, "A sitting was earned (" + (key || source) + ") while one is held · it waits"); return { ok: true, queued: true, position: st.owed.length }; }
   st.sitting = { source, key: key || null, at: now }; logEv(st, "A sitting is held · " + (key || source));
   return { ok: true, sitting: st.sitting };
+}
+// Join the queue by the time earned: after every entry earned no later (oldest first; equal times keep the order they came).
+export function queueSitting(st, source, key, at) {
+  const e = { key, at, source }; let i = st.owed.length; while (i > 0 && st.owed[i - 1].at > at) i--;
+  st.owed.splice(i, 0, e); return e;
 }
 // The developer's held sitting (the ledger untouched).
 export function devGrantSitting(st, now = Date.now()) { if (st.sitting) return { ok: false, msg: "A sitting is held" }; st.sitting = { source: "dev", key: null, at: now }; logEv(st, "Developer: a held sitting"); return { ok: true }; }
@@ -71,38 +76,7 @@ export function collectMoments(st, settings = DEFAULT_SETTINGS, now = Date.now()
   for (const mo of momentsEarned(st, settings)) { if (st.moments[mo.key]) continue; res.push({ ...mo, ...grantSitting(st, "moment", mo.key, now) }); }
   return res;
 }
-// The warnings, before the act that pays a moment, while a sitting is held ("use your sitting first", on the price line, before anything is paid):
-// a guide one look from full; the first read of a sealed chapter; a cross whose child would complete a deep line.
-export function sittingWarning(st, settings = DEFAULT_SETTINGS) {
-  if (!st.doorAt || !st.sitting) return [];   // behind the shut door nothing can be lost, so nothing to warn
-  return [...new Set(st.knownIds)].filter((id) => !st.moments["guide:" + id] && fieldGuide(st, id, settings)?.oneFromFull);
-}
-// The moments an act would earn that are not yet paid (the keys). The warning comes when the act would lose one: any, while a sitting is held, or the second of two earned at once
-// (the slot holds one, so the second is spent). `act` changes a copy of the save the way the act would.
 const unpaid = (st, settings) => momentsEarned(st, settings).map((m) => m.key).filter((k) => !st.moments[k]);
-export function momentsOf(st, act, settings = DEFAULT_SETTINGS, species = null) {
-  const base = structuredClone(st); if (species && !base.knownIds.includes(species)) base.knownIds.push(species);   // an act on a pod or mibi is on a known species
-  const after = structuredClone(base); act(after); const before = new Set(unpaid(base, settings));
-  return unpaid(after, settings).filter((k) => !before.has(k));
-}
-const losesOne = (st, n) => (st.sitting ? n >= 1 : n >= 2);
-// A read of `chapterId` on `x` (a pod or a mibi): counts the moments it would earn: the sealed chapter's first read and the guide it may fill.
-export function readWarning(st, species, chapterId, x = null, settings = DEFAULT_SETTINGS) {
-  if (!st.doorAt) return "";
-  const fr = frameOf(species), ch = fr && fr.chapters.find((c) => c.id === chapterId); if (!ch) return "";
-  const n = momentsOf(st, (c) => {
-    const once = c.readOnce[species] || (c.readOnce[species] = []); if (!once.includes(chapterId)) once.push(chapterId);
-    if (x && x.genome) for (const [t, ls] of chapterLooks(fr, ch, x.genome)) guideAdd(c, species, t, ls);
-  }, settings, species).length;
-  return losesOne(st, n) ? WARNING : "";
-}
-// A cross whose child would complete a deep line: one moment, lost if a sitting is held.
-export function crossWarning(st, a, b, settings = DEFAULT_SETTINGS) {
-  if (!st.doorAt || !a || !b) return "";
-  const child = { id: -1, parents: [{ id: a.id }, { id: b.id }] }, snap = structuredClone(st); snap.mibis.push(child);
-  const n = lineDepth(snap, child) >= DEEP_LINE && !st.moments[lineKey(snap, child)] ? 1 : 0;
-  return losesOne(st, n) ? WARNING : "";
-}
 
 // --- behind a shut door (the-portrait.md §8, X21) ------------------------------------------------------------------------------
 // The door first opens: every moment earned before then is owed. It goes into the ledger (so it never pays twice) and waits in earned order; one comes into the slot whenever
@@ -110,16 +84,16 @@ export function crossWarning(st, a, b, settings = DEFAULT_SETTINGS) {
 export function openSittingDoor(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (st.doorAt) return { ok: false, again: true };
   st.doorAt = now;
-  for (const k of unpaid(st, settings)) { st.moments[k] = now; st.owed.push({ key: k, at: now }); }
+  for (const k of unpaid(st, settings)) { st.moments[k] = now; queueSitting(st, "moment", k, now); }
   logEv(st, "Sittings owed · " + st.owed.length);
   return giveOwed(st, now);
 }
-// One owed sitting into the slot, when it is empty and no welcome waits for it (the welcome comes first because it teaches).
+// The oldest owed sitting into the slot, when it is empty, with its own source.
 export function giveOwed(st, now = Date.now()) {
-  if (st.sitting || st.welcomePending || !st.owed.length) return { ok: false };
-  const { key } = st.owed.shift();
-  st.sitting = { source: "moment", key, at: now }; logEv(st, "A sitting is held · " + key);
-  return { ok: true };
+  if (st.sitting || !st.owed.length) return { ok: false };
+  const { key, source } = st.owed.shift();
+  st.sitting = { source: source || "moment", key, at: now }; logEv(st, "A sitting is held · " + (key || source));
+  return { ok: true, source: st.sitting.source, key };
 }
 
 // --- a mibi may sit once, when it has a habit and a place -----------------------------------------------------------------------
@@ -133,13 +107,14 @@ export function portraitBlock(st, m, sv) {
   if (!placesOf(m).length) return "no expedition yet";
   return "";
 }
-// The welcome sitting (the-portrait.md §2, §8): at the first dock at which a mibi comes home from a walk with the player; one per player; it waits for the slot if one is
-// held, and is never lost. `home` is the ids of the mibis that came home at this dock (dockKey's result).
+// The welcome sitting (the-portrait.md §2, §8): at the first dock at which a mibi comes home from a walk with the player; one per player; it joins the queue (by when it came due)
+// if one is held, and is never lost. `home` is the ids of the mibis that came home at this dock (dockKey's result).
 export function checkWelcome(st, now = Date.now(), home = []) {
   if (st.welcomeGiven) return { ok: false, again: true };
-  if (!st.welcomePending && !home.some((id) => { const m = mibiById(st, id); return m && !m.released; })) return { ok: false, early: true };
-  if (st.sitting) { st.welcomePending = true; return { ok: false, waits: true }; }
-  st.welcomeGiven = true; st.welcomePending = false; st.moments.welcome = now; return grantSitting(st, "welcome", null, now);
+  if (!home.some((id) => { const m = mibiById(st, id); return m && !m.released; })) return { ok: false, early: true };
+  st.welcomeGiven = true; st.moments.welcome = now;
+  if (st.sitting) { queueSitting(st, "welcome", null, now); logEv(st, "The welcome sitting waits behind the held one"); return { ok: false, waits: true }; }
+  return grantSitting(st, "welcome", null, now);
 }
 // The dock, with the welcome: the Companion docks, what came home is recorded (habits, places), and the first walk home gives the welcome.
 export function dock(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
@@ -177,8 +152,8 @@ export function beginSitting(st, m, pose, place, settings = DEFAULT_SETTINGS, no
   const crate = { id: "sit" + st.crateN, mibiId: m.id, pose, place, start: now, source, painted: false, opened: false };
   st.sittingCrates.push(crate); m.portrait = { state: "painting", pose, place, crate: crate.id, start: now, stage: mibiStage(st, m, settings) };   // the portrait shows this stage forever
   logEv(st, m.name + " sits for its portrait · " + pose + " · " + place);
-  const w = st.welcomePending ? checkWelcome(st, now) : null, o = w && w.ok ? null : giveOwed(st, now);   // a waiting welcome first, then the owed sittings in earned order
-  return { ok: true, crate, wait: sittingWaitMs(settings), welcome: w, owed: o };
+  const o = giveOwed(st, now);   // one queue, oldest first
+  return { ok: true, crate, wait: sittingWaitMs(settings), welcome: o.ok && o.source === "welcome" ? o : null, owed: o.ok && o.source !== "welcome" ? o : null };
 }
 
 // --- the crate: the lamp fills, the painting lands, the bay opens --------------------------------------------------------------
