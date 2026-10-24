@@ -407,7 +407,7 @@ static void kit_words(void) {
     check(ok4 == 0 && kabsent("ks.g4") && kabsent("ks.r4"), "kit_stage: a spec with no rectangle draws nothing and returns 0", "");
     prim_end();
     /* kit_stamp: the case's back, the plate, the clip, the stamp centred on the plate, the case's front, in this order. The ids of the stamp's own nodes are fixed, so each case is its own frame and is read after the frame ends (a node not drawn is dropped then). A node inside a clip is placed from the clip's corner. */
-    kit_stamp_t full = { "st.plate", "st", "st.img", 0, "kst", "cs" }, bare = { "st.plate", "st", "st.img", 0, NULL, NULL }, alone = { "st.plate", "st", "st.img", 1, "kst", "cs" };
+    kit_stamp_t full = { "st.plate", "st", "st.img", 0, "kst", "cs", NULL, { 0, 0 } }, bare = { "st.plate", "st", "st.img", 0, NULL, NULL, NULL, { 0, 0 } }, alone = { "st.plate", "st", "st.img", 1, "kst", "cs", NULL, { 0, 0 } };
     prim_begin(); kit_stamp("kst", "r.rect", "ks-plate", "ks-stamp", 64, 20, &full); prim_end();
     check(table_nodes() == 5 && kat("stamp.case", FN_SPRITE, 96, 46, 128, 128) && kat("st.plate", FN_SPRITE, 100, 50, 120, 120) && kat("stamp.clip", FN_CLIP, 128, 78, 64, 20) && kat("stamp.stamp", FN_SPRITE, 0, 0, 64, 64) && kat("stamp.front", FN_SPRITE, 96, 46, 128, 128),
       "kit_stamp: the case's back, the plate, the clip cut to clipH rows at the stamp's place (half the room left, rounding up), the stamp in it, the case's front: five nodes", "");
@@ -551,6 +551,62 @@ static void glint_readout(void) {
   }
   spec_drop("props");
 }
+/* kit_resident, word_livingWindow's cross-dither and kit_stamp's corner: the nodes, boxes and ops they draw, and the forms that draw as before */
+static void resident_window_corner(void) {
+  face_init(); prim_palette_add("kitA", KA); prim_palette_add("kitB", KB); prim_palette_add("kitC", KC); prim_palette_add("kitD", KD);
+  { const char *hi = "{\"t\":\"hello\",\"contract\":1}"; wire_send(hi, (int)strlen(hi)); }
+  static const struct { const char *id; int w, h; } PIC[] = { { "kr-pic", 30, 40 }, { "kr-from", 30, 40 }, { "kr-out", 10, 20 }, { "lw-pic", 40, 50 }, { "lw-from", 40, 50 }, { "kc-plate", 120, 120 }, { "kc-stamp", 64, 64 }, { "kc-corner", 16, 16 } };
+  for (int i = 0; i < 8; i++) { char m[160]; snprintf(m, sizeof m, "{\"t\":\"asset\",\"id\":\"%s\",\"w\":%d,\"h\":%d,\"policy\":\"art\",\"status\":\"placeholder\"}", PIC[i].id, PIC[i].w, PIC[i].h); check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot(PIC[i].id) >= 0, "kit_resident, livingWindow and the corner: a picture is loaded", PIC[i].id); }
+  static const char KRS[] = "{\"r\":{\"rect\":[100,50,30,40]},\"o\":{\"rect\":[110,70,10,20]},\"g\":{\"rect\":[10,20,40,30],\"ground\":[10,40,40,6],\"foot\":[10,46,40,4]},\"colours\":{\"g\":{\"back\":\"kitA\",\"ground\":\"kitB\",\"groundTop\":\"kitC\",\"foot\":\"kitD\"}},\"s\":{\"rect\":[872,64,120,120]}}";
+  spec_load("krs", KRS, sizeof KRS - 1);
+  int ret;
+  /* kit_resident: the still, the slot, the out mark, the dither */
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 4, NULL, 0); prim_end();
+  check(ret == 1 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 46, 30, 40) && kabsent("kr.dither") && kat("kr.out", FN_SPRITE, 100, 50, 0, 0), "kit_resident: the still picture 1:1 at its box lifted, the out mark's node with no size at the box's corner, not lifted; returns 1", "");
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 0, "kr-missing", 8); prim_end();
+  check(ret == 1 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 50, 30, 40) && kabsent("kr.dither"), "kit_resident: a from the host has not sent is no dither, the still as before", "");
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-missing", "", 4, "kr-from", 8); prim_end();
+  check(ret == 0 && table_nodes() == 0 && kabsent("kr.pic") && kabsent("kr.dither") && kabsent("kr.out"), "kit_resident: no picture sent and no out mark: no node, returns 0", "");
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "", "kr-out", 4, NULL, 0); prim_end();
+  check(ret == 0 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 46, 0, 0) && kabsent("kr.dither") && kat("kr.out", FN_SPRITE, 110, 70, 10, 20), "kit_resident: out with no picture: the picture's node with no size over the out mark, the mark 1:1 at its rect; returns 0", "");
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "kr-out", 0, NULL, 0); prim_end();
+  check(ret == 1 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 50, 30, 40) && kat("kr.out", FN_SPRITE, 110, 70, 10, 20), "kit_resident: the picture and the out mark both sent: both drawn", "");
+  static const int LV[3] = { 1, 8, 15 };
+  for (int i = 0; i < 3; i++) {
+    char ops[200], want[200];
+    prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 4, "kr-from", LV[i]); snprintf(ops, sizeof ops, "%s", prim_ops()); prim_end();
+    snprintf(want, sizeof want, "[[\"bayerPick\",%d,%d,%d,100,46,0,0,0,0]]", wire_asset_slot("kr-from"), wire_asset_slot("kr-pic"), LV[i]);
+    check(ret == 1 && table_nodes() == 3 && kat("kr.pic", FN_SPRITE, 100, 46, 0, 0) && kat("kr.dither", FN_COMPOSED, 100, 46, 30, 40) && strcmp(ops, want) == 0 && kat("kr.out", FN_SPRITE, 100, 50, 0, 0),
+      "kit_resident: dithering, the picture's node with no size, then the pick from `from` to the picture at the level over the lifted box (levels 1, 8, 15), then the out slot", ops);
+  }
+  /* word_livingWindow: no from draws as before; a sent from hides the master's node and dithers to it from the same windows */
+  int g[4] = { 10, 20, 40, 30 };
+  prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "lw-pic", 0, 10, NULL, 0); prim_end();
+  check(table_nodes() == 5 && kat("lw.back", FN_RECT, 10, 20, 0, 0) && kat("lw.master", FN_SPRITE, g[0], g[1], g[2], g[3]) && kabsent("lw.dither"), "livingWindow: without from, the plates with no size and the master over the glass, as before", "");
+  prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "lw-pic", 0, 10, "", 9); prim_end();
+  check(table_nodes() == 5 && kat("lw.master", FN_SPRITE, g[0], g[1], g[2], g[3]) && kabsent("lw.dither"), "livingWindow: an empty from is no from", "");
+  prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "lw-pic", 0, 10, "lw-missing", 9); prim_end();
+  check(table_nodes() == 5 && kat("lw.master", FN_SPRITE, g[0], g[1], g[2], g[3]) && kabsent("lw.dither"), "livingWindow: a from the host has not sent is no from", "");
+  { char ops[200], want[200];
+    prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "lw-pic", 0, 10, "lw-from", 9); snprintf(ops, sizeof ops, "%s", prim_ops()); prim_end();
+    snprintf(want, sizeof want, "[[\"bayerPick\",%d,%d,9,10,20,0,10,0,10]]", wire_asset_slot("lw-from"), wire_asset_slot("lw-pic"));
+    check(table_nodes() == 6 && kat("lw.master", FN_SPRITE, g[0], g[1], 0, 0) && kat("lw.dither", FN_COMPOSED, g[0], g[1], g[2], g[3]) && strcmp(ops, want) == 0, "livingWindow: with from, the master's node with no size, then the pick from `from` to the master at the level, both windows at (sx, sy), over the glass", ops); }
+  prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "", 0, 10, "lw-from", 9); prim_end();
+  check(table_nodes() == 4 && kat("lw.back", FN_RECT, 10, 20, 40, 30) && kabsent("lw.master") && kabsent("lw.dither"), "livingWindow: with from and no master, the flat plates alone", "");
+  /* kit_stamp's corner: a fifth fixed node after the front, 1:1 at cornerAt from the label's rect; NULL or "" adds none */
+  kit_stamp_t cn = { "st.plate", "st", "st.img", 0, NULL, NULL, "kc-corner", { 104, 0 } }, cnull = { "st.plate", "st", "st.img", 0, NULL, NULL, NULL, { 104, 0 } }, cempty = { "st.plate", "st", "st.img", 0, NULL, NULL, "", { 104, 0 } }, cmiss = { "st.plate", "st", "st.img", 0, NULL, NULL, "kc-missing", { 104, 0 } };
+  prim_begin(); kit_stamp("krs", "s.rect", "kc-plate", "kc-stamp", 64, -1, &cn); prim_end();
+  check(table_nodes() == 3 && kat("st.plate", FN_SPRITE, 872, 64, 120, 120) && kat("stamp.stamp", FN_SPRITE, 900, 92, 64, 64) && kat("stamp.corner", FN_SPRITE, 976, 64, 16, 16), "kit_stamp: the corner 1:1 at the rect + cornerAt (976, 64, 16 x 16), after the label", "");
+  prim_begin(); kit_stamp("krs", "s.rect", "kc-plate", "", 64, -1, &cn); prim_end();
+  check(table_nodes() == 2 && kat("st.plate", FN_SPRITE, 872, 64, 0, 0) && kat("stamp.corner", FN_SPRITE, 976, 64, 16, 16), "kit_stamp: the corner stands with no stamp", "");
+  prim_begin(); kit_stamp("krs", "s.rect", "kc-plate", "kc-stamp", 64, -1, &cnull); prim_end();
+  check(table_nodes() == 2 && kabsent("stamp.corner"), "kit_stamp: a NULL corner adds no node", "");
+  prim_begin(); kit_stamp("krs", "s.rect", "kc-plate", "kc-stamp", 64, -1, &cempty); prim_end();
+  check(table_nodes() == 2 && kabsent("stamp.corner"), "kit_stamp: an empty corner adds no node", "");
+  prim_begin(); kit_stamp("krs", "s.rect", "kc-plate", "kc-stamp", 64, -1, &cmiss); prim_end();
+  check(table_nodes() == 2 && kabsent("stamp.corner"), "kit_stamp: a corner the host has not sent adds no node", "");
+  spec_drop("krs");
+}
 int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";
   focus_vectors(dir);
@@ -563,6 +619,7 @@ int main(int argc, char **argv) {
   line_words();
   kit_words();
   glint_readout();
+  resident_window_corner();
   printf("face_test: %d checks, %d failed\n", checks, fails);
   return fails ? 1 : 0;
 }

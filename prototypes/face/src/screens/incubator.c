@@ -166,7 +166,7 @@ static void build_capsule(int t_inc, int t_gn, int t_h) {
 static void build_column(int t_inc) {
   int st_empty = in_state("empty"); if (st_empty || (t_inc >= 0 && t_inc < 1200)) return;
   if (spec_len("props", "regions.stamp") >= 0) {
-    kit_stamp_t o = { "stamp.plate", "stamp.plate", "stamp", 0, I, "regions" };   /* the case's front veil is the art director's recut, alpha 0 over the 120 x 120 plate (UI/UX round 2, E2) */
+    kit_stamp_t o = { "stamp.plate", "stamp.plate", "stamp", 0, I, "regions", NULL, { 0, 0 } };   /* the case's front veil is the art director's recut, alpha 0 over the 120 x 120 plate (UI/UX round 2, E2) */
     kit_stamp(I, "regions.stamp.rect", v_pstr("regions.stamp.plate"), v_pstr("regions.stamp.asset"), v_pint("regions.stamp.size", 0), -1, &o);
   }
   { const char *code = v_pstr("regions.code"); if (has(code)) { v_region("code", LAYER_TYPE); v_line_at("code", code, v_si(I, "regions.code.centre", 152), v_si(I, "regions.code.lineTop", 344), V_ANCHOR_LINE, v_si(I, "regions.code.px", 16), v_scol(I, "colours.code"), V_ALIGN_CENTRE); } }

@@ -9,7 +9,7 @@ import { registerMoving } from "./moving.mjs";
 import { gradedOf, grade } from "./light-grade.mjs";
 import { layeredStand, composeStand, standPictureId, fitDown, curlPicture, traitTile } from "./layered-stand.mjs";
 import { drawnLooks } from "./looks.mjs";
-import { portraitSource } from "./portrait-source.mjs";
+import { portraitSource, portraitOpening } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackPatternId, leastFinal } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
 import { emblemArt, ICON, beamArt, mibiArt, founderArt, speciesArt } from "./art.mjs";
@@ -139,6 +139,11 @@ export function registerPictures(reqs, env) {
       }
       case "ph": put(r.id, r.size[0], r.size[1], r.until, () => { const pb = new PB(r.size[0], r.size[1]), [w, h] = r.size; const edge = r.hollow ? C.stone : C.mist; if (!r.hollow) pb.rect(0, 0, w, h, C.stone); pb.rect(0, 0, w, 1, edge); pb.rect(0, h - 1, w, 1, edge); pb.rect(0, 0, 1, h, edge); pb.rect(w - 1, 0, 1, h, edge); return pb; }); break;   // the PH look: a stone plate with a 1 px mist edge inside, or a 1 px stone edge with no fill
       case "portrait": {   // the sitting's portrait at 40×30, derived on the Station (derive.mjs): an empty slot until its source arrives, then filled (assets.mjs: a stand-in fills an empty slot); the status is "derived", never in the placeholder register
+        if (r.size && r.size[0] === 528 && r.size[1] === 392) {   // the opening itself, 1:1 (the Sitting's portrait state): from the kept source, else an empty slot
+          const o = portraitOpening(r.digest);
+          if (!o) registerSlot({ id: r.id, w: 528, h: 392, until: "the sitting's portrait (its opening, kept on the Station while it is held)" }); else registerAsset({ id: r.id, w: 528, h: 392, status: "derived", build: () => o });
+          break;
+        }
         const src = portraitSource(r.digest);
         if (!src) registerSlot({ id: r.id, w: 40, h: 30, until: "the sitting's portrait (derived on the Station from its opening)" }); else registerAsset({ id: r.id, w: 40, h: 30, status: "derived", build: () => src });
         break;

@@ -100,7 +100,9 @@ iframe{border:0; display:block; background:var(--void)}
 #keysPanel h3{margin:10px 0 4px; font-weight:500; font-size:12px; color:var(--bone)}
 #keysPanel dl{margin:0; display:grid; grid-template-columns:max-content 1fr; gap:2px 12px; font-size:12px}
 #keysPanel dt{color:var(--mist)} #keysPanel dd{margin:0}
-#stamp{margin-top:12px; color:var(--mist); font-size:12px}
+/* the build stamp: page chrome in the page's bottom margin, right-aligned to the content, under every block */
+#stamp{position:absolute; color:var(--mist); font-size:12px; line-height:12px; text-align:right; white-space:nowrap; pointer-events:none}
+#zDown[aria-disabled="true"],#zUp[aria-disabled="true"]{color:var(--stone); cursor:default}
 </style>
 </head>
 <body>
@@ -113,6 +115,7 @@ iframe{border:0; display:block; background:var(--void)}
   <div id="spacer"></div>
   <div id="cradle" title="Dock the Companion in the Caddy"><div id="slot"></div><img id="lamp" alt="" src="../ui/assets/masters/pods/frame-lamp-8-stone.png" width="8" height="8"></div>
   <div id="ring"></div>
+  <div id="stamp" class="hidden">build local</div>
 </div>
   <iframe id="fBench" title="Bench" class="hidden" allow=""></iframe>   <!-- the workbench is hidden on the play page (an outdated tool): never loaded -->
   <div id="dev" class="hidden"><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
@@ -122,6 +125,9 @@ iframe{border:0; display:block; background:var(--void)}
   <button type="button" class="ctl hidden" id="tabBench">Bench</button>
   <button type="button" class="ctl" id="dockCtl" aria-label="Dock the Companion in the Caddy" title="Dock the Companion in the Caddy"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint" id="dockHint">⇧D</span></button>
   <button type="button" class="ctl" id="keysBtn">Keys ?</button>
+  <button type="button" class="ctl hidden" id="zDown" aria-label="Smaller" title="Smaller (−)">−</button>
+  <button type="button" class="ctl hidden" id="zFit" aria-pressed="true">fit</button>
+  <button type="button" class="ctl hidden" id="zUp" aria-label="Larger" title="Larger (+)">+</button>
   <button type="button" class="ctl hidden" id="devBtn" aria-pressed="false">Developer tools</button>
   <div id="note">One device at a time: ` switches. Both show from 1064 wide.</div>
   <div id="live" aria-live="polite"></div>
@@ -130,12 +136,11 @@ iframe{border:0; display:block; background:var(--void)}
   <h2>Keys</h2>
   <p>Only the device with the keys hears them. Shift keys belong to the page.</p>
   <h3>Page (any device, not while typing)</h3>
-  <dl><dt>`</dt><dd>Next device</dd><dt>Shift+`</dt><dd>Previous device</dd><dt>Shift+D</dt><dd>Dock or lift the Companion</dd><dt class="hidden" id="helpDevK">Shift+T</dt><dd class="hidden" id="helpDevD">Developer tools</dd><dt>Shift+/ (?)</dt><dd>This panel; Esc or ? closes it</dd></dl>
+  <dl><dt>`</dt><dd>Next device</dd><dt>Shift+`</dt><dd>Previous device</dd><dt>Shift+D</dt><dd>Dock or lift the Companion</dd><dt class="hidden" id="helpDevK">Shift+T</dt><dd class="hidden" id="helpDevD">Developer tools</dd><dt>Shift+/ (?)</dt><dd>This panel; Esc or ? closes it</dd><dt class="hidden" id="helpZK">− and = (+)</dt><dd class="hidden" id="helpZD">Smaller and larger (whole pixels); the size control's fit undoes them</dd></dl>
   <h3>Station</h3>
   <dl><dt>← ↑ → ↓</dt><dd>Move the ring</dd><dt>Enter, Space</dt><dd>✓, what the bottom line names</dd><dt>Esc, Backspace</dt><dd>← Back one view</dd><dt>H</dt><dd>Home; Home again: rest</dd><dt>B</dt><dd>Vivarium</dd><dt>R</dt><dd>Research</dd><dt>L</dt><dd>Library</dd></dl>
   <h3>Companion</h3>
   <dl><dt>← ↑ → ↓ or W A S D</dt><dd>Tap to step, hold to walk</dd><dt>Enter, Space</dt><dd>✓ Confirm</dd><dt>Esc, Backspace</dt><dd>← Back</dd><dt>C</dt><dd>))) Call</dd></dl>
-  <div id="stamp" class="hidden">build …</div>
 </div>
 <script type="module" src="src/shell.mjs"></script>
 </body>

@@ -404,7 +404,7 @@ import { policyOf as policyOfPortrait } from "../../ui/asset-policy.mjs";
     const t = new Uint8ClampedArray(ok); t[(200 * OW + 100) * 4 + 3] = 254; const r = derivePortrait(t); assert.match(r.error, /opaque/); assert.equal(r.rgba, undefined);
     assert.deepEqual([...derivePortrait(ok).rgba()], [...derivePortrait(ok).rgba()]);
   });
-  test("the portrait kind: no source is an empty slot, a source that arrives fills it (40×30, derived, painted); the id is the digest's, the source is not kept", async () => {
+  test("the portrait kind: no source is an empty slot, a source that arrives fills it (40×30, derived, painted); the id is the digest's; the slot keeps only the 40×30 result", async () => {
     const digest = "00112233445566778899aabbccddeeff", id = `portrait:${digest.slice(0, 16)}:40x30`, req = [{ kind: "portrait", id, digest, size: [40, 30] }];
     registerPictures(req, {}); assert.deepEqual([assetEntry(id).status, assetEntry(id).w, assetEntry(id).h], ["empty", 40, 30], "no source: an empty slot");
     assert.equal(injectPortraitSource(digest, opening(() => [90, 80, 70])).ok, true); registerPictures(req, {});

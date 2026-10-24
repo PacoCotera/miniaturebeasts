@@ -10,10 +10,12 @@
 #include <string.h>
 
 /* Home's glass and Idle's painting are one word: the spec's `bezel` (a housing round the glass: its rectangle path, or NULL for none: the part `inside`, with no bezel and no glass edges), the `glass` (its rectangle, ground band and foot at <glass>.rect, .ground and .foot)
-   and `colours` (<colours>.back, .ground, .groundTop, .foot and, with a bezel, .edge; the bezel's own are `colours.bezel.*` of the same spec). `region` names the glass in the log ("glass" on Home, "vivarium" on Idle). */
+   and `colours` (<colours>.back, .ground, .groundTop, .foot and, with a bezel, .edge; the bezel's own are `colours.bezel.*` of the same spec). `region` names the glass in the log ("glass" on Home, "vivarium" on Idle).
+   `from` and `level`: the glass's cross-dither from a previous picture (the caller's clock, 0 to 16). NULL or "" draws as before. While the master and `from` are both on the face, the master's node stands with no size
+   and <region>.dither follows it: the pick from `from` to the master at level, both windows at (sx, sy), over the glass. */
 static const char *g_spec;
 
-void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture, int sx, int sy) {
+void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture, int sx, int sy, const char *from, int level) {
   g_spec = spec; int b[4] = { 0, 0, 0, 0 }, g[4], ground[4], foot[4]; char p[96], id[64];
   v_srect(g_spec, v_fmt("%s.rect", glass), g); v_srect(g_spec, v_fmt("%s.ground", glass), ground); v_srect(g_spec, v_fmt("%s.foot", glass), foot);
   if (bezel) {
@@ -33,7 +35,9 @@ void word_livingWindow(const char *spec, const char *region, const char *bezel, 
   if (bezel) {
     kit_panel(region, g[0], g[1], g[2], g[3], NULL, COL("edge"), painted);   /* the glass edge: the outline-only form, the same four nodes with no size while the painting stands */
   }
-  if (painted) { v_name(region); v_sprite_window(NAME("master"), glassPicture, sx, sy, g[0], g[1], g[2], g[3]); }
+  int dithering = painted && from && *from && wire_asset_slot(from) >= 0;
+  if (painted && !dithering) { v_name(region); v_sprite_window(NAME("master"), glassPicture, sx, sy, g[0], g[1], g[2], g[3]); }
+  else if (dithering) { v_name(region); v_sprite_hidden(NAME("master"), glassPicture, g[0], g[1]); v_dither_window(NAME("dither"), from, sx, sy, glassPicture, sx, sy, level, g[0], g[1], g[2], g[3]); }
 #undef NAME
 #undef COL
 }

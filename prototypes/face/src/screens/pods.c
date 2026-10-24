@@ -32,7 +32,7 @@ static void focus_ring(const char *state) {
 /* the overview's stamp label in its case (the props' regions.stamp): the case's back, the plate (which stands without a stamp), the stamp, the case's front */
 static void stamp_label(const char *base) {
   if (spec_len("props", "regions.stamp") < 0) return;
-  kit_stamp_t o = { "stamp", "stamp", "stamp.image", 1, S, base };
+  kit_stamp_t o = { "stamp", "stamp", "stamp.image", 1, S, base, NULL, { 0, 0 } };
   kit_stamp(S, v_fmt("%s.stamp.rect", base), v_pstr("regions.stamp.plate"), v_pstr("regions.stamp.asset"), v_pint("regions.stamp.size", 0), -1, &o);
 }
 
