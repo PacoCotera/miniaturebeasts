@@ -9750,12 +9750,12 @@
    408
   ],
   "rect": null,
-  "src": "source/raw/sitting-backdrop-meadow.jpg (gemini-3-pro-image)",
-  "made": "the Sitting's meadow backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [142, 208, 1058, 895]), reduced x0.594 with Lanczos to 544x408, nothing else changed (pass 85)",
-  "sha256": "e81f991e41f1f6c2a60a52900fd380c9c7ed9b0ee7a3f92f457090777d9299ad",
+  "src": "source/raw/sitting-backdrop-meadow-near-a.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's meadow backdrop in the near-Vivarium treatment (studio brief 2026-10-23 22:00): centre-crop 1195x896, LANCZOS once to 544x408 (sitting-backdrops-near/); supersedes the 10-09 flat-wash backdrop (sha256 e81f991e..., in git history)",
+  "sha256": "6117a4a4b9b7ed20b25406d3532399ba537b3865cd69e5ba95fde52e7118d28b",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status_note": "signed by the art director AD 2026-10-23 23:07, 74031d07; copied over the 10-09 file 2026-10-23 23:11"
  },
  "sitting-backdrop-pond-544x408": {
   "size": [
@@ -9763,12 +9763,12 @@
    408
   ],
   "rect": null,
-  "src": "source/raw/sitting-backdrop-pond.jpg (gemini-3-pro-image)",
-  "made": "the Sitting's pond backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [129, 190, 1070, 895]), reduced x0.578 with Lanczos to 544x408, nothing else changed (pass 85)",
-  "sha256": "13cdd96dcfd322eee67ecc368f30c8510f971e749bd1ff8a3b226def99e49d39",
+  "src": "source/raw/sitting-backdrop-pond-near-b.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's pond backdrop in the near-Vivarium treatment (studio brief 2026-10-23 22:00): centre-crop 1195x896, LANCZOS once, then the local burn of sitting-backdrops-near/guides/fix-bd.py to 544x408 (sitting-backdrops-near/); supersedes the 10-09 flat-wash backdrop (sha256 13cdd96d..., in git history)",
+  "sha256": "3b59658feceb63f66cbbc7440e72ef7a9657db69d5e3928291fee815be47b775",
   "status": "signed",
-  "signed_in": "art director, sitting verdict (a079009f)",
-  "status_note": "a Sitting master signed by the art director after the 1x composite"
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status_note": "signed by the art director AD 2026-10-23 23:07, 74031d07; copied over the 10-09 file 2026-10-23 23:11"
  },
  "sitting-backdrop-rock-544x408": {
   "size": [
@@ -9776,12 +9776,12 @@
    408
   ],
   "rect": null,
-  "src": "source/raw/sitting-backdrop-rock.jpg (gemini-3-pro-image)",
-  "made": "the Sitting's rock backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [87, 126, 1113, 895]), reduced x0.53 with Lanczos to 544x408, nothing else changed (pass 85)",
-  "sha256": "500f8fcb67349d17927f79912cac5f51e7f76a26888c608fafd71761d6cd1858",
+  "src": "source/raw/sitting-backdrop-rock-near-c.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's rock backdrop in the near-Vivarium treatment (studio brief 2026-10-23 22:00): centre-crop 1195x896, LANCZOS once to 544x408 (sitting-backdrops-near/); supersedes the 10-09 flat-wash backdrop (sha256 500f8fcb..., in git history)",
+  "sha256": "6002595ff76392b4db30e698f391836e7d0b649652c637c855e7e265089c259c",
   "status": "signed",
-  "signed_in": "art director, sitting verdict (a079009f)",
-  "status_note": "a Sitting master signed by the art director after the 1x composite"
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status_note": "signed by the art director AD 2026-10-23 23:07, 74031d07; copied over the 10-09 file 2026-10-23 23:11"
  },
  "sitting-backdrop-wood-544x408": {
   "size": [
@@ -9789,12 +9789,12 @@
    408
   ],
   "rect": null,
-  "src": "source/raw/sitting-backdrop-wood-r2.jpg (gemini-3-pro-image)",
-  "made": "the Sitting's wood backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [3, 0, 1196, 894]), reduced x0.456 with Lanczos to 544x408, nothing else changed (pass 85)",
-  "sha256": "9e8ae33217020982f44acccc6fe9fd44e3006efc484a678007ffa351f2ced19d",
+  "src": "source/raw/sitting-backdrop-wood-near-a.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's wood backdrop in the near-Vivarium treatment (studio brief 2026-10-23 22:00): centre-crop 1195x896, LANCZOS once to 544x408 (sitting-backdrops-near/); supersedes the 10-09 flat-wash backdrop (sha256 9e8ae332..., in git history)",
+  "sha256": "c9380e4b2f0132bdd693ba86e9e5190fea72f6ee54399b8776d4c3b58de9b6e6",
   "status": "new",
-  "signed_in": null,
-  "status_note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status_note": "signed by the art director AD 2026-10-23 23:07, 74031d07; copied over the 10-09 file 2026-10-23 23:11"
  },
  "sitting-backdrop-cave-544x408": {
   "size": [
@@ -9802,12 +9802,12 @@
    408
   ],
   "rect": null,
-  "src": "source/raw/sitting-backdrop-cave.jpg (gemini-3-pro-image)",
-  "made": "the Sitting's cave backdrop: a Pro painting (a soft wash, no creatures, no text), cropped to the 4:3 window whose horizon falls at the spec's local y 248 (crop [169, 249, 1031, 895]), reduced x0.631 with Lanczos to 544x408, nothing else changed (pass 85)",
-  "sha256": "358e6b99f32cc0a122b968e35a86bb6ff805be411c62e86639c8de13f888ef99",
+  "src": "source/raw/sitting-backdrop-cave-near-a.jpg (gemini-3-pro-image)",
+  "made": "the Sitting's cave backdrop in the near-Vivarium treatment (studio brief 2026-10-23 22:00): crop 1050x788 at (75,108), LANCZOS once, Color 1.15 (sitting-backdrops-near/guides/fix-bd.py) to 544x408 (sitting-backdrops-near/); supersedes the 10-09 flat-wash backdrop (sha256 358e6b99..., in git history)",
+  "sha256": "df1ea304309ee616bfddf0f0f7e158ee6f9d5b0b141cfa90f8a23f15c72c65c3",
   "status": "signed",
-  "signed_in": "art director, sitting verdict (a079009f)",
-  "status_note": "a Sitting master signed by the art director after the 1x composite"
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "status_note": "signed by the art director AD 2026-10-23 23:07, 74031d07; copied over the 10-09 file 2026-10-23 23:11"
  },
  "pose-S01-shake-dry-96x96": {
   "size": [

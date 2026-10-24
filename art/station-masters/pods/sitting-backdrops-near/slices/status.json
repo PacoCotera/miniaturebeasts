@@ -1,22 +1,27 @@
 {
  "sitting-backdrop-meadow-544x408": {
   "status": "new",
-  "note": "near-treatment repaint from sitting-backdrop-meadow-near-a (gemini-3-pro-image); exit checks: pass; not signed; AD ruling 22:31: sign as cut"
+  "note": "near-treatment repaint from sitting-backdrop-meadow-near-a (gemini-3-pro-image); exit checks: pass; AD ruling 22:31: sign as cut; signed AD 2026-10-23 23:07, 74031d07; copied over slices/sitting-backdrop-meadow-544x408.png",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07"
  },
  "sitting-backdrop-pond-544x408": {
   "status": "new",
-  "note": "0 MXN fix per AD ruling 22:31; gates 10-13 pass after the fix; not signed"
+  "note": "0 MXN fix per AD ruling 22:31; gates 10-13 pass after the fix; signed AD 2026-10-23 23:07, 74031d07; copied over slices/sitting-backdrop-pond-544x408.png",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07"
  },
  "sitting-backdrop-rock-544x408": {
   "status": "new",
-  "note": "near-treatment repaint from sitting-backdrop-rock-near-c (AD Round 2 prompt); exit checks: pass (gates 10-13, check 13 at std <= 30); notes: a soft strip still runs below y ~345 under the tag rows (feet band 13.0 passes); the right slab reaches the figure zone edge at x 345-352; not signed"
+  "note": "near-treatment repaint from sitting-backdrop-rock-near-c (AD Round 2 prompt); exit checks: pass (gates 10-13, check 13 at std <= 30); notes: a soft strip still runs below y ~345 under the tag rows (feet band 13.0 passes); the right slab reaches the figure zone edge at x 345-352; signed AD 2026-10-23 23:07, 74031d07; copied over slices/sitting-backdrop-rock-544x408.png",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07"
  },
  "sitting-backdrop-wood-544x408": {
   "status": "new",
-  "note": "near-treatment repaint from sitting-backdrop-wood-near-a (gemini-3-pro-image); exit checks: pass; not signed; AD ruling 22:31: sign as cut"
+  "note": "near-treatment repaint from sitting-backdrop-wood-near-a (gemini-3-pro-image); exit checks: pass; AD ruling 22:31: sign as cut; signed AD 2026-10-23 23:07, 74031d07; copied over slices/sitting-backdrop-wood-544x408.png",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07"
  },
  "sitting-backdrop-cave-544x408": {
   "status": "new",
-  "note": "0 MXN fix per AD ruling 22:31; gates 10-13 pass after the fix; not signed"
+  "note": "0 MXN fix per AD ruling 22:31; gates 10-13 pass after the fix; signed AD 2026-10-23 23:07, 74031d07; copied over slices/sitting-backdrop-cave-544x408.png",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07"
  }
 }

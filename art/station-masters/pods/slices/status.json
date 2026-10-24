@@ -3089,28 +3089,28 @@
  },
  "sitting-backdrop-meadow-544x408": {
   "status": "new",
-  "signed_in": null,
-  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "note": "near-treatment repaint from sitting-backdrop-meadow-near-a; signed by the art director (AD 2026-10-23 23:07, 74031d07); supersedes the 10-09 flat wash"
  },
  "sitting-backdrop-pond-544x408": {
-  "status": "signed",
-  "signed_in": "art director, sitting verdict (a079009f)",
-  "note": "a Sitting master signed by the art director after the 1x composite"
+  "status": "new",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "note": "near-treatment repaint from sitting-backdrop-pond-near-b; signed by the art director (AD 2026-10-23 23:07, 74031d07); supersedes the 10-09 flat wash"
  },
  "sitting-backdrop-rock-544x408": {
-  "status": "signed",
-  "signed_in": "art director, sitting verdict (a079009f)",
-  "note": "a Sitting master signed by the art director after the 1x composite"
+  "status": "new",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "note": "near-treatment repaint from sitting-backdrop-rock-near-c; signed by the art director (AD 2026-10-23 23:07, 74031d07); supersedes the 10-09 flat wash"
  },
  "sitting-backdrop-wood-544x408": {
   "status": "new",
-  "signed_in": null,
-  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "note": "near-treatment repaint from sitting-backdrop-wood-near-a; signed by the art director (AD 2026-10-23 23:07, 74031d07); supersedes the 10-09 flat wash"
  },
  "sitting-backdrop-cave-544x408": {
-  "status": "signed",
-  "signed_in": "art director, sitting verdict (a079009f)",
-  "note": "a Sitting master signed by the art director after the 1x composite"
+  "status": "new",
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
+  "note": "near-treatment repaint from sitting-backdrop-cave-near-a; signed by the art director (AD 2026-10-23 23:07, 74031d07); supersedes the 10-09 flat wash"
  },
  "pose-S01-shake-dry-96x96": {
   "status": "signed",

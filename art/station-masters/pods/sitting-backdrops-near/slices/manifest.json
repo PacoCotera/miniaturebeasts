@@ -5,7 +5,7 @@
   "h": 408,
   "sha256": "6117a4a4b9b7ed20b25406d3532399ba537b3865cd69e5ba95fde52e7118d28b",
   "from": "source/raw/sitting-backdrop-meadow-near-a.jpg, centre-crop 1195x896, LANCZOS once (guides/cut-bd.py)",
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
   "status": "new"
  },
  "sitting-backdrop-pond-544x408": {
@@ -14,7 +14,7 @@
   "h": 408,
   "sha256": "3b59658feceb63f66cbbc7440e72ef7a9657db69d5e3928291fee815be47b775",
   "from": "source/raw/sitting-backdrop-pond-near-b.jpg, centre-crop 1195x896, LANCZOS once, then the local burn of guides/fix-bd.py",
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
   "status": "new"
  },
  "sitting-backdrop-rock-544x408": {
@@ -23,7 +23,7 @@
   "h": 408,
   "sha256": "6002595ff76392b4db30e698f391836e7d0b649652c637c855e7e265089c259c",
   "from": "source/raw/sitting-backdrop-rock-near-c.jpg, centre-crop 1195x896, LANCZOS once (guides/cut-bd.py)",
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
   "status": "new"
  },
  "sitting-backdrop-wood-544x408": {
@@ -32,7 +32,7 @@
   "h": 408,
   "sha256": "c9380e4b2f0132bdd693ba86e9e5190fea72f6ee54399b8776d4c3b58de9b6e6",
   "from": "source/raw/sitting-backdrop-wood-near-a.jpg, centre-crop 1195x896, LANCZOS once (guides/cut-bd.py)",
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
   "status": "new"
  },
  "sitting-backdrop-cave-544x408": {
@@ -41,7 +41,7 @@
   "h": 408,
   "sha256": "df1ea304309ee616bfddf0f0f7e158ee6f9d5b0b141cfa90f8a23f15c72c65c3",
   "from": "source/raw/sitting-backdrop-cave-near-a.jpg, crop 1050x788 at (75,108), LANCZOS once, Color 1.15 (guides/fix-bd.py)",
-  "signed_in": null,
+  "signed_in": "AD 2026-10-23 23:07, 74031d07",
   "status": "new"
  }
 }

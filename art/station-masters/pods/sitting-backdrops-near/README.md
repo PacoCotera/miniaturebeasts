@@ -64,3 +64,9 @@ The stones are lit on their top and left faces. Notes for you at 1×:
 - The right-hand slab reaches the figure zone's right edge at x 345–352.
 
 `slices/` now holds rock-c. Rock-a and rock-b stay as raws. The signed 10-09 rock in the top-level `slices/` is untouched until you sign. The proofs are rebuilt, and the adult `window-1x.png` now shows rock-c.
+
+## Signed (art director, ruling Round 3, 23:07 on 74031d07), copied 2026-10-23 23:11
+
+All five are signed: meadow (as cut), pond (pond-b, burned), rock (rock-c), wood (as cut) and cave (crop and grade). They are copied byte for byte over `slices/sitting-backdrop-{meadow,pond,rock,wood,cave}-544x408.png`, with ids unchanged. Their `slices/manifest.json` and `status.json` entries carry `signed_in: "AD 2026-10-23 23:07, 74031d07"`.
+
+**The 10-09 flat-wash set** (meadow, pond, rock, wood, cave) is superseded and stays in git history only. The plain backdrop is untouched.
