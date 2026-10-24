@@ -11,3 +11,13 @@ Built by `guides/compose-sit.py` at 0 MXN. The stage's canvas transform (crested
 | Request | Input | sha256 |
 | --- | --- | --- |
 | K1a `sit-S01-adult-keys-crested-a` | `guides/compose-sit-adult-crested.png` | `3bba33279b462e6093e331c16506e78dbab15f42567f83174af7bc7a717214c4` |
+
+## Requests
+
+| Request | Time (Mexico City) | Result | MXN (usageMetadata) | Job 1 total / 39 | Both jobs / 66 | Pacific day / 250 |
+| --- | --- | --- | --- | --- | --- | --- |
+| K1a `sit-S01-adult-keys-crested-a` | 2026-10-23 22:09 | **failed, exit check 1**: HTTP 402, "Your prepayment credits are depleted" (RESOURCE_EXHAUSTED); no picture | 0.00 (non-200, not billed) | 0.00 | 0.00 | 0.00 (10-23) |
+
+## Stopped (2026-10-23 22:09)
+
+The API account's prepaid credits are depleted, so no request can return. The work stopped after K1a and was not retried: a retry would fail the same way, and billing is outside the studio. Nothing else ran: K2a to K4a, the juvenile K1j to K4j and the backdrops B1 to B5 are not made. Resuming needs the credits topped up (owner, through the lead). After that, the next request is K1a again, as `sit-S01-adult-keys-crested-a` (the 402 was not a model result, so it is the same request, not a letter-b retry; the lead's call).
