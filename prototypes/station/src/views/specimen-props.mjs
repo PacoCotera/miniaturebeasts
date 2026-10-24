@@ -2,7 +2,7 @@
 // and the module's words. Pure selectors over the save and the frames; the picture is made here in the logic process, off the face's frame, and named by its id (specimen:{species}:{digest of the found looks}:v{recipe}).
 import * as S from "../state.mjs";
 import { frameOf, frameIds } from "../genome.mjs";
-import { fieldGuide, wishOf, possibleLooks } from "../library.mjs";
+import { fieldGuide, wishOf, possibleLooks, speciesStatus } from "../library.mjs";
 import { specimenFor, specimenId, peekSpecimen } from "../specimen-cache.mjs";
 import { HARNESS, MARGIN } from "../specimen.mjs";
 import { fill } from "./words.mjs";
@@ -30,6 +30,14 @@ export function specimenInput(st, id, settings) {
   const shut = frame.chapters.filter((ch) => shutOf(st, id, ch, settings)).map((ch) => ch.id), found = {};
   for (const ch of frame.chapters) if (!shut.includes(ch.id)) for (const t of ch.traits) { const ls = S.guideLooks(st, id, t.id); if (ls.length) found[t.id] = ls.slice(); }
   return { frame, found, shut };
+}
+// What the Level 2 sheet of a species is made from (library-sheet.mjs): its mode ("found", or "met": the pencil study with no words, the same for every player), the found looks and the chapters still shut
+// (specimenInput), the looks new this visit (newLooksOf, as "<trait>|<look>"), the chapters read once, sealedOpen, and the species' share of the rest of the window's signature (its seen looks and its wish). null for an unmet species.
+export function sheetInput(st, id, settings) {
+  const status = speciesStatus(st, id); if (status === "unmet" || !frameOf(id)) return null;
+  if (status !== "found") return { species: id, mode: "met", found: {}, shut: [], fresh: [], readOnce: [], sealedOpen: false, sig: null };
+  const { found, shut } = specimenInput(st, id, settings);
+  return { species: id, mode: "found", found, shut, fresh: [...newLooksOf(st, id, settings)], readOnce: (st.readOnce[id] || []).slice(), sealedOpen: !!settings.sealedOpen, sig: [st.libSeen?.[id] ?? {}, st.wish?.[id] ?? null] };
 }
 // The new looks of a species: its current looks (a legacy look, the Loika's plain, never counts) found since the Library was last opened full screen, as "<trait>|<look>".
 export function newLooksOf(st, id, settings) {

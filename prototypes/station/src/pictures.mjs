@@ -3,7 +3,7 @@
 // the request into a registered entry (a placeholder, flagged, with what it waits for) whose builder draws it once at
 // its size: the pod from its signed layers, the stamp on whole-pixel cells; the marks, the places, the frames and the figures are the studio's masters,
 // taken by id when placed. Nothing is ever cropped and enlarged.
-import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset, hasAsset, isFilled } from "../../ui/assets.mjs";
+import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset, hasAsset, isFilled, dropAsset } from "../../ui/assets.mjs";
 import { PB, C, HEX, RGB, art, fromRGBA, bay } from "./pixels.mjs";
 import { registerMoving } from "./moving.mjs";
 import { gradedOf, grade } from "./light-grade.mjs";
@@ -19,8 +19,10 @@ import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { relit } from "./relight.mjs";
 import { specimenFor } from "./specimen-cache.mjs";
 import { renderCell } from "./specimen.mjs";
+import { sheetPicture, renderDisc } from "./library-sheet.mjs";
 import { facePicture } from "./face-pictures.mjs";
 
+const SHEET_IDS = {};   // the Level 2 sheet's current entry of each kind (library-sheet.mjs keeps its pictures)
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
 
@@ -154,6 +156,18 @@ export function registerPictures(reqs, env) {
         const [w, h] = r.size; if (hasAsset(r.id)) break; const frame = env.frameOf(r.species), ground = RGB[C[r.ground]];
         registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => { if (data) return data; const fr = r.shut?.length ? { ...frame, chapters: frame.chapters.map((ch) => ({ ...ch, sealed: r.shut.includes(ch.id) })) } : frame;
           const p = renderCell(fr, { [r.species]: r.found ?? {} }, { pencil: r.status === "met", ground }); console.log(`# library cell ${r.id}: ${r.status}, rendered in ${p.ms.toFixed(0)} ms (${w} x ${h})`); return (data = p.rgba); } }; } });
+        break;
+      }
+      case "librarysheet": case "librarylit": case "librarypage": {   // the Level 2 sheet, its lit variant and the lit chapter's page (library-sheet.mjs): made in the logic process, kept as the current sheet, one lit variant and one page; a newer request
+        // supersedes the older one of its kind, whose entry goes; on the ground master's pixels where library-ground-1024x522 is placed, else flat libGround; its time printed
+        const [w, h] = r.size; if (hasAsset(r.id)) break; const old = SHEET_IDS[r.kind]; if (old && old !== r.id) dropAsset(old); SHEET_IDS[r.kind] = r.id;
+        const frame = env.frameOf(r.species), gm = masterAt("library-ground-1024x522", 1024, 522);
+        registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => ({ w, h, rgba: () => sheetPicture(frame, r, { ground: gm ? { w: 1024, h: 522, rgba: assetOf("library-ground-1024x522").rgba() } : null }).rgba }) });
+        break;
+      }
+      case "lookdisc": {   // a found look's disc at 16 (the page disc at 16), for the Level 2 shelf's wish pieces; transparent outside the disc
+        if (hasAsset(r.id)) break; const frame = env.frameOf(r.species);
+        registerAsset({ id: r.id, w: 16, h: 16, status: "derived", until: null, build: () => { let data = null; return { w: 16, h: 16, rgba: () => data ?? (data = renderDisc(frame, r.trait, r.look).rgba) }; } });
         break;
       }
       case "face": {   // a mibi's face for the Library (library.json faces, face-pictures.mjs): from its layered stand through the species' face window, at its size, on libGround; a labelled stand-in where the species has none; its time printed
