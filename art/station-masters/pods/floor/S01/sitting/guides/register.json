@@ -1,0 +1,131 @@
+{
+ "adult-k1": {
+  "sheet": "source/raw/sit-S01-adult-keys-crested-b.jpg",
+  "mirrored_cells": [
+   2,
+   3,
+   5,
+   6
+  ],
+  "takes": {
+   "shake-t1": {
+    "droplets_on_fur_painted_out": 2,
+    "droplets_clear_of_coat_on_sheet": 6,
+    "despilled_px": 942,
+    "inner_cast_repainted_px": 56,
+    "cell": 2,
+    "mirrored": true,
+    "feet_row_before": 302,
+    "move_px": [
+     4,
+     1
+    ],
+    "droplets_kept": 6,
+    "box": [
+     14,
+     31,
+     299,
+     304
+    ],
+    "clear_1px": true
+   },
+   "calm-t1": {
+    "despilled_px": 64,
+    "inner_cast_repainted_px": 0,
+    "cell": 3,
+    "mirrored": true,
+    "feet_row_before": 296,
+    "move_px": [
+     2,
+     7
+    ],
+    "droplets_kept": 0,
+    "box": [
+     21,
+     37,
+     283,
+     304
+    ],
+    "clear_1px": true
+   },
+   "shake-t2": {
+    "droplets_on_fur_painted_out": 2,
+    "droplets_clear_of_coat_on_sheet": 8,
+    "despilled_px": 1095,
+    "inner_cast_repainted_px": 37,
+    "cell": 5,
+    "mirrored": true,
+    "feet_row_before": 302,
+    "move_px": [
+     0,
+     1
+    ],
+    "droplets_kept": 8,
+    "box": [
+     12,
+     28,
+     293,
+     304
+    ],
+    "clear_1px": true
+   },
+   "calm-t2": {
+    "despilled_px": 65,
+    "inner_cast_repainted_px": 0,
+    "cell": 6,
+    "mirrored": true,
+    "feet_row_before": 301,
+    "move_px": [
+     4,
+     2
+    ],
+    "droplets_kept": 0,
+    "box": [
+     21,
+     29,
+     282,
+     303
+    ],
+    "clear_1px": true
+   }
+  },
+  "cell1": {
+   "despilled_px": 108,
+   "inner_cast_repainted_px": 0,
+   "cell": 1,
+   "mirrored": false,
+   "feet_row_before": 302,
+   "move_px": [
+    0,
+    0
+   ],
+   "droplets_kept": 0,
+   "box": [
+    22,
+    17,
+    279,
+    303
+   ],
+   "clear_1px": true,
+   "against_anchor": {
+    "check5_outline_p95_px": 3.61,
+    "check5_outline_max_px": 4.12,
+    "check5_mean_rgb_diff_inside": 3.09
+   },
+   "against_input_cut_the_same_way": {
+    "check5_outline_p95_px": 2.24,
+    "check5_outline_max_px": 3.16,
+    "check5_mean_rgb_diff_inside": 2.98
+   },
+   "input_roundtrip_against_anchor": {
+    "check5_outline_p95_px": 2.0,
+    "check5_outline_max_px": 2.0,
+    "check5_mean_rgb_diff_inside": 0.6
+   },
+   "centroid_shift_px_xy": [
+    -0.82,
+    -0.59
+   ]
+  }
+ }
+}

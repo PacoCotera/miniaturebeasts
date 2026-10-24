@@ -1,0 +1,84 @@
+{
+ "sheet": "source/raw/sit-S01-adult-keys-crested-b.jpg",
+ "mirrored": [
+  2,
+  3,
+  5,
+  6
+ ],
+ "anchor_light": {
+  "hi_dx": -0.217,
+  "TL/TR": 1.18,
+  "TL/BR": 1.27
+ },
+ "takes": {
+  "shake-t1": {
+   "light": {
+    "hi_dx": -0.18,
+    "TL/TR": 1.14,
+    "TL/BR": 1.32
+   },
+   "light_test": true,
+   "droplet_light": {
+    "n": 8,
+    "dx": -0.065,
+    "dy": -0.17,
+    "left": 7,
+    "right": 1
+   },
+   "iou_anchor": 0.74,
+   "iou_curl": 0.65,
+   "height_of_anchor": 0.95,
+   "reads_apart": true
+  },
+  "calm-t1": {
+   "light": {
+    "hi_dx": -0.195,
+    "TL/TR": 1.17,
+    "TL/BR": 1.23
+   },
+   "light_test": true,
+   "iou_anchor": 0.8,
+   "iou_curl": 0.72,
+   "height_of_anchor": 0.93,
+   "reads_apart": true
+  },
+  "shake-t2": {
+   "light": {
+    "hi_dx": -0.162,
+    "TL/TR": 1.13,
+    "TL/BR": 1.2
+   },
+   "light_test": true,
+   "droplet_light": {
+    "n": 10,
+    "dx": -0.07,
+    "dy": -0.206,
+    "left": 6,
+    "right": 4
+   },
+   "iou_anchor": 0.78,
+   "iou_curl": 0.6,
+   "height_of_anchor": 0.96,
+   "reads_apart": true
+  },
+  "calm-t2": {
+   "light": {
+    "hi_dx": -0.174,
+    "TL/TR": 1.13,
+    "TL/BR": 1.22
+   },
+   "light_test": true,
+   "iou_anchor": 0.87,
+   "iou_curl": 0.7,
+   "height_of_anchor": 0.95,
+   "reads_apart": false
+  }
+ },
+ "pairs_shake_calm": {
+  "shake-t1xcalm-t1": 0.76,
+  "shake-t1xcalm-t2": 0.75,
+  "shake-t2xcalm-t1": 0.74,
+  "shake-t2xcalm-t2": 0.74
+ }
+}
