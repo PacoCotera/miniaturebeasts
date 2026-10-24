@@ -8,12 +8,12 @@
 //   5. registerScreen is given a draw, nodes or faceNodes (a literal here; the function itself throws on any object that has one, so a variable cannot get past);
 //   6. an lv_*_create call appears in the face's C outside face/src/prim/ (the platform's lv_display_create and lv_indev_create excepted);
 //   7a. a screen (face/src/screens/*.c) calls prim_node: a screen draws through the v_* helpers and the kit, never a node of its own;
-//   7b. a screen defines a static spec accessor: a static function that takes a path (a char pointer) and whose body is one call of spec_int, spec_str, spec_len, spec_bool, v_si, v_sk, v_srect,
-//       v_scol or v_spec_rect on that path (a computation that reads the spec and does more is not an accessor);
+//   7b. a screen defines a static spec accessor: a static function that takes a path (a char pointer, "const char *p" or "const char *const p") and whose body is one call of spec_int, spec_str,
+//       spec_len, spec_bool, spec_raw, spec_member, v_si, v_sk, v_srect, v_scol, v_scol_or, v_token, v_sstr or v_spec_rect on that path (a computation that reads the spec and does more is not an accessor);
 //   the ratchet: a screen makes more direct v_rect, v_text, v_sprite, v_sprite_window and v_sprite_hidden calls than face/kit-ratchet.json allows it (a screen it does not name: 0), or the file
 //       has no "screenSpecific" list, or that list names a screen file that does not exist;
 //   8. a kit_* function defined under face/src/vocab/ has no header comment before it beginning "/* kit_<name> (" that holds Props, Region, Node id (or Node ids) and Returns.
-//   The C of rules 6 to 8 is read through blank(src, { js: false }): a call in a comment is not counted; a call is matched as NAME, any spaces, then "(".
+//   The C of rules 6 to 8 is read through blank(src, { js: false }): a call in a comment is not counted; for rule 7b and the ratchet a call is matched as NAME, any spaces, then "("; rule 7a flags any mention of prim_node (a macro, a function pointer or a bracketed name included).
 //   node prototypes/face/tools/guard.mjs        (from anywhere; --root <dir> checks another tree)
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import path from "node:path";
@@ -39,8 +39,8 @@ const marked = (raw) => { const ok = new Set(); let on = false; raw.split("\n").
 const NODE_EXPORTS = /\b_?face_(scene_begin|scene_end|node|node_tag|text|text_size|ops|ops_size|measure|asset|background|region|selftest_scene)\b/;
 const LV_CREATE = /\blv_[a-z0-9_]+_create\s*\(/g, LV_OK = new Set(["lv_display_create", "lv_indev_create"]);
 
-const DIRECT = /\b(?:v_rect|v_text|v_sprite|v_sprite_window|v_sprite_hidden)\s*\(/g, PRIM_NODE = /\bprim_node\s*\(/g;
-const ACCESSOR_CALLS = new Set(["spec_int", "spec_str", "spec_len", "spec_bool", "v_si", "v_sk", "v_srect", "v_scol", "v_spec_rect"]);
+const DIRECT = /\b(?:v_rect|v_text|v_sprite|v_sprite_window|v_sprite_hidden)\s*\(/g, PRIM_NODE = /\bprim_node\b/g;
+const ACCESSOR_CALLS = new Set(["spec_int", "spec_str", "spec_len", "spec_bool", "v_si", "v_sk", "v_srect", "v_scol", "v_spec_rect", "v_sstr", "v_scol_or", "v_token", "spec_raw", "spec_member"]);
 const HEADER = [["Props", /\bProps\b/], ["Region", /\bRegion\b/], ["Node id", /\bNode ids?\b/], ["Returns", /\bReturns\b/]];
 const lineAt = (s, i) => s.slice(0, i).split("\n").length;
 // the index of the bracket that closes the one at `i` (s[i] is "(" or "{"), or -1
@@ -50,7 +50,7 @@ function accessors(code) {
   const out = [];
   for (const m of code.matchAll(/\bstatic\s+[\w\s*]*?\b(\w+)\s*\(([^()]*)\)\s*\{/g)) {
     const open = m.index + m[0].length - 1, end = closing(code, open); if (end < 0) continue;
-    const ptrs = m[2].split(",").map((p) => p.match(/\bchar\s*\*\s*(\w+)\s*$/)?.[1]).filter(Boolean); if (!ptrs.length) continue;
+    const ptrs = m[2].split(",").map((p) => p.match(/\bchar\s*\*\s*(?:const\s+)?(\w+)\s*$/)?.[1]).filter(Boolean); if (!ptrs.length) continue;
     const body = code.slice(open + 1, end).trim(), call = body.match(/^(?:return\s+)?(\w+)\s*\(/); if (!call || !ACCESSOR_CALLS.has(call[1])) continue;
     const po = body.indexOf("(", call[0].length - 1), pc = closing(body, po); if (pc < 0 || !/^\s*;$/.test(body.slice(pc + 1))) continue;
     const args = body.slice(po + 1, pc);

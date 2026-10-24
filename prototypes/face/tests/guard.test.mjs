@@ -123,11 +123,16 @@ test("rule 7a: a prim_node call in a screen fails; one in a comment does not, an
   assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '  /* prim_node(v_id("x"), FN_RECT, 0, 0, 1, 1, 0, 0, 0); */ // prim_node(1);') })), []);
   assert.match(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '  prim_node/* c */(v_id("x"), FN_RECT, 0, 0, 1, 1, 0, 0, 0);') })).join("\n"), /bench\.c:30 calls prim_node/);
   assert.match(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '  prim_node (v_id("x"), FN_RECT, 0, 0, 1, 1, 0, 0, 0);') })).join("\n"), /bench\.c:30 calls prim_node/);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '#define PN prim_node') })), ["face/src/screens/bench.c:30 calls prim_node (rule 7a: a screen draws through v_* and the kit)"], "a macro that names it");
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, "static void (*pn)(uint32_t, int, int, int, int, int, uint32_t, int, int) = prim_node;") })), ["face/src/screens/bench.c:30 calls prim_node (rule 7a: a screen draws through v_* and the kit)"], "a function pointer to it");
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/bench.c": plant("bench.c", 30, '  (prim_node)(v_id("x"), FN_RECT, 0, 0, 1, 1, 0, 0, 0);') })), ["face/src/screens/bench.c:30 calls prim_node (rule 7a: a screen draws through v_* and the kit)"], "the name in brackets");
 });
 test("rule 7b: a static spec accessor in a screen fails; a computation over the spec does not", () => {
   const f = fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 25, "static int cs(const char *path, int d) { return v_si(C, path, d); }") }));
   assert.deepEqual(f, ["face/src/screens/cargo.c:25 defines the static spec accessor cs (rule 7b: one call of v_si on its path; use the v_* reader)"]);
   assert.match(fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 25, 'static void cr(const char *k, int r[4])\n{\n  v_srect(C, v_fmt("regions.%s.rect", k), r);\n}') })).join("\n"), /cargo\.c:25 defines the static spec accessor cr \(rule 7b: one call of v_srect/);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 25, "static const char *pic(const char *path) { return v_sstr(C, path); }") })), ["face/src/screens/cargo.c:25 defines the static spec accessor pic (rule 7b: one call of v_sstr on its path; use the v_* reader)"], "a v_sstr accessor");
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 25, "static int cn(const char *const path) { return spec_int(C, path, 0); }") })), ["face/src/screens/cargo.c:25 defines the static spec accessor cn (rule 7b: one call of spec_int on its path; use the v_* reader)"], "a path written as a const pointer");
   assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 25, 'static int top(const char *k) { int r[4]; v_srect(C, k, r); return r[1] + r[3]; }\nstatic int fixed(void) { return v_si(C, "a.b", 0); }') })), []);
 });
 test("the ratchet: one more direct drawing call in a screen fails, and so does a screen it does not name that draws directly", () => {
