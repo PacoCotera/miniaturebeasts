@@ -1,0 +1,20 @@
+[
+ {
+  "name": "sitting-backdrop-rock-near-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/slices/vivarium-near-day-544x408.png",
+    "THE TREATMENT (our signed near-Vivarium painting, project-owned): its eye-level miniature diorama, macro depth, the sharp ground band at the creature's feet, the soft distance, the matte sculpted rendering and the warm light from the upper left. Take the treatment, not its place or objects."
+   ],
+   [
+    "art/station-masters/pods/slices/place-rock-96x96.png",
+    "THE PLACE (our signed place card, project-owned): what this place is, its palette and materials. Not its composition."
+   ]
+  ],
+  "prompt": "Output a NEW image, 4:3: the rock field's slabs, painted in the SAME treatment as the first reference: an eye-level miniature diorama seen at a small creature's scale, with macro depth, the same matte sculpted miniature rendering, and the same warm soft daylight from the UPPER LEFT with soft shadows falling to the lower right. The place is the one in the second reference, in its palette and materials.\n\nCOMPOSITION:\n- The ground fills the lower part, a sharp, in-focus band of textured ground (fine natural texture, low and fairly flat) running across the whole picture at 75 to 85 percent of the height. A small creature will stand on it with its feet at 79 percent down, in the middle of the width.\n- Behind it, soft out-of-focus depth with gentle detail and warm haze.\n- The middle of the picture, from 35 to 65 percent across and from 40 to 79 percent down, holds calm mid-tone ground and soft distance only: nothing tall, no object, no bright spot, no dark hole.\n- The bottom strip, 29 to 71 percent across and 85 to 93 percent down, is plain, quiet ground with no object and no bright spot.\n- The place's larger features (large flat slabs and boulders) stand only at the left and right sides and in the soft distance.\n\nNO creatures, no animals, no figures of any kind; no text, letters, digits or logos; no frame, border, vignette or UI. The place fills the canvas edge to edge. No glossy surfaces, no cool blue cast, no neon; nothing childish or toy-like."
+ }
+]
