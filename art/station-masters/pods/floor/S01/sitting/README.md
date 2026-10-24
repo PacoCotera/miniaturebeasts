@@ -28,6 +28,7 @@ Built by `guides/compose-sit.py` at 0 MXN. The stage's canvas transform (crested
 | K2a `sit-S01-adult-keys-bare-a` | 2026-10-23 22:39 | **failed, check 4**: cell 4 holds a second bare anchor (85,022 non-magenta px). Corrected after K2b: my first check 8 numbers were a cut fault (the twin's whole-pixel moves applied twice, and droplets above the bare head falling outside the body's box). Measured right, K2a passes 8 as K2b does (below) | 3.62 | 12.11 | 36.62 | 36.62 (10-23) |
 | K2b `sit-S01-adult-keys-bare-b` (the adult retry; adult total before it 12.11 ≤ 26) | 2026-10-23 22:41 | **failed, check 4 again**: cell 4 holds a second bare anchor (84,871 px). Check 8 otherwise: 0 leaf px on every key, round heads by eye; mean RGB against the crested twin 3.2–3.5; outline p95 3.61 px on every take (max 4.0–5.4), against a 2.0 px floor for the input cut through the same key-out; droplets 6 of 6 and 8 of 8 within 0.3 px on the sheet, except one small droplet of shake t1 (cell x 59, y 291) shrunk under 20 px; cell 1's head against the signed bare anchor p95 2.83 px; facing kept | 3.67 | 15.77 | 40.28 | 40.28 (10-23) |
 | K3a `sit-S01-adult-keys-patches-a` | 2026-10-23 22:51 | **pass.** Check 3: border 10. Check 5 (cell 1 against its input through the same key-out): p95 2.24, max 5.0, centroid −0.39 / −0.16, mean 2.95. Check 9: three masses of ≥ 150 px on every take, like the anchor (shake t1 3095 / 1325 / 848; shake t2 2804 / 1259 / 730; calm t1 2365 / 725 / 514), no crescents or specks by eye, alpha 0 outside the fur mask, 0 px repainted outside the coat. Check 4: cell 4 empty. Cell 6 (empty in the input) came back with a patched copy of calm t1 inside x 33–385 × y 99–374 of the cell, 0 px in the seam bands: cut away and noted under the Round 2 rule | 3.75 | 19.52 | 48.12 | 48.12 (10-23) |
+| K4a `sit-S01-adult-keys-stripes-a` | 2026-10-23 22:53 | **pass.** Check 3: border 10. Check 5: p95 2.24, max 5.0, centroid −0.54 / −0.16, mean 3.26. Check 9: stripes on every take, 0 stripe px inside the head ellipses (no face or rings), alpha 0 outside the fur mask, repainted outside the coat 0.07 % at most. Cells 4 and 6 empty | 3.68 | 23.20 | 51.80 | 51.80 (10-23) |
 
 ## Art director's ruling 22:31: K1b mirrored (0 MXN, 2026-10-23 22:37)
 
@@ -74,7 +75,31 @@ The lead's go: job 1 ceiling 40 MXN, hard stop 43; job 2 (B3c only) ceiling 32.7
 - **Shake t1's small droplet** (K2b cell x 59, y 291) is restored in the bare key from the crested twin's droplet at the twin's place: 23 px, `guides/restore-drop.py`.
 - **Prompts:** K3a and K4a carry the facing line and the cell-4 line after their first paragraph (`guides/jobs-sit.py`).
 
-## Job 1 stopped again after K2b (2026-10-23 22:44)
+## Adult layers and 1× proofs (0 MXN, 2026-10-23 22:56)
+
+**Layers** (`guides/layers-sit.py`, numbers in `guides/layers.json`). This runs the work-queue code unchanged: cut-layers.py's fur_mask, zone_mask and mark_layer, and heads-off.py's rule.
+- **Crest overlays:** base + overlay equals the base outside mask and band, 0 differing px on every take.
+- **Fur masks:** 0 droplet px in every mask.
+- **Zone masks:** cut-layers.py's v4 rule, the top 48 % of each coat column. Not hand-cut; a note to you.
+- **HEADS ellipses (cx, cy, rx, ry):** shake t1 (80, 160, 72, 68); shake t2 (95, 140, 75, 72); calm t1 (88, 150, 80, 70).
+- **Patches and stripes:** alpha 0 outside the fur mask on every layer.
+
+**24-look dry run** (`proof-looks.py`, with recolour() and ramp_paint() copied unchanged from station-gate a9e24215):
+- Outside the fur mask the recolour changes 2,676–3,074 px (single coats) and 318–416 px (two-tones) per take, up to 35 levels. Outside the mask dilated 3 px it changes 0.
+- That is the station code's 0.7 px soft edge. The signed anchor does the same (2,897 / 553 px), and belly, eyes, crest and droplets lie further in.
+- The exit as written (0 outside the mask) is not met by the station's own code on any key. A note to you.
+
+**Edge:** 0 magenta-cast px on the 2 px edge and 0 px of alpha 1–59 on every take. By eye at 1× over black, #1d232b and near-night: no fringe (`edge-1x.png`).
+
+**Base + crest against the crested twin:** 766–1,291 px differ at alpha > 128. This is the K2 sheet's ~1 px softer edge, within R2.3's outline limit.
+
+**Juvenile gate:** the adult reads-apart and cards proofs are pushed. Shake t1, shake t2 and calm t1 pass checks 6–9. So the juvenile runs.
+
+**Proofs** in `proof/adult/`: `takes-1x.png`, `reads-apart-48-1x.png`, `layers-1x.png`, `cards-1x.png`, `cards-x3.png`, `looks-1x.png`, `window-1x.png`, `edge-1x.png`.
+- The window proof is at the Habitat factor 0.5192, feet on y 380, axis x 272, over near-day and the five near backdrops.
+- Every new file is in `floor/S01/manifest.json` (signed_in null, status new) and `status.json`.
+
+## (superseded by Round 2) Job 1 stopped again after K2b (2026-10-23 22:44)
 
 Both K2 sheets put a copy of the second reference, the bare anchor, into cell 4, which the brief keeps empty (check 4, a sheet failure). The one adult retry (K2b) is spent, so no adult take passes K2, and K3a, K4a and the juvenile do not run. Under the brief: "If no adult take of a pose survives K2–K4, stop and report. I decide before the juvenile spends."
 
@@ -84,7 +109,7 @@ Apart from cell 4, K2b reads well at 1×: `proof/k2b-crested-bare-1x.png` (crest
 - **Check 8's 2 px outline:** every take sits at p95 3.61 px. The input cut through the same key-out sits at 2.0, so the line can't be met by this key-out on a returned JPEG; the edge comes back about 1 px softer each round. The mean RGB difference of 3.2–3.5 shows no repaint.
 - **Job 1 stands at 15.77 of 50 MXN.**
 
-## Job 1 stopped after K1b (request sent 22:17)
+## (superseded by the 22:31 ruling) Job 1 stopped after K1b (request sent 22:17)
 
 Both adult K1 sheets came back with every take mirrored: the head to the right, against the brief's "adult head to the LEFT" that the prompt carries as written. The one adult retry is spent, so no adult take of either pose survives K1, and nothing was cut. Under the brief ("If no adult take of a pose survives K2–K4, stop and report. I decide before the juvenile spends"), K2a to K4a and the juvenile K1j to K4j are not run. The art director decides. The studio does not mirror a take by itself: mirroring flips the top-left light, and the facing is the art director's call. Job 1 stands at 8.49 of 39 MXN.
 

@@ -76,5 +76,64 @@
    "4": 0,
    "6": 68392
   }
+ },
+ "adult-stripes": {
+  "anchor": {
+   "mark_px": 1456,
+   "masses_over_150px": 3,
+   "mass_sizes": [
+    656,
+    576,
+    224
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 14,
+   "repainted_fraction_of_figure": 0.0003,
+   "anchor_layer_vs_signed_px_alpha>128_iou": null
+  },
+  "shake-t1": {
+   "mark_px": 3688,
+   "masses_over_150px": 3,
+   "mass_sizes": [
+    2384,
+    959,
+    345
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 0,
+   "repainted_fraction_of_figure": 0.0
+  },
+  "calm-t1": {
+   "mark_px": 1697,
+   "masses_over_150px": 3,
+   "mass_sizes": [
+    842,
+    683,
+    171,
+    1
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 1,
+   "repainted_fraction_of_figure": 0.0
+  },
+  "shake-t2": {
+   "mark_px": 3900,
+   "masses_over_150px": 4,
+   "mass_sizes": [
+    2178,
+    871,
+    430,
+    301,
+    68,
+    37
+   ],
+   "alpha_outside_fur_px": 0,
+   "repainted_outside_coat_px": 29,
+   "repainted_fraction_of_figure": 0.0007
+  },
+  "empty_cells": {
+   "4": 0,
+   "6": 0
+  }
  }
 }
