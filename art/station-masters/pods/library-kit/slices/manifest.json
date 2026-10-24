@@ -1,0 +1,557 @@
+{
+ "library-ground-1024x522": {
+  "file": "library-ground-1024x522.png",
+  "size": [
+   1024,
+   522
+  ],
+  "sha256": "a1559aa3a454c6cae26d7caf3a50d7013ac1342140628afc7f039587c88e1db1",
+  "from": {
+   "source": "public work-queue results/T-20261019-home/specimen-generator/specimen3.js finish (seed 7, grain 4)",
+   "source_sha256": "382cf3516a0bb89ecdc3990d3b0d8f491a9e68f832423622a098115a01ff282d",
+   "script": "guides/make-ground.py"
+  },
+  "signed_in": null,
+  "status": "derived-from-concept"
+ },
+ "species-mark-S01-10": {
+  "file": "species-mark-S01-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "54d30b30f04243a1993ef1209249b5d0313875407cd2d3d7e16a64094002d6c3",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S01.json (glyph)",
+   "source_sha256": "2864cee6f21d1582dc334c157019ce5791d6c10c6ab6acaef4aea6afd49abb94",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S01-15": {
+  "file": "species-mark-S01-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "4abfab16f07c0e507b96171fe93011770df0ff7ca0b9190573eef6f64fcba7e5",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S01.json (glyph)",
+   "source_sha256": "2864cee6f21d1582dc334c157019ce5791d6c10c6ab6acaef4aea6afd49abb94",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S02-10": {
+  "file": "species-mark-S02-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "e77bf130c8dda7855721a7ba558f167558d9393056533b42e8dcd1f53256fb40",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S02.json (glyph)",
+   "source_sha256": "1a06670bcc1c309ac5944a8b9d46ac2d0fd78f60d252f6093d2067496fa44f4e",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S02-15": {
+  "file": "species-mark-S02-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "553c40ed28376167e64ee64245e820effece4828c0277712cbff646d5ea009f1",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S02.json (glyph)",
+   "source_sha256": "1a06670bcc1c309ac5944a8b9d46ac2d0fd78f60d252f6093d2067496fa44f4e",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S03-10": {
+  "file": "species-mark-S03-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "357d414006ba548f4734f44409951e9b64df6b48027774363830fceaad373698",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S03.json (glyph)",
+   "source_sha256": "06c763b399fd818b0363d188bd1a3815912a1bdfb10bca46605317a93d481bd6",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S03-15": {
+  "file": "species-mark-S03-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "daca2767456fc4b694c8a5a6480b8328b5e471d910dfbf283ca4db50de18faa6",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S03.json (glyph)",
+   "source_sha256": "06c763b399fd818b0363d188bd1a3815912a1bdfb10bca46605317a93d481bd6",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S04-10": {
+  "file": "species-mark-S04-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "71585aa57f96dc5244c99cb97598f76525dbf71d5ad876dd1dcfd3d8d68debcb",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S04.json (glyph)",
+   "source_sha256": "65cb5f7ea69abca1db7dce6af1d7c416875ab701e68a73a24b5a50a8575f783d",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S04-15": {
+  "file": "species-mark-S04-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "c69f78873b40f6e4be71a5b413296de2156d3a09f8b151852070197a654d76d6",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S04.json (glyph)",
+   "source_sha256": "65cb5f7ea69abca1db7dce6af1d7c416875ab701e68a73a24b5a50a8575f783d",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S05-10": {
+  "file": "species-mark-S05-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "1670a8cbf4fe2193c8ec55dee8c9efa3c0a1ecb86956105c532e76aa3475940a",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S05.json (glyph)",
+   "source_sha256": "fff394a4b955e984de5e7ebfe1e17a68e09deac2f83c13f0281aacb554061443",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S05-15": {
+  "file": "species-mark-S05-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "2f7949abab0f194c8af75b72948bbd6c4a7de0799d638c215bbd472046b66b71",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S05.json (glyph)",
+   "source_sha256": "fff394a4b955e984de5e7ebfe1e17a68e09deac2f83c13f0281aacb554061443",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S06-10": {
+  "file": "species-mark-S06-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "4e72026532a24f60fd0478c31e3efea8677db36e9b8e8b9d3257718182993345",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S06.json (glyph)",
+   "source_sha256": "eae240e4d4a47b29871387121ebaaf52403f8a5a200334519a07e62c86b3868a",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S06-15": {
+  "file": "species-mark-S06-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "79aa7a25516c19825354d1776b741fa62a4cc1096dbdd985ecac3a6b036bd6b5",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S06.json (glyph)",
+   "source_sha256": "eae240e4d4a47b29871387121ebaaf52403f8a5a200334519a07e62c86b3868a",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S07-10": {
+  "file": "species-mark-S07-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "5e968982bd9cc97699c8228e92bc9661cbd0cb2104dace475d52ff5038e0566b",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S07.json (glyph)",
+   "source_sha256": "ebd818d9c942c2e554413cc12e787bd8d370dda344730117bda25d75f07ea805",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S07-15": {
+  "file": "species-mark-S07-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "b4bcc36d5fbe2b1fc1fd08a3047d9bf3e2b4f9e5b6a34a5277c05daf8c747c5c",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S07.json (glyph)",
+   "source_sha256": "ebd818d9c942c2e554413cc12e787bd8d370dda344730117bda25d75f07ea805",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S08-10": {
+  "file": "species-mark-S08-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "95db3ada1d902973395b71a3946e7eb76c47d4f7400d8cde2473c177766ecea2",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S08.json (glyph)",
+   "source_sha256": "0789557101c9f86a0e28df0966413c98ff95fd59b5860388ed339f1ad0503d13",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S08-15": {
+  "file": "species-mark-S08-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "4e46ee78d9187128c91a56430bf761aeb192ba23702a61e8631d4b4ca5887b17",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S08.json (glyph)",
+   "source_sha256": "0789557101c9f86a0e28df0966413c98ff95fd59b5860388ed339f1ad0503d13",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S09-10": {
+  "file": "species-mark-S09-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "0bd0d6026198695c7c41091396ec29524c42734b0434edf00afe240730ac9bba",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S09.json (glyph)",
+   "source_sha256": "3832d5ab35ed4210397234730c672b9451c7c85939a80ef9ce7779dff57d36f7",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S09-15": {
+  "file": "species-mark-S09-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "001415ff994a29d3fdd0877394add63f25f7d113fdfc69ca2551f7ab7835ed8f",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S09.json (glyph)",
+   "source_sha256": "3832d5ab35ed4210397234730c672b9451c7c85939a80ef9ce7779dff57d36f7",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S10-10": {
+  "file": "species-mark-S10-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "3c23d1a5d7ae11b50bb335242175f19f1677cf5a81347ac51610d2077d194df7",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S10.json (glyph)",
+   "source_sha256": "572e8d2f43ea8125dd6daeeb098780f2cd38a69fc955471fc5159ac450afcc71",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S10-15": {
+  "file": "species-mark-S10-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "4b301d8321b35137b3e69a5f75b02010678c764f184d3b9246b27928543bb355",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S10.json (glyph)",
+   "source_sha256": "572e8d2f43ea8125dd6daeeb098780f2cd38a69fc955471fc5159ac450afcc71",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S11-10": {
+  "file": "species-mark-S11-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "0fa74f2bd81981208b69f72fa19efc186a3ec3e2ae1bd100499349b3d8bce092",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S11.json (glyph)",
+   "source_sha256": "01ab6dc706482e4fc0b5ddfaf4797676f0fe066ccf134c3dabeb4df1b9bbd8ce",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S11-15": {
+  "file": "species-mark-S11-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "f7995f475d912ecfb42df90d5a6db5bec1b9914e4237d87b461f6bb0bba40275",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S11.json (glyph)",
+   "source_sha256": "01ab6dc706482e4fc0b5ddfaf4797676f0fe066ccf134c3dabeb4df1b9bbd8ce",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S12-10": {
+  "file": "species-mark-S12-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "5199092862b37f61ff808a4107b890d7fb42a89a1a69ffeef596339f3cd9f0b8",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S12.json (glyph)",
+   "source_sha256": "2630e433df2550f60fb5941976c88cb3d0af2e433e4d05df974a82c518f53aaa",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S12-15": {
+  "file": "species-mark-S12-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "ac086094655a4fa9b9cc86a00876039a3365b1438bcb905197b009260f10873d",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S12.json (glyph)",
+   "source_sha256": "2630e433df2550f60fb5941976c88cb3d0af2e433e4d05df974a82c518f53aaa",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S13-10": {
+  "file": "species-mark-S13-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "5c684d671de0077103800f1e8614c5520616c3c6a0a77ab0deedb7ddbca537e0",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S13.json (glyph)",
+   "source_sha256": "0c5870f74731d937dd7bf45e5da446f7ec5214acf715c2eee0bf2051bc5b5c70",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S13-15": {
+  "file": "species-mark-S13-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "0a85d3d61ca1938e988860a4de82c2335c6c856474ba7c340c3776d688be500f",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S13.json (glyph)",
+   "source_sha256": "0c5870f74731d937dd7bf45e5da446f7ec5214acf715c2eee0bf2051bc5b5c70",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S14-10": {
+  "file": "species-mark-S14-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "141893cd99cbd8beb2c4940804fe46638f56bbc27e80a3ee4c184249d98f1bce",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S14.json (glyph)",
+   "source_sha256": "f3816621c487aec02f3a8207d663fc32091ef5740f6037c1421d583007094065",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S14-15": {
+  "file": "species-mark-S14-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "463c3c02e4c5d913832cf462c17ffb0fbb4d5749d3d62e67ea475be43d7da5a7",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S14.json (glyph)",
+   "source_sha256": "f3816621c487aec02f3a8207d663fc32091ef5740f6037c1421d583007094065",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S15-10": {
+  "file": "species-mark-S15-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "85fa48484de1a50c72dc5c6e5ce48e2189f7a3dad4a2bb1b8f3eda5898902f18",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S15.json (glyph)",
+   "source_sha256": "a06340efc6cc45d63b381557889fb9dd968fd8df36e4eb51ee33ecefb0b68fff",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S15-15": {
+  "file": "species-mark-S15-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "9c87f6cfba7ef100c57018e1920c59992244b312af5e280203d6e245a906262d",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S15.json (glyph)",
+   "source_sha256": "a06340efc6cc45d63b381557889fb9dd968fd8df36e4eb51ee33ecefb0b68fff",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S16-10": {
+  "file": "species-mark-S16-10.png",
+  "size": [
+   10,
+   10
+  ],
+  "sha256": "91052ec1655e77c85253f740671ae0f109158b715aa62ef929d2bba1df9d528a",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S16.json (glyph)",
+   "source_sha256": "8f35a24c8e90ceffbf1648ce4c9daec3232a6444dbd1d074f428a2854d864134",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "species-mark-S16-15": {
+  "file": "species-mark-S16-15.png",
+  "size": [
+   15,
+   15
+  ],
+  "sha256": "334ce74b2b3b608e29ce0b8ea634bd2b3a5c63fca4b05ebb4d72b39cc9becbf6",
+  "from": {
+   "source": "station-gate prototypes/workbench/frames/species-S16.json (glyph)",
+   "source_sha256": "8f35a24c8e90ceffbf1648ce4c9daec3232a6444dbd1d074f428a2854d864134",
+   "script": "guides/cut-marks.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "library-seed-24x24": {
+  "file": "library-seed-24x24.png",
+  "size": [
+   24,
+   24
+  ],
+  "sha256": "2a858bb57639390d1fdcac798b431713c7217ce9e03a7075fa519f746622db1a",
+  "from": {
+   "source": "iwq results/T-20261017-library/art/compose-all2-v3.js seedMark",
+   "source_sha256": "049e4e2c474c245eaa56265335c7c6b5de6fe8b889f24cf642e63b1796026a70",
+   "script": "guides/draw-seed.py (guides/seed_rule.py)"
+  },
+  "signed_in": null,
+  "status": "derived-from-concept"
+ },
+ "wish-mark-12": {
+  "file": "wish-mark-12.png",
+  "size": [
+   12,
+   12
+  ],
+  "sha256": "fdc4d620ce03605ce2207306d8774163953fa9bd3e447e3bc7e2b2faae56f915",
+  "from": {
+   "source": "iwq results/T-20261017-library/art/compose-species.js star5",
+   "source_sha256": "89c89bea9b024835be4cf60d574d30c7a9974fd2f0eb49b3f5f54c8f3d7cda3b",
+   "script": "guides/draw-star.py (guides/star_rule.py)"
+  },
+  "signed_in": null,
+  "status": "derived-from-concept"
+ },
+ "look-disc-open-16": {
+  "file": "look-disc-open-16.png",
+  "size": [
+   16,
+   16
+  ],
+  "sha256": "56fce90626e48e1b94d84e0a06abc11f4728a7cd0a8ec01122b4ff9fac406d66",
+  "from": {
+   "source": "typed by the rule in the brief (no source file)",
+   "source_sha256": null,
+   "script": "guides/draw-ring.py"
+  },
+  "signed_in": null,
+  "status": "new"
+ },
+ "library-sitting-16x12": {
+  "file": "library-sitting-16x12.png",
+  "size": [
+   16,
+   12
+  ],
+  "sha256": "15340101dfed9a2a607ab47ab15fb253bbf8cafa8339ca91d0c65a52fd7c488f",
+  "from": {
+   "source": "station-gate c4be3673 prototypes/ui/assets/masters/pods/home-sitting-32x24.png",
+   "source_sha256": "80ba90b17fa0df1a87d974cbbd88ca2d78b7911d48cafe88a6a915efca039298",
+   "script": "guides/sitting-16x12.py (the GRID typed by hand; the script writes and checks it)"
+  },
+  "signed_in": null,
+  "status": "new"
+ }
+}
