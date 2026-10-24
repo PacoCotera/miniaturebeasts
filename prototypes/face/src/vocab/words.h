@@ -31,6 +31,8 @@ void word_specimen(const char *base);   /* the pod under the beam on its cradle;
 void word_kin(const char *base);        /* the overview's kin rings and the hatch */
 void word_page(const char *key);        /* the chapter page ("page") or one of Compare's two ("pageA", "pageB") */
 void word_list(void);    /* Pods' collection: the rack's places */
+int kit_glint_level(const char *spec, const char *path, uint32_t elapsed_ms, int motion);   /* a fading glint's dither level, 0 to <path>.levels: in over the first half of <path>.ms, out over the second; motion 0: the top level (contract header in station/glint.c) */
+void kit_glint(const char *id, const char *asset, int cx, int cy, int w, int h, int level);   /* one glint: the asset dithered in from clear at the level, centred on (cx, cy); its layer is the asset's */
 /* the ring of the target whose `group` this is in the screen spec of the props (the rail's, Pods'), at the region id the caller names */
 void word_focusRingFor(const char *id, const int drawn[4], const char *group);
 void word_rail(const char *marksSpec);    /* the chapter rail (frame spec) with the ring on its focused tab; `marksSpec` names the spec whose colours.rail the marked pips take (NULL: the screen has no marked pips) */
