@@ -3215,6 +3215,13 @@
    "sha256": "c825a5380460798afb932816e479178601a81a23af34d377a1802d7f7e8fae9b",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "place-cave-96x96": {
+   "file": "pods/place-cave-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "4eb995814991ce9276b0fb0fbdb502101b687612c61579c360d12b7ca3367096",
+   "signed": "art director, sitting verdict (a079009f)"
+  },
   "place-meadow-48x48": {
    "file": "pods/place-meadow-48x48.png",
    "w": 48,
@@ -3228,6 +3235,13 @@
    "h": 64,
    "sha256": "1ab545a590d5e69c8a5dbec5e623aad95e7d82e86c887000d03f89a1707f224e",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "place-meadow-96x96": {
+   "file": "pods/place-meadow-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "7ba22a9108a0e112a4d25d01f094289a341dd63da4bbbe64de642f380f255208",
+   "signed": "art director, sitting verdict (a079009f)"
   },
   "place-pond-48x48": {
    "file": "pods/place-pond-48x48.png",
@@ -3243,6 +3257,13 @@
    "sha256": "e17c94bf08939691d08f4f3c9882e12189ea4a23ab4108f8ff847e8f5f4fc99f",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "place-pond-96x96": {
+   "file": "pods/place-pond-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "8f0df577e35ac87baed2f4c8da5c65cd0ce6183db0d3a0ac3066ab966b7fdc24",
+   "signed": "art director, sitting verdict (a079009f)"
+  },
   "place-rock-48x48": {
    "file": "pods/place-rock-48x48.png",
    "w": 48,
@@ -3257,6 +3278,13 @@
    "sha256": "9bc3c7801fafb8426a506e701c113c7d2e86da985ef5489c3812f3335c135e3f",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "place-rock-96x96": {
+   "file": "pods/place-rock-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "d8e0f79bd95d68801ac81006264d9a291b6fee5876e4bafe74913b8b10ba4850",
+   "signed": "art director, sitting verdict (a079009f)"
+  },
   "place-wood-48x48": {
    "file": "pods/place-wood-48x48.png",
    "w": 48,
@@ -3270,6 +3298,13 @@
    "h": 64,
    "sha256": "aeea3ff5939c3e51a290562cbd99e49ccad03ef96b3582996adf61f6821e4a35",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "place-wood-96x96": {
+   "file": "pods/place-wood-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "2360f346a688ccfc5de5e8da1f9d4cb31c6c6331c428ffd8aab15185a0b3fbaf",
+   "signed": "art director, sitting verdict (a079009f)"
   },
   "plate-device-136x96": {
    "file": "pods/plate-device-136x96.png",
@@ -5601,6 +5636,20 @@
    "h": 40,
    "sha256": "539edb3a9febe50d1e308296f1428593e318462177a746c06d11de0b09ff0746",
    "signed": "named with --ids"
+  },
+  "sitting-gilt-560x424": {
+   "file": "pods/sitting-gilt-560x424.png",
+   "w": 560,
+   "h": 424,
+   "sha256": "9675b2b29b998fb7a31bb56f5e997f96e73907cc1670786b001e7059f6580617",
+   "signed": "art director, sitting verdict (a079009f)"
+  },
+  "sitting-gilt-lit-560x424": {
+   "file": "pods/sitting-gilt-lit-560x424.png",
+   "w": 560,
+   "h": 424,
+   "sha256": "56b8956ca5d2ae9829bc87afde3f976e60720d0264b315c7e3cef5f2544878a9",
+   "signed": "art director, sitting verdict (a079009f)"
   },
   "species-mark-S01-10": {
    "file": "pods/species-mark-S01-10.png",
