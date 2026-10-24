@@ -80,6 +80,13 @@
    "cells": {
     "1": "floor/S01/crested/mibi-juvenile-S01-anchor-304x312.png"
    }
+  },
+  "compose-sit-juvenile-bare-in.png": {
+   "cells": {
+    "1": "floor/S01/crested/mibi-juvenile-S01-anchor-304x312.png",
+    "2": "floor/S01/crested/mibi-juvenile-S01-shake-t1-304x312.png",
+    "3": "floor/S01/crested/mibi-juvenile-S01-calm-t1-304x312.png"
+   }
   }
  }
 }

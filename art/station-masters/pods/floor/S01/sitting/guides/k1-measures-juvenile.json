@@ -1,0 +1,79 @@
+{
+ "sheet": "source/raw/sit-S01-juvenile-keys-crested-a.jpg",
+ "mirrored": [],
+ "anchor_light": {
+  "hi_dx": 0.146,
+  "TL/TR": 0.91,
+  "TL/BR": 1.0
+ },
+ "takes": {
+  "shake-t1": {
+   "light": {
+    "hi_dx": 0.214,
+    "TL/TR": 0.95,
+    "TL/BR": 1.11
+   },
+   "light_test": false,
+   "droplet_light": {
+    "n": 6,
+    "dx": 0.066,
+    "dy": -0.093,
+    "left": 2,
+    "right": 4
+   },
+   "iou_anchor": 0.76,
+   "iou_curl": 0.56,
+   "height_of_anchor": 1.08,
+   "reads_apart": true
+  },
+  "calm-t1": {
+   "light": {
+    "hi_dx": 0.283,
+    "TL/TR": 0.88,
+    "TL/BR": 1.01
+   },
+   "light_test": false,
+   "iou_anchor": 0.73,
+   "iou_curl": 0.63,
+   "height_of_anchor": 0.98,
+   "reads_apart": true
+  },
+  "shake-t2": {
+   "light": {
+    "hi_dx": 0.119,
+    "TL/TR": 1.01,
+    "TL/BR": 1.18
+   },
+   "light_test": true,
+   "droplet_light": {
+    "n": 6,
+    "dx": 0.054,
+    "dy": -0.11,
+    "left": 2,
+    "right": 4
+   },
+   "iou_anchor": 0.74,
+   "iou_curl": 0.57,
+   "height_of_anchor": 1.06,
+   "reads_apart": true
+  },
+  "calm-t2": {
+   "light": {
+    "hi_dx": 0.247,
+    "TL/TR": 0.89,
+    "TL/BR": 1.02
+   },
+   "light_test": false,
+   "iou_anchor": 0.72,
+   "iou_curl": 0.64,
+   "height_of_anchor": 0.97,
+   "reads_apart": true
+  }
+ },
+ "pairs_shake_calm": {
+  "shake-t1xcalm-t1": 0.64,
+  "shake-t1xcalm-t2": 0.63,
+  "shake-t2xcalm-t1": 0.65,
+  "shake-t2xcalm-t2": 0.65
+ }
+}
