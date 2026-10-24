@@ -1,0 +1,95 @@
+{
+ "measured": "2026-10-23 22:23",
+ "method": "sitting-backdrops-near/guides/measure-bd.py",
+ "rows": {
+  "vivarium-near-day (reference)": {
+   "file": "slices/vivarium-near-day-544x408.png",
+   "detail": 15.8,
+   "saturation": 144.5,
+   "spread": 48.9,
+   "key": 2.0,
+   "figure_zone_lum": 0.26,
+   "feet_band_detail": 16.4,
+   "tag_std": 28.0,
+   "tag_p99": 160.0
+  },
+  "sitting-backdrop-meadow-near-a": {
+   "file": "source/raw/sitting-backdrop-meadow-near-a.jpg, cut to sitting-backdrops-near/slices/sitting-backdrop-meadow-544x408.png",
+   "detail": 12.3,
+   "saturation": 111.4,
+   "spread": 48.1,
+   "key": 2.8,
+   "figure_zone_lum": 0.305,
+   "feet_band_detail": 11.5,
+   "tag_std": 3.7,
+   "tag_p99": 139.0,
+   "mxn": 4.177,
+   "result": "pass"
+  },
+  "sitting-backdrop-pond-near-a": {
+   "file": "source/raw/sitting-backdrop-pond-near-a.jpg, cut (not kept in slices/)",
+   "detail": 5.4,
+   "saturation": 88.7,
+   "spread": 47.3,
+   "key": 1.38,
+   "figure_zone_lum": 0.335,
+   "feet_band_detail": 4.1,
+   "tag_std": 7.3,
+   "tag_p99": 153.0,
+   "mxn": 4.137,
+   "result": "fail: gate 10 (detail 5.4 < 11, saturation 88.7 < 90), check 12 (feet band detail 4.1, flat ground under the feet line)"
+  },
+  "sitting-backdrop-rock-near-a": {
+   "file": "source/raw/sitting-backdrop-rock-near-a.jpg, cut to sitting-backdrops-near/slices/sitting-backdrop-rock-544x408.png",
+   "detail": 8.9,
+   "saturation": 79.2,
+   "spread": 50.1,
+   "key": 3.68,
+   "figure_zone_lum": 0.267,
+   "feet_band_detail": 12.4,
+   "tag_std": 8.8,
+   "tag_p99": 135.0,
+   "mxn": 4.0713,
+   "result": "fail: gate 10 (detail 8.9 < 11, saturation 79.2 < 90)"
+  },
+  "sitting-backdrop-wood-near-a": {
+   "file": "source/raw/sitting-backdrop-wood-near-a.jpg, cut to sitting-backdrops-near/slices/sitting-backdrop-wood-544x408.png",
+   "detail": 14.5,
+   "saturation": 115.1,
+   "spread": 53.1,
+   "key": 2.27,
+   "figure_zone_lum": 0.257,
+   "feet_band_detail": 16.4,
+   "tag_std": 19.8,
+   "tag_p99": 148.0,
+   "mxn": 4.002,
+   "result": "pass"
+  },
+  "sitting-backdrop-cave-near-a": {
+   "file": "source/raw/sitting-backdrop-cave-near-a.jpg, cut to sitting-backdrops-near/slices/sitting-backdrop-cave-544x408.png",
+   "detail": 14.5,
+   "saturation": 82.7,
+   "spread": 55.6,
+   "key": 1.7,
+   "figure_zone_lum": 0.305,
+   "feet_band_detail": 20.1,
+   "tag_std": 31.9,
+   "tag_p99": 181.0,
+   "mxn": 4.2332,
+   "result": "fail: gate 10 (saturation 82.7 < 90), check 13 (tag rows grey std 31.9 > 20: pebbles)"
+  },
+  "sitting-backdrop-pond-near-b": {
+   "file": "source/raw/sitting-backdrop-pond-near-b.jpg, cut to sitting-backdrops-near/slices/sitting-backdrop-pond-544x408.png",
+   "detail": 11.4,
+   "saturation": 100.5,
+   "spread": 48.3,
+   "key": 2.06,
+   "figure_zone_lum": 0.412,
+   "feet_band_detail": 12.0,
+   "tag_std": 19.1,
+   "tag_p99": 163.0,
+   "mxn": 3.8874,
+   "result": "fail: check 11 (figure zone mean luminance 0.412 > 0.35, bright haze); gate 10, checks 12 and 13 pass"
+  }
+ }
+}

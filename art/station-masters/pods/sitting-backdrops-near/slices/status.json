@@ -1,0 +1,22 @@
+{
+ "sitting-backdrop-meadow-544x408": {
+  "status": "new",
+  "note": "near-treatment repaint from sitting-backdrop-meadow-near-a (gemini-3-pro-image); exit checks: pass; not signed"
+ },
+ "sitting-backdrop-pond-544x408": {
+  "status": "new",
+  "note": "near-treatment repaint from sitting-backdrop-pond-near-b (gemini-3-pro-image); exit checks: fail: check 11 (figure zone mean luminance 0.412 > 0.35, bright haze); gate 10, checks 12 and 13 pass; not signed"
+ },
+ "sitting-backdrop-rock-544x408": {
+  "status": "new",
+  "note": "near-treatment repaint from sitting-backdrop-rock-near-a (gemini-3-pro-image); exit checks: fail: gate 10 (detail 8.9 < 11, saturation 79.2 < 90); not signed"
+ },
+ "sitting-backdrop-wood-544x408": {
+  "status": "new",
+  "note": "near-treatment repaint from sitting-backdrop-wood-near-a (gemini-3-pro-image); exit checks: pass; not signed"
+ },
+ "sitting-backdrop-cave-544x408": {
+  "status": "new",
+  "note": "near-treatment repaint from sitting-backdrop-cave-near-a (gemini-3-pro-image); exit checks: fail: gate 10 (saturation 82.7 < 90), check 13 (tag rows grey std 31.9 > 20: pebbles); not signed"
+ }
+}

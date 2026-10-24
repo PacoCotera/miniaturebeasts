@@ -21,7 +21,7 @@ Built by `guides/compose-sit.py` at 0 MXN. The stage's canvas transform (crested
 | K1a `sit-S01-adult-keys-crested-a` (re-sent after the owner's top-up, lead 22:12) | 2026-10-23 22:16 | **failed, checks 6 and 7**: all four takes (cells 2, 3, 5, 6) face RIGHT; the adult faces LEFT (cell 1's face at x 115 of the cell, the takes' at 263-327 against body centres 218-226). Neither take of either pose passes, so the sheet fails. Also: the shake takes' droplets sit on the coat. Passed: check 3 (border median 9 from #FF00FF), cell 1 in place (mean RGB difference 4.3) | 4.17 | 4.17 | 4.17 | 4.17 (10-23) |
 | K1b `sit-S01-adult-keys-crested-b` (the adult retry; adult total before it 4.17 ≤ 18.6) | 2026-10-23 22:17 | **failed, checks 6 and 7 again**: all four takes face RIGHT (by eye at 1×: every face, eye and snout on the cell's right side; cell 1 faces left). Neither take of either pose passes. Passed: check 3 (border 8 from #FF00FF), cell 1 in place (mean RGB difference 4.5). The droplets now sit mostly clear of the coat | 4.32 | 8.49 | 8.49 | 8.49 (10-23) |
 
-## Job 1 stopped (2026-10-23 22:19)
+## Job 1 stopped after K1b (request sent 22:17)
 
 Both adult K1 sheets came back with every take mirrored: the head to the right, against the brief's "adult head to the LEFT" that the prompt carries as written. The one adult retry is spent, so no adult take of either pose survives K1, and nothing was cut. Under the brief ("If no adult take of a pose survives K2–K4, stop and report. I decide before the juvenile spends"), K2a to K4a and the juvenile K1j to K4j are not run. The art director decides. The studio does not mirror a take by itself: mirroring flips the top-left light, and the facing is the art director's call. Job 1 stands at 8.49 of 39 MXN.
 

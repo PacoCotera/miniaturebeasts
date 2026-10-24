@@ -5580,5 +5580,22 @@
    "thoughtsTokenCount": 308,
    "totalTokenCount": 2756
   }
+ },
+ {
+  "tag": "sitting-backdrop-pond-near-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.19437,
+  "mxn": 3.8874,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-23",
+  "time": "2026-10-24T04:21:36Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1005,
+   "candidatesTokenCount": 1378,
+   "thoughtsTokenCount": 225,
+   "totalTokenCount": 2608
+  }
  }
 ]
