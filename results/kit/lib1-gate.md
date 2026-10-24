@@ -1,6 +1,6 @@
 # Library 1 gate (architect, 2026-10-24 02:10 Mexico City), c392c5e1
 
-T-20261023-289, build/library-kit c392c5e1 on c4be3673. It is one commit, by Paco Cotera <paco@cotera.org>, with no trailers. It touches 8 files: CMakeLists, home_frame.c, face_test.c, frame.c, the new station/glint.c, words.h, metrics.json and frame.json. I gated it against the ticket's Rules, the K7 lines (k7-gate.md §5) and the Library UI/UX source (iwq/results/T-20261017-library/).
+T-20261023-289, build/library-kit c392c5e1 on c4be3673. It is one commit, by Paco Cotera <paco@cotera.org>, with no trailers. It touches 8 files: CMakeLists, home_frame.c, face_test.c, frame.c, the new station/glint.c, words.h, metrics.json and frame.json. I gated it against the ticket's Rules, the K7 lines (k7-gate.md §5) and the Library UI/UX source.
 
 ## 1. Verdict
 
@@ -53,7 +53,7 @@ All runs were in my own worktree under scratchpad/arch-lib1, with private FACE_B
 **What the UI/UX source says about the readout.** Grepping "readout" finds it in the UI/UX Library design and words.md only. the UI/UX follow-ups and the UI/UX follow-ups have no readout line.
 - the UI/UX Library design: "drawn at 16 px in `mist`, starting at x = the title's end + 8, and clipped to end by x 248;"
 - the UI/UX Library design: "the mark (a 10×10 picture) 4 px before its word;"
-- kit-map-ruling.md:11 and words.md:25 give the same x figures (123, +14 with a mark, clip at 248) and no y.
+- The architect's K-order ruling and the copywriter's words give the same x figures (123, +14 with a mark, clip at 248) and no y.
 - The mock that drew the readout, the art director's mock composer, draws the word at `textBaseline = 'middle'` on y 19 and the mark with `glyphMark(o, p.mark, x, 19 - 5, …)`. The mark is centred on its word's middle line, not on the bar or the title.
 
 **The source fixes x only.** Its one statement about the mark, "4 px before its word", ties the mark to its word, and the mock centres the mark on the word. Nothing in the source ties the mark to the title rect.
