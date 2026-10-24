@@ -838,3 +838,28 @@ test("fix 14: a moving set's contact shadow is as wide as its creature cell, at 
   }
   assert.ok(n >= 3, "the sets were found: " + n);
 });
+
+// The Library's Level 2 (library.json l2): the shelf's rows and the Families shelf as the ticket places them, the UI/UX ruling for the sittings, the focus graphs and targets, the words, the frame's tree
+test("the Library's Level 2 (library.json l2): the shelf, the families, the focus and the words; library.species built, library.family not yet", async () => {
+  const lib = rd("../specs/station/library.json"), L = lib.l2, SH = L.shelf, FA = L.families, { listPitch } = await import("../specs/derive.mjs");
+  assert.deepEqual([L.states, L.initial, L.picture.rect, L.page.rect], [["sheet", "lit"], "sheet", [16, 40, 664, 522], [700, 50, 308, 500]]);
+  assert.deepEqual([SH.rect, SH.radius, SH.fill, SH.edge, SH.bevel, SH.band], [[700, 50, 308], 6, "libPanel", null, null, { side: 0, h: 30, fill: "libHead", rule: "libWell" }]);
+  const h = (w, s) => SH.height.head + SH.height.gap + SH.wish.pitch * w + SH.height.afterWish + SH.face.picture.size + (s > 0 ? SH.sittings.row : 0) + SH.height.pad;
+  for (const w of [0, 1, 4]) for (const s of [0, 3]) assert.equal(h(w, s), 30 + 12 + 24 * w + 16 + 64 + (s > 0 ? 36 : 0) + 12, `h at w ${w}, s ${s}`);
+  assert.deepEqual([SH.title.x, SH.title.lineTop, SH.title.colour, SH.wish.label.x, SH.wish.label.lineTop], [712, 55, "fog", 712, 92]);
+  assert.deepEqual([SH.wish.disc.at, SH.wish.disc.size, SH.wish.star.at, SH.wish.star.size, SH.wish.word.x, SH.wish.word.lineTop, SH.wish.word.clip, SH.wish.max], [[800, 94], [16, 16], [810, 88], [12, 12], 826, 92, 170, 4]);
+  assert.deepEqual([SH.wish.word.colour, SH.wish.disc.open, SH.wish.focus.rect], [{ carried: "bone", not: "fog" }, "look-disc-open-16", [796, 88, 204, 4]]);
+  assert.deepEqual([SH.face.label.x, SH.face.label.dy, SH.face.picture.x, SH.face.picture.size, SH.face.name.x, SH.face.name.dy, SH.face.name.clip, SH.face.name.colour], [712, 22, 800, 64, 876, 22, 120, "bone"]);
+  assert.deepEqual([SH.sittings.label.x, SH.sittings.label.dy, SH.sittings.x0, SH.sittings.pitch, SH.sittings.dy, SH.sittings.size, SH.sittings.max, SH.sittings.row, SH.sittings.slice], [712, 2, 800, 20, 6, [16, 12], 9, 36, "library-sitting-16x12"], "sitting k at (800 + 20 k, y_s + 6), the label at lineTop y_s + 2 (UI/UX)");
+  assert.deepEqual([FA.x, FA.w, FA.gap, FA.head + FA.rowGap + FA.rowPitch + FA.pad, FA.max, FA.name.clip, FA.name.align], [700, 308, 12, 30 + 12 + 80 + 12, 8, 72, "centre"]);
+  assert.deepEqual([0, 3, 4, 7].map((j) => listPitch(FA, 8, j)), [[712, 42, 56, 56], [712 + 76 * 3, 42, 56, 56], [712, 42 + 80, 56, 56], [712 + 76 * 3, 42 + 80, 56, 56]], "face j at (712 + 76 (j mod 4), y_r + 42 + 80 floor(j / 4))");
+  const T = L.focus.targets; assert.deepEqual(Object.fromEntries(Object.entries(T).map(([k, t]) => [k, [t.group, t.shape]])), { chapter: ["chapter", { rect: 6 }], wish: ["shelf", { rect: 4 }], face: ["shelf", { rect: 0 }], family: ["shelf", { rect: 0 }], look: ["look", { circle: "box" }] });
+  const N = (g) => [{ nearestIn: g, ahead: true }];
+  assert.deepEqual(L.focus.sheet, { fallback: "none", chapter: { left: [...N("chapter"), "none"], right: [...N("chapter"), ...N("shelf"), "none"], up: [...N("chapter"), "none"], down: [...N("chapter"), "none"] }, shelf: { left: [...N("shelf"), ...N("chapter"), "none"], right: [...N("shelf"), "none"], up: [...N("shelf"), "none"], down: [...N("shelf"), "none"] } });
+  assert.deepEqual(L.focus.lit, { fallback: "none", chapter: { left: [...N("chapter"), "none"], right: [...N("chapter"), "look.first", "none"], up: [...N("chapter"), "none"], down: [...N("chapter"), "none"] }, look: { left: [...N("look"), ...N("chapter"), "none"], right: [...N("look"), "none"], up: [...N("look"), "none"], down: [...N("look"), "none"] } });
+  const S = L.strings; assert.deepEqual([S.back, S.clear, S.show, S.clearChapter, S.wish, S.face, S.family, S.metOnly], ["Library", "Clear", "Show {Chapter}", "Clear {Chapter}", "Change the wish", "Look at {name}", "See the family", "seen, no pod identified yet"]);
+  assert.deepEqual(S.carried.two, ["carried by {A} and {B}", "{A} and {B} carry it", "{A} and more carry it", "{A} and more", "carried by more than one"]); assert.deepEqual(S.carried.one, ["carried by {A}", "carried by one of yours"]);
+  for (const s of [S.metOnly, S.carried.none, ...S.carried.two, ...S.carried.many, ...S.carried.one, ...Object.values(S.familyNameless), S.faceReleased.nameless]) assert.ok(!/\d|…$/.test(s) && s.split(" ").length <= 6, s);
+  const nav = frame.navigation.screens; assert.deepEqual([nav["library.species"].parent, nav["library.species"].back, nav["library.family"].parent, nav["library.family"].back], ["library", "Library", "library.species", "{Species}"]);
+  assert.equal(frame.strings.titles["library.family"], "Library"); assert.ok(frame.navigation.jumps.some((j) => j.from === "pods.overview" && j.to === "library.species" && !j.shut));
+});

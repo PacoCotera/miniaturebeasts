@@ -171,6 +171,7 @@
    "faceReleased": { "named": "{Name}, in the wild", "nameless": "in the wild" },
    "familyAt": { "home": "{Name} at home", "trip": "{Name} on a trip", "wild": "{Name}, in the wild" },
    "familyNameless": { "home": "at home", "trip": "on a trip", "wild": "in the wild" },
+   "namedRule": "a named line (faceReleased.named, familyAt) that does not fit the subject (208 px, 6 words) gives its nameless line",
    "metOnly": "seen, no pod identified yet",
    "carried": {
     "two": ["carried by {A} and {B}", "{A} and {B} carry it", "{A} and more carry it", "{A} and more", "carried by more than one"],
