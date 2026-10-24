@@ -36,10 +36,11 @@ export function fieldGuide(st, id, settings = DEFAULT_SETTINGS) {
 }
 export const guideUnseen = (st, id, settings) => fieldGuide(st, id, settings)?.unseen ?? null;
 
-// The Library's visit note, taken when the player enters the Library: every species' guide looks in the chapters that are not shut, { <species>: { <trait>: [looks] } }. Leaving the Library adds it to the seen record (state.mjs libRecord).
-export function seenNote(st, settings = DEFAULT_SETTINGS) {
-  const out = {};
-  for (const id of Object.keys(st.guide || {})) {
+// The Library's visit note: the guide looks in the chapters that are not shut, { <species>: { <trait>: [looks] } }, of every species, or of `only` (Level 2's entry: that species alone, an empty note when it has none:
+// a met-only entry). Leaving the Library adds the note to the seen record (state.mjs libRecord).
+export function seenNote(st, settings = DEFAULT_SETTINGS, only = null) {
+  const out = only ? { [only]: {} } : {};
+  for (const id of only ? [only] : Object.keys(st.guide || {})) {
     const fr = frameOf(id); if (!fr) continue;
     for (const ch of fr.chapters) {
       if (ch.sealed && !settings.sealedOpen && !(st.readOnce[id] || []).includes(ch.id)) continue;

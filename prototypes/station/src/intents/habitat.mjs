@@ -4,7 +4,7 @@ import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { habitatShown, watchFrame } from "../trickle.mjs";
 import { openNamer } from "./namer.mjs";
-import { openAt } from "./library.mjs";
+import { openSpecies } from "./library.mjs";
 import { openPanel } from "./panel.mjs";
 import { doorOpen } from "../nav.mjs";
 
@@ -42,7 +42,7 @@ export function intent(h, target, verb) {
     else play(h, "moment");   // Greet: the species' moment (its moving set's hops, or the placeholder's two until a set lands); nothing rewarded, nothing said
   }
   else if (target === "name") openNamer(h, m, "rename");
-  else if (target === "species") openAt(h, S.speciesOf(m));   // ✓ Open the guide (frame.json navigation.jumps): the Library's Level 1 with the ring on this species
+  else if (target === "species") openSpecies(h, S.speciesOf(m));   // ✓ Open the guide (frame.json navigation.jumps): the Library's Level 2 of this species
   else if (target.startsWith("plate.")) {
     const ch = chapterAt(m, target); if (!ch) return;
     const r = S.readMibi(h.st, m, ch.id, h.settings);

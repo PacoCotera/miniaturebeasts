@@ -81,7 +81,7 @@ test("the subject: a new look, two to six spelled, seven or more drop the count,
 });
 
 test("new this visit: a found species with looks found since the seen record glints, and the subject counts them across species; a met one never glints", () => {
-  const st = world(); st.knownIds = ["S02", "S03"]; st.metIds = ["S04"]; findLooks(st, "S02", 4); findLooks(st, "S03", 2); S.libOpened(st);
+  const st = world(); st.knownIds = ["S02", "S03"]; st.metIds = ["S04"]; findLooks(st, "S02", 4); findLooks(st, "S03", 2); st.libSeen = S.libSnapshot(st);
   let b = build(st); assert.ok(b.props.regions.cells.every((c) => !c.glint)); assert.equal(b.line.subject, "");
   findLooks(st, "S02", 2); b = build(st); assert.deepEqual(b.props.regions.cells.filter((c) => c.glint).map((c) => c.id), ["S02"]); assert.equal(b.line.subject, "two new looks");
   findLooks(st, "S03", 1); b = build(st); assert.deepEqual(b.props.regions.cells.filter((c) => c.glint).map((c) => c.id), ["S02", "S03"]); assert.equal(b.line.subject, "three new looks");

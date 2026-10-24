@@ -388,7 +388,7 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
   assert.equal(focusMove(hab.focus.graph, OUT, "name", "left", resolve), "name", "out: ◀ from the name stays");
   // nothing on Habitat is amber; no banned word in its strings; the guide's door is frame.json's jump
   assert.ok(!JSON.stringify(hab.colours).includes("amber"), "no amber up close"); assert.ok(!/outing/.test(JSON.stringify(hab.strings)), "expedition, never outing");
-  assert.ok(frame.navigation.jumps.some((j) => j.from === "habitat" && j.to === "library" && j.action === hab.strings.guide), "the guide's door: the Library's Level 1");
+  assert.ok(frame.navigation.jumps.some((j) => j.from === "habitat" && j.to === "library.species" && j.action === hab.strings.guide), "the guide's door: the Library's Level 2");
   assert.deepEqual(paletteBad(hab.colours), []);
 });
 
@@ -731,7 +731,7 @@ const SHAPES = {
   "habitat.json": { resident: "footprint", name: { rect: 0 }, species: { rect: 0, chip: 4 }, plate: { rect: 0 }, door: { rect: 6 }, portrait: { rect: 6 }, cross: { rect: 6 }, wild: { rect: 6 }, tile: { rect: 6 } },
   "namer.json": { key: { rect: 0 }, "mod.shift": { rect: 0 }, "mod.space": { rect: 0 }, "mod.page": { rect: 0 }, "act.done": { rect: 0 }, "act.suggest": { rect: 0 } },
   "pods.json": { place: { circle: { centre: [96, 88], r: 88 } }, pod: "oval", tab: "tab", kin: { circle: "box" }, hatch: { rect: 6 } },
-  "create.json": { roll: { rect: 0 } }, "library.json": { cell: { rect: 6 } }, "bench.json": { plates: { rect: 0 }, switch: { rect: 6 }, slot: { rect: 6 } }, "sitting.json": { card: { rect: 6 } }, "panel.json": { card: { rect: 10 } } };
+  "create.json": { roll: { rect: 0 } }, "library.json": { cell: { rect: 6 }, chapter: { rect: 6 }, wish: { rect: 4 }, face: { rect: 0 }, family: { rect: 0 }, look: { circle: "box" } }, "bench.json": { plates: { rect: 0 }, switch: { rect: 6 }, slot: { rect: 6 } }, "sitting.json": { card: { rect: 6 } }, "panel.json": { card: { rect: 10 } } };
 test("fix 14, the shape rule: every focus target has a shape of the five kinds and no `ring`; its rect radius is its object's; no spec but frame.json holds ring tokens or a ring colour; six (radius, ground) pairs at most", () => {
   const pairs = new Set(); let seen = 0;
   for (const [file, spec] of STATION) {

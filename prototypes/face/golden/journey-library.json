@@ -189,10 +189,27 @@
      }
     ],
     "screen": "library.species",
-    "state": "notBuilt",
-    "focus": null,
+    "state": "sheet",
+    "focus": "",
     "ok": null,
-    "subject": "",
+    "subject": "seen, no pod identified yet",
+    "back": "Library"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "",
+    "ok": null,
+    "subject": "seen, no pod identified yet",
     "back": "Library"
    },
    {
@@ -201,8 +218,272 @@
      {
       "t": "intent",
       "screen": "library.species",
-      "target": "screen",
+      "target": "",
       "verb": "back"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S04",
+    "ok": "Open Hiljan",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S09"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S09",
+    "ok": "Open Belatz",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "cell.S09",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, all found",
+    "back": "Library"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library.species",
+      "target": "chapter.legs-tail"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.legs-tail",
+    "ok": "Show Legs & tail",
+    "subject": "Legs & tail, all found",
+    "back": "Library"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library.species",
+      "target": "chapter.coat"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, all found",
+    "back": "Library"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.coat",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "lit",
+    "focus": "chapter.coat",
+    "ok": "Clear Coat",
+    "subject": "Coat, all found",
+    "back": "Clear"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library.species",
+      "target": "chapter.legs-tail"
+     }
+    ],
+    "screen": "library.species",
+    "state": "lit",
+    "focus": "chapter.legs-tail",
+    "ok": "Show Legs & tail",
+    "subject": "Legs & tail, all found",
+    "back": "Clear"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.legs-tail",
+      "verb": "back"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, all found",
+    "back": "Library"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.coat",
+      "verb": "back"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S09",
+    "ok": "Open Belatz",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S03"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S03",
+    "ok": "Open Tuikis",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "cell.S03",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, all found",
+    "back": "Library"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.coat",
+      "verb": "back"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S03",
+    "ok": "Open Tuikis",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S01"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S01",
+    "ok": "Open Loika",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "cell.S01",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, more to find",
+    "back": "Library"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.coat",
+      "verb": "back"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S01",
+    "ok": "Open Loika",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S03"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S03",
+    "ok": "Open Tuikis",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S04"
      }
     ],
     "screen": "library",
@@ -254,6 +535,23 @@
       "screen": "habitat",
       "target": "species",
       "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, more to find",
+    "back": "Library"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.coat",
+      "verb": "back"
      }
     ],
     "screen": "library",

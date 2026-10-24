@@ -64,6 +64,12 @@ int library_focus(focus_target_t *out, int cap);
 void library_key(int code);
 void library_hidden(void);
 int library_l1_tick(uint32_t now);
+/* The Library's Level 2 (screens/library_species.c): its words, its targets as they drew them (the open plates, the shelf or the lit chapter's looks), its keys; its glints' clock (again from the start when another screen shows) and its tick */
+void library_species_words(void);
+int species_focus(focus_target_t *out, int cap);
+void library_species_key(int code);
+void species_hidden(void);
+int library_l2_tick(uint32_t now);
 /* The Probe bench (screens/bench.c): its words, the targets as they drew them, its keys */
 void bench_words(void);
 int bench_focus(focus_target_t *out, int cap);

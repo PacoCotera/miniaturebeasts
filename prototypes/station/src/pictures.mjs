@@ -19,10 +19,14 @@ import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { relit } from "./relight.mjs";
 import { specimenFor } from "./specimen-cache.mjs";
 import { renderCell } from "./specimen.mjs";
-import { sheetPicture, renderDisc } from "./library-sheet.mjs";
+import { sheetPicture, renderDisc, sheetKept, keptPictures, warmPaper } from "./library-sheet.mjs";
 import { facePicture } from "./face-pictures.mjs";
 
 const SHEET_IDS = {};   // the Level 2 sheet's current entry of each kind (library-sheet.mjs keeps its pictures)
+const FACE_STAGE = new Map();   // the stage each face entry was drawn at
+const DROPPED = [];   // the ids whose entry a newer picture superseded: the host drops them on the face (the Library 3 gate's P4: the face's table recycles only by least recent use)
+// The superseded ids since the last call, taken (the host drops each on the face).
+export const droppedPictures = () => DROPPED.splice(0);
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
 
@@ -158,16 +162,15 @@ export function registerPictures(reqs, env) {
       case "moving": registerMoving(r.id, movingSource(env)); break;   // a moving set's atlas (Station M1 §1.2): composed from its placed masters or §1.5's stand-ins
       case "icon": put(r.id, r.px, r.px, "the icon set", () => ICON[r.name](r.px)); break;
       case "librarycell": {   // a Level 1 cell's picture (library.json l1.cell.picture): the specimen generator's cell harness (specimen.mjs renderCell), the found specimen or the met pencil study on its cell's flat ground; made once in the logic process, its time printed
-        const [w, h] = r.size; if (hasAsset(r.id)) break; const frame = env.frameOf(r.species), ground = RGB[C[r.ground]];
-        registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => { if (data) return data; const fr = r.shut?.length ? { ...frame, chapters: frame.chapters.map((ch) => ({ ...ch, sealed: r.shut.includes(ch.id) })) } : frame;
-          const p = renderCell(fr, { [r.species]: r.found ?? {} }, { pencil: r.status === "met", ground }); console.log(`# library cell ${r.id}: ${r.status}, rendered in ${p.ms.toFixed(0)} ms (${w} x ${h})`); return (data = p.rgba); } }; } });
+        const [w, h] = r.size; if (hasAsset(r.id)) break;
+        registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => ({ w, h, rgba: () => cellPixels(r, env) }) });
         break;
       }
-      case "librarysheet": case "librarylit": case "librarypage": {   // the Level 2 sheet, its lit variant and the lit chapter's page (library-sheet.mjs): made in the logic process, kept as the current sheet, one lit variant and one page; a newer request
-        // supersedes the older one of its kind, whose entry goes; on the ground master's pixels where library-ground-1024x522 is placed, else flat libGround; its time printed
-        const [w, h] = r.size; if (hasAsset(r.id)) break; const old = SHEET_IDS[r.kind]; if (old && old !== r.id) dropAsset(old); SHEET_IDS[r.kind] = r.id;
-        const frame = env.frameOf(r.species), gm = masterAt("library-ground-1024x522", 1024, 522);
-        registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => ({ w, h, rgba: () => sheetPicture(frame, r, { ground: gm ? { w: 1024, h: 522, rgba: assetOf("library-ground-1024x522").rgba() } : null }).rgba }) });
+      case "librarysheet": case "librarylit": case "librarypage": case "libraryquiet": {   // the Level 2 sheet, its lit variant, the lit chapter's page and the sheet's quiet stand-in (library-sheet.mjs): made in the logic process, kept as the current one of each kind; a newer request
+        // supersedes the older one of its kind, whose entry goes and whose picture the host drops on the face (droppedPictures); on the ground master's pixels where library-ground-1024x522 is placed, else flat libGround; its time printed
+        const [w, h] = r.size; if (hasAsset(r.id)) break; const old = SHEET_IDS[r.kind]; if (old && old !== r.id) { dropAsset(old); DROPPED.push(old); } SHEET_IDS[r.kind] = r.id;
+        const frame = env.frameOf(r.species);
+        registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => ({ w, h, rgba: () => sheetPicture(frame, r, { ground: sheetGround() }).rgba }) });
         break;
       }
       case "lookdisc": {   // a found look's disc at 16 (the page disc at 16), for the Level 2 shelf's wish pieces; transparent outside the disc
@@ -176,7 +179,8 @@ export function registerPictures(reqs, env) {
         break;
       }
       case "face": {   // a mibi's face for the Library (library.json faces, face-pictures.mjs): from its layered stand through the species' face window, at its size, on libGround; a labelled stand-in where the species has none; its time printed
-        const [w, h] = r.size; if (hasAsset(r.id)) break; const spec = SPECS.library.faces, rgb = (n) => RGB[C[n]];
+        // the id names the mibi and the size, not the stage (the art director, F4): a face drawn at another stage than its entry's (a mibi with no portrait that grew) is a new picture, and the old one goes from the face
+        const [w, h] = r.size; if (hasAsset(r.id) && FACE_STAGE.get(r.id) === r.stage) break; if (hasAsset(r.id)) { dropAsset(r.id); DROPPED.push(r.id); } FACE_STAGE.set(r.id, r.stage); const spec = SPECS.library.faces, rgb = (n) => RGB[C[n]];
         const stand = !!spec.windows?.[r.species]?.[r.stage === "elder" ? "adult" : r.stage] && !!layeredStand(r.species, r.stage, [304, 312], "default");
         registerAsset({ id: r.id, w, h, status: stand ? "derived" : "placeholder", until: stand ? null : "the species' layered stand and the art director's face window", build: () => { let data = null; return { w, h, rgba: () => { if (data) return data;
           const p = facePicture({ species: r.species, stage: r.stage, looks: r.looks, size: w, faded: !!r.faded }, spec, rgb); console.log(`# face ${r.id}: rendered in ${p.ms.toFixed(0)} ms${p.standIn ? " (the stand-in)" : ""}`); return (data = p.rgba); } }; } });
@@ -186,5 +190,46 @@ export function registerPictures(reqs, env) {
     }
   }
 }
+// ---- the Library's pictures made off the open path (the Library 2 gate's F5; the Library 3 gate's P1, P2, P4, P5) ----
+// A Level 1 cell picture or a Level 2 sheet, lit variant or page takes from 40 ms to over a second here (3 to 4 times that on a Pi 4), and the logic thread answers nothing while one is made. So the props name only
+// pictures that are made (libraryMade): a cell not yet made draws its quiet ground, a sheet its species' last sheet or its quiet stand-in, a lit variant the unlit sheet, a page nothing; the builders hand the rest
+// to wantLibrary, and the host makes one at a time (warmLibraryNext) after a frame is out and never in a hold; the next props name it, and the face swaps it in. A newer lit variant, page or sheet supersedes a queued one.
+const CELLS = new Map();   // a Level 1 cell picture's pixels by id, once made
+const WARM = [], ASKED = new Map();   // the requests waiting to be made, in the order asked, and when each was asked
+const ORDER = { librarylit: 0, librarypage: 1, librarysheet: 2, librarycell: 3 };   // the player's lit chapter first (its variant, then its page), then the sheet, then the cells
+const SUPERSEDES = new Set(["librarylit", "librarypage", "librarysheet"]);
+const sheetGround = () => (masterAt("library-ground-1024x522", 1024, 522) ? { w: 1024, h: 522, rgba: assetOf("library-ground-1024x522").rgba() } : null);   // the ground master's pixels, or null while it is not placed (flat libGround)
+function cellPixels(r, env, say = (s) => console.log(s)) {
+  const have = CELLS.get(r.id); if (have) return have;
+  const frame = env.frameOf(r.species), fr = r.shut?.length ? { ...frame, chapters: frame.chapters.map((ch) => ({ ...ch, sealed: r.shut.includes(ch.id) })) } : frame;
+  const p = renderCell(fr, { [r.species]: r.found ?? {} }, { pencil: r.status === "met", ground: RGB[C[r.ground]] }); say(`# library cell ${r.id}: ${r.status}, rendered in ${p.ms.toFixed(0)} ms (${r.size[0]} x ${r.size[1]})`);
+  CELLS.set(r.id, p.rgba); return p.rgba;
+}
+// Whether a Library picture is made: a cell's pixels, or a sheet, lit variant, page or quiet stand-in library-sheet.mjs keeps.
+export const libraryMade = (id) => CELLS.has(id) || sheetKept(id);
+// The species' last made sheet (library-sheet.mjs keeps one): its id, or null.
+export const lastSheet = (species) => { const id = keptPictures().sheet; return id && id.startsWith(`library-sheet-${species}-`) ? id : null; };
+// Ask for pictures to be made off the open path: each request not made and not waiting joins the queue; a lit variant, a page or a sheet supersedes a waiting one of its kind.
+export function wantLibrary(reqs) {
+  for (const r of reqs) {
+    if (libraryMade(r.id) || WARM.some((q) => q.id === r.id)) continue;
+    if (SUPERSEDES.has(r.kind)) for (let i = WARM.length - 1; i >= 0; i--) if (WARM[i].kind === r.kind) WARM.splice(i, 1);
+    WARM.push(r); ASKED.set(r.id, performance.now());
+  }
+}
+export const libraryWaiting = () => WARM.map((r) => r.id);
+// Make the next waiting picture (the lit chapter's first, then the sheet, then the cells; in the order asked within a kind): { id, kind, ms (to make it), waited (since it was asked) }, or null when none waits.
+export function warmLibraryNext(env, say = (s) => console.log(s)) {
+  if (!WARM.length) return null;
+  let k = 0; for (let i = 1; i < WARM.length; i++) if (ORDER[WARM[i].kind] < ORDER[WARM[k].kind]) k = i;
+  const r = WARM.splice(k, 1)[0], t0 = performance.now();
+  if (r.kind === "librarycell") cellPixels(r, env, say); else sheetPicture(env.frameOf(r.species), r, { ground: sheetGround(), print: say });
+  const at = ASKED.get(r.id) ?? t0; ASKED.delete(r.id);
+  return { id: r.id, kind: r.kind, ms: performance.now() - t0, waited: performance.now() - at };
+}
+// The one-time paper of the sheet's finish (library-sheet.mjs, about 3 s here, ~10 s on a Pi 4, ~11 MB), made off the open path (at the host's boot idle): its time, or 0 when it was made already.
+export const warmLibraryPaper = () => warmPaper();
+export const clearLibraryCells = () => { CELLS.clear(); WARM.length = 0; ASKED.clear(); };
+
 // The material icons the text runs draw (16 px).
 export const iconRequests = () => [...["energy", "data", "essence", "cross"].map((name) => ({ kind: "icon", id: `icon:${name}:16`, name, px: 16 })), { kind: "slot", id: "icon-cross-16", master: "icon-cross-16", size: [16, 16], until: "the cross icon master (the clash line's ✕)" }];   // the clash line's ✕ is the master icon-cross-16 (painted), not the stand-in sprite

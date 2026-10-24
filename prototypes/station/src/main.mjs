@@ -26,7 +26,8 @@ import { bootFace } from "./face-lvgl.mjs";
 import * as cargo from "./intents/cargo.mjs";
 import * as create from "./intents/create.mjs";
 import * as frameIntents from "./intents/frame.mjs";
-import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, lightIds, pinned, picture, setEnv } from "./host.mjs";
+import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, lightIds, pinned, picture, setEnv, setMetrics, libraryAhead } from "./host.mjs";
+import { warmLibraryNext, wantLibrary, libraryWaiting, warmLibraryPaper } from "./pictures.mjs";
 import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL } from "../../ui/assets.mjs";
 
 const $ = (id) => document.getElementById(id);
@@ -61,10 +62,21 @@ function pump() {
 // The screen's props, when they changed: the pictures first (the face takes a picture once, by id), then the props.
 // The Library's specimen is rendered here, never on a sync (build spec 4.2: about a second, and the logic thread answers nothing during it). Home's props show the last specimen (or the starter's empty form) until it is made. It is asked for after the sync
 // that found the state wanting it, once the frame is out, and not while an event holds input (an opening's steps are sent first); the first frame at boot asks too.
-let warmAt = null;
+// The Library's own pictures are made the same way, one a tick (pictures.mjs warmLibraryNext): what the props asked for first (the lit chapter's variant and page, a sheet, the Level 1 cells), then the sheet finish's one-time paper
+// (the Library 3 gate's P5: at the boot idle), then a sheet ahead of the open (P2: the species Level 1's ring rests on, else the last species whose sheet changed). Each one's time and its wait since it was asked are printed.
+let warmAt = null, paperDone = false;
+const AHEAD_REST_MS = 500;   // the ring "rests" on a Level 1 cell once no key has been pressed for this long (a builder's number: the Library 3 gate's P2 names no time)
+const LIB_ENV = { frameOf };
+function warmLibraryOne() {
+  const made = (w) => { if (w) console.log(`# library swap-in ${w.kind} ${w.id}: made in ${w.ms.toFixed(0)} ms, ${w.waited.toFixed(0)} ms after it was asked`); return !!w; };
+  if (made(warmLibraryNext(LIB_ENV))) return true;
+  if (!paperDone) { paperDone = true; const ms = warmLibraryPaper(); if (ms) console.log(`# library paper: made in ${ms.toFixed(0)} ms at the boot idle`); return true; }
+  if (performance.now() - (UI.lastInput ?? 0) >= AHEAD_REST_MS) { wantLibrary(libraryAhead()); return made(warmLibraryNext(LIB_ENV)); }
+  return false;
+}
 function queueWarm() {
   if (warmAt != null || !G.ready) return;
-  warmAt = setTimeout(() => { warmAt = null; if (H && H.holding()) return; try { warmLibrary(G.st, G.settings); } catch (e) { renderErrors.push("specimen: " + e.message); } }, 30);
+  warmAt = setTimeout(() => { warmAt = null; if (H && H.holding()) return; try { warmLibrary(G.st, G.settings); } catch (e) { renderErrors.push("specimen: " + e.message); } try { warmLibraryOne(); } catch (e) { renderErrors.push("library: " + e.message); } }, 30);
 }
 function syncProps() {
   if (msgSent !== FX.msgAt) { msgSent = FX.msgAt; if (FX.msg) H.play({ kind: "plate", target: "msg", ms: FX.msgMs || 4000 }); }
@@ -72,7 +84,8 @@ function syncProps() {
   const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
   lastOwed = p.owed ?? [];   // the current scene's requests that carry an owed habit key (snapshot): read on every sync, as the same props may be asked with or without it
   queueWarm();   // after the props are built, before the early return: a warm that was held waits for the hold, not for a change of props
-  if (key === lastProps) return;
+  for (const id of p.dropped ?? []) FACE.drop(id);   // a picture a newer one superseded leaves the face (the Library 3 gate's P4)
+  if (key === lastProps && !p.dropped?.length) return;
   { FACE.beginScene(); for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());
   else { const light = p.light ?? lastLight; if (lastLight && lastLight !== light) for (const id of lightIds(lastLight)) FACE.drop(id); if (lastLight && lastLight !== light) for (const id of litHeld) if (!p.ids.includes(id)) { FACE.drop(id); litHeld.delete(id); } for (const id of p.lit ?? []) litHeld.add(id); lastLight = light;   // fix 7: at a light change the graded residents the new props do not name go with the old light
@@ -208,6 +221,7 @@ const bootAssets = async () => {
   for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "panel", "library", "bench", "cross"]) SPECS[k] = await spec(k + ".json");
   { const ix = await spec("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = await spec(`moving/${id}.json`); SPECS.moving = sets; setMoving(sets); }   // the moving sets (Station M1 §2.2): one file a species, one spec on the face
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
+  setMetrics(await (await fetch(new URL("../../face/dist/metrics.json", import.meta.url), { cache: "no-store" })).json());   // the face's Inter metrics: Level 2 measures its bottom-line ladders with them (ui/specs/measure.mjs)
   setStandLooks(await spec("stand-looks.json")); setStandSizes(await spec("stand-sizes.json")); await loadStandLayers(new URL("../../ui/assets/stands/", import.meta.url));   // each mibi drawn as itself: the unread default looks and the layered stands' cut-outs (looks.mjs, layered-stand.mjs)
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   setEnv({ rgb: rgbOfName });
@@ -244,6 +258,7 @@ window.__st = { ready, renderErrors, portraitSource: (digest, rgba) => { const r
   get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel, invOverflows: () => FACE.invOverflows(), invCap: () => FACE.invCap(), pass: FACE.pass, hide: FACE.hide, offPalette: FACE.offPalette, forceFull: FACE.forceFull, errors: faceErrors.slice(), log: () => lastLog } : null; },
   // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, the ids of the scene's requests that carry an owed habit key, and with `capture` the PNG.
   snapshot: ({ capture = false } = {}) => { const f = FACE, out = { hash: f.hash(), errors: faceErrors.slice(), refused: f.refused(), owed: lastOwed.slice() }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },
+  libraryWarm: () => { let n = 0; while (warmLibraryNext(LIB_ENV)) n++; return n; }, libraryWaiting,   // the Library's pictures waiting to be made, made now (the goldens take a scene once they are)
   get msg() { return FX.msg; }, capture: () => vis.toDataURL("image/png"), holding: () => H.holding(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, frameOf, frameIds, podById, genomesText, podGenome, genomeSha, nameCode,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); const pb = stampArt(fr, p.genome, p.read, side); return { width: pb.w, height: pb.h, data: pb.rgba() }; },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },

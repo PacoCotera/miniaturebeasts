@@ -8,6 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
+import * as Lib from "../src/library.mjs";
 import { createFocus } from "../../ui/focus.mjs";
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { blank } from "../../face/tools/blank.mjs";
@@ -32,7 +33,7 @@ function pod(st, id, read = [], gs = 5, identified = true) { S.seedPodFromGenome
 const chapters = (id) => frameOf(id).chapters.map((c) => c.id);
 
 test("every screen with intents has a module, and a face intent reaches it; the frame's verbs are the same on every screen", () => {
-  assert.deepEqual(Object.keys(INTENTS).sort(), ["bench", "cargo", "create", "frame", "habitat", "home", "incubator", "library", "namer", "panel", "pods", "vivarium"]);
+  assert.deepEqual(Object.keys(INTENTS).sort(), ["bench", "cargo", "create", "frame", "habitat", "home", "incubator", "library", "library.species", "namer", "panel", "pods", "vivarium"]);
   const st = world(), h = host(st); h.ui.screen = "library";
   dispatch(h, { screen: "library", target: "x", verb: "room:home" }); assert.deepEqual(h.went, ["home"]); assert.equal(h.ui.home.f, "room");
 });
@@ -183,7 +184,7 @@ test("the incubator: Choose a pod (empty), Hatch now (growing: pays, ends the wa
    { const st3 = h3.st, p3 = pod(st3, "S01", chapters("S01")); S.grow(st3, p3, {}, settings, T0); h3.t = T0; INTENTS.incubator.intent(h3, "bud", "confirm"); assert.deepEqual([h3.went.at(-1), h3.played.length, h3.timers.length, st3.bud, h3.ui.hab.id, h3.ui.hab.f], ["habitat", 0, 0, null, st3.mibis.at(-1).id, "resident"], "Hatch now with reduced motion: a cut to the meet on the frame of ✓"); }
 });
 
-test("the Library's Level 1: the ring's species is kept; ✓ on a met or found cell opens that species (Level 2, not built yet), on an unmet cell or anything else does nothing; ← is Home with the ring on the Library bezel; the card's species word opens Level 1 on its species", () => {
+test("the Library's Level 1: the ring's species is kept; ✓ on a met or found cell opens that species' Level 2, on an unmet cell or anything else does nothing; ← is Home with the ring on the Library bezel; the card's species word opens Level 2 of its species", () => {
   const st = world(), h = host(st); h.specs.library = J("library"); st.knownIds.push("S01"); st.metIds.push("S03");
   INTENTS.library.focus(h, "cell.S02"); assert.equal(h.ui.lib.l1, "S02", "the face said the ring moved: the Library keeps it"); INTENTS.library.focus(h, "cell.S16"); assert.equal(h.ui.lib.l1, "S16"); INTENTS.library.focus(h, "tile.1"); INTENTS.library.focus(h, "cell.S99"); assert.equal(h.ui.lib.l1, "S16", "not a cell: kept");
   const n0 = h.said.length; INTENTS.library.intent(h, "cell.S02", "confirm"); assert.deepEqual([h.said.length, h.went, h.ui.lib.l1], [n0, [], "S16"], "an unmet cell opens nothing and says nothing");
@@ -191,7 +192,23 @@ test("the Library's Level 1: the ring's species is kept; ✓ on a met or found c
   INTENTS.library.intent(h, "cell.S03", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.lib.l1], ["library.species", "S03"], "a met cell opens its species");
   INTENTS.library.intent(h, "cell.S01", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.lib.l1], ["library.species", "S01"], "a found cell opens its species");
   INTENTS.library.intent(h, "cell.S01", "back"); assert.deepEqual([h.went.at(-1), h.ui.home.f], ["home", "library"]);
-  S.seedAdults(st, "S01", 5, 2, settings); h.ui.hab.id = st.mibis[0].id; h.ui.lib.l1 = "S09"; INTENTS.habitat.intent(h, "species", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.lib.l1], ["library", "S01"], "✓ Open the guide: Level 1, the ring on the card's species");
+  S.seedAdults(st, "S01", 5, 2, settings); h.ui.hab.id = st.mibis[0].id; h.ui.lib.l1 = "S09"; INTENTS.habitat.intent(h, "species", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.lib.l1, h.ui.lib.species, h.ui.lib.state], ["library.species", "S01", "S01", "sheet"], "✓ Open the guide: Level 2 of the card's species, in sheet");
+});
+
+test("the Library's Level 2: ✓ on a plate lights it, again clears it, on another plate swaps; ← clears, then returns to Level 1 on the species; the ring's memory; the face jumps up close, a family face to Level 3; met-only does nothing", () => {
+  const st = world(), h = host(st); h.specs.library = J("library"); S.seedAdults(st, "S01", 5, 2, settings); st.metIds.push("S04"); const [a] = st.mibis; a.portrait = { state: "delivered" }; assert.ok(Lib.makeFace(st, a).ok);
+  INTENTS.library.intent(h, "cell.S01", "confirm"); const L = h.ui.lib, sp = INTENTS["library.species"]; assert.deepEqual([h.went.at(-1), L.species, L.state, L.lit, L.cur], ["library.species", "S01", "sheet", null, null]);
+  sp.focus(h, "chapter.face"); assert.deepEqual([L.cur, L.l2.S01], ["chapter.face", "chapter.face"], "in sheet the memory is written on each move");
+  sp.intent(h, "chapter.face", "confirm"); assert.deepEqual([L.state, L.lit, L.cur, L.l2.S01], ["lit", "face", "chapter.face", "chapter.face"], "✓ Show {Chapter}: lit, the ring stays on the plate");
+  sp.focus(h, "look.eyes.round"); assert.deepEqual([L.cur, L.l2.S01], ["look.eyes.round", "chapter.face"], "in lit the memory holds the lit chapter's plate whatever the ring is on");
+  sp.intent(h, "look.eyes.round", "confirm"); assert.equal(L.state, "lit", "✓ on a look does nothing");
+  sp.intent(h, "chapter.coat", "confirm"); assert.deepEqual([L.state, L.lit, L.l2.S01], ["lit", "coat", "chapter.coat"], "✓ on another plate lights that one");
+  sp.intent(h, "chapter.coat", "confirm"); assert.deepEqual([L.state, L.lit, L.cur], ["sheet", null, "chapter.coat"], "✓ Clear {Chapter}: back to sheet");
+  sp.intent(h, "chapter.face", "confirm"); sp.focus(h, "look.eyes.round"); sp.intent(h, "look.eyes.round", "back"); assert.deepEqual([L.state, L.lit, L.cur, h.went.at(-1)], ["sheet", null, "chapter.face", "library.species"], "← in lit: Clear, the ring on the lit chapter's plate");
+  sp.intent(h, "chapter.face", "back"); assert.deepEqual([h.went.at(-1), L.l1], ["library", "S01"], "← in sheet: Level 1 on this species");
+  INTENTS.library.intent(h, "cell.S01", "confirm"); sp.intent(h, "face", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.hab.id], ["habitat", a.id], "✓ Look at {name}: that mibi up close");
+  INTENTS.library.intent(h, "cell.S01", "confirm"); sp.intent(h, "family." + a.id, "confirm"); assert.deepEqual([h.went.at(-1), L.family], ["library.family", a.id], "✓ See the family: Level 3");
+  INTENTS.library.intent(h, "cell.S04", "confirm"); const n = h.went.length; sp.intent(h, "chapter.coat", "confirm"); assert.deepEqual([h.went.length, L.state], [n, "sheet"], "met-only: no ✓");
 });
 
 test("one mibi up close: ✓ on the resident greets (the spec's moment: 1800 ms, held 300, a cut), on the name opens the namer, ✓ on Wild opens the Return panel and its Return card acts, ← goes to the whole with the ring on this mibi", () => {

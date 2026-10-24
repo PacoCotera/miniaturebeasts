@@ -26,6 +26,7 @@ import { libraryStates } from "./library-states.mjs";
 import { benchStates } from "./bench-states.mjs";
 import { departures as benchDepartures } from "./bench-regions.mjs";
 import { departures as libraryDepartures } from "./library-regions.mjs";
+import { departures as speciesDepartures } from "./library-species-regions.mjs";
 
 const specs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), home = J("home"), cargo = J("cargo"), create = J("create"), incubator = J("incubator"), vivarium = J("vivarium"), habitat = J("habitat"), namerSpec = J("namer"), library = J("library"), benchSpec = J("bench"), frame = J("frame");
 // Rule F2, the 2 px floor on the rendered frame (fix 14 §14.4): for a creature's ring, the bands that reach 3:1 against the ground (the same state drawn without the ring) add up to 2 px in every cross-section of the line
@@ -105,7 +106,7 @@ const reading = (screen) => async (name, page, fail) => {
   }
   if (screen === "library") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, props: window.__st.props, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
-    const d = keep(c.props?.state === "all" ? libraryDepartures(c.log, library, c.props, c.props?.focus?.cur) : []); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    const d = keep(c.props?.screen === "library.species" ? speciesDepartures(c.log, library, c.props, c.props?.focus?.cur) : c.props?.state === "all" ? libraryDepartures(c.log, library, c.props, c.props?.focus?.cur) : []); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   if (screen === "bench") {
