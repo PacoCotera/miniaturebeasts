@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import vm from "node:vm";
+import { blank } from "../../face/tools/blank.mjs";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
 import * as V from "../src/view.mjs";
@@ -91,7 +92,7 @@ test("determinism: the same world twice, and places in reverse order on a fresh 
 });
 
 test("purity, by source: no page state, DOM, storage, clock, randomness, drawing or import", () => {
-  const code = MODULE_SRC.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  const code = blank(MODULE_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /import /]) assert.doesNotMatch(code, re);
 });
 
@@ -342,7 +343,7 @@ test("atlas: a blocking tile never draws as lawn; without its own pieces it take
   const flat = places.find(p => !p.lay.tiles.some(t => blockKinds.includes(t))); if (flat) assert.ok(A.placeLayers(flat.lay, flat.seed, none, 0, flat.level).ok, "a place with no blocking terrain kind");
 });
 test("atlas: pure and integer only, by source; its only import is ./world.mjs; no export shadows a page identifier", () => {
-  const code = ATLAS_SRC.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  const code = blank(ATLAS_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /Math\.round/, /Math\.hypot/, /Math\.sqrt/]) assert.doesNotMatch(code, re, String(re));
   assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
   assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["./world.mjs"]);
@@ -350,7 +351,7 @@ test("atlas: pure and integer only, by source; its only import is ./world.mjs; n
   for (const k of Object.keys(A)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
 });
 test("view: pure and integer only, by source; its only import is ./world.mjs; no export shadows a page identifier", () => {
-  const code = VIEW_SRC.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  const code = blank(VIEW_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /Math\.round/, /Math\.hypot/, /Math\.sqrt/]) assert.doesNotMatch(code, re, String(re));
   assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
   assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["./world.mjs"]);
@@ -373,7 +374,7 @@ test("the storm's dark band: at a fractional gap, 32 px keeps main's columns and
 test("generator 2 is integer only, by source", () => {
   const a = MODULE_SRC.indexOf("// ---- generator 2 (integer only) ----\n"), b = MODULE_SRC.indexOf("// ---- end generator 2 ----\n");
   assert.ok(a > 0 && b > a, "the generator 2 markers");
-  const code = MODULE_SRC.slice(a, b).replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  const code = blank(MODULE_SRC.slice(a, b));
   for (const s of ["Math.hypot", "Math.round", "Math.sqrt", "Math.pow", "Math.random", ".f(", ".chance(", ".pick(", "rnd(", "fbm(", "noise2(", "finishLayout(", "genPatch(", "genCave("])
     assert.equal(code.includes(s), false, s);
   assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
