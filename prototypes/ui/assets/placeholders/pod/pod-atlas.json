@@ -4,8 +4,8 @@
  "note": "Hand-drawn placeholders: one drawing per size class and state, coloured per species by remap. Never a master.",
  "palette": {
   "file": "prototypes/ui/palettes/station.json",
-  "colours": 62,
-  "transparentIndex": 62,
+  "colours": 68,
+  "transparentIndex": 68,
   "names": [
    "void",
    "ink",
@@ -68,9 +68,15 @@
    "deepTeal",
    "sage",
    "sageD",
-   "focus"
+   "focus",
+   "libGround",
+   "libPanel",
+   "libHead",
+   "libQuiet",
+   "libWell",
+   "libLine"
   ],
-  "note": "PNG palette index = position in that file; index 62 is transparent (tRNS)"
+  "note": "PNG palette index = position in that file; index 68 is transparent (tRNS)"
  },
  "stage": {
   "anchor": [

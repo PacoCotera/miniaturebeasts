@@ -81,7 +81,7 @@ brown-grey), **LIGHT** (lamp pools), **veil** (unsurveyed ground in a place: DAR
 dot, 16 px dithered edge), **cloud bank** (unexplored map: lavender masses, no ground drawn
 under them, darkening away from the explored island), **fade** (seen cells: DARK, checker).
 
-**Station palette: 62 colours** (the working rule). The numbers live in
+**Station palette: 68 colours** (the working rule). The numbers live in
 [`prototypes/ui/palettes/station.json`](../../prototypes/ui/palettes/station.json), which the Station build took when it renamed its colour uses per the migration table below; this section
 shows them and their roles. It is the one palette of the Station's **art layer**: the chrome,
 the pixel art the build draws (material icons, lamps, pips, the glint, the leaf timer, Shield
@@ -145,6 +145,14 @@ bands.
 | `sage` | `#84ae78` | The leaf timer: a filled leaf | `sageD` · `sprout` | Frame 3: the leaf timer; frame 1: the Incubator module's leaves |
 | `sageD` | `#5d7a5f` | A leaf's vein and shade; the line a filling leaf rises to | `forest` · `sage` | Frame 3: the leaf timer; frame 1: the Incubator module's leaves |
 | `focus` | `#ffe6ad` | The focus ring's cream, between `void` keys; with the amber lamp and Confirm's orange, one of the panels' only warm marks | `sand` · `white` | Not on the board: the focus ring |
+| `libGround` | `#211b1a` | The Library's stage ground (L1–L3 only): the flat stand-in for the ground master | `libWell` · `libQuiet` | The approved Library renders: the warm ground under the cells and the sheet |
+| `libPanel` | `#342c29` | Library surfaces: found cells, shelf bezels, the info panel, sheet frames and bands, the unmet cell's lip | `libQuiet` · `libHead` | The approved Library renders: the found cells and the shelf |
+| `libHead` | `#3a312c` | Library bands: the found cell's name plate, panel and frame headers | `libPanel` · `libLine` | The approved Library renders: the cell name plates and panel heads |
+| `libQuiet` | `#2a2320` | Library met cells | `libGround` · `libPanel` | The approved Library renders: the met cells |
+| `libWell` | `#1a1514` | Library unmet cells; the 1 px rule under every Library band | `void` · `libGround` | The approved Library renders: the unmet wells |
+| `libLine` | `#4a413c` | The Library bevel on every bezel, the stamp slot outline, the overview edge, portrait frames | `libHead` · `bevel` | The approved Library renders: the warm bevel and the slot outlines |
+
+Text on the Library's grounds: `mist` is text only on `libGround`, `libQuiet` and `libWell`; `fog` is quiet text on `libPanel` and `libHead`; `stone` is never text.
 
 <img src="ui-kit/station-palette-1x.png" width="950" alt="The Station palette as a swatch strip, 1×">
 
