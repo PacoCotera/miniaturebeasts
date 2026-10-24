@@ -127,5 +127,109 @@
     -0.59
    ]
   }
+ },
+ "adult-k2": {
+  "sheet": "source/raw/sit-S01-adult-keys-bare-a.jpg",
+  "takes": {
+   "shake-t1": {
+    "despilled_px": 549,
+    "inner_cast_repainted_px": 0,
+    "cell": 2,
+    "move_px_from_twin": [
+     4,
+     1
+    ],
+    "outline_p95_px_outside_crest+10": 6.4,
+    "outline_max_px": 8.0,
+    "mean_rgb_diff_inside": 12.41,
+    "leaf_px_left": 0,
+    "droplets_twin": 6,
+    "droplets_bare": 3,
+    "droplet_moves_px": [
+     41.0,
+     76.5,
+     4.1,
+     3.8,
+     4.6,
+     122.7
+    ]
+   },
+   "calm-t1": {
+    "despilled_px": 128,
+    "inner_cast_repainted_px": 0,
+    "cell": 3,
+    "move_px_from_twin": [
+     2,
+     7
+    ],
+    "outline_p95_px_outside_crest+10": 8.66,
+    "outline_max_px": 10.44,
+    "mean_rgb_diff_inside": 23.68,
+    "leaf_px_left": 0,
+    "droplets_twin": 0,
+    "droplets_bare": 0,
+    "droplet_moves_px": []
+   },
+   "shake-t2": {
+    "despilled_px": 898,
+    "inner_cast_repainted_px": 0,
+    "cell": 5,
+    "move_px_from_twin": [
+     0,
+     1
+    ],
+    "outline_p95_px_outside_crest+10": 4.0,
+    "outline_max_px": 6.08,
+    "mean_rgb_diff_inside": 5.75,
+    "leaf_px_left": 0,
+    "droplets_twin": 8,
+    "droplets_bare": 5,
+    "droplet_moves_px": [
+     52.8,
+     121.7,
+     0.8,
+     0.9,
+     1.0,
+     1.0,
+     1.0,
+     24.2
+    ]
+   },
+   "calm-t2": {
+    "despilled_px": 176,
+    "inner_cast_repainted_px": 0,
+    "cell": 6,
+    "move_px_from_twin": [
+     4,
+     2
+    ],
+    "outline_p95_px_outside_crest+10": 6.0,
+    "outline_max_px": 7.28,
+    "mean_rgb_diff_inside": 14.07,
+    "leaf_px_left": 0,
+    "droplets_twin": 0,
+    "droplets_bare": 0,
+    "droplet_moves_px": []
+   }
+  },
+  "cell4_non_magenta_px": 85022,
+  "cell1": {
+   "despilled_px": 91,
+   "inner_cast_repainted_px": 0,
+   "cell": 1,
+   "move_px_from_twin": [
+    0,
+    0
+   ],
+   "outline_p95_px_outside_crest+10": 4.0,
+   "outline_max_px": 5.83,
+   "mean_rgb_diff_inside": 3.55,
+   "leaf_px_left": 0,
+   "droplets_twin": 0,
+   "droplets_bare": 0,
+   "droplet_moves_px": [],
+   "head_vs_signed_bare_anchor_p95_px": 2.83,
+   "head_vs_signed_bare_anchor_max_px": 3.0
+  }
  }
 }

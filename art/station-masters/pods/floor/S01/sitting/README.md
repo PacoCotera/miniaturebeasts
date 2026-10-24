@@ -13,6 +13,7 @@ Built by `guides/compose-sit.py` at 0 MXN. The stage's canvas transform (crested
 | K1a `sit-S01-adult-keys-crested-a` | `guides/compose-sit-adult-crested.png` | `3bba33279b462e6093e331c16506e78dbab15f42567f83174af7bc7a717214c4` |
 | K1b `sit-S01-adult-keys-crested-b` (the adult retry, check 6: wrong facing) | `guides/compose-sit-adult-crested.png`, the same file | `3bba33279b462e6093e331c16506e78dbab15f42567f83174af7bc7a717214c4` |
 | K2a `sit-S01-adult-keys-bare-a` | `guides/compose-sit-adult-bare-in.png`: the crested anchor in cell 1, the four mirrored, droplet-fixed K1b takes in cells 2, 3, 5, 6 | `90995042e83688ceeed55f501a04da3a3d5fdac58a6396531b2e7090e7dedd37` |
+| K2b `sit-S01-adult-keys-bare-b` (the adult retry, checks 4 and 8) | the same two files | as K2a |
 | K2a, second reference | `guides/compose-sit-adult-bare-anchor-ref.png`: the signed bare anchor (7e52ae98…) at 304 × 312 flattened on #FF00FF | `3dd6e52e4a573ec3f64e61e64e0bd835b94ec75f64a5857666b3a6b1b0e4997d` |
 
 ## Requests
@@ -22,6 +23,7 @@ Built by `guides/compose-sit.py` at 0 MXN. The stage's canvas transform (crested
 | K1a `sit-S01-adult-keys-crested-a` (first send) | 2026-10-23 22:09 | **failed, exit check 1**: HTTP 402, "Your prepayment credits are depleted" (RESOURCE_EXHAUSTED); no picture | 0.00 (non-200, not billed) | 0.00 | 0.00 | 0.00 (10-23) |
 | K1a `sit-S01-adult-keys-crested-a` (re-sent after the owner's top-up, lead 22:12) | 2026-10-23 22:16 | **failed, checks 6 and 7**: all four takes (cells 2, 3, 5, 6) face RIGHT; the adult faces LEFT (cell 1's face at x 115 of the cell, the takes' at 263-327 against body centres 218-226). Neither take of either pose passes, so the sheet fails. Also: the shake takes' droplets sit on the coat. Passed: check 3 (border median 9 from #FF00FF), cell 1 in place (mean RGB difference 4.3) | 4.17 | 4.17 | 4.17 | 4.17 (10-23) |
 | K1b `sit-S01-adult-keys-crested-b` (the adult retry; adult total before it 4.17 ≤ 18.6) | 2026-10-23 22:17 | **failed, checks 6 and 7 again**: all four takes face RIGHT (by eye at 1×: every face, eye and snout on the cell's right side; cell 1 faces left). Neither take of either pose passes. Passed: check 3 (border 8 from #FF00FF), cell 1 in place (mean RGB difference 4.5). The droplets now sit mostly clear of the coat | 4.32 | 8.49 | 8.49 | 8.49 (10-23) |
+| K2a `sit-S01-adult-keys-bare-a` | 2026-10-23 22:39 | **failed, checks 4 and 8**: cell 4 holds a second bare anchor (85,022 non-magenta px); 3 of 6 and 3 of 8 droplets lost on the shake takes; outline against the crested twin p95 4.0–8.7 px outside the crest zone (calm t1 also shifted about 6 px up); mean RGB 5.8–23.7. Passed: every leaf gone (0 leaf px), round heads by eye, facing kept (all left) | 3.62 | 12.11 | 36.62 | 36.62 (10-23) |
 
 ## Art director's ruling 22:31: K1b mirrored (0 MXN, 2026-10-23 22:37)
 

@@ -8,7 +8,8 @@ Mirror (ruling 22:31, the standing rule): a take named in MIRROR is flipped left
 Magenta spill: in the 3 px edge band, min(R,B) - G above 15 is taken off R and B; on a droplet's rim such pixels are choked (alpha 0); strongly
 magenta pixels deeper in the body (min(R,B) - G > 40, the pockets at the crest's roots) are repainted from their neighbours.
 Droplets on the fur (ruling 22:31): droplet pixels whose 2 px ring is > 50 % body are painted out from the fur around them, before the cut.
-usage (from art/station-masters/pods): python3 -I floor/S01/sitting/guides/cut-sit.py k1 <stage> <raw sheet> <mirror cells, e.g. 2,3,5,6 or ->"""
+usage (from art/station-masters/pods): python3 -I floor/S01/sitting/guides/cut-sit.py k1 <stage> <raw sheet> <mirror cells, e.g. 2,3,5,6 or ->
+                                       python3 -I floor/S01/sitting/guides/cut-sit.py k2 <stage> <raw sheet>   (the bare sheet; each key takes its crested twin's moves)"""
 import json, os, sys, numpy as np
 from PIL import Image
 from scipy import ndimage as nd
@@ -60,25 +61,7 @@ def k1(stage, sheet, mirror):
         r = {}
         if c != 1 and CELLS[c][0] == 'shake':
             on, non, ncl = drops_on_fur(q); q = inpaint(q, on); r['droplets_on_fur_painted_out'] = non; r['droplets_clear_of_coat_on_sheet'] = ncl
-        im, ground, cx, w, shad = cut(q[I:CH - I, I:CW - I])
-        can = np.asarray(to_canvas(im, M, 'RGBA')).copy(); can[..., 3] = quant(can[..., 3]); sh = np.asarray(to_canvas(shad, M, 'L'))
-        sol = can[..., 3] > 128; lab, n = nd.label(sol); sz = nd.sum(sol, lab, range(1, n + 1)); main = lab == (1 + int(np.argmax(sz)))
-        ys, xs = np.where(main); bx = (xs.min() - 16, xs.max() + 16, ys.min() - 16, ys.max() + 16)
-        keep = main.copy(); nd_ = 0
-        for i in range(1, n + 1):
-            if i == 1 + int(np.argmax(sz)): continue
-            isl = lab == i; iy, ix = np.where(isl)
-            if isl.sum() >= 9 and (can[..., 3][isl] >= 200).sum() >= 9 and ix.min() >= bx[0] and ix.max() <= bx[1] and iy.min() >= bx[2] and iy.max() <= bx[3]:
-                keep |= nd.binary_dilation(isl, iterations=1) & (can[..., 3] > 0); nd_ += 1
-        near = nd.binary_dilation(main, iterations=2) & (can[..., 3] > 0)        # the faint edge of the body
-        can[..., 3] = np.where(keep | near, can[..., 3], 0); can[can[..., 3] == 0] = 0
-        spill_zone = (can[..., 3] > 0) & ~nd.binary_erosion(main, iterations=3) | (keep & ~main)       # the edge band and the droplets
-        f = can[..., :3].astype(float); sp = np.clip(np.minimum(f[..., 0], f[..., 2]) - f[..., 1], 0, None); hit = spill_zone & (sp > 15)
-        dro = keep & ~nd.binary_dilation(main, iterations=2)
-        f[..., 0] -= np.where(hit & ~dro, sp, 0); f[..., 2] -= np.where(hit & ~dro, sp, 0); can[..., 3] = np.where(hit & dro, 0, can[..., 3])   # a droplet's pink rim is choked, not darkened
-        inner = (can[..., 3] > 0) & nd.binary_erosion(main, iterations=3) & (np.minimum(f[..., 0], f[..., 2]) - f[..., 1] > 40)            # inner cast: repainted from neighbours
-        if inner.any(): f = inpaint(f, nd.binary_dilation(inner, iterations=1) & main)
-        can[..., :3] = np.clip(np.rint(f), 0, 255).astype(np.uint8); r['despilled_px'] = int(hit.sum()); r['inner_cast_repainted_px'] = int(inner.sum())
+        can, main, keep, nd_, sh = key(q, M, r)
         foot = np.where(main.any(1))[0].max(); mx = np.where(main.any(0))[0]; bcx = (mx.min() + mx.max()) / 2
         dy = FEETROW - int(foot); dx = int(round(acx - bcx)) if c != 1 else 0
         if c == 1: dy = 0
@@ -98,6 +81,28 @@ def k1(stage, sheet, mirror):
             pose, t = CELLS[c]; p = f'floor/S01/crested/mibi-{stage}-S01-{pose}-{t}-304x312.png'; Image.fromarray(out).save(p)
             Image.fromarray(np.where(sh > 0, sh, 0).astype(np.uint8)).save(f'floor/S01/sitting/guides/discard-shadow-{stage}-{pose}-{t}.png'); rep['takes'][f'{pose}-{t}'] = r
     return rep
+def key(q, M, r):
+    """The key-out of one cell (as given, after any mirror and droplet fix) onto the canvas, before the whole-pixel moves."""
+    im, ground, cx, w, shad = cut(q[I:CH - I, I:CW - I])
+    can = np.asarray(to_canvas(im, M, 'RGBA')).copy(); can[..., 3] = quant(can[..., 3]); sh = np.asarray(to_canvas(shad, M, 'L'))
+    sol = can[..., 3] > 128; lab, n = nd.label(sol); sz = nd.sum(sol, lab, range(1, n + 1)); main = lab == (1 + int(np.argmax(sz)))
+    ys, xs = np.where(main); bx = (xs.min() - 16, xs.max() + 16, ys.min() - 16, ys.max() + 16)
+    keep = main.copy(); nd_ = 0
+    for i in range(1, n + 1):
+        if i == 1 + int(np.argmax(sz)): continue
+        isl = lab == i; iy, ix = np.where(isl)
+        if isl.sum() >= 9 and (can[..., 3][isl] >= 200).sum() >= 9 and ix.min() >= bx[0] and ix.max() <= bx[1] and iy.min() >= bx[2] and iy.max() <= bx[3]:
+            keep |= nd.binary_dilation(isl, iterations=1) & (can[..., 3] > 0); nd_ += 1
+    near = nd.binary_dilation(main, iterations=2) & (can[..., 3] > 0)        # the faint edge of the body
+    can[..., 3] = np.where(keep | near, can[..., 3], 0); can[can[..., 3] == 0] = 0
+    spill_zone = (can[..., 3] > 0) & ~nd.binary_erosion(main, iterations=3) | (keep & ~main)       # the edge band and the droplets
+    f = can[..., :3].astype(float); sp = np.clip(np.minimum(f[..., 0], f[..., 2]) - f[..., 1], 0, None); hit = spill_zone & (sp > 15)
+    dro = keep & ~nd.binary_dilation(main, iterations=2)
+    f[..., 0] -= np.where(hit & ~dro, sp, 0); f[..., 2] -= np.where(hit & ~dro, sp, 0); can[..., 3] = np.where(hit & dro, 0, can[..., 3])   # a droplet's pink rim is choked, not darkened
+    inner = (can[..., 3] > 0) & nd.binary_erosion(main, iterations=3) & (np.minimum(f[..., 0], f[..., 2]) - f[..., 1] > 40)            # inner cast: repainted from neighbours
+    if inner.any(): f = inpaint(f, nd.binary_dilation(inner, iterations=1) & main)
+    can[..., :3] = np.clip(np.rint(f), 0, 255).astype(np.uint8); r['despilled_px'] = int(hit.sum()); r['inner_cast_repainted_px'] = int(inner.sum())
+    return can, main, keep, nd_, sh
 def outline_p95(a, b, far):
     ea, eb = a & ~nd.binary_erosion(a), b & ~nd.binary_erosion(b); da, db = nd.distance_transform_edt(~ea), nd.distance_transform_edt(~eb)
     v = np.concatenate([da[eb & far], db[ea & far]]); return float(np.percentile(v, 95)), float(v.max())
@@ -107,8 +112,41 @@ def check5(out, anc):
     a, b = out[..., 3] > 128, anc[..., 3] > 128; far = ~nd.binary_dilation(green(anc) | green(out), iterations=10)
     p95, mx = outline_p95(a, b, far); inside = a & b & ~nd.binary_dilation((a & ~nd.binary_erosion(a)) | (b & ~nd.binary_erosion(b)), iterations=2)
     return {'check5_outline_p95_px': round(p95, 2), 'check5_outline_max_px': round(mx, 2), 'check5_mean_rgb_diff_inside': round(float(np.abs(out[..., :3].astype(float) - anc[..., :3].astype(float))[inside].mean()), 2)}
+def shift(can, dx, dy):
+    out = np.zeros_like(can); ys0, ys1 = max(0, dy), min(KH, KH + dy); xs0, xs1 = max(0, dx), min(KW, KW + dx)
+    out[ys0:ys1, xs0:xs1] = can[ys0 - dy:ys1 - dy, xs0 - dx:xs1 - dx]; return out
+def islands(out, main):
+    """Droplet islands (solid, off the body): their centroids."""
+    sol = (out[..., 3] > 128) & ~nd.binary_dilation(main, iterations=2); lab, n = nd.label(sol)
+    return [tuple(np.array(np.where(lab == i)).mean(1)[::-1]) for i in range(1, n + 1) if (lab == i).sum() >= 9]
+def k2(stage, sheet):
+    """K2 bare sheet: every cell cut with the same inverse transform, then given its crested twin's whole-pixel move, so it lands on its twin
+    (the brief's cut.py rule, placed by the twin). Measures checks 4 and 8."""
+    M = J['maps'][stage]; A = np.asarray(Image.open(sheet).convert('RGB')).astype(float); R = json.load(open('floor/S01/sitting/guides/register.json'))[f'{stage}-k1']
+    rep = {'sheet': sheet, 'takes': {}}
+    q4 = A[CH:2 * CH, 0:CW][I:CH - I, I:CW - I]; rep['cell4_non_magenta_px'] = int((np.abs(q4 - [255, 0, 255]).sum(-1) > 90).sum())
+    for c in [1] + list(CELLS):
+        x0, y0 = ((c - 1) % 3) * CW, ((c - 1) // 3) * CH; q = A[y0:y0 + CH, x0:x0 + CW].copy(); r = {}
+        can, main, keep, nd_, sh = key(q, M, r)
+        if c == 1: name, mv, twin = 'anchor', [0, 0], f'floor/S01/crested/mibi-{stage}-S01-anchor-304x312.png'
+        else: pose, t = CELLS[c]; name = f'{pose}-{t}'; mv = R['takes'][name]['move_px']; twin = f'floor/S01/crested/mibi-{stage}-S01-{name}-304x312.png'
+        out = shift(can, *mv); tw = np.asarray(Image.open(twin).convert('RGBA'))
+        a, b = out[..., 3] > 128, tw[..., 3] > 128; crest = green(tw); crest |= nd.binary_dilation(crest, iterations=30) & b & ~a; far = ~nd.binary_dilation(crest, iterations=10)   # the crest zone: the leaves and what the twin has beside them that the bare key has not (cut.py's rule)
+        lab, n = nd.label(a); bm = lab == (np.bincount(lab.ravel())[1:].argmax() + 1); lab, n = nd.label(b); tm = lab == (np.bincount(lab.ravel())[1:].argmax() + 1)
+        p95, mx = outline_p95(bm, tm, far)
+        inside = bm & tm & far & ~nd.binary_dilation((bm & ~nd.binary_erosion(bm)) | (tm & ~nd.binary_erosion(tm)), iterations=2)
+        di, dt = islands(out, bm), islands(tw, tm); moved = [round(min(float(np.hypot(x - u, y - v)) for u, v in di), 1) if di else None for x, y in dt]
+        r.update({'cell': c, 'move_px_from_twin': mv, 'outline_p95_px_outside_crest+10': round(p95, 2), 'outline_max_px': round(mx, 2), 'mean_rgb_diff_inside': round(float(np.abs(out[..., :3].astype(float) - tw[..., :3].astype(float))[inside].mean()), 2),
+                  'leaf_px_left': int(green(out).sum()), 'droplets_twin': len(dt), 'droplets_bare': len(di), 'droplet_moves_px': moved})
+        if c == 1:
+            ba = np.asarray(Image.open(f'floor/S01/keys/mibi-{stage}-S01-base-anchor-304x312.png').convert('RGBA')); bb = ba[..., 3] > 128
+            head = np.zeros_like(bb); ys = np.where(bb.any(1))[0]; head[:ys.min() + 90] = True
+            hp95, hmx = outline_p95(bm, bb, head); r['head_vs_signed_bare_anchor_p95_px'] = round(hp95, 2); r['head_vs_signed_bare_anchor_max_px'] = round(hmx, 2); rep['cell1'] = r
+        else:
+            Image.fromarray(out).save(f'floor/S01/keys/mibi-{stage}-S01-base-{name}-304x312.png'); rep['takes'][name] = r
+    return rep
 if __name__ == '__main__':
-    mode, stage, sheet, mir = sys.argv[1:5]
-    rep = k1(stage, sheet, set() if mir == '-' else {int(x) for x in mir.split(',')})
+    mode, stage, sheet = sys.argv[1:4]
+    rep = k1(stage, sheet, set() if sys.argv[4] == '-' else {int(x) for x in sys.argv[4].split(',')}) if mode == 'k1' else k2(stage, sheet)
     rp = 'floor/S01/sitting/guides/register.json'; R = json.load(open(rp)) if os.path.exists(rp) else {}
     R[f'{stage}-{mode}'] = rep; json.dump(R, open(rp, 'w'), indent=1); print(json.dumps(rep, indent=1))
