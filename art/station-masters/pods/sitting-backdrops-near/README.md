@@ -40,3 +40,13 @@ First written 2026-10-23 22:23.
 - **Cave:** cropped 1050 × 788 at (75, 108), LANCZOS once, Color 1.15, with `guides/fix-bd.py`. sha256 `df1ea304…65c3`, matching the ruling's render. After the fix: detail 14.2, saturation 98.0, spread 53.1, key 1.40, zone 0.318, feet band 17.9, tag 27.7 / 172. It passes.
 - **Rock:** retry B3b with the ruling's changed prompt (below, when run).
 - The proofs are rebuilt with pond-a gone. Rows: meadow, pond, rock, wood, cave.
+
+## B3b rock (2026-10-23 22:45)
+
+| Request | Time | MXN | detail | sat | spread | key | zone | feet band | tag std / p99 | Result | Job 2 / 30 | Both / 80 | Day / 250 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| B3b rock-near-b (the ruling's prompt) | 22:44 | 4.09 | 14.6 | 125.3 | 44.9 | **1.06** | **0.355** | **9.5** | 4.8 / 150 | **fail** gate 10 (key), checks 11 and 12 | 28.60 | 44.38 | 44.38 |
+
+Detail and saturation now pass. The key fails: the light falls from the back right, so the top-left quadrant is not brighter than the bottom-right (1.06 against 1.3), and the light would flip. The view also looks down onto the ground, and below y 335 a soft strip pulls the feet band to 9.5. Under the ruling ("If B3b fails gate 10 again, stop and report. A B3c is my call"), job 2 stops at 28.60 of 30 MXN. A B3c would also not fit: 28.60 + 4.80 is over 30.
+
+`slices/` holds rock-b (status new, failing); rock-a stays as its raw. The proofs are rebuilt.

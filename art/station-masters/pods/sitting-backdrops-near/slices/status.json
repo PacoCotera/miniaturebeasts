@@ -9,7 +9,7 @@
  },
  "sitting-backdrop-rock-544x408": {
   "status": "new",
-  "note": "near-treatment repaint from sitting-backdrop-rock-near-a (gemini-3-pro-image); exit checks: fail: gate 10 (detail 8.9 < 11, saturation 79.2 < 90); not signed; AD ruling 22:31: retry B3b with a changed prompt"
+  "note": "near-treatment repaint from sitting-backdrop-rock-near-b (the AD ruling 22:31 prompt); exit checks: fail: gate 10 (key 1.06 < 1.3: lit from the right/back, the light would flip), check 11 (zone 0.355 > 0.35), check 12 (feet band detail 9.5 < 11: soft strip below y 335); detail and saturation now pass; not signed; B3c is the art director's call"
  },
  "sitting-backdrop-wood-544x408": {
   "status": "new",
