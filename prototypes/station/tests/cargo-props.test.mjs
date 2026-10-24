@@ -96,6 +96,12 @@ test("the bay: a berth for each walk crate (at most three, in arrival order), th
   assert.deepEqual(build(sc.two.st, sc.two.sv).props.focus, { cur: "room", targets: [] });
 });
 
+test("the counts in words: waiting pods and arriving crates read seven to twelve in words, and many from thirteen", () => {
+  const away = (n) => { const st = world(); st.dock = { docked: false, at: T0 }; for (let i = 0; i < n; i++) st.waiting.push({ id: "w" + i, species: "S01", sp: 0, g: "meadow", how: "calm", gs: 3, idd: 0, read: [] }); return build(st, sv0()).line.subject; };
+  assert.equal(away(6), "six pods wait for a well"); assert.equal(away(7), "seven pods wait for a well"); assert.equal(away(12), "twelve pods wait for a well"); assert.equal(away(13), "many pods wait for a well");
+  const crates = (n) => build(world(), sv0(), cargoUI({ state: "arrival", arrival: { phase: "show", crates: n, shown: Math.min(n, 3), newCrates: [], back: [], leaving: [], plates: { max: 3, whole: 3, mended: 0 }, broke: false } })).line.subject;
+  assert.equal(crates(7), "seven sealed crates"); assert.equal(crates(12), "twelve sealed crates"); assert.equal(crates(13), "many sealed crates");
+});
 test("the line: Open them all (Open it for one) when a crate is ready, none otherwise; the waiting line in the middle when a pod waits; the notice the most pressing after the crates", () => {
   const sc = scenes(), L = (n, ui) => build(sc[n].st, sc[n].sv, ui).line;
   assert.deepEqual(L("one"), { ok: "Open it", back: "Home", subject: "", need: "" }); assert.equal(L("two").ok, "Open them all"); assert.equal(L("three").ok, "Open them all");
