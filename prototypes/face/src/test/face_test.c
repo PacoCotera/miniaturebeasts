@@ -538,12 +538,13 @@ static void glint_readout(void) {
     spec_drop("props"); spec_load("props", PRS[i], strlen(PRS[i]));
     prim_begin(); word_topBar(); prim_end();
     kbox("top.title.0", tb); kt[i] = kbox("top.readout.text", rb); km[i] = kbox("top.readout.mark", mb);
+    int tm[4]; kbox("top.m.e", tm);   /* the Energy figure: a 16 px word of the bar, cap top 12 on baseline 24 */
     if (i == 0) {
       check(tb[0] + tb[2] == 115, "readout: the title \"Library\" (20 px) ends at x 115", "");
-      check(km[i] == FN_SPRITE && mb[0] == 123 && mb[2] == 10 && mb[3] == 10 && mb[1] == 8 + (24 - 10 + 1) / 2, "readout: with a mark, the 10 x 10 mark at the title's end + 8 (x 123), centred on the title's rect", "");
+      check(km[i] == FN_SPRITE && mb[0] == 123 && mb[2] == 10 && mb[3] == 10 && mb[1] == 13 && rb[1] == tm[1], "readout: with a mark, the 10 x 10 mark at the title's end + 8 (x 123), y 13: centred on the text's cap, 12 to 24, on the title's baseline 24 as the counters", "");
       check(kt[i] == FN_TEXT && rb[0] == 137 && rb[2] == v_measure("Untuva family", 16) && rb[2] == 103 && rb[0] + rb[2] <= 248, "readout: then 4 px, then the text at x 137, \"Untuva family\" (103 px) whole in the 111 px left", "");
     }
-    if (i == 1) check(kabsent("top.readout.mark") && kt[i] == FN_TEXT && rb[0] == 123 && rb[2] == v_measure("All species", 16), "readout: without a mark, the text at the title's end + 8 (x 123) and no mark node", "");
+    if (i == 1) check(kabsent("top.readout.mark") && kt[i] == FN_TEXT && rb[0] == 123 && rb[1] == tm[1] && rb[2] == v_measure("All species", 16), "readout: without a mark, the text at the title's end + 8 (x 123) and no mark node", "");
     if (i == 2) { char cut[V_STR + 4]; v_clip("Untuva family of the long hollow", 248 - 137, 16, cut, sizeof cut); size_t n = strlen(cut);
       check(kt[i] == FN_TEXT && rb[0] == 137 && rb[2] == v_measure(cut, 16) && rb[0] + rb[2] <= 248 && n > 3 && strcmp(cut + n - 3, "\xe2\x80\xa6") == 0 && strlen(cut) < strlen("Untuva family of the long hollow"), "readout: a text too long is cut by v_clip to end by x 248, ending in the ellipsis", cut); }
     if (i == 3) check(kabsent("top.readout.text") && kabsent("top.readout.mark") && tb[0] + tb[2] == 115, "readout: props without frame.top.readout draw no readout node", "");
