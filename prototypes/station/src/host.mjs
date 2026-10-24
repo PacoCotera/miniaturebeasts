@@ -194,7 +194,7 @@ export function incubatorBody() {
 }
 
 // ---- the props of the screen on the page ----
-// { msg: the props message (without seq), ids: every picture the face needs before them, requests: the Pods pictures to register }
+// { msg: the props message (without seq), ids: every picture the face needs before them, light, lit: the graded residents, owed: the ids of the requests that carry an owed habit key }
 export function screenProps(plate) {
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
   if (UI.screen === "habitat" && !S.housed(G.st).length) goScreen("vivarium");   // one mibi up close always shows one mibi: with none housed the whole shows its empty state
@@ -204,7 +204,7 @@ export function screenProps(plate) {
     const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, ...living() }, SPECS.frame);
     registerPictures(body.requests, { podById, frameOf, mibiGenome: (id) => mibiById(id)?.genome });
     const ids = new Set(body.requests.map((r) => r.id)); walk(body.props, ids);
-    return { msg: { screen, ...body.props }, ids: [...ids], light, lit: litOf(body.requests) };
+    return { msg: { screen, ...body.props }, ids: [...ids], light, lit: litOf(body.requests), owed: owedOf(body.requests) };
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen) || (screen === "library" && UI.lib.f !== "spread")) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen === "library" ? "book" : screen), plate: pl } }, ids: [], light };   // the Book (and its guide) is a state of the library screen: not built yet, ← reads Library
@@ -213,12 +213,13 @@ export function screenProps(plate) {
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
-  if (screen === "home") return { msg: { screen, ...body.props, frame: { plate: pl } }, ids: [...ids], light, lit: litOf(reqs) };   // Home's top bar and line are its own (home.json): the frame sends only the plate
+  if (screen === "home") return { msg: { screen, ...body.props, frame: { plate: pl } }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs) };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
-  return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids], light, lit: litOf(reqs) };
+  return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs) };
 }
 let shownLight = null;   // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
 const litOf = (reqs) => reqs.filter((r) => r.kind === "mibi" && r.light).map((r) => r.id);   // the graded residents the props name
+const owedOf = (reqs) => reqs.filter((r) => r.owed).map((r) => r.id);   // the scene's pictures that show an owed habit key (the request's `owed`): a golden refuses them
 // The pictures a light puts on the face, by their ids (their sizes from the specs that place them): the host drops them once props with the next light are taken.
 export const lightIds = (light) => { const v = SPECS.frame.idle.regions.vivarium.rect, b = SPECS.frame.idle.regions.bed.rect; return [`idle-vivarium-${light}:${v[2]}x${v[3]}`, `home-bed-${light}-${b[2]}x${b[3]}`, ...(SPECS.habitat?.light ? [`${SPECS.habitat.light.pictures[light]}-${SPECS.habitat.light.size.join("x")}`] : [])]; };   // and one mibi up close's near Vivarium
 // The pictures of the frame and the Companion's face, the same on every screen.

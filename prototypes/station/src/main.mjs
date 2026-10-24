@@ -45,7 +45,7 @@ async function loadFrames() {
 
 // --- the face ---
 let dockElsewhere = false;   // ?embed: the play page's Dock control asked while another device had the keys (frame.json navigation.dock); never set standalone
-let FACE = null, H = null, lastLog = null, lastProps = null, msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
+let FACE = null, H = null, lastLog = null, lastProps = null, lastOwed = [], msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
 const renderErrors = [];   // every error the face or a frame raised, kept for the checks to read
 const said = [];   // the focus and the intents the face said, for the journey's golden (window.__st.said() takes and clears them)
 const faceErrors = [];
@@ -70,6 +70,7 @@ function syncProps() {
   if (msgSent !== FX.msgAt) { msgSent = FX.msgAt; if (FX.msg) H.play({ kind: "plate", target: "msg", ms: FX.msgMs || 4000 }); }
   for (const e of LAYER.presenter.events(topValues())) H.play(e);
   const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
+  lastOwed = p.owed ?? [];   // the current scene's requests that carry an owed habit key (snapshot): read on every sync, as the same props may be asked with or without it
   queueWarm();   // after the props are built, before the early return: a warm that was held waits for the hold, not for a change of props
   if (key === lastProps) return;
   { FACE.beginScene(); for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
@@ -241,8 +242,8 @@ const podsGo = (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if 
 window.__st = { ready, renderErrors, portraitSource: (digest, rgba) => { const r = injectPortraitSource(digest, rgba); if (r.error) renderErrors.push("portrait " + digest + ": " + r.error); return r; }, faceErrors, said: () => said.splice(0), pendingRoom: () => H.pendingRoom ?? null, get props() { return lastProps ? JSON.parse(lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   say: (t) => msg(t), act: (k) => act(k), press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(H, fromIdle), openBay: () => { const r = S.openBay(G.st, G.sv, G.settings, Date.now()); save(); return r; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => H.goto(s),
   get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel, invOverflows: () => FACE.invOverflows(), invCap: () => FACE.invCap(), pass: FACE.pass, hide: FACE.hide, offPalette: FACE.offPalette, forceFull: FACE.forceFull, errors: faceErrors.slice(), log: () => lastLog } : null; },
-  // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, and with `capture` the PNG.
-  snapshot: ({ capture = false } = {}) => { const f = FACE, out = { hash: f.hash(), errors: faceErrors.slice(), refused: f.refused() }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },
+  // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, the ids of the scene's requests that carry an owed habit key, and with `capture` the PNG.
+  snapshot: ({ capture = false } = {}) => { const f = FACE, out = { hash: f.hash(), errors: faceErrors.slice(), refused: f.refused(), owed: lastOwed.slice() }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },
   get msg() { return FX.msg; }, capture: () => vis.toDataURL("image/png"), holding: () => H.holding(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, frameOf, frameIds, podById, genomesText, podGenome, genomeSha, nameCode,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); const pb = stampArt(fr, p.genome, p.read, side); return { width: pb.w, height: pb.h, data: pb.rgba() }; },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },

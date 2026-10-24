@@ -30,15 +30,24 @@ export function figureBox(stand, place, view) {
   const fig = INDEX.stands[stand.species][stand.stage].figure, fh = fig[3] - fig[1] + 1, [cw, ch] = ART_SIZE.split("x").map(Number), s = h / fh;
   return [Math.max(1, Math.round(cw * s)), Math.max(1, Math.round(ch * s))];
 }
-// the layered stand of a species and stage for a place (the size a view asks) in a view, or null: { species, stage, size (the picture: the place's), figure (the box the figure is fitted in), traits, base, layers }, every file loaded
-export function layeredStand(species, stage, place, view = "default") {
+// the layered stand of a species and stage for a place (the size a view asks) in a view and a pose, or null: { species, stage, pose, size (the picture: the place's), figure (the box the figure is fitted in), traits, base, layers },
+// every file loaded. A pose is one of the stage's cut poses (index `poses`; the anchor is the stage's own entry): its art is drawn at the factor of the stage's anchor figure, so every pose of a stage is one scale.
+export function layeredStand(species, stage, place, view = "default", pose = "anchor") {
   const st = stageKey(stage), set = INDEX?.stands?.[species]?.[st]; if (!set) return null;
   if (!SIZES?.places?.includes(`${place[0]}x${place[1]}`)) return null;
-  const [cw, ch] = ART_SIZE.split("x").map(Number), sz = set.sizes?.[ART_SIZE]; if (!sz || !PIXELS.has(sz.base) || !Object.values(sz.bases ?? {}).every((f) => PIXELS.has(f)) || !sz.layers.every((l) => PIXELS.has(l.file))) return null;
-  const stand = { species, stage: st, size: [...place], view, traits: set.traits, base: sz.base, bases: sz.bases ?? {}, layers: sz.layers }, figure = figureBox(stand, place, view);
-  const fig = set.figure, sc = Math.min(figure[0] / cw, figure[1] / ch);   // never up past the art, and the figure itself (not the canvas around it) must fit its picture
+  const art = set.poses?.[pose] ?? (pose === "anchor" ? set : null); if (!art) return null;
+  const [cw, ch] = ART_SIZE.split("x").map(Number), sz = art.sizes?.[ART_SIZE]; if (!sz || !PIXELS.has(sz.base) || !Object.values(sz.bases ?? {}).every((f) => PIXELS.has(f)) || !sz.layers.every((l) => PIXELS.has(l.file))) return null;
+  const stand = { species, stage: st, pose, size: [...place], view, traits: set.traits, base: sz.base, bases: sz.bases ?? {}, layers: sz.layers }, figure = figureBox(stand, place, view);
+  const fig = art.figure, sc = Math.min(figure[0] / cw, figure[1] / ch);   // never up past the art, and the figure itself (not the canvas around it) must fit its picture
   if (sc > 1 || (fig[2] - fig[0] + 1) * sc > place[0] + 0.5 || (fig[3] - fig[1] + 1) * sc > place[1] + 0.5) return null;
   return { ...stand, figure };
+}
+// The pose a habit shows a stage in: { pose, owed }. The pose the species' habits map the habit to, when that pose is cut for the stage; else the anchor, owed "habit key <habit>" (a species with no layered stand
+// is owed too: its picture is the species' stand-in, as before). Pure: the index's data only.
+export function poseFor(species, stage, habit) {
+  const pose = INDEX?.stands?.[species]?.habits?.[habit];
+  if (pose && INDEX.stands[species][stageKey(stage)]?.poses?.[pose]) return { pose, owed: null };
+  return { pose: "anchor", owed: `habit key ${habit}` };
 }
 // The base a mibi's coat calls for: a coat the stand has a painted base for (the version 4 colours, recoloured by the signed ramps), else the stand's own base (charcoal, or a coat it has no ramp for)
 export const baseFor = (stand, looks) => stand.bases[looks.colour] ?? stand.base;
@@ -47,7 +56,7 @@ export const layersFor = (stand, looks) => stand.layers.filter((l) => l.op !== "
 // The stand's contact shadow layer for its view, or null (only the views the layer names get one)
 export const underOf = (stand) => stand.layers.find((l) => l.op === "under" && l.views.includes(stand.view)) ?? null;
 // The picture's variant key for a stand and a mibi's looks: the looks the stand HAS a layer for (a trait it cannot show, or a look it has no layer for, is the base), so two mibis that draw the same pixels are one picture
-export function standVariant(stand, looks) { const shown = {}; if (stand.bases[looks.colour]) shown.colour = looks.colour; for (const l of layersFor(stand, looks)) shown[l.trait] = looks[l.trait]; const key = standKey(stand.species, stand.traits, shown) + "@" + stand.figure.join("x") + (underOf(stand) ? "+u" : ""); return { key, token: keyToken(key) }; }
+export function standVariant(stand, looks) { const shown = {}; if (stand.bases[looks.colour]) shown.colour = looks.colour; for (const l of layersFor(stand, looks)) shown[l.trait] = looks[l.trait]; const key = standKey(stand.species, stand.traits, shown) + "@" + stand.figure.join("x") + (underOf(stand) ? "+u" : "") + (stand.pose && stand.pose !== "anchor" ? "#" + stand.pose : ""); return { key, token: keyToken(key) }; }
 export const standPictureId = (stand, looks, light = "day") => { const { token } = standVariant(stand, looks); return `mibi:${stand.species}~${token}:${stand.stage}:${stand.size[0]}x${stand.size[1]}${light === "day" ? "" : ":" + light}`; };
 
 // Scaling down (Lanczos 3, premultiplied alpha, separable): the canvas fitted into w×h by the one factor that fits, bottom-centred, transparent around
@@ -121,7 +130,7 @@ function withShadow(art, cw, ch, under, shadow) {
 const COMPOSED = new Map();
 export const scaleOf = (stand) => { const [cw, ch] = ART_SIZE.split("x").map(Number); return Math.min(stand.figure[0] / cw, stand.figure[1] / ch); };
 function composed(stand, looks) {
-  const key = `${stand.stage}:${stand.size.join("x")}|${standVariant(stand, looks).key}`; if (COMPOSED.has(key)) return COMPOSED.get(key);
+  const key = `${stand.stage}:${stand.size.join("x")}|${standVariant(stand, looks).key}`; if (COMPOSED.has(key)) return COMPOSED.get(key);   // the variant's key holds the pose (not the anchor's)
   const [cw, ch] = ART_SIZE.split("x").map(Number), [w, h] = stand.size, [fw, fh] = stand.figure, art = artOf(stand, looks), under = underOf(stand);
   let px, figure;
   if (!under) { px = fitDown(art, cw, ch, fw, fh, w, h); figure = inkBox(px, w, h); }

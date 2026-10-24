@@ -130,6 +130,7 @@ const reading = (screen) => async (name, page, fail) => {
   }
   console.log(name.padEnd(34) + " chrome " + String(r.pass1).padStart(8) + " · chrome+art " + String(r.pass2).padStart(8) + ringTxt + extra + (r.errors.length ? " · errors: " + r.errors.join("; ") : "") + (r.refused ? " · refused nodes: " + r.refused : ""));
   if (r.errors.length || r.refused) fail(name + ": " + r.errors.join("; ") + " refused " + r.refused);
+  if (r.owed?.length) fail(name + ": shows an owed habit key (" + r.owed.join(", ") + ")");
   if (r.pass1 !== 0) fail(name + ": chrome reads " + r.pass1 + " off-palette pixels"); if (r.pass2 !== 0) fail(name + ": art reads " + r.pass2 + " off-palette pixels");
 };
 for (const [screen, states] of [["pods", podsStates], ["home", homeStates], ["cargo", cargoStates], ["create", createStates], ["incubator", incubatorStates], ["vivarium", vivariumStates], ["habitat", habitatStates], ["library", libraryStates], ["bench", benchStates], ["idle", idleStates]].filter(([screen]) => !process.env.LAYER_ONLY || process.env.LAYER_ONLY.split(",").includes(screen))) { const { fails } = await states(reading(screen)); failed += fails.length; }   // LAYER_ONLY=cargo,home: only those screens
