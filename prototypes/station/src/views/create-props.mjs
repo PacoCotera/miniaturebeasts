@@ -9,7 +9,8 @@ import { shutSealed } from "../state.mjs";
 import { plateReq, kPct } from "../stamplook.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing, codeText } from "../genome.mjs";
-import { slot, railOf } from "./pods-props.mjs";
+import { railOf } from "./pods-props.mjs";
+import { slotAt as slot, ph as phOf } from "./requests.mjs";
 import { treatmentOf, drawnDigest, builtOf } from "../art.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { fill, spell, plural } from "./words.mjs";
@@ -33,7 +34,7 @@ export function createBuild(m, spec, pods) {
   const { st, settings } = m, cr = m.ui.create, requests = [], req = reqOf(requests);
   const p = createPod(st, cr), fr = frameOf(S.speciesOf(p)), R = spec.regions, list = reviewTraits(p, fr), changed = S.changedTraits(cr.choices), grown = !!cr.grown;
   const state = grown ? "grow" : list.length ? "shape" : "nothingRead";
-  const ph = (id, size, hollow, until) => req({ kind: "ph", id, size, hollow, until });
+  const ph = phOf(req, "its master (masters/index.json)");
   const f = clamp(cr.f, 0, Math.max(0, list.length - 1)), cur = list[f] ?? null, genome = S.founderGenome(p, cr.choices);
   const regions = {};
 
@@ -106,7 +107,7 @@ export function createBuild(m, spec, pods) {
   const Sg = spec.strings, cost = grown ? cr.grown.cost : S.growCost(st, cr.choices, settings), key = grown ? null : S.growBlockKey(st, p, cr.choices, settings, cr.clash);
   const unread = fr.chapters.filter((c) => !p.read.includes(c.id) && !shutSealed(c, settings)), shut = fr.chapters.filter((c) => !p.read.includes(c.id) && shutSealed(c, settings)), name = S.spName(p);
   // the context: nothingRead the pod's own sentence; unread chapters the count alone (a shut sealed chapter is never counted: shutSealed); every other chapter read and a sealed one shut, naming it (owner, W4); else fully known
-  const subject = state === "nothingRead" ? Sg.traitLine.none : unread.length ? plural(unread.length, fill(Sg.surprise.one, { Chapter: unread[0].name }), fill(Sg.surprise.more, { "n in words": spell(unread.length) })) : shut.length ? fill(Sg.sealedShut, { Chapter: shut[0].name }) : S.cap(S.aAn(name)) + ", fully known";
+  const subject = state === "nothingRead" ? Sg.traitLine.none : unread.length ? plural(unread.length, fill(Sg.surprise.one, { Chapter: unread[0].name }), fill(Sg.surprise.more, { "n in words": spell(unread.length, "many") })) : shut.length ? fill(Sg.sealedShut, { Chapter: shut[0].name }) : S.cap(S.aAn(name)) + ", fully known";
   // grow: the line is Growing, with no action, price or way back (null: the frame drops their nodes), an empty right slot and its own context (fix 5 C6); else C5: the right slot is Create's own, block reasons first, then the shortfall, then the warning, else empty
   const bottom = grown ? { ok: null, price: null, back: null, subject: Sg.growing, need: "" } : { ok: Sg.action, price: S.priceText(cost.e, cost.d, cost.s, S.budMinutes(st, changed.length, settings)), back: S.cap(name), subject, need: "" };
   if (!grown && key && key.key === "short") { bottom.dim = true; bottom.short = key.short; bottom.need = fill(Sg.notices.shortFrom[key.from], { icons: key.short }); }   // short: the dimmed ✓, the short figures amber

@@ -4,12 +4,11 @@
 // the shape is bench.props.json.
 //   m: { st, sv, settings, docked, ui (UI.bench: { f, install }) }
 import * as S from "../state.mjs";
-import { slot } from "./pods-props.mjs";
+import { slotAt as slot } from "./requests.mjs";
 import { warnWords } from "./goal-words.mjs";
-import { spell } from "./words.mjs";
-import { req as reqOf, ph as phOf } from "./requests.mjs";
+import { fill, spell } from "./words.mjs";
+import { req as reqOf, ph as phOf, plateDevice } from "./requests.mjs";
 
-const fill = (t, o) => t.replace(/\{([^{}|]+)\|([^{}|]+)\}/g, (_, a, b) => (o.n === 1 ? a : b)).replace(/\{([^{}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
 export function benchBuild(m, spec, frame) {
   const { st, sv, settings, docked, ui } = m, R = spec.regions, Sg = spec.strings, requests = [], req = reqOf(requests);
@@ -33,7 +32,7 @@ export function benchBuild(m, spec, frame) {
   ph(AD.reach.slice, AD.reach.size); ph(AD.reach.newSlice, AD.reach.size); ph(AD.deep.slice, AD.deep.size); ph(AD.deep.newSlice, AD.deep.size);
 
   // the switch: set at any time, docked or away
-  const plate = (r) => req({ kind: "slot", id: `plate-device-${r.rect[2]}x${r.rect[3]}`, master: `plate-device-${r.rect[2]}x${r.rect[3]}`, size: r.rect.slice(2), until: "the device plate (fix 2: placed 1:1 at the module's rect)" });
+  const plate = (r) => req(plateDevice(r.rect[2], r.rect[3], "the device plate (fix 2: placed 1:1 at the module's rect)"));
   const on = !!st.mendFull, sw = { plate: plate(R.switch), state: on ? "on" : "off", lamp: on ? "well" : "off", count, whole: on ? count : Math.min(S.DOCK_MEND_FLOOR, count) };
   // the slot, in order: tier 2 fitted; away dim; affordable ready; else dim, short
   const ready = tier < 2 && docked && S.tier2Ready(st, settings);

@@ -3,8 +3,8 @@
 // Number words, 0 to 12; a number outside the table is its digits.
 const NUMBER_WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
 
-// spell(n): the word for n, "no" for 0 and "twelve" for 12; String(n) for any other n.
-export const spell = (n) => NUMBER_WORDS[n] ?? String(n);
+// spell(n, beyond): the word for n, "no" for 0 and "twelve" for 12; for any other n, `beyond` when it is given (a caller's own word, such as "many"), otherwise String(n).
+export const spell = (n, beyond) => NUMBER_WORDS[n] ?? beyond ?? String(n);
 
 // count(n): the word a count takes before a noun: "a" for 1, otherwise spell(n) ("two", "three", ..., "no" for 0).
 export const count = (n) => (n === 1 ? "a" : spell(n));
@@ -13,5 +13,8 @@ export const count = (n) => (n === 1 ? "a" : spell(n));
 export const plural = (n, one, many) => (n === 1 ? one : many);
 
 // fill(template, values): every `{name}` in the template becomes values[name], a name being anything between the braces (`{n in words}` and `{a/an}` included).
-// A name the values do not hold stays as written, braces and all. Returns a string.
-export const fill = (template, values) => template.replace(/\{([^{}]+)\}/g, (_, k) => (k in values ? values[k] : "{" + k + "}"));
+// A name is looked up as an own key of `values` (Object.hasOwn), so `{constructor}` is never filled from the prototype.
+// A name the values do not hold, of the form `one|many` (exactly one `|`, both sides non-empty), becomes plural(values.n, one, many): `one` when values.n is exactly 1, otherwise `many`.
+// Any other name the values do not hold stays as written, braces and all (`{a|b|c}` too). Returns a string.
+const ONE_MANY = /^([^|]+)\|([^|]+)$/;
+export const fill = (template, values) => template.replace(/\{([^{}]+)\}/g, (_, k) => { if (Object.hasOwn(values, k)) return values[k]; const p = k.match(ONE_MANY); return p ? plural(values.n, p[1], p[2]) : "{" + k + "}"; });

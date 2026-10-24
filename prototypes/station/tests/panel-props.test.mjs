@@ -9,7 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { panelBuild, initialFocus, growNowCards } from "../src/views/panel-props.mjs";
+import { panelBuild, initialFocus, growNowCards, dockCards } from "../src/views/panel-props.mjs";
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { openPanel } from "../src/intents/panel.mjs";
 import { createMeasure } from "../../ui/specs/measure.mjs";
@@ -127,6 +127,11 @@ for (const [kind, gain] of [["mibi", S.PRICE.wildMibi], ["pod", S.PRICE.wild]]) 
     assert.equal(v.line.ok, kind === "mibi" ? `Release ${h.st.mibis[0].name}` : "Release it"); assert.equal(v.line.price, S.gainText(gain)); assert.equal(v.line.subject, "", "the middle is empty on a card-form panel"); assert.ok(wview(h).cards[0].line, "the fact is on the card");
   });
 }
+
+test("the dock strip's Open the bay line: the crates in words to twelve, many from thirteen", () => {
+  const line = (n) => dockCards({ ui: { cargo: { arrival: { crates: n } } } }, panelSpec, frameSpec, []).find((c) => c.id === "open").line;
+  assert.equal(line(1), panelSpec.strings.dock.oneCrate); assert.equal(line(12), "twelve crates to the case"); assert.equal(line(13), "many crates to the case");
+});
 
 // ---- the Fit the upgrade? panel (T-20261016-53; spec §1.6): ⚡ 12 ◆ 4 from the rules, dimmed with what is short, Not now spends nothing ----
 function fitHost(o = {}) {

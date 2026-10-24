@@ -9,13 +9,12 @@ import { frameOf, traitState, genomeDigest, stampSizing } from "../genome.mjs";
 import { pageGrid } from "../../../ui/specs/derive.mjs";
 import { founderPicture } from "./create-props.mjs";
 import { plateReq, kPct } from "../stamplook.mjs";
-import { fill } from "./words.mjs";
-import { req as reqOf } from "./requests.mjs";
+import { fill, spell } from "./words.mjs";
+import { req as reqOf, slotAt as slot } from "./requests.mjs";
 
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
 const podFrame = (p) => frameOf(S.speciesOf(p));
 // A picture the room needs at a size: the placed master of that id when it is exactly that size, an empty slot (nothing drawn, never scaled) when it is not.
-export const slot = (req, master, rect, until) => { const size = rect.slice(2); return req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until }); };
 // An unidentified pod is the unknown pod: its own pictures, never a species' shell, even when the species is known.
 const shellFrame = (st, p) => (p.idd && st.knownIds.includes(S.speciesOf(p)) ? podFrame(p) : null);
 // The species a pod's shell shows (an unidentified pod, and a species not yet known, show the unknown shell): Pods' collection and Cargo's rack draw the same pod.
@@ -24,8 +23,7 @@ const railWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.rail
 const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.heading : c.name);
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // No digits where a picture or a word does: a count in a sentence is said in words (the frame's shared need line on Pods); an amount beside a material icon is a price or a shortfall and stays in figures.
-const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
-export const inWords = (text) => (text || "").replace(/\d+(?! [⚡◆❀])/g, (n) => WORDS[+n] ?? "many");
+export const inWords = (text) => (text || "").replace(/\d+(?! [⚡◆❀])/g, (n) => spell(+n, "many"));
 
 // m: { st, settings, docked, crates, ui: { view, cur, ci, cmp }, focus: id | null }   (what is playing is the timeline's: it sends events, the view sends end states)
 // Pods is three states (station-layouts.md, Pods): the collection, a pod's overview, a chapter's page; Compare is the overview's. The view reads `ui.view`.

@@ -15,7 +15,7 @@ import { listForm } from "../../../ui/specs/derive.mjs";
 import { kPct } from "../stamplook.mjs";
 import { doorOpen } from "../nav.mjs";
 import { fill, spell } from "./words.mjs";
-import { req as reqOf, slot as slotOf, plateDevice } from "./requests.mjs";
+import { req as reqOf, slot as slotOf, plateDevice, slotAt } from "./requests.mjs";
 
 // The species' face (the top bar's mark, frame.json regions.marks.face), docked or dimmed.
 const faceId = (frame, mb, away) => (away ? frame.regions.marks.face.away : frame.regions.marks.face.docked).replace("{mibi}", S.spName(mb).toLowerCase());
@@ -55,7 +55,7 @@ export function habitatBuild(m, spec, frame, home) {
     plate: plate(416, 208),
     heart: shown.bonded ? slot("heart-full-24", R.card.heart.size, "the heart master") : "",
     notches: { count: Math.min(shown.notches || 0, 3), picture: slot("notch-skill-16x24", R.card.notches.notch, "the skill notch master") },
-    species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: req({ kind: "slot", id: "mark-guide-16:16x16", master: "mark-guide-16", size: [16, 16], until: "the guide mark master (AD G1)" }) },
+    species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: slotAt(req, "mark-guide-16", [0, 0, 16, 16], "the guide mark master (AD G1)") },
     story, code: codeText(shown.code),
     stamp: { size: sz.size, N: sz.N, cell: sz.cell, plate: slot("plate-well-120x120", [120, 120], "the label's well (Habitat GB2)"), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}:k${kPct(spec.colours.stampLabel.k)}`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size, k: spec.colours.stampLabel.k }) },
   };
@@ -64,7 +64,7 @@ export function habitatBuild(m, spec, frame, home) {
   const sealedShut = (c) => !!c.sealed && !settings.sealedOpen && !(shown.read || []).includes(c.id);
   const plates = (fr?.chapters ?? []).slice(0, R.plates.places.max).map((c) => {
     const st2 = (shown.read || []).includes(c.id) ? "read" : sealedShut(c) ? "sealed" : "unread";
-    return { id: c.id, state: st2, ground: req({ kind: "slot", id: `chapter-plate-${st2}-40x40:40x40`, master: `chapter-plate-${st2}-40x40`, size: [40, 40], until: "the chapter plate master (AD P1)" }), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${st2}:24`, chapter: c.id, state: st2 }) };
+    return { id: c.id, state: st2, ground: slotAt(req, `chapter-plate-${st2}-40x40`, [0, 0, 40, 40], "the chapter plate master (AD P1)"), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${st2}:24`, chapter: c.id, state: st2 }) };
   });
   regions.plates = { items: plates };
 
@@ -76,7 +76,7 @@ export function habitatBuild(m, spec, frame, home) {
 
   // the Portrait module
   const pst = shown.portrait ? (shown.portrait.state === "delivered" ? "portrayed" : "painting") : st.sitting ? "held" : "none";
-  regions.portrait = { plate: plate(136, 96), state: pst, frame: req({ kind: "slot", id: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40:48x40`, master: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40`, size: [48, 40], until: "the sitting frame master (AD, candidates)" }), picture: pst === "portrayed" && shown.portrait.digest ? req({ kind: "portrait", id: `portrait:${String(shown.portrait.digest).slice(0, 16)}:40x30`, digest: shown.portrait.digest, size: [40, 30] }) : "" };
+  regions.portrait = { plate: plate(136, 96), state: pst, frame: slotAt(req, `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40`, [0, 0, 48, 40], "the sitting frame master (AD, candidates)"), picture: pst === "portrayed" && shown.portrait.digest ? req({ kind: "portrait", id: `portrait:${String(shown.portrait.digest).slice(0, 16)}:40x30`, digest: shown.portrait.digest, size: [40, 30] }) : "" };
 
   // the Cross module: one face a partner, an adult or an elder of its species; a partner out with the Companion while it is away is dimmed
   const partners = S.isAdult(st, shown, settings) ? S.crossPartners(st, sv, shown, settings) : [], pickable = partners.filter((p) => !p.away);
@@ -85,7 +85,7 @@ export function habitatBuild(m, spec, frame, home) {
 
   // the Wild module: the gate stays shut; ✓ opens the Return panel (decision panel spec §1.6), which replaced the "✓ again" arm
   const wildBlock = S.returnMibiBlock(st, sv, shown);
-  regions.wild = { plate: plate(136, 96), state: "shut", gate: req({ kind: "slot", id: "gate-wild-shut-48x48:48x48", master: "gate-wild-shut-48x48", size: [48, 48], until: "the gate master (AD W1)" }) };
+  regions.wild = { plate: plate(136, 96), state: "shut", gate: slotAt(req, "gate-wild-shut-48x48", [0, 0, 48, 48], "the gate master (AD W1)") };
 
   // the strip: one tile a bay, the housed mibis in bay order then the free bays; the mibi up close is the shown tile
   const housed = S.housed(st).slice().sort((a, b) => a.bay - b.bay), n = S.bayCount(st, settings);

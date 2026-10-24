@@ -14,7 +14,7 @@ import { readyCrates, bayState } from "../sitting.mjs";
 import { paintingOf } from "./idle-props.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { fill, count, plural } from "./words.mjs";
-import { req as reqOf, ph as phOf } from "./requests.mjs";
+import { req as reqOf, ph as phOf, slotAt } from "./requests.mjs";
 
 // The Library module's region and the request that makes its specimen (build spec 4.2) come from the specimen painter (views/specimen-props.mjs), which the host registers here: the painter stays out of what the intents import
 // (they are DOM-free and run as a Node program, intents.test.mjs), and a build with none registered shows the Library's placeholder.
@@ -172,10 +172,10 @@ function glassOf(m, spec, frame, housed, requests) {
 
 // m: { st, sv, settings, docked, ui, focus: id | null, time (seconds of the day), date { y, m, d }, now (ms), place, spec home.json, frame frame.json }
 export function homeBuild(m, spec, frame) {
-  const { st, sv, settings } = m, now = m.now ?? Date.now(), Sg = spec.strings, T = Sg.stations, docked = !!m.docked, fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
+  const { st, sv, settings } = m, now = m.now ?? Date.now(), Sg = spec.strings, T = Sg.stations, docked = !!m.docked;
   const needs = homeNeeds(st, sv, settings, m.ui ?? {}, now), requests = [];
   // the stations: the lines and the lamp
-  const req = reqOf(requests), slot = (master, size) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: "its master (build spec section 9)" });
+  const req = reqOf(requests), slot = (master, size) => slotAt(req, master, [0, 0, ...size], "its master (build spec section 9)");
   const pods = (() => {
     const n = st.tray.length, seen = new Set(st.tray.filter((q) => q.idd || st.knownIds.includes(S.speciesOf(q))).map((q) => S.speciesOf(q))), k = seen.size;
     const amber = st.tray.some((p) => !p.idd && !p.seen) || st.tray.some((p) => S.podGlints(st, p));
