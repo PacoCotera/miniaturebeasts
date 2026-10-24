@@ -407,7 +407,7 @@ static void kit_words(void) {
     check(ok4 == 0 && kabsent("ks.g4") && kabsent("ks.r4"), "kit_stage: a spec with no rectangle draws nothing and returns 0", "");
     prim_end();
     /* kit_stamp: the case's back, the plate, the clip, the stamp centred on the plate, the case's front, in this order. The ids of the stamp's own nodes are fixed, so each case is its own frame and is read after the frame ends (a node not drawn is dropped then). A node inside a clip is placed from the clip's corner. */
-    kit_stamp_t full = { "st.plate", "st", "st.img", 0, "kst", "cs" }, bare = { "st.plate", "st", "st.img", 0, NULL, NULL }, alone = { "st.plate", "st", "st.img", 1, "kst", "cs" };
+    kit_stamp_t full = { "st.plate", "st", "st.img", 0, "kst", "cs", NULL, { 0, 0 } }, bare = { "st.plate", "st", "st.img", 0, NULL, NULL, NULL, { 0, 0 } }, alone = { "st.plate", "st", "st.img", 1, "kst", "cs", NULL, { 0, 0 } };
     prim_begin(); kit_stamp("kst", "r.rect", "ks-plate", "ks-stamp", 64, 20, &full); prim_end();
     check(table_nodes() == 5 && kat("stamp.case", FN_SPRITE, 96, 46, 128, 128) && kat("st.plate", FN_SPRITE, 100, 50, 120, 120) && kat("stamp.clip", FN_CLIP, 128, 78, 64, 20) && kat("stamp.stamp", FN_SPRITE, 0, 0, 64, 64) && kat("stamp.front", FN_SPRITE, 96, 46, 128, 128),
       "kit_stamp: the case's back, the plate, the clip cut to clipH rows at the stamp's place (half the room left, rounding up), the stamp in it, the case's front: five nodes", "");
@@ -507,6 +507,122 @@ static void kit_words(void) {
     free(pc);
   }
 }
+/* kit_glint (Home's Library glints on it) and the top bar's readout after the title */
+static void glint_readout(void) {
+  static const char *GP = "regions.library.specimen.glint";
+  int ms = spec_int("home", "regions.library.specimen.glint.ms", 0), top = spec_int("home", "regions.library.specimen.glint.levels", 0);
+  check(ms == 2000 && top == 16, "kit_glint_level: home.json holds the period 2000 and 16 levels", "");
+  check(kit_glint_level("home", GP, 0, 1) == 0 && kit_glint_level("home", GP, (uint32_t)ms / 4, 1) == 8 && kit_glint_level("home", GP, (uint32_t)ms / 2, 1) == 16 && kit_glint_level("home", GP, (uint32_t)(3 * ms / 4), 1) == 8 && kit_glint_level("home", GP, (uint32_t)ms, 1) == 0,
+    "kit_glint_level: 0, 8, 16, 8, 0 at 0, ms/4, ms/2, 3ms/4 and ms (in over the first half, out over the second)", "");
+  check(kit_glint_level("home", GP, 0, 0) == 16 && kit_glint_level("home", GP, (uint32_t)ms / 4, 0) == 16 && kit_glint_level("home", GP, (uint32_t)ms / 2, 0) == 16 && kit_glint_level("home", GP, (uint32_t)(3 * ms / 4), 0) == 16 && kit_glint_level("home", GP, (uint32_t)ms, 0) == 16,
+    "kit_glint_level: motion 0 gives the top level at every time", "");
+  { const char *m = "{\"t\":\"asset\",\"id\":\"kg-star-12\",\"w\":12,\"h\":12,\"policy\":\"art\",\"status\":\"placeholder\"}"; check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot("kg-star-12") >= 0, "kit_glint: a picture is loaded", ""); }
+  int g[4], gw = v_sk("home", "regions.library.specimen.glint.size", 0), gh = v_sk("home", "regions.library.specimen.glint.size", 1), bx = 100, by = 60; v_srect("home", "regions.library.window", g);
+  char o0[160], o16[160];
+  prim_begin(); v_region("library.window", LAYER_ART); kit_glint("library.glint.0", "kg-star-12", g[0] + bx, g[1] + by, gw, gh, 0); snprintf(o0, sizeof o0, "%s", prim_ops()); prim_end();
+  check(table_nodes() == 1 && kat("library.glint.0", FN_COMPOSED, g[0] + bx - gw / 2, g[1] + by - gh / 2, gw, gh) && strstr(o0, "[[\"bayerPick\",-1,") == o0 && strstr(o0, ",0,") != NULL, "kit_glint: at level 0 one composed node, the bead's box as Home draws it (centred, glint.size), dithered in from clear", o0);
+  prim_begin(); v_region("library.window", LAYER_ART); kit_glint("library.glint.0", "kg-star-12", g[0] + bx, g[1] + by, gw, gh, top); snprintf(o16, sizeof o16, "%s", prim_ops()); prim_end();
+  { char want[160]; snprintf(want, sizeof want, "[[\"bayerPick\",-1,%d,16,%d,%d,0,0,0,0]]", wire_asset_slot("kg-star-12"), g[0] + bx - gw / 2, g[1] + by - gh / 2);
+    check(table_nodes() == 1 && kat("library.glint.0", FN_COMPOSED, g[0] + bx - gw / 2, g[1] + by - gh / 2, gw, gh) && strcmp(o16, want) == 0, "kit_glint: at the top level the same node and box, the whole star", o16); }
+  prim_begin(); kit_glint("library.glint.1", "kg-not-sent", 50, 50, 12, 12, 16); prim_end();
+  check(kabsent("library.glint.1"), "kit_glint: an asset the host has not sent makes no node", "");
+  /* the readout: "Library" (20 px) ends at x 115, the readout starts at 123 (137 for the text after a 10 px mark and 4 px), ending by x 248 */
+  { const char *m = "{\"t\":\"asset\",\"id\":\"kr-mark-10\",\"w\":10,\"h\":10,\"policy\":\"art\",\"status\":\"placeholder\"}"; check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot("kr-mark-10") >= 0, "readout: a mark is loaded", ""); }
+  static const char *PRS[] = {
+    "{\"frame\":{\"top\":{\"screen\":\"library\",\"title\":\"Library\",\"readout\":{\"text\":\"Untuva family\",\"mark\":\"kr-mark-10\"}}}}",
+    "{\"frame\":{\"top\":{\"screen\":\"library\",\"title\":\"Library\",\"readout\":{\"text\":\"All species\",\"mark\":null}}}}",
+    "{\"frame\":{\"top\":{\"screen\":\"library\",\"title\":\"Library\",\"readout\":{\"text\":\"Untuva family of the long hollow\",\"mark\":\"kr-mark-10\"}}}}",
+    "{\"frame\":{\"top\":{\"screen\":\"library\",\"title\":\"Library\"}}}" };
+  int tb[4], rb[4], mb[4], kt[4], km[4];
+  for (int i = 0; i < 4; i++) {
+    spec_drop("props"); spec_load("props", PRS[i], strlen(PRS[i]));
+    prim_begin(); word_topBar(); prim_end();
+    kbox("top.title.0", tb); kt[i] = kbox("top.readout.text", rb); km[i] = kbox("top.readout.mark", mb);
+    int tm[4]; kbox("top.m.e", tm);   /* the Energy figure: a 16 px word of the bar, cap top 12 on baseline 24 */
+    if (i == 0) {
+      check(tb[0] + tb[2] == 115, "readout: the title \"Library\" (20 px) ends at x 115", "");
+      check(km[i] == FN_SPRITE && mb[0] == 123 && mb[2] == 10 && mb[3] == 10 && mb[1] == 13 && rb[1] == tm[1], "readout: with a mark, the 10 x 10 mark at the title's end + 8 (x 123), y 13: centred on the text's cap, 12 to 24, on the title's baseline 24 as the counters", "");
+      check(kt[i] == FN_TEXT && rb[0] == 137 && rb[2] == v_measure("Untuva family", 16) && rb[2] == 103 && rb[0] + rb[2] <= 248, "readout: then 4 px, then the text at x 137, \"Untuva family\" (103 px) whole in the 111 px left", "");
+    }
+    if (i == 1) check(kabsent("top.readout.mark") && kt[i] == FN_TEXT && rb[0] == 123 && rb[1] == tm[1] && rb[2] == v_measure("All species", 16), "readout: without a mark, the text at the title's end + 8 (x 123) and no mark node", "");
+    if (i == 2) { char cut[V_STR + 4]; v_clip("Untuva family of the long hollow", 248 - 137, 16, cut, sizeof cut); size_t n = strlen(cut);
+      check(kt[i] == FN_TEXT && rb[0] == 137 && rb[2] == v_measure(cut, 16) && rb[0] + rb[2] <= 248 && n > 3 && strcmp(cut + n - 3, "\xe2\x80\xa6") == 0 && strlen(cut) < strlen("Untuva family of the long hollow"), "readout: a text too long is cut by v_clip to end by x 248, ending in the ellipsis", cut); }
+    if (i == 3) check(kabsent("top.readout.text") && kabsent("top.readout.mark") && tb[0] + tb[2] == 115, "readout: props without frame.top.readout draw no readout node", "");
+  }
+  spec_drop("props");
+}
+/* kit_resident, word_livingWindow's cross-dither and kit_stamp's corner: the nodes, boxes and ops they draw, and the forms that draw as before */
+static void resident_window_corner(void) {
+  face_init(); prim_palette_add("kitA", KA); prim_palette_add("kitB", KB); prim_palette_add("kitC", KC); prim_palette_add("kitD", KD);
+  { const char *hi = "{\"t\":\"hello\",\"contract\":1}"; wire_send(hi, (int)strlen(hi)); }
+  static const struct { const char *id; int w, h; } PIC[] = { { "kr-pic", 30, 40 }, { "kr-from", 30, 40 }, { "kr-out", 10, 20 }, { "lw-pic", 40, 50 }, { "lw-from", 40, 50 }, { "kc-plate", 120, 120 }, { "kc-stamp", 64, 64 }, { "kc-corner", 16, 16 }, { "kf-pic", 304, 312 }, { "kf-from", 304, 312 } };
+  for (int i = 0; i < 10; i++) { char m[160]; snprintf(m, sizeof m, "{\"t\":\"asset\",\"id\":\"%s\",\"w\":%d,\"h\":%d,\"policy\":\"art\",\"status\":\"placeholder\"}", PIC[i].id, PIC[i].w, PIC[i].h); check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot(PIC[i].id) >= 0, "kit_resident, livingWindow and the corner: a picture is loaded", PIC[i].id); }
+  static const char KRS[] = "{\"f\":{\"rect\":[144,68,304,312],\"axis\":296,\"feet\":380},\"r\":{\"rect\":[100,50,30,40]},\"o\":{\"rect\":[110,70,10,20]},\"g\":{\"rect\":[10,20,40,30],\"ground\":[10,40,40,6],\"foot\":[10,46,40,4]},\"colours\":{\"g\":{\"back\":\"kitA\",\"ground\":\"kitB\",\"groundTop\":\"kitC\",\"foot\":\"kitD\"}},\"s\":{\"rect\":[872,64,120,120]}}";
+  spec_load("krs", KRS, sizeof KRS - 1);
+  int ret;
+  /* kit_resident: the still, the slot, the out mark, the dither */
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 4, NULL, 0, NULL, NULL, NULL); prim_end();
+  check(ret == 1 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 46, 30, 40) && kabsent("kr.dither") && kat("kr.out", FN_SPRITE, 100, 50, 0, 0), "kit_resident: the still picture 1:1 at its box lifted, the out mark's node with no size at the box's corner, not lifted; returns 1", "");
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 0, "kr-missing", 8, NULL, NULL, NULL); prim_end();
+  check(ret == 1 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 50, 30, 40) && kabsent("kr.dither"), "kit_resident: a from the host has not sent is no dither, the still as before", "");
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-missing", "", 4, "kr-from", 8, NULL, NULL, NULL); prim_end();
+  check(ret == 0 && table_nodes() == 0 && kabsent("kr.pic") && kabsent("kr.dither") && kabsent("kr.out"), "kit_resident: no picture sent and no out mark: no node, returns 0", "");
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "", "kr-out", 4, NULL, 0, NULL, NULL, NULL); prim_end();
+  check(ret == 0 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 46, 0, 0) && kabsent("kr.dither") && kat("kr.out", FN_SPRITE, 110, 70, 10, 20), "kit_resident: out with no picture: the picture's node with no size over the out mark, the mark 1:1 at its rect; returns 0", "");
+  prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "kr-out", 0, NULL, 0, NULL, NULL, NULL); prim_end();
+  check(ret == 1 && table_nodes() == 2 && kat("kr.pic", FN_SPRITE, 100, 50, 30, 40) && kat("kr.out", FN_SPRITE, 110, 70, 10, 20), "kit_resident: the picture and the out mark both sent: both drawn", "");
+  static const int LV[3] = { 1, 8, 15 };
+  for (int i = 0; i < 3; i++) {
+    char ops[200], want[200];
+    prim_begin(); ret = kit_resident("krs", "r.rect", "o.rect", "kr", "kr-pic", "", 4, "kr-from", LV[i], NULL, NULL, NULL); snprintf(ops, sizeof ops, "%s", prim_ops()); prim_end();
+    snprintf(want, sizeof want, "[[\"bayerPick\",%d,%d,%d,100,46,0,0,0,0]]", wire_asset_slot("kr-from"), wire_asset_slot("kr-pic"), LV[i]);
+    check(ret == 1 && table_nodes() == 3 && kat("kr.pic", FN_SPRITE, 100, 46, 0, 0) && kat("kr.dither", FN_COMPOSED, 100, 46, 30, 40) && strcmp(ops, want) == 0 && kat("kr.out", FN_SPRITE, 100, 50, 0, 0),
+      "kit_resident: dithering, the picture's node with no size, then the pick from `from` to the picture at the level over the lifted box (levels 1, 8, 15), then the out slot", ops);
+  }
+  /* kit_resident with a figure: the picture's own size placed so the figure centres on the axis and its last solid row stands on the feet; NULL draws at the rect as before */
+  { static const struct { const char *what; int f[4]; } FIG[] = { { "the adult stand (anchor)", { 84, 190, 136, 118 } }, { "the adult curl", { 88, 212, 130, 95 } }, { "the juvenile curl", { 100, 226, 103, 79 } } };
+    for (int i = 0; i < 3; i++) {
+      const int *f = FIG[i].f; int b[4];
+      prim_begin(); ret = kit_resident("krs", "f.rect", "o.rect", "kr", "kf-pic", "", 0, NULL, 0, f, "f.axis", "f.feet"); prim_end();
+      int k = kbox("kr.pic", b);
+      check(ret == 1 && k == FN_SPRITE && table_nodes() == 2 && b[2] == 304 && b[3] == 312 && b[0] + f[0] + f[2] / 2 == 296 && b[1] + f[1] + f[3] - 1 == 380 && kat("kr.out", FN_SPRITE, b[0], b[1], 0, 0), "kit_resident: with a figure, the picture at its own size, the figure's centre on the axis (296) and its last solid row on the feet (380); the out slot at the same box", FIG[i].what);
+      prim_begin(); ret = kit_resident("krs", "f.rect", "o.rect", "kr", "kf-pic", "", 2, "kf-from", 8, f, "f.axis", "f.feet"); prim_end();
+      int d[4]; int kd = kbox("kr.dither", d);
+      check(ret == 1 && kd == FN_COMPOSED && d[0] == b[0] && d[1] == b[1] - 2 && d[2] == 304 && d[3] == 312 && kat("kr.pic", FN_SPRITE, b[0], b[1] - 2, 0, 0) && kat("kr.out", FN_SPRITE, b[0], b[1], 0, 0), "kit_resident: with a figure, the lift rides up from the figure's box, the dither over that box, the out slot unlifted at it", FIG[i].what);
+    }
+    prim_begin(); kit_resident("krs", "f.rect", "o.rect", "kr", "kf-pic", "", 4, "kf-from", 8, NULL, NULL, NULL); prim_end();
+    int nb[4]; kbox("kr.dither", nb);
+    check(table_nodes() == 3 && nb[0] == 144 && nb[1] == 64 && nb[2] == 304 && nb[3] == 312 && kat("kr.out", FN_SPRITE, 144, 68, 0, 0), "kit_resident: figure NULL draws at the rect, lifted, as before", "");
+    prim_begin(); kit_resident("krs", "f.rect", "o.rect", "kr", "kf-missing", "", 4, NULL, 0, FIG[1].f, "f.axis", "f.feet"); prim_end();
+    check(table_nodes() == 0, "kit_resident: a figure with no picture sent draws no node, as with none", ""); }
+  /* word_livingWindow: no from draws as before; a sent from hides the master's node and dithers to it from the same windows */
+  int g[4] = { 10, 20, 40, 30 };
+  prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "lw-pic", 0, 10, NULL, 0); prim_end();
+  check(table_nodes() == 5 && kat("lw.back", FN_RECT, 10, 20, 0, 0) && kat("lw.master", FN_SPRITE, g[0], g[1], g[2], g[3]) && kabsent("lw.dither"), "livingWindow: without from, the plates with no size and the master over the glass, as before", "");
+  prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "lw-pic", 0, 10, "", 9); prim_end();
+  check(table_nodes() == 5 && kat("lw.master", FN_SPRITE, g[0], g[1], g[2], g[3]) && kabsent("lw.dither"), "livingWindow: an empty from is no from", "");
+  prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "lw-pic", 0, 10, "lw-missing", 9); prim_end();
+  check(table_nodes() == 5 && kat("lw.master", FN_SPRITE, g[0], g[1], g[2], g[3]) && kabsent("lw.dither"), "livingWindow: a from the host has not sent is no from", "");
+  { char ops[200], want[200];
+    prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "lw-pic", 0, 10, "lw-from", 9); snprintf(ops, sizeof ops, "%s", prim_ops()); prim_end();
+    snprintf(want, sizeof want, "[[\"bayerPick\",%d,%d,9,10,20,0,10,0,10]]", wire_asset_slot("lw-from"), wire_asset_slot("lw-pic"));
+    check(table_nodes() == 6 && kat("lw.master", FN_SPRITE, g[0], g[1], 0, 0) && kat("lw.dither", FN_COMPOSED, g[0], g[1], g[2], g[3]) && strcmp(ops, want) == 0, "livingWindow: with from, the master's node with no size, then the pick from `from` to the master at the level, both windows at (sx, sy), over the glass", ops); }
+  prim_begin(); word_livingWindow("krs", "lw", NULL, "g", "colours.g", "", 0, 10, "lw-from", 9); prim_end();
+  check(table_nodes() == 4 && kat("lw.back", FN_RECT, 10, 20, 40, 30) && kabsent("lw.master") && kabsent("lw.dither"), "livingWindow: with from and no master, the flat plates alone", "");
+  /* kit_stamp's corner: a fifth fixed node after the front, 1:1 at cornerAt from the label's rect; NULL or "" adds none */
+  kit_stamp_t cn = { "st.plate", "st", "st.img", 0, NULL, NULL, "kc-corner", { 104, 0 } }, cnull = { "st.plate", "st", "st.img", 0, NULL, NULL, NULL, { 104, 0 } }, cempty = { "st.plate", "st", "st.img", 0, NULL, NULL, "", { 104, 0 } }, cmiss = { "st.plate", "st", "st.img", 0, NULL, NULL, "kc-missing", { 104, 0 } };
+  prim_begin(); kit_stamp("krs", "s.rect", "kc-plate", "kc-stamp", 64, -1, &cn); prim_end();
+  check(table_nodes() == 3 && kat("st.plate", FN_SPRITE, 872, 64, 120, 120) && kat("stamp.stamp", FN_SPRITE, 900, 92, 64, 64) && kat("stamp.corner", FN_SPRITE, 976, 64, 16, 16), "kit_stamp: the corner 1:1 at the rect + cornerAt (976, 64, 16 x 16), after the label", "");
+  prim_begin(); kit_stamp("krs", "s.rect", "kc-plate", "", 64, -1, &cn); prim_end();
+  check(table_nodes() == 2 && kat("st.plate", FN_SPRITE, 872, 64, 0, 0) && kat("stamp.corner", FN_SPRITE, 976, 64, 16, 16), "kit_stamp: the corner stands with no stamp", "");
+  prim_begin(); kit_stamp("krs", "s.rect", "kc-plate", "kc-stamp", 64, -1, &cnull); prim_end();
+  check(table_nodes() == 2 && kabsent("stamp.corner"), "kit_stamp: a NULL corner adds no node", "");
+  prim_begin(); kit_stamp("krs", "s.rect", "kc-plate", "kc-stamp", 64, -1, &cempty); prim_end();
+  check(table_nodes() == 2 && kabsent("stamp.corner"), "kit_stamp: an empty corner adds no node", "");
+  prim_begin(); kit_stamp("krs", "s.rect", "kc-plate", "kc-stamp", 64, -1, &cmiss); prim_end();
+  check(table_nodes() == 2 && kabsent("stamp.corner"), "kit_stamp: a corner the host has not sent adds no node", "");
+  spec_drop("krs");
+}
 int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";
   focus_vectors(dir);
@@ -518,6 +634,8 @@ int main(int argc, char **argv) {
   layout_vectors(dir, argc > 2 ? argv[2] : "../ui/specs/station");
   line_words();
   kit_words();
+  glint_readout();
+  resident_window_corner();
   printf("face_test: %d checks, %d failed\n", checks, fails);
   return fails ? 1 : 0;
 }

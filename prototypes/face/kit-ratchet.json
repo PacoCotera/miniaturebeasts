@@ -3,17 +3,19 @@
     "bench": 3,
     "cargo": 12,
     "create": 11,
-    "habitat": 13,
+    "habitat": 8,
     "home": 14,
     "home_builds": 3,
     "home_frame": 18,
     "incubator": 5,
-    "library": 4,
+    "library": 0,
+    "library_species": 0,
     "moving": 0,
     "namer": 4,
     "panel": 28,
     "pods": 0,
-    "screens": 1
+    "screens": 1,
+    "sitting": 0
   },
   "screenSpecific": [
     { "file": "home_frame.c", "what": "the bay's berths (home.json regions.bay.picture)", "ruling": "K5 gate 2b" }

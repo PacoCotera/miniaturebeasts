@@ -3,6 +3,7 @@
 // { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props) }.
 // Runs in Node, tested there (tests/habitat-props.test.mjs); the shape is habitat.props.json.
 //   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), habId (the mibi up close), meetId (the new mibi whose meet is on), offline }
+//   sittingSpec: sitting.json, for the Portrait module's ✓ strings.lookPortrait (the portrait, offered while its picture is held)
 import * as S from "../state.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameFor } from "../state.mjs";
@@ -16,11 +17,12 @@ import { kPct } from "../stamplook.mjs";
 import { doorOpen } from "../nav.mjs";
 import { fill, spell } from "./words.mjs";
 import { req as reqOf, slot as slotOf, plateDevice, slotAt } from "./requests.mjs";
+import { portraitOffered } from "./sitting-props.mjs";
 
 // The species' face (the top bar's mark, frame.json regions.marks.face), docked or dimmed.
 const faceId = (frame, mb, away) => (away ? frame.regions.marks.face.away : frame.regions.marks.face.docked).replace("{mibi}", S.spName(mb).toLowerCase());
 
-export function habitatBuild(m, spec, frame, home) {
+export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
   const { st, sv, settings } = m, requests = [], req = reqOf(requests);
   const R = spec.regions, Sg = spec.strings, docked = !!m.docked;
   const shown = habitatShown(st, sv, m.habId); if (!shown) return null;
@@ -57,7 +59,8 @@ export function habitatBuild(m, spec, frame, home) {
     notches: { count: Math.min(shown.notches || 0, 3), picture: slot("notch-skill-16x24", R.card.notches.notch, "the skill notch master") },
     species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: slotAt(req, "mark-guide-16", [0, 0, 16, 16], "the guide mark master (AD G1)") },
     story, code: codeText(shown.code),
-    stamp: { size: sz.size, N: sz.N, cell: sz.cell, plate: slot("plate-well-120x120", [120, 120], "the label's well (Habitat GB2)"), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}:k${kPct(spec.colours.stampLabel.k)}`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size, k: spec.colours.stampLabel.k }) },
+    stamp: { size: sz.size, N: sz.N, cell: sz.cell, plate: slot("plate-well-120x120", [120, 120], "the label's well (Habitat GB2)"), asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}:k${kPct(spec.colours.stampLabel.k)}`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size, k: spec.colours.stampLabel.k }),
+      corner: shown.portrait?.state === "delivered" ? slot(R.stamp.portrayed.slice, R.stamp.portrayed.rect.slice(2)) : "" },   // the portrayed corner on the label (regions.stamp.portrayed): only once the portrait came
   };
 
   // the plates, one a chapter in ring order: read, unread (readable at home or out) or sealed
@@ -99,13 +102,14 @@ export function habitatBuild(m, spec, frame, home) {
   const unread = (p) => p.state === "unread", cost = (p) => S.mibiReadCost(st, shown, p.id, settings);
   const dKind = pend.find((r) => r.id === shown.id)?.op ?? (proj.includes(shown.id) ? "bring" : proj.length >= 3 ? "full" : "take");
   const sitting = pst === "held" && !(!docked && carried.includes(shown.id)) && habitsOf(shown).length && placesOf(shown).length;
+  const look = pst === "portrayed" && portraitOffered(shown) && doorOpen("sitting") && !S.isAway(st, sv, shown) && !!sittingSpec?.strings?.lookPortrait;   // portrayed and its picture held: ✓ opens the sitting's state portrait
   const targets = [];
   if (state !== "out") targets.push({ id: "resident", group: "resident", enabled: true });
   if (state !== "meet") targets.push({ id: "name", group: "name", enabled: true });
-  targets.push({ id: "species", group: "species", enabled: doorOpen("book") });
+  targets.push({ id: "species", group: "species", enabled: true });   // ✓ Open the guide: the Library's Level 1 on this species
   plates.forEach((p, i) => targets.push({ id: "plate." + i, group: "plate", enabled: unread(p) }));
   targets.push({ id: "door", group: "top", enabled: dKind === "take" || dKind === "bring" });
-  targets.push({ id: "portrait", group: "top", enabled: !!sitting && doorOpen("sitting") });
+  targets.push({ id: "portrait", group: "top", enabled: (!!sitting && doorOpen("sitting")) || look });
   targets.push({ id: "cross", group: "low", enabled: crossState === "adult" && doorOpen("cross") });
   targets.push({ id: "wild", group: "low", enabled: !wildBlock });
   for (const t of tiles) if (t.state !== "free") targets.push({ id: "tile." + t.id, group: "tile", enabled: true });
@@ -120,7 +124,7 @@ export function habitatBuild(m, spec, frame, home) {
   const id = cur.startsWith("tile.") ? "resident" : cur;
   if (id === "resident") line = { ok: meet ? fill(Sg.name, named) : fill(Sg.greet, named), subject: painting ?? contextOf, back: Sg.back, need: null };
   else if (id === "name") line = { ok: fill(Sg.rename, named), subject: out ? Sg.out : painting ?? contextOf, back: Sg.back, need: null };
-  else if (id === "species") line = doorOpen("book") ? { ok: Sg.guide, subject: fill(Sg.every, { Species: species }), back: Sg.back, need: null } : { ok: null, subject: Sg.shut.guide, back: Sg.back, need: null };
+  else if (id === "species") line = { ok: Sg.guide, subject: fill(Sg.every, { Species: species }), back: Sg.back, need: null };
   else if (id.startsWith("plate.")) {
     const p = plates[+id.slice(6)], ch = fr.chapters[+id.slice(6)], Chapter = ch.name;
     if (p.state === "read") line = { ok: null, subject: fill(Sg.plateRead, { Chapter }), back: Sg.back, need: null };
@@ -136,7 +140,8 @@ export function habitatBuild(m, spec, frame, home) {
     line = { ...line, back: Sg.back, need: null };
   } else if (id === "portrait") {
     const why = pst === "none" ? Sg.noSitting : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : !docked && carried.includes(shown.id) ? Sg.portraitOut : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : !doorOpen("sitting") ? Sg.shut.portrait : null;
-    line = why ? { ok: null, subject: why, back: Sg.back, need: null } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext, back: Sg.back, need: null };
+    line = look ? { ok: sittingSpec.strings.lookPortrait, subject: Sg.portrayed, back: Sg.back, need: null }   // bottomLine.portrait.portrayed: ✓ strings.lookPortrait only while the picture is held
+      : why ? { ok: null, subject: why, back: Sg.back, need: null } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext, back: Sg.back, need: null };
   } else if (id === "cross") {
     line = crossState === "adult" && !doorOpen("cross") ? { ok: null, subject: Sg.shut.cross }
       : crossState === "adult" ? { ok: fill(Sg.cross, named), subject: fill(Sg.partners, { "n in words": spell(Math.min(pickable.length, 11)), Species: species }) }

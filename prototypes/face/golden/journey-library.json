@@ -1,7 +1,7 @@
 {
- "_note": "The Library spread, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen, the state and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "_note": "The Library's Level 1, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen, the state and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
  "steps": {
-  "library-spread": [
+  "library-l1": [
    {
     "key": "confirm",
     "said": [
@@ -13,10 +13,27 @@
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S01",
+    "state": "all",
+    "focus": "",
     "ok": null,
-    "subject": "an empty frame",
+    "subject": "no species seen yet",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "",
+    "ok": null,
+    "subject": "no species seen yet",
     "back": "Home"
    },
    {
@@ -25,7 +42,7 @@
      {
       "t": "intent",
       "screen": "library",
-      "target": "frame.S01",
+      "target": "",
       "verb": "back"
      }
     ],
@@ -37,7 +54,7 @@
     "back": null
    }
   ],
-  "library-spread-found": [
+  "library-l1-found": [
    {
     "key": "library",
     "said": [
@@ -49,10 +66,10 @@
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S01",
-    "ok": null,
-    "subject": "Loika",
+    "state": "all",
+    "focus": "cell.S01",
+    "ok": "Open Loika",
+    "subject": "new looks",
     "back": "Home"
    },
    {
@@ -61,14 +78,14 @@
      {
       "t": "focus",
       "screen": "library",
-      "target": "frame.S02"
+      "target": "cell.S03"
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S02",
-    "ok": null,
-    "subject": "an empty frame",
+    "state": "all",
+    "focus": "cell.S03",
+    "ok": "Open Tuikis",
+    "subject": "new looks",
     "back": "Home"
    },
    {
@@ -77,14 +94,14 @@
      {
       "t": "focus",
       "screen": "library",
-      "target": "frame.S03"
+      "target": "cell.S04"
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S03",
-    "ok": null,
-    "subject": "Tuikis",
+    "state": "all",
+    "focus": "cell.S04",
+    "ok": "Open Hiljan",
+    "subject": "new looks",
     "back": "Home"
    },
    {
@@ -93,14 +110,255 @@
      {
       "t": "focus",
       "screen": "library",
-      "target": "frame.S07"
+      "target": "cell.S09"
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S07",
+    "state": "all",
+    "focus": "cell.S09",
+    "ok": "Open Belatz",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S01"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S01",
+    "ok": "Open Loika",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "up",
+    "said": [],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S01",
+    "ok": "Open Loika",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S03"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S03",
+    "ok": "Open Tuikis",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S04"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S04",
+    "ok": "Open Hiljan",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "cell.S04",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "",
     "ok": null,
-    "subject": "an empty frame",
+    "subject": "seen, no pod identified yet",
+    "back": "Library"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "",
+    "ok": null,
+    "subject": "seen, no pod identified yet",
+    "back": "Library"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "",
+      "verb": "back"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S04",
+    "ok": "Open Hiljan",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "cell.S09"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S09",
+    "ok": "Open Belatz",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "cell.S09",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, all found",
+    "back": "Library"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library.species",
+      "target": "chapter.legs-tail"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.legs-tail",
+    "ok": "Show Legs & tail",
+    "subject": "Legs & tail, all found",
+    "back": "Library"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library.species",
+      "target": "chapter.coat"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, all found",
+    "back": "Library"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.coat",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "lit",
+    "focus": "chapter.coat",
+    "ok": "Clear Coat",
+    "subject": "Coat, all found",
+    "back": "Clear"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library.species",
+      "target": "chapter.legs-tail"
+     }
+    ],
+    "screen": "library.species",
+    "state": "lit",
+    "focus": "chapter.legs-tail",
+    "ok": "Show Legs & tail",
+    "subject": "Legs & tail, all found",
+    "back": "Clear"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.legs-tail",
+      "verb": "back"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, all found",
+    "back": "Library"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.coat",
+      "verb": "back"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S09",
+    "ok": "Open Belatz",
+    "subject": "new looks",
     "back": "Home"
    },
    {
@@ -109,14 +367,48 @@
      {
       "t": "focus",
       "screen": "library",
-      "target": "frame.S03"
+      "target": "cell.S03"
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S03",
-    "ok": null,
-    "subject": "Tuikis",
+    "state": "all",
+    "focus": "cell.S03",
+    "ok": "Open Tuikis",
+    "subject": "new looks",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "cell.S03",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, all found",
+    "back": "Library"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.coat",
+      "verb": "back"
+     }
+    ],
+    "screen": "library",
+    "state": "all",
+    "focus": "cell.S03",
+    "ok": "Open Tuikis",
+    "subject": "new looks",
     "back": "Home"
    },
    {
@@ -125,40 +417,48 @@
      {
       "t": "focus",
       "screen": "library",
-      "target": "frame.S02"
+      "target": "cell.S01"
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S02",
-    "ok": null,
-    "subject": "an empty frame",
+    "state": "all",
+    "focus": "cell.S01",
+    "ok": "Open Loika",
+    "subject": "new looks",
     "back": "Home"
    },
    {
-    "key": "left",
+    "key": "confirm",
     "said": [
      {
-      "t": "focus",
+      "t": "intent",
       "screen": "library",
-      "target": "frame.S01"
+      "target": "cell.S01",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, more to find",
+    "back": "Library"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library.species",
+      "target": "chapter.coat",
+      "verb": "back"
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S01",
-    "ok": null,
-    "subject": "Loika",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S01",
-    "ok": null,
-    "subject": "Loika",
+    "state": "all",
+    "focus": "cell.S01",
+    "ok": "Open Loika",
+    "subject": "new looks",
     "back": "Home"
    },
    {
@@ -167,14 +467,14 @@
      {
       "t": "focus",
       "screen": "library",
-      "target": "frame.S02"
+      "target": "cell.S03"
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S02",
-    "ok": null,
-    "subject": "an empty frame",
+    "state": "all",
+    "focus": "cell.S03",
+    "ok": "Open Tuikis",
+    "subject": "new looks",
     "back": "Home"
    },
    {
@@ -183,62 +483,14 @@
      {
       "t": "focus",
       "screen": "library",
-      "target": "frame.S03"
+      "target": "cell.S04"
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S03",
-    "ok": null,
-    "subject": "Tuikis",
-    "back": "Home"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "library",
-      "target": "frame.S04"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S04",
-    "ok": null,
-    "subject": "Hiljan, only seen",
-    "back": "Home"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "library",
-      "target": "frame.S09"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S09",
-    "ok": null,
-    "subject": "Belatz",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "library",
-      "target": "frame.S04"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S04",
-    "ok": null,
-    "subject": "Hiljan, only seen",
+    "state": "all",
+    "focus": "cell.S04",
+    "ok": "Open Hiljan",
+    "subject": "new looks",
     "back": "Home"
    },
    {
@@ -247,7 +499,7 @@
      {
       "t": "intent",
       "screen": "library",
-      "target": "frame.S04",
+      "target": "cell.S04",
       "verb": "back"
      }
     ],
@@ -269,10 +521,10 @@
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S04",
-    "ok": null,
-    "subject": "Hiljan, only seen",
+    "state": "all",
+    "focus": "cell.S04",
+    "ok": "Open Hiljan",
+    "subject": "",
     "back": "Home"
    },
    {
@@ -280,162 +532,33 @@
     "said": [
      {
       "t": "intent",
-      "screen": "library",
-      "target": "frame.S04",
+      "screen": "habitat",
+      "target": "species",
       "verb": "confirm"
      }
     ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S04",
-    "ok": null,
-    "subject": "Hiljan, only seen",
-    "back": "Home"
+    "screen": "library.species",
+    "state": "sheet",
+    "focus": "chapter.coat",
+    "ok": "Show Coat",
+    "subject": "Coat, more to find",
+    "back": "Library"
    },
    {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "library",
-      "target": "frame.S03"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S03",
-    "ok": null,
-    "subject": "Tuikis",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "library",
-      "target": "frame.S02"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S02",
-    "ok": null,
-    "subject": "an empty frame",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "library",
-      "target": "frame.S01"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S01",
-    "ok": null,
-    "subject": "Loika",
-    "back": "Home"
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "library",
-      "target": "frame.S05"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S05",
-    "ok": null,
-    "subject": "an empty frame",
-    "back": "Home"
-   },
-   {
-    "key": "confirm",
+    "key": "back",
     "said": [
      {
       "t": "intent",
-      "screen": "library",
-      "target": "frame.S05",
-      "verb": "confirm"
+      "screen": "library.species",
+      "target": "chapter.coat",
+      "verb": "back"
      }
     ],
     "screen": "library",
-    "state": "spread",
-    "focus": "frame.S05",
-    "ok": null,
-    "subject": "an empty frame",
-    "back": "Home"
-   },
-   {
-    "key": "up",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "library",
-      "target": "frame.S01"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S01",
-    "ok": null,
-    "subject": "Loika",
-    "back": "Home"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "library",
-      "target": "frame.S02"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S02",
-    "ok": null,
-    "subject": "an empty frame",
-    "back": "Home"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "library",
-      "target": "frame.S03"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S03",
-    "ok": null,
-    "subject": "Tuikis",
-    "back": "Home"
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "library",
-      "target": "frame.S03",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "library",
-    "state": "spread",
-    "focus": "frame.S03",
-    "ok": null,
-    "subject": "Tuikis",
+    "state": "all",
+    "focus": "cell.S01",
+    "ok": "Open Loika",
+    "subject": "",
     "back": "Home"
    },
    {
@@ -444,7 +567,7 @@
      {
       "t": "intent",
       "screen": "library",
-      "target": "frame.S03",
+      "target": "cell.S01",
       "verb": "back"
      }
     ],

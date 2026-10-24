@@ -8,25 +8,28 @@ import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, p
 import * as S from "./state.mjs";
 import { frameOf, genomeDigest } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
-import { homeBuild, mibiPictureOf, setLibrary } from "./views/home-props.mjs";
-import { libraryOf } from "./views/specimen-props.mjs";
+import { homeBuild, mibiPictureOf, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
+import { libraryOf, specimenSpecies, STARTER } from "./views/specimen-props.mjs";
 setLibrary(libraryOf);   // Home's Library module: the specimen of the species with something found (build spec 4.2)
+setLibrarySpecies((st, settings) => specimenSpecies(st, settings) ?? STARTER);   // the species it is for: where ✓ on its bezel puts the Library's ring
 import { dropLight } from "./light-grade.mjs";
 import { vivariumBuild } from "./views/vivarium-props.mjs";
 import { habitatBuild } from "./views/habitat-props.mjs";
 import { namerBuild } from "./views/namer-props.mjs";
 import { panelBuild } from "./views/panel-props.mjs";
 import { benchBuild } from "./views/bench-props.mjs";
-import { libraryBuild } from "./views/library-props.mjs";
+import { libraryBuild, speciesBuild, sheetAhead } from "./views/library-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
 import { createBuild, createPod } from "./views/create-props.mjs";
 import { incubatorBuild } from "./views/incubator-props.mjs";
+import { sittingBuild } from "./views/sitting-props.mjs";
+import { newSit } from "./intents/sitting.mjs";
 import { incubatorTick } from "./intents/incubator.mjs";
 import { enter as enterHabitat, endMeet } from "./intents/habitat.mjs";
 import { cuttingHatch, landHatch } from "./intents/incubator.mjs";
 import { arrivePending } from "./intents/arrival.mjs";
-import { registerPictures, iconRequests, movingSource } from "./pictures.mjs";
+import { registerPictures, iconRequests, movingSource, libraryMade, lastSheet, wantLibrary, droppedPictures } from "./pictures.mjs";
 import { setMovingSource } from "./moving.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf, isBuilt } from "./nav.mjs";
@@ -69,7 +72,7 @@ export function topFor(screen) {
 export const topValues = () => UI.cargo.shown ?? { e: G.st.e, d: G.st.d, s: G.st.s, turn: G.st.turn };
 // A screen the face has no words for: no action, no subject, the way back from navigation and the default notice.
 export function notBuiltLine(screen) {
-  const nav = SPECS.frame.navigation, place = SCREEN_PLACE[screen] || screen, pod = podById(UI.create?.podId ?? UI.pods.cur), mibi = mibiById(UI.hab.id), back = backWord(nav, place, nav.screens[place]?.back === "{name}" ? mibi?.name ?? "" : pod ? S.cap(S.spName(pod)) : "");   // a way back that names the pod ("{pod}") names the pod Create was opened on, one that names the mibi ("{name}") the mibi shown up close; the face reads "Back" when the name does not fit
+  const nav = SPECS.frame.navigation, place = SCREEN_PLACE[screen] || screen, pod = podById(UI.create?.podId ?? UI.pods.cur), mibi = mibiById(UI.hab.id), bw = nav.screens[place]?.back, back = backWord(nav, place, bw === "{name}" ? mibi?.name ?? "" : bw === "{Species}" ? frameOf(UI.lib.species)?.species.name ?? "" : pod ? S.cap(S.spName(pod)) : "");   // a way back that names the pod ("{pod}") names the pod Create was opened on, one that names the mibi ("{name}") the mibi shown up close, one that names the species ("{Species}") the Library's species; the face reads "Back" when the name does not fit
   return { ok: null, back, subject: "", need: need().text };
 }
 // The place a screen's way back lands on: the parent in the navigation tree, as a screen id (and the state of Pods it opens on).
@@ -130,7 +133,7 @@ export function vivariumBody(light = lightNow()) {
 // The mibi chosen on the whole (or the hatch's, or the first at home), its card, the modules and the strip; the ring is the face's (habitat.json focus.graph) and the host keeps what the face says in UI.hab.f. While the namer is open its props ride on
 // habitat's (an overlay) and its bottom line is the frame's. Returns null with no mibi housed: the whole shows its empty state.
 export function habitatBody(light = lightNow()) {
-  const body = habitatBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.hab.f, habId: UI.hab.id, meetId: UI.meet, ...living() }, SPECS.habitat, SPECS.frame, SPECS.home);
+  const body = habitatBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.hab.f, habId: UI.hab.id, meetId: UI.meet, ...living() }, SPECS.habitat, SPECS.frame, SPECS.home, SPECS.sitting);
   if (!body) return null;
   UI.hab.f = body.props.focus.cur; UI.hab.id = body.shown.id; const rs = body.props.regions.resident; UI.hab.asleep = !!(rs && rs.moving && rs.rest === "asleep");   // a sleeper with a moving set: its Greet is the asleep moment (habitat.json events.moment.asleep)
   const n = UI.hab.namer, who = n && mibiById(n.id), pn = UI.panel;
@@ -153,10 +156,30 @@ export function benchBody() {
   return body;
 }
 
-// ---- The Library's spread ----
-// Sixteen frames, one a species in its own place; the ring is the face's (library.json spread.focus.graph) and the host keeps the frame it says in UI.lib.i (intents/library.mjs focus).
+// ---- The Library's Level 1 ----
+// Every species of the catalogue in its cell; the ring is the face's (library.json l1.focus.graph) and the host keeps the species it says in UI.lib.l1 (intents/library.mjs focus). The props name only cell pictures that are made;
+// the rest are made off the open path (pictures.mjs wantLibrary), and the cell draws its quiet ground until then.
 export function libraryBody() {
-  return libraryBuild({ st: G.st, settings: G.settings, ui: UI.lib }, SPECS.library, SPECS.frame);
+  const body = libraryBuild({ st: G.st, settings: G.settings, ui: UI.lib, ready: libraryMade }, SPECS.library, SPECS.frame);
+  wantLibrary(body.later); return body;
+}
+// ---- The Library's Level 2 ----
+// One species: its sheet, the shelf and one chapter lit with its page (library.json l2); the ring is the face's (l2.focus.<state>) and the host keeps it in UI.lib.cur (intents/library.mjs species.focus). The props name only
+// pictures that are made; the rest are made off the open path. The face's metrics measure the bottom line's ladders (setMetrics, the face's dist/metrics.json).
+let METRICS = null;
+export const setMetrics = (m) => { METRICS = m; };
+// The sheets to make ahead of the open (the Library 3 gate's P2), when nothing else waits: on Level 1 the sheet of the found species its ring rests on; outside the Library the last species whose sheet changed
+// (a discovery, a read, sealedOpen) since the last look (the first look only notes them); on Level 2 and below none, so the sheet shown stays kept. The kept sheet is one, so one is asked for at a time.
+let aheadSeen = null;
+export function libraryAhead() {
+  const ids = Object.fromEntries(Object.keys(G.st.guide || {}).map((sid) => [sid, sheetAhead(G.st, G.settings, SPECS.library, sid)]).filter(([, r]) => r)), first = aheadSeen == null;
+  const changed = first ? [] : Object.keys(ids).filter((sid) => aheadSeen[sid] !== ids[sid].id); aheadSeen = Object.fromEntries(Object.entries(ids).map(([k, r]) => [k, r.id]));
+  if (UI.screen === "library") return UI.lib.l1 && ids[UI.lib.l1] ? [ids[UI.lib.l1]] : [];
+  return UI.screen.startsWith("library.") || !changed.length ? [] : [ids[changed[changed.length - 1]]];
+}
+export function speciesBody() {
+  const body = speciesBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI.lib, metrics: METRICS, ready: libraryMade, lastSheet }, SPECS.library, SPECS.frame);
+  UI.lib.cur = body.props.focus.cur || null; wantLibrary(body.later); return body;
 }
 
 // ---- Cargo ----
@@ -193,8 +216,27 @@ export function incubatorBody() {
   return body;
 }
 
+// ---- the sitting ----
+// The ceremony on Habitat's shown mibi (UI.hab.id), its step and choices the UI's (UI.sit, intents/sitting.mjs); the ring is the face's on the cards (sitting.json focus.pose.graph) and the host keeps what the face says in UI.sit.focus.
+// While the resident's light change waits for the backdrop's end (events.backdrop.resident "cut") the window keeps the picture it had. Returns null with no visit, or in state portrait while its picture is not held.
+export function sittingBody(light = lightNow()) {
+  const s = UI.sit; if (!s) return null;
+  const body = sittingBuild({ st: G.st, sv: G.sv, settings: G.settings, light, mibiId: UI.hab.id, ui: s }, SPECS.sitting, SPECS.habitat); if (!body) return null;
+  s.focus = body.props.focus.cur;
+  const r = body.props.regions.resident; if (s.prev.cut && s.prev.resident && r.picture) r.picture = s.prev.resident;
+  return body;
+}
+// A way into the sitting (Habitat's Portrait ✓ and, later, Cargo's end): a fresh visit on mibi `m` in `state` ("pose", or "portrait" for the finished picture), never when the props builder has nothing to show (the portrait's
+// picture not held): then nothing changes and it returns false.
+export function enterSitting(h, m, { state = "pose", from = "habitat" } = {}) {
+  if (!m) return false;
+  const sit = newSit(from, state);
+  if (!sittingBuild({ st: G.st, sv: G.sv, settings: G.settings, light: lightNow(), mibiId: m.id, ui: sit }, SPECS.sitting, SPECS.habitat)) return false;
+  UI.hab.id = m.id; UI.sit = sit; h.goto("sitting"); return true;
+}
+
 // ---- the props of the screen on the page ----
-// { msg: the props message (without seq), ids: every picture the face needs before them, requests: the Pods pictures to register }
+// { msg: the props message (without seq), ids: every picture the face needs before them, light, lit: the graded residents, owed: the ids of the requests that carry an owed habit key }
 export function screenProps(plate) {
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
   if (UI.screen === "habitat" && !S.housed(G.st).length) goScreen("vivarium");   // one mibi up close always shows one mibi: with none housed the whole shows its empty state
@@ -204,21 +246,26 @@ export function screenProps(plate) {
     const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, ...living() }, SPECS.frame);
     registerPictures(body.requests, { podById, frameOf, mibiGenome: (id) => mibiById(id)?.genome });
     const ids = new Set(body.requests.map((r) => r.id)); walk(body.props, ids);
-    return { msg: { screen, ...body.props }, ids: [...ids], light, lit: litOf(body.requests) };
+    return { msg: { screen, ...body.props }, ids: [...ids], light, lit: litOf(body.requests), owed: owedOf(body.requests) };
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
-  if (!isBuilt(screen) || (screen === "library" && UI.lib.f !== "spread")) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen === "library" ? "book" : screen), plate: pl } }, ids: [], light };   // the Book (and its guide) is a state of the library screen: not built yet, ← reads Library
-  const body = screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
+  if (screen === "sitting" && !UI.sit) { goScreen("habitat"); return screenProps(plate); }   // no visit to show: one mibi up close
+  const sat = screen === "sitting" ? sittingBody(light) : null; if (screen === "sitting" && !sat) { UI.sit = null; goScreen("habitat"); return screenProps(plate); }
+  const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
-  const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
+  const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids); const dropped = droppedPictures();   // the pictures a newer one superseded (P4): the host drops them on the face before it sends the props' pictures
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
-  if (screen === "home") return { msg: { screen, ...body.props, frame: { plate: pl } }, ids: [...ids], light, lit: litOf(reqs) };   // Home's top bar and line are its own (home.json): the frame sends only the plate
+  if (screen === "sitting") for (const id of [UI.sit.prev.glass, UI.sit.prev.resident]) if (id) ids.add(id);   // the pictures the window's dithers start from stay on the face until their events end
+  if (screen === "home") return { msg: { screen, ...body.props, frame: { plate: pl } }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
-  return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids], light, lit: litOf(reqs) };
+  if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
+  return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
 }
 let shownLight = null;   // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
 const litOf = (reqs) => reqs.filter((r) => r.kind === "mibi" && r.light).map((r) => r.id);   // the graded residents the props name
+const owedOf = (reqs) => reqs.filter((r) => r.owed).map((r) => r.id);   // the scene's pictures that show an owed habit key (the request's `owed`): a golden refuses them
 // The pictures a light puts on the face, by their ids (their sizes from the specs that place them): the host drops them once props with the next light are taken.
 export const lightIds = (light) => { const v = SPECS.frame.idle.regions.vivarium.rect, b = SPECS.frame.idle.regions.bed.rect; return [`idle-vivarium-${light}:${v[2]}x${v[3]}`, `home-bed-${light}-${b[2]}x${b[3]}`, ...(SPECS.habitat?.light ? [`${SPECS.habitat.light.pictures[light]}-${SPECS.habitat.light.size.join("x")}`] : [])]; };   // and one mibi up close's near Vivarium
 // The pictures of the frame and the Companion's face, the same on every screen.
@@ -263,7 +310,7 @@ export function createHost({ send, nowMs, light, time = null, afterSave = () => 
   };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), motion, say: msg, play, at, skip, save: () => { save(); afterSave(); }, holding, arriving,
+    now: () => Date.now(), motion, say: msg, play, at, skip, save: () => { save(); afterSave(); }, holding, arriving, light: () => shownLight ?? lightNow(), enterSitting: (m, o) => enterSitting(h, m, o),
     // The frame loop's call: what was scheduled and is due runs, in order; then the room key kept through a hold is dispatched once the hold is over.
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
@@ -302,7 +349,9 @@ export function onFaceMessage(h, m) {
     if (m.screen === "namer") { if (UI.screen === "habitat" && UI.hab.namer) UI.hab.namer.f = m.target; return; }   // a namer message after it closed is dropped
     if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
     if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
-    if (m.screen === "library") { if (UI.screen === "library" && UI.lib.f === "spread") INTENTS.library.focus(h, m.target); return; }
+    if (m.screen === "library") { if (UI.screen === "library") INTENTS.library.focus(h, m.target); return; }
+    if (m.screen === "sitting") { if (UI.screen === "sitting") INTENTS.sitting.focus(h, m.target); return; }
+    if (m.screen === "library.species") { if (UI.screen === "library.species") INTENTS.library.species.focus(h, m.target); return; }
     if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return;
   }
   if (m.t !== "intent") return;

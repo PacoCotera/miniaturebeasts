@@ -5,14 +5,14 @@ usage:  python3 -I build.py            (from anywhere)
 Reads   source/pod-large.txt, pod-medium.txt, pod-small.txt, pod-well.txt   the drawings: pieces body, band, glow
         source/glyphs.txt                                                    the 16 species glyphs, 5x5 cells
         source/layout.json                                                   anchors, ramps, pigments, species
-        ../../../../palettes/station.json                          the 62 colours
+        ../../../../palettes/station.json                          the 68 colours
 Writes  pod-bodies.png      sheet: per class, the sealed pod, the identified pod, the seal band and the glow
         pod-glyphs.png      sheet: per class, the 16 glyphs (cream, one cell = the class's glyph cell)
         pod-atlas.json      sprite rects, anchors, ramps, per-species remaps, how to composite, manifest entries
         contact-1x.png, contact-2x.png
 
-Standard library only. PNGs are written here, indexed: PLTE holds the 62 palette colours in file order (index = position
-in station.json) and entry 62 is the transparent index (tRNS alpha 0, the only alpha there is). A pixel can
+Standard library only. PNGs are written here, indexed: PLTE holds the 68 palette colours in file order (index = position
+in station.json) and entry 68 is the transparent index (tRNS alpha 0, the only alpha there is). A pixel can
 only be a palette colour or empty: nothing can be off palette, there is no anti-aliasing and no dithering.
 
 Source legend. The drawings use two base ramps that stand for "the species' colour A" and "colour B"; the species'
@@ -35,7 +35,7 @@ def read_palette(layout):
     path = os.path.normpath(os.path.join(SRC, layout["palette"]))
     d = json.load(open(path, encoding="utf-8"))
     names = [n for n, _ in d["colours"]]
-    assert len(names) == 62, "the palette must hold 62 colours, has %d" % len(names)
+    assert len(names) == 68, "the palette must hold 68 colours, has %d" % len(names)
     rgb = [tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for _, h in d["colours"]]
     return names, rgb
 
@@ -124,7 +124,7 @@ def main():
     layout = json.load(open(os.path.join(SRC, "layout.json"), encoding="utf-8"))
     names, rgb = read_palette(layout)
     idx = {n: i for i, n in enumerate(names)}
-    T = len(names)                                   # the transparent index, 62
+    T = len(names)                                   # the transparent index, 68
     palette = rgb + [(0, 0, 0)]
     legend = {}
     for ramp, chars in RAMP_CHARS.items():
@@ -288,8 +288,8 @@ def main():
     atlas = {
         "name": "Pod placeholders", "status": layout["status"],
         "note": "Hand-drawn placeholders: one drawing per size class and state, coloured per species by remap. Never a master.",
-        "palette": {"file": "prototypes/ui/palettes/station.json", "colours": 62, "transparentIndex": T,
-                    "names": names, "note": "PNG palette index = position in that file; index 62 is transparent (tRNS)"},
+        "palette": {"file": "prototypes/ui/palettes/station.json", "colours": 68, "transparentIndex": T,
+                    "names": names, "note": "PNG palette index = position in that file; index 68 is transparent (tRNS)"},
         "stage": layout["stage"],
         "ramps": {"A": {"chars": RAMP_CHARS["A"], "names": layout["legend"]["A"], "indices": base_idx["A"]},
                   "B": {"chars": RAMP_CHARS["B"], "names": layout["legend"]["B"], "indices": base_idx["B"]},

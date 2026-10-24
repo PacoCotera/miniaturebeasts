@@ -1,5 +1,5 @@
 // The Portrait picture's test card (ruling (c), 2026-10-15 05:02): a 528×392 source built in code, deterministic, not art and not a portrait, reachable only through the ?test harness (habitat-pictured). Flat 13×13 blocks, so the 40×30
-// output is exact under the provisional reducer and any averaging one; a 1 px dark rim proves the 1:1 placement in the window; the red outside the crop (x 4..524, y 1..391) must never show; four quadrants prove the orientation.
+// output is exact under the provisional reducer and any averaging one; a 1 px dark rim proves the 1:1 placement in the window; the red outside the crop (x 4..524, y 1..391) must never show in the 40×30 picture; the Sitting's 1:1 portrait (sitting-portrait) shows the whole source, its red margin with it; four quadrants prove the orientation.
 // No imports: its source runs in the page (toString) and Node tests import it.
 export function portraitFixture() {
   const W = 528, H = 392, d = new Uint8ClampedArray(W * H * 4);

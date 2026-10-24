@@ -1,6 +1,9 @@
 /* The frame's three words: the top bar, the bottom line and the message plate (station-layouts.md "The frame"), ported from components/topBar.mjs, bottomLine.mjs and
    messagePlate.mjs. Spec: the `frame` spec; props: `props.frame.top`, `.line`, `.plate`. Marks are pictures the host has sent: one that is not on the face draws nothing and
-   the layout does not move. */
+   the layout does not move.
+   word_topBar's readout: props frame.top.readout { text, mark } (mark: a picture id, or null for none); spec regions.top.readout { gap, markGap, px, colour, end, mark: [w, h] }. Drawn after the title, from the
+   title's drawn end + gap: the mark (node top.readout.mark, a v_slot of mark w x h), then markGap, then the text (node top.readout.text, px in colour, on the title's baseline, the mark centred on its cap, cut by v_clip to end by `end`);
+   without a mark the text starts at the title's end + gap and there is no mark node. Props without frame.top.readout: neither node. */
 #include "../vocab.h"
 #include "../words.h"
 #include "../../prim/prim.h"
@@ -62,7 +65,18 @@ void word_topBar(void) {
   if (*room) { lower(room); snprintf(a, sizeof a, "regions.marks.room.%s", room); snprintf(b, sizeof b, "%s", v_sstr(F, a)); mark("top.room", b, rr); }
   v_region("title", LAYER_TYPE);
   spec_str(P, "frame.top.title", s, sizeof s); snprintf(c, 24, "%s", v_scol(F, "colours.title"));
-  v_run("top.title", s, v_si(F, "regions.title.text.0", 0), v_cap_top(v_si(F, "regions.title.text.1", 0) + 2, V_ANCHOR_CAP, v_si(F, "regions.title.px", 0)), v_si(F, "regions.title.px", 0), c, V_ALIGN_LEFT);
+  v_run_t title = v_run("top.title", s, v_si(F, "regions.title.text.0", 0), v_cap_top(v_si(F, "regions.title.text.1", 0) + 2, V_ANCHOR_CAP, v_si(F, "regions.title.px", 0)), v_si(F, "regions.title.px", 0), c, V_ALIGN_LEFT);
+  /* the readout after the title (props frame.top.readout { text, mark }): its nodes only when the props carry it. The text sits on the title's baseline (24, where the bar's other 16 px words sit),
+     the mark (when named) first, centred on the text's cap; the text is cut with an ellipsis to end by regions.top.readout.end. A mark not on the face draws nothing and the text does not move. */
+  { const char *ro = spec_raw(P, "frame.top.readout", NULL);
+    if (ro && *ro == '{') {
+      int x = title.end + v_si(F, "regions.top.readout.gap", 0), px = v_si(F, "regions.top.readout.px", 0), mw = v_sk(F, "regions.top.readout.mark", 0), mh = v_sk(F, "regions.top.readout.mark", 1), base = v_si(F, "regions.title.text.1", 0) + 2 + v_cap(v_si(F, "regions.title.px", 0));
+      char m[96], txt[V_STR], cut[V_STR + 4];
+      if (spec_str(P, "frame.top.readout.mark", m, sizeof m) > 0) { v_name("title"); v_slot("top.readout.mark", m, NULL, x, base - v_cap(px) + v_fdiv(v_cap(px) - mh, 2), mw, mh, 1); x += mw + v_si(F, "regions.top.readout.markGap", 0); }
+      spec_str(P, "frame.top.readout.text", txt, sizeof txt); v_clip(txt, v_si(F, "regions.top.readout.end", 0) - x, px, cut, sizeof cut);
+      v_region("title", LAYER_TYPE); snprintf(c, 24, "%s", v_scol(F, "regions.top.readout.colour"));
+      v_line_at("top.readout.text", cut, x, base, V_ANCHOR_BASE, px, c, V_ALIGN_LEFT);
+    } }
   /* what you hold, centred on 512 */
   static const char K[3] = { 'e', 'd', 's' }; static const char *ICON[3] = { "energy", "data", "essence" };
   int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_px = v_si(F, "regions.materials.px", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = v_si(F, "regions.materials.centre", 0);

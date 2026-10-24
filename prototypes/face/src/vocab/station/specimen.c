@@ -79,7 +79,9 @@ void word_specimen(const char *base) {
     }
   }
   /* the overview's own parts: the figure beside the pod, the marks that say who it is, the find's picture */
-  if (spec_len(S, v_fmt("%s.figure", base)) >= 0) { int fr[4]; const char *fid = v_pstr("regions.specimen.figure"); char eid[96]; spec_str(S, v_fmt("%s.figure.beforeIdentify.slice", base), eid, sizeof eid); v_srect(S, v_fmt("%s.%s", base, *eid && strncmp(fid, eid, strlen(eid)) == 0 ? "figure.beforeIdentify.rect" : "figure.rect"), fr); v_region("figure", LAYER_PAINTED); layer("specimen.figure", fr, fid); }   /* GB1 C1: the painted adult 1:1 at figure.rect, or the empty halo at its own rect; one picture, no cross-fade */
+  if (spec_len(S, v_fmt("%s.figure", base)) >= 0) { int fr[4]; const char *fid = v_pstr("regions.specimen.figure"); char eid[96]; spec_str(S, v_fmt("%s.figure.beforeIdentify.slice", base), eid, sizeof eid); v_srect(S, v_fmt("%s.%s", base, *eid && strncmp(fid, eid, strlen(eid)) == 0 ? "figure.beforeIdentify.rect" : "figure.rect"), fr);
+    if (strcmp(v_focus_cur(), "figure") == 0) fr[1] -= spec_int("frame", "focus.lift.creature", 4);   /* the focused figure lifts as a creature does; its footprint ring stays on the feet (screens/pods.c) */
+    v_region("figure", LAYER_PAINTED); layer("specimen.figure", fr, fid); }   /* GB1 C1: the painted adult 1:1 at figure.rect, or the empty halo at its own rect; one picture, no cross-fade */
   /* the two captions (lvgl-switch.md L2.0, decided 2026-10-09): "this pod" under the who-it-is marks, always in the overview; "the species" under the figure, only when the pod is identified (the view sends it then). They have no JavaScript twin. */
   const char *cap = v_pstr("regions.specimen.captions.pod");
   if (has(cap) && spec_len(S, v_fmt("%s.thisPod", base)) >= 0) caption("thisPod", base, "thisPod", cap);

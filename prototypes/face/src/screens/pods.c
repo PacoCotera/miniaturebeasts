@@ -16,12 +16,13 @@ static int pod_box(const char *base, int box[4]) {
   if (!*v_pstr("regions.specimen.pod.sealed")) return 0;
   return kit_pod(S, v_pstr("regions.specimen.pod.sizeClass"), spec_int(S, v_fmt("%s.pod.axis", base), 0), spec_int(S, v_fmt("%s.pod.feet", base), 0), NULL, box);
 }
-/* the ring on the focused target, in the form of its group: a place and a kin wear the circle, the pod and the hatch the rounded rectangle; the rail's tabs carry their own. The box is the focus table's. */
+/* the ring on the focused target, in the form of its group: a place and a kin wear the circle, the pod and the hatch the rounded rectangle, the figure its footprint; the rail's tabs carry their own. The box is the focus table's. */
 static void focus_ring(const char *state) {
   char cur[40]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0] || spec_len("props", "overlay") >= 0 || strcmp(state, "compare") == 0) return;
   focus_target_t t[64]; int n = pods_focus(t, 64);
   for (int i = 0; i < n; i++) if (strcmp(t[i].id, cur) == 0) {
     v_region("focus", LAYER_CHROME);
+    if (strcmp(t[i].group, "figure") == 0 && t[i].w > 0) { int box[4] = { t[i].x, t[i].y, t[i].w, t[i].h }; word_focusRingFootprint("focus", S, "targets.figure", v_pstr("regions.specimen.figure"), "", box); return; }   /* the figure wears the footprint, from the adult picture's lowest rows, on its unlifted box */
     if (strcmp(t[i].group, "place") && strcmp(t[i].group, "kin") && strcmp(t[i].group, "pod") && strcmp(t[i].group, "hatch")) return;
     if (t[i].w <= 0) return;
     int box[4] = { t[i].x, t[i].y, t[i].w, t[i].h };
@@ -32,7 +33,7 @@ static void focus_ring(const char *state) {
 /* the overview's stamp label in its case (the props' regions.stamp): the case's back, the plate (which stands without a stamp), the stamp, the case's front */
 static void stamp_label(const char *base) {
   if (spec_len("props", "regions.stamp") < 0) return;
-  kit_stamp_t o = { "stamp", "stamp", "stamp.image", 1, S, base };
+  kit_stamp_t o = { "stamp", "stamp", "stamp.image", 1, S, base, NULL, { 0, 0 } };
   kit_stamp(S, v_fmt("%s.stamp.rect", base), v_pstr("regions.stamp.plate"), v_pstr("regions.stamp.asset"), v_pint("regions.stamp.size", 0), -1, &o);
 }
 
@@ -49,6 +50,7 @@ int pods_focus(focus_target_t *out, int cap) {
     else if (strncmp(t->id, "rail.", 5) == 0) { if (k < nt) { r[0] = tabs[k].x; r[1] = tabs[k].y; r[2] = tabs[k].w; r[3] = tabs[k].h; } }
     else if (strcmp(t->id, "pod") == 0) pod_box(base, r);
     else if (strcmp(t->id, "hatch") == 0) for (int q = 0; q < 4; q++) r[q] = v_sk(S, v_fmt("%s.%s", base, "hatch.rect"), q);
+    else if (strcmp(t->id, "figure") == 0) v_srect(S, v_fmt("%s.figure.rect", base), r);
     focus_fill(t, "focus.targets", i, r);
   }
   return n;

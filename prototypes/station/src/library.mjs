@@ -36,6 +36,19 @@ export function fieldGuide(st, id, settings = DEFAULT_SETTINGS) {
 }
 export const guideUnseen = (st, id, settings) => fieldGuide(st, id, settings)?.unseen ?? null;
 
+// The Library's visit note: the guide looks in the chapters that are not shut, { <species>: { <trait>: [looks] } }, of every species, or of `only` (Level 2's entry: that species alone, an empty note when it has none:
+// a met-only entry). Leaving the Library adds the note to the seen record (state.mjs libRecord).
+export function seenNote(st, settings = DEFAULT_SETTINGS, only = null) {
+  const out = only ? { [only]: {} } : {};
+  for (const id of only ? [only] : Object.keys(st.guide || {})) {
+    const fr = frameOf(id); if (!fr) continue;
+    for (const ch of fr.chapters) {
+      if (ch.sealed && !settings.sealedOpen && !(st.readOnce[id] || []).includes(ch.id)) continue;
+      for (const t of ch.traits) { const ls = guideLooks(st, id, t.id); if (ls.length) (out[id] || (out[id] = {}))[t.id] = ls.slice(); }
+    }
+  }
+  return out;
+}
 // The book of one species: its status, the field guide, the face (a portrayed mibi the player chose, else none), the mibis of it that could be made the face.
 export function book(st, id, settings = DEFAULT_SETTINGS) {
   const fr = frameOf(id); if (!fr) return null;
@@ -49,8 +62,6 @@ export function visitTarget(st, id) {
   const f = faceOf(st, id), m = f != null ? mibiById(st, f) : null;
   return m && !m.released ? m : st.mibis.find((q) => speciesOf(q) === id && !q.released) || null;
 }
-// The library's spread: sixteen frames, each with its status.
-export const spread = (st, ids) => ids.map((id) => ({ id, status: speciesStatus(st, id) }));
 
 // The face of a species in the book: the mibi the player chose among its portrayed ones. A released mibi keeps its portrait in the book.
 export const faceOf = (st, id) => { const f = st.face && st.face[id]; const m = f != null ? mibiById(st, f) : null; return m && m.portrait && m.portrait.state === "delivered" ? m.id : null; };

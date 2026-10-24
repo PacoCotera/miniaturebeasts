@@ -1,5 +1,5 @@
 {
- "note": "How tall each view draws a layered stand: the figure's height in px, crest to feet, adult and juvenile. The table is `## Size and pose` in design/art-direction.md; this file carries its values and nothing here is the authority. The stand is composed at that height in the logic process from the art cut once at 304x312 (the face never scales). The picture is the place's own size, because the face places a picture 1:1 in its slot: the figure stands on its foot, transparent around it. The incubator view (T-20261016-222) draws the juvenile 146 px tall in the capsule (build-spec section 4.3). A view not listed draws the whole art fitted in its place (tiles and the Companion: unchanged). `places` are the sizes that are standing poses.",
+ "note": "How tall each view draws a layered stand: the figure's height in px, crest to feet, adult and juvenile. The table is `## Size and pose` in design/art-direction.md; this file carries its values and nothing here is the authority. The stand is composed at that height in the logic process from the art cut once at 304x312 (the face never scales). The picture is the place's own size, because the face places a picture 1:1 in its slot: the figure stands on its foot, transparent around it. The incubator view (T-20261016-222) draws the juvenile 146 px tall in the capsule (build-spec section 4.3). A view not listed draws the whole art fitted in its place (tiles and the Companion: unchanged). `places` are the sizes a layered picture is composed at: a place that a view gives a figure height draws a standing pose at that height; any other place (the 48 tiles and thumbs, the 96 cards) draws the whole art fitted.",
  "views": {
   "home": { "adult": 54, "juvenile": 40 },
   "vivarium": { "adult": 54, "juvenile": 40 },
@@ -7,5 +7,5 @@
   "habitat": { "adult": 150, "juvenile": 110 },
   "incubator": { "adult": 146, "juvenile": 146 }
  },
- "places": ["144x152", "104x112", "304x312", "48x48"]
+ "places": ["144x152", "104x112", "304x312", "48x48", "96x96"]
 }

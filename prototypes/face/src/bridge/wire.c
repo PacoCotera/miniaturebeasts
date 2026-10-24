@@ -211,7 +211,8 @@ static int on_props(const msg_t *m, int len) {
   if (!str(m, key(m, "screen"), screen, sizeof screen)) return fail("props: screen is required");
   char state[16] = ""; str(m, key(m, "state"), state, sizeof state);
   int unbuilt = flag(m, key(m, "idle")) || strcmp(state, "notBuilt") == 0;   /* a screen with no binding table needs no spec: the frame's notBuilt composition draws it */
-  if (!unbuilt && !spec_has(screen)) { char b[96]; snprintf(b, sizeof b, "props for the screen %s, whose spec is not loaded", screen); return fail(b); }
+  char sspec[32]; snprintf(sspec, sizeof sspec, "%s", screen); { char *dot = strchr(sspec, '.'); if (dot) *dot = 0; }   /* a level of a screen (library.species) is drawn from its screen's spec (library) */
+  if (!unbuilt && !spec_has(sspec)) { char b[96]; snprintf(b, sizeof b, "props for the screen %s, whose spec is not loaded", screen); return fail(b); }
   if (g_seq_set && (uint32_t)seq < g_seq) return fail("props: seq went back");
   { int ov = key(m, "overlay");   /* an overlay (the namer): only on a screen whose spec lists it, whose own spec is an overlay over this screen, with a binding table in the face; refused whole, the previous props stay */
     if (ov >= 0) {

@@ -20,6 +20,10 @@ import { req as reqOf, ph as phOf, slotAt } from "./requests.mjs";
 // (they are DOM-free and run as a Node program, intents.test.mjs), and a build with none registered shows the Library's placeholder.
 let library = () => ({ region: {}, request: null });
 export const setLibrary = (fn) => { library = fn; };
+// The species Home's Library module is for (specimen-props.mjs specimenSpecies, the starter's while nothing is found), which the host registers beside the painter; null with none registered: where ✓ on the Library bezel puts the Library's ring
+let speciesOfLibrary = () => null;
+export const setLibrarySpecies = (fn) => { speciesOfLibrary = fn; };
+export const librarySpecies = (st, settings) => speciesOfLibrary(st, settings);
 
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
 // A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<genome digest>:<juvenile|adult|elder>:<w>x<h>
@@ -29,15 +33,17 @@ export const lookOf = (st, mb, size, settings) => standLook(S.speciesOf(mb), S.m
 // the picture's id and the stage and size it is drawn at, for every caller that names a mibi's picture (the views' requests and the host's swap dither); the light is the scene's (fix 7), the grade's source the master drawn
 // A species with a layered stand at the place (layered-stand.mjs) draws each mibi as itself: the picture is the stand's variant for the mibi's drawn looks (looks.mjs drawnLooks), named by that variant, so two mibis with the same looks
 // are one picture and a child that is read later is a new one; the request carries the looks. Every other stand is the species' own, named by the genome's digest, as before.
-export const mibiPictureOf = (st, mb, size, settings, light = "day", view = "default") => {
-  const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view);
+// A pose (layered-stand.mjs poseFor) is the pose's name, or poseFor's { pose, owed } itself; the anchor by default. A pose that is not the anchor is part of the stand's variant, so of the id.
+const poseName = (pose) => (typeof pose === "string" ? pose : pose?.pose ?? "anchor");
+export const mibiPictureOf = (st, mb, size, settings, light = "day", view = "default", pose = "anchor") => {
+  const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
   if (stand) { const looks = drawnLooks(frameOf(sp), mb); return { id: standPictureId(stand, looks, light), stage: grown, size: [...stand.size], looks }; }
   const { stage, size: drawn } = lookOf(st, mb, size, settings);
   return { id: mibiPictureId(genomeDigest(mb.genome), stage, drawn, light), stage, size: drawn };
 };
 // A standing mibi's figure, [dx, dy, W, H]: the drawn bbox of its composed figure in its picture, or null when the picture is not a layered stand
-export const figureOf = (st, mb, size, settings, view = "default") => {
-  const sp = S.speciesOf(mb), stand = layeredStand(sp, mb.stage ?? S.mibiStage(st, mb, settings), size, view); if (!stand) return null;
+export const figureOf = (st, mb, size, settings, view = "default", pose = "anchor") => {
+  const sp = S.speciesOf(mb), stand = layeredStand(sp, mb.stage ?? S.mibiStage(st, mb, settings), size, view, poseName(pose)); if (!stand) return null;
   return standFigure(stand, drawnLooks(frameOf(sp), mb));
 };
 // A sleeper's curl at the world size: the nap master reduced by the standing figure's factor for its stage, with its own shadow. { id, figure, request } when the nap master is placed; else null (the 96 × 88 nap picture as it was)
@@ -49,7 +55,8 @@ export function curlOfMibi(st, mb, nap, slot, settings, light, view) {
   const ms = look.stage === "juvenile" ? "juvenile" : "adult", day = `mibi:${sp}~${keyToken(`curl|${master}|${view}|${f}`)}:${ms}:${pic.w}x${pic.h}`;
   return { id: day + (light === "day" ? "" : ":" + light), figure: pic.figure, request: { kind: "curl", id: day + (light === "day" ? "" : ":" + light), day, master, species: sp, stage: look.stage, view, factor: f, ...(light === "day" ? {} : { light }) } };
 }
-export const mibiReq = (req, st, mb, size, settings, light = "day", view = "default") => { const p = mibiPictureOf(st, mb, size, settings, light, view); return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size, ...(p.looks ? { looks: p.looks, view } : {}), ...(light === "day" ? {} : { light }) }); };
+// The request carries the pose only when it is not the anchor, and `owed` (poseFor's "habit key <habit>") when the pose given has one: a scene showing it is refused as a golden (main.mjs snapshot)
+export const mibiReq = (req, st, mb, size, settings, light = "day", view = "default", pose = "anchor") => { const p = mibiPictureOf(st, mb, size, settings, light, view, pose), name = poseName(pose), owed = typeof pose === "string" ? null : pose?.owed; return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size, ...(p.looks ? { looks: p.looks, view } : {}), ...(light === "day" ? {} : { light }), ...(name !== "anchor" ? { pose: name } : {}), ...(owed ? { owed } : {}) }); };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's

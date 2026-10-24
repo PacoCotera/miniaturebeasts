@@ -61,6 +61,15 @@ test("one slot, one frame: a sitting is held, and a second earned meanwhile is g
   const d = world(1); assert.ok(T.devGrantSitting(d, T0).ok); assert.deepEqual(d.moments, {}, "the developer's sitting leaves the ledger alone"); assert.ok(!T.devGrantSitting(d, T0).ok);
 });
 
+test("the sittings a species has earned (the Library's shelf row): its paid sealed chapter and its paid guide count; a line's key and another species' keys do not", () => {
+  const st = world(1); assert.equal(T.sittingsOf(st, "S01"), 0, "nothing paid");
+  assert.ok(T.grantSitting(st, "moment", T.momentKey.sealed("S01", "face"), T0).ok); assert.ok(T.grantSitting(st, "moment", T.momentKey.guide("S01"), T0 + 1).ok);
+  assert.deepEqual(Object.keys(st.moments), ["sealed:S01:face", "guide:S01"], "the ledger's keys, as the moments earned name them"); assert.equal(T.sittingsOf(st, "S01"), 2);
+  for (const k of ["line:1+2", "sealed:S02:face", "guide:S02"]) assert.ok(T.grantSitting(st, "moment", k, T0 + 2).ok);
+  assert.equal(T.sittingsOf(st, "S01"), 2, "a line and another species' moments are not this species'"); assert.equal(T.sittingsOf(st, "S03"), 0, "a species with none paid");
+  const only = world(1); only.moments = { "line:1+2": T0, "guide:S02": T0, "sealed:S02:face": T0 }; assert.equal(T.sittingsOf(only, "S01"), 0, "a line's key and another species' keys count 0");
+});
+
 test("the research moments: a sealed chapter read, then the guide filled with the sealed chapter's looks, then a deep line; each found when true and paid once", () => {
   const id = ["S02", "S09", "S11", "S15", "S16"].find((s) => frameOf(s).chapters.some((c) => c.sealed)), fr = frameOf(id), sealed = fr.chapters.find((c) => c.sealed);
   const st = world(1); st.doorAt = T0; st.knownIds.push(id);
@@ -83,14 +92,14 @@ test("the research moments: a sealed chapter read, then the guide filled with th
 test("the welcome sitting: at the first dock at which a mibi comes home from a walk; the bench alone never gives it; one per player; it waits for the slot and is never lost", () => {
   const st = world(1), m = st.mibis[0];
   T.recordHabit(st, m, "calm"); assert.ok(T.checkWelcome(st, T0, []).early, "a watched habit at the bench: no welcome"); assert.ok(!st.welcomeGiven);
-  const r = T.dock(st, sv([{ id: m.id, outings: 1, habitsDone: ["calm"] }], 4, [{ v: 1, n: 1, partner: m.id, places: ["wood"], carried: [m.id] }]), settings, T0); assert.ok(r.welcome.ok); assert.equal(st.sitting.source, "welcome"); assert.ok(st.welcomeGiven);
+  const r = T.dock(st, sv([{ id: m.id, outings: 1, habitsDone: ["calm"] }], 4, [{ v: 1, n: 1, partner: m.id, places: ["wood"], carried: [m.id] }]), settings, T0); assert.ok(r.welcome.ok && !r.welcome.queued); assert.equal(st.sitting.source, "welcome"); assert.ok(st.welcomeGiven);
   const sv2 = sv([{ id: m.id, outings: 2 }], 5); T.dock(st, sv2, settings, T0 + 1); assert.ok(T.dock(st, sv2, settings, T0 + 2).welcome.again, "one per player");
   // a walk home with no habit recorded still gives it: the dock is the trigger
   const w = world(1), wm = w.mibis[0]; assert.ok(T.dock(w, sv([{ id: wm.id, outings: 1 }]), settings, T0).welcome.ok);
   // a sitting held: the welcome waits, and comes when the slot is free
   const h = world(1), hm = h.mibis[0]; walked(h, hm); T.devGrantSitting(h, T0);
-  const r2 = T.dock(h, sv([{ id: hm.id, outings: 1 }]), settings, T0); assert.ok(r2.welcome.waits && h.welcomeGiven && h.owed.length === 1 && h.owed[0].source === "welcome", "earned while one is held: it joins the queue");
-  assert.ok(T.beginSitting(h, hm, "calm", "wood", settings, T0 + 5).welcome.ok, "the slot is free: the waiting welcome is held"); assert.ok(h.welcomeGiven && !h.owed.length); assert.equal(h.sitting.source, "welcome");
+  const r2 = T.dock(h, sv([{ id: hm.id, outings: 1 }]), settings, T0); assert.ok(r2.welcome.ok && r2.welcome.queued && r2.welcome.position === 1 && h.welcomeGiven && h.owed.length === 1 && h.owed[0].source === "welcome", "earned while one is held: it joins the queue");
+  assert.equal(T.beginSitting(h, hm, "calm", "wood", settings, T0 + 5).next, true, "the slot is free: the waiting welcome is held"); assert.ok(h.welcomeGiven && !h.owed.length); assert.equal(h.sitting.source, "welcome");
   assert.ok(T.checkWelcome(h, T0 + 6, [hm.id]).again, "once per player, queued or held");
   const rel = world(1); rel.mibis[0].released = true; assert.ok(T.checkWelcome(rel, T0, [rel.mibis[0].id]).early, "a released mibi does not count");
 });
@@ -101,7 +110,7 @@ test("the welcome sitting: a walk home read while docked (the save changed, no D
   const back = sv([{ id: m.id, outings: 1, habitsDone: ["calm"] }], 4, [{ v: 1, n: 1, partner: m.id, places: ["wood"], carried: [m.id] }]);
   const r = T.mergeHome(st, back, T0 + 1); assert.deepEqual(r.home, [m.id]); assert.ok(r.welcome.ok); assert.equal(st.sitting.source, "welcome"); assert.ok(st.welcomeGiven);
   const r2 = T.mergeHome(st, back, T0 + 2); assert.deepEqual(r2.home, []); assert.equal(r2.welcome, null);
-  const h = world(1); T.devGrantSitting(h); T.dock(h, sv([{ id: h.mibis[0].id }]), settings, T0); const w = T.mergeHome(h, sv([{ id: h.mibis[0].id, outings: 1 }]), T0 + 1).welcome; assert.ok(w.waits && h.welcomeGiven && h.owed.length === 1);
+  const h = world(1); T.devGrantSitting(h); T.dock(h, sv([{ id: h.mibis[0].id }]), settings, T0); const w = T.mergeHome(h, sv([{ id: h.mibis[0].id, outings: 1 }]), T0 + 1).welcome; assert.ok(w.ok && w.queued && h.welcomeGiven && h.owed.length === 1);
 });
 
 test("the offer and its refusals: no sitting, a mibi with no expedition yet, a pose it has not done, a place it has not been, one sitting each", () => {
@@ -119,7 +128,7 @@ test("the offer and its refusals: no sitting, a mibi with no expedition yet, a p
 test("begin: the frame leaves the slot, the crate goes to the bay, the mibi is marked, nothing is spent; a juvenile may sit; a second sitting may begin while a crate waits", () => {
   const st = world(2), m = walked(st, st.mibis[0]); m.born = st.turn;   // a juvenile
   assert.equal(S.mibiStage(st, m), "juvenile"); T.devGrantSitting(st, T0);
-  const r = T.beginSitting(st, m, "calm", "wood", settings, T0); assert.ok(r.ok); assert.equal(st.sitting, null); assert.equal(m.portrait.stage, S.mibiStage(st, m, settings), "the stage it sat at"); assert.equal(st.sittingCrates.length, 1);
+  const r = T.beginSitting(st, m, "calm", "wood", settings, T0); assert.ok(r.ok); assert.deepEqual(Object.keys(r), ["ok", "crate", "wait", "next"], "begin returns { ok, crate, wait, next }"); assert.equal(r.next, false, "nothing waited in the queue"); assert.equal(st.sitting, null); assert.equal(m.portrait.stage, S.mibiStage(st, m, settings), "the stage it sat at"); assert.equal(st.sittingCrates.length, 1);
   assert.deepEqual({ ...st.sittingCrates[0] }, { id: "sit1", mibiId: m.id, pose: "calm", place: "wood", start: T0, source: "dev", painted: false, opened: false });
   assert.deepEqual({ ...m.portrait }, { state: "painting", pose: "calm", place: "wood", crate: "sit1", start: T0, stage: "juvenile" }); assert.deepEqual(money(st), [0, 0, 0]);
   const n = walked(st, st.mibis[1], "shake-dry", "pond"); T.devGrantSitting(st, T0 + 1); assert.ok(T.beginSitting(st, n, "shake-dry", "pond", settings, T0 + 1).ok); assert.equal(st.sittingCrates.length, 2, "two crates wait");
@@ -220,20 +229,20 @@ test("X21 behind a shut door: nothing paid, nothing lost; the door opens: owed i
   assert.deepEqual(st.owed.map((o) => o.key), T.momentsEarned(st, settings).map((m) => m.key)); assert.deepEqual(st.owed.map((o) => o.key), keys, "sealed, then guide");
   for (const k of keys) assert.equal(st.moments[k], T0 + 1); assert.equal(st.sitting.source, "welcome", "the welcome stays held");
   const once = JSON.stringify(st); assert.ok(T.openSittingDoor(st, settings, T0 + 2).again); assert.equal(JSON.stringify(st), once, "a second open changes nothing");
-  const r1 = T.beginSitting(st, a, "calm", "wood", settings, T0 + 3); assert.ok(r1.ok && r1.owed.ok); assert.equal(st.sitting.key, keys[0]); assert.equal(st.owed.length, 1);
-  const r2 = T.beginSitting(st, b, "calm", "wood", settings, T0 + 4); assert.ok(r2.ok && r2.owed.ok); assert.equal(st.sitting.key, keys[1]); assert.deepEqual(st.owed, []);
+  const r1 = T.beginSitting(st, a, "calm", "wood", settings, T0 + 3); assert.ok(r1.ok && r1.next); assert.equal(st.sitting.key, keys[0]); assert.equal(st.owed.length, 1);
+  const r2 = T.beginSitting(st, b, "calm", "wood", settings, T0 + 4); assert.ok(r2.ok && r2.next); assert.equal(st.sitting.key, keys[1]); assert.deepEqual(st.owed, []);
   assert.deepEqual(T.collectMoments(st, settings, T0 + 5), [], "paid once");
 });
 
 test("X21 a waiting welcome takes its place in the one queue by when it came due; after the door a moment earned while one is held waits", () => {
   const h = world(1), m = h.mibis[0]; walked(h, m); earnBoth(h); T.devGrantSitting(h, T0);
   assert.equal(T.openSittingDoor(h, settings, T0).ok, false, "a sitting is held: nothing given yet"); assert.equal(h.owed.length, 2);
-  assert.ok(T.checkWelcome(h, T0 + 1, [m.id]).waits && h.welcomeGiven);
+  assert.ok(T.checkWelcome(h, T0 + 1, [m.id]).queued && h.welcomeGiven);
   assert.deepEqual(h.owed.map((o) => o.source), ["moment", "moment", "welcome"], "it came due after the moments were earned: it waits behind them");
-  const r = T.beginSitting(h, m, "calm", "wood", settings, T0 + 2); assert.equal(r.welcome, null); assert.ok(r.owed.ok); assert.equal(h.sitting.source, "moment"); assert.equal(h.owed.length, 2);
-  const e = world(1), em = e.mibis[0]; walked(e, em); T.devGrantSitting(e, T0); assert.ok(T.checkWelcome(e, T0 + 1, [em.id]).waits); earnBoth(e);
+  const r = T.beginSitting(h, m, "calm", "wood", settings, T0 + 2); assert.equal(r.next, true); assert.equal(h.sitting.source, "moment"); assert.equal(h.owed.length, 2);
+  const e = world(1), em = e.mibis[0]; walked(e, em); T.devGrantSitting(e, T0); assert.ok(T.checkWelcome(e, T0 + 1, [em.id]).queued); earnBoth(e);
   T.openSittingDoor(e, settings, T0 + 2); assert.deepEqual(e.owed.map((o) => o.source), ["welcome", "moment", "moment"], "the welcome came due first: it comes first");
-  assert.equal(T.beginSitting(e, em, "calm", "wood", settings, T0 + 3).welcome.ok, true); assert.equal(e.sitting.source, "welcome");
+  assert.equal(T.beginSitting(e, em, "calm", "wood", settings, T0 + 3).next, true); assert.equal(e.sitting.source, "welcome");
   const s = world(1); T.openSittingDoor(s, settings, T0); assert.deepEqual(s.owed, []); T.devGrantSitting(s, T0);
   const chain = []; for (let i = 0; i < T.DEEP_LINE + 1; i++) chain.push({ id: 100 + i, name: "m" + i, species: "S01", parents: i === 0 ? null : [{ id: 100 + i - 1 }, { id: 9 }], genome: {}, read: [] });
   s.mibis.push(...chain);
@@ -255,7 +264,7 @@ test("sittings are never lost: two earned while one is held, three begins bring 
 test("the queue comes forward oldest first by when each was earned, the welcome by when it came due, each with its own source", () => {
   const st = world(3), [a, b, c] = st.mibis; for (const m of [a, b, c]) walked(st, m);
   T.devGrantSitting(st, T0);
-  T.grantSitting(st, "moment", "m:late", T0 + 30); assert.ok(T.checkWelcome(st, T0 + 20, [a.id]).waits); T.grantSitting(st, "moment", "m:early", T0 + 10);
+  T.grantSitting(st, "moment", "m:late", T0 + 30); assert.ok(T.checkWelcome(st, T0 + 20, [a.id]).queued); T.grantSitting(st, "moment", "m:early", T0 + 10);
   assert.deepEqual(st.owed.map((o) => o.key || o.source), ["m:early", "welcome", "m:late"], "by the time earned");
   const order = []; for (const [i, m] of [a, b, c, a].entries()) { const r = T.beginSitting(st, m, "calm", "wood", settings, T0 + 40 + i); if (r.ok) order.push(st.sitting && (st.sitting.key || st.sitting.source)); }
   assert.deepEqual(order, ["m:early", "welcome", "m:late"], "each comes into the slot at once, the last begin leaves it empty");

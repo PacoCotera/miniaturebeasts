@@ -4,7 +4,7 @@ import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { habitatShown, watchFrame } from "../trickle.mjs";
 import { openNamer } from "./namer.mjs";
-import { openBook } from "./library.mjs";
+import { openSpecies } from "./library.mjs";
 import { openPanel } from "./panel.mjs";
 import { doorOpen } from "../nav.mjs";
 
@@ -42,7 +42,7 @@ export function intent(h, target, verb) {
     else play(h, "moment");   // Greet: the species' moment (its moving set's hops, or the placeholder's two until a set lands); nothing rewarded, nothing said
   }
   else if (target === "name") openNamer(h, m, "rename");
-  else if (target === "species") { if (!doorOpen("book")) return; openBook(h, S.speciesOf(m)); h.ui.lib.f = "guide"; h.goto("library"); }   // the species' guide (frame.json navigation.jumps): not built yet, a slot of its own; ← reads Library
+  else if (target === "species") openSpecies(h, S.speciesOf(m));   // ✓ Open the guide (frame.json navigation.jumps): the Library's Level 2 of this species
   else if (target.startsWith("plate.")) {
     const ch = chapterAt(m, target); if (!ch) return;
     const r = S.readMibi(h.st, m, ch.id, h.settings);
@@ -53,7 +53,7 @@ export function intent(h, target, verb) {
     const bring = S.projectCarried(h.st, h.sv).includes(m.id), r = bring ? S.carryHome(h.st, h.sv, m) : S.carryAdd(h.st, h.sv, m);
     if (r.ok) h.save(); else if (r.why === "full") h.say(fill(h.specs.habitat.strings.carryRefused, { name: m.name }));
   }
-  else if (target === "portrait") { if (doorOpen("sitting") && !S.isAway(h.st, h.sv, m) && h.st.sitting && !m.portrait) h.goto("sitting"); }   // the sitting: not built yet, a slot of its own
+  else if (target === "portrait") { if (doorOpen("sitting") && !S.isAway(h.st, h.sv, m) && (m.portrait || h.st.sitting) && h.enterSitting) h.enterSitting(m, { state: m.portrait ? "portrait" : "pose", from: "habitat" }); }   // the sitting (its door shut until the screen is listed in nav.mjs BUILT): Portray opens the pose step; portrayed, the portrait, only while its picture is held (host.mjs enterSitting)
   else if (target === "cross") {
     if (!doorOpen("cross") || !S.isAdult(h.st, m, h.settings) || S.isAway(h.st, h.sv, m)) return;
     if (S.crossPartners(h.st, h.sv, m, h.settings).some((p) => !p.away)) openCross(h, m);   // only partners at home can be picked

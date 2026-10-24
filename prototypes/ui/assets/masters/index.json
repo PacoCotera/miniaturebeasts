@@ -1681,13 +1681,6 @@
    "sha256": "7ee2c9c9237a32278cbd14034e3e9d7f840637e9629f832fa1788e19b2eca3a9",
    "signed": "art director (home hand masters, #112 and #116)"
   },
-  "home-sitting-32x24": {
-   "file": "pods/home-sitting-32x24.png",
-   "w": 32,
-   "h": 24,
-   "sha256": "80ba90b17fa0df1a87d974cbbd88ca2d78b7911d48cafe88a6a915efca039298",
-   "signed": "named with --ids"
-  },
   "home-well-32x32": {
    "file": "home/home-well-32x32.png",
    "w": 32,
@@ -1814,12 +1807,40 @@
    "sha256": "4518bc8bafdf4b6349240d15817d4774012d30d4091823d8138a0cb4fda35c3a",
    "signed": "art director, verdict (d09acb12)"
   },
+  "library-ground-1024x522": {
+   "file": "pods/library-ground-1024x522.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "a1559aa3a454c6cae26d7caf3a50d7013ac1342140628afc7f039587c88e1db1",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "library-seed-24x24": {
+   "file": "pods/library-seed-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "80d853c0bbfe9d7e3bcfb7783ea917fada00224034ea9a073150e18f73737f63",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "library-sitting-16x12": {
+   "file": "pods/library-sitting-16x12.png",
+   "w": 16,
+   "h": 12,
+   "sha256": "15340101dfed9a2a607ab47ab15fb253bbf8cafa8339ca91d0c65a52fd7c488f",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
   "library-stage-spread-1024x522": {
    "file": "pods/library-stage-spread-1024x522.png",
    "w": 1024,
    "h": 522,
    "sha256": "1b2024ca343b294e4793e0dc72efe1178d5cc4eb9eb778776a3fcd516e5722a2",
    "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "look-disc-open-16": {
+   "file": "pods/look-disc-open-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "56fce90626e48e1b94d84e0a06abc11f4728a7cd0a8ec01122b4ff9fac406d66",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-asleep-24x16": {
    "file": "pods/mark-asleep-24x16.png",
@@ -2070,113 +2091,113 @@
    "file": "pods/mark-species-S01-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "26c19b7d0b3073573eee1e199ce66967e7c9f74eddbaba12b61c3aa410536f5f",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "5f7c0c61eeee38a45e7c4ec9e49a21e6286355a936e3194b132c0e36846129ce",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S02-24x24": {
    "file": "pods/mark-species-S02-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "cfbb5ac00d1430fa9e4e3bdfdfa6d1b401b5c6e177884b2a6836c82081fd4d84",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "c527ba52e5115caa2f3057d0446ac9c774d0a380cc8c895e024c1f97b05d9535",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S03-24x24": {
    "file": "pods/mark-species-S03-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "eb25449c2f9fcafb8ea76d262ca0d0bc3538458d493df728b1c06ade139c4615",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "b5fe42de003893fff57efddd9a5328fe95ff63aead2ca27897646d7539c6427f",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S04-24x24": {
    "file": "pods/mark-species-S04-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "ddff45e0e334b762b37dad7f59fe285d119d47a4fc739199f385393e52aa69dd",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "8e663b7cf812715201a914e96f26b6839a989f215282da42a15ea9fbdc98f11f",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S05-24x24": {
    "file": "pods/mark-species-S05-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "cb294db4bcffb60012ff8b513ca53136c56f8acba1174915c20bcfa8e44f60f5",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "b7eea28a5d114c946f1ba4a8292566d3fb79c864bfd14b11cbdddf0eb6b8f430",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S06-24x24": {
    "file": "pods/mark-species-S06-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "23bcbf4c3c059ea1ef6c69a7fc81cb63ce0d73925fe19e9c8a8315d73c849cda",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "7ca05ed9207e917daae01adf2492f8a12280a2bdb8aaf641d14cd9108045d07d",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S07-24x24": {
    "file": "pods/mark-species-S07-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "2a4be6b63f285dccbac6d0498f3e6d17b79a5bf0d9b55091c19ac9789abc6453",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "ce2dc2299b7446a2eb9550c4d7adaf1ecdc4be1a86ec732aa521ca9225a18688",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S08-24x24": {
    "file": "pods/mark-species-S08-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "aabcd1b4fb7de76fc44e7cd8269ae8c21cf220dbd1532bf53f522f6b58246fc3",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "60fcf6a106f2c3f06c14d04a1029b065138e9bc7e5f4e59a2a3cf8e960451466",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S09-24x24": {
    "file": "pods/mark-species-S09-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "1fdec141e949b11ce9d424e1e35a5ac24a2e50a1f462f42c8f0bf2b23e862a70",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "9e20f19bed98b5d5fb1a93184dd0e029fa817e1265bfc01cfa07b19079f1f071",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S10-24x24": {
    "file": "pods/mark-species-S10-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "ccfcd8acf6e8a87e51d0768aade8fd1a6b7369628e0e63e4023a4c4f488aa5e6",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "b6ac2f584f049677001231453b0d73419aa7df7ae058617cc35eb237534b0184",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S11-24x24": {
    "file": "pods/mark-species-S11-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "3e4f0f01b2574b5c570c2901d17d63ece52f2f4ea5506f059a6e6f7c85380e34",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "0bb54f1da9c2d5c14aa32d86dd7f3cef3b6e9bd0330f0630e1979e7d3f9c1a0d",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S12-24x24": {
    "file": "pods/mark-species-S12-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "7373a8c5dcdfa37b8963be8f58b794c928580b8d8b48151b3b97fd26358e5228",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "831f085d392ca04db0e1359ca4fa6c20e4b2c4377fafc49306208228c74acbe0",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S13-24x24": {
    "file": "pods/mark-species-S13-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "5c20add176b1cbeafce0695218cd1160ba85630c9e787ab3bc65361499629043",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "939e3213fdf037e5104d02a5896738beaf20305b7eba42225336844417d2fc3f",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S14-24x24": {
    "file": "pods/mark-species-S14-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "393645557b1bd3acbd1da62129ee2565a1ab281a4f09cae4128f5c63902fc523",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "c4728cde20402b807a2fb7c20fa817e5a520d68067a05a1a0d1bec42f25009a6",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S15-24x24": {
    "file": "pods/mark-species-S15-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "f294b8296a9fefb31c940178c69044b013747486660eca404a74fbec116e18c3",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "0ce87ba125895b32d43445eeda1dd85df02d9e4e02433b0bdffb27a74e6ce4b6",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-species-S16-24x24": {
    "file": "pods/mark-species-S16-24x24.png",
    "w": 24,
    "h": 24,
-   "sha256": "20c80362a6007f34520f107dd601ea41d39689b09a1b9009b0ecd4776f6ea92a",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "6a9627404c0d81f9e76f784982f9f92d421cb46b93438f43d7f93bc343e5e37f",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "mark-waiting-24": {
    "file": "pods/mark-waiting-24.png",
@@ -3194,6 +3215,13 @@
    "sha256": "c825a5380460798afb932816e479178601a81a23af34d377a1802d7f7e8fae9b",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "place-cave-96x96": {
+   "file": "pods/place-cave-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "4eb995814991ce9276b0fb0fbdb502101b687612c61579c360d12b7ca3367096",
+   "signed": "art director, sitting verdict (a079009f)"
+  },
   "place-meadow-48x48": {
    "file": "pods/place-meadow-48x48.png",
    "w": 48,
@@ -3207,6 +3235,13 @@
    "h": 64,
    "sha256": "1ab545a590d5e69c8a5dbec5e623aad95e7d82e86c887000d03f89a1707f224e",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "place-meadow-96x96": {
+   "file": "pods/place-meadow-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "7ba22a9108a0e112a4d25d01f094289a341dd63da4bbbe64de642f380f255208",
+   "signed": "art director, sitting verdict (a079009f)"
   },
   "place-pond-48x48": {
    "file": "pods/place-pond-48x48.png",
@@ -3222,6 +3257,13 @@
    "sha256": "e17c94bf08939691d08f4f3c9882e12189ea4a23ab4108f8ff847e8f5f4fc99f",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "place-pond-96x96": {
+   "file": "pods/place-pond-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "8f0df577e35ac87baed2f4c8da5c65cd0ce6183db0d3a0ac3066ab966b7fdc24",
+   "signed": "art director, sitting verdict (a079009f)"
+  },
   "place-rock-48x48": {
    "file": "pods/place-rock-48x48.png",
    "w": 48,
@@ -3236,6 +3278,13 @@
    "sha256": "9bc3c7801fafb8426a506e701c113c7d2e86da985ef5489c3812f3335c135e3f",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "place-rock-96x96": {
+   "file": "pods/place-rock-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "d8e0f79bd95d68801ac81006264d9a291b6fee5876e4bafe74913b8b10ba4850",
+   "signed": "art director, sitting verdict (a079009f)"
+  },
   "place-wood-48x48": {
    "file": "pods/place-wood-48x48.png",
    "w": 48,
@@ -3249,6 +3298,13 @@
    "h": 64,
    "sha256": "aeea3ff5939c3e51a290562cbd99e49ccad03ef96b3582996adf61f6821e4a35",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "place-wood-96x96": {
+   "file": "pods/place-wood-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "2360f346a688ccfc5de5e8da1f9d4cb31c6c6331c428ffd8aab15185a0b3fbaf",
+   "signed": "art director, sitting verdict (a079009f)"
   },
   "plate-device-136x96": {
    "file": "pods/plate-device-136x96.png",
@@ -5560,6 +5616,41 @@
    "sha256": "24672e5575e04e3388d0d1e48020363b824664c0ee88827f4fa15a99871815a9",
    "signed": "art director, original concept marks (#117)"
   },
+  "sitting-backdrop-cave-544x408": {
+   "file": "pods/sitting-backdrop-cave-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "df1ea304309ee616bfddf0f0f7e158ee6f9d5b0b141cfa90f8a23f15c72c65c3",
+   "signed": "AD 2026-10-23 23:07, 74031d07"
+  },
+  "sitting-backdrop-meadow-544x408": {
+   "file": "pods/sitting-backdrop-meadow-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "6117a4a4b9b7ed20b25406d3532399ba537b3865cd69e5ba95fde52e7118d28b",
+   "signed": "AD 2026-10-23 23:07, 74031d07"
+  },
+  "sitting-backdrop-pond-544x408": {
+   "file": "pods/sitting-backdrop-pond-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "3b59658feceb63f66cbbc7440e72ef7a9657db69d5e3928291fee815be47b775",
+   "signed": "AD 2026-10-23 23:07, 74031d07"
+  },
+  "sitting-backdrop-rock-544x408": {
+   "file": "pods/sitting-backdrop-rock-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "6002595ff76392b4db30e698f391836e7d0b649652c637c855e7e265089c259c",
+   "signed": "AD 2026-10-23 23:07, 74031d07"
+  },
+  "sitting-backdrop-wood-544x408": {
+   "file": "pods/sitting-backdrop-wood-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "c9380e4b2f0132bdd693ba86e9e5190fea72f6ee54399b8776d4c3b58de9b6e6",
+   "signed": "AD 2026-10-23 23:07, 74031d07"
+  },
   "sitting-frame-empty-48x40": {
    "file": "pods/sitting-frame-empty-48x40.png",
    "w": 48,
@@ -5580,6 +5671,244 @@
    "h": 40,
    "sha256": "539edb3a9febe50d1e308296f1428593e318462177a746c06d11de0b09ff0746",
    "signed": "named with --ids"
+  },
+  "sitting-gilt-560x424": {
+   "file": "pods/sitting-gilt-560x424.png",
+   "w": 560,
+   "h": 424,
+   "sha256": "9675b2b29b998fb7a31bb56f5e997f96e73907cc1670786b001e7059f6580617",
+   "signed": "art director, sitting verdict (a079009f)"
+  },
+  "sitting-gilt-lit-560x424": {
+   "file": "pods/sitting-gilt-lit-560x424.png",
+   "w": 560,
+   "h": 424,
+   "sha256": "56b8956ca5d2ae9829bc87afde3f976e60720d0264b315c7e3cef5f2544878a9",
+   "signed": "art director, sitting verdict (a079009f)"
+  },
+  "species-mark-S01-10": {
+   "file": "pods/species-mark-S01-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "54d30b30f04243a1993ef1209249b5d0313875407cd2d3d7e16a64094002d6c3",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S01-15": {
+   "file": "pods/species-mark-S01-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "4abfab16f07c0e507b96171fe93011770df0ff7ca0b9190573eef6f64fcba7e5",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S02-10": {
+   "file": "pods/species-mark-S02-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "e77bf130c8dda7855721a7ba558f167558d9393056533b42e8dcd1f53256fb40",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S02-15": {
+   "file": "pods/species-mark-S02-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "553c40ed28376167e64ee64245e820effece4828c0277712cbff646d5ea009f1",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S03-10": {
+   "file": "pods/species-mark-S03-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "357d414006ba548f4734f44409951e9b64df6b48027774363830fceaad373698",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S03-15": {
+   "file": "pods/species-mark-S03-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "daca2767456fc4b694c8a5a6480b8328b5e471d910dfbf283ca4db50de18faa6",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S04-10": {
+   "file": "pods/species-mark-S04-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "71585aa57f96dc5244c99cb97598f76525dbf71d5ad876dd1dcfd3d8d68debcb",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S04-15": {
+   "file": "pods/species-mark-S04-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "c69f78873b40f6e4be71a5b413296de2156d3a09f8b151852070197a654d76d6",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S05-10": {
+   "file": "pods/species-mark-S05-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "1670a8cbf4fe2193c8ec55dee8c9efa3c0a1ecb86956105c532e76aa3475940a",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S05-15": {
+   "file": "pods/species-mark-S05-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "2f7949abab0f194c8af75b72948bbd6c4a7de0799d638c215bbd472046b66b71",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S06-10": {
+   "file": "pods/species-mark-S06-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "4e72026532a24f60fd0478c31e3efea8677db36e9b8e8b9d3257718182993345",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S06-15": {
+   "file": "pods/species-mark-S06-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "79aa7a25516c19825354d1776b741fa62a4cc1096dbdd985ecac3a6b036bd6b5",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S07-10": {
+   "file": "pods/species-mark-S07-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "5e968982bd9cc97699c8228e92bc9661cbd0cb2104dace475d52ff5038e0566b",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S07-15": {
+   "file": "pods/species-mark-S07-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "b4bcc36d5fbe2b1fc1fd08a3047d9bf3e2b4f9e5b6a34a5277c05daf8c747c5c",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S08-10": {
+   "file": "pods/species-mark-S08-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "95db3ada1d902973395b71a3946e7eb76c47d4f7400d8cde2473c177766ecea2",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S08-15": {
+   "file": "pods/species-mark-S08-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "4e46ee78d9187128c91a56430bf761aeb192ba23702a61e8631d4b4ca5887b17",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S09-10": {
+   "file": "pods/species-mark-S09-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "0bd0d6026198695c7c41091396ec29524c42734b0434edf00afe240730ac9bba",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S09-15": {
+   "file": "pods/species-mark-S09-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "001415ff994a29d3fdd0877394add63f25f7d113fdfc69ca2551f7ab7835ed8f",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S10-10": {
+   "file": "pods/species-mark-S10-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "3c23d1a5d7ae11b50bb335242175f19f1677cf5a81347ac51610d2077d194df7",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S10-15": {
+   "file": "pods/species-mark-S10-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "4b301d8321b35137b3e69a5f75b02010678c764f184d3b9246b27928543bb355",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S11-10": {
+   "file": "pods/species-mark-S11-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "0fa74f2bd81981208b69f72fa19efc186a3ec3e2ae1bd100499349b3d8bce092",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S11-15": {
+   "file": "pods/species-mark-S11-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "f7995f475d912ecfb42df90d5a6db5bec1b9914e4237d87b461f6bb0bba40275",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S12-10": {
+   "file": "pods/species-mark-S12-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "5199092862b37f61ff808a4107b890d7fb42a89a1a69ffeef596339f3cd9f0b8",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S12-15": {
+   "file": "pods/species-mark-S12-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "ac086094655a4fa9b9cc86a00876039a3365b1438bcb905197b009260f10873d",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S13-10": {
+   "file": "pods/species-mark-S13-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "5c684d671de0077103800f1e8614c5520616c3c6a0a77ab0deedb7ddbca537e0",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S13-15": {
+   "file": "pods/species-mark-S13-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "0a85d3d61ca1938e988860a4de82c2335c6c856474ba7c340c3776d688be500f",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S14-10": {
+   "file": "pods/species-mark-S14-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "141893cd99cbd8beb2c4940804fe46638f56bbc27e80a3ee4c184249d98f1bce",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S14-15": {
+   "file": "pods/species-mark-S14-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "463c3c02e4c5d913832cf462c17ffb0fbb4d5749d3d62e67ea475be43d7da5a7",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S15-10": {
+   "file": "pods/species-mark-S15-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "85fa48484de1a50c72dc5c6e5ce48e2189f7a3dad4a2bb1b8f3eda5898902f18",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S15-15": {
+   "file": "pods/species-mark-S15-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "9c87f6cfba7ef100c57018e1920c59992244b312af5e280203d6e245a906262d",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S16-10": {
+   "file": "pods/species-mark-S16-10.png",
+   "w": 10,
+   "h": 10,
+   "sha256": "91052ec1655e77c85253f740671ae0f109158b715aa62ef929d2bba1df9d528a",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "species-mark-S16-15": {
+   "file": "pods/species-mark-S16-15.png",
+   "w": 15,
+   "h": 15,
+   "sha256": "334ce74b2b3b608e29ce0b8ea634bd2b3a5c63fca4b05ebb4d72b39cc9becbf6",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
   "spread-gilt-corner-16x16": {
    "file": "pods/spread-gilt-corner-16x16.png",
@@ -7122,6 +7451,13 @@
    "h": 64,
    "sha256": "44a9a0462150bc7511415686a13c2dd247dbfa24c1c95126610ac3e89276c7ed",
    "signed": "cut by prototypes/ui/tools/cargo-cuts.py from placed masters, no painting (T-20261016-216); the art director signs at 1x in the Cargo captures"
+  },
+  "wish-mark-12": {
+   "file": "pods/wish-mark-12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "fdc4d620ce03605ce2207306d8774163953fa9bd3e447e3bc7e2b2faae56f915",
+   "signed": "AD 2026-10-23 23:53, b00a8b17"
   }
  }
 }

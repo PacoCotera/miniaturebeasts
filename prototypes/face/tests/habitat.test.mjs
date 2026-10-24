@@ -274,7 +274,7 @@ test("the Portrait picture: one node after the frame, at 920,316 resting and 920
     assert.deepEqual(f.pixel(918, 316 + dy), colour("sitting-frame-portrait-48x40:48x40"), "the frame's rail beside the window");
   }
   for (const [o, focus] of [[{ portrait: "portrayed" }, "resident"], [{ portrait: "held" }, "portrait"], [{}, "resident"]]) {
-    const b = scene({ ...o, focus }), f = await start(b), lg = logOf(f); assert.equal(b.props.regions.portrait.picture, ""); assert.ok(!reg(lg, "painted"), "no picture: nothing painted in the module's window"); assert.equal(f.objects(), objects[focus], `the node is always there: the same object count (${JSON.stringify(o)} ${focus})`);
+    const b = scene({ ...o, focus }), f = await start(b), lg = logOf(f); assert.equal(b.props.regions.portrait.picture, ""); assert.ok(!reg(lg, "painted"), "no picture: nothing painted in the module's window"); assert.equal(f.objects() + (o.portrait === "portrayed" ? 0 : 1), objects[focus], `the node is always there: the same object count, less the stamp's portrayed corner when not portrayed (${JSON.stringify(o)} ${focus})`);
     const dy = focus === "portrait" ? -2 : 0, fr = b.props.regions.portrait.frame.id ?? b.props.regions.portrait.frame; f.pass(3); assert.deepEqual(f.pixel(940, 330 + dy), colour(fr), "the frame's own window shows"); assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false), []);
   }
   const b = scene({ portrait: "portrayed", digest: D, focus: "resident" }), f = await start(b), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false); };
@@ -298,4 +298,11 @@ test("a resident's ring is its footprint on the ground: the 4 px lift moves the 
   const lg = logOf(f) ?? f.lastLog, ring = lg.regions.find((q) => q.id === "focus" && q.layer === "chrome").rect, foot = footOf(pid, pic, () => null); assert.ok(foot, "the resident's picture has a footprint");
   assert.deepEqual(ring, footprintRing(foot, box), "the ring is the footprint of the unlifted box");
   const pr = lg.regions.find((q) => q.id === "resident" && q.layer !== "chrome"); assert.ok(pr && pr.rect[1] < box[1], "the picture itself has risen");
+});
+
+test("the stamp label's portrayed corner: portrayed, spread-gilt-corner-16x16 1:1 at (976, 64) in its own region stamp.portrayed, on the layer of its picture (habitat.json regions.stamp.portrayed); a sitting held or painting, none", { skip }, async () => {
+  const P = spec.regions.stamp.portrayed, corner = (lg) => lg.regions.find((r) => r.id === "stamp.portrayed");   // its layer is the picture's (the corner master is art)
+  const b = scene({ portrait: "portrayed", focus: "resident" }), f = await start(b), lg = logOf(f); assert.deepEqual(f.errors(), []); assert.equal(b.props.regions.card.stamp.corner, P.slice);
+  assert.deepEqual(corner(lg).rect, P.rect); assert.deepEqual([R.stamp.rect[0] + P.at[0], R.stamp.rect[1] + P.at[1]], P.rect.slice(0, 2), "at the label's top-right corner");
+  for (const o of [{ portrait: "held" }, {}]) { const c = scene({ ...o, focus: "resident" }), g = await start(c); assert.equal(c.props.regions.card.stamp.corner, ""); assert.equal(corner(logOf(g)), undefined, JSON.stringify(o)); }
 });

@@ -111,17 +111,12 @@ static int lib_breath_level(uint32_t now) {   /* the level (0 to 3) the cycle ha
   if (!lib_motion() || n <= 0 || ms <= 0) return 0;
   return v_sk(H, "regions.library.specimen.breath.cycle", (int)(((now - g_lib_t0) / (uint32_t)ms) % (uint32_t)n));
 }
-static int lib_glint_level(uint32_t now) {   /* the dither level (0 to 16): in over the first half of the period, out over the second */
-  int ms = v_si(H, "regions.library.specimen.glint.ms", 2000), top = v_si(H, "regions.library.specimen.glint.levels", 16);
-  if (!lib_motion() || ms <= 1) return top;
-  int ph = (int)((now - g_lib_t0) % (uint32_t)ms), half = ms / 2, up = ph < half ? ph : ms - ph; return top * up / half;
-}
 static int lib_on_home(void) { return strcmp(v_pstr("screen"), "home") == 0 && !v_pbool("idle", 0) && spec_has(H); }   /* Idle is a screen of "home" props too: the Library has no part in it */
 int library_swap_pending(uint32_t now) { return lib_on_home() && lib_motion() && g_lib_have && g_lib_level >= 0 && lib_breath_level(now) != g_lib_level; }
 int library_tick(uint32_t now) {   /* a swap or a glint step is due that the last draw did not show */
   if (!lib_on_home() || !lib_motion() || !g_lib_have) return 0;
   if (lib_breath_level(now) != g_lib_level) return 1;
-  return v_plen("regions.library.glints") > 0 && lib_glint_level(now) != g_lib_glint;
+  return v_plen("regions.library.glints") > 0 && kit_glint_level(H, "regions.library.specimen.glint", now - g_lib_t0, lib_motion()) != g_lib_glint;
 }
 static int lib_painted(void) { const char *pic = v_pstr("regions.library.picture"); return pic && *pic && wire_asset_slot(pic) >= 0; }
 static void library_window(void) {
@@ -137,10 +132,10 @@ static void library_window(void) {
     v_rect("library.shade.t", g[0], g[1], painted ? g[2] : 0, painted ? sp2 : 0, shade); v_rect("library.shade.l", g[0], g[1], painted ? sp2 : 0, painted ? g[3] : 0, shade); }   /* omitted on the placeholder: nodes of no size */
   v_region("library.window", LAYER_ART);
   const char *star = v_pstr("regions.library.star"); int ng = v_plen("regions.library.glints"), mx = v_si(H, "regions.library.specimen.glint.max", 8), gw = v_sk(H, "regions.library.specimen.glint.size", 0), gh = v_sk(H, "regions.library.specimen.glint.size", 1);
-  int gl = lib_glint_level(now); g_lib_glint = gl; if (ng > mx) ng = mx;
+  int gl = kit_glint_level(H, "regions.library.specimen.glint", now - g_lib_t0, lib_motion()); g_lib_glint = gl; if (ng > mx) ng = mx;
   if (painted && star && *star) for (int i = 0; i < ng; i++) {
     int x = v_pint(v_fmt("regions.library.glints.%d.0", i), 0), y = v_pint(v_fmt("regions.library.glints.%d.1", i), 0);
-    v_dither_window(v_fmt("library.glint.%d", i), NULL, 0, 0, star, 0, 0, gl, g[0] + x - gw / 2, g[1] + y - gh / 2, gw, gh);   /* centred on the bead; level 0 draws nothing, level 16 the whole star */
+    kit_glint(v_fmt("library.glint.%d", i), star, g[0] + x, g[1] + y, gw, gh, gl);   /* centred on the bead */
   }
 }
 static void library_captions(void) {

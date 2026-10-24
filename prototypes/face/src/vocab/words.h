@@ -23,19 +23,22 @@ void word_focusRing(const char *id, const char *spec, const char *target, const 
 void word_focusRingFootprint(const char *id, const char *spec, const char *target, const char *picture, const char *cell, const int drawn[4]);
 void word_focusRingFigure(const char *id, const char *spec, const char *target, const char *picture, int fx, int feetY, int W);   /* a figure's ring: (W + 10) x (fh + 10) on its feet point */
 /* station/ */
-typedef struct { const char *plateId, *plateRegion, *imageRegion; int plateAlone; const char *caseSpec, *caseBase; } kit_stamp_t;   /* the stamp label's own ids and regions (the screens' names), whether the plate stands without a stamp, and the case (caseSpec NULL: none) */
-void kit_stamp(const char *spec, const char *rect, const char *plate, const char *asset, int size, int clipH, const kit_stamp_t *o);   /* the stamp label: the case's back, the plate (a slot), the stamp centred on it (cut to clipH rows when clipH >= 0), the case's front */
+typedef struct { const char *plateId, *plateRegion, *imageRegion; int plateAlone; const char *caseSpec, *caseBase; const char *corner; int cornerAt[2]; } kit_stamp_t;   /* the stamp label's own ids and regions (the screens' names), whether the plate stands without a stamp, the case (caseSpec NULL: none), and the corner picture (NULL or "": none) at cornerAt from the label's rect */
+void kit_stamp(const char *spec, const char *rect, const char *plate, const char *asset, int size, int clipH, const kit_stamp_t *o);   /* the stamp label: the case's back, the plate (a slot), the stamp centred on it (cut to clipH rows when clipH >= 0), the case's front, the corner */
+int kit_resident(const char *spec, const char *rect, const char *outRect, const char *id, const char *picture, const char *out, int lift, const char *from, int level, const int figure[4], const char *axis, const char *feet);   /* the up-close still resident: its picture lifted (or a slot), at rect or placed by its figure on axis and feet (figure NULL: at rect), the cross-dither from `from` at level (NULL or "": none), the out mark (contract header in station/resident.c) */
 typedef struct { const char *id, *region, *picture; int on; } kit_podShadow_t;   /* the pod's contact shadow: its node id, region and picture; on 0 keeps the node with no size */
 int kit_pod(const char *spec, const char *cls, int axis, int feet, const kit_podShadow_t *shadow, int box[4]);   /* the pod's box from its size class (bottom-centred on axis and feet), and its shadow when given; 1 when the class gives a box */
 void word_specimen(const char *base);   /* the pod under the beam on its cradle; base: the state's regions in the pods spec ("regions.overview" or "regions.chapter") */
 void word_kin(const char *base);        /* the overview's kin rings and the hatch */
 void word_page(const char *key);        /* the chapter page ("page") or one of Compare's two ("pageA", "pageB") */
 void word_list(void);    /* Pods' collection: the rack's places */
+int kit_glint_level(const char *spec, const char *path, uint32_t elapsed_ms, int motion);   /* a fading glint's dither level, 0 to <path>.levels: in over the first half of <path>.ms, out over the second; motion 0: the top level (contract header in station/glint.c) */
+void kit_glint(const char *id, const char *asset, int cx, int cy, int w, int h, int level);   /* one glint: the asset dithered in from clear at the level, centred on (cx, cy); its layer is the asset's */
 /* the ring of the target whose `group` this is in the screen spec of the props (the rail's, Pods'), at the region id the caller names */
 void word_focusRingFor(const char *id, const int drawn[4], const char *group);
 void word_rail(const char *marksSpec);    /* the chapter rail (frame spec) with the ring on its focused tab; `marksSpec` names the spec whose colours.rail the marked pips take (NULL: the screen has no marked pips) */
 /* station/ (Home) */
-void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture, int sx, int sy);   /* the living window (the picture is shown from source (sx, sy): the whole shows rows 120 to 560 of Idle's painting): the bezel (NULL: none, the part inside) and the glass, flat plates until the glass master, the master over them */
+void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture, int sx, int sy, const char *from, int level);   /* the living window (the picture is shown from source (sx, sy): the whole shows rows 120 to 560 of Idle's painting): the bezel (NULL: none, the part inside) and the glass, flat plates until the glass master, the master over them; from (NULL or "": none) cross-dithers the master from that picture at level */
 /* common/ */
 void word_ribbon(const char *id, const int rect[4], const char *text, int px, int pad, const char *fill, const char *edge, const char *textColour);   /* the ribbon (pad: the room each side of the words): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
 void word_topBar(void);

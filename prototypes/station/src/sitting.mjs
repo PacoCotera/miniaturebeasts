@@ -60,15 +60,19 @@ export function lineFounders(st, m, seen = new Set()) {
   seen.add(m.id); return [...new Set(m.parents.flatMap((p) => lineFounders(st, mibiById(st, p.id) || { id: p.id }, new Set(seen))))];
 }
 export const lineKey = (st, m) => "line:" + lineFounders(st, m).sort((x, y) => x - y).join("+");
+// A species' research moment keys: a sealed chapter opened, its field guide filled (one helper for the moments earned and the sittings counted).
+export const momentKey = { sealed: (id, chId) => "sealed:" + id + ":" + chId, guide: (id) => "guide:" + id };
 export function momentsEarned(st, settings = DEFAULT_SETTINGS) {
   const out = [];
   for (const id of new Set(st.knownIds)) {
-    for (const chId of st.readOnce[id] || []) { const ch = frameOf(id)?.chapters.find((c) => c.id === chId); if (ch && ch.sealed) out.push({ key: "sealed:" + id + ":" + chId, kind: "sealed", species: id, chapter: chId }); }
-    const fg = fieldGuide(st, id, settings); if (fg && fg.complete) out.push({ key: "guide:" + id, kind: "guide", species: id });
+    for (const chId of st.readOnce[id] || []) { const ch = frameOf(id)?.chapters.find((c) => c.id === chId); if (ch && ch.sealed) out.push({ key: momentKey.sealed(id, chId), kind: "sealed", species: id, chapter: chId }); }
+    const fg = fieldGuide(st, id, settings); if (fg && fg.complete) out.push({ key: momentKey.guide(id), kind: "guide", species: id });
   }
   for (const m of st.mibis) { const k = lineKey(st, m); if (lineDepth(st, m) >= DEEP_LINE && !out.some((o) => o.key === k)) out.push({ key: k, kind: "line", mibi: m.id }); }   // one moment a line
   return out;
 }
+// The research sittings a species has earned: its paid moments in the ledger (st.moments), a sealed chapter opened and the guide filled; a line or another species' moment is not its own.
+export const sittingsOf = (st, species) => Object.keys(st.moments ?? {}).filter((k) => k === momentKey.guide(species) || k.startsWith(momentKey.sealed(species, ""))).length;
 // Pay every moment not yet paid, in order; returns what happened to each. Behind the shut door nothing is paid: each moment stays earned.
 export function collectMoments(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.doorAt) return [];
@@ -108,12 +112,12 @@ export function portraitBlock(st, m, sv) {
   return "";
 }
 // The welcome sitting (the-portrait.md §2, §8): at the first dock at which a mibi comes home from a walk with the player; one per player; it joins the queue (by when it came due)
-// if one is held, and is never lost. `home` is the ids of the mibis that came home at this dock (dockKey's result).
+// if one is held, and is never lost. `home` is the ids of the mibis that came home at this dock (dockKey's result). Returns grantSitting's shapes: held { ok: true, sitting }, queued { ok: true, queued: true, position }.
 export function checkWelcome(st, now = Date.now(), home = []) {
   if (st.welcomeGiven) return { ok: false, again: true };
   if (!home.some((id) => { const m = mibiById(st, id); return m && !m.released; })) return { ok: false, early: true };
   st.welcomeGiven = true; st.moments.welcome = now;
-  if (st.sitting) { queueSitting(st, "welcome", null, now); logEv(st, "The welcome sitting waits behind the held one"); return { ok: false, waits: true }; }
+  if (st.sitting) { queueSitting(st, "welcome", null, now); logEv(st, "The welcome sitting waits behind the held one"); return { ok: true, queued: true, position: st.owed.length }; }   // grantSitting's shape
   return grantSitting(st, "welcome", null, now);
 }
 // The dock, with the welcome: the Companion docks, what came home is recorded (habits, places), and the first walk home gives the welcome.
@@ -144,7 +148,8 @@ export function beginBlock(st, m, pose, place, sv) {
   return "";
 }
 // Begin: the frame leaves the slot and the crate goes to the bay; it costs the sitting and nothing else. A second sitting may begin while a crate waits (sitting crates do not count
-// against the bay's three); a welcome that was waiting for the slot is given now.
+// against the bay's three); the oldest sitting waiting in the queue comes into the slot now. Returns { ok, crate, wait, next }: `next` is true when a held sitting came forward from the
+// queue (which one is st.sitting.source; no screen tells a welcome from a moment).
 export function beginSitting(st, m, pose, place, settings = DEFAULT_SETTINGS, now = Date.now(), sv) {
   const b = beginBlock(st, m, pose, place, sv); if (b) return { ok: false, msg: "Begin the sitting · " + b };
   const source = st.sitting.source; st.sitting = null;
@@ -153,7 +158,7 @@ export function beginSitting(st, m, pose, place, settings = DEFAULT_SETTINGS, no
   st.sittingCrates.push(crate); m.portrait = { state: "painting", pose, place, crate: crate.id, start: now, stage: mibiStage(st, m, settings) };   // the portrait shows this stage forever
   logEv(st, m.name + " sits for its portrait · " + pose + " · " + place);
   const o = giveOwed(st, now);   // one queue, oldest first
-  return { ok: true, crate, wait: sittingWaitMs(settings), welcome: o.ok && o.source === "welcome" ? o : null, owed: o.ok && o.source !== "welcome" ? o : null };
+  return { ok: true, crate, wait: sittingWaitMs(settings), next: !!o.ok };
 }
 
 // --- the crate: the lamp fills, the painting lands, the bay opens --------------------------------------------------------------

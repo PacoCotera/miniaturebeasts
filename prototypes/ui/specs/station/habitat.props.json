@@ -357,7 +357,8 @@
         "N",
         "cell",
         "plate",
-        "asset"
+        "asset",
+        "corner"
        ],
        "additionalProperties": false,
        "properties": {
@@ -375,6 +376,10 @@
         },
         "asset": {
          "type": "string"
+        },
+        "corner": {
+         "type": "string",
+         "description": "spread-gilt-corner-16x16 when the mibi is portrayed (habitat.json regions.stamp.portrayed), else \"\""
         }
        }
       }

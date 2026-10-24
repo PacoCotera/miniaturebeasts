@@ -225,10 +225,11 @@ function lineOf(m, spec, p, chapters, ci, view, frame) {
   }
   if (f && f.startsWith("kin.")) { const q = S.podById(st, view.kin[+f.slice(4)]?.id); return q ? { ok: "Compare", back, subject: state(q), need: glintOf(q) } : { back }; }
   if (f === "hatch") return { ok: "Return to the wild", price: S.gainText(1), back, subject: fill(Sg.backTo, { place: S.PLACE_WORD[p.g] || "wild" }) };
+  if (f === "figure" && p.idd) return { ok: Sg.openGuide, back, subject: fill(Sg.everySpecies, { species: S.cap(S.spName(p)) }) };   // ✓ Open the guide: the Library's Level 2 of this pod's species, free
   return { back };
 }
 
-// The focus targets of the state: the places (the collection), or the rail's tabs, the pod, the kin and the hatch (the overview), or the rail's tabs (the chapter page); the graph is the spec's.
+// The focus targets of the state: the places (the collection), or the rail's tabs, the pod, the figure (an identified pod's), the kin and the hatch (the overview), or the rail's tabs (the chapter page); the graph is the spec's.
 function targetsOf(view, st, spec, cur) {
   const t = [];
   if (view.mode === "collection") { st.tray.slice(0, spec.regions.collection.places.slots).forEach((q, i) => t.push({ id: "place." + i, group: "place", index: i })); return t; }
@@ -236,6 +237,7 @@ function targetsOf(view, st, spec, cur) {
   if (view.rail && view.rail.tabs.length) view.rail.tabs.forEach((_, i) => t.push({ id: "rail." + i, group: "rail", index: i }));   // Compare's targets are its rail's tabs alone
   if (view.mode === "overview") {
     t.push({ id: "pod", group: "pod" });
+    if (cur.idd) t.push({ id: "figure", group: "figure" });   // the species' figure, once the pod is identified (pods.json targets.figure)
     (view.kin || []).forEach((k, i) => t.push({ id: "kin." + i, group: "kin", index: i }));
     t.push({ id: "hatch", group: "hatch" });
   }

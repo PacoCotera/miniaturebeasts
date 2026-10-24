@@ -42,7 +42,7 @@ test("the species: none found is null (the starter's empty form shows); the only
 test("the counts: every trait's current looks count, 20 for the version-4 Loika; a plain look is a found bead once seen and never counts as new", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 1, settings); assert.equal(total(st, "S01"), 20);
   S.guideAdd(st, "S01", "markings", ["plain"]); assert.equal(total(st, "S01"), 20, "a legacy look moves nothing");
-  S.libOpened(st); S.guideAdd(st, "S01", "markings", ["plain"]);
+  st.libSeen = S.libSnapshot(st); S.guideAdd(st, "S01", "markings", ["plain"]);
   assert.equal(newLooksOf(st, "S01", settings).size, 0);
   warmLibrary(st, settings); const r = libraryOf(st, settings, spec).region; assert.ok(!("new" in r), "nothing new");
   const input = specimenInput(st, "S01", settings); assert.ok(input.found.markings.includes("plain"), "the plain look is in what the specimen draws");
@@ -50,10 +50,10 @@ test("the counts: every trait's current looks count, 20 for the version-4 Loika;
 });
 test("a look is new when it was found since the Library was last opened full screen: opening it again clears them; a save from before the field takes what it knows as seen", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const n0 = newLooksOf(st, "S01", settings).size; assert.ok(n0 > 0 && n0 <= 20, "a fresh Library: every look found is new");
-  S.libOpened(st); assert.equal(newLooksOf(st, "S01", settings).size, 0);
+  st.libSeen = S.libSnapshot(st); assert.equal(newLooksOf(st, "S01", settings).size, 0);
   const t = frameOf("S01").chapters.flatMap((c) => c.traits).find((x) => x.id === "eye-rings"); const unseen = t.looks.find((l) => !S.guideLooks(st, "S01", t.id).includes(l)) ?? null;
   if (unseen) { S.guideAdd(st, "S01", t.id, [unseen]); assert.deepEqual([...newLooksOf(st, "S01", settings)], [`eye-rings|${unseen}`]); }
-  S.libOpened(st); assert.equal(newLooksOf(st, "S01", settings).size, 0);
+  st.libSeen = S.libSnapshot(st); assert.equal(newLooksOf(st, "S01", settings).size, 0);
   const old = JSON.parse(JSON.stringify(st)); delete old.libSeen; S.normalize(old); assert.deepEqual(old.libSeen, st.guide, "an older save: what it knows is not new");
 });
 test("a shut sealed chapter shows no bead and counts no new look; once opened its looks are drawn", () => {
@@ -68,7 +68,7 @@ test("the Library region of Home's props: the specimen's id and its four levels,
   assert.equal(r.genome, "Loika genome"); assert.equal(q.kind, "specimen"); assert.deepEqual([q.size, q.species], [[344, 362], "S01"]);
   const n = newLooksOf(st, "S01", settings).size; assert.equal(r.new, `${n} new`); assert.equal(r.glints.length, Math.min(8, n));
   for (const [x, y] of r.glints) assert.ok(x >= 12 && x <= 344 - 12 && y >= 12 && y <= 362 - 12, "a bead keeps off the edge");
-  S.libOpened(st); const z = libraryOf(st, settings, spec); assert.equal(z.region.glints.length, 0); assert.ok(!("new" in z.region)); assert.equal(z.region.picture, r.picture, "opening the Library re-renders nothing: the looks are the same");
+  st.libSeen = S.libSnapshot(st); const z = libraryOf(st, settings, spec); assert.equal(z.region.glints.length, 0); assert.ok(!("new" in z.region)); assert.equal(z.region.picture, r.picture, "opening the Library re-renders nothing: the looks are the same");
   const b = homeBuild({ st, sv: { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3 }, settings, docked: true, ui: {}, focus: null, time: 12 * 3600, date: { y: 2026, m: 9, d: 17 }, now: Date.now() }, spec, frameSpec);
   assert.deepEqual(b.props.regions.library, z.region); assert.ok(b.requests.some((x) => x.kind === "specimen") && b.requests.some((x) => x.kind === "star"));
 });
