@@ -13,6 +13,7 @@ Built by `guides/compose-sit.py` at 0 MXN. The stage's canvas transform (crested
 | K1a `sit-S01-adult-keys-crested-a` | `guides/compose-sit-adult-crested.png` | `3bba33279b462e6093e331c16506e78dbab15f42567f83174af7bc7a717214c4` |
 | K1b `sit-S01-adult-keys-crested-b` (the adult retry, check 6: wrong facing) | `guides/compose-sit-adult-crested.png`, the same file | `3bba33279b462e6093e331c16506e78dbab15f42567f83174af7bc7a717214c4` |
 | K2a `sit-S01-adult-keys-bare-a` | `guides/compose-sit-adult-bare-in.png`: the crested anchor in cell 1, the four mirrored, droplet-fixed K1b takes in cells 2, 3, 5, 6 | `90995042e83688ceeed55f501a04da3a3d5fdac58a6396531b2e7090e7dedd37` |
+| K2a, second reference | `guides/compose-sit-adult-bare-anchor-ref.png`: the signed bare anchor (7e52ae98…) at 304 × 312 flattened on #FF00FF | `3dd6e52e4a573ec3f64e61e64e0bd835b94ec75f64a5857666b3a6b1b0e4997d` |
 
 ## Requests
 

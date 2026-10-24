@@ -8,6 +8,7 @@ usage (from art/station-masters/pods): python3 -I floor/S01/sitting/guides/compo
   bare-in     cell 1 the crested anchor, cells 2,3,5,6 the cut crested takes crested/mibi-<stage>-S01-{shake,calm}-t{1,2} (K2)
   patches-in  cell 1 the bare anchor + its round-2 patches, cells 2,3,5,6 the cut bare takes keys/mibi-<stage>-S01-base-{shake,calm}-t{1,2} (K3)
   stripes-in  cell 1 the bare anchor + its stripes, the same takes (K4)
+  bare-ref    K2's second reference: the bare anchor at 304x312 flattened on magenta
 A take whose file is absent (dropped at K1) leaves its cell empty magenta. Work-queue layers are read with git show from /home/user/wq at f1285a67."""
 import io, json, os, subprocess, sys, numpy as np
 from PIL import Image
@@ -53,5 +54,9 @@ def build(stage, kind):
     jp = 'floor/S01/sitting/guides/compose-sit.json'; J = json.load(open(jp)) if os.path.exists(jp) else {}
     J.setdefault('maps', {})[stage] = M; J.setdefault('sheets', {})[os.path.basename(out)] = {'cells': {str(k): v for k, v in used.items()}}
     json.dump(J, open(jp, 'w'), indent=1); print(out, used)
+def bare_ref(stage):
+    """K2's second reference: the signed bare anchor at 304x312, flattened on flat magenta."""
+    a = np.asarray(rgba(f'floor/S01/keys/mibi-{stage}-S01-base-anchor-304x312.png')).astype(float); al = a[..., 3:] / 255.0
+    out = f'floor/S01/sitting/guides/compose-sit-{stage}-bare-anchor-ref.png'; Image.fromarray(np.clip(np.rint(MAG * (1 - al) + a[..., :3] * al), 0, 255).astype(np.uint8)).save(out); print(out)
 if __name__ == '__main__':
-    build(sys.argv[1], sys.argv[2])
+    bare_ref(sys.argv[1]) if sys.argv[2] == 'bare-ref' else build(sys.argv[1], sys.argv[2])
