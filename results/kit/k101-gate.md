@@ -1,0 +1,108 @@
+# K10.1 gate (architect, 2026-10-23 18:13 Mexico City), 3fe61bde
+
+What I measured. I used a detached worktree at 3fe61bde with a private FACE_BUILD_DIR and STATION_CHECKS, and the views and tests of 3cecde15 taken out with `git archive`. All of it is removed afterwards.
+- `build.sh native` at 3fe61bde gives the same figures as the builder and the reviewer: layout 753 cases, 0 differ; face_test 15177 checks, 0 failed; hash 47e09df8. I needed it for dist/metrics.json.
+- **The props record comparison** uses the K10 recorder. It wraps every exported function of station/src/views except words.mjs and requests.mjs, keeps undefined fields, functions, typed arrays and key order, and hashes each return.
+  - I added one switch, so the hook can also serve the base test files.
+  - It ran over the 19 views test files on these sides:
+    - after against after, twice;
+    - the base tests on the base views and on the after views;
+    - the after tests on the base views and on the after views;
+    - the merged tree of K6 (0cd33136) with 3fe61bde.
+  - On the base side I left out the pods-props `slot` records. That function moved to requests.mjs, which the recorder does not wrap.
+  - For the two files that differ, I recorded the full serializations and diffed them field by field.
+- **A probe of my own**, run on both sides, with the whole props hashed and diffed field by field:
+  - cargoBuild with 0–15 waiting pods (away and docked) and 0–15 arrival crates;
+  - panel dockCards with 0–15 crates;
+  - pods inWords for 0–15;
+  - panel artOf for n 0–5.
+- **node --test:**
+  - at 3fe61bde, station: 588 pass, 0 fail;
+  - on the merged K6 + K10.1 tree, station + face tiles.test + ui specs.test: 633 pass, 0 fail.
+- `git merge-tree --write-tree` three ways, the commit's metadata, and the diff read line by line against 2a–2j and the Cargo ruling.
+- **Not run by me:** the journeys, the type log, checks.mjs, goldens, the guards, the wasm build and the face node tests. For those I rely on the reviewer's figures (both journeys, goldens, both guards, 1611 node tests) and the builder's (type log 44 of 44 identical, checks.mjs stripped identical).
+
+- **1. K10.1 (T-20261023-282) as built: PASS against 2a–2j and the Cargo ruling.**
+  - **The record is deterministic.** After against after: 13184 records, 0 differ.
+  - **Neutral except 2e (base tests, base views against after views):**
+    - 13132 records, the same count as K10's "without pods-props slot". 735 differ, all in createBuild: create-props 725 of 4462 and policy-families 10 of 165. The other 17 files: 0 differ.
+    - The field diff of the 735: in each one exactly four fields change, and nothing else.
+      - In the chamber-back-400x320 and chamber-front-400x320 requests, `hollow` goes from undefined to false and `until` goes from undefined to "its master (masters/index.json)".
+      - No other field changes, no key order changes, and no other id is touched.
+      - These are 2e's two ruled differences and the only ones.
+  - **The after tests on the base views against the after views:**
+    - The same 725 + 10 again.
+    - panel-props: 636 records, 0 differ. The new dockCards case is neutral.
+    - cargo-props differs only because the new Cargo test fails on the base views at its "seven" assertion, as it should, and the records after it shift.
+  - **The Cargo change, from my probe:**
+    - Only the waiting counts 7–12 (away and docked) and the crate counts 7–12 differ, and only in `line.subject`: 18 of 48 props.
+      - "many pods wait for a well" becomes "seven … twelve pods wait for a well".
+      - "many sealed crates" becomes "seven … twelve sealed crates".
+    - 0–6 and 13–15 are identical, with 13 and up "many".
+    - Panel dockCards 0–15 and pods inWords 0–15 are identical on both sides.
+    - The builder's probe took 0, 1, 2, 6, 7, 8, 12, 13 and 14. This one takes every n from 0 to 15.
+  - **Lines 2a–2j are as ruled:**
+    - spell(n, beyond); fill uses Object.hasOwn and one|many, with the one regex; req once; plateDevice's until; slotAt, moved verbatim.
+    - pods-props no longer defines or exports `slot`. The six importers use requests.mjs.
+    - The cargo and habitat literals use slotAt.
+    - create uses phOf and spell(…, "many").
+    - The bench, home, pods, panel and cargo tables and fills are gone.
+    - 2j: artOf takes w from listForm(P.cards, n).first[2].
+    - Grep of the views:
+      - Every object-literal slot request left is one the ruling keeps (the home bed, the idle painting, the pods compareA plate), or belongs to library-props.
+      - The panel crate crop stays as ruled.
+      - There is one fill and one number table outside library-props.
+  - **The 2h tests are there, with the Cargo change:**
+    - Cargo: 7 waiting reads "seven", 12 "twelve", 13 "many", and the same for crates.
+    - Panel: 12 reads "twelve", 13 "many".
+    - The words-requests cases.
+  - **Commit:** author and committer are both Paco Cotera <paco@cotera.org>, with no trailers. It touches 14 files, all under prototypes/station.
+
+- **2. artOf at n = 0 and n > 3: accepted; no fix line.**
+  - **Measured, before and after:**
+    - Before, artOf(0) threw a TypeError: w = Infinity gives the id "…Infinityx288", which sz() cannot parse. It never returned Infinity widths.
+    - Now artOf(0) gives 776, from listForm's shared rule (the smallest form whose upTo is at least n).
+    - n 1–3 are identical before and after: 776, 380, 248.
+    - n 4 and 5 used to give ids 182 and 142.4 wide, which match no master. They now throw "listPitch: 4 items; no form holds them".
+  - **No caller reaches the change:**
+    - artOf is called only from panelBuild, for non-strip panels, with cards.length.
+    - panelBuild with no cards throws earlier, in initialFocus.
+    - frame.json panel.cards.max is 3, and the face's panel.test passes 1–3.
+  - **Refusing a count that no form holds is the rule.** It is derive.mjs's listForm contract, the same as K6's probe plates ("a new tier must add a form"), and better than a quiet nonsense id. A special case for n = 0 in artOf would be a second rule.
+
+- **3. Nothing blocks merging K10.1 onto station-gate.**
+  - **station-gate 95f9762a with 3fe61bde:** clean, exit 0, tree f0f303a3, which is 3fe61bde's own tree. 3cecde15 has station-gate's tree, 2eeac47b.
+  - **If K6 merges first:**
+    - `merge-tree 0cd33136 3fe61bde` is clean, exit 0 (tree 1314cad3), and `95f9762a` with `0cd33136` is clean too.
+    - The files are disjoint:
+      - K6 touches 27 files under prototypes/face, plus two spec additions: cargo.json band.probe.forms, and habitat.json nameTag under/overGap.
+      - K10.1 touches 14 files under prototypes/station.
+    - On the merged tree the props records are 13184, 0 differ against 3fe61bde, and the station, tiles and specs tests pass 633 of 633.
+    - K10.1 merges before or after K6 with nothing to redo.
+  - **0cd33136 is not on origin.** origin build/ui-kit is 3d93b2bb. My K6 check is against the local commit named to me.
+  - **The ticket's merge condition ("Done when") is met.** UI/UX's fit check of the longest Cargo lines is done: cargo-twelve-fit.md (17:42 Mexico City) rules that they fit, the widest being 199 px in the 208 px subject slot, with no fallback. That is UI/UX's call, not mine. The builder's and the reviewer's "not done" came before it.
+
+- **4. K5.1: not now. Cut it on build/ui-kit once K6 and K10.1 are both on station-gate.**
+  - **Why not now:** k5-gate.md §4 puts K5.1 after K6 and K10.1 merge.
+    - station-gate is still 95f9762a.
+    - K6 is unpushed and not gated.
+    - K5.1 reads K6's new probe forms.
+  - **Why build/ui-kit:** K5.1 touches face/tools, the face tests, the specs and the station tests, and no views or library file. That is kit work. It goes on that branch once K6 has left it.
+  - **Changes to its ticket from what I measured:**
+    - `base: station-gate with K6 (build/ui-kit) and K10.1 (build/props-words 3fe61bde) merged; branch build/ui-kit.`
+    - panel-props.mjs:117 is no longer a reader of panel.cards width/gap, because 2j reads panel.cards.forms. The old panel card keys are still read by:
+      - panel-props.test.mjs:44 (cards.width/gap) and :47 (cards.y/h);
+      - arrival.test.mjs:83 (strip.cards w/gap);
+      - face cargo.test.mjs:366–367 (strip.cards x/y/w/h).
+    - If K6 merges as at 0cd33136: cargo arrival.band.probe gains forms.row and keeps `at` and `pitch`.
+      - Their only reader is tiles.test.mjs's old-arithmetic case; cargo.c lays the plates out with kit_tiles on the forms.
+      - So K5.1 also drops `band.probe at/pitch`.
+      - `size` stays, because cargo-props.mjs:114 reads it for the icon's placeholder.
+    - The props records stay unchanged, as k5-gate.md says.
+
+Cleanup:
+- The worktree is removed and pruned, and so are the private build directory, the base copies, the merged-tree export and every record. /home/user/pw is unchanged: build/props-words at 3fe61bde, clean.
+- I created no /tmp/bake-* directory, so I deleted none.
+  - Only face bake.test makes them, and I did not run it.
+  - Directories made at 23:51–23:57 UTC came from another node --test run, and some older ones were deleted by someone else during my session.
+- The scripts are kept, about 30 KB, in /tmp/claude-0/-home-user/48cdf533-58b9-58f2-b00a-c4744c6746fe/scratchpad/k101g: hooks.mjs with the K10_TESTBASE switch, register.mjs, run.sh, cmp.py, fdiff.py and probe.mjs.
