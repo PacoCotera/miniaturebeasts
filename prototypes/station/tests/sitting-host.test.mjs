@@ -1,4 +1,4 @@
-// The sitting's host and keys (host.mjs enterSitting, sittingBody; intents/sitting.mjs) on the real host over the real rules, with its door still shut (nav.mjs BUILT has no "sitting"): the way in, the steps (✓ a step forward,
+// The sitting's host and keys (host.mjs enterSitting, sittingBody; intents/sitting.mjs) on the real host over the real rules, its door open (nav.mjs BUILT lists "sitting"): the way in (Habitat's Portrait ✓, the portrait only while its picture is held), a Lift mid-ceremony, the steps (✓ a step forward,
 // ← a step back keeping the choice), the armed confirm and begin (events.begin: the lit gilt out, then beginSitting and Habitat with the plate at 300 ms, input held 480 ms), the window's dithers (events.backdrop: the glass,
 // and the resident's light change in both forms, "dither" and "cut"; the pose step's stand/curl change), reduced motion (cuts), the room key and leaving (the choices dropped), and sitting.json focus.vectors that leave the screen.
 //   node --test prototypes/station/tests/sitting-host.test.mjs
@@ -33,7 +33,7 @@ function rig({ motion = true, habits = ["sleep-curled", "shake-dry", "calm"], wa
   G.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], st: G.st };
   UI.screen = "habitat"; UI.idle = false; UI.hab.id = mb.id; UI.hab.f = "portrait"; UI.sit = null; UI.panel = null; FX.msg = "";
   const sent = []; let t = 0; const h = createHost({ send: (m) => sent.push(m), nowMs: () => t, light: () => light, motion: () => motion }); h.save = () => {};
-  const say = (target, verb) => { if (!h.holding()) dispatch(h, { screen: "sitting", target, verb }); },   // behind the shut door the host takes ← as notBuilt's (the parent): the intents are dispatched as the open door will
+  const say = (target, verb) => { if (!h.holding()) dispatch(h, { screen: "sitting", target, verb }); },   // the sitting's intents, as the face says them
     focus = (target) => onFaceMessage(h, { t: "focus", seq: 1, screen: "sitting", target });
   const dithers = (target) => sent.filter((m) => m.kind === "dither" && m.target === target);
   return { h, sent, mb, say, focus, dithers, at: (ms) => { t = ms; h.frame(); }, body: () => sittingBody(light) };
@@ -41,12 +41,31 @@ function rig({ motion = true, habits = ["sleep-curled", "shake-dry", "calm"], wa
 const offerOf = (mb) => T.offer(G.st, mb, G.sv);
 const ART = () => { const a = new Uint8ClampedArray(528 * 392 * 4); for (let i = 0; i < a.length; i += 4) { a[i] = 7; a[i + 1] = (i >> 2) & 255; a[i + 2] = 40; a[i + 3] = 255; } return a; };
 
-test("the door stays shut: the screen is not built, Habitat's Portrait ✓ does not open it, and a jump to it shows the frame's notBuilt; a room key drops the sitting's choices", () => {
-  const { h, mb } = rig(); assert.equal(isBuilt("sitting"), false); assert.ok(DROPS_ON_ROOM_KEY.includes("sitting"));
-  onFaceMessage(h, { t: "intent", seq: 1, screen: "habitat", target: "portrait", verb: "confirm" }); assert.equal(UI.screen, "habitat", "the door is shut"); assert.equal(UI.sit, null);
-  assert.equal(enterSitting(h, mb), true); assert.equal(UI.screen, "sitting"); assert.deepEqual(UI.sit, newSit("habitat", "pose"));
-  assert.equal(screenProps("").msg.state, "notBuilt", "behind the shut door the frame draws notBuilt");
+test("the door is open: the screen is built, Habitat's Portrait ✓ opens the pose step and the page takes the sitting's props; a room key drops the sitting's choices", () => {
+  const { h, mb } = rig(); assert.equal(isBuilt("sitting"), true); assert.ok(DROPS_ON_ROOM_KEY.includes("sitting"));
+  onFaceMessage(h, { t: "intent", seq: 1, screen: "habitat", target: "portrait", verb: "confirm" }); assert.equal(UI.screen, "sitting", "the door is open"); assert.deepEqual(UI.sit, { ...newSit("habitat", "pose"), focus: UI.sit.focus });
+  const p = screenProps("").msg; assert.deepEqual([p.screen, p.state, p.focus.cur], ["sitting", "pose", "card.0"]); assert.equal(p.frame.line.back, "Dot");
   onFaceMessage(h, { t: "intent", seq: 1, screen: "sitting", target: "card.0", verb: "room:home" }); assert.equal(UI.sit, null, "the room key drops the visit"); assert.equal(UI.screen, "home");
+});
+
+test("Habitat's Portrait ✓ on a portrayed mibi opens the portrait only while its picture is held; with none held it stays on Habitat", () => {
+  dropPortraitSources();
+  const { h, mb } = rig({ held: false }); mb.portrait = { state: "delivered", pose: "sleep-curled", place: "wood", crate: "sit1", start: T0, at: T0, digest: "0123456789abcdef0011223344556677" };
+  onFaceMessage(h, { t: "intent", seq: 1, screen: "habitat", target: "portrait", verb: "confirm" }); assert.deepEqual([UI.screen, UI.sit], ["habitat", null], "no picture held: nothing opens");
+  assert.equal(injectPortraitSource(mb.portrait.digest, ART()).ok, true);
+  onFaceMessage(h, { t: "intent", seq: 1, screen: "habitat", target: "portrait", verb: "confirm" }); assert.deepEqual([UI.screen, UI.sit.step, UI.sit.from], ["sitting", "portrait", "habitat"]);
+  dropPortraitSources();
+});
+
+test("a Lift between the place step and confirm keeps both choices: the confirm step reads portraitOut, ✓ neither arms nor begins; the Dock restores ✓ Portray", () => {
+  const { h, mb, say } = rig(); enterSitting(h, mb); const o = offerOf(mb);
+  say("card.0", "confirm"); G.sv.carried = [mb.id]; G.st.dock = { docked: false, at: T0 };   // the Caddy lifted with the mibi aboard
+  say("card.0", "confirm"); assert.deepEqual([UI.sit.step, UI.sit.pose, UI.sit.place], ["confirm", o.poses[0], o.places[0]], "both choices kept");
+  let p = screenProps("").msg; assert.deepEqual([p.frame.line.ok, p.frame.line.subject, p.regions.gilt.picture], [null, HAB.strings.portraitOut, SIT.regions.gilt.slices.rest]);
+  say("room", "confirm"); say("room", "confirm"); assert.deepEqual([UI.sit.step, UI.sit.armed], ["confirm", null], "✓ does nothing"); assert.ok(G.st.sitting, "nothing spent");
+  G.st.dock = { docked: true, at: T0 + 1 };   // docked again
+  p = screenProps("").msg; assert.deepEqual([p.frame.line.ok, p.frame.line.subject], ["Portray Dot", SIT.strings.once]);
+  say("room", "confirm"); assert.equal(UI.sit.armed, "room", "✓ arms again");
 });
 
 test("enterSitting never enters the portrait state while sittingBuild has nothing to show (its picture not held); with the opening held it opens on the portrait, ✓ does nothing, ← goes to Habitat with the ring on Portrait", () => {

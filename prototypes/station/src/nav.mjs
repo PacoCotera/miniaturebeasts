@@ -22,7 +22,7 @@ export const upFrom = (nav, place) => parentOf(nav, place);
 
 // --- the doors -------------------------------------------------------------------------------------------------------------------
 // The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition (a developer jump and the journey's not-built steps reach it; no target in play does).
-export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium", "habitat", "library", "bench"];
+export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium", "habitat", "library", "bench", "sitting"];
 export const isBuilt = (screen) => BUILT.includes(screen);
 // A door is open when the screen it leads to is built: cross and sitting open when listed in BUILT. A shut door is shut in place (no ✓ cap, its screen's shut line).
 const DOOR_SCREEN = { cross: "cross", sitting: "sitting" };

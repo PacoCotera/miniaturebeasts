@@ -10,7 +10,7 @@ import { frameFor } from "../state.mjs";
 import { stampSizing, genomeDigest } from "../genome.mjs";
 import { kPct } from "../stamplook.mjs";
 import { poseFor } from "../layered-stand.mjs";
-import { offer } from "../sitting.mjs";
+import { offer, beginBlock } from "../sitting.mjs";
 import { portraitOpening } from "../portrait-source.mjs";
 import { mibiReq, figureOf } from "./home-props.mjs";
 import { fill } from "./words.mjs";
@@ -46,12 +46,15 @@ export function sittingBuild(m, spec, habitat) {
   const targets = items.map((_, i) => ({ id: "card." + i, group: "card", enabled: true }));
   const cur = items.length ? (targets.some((t) => t.id === ui.focus) ? ui.focus : "card." + Math.max(0, before)) : "room";
   const focused = items.length ? items[+cur.slice(5)] : null;
-  const armed = state === "confirm" && ui.armed === "room" ? "room" : null;
+  // a Lift mid-ceremony (the mibi carried while the Companion is away): the choices are kept, the confirm step reads habitat.json strings.portraitOut and never lights, ✓ does nothing, until the Dock
+  const out = state === "confirm" && !!chosenPose && !!chosenPlace && beginBlock(st, mb, chosenPose, chosenPlace, m.sv) === habitat.strings.portraitOut;
+  const armed = state === "confirm" && !out && ui.armed === "room" ? "room" : null;
 
   const regions = {};
   regions.stage = { room: [slot("room-vivarium-stage-habitat", R.stage.rect.slice(2), "the up-close stage master")] };
   // the glass: Habitat's own in the hour's light on the pose step; the focused or chosen place's backdrop in its day light after
   regions.glass = { picture: state === "pose" ? slot(`${habitat.light.pictures[m.light]}-${habitat.light.size.join("x")}`, habitat.light.size, "the near Vivarium master (the light)") : backdrop(state === "place" ? focused : chosenPlace) };
+  if (state === "place") for (const g of places) if (g !== focused) backdrop(g);   // regions.glass.load: every place card's backdrop on the place step (at most five), so a ring move never waits on a load; the host drops them with the screen
   // the resident: the focused card's habit (pose) or the chosen pose (place, confirm, begin) at the Habitat factor; the hour's light on the pose step, ungraded after; a slot in state portrait
   const habit = state === "pose" ? focused : chosenPose;
   if (portrayed) regions.resident = { id: sid, name: mb.name, stage, picture: "", figure: null, pose: chosenPose };
@@ -85,6 +88,7 @@ export function sittingBuild(m, spec, habitat) {
   const placeWord = (g) => "the " + (S.PLACE_WORD[g] || g);
   const line = state === "pose" ? { ok: Sg.thisPose, subject: focused ? habitat.strings.watchHabits[focused] ?? focused : "", back: mb.name, need: null }
     : state === "place" ? { ok: Sg.thisPlace, subject: focused ? placeWord(focused) : "", back: Sg.steps.pose, need: null }
+    : state === "confirm" && out ? { ok: null, subject: habitat.strings.portraitOut, back: Sg.steps.place, need: null }
     : state === "confirm" ? { ok: fill(armed ? Sg.portrayAgain : Sg.portray, named), subject: Sg.once, back: Sg.steps.place, need: null }
     : state === "begin" ? { ok: null, subject: "", back: null, need: null }
     : { ok: null, subject: Sg.portraitContext ?? "", back: mb.name, need: null };

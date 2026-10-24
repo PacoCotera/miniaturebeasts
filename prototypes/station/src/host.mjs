@@ -133,7 +133,7 @@ export function vivariumBody(light = lightNow()) {
 // The mibi chosen on the whole (or the hatch's, or the first at home), its card, the modules and the strip; the ring is the face's (habitat.json focus.graph) and the host keeps what the face says in UI.hab.f. While the namer is open its props ride on
 // habitat's (an overlay) and its bottom line is the frame's. Returns null with no mibi housed: the whole shows its empty state.
 export function habitatBody(light = lightNow()) {
-  const body = habitatBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.hab.f, habId: UI.hab.id, meetId: UI.meet, ...living() }, SPECS.habitat, SPECS.frame, SPECS.home);
+  const body = habitatBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.hab.f, habId: UI.hab.id, meetId: UI.meet, ...living() }, SPECS.habitat, SPECS.frame, SPECS.home, SPECS.sitting);
   if (!body) return null;
   UI.hab.f = body.props.focus.cur; UI.hab.id = body.shown.id; const rs = body.props.regions.resident; UI.hab.asleep = !!(rs && rs.moving && rs.rest === "asleep");   // a sleeper with a moving set: its Greet is the asleep moment (habitat.json events.moment.asleep)
   const n = UI.hab.namer, who = n && mibiById(n.id), pn = UI.panel;

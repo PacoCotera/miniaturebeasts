@@ -172,12 +172,14 @@ static void build_story(void) {
 static void build_code(void) {
   const char *code = v_pstr("regions.card.code"); v_region("code", LAYER_TYPE); v_line_at("code", code, v_sk(S, "regions.code.rect", 0), v_si(S, "regions.code.lineTop", 162), V_ANCHOR_LINE, v_si(S, "regions.code.px", 16), v_scol(S, "colours.card.code"), V_ALIGN_LEFT);
 }
-/* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows); no stamp: no label */
+/* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows); no stamp: no label;
+   a portrayed mibi's label carries the gilt corner 1:1 at regions.stamp.portrayed.at (kit_stamp's corner) */
 static void build_stamp(void) {
   const char *a = v_pstr("regions.card.stamp.asset"); int size = v_pint("regions.card.stamp.size", 0), N = v_pint("regions.card.stamp.N", 0), cell = v_pint("regions.card.stamp.cell", 0);
   int rows = N + 2, shown = rows; anim_state_t t;
   if (v_pbool("motion", 1)) for (int i = 0, n = v_plen("regions.plates.items"); i < n; i++) if (anim_get(ANIM_READ, v_fmt("plate.%d", i), &t) && t.ms > 0) { shown = rows * t.elapsed / t.ms; break; }
-  kit_stamp_t o = { "stamp", "stamp", "stamp", 0, NULL, NULL, NULL, { 0, 0 } };
+  char corner[96]; snprintf(corner, sizeof corner, "%s", v_pstr("regions.card.stamp.corner"));   /* the portrayed corner (regions.stamp.portrayed), "" when not portrayed */
+  kit_stamp_t o = { "stamp", "stamp", "stamp", 0, NULL, NULL, corner, { v_sk(S, "regions.stamp.portrayed.at", 0), v_sk(S, "regions.stamp.portrayed.at", 1) } };
   kit_stamp(S, "regions.stamp.rect", v_pstr("regions.card.stamp.plate"), a, size, shown * cell, &o);
 }
 
