@@ -598,7 +598,7 @@ int home_test_nap(int i) { return i >= 0 && i < g_nnap ? g_nap[i].cell : -1; }
    and the one line on its strip. The same living-window code as the Vivarium's whole, on the frame spec's rectangles. ---- */
 void idle_words(void) {
   g_idle = 1; library_reset(); ent_load("");   /* Idle has no Library module: Home's clock starts again when Home shows */
-  word_livingWindow("frame", "vivarium", NULL, "idle.regions.vivarium", "idle.colours", v_pstr("regions.vivarium.picture"), 0, 0);
+  word_livingWindow("frame", "vivarium", NULL, "idle.regions.vivarium", "idle.colours", v_pstr("regions.vivarium.picture"), 0, 0, NULL, 0);
   glass_group("");
   g_idle = 0;
 }
@@ -644,7 +644,7 @@ void vivarium_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   ent_load(cur);
   kit_stage("vivarium", "regions.stage.rect", v_scol("vivarium", "colours.stageGround"), "stage", "stage.ground", NULL, NULL);
-  word_livingWindow("vivarium", "window", NULL, "regions.window", "colours.window", v_pstr("regions.window.picture"), 0, spec_int("vivarium", "regions.window.painting.rows.0", 0));   /* rows 120 to 560 of Idle's painting of the light, 1:1, at the window */
+  word_livingWindow("vivarium", "window", NULL, "regions.window", "colours.window", v_pstr("regions.window.picture"), 0, spec_int("vivarium", "regions.window.painting.rows.0", 0), NULL, 0);   /* rows 120 to 560 of Idle's painting of the light, 1:1, at the window */
   glass_group(cur);   /* the bed in the empty state too (no resident, no sleeper): the nest, and its mark while away */
   for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) ent_tag(&g_e[i], "regions.window");
   { int box[4]; build_bayStrip("vivarium", cur, box);

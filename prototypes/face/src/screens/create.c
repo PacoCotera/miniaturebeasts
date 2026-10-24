@@ -125,7 +125,7 @@ static void build_traitLine(void) {
 static void build_stamp(void) {
   const char *a = v_pstr("regions.stamp.asset"); int size = v_pint("regions.stamp.size", 0), N = v_pint("regions.stamp.N", 0), cell = v_pint("regions.stamp.cell", 0), rows = N + 2, shown = rows;
   if (strcmp(v_pstr("state"), "grow") == 0) { int t = grow_time(), ms = v_si(C, "events.grow.steps.0.ms", 300); if (has_roll() && t >= 0 && t < ms) shown = rows * t / ms; }   /* nothing read (no roll): the stamp is a cut, the whole of it from 0 */
-  kit_stamp_t o = { "stamp.plate", "stamp.plate", "stampImage", 0, C, "regions" };   /* the case is drawn in every state (fix 5 Create C1); the stamp has its own region (as Pods'), so the case's rectangle is not folded into it */
+  kit_stamp_t o = { "stamp.plate", "stamp.plate", "stampImage", 0, C, "regions", NULL, { 0, 0 } };   /* the case is drawn in every state (fix 5 Create C1); the stamp has its own region (as Pods'), so the case's rectangle is not folded into it */
   kit_stamp(C, "regions.stamp.rect", v_pstr("regions.stamp.plate"), a, size, shown * cell, &o);
 }
 static void build_code(void) {

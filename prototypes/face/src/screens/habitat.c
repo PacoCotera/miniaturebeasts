@@ -134,13 +134,7 @@ static void build_resident(const char *cur) {
   const char *pic = v_pstr("regions.resident.picture"), *outPic = v_pstr("regions.resident.out"); int waiting = v_pbool("regions.resident.waiting", 0), lift = (strcmp(cur, "resident") == 0 ? v_si(S, "regions.resident.lift", 4) : 0);
   char from[96] = ""; int level = 16; anim_state_t t;
   if (v_pbool("motion", 1) && anim_get(ANIM_DITHER, "resident", &t) && t.from_id[0] && t.ms > 0 && wire_has_asset(t.from_id) && has(pic)) { snprintf(from, sizeof from, "%s", t.from_id); level = 16 * t.elapsed / t.ms; if (level > 16) level = 16; }   /* the swap: the old mibi cross-dithers to the new in 16 levels */
-  int y = r[1] - lift - hop_lift(), dithering = from[0] != 0;
-  v_region("resident", LAYER_ART);
-  if (has(pic) && !dithering) { v_name("resident"); v_sprite("resident.pic", pic, r[0], y, r[2], r[3]); } else if (has(pic)) v_sprite_hidden("resident.pic", pic, r[0], y); else if (has(outPic)) v_sprite_hidden("resident.pic", outPic, r[0], y);
-  v_region("resident", LAYER_ART);
-  if (dithering) v_dither("resident.dither", from, pic, level, r[0], y, r[2], r[3]);
-  if (has(outPic)) { int o[4]; v_srect(S, "regions.resident.out.rect", o); v_name("resident"); v_sprite("resident.out", outPic, o[0], o[1], o[2], o[3]); }
-  else if (has(pic)) v_sprite_hidden("resident.out", pic, r[0], r[1]);
+  kit_resident(S, "regions.resident.rect", "regions.resident.out.rect", "resident", pic, outPic, lift + hop_lift(), from, level);
   v_name("resident.lamp"); build_waitingLamp("resident.lamp", lp[0], lp[1] - lift, waiting && !has(outPic));   /* rides the focus lift */
 }
 
@@ -183,7 +177,7 @@ static void build_stamp(void) {
   const char *a = v_pstr("regions.card.stamp.asset"); int size = v_pint("regions.card.stamp.size", 0), N = v_pint("regions.card.stamp.N", 0), cell = v_pint("regions.card.stamp.cell", 0);
   int rows = N + 2, shown = rows; anim_state_t t;
   if (v_pbool("motion", 1)) for (int i = 0, n = v_plen("regions.plates.items"); i < n; i++) if (anim_get(ANIM_READ, v_fmt("plate.%d", i), &t) && t.ms > 0) { shown = rows * t.elapsed / t.ms; break; }
-  kit_stamp_t o = { "stamp", "stamp", "stamp", 0, NULL, NULL };
+  kit_stamp_t o = { "stamp", "stamp", "stamp", 0, NULL, NULL, NULL, { 0, 0 } };
   kit_stamp(S, "regions.stamp.rect", v_pstr("regions.card.stamp.plate"), a, size, shown * cell, &o);
 }
 
@@ -297,7 +291,7 @@ static void build_ring(const char *cur) {
 void habitat_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   build_stage();
-  word_livingWindow(S, "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"), 0, 0);
+  word_livingWindow(S, "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"), 0, 0, NULL, 0);
   build_moving_shadow();
   build_ring_under(cur);
   build_resident(cur);
