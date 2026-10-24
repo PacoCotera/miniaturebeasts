@@ -57,7 +57,7 @@ The lead's go raised job 2's hard stop to 34 MXN (B3c only). The prompt is B3b's
 
 | Request | Time | MXN | detail | sat | spread | key | zone | feet band | tag std / p99 | Result | Job 2 / 34 | Both / 77 | Day / 250 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| B3c rock-near-c | 23:02 | 4.38 | 11.3 | 118.6 | 43.1 | 1.55 | 0.298 | 13.0 | 12.3 / 156 | **pass**, gates 10–13 | 32.98 | 68.00 | 68.00 |
+| B3c rock-near-c | 23:02 | 4.38 | 11.3 | 118.6 | 43.1 | 1.55 | 0.298 | 13.0 | 12.3 / 156 | **pass**, gates 10–13 | 32.98 | 67.99 | 67.99 |
 
 The stones are lit on their top and left faces. Notes for you at 1×:
 - A soft strip still runs below about y 345, under the tag rows, despite the prompt line. The feet stand on sharp moss and grit, and the feet band is 13.0.
