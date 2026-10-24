@@ -138,7 +138,7 @@
  },
  "home": {
   "plate": {"on": "Habitat, after events.begin", "lines": ["strings.beganPlate"], "px": 16, "pad": 16, "line": 20, "height": 36, "bottom": 550, "example": {"lines": 1, "widths": [193], "rect": [399, 514, 226, 36], "note": "Fig: the line plus 16 each side, rounded up to an even width to centre on x 512; it covers the strip, not the mibi or the Portrait module"}},
-  "berth": {"rect": [912, 408, 32, 24], "after": "the next held frame when begin brought one forward from the queue, whatever its source (sitting.mjs beginSitting: .welcome or .owed not null; the same as st.sitting set after begin); else nothing. No count, no word"}
+  "berth": {"rect": [912, 408, 32, 24], "after": "the next held frame when begin brought one forward from the queue, whatever its source (the state after begin: st.sitting held; sitting.mjs beginSitting returns next: true); else nothing. No count, no word"}
  },
  "buildChanges": [
   "the build has no sitting screen: sitting.mjs holds its rules headless (offer, beginBlock, beginSitting); habitat.mjs offers no Portray",
