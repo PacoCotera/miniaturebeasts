@@ -22,3 +22,17 @@ Targets: `plates`, `switch`, `slot`; the host sets `ui.bench.f` from the face's 
 
 The Dock key on the bench is a cut: lifted, a ring on the plates moves to the switch and the arm clears; docked, the ring stays and the plates show as the dock left them.
 
+
+## Sitting (`sitting.mjs`)
+
+Targets: `card.<i>` on the pose and place steps, `room` on the confirm step and the portrait; the mibi is Habitat's shown one (`ui.hab.id`) and the visit is `ui.sit` (`{ step, pose, place, focus, armed, from, prev }`), opened by `host.mjs` `enterSitting` (never on the portrait while its picture is not held). The host sets `ui.sit.focus` from the face's `focus` message (`focus(h, target)`). A room key and leaving the screen drop `ui.sit`; nothing is spent before the second ✓ of the confirm step. The door stays shut while `nav.mjs` `BUILT` does not list the screen.
+
+| Key | Does | Plays (numbers from `sitting.json` `events`) |
+| --- | --- | --- |
+| ✓ on a pose card | the pose is chosen, the place step opens | `dither` on `glass` and on `resident` (`events.backdrop`, 200 ms; with `events.backdrop.resident` "cut" the resident's picture waits for the end) |
+| ✓ on a place card | the place is chosen, the confirm step opens | none (cuts) |
+| ✓ on the confirm step | the first arms (the lit gilt); the second begins: `beginSitting` at the screen change, Habitat with the plate (`strings.beganPlate`) and the ring on Portrait | `dither` on `gilt` from the lit gilt (`events.begin.steps[0]`), held `events.begin.hold`; then the screen change at `steps[1].at` |
+| ← | a step back keeping the choice; from the pose step and the portrait, Habitat with the ring on Portrait | the backdrop's dither back on leaving the place step |
+| the pad on the pose step | (the face's) a change to or from the curl | `dither` on `resident` (`events.pose`, 16 levels over 180 ms), cut by the next press |
+
+Reduced motion: every change is a cut and begin lands on Habitat on the frame of the key.

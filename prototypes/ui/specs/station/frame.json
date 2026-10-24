@@ -155,7 +155,7 @@
    "vivarium": {"parent": "home", "back": "Home", "spec": "vivarium.json"},
    "habitat": {"parent": "vivarium", "back": "Vivarium"},
    "cross": {"parent": "habitat", "back": "{name}"},
-   "sitting": {"parent": "habitat", "back": "{name}", "steps": "inside the sitting ← goes back a step (place to pose, look and confirm to place); from the pose step it goes to the Vivarium (sitting.json keys.back)"}
+   "sitting": {"parent": "habitat", "back": "{name}", "steps": "inside the sitting ← goes back a step (place to pose, look and confirm to place); from the pose step, and from the portrait, it goes to Habitat with the ring on Portrait (sitting.json keys.back)"}
   },
   "podBack": "{pod} is the pod's label (\"Loika\"); a name wider than the way back's 68 px for its word reads \"Back\"",
   "nameBack": "{name} is the shown mibi's name; a name wider than the way back's 68 px for its word reads \"Back\"",

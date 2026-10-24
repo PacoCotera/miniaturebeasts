@@ -153,6 +153,6 @@ describe("the request takes a pose", () => {
 });
 
 test("the placeholder register lists the poses and the owed habit keys", () => {
-  const sl = PLACEHOLDERS.find((p) => p.id === "stand-layers"); assert.match(sl.what, /96×96/); assert.match(sl.what, /anchor and curl/);
-  const owed = PLACEHOLDERS.find((p) => p.id === "habit-key-owed"); assert.ok(owed && owed.until);
+  const sl = PLACEHOLDERS.find((p) => p.id === "stand-layers"); assert.match(sl.what, /96×96/); assert.match(sl.what, /anchor, curl, shake and calm/);
+  const owed = PLACEHOLDERS.find((p) => p.id === "habit-key-owed"); assert.ok(owed && owed.until); assert.doesNotMatch(owed.what, /shake-dry/, "S01 shake-dry has its signed pose");
 });

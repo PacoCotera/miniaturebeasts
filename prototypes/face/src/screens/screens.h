@@ -64,6 +64,10 @@ int library_focus(focus_target_t *out, int cap);
 void library_key(int code);
 void library_hidden(void);
 int library_l1_tick(uint32_t now);
+/* The sitting (screens/sitting.c): its words by the state the props name, the cards as they drew them (the pose and place steps), its keys */
+void sitting_words(void);
+int sitting_focus(focus_target_t *out, int cap);
+void sitting_key(int code);
 /* The Probe bench (screens/bench.c): its words, the targets as they drew them, its keys */
 void bench_words(void);
 int bench_focus(focus_target_t *out, int cap);

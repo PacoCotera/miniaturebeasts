@@ -1,0 +1,135 @@
+// The sitting's host and keys (host.mjs enterSitting, sittingBody; intents/sitting.mjs) on the real host over the real rules, with its door still shut (nav.mjs BUILT has no "sitting"): the way in, the steps (✓ a step forward,
+// ← a step back keeping the choice), the armed confirm and begin (events.begin: the lit gilt out, then beginSitting and Habitat with the plate at 300 ms, input held 480 ms), the window's dithers (events.backdrop: the glass,
+// and the resident's light change in both forms, "dither" and "cut"; the pose step's stand/curl change), reduced motion (cuts), the room key and leaving (the choices dropped), and sitting.json focus.vectors that leave the screen.
+//   node --test prototypes/station/tests/sitting-host.test.mjs
+import { test, before } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync, readdirSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { setFrames } from "../src/genome.mjs";
+import * as S from "../src/state.mjs";
+import * as T from "../src/sitting.mjs";
+import { G, UI, SPECS, FX } from "../src/game.mjs";
+import { dispatch } from "../src/intents/index.mjs";
+import { createHost, onFaceMessage, screenProps, sittingBody, enterSitting } from "../src/host.mjs";
+import { newSit } from "../src/intents/sitting.mjs";
+import { isBuilt, DROPS_ON_ROOM_KEY } from "../src/nav.mjs";
+import { loadStandLayersFs, loadStandLooksFs } from "../tools/stand-layers-fs.mjs";
+import { injectPortraitSource, dropPortraitSources } from "../src/portrait-source.mjs";
+
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
+const J = (k) => JSON.parse(readFileSync(path.join(specs, k + ".json"), "utf8"));
+for (const k of ["frame", "pods", "home", "cargo", "create", "vivarium", "habitat", "namer", "panel", "sitting"]) SPECS[k] = J(k);
+const SIT = SPECS.sitting, HAB = SPECS.habitat, T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 };
+before(() => { loadStandLooksFs(); loadStandLayersFs(); });
+
+// Dot (S01 adult) up close at night with a sitting held, its habits seen and its places been; the host on a clock the test moves
+function rig({ motion = true, habits = ["sleep-curled", "shake-dry", "calm"], walked = ["wood", "pond"], held = true, light = "night" } = {}) {
+  G.settings = settings; G.st = S.freshSt("w1", 3, T0); S.normalize(G.st); G.st.firstMibi = false;
+  const mb = S.seedAdults(G.st, "S01", 5, 1, settings).mibis[0]; mb.name = "Dot"; for (const x of habits) T.recordHabit(G.st, mb, x); for (const g of walked) T.recordWalk(G.st, mb, g);
+  if (held) G.st.sitting = { source: "dev", key: null, at: T0 };
+  G.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], st: G.st };
+  UI.screen = "habitat"; UI.idle = false; UI.hab.id = mb.id; UI.hab.f = "portrait"; UI.sit = null; UI.panel = null; FX.msg = "";
+  const sent = []; let t = 0; const h = createHost({ send: (m) => sent.push(m), nowMs: () => t, light: () => light, motion: () => motion }); h.save = () => {};
+  const say = (target, verb) => { if (!h.holding()) dispatch(h, { screen: "sitting", target, verb }); },   // behind the shut door the host takes ← as notBuilt's (the parent): the intents are dispatched as the open door will
+    focus = (target) => onFaceMessage(h, { t: "focus", seq: 1, screen: "sitting", target });
+  const dithers = (target) => sent.filter((m) => m.kind === "dither" && m.target === target);
+  return { h, sent, mb, say, focus, dithers, at: (ms) => { t = ms; h.frame(); }, body: () => sittingBody(light) };
+}
+const offerOf = (mb) => T.offer(G.st, mb, G.sv);
+const ART = () => { const a = new Uint8ClampedArray(528 * 392 * 4); for (let i = 0; i < a.length; i += 4) { a[i] = 7; a[i + 1] = (i >> 2) & 255; a[i + 2] = 40; a[i + 3] = 255; } return a; };
+
+test("the door stays shut: the screen is not built, Habitat's Portrait ✓ does not open it, and a jump to it shows the frame's notBuilt; a room key drops the sitting's choices", () => {
+  const { h, mb } = rig(); assert.equal(isBuilt("sitting"), false); assert.ok(DROPS_ON_ROOM_KEY.includes("sitting"));
+  onFaceMessage(h, { t: "intent", seq: 1, screen: "habitat", target: "portrait", verb: "confirm" }); assert.equal(UI.screen, "habitat", "the door is shut"); assert.equal(UI.sit, null);
+  assert.equal(enterSitting(h, mb), true); assert.equal(UI.screen, "sitting"); assert.deepEqual(UI.sit, newSit("habitat", "pose"));
+  assert.equal(screenProps("").msg.state, "notBuilt", "behind the shut door the frame draws notBuilt");
+  onFaceMessage(h, { t: "intent", seq: 1, screen: "sitting", target: "card.0", verb: "room:home" }); assert.equal(UI.sit, null, "the room key drops the visit"); assert.equal(UI.screen, "home");
+});
+
+test("enterSitting never enters the portrait state while sittingBuild has nothing to show (its picture not held); with the opening held it opens on the portrait, ✓ does nothing, ← goes to Habitat with the ring on Portrait", () => {
+  dropPortraitSources();
+  const { h, mb, say } = rig({ held: false }); mb.portrait = { state: "delivered", pose: "sleep-curled", place: "wood", crate: "sit1", start: T0, at: T0, digest: "0123456789abcdef0011223344556677" };
+  assert.equal(enterSitting(h, mb, { state: "portrait" }), false); assert.equal(UI.screen, "habitat"); assert.equal(UI.sit, null, "nothing changed");
+  assert.equal(injectPortraitSource(mb.portrait.digest, ART()).ok, true);
+  assert.equal(enterSitting(h, mb, { state: "portrait" }), true); assert.equal(UI.sit.step, "portrait"); assert.equal(sittingBody("night").props.state, "portrait");
+  say("room", "confirm"); assert.equal(UI.screen, "sitting"); assert.equal(UI.sit.step, "portrait", "view only: ✓ does nothing");
+  say("room", "back"); assert.deepEqual([UI.screen, UI.hab.f, UI.sit], ["habitat", "portrait", null]);
+  dropPortraitSources();
+});
+
+test("the steps: ✓ on a card goes a step forward, ← a step back keeping the choice (the ring on it); confirm is entered only with both choices made; from the pose step ← goes to Habitat with the ring on Portrait, the choices dropped", () => {
+  const { h, mb, say, body } = rig(); enterSitting(h, mb); const o = offerOf(mb);
+  assert.equal(body().props.focus.cur, "card.0", "the visit opens on card.0");
+  say("card.1", "confirm"); assert.deepEqual([UI.sit.step, UI.sit.pose], ["place", o.poses[1]]); assert.equal(body().props.focus.cur, "card.0");
+  say("card.1", "confirm"); assert.deepEqual([UI.sit.step, UI.sit.place], ["confirm", o.places[1]]); assert.equal(body().props.focus.cur, "room");
+  say("room", "back"); assert.equal(UI.sit.step, "place"); assert.equal(body().props.focus.cur, "card.1", "back on the place step, the ring on the place chosen");
+  say("card.1", "back"); assert.equal(UI.sit.step, "pose"); assert.equal(body().props.focus.cur, "card.1", "back on the pose step, the ring on the pose chosen"); assert.deepEqual([UI.sit.pose, UI.sit.place], [o.poses[1], o.places[1]], "every choice kept inside the screen");
+  say("card.1", "back"); assert.deepEqual([UI.screen, UI.hab.f, UI.sit], ["habitat", "portrait", null]); assert.ok(G.st.sitting, "nothing spent");
+  // confirm only with both choices: a place step with no pose chosen takes no ✓; a confirm step with a choice missing does not arm
+  enterSitting(h, mb); UI.sit.step = "place"; say("card.0", "confirm"); assert.equal(UI.sit.step, "place", "no pose chosen: the place step stays");
+  UI.sit.step = "confirm"; UI.sit.pose = o.poses[0]; UI.sit.place = null; say("room", "confirm"); assert.equal(UI.sit.armed, null, "no place chosen: nothing arms");
+  say("card.9", "confirm"); assert.equal(UI.sit.step, "confirm");
+});
+
+test("the armed confirm and begin: the first ✓ arms (the lit gilt), the second plays events.begin (the lit gilt dithers out, input held 480 ms) and at 300 ms spends the sitting (beginSitting) and goes to Habitat with the plate and the ring on Portrait", () => {
+  const { h, mb, say, sent, dithers, at, body } = rig(); enterSitting(h, mb); const o = offerOf(mb);
+  say("card.0", "confirm"); say("card.0", "confirm"); assert.equal(UI.sit.step, "confirm"); assert.equal(body().props.regions.gilt.picture, SIT.regions.gilt.slices.rest);
+  say("room", "confirm"); assert.equal(UI.sit.armed, "room"); assert.equal(body().props.regions.gilt.picture, SIT.regions.gilt.slices.armed, "armed: the gilt lights");
+  const n = sent.length; say("room", "confirm"); const g = dithers("gilt").at(-1);
+  assert.deepEqual([g.from, g.ms, g.hold], ["sitting-gilt-lit-560x424", 300, 480]); assert.equal(UI.sit.step, "begin"); assert.equal(h.holding(), true); assert.ok(G.st.sitting, "nothing spent before the step at 300");
+  at(299); assert.equal(UI.screen, "sitting"); assert.ok(!mb.portrait);
+  at(300); assert.equal(G.st.sitting, null, "the sitting is spent"); assert.deepEqual([mb.portrait.state, mb.portrait.pose, mb.portrait.place], ["painting", o.poses[0], o.places[0]]);
+  assert.deepEqual([UI.screen, UI.hab.f, UI.sit], ["habitat", "portrait", null]); assert.equal(FX.msg, "Dot's portrait is on its way", "the plate: beganPlate alone");
+  assert.ok(sent.slice(n).some((m) => m.kind === "dither" && m.target === "stage" && m.ms === 180), "the screen change's dither"); assert.equal(h.holding(), true); at(480); assert.equal(h.holding(), false, "input held to 480 ms");
+});
+
+test("reduced motion: begin lands on Habitat on the frame of the second ✓ with its plate, no gilt dither, nothing held; the window's changes are cuts", () => {
+  const { h, mb, say, dithers } = rig({ motion: false }); enterSitting(h, mb); const s0 = dithers("stage").length;
+  say("card.0", "confirm"); assert.deepEqual([dithers("glass").length, dithers("resident").length], [0, 0], "the backdrop and the resident cut"); say("card.0", "confirm"); say("room", "confirm"); say("room", "confirm");
+  assert.equal(UI.screen, "habitat"); assert.equal(G.st.sitting, null); assert.equal(dithers("gilt").length, 0); assert.equal(dithers("stage").length, s0, "the screen change is a cut"); assert.equal(h.holding(), false); assert.equal(FX.msg, "Dot's portrait is on its way");
+});
+
+test("the place step's window: entering it dithers the glass from Habitat's vivarium-near-{light} to the focused place's backdrop and the resident from the hour's light to ungraded on one 200 ms clock; the ring moving among the places dithers the glass alone; going back dithers both back; every from is the glass's own size", () => {
+  const { h, mb, say, focus, dithers, at, body } = rig(); enterSitting(h, mb); const o = offerOf(mb), size = HAB.light.size.join("x");
+  const r0 = body().props.regions.resident.picture; assert.match(r0, /:night$/, "the pose step: the hour's light");
+  say("card.0", "confirm"); const g = dithers("glass").at(-1), r = dithers("resident").at(-1), B = SIT.events.backdrop;
+  assert.deepEqual([g.from, g.ms, g.hold], [`vivarium-near-night-${size}`, B.ms, B.hold]); assert.deepEqual([r.from, r.ms], [r0, B.ms], "the resident rides the backdrop's clock (events.backdrop.resident dither)");
+  assert.deepEqual(UI.sit.prev, { glass: g.from, resident: r0, cut: false }, "the froms stay on the face for the event");
+  assert.equal(body().props.regions.glass.picture, `sitting-backdrop-${o.places[0]}-${size}`); assert.doesNotMatch(body().props.regions.resident.picture, /:night$/, "ungraded on the place step");
+  at(200); assert.deepEqual(UI.sit.prev, { glass: null, resident: null, cut: false });
+  const nr = dithers("resident").length; focus("card.1"); assert.equal(dithers("glass").at(-1).from, `sitting-backdrop-${o.places[0]}-${size}`); assert.equal(dithers("resident").length, nr, "moving among the places: the backdrop alone");
+  at(400); say("card.1", "back"); assert.equal(dithers("glass").at(-1).from, `sitting-backdrop-${o.places[1]}-${size}`); assert.doesNotMatch(dithers("resident").at(-1).from, /:night$/); assert.match(body().props.regions.resident.picture, /:night$/, "back on the pose step: the hour's light");
+  for (const e of dithers("glass")) assert.ok(e.from.endsWith("-" + size), "only pictures of habitat.json light.size: " + e.from);
+});
+
+test("events.backdrop.resident \"cut\": no resident dither; the window keeps the hour's picture until the backdrop's 200 ms end, then cuts to ungraded", () => {
+  const keep = SPECS.sitting; SPECS.sitting = { ...keep, events: { ...keep.events, backdrop: { ...keep.events.backdrop, resident: "cut" } } };
+  try {
+    const { h, mb, say, dithers, at, body } = rig(); enterSitting(h, mb); const r0 = body().props.regions.resident.picture;
+    say("card.0", "confirm"); assert.equal(dithers("resident").length, 0); assert.equal(dithers("glass").length, 1, "the backdrop still dithers");
+    assert.equal(body().props.regions.resident.picture, r0, "until the end: the picture it had"); at(199); assert.equal(body().props.regions.resident.picture, r0);
+    at(200); assert.notEqual(body().props.regions.resident.picture, r0, "cut at 200 to ungraded"); assert.doesNotMatch(body().props.regions.resident.picture, /:night$/);
+  } finally { SPECS.sitting = keep; }
+});
+
+test("the pose step: a focus move to or from the curl cross-dithers the resident 16 levels over 180 ms, cut by the next press; a stand-to-stand move is a cut", () => {
+  const { h, mb, focus, dithers, body } = rig(); enterSitting(h, mb); const o = offerOf(mb), at = (i) => "card." + i, curl = o.poses.indexOf("sleep-curled"), stands = o.poses.map((_, i) => i).filter((i) => i !== curl);
+  focus(at(stands[0])); const a = body().props.regions.resident.picture; focus(at(curl)); const e = dithers("resident").at(-1);
+  const P = SIT.events.pose; assert.deepEqual([e.kind, e.target, e.from, e.ms, e.levels, e.cut, e.hold], [P.kind, P.target, a, P.ms, P.levels, true, P.hold]); assert.deepEqual([P.ms, P.levels], [180, 16], "sitting.json events.pose: Habitat's 16 levels over 180 ms");
+  const n = dithers("resident").length; focus(at(stands[0])); assert.equal(dithers("resident").length, n + 1, "from the curl: a dither too");
+  focus(at(stands[1])); assert.equal(dithers("resident").length, n + 1, "stand to stand (shake and calm, or an owed habit's stand): a cut, whatever the picture");
+});
+
+test("sitting.json focus.vectors that leave the screen or arm: ← from the pose step and from the portrait go to Habitat with the ring on Portrait; ✓ on the confirm step arms the room", () => {
+  for (const v of SIT.focus.vectors.filter((x) => x.screen || x.armed)) {
+    dropPortraitSources(); const { h, mb, say } = rig(); const o = offerOf(mb);
+    if (v.state === "portrait") { mb.portrait = { state: "delivered", pose: o.poses[0], place: o.places[0], crate: "sit1", start: T0, at: T0, digest: "00112233445566778899aabbccddeeff" }; assert.equal(injectPortraitSource(mb.portrait.digest, ART()).ok, true); assert.equal(enterSitting(h, mb, { state: "portrait" }), true); }
+    else { enterSitting(h, mb); if (v.state === "confirm") { say("card.0", "confirm"); say("card.0", "confirm"); } }
+    say(v.from, v.key);
+    if (v.screen) assert.deepEqual([UI.screen, UI.hab.f], [v.screen, v.focus], JSON.stringify(v)); else assert.equal(UI.sit.armed, v.armed, JSON.stringify(v));
+  }
+  dropPortraitSources();
+});

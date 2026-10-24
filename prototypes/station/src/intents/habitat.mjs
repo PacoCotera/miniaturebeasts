@@ -53,7 +53,7 @@ export function intent(h, target, verb) {
     const bring = S.projectCarried(h.st, h.sv).includes(m.id), r = bring ? S.carryHome(h.st, h.sv, m) : S.carryAdd(h.st, h.sv, m);
     if (r.ok) h.save(); else if (r.why === "full") h.say(fill(h.specs.habitat.strings.carryRefused, { name: m.name }));
   }
-  else if (target === "portrait") { if (doorOpen("sitting") && !S.isAway(h.st, h.sv, m) && h.st.sitting && !m.portrait) h.goto("sitting"); }   // the sitting: not built yet, a slot of its own
+  else if (target === "portrait") { if (doorOpen("sitting") && !S.isAway(h.st, h.sv, m) && (m.portrait || h.st.sitting) && h.enterSitting) h.enterSitting(m, { state: m.portrait ? "portrait" : "pose", from: "habitat" }); }   // the sitting (its door shut until the screen is listed in nav.mjs BUILT): Portray opens the pose step; portrayed, the portrait, only while its picture is held (host.mjs enterSitting)
   else if (target === "cross") {
     if (!doorOpen("cross") || !S.isAdult(h.st, m, h.settings) || S.isAway(h.st, h.sv, m)) return;
     if (S.crossPartners(h.st, h.sv, m, h.settings).some((p) => !p.away)) openCross(h, m);   // only partners at home can be picked

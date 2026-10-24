@@ -31,7 +31,7 @@ export const doorOpen = (id) => !!DOOR_SCREEN[id] && isBuilt(DOOR_SCREEN[id]);
 // --- the room keys -----------------------------------------------------------------------------------------------------------------
 // Each opens the top of its room from anywhere, even from inside it. `leaving` lists the places whose unpaid choices a room key drops.
 export const ROOM_KEYS = { home: "home", research: "pods.collection", library: "library.all", habitat: "vivarium" };   // each is the room key's screen and state in frame.json navigation.roomKeys
-export const DROPS_ON_ROOM_KEY = ["create", "cross"];
+export const DROPS_ON_ROOM_KEY = ["create", "cross", "sitting"];
 export const roomTop = (key) => ROOM_KEYS[key] || null;
 
 // Home's pad is the face's: focus.graph in home.json (order, nearestIn, ahead), walked by the face's focus port; the vectors are in face/tests (focus.json).

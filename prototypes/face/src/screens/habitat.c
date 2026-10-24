@@ -134,7 +134,7 @@ static void build_resident(const char *cur) {
   const char *pic = v_pstr("regions.resident.picture"), *outPic = v_pstr("regions.resident.out"); int waiting = v_pbool("regions.resident.waiting", 0), lift = (strcmp(cur, "resident") == 0 ? v_si(S, "regions.resident.lift", 4) : 0);
   char from[96] = ""; int level = 16; anim_state_t t;
   if (v_pbool("motion", 1) && anim_get(ANIM_DITHER, "resident", &t) && t.from_id[0] && t.ms > 0 && wire_has_asset(t.from_id) && has(pic)) { snprintf(from, sizeof from, "%s", t.from_id); level = 16 * t.elapsed / t.ms; if (level > 16) level = 16; }   /* the swap: the old mibi cross-dithers to the new in 16 levels */
-  kit_resident(S, "regions.resident.rect", "regions.resident.out.rect", "resident", pic, outPic, lift + hop_lift(), from, level);
+  kit_resident(S, "regions.resident.rect", "regions.resident.out.rect", "resident", pic, outPic, lift + hop_lift(), from, level, NULL, NULL, NULL);
   v_name("resident.lamp"); build_waitingLamp("resident.lamp", lp[0], lp[1] - lift, waiting && !has(outPic));   /* rides the focus lift */
 }
 
