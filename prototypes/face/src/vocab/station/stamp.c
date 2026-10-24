@@ -3,7 +3,7 @@
    size (the stamp's side in px, 0: no stamp); clipH (-1: no clip; 0 or more: the stamp is cut to its top clipH rows, the caller's clock); o: plateId and plateRegion (the plate's node id and log region), imageRegion (the stamp's log region), plateAlone (1: the plate stands when there is no stamp; 0: only with one),
    caseSpec and caseBase (the spec and the path of its regions that hold stampCase.rect and stampCaseFront.rect; NULL caseSpec: no case; the case's pictures are the props' regions.stamp.case.back and .front, as the case has always read them),
    corner (the corner's picture id; NULL or "": none) and cornerAt (its offset x, y from the label's rect). The ids and regions are the caller's, as the screens have always named them.
-   Region and layer: plateRegion and imageRegion, painted; the case sets its own ("stamp"); the corner its own ("stamp.portrayed", painted).
+   Region and layer: plateRegion and imageRegion, painted; the case sets its own ("stamp"); the corner its own region ("stamp.portrayed"), on its picture's layer (spread-gilt-corner-16x16 is ART).
    Node ids, in this order: the case's back (stamp.case); <plateId> (a slot: it keeps its place with no size when the stamp is not shown); stamp.clip (only when clipH is 0 or more and there is a stamp); stamp.stamp; the case's front (stamp.front);
    stamp.corner (the corner 1:1, its own size, at (x + cornerAt[0], y + cornerAt[1]), whether there is a stamp or not; none when corner is NULL or "" or the host has not sent it). The stamp's two nodes stand only when there is a stamp, the case's front stands whether there is or not.
    Placement: the stamp is centred on the plate (x + half of the room left, y + half of the room left, the half rounding up).
@@ -33,5 +33,5 @@ void kit_stamp(const char *spec, const char *rect, const char *plate, const char
     v_sprite("stamp.stamp", asset, x, y, size, size);
   }
   if (o->caseSpec) word_stampCase(o->caseSpec, o->caseBase, 1);
-  { int cs[2]; if (o->corner && *o->corner && v_asset_size(o->corner, cs) == 0) { v_region("stamp.portrayed", LAYER_PAINTED); v_sprite("stamp.corner", o->corner, r[0] + o->cornerAt[0], r[1] + o->cornerAt[1], cs[0], cs[1]); } }
+  { int cs[2]; if (o->corner && *o->corner && v_asset_size(o->corner, cs) == 0) { v_region("stamp.portrayed", LAYER_ART); v_sprite("stamp.corner", o->corner, r[0] + o->cornerAt[0], r[1] + o->cornerAt[1], cs[0], cs[1]); } }
 }

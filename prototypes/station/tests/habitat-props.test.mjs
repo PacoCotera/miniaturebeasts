@@ -12,7 +12,7 @@ import { habitatBuild } from "../src/views/habitat-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("habitat.json"), frameSpec = J("frame.json"), home = J("home.json"), schema = J("habitat.props.json"), namerSchema = J("namer.props.json");
+const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), sittingSpec = J("sitting.json"), spec = J("habitat.json"), frameSpec = J("frame.json"), home = J("home.json"), schema = J("habitat.props.json"), namerSchema = J("namer.props.json");
 const T0 = 1_000_000, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", bays });
 
 export function validate(v, sc, root = schema, at = "$", out = []) {
@@ -37,7 +37,7 @@ const world = (bays = 8) => { const st = S.freshSt("w1", 3, T0); S.normalize(st)
 const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], ...over });
 const dock = (st, d = true) => { st.dock = { docked: d, at: T0 }; };
 const mibis = (w, n) => { S.seedAdults(w.st, "S01", 5, n, w.settings); for (const m of w.st.mibis) m.paint = { state: "landed" }; return w.st.mibis; };
-const build = ({ st, settings }, sv, over = {}) => habitatBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, habId: st.mibis[0]?.id ?? null, meetId: null, armed: false, ...over }, spec, frameSpec, home);
+const build = ({ st, settings }, sv, over = {}) => habitatBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, habId: st.mibis[0]?.id ?? null, meetId: null, armed: false, ...over }, spec, frameSpec, home, sittingSpec);
 
 function scenes() {
   const out = {};
@@ -119,7 +119,7 @@ test("Portrait: none, held, its portrait on the way, portrayed; the context name
   const line = (o) => build(w, sv, { focus: "portrait", ...o }).line, st = (o) => build(w, sv, { focus: "portrait", ...o }).props.regions.portrait.state;
   assert.equal(st(), "none"); assert.equal(line().subject, "no sitting held");
   w.st.sitting = { source: "dev", key: null, at: 0 }; assert.equal(st(), "held"); assert.equal(line().subject, "no pose seen yet"); assert.equal(build(w, sv, { focus: "portrait" }).props.focus.targets.find((t) => t.id === "portrait").enabled, false);
-  m[0].habits = ["calm"]; m[0].walked = ["wood"]; m[0].places = ["wood"]; const l = line(); assert.equal(l.ok, null); assert.equal(l.subject, "portraits are not open yet", "a mibi that has seen a pose and been to a place may sit, but the door is shut until slot 9");
+  m[0].habits = ["calm"]; m[0].walked = ["wood"]; m[0].places = ["wood"]; const l = line(); assert.equal(l.ok, `Portray ${m[0].name}`); assert.equal(l.subject, spec.strings.portrayContext, "a mibi that has seen a pose and been to a place may sit: the door is open"); assert.equal(build(w, sv, { focus: "portrait" }).props.focus.targets.find((t) => t.id === "portrait").enabled, true);
   m[0].portrait = { state: "painting" }; assert.equal(st(), "painting"); assert.equal(line().subject, "its portrait is on its way"); m[0].portrait = { state: "delivered" }; assert.equal(st(), "portrayed"); assert.equal(line().subject, "already portrayed");
 });
 
@@ -184,4 +184,34 @@ test("fix 7: the close view's resident takes the scene's light; the Companion's 
   const reqs = (light) => build(w, sv, { light }).requests.filter((r) => r.kind === "mibi"), day = reqs("day");
   assert.ok(day.every((r) => !("light" in r)));
   for (const light of ["dawn", "dusk", "night"]) { const got = reqs(light), big = got.filter((r) => r.size[0] > 48); assert.equal(got.length, day.length); assert.ok(big.length >= 1 && big.every((r) => r.light === light && r.id.endsWith(":" + light)), light); assert.ok(got.filter((r) => r.size[0] === 48).every((r) => !("light" in r))); }
+});
+
+test("the portrayed corner and ✓ Look at the portrait: the stamp label carries spread-gilt-corner-16x16 once the portrait came (never before, never while painting); ✓ strings.lookPortrait only while its 528×392 opening is held", async () => {
+  const { injectPortraitSource, dropPortraitSources } = await import("../src/portrait-source.mjs");
+  const w = world(); dock(w.st); const m = mibis(w, 2), sv = sv0(), b = () => build(w, sv, { focus: "portrait" }), corner = () => b().props.regions.card.stamp.corner;
+  const P = spec.regions.stamp.portrayed, sitP = sittingSpec.regions.stamp.portrayed; for (const k of ["slice", "rect", "at", "sprite", "rule"]) assert.deepEqual(P[k], sitP[k], "habitat.json regions.stamp.portrayed is sitting.json's: " + k);
+  assert.deepEqual(P.inStates, ["rest", "meet", "out"]); assert.equal(spec.drawOrder[spec.drawOrder.indexOf("stamp") + 1], "stamp.portrayed"); assert.equal(spec.focus.entry.backFromPortrait, "portrait");
+  dropPortraitSources(); assert.equal(corner(), "", "none"); w.st.sitting = { source: "dev", key: null, at: 0 }; assert.equal(corner(), "", "held");
+  m[0].portrait = { state: "painting" }; assert.equal(corner(), "", "painting");
+  m[0].portrait = { state: "delivered" }; assert.equal(corner(), P.slice, "portrayed, its picture not come"); assert.ok(b().requests.some((r) => r.id === P.slice && r.kind === "slot"), "the corner is a slot request");
+  assert.deepEqual([b().line.ok, b().line.subject], [null, spec.strings.portrayed], "no picture held: no ✓");
+  const digest = "0123456789abcdef0011223344556677"; m[0].portrait = { state: "delivered", digest };
+  assert.deepEqual([b().line.ok, b().line.subject], [null, spec.strings.portrayed], "its digest but no opening held: no ✓");
+  const a = new Uint8ClampedArray(528 * 392 * 4); for (let i = 0; i < a.length; i += 4) { a[i] = 7; a[i + 1] = (i >> 2) & 255; a[i + 2] = 40; a[i + 3] = 255; } assert.equal(injectPortraitSource(digest, a).ok, true);
+  assert.deepEqual([b().line.ok, b().line.subject, b().line.back], [sittingSpec.strings.lookPortrait, spec.strings.portrayed, spec.strings.back], "the opening held: ✓ Look at the portrait"); assert.equal(sittingSpec.strings.lookPortrait, "Look at the portrait");
+  assert.equal(b().props.focus.targets.find((t) => t.id === "portrait").enabled, true); assert.deepEqual(validate(b().props, schema), [], "the props schema takes the corner");
+  assert.equal(build(w, sv, { focus: "resident" }).props.regions.card.stamp.corner, P.slice, "the corner whatever the ring is on");
+  dropPortraitSources();
+});
+
+test("✓ Look at the portrait is never a cap that does nothing: portrayed with its opening held but out with the Companion while it is away, or built without sitting.json, the Portrait target is disabled and the line is { ok null, strings.portrayed }", async () => {
+  const { injectPortraitSource, dropPortraitSources } = await import("../src/portrait-source.mjs");
+  const w = world(); dock(w.st); const m = mibis(w, 2), digest = "00112233445566778899aabbccddeeff"; m[0].portrait = { state: "delivered", digest };
+  const a = new Uint8ClampedArray(528 * 392 * 4); for (let i = 0; i < a.length; i += 4) { a[i] = 7; a[i + 1] = (i >> 2) & 255; a[i + 2] = 40; a[i + 3] = 255; } dropPortraitSources(); assert.equal(injectPortraitSource(digest, a).ok, true);
+  const off = (b) => { assert.equal(b.props.focus.targets.find((t) => t.id === "portrait").enabled, false); assert.deepEqual([b.line.ok, b.line.subject], [null, spec.strings.portrayed]); };
+  assert.equal(build(w, sv0(), { focus: "portrait" }).line.ok, sittingSpec.strings.lookPortrait, "docked: the cap");
+  w.st.dock = { docked: false, at: 1 }; const away = { ...sv0(), carried: [m[0].id] }; assert.ok(S.isAway(w.st, away, m[0]));
+  off(build(w, away, { focus: "portrait" }));
+  dock(w.st); off(habitatBuild({ st: w.st, sv: sv0(), settings: w.settings, docked: true, light: "day", focus: "portrait", habId: m[0].id, meetId: null, armed: false }, spec, frameSpec, home));
+  dropPortraitSources();
 });

@@ -139,7 +139,7 @@ test("the resident: the focused card's habit on the pose step in the hour's ligh
     assert.equal(r.picture, pose.picture.slice(0, -(light.length + 1)), "the same composition, ungraded");
   }
   assert.deepEqual(pose.figure, standFigure(layeredStand("S01", "adult", [304, 312], "habitat", "curl"), mibiReqs(build(w, { step: "pose", focus: "card.1" }, light)).find((r) => r.size[0] === 304).looks), "the curl's own figure");
-  assert.deepEqual([pose.figure[2], pose.figure[3]], [130, 95], "the adult curl at the Habitat factor");
+  assert.deepEqual([pose.figure[2], pose.figure[3]], [129, 95], "the adult curl at the Habitat factor (the re-signed key, its painted contact shadow out)");
   const juv = build(dot({ juvenile: true }), { step: "place", pose: "sleep-curled" }).props.regions.resident; assert.equal(juv.stage, "juvenile"); assert.deepEqual([juv.figure[2], juv.figure[3]], [103, 79], "the juvenile curl");
   assert.equal(build(dot({ species: "S02" }), { step: "pose" }).props.regions.resident.figure, null, "S02 has no layered stand: no figure");
   const t = build(w, { step: "pose", focus: "card.0" }).props.regions.resident; assert.equal(t.pose, "shake-dry");
@@ -214,4 +214,32 @@ test("the pictures register: every request of every state (the layered cards, th
   const all = [...Object.values(states(w, "shake-dry", "wood")), build(portray(w, "sleep-curled", "wood"), { step: "portrait" })];
   for (const b of all) { registerPictures(b.requests, env); for (const r of b.requests) assert.ok(assetEntry(r.id), r.id); }
   dropPortraitSources(); wipe();
+});
+
+test("a Lift mid-ceremony: in state confirm, while beginBlock says the mibi sits when you dock, the line is { ok null, habitat.json strings.portraitOut, ← strings.steps.place } and the gilt does not light, even armed; docked again, ✓ Portray", () => {
+  const w = dot({ habits: ["sleep-curled", "calm"], walked: ["wood"] }), ui = { step: "confirm", pose: "calm", place: "wood", focus: null, armed: null }; w.st.sitting = { source: "dev", key: null, at: T0 }; w.st.dock = { docked: true, at: T0 };
+  const at = (docked, armed = null) => { w.st.dock = { docked, at: T0 }; return sittingBuild({ st: w.st, sv: { ...sv0(), carried: docked ? [] : [w.mb.id] }, settings, light: "day", mibiId: w.mb.id, ui: { ...ui, armed } }, spec, habitat); };
+  assert.equal(T.beginBlock(w.st, w.mb, "calm", "wood", { ...sv0(), carried: [w.mb.id] }), "", "docked, nothing blocks");
+  w.st.dock = { docked: false, at: T0 }; assert.equal(T.beginBlock(w.st, w.mb, "calm", "wood", { ...sv0(), carried: [w.mb.id] }), habitat.strings.portraitOut, "the rule's word is habitat.json's portraitOut");
+  for (const armed of [null, "room"]) {
+    const b = at(false, armed); assert.deepEqual(validate(b.props, schema), []);
+    assert.deepEqual(b.line, { ok: null, subject: habitat.strings.portraitOut, back: Sg.steps.place, need: null }, "the confirm step reads portraitOut, ✓ has no cap");
+    assert.equal(b.props.regions.gilt.picture, spec.regions.gilt.slices.rest, "the gilt does not light"); assert.equal(b.props.focus.armed, null);
+    assert.deepEqual(b.props.regions.chosen.items.map((x) => x.picture).length, 2, "both choices kept");
+  }
+  const d = at(true); assert.deepEqual(d.line, { ok: "Portray Dot", subject: Sg.once, back: Sg.steps.place, need: null }, "docked: ✓ Portray again"); assert.equal(d.props.regions.gilt.picture, spec.regions.gilt.slices.rest);
+  w.st.dock = { docked: false, at: T0 };
+  const notCarried = sittingBuild({ st: w.st, sv: sv0(), settings, light: "day", mibiId: w.mb.id, ui }, spec, habitat); assert.equal(notCarried.line.ok, "Portray Dot", "lifted but not carried: nothing blocks");
+});
+
+test("regions.glass.load: on the place step the requests hold every place card's backdrop (at most five), the focused one first; the pose step asks for none, the confirm step for the chosen one alone", () => {
+  const size = habitat.light.size.join("x"), w = dot({ habits: ["sleep-curled"], walked: ["pond", "rock", "wood", "cave"] }), places = T.offer(w.st, w.mb, sv0()).places;
+  assert.equal(places.length, 5);
+  const backdrops = (b) => b.requests.filter((r) => r.id.startsWith("sitting-backdrop-")).map((r) => r.id);
+  const p = build(w, { step: "place", pose: "sleep-curled", place: null, focus: "card.4", armed: null });
+  assert.equal(p.props.regions.glass.picture, `sitting-backdrop-${places[4]}-${size}`);
+  assert.deepEqual(backdrops(p), [places[4], ...places.slice(0, 4)].map((g) => `sitting-backdrop-${g}-${size}`), "every place's backdrop, once, the focused first");
+  for (const id of backdrops(p)) assert.ok(spec.regions.glass.backdrops.includes(id), id + " is one of regions.glass.backdrops");
+  assert.deepEqual(backdrops(build(w, { step: "pose", pose: null, place: null, focus: null, armed: null })), []);
+  assert.deepEqual(backdrops(build(w, { step: "confirm", pose: "sleep-curled", place: "rock", focus: null, armed: null })), [`sitting-backdrop-rock-${size}`]);
 });

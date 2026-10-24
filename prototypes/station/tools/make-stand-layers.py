@@ -11,6 +11,7 @@ The anchor key is the standing pose every still picture takes; the other keys ar
 habit maps to: HABITS, written as stands.S01.habits); each is cut exactly as the anchor, from the same set under its own pose name, into stands.S01.<stage>.poses.<pose> = { figure, sizes }.
 The held keys the art director signed for the Sitting screen (SIGNED: shake and calm) are cut from their final ids only: the key, crest overlay and crested key under floor/S01, and their own fur mask, zone mask,
 patches and stripes from floor/S01/layers (not LAYERS_DIR); every one of those files is checked against floor/S01/manifest.json's sha256 before anything is written.
+The curl's key and crested key (RESIGNED: re-signed with the painted contact shadow taken out) are checked against the same manifest; its patches, stripes and masks stay LAYERS_DIR's.
 The top-level entry of a stage stays the anchor's, and the contact shadows (the "under" layer and `curl.shadow`, written by place-stand-shadows.mjs) are carried over from the index as they are.
 Only the 304x312 canvas is cut. A stand at any smaller size is composed at that size in the logic process (layered-stand.mjs), so the size is a parameter of the picture, not of the art. Nothing is scaled up.
 
@@ -33,8 +34,12 @@ def signed_files(stage, pose):   # the signed final ids of a pose, relative to f
     return [f'keys/mibi-{stage}-S01-base-{pose}-304x312.png', f'crested/mibi-{stage}-S01-{pose}-304x312.png', f'overlays/mibi-{stage}-S01-{pose}-crest-304x312.png',
             *[f'layers/mibi-{stage}-S01-{pose}-{part}-304x312.png' for part in ('fur-mask', 'zone-mask', 'patches', 'stripes')]]
 MANIFEST = {e['file']: e['sha256'] for e in json.load(open(os.path.join(FLOOR, 'manifest.json'))).values() if isinstance(e, dict) and 'file' in e}
-bad = [f for st in ('adult', 'juvenile') for pose in SIGNED for f in signed_files(st, pose)
-       if f not in MANIFEST or hashlib.sha256(open(os.path.join(FLOOR, f), 'rb').read()).hexdigest() != MANIFEST[f]]
+RESIGNED = ('curl',)   # the poses whose key and crested key the art director re-signed (the curl: its painted contact shadow taken out); their layers stay LAYERS_DIR's
+def resigned_files(stage, pose): return [f'keys/mibi-{stage}-S01-base-{pose}-304x312.png', f'crested/mibi-{stage}-S01-{pose}-304x312.png']
+BY_ID = {k: e['sha256'] for k, e in json.load(open(os.path.join(FLOOR, 'manifest.json'))).items() if isinstance(e, dict) and 'sha256' in e}   # a key recorded by its id alone (no file)
+def recorded(f): return MANIFEST.get(f) or BY_ID.get(os.path.basename(f)[:-4])
+bad = [f for st in ('adult', 'juvenile') for f in [*(g for pose in SIGNED for g in signed_files(st, pose)), *(g for pose in RESIGNED for g in resigned_files(st, pose))]
+       if not recorded(f) or hashlib.sha256(open(os.path.join(FLOOR, f), 'rb').read()).hexdigest() != recorded(f)]
 if bad: sys.exit('not the signed files (sha256 against floor/S01/manifest.json): ' + ', '.join(bad))
 
 def rd(path): return Image.open(path).convert('RGBA')

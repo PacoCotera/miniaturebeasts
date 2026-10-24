@@ -196,7 +196,7 @@
    "text": "the mibi's code in three groups with spaces, no dots (\"3MB W21 1BB\"), live text, shareable",
    "room": "152: the widest code, \"WWW WWW WWW\", is 152 at 16 px; the notches sit 8 px after it"
   },
-  "stamp": {"rect": [872, 64, 120, 120], "plate": "plate-well-120x120", "component": "stampLabel", "look": "stampCase", "slot": "the card's own, not frame.json regions.stampSlot: 804, 400 lands on the Cross and Wild modules (592 to 1008, 376 to 472), and the card's bottom right is the plates' row (608, 200, 376, 40); the rect stays, the demotion is the stampCase look", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: nothing drawn, no size (station-layouts.md, Every state composed, 2); was the bare bone label", "fromFocal": 424},
+  "stamp": {"rect": [872, 64, 120, 120], "plate": "plate-well-120x120", "component": "stampLabel", "look": "stampCase", "slot": "the card's own, not frame.json regions.stampSlot: 804, 400 lands on the Cross and Wild modules (592 to 1008, 376 to 472), and the card's bottom right is the plates' row (608, 200, 376, 40); the rect stays, the demotion is the stampCase look", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: nothing drawn, no size (station-layouts.md, Every state composed, 2); was the bare bone label", "fromFocal": 424, "portrayed": {"slice": "spread-gilt-corner-16x16", "rect": [976, 64, 16, 16], "at": [104, 0], "sprite": "1:1, undimmed", "when": "m.portrait.state is delivered (portrayed)", "rule": "in the label's top-right corner, never over the stamp's cells: its opaque pixels stay clear of the largest stamp (104 at 880, 72) by 1 px on the diagonal (measured on the master)", "inStates": ["rest", "meet", "out"]}},
   "plates": {
    "rect": [608, 200, 376, 40],
    "component": "list",
@@ -333,6 +333,7 @@
   "story",
   "code",
   "stamp",
+  "stamp.portrayed",
   "plates",
   "door",
   "portrait (its frame, then its picture)",
@@ -422,6 +423,7 @@
    "backFromCross": "cross: the target that led there",
    "backFromSitting": "portrait: ← from the sitting's pose step (sitting.json keys.back)",
    "sittingBegun": "portrait: the sitting's begin lands here, the module in its painting state (sitting.json events.begin)",
+   "backFromPortrait": "portrait",
    "namerClosed": "resident after naming from the meet; name after Rename"
   },
   "graph": {
@@ -490,7 +492,7 @@
     "shape": { "rect": 6 },
     "box": "regions.portrait.rect",
     "lift": 2,
-    "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting; and doorOpen(sitting) (until slot 9 read-only, bottomLine.portrait.shut)"
+    "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting; and doorOpen(sitting) (read-only with bottomLine.portrait.shut only while nav.mjs BUILT lacks sitting; listed since S3)"
    },
    "cross": {
     "group": "low",
@@ -587,8 +589,8 @@
    },
    "blocked": {"action": null, "context": "sitting.portraitBlock's words: strings.noPose, strings.noPlace, strings.portrayed; out, strings.portraitOut"},
    "painting": {"action": null, "context": "strings.portraitOnWay"},
-   "portrayed": {"action": null, "context": "strings.portrayed"},
-   "shut": {"action": null, "context": "strings.shut.portrait", "when": "state held with sitting.portraitBlock empty and doorOpen(sitting) false (until slot 9)"}
+   "portrayed": {"action": "strings.lookPortrait", "context": "strings.portrayed", "when": "portrayed, its 528×392 opening kept (sitting-props portraitOffered: portrait-source.mjs portraitOpening) and the mibi not away; else action null"},
+   "shut": {"action": null, "context": "strings.shut.portrait", "when": "state held with sitting.portraitBlock empty and doorOpen(sitting) false (unreached since S3: nav.mjs BUILT lists sitting)"}
   },
   "cross": {
    "adult": {"action": "strings.cross", "context": "strings.partners"},

@@ -97,3 +97,17 @@ test("the kin ring and the hatch switch layer with their master: art while a pla
 });
 // a palette-exact picture of an id's own, for the placeholders
 function standInArt(id, w, h) { const d = new Uint8ClampedArray(w * h * 4), c = rgbs[hash(id) % rgbs.length]; for (let i = 0; i < w * h; i++) { d[i * 4] = c[0]; d[i * 4 + 1] = c[1]; d[i * 4 + 2] = c[2]; d[i * 4 + 3] = 255; } return { w, h, data: d }; }
+
+// The Sitting's three families (ui/asset-policy.mjs; the art director confirmed them, 2026-10-24): one case each
+test("the Sitting's gilt, at rest and lit, is art at either status (palette-exact); another size or an unknown gilt is in no family", () => {
+  for (const id of ["sitting-gilt-560x424", "sitting-gilt-lit-560x424", "sitting-gilt-560x424:560x424", "sitting-gilt-lit-560x424:560x424"]) for (const st of ["placeholder", "master"]) assert.equal(policyOf(id, st), "art", `${id} ${st}`);
+  for (const bad of ["sitting-gilt-560x400", "sitting-gilt-dim-560x424"]) assert.throws(() => policyOf(bad, "master"), /no layer family/, bad);
+});
+test("the Sitting's place cards and thumbs (96 and 48) of the five places are painted at either status; another size or place is in no family", () => {
+  for (const g of ["meadow", "pond", "rock", "wood", "cave"]) for (const s of ["96x96", "48x48", "96x96:96x96", "48x48:48x48"]) for (const st of ["placeholder", "master"]) assert.equal(policyOf(`place-${g}-${s}`, st), "painted", `place-${g}-${s} ${st}`);
+  for (const bad of ["place-wood-64x64", "place-beach-96x96"]) assert.throws(() => policyOf(bad, "master"), /no layer family/, bad);
+});
+test("the Sitting's five place backdrops are painted at either status; the plain backdrop of old is in no family", () => {
+  for (const g of ["meadow", "pond", "rock", "wood", "cave"]) for (const s of ["", ":544x408"]) for (const st of ["placeholder", "master"]) assert.equal(policyOf(`sitting-backdrop-${g}-544x408${s}`, st), "painted", `${g}${s} ${st}`);
+  for (const bad of ["sitting-backdrop-plain-544x408", "sitting-backdrop-wood-528x392"]) assert.throws(() => policyOf(bad, "master"), /no layer family/, bad);
+});
