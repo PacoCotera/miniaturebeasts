@@ -19,7 +19,7 @@ const TARGETS = {
   vivarium: (state, spec, v) => (state === "empty" ? [] : Object.entries(spec.focus.layout).filter(([id]) => !(id.startsWith("resident.") && (v.away ?? []).includes(id.slice(9)))).filter(([id]) => id !== "note").map(([id, rect]) => ({ id, rect, group: id.slice(0, id.indexOf(".")), ...(id.startsWith("tile.") ? { index: Object.keys(spec.focus.layout).filter((k) => k.startsWith("tile.")).indexOf(id) } : {}) }))),
   // one mibi up close: the view's targets in its order (the resident but out, the name but in the meet, the species word, one plate a chapter, the four modules, six tiles t0 to t5 in the full form), the boxes the spec gives
   habitat: (state, spec, v) => { const R = spec.regions, np = v.chapters ?? 4, out = [];
-    if (state !== "out") out.push({ id: "resident", rect: R.resident.rect, group: "resident" }); if (state !== "meet") out.push({ id: "name", rect: R.nameTag.rect, group: "name" }); out.push({ id: "species", rect: R.speciesLine.rect, group: "species" });
+    if (state !== "out") out.push({ id: "resident", rect: R.resident.rect, group: "resident" }); if (state !== "meet") out.push({ id: "name", rect: R.nameTag.rect, group: "name" }); out.push({ id: "species", rect: R.speciesLine.rect, group: "species" }); out.push({ id: "family", rect: [R.story.rect[0], R.story.rect[1], R.story.rect[2], 2 * R.story.pitch], group: "family" });
     for (let i = 0; i < np; i++) out.push({ id: "plate." + i, rect: listPitch(R.plates.places, np, i), group: "plate" });
     for (const [id, g] of [["door", "top"], ["portrait", "top"], ["cross", "low"], ["wild", "low"]]) out.push({ id, rect: R[id].rect, group: g });
     for (let i = 0; i < 6; i++) out.push({ id: "tile.t" + i, rect: listPitch(R.tiles, 6, i), group: "tile", index: i });

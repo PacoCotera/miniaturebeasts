@@ -256,6 +256,11 @@ int habitat_focus(focus_target_t *out, int cap) {
     if (strcmp(t->id, "resident") == 0) v_srect(S, "regions.resident.rect", r);
     else if (strcmp(t->id, "name") == 0) memcpy(r, g_tag, sizeof r);
     else if (strcmp(t->id, "species") == 0) v_srect(S, "regions.speciesLine.rect", r);
+    else if (strcmp(t->id, "family") == 0) {   /* the story's origin lines as drawn (one for a founder, two for a bred mibi, as the props name them), the widest clipped to the story's width, a pitch a line */
+      int s[4], px = v_si(S, "regions.story.px", 16), n = v_pint(v_fmt("focus.targets.%d.lines", i), 1), w = 0; v_srect(S, "regions.story.rect", s);
+      for (int q = 0; q < n && q < 2; q++) { char tx[V_STR]; snprintf(tx, sizeof tx, "%s", v_pstr(v_fmt("regions.card.story.%d", q))); int m = v_measure(tx, px); if (m > w) w = m; }
+      r[0] = s[0]; r[1] = s[1]; r[2] = w < s[2] ? w : s[2]; r[3] = v_si(S, "regions.story.pitch", 24) * n;
+    }
     else if (strncmp(t->id, "plate.", 6) == 0) { int j = atoi(t->id + 6); if (j >= 0 && j < np) plate_rect(np, j, r); }
     else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int q = 0; q < nt; q++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", q)), t->id + 5) == 0) layout_list_pitch(S, "regions.tiles", nt, q, r); ix = 0; for (int q = 0; q < k; q++) if (strncmp(out[q].id, "tile.", 5) == 0) ix++; }
     else v_srect(S, v_fmt("regions.%s.rect", t->id), r);

@@ -21,8 +21,10 @@ import { specimenFor } from "./specimen-cache.mjs";
 import { renderCell } from "./specimen.mjs";
 import { sheetPicture, renderDisc, sheetKept, keptPictures, warmPaper } from "./library-sheet.mjs";
 import { facePicture } from "./face-pictures.mjs";
+import { farPicture, miniPicture } from "./lineage-pictures.mjs";
 
 const SHEET_IDS = {};   // the Level 2 sheet's current entry of each kind (library-sheet.mjs keeps its pictures)
+const LINEAGE_IDS = {};   // Level 3's current entry of each kind (lineagefar, lineagemini); a newer one supersedes it
 const FACE_STAGE = new Map();   // the stage each face entry was drawn at
 const DROPPED = [];   // the ids whose entry a newer picture superseded: the host drops them on the face (the Library 3 gate's P4: the face's table recycles only by least recent use)
 // The superseded ids since the last call, taken (the host drops each on the face).
@@ -184,6 +186,13 @@ export function registerPictures(reqs, env) {
         const stand = !!spec.windows?.[r.species]?.[r.stage === "elder" ? "adult" : r.stage] && !!layeredStand(r.species, r.stage, [304, 312], "default");
         registerAsset({ id: r.id, w, h, status: stand ? "derived" : "placeholder", until: stand ? null : "the species' layered stand and the art director's face window", build: () => { let data = null; return { w, h, rgba: () => { if (data) return data;
           const p = facePicture({ species: r.species, stage: r.stage, looks: r.looks, size: w, faded: !!r.faded }, spec, rgb); console.log(`# face ${r.id}: rendered in ${p.ms.toFixed(0)} ms${p.standIn ? " (the stand-in)" : ""}`); return (data = p.rgba); } }; } });
+        break;
+      }
+      case "lineagefar": case "lineagemini": {   // Level 3's pictures (lineage-pictures.mjs: the whole lineage at FAR, and the same drawing reduced for CLOSE's inset): made once by id (the digest of what they draw) when the face first
+        // needs their pixels, in the logic process; the FAR picture on the ground master's own pixels for its rect (flat libGround until it is placed); its time printed
+        const [w, h] = r.size; if (hasAsset(r.id)) break; const old = LINEAGE_IDS[r.kind]; if (old && old !== r.id) { dropAsset(old); DROPPED.push(old); } LINEAGE_IDS[r.kind] = r.id; const rgb = (n) => RGB[C[n]];
+        registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => { if (data) return data;
+          const p = r.kind === "lineagefar" ? farPicture(r.input, SPECS.library, { rgb, ground: sheetGround() }) : miniPicture(r.input, SPECS.library, { rgb }); console.log(`# lineage ${r.id}: rendered in ${p.ms.toFixed(1)} ms`); return (data = p.rgba); } }; } });
         break;
       }
       default: throw new Error("unknown picture kind " + r.kind);

@@ -58,7 +58,8 @@ test("Level 2 in sheet, the Loika at mid: every node at its place, the same node
   assert.equal(sh.h, 30 + 12 + 24 * 2 + 64 + 20 + 16 * 2 + 12, "h = 30 + 12 + 24 w + 64 + 20 + 16 (n - 1) + 12, the three rows drawn");
   assert.deepEqual(f.nodeBox("shelf.unlocked.panel").box, [700, 50, 308, sh.h]); assert.deepEqual(f.nodeBox("shelf.wish.1.disc").box, [800, 94 + 24, 16, 16]); assert.deepEqual(f.nodeBox("shelf.wish.1.star").box, [810, 88 + 24, 12, 12]);
   const yf = 50 + 30 + 12 + 24 * 2 + 16; assert.deepEqual(f.nodeBox("shelf.face.picture").box, [800, yf, 64, 64]); assert.deepEqual(f.nodeBox("shelf.sit.1").box, [820, yf + 64 + 16 + 6, 16, 12], "sitting k at (800 + 20 k, y_s + 6), the UI/UX ruling");
-  const yr = 50 + sh.h + 12; assert.deepEqual(f.nodeBox("shelf.families.panel").box, [700, yr, 308, 30 + 12 + 80 * 2 + 12]); assert.deepEqual(f.nodeBox("family.4.picture").box, [712, yr + 42 + 80, 56, 56]);
+  const yr = 50 + sh.h + 12; assert.deepEqual(f.nodeBox("shelf.families.panel").box, [700, yr, 308, 30 + 12 + 88 + 80 + 12], "two rows: 222 (AD4-3)"); assert.equal(sh.hr, 222);
+  for (const j of [4, 5, 6, 7]) if (j < sh.n) { assert.deepEqual(f.nodeBox(`family.${j}.picture`).box, [712 + 76 * (j - 4), yr + 42 + 88, 56, 56], `face ${j} at Y_F + 130`); const t = b.props.focus.targets.find((q) => q.id === "family." + b.props.regions.shelf.families[j].id); assert.ok(t); assert.deepEqual(targetBox(spec, b.props, t.id), [712 + 76 * (j - 4), yr + 130, 56, 56], `the focus box of face ${j} at +88`); }
   assert.deepEqual(f.nodeBox("family.5.picture").box.slice(2), [0, 0], "the faces beyond the family's are nodes of no size"); assert.deepEqual(f.nodeBox("page.picture").box.slice(2), [0, 0], "no page in sheet");
   const g = b.props.regions.sheet.glints[0]; assert.deepEqual(f.nodeBox("sheet.glint.0").box, [16 + g[0] - 6, 40 + g[1] - 6, 12, 12], "the glint at the generator's centre plus the sheet's origin");
   assert.equal(speciesParts(spec, b.props).length, 1 + 8 + 2 + 1 + 4 * 3 + 3 + 1 + 9 + 2 + 8 * 2 + 1, "the node table");
@@ -73,7 +74,7 @@ test("Unlocked is drawn only when one of its rows is: nothing to unlock leaves e
   const parts = speciesParts(spec, b.props); assert.deepEqual(parts.map((p) => p[0]), speciesParts(spec, none.props).map((p) => p[0]), "the same nodes in the same order");
   const unlocked = parts.filter(([id]) => /^shelf\.(unlocked|wish|face|sit)/.test(id)); assert.equal(unlocked.length, 2 + 1 + 12 + 3 + 10);
   for (const [id, shown, , kind] of unlocked) { assert.equal(shown, false, id); const box = f.nodeBox(id).box; if (kind === "text") assert.equal(box[2], 0, id + ": a line with no text"); else assert.deepEqual(box.slice(2), [0, 0], id + " is a node of no size"); }
-  assert.deepEqual(f.nodeBox("shelf.families.panel").box, [700, 50, 308, 30 + 12 + 80 + 12], "Families at y 50"); assert.deepEqual(f.nodeBox("family.0.picture").box, [712, 50 + 42, 56, 56]);
+  assert.deepEqual(f.nodeBox("shelf.families.panel").box, [700, 50, 308, 30 + 12 + 80 + 12], "Families at y 50; one row: 134"); assert.deepEqual(f.nodeBox("family.0.picture").box, [712, 50 + 42, 56, 56]);
   assert.ok(!b.props.focus.targets.some((t) => t.id === "wish" || t.id === "face"), "no target for a row not drawn");
   bare.mibis[0].portrait = { state: "delivered", stage: "adult" }; assert.ok(Lib.makeFace(bare, bare.mibis[0]).ok); f.build = b = at(bare); f.setProps();
   assert.deepEqual(partDepartures(boxOf(f), spec, b.props), []); assert.deepEqual(f.nodeBox("shelf.unlocked.panel").box, [700, 50, 308, 30 + 12 + 64 + 12]);

@@ -1,10 +1,10 @@
-// One mibi up close, the Vivarium's closest level (the habitat identifier stays; habitat.json): ✓ on the resident, the name, the species word, a chapter plate, the Companion, Portrait, Cross, Wild or a tile. The events are the spec's
+// One mibi up close, the Vivarium's closest level (the habitat identifier stays; habitat.json): ✓ on the resident, the name, the species word, the story's origin lines (See the family), a chapter plate, the Companion, Portrait, Cross, Wild or a tile. The events are the spec's
 // (events.moment, read, release, back): no constant of time lives here. ✓ on Wild opens the Return panel (`returnNow` is its Return card). The meet's first ✓ opens the namer (intents/namer.mjs).
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { habitatShown, watchFrame } from "../trickle.mjs";
 import { openNamer } from "./namer.mjs";
-import { openSpecies } from "./library.mjs";
+import { openSpecies, openFamily } from "./library.mjs";
 import { openPanel } from "./panel.mjs";
 import { doorOpen } from "../nav.mjs";
 
@@ -43,6 +43,7 @@ export function intent(h, target, verb) {
   }
   else if (target === "name") openNamer(h, m, "rename");
   else if (target === "species") openSpecies(h, S.speciesOf(m));   // ✓ Open the guide (frame.json navigation.jumps): the Library's Level 2 of this species
+  else if (target === "family") openFamily(h, m.id);   // ✓ See the family (frame.json navigation.jumps): Level 3 of its species, close on this mibi
   else if (target.startsWith("plate.")) {
     const ch = chapterAt(m, target); if (!ch) return;
     const r = S.readMibi(h.st, m, ch.id, h.settings);

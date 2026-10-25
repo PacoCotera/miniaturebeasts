@@ -38,7 +38,7 @@ static shelf_t shelf_of(void) {
   o.yf = top + head + gap + (o.w > 0 ? pitch * o.w + between : 0); o.ys = o.yf + (o.face ? fs + between : 0);
   o.h = o.u ? head + gap + (o.w > 0 ? pitch * o.w : 0) + (o.face ? fs : 0) + (o.s > 0 ? v_si(S, "l2.shelf.sittings.row", 0) : 0) + between * (drawn - 1) + v_si(S, "l2.shelf.height.pad", 0) : 0;
   o.yr = o.u ? top + o.h + v_si(S, "l2.families.gap", 0) : top;
-  int rows = o.n > v_sk(S, "l2.families.grid", 0) ? 2 : 1; o.hr = v_si(S, "l2.families.head", 0) + v_si(S, "l2.families.rowGap", 0) + v_si(S, "l2.families.rowPitch", 0) * rows + v_si(S, "l2.families.pad", 0);
+  int rows = o.n > v_sk(S, "l2.families.grid", 0) ? 2 : 1; o.hr = v_si(S, "l2.families.head", 0) + v_si(S, "l2.families.rowGap", 0) + v_si(S, "l2.families.rowPitch", 0) * (rows - 1) + v_si(S, "l2.families.rowH", 0) + v_si(S, "l2.families.pad", 0);
   return o;
 }
 /* a label or a line of the shelf at lineTop y: its text when shown, else the node with no size */

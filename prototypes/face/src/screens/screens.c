@@ -134,6 +134,7 @@ static void draw(void) {
     else if (strcmp(screen, "habitat") == 0 && spec_has("habitat") && spec_len("props", "regions") >= 0) { home_hidden(); habitat_words(); }
     else if (strcmp(screen, "library") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_words(); }
     else if (strcmp(screen, "library.species") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_species_words(); }
+    else if (strcmp(screen, "library.family") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_family_words(); }
     else if (strcmp(screen, "bench") == 0 && spec_has("bench") && spec_len("props", "regions") >= 0) { home_hidden(); bench_words(); }
     else if (strcmp(screen, "sitting") == 0 && spec_has("sitting") && spec_len("props", "regions") >= 0) { home_hidden(); sitting_words(); }
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
@@ -195,6 +196,7 @@ void screens_key(int code) {
   if (strcmp(screen, "habitat") == 0 && spec_has("habitat") && spec_len("props", "regions") >= 0) { habitat_key(code); return; }
   if (strcmp(screen, "library") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { library_key(code); return; }
   if (strcmp(screen, "library.species") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { library_species_key(code); return; }
+  if (strcmp(screen, "library.family") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { library_family_key(code); return; }
   if (strcmp(screen, "bench") == 0 && spec_has("bench") && spec_len("props", "regions") >= 0) { bench_key(code); return; }
   if (strcmp(screen, "sitting") == 0 && spec_has("sitting") && spec_len("props", "regions") >= 0) { sitting_key(code); return; }
   if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { cargo_key(code); return; }

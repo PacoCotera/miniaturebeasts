@@ -13,7 +13,7 @@ export function shelfOf(spec, props) {
   const face = !!R.face, rows = (w > 0) + face + (s > 0), u = rows > 0, B = SH.height.between;
   const yf = top + SH.height.head + SH.height.gap + (w > 0 ? SH.wish.pitch * w + B : 0), ys = yf + (face ? SH.face.picture.size + B : 0);
   const h = u ? SH.height.head + SH.height.gap + (w > 0 ? SH.wish.pitch * w : 0) + (face ? SH.face.picture.size : 0) + (s > 0 ? SH.sittings.row : 0) + B * (rows - 1) + SH.height.pad : 0;
-  const yr = u ? top + h + FA.gap : top, hr = FA.head + FA.rowGap + FA.rowPitch * (n > FA.grid[0] ? 2 : 1) + FA.pad;
+  const yr = u ? top + h + FA.gap : top, hr = FA.head + FA.rowGap + FA.rowPitch * (n > FA.grid[0] ? 1 : 0) + FA.rowH + FA.pad;
   return { shown: R.shown, w, s, n, face, u, h, yf, ys, yr, hr };
 }
 // The nodes in the fixed order: [id, shown, box, kind]; kind "pic" (a picture or its slot), "panel" (a bezel's nine-slice, or its slot), "text" (box [x, lineTop, align]).

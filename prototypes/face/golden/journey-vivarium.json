@@ -393,6 +393,23 @@
      {
       "t": "focus",
       "screen": "habitat",
+      "target": "family"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "family",
+    "ok": "See the family",
+    "price": null,
+    "subject": "",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
       "target": "plate.0"
      }
     ],
@@ -471,6 +488,23 @@
     "ok": "Open the guide",
     "price": null,
     "subject": "every Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "family"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "family",
+    "ok": "See the family",
+    "price": null,
+    "subject": "",
     "back": "Vivarium"
    },
    {
@@ -688,6 +722,23 @@
     "ok": "Open the guide",
     "price": null,
     "subject": "every Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "family"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "family",
+    "ok": "See the family",
+    "price": null,
+    "subject": "",
     "back": "Vivarium"
    },
    {
