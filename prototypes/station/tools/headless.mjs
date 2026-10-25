@@ -59,7 +59,7 @@ export class Player {
     const f = this.field, owed = f.calls * FIELD.call + f.beacons * FIELD.beacon + f.patches * FIELD.patch + this.carry, spend = this.fieldSpendNow();   // a half beacon is one every other walk: the remainder carries to the next walk
     this.carry = owed - spend;
     if (spend) this.step("the field: " + [f.calls && f.calls + " Call" + (f.calls > 1 ? "s" : ""), f.beacons && (f.beacons < 1 ? "a beacon" : f.beacons + " beacon"), f.patches && f.patches + " patch"].filter(Boolean).join(", "), () => { this.st.e -= spend; return { ok: this.st.e >= 0 }; });
-    if (r.welcome && r.welcome.ok) { this.mark("welcome"); this.step("the welcome sitting", () => ({ ok: true })); }
+    if (r.welcome?.ok && !r.welcome.queued) { this.mark("welcome"); this.step("the welcome sitting", () => ({ ok: true })); }
     if (r.tier2) {   // the walk's row is its own yield; the Probe, bought at that dock, is its own row
       const w = walkRow; w.e -= r.tier2.e; w.d -= r.tier2.d; w.s -= r.tier2.s; w.stock = [w.stock[0] - r.tier2.e, w.stock[1] - r.tier2.d, w.stock[2] - r.tier2.s];
       this.mark("probe"); this.steps.push({ name: "Probe tier 2", e: r.tier2.e, d: r.tier2.d, s: r.tier2.s, ms: 0, ok: true, stock: [this.st.e, this.st.d, this.st.s], t: this.now - this.start }); }

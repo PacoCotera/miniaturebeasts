@@ -1,6 +1,7 @@
 // The namer as an overlay (namer.json; lvgl-switch.md §2.2), in Node: the view's props (views/namer-props.mjs) validate against namer.props.json in every field state, on both pages and in both cases, name no rectangle, and list the targets as the spec's graph
 // expects (the keys the page draws, then shift, space, page, done, suggest); the intents (intents/namer.mjs) type, delete, clear, suggest, refuse in words and save by the rules: Keep writes nothing, a rename follows its references.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -8,7 +9,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { namerBuild } from "../src/views/namer-props.mjs";
+import { namerBuild as namerBuildUnchecked } from "../src/views/namer-props.mjs";
+const namerBuild = lineCased(namerBuildUnchecked, "namer");   // every body it builds goes through assertLineCase (report mode)
 import { INTENTS } from "../src/intents/index.mjs";
 import { openNamer } from "../src/intents/namer.mjs";
 import { validate } from "./habitat-props.test.mjs";

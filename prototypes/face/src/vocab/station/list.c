@@ -12,23 +12,12 @@
 
 #define S "pods"
 #define C "regions.collection"
-static int si(const char *path, int dflt) { return spec_int(S, path, dflt); }
-static int sa(const char *base, int k, int dflt) { char p[128]; snprintf(p, sizeof p, "%s.%d", base, k); return spec_int(S, p, dflt); }
-
-/* the bench: the stage's ground and the room master over it (the first of the candidates the face holds) */
-void word_bench(void) {
-  int r[4]; if (!v_spec_rect(S, "regions.bench.rect", r)) return;
-  char ground[24]; spec_str(S, "colours.ground", ground, sizeof ground);
-  v_region("bench", LAYER_CHROME); v_rect("bench", r[0], r[1], r[2], r[3], ground);
-  v_region("bench", LAYER_PAINTED);   /* the room stage is a painted master */
-  for (int i = 0; i < v_plen("regions.bench.room"); i++) if (v_sprite("bench.room", v_pstr(v_fmt("regions.bench.room.%d", i)), r[0], r[1], r[2], r[3])) break;
-}
 
 void word_list(void) {
   char name[24]; spec_str(S, "colours.name", name, sizeof name);
   int n = v_plen("regions.list.places");
-  int slice[4]; for (int k = 0; k < 4; k++) slice[k] = sa(C ".ring.slice", k, 0);
-  int podW = sa(C ".pod.size", 0, 0), podH = sa(C ".pod.size", 1, 0), npx = si(C ".name.px", 20), nh = si(C ".name.h", 24);
+  int slice[4]; for (int k = 0; k < 4; k++) slice[k] = v_si(S, v_fmt("%s.%d", C ".ring.slice", k), 0);
+  int podW = v_si(S, v_fmt("%s.%d", C ".pod.size", 0), 0), podH = v_si(S, v_fmt("%s.%d", C ".pod.size", 1), 0), npx = v_si(S, C ".name.px", 20), nh = v_si(S, C ".name.h", 24);
   for (int i = 0; i < n; i++) {
     int r[4]; layout_place_rect(S, C, i, r);
     const char *pre = v_fmt("regions.list.places.%d", i); char P[96]; snprintf(P, sizeof P, "%s", pre);
@@ -40,20 +29,20 @@ void word_list(void) {
     }
     if (v_pbool(v_fmt("%s.empty", P), 0)) continue;
     const char *pod = v_pstr(v_fmt("%s.pod", P));
-    if (*pod) { v_region("place.pod", LAYER_PAINTED); v_sprite(v_fmt("%s.pod", pid), pod, r[0] + sa(C ".pod.centre", 0, 0) - podW / 2, r[1] + sa(C ".pod.centre", 1, 0) - podH / 2, podW, podH); }
+    if (*pod) { v_region("place.pod", LAYER_PAINTED); v_sprite(v_fmt("%s.pod", pid), pod, r[0] + v_si(S, v_fmt("%s.%d", C ".pod.centre", 0), 0) - podW / 2, r[1] + v_si(S, v_fmt("%s.%d", C ".pod.centre", 1), 0) - podH / 2, podW, podH); }
     char text[V_STR]; snprintf(text, sizeof text, "%s", v_pstr(v_fmt("%s.name", P)));
-    int nx = r[0] + sa(C ".name.at", 0, 0), ny = r[1] + sa(C ".name.at", 1, 0), tw = v_measure(text, npx);
+    int nx = r[0] + v_si(S, v_fmt("%s.%d", C ".name.at", 0), 0), ny = r[1] + v_si(S, v_fmt("%s.%d", C ".name.at", 1), 0), tw = v_measure(text, npx);
     int pw = layout_plate_width(S, C ".name", tw);
     { char al[16] = "", cl[16] = ""; spec_str(S, C ".name.align", al, sizeof al); spec_str(S, C ".name.clamp", cl, sizeof cl);   /* align centre: `at` is the plate's centre; clamp place: the plate stays inside the place's rectangle */
       if (strcmp(al, "centre") == 0) nx -= v_half(pw);
       if (strcmp(cl, "place") == 0) { if (nx + pw > r[0] + r[2]) nx = r[0] + r[2] - pw; if (nx < r[0]) nx = r[0]; } }
     v_region("place.name", LAYER_PAINTED); v_plate(v_fmt("%s.plate", pid), C ".name", pw, nx, ny);
-    v_region("place.name", LAYER_TYPE); v_text(v_fmt("%s.name", pid), text, nx + v_half(pw - tw), ny + v_fdiv(nh - v_cap(npx), 2), tw, npx, name);
+    v_region("place.name", LAYER_TYPE); v_line_in(v_fmt("%s.name", pid), text, nx, pw, v_cap_in(ny, nh, npx), V_ANCHOR_CAP, npx, name);
     const char *grow = v_pstr(v_fmt("%s.grow", P));
-    if (*grow) { v_region("place", LAYER_ART); v_sprite(v_fmt("%s.grow", pid), grow, r[0] + sa(C ".grow.at", 0, 0), r[1] + sa(C ".grow.at", 1, 0), sa(C ".grow.at", 2, 0), sa(C ".grow.at", 3, 0)); }
+    if (*grow) { v_region("place", LAYER_ART); v_sprite(v_fmt("%s.grow", pid), grow, r[0] + v_si(S, v_fmt("%s.%d", C ".grow.at", 0), 0), r[1] + v_si(S, v_fmt("%s.%d", C ".grow.at", 1), 0), v_si(S, v_fmt("%s.%d", C ".grow.at", 2), 0), v_si(S, v_fmt("%s.%d", C ".grow.at", 3), 0)); }
     const char *glint = v_pstr(v_fmt("%s.glint", P));
-    if (*glint) { v_region("place", LAYER_ART); v_sprite(v_fmt("%s.glint", pid), glint, r[0] + sa(C ".glint.at", 0, 0), r[1] + sa(C ".glint.at", 1, 0), sa(C ".glint.at", 2, 0), sa(C ".glint.at", 3, 0)); }
+    if (*glint) { v_region("place", LAYER_ART); v_sprite(v_fmt("%s.glint", pid), glint, r[0] + v_si(S, v_fmt("%s.%d", C ".glint.at", 0), 0), r[1] + v_si(S, v_fmt("%s.%d", C ".glint.at", 1), 0), v_si(S, v_fmt("%s.%d", C ".glint.at", 2), 0), v_si(S, v_fmt("%s.%d", C ".glint.at", 3), 0)); }
   }
   const char *wait = v_pstr("regions.list.waiting");
-  if (*wait) { v_region("waiting", LAYER_ART); v_sprite("list.waiting", wait, sa(C ".waiting.rect", 0, 0), sa(C ".waiting.rect", 1, 0), sa(C ".waiting.rect", 2, 0), sa(C ".waiting.rect", 3, 0)); }
+  if (*wait) { v_region("waiting", LAYER_ART); v_sprite("list.waiting", wait, v_si(S, v_fmt("%s.%d", C ".waiting.rect", 0), 0), v_si(S, v_fmt("%s.%d", C ".waiting.rect", 1), 0), v_si(S, v_fmt("%s.%d", C ".waiting.rect", 2), 0), v_si(S, v_fmt("%s.%d", C ".waiting.rect", 3), 0)); }
 }

@@ -2,12 +2,15 @@
 // The Station's layer checks (technical-architecture.md §5.6), run after the journey on what it recorded at every screenshot point (STATION_CHECKS, default the system temp dir): the face's own log
 // (every string it set, each drawn region), its palette readings in test mode, and for the points that name it the frame's pixels. Numbers are printed in the job log; any failure exits 1.
 //   1. palette: the chrome and art layers (passes 1 and 2) read exactly 0 off-palette pixels at every point; painted masters show only on pass 3.
-//   2. type: every string the face set is Inter at 16, 20 or 28 px; none refused, no error sent; no digits in the text of a region marked noDigits; no subject clipped with an ellipsis.
+//   2. type: every string the face set is Inter at 16, Medium 16 (its code 1016), 20 or 28 px; none refused, no error sent; no digits in the text of a region marked noDigits; no subject clipped with an ellipsis.
 //   3. regions: every drawn region's box in the face's log equals (or lies in) its rectangle in the spec file; the stamp label is 120×120 with the stamp at most 104 px inside it; the rail's tab count
 //      equals the frame's chapter count; every Pods state draws the regions it must.
 //   4. size: the frame is 1024×600.
 //   5. ink: where the ink of each frame region lies in the frame's pixels against the spec (the title after the room's mark, the counters and the subject centred, the notice and the way back
 //      right-aligned, the verb after its cap), and a slot that says nothing has no ink. (Moved here from face/tools/frame-check.mjs, which it replaces.)
+//   6. clearance: the text's distances from the edges, the bars' middles, its container, the pictures, the focus ring, the rules, other text and the clips (ui/specs/clearance.mjs, T1 to T7, T10,
+//      T11) at every point, from the face's node log. Report mode: the departures are printed per screen; a screen frame.json type.clearance.enforced lists fails on any, and an exception
+//      nobody uses fails.
 import { readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -23,6 +26,7 @@ import { departures as habitatDepartures } from "../../face/tools/habitat-region
 import { departures as libraryDepartures } from "../../face/tools/library-regions.mjs";
 import { departures as benchDepartures } from "../../face/tools/bench-regions.mjs";
 import { departures as cargoDepartures } from "../../face/tools/cargo-regions.mjs";
+import { departures as clearance, unusedExceptions, enforced, enforcedDeparture, FRAME_REGIONS } from "../../ui/specs/clearance.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 const file = process.argv[2] || process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
@@ -35,7 +39,7 @@ const rgbOf = (name) => { const h = palette[name]; return [1, 3, 5].map((i) => p
 const fails = [], fail = (m) => { fails.push(m); console.error("FAIL " + m); };
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
-const F = frame.regions, R = pods.regions, N = frame.notBuilt, SIZES = [16, 20, 28], MODULES = ["cargo", "pods", "incubator", "probe", "library"];
+const F = frame.regions, R = pods.regions, N = frame.notBuilt, SIZES = [16, 1016, 20, 28], MODULES = ["cargo", "pods", "incubator", "probe", "library"];
 
 // the plate's chrome region is the plate and its shadow, 3 px lower
 // ---- 1. palette, 2. type, 4. size, at every point
@@ -49,11 +53,11 @@ for (const s of rec.shots) {
   if (c.refused || sn.refused) fail(`${s.name}: the face refused ${c.refused || sn.refused} nodes`);
   for (const e of [...c.errors, ...sn.errors]) fail(`${s.name}: the face sent an error: ${e}`);
   const bad = lg.type.filter((r) => !SIZES.includes(r.px) || !r.text || !r.region);
-  for (const r of bad.slice(0, 3)) fail(`${s.name}: "${r.text}" set at ${r.px} px in region "${r.region}", not Inter at 16, 20 or 28 px in a region`);
+  for (const r of bad.slice(0, 3)) fail(`${s.name}: "${r.text}" set at ${r.px} px in region "${r.region}", not Inter at 16, Medium 16 (1016), 20 or 28 px in a region`);
   stringsMax = Math.max(stringsMax, lg.type.length);
   console.log(`${s.name.padEnd(26)} off-palette chrome ${String(sn.pass1).padStart(2)} · chrome+art ${String(sn.pass2).padStart(2)} · strings ${String(lg.type.length).padStart(3)} (${bad.length} off-spec) · frame ${c.size.join("×")}`);
 }
-console.log(`type: up to ${stringsMax} strings in a frame, every one Inter 16, 20 or 28 px through the face; text API calls on the page: ${rec.textApiCalls}`);
+console.log(`type: up to ${stringsMax} strings in a frame, every one Inter 16, Medium 16, 20 or 28 px through the face; text API calls on the page: ${rec.textApiCalls}`);
 if (rec.textApiCalls !== 0) fail(`the page called the canvas text API ${rec.textApiCalls} times`);
 
 // ---- 3. regions against the spec files
@@ -92,7 +96,7 @@ for (const s of rec.shots) {
     const d = keep(vivariumDepartures(lg, vivariumSpec, c.viv.state, c.viv.cur, c.viv.n, c.viv.figs)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "bench" && c.bench) {   // the Probe bench: every region of the face's log against bench.json (face/tools/bench-regions.mjs): zero departures
     const d = keep(benchDepartures(lg, benchSpec, c.bench.props, c.bench.cur)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
-  } else if (c.screen === "library" && c.lib) {   // the Library spread: every region of the face's log against library.json (face/tools/library-regions.mjs): zero departures; each part at place + at, inside its page
+  } else if (c.screen === "library" && c.lib) {   // the Library's Level 1: every region of the face's log against library.json (face/tools/library-regions.mjs): zero departures; the cells' pictures the union of the parts their states give
     const d = keep(libraryDepartures(lg, librarySpec, c.lib.props, c.lib.cur)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "habitat" && c.hab) {   // one mibi up close: every region of the face's log against habitat.json (and namer.json while the namer is open) (face/tools/habitat-regions.mjs): zero departures
     const d = keep(habitatDepartures(lg, habitatSpec, namerSpec, c.hab.state, c.hab.cur, c.hab.n, c.hab.open)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
@@ -114,7 +118,7 @@ for (const s of rec.shots) {
     // no digits where a picture does the job; the bottom line's subject is never clipped with an ellipsis
     for (const t of lg.type) { const flag = NO_DIGIT[t.region]?.(c); if (flag && /\d/.test(t.text)) must(false, `"${t.text}" in the region ${t.region} holds a digit, and the spec says it holds none`); if (t.region === "subject") must(!t.text.endsWith("…"), `the bottom line's subject "${t.text}" is clipped with "…"`); }
   }
-  console.log(`${s.name.padEnd(26)} ${lg.regions.length} drawn regions · ${c.screen}${c.mode ? "/" + c.mode : ""}${c.props?.state === "notBuilt" ? " (not built)" : ""} · placeholders registered ${c.placeholders}`);
+  console.log(`${s.name.padEnd(26)} ${lg.regions.length} drawn regions · ${c.screen}${c.mode ? "/" + c.mode : ""}${c.props?.state === "notBuilt" ? " (not built)" : ""} · placeholders registered ${c.placeholders}${s.snap.owed?.length ? ` · habit keys owed ${s.snap.owed.length}` : ""}`);
 }
 // every Pods state is recorded, with the regions it must draw
 { const need = { collection: [["painted", "place.pod"], ["type", "place.name"]], overview: [["painted", "pod"], ["type", "name"], ["painted", "hatch"]], chapter: [["painted", "pod"], ["type", "name"], ["chrome", "page.rule"], ["painted", "rail.tab"]], compare: [["painted", "pageA"], ["painted", "pageB"], ["painted", "rail.tab"]] };
@@ -124,7 +128,7 @@ for (const s of rec.shots) {
 for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === "home")) fail(`no screenshot point records Home as ${pt}`);
 for (const screen of ["cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
 if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) fail("no screenshot point records Idle");
-for (const [pt, state] of [["page-bench", "docked"], ["page-bench-panel-upgrade", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "spread"], ["page-library-spread", "spread"], ["page-vivarium", "rest"], ["page-vivarium-away", "rest"], ["page-vivarium-away-night", "rest"], ["page-mibi-out", "rest"], ["page-vivarium-empty", "empty"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
+for (const [pt, state] of [["page-bench", "docked"], ["page-bench-panel-upgrade", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "all"], ["page-library-spread", "all"], ["page-vivarium", "rest"], ["page-vivarium-away", "rest"], ["page-vivarium-away-night", "rest"], ["page-mibi-out", "rest"], ["page-vivarium-empty", "empty"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
 // the moving sets (vivarium-regions): every resident's drawn box, at every cell's lift and dy (the hop's lift, a pass's rise, the crouch lowered 2 px), stays inside its window on the whole and Idle; up close and in the hatch
 // the up-close hop scales down to fit when the rect leaves less above the figure, so it never clips (the animator's closeHop note)
 { const MV = path.join(ui, "specs/station/moving"), ix = JSON.parse(readFileSync(path.join(MV, "index.json"), "utf8")), sets = Object.fromEntries(ix.sets.map((id) => [id, JSON.parse(readFileSync(path.join(MV, id + ".json"), "utf8"))]));
@@ -172,5 +176,21 @@ console.log("== ink against the frame spec");
   }
   console.log(`ink: ${n} regions compared in ${rec.shots.filter((x) => x.png && !x.check.idle).length} frames`);
   if (!rec.shots.some((x) => x.png)) fail("no screenshot point records the frame's pixels"); }
+// ---- 6. clearance: the spacing rules for text, from the face's node log (report mode until a screen is enforced)
+console.log("== clearance of text (ui/specs/clearance.mjs), report mode unless frame.json type.clearance.enforced lists the screen");
+{ const SPEC_OF = { home, pods, create: createSpec, incubator: incubatorSpec, cargo: cargoSpec, vivarium: vivariumSpec, bench: benchSpec, library: librarySpec, habitat: habitatSpec, sitting: JSON.parse(readFileSync(path.join(ui, "specs/station/sitting.json"), "utf8")) };
+  const per = {}, results = [], frameN = { points: 0, departures: 0 };   // the frame's own text over every point
+  for (const s of rec.shots) {
+    const c = s.check, lg = c.log; if (!lg?.nodes) { fail(`${s.name}: the face's log has no nodes (the clearance checks read them)`); continue; }
+    const screen = c.idle ? "idle" : c.screen ?? "?", spec = c.idle ? frame.idle : SPEC_OF[screen] ?? {};
+    const d = clearance(lg, spec, frame, undefined, screen); results.push(d);
+    const p = (per[screen] ??= { points: 0, departures: 0, rules: {} }); p.points++; p.departures += d.length; for (const x of d) p.rules[x.rule] = (p.rules[x.rule] ?? 0) + 1;
+    for (const x of d) if (enforcedDeparture(frame, screen, x)) fail(`${s.name}: ${x.rule} ${x.node}: ${x.measured} from ${x.other}, ${x.required} required`);
+    frameN.points++; frameN.departures += d.filter((x) => FRAME_REGIONS.has(x.node.split(" ")[0])).length;
+  }
+  for (const [screen, p] of Object.entries(per).sort()) console.log(`clearance ${screen.padEnd(10)} ${String(p.points).padStart(3)} points · ${String(p.departures).padStart(4)} departures (${Object.entries(p.rules).sort().map(([r, n]) => `${r} ${n}`).join(", ") || "none"})${enforced(frame, screen) ? " · enforced" : " · report"}`);
+  console.log(`clearance frame      ${String(frameN.points).padStart(3)} points · ${String(frameN.departures).padStart(4)} departures of the frame's own text${enforced(frame, "frame") ? " · enforced" : " · report"}`);
+  for (const e of unusedExceptions(frame, results)) fail(`frame.json type.clearance.exceptions: ${e.rule} ${e.node} is used by no departure`);
+  console.log(`clearance: ${results.reduce((n, d) => n + d.length, 0)} departures at ${results.length} points (report mode: ${(frame.type.clearance?.enforced ?? []).length} screens enforced)`); }
 console.log(fails.length ? `${fails.length} failure(s)` : "layer checks ok");
 process.exit(fails.length ? 1 : 0);

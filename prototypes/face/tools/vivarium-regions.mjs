@@ -23,7 +23,7 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0, figs 
     for (const r of [...got("bed.sleepers", "art"), ...got("bed.sleepers", "painted")]) must(r.rect[3] > up[3] || within(r.rect, up), `a sleeper (${r.layer}) ${r.rect} leaves the bed ${b} and the nap's height above it`); }
   if (state === "empty") for (const id of ["resident", "bed.sleepers", "nameTag", "focus"]) must(got(id).length === 0, `the empty whole draws no ${id}`);   // the bed stands, the nest alone (or with its mark while away)
   { const tag = got("nameTag", "chrome")[0], txt = got("nameTag", "type")[0]; must(!!tag === /^resident\./.test(cur), `the name tag shows ${tag ? "" : "no "}when the ring is on ${cur}`);
-    if (tag) { must(within(tag.rect, [win[0] + 8, win[1], win[2] - 16, win[3]]), `the name tag ${tag.rect} is not 8 px inside the window ${win}`); must(tag.rect[3] === R.nameTag.h, `the name tag is ${tag.rect[3]} tall, not ${R.nameTag.h}`); must(tag.rect[2] % R.nameTag.round === 0 && tag.rect[2] >= R.nameTag.min && tag.rect[2] <= R.nameTag.max, `the name tag's width ${tag.rect[2]} is not a multiple of ${R.nameTag.round} in ${R.nameTag.min} to ${R.nameTag.max}`); }
+    if (tag) { must(within(tag.rect, [win[0] + 8, win[1], win[2] - 16, win[3]]), `the name tag ${tag.rect} is not 8 px inside the window ${win}`); must(tag.rect[3] === R.nameTag.h, `the name tag is ${tag.rect[3]} tall, not ${R.nameTag.h}`); const TP = R.nameTag.plate; must(tag.rect[2] % TP.round === 0 && tag.rect[2] >= TP.min && tag.rect[2] <= TP.max, `the name tag's width ${tag.rect[2]} is not a multiple of ${TP.round} in ${TP.min} to ${TP.max}`); }
     if (tag && txt) must(within(txt.rect, tag.rect), `the name ${txt.rect} leaves its tag ${tag.rect}`); }
   for (const r of got("strip", "painted")) must(r.rect[2] === 0 || eq(r.rect, R.strip.rect), `the strip's plate ${r.rect} is not ${R.strip.rect}`);
   must(!got("strip", "chrome").length, "the strip draws no fill or edge (fix 2 F1)");
@@ -42,7 +42,7 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0, figs 
   for (const r of got("focus")) must(within(r.rect, [0, 0, 1024, 600]), `the ring ${r.rect} leaves the screen`);
   // fix 14, rule 5: a tile's ring is the tile as drawn (lifted) grown by 5
   if (/^tile\./.test(cur) && got("focus").length) { const ring = got("focus")[0].rect, tiles = regions.filter((x) => /^tile\./.test(x.id) && x.layer === "chrome").map((x) => [x.rect[0] - 5, x.rect[1] - 5, x.rect[2] + 10, x.rect[3] + 10]); must(tiles.some((b) => eq(ring, b)), `the ${cur} ring ${ring} is not a tile as drawn grown by 5`); }
-  for (const t of type) must([16, 20, 28].includes(t.px), `"${t.text}" is set at ${t.px} px`);
+  for (const t of type) must([16, 1016, 20, 28].includes(t.px), `"${t.text}" is set at ${t.px} px`);
   for (const r of regions.filter((x) => x.layer === "type" && x.id !== "nameTag" && within(x.rect, [0, 40, 1024, 520]))) out.push(`the whole sets a word (${r.id}) in the window or the strip: no word there but the name tag`);
   return out;
 }

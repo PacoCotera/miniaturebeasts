@@ -118,10 +118,9 @@
    "h": 32,
    "px": 20,
    "weight": 500,
-   "pad": 12,
-   "round": 8,
-   "min": 80,
-   "max": 224,
+   "plate": {"min": 80, "max": 224, "pad": 12, "round": 8},
+   "under": 24,
+   "overGap": 8,
    "lineTop": 418,
    "centre": 296,
    "w": "the name's width + 2 × pad (24), rounded up to `round` (8), at least `min` (80); the widest name (200 px at 20 px) gives `max` (224). Centred on x 296; the region is the slot it sits in",
@@ -197,7 +196,7 @@
    "text": "the mibi's code in three groups with spaces, no dots (\"3MB W21 1BB\"), live text, shareable",
    "room": "152: the widest code, \"WWW WWW WWW\", is 152 at 16 px; the notches sit 8 px after it"
   },
-  "stamp": {"rect": [872, 64, 120, 120], "plate": "plate-well-120x120", "component": "stampLabel", "look": "stampCase", "slot": "the card's own, not frame.json regions.stampSlot: 804, 400 lands on the Cross and Wild modules (592 to 1008, 376 to 472), and the card's bottom right is the plates' row (608, 200, 376, 40); the rect stays, the demotion is the stampCase look", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: nothing drawn, no size (station-layouts.md, Every state composed, 2); was the bare bone label", "fromFocal": 424},
+  "stamp": {"rect": [872, 64, 120, 120], "plate": "plate-well-120x120", "component": "stampLabel", "look": "stampCase", "slot": "the card's own, not frame.json regions.stampSlot: 804, 400 lands on the Cross and Wild modules (592 to 1008, 376 to 472), and the card's bottom right is the plates' row (608, 200, 376, 40); the rect stays, the demotion is the stampCase look", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: nothing drawn, no size (station-layouts.md, Every state composed, 2); was the bare bone label", "fromFocal": 424, "portrayed": {"slice": "spread-gilt-corner-16x16", "rect": [976, 64, 16, 16], "at": [104, 0], "sprite": "1:1, undimmed", "when": "m.portrait.state is delivered (portrayed)", "rule": "in the label's top-right corner, never over the stamp's cells: its opaque pixels stay clear of the largest stamp (104 at 880, 72) by 1 px on the diagonal (measured on the master)", "inStates": ["rest", "meet", "out"]}},
   "plates": {
    "rect": [608, 200, 376, 40],
    "component": "list",
@@ -268,12 +267,8 @@
    "word": [16, 12],
    "lamp": null,
    "faces": {
-    "size": [24, 24],
-    "pitch": 32,
-    "perRow": 7,
     "max": 11,
-    "oneRow": [16, 56],
-    "twoRows": [[16, 38], [16, 64]],
+    "forms": {"oneRow": {"upTo": 7, "first": [608, 432, 24, 24], "pitch": [32, 0], "grid": [7, 1]}, "twoRows": {"upTo": 11, "first": [608, 414, 24, 24], "pitch": [32, 26], "grid": [7, 2]}},
     "slice": "face-{species}-24",
     "rule": "one face a partner (an adult or an elder of its species, not itself), in bay order: up to seven in one row at y 56; eight to eleven in two rows of up to seven, at y 38 and 64",
     "none": "nothing drawn",
@@ -338,6 +333,7 @@
   "story",
   "code",
   "stamp",
+  "stamp.portrayed",
   "plates",
   "door",
   "portrait (its frame, then its picture)",
@@ -423,21 +419,23 @@
    "hatch": "resident, the new mibi, in state meet (incubator.json handoff)",
    "homeMeet": "resident, the new mibi, in state meet (Home's ✓ Meet)",
    "homeResident": "resident, the mibi looked at (Home's ✓ Look at, straight to this level; ← then goes to the whole)",
-   "visit": "resident, the mibi visited (the Book's ✓ Visit, a jump)",
+   "visit": "resident, the mibi visited (a jump)",
    "backFromCross": "cross: the target that led there",
    "backFromSitting": "portrait: ← from the sitting's pose step (sitting.json keys.back)",
    "sittingBegun": "portrait: the sitting's begin lands here, the module in its painting state (sitting.json events.begin)",
+   "backFromPortrait": "portrait",
    "namerClosed": "resident after naming from the meet; name after Rename"
   },
   "graph": {
    "fallback": "none",
    "resident": {"right": ["name", "species"], "down": "tile.shown", "left": "none", "up": "none"},
    "name": {"right": "species", "up": ["resident", "none"], "left": ["resident", "none"], "down": "tile.shown"},
-   "species": {"left": ["name", "resident"], "up": ["name", "resident"], "down": "plate.0", "right": "none"},
+   "species": {"left": ["name", "resident"], "up": ["name", "resident"], "down": "family", "right": "none"},
+   "family": {"up": "species", "down": "plate.0", "left": ["name", "resident"], "right": "none"},
    "plate": {
     "left": [{"nearestIn": "plate", "ahead": true}, "resident", "name"],
     "right": [{"nearestIn": "plate", "ahead": true}, "none"],
-    "up": "species",
+    "up": "family",
     "down": {"nearestIn": "top"}
    },
    "top": {
@@ -474,7 +472,8 @@
     "present": "rest and out (in the meet the ribbon stands there and is not a target)",
     "enabled": "always: any housed mibi may be renamed, at home, bonded or out with the Companion; never a released one"
    },
-   "species": {"group": "species", "shape": { "rect": 0, "chip": 4 }, "box": "the line's text and guide mark as drawn", "lift": 0, "enabled": "doorOpen(book); until slot 8 read-only (no ✓ cap, bottomLine.species.shut)"},
+   "species": {"group": "species", "shape": { "rect": 0, "chip": 4 }, "box": "the line's text and guide mark as drawn", "lift": 0, "enabled": "always: ✓ Open the guide"},
+   "family": {"group": "family", "shape": { "rect": 0, "chip": 4 }, "box": "the story's origin lines as drawn (a founder's one line, a bred mibi's two; the memory line is not part of it): x 608, y 88, the widest of them clipped to 248, 24 px a line (the props' focus target names its lines)", "lift": 0, "present": "rest, meet and out", "enabled": "always, as the species word (the door rule of `species`): ✓ See the family", "ruling": "UI/UX (T-20261023-293): the card's one statement of lineage; its own group, so the graph can give it the edges the ruling names"},
    "plate": {
     "group": "plate",
     "id": "plate.<i>, i from 0 in ring order",
@@ -495,7 +494,7 @@
     "shape": { "rect": 6 },
     "box": "regions.portrait.rect",
     "lift": 2,
-    "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting; and doorOpen(sitting) (until slot 9 read-only, bottomLine.portrait.shut)"
+    "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting; and doorOpen(sitting) (read-only with bottomLine.portrait.shut only while nav.mjs BUILT lacks sitting; listed since S3)"
    },
    "cross": {
     "group": "low",
@@ -524,13 +523,18 @@
    {"from": "name", "key": "down", "to": "tile.shown"},
    {"from": "species", "key": "left", "to": "name"},
    {"from": "species", "key": "up", "to": "name"},
-   {"from": "species", "key": "down", "to": "plate.0"},
+   {"from": "species", "key": "down", "to": "family"},
+   {"from": "family", "key": "up", "to": "species"},
+   {"from": "family", "key": "down", "to": "plate.0"},
+   {"from": "family", "key": "left", "to": "name"},
+   {"from": "family", "key": "right", "to": "family"},
+   {"state": "meet", "from": "family", "key": "left", "to": "resident", "note": "no name tag in the meet"},
    {"from": "plate.0", "key": "left", "to": "resident"},
    {"from": "plate.0", "key": "right", "to": "plate.1"},
    {"from": "plate.3", "key": "right", "to": "plate.3", "chapters": 4},
    {"from": "plate.0", "key": "down", "to": "door"},
    {"from": "plate.3", "key": "down", "to": "door"},
-   {"from": "plate.2", "key": "up", "to": "species"},
+   {"from": "plate.2", "key": "up", "to": "family"},
    {"from": "door", "key": "right", "to": "portrait"},
    {"from": "door", "key": "left", "to": "resident"},
    {"from": "door", "key": "down", "to": "cross"},
@@ -564,8 +568,8 @@
   },
   "name": {"action": "strings.rename", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); out, strings.out"},
   "tile": "as resident, for the tile's mibi",
-  "species": {"action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → book, spread guide; ← there reads Library",
-   "shut": {"action": null, "context": "strings.shut.guide", "when": "doorOpen(book) false (until slot 8)"}},
+  "species": {"action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → library, Level 1 with the ring on this species"},
+  "family": {"action": "strings.family", "context": "none (the ruling names no subject)", "jump": "frame.json navigation.jumps: habitat → library.family, close on the shown mibi; ← there returns to Level 2 of its species"},
   "plate": {
    "read": {"action": null, "context": "strings.plateRead"},
    "unread": {
@@ -593,8 +597,8 @@
    },
    "blocked": {"action": null, "context": "sitting.portraitBlock's words: strings.noPose, strings.noPlace, strings.portrayed; out, strings.portraitOut"},
    "painting": {"action": null, "context": "strings.portraitOnWay"},
-   "portrayed": {"action": null, "context": "strings.portrayed"},
-   "shut": {"action": null, "context": "strings.shut.portrait", "when": "state held with sitting.portraitBlock empty and doorOpen(sitting) false (until slot 9)"}
+   "portrayed": {"action": "strings.lookPortrait", "context": "strings.portrayed", "when": "portrayed, its 528×392 opening kept (sitting-props portraitOffered: portrait-source.mjs portraitOpening) and the mibi not away; else action null"},
+   "shut": {"action": null, "context": "strings.shut.portrait", "when": "state held with sitting.portraitBlock empty and doorOpen(sitting) false (unreached since S3: nav.mjs BUILT lists sitting)"}
   },
   "cross": {
    "adult": {"action": "strings.cross", "context": "strings.partners"},
@@ -695,10 +699,10 @@
   "shut": {
    "cross": "crossing is not open yet",
    "portrait": "portraits are not open yet",
-   "guide": "the guide is not open yet",
    "note": "context slot 208 px at 16, six words or fewer, no digits: 177, 182, 188 px; until slots 7, 8, 9 (doorOpen)"
   },
   "guide": "Open the guide",
+  "family": "See the family",
   "every": "every {Species}",
   "plateRead": "{Chapter}, read",
   "read": "Read {Chapter}",

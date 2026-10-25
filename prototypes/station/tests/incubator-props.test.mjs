@@ -1,5 +1,6 @@
 // The Incubator's props (lvgl-switch.md §2.1, §4 R; incubator.json): the view the face takes, views/incubator-props.mjs, in Node. The four states (empty, growing, ready, hatch), the leaves of the wait, the rail's tabs, the bottom line, the budget.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -7,7 +8,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { incubatorBuild, knownChapters } from "../src/views/incubator-props.mjs";
+import { incubatorBuild as incubatorBuildUnchecked, knownChapters } from "../src/views/incubator-props.mjs";
+const incubatorBuild = lineCased(incubatorBuildUnchecked, "incubator");   // every body it builds goes through assertLineCase (report mode)
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));

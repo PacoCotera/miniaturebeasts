@@ -9,7 +9,7 @@
     "ribbon": "Meet Moss",
     "tag": false,
     "ok": "Name Moss",
-    "subject": "a young Loika",
+    "subject": "A young Loika",
     "back": "Vivarium",
     "waiting": false
    }
@@ -332,7 +332,7 @@
     "ring": "resident.8",
     "ok": "Look at Pip",
     "price": null,
-    "subject": "a young Loika",
+    "subject": "A young Loika",
     "back": "Home"
    },
    {
@@ -350,7 +350,7 @@
     "ring": "resident",
     "ok": "Greet Pip",
     "price": null,
-    "subject": "a young Loika",
+    "subject": "A young Loika",
     "back": "Vivarium"
    },
    {
@@ -367,7 +367,7 @@
     "ring": "name",
     "ok": "Rename Pip",
     "price": null,
-    "subject": "a young Loika",
+    "subject": "A young Loika",
     "back": "Vivarium"
    },
    {
@@ -382,9 +382,26 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": null,
+    "ok": "Open the guide",
     "price": null,
-    "subject": "the guide is not open yet",
+    "subject": "Every Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "family"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "family",
+    "ok": "See the family",
+    "price": null,
+    "subject": "",
     "back": "Vivarium"
    },
    {
@@ -436,7 +453,7 @@
     "ring": "resident",
     "ok": "Greet Pip",
     "price": null,
-    "subject": "a young Loika",
+    "subject": "A young Loika",
     "back": "Vivarium"
    },
    {
@@ -453,7 +470,7 @@
     "ring": "name",
     "ok": "Rename Pip",
     "price": null,
-    "subject": "a young Loika",
+    "subject": "A young Loika",
     "back": "Vivarium"
    },
    {
@@ -468,9 +485,26 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": null,
+    "ok": "Open the guide",
     "price": null,
-    "subject": "the guide is not open yet",
+    "subject": "Every Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "family"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "family",
+    "ok": "See the family",
+    "price": null,
+    "subject": "",
     "back": "Vivarium"
    },
    {
@@ -504,7 +538,7 @@
     "ring": "door",
     "ok": "Take Pip with you",
     "price": null,
-    "subject": "goes with you now",
+    "subject": "Goes with you now",
     "back": "Vivarium"
    },
    {
@@ -527,7 +561,7 @@
     "ring": "door",
     "ok": null,
     "price": null,
-    "subject": "goes with you now",
+    "subject": "Goes with you now",
     "back": "Vivarium"
    },
    {
@@ -544,7 +578,7 @@
     "ring": "cross",
     "ok": null,
     "price": null,
-    "subject": "crosses once adult",
+    "subject": "Crosses once adult",
     "back": "Vivarium"
    },
    {
@@ -561,7 +595,7 @@
     "ring": "wild",
     "ok": null,
     "price": null,
-    "subject": "not until it is adult",
+    "subject": "Not until it is adult",
     "back": "Vivarium"
    },
    {
@@ -579,7 +613,7 @@
     "ring": "wild",
     "ok": null,
     "price": null,
-    "subject": "not until it is adult",
+    "subject": "Not until it is adult",
     "back": "Vivarium"
    },
    {
@@ -597,7 +631,7 @@
     "ring": "wild",
     "ok": null,
     "price": null,
-    "subject": "not until it is adult",
+    "subject": "Not until it is adult",
     "back": "Vivarium"
    },
    {
@@ -619,7 +653,7 @@
     "ring": "tile.8",
     "ok": "Greet Pip",
     "price": null,
-    "subject": "a young Loika",
+    "subject": "A young Loika",
     "back": "Vivarium"
    },
    {
@@ -636,7 +670,7 @@
     "ring": "tile.5",
     "ok": "Greet Tuft",
     "price": null,
-    "subject": "an adult Loika",
+    "subject": "An adult Loika",
     "back": "Vivarium"
    },
    {
@@ -653,7 +687,7 @@
     "ring": "resident",
     "ok": "Greet Tuft",
     "price": null,
-    "subject": "an adult Loika",
+    "subject": "An adult Loika",
     "back": "Vivarium"
    },
    {
@@ -670,7 +704,7 @@
     "ring": "name",
     "ok": "Rename Tuft",
     "price": null,
-    "subject": "an adult Loika",
+    "subject": "An adult Loika",
     "back": "Vivarium"
    },
    {
@@ -685,9 +719,26 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "species",
-    "ok": null,
+    "ok": "Open the guide",
     "price": null,
-    "subject": "the guide is not open yet",
+    "subject": "Every Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "family"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "family",
+    "ok": "See the family",
+    "price": null,
+    "subject": "",
     "back": "Vivarium"
    },
    {
@@ -721,7 +772,7 @@
     "ring": "door",
     "ok": "Take Tuft with you",
     "price": null,
-    "subject": "goes with you now",
+    "subject": "Goes with you now",
     "back": "Vivarium"
    },
    {
@@ -738,7 +789,7 @@
     "ring": "cross",
     "ok": null,
     "price": null,
-    "subject": "crossing is not open yet",
+    "subject": "Crossing is not open yet",
     "back": "Vivarium"
    },
    {
@@ -755,7 +806,7 @@
     "ring": "wild",
     "ok": "Return Tuft",
     "price": "❀ +2",
-    "subject": "goes back to the wild",
+    "subject": "Goes back to the wild",
     "back": "Vivarium"
    },
    {
@@ -802,7 +853,7 @@
     "ring": "resident",
     "ok": "Greet Dot",
     "price": null,
-    "subject": "an adult Loika",
+    "subject": "An adult Loika",
     "back": "Vivarium"
    },
    {
@@ -833,7 +884,7 @@
     "screen": "vivarium",
     "focus": "resident.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    },
    {
@@ -848,7 +899,7 @@
     "screen": "vivarium",
     "focus": "tile.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    },
    {
@@ -863,7 +914,7 @@
     "screen": "vivarium",
     "focus": "resident.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    },
    {
@@ -878,7 +929,7 @@
     "screen": "vivarium",
     "focus": "tile.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    },
    {
@@ -893,7 +944,7 @@
     "screen": "vivarium",
     "focus": "tile.2",
     "ok": "Look at Moss",
-    "subject": "a young Loika",
+    "subject": "A young Loika",
     "back": "Home"
    },
    {
@@ -908,7 +959,7 @@
     "screen": "vivarium",
     "focus": "tile.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    },
    {
@@ -917,7 +968,7 @@
     "screen": "vivarium",
     "focus": "tile.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    },
    {
@@ -926,7 +977,7 @@
     "screen": "vivarium",
     "focus": "tile.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    },
    {
@@ -935,7 +986,7 @@
     "screen": "vivarium",
     "focus": "tile.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    },
    {
@@ -944,7 +995,7 @@
     "screen": "vivarium",
     "focus": "tile.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    },
    {
@@ -960,7 +1011,7 @@
     "screen": "vivarium",
     "focus": "resident.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    }
   ],
@@ -978,7 +1029,7 @@
     "screen": "habitat",
     "focus": "vivarium",
     "ok": "Greet Dot",
-    "subject": "an adult Loika",
+    "subject": "An adult Loika",
     "back": "Vivarium"
    },
    {
@@ -1001,7 +1052,7 @@
     "screen": "vivarium",
     "focus": "resident.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    },
    {
@@ -1026,7 +1077,7 @@
     "screen": "vivarium",
     "focus": "tile.1",
     "ok": "Look at Dot",
-    "subject": "out with the Companion",
+    "subject": "Out with the Companion",
     "back": "Home"
    },
    {
@@ -1035,7 +1086,7 @@
     "screen": "cargo",
     "focus": "vivarium",
     "ok": null,
-    "subject": "the bay is empty",
+    "subject": "The bay is empty",
     "back": null
    },
    {
@@ -1051,7 +1102,7 @@
     "screen": "vivarium",
     "focus": "resident.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "back": "Home"
    }
   ]

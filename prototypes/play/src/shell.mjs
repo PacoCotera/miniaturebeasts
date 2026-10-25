@@ -5,6 +5,8 @@
 // Lengths are in lp: one lp is `f` CSS px, so every edge lands on a whole physical pixel. Colours are the Station's 14.
 
 import { canvasPainter, createPaper, caddyLines } from "./caddy.mjs";   // the Caddy's e-paper: play-page chrome like the rest, fed by the Station's mb-caddy
+import { baseK, baseTier, fitChoice, chosen, clampZ, Z_MAX } from "./fit.mjs";   // the size: z device px per lp and its tier
+import { stampText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
 
 const params = new URLSearchParams(location.search), TEST = params.has("test"), DEV = params.has("dev"), SEED = params.get("seed");
 const $ = (id) => document.getElementById(id);
@@ -12,13 +14,19 @@ const SEAT_MS = 160, EASE = [0, 0, 0.2, 1];
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // ---- the pixel rule ----
-// The faces keep the pixel rule: one lp is f = k / devicePixelRatio CSS px. The page chrome (keys, bar, trays, gaps) is in CSS px, snapped to whole physical pixels; the thresholds are CSS px of the window, the bar included.
-let dpr = 1, k = 1, f = 1, CW = 1920, CH = 1080, tier = "row";   // tier: "stack", "row" or "narrow"
+// The faces keep the pixel rule: one lp is f = k / devicePixelRatio CSS px, k = z, a whole number of device px per lp (src/fit.mjs). The page chrome (keys, bar, trays, gaps) is in CSS px, snapped to whole
+// physical pixels; the thresholds are CSS px of the window, the bar included. k0 is the faces' own scale (each device draws its screen at max(1, floor(dpr)) device px per CSS px); the shell scales a frame by
+// z / k0 as a whole, so a face pixel stays a z × z block. ?test keeps z = k0 and today's tiers.
+const Z_KEY = "mb-play-z";
+const loadZ = () => { try { const v = localStorage.getItem(Z_KEY); return v == null ? null : clampZ(v); } catch { return null; } };
+const saveZ = (v) => { try { if (v == null) localStorage.removeItem(Z_KEY); else localStorage.setItem(Z_KEY, String(v)); } catch { /* no storage: the choice lasts the visit */ } };
+let dpr = 1, k = 1, k0 = 1, f = 1, CW = 1920, CH = 1080, tier = "row", zSet = TEST ? null : loadZ();   // tier: "stack", "row" or "narrow"; zSet: the chosen z, null for fit
 function metrics() {
-  dpr = window.devicePixelRatio || 1; k = Math.max(1, Math.floor(dpr)); f = k / dpr; CW = innerWidth; CH = innerHeight;
+  dpr = window.devicePixelRatio || 1; k0 = baseK(dpr); CW = innerWidth; CH = innerHeight;
+  const c = TEST ? { tier: baseTier(CW, CH), z: k0 } : zSet != null ? chosen(zSet, CW, CH, dpr) : fitChoice(CW, CH, dpr);
+  k = c.z; tier = c.tier; f = k / dpr;
   document.documentElement.style.setProperty("--f", String(f));
   document.documentElement.style.setProperty("--mark", (24 * Math.max(1, Math.round(dpr))) / dpr + "px");   // the 24 px room marks at 24 × n device px, nearest-neighbour: never smoothed, never a fractional step
-  tier = CW < 1064 ? "narrow" : CW >= 1878 && CH >= 800 ? "row" : "stack";
 }
 const px = (lp) => Math.round(lp * k) / dpr + "px";
 const pxUp = (lp) => Math.ceil(Math.round(lp * k) / dpr * 64) / 64 + "px";   // a size, up to Chromium's next 1/64 CSS px layout unit
@@ -26,8 +34,13 @@ const S = (v) => Math.round(v * dpr) / dpr;   // a CSS length snapped to a whole
 const Z = (v) => Math.ceil(v * dpr - 1e-6) / dpr;   // a CSS size rounded up to a whole physical pixel (never below the minimum)
 const Zc = (v) => Math.ceil(Z(v) * 64) / 64;   // and up to Chromium's next 1/64 layout unit
 // iframes, shells and trays go by transform with their sizes rounded up to the next layout unit: nested left/top values floor to 1/64 px and would put a device's screen off the whole device pixel
+// a frame keeps the size its face draws at (k0) and is scaled by z / k0 from its top left: whole blocks of device pixels
+const placeFrame = (el, x, y, w, h) => { const s = el.style, sc = k / k0;
+  s.left = "0px"; s.top = "0px"; s.transform = "translate(" + px(x) + "," + px(y) + ")" + (sc !== 1 ? " scale(" + sc + ")" : ""); s.transformOrigin = sc !== 1 ? "0 0" : "";
+  s.width = Math.ceil(Math.round(w * k0) / dpr * 64) / 64 + "px"; s.height = Math.ceil(Math.round(h * k0) / dpr * 64) / 64 + "px"; };
 const place = (el, x, y, w, h) => { const s = el.style;
-  if (el.tagName === "IFRAME" || el.classList.contains("shell")) { s.left = "0px"; s.top = "0px"; s.transform = "translate(" + px(x) + "," + px(y) + ")"; if (w != null) s.width = pxUp(w); if (h != null) s.height = pxUp(h); return; }
+  if (el.tagName === "IFRAME") { placeFrame(el, x, y, w, h); return; }
+  if (el.classList.contains("shell")) { s.left = "0px"; s.top = "0px"; s.transform = "translate(" + px(x) + "," + px(y) + ")"; if (w != null) s.width = pxUp(w); if (h != null) s.height = pxUp(h); return; }
   s.left = px(x); s.top = px(y); if (w != null) s.width = px(w); if (h != null) s.height = px(h); };
 // the same in CSS px (page chrome)
 const placeC = (el, x, y, w, h, tf) => { const s = el.style;
@@ -119,6 +132,7 @@ function trayPlan(dev, T) {
 const bar = $("bar"), stage = $("stage"), shS = $("shStation"), shC = $("shCompanion"), ring = $("ring"), cradle = $("cradle"), slot = $("slot"), lamp = $("lamp"), dev = $("dev"), keysPanel = $("keysPanel");
 const trayEl = { station: $("rowStation"), companion: $("rowCompanion") };
 const tabs = { station: $("tabStation"), companion: $("tabCompanion") }, dockCtl = $("dockCtl"), keysBtn = $("keysBtn"), devBtn = $("devBtn"), note = $("note");
+const zDown = $("zDown"), zFit = $("zFit"), zUp = $("zUp"), stamp = $("stamp");
 const GAPV = 24, TOP = 16, BOT = 16;   // CSS px: between blocks, from the bar, below the last block
 const geom = { station: null, companion: null, caddy: null, height: 0, rows: { station: 1, companion: 1 } };   // block boxes in stage CSS px, for the scroll and the checks
 
@@ -128,10 +142,12 @@ function layout() {
   // the bar: 40 CSS px, controls 40 tall
   const tabW = narrow ? 104 : 124, tw = narrow ? [12, 124] : [12, 144];
   ["station", "companion"].forEach((d, i) => { placeC(tabs[d], tw[i], 0, tabW, 40); tabs[d].classList.toggle("on", owner === d); tabs[d].setAttribute("aria-pressed", String(owner === d)); });
-  const dockX = narrow ? CW - 232 : CW - 436, dockW = narrow ? 40 : 168;
+  // from the right: the developer tools' place, the size control (not under ?test), Keys ?, the Dock
+  const zw = TEST ? 0 : 152 + 8, dockX = (narrow ? CW - 232 : CW - 436) - zw, dockW = narrow ? 40 : 168;
   placeC(dockCtl, dockX, 0, dockW, 40);
-  placeC(keysBtn, narrow ? CW - 184 : CW - 260, 0, narrow ? 64 : 92, 40);
+  placeC(keysBtn, (narrow ? CW - 184 : CW - 260) - zw, 0, narrow ? 64 : 92, 40);
   placeC(devBtn, narrow ? CW - 112 : CW - 160, 0, narrow ? 100 : 148, 40);
+  if (!TEST) layoutSize((narrow ? CW - 112 : CW - 160) - zw);
   devBtn.textContent = narrow ? "Tools" : "Developer tools"; devBtn.setAttribute("aria-label", "Developer tools"); devBtn.classList.toggle("on", devOpen); devBtn.setAttribute("aria-pressed", String(devOpen));
   layoutDock(narrow);
   // the bar's note: the narrow tier's line, or for 4000 ms after a seat, a lift or the opening's end, the Caddy's two lines as one (T-20261016-109)
@@ -145,11 +161,12 @@ function layout() {
   geom.rows = { station: planS.rows, companion: planC.rows };
   const y0 = narrow ? 28 : TOP;
   let xS, xC, yS = y0, yC, caddyX, caddyY, h;
+  const centre = (w) => (w <= cwid ? Math.floor((cwid - w) / 2) : 12);   // centred, or 12 in from the left when a chosen z is wider than the window (the page scrolls sideways)
   if (narrow) { xS = 12; xC = Math.max(12, Math.floor((cwid - cw) / 2)); yC = y0; }
-  else if (row) { const tot = sw + GAPV + cw, x0 = Math.floor((cwid - tot) / 2); xS = x0; xC = x0 + sw + GAPV; yC = y0; }
-  else { xS = Math.floor((cwid - sw) / 2); xC = Math.floor((cwid - cw) / 2); yC = yS + shH + trS + GAPV; }
+  else if (row) { const tot = sw + GAPV + cw, x0 = centre(tot); xS = x0; xC = x0 + sw + GAPV; yC = y0; }
+  else { xS = centre(sw); xC = centre(cw); yC = yS + shH + trS + GAPV; }
   const cradleY = yC + shH + trC;
-  if (row) { caddyX = xS + sw - caddyW; caddyY = yS + shH + trS + GAPV; } else { caddyX = Math.floor((cwid - caddyW) / 2); caddyY = cradleY + cradleH + GAPV; }
+  if (row) { caddyX = xS + sw - caddyW; caddyY = yS + shH + trS + GAPV; } else { caddyX = centre(caddyW); caddyY = cradleY + cradleH + GAPV; }
   h = narrow ? Math.max(yS + shH + trS, yC + shH + trC + cradleH) + BOT : Math.max(row ? caddyY + caddyH : 0, cradleY + cradleH, row ? 0 : caddyY + caddyH) + BOT;
   geom.station = { x: xS, y: yS, w: sw, h: shH + trS }; geom.companion = { x: xC, y: yC, w: cw, h: shH + trC }; geom.height = h;
   const seatPx = seatOff * f;
@@ -173,6 +190,10 @@ function layout() {
   const g = owner === "station" ? geom.station : geom.companion, top = owner === "station" ? g.y : g.y + seatPx;
   ring.classList.remove("hidden"); placeC(ring, g.x - 3 * f, top - 3 * f, g.w + 6 * f, g.y + g.h - top + 6 * f, true);
   spacer.style.top = Math.max(0, Math.ceil(h) - 1) + "px";
+  const right = narrow ? (owner === "station" ? xS + sw : xC + cw) : Math.max(xS + sw, xC + cw, caddyX + caddyW);
+  spacer.style.left = !TEST && right + 12 > cwid ? Math.ceil(right + 12) - 1 + "px" : "";   // a chosen z wider than the window: the page scrolls sideways to the right margin
+  // the build stamp: page chrome in the page's bottom margin, under every block, right-aligned to the content (not under ?test)
+  if (!TEST) placeC(stamp, 0, h - BOT + 2, right, 12, true);
   // the developer tools
   dev.classList.toggle("hidden", !devOpen); dev.classList.toggle("column", row);
   if (row) placeC(dev, CW - 332, 52, 320, CH - 64); else { const w = tier === "stack" ? 360 : Math.min(360, CW); placeC(dev, CW - w, 40, w, CH - 40); }
@@ -183,6 +204,17 @@ function layout() {
 function dockTitle() {
   const c = caddy; return !c.canDock ? "The Companion has no world yet" : c.docked ? "Lift the Companion from the Caddy" : c.crates > 0 ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion in the Caddy";
 }
+// the size control: − / fit / +, the middle showing ×z (and "fit" while the fit is on)
+function layoutSize(x) {
+  placeC(zDown, x, 0, 40, 40); placeC(zFit, x + 44, 0, 64, 40); placeC(zUp, x + 112, 0, 40, 40);
+  const fit = zSet == null; zFit.textContent = (fit ? "fit ×" : "×") + k; zFit.classList.toggle("on", fit); zFit.setAttribute("aria-pressed", String(fit));
+  zFit.setAttribute("aria-label", "Fit to the window, now ×" + k); zFit.title = fit ? "Fitted to the window: ×" + k : "Fit to the window (now ×" + k + ")";
+  zDown.setAttribute("aria-disabled", String(k <= 1)); zUp.setAttribute("aria-disabled", String(k >= Z_MAX));
+}
+function setZ(v) {   // v: a z, or null for fit; the choice is kept per browser, fit clears it
+  zSet = v == null ? null : clampZ(v); saveZ(zSet); layout(); reveal(owner, true);
+}
+const zStep = (d) => { if (TEST) return; const n = clampZ(k + d); if (n !== k) setZ(n); };
 function layoutDock(iconOnly) {
   const c = caddy, d = c.docked, crates = !d && c.canDock && c.crates > 0, word = d ? "Lift" : "Dock";
   const mark = $("dockMark"), wordEl = $("dockWord"), hint = $("dockHint"), dot = $("dockDot");
@@ -239,6 +271,8 @@ function pageKey(e) {
   else if (e.shiftKey && e.code === "KeyT") toggleDev();
   else if (e.shiftKey && e.code === "Slash") toggleKeys();
   else if (e.code === "Escape" && keysOpen) toggleKeys(false);
+  else if (!TEST && !e.shiftKey && (e.code === "Minus" || e.code === "NumpadSubtract")) zStep(-1);
+  else if (!TEST && (e.code === "Equal" || e.code === "NumpadAdd")) zStep(1);   // = or + (Shift+=)
   else hit = false;
   if (hit) { e.preventDefault(); e.stopImmediatePropagation(); }
 }
@@ -252,6 +286,8 @@ function toggleDev(on = !devOpen) { devOpen = on; layout(); try { frames.station
 devBtn.addEventListener("click", () => { toggleDev(); giveKeys(owner); });
 function toggleKeys(on = !keysOpen) { keysOpen = on; layout(); }
 keysBtn.addEventListener("click", () => toggleKeys());
+const barGiveBack = (b) => { if (document.activeElement === b) b.blur(); giveKeys(owner); };
+zDown.addEventListener("click", () => { zStep(-1); barGiveBack(zDown); }); zUp.addEventListener("click", () => { zStep(1); barGiveBack(zUp); }); zFit.addEventListener("click", () => { setZ(null); barGiveBack(zFit); });
 
 // ---- the Dock control, the cradle and the seat (X3) ----
 const live = $("live"); const say = (t) => { live.textContent = ""; setTimeout(() => { live.textContent = t; }, 30); };
@@ -311,15 +347,14 @@ buildKeys();
 for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { attach(d); if (d === "station") { if (devOpen) toggleDev(true); if (!gotLoadOwner) { gotLoadOwner = true; setOwner("station"); } } });
 let gotLoadOwner = false;
 frames.station.src = stationUrl; frames.companion.src = companionUrl;
-if (DEV) { devOpen = true; for (const id of ["devBtn", "stamp", "helpDevK", "helpDevD"]) $(id).classList.remove("hidden"); }   // the Developer tools button, its help row and the build stamp show with ?dev only; the Shift+T key stays
+if (DEV) { devOpen = true; for (const id of ["devBtn", "helpDevK", "helpDevD"]) $(id).classList.remove("hidden"); }   // the Developer tools button and its help row show with ?dev only; the Shift+T key stays
+if (!TEST) for (const id of ["zDown", "zFit", "zUp", "stamp", "helpZK", "helpZD"]) $(id).classList.remove("hidden");   // the size control, its keys and the build stamp: everywhere but ?test, which keeps today's page
 let dprQuery = null;
 function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr); dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`); dprQuery.addEventListener("change", onDpr); }
 function onDpr() { layout(); armDpr(); }
 armDpr(); window.addEventListener("resize", layout);
-fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => {
-  const short = j.short || String(j.commit || "").slice(0, 7), d = new Date(j.built); let t = ""; if (!isNaN(d)) t = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Mexico_City", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
-  $("stamp").textContent = short ? "build " + short + (t ? " · " + t : "") : "local build";
-}).catch(() => { $("stamp").textContent = "local build"; });
+// the build stamp from the site's build.json: "build <short> · YYYY-MM-DD HH:MM Mexico City"; "build local" with no build.json
+fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => { stamp.textContent = stampText(j); }).catch(() => { stamp.textContent = "build local"; });
 layout(); reveal(owner, true);   // the page opens revealed for the device with the keys (the Station on a fresh load); no scroll position is restored
 // for the play-page journey: read-only views of the shell's state
-window.__play = { get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get tier() { return tier; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get awaiting() { return awaiting; }, get pressed() { return pressed; }, get caddySheet() { return { up: tier !== "narrow", lines: paper.lines, refreshes: paper.refreshes, note: noteCaddy }; }, rects, frames };
+window.__play = { get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get tier() { return tier; }, get z() { return k; }, get fit() { return zSet == null; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get awaiting() { return awaiting; }, get pressed() { return pressed; }, get caddySheet() { return { up: tier !== "narrow", lines: paper.lines, refreshes: paper.refreshes, note: noteCaddy }; }, rects, frames };

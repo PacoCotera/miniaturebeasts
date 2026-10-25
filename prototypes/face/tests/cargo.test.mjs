@@ -17,6 +17,7 @@ import { cargoBuild } from "../../station/src/views/cargo-props.mjs";
 import { INTENTS } from "../../station/src/intents/index.mjs";
 import { departures } from "../tools/cargo-regions.mjs";
 import { dirty, dirtyRects } from "./dirty.mjs";
+import { listPitch } from "../../ui/specs/derive.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), cargoSpec = J("cargo"), homeSpec = J("home");
@@ -336,8 +337,11 @@ test("the beats at 0.2, 1.0, 2.0, 3.0 and 3.5 s: the ribbon from 500, the link l
   stand(f, t0 + 1700); assert.ok(nb("mibi.0.d"), "the first mibi dithers in at 1700"); assert.equal(nb("mibi.0")[2], 0, "its picture waits for the dither's end"); assert.equal(nb("mibi.1")[2], 0);
   const hop = []; for (let q = 0; q < 12; q++) { stand(f, t0 + 1900 + q * 16); const x = nb("mibi.0"); if (x && x[2] > 0) hop.push(x[1]); } assert.ok(Math.min(...hop) < Math.max(...hop), "one hop: " + hop); assert.equal(Math.max(...hop) - Math.min(...hop) <= 4, true, "at most 4 px up");
   stand(f, t0 + 2000); assert.deepEqual(nb("mibi.0").slice(2), [304, 312]); stand(f, t0 + 2300); assert.equal(nb("mibi.0")[1], AR.mibis.byCount["2"][0][1], "after the hop it stands on its feet line");
+  stand(f, t0 + 2500); assert.deepEqual([nb("band.plate.0"), nb("band.plate.1")], [[40, 68, 16, 16], [60, 68, 16, 16]], "2.5 s: one mended plate of two turns whole, the plates 20 apart from (40, 68)"); assert.deepEqual(nb("band.words.0").slice(0, 2), [84, 66], "the words a gap after the last plate");
   stand(f, t0 + 3000); assert.equal(nb("mibi.1")[2], 304, "3.0 s: both mibis stand"); assert.ok(nb("band.face.0")[2] === 24, "the leaving face"); assert.equal(ribbonWords(), cargoSpec.strings.arrival.ribbon);
   stand(f, t0 + 3499); assert.equal(f.errors().length, 0);
+  { const g = await start(arrivalScene({ crates: 0, back: 0, mend: { free: 3, paid: 0, broke: true } }), { t0: 1000, node: true }), g0 = g.t; logOf(g); g.send({ t: "event", ...SHOW, ms: 3500, hold: 3500 }); stand(g, g0 + 2500);
+    assert.deepEqual(g.nodeBox("band.words.0")?.box.slice(0, 2), [104, 66], "a broken Probe of three: the words after the third plate"); assert.equal(g.errors().length, 0); }
 });
 test("every animation frame of the show redraws at most a quarter of the screen (153,600 px), at frames every 16 and 40 ms through 3.5 s; the worst is printed", { skip }, async () => {
   for (const step of [16, 40]) {
@@ -363,8 +367,8 @@ test("with reduced motion each beat is a cut on the host's stage (regions.arriva
 test("the choice: the strip's two cards in a plate under the bay, the ring on Open the bay, ◀ ▶ between the cards, ✓ says an intent of the panel on the focused card, ← is back, the rack stands under it, and the bay above stays visible", { skip }, async () => {
   const b = arrivalScene({ phase: "choice", back: 2 }), f = await start(b, { t0: 1000, node: true }); logOf(f); const S0 = frameSpec.regions.panel.strip;
   assert.equal(b.props.overlay.form, "strip"); const lg = logOf(f) ?? (f.frame(f.t + 16), logOf(f)); frames(f);
-  const rect = (id) => f.nodeBox(id)?.box; assert.deepEqual(rect("card.0.well"), [S0.cards.x, S0.cards.y, S0.cards.w, S0.cards.h]); assert.deepEqual(rect("card.1.well"), [S0.cards.x + S0.cards.w + S0.cards.gap, S0.cards.y, S0.cards.w, S0.cards.h]);
-  assert.deepEqual(rect("card.0.picture").slice(0, 2), [S0.cards.x + S0.picture.at[0], S0.cards.y + S0.picture.at[1]]); assert.deepEqual(rect("card.0.picture").slice(2), [96, 96]);
+  const rect = (id) => f.nodeBox(id)?.box; const C0 = listPitch(S0.cards, 2, 0); assert.deepEqual(rect("card.0.well"), C0); assert.deepEqual(rect("card.1.well"), listPitch(S0.cards, 2, 1));
+  assert.deepEqual(rect("card.0.picture").slice(0, 2), [C0[0] + S0.picture.at[0], C0[1] + S0.picture.at[1]]); assert.deepEqual(rect("card.0.picture").slice(2), [96, 96]);
   assert.equal(f.nodeBox("apron"), null, "the apron has given way"); assert.equal(f.nodeBox("mibi.0"), null);
   let [m] = key(f, "right"); assert.deepEqual([m.t, m.screen, m.target], ["focus", "panel", "card.later"]); [m] = key(f, "left"); assert.equal(m.target, "card.open");
   [m] = key(f, "confirm"); assert.deepEqual([m.t, m.screen, m.target, m.verb], ["intent", "panel", "card.open", "confirm"]); [m] = key(f, "back"); assert.deepEqual([m.screen, m.verb], ["panel", "back"]);

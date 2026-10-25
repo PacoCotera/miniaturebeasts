@@ -1,119 +1,102 @@
-/* The Library spread (library.json `spread`; station-layouts.md "Library spread"): the words that draw it from the spec and the props' regions, in draw order, then the focus ring. The stage (the field journal open across it, its
-   labelled placeholder until the master is signed), then the sixteen frames of `spreadPage` on the two pages: `listPitch` with no forms over each page's places, n = 8 always (an unmet frame is still a place). A frame's nodes have
-   stable ids (frame.<SNN>.picture, .rule, .roundel, .name, .gilt, .seed.0 to .seed.3, .seal) and are tagged with the page's region; a part the status does not give is hidden, never destroyed. Nothing clips; the pad's graph is
-   `spread.focus.graph` on the boxes this file drew, and the ring draws last, over the gilt corner and the seal. The Book (a state of the library screen) is drawn by the frame's notBuilt composition. */
+/* The Library's Level 1 (library.json `l1`): a binding table. The stage (kit_stage: the flat libGround, the ground master over it once sent), then the sixteen cells on `l1.grid` (kit_tiles), each the same ten parts in the same order
+   whatever its state (found, met or unmet): the cell (kit_bezel), the picture, the plate rule (kit_hairline, dashed), the species mark, the name (v_line through v_clip), the face chip, the wish mark, the glint (kit_glint), the seed
+   and the lip (kit_hairline). A part the state does not show is a node of no size (the dashed rule keeps its box with no ops, kit_hairline's hidden form; a hidden glint is the star's slot, as a composed node has a size). Every rect, colour and picture id is the spec's; the props name the species,
+   their states, names, pictures and flags. The ring (word_focusRing on `l1.focus.targets.cell`) is drawn last; the pad walks `l1.focus.graph` over the met and found cells. The glints fade on the face's own clock, from the frame
+   Level 1 was first drawn in (solid under reduced motion). */
 #include "screens.h"
 #include "../vocab/vocab.h"
 #include "../vocab/words.h"
+#include "../anim/anim.h"
 #include "../prim/prim.h"
 #include "../spec/spec.h"
-#include "../bridge/wire.h"
-#include "../layout/layout.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #define S "library"
-#define PAGE_ITEMS 8
-static int li(const char *p, int d) { return spec_int(S, p, d); }
-static int lk(const char *base, int k) { return spec_int(S, v_fmt("%s.%d", base, k), 0); }
-static const char *lcol(const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(S, p, o, 24); return o; }
-static const char *fcol(const char *p) { static char b[4][24]; static int k; char *o = b[k++ & 3]; spec_str("frame", p, o, 24); return o; }
-static const char *lstr(const char *p) { static char b[8][96]; static int k; char *o = b[k++ & 7]; spec_str(S, p, o, 96); return o; }
-static int has(const char *id) { return id && *id && wire_has_asset(id); }
-static const char *cur(void) { return v_focus_cur_at("focus.cur"); }
+#define CELLS 16
+#define P(part, key) v_fmt("l1.cell.%s.%s", part, key)
 
-/* the place of the frame k of a page (0 left, 1 right): the page's `places` by listPitch, 8 items, no forms */
-static void frame_rect(int page, int k, int out[4]) { layout_list_pitch(S, page ? "spread.regions.rightPage.places" : "spread.regions.leftPage.places", PAGE_ITEMS, k, out); }
-static const char *item_path(int page, int k) { return v_fmt("regions.%s.items.%d", page ? "rightPage" : "leftPage", k); }
+/* ---- the glints' clock: from the first frame Level 1 is drawn in; again from the start when another screen shows ---- */
+static uint32_t g_t0; static int g_have, g_level = -1;
+void library_hidden(void) { g_have = 0; g_level = -1; }
+static int any_glint(void) { for (int i = 0, n = v_plen("regions.cells"); i < n; i++) if (v_pbool(v_fmt("regions.cells.%d.glint", i), 0)) return 1; return 0; }
+static int on_l1(void) { return strcmp(v_pstr("screen"), S) == 0 && !v_pbool("idle", 0) && spec_has(S) && spec_len("props", "regions") >= 0; }
+int library_l1_tick(uint32_t now) { return on_l1() && g_have && v_pbool("motion", 1) && any_glint() && kit_glint_level(S, "l1.cell.glint", now - g_t0, 1) != g_level; }
 
-/* ---- the stage: the flat ground at the stage's rectangle (what the chrome layer reads, covered by the picture) and the master or its labelled placeholder over it ---- */
-static void build_stage(void) {
-  int r[4] = { lk("spread.regions.stage.rect", 0), lk("spread.regions.stage.rect", 1), lk("spread.regions.stage.rect", 2), lk("spread.regions.stage.rect", 3) };
-  const char *pic = v_pstr("regions.stage.picture");
-  v_region("stage", LAYER_CHROME); v_rect("stage.ground", r[0], r[1], r[2], r[3], fcol("colours.stageGround"));
-  v_name("stage"); if (has(pic)) v_sprite("stage.picture", pic, r[0], r[1], r[2], r[3]);
+/* ---- one cell, by the state the props give ---- */
+static void cell(int i, const int b[4], void *ctx) {
+  (void)ctx;
+  char sid[8], status[8], pic[96], mark[96], face[96], name[V_STR], cut[V_STR + 4], id[48], seed[96], star[96], wish[96];
+  snprintf(sid, sizeof sid, "%s", v_pstr(v_fmt("regions.cells.%d.id", i))); snprintf(status, sizeof status, "%s", v_pstr(v_fmt("regions.cells.%d.status", i)));
+  snprintf(pic, sizeof pic, "%s", v_pstr(v_fmt("regions.cells.%d.picture", i))); snprintf(mark, sizeof mark, "%s", v_pstr(v_fmt("regions.cells.%d.mark", i)));
+  snprintf(face, sizeof face, "%s", v_pstr(v_fmt("regions.cells.%d.face", i))); snprintf(name, sizeof name, "%s", v_pstr(v_fmt("regions.cells.%d.name", i)));
+  snprintf(seed, sizeof seed, "%s", v_sstr(S, P("seed", "slice"))); snprintf(star, sizeof star, "%s", v_sstr(S, P("glint", "slice"))); snprintf(wish, sizeof wish, "%s", v_sstr(S, P("wish", "slice")));
+  int found = strcmp(status, "found") == 0, met = strcmp(status, "met") == 0, known = found || met, x = b[0], y = b[1], r[4];
+  const char *st = found ? "found" : met ? "met" : "unmet";
+  /* the cell: its fill and bevel by state, the band on a found cell */
+  char fill[24], bevel[24], bandFill[24], bandRule[24];
+  snprintf(fill, sizeof fill, "%s", v_scol(S, v_fmt("l1.cell.bezel.%s.fill", st))); snprintf(bevel, sizeof bevel, "%s", v_scol(S, v_fmt("l1.cell.bezel.%s.bevel", st)));
+  snprintf(bandFill, sizeof bandFill, "%s", v_scol(S, "l1.cell.bezel.found.band.fill")); snprintf(bandRule, sizeof bandRule, "%s", v_scol(S, "l1.cell.bezel.found.band.rule"));
+  kit_band_t band = { v_si(S, "l1.cell.bezel.found.band.side", 1), v_si(S, "l1.cell.bezel.found.band.h", 0), bandFill, bandRule };
+  v_srect(S, "l1.cell.bezel.rect", r); snprintf(id, sizeof id, "cell.%s", sid);
+  v_region("grid", LAYER_CHROME); kit_bezel(id, x + r[0], y + r[1], r[2], r[3], v_si(S, "l1.cell.bezel.radius", 1), fill, NULL, bevel, found ? &band : NULL);
+  /* the picture: the specimen as found, the pencil study when met */
+  v_srect(S, P("picture", "rect"), r); snprintf(id, sizeof id, "cell.%s.picture", sid);
+  v_name("grid"); v_slot(id, pic, seed, x + r[0], y + r[1], r[2], r[3], known && *pic);
+  /* the plate rule of a met cell, dashed */
+  { int dash[2] = { v_sk(S, P("rule", "dash"), 0), v_sk(S, P("rule", "dash"), 1) }; char col[24]; snprintf(col, sizeof col, "%s", v_scol(S, P("rule", "colour"))); snprintf(id, sizeof id, "cell.%s.rule", sid);
+    v_region("grid", LAYER_CHROME); kit_hairline(id, x + v_sk(S, P("rule", "at"), 0), y + v_sk(S, P("rule", "at"), 1), v_si(S, P("rule", "len"), 0), met ? col : NULL, 0, dash); }
+  /* the species mark */
+  v_srect(S, P("mark", "rect"), r); snprintf(id, sizeof id, "cell.%s.mark", sid);
+  v_name("grid"); v_slot(id, mark, seed, x + r[0], y + r[1], r[2], r[3], known && *mark);
+  /* the name, cut to its clip: bone when found, mist when met, "" when unmet */
+  { int px = v_si(S, P("name", "px"), 16); char col[24]; snprintf(col, sizeof col, "%s", v_scol(S, found ? "l1.cell.name.colour.found" : "l1.cell.name.colour.met"));
+    v_clip(known ? name : "", v_si(S, P("name", "clip"), 0), px, cut, sizeof cut); snprintf(id, sizeof id, "cell.%s.name", sid);
+    v_region("grid", LAYER_TYPE); v_line_at(id, cut, x + v_si(S, P("name", "x"), 0), y + v_si(S, P("name", "lineTop"), 0), V_ANCHOR_LINE, px, col, V_ALIGN_LEFT); }
+  /* the face chip of a found species with a face */
+  int chip = found && *face;
+  v_srect(S, P("face", "rect"), r); snprintf(id, sizeof id, "cell.%s.face", sid);
+  v_name("grid"); v_slot(id, face, seed, x + r[0], y + r[1], r[2], r[3], chip);
+  /* the wish mark, beside the chip or alone */
+  v_srect(S, chip ? P("wish", "rect") : P("wish", "alone"), r); snprintf(id, sizeof id, "cell.%s.wish", sid);
+  v_name("grid"); v_slot(id, wish, seed, x + r[0], y + r[1], r[2], r[3], known && v_pbool(v_fmt("regions.cells.%d.wish", i), 0));
+  /* the glint of a found species with a look new this visit; with none, the star's node of no size at the glint's centre (a composed node has a size, so the hidden part is the picture's slot) */
+  { int on = found && v_pbool(v_fmt("regions.cells.%d.glint", i), 0), cx = x + v_sk(S, P("glint", "centre"), 0), cy = y + v_sk(S, P("glint", "centre"), 1); snprintf(id, sizeof id, "cell.%s.glint", sid);
+    v_name("grid"); if (on) kit_glint(id, star, cx, cy, v_sk(S, P("glint", "size"), 0), v_sk(S, P("glint", "size"), 1), g_level); else v_slot(id, star, NULL, cx, cy, 0, 0, 0); }
+  /* the seed and the lip of an unmet cell */
+  v_srect(S, P("seed", "rect"), r); snprintf(id, sizeof id, "cell.%s.seed", sid);
+  v_name("grid"); v_slot(id, seed, NULL, x + r[0], y + r[1], r[2], r[3], !known);
+  { char col[24]; snprintf(col, sizeof col, "%s", v_scol(S, P("lip", "colour"))); snprintf(id, sizeof id, "cell.%s.lip", sid);
+    v_region("grid", LAYER_CHROME); kit_hairline(id, x + v_sk(S, P("lip", "at"), 0), y + v_sk(S, P("lip", "at"), 1), known ? 0 : v_si(S, P("lip", "len"), 0), col, 0, NULL); }
 }
 
-/* ---- one frame of spreadPage, by the status the props give ---- */
-static void hidden_sprite(const char *id, int x, int y) { v_sprite_hidden(id, v_pstr("regions.stage.picture"), x, y); }
-static void build_frame(int page, int k) {
-  char it[64]; snprintf(it, sizeof it, "%s", item_path(page, k));   /* a copy: v_fmt below reuses its buffers */
-  const char *reg = page ? "rightPage" : "leftPage"; int f[4]; frame_rect(page, k, f);
-  const char *sid = v_pstr(v_fmt("%s.id", it)), *status = v_pstr(v_fmt("%s.status", it)); int found = strcmp(status, "found") == 0, met = strcmp(status, "met") == 0, known = found || met;
-  char id[48]; const char *pic = v_pstr(v_fmt("%s.picture", it)), *roundel = v_pstr(v_fmt("%s.roundel", it)), *clan = v_pstr(v_fmt("%s.clan", it)), *name = v_pstr(v_fmt("%s.name", it));
-  int px = f[0] + lk("spread.item.plate.at", 0), py = f[1] + lk("spread.item.plate.at", 1);
-  /* the focused frame's picture lifts `spread.item.lift` px in its mat (the frame is printed and the ring stays) */
-  { char fid[48], c[48]; snprintf(fid, sizeof fid, "frame.%s", sid); snprintf(c, sizeof c, "%s", cur()); if (!strcmp(c, fid)) py -= li("spread.item.lift", 0); }   /* copies: cur() and v_pstr share buffers */
-  /* the plate (found) or the study (met), in the 8 px mat */
-  snprintf(id, sizeof id, "frame.%s.picture", sid); v_name(reg);
-  if (known && has(pic)) v_sprite(id, pic, px, py, lk("spread.item.plate.at", 2), lk("spread.item.plate.at", 3)); else hidden_sprite(id, px, py);
-  /* the clan's flat ink rule over the frame, and its roundel before it */
-  int rx = f[0] + lk("spread.item.clanRule.at", 0), ry = f[1] + lk("spread.item.clanRule.at", 1), rw = lk("spread.item.clanRule.at", 2), rh = lk("spread.item.clanRule.at", 3);
-  snprintf(id, sizeof id, "frame.%s.rule", sid); v_region(reg, LAYER_CHROME);
-  /* a frame that shows no rule is a rect of no size: its colour (a stand-in) is never drawn */
-  v_rect(id, rx, ry, known && *clan ? rw : 0, known && *clan ? rh : 0, known && *clan ? lcol(v_fmt("spread.clanColours.%s", clan)) : lcol("spread.colours.nameFound"));
-  int qx = f[0] + lk("spread.item.roundel.at", 0), qy = f[1] + lk("spread.item.roundel.at", 1);
-  snprintf(id, sizeof id, "frame.%s.roundel", sid); v_name(reg);
-  if (known && has(roundel)) v_sprite(id, roundel, qx, qy, lk("spread.item.roundel.at", 2), lk("spread.item.roundel.at", 3)); else hidden_sprite(id, qx, qy);
-  /* the name on the caption rule: 16 px, centred, ink when found and stone when met */
-  int npx = li("spread.item.name.px", 16), nw = known ? v_measure(name, npx) : 0, bx = f[0] + lk("spread.item.name.at", 0), by = f[1] + lk("spread.item.name.at", 1), bw = lk("spread.item.name.at", 2), bh = lk("spread.item.name.at", 3);
-  snprintf(id, sizeof id, "frame.%s.name", sid); v_region(reg, LAYER_TYPE);
-  v_text(id, known ? name : "", bx + v_half(bw - nw), by + v_fdiv(bh - v_cap(npx), 2), nw, npx, lcol(found ? "spread.colours.nameFound" : "spread.colours.nameMet"));
-  /* the gilt corner of a portrayed species */
-  int gx = f[0] + lk("spread.item.gilt.at", 0), gy = f[1] + lk("spread.item.gilt.at", 1); const char *gp = lstr("spread.item.gilt.slice");
-  snprintf(id, sizeof id, "frame.%s.gilt", sid); v_name(reg);
-  if (found && v_pbool(v_fmt("%s.portrayed", it), 0) && has(gp)) v_sprite(id, gp, gx, gy, lk("spread.item.gilt.at", 2), lk("spread.item.gilt.at", 3)); else hidden_sprite(id, gx, gy);
-  /* the progress: four seeds, the first `progress` full, the rest empty (found only) */
-  int progress = v_pint(v_fmt("%s.progress", it), 0), nseed = li("spread.item.progress.count", 4); const char *full = lstr("spread.item.progress.slices.full"), *empty = lstr("spread.item.progress.slices.empty");
-  for (int s = 0; s < nseed; s++) {
-    int sx = f[0] + spec_int(S, v_fmt("spread.item.progress.places.%d.0", s), 0), sy = f[1] + spec_int(S, v_fmt("spread.item.progress.places.%d.1", s), 0); const char *sp = s < progress ? full : empty;
-    snprintf(id, sizeof id, "frame.%s.seed.%d", sid, s); v_name(reg);
-    if (found && progress > 0 && has(sp)) v_sprite(id, sp, sx, sy, lk("spread.item.progress.seed", 0), lk("spread.item.progress.seed", 1)); else hidden_sprite(id, sx, sy);
-  }
-  /* the seal of a complete guide */
-  int zx = f[0] + lk("spread.item.seal.at", 0), zy = f[1] + lk("spread.item.seal.at", 1); const char *zp = lstr("spread.item.seal.slice");
-  snprintf(id, sizeof id, "frame.%s.seal", sid); v_name(reg);
-  if (found && v_pbool(v_fmt("%s.complete", it), 0) && has(zp)) v_sprite(id, zp, zx, zy, lk("spread.item.seal.at", 2), lk("spread.item.seal.at", 3)); else hidden_sprite(id, zx, zy);
-}
-static void build_pages(void) {
-  for (int page = 0; page < 2; page++) {
-    int n = v_plen(v_fmt("regions.%s.items", page ? "rightPage" : "leftPage")); if (n > PAGE_ITEMS) n = PAGE_ITEMS;
-    for (int k = 0; k < n; k++) build_frame(page, k);
-  }
-}
-
-/* ---- the focus: sixteen targets `frame.<SNN>`, each its frame's place; the ring is the last thing drawn ---- */
-int library_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
-  snprintf(graph_key, (size_t)gcap, "spread.focus.graph");
-  int n = v_plen("focus.targets"), k = 0; if (n > cap) n = cap;
+/* ---- the focus: the met and found cells, each its cell's rect ---- */
+static void no_draw(int i, const int b[4], void *ctx) { (void)i; (void)b; (void)ctx; }
+int library_focus(focus_target_t *out, int cap) {
+  int boxes[CELLS][4], r[4], n = v_plen("focus.targets"), cells = v_plen("regions.cells"); if (n > cap) n = cap;
+  if (cells != CELLS || kit_tiles(S, "l1.grid", CELLS, no_draw, NULL, boxes) < 0) return 0;
+  v_srect(S, "l1.cell.bezel.rect", r);
   for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[k]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
-    t->enabled = v_pbool(v_fmt("focus.targets.%d.enabled", i), 1); t->index = i; int r[4] = { 0, 0, 0, 0 };
-    for (int page = 0; page < 2; page++) for (int j = 0, m = v_plen(v_fmt("regions.%s.items", page ? "rightPage" : "leftPage")); j < m && j < PAGE_ITEMS; j++)
-      if (strncmp(t->id, "frame.", 6) == 0 && strcmp(t->id + 6, v_pstr(v_fmt("%s.id", item_path(page, j)))) == 0) frame_rect(page, j, r);
-    t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3]; k++;
+    focus_target_t *t = &out[i]; focus_fill(t, "focus.targets", i, NULL); int box[4] = { 0, 0, 0, 0 };
+    for (int k = 0; k < CELLS; k++) if (strncmp(t->id, "cell.", 5) == 0 && strcmp(t->id + 5, v_pstr(v_fmt("regions.cells.%d.id", k))) == 0) { box[0] = boxes[k][0] + r[0]; box[1] = boxes[k][1] + r[1]; box[2] = r[2]; box[3] = r[3]; }
+    focus_fill(t, "focus.targets", i, box);
   }
-  return k;
+  return n;
 }
-static void build_ring(void) {
-  char c[48]; snprintf(c, sizeof c, "%s", cur()); if (!*c) return;   /* a copy: v_pstr below reuses the buffer */
-  focus_target_t t[40]; char gk[32]; int n = library_focus(t, 40, gk, sizeof gk), box[4] = { 0, 0, 0, 0 };
-  for (int i = 0; i < n; i++) if (strcmp(t[i].id, c) == 0) { box[0] = t[i].x; box[1] = t[i].y; box[2] = t[i].w; box[3] = t[i].h; }
-  if (box[2] <= 0) return;
-  v_region("focus", LAYER_CHROME); word_focusRing("focus", S, "spread.focus.targets.frame", box);
+static void ring(void) {
+  char c[48]; snprintf(c, sizeof c, "%s", v_focus_cur()); if (!*c) return;
+  focus_target_t t[CELLS]; int n = library_focus(t, CELLS);
+  for (int i = 0; i < n; i++) if (strcmp(t[i].id, c) == 0 && t[i].w > 0) { int box[4] = { t[i].x, t[i].y, t[i].w, t[i].h }; v_region("focus", LAYER_CHROME); word_focusRing("focus", S, "l1.focus.targets.cell", box); return; }
 }
-void library_words(void) { build_stage(); build_pages(); build_ring(); }
 
-/* a key on the spread: ✓ ← and the room keys are intents on the focused frame; the pad moves the ring by spread.focus.graph and says `focus` */
-void library_key(int code) {
-  char c[48]; snprintf(c, sizeof c, "%s", cur());
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) { screens_say("intent", c, verb); return; }
-  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
-  focus_target_t t[40]; char gk[32]; int n = library_focus(t, 40, gk, sizeof gk); int glen; const char *graph = spec_raw(S, "spread.focus.graph", &glen); char err[200];
-  focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
-  int roomAt[4] = { 0, 0, 0, 0 }; char to[48]; int step = focus_move(g, t, n, c, dir, NULL, 0, roomAt, to, sizeof to); focus_graph_free(g);
-  if (step || strcmp(to, c) == 0) return;
-  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
+void library_words(void) {
+  uint32_t now = anim_now(); if (!g_have) { g_have = 1; g_t0 = now; }
+  g_level = kit_glint_level(S, "l1.cell.glint", now - g_t0, v_pbool("motion", 1));
+  kit_stage(S, "l1.stage.rect", v_scol(S, "l1.stage.ground"), "stage", "stage.ground", "stage.picture", "regions.stage.picture");
+  if (v_plen("regions.cells") != CELLS) { v_error("library: Level 1 is built for the sixteen species of l1.grid; another catalogue size comes back to UI/UX"); return; }
+  kit_tiles(S, "l1.grid", CELLS, cell, NULL, NULL);
+  ring();
 }
+
+/* a key on Level 1: ✓ ← and the room keys are intents on the focused cell; the pad moves the ring by l1.focus.graph and says `focus` */
+void library_key(int code) { screens_key_graph(code, S, "l1.focus.graph", library_focus, NULL, &(screens_keys_t){ 0 }); }

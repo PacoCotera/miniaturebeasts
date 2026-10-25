@@ -12,12 +12,12 @@
 
 /* The composition of a screen the face has no binding table for (frame.json notBuilt): the stage in colours.stageGround (Idle: the whole 1024x600 in notBuilt.colours.ground) and one line, centred. No picture, no target, no ring. */
 static void not_built(void) {
-  char c[24], s[V_STR]; int r[4];
-  spec_str("frame", "colours.stageGround", c, sizeof c); if (v_spec_rect("frame", "regions.stage.rect", r)) { v_region("notBuilt.stage", LAYER_CHROME); v_rect("notBuilt.stage", r[0], r[1], r[2], r[3], c); }
+  char c[24], s[V_STR];
+  kit_stage("frame", "regions.stage.rect", v_scol("frame", "colours.stageGround"), "notBuilt.stage", "notBuilt.stage", NULL, NULL);
   spec_str("frame", "notBuilt.strings.line", s, sizeof s);
-  int px = spec_int("frame", "notBuilt.regions.line.px", 20), w = v_measure(s, px), x = spec_int("frame", "notBuilt.regions.line.centre", 512) - v_half(w);
+  int px = spec_int("frame", "notBuilt.regions.line.px", 20);
   spec_str("frame", "notBuilt.colours.line", c, sizeof c);
-  v_region("notBuilt.line", LAYER_TYPE); v_text("notBuilt.line", s, x, spec_int("frame", "notBuilt.regions.line.capTop", 288), w, px, c);
+  v_region("notBuilt.line", LAYER_TYPE); v_line_at("notBuilt.line", s, spec_int("frame", "notBuilt.regions.line.centre", 512), spec_int("frame", "notBuilt.regions.line.capTop", 288), V_ANCHOR_CAP, px, c, V_ALIGN_CENTRE);
 }
 /* Idle's line (frame.json idle, the frame's binding table: a composition, not a word): the strip (`ground`, a 1 px `void` rule on its top row) and the one line in `mist`, centred on x 512 with its middle on y 584, 16 px; the line is props.frame.idle.line,
    and none (an empty string) sets no type: the strip and its rule stay. */
@@ -25,9 +25,9 @@ static void build_idleLine(void) {
   char ground[24], rule[24], line[24]; int s[4], l[4];
   spec_str("frame", "idle.colours.strip", ground, sizeof ground); spec_str("frame", "idle.colours.rule", rule, sizeof rule); spec_str("frame", "idle.colours.line", line, sizeof line);
   if (!v_spec_rect("frame", "idle.regions.strip.rect", s) || !v_spec_rect("frame", "idle.regions.line.rect", l)) return;
-  v_region("idle.strip", LAYER_CHROME); v_rect("idle.strip", s[0], s[1], s[2], s[3], ground); v_rect("idle.strip.rule", s[0], s[1], s[2], 1, rule);
+  v_region("idle.strip", LAYER_CHROME); v_rect("idle.strip", s[0], s[1], s[2], s[3], ground); kit_hairline("idle.strip.rule", s[0], s[1], s[2], rule, 0, NULL);
   const char *text = v_pstr("frame.idle.line"); int px = spec_int("frame", "idle.regions.line.px", 16);
-  if (*text) { int w = v_measure(text, px), mid = spec_int("frame", "idle.regions.line.middle", 584), cx = spec_int("frame", "idle.regions.line.centre", 512); v_region("idle.line", LAYER_TYPE); v_text("idle.line", text, cx - v_half(w), mid - v_half(v_cap(px)), w, px, line); }
+  if (*text) { v_region("idle.line", LAYER_TYPE); v_line_at("idle.line", text, spec_int("frame", "idle.regions.line.centre", 512), spec_int("frame", "idle.regions.line.middle", 584), V_ANCHOR_MID, px, line, V_ALIGN_CENTRE); }
 }
 static int is_not_built(void) { char st[24]; spec_str("props", "state", st, sizeof st); return strcmp(st, "notBuilt") == 0; }
 /* Which screens the face draws with words. */
@@ -48,8 +48,7 @@ static void stage_dither(void) {
   char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);
   for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
   snprintf(ops + n, sizeof ops - (size_t)n, "],\"void\"]]");
-  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
-  v_region("stage", LAYER_ART); prim_node(v_id("stage.dither"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
+  v_region("stage", LAYER_ART); v_composed("stage.dither", r[0], r[1], r[2], r[3], ops);
 }
 /* a target's ring shape (lvgl-switch.md §2.6; fix 14): "oval", "footprint", "tab", { "rect": r >= 0 [, "chip": n >= 0] }, { "circle": "box" } or { "circle": { "centre": [x, y], "r": r > 0 } }, and nothing else;
    its `ground`, when present, is "default" (the paper ground is retired); the old `ring` key is refused */
@@ -93,8 +92,9 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
         { char gp[176]; int gl; snprintf(gp, sizeof gp, "focus.%s.graph", key); const char *own = spec_raw(screen, gp, &gl); if (own && own[0] == '{') { sg = own; sl = gl; snprintf(b, sizeof b, "focus.%.140s.graph", key); } }   /* a state that keeps its graph beside its targets (Create, Incubator): that graph */
         char why[160]; focus_graph_t *fg = focus_graph_parse(sg, sl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, b, why); return -1; } focus_graph_free(fg);
       } }
-  { int gl; const char *sg = spec_raw(screen, "spread.focus.graph", &gl);   /* a spec whose screen has a spread: its own graph is vetted too */
-    if (sg) { char why[160]; focus_graph_t *fg = focus_graph_parse(sg, gl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: spread.focus.graph: %s", screen, why); return -1; } focus_graph_free(fg); } }
+  { static const char *const LEVELS[] = { "l1.focus.graph", "l2.focus.sheet", "l2.focus.lit" };   /* a spec whose screen has levels (the Library): each level's own graph is vetted too */
+    for (int i = 0; i < 3; i++) { int gl; const char *sg = spec_raw(screen, LEVELS[i], &gl);
+      if (sg) { char why[160]; focus_graph_t *fg = focus_graph_parse(sg, gl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, LEVELS[i], why); return -1; } focus_graph_free(fg); } } }
   for (int i = 0, n = spec_len(screen, "regions"); i < n; i++) {
     char key[48], base[96], p[160], dummy[2]; if (!spec_member(screen, "regions", i, key, sizeof key, dummy, sizeof dummy)) continue;
     snprintf(base, sizeof base, "regions.%s.forms", key);   /* a list's forms (listPitch): a form with no upTo, two with one upTo or a grid shorter than its upTo is refused at load */
@@ -125,13 +125,18 @@ static void draw(void) {
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); /* a screen draws its words when the props carry its regions */
     if (strcmp(screen, "habitat") != 0 || spec_bool("props", "idle", 0)) habitat_hidden();   /* one mibi up close's own tick starts again from its first frame when it shows again */
+    if (strcmp(screen, "library") != 0 || spec_bool("props", "idle", 0)) library_hidden();   /* the Library's glints: their clock starts again when Level 1 shows again */
+    if (strcmp(screen, "library.species") != 0 || spec_bool("props", "idle", 0)) species_hidden();   /* and when Level 2 shows again */
     if (spec_bool("props", "idle", 0) && spec_len("props", "regions") >= 0) idle_words();
     else if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
     else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();   /* Home has a living window: its walk lives while Home shows (home_hidden runs when another screen does) */
     else if (strcmp(screen, "vivarium") == 0 && spec_has("vivarium") && spec_len("props", "regions") >= 0) vivarium_words();
     else if (strcmp(screen, "habitat") == 0 && spec_has("habitat") && spec_len("props", "regions") >= 0) { home_hidden(); habitat_words(); }
     else if (strcmp(screen, "library") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_words(); }
+    else if (strcmp(screen, "library.species") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_species_words(); }
+    else if (strcmp(screen, "library.family") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_family_words(); }
     else if (strcmp(screen, "bench") == 0 && spec_has("bench") && spec_len("props", "regions") >= 0) { home_hidden(); bench_words(); }
+    else if (strcmp(screen, "sitting") == 0 && spec_has("sitting") && spec_len("props", "regions") >= 0) { home_hidden(); sitting_words(); }
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
     else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); if (!incubate_open()) create_words(); }
     else if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { home_hidden(); if (!hatchnow_open()) incubator_words(); }
@@ -154,6 +159,9 @@ int screens_props(const char *json, int len) {
 }
 
 /* ---- keys ---- */
+static const char *room_verb(int code) { return code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL; }
+static const char *key_verb(int code, int back) { return code == 10 ? "confirm" : code == 27 && back ? "back" : room_verb(code); }   /* ✓ ← and the room keys: the verbs said on the focused target */
+static int key_dir(int code) { return code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; }
 void screens_say(const char *kind, const char *target, const char *verb) {
   char screen[32], b[300]; if (spec_len("props", "overlay") >= 0) spec_str("props", "overlay.id", screen, sizeof screen); else spec_str("props", "screen", screen, sizeof screen);   /* while an overlay is open the intent is its own */
   if (verb) snprintf(b, sizeof b, "{\"t\":\"intent\",\"seq\":%u,\"screen\":\"%s\",\"target\":\"%s\",\"verb\":\"%s\"}", wire_props_seq(), screen, target, verb);
@@ -163,13 +171,13 @@ void screens_say(const char *kind, const char *target, const char *verb) {
 void screens_key(int code) {
   { char st[48], sc[32]; spec_str("props", "screen", sc, sizeof sc);   /* Cargo's opening holds (build spec 8.4): ✓, ← and a room key end the hold on the face and are said on "room" (confirm, back, room:<x>); the host applies the current crate's end state; the pad sends nothing */
     if (strcmp(sc, "cargo") == 0 && anim_skippable(st, sizeof st) && strcmp(st, "crate") == 0) {
-      const char *v = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
+      const char *v = key_verb(code, 1);
       if (v) { anim_skip(); screens_say("intent", "room", v); screens_redraw(); }
       return; } }
-  { char st[48]; int room = code == 2 || code == 114 || code == 108 || code == 98;   /* the dock arrival's show (target "show") is cut by any key but a room key (which is Later, then acts: the host's) */
+  { char st[48]; int room = room_verb(code) != NULL;   /* the dock arrival's show (target "show") is cut by any key but a room key (which is Later, then acts: the host's) */
     if ((code == 10 || (!room && anim_skippable(st, sizeof st) && strcmp(st, "show") == 0)) && anim_skippable(st, sizeof st)) { anim_skip(); screens_say("intent", st, "skip"); screens_redraw(); return; } }   /* ✓ in a skippable hold (§2.1): the event cuts to its end, says done, and ✓ is said as `skip` on its target; nothing else takes ✓ in a hold */
   if (anim_holding()) {   /* an event holds input: no key is acted on but a room key, which is said on the current focus target (or the screen); the host keeps the last one and dispatches it when the hold ends (§2.1) */
-    char sc[32]; spec_str("props", "screen", sc, sizeof sc); const char *rv = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
+    char sc[32]; spec_str("props", "screen", sc, sizeof sc); const char *rv = room_verb(code);
     if (rv) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : strcmp(sc, "home") == 0 || strcmp(sc, "cargo") == 0 ? "room" : "screen", rv); }
     return;
   }
@@ -178,7 +186,7 @@ void screens_key(int code) {
   if (spec_bool("props", "idle", 0)) { screens_say("intent", "idle", "wake"); return; }   /* the first press on Idle wakes and does nothing else */
   if (spec_len("props", "overlay") >= 0) { char oid[24]; spec_str("props", "overlay.id", oid, sizeof oid); if (strcmp(oid, "panel") == 0 && spec_has("panel")) { panel_key(code); return; } if (spec_has("namer")) { namer_key(code); return; } }   /* an overlay open: its graph is the only one and the screen beneath takes no key */
   if (is_not_built()) {   /* no targets, no ring: a room key opens its room; ← goes to the parent when the bottom line names one; the rest does nothing */
-    const char *v = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL; char b[64];
+    const char *v = room_verb(code); char b[64];
     if (!v && code == 27 && spec_str("props", "frame.line.back", b, sizeof b) > 0) v = "back";
     if (v) screens_say("intent", "screen", v);
     return;
@@ -187,23 +195,37 @@ void screens_key(int code) {
   if (strcmp(screen, "vivarium") == 0 && spec_has("vivarium") && spec_len("props", "regions") >= 0) { vivarium_key(code); return; }
   if (strcmp(screen, "habitat") == 0 && spec_has("habitat") && spec_len("props", "regions") >= 0) { habitat_key(code); return; }
   if (strcmp(screen, "library") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { library_key(code); return; }
+  if (strcmp(screen, "library.species") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { library_species_key(code); return; }
+  if (strcmp(screen, "library.family") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { library_family_key(code); return; }
   if (strcmp(screen, "bench") == 0 && spec_has("bench") && spec_len("props", "regions") >= 0) { bench_key(code); return; }
+  if (strcmp(screen, "sitting") == 0 && spec_has("sitting") && spec_len("props", "regions") >= 0) { sitting_key(code); return; }
   if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { cargo_key(code); return; }
   if (strcmp(screen, "create") == 0 && spec_has("create") && spec_len("props", "regions") >= 0) { create_key(code); return; }
   if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { incubator_key(code); return; }
   if (strcmp(screen, "pods") != 0 || spec_len("props", "regions") < 0 || !spec_has("pods")) return;
-  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
+  screens_keys_t o = { 0 }; o.resolve = 1; o.steps = 1; char path[48]; snprintf(path, sizeof path, "focus.%s", v_pstr("state"));
+  screens_key_graph(code, "pods", path, pods_focus, NULL, &o);
+}
+void focus_fill(focus_target_t *t, const char *path, int i, const int box[4]) {
+  memset(t, 0, sizeof *t);
+  snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("%s.%d.id", path, i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("%s.%d.group", path, i)));
+  t->enabled = v_pbool(v_fmt("%s.%d.enabled", path, i), 1); t->index = v_pint(v_fmt("%s.%d.index", path, i), i);
+  if (box) { t->x = box[0]; t->y = box[1]; t->w = box[2]; t->h = box[3]; }
+}
+void screens_key_graph(int code, const char *spec, const char *graph_path, screens_focus_fn focus_fn, const char *default_cur, const screens_keys_t *opts) {
+  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur_at(opts->cur_path ? opts->cur_path : "focus.cur")); if (!cur[0] && default_cur) snprintf(cur, sizeof cur, "%s", default_cur);
+  const char *verb = key_verb(code, !opts->no_back);
   if (verb) { screens_say("intent", cur, verb); return; }
-  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
-  focus_target_t t[64]; char gkey[24]; int n = pods_focus(t, 64, gkey, sizeof gkey); if (n <= 0) return;
-  char path[48], err[200]; snprintf(path, sizeof path, "focus.%s", gkey); int glen; const char *graph = spec_raw("pods", path, &glen);
+  int dir = key_dir(code); if (dir < 0 || !graph_path || !focus_fn) return;
+  focus_target_t t[FOCUS_TARGETS]; int n = focus_fn(t, FOCUS_TARGETS); if (n <= 0) return;
+  int glen; const char *graph = spec_raw(spec, graph_path, &glen); char err[200];
   focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
   focus_resolve_t r[16]; int nr = 0;
-  for (int i = 0, m = spec_len("props", "focus.resolve"); i < m && nr < 16; i++) { if (spec_member("props", "focus.resolve", i, r[nr].sel, sizeof r[nr].sel, r[nr].id, sizeof r[nr].id)) nr++; }
-  char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, NULL, to, sizeof to); focus_graph_free(g);
-  if (step) { char v[16]; snprintf(v, sizeof v, "step:%s", dir == FOCUS_UP ? "up" : dir == FOCUS_DOWN ? "down" : dir == FOCUS_LEFT ? "left" : "right"); screens_say("intent", cur, v); return; }
+  if (opts->resolve) for (int i = 0, m = spec_len("props", "focus.resolve"); i < m && nr < 16; i++) { if (spec_member("props", "focus.resolve", i, r[nr].sel, sizeof r[nr].sel, r[nr].id, sizeof r[nr].id)) nr++; }
+  int roomAt[4]; if (opts->room_at) v_srect(spec, opts->room_at, roomAt);
+  char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, opts->room_at ? roomAt : NULL, to, sizeof to); focus_graph_free(g);
+  if (step) { if (opts->steps) screens_say("intent", cur, dir == FOCUS_UP ? "step:up" : dir == FOCUS_DOWN ? "step:down" : dir == FOCUS_LEFT ? "step:left" : "step:right"); return; }
   if (strcmp(to, cur) == 0) return;
-  v_focus_set(to); draw(); screens_say("focus", to, NULL);   /* the ring moves on the frame of the key: the words are drawn again at once */
+  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);   /* the ring moves on the frame of the key: the words are drawn again at once */
 }
-int screens_tick(uint32_t now) { return spec_has("props") && spec_has("frame") && (home_tick(now) || habitat_tick(now) || incubator_tick(now)); }
+int screens_tick(uint32_t now) { return spec_has("props") && spec_has("frame") && (home_tick(now) || habitat_tick(now) || incubator_tick(now) || library_l1_tick(now) || library_l2_tick(now)); }

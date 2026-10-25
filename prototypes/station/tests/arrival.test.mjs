@@ -12,13 +12,14 @@ import { arrivalOf, holdsNewSpecies } from "../src/arrival.mjs";
 import { cargoBuild } from "../src/views/cargo-props.mjs";
 import { panelBuild } from "../src/views/panel-props.mjs";
 import { timesOf } from "../src/intents/arrival.mjs";
-import { createMeasure } from "../../ui/specs/measure.mjs";
+import { createMeasure, measureRole } from "../../ui/specs/measure.mjs";
+import { listPitch } from "../../ui/specs/derive.mjs";
 import { validate } from "./habitat-props.test.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), cargo = J("cargo"), home = J("home"), frame = J("frame"), panel = J("panel"), pods = J("pods"), schema = J("cargo.props"), A = cargo.regions.arrival;
-const measure = createMeasure(JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")));
+const metrics = JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")), measure = createMeasure(metrics), byRole = (role) => measureRole(metrics, frame, role);   // a text role's measure (frame.json type.roles)
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000, words = (t) => t.trim().split(/\s+/).filter(Boolean).length;
 const SPELL = ["no", "one", "two", "three"];
 
@@ -77,9 +78,9 @@ test("the beats' times come from the spec: the link light, the crates' stagger, 
 test("every string of the show at its longest, measured: the ribbon (words + 32 ≤ 608), the band's words (≤ 160), the strip's names and lines (≤ 252), the plates (≤ 608), at the spec's sizes and words", () => {
   const Sg = cargo.strings.arrival, R = cargo.regions.dockRibbon, D = panel.strings.dock, P = frame.navigation.dock.plates, strip = frame.regions.panel.strip;
   assert.ok(measure(Sg.ribbon, R.px) + 32 <= 608, "ribbon"); assert.ok(measure(Sg.broken, R.px) <= 576, "the broken ribbon: " + measure(Sg.broken, R.px)); assert.ok(measure(Sg.mended.replace("{n in words}", "three"), 16) <= 160, "three mended, free");
-  for (const t of [D.cards.open.name, D.cards.later.name]) assert.ok(words(t) <= 3 && measure(t, strip.name.px) <= strip.name.max, t);
-  for (const t of [D.cards.open.line.replace("{n in words}", "three"), D.cards.open.line.replace("{n in words}", "twelve"), D.oneCrate, D.cards.later.line]) assert.ok(words(t) <= 6 && measure(t, strip.line.px) <= strip.line.max, `${t} (${measure(t, strip.line.px)} px)`);
+  for (const t of [D.cards.open.name, D.cards.later.name]) assert.ok(words(t) <= 3 && byRole(strip.name.role)(t) <= strip.name.max, t);
+  for (const t of [D.cards.open.line.replace("{n in words}", "three"), D.cards.open.line.replace("{n in words}", "twelve"), D.oneCrate, D.cards.later.line]) assert.ok(words(t) <= 6 && byRole(strip.line.role)(t) <= strip.line.max, `${t} (${byRole(strip.line.role)(t)} px)`);
   assert.ok(measure(P.crates, 16) <= 608, "the crates plate"); assert.ok(measure(P.goes.replace("{Name}", "Wwwwwwwwww"), 16) <= 608, "the name plate at ten of the widest letters"); assert.equal(Sg.ribbon, panel.strings.arrival.text === undefined ? Sg.ribbon : Sg.ribbon);
-  assert.equal(frame.regions.panel.strip.cards.w * 2 + frame.regions.panel.strip.cards.gap + 2 * 16, 840, "two cards fill the strip's 840");
+  const SC = [0, 1].map((i) => listPitch(frame.regions.panel.strip.cards, 2, i)); assert.equal(SC[1][0] + SC[1][2] - SC[0][0] + 2 * 16, 840, "two cards fill the strip's 840");
   assert.ok(words(Sg.ribbon) <= 6 && words(Sg.broken) <= 12); void SPELL;
 });

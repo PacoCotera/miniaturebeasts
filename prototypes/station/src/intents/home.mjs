@@ -1,12 +1,13 @@
 // Home's intents (home.json: the keys, the line): the rule calls behind ✓ on the room (the first need in the line), on a bezel and on a station, and the rest. The pad is the face's (focus.graph); ← does nothing on Home.
 import * as S from "../state.mjs";
 import { openBay } from "./cargo.mjs";
-import { homeNeeds } from "../views/home-props.mjs";
+import { homeNeeds, librarySpecies } from "../views/home-props.mjs";
 import { intent as incubatorIntent } from "./incubator.mjs";
+import { openAt } from "./library.mjs";
 
 export const toPods = (h, id = null) => { const p = id != null && S.podById(h.st, id) ? S.podById(h.st, id) : S.neediestPod(h.st); if (p) h.ui.pods.cur = p.id; h.ui.pods.view = "collection"; h.ui.pods.focus.set(null); h.goto("pods"); };
 const toVivarium = (h, id) => { const ui = h.ui; if (id != null && S.mibiById(h.st, id)) ui.hab.id = id; ui.hab.f = "resident"; h.goto("habitat"); };   // the ring on the resident; a new mibi opens in its meet (ui.meet), ended by the first press there
-const toLibrary = (h) => { h.ui.lib.f = "spread"; h.goto("library"); };
+const toLibrary = (h) => openAt(h, librarySpecies(h.st, h.settings));   // Level 1 with the ring on Home's species: the one its Library module is for
 // The room's ✓: what needs the player (the notice's own action).
 export function doNeed(h, nd) {
   if (!nd) return;

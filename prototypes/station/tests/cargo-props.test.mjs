@@ -2,6 +2,7 @@
 // end, arrival), holds no rectangle, no measure and no layout rule, fits the 32 KiB props budget with the frame beside it, spells the line from cargo.json's strings (Open them all, Open it, Skip, Look at the pods, the waiting line),
 // plans the run on a copy of the state (each crate's pods with the well or the mat place each lands in, its finds and materials, its length, the start table) and applies the rules one crate at a time.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -11,13 +12,15 @@ import { setFrames, frameOf, podGenome, speciesIndex } from "../src/genome.mjs";
 import { traitLooks } from "../../workbench/framework/describe.mjs";
 import * as S from "../src/state.mjs";
 import * as T from "../src/sitting.mjs";
-import { cargoBuild } from "../src/views/cargo-props.mjs";
+import { cargoBuild as cargoBuildUnchecked } from "../src/views/cargo-props.mjs";
+const cargoBuild = lineCased(cargoBuildUnchecked, "cargo");   // every body it builds goes through assertLineCase (report mode)
 import { readyList, planRun, lengthOf, timesOf, fitCount, stepTimes, HOLD_MAX } from "../src/cargo-run.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
+import { injectPortraitSource, dropPortraitSources } from "../src/portrait-source.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("cargo.json"), home = J("home.json"), frameSpec = J("frame.json"), schema = J("cargo.props.json");
+const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("cargo.json"), home = J("home.json"), frameSpec = J("frame.json"), schema = J("cargo.props.json"), sittingSpec = J("sitting.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
 
 function validate(v, sc, at = "$", out = []) {
@@ -40,11 +43,12 @@ const crate = (n, pods = 2, extra = {}) => ({ id: "c" + n, n, turn: n * 2, at: T
 const sitting = (st, over = {}) => { const m = S.seedAdults(st, "S01", 5, 1, settings).mibis[0]; st.sittingCrates.push({ id: "sc1", mibiId: m.id, start: -1e10, painted: true, ...over }); m.portrait = { state: "painting", crate: "sc1", ...(over.digest ? { digest: over.digest } : {}) }; return m; };
 const sv0 = (bay = []) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay, mibis: [], carried: [], tier: 1, shield: 3 });
 const cargoUI = (over = {}) => ({ cargo: { state: "bay", crate: 0, at: 0, run: null, shown: null, ...over }, meet: null });
-const build = (st, sv, ui = cargoUI()) => cargoBuild({ st, sv, settings, docked: S.docked(st), ui, now: T0 }, spec, home, frameSpec);
+const build = (st, sv, ui = cargoUI(), sit = sittingSpec) => cargoBuild({ st, sv, settings, docked: S.docked(st), ui, now: T0 }, spec, home, frameSpec, sit);
 // the opening through the real intent, on a recording host (no clock: the timers are read, not run)
 function opened(st, sv, motion = true) {
   const ui = { screen: "cargo", home: { f: "room" }, hab: {}, viv: {}, lib: {}, pods: { view: "collection", cur: null, ci: 0, cmp: null, wildArm: 0, focus: { set() {}, cur: null } }, ...cargoUI() };
-  const h = { st, sv, settings, ui, specs: { cargo: spec, home, frame: frameSpec }, played: [], timers: [], said: [], went: [], t: 0, now: () => T0, motion: () => motion, say: (t) => h.said.push(t), goto: (s) => h.went.push(s), play: (e) => h.played.push(e), at: (ms, fn) => h.timers.push({ ms: h.t + ms, fn }), skip: () => true, save() {} };
+  const h = { st, sv, settings, ui, specs: { cargo: spec, home, frame: frameSpec, sitting: sittingSpec }, played: [], timers: [], said: [], went: [], entered: [], t: 0, now: () => T0, motion: () => motion, say: (t) => h.said.push(t), goto: (s) => h.went.push(s), play: (e) => h.played.push(e), at: (ms, fn) => h.timers.push({ ms: h.t + ms, fn }), skip: () => true, save() {},
+    enterSitting: (m, o) => { h.entered.push([m.id, o]); h.went.push("sitting"); return true; } };
   INTENTS.cargo.intent(h, "room", "confirm"); return h;
 }
 // run the timers up to a time (in order), moving the host's clock with them
@@ -96,6 +100,12 @@ test("the bay: a berth for each walk crate (at most three, in arrival order), th
   assert.deepEqual(build(sc.two.st, sc.two.sv).props.focus, { cur: "room", targets: [] });
 });
 
+test("the counts in words: waiting pods and arriving crates read seven to twelve in words, and many from thirteen", () => {
+  const away = (n) => { const st = world(); st.dock = { docked: false, at: T0 }; for (let i = 0; i < n; i++) st.waiting.push({ id: "w" + i, species: "S01", sp: 0, g: "meadow", how: "calm", gs: 3, idd: 0, read: [] }); return build(st, sv0()).line.subject; };
+  assert.equal(away(6), "six pods wait for a well"); assert.equal(away(7), "seven pods wait for a well"); assert.equal(away(12), "twelve pods wait for a well"); assert.equal(away(13), "many pods wait for a well");
+  const crates = (n) => build(world(), sv0(), cargoUI({ state: "arrival", arrival: { phase: "show", crates: n, shown: Math.min(n, 3), newCrates: [], back: [], leaving: [], plates: { max: 3, whole: 3, mended: 0 }, broke: false } })).line.subject;
+  assert.equal(crates(7), "seven sealed crates"); assert.equal(crates(12), "twelve sealed crates"); assert.equal(crates(13), "many sealed crates");
+});
 test("the line: Open them all (Open it for one) when a crate is ready, none otherwise; the waiting line in the middle when a pod waits; the notice the most pressing after the crates", () => {
   const sc = scenes(), L = (n, ui) => build(sc[n].st, sc[n].sv, ui).line;
   assert.deepEqual(L("one"), { ok: "Open it", back: "Home", subject: "", need: "" }); assert.equal(L("two").ok, "Open them all"); assert.equal(L("three").ok, "Open them all");
@@ -191,4 +201,24 @@ test("the waiting line in the opening and the end: a pod that has gone to the ma
 test("at most the plays that fit the hold's ceiling are played; the rest are taken in by the rule when the run ends", () => {
   const st = world(), sv = sv0(Array.from({ length: 9 }, (_, i) => crate(i + 1, 4))), h = opened(st, sv), run = h.ui.cargo.run, ar = h.played.find((e) => e.kind === "arrival");
   assert.ok(ar.hold <= 30000 && run.items.length < 9 && run.items.length >= 1, `${run.items.length} crates play, hold ${ar.hold}`); assert.equal(run.rest.length, 9 - run.items.length); runTo(h, 1e9); assert.equal(st.accepted.length, 9, "every crate is taken in by the end"); assert.equal(h.ui.cargo.state, "end");
+});
+
+// keys.confirm.end: ✓ See the portrait first, while the run opened this mibi's sitting crate, sitting.json regions.portrait.offeredFrom lists cargo-end and portraitOpening holds its digest; otherwise Look at the pods, as before
+test("the end after a run that opened a sitting crate: ✓ See the portrait (the sitting's state portrait, from cargo) before Look at the pods, only while its opening is kept and offeredFrom lists cargo-end", () => {
+  const DG = "00112233445566778899aabbccddeeff", ART = () => { const a = new Uint8ClampedArray(528 * 392 * 4); for (let i = 0; i < a.length; i += 4) { a[i] = 9; a[i + 1] = (i >> 2) & 255; a[i + 2] = 40; a[i + 3] = 255; } return a; };
+  const mk = ({ held = true, pods = 2 } = {}) => { dropPortraitSources(); const st = world(), sv = sv0([crate(1, pods)]), m = sitting(st, { digest: DG }); if (held) assert.equal(injectPortraitSource(DG, ART()).ok, true); const h = opened(st, sv); h.ui.pods.focus = { set() {} }; runTo(h, 1e9); return { st, sv, h, m }; };
+  try {
+    assert.equal(spec.strings.end.confirm, "See the portrait", "CW-1, sentence case");
+    { const { st, sv, h, m } = mk(); assert.equal(h.ui.cargo.state, "end"); assert.equal(S.mibiById(st, m.id).portrait.state, "delivered");
+      const b = build(st, sv, h.ui); assert.deepEqual([b.line.ok, b.line.back, b.line.subject], ["See the portrait", "Home", ""], "the portrait first, a pod came too");
+      assert.equal(build(st, sv, h.ui, null).line.ok, "Look at the pods", "with no sitting spec, no portrait");
+      INTENTS.cargo.intent(h, "room", "confirm"); assert.deepEqual(h.entered, [[m.id, { state: "portrait", from: "cargo" }]]); assert.deepEqual(h.went, ["sitting"], "not Pods"); assert.equal(h.ui.cargo.state, "bay", "the end closes"); }
+    { const { st, sv, h } = mk({ held: false }); assert.equal(build(st, sv, h.ui).line.ok, "Look at the pods", "no opening kept: Look at the pods, as now");
+      INTENTS.cargo.intent(h, "room", "confirm"); assert.deepEqual([h.entered, h.went], [[], ["pods"]]); }
+    { const { st, sv, h } = mk({ pods: 0 }); assert.equal(build(st, sv, h.ui).line.ok, "See the portrait", "no pod came: the portrait still"); INTENTS.cargo.intent(h, "room", "confirm"); assert.deepEqual(h.went, ["sitting"]); }
+    { const { st, sv, h } = mk({ held: false, pods: 0 }); assert.equal(build(st, sv, h.ui).line.ok, null, "neither: no ✓ cap"); }
+    { const { st, sv, h } = mk(); const off = structuredClone(sittingSpec); off.regions.portrait.offeredFrom = ["habitat-portrayed"]; assert.equal(build(st, sv, h.ui, off).line.ok, "Look at the pods", "offeredFrom without cargo-end: no portrait"); h.specs.sitting = off; INTENTS.cargo.intent(h, "room", "confirm"); assert.deepEqual(h.went, ["pods"]); }
+    { const { st, sv, h } = mk(); h.enterSitting = () => false; INTENTS.cargo.intent(h, "room", "confirm"); assert.deepEqual(h.went, ["pods"], "the sitting refuses (nothing to show): ✓ falls through to Look at the pods"); }
+    { const { h } = mk(); INTENTS.cargo.intent(h, "room", "back"); assert.deepEqual([h.entered, h.went], [[], ["home"]], "← is Home"); }
+  } finally { dropPortraitSources(); }
 });

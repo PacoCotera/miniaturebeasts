@@ -25,7 +25,11 @@
  ],
  "focus": {
   "initial": "the first card that is not dimmed (the option the player came for, on the left); if every card is dimmed, the way-out card",
-  "rule": "◀ ▶ the previous and next card, stopping at the ends; ▲ ▼ do nothing; the graph is not a spec graph: the face walks the props' targets in order",
+  "rule": "◀ ▶ the previous and next card, stopping at the ends; ▲ ▼ do nothing (the graph below)",
+  "graph": {
+   "fallback": "none",
+   "card": { "axis": "horizontal", "up": "none", "down": "none" }
+  },
   "targets": {
    "card": {
     "group": "card",
@@ -303,8 +307,7 @@
    "note": "the room's bar (158 px wide, lit from layer x 89) at the panel's x0.865: 137 px wide, lit from layer x 77 of the 296 x 459 layer; the whole bar with its glow at 137"
   },
   "caption": {
-   "px": 16,
-   "colour": "fog",
+   "role": "quiet",
    "note": "'ready in about {n} min', Inter 16, fog on the bezel's panel fill, right-aligned in Wait's header (12 in from the bezel's right, the baseline as the verbs'), mirroring Hatch now's price; the window carries no text"
   }
  }

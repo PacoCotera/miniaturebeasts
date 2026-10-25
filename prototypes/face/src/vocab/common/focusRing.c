@@ -12,23 +12,18 @@
 
 #define F "frame"
 #define RING "focus.ring"
-static int fi(const char *path, int dflt) { return spec_int(F, path, dflt); }
 
 typedef struct { int w[3], gap, reach; char key[24], core[24]; int hasKey; } bands_t;
 /* the cased line's bands and the colours of the target's ground */
 static int read_bands(const char *ground, bands_t *b) {
   char p[96];
-  for (int k = 0; k < 3; k++) { snprintf(p, sizeof p, RING ".bands.%d.w", k); b->w[k] = fi(p, 0); }
-  b->gap = fi(RING ".gap", 1); b->reach = fi(RING ".reach", 5);
+  for (int k = 0; k < 3; k++) { snprintf(p, sizeof p, RING ".bands.%d.w", k); b->w[k] = v_si(F, p, 0); }
+  b->gap = v_si(F, RING ".gap", 1); b->reach = v_si(F, RING ".reach", 5);
   if (b->w[0] < 1 || b->w[1] < 1 || b->w[2] < 1 || b->reach != b->gap + b->w[0] + b->w[1] + b->w[2]) { v_error("word focusRing: frame focus.ring bands, gap and reach do not agree"); return -1; }
   snprintf(p, sizeof p, RING ".colours.%s.core", ground); spec_str(F, p, b->core, sizeof b->core);
   snprintf(p, sizeof p, RING ".colours.%s.key", ground); b->hasKey = spec_str(F, p, b->key, sizeof b->key) > 0;
   if (!b->core[0]) { char m[100]; snprintf(m, sizeof m, "word focusRing: frame focus.ring.colours.%.30s has no core", ground); v_error(m); return -1; }
   return 0;
-}
-static void composed(const char *id, int x, int y, int w, int h, const char *ops) {
-  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
-  prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);
 }
 /* the three bands as ops of one shape in a W x H picture, each band's ring at the inset of the bands inside it; the key bands are left out on a ground that has none */
 static int bands_ops(char *ops, int cap, const char *shape, int W, int H, int R, const bands_t *b, const int insets[3], const int widths[3]) {
@@ -55,13 +50,13 @@ static void ring_rect(const char *id, const int r[4], int rad, int chip, const b
 /* an ellipse ring in the box (x, y, W, H) */
 static void ring_ellipse(const char *id, int x, int y, int W, int H, const bands_t *b, const int insets[3], const int widths[3]) {
   if (W < 8 || H < 8) { v_error("word focusRing: an ellipse ring under 8 px on an axis cannot be drawn"); return; }
-  char ops[400]; bands_ops(ops, sizeof ops, "ellipse", W, H, 0, b, insets, widths); composed(id, x, y, W, H, ops);
+  char ops[400]; bands_ops(ops, sizeof ops, "ellipse", W, H, 0, b, insets, widths); v_composed(id, x, y, W, H, ops);
 }
 static void ring_tab(const char *id, const int r[4], const bands_t *b) {
-  char p[96]; int slant = fi(RING ".shapes.tab.slant", 16), slantTo = fi(RING ".shapes.tab.slantTo", 80), tabTop = fi("regions.rail.y", 40), out[3], top[3], bot[3], rad[3];
+  char p[96]; int slant = v_si(F, RING ".shapes.tab.slant", 16), slantTo = v_si(F, RING ".shapes.tab.slantTo", 80), tabTop = v_si(F, "regions.rail.y", 40), out[3], top[3], bot[3], rad[3];
   for (int k = 0; k < 3; k++) {
-    snprintf(p, sizeof p, RING ".shapes.tab.outside.%d", k); out[k] = fi(p, 0); snprintf(p, sizeof p, RING ".shapes.tab.top.%d", k); top[k] = fi(p, 0);
-    snprintf(p, sizeof p, RING ".shapes.tab.bottom.%d", k); bot[k] = fi(p, 0); snprintf(p, sizeof p, RING ".shapes.tab.radius.%d", k); rad[k] = fi(p, 0);
+    snprintf(p, sizeof p, RING ".shapes.tab.outside.%d", k); out[k] = v_si(F, p, 0); snprintf(p, sizeof p, RING ".shapes.tab.top.%d", k); top[k] = v_si(F, p, 0);
+    snprintf(p, sizeof p, RING ".shapes.tab.bottom.%d", k); bot[k] = v_si(F, p, 0); snprintf(p, sizeof p, RING ".shapes.tab.radius.%d", k); rad[k] = v_si(F, p, 0);
   }
   int W = r[2] + 2 * out[0] + slant, H = bot[0] - top[0]; char ops[640]; int n = snprintf(ops, sizeof ops, "["), first = 1;
   for (int k = 0; k < 3; k++) {
@@ -71,7 +66,7 @@ static void ring_tab(const char *id, const int r[4], const bands_t *b) {
     first = 0;
   }
   snprintf(ops + n, sizeof ops - (size_t)n, "]");
-  composed(id, r[0] - out[0], top[0], W, H, ops);
+  v_composed(id, r[0] - out[0], top[0], W, H, ops);
 }
 
 /* A creature ring's weight by the light (the 2 px floor, fix 14 §14.4): frame.json focus.ring.shapes.footprint.weight maps each light to "default" or "light". When the four agree, that is the weight and no light is read;
@@ -95,10 +90,10 @@ static void ring_of(const char *id, const char *spec, const char *target, const 
     if (strcmp(shape, "tab") == 0) { ring_tab(id, r, &b); return; }
     if (strcmp(shape, "footprint") == 0) {
       if (!foot) { char m[120]; snprintf(m, sizeof m, "word focusRing: no footprint for %.60s", id); v_error(m); return; }
-      int w = foot[2], fh = 2 * v_fdiv(w + 6, 12); { int lo = fi(RING ".shapes.footprint.hMin", 6), hi = fi(RING ".shapes.footprint.hMax", 16); if (fh < lo) fh = lo; if (fh > hi) fh = hi; }
+      int w = foot[2], fh = 2 * v_fdiv(w + 6, 12); { int lo = v_si(F, RING ".shapes.footprint.hMin", 6), hi = v_si(F, RING ".shapes.footprint.hMax", 16); if (fh < lo) fh = lo; if (fh > hi) fh = hi; }
       int lw = footprint_light(light); if (lw < 0) { char m[120]; snprintf(m, sizeof m, "word focusRing: unknown light on %.60s", light); v_error(m); return; }
       int W = w + 10, H = fh + 10, x = r[0] + (mirrored ? r[2] - foot[0] - w : foot[0]) - 5, y = r[1] + foot[1] - H / 2;
-      if (lw) { int li[3], wd[3]; for (int k = 0; k < 3; k++) { snprintf(p, sizeof p, RING ".shapes.footprint.light.insets.%d", k); li[k] = fi(p, k + 1); snprintf(p, sizeof p, RING ".shapes.footprint.light.widths.%d", k); wd[k] = fi(p, 1); } ring_ellipse(id, x, y, W, H, &b, li, wd); }
+      if (lw) { int li[3], wd[3]; for (int k = 0; k < 3; k++) { snprintf(p, sizeof p, RING ".shapes.footprint.light.insets.%d", k); li[k] = v_si(F, p, k + 1); snprintf(p, sizeof p, RING ".shapes.footprint.light.widths.%d", k); wd[k] = v_si(F, p, 1); } ring_ellipse(id, x, y, W, H, &b, li, wd); }
       else ring_ellipse(id, x, y, W, H, &b, ins, b.w);
       return;
     }
@@ -139,6 +134,22 @@ void word_focusRingFootprint(const char *id, const char *spec, const char *targe
 void word_focusRingFigure(const char *id, const char *spec, const char *target, const char *picture, int fx, int feetY, int W) {
   int foot[3] = { fx - W / 2, feetY, W }, r[4] = { 0, 0, 0, 0 };
   ring_of(id, spec, target, r, foot, picture, 0);
+}
+
+/* kit_focusRingHold (common/): the hold mark, the held thing's own mark beside the one focus ring (the Library's compare holds one mibi while the ring walks another).
+   Props: id (the node's id); box (the held thing's box as the screen drew it, x, y, w, h); rad (the corner radius of the held thing's focus target, its shape radius: 2 on a Library mibi slot). Reads frame.json focus.ring.hold (one band: its w and role "core"; gap) and the core colour of focus.ring.colours.default.
+   Region and layer: the caller's region, at the chrome layer (it sets v_layer(LAYER_CHROME)); the caller draws it before the ring. It is never a focus target and draws no key bands.
+   Node id: <id>, one composed node at the box grown by gap + w on each side, its ops one ["ring", "round", 0, 0, W, H, w, rad + gap + w, core] (a 1 px line with the ring's outer corner: the ring's radius on the same target is rad + reach); a box of no size keeps the node with no size and ops [].
+   The node is sent marked a hold (prim_hold), so the test log counts it as "hold" (flag 4), never as a ring. A hold spec that is not one core band and a gap of 0 or more is an error and no node.
+   Returns nothing. */
+void kit_focusRingHold(const char *id, const int box[4], int rad) {
+  int w = v_si(F, RING ".hold.bands.0.w", 0), gap = v_si(F, RING ".hold.gap", -1); char role[16] = "", core[24] = "";
+  spec_str(F, RING ".hold.bands.0.role", role, sizeof role); spec_str(F, RING ".colours.default.core", core, sizeof core);
+  if (spec_len(F, RING ".hold.bands") != 1 || w < 1 || gap < 0 || strcmp(role, "core") != 0 || !core[0]) { v_error("kit_focusRingHold: frame focus.ring.hold is one core band and a gap"); return; }
+  v_layer(LAYER_CHROME); prim_hold(1);
+  if (box[2] <= 0 || box[3] <= 0) v_composed(id, box[0], box[1], 0, 0, "[]");
+  else { int o = gap + w, W = box[2] + 2 * o, H = box[3] + 2 * o; char ops[160]; snprintf(ops, sizeof ops, "[[\"ring\",\"round\",0,0,%d,%d,%d,%d,\"%s\"]]", W, H, w, (rad < 0 ? 0 : rad) + o, core); v_composed(id, box[0] - o, box[1] - o, W, H, ops); }
+  prim_hold(0);
 }
 
 /* the ring of the target group of the screen in props (the rail's, Pods'): the target whose `group` this is */

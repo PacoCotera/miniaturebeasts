@@ -35,12 +35,16 @@ export const SCENES = {
   "companion-away":      { f: "room", set: (w) => { w.adults(3); w.carry([0]); w.away(); } },
   "pods-empty":          { f: "room", set: (w) => { w.adults(2); } },
   "pods-full":           { f: "room", set: (w) => { w.adults(2); w.pods(6); w.seen(); } },
+  "library-0-new":       { f: "room", set: (w) => { w.adults(3); w.libNew(0); } },   // the Library opened full screen: the specimen of the species with the fewest looks unfound, no new caption, no glint (build spec 4.2)
+  "library-3-new":       { f: "room", set: (w) => { w.adults(3); w.libNew(3); } },   // three looks found since: "3 new" and a glint on each bead (reduced motion: the glints simply show)
+  "library-focused":     { f: "library", set: (w) => { w.adults(3); w.libNew(3); } },
 };
 // the helpers the scenes call, in the page
 export const WORLD = () => ({
   // the Companion's part of the save is re-read from storage on every save: an edit to it is written there at once
   persist() { const S = window.__st; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); },
-  reset() { const S = window.__st, st = S.ST, sv = S.SV; S.UI.meet = null; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; st.sittingCrates = []; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.nameN = 0; st.namesUsed = []; st.knownIds = []; S.UI.meet = null; S.UI.home.f = "room"; this.persist(); },
+  reset() { const S = window.__st, st = S.ST, sv = S.SV; S.UI.meet = null; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; st.sittingCrates = []; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.nameN = 0; st.namesUsed = []; st.knownIds = []; st.libSeen = {}; S.UI.meet = null; S.UI.home.f = "room"; this.persist(); },
+  libNew(n) { const st = window.__st.ST; st.libSeen = JSON.parse(JSON.stringify(st.guide)); let k = n; for (const t of Object.keys(st.libSeen.S01 ?? {})) while (k > 0 && st.libSeen.S01[t].length > 1) { st.libSeen.S01[t].pop(); k--; } },   // the Library opened full screen, then n looks found since
   adults(n) { const st = window.__st.ST, k = st.mibis.length; window.__st.seedAdults("S01", 5, n); for (const m of st.mibis.slice(k)) m.paint = { state: "landed" }; },
   young(n) { const st = window.__st.ST; const k = st.mibis.length; window.__st.seedAdults("S01", 77, n); for (const m of st.mibis.slice(k)) { m.born = st.turn; m.paint = { state: "landed" }; } },
   meet(i) { const S = window.__st; S.UI.meet = S.ST.mibis[i].id; },

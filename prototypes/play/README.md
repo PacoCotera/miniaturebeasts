@@ -12,13 +12,17 @@ Two same-origin documents in one page (the workbench's bench is hidden, below), 
 | Companion | `../exploration/?embed` (plus `&seed=<n>` and `&dev=1` as given) | 450 × 600 |
 | Bench | `../workbench/` (hidden: the bench container, its handle and its tab are not shown and the frame is never loaded; the workbench's own page stays) | none |
 
-`?embed` is each device's screen alone, at a whole number of physical pixels per device pixel: each screen keeps its whole CSS size (1024 and 450 px) and is scaled by `k / devicePixelRatio` with `k = max(1, floor(devicePixelRatio))`, set from a function that re-arms itself on every device-pixel-ratio change; on the page one lp is `k / devicePixelRatio` CSS pixels. The play page applies the same rule to every edge it places.
+`?embed` is each device's screen alone, at a whole number of physical pixels per device pixel: each screen keeps its whole CSS size (1024 and 450 px) and is scaled by `k / devicePixelRatio` with `k = max(1, floor(devicePixelRatio))`, set from a function that re-arms itself on every device-pixel-ratio change; on the page one lp is `z / devicePixelRatio` CSS pixels, where `z` is the page's size (below; `z = k` by default where nothing larger fits). The shell scales each frame as a whole by `z / k` from its top left, so every face pixel stays a `z × z` block of device pixels. The play page applies the same rule to every edge it places.
 
 **The save.** The devices cross the save exactly as between two tabs: each writes its own part of `mb-save-v8` and hears the other through the `storage` event, which fires between same-origin frames unchanged. **The shell never reads or writes the save.** The Station frame computes the Caddy's state and posts it; the shell shows it.
 
 ## Layouts
 
 The thresholds are CSS px of the window (`innerWidth`, `innerHeight`, the bar included), never lp. The faces keep the pixel rule (one lp is `k / devicePixelRatio` CSS px, never scaled at runtime); the page chrome (bar, keys, trays, gaps, text) is in CSS px, snapped to whole physical pixels.
+
+**The size (`src/fit.mjs`).** `z` is a whole number of device pixels per lp. **Fit** (the default) is the largest `z` at which the layout does not scroll sideways and each device's block (its shell and its key tray) fits the window's height under the bar; the stack is taken whenever it gives a larger `z` than the row; never below `k`, where the tiers below are today's. The size control in the bar beside Keys ? (− / fit / +, the middle showing `×z`) and the keys `-` and `=` (or `+`) choose a `z` (1 to 8); the choice is kept per browser (`localStorage` `mb-play-z`, fit clears it). A chosen `z` larger than fits makes the page scroll; a face never shrinks below it. The Caddy's block, the shells, the trays' widths and the ring are in lp and grow with `z`; the keys, the tray rows and the bar stay in CSS px. `?test` keeps `z = k`, today's tiers, no size control and no stamp, so the journey's checks and its earlier captures are unchanged.
+
+**The build stamp.** At the page's foot, in its bottom margin under every block, right-aligned to the content: `build <short> · YYYY-MM-DD HH:MM Mexico City` from the site's `build.json` (its UTC `built` converted to Mexico City time, `src/stamp.mjs`; the viewer's own zone is never used), `build local` with no `build.json`.
 
 | Layout | When (CSS px) | Shows |
 | --- | --- | --- |

@@ -63,7 +63,13 @@
   ["deepTeal", "#2a2a2d"],
   ["sage", "#84ae78"],
   ["sageD", "#5d7a5f"],
-  ["focus", "#ffe6ad"]
+  ["focus", "#ffe6ad"],
+  ["libGround", "#211b1a"],
+  ["libPanel", "#342c29"],
+  ["libHead", "#3a312c"],
+  ["libQuiet", "#2a2320"],
+  ["libWell", "#1a1514"],
+  ["libLine", "#4a413c"]
  ],
  "darker": {
   "void": "void",
@@ -127,7 +133,13 @@
   "deepTeal": "void",
   "sage": "sageD",
   "sageD": "forest",
-  "focus": "sand"
+  "focus": "sand",
+  "libGround": "libWell",
+  "libPanel": "libQuiet",
+  "libHead": "libPanel",
+  "libQuiet": "libGround",
+  "libWell": "void",
+  "libLine": "libHead"
  },
  "lighter": {
   "void": "ink",
@@ -191,6 +203,12 @@
   "deepTeal": "bar",
   "sage": "sprout",
   "sageD": "sage",
-  "focus": "white"
+  "focus": "white",
+  "libGround": "libQuiet",
+  "libPanel": "libHead",
+  "libHead": "libLine",
+  "libQuiet": "libPanel",
+  "libWell": "libGround",
+  "libLine": "bevel"
  }
 }

@@ -42,6 +42,8 @@ export function household(o = {}) {
   if (n5) S.seedAdults(st, "S05", 9, n5, settings);
   for (const m of st.mibis) m.paint = { state: "landed" };
   for (const m of st.mibis.slice(o.adults ?? 0)) m.born = st.turn;   // the juveniles
+  if (o.libNew != null) { st.libSeen = S.libSnapshot(st); let k = o.libNew; for (const t of Object.keys(st.libSeen.S01 ?? {})) while (k > 0 && st.libSeen.S01[t].length > 1) { st.libSeen.S01[t].pop(); k--; } }   // the Library opened full screen, then libNew looks found since (the last found of the traits that have more than one)
+  warmLibrary(st, settings);   // the host warms the specimen when a look is found; Home's props only read it
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };   // carry: the indexes of the mibis with the Companion
   return { st, sv, settings, m: { st, sv, settings, ui: o.ui ?? {}, docked: o.docked ?? true, light: o.light ?? "day", time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: o.motionSets ?? true } };
 }
@@ -56,7 +58,12 @@ export function sleepersOf(build, n = 3) {
 // a picture for a request: a moving atlas synthesized (moving-scene's), any other a flat block
 const hash2 = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 export function flatPicture(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash2(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
-export function sendRequests(f, requests, opts = {}) { for (const r of requests) f.handleOf(r.id, withPolicy((i) => (r.kind === "moving" ? atlasPicture(i, opts) : flatPicture(i, r.size ?? [16, 16])))); }
+export function sendRequests(f, requests, opts = {}) {
+  for (const r of requests) {
+    if (r.kind === "specimen") { for (const id of r.levels) f.handleOf(id, withPolicy((i) => flatPicture(i, r.size))); continue; }   // the Library's specimen: its four levels, each a flat block of its own colour
+    f.handleOf(r.id, withPolicy((i) => (r.kind === "moving" ? atlasPicture(i, opts) : flatPicture(i, r.size ?? (r.kind === "star" ? [12, 12] : [16, 16])))));
+  }
+}
 // the state word of face_test_state
 export const STATE = (v) => ({ clip: v & 15, travelling: !!(v & 16), airborne: !!(v & 32), asleep: !!(v & 64), wanderer: !!(v & 128), focused: !!(v & 256), phase: (v >> 12) & 15 });
 export const CLIP = { rest: 0, hop: 1, walk: 2, curl: 3, asleep: 4, wake: 5, stir: 6, ack: 7 };
@@ -65,7 +72,9 @@ export const CLIP = { rest: 0, hop: 1, walk: 2, curl: 3, asleep: 4, wake: 5, sti
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { vivariumBuild } from "../../station/src/views/vivarium-props.mjs";
 import { idleBuild } from "../../station/src/views/idle-props.mjs";
-import { homeBuild } from "../../station/src/views/home-props.mjs";
+import { homeBuild, setLibrary } from "../../station/src/views/home-props.mjs";
+import { libraryOf, warmLibrary } from "../../station/src/views/specimen-props.mjs";
+setLibrary(libraryOf);   // the host registers it; Home's Library module is the specimen (build spec 4.2)
 const here2 = path.dirname(fileURLToPath(import.meta.url)), specDir = path.resolve(here2, "../../ui/specs/station");
 export const SPEC = (n) => JSON.parse(readFileSync(path.join(specDir, n + ".json"), "utf8"));
 const palette = JSON.parse(readFileSync(path.resolve(here2, "../../ui/palettes/station.json"), "utf8")).colours;
