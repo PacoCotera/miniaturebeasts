@@ -7,6 +7,10 @@
 #ifndef PRIM_H
 #define PRIM_H
 #include <stdint.h>
+/* The fonts the face holds, by code: a font is named by its px and weight. The px's default weight keeps the px as its code (so a text node at 16 Regular, 20 Medium or 28 SemiBold
+   is what it always was); another weight at a px is 1000 + px. Any other code is refused (a text node, a measure). */
+enum { PRIM_FONT_R16 = 16, PRIM_FONT_M16 = 1016, PRIM_FONT_M20 = 20, PRIM_FONT_SB28 = 28 };
+int prim_font_px(int code);     /* the px of a font code (16 for 1016), or 0 when the face has no such font */
 enum { FN_RECT = 1, FN_TEXT = 2, FN_SPRITE = 3, FN_NINE = 4, FN_CLIP = 5, FN_COMPOSED = 6 };
 enum { LAYER_CHROME = 0, LAYER_ART = 1, LAYER_PAINTED = 2, LAYER_TYPE = 3 };
 void prim_init(void);
@@ -14,7 +18,7 @@ void prim_begin(void);
 /* The layer and region every node sent from now on carries, until changed. A region is the spec's region id (at most 47 bytes). */
 void prim_tag(int layer, const char *region);
 /* id: the page's hash of the node id. rect: x, y, w, h. rgb: 0xRRGGBB. a, b by kind:
-   text: a = px (16, 20, 28), b = the cap height in px (the rect's y is the cap top); sprite: a = the asset handle (rgb: 0, or source x << 16 | source y to show that window of a larger picture);
+   text: a = the font code (PRIM_FONT_*: 16, 1016, 20, 28), b = the cap height in px (the rect's y is the cap top); sprite: a = the asset handle (rgb: 0, or source x << 16 | source y to show that window of a larger picture);
    nine-slice: a = the asset handle, rgb = its insets left, top, right, bottom packed one a byte (the corners are placed 1:1), b = the tile of its edges and middle in px (0: the whole strip);
    clip: a = how many of the nodes that follow it are inside it (their rects are absolute; they are cut at the clip's rect);
    composed: the ops as JSON in the text buffer (see prim_compose), drawn into a w x h picture of the face's own once per change.
@@ -27,8 +31,10 @@ void prim_end(void);
 char *prim_ops(void);           /* a 128 KiB buffer for the ops of a composed node (JSON), filled before the node */
 int prim_ops_size(void);
 char *prim_text(void);          /* a 1 KiB buffer the page fills (UTF-8, NUL ended) before a text node or a measure */
+void prim_text_role(const char *role, const char *ground);   /* the role and ground the next text node is set by (the log carries them); the words set it before the node, "" or NULL for none */
+void prim_run(uint32_t run);   /* the run the nodes sent from now on belong to: one v_run or v_price call, the v_id of its id; 0 for none (the log carries it on each text entry and as the 14th value of each node) */
 int prim_text_size(void);
-int prim_measure(int px);       /* the width in px of prim_text() set in Inter at px */
+int prim_measure(int code);     /* the width in px of prim_text() set in the font of that code (PRIM_FONT_*), or -1 for a code the face has no font for */
 uint8_t *prim_asset(int handle, int w, int h);   /* a picture's pixels (B, G, R, A in memory), for the page to fill; NULL when refused */
 int prim_snapshot(int x, int y, int w, int h);   /* the screen's objects as drawn now, the rect (x, y, w, h) copied into the face's one snapshot picture (lv_snapshot): its handle, or -1 */
 void prim_snapshot_free(void);                   /* release the snapshot */
@@ -70,6 +76,8 @@ int prim_asset_diff_box(int fh, int th, int out[4]);    /* the change box: pixel
 /* The feet of a held picture (the decision panel's composite rule, T-20261016-70): out = the lowest row holding a pixel of alpha >= `alpha`, and the first and last column of such pixels in that row and the `rows` - 1 above it (inclusive). 0, or -1 for an empty slot or a picture with no such pixel. */
 int prim_asset_feet(int handle, int alpha, int rows, int out[3]);
 int prim_asset_layer_of(int handle);   /* the layer the host gave a picture (art or painted; art when it gave none) */
-/* {"regions":[{"id","layer","rect":[x,y,w,h]}...],"type":[{"text","px","region"}...],"refused":n,"objects":n,"table":n,"pictures":n} into buf (a clip's children count only where the clip shows them; objects are LVGL's, table is the face's node table); returns its length, or -1 if it does not fit. */
+/* {"regions":[{"id","layer","rect":[x,y,w,h]}...],"type":[{"text","px","region","role","ground","x","w","cap","base"}...],"nodes":[[id,kind,layer,region,x,y,w,h,flags,inkx,inky,inkw,inkh]...],"refused":n,"objects":n,"table":n,"pictures":n}
+   into buf (a clip's children count only where the clip shows them; objects are LVGL's, table is the face's node table; a text's px is its font code, cap and base its cap top and baseline rows, role and
+   ground what the words set it by, "" when set by size; nodes: every node shown with a size in draw order, see prim_log_json); returns its length, or -1 if it does not fit. */
 int prim_log_json(char *buf, int cap);
 #endif

@@ -14,7 +14,7 @@ void v_region(const char *region, int layer);          /* every node from now on
 void v_name(const char *region);                       /* the same, for a region of pictures only: a sprite or nine-slice takes its layer from its asset, the word chooses none */
 void v_layer(int layer);                               /* the same region, another layer */
 uint32_t v_col(const char *name);                      /* a palette colour by name (0 and an error when the palette has none) */
-int v_cap(int px);                                     /* Inter's cap height at 16, 20, 28 px: 12, 14, 21 */
+int v_cap(int px);                                     /* Inter's cap height at 16, 20, 28 px: 12, 14, 21 (a font code: its px's; the px forms below take a font code where they take px) */
 int v_measure(const char *s, int px);                  /* the width of a string at px */
 void v_rect(const char *id, int x, int y, int w, int h, const char *colour);
 /* One string of Inter, the cap top on y. */
@@ -95,6 +95,28 @@ int v_price(const char *id, const char *s, int x, int y, int px, const char *col
 int v_wrap(const char *s, int maxw, int px, char *buf, int cap, int max);
 /* A string cut to a width with an ellipsis. */
 void v_clip(const char *s, int maxw, int px, char *out, int cap);
+/* ---- text by role (frame.json type.fonts, type.grounds, type.roles): the forms a screen draws its words with; a role names the font, the colour on each ground and the shadow on a painting ----
+   role: a name of type.roles, or "<role>.<variant>" for one of its variants (a colour of type.roles.<role>.variants on any ground the role has a colour for).
+   ground: a kind (field, pane, band, painted) or a palette name type.grounds maps to one (ground, panel, bar, ...).
+   A role is resolved once per load of the frame spec and cached. An unknown role, a ground it has no colour on, or a variant it lacks is refused with an error and draws one text node of no size
+   (the id the form would have drawn first), so no node goes missing; the measures return 0 (the cap forms y or top). The px forms (v_line_at, v_line_in, v_run, v_price, v_text and the px
+   measures) are their internals.
+   v_say: v_line_at by role: the role's font, its colour on the ground and, where the role has a shadow on that ground (a painting), a copy of the string in the shadow's colour one pixel right and
+   down under it (node "<id>.shadow", sent first). V_ANCHOR_LINE uses the role's pitch. Region and layer: the caller's. Node id: v_id(id) (and <id>.shadow). Returns the width.
+   v_say_in: the same, centred in the box [bx, bx + bw). v_say_run: v_run by role (no shadow). v_say_price: v_price by role: the role's font, each group's figure in the colour of the role cols[g]
+   names on the ground and a price with no group in that of `other` (each "<role>" or "<role>.<variant>"); returns the end x.
+   v_role_pitch, v_role_width, v_role_clip, v_role_wrap, v_role_cap_top, v_role_cap_in: the px measures by role; v_role_font: the role's font code (prim.h PRIM_FONT_*), 0 when refused. */
+int v_say(const char *id, const char *s, int x, int y, int anchor, const char *role, const char *ground, int align);
+int v_say_in(const char *id, const char *s, int bx, int bw, int y, int anchor, const char *role, const char *ground);
+v_run_t v_say_run(const char *id, const char *s, int x, int y, const char *role, const char *ground, int align);
+int v_say_price(const char *id, const char *s, int x, int y, const char *role, const char *ground, const char *cols[V_PRICE_N], const char *other);
+int v_role_pitch(const char *role);
+int v_role_width(const char *s, const char *role);
+void v_role_clip(const char *s, int maxw, const char *role, char *out, int cap);
+int v_role_wrap(const char *s, int maxw, const char *role, char *buf, int cap, int max);
+int v_role_cap_top(int y, int anchor, const char *role);
+int v_role_cap_in(int top, int h, const char *role);
+int v_role_font(const char *role);
 /* A fixed rectangle of the spec, [x, y, w, h], at a path of the frame spec; 0 when it is not a 4-array. */
 int v_spec_rect(const char *screen, const char *path, int r[4]);
 void v_error(const char *what);

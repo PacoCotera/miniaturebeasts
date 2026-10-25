@@ -12,6 +12,8 @@
 //       spec_len, spec_bool, spec_raw, spec_member, v_si, v_sk, v_srect, v_scol, v_scol_or, v_token, v_sstr or v_spec_rect on that path (a computation that reads the spec and does more is not an accessor);
 //   the ratchet: a screen makes more direct v_rect, v_text, v_sprite, v_sprite_window and v_sprite_hidden calls than face/kit-ratchet.json allows it (a screen it does not name: 0), or the file
 //       has no "screenSpecific" list, or that list names a screen file that does not exist;
+//   the text ratchet: a screen makes more px-form text calls (v_line_at, v_line_in, v_run, v_price, v_text, v_measure, v_run_width, v_clip, v_wrap, v_cap_top, v_cap_in) than kit-ratchet.json's
+//       "text" table allows it (a screen it does not name: 0): a screen draws its words by role (v_say and the v_role_* measures);
 //   8. a kit_* function defined under face/src/vocab/ has no header comment before it beginning "/* kit_<name> (" that holds Props, Region, Node id (or Node ids) and Returns.
 //   The C of rules 6 to 8 is read through blank(src, { js: false }): a call in a comment is not counted; for rule 7b and the ratchet a call is matched as NAME, any spaces, then "("; rule 7a flags any mention of prim_node (a macro, a function pointer or a bracketed name included).
 //   node prototypes/face/tools/guard.mjs        (from anywhere; --root <dir> checks another tree)
@@ -41,6 +43,7 @@ const NODE_EXPORTS = /\b_?face_(scene_begin|scene_end|node|node_tag|text|text_si
 const LV_CREATE = /\blv_[a-z0-9_]+_create\s*\(/g, LV_OK = new Set(["lv_display_create", "lv_indev_create"]);
 
 const DIRECT = /\b(?:v_rect|v_text|v_sprite|v_sprite_window|v_sprite_hidden)\s*\(/g, PRIM_NODE = /\bprim_node\b/g;
+const PX_TEXT = /\b(?:v_line_at|v_line_in|v_run|v_price|v_text|v_measure|v_run_width|v_clip|v_wrap|v_cap_top|v_cap_in)\s*\(/g;   // the px forms of text (the text ratchet)
 const ACCESSOR_CALLS = new Set(["spec_int", "spec_str", "spec_len", "spec_bool", "v_si", "v_sk", "v_srect", "v_scol", "v_spec_rect", "v_sstr", "v_scol_or", "v_token", "spec_raw", "spec_member"]);
 const HEADER = [["Props", /\bProps\b/], ["Region", /\bRegion\b/], ["Node id", /\bNode ids?\b/], ["Returns", /\bReturns\b/]];
 const lineAt = (s, i) => s.slice(0, i).split("\n").length;
@@ -59,12 +62,12 @@ function accessors(code) {
   }
   return out;
 }
-// each screen file's direct drawing calls, prim_node calls (their lines) and static spec accessors, read through blank (exported for the ratchet's count)
+// each screen file's direct drawing calls, px-form text calls, prim_node calls (their lines) and static spec accessors, read through blank (exported for the ratchets' counts)
 export function kitCounts(screensDir) {
   const out = {};
   for (const f of readdirSync(screensDir).filter((f) => f.endsWith(".c")).sort()) {
     const code = blank(readFileSync(path.join(screensDir, f), "utf8"), { js: false });
-    out[f] = { direct: [...code.matchAll(DIRECT)].length, primNode: [...code.matchAll(PRIM_NODE)].map((m) => lineAt(code, m.index)), accessors: accessors(code) };
+    out[f] = { direct: [...code.matchAll(DIRECT)].length, text: [...code.matchAll(PX_TEXT)].length, primNode: [...code.matchAll(PRIM_NODE)].map((m) => lineAt(code, m.index)), accessors: accessors(code) };
   }
   return out;
 }
@@ -124,6 +127,8 @@ export function check(root) {
       for (const a of c.accessors) fails.push(`${r}:${a.line} defines the static spec accessor ${a.name} (rule 7b: one call of ${a.call} on its path; use the v_* reader)`);
       const allowed = ratchet?.counts?.[f.replace(/\.c$/, "")] ?? 0;
       if (ratchet && c.direct > allowed) fails.push(`${r} makes ${c.direct} direct v_rect/v_text/v_sprite/v_sprite_window/v_sprite_hidden calls; the ratchet allows ${allowed} (face/kit-ratchet.json)`);
+      const allowedText = ratchet?.text?.[f.replace(/\.c$/, "")] ?? 0;
+      if (ratchet && c.text > allowedText) fails.push(`${r} makes ${c.text} px-form text calls (v_line_at, v_line_in, v_run, v_price, v_text, v_measure, v_run_width, v_clip, v_wrap, v_cap_top, v_cap_in); the text ratchet allows ${allowedText} (face/kit-ratchet.json "text": draw words by role, v_say and v_role_*)`);
     }
     if (ratchet) {
       if (!Array.isArray(ratchet.screenSpecific)) fails.push('face/kit-ratchet.json has no "screenSpecific" list');

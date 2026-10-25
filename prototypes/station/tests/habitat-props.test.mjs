@@ -1,6 +1,7 @@
 // One mibi up close as props (lvgl-switch.md §2.1, §4 V; habitat.json): the view the face takes, views/habitat-props.mjs, in Node. Plain JSON that names what and never where: it validates against habitat.props.json (and the namer's overlay
 // against namer.props.json) in every scene, holds no rectangle, fits the props budget, names the state (rest, meet, out), the card, the plates, the four modules and the strip, and the ring's targets and bottom line by the spec's rules.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -8,7 +9,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, genomeDigest } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { habitatBuild } from "../src/views/habitat-props.mjs";
+import { habitatBuild as habitatBuildUnchecked } from "../src/views/habitat-props.mjs";
+const habitatBuild = lineCased(habitatBuildUnchecked, "habitat");   // every body it builds goes through assertLineCase (report mode)
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));

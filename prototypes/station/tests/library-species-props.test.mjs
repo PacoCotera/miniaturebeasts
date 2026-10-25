@@ -3,6 +3,7 @@
 // chapter; the line's verbs and subjects are library.json l2.strings, the carried-by ladder measured with the face's metrics; the props never name a picture that is not made (the Library 3 gate's P1): the species' last sheet
 // or the quiet stand-in for a sheet, the unlit sheet for a lit variant, nothing for a page. Level 1's cells the same way (the Library 2 gate's F5). The face of a portrayed mibi keeps its portrait's stage (F4).
 //   node --test prototypes/station/tests/library-species-props.test.mjs
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -12,7 +13,9 @@ import { setFrames, frameOf } from "../src/genome.mjs";
 import { currentLooks } from "../../workbench/framework/describe.mjs";
 import * as S from "../src/state.mjs";
 import * as Lib from "../src/library.mjs";
-import { speciesBuild, libraryBuild, carriedLine } from "../src/views/library-props.mjs";
+import { speciesBuild as speciesBuildUnchecked, libraryBuild as libraryBuildUnchecked, carriedLine } from "../src/views/library-props.mjs";
+const speciesBuild = lineCased(speciesBuildUnchecked, "library-species");   // every body it builds goes through assertLineCase (report mode)
+const libraryBuild = lineCased(libraryBuildUnchecked, "library-species");   // every body it builds goes through assertLineCase (report mode)
 import { sheetInput } from "../src/views/specimen-props.mjs";
 import { sheetFacts, speciesFacts } from "../src/library-sheet.mjs";
 import { sheetId, quietId, litId, pageId } from "../src/views/requests.mjs";

@@ -2,6 +2,7 @@
 // fits the 32 KiB props budget, says the top bar's words (the date and the clock), the line (the needs in their order, the goal, a target's verb), the four stations' words and the Vivarium's readout from home.json's strings, and agrees with the host's
 // rules on what the room's ✓ does. The living window's shared selectors (residents' seeds, rest, light, picture ids), which Idle and the Vivarium's whole use, are tested through Idle's view beneath.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -10,7 +11,8 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { traitLooks } from "../../workbench/framework/describe.mjs";
-import { homeBuild, homeNeeds, dateWords, clockWords, lightAt, wordsOf } from "../src/views/home-props.mjs";
+import { homeBuild as homeBuildUnchecked, homeNeeds, dateWords, clockWords, lightAt, wordsOf } from "../src/views/home-props.mjs";
+const homeBuild = lineCased(homeBuildUnchecked, "home");   // every body it builds goes through assertLineCase (report mode)
 import { idleBuild } from "../src/views/idle-props.mjs";
 import { goalWords } from "../src/views/goal-words.mjs";
 

@@ -2,6 +2,7 @@
 // spec's geometry and width limits (measured with the real metrics, with one, two and three cards), open on the first card that is neither dimmed nor a loss, dim a card that is short, and build the bottom line from the focused card (the line and
 // the panel never disagree); its intents (intents/panel.mjs, create.mjs) open on ✓ Grow it, spend nothing on ←, a room key or a dimmed card, and land where the card said: both jump modes end to end.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -9,7 +10,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { panelBuild, initialFocus, growNowCards, dockCards } from "../src/views/panel-props.mjs";
+import { panelBuild as panelBuildUnchecked, initialFocus, growNowCards, dockCards } from "../src/views/panel-props.mjs";
+const panelBuild = lineCased(panelBuildUnchecked, "panel");   // every body it builds goes through assertLineCase (report mode)
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { openPanel } from "../src/intents/panel.mjs";
 import { createMeasure } from "../../ui/specs/measure.mjs";

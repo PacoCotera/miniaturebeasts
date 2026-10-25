@@ -8,6 +8,9 @@
 //   4. size: the frame is 1024×600.
 //   5. ink: where the ink of each frame region lies in the frame's pixels against the spec (the title after the room's mark, the counters and the subject centred, the notice and the way back
 //      right-aligned, the verb after its cap), and a slot that says nothing has no ink. (Moved here from face/tools/frame-check.mjs, which it replaces.)
+//   6. clearance: the text's distances from the edges, the bars' middles, its container, the pictures, the focus ring, the rules, other text and the clips (ui/specs/clearance.mjs, T1 to T7, T10,
+//      T11) at every point, from the face's node log. Report mode: the departures are printed per screen; a screen frame.json type.clearance.enforced lists fails on any, and an exception
+//      nobody uses fails.
 import { readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -23,6 +26,7 @@ import { departures as habitatDepartures } from "../../face/tools/habitat-region
 import { departures as libraryDepartures } from "../../face/tools/library-regions.mjs";
 import { departures as benchDepartures } from "../../face/tools/bench-regions.mjs";
 import { departures as cargoDepartures } from "../../face/tools/cargo-regions.mjs";
+import { departures as clearance, unusedExceptions, enforced } from "../../ui/specs/clearance.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 const file = process.argv[2] || process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
@@ -172,5 +176,19 @@ console.log("== ink against the frame spec");
   }
   console.log(`ink: ${n} regions compared in ${rec.shots.filter((x) => x.png && !x.check.idle).length} frames`);
   if (!rec.shots.some((x) => x.png)) fail("no screenshot point records the frame's pixels"); }
+// ---- 6. clearance: the spacing rules for text, from the face's node log (report mode until a screen is enforced)
+console.log("== clearance of text (ui/specs/clearance.mjs), report mode unless frame.json type.clearance.enforced lists the screen");
+{ const SPEC_OF = { home, pods, create: createSpec, incubator: incubatorSpec, cargo: cargoSpec, vivarium: vivariumSpec, bench: benchSpec, library: librarySpec, habitat: habitatSpec, sitting: JSON.parse(readFileSync(path.join(ui, "specs/station/sitting.json"), "utf8")) };
+  const per = {}, results = [];
+  for (const s of rec.shots) {
+    const c = s.check, lg = c.log; if (!lg?.nodes) { fail(`${s.name}: the face's log has no nodes (the clearance checks read them)`); continue; }
+    const screen = c.idle ? "idle" : c.screen ?? "?", spec = c.idle ? frame.idle : SPEC_OF[screen] ?? {};
+    const d = clearance(lg, spec, frame); results.push(d);
+    const p = (per[screen] ??= { points: 0, departures: 0, rules: {} }); p.points++; p.departures += d.length; for (const x of d) p.rules[x.rule] = (p.rules[x.rule] ?? 0) + 1;
+    if (enforced(frame, screen)) for (const x of d) fail(`${s.name}: ${x.rule} ${x.node}: ${x.measured} from ${x.other}, ${x.required} required`);
+  }
+  for (const [screen, p] of Object.entries(per).sort()) console.log(`clearance ${screen.padEnd(10)} ${String(p.points).padStart(3)} points · ${String(p.departures).padStart(4)} departures (${Object.entries(p.rules).sort().map(([r, n]) => `${r} ${n}`).join(", ") || "none"})${enforced(frame, screen) ? " · enforced" : " · report"}`);
+  for (const e of unusedExceptions(frame, results)) fail(`frame.json type.clearance.exceptions: ${e.rule} ${e.node} is used by no departure`);
+  console.log(`clearance: ${results.reduce((n, d) => n + d.length, 0)} departures at ${results.length} points (report mode: ${(frame.type.clearance?.enforced ?? []).length} screens enforced)`); }
 console.log(fails.length ? `${fails.length} failure(s)` : "layer checks ok");
 process.exit(fails.length ? 1 : 0);

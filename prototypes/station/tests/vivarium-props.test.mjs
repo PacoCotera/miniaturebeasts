@@ -1,6 +1,7 @@
 // The Vivarium's whole as props (lvgl-switch.md §2.1, §4 V; vivarium.json): the view the face takes, views/vivarium-props.mjs, in Node. Plain JSON that names what and never where: it validates against vivarium.props.json in every scene,
 // holds no rectangle, fits the props budget, lists every mibi at home as a walker and the docked carried set as sleepers, a tile a bay (housed, out, free), the targets in bay order and the ring where the way in puts it.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -8,7 +9,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { vivariumBuild } from "../src/views/vivarium-props.mjs";
+import { vivariumBuild as vivariumBuildUnchecked } from "../src/views/vivarium-props.mjs";
+const vivariumBuild = lineCased(vivariumBuildUnchecked, "vivarium");   // every body it builds goes through assertLineCase (report mode)
 import { loadStandLayersFs, loadStandLooksFs, unloadStands } from "../tools/stand-layers-fs.mjs";
 import { placeMaster, dropAsset } from "../../ui/assets.mjs";
 import { layeredStand, composeStand, inkBox } from "../src/layered-stand.mjs";
