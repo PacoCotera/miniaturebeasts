@@ -2,13 +2,16 @@
 // catalogue: six found, four met, the rest unmet, the wish on the Tuikis alone and on the Loika beside its face chip; the room key and the dither take it with the Tuikis's wish only), `library-l1-new` (glints and "three new looks"), `library-l1-roomkey` (the Library room key from Home: the ring
 // on the last species visited) and `library-l1-dither` (✓ on Home's Library bezel: the frame at the midpoint of the 180 ms stage dither, motion on, virtual clock); the Loika's guide is filled in each (the art director, L4-AD1) and
 // the seen record taken after it. Level 2 (library.species): the Loika at mid, its Coat lit, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat
-// lit complete, the Blikur and the Loika late (colour chips). Each is reached by the page's own state and the player's keys and intents, the Library's pictures made (window.__st.libraryWarm: they are made off the open path in
+// lit complete, the Blikur and the Loika late (colour chips). Level 3 (library.family, far): a Loika lineage of two blocks (`library-l3-far`, the ring on Moss) and of one (`library-l3-far-one-family`, on Dot). Each is reached by the page's own state and the player's keys and intents, the Library's pictures made (window.__st.libraryWarm: they are made off the open path in
 // play), and asserted (screen, state, what the props show, the ring, the line) before `visit(name, page, fail)` is called. Taken with reduced motion (the glints solid), except the dither. Returns { fails }.
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
+import * as S from "../../station/src/state.mjs";
+import { setFrames } from "../../station/src/genome.mjs";
+import { buildLineage } from "../../station/tests/fixtures/lineage.mjs";
 
 const MID_S01 = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../station/tests/fixtures/specimen/states/mid.json"), "utf8")).S01;   // the approved Loika at mid (the sheet generator's review state)
 // a scene starts from nothing known (`bare`, in enter): no species found or met, no guide, no wish, no face and no sittings, so what each scene shows is exactly what it sets. `seen()` takes the seen record up to the guide (nothing new).
@@ -52,6 +55,28 @@ const L2 = {
   "l2-blikur": { species: "S16", set: GUIDE, arg: ["S16", 0.6], expect: { plates: 7, shut: ["charge"], shelf: true } },
   "l2-loika-late": { species: "S01", set: LOIKA, arg: { add: { colour: ["charcoal and ash", "ash"] } }, expect: { plates: 4, shelf: true } },
 };
+
+// ---- Level 3: a Loika lineage (station/tests/fixtures/lineage.mjs), built here and put in the page's save; reached by the player's way in (Level 2's family face, ✓ See the family: close, drawn as not built until
+// its screen is) and ← (the tree exceeds CLOSE's view: FAR), the ring on the entry mibi: `full` (two blocks, a joined cross, a shed-pod child, released mibis and a bud; Moss the entry) and `one` (one block; Dot) ----
+const L3 = { "l3-far": { which: "full", entry: "Moss", blocks: 2 }, "l3-far-one-family": { which: "one", entry: "Dot", blocks: 1 } };
+const FRAMES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames");
+function lineageSave(which) {
+  setFrames(readdirSync(FRAMES).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(FRAMES, f), "utf8"))));
+  const st = S.freshSt("w1", 3, 0); st.mibis = []; st.nextMibi = 1; st.bud = null; st.turn = 0; const by = buildLineage(st, which, { turn: 0 });
+  return { mibis: st.mibis, bud: st.bud, next: st.nextMibi, names: st.namesUsed, ids: Object.fromEntries(Object.entries(by).map(([n, m]) => [n, m.id])) };
+}
+const LINEAGE = (w, bare, seen, mid, save) => {
+  const S = window.__st, st = S.ST; bare(); st.mibis = JSON.parse(JSON.stringify(save.mibis)); for (const m of st.mibis) m.born += st.turn; st.nextMibi = save.next; st.namesUsed = [...save.names];
+  st.bud = save.bud ? { ...JSON.parse(JSON.stringify(save.bud)), start: Date.now() } : null; st.knownIds = ["S01"]; S.fillGuide("S01", 0.4); seen();
+};
+async function assertL3(page, name, sc, fail) {
+  const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, p: window.__st.props })), p = u.p, must = (ok, m) => { if (!ok) fail(`library-${name}: ${m}`); };
+  if (u.screen !== "library.family" || p?.screen !== "library.family") { fail(`library-${name}: on ${u.screen}`); return; }
+  must(p.state === "far", `the state is ${p.state}, not far`); must(/^lineage-far-S01-[0-9a-f]{8}$/.test(p.regions.far.picture), `the picture ${p.regions.far.picture}`);
+  must(p.focus.cur === "node." + sc.ids[sc.entry], `the ring is on ${p.focus.cur}, not ${sc.entry}`); must(p.regions.lineage.nodes.every((n) => n.u >= 0), "the nodes are placed");
+  must(p.frame.top.readout.text === "Loika family" && p.frame.top.readout.mark === "species-mark-S01-10", "the readout"); must(p.frame.line.ok === "Zoom in" && p.frame.line.back === "Loika", "the line " + JSON.stringify(p.frame.line));
+  const pods = p.regions.lineage.nodes.filter((n) => n.kind === "pod"); must(pods.every((n) => n.row === 0) && !p.focus.targets.some((t) => t.id.startsWith("pod.")), "the founders' pods in row 0, never targets");
+}
 
 async function enter(page, sc, prewarm = false) {
   await page.evaluate(([setSrc, l1, via, prewarm, mid, arg]) => {
@@ -110,6 +135,15 @@ async function stillStates(visit) {
       await page.evaluate((id) => window.__st.intent({ screen: "library", target: "cell." + id, verb: "confirm" }), sc.species); await page.waitForTimeout(300); await settle(page);   // Level 1's ✓ Open {species}
       if (sc.lit) { await page.evaluate((ch) => window.__st.intent({ screen: "library.species", target: "chapter." + ch, verb: "confirm" }), sc.lit); await page.waitForTimeout(300); await settle(page); }   // ✓ Show {Chapter}
       await assertL2(page, name, sc, fail);
+      await visit("library-" + name, page, fail);
+    }
+    for (const [name, sc] of Object.entries(L3)) {   // Level 1's ✓ Open Loika, Level 2's family face ✓ See the family (close), then ← (the tree exceeds the view: FAR)
+      const save = lineageSave(sc.which); sc.ids = save.ids;
+      await enter(page, { set: LINEAGE, l1: "S01", arg: save }); await page.waitForTimeout(300);
+      await page.evaluate(() => window.__st.intent({ screen: "library", target: "cell.S01", verb: "confirm" })); await page.waitForTimeout(300); await settle(page);
+      await page.evaluate((id) => window.__st.intent({ screen: "library.species", target: "family." + id, verb: "confirm" }), save.ids[sc.entry]); await page.waitForTimeout(300);
+      await page.evaluate(() => window.__st.intent({ screen: "library.family", target: "screen", verb: "back" })); await page.waitForTimeout(500);
+      await assertL3(page, name, sc, fail);
       await visit("library-" + name, page, fail);
     }
     await noErrors(page, fail);

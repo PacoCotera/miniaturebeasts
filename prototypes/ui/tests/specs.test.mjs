@@ -729,10 +729,10 @@ const walk = (o, fn, trail = []) => { if (o && typeof o === "object") for (const
 const SHAPES = {
   "home.json": { vivarium: { rect: 10 }, library: { rect: 10 }, pods: { rect: 8 }, incubator: { rect: 8 }, companion: { rect: 8 }, bay: { rect: 8 } },   // the bezels' radius 10 and the stations' 8: the ring (4 out) is 14 and 12
   "vivarium.json": { resident: "footprint", tile: { rect: 6 } },
-  "habitat.json": { resident: "footprint", name: { rect: 0 }, species: { rect: 0, chip: 4 }, plate: { rect: 0 }, door: { rect: 6 }, portrait: { rect: 6 }, cross: { rect: 6 }, wild: { rect: 6 }, tile: { rect: 6 } },
+  "habitat.json": { resident: "footprint", name: { rect: 0 }, species: { rect: 0, chip: 4 }, family: { rect: 0, chip: 4 }, plate: { rect: 0 }, door: { rect: 6 }, portrait: { rect: 6 }, cross: { rect: 6 }, wild: { rect: 6 }, tile: { rect: 6 } },
   "namer.json": { key: { rect: 0 }, "mod.shift": { rect: 0 }, "mod.space": { rect: 0 }, "mod.page": { rect: 0 }, "act.done": { rect: 0 }, "act.suggest": { rect: 0 } },
   "pods.json": { place: { circle: { centre: [96, 88], r: 88 } }, pod: "oval", tab: "tab", kin: { circle: "box" }, hatch: { rect: 6 }, figure: "footprint" },
-  "create.json": { roll: { rect: 0 } }, "library.json": { cell: { rect: 6 }, chapter: { rect: 6 }, wish: { rect: 4 }, face: { rect: 0 }, family: { rect: 0 }, look: { circle: "box" } }, "bench.json": { plates: { rect: 0 }, switch: { rect: 6 }, slot: { rect: 6 } }, "sitting.json": { card: { rect: 6 } }, "panel.json": { card: { rect: 10 } } };
+  "create.json": { roll: { rect: 0 } }, "library.json": { cell: { rect: 6 }, chapter: { rect: 6 }, wish: { rect: 4 }, face: { rect: 0 }, family: { rect: 0 }, look: { circle: "box" }, node: { circle: "box" } }, "bench.json": { plates: { rect: 0 }, switch: { rect: 6 }, slot: { rect: 6 } }, "sitting.json": { card: { rect: 6 } }, "panel.json": { card: { rect: 10 } } };
 test("fix 14, the shape rule: every focus target has a shape of the five kinds and no `ring`; its rect radius is its object's; no spec but frame.json holds ring tokens or a ring colour; six (radius, ground) pairs at most", () => {
   const pairs = new Set(); let seen = 0;
   for (const [file, spec] of STATION) {
@@ -840,7 +840,7 @@ test("fix 14: a moving set's contact shadow is as wide as its creature cell, at 
 });
 
 // The Library's Level 2 (library.json l2): the shelf's rows and the Families shelf as the ticket places them, the UI/UX ruling for the sittings, the focus graphs and targets, the words, the frame's tree
-test("the Library's Level 2 (library.json l2): the shelf, the families, the focus and the words; library.species built, library.family not yet", async () => {
+test("the Library's Level 2 (library.json l2): the shelf, the families, the focus and the words; library.species and library.family built", async () => {
   const lib = rd("../specs/station/library.json"), L = lib.l2, SH = L.shelf, FA = L.families, { listPitch } = await import("../specs/derive.mjs");
   assert.deepEqual([L.states, L.initial, L.picture.rect, L.page.rect], [["sheet", "lit"], "sheet", [16, 40, 664, 522], [700, 50, 308, 500]]);
   assert.deepEqual([SH.rect, SH.radius, SH.fill, SH.edge, SH.bevel, SH.band], [[700, 50, 308], 6, "libPanel", null, null, { side: 0, h: 30, fill: "libHead", rule: "libWell" }]);
@@ -859,8 +859,8 @@ test("the Library's Level 2 (library.json l2): the shelf, the families, the focu
   assert.deepEqual([SH.wish.word.colour, SH.wish.disc.open, SH.wish.focus.rect], [{ carried: "bone", not: "fog" }, "look-disc-open-16", [796, 88, 204, 4]]);
   assert.deepEqual([SH.face.label.x, SH.face.label.dy, SH.face.picture.x, SH.face.picture.size, SH.face.name.x, SH.face.name.dy, SH.face.name.clip, SH.face.name.colour], [712, 22, 800, 64, 876, 22, 120, "bone"]);
   assert.deepEqual([SH.sittings.label.x, SH.sittings.label.dy, SH.sittings.x0, SH.sittings.pitch, SH.sittings.dy, SH.sittings.size, SH.sittings.max, SH.sittings.row, SH.sittings.slice], [712, 2, 800, 20, 6, [16, 12], 9, 20, "library-sitting-16x12"], "sitting k at (800 + 20 k, y_s + 6), the label at lineTop y_s + 2 (UI/UX)");
-  assert.deepEqual([FA.x, FA.w, FA.gap, FA.head + FA.rowGap + FA.rowPitch + FA.pad, FA.max, FA.name.clip, FA.name.align], [700, 308, 12, 30 + 12 + 80 + 12, 8, 72, "centre"]);
-  assert.deepEqual([0, 3, 4, 7].map((j) => listPitch(FA, 8, j)), [[712, 42, 56, 56], [712 + 76 * 3, 42, 56, 56], [712, 42 + 80, 56, 56], [712 + 76 * 3, 42 + 80, 56, 56]], "face j at (712 + 76 (j mod 4), y_r + 42 + 80 floor(j / 4))");
+  assert.deepEqual([FA.x, FA.w, FA.gap, FA.head + FA.rowGap + FA.rowH + FA.pad, FA.head + FA.rowGap + FA.rowPitch + FA.rowH + FA.pad, FA.max, FA.name.clip, FA.name.align], [700, 308, 12, 134, 222, 8, 72, "centre"], "one row 134, two rows 222 (AD4-3)");
+  assert.deepEqual([0, 3, 4, 7].map((j) => listPitch(FA, 8, j)), [[712, 42, 56, 56], [712 + 76 * 3, 42, 56, 56], [712, 42 + 88, 56, 56], [712 + 76 * 3, 42 + 88, 56, 56]], "face j at (712 + 76 (j mod 4), y_r + 42 + 88 floor(j / 4))");
   const T = L.focus.targets; assert.deepEqual(Object.fromEntries(Object.entries(T).map(([k, t]) => [k, [t.group, t.shape]])), { chapter: ["chapter", { rect: 6 }], wish: ["shelf", { rect: 4 }], face: ["shelf", { rect: 0 }], family: ["shelf", { rect: 0 }], look: ["look", { circle: "box" }] });
   const N = (g) => [{ nearestIn: g, ahead: true }];
   assert.deepEqual(L.focus.sheet, { fallback: "none", chapter: { left: [...N("chapter"), "none"], right: [...N("chapter"), ...N("shelf"), "none"], up: [...N("chapter"), "none"], down: [...N("chapter"), "none"] }, shelf: { left: [...N("shelf"), ...N("chapter"), "none"], right: [...N("shelf"), "none"], up: [...N("shelf"), "none"], down: [...N("shelf"), "none"] } });

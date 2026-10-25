@@ -10,6 +10,8 @@ The host drops an intent while an event holds input (`TL.holding()`, lvgl-switch
 
 Targets are `cell.<SNN>` only, the met and found cells of Level 1; the host sets `ui.lib.l1` (the species of the ring) from the face's `focus` message (`focus(h, target)`). ✓ on a met or found cell opens that species, `library.species` (Level 2, which the frame draws as not built yet; its ← is Level 1 with the ring on that species); ✓ on anything else does nothing; ← sets Home's ring on the Library bezel and goes Home. `openAt(h, id)` is every way in that names a species: Home's Library bezel (the species its module is for) and Habitat's species word ("Open the guide").
 
+Level 3 (`library.family`, the `family` export): `openFamily(h, mibiId)` is every way in (Level 2's family face and the card's origin lines, ✓ See the family): close on that mibi, its parent Level 2 of its species. Targets are `node.<mibi id>` and `node.bud`; the host keeps the ring in `ui.lib.l3[species].node` and notes a ▲ (a move onto the parent it answered) in `ui.lib.l3last` for the next selectors (`lineage.mjs resolveOf`). In far ✓ is Zoom in (close on the ring's node, under the 180 ms stage dither) and ← is Level 2; in close (not built yet) ← is far while the tree exceeds the view, else Level 2.
+
 ## Probe bench (`bench.mjs`)
 
 Targets: `plates`, `switch`, `slot`; the host sets `ui.bench.f` from the face's `focus` message (`focus(h, target)`). ✓ on the slot opens the Fit the upgrade? panel (`intents/bench.mjs` `fitNow` is its Fit it card). ← is Home with the ring on the Probe module.

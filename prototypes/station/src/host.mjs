@@ -6,6 +6,7 @@
 // The rules are state.mjs's, the screens' state is game.mjs's UI, and the key's rule call is intents/*: nothing here decides a rule or a layout.
 import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, podById, mibiById, onScreenChange, stationDate } from "./game.mjs";
 import * as S from "./state.mjs";
+import { speciesStatus } from "./library.mjs";
 import { frameOf, genomeDigest } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
 import { homeBuild, mibiPictureOf, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
@@ -18,7 +19,7 @@ import { habitatBuild } from "./views/habitat-props.mjs";
 import { namerBuild } from "./views/namer-props.mjs";
 import { panelBuild } from "./views/panel-props.mjs";
 import { benchBuild } from "./views/bench-props.mjs";
-import { libraryBuild, speciesBuild, sheetAhead } from "./views/library-props.mjs";
+import { libraryBuild, speciesBuild, sheetAhead, familyBuild } from "./views/library-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
 import { createBuild, createPod } from "./views/create-props.mjs";
@@ -182,6 +183,15 @@ export function speciesBody() {
   UI.lib.cur = body.props.focus.cur || null; wantLibrary(body.later); return body;
 }
 
+// ---- The Library's Level 3 ----
+// One species' lineage (library.json l3): far is drawn with words (the lineage's picture, made by id when the face asks for it, its time printed); close and compare are the frame's notBuilt composition until their
+// screens are built, with this level's top bar and line. The ring is the face's (l3.focus.graph with the host's selectors); the host keeps it in UI.lib.l3[species] (intents/library.mjs family.focus).
+// Null when no found species is shown (a developer's jump): the frame's notBuilt composition, as before.
+export function familyBody() {
+  const sid = UI.lib.species; if (!sid || !frameOf(sid) || speciesStatus(G.st, sid) !== "found") return null;
+  return familyBuild({ st: G.st, settings: G.settings, ui: UI.lib, metrics: METRICS }, SPECS.library, SPECS.frame, SPECS.home);
+}
+
 // ---- Cargo ----
 // The bay, the crate opening and the end: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
 export function cargoBody() {
@@ -250,9 +260,15 @@ export function screenProps(plate) {
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
+  const fam = screen === "library.family" ? familyBody() : null;
+  if (screen === "library.family" && (!fam || fam.notBuilt)) {   // Level 3's close and compare (not built yet): the frame's composition with this level's top bar and line; no found species shown: as any screen not built
+    if (!fam) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };
+    registerPictures(fam.requests, { podById, frameOf }); top.readout = fam.top.readout;
+    return { msg: { screen, state: "notBuilt", frame: { top, line: { ...fam.line, need: need().text }, plate: pl } }, ids: fam.requests.map((r) => r.id), light };
+  }
   if (screen === "sitting" && !UI.sit) { goScreen("habitat"); return screenProps(plate); }   // no visit to show: one mibi up close
   const sat = screen === "sitting" ? sittingBody(light) : null; if (screen === "sitting" && !sat) { UI.sit = null; goScreen("habitat"); return screenProps(plate); }
-  const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids); const dropped = droppedPictures();   // the pictures a newer one superseded (P4): the host drops them on the face before it sends the props' pictures
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
@@ -352,6 +368,7 @@ export function onFaceMessage(h, m) {
     if (m.screen === "library") { if (UI.screen === "library") INTENTS.library.focus(h, m.target); return; }
     if (m.screen === "sitting") { if (UI.screen === "sitting") INTENTS.sitting.focus(h, m.target); return; }
     if (m.screen === "library.species") { if (UI.screen === "library.species") INTENTS.library.species.focus(h, m.target); return; }
+    if (m.screen === "library.family") { if (UI.screen === "library.family") INTENTS.library.family.focus(h, m.target); return; }
     if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return;
   }
   if (m.t !== "intent") return;

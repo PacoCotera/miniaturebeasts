@@ -112,7 +112,8 @@ test("the shelf: the wish pieces in frame order (the found disc when a read carr
   let w = build(st).props.regions.shelf.wish; assert.deepEqual(w.map((p) => [p.trait, p.disc, p.carried]), traits.slice(0, 2).map((t) => [t.id, "look-disc-open-16", false]));
   for (const m of st.mibis) m.read = fr.chapters.map((c) => c.id); w = build(st).props.regions.shelf.wish;
   assert.deepEqual(w.map((p) => p.carried), [true, true]); assert.match(w[0].disc, /^look-disc-S01-/);
-  st.moments = { "guide:S01": 1, "sealed:S01:face": 2, "guide:S02": 3, "line:1": 4 }; assert.equal(build(st).props.regions.shelf.sittings, 2, "the sittings of this species' moments");
+  st.moments = { "guide:S01": 1, "sealed:S01:face": 2, "guide:S02": 3, "line:1": 4 }; assert.equal(build(st).props.regions.shelf.sittings, 3, "the sittings of this species' moments: its guide, its sealed chapter and its own deep line (mibi 1 is a Loika)");
+  st.moments = Object.fromEntries(st.mibis.map((m, i) => ["line:" + m.id, i])); assert.equal(build(st).props.regions.shelf.sittings, 9, "ten deep lines: at most nine on the shelf");
   st.mibis[0].released = true; st.mibis[1].released = true; const ids = st.mibis.map((m) => m.id).sort((a, b) => b - a).slice(0, 8);
   const fam = build(st).props.regions.shelf.families; assert.equal(fam.length, 8, "at most eight");
   assert.deepEqual(fam.map((f) => f.id).sort((a, b) => a - b), ids.sort((a, b) => a - b), "the eight most recent");

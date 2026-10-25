@@ -15,6 +15,8 @@ import { blank } from "../../face/tools/blank.mjs";
 import { openBay } from "../src/intents/cargo.mjs";
 import { arrivePending } from "../src/intents/arrival.mjs";
 import { setLibrarySpecies } from "../src/views/home-props.mjs";
+import { lineageOf } from "../src/lineage.mjs";
+import { buildLineage } from "./fixtures/lineage.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
@@ -33,7 +35,7 @@ function pod(st, id, read = [], gs = 5, identified = true) { S.seedPodFromGenome
 const chapters = (id) => frameOf(id).chapters.map((c) => c.id);
 
 test("every screen with intents has a module, and a face intent reaches it; the frame's verbs are the same on every screen", () => {
-  assert.deepEqual(Object.keys(INTENTS).sort(), ["bench", "cargo", "create", "frame", "habitat", "home", "incubator", "library", "library.species", "namer", "panel", "pods", "sitting", "vivarium"]);
+  assert.deepEqual(Object.keys(INTENTS).sort(), ["bench", "cargo", "create", "frame", "habitat", "home", "incubator", "library", "library.family", "library.species", "namer", "panel", "pods", "sitting", "vivarium"]);
   const st = world(), h = host(st); h.ui.screen = "library";
   dispatch(h, { screen: "library", target: "x", verb: "room:home" }); assert.deepEqual(h.went, ["home"]); assert.equal(h.ui.home.f, "room");
 });
@@ -207,8 +209,26 @@ test("the Library's Level 2: ✓ on a plate lights it, again clears it, on anoth
   sp.intent(h, "chapter.face", "confirm"); sp.focus(h, "look.eyes.round"); sp.intent(h, "look.eyes.round", "back"); assert.deepEqual([L.state, L.lit, L.cur, h.went.at(-1)], ["sheet", null, "chapter.face", "library.species"], "← in lit: Clear, the ring on the lit chapter's plate");
   sp.intent(h, "chapter.face", "back"); assert.deepEqual([h.went.at(-1), L.l1], ["library", "S01"], "← in sheet: Level 1 on this species");
   INTENTS.library.intent(h, "cell.S01", "confirm"); sp.intent(h, "face", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.hab.id], ["habitat", a.id], "✓ Look at {name}: that mibi up close");
-  INTENTS.library.intent(h, "cell.S01", "confirm"); sp.intent(h, "family." + a.id, "confirm"); assert.deepEqual([h.went.at(-1), L.family], ["library.family", a.id], "✓ See the family: Level 3");
+  INTENTS.library.intent(h, "cell.S01", "confirm"); sp.intent(h, "family." + a.id, "confirm"); assert.deepEqual([h.went.at(-1), L.species, L.l3.S01.node, L.l3.S01.zoom], ["library.family", "S01", "node." + a.id, "close"], "✓ See the family: Level 3, close on that mibi");
   INTENTS.library.intent(h, "cell.S04", "confirm"); const n = h.went.length; sp.intent(h, "chapter.coat", "confirm"); assert.deepEqual([h.went.length, L.state], [n, "sheet"], "met-only: no ✓");
+});
+
+test("the Library's Level 3: the ways in (Level 2's family face, the card's origin lines) open close on that mibi, its parent Level 2 of its species; ← from close goes to far while the tree exceeds the view (the stage dither), else to Level 2; ✓ Zoom in from far goes to close on the ring's node; the ring is kept, a ▲ noted", () => {
+  const st = world(), h = host(st); h.specs.library = J("library"); h.specs.habitat = habitatSpec; const by = buildLineage(st, "full", { turn: st.turn }); st.knownIds.push("S01");
+  const L = h.ui.lib, fam = INTENTS["library.family"], C = h.specs.library.l3.close;
+  h.ui.hab.id = by.Moss.id; h.ui.lib.species = "S09"; INTENTS.habitat.intent(h, "family", "confirm");
+  assert.deepEqual([h.went.at(-1), L.species, L.l3.S01.node, L.l3.S01.zoom], ["library.family", "S01", "node." + by.Moss.id, "close"], "✓ See the family on the card: close on the shown mibi, the species its own");
+  const lin = lineageOf(st, "S01", { gap: 4 }), mn = lin.nodes.find((n) => n.id === "node." + by.Moss.id); assert.deepEqual(L.l3.S01.cam, [C.grid.x0 + mn.u * C.grid.du - (C.comfort[0] + C.comfort[2] / 2), C.grid.y0 + mn.row * C.grid.drow - (C.comfort[1] + C.comfort[3] / 2)], "the entry centred in the comfort zone");
+  fam.intent(h, "screen", "confirm"); assert.equal(L.l3.S01.zoom, "close", "close (not built): no ✓");
+  h.played.length = 0; fam.intent(h, "screen", "back"); assert.deepEqual([h.went.at(-1), L.l3.S01.zoom, h.played.map((e) => [e.kind, e.target, e.ms, e.hold])], ["library.family", "far", [["dither", "stage", 180, 180]]], "← from close: far, the tree exceeds the view, under the stage dither");
+  fam.focus(h, "node." + by.Dot.id); assert.deepEqual([L.l3.S01.node, L.l3last], ["node." + by.Dot.id, { up: "node." + by.Moss.id }], "Dot is Moss's first recorded parent: a ▲");
+  fam.focus(h, "node." + by.Bean.id); assert.deepEqual([L.l3.S01.node, L.l3last], ["node." + by.Bean.id, null], "a move along: no ▲");
+  h.played.length = 0; h.moving = false; fam.intent(h, "node." + by.Bean.id, "confirm"); assert.deepEqual([L.l3.S01.zoom, L.l3.S01.node, h.played], ["close", "node." + by.Bean.id, []], "✓ Zoom in: close on the ring's node; a cut under reduced motion"); h.moving = true;
+  assert.ok(Array.isArray(L.l3.S01.cam) && L.l3.S01.cam.length === 2);
+  fam.intent(h, "screen", "back"); fam.intent(h, "node." + by.Bean.id, "back"); assert.deepEqual([h.went.at(-1), L.species, L.state], ["library.species", "S01", "sheet"], "← from far: Level 2 of the species, whatever the way in");
+  const small = world(), hs = host(small); hs.specs.library = J("library"); S.seedSiblings(small, "S01", 4, settings); const kid = small.mibis.at(-1);
+  INTENTS.library.intent(hs, "cell.S01", "confirm"); INTENTS["library.species"].intent(hs, "family." + kid.id, "confirm"); assert.deepEqual([hs.went.at(-1), hs.ui.lib.l3.S01.zoom], ["library.family", "close"]);
+  INTENTS["library.family"].intent(hs, "screen", "back"); assert.deepEqual(hs.went.at(-1), "library.species", "← from close on a tree that fits the view: Level 2");
 });
 
 test("one mibi up close: ✓ on the resident greets (the spec's moment: 1800 ms, held 300, a cut), on the name opens the namer, ✓ on Wild opens the Return panel and its Return card acts, ← goes to the whole with the ring on this mibi", () => {

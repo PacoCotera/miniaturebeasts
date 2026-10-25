@@ -13,8 +13,9 @@
 //   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at, digest }; digest: the first 16 hex of the SHA-256 of the 528×392 RGBA of the portrait's opening, written only by a rule when the source lands (not yet written in play)
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
 import { frameOf } from "./genome.mjs";
-import { mibiById, mergeCare, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, mibiStage, dockKey, DEFAULT_SETTINGS } from "./state.mjs";
+import { mibiById, speciesOf, mergeCare, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, mibiStage, dockKey, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
+import { parentsOf, crossDepth } from "./lineage.mjs";
 
 // What a mibi has done (state.mjs): habits watched, places been; re-exported here, where the sitting reads them.
 export { recordHabit, recordWalk, habitsOf, placesOf, watchResident, WATCH_MS } from "./state.mjs";
@@ -48,20 +49,20 @@ export function devGrantSitting(st, now = Date.now()) { if (st.sitting) return {
 // A sealed chapter opened (in the first build its first read; when finds come, the find opening it, under the same key), a field guide filled (the sealed chapter's looks
 // included, so a species with one fills only after it; the sealed chapter's own moment comes first), a deep line. (The first pod of a new drop waits on what a drop is.)
 // Derived from the save, so each is found whenever it is true and paid once.
-// The crosses on the longest path of a mibi's recorded tree (a founder 0); released ancestors count.
-export function lineDepth(st, m, seen = new Set()) {
-  if (!m || !m.parents || seen.has(m.id)) return 0; seen.add(m.id);
-  return 1 + Math.max(0, ...m.parents.map((p) => lineDepth(st, mibiById(st, p.id), new Set(seen))));
-}
-// A line is named by its founders (the mibis at the roots of the recorded tree): siblings, and every later child of the same line, share it, so a line pays once however deep it goes.
+// The crosses on the longest path of a mibi's recorded tree (a founder 0; a shed step adds none): lineage.mjs crossDepth, the one definition. Released ancestors count.
+export const lineDepth = crossDepth;
+// A line is named by its founders (the mibis at the roots of the recorded tree, a shed-pod child's through its single parent: lineage.mjs parentsOf): siblings, and every later child of the same line, share it,
+// so a line pays once however deep it goes.
 export function lineFounders(st, m, seen = new Set()) {
   if (!m || seen.has(m.id)) return [];
-  if (!m.parents || !m.parents.length) return [m.id];
-  seen.add(m.id); return [...new Set(m.parents.flatMap((p) => lineFounders(st, mibiById(st, p.id) || { id: p.id }, new Set(seen))))];
+  const ps = parentsOf(st, m); if (!ps.length) return [m.id];
+  seen.add(m.id); return [...new Set(ps.flatMap((id) => lineFounders(st, mibiById(st, id) || { id }, new Set(seen))))];
 }
-export const lineKey = (st, m) => "line:" + lineFounders(st, m).sort((x, y) => x - y).join("+");
-// A species' research moment keys: a sealed chapter opened, its field guide filled (one helper for the moments earned and the sittings counted).
-export const momentKey = { sealed: (id, chId) => "sealed:" + id + ":" + chId, guide: (id) => "guide:" + id };
+export const lineKey = (st, m) => momentKey.line(lineFounders(st, m));
+// A species' research moment keys: a sealed chapter opened, its field guide filled, a deep line (one helper for the moments earned and the sittings counted).
+export const momentKey = { sealed: (id, chId) => "sealed:" + id + ":" + chId, guide: (id) => "guide:" + id, line: (founders) => "line:" + [...founders].sort((x, y) => x - y).join("+") };
+// The founders a line key names (ids), or null for a key that is not a line's.
+const lineKeyFounders = (k) => (k.startsWith(momentKey.line([])) ? k.slice(momentKey.line([]).length).split("+").filter(Boolean).map(Number) : null);
 export function momentsEarned(st, settings = DEFAULT_SETTINGS) {
   const out = [];
   for (const id of new Set(st.knownIds)) {
@@ -71,8 +72,10 @@ export function momentsEarned(st, settings = DEFAULT_SETTINGS) {
   for (const m of st.mibis) { const k = lineKey(st, m); if (lineDepth(st, m) >= DEEP_LINE && !out.some((o) => o.key === k)) out.push({ key: k, kind: "line", mibi: m.id }); }   // one moment a line
   return out;
 }
-// The research sittings a species has earned: its paid moments in the ledger (st.moments), a sealed chapter opened and the guide filled; a line or another species' moment is not its own.
-export const sittingsOf = (st, species) => Object.keys(st.moments ?? {}).filter((k) => k === momentKey.guide(species) || k.startsWith(momentKey.sealed(species, ""))).length;
+// The research sittings a species has earned: its paid moments in the ledger (st.moments): a sealed chapter opened, the guide filled and a deep line of its own (the line's founders of this species); another species' moment is not its own.
+export const sittingsOf = (st, species) => Object.keys(st.moments ?? {}).filter((k) => k === momentKey.guide(species) || k.startsWith(momentKey.sealed(species, "")) || ofSpecies(st, lineKeyFounders(k), species)).length;
+// A line's founders all in the save and of `species` (a line is one species's: a cross is within a species).
+const ofSpecies = (st, founders, species) => !!founders?.length && founders.every((id) => { const m = mibiById(st, id); return !!m && speciesOf(m) === species; });
 // Pay every moment not yet paid, in order; returns what happened to each. Behind the shut door nothing is paid: each moment stays earned.
 export function collectMoments(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.doorAt) return [];

@@ -48,3 +48,12 @@ export const sheet = (req) => (spec, input, facts, lit = null) => {
 export const disc = (req) => (species, trait, look) => req({ kind: "lookdisc", id: discId(species, trait, look), species, trait, look, size: [16, 16] });
 // quiet(req): the maker of a sheet's quiet stand-in request: quiet(spec, input, facts) requests { kind: "libraryquiet", id: quietId, species, input, size: l2.sheet.rect's } and returns the id.
 export const quiet = (req) => (spec, input, facts) => req({ kind: "libraryquiet", id: quietId(input, facts), species: input.species, input, size: spec.l2.sheet.rect.slice(2) });
+
+// ---- Level 3's pictures (lineage-pictures.mjs draws them; library.json l3) ----
+// input: the lineage as the pictures draw it (views/library-props.mjs lineageInput: the nodes with their dots' colours, the links). The digest names what sets their pixels: each node's id, kind, place, release and colour,
+// and the links; the same lineage is the same picture for both sizes.
+export const lineageDigest = (input) => keyToken(JSON.stringify([input.nodes.map((n) => [n.id, n.kind, n.row, n.u, !!n.released, n.colour ?? null]), input.links.map((l) => [l.a, l.b, !!l.faded])]));
+// lineageFar(req), lineageMini(req): the makers of Level 3's picture requests for one builder: (spec, input) requests { kind: "lineagefar" | "lineagemini", id: lineage-far-{SNN}-{digest} | lineage-mini-{SNN}-{digest},
+// species, input, size: l3.far.rect's or l3.mini.rect's } and returns the id.
+export const lineageFar = (req) => (spec, input) => req({ kind: "lineagefar", id: `lineage-far-${input.species}-${lineageDigest(input)}`, species: input.species, input, size: spec.l3.far.rect.slice(2) });
+export const lineageMini = (req) => (spec, input) => req({ kind: "lineagemini", id: `lineage-mini-${input.species}-${lineageDigest(input)}`, species: input.species, input, size: spec.l3.mini.rect.slice(2) });

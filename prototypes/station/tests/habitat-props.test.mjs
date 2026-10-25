@@ -140,8 +140,10 @@ test("Portrait picture: \"\" for none, held, painting and portrayed with no dige
 test("the strip: a tile a bay, the housed mibis in bay order then the free bays, the shown mibi's tile marked, an out mibi's tile the glyph; the targets in the graph's groups; a tile shows its mibi (focus.resolve tile.shown)", () => {
   const S0 = scenes(), b = build(S0.rest.w, S0.rest.sv), m = S0.rest.w.st.mibis, T = b.props.regions.tiles.items;
   assert.equal(T.length, 8); assert.deepEqual(T.map((t) => t.state), ["housed", "housed", "housed", "housed", "free", "free", "free", "free"]); assert.deepEqual(T.map((t) => t.shown), [true, false, false, false, false, false, false, false]);
-  assert.deepEqual(b.props.focus.targets.map((t) => t.id), ["resident", "name", "species", ...frameOf("S01").chapters.map((c, i) => "plate." + i), "door", "portrait", "cross", "wild", ...m.map((x) => "tile." + x.id)]);
-  assert.deepEqual(b.props.focus.targets.map((t) => t.group).filter((g, i, a) => a.indexOf(g) === i), ["resident", "name", "species", "plate", "top", "low", "tile"]);
+  assert.deepEqual(b.props.focus.targets.map((t) => t.id), ["resident", "name", "species", "family", ...frameOf("S01").chapters.map((c, i) => "plate." + i), "door", "portrait", "cross", "wild", ...m.map((x) => "tile." + x.id)]);
+  assert.deepEqual(b.props.focus.targets.map((t) => t.group).filter((g, i, a) => a.indexOf(g) === i), ["resident", "name", "species", "family", "plate", "top", "low", "tile"]);
+  const fam = b.props.focus.targets.find((t) => t.id === "family"); assert.deepEqual([fam.group, fam.enabled, fam.lines], ["family", true, m[0].from?.of?.length === 2 ? 2 : 1], "the story's origin lines: See the family");
+  assert.deepEqual(build(S0.rest.w, S0.rest.sv, { focus: "family" }).line, { ok: "See the family", subject: "", back: "Vivarium", need: null }, "✓ See the family, the jump to Level 3");
   assert.equal(b.props.focus.resolve["tile.shown"], "tile." + m[0].id); assert.equal(build(S0.rest.w, S0.rest.sv, { habId: m[2].id }).props.focus.resolve["tile.shown"], "tile." + m[2].id);
   assert.equal(build(S0.twelve.w, S0.twelve.sv).props.regions.tiles.items.length, 12);
 });

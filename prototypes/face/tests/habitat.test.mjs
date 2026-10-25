@@ -123,11 +123,13 @@ test("habitat's node order is unchanged by the namer: the regions in the log bef
   assert.equal(push(f, b0), 0); frames(f); const after = order(logOf(f)); assert.equal(after, before, "the same regions in the same order after the namer closes");
 });
 
-test("the keys on the screen: ✓ ← and the room keys are intents on the focused target, the pad moves the ring by habitat.json's graph (▶ from the resident is the name, ▼ its tile), the host's `tile.shown` selector lands ▼ on the shown tile", { skip }, async () => {
+test("the keys on the screen: ✓ ← and the room keys are intents on the focused target, the pad moves the ring by habitat.json's graph (▶ from the resident is the name, ▼ its tile; ▼ from the species word the origin lines, then the plates), the host's `tile.shown` selector lands ▼ on the shown tile", { skip }, async () => {
   const b = scene({ focus: "resident" }), f = await start(b), cur0 = b.props.focus.cur;
   for (const [k, verb] of [["confirm", "confirm"], ["back", "back"], ["home", "room:home"], ["research", "room:research"], ["library", "room:library"], ["habitat", "room:habitat"]]) { const m = key(f, k); assert.deepEqual(m.map((x) => [x.t, x.screen, x.target, x.verb]), [["intent", "habitat", cur0, verb]], k); }
   const go = (k) => { const m = key(f, k); if (m[0]?.t === "focus") withFocus(f, m[0].target); return m; };
   let m = go("right"); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "name"]]); m = go("right"); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "species"]]);
+  m = go("down"); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "family"]], "▼ from the species word: the story's origin lines (See the family)");
+  { const r = logOf(f).regions.find((q) => q.id === "focus")?.rect, s = spec.regions.story.rect; assert.ok(r && r[0] <= s[0] && r[1] <= s[1] && r[0] + r[2] > s[0] + 24 && r[1] + r[3] >= s[1] + spec.regions.story.pitch, `the ring ${r} round the origin lines`); }
   m = go("down"); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "plate.0"]]); m = go("down"); assert.equal(m[0].target, "door"); m = go("down"); assert.equal(m[0].target, "cross"); m = go("right"); assert.equal(m[0].target, "wild"); m = go("down"); assert.equal(m[0].target, "tile." + b.shown.id, "the shown tile");
   m = go("up"); assert.equal(m[0].target, "resident"); withFocus(f, "resident"); assert.deepEqual(key(f, "left"), [], "the left edge stops");
 });

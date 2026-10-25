@@ -53,6 +53,15 @@ test("P4: a sheet, lit variant or page a newer one of its kind superseded is dro
   assert.deepEqual(P.droppedPictures(), [a.id], "the older sheet goes"); assert.deepEqual(P.droppedPictures(), [], "taken once");
 });
 
+test("Level 3's pictures supersede as the sheets do: a newer lineagefar or lineagemini drops the older of its kind; the same id twice drops nothing", () => {
+  for (const kind of ["lineagefar", "lineagemini"]) {
+    const mk = (id) => ({ kind, id, size: [8, 8], input: {} }); P.droppedPictures();
+    P.registerPictures([mk(`${kind}-a`)], env); assert.deepEqual(P.droppedPictures(), [], "the first drops nothing");
+    P.registerPictures([mk(`${kind}-a`)], env); assert.deepEqual(P.droppedPictures(), [], "the same id twice drops nothing");
+    P.registerPictures([mk(`${kind}-b`)], env); assert.deepEqual(P.droppedPictures(), [`${kind}-a`], "the older goes");
+  }
+});
+
 test("the quiet stand-in is made at once: the ground, the surfaces, the type and the mosaic, no form; its time printed against the 150 ms target", () => {
   const out = []; quietReq(collector(out))(lib, input(mid), L.speciesFacts(frameOf("S01"))); const q = out[0], t0 = performance.now(), pic = L.sheetPicture(frameOf("S01"), q, { print: say }), ms = performance.now() - t0;
   console.log(`# library quiet stand-in ${q.id}: made in ${ms.toFixed(0)} ms (target 150 ms here)`);

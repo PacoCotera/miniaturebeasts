@@ -152,7 +152,7 @@
    "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
    "library": {"parent": "home", "back": "Home", "states": ["all"], "spec": "library.json"},
    "library.species": {"parent": "library", "back": "Library", "states": ["sheet", "lit"], "spec": "library.json l2: Level 2, one species; ← in lit reads Clear (library.json l2.keys.back); ← in sheet returns to Level 1 with the ring on that species"},
-   "library.family": {"parent": "library.species", "back": "{Species}", "spec": "Level 3, not built yet (notBuilt); ← returns to Level 2 of that species; {Species} is the species' name, a name wider than the way back's 68 px for its word reads \"Back\""},
+   "library.family": {"parent": "library.species", "back": "{Species}", "states": ["close", "compare", "far"], "spec": "library.json l3: Level 3, one species' lineage; far is built, close and compare are drawn as notBuilt until built; ← from far returns to Level 2 of that species (from close to far while the tree exceeds the view: library.json l3.keys.back); {Species} is the species' name, a name wider than the way back's 68 px for its word reads \"Back\""},
    "vivarium": {"parent": "home", "back": "Home", "spec": "vivarium.json"},
    "habitat": {"parent": "vivarium", "back": "Vivarium"},
    "cross": {"parent": "habitat", "back": "{name}"},
@@ -169,7 +169,8 @@
    {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "library.species", "focus": "that pod's species, Level 2"},
    {"from": "habitat", "target": "the card's species word", "action": "Open the guide", "to": "library.species", "focus": "that species, Level 2"},
    {"from": "library", "target": "a met or found cell", "action": "Open {species}", "to": "library.species", "focus": "that species, Level 2"},
-   {"from": "library.species", "target": "a family face", "action": "See the family", "to": "library.family", "focus": "that mibi"},
+   {"from": "library.species", "target": "a family face", "action": "See the family", "to": "library.family", "focus": "close, on that mibi"},
+   {"from": "habitat", "target": "the card's origin lines (habitat.json focus.targets.family)", "action": "See the family", "to": "library.family", "focus": "close, on the shown mibi; ← there returns to Level 2 of its species"},
    {"from": "library.species", "target": "the face", "action": "Look at {name}", "to": "habitat", "focus": "the resident: that mibi", "when": "the face is not released"}
   ],
   "jumpRule": "stack navigation: after a jump, ← goes to the parent of the screen you are on in this tree, never back along the way you came",

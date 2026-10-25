@@ -1,4 +1,4 @@
-// The Library's Level 1 as props (library.json l1): pure selectors from the state and the Library's UI to the props of the face's Level 1, beside the frame's. Props name *what*, never *where*: ids, statuses, names, flags, picture ids
+// The Library's Level 1 as props (library.json l1; Level 2 and Level 3 below): pure selectors from the state and the Library's UI to the props of the face's Level 1, beside the frame's. Props name *what*, never *where*: ids, statuses, names, flags, picture ids
 // and the focus targets by id; no rectangle, no colour, no layout rule (the face places and colours everything from library.json). The output is plain JSON:
 // { props (state, regions, focus), line (the bottom line, for the frame), top (the top bar's readout), requests (the pictures the host makes ready before the props) }. Runs in Node, tested there (tests/library-props.test.mjs);
 // the shape is library.props.json.
@@ -9,11 +9,13 @@ import { frameIds, frameOf } from "../genome.mjs";
 import { drawnLooks, keyToken } from "../looks.mjs";
 import { specimenInput, newLooksOf, sheetInput } from "./specimen-props.mjs";
 import { fill, spell } from "./words.mjs";
-import { req as collector, slot as slotOf, sheet as sheetReqs, disc as discReq, quiet as quietReq, canLight } from "./requests.mjs";
+import { req as collector, slot as slotOf, sheet as sheetReqs, disc as discReq, quiet as quietReq, canLight, lineageFar as lineageFarReq } from "./requests.mjs";
 import { faceId } from "../face-pictures.mjs";
 import { speciesFacts, sheetFacts, printed } from "../library-sheet.mjs";
 import { createMeasure } from "../../../ui/specs/measure.mjs";
 import { sittingsOf } from "../sitting.mjs";
+import { lineageOf, targetsOf, resolveOf, fitsClose, farGeometry } from "../lineage.mjs";
+import { bodyColour } from "../lineage-pictures.mjs";
 
 // The subject of Level 1 (strings.subjects): n looks new this visit, across every species. One is "a new look"; two to six spell n; seven or more drop the count; none is empty; no species met is its own line.
 export function subjectOf(strings, n, anyMet) {
@@ -132,4 +134,35 @@ export function speciesBuild(m, spec, frame) {
 export function sheetAhead(st, settings, spec, sid) {
   const fr = frameOf(sid); if (!fr || Lib.speciesStatus(st, sid) !== "found") return null;
   const out = []; sheetReqs(collector(out))(spec, sheetInput(st, sid, settings), speciesFacts(fr)); return out[0];
+}
+
+// ---- Level 3 (library.json l3: the screen library.family) ----
+// The lineage as the pictures draw it: { species, nodes: [{ id, kind, row, u, released, colour (the mibi's read, shown body colour, or null: neutral) }], links, span, rows }.
+export function lineageInput(st, lin) {
+  const fr = frameOf(lin.species);
+  return { species: lin.species, nodes: lin.nodes.map(({ id, kind, row, u, released, mibi }) => ({ id, kind, row, u, released, colour: kind === "mibi" ? bodyColour(fr, S.mibiById(st, mibi)) : null })), links: lin.links, span: lin.span, rows: lin.rows };
+}
+// Every selector of the graph answered: one with no answer is the ring's own node, so the ring stays (an unanswered selector would fall to its group's first target: focus.c, ui/focus.mjs).
+const answered = (r, sels, cur) => Object.fromEntries(sels.map((s) => [s, r[s] ?? cur]));
+// Level 3 of one species as props: m: { st, settings, ui (UI.lib: { species, l3: { [species]: { node, zoom, cam } }, l3last }), metrics }, spec (library.json), frame (frame.json), home (home.json: the stage words).
+// Returns { props (state, regions, focus), line, top, requests, notBuilt }: far is drawn with words; close and compare are not built yet (notBuilt: the frame's composition with this level's top bar and line).
+// Props name what, never where: the nodes in grid units (lineage.mjs) and the FAR dot boxes as the generator's facts in the picture's coordinates.
+export function familyBuild(m, spec, frame, home) {
+  const { st, settings, ui } = m, L3 = spec.l3, Sg = L3.strings, sid = ui.species, fr = frameOf(sid);
+  if (!fr || Lib.speciesStatus(st, sid) !== "found") throw new Error(`Level 3 shows a found species, not ${sid}`);
+  const requests = [], req = collector(requests, true), slot = slotOf(req, "its master (library.json)"), lin = lineageOf(st, sid, { gap: L3.block.gap }), mem = ui.l3?.[sid] ?? {}, zoom = mem.zoom === "far" ? "far" : "close";
+  const mark = slot(spec.l1.cell.mark.slice.replace("{SNN}", sid), spec.l1.cell.mark.rect.slice(2)), top = { readout: { text: fill(Sg.readout, { Species: fr.species.name }), mark } };
+  if (zoom !== "far") return { notBuilt: true, state: zoom, line: { ok: null, subject: "", back: fitsClose(lin, L3.close) ? fr.species.name : Sg.backFar, need: null }, top, requests };
+  const ground = slot(spec.l1.stage.master, spec.l1.stage.rect.slice(2)), input = lineageInput(st, lin), g = farGeometry(input, spec), picture = lineageFarReq(req)(spec, input);
+  const targets = targetsOf(lin).map((id) => ({ id, group: "node", enabled: true })), cur = targets.some((t) => t.id === mem.node) ? mem.node : targets[0]?.id ?? "";
+  // the line: Zoom in; the focused mibi's name and stage (the nameless step past the name's room), the bud's own words; ← the species (Level 2)
+  const measure = measureOf(m.metrics), px = frame.regions.subject.px, n = lin.nodes.find((q) => q.id === cur), mb = n?.kind === "mibi" ? S.mibiById(st, n.mibi) : null;
+  let subject = "";
+  if (n?.kind === "bud") subject = Sg.bud;
+  else if (mb) { const stage = S.mibiStage(st, mb, settings), name = S.cap(mb.name ?? ""); subject = name && measure(name, px) <= Sg.nameRoom ? fill(Sg.farSubject, { Name: name, stage: home.strings.stages[stage] ?? stage }) : Sg.nameless[stage]; }
+  return {
+    props: { state: "far", regions: { stage: { picture: [ground] }, lineage: { nodes: lin.nodes.map(({ id, kind, row, u, released }) => ({ id, kind, row, u, released })), links: lin.links }, far: { picture, boxes: targets.map((t) => ({ id: t.id, rect: g.boxes[t.id] })) } },
+      focus: { cur, targets, resolve: answered(resolveOf(lin, cur, "far", ui.l3last), Object.values(L3.focus.graph.node).map((e) => e[0]), cur) } },
+    line: { ok: cur ? Sg.zoomIn : null, subject, back: fr.species.name, need: null }, top, requests,
+  };
 }

@@ -74,6 +74,10 @@ int species_focus(focus_target_t *out, int cap);
 void library_species_key(int code);
 void species_hidden(void);
 int library_l2_tick(uint32_t now);
+/* The Library's Level 3 (screens/library_family.c), in far: its words, its targets as they drew them (the mibis and the bud at their dot boxes), its keys */
+void library_family_words(void);
+int family_focus(focus_target_t *out, int cap);
+void library_family_key(int code);
 /* The Probe bench (screens/bench.c): its words, the targets as they drew them, its keys */
 void bench_words(void);
 int bench_focus(focus_target_t *out, int cap);
