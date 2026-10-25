@@ -7,12 +7,13 @@ import * as S from "../state.mjs";
 import { livingOf, mibiReq } from "./home-props.mjs";
 import { paintingOf } from "./idle-props.mjs";
 import { listForm } from "../../../ui/specs/derive.mjs";
+import { fill } from "./words.mjs";
+import { req as reqOf, slot as slotOf, ph as phOf, plateDevice } from "./requests.mjs";
 
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
 export function vivariumBuild(m, spec, frame, home) {
-  const { st, sv, settings } = m, requests = [], req = (r) => { requests.push(r); return r.id; }, R = spec.regions, docked = !!m.docked;
-  const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (station-layouts.md, The Vivarium: the whole)" });
+  const { st, sv, settings } = m, requests = [], req = reqOf(requests), R = spec.regions, docked = !!m.docked;
+  const ph = phOf(req, "its master (station-layouts.md, The Vivarium: the whole)");
   const carried = S.carriedIds(st, sv), housed = S.housed(st).slice().sort((a, b) => a.bay - b.bay), out = (mb) => carried.includes(mb.id) && !docked;   // out: with the Companion, away
   const state = housed.length ? "rest" : "empty";
   const L = frame.light, lw = livingOf({ view: "vivarium", st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, L);
@@ -24,10 +25,10 @@ export function vivariumBuild(m, spec, frame, home) {
     tiles: { glyph: frame.regions.marks.companion.away, items: [] },   // an out mibi's tile shows the Companion's outline glyph (the top bar's away mark)
   };
   // a tile a bay: the housed mibis in bay order, then the free bays; a housed one shows its thumbnail, one out with the Companion its glyph
-  const n = S.bayCount(st, settings), tw = listForm(R.tiles, n).name === "full" ? 152 : 72, slot = (id, size) => req({ kind: "slot", id, master: id, size, until: "the device plate (fix 2: placed 1:1)" });
+  const n = S.bayCount(st, settings), tw = listForm(R.tiles, n).first[2], slot = slotOf(req, "the device plate (fix 2: placed 1:1)");
   const tiles = housed.slice(0, n).map((mb) => ({ id: String(mb.id), state: out(mb) ? "out" : "housed", picture: out(mb) ? "" : mibiReq(req, st, mb, [48, 48], settings), well: slot(`plate-well-${tw}x48`, [tw, 48]) }));   // fix 2 F4: the tile is its well by form; a free bay draws nothing
   while (tiles.length < n) tiles.push({ id: "", state: "free", picture: "", well: "" });
-  regions.strip = { plate: n ? slot("plate-device-992x64", [992, 64]) : "" };
+  regions.strip = { plate: n ? req(plateDevice(992, 64)) : "" };
   regions.tiles.items = tiles;
   // the focus: the residents in bay order (a sleeper in its bay's place), then the tiles in bay order; the ring on the target the way in names
   const asleep = new Set(lw.sleepers.map((p) => p.id)), atHome = new Set(residents.map((p) => p.id)), targets = [];

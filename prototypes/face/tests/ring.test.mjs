@@ -10,7 +10,7 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
-import { ringMask, tabRingMask, focusRingOps, ringRaster, footprintRing } from "../../ui/rings.mjs";
+import { ringMask, tabRingMask, focusRingOps, ringRaster, footprintRing, ringDepartures } from "../../ui/rings.mjs";
 import { footprintOf, footprintHeight } from "../../ui/specs/derive.mjs";
 import { encodePNG } from "../../ui/png.mjs";
 import { setMoving, footOf, cellsOf } from "../../station/src/moving.mjs";
@@ -105,6 +105,14 @@ test("no file of the face writes a ring or tabRing op but focusRing.c and, once,
     const allowed = rel === "vocab/common/focusRing.c" ? Infinity : rel === "vocab/common/frame.c" ? 1 : 0;
     assert.ok(n <= allowed, `${rel} writes ${n} ring op string(s)`);
   }
+});
+test("rule 1 with the hold mark (kit_focusRingHold): the log counts it as hold, never as a ring; one ring and at most one hold a frame, the hold at the chrome layer", () => {
+  const ring = { id: "focus", layer: "chrome", rect: [0, 0, 10, 10], ring: 1 };
+  assert.deepEqual(ringDepartures({ regions: [ring, { id: "tree", layer: "chrome", rect: [0, 0, 66, 66], hold: 1 }] }), [], "one ring and one hold");
+  assert.deepEqual(ringDepartures({ regions: [ring] }), [], "no hold");
+  assert.deepEqual(ringDepartures({ regions: [ring, { id: "tree", layer: "chrome", rect: [0, 0, 66, 66], hold: 1 }, { id: "panel", layer: "chrome", rect: [0, 0, 9, 9], hold: 1 }] }), ["2 hold marks in one frame (at most one)"]);
+  assert.deepEqual(ringDepartures({ regions: [ring, { id: "tree", layer: "art", rect: [0, 0, 66, 66], hold: 1 }] }), ["a hold mark off the chrome layer in tree/art"]);
+  assert.deepEqual(ringDepartures({ regions: [ring, { id: "tree", layer: "chrome", rect: [0, 0, 66, 66], ring: 1 }] }), ["a non-standard focus form in tree/chrome (1)"], "a ring op outside the focus region that is not marked a hold is still a second ring");
 });
 test("the focus diff mask: a pair that differs only in the ring's band is ring-only; one pixel outside it is content changed, and exits non-zero unless a reason is listed (which does not make it ring-only)", () => {
   const dir = mkdtempSync(path.join(tmpdir(), "fdm-")), mk = (name, edit) => { const d = path.join(dir, name); mkdirSync(d); const px = new Uint8Array(1024 * 600 * 4).fill(40); for (let i = 3; i < px.length; i += 4) px[i] = 255; edit?.(px);

@@ -7,13 +7,14 @@ import * as S from "../state.mjs";
 import { plateMasterReq, kPct } from "../stamplook.mjs";
 import { warnWords } from "./goal-words.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
-import { slot } from "./pods-props.mjs";
+import { slotAt as slot } from "./requests.mjs";
 import { choosePod } from "../intents/incubator.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { relitJuvenile } from "./hatch-props.mjs";
 import { RECIPE } from "../relight.mjs";
+import { fill } from "./words.mjs";
+import { req as reqOf } from "./requests.mjs";
 
-const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
 // The chapters a bud knows, by id: a founder's bud clears its unread ones one at a time across the wait (state.budChapterKnown; a shut sealed chapter never), a cross bud only what it was born knowing; once it is ready a founder's knows every chapter but a shut sealed one.
 export function knownChapters(st, B, settings, now) {
@@ -21,7 +22,7 @@ export function knownChapters(st, B, settings, now) {
   return fr.chapters.filter((c) => (B.read || []).includes(c.id) || (B.kind !== "cross" && S.budChapterKnown(st, c.id, settings, now))).map((c) => c.id);
 }
 export function incubatorBuild(m, spec, pods) {
-  const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = (r) => { requests.push(r); return r.id; }, R = spec.regions, hatch = m.ui.inc.hatch ?? null;
+  const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = reqOf(requests), R = spec.regions, hatch = m.ui.inc.hatch ?? null;
   const signed = "signed (art director, the capsule masters list)", gs = !hatch && m.ui.inc.grow && now < m.ui.inc.grow.until ? m.ui.inc.grow : null, B = st.bud ?? gs?.bud ?? null;   // gs: Hatch now is playing (it has already hatched the bud, so gs.bud is the bud that was in the chamber): the screen shows the bud as it was until the event ends, then the hatch on one refresh
   const ready = !!B && !gs && S.budReady(st, settings, now);
   const mb = hatch ? S.mibiById(st, hatch.mibi) : null;   // the mibi that hatched, while the hatch plays

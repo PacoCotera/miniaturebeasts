@@ -61,7 +61,7 @@ export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 // --- the record ------------------------------------------------------------------------------------
 export function freshSt(wid, turn, now = Date.now()) {
   return { schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: 0, d: 0, s: 0,
-    tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, readEver: false, freeId: false, firstMibi: true,
+    tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, libSeen: {}, readEver: false, freeId: false, firstMibi: true,
     mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, bays: BAYS, sitting: null, moments: {}, welcomeGiven: false, owed: [], doorAt: null, wish: {}, face: {}, sittingCrates: [], outbox: [],
     dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: false, returned: [], log: [] };
 }
@@ -126,8 +126,12 @@ export function migrate(st, now = Date.now(), sv = null) {
 export function normalize(st, now = Date.now()) {
   for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed"]) if (!Array.isArray(st[k])) st[k] = [];
   st.outbox = st.outbox.filter((o) => o.sitting);   /* the Caddy is called only for the sitting's portrait: an old Grow or Cross entry never goes (additive, no schema bump) */
+  if (st.welcomePending) { st.owed.unshift({ key: null, at: 0, source: "welcome" }); st.welcomeGiven = true; }   /* an older save kept the waiting welcome as a flag: it joins the queue, first as it was (additive, no schema bump) */
+  delete st.welcomePending;
+  for (const o of st.owed) if (!o.source) o.source = "moment";   /* an older queue held moments only */
   if (st.doorAt === undefined) st.doorAt = null;   /* the sitting's door: null until it first opens on this save (sitting.mjs openSittingDoor); additive, no schema bump */
   for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
+  if (!st.libSeen || typeof st.libSeen !== "object") st.libSeen = libSnapshot(st);   /* the looks the Library had shown when it was last opened full screen (build spec 4.2, "new"): a save from before it holds none, so what it knows now is not new; additive, no schema bump */
   st.dock = st.dock || { docked: false, at: now }; if (!st.bays) st.bays = BAYS;
   for (const r of st.returned) if (r && r.species === undefined) r.species = speciesId(r.sp);   /* a returned pod from before it carried its species: 0-2 resolve, -1 stays null; additive, no schema bump */
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); }
@@ -210,6 +214,11 @@ export function rebuildGuide(st) {
 }
 export function guideAdd(st, species, traitId, looks) { const g = st.guide[species] || (st.guide[species] = {}), a = g[traitId] || (g[traitId] = []); for (const l of looks) if (!a.includes(l)) a.push(l); }
 export const guideLooks = (st, species, traitId) => st.guide[species]?.[traitId] ?? [];
+// A look is new in the Library (build spec 4.2) when it was found since the Library was last opened full screen: libSeen holds the guide as it stood at that open, and opening it again takes it up to date.
+export const libSnapshot = (st) => JSON.parse(JSON.stringify(st.guide || {}));
+// The Library's seen record is written when the player leaves the Library (game.mjs goScreen): `note` is { <species>: { <trait>: [looks] } } as taken on entry (library.mjs seenNote), added to st.libSeen look by look.
+export const libRecord = (st, note) => { if (!st.libSeen || typeof st.libSeen !== "object") st.libSeen = {}; for (const [sp, traits] of Object.entries(note || {})) { const g = st.libSeen[sp] || (st.libSeen[sp] = {}); for (const [t, looks] of Object.entries(traits)) { const a = g[t] || (g[t] = []); for (const l of looks) if (!a.includes(l)) a.push(l); } } };
+export const libNewLooks = (st, species, traitId) => { const seen = st.libSeen?.[species]?.[traitId] ?? []; return guideLooks(st, species, traitId).filter((l) => !seen.includes(l)); };
 
 // The band of a crate's reach (explored of the land, `of`): thirds of it, all of it, none for a crate with no map (cargo.json regions.report.reach.thresholds)
 export const reachBand = (c) => { const of = c.of | 0, x = c.explored | 0; return of <= 0 ? "" : x * 3 < of ? "underThird" : x * 3 < 2 * of ? "underTwoThirds" : x < of ? "underAll" : "all"; };

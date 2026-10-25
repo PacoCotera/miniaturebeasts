@@ -33,10 +33,12 @@ export function cellsOf(species, stage, part, w, h) {
 }
 // A creature picture's footprint, the `foot` the host sends on its `asset` message (fix 14, FR4; the architect's ruling of 08:12): a `mibi:` still, master copy or rig render (graded copies alike): [x, feetY, w] at alpha T.alpha; a walk or close
 // atlas: { stand, curl, shadow }, its cells found by name (the first painted, non-mirror cell of that name: no index is written anywhere) and `shadow` from cell 0 of the same-size shadow atlas at T.shadowAlpha, moved into the creature cell's
-// coordinates (feetY + h - the shadow's h); a nap atlas: { curl }; a shadow atlas and the mibi-* master ids: none. `picOf(id)` gives the shadow atlas. Alpha only, so a graded copy measures as its master. Null when nothing has ink.
+// coordinates (feetY + h - the shadow's h); a nap atlas: { curl }; a founder picture (Pods' figure): [x, feetY, w] of the species' adult master at its size where placed, else of the picture; a shadow atlas and the mibi-* master ids: none. `picOf(id)` gives the shadow atlas. Alpha only, so a graded copy measures as its master. Null when nothing has ink.
 export function footOf(id, pic, picOf, T = { band: 6, alpha: 128, shadowAlpha: 1 }) {
   const rgba = typeof pic.rgba === "function" ? pic : { w: pic.w, h: pic.h, rgba: () => pic.data };
   if (/^mibi:/.test(id)) return footprintOf(rgba, 0, pic.w, T);
+  { const f = id.match(/^founder:(S\d{2}):[^:]+:[^:]+:(\d+)x(\d+)$/);   // Pods' figure (a founder picture): its footprint from the lowest rows of the species' adult picture at that size where it is placed (the veil leaves the feet), else from the picture itself
+    if (f) { const a = picOf?.(`mibi-adult-${f[1]}-${f[2]}x${f[3]}`), src = a && a.w === pic.w && a.h === pic.h ? (typeof a.rgba === "function" ? a : { w: a.w, h: a.h, rgba: () => a.data }) : rgba; return footprintOf(src, 0, pic.w, T); } }
   const a = parse(id); if (!a || a.part === "shadow") return null;
   const cs = cellsOf(a.species, a.stage, a.part, a.w, a.h), at = (name) => { const i = cs.findIndex((c) => c.name === name && !c.mirror); return i < 0 ? null : 1 + i * a.w; }, out = {};
   for (const name of a.part === "nap" ? ["curl"] : ["stand", "curl"]) { const x = at(name); if (x == null) continue; const f = footprintOf(rgba, x, a.w, T); if (f) out[name] = f; }

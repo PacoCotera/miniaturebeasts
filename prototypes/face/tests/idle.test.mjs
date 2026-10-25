@@ -68,7 +68,7 @@ test("the departure check bites: a resident leaving the walk ground, the strip m
 });
 test("the line is centred on x 512 and y 584 at 16 px on its strip; no line, no text; no frame word, no ring", { skip }, async () => {
   const f = await start(scene({ adults: 2, crates: 2 })), lg = logOf(f);
-  assert.deepEqual(lg.type.map((t) => [t.text, t.px, t.region]), [["two crates wait in the bay", 16, "idle.line"]]); const r = lg.regions.find((x) => x.id === "idle.line");
+  assert.deepEqual(lg.type.map((t) => [t.text, t.px, t.region]), [["Two crates wait in the Bay", 16, "idle.line"]]); const r = lg.regions.find((x) => x.id === "idle.line");
   assert.ok(Math.abs(r.rect[0] + r.rect[2] / 2 - 512) <= 1); assert.deepEqual(lg.regions.find((x) => x.id === "idle.strip").rect, [0, 568, 1024, 32]);
   const g = await start(scene({ adults: 2 })); assert.deepEqual(logOf(g).type, [], "none holds: no line");
 });

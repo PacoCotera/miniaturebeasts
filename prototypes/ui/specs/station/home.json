@@ -70,7 +70,17 @@
    "component": "panel",
    "build": "bezel",
    "window": [656,78,344,362],
-   "placeholder": {"fill":"stone","edge":"mist"}
+   "placeholder": {"fill":"stone","edge":"mist"},
+   "specimen": {
+    "size": [344,362],
+    "shade": {"px": 2, "colour": "void", "edges": ["top","left"], "note": "build spec 11.5: the window's inner shade replaces the generator's edge gradient, 2 px along the inside top and left edges, drawn as rects; omitted on the placeholder"},
+    "breath": {"ms": 2000, "cycle": [0,1,2,3,2,1], "note": "build spec 4.2: four pre-rendered brightness levels of the picture and one whole-picture swap every 2 s, cycling levels 1 2 3 4 3 2 (the main one is level 1); a swap frame is 124,528 px, and the residents do not step on it. Reduced motion: no breathing, level 1 only"},
+    "glint": {"size": [12,12], "max": 8, "ms": 2000, "levels": 16, "note": "build spec 4.2: glint-star-12x12 centred on each bead of a look found since the Library was last opened full screen, at most 8 drawn; it fades in and out on the 16-level stage dither over 2 s (in for the first half, out for the second, then again); reduced motion: no fade, the glints simply show"},
+    "captions": {
+     "new": {"at": [668,412], "px": 16, "colour": "gold", "note": "{n} new, at the lower left, hidden at 0"},
+     "genome": {"right": 988, "y": 412, "px": 16, "colour": "mist", "note": "{Species} genome, right-aligned"}
+    }
+   }
   },
   "console": {
    "rect": [16,460,992,132],
@@ -110,7 +120,7 @@
    "rect": [32,477,226,98],
    "build": "station",
    "picture": [76,66],
-   "slots": {"size":[24,32],"gap":2,"cols":3,"rows":2},
+   "slots": {"cols":3,"rows":2,"forms":{"grid":{"upTo":6,"first":[174,493,24,32],"pitch":[26,34],"grid":[3,2]}}},
    "glint": {"size":[12,12],"at":[12,0],"note": "ruled in build spec section 14: the glint star on a pod with one, over the pod's top right corner, 12 x 12 at the slot's (12, 0)"}
   },
   "incubator": {
@@ -131,7 +141,7 @@
    "rect": [528,477,226,98],
    "build": "station",
    "picture": [28,46],
-   "plates": {"size":[12,24],"gap":4,"at":[12,64],"max":4,"pictures":{"whole":"home-shield-whole-12x24","lost":"home-shield-lost-12x24"},"note": "ruled in build spec section 14: the Probe's plates as line 2, docked, up to 4, 12 x 24, 4 apart (the old module's pitch 16) from (12, 64); a plate is whole or lost"}
+   "plates": {"size":[12,24],"gap":4,"at":[12,64],"max":4,"forms":{"row":{"upTo":4,"first":[540,541,12,24],"pitch":[16,0],"grid":[4,1]}},"pictures":{"whole":"home-shield-whole-12x24","lost":"home-shield-lost-12x24"},"note": "ruled in build spec section 14: the Probe's plates as line 2, docked, up to 4, 12 x 24, 4 apart (the old module's pitch 16) from (12, 64); a plate is whole or lost"}
   },
   "bay": {
    "offGrid": "the build spec's numbers: 226 by 98 at y 477",
@@ -165,7 +175,7 @@
    }
   },
   "nameTag": {
-   "build": "nameTag", "component": "panel", "h": 24, "px": 16, "pad": 8, "round": 8, "min": 48, "max": 176, "below": 16, "over": 32,
+   "build": "nameTag", "component": "panel", "h": 24, "px": 16, "plate": {"min": 48, "max": 176, "pad": 8, "round": 8}, "below": 16, "over": 32,
    "note": "the Vivarium's tag (vivarium.json regions.nameTag), on the mibi that has an event, until the player visits it; no lift"
   },
   "away": {
@@ -305,6 +315,7 @@
    "bay": "Open the Bay"
   },
   "away": "away",
+  "library": {"new": "{n} new", "genome": "{Species} genome"},
   "notes": {"companionAway":"the Companion is on a trip"},
   "readout": {"home":"{n} at home","trip":"{m} on a trip","allTrip":"all on a trip","sep":" · "},
   "stations": {

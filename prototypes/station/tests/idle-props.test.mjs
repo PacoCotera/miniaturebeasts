@@ -2,6 +2,7 @@
 // living window's people with Home (the same seeds, the bed, the carried set asleep), and says the one line the spec's order gives: the crates in the bay while docked, the bud ready, the bud growing, the mibis out with the Companion
 // (only while away); none, empty; six words or fewer, no digits.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -9,7 +10,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { idleBuild, idleLine } from "../src/views/idle-props.mjs";
+import { idleBuild as idleBuildUnchecked, idleLine } from "../src/views/idle-props.mjs";
+const idleBuild = lineCased(idleBuildUnchecked, "idle");   // every body it builds goes through assertLineCase (report mode)
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -50,11 +52,11 @@ test("the living window is the Vivarium's whole's: the same residents with the s
 });
 test("the line: the first that holds of crates (docked), the bud ready, the bud growing, out with the Companion (away, mibis carried); none, empty; six words or fewer and no digits", () => {
   const L = (st, sv) => idleLine({ st, sv, settings, docked: S.docked(st) }, frame.idle);
-  { const st = world(); assert.equal(L(st, sv0()), "", "nothing: empty"); assert.equal(L(st, sv0({ bay: [crate(1)] })), "a crate waits in the bay"); assert.equal(L(st, sv0({ bay: [crate(1), crate(2)] })), "two crates wait in the bay"); assert.equal(L(st, sv0({ bay: [1, 2, 3, 4].map(crate) })), "crates wait in the bay", "more than three: the count is dropped"); }
+  { const st = world(); assert.equal(L(st, sv0()), "", "nothing: empty"); assert.equal(L(st, sv0({ bay: [crate(1)] })), "A crate waits in the Bay"); assert.equal(L(st, sv0({ bay: [crate(1), crate(2)] })), "Two crates wait in the Bay"); assert.equal(L(st, sv0({ bay: [1, 2, 3, 4].map(crate) })), "Crates wait in the Bay", "more than three: the count is dropped"); }
   { const st = world(); st.dock = { docked: false, at: T0 }; assert.equal(L(st, sv0({ bay: [crate(1)] })), "", "crates only while docked"); }
-  { const st = world(); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; assert.equal(L(st, sv0()), "a bud is growing"); st.bud.start = Date.now() - 1e9; assert.equal(L(st, sv0()), "the bud is ready"); assert.equal(L(st, sv0({ bay: [crate(1)] })), "a crate waits in the bay", "the crates come first"); }
+  { const st = world(); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; assert.equal(L(st, sv0()), "A bud is growing"); st.bud.start = Date.now() - 1e9; assert.equal(L(st, sv0()), "The bud is ready"); assert.equal(L(st, sv0({ bay: [crate(1)] })), "A crate waits in the Bay", "the crates come first"); }
   { const st = world(); adults(st, 3); st.dock = { docked: false, at: T0 }; const one = L(st, sv0({ carried: [st.mibis[0].id] })); assert.equal(one, `${st.mibis[0].name} is out with the Companion`);
-    assert.equal(L(st, sv0({ carried: [st.mibis[0].id, st.mibis[1].id] })), "two mibis are with the Companion"); assert.equal(L(st, sv0({ carried: st.mibis.map((m) => m.id) })), "three mibis are with the Companion");
+    assert.equal(L(st, sv0({ carried: [st.mibis[0].id, st.mibis[1].id] })), "Two mibis are with the Companion"); assert.equal(L(st, sv0({ carried: st.mibis.map((m) => m.id) })), "Three mibis are with the Companion");
     st.dock = { docked: true, at: T0 }; assert.equal(L(st, sv0({ carried: [st.mibis[0].id] })), "", "docked, nothing about them"); }
   for (const t of [...Object.values(frame.idle.strings.crates), frame.idle.strings.budReady, frame.idle.strings.budGrowing, ...Object.values(frame.idle.strings.out)]) { assert.ok(t.replace("{name}", "Bean").split(" ").length <= 6, t); assert.ok(!/\d/.test(t), t); }
 });

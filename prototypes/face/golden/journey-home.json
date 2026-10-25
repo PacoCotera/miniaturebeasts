@@ -8,7 +8,7 @@
     "screen": "cargo",
     "focus": "room",
     "ok": "Skip",
-    "subject": "two sealed crates",
+    "subject": "Two sealed crates",
     "idle": false
    },
    {
@@ -24,7 +24,7 @@
     "screen": "cargo",
     "focus": "room",
     "ok": "Open the bay",
-    "subject": "two crates to the case",
+    "subject": "Two crates to the case",
     "idle": false
    },
    {
@@ -39,7 +39,7 @@
     "screen": "cargo",
     "focus": "room",
     "ok": "Later",
-    "subject": "they wait while docked",
+    "subject": "They wait while docked",
     "idle": false
    },
    {
@@ -90,7 +90,7 @@
     "line": {
      "needs": [
       "Open the Bay",
-      "a new pod in the case"
+      "A new pod in the case"
      ]
     },
     "plate": ""
@@ -270,7 +270,7 @@
     "screen": "pods",
     "focus": "bay",
     "ok": "Look at this pod",
-    "subject": "sealed until identified",
+    "subject": "Sealed until identified",
     "idle": false
    },
    {
@@ -469,7 +469,7 @@
     "screen": "incubator",
     "focus": "incubator",
     "ok": "Choose a pod",
-    "subject": "ready for a new bud",
+    "subject": "Ready for a new bud",
     "idle": false
    },
    {
@@ -500,8 +500,8 @@
     ],
     "screen": "library",
     "focus": "library",
-    "ok": null,
-    "subject": "Loika",
+    "ok": "Open Loika",
+    "subject": "New looks",
     "idle": false
    },
    {
@@ -510,7 +510,7 @@
      {
       "t": "intent",
       "screen": "library",
-      "target": "frame.S01",
+      "target": "cell.S01",
       "verb": "back"
      }
     ],
@@ -565,7 +565,7 @@
     "screen": "bench",
     "focus": "companion",
     "ok": "Switch off",
-    "subject": "two free, the rest ⚡ 1 each",
+    "subject": "Two free, the rest ⚡ 1 each",
     "idle": false
    },
    {
@@ -597,7 +597,7 @@
     "screen": "vivarium",
     "focus": "vivarium",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "An adult Loika, asleep",
     "idle": false
    },
    {
@@ -629,7 +629,7 @@
     "screen": "pods",
     "focus": "pods",
     "ok": "Look at this pod",
-    "subject": "sealed until identified",
+    "subject": "Sealed until identified",
     "idle": false
    },
    {
@@ -745,7 +745,7 @@
     "screen": "pods",
     "focus": "room",
     "ok": "Look at this pod",
-    "subject": "sealed until identified",
+    "subject": "Sealed until identified",
     "idle": false
    }
   ],
@@ -772,7 +772,7 @@
     "screen": "pods",
     "focus": "pods",
     "ok": "Look at this pod",
-    "subject": "sealed until identified",
+    "subject": "Sealed until identified",
     "idle": false
    },
    {
@@ -781,7 +781,7 @@
     "screen": "cargo",
     "focus": "room",
     "ok": null,
-    "subject": "the bay is empty",
+    "subject": "The bay is empty",
     "idle": false
    },
    {

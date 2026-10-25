@@ -1,5 +1,5 @@
-// The field guide's model and rules (prototypes/ui/specs/station/library.json): the bindings to library.mjs, lookCarriers, the pad, the face spread's clarity lines and Visit, and the spec data the
-// guide rests on. Model and rules only: the drawing (the view's nodes, the tint, the layout numbers) is left to the LVGL face at L2.1.
+// The field guide's model and rules: the bindings to library.mjs, lookCarriers, the pad, and the spec data the
+// guide's doors rest on. Model and rules only: the drawing (the view's nodes, the tint, the layout numbers) is left to the LVGL face at L2.1.
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -48,15 +48,8 @@ test("the pad: ▶ ◀ move across the columns that are not sealed, ▲ from the
   if (short > 0) { let k = tall; for (let i = 0; i < 8 && k.col < short; i++) k = guideMove(model, w.st, k, "right"); assert.ok(k.row <= lastRow(k.col), "the row is clamped to the column's last"); }
 });
 
-test("the face spread's clarity line: 'A typical Belatz, not one of yours.', the portrayed mibi's line, the released one's; ✓ Visit needs a living mibi as the face", () => {
-  const w = world("S09", 1), m = w.ms[0]; assert.equal(L.faceLine(w.st, "S09"), "A typical Belatz, not one of yours."); assert.equal(L.visitFace(w.st, "S09"), null, "the type face: no ✓");
-  m.portrait = { state: "delivered" }; w.st.face.S09 = m.id; assert.equal(L.faceLine(w.st, "S09"), `${m.name}, your Belatz, sat for this.`); assert.equal(L.visitFace(w.st, "S09").id, m.id, "a living face");
-  m.released = true; assert.equal(L.faceLine(w.st, "S09"), `${m.name} sat for this, now in the wild.`); assert.equal(L.visitFace(w.st, "S09"), null, "a face in the wild: no ✓");
-});
-
-test("the spec data the guide rests on: the strings, the jumps, the one cased ring and the species' wireframes", () => {
-  const pods = specs("pods.json"), frame = specs("frame.json"), lib = specs("library.json"); assert.equal(pods.strings.thisPod, "this pod"); assert.equal(pods.strings.theSpecies, "every {species}"); assert.equal(pods.strings.openGuide, "Open the guide"); assert.equal(pods.strings.legsTail.heading, "Legs & Tail");
-  assert.ok(frame.navigation.jumps.some((j) => j.from === "pods.overview" && j.to === "book" && j.spread === "guide")); assert.ok(frame.navigation.jumps.some((j) => j.from === "habitat" && j.to === "book" && j.spread === "guide")); assert.equal(frame.navigation.screens.book.back, "Library");
+test("the spec data the guide's doors rest on: the strings, the jumps (to the Library's Level 2 of that species), the one cased ring", () => {
+  const pods = specs("pods.json"), frame = specs("frame.json"); assert.equal(pods.strings.thisPod, "this pod"); assert.equal(pods.strings.theSpecies, "every {species}"); assert.equal(pods.strings.openGuide, "Open the guide"); assert.equal(pods.strings.legsTail.heading, "Legs & Tail");
+  assert.ok(frame.navigation.jumps.some((j) => j.from === "pods.overview" && j.to === "library.species" && !j.shut && !j.pending)); assert.ok(frame.navigation.jumps.some((j) => j.from === "habitat" && j.to === "library.species" && !j.shut)); assert.ok(!("book" in frame.navigation.screens), "the Book is retired");
   assert.deepEqual(frame.focus.ring.colours, { default: { core: "focus", key: "void" } }, "one form: no paper ground"); assert.deepEqual([frame.focus.ring.gap, frame.focus.ring.reach, ...frame.focus.ring.bands.map((b) => b.w)], [1, 5, 1, 2, 1]);
-  assert.equal(lib.regions.faceSpread.visit, "derived.faceVisit"); assert.deepEqual(lib.regions.faceSpread.stamp.rect, [832, 112, 120, 120]); assert.deepEqual(lib.regions.detail.carried.names.capTops, [124, 144]);
 });

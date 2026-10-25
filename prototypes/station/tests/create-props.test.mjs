@@ -2,6 +2,7 @@
 // measure and no layout rule, fits the 32 KiB props budget with the frame beside it, spells the trait line, the context, the notice and the price from create.json's strings and the rules, puts the roll's pictures in the order of the spec
 // (as the pod is, only the first copy, only the second), counts the leaves the bud will take, and follows the founder's picture through the rolls.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -9,7 +10,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome, traitState } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { createBuild, reviewTraits, founderPicture, createPod } from "../src/views/create-props.mjs";
+import { createBuild as createBuildUnchecked, reviewTraits, founderPicture, createPod } from "../src/views/create-props.mjs";
+const createBuild = lineCased(createBuildUnchecked, "create");   // every body it builds goes through assertLineCase (report mode)
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));

@@ -3,16 +3,16 @@
 // are frame.json's. Costs come from the rules (state.mjs), never from the strings. Runs in Node, tested there (tests/panel-props.test.mjs); the shape is panel.props.json.
 //   m: { st, settings, ui: { create, panel: { screen, id, focus } }, jump: "arrival" | "fork" }, spec panel.json, frame frame.json, pods pods.json, create create.json
 import * as S from "../state.mjs";
+import { listForm } from "../../../ui/specs/derive.mjs";
 import { createPod, founderPicture } from "./create-props.mjs";
 import { frameOf } from "../genome.mjs";
 import { habitatShown } from "../trickle.mjs";
 import { mibiReq } from "./home-props.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
-import { slot } from "./pods-props.mjs";
 import { relitJuvenile } from "./hatch-props.mjs";
+import { fill, plural, spell } from "./words.mjs";
+import { req as reqOf, slot as slotOf, slotAt as slot } from "./requests.mjs";
 
-const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
-const SPELL = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
 // (the Grow this founder? panel and its JUVENILE and FOUNDER pictures are retired with T-20261016-222)   // the juvenile and the founder as the card shows them (T-20261016-70: each stands at least 80 px tall in the 160 slot; the spec's 104 × 112 stood at 43 %)
 
 
@@ -22,7 +22,7 @@ export function incubateCards() {
   return [{ id: "incubate", act: "incubate", room: null, dim: false, loss: false, name: "incubate", cost: "", short: "" }, { id: "keep", act: "keep", room: null, dim: false, loss: false, name: "keep", cost: "", short: "" }];
 }
 export function incubateBuild(m, spec, frame, pods, createSpec) {
-  const { st, settings } = m, cr = m.ui.create, requests = [], req = (r) => { requests.push(r); return r.id; }, P = spec.incubate, Sg = createSpec.strings.panel, p = createPod(st, cr), species = S.speciesOf(p), signed = "signed (art director, the capsule masters list)";
+  const { st, settings } = m, cr = m.ui.create, requests = [], req = reqOf(requests), P = spec.incubate, Sg = createSpec.strings.panel, p = createPod(st, cr), species = S.speciesOf(p), signed = "signed (art director, the capsule masters list)";
   const cost = S.growCost(st, cr.choices, settings), text = S.priceText(cost.e, cost.d, cost.s, 0), [lw, lh] = P.windows.left.slice(2);
   const room = slot(req, "capsule-room-dusk-474x468", [0, 0, lw, lh], signed);
   const sz = [296, 459], L = layers(req, sz, ["interior-dusk", "shell-dusk", "seal-ring", "glass-closed"]);
@@ -38,7 +38,7 @@ export function incubateBuild(m, spec, frame, pods, createSpec) {
 // The cards of the Release panels (§1.6): Release it (the gain from the rules, its fact in the text colour, the subject on its place's scene) and Keep (the subject as it is). The cost of the act is a gain, ❀ +2 for a mibi and ❀ +1 for a pod.
 export const WILD = [144, 152], WILD_POD = [88, 112];
 export function wildCards(m, spec, frame, requests) {
-  const { st, settings } = m, id = m.ui.panel.id, mibi = id === "wildMibi", Sg = spec.strings[id], req = (r) => { requests.push(r); return r.id; };
+  const { st, settings } = m, id = m.ui.panel.id, mibi = id === "wildMibi", Sg = spec.strings[id], req = reqOf(requests);
   let subject, keepName, picture, size, releaseName, fact;
   if (mibi) {
     subject = habitatShown(st, m.sv, m.ui.hab.id); if (!subject) return [];
@@ -58,9 +58,9 @@ export function wildCards(m, spec, frame, requests) {
 // The cards of the Fit the upgrade? panel (§1.6): Fit it (the part fitted, ⚡ and ◆ from the rules, dimmed with what is short) and Not now (the part dimmed). Nothing is a mark: the part stays on the bench.
 export const PART = [128, 128];
 export function fitCards(m, spec, frame, requests) {
-  const { st, settings } = m, Sg = spec.strings.fitUpgrade, req = (r) => { requests.push(r); return r.id; };
+  const { st, settings } = m, Sg = spec.strings.fitUpgrade, req = reqOf(requests);
   const e = S.price(S.PRICE.tier2E, settings), d = S.price(S.PRICE.tier2D, settings), short = S.canPay(st, e, d, 0) ? "" : S.shortIcons(st, e, d, 0);
-  const part = (id) => req({ kind: "slot", id, master: id, size: PART, until: "the Probe's upgrade part (bench.json regions.slot.part)" });
+  const part = (id) => slotOf(req, "the Probe's upgrade part (bench.json regions.slot.part)")(id, PART);
   return [
     { id: "fit", act: "fit", room: null, picture: part("bench-part-t2-fitted-128"), pictureSize: PART, mark: "", name: Sg.cards.fit.name, cost: S.priceText(e, d, 0), gain: false, short, line: Sg.cards.fit.line, loss: false, dim: !S.tier2Ready(st, settings) },
     { id: "later", act: "notNow", room: null, picture: part("bench-part-t2-dim-128"), pictureSize: PART, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
@@ -82,7 +82,7 @@ export function hatchedGhost(st, settings) {
 }
 // The Hatch now | Wait panel's props (panel.json `hatchnow`, the day set at x0.733): the hatched look in the left window and the growing look in the right, drawn by the face from the same layers.
 export function hatchNowBuild(m, spec, frame, pods) {
-  const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = (r) => { requests.push(r); return r.id; }, P = spec.hatchnow, W = spec.incubate.windows, B = st.bud, species = B.species, signed = "signed (art director, the capsule masters list)";
+  const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = reqOf(requests), P = spec.hatchnow, W = spec.incubate.windows, B = st.bud, species = B.species, signed = "signed (art director, the capsule masters list)";
   const cards = growNowCards(m, spec), sz = [296, 459], [lw, lh] = W.left.slice(2);
   const room = slot(req, "capsule-room-day-474x468", [0, 0, lw, lh], signed), L = layers(req, sz, ["interior-day", "shell", "bar-lit", "glass-closed"]), door = slot(req, "capsule-door-open-457x459", [0, 0, 457, 459], signed);
   const lay = P.left.layers, rlay = P.right.layers, area = podArea(180), sealedArea = podArea(P.left.podHeight);
@@ -104,7 +104,7 @@ export function dockCards(m, spec, frame, requests) {
   const Sg = spec.strings.dock, n = m.ui.cargo?.arrival?.crates ?? 0, C = frame.regions.panel.strip.picture;
   // the card's crate: a 96 × 96 window of the placed crate master, 1:1 (frame.json regions.panel.strip.picture.crops)
   const crop = (k) => { const c = C.crops[k], id = `crate-${k}-crop-${C.size[0]}x${C.size[1]}`; requests.push({ kind: "crop", id, master: c.master, of: c.of, at: c.at, size: C.size, until: "the crate master it is cut from (T-20261016-161)" }); return id; };
-  const open = n === 1 ? Sg.oneCrate : fill(Sg.cards.open.line, { "n in words": SPELL[n] ?? "many" });
+  const open = plural(n, Sg.oneCrate, fill(Sg.cards.open.line, { "n in words": spell(n, "many") }));
   const art = { well: "", focused: "", stage: "", glow: "", light: "" };
   return [
     { id: "open", act: "open", room: null, picture: crop("open"), pictureSize: STRIP_PICTURE, mark: "", name: Sg.cards.open.name, cost: "", gain: false, short: "", line: open, loss: false, dim: false, art },
@@ -113,8 +113,8 @@ export function dockCards(m, spec, frame, requests) {
 }
 // The masters the panel is drawn from (frame.json regions.panel.art, T-20261016-47 and -70): the housing, the veil, the contact shadow and the chip, and for each card its well (focused or not), stage, glow and light at the card's width.
 export function artOf(frame, n, requests, wild = false) {
-  const A = frame.regions.panel.art, P = frame.regions.panel, w = (P.cards.width - P.cards.gap * (n - 1)) / n, pw = w - 32, at = (t) => t.replace("{w}", w).replace("{pw}", pw);
-  const req = (id, size) => { if (!requests.some((r) => r.id === id)) requests.push({ kind: "slot", id, master: id, size, until: "the decision panel's master (art director, T-20261016-47, -70)" }); return id; };
+  const A = frame.regions.panel.art, P = frame.regions.panel, w = listForm(P.cards, n).first[2], pw = w - 32, at = (t) => t.replace("{w}", w).replace("{pw}", pw);
+  const req = slotOf(reqOf(requests, true), "the decision panel's master (art director, T-20261016-47, -70)");
   const sz = (id) => id.match(/(\d+)x(\d+)(?:-focused)?$/).slice(1).map(Number);
   const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return req(id, sz(id)); };
   return { housing: pick(A.housing), veil: pick(A.veil), shadow: pick(A.shadow), chip: pick(A.chip), card: { well: pick(A.card), focused: pick(A.focused), stage: pick(A.stage), glow: pick(A.glow), light: pick(A.light) }, scene: wild ? pick(A.scene) : "" };

@@ -19,30 +19,20 @@
 #define S "habitat"
 #define MAXP 8
 #define MAXF 11
-static int hi(const char *p, int d) { return spec_int(S, p, d); }
-static int hk(const char *base, int k) { return spec_int(S, v_fmt("%s.%d", base, k), 0); }
-static void hrect(const char *p, int r[4]) { if (!v_spec_rect(S, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
-static const char *colr(const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(S, p, o, 24); return o; }
-static const char *fcol(const char *p) { static char b[4][24]; static int k; char *o = b[k++ & 3]; spec_str("frame", p, o, 24); return o; }
 static int has(const char *id) { return id && *id && wire_has_asset(id); }
 static int g_tag[4];   /* the name tag as drawn (the name target's box), zeros while the meet ribbon stands in its place */
 
 /* ---- the stage and the living window ---- */
-static void build_stage(void) {
-  int r[4]; hrect("regions.stage.rect", r);
-  v_region("stage", LAYER_CHROME); v_rect("stage.ground", r[0], r[1], r[2], r[3], fcol("colours.stageGround"));
-  v_region("stage", LAYER_PAINTED);
-  for (int i = 0, n = v_plen("regions.stage.room"); i < n; i++) if (v_sprite("stage.room", v_pstr(v_fmt("regions.stage.room.%d", i)), r[0], r[1], r[2], r[3])) break;   /* the up-close stage master, until it is signed the ground alone */
-}
+static void build_stage(void) { kit_stage(S, "regions.stage.rect", v_scol("frame", "colours.stageGround"), "stage", "stage.ground", "stage.room", "regions.stage.room"); }   /* the up-close stage master, until it is signed the ground alone */
 
 /* ---- the resident ---- */
 /* the lift of the placeholder's hops (events.moment.placeholder): hop h begins at `hops[h]` ms of the moment and runs `ms`; `lift` is [ms into the hop, px above where the creature stands]; whole pixels, no ease */
 static int hop_lift(void) {
   anim_state_t t; if (!v_pbool("motion", 1) || !anim_get(ANIM_MOMENT, "resident", &t)) return 0;
-  int ms = hi("events.moment.placeholder.ms", 400), lift = 0;
+  int ms = v_si(S, "events.moment.placeholder.ms", 400), lift = 0;
   for (int h = 0, n = spec_len(S, "events.moment.placeholder.hops"); h < n; h++) {
-    int at = hk("events.moment.placeholder.hops", h), dt = t.elapsed - at; if (dt < 0 || dt >= ms) continue;
-    for (int k = 0, m = spec_len(S, "events.moment.placeholder.lift"); k < m; k++) { int step = hk(v_fmt("events.moment.placeholder.lift.%d", k), 0); if (step <= dt) lift = hk(v_fmt("events.moment.placeholder.lift.%d", k), 1); }
+    int at = v_sk(S, "events.moment.placeholder.hops", h), dt = t.elapsed - at; if (dt < 0 || dt >= ms) continue;
+    for (int k = 0, m = spec_len(S, "events.moment.placeholder.lift"); k < m; k++) { int step = v_sk(S, v_fmt("events.moment.placeholder.lift.%d", k), 0); if (step <= dt) lift = v_sk(S, v_fmt("events.moment.placeholder.lift.%d", k), 1); }
   }
   return lift;
 }
@@ -53,7 +43,7 @@ static unsigned g_bs; static long g_bnext; static int g_bseeded;   /* the blink'
 void habitat_hidden(void) { g_hhave = 0; }
 static const mv_stage_t *close_set(void) {
   const char *set = v_pstr("regions.resident.moving.set"), *atlas = v_pstr("regions.resident.moving.close"), *stg = v_pstr("regions.resident.stage"); if (!*set || !has(atlas)) return NULL;
-  const mv_stage_t *ms = moving_stage(set, !strcmp(stg, "juvenile") ? MV_JUV : !strcmp(stg, "elder") ? MV_ELDER : MV_ADULT); int r[4]; hrect("regions.resident.rect", r);
+  const mv_stage_t *ms = moving_stage(set, !strcmp(stg, "juvenile") ? MV_JUV : !strcmp(stg, "elder") ? MV_ELDER : MV_ADULT); int r[4]; v_srect(S, "regions.resident.rect", r);
   return ms && ms->cw == r[2] && ms->ch == r[3] ? ms : NULL;
 }
 static int loop_at(const mv_loop_t *l, int t) { int p = 0; for (int i = 0; i < l->n; i++) p += l->ms[i] / 80; if (p <= 0) return l->cell[0]; t %= p; for (int i = 0; i < l->n; i++) { int d = l->ms[i] / 80; if (t < d) return l->cell[i]; t -= d; } return l->cell[0]; }
@@ -104,7 +94,7 @@ int habitat_test_cell(void) { const mv_stage_t *S0 = close_set(); if (!S0) retur
 int habitat_test_lift(void) { const mv_stage_t *S0 = close_set(); if (!S0) return -100; close_t f; close_frame(S0, &f, 1, 1); return f.lift; }
 static void close_now(const mv_stage_t *S0, const int r[4], close_t *f) {   /* this frame's close cell: its own tick from the screen's first frame (and a new mibi's), the hop scaled to the window */
   { const char *id = v_pstr("regions.resident.id"); if (!g_hhave || strcmp(g_hid, id)) { g_hhave = 1; g_ht0 = anim_now(); g_hbreath0 = g_ht0; g_hmoment_end = 0; g_hmoment_on = 0; g_bseeded = 0; snprintf(g_hid, sizeof g_hid, "%s", id); } }
-  int glass[4]; hrect("regions.glass.rect", glass); int room = r[1] - glass[1], apex = 0; for (int i = 0; i < S0->chop_nlift; i++) if (S0->chop_lift[i] > apex) apex = S0->chop_lift[i];
+  int glass[4]; v_srect(S, "regions.glass.rect", glass); int room = r[1] - glass[1], apex = 0; for (int i = 0; i < S0->chop_nlift; i++) if (S0->chop_lift[i] > apex) apex = S0->chop_lift[i];
   int sn = 1, sd = 1; if (apex > room && apex > 0) { sn = room > 0 ? room : 0; sd = apex; }   /* the hop scales down to fit the window above the figure, never clipped */
   close_frame(S0, f, sn, sd);
 }
@@ -112,7 +102,7 @@ static void close_now(const mv_stage_t *S0, const int r[4], close_t *f) {   /* t
 static void build_moving_shadow(void) {
   const mv_stage_t *S0 = close_set(); if (!S0) return;
   const char *shadow = v_pstr("regions.resident.moving.shadow"); char sh[96]; snprintf(sh, sizeof sh, "%s", shadow); if (!has(sh)) return;
-  int r[4]; hrect("regions.resident.rect", r); close_t f; close_now(S0, r, &f);
+  int r[4]; v_srect(S, "regions.resident.rect", r); close_t f; close_now(S0, r, &f);
   v_name("resident.shadow"); v_sprite_window("resident.shadow", sh, 1 + (f.sh75 ? 1 : 0) * S0->scw, 0, r[0], r[1] + r[3] - S0->sch, S0->scw, S0->sch);
 }
 static int build_moving_resident(const char *cur, int r[4], int lift) {
@@ -134,186 +124,181 @@ static int build_moving_resident(const char *cur, int r[4], int lift) {
   return 1;
 }
 static void build_resident(const char *cur) {
-  int r[4], lp[4]; hrect("regions.resident.rect", r); hrect("regions.resident.lamp.rect", lp);
-  if (build_moving_resident(cur, r, strcmp(cur, "resident") == 0 ? hi("regions.resident.lift", 4) : 0)) {
-    int waiting = v_pbool("regions.resident.waiting", 0), lift = (strcmp(cur, "resident") == 0 ? hi("regions.resident.lift", 4) : 0); const char *pic = v_pstr("regions.resident.picture");
+  int r[4], lp[4]; v_srect(S, "regions.resident.rect", r); v_srect(S, "regions.resident.lamp.rect", lp);
+  if (build_moving_resident(cur, r, strcmp(cur, "resident") == 0 ? v_si(S, "regions.resident.lift", 4) : 0)) {
+    int waiting = v_pbool("regions.resident.waiting", 0), lift = (strcmp(cur, "resident") == 0 ? v_si(S, "regions.resident.lift", 4) : 0); const char *pic = v_pstr("regions.resident.picture");
     if (has(pic)) v_sprite_hidden("resident.out", pic, r[0], r[1]);
     v_name("resident.lamp"); build_waitingLamp("resident.lamp", lp[0], lp[1] - lift, waiting);
     return;
   }
-  const char *pic = v_pstr("regions.resident.picture"), *outPic = v_pstr("regions.resident.out"); int waiting = v_pbool("regions.resident.waiting", 0), lift = (strcmp(cur, "resident") == 0 ? hi("regions.resident.lift", 4) : 0);
+  const char *pic = v_pstr("regions.resident.picture"), *outPic = v_pstr("regions.resident.out"); int waiting = v_pbool("regions.resident.waiting", 0), lift = (strcmp(cur, "resident") == 0 ? v_si(S, "regions.resident.lift", 4) : 0);
   char from[96] = ""; int level = 16; anim_state_t t;
   if (v_pbool("motion", 1) && anim_get(ANIM_DITHER, "resident", &t) && t.from_id[0] && t.ms > 0 && wire_has_asset(t.from_id) && has(pic)) { snprintf(from, sizeof from, "%s", t.from_id); level = 16 * t.elapsed / t.ms; if (level > 16) level = 16; }   /* the swap: the old mibi cross-dithers to the new in 16 levels */
-  int y = r[1] - lift - hop_lift(), dithering = from[0] != 0;
-  v_region("resident", LAYER_ART);
-  if (has(pic) && !dithering) { v_name("resident"); v_sprite("resident.pic", pic, r[0], y, r[2], r[3]); } else if (has(pic)) v_sprite_hidden("resident.pic", pic, r[0], y); else if (has(outPic)) v_sprite_hidden("resident.pic", outPic, r[0], y);
-  v_region("resident", LAYER_ART);
-  if (dithering) v_dither("resident.dither", from, pic, level, r[0], y, r[2], r[3]);
-  if (has(outPic)) { int o[4]; hrect("regions.resident.out.rect", o); v_name("resident"); v_sprite("resident.out", outPic, o[0], o[1], o[2], o[3]); }
-  else if (has(pic)) v_sprite_hidden("resident.out", pic, r[0], r[1]);
+  kit_resident(S, "regions.resident.rect", "regions.resident.out.rect", "resident", pic, outPic, lift + hop_lift(), from, level, NULL, NULL, NULL);
   v_name("resident.lamp"); build_waitingLamp("resident.lamp", lp[0], lp[1] - lift, waiting && !has(outPic));   /* rides the focus lift */
 }
 
 /* ---- the name tag, or the meet ribbon in its place ---- */
 static void build_tag(void) {
-  int box[4], rib[4]; hrect("regions.resident.rect", box); hrect("regions.meetRibbon.rect", rib);
+  int box[4], rib[4]; v_srect(S, "regions.resident.rect", box); v_srect(S, "regions.meetRibbon.rect", rib);
   const char *name = v_pstr("regions.nameTag.text"), *words = v_pstr("regions.meetRibbon.text"); int meet = strcmp(v_pstr("state"), "meet") == 0 && *words;
   anim_state_t t; int flash = v_pbool("motion", 1) && anim_get(ANIM_FLASH, "nameTag", &t);   /* the frame's flash, solid for the event's 240 ms as a counter's (frame.c) */
   memset(g_tag, 0, sizeof g_tag);
   v_region("meetRibbon", LAYER_CHROME);
-  word_ribbon("meetRibbon", rib, meet ? words : "", hi("regions.meetRibbon.px", 20), hi("regions.meetRibbon.pad", 0), flash ? fcol("colours.flash") : colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), flash ? fcol("colours.flashInk") : colr("colours.ribbon.text"));
-  if (!meet) { g_tagFlash = flash; build_nameTag(S, "regions.glass", name, box, hi("regions.resident.lift", 4), g_tag); g_tagFlash = 0; }
-  else { g_tagSlot = 1; build_nameTag(S, "regions.glass", name, box, hi("regions.resident.lift", 4), g_tag); g_tagSlot = 0; memset(g_tag, 0, sizeof g_tag); }   /* the same nodes with no size, at the tag's place: the opening redraws nothing at the origin */
+  word_ribbon("meetRibbon", rib, meet ? words : "", v_si(S, "regions.meetRibbon.pad", 0), flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.ribbon.fill"), v_scol(S, "colours.ribbon.edge"), flash ? "heading.flash" : NULL);
+  int below = box[1] + box[3] + v_si(S, "regions.nameTag.under", 0), over = box[1] - v_si(S, "regions.resident.lift", 4) - v_si(S, "regions.nameTag.overGap", 0) - v_si(S, "regions.nameTag.h", 0);   /* the tag's top under the feet (nameTag.under), or its bottom a gap (nameTag.overGap) above the lifted box when it would pass the glass's bottom margin */
+  if (!meet) kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 0, flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), flash ? "nameTag.flash" : NULL, g_tag);
+  else { kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 1, v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), NULL, g_tag); memset(g_tag, 0, sizeof g_tag); }   /* the same nodes with no size, at the tag's place: the opening redraws nothing at the origin */
 }
 
 /* ---- the card ---- */
-static void card_sprite(const char *id, const char *pic, int x, int y, int w, int h) { v_name("card"); if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_sprite_hidden(id, v_pstr("regions.glass.picture"), x, y); }
+static void card_sprite(const char *id, const char *pic, int x, int y, int w, int h) { v_name("card"); v_slot(id, pic, v_pstr("regions.glass.picture"), x, y, w, h, 1); }
 static void build_card(void) {
-  int c[4]; hrect("regions.card.rect", c);
+  int c[4]; v_srect(S, "regions.card.rect", c);
   { const char *pl = v_pstr("regions.card.plate"); v_region("card", LAYER_PAINTED); if (*pl) v_sprite("card", pl, c[0], c[1], c[2], c[3]); }   /* fix 2 F1: the card is its device plate, 1:1, the region's first node; no picture, no plate (F6) */
-  card_sprite("card.heart", v_pstr("regions.card.heart"), c[0] + hk("regions.card.heart.at", 0), c[1] + hk("regions.card.heart.at", 1), hk("regions.card.heart.size", 0), hk("regions.card.heart.size", 1));
-  int n = v_pint("regions.card.notches.count", 0); if (n > 3) n = 3; const char *np = v_pstr("regions.card.notches.picture"); int nw = hk("regions.card.notches.notch", 0), nh = hk("regions.card.notches.notch", 1);
-  for (int i = 0; i < 3; i++) { int x = i < n ? hk(v_fmt("regions.card.notches.places.%d.%d", n, i), 0) : 0, y = i < n ? hk(v_fmt("regions.card.notches.places.%d.%d", n, i), 1) : 0; if (i < n) card_sprite(v_fmt("card.notch.%d", i), np, x, y, nw, nh); else card_sprite(v_fmt("card.notch.%d", i), "", 0, 0, 0, 0); }
+  card_sprite("card.heart", v_pstr("regions.card.heart"), c[0] + v_sk(S, "regions.card.heart.at", 0), c[1] + v_sk(S, "regions.card.heart.at", 1), v_sk(S, "regions.card.heart.size", 0), v_sk(S, "regions.card.heart.size", 1));
+  int n = v_pint("regions.card.notches.count", 0); if (n > 3) n = 3; const char *np = v_pstr("regions.card.notches.picture"); int nw = v_sk(S, "regions.card.notches.notch", 0), nh = v_sk(S, "regions.card.notches.notch", 1);
+  for (int i = 0; i < 3; i++) { int x = i < n ? v_sk(S, v_fmt("regions.card.notches.places.%d.%d", n, i), 0) : 0, y = i < n ? v_sk(S, v_fmt("regions.card.notches.places.%d.%d", n, i), 1) : 0; if (i < n) card_sprite(v_fmt("card.notch.%d", i), np, x, y, nw, nh); else card_sprite(v_fmt("card.notch.%d", i), "", 0, 0, 0, 0); }
 }
 static void build_speciesLine(void) {
-  int r[4]; hrect("regions.speciesLine.rect", r); const char *text = v_pstr("regions.card.species.text"), *mark = v_pstr("regions.card.species.mark"); int px = hi("regions.speciesLine.px", 16), w = v_measure(text, px);
-  v_region("speciesLine", LAYER_TYPE); v_text("speciesLine.text", text, r[0], hi("regions.speciesLine.lineTop", 66) + v_fdiv(20 - v_cap(px), 2), w, px, colr("colours.card.species"));
-  int mw = hk("regions.speciesLine.mark.size", 0), mh = hk("regions.speciesLine.mark.size", 1);
-  v_name("speciesLine"); if (has(mark)) v_sprite("speciesLine.mark", mark, r[0] + w + hi("regions.speciesLine.mark.gap", 4), r[1] + v_fdiv(r[3] - mh, 2), mw, mh); else v_sprite_hidden("speciesLine.mark", v_pstr("regions.glass.picture"), 0, 0);   /* 4 px after the line's last word, on its centre */
+  int r[4]; v_srect(S, "regions.speciesLine.rect", r); const char *text = v_pstr("regions.card.species.text"), *mark = v_pstr("regions.card.species.mark"); v_region("speciesLine", LAYER_TYPE); int w = v_line_at("speciesLine.text", text, r[0], v_si(S, "regions.speciesLine.lineTop", 66), V_ANCHOR_LINE, v_si(S, "regions.speciesLine.px", 16), v_scol(S, "colours.card.species"), V_ALIGN_LEFT);
+  int mw = v_sk(S, "regions.speciesLine.mark.size", 0), mh = v_sk(S, "regions.speciesLine.mark.size", 1);
+  v_name("speciesLine"); v_slot_at("speciesLine.mark", mark, v_pstr("regions.glass.picture"), r[0] + w + v_si(S, "regions.speciesLine.mark.gap", 4), r[1] + v_fdiv(r[3] - mh, 2), mw, mh, 1, 0, 0);   /* 4 px after the line's last word, on its centre */
 }
 static void build_story(void) {
-  v_region("story", LAYER_TYPE); int px = hi("regions.story.px", 16);
-  for (int i = 0; i < 3; i++) { const char *t = v_pstr(v_fmt("regions.card.story.%d", i)); int w = v_measure(t, px), top = hk("regions.story.lineTops", i); v_text(v_fmt("story.%d", i), t, hk("regions.story.rect", 0), top + v_fdiv(20 - v_cap(px), 2), *t ? w : 0, px, colr("colours.card.story")); }
+  v_region("story", LAYER_TYPE); int px = v_si(S, "regions.story.px", 16);
+  for (int i = 0; i < 3; i++) { const char *t = v_pstr(v_fmt("regions.card.story.%d", i)); v_line_at(v_fmt("story.%d", i), t, v_sk(S, "regions.story.rect", 0), v_sk(S, "regions.story.lineTops", i), V_ANCHOR_LINE, px, v_scol(S, "colours.card.story"), V_ALIGN_LEFT); }
 }
 static void build_code(void) {
-  const char *code = v_pstr("regions.card.code"); int px = hi("regions.code.px", 16), w = v_measure(code, px);
-  v_region("code", LAYER_TYPE); v_text("code", code, hk("regions.code.rect", 0), hi("regions.code.lineTop", 162) + v_fdiv(20 - v_cap(px), 2), *code ? w : 0, px, colr("colours.card.code"));
+  const char *code = v_pstr("regions.card.code"); v_region("code", LAYER_TYPE); v_line_at("code", code, v_sk(S, "regions.code.rect", 0), v_si(S, "regions.code.lineTop", 162), V_ANCHOR_LINE, v_si(S, "regions.code.px", 16), v_scol(S, "colours.card.code"), V_ALIGN_LEFT);
 }
-/* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows); no stamp: no label */
+/* the stamp label: the dimmed plate (stampCase: 120 x 120, a 1 px edge) and the dimmed stamp centred on it; the read event prints its cells row by row from the top over its length (N + 2 rows of `cell` px, whole rows); no stamp: no label;
+   a portrayed mibi's label carries the gilt corner 1:1 at regions.stamp.portrayed.at (kit_stamp's corner) */
 static void build_stamp(void) {
-  int r[4]; hrect("regions.stamp.rect", r); const char *pl = v_pstr("regions.card.stamp.plate");
   const char *a = v_pstr("regions.card.stamp.asset"); int size = v_pint("regions.card.stamp.size", 0), N = v_pint("regions.card.stamp.N", 0), cell = v_pint("regions.card.stamp.cell", 0);
-  v_region("stamp", LAYER_PAINTED); if (has(pl)) { if (has(a) && size) v_sprite("stamp", pl, r[0], r[1], r[2], r[3]); else v_sprite_hidden("stamp", pl, r[0], r[1]); }
-  if (!has(a) || !size) return;
-  int x = r[0] + v_half(r[2] - size), y = r[1] + v_half(r[3] - size), rows = N + 2, shown = rows; anim_state_t t;
+  int rows = N + 2, shown = rows; anim_state_t t;
   if (v_pbool("motion", 1)) for (int i = 0, n = v_plen("regions.plates.items"); i < n; i++) if (anim_get(ANIM_READ, v_fmt("plate.%d", i), &t) && t.ms > 0) { shown = rows * t.elapsed / t.ms; break; }
-  v_name("stamp"); prim_node(v_id("stamp.clip"), FN_CLIP, x, y, size, shown * cell, 0, 1, 0);
-  v_sprite("stamp.stamp", a, x, y, size, size);
+  char corner[96]; snprintf(corner, sizeof corner, "%s", v_pstr("regions.card.stamp.corner"));   /* the portrayed corner (regions.stamp.portrayed), "" when not portrayed */
+  kit_stamp_t o = { "stamp", "stamp", "stamp", 0, NULL, NULL, corner, { v_sk(S, "regions.stamp.portrayed.at", 0), v_sk(S, "regions.stamp.portrayed.at", 1) } };
+  kit_stamp(S, "regions.stamp.rect", v_pstr("regions.card.stamp.plate"), a, size, shown * cell, &o);
 }
 
 /* ---- the plates: one a chapter in ring order, left-aligned from x 608: the signed ground and the rail's 24 x 24 emblem at (8, 8) ---- */
 static void plate_rect(int n, int i, int out[4]) { layout_list_pitch(S, "regions.plates.places", n, i, out); }
 static void build_chapterPlates(const char *cur) {
   int n = v_plen("regions.plates.items"); if (n > MAXP) n = MAXP; if (n < 0) n = 0;
-  int ex = hk("regions.plates.plate.emblem.at", 0), ey = hk("regions.plates.plate.emblem.at", 1);
+  int ex = v_sk(S, "regions.plates.plate.emblem.at", 0), ey = v_sk(S, "regions.plates.plate.emblem.at", 1);
   for (int i = 0; i < MAXP; i++) {
     int b[4] = { 0, 0, 0, 0 }; if (i < n) plate_rect(n, i, b);
-    int focused = i < n && strncmp(cur, "plate.", 6) == 0 && atoi(cur + 6) == i, lift = focused ? hi("focus.targets.plate.lift", 2) : 0;
+    int focused = i < n && strncmp(cur, "plate.", 6) == 0 && atoi(cur + 6) == i, lift = focused ? v_si(S, "focus.targets.plate.lift", 2) : 0;
     const char *ground = i < n ? v_pstr(v_fmt("regions.plates.items.%d.ground", i)) : "", *emb = i < n ? v_pstr(v_fmt("regions.plates.items.%d.emblem", i)) : "";
     char id[24]; snprintf(id, sizeof id, "plate.%d", i); v_name("plates");
-    if (has(ground)) v_sprite(id, ground, b[0], b[1] - lift, b[2], b[3]); else v_sprite_hidden(id, v_pstr("regions.glass.picture"), b[0], b[1]);
+    v_slot_at(id, ground, v_pstr("regions.glass.picture"), b[0], b[1] - lift, b[2], b[3], 1, b[0], b[1]);
     snprintf(id, sizeof id, "plate.%d.emblem", i); v_name("plates");
-    if (has(emb)) v_sprite(id, emb, b[0] + ex, b[1] + ey - lift, 24, 24); else v_sprite_hidden(id, v_pstr("regions.glass.picture"), b[0], b[1]);
+    v_slot_at(id, emb, v_pstr("regions.glass.picture"), b[0] + ex, b[1] + ey - lift, 24, 24, 1, b[0], b[1]);
   }
 }
 
 /* ---- the modules: the one `module` build with no lamp (build_module), and each module's objects, lifted with it ---- */
 static void free_node(const char *id, int x, int y, int w, int h) {   /* a free place is the well alone, no dash (fix 2 F4): the node keeps its box with no ops */
-  snprintf(prim_ops(), (size_t)prim_ops_size(), "[]"); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);
+  v_composed(id, x, y, w, h, "[]");
 }
 static void door_objects(int dy) {
-  int r[4]; hrect("regions.door.rect", r); int pw = hk("regions.door.places.size", 0), ph = hk("regions.door.places.size", 1), gx = hk("regions.door.glyph.at", 0), gy = hk("regions.door.glyph.at", 1), gw = hk("regions.door.glyph.size", 0), gh = hk("regions.door.glyph.size", 1);
+  int r[4]; v_srect(S, "regions.door.rect", r); int pw = v_sk(S, "regions.door.places.size", 0), ph = v_sk(S, "regions.door.places.size", 1), gx = v_sk(S, "regions.door.glyph.at", 0), gy = v_sk(S, "regions.door.glyph.at", 1), gw = v_sk(S, "regions.door.glyph.size", 0), gh = v_sk(S, "regions.door.glyph.size", 1);
   const char *glyph = v_pstr("regions.door.glyph"), *lampPic = v_pstr("regions.door.lamp");
-  v_name("door"); if (has(glyph)) v_sprite("door.glyph", glyph, r[0] + gx, r[1] + dy + gy, gw, gh); else v_sprite_hidden("door.glyph", v_pstr("regions.glass.picture"), r[0], r[1]);
+  v_name("door"); v_slot_at("door.glyph", glyph, v_pstr("regions.glass.picture"), r[0] + gx, r[1] + dy + gy, gw, gh, 1, r[0], r[1]);
   for (int i = 0; i < 3; i++) {
-    int x = r[0] + hk(v_fmt("regions.door.places.at.%d", i), 0), y = r[1] + dy + hk(v_fmt("regions.door.places.at.%d", i), 1);
+    int x = r[0] + v_sk(S, v_fmt("regions.door.places.at.%d", i), 0), y = r[1] + dy + v_sk(S, v_fmt("regions.door.places.at.%d", i), 1);
     char P[48]; snprintf(P, sizeof P, "regions.door.places.%d", i); int some = spec_len("props", P) >= 0 && v_pstr(v_fmt("%s.picture", P))[0];
     const char *pic = some ? v_pstr(v_fmt("%s.picture", P)) : "";
     { const char *wl = v_pstr(v_fmt("%s.well", P)); v_region("door", LAYER_PAINTED); if (*wl) v_sprite(v_fmt("door.recess.%d", i), wl, x, y, pw, ph); }   /* the place is its well in every state (fix 2 F4): the mibi stands in it, or the well alone */
-    v_name("door"); if (has(pic)) v_sprite(v_fmt("door.place.%d", i), pic, x, y, pw, ph); else v_sprite_hidden(v_fmt("door.place.%d", i), glyph[0] ? glyph : v_pstr("regions.glass.picture"), x, y);
-    v_name("door"); if (some && v_pbool(v_fmt("%s.waiting", P), 0) && has(lampPic)) v_sprite(v_fmt("door.lamp.%d", i), lampPic, x + hk("regions.door.places.lampAt", 0), y + hk("regions.door.places.lampAt", 1), 8, 8); else v_sprite_hidden(v_fmt("door.lamp.%d", i), v_pstr("regions.glass.picture"), x, y);
+    v_name("door"); v_slot(v_fmt("door.place.%d", i), pic, glyph[0] ? glyph : v_pstr("regions.glass.picture"), x, y, pw, ph, 1);
+    v_name("door"); v_slot_at(v_fmt("door.lamp.%d", i), lampPic, v_pstr("regions.glass.picture"), x + v_sk(S, "regions.door.places.lampAt", 0), y + v_sk(S, "regions.door.places.lampAt", 1), 8, 8, some && v_pbool(v_fmt("%s.waiting", P), 0), x, y);
     v_region("door", LAYER_CHROME); free_node(v_fmt("door.free.%d", i), x, y, pw, ph);
   }
 }
 static void portrait_objects(int dy) {
-  int r[4]; hrect("regions.portrait.rect", r); const char *f = v_pstr("regions.portrait.frame"); int fx = hk("regions.portrait.frame.at", 0), fy = hk("regions.portrait.frame.at", 1), fw = hk("regions.portrait.frame.size", 0), fh = hk("regions.portrait.frame.size", 1);
-  v_name("portrait"); if (has(f)) v_sprite("portrait.frame", f, r[0] + fx, r[1] + dy + fy, fw, fh); else v_sprite_hidden("portrait.frame", v_pstr("regions.glass.picture"), r[0], r[1]);
+  int r[4]; v_srect(S, "regions.portrait.rect", r); const char *f = v_pstr("regions.portrait.frame"); int fx = v_sk(S, "regions.portrait.frame.at", 0), fy = v_sk(S, "regions.portrait.frame.at", 1), fw = v_sk(S, "regions.portrait.frame.size", 0), fh = v_sk(S, "regions.portrait.frame.size", 1);
+  v_name("portrait"); v_slot_at("portrait.frame", f, v_pstr("regions.glass.picture"), r[0] + fx, r[1] + dy + fy, fw, fh, 1, r[0], r[1]);
   /* its picture, over the frame's window (frame.picture: at and size from the spec, 1:1): painted from the asset; not landed (""), a 0x0 window that draws nothing and the frame master's own window shows */
-  const char *p = v_pstr("regions.portrait.picture"); int px = hk("regions.portrait.frame.picture.at", 0), py = hk("regions.portrait.frame.picture.at", 1), pw = hk("regions.portrait.frame.picture.size", 0), ph = hk("regions.portrait.frame.picture.size", 1);
-  v_name("portrait"); if (has(p)) v_sprite("portrait.picture", p, r[0] + fx + px, r[1] + dy + fy + py, pw, ph); else v_sprite_hidden("portrait.picture", has(f) ? f : v_pstr("regions.glass.picture"), r[0], r[1]);
+  const char *p = v_pstr("regions.portrait.picture"); int px = v_sk(S, "regions.portrait.frame.picture.at", 0), py = v_sk(S, "regions.portrait.frame.picture.at", 1), pw = v_sk(S, "regions.portrait.frame.picture.size", 0), ph = v_sk(S, "regions.portrait.frame.picture.size", 1);
+  v_name("portrait"); v_slot_at("portrait.picture", p, has(f) ? f : v_pstr("regions.glass.picture"), r[0] + fx + px, r[1] + dy + fy + py, pw, ph, 1, r[0], r[1]);
+}
+static void cross_face(int i, const int b[4], void *ctx) {
+  int dy = *(int *)ctx, x = b[0], y = b[1] + dy, w = b[2], h = b[3];   /* the module's lift moves the faces with it */
+  char id[32], P[48]; snprintf(P, sizeof P, "regions.cross.faces.%d", i); const char *pic = v_pstr(v_fmt("%s.picture", P)); int away = v_pbool(v_fmt("%s.away", P), 0);
+  snprintf(id, sizeof id, "cross.face.%d", i); v_name("cross");
+  if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_faceHolder(id, S, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
 }
 static void cross_objects(int dy) {
-  int r[4]; hrect("regions.cross.rect", r); int n = v_plen("regions.cross.faces"); if (n > MAXF) n = MAXF; if (n < 0) n = 0;
-  int w = hk("regions.cross.faces.size", 0), h = hk("regions.cross.faces.size", 1), pitch = hi("regions.cross.faces.pitch", 32), per = hi("regions.cross.faces.perRow", 7);
-  for (int i = 0; i < MAXF; i++) {
-    if (i >= n) continue;
-    char id[32], P[48]; int row = n > per ? i / per : 0, col = n > per ? i % per : i;
-    int x = r[0] + hk(n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 0) + col * pitch, y = r[1] + dy + hk(n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 1);
-    snprintf(P, sizeof P, "regions.cross.faces.%d", i); const char *pic = v_pstr(v_fmt("%s.picture", P)); int away = v_pbool(v_fmt("%s.away", P), 0);
-    snprintf(id, sizeof id, "cross.face.%d", i); v_name("cross");
-    if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_faceHolder(id, S, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
-  }
+  int n = v_plen("regions.cross.faces"); if (n > MAXF) n = MAXF; if (n < 0) n = 0;
+  kit_tiles(S, "regions.cross.faces", n, cross_face, &dy, NULL);   /* one row of up to seven, or two rows (the spec's forms) */
 }
 static void wild_objects(int dy) {
-  int r[4]; hrect("regions.wild.rect", r); const char *g = v_pstr("regions.wild.gate"); int gx = hk("regions.wild.gate.at", 0), gy = hk("regions.wild.gate.at", 1), gw = hk("regions.wild.gate.size", 0), gh = hk("regions.wild.gate.size", 1);
-  v_name("wild"); if (has(g)) v_sprite("wild.gate", g, r[0] + gx, r[1] + dy + gy, gw, gh); else v_sprite_hidden("wild.gate", v_pstr("regions.glass.picture"), r[0], r[1]);
+  int r[4]; v_srect(S, "regions.wild.rect", r); const char *g = v_pstr("regions.wild.gate"); int gx = v_sk(S, "regions.wild.gate.at", 0), gy = v_sk(S, "regions.wild.gate.at", 1), gw = v_sk(S, "regions.wild.gate.size", 0), gh = v_sk(S, "regions.wild.gate.size", 1);
+  v_name("wild"); v_slot_at("wild.gate", g, v_pstr("regions.glass.picture"), r[0] + gx, r[1] + dy + gy, gw, gh, 1, r[0], r[1]);
 }
 static const char *MODS[4] = { "door", "portrait", "cross", "wild" };
 static void build_modules(const char *cur) {
   for (int m = 0; m < 4; m++) {
-    int dy = strcmp(cur, MODS[m]) == 0 ? -hi(v_fmt("focus.targets.%s.lift", MODS[m]), 2) : 0;
+    int dy = strcmp(cur, MODS[m]) == 0 ? -v_si(S, v_fmt("focus.targets.%s.lift", MODS[m]), 2) : 0;
     build_module(S, MODS[m], dy, "");
     if (m == 0) door_objects(dy); else if (m == 1) portrait_objects(dy); else if (m == 2) cross_objects(dy); else wild_objects(dy);
   }
 }
 
 /* ---- the targets as the words drew them, in the props' order ---- */
-int habitat_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
-  snprintf(graph_key, (size_t)gcap, "graph");
+int habitat_focus(focus_target_t *out, int cap) {
   int n = v_plen("focus.targets"); if (n > cap) n = cap; int np = v_plen("regions.plates.items"), nt = v_plen("regions.tiles.items"); if (nt > 12) return 0;
   int have = nt > 0 && layout_list_form(S, "regions.tiles", nt, NULL, 0) >= 0, k = 0;
   for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[k]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
-    t->enabled = v_pbool(v_fmt("focus.targets.%d.enabled", i), 1); t->index = i; int r[4] = { 0, 0, 0, 0 };
-    if (strcmp(t->id, "resident") == 0) hrect("regions.resident.rect", r);
+    focus_target_t *t = &out[k]; focus_fill(t, "focus.targets", i, NULL); int r[4] = { 0, 0, 0, 0 }, ix = i;
+    if (strcmp(t->id, "resident") == 0) v_srect(S, "regions.resident.rect", r);
     else if (strcmp(t->id, "name") == 0) memcpy(r, g_tag, sizeof r);
-    else if (strcmp(t->id, "species") == 0) hrect("regions.speciesLine.rect", r);
+    else if (strcmp(t->id, "species") == 0) v_srect(S, "regions.speciesLine.rect", r);
+    else if (strcmp(t->id, "family") == 0) {   /* the story's origin lines as drawn (one for a founder, two for a bred mibi, as the props name them), the widest clipped to the story's width, a pitch a line */
+      int s[4], px = v_si(S, "regions.story.px", 16), n = v_pint(v_fmt("focus.targets.%d.lines", i), 1), w = 0; v_srect(S, "regions.story.rect", s);
+      for (int q = 0; q < n && q < 2; q++) { char tx[V_STR]; snprintf(tx, sizeof tx, "%s", v_pstr(v_fmt("regions.card.story.%d", q))); int m = v_measure(tx, px); if (m > w) w = m; }
+      r[0] = s[0]; r[1] = s[1]; r[2] = w < s[2] ? w : s[2]; r[3] = v_si(S, "regions.story.pitch", 24) * n;
+    }
     else if (strncmp(t->id, "plate.", 6) == 0) { int j = atoi(t->id + 6); if (j >= 0 && j < np) plate_rect(np, j, r); }
-    else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int q = 0; q < nt; q++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", q)), t->id + 5) == 0) layout_list_pitch(S, "regions.tiles", nt, q, r); t->index = 0; for (int q = 0; q < k; q++) if (strncmp(out[q].id, "tile.", 5) == 0) t->index++; }
-    else hrect(v_fmt("regions.%s.rect", t->id), r);
-    t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3]; k++;
+    else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int q = 0; q < nt; q++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", q)), t->id + 5) == 0) layout_list_pitch(S, "regions.tiles", nt, q, r); ix = 0; for (int q = 0; q < k; q++) if (strncmp(out[q].id, "tile.", 5) == 0) ix++; }
+    else v_srect(S, v_fmt("regions.%s.rect", t->id), r);
+    focus_fill(t, "focus.targets", i, r); t->index = ix; k++;
   }
   return k;
 }
 
 static void build_ring_under(const char *cur) {
   if (strcmp(cur, "resident") != 0 || spec_len("props", "overlay") >= 0) return;
-  int r[4]; hrect("regions.resident.rect", r); v_region("focus", LAYER_CHROME);
+  int r[4]; v_srect(S, "regions.resident.rect", r); v_region("focus", LAYER_CHROME);
   const mv_stage_t *S0 = close_set();   /* the footprint ring: on the ground under the creature, as on Home; a moving set's cell by name (curl asleep, stand otherwise), a still's whole picture */
   if (S0) { char at[96]; snprintf(at, sizeof at, "%s", v_pstr("regions.resident.moving.close")); close_t f; close_now(S0, r, &f); word_focusRingFootprint("focus", S, "focus.targets.resident", at, strncmp(f.cell, "curl", 4) == 0 ? "curl" : f.sh75 ? "shadow" : "stand", r);   /* shadow: a hop's air tick that shows shadow-75 */ }
   else { char pic[96]; snprintf(pic, sizeof pic, "%s", v_pstr("regions.resident.picture")); word_focusRingFootprint("focus", S, "focus.targets.resident", pic, "", r); }
 }
-/* the ring on the focused target (the resident's is under the creature, drawn before it): a plate or a module lifted 2 px, a tile in its form, the name and the species word round */
+/* the ring on the focused target (the resident's is under the creature, drawn before it): a plate or a module lifted 2 px, a tile in its form, the name and the species word round. The box is the focus table's. */
 static void build_ring(const char *cur) {
   if (!cur[0] || strcmp(cur, "resident") == 0 || spec_len("props", "overlay") >= 0 || anim_holding()) return;
+  focus_target_t t[40]; int n = habitat_focus(t, 40), at = -1; for (int i = 0; i < n; i++) if (strcmp(t[i].id, cur) == 0) at = i;
   int box[4] = { 0, 0, 0, 0 }; char target[96];
   v_region("focus", LAYER_CHROME);
-  if (strcmp(cur, "name") == 0) { memcpy(box, g_tag, sizeof box); snprintf(target, sizeof target, "focus.targets.name"); }
+  if (strncmp(cur, "tile.", 5) == 0 || at < 0) return;   /* the strip's own ring (build_bayStrip's box) */
+  box[0] = t[at].x; box[1] = t[at].y; box[2] = t[at].w; box[3] = t[at].h;
+  if (strcmp(cur, "name") == 0) snprintf(target, sizeof target, "focus.targets.name");
   else if (strcmp(cur, "species") == 0) {   /* the line's text and guide mark as drawn: the word adds the chip's 4 px each side */
-    int r[4]; hrect("regions.speciesLine.rect", r); const char *text = v_pstr("regions.card.species.text"); char tx[96]; snprintf(tx, sizeof tx, "%s", text); const char *mark = v_pstr("regions.card.species.mark");
-    int w = v_measure(tx, hi("regions.speciesLine.px", 16)); if (has(mark)) w += hi("regions.speciesLine.mark.gap", 4) + hk("regions.speciesLine.mark.size", 0);
+    int r[4] = { box[0], box[1], box[2], box[3] }; const char *text = v_pstr("regions.card.species.text"); char tx[96]; snprintf(tx, sizeof tx, "%s", text); const char *mark = v_pstr("regions.card.species.mark");
+    int w = v_measure(tx, v_si(S, "regions.speciesLine.px", 16)); if (has(mark)) w += v_si(S, "regions.speciesLine.mark.gap", 4) + v_sk(S, "regions.speciesLine.mark.size", 0);
     box[0] = r[0]; box[1] = r[1] + v_fdiv(r[3] - 24, 2); box[2] = w; box[3] = 24; snprintf(target, sizeof target, "focus.targets.species");
   }
-  else if (strncmp(cur, "plate.", 6) == 0) { int n = v_plen("regions.plates.items"), i = atoi(cur + 6); if (i < 0 || i >= n) return; plate_rect(n, i, box); box[1] -= hi("focus.targets.plate.lift", 2); snprintf(target, sizeof target, "focus.targets.plate"); }
-  else if (strncmp(cur, "tile.", 5) == 0) return;   /* the strip's own ring (build_bayStrip's box) */
-  else { hrect(v_fmt("regions.%s.rect", cur), box); box[1] -= hi(v_fmt("focus.targets.%s.lift", cur), 2); snprintf(target, sizeof target, "focus.targets.%s", cur); }
+  else if (strncmp(cur, "plate.", 6) == 0) { box[1] -= v_si(S, "focus.targets.plate.lift", 2); snprintf(target, sizeof target, "focus.targets.plate"); }
+  else { box[1] -= v_si(S, v_fmt("focus.targets.%s.lift", cur), 2); snprintf(target, sizeof target, "focus.targets.%s", cur); }
   if (box[2] > 0) word_focusRing("focus", S, target, box);
 }
 
 void habitat_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   build_stage();
-  word_livingWindow(S, "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"), 0, 0);
+  word_livingWindow(S, "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"), 0, 0, NULL, 0);
   build_moving_shadow();
   build_ring_under(cur);
   build_resident(cur);
@@ -326,18 +311,4 @@ void habitat_words(void) {
 }
 
 /* a key on one mibi up close: ✓ ← and the room keys say an intent on the focused target; the pad moves the ring by habitat.json focus.graph (the host's selector `tile.shown` in focus.resolve) */
-void habitat_key(int code) {
-  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0]) snprintf(cur, sizeof cur, "resident");
-  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) { screens_say("intent", cur, verb); return; }
-  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
-  focus_target_t t[40]; char gkey[24]; int n = habitat_focus(t, 40, gkey, sizeof gkey);
-  int glen; const char *graph = spec_raw(S, "focus.graph", &glen); char err[200];
-  focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
-  focus_resolve_t r[8]; int nr = 0;
-  for (int i = 0, m = spec_len("props", "focus.resolve"); i < m && nr < 8; i++) { if (spec_member("props", "focus.resolve", i, r[nr].sel, sizeof r[nr].sel, r[nr].id, sizeof r[nr].id)) nr++; }
-  int roomAt[4] = { 0, 0, 0, 0 };
-  char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, roomAt, to, sizeof to); focus_graph_free(g);
-  if (step || strcmp(to, cur) == 0) return;
-  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
-}
+void habitat_key(int code) { screens_key_graph(code, S, "focus.graph", habitat_focus, "resident", &(screens_keys_t){ .resolve = 1 }); }

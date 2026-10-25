@@ -3,8 +3,8 @@
 usage:  python3 -I check.py            (from anywhere; run build.py first)
 
 Standard library only. It decodes the built PNGs itself and tests the pixels, not the source:
-  - off-palette pixels in every PNG (an opaque pixel whose colour is not one of the 62 in station.json): must be 0;
-  - the PNG palette is the 62 colours in file order, plus the one transparent entry; alpha only 0 or 255 (no partial alpha);
+  - off-palette pixels in every PNG (an opaque pixel whose colour is not one of the 68 in station.json): must be 0;
+  - the PNG palette is the 68 colours in file order, plus the one transparent entry; alpha only 0 or 255 (no partial alpha);
   - no pixel in void (black), no outline in black;
   - the atlas rects fit their sheets and the sprites are not empty; sprite sizes equal the class box;
   - the stem's top row is the box's top row and the shell's foot is the box's last row, both centred;
@@ -70,13 +70,13 @@ def main():
                 if v == T:
                     continue
                 opaque += 1
-                if v >= len(pal) or v >= 62 or pal[v] != want[v]:
+                if v >= len(pal) or v >= 68 or pal[v] != want[v]:
                     off += 1
-        pal_ok = pal[:62] == want and len(pal) == 63
+        pal_ok = pal[:68] == want and len(pal) == 69
         alpha_ok = trns == [255] * T + [0]
         void = sum(1 for r in rows for v in r if v == names.index("void"))
         print("  %-16s %5dx%-4d opaque %7d  off-palette %d  void %d  palette %s  alpha %s" %
-              (f, w, h, opaque, off, void, "62+1 ok" if pal_ok else "WRONG", "0/255 only" if alpha_ok else "WRONG"))
+              (f, w, h, opaque, off, void, "68+1 ok" if pal_ok else "WRONG", "0/255 only" if alpha_ok else "WRONG"))
         off_total += off
         if off or void or not pal_ok or not alpha_ok:
             fails.append(f + ": palette")

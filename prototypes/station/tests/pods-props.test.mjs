@@ -1,6 +1,7 @@
 // Pods' props (lvgl-switch.md §2.1): the view the face takes, views/pods-props.mjs, in Node. Plain JSON that names what and never where: it validates against pods.props.json for every species in every
 // state, holds no rectangle, no measure and no layout rule (the view imports neither a layout nor a component), and fits the 32 KiB props budget with the frame beside it.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -8,7 +9,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { podsProps, compareBackFocus } from "../src/views/pods-props.mjs";
+import { podsProps as podsPropsUnchecked, compareBackFocus } from "../src/views/pods-props.mjs";
+const podsProps = lineCased(podsPropsUnchecked, "pods");   // every body it builds goes through assertLineCase (report mode)
 import { createMeasure } from "../../ui/specs/measure.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -247,4 +249,12 @@ test("P8: a sealed chapter of a pod that glints on another chapter says glintPod
   assert.ok(!S.podGlints(st, st.tray[0])); assert.equal(line().need, "", "no glint: empty");
   st.readOnce.S02 = [fr.chapters[0].id]; st.guide.S02 = {}; assert.ok(S.podGlints(st, st.tray[0]), "the pod now glints on its first chapter");
   assert.equal(line().need, spec.strings.glintPod, "another chapter glints: glintPod");
+});
+
+test("the Pods guide target: an identified pod's figure is a target after the pod (✓ Open the guide, every {Species}, free); an unidentified pod's is none", () => {
+  const st = rich(["S01"]), b = bodyOf(open(st)), ids = b.props.focus.targets.map((t) => t.id);
+  assert.equal(ids[ids.indexOf("pod") + 1], "figure", "the figure right after the pod"); assert.equal(b.props.focus.targets.find((t) => t.id === "figure").group, "figure");
+  assert.deepEqual(lineOf(open(st, { focus: "figure" })), { ok: "Open the guide", back: "Pods", subject: "every Loika", need: "" }, "✓ Open the guide, free");
+  const raw = stock(["S01"]); assert.ok(!bodyOf(open(raw)).props.focus.targets.some((t) => t.id === "figure"), "an unidentified pod's figure is no target");
+  assert.deepEqual(validate(b.props, schema), []);
 });

@@ -9,6 +9,10 @@
 #define FOCUS_DOWN 1
 #define FOCUS_LEFT 2
 #define FOCUS_RIGHT 3
+/* The targets a screen's focus table holds (screens_key_graph, the rings, the ordered groups): a screen's focus function is given room for FOCUS_TARGETS and lists at most that many, in the props'
+   order; a target past them (the 65th and later) is not on the face's table: the pad never lands on it by an edge or a group, a selector the host answers with it is taken as unanswered (the
+   selector's group's first target, as focus_move does for a selector with no answer), and no ring is drawn on it. */
+#define FOCUS_TARGETS 64
 typedef struct focus_graph focus_graph_t;
 typedef struct { char id[FOCUS_ID]; char group[32]; int index; int enabled; int x, y, w, h; } focus_target_t;   /* group "" : the id up to its first "." */
 typedef struct { char sel[32]; char id[FOCUS_ID]; } focus_resolve_t;   /* id "": the view found nothing (null) */

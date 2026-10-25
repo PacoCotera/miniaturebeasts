@@ -116,6 +116,14 @@ test("props: the screen's spec must be loaded, seq may not go back, the budget i
   assert.equal(f.send({ t: "key", k: "confirm" }), 0); assert.equal(M._face_key_count() >= 1, true); assert.equal(f.send({ t: "key", k: "x" }), -1); assert.match(f.errors()[0], /unknown key x/);
 });
 
+test("props for a level of a screen are drawn from its screen's spec: library.species with only frame.json loaded is refused, and accepted once library.json is sent", { skip }, async () => {
+  const f = await boot(), J = (n) => JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station", n + ".json"), "utf8"));
+  assert.equal(f.send({ t: "spec", screen: "frame", json: J("frame") }), 0);
+  assert.equal(f.send({ t: "props", seq: 1, screen: "library.species", regions: {} }), -1); assert.match(f.errors()[0], /whose spec is not loaded/);
+  assert.equal(f.send({ t: "spec", screen: "library", json: J("library") }), 0);
+  assert.equal(f.send({ t: "props", seq: 2, screen: "library.species", regions: {} }), 0, "the level's screen spec (library) is loaded"); assert.deepEqual(f.errors(), []);
+});
+
 test("clip is a real primitive: a child is cut at the clip's rectangle, and goes with it", { skip }, async () => {
   const f = await boot(); frames(f, 2);
   // a 20×20 sprite of one colour, clipped to its right half

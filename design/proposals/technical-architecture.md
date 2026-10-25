@@ -71,6 +71,7 @@ Arithmetic from the reference hardware ([devices.md](../devices.md)), to be meas
 | One frame | 270 KB as palette indexes (PSRAM); 540 KB as 16-bit; a 60-row strip to the panel is 54 KB | 54 KB at 2 bits a pixel; one printer line is 48 bytes | 2.4 MB at 32 bits; two buffers 4.8 MB |
 | Assets | One byte a pixel: a 48 px tile is 2.3 KB, a 280×300 resident 84 KB. v1's 942 KB of RGBA art would be about 235 KB | Four-gray sets; paintings on the SD card | The layers and the bake run here (art pipeline §11) |
 | Lesson from v1 | The 1.4 MB image was 1.1 MB of flash data, mostly RGBA art and anti-aliased font tables. Indexed assets and bitmap type remove most of it | 470 KB Caddy UI compiled | Never ran on a Pi |
+| Fonts | | | Inter Regular 16, Medium 16, Medium 20 and SemiBold 28 (`lv_font_conv` 1.5.3, 4 bpp, kerning, 352 glyphs): 139.4 KB in flash (116.2 KB before Medium 16), 0 RAM a font (the tables are `const`); the draw buffer is one glyph box, at most 784 B, shared. The Pi and any ESP32 port of the face carry the same four |
 
 The Companion's pixel model (8-bit indexed colour: a palette of up to 256 entries in per-biome sets, indexes in memory, a lookup to 16-bit on the way to the panel) is the same model the sandbox uses. The device enforces the palette for free.
 
@@ -195,7 +196,7 @@ The other contracts (the wire format and every message are lvgl-switch.md §2.1)
 - **View:** `view(state, focus) → props`, for example `{ pod: { asset, sealed }, rail: { chapters: [{ id, read, glint, sealed }] }, line: { ok, price, back, subject, need } }`. Props name what, never where. Pure, tested in Node against the screen's props schema, and sent to the face as a `props` message.
 - **Intent:** a key goes through the face's focus graph, which gives either a focus move (a `focus` message) or `{ target, verb }` (an `intent` message). The screen's intent table maps it to one rule call, which returns `{ st, events }`.
 - **Event:** `{ kind: "wipe", target: "page", ms: 2000, hold: 2000 }`. The JavaScript timeline decides that it plays and holds input; the face plays it. No global timestamps.
-- **Primitive:** the face's closed set (rect, text, sprite, nine-slice, clip, composed picture), each carrying its layer and the region that drew it. Colours are palette names, except on the painted and type layers. Fonts are LVGL fonts baked from the bundled file (`inter-16`, `inter-20`, `inter-28`; Mibi 7×9 when the Companion comes), never a CSS font string.
+- **Primitive:** the face's closed set (rect, text, sprite, nine-slice, clip, composed picture), each carrying its layer and the region that drew it. Colours are palette names, except on the painted and type layers. Fonts are LVGL fonts baked from the bundled file (`inter-16`, `inter-16m` (Medium 16), `inter-20`, `inter-28`; Mibi 7×9 when the Companion comes), never a CSS font string.
 - **Asset:** `{ id, file, w, h, policy: palette48 | stationChrome | painted | gray4 | print1, status: placeholder | master, until, hash, foot? }`. `foot`: a creature picture's footprint, measured by `station/src/moving.mjs` `footOf` through `derive.mjs` (lvgl-switch §2.4). Files are PNG: indexed for the palette policies, 32-bit with straight alpha for `painted`. `bake-images.mjs` converts them to LVGL's binary images (lvgl-switch.md §2.4).
 
 ### 5.3 How the layout spec becomes code
@@ -283,7 +284,7 @@ Each milestone ships to the sandbox and plays from a fresh world. The save chang
 | Inter from LVGL's fonts reads differently from the browser's | The sandbox draws with LVGL's fonts, so the type judged in the sandbox is the type the device draws |
 | The device port differs from the sandbox's pixels | The same C face on both; golden framebuffer hashes equal on WebAssembly, native x86-64 and aarch64 |
 | Splitting the Companion breaks the playable page | C1 makes no visible change; the smoke and parse checks stay (the parse check reads module scripts with `node --check`); golden world vectors for each generator |
-| The Station palette moves while art and layouts settle (`ui/palettes/station.json`, 62 colours, painted art on top) | The renderer takes the palette as data (the `palette` message); the UI designer and the art director set it; the check follows |
+| The Station palette moves while art and layouts settle (`ui/palettes/station.json`, 68 colours, painted art on top) | The renderer takes the palette as data (the `palette` message); the UI designer and the art director set it; the check follows |
 
 ## 7. The device split in brief
 

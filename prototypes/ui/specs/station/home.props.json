@@ -25,7 +25,7 @@
     { "type": "object", "required": ["note"], "additionalProperties": false, "properties": { "note": { "type": "string" } } },
     { "type": "object", "additionalProperties": false, "properties": {} } ] },
    "vivarium": { "type": "object", "required": ["readout"], "additionalProperties": false, "properties": { "readout": { "type": "string" } } },
-   "library": { "type": "object", "additionalProperties": false, "properties": {} },
+   "library": { "type": "object", "additionalProperties": false, "properties": { "species": { "type": "string" }, "picture": { "type": "string", "description": "the specimen picture's id (the main level)" }, "levels": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "string" }, "description": "the four breathing levels' picture ids, the main one first" }, "glints": { "type": "array", "maxItems": 8, "items": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "integer" } }, "description": "the bead centres, in the window's pixels, of the looks found since the Library was last opened full screen (at most 8)" }, "star": { "type": "string" }, "new": { "type": "string", "description": "{n} new, only when n is above 0" }, "genome": { "type": "string" } } },
    "glass": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "tag": { "type": "string" }, "away": { "type": "object", "required": ["picture", "figure"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "figure": { "type": "array", "items": { "type": "integer" }, "minItems": 4, "maxItems": 4 } } } } },
    "residents": { "type": "array", "maxItems": 6, "items": { "$ref": "person" } },
    

@@ -123,11 +123,13 @@ test("habitat's node order is unchanged by the namer: the regions in the log bef
   assert.equal(push(f, b0), 0); frames(f); const after = order(logOf(f)); assert.equal(after, before, "the same regions in the same order after the namer closes");
 });
 
-test("the keys on the screen: ✓ ← and the room keys are intents on the focused target, the pad moves the ring by habitat.json's graph (▶ from the resident is the name, ▼ its tile), the host's `tile.shown` selector lands ▼ on the shown tile", { skip }, async () => {
+test("the keys on the screen: ✓ ← and the room keys are intents on the focused target, the pad moves the ring by habitat.json's graph (▶ from the resident is the name, ▼ its tile; ▼ from the species word the origin lines, then the plates), the host's `tile.shown` selector lands ▼ on the shown tile", { skip }, async () => {
   const b = scene({ focus: "resident" }), f = await start(b), cur0 = b.props.focus.cur;
   for (const [k, verb] of [["confirm", "confirm"], ["back", "back"], ["home", "room:home"], ["research", "room:research"], ["library", "room:library"], ["habitat", "room:habitat"]]) { const m = key(f, k); assert.deepEqual(m.map((x) => [x.t, x.screen, x.target, x.verb]), [["intent", "habitat", cur0, verb]], k); }
   const go = (k) => { const m = key(f, k); if (m[0]?.t === "focus") withFocus(f, m[0].target); return m; };
   let m = go("right"); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "name"]]); m = go("right"); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "species"]]);
+  m = go("down"); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "family"]], "▼ from the species word: the story's origin lines (See the family)");
+  { const r = logOf(f).regions.find((q) => q.id === "focus")?.rect, s = spec.regions.story.rect; assert.ok(r && r[0] <= s[0] && r[1] <= s[1] && r[0] + r[2] > s[0] + 24 && r[1] + r[3] >= s[1] + spec.regions.story.pitch, `the ring ${r} round the origin lines`); }
   m = go("down"); assert.deepEqual(m.map((x) => [x.t, x.target]), [["focus", "plate.0"]]); m = go("down"); assert.equal(m[0].target, "door"); m = go("down"); assert.equal(m[0].target, "cross"); m = go("right"); assert.equal(m[0].target, "wild"); m = go("down"); assert.equal(m[0].target, "tile." + b.shown.id, "the shown tile");
   m = go("up"); assert.equal(m[0].target, "resident"); withFocus(f, "resident"); assert.deepEqual(key(f, "left"), [], "the left edge stops");
 });
@@ -274,7 +276,7 @@ test("the Portrait picture: one node after the frame, at 920,316 resting and 920
     assert.deepEqual(f.pixel(918, 316 + dy), colour("sitting-frame-portrait-48x40:48x40"), "the frame's rail beside the window");
   }
   for (const [o, focus] of [[{ portrait: "portrayed" }, "resident"], [{ portrait: "held" }, "portrait"], [{}, "resident"]]) {
-    const b = scene({ ...o, focus }), f = await start(b), lg = logOf(f); assert.equal(b.props.regions.portrait.picture, ""); assert.ok(!reg(lg, "painted"), "no picture: nothing painted in the module's window"); assert.equal(f.objects(), objects[focus], `the node is always there: the same object count (${JSON.stringify(o)} ${focus})`);
+    const b = scene({ ...o, focus }), f = await start(b), lg = logOf(f); assert.equal(b.props.regions.portrait.picture, ""); assert.ok(!reg(lg, "painted"), "no picture: nothing painted in the module's window"); assert.equal(f.objects() + (o.portrait === "portrayed" ? 0 : 1), objects[focus], `the node is always there: the same object count, less the stamp's portrayed corner when not portrayed (${JSON.stringify(o)} ${focus})`);
     const dy = focus === "portrait" ? -2 : 0, fr = b.props.regions.portrait.frame.id ?? b.props.regions.portrait.frame; f.pass(3); assert.deepEqual(f.pixel(940, 330 + dy), colour(fr), "the frame's own window shows"); assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false), []);
   }
   const b = scene({ portrait: "portrayed", digest: D, focus: "resident" }), f = await start(b), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, false); };
@@ -298,4 +300,11 @@ test("a resident's ring is its footprint on the ground: the 4 px lift moves the 
   const lg = logOf(f) ?? f.lastLog, ring = lg.regions.find((q) => q.id === "focus" && q.layer === "chrome").rect, foot = footOf(pid, pic, () => null); assert.ok(foot, "the resident's picture has a footprint");
   assert.deepEqual(ring, footprintRing(foot, box), "the ring is the footprint of the unlifted box");
   const pr = lg.regions.find((q) => q.id === "resident" && q.layer !== "chrome"); assert.ok(pr && pr.rect[1] < box[1], "the picture itself has risen");
+});
+
+test("the stamp label's portrayed corner: portrayed, spread-gilt-corner-16x16 1:1 at (976, 64) in its own region stamp.portrayed, on the layer of its picture (habitat.json regions.stamp.portrayed); a sitting held or painting, none", { skip }, async () => {
+  const P = spec.regions.stamp.portrayed, corner = (lg) => lg.regions.find((r) => r.id === "stamp.portrayed");   // its layer is the picture's (the corner master is art)
+  const b = scene({ portrait: "portrayed", focus: "resident" }), f = await start(b), lg = logOf(f); assert.deepEqual(f.errors(), []); assert.equal(b.props.regions.card.stamp.corner, P.slice);
+  assert.deepEqual(corner(lg).rect, P.rect); assert.deepEqual([R.stamp.rect[0] + P.at[0], R.stamp.rect[1] + P.at[1]], P.rect.slice(0, 2), "at the label's top-right corner");
+  for (const o of [{ portrait: "held" }, {}]) { const c = scene({ ...o, focus: "resident" }), g = await start(c); assert.equal(c.props.regions.card.stamp.corner, ""); assert.equal(corner(logOf(g)), undefined, JSON.stringify(o)); }
 });

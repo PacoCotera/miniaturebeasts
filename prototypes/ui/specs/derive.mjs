@@ -101,7 +101,6 @@ export function evaluate(rule, node, args) {
     case "plateWidth": out.push(plateWidth(node, args[0])); break;
     case "platePosition": out.push(...platePosition(node, args[0], args[1], args[2] ? args.slice(3, 7) : null)); break;
     case "stampCell": out.push(stampCell(args[0], args[1], args[2])); break;
-    case "leafArc": { let boxes = null; try { boxes = leafArc(node, args[0]); } catch { /* refused */ } out.push(+!boxes, boxes ? boxes.length : 0); for (const b of boxes ?? []) out.push(...b); break; }
     case "listPitch": { let f = null, r = null; try { f = listForm(node, args[0]); r = listPitch(node, args[0], args[1]); } catch { /* refused */ } out.push(+!r, r ? f.upTo : 0, ...(r ?? [0, 0, 0, 0])); break; }
     case "plateIndex": out.push(plateSeries(node).indexOf(`${node.plate.series}-${plateWidth(node, args[0])}x${node.plate.h}`), plateSeries(node).length); break;
     default: throw new Error("unknown rule " + rule);
@@ -109,8 +108,6 @@ export function evaluate(rule, node, args) {
   return out;
 }
 
-// The Incubator's leaves on their arcs (incubator.json regions.leaves; lvgl-switch.md §2.3): n leaves fill the inner arc first, left to right, then the outer, each run centred on its arc's table:
-// the k leaves of a run take the slots perArc − k + 2j, j = 0 … k − 1, of the arc's table of 2·perArc − 1 positions. Returns the boxes [x, y, w, h]; more than 2 × perArc is refused.
 // A list's pitch (rule listPitch): item i of a grid stands at first + pitch · (column, row), row-major; with forms (`{ <name>: { upTo, first, pitch, grid } }`) n items take the form with the smallest upTo at least n. A form with no upTo, two forms with one
 // upTo, or a grid shorter than its upTo is refused (at load); an n no form holds, and an i outside 0..n−1, are refused. `placeRect` is the Pods rack's, the same rule with no forms.
 export const pitchRect = (t, i) => [t.first[0] + t.pitch[0] * (i % t.grid[0]), t.first[1] + t.pitch[1] * Math.floor(i / t.grid[0]), t.first[2], t.first[3]];
@@ -130,12 +127,6 @@ export function listForm(L, n) {
 export function listPitch(L, n, i) {
   const f = listForm(L, n); if (!Number.isInteger(i) || i < 0 || i >= n) throw new Error(`listPitch: item ${i} of ${n}`);
   return pitchRect(f, i);
-}
-export function leafArc(R, n) {
-  const L = R.leafArc, [lw, lh] = R.leaf;
-  if (!Number.isInteger(n) || n < 0 || n > 2 * L.perArc) throw new Error(`leafArc: ${n} leaves; the arcs hold ${2 * L.perArc}`);
-  const a = Math.min(n, L.perArc), b = n - a, run = (key, k) => Array.from({ length: k }, (_, j) => [...L[key][L.perArc - k + 2 * j], lw, lh]);
-  return [...run("inner", a), ...run("outer", b)];
 }
 
 // ---- the splice (prototypes/ui/specs/station/cross.json, station-layouts.md "Cross: the splice"): the oracle of the C layout rule splicePlan (L2.1) ----

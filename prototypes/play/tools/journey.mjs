@@ -4,7 +4,7 @@
 // Companion crate. It proves: A, the Row layout at 1x (every frame's box exact, both screens 1:1 on the page, also at dpr 1.25); B, the dock round trip with the keys, the landing rule and
 // the lift; C, the narrow tier; ST, the Stack and the dock round trip in it with the page scrolled (the Station wholly in view after the contact beat); M, the layouts and key minimums measured at 1280 x 720, 1440 x 900,
 // 1920 x 1080, 2560 x 1440 and 1440 x 900 at dpr 1.25 and 1.75 (each key's CSS box, the trays, the Companion never cut, both faces on whole device pixels); K, the Caddy's screen always shown; D, the figures it prints
-// (heaps, the face, main-thread time a frame); E, a change of device pixel ratio with no resize. Fails on any page error, any console error in any frame (a 404 for the optional build stamp or the Caddy service is not one) and any assertion.
+// (heaps, the face, main-thread time a frame); E, a change of device pixel ratio with no resize; Z, the size (fit, a chosen z of 2 in whole blocks, kept per browser) and the build stamp, outside ?test. Fails on any page error, any console error in any frame (a 404 for the optional build stamp or the Caddy service is not one) and any assertion.
 //   node prototypes/play/tools/journey.mjs          (PW_DIR=/path/with/node_modules/playwright when playwright is not local)
 //   PLAY_CAPTURES=1 node prototypes/play/tools/journey.mjs     also writes the captures of img/ (clipped to the page)
 import { createServer } from "node:http";
@@ -34,7 +34,7 @@ const near = (a, b, m, tol = 0.51) => expect(Array.isArray(a) ? a.every((v, i) =
 
 async function open(width, height, { dsf = 1, motion = false, query = "?test" } = {}) {
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: dsf, reducedMotion: motion ? "no-preference" : "reduce" });
-  await ctx.addInitScript(() => { if (!sessionStorage.getItem("play-journey")) { localStorage.setItem("mb-station-dev", '{"light":"day"}'); sessionStorage.setItem("play-journey", "1"); } });
+  await ctx.addInitScript(() => { if (!sessionStorage.getItem("play-journey")) { localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("play-journey", "1"); } });
   const page = await ctx.newPage();
   page.on("pageerror", (e) => { errors.push("pageerror: " + e.message); console.error("FAIL pageerror: " + e.message); });
   page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) { errors.push("console: " + m.text().slice(0, 200)); console.error("FAIL console: " + m.text().slice(0, 200)); } });
@@ -88,6 +88,7 @@ const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, {
   eq([await box(page, "#shStation"), await box(page, "#rowStation"), await box(page, "#shCompanion"), await box(page, "#rowCompanion")], [[187, 56, 1040, 616], [187, 672, 1040, 72], [1251, 56, 466, 616], [1251, 672, 466, 72]], "A: the shells and their joined trays");
   eq(await page.evaluate(() => [getComputedStyle(document.getElementById("fBench")).display, !!document.getElementById("fBench").getAttribute("src")]), ["none", false], "A: the workbench is hidden and not loaded");
   const sImg = rd(await page.screenshot({ clip: { x: 195, y: 64, width: 1024, height: 600 } })), sCap = dataPng(await st().evaluate(() => window.__st.capture()));
+  eq(await st().evaluate(() => window.__st.props?.regions?.bar?.clock), "12:00", "A: the bar's clock is the pinned Station time (a minute tick cannot differ a capture)");
   expect(sameImage(sImg, sCap), "A: the page's Station frame is pixel-equal to __st.capture() (1:1)");
   const cImg = rd(await page.screenshot({ clip: { x: 1259, y: 64, width: 450, height: 600 } })), cCap = dataPng(await mb().evaluate(() => window.__mb.capture()));
   expect(sameImage(cImg, cCap), "A: the page's Companion frame is pixel-equal to __mb.capture() (1:1)");
@@ -304,6 +305,60 @@ const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Res
   }
 }
 
+// ---- Z. the size (not under ?test): fit, the chosen z, the build stamp (viewport 1920 × 1080) ----
+// a face at z device px per lp: the frame's visible region against the capture, each capture pixel a z × z block; returns [differing, compared]
+async function zBad(page, sel, W, z, capture) {
+  const r = await box(page, sel), shot = rd(await page.screenshot({ scale: "device" })), cap = dataPng(await capture()), x0 = Math.round(r[0]), y0 = Math.round(r[1]);
+  let bad = 0, n = 0; for (let y = 0; y < 600 * z; y++) for (let x = 0; x < W * z; x++) { const sx = x0 + x, sy = y0 + y; if (sx < 0 || sy < 40 || sx >= shot.width || sy >= shot.height) continue; n++; const a = (sy * shot.width + sx) * 4, b = (Math.floor(y / z) * cap.width + Math.floor(x / z)) * 4; if (shot.data[a] !== cap.data[b] || shot.data[a + 1] !== cap.data[b + 1] || shot.data[a + 2] !== cap.data[b + 2]) bad++; }
+  return [bad, n];
+}
+{
+  const { ctx, page, st, mb } = await open(1920, 1080, { query: "?seed=3" });
+  const zs = () => page.evaluate(() => [__play.tier, __play.z, __play.fit, localStorage.getItem("mb-play-z"), document.getElementById("zFit").textContent]);
+  eq(await zs(), ["row", 1, true, null, "fit ×1"], "Z: fit at 1920 × 1080 (1×) is the Row at z 1");
+  eq(await box(page, "#fStation"), [195, 64, 1024, 600], "Z: at fit the Station frame is where ?test has it");
+  const ctl = await page.evaluate(() => ["zDown", "zFit", "zUp", "keysBtn", "dockCtl"].map((i) => { const b = document.getElementById(i).getBoundingClientRect(); return [i, b.left, b.width, b.height, getComputedStyle(document.getElementById(i)).display]; }));
+  expect(ctl.every((c) => c[3] === 40 && c[4] !== "none") && ctl[2][1] + ctl[2][2] <= 1920 - 160 && ctl[3][1] + ctl[3][2] <= ctl[0][1] && ctl[4][1] + ctl[4][2] <= ctl[3][1], "Z: the size control shows beside Keys ?, 40 tall, clear of Keys and the Dock " + JSON.stringify(ctl));
+  const stampAt = () => page.evaluate(() => { const s = document.getElementById("stamp"), b = s.getBoundingClientRect(), g = __play.geom, st = document.getElementById("stage").getBoundingClientRect(), sc = document.getElementById("stage").scrollTop, lows = ["shStation", "rowStation", "shCompanion", "rowCompanion", "cradle", "caddySheet"].map((i) => document.getElementById(i).getBoundingClientRect()).map((r) => r.bottom); return { text: s.textContent, display: getComputedStyle(s).display, top: b.top, bottom: b.bottom, lowest: Math.max(...lows), pageBottom: st.top + g.height - sc, textW: s.scrollWidth }; });
+  let sa = await stampAt();
+  eq([sa.text, sa.display], ["build local", "block"], "Z: the build stamp shows (no build.json here: build local)");
+  expect(sa.top >= sa.lowest - 0.01 && sa.bottom <= sa.pageBottom + 0.01, "Z: the stamp lies under every block, in the page's foot " + JSON.stringify(sa));
+  await clip(page, "play-fit-1920x1080.png");
+  await page.keyboard.press("Equal"); await page.waitForTimeout(400);
+  eq(await zs(), ["stack", 2, false, "2", "×2"], "Z: = chooses z 2: the Stack, kept in localStorage");
+  { const f = await box(page, "#fStation"), c = await box(page, "#fCompanion"); eq([f[2], f[3], c[2], c[3]], [2048, 1200, 900, 1200], "Z: at z 2 the frames are 2048 × 1200 and 900 × 1200 CSS px"); }
+  { const sw = await page.evaluate(() => [document.getElementById("stage").scrollWidth, document.getElementById("stage").clientWidth]); expect(sw[0] > sw[1], "Z: wider than the window at z 2, the page scrolls sideways " + JSON.stringify(sw)); }
+  { const [bad, n] = await zBad(page, "#fStation", 1024, 2, () => st().evaluate(() => window.__st.capture())); eq([bad, n > 1000000], [0, true], "Z: the Station at z 2: each face pixel a whole 2 × 2 block (differing device pixels, compared " + n + ")"); }
+  await page.evaluate(() => { const g = __play.geom.companion, s = document.getElementById("stage"); s.scrollTop = Math.max(0, g.y - 16); }); await page.waitForTimeout(200);
+  { const [bad, n] = await zBad(page, "#fCompanion", 450, 2, () => mb().evaluate(() => window.__mb.capture())); eq([bad, n > 500000], [0, true], "Z: the Companion at z 2: whole 2 × 2 blocks (differing device pixels, compared " + n + ")"); }
+  await page.evaluate(() => { const s = document.getElementById("stage"); s.scrollTop = 0; s.scrollLeft = 0; }); await page.waitForTimeout(200);
+  await clip(page, "play-z2-stack.png");
+  await page.evaluate(() => { const s = document.getElementById("stage"); s.scrollTop = s.scrollHeight; }); await page.waitForTimeout(200);
+  sa = await stampAt(); expect(sa.top >= sa.lowest - 0.01 && sa.bottom <= sa.pageBottom + 0.01, "Z: at z 2 the stamp is still under every block " + JSON.stringify(sa));
+  await page.keyboard.press("Minus"); await page.waitForTimeout(300); eq((await zs()).slice(0, 4), ["row", 1, false, "1"], "Z: − chooses z 1 (kept)");
+  await page.keyboard.press("Shift+Equal"); await page.waitForTimeout(300); eq((await zs()).slice(1, 4), [2, false, "2"], "Z: + (Shift+=) chooses z 2");
+  await page.reload({ waitUntil: "load" }); await page.waitForFunction(() => window.__play && window.__play.frames.station.contentWindow && window.__play.frames.station.contentWindow.__st, null, { timeout: 30000 }); await page.waitForTimeout(600);
+  eq((await zs()).slice(0, 4), ["stack", 2, false, "2"], "Z: a reload keeps the chosen z");
+  await page.click("#zFit"); await page.waitForTimeout(300); eq(await zs(), ["row", 1, true, null, "fit ×1"], "Z: fit clears the choice");
+  await page.click("#zUp"); await page.waitForTimeout(300); eq((await zs()).slice(1, 3), [2, false], "Z: the + button");
+  await page.click("#zDown"); await page.waitForTimeout(300); eq((await zs()).slice(1, 3), [1, false], "Z: the − button");
+  await page.goto(base + "?test", { waitUntil: "load" }); await page.waitForFunction(() => window.__play && window.__play.frames.station.contentWindow && window.__play.frames.station.contentWindow.__st, null, { timeout: 30000 }); await page.waitForTimeout(600);
+  await page.evaluate(() => localStorage.setItem("mb-play-z", "3")); await page.reload({ waitUntil: "load" }); await page.waitForFunction(() => window.__play && window.__play.frames.station.contentWindow, null, { timeout: 30000 }); await page.waitForTimeout(600);
+  eq(await page.evaluate(() => [__play.tier, __play.z, getComputedStyle(document.getElementById("zFit")).display, getComputedStyle(document.getElementById("stamp")).display]), ["row", 1, "none", "none"], "Z: ?test keeps today's layout whatever is stored (z = k, no size control, no stamp)");
+  await page.keyboard.press("Equal"); await page.waitForTimeout(300); eq(await page.evaluate(() => __play.z), 1, "Z: ?test: = does not change the size");
+  await ctx.close();
+}
+
+{
+  // the stamp with a build.json, in a viewer's zone far from Mexico City: the time is Mexico City's
+  const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, reducedMotion: "reduce", timezoneId: "Asia/Tokyo" });
+  await ctx.route(/\/build\.json(\?|$)/, (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ commit: "a9d087f9aa00", short: "a9d087f", built: "2026-10-24T03:07:00Z" }) }));
+  const page = await ctx.newPage(); page.on("pageerror", (e) => { errors.push("pageerror: " + e.message); console.error("FAIL pageerror: " + e.message); });
+  await page.goto(base, { waitUntil: "load" }); await page.waitForFunction(() => document.getElementById("stamp").textContent !== "build local", null, { timeout: 10000 }).catch(() => {});
+  eq(await page.evaluate(() => document.getElementById("stamp").textContent), "build a9d087f · 2026-10-23 21:07 Mexico City", "Z: the stamp reads build.json in Mexico City time (the viewer in Tokyo)");
+  await ctx.close();
+}
+
 // ---- K. the Caddy's screen: always shown in its own 808 × 288 block, redrawn only when its lines change; Shift+C is retired (1920 × 1080, the Row) ----
 {
   const { ctx, page, st } = await open(1920, 1080, { query: "?test&seed=3" });
@@ -328,7 +383,9 @@ const MIN = { Left: 56, Up: 56, Down: 56, Right: 56, Home: 56, Vivarium: 56, Res
 
 // ---- the standalone Station page's own Dock control (the round key is gone), for the capture ----
 {
-  const ctx = await browser.newContext({ viewport: { width: 1360, height: 900 }, reducedMotion: "reduce" }); const page = await ctx.newPage();
+  const ctx = await browser.newContext({ viewport: { width: 1360, height: 900 }, reducedMotion: "reduce" });
+  await ctx.addInitScript(() => { if (!sessionStorage.getItem("play-journey")) { localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("play-journey", "1"); } });   // the Station's clock pinned, as in open()
+  const page = await ctx.newPage();
   page.on("pageerror", (e) => { errors.push("pageerror: " + e.message); console.error("FAIL pageerror: " + e.message); });
   await page.goto(base.replace("/play/", "/station/") + "?test", { waitUntil: "load" }); await page.evaluate(() => window.__st.ready); await page.waitForTimeout(500);
   await page.evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);

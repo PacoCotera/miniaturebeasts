@@ -2,8 +2,8 @@
 // words with no icons, `icons` the materials a short step lacks (space-separated), `plain` the nameless sibling of a key with {name} ("" where it has none): the face measures text and icons against its room and draws `plain` when they pass it.
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
+import { fill } from "./words.mjs";
 
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const speciesWord = (id) => (id && frameOf(id)?.species.name) || "";
 const article = (w) => S.aAn(w).split(" ")[0];
 // goal: goalKey's result (not null); docked: whether the Companion is docked; frame: frame.json.

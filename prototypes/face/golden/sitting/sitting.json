@@ -1,0 +1,53 @@
+{
+ "_note": "The sitting (S01 adult Dot, noon, reduced motion unless timed): the pose step (three habits, the curl, one habit, a juvenile), the place step (two places, at night, five places), the confirm step (at rest, armed), begin at 150 ms (motion on, virtual clock), the portrait (the test card at 528×392) and a long name: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "states": {
+  "sitting-pose": {
+   "hash": "91d39edd",
+   "png": "sitting-pose.png"
+  },
+  "sitting-pose-curl": {
+   "hash": "c452d4a5",
+   "png": "sitting-pose-curl.png"
+  },
+  "sitting-pose-one": {
+   "hash": "f0f513b8",
+   "png": "sitting-pose-one.png"
+  },
+  "sitting-pose-juvenile": {
+   "hash": "86e60ee7",
+   "png": "sitting-pose-juvenile.png"
+  },
+  "sitting-place": {
+   "hash": "3acbd67f",
+   "png": "sitting-place.png"
+  },
+  "sitting-place-night": {
+   "hash": "3acbd67f",
+   "png": "sitting-place-night.png"
+  },
+  "sitting-place-five": {
+   "hash": "e53d28eb",
+   "png": "sitting-place-five.png"
+  },
+  "sitting-confirm": {
+   "hash": "3b89d2f6",
+   "png": "sitting-confirm.png"
+  },
+  "sitting-confirm-armed": {
+   "hash": "58c10bfb",
+   "png": "sitting-confirm-armed.png"
+  },
+  "sitting-portrait": {
+   "hash": "586fdffc",
+   "png": "sitting-portrait.png"
+  },
+  "sitting-portrait-long-name": {
+   "hash": "10bfe20d",
+   "png": "sitting-portrait-long-name.png"
+  },
+  "sitting-begin-150ms": {
+   "hash": "b9797af4",
+   "png": "sitting-begin-150ms.png"
+  }
+ }
+}

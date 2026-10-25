@@ -18,6 +18,7 @@ import { vivariumStates } from "./vivarium-states.mjs";
 import { habitatStates } from "./habitat-states.mjs";
 import { libraryStates } from "./library-states.mjs";
 import { benchStates } from "./bench-states.mjs";
+import { sittingStates } from "./sitting-states.mjs";
 
 const golden = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golden"), check = process.argv.includes("--check");
 const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' goldens" }, home: { states: homeStates, prefix: "", note: "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones)" },
@@ -26,8 +27,9 @@ const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' gold
   incubator: { states: incubatorStates, prefix: "", note: "The Incubator's goldens: empty, growing (early, late), ready, the hatch at seven instants, growNow at two, and the frame after ✓ Skip" },
   habitat: { states: habitatStates, prefix: "", note: "One mibi up close: rest, the meet (and its placeholder), out with the Companion, the card, a plate focused, the Companion module (a request waiting, away), Cross, Portrait, the Wild gate armed, a tile focused, twelve compact tiles, the four lights and the namer over it (opened, typed, the accents page, a refusal, empty, full)" },
   vivarium: { states: vivariumStates, prefix: "", note: "The Vivarium's whole: docked (the carried two asleep), away, an out mibi's tile focused, empty, a housed tile and a sleeper focused, twelve residents, and the walk 8000 ms in" },
-  library: { states: libraryStates, prefix: "", note: "The Library spread: the wireframe scene (ring on a found frame), a fresh world, the ring over a portrayed and complete frame (gilt and seal), and the Book shut: ✓ on a found frame, the plate 400 ms into its 4 s event, motion on, virtual clock" },
+  library: { states: libraryStates, prefix: "", note: "The Library. Level 1: only the Loika met, a mid-game catalogue (the wish alone on a found species and beside the Loika's face chip), glints and three new looks, the room key (the ring on the last species visited), and the Home to Level 1 dither at its midpoint (motion on, virtual clock). Level 2: the Loika at mid, its Coat lit with its page, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat lit complete, the Blikur and the Loika late (colour chips). Level 3, far: a Loika lineage of two blocks (the ring on Moss) and of one (on Dot); close: on Moss, links leaving every edge, a tree that fits the view, a pan's three steps (motion on, virtual clock) and FAR to CLOSE at the dither's midpoint" },
   bench: { states: benchStates, prefix: "", note: "The Probe bench: docked with the ring on the plates, the upgrade armed, the Probe away, and the upgrade fitted" },
+  sitting: { states: sittingStates, prefix: "", note: "The sitting (S01 adult Dot, noon, reduced motion unless timed): the pose step (three habits, the curl, one habit, a juvenile), the place step (two places, at night, five places), the confirm step (at rest, armed), begin at 150 ms (motion on, virtual clock), the portrait (the test card at 528×392) and a long name" },
   idle: { states: idleStates, prefix: "", note: "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk" } };
 const want = process.argv.slice(2).filter((a) => SCREENS[a]), run = want.length ? want : Object.keys(SCREENS);
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
@@ -38,6 +40,7 @@ for (const screen of run) {
     if (opts?.captureOnly) return;   // a capture state (fix 14), not a golden
     const a = await page.evaluate(() => window.__st.snapshot({ capture: true }));
     if (a.errors.length || a.refused) fail(name + ": errors " + a.errors.join("; ") + " refused " + a.refused);
+    if (a.owed?.length) fail(name + ": shows an owed habit key (" + a.owed.join(", ") + ")");   // a pose whose habit has no signed key draws the derived stand: never a golden
     if (screen === "pods" || !/pressed|arriving/.test(name)) { const b = await page.evaluate(() => window.__st.snapshot({ capture: true })); if (a.hash !== b.hash) fail(name + ": drawn twice, two hashes (" + a.hash + ", " + b.hash + "): the state is not deterministic"); }
     got[name] = { hash: a.hash, png: prefix + slug(name) + ".png" };
     if (name === "create-roll-100" || name === "create-shape-changed") pngs[name] = a.png;

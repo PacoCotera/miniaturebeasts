@@ -13,10 +13,18 @@ import { goalWords } from "./goal-words.mjs";
 import { readyCrates, bayState } from "../sitting.mjs";
 import { paintingOf } from "./idle-props.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
+import { fill, count, plural, capLine } from "./words.mjs";
+import { req as reqOf, ph as phOf, slotAt } from "./requests.mjs";
 
-const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
-const COUNT = ["", "a", "two", "three", "four", "five", "six"];
-const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
+// The Library module's region and the request that makes its specimen (build spec 4.2) come from the specimen painter (views/specimen-props.mjs), which the host registers here: the painter stays out of what the intents import
+// (they are DOM-free and run as a Node program, intents.test.mjs), and a build with none registered shows the Library's placeholder.
+let library = () => ({ region: {}, request: null });
+export const setLibrary = (fn) => { library = fn; };
+// The species Home's Library module is for (specimen-props.mjs specimenSpecies, the starter's while nothing is found), which the host registers beside the painter; null with none registered: where ✓ on the Library bezel puts the Library's ring
+let speciesOfLibrary = () => null;
+export const setLibrarySpecies = (fn) => { speciesOfLibrary = fn; };
+export const librarySpecies = (st, settings) => speciesOfLibrary(st, settings);
+
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
 // A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<genome digest>:<juvenile|adult|elder>:<w>x<h>
 export const mibiPictureId = (digest, stage, [w, h], light = "day") => `mibi:${digest}:${stage}:${w}x${h}${light === "day" ? "" : ":" + light}`;   // fix 7: a graded resident names its light (dawn, dusk, night); at day the id is the master's own, unchanged
@@ -25,15 +33,17 @@ export const lookOf = (st, mb, size, settings) => standLook(S.speciesOf(mb), S.m
 // the picture's id and the stage and size it is drawn at, for every caller that names a mibi's picture (the views' requests and the host's swap dither); the light is the scene's (fix 7), the grade's source the master drawn
 // A species with a layered stand at the place (layered-stand.mjs) draws each mibi as itself: the picture is the stand's variant for the mibi's drawn looks (looks.mjs drawnLooks), named by that variant, so two mibis with the same looks
 // are one picture and a child that is read later is a new one; the request carries the looks. Every other stand is the species' own, named by the genome's digest, as before.
-export const mibiPictureOf = (st, mb, size, settings, light = "day", view = "default") => {
-  const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view);
+// A pose (layered-stand.mjs poseFor) is the pose's name, or poseFor's { pose, owed } itself; the anchor by default. A pose that is not the anchor is part of the stand's variant, so of the id.
+const poseName = (pose) => (typeof pose === "string" ? pose : pose?.pose ?? "anchor");
+export const mibiPictureOf = (st, mb, size, settings, light = "day", view = "default", pose = "anchor") => {
+  const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
   if (stand) { const looks = drawnLooks(frameOf(sp), mb); return { id: standPictureId(stand, looks, light), stage: grown, size: [...stand.size], looks }; }
   const { stage, size: drawn } = lookOf(st, mb, size, settings);
   return { id: mibiPictureId(genomeDigest(mb.genome), stage, drawn, light), stage, size: drawn };
 };
 // A standing mibi's figure, [dx, dy, W, H]: the drawn bbox of its composed figure in its picture, or null when the picture is not a layered stand
-export const figureOf = (st, mb, size, settings, view = "default") => {
-  const sp = S.speciesOf(mb), stand = layeredStand(sp, mb.stage ?? S.mibiStage(st, mb, settings), size, view); if (!stand) return null;
+export const figureOf = (st, mb, size, settings, view = "default", pose = "anchor") => {
+  const sp = S.speciesOf(mb), stand = layeredStand(sp, mb.stage ?? S.mibiStage(st, mb, settings), size, view, poseName(pose)); if (!stand) return null;
   return standFigure(stand, drawnLooks(frameOf(sp), mb));
 };
 // A sleeper's curl at the world size: the nap master reduced by the standing figure's factor for its stage, with its own shadow. { id, figure, request } when the nap master is placed; else null (the 96 × 88 nap picture as it was)
@@ -45,14 +55,15 @@ export function curlOfMibi(st, mb, nap, slot, settings, light, view) {
   const ms = look.stage === "juvenile" ? "juvenile" : "adult", day = `mibi:${sp}~${keyToken(`curl|${master}|${view}|${f}`)}:${ms}:${pic.w}x${pic.h}`;
   return { id: day + (light === "day" ? "" : ":" + light), figure: pic.figure, request: { kind: "curl", id: day + (light === "day" ? "" : ":" + light), day, master, species: sp, stage: look.stage, view, factor: f, ...(light === "day" ? {} : { light }) } };
 }
-export const mibiReq = (req, st, mb, size, settings, light = "day", view = "default") => { const p = mibiPictureOf(st, mb, size, settings, light, view); return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size, ...(p.looks ? { looks: p.looks, view } : {}), ...(light === "day" ? {} : { light }) }); };
+// The request carries the pose only when it is not the anchor, and `owed` (poseFor's "habit key <habit>") when the pose given has one: a scene showing it is refused as a golden (main.mjs snapshot)
+export const mibiReq = (req, st, mb, size, settings, light = "day", view = "default", pose = "anchor") => { const p = mibiPictureOf(st, mb, size, settings, light, view, pose), name = poseName(pose), owed = typeof pose === "string" ? null : pose?.owed; return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size, ...(p.looks ? { looks: p.looks, view } : {}), ...(light === "day" ? {} : { light }), ...(name !== "anchor" ? { pose: name } : {}), ...(owed ? { owed } : {}) }); };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
 // The notice and the action of a need, from strings.needs. A count is spelled to the picture's most; above it the count is dropped.
 export function wordsOf(need, spec) {
   if (!need) return { notice: "", action: null };
-  const N = spec.strings.needs[need.key], word = need.n != null && need.n >= 1 && need.n <= need.max ? COUNT[need.n] : "";
+  const N = spec.strings.needs[need.key], word = need.n != null && need.n >= 1 && need.n <= need.max ? count(need.n) : "";
   let notice = need.n === 1 && N.noticeOne ? N.noticeOne : N.notice;
   const vals = { count: word, name: need.name, a: need.a, species: need.species };
   if (need.short && N.short) notice = N.short;
@@ -151,8 +162,8 @@ function couldIncubate(st, settings) {
 // The Vivarium window's people (build spec section 3): the residents at home that walk, at most six (more: the mibi being met, ui.meet, first, then the newest of born and grown up, ties in bay order),
 // in bay order; the picture of the light; the one event tag (ui.meet: born or grown up); the first mibi out on a trip in the away frame, its stand's figure at its world size.
 function glassOf(m, spec, frame, housed, requests) {
-  const { st, sv, settings } = m, R = spec.regions, light = m.light ?? "day", docked = !!m.docked, req = (r) => { requests.push(r); return r.id; };
-  const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (station-layouts.md, The Vivarium: the whole)" });
+  const { st, sv, settings } = m, R = spec.regions, light = m.light ?? "day", docked = !!m.docked, req = reqOf(requests);
+  const ph = phOf(req, "its master (station-layouts.md, The Vivarium: the whole)");
   const lw = livingOf({ st, sv, settings, docked, light, view: "home", noBed: true, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, { resident: R.resident, bed: { sleepers: { ink: { max: R.resident.asleep.ink } } } }, req, ph, frame.light);
   const meet = m.ui?.meet != null ? String(m.ui.meet) : null, bayOf = new Map(housed.map((mb) => [String(mb.id), mb.bay]));
   // the newest life event: born, or grown up (born + adultTurns, derived: no field stores it) once that has come; the mibi being met always first; ties in bay order
@@ -168,10 +179,10 @@ function glassOf(m, spec, frame, housed, requests) {
 
 // m: { st, sv, settings, docked, ui, focus: id | null, time (seconds of the day), date { y, m, d }, now (ms), place, spec home.json, frame frame.json }
 export function homeBuild(m, spec, frame) {
-  const { st, sv, settings } = m, now = m.now ?? Date.now(), Sg = spec.strings, T = Sg.stations, docked = !!m.docked, fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
+  const { st, sv, settings } = m, now = m.now ?? Date.now(), Sg = spec.strings, T = Sg.stations, docked = !!m.docked;
   const needs = homeNeeds(st, sv, settings, m.ui ?? {}, now), requests = [];
   // the stations: the lines and the lamp
-  const req = (r) => { requests.push(r); return r.id; }, slot = (master, size) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: "its master (build spec section 9)" });
+  const req = reqOf(requests), slot = (master, size) => slotAt(req, master, [0, 0, ...size], "its master (build spec section 9)");
   const pods = (() => {
     const n = st.tray.length, seen = new Set(st.tray.filter((q) => q.idd || st.knownIds.includes(S.speciesOf(q))).map((q) => S.speciesOf(q))), k = seen.size;
     const amber = st.tray.some((p) => !p.idd && !p.seen) || st.tray.some((p) => S.podGlints(st, p));
@@ -192,23 +203,32 @@ export function homeBuild(m, spec, frame) {
   const bay = (() => {
     const cs = docked ? S.bayCrates(st, sv) : [], bs = bayState(st, sv, settings, now), B = T.bay, trips = new Set(cs.map((c) => c.turn)).size;   // bayState: the walk crates while docked and the portrait crates that are ready; amber when anything waits
     const waiting = cs.length > 0 || bs.sitting > 0, rc0 = readyCrates(st, settings, now)[0], pname = rc0 ? S.mibiById(st, rc0.mibiId)?.name ?? "" : "";
-    return { state: waiting ? "waiting" : "clear", berths: bs.sitting ? 4 : 3, crates: Math.min(cs.length, 3), pictures: { shut: slot("berth-shut-26x24", [26, 24]), crate: slot("berth-crate-26x24", [26, 24]), portrait: slot("berth-portrait-18x24", [18, 24]) }, line1: cs.length ? fill(cs.length === 1 ? B.waitingOne : B.waiting, { n: cs.length }) : bs.sitting ? B.portrait : B.clear, line2: cs.length ? (trips <= 1 ? B.lastTrip : fill(B.trips, { n: trips })) : bs.sitting ? (pname ? fill(B.portraitName, { name: pname }) : B.portraitNoName) : "", lamp: bs.amber ? "needsYou" : "off" };
+    return { state: waiting ? "waiting" : "clear", berths: bs.sitting ? 4 : 3, crates: Math.min(cs.length, 3), pictures: { shut: slot("berth-shut-26x24", [26, 24]), crate: slot("berth-crate-26x24", [26, 24]), portrait: slot("berth-portrait-18x24", [18, 24]) }, line1: cs.length ? fill(plural(cs.length, B.waitingOne, B.waiting), { n: cs.length }) : bs.sitting ? B.portrait : B.clear, line2: cs.length ? (trips <= 1 ? B.lastTrip : fill(B.trips, { n: trips })) : bs.sitting ? (pname ? fill(B.portraitName, { name: pname }) : B.portraitNoName) : "", lamp: bs.amber ? "needsYou" : "off" };
   })();
   // the windows: the Vivarium's readout (each part only when non-zero; "all on a trip" when nobody is home)
   const housed = S.housed(st), onTrip = housed.filter((mb) => S.isAway(st, sv, mb)).length, atHome = housed.length - onTrip, R = Sg.readout;
   const readout = !housed.length ? "" : atHome === 0 ? R.allTrip : [atHome ? fill(R.home, { n: atHome }) : "", onTrip ? fill(R.trip, { m: onTrip }) : ""].filter(Boolean).join(R.sep);
   // the focus: the six targets, the ring on `cur` or nowhere
   const living = glassOf(m, spec, frame, housed, requests);
+  const lib = library(st, settings, spec); if (lib.request) { requests.push(lib.request); requests.push({ kind: "star", id: "star:12" }); }   // the Library's specimen (build spec 4.2) and the glint on a bead found since it was last opened
   const targets = ["vivarium", "library", "pods", "incubator", "companion", "bay"].map((id) => ({ id, group: id }));
   const cur = m.focus && targets.some((t) => t.id === m.focus) ? m.focus : "room";
   const line = lineOf(m, spec, frame, { cur, needs, docked, companion });
-  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: {}, glass: living.glass, residents: living.residents, pods, incubator, companion, bay };
+  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: lib.region, glass: living.glass, residents: living.residents, pods, incubator, companion, bay };
   return { props: { state: "home", regions, focus: { cur, targets } }, requests, needs, targets };
 }
 
 // ---- the line (home.json strings.line) ----
 // At rest: the needs (at most two: the first by its action with the ✓ cap, the second by its notice), else the goal. On a target: its verb, and its subject if it has one. The Companion away has no verb: it says it is on a trip.
+// Each zone of the line is a line of its own and takes its capital (capLine): the action, the notice, the goal, the note and the verb.
 function lineOf(m, spec, frame, v) {
+  const line = lineWords(m, spec, frame, v);
+  if (line.needs) line.needs = line.needs.map(capLine);
+  if (line.goal) line.goal = { ...line.goal, text: capLine(line.goal.text), plain: capLine(line.goal.plain) };
+  for (const k of ["note", "verb"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);
+  return line;
+}
+function lineWords(m, spec, frame, v) {
   const Sg = spec.strings, { cur } = v;
   if (cur === "room") {
     const W = { strings: { needs: Sg.line.needs } };   // Home's own table: each need's action (the first) and notice (the second), the counts spelled

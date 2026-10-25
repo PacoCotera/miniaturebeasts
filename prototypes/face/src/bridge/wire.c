@@ -119,7 +119,7 @@ static int on_spec(const msg_t *m) {
   { char why[200]; if (screens_vet_spec(screen, why, sizeof why) < 0) { spec_drop(screen); return fail(why); } }   /* a spec that names a word wrongly is refused whole, never improvised */
   return 0;
 }
-int wire_asset_slot(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
+int wire_asset_slot(const char *id) { if (!id || !id[0]) return -1; /* "" marks a free slot of the table (a drop clears the id to it): no picture binds under it */ for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
 static int g_slice[256][4], g_tile[256], g_has_slice[256];
 int wire_asset_nine(int slot, int insets[4], int *tile) { if (slot < 0 || slot >= 256 || !g_has_slice[slot]) return 0; memcpy(insets, g_slice[slot], sizeof g_slice[slot]); if (tile) *tile = g_tile[slot]; return 1; }
 /* a creature picture's footprint (fix 14, FR4): [x, feetY, w] relative to the picture, or { stand?, curl?, shadow? } each [x, feetY, w] relative to its cell, as the host measured it (derive.mjs footprintOf) */
@@ -134,7 +134,7 @@ static int read_foot(const msg_t *m, int t, int cellw, int h, int out[3]) {   /*
 static int slot_of(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
 static int on_asset(const msg_t *m) {
   char id[96]; int w = 0, h = 0, drop = flag(m, key(m, "drop"));
-  if (!str(m, key(m, "id"), id, sizeof id)) return fail("asset: id is required");
+  if (!str(m, key(m, "id"), id, sizeof id) || !id[0]) return fail("asset: id is required");   /* "" marks a free slot, so it names no picture */
   if (drop) { int s = slot_of(id); if (s >= 0) { prim_asset_free(s); g_ids[s][0] = 0; } return 0; }   /* a slot is released by name: the host recycles its least recently used picture this way */
   if (!num(m, key(m, "w"), &w) || !num(m, key(m, "h"), &h)) return fail("asset: w and h are required");
   char src[8]; if (!str(m, key(m, "src"), src, sizeof src)) strcpy(src, "heap");
@@ -173,10 +173,27 @@ static int on_asset(const msg_t *m) {
   }
   g_last_asset = slot; return 0;
 }
+/* an array of 1 to max integers at token t into out: its length, or 0 when it is not one */
+static int ints(const msg_t *m, int t, int *out, int max) {
+  if (t < 0 || m->tok[t].type != JSMN_ARRAY || m->tok[t].size < 1 || m->tok[t].size > max) return 0;
+  for (int k = 0; k < m->tok[t].size; k++) if (!num(m, t + 1 + k, &out[k])) return 0;
+  return m->tok[t].size;
+}
+/* a pan (anim.h anim_add_pan): { kind: "pan", target, from: [x, y], to: [x, y], steps: [ms, ...], frac: [%, ...] }, steps and frac of one length */
+static int on_pan(const msg_t *m) {
+  char target[48] = ""; int from[2], to[2], steps[ANIM_STEPS], frac[ANIM_STEPS];
+  if (key(m, "target") >= 0 && !str(m, key(m, "target"), target, sizeof target)) return fail("event: target must be a string of at most 47 bytes");
+  if (ints(m, key(m, "from"), from, 2) != 2 || ints(m, key(m, "to"), to, 2) != 2) return fail("event: a pan's from and to are [x, y], whole pixels");
+  int n = ints(m, key(m, "steps"), steps, ANIM_STEPS); if (!n || ints(m, key(m, "frac"), frac, ANIM_STEPS) != n) return fail("event: a pan's steps and frac are lists of 1 to 4 whole numbers, one frac a step");
+  if (key(m, "hold") >= 0) { int hold; if (!num(m, key(m, "hold"), &hold) || hold != 0) return fail("event: a pan holds no input (hold 0)"); }
+  if (anim_add_pan(target, from, to, steps, frac, n, spec_bool("props", "motion", 1)) < 0) return fail("event: a pan's steps start at 0 and rise, its frac rise to 100 (or the face holds 24 events at once)");
+  g_nevents++; g_dirty_log = 1; screens_redraw(); return 0;
+}
 static int on_event(const msg_t *m) {
   char k[24]; if (!str(m, key(m, "kind"), k, sizeof k)) return fail("event: kind is required");
   int kind = anim_kind(k);
   if (kind < 0) { char b[80]; snprintf(b, sizeof b, "event: unknown kind %s", k); return fail(b); }
+  if (kind == ANIM_PAN) return on_pan(m);
   int ms = 0, from = 0, to = 0; char target[48] = "";
   if (key(m, "ms") >= 0 && !num(m, key(m, "ms"), &ms)) return fail("event: ms must be a number");
   char from_id[96] = "";
@@ -211,7 +228,8 @@ static int on_props(const msg_t *m, int len) {
   if (!str(m, key(m, "screen"), screen, sizeof screen)) return fail("props: screen is required");
   char state[16] = ""; str(m, key(m, "state"), state, sizeof state);
   int unbuilt = flag(m, key(m, "idle")) || strcmp(state, "notBuilt") == 0;   /* a screen with no binding table needs no spec: the frame's notBuilt composition draws it */
-  if (!unbuilt && !spec_has(screen)) { char b[96]; snprintf(b, sizeof b, "props for the screen %s, whose spec is not loaded", screen); return fail(b); }
+  char sspec[32]; snprintf(sspec, sizeof sspec, "%s", screen); { char *dot = strchr(sspec, '.'); if (dot) *dot = 0; }   /* a level of a screen (library.species) is drawn from its screen's spec (library) */
+  if (!unbuilt && !spec_has(sspec)) { char b[96]; snprintf(b, sizeof b, "props for the screen %s, whose spec is not loaded", screen); return fail(b); }
   if (g_seq_set && (uint32_t)seq < g_seq) return fail("props: seq went back");
   { int ov = key(m, "overlay");   /* an overlay (the namer): only on a screen whose spec lists it, whose own spec is an overlay over this screen, with a binding table in the face; refused whole, the previous props stay */
     if (ov >= 0) {

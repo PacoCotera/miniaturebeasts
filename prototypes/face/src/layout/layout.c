@@ -133,18 +133,6 @@ int layout_list_pitch(const char *spec, const char *path, int n, int i, int out[
   pitch_rect(spec, base, i, out); return up;
 }
 int layout_list_form(const char *spec, const char *path, int n, char *name, int cap) { char base[400]; return list_form(spec, path, n, base, sizeof base, name, cap); }
-int layout_leaf_arc(const char *spec, const char *region, int n, int out[LAYOUT_LEAVES][4]) {
-  char base[300]; snprintf(base, sizeof base, "%s.leafArc", region); int per = ip(spec, base, "perArc", 20), lw = ia(spec, region, "leaf", 0, 16), lh = ia(spec, region, "leaf", 1, 20);
-  if (n < 0 || n > 2 * per || n > LAYOUT_LEAVES) return -1;
-  { char t[330]; snprintf(t, sizeof t, "%s.inner", base); if (spec_len(spec, t) != 2 * per - 1) return -1; snprintf(t, sizeof t, "%s.outer", base); if (spec_len(spec, t) != 2 * per - 1) return -1; }   /* each arc holds 2·perArc − 1 slots, no other length */
-  int a = n < per ? n : per;
-  for (int i = 0; i < n; i++) {
-    int arc = i >= a, k = arc ? n - a : a, j = arc ? i - a : i, slot = per - k + 2 * j; char t[330]; snprintf(t, sizeof t, "%s.%s", base, arc ? "outer" : "inner");
-    { char q[360]; snprintf(q, sizeof q, "%s.%d.0", t, slot); out[i][0] = spec_int(spec, q, 0); snprintf(q, sizeof q, "%s.%d.1", t, slot); out[i][1] = spec_int(spec, q, 0); }
-    out[i][2] = lw; out[i][3] = lh;
-  }
-  return n;
-}
 int layout_eval(const char *rule, const char *spec, const char *path, const int *a, int na, int *out, int cap) {
   int k = 0;
 #define PUSH(v) do { if (k < cap) out[k] = (v); k++; } while (0)
@@ -172,8 +160,6 @@ int layout_eval(const char *rule, const char *spec, const char *path, const int 
   } else if (strcmp(rule, "plateIndex") == 0 && na >= 1) {   /* the place of the width's id in the series, and the series' length */
     int w = layout_plate_width(spec, path, a[0]), mn = ip(spec, path, "plate.min", 0), mx = ip(spec, path, "plate.max", 0), st = ip(spec, path, "plate.round", 1);
     PUSH((w - mn) / st); PUSH((mx - mn) / st + 1);
-  } else if (strcmp(rule, "leafArc") == 0 && na >= 1) {
-    int b[LAYOUT_LEAVES][4], n = layout_leaf_arc(spec, path, a[0], b); PUSH(n < 0); PUSH(n < 0 ? 0 : n); for (int i = 0; i < n; i++) for (int j = 0; j < 4; j++) PUSH(b[i][j]);
   } else if (strcmp(rule, "listPitch") == 0 && na >= 2) {
     int b[4], up = layout_list_pitch(spec, path, a[0], a[1], b); PUSH(up < 0); PUSH(up < 0 ? 0 : up); for (int j = 0; j < 4; j++) PUSH(b[j]);
   } else if (strcmp(rule, "stampCell") == 0 && na >= 3) {
