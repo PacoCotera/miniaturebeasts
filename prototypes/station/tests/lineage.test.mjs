@@ -9,14 +9,14 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as T from "../src/sitting.mjs";
-import { parentsOf, generation, crossDepth, lineageOf, targetsOf, resolveOf, fitsClose, camAt } from "../src/lineage.mjs";
+import { nameBelow, extentOf, parentsOf, generation, crossDepth, lineageOf, targetsOf, resolveOf, fitsClose, camAt, walkMemo, closeRect, inView, panFor, panSteps, slotsOf, camOffset, camFromOffset, overviewBox } from "../src/lineage.mjs";
 import { bodyColour, farGeometry, miniGeometry, farPicture, miniPicture } from "../src/lineage-pictures.mjs";
 import { lineageInput } from "../src/views/library-props.mjs";
 import { buildLineage } from "./fixtures/lineage.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const spec = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/library.json"), "utf8")), L3 = spec.l3, GAP = L3.block.gap;
+const spec = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/library.json"), "utf8")), L3 = spec.l3, GAP = L3.block.gap, BELOW = nameBelow(L3.close, JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/frame.json"), "utf8")));
 const palette = Object.fromEntries(JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours.map(([n, h]) => [n, [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))]));
 const rgb = (n) => palette[n];
 const world = (which = "full") => { const st = S.freshSt("w1", 3, 1e6); S.normalize(st); st.turn = 20; const by = buildLineage(st, which, { turn: 20 }); return { st, by, lin: lineageOf(st, "S01", { gap: GAP }) }; };
@@ -133,11 +133,15 @@ test("the selectors in FAR and in CLOSE: node.parent the first recorded parent; 
 
 test("CLOSE's fit: the full lineage exceeds the view (← from close goes to FAR); a small family fits; the entry camera centres the node in the comfort zone; zoom-in puts it where its FAR dot was, clamped", () => {
   const { lin, by } = world(), small = lineageOf((() => { const st = S.freshSt("w1", 3, 1e6); S.normalize(st); const a = born(st, "Ash", null), b = born(st, "Elm", null); born(st, "Yew", [a, b]); return st; })(), "S01", { gap: GAP });
-  assert.equal(fitsClose(lin, L3.close), false); assert.equal(fitsClose(small, L3.close), true); assert.equal(fitsClose(world("one").lin, L3.close), false, "eight siblings are wider than the view");
-  const C = L3.close, m = nodeOf(lin, "node." + by.Moss.id), cam = camAt(lin, "node." + by.Moss.id, C), wx = C.grid.x0 + m.u * C.grid.du, wy = C.grid.y0 + m.row * C.grid.drow, z = C.comfort;
+  assert.equal(fitsClose(lin, L3.close, BELOW), false); assert.equal(fitsClose(small, L3.close, BELOW), true); assert.equal(fitsClose(world("one").lin, L3.close, BELOW), false, "eight siblings are wider than the view");
+  const C = L3.close, m = nodeOf(lin, "node." + by.Moss.id), cam = camAt(lin, "node." + by.Moss.id, C, null, BELOW), wx = C.grid.x0 + m.u * C.grid.du, wy = C.grid.y0 + m.row * C.grid.drow, z = C.comfort;
   assert.deepEqual([wx - cam[0], wy - cam[1]], [z[0] + z[2] / 2, z[1] + z[3] / 2], "centred in the comfort zone");
   const g = farGeometry(lineageInput(world().st, lin), spec), d = g.boxes["node." + by.Moss.id], dot = [L3.far.rect[0] + d[0] + d[2] / 2, L3.far.rect[1] + d[1] + d[3] / 2];
-  const c2 = camAt(lin, "node." + by.Moss.id, C, dot), s = [wx - c2[0], wy - c2[1]];
+  const c2 = camAt(lin, "node." + by.Moss.id, C, dot, BELOW), s = [wx - c2[0], wy - c2[1]];
+  assert.deepEqual(BELOW, { mibi: 53, bud: 42 }, "the name lines' bottoms: mibi y+53, bud y+42");
+  { const [l, t, r, bt] = extentOf(small, C, BELOW), sid = small.nodes[0].id, cs = camAt(small, sid, C, null, BELOW); assert.deepEqual(cs, [Math.floor((l + r - 776) / 2), Math.floor((t + bt - 598) / 2)], "a fitting tree: its whole extent centred in the view");
+    assert.deepEqual(camAt(small, sid, C, [300, 300], BELOW), cs, "on a zoom in too"); assert.deepEqual(camAt(small, small.nodes[1].id, C, null, BELOW), cs, "whichever node");
+    for (const n of small.nodes) assert.ok(inView(C, n, cs, BELOW), n.id + " wholly in the view"); console.log(`# a fitting tree: extent ${[l, t, r, bt]}, cam ${cs}`); }
   assert.deepEqual(s, [Math.min(Math.max(dot[0], z[0] + 28), z[0] + z[2] - 28), Math.min(Math.max(dot[1], z[1] + 28), z[1] + z[3] - 28)], "where its FAR dot was, clamped so the 56 box lies inside the zone");
 });
 
@@ -189,6 +193,60 @@ test("the mini: the FAR drawing reduced by s = min(208/992, 96/510), centred (ox
   for (const n of input.nodes) { const [x, y] = toMini(C.x0 + n.u * C.du, C.y0 + n.row * C.drow), f = far.boxes[n.id]; assert.ok(Math.abs(x - ((f[0] + 6) * m.s + m.ox)) < 1 && Math.abs(y - ((f[1] + 6) * m.s + m.oy)) < 1, n.id + ": the CLOSE point maps onto its mini dot"); }
   const pic = miniPicture(input, spec, { rgb }); console.log(`# lineage-mini: rendered in ${pic.ms.toFixed(1)} ms`); assert.deepEqual([pic.w, pic.h], [208, 96]);
   assert.equal(pic.rgba[3], 0, "clear outside its ink");
+  const fr = frameOf("S01"), dot = input.nodes.find((n) => n.kind === "mibi" && n.colour?.length === 1 && !n.released), two = input.nodes.find((n) => n.kind === "mibi" && n.colour?.length === 2 && !n.released), mpx = (x, y) => Array.from(pic.rgba.slice((y * 208 + x) * 4, (y * 208 + x) * 4 + 4));
+  assert.ok(dot && two && fr, "the fixture holds a single colour and a two-tone");
+  const disc = (n) => { const b = m.boxes[n.id]; return [0, 1, 2, 3].map((j) => [0, 1, 2, 3].map((i) => (mpx(b[0] + i, b[1] + j)[3] ? "#" : ".")).join("")); };
+  assert.deepEqual(disc(dot), [".##.", "####", "####", ".##."], "the mini's dot is the 4 x 4 disc by the outline rule (the art director), not a full square");
+  { const { by } = world(), ringed = (m2, c) => { const n = input.nodes.find((q) => q.id === "node." + m2.id), b = m.boxes[n.id], px4 = (i, j) => mpx(b[0] + i, b[1] + j);
+      assert.ok(n.colour == null, "unread Coat: no colour");
+      assert.deepEqual([0, 1, 2, 3].map((j) => [0, 1, 2, 3].map((i) => (px4(i, j).join() === [...c, 255].join() ? "#" : ".")).join("")), [".##.", "#..#", "#..#", ".##."], "the inset box holds exactly 8 px of the ring in .##./#..#/#..#/.##.");
+      for (const [i, j] of [[1, 1], [2, 1], [1, 2], [2, 2]]) assert.equal(px4(i, j)[3], 0, "alpha 0 at the four inner pixels"); };
+    ringed(by.Sedge, rgb("frostS")); ringed(by.Hazel, [85, 86, 92]); }
+  const b2 = m.boxes[two.id], hx = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)), c = two.colour.map(hx);
+  assert.deepEqual([mpx(b2[0] + 1, b2[1] + 1).slice(0, 3), mpx(b2[0] + 2, b2[1] + 1).slice(0, 3)], c, "a two-tone split at i = 2");
+});
+
+test("the walks are linear in the tree (the Library 5 gate's W2): 16 generations of sibling crosses, each generation two siblings of the one before, walked under 20 ms by lineageOf, generation, crossDepth and the moments", () => {
+  const st = S.freshSt("w1", 3, 1e6); S.normalize(st); st.mibis = []; st.nextMibi = 1;
+  let pair = [born(st, "A0", null), born(st, "B0", null)];
+  for (let g = 1; g <= 16; g++) pair = [born(st, "A" + g, pair), born(st, "B" + g, pair)];
+  const top = pair[0], t0 = performance.now(), lin = lineageOf(st, "S01", { gap: GAP }), t1 = performance.now(), gen = generation(st, top), cd = crossDepth(st, top), t2 = performance.now(), mo = T.momentsEarned(st, S.DEFAULT_SETTINGS), t3 = performance.now();
+  console.log(`# 16 generations of sibling crosses (${st.mibis.length} mibis): lineageOf ${(t1 - t0).toFixed(2)} ms, generation and crossDepth ${(t2 - t1).toFixed(2)} ms, momentsEarned ${(t3 - t2).toFixed(2)} ms`);
+  assert.deepEqual([gen, cd], [16, 16]); assert.equal(lin.rows, 18); assert.ok(mo.some((x) => x.kind === "line"), "the deep line is earned");
+  for (const [what, ms] of [["lineageOf", t1 - t0], ["generation and crossDepth", t2 - t1], ["momentsEarned", t3 - t2]]) assert.ok(ms < 20, `${what}: ${ms.toFixed(2)} ms`);
+  const memo = walkMemo(); assert.equal(generation(st, top, memo), 16); assert.equal(memo.gen.size, st.mibis.length - 1, "each of its ancestors (every mibi but its sibling) walked once into the memo");
+});
+
+test("the pan's vectors (face/tests/vectors/pan.json, which face_test runs on anim.c): the host's step cameras (panSteps, the slots' cameras) are the face's at each step", () => {
+  const { cases } = JSON.parse(readFileSync(path.resolve(here, "../../face/tests/vectors/pan.json"), "utf8")); let n = 0;
+  for (const c of cases.filter((q) => !q.refused)) {
+    const cams = panSteps(c.from, c.to, c.frac), stepAt = (ms) => c.steps.reduce((s, at, i) => (ms >= at ? i : s), 0);
+    for (const [ms, want] of c.at) { if (want === null) { assert.ok(ms >= c.steps.at(-1), c.name + ": over at its last step"); assert.deepEqual(cams.at(-1), c.to, c.name + ": the last step is `to`"); } else { assert.deepEqual(cams[stepAt(ms)], want, `${c.name} at ${ms} ms`); n++; } }
+  }
+  assert.ok(n >= 6, n + " step cameras compared");
+});
+
+test("CLOSE's camera and slots (l3.close): a node's box centred on its grid point less the camera; wholly inside the view or not drawn; the pan the least whole pixels into the comfort zone on each axis; the steps at trunc(frac); the slots by row then u under any step's camera, 32 at most; the camera as an offset from its node; the overview's view box in the mini", () => {
+  const { lin, by } = world(), C = L3.close, node = (m) => nodeOf(lin, "node." + m.id), moss = node(by.Moss), cam = camAt(lin, moss.id, C, null, BELOW);
+  assert.deepEqual(cam, [12, 105]); assert.deepEqual(closeRect(C, moss, cam), [360, 271, 56, 56], "Moss centred in the zone: its box about (388, 299)");
+  assert.deepEqual(closeRect(C, nodeOf(lin, "node.bud"), cam), [16 + 7 * 48 - 12 - 12, 44 + 4 * 120 - 105 - 16, 24, 32], "the bud's box (x - 12, y - 16, 24, 32)");
+  assert.equal(inView(C, node(by.Reed), cam), false, "Reed (row 1, y 59) crosses the view's top: not drawn"); assert.equal(inView(C, node(by.Sorrel), cam), true);
+  assert.deepEqual(panFor(lin, moss.id, C, cam), cam, "inside the zone: no pan"); assert.deepEqual(panFor(lin, node(by.Reed).id, C, cam), [12 - 189, 105 - 115]);
+  assert.deepEqual(panFor(lin, node(by.Yarrow).id, C, cam), [16 + 16 * 48 + 28 - 611, 105 - 115], "right of the zone: the box's right edge on the zone's");
+  assert.deepEqual(panSteps([12, 105], [12, -10], [50, 85, 100]), [[12, 48], [12, 8], [12, -10]], "trunc toward zero, as the face's integer division"); assert.deepEqual(panSteps([0, 0], [-3, 3], [50]), [[-1, 1]]);
+  const slots = slotsOf(lin, C, [cam]); assert.ok(slots.every((n) => inView(C, n, cam))); assert.deepEqual(slots.map((n) => n.id), lin.nodes.filter((n) => inView(C, n, cam)).map((n) => n.id), "every node wholly inside, by row then u");
+  const both = slotsOf(lin, C, panSteps(cam, [-177, -10], C.pan.frac)); assert.ok(both.some((n) => n.id === node(by.Reed).id), "a pan's slots hold the nodes of every step"); assert.ok(both.length <= C.slots);
+  const many = { nodes: Array.from({ length: 40 }, (_, i) => ({ id: "n" + i, kind: "pod", u: i % 10, row: Math.floor(i / 10) })) }; assert.equal(many.nodes.filter((n) => inView(C, n, [-30, -60])).length, 40);
+  assert.deepEqual(slotsOf(many, C, [[-30, -60]]).map((n) => n.id), many.nodes.slice(0, C.slots).map((n) => n.id), "40 nodes inside: the first 32 by row then u");
+  // 40 nodes in view across a pan's step cameras (row 0 only under the early steps): every node under the final camera gets a slot, the early steps' only ones fill what is left
+  { const cs = [[-30, -60], [-30, -30], [-30, 0]], fin = cs[2], pan = { nodes: many.nodes };
+    const under = many.nodes.filter((n) => inView(C, n, fin)), only = many.nodes.filter((n) => !under.includes(n) && cs.some((c) => inView(C, n, c)));
+    assert.ok(under.length + only.length > C.slots && under.length <= C.slots && only.length > 0, `the setup: ${under.length + only.length} nodes in view across the steps, ${under.length} under the final camera`);
+    const got = slotsOf(pan, C, cs).map((n) => n.id); assert.ok(under.every((n) => got.includes(n.id)), "every node under the final camera has a slot"); assert.deepEqual(got, [...under, ...only].slice(0, C.slots).map((n) => n.id), "the final camera's nodes first, then the early steps' only, each by row then u"); }
+  const off = camOffset(lin, moss.id, C, cam); assert.deepEqual(off, [-388, -299], "the camera less Moss's grid point: Moss on screen at (388, 299)"); assert.deepEqual(camFromOffset(lin, moss.id, C, off), cam);
+  const input = lineageInput(world().st, lin), m = miniGeometry(input, spec), box = overviewBox(input, spec, cam);
+  const want = [Math.round(m.origin[0] + cam[0] * m.scale[0]), Math.round(m.origin[1] + cam[1] * m.scale[1])]; assert.deepEqual(box.slice(0, 2), want.map((v) => Math.max(0, v)), "the view's corner in the mini");
+  assert.ok(box[2] > 0 && box[3] > 0 && box[0] + box[2] <= 208 && box[1] + box[3] <= 96, "inside the mini: " + box);
 });
 
 test("the pictures' requests (views/requests.mjs): lineage-far-{SNN}-{digest} and lineage-mini-{SNN}-{digest} at their sizes, one digest of what sets their pixels; a colour, a release or a new node is a new picture", async () => {

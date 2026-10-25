@@ -56,4 +56,7 @@ export const lineageDigest = (input) => keyToken(JSON.stringify([input.nodes.map
 // lineageFar(req), lineageMini(req): the makers of Level 3's picture requests for one builder: (spec, input) requests { kind: "lineagefar" | "lineagemini", id: lineage-far-{SNN}-{digest} | lineage-mini-{SNN}-{digest},
 // species, input, size: l3.far.rect's or l3.mini.rect's } and returns the id.
 export const lineageFar = (req) => (spec, input) => req({ kind: "lineagefar", id: `lineage-far-${input.species}-${lineageDigest(input)}`, species: input.species, input, size: spec.l3.far.rect.slice(2) });
+// rackPod(req): the maker of a species' rack pod request (the one pod renderer at rack size: pictures.mjs rackpod, home.json regions.rackPod): rackPod(species, size) requests { kind: "rackpod", id: rackpod:{SNN}, species, size }
+// and returns the id (Level 3's CLOSE pods and bud).
+export const rackPod = (req) => (species, size) => req({ kind: "rackpod", id: `rackpod:${species ?? "unknown"}`, species, size });
 export const lineageMini = (req) => (spec, input) => req({ kind: "lineagemini", id: `lineage-mini-${input.species}-${lineageDigest(input)}`, species: input.species, input, size: spec.l3.mini.rect.slice(2) });

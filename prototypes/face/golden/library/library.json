@@ -1,5 +1,5 @@
 {
- "_note": "The Library. Level 1: only the Loika met, a mid-game catalogue (the wish alone on a found species and beside the Loika's face chip), glints and three new looks, the room key (the ring on the last species visited), and the Home to Level 1 dither at its midpoint (motion on, virtual clock). Level 2: the Loika at mid, its Coat lit with its page, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat lit complete, the Blikur and the Loika late (colour chips). Level 3, far: a Loika lineage of two blocks (the ring on Moss) and of one (on Dot): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "_note": "The Library. Level 1: only the Loika met, a mid-game catalogue (the wish alone on a found species and beside the Loika's face chip), glints and three new looks, the room key (the ring on the last species visited), and the Home to Level 1 dither at its midpoint (motion on, virtual clock). Level 2: the Loika at mid, its Coat lit with its page, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat lit complete, the Blikur and the Loika late (colour chips). Level 3, far: a Loika lineage of two blocks (the ring on Moss) and of one (on Dot); close: on Moss, links leaving every edge, a tree that fits the view, a pan's three steps (motion on, virtual clock) and FAR to CLOSE at the dither's midpoint: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "library-l1-first": {
    "hash": "e544425e",
@@ -18,64 +18,92 @@
    "png": "library-l1-roomkey.png"
   },
   "library-l2-loika-mid": {
-   "hash": "d7be3898",
+   "hash": "60d57413",
    "png": "library-l2-loika-mid.png"
   },
   "library-l2-coat-lit": {
-   "hash": "c51b36ec",
+   "hash": "3cdd4c4f",
    "png": "library-l2-coat-lit.png"
   },
   "library-l2-met-only": {
-   "hash": "8c718736",
+   "hash": "bb918cbd",
    "png": "library-l2-met-only.png"
   },
   "library-l2-new": {
-   "hash": "9c645acc",
+   "hash": "dce5e34f",
    "png": "library-l2-new.png"
   },
   "library-l2-wish-uncarried": {
-   "hash": "9921600f",
+   "hash": "4e10b778",
    "png": "library-l2-wish-uncarried.png"
   },
   "library-l2-shut": {
-   "hash": "22e80bc2",
+   "hash": "90911649",
    "png": "library-l2-shut.png"
   },
   "library-l2-hiljan": {
-   "hash": "87143e0b",
+   "hash": "13d2f73c",
    "png": "library-l2-hiljan.png"
   },
   "library-l2-kilpo": {
-   "hash": "55f03a05",
+   "hash": "5065785e",
    "png": "library-l2-kilpo.png"
   },
   "library-l2-belatz": {
-   "hash": "230c0c28",
+   "hash": "9fb7e2ab",
    "png": "library-l2-belatz.png"
   },
   "library-l2-belatz-coat-lit-complete": {
-   "hash": "b8e298b3",
+   "hash": "a8bd3500",
    "png": "library-l2-belatz-coat-lit-complete.png"
   },
   "library-l2-blikur": {
-   "hash": "6ccfdeac",
+   "hash": "0f096897",
    "png": "library-l2-blikur.png"
   },
   "library-l2-loika-late": {
-   "hash": "262a7b16",
+   "hash": "81c41769",
    "png": "library-l2-loika-late.png"
   },
   "library-l3-far": {
-   "hash": "a89bc0d3",
+   "hash": "05a185e0",
    "png": "library-l3-far.png"
   },
   "library-l3-far-one-family": {
-   "hash": "0a79b8b6",
+   "hash": "42a3adf1",
    "png": "library-l3-far-one-family.png"
+  },
+  "library-l3-close-moss": {
+   "hash": "afaddfc8",
+   "png": "library-l3-close-moss.png"
+  },
+  "library-l3-close-stubs": {
+   "hash": "251478d6",
+   "png": "library-l3-close-stubs.png"
+  },
+  "library-l3-close-fits": {
+   "hash": "eef42fcd",
+   "png": "library-l3-close-fits.png"
   },
   "library-l1-dither": {
    "hash": "a9bfe831",
    "png": "library-l1-dither.png"
+  },
+  "library-l3-pan-step-1": {
+   "hash": "5d242b32",
+   "png": "library-l3-pan-step-1.png"
+  },
+  "library-l3-pan-step-2": {
+   "hash": "22ce5ef6",
+   "png": "library-l3-pan-step-2.png"
+  },
+  "library-l3-pan-step-3": {
+   "hash": "251478d6",
+   "png": "library-l3-pan-step-3.png"
+  },
+  "library-l3-zoom-in": {
+   "hash": "0107ed7b",
+   "png": "library-l3-zoom-in.png"
   }
  }
 }

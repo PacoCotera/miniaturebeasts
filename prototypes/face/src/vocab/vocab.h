@@ -138,4 +138,7 @@ const char *v_pstr(const char *path);
 int v_pint(const char *path, int dflt);
 int v_pbool(const char *path, int dflt);
 int v_plen(const char *path);
+/* v_pbox(list, id, ox, oy, box): a box the props give by id in a picture's own coordinates (a generator's fact: the entry of the props list at `list` whose `id` is `id`, its `rect`), plus the
+   picture's origin (ox, oy) on x and y, into box. Reads the props only; draws nothing; no node. 1 when the list holds the id, else 0 and box untouched. */
+int v_pbox(const char *list, const char *id, int ox, int oy, int box[4]);
 #endif

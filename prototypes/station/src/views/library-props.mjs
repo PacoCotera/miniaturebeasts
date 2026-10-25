@@ -9,12 +9,12 @@ import { frameIds, frameOf } from "../genome.mjs";
 import { drawnLooks, keyToken } from "../looks.mjs";
 import { specimenInput, newLooksOf, sheetInput } from "./specimen-props.mjs";
 import { fill, spell, capLine } from "./words.mjs";
-import { req as collector, slot as slotOf, sheet as sheetReqs, disc as discReq, quiet as quietReq, canLight, lineageFar as lineageFarReq } from "./requests.mjs";
+import { req as collector, slot as slotOf, sheet as sheetReqs, disc as discReq, quiet as quietReq, canLight, lineageFar as lineageFarReq, lineageMini as lineageMiniReq, rackPod as rackPodReq } from "./requests.mjs";
 import { faceId } from "../face-pictures.mjs";
 import { speciesFacts, sheetFacts, printed } from "../library-sheet.mjs";
 import { createMeasure, measureRole } from "../../../ui/specs/measure.mjs";
 import { sittingsOf } from "../sitting.mjs";
-import { lineageOf, targetsOf, resolveOf, fitsClose, farGeometry } from "../lineage.mjs";
+import { lineageOf, targetsOf, resolveOf, fitsClose, farGeometry, camAt, camFromOffset, panSteps, slotsOf, overviewBox, nameBelow } from "../lineage.mjs";
 import { bodyColour } from "../lineage-pictures.mjs";
 
 // The subject of Level 1 (strings.subjects): n looks new this visit, across every species. One is "a new look"; two to six spell n; seven or more drop the count; none is empty; no species met is its own line.
@@ -144,17 +144,19 @@ export function lineageInput(st, lin) {
 }
 // Every selector of the graph answered: one with no answer is the ring's own node, so the ring stays (an unanswered selector would fall to its group's first target: focus.c, ui/focus.mjs).
 const answered = (r, sels, cur) => Object.fromEntries(sels.map((s) => [s, r[s] ?? cur]));
-// Level 3 of one species as props: m: { st, settings, ui (UI.lib: { species, l3: { [species]: { node, zoom, cam } }, l3last }), metrics }, spec (library.json), frame (frame.json), home (home.json: the stage words).
-// Returns { props (state, regions, focus), line, top, requests, notBuilt }: far is drawn with words; close and compare are not built yet (notBuilt: the frame's composition with this level's top bar and line).
-// Props name what, never where: the nodes in grid units (lineage.mjs) and the FAR dot boxes as the generator's facts in the picture's coordinates.
+// Level 3 of one species as props: m: { st, settings, ui (UI.lib: { species, l3: { [species]: { node, zoom, cam, pan } }, l3last }), metrics }, spec (library.json), frame (frame.json), home (home.json: the stage words).
+// Returns { props (state, regions, focus), line, top, requests, notBuilt }: far and close are drawn with words; compare is not built yet (notBuilt: the frame's composition with this level's top bar and line).
+// Props name what, never where: the nodes and links in grid units (lineage.mjs), the FAR dot boxes as the generator's facts in the picture's coordinates, CLOSE's camera (the host's: px to take off the grid's),
+// its slots (the nodes the host assigns) and the overview's view box as the mini's facts in the mini's coordinates.
 export function familyBuild(m, spec, frame, home) {
   const { st, settings, ui } = m, L3 = spec.l3, Sg = L3.strings, sid = ui.species, fr = frameOf(sid);
   if (!fr || Lib.speciesStatus(st, sid) !== "found") throw new Error(`Level 3 shows a found species, not ${sid}`);
   const requests = [], req = collector(requests, true), slot = slotOf(req, "its master (library.json)"), lin = lineageOf(st, sid, { gap: L3.block.gap }), mem = ui.l3?.[sid] ?? {}, zoom = mem.zoom === "far" ? "far" : "close";
   const mark = slot(spec.l1.cell.mark.slice.replace("{SNN}", sid), spec.l1.cell.mark.rect.slice(2)), top = { readout: { text: fill(Sg.readout, { Species: fr.species.name }), mark } };
-  if (zoom !== "far") return { notBuilt: true, state: zoom, line: { ok: null, subject: "", back: fitsClose(lin, L3.close) ? fr.species.name : Sg.backFar, need: null }, top, requests };
-  const ground = slot(spec.l1.stage.master, spec.l1.stage.rect.slice(2)), input = lineageInput(st, lin), g = farGeometry(input, spec), picture = lineageFarReq(req)(spec, input);
   const targets = targetsOf(lin).map((id) => ({ id, group: "node", enabled: true })), cur = targets.some((t) => t.id === mem.node) ? mem.node : targets[0]?.id ?? "";
+  if (zoom === "close") return closeBuild(m, spec, lin, { targets, cur, mem, top, requests, req, slot, frame });
+  if (zoom !== "far") return { notBuilt: true, state: zoom, line: { ok: null, subject: "", back: fitsClose(lin, L3.close, nameBelow(L3.close, frame)) ? fr.species.name : Sg.backFar, need: null }, top, requests };
+  const ground = slot(spec.l1.stage.master, spec.l1.stage.rect.slice(2)), input = lineageInput(st, lin), g = farGeometry(input, spec), picture = lineageFarReq(req)(spec, input);
   // the line: Zoom in; the focused mibi's name and stage (the nameless step past the name's room), the bud's own words; ← the species (Level 2)
   const measureOfLine = measureOf(m.metrics) && measureRole(m.metrics, frame, frame.regions.subject.role), n = lin.nodes.find((q) => q.id === cur), mb = n?.kind === "mibi" ? S.mibiById(st, n.mibi) : null;
   let subject = "";
@@ -164,5 +166,28 @@ export function familyBuild(m, spec, frame, home) {
     props: { state: "far", regions: { stage: { picture: [ground] }, lineage: { nodes: lin.nodes.map(({ id, kind, row, u, released }) => ({ id, kind, row, u, released })), links: lin.links }, far: { picture, boxes: targets.map((t) => ({ id: t.id, rect: g.boxes[t.id] })) } },
       focus: { cur, targets, resolve: answered(resolveOf(lin, cur, "far", ui.l3last), Object.values(L3.focus.graph.node).map((e) => e[0]), cur) } },
     line: { ok: cur ? Sg.zoomIn : null, subject, back: fr.species.name, need: null }, top, requests,
+  };
+}
+// CLOSE (library.json l3.close): the tree walked face by face. The camera is the host's (ui.lib.l3[species].cam, an offset from its node; the entry centred in the comfort zone when none), and a pan the host plays
+// (mem.pan: { from, to }) gives the step cameras the slots are assigned for. The props carry the lineage (as FAR's), the links in grid units with the row in half rows (the face reads integers), the camera,
+// the slots (each node wholly inside the view under one of the cameras: its picture, its name, its grid point), the panel's overview (the mini and the view box, only when the tree exceeds the view) and the focus.
+// The line: no ✓ until compare is built; the subject empty, the bud's own words; ← Family when the tree exceeds the view (to FAR), else the species (Level 2).
+export { nameBelow };
+function closeBuild(m, spec, lin, { targets, cur, mem, top, requests, req, slot, frame }) {
+  const { st, settings, ui } = m, L3 = spec.l3, C = L3.close, Sg = L3.strings, sid = lin.species, fr = frameOf(sid), fits = fitsClose(lin, C, nameBelow(C, frame));
+  const ground = slot(spec.l1.stage.master, spec.l1.stage.rect.slice(2)), cam = cur && Array.isArray(mem.cam) ? camFromOffset(lin, cur, C, mem.cam) : camAt(lin, cur, C, null, nameBelow(C, frame));
+  const cams = mem.pan && Array.isArray(mem.pan.from) ? panSteps(mem.pan.from, cam, C.pan.frac) : [cam], pod = rackPodReq(req);
+  const slots = slotsOf(lin, C, cams, nameBelow(C, frame)).map((n) => {
+    const at = { id: n.id, kind: n.kind, u: n.u, row: n.row, released: n.released };
+    if (n.kind !== "mibi") return { ...at, picture: pod(sid, C.boxes[n.kind]), name: n.kind === "bud" ? Sg.growing : "" };
+    const mb = S.mibiById(st, n.mibi); return { ...at, picture: req(faceReq(st, settings, mb, sid, C.boxes.mibi[0])), name: S.cap(mb.name ?? "") };
+  });
+  const input = lineageInput(st, lin), mini = fits ? "" : lineageMiniReq(req)(spec, input), n = lin.nodes.find((q) => q.id === cur);
+  return {
+    props: { state: "close", regions: { stage: { picture: [ground] }, lineage: { nodes: lin.nodes.map(({ id, kind, row, u, released }) => ({ id, kind, row, u, released })), links: lin.links },
+      tree: { cam, slots, links: lin.links.map((l) => ({ a: [l.a[0], l.a[1] * 2], b: [l.b[0], l.b[1] * 2], faded: l.faded })) },
+      panel: { ov: { picture: mini, box: fits ? [0, 0, 0, 0] : overviewBox(input, spec, cam) } } },
+      focus: { cur, targets, resolve: answered(resolveOf(lin, cur, "close", ui.l3last), Object.values(L3.focus.graph.node).map((e) => e[0]), cur) } },
+    line: { ok: null, subject: n?.kind === "bud" ? Sg.bud : "", back: fits ? fr.species.name : Sg.backFar, need: null }, top, requests,
   };
 }

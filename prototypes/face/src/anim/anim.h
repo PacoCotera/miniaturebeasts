@@ -4,7 +4,7 @@
 #ifndef ANIM_H
 #define ANIM_H
 #include <stdint.h>
-enum { ANIM_SEAL, ANIM_WIPE, ANIM_RIBBON, ANIM_PLATE, ANIM_TICK, ANIM_FLASH, ANIM_DITHER, ANIM_ARRIVAL, ANIM_HATCH, ANIM_WAKE, ANIM_REST, ANIM_GROW, ANIM_GROW_NOW, ANIM_MOMENT, ANIM_READ, ANIM_MEND, ANIM_SWITCH, ANIM_INSTALL, ANIM_SENDOFF, ANIM_INCUBATE, ANIM_KINDS };
+enum { ANIM_SEAL, ANIM_WIPE, ANIM_RIBBON, ANIM_PLATE, ANIM_TICK, ANIM_FLASH, ANIM_DITHER, ANIM_ARRIVAL, ANIM_HATCH, ANIM_WAKE, ANIM_REST, ANIM_GROW, ANIM_GROW_NOW, ANIM_MOMENT, ANIM_READ, ANIM_MEND, ANIM_SWITCH, ANIM_INSTALL, ANIM_SENDOFF, ANIM_INCUBATE, ANIM_PAN, ANIM_KINDS };
 int anim_kind(const char *name);                 /* the kind's number, or -1 */
 const char *anim_name(int kind);
 void anim_reset(void);
@@ -22,4 +22,13 @@ int anim_holding(void);                          /* an event that holds input is
 /* A skippable hold (lvgl-switch.md §2.1): an event carrying `skip` holds input. Its hold is kept apart from every other event's, so ending it leaves theirs. */
 int anim_skippable(char *target, int cap);       /* 1 when a skippable hold runs (its event's target into target), else 0 */
 int anim_skip(void);                             /* ✓ in a skippable hold: every playing event that carries `skip` jumps to its end and says `done`, and the skippable hold ends; the other holds stand. Returns how many ended */
+/* A pan (Library Level 3's camera, library.json l3.close.pan): a camera that moves from `from` to `to` in whole-pixel steps, each a cut. Step i is the camera from + (to - from) * frac[i] / 100 on each
+   axis (C's integer division, toward zero; frac rising, the last 100). Step 0 is shown from the first frame the pan is drawn in (the frame after it arrives); step i from the first frame at least
+   steps[i] - steps[i - 1] ms after the frame that showed step i - 1 (steps: 0 first, rising), so two steps are never shown closer than their gap, whatever the frame times. The pan is over at its last
+   step: the screen then draws its own camera (the props', which is `to`). n steps, 1 to ANIM_STEPS; with motion off it is over at once. A pan on the same target again starts over.
+   Returns 0, or -1 when refused (n out of range, steps or frac out of order, the table full). */
+#define ANIM_STEPS 4
+int anim_add_pan(const char *target, const int from[2], const int to[2], const int *steps, const int *frac, int n, int motion);
+/* The playing pan on `target`: the camera of its step now into out, 1; 0 when no pan plays there (out untouched). */
+int anim_pan_at(const char *target, int out[2]);
 #endif

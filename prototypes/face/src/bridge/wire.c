@@ -173,10 +173,27 @@ static int on_asset(const msg_t *m) {
   }
   g_last_asset = slot; return 0;
 }
+/* an array of 1 to max integers at token t into out: its length, or 0 when it is not one */
+static int ints(const msg_t *m, int t, int *out, int max) {
+  if (t < 0 || m->tok[t].type != JSMN_ARRAY || m->tok[t].size < 1 || m->tok[t].size > max) return 0;
+  for (int k = 0; k < m->tok[t].size; k++) if (!num(m, t + 1 + k, &out[k])) return 0;
+  return m->tok[t].size;
+}
+/* a pan (anim.h anim_add_pan): { kind: "pan", target, from: [x, y], to: [x, y], steps: [ms, ...], frac: [%, ...] }, steps and frac of one length */
+static int on_pan(const msg_t *m) {
+  char target[48] = ""; int from[2], to[2], steps[ANIM_STEPS], frac[ANIM_STEPS];
+  if (key(m, "target") >= 0 && !str(m, key(m, "target"), target, sizeof target)) return fail("event: target must be a string of at most 47 bytes");
+  if (ints(m, key(m, "from"), from, 2) != 2 || ints(m, key(m, "to"), to, 2) != 2) return fail("event: a pan's from and to are [x, y], whole pixels");
+  int n = ints(m, key(m, "steps"), steps, ANIM_STEPS); if (!n || ints(m, key(m, "frac"), frac, ANIM_STEPS) != n) return fail("event: a pan's steps and frac are lists of 1 to 4 whole numbers, one frac a step");
+  if (key(m, "hold") >= 0) { int hold; if (!num(m, key(m, "hold"), &hold) || hold != 0) return fail("event: a pan holds no input (hold 0)"); }
+  if (anim_add_pan(target, from, to, steps, frac, n, spec_bool("props", "motion", 1)) < 0) return fail("event: a pan's steps start at 0 and rise, its frac rise to 100 (or the face holds 24 events at once)");
+  g_nevents++; g_dirty_log = 1; screens_redraw(); return 0;
+}
 static int on_event(const msg_t *m) {
   char k[24]; if (!str(m, key(m, "kind"), k, sizeof k)) return fail("event: kind is required");
   int kind = anim_kind(k);
   if (kind < 0) { char b[80]; snprintf(b, sizeof b, "event: unknown kind %s", k); return fail(b); }
+  if (kind == ANIM_PAN) return on_pan(m);
   int ms = 0, from = 0, to = 0; char target[48] = "";
   if (key(m, "ms") >= 0 && !num(m, key(m, "ms"), &ms)) return fail("event: ms must be a number");
   char from_id[96] = "";

@@ -18,7 +18,7 @@
 #define WISH 4
 #define SITS 9
 #define FAMILY 8
-#define TARGETS 64
+#define TARGETS FOCUS_TARGETS
 
 /* ---- the glints' clock: from the first frame Level 2 is drawn in; again from the start when another screen shows ---- */
 static uint32_t g_t0; static int g_have, g_level = -1;
@@ -71,8 +71,8 @@ int species_focus(focus_target_t *out, int cap) {
   if (kit_tiles(S, "l2.families", FAMILY, no_draw, NULL, boxes) < 0) return 0;
   for (int i = 0; i < n; i++) {
     focus_target_t *t = &out[i]; focus_fill(t, "focus.targets", i, NULL); int box[4] = { 0, 0, 0, 0 };
-    if (strncmp(t->id, "chapter.", 8) == 0) { for (int k = 0, m = v_plen("regions.sheet.plates"); k < m; k++) if (strcmp(v_pstr(v_fmt("regions.sheet.plates.%d.id", k)), t->id) == 0) for (int q = 0; q < 4; q++) box[q] = v_pint(v_fmt("regions.sheet.plates.%d.rect.%d", k, q), 0) + (q == 0 ? sx : q == 1 ? sy : 0); }
-    else if (strncmp(t->id, "look.", 5) == 0) { for (int k = 0, m = v_plen("regions.page.discs"); k < m; k++) if (strcmp(v_pstr(v_fmt("regions.page.discs.%d.id", k)), t->id) == 0) for (int q = 0; q < 4; q++) box[q] = v_pint(v_fmt("regions.page.discs.%d.rect.%d", k, q), 0) + (q == 0 ? px : q == 1 ? py : 0); }
+    if (strncmp(t->id, "chapter.", 8) == 0) v_pbox("regions.sheet.plates", t->id, sx, sy, box);
+    else if (strncmp(t->id, "look.", 5) == 0) v_pbox("regions.page.discs", t->id, px, py, box);
     else if (strcmp(t->id, "wish") == 0) { v_srect(S, "l2.shelf.wish.focus.rect", box); box[3] += v_si(S, "l2.shelf.wish.pitch", 0) * sh.w; }
     else if (strcmp(t->id, "face") == 0) { box[0] = v_si(S, "l2.shelf.face.picture.x", 0); box[1] = sh.yf; box[2] = box[3] = v_si(S, "l2.shelf.face.picture.size", 0); }
     else if (strncmp(t->id, "family.", 7) == 0) { for (int k = 0; k < sh.n; k++) if (strcmp(v_fmt("family.%d", v_pint(v_fmt("regions.shelf.families.%d.id", k), -1)), t->id) == 0) { box[0] = boxes[k][0]; box[1] = sh.yr + boxes[k][1]; box[2] = boxes[k][2]; box[3] = boxes[k][3]; } }

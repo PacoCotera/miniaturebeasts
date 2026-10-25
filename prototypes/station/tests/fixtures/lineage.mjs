@@ -1,8 +1,9 @@
 // The Loika lineages Level 3 is drawn and tested on (library.json l3): `full`, four generations of mibis in two blocks with a joined cross, a shed-pod child, released mibis and a bud (the goldens'
-// library-l3-far: Dot x Bean joins the Reed and Rush family to the Bean and Clover one, Thistle is Ivy's shed pod, Rush's children sit under a faded parent; Moss is the entry and Dot is held where a later ticket compares), and `one`, one block (two founders and eight children, wider than CLOSE's view). Built into a state by plain records, deterministic: the founders from fixed pod seeds,
+// library-l3-far: Dot x Bean joins the Reed and Rush family to the Bean and Clover one, Thistle is Ivy's shed pod, Rush's children sit under a faded parent; Moss is the entry and Dot is held where a later ticket compares), `one`, one block (two founders and eight children, wider than CLOSE's view),
+// and `small`, two founders and two children (the whole tree fits CLOSE's view). Built into a state by plain records, deterministic: the founders from fixed pod seeds,
 // each child a cross of its recorded parents on a seeded stream (cross.mjs, as doCross draws it), the shed-pod child its parent's shed pod (cross.mjs shedPod: origin kind "shed", parentIds [id, id]).
 // Every mibi has read every open chapter (its Coat read: its dot shows its body colour) except those a lineage names in coatUnread (`full`: Hazel, released, and Sedge: the neutral open ring, in the golden). The frames must be loaded (genome.mjs setFrames).
-//   buildLineage(st, "full" | "one", { turn, now }) → the mibis by name (and st.bud)
+//   buildLineage(st, "full" | "one" | "small", { turn, now }) → the mibis by name (and st.bud)
 import { frameOf, podGenome, genomeSha, nameCode, cross, speciesIndex, genomeProblems } from "../../src/genome.mjs";
 import { shedPod } from "../../../workbench/framework/cross.mjs";
 
@@ -15,7 +16,8 @@ const FULL = [
   ["Sorrel", ["Moss", "Thistle"], "juvenile", false],
 ];
 const ONE = [["Reed", null, "elder", false], ["Rush", null, "elder", false], ...["Hazel", "Ivy", "Dot", "Fern", "Moss", "Wren", "Sorrel", "Lark"].map((n) => [n, ["Reed", "Rush"], "adult", false])];   // eight siblings: wider than CLOSE's view
-export const LINEAGES = { full: { mibis: FULL, bud: ["Moss", "Thistle"], coatUnread: ["Hazel", "Sedge"] }, one: { mibis: ONE, bud: null } };
+const SMALL = [["Reed", null, "elder", false], ["Rush", null, "elder", false], ["Ivy", ["Reed", "Rush"], "adult", false], ["Dot", ["Reed", "Rush"], "adult", false]];   // two founders and two children: the whole tree fits CLOSE's view
+export const LINEAGES = { full: { mibis: FULL, bud: ["Moss", "Thistle"], coatUnread: ["Hazel", "Sedge"] }, one: { mibis: ONE, bud: null }, small: { mibis: SMALL, bud: null } };
 
 const stream = (seed) => { let x = seed >>> 0; return () => { x = (Math.imul(x ^ (x >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return (x >>> 8) / 16777216; }; };
 const AGE = { juvenile: 0, adult: 3, elder: 9 };   // turns since birth: young below 2, elder from 8 (state.mjs stageAt with the default turns)

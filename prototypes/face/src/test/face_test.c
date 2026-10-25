@@ -10,6 +10,7 @@
 #include "../vocab/words.h"
 #include "../bridge/wire.h"
 #include "../face.h"
+#include "../anim/anim.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -629,6 +630,49 @@ static void resident_window_corner(void) {
 static int ty_errors(const char *needle) { int n = 0; const char *m; while ((m = wire_poll()) != NULL) if (strstr(m, "\"error\"") && (!needle || strstr(m, needle))) n++; return n; }
 static int ty_none(const char *id, int x) { int b[4]; return kbox(id, b) == FN_TEXT && b[0] == x && b[2] == 0 && b[3] == 0; }   /* a text node of no size at x */
 static int ty_same(const char *a, const char *b) { int x[4], y[4]; int ka = kbox(a, x), kb = kbox(b, y); return ka == FN_TEXT && kb == FN_TEXT && x[0] == y[0] && x[1] == y[1] && x[2] == y[2] && x[3] == y[3]; }
+/* the pan (anim.h anim_add_pan), tests/vectors/pan.json: the step's camera from the pan's first frame, over at its last step; the refusals; motion off is over at once; the same vectors run on the host's
+   step cameras (station/tests/lineage.test.mjs, lineage.mjs panSteps) */
+static void pan_vectors(const char *dir) {
+  char path[512]; snprintf(path, sizeof path, "%s/pan.json", dir); long len; char *js = slurp(path, &len);
+  if (!js) { check(0, "pan.json", "cannot read"); return; }
+  if (spec_load("panv", js, (size_t)len) < 0) { check(0, "pan.json", spec_error()); free(js); return; }
+  for (int c = 0, nc = spec_len("panv", "cases"); c < nc; c++) {
+    char name[160], P[64]; snprintf(P, sizeof P, "cases.%d", c); spec_str("panv", v_fmt("%s.name", P), name, sizeof name);
+    int from[2], to[2], steps[8], frac[8], n = spec_len("panv", v_fmt("%s.steps", P));
+    for (int k = 0; k < 2; k++) { from[k] = spec_int("panv", v_fmt("%s.from.%d", P, k), 0); to[k] = spec_int("panv", v_fmt("%s.to.%d", P, k), 0); }
+    for (int k = 0; k < n && k < 8; k++) { steps[k] = spec_int("panv", v_fmt("%s.steps.%d", P, k), 0); frac[k] = spec_int("panv", v_fmt("%s.frac.%d", P, k), 0); }
+    anim_reset(); anim_tick(1000); int rc = anim_add_pan("tree", from, to, steps, frac, n, 1);
+    if (spec_bool("panv", v_fmt("%s.refused", P), 0)) { int cam[2]; check(rc < 0 && !anim_pan_at("tree", cam), name, "refused, and no pan plays"); continue; }
+    check(rc == 0, name, "added"); int cam[2] = { -1, -1 }, before = anim_pan_at("tree", cam);
+    if (n > 1) check(before && cam[0] == from[0] + (to[0] - from[0]) * frac[0] / 100 && cam[1] == from[1] + (to[1] - from[1]) * frac[0] / 100, name, "before its first frame: the first step");
+    anim_tick(1016);   /* the pan's first frame: its clock starts here */
+    for (int a = 0, na = spec_len("panv", v_fmt("%s.at", P)); a < na; a++) {
+      int ms = spec_int("panv", v_fmt("%s.at.%d.0", P, a), 0), want = spec_len("panv", v_fmt("%s.at.%d.1", P, a)) == 2; anim_tick(1016 + (uint32_t)ms);
+      int got[2] = { 0, 0 }, on = anim_pan_at("tree", got); char d[160];
+      snprintf(d, sizeof d, "at %d ms: want %s [%d, %d], got %s [%d, %d]", ms, want ? "" : "none", want ? spec_int("panv", v_fmt("%s.at.%d.1.0", P, a), 0) : 0, want ? spec_int("panv", v_fmt("%s.at.%d.1.1", P, a), 0) : 0, on ? "" : "none", got[0], got[1]);
+      check(want ? on && got[0] == spec_int("panv", v_fmt("%s.at.%d.1.0", P, a), 0) && got[1] == spec_int("panv", v_fmt("%s.at.%d.1.1", P, a), 0) : !on, name, d);
+    }
+  }
+  { int from[2] = { 0, 0 }, to[2] = { 10, 10 }, steps[3] = { 0, 67, 133 }, frac[3] = { 50, 85, 100 }, cam[2]; anim_reset(); anim_tick(10); check(anim_add_pan("tree", from, to, steps, frac, 3, 0) == 0 && !anim_pan_at("tree", cam), "pan: motion off, over at once (one step at the full offset: the screen's own camera)", ""); }
+  { int from[2] = { 0, 0 }, to[2] = { 10, 10 }, steps[3] = { 0, 67, 133 }, frac[3] = { 50, 85, 100 }, cam[2]; anim_reset(); anim_tick(10); anim_add_pan("tree", from, to, steps, frac, 3, 1); anim_tick(26); anim_tick(80);
+    int to2[2] = { -10, 0 }; anim_add_pan("tree", to, to2, steps, frac, 3, 1); anim_pan_at("tree", cam); check(anim_active() == 1 && cam[0] == 0 && cam[1] == 5, "pan: a pan on the same target again starts over (its first step from its own from)", ""); }
+  anim_reset(); spec_drop("panv"); free(js);
+}
+/* the focus table's cap (focus.h FOCUS_TARGETS): a screen lists at most 64 targets; a selector the host answers with a 65th is taken as unanswered (its group's first target), an edge never lands past the table */
+static void focus_cap(void) {
+  check(FOCUS_TARGETS == 64, "focus: the table holds 64 targets", "");
+  const char *g = "{\"fallback\":\"none\",\"node\":{\"up\":[\"node.parent\",\"none\"],\"down\":[\"node.child\",\"none\"]}}"; char err[200];
+  focus_graph_t *gr = focus_graph_parse(g, (int)strlen(g), err, sizeof err); if (!gr) { check(0, "focus cap: the graph", err); return; }
+  static focus_target_t t[FOCUS_TARGETS + 1]; memset(t, 0, sizeof t);
+  for (int i = 0; i <= FOCUS_TARGETS; i++) { snprintf(t[i].id, sizeof t[i].id, "node.%d", i); snprintf(t[i].group, sizeof t[i].group, "node"); t[i].enabled = 1; t[i].index = i; t[i].x = 20 * (i % 32); t[i].y = 40 * (i / 32); t[i].w = t[i].h = 12; }
+  focus_resolve_t r[1]; char out[FOCUS_ID];
+  snprintf(r[0].sel, sizeof r[0].sel, "node.parent"); snprintf(r[0].id, sizeof r[0].id, "node.63");
+  focus_move(gr, t, FOCUS_TARGETS, "node.10", FOCUS_UP, r, 1, NULL, out, sizeof out); check(strcmp(out, "node.63") == 0, "focus cap: the 64th target is on the table", out);
+  snprintf(r[0].id, sizeof r[0].id, "node.64");
+  focus_move(gr, t, FOCUS_TARGETS, "node.10", FOCUS_UP, r, 1, NULL, out, sizeof out); check(strcmp(out, "node.0") == 0, "focus cap: a selector answered with the 65th is taken as unanswered: the group's first target", out);
+  focus_move(gr, t, FOCUS_TARGETS, "node.64", FOCUS_UP, r, 1, NULL, out, sizeof out); check(strcmp(out, "node.0") == 0, "focus cap: the ring on the 65th is not on the table: a move lands on the first target", out);
+  focus_graph_free(gr);
+}
 static void type_kit(void) {
   face_init(); { const char *hi = "{\"t\":\"hello\",\"contract\":1}"; wire_send(hi, (int)strlen(hi)); }
   static const char *COLS[] = { "bone", "fog", "mist", "ink", "void", "orange", "amber", "focus", "gold", "coral" };
@@ -783,6 +827,8 @@ int main(int argc, char **argv) {
   glint_readout();
   resident_window_corner();
   type_kit();
+  pan_vectors(dir);
+  focus_cap();
   printf("face_test: %d checks, %d failed\n", checks, fails);
   return fails ? 1 : 0;
 }

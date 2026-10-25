@@ -38,6 +38,7 @@
     "sitting": 4
   },
   "screenSpecific": [
-    { "file": "home_frame.c", "what": "the bay's berths (home.json regions.bay.picture)", "ruling": "K5 gate 2b" }
+    { "file": "home_frame.c", "what": "the bay's berths (home.json regions.bay.picture)", "ruling": "K5 gate 2b" },
+    { "file": "library_family.c", "what": "the tree's links (tree.links.0..3, tree.path)", "ruling": "T-20261023-294: screen-specific until FAR is drawn live; then it becomes a station kit_links" }
   ]
 }
