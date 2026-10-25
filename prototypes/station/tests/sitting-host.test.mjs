@@ -14,6 +14,7 @@ import { G, UI, SPECS, FX } from "../src/game.mjs";
 import { dispatch } from "../src/intents/index.mjs";
 import { createHost, onFaceMessage, screenProps, sittingBody, enterSitting } from "../src/host.mjs";
 import { newSit } from "../src/intents/sitting.mjs";
+import { capLine } from "../src/views/words.mjs";
 import { isBuilt, DROPS_ON_ROOM_KEY } from "../src/nav.mjs";
 import { loadStandLayersFs, loadStandLooksFs } from "../tools/stand-layers-fs.mjs";
 import { injectPortraitSource, dropPortraitSources } from "../src/portrait-source.mjs";
@@ -61,10 +62,10 @@ test("a Lift between the place step and confirm keeps both choices: the confirm 
   const { h, mb, say } = rig(); enterSitting(h, mb); const o = offerOf(mb);
   say("card.0", "confirm"); G.sv.carried = [mb.id]; G.st.dock = { docked: false, at: T0 };   // the Caddy lifted with the mibi aboard
   say("card.0", "confirm"); assert.deepEqual([UI.sit.step, UI.sit.pose, UI.sit.place], ["confirm", o.poses[0], o.places[0]], "both choices kept");
-  let p = screenProps("").msg; assert.deepEqual([p.frame.line.ok, p.frame.line.subject, p.regions.gilt.picture], [null, HAB.strings.portraitOut, SIT.regions.gilt.slices.rest]);
+  let p = screenProps("").msg; assert.deepEqual([p.frame.line.ok, p.frame.line.subject, p.regions.gilt.picture], [null, capLine(HAB.strings.portraitOut), SIT.regions.gilt.slices.rest]);   // the host cases the line (capLine)
   say("room", "confirm"); say("room", "confirm"); assert.deepEqual([UI.sit.step, UI.sit.armed], ["confirm", null], "✓ does nothing"); assert.ok(G.st.sitting, "nothing spent");
   G.st.dock = { docked: true, at: T0 + 1 };   // docked again
-  p = screenProps("").msg; assert.deepEqual([p.frame.line.ok, p.frame.line.subject], ["Portray Dot", SIT.strings.once]);
+  p = screenProps("").msg; assert.deepEqual([p.frame.line.ok, p.frame.line.subject], ["Portray Dot", capLine(SIT.strings.once)]);
   say("room", "confirm"); assert.equal(UI.sit.armed, "room", "✓ arms again");
 });
 

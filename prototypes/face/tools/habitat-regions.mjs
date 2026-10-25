@@ -86,6 +86,6 @@ export function departures(log, spec, namer, state = "rest", cur = "resident", n
     for (const r of got("focus")) must(within(r.rect, grow(P, 4)), `the ring ${r.rect} is not over the namer (habitat draws none while it is open)`);
   }
   for (const r of got("focus")) must(within(r.rect, [0, 0, 1024, 600]), `the ring ${r.rect} leaves the screen`);
-  for (const t of type) must([16, 20, 28].includes(t.px), `"${t.text}" is set at ${t.px} px`);
+  for (const t of type) must([16, 1016, 20, 28].includes(t.px), `"${t.text}" is set at ${t.px} px`);
   return out;
 }

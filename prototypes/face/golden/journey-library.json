@@ -16,7 +16,7 @@
     "state": "all",
     "focus": "",
     "ok": null,
-    "subject": "no species seen yet",
+    "subject": "No species seen yet",
     "back": "Home"
    },
    {
@@ -33,7 +33,7 @@
     "state": "all",
     "focus": "",
     "ok": null,
-    "subject": "no species seen yet",
+    "subject": "No species seen yet",
     "back": "Home"
    },
    {
@@ -69,7 +69,7 @@
     "state": "all",
     "focus": "cell.S01",
     "ok": "Open Loika",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -85,7 +85,7 @@
     "state": "all",
     "focus": "cell.S03",
     "ok": "Open Tuikis",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -101,7 +101,7 @@
     "state": "all",
     "focus": "cell.S04",
     "ok": "Open Hiljan",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -117,7 +117,7 @@
     "state": "all",
     "focus": "cell.S09",
     "ok": "Open Belatz",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -133,7 +133,7 @@
     "state": "all",
     "focus": "cell.S01",
     "ok": "Open Loika",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -143,7 +143,7 @@
     "state": "all",
     "focus": "cell.S01",
     "ok": "Open Loika",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -159,7 +159,7 @@
     "state": "all",
     "focus": "cell.S03",
     "ok": "Open Tuikis",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -175,7 +175,7 @@
     "state": "all",
     "focus": "cell.S04",
     "ok": "Open Hiljan",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -192,7 +192,7 @@
     "state": "sheet",
     "focus": "",
     "ok": null,
-    "subject": "seen, no pod identified yet",
+    "subject": "Seen, no pod identified yet",
     "back": "Library"
    },
    {
@@ -209,7 +209,7 @@
     "state": "sheet",
     "focus": "",
     "ok": null,
-    "subject": "seen, no pod identified yet",
+    "subject": "Seen, no pod identified yet",
     "back": "Library"
    },
    {
@@ -226,7 +226,7 @@
     "state": "all",
     "focus": "cell.S04",
     "ok": "Open Hiljan",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -242,7 +242,7 @@
     "state": "all",
     "focus": "cell.S09",
     "ok": "Open Belatz",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -358,7 +358,7 @@
     "state": "all",
     "focus": "cell.S09",
     "ok": "Open Belatz",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -374,7 +374,7 @@
     "state": "all",
     "focus": "cell.S03",
     "ok": "Open Tuikis",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -408,7 +408,7 @@
     "state": "all",
     "focus": "cell.S03",
     "ok": "Open Tuikis",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -424,7 +424,7 @@
     "state": "all",
     "focus": "cell.S01",
     "ok": "Open Loika",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -458,7 +458,7 @@
     "state": "all",
     "focus": "cell.S01",
     "ok": "Open Loika",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -474,7 +474,7 @@
     "state": "all",
     "focus": "cell.S03",
     "ok": "Open Tuikis",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {
@@ -490,7 +490,7 @@
     "state": "all",
     "focus": "cell.S04",
     "ok": "Open Hiljan",
-    "subject": "new looks",
+    "subject": "New looks",
     "back": "Home"
    },
    {

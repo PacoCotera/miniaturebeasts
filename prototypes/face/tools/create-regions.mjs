@@ -42,6 +42,6 @@ export function departures(log, spec, frame, state = "shape", pod = null, rolled
   must(state === "grow" || got("code", "type").length === 0, "the code is printed at Grow");
   must(got("stamp.plate", "painted").length === 1, "the stamp label (its dimmed plate) is drawn once");
   must(got("founder").length === 1, "the founder is drawn");
-  for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
+  for (const t of type) if (![16, 1016, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
   void pod; return out;
 }

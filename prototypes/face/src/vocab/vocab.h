@@ -88,6 +88,8 @@ int v_line_in(const char *id, const char *s, int bx, int bw, int y, int anchor, 
 typedef struct { int width, end; } v_run_t;
 int v_run_width(const char *s, int px);
 v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *colour, int align);
+void v_inline(const char *id);   /* opens an inline group: every node sent until v_inline_end is one run in the log (a mark and its word, an icon and its figure); a v_run or v_price inside it joins the group */
+void v_inline_end(void);
 /* A price run with stable nodes: Energy, Essence, Data and the bud's wait (⧗, icon-wait-16) each have an icon and a figure node (no size when the price does not name it); `cols` is the figure's colour for each, `other` the colour of a price with no group ("free"). Returns the end x. */
 #define V_PRICE_N 4   /* the groups of a price, a closed table (vocab.c PRICE): ⚡ ❀ ◆ ⧗ */
 int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[V_PRICE_N], const char *other);
@@ -105,7 +107,7 @@ void v_clip(const char *s, int maxw, int px, char *out, int cap);
    down under it (node "<id>.shadow", sent first). V_ANCHOR_LINE uses the role's pitch. Region and layer: the caller's. Node id: v_id(id) (and <id>.shadow). Returns the width.
    v_say_in: the same, centred in the box [bx, bx + bw). v_say_run: v_run by role (no shadow). v_say_price: v_price by role: the role's font, each group's figure in the colour of the role cols[g]
    names on the ground and a price with no group in that of `other` (each "<role>" or "<role>.<variant>"); returns the end x.
-   v_role_pitch, v_role_width, v_role_clip, v_role_wrap, v_role_cap_top, v_role_cap_in: the px measures by role; v_role_font: the role's font code (prim.h PRIM_FONT_*), 0 when refused. */
+   v_role_pitch, v_role_width, v_role_clip, v_role_wrap, v_role_cap_top, v_role_cap_in: the px measures by role (v_role_width a run's: its icons inline, as v_say_run lays them); v_role_font: the role's font code (prim.h PRIM_FONT_*), 0 when refused. */
 int v_say(const char *id, const char *s, int x, int y, int anchor, const char *role, const char *ground, int align);
 int v_say_in(const char *id, const char *s, int bx, int bw, int y, int anchor, const char *role, const char *ground);
 v_run_t v_say_run(const char *id, const char *s, int x, int y, const char *role, const char *ground, int align);

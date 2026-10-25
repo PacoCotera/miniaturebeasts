@@ -25,7 +25,7 @@ export function departures(log, spec, frame, state = "bay", opts = {}) {
     for (const r of got("mibis")) must(within(r.rect, [32, 216 - 4, 960, 312 + 4]) && r.rect[1] + r.rect[3] <= AR.mibis.feet + 1, `a mibi's picture ${r.rect} is not on the apron with its feet on ${AR.mibis.feet}`);
     for (const r of [...got("arrivalBand"), ...got("band.probe"), ...got("band.leaving")]) must(r.rect[1] >= 56 && r.rect[1] + r.rect[3] <= 100 && r.rect[0] >= 32 && r.rect[0] + r.rect[2] <= 992, `the band ${r.id} ${r.rect} leaves the bay's top corners`);
     for (const r of got("glint")) must(r.rect[1] >= 120 && r.rect[1] + r.rect[3] <= 140, `a glint ${r.rect} is not at the crate's top (y 128)`);
-    for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
+    for (const t of type) if (![16, 1016, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
     return out;
   }
   must(got("apron").length === 0 && got("mibis").length === 0 && got("light").length === 0 && got("ribbon").length === 0, "the apron, the mibis, the link light and the ribbon show only in the arrival");
@@ -50,6 +50,6 @@ export function departures(log, spec, frame, state = "bay", opts = {}) {
   for (const r of got("travel")) must(within(r.rect, [-16, -64, 1056, 616]), `what travels ${r.rect} leaves the travel rectangle ${R.travel.rect} by more than the spec's targets do (16 px at the sides, up to the top bar's icons)`);
   must(state === "opening" || (got("display").length === 0 && got("travel").length === 0 && got("portrait").length === 0 && got("displayAmount").length === 0), "the display and what travels show only in the opening");
   must(state !== "bay" || art("hatch.well").length === 0, "the bay's hatch is shut: no wells");
-  for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
+  for (const t of type) if (![16, 1016, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
   return out;
 }

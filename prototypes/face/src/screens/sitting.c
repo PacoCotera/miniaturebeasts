@@ -37,7 +37,7 @@ static void window(void) {
   dither_of("resident", from, sizeof from, &level);
   kit_resident(S, "regions.resident.rect", "regions.resident.rect", "resident", pic, "", 0, from[0] ? from : NULL, level, hasFig ? fig : NULL, "regions.resident.axis", "regions.resident.feet");
   { int box[4], out[4]; v_srect(S, "regions.resident.rect", box); const char *name = v_pstr("regions.nameTag.text"); int y = v_sk(S, "regions.nameTag.rect", 1);
-    kit_nameTag(S, "regions.glass", name, box, y, y, KIT_TAG_AUTO, !*name, v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), v_scol(S, "colours.nameTag.name"), out); }
+    kit_nameTag(S, "regions.glass", name, box, y, y, KIT_TAG_AUTO, !*name, v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), NULL, out); }
   { int r[4]; v_srect(S, "regions.portrait.rect", r); const char *p = v_pstr("regions.portrait.picture"); v_name("portrait"); v_slot("portrait", p, NULL, r[0], r[1], r[2], r[3], *p != 0); }
   { int r[4]; v_srect(S, "regions.gilt.rect", r); char p[96]; snprintf(p, sizeof p, "%s", v_pstr("regions.gilt.picture")); int out = dither_of("gilt", from, sizeof from, &level);
     v_name("gilt"); v_slot("gilt", p, out ? from : NULL, r[0], r[1], r[2], r[3], *p && !out);

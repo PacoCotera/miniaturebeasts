@@ -175,7 +175,7 @@ static void build_column(int t_inc) {
 static void build_ribbon(int t) {
   if (!in_state("hatch")) return;
   int r[4]; v_srect(I, "regions.ribbon.rect", r); int at = v_si(I, "events.hatch.steps.3.at", 1200); const char *words = v_pstr("regions.ribbon");
-  v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= at ? words : "", v_si(I, "regions.ribbon.px", 20), v_si(I, "regions.ribbon.pad", 0), v_scol(I, "colours.ribbon.fill"), v_scol(I, "colours.ribbon.edge"), v_scol(I, "colours.ribbon.text"));
+  v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= at ? words : "", v_si(I, "regions.ribbon.pad", 0), v_scol(I, "colours.ribbon.fill"), v_scol(I, "colours.ribbon.edge"), NULL);
 }
 
 int incubator_tick(uint32_t now) { (void)now; return 0; }   /* the moments are events: their frames are drawn while they play */

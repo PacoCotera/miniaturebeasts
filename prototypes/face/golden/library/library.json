@@ -2,79 +2,79 @@
  "_note": "The Library. Level 1: only the Loika met, a mid-game catalogue (the wish alone on a found species and beside the Loika's face chip), glints and three new looks, the room key (the ring on the last species visited), and the Home to Level 1 dither at its midpoint (motion on, virtual clock). Level 2: the Loika at mid, its Coat lit with its page, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat lit complete, the Blikur and the Loika late (colour chips). Level 3, far: a Loika lineage of two blocks (the ring on Moss) and of one (on Dot): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "library-l1-first": {
-   "hash": "6ccb2114",
+   "hash": "e544425e",
    "png": "library-l1-first.png"
   },
   "library-l1-mid": {
-   "hash": "61a3a65b",
+   "hash": "caa943a5",
    "png": "library-l1-mid.png"
   },
   "library-l1-new": {
-   "hash": "be7a5714",
+   "hash": "c4742635",
    "png": "library-l1-new.png"
   },
   "library-l1-roomkey": {
-   "hash": "b316a261",
+   "hash": "25e690b5",
    "png": "library-l1-roomkey.png"
   },
   "library-l2-loika-mid": {
-   "hash": "d0791968",
+   "hash": "d7be3898",
    "png": "library-l2-loika-mid.png"
   },
   "library-l2-coat-lit": {
-   "hash": "bbe2dde7",
+   "hash": "c51b36ec",
    "png": "library-l2-coat-lit.png"
   },
   "library-l2-met-only": {
-   "hash": "35c93d0c",
+   "hash": "8c718736",
    "png": "library-l2-met-only.png"
   },
   "library-l2-new": {
-   "hash": "55c1c7a4",
+   "hash": "9c645acc",
    "png": "library-l2-new.png"
   },
   "library-l2-wish-uncarried": {
-   "hash": "09e33e13",
+   "hash": "9921600f",
    "png": "library-l2-wish-uncarried.png"
   },
   "library-l2-shut": {
-   "hash": "8ea93239",
+   "hash": "22e80bc2",
    "png": "library-l2-shut.png"
   },
   "library-l2-hiljan": {
-   "hash": "fe98c939",
+   "hash": "87143e0b",
    "png": "library-l2-hiljan.png"
   },
   "library-l2-kilpo": {
-   "hash": "9dddb649",
+   "hash": "55f03a05",
    "png": "library-l2-kilpo.png"
   },
   "library-l2-belatz": {
-   "hash": "752ee530",
+   "hash": "230c0c28",
    "png": "library-l2-belatz.png"
   },
   "library-l2-belatz-coat-lit-complete": {
-   "hash": "8dbcfba4",
+   "hash": "b8e298b3",
    "png": "library-l2-belatz-coat-lit-complete.png"
   },
   "library-l2-blikur": {
-   "hash": "bb6ca2a0",
+   "hash": "6ccfdeac",
    "png": "library-l2-blikur.png"
   },
   "library-l2-loika-late": {
-   "hash": "4e68a6da",
+   "hash": "262a7b16",
    "png": "library-l2-loika-late.png"
   },
   "library-l3-far": {
-   "hash": "612adc56",
+   "hash": "a89bc0d3",
    "png": "library-l3-far.png"
   },
   "library-l3-far-one-family": {
-   "hash": "fbf798e5",
+   "hash": "0a79b8b6",
    "png": "library-l3-far-one-family.png"
   },
   "library-l1-dither": {
-   "hash": "5d979b4c",
+   "hash": "a9bfe831",
    "png": "library-l1-dither.png"
   }
  }

@@ -56,6 +56,7 @@ void prim_init(void) { g_run = 0; g_n = 0; g_unknown = 0; g_nreg = 1; strcpy(g_r
 char *prim_text(void) { return g_text; }
 void prim_text_role(const char *role, const char *ground) { snprintf(g_trole, sizeof g_trole, "%s", role ? role : ""); snprintf(g_tground, sizeof g_tground, "%s", ground ? ground : ""); }
 void prim_run(uint32_t run) { g_run = run; }
+uint32_t prim_run_get(void) { return g_run; }
 char *prim_ops(void) { return g_ops; }
 int prim_ops_size(void) { return (int)sizeof g_ops; }
 int prim_text_size(void) { return (int)sizeof g_text; }

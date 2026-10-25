@@ -25,7 +25,7 @@ const MID_EXPECT = { found: ["S01", "S02", "S03", "S07", "S09", "S12"], met: ["S
 const L1 = {
   "l1-first": { l1: null, cur: "cell.S01", subject: "", expect: { found: [], met: ["S01"] }, set: (w, bare, seen) => { const st = window.__st.ST; bare(); st.metIds = ["S01"]; seen(); } },
   "l1-mid": { l1: "S01", cur: "cell.S01", subject: "", expect: { ...MID_EXPECT, wish: ["S01", "S03"] }, set: MID, arg: { loikaWish: true } },
-  "l1-new": { l1: "S02", cur: "cell.S02", subject: "three new looks", expect: { found: ["S01", "S02", "S03"], met: ["S05"], glint: ["S02", "S03"] }, set: (w, bare, seen) => {
+  "l1-new": { l1: "S02", cur: "cell.S02", subject: "Three new looks", expect: { found: ["S01", "S02", "S03"], met: ["S05"], glint: ["S02", "S03"] }, set: (w, bare, seen) => {
     const S = window.__st, st = S.ST; w.adults(1); bare(); st.knownIds = ["S02", "S03"]; st.metIds = ["S05"]; S.fillGuide("S01", 0.4); S.fillGuide("S02", 0.3); S.fillGuide("S03", 0.3); seen();   // the Loika's guide filled, and seen: nothing new for it
     const drop = (id, n) => { for (const t of Object.keys(st.libSeen[id] ?? {})) while (n > 0 && st.libSeen[id][t].length > 1) { st.libSeen[id][t].pop(); n--; } };   // looks found since the record: the last found of the traits with more than one
     drop("S02", 2); drop("S03", 1); } },
@@ -114,7 +114,7 @@ async function assertL2(page, name, sc, fail) {
   if (E.face) must(!!R.shelf.face, "the face"); if (E.families != null) must(R.shelf.families.length === E.families, `${R.shelf.families.length} family faces`);
   if (E.wish) must(JSON.stringify(R.shelf.wish.map((q) => q.carried)) === JSON.stringify(E.wish), `the wish carried ${R.shelf.wish.map((q) => q.carried)}`);
   const ring = E.ring ?? (sc.lit ? "chapter." + sc.lit : R.sheet.plates[0]?.id ?? ""); must(p.focus.cur === ring, `the ring is on ${p.focus.cur}, not ${ring}`);
-  if (sc.met) must(p.frame.line.ok === null && p.frame.line.subject === "seen, no pod identified yet", "the met-only line");
+  if (sc.met) must(p.frame.line.ok === null && p.frame.line.subject === "Seen, no pod identified yet", "the met-only line");
   else if (sc.lit) must(p.frame.line.back === "Clear" && /^Clear /.test(p.frame.line.ok), "the lit line"); else must(p.frame.line.back === "Library" && /^Show /.test(p.frame.line.ok), "the sheet line");
 }
 const noErrors = async (page, fail) => { const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | ")); };

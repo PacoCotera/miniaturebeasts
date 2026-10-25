@@ -1,13 +1,13 @@
 // The clearance of text (the spacing rules for text, Station column: T1 to T7, T10 and T11): pure, measured from the face's node log, not from ink, so the same numbers come from the
 // WebAssembly face, the native build and the Pi. checks.mjs runs it on every journey point (rule 6) and face/tools/layer-check.mjs on every golden state.
-//   departures(log, spec, frameSpec, inkOf) -> [{ rule, node, other, measured, required }]
+//   departures(log, spec, frameSpec, inkOf, screen) -> [{ rule, node, other, measured, required }]
 // log: the face's log (prim_log_json): `type`, each text with its region, role, ground, x, w, cap (its cap top row) and base (its baseline row); `nodes`, every node shown with a size in draw
 //   order, [id, kind, layer, region, x, y, w, h, flags, inkx, inky, inkw, inkh, run] (run: the v_run or v_price call the node was sent in, 0 for none; kind: 1 rect, 2 text, 3 sprite, 4 nine-slice, 5 clip, 6 composed; flags: 1 a focus ring, 2 inside a clip).
 // spec: the screen's spec; a region (by its id under `regions`, a dotted id through nested regions) may mark "band": "chip" or "key" (T4's 8 from the ends), "labels": "<node id>" (the picture
 //   its text labels, T5's 8) and "ellipsis": true (a slot whose name may end in "…", T11). frameSpec: frame.json (the bars, type.clearance.exceptions).
 // inkOf(node): a picture node's visible box [x, y, w, h] on the screen (default: the ink the log carries for it, the box of its pixels with alpha above 0).
 // Each departure names its rule; `node` is the text ("<region> \"<text>\""), `other` what it is measured against, `measured` and `required` in px. Exceptions are spec data, never code:
-// frame.json type.clearance.exceptions [{ node, rule, reason, by }] (node: the text's region, or "<region> \"<text>\""): a departure an exception covers is dropped, and used() names the ones in use.
+// frame.json type.clearance.exceptions [{ screen?, node, rule, reason, by }] (node: the text's region, or "<region> \"<text>\""; screen: when named, the exception covers that screen only, the `screen` argument): a departure an exception covers is dropped, and used() names the ones in use.
 const KIND = { rect: 1, text: 2, sprite: 3, nine: 4, clip: 5, composed: 6 }, RING = 1;
 const TOP = { y0: 0, y1: 40, centre: 20 }, LINE = { y0: 562, y1: 600, cap: 576, centre: 582 };   // the bars' rows (frame.json regions.top, regions.line) and their middles (T2)
 const CAP = { 16: 12, 20: 14, 28: 21 }, pxOf = (code) => (code > 1000 ? code % 1000 : code), capOf = (code) => CAP[pxOf(code)] ?? Math.floor((pxOf(code) * 3) / 4);
@@ -22,7 +22,7 @@ const gap = (t, b) => (rowsMeet(t, b) ? hgap(t, b) : colsMeet(t, b) ? vgap(t, b)
 function regionOf(spec, id) { let at = spec?.regions; for (const k of String(id).split(".")) { if (!at || typeof at !== "object") return null; at = at[k]; } return at && typeof at === "object" ? at : null; }
 const nameOf = (t) => `${t.region} "${t.text}"`;
 
-export function departures(log, spec, frameSpec, inkOf) {
+export function departures(log, spec, frameSpec, inkOf, screen) {
   const nodes = (log?.nodes ?? []).map(node).map((n, i) => ({ ...n, order: i })), ink = inkOf ?? ((n) => n.ink), out = [];
   // a node that a later rectangle, or a later picture whose pixels fill its box, covers whole is not seen (an overlay's veil and panel over the screen under it): it is not measured, nor measured against
   const solid = (r) => r.kind === KIND.rect || ((r.kind === KIND.sprite || r.kind === KIND.nine) && r.ink[0] === r.x && r.ink[1] === r.y && r.ink[2] === r.w && r.ink[3] === r.h);
@@ -68,12 +68,14 @@ export function departures(log, spec, frameSpec, inkOf) {
         if (mine.x + mine.w - (t.x + t.w) < end) say("T4", t, box + " end", mine.x + mine.w - (t.x + t.w), end);
       }
     }
-    // T5, a neighbour picture: 8 from the one the spec says the text labels, 16 from any other on the same rows (a picture under the text is its ground, an icon of its own run is inline: the node and the text carry the run they were sent in)
+    // T5, a neighbour picture: 8 from the one the spec says the text labels, 16 from any other on the same rows (a picture under the text is its ground, as is one that encloses any logged text, a tab's or a plate's; a picture of its own run is inline, T8: the node and the text carry the run they were sent in)
     for (const p of pictures) {
-      const b = ink(p); if (!b || b[2] <= 0 || b[3] <= 0 || encloses(b, t) || (t.run && p.run === t.run)) continue;
+      const b = ink(p); if (!b || b[2] <= 0 || b[3] <= 0 || encloses(b, t) || (t.run && p.run === t.run) || texts.some((o) => encloses(b, o))) continue;
       const labels = R.labels != null && fnv(R.labels) === p.id, want = labels ? 8 : 16, g = labels ? gap(t, b) : rowsMeet(t, b) ? hgap(t, b) : null;
       if (g != null && g < want) say("T5", t, `${labels ? "the picture it labels" : "a picture"} ${p.region} [${b.join(", ")}]`, g, want);
     }
+    // T8, an inline group: a picture and a text of the same run on the same rows are 4 apart
+    if (t.run) for (const p of pictures) { if (p.run !== t.run) continue; const b = ink(p); if (!b || b[2] <= 0 || b[3] <= 0 || !rowsMeet(t, b)) continue; const g = hgap(t, b); if (g < 4) say("T8", t, `its own run's picture ${p.region} [${b.join(", ")}]`, g, 4); }
     // T6, the focus ring: 4 from its outer edge (a text inside the ring's box is the ringed thing's own)
     for (const r of seenNodes.filter((n) => n.ring)) { const b = [r.x, r.y, r.w, r.h]; if (inside(t, b)) continue; const g = gap(t, b); if (g != null && g < 4) say("T6", t, `the focus ring [${b.join(", ")}]`, g, 4); }
     // T7, a 1 px rule: 8 from it
@@ -85,11 +87,16 @@ export function departures(log, spec, frameSpec, inkOf) {
     if (t.text.includes("…") && R.ellipsis !== true) say("T11", t, "an ellipsis outside a name's marked slot", 0, 0);
   }
   const ex = frameSpec?.type?.clearance?.exceptions ?? [], used = new Set();
-  const kept = out.filter((d) => { const e = ex.findIndex((x) => x.rule === d.rule && (x.node === d.node || d.node.startsWith(x.node + " \""))); if (e < 0) return true; used.add(e); return false; });
+  const kept = out.filter((d) => { const e = ex.findIndex((x) => x.rule === d.rule && (!x.screen || x.screen === screen) && (x.node === d.node || d.node.startsWith(x.node + " \""))); if (e < 0) return true; used.add(e); return false; });
   Object.defineProperty(kept, "used", { value: [...used].map((i) => ex[i]) });   // the exceptions in use (not enumerable: the result compares as the list of departures)
   return kept;
 }
 // The exceptions frame.json lists that no departure used across a whole run (each must be in use, so the list cannot rot): pass every result of departures().
 export function unusedExceptions(frameSpec, results) { const ex = frameSpec?.type?.clearance?.exceptions ?? [], used = new Set(results.flatMap((r) => r.used ?? [])); return ex.filter((e) => !used.has(e)); }
-// Report or fail: a screen listed in frame.json type.clearance.enforced fails on a departure; any other is reported (today none is listed).
+// Report or fail: a screen listed in frame.json type.clearance.enforced fails on a departure; any other is reported.
 export const enforced = (frameSpec, screen) => (frameSpec?.type?.clearance?.enforced ?? []).includes(screen);
+// The frame's own text, on every screen that draws it: the regions its words draw text in (the top bar's zones, the bottom line's, the message plate), the decision panel's
+// (its question, its cards' words) and the chapter rail's tabs. "frame" in type.clearance.enforced fails a departure of any of them on any screen; the screen's own text stays as its entry says.
+export const FRAME_REGIONS = new Set(["title", "materials", "time", "action", "subject", "need", "back", "plate", "panelTitle", "cardText", "rail.tab"]);
+const regionOfDeparture = (d) => String(d.node).match(/^[^ ]+/)?.[0] ?? "";
+export const enforcedDeparture = (frameSpec, screen, d) => enforced(frameSpec, screen) || (enforced(frameSpec, "frame") && FRAME_REGIONS.has(regionOfDeparture(d)));

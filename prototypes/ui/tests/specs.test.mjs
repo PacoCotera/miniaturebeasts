@@ -155,22 +155,23 @@ test("the Station frame's language: the zones of the top bar and the bottom line
   const F = frame.regions, fsvg = readFileSync(new URL("../../../design/style-guide/station-layouts/00-frame.svg", import.meta.url), "utf8"), fb = new Set([...fsvg.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g)].map((m) => [Math.round(m[1] - 0.5), Math.round(m[2] - 0.5), Math.round(+m[3] + 1), Math.round(+m[4] + 1)].join(",")));
   for (const k of ["title", "materials", "companion", "time", "action", "subject", "need", "back"]) assert.ok(fb.has(F[k].rect.join(",")), `${k} ${F[k].rect} is not in the frame wireframe`);
   assert.equal(F.action.wait.icon, "icon-wait-16", "the bud's wait is the price's fourth group, one picture id everywhere (fix 6 N1a)"); assert.deepEqual([F.action.wait.token, F.action.wait.size, F.action.wait.colour, F.action.wait.never], ["⧗", [16, 16], "price", "need"]);
-  const bot = ["action", "subject", "need", "back"].map((k) => F[k].rect); assert.deepEqual(F.separators.x, [404, 620]);
-  assert.ok(bot[0][0] + bot[0][2] < 404 && 404 < bot[1][0] && bot[1][0] + bot[1][2] < 620 && 620 < bot[2][0], "rules between action, context and notice");
-  assert.equal(F.need.right + F.back.gapBefore, F.back.rect[0], "the notice 24 px before the way back"); assert.equal(F.back.right, 1008); assert.equal(F.subject.rect[0] + F.subject.rect[2] / 2, 512);
+  const bot = ["action", "subject", "need", "back"].map((k) => F[k].rect); assert.deepEqual(F.separators.x, [400, 624]);
+  assert.ok(bot[0][0] + bot[0][2] < 400 && 400 < bot[1][0] && bot[1][0] + bot[1][2] < 624 && 624 < bot[2][0], "rules between action, context and notice");
+  for (const x of F.separators.x) for (const r of bot) assert.ok(r[0] - x >= 8 || x - (r[0] + r[2]) >= 8, `the rule at ${x} 8 px from the zone ${r} (T7)`);
+  assert.equal(F.need.right + F.back.gapBefore, F.back.rect[0], "the notice 16 px before the way back"); assert.equal(F.back.right, 1008); assert.equal(F.subject.rect[0] + F.subject.rect[2] / 2, 512);
   for (const id of ["frame-room-home-24", "frame-room-research-24", "frame-room-library-24", "frame-room-vivarium-24", "frame-companion-solid-16x24", "frame-companion-outline-16x24", "frame-lamp-8-mint", "frame-lamp-8-stone", "home-lamp-amber-12x12", "home-lamp-hairline-12x12", "home-lamp-sprout-12x12", "home-lamp-sky-12x12", "face-{mibi}-24-away", "face-24-empty", "frame-sun-16"]) assert.ok(JSON.stringify(F.marks).includes(id), "slice " + id);
   assert.deepEqual(Object.keys(F.marks.lamp12).sort(), ["needsYou", "off", "waiting", "well"]);
-  assert.equal(F.top.slice, "frame-top-bar-1024x40"); assert.equal(F.line.slice, "frame-bottom-line-1024x38");
+  assert.equal(F.top.readout.gap, 12, "title → readout 12 (T8)"); assert.equal(F.top.slice, "frame-top-bar-1024x40"); assert.equal(F.line.slice, "frame-bottom-line-1024x38");
   assert.equal(F.marks.scale, "never");
   const top = ["title", "materials", "companion", "time"].map((k) => F[k].rect);
   for (let i = 1; i < top.length; i++) assert.ok(top[i - 1][0] + top[i - 1][2] + 16 <= top[i][0], "top bar zones apart, left to right");
   assert.deepEqual(F.topRules.x, [256, 888]); assert.ok(F.title.rect[0] + F.title.rect[2] < 256 && 256 < F.materials.rect[0] && F.materials.rect[0] + F.materials.rect[2] < F.companion.rect[0] && F.companion.rect[0] + F.companion.rect[2] < 888 && 888 < F.time.rect[0], "the rules between the groups");
   assert.equal(F.time.rect[0] + F.time.rect[2], 1008); assert.equal(F.materials.rect[0] + F.materials.rect[2] / 2, 512);
-  assert.deepEqual([F.title.px, F.title.weight, F.title.words, F.companion.words], [20, 500, 1, 0]); assert.deepEqual(F.title.mark, [16, 8, 24, 24]);
+  assert.deepEqual([F.title.role, F.title.words, F.companion.words], ["title", 1, 0]); assert.deepEqual(frame.type.fonts[frame.type.roles[F.title.role].font], [20, 500], "the title at 20 Medium"); assert.deepEqual(F.title.mark, [16, 8, 24, 24]);
   assert.equal(frame.colours.verb, "orange"); assert.equal(frame.colours.capConfirm, "orange");
   assert.deepEqual(frame.strings.withdrawn, ["dot", "backArrow"], "no dot-joined parts in the frame: the ← is a key cap, the parts are zones");
   // the way back is 88 wide with 68 px of room for its word, the notice ends 24 px before it; every title's mark is the icon of a key (station-layouts.md, The column and the keys)
-  assert.deepEqual(F.back.rect, [920, 570, 88, 24]); assert.equal(F.back.room, F.back.rect[2] - F.back.cap[0] - F.back.capGap); assert.deepEqual(F.need.rect, [624, 570, 272, 24]); assert.equal(F.need.right, F.need.rect[0] + F.need.rect[2]);
+  assert.deepEqual(F.back.rect, [920, 570, 88, 24]); assert.equal(F.back.room, F.back.rect[2] - F.back.cap[0] - F.back.capGap); assert.deepEqual(F.need.rect, [632, 570, 272, 24]); assert.equal(F.need.right, F.need.rect[0] + F.need.rect[2]);
   assert.deepEqual(Object.keys(F.marks.room).filter((k) => k !== "size").sort(), ["home", "library", "research", "vivarium"], "four room marks, one per coloured key");
   for (const [screen, room] of Object.entries(F.title.marks)) assert.ok(F.marks.room[room.toLowerCase()], `${screen}: its mark ${room} is a key's icon`);
   assert.equal(F.title.marks.cargo, "Home", "Cargo carries Home's mark"); for (const k of ["vivarium", "habitat", "cross", "sitting"]) assert.equal(F.title.marks[k], "Vivarium", k);
@@ -520,7 +521,7 @@ test("the not-built composition agrees with its wireframes: one line on the stag
   assert.equal(frame.colours.stageGround, "ground", "the stage with no slice is the instrument's ground"); assert.equal(N.colours.ground, frame.colours.stageGround);
   assert.deepEqual(paletteBad(N.colours), []); assert.deepEqual(paletteBad(frame.idle.colours), []);
   for (const k of ["line"]) { const s = N.strings[k]; assert.ok(s.split(/\s+/).length <= R.line.words, `${k}: six words or fewer`); assert.ok(!/\d/.test(s), `${k}: no digits`); assert.ok(!s.endsWith("."), `${k}: no full stop`); }
-  assert.equal(N.strings.line, N.strings.line.toLowerCase(), "the line in lower case, as the frame's notices; the title names the screen");
+  assert.equal(N.strings.line, N.strings.line[0].toUpperCase() + N.strings.line.slice(1).toLowerCase(), "the line in sentence case (one capital at its start), as the frame's notices; the title names the screen");
   assert.equal(N.strings.subject, "");
 });
 
@@ -651,7 +652,7 @@ test("Idle is the Vivarium's whole without the frame: one painting, the bed and 
   assert.equal(R.bed.markRect[0] + 8, S.centre); assert.ok(inside(R.resident.walk.ground, V.ground));
   assert.deepEqual(S.ink.rects[3], S.places[3].map((x) => [x - 48, S.footY - 88, 96, 88])); assert.deepEqual([S.ink.rects[3][0][0], S.ink.rects[3][2][0] + 96], [R.bed.rect[0], R.bed.rect[0] + R.bed.rect[2]]);
   for (const x of S.places[2]) assert.ok(B.has([x - 48, S.footY - 88, 96, 88].join(",")), "two sleepers' nap ink in the wireframe"); assert.ok(!("asleepMark" in S) && S.mark === null, "no asleep mark");
-  assert.deepEqual(I.strings.out, { 1: "{name} is out with the Companion", 2: "two mibis are with the Companion", 3: "three mibis are with the Companion" });
+  assert.deepEqual(I.strings.out, { 1: "{name} is out with the Companion", 2: "Two mibis are with the Companion", 3: "Three mibis are with the Companion" });
   for (const s of [...Object.values(I.strings.crates), I.strings.budReady, I.strings.budGrowing, ...Object.values(I.strings.out)]) { assert.ok(wordsIn(s) <= R.line.words, s); assert.ok(!/\d/.test(s), s); }
   assert.deepEqual(I.strings.order, ["crates", "budReady", "budGrowing", "out"]);
 });
@@ -875,10 +876,11 @@ test("the Library's Level 2 (library.json l2): the shelf, the families, the focu
 // The string lint (the copywriter's case rule, sentence case), in report mode: every string leaf of every station spec's `strings` tables (at any depth) starts, after its leading spaces, with an
 // upper-case letter, a digit or a non-letter glyph; or with a placeholder of a name the model already capitalises; or its key path (inside that `strings`) is listed in the table's own
 // `fragments` (a fragment set inside other lines, each entry with its reason) or `composed` (a template capLine cases where it is set: so a lowercase-led template never passes as a plain line).
-// A list entry is a glob path ("watchHabits.*": * is any run inside one key) or { path, reason }; it covers the path and everything under it. The misses are printed per file; nothing fails yet:
-// each screen's ticket enforces its own spec.
+// A list entry is a glob path ("watchHabits.*": * is any run inside one key) or { path, reason }; it covers the path and everything under it. The misses are printed per file; a file
+// LINT_ENFORCED names fails on any (each screen's ticket enforces its own spec), and every list entry of an enforced file carries its reason.
 // A leaf whose own key is spec documentation (a note, a rule, a key that begins with an underscore, or ends in Note or Rule) is not a line the player reads: the lint skips it.
 const DOCUMENTATION = /^(_|note$|rule$)|(Note|Rule)$/;
+const LINT_ENFORCED = ["frame.json"];
 const CAPITALISED = ["{Name}", "{name}", "{Species}", "{species}", "{Chapter}", "{Trait}", "{A}", "{B}", "{pod}"];
 function lintStrings(spec) {
   const misses = [], passed = [];
@@ -898,11 +900,17 @@ function lintStrings(spec) {
   }
   return { misses, passed: passed.length };
 }
-test("the string lint (report mode): each station spec's strings start with a capital, a digit, a glyph or a capitalised name, or are listed as fragments or composed", () => {
+test("the string lint (enforced for frame.json, report mode elsewhere): each station spec's strings start with a capital, a digit, a glyph or a capitalised name, or are listed as fragments or composed", () => {
   const dir = new URL("../specs/station/", import.meta.url), files = readdirSync(dir).filter((f) => f.endsWith(".json") && !f.endsWith(".props.json") && !f.startsWith("stand-"));
   let total = 0;
-  for (const f of files.sort()) { const { misses, passed } = lintStrings(JSON.parse(readFileSync(new URL(f, dir), "utf8"))); if (!misses.length && !passed) continue; total += misses.length;
-    console.log(`string lint (report mode): ${f}: ${misses.length} of ${misses.length + passed} strings start in lowercase${misses.length ? " (e.g. " + misses.slice(0, 3).map(([p, s]) => `${p} "${s}"`).join(", ") + ")" : ""}`); }
+  for (const f of files.sort()) { const spec = JSON.parse(readFileSync(new URL(f, dir), "utf8")), { misses, passed } = lintStrings(spec); if (!misses.length && !passed) continue; total += misses.length;
+    const on = LINT_ENFORCED.includes(f);
+    console.log(`string lint (${on ? "enforced" : "report mode"}): ${f}: ${misses.length} of ${misses.length + passed} strings start in lowercase${misses.length ? " (e.g. " + misses.slice(0, 3).map(([p, s]) => `${p} "${s}"`).join(", ") + ")" : ""}`);
+    if (on) {
+      assert.deepEqual(misses, [], `${f}: every string starts with a capital, a digit, a glyph or a capitalised name, or is listed as a fragment or composed`);
+      const lists = []; const find = (v) => { if (Array.isArray(v)) v.forEach(find); else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) { if (k === "strings" && x && typeof x === "object") lists.push(...(x.fragments ?? []), ...(x.composed ?? [])); find(x); } }; find(spec);
+      for (const e of lists) assert.ok(e && typeof e.path === "string" && typeof e.reason === "string" && e.reason.length > 0, `${f}: the list entry ${JSON.stringify(e)} has its path and its reason`);
+    } }
   console.log(`string lint (report mode): ${total} lowercase-led strings in all`);
   const t = lintStrings({ strings: { a: "the bud", b: "Open", c: "3 at home", d: "✕ {Trait}", e: "{name} grows", f: "{a} pod", g: { x: "digging" }, h: ["one", "Two"], fragments: ["g.*"], composed: [{ path: "f", reason: "the article, cased by capLine" }] }, l2: { strings: { q: "met only" } } });
   assert.deepEqual(t.misses, [["a", "the bud"], ["h.0", "one"], ["q", "met only"]]); assert.equal(t.passed, 7);

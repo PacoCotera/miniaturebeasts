@@ -4,12 +4,12 @@ import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
 
 const SCENES = {
-  docked: { line: "two crates wait in the bay", set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.crates(2); } },
-  "docked-dawn":  { line: "two crates wait in the bay", light: "dawn",  set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.crates(2); } },   // the docked scene at three lights (fix 7: the residents take the grade)
-  "docked-dusk":  { line: "two crates wait in the bay", light: "dusk",  set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.crates(2); } },
-  "docked-night": { line: "two crates wait in the bay", light: "night", set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.crates(2); } },
+  docked: { line: "Two crates wait in the Bay", set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.crates(2); } },
+  "docked-dawn":  { line: "Two crates wait in the Bay", light: "dawn",  set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.crates(2); } },   // the docked scene at three lights (fix 7: the residents take the grade)
+  "docked-dusk":  { line: "Two crates wait in the Bay", light: "dusk",  set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.crates(2); } },
+  "docked-night": { line: "Two crates wait in the Bay", light: "night", set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.crates(2); } },
   away:   { line: /^\S+ is out with the Companion$/, set: (w) => { w.adults(4); w.young(2); w.carry([0]); w.away(); } },
-  none:   { line: "a bud is growing", set: (w) => { w.adults(3); w.bud(false); } },
+  none:   { line: "A bud is growing", set: (w) => { w.adults(3); w.bud(false); } },
   empty:  { line: "", set: (w) => { w.adults(2); } },
   twelve: { line: "", timed: true, set: (w) => { w.bays(12); w.adults(12); } },
 };

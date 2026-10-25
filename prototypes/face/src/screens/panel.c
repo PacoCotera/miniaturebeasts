@@ -52,23 +52,27 @@ static void build_plate(void) {
   char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", v_token(F, v_scol_or(F, RP ".ground", "bone"))); snprintf(edge, sizeof edge, "%s", v_token(F, v_scol_or(F, RP ".edge", "bone")));
   kit_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge, 0);
 }
+/* the question: its role on the panel's ground, centred in its rect, the cap on the rect's middle */
 static void build_title(void) {
-  int r[4]; v_srect(F, RP ".title.rect", r); const char *t = v_pstr("overlay.regions.title"); int px = v_si(F, RP ".title.px", 28), w = v_measure(t, px);
-  v_region("panelTitle", LAYER_TYPE); v_line_at("panel.title", t, r[0] + v_half(r[2] - w), v_si(F, RP ".title.lineTop", r[1]), V_ANCHOR_LINE, px, v_token(F, v_scol_or(F, RP ".title.colour", "bone")), V_ALIGN_LEFT);
+  int r[4]; v_srect(F, RP ".title.rect", r); const char *t = v_pstr("overlay.regions.title"); char role[24], g[24]; snprintf(role, sizeof role, "%s", v_sstr(F, RP ".title.role")); snprintf(g, sizeof g, "%s", v_sstr(F, RP ".ground"));
+  v_region("panelTitle", LAYER_TYPE); v_say_in("panel.title", t, r[0], r[2], v_role_cap_in(r[1], r[3], role), V_ANCHOR_CAP, role, g);
 }
 static const char *GLYPH[4] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86", "\xe2\xa7\x97" };   /* ⚡ ❀ ◆ ⧗, the price's closed table (vocab.c PRICE) */
-/* the cost groups on rubber chips: each "glyph figure" of the price string on a chip nine-sliced round it (6 px in, 8 between groups); a short figure in `need`, a gain in `turn` */
+/* the cost groups on rubber chips: each "glyph figure" of the price string on a chip nine-sliced round it (6 px in, 8 between groups), its cap centred in the chip; the figure in the role
+   regions.panel.card.costs names for a price, a short one or a gain, on the card's ground */
 static void build_costs(int i, int x, int y, const char *cost, const char *shorts, int gain) {
-  const char *chip = v_pstr("overlay.regions.art.chip"); int pad = v_si(F, RP ".art.chip.pad", 6), between = v_si(F, RP ".art.chip.between", 8), ch = v_si(F, RP ".art.chip.h", 20), px = v_si(F, RP ".card.costs.px", 16), k = 0;
+  const char *chip = v_pstr("overlay.regions.art.chip"); int pad = v_si(F, RP ".art.chip.pad", 6), between = v_si(F, RP ".art.chip.between", 8), ch = v_si(F, RP ".art.chip.h", 20), k = 0;
+  char role[24], gr[24]; snprintf(role, sizeof role, "%s", v_sstr(F, RP ".card.costs.role")); snprintf(gr, sizeof gr, "%s", v_sstr(F, RP ".card.ground")); int top = v_role_cap_in(y, ch, role);
   static const int CAPS[4] = { 10, 0, 10, 0 };
   for (const char *p = cost; *p;) {
     int g = -1; for (int j = 0; j < 4; j++) if (strncmp(p, GLYPH[j], strlen(GLYPH[j])) == 0) g = j;
     if (g < 0) { p++; continue; }
     const char *q = p + strlen(GLYPH[g]); while (*q == ' ') q++; int n = 0; while (q[n] && q[n] != ' ') n++;
     char grp[48]; snprintf(grp, sizeof grp, "%s %.*s", GLYPH[g], n, q);
-    int rw = v_run_width(grp, px), cw = rw + 2 * pad; const char *colour = v_token(F, gain ? "turn" : (g < 3 && *shorts && strstr(shorts, GLYPH[g])) ? "need" : "price");
+    char as[32]; snprintf(as, sizeof as, "%s", v_sstr(F, gain ? RP ".card.costs.gain" : (g < 3 && *shorts && strstr(shorts, GLYPH[g])) ? RP ".card.costs.short" : RP ".card.costs.price"));
+    int rw = v_role_width(grp, as), cw = rw + 2 * pad;
     v_region("cardChips", LAYER_PAINTED); if (*chip) v_nine(v_fmt("card.%d.chip.%d", i, k), chip, x, y, cw, ch, CAPS);
-    v_region("cardText", LAYER_TYPE); v_run(v_fmt("card.%d.cost.%d", i, k), grp, x + pad, y, px, colour, V_ALIGN_LEFT);
+    v_region("cardText", LAYER_TYPE); v_say_run(v_fmt("card.%d.cost.%d", i, k), grp, x + pad, top, as, gr, V_ALIGN_LEFT);
     x += cw + between; k++; p = q + n;
   }
 }
@@ -97,13 +101,16 @@ static void build_card(int i, int n, int focused) {
   /* the destination mark: the title bar's mark of the room it lands in, over the picture's top right; staying here: none */
   { const char *mk = v_pstr(v_fmt("overlay.regions.cards.%d.mark", i)); int ms = v_sk(F, RP ".card.mark.size", 0); if (ms <= 0) ms = 24;
     v_name("cardMarks"); v_slot_at(v_fmt("card.%d.mark", i), mk, NULL, r[0] + w - 40, r[1] + v_sk(F, RP ".card.mark.at", 1), ms, ms, 1, r[0] + w - 40, r[1] + 16); }
-  /* the name: 20, the option's verb */
-  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.name", i), s, r[0] + v_sk(F, RP ".card.name.at", 0), r[1] + v_sk(F, RP ".card.name.at", 1), V_ANCHOR_LINE, v_si(F, RP ".card.name.px", 20), v_token(F, v_scol_or(F, dim ? RP ".card.name.colourDim" : RP ".card.name.colour", "bone")), V_ALIGN_LEFT); }
+  /* the name: the option's verb, in its role on the card's ground */
+  char cg[24]; snprintf(cg, sizeof cg, "%s", v_sstr(F, RP ".card.ground"));
+  { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); char role[24]; snprintf(role, sizeof role, "%s", v_sstr(F, dim ? RP ".card.name.roleDim" : RP ".card.name.role")); int nx = r[0] + v_sk(F, RP ".card.name.at", 0), ny = r[1] + v_sk(F, RP ".card.name.at", 1);
+    v_region("cardText", LAYER_TYPE); v_say(v_fmt("card.%d.name", i), s, nx, ny, V_ANCHOR_LINE, role, cg, V_ALIGN_LEFT); }
   /* the costs, on their chips; free: nothing drawn */
   build_costs(i, r[0] + v_sk(F, RP ".card.costs.at", 0), r[1] + v_sk(F, RP ".card.costs.at", 1), v_pstr(v_fmt("overlay.regions.cards.%d.cost", i)), v_pstr(v_fmt("overlay.regions.cards.%d.short", i)), v_pbool(v_fmt("overlay.regions.cards.%d.gain", i), 0));
   /* the line: the one thing the picture cannot say, 16; a loss shows it in `need` */
   { const char *s = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); (void)tw;
-    v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.line", i), s, r[0] + v_sk(F, RP ".card.line.at", 0), r[1] + v_sk(F, RP ".card.line.at", 1), V_ANCHOR_LINE, v_si(F, RP ".card.line.px", 16), v_token(F, v_scol_or(F, dim ? RP ".card.line.colourDim" : loss ? RP ".card.line.colourLoss" : RP ".card.line.colour", "bone")), V_ALIGN_LEFT); }
+    char role[24]; snprintf(role, sizeof role, "%s", v_sstr(F, dim ? RP ".card.line.roleDim" : loss ? RP ".card.line.roleLoss" : RP ".card.line.role"));
+    v_region("cardText", LAYER_TYPE); v_say(v_fmt("card.%d.line", i), s, r[0] + v_sk(F, RP ".card.line.at", 0), r[1] + v_sk(F, RP ".card.line.at", 1), V_ANCHOR_LINE, role, cg, V_ALIGN_LEFT); }
 }
 /* the ring: the focused card's rect, the frame ring { rect: 10 } 4 px out (the ring reaches 5 from the rect it is given, so the rect is drawn 1 px in); no lift */
 static void build_ring(int n) {
@@ -125,10 +132,11 @@ static void build_strip(int n) {
     v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), c[0], c[1], c[2], c[3], well, wedge, 0);
     { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pw = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0);
       v_name("cardPictures"); v_slot_at(v_fmt("card.%d.picture", i), pic, NULL, c[0] + v_sk(F, RP ".strip.picture.at", 0), c[1] + v_sk(F, RP ".strip.picture.at", 1), pw, ph, pw > 0 && ph > 0, c[0], c[1]); }
-    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); int px = v_si(F, RP ".strip.name.px", 20); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
-      v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.name", i), fit, tx, c[1] + v_sk(F, RP ".strip.name.at", 1), V_ANCHOR_LINE, px, v_token(F, v_scol_or(F, dim ? RP ".strip.name.colourDim" : RP ".strip.name.colour", "bone")), V_ALIGN_LEFT); }
-    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); int px = v_si(F, RP ".strip.line.px", 16); char fit[V_STR]; v_clip(t, maxw, px, fit, sizeof fit);
-      v_region("cardText", LAYER_TYPE); v_line_at(v_fmt("card.%d.line", i), fit, tx, c[1] + v_sk(F, RP ".strip.line.at", 1), V_ANCHOR_LINE, px, v_token(F, v_scol_or(F, dim ? RP ".strip.line.colourDim" : RP ".strip.line.colour", "bone")), V_ALIGN_LEFT); }
+    char g[24]; snprintf(g, sizeof g, "%s", v_sstr(F, RP ".ground"));   /* the strip's words stand on its ground (the cards are its code-drawn wells) */
+    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.name", i)); char role[24], fit[V_STR]; snprintf(role, sizeof role, "%s", v_sstr(F, dim ? RP ".strip.name.roleDim" : RP ".strip.name.role")); v_role_clip(t, maxw, role, fit, sizeof fit); int ny = c[1] + v_sk(F, RP ".strip.name.at", 1);
+      v_region("cardText", LAYER_TYPE); v_say(v_fmt("card.%d.name", i), fit, tx, ny, V_ANCHOR_LINE, role, g, V_ALIGN_LEFT); }
+    { const char *t = v_pstr(v_fmt("overlay.regions.cards.%d.line", i)); char role[24], fit[V_STR]; snprintf(role, sizeof role, "%s", v_sstr(F, dim ? RP ".strip.line.roleDim" : RP ".strip.line.role")); v_role_clip(t, maxw, role, fit, sizeof fit);
+      v_region("cardText", LAYER_TYPE); v_say(v_fmt("card.%d.line", i), fit, tx, c[1] + v_sk(F, RP ".strip.line.at", 1), V_ANCHOR_LINE, role, g, V_ALIGN_LEFT); }
     (void)cur;
   }
 }
@@ -212,9 +220,9 @@ static void build_hatchnow(void) {
   int l[4], r[4], wl[4], wr[4]; card_rect(0, 2, l); card_rect(1, 2, r); v_srect(PN, "incubate.windows.left", wl); v_srect(PN, "incubate.windows.right", wr);
   build_bezel(0, l, v_pstr("overlay.regions.verbs.grow")); build_bezel(1, r, v_pstr("overlay.regions.verbs.wait"));
   build_price(l);
-  { const char *t = v_pstr("overlay.regions.caption"); int px = v_si(PN, "hatchnow.caption.px", 16); static char cc[24]; char s[24];   /* Wait's readout: "ready in about N min", right-aligned in its header as Hatch now's price is in its own */
-    if (*t) { spec_str(PN, "hatchnow.caption.colour", s, sizeof s); snprintf(cc, sizeof cc, "%s", v_token(F, s));
-      v_region("panelCaption", LAYER_TYPE); v_line_at("panel.caption", t, r[0] + r[2] - v_si(PN, "incubate.price.right", 12), r[1] + v_si(PN, "incubate.header.baseline", 20), V_ANCHOR_BASE, px, cc, V_ALIGN_RIGHT); } }
+  { const char *t = v_pstr("overlay.regions.caption");   /* Wait's readout: "ready in about N min", right-aligned in its header as Hatch now's price is in its own, in its role on the bezel's fill */
+    if (*t) { char role[24], g[24]; snprintf(role, sizeof role, "%s", v_sstr(PN, "hatchnow.caption.role")); snprintf(g, sizeof g, "%s", v_scol_or(PN, "incubate.bezels.fill", "panel"));
+      v_region("panelCaption", LAYER_TYPE); v_say("panel.caption", t, r[0] + r[2] - v_si(PN, "incubate.price.right", 12), r[1] + v_si(PN, "incubate.header.baseline", 20), V_ANCHOR_BASE, role, g, V_ALIGN_RIGHT); } }
   build_hatched(wl); build_window_frame(0, wl);
   build_growing(wr); build_window_frame(1, wr);
   { anim_state_t t; if (!anim_get(ANIM_DITHER, "stage", &t)) build_ring(2); }

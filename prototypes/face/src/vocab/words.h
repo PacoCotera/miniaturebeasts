@@ -16,7 +16,7 @@ int kit_tiles(const char *spec, const char *list, int n, kit_tile_fn draw, void 
 #define KIT_TAG_BELOW 0   /* the tag's top is yBelow */
 #define KIT_TAG_OVER 1    /* the tag's top is yOver */
 #define KIT_TAG_AUTO 2    /* yBelow, or yOver when the tag's bottom would pass 8 px above the window's bottom */
-void kit_nameTag(const char *spec, const char *glass, const char *name, const int anchor[4], int yBelow, int yOver, int rule, int slot, const char *fill, const char *edge, const char *ink, int out[4]);   /* a name on a panel centred on the anchor box, 8 px inside the window `glass`; slot: the same nodes with no size; out: the tag's box */
+void kit_nameTag(const char *spec, const char *glass, const char *name, const int anchor[4], int yBelow, int yOver, int rule, int slot, const char *fill, const char *edge, const char *role, int out[4]);   /* a name on a panel centred on the anchor box, 8 px inside the window `glass`; slot: the same nodes with no size; out: the tag's box */
 /* The focus ring (fix 14): `target` is the path of the target's entry in `spec` (its `shape` and `ground` are read there, the bands, gap, reach and colours from frame.json focus.ring); `drawn` is the object's rect as the screen drew it this frame, lifted where it lifts; `id` is the ring's region id. */
 void word_focusRing(const char *id, const char *spec, const char *target, const int drawn[4]);
 /* A creature's ring: its footprint on the ground. `picture` is the creature's picture id as drawn (a still, a moving-set atlas or a nap), `cell` is "stand", "curl", "shadow" or "" (the whole picture), `drawn` is its box, not lifted. */
@@ -40,7 +40,7 @@ void word_rail(const char *marksSpec);    /* the chapter rail (frame spec) with 
 /* station/ (Home) */
 void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture, int sx, int sy, const char *from, int level);   /* the living window (the picture is shown from source (sx, sy): the whole shows rows 120 to 560 of Idle's painting): the bezel (NULL: none, the part inside) and the glass, flat plates until the glass master, the master over them; from (NULL or "": none) cross-dithers the master from that picture at level */
 /* common/ */
-void word_ribbon(const char *id, const int rect[4], const char *text, int px, int pad, const char *fill, const char *edge, const char *textColour);   /* the ribbon (pad: the room each side of the words): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
+void word_ribbon(const char *id, const int rect[4], const char *text, int pad, const char *fill, const char *edge, const char *role);   /* the ribbon (pad: the room each side of the words; role: the words' role on the band, NULL for "heading"): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
 void word_topBar(void);
 int frame_material_centre(int i, int out[2]);   /* the centre of a counter's icon in the top bar (0 Energy, 1 Data, 2 Essence) as the bar lays it out now: where Cargo's materials travel */
 void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, int away);   /* a face picture's holder ring (art layer, regions.marks.face.ringWidth), until the picture is painted: not a focus mark */

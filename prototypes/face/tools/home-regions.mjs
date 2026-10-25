@@ -43,6 +43,6 @@ export function departures(log, spec, frame, cur = "room") {
   { const rings = got("focus"), reach = frame.focus.ring.reach;
     if (TARGETS.includes(cur)) { const b = R[cur].rect, want = [b[0] - reach, b[1] - reach, b[2] + 2 * reach, b[3] + 2 * reach]; must(rings.length === 1 && eq(rings[0].rect, want), `the ring ${rings[0]?.rect} is not ${want}: the object as drawn grown by ${reach}`); }
     else must(rings.length === 0, `a ring is drawn at rest: ${rings[0]?.rect}`); }
-  for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
+  for (const t of type) if (![16, 1016, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
   return out;
 }

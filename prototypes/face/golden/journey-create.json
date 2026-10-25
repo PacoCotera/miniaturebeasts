@@ -20,7 +20,7 @@
     },
     "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
+    "subject": "Two chapters unread"
    },
    {
     "key": "down",
@@ -42,7 +42,7 @@
     },
     "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
-    "subject": "two chapters unread"
+    "subject": "Two chapters unread"
    },
    {
     "key": "research",
@@ -58,7 +58,7 @@
     "create": null,
     "ok": "Look at this pod",
     "price": null,
-    "subject": "sealed until identified"
+    "subject": "Sealed until identified"
    },
    {
     "key": "confirm",
@@ -78,7 +78,7 @@
     },
     "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ⧗ 20",
-    "subject": "two chapters unread"
+    "subject": "Two chapters unread"
    },
    {
     "key": "down",
@@ -100,7 +100,7 @@
     },
     "ok": "Incubate",
     "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
-    "subject": "two chapters unread"
+    "subject": "Two chapters unread"
    }
   ],
   "create-grow": [
@@ -142,7 +142,7 @@
     },
     "ok": null,
     "price": null,
-    "subject": "it goes to the Incubator"
+    "subject": "It goes to the Incubator"
    },
    {
     "held": [
