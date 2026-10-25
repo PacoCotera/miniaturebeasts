@@ -1,0 +1,41 @@
+{
+ "pool_brightest_224x52_in_tray_stage_only": [
+  0.307,
+  [
+   280,
+   418
+  ]
+ ],
+ "pool_window_on_composed_screen": [
+  0.307,
+  [
+   280,
+   418
+  ]
+ ],
+ "best_224x52_window_stage_outside_tray": [
+  0.236,
+  [
+   138,
+   118
+  ]
+ ],
+ "pool_is_brightest_window_of_the_stage": true,
+ "stage_tray_window": [
+  0.384,
+  [
+   400,
+   428
+  ]
+ ],
+ "founder_S01_272_p95": 0.679,
+ "pod_p95": 0.275,
+ "capsule_p95": 0.289,
+ "founder_p95_highest_of_objects": true,
+ "label_mean_lum": 0.175,
+ "label_p95_lum": 0.223,
+ "founder_mean_lum": 0.192,
+ "cell_contrast": 4.14,
+ "label_srgb_mean": 110.9,
+ "label_under_founder_mean_p95": true
+}

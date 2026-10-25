@@ -10430,12 +10430,12 @@
    1024,
    522
   ],
-  "src": "slices/room-bench-stage-incubator.png (signed; its Pro painting is gemini-3-pro-image)",
-  "made": "Create's own stage, drawn by hand from the signed Incubator stage in the same frame (the rim, screws and side plates are its pixels): its hoses and gauges painted out by the floor model, a plain slate floor with nothing in the keep-clear zones; the set-aside Pro painting is source/raw/create-stage.jpg (pass 120)",
-  "sha256": "d48e37b576f13f4f3bcedc347b2cdb7d35b39d33953d85ec7dd8ed6ed26a5a29",
+  "src": "create-relayout/build.py, from masters-pods 1cb5b1a2 slices/room-bench-stage-create.png (sha256 eac3651928c0...)",
+  "made": "A1 symmetric opening [68,58,888,494] by one column map; A2 old tray cleared; A3 tray 9-slice at [276,240,472,288]; A5 dish 152 wide; A6 capsule contact shadow; A7 case well",
+  "sha256": "f7fac22e7a1888f04a5c70658f8f8c073f4d014f72d2876ace60b18e4beb2ab4",
   "status": "new",
   "signed_in": null,
-  "status_note": "new (10-15): fix 5 Create CA1, relit from one Pro edit (source/raw/ca1-create-relight.jpg) cut back by hand (create-relight/cut-relight.py): frame 3's top-left key light, the tray floor and its pool; the housing pixel for pixel; C12 measured (pool 0.379 vs 0.293 elsewhere); replaces 209f9fda09c7\u2026 (was signed); plus CA3, the dish pressed in by hand at the pod's place (create-relight/paint-dish.py); signed in the Create retake"
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures; replaces d48e37b5... (was signed)"
  },
  "dome-front-304x272": {
   "size": [
@@ -11260,13 +11260,12 @@
    72
   ],
   "rect": null,
-  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
-  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
-  "sha256": "63c2f1e3c14a9455b9163c1226633534593f04ce8f7ce704129555fdb1ee3edd",
-  "status": "signed",
-  "signed_in": "art director, trait wave 1, 10-11",
-  "status_note": "one sheet per trait: every look in the same framing",
-  "defringed": "magenta key residue removed, 8 px (tools/defringe-plates.py, 2026-10-12)"
+  "src": "sg prototypes/ui/assets/stands S01 layered stand (signed v4)",
+  "made": "derived roll picture: stand window reduced into 96x54 at (16,9) on #162a37, 12 px fade (traitcut.py roll form)",
+  "sha256": "e9f10a22493cdafd076c096a6de19b98d16d5aad6987e90d5e522a5201b16fca",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures; replaces the old two-look master (was signed)"
  },
  "trait-S01-markings-pale-patches-144x176": {
   "size": [
@@ -21875,5 +21874,303 @@
   "status": "derived-from-concept",
   "signed_in": null,
   "status_note": "derived-from-concept (10-18): the art director's 176 px build-time reduction of crate-sitting-256x176 for the portrait berth (work-queue bf33f4c2, results/T-20261016-197/finish/cuts/), taken byte for byte; not drawn by the studio; awaiting the art director's judgement (not signed)"
+ },
+ "chamber-back-472x288": {
+  "size": [
+   472,
+   288
+  ],
+  "rect": [
+   276,
+   240,
+   472,
+   288
+  ],
+  "src": "create-relayout/build.py, from masters-pods 1cb5b1a2 slices/room-bench-stage-create.png (sha256 eac3651928c0...)",
+  "made": "crop of the new stage at screen [276,240,472,288]; alpha 255 but the four corner masks of chamber-back-400x320",
+  "sha256": "05ec22e49bdf01fbca5a43d9849f5ad5713f60894a6b106119a170b87e919789",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "chamber-front-472x288": {
+  "size": [
+   472,
+   288
+  ],
+  "rect": [
+   276,
+   240,
+   472,
+   288
+  ],
+  "src": "create-relayout/build.py, from masters-pods 1cb5b1a2 slices/room-bench-stage-create.png (sha256 eac3651928c0...)",
+  "made": "ink rows 278-287: the stage there, alpha from chamber-front-400x320 rows 310-319 through the 9-slice column map",
+  "sha256": "e4cc284b766a967e63d58c525c155e1f9863fd3c7ab532432a19eea73ce9dcc3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "room-cradle-front-create-152x48": {
+  "size": [
+   152,
+   48
+  ],
+  "rect": [
+   92,
+   348,
+   152,
+   48
+  ],
+  "src": "create-relayout/build.py, from masters-pods 1cb5b1a2 slices/room-bench-stage-create.png (sha256 eac3651928c0...)",
+  "made": "the dish's near lip, the dished stage with alpha from the near half-ring",
+  "sha256": "6e99d4cf463e5f11280d710af0145230a77c58ee448158f85c50558017f75145",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "room-stamp-case-create-152x152": {
+  "size": [
+   152,
+   152
+  ],
+  "rect": [
+   780,
+   104,
+   152,
+   152
+  ],
+  "src": "create-relayout/build.py, from masters-pods 1cb5b1a2 slices/room-bench-stage-create.png (sha256 eac3651928c0...)",
+  "made": "a dim well pressed into the bench (6 px bevel, 3 px deep, floor x0.80, 2 px worn lip), no sage, corners or screws",
+  "sha256": "cc11f4ff102fe139e0d9c4c4e8de04cb98acb163b1f3aae6633496640ad7ddd0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "room-stamp-case-create-152x152-front": {
+  "size": [
+   152,
+   152
+  ],
+  "rect": [
+   780,
+   104,
+   152,
+   152
+  ],
+  "src": "create-relayout/build.py, from masters-pods 1cb5b1a2 slices/room-bench-stage-create.png (sha256 eac3651928c0...)",
+  "made": "#1d232b at 48% over the well floor only (inset 8, radius 6)",
+  "sha256": "1c4cb77e352c986ec9abeade7f2e9e6871ebaaeb9809d5ccb5bc57602c30e6fa",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "capsule-shell-145x224": {
+  "size": [
+   145,
+   224
+  ],
+  "rect": null,
+  "src": "sg prototypes/ui/assets/masters/capsule/capsule-shell-145x224.png (faf36561...)",
+  "made": "hinge stubs erased (x 139-144, rows 186-201); 0 ink right of the main run on rows 180-223",
+  "sha256": "315dd262f43a9bb01d1626b3213220acfac79a64d202bb6f14d1e75c5a9cbe44",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures; replaces faf36561... (was signed)"
+ },
+ "mibi-adult-S01-272x280": {
+  "size": [
+   272,
+   280
+  ],
+  "rect": null,
+  "src": "adult/mibi-adult-S01-304x312.png",
+  "made": "one LANCZOS reduction by 272/304, alpha snapped (>=200:255; 60-199:min(a,110); <60:0), ground row 305 -> 273, centre x 136",
+  "sha256": "01a109448d55f5d2598bafe70528f62932187b17889d28e6b46ae05b1d6d9cae",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S02-272x280": {
+  "size": [
+   272,
+   280
+  ],
+  "rect": null,
+  "src": "adult/mibi-adult-S02-304x312.png",
+  "made": "one LANCZOS reduction by 272/304, alpha snapped (>=200:255; 60-199:min(a,110); <60:0), ground row 305 -> 273, centre x 136",
+  "sha256": "c9c8654af05a782a496061b4b73e54c01321033ccebcf0e7d2424bfb8eab9445",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S03-272x280": {
+  "size": [
+   272,
+   280
+  ],
+  "rect": null,
+  "src": "adult/mibi-adult-S03-304x312.png",
+  "made": "one LANCZOS reduction by 272/304, alpha snapped (>=200:255; 60-199:min(a,110); <60:0), ground row 305 -> 273, centre x 136",
+  "sha256": "df2f76d26fca644cd609e29ae9479f45a3d3448f047bb6a33f9e32d1921204d2",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S09-272x280": {
+  "size": [
+   272,
+   280
+  ],
+  "rect": null,
+  "src": "adult/mibi-adult-S09-304x312.png",
+  "made": "one LANCZOS reduction by 272/304, alpha snapped (>=200:255; 60-199:min(a,110); <60:0), ground row 305 -> 273, centre x 136",
+  "sha256": "ecf32269cc2c5f90f02e3442a9feeff9e2a6acf4c0da4fa4dd32a75ebe07c2f5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S13-272x280": {
+  "size": [
+   272,
+   280
+  ],
+  "rect": null,
+  "src": "adult/mibi-adult-S13-304x312.png",
+  "made": "one LANCZOS reduction by 272/304, alpha snapped (>=200:255; 60-199:min(a,110); <60:0), ground row 305 -> 273, centre x 136",
+  "sha256": "d2d9882e9f99e6964f6cf55a5d2621b96162ad503938d57a71bdd8ce88e92893",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S16-272x280": {
+  "size": [
+   272,
+   280
+  ],
+  "rect": null,
+  "src": "adult/mibi-adult-S16-304x312.png",
+  "made": "one LANCZOS reduction by 272/304, alpha snapped (>=200:255; 60-199:min(a,110); <60:0), ground row 305 -> 273, centre x 136",
+  "sha256": "90b14c8e704721cd1e8679910890c0f5721a0d04e15239bd63c8c291114deec3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-ash-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "sg prototypes/ui/assets/stands S01 layered stand (signed v4)",
+  "made": "derived roll picture: stand window reduced into 96x54 at (16,9) on #162a37, 12 px fade (traitcut.py roll form)",
+  "sha256": "489a93e95b483f886f321a31c3c3402e86aefa2aad2a3c43b9682d55320c9508",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-charcoal-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "sg prototypes/ui/assets/stands S01 layered stand (signed v4)",
+  "made": "derived roll picture: stand window reduced into 96x54 at (16,9) on #162a37, 12 px fade (traitcut.py roll form)",
+  "sha256": "864eaa726684a34ecb813af143a920786a5147541bf99204c79cd71143a54987",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-charcoal-and-ash-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "sg prototypes/ui/assets/stands S01 layered stand (signed v4)",
+  "made": "derived roll picture: stand window reduced into 96x54 at (16,9) on #162a37, 12 px fade (traitcut.py roll form)",
+  "sha256": "22b09e8e0226eadd46faade748eaf0fbabce8fe13db3f9a6c70d5432053f1a07",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-charcoal-and-russet-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "sg prototypes/ui/assets/stands S01 layered stand (signed v4)",
+  "made": "derived roll picture: stand window reduced into 96x54 at (16,9) on #162a37, 12 px fade (traitcut.py roll form)",
+  "sha256": "bfad0cbc7cdc8b6b96b02d3f66f70b7b4c482189a90a3b3d191d2718b1268cc1",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-russet-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "sg prototypes/ui/assets/stands S01 layered stand (signed v4)",
+  "made": "derived roll picture: stand window reduced into 96x54 at (16,9) on #162a37, 12 px fade (traitcut.py roll form)",
+  "sha256": "6c8f4d2a7b682a53239a553ea780e30dd5c49b5ba04244a2cd81fabff41f7de9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-russet-and-ash-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "sg prototypes/ui/assets/stands S01 layered stand (signed v4)",
+  "made": "derived roll picture: stand window reduced into 96x54 at (16,9) on #162a37, 12 px fade (traitcut.py roll form)",
+  "sha256": "c8b9acf830ca6e558116de855baf471936fcc3fad7559a99287add4b639aa6ad",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-markings-patches-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "sg prototypes/ui/assets/stands S01 layered stand (signed v4)",
+  "made": "derived roll picture: stand window reduced into 96x54 at (16,9) on #162a37, 12 px fade (traitcut.py roll form)",
+  "sha256": "cf7a81617258a6207f116d74360df103fa14f2cb63b3eae50d53f031916acfab",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-markings-stripes-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "sg prototypes/ui/assets/stands S01 layered stand (signed v4)",
+  "made": "derived roll picture: stand window reduced into 96x54 at (16,9) on #162a37, 12 px fade (traitcut.py roll form)",
+  "sha256": "d779223f8fa81f6c4f53abaa0db332a8adb9194faa85a673328884ad0e8954f3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-markings-stripes-and-patches-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "sg prototypes/ui/assets/stands S01 layered stand (signed v4)",
+  "made": "derived roll picture: stand window reduced into 96x54 at (16,9) on #162a37, 12 px fade (traitcut.py roll form)",
+  "sha256": "22f34355c685570ba7d1df17138ea4ff7bcf7aabb89776c4d84284f0ee41b2cf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
  }
 }

@@ -1,0 +1,220 @@
+{
+ "inputs": {
+  "base": [
+   "/tmp/claude-0/-home-user/1193a7c0-1ddb-4918-b3b9-bfc5e73ad028/scratchpad/sj/base.png",
+   "eac3651928c02badb12b52a2b2ebcadb51fc6fdd0e96860db202f73ea8b8d3ef"
+  ],
+  "chamber-back-400x320.png": "a4c77d5a04034b55ec616f72be5b59cdcbbaea6d10b51b285085c96b8cdffce1",
+  "chamber-front-400x320.png": "e156b1f2b90d15eec36da296fac058efe14e3e651c3e24577d0e2b7c9dc854c3",
+  "capsule-shell-145x224": "faf365614f34dae7a61f680ec969ed0e31b5a7b03722f92a511267af30472cc2",
+  "stands/index.json": "818dfc494e1a2c050205733c3cb754670958a43e91f27f2c9921565b2d561c22",
+  "S01-adult-304x312-base.png": "a4daefe8241346c11e71dfc1b6f5a2499950919dbec4f47683e24351a382a127",
+  "S01-adult-304x312-stripes.png": "4069f6f2693e63cd1b13aca816e94d715fedd51142c31b98568d6d3fac29177b",
+  "S01-adult-304x312-patches.png": "194c3f8cf1a140bb13f698403b43287dbb51a12269a1660c5cbf3ef7bec6627a",
+  "S01-adult-304x312-base-charcoal-and-russet.png": "5baa7c42199bf4f8ff847c2ab7785be699e423059f1a629e8fcae3b66bb87b9f",
+  "S01-adult-304x312-base-charcoal-and-ash.png": "a869574e2b3f6ea296ee8b194cbd267b3ca22d98cdab59a0e0075c9d305e4f0b",
+  "S01-adult-304x312-base-russet.png": "69249944ce5ade2de0ba1832fef9d1ac4be9a841303c05baa4b63a4778dbd32a",
+  "S01-adult-304x312-base-russet-and-ash.png": "52faea3efdad96120db7a671547d64b76c3ad43a14f6509aa99dc730f35678fd",
+  "S01-adult-304x312-base-ash.png": "cb8506e810f14490fb375abf26383203bdc71e5808a8da1c60bbf4cce627f45c"
+ },
+ "A1": {
+  "left band neighbour max": 21,
+  "interior seam 842|845": 14,
+  "right band seam 969|972": 18
+ },
+ "A4": {
+  "back_corner_alpha_px": 176,
+  "front_ink_rows": [
+   278,
+   287
+  ],
+  "composed_equals_stage_where_alpha_255": 1
+ },
+ "outside_named_boxes_changed_px": 0,
+ "changed_px_by_op": {
+  "A2+A3 box": 149827,
+  "dish": 6276,
+  "shadow": 421,
+  "case": 22431
+ },
+ "A8": {
+  "ink_right_of_main_run_rows_180_223": 0,
+  "pixels_erased": 91
+ },
+ "A9": {
+  "S01": {
+   "offset": [
+    0,
+    0
+   ],
+   "body_box": [
+    18,
+    15,
+    253,
+    273
+   ],
+   "body_h": 259,
+   "alpha_values_ok": true,
+   "magenta_px": 0,
+   "fits_280": true
+  },
+  "S02": {
+   "offset": [
+    1,
+    0
+   ],
+   "body_box": [
+    35,
+    84,
+    237,
+    268
+   ],
+   "body_h": 185,
+   "alpha_values_ok": true,
+   "magenta_px": 0,
+   "fits_280": true
+  },
+  "S03": {
+   "offset": [
+    0,
+    0
+   ],
+   "body_box": [
+    74,
+    123,
+    197,
+    271
+   ],
+   "body_h": 149,
+   "alpha_values_ok": true,
+   "magenta_px": 0,
+   "fits_280": true
+  },
+  "S09": {
+   "offset": [
+    0,
+    0
+   ],
+   "body_box": [
+    36,
+    20,
+    237,
+    270
+   ],
+   "body_h": 251,
+   "alpha_values_ok": true,
+   "magenta_px": 0,
+   "fits_280": true
+  },
+  "S13": {
+   "offset": [
+    1,
+    0
+   ],
+   "body_box": [
+    30,
+    137,
+    240,
+    272
+   ],
+   "body_h": 136,
+   "alpha_values_ok": true,
+   "magenta_px": 0,
+   "fits_280": true
+  },
+  "S16": {
+   "offset": [
+    1,
+    0
+   ],
+   "body_box": [
+    88,
+    58,
+    184,
+    248
+   ],
+   "body_h": 191,
+   "alpha_values_ok": true,
+   "magenta_px": 0,
+   "fits_280": true
+  }
+ },
+ "A10": {
+  "distinct_markings": 4,
+  "distinct_colour": 6
+ },
+ "checks": {
+  "edge_row_min_lum_x300_724": {
+   "510": 425
+  },
+  "edge_row_min_lum_base_x100_300": {
+   "510": 200
+  },
+  "opening": {
+   "left_edge_shift": 4,
+   "right_edge_shift": 2,
+   "left_edge_x": 68,
+   "right_edge_x_exclusive": 956,
+   "width": 888,
+   "rect_screen": [
+    68,
+    58,
+    888,
+    494
+   ]
+  },
+  "tray_box_by_luminance_edges": {
+   "x0": 276,
+   "x1_last_bright": 747,
+   "y0_stage": 200,
+   "y1_last_bright_stage": 487
+  },
+  "interior_highpass_std": {
+   "old": 1.129,
+   "new": 1.138
+  },
+  "dish_ink_box_|mult-1|>0.03_screen": [
+   85,
+   345,
+   166,
+   48
+  ],
+  "dish_ink_box_|mult-1|>0.08_screen": [
+   87,
+   346,
+   162,
+   46
+  ],
+  "case_outer_ring_vs_stage_max_diff": 0.0,
+  "capsule_foot_shadow_changed_px_box_screen": [
+   814,
+   522,
+   893,
+   528
+  ],
+  "dish_ink_box_diff>10_screen": [
+   87,
+   346,
+   163,
+   46
+  ],
+  "dish_ink_box_diff>25_screen": [
+   90,
+   346,
+   158,
+   46
+  ],
+  "dish_ink_box_diff>32_screen": [
+   92,
+   347,
+   155,
+   45
+  ],
+  "dish_ink_box_diff>40_screen": [
+   95,
+   349,
+   152,
+   43
+  ]
+ }
+}

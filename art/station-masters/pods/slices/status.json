@@ -3333,9 +3333,9 @@
   "note": "signed (art director): at 1x: L* 25.6, key R-B 46, sat 51, 0.0 percent above L* 70, R above B, background 17.9, ground 35.0, against the revised night rule (mean 24-28, bg 12-18, ground 30-36); the Pro night repaint of the signed glass day, the composition kept; placed as the night set with Idle night, glass night and night bed (the pair rule)"
  },
  "room-bench-stage-create": {
-  "status": "signed",
-  "signed_in": "art director, verdict (528b73d5)",
-  "note": "signed (art director) at 1x: L* 35.5, key R-B 37, sat 25 against the Pods overview 36.8/35/22; the signed Incubator stage's frame with its hardware painted out, plain in every keep-clear zone"
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
  },
  "dome-front-304x272": {
   "status": "signed",
@@ -3638,9 +3638,9 @@
   "note": ""
  },
  "roll-S01-markings-plain-128x72": {
-  "status": "unclassified",
+  "status": "new",
   "signed_in": null,
-  "note": ""
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
  },
  "trait-S01-markings-pale-patches-144x176": {
   "status": "new",
@@ -7128,5 +7128,110 @@
   "status": "derived-from-concept",
   "signed_in": null,
   "note": "derived-from-concept (10-18): the art director's 176 px build-time reduction of crate-sitting-256x176 for the portrait berth (work-queue bf33f4c2, results/T-20261016-197/finish/cuts/), taken byte for byte; not drawn by the studio; awaiting the art director's judgement (not signed)"
+ },
+ "chamber-back-472x288": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "chamber-front-472x288": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "room-cradle-front-create-152x48": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "room-stamp-case-create-152x152": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "room-stamp-case-create-152x152-front": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "capsule-shell-145x224": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S01-272x280": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S02-272x280": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S03-272x280": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S09-272x280": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S13-272x280": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S16-272x280": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-ash-128x72": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-charcoal-128x72": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-charcoal-and-ash-128x72": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-charcoal-and-russet-128x72": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-russet-128x72": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-colour-russet-and-ash-128x72": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-markings-patches-128x72": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-markings-stripes-128x72": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "roll-S01-markings-stripes-and-patches-128x72": {
+  "status": "new",
+  "signed_in": null,
+  "note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
  }
 }
