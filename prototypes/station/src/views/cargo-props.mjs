@@ -2,7 +2,7 @@
 // asset ids, strings, flags and which crate and pod goes to which well or place of the mat; no rectangle, no measure, no layout rule, no colour (the words place everything from cargo.json). The output is plain JSON:
 // { props (state, berths, sittingCrate, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props), need }.
 // Runs in Node, tested there (tests/cargo-props.test.mjs); the shape is cargo.props.json.
-//   m: { st, sv, settings, docked, ui: { cargo: { state, crate, at, run, shown, arrival }, skip }, spec cargo.json, home home.json, frame frame.json }
+//   m: { st, sv, settings, docked, ui: { cargo: { state, crate, at, run, shown, arrival }, skip }, spec cargo.json, home home.json, frame frame.json, sittingSpec sitting.json (the end's ✓ See the portrait, keys.confirm.end) }
 //   ui.cargo.run is what ✓ Open them all made (cargo-run.mjs planRun, intents/cargo.mjs openBay): the crates in the order they open, each with what it holds and the well or the mat place each pod lands in.
 import * as S from "../state.mjs";
 import * as T from "../sitting.mjs";
@@ -10,12 +10,21 @@ import { wordsOf, mibiReq } from "./home-props.mjs";
 import { shellSpecies } from "./pods-props.mjs";
 import { readyList, MATS } from "../cargo-run.mjs";
 import { fill, spell, plural } from "./words.mjs";
+import { portraitOffered } from "./sitting-props.mjs";
 import { req as reqOf, slot as slotOf, ph as phOf, slotAt } from "./requests.mjs";
 
 // The crates ready to open in the bay: the walk crates while docked.
 export const walkCrates = (st, sv, docked) => (docked ? S.bayCrates(st, sv) : []);
 
-export function cargoBuild(m, spec, home, frame) {
+// Cargo's end (keys.confirm.end): the mibi whose sitting crate this run opened, while sitting.json regions.portrait.offeredFrom lists cargo-end and its 528×392 opening is kept (sitting-props portraitOffered:
+// portrait-source.mjs portraitOpening); else null, and ✓ is Look at the pods. With no sitting spec, null.
+export function endPortrait(st, run, sittingSpec) {
+  if (!run || !(sittingSpec?.regions?.portrait?.offeredFrom ?? []).includes("cargo-end")) return null;
+  const it = run.items.find((x) => x.kind === "sitting" && x.st && x.st.applied), mb = it ? S.mibiById(st, it.portrait.mibi) : null;
+  return mb && portraitOffered(mb) ? mb : null;
+}
+
+export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
   const { st, sv, settings } = m, c = m.ui.cargo, requests = [], req = reqOf(requests);
   const R = spec.regions, docked = !!m.docked, state = c.state, Sg = spec.strings, spelled = (n) => spell(n, "many");
   const slot = slotOf(req, "the signed master or its cut (cargo.json, cargo-cuts.py)");
@@ -96,7 +105,7 @@ export function cargoBuild(m, spec, home, frame) {
   const waitingNow = state === "bay" ? st.waiting.length : state === "end" ? run.plan.sim.waiting.length : run.pre.waiting.length + run.items.reduce((a, it) => a + it.st.mat.size, 0);
   const came = run ? run.items.some((it) => it.pods.some((p) => p.well >= 0)) : false, nPods = run ? run.items.reduce((a, it) => a + it.pods.filter((p) => p.well >= 0).length, 0) : 0;
   if (state === "opening") line = { ok: m.ui.skip ? Sg.skip : null, back: "Home", subject: waitingNow > run.pre.waiting.length ? wait(waitingNow) : "", need: "" };
-  else if (state === "end") line = { ok: came ? plural(nPods, Sg.newPods.one, Sg.newPods.few) : null, back: "Home", subject: waitingNow ? wait(waitingNow) : "", need: "" };
+  else if (state === "end") line = { ok: endPortrait(st, run, sittingSpec) && Sg.end?.confirm ? Sg.end.confirm : came ? plural(nPods, Sg.newPods.one, Sg.newPods.few) : null, back: "Home", subject: waitingNow ? wait(waitingNow) : "", need: "" };   // keys.confirm.end: the portrait first, then Look at the pods
   else { const n = ready.length; line = { ok: n ? plural(n, Sg.openOne, Sg.open) : null, back: "Home", subject: st.waiting.length ? wait(st.waiting.length) : "", need: notice() }; }
   return { props, line, requests, need };
 }

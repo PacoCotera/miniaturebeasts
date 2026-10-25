@@ -153,3 +153,23 @@ test("sitting.json focus.vectors that leave the screen or arm: ← from the pose
   }
   dropPortraitSources();
 });
+
+// Cargo's end (cargo.json keys.confirm.end, frame.json navigation.jumps): on the real host, a run that opened Dot's sitting crate ends with ✓ See the portrait; ✓ opens the sitting's state portrait (from cargo), ← goes to Habitat
+// with the ring on Portrait. Without the opening kept, ✓ is Look at the pods, as before.
+test("Cargo's end after a run that opened Dot's sitting crate: ✓ See the portrait opens the portrait full size, ← Habitat with the ring on Portrait; with the opening not kept, Look at the pods", () => {
+  for (const held of [true, false]) {
+    dropPortraitSources();
+    const { h, mb, say, at } = rig({ motion: false, held: false }), DG = "0123456789abcdef0011223344556677";
+    G.st.sittingCrates.push({ id: "sit1", mibiId: mb.id, pose: "sleep-curled", place: "wood", start: -1e10, source: "dev", painted: true, opened: false });
+    mb.portrait = { state: "painting", pose: "sleep-curled", place: "wood", crate: "sit1", start: 0, digest: DG }; if (held) assert.equal(injectPortraitSource(DG, ART()).ok, true);
+    G.sv.bay = [{ id: "c1", n: 1, turn: 2, at: T0, e: 3, d: 3, s: 4, met: [], explored: 5, of: 20, lines: [], pods: [{ id: "p0", species: "S01", sp: 0, g: "meadow", how: "calm", gs: 11, k: null }] }]; G.st.dock = { docked: true, at: T0 };
+    UI.screen = "cargo"; UI.cargo = { state: "bay", crate: 0, at: 0, run: null, shown: null, arrival: null };
+    dispatch(h, { screen: "cargo", target: "room", verb: "confirm" }); assert.equal(UI.cargo.state, "opening"); at(60000); assert.equal(UI.cargo.state, "end", held + ": the end"); assert.equal(mb.portrait.state, "delivered");
+    const p = screenProps("").msg; assert.equal(p.frame.line.ok, held ? "See the portrait" : "Look at the pods", held + ": the line");
+    dispatch(h, { screen: "cargo", target: "room", verb: "confirm" });
+    if (!held) { assert.equal(UI.screen, "pods", "no opening kept: Look at the pods"); continue; }
+    assert.deepEqual([UI.screen, UI.sit.step, UI.sit.from, UI.hab.id], ["sitting", "portrait", "cargo", mb.id]); assert.equal(sittingBody("night").props.state, "portrait"); assert.equal(UI.cargo.state, "bay", "the end closed");
+    say("room", "back"); assert.deepEqual([UI.screen, UI.hab.f, UI.sit], ["habitat", "portrait", null], "← Habitat with the ring on Portrait");
+  }
+  dropPortraitSources();
+});
