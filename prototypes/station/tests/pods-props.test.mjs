@@ -1,6 +1,7 @@
 // Pods' props (lvgl-switch.md §2.1): the view the face takes, views/pods-props.mjs, in Node. Plain JSON that names what and never where: it validates against pods.props.json for every species in every
 // state, holds no rectangle, no measure and no layout rule (the view imports neither a layout nor a component), and fits the 32 KiB props budget with the frame beside it.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -8,7 +9,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { podsProps, compareBackFocus } from "../src/views/pods-props.mjs";
+import { podsProps as podsPropsUnchecked, compareBackFocus } from "../src/views/pods-props.mjs";
+const podsProps = lineCased(podsPropsUnchecked, "pods");   // every body it builds goes through assertLineCase (report mode)
 import { createMeasure } from "../../ui/specs/measure.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");

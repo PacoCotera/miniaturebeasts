@@ -139,8 +139,17 @@ test("the ratchet: one more direct drawing call in a screen fails, and so does a
   const counts = JSON.parse(readFileSync(path.join(real, "prototypes/face/kit-ratchet.json"), "utf8")).counts;
   const f = fails(kitFiles({ "prototypes/face/src/screens/habitat.c": plant("habitat.c", 40, '  /* v_rect("c", 0, 0, 1, 1, "x"); */ v_rect("x", 0, 0, 1, 1, "ink");') }));
   assert.deepEqual(f, [`face/src/screens/habitat.c makes ${counts.habitat + 1} direct v_rect/v_text/v_sprite/v_sprite_window/v_sprite_hidden calls; the ratchet allows ${counts.habitat} (face/kit-ratchet.json)`]);
-  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/fresh.c": 'void fresh(void) { v_text("t", "a", 0, 0, 10, 16, "ink"); }\n' })), ["face/src/screens/fresh.c makes 1 direct v_rect/v_text/v_sprite/v_sprite_window/v_sprite_hidden calls; the ratchet allows 0 (face/kit-ratchet.json)"]);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/fresh.c": 'void fresh(void) { v_rect("t", 0, 0, 10, 16, "ink"); }\n' })), ["face/src/screens/fresh.c makes 1 direct v_rect/v_text/v_sprite/v_sprite_window/v_sprite_hidden calls; the ratchet allows 0 (face/kit-ratchet.json)"]);
   assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/fresh.c": 'void fresh(void) { v_slot("t", "a", NULL, 0, 0, 1, 1, 1); }\n' })), [], "a screen that draws through the toolbox's slot and the kit has nothing to count");
+});
+test("the text ratchet: one more px-form text call in a screen fails, a screen it does not name enters at 0, and a call by role or in a comment counts for nothing", () => {
+  const text = JSON.parse(readFileSync(path.join(real, "prototypes/face/kit-ratchet.json"), "utf8")).text, PX = "(v_line_at, v_line_in, v_run, v_price, v_text, v_measure, v_run_width, v_clip, v_wrap, v_cap_top, v_cap_in)";
+  const why = (f, n, a) => `face/src/screens/${f} makes ${n} px-form text calls ${PX}; the text ratchet allows ${a} (face/kit-ratchet.json "text": draw words by role, v_say and v_role_*)`;
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/cargo.c": plant("cargo.c", 40, '  /* v_measure("c", 16); */ int w_ = v_measure ("x", 16); (void)w_;') })), [why("cargo.c", text.cargo + 1, text.cargo)]);
+  for (const call of ['v_line_at("t", "a", 0, 0, 0, 16, "ink", 0);', 'v_line_in("t", "a", 0, 9, 0, 0, 16, "ink");', 'v_run("t", "a", 0, 0, 16, "ink", 0);', 'v_price("t", "a", 0, 0, 16, c, "ink");', 'v_run_width("a", 16);', 'v_clip("a", 9, 16, b, 9);', 'v_wrap("a", 9, 16, b, 9, 1);', 'v_cap_top(0, 0, 16);', 'v_cap_in(0, 9, 16);'])
+    assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/fresh.c": `void fresh(void) { ${call} }\n` })), [why("fresh.c", 1, 0)], call);
+  assert.deepEqual(fails(kitFiles({ "prototypes/face/src/screens/fresh.c": 'void fresh(void) { v_say("t", "a", 0, 0, 1, "label", "pane", 0); v_role_width("a", "label"); v_say_run("r", "a", 0, 0, "verb", "band", 0); v_role_cap_in(0, 9, "label"); }\n' })), [], "the role forms are not counted");
+  assert.deepEqual(Object.keys(text).sort(), readdirSync(path.join(faceSrc, "screens")).filter((f) => f.endsWith(".c")).map((f) => f.replace(/\.c$/, "")).sort(), "the text table names every screen file at today's count");
 });
 test("the ratchet carries screenSpecific: a missing list, or one that names a file that does not exist, fails", () => {
   const r = JSON.parse(readFileSync(path.join(real, "prototypes/face/kit-ratchet.json"), "utf8"));

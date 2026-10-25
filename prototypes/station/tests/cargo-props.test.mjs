@@ -2,6 +2,7 @@
 // end, arrival), holds no rectangle, no measure and no layout rule, fits the 32 KiB props budget with the frame beside it, spells the line from cargo.json's strings (Open them all, Open it, Skip, Look at the pods, the waiting line),
 // plans the run on a copy of the state (each crate's pods with the well or the mat place each lands in, its finds and materials, its length, the start table) and applies the rules one crate at a time.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -11,7 +12,8 @@ import { setFrames, frameOf, podGenome, speciesIndex } from "../src/genome.mjs";
 import { traitLooks } from "../../workbench/framework/describe.mjs";
 import * as S from "../src/state.mjs";
 import * as T from "../src/sitting.mjs";
-import { cargoBuild } from "../src/views/cargo-props.mjs";
+import { cargoBuild as cargoBuildUnchecked } from "../src/views/cargo-props.mjs";
+const cargoBuild = lineCased(cargoBuildUnchecked, "cargo");   // every body it builds goes through assertLineCase (report mode)
 import { readyList, planRun, lengthOf, timesOf, fitCount, stepTimes, HOLD_MAX } from "../src/cargo-run.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
 

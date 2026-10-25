@@ -2,7 +2,7 @@
 // The art director's layer table on the real pictures: the Station page's own face, in test mode (?test), drawing Pods from pods-props, Home from home-props Cargo from cargo-props and Create from create-props. At each of Pods' states and each of Home's, Cargo's and Create's capture points the
 // pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art) must read 0; painted pictures show only on pass 3. For Home, Cargo, Idle and Create also check 1 of the gate: no region of the face's log departs from home.json, cargo.json, frame.json (Idle) or create.json
 // (tools/home-regions.mjs, tools/cargo-regions.mjs, tools/idle-regions.mjs, tools/create-regions.mjs), and the budgets are printed (objects, pictures, props). Prints one line per state; exits 1 on any other reading.
-//   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/layer-check.mjs   (after build.sh; LAYER_ONLY=cargo takes only the screens named)
+//   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/layer-check.mjs   (after build.sh; LAYER_ONLY=cargo takes only the screens named; CLEARANCE_SHOW=1 prints each clearance departure)
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,6 +28,7 @@ import { sittingStates } from "./sitting-states.mjs";
 import { departures as benchDepartures } from "./bench-regions.mjs";
 import { departures as libraryDepartures } from "./library-regions.mjs";
 import { departures as speciesDepartures } from "./library-species-regions.mjs";
+import { departures as clearance, unusedExceptions, enforced } from "../../ui/specs/clearance.mjs";
 
 const specs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), home = J("home"), cargo = J("cargo"), create = J("create"), incubator = J("incubator"), vivarium = J("vivarium"), habitat = J("habitat"), namerSpec = J("namer"), library = J("library"), benchSpec = J("bench"), frame = J("frame");
 // Rule F2, the 2 px floor on the rendered frame (fix 14 §14.4): for a creature's ring, the bands that reach 3:1 against the ground (the same state drawn without the ring) add up to 2 px in every cross-section of the line
@@ -59,6 +60,9 @@ function floorProblems(name, rect, withRing, ground) {
   return { text: `${name}: ${sum}`, fail: px3 < 2 * total || none > 0 ? `${name}: ${sum}; ${px3 < 2 * total ? `ring pixels at 3:1 ${px3} < 2 x ${total}` : ""}${none ? ` ${none} cross-sections with none at 3:1 (first under 2 px at ${first})` : ""}` : null, first };
 }
 let failed = 0;
+// the clearance of text (ui/specs/clearance.mjs) at every golden state, from the face's node log: report mode, a screen frame.json type.clearance.enforced lists fails on a departure
+const clearanceSpec = (screen) => (screen === "idle" ? frame.idle : { home, cargo, create, incubator, vivarium, habitat, library, bench: benchSpec, pods: J("pods"), sitting: J("sitting") }[screen] ?? {});
+const clearanceRuns = [], clearancePer = {};
 const reading = (screen) => async (name, page, fail) => {
   const panel = await page.evaluate(() => window.__st.props?.overlay?.id === "panel"), keep = (d) => (panel ? d.filter((m) => !/\bring\b|focus draws nothing|namer's plate/.test(m)) : d);   // a decision panel is open: its ring and plate are the panel's (tests/panel.test.mjs); the screen beneath draws none
   const r = await page.evaluate(() => window.__st.snapshot());
@@ -84,6 +88,9 @@ const reading = (screen) => async (name, page, fail) => {
         ringTxt += " · floor " + res.text.slice(name.length + 2); if (res.fail) fail(res.fail); }
     } }
   let extra = "";
+  { const lg = await page.evaluate(() => window.__st.check().log); if (!lg?.nodes) fail(`${name}: the face's log has no nodes (the clearance checks read them)`);
+    const d = clearance(lg, clearanceSpec(screen), frame); clearanceRuns.push(d); const p = (clearancePer[screen] ??= { states: 0, departures: 0, rules: {} }); p.states++; p.departures += d.length; for (const x of d) p.rules[x.rule] = (p.rules[x.rule] ?? 0) + 1;
+    ringTxt += ` · clearance ${d.length}`; if (process.env.CLEARANCE_SHOW) for (const x of d) console.log(`  ${x.rule} ${x.node}: ${x.measured} from ${x.other}, ${x.required} required`); if (enforced(frame, screen)) for (const x of d) fail(`${name}: ${x.rule} ${x.node}: ${x.measured} from ${x.other}, ${x.required} required`); }
   if (screen === "home") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, cur: window.__st.props?.focus?.cur ?? "room", size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
     const d = departures(c.log, home, frame, c.cur); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
@@ -141,4 +148,7 @@ const reading = (screen) => async (name, page, fail) => {
   if (r.pass1 !== 0) fail(name + ": chrome reads " + r.pass1 + " off-palette pixels"); if (r.pass2 !== 0) fail(name + ": art reads " + r.pass2 + " off-palette pixels");
 };
 for (const [screen, states] of [["pods", podsStates], ["home", homeStates], ["cargo", cargoStates], ["create", createStates], ["incubator", incubatorStates], ["vivarium", vivariumStates], ["habitat", habitatStates], ["library", libraryStates], ["bench", benchStates], ["sitting", sittingStates], ["idle", idleStates]].filter(([screen]) => !process.env.LAYER_ONLY || process.env.LAYER_ONLY.split(",").includes(screen))) { const { fails } = await states(reading(screen)); failed += fails.length; }   // LAYER_ONLY=cargo,home: only those screens
+for (const [screen, p] of Object.entries(clearancePer).sort()) console.log(`clearance ${screen.padEnd(10)} ${String(p.states).padStart(3)} states · ${String(p.departures).padStart(4)} departures (${Object.entries(p.rules).sort().map(([r, n]) => `${r} ${n}`).join(", ") || "none"})${enforced(frame, screen) ? " · enforced" : " · report"}`);
+if (!process.env.LAYER_ONLY) for (const e of unusedExceptions(frame, clearanceRuns)) { failed++; console.error(`FAIL frame.json type.clearance.exceptions: ${e.rule} ${e.node} is used by no departure`); }
+console.log(`clearance: ${clearanceRuns.reduce((n, d) => n + d.length, 0)} departures at ${clearanceRuns.length} golden states (report mode: ${(frame.type.clearance?.enforced ?? []).length} screens enforced)`);
 console.log(failed ? failed + " failure(s)" : "layer check ok"); process.exit(failed ? 1 : 0);

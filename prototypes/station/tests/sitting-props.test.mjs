@@ -2,6 +2,7 @@
 // begin, portrait) for Dot (S01 adult) with sleep-curled only and with sleep-curled and shake-dry, a juvenile and an S02; every mibi picture is mibiReq with poseFor's pose, so an owed habit key marks its requests; a card's three requests
 // share one pose and one set of looks; the window is the hour's light on the pose step and ungraded after; the portrait state is offered only while its opening is held (portrait-source.mjs keeps the last two).
 //   node --test prototypes/station/tests/sitting-props.test.mjs
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test, describe, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -12,7 +13,8 @@ import * as S from "../src/state.mjs";
 import * as T from "../src/sitting.mjs";
 import { poseFor, layeredStand, standFigure } from "../src/layered-stand.mjs";
 import { loadStandLayersFs, loadStandLooksFs, unloadStands } from "../tools/stand-layers-fs.mjs";
-import { sittingBuild, portraitOffered } from "../src/views/sitting-props.mjs";
+import { sittingBuild as sittingBuildUnchecked, portraitOffered } from "../src/views/sitting-props.mjs";
+const sittingBuild = lineCased(sittingBuildUnchecked, "sitting");   // every body it builds goes through assertLineCase (report mode)
 import { lightAt } from "../src/views/home-props.mjs";
 import { injectPortraitSource, dropPortraitSources, portraitOpening, portraitSource, OPENINGS_KEPT } from "../src/portrait-source.mjs";
 import { registerPictures } from "../src/pictures.mjs";

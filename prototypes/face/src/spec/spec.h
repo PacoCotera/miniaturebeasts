@@ -8,6 +8,8 @@
 int spec_load(const char *screen, const char *json, size_t len);
 const char *spec_error(void);
 int spec_has(const char *screen);
+/* The load a spec is at: a number that changes each time the spec is loaded again (0 when it is absent), for a reader that caches what it read from it. */
+unsigned spec_serial(const char *screen);
 /* Forget a spec (the loader refused it after parsing). */
 void spec_drop(const char *screen);
 int spec_count(void);

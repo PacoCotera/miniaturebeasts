@@ -18,20 +18,27 @@ uint32_t v_col(const char *name) {
   if (prim_palette_rgb(name, &rgb) < 0) { char b[96]; snprintf(b, sizeof b, "word: the palette has no colour %.40s", name); v_error(b); }
   return rgb;
 }
-int v_cap(int px) { return px == 16 ? 12 : px == 20 ? 14 : px == 28 ? 21 : px * 3 / 4; }
+/* the px of a size or font code: a code the face holds gives its px (1016: 16), any other number is a px as it was */
+static int px_of(int code) { int p = prim_font_px(code); return p ? p : code; }
+int v_cap(int px) { px = px_of(px); return px == 16 ? 12 : px == 20 ? 14 : px == 28 ? 21 : px * 3 / 4; }
 static void settext(const char *s) { snprintf(prim_text(), (size_t)prim_text_size(), "%s", s); }
 int v_measure(const char *s, int px) { settext(s); return prim_measure(px); }
 void v_rect(const char *id, int x, int y, int w, int h, const char *colour) { prim_node(v_id(id), FN_RECT, x, y, w, h, v_col(colour), 0, 0); }
+static const char *g_say_role = "", *g_say_ground = "", *g_say_shadow = "";   /* the role and ground the text nodes being sent are set by (the v_say forms set them around their calls), "" for a text set by size; the colour of the shadow the role casts there, "" for none */
 void v_text(const char *id, const char *s, int x, int y, int w, int px, const char *colour) {
-  settext(s); prim_node(v_id(id), FN_TEXT, x, y, w, px * 5 / 4, v_col(colour), px, v_cap(px));
+  if (g_say_shadow[0] && s[0]) {   /* the painted ground's shadow: the same string one pixel right and down, under it, drawn where its text node is */
+    char sid[112]; snprintf(sid, sizeof sid, "%s.shadow", id);
+    settext(s); prim_text_role("shadow", g_say_ground); prim_node(v_id(sid), FN_TEXT, x + 1, y + 1, w, px_of(px) * 5 / 4, v_col(g_say_shadow), px, v_cap(px));
+  }
+  settext(s); prim_text_role(g_say_role, g_say_ground); prim_node(v_id(id), FN_TEXT, x, y, w, px_of(px) * 5 / 4, v_col(colour), px, v_cap(px));
 }
 int v_cap_in(int top, int h, int px) { return top + v_fdiv(h - v_cap(px), 2); }
 int v_cap_top(int y, int anchor, int px) {
   int cap = v_cap(px);
   switch (anchor) {
     case V_ANCHOR_LINE: {
-      int pitch = v_si("frame", v_fmt("type.pitch.%d", px), 0);
-      if (pitch <= 0) { char b[96]; snprintf(b, sizeof b, "word: the frame has no type.pitch.%d", px); v_error(b); return y; }
+      int pitch = v_si("frame", v_fmt("type.pitch.%d", px_of(px)), 0);
+      if (pitch <= 0) { char b[96]; snprintf(b, sizeof b, "word: the frame has no type.pitch.%d", px_of(px)); v_error(b); return y; }
       return v_cap_in(y, pitch, px);
     }
     case V_ANCHOR_CAP: return y;
@@ -41,7 +48,7 @@ int v_cap_top(int y, int anchor, int px) {
   { char b[96]; snprintf(b, sizeof b, "word: no text anchor %d", anchor); v_error(b); }
   return y;
 }
-static int line_refused(int anchor, int px) { return anchor == V_ANCHOR_LINE && v_si("frame", v_fmt("type.pitch.%d", px), 0) <= 0; }
+static int line_refused(int anchor, int px) { return anchor == V_ANCHOR_LINE && v_si("frame", v_fmt("type.pitch.%d", px_of(px)), 0) <= 0; }
 int v_line_at(const char *id, const char *s, int x, int y, int anchor, int px, const char *colour, int align) {
   if (line_refused(anchor, px)) { v_cap_top(y, anchor, px); return 0; }
   int w = v_measure(s, px);
@@ -118,13 +125,14 @@ int v_run_width(const char *s, int px) {
   int w = 0; char piece[V_STR]; int n = 0;
   for (const char *p = s; *p;) {
     int l; const char *ic = icon_of(p, &l);
-    if (ic) { if (n) { piece[n] = 0; w += v_measure(piece, px); n = 0; } w += px + 4; p += l; }
+    if (ic) { if (n) { piece[n] = 0; w += v_measure(piece, px); n = 0; } w += px_of(px) + 4; p += l; }
     else if (n < V_STR - 1) piece[n++] = *p++; else p++;
   }
   if (n) { piece[n] = 0; w += v_measure(piece, px); }
   return w;
 }
 v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *colour, int align) {
+  prim_run(v_id(id));   /* the pieces and icons of this call are one run in the log */
   v_run_t r; r.width = v_run_width(s, px);
   int cx = align == V_ALIGN_CENTRE ? x - (r.width + 1) / 2 : align == V_ALIGN_RIGHT ? x - r.width : x, i = 0;
   char piece[V_STR]; int n = 0;
@@ -133,13 +141,13 @@ v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *c
     if (!*p || ic) {
       if (n) { piece[n] = 0; int w = v_measure(piece, px); char nid[96]; snprintf(nid, sizeof nid, "%s.%d", id, i++); v_text(nid, piece, cx, y, w, px, colour); cx += w; n = 0; }
       if (!*p) break;
-      char nid[96], aid[64]; snprintf(nid, sizeof nid, "%s.%d", id, i++); snprintf(aid, sizeof aid, ic, px);
-      int iy = y + v_cap(px) - px + (int)(px * 0.12 + 0.5);
-      if (!v_sprite(nid, aid, cx + 2, iy, px, px)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", aid); v_error(b); }
-      cx += px + 4; p += l;
+      int ip = px_of(px); char nid[96], aid[64]; snprintf(nid, sizeof nid, "%s.%d", id, i++); snprintf(aid, sizeof aid, ic, ip);
+      int iy = y + v_cap(px) - ip + (int)(ip * 0.12 + 0.5);
+      if (!v_sprite(nid, aid, cx + 2, iy, ip, ip)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", aid); v_error(b); }
+      cx += ip + 4; p += l;
     } else if (n < V_STR - 1) piece[n++] = *p++; else p++;
   }
-  r.end = cx; return r;
+  r.end = cx; prim_run(0); return r;
 }
 /* A price ("⚡ 2 ❀ 4 ◆ 1 ⧗ 20": Energy, Essence, Data and the bud's wait in that order, each icon and its figure): the four groups always have their two nodes (icon, figure), the ones the price does not name with no size, so a price that gains or loses a group
    changes nodes and never adds or removes one (§2.2). The wait's picture must be on the face (icon-wait-16): else v_error and its two nodes take no size, never a glyph or a bare figure. A price with no material in it ("free") is one text node. The icon's and the figure's layout is v_run's. */
@@ -155,28 +163,29 @@ static int price_pairs(const char *s) {
   return 1;
 }
 int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[V_PRICE_N], const char *other) {
-  if (!price_pairs(s)) { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); return v_run(nid, s, x, y, px, other, V_ALIGN_LEFT).end; }
+  prim_run(v_id(id));   /* the icons and figures of this call are one run in the log */
+  if (!price_pairs(s)) { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); int e = v_run(nid, s, x, y, px, other, V_ALIGN_LEFT).end; prim_run(0); return e; }
   int cx = x, groups = 0; char fig[V_PRICE_N][24]; int has[V_PRICE_N];
   for (int g = 0; g < V_PRICE_N; g++) {
     const char *p = strstr(s, PRICE[g].glyph); has[g] = p != NULL; fig[g][0] = 0; if (!p) continue;
     p += strlen(PRICE[g].glyph); while (*p == ' ') p++; size_t n = 0; while (p[n] && p[n] != ' ' && n < sizeof fig[g] - 2) n++;   /* the figure: the word after the icon */
     snprintf(fig[g], sizeof fig[g], " %.*s", (int)n, p); groups++;
   }
-  int iy = y + v_cap(px) - px + (int)(px * 0.12 + 0.5);
+  int ip = px_of(px), iy = y + v_cap(px) - ip + (int)(ip * 0.12 + 0.5);
   for (int g = 0; g < V_PRICE_N; g++) {
-    char ic[48], nid[96]; snprintf(ic, sizeof ic, PRICE[g].icon, px);
+    char ic[48], nid[96]; snprintf(ic, sizeof ic, PRICE[g].icon, ip);
     if (has[g] && g == V_PRICE_N - 1 && !wire_has_asset(ic)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", ic); v_error(b); has[g] = 0; }   /* the wait without its picture: no glyph, no bare figure */
     if (has[g]) {
       char prefix[V_STR]; const char *at = strstr(s, PRICE[g].glyph); snprintf(prefix, sizeof prefix, "%.*s", (int)(at - s), s);   /* each icon stands where the single run would put it: after the width of the price up to it */
       cx = x + (at == s ? 0 : v_run_width(prefix, px));
-      snprintf(nid, sizeof nid, "%s.%d.i", id, g); if (!v_sprite(nid, ic, cx + 2, iy, px, px)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", ic); v_error(b); }
-      cx += px + 4; int w = v_measure(fig[g], px); snprintf(nid, sizeof nid, "%s.%d.t", id, g); v_text(nid, fig[g], cx, y, w, px, cols[g]); cx += w;
+      snprintf(nid, sizeof nid, "%s.%d.i", id, g); if (!v_sprite(nid, ic, cx + 2, iy, ip, ip)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", ic); v_error(b); }
+      cx += ip + 4; int w = v_measure(fig[g], px); snprintf(nid, sizeof nid, "%s.%d.t", id, g); v_text(nid, fig[g], cx, y, w, px, cols[g]); cx += w;
     } else {
       snprintf(nid, sizeof nid, "%s.%d.i", id, g); v_sprite_hidden(nid, ic, cx, iy); snprintf(nid, sizeof nid, "%s.%d.t", id, g); v_text(nid, "", cx, y, 0, px, cols[g]);
     }
   }
   { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); int w = groups || !*s ? 0 : v_measure(s, px); v_text(nid, groups ? "" : s, cx, y, w, px, other); if (w) cx += w; }
-  return cx;
+  prim_run(0); return cx;
 }
 int v_wrap(const char *s, int maxw, int px, char *buf, int cap, int max) {
   int nl = 0, o = 0; char cur[V_STR * 2]; cur[0] = 0; int cl = 0;
@@ -239,3 +248,104 @@ void v_plate_in(const char *spec, const char *id, const char *namePath, int w, i
   char asset[96]; snprintf(asset, sizeof asset, "%s-%dx%d", series, w, h);
   if (!v_sprite(id, asset, x, y, w, h)) { char b[140]; snprintf(b, sizeof b, "word: the name plate %.60s is not on the face", asset); v_error(b); prim_refuse(); }
 }
+
+/* ---- text by role (frame.json type: fonts, grounds, roles) ----
+   A role is resolved from the frame spec once per load of it and cached by its name and ground: its font (type.roles.<role>.font, a name of type.fonts that is one of the face's fonts), its
+   colour on the ground (type.roles.<role>.colour.<kind>, or the variant's of "<role>.<variant>"), the shadow it casts there (type.roles.<role>.shadow.<kind>, "" for none) and its pitch
+   (type.roles.<role>.pitch, else the frame's type.pitch of its px). A ground is a kind (field, pane, band, painted) or a palette name type.grounds maps to one. */
+static const struct { const char *name; int code; } FONTS[] = { { "R16", PRIM_FONT_R16 }, { "M16", PRIM_FONT_M16 }, { "M20", PRIM_FONT_M20 }, { "SB28", PRIM_FONT_SB28 } };   /* prim.h's codes by the names type.fonts gives them */
+typedef struct { char key[64]; int ok, code, pitch; char colour[24], shadow[24]; } role_t;
+#define ROLE_CACHE 64
+static role_t g_roles[ROLE_CACHE]; static int g_nroles; static unsigned g_roles_serial;
+static int is_kind(const char *g) { return strcmp(g, "field") == 0 || strcmp(g, "pane") == 0 || strcmp(g, "band") == 0 || strcmp(g, "painted") == 0; }
+static int role_refuse(const char *what, const char *role, const char *ground) { char b[160]; snprintf(b, sizeof b, "word: %s (role %.40s, ground %.24s)", what, role ? role : "", ground ? ground : ""); v_error(b); return 0; }
+/* a font name of type.fonts that is one of the face's fonts: its code, else 0 */
+static int font_named(const char *font) {
+  int code = 0; for (unsigned i = 0; i < sizeof FONTS / sizeof FONTS[0]; i++) if (strcmp(font, FONTS[i].name) == 0) code = FONTS[i].code;
+  return code && v_si("frame", v_fmt("type.fonts.%s.0", font), 0) == prim_font_px(code) ? code : 0;
+}
+/* the role's variant ("<role>.<variant>"): 0 for none named, 1 a palette name (that colour on every ground the role has), 2 an object (a subset of font, pitch, colour, shadow), -1 neither (or not there) */
+static int variant_kind(const char *base, const char *dot, char *path, int cap) {
+  if (!dot) return 0; snprintf(path, (size_t)cap, "type.roles.%s.variants.%s", base, dot + 1);
+  int len = 0; const char *raw = spec_raw("frame", path, &len); char c[4];
+  if (!raw || len <= 0) return -1;
+  return raw[0] == '{' ? 2 : spec_str("frame", path, c, sizeof c) > 0 ? 1 : -1;
+}
+/* the role's font code and pitch (no ground: a measure), or 0 with an error. A variant's font and pitch come before the role's; a key it leaves out is the role's */
+static int role_font(const char *role, int *code, int *pitch) {
+  char base[40]; const char *dot = strchr(role ? role : "", '.'); snprintf(base, sizeof base, "%.*s", dot ? (int)(dot - role) : (int)strlen(role ? role : ""), role ? role : "");
+  if (!base[0] || spec_len("frame", v_fmt("type.roles.%s", base)) <= 0) return role_refuse("the frame has no such role", role, "");
+  char font[16]; spec_str("frame", v_fmt("type.roles.%s.font", base), font, sizeof font); *code = font_named(font);
+  if (!*code) return role_refuse("the role's font is not one the face holds", role, "");
+  char vp[120]; int vk = variant_kind(base, dot, vp, sizeof vp), vpitch = 0;
+  if (vk < 0) return role_refuse("the role has no such variant", role, "");
+  if (vk == 2) {
+    int flen = 0; const char *fraw = spec_raw("frame", v_fmt("%s.font", vp), &flen);
+    if (fraw) { char vf[16]; if (spec_str("frame", v_fmt("%s.font", vp), vf, sizeof vf) <= 0 || !(*code = font_named(vf))) return role_refuse("the variant's font is not one the face holds", role, ""); }
+    vpitch = v_si("frame", v_fmt("%s.pitch", vp), 0);
+  }
+  *pitch = vpitch > 0 ? vpitch : v_si("frame", v_fmt("type.roles.%s.pitch", base), 0); if (*pitch <= 0) *pitch = v_si("frame", v_fmt("type.pitch.%d", prim_font_px(*code)), 0);
+  return 1;
+}
+static const role_t *role_of(const char *role, const char *ground) {
+  unsigned serial = spec_serial("frame"); if (serial != g_roles_serial) { g_nroles = 0; g_roles_serial = serial; }
+  char key[64]; snprintf(key, sizeof key, "%s@%s", role ? role : "", ground ? ground : "");
+  for (int i = 0; i < g_nroles; i++) if (strcmp(g_roles[i].key, key) == 0) { if (!g_roles[i].ok) role_refuse("the role is refused on this ground", role, ground); return g_roles[i].ok ? &g_roles[i] : NULL; }
+  role_t r; memset(&r, 0, sizeof r); snprintf(r.key, sizeof r.key, "%s", key);
+  if (role_font(role, &r.code, &r.pitch)) {
+    char base[40], kind[16], vp[120]; const char *dot = strchr(role, '.'); snprintf(base, sizeof base, "%.*s", dot ? (int)(dot - role) : (int)strlen(role), role);
+    int vk = variant_kind(base, dot, vp, sizeof vp);
+    if (ground && is_kind(ground)) snprintf(kind, sizeof kind, "%s", ground); else spec_str("frame", v_fmt("type.grounds.%s", ground ? ground : ""), kind, sizeof kind);
+    if (!is_kind(kind)) role_refuse("the frame has no such ground", role, ground);
+    else if (spec_str("frame", v_fmt("type.roles.%s.colour.%s", base, kind), r.colour, sizeof r.colour) <= 0) role_refuse("the role has no colour on this ground", role, ground);
+    else if (vk == 1 && spec_str("frame", vp, r.colour, sizeof r.colour) <= 0) role_refuse("the role has no such variant", role, ground);
+    else if (vk == 2 && spec_raw("frame", v_fmt("%s.colour", vp), NULL) && spec_str("frame", v_fmt("%s.colour", vp), r.colour, sizeof r.colour) <= 0) role_refuse("the variant's colour is not a palette name", role, ground);
+    else {
+      if (vk == 2 && spec_len("frame", v_fmt("%s.shadow", vp)) >= 0 && *spec_raw("frame", v_fmt("%s.shadow", vp), NULL) == '{') spec_str("frame", v_fmt("%s.shadow.%s", vp, kind), r.shadow, sizeof r.shadow);   /* a variant's shadow map replaces the role's ({} = none) */
+      else spec_str("frame", v_fmt("type.roles.%s.shadow.%s", base, kind), r.shadow, sizeof r.shadow);
+      r.ok = 1;
+    }
+  }
+  static role_t spare; role_t *slot = g_nroles < ROLE_CACHE ? &g_roles[g_nroles++] : &spare;   /* a full cache still answers, uncached */
+  *slot = r; return r.ok ? slot : NULL;
+}
+/* the node of no size a refused role draws, so no node goes missing */
+static void say_refused(const char *id, int x, int y) { settext(""); prim_text_role("", ""); prim_node(v_id(id), FN_TEXT, x, y, 0, 0, 0, PRIM_FONT_R16, v_cap(PRIM_FONT_R16)); }
+static int say_top(int y, int anchor, const role_t *r) { if (anchor == V_ANCHOR_LINE) return r->pitch > 0 ? v_cap_in(y, r->pitch, r->code) : v_cap_top(y, anchor, r->code); return v_cap_top(y, anchor, r->code); }
+static int say_at(const char *id, const char *s, int lx, int top, int w, const role_t *r, const char *role, const char *ground) {
+  g_say_role = role; g_say_ground = ground; g_say_shadow = r->shadow; v_text(id, s, lx, top, w, r->code, r->colour); g_say_role = g_say_ground = g_say_shadow = "";   /* v_text draws the role's shadow first, where the text node is drawn */
+  return w;
+}
+int v_say(const char *id, const char *s, int x, int y, int anchor, const char *role, const char *ground, int align) {
+  const role_t *r = role_of(role, ground); if (!r) { say_refused(id, x, y); return 0; }
+  if (anchor == V_ANCHOR_LINE && r->pitch <= 0) { role_refuse("the role has no pitch for a line anchor", role, ground); say_refused(id, x, y); return 0; }
+  int w = v_measure(s, r->code), top = say_top(y, anchor, r);
+  return say_at(id, s, align == V_ALIGN_CENTRE ? x - v_half(w) : align == V_ALIGN_RIGHT ? x - w : x, top, w, r, role, ground);
+}
+int v_say_in(const char *id, const char *s, int bx, int bw, int y, int anchor, const char *role, const char *ground) {
+  const role_t *r = role_of(role, ground); if (!r) { say_refused(id, bx, y); return 0; }
+  if (anchor == V_ANCHOR_LINE && r->pitch <= 0) { role_refuse("the role has no pitch for a line anchor", role, ground); say_refused(id, bx, y); return 0; }
+  int w = v_measure(s, r->code); return say_at(id, s, bx + v_half(bw - w), say_top(y, anchor, r), w, r, role, ground);
+}
+v_run_t v_say_run(const char *id, const char *s, int x, int y, const char *role, const char *ground, int align) {
+  const role_t *r = role_of(role, ground); if (!r) { v_run_t z = { 0, x }; say_refused(v_fmt("%s.0", id), x, y); return z; }
+  g_say_role = role; g_say_ground = ground; g_say_shadow = r->shadow; v_run_t o = v_run(id, s, x, y, r->code, r->colour, align); g_say_role = g_say_ground = g_say_shadow = ""; return o;
+}
+int v_say_price(const char *id, const char *s, int x, int y, const char *role, const char *ground, const char *cols[V_PRICE_N], const char *other) {
+  const role_t *r = role_of(role, ground), *o = r ? role_of(other, ground) : NULL; char c[V_PRICE_N][24]; const char *cp[V_PRICE_N];
+  int ok = r && o; for (int g = 0; ok && g < V_PRICE_N; g++) { const role_t *q = role_of(cols[g], ground); if (!q) ok = 0; else { snprintf(c[g], sizeof c[g], "%s", q->colour); cp[g] = c[g]; } }
+  if (!ok) { say_refused(v_fmt("%s.o", id), x, y); return x; }
+  char oc[24]; snprintf(oc, sizeof oc, "%s", o->colour); int code = r->code;
+  g_say_role = role; g_say_ground = ground; g_say_shadow = r->shadow; int end = v_price(id, s, x, y, code, cp, oc); g_say_role = g_say_ground = g_say_shadow = ""; return end;
+}
+int v_role_pitch(const char *role) { int code, pitch; return role_font(role, &code, &pitch) ? pitch : 0; }
+int v_role_width(const char *s, const char *role) { int code, pitch; return role_font(role, &code, &pitch) ? v_measure(s, code) : 0; }
+void v_role_clip(const char *s, int maxw, const char *role, char *out, int cap) { int code, pitch; if (role_font(role, &code, &pitch)) v_clip(s, maxw, code, out, cap); else if (cap > 0) out[0] = 0; }
+int v_role_wrap(const char *s, int maxw, const char *role, char *buf, int cap, int max) { int code, pitch; return role_font(role, &code, &pitch) ? v_wrap(s, maxw, code, buf, cap, max) : 0; }
+int v_role_cap_top(int y, int anchor, const char *role) {
+  int code, pitch; if (!role_font(role, &code, &pitch)) return y;
+  if (anchor == V_ANCHOR_LINE) { if (pitch <= 0) { role_refuse("the role has no pitch for a line anchor", role, ""); return y; } return v_cap_in(y, pitch, code); }
+  return v_cap_top(y, anchor, code);
+}
+int v_role_cap_in(int top, int h, const char *role) { int code, pitch; return role_font(role, &code, &pitch) ? v_cap_in(top, h, code) : top; }
+int v_role_font(const char *role) { int code, pitch; return role_font(role, &code, &pitch) ? code : 0; }

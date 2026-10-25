@@ -1,6 +1,7 @@
 // The Library's Level 1 as props (library.json l1): the view the face takes, views/library-props.mjs, in Node. Plain JSON that names what and never where: it validates against library.props.json in every scene, holds no
 // rectangle, lists every species in species order with its state, targets the met and found cells only, keeps the ring on ui.lib.l1, marks the wish and the looks new this visit, and says the line from the spec's strings.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -10,7 +11,8 @@ import { setFrames, frameIds, frameOf } from "../src/genome.mjs";
 import { currentLooks } from "../../workbench/framework/describe.mjs";
 import * as S from "../src/state.mjs";
 import * as Lib from "../src/library.mjs";
-import { libraryBuild, subjectOf } from "../src/views/library-props.mjs";
+import { libraryBuild as libraryBuildUnchecked, subjectOf } from "../src/views/library-props.mjs";
+const libraryBuild = lineCased(libraryBuildUnchecked, "library");   // every body it builds goes through assertLineCase (report mode)
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 const FRAMES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));

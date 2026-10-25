@@ -2,6 +2,7 @@
 // living window's people with Home (the same seeds, the bed, the carried set asleep), and says the one line the spec's order gives: the crates in the bay while docked, the bud ready, the bud growing, the mibis out with the Companion
 // (only while away); none, empty; six words or fewer, no digits.
 //   node --test prototypes/station/tests/
+import { lineCased } from "./fixtures/line-case.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -9,7 +10,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { idleBuild, idleLine } from "../src/views/idle-props.mjs";
+import { idleBuild as idleBuildUnchecked, idleLine } from "../src/views/idle-props.mjs";
+const idleBuild = lineCased(idleBuildUnchecked, "idle");   // every body it builds goes through assertLineCase (report mode)
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");

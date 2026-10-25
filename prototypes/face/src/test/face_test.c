@@ -155,14 +155,15 @@ static void ring_vectors(const char *dir) {
   printf("rings: %d cases, %d differ\n", n, bad);
   free(mask); free(px); free(big); free(roles); free(ex); free(js);
 }
-/* the metrics (metrics.json, made from the table of the compiled fonts): lv_text_get_width gives the width the table sums, for every Station string at 16, 20 and 28 px */
+/* the metrics (metrics.json, made from the table of the compiled fonts): lv_text_get_width gives the width the table sums, for every Station string at 16, 20 and 28 px and in Medium 16 ("font": "16m") */
 static void metrics_vectors(const char *dir) {
   char path[512]; snprintf(path, sizeof path, "%s/metrics.json", dir); long len; char *js = slurp(path, &len);
   if (!js) { check(0, "metrics.json", "cannot read"); return; }
   if (spec_load("metrics", js, (size_t)len) < 0) { check(0, "metrics.json", spec_error()); free(js); return; }
   int n = spec_len("metrics", "cases"), bad = 0;
   for (int c = 0; c < n; c++) {
-    char p[64]; snprintf(p, sizeof p, "cases.%d.px", c); int px = spec_int("metrics", p, 0); snprintf(p, sizeof p, "cases.%d.width", c); int want = spec_int("metrics", p, -1);
+    char p[64], font[8]; snprintf(p, sizeof p, "cases.%d.px", c); int px = spec_int("metrics", p, 0); snprintf(p, sizeof p, "cases.%d.width", c); int want = spec_int("metrics", p, -1);
+    snprintf(p, sizeof p, "cases.%d.font", c); if (spec_str("metrics", p, font, sizeof font) > 0) px = strcmp(font, "16m") == 0 ? PRIM_FONT_M16 : -1;   /* a case by font key: "16m" is Medium 16's code */
     snprintf(p, sizeof p, "cases.%d.text", c); spec_str("metrics", p, prim_text(), prim_text_size()); int got = prim_measure(px);
     if (got != want) { bad++; char d[200]; snprintf(d, sizeof d, "%d px \"%.60s\": width %d, wanted %d", px, prim_text(), got, want); check(0, "metrics", d); } else checks++;
   }
@@ -623,6 +624,140 @@ static void resident_window_corner(void) {
   check(table_nodes() == 2 && kabsent("stamp.corner"), "kit_stamp: a corner the host has not sent adds no node", "");
   spec_drop("krs");
 }
+/* The kit for type: the font codes (prim.h PRIM_FONT_*), the roles of frame.json type.roles resolved by the v_say forms, the refusals of an unknown role, ground or variant (an error and a
+   node of no size), v_say equal to v_line_at for every role whose font is one of the three a px names (R16, M20, SB28), the role and ground in the log, and the cache dropped on a new load. */
+static int ty_errors(const char *needle) { int n = 0; const char *m; while ((m = wire_poll()) != NULL) if (strstr(m, "\"error\"") && (!needle || strstr(m, needle))) n++; return n; }
+static int ty_none(const char *id, int x) { int b[4]; return kbox(id, b) == FN_TEXT && b[0] == x && b[2] == 0 && b[3] == 0; }   /* a text node of no size at x */
+static int ty_same(const char *a, const char *b) { int x[4], y[4]; int ka = kbox(a, x), kb = kbox(b, y); return ka == FN_TEXT && kb == FN_TEXT && x[0] == y[0] && x[1] == y[1] && x[2] == y[2] && x[3] == y[3]; }
+static void type_kit(void) {
+  face_init(); { const char *hi = "{\"t\":\"hello\",\"contract\":1}"; wire_send(hi, (int)strlen(hi)); }
+  static const char *COLS[] = { "bone", "fog", "mist", "ink", "void", "orange", "amber", "focus", "gold", "coral" };
+  for (unsigned i = 0; i < sizeof COLS / sizeof *COLS; i++) { uint32_t rgb; if (prim_palette_rgb(COLS[i], &rgb) < 0) prim_palette_add(COLS[i], 0x101010u * (i + 1)); }
+  ty_errors(NULL);
+  /* the font codes: the three a px names keep the px, Medium 16 is 1016, any other is refused */
+  check(prim_font_px(PRIM_FONT_R16) == 16 && prim_font_px(PRIM_FONT_M16) == 16 && prim_font_px(PRIM_FONT_M20) == 20 && prim_font_px(PRIM_FONT_SB28) == 28 && PRIM_FONT_R16 == 16 && PRIM_FONT_M16 == 1016 && PRIM_FONT_M20 == 20 && PRIM_FONT_SB28 == 28, "font codes: 16, 1016, 20 and 28 name Regular 16, Medium 16, Medium 20 and SemiBold 28", "");
+  check(prim_font_px(17) == 0 && prim_font_px(1020) == 0 && prim_font_px(2016) == 0 && prim_font_px(0) == 0 && prim_font_px(-16) == 0, "font codes: any other code names no font", "");
+  snprintf(prim_text(), (size_t)prim_text_size(), "Open the Bay");
+  { int r = prim_measure(PRIM_FONT_R16), m = prim_measure(PRIM_FONT_M16), bad = prim_measure(1020); char d[96]; snprintf(d, sizeof d, "Regular %d, Medium %d, 1020: %d", r, m, bad);
+    check(r > 0 && m >= r && bad == -1 && prim_measure(17) == -1, "prim_measure: by code, Medium 16 as wide or wider than Regular 16, an unknown code -1", d); }
+  prim_begin(); v_region("ty.code", LAYER_TYPE); int u0 = prim_unknown();
+  snprintf(prim_text(), (size_t)prim_text_size(), "Hi"); prim_node(v_id("ty.c1016"), FN_TEXT, 100, 100, 20, 20, 0, PRIM_FONT_M16, 12);
+  snprintf(prim_text(), (size_t)prim_text_size(), "Hi"); prim_node(v_id("ty.c1020"), FN_TEXT, 100, 140, 20, 20, 0, 1020, 14);
+  int u1 = prim_unknown(); prim_end();
+  check(kbox("ty.c1016", (int[4]){0}) == FN_TEXT && kabsent("ty.c1020") && u1 - u0 == 1, "prim_node: a text node at code 1016 is drawn, one at 1020 refused", "");
+  /* every role of frame.json type.roles on every ground it has a colour on: its font is type.fonts' code, it draws one node (two with the shadow on a painting), no error */
+  int nroles = spec_len("frame", "type.roles"), resolved = 0, pairs = 0, same = 0, shadows = 0;
+  check(nroles == 16, "type.roles: the sixteen roles of the role table", "");
+  for (int i = 0; i < nroles; i++) {
+    char role[40], dummy[4]; if (!spec_member("frame", "type.roles", i, role, sizeof role, dummy, sizeof dummy)) continue;
+    char font[16]; spec_str("frame", v_fmt("type.roles.%s.font", role), font, sizeof font);
+    int want = strcmp(font, "R16") == 0 ? PRIM_FONT_R16 : strcmp(font, "M16") == 0 ? PRIM_FONT_M16 : strcmp(font, "M20") == 0 ? PRIM_FONT_M20 : strcmp(font, "SB28") == 0 ? PRIM_FONT_SB28 : -1;
+    check(v_role_font(role) == want && want > 0, "role resolve: the role's font code is its type.fonts name's", role);
+    int np = spec_len("frame", v_fmt("type.roles.%s.colour", role));
+    for (int k = 0; k < np; k++) {
+      char kind[16], col[24]; if (!spec_member("frame", v_fmt("type.roles.%s.colour", role), k, kind, sizeof kind, col, sizeof col)) continue;
+      char sh[24]; spec_str("frame", v_fmt("type.roles.%s.shadow.%s", role, kind), sh, sizeof sh);
+      const char *id = v_fmt("ty.%s.%s", role, kind); char sid[64]; snprintf(sid, sizeof sid, "%s.shadow", id); char idc[64]; snprintf(idc, sizeof idc, "%s", id);
+      prim_begin(); v_region("ty.say", LAYER_TYPE); int w = v_say(idc, "Hello", 200, 100, V_ANCHOR_CAP, role, kind, V_ALIGN_LEFT); prim_end();
+      int b[4], e = ty_errors(NULL), kb = kbox(idc, b), s4[4], ks = kbox(sid, s4);
+      check(e == 0 && kb == FN_TEXT && w == v_measure("Hello", want) && b[0] == 200 && b[2] == w && (sh[0] ? ks == FN_TEXT && s4[0] == 201 && s4[1] == b[1] + 1 && s4[2] == w : ks < 0), "role resolve: v_say draws the role on each ground it has a colour on (and its shadow where it has one)", idc);
+      pairs++; if (sh[0]) shadows++;
+      if (want != PRIM_FONT_M16 && !sh[0]) {   /* v_say is v_line_at for the fonts a px names: every anchor and alignment, and v_say_in is v_line_in */
+        int ok = 1; static const int AN[] = { V_ANCHOR_LINE, V_ANCHOR_CAP, V_ANCHOR_BASE, V_ANCHOR_MID }, AL[] = { V_ALIGN_LEFT, V_ALIGN_CENTRE, V_ALIGN_RIGHT };
+        for (int a = 0; a < 4; a++) for (int l = 0; l < 3; l++) {
+          prim_begin(); v_region("ty.eq", LAYER_TYPE); int w1 = v_say("ty.eq.say", "Legs & Tail", 300, 120, AN[a], role, kind, AL[l]); int w2 = v_line_at("ty.eq.line", "Legs & Tail", 300, 120, AN[a], want, col, AL[l]);
+          int w3 = v_say_in("ty.eq.sin", "Legs & Tail", 300, 200, 120, AN[a], role, kind), w4 = v_line_in("ty.eq.lin", "Legs & Tail", 300, 200, 120, AN[a], want, col); prim_end();
+          if (!(w1 == w2 && w3 == w4 && ty_same("ty.eq.say", "ty.eq.line") && ty_same("ty.eq.sin", "ty.eq.lin"))) ok = 0;
+        }
+        check(ok && ty_errors(NULL) == 0, "v_say == v_line_at and v_say_in == v_line_in for a role whose font a px names, every anchor and alignment", idc); same++;
+      }
+    }
+    resolved++;
+  }
+  { char d[96]; snprintf(d, sizeof d, "%d roles, %d role-ground pairs, %d with a shadow, %d compared with v_line_at", resolved, pairs, shadows, same); check(resolved == 16 && same > 0 && shadows > 0, "role resolve: every role", d); printf("type kit: %s\n", d); }
+  /* a ground by palette name, a variant */
+  prim_begin(); v_region("ty.v", LAYER_TYPE);
+  int wp = v_say("ty.pal", "Hello", 10, 10, V_ANCHOR_CAP, "quiet", "panel", V_ALIGN_LEFT), wv = v_say("ty.var", "12", 10, 40, V_ANCHOR_CAP, "figure.price", "bar", V_ALIGN_LEFT);
+  v_run_t rr = v_say_run("ty.run", "Hello", 10, 70, "verb", "bar", V_ALIGN_LEFT); prim_end();
+  check(wp == v_measure("Hello", 16) && wv == v_measure("12", PRIM_FONT_M16) && rr.width == v_measure("Hello", PRIM_FONT_M16) && ty_errors(NULL) == 0 && kbox("ty.run.0", (int[4]){0}) == FN_TEXT, "role resolve: a ground by its palette name (panel: pane, bar: band), a variant (figure.price), a run by role", "");
+  /* the log carries the role, the ground, the cap top and the baseline */
+  { static char b[65536]; prim_begin(); v_region("ty.log", LAYER_TYPE); v_say("ty.log.a", "Eyebrow", 40, 60, V_ANCHOR_CAP, "eyebrow", "pane", V_ALIGN_LEFT); v_line_at("ty.log.b", "Sized", 40, 100, V_ANCHOR_CAP, 16, "bone", V_ALIGN_LEFT); int n = prim_log_json(b, (int)sizeof b); prim_end();
+    check(n > 0 && strstr(b, "{\"text\":\"Eyebrow\",\"px\":1016,\"region\":\"ty.log\",\"role\":\"eyebrow\",\"ground\":\"pane\",\"run\":0,\"x\":40,") && strstr(b, ",\"cap\":60,\"base\":72}") && strstr(b, "{\"text\":\"Sized\",\"px\":16,\"region\":\"ty.log\",\"role\":\"\",\"ground\":\"\",\"run\":0,\"x\":40,") && strstr(b, ",\"cap\":100,\"base\":112}"), "the log: a text node's role, ground, x, width, cap top and baseline (\"\" for a text set by size)", ""); }
+  /* refusals: an error and one node of no size */
+  static const struct { const char *role, *ground, *why; } BAD[] = { { "nope", "field", "no such role" }, { "title", "field", "no colour on this ground" }, { "label", "zzz", "no such ground" }, { "label.zzz", "field", "no such variant" }, { "", "field", "no such role" } };
+  for (unsigned i = 0; i < sizeof BAD / sizeof *BAD; i++) {
+    char id[32]; snprintf(id, sizeof id, "ty.bad.%u", i);
+    prim_begin(); v_region("ty.bad", LAYER_TYPE); int w = v_say(id, "Hello", 50, 60, V_ANCHOR_CAP, BAD[i].role, BAD[i].ground, V_ALIGN_LEFT); int u = prim_unknown(); prim_end();
+    int e = ty_errors(BAD[i].why);
+    { char d[96]; snprintf(d, sizeof d, "%s: errors %d, refused %d", BAD[i].why, e, u);
+    check(w == 0 && e == 1 && u == 0 && ty_none(id, 50), "refusal: an unknown role, a ground with no colour, an unknown ground or variant: an error and one text node of no size", d); }
+  }
+  prim_begin(); v_region("ty.bad", LAYER_TYPE); v_run_t br = v_say_run("ty.badrun", "Hello", 50, 60, "nope", "band", V_ALIGN_LEFT); prim_end();
+  check(br.width == 0 && ty_errors("no such role") == 1 && ty_none("ty.badrun.0", 50), "refusal: v_say_run with an unknown role: an error and its first node with no size", "");
+  check(v_role_width("Hello", "nope") == 0 && v_role_pitch("nope") == 0 && v_role_cap_in(10, 20, "nope") == 10 && v_role_cap_top(10, V_ANCHOR_LINE, "nope") == 10 && ty_errors("no such role") == 4, "refusal: the role measures of an unknown role answer 0 (the cap forms y), with an error each", "");
+  check(v_role_width("Hello", "heading") == v_measure("Hello", 20) && v_role_pitch("heading") == 28 && v_role_pitch("label") == 20 && v_role_cap_in(48, 30, "eyebrow") == v_cap_in(48, 30, 16) && v_role_cap_top(48, V_ANCHOR_LINE, "heading") == v_cap_top(48, V_ANCHOR_LINE, 20), "the role measures: width, pitch (a role with none takes its px's), cap", "");
+  /* a variant may carry a font, a pitch, a colour or a shadow (type.roles.<r>.variants.<v>): the measures follow it, the colour and the shadow too */
+  check(v_role_font("nameTag") == PRIM_FONT_M20 && v_role_font("nameTag.crowd") == PRIM_FONT_M16 && v_role_font("figure.large") == PRIM_FONT_M20 && v_role_font("figure.price") == PRIM_FONT_M16, "variant font: nameTag.crowd is Medium 16, figure.large Medium 20, a palette-name variant keeps the role's", "");
+  check(v_role_pitch("body.facts") == 24 && v_role_pitch("quiet.facts") == 24 && v_role_pitch("body") == 20 && v_role_pitch("quiet.bay") == 20 && v_role_pitch("nameTag.crowd") == 20 && v_role_pitch("figure.large") == 28, "variant pitch: body.facts and quiet.facts 24, a variant with none keeps the role's (or its font's)", "");
+  check(v_role_width("Hello", "nameTag.crowd") == v_measure("Hello", PRIM_FONT_M16) && v_role_cap_in(10, 20, "figure.large") == v_cap_in(10, 20, PRIM_FONT_M20) && ty_errors(NULL) == 0, "variant font: the role measures follow the variant's font", "");
+  { int b[4], s4[4]; static char lg[65536];
+    prim_begin(); v_region("ty.var2", LAYER_TYPE);
+    v_say("ty.wall", "Painted", 200, 100, V_ANCHOR_CAP, "code.wall", "painted", V_ALIGN_LEFT); v_say("ty.nowall", "Painted", 200, 140, V_ANCHOR_CAP, "code", "painted", V_ALIGN_LEFT);
+    v_say("ty.crowd", "Crowd", 200, 180, V_ANCHOR_CAP, "nameTag.crowd", "pane", V_ALIGN_LEFT); v_say("ty.large", "12", 200, 220, V_ANCHOR_CAP, "figure.large", "field", V_ALIGN_LEFT);
+    int n = prim_log_json(lg, (int)sizeof lg); prim_end();
+    check(kbox("ty.wall", b) == FN_TEXT && kabsent("ty.wall.shadow") && kbox("ty.nowall", b) == FN_TEXT && kbox("ty.nowall.shadow", s4) == FN_TEXT && ty_errors(NULL) == 0, "variant shadow: code.wall on painted casts none (its shadow is {}), code does", "");
+    check(n > 0 && strstr(lg, "{\"text\":\"Painted\",\"px\":16,\"region\":\"ty.var2\",\"role\":\"code.wall\",\"ground\":\"painted\"") && strstr(lg, "{\"text\":\"Crowd\",\"px\":1016,") && strstr(lg, "{\"text\":\"12\",\"px\":20,"), "variant font: the log carries the variant's font code (nameTag.crowd 1016, figure.large 20) and the role string", ""); }
+  /* a shadow is drawn where the text node is drawn: a run's pieces and a price's figures cast the role's shadow, each just before its text; an icon casts none */
+  { static char lg[65536]; int b[4], s4[4];
+    prim_begin(); v_region("ty.run", LAYER_TYPE);
+    v_say_run("ty.prun", "Hello", 10, 100, "quiet.bay", "painted", V_ALIGN_LEFT);
+    prim_end(); int n = prim_log_json(lg, (int)sizeof lg);   /* after prim_end: the nodes have their sizes and join the screen */
+    char key[40]; snprintf(key, sizeof key, "[%u,", (unsigned)v_id("ty.prun.0.shadow")); const char *ps = strstr(lg, key); snprintf(key, sizeof key, "[%u,", (unsigned)v_id("ty.prun.0")); const char *pt = strstr(lg, key);
+    check(n > 0 && kbox("ty.prun.0", b) == FN_TEXT && kbox("ty.prun.0.shadow", s4) == FN_TEXT && s4[0] == 11 && s4[1] == b[1] + 1 && s4[2] == b[2] && b[0] == 10 && ps && pt && ps < pt, "run shadow: v_say_run in quiet.bay on painted draws ty.prun.0.shadow at (11, cap + 1) before ty.prun.0", "");
+    prim_begin(); v_region("ty.run2", LAYER_TYPE); v_say_run("ty.prun2", "Hello", 10, 100, "quiet.bay", "painted", V_ALIGN_LEFT); v_say_run("ty.prun3", "Hello", 10, 140, "quiet.bay", "pane", V_ALIGN_LEFT); prim_end();
+    check(kbox("ty.prun2.0.shadow", s4) == FN_TEXT && kabsent("ty.prun3.0.shadow") && ty_errors(NULL) == 0, "run shadow: only on the ground the role casts one", "");
+    const char *cols[V_PRICE_N] = { "body", "body", "body", "body" };
+    prim_begin(); v_region("ty.pr", LAYER_TYPE); v_say_price("ty.price", "\xe2\x9a\xa1 2 \xe2\x9d\x80 4", 10, 100, "quiet.bay", "painted", cols, "body"); prim_end();
+    ty_errors("is not on the face");   /* the test face holds no icon pictures: the icons say so, the figures are drawn */
+    check(kbox("ty.price.0.t", b) == FN_TEXT && kbox("ty.price.0.t.shadow", s4) == FN_TEXT && s4[0] == b[0] + 1 && s4[1] == b[1] + 1 && kabsent("ty.price.0.i.shadow") && kabsent("ty.price.3.t.shadow") && ty_errors(NULL) == 0, "price shadow: v_say_price casts the role's shadow under each figure, none under an icon or a group the price lacks", ""); }
+  /* a run is logged by id: the pieces of one v_run or v_price call carry its v_id, on the type entries and as the 14th value of each node */
+  { static char lg[65536];
+    prim_begin(); v_region("ty.runlog", LAYER_TYPE);
+    v_say_run("ty.runa", "Hello", 10, 100, "label", "field", V_ALIGN_LEFT); v_say("ty.runb", "Plain", 200, 100, V_ANCHOR_CAP, "label", "field", V_ALIGN_LEFT);
+    const char *cols[V_PRICE_N] = { "label", "label", "label", "label" }; v_say_price("ty.runp", "\xe2\x9a\xa1 2", 300, 100, "label", "field", cols, "label");
+    prim_end(); int n = prim_log_json(lg, (int)sizeof lg); ty_errors(NULL);   /* the price's icon, which the test face does not hold */
+    char want[160]; snprintf(want, sizeof want, "{\"text\":\"Hello\",\"px\":16,\"region\":\"ty.runlog\",\"role\":\"label\",\"ground\":\"field\",\"run\":%u,", (unsigned)v_id("ty.runa"));
+    char plain[160]; snprintf(plain, sizeof plain, "\"text\":\"Plain\",\"px\":16,\"region\":\"ty.runlog\",\"role\":\"label\",\"ground\":\"field\",\"run\":0,");
+    char fig[160]; snprintf(fig, sizeof fig, "\"text\":\" 2\",\"px\":16,\"region\":\"ty.runlog\",\"role\":\"label\",\"ground\":\"field\",\"run\":%u,", (unsigned)v_id("ty.runp"));
+    char nd[64], r[24]; snprintf(nd, sizeof nd, "[%u,2,3,", (unsigned)v_id("ty.runa.0")); snprintf(r, sizeof r, ",%u]", (unsigned)v_id("ty.runa")); const char *p = strstr(lg, nd), *e = p ? strchr(p, ']') : NULL;
+    int tail = e && (size_t)(e - p) + 1 > strlen(r) && strncmp(e - strlen(r) + 1, r, strlen(r)) == 0;   /* the node's entry ends with its run */
+    check(n > 0 && strstr(lg, want) && strstr(lg, plain) && strstr(lg, fig) && tail, "run log: a type entry carries the run's v_id (0 for a plain line), a node's 14th value is its run", ""); }
+  /* a variant neither a string nor an object, or naming a font the face does not hold, is refused: an error and a node of no size */
+  { int len = 0; const char *raw = spec_raw("frame", "", &len); char *orig = raw ? (char *)malloc((size_t)len + 1) : NULL, *alt = raw ? (char *)malloc((size_t)len + 64) : NULL;
+    if (orig && alt) { memcpy(orig, raw, (size_t)len); orig[len] = 0;
+      static const struct { const char *from, *to, *why; int font; } BADV[] = { { "\"crowd\": { \"font\": \"M16\" }", "\"crowd\": { \"font\": \"X9\" }", "font", 0 }, { "\"crowd\": { \"font\": \"M16\" }", "\"crowd\": 5", "no such variant", 0 }, { "\"crowd\": { \"font\": \"M16\" }", "\"crowd\": [\"M16\"]", "no such variant", 0 }, { "\"crowd\": { \"font\": \"M16\" }", "\"crowd\": { \"colour\": 7 }", "colour", PRIM_FONT_M20 } };
+      for (unsigned i = 0; i < sizeof BADV / sizeof *BADV; i++) {
+        const char *at = strstr(orig, BADV[i].from); int ok = at != NULL, fo = -1, e = 0, w = -1, nz = 0, after = -1; char id[32]; snprintf(id, sizeof id, "ty.badv.%u", i);
+        if (ok) { size_t head = (size_t)(at - orig); memcpy(alt, orig, head); size_t tl = strlen(BADV[i].to); memcpy(alt + head, BADV[i].to, tl); strcpy(alt + head + tl, at + strlen(BADV[i].from)); spec_load("frame", alt, strlen(alt));
+          ty_errors(NULL); fo = v_role_font("nameTag.crowd");
+          prim_begin(); v_region("ty.badv", LAYER_TYPE); w = v_say(id, "Hello", 50, 60, V_ANCHOR_CAP, "nameTag.crowd", "pane", V_ALIGN_LEFT); int u = prim_unknown(); prim_end(); e = ty_errors(NULL); nz = ty_none(id, 50) && u == 0;
+          spec_load("frame", orig, strlen(orig)); after = v_role_font("nameTag.crowd"); }
+        char d[96]; snprintf(d, sizeof d, "%s: font %d, errors %d, then %d", BADV[i].why, fo, e, after);
+        check(ok && fo == BADV[i].font && w == 0 && e >= 1 && nz && after == PRIM_FONT_M16, "refusal: a variant of a font the face does not hold, or neither a string nor an object: an error and a node of no size", d);
+      } }
+    else check(0, "variant refusals: the frame's text", "absent");
+    free(orig); free(alt); }
+  /* the cache follows the spec: a new load of the frame with another font for a role is read */
+  { int len = 0; const char *raw = spec_raw("frame", "", &len); char *orig = raw ? (char *)malloc((size_t)len + 1) : NULL, *alt = raw ? (char *)malloc((size_t)len + 1) : NULL;
+    if (orig && alt) { memcpy(orig, raw, (size_t)len); orig[len] = 0; memcpy(alt, raw, (size_t)len + 1); alt[len] = 0;
+      char *h = strstr(alt, "\"heading\": { \"font\": \"M20\""); int before = v_role_font("heading"), during = -1, after = -1;
+      if (h) { memcpy(strstr(h, "M20"), "M16", 3); spec_load("frame", alt, strlen(alt)); during = v_role_font("heading"); spec_load("frame", orig, strlen(orig)); after = v_role_font("heading"); }
+      char d[80]; snprintf(d, sizeof d, "%d, then %d, then %d", before, during, after);
+      check(h && before == PRIM_FONT_M20 && during == PRIM_FONT_M16 && after == PRIM_FONT_M20, "role cache: a new load of the frame is read again (the heading set to M16 and back)", d); }
+    else check(0, "role cache: the frame's text", "absent");
+    free(orig); free(alt); }
+  ty_errors(NULL);
+}
 int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";
   focus_vectors(dir);
@@ -636,6 +771,7 @@ int main(int argc, char **argv) {
   kit_words();
   glint_readout();
   resident_window_corner();
+  type_kit();
   printf("face_test: %d checks, %d failed\n", checks, fails);
   return fails ? 1 : 0;
 }

@@ -12,7 +12,8 @@ import { dirty, dirtyRects } from "./dirty.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { setFrames } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
-import { familyBuild } from "../../station/src/views/library-props.mjs";
+import { familyBuild as familyBuildUnchecked } from "../../station/src/views/library-props.mjs";
+import { lineCased } from "../../station/tests/fixtures/line-case.mjs";
 import { buildLineage } from "../../station/tests/fixtures/lineage.mjs";
 import { moveFocus } from "../../ui/focus.mjs";
 
@@ -23,6 +24,7 @@ const metrics = built ? JSON.parse(readFileSync(path.resolve(here, "../dist/metr
 setFrames(readdirSync(path.resolve(here, "../../workbench/frames")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames", f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 };
 const world = (which = "full") => { const st = S.freshSt("w1", 3, 1e6); S.normalize(st); st.turn = 20; const by = buildLineage(st, which, { turn: 20 }); return { st, by }; };
+const familyBuild = lineCased(familyBuildUnchecked, "library-family");
 const build = (st, node, zoom = "far", last = null) => familyBuild({ st, settings, ui: { species: "S01", l3: { S01: { node, zoom, cam: null } }, l3last: last }, metrics }, spec, frameSpec, home);
 const frameProps = (b) => ({ top: { screen: "library.family", title: "Library", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null }, readout: b.top.readout }, line: { need: "", ...b.line }, plate: { text: "" } });
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };

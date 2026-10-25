@@ -871,3 +871,62 @@ test("the Library's Level 2 (library.json l2): the shelf, the families, the focu
   const nav = frame.navigation.screens; assert.deepEqual([nav["library.species"].parent, nav["library.species"].back, nav["library.family"].parent, nav["library.family"].back], ["library", "Library", "library.species", "{Species}"]);
   assert.equal(frame.strings.titles["library.family"], "Library"); assert.ok(frame.navigation.jumps.some((j) => j.from === "pods.overview" && j.to === "library.species" && !j.shut));
 });
+
+// The string lint (the copywriter's case rule, sentence case), in report mode: every string leaf of every station spec's `strings` tables (at any depth) starts, after its leading spaces, with an
+// upper-case letter, a digit or a non-letter glyph; or with a placeholder of a name the model already capitalises; or its key path (inside that `strings`) is listed in the table's own
+// `fragments` (a fragment set inside other lines, each entry with its reason) or `composed` (a template capLine cases where it is set: so a lowercase-led template never passes as a plain line).
+// A list entry is a glob path ("watchHabits.*": * is any run inside one key) or { path, reason }; it covers the path and everything under it. The misses are printed per file; nothing fails yet:
+// each screen's ticket enforces its own spec.
+// A leaf whose own key is spec documentation (a note, a rule, a key that begins with an underscore, or ends in Note or Rule) is not a line the player reads: the lint skips it.
+const DOCUMENTATION = /^(_|note$|rule$)|(Note|Rule)$/;
+const CAPITALISED = ["{Name}", "{name}", "{Species}", "{species}", "{Chapter}", "{Trait}", "{A}", "{B}", "{pod}"];
+function lintStrings(spec) {
+  const misses = [], passed = [];
+  const tables = []; const find = (v) => { if (Array.isArray(v)) v.forEach(find); else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) { if (k === "strings" && x && typeof x === "object" && !Array.isArray(x)) tables.push(x); find(x); } }; find(spec);
+  for (const T of tables) {
+    const globs = (list) => (Array.isArray(list) ? list : []).map((e) => (typeof e === "string" ? e : e?.path)).filter((g) => typeof g === "string").map((g) => new RegExp("^" + g.split(".").map((s) => s.split("*").map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[^.]*")).join("\\.") + "(\\..*)?$"));
+    const listed = [...globs(T.fragments), ...globs(T.composed)];
+    const walk = (v, at) => {
+      if (typeof v === "string") {
+        const s = v.replace(/^ +/, ""); if (!s) return;
+        const ok = s.startsWith("{") ? CAPITALISED.some((p) => s.startsWith(p)) : !/^\p{Ll}/u.test(s);
+        if (ok || listed.some((re) => re.test(at))) passed.push(at); else misses.push([at, v]);
+      } else if (Array.isArray(v)) v.forEach((x, i) => walk(x, at ? `${at}.${i}` : String(i)));
+      else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) { if (!at && (k === "fragments" || k === "composed")) continue; if (k === "strings") continue; if (typeof x === "string" && DOCUMENTATION.test(k)) continue; walk(x, at ? `${at}.${k}` : k); }
+    };
+    walk(T, "");
+  }
+  return { misses, passed: passed.length };
+}
+test("the string lint (report mode): each station spec's strings start with a capital, a digit, a glyph or a capitalised name, or are listed as fragments or composed", () => {
+  const dir = new URL("../specs/station/", import.meta.url), files = readdirSync(dir).filter((f) => f.endsWith(".json") && !f.endsWith(".props.json") && !f.startsWith("stand-"));
+  let total = 0;
+  for (const f of files.sort()) { const { misses, passed } = lintStrings(JSON.parse(readFileSync(new URL(f, dir), "utf8"))); if (!misses.length && !passed) continue; total += misses.length;
+    console.log(`string lint (report mode): ${f}: ${misses.length} of ${misses.length + passed} strings start in lowercase${misses.length ? " (e.g. " + misses.slice(0, 3).map(([p, s]) => `${p} "${s}"`).join(", ") + ")" : ""}`); }
+  console.log(`string lint (report mode): ${total} lowercase-led strings in all`);
+  const t = lintStrings({ strings: { a: "the bud", b: "Open", c: "3 at home", d: "✕ {Trait}", e: "{name} grows", f: "{a} pod", g: { x: "digging" }, h: ["one", "Two"], fragments: ["g.*"], composed: [{ path: "f", reason: "the article, cased by capLine" }] }, l2: { strings: { q: "met only" } } });
+  assert.deepEqual(t.misses, [["a", "the bud"], ["h.0", "one"], ["q", "met only"]]); assert.equal(t.passed, 7);
+  const d = lintStrings({ strings: { note: "a note", _why: "a reason", rule: "a rule", loseNote: "a note", keepRule: "a rule", notes: "kept", rules: "kept", deep: { note: "a note", line: "kept" } } });
+  assert.deepEqual(d.misses.map(([p]) => p), ["notes", "rules", "deep.line"], "the notes and rules by key are skipped, other keys are read");
+});
+
+test("the type roles: a variant is a palette name or an object of font, pitch, colour and shadow; every font is a type.fonts name; a shadow on painted is cast on bone, fog or gold", () => {
+  const T = frame.type, KEYS = ["font", "pitch", "colour", "shadow"], CASTS_ON = ["bone", "fog", "gold"], names = new Set(palette.colours.map(([n]) => n));
+  for (const [r, R] of Object.entries(T.roles)) {
+    assert.ok(T.fonts[R.font], `${r}: the font ${R.font} is a type.fonts name`);
+    for (const [v, V] of Object.entries(R.variants ?? {})) {
+      const at = `${r}.${v}`;
+      if (typeof V === "string") { assert.ok(names.has(V), `${at}: ${V} is a palette name`); continue; }
+      assert.ok(V && typeof V === "object" && !Array.isArray(V), `${at}: a palette name or an object`);
+      for (const k of Object.keys(V)) assert.ok(KEYS.includes(k), `${at}: the key ${k} is one of ${KEYS.join(", ")}`);
+      if ("font" in V) assert.ok(T.fonts[V.font], `${at}: the font ${V.font} is a type.fonts name`);
+      if ("pitch" in V) assert.ok(Number.isInteger(V.pitch) && V.pitch > 0, `${at}: the pitch is a positive integer`);
+      if ("colour" in V) assert.ok(typeof V.colour === "string" && names.has(V.colour), `${at}: the colour is one palette name`);
+      if ("shadow" in V) assert.ok(V.shadow && typeof V.shadow === "object" && !Array.isArray(V.shadow), `${at}: the shadow is a per-ground map`);
+    }
+    for (const v of [undefined, ...Object.keys(R.variants ?? {})]) {   // wherever the role, or a variant of it, casts a shadow on painted, the colour it casts it on
+      const V = v === undefined ? undefined : R.variants[v], colour = typeof V === "string" ? V : V?.colour ?? R.colour.painted, shadow = V && typeof V === "object" && V.shadow ? V.shadow : R.shadow;
+      if (R.colour.painted !== undefined && shadow?.painted) assert.ok(CASTS_ON.includes(colour), `${r}${v ? "." + v : ""}: a shadow on painted is cast on ${CASTS_ON.join(", ")}, not ${colour}`);
+    }
+  }
+});
