@@ -8,6 +8,7 @@
 //   - u is in half-sibling units (siblings are 2 apart). Within a block the nodes are placed in birth order, each to the right of every node already in its row (a founder of every node already in its block), so a birth never moves a node already placed
 //     in its block; a block that widens moves the blocks after it by a rigid translation and the blocks before it never.
 import { mibiById, speciesOf } from "./state.mjs";
+import { traitState, heritableTraits } from "./genome.mjs";
 
 // The parents a mibi's save records (ids, in the save's order, each once), else a shed-pod child's single parent; [] for a founder.
 export function parentsOf(st, m) {
@@ -178,20 +179,21 @@ export function farGeometry(lin, spec) {
   const F = spec.l3.far, [W, H] = F.rect.slice(2), d = F.dot, [u0, u1] = lin.span, span = (u1 - u0) / 2, R = Math.max(1, lin.rows);
   const fit = span > 0 ? Math.floor((F.spacing.share * W) / span) : F.spacing.max;
   if (fit < F.spacing.min) throw new Error(`FAR of ${lin.species}: a span of ${span} sibling steps gives ${fit} px spacing, below ${F.spacing.min}: it would need a camera (UI/UX)`);
-  const sx = Math.min(F.spacing.max, fit), rowsFit = R >= 2 ? Math.floor((H - d - 2 * F.fit.margin) / (R - 1)) : Infinity, sy = Math.min(Math.round(1.5 * sx), rowsFit);
+  const sx = Math.min(F.spacing.max, fit), rowsFit = R >= 2 ? Math.floor((H - d - 2 * F.fit.margin) / (R - 1)) : Infinity, sy = Math.min(Math.max(Math.round(1.5 * sx), F.fit.syMin), rowsFit);
   if (rowsFit < F.fit.syMin) throw new Error(`FAR of ${lin.species}: ${R} rows give ${rowsFit} px between rows, below ${F.fit.syMin}: it would need a camera (UI/UX)`);   // the rows' fit refuses; 1.5 sx below it is the span's (sx >= 16)
   const left = Math.floor((W - (Math.round(((u1 - u0) * sx) / 2) + d)) / 2), top = Math.floor((H - ((R - 1) * sy + d)) / 2);
   const bx = (u) => left + Math.round(((u - u0) * sx) / 2), by = (row) => top + Math.round(row * sy);
   const boxes = {}; for (const n of lin.nodes) boxes[n.id] = [bx(n.u), by(n.row), d, d];
   return { sx, sy, rows: R, span, left, top, boxes, X: (u) => bx(u) + d / 2, Y: (row) => by(row) + d / 2 };
 }
-// The mini's geometry: one uniform s = min(208 / 992, 96 / 510) over the FAR picture, centred: { s, ox, oy, boxes (the 4 x 4 dot boxes; a pod's and the bud's the one pixel at its centre), scale: [kx, ky] (mini px per CLOSE px),
+// The mini's geometry: one uniform s = min(208 / 992, 96 / 510) over the FAR picture, centred: { s, ox, oy, dot (d = min(4, max(2, floor(min(sx, sy) s) - 1))), boxes (the d x d dot boxes at round(centre s + origin) - floor(d / 2); a pod's and the bud's the one pixel at its centre), scale: [kx, ky] (mini px per CLOSE px),
 // origin: [mx, my] (the mini position of the grid point u 0, row 0) }: a CLOSE point (X, Y) is at (mx + (X - 16) kx, my + (Y - 44) ky) in the mini.
 export function miniGeometry(lin, spec, far = farGeometry(lin, spec)) {
-  const [FW, FH] = spec.l3.far.rect.slice(2), [MW, MH] = spec.l3.mini.rect.slice(2), k = spec.l3.mini.dot, s = Math.min(MW / FW, MH / FH), ox = Math.round((MW - FW * s) / 2), oy = Math.round((MH - FH * s) / 2);
+  const M = spec.l3.mini, [FW, FH] = spec.l3.far.rect.slice(2), [MW, MH] = M.rect.slice(2), s = Math.min(MW / FW, MH / FH), ox = Math.round((MW - FW * s) / 2), oy = Math.round((MH - FH * s) / 2);
+  const k = Math.min(M.dot, Math.max(M.dotMin, Math.floor(Math.min(far.sx, far.sy) * s) - 1));   // the mini dot (UI/UX): p = floor(min(sx, sy) s), d = min(4, max(2, p - 1))
   const at = (x, y) => [Math.round(x * s + ox), Math.round(y * s + oy)], boxes = {};
-  for (const n of lin.nodes) { const b = far.boxes[n.id], [cx, cy] = at(b[0] + b[2] / 2, b[1] + b[3] / 2); boxes[n.id] = n.kind === "mibi" ? [cx - k / 2, cy - k / 2, k, k] : [cx, cy, 1, 1]; }
-  return { s, ox, oy, boxes, at, scale: [(s * far.sx) / 2 / spec.l3.close.grid.du, (s * far.sy) / spec.l3.close.grid.drow], origin: [ox + far.X(0) * s, oy + far.Y(0) * s] };
+  for (const n of lin.nodes) { const b = far.boxes[n.id], [cx, cy] = at(b[0] + b[2] / 2, b[1] + b[3] / 2); boxes[n.id] = n.kind === "mibi" ? [cx - Math.floor(k / 2), cy - Math.floor(k / 2), k, k] : [cx, cy, 1, 1]; }
+  return { s, ox, oy, dot: k, boxes, at, scale: [(s * far.sx) / 2 / spec.l3.close.grid.du, (s * far.sy) / spec.l3.close.grid.drow], origin: [ox + far.X(0) * s, oy + far.Y(0) * s] };
 }
 
 // CLOSE's view as a box in the mini (l3.mini.facts: a CLOSE point (X, Y) is at (mx + (X - grid.x0) kx, my + (Y - grid.y0) ky)) under camera cam: the view's corners, each rounded, then cut to the mini's own rect;
@@ -201,4 +203,35 @@ export function overviewBox(lin, spec, cam, mini = miniGeometry(lin, spec)) {
   const X = (x) => Math.round(mx + (x + cam[0] - C.grid.x0) * kx), Y = (y) => Math.round(my + (y + cam[1] - C.grid.y0) * ky);
   const x0 = Math.max(0, X(V[0])), y0 = Math.max(0, Y(V[1])), x1 = Math.min(MW, X(V[0] + V[2])), y1 = Math.min(MH, Y(V[1] + V[3]));
   return [x0, y0, Math.max(0, x1 - x0), Math.max(0, y1 - y0)];
+}
+
+// ---- compare (library.json l3.compare): one computation for the fact, the block light and the path ----
+// What two mibis of one species show alike, from their read looks (traitState(...).shows, the whole look: "charcoal and ash" is not "ash"), trait by trait on the traits read on both; never the stamps' patterns.
+// Returns { read: [trait ids read on both], same: [the traits among them that show the same, in frame order], lit: [the chapter ids read on both whose compared traits, one or more, all show the same] }.
+export function compareLooks(frame, a, b) {
+  const both = (ch) => (a.read ?? []).includes(ch) && (b.read ?? []).includes(ch), read = [], same = [], per = new Map();
+  for (const { chapter, trait } of heritableTraits(frame)) {
+    if (!both(chapter)) continue;
+    const eq = traitState(frame, trait, a.genome).shows === traitState(frame, trait, b.genome).shows; read.push(trait.id); if (eq) same.push(trait);
+    const p = per.get(chapter) ?? { n: 0, eq: 0 }; p.n++; if (eq) p.eq++; per.set(chapter, p);
+  }
+  return { read, same, lit: frame.chapters.map((c) => c.id).filter((c) => per.has(c) && per.get(c).n > 0 && per.get(c).eq === per.get(c).n) };
+}
+// The recorded line between two mibis of a lineage: the shortest walk over the recorded parents and children (mibis only; a pod or the bud is never on it), as the links draw it (lineageOf's links), in grid units
+// with the row in half rows ({ a: [u, h], b: [u, h] }, h = 2 row): a parent's drop to its children's bus, the bus between the two columns, the child's drop; one vertical for a lone child on its lone parent's column.
+// [] when the two are one mibi, either is not a mibi of the lineage, or no recorded line joins them.
+export function pathBetween(lin, from, to) {
+  const node = new Map(lin.nodes.map((n) => [n.id, n])), mibi = (id) => node.get(id)?.kind === "mibi";
+  if (from === to || !mibi(from) || !mibi(to)) return [];
+  const prev = new Map([[from, null]]), queue = [from];
+  while (queue.length && !prev.has(to)) { const id = queue.shift(), n = node.get(id); for (const q of [...n.parents, ...n.children]) if (mibi(q) && !prev.has(q)) { prev.set(q, id); queue.push(q); } }
+  if (!prev.has(to)) return [];
+  const walk = []; for (let id = to; id != null; id = prev.get(id)) walk.unshift(node.get(id));
+  const segs = [];
+  for (let i = 1; i < walk.length; i++) {
+    const [x, y] = [walk[i - 1], walk[i]], [p, c] = y.parents.includes(x.id) ? [x, y] : [y, x], kids = lin.nodes.filter((q) => q.parents.join("+") === c.parents.join("+"));
+    if (c.parents.length === 1 && kids.length === 1 && p.u === c.u) { segs.push({ a: [p.u, 2 * p.row], b: [c.u, 2 * c.row] }); continue; }
+    const h = 2 * c.row - 1; segs.push({ a: [p.u, 2 * p.row], b: [p.u, h] }); if (p.u !== c.u) segs.push({ a: [Math.min(p.u, c.u), h], b: [Math.max(p.u, c.u), h] }); segs.push({ a: [c.u, h], b: [c.u, 2 * c.row] });
+  }
+  return segs;
 }

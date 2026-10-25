@@ -33,6 +33,7 @@ int prim_ops_size(void);
 char *prim_text(void);          /* a 1 KiB buffer the page fills (UTF-8, NUL ended) before a text node or a measure */
 void prim_text_role(const char *role, const char *ground);   /* the role and ground the next text node is set by (the log carries them); the words set it before the node, "" or NULL for none */
 uint32_t prim_run_get(void);   /* the run now open (prim_run), 0 for none */
+void prim_hold(int on);       /* the nodes sent from now on are a hold mark (kit_focusRingHold), on until it is turned off: the log counts them as "hold", never as a ring (flag 4 on each node) */
 void prim_run(uint32_t run);   /* the run the nodes sent from now on belong to: one v_run or v_price call, the v_id of its id; 0 for none (the log carries it on each text entry and as the 14th value of each node) */
 int prim_text_size(void);
 int prim_measure(int code);     /* the width in px of prim_text() set in the font of that code (PRIM_FONT_*), or -1 for a code the face has no font for */

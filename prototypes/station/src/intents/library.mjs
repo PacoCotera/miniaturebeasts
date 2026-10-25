@@ -1,7 +1,7 @@
 // The Library's intents (library.json l1.keys, l2.keys). Level 1: ✓ on a met or found cell opens that species' Level 2 (library.species) and ← goes Home with the ring on the Library bezel.
 // Level 2: ✓ on a plate lights its chapter (lit) or clears it; ✓ on the face jumps to that mibi up close, on a family face to Level 3 (library.family, close on that mibi); ← clears a lit chapter, else returns to Level 1
-// with the ring on this species. Level 3: ✓ Zoom in (far) to close on the ring's node; ← from far to Level 2, from close to far when the tree exceeds CLOSE's view, else to Level 2; in close a ring move that
-// would leave the comfort zone pans the camera. The pads are the face's (l1.focus.graph, l2.focus.<state>): the host keeps the species of Level 1's ring in ui.lib.l1 and Level 2's ring in ui.lib.cur, its memory in ui.lib.l2[species]. An unmet cell is not a target.
+// with the ring on this species. Level 3: ✓ Zoom in (far) to close on the ring's node; ✓ Compare from {name} (close, and compare off the held mibi) holds the ring's mibi; ✓ Look at {name} on the held mibi jumps
+// to it up close; ← from far to Level 2, from close to far when the tree exceeds CLOSE's view, else to Level 2, from compare to close; in close and compare a ring move that would leave the comfort zone pans the camera. The pads are the face's (l1.focus.graph, l2.focus.<state>): the host keeps the species of Level 1's ring in ui.lib.l1 and Level 2's ring in ui.lib.cur, its memory in ui.lib.l2[species]. An unmet cell is not a target.
 import * as Lib from "../library.mjs";
 import { frameIds, frameOf } from "../genome.mjs";
 import { speciesOf } from "../state.mjs";
@@ -71,7 +71,7 @@ export function openFamily(h, mibiId) {
 function familyFocus(h, target) {
   const L = h.ui.lib, mem = L.l3?.[L.species]; if (!mem || typeof target !== "string" || !target.startsWith("node.")) return;
   const lin = lineage(h, L.species), r = resolveOf(lin, mem.node, mem.zoom, L.l3last); L.l3last = r["node.parent"] === target ? { up: mem.node } : null;
-  if (mem.zoom === "close" && lin.nodes.some((n) => n.id === target)) {
+  if ((mem.zoom === "close" || mem.zoom === "compare") && lin.nodes.some((n) => n.id === target)) {
     const C = h.specs.library.l3.close, from = Array.isArray(mem.cam) ? camFromOffset(lin, mem.node, C, mem.cam) : camAt(lin, mem.node, C, null, below(h)), to = fitsClose(lin, C, below(h)) ? [...from] : panFor(lin, target, C, from), moved = to[0] !== from[0] || to[1] !== from[1];
     mem.pan = null;
     if (moved && (h.motion ? h.motion() : true)) { const P = C.pan; mem.pan = { from, to }; h.play({ kind: P.kind, target: P.target, from, to, steps: P.steps, frac: P.frac }); }
@@ -79,15 +79,24 @@ function familyFocus(h, target) {
   }
   mem.node = target;
 }
-// ✓ Zoom in (far): close on the ring's node, put where its FAR dot was on screen, clamped into the comfort zone. ← in far: Level 2 of the species; in close: far when the tree exceeds CLOSE's view, else Level 2.
+// ✓ Zoom in (far): close on the ring's node, put where its FAR dot was on screen, clamped into the comfort zone. ✓ in close on a mibi (released ones too): compare, that mibi held; in compare on another mibi: the hold
+// moves to it; in compare on the held mibi: that mibi up close (Habitat), nothing when it is released (the hold stays). The bud has no ✓. ← in far: Level 2 of the species; in close: far when the tree exceeds
+// CLOSE's view, else Level 2; in compare: close (stop comparing), the camera and the ring kept.
 function familyIntent(h, target, verb) {
   const L = h.ui.lib, sid = L.species, mem = L.l3?.[sid]; if (!sid || !frameOf(sid) || !mem) return;
   const S3 = h.specs.library.l3, lin = lineage(h, sid);
   if (verb === "back") {
+    if (mem.zoom === "compare") { mem.zoom = "close"; mem.held = null; mem.pan = null; return; }
     if (mem.zoom === "close" && !fitsClose(lin, S3.close, below(h))) { mem.zoom = "far"; mem.pan = null; L.l3last = null; zoomDither(h); return; }
     L.state = "sheet"; L.lit = null; L.cur = null; h.goto("library.species"); return;
   }
-  if (verb !== "confirm" || mem.zoom !== "far" || !targetsOf(lin).includes(target)) return;   // close (until compare is built) and compare: no ✓
+  if (verb !== "confirm" || !targetsOf(lin).includes(target)) return;
+  if (mem.zoom === "close" || mem.zoom === "compare") {
+    const n = lin.nodes.find((q) => q.id === target); if (n?.kind !== "mibi") return;   // the bud: no ✓
+    if (mem.zoom === "compare" && mem.held === target) { const m = h.st.mibis.find((x) => x.id === n.mibi); if (m && !m.released) { h.ui.hab.id = m.id; h.ui.hab.f = "resident"; h.goto("habitat"); } return; }   // ✓ Look at {name}
+    mem.zoom = "compare"; mem.held = target; mem.pan = null; return;   // ✓ Compare from {name}: holds it (or moves the hold)
+  }
+  if (mem.zoom !== "far") return;
   const g = farGeometry(lin, h.specs.library), b = g.boxes[target], o = S3.far.rect;
   mem.node = target; mem.zoom = "close"; mem.cam = camOffset(lin, target, S3.close, camAt(lin, target, S3.close, [o[0] + b[0] + b[2] / 2, o[1] + b[1] + b[3] / 2], below(h))); mem.pan = null; L.l3last = null; zoomDither(h);
 }

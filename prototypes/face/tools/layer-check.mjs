@@ -66,15 +66,17 @@ const clearanceRuns = [], clearancePer = {}, clearanceFrame = { states: 0, depar
 const reading = (screen) => async (name, page, fail) => {
   const panel = await page.evaluate(() => window.__st.props?.overlay?.id === "panel"), keep = (d) => (panel ? d.filter((m) => !/\bring\b|focus draws nothing|namer's plate/.test(m)) : d);   // a decision panel is open: its ring and plate are the panel's (tests/panel.test.mjs); the screen beneath draws none
   const r = await page.evaluate(() => window.__st.snapshot());
-  // fix 14, on every screen and state: (rule 1) a ring is the one focus word's, or a named holder's; (rule 2) on pass 1, in the stage, every pixel of `focus` lies inside the focus region, none when there is no ring;
+  // fix 14, on every screen and state: (rule 1) a ring is the one focus word's, or a named holder's, and at most one hold mark (logged `hold`) beside it; (rule 2) on pass 1, in the stage, every pixel of `focus` lies inside the
+  // focus region or the hold mark's, none when there is neither;
   // (rule 4, runtime) no composed node of dashes or dots makes a closed box. The focus region's rect is the log's, taken in the same capture.
   let ringTxt = "";
   { const g = await page.evaluate(({ focus }) => {
-      const F = window.__st.face, log = window.__st.check().log, fr = log.regions.filter((r) => r.id === "focus" && r.layer === "chrome"), rect = fr[0]?.rect ?? null;
+      const F = window.__st.face, log = window.__st.check().log, fr = log.regions.filter((r) => r.id === "focus" && r.layer === "chrome"), rect = fr[0]?.rect ?? null, holds = log.nodes.filter((n) => n[8] & 4).map((n) => n.slice(4, 8));
+      const inR = (r, x, y) => x >= r[0] && y >= r[1] && x < r[0] + r[2] && y < r[1] + r[3];   // the hold mark (kit_focusRingHold) is focus too, in its own box (the flagged node's, not its region's)
       F.pass(1); let outside = 0, inside = 0, at = null;
       for (let y = 40; y < 562; y++) for (let x = 0; x < 1024; x++) { const p = F.pixel(x, y), hit = (p[0] === focus[0] && p[1] === focus[1] && p[2] === focus[2]);
-        if (hit && rect && x >= rect[0] && y >= rect[1] && x < rect[0] + rect[2] && y < rect[1] + rect[3]) inside++;
-        if (hit && (!rect || x < rect[0] || y < rect[1] || x >= rect[0] + rect[2] || y >= rect[1] + rect[3])) { outside++; if (!at) at = [x, y]; } }
+        if (hit && rect && inR(rect, x, y)) inside++;
+        if (hit && (!rect || !inR(rect, x, y)) && !holds.some((r) => inR(r, x, y))) { outside++; if (!at) at = [x, y]; } }
       F.pass(3); return { log, hold: window.__st.holding() && window.__st.props?.screen !== "bench" && !/^resident/.test(window.__st.props?.overlay?.focus?.cur ?? window.__st.props?.focus?.cur ?? ""), faces: (window.__st.props?.regions?.cross?.faces ?? []).length, focusTarget: !!(window.__st.props?.overlay?.focus?.cur || (window.__st.props?.focus?.cur && window.__st.props.focus.cur !== "room")), boxes: log.regions.filter((q) => q.box).map((q) => q.id + "/" + q.layer), outside, inside, at };
     }, { focus: [0xff, 0xe6, 0xad] });
     for (const d of ringDepartures(g.log, g)) fail(`${name}: ${d}`);

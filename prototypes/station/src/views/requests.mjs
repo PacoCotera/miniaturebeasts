@@ -1,5 +1,7 @@
 // The picture requests the props builders make: a builder collects its requests in one array and each request is a plain object the host reads. Pure.
 import { keyToken } from "../looks.mjs";
+import { genomeDigest } from "../genome.mjs";
+import { kPct } from "../stamplook.mjs";
 
 // req(requests, once = false): the collector for one builder. req(r) pushes the request r onto `requests` and returns r.id.
 // With `once`, a request whose id is already in `requests` is not pushed again; the id is returned either way.
@@ -60,3 +62,5 @@ export const lineageFar = (req) => (spec, input) => req({ kind: "lineagefar", id
 // and returns the id (Level 3's CLOSE pods and bud).
 export const rackPod = (req) => (species, size) => req({ kind: "rackpod", id: `rackpod:${species ?? "unknown"}`, species, size });
 export const lineageMini = (req) => (spec, input) => req({ kind: "lineagemini", id: `lineage-mini-${input.species}-${lineageDigest(input)}`, species: input.species, input, size: spec.l3.mini.rect.slice(2) });
+// A stamp request (the id names the genome, the chapters read, the size and, on the Pods, the plate's k); `who` names the mibi, pod or bud it is for.
+export const stamp = (req) => ({ genome, read, size, k = null, ...who }) => req({ kind: "stamp", id: `stamp:${genomeDigest(genome)}:${[...read].sort().join(",")}:${size}${k == null ? "" : `:k${kPct(k)}`}`, ...who, read, size, ...(k == null ? {} : { k }) });

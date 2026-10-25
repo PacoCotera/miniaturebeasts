@@ -21,6 +21,7 @@ void kit_nameTag(const char *spec, const char *glass, const char *name, const in
 void word_focusRing(const char *id, const char *spec, const char *target, const int drawn[4]);
 /* A creature's ring: its footprint on the ground. `picture` is the creature's picture id as drawn (a still, a moving-set atlas or a nap), `cell` is "stand", "curl", "shadow" or "" (the whole picture), `drawn` is its box, not lifted. */
 void word_focusRingFootprint(const char *id, const char *spec, const char *target, const char *picture, const char *cell, const int drawn[4]);
+void kit_focusRingHold(const char *id, const int box[4], int rad);   /* the hold mark: one composed node at box grown by frame focus.ring.hold's gap and band, 1 px, with the ring's outer corner (rad: the target's shape radius) in the ring's core colour, no key bands, at the chrome layer of the caller's region, marked a hold in the log (contract header in common/focusRing.c) */
 void word_focusRingFigure(const char *id, const char *spec, const char *target, const char *picture, int fx, int feetY, int W);   /* a figure's ring: (W + 10) x (fh + 10) on its feet point */
 /* station/ */
 typedef struct { const char *plateId, *plateRegion, *imageRegion; int plateAlone; const char *caseSpec, *caseBase; const char *corner; int cornerAt[2]; } kit_stamp_t;   /* the stamp label's own ids and regions (the screens' names), whether the plate stands without a stamp, the case (caseSpec NULL: none), and the corner picture (NULL or "": none) at cornerAt from the label's rect */

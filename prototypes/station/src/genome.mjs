@@ -49,6 +49,8 @@ export const chapterSeal = (frame, chapter) => (chapter.sealed ? chapter.opensWi
 const MEMO = new WeakMap();
 const memo = (genome, key, fn) => { let m = MEMO.get(genome); if (!m) MEMO.set(genome, (m = new Map())); if (!m.has(key)) m.set(key, fn()); return m.get(key); };
 export const traitState = (frame, trait, genome) => memo(genome, "t:" + frame.species.id + ":" + trait.id, () => traitStateOf(frame, trait, genome));
+// The traits compare reads: heritable ones only (no locus locked, none the mibi changes itself: never Glow, Basking or Phase), each with its chapter, in frame order.
+export const heritableTraits = (frame) => frame.chapters.flatMap((ch) => ch.traits.filter((t) => t.loci.every((id) => { const l = frame.loci.find((q) => q.id === id); return !!l && l.kind !== "locked" && l.changedBy !== "self"; })).map((t) => ({ chapter: ch.id, trait: t })));
 // The Pods line stays within six words (trait-names.md §2): a pair of colours is written with a comma, no leading "shows" on a hides line, a blend is "A to B", no apology on an asleep line.
 const LINE_LOOKS = { pairSep: ", " };
 function traitStateOf(frame, trait, genome) {
@@ -82,6 +84,14 @@ function chapterLooksOf(frame, chapter, genome) {
 // The stamp's modules a side (N): the cell of its label is floor(104 / (N + 2)), at least 2 (station-layouts.md, the stamp label).
 export const stampModules = (frame, genome = null) => { const sf = stampFrameOf(frame, genome); return sf ? stampSizeFor(sf).N : 0; };
 export const stampSizing = (frame, genome = null) => { const N = stampModules(frame, genome), cell = Math.max(2, Math.floor(104 / (N + 2))); return { N, cell, size: (N + 2) * cell }; };
+// The stamp's chapter blocks in the stamp picture's own pixels (its quiet margin of one cell included, as stampPicture rasterises it): { <chapter id>: [x, y, w, h] }, from the stamp's layout (codec.mjs layout), never
+// from its pattern; {} when the species has no stamp.
+export function stampBlocks(frame, genome = null) {
+  const sf = stampFrameOf(frame, genome), L = sf ? stampSizeFor(sf) : null; if (!L) return {};
+  const { cell } = stampSizing(frame, genome), out = {};
+  for (const b of L.blocks) { const ch = frame.chapters[b.chapter]; if (!ch) continue; const { r0, c0, r1, c1 } = b.rect; out[ch.id] = [(c0 + 1) * cell, (r0 + 1) * cell, (c1 - c0) * cell, (r1 - r0) * cell]; }
+  return out;
+}
 // A mibi or pod keeps the frame version it was born with (the same individual everywhere, on paper too): the genome's own, then the frame's, then the current one.
 export const stampFrameOf = (frame, genome = null) => stampFrameFor(frame.species.order, genome?.frameVersion ?? frame.frameVersion ?? FRAME_VERSION);
 // The stamp's genome: every heritable copy as the genome holds it (blends on the step: quantizeGenome),

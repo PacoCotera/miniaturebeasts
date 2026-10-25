@@ -6,10 +6,10 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
+import { setFrames, frameOf, podGenome, traitState, heritableTraits, stampBlocks, stampSizing } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as T from "../src/sitting.mjs";
-import { nameBelow, extentOf, parentsOf, generation, crossDepth, lineageOf, targetsOf, resolveOf, fitsClose, camAt, walkMemo, closeRect, inView, panFor, panSteps, slotsOf, camOffset, camFromOffset, overviewBox } from "../src/lineage.mjs";
+import { nameBelow, extentOf, parentsOf, generation, crossDepth, lineageOf, targetsOf, resolveOf, fitsClose, camAt, walkMemo, closeRect, inView, panFor, panSteps, slotsOf, camOffset, camFromOffset, overviewBox, compareLooks, pathBetween } from "../src/lineage.mjs";
 import { bodyColour, farGeometry, miniGeometry, farPicture, miniPicture } from "../src/lineage-pictures.mjs";
 import { lineageInput } from "../src/views/library-props.mjs";
 import { buildLineage } from "./fixtures/lineage.mjs";
@@ -204,6 +204,47 @@ test("the mini: the FAR drawing reduced by s = min(208/992, 96/510), centred (ox
     ringed(by.Sedge, rgb("frostS")); ringed(by.Hazel, [85, 86, 92]); }
   const b2 = m.boxes[two.id], hx = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)), c = two.colour.map(hx);
   assert.deepEqual([mpx(b2[0] + 1, b2[1] + 1).slice(0, 3), mpx(b2[0] + 2, b2[1] + 1).slice(0, 3)], c, "a two-tone split at i = 2");
+});
+
+test("FAR's fit with the rows' floor (UI/UX): sy = min(max(round(1.5 sx), syMin), the rows' fit), so a wide tree's narrow sx never puts its rows closer than syMin; the refusal past 17 rows unchanged", () => {
+  const row = (span, R = 2) => ({ species: "S01", nodes: [{ id: "a", kind: "mibi", row: 0, u: 0 }, { id: "b", kind: "mibi", row: R - 1, u: 2 * span }], links: [], span: [0, 2 * span], rows: R });
+  for (const [span, sx, sy] of [[52, 16, 30], [44, 19, 30], [42, 20, 30], [40, 21, 32], [31, 27, 41]]) { const g = farGeometry(row(span), spec); assert.deepEqual([g.sx, g.sy], [sx, sy], `span ${span}: sx ${sx}, sy ${sy}`); }
+  assert.equal(farGeometry(row(52, 1), spec).sy, 30, "one row too"); assert.equal(farGeometry(row(52, 17), spec).sy, 30); assert.throws(() => farGeometry(row(52, 18), spec), /18 rows give 28 px between rows, below 30/);
+});
+test("the mini on a wide shallow tree (UI/UX): the dot d = min(4, max(2, floor(min(sx, sy) s) - 1)): sx 16-21 gives 2 px, 22-26 3, 27 and more 4; its box round(centre s + origin) - floor(d / 2); the neutral at 3 an open ring by the pixel rule, at 2 a filled 2 x 2 frostS; pods and the bud one pixel", () => {
+  const shallow = (span) => { const nodes = [{ id: "pod.a", kind: "pod", row: 0, u: 0 }, { id: "node.a", kind: "mibi", row: 1, u: 0, colour: null }, { id: "node.b", kind: "mibi", row: 1, u: 2 * span, colour: ["#7a5230"] }, { id: "node.bud", kind: "bud", row: 1, u: span }];
+    return { species: "S01", nodes, links: [{ a: [0, 0], b: [0, 1], faded: false }], span: [0, 2 * span], rows: 2 }; };
+  for (const [span, sx, d] of [[52, 16, 2], [40, 21, 2], [38, 22, 3], [32, 26, 3], [31, 27, 4], [8, 48, 4]]) {
+    const input = shallow(span), far = farGeometry(input, spec), m = miniGeometry(input, spec, far); assert.equal(far.sx, sx); assert.equal(m.dot, d, `sx ${sx}: a ${d} px dot`);
+    for (const n of input.nodes) { const f = far.boxes[n.id], [cx, cy] = [Math.round((f[0] + 6) * m.s + m.ox), Math.round((f[1] + 6) * m.s + m.oy)];
+      assert.deepEqual(m.boxes[n.id], n.kind === "mibi" ? [cx - Math.floor(d / 2), cy - Math.floor(d / 2), d, d] : [cx, cy, 1, 1], `${n.id} at sx ${sx}`); }
+    const pic = miniPicture(input, spec, { rgb }), at = (x, y) => Array.from(pic.rgba.slice((y * 208 + x) * 4, (y * 208 + x) * 4 + 4)), b = m.boxes["node.a"], grid = [];
+    for (let j = 0; j < d; j++) { let s = ""; for (let i = 0; i < d; i++) { const p = at(b[0] + i, b[1] + j); s += p[3] === 0 ? "." : p.slice(0, 3).join() === rgb("frostS").join() ? "#" : "?"; } grid.push(s); }
+    assert.deepEqual(grid, { 2: ["##", "##"], 3: ["###", "#.#", "###"], 4: [".##.", "#..#", "#..#", ".##."] }[d], `the neutral at ${d}: ${grid.join("/")}`);
+    const pb = m.boxes["pod.a"], bb = m.boxes["node.bud"]; assert.deepEqual(at(pb[0], pb[1]).slice(0, 3), rgb("mist")); assert.deepEqual(at(bb[0], bb[1]).slice(0, 3), rgb("mint"));
+  }
+});
+test("compare (l3.compare.compute): the heritable traits only (never a locked locus or one the mibi changes itself: Glow, Basking, Phase); traitState(...).shows, the whole look, on the traits read on both; a chapter lit when read on both with every compared trait the same; the stamp's blocks from its layout", () => {
+  const ids = (fr) => heritableTraits(fr).map((x) => x.trait.name);
+  assert.ok(!ids(frameOf("S03")).includes("Glow") && ids(frameOf("S03")).includes("Duration"), "the Tuikis: Glow (changed by itself) is never compared");
+  assert.ok(!ids(frameOf("S15")).includes("Basking") && !ids(frameOf("S16")).includes("Phase"), "never Basking or Phase");
+  for (const id of ["S01", "S09", "S16"]) { const fr = frameOf(id); for (const { trait } of heritableTraits(fr)) for (const l of trait.loci) { const q = fr.loci.find((x) => x.id === l); assert.ok(q.kind !== "locked" && q.changedBy !== "self", `${id} ${trait.id}`); } }
+  const { st, by, lin } = world(), fr = frameOf("S01"), c = compareLooks(fr, by.Dot, by.Moss);
+  assert.deepEqual(c.read, ["colour", "markings", "crown", "eye-rings", "drive", "efficiency"]); assert.deepEqual(c.same.map((t) => t.id), ["crown", "eye-rings", "drive"]); assert.deepEqual(c.lit, ["face", "movement"]);
+  for (const t of c.same) assert.equal(traitState(fr, t, by.Dot.genome).shows, traitState(fr, t, by.Moss.genome).shows);
+  assert.equal(traitState(fr, fr.chapters[0].traits[0], by.Dot.genome).shows, "charcoal and ash"); assert.ok(!c.same.some((t) => t.id === "colour"), "charcoal and ash is not ash (Moss): whole looks");
+  const h = compareLooks(fr, by.Hazel, by.Dot); assert.ok(!h.read.includes("colour") && !h.lit.includes("coat"), "Hazel's Coat is unread: not read on both, never lit");
+  assert.deepEqual(compareLooks(fr, by.Nettle, by.Yarrow).same, [], "no read look in common");
+  const B = stampBlocks(fr, by.Dot.genome), { cell, size } = stampSizing(fr, by.Dot.genome); assert.deepEqual(Object.keys(B), fr.chapters.map((ch) => ch.id)); for (const r of Object.values(B)) assert.ok(r[0] >= cell && r[1] >= cell && r[0] + r[2] <= size - cell && r[1] + r[3] <= size - cell && r.every((v) => v % cell === 0), "a block inside the stamp's quiet margin, on its cells");
+  void st; void lin;
+});
+test("the path (l3.compare.path): the shortest recorded line between two mibis, as the links draw it (a parent's drop to the bus, the bus, the child's drop; one vertical for a lone child on its parent's column), in grid units with half rows; none between one mibi, unrelated mibis, or with the bud or a pod", () => {
+  const { by, lin } = world(), id = (n) => "node." + by[n].id, segs = (a, b) => pathBetween(lin, id(a), id(b)), node = (n) => nodeOf(lin, id(n));
+  const dm = segs("Dot", "Moss"), d = node("Dot"), m = node("Moss"); assert.deepEqual(dm, [{ a: [d.u, 2 * d.row], b: [d.u, 2 * m.row - 1] }, { a: [Math.min(d.u, m.u), 2 * m.row - 1], b: [Math.max(d.u, m.u), 2 * m.row - 1] }, { a: [m.u, 2 * m.row - 1], b: [m.u, 2 * m.row] }]);
+  assert.deepEqual(segs("Moss", "Dot"), dm, "the same line either way");
+  for (const s of dm) assert.ok(lin.links.some((l) => (l.a[0] === l.b[0]) === (s.a[0] === s.b[0]) && Math.min(l.a[0], l.b[0]) <= Math.min(s.a[0], s.b[0]) && Math.max(l.a[0], l.b[0]) >= Math.max(s.a[0], s.b[0]) && Math.min(l.a[1], l.b[1]) * 2 <= Math.min(s.a[1], s.b[1]) && Math.max(l.a[1], l.b[1]) * 2 >= Math.max(s.a[1], s.b[1])), "on a recorded link: " + JSON.stringify(s));
+  assert.equal(segs("Reed", "Sorrel").length > 3, true, "Reed down to Ivy, Ivy's shed pod Thistle, Thistle to Sorrel"); assert.deepEqual(segs("Dot", "Dot"), []);
+  assert.deepEqual(segs("Nettle", "Bean").length > 0, false, "Nettle's block and Bean's are not joined: no line"); assert.deepEqual(pathBetween(lin, id("Moss"), "node.bud"), [], "the bud is never compared");
 });
 
 test("the walks are linear in the tree (the Library 5 gate's W2): 16 generations of sibling crosses, each generation two siblings of the one before, walked under 20 ms by lineageOf, generation, crossDepth and the moments", () => {

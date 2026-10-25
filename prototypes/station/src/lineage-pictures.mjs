@@ -2,7 +2,7 @@
 //   lineage-far-{SNN}-{digest}, 992 x 510 at l3.far.rect: the whole lineage as one picture, composited over the ground master's own pixels for its rect (flat libGround until the master is placed);
 //   lineage-mini-{SNN}-{digest}, 208 x 96: the same drawing reduced by one uniform scale, on a clear ground (the inset's panel shows through).
 // The geometry (lineage.mjs farGeometry, miniGeometry) is pure and cheap: the props builder takes the dot boxes from it as the generator's facts, in the picture's own coordinates; the face adds the picture's place.
-//   - spacing: sx = clamp(floor(0.85 * 992 / span), 16, 48) per sibling step (span in sibling steps, 2 u), sy = min(round(1.5 sx), floor((510 - dot - 2 margin) / (R - 1))) for R rows, the tree centred;
+//   - spacing: sx = clamp(floor(0.85 * 992 / span), 16, 48) per sibling step (span in sibling steps, 2 u), sy = min(max(round(1.5 sx), syMin), floor((510 - dot - 2 margin) / (R - 1))) for R rows, the tree centred;
 //     below 16 px sx, or rows fitting below syMin apart, FAR would need a camera: the generator refuses, naming the species and the span or the rows.
 //   - a mibi's dot: 12 px in its read, shown body colour (two halves for a two-tone, the first on the left), never from hidden copies; an open frostS ring when Coat is unread or the colour is locked;
 //     a released mibi's dot faded as its face is (library.json faces.faded). Pods: a 1 px mist outline oval 8 x 10 at (2, 1) in the dot box, the bud's in mint, the ground inside.
@@ -46,8 +46,8 @@ export function farPicture(input, spec, { rgb, ground = null } = {}) {
   }
   return { w: W, h: H, rgba: px, boxes: g.boxes, sx: g.sx, sy: g.sy, ms: performance.now() - t0 };
 }
-// The mini (208 x 96, clear outside its ink): the FAR drawing reduced: links 1 px, a mibi a 4 x 4 disc in its dot's colour by the pixel rule (the art director: .##. / #### / #### / .##., a two-tone split at i = 2;
-// the open ring at that size when neutral), a pod and the bud one pixel. Returns { w, h, rgba, boxes, scale, origin, ms }.
+// The mini (208 x 96, clear outside its ink): the FAR drawing reduced: links 1 px, a mibi a d x d disc (lineage.mjs miniGeometry: 2 to 4 px by FAR's spacing) in its dot's colour by the pixel rule (the art director: at 4
+// .##. / #### / #### / .##., a two-tone split at i = d / 2; the open ring at that size when neutral, a filled 2 x 2 at 2), a pod and the bud one pixel. Returns { w, h, rgba, boxes, scale, origin, ms }.
 export function miniPicture(input, spec, { rgb } = {}) {
   const t0 = performance.now(), F = spec.l3.far, far = farGeometry(input, spec), m = miniGeometry(input, spec, far), [W, H] = spec.l3.mini.rect.slice(2), px = new Uint8ClampedArray(W * H * 4);
   const put = (x, y, c) => { if (x < 0 || y < 0 || x >= W || y >= H) return; const i = (y * W + x) * 4; px[i] = c[0]; px[i + 1] = c[1]; px[i + 2] = c[2]; px[i + 3] = 255; };

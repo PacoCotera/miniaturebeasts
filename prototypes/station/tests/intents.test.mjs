@@ -220,7 +220,7 @@ test("the Library's Level 3: the ways in (Level 2's family face, the card's orig
   assert.deepEqual([h.went.at(-1), L.species, L.l3.S01.node, L.l3.S01.zoom], ["library.family", "S01", "node." + by.Moss.id, "close"], "✓ See the family on the card: close on the shown mibi, the species its own");
   const lin = lineageOf(st, "S01", { gap: 4 }), mn = lin.nodes.find((n) => n.id === "node." + by.Moss.id); assert.deepEqual(camFromOffset(lin, "node." + by.Moss.id, C, L.l3.S01.cam), [C.grid.x0 + mn.u * C.grid.du - (C.comfort[0] + C.comfort[2] / 2), C.grid.y0 + mn.row * C.grid.drow - (C.comfort[1] + C.comfort[3] / 2)], "the entry centred in the comfort zone");
   assert.deepEqual(L.l3.S01.cam, [-(C.comfort[0] + C.comfort[2] / 2), -(C.comfort[1] + C.comfort[3] / 2)], "the camera kept as an offset from its node: the camera less the node's grid point");
-  fam.intent(h, "screen", "confirm"); assert.equal(L.l3.S01.zoom, "close", "close: no ✓ until compare is built");
+  fam.intent(h, "screen", "confirm"); assert.equal(L.l3.S01.zoom, "close", "close: ✓ on what is not a target does nothing");
   h.played.length = 0; fam.intent(h, "screen", "back"); assert.deepEqual([h.went.at(-1), L.l3.S01.zoom, h.played.map((e) => [e.kind, e.target, e.ms, e.hold])], ["library.family", "far", [["dither", "stage", 180, 180]]], "← from close: far, the tree exceeds the view, under the stage dither");
   fam.focus(h, "node." + by.Dot.id); assert.deepEqual([L.l3.S01.node, L.l3last], ["node." + by.Dot.id, { up: "node." + by.Moss.id }], "Dot is Moss's first recorded parent: a ▲");
   fam.focus(h, "node." + by.Bean.id); assert.deepEqual([L.l3.S01.node, L.l3last], ["node." + by.Bean.id, null], "a move along: no ▲");
@@ -243,6 +243,22 @@ test("the Library's Level 3 in close: the host owns the camera; a ring move insi
   assert.deepEqual([abs(), L.l3.S01.pan], [panFor(lin, id("Moss"), C, want), null], "the cut's camera, no pan kept");
   const r = (n) => { const q = lin.nodes.find((x) => x.id === id(n)), c = abs(); return [C.grid.x0 + q.u * C.grid.du - c[0] - 28, C.grid.y0 + q.row * C.grid.drow - c[1] - 28]; };
   const [x, y] = r("Moss"); assert.ok(x >= C.comfort[0] && y >= C.comfort[1] && x + 56 <= C.comfort[0] + C.comfort[2] && y + 56 <= C.comfort[1] + C.comfort[3], "the node lies in the zone after a move");
+});
+
+test("the Library's Level 3 compare: ✓ Compare from {name} in close holds the ring's mibi (a released one too); in compare ✓ on another mibi moves the hold, ✓ on the held mibi is Look at {name} (Habitat up close on it), nothing when it is released (the hold stays); the bud has no ✓; ← Done to close, the camera and the ring kept; the camera pans in compare as in close", () => {
+  const st = world(), h = host(st); h.specs.library = J("library"); h.specs.habitat = habitatSpec; const by = buildLineage(st, "full", { turn: st.turn }); st.knownIds.push("S01");
+  const L = h.ui.lib, fam = INTENTS["library.family"], id = (n) => "node." + by[n].id, mem = () => L.l3.S01;
+  h.ui.hab.id = by.Moss.id; INTENTS.habitat.intent(h, "family", "confirm"); const cam = [...mem().cam];
+  fam.intent(h, "node.bud", "confirm"); assert.deepEqual([mem().zoom, mem().held], ["close", undefined], "the bud: no ✓");
+  fam.intent(h, id("Moss"), "confirm"); assert.deepEqual([mem().zoom, mem().held, mem().node, h.went.at(-1)], ["compare", id("Moss"), id("Moss"), "library.family"], "✓ Compare from Moss: compare, Moss held");
+  fam.focus(h, id("Dot")); fam.intent(h, id("Dot"), "confirm"); assert.deepEqual([mem().zoom, mem().held], ["compare", id("Dot")], "✓ Compare from Dot: the hold moves");
+  fam.intent(h, "node.bud", "confirm"); assert.deepEqual([mem().zoom, mem().held], ["compare", id("Dot")], "the bud in compare: no ✓");
+  const went = h.went.length; fam.focus(h, id("Wren")); fam.intent(h, id("Wren"), "confirm"); assert.equal(mem().held, id("Wren"), "a released mibi may be held");
+  fam.intent(h, id("Wren"), "confirm"); assert.deepEqual([mem().zoom, mem().held, h.went.length], ["compare", id("Wren"), went], "on the held mibi, released: the press does nothing, the hold stays");
+  fam.focus(h, id("Dot")); fam.intent(h, id("Dot"), "confirm"); fam.intent(h, id("Dot"), "confirm"); assert.deepEqual([h.went.at(-1), h.ui.hab.id, h.ui.hab.f], ["habitat", by.Dot.id, "resident"], "✓ Look at Dot: that mibi up close");
+  L.l3.S01.zoom = "compare"; L.l3.S01.held = id("Moss"); fam.focus(h, id("Moss")); const c2 = [...mem().cam];
+  fam.intent(h, id("Moss"), "back"); assert.deepEqual([mem().zoom, mem().held, mem().node, mem().cam], ["close", null, id("Moss"), c2], "← Done: close, the camera and the ring kept"); void cam;
+  fam.intent(h, id("Moss"), "confirm"); h.played.length = 0; fam.focus(h, id("Reed")); assert.equal(h.played[0]?.kind, "pan", "a ring move out of the comfort zone pans in compare as in close");
 });
 
 test("one mibi up close: ✓ on the resident greets (the spec's moment: 1800 ms, held 300, a cut), on the name opens the namer, ✓ on Wild opens the Return panel and its Return card acts, ← goes to the whole with the ring on this mibi", () => {

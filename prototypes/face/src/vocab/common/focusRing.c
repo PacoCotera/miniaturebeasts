@@ -136,6 +136,22 @@ void word_focusRingFigure(const char *id, const char *spec, const char *target, 
   ring_of(id, spec, target, r, foot, picture, 0);
 }
 
+/* kit_focusRingHold (common/): the hold mark, the held thing's own mark beside the one focus ring (the Library's compare holds one mibi while the ring walks another).
+   Props: id (the node's id); box (the held thing's box as the screen drew it, x, y, w, h); rad (the corner radius of the held thing's focus target, its shape radius: 2 on a Library mibi slot). Reads frame.json focus.ring.hold (one band: its w and role "core"; gap) and the core colour of focus.ring.colours.default.
+   Region and layer: the caller's region, at the chrome layer (it sets v_layer(LAYER_CHROME)); the caller draws it before the ring. It is never a focus target and draws no key bands.
+   Node id: <id>, one composed node at the box grown by gap + w on each side, its ops one ["ring", "round", 0, 0, W, H, w, rad + gap + w, core] (a 1 px line with the ring's outer corner: the ring's radius on the same target is rad + reach); a box of no size keeps the node with no size and ops [].
+   The node is sent marked a hold (prim_hold), so the test log counts it as "hold" (flag 4), never as a ring. A hold spec that is not one core band and a gap of 0 or more is an error and no node.
+   Returns nothing. */
+void kit_focusRingHold(const char *id, const int box[4], int rad) {
+  int w = v_si(F, RING ".hold.bands.0.w", 0), gap = v_si(F, RING ".hold.gap", -1); char role[16] = "", core[24] = "";
+  spec_str(F, RING ".hold.bands.0.role", role, sizeof role); spec_str(F, RING ".colours.default.core", core, sizeof core);
+  if (spec_len(F, RING ".hold.bands") != 1 || w < 1 || gap < 0 || strcmp(role, "core") != 0 || !core[0]) { v_error("kit_focusRingHold: frame focus.ring.hold is one core band and a gap"); return; }
+  v_layer(LAYER_CHROME); prim_hold(1);
+  if (box[2] <= 0 || box[3] <= 0) v_composed(id, box[0], box[1], 0, 0, "[]");
+  else { int o = gap + w, W = box[2] + 2 * o, H = box[3] + 2 * o; char ops[160]; snprintf(ops, sizeof ops, "[[\"ring\",\"round\",0,0,%d,%d,%d,%d,\"%s\"]]", W, H, w, (rad < 0 ? 0 : rad) + o, core); v_composed(id, box[0] - o, box[1] - o, W, H, ops); }
+  prim_hold(0);
+}
+
 /* the ring of the target group of the screen in props (the rail's, Pods'): the target whose `group` this is */
 void word_focusRingFor(const char *id, const int drawn[4], const char *group) {
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);

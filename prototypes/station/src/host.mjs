@@ -185,12 +185,12 @@ export function speciesBody() {
 }
 
 // ---- The Library's Level 3 ----
-// One species' lineage (library.json l3): far and close are drawn with words (the lineage's pictures, made by id when the face asks for them, their times printed); compare is the frame's notBuilt composition until
-// its screen is built, with this level's top bar and line. The ring is the face's (l3.focus.graph with the host's selectors); the host keeps it and CLOSE's camera in UI.lib.l3[species] (intents/library.mjs family.focus).
+// One species' lineage (library.json l3): far, close and compare are drawn with words (the lineage's pictures, made by id when the face asks for them, their times printed). The ring is the face's (l3.focus.graph with
+// the host's selectors); the host keeps it, CLOSE's camera and the held mibi in UI.lib.l3[species] (intents/library.mjs family.focus and intent).
 // Null when no found species is shown (a developer's jump): the frame's notBuilt composition, as before.
 export function familyBody() {
   const sid = UI.lib.species; if (!sid || !frameOf(sid) || speciesStatus(G.st, sid) !== "found") return null;
-  return familyBuild({ st: G.st, settings: G.settings, ui: UI.lib, metrics: METRICS }, SPECS.library, SPECS.frame, SPECS.home);
+  return familyBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI.lib, metrics: METRICS }, SPECS.library, SPECS.frame, SPECS.home);
 }
 
 // ---- Cargo ----
@@ -262,11 +262,7 @@ export function screenProps(plate) {
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
   const fam = screen === "library.family" ? familyBody() : null;
-  if (screen === "library.family" && (!fam || fam.notBuilt)) {   // Level 3's compare (not built yet): the frame's composition with this level's top bar and line; no found species shown: as any screen not built
-    if (!fam) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };
-    registerPictures(fam.requests, { podById, frameOf }); top.readout = fam.top.readout;
-    return { msg: { screen, state: "notBuilt", frame: { top, line: { ...fam.line, need: need().text }, plate: pl } }, ids: fam.requests.map((r) => r.id), light };
-  }
+  if (screen === "library.family" && !fam) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };   // no found species shown: as any screen not built
   if (screen === "sitting" && !UI.sit) { goScreen("habitat"); return screenProps(plate); }   // no visit to show: one mibi up close
   const sat = screen === "sitting" ? sittingBody(light) : null; if (screen === "sitting" && !sat) { UI.sit = null; goScreen("habitat"); return screenProps(plate); }
   const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
