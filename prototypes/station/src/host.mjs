@@ -196,7 +196,7 @@ export function familyBody() {
 // ---- Cargo ----
 // The bay, the crate opening and the end: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
 export function cargoBody() {
-  const body = cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, light: lightNow(), now: Date.now() }, SPECS.cargo, SPECS.home, SPECS.frame), pn = UI.panel, a = UI.cargo.arrival;
+  const body = cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, light: lightNow(), now: Date.now() }, SPECS.cargo, SPECS.home, SPECS.frame, SPECS.sitting), pn = UI.panel, a = UI.cargo.arrival;
   if (pn && pn.screen === "cargo" && UI.cargo.state === "arrival" && a && a.phase === "choice") {   // the dock arrival's choice: the strip's props ride on Cargo's (an overlay) and its bottom line is built from the focused card
     const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
     pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
@@ -237,7 +237,7 @@ export function sittingBody(light = lightNow()) {
   const r = body.props.regions.resident; if (s.prev.cut && s.prev.resident && r.picture) r.picture = s.prev.resident;
   return body;
 }
-// A way into the sitting (Habitat's Portrait ✓ and, later, Cargo's end): a fresh visit on mibi `m` in `state` ("pose", or "portrait" for the finished picture), never when the props builder has nothing to show (the portrait's
+// A way into the sitting (Habitat's Portrait ✓ and Cargo's end ✓ See the portrait): a fresh visit on mibi `m` in `state` ("pose", or "portrait" for the finished picture), never when the props builder has nothing to show (the portrait's
 // picture not held): then nothing changes and it returns false.
 export function enterSitting(h, m, { state = "pose", from = "habitat" } = {}) {
   if (!m) return false;

@@ -187,6 +187,7 @@
   "podBack": "{pod} is the pod's label (\"Loika\"); a name wider than the way back's 68 px for its word reads \"Back\"",
   "nameBack": "{name} is the shown mibi's name; a name wider than the way back's 68 px for its word reads \"Back\"",
   "jumps": [
+   {"from": "cargo", "state": "end", "action": "See the portrait", "to": "sitting", "view": "portrait", "focus": "room (view only); ← Habitat with the ring on Portrait", "when": "the run opened this mibi's sitting crate and its opening is kept; first, before Look at the pods; present only while sitting.json regions.portrait.offeredFrom lists cargo-end"},
    {"from": "cargo", "state": "end", "action": "Look at the pods", "to": "pods", "view": "collection", "focus": "the newest pod", "when": "a new pod landed in a well"},
    {"from": "create", "action": "Incubate", "to": "incubator"},
    {"from": "cross", "action": "Cross them", "to": "incubator"},

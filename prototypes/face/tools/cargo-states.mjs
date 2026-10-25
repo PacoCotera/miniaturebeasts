@@ -1,5 +1,5 @@
 // Cargo (the Bay) in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: the bay at rest (one to three walk crates; nothing in; away; pods waiting on the mat; a portrait crate in,
-// docked and away), the end (pods came, none), one crate opening at the instants of its steps (events.opening: the lift, the contents' dither halfway, the materials answering and in flight, the hatch open, a pod in flight and halfway through its swap,
+// docked and away), the end (pods came, none, and after a run that opened a sitting crate whose opening is kept: ✓ See the portrait), one crate opening at the instants of its steps (events.opening: the lift, the contents' dither halfway, the materials answering and in flight, the hatch open, a pod in flight and halfway through its swap,
 // a pod landing on the mat, a find in flight, the crate done), the opening with three crates and with the portrait crate, the frame after ✓ Skip, and the dock arrival (T-20261016-48, -58, -112).
 // The still states are taken with reduced motion on a virtual clock the tool steps (every event at its end; the opening's cuts at their times); the opening's steps are taken with motion on, at exact instants of the face's clock. Each point is reached by
 // the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
@@ -45,6 +45,7 @@ const SCENES = {
   "bay-portrait-away": { set: (w) => { w.adults(2); w.away(); w.crateSitting(false); } },
   "end":          { open: true, set: (w) => { w.adults(2); w.pods(2); w.crates(3, 2); w.waitingPods(1); } },
   "end-no-pods":  { open: true, set: (w) => { w.adults(2); w.crates(1, 0); } },
+  "end-portrait": { open: true, set: (w) => { w.adults(2); w.pods(2); w.crates(2); w.crateSitting(true); } },
 };
 // one crate opening (two free wells, a third pod for the mat, a find), at the instants of its steps: motion on, the face's own clock ("at 0" is the first frame, 1 ms in: the crate lifting in its berth)
 const ONE = (w) => { w.adults(2); w.pods(4); w.crates(1, 3, { finds: ["pearl"] }); };

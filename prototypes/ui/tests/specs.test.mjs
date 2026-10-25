@@ -622,6 +622,13 @@ test("the Cargo spec file is the build spec's sections 1 to 6 (T-20261016-197): 
   assert.deepEqual(cg.focus.graph, { room: { up: "none", down: "none", left: "none", right: "none" } });
   assert.deepEqual(frame.navigation.screens.cargo, { parent: "home", back: "Home", states: cg.states, spec: "cargo.json" }); assert.equal(frame.strings.titles.cargo, cg.strings.title); assert.equal(frame.regions.title.marks.cargo, cg.title.mark);
   assert.ok(frame.navigation.jumps.some((j) => j.from === "cargo" && j.to === "pods" && Object.values(cg.strings.newPods).includes(j.action) && j.state === "end"), "the hand-off to Pods");
+  {   // keys.confirm.end: the portrait first, then Look at the pods; the jump to the sitting's state portrait is present only while sitting.json regions.portrait.offeredFrom lists cargo-end
+    const sit = rd("../specs/station/sitting.json"), ends = frame.navigation.jumps.filter((j) => j.from === "cargo" && j.state === "end"), toPortrait = ends.filter((j) => j.to === "sitting");
+    assert.equal(cg.strings.end.confirm, "See the portrait", "CW-1"); assert.ok(wordsIn(cg.strings.end.confirm) <= 4); assert.match(cg.strings.end.confirm, /^[A-Z]/, "sentence case");
+    assert.equal(toPortrait.length, sit.regions.portrait.offeredFrom.includes("cargo-end") ? 1 : 0, "the Cargo end jump only while offeredFrom lists cargo-end");
+    if (toPortrait.length) { assert.deepEqual([toPortrait[0].action, toPortrait[0].view], [cg.strings.end.confirm, "portrait"]); assert.ok(sit.states.includes("portrait")); assert.equal(ends[0], toPortrait[0], "first, before Look at the pods"); }
+    assert.equal(cg.regions.dockCrates.sitting.revealNote, "the reveal is the sitting's state portrait (sitting.json)");
+  }
   assert.deepEqual([cg.strings.open, cg.strings.openOne, cg.strings.skip, cg.strings.newPods], ["Open them all", "Open it", "Skip", { one: "Look at the pods", few: "Look at the pods" }]); assert.deepEqual(cg.strings.subjects, { waiting: "{count} pods wait for a well", waitingOne: "a pod waits for a well" });
   for (const s of [cg.strings.open, cg.strings.openOne, cg.strings.skip, ...Object.values(cg.strings.newPods)]) assert.ok(wordsIn(s) <= 4, s);
   for (const s of stringsOf(cg.strings.subjects)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
