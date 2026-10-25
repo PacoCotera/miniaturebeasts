@@ -374,11 +374,11 @@ static void kit_words(void) {
     #undef KT_RUN
   }
   /* kit_nameTag: six nodes in a fixed order, centred on the anchor, 8 px inside the window, over the anchor by its rule, the width by the plate rule */
-  { static const char KG[] = "{\"regions\":{\"glass\":{\"rect\":[0,0,400,300]},\"nameTag\":{\"h\":24,\"px\":16,\"plate\":{\"min\":48,\"max\":96,\"pad\":8,\"round\":8}}}}";
+  { static const char KG[] = "{\"regions\":{\"glass\":{\"rect\":[0,0,400,300]},\"nameTag\":{\"h\":24,\"px\":16,\"plate\":{\"min\":48,\"max\":96,\"pad\":8,\"round\":8}}},\"colours\":{\"nameTag\":{\"text\":\"kitC\"}}}";
     spec_load("ktag", KG, sizeof KG - 1);
     int tw = v_measure("Moss", 16), want = (tw + 16 + 7) / 8 * 8; if (want < 48) want = 48; if (want > 96) want = 96;
     int a[4] = { 150, 100, 100, 60 }, al[4] = { -20, 100, 20, 60 }, ar[4] = { 390, 100, 20, 60 }, o[7][4], cnt = 0, okp = 0, oks = 0;
-    #define KTAG(k, anc, yb, yo, rl, sl) do { prim_begin(); n0 = table_nodes(); kit_nameTag("ktag", "regions.glass", "Moss", anc, yb, yo, rl, sl, "kitA", "kitB", "kitC", o[k]); n1 = table_nodes(); \
+    #define KTAG(k, anc, yb, yo, rl, sl) do { prim_begin(); n0 = table_nodes(); kit_nameTag("ktag", "regions.glass", "Moss", anc, yb, yo, rl, sl, "kitA", "kitB", NULL, o[k]); n1 = table_nodes(); \
       if (k == 0) { cnt = n1 - n0; okp = kat("nameTag", FN_RECT, o[0][0], 180, want, 24) && kat("nameTag.et", FN_RECT, o[0][0], 180, want, 1) && kat("nameTag.er", FN_RECT, o[0][0] + want - 1, 180, 1, 24) && ktext(o[0][0] + (want - tw + 1) / 2, tw); } \
       if (k == 6) oks = n1 - n0 == 2 && kat("nameTag", FN_RECT, o[6][0], 180, 0, 0) && kabsent("nameTag.et") && ktext(o[6][0] + (want - tw + 1) / 2, 0); \
       prim_end(); } while (0)
@@ -539,15 +539,15 @@ static void glint_readout(void) {
     spec_drop("props"); spec_load("props", PRS[i], strlen(PRS[i]));
     prim_begin(); word_topBar(); prim_end();
     kbox("top.title.0", tb); kt[i] = kbox("top.readout.text", rb); km[i] = kbox("top.readout.mark", mb);
-    int tm[4]; kbox("top.m.e", tm);   /* the Energy figure: a 16 px word of the bar, cap top 12 on baseline 24 */
+    int tm[4]; kbox("top.m.e", tm);   /* the Energy figure: a 16 px word of the bar, cap top 14 (centred in the bar) */
     if (i == 0) {
       check(tb[0] + tb[2] == 115, "readout: the title \"Library\" (20 px) ends at x 115", "");
-      check(km[i] == FN_SPRITE && mb[0] == 123 && mb[2] == 10 && mb[3] == 10 && mb[1] == 13 && rb[1] == tm[1], "readout: with a mark, the 10 x 10 mark at the title's end + 8 (x 123), y 13: centred on the text's cap, 12 to 24, on the title's baseline 24 as the counters", "");
-      check(kt[i] == FN_TEXT && rb[0] == 137 && rb[2] == v_measure("Untuva family", 16) && rb[2] == 103 && rb[0] + rb[2] <= 248, "readout: then 4 px, then the text at x 137, \"Untuva family\" (103 px) whole in the 111 px left", "");
+      check(km[i] == FN_SPRITE && mb[0] == 127 && mb[2] == 10 && mb[3] == 10 && mb[1] == 15 && rb[1] == tm[1], "readout: with a mark, the 10 x 10 mark at the title's end + 12 (x 127), y 15: centred on the text's cap, 14 to 26, the cap centred in the bar as the counters'", "");
+      check(kt[i] == FN_TEXT && rb[0] == 141 && rb[2] == v_measure("Untuva family", 16) && rb[2] == 103 && rb[0] + rb[2] <= 248, "readout: then 4 px, then the text at x 141, \"Untuva family\" (103 px) whole in the 107 px left", "");
     }
-    if (i == 1) check(kabsent("top.readout.mark") && kt[i] == FN_TEXT && rb[0] == 123 && rb[1] == tm[1] && rb[2] == v_measure("All species", 16), "readout: without a mark, the text at the title's end + 8 (x 123) and no mark node", "");
-    if (i == 2) { char cut[V_STR + 4]; v_clip("Untuva family of the long hollow", 248 - 137, 16, cut, sizeof cut); size_t n = strlen(cut);
-      check(kt[i] == FN_TEXT && rb[0] == 137 && rb[2] == v_measure(cut, 16) && rb[0] + rb[2] <= 248 && n > 3 && strcmp(cut + n - 3, "\xe2\x80\xa6") == 0 && strlen(cut) < strlen("Untuva family of the long hollow"), "readout: a text too long is cut by v_clip to end by x 248, ending in the ellipsis", cut); }
+    if (i == 1) check(kabsent("top.readout.mark") && kt[i] == FN_TEXT && rb[0] == 127 && rb[1] == tm[1] && rb[2] == v_measure("All species", 16), "readout: without a mark, the text at the title's end + 12 (x 127) and no mark node", "");
+    if (i == 2) { char cut[V_STR + 4]; v_clip("Untuva family of the long hollow", 248 - 141, 16, cut, sizeof cut); size_t n = strlen(cut);
+      check(kt[i] == FN_TEXT && rb[0] == 141 && rb[2] == v_measure(cut, 16) && rb[0] + rb[2] <= 248 && n > 3 && strcmp(cut + n - 3, "\xe2\x80\xa6") == 0 && strlen(cut) < strlen("Untuva family of the long hollow"), "readout: a text too long is cut by v_clip to end by x 248, ending in the ellipsis", cut); }
     if (i == 3) check(kabsent("top.readout.text") && kabsent("top.readout.mark") && tb[0] + tb[2] == 115, "readout: props without frame.top.readout draw no readout node", "");
   }
   spec_drop("props");
@@ -728,10 +728,21 @@ static void type_kit(void) {
     prim_end(); int n = prim_log_json(lg, (int)sizeof lg); ty_errors(NULL);   /* the price's icon, which the test face does not hold */
     char want[160]; snprintf(want, sizeof want, "{\"text\":\"Hello\",\"px\":16,\"region\":\"ty.runlog\",\"role\":\"label\",\"ground\":\"field\",\"run\":%u,", (unsigned)v_id("ty.runa"));
     char plain[160]; snprintf(plain, sizeof plain, "\"text\":\"Plain\",\"px\":16,\"region\":\"ty.runlog\",\"role\":\"label\",\"ground\":\"field\",\"run\":0,");
-    char fig[160]; snprintf(fig, sizeof fig, "\"text\":\" 2\",\"px\":16,\"region\":\"ty.runlog\",\"role\":\"label\",\"ground\":\"field\",\"run\":%u,", (unsigned)v_id("ty.runp"));
+    char fig[160]; snprintf(fig, sizeof fig, "\"text\":\"2\",\"px\":16,\"region\":\"ty.runlog\",\"role\":\"label\",\"ground\":\"field\",\"run\":%u,", (unsigned)v_id("ty.runp"));
     char nd[64], r[24]; snprintf(nd, sizeof nd, "[%u,2,3,", (unsigned)v_id("ty.runa.0")); snprintf(r, sizeof r, ",%u]", (unsigned)v_id("ty.runa")); const char *p = strstr(lg, nd), *e = p ? strchr(p, ']') : NULL;
     int tail = e && (size_t)(e - p) + 1 > strlen(r) && strncmp(e - strlen(r) + 1, r, strlen(r)) == 0;   /* the node's entry ends with its run */
     check(n > 0 && strstr(lg, want) && strstr(lg, plain) && strstr(lg, fig) && tail, "run log: a type entry carries the run's v_id (0 for a plain line), a node's 14th value is its run", ""); }
+  /* an inline group: a v_run and a v_say inside v_inline carry the group's run, the run after v_inline_end is its own again */
+  { static char lg[65536];
+    prim_begin(); v_region("ty.inl", LAYER_TYPE);
+    v_inline("ty.grp"); v_say_run("ty.ia", "Hello", 10, 100, "label", "field", V_ALIGN_LEFT); v_say("ty.ib", "Plain", 200, 100, V_ANCHOR_CAP, "label", "field", V_ALIGN_LEFT); v_inline_end();
+    v_say_run("ty.ic", "After", 300, 100, "label", "field", V_ALIGN_LEFT);
+    prim_end(); int n = prim_log_json(lg, (int)sizeof lg);
+    char a[200], b[200], c[200];
+    snprintf(a, sizeof a, "\"text\":\"Hello\",\"px\":16,\"region\":\"ty.inl\",\"role\":\"label\",\"ground\":\"field\",\"run\":%u,", (unsigned)v_id("ty.grp"));
+    snprintf(b, sizeof b, "\"text\":\"Plain\",\"px\":16,\"region\":\"ty.inl\",\"role\":\"label\",\"ground\":\"field\",\"run\":%u,", (unsigned)v_id("ty.grp"));
+    snprintf(c, sizeof c, "\"text\":\"After\",\"px\":16,\"region\":\"ty.inl\",\"role\":\"label\",\"ground\":\"field\",\"run\":%u,", (unsigned)v_id("ty.ic"));
+    check(n > 0 && strstr(lg, a) && strstr(lg, b) && strstr(lg, c) && prim_run_get() == 0, "inline group: a v_run inside a v_inline carries the group's run, as does a plain line; after v_inline_end a run is its own", ""); }
   /* a variant neither a string nor an object, or naming a font the face does not hold, is refused: an error and a node of no size */
   { int len = 0; const char *raw = spec_raw("frame", "", &len); char *orig = raw ? (char *)malloc((size_t)len + 1) : NULL, *alt = raw ? (char *)malloc((size_t)len + 64) : NULL;
     if (orig && alt) { memcpy(orig, raw, (size_t)len); orig[len] = 0;

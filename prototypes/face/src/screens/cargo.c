@@ -363,7 +363,7 @@ static void build_arrival(int choice) {
   if (!choice) { int r[4]; v_srect(C, ARR ".apron.rect", r); v_region("apron", LAYER_ART); v_name("apron"); v_sprite("apron", v_pstr(ARR ".apron"), r[0], r[1], r[2], r[3]); }
   { int r[4]; v_srect(C, "regions.dockRibbon.rect", r); const char *words = v_pstr(ARR ".ribbon"); int rpx = v_si(C, "regions.dockRibbon.px", 20), rpad = v_si(C, "regions.dockRibbon.pad", 16), rib = v_si(C, ARR ".crates.at", 500);
     int w = layout_plate_width(C, "regions.dockRibbon", v_measure(words, rpx)); r[0] = 512 - w / 2; r[2] = w;
-    v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= rib ? words : "", rpx, rpad, v_scol(C, "colours.ribbon.fill"), v_scol(C, "colours.ribbon.edge"), v_scol(C, "colours.ribbon.text")); }
+    v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= rib ? words : "", rpad, v_scol(C, "colours.ribbon.fill"), v_scol(C, "colours.ribbon.edge"), NULL); }
   build_light(t);
   build_crates_arrival(t);
   if (!choice) build_mibis(t);

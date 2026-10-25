@@ -1,6 +1,7 @@
 // The frame's words (lvgl-switch.md §2.2) against the JavaScript components they replace. tests/vectors/frame-words.json holds, for each case, the props of a frame and the hash of the
 // framebuffer the JavaScript components drew for it (through the node path, on this face, with the stand-in pictures below): the words, given the props, must draw the same pixels.
-// The fixture was made once from components/frame.mjs, so no test imports the frozen drawing layer. Skipped when the face has not been built (build.sh).
+// The fixture was made once from components/frame.mjs, so no test imports the frozen drawing layer; its hashes were retaken on the face when the frame's text moved onto the type roles (the bars'
+// caps centred, the separators and the notice moved, the figures and the verb in Medium 16). Skipped when the face has not been built (build.sh).
 //   node --test prototypes/face/tests/words.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";

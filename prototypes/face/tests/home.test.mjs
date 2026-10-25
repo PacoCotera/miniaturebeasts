@@ -168,11 +168,11 @@ test("the bar: Station at x 16, the place name 12 after it when the save has one
 const lineBox = R.line.rect, lineNodes = (f) => { const ids = ["line.lamp", "line.cap", "line.needs.0", "line.verb.0", "line.sep.0", "line.subject.0", "line.note.0", "line.goal.0", "line.goal.1", "line.goal.2"]; return Object.fromEntries(ids.map((id) => [id, box(f, id)]).filter(([, v]) => v && v[2] > 0)); };
 async function drawn(line, o = {}) { const b = scene({ adults: 1, ...o }); b.props.regions.line = line; return start(b, { dir: node }); }
 test("the line at rest with two needs: the amber lamp, the ✓ cap and the first need's action, then its dot and the second's notice, all in the zone, centred, the words in the need colour", { skip }, async () => {
-  const f = await start(scene({ adults: 3, crates: 2, bud: 1e8 / 60000 }), { dir: node }), lg = logOf(f); assert.deepEqual(f.build.props.regions.line, { needs: ["Open the Bay", "the bud is ready"] });
+  const f = await start(scene({ adults: 3, crates: 2, bud: 1e8 / 60000 }), { dir: node }), lg = logOf(f); assert.deepEqual(f.build.props.regions.line, { needs: ["Open the Bay", "The bud is ready"] });
   const N = lineNodes(f); assert.deepEqual(Object.keys(N).sort(), ["line.cap", "line.lamp", "line.needs.0"]); for (const [id, r] of Object.entries(N)) assert.ok(inside(r, lineBox), `${id} ${r} leaves the zone ${lineBox}`);
   assert.deepEqual([N["line.lamp"][2], N["line.lamp"][3], N["line.cap"][2], N["line.cap"][3]], [12, 12, 16, 16]); assert.equal(N["line.cap"][0], N["line.lamp"][0] + 12 + 4, "the lamp, 4, then the cap"); assert.equal(N["line.needs.0"][0], N["line.cap"][0] + 16 + 4, "the cap, 4, then the words");
   const left = N["line.lamp"][0], right = N["line.needs.0"][0] + N["line.needs.0"][2]; assert.ok(Math.abs((left + right) / 2 - 580) <= 1, `centred on the zone: ${(left + right) / 2}`);
-  assert.deepEqual(typeIn(lg, "line").map((t) => [t.text, t.px]), [["Open the Bay \u00b7 the bud is ready", 16]]);
+  assert.deepEqual(typeIn(lg, "line").map((t) => [t.text, t.px]), [["Open the Bay \u00b7 The bud is ready", 16]]);
 });
 test("the line at rest with one need, with none and a goal, and with none and no goal", { skip }, async () => {
   let f = await start(scene({ adults: 2, crates: 1 }), { dir: node }), lg = logOf(f); assert.deepEqual(f.build.props.regions.line, { needs: ["Open the Bay"] }); assert.deepEqual(typeIn(lg, "line").map((t) => t.text), ["Open the Bay"]);
@@ -189,10 +189,10 @@ test("the goal: a name too wide for the zone with its icons falls back to the na
 test("a target's verb with its cap, and its subject in mist after a dot, clipped with an ellipsis at the zone's edge only; the Companion away says it is on a trip, with no cap", { skip }, async () => {
   let f = await drawn({ verb: "Open the Bay" }), lg = logOf(f); assert.ok(lineNodes(f)["line.cap"], "the cap"); assert.deepEqual(typeIn(lg, "line").map((t) => t.text), ["Open the Bay"]); assert.equal(lineNodes(f)["line.lamp"], undefined, "no lamp on a target");
   f = await drawn({ verb: "Open the Bay", subject: "two sealed crates from the last trip, all of them waiting at the berths for their turn to be opened" }); lg = logOf(f);
-  const words = typeIn(lg, "line").map((t) => t.text); assert.equal(words[0], "Open the Bay"); assert.equal(words[1], " \u00b7 "); assert.match(words[2], /\u2026$/, "the subject is cut with an ellipsis"); assert.ok(!words[0].includes("\u2026") && !words[1].includes("\u2026"), "only the subject may end in one");
+  const words = typeIn(lg, "line").map((t) => t.text); assert.equal(words[0], "Open the Bay"); assert.equal(words[1], "\u00b7"); assert.match(words[2], /\u2026$/, "the subject is cut with an ellipsis"); assert.ok(!words[0].includes("\u2026") && !words[1].includes("\u2026"), "only the subject may end in one");
   for (const [id, r] of Object.entries(lineNodes(f))) assert.ok(inside(r, lineBox), `${id} ${r} leaves the zone`); const sub = box(f, "line.subject.0"); assert.ok(sub[0] + sub[2] <= lineBox[0] + lineBox[2] && sub[0] + sub[2] >= lineBox[0] + lineBox[2] - 12, "it ends at the zone's edge");
-  f = await drawn({ verb: "Open the Bay", subject: "a short one" }); assert.deepEqual(typeIn(logOf(f), "line").map((t) => t.text), ["Open the Bay", " \u00b7 ", "a short one"]);
-  f = await start(scene({ adults: 2, carry: [0], away: true, focus: "companion" }), { dir: node }); lg = logOf(f); assert.deepEqual(f.build.props.regions.line, { note: "the Companion is on a trip" }); assert.equal(lineNodes(f)["line.cap"], undefined, "no cap: ✓ does nothing there"); assert.deepEqual(typeIn(lg, "line").map((t) => t.text), ["the Companion is on a trip"]);
+  f = await drawn({ verb: "Open the Bay", subject: "a short one" }); assert.deepEqual(typeIn(logOf(f), "line").map((t) => t.text), ["Open the Bay", "\u00b7", "a short one"]);
+  f = await start(scene({ adults: 2, carry: [0], away: true, focus: "companion" }), { dir: node }); lg = logOf(f); assert.deepEqual(f.build.props.regions.line, { note: "The Companion is on a trip" }); assert.equal(lineNodes(f)["line.cap"], undefined, "no cap: ✓ does nothing there"); assert.deepEqual(typeIn(lg, "line").map((t) => t.text), ["The Companion is on a trip"]);
 });
 test("the line never wraps: every pair of needs (the first by its action, the second by its notice, counts at their most) and every verb measures inside the zone, at the face's own Inter", { skip }, async () => {
   const f = installScene(await bootFace(pathToFileURL(node + "/"), { test: true })), W = (s) => f.measure(s, 16), sep = W(homeSpec.regions.line.sep), room = lineBox[2] - 12 - 4 - 16 - 4;
@@ -255,7 +255,7 @@ test("the needs hold in the spec's order and clear when acted on: crates, the bu
   const b = scene({ adults: 3, crates: 2, bud: 1e8 / 60000, portrait: true, unseen: true, waiting: true, ui: { meet: 1 } });
   const keys = (x) => homeNeeds(x.st, x.sv, settings, x.ui ?? { meet: 1 }, Date.now() + 1000).map((n) => n.key); assert.deepEqual(keys(b), ["crates", "budReady", "portrait", "meet", "newPods", "waitingPods"]);
   assert.deepEqual(homeSpec.strings.line.order, ["crates", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
-  assert.deepEqual(b.props.regions.line, { needs: ["Open the Bay", "the bud is ready"] }, "at most two");
+  assert.deepEqual(b.props.regions.line, { needs: ["Open the Bay", "The bud is ready"] }, "at most two");
   b.sv.bay = []; assert.deepEqual(keys(b).slice(0, 2), ["budReady", "portrait"], "the crates are gone once opened");
 });
 

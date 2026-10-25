@@ -94,10 +94,10 @@ test("the needs hold in the spec's order: crates, the bud, a portrait, a new mib
 test("the line at rest: at most two needs, the first by its action and the second by its notice; with none, the goal; the verb of a target on a focus; the Companion away says it is on a trip", () => {
   const sc = scenes(), line = (x, over) => build(x.st, x.sv, over).props.regions.line;
   assert.deepEqual(line(sc.crates), { needs: ["Open the Bay"] }); assert.deepEqual(line(sc.portrait), { needs: ["Open the Bay", "Dot's portrait has come"], name: "Dot" });
-  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0({ bay: [crate(1), crate(2)] }) }), { needs: ["Open the Bay", "the bud is ready"] }, "two at most, the example of the spec"); }
+  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0({ bay: [crate(1), crate(2)] }) }), { needs: ["Open the Bay", "The bud is ready"] }, "two at most, the example of the spec; each zone a line with its capital"); }
   { const { st, sv } = sc.docked; assert.ok(line({ st, sv }).goal, "nothing needs the player: the goal"); }
   for (const [id, verb] of Object.entries({ vivarium: "Go to the Vivarium", library: "Go to the Library", pods: "Go to Pods", incubator: "Go to the Incubator", companion: "Go to the Probe bench", bay: "Open the Bay" })) assert.deepEqual(line(sc.docked, { focus: id }), { verb }, id);
-  assert.deepEqual(line(sc.away, { focus: "companion" }), { note: "the Companion is on a trip" }); assert.deepEqual(line(sc.away, { focus: "bay" }), { verb: "Open the Bay" });
+  assert.deepEqual(line(sc.away, { focus: "companion" }), { note: "The Companion is on a trip" }); assert.deepEqual(line(sc.away, { focus: "bay" }), { verb: "Open the Bay" });
 });
 
 test("the stations' words and lamps: Pods, the Incubator in each state, the Companion docked and away, the Bay waiting and clear, a portrait crate in", () => {
@@ -215,7 +215,7 @@ test("the goal: with no firm need the goal is the line; a first-group need keeps
   // loop 2: the pair (Dot) is short of \u26a1 for the Loika pod it holds
   const st = world(); dock(st); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot"; st.e = 1;
   const lk = pod(st, "S01"); lk.read = [frameOf("S01").chapters[0].id]; lk.seen = 1;
-  const b = build(st, sv0()); assert.deepEqual(b.props.regions.line, { goal: { text: "go out for more", icons: "\u26a1", plain: "" } }); assert.equal(S.needKey(st, sv0(), settings, {}).key, "couldGrow", "needKey is unchanged");
+  const b = build(st, sv0()); assert.deepEqual(b.props.regions.line, { goal: { text: "Go out for more", icons: "\u26a1", plain: "" } }); assert.equal(S.needKey(st, sv0(), settings, {}).key, "couldGrow", "needKey is unchanged");
   // a new pod (first group): the need as now, no goal
   const st2 = world(); dock(st2); S.seedAdults(st2, "S01", 5, 1, settings); pod(st2, "S01", 5, false);
   assert.deepEqual(build(st2, sv0()).props.regions.line, { needs: ["Look at the pods"] });
@@ -225,21 +225,21 @@ test("the goal: with no firm need the goal is the line; a first-group need keeps
 });
 test("the goal away reads the aim, and growUp counts the walks in words", () => {
   const st = world(); dock(st, false); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
-  assert.equal(S.goalKey(st, sv0()).step.key, "findPod"); assert.deepEqual(build(st, sv0()).props.regions.line, { goal: { text: "find a Loika pod", icons: "", plain: "" } }, "away, pair, findPod: only goOut reads the aim, so the step's own words show");
+  assert.equal(S.goalKey(st, sv0()).step.key, "findPod"); assert.deepEqual(build(st, sv0()).props.regions.line, { goal: { text: "Find a Loika pod", icons: "", plain: "" } }, "away, pair, findPod: only goOut reads the aim, so the step's own words show");
   const w = world(); dock(w, false); const [a, b2] = S.seedAdults(w, "S01", 5, 2, settings).mibis; a.name = "Dot"; b2.name = "Moss"; a.born = 1; b2.born = 2; w.turn = 2;
-  assert.equal(build(w, sv0()).props.regions.line.goal.text, "walks grow Dot up"); assert.equal(build(w, sv0()).props.regions.line.goal.plain, "walks grow the pair up");
-  dock(w, true); w.turn = 2; assert.equal(build(w, sv0()).props.regions.line.goal.text, "more walks grow the pair"); w.turn = 3; assert.equal(build(w, sv0()).props.regions.line.goal.text, "one more walk grows the pair");
+  assert.equal(build(w, sv0()).props.regions.line.goal.text, "Walks grow Dot up"); assert.equal(build(w, sv0()).props.regions.line.goal.plain, "Walks grow the pair up");
+  dock(w, true); w.turn = 2; assert.equal(build(w, sv0()).props.regions.line.goal.text, "More walks grow the pair"); w.turn = 3; assert.equal(build(w, sv0()).props.regions.line.goal.text, "One more walk grows the pair");
 });
 test("goalWords: a name too wide falls back to the nameless sibling of the four keys that have one; the other keys have none", () => {
   const face = (goal, docked = true) => goalWords(goal, docked, frameSpec);
-  assert.deepEqual(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: true, step: { key: "goOut" } }), { text: "Dot grows with care", icons: "", plain: "the young mibi grows with care" });
-  assert.deepEqual(face({ key: "guide", species: "S01", step: { key: "read", species: "S01", pod: "p", chapter: frameOf("S01").chapters[0].id, cost: 1 } }), { text: `read ${frameOf("S01").chapters[0].name} on the Loika pod`, icons: "", plain: "" }, "the guide's read has no name, so no nameless sibling");
-  assert.equal(face({ key: "guide", species: "S01", step: { key: "findPod", species: "S01" } }, false).text, "find a Loika pod", "away, a findPod step reads its own words, not the aim");
-  assert.deepEqual(face({ key: "readChild", name: "Dot", step: { key: "read", name: "Dot" } }), { text: "read Dot's chapters", icons: "", plain: "read the new mibi's chapters" });
-  assert.equal(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, false).plain, "walks grow the pair up");
-  assert.equal(face({ key: "readChild", name: "Dot", step: { key: "goOut" } }, false).plain, "read the new mibi's chapters");
+  assert.deepEqual(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: true, step: { key: "goOut" } }), { text: "Dot grows with care", icons: "", plain: "The young mibi grows with care" });
+  assert.deepEqual(face({ key: "guide", species: "S01", step: { key: "read", species: "S01", pod: "p", chapter: frameOf("S01").chapters[0].id, cost: 1 } }), { text: `Read ${frameOf("S01").chapters[0].name} on the Loika pod`, icons: "", plain: "" }, "the guide's read has no name, so no nameless sibling");
+  assert.equal(face({ key: "guide", species: "S01", step: { key: "findPod", species: "S01" } }, false).text, "Find a Loika pod", "away, a findPod step reads its own words, not the aim");
+  assert.deepEqual(face({ key: "readChild", name: "Dot", step: { key: "read", name: "Dot" } }), { text: "Read Dot's chapters", icons: "", plain: "Read the new mibi's chapters" });
+  assert.equal(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, false).plain, "Walks grow the pair up");
+  assert.equal(face({ key: "readChild", name: "Dot", step: { key: "goOut" } }, false).plain, "Read the new mibi's chapters");
   for (const goal of [{ key: "cross", names: ["Dot", "Moss"], step: { key: "cross" } }, { key: "firstPod", step: { key: "goOut" } }, { key: "pair", name: "Dot", species: "S01", step: { key: "identify", species: "S01" } }]) assert.equal(face(goal).plain, "", goal.key);
-  assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆ ⚡", from: "fieldAndBench" } }).text, "go out and watch for more"); assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆", from: "bench" } }).icons, "◆");
+  assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆ ⚡", from: "fieldAndBench" } }).text, "Go out and watch for more"); assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆", from: "bench" } }).icons, "◆");
 });
 
 test("a mibi with no painting changes nothing on Home: the Incubator is empty with its lamp off (Grow paints nothing)", () => {
@@ -249,9 +249,9 @@ test("a mibi with no painting changes nothing on Home: the Incubator is empty wi
 test("the goal sentence names no species before it is known: identify a pod (fresh game), identify the Loika pod once Loikas are known; no warning words for an unknown species", () => {
   const sv = sv0({ carried: [] }), st = world(); st.dock = { docked: false, at: T0 }; pod(st, "S01", 5, false); assert.deepEqual(st.knownIds, []);
   const g = S.goalKey(st, sv, settings); assert.equal(g.step.key, "identify"); assert.equal(g.step.species, null);
-  const w = goalWords(g, false, frameSpec); assert.ok(JSON.stringify(w).includes("identify a pod") && !/Loika/.test(JSON.stringify(w)), JSON.stringify(w));
-  assert.equal(frameSpec.strings.goal.step.identifyAny, "identify a pod"); assert.equal(frameSpec.strings.goal.step.identify, "identify the {species} pod");
-  st.knownIds.push("S01"); st.tray.length = 0; pod(st, "S01", 6, false); const g2 = S.goalKey(st, sv, settings); assert.equal(g2.step.species, "S01"); assert.ok(/identify the Loika pod/.test(JSON.stringify(goalWords(g2, false, frameSpec))));
+  const w = goalWords(g, false, frameSpec); assert.ok(JSON.stringify(w).includes("Identify a pod") && !/Loika/.test(JSON.stringify(w)), JSON.stringify(w));
+  assert.equal(frameSpec.strings.goal.step.identifyAny, "Identify a pod"); assert.equal(frameSpec.strings.goal.step.identify, "Identify the {species} pod");
+  st.knownIds.push("S01"); st.tray.length = 0; pod(st, "S01", 6, false); const g2 = S.goalKey(st, sv, settings); assert.equal(g2.step.species, "S01"); assert.ok(/Identify the Loika pod/.test(JSON.stringify(goalWords(g2, false, frameSpec))));
 });
 
 test("the Vivarium window's props (build spec 3): the painting of the light, the residents at home (at most six, the carried too while docked), the event tag on the mibi to meet, the first mibi out in the away frame; nothing names a rectangle", () => {

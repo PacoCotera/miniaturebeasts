@@ -8,11 +8,11 @@ import * as Lib from "../library.mjs";
 import { frameIds, frameOf } from "../genome.mjs";
 import { drawnLooks, keyToken } from "../looks.mjs";
 import { specimenInput, newLooksOf, sheetInput } from "./specimen-props.mjs";
-import { fill, spell } from "./words.mjs";
+import { fill, spell, capLine } from "./words.mjs";
 import { req as collector, slot as slotOf, sheet as sheetReqs, disc as discReq, quiet as quietReq, canLight, lineageFar as lineageFarReq } from "./requests.mjs";
 import { faceId } from "../face-pictures.mjs";
 import { speciesFacts, sheetFacts, printed } from "../library-sheet.mjs";
-import { createMeasure } from "../../../ui/specs/measure.mjs";
+import { createMeasure, measureRole } from "../../../ui/specs/measure.mjs";
 import { sittingsOf } from "../sitting.mjs";
 import { lineageOf, targetsOf, resolveOf, fitsClose, farGeometry } from "../lineage.mjs";
 import { bodyColour } from "../lineage-pictures.mjs";
@@ -58,12 +58,12 @@ function faceReq(st, settings, fm, species, size) {
 }
 
 // ---- Level 2 (library.json l2: the screen library.species) ----
-// The first step of a ladder (library.json l2.strings) that fits the bottom line's subject (frame.json regions.subject: its width and words, at its px), measured with the face's Inter (ui/specs/measure.mjs over
-// face/dist/metrics.json); the last step when none does.
+// The first step of a ladder (library.json l2.strings) that fits the bottom line's subject (frame.json regions.subject: its width and words, in its role), measured with the face's Inter (ui/specs/measure.mjs over
+// face/dist/metrics.json) as the line is drawn, with its capital (the host cases the line, capLine); the last step when none does.
 const measures = new WeakMap();
 function measureOf(metrics) { if (!metrics) throw new Error("Level 2's lines are measured: the model carries face/dist/metrics.json (m.metrics)"); let f = measures.get(metrics); if (!f) { f = createMeasure(metrics); measures.set(metrics, f); } return f; }
 const ladder = (fit, steps, values) => { const all = steps.map((s) => fill(s, values)); return all.find(fit) ?? all[all.length - 1]; };
-const fitter = (measure, frame) => { const R = frame.regions.subject; return (s) => measure(s, R.px) <= R.rect[2] && s.split(" ").length <= R.words; };
+const fitter = (metrics, frame) => { const R = frame.regions.subject, measure = measureRole(metrics, frame, R.role); return (s) => measure(capLine(s)) <= R.rect[2] && s.split(" ").length <= R.words; };
 // The carried-by line of a found look (lookCarriers: the read chapters of living mibis).
 export function carriedLine(fit, strings, carriers) {
   const C = strings.carried, [a, b] = carriers.map((c) => c.name);
@@ -81,7 +81,7 @@ function familyOf(st, sv, sid, max) {
 export function speciesBuild(m, spec, frame) {
   const { st, sv, settings, ui } = m, L2 = spec.l2, Sg = L2.strings, SH = L2.shelf, FA = L2.families, sid = ui.species, fr = frameOf(sid), status = fr ? Lib.speciesStatus(st, sid) : "unmet";
   if (!fr || status === "unmet") throw new Error(`Level 2 shows a met or found species, not ${sid} (${status})`);
-  const requests = [], later = [], req = collector(requests, true), slot = slotOf(req, "its master (library.json)"), made = m.ready ?? (() => true), fit = fitter(measureOf(m.metrics), frame), met = status === "met";
+  const requests = [], later = [], req = collector(requests, true), slot = slotOf(req, "its master (library.json)"), made = m.ready ?? (() => true), fit = measureOf(m.metrics) && fitter(m.metrics, frame), met = status === "met";
   const ground = slot(spec.l1.stage.master, spec.l1.stage.rect.slice(2));
   const input = sheetInput(st, sid, settings), sp = speciesFacts(fr), lit = !met && ui.state === "lit" && ui.lit && canLight(input, ui.lit) ? ui.lit : null, state = lit ? "lit" : "sheet";
   const facts = sheetFacts(fr, input, lit), guide = met ? null : Lib.fieldGuide(st, sid, settings);
@@ -156,10 +156,10 @@ export function familyBuild(m, spec, frame, home) {
   const ground = slot(spec.l1.stage.master, spec.l1.stage.rect.slice(2)), input = lineageInput(st, lin), g = farGeometry(input, spec), picture = lineageFarReq(req)(spec, input);
   const targets = targetsOf(lin).map((id) => ({ id, group: "node", enabled: true })), cur = targets.some((t) => t.id === mem.node) ? mem.node : targets[0]?.id ?? "";
   // the line: Zoom in; the focused mibi's name and stage (the nameless step past the name's room), the bud's own words; ← the species (Level 2)
-  const measure = measureOf(m.metrics), px = frame.regions.subject.px, n = lin.nodes.find((q) => q.id === cur), mb = n?.kind === "mibi" ? S.mibiById(st, n.mibi) : null;
+  const measureOfLine = measureOf(m.metrics) && measureRole(m.metrics, frame, frame.regions.subject.role), n = lin.nodes.find((q) => q.id === cur), mb = n?.kind === "mibi" ? S.mibiById(st, n.mibi) : null;
   let subject = "";
   if (n?.kind === "bud") subject = Sg.bud;
-  else if (mb) { const stage = S.mibiStage(st, mb, settings), name = S.cap(mb.name ?? ""); subject = name && measure(name, px) <= Sg.nameRoom ? fill(Sg.farSubject, { Name: name, stage: home.strings.stages[stage] ?? stage }) : Sg.nameless[stage]; }
+  else if (mb) { const stage = S.mibiStage(st, mb, settings), name = S.cap(mb.name ?? ""); subject = name && measureOfLine(name) <= Sg.nameRoom ? fill(Sg.farSubject, { Name: name, stage: home.strings.stages[stage] ?? stage }) : Sg.nameless[stage]; }
   return {
     props: { state: "far", regions: { stage: { picture: [ground] }, lineage: { nodes: lin.nodes.map(({ id, kind, row, u, released }) => ({ id, kind, row, u, released })), links: lin.links }, far: { picture, boxes: targets.map((t) => ({ id: t.id, rect: g.boxes[t.id] })) } },
       focus: { cur, targets, resolve: answered(resolveOf(lin, cur, "far", ui.l3last), Object.values(L3.focus.graph.node).map((e) => e[0]), cur) } },

@@ -13,7 +13,7 @@ import { goalWords } from "./goal-words.mjs";
 import { readyCrates, bayState } from "../sitting.mjs";
 import { paintingOf } from "./idle-props.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
-import { fill, count, plural } from "./words.mjs";
+import { fill, count, plural, capLine } from "./words.mjs";
 import { req as reqOf, ph as phOf, slotAt } from "./requests.mjs";
 
 // The Library module's region and the request that makes its specimen (build spec 4.2) come from the specimen painter (views/specimen-props.mjs), which the host registers here: the painter stays out of what the intents import
@@ -220,7 +220,15 @@ export function homeBuild(m, spec, frame) {
 
 // ---- the line (home.json strings.line) ----
 // At rest: the needs (at most two: the first by its action with the ✓ cap, the second by its notice), else the goal. On a target: its verb, and its subject if it has one. The Companion away has no verb: it says it is on a trip.
+// Each zone of the line is a line of its own and takes its capital (capLine): the action, the notice, the goal, the note and the verb.
 function lineOf(m, spec, frame, v) {
+  const line = lineWords(m, spec, frame, v);
+  if (line.needs) line.needs = line.needs.map(capLine);
+  if (line.goal) line.goal = { ...line.goal, text: capLine(line.goal.text), plain: capLine(line.goal.plain) };
+  for (const k of ["note", "verb"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);
+  return line;
+}
+function lineWords(m, spec, frame, v) {
   const Sg = spec.strings, { cur } = v;
   if (cur === "room") {
     const W = { strings: { needs: Sg.line.needs } };   // Home's own table: each need's action (the first) and notice (the second), the counts spelled

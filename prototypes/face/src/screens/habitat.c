@@ -145,10 +145,10 @@ static void build_tag(void) {
   anim_state_t t; int flash = v_pbool("motion", 1) && anim_get(ANIM_FLASH, "nameTag", &t);   /* the frame's flash, solid for the event's 240 ms as a counter's (frame.c) */
   memset(g_tag, 0, sizeof g_tag);
   v_region("meetRibbon", LAYER_CHROME);
-  word_ribbon("meetRibbon", rib, meet ? words : "", v_si(S, "regions.meetRibbon.px", 20), v_si(S, "regions.meetRibbon.pad", 0), flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.ribbon.fill"), v_scol(S, "colours.ribbon.edge"), flash ? v_scol("frame", "colours.flashInk") : v_scol(S, "colours.ribbon.text"));
+  word_ribbon("meetRibbon", rib, meet ? words : "", v_si(S, "regions.meetRibbon.pad", 0), flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.ribbon.fill"), v_scol(S, "colours.ribbon.edge"), flash ? "heading.flash" : NULL);
   int below = box[1] + box[3] + v_si(S, "regions.nameTag.under", 0), over = box[1] - v_si(S, "regions.resident.lift", 4) - v_si(S, "regions.nameTag.overGap", 0) - v_si(S, "regions.nameTag.h", 0);   /* the tag's top under the feet (nameTag.under), or its bottom a gap (nameTag.overGap) above the lifted box when it would pass the glass's bottom margin */
-  if (!meet) kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 0, flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), flash ? v_scol("frame", "colours.flashInk") : v_scol(S, "colours.nameTag.text"), g_tag);
-  else { kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 1, v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), v_scol(S, "colours.nameTag.text"), g_tag); memset(g_tag, 0, sizeof g_tag); }   /* the same nodes with no size, at the tag's place: the opening redraws nothing at the origin */
+  if (!meet) kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 0, flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), flash ? "nameTag.flash" : NULL, g_tag);
+  else { kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 1, v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), NULL, g_tag); memset(g_tag, 0, sizeof g_tag); }   /* the same nodes with no size, at the tag's place: the opening redraws nothing at the origin */
 }
 
 /* ---- the card ---- */

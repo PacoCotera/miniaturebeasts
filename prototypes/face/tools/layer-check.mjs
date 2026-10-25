@@ -28,7 +28,7 @@ import { sittingStates } from "./sitting-states.mjs";
 import { departures as benchDepartures } from "./bench-regions.mjs";
 import { departures as libraryDepartures } from "./library-regions.mjs";
 import { departures as speciesDepartures } from "./library-species-regions.mjs";
-import { departures as clearance, unusedExceptions, enforced } from "../../ui/specs/clearance.mjs";
+import { departures as clearance, unusedExceptions, enforced, enforcedDeparture, FRAME_REGIONS } from "../../ui/specs/clearance.mjs";
 
 const specs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), home = J("home"), cargo = J("cargo"), create = J("create"), incubator = J("incubator"), vivarium = J("vivarium"), habitat = J("habitat"), namerSpec = J("namer"), library = J("library"), benchSpec = J("bench"), frame = J("frame");
 // Rule F2, the 2 px floor on the rendered frame (fix 14 §14.4): for a creature's ring, the bands that reach 3:1 against the ground (the same state drawn without the ring) add up to 2 px in every cross-section of the line
@@ -62,7 +62,7 @@ function floorProblems(name, rect, withRing, ground) {
 let failed = 0;
 // the clearance of text (ui/specs/clearance.mjs) at every golden state, from the face's node log: report mode, a screen frame.json type.clearance.enforced lists fails on a departure
 const clearanceSpec = (screen) => (screen === "idle" ? frame.idle : { home, cargo, create, incubator, vivarium, habitat, library, bench: benchSpec, pods: J("pods"), sitting: J("sitting") }[screen] ?? {});
-const clearanceRuns = [], clearancePer = {};
+const clearanceRuns = [], clearancePer = {}, clearanceFrame = { states: 0, departures: 0 };   // the frame's own text (the top bar, the bottom line, the plate, the panel, the rail) over every state
 const reading = (screen) => async (name, page, fail) => {
   const panel = await page.evaluate(() => window.__st.props?.overlay?.id === "panel"), keep = (d) => (panel ? d.filter((m) => !/\bring\b|focus draws nothing|namer's plate/.test(m)) : d);   // a decision panel is open: its ring and plate are the panel's (tests/panel.test.mjs); the screen beneath draws none
   const r = await page.evaluate(() => window.__st.snapshot());
@@ -89,8 +89,9 @@ const reading = (screen) => async (name, page, fail) => {
     } }
   let extra = "";
   { const lg = await page.evaluate(() => window.__st.check().log); if (!lg?.nodes) fail(`${name}: the face's log has no nodes (the clearance checks read them)`);
-    const d = clearance(lg, clearanceSpec(screen), frame); clearanceRuns.push(d); const p = (clearancePer[screen] ??= { states: 0, departures: 0, rules: {} }); p.states++; p.departures += d.length; for (const x of d) p.rules[x.rule] = (p.rules[x.rule] ?? 0) + 1;
-    ringTxt += ` · clearance ${d.length}`; if (process.env.CLEARANCE_SHOW) for (const x of d) console.log(`  ${x.rule} ${x.node}: ${x.measured} from ${x.other}, ${x.required} required`); if (enforced(frame, screen)) for (const x of d) fail(`${name}: ${x.rule} ${x.node}: ${x.measured} from ${x.other}, ${x.required} required`); }
+    const d = clearance(lg, clearanceSpec(screen), frame, undefined, screen); clearanceRuns.push(d); const p = (clearancePer[screen] ??= { states: 0, departures: 0, rules: {} }); p.states++; p.departures += d.length; for (const x of d) p.rules[x.rule] = (p.rules[x.rule] ?? 0) + 1;
+    ringTxt += ` · clearance ${d.length}`; if (process.env.CLEARANCE_SHOW) for (const x of d) console.log(`  ${x.rule} ${x.node}: ${x.measured} from ${x.other}, ${x.required} required`); for (const x of d) if (enforcedDeparture(frame, screen, x)) fail(`${name}: ${x.rule} ${x.node}: ${x.measured} from ${x.other}, ${x.required} required`);
+    const fr = d.filter((x) => FRAME_REGIONS.has(x.node.split(" ")[0])); clearanceFrame.states++; clearanceFrame.departures += fr.length; }
   if (screen === "home") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, cur: window.__st.props?.focus?.cur ?? "room", size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
     const d = departures(c.log, home, frame, c.cur); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
@@ -149,6 +150,7 @@ const reading = (screen) => async (name, page, fail) => {
 };
 for (const [screen, states] of [["pods", podsStates], ["home", homeStates], ["cargo", cargoStates], ["create", createStates], ["incubator", incubatorStates], ["vivarium", vivariumStates], ["habitat", habitatStates], ["library", libraryStates], ["bench", benchStates], ["sitting", sittingStates], ["idle", idleStates]].filter(([screen]) => !process.env.LAYER_ONLY || process.env.LAYER_ONLY.split(",").includes(screen))) { const { fails } = await states(reading(screen)); failed += fails.length; }   // LAYER_ONLY=cargo,home: only those screens
 for (const [screen, p] of Object.entries(clearancePer).sort()) console.log(`clearance ${screen.padEnd(10)} ${String(p.states).padStart(3)} states · ${String(p.departures).padStart(4)} departures (${Object.entries(p.rules).sort().map(([r, n]) => `${r} ${n}`).join(", ") || "none"})${enforced(frame, screen) ? " · enforced" : " · report"}`);
+console.log(`clearance frame      ${String(clearanceFrame.states).padStart(3)} states · ${String(clearanceFrame.departures).padStart(4)} departures of the frame's own text${enforced(frame, "frame") ? " · enforced" : " · report"}`);
 if (!process.env.LAYER_ONLY) for (const e of unusedExceptions(frame, clearanceRuns)) { failed++; console.error(`FAIL frame.json type.clearance.exceptions: ${e.rule} ${e.node} is used by no departure`); }
 console.log(`clearance: ${clearanceRuns.reduce((n, d) => n + d.length, 0)} departures at ${clearanceRuns.length} golden states (report mode: ${(frame.type.clearance?.enforced ?? []).length} screens enforced)`);
 console.log(failed ? failed + " failure(s)" : "layer check ok"); process.exit(failed ? 1 : 0);

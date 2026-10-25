@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { departures, unusedExceptions, enforced } from "../specs/clearance.mjs";
+import { departures, unusedExceptions, enforced, enforcedDeparture, FRAME_REGIONS } from "../specs/clearance.mjs";
 
 const frame = JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8"));
 // a text at (x, cap) of width w, 16 px (cap 12) unless px says otherwise; run: the v_run or v_price call it was sent in (0 for none)
@@ -34,10 +34,10 @@ test("clearance T3 and T4: a pane's 12 inside; a band's cap centred and 12 from 
   assert.deepEqual(departures(off, {}, frame).map((x) => [x.rule, x.measured, x.required]), [["T4", 102, 106]], "the cap 4 rows above the band's middle");
 });
 test("clearance T5: 8 from the picture a text labels, 16 from any other on its rows; a picture under it is its ground, its own run's icons are inline", () => {
-  const log = { type: [text("cap", "Dot", 100, 300, 30, 16, 5)], nodes: [nd(7, 3, "pic", 140, 290, 40, 40, 0, [150, 292, 20, 30]), nd(8, 3, "ground", 0, 0, 1024, 600, 0, undefined, 2), nd(9, 3, "cap", 132, 298, 16, 16, 0, undefined, 1, 5)] };
+  const log = { type: [text("cap", "Dot", 100, 300, 30, 16, 5)], nodes: [nd(7, 3, "pic", 140, 290, 40, 40, 0, [150, 292, 20, 30]), nd(8, 3, "ground", 0, 0, 1024, 600, 0, undefined, 2), nd(9, 3, "cap", 134, 298, 16, 16, 0, undefined, 1, 5)] };
   assert.deepEqual(departures(log, {}, frame), [], "20 from a picture on its rows, its ground and its own icon (the run it was sent in)");
   const other = { ...log, type: [text("cap", "Dot", 100, 300, 30, 16, 6)] };
-  assert.deepEqual(departures(other, {}, frame).map((x) => [x.rule, x.measured, x.required]), [["T5", 2, 16]], "an icon of another run in the same region is a neighbour");
+  assert.deepEqual(departures(other, {}, frame).map((x) => [x.rule, x.measured, x.required]), [["T5", 4, 16]], "an icon of another run in the same region is a neighbour");
   const chrome = { type: [text("cap", "Dot", 300, 300, 30)], nodes: [nd(7, 3, "pic", 334, 290, 40, 40, 0, undefined, 0), nd(8, 4, "frame", 262, 290, 24, 40, 0, undefined, 0)] };
   assert.deepEqual(departures(chrome, {}, frame).map((x) => [x.rule, x.other.split(" ")[2], x.measured]), [["T5", "pic", 4]], "a sprite counts on any layer, a nine-slice only off the chrome layer");
   const off = { ...chrome, nodes: [chrome.nodes[0], nd(8, 4, "frame", 262, 290, 24, 40, 0, undefined, 2)] };
@@ -47,6 +47,15 @@ test("clearance T5: 8 from the picture a text labels, 16 from any other on its r
   const fnv = (s) => { let h = 2166136261; for (const c of Buffer.from(s)) { h ^= c; h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };
   const labelled = { type: [text("cap", "Dot", 100, 300, 30)], nodes: [nd(fnv("tile.pic"), 3, "pic", 100, 250, 40, 40, 0, [100, 250, 40, 44])] };
   assert.deepEqual(departures(labelled, { regions: { cap: { labels: "tile.pic" } } }, frame).map((x) => [x.rule, x.measured, x.required]), [["T5", 6, 8]], "the picture it labels, above it");
+});
+test("clearance T5 and T8: a picture that encloses any logged text is a ground; a picture and a text of one run on the same rows are 4 apart", () => {
+  const ground = { type: [text("tab", "Movement", 100, 300, 70, 16, 0), text("tab", "Other", 300, 300, 40, 16, 0)], nodes: [nd(7, 3, "tab", 90, 290, 100, 40, 0, [90, 290, 100, 40]), nd(8, 3, "emblem", 176, 296, 16, 16, 0, undefined, 1, 0)] };
+  assert.deepEqual(departures(ground, {}, frame).filter((x) => x.node.includes("Other")), [], "a tab's ground encloses 'Movement': it is not a neighbour of 'Other' on the same rows");
+  const run = (gapPx) => ({ type: [text("top", "Library", 100 + 16 + gapPx, 300, 60, 20, 9)], nodes: [nd(7, 3, "top", 100, 296, 16, 16, 0, undefined, 1, 9)] });
+  assert.deepEqual(departures(run(3), {}, frame).map((x) => [x.rule, x.measured, x.required]), [["T8", 3, 4]], "3 apart in one run");
+  assert.deepEqual(departures(run(4), {}, frame), [], "4 apart in one run");
+  const other = { type: run(3).type.map((t) => ({ ...t, run: 10 })), nodes: run(3).nodes };
+  assert.deepEqual(departures(other, {}, frame).map((x) => x.rule), ["T5"], "a picture of another run is T5's");
 });
 test("clearance T6 and T7: 4 from the focus ring's outer edge, 8 from a 1 px rule", () => {
   const log = { type: [text("c", "Moss", 100, 302, 40)], nodes: [nd(1, 6, "focus", 90, 200, 60, 100, 1), nd(2, 1, "sep", 150, 296, 1, 20)] };
@@ -80,5 +89,23 @@ test("clearance: exceptions are frame.json data, each one in use; a screen is re
   assert.deepEqual(d, []); assert.deepEqual(d.used.map((e) => e.node), ["a"]);
   assert.deepEqual(unusedExceptions(f, [d]).map((e) => e.node), ["z"]);
   assert.equal(enforced(f, "home"), true); assert.equal(enforced(f, "pods"), false);
-  assert.deepEqual(frame.type.clearance, { enforced: [], exceptions: [] }, "report mode everywhere today, no exceptions");
+  assert.deepEqual(frame.type.clearance.exceptions.map((e) => [e.screen, e.node, e.rule, e.by]), [["create", "rail.tab", "T4", "UI/UX"], ["pods", "rail.tab", "T6", "UI/UX"]], "the two entries UI/UX wrote, each naming its screen");
+});
+
+test("clearance: an exception may name one screen", () => {
+  const f = { ...frame, type: { ...frame.type, clearance: { enforced: [], exceptions: [{ screen: "create", node: "a", rule: "T1", reason: "test", by: "UI/UX" }] } } };
+  const log = { type: [text("a", "Left", 12, 100, 40)], nodes: [] };
+  assert.deepEqual(departures(log, {}, f, undefined, "create"), [], "the named screen");
+  assert.deepEqual(departures(log, {}, f, undefined, "pods").map((x) => x.rule), ["T1"], "any other screen");
+  assert.deepEqual(departures(log, {}, f).map((x) => x.rule), ["T1"], "no screen given");
+});
+test("\"frame\" in type.clearance.enforced fails the frame's own text on every screen and leaves the screen's own text as its entry says", () => {
+  const f = { type: { clearance: { enforced: ["frame"], exceptions: [] } } }, none = { type: { clearance: { enforced: [], exceptions: [] } } };
+  const bar = { rule: "T2", node: 'subject "Goes with you now"' }, mine = { rule: "T5", node: 'card "Moss"' }, plate = { rule: "T1", node: 'plate "No bay free."' }, icon = { rule: "T2", node: "need [762, 576, 12, 12]" };
+  assert.equal(enforcedDeparture(f, "pods", bar), true); assert.equal(enforcedDeparture(f, "pods", plate), true); assert.equal(enforcedDeparture(f, "pods", icon), true);
+  assert.equal(enforcedDeparture(f, "pods", mine), false, "a screen's own text is reported while its screen is not listed");
+  assert.equal(enforcedDeparture({ type: { clearance: { enforced: ["frame", "pods"], exceptions: [] } } }, "pods", mine), true);
+  assert.equal(enforcedDeparture(none, "pods", bar), false, "report mode");
+  for (const r of ["title", "materials", "time", "action", "subject", "need", "back", "plate", "panelTitle", "cardText", "rail.tab"]) assert.ok(FRAME_REGIONS.has(r), r);
+  assert.ok(!FRAME_REGIONS.has("line") && !FRAME_REGIONS.has("bar"), "Home's own bar (its regions bar and line) is Home's");
 });

@@ -131,15 +131,21 @@ int v_run_width(const char *s, int px) {
   if (n) { piece[n] = 0; w += v_measure(piece, px); }
   return w;
 }
+/* An inline group: every node sent between v_inline(id) and v_inline_end() is one run in the log (a mark and its word, an icon and its figure), whatever calls drew them; a v_run or v_price inside it joins the group's run. */
+void v_inline(const char *id) { prim_run(v_id(id)); }
+void v_inline_end(void) { prim_run(0); }
 v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *colour, int align) {
-  prim_run(v_id(id));   /* the pieces and icons of this call are one run in the log */
+  uint32_t outer = prim_run_get(); if (!outer) prim_run(v_id(id));   /* the pieces and icons of this call are one run in the log (inside a v_inline group, the group's run) */
   v_run_t r; r.width = v_run_width(s, px);
   int cx = align == V_ALIGN_CENTRE ? x - (r.width + 1) / 2 : align == V_ALIGN_RIGHT ? x - r.width : x, i = 0;
   char piece[V_STR]; int n = 0;
   for (const char *p = s;;) {
     int l = 0; const char *ic = *p ? icon_of(p, &l) : NULL;
     if (!*p || ic) {
-      if (n) { piece[n] = 0; int w = v_measure(piece, px); char nid[96]; snprintf(nid, sizeof nid, "%s.%d", id, i++); v_text(nid, piece, cx, y, w, px, colour); cx += w; n = 0; }
+      if (n) { piece[n] = 0; int w = v_measure(piece, px); char nid[96]; snprintf(nid, sizeof nid, "%s.%d", id, i++); { /* the node carries only the piece's non-space glyphs: the spaces are advance, not ink */
+        const char *lp = piece; while (*lp == ' ') lp++; int lead = w - v_measure(lp, px); char core[V_STR]; snprintf(core, sizeof core, "%s", lp); size_t cl = strlen(core); while (cl && core[cl - 1] == ' ') core[--cl] = 0;
+        v_text(nid, core, cx + lead, y, *core ? v_measure(core, px) : 0, px, colour); }
+      cx += w; n = 0; }
       if (!*p) break;
       int ip = px_of(px); char nid[96], aid[64]; snprintf(nid, sizeof nid, "%s.%d", id, i++); snprintf(aid, sizeof aid, ic, ip);
       int iy = y + v_cap(px) - ip + (int)(ip * 0.12 + 0.5);
@@ -147,7 +153,7 @@ v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *c
       cx += ip + 4; p += l;
     } else if (n < V_STR - 1) piece[n++] = *p++; else p++;
   }
-  r.end = cx; prim_run(0); return r;
+  r.end = cx; if (!outer) prim_run(0); return r;
 }
 /* A price ("⚡ 2 ❀ 4 ◆ 1 ⧗ 20": Energy, Essence, Data and the bud's wait in that order, each icon and its figure): the four groups always have their two nodes (icon, figure), the ones the price does not name with no size, so a price that gains or loses a group
    changes nodes and never adds or removes one (§2.2). The wait's picture must be on the face (icon-wait-16): else v_error and its two nodes take no size, never a glyph or a bare figure. A price with no material in it ("free") is one text node. The icon's and the figure's layout is v_run's. */
@@ -163,8 +169,8 @@ static int price_pairs(const char *s) {
   return 1;
 }
 int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[V_PRICE_N], const char *other) {
-  prim_run(v_id(id));   /* the icons and figures of this call are one run in the log */
-  if (!price_pairs(s)) { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); int e = v_run(nid, s, x, y, px, other, V_ALIGN_LEFT).end; prim_run(0); return e; }
+  uint32_t outer = prim_run_get(); if (!outer) prim_run(v_id(id));   /* the icons and figures of this call are one run in the log (inside a v_inline group, the group's run) */
+  if (!price_pairs(s)) { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); int e = v_run(nid, s, x, y, px, other, V_ALIGN_LEFT).end; if (!outer) prim_run(0); return e; }
   int cx = x, groups = 0; char fig[V_PRICE_N][24]; int has[V_PRICE_N];
   for (int g = 0; g < V_PRICE_N; g++) {
     const char *p = strstr(s, PRICE[g].glyph); has[g] = p != NULL; fig[g][0] = 0; if (!p) continue;
@@ -179,13 +185,13 @@ int v_price(const char *id, const char *s, int x, int y, int px, const char *col
       char prefix[V_STR]; const char *at = strstr(s, PRICE[g].glyph); snprintf(prefix, sizeof prefix, "%.*s", (int)(at - s), s);   /* each icon stands where the single run would put it: after the width of the price up to it */
       cx = x + (at == s ? 0 : v_run_width(prefix, px));
       snprintf(nid, sizeof nid, "%s.%d.i", id, g); if (!v_sprite(nid, ic, cx + 2, iy, ip, ip)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", ic); v_error(b); }
-      cx += ip + 4; int w = v_measure(fig[g], px); snprintf(nid, sizeof nid, "%s.%d.t", id, g); v_text(nid, fig[g], cx, y, w, px, cols[g]); cx += w;
+      cx += ip + 4; int w = v_measure(fig[g], px), fw = v_measure(fig[g] + 1, px); snprintf(nid, sizeof nid, "%s.%d.t", id, g); v_text(nid, fig[g] + 1, cx + (w - fw), y, fw, px, cols[g]); cx += w;   /* the figure's leading space is advance, not ink */
     } else {
       snprintf(nid, sizeof nid, "%s.%d.i", id, g); v_sprite_hidden(nid, ic, cx, iy); snprintf(nid, sizeof nid, "%s.%d.t", id, g); v_text(nid, "", cx, y, 0, px, cols[g]);
     }
   }
   { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); int w = groups || !*s ? 0 : v_measure(s, px); v_text(nid, groups ? "" : s, cx, y, w, px, other); if (w) cx += w; }
-  prim_run(0); return cx;
+  if (!outer) prim_run(0); return cx;
 }
 int v_wrap(const char *s, int maxw, int px, char *buf, int cap, int max) {
   int nl = 0, o = 0; char cur[V_STR * 2]; cur[0] = 0; int cl = 0;
@@ -339,7 +345,7 @@ int v_say_price(const char *id, const char *s, int x, int y, const char *role, c
   g_say_role = role; g_say_ground = ground; g_say_shadow = r->shadow; int end = v_price(id, s, x, y, code, cp, oc); g_say_role = g_say_ground = g_say_shadow = ""; return end;
 }
 int v_role_pitch(const char *role) { int code, pitch; return role_font(role, &code, &pitch) ? pitch : 0; }
-int v_role_width(const char *s, const char *role) { int code, pitch; return role_font(role, &code, &pitch) ? v_measure(s, code) : 0; }
+int v_role_width(const char *s, const char *role) { int code, pitch; return role_font(role, &code, &pitch) ? v_run_width(s, code) : 0; }   /* a run's width: its icons inline, as v_say_run lays them */
 void v_role_clip(const char *s, int maxw, const char *role, char *out, int cap) { int code, pitch; if (role_font(role, &code, &pitch)) v_clip(s, maxw, code, out, cap); else if (cap > 0) out[0] = 0; }
 int v_role_wrap(const char *s, int maxw, const char *role, char *buf, int cap, int max) { int code, pitch; return role_font(role, &code, &pitch) ? v_wrap(s, maxw, code, buf, cap, max) : 0; }
 int v_role_cap_top(int y, int anchor, const char *role) {

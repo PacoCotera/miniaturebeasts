@@ -38,7 +38,7 @@ void word_rail(const char *marksSpec) {
   int open = v_pint("regions.rail.open", 0); layout_tab_t tabs[LAYOUT_TABS];
   int run = 0, x0 = 0, placed = layout_slant_tabs(F, R, n, open, 0, tabs, &run, &x0); if (placed <= 0) return;
   int S = fi("slant", 16), gsz = fi("glint.size", 12), gbelow = fi("glint.below", 2);
-  int em0 = fi("full_layout.emblem.0", 24), em1 = fi("full_layout.emblem.1", 24), gap = fi("full_layout.gap", 8), labelY = fi("full_layout.labelY", 0), labelC = fi("full_layout.labelCentre", 0), pipsC = fi("full_layout.pipsCentre", 0);
+  int em0 = fi("full_layout.emblem.0", 24), em1 = fi("full_layout.emblem.1", 24), gap = fi("full_layout.gap", 8), labelY = marksSpec ? fi("full_layout.labelYMarked", 0) : fi("full_layout.labelY", 0), labelC = fi("full_layout.labelCentre", 0), pipsC = fi("full_layout.pipsCentre", 0);
   int cEmY = fi("compact_layout.emblemY", 0), cEmC = fi("compact_layout.emblemCentre", 0), cPipsC = fi("compact_layout.pipsCentre", 0);
   char focus[40]; snprintf(focus, sizeof focus, "%s", v_focus_cur()); int focused = strncmp(focus, "rail.", 5) == 0 ? atoi(focus + 5) : v_pint("regions.rail.current", -1);   /* Compare has no focus: its ring is on the chapter both pages show */
   char star[96]; snprintf(star, sizeof star, "%s", v_pstr("regions.rail.star"));
@@ -59,9 +59,12 @@ void word_rail(const char *marksSpec) {
     const char *emblem = v_pstr(v_fmt("regions.rail.tabs.%d.emblem", i));
     if (full) {
       char text[V_STR]; snprintf(text, sizeof text, "%s", v_pstr(v_fmt("regions.rail.tabs.%d.word", i)));
-      int ww = v_measure(text, 16), bw = em0 + gap + ww, bx = x + labelC - v_half(bw), wx = bx + em0 + gap;
+      /* the word is a label on the tab (a band): bone when read, the state's mist when unread or sealed, ink on the open (light) tab; with the emblem, centred on the tab's middle where no marks hang under it */
+      const char *role = strcmp(key, "open") == 0 ? "label.open" : strcmp(key, "read") == 0 ? "label" : "label.state";
+      int ww = v_role_width(text, role), bw = em0 + gap + ww, bx = x + labelC - v_half(bw), wx = bx + em0 + gap;
+      v_inline(v_fmt("%s.label", tid));   /* the emblem and the word are one group */
       if (has(emblem)) v_sprite(v_fmt("%s.emblem", tid), emblem, bx, labelY, em0, em1);
-      v_region("rail.tab", LAYER_TYPE); v_line_at(v_fmt("%s.word", tid), text, wx, v_cap_in(labelY, em1, 16), V_ANCHOR_CAP, 16, word, V_ALIGN_LEFT);
+      v_region("rail.tab", LAYER_TYPE); v_say(v_fmt("%s.word", tid), text, wx, v_role_cap_in(labelY, em1, role), V_ANCHOR_CAP, role, "band", V_ALIGN_LEFT); v_inline_end(); (void)word;
       pipCx = x + pipsC;
     } else {
       if (has(emblem)) v_sprite(v_fmt("%s.emblem", tid), emblem, x + cEmC - em0 / 2, cEmY, em0, em1);
