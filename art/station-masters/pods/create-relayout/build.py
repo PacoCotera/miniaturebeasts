@@ -35,7 +35,7 @@ assert (H, W) == (522, 1024) and RP['inputs']['base'][1].startswith('eac3651928c
 # the old painted tray: x 312-711, y 191-513. Wall rows 191-499: the wall's own light (normalised gaussian sigma 18 with the box masked out)
 # times the base's own grain (high-pass sigma 3, the ratio to its gaussian) transplanted 1:1 from the clean wall of the same rows (x 724-923).
 # Bezel rows 500-521: copied row-aligned and 1:1 from x 724-923, gain-matched by the sigma-18 ratio along x, feathered over 8 px outside the box.
-BX0, BX1, BY0, BY1 = 312, 712, 191, 514
+BX0, BX1, BY0, BY1 = 309, 716, 191, 514                       # F1 (AD 11:35): the box is x 312-715 plus its left drop-shadow line (309-311), so the old tray's side shadows go too
 L0 = lin(B0)
 def nconv(img, known, s, trunc=4):
     k = known.astype(float)
@@ -47,20 +47,28 @@ LFn = nconv(L0, known, 18, 4)
 tx = ((np.arange(W) - (BX0 - 1)) / (BX1 - BX0 + 1)).clip(0, 1)[None, :, None]
 LF = LFn[:, BX0 - 1:BX0][:, [0] * W] * (1 - tx) + LFn[:, BX1:BX1 + 1][:, [0] * W] * tx
 GR = L0 / np.maximum(np.dstack([nd.gaussian_filter(L0[..., c], 3) for c in range(3)]), 1e-6)      # the base's own grain, as a ratio
-strip = GR[:, 724:924]; gt = np.concatenate([strip, strip[:, ::-1]], 1)                          # 400 columns, the same rows
+strip = GR[:, 724:928]; gt = np.concatenate([strip, strip[:, ::-1]], 1)[:, :BX1 - BX0]                          # 404 columns, the same rows
 A = L0.copy()
 A[BY0:500, BX0:BX1] = LF[BY0:500, BX0:BX1] * gt[BY0:500]
 # bezel rows 500-521
-R0, R1, XA, XB = 500, 522, BX0 - 8, BX1 + 8
-src = np.tile(np.concatenate([L0[R0:R1, 724:924], L0[R0:R1, 923:723:-1]], 1), (1, 2, 1))[:, :XB - XA]      # (22, 416, 3), row aligned
+R0, R1, XA, XB = 500, 522, BX0 - 16, BX1 + 16
+src = np.tile(np.concatenate([L0[R0:R1, 724:927], L0[R0:R1, 926:723:-1]], 1), (1, 2, 1))[:, :XB - XA]      # (22, 416, 3), row aligned
 kb = np.zeros((R1 - R0, W), bool); kb[:, 100:XA - 0] = True; kb[:, XB:920] = True
 Tk = np.dstack([nd.gaussian_filter1d(L0[R0:R1, :, c] * kb, 18, axis=1, mode='constant') for c in range(3)]) / np.maximum(nd.gaussian_filter1d(kb.astype(float), 18, axis=1, mode='constant'), 1e-300)[..., None]
 tb = ((np.arange(W) - (XA - 1)) / (XB - XA + 1)).clip(0, 1)[None, :, None]
 Tn = Tk[:, XA - 1:XA][:, [0] * W] * (1 - tb) + Tk[:, XB:XB + 1][:, [0] * W] * tb          # the same, along the bezel rows
 Sn = np.dstack([nd.gaussian_filter1d(src[..., c], 18, axis=1, mode='nearest') for c in range(3)])
 gain = Tn[:, XA:XB] / np.maximum(Sn, 1e-6)
-xs = np.arange(XA, XB); wx = np.where(xs < BX0, smooth((xs - XA + 1) / 9.0), np.where(xs >= BX1, smooth((XB - xs) / 9.0), 1.0))[None, :, None]
+xs = np.arange(XA, XB); wx = np.where(xs < BX0, smooth((xs - XA + 1) / 17.0), np.where(xs >= BX1, smooth((XB - xs) / 17.0), 1.0))[None, :, None]
 A[R0:R1, XA:XB] = L0[R0:R1, XA:XB] * (1 - wx) + src * gain * wx
+# F1: the level of the fill meets the wall beside it: a ratio per row (per row) at each side of the box, carried 10 px into it
+rows_ = slice(BY0, R1)
+mean6 = lambda M, a, b: M[rows_, a:b].mean(1)
+rl = nd.gaussian_filter1d(mean6(A, BX0 - 3, BX0) / np.maximum(mean6(A, BX0, BX0 + 3), 1e-6), 0.6, axis=0, mode='nearest')
+rr = nd.gaussian_filter1d(mean6(A, BX1, BX1 + 3) / np.maximum(mean6(A, BX1 - 3, BX1), 1e-6), 0.6, axis=0, mode='nearest')
+rl[BY1 - BY0 - 1 + 1:] = 1; rr[BY1 - BY0 - 1 + 1:] = 1                                  # rows 514-521 are the bezel's own (already matched)
+for k in range(0, 24):
+    A[rows_, BX0 + k] *= (1 + (rl - 1) * np.exp(-k / 6.0)); A[rows_, BX1 - 1 - k] *= (1 + (rr - 1) * np.exp(-k / 6.0))
 Bc = srgb(A); Bc[:BY0] = B0[:BY0]; Bc[BY1:] = Bc[BY1:]
 untouched = np.ones((H, W), bool); untouched[BY0:500, BX0:BX1] = False; untouched[R0:R1, XA:XB] = False
 Bc = np.where(untouched[..., None], B0, Bc)
@@ -172,7 +180,7 @@ STAGE = np.asarray(Image.open(os.path.join(SL, 'room-bench-stage-create.png')).c
 
 # the "nothing else changed" check: against the column-mapped base, nothing changes outside the named boxes
 named = np.zeros((H, W), bool)
-bx0 = 316; named[BY0:BY1, bx0:bx0 + 400] = True; named[BY0:BY1, 308:316] |= True; named[R0:R1, 308:728] = True    # A2 (mapped) with its 8 px feather
+bx0 = 313; named[BY0:BY1, bx0:bx0 + 407] = True; named[BY0:BY1, 300:316] |= True; named[R0:R1, 290:740] = True    # A2 (mapped) with its 8 px feather
 named[200:488, 276:748] = True                                                                                         # A3
 named |= dish_changed | shadow_changed | case_changed
 diff = np.abs(STAGE - S0).sum(-1) > 0
@@ -194,7 +202,10 @@ for y in range(186, 202):                         # the stubs: ink beyond the bo
     sh[y, e + 1:] = 0
 for y in range(180, 224):                         # any speck right of the main (longest) run
     rs = runs(sh[y, :, 3]); main = max(rs, key=lambda t: t[1] - t[0]); sh[y, main[1] + 1:] = 0
+sh[220:224, 19:107, :3] = sh[219:220, 19:107, :3]                          # F2 (AD 11:35): the Incubator's floor line baked into rows 220-223 takes row 219's RGB, alpha unchanged
 bad = sum(int((sh[y, max(runs(sh[y, :, 3]), key=lambda t: t[1] - t[0])[1] + 1:, 3] > 0).sum()) for y in range(180, 224))
+LUMF = lambda r_: float((sh[r_, 19:107, :3].astype(float) @ [.2126, .7152, .0722]).mean())
+RP['F2_rows_220_223_mean_lum_vs_row_219'] = [round(LUMF(219), 2)] + [round(LUMF(r_), 2) for r_ in range(220, 224)]
 RP['A8'] = {'ink_right_of_main_run_rows_180_223': bad, 'pixels_erased': int((np.asarray(Image.open(sh_in).convert('RGBA'))[..., 3] > 0).sum() - (sh[..., 3] > 0).sum())}
 Image.fromarray(sh, 'RGBA').save(os.path.join(SL, 'capsule-shell-145x224.png'))
 
@@ -268,6 +279,9 @@ CK['capsule_foot_shadow_changed_px_box_screen'] = [int(np.where(shadow_changed)[
 dd_ = np.abs(S3 - S2).sum(-1)
 for t in (10, 25, 32, 40):
     ys_, xs_ = np.where(dd_ > t); CK[f'dish_ink_box_diff>{t}_screen'] = [int(xs_.min()), int(ys_.min() + 40), int(xs_.max() - xs_.min() + 1), int(ys_.max() - ys_.min() + 1)]
+colstep = lambda x: float(np.abs(LS[488:512, x] - LS[488:512, x - 1]).mean()) if False else float(np.abs(ST[488:512, x] - ST[488:512, x - 1]).sum(-1).mean())
+CK['F1_column_step_rows_488_511_x714_719'] = {x: round(float(np.abs((ST[488:512, x] - ST[488:512, x - 1]).mean(0)).sum()), 2) for x in range(714, 720)}
+CK['F1_column_step_rows_488_511_x312_318'] = {x: round(float(np.abs((ST[488:512, x] - ST[488:512, x - 1]).mean(0)).sum()), 2) for x in range(312, 319)}
 RP['checks'] = CK
 json.dump(RP, open(os.path.join(PODS, 'create-relayout', 'build-report.json'), 'w'), indent=1, default=str)
 print(json.dumps(RP, indent=1, default=str))

@@ -10432,10 +10432,10 @@
   ],
   "src": "create-relayout/build.py, from masters-pods 1cb5b1a2 slices/room-bench-stage-create.png (sha256 eac3651928c0...)",
   "made": "A1 symmetric opening [68,58,888,494] by one column map; A2 old tray cleared; A3 tray 9-slice at [276,240,472,288]; A5 dish 152 wide; A6 capsule contact shadow; A7 case well",
-  "sha256": "f7fac22e7a1888f04a5c70658f8f8c073f4d014f72d2876ace60b18e4beb2ab4",
+  "sha256": "000184578921a0230bfda0b0214876355a70e292dc81d8d7808f96e6f1543a49",
   "status": "new",
   "signed_in": null,
-  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures; replaces d48e37b5... (was signed)"
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures; replaces d48e37b5... (was signed); amended 11:35 (F1 old tray shadows out of the stage, F2 shell rows 220-223 take row 219)"
  },
  "dome-front-304x272": {
   "size": [
@@ -21973,10 +21973,10 @@
   "rect": null,
   "src": "sg prototypes/ui/assets/masters/capsule/capsule-shell-145x224.png (faf36561...)",
   "made": "hinge stubs erased (x 139-144, rows 186-201); 0 ink right of the main run on rows 180-223",
-  "sha256": "315dd262f43a9bb01d1626b3213220acfac79a64d202bb6f14d1e75c5a9cbe44",
+  "sha256": "fa271f0e1a251bd3df8bebb94ce4d61c648db4830974edebc86729e804afcbc8",
   "status": "new",
   "signed_in": null,
-  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures; replaces faf36561... (was signed)"
+  "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures; replaces faf36561... (was signed); amended 11:35 (F1 old tray shadows out of the stage, F2 shell rows 220-223 take row 219)"
  },
  "mibi-adult-S01-272x280": {
   "size": [
