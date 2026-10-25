@@ -15,7 +15,7 @@ import { blank } from "../../face/tools/blank.mjs";
 import { openBay } from "../src/intents/cargo.mjs";
 import { arrivePending } from "../src/intents/arrival.mjs";
 import { setLibrarySpecies } from "../src/views/home-props.mjs";
-import { lineageOf } from "../src/lineage.mjs";
+import { lineageOf, camFromOffset, panFor } from "../src/lineage.mjs";
 import { buildLineage } from "./fixtures/lineage.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -218,8 +218,9 @@ test("the Library's Level 3: the ways in (Level 2's family face, the card's orig
   const L = h.ui.lib, fam = INTENTS["library.family"], C = h.specs.library.l3.close;
   h.ui.hab.id = by.Moss.id; h.ui.lib.species = "S09"; INTENTS.habitat.intent(h, "family", "confirm");
   assert.deepEqual([h.went.at(-1), L.species, L.l3.S01.node, L.l3.S01.zoom], ["library.family", "S01", "node." + by.Moss.id, "close"], "✓ See the family on the card: close on the shown mibi, the species its own");
-  const lin = lineageOf(st, "S01", { gap: 4 }), mn = lin.nodes.find((n) => n.id === "node." + by.Moss.id); assert.deepEqual(L.l3.S01.cam, [C.grid.x0 + mn.u * C.grid.du - (C.comfort[0] + C.comfort[2] / 2), C.grid.y0 + mn.row * C.grid.drow - (C.comfort[1] + C.comfort[3] / 2)], "the entry centred in the comfort zone");
-  fam.intent(h, "screen", "confirm"); assert.equal(L.l3.S01.zoom, "close", "close (not built): no ✓");
+  const lin = lineageOf(st, "S01", { gap: 4 }), mn = lin.nodes.find((n) => n.id === "node." + by.Moss.id); assert.deepEqual(camFromOffset(lin, "node." + by.Moss.id, C, L.l3.S01.cam), [C.grid.x0 + mn.u * C.grid.du - (C.comfort[0] + C.comfort[2] / 2), C.grid.y0 + mn.row * C.grid.drow - (C.comfort[1] + C.comfort[3] / 2)], "the entry centred in the comfort zone");
+  assert.deepEqual(L.l3.S01.cam, [-(C.comfort[0] + C.comfort[2] / 2), -(C.comfort[1] + C.comfort[3] / 2)], "the camera kept as an offset from its node: the camera less the node's grid point");
+  fam.intent(h, "screen", "confirm"); assert.equal(L.l3.S01.zoom, "close", "close: no ✓ until compare is built");
   h.played.length = 0; fam.intent(h, "screen", "back"); assert.deepEqual([h.went.at(-1), L.l3.S01.zoom, h.played.map((e) => [e.kind, e.target, e.ms, e.hold])], ["library.family", "far", [["dither", "stage", 180, 180]]], "← from close: far, the tree exceeds the view, under the stage dither");
   fam.focus(h, "node." + by.Dot.id); assert.deepEqual([L.l3.S01.node, L.l3last], ["node." + by.Dot.id, { up: "node." + by.Moss.id }], "Dot is Moss's first recorded parent: a ▲");
   fam.focus(h, "node." + by.Bean.id); assert.deepEqual([L.l3.S01.node, L.l3last], ["node." + by.Bean.id, null], "a move along: no ▲");
@@ -229,6 +230,19 @@ test("the Library's Level 3: the ways in (Level 2's family face, the card's orig
   const small = world(), hs = host(small); hs.specs.library = J("library"); S.seedSiblings(small, "S01", 4, settings); const kid = small.mibis.at(-1);
   INTENTS.library.intent(hs, "cell.S01", "confirm"); INTENTS["library.species"].intent(hs, "family." + kid.id, "confirm"); assert.deepEqual([hs.went.at(-1), hs.ui.lib.l3.S01.zoom], ["library.family", "close"]);
   INTENTS["library.family"].intent(hs, "screen", "back"); assert.deepEqual(hs.went.at(-1), "library.species", "← from close on a tree that fits the view: Level 2");
+});
+
+test("the Library's Level 3 in close: the host owns the camera; a ring move inside the comfort zone keeps it (no pan), one that would leave it pans the least whole pixels that bring the node back (the pan event, l3.close.pan), a cut under reduced motion; the camera is kept as an offset from the new node", () => {
+  const st = world(), h = host(st); h.specs.library = J("library"); h.specs.habitat = habitatSpec; const by = buildLineage(st, "full", { turn: st.turn }); st.knownIds.push("S01");
+  const L = h.ui.lib, fam = INTENTS["library.family"], C = h.specs.library.l3.close, lin = lineageOf(st, "S01", { gap: 4 }), id = (n) => "node." + by[n].id, abs = () => camFromOffset(lin, L.l3.S01.node, C, L.l3.S01.cam);
+  h.ui.hab.id = by.Moss.id; INTENTS.habitat.intent(h, "family", "confirm"); const entry = abs(); assert.deepEqual(entry, [12, 105], "Moss centred in the comfort zone");
+  h.played.length = 0; fam.focus(h, id("Dot")); assert.deepEqual([h.played, abs(), L.l3.S01.pan], [[], entry, null], "▲ to Dot: its box lies in the zone, the camera stays");
+  fam.focus(h, id("Reed")); const want = panFor(lin, id("Reed"), C, entry); assert.deepEqual(want, [12 - 189, 105 - 115], "Reed's box (u 0, row 1: at x -24, y 31) is 189 px left of the zone and 115 px above it: the camera moves by just that");
+  assert.deepEqual(h.played, [{ kind: "pan", target: "tree", from: entry, to: want, steps: C.pan.steps, frac: C.pan.frac }], "the pan event"); assert.deepEqual([abs(), L.l3.S01.pan], [want, { from: entry, to: want }]);
+  h.played.length = 0; h.moving = false; fam.focus(h, id("Moss")); assert.deepEqual(h.played, [], "reduced motion: no event, one cut"); h.moving = true;
+  assert.deepEqual([abs(), L.l3.S01.pan], [panFor(lin, id("Moss"), C, want), null], "the cut's camera, no pan kept");
+  const r = (n) => { const q = lin.nodes.find((x) => x.id === id(n)), c = abs(); return [C.grid.x0 + q.u * C.grid.du - c[0] - 28, C.grid.y0 + q.row * C.grid.drow - c[1] - 28]; };
+  const [x, y] = r("Moss"); assert.ok(x >= C.comfort[0] && y >= C.comfort[1] && x + 56 <= C.comfort[0] + C.comfort[2] && y + 56 <= C.comfort[1] + C.comfort[3], "the node lies in the zone after a move");
 });
 
 test("one mibi up close: ✓ on the resident greets (the spec's moment: 1800 ms, held 300, a cut), on the name opens the namer, ✓ on Wild opens the Return panel and its Return card acts, ← goes to the whole with the ring on this mibi", () => {

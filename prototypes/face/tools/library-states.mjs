@@ -2,7 +2,8 @@
 // catalogue: six found, four met, the rest unmet, the wish on the Tuikis alone and on the Loika beside its face chip; the room key and the dither take it with the Tuikis's wish only), `library-l1-new` (glints and "three new looks"), `library-l1-roomkey` (the Library room key from Home: the ring
 // on the last species visited) and `library-l1-dither` (✓ on Home's Library bezel: the frame at the midpoint of the 180 ms stage dither, motion on, virtual clock); the Loika's guide is filled in each (the art director, L4-AD1) and
 // the seen record taken after it. Level 2 (library.species): the Loika at mid, its Coat lit, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat
-// lit complete, the Blikur and the Loika late (colour chips). Level 3 (library.family, far): a Loika lineage of two blocks (`library-l3-far`, the ring on Moss) and of one (`library-l3-far-one-family`, on Dot). Each is reached by the page's own state and the player's keys and intents, the Library's pictures made (window.__st.libraryWarm: they are made off the open path in
+// lit complete, the Blikur and the Loika late (colour chips). Level 3 (library.family): far, a Loika lineage of two blocks (`library-l3-far`, the ring on Moss) and of one (`library-l3-far-one-family`, on Dot); close on Moss (`library-l3-close-moss`), links leaving every edge
+// (`library-l3-close-stubs`), a tree that fits the view (`library-l3-close-fits`), a pan's three steps (`library-l3-pan-step-1` to `-3`) and FAR → CLOSE at the dither's midpoint (`library-l3-zoom-in`). Each is reached by the page's own state and the player's keys and intents, the Library's pictures made (window.__st.libraryWarm: they are made off the open path in
 // play), and asserted (screen, state, what the props show, the ring, the line) before `visit(name, page, fail)` is called. Taken with reduced motion (the glints solid), except the dither. Returns { fails }.
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -56,9 +57,16 @@ const L2 = {
   "l2-loika-late": { species: "S01", set: LOIKA, arg: { add: { colour: ["charcoal and ash", "ash"] } }, expect: { plates: 4, shelf: true } },
 };
 
-// ---- Level 3: a Loika lineage (station/tests/fixtures/lineage.mjs), built here and put in the page's save; reached by the player's way in (Level 2's family face, ✓ See the family: close, drawn as not built until
-// its screen is) and ← (the tree exceeds CLOSE's view: FAR), the ring on the entry mibi: `full` (two blocks, a joined cross, a shed-pod child, released mibis and a bud; Moss the entry) and `one` (one block; Dot) ----
-const L3 = { "l3-far": { which: "full", entry: "Moss", blocks: 2 }, "l3-far-one-family": { which: "one", entry: "Dot", blocks: 1 } };
+// ---- Level 3: a Loika lineage (station/tests/fixtures/lineage.mjs), built here and put in the page's save; reached by the player's way in (Level 2's family face, ✓ See the family: close, the entry centred in the
+// comfort zone), then the player's keys: ← (the tree exceeds CLOSE's view: FAR) or the pad. `full` (two blocks, a joined cross, a shed-pod child, released mibis and a bud; Moss the entry), `one` (one block; Dot),
+// `small` (the whole tree fits CLOSE's view; Reed). close-stubs: from Moss ▲ Dot, then ▶ Bean (straight after a ▲, the other parent): Bean's box is above the comfort zone, the camera pans 115 px up (a cut
+// here, reduced motion) and links leave every edge of the view. The timed pass takes that pan at its three steps and FAR → CLOSE at the stage dither's midpoint (✓ Zoom in on Moss). ----
+const L3 = {
+  "l3-far": { which: "full", entry: "Moss", blocks: 2, keys: ["back"], zoom: "far" }, "l3-far-one-family": { which: "one", entry: "Dot", blocks: 1, keys: ["back"], zoom: "far" },
+  "l3-close-moss": { which: "full", entry: "Moss", zoom: "close", ring: "Moss", cam: [12, 105], back: "Family", inset: true },
+  "l3-close-stubs": { which: "full", entry: "Moss", keys: ["up", "right"], zoom: "close", ring: "Bean", cam: [12, -10], back: "Family", inset: true },
+  "l3-close-fits": { which: "small", entry: "Reed", zoom: "close", ring: "Reed", back: "Loika", inset: false },
+};
 const FRAMES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames");
 function lineageSave(which) {
   setFrames(readdirSync(FRAMES).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(FRAMES, f), "utf8"))));
@@ -72,6 +80,14 @@ const LINEAGE = (w, bare, seen, mid, save) => {
 async function assertL3(page, name, sc, fail) {
   const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, p: window.__st.props })), p = u.p, must = (ok, m) => { if (!ok) fail(`library-${name}: ${m}`); };
   if (u.screen !== "library.family" || p?.screen !== "library.family") { fail(`library-${name}: on ${u.screen}`); return; }
+  if (sc.zoom === "close") {   // CLOSE: the camera, the ring, the slots' pictures made, the line, the overview only when the tree exceeds the view
+    const T = p.regions.tree; must(p.state === "close", `the state is ${p.state}, not close`); must(p.focus.cur === "node." + sc.ids[sc.ring], `the ring is on ${p.focus.cur}, not ${sc.ring}`);
+    if (sc.cam) must(JSON.stringify(T.cam) === JSON.stringify(sc.cam), `the camera is ${T.cam}, not ${sc.cam}`);
+    must(T.slots.length > 0 && T.slots.every((s) => s.picture), "every slot names its picture"); must(T.slots.some((s) => s.id === p.focus.cur), "the ring's node is in a slot");
+    must(p.frame.line.ok === null && p.frame.line.subject === "" && p.frame.line.back === sc.back, "the line " + JSON.stringify(p.frame.line)); must(p.frame.top.readout.text === "Loika family", "the readout");
+    must(!!p.regions.panel.ov.picture === sc.inset && (!sc.inset || /^lineage-mini-S01-[0-9a-f]{8}$/.test(p.regions.panel.ov.picture)), `the overview ${p.regions.panel.ov.picture || "none"}`);
+    return;
+  }
   must(p.state === "far", `the state is ${p.state}, not far`); must(/^lineage-far-S01-[0-9a-f]{8}$/.test(p.regions.far.picture), `the picture ${p.regions.far.picture}`);
   must(p.focus.cur === "node." + sc.ids[sc.entry], `the ring is on ${p.focus.cur}, not ${sc.entry}`); must(p.regions.lineage.nodes.every((n) => n.u >= 0), "the nodes are placed");
   must(p.frame.top.readout.text === "Loika family" && p.frame.top.readout.mark === "species-mark-S01-10", "the readout"); must(p.frame.line.ok === "Zoom in" && p.frame.line.back === "Loika", "the line " + JSON.stringify(p.frame.line));
@@ -137,18 +153,23 @@ async function stillStates(visit) {
       await assertL2(page, name, sc, fail);
       await visit("library-" + name, page, fail);
     }
-    for (const [name, sc] of Object.entries(L3)) {   // Level 1's ✓ Open Loika, Level 2's family face ✓ See the family (close), then ← (the tree exceeds the view: FAR)
-      const save = lineageSave(sc.which); sc.ids = save.ids;
-      await enter(page, { set: LINEAGE, l1: "S01", arg: save }); await page.waitForTimeout(300);
-      await page.evaluate(() => window.__st.intent({ screen: "library", target: "cell.S01", verb: "confirm" })); await page.waitForTimeout(300); await settle(page);
-      await page.evaluate((id) => window.__st.intent({ screen: "library.species", target: "family." + id, verb: "confirm" }), save.ids[sc.entry]); await page.waitForTimeout(300);
-      await page.evaluate(() => window.__st.intent({ screen: "library.family", target: "screen", verb: "back" })); await page.waitForTimeout(500);
+    for (const [name, sc] of Object.entries(L3)) {   // Level 1's ✓ Open Loika, Level 2's family face ✓ See the family (close), then the player's keys (← from close: the tree exceeds the view, FAR)
+      await l3Enter(page, sc, (ms) => page.waitForTimeout(ms));
+      for (const k of sc.keys ?? []) { await page.evaluate((key) => window.__st.press(key), k); await page.waitForTimeout(400); }
+      await settle(page);
       await assertL3(page, name, sc, fail);
       await visit("library-" + name, page, fail);
     }
     await noErrors(page, fail);
   } finally { await close(); }
   return { fails };
+}
+// Level 3 entered as the player does: the lineage put in the save, Level 1's ✓ Open Loika, Level 2's family face ✓ See the family: close on the entry mibi; its pictures made. `wait(ms)`: real or virtual time.
+async function l3Enter(page, sc, wait) {
+  const save = lineageSave(sc.which); sc.ids = save.ids;
+  await enter(page, { set: LINEAGE, l1: "S01", arg: save }); await wait(300);
+  await page.evaluate(() => window.__st.intent({ screen: "library", target: "cell.S01", verb: "confirm" })); await wait(300); await settle(page, wait);
+  await page.evaluate((id) => window.__st.intent({ screen: "library.species", target: "family." + id, verb: "confirm" }), save.ids[sc.entry]); await wait(400); await settle(page, wait);
 }
 // the timed pass: motion on, a virtual clock. Level 1's pictures are made first (Level 1 once, then Home), so the frame at the dither's midpoint shows them as play does once they are made; the way in is taken once Home's
 // own screen change is over, and the frame is taken `timed` ms after it (the stage dither's midpoint).
@@ -164,6 +185,20 @@ async function timedStates(visit) {
       await wayIn(page, sc); await step(sc.timed);
       await assertL1(page, name, sc, fail);
       await visit("library-" + name, page, fail); await step(2000);
+    }
+    {   // Level 3's pan (from Moss ▲ Dot, then ▶ Bean: 115 px up, l3.close.pan's three steps, each no sooner than its gap after the one before; frames every 40 ms): each step's first frame
+      const sc = { ...L3["l3-close-stubs"] }; await l3Enter(page, sc, (ms) => step(ms));
+      await page.evaluate(() => window.__st.press("up")); await step(400);
+      await page.evaluate(() => window.__st.press("right"));
+      for (const [n, ms] of [[1, 40], [2, 80], [3, 80]]) { await step(ms); if (n === 3) await assertL3(page, "l3-pan-step-3", sc, fail); await visit("library-l3-pan-step-" + n, page, fail); }
+      await step(1000);
+    }
+    {   // FAR → CLOSE: ← from close on Moss (the tree exceeds the view: FAR), its picture made, then ✓ Zoom in; the frame at the 180 ms stage dither's midpoint
+      const sc = { ...L3["l3-close-moss"] }; await l3Enter(page, sc, (ms) => step(ms));
+      await page.evaluate(() => window.__st.press("back")); await step(600); await settle(page, () => step(120));
+      await page.evaluate(() => window.__st.press("confirm")); await step(90);
+      { const p = await page.evaluate(() => window.__st.props); if (p?.state !== "close" || p.focus.cur !== "node." + sc.ids.Moss) fail(`library-l3-zoom-in: ${p?.state} on ${p?.focus?.cur}`); }
+      await visit("library-l3-zoom-in", page, fail); await step(1000);
     }
     await noErrors(page, fail);
   } finally { await close(); }

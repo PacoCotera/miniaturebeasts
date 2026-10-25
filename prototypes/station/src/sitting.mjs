@@ -15,7 +15,7 @@
 import { frameOf } from "./genome.mjs";
 import { mibiById, speciesOf, mergeCare, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, mibiStage, dockKey, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
-import { parentsOf, crossDepth } from "./lineage.mjs";
+import { parentsOf, crossDepth, walkMemo } from "./lineage.mjs";
 
 // What a mibi has done (state.mjs): habits watched, places been; re-exported here, where the sitting reads them.
 export { recordHabit, recordWalk, habitsOf, placesOf, watchResident, WATCH_MS } from "./state.mjs";
@@ -53,12 +53,15 @@ export function devGrantSitting(st, now = Date.now()) { if (st.sitting) return {
 export const lineDepth = crossDepth;
 // A line is named by its founders (the mibis at the roots of the recorded tree, a shed-pod child's through its single parent: lineage.mjs parentsOf): siblings, and every later child of the same line, share it,
 // so a line pays once however deep it goes.
-export function lineFounders(st, m, seen = new Set()) {
-  if (!m || seen.has(m.id)) return [];
+// memo: lineage.mjs walkMemo, one per call that walks many mibis (momentsEarned), so each mibi's founders are found once.
+export function lineFounders(st, m, memo = walkMemo(), onPath = new Set()) {
+  if (!m || onPath.has(m.id)) return [];
+  if (memo.founders.has(m.id)) return memo.founders.get(m.id);
   const ps = parentsOf(st, m); if (!ps.length) return [m.id];
-  seen.add(m.id); return [...new Set(ps.flatMap((id) => lineFounders(st, mibiById(st, id) || { id }, new Set(seen))))];
+  onPath.add(m.id); const v = [...new Set(ps.flatMap((id) => lineFounders(st, mibiById(st, id) || { id }, memo, onPath)))]; onPath.delete(m.id);
+  memo.founders.set(m.id, v); return v;
 }
-export const lineKey = (st, m) => momentKey.line(lineFounders(st, m));
+export const lineKey = (st, m, memo) => momentKey.line(lineFounders(st, m, memo));
 // A species' research moment keys: a sealed chapter opened, its field guide filled, a deep line (one helper for the moments earned and the sittings counted).
 export const momentKey = { sealed: (id, chId) => "sealed:" + id + ":" + chId, guide: (id) => "guide:" + id, line: (founders) => "line:" + [...founders].sort((x, y) => x - y).join("+") };
 // The founders a line key names (ids), or null for a key that is not a line's.
@@ -69,7 +72,8 @@ export function momentsEarned(st, settings = DEFAULT_SETTINGS) {
     for (const chId of st.readOnce[id] || []) { const ch = frameOf(id)?.chapters.find((c) => c.id === chId); if (ch && ch.sealed) out.push({ key: momentKey.sealed(id, chId), kind: "sealed", species: id, chapter: chId }); }
     const fg = fieldGuide(st, id, settings); if (fg && fg.complete) out.push({ key: momentKey.guide(id), kind: "guide", species: id });
   }
-  for (const m of st.mibis) { const k = lineKey(st, m); if (lineDepth(st, m) >= DEEP_LINE && !out.some((o) => o.key === k)) out.push({ key: k, kind: "line", mibi: m.id }); }   // one moment a line
+  const memo = walkMemo();   // the walks of every mibi share one memory: each ancestor is walked once (the Library 5 gate's W2)
+  for (const m of st.mibis) { const k = lineKey(st, m, memo); if (lineDepth(st, m, memo) >= DEEP_LINE && !out.some((o) => o.key === k)) out.push({ key: k, kind: "line", mibi: m.id }); }   // one moment a line
   return out;
 }
 // The research sittings a species has earned: its paid moments in the ledger (st.moments): a sealed chapter opened, the guide filled and a deep line of its own (the line's founders of this species); another species' moment is not its own.

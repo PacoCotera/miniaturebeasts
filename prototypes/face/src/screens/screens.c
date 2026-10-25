@@ -217,7 +217,7 @@ void screens_key_graph(int code, const char *spec, const char *graph_path, scree
   const char *verb = key_verb(code, !opts->no_back);
   if (verb) { screens_say("intent", cur, verb); return; }
   int dir = key_dir(code); if (dir < 0 || !graph_path || !focus_fn) return;
-  focus_target_t t[64]; int n = focus_fn(t, 64); if (n <= 0) return;
+  focus_target_t t[FOCUS_TARGETS]; int n = focus_fn(t, FOCUS_TARGETS); if (n <= 0) return;
   int glen; const char *graph = spec_raw(spec, graph_path, &glen); char err[200];
   focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
   focus_resolve_t r[16]; int nr = 0;

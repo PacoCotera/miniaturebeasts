@@ -131,6 +131,13 @@ int v_run_width(const char *s, int px) {
   if (n) { piece[n] = 0; w += v_measure(piece, px); }
   return w;
 }
+int v_pbox(const char *list, const char *id, int ox, int oy, int box[4]) {
+  for (int k = 0, m = v_plen(list); k < m; k++) if (strcmp(v_pstr(v_fmt("%s.%d.id", list, k)), id) == 0) {
+    for (int q = 0; q < 4; q++) box[q] = v_pint(v_fmt("%s.%d.rect.%d", list, k, q), 0) + (q == 0 ? ox : q == 1 ? oy : 0);
+    return 1;
+  }
+  return 0;
+}
 /* An inline group: every node sent between v_inline(id) and v_inline_end() is one run in the log (a mark and its word, an icon and its figure), whatever calls drew them; a v_run or v_price inside it joins the group's run. */
 void v_inline(const char *id) { prim_run(v_id(id)); }
 void v_inline_end(void) { prim_run(0); }

@@ -19,7 +19,7 @@ static int pod_box(const char *base, int box[4]) {
 /* the ring on the focused target, in the form of its group: a place and a kin wear the circle, the pod and the hatch the rounded rectangle, the figure its footprint; the rail's tabs carry their own. The box is the focus table's. */
 static void focus_ring(const char *state) {
   char cur[40]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0] || spec_len("props", "overlay") >= 0 || strcmp(state, "compare") == 0) return;
-  focus_target_t t[64]; int n = pods_focus(t, 64);
+  focus_target_t t[FOCUS_TARGETS]; int n = pods_focus(t, FOCUS_TARGETS);
   for (int i = 0; i < n; i++) if (strcmp(t[i].id, cur) == 0) {
     v_region("focus", LAYER_CHROME);
     if (strcmp(t[i].group, "figure") == 0 && t[i].w > 0) { int box[4] = { t[i].x, t[i].y, t[i].w, t[i].h }; word_focusRingFootprint("focus", S, "targets.figure", v_pstr("regions.specimen.figure"), "", box); return; }   /* the figure wears the footprint, from the adult picture's lowest rows, on its unlifted box */

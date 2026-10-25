@@ -152,8 +152,8 @@ int focus_move(const focus_graph_t *g, const focus_target_t *t, int n, const cha
     int step = gr->axis == 'v' ? (dir == FOCUS_DOWN ? 1 : dir == FOCUS_UP ? -1 : 0) : (dir == FOCUS_RIGHT ? 1 : dir == FOCUS_LEFT ? -1 : 0);
     if (step) {
       /* the group's targets by index (a stable insertion sort over a small list), the ring's place, one step */
-      const focus_target_t *items[64]; int ni = 0;
-      for (int i = 0; i < n && ni < 64; i++) if (ingroup(&t[i], gname)) { int j = ni++; while (j > 0 && items[j - 1]->index > t[i].index) { items[j] = items[j - 1]; j--; } items[j] = &t[i]; }
+      const focus_target_t *items[FOCUS_TARGETS]; int ni = 0;
+      for (int i = 0; i < n && ni < FOCUS_TARGETS; i++) if (ingroup(&t[i], gname)) { int j = ni++; while (j > 0 && items[j - 1]->index > t[i].index) { items[j] = items[j - 1]; j--; } items[j] = &t[i]; }
       int at = -1; for (int i = 0; i < ni; i++) if (items[i] == c) at = i;
       if (at >= 0 && at + step >= 0 && at + step < ni) put(out, cap, items[at + step]->id); else put(out, cap, cur);
       return 0;

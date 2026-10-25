@@ -186,7 +186,7 @@
  "l3": {
   "states": ["close", "compare", "far"],
   "initial": "close",
-  "built": "far; close and compare are drawn by the frame's notBuilt composition until their screens are built (the host sends them as notBuilt, with this level's top bar and line)",
+  "built": "far and close; compare is drawn by the frame's notBuilt composition until its screen is built (the host sends it as notBuilt, with this level's top bar and line)",
   "readout": "frame.top.readout: the species mark species-mark-{SNN}-10 and strings.readout",
   "stage": "l1.stage: kit_stage, as on Levels 1 and 2",
   "parent": "library.species of the shown species, whichever way Level 3 was entered (stack navigation: the Vivarium's way in too)",
@@ -223,21 +223,30 @@
    "dot": 4,
    "rule": "the FAR picture reduced by one uniform s = min(208 / 992, 96 / 510), centred (ox = round((208 - 992 s) / 2), oy = round((96 - 510 s) / 2)), on a clear ground: a mibi a dot x dot square in its FAR dot's colour (the open ring by the pixel rule at that size when neutral) at round(its FAR dot's centre · s + [ox, oy]) - dot / 2; a pod one pixel in mist, the bud's in mint; links 1 px, as FAR's",
    "facts": "the picture returns its dot boxes and, for the host to place CLOSE's view box, scale [kx, ky] (mini px per CLOSE px: s · (sx / 2) / close.grid.du and s · sy / close.grid.drow) and origin [mx, my] (the mini position of the grid point u 0, row 0): a CLOSE point (X, Y) is at (mx + (X - grid.x0) kx, my + (Y - grid.y0) ky)",
-   "when": "made for CLOSE's overview inset (T-20261023-294); FAR has none"
+   "when": "made for CLOSE's overview inset (l3.close.inset), only when the tree exceeds the view; FAR has none"
   },
   "close": {
    "view": [16, 44, 744, 510],
    "comfort": [165, 146, 446, 306],
    "grid": { "x0": 16, "y0": 44, "du": 48, "drow": 120 },
    "boxes": { "mibi": [56, 56], "pod": [24, 32], "bud": [24, 32] },
-   "rule": "a node's centre at x = x0 + u · du - cam.x, y = y0 + row · drow - cam.y (siblings 96 apart; founders at y 164 with no camera); the tree exceeds the view when its boxes' extent is wider or taller than the view",
-   "camera": "on a way in the entry node centred in the comfort zone; on ✓ Zoom in the node where its FAR dot was on screen, clamped so its box lies inside the comfort zone",
-   "until": "T-20261023-294: the frame's notBuilt composition; ← from it goes to far when the tree exceeds the view (back word strings.backFar), else to Level 2 ({Species}); ✓ has no cap"
+   "rule": "a node's centre at x = x0 + u · du - cam.x, y = y0 + row · drow - cam.y (siblings 96 apart; founders at y 164 with no camera); the tree exceeds the view when its extent (boxes, names at max(box, names.clip) wide, mibi lines to y+53, bud lines to y+42) is wider or taller than the view",
+   "camera": "a tree whose extent (boxes, names at max(box, names.clip) wide, mibi lines to y+53, bud lines to y+42) fits 744 x 510: cam.x = floor((L + R - 776) / 2), cam.y = floor((T + B - 598) / 2) (L R T B in grid px at cam 0) on a way in and on Zoom in, no pan on a ring move; otherwise the comfort-zone rule: on a way in the entry node centred in the comfort zone; on ✓ Zoom in the node where its FAR dot was on screen, clamped so its box lies inside the comfort zone; when a ring move would put the node's box outside the comfort zone, the camera moves the least whole-pixel offset that brings it back (the host decides it on the face's focus and plays the pan); remembered in ui.lib.l3[species].cam as an offset from its node (the camera less the node's grid point)",
+   "pan": { "kind": "pan", "target": "tree", "steps": [0, 67, 133], "frac": [50, 85, 100], "rule": "the host's event { kind: pan, target: tree, from: [x, y], to: [x, y], steps, frac }: the face draws the slots and the link tiles at from + trunc((to - from) frac / 100), step 0 from the pan's first frame and step i no sooner than steps[i] - steps[i - 1] ms after the frame that showed step i - 1, and at the props' camera (to) once it ends; reduced motion: one step at the full offset (no event, the props' camera)", "budget": "a step is a camera cut: at most 392,080 px redrawn (the union of the frame's dirty rects), every rect inside the tree view grown by 5 px on each side, [11, 39, 754, 520] (the names' labels invalidate 5 px out), and on the same frame rects inside the overview inset [788, 440, 208, 96] (its view box moves); each step no sooner than its own gap (steps[i] - steps[i - 1]: 67, then 66 ms) after the frame that showed the one before; every other frame at most 153,600 px; reduced motion: one such cut; LVGL's rectangle sum is printed, not budgeted" },
+   "slots": 32,
+   "slot": { "rule": "32 fixed slots, assigned by the host (regions.tree.slots: the nodes under the camera first, then those only under a pan's earlier steps, each by row then u) to the nodes wholly inside the view, a mibi and the bud with their name lines (to lineTop + the role's pitch), under the camera (or under any of a pan's step cameras); a node that would cross the view's edge is not drawn (its slot has no size) and its links end in stubs; unused slots have no size", "mibi": "v_slot of the mibi's face, faces id at 56 (:faded when released), its box centred on (x, y)", "pod": "v_slot of the species' rack pod (the one pod renderer at rack size, request kind rackpod, home.json regions.rackPod), box (x - 12, y - 16, 24, 32); the bud the same picture", "ids": "tree.slot.{k}.face, tree.slot.{k}.name" },
+   "names": { "role": "label", "released": "label.state", "mibi": 33, "bud": 22, "gap": 2, "clip": 88, "rule": "centred at x; lineTop y + names.mibi (a mibi: its name) or y + names.bud (the bud: strings.growing); the link starts names.gap below the name line's pitch (y + names.mibi + type.pitch.16 + names.gap); pods have none; cut to names.clip px; released in names.released (the name only, never \"in the wild\")" },
+   "links": { "tiles": [2, 2], "tile": [372, 255], "width": 2, "colour": "mist", "faded": "stone", "junction": { "size": 4, "colour": "bone" }, "bridge": 3, "stub": { "len": 16, "on": 2, "off": 2 }, "ids": "tree.links.0..3, the 2 x 2 tiles over the view in reading order (an empty tile keeps its box with ops [])", "rule": "screen-specific (library_family.c): orthogonal, palette-exact, composed with h, v and dash ops; the props' segments (regions.tree.links: a, b in grid units, the row in half rows h = 2 row) at x = x0 + u du - cam.x, y = y0 + h drow / 2 - cam.y, each `width` px (columns x - 1 and x, rows y - 1 and y); a link stops at a node's box (a drawn mibi's: y + names.mibi + type.pitch.16 + names.gap (y+55); the bud's: y + names.bud + type.pitch.16 + names.gap (y+44)); a faded parent's links in `faded`; a junction dot (size x size, centred) where a stem meets its bus; a `bridge` px gap in a stem on each side of a bus that crosses it (the ground shows); a link leaving the view, or ending at a node that is not drawn, ends in a stub: its last `stub.len` px dotted (on, off) in its link's colour, a dot at the end, no arrow and no count" },
+   "path": { "rect": [16, 44, 744, 510], "rule": "tree.path: kept for the compare state, its box the view and ops [] here" },
+   "panel": { "rect": [776, 44, 232, 512], "radius": 6, "fill": "libPanel", "bevel": "libLine", "rule": "kit_bezel, edge none; in close it holds the bezel and the overview inset (the rows come with compare)" },
+   "inset": { "rect": [788, 440, 208, 96], "edge": "libLine", "box": "focus", "rule": "only in close and only when the tree exceeds the view (no size otherwise): v_slot of the mini (panel.ov.picture), its outline kit_panel(fill none, edge) (panel.ov.edge), the view box kit_panel(fill none, box) at the host's rect (regions.panel.ov.box, in the inset's coordinates) plus the inset's origin (panel.ov.box)" }
   },
   "zoom": "FAR ↔ CLOSE is a state change on one screen: the host plays the 180 ms stage dither (a cut under reduced motion), as Create's panel does; every picture is 1:1 and nothing scales",
   "focus": {
    "targets": {
-    "node": { "group": "node", "shape": { "circle": "box" }, "lift": 0, "box": "far: the node's dot box + l3.far.rect's origin (CLOSE's slot boxes and shapes come with T-20261023-294)", "enabled": "every mibi (node.{mibiId}) and the bud (node.bud); a pod is never a target; the same ids in both zooms, so the ring carries across a zoom" }
+    "node": { "group": "node", "shape": { "circle": "box" }, "lift": 0, "box": "far: the node's dot box + l3.far.rect's origin; close: its slot's box (targets.mibi, targets.bud)", "enabled": "every mibi (node.{mibiId}) and the bud (node.bud); a pod is never a target; the same ids in both zooms, so the ring carries across a zoom" },
+    "mibi": { "group": "node", "shape": { "rect": 2 }, "lift": 0, "box": "close: the mibi's 56 x 56 slot box" },
+    "bud": { "group": "node", "shape": "oval", "lift": 0, "box": "close: the bud's 24 x 32 slot box" }
    },
    "graph": { "fallback": "none",
     "node": { "up": ["node.parent", "none"], "down": ["node.child", "none"], "left": ["node.left", "none"], "right": ["node.right", "none"] } },
@@ -253,11 +262,11 @@
   },
   "keys": {
    "pad": "l3.focus.graph (screens_key_graph with family_focus and the host's selectors)",
-   "confirm": "far: \"Zoom in\", to close on the ring's node (the camera above); close (until built): no ✓",
+   "confirm": "far: \"Zoom in\", to close on the ring's node (the camera above); close: no ✓ until compare is built (the bud never has one)",
    "back": "far: to Level 2 of the species, back word {Species}; close: to far when the tree exceeds the view (back word strings.backFar), else to Level 2 ({Species})",
    "waysIn": "Level 2's family face, ✓ See the family: close on that mibi; the Vivarium's up-close card (habitat.json focus.targets.family), ✓ See the family: close on the shown mibi"
   },
-  "line": { "action": "strings.zoomIn (far)", "subject": "far: strings.farSubject, or strings.nameless.{stage} when the name is wider than strings.nameRoom px; the bud strings.bud", "back": "{Species}, or strings.backFar from close when the tree exceeds the view" },
+  "line": { "action": "strings.zoomIn (far)", "subject": "far: strings.farSubject, or strings.nameless.{stage} when the name is wider than strings.nameRoom px; close: empty; the bud strings.bud (both zooms)", "back": "{Species}, or strings.backFar from close when the tree exceeds the view" },
   "strings": {
    "_note": "the copywriter's words",
    "readout": "{Species} family",
@@ -267,7 +276,8 @@
    "nameRoom": 153,
    "nameless": { "juvenile": "a young mibi", "adult": "an adult mibi", "elder": "an elder mibi" },
    "bud": "a bud, still growing",
-   "backFar": "Family"
+   "backFar": "Family",
+   "growing": "Growing"
   }
  },
  "seen": "newLooksOf (specimen-props.mjs) is the one definition of a new look for Home, Level 1 and the Level 2 glints. Entering Level 2 of species X (from Level 1, from Level 3 by ←, or by \"Open the guide\") sets the unsaved note ui.lib.pending[X] to X's guide looks in chapters not shut, as of that entry (a later entry to X replaces it; a met-only entry sets an empty note); leaving the Library (the first screen that is neither library nor library.*) adds only the species in the note to st.libSeen and saves. Entering the Library notes nothing; nothing is recorded on entry or inside the Library",

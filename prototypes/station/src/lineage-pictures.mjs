@@ -46,7 +46,8 @@ export function farPicture(input, spec, { rgb, ground = null } = {}) {
   }
   return { w: W, h: H, rgba: px, boxes: g.boxes, sx: g.sx, sy: g.sy, ms: performance.now() - t0 };
 }
-// The mini (208 x 96, clear outside its ink): the FAR drawing reduced: links 1 px, a mibi a 4 x 4 square in its dot's colour (the open ring at that size when neutral), a pod and the bud one pixel. Returns { w, h, rgba, boxes, scale, origin, ms }.
+// The mini (208 x 96, clear outside its ink): the FAR drawing reduced: links 1 px, a mibi a 4 x 4 disc in its dot's colour by the pixel rule (the art director: .##. / #### / #### / .##., a two-tone split at i = 2;
+// the open ring at that size when neutral), a pod and the bud one pixel. Returns { w, h, rgba, boxes, scale, origin, ms }.
 export function miniPicture(input, spec, { rgb } = {}) {
   const t0 = performance.now(), F = spec.l3.far, far = farGeometry(input, spec), m = miniGeometry(input, spec, far), [W, H] = spec.l3.mini.rect.slice(2), px = new Uint8ClampedArray(W * H * 4);
   const put = (x, y, c) => { if (x < 0 || y < 0 || x >= W || y >= H) return; const i = (y * W + x) * 4; px[i] = c[0]; px[i + 1] = c[1]; px[i + 2] = c[2]; px[i + 3] = 255; };
@@ -56,7 +57,7 @@ export function miniPicture(input, spec, { rgb } = {}) {
     const [x0, y0, w, h] = m.boxes[n.id], f = (c) => (n.released ? fade(c) : c);
     if (n.kind !== "mibi") { put(x0, y0, rgb(n.kind === "bud" ? F.pod.bud : F.pod.colour)); continue; }
     const cols = n.colour ? n.colour.map(hexRGB) : null;
-    for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { if (cols) put(x0 + i, y0 + j, f(cols[cols.length > 1 && i >= w / 2 ? 1 : 0])); else if (ring(i, j, w, h)) put(x0 + i, y0 + j, f(rgb(F.neutral))); }
+    for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { if (cols) { if (inside(i, j, w, h)) put(x0 + i, y0 + j, f(cols[cols.length > 1 && i >= w / 2 ? 1 : 0])); } else if (inside(i, j, w, h)) { if (ring(i, j, w, h)) put(x0 + i, y0 + j, f(rgb(F.neutral))); else { const k = ((y0 + j) * W + x0 + i) * 4; if (x0 + i >= 0 && y0 + j >= 0 && x0 + i < W && y0 + j < H) px.fill(0, k, k + 4); } } }   // a disc by the outline rule (.##. #### #### .##. at 4), two halves split at i = w / 2
   }
   return { w: W, h: H, rgba: px, boxes: m.boxes, scale: m.scale, origin: m.origin, ms: performance.now() - t0 };
 }

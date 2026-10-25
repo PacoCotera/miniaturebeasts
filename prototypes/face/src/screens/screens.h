@@ -22,7 +22,7 @@ typedef struct {
   const char *cur_path;   /* the props path of the focused target; NULL: "focus.cur" (an overlay's is "overlay.focus.cur") */
 } screens_keys_t;
 typedef int (*screens_focus_fn)(focus_target_t *out, int cap);
-/* `opts` is never NULL (pass a zero screens_keys_t for no options). At most 64 targets from focus_fn and 16 focus.resolve entries are read. */
+/* `opts` is never NULL (pass a zero screens_keys_t for no options). At most FOCUS_TARGETS (64) targets from focus_fn and 16 focus.resolve entries are read. */
 void screens_key_graph(int code, const char *spec, const char *graph_path, screens_focus_fn focus_fn, const char *default_cur, const screens_keys_t *opts);
 /* focus_fill: the target `t` of the props' list at `path` (a path to the list, "focus.targets"), entry `i`: its id, group, enabled (default 1) and index (default i) from the props, and `box` ({x, y, w, h}, NULL: zeros).
    A target whose box depends on its id is filled with NULL, its box found from t->id, and filled again with the box. Reads: the props at <path>.<i>.{id,group,enabled,index}. */

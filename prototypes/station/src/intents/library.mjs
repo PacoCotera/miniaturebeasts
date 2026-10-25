@@ -1,10 +1,11 @@
 // The Library's intents (library.json l1.keys, l2.keys). Level 1: ✓ on a met or found cell opens that species' Level 2 (library.species) and ← goes Home with the ring on the Library bezel.
 // Level 2: ✓ on a plate lights its chapter (lit) or clears it; ✓ on the face jumps to that mibi up close, on a family face to Level 3 (library.family, close on that mibi); ← clears a lit chapter, else returns to Level 1
-// with the ring on this species. Level 3: ✓ Zoom in (far) to close on the ring's node; ← from far to Level 2, from close to far when the tree exceeds CLOSE's view, else to Level 2. The pads are the face's (l1.focus.graph, l2.focus.<state>): the host keeps the species of Level 1's ring in ui.lib.l1 and Level 2's ring in ui.lib.cur, its memory in ui.lib.l2[species]. An unmet cell is not a target.
+// with the ring on this species. Level 3: ✓ Zoom in (far) to close on the ring's node; ← from far to Level 2, from close to far when the tree exceeds CLOSE's view, else to Level 2; in close a ring move that
+// would leave the comfort zone pans the camera. The pads are the face's (l1.focus.graph, l2.focus.<state>): the host keeps the species of Level 1's ring in ui.lib.l1 and Level 2's ring in ui.lib.cur, its memory in ui.lib.l2[species]. An unmet cell is not a target.
 import * as Lib from "../library.mjs";
 import { frameIds, frameOf } from "../genome.mjs";
 import { speciesOf } from "../state.mjs";
-import { lineageOf, targetsOf, resolveOf, fitsClose, camAt, farGeometry } from "../lineage.mjs";
+import { lineageOf, targetsOf, resolveOf, fitsClose, camAt, farGeometry, camOffset, camFromOffset, panFor, nameBelow } from "../lineage.mjs";
 
 const cellSpecies = (target) => (typeof target === "string" && target.startsWith("cell.") && frameIds().includes(target.slice(5)) ? target.slice(5) : null);
 // The ring moved to a cell (the face says `cell.<SNN>`): the Library keeps its species.
@@ -53,6 +54,7 @@ export const species = { intent: speciesIntent, focus: speciesFocus };
 
 // ---- Level 3 (library.family) ----
 // The lineage of the shown species (lineage.mjs, l3.block.gap) and the dither a zoom plays (the 180 ms stage dither, as Create's panel; none under reduced motion).
+const below = (h) => nameBelow(h.specs.library.l3.close, h.specs.frame);
 const lineage = (h, sid) => lineageOf(h.st, sid, { gap: h.specs.library.l3.block.gap });
 const zoomDither = (h) => { if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); };
 // A way in (Level 2's family face, the Vivarium's up-close card): Level 3 of that mibi's species in close, the ring on it and the camera centring it in the comfort zone (l3.close.camera). Its parent is Level 2 of
@@ -60,24 +62,33 @@ const zoomDither = (h) => { if (h.motion ? h.motion() : true) h.play({ kind: "di
 export function openFamily(h, mibiId) {
   const m = h.st.mibis.find((x) => x.id === mibiId), sid = m && speciesOf(m); if (!m || !frameIds().includes(sid) || Lib.speciesStatus(h.st, sid) !== "found") return false;
   const L = h.ui.lib, node = "node." + m.id; L.species = sid; L.l1 = sid; L.state = "sheet"; L.lit = null; L.cur = null; L.l3 ??= {}; L.l3last = null;
-  L.l3[sid] = { node, zoom: "close", cam: camAt(lineage(h, sid), node, h.specs.library.l3.close) };
+  const lin = lineage(h, sid), C = h.specs.library.l3.close; L.l3[sid] = { node, zoom: "close", cam: camOffset(lin, node, C, camAt(lin, node, C, null, below(h))), pan: null };   // the camera kept as an offset from its node
   h.goto("library.family"); return true;
 }
 // The ring moved on Level 3: its node is kept for both zooms; a move that lands on the parent the host answered for the last node is a ▲ (l3.focus.selectors.host), which the next selectors read.
+// In close the host owns the camera (l3.close.camera): when the new node's box would lie outside the comfort zone, the camera moves the least whole pixels that bring it back and the pan plays
+// (l3.close.pan: its steps; none under reduced motion, a cut to the new camera); the camera is kept as an offset from the new node.
 function familyFocus(h, target) {
   const L = h.ui.lib, mem = L.l3?.[L.species]; if (!mem || typeof target !== "string" || !target.startsWith("node.")) return;
-  const r = resolveOf(lineage(h, L.species), mem.node, mem.zoom, L.l3last); L.l3last = r["node.parent"] === target ? { up: mem.node } : null; mem.node = target;
+  const lin = lineage(h, L.species), r = resolveOf(lin, mem.node, mem.zoom, L.l3last); L.l3last = r["node.parent"] === target ? { up: mem.node } : null;
+  if (mem.zoom === "close" && lin.nodes.some((n) => n.id === target)) {
+    const C = h.specs.library.l3.close, from = Array.isArray(mem.cam) ? camFromOffset(lin, mem.node, C, mem.cam) : camAt(lin, mem.node, C, null, below(h)), to = fitsClose(lin, C, below(h)) ? [...from] : panFor(lin, target, C, from), moved = to[0] !== from[0] || to[1] !== from[1];
+    mem.pan = null;
+    if (moved && (h.motion ? h.motion() : true)) { const P = C.pan; mem.pan = { from, to }; h.play({ kind: P.kind, target: P.target, from, to, steps: P.steps, frac: P.frac }); }
+    mem.cam = camOffset(lin, target, C, to);
+  }
+  mem.node = target;
 }
 // ✓ Zoom in (far): close on the ring's node, put where its FAR dot was on screen, clamped into the comfort zone. ← in far: Level 2 of the species; in close: far when the tree exceeds CLOSE's view, else Level 2.
 function familyIntent(h, target, verb) {
   const L = h.ui.lib, sid = L.species, mem = L.l3?.[sid]; if (!sid || !frameOf(sid) || !mem) return;
   const S3 = h.specs.library.l3, lin = lineage(h, sid);
   if (verb === "back") {
-    if (mem.zoom === "close" && !fitsClose(lin, S3.close)) { mem.zoom = "far"; L.l3last = null; zoomDither(h); return; }
+    if (mem.zoom === "close" && !fitsClose(lin, S3.close, below(h))) { mem.zoom = "far"; mem.pan = null; L.l3last = null; zoomDither(h); return; }
     L.state = "sheet"; L.lit = null; L.cur = null; h.goto("library.species"); return;
   }
-  if (verb !== "confirm" || mem.zoom !== "far" || !targetsOf(lin).includes(target)) return;   // close (until built) and compare: no ✓
+  if (verb !== "confirm" || mem.zoom !== "far" || !targetsOf(lin).includes(target)) return;   // close (until compare is built) and compare: no ✓
   const g = farGeometry(lin, h.specs.library), b = g.boxes[target], o = S3.far.rect;
-  mem.node = target; mem.zoom = "close"; mem.cam = camAt(lin, target, S3.close, [o[0] + b[0] + b[2] / 2, o[1] + b[1] + b[3] / 2]); L.l3last = null; zoomDither(h);
+  mem.node = target; mem.zoom = "close"; mem.cam = camOffset(lin, target, S3.close, camAt(lin, target, S3.close, [o[0] + b[0] + b[2] / 2, o[1] + b[1] + b[3] / 2], below(h))); mem.pan = null; L.l3last = null; zoomDither(h);
 }
 export const family = { intent: familyIntent, focus: familyFocus };

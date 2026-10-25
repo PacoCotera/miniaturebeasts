@@ -185,8 +185,8 @@ export function speciesBody() {
 }
 
 // ---- The Library's Level 3 ----
-// One species' lineage (library.json l3): far is drawn with words (the lineage's picture, made by id when the face asks for it, its time printed); close and compare are the frame's notBuilt composition until their
-// screens are built, with this level's top bar and line. The ring is the face's (l3.focus.graph with the host's selectors); the host keeps it in UI.lib.l3[species] (intents/library.mjs family.focus).
+// One species' lineage (library.json l3): far and close are drawn with words (the lineage's pictures, made by id when the face asks for them, their times printed); compare is the frame's notBuilt composition until
+// its screen is built, with this level's top bar and line. The ring is the face's (l3.focus.graph with the host's selectors); the host keeps it and CLOSE's camera in UI.lib.l3[species] (intents/library.mjs family.focus).
 // Null when no found species is shown (a developer's jump): the frame's notBuilt composition, as before.
 export function familyBody() {
   const sid = UI.lib.species; if (!sid || !frameOf(sid) || speciesStatus(G.st, sid) !== "found") return null;
@@ -262,7 +262,7 @@ export function screenProps(plate) {
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
   const fam = screen === "library.family" ? familyBody() : null;
-  if (screen === "library.family" && (!fam || fam.notBuilt)) {   // Level 3's close and compare (not built yet): the frame's composition with this level's top bar and line; no found species shown: as any screen not built
+  if (screen === "library.family" && (!fam || fam.notBuilt)) {   // Level 3's compare (not built yet): the frame's composition with this level's top bar and line; no found species shown: as any screen not built
     if (!fam) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };
     registerPictures(fam.requests, { podById, frameOf }); top.readout = fam.top.readout;
     return { msg: { screen, state: "notBuilt", frame: { top, line: { ...fam.line, need: need().text }, plate: pl } }, ids: fam.requests.map((r) => r.id), light };
@@ -300,7 +300,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "incubate", "moment", "read", "mend", "switch", "install", "sendoff"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "incubate", "moment", "read", "mend", "switch", "install", "sendoff", "pan"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
 // The light of the moment, read once for both screens that show it (the Vivarium by the clock: Home's glass and bed, Idle's painting): the host's, so a view never reads a clock.
 let lightNow = () => { throw new Error("the host has no light: createHost({ light }) names it"); };
 let timeNow = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };   // the Station time in seconds of the day: createHost({ time }) names it (main.mjs: the developer's Station time, else the clock)

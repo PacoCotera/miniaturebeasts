@@ -62,6 +62,7 @@ void word_topBar(void) {
   v_name("title");   /* the top bar's marks (room, companion, face, sun): each picture's layer is its asset's */
   char screen[32], room[24]; spec_str(P, "frame.top.screen", screen, sizeof screen);
   snprintf(a, sizeof a, "regions.title.marks.%s", screen); snprintf(room, sizeof room, "%s", v_sstr(F, a));
+  if (!*room && strchr(screen, '.')) { int top = (int)(strchr(screen, '.') - screen); snprintf(a, sizeof a, "regions.title.marks.%.*s", top, screen); snprintf(room, sizeof room, "%s", v_sstr(F, a)); }   /* a level of a room (library.species): the path reads its dots as nesting, so the room's own mark, the name before the first "." */
   v_srect(F, "regions.title.mark", rr);
   v_inline("top.title");   /* the room mark, the title and its readout are one group (T8 against T5 and T10) */
   if (*room) { lower(room); snprintf(a, sizeof a, "regions.marks.room.%s", room); snprintf(b, sizeof b, "%s", v_sstr(F, a)); mark("top.room", b, rr); }

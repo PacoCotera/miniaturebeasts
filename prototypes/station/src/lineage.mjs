@@ -16,20 +16,29 @@ export function parentsOf(st, m) {
   const o = m.genome?.origin; if (o?.kind === "shed" && Array.isArray(o.parentIds) && o.parentIds[0] != null) return [o.parentIds[0]];
   return [];
 }
+// A walk's memory for one call that walks many mibis (lineageOf, sitting.mjs momentsEarned): each mibi's value is found once and kept, so a walk is linear in the tree, never in its paths (sibling crosses
+// share their parents: without it 16 generations are 2^16 paths). One per call: the save may change between calls.
+export const walkMemo = () => ({ gen: new Map(), cross: new Map(), founders: new Map() });
+// One mibi's value by a walk over its recorded parents, kept in memo[key]: `onPath` holds the mibis the walk is inside (a loop in a recorded tree ends there, as 0), `of(ps)` the value from its parents' ids.
+function walked(m, memo, key, onPath, of) {
+  if (!m || onPath.has(m.id)) return 0;
+  if (memo[key].has(m.id)) return memo[key].get(m.id);
+  onPath.add(m.id); const v = of(); onPath.delete(m.id);
+  memo[key].set(m.id, v); return v;
+}
 // The longest path from a mibi to a founder of its recorded tree (a founder 0); released ancestors count, a parent not in the save counts as a founder beyond it, a loop in a recorded tree ends.
-export function generation(st, m, seen = new Set()) {
-  if (!m || seen.has(m.id)) return 0;
-  const ps = parentsOf(st, m); if (!ps.length) return 0; seen.add(m.id);
-  return 1 + Math.max(0, ...ps.map((id) => generation(st, mibiById(st, id), new Set(seen))));
+export function generation(st, m, memo = walkMemo(), onPath = new Set()) {
+  return walked(m, memo, "gen", onPath, () => { const ps = parentsOf(st, m); return ps.length ? 1 + Math.max(0, ...ps.map((id) => generation(st, mibiById(st, id), memo, onPath))) : 0; });
 }
 
 // The crosses on the longest path of a mibi's recorded tree (a founder 0): a cross adds one, a shed step none (a shed-pod child carries its parent's depth; later crosses through it count). The Sitting's deep line
 // (sitting.mjs lineDepth; the game designer: four generations of crosses). Released ancestors count, a parent not in the save counts as a founder beyond it, a loop in a recorded tree ends.
-export function crossDepth(st, m, seen = new Set()) {
-  if (!m || seen.has(m.id)) return 0; seen.add(m.id);
-  const ps = parentsOf(st, m); if (!ps.length) return 0;
-  if (m.genome?.origin?.kind === "shed") return crossDepth(st, mibiById(st, ps[0]), new Set(seen));
-  return 1 + Math.max(0, ...ps.map((id) => crossDepth(st, mibiById(st, id), new Set(seen))));
+export function crossDepth(st, m, memo = walkMemo(), onPath = new Set()) {
+  return walked(m, memo, "cross", onPath, () => {
+    const ps = parentsOf(st, m); if (!ps.length) return 0;
+    if (m.genome?.origin?.kind === "shed") return crossDepth(st, mibiById(st, ps[0]), memo, onPath);
+    return 1 + Math.max(0, ...ps.map((id) => crossDepth(st, mibiById(st, id), memo, onPath)));
+  });
 }
 
 const GAP = 4, STEP = 2;
@@ -43,7 +52,7 @@ export function lineageOf(st, species, opts = {}) {
   const ms = st.mibis.filter((m) => speciesOf(m) === species).sort((a, b) => a.id - b.id), byId = new Map(ms.map((m) => [m.id, m]));
   const bud = st.bud && speciesOf(st.bud) === species ? st.bud : null;
   const known = (x) => parentsOf(st, x).filter((id) => byId.has(id));
-  const rowOf = (m) => generation(st, m) + 1;
+  const memo = walkMemo(), rowOf = (m) => generation(st, m, memo) + 1;
   // the births in order: the mibis by id, the bud last
   const births = ms.map((m) => ({ key: "node." + m.id, m, kind: "mibi", row: rowOf(m), parents: known(m).map((id) => "node." + id), founder: !parentsOf(st, m).length, released: !!m.released }));
   if (bud) { const ps = known(bud), founder = !parentsOf(st, bud).length; births.push({ key: "node.bud", m: null, kind: "bud", row: ps.length ? 1 + Math.max(...ps.map((id) => rowOf(byId.get(id)))) : 1, parents: ps.map((id) => "node." + id), founder, released: false }); }
@@ -113,19 +122,55 @@ export function resolveOf(lin, cur, zoom, last = null) {
 
 // ---- CLOSE's grid (library.json l3.close): a node's centre at x = x0 + u du - cam x, y = y0 + row drow - cam y; its box (boxes.<kind>) centred there ----
 const boxOf = (C, n) => C.boxes[n.kind] ?? C.boxes.mibi;
-// Whether the whole lineage fits CLOSE's view (every node's box inside it with some camera): the extent of the boxes is no wider and no taller than the view.
-export function fitsClose(lin, C) {
-  if (!lin.nodes.length) return true;
-  const xs = lin.nodes.flatMap((n) => { const w = boxOf(C, n)[0] / 2, x = C.grid.x0 + n.u * C.grid.du; return [x - w, x + w]; }), ys = lin.nodes.flatMap((n) => { const h = boxOf(C, n)[1] / 2, y = C.grid.y0 + n.row * C.grid.drow; return [y - h, y + h]; });
-  return Math.max(...xs) - Math.min(...xs) <= C.view[2] && Math.max(...ys) - Math.min(...ys) <= C.view[3];
+// How far a mibi and the bud are drawn below their grid point in CLOSE: their name line's bottom (l3.close.names: its lineTop, plus the role's pitch, frame.json type), so a node wholly inside the view holds its name.
+export const nameBelow = (C, frame) => { const R = frame.type.roles[C.names.role], p = R.pitch ?? frame.type.pitch[String(frame.type.fonts[R.font][0])]; return { mibi: C.names.mibi + p, bud: C.names.bud + p }; };
+// The extent of the whole lineage in CLOSE's grid px at camera 0: [L, T, R, B], a named node (mibi, bud) at max(box, names.clip) wide and down to its name line's bottom (below), a pod at its box.
+export function extentOf(lin, C, below) {
+  const xs = [], ys = [];
+  for (const n of lin.nodes) {
+    const [bw, bh] = boxOf(C, n), [x, y] = worldOf(C, n), w = (n.kind === "pod" ? bw : Math.max(bw, C.names.clip)) / 2;
+    xs.push(x - w, x + w); ys.push(y - bh / 2, y + (below[n.kind] ?? bh / 2));
+  }
+  return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
 }
-// The camera [x, y] that puts node `id` at the screen point `at` clamped so its box lies inside the comfort zone (C.comfort), or, with no `at`, at the zone's centre (the entry).
-export function camAt(lin, id, C, at = null) {
+// Whether the whole lineage fits CLOSE's view (every node with its name inside it with some camera): the extent is no wider and no taller than the view.
+export function fitsClose(lin, C, below) {
+  if (!lin.nodes.length) return true;
+  const [l, t, r, b] = extentOf(lin, C, below); return r - l <= C.view[2] && b - t <= C.view[3];
+}
+// The camera [x, y] that puts node `id` at the screen point `at` clamped so its box lies inside the comfort zone (C.comfort), or, with no `at`, at the zone's centre (the entry); a tree that fits the view (fitsClose) has its extent centred instead, whatever `at`.
+export function camAt(lin, id, C, at = null, below) {
   const n = lin.nodes.find((q) => q.id === id); if (!n) return [0, 0];
+  if (fitsClose(lin, C, below)) { const [l, t, r, bt] = extentOf(lin, C, below); return [Math.floor((l + r - 776) / 2), Math.floor((t + bt - 598) / 2)]; }   // a fitting tree: its whole extent centred in the view (16 + 760, 44 + 554)
   const [bw, bh] = boxOf(C, n), z = C.comfort, wx = C.grid.x0 + n.u * C.grid.du, wy = C.grid.y0 + n.row * C.grid.drow, clamp = (v, a, b) => Math.min(Math.max(v, a), b);
   const sx = at ? clamp(at[0], z[0] + bw / 2, z[0] + z[2] - bw / 2) : z[0] + z[2] / 2, sy = at ? clamp(at[1], z[1] + bh / 2, z[1] + z[3] - bh / 2) : z[1] + z[3] / 2;
   return [wx - sx, wy - sy];
 }
+
+// A node's grid point in CLOSE's px with no camera (x0 + u du, y0 + row drow), its centre on screen under camera cam (that less cam), and its box there: boxes.<kind> centred on the centre.
+const worldOf = (C, n) => [C.grid.x0 + n.u * C.grid.du, C.grid.y0 + n.row * C.grid.drow];
+export const closeRect = (C, n, cam) => { const [wx, wy] = worldOf(C, n), [w, h] = boxOf(C, n); return [wx - cam[0] - w / 2, wy - cam[1] - h / 2, w, h]; };
+const holds = (z, r) => r[0] >= z[0] && r[1] >= z[1] && r[0] + r[2] <= z[0] + z[2] && r[1] + r[3] <= z[1] + z[3];
+// Whether node n lies wholly inside CLOSE's view under camera cam (a node that would cross the view's edge is not drawn). below: { <kind>: px }, how far a node of that kind is drawn below its grid point
+// (its name line's bottom: views/library-props.mjs nameBelow), else its box's half height.
+export const inView = (C, n, cam, below = null) => { const r = closeRect(C, n, cam), b = below?.[n.kind]; return holds(C.view, b != null ? [r[0], r[1], r[2], r[3] / 2 + b] : r); };
+// The pan (l3.close.camera): when node id's box lies outside the comfort zone under camera cam, the least whole-pixel move of the camera that brings it back inside, on each axis; else cam itself.
+export function panFor(lin, id, C, cam) {
+  const n = lin.nodes.find((q) => q.id === id); if (!n) return [...cam];
+  const r = closeRect(C, n, cam), z = C.comfort, d = (lo, len, a, alen) => (lo < a ? lo - a : lo + len > a + alen ? lo + len - (a + alen) : 0);
+  return [cam[0] + d(r[0], r[2], z[0], z[2]), cam[1] + d(r[1], r[3], z[1], z[3])];
+}
+// A pan's step cameras (l3.close.pan: frac in %, one per step): from + trunc((to - from) frac / 100) on each axis, the whole pixels the face's pan draws at (anim.c anim_pan_at).
+export const panSteps = (from, to, frac) => frac.map((f) => [0, 1].map((k) => from[k] + Math.trunc(((to[k] - from[k]) * f) / 100)));
+// The node slots (l3.close.slots): the nodes wholly inside the view (their names too: below, as inView) under any of the cameras (a pan's steps), the nodes under the last camera first, then those only under a pan's earlier steps, each by row then u, at most C.slots of them.
+export const slotsOf = (lin, C, cams, below = null) => {
+  const last = cams[cams.length - 1], fin = lin.nodes.filter((n) => inView(C, n, last, below)), early = lin.nodes.filter((n) => !fin.includes(n) && cams.some((c) => inView(C, n, c, below)));
+  return [...fin, ...early].slice(0, C.slots);
+};
+// The camera saved as an offset from its node (UI/UX; ui.lib.l3[species].cam): the camera less the node's grid point; and the camera back from it. A node not in the lineage is at the origin.
+const worldOfId = (lin, C, id) => { const n = lin.nodes.find((q) => q.id === id); return n ? worldOf(C, n) : [0, 0]; };
+export const camOffset = (lin, id, C, cam) => { const w = worldOfId(lin, C, id); return [cam[0] - w[0], cam[1] - w[1]]; };
+export const camFromOffset = (lin, id, C, off) => { const w = worldOfId(lin, C, id); return [w[0] + off[0], w[1] + off[1]]; };
 
 // ---- the pictures' geometry (library.json l3.far, l3.mini): the generator's facts, pure; lineage-pictures.mjs draws on it ----
 // FAR's geometry for a lineage: { sx, sy, rows, span (sibling steps), left, top (the dot box of u0, row 0), boxes: { node id: [x, y, d, d] }, X(u), Y(row) (a grid point's pixel, row may be a half) }.
@@ -149,3 +194,11 @@ export function miniGeometry(lin, spec, far = farGeometry(lin, spec)) {
   return { s, ox, oy, boxes, at, scale: [(s * far.sx) / 2 / spec.l3.close.grid.du, (s * far.sy) / spec.l3.close.grid.drow], origin: [ox + far.X(0) * s, oy + far.Y(0) * s] };
 }
 
+// CLOSE's view as a box in the mini (l3.mini.facts: a CLOSE point (X, Y) is at (mx + (X - grid.x0) kx, my + (Y - grid.y0) ky)) under camera cam: the view's corners, each rounded, then cut to the mini's own rect;
+// [x, y, w, h] in the mini's coordinates (the inset's).
+export function overviewBox(lin, spec, cam, mini = miniGeometry(lin, spec)) {
+  const C = spec.l3.close, V = C.view, [kx, ky] = mini.scale, [mx, my] = mini.origin, [MW, MH] = spec.l3.mini.rect.slice(2);
+  const X = (x) => Math.round(mx + (x + cam[0] - C.grid.x0) * kx), Y = (y) => Math.round(my + (y + cam[1] - C.grid.y0) * ky);
+  const x0 = Math.max(0, X(V[0])), y0 = Math.max(0, Y(V[1])), x1 = Math.min(MW, X(V[0] + V[2])), y1 = Math.min(MH, Y(V[1] + V[3]));
+  return [x0, y0, Math.max(0, x1 - x0), Math.max(0, y1 - y0)];
+}
