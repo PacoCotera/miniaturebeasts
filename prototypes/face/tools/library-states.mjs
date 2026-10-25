@@ -2,8 +2,9 @@
 // catalogue: six found, four met, the rest unmet, the wish on the Tuikis alone and on the Loika beside its face chip; the room key and the dither take it with the Tuikis's wish only), `library-l1-new` (glints and "three new looks"), `library-l1-roomkey` (the Library room key from Home: the ring
 // on the last species visited) and `library-l1-dither` (✓ on Home's Library bezel: the frame at the midpoint of the 180 ms stage dither, motion on, virtual clock); the Loika's guide is filled in each (the art director, L4-AD1) and
 // the seen record taken after it. Level 2 (library.species): the Loika at mid, its Coat lit, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat
-// lit complete, the Blikur and the Loika late (colour chips). Level 3 (library.family): far, a Loika lineage of two blocks (`library-l3-far`, the ring on Moss) and of one (`library-l3-far-one-family`, on Dot); close on Moss (`library-l3-close-moss`), links leaving every edge
-// (`library-l3-close-stubs`), a tree that fits the view (`library-l3-close-fits`), a pan's three steps (`library-l3-pan-step-1` to `-3`) and FAR → CLOSE at the dither's midpoint (`library-l3-zoom-in`). Each is reached by the page's own state and the player's keys and intents, the Library's pictures made (window.__st.libraryWarm: they are made off the open path in
+// lit complete, the Blikur and the Loika late (colour chips). Level 3 (library.family): far, a Loika lineage of two blocks (`library-l3-far`, the ring on Moss) and of one (`library-l3-far-one-family`, on Dot); close on Moss (`library-l3-close-moss`, the panel's rows), links leaving every edge
+// (`library-l3-close-stubs`), a tree that fits the view (`library-l3-close-fits`), close on a founder (`library-l3-close-founder`, Bean: its pod and place) and on a shed-pod child (`library-l3-close-shedpod`, Thistle: Ivy's line), compare with Dot held
+// and Moss focused (`library-l3-compare-dot-moss`: ▲ Dot, ✓ Compare from Dot, ▼ Moss; blocks lit) and with no read look in common (`library-l3-compare-none`: Nettle held, ▶ Yarrow), a pan's three steps (`library-l3-pan-step-1` to `-3`) the bud in close (`library-l3-close-bud`: Moss ▼ ▶), the ring back on the held mibi (`library-l3-compare-on-held`: Moss ✓, ▼ ▶ ▲) and FAR → CLOSE at the dither's midpoint (`library-l3-zoom-in`). Each is reached by the page's own state and the player's keys and intents, the Library's pictures made (window.__st.libraryWarm: they are made off the open path in
 // play), and asserted (screen, state, what the props show, the ring, the line) before `visit(name, page, fail)` is called. Taken with reduced motion (the glints solid), except the dither. Returns { fails }.
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -63,9 +64,15 @@ const L2 = {
 // here, reduced motion) and links leave every edge of the view. The timed pass takes that pan at its three steps and FAR → CLOSE at the stage dither's midpoint (✓ Zoom in on Moss). ----
 const L3 = {
   "l3-far": { which: "full", entry: "Moss", blocks: 2, keys: ["back"], zoom: "far" }, "l3-far-one-family": { which: "one", entry: "Dot", blocks: 1, keys: ["back"], zoom: "far" },
-  "l3-close-moss": { which: "full", entry: "Moss", zoom: "close", ring: "Moss", cam: [12, 105], back: "Family", inset: true },
-  "l3-close-stubs": { which: "full", entry: "Moss", keys: ["up", "right"], zoom: "close", ring: "Bean", cam: [12, -10], back: "Family", inset: true },
-  "l3-close-fits": { which: "small", entry: "Reed", zoom: "close", ring: "Reed", back: "Loika", inset: false },
+  "l3-close-moss": { which: "full", entry: "Moss", zoom: "close", ring: "Moss", cam: [12, 105], back: "Family", inset: true, ok: "Compare from Moss" },
+  "l3-close-stubs": { which: "full", entry: "Moss", keys: ["up", "right"], zoom: "close", ring: "Bean", cam: [12, -10], back: "Family", inset: true, ok: "Compare from Bean" },
+  "l3-close-bud": { which: "full", entry: "Moss", keys: ["down", "right"], zoom: "close", ring: "bud", bud: true, back: "Family", inset: true, ok: null },
+  "l3-close-fits": { which: "small", entry: "Reed", zoom: "close", ring: "Reed", back: "Loika", inset: false, ok: "Compare from Reed" },
+  "l3-close-founder": { which: "full", entry: "Bean", zoom: "close", ring: "Bean", back: "Family", inset: true, ok: "Compare from Bean", parents: ["Meadow pod"] },
+  "l3-close-shedpod": { which: "full", entry: "Thistle", zoom: "close", ring: "Thistle", back: "Family", inset: true, ok: "Compare from Thistle", parents: ["Ivy's line"] },
+  "l3-compare-dot-moss": { which: "full", entry: "Moss", keys: ["up", "confirm", "down"], zoom: "compare", ring: "Moss", held: "Dot", cam: [12, 105], back: "Done", ok: "Compare from Moss", subject: "Compared with Dot", fact: "Same Crown, Eyes and Drive", lit: [1, 2] },
+  "l3-compare-on-held": { which: "full", entry: "Moss", keys: ["confirm", "down", "right", "up"], zoom: "compare", ring: "Moss", held: "Moss", onHeld: true, back: "Done", ok: "Look at Moss", subject: "Holding Moss", fact: "", lit: [] },
+  "l3-compare-none": { which: "full", entry: "Nettle", keys: ["confirm", "right"], zoom: "compare", ring: "Yarrow", held: "Nettle", back: "Done", ok: "Compare from Yarrow", subject: "Compared with Nettle", fact: "No read look in common", lit: [] },
 };
 const FRAMES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames");
 function lineageSave(which) {
@@ -80,12 +87,19 @@ const LINEAGE = (w, bare, seen, mid, save) => {
 async function assertL3(page, name, sc, fail) {
   const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, p: window.__st.props })), p = u.p, must = (ok, m) => { if (!ok) fail(`library-${name}: ${m}`); };
   if (u.screen !== "library.family" || p?.screen !== "library.family") { fail(`library-${name}: on ${u.screen}`); return; }
-  if (sc.zoom === "close") {   // CLOSE: the camera, the ring, the slots' pictures made, the line, the overview only when the tree exceeds the view
-    const T = p.regions.tree; must(p.state === "close", `the state is ${p.state}, not close`); must(p.focus.cur === "node." + sc.ids[sc.ring], `the ring is on ${p.focus.cur}, not ${sc.ring}`);
+  if (sc.zoom === "close" || sc.zoom === "compare") {   // CLOSE and compare: the camera, the ring, the slots' pictures made, the panel's rows, the line, the overview only in close when the tree exceeds the view; compare's held mibi, fact, block light and path
+    const T = p.regions.tree, P = p.regions.panel; must(p.state === sc.zoom, `the state is ${p.state}, not ${sc.zoom}`); must(p.focus.cur === (sc.bud ? "node.bud" : "node." + sc.ids[sc.ring]), `the ring is on ${p.focus.cur}, not ${sc.ring}`);
     if (sc.cam) must(JSON.stringify(T.cam) === JSON.stringify(sc.cam), `the camera is ${T.cam}, not ${sc.cam}`);
     must(T.slots.length > 0 && T.slots.every((s) => s.picture), "every slot names its picture"); must(T.slots.some((s) => s.id === p.focus.cur), "the ring's node is in a slot");
-    must(p.frame.line.ok === null && p.frame.line.subject === "" && p.frame.line.back === sc.back, "the line " + JSON.stringify(p.frame.line)); must(p.frame.top.readout.text === "Loika family", "the readout");
-    must(!!p.regions.panel.ov.picture === sc.inset && (!sc.inset || /^lineage-mini-S01-[0-9a-f]{8}$/.test(p.regions.panel.ov.picture)), `the overview ${p.regions.panel.ov.picture || "none"}`);
+    must(p.frame.line.ok === sc.ok && p.frame.line.subject === (sc.subject ?? "") && p.frame.line.back === sc.back, "the line " + JSON.stringify(p.frame.line)); must(p.frame.top.readout.text === "Loika family", "the readout");
+    must(sc.bud ? P.rows.name === "Loika bud" && P.rows.portraitSlot && P.rows.portrait === "rackpod:S01" && /^stamp:S01-[0-9a-f]+:[a-z,]*:\d+:k16$/.test(P.rows.stamp.picture) : P.rows.name === sc.ring && /^face:\d+:64(:faded)?$/.test(P.rows.portrait) && /^stamp:S01-[0-9a-f]+:[a-z,]*:\d+:k16$/.test(P.rows.stamp.picture), "the rows of " + sc.ring + " " + JSON.stringify([P.rows.name, P.rows.portrait, P.rows.stamp.picture]));
+    if (sc.parents) must(JSON.stringify(P.rows.parents.map((q) => q.name)) === JSON.stringify(sc.parents), "the parents " + JSON.stringify(P.rows.parents));
+    must(!!P.ov.picture === !!sc.inset && (!sc.inset || /^lineage-mini-S01-[0-9a-f]{8}$/.test(P.ov.picture)), `the overview ${P.ov.picture || "none"}`);
+    if (sc.zoom === "compare") {
+      must(T.hold === "node." + sc.ids[sc.held] && P.held?.name === sc.held, `${sc.held} held (${T.hold})`); must(P.fact === sc.fact, `the fact "${P.fact}"`);
+      must(JSON.stringify(P.rows.stamp.lights.map((q) => q.c)) === JSON.stringify(sc.lit) && JSON.stringify(P.held.stamp.lights.map((q) => q.c)) === JSON.stringify(sc.lit), "the block light " + JSON.stringify(P.rows.stamp.lights));
+      must(sc.onHeld ? T.path.length === 0 : T.path.length > 0, sc.onHeld ? "no path with the ring on the held mibi" : "the path between them"); must(/^face:\d+:56(:faded)?$/.test(P.held.portrait) && /:k16$/.test(P.held.stamp.picture), "the held portrait at 56 and its stamp dimmed " + JSON.stringify([P.held.portrait, P.held.stamp.picture]));
+    }
     return;
   }
   must(p.state === "far", `the state is ${p.state}, not far`); must(/^lineage-far-S01-[0-9a-f]{8}$/.test(p.regions.far.picture), `the picture ${p.regions.far.picture}`);

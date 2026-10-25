@@ -131,7 +131,8 @@ export function zoneRange(pngBytes, scene, shadow = STAND_IN_SHADOW) {
 
 // ---- rule 1 (fix 14, one focus form), on the test-mode region log: the log has one entry per region and layer, and `ring: n` counts the entry's shown nodes whose picture holds a ring or tabRing op (a composed node, or a nine-slice
 // or sprite of a face-owned source composed with one). Allowed: `focus` / chrome with n = 1 when no hold that drops the ring is on (`hold`: only on Home and Habitat chrome targets, tiles and the namer; the Probe's ring stays through its mend and install and every creature footprint ring stays, as on main) and the state has a focus target; `companion` / art with n <= 1 (the top bar's holder); `cross` / art with n <= `faces`
-// (Habitat's holders). Rule 4's source scan pins the only two writers of a ring op (focusRing.c, v_faceHolder), so the region level cannot be fooled. Returns the departures.
+// (Habitat's holders). Rule 4's source scan pins the only two writers of a ring op (focusRing.c, v_faceHolder), so the region level cannot be fooled. The hold mark (focusRing.c kit_focusRingHold) is logged as
+// `hold`, not `ring`: at most one a frame, at the chrome layer, beside the one ring. Returns the departures.
 export function ringDepartures(log, { hold = false, faces = 0, focusTarget = true } = {}) {
   const out = [];
   for (const e of log.regions ?? []) {
@@ -139,5 +140,9 @@ export function ringDepartures(log, { hold = false, faces = 0, focusTarget = tru
     const ok = e.id === "focus" && e.layer === "chrome" ? n === 1 && !hold && focusTarget : e.id === "companion" && e.layer === "art" ? n <= 1 : e.id === "cross" && e.layer === "art" ? n <= faces : false;
     if (!ok) out.push(`a non-standard focus form in ${e.id}/${e.layer} (${n})`);
   }
+  // the hold mark (kit_focusRingHold, frame.json focus.ring.hold): the log counts it as `hold`, never as a ring; at most one a frame, at the chrome layer
+  const holds = (log.regions ?? []).filter((e) => e.hold), nh = holds.reduce((s, e) => s + e.hold, 0);
+  if (nh > 1) out.push(`${nh} hold marks in one frame (at most one)`);
+  for (const e of holds) if (e.layer !== "chrome") out.push(`a hold mark off the chrome layer in ${e.id}/${e.layer}`);
   return out;
 }

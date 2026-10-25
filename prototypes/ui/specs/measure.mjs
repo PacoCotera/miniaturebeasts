@@ -29,3 +29,17 @@ export function measureRole(metrics, frame, role) {
   let m = measures.get(metrics); if (!m) { m = createMeasure(metrics); measures.set(metrics, m); }
   return (text) => m(text, key);
 }
+// The face's v_clip rule: a string cut to a room, one character fewer at a time and then "\u2026" (a lone first character and "\u2026" when none fits). `measure` is a text => width.
+export function clipTo(measure, s, room) {
+  if (measure(s) <= room) return s;
+  const cs = Array.from(s); for (let k = cs.length - 1; k > 0; k--) { const t = cs.slice(0, k).join("") + "\u2026"; if (measure(t) <= room) return t; }
+  return cs[0] + "\u2026";
+}
+// The face's v_wrap rule, the greedy count: the lines a string takes at a width, a word going to the next line when it does not fit (a word wider than the width stands alone on its line).
+// `glue`: a word that goes with the word after it (the fact's "and": no line ends on it), measured as one unit with it.
+export function wrapCount(measure, s, width, glue = null) {
+  const ws = s.split(" "), toks = []; for (let i = 0; i < ws.length; i++) toks.push(glue !== null && ws[i] === glue && i + 1 < ws.length ? ws[i] + " " + ws[++i] : ws[i]);
+  let n = 0, cur = "";
+  for (const w of toks) { const t = cur ? cur + " " + w : w; if (!cur || measure(t) <= width) cur = t; else { n++; cur = w; } }
+  return n + (cur ? 1 : 0);
+}

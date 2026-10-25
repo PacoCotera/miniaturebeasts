@@ -53,6 +53,7 @@
  },
  "focus": { "ring": {
    "line": "solid", "gap": 1, "bands": [{ "w": 1, "role": "key" }, { "w": 2, "role": "core" }, { "w": 1, "role": "key" }], "reach": 5,
+   "hold": { "bands": [{ "w": 1, "role": "core" }], "gap": 4, "rule": "kit_focusRingHold: the held thing's mark (the Library's compare), one composed node at the box grown by gap plus the bands, 1 px in the core colour with no key bands, the ring's outer radius on the same target (its shape radius + gap + band: 7 on a Library mibi slot); on the caller's region at the chrome layer, drawn before the ring; never a focus target; the test log marks it hold (at most one a frame, beside the one ring)" },
    "radius": "the object's radius + the band's outer offset (5, 4, 2)",
    "colours": { "default": { "core": "focus", "key": "void" } },
    "shapes": {

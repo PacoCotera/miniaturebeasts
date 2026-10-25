@@ -74,35 +74,59 @@
    "png": "library-l3-far-one-family.png"
   },
   "library-l3-close-moss": {
-   "hash": "afaddfc8",
+   "hash": "dcaeacbd",
    "png": "library-l3-close-moss.png"
   },
   "library-l3-close-stubs": {
-   "hash": "251478d6",
+   "hash": "6eeb7f9e",
    "png": "library-l3-close-stubs.png"
   },
+  "library-l3-close-bud": {
+   "hash": "000e9336",
+   "png": "library-l3-close-bud.png"
+  },
   "library-l3-close-fits": {
-   "hash": "eef42fcd",
+   "hash": "c8520121",
    "png": "library-l3-close-fits.png"
+  },
+  "library-l3-close-founder": {
+   "hash": "93a72d40",
+   "png": "library-l3-close-founder.png"
+  },
+  "library-l3-close-shedpod": {
+   "hash": "6d76c9c0",
+   "png": "library-l3-close-shedpod.png"
+  },
+  "library-l3-compare-dot-moss": {
+   "hash": "de2a08d7",
+   "png": "library-l3-compare-dot-moss.png"
+  },
+  "library-l3-compare-on-held": {
+   "hash": "6f4c4361",
+   "png": "library-l3-compare-on-held.png"
+  },
+  "library-l3-compare-none": {
+   "hash": "65679f57",
+   "png": "library-l3-compare-none.png"
   },
   "library-l1-dither": {
    "hash": "a9bfe831",
    "png": "library-l1-dither.png"
   },
   "library-l3-pan-step-1": {
-   "hash": "5d242b32",
+   "hash": "f2d5f882",
    "png": "library-l3-pan-step-1.png"
   },
   "library-l3-pan-step-2": {
-   "hash": "22ce5ef6",
+   "hash": "136b59fa",
    "png": "library-l3-pan-step-2.png"
   },
   "library-l3-pan-step-3": {
-   "hash": "251478d6",
+   "hash": "6eeb7f9e",
    "png": "library-l3-pan-step-3.png"
   },
   "library-l3-zoom-in": {
-   "hash": "0107ed7b",
+   "hash": "190958c8",
    "png": "library-l3-zoom-in.png"
   }
  }

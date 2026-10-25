@@ -361,6 +361,20 @@ static void kit_words(void) {
   check(strcmp(cb, "[[\"rrect\",0,0,200,90,10,\"kitA\",\"kitB\"]]") == 0, "kit_bezelComposed: no bevel, the rrect op alone", cb);
   check(strcmp(cc, "[[\"rrect\",0,0,200,90,10,\"kitA\",\"\"],[\"h\",10,1,180,\"kitC\"]]") == 0, "kit_bezelComposed: edge NULL is an empty edge", cc);
   check(kabsent("kc.r") && kabsent("kc.w") && kabsent("kc.h"), "kit_bezelComposed: a radius under 1, a width under 2r and a height under 2r make no node", "");
+  /* kit_focusRingHold: one composed node at the box grown by frame focus.ring.hold's gap and band, a square 1 px ring op in the core colour, no key bands; the chrome layer of the caller's region;
+     the log counts it as a hold, never a ring (rule 1 stays one ring); a box of no size keeps the node with no size and ops [] */
+  { uint32_t fc; if (prim_palette_rgb("focus", &fc) < 0) prim_palette_add("focus", 0xffe6ad); }
+  prim_begin(); n0 = table_nodes();
+  v_region("kfh", LAYER_TYPE); kit_focusRingHold("kfh.a", (const int[4]){ 100, 200, 56, 56 }, 2); char fh[200]; snprintf(fh, sizeof fh, "%s", prim_ops());
+  v_region("kfh.z", LAYER_ART); kit_focusRingHold("kfh.b", (const int[4]){ 16, 44, 0, 0 }, 2); char fz[200]; snprintf(fz, sizeof fz, "%s", prim_ops());
+  n1 = table_nodes(); prim_end();
+  { static char lb[65536]; prim_log_json(lb, (int)sizeof lb); int g = v_si("frame", "focus.ring.hold.gap", -1), w = v_si("frame", "focus.ring.hold.bands.0.w", 0), o = g + w; char want[160];
+    snprintf(want, sizeof want, "[[\"ring\",\"round\",0,0,%d,%d,%d,%d,\"focus\"]]", 56 + 2 * o, 56 + 2 * o, w, 2 + o);
+    check(g == 4 && w == 1, "kit_focusRingHold: frame focus.ring.hold is one 1 px core band and a gap of 4", "");
+    check(n1 - n0 == 2 && kat("kfh.a", FN_COMPOSED, 100 - o, 200 - o, 56 + 2 * o, 56 + 2 * o) && strcmp(fh, want) == 0, "kit_focusRingHold: one composed node at box + gap + band, one rounded ring op (radius 2 + gap + band, the ring's outer corner) in focus, no key bands", fh);
+    check(kat("kfh.b", FN_COMPOSED, 16, 44, 0, 0) && strcmp(fz, "[]") == 0, "kit_focusRingHold: a box of no size keeps its node with no size and ops []", fz);
+    check(strstr(lb, "{\"id\":\"kfh\",\"layer\":\"chrome\",\"rect\":[95,195,66,66],\"hold\":1}") != NULL, "kit_focusRingHold: the caller's region at the chrome layer, logged as a hold and not as a ring", "");
+    uint8_t *px = calloc((size_t)(66 * 66 * 4), 1); check(px && prim_compose(px, 66, 66, fh) >= 0 && kpx(px, 66, 0, 0) == 0 && kpx(px, 66, 33, 0) == 0xffffe6adu && kpx(px, 66, 1, 1) == 0 && kpx(px, 66, 33, 33) == 0, "kit_focusRingHold: the ops compose a 1 px line on the box's edge with a rounded corner", ""); free(px); }
   /* kit_tiles: the callback once for each tile in order at the list's box, the form that holds n, a refusal draws nothing */
   { static const char KT[] = "{\"l\":{\"forms\":{\"a\":{\"upTo\":2,\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]},\"b\":{\"upTo\":4,\"first\":[0,0,4,8],\"pitch\":[5,0],\"grid\":[4,1]}}},\"p\":{\"first\":[1,2,3,4],\"pitch\":[10,20],\"grid\":[2,2]}}";
     spec_load("ktile", KT, sizeof KT - 1);

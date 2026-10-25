@@ -5,16 +5,16 @@
 //   m: { st, settings, ui (UI.lib: { l1 }) }
 import * as S from "../state.mjs";
 import * as Lib from "../library.mjs";
-import { frameIds, frameOf } from "../genome.mjs";
+import { frameIds, frameOf, stampSizing, stampBlocks } from "../genome.mjs";
 import { drawnLooks, keyToken } from "../looks.mjs";
 import { specimenInput, newLooksOf, sheetInput } from "./specimen-props.mjs";
 import { fill, spell, capLine } from "./words.mjs";
-import { req as collector, slot as slotOf, sheet as sheetReqs, disc as discReq, quiet as quietReq, canLight, lineageFar as lineageFarReq, lineageMini as lineageMiniReq, rackPod as rackPodReq } from "./requests.mjs";
+import { req as collector, slot as slotOf, sheet as sheetReqs, disc as discReq, quiet as quietReq, canLight, lineageFar as lineageFarReq, lineageMini as lineageMiniReq, rackPod as rackPodReq, stamp as stampReq } from "./requests.mjs";
 import { faceId } from "../face-pictures.mjs";
 import { speciesFacts, sheetFacts, printed } from "../library-sheet.mjs";
-import { createMeasure, measureRole } from "../../../ui/specs/measure.mjs";
+import { createMeasure, measureRole, clipTo, wrapCount } from "../../../ui/specs/measure.mjs";
 import { sittingsOf } from "../sitting.mjs";
-import { lineageOf, targetsOf, resolveOf, fitsClose, farGeometry, camAt, camFromOffset, panSteps, slotsOf, overviewBox, nameBelow } from "../lineage.mjs";
+import { lineageOf, targetsOf, resolveOf, fitsClose, farGeometry, camAt, camFromOffset, panSteps, slotsOf, overviewBox, nameBelow, compareLooks, pathBetween } from "../lineage.mjs";
 import { bodyColour } from "../lineage-pictures.mjs";
 
 // The subject of Level 1 (strings.subjects): n looks new this visit, across every species. One is "a new look"; two to six spell n; seven or more drop the count; none is empty; no species met is its own line.
@@ -145,36 +145,38 @@ export function lineageInput(st, lin) {
 // Every selector of the graph answered: one with no answer is the ring's own node, so the ring stays (an unanswered selector would fall to its group's first target: focus.c, ui/focus.mjs).
 const answered = (r, sels, cur) => Object.fromEntries(sels.map((s) => [s, r[s] ?? cur]));
 // Level 3 of one species as props: m: { st, settings, ui (UI.lib: { species, l3: { [species]: { node, zoom, cam, pan } }, l3last }), metrics }, spec (library.json), frame (frame.json), home (home.json: the stage words).
-// Returns { props (state, regions, focus), line, top, requests, notBuilt }: far and close are drawn with words; compare is not built yet (notBuilt: the frame's composition with this level's top bar and line).
+// Returns { props (state, regions, focus), line, top, requests }: far, close and compare are drawn with words.
 // Props name what, never where: the nodes and links in grid units (lineage.mjs), the FAR dot boxes as the generator's facts in the picture's coordinates, CLOSE's camera (the host's: px to take off the grid's),
 // its slots (the nodes the host assigns) and the overview's view box as the mini's facts in the mini's coordinates.
 export function familyBuild(m, spec, frame, home) {
   const { st, settings, ui } = m, L3 = spec.l3, Sg = L3.strings, sid = ui.species, fr = frameOf(sid);
   if (!fr || Lib.speciesStatus(st, sid) !== "found") throw new Error(`Level 3 shows a found species, not ${sid}`);
-  const requests = [], req = collector(requests, true), slot = slotOf(req, "its master (library.json)"), lin = lineageOf(st, sid, { gap: L3.block.gap }), mem = ui.l3?.[sid] ?? {}, zoom = mem.zoom === "far" ? "far" : "close";
+  const requests = [], req = collector(requests, true), slot = slotOf(req, "its master (library.json)"), lin = lineageOf(st, sid, { gap: L3.block.gap }), mem = ui.l3?.[sid] ?? {};
+  const held = mem.zoom === "compare" && lin.nodes.some((n) => n.id === mem.held && n.kind === "mibi") ? mem.held : null, zoom = mem.zoom === "far" ? "far" : held ? "compare" : "close";
   const mark = slot(spec.l1.cell.mark.slice.replace("{SNN}", sid), spec.l1.cell.mark.rect.slice(2)), top = { readout: { text: fill(Sg.readout, { Species: fr.species.name }), mark } };
   const targets = targetsOf(lin).map((id) => ({ id, group: "node", enabled: true })), cur = targets.some((t) => t.id === mem.node) ? mem.node : targets[0]?.id ?? "";
-  if (zoom === "close") return closeBuild(m, spec, lin, { targets, cur, mem, top, requests, req, slot, frame });
-  if (zoom !== "far") return { notBuilt: true, state: zoom, line: { ok: null, subject: "", back: fitsClose(lin, L3.close, nameBelow(L3.close, frame)) ? fr.species.name : Sg.backFar, need: null }, top, requests };
+  if (zoom !== "far") return closeBuild(m, spec, lin, { targets, cur, mem, top, requests, req, slot, frame, home, held });
   const ground = slot(spec.l1.stage.master, spec.l1.stage.rect.slice(2)), input = lineageInput(st, lin), g = farGeometry(input, spec), picture = lineageFarReq(req)(spec, input);
-  // the line: Zoom in; the focused mibi's name and stage (the nameless step past the name's room), the bud's own words; ← the species (Level 2)
+  // the line: Zoom in; the focused mibi's name and stage (the nameless step past the name's room), the bud none; ← the species (Level 2)
   const measureOfLine = measureOf(m.metrics) && measureRole(m.metrics, frame, frame.regions.subject.role), n = lin.nodes.find((q) => q.id === cur), mb = n?.kind === "mibi" ? S.mibiById(st, n.mibi) : null;
   let subject = "";
-  if (n?.kind === "bud") subject = Sg.bud;
-  else if (mb) { const stage = S.mibiStage(st, mb, settings), name = S.cap(mb.name ?? ""); subject = name && measureOfLine(name) <= Sg.nameRoom ? fill(Sg.farSubject, { Name: name, stage: home.strings.stages[stage] ?? stage }) : Sg.nameless[stage]; }
+  if (mb) { const stage = S.mibiStage(st, mb, settings), name = S.cap(mb.name ?? ""); subject = name && measureOfLine(name) <= Sg.nameRoom ? fill(Sg.farSubject, { Name: name, stage: home.strings.stages[stage] ?? stage }) : Sg.nameless[stage]; }
   return {
     props: { state: "far", regions: { stage: { picture: [ground] }, lineage: { nodes: lin.nodes.map(({ id, kind, row, u, released }) => ({ id, kind, row, u, released })), links: lin.links }, far: { picture, boxes: targets.map((t) => ({ id: t.id, rect: g.boxes[t.id] })) } },
       focus: { cur, targets, resolve: answered(resolveOf(lin, cur, "far", ui.l3last), Object.values(L3.focus.graph.node).map((e) => e[0]), cur) } },
     line: { ok: cur ? Sg.zoomIn : null, subject, back: fr.species.name, need: null }, top, requests,
   };
 }
-// CLOSE (library.json l3.close): the tree walked face by face. The camera is the host's (ui.lib.l3[species].cam, an offset from its node; the entry centred in the comfort zone when none), and a pan the host plays
+// CLOSE (library.json l3.close) and compare (l3.compare): the tree walked face by face. The camera is the host's (ui.lib.l3[species].cam, an offset from its node; the entry centred in the comfort zone when none), and a pan the host plays
 // (mem.pan: { from, to }) gives the step cameras the slots are assigned for. The props carry the lineage (as FAR's), the links in grid units with the row in half rows (the face reads integers), the camera,
-// the slots (each node wholly inside the view under one of the cameras: its picture, its name, its grid point), the panel's overview (the mini and the view box, only when the tree exceeds the view) and the focus.
-// The line: no ✓ until compare is built; the subject empty, the bud's own words; ← Family when the tree exceeds the view (to FAR), else the species (Level 2).
+// the slots (each node wholly inside the view under one of the cameras: its picture, its name, its grid point), the panel (the focused node's rows; in compare the held mibi and the fact; the overview, the mini and the
+// view box, only in close and only when the tree exceeds the view) and the focus. In compare the one comparison (lineage.mjs compareLooks, pathBetween) gives the fact, the block light (in each stamp's own
+// coordinates) and the path (regions.tree.path, as the links), none with the ring on the held mibi or the bud; the hold mark's node is regions.tree.hold.
+// The line: close ✓ Compare from {name}; compare ✓ Compare from {name} (the ring elsewhere) or Look at {name} (on the held mibi, none when it is released); the subjects past their rooms in their nameless steps; the bud none in far and close, Holding {the held name} in compare, and no ✓
+// words and no ✓; ← Family when the tree exceeds the view (to FAR), else the species (Level 2); ← Done in compare.
 export { nameBelow };
-function closeBuild(m, spec, lin, { targets, cur, mem, top, requests, req, slot, frame }) {
-  const { st, settings, ui } = m, L3 = spec.l3, C = L3.close, Sg = L3.strings, sid = lin.species, fr = frameOf(sid), fits = fitsClose(lin, C, nameBelow(C, frame));
+function closeBuild(m, spec, lin, { targets, cur, mem, top, requests, req, slot, frame, home, held }) {
+  const { st, settings } = m, L3 = spec.l3, C = L3.close, Sg = L3.strings, sid = lin.species, fr = frameOf(sid), fits = fitsClose(lin, C, nameBelow(C, frame)), compare = !!held;
   const ground = slot(spec.l1.stage.master, spec.l1.stage.rect.slice(2)), cam = cur && Array.isArray(mem.cam) ? camFromOffset(lin, cur, C, mem.cam) : camAt(lin, cur, C, null, nameBelow(C, frame));
   const cams = mem.pan && Array.isArray(mem.pan.from) ? panSteps(mem.pan.from, cam, C.pan.frac) : [cam], pod = rackPodReq(req);
   const slots = slotsOf(lin, C, cams, nameBelow(C, frame)).map((n) => {
@@ -182,12 +184,70 @@ function closeBuild(m, spec, lin, { targets, cur, mem, top, requests, req, slot,
     if (n.kind !== "mibi") return { ...at, picture: pod(sid, C.boxes[n.kind]), name: n.kind === "bud" ? Sg.growing : "" };
     const mb = S.mibiById(st, n.mibi); return { ...at, picture: req(faceReq(st, settings, mb, sid, C.boxes.mibi[0])), name: S.cap(mb.name ?? "") };
   });
-  const input = lineageInput(st, lin), mini = fits ? "" : lineageMiniReq(req)(spec, input), n = lin.nodes.find((q) => q.id === cur);
+  const input = lineageInput(st, lin), mini = fits || compare ? "" : lineageMiniReq(req)(spec, input), node = (id) => lin.nodes.find((q) => q.id === id), n = node(cur);
+  const mibiOf = (q) => (q?.kind === "mibi" ? S.mibiById(st, q.mibi) : null), mb = mibiOf(n), hm = held ? mibiOf(node(held)) : null;
+  // the one comparison: never with the ring on the held mibi, never on the bud
+  const cmp = compare && mb && cur !== held ? compareLooks(fr, hm, mb) : null, rows = rowsOf(m, spec, lin, n, { req, slot, pod, home, frame }), measureLine = measureOf(m.metrics) && measureRole(m.metrics, frame, frame.regions.subject.role);
+  if (cmp) rows.stamp.lights = lightsOf(fr, mb, cmp.lit);
+  const panel = { ov: { picture: mini, box: fits || compare ? [0, 0, 0, 0] : overviewBox(input, spec, cam) }, rows, held: null, fact: "" };
+  if (compare) {
+    const H = L3.compare.held, hs = stampOf(fr, hm, req, spec.colours.stampLabel.k);
+    panel.held = { name: S.cap(hm.name ?? ""), mark: slot(H.mark.slice.replace("{SNN}", sid), [H.mark.size, H.mark.size]), portrait: req(faceReq(st, settings, hm, sid, H.portrait.size)), stamp: { ...hs, lights: cmp ? lightsOf(fr, hm, cmp.lit) : [] } };
+    if (cmp) panel.fact = factOf(Sg.fact, cmp, L3.compare.fact, measureOf(m.metrics) && measureRole(m.metrics, frame, L3.compare.fact.role));
+  }
+  // the line
+  const name = S.cap(mb?.name ?? ""), fitsRoom = (s, room) => !!s && measureLine(s) <= room, line = { ok: null, subject: "", back: compare ? Sg.done : fits ? fr.species.name : Sg.backFar, need: null };
+  if (mb && !compare) line.ok = fill(Sg.compareFrom, { name });
+  else if (mb && cur === held) { line.ok = mb.released ? null : fill(Sg.lookAt, { name }); line.subject = fitsRoom(name, Sg.holdingRoom) ? fill(Sg.holding, { Name: name }) : Sg.holdingNameless; }
+  else if (n?.kind === "bud" && compare) { const hn = S.cap(hm.name ?? ""); line.subject = fitsRoom(hn, Sg.holdingRoom) ? fill(Sg.holding, { Name: hn }) : Sg.holdingNameless; }   // the bud has no name: the subject is the held mibi's, as on the held mibi itself
+  else if (mb) { const hn = S.cap(hm.name ?? ""); line.ok = fill(Sg.compareFrom, { name }); line.subject = fitsRoom(hn, Sg.comparedRoom) ? fill(Sg.comparedWith, { Held: hn }) : Sg.comparedNameless; }
   return {
-    props: { state: "close", regions: { stage: { picture: [ground] }, lineage: { nodes: lin.nodes.map(({ id, kind, row, u, released }) => ({ id, kind, row, u, released })), links: lin.links },
-      tree: { cam, slots, links: lin.links.map((l) => ({ a: [l.a[0], l.a[1] * 2], b: [l.b[0], l.b[1] * 2], faded: l.faded })) },
-      panel: { ov: { picture: mini, box: fits ? [0, 0, 0, 0] : overviewBox(input, spec, cam) } } },
-      focus: { cur, targets, resolve: answered(resolveOf(lin, cur, "close", ui.l3last), Object.values(L3.focus.graph.node).map((e) => e[0]), cur) } },
-    line: { ok: null, subject: n?.kind === "bud" ? Sg.bud : "", back: fits ? fr.species.name : Sg.backFar, need: null }, top, requests,
+    props: { state: compare ? "compare" : "close", regions: { stage: { picture: [ground] }, lineage: { nodes: lin.nodes.map(({ id, kind, row, u, released }) => ({ id, kind, row, u, released })), links: lin.links },
+      tree: { cam, slots, links: lin.links.map((l) => ({ a: [l.a[0], l.a[1] * 2], b: [l.b[0], l.b[1] * 2], faded: l.faded })), path: cmp ? pathBetween(lin, held, cur) : [], hold: held ?? "" },
+      panel },
+      focus: { cur, targets, resolve: answered(resolveOf(lin, cur, "close", m.ui.l3last), Object.values(L3.focus.graph.node).map((e) => e[0]), cur) } },
+    line, top, requests,
   };
+}
+// A stamp of a mibi or the bud as the panel shows it (l3.close.panel.rows.stamp): its read chapters, at its stampSizing size, dimmed as a label (colours.stampLabel.k: the request's id gains :k16; the block light is drawn after it, undimmed); { picture, size, lights: [] }.
+function stampOf(fr, mb, req, k, bud = null) {
+  const g = bud ? bud.genome : mb.genome, read = fr.chapters.filter((c) => ((bud ?? mb).read ?? []).includes(c.id)).map((c) => c.id), sz = stampSizing(fr, g);
+  return { picture: stampReq(req)({ genome: g, read, size: sz.size, k, species: fr.species.id, ...(bud ? { bud: true } : { mibi: mb.id }) }), size: sz.size, lights: [] };
+}
+// The block light in one stamp: each lit chapter's block, { c (its index in the frame), rect (in the stamp's own pixels) }.
+const lightsOf = (fr, mb, lit) => { const B = stampBlocks(fr, mb.genome); return lit.filter((id) => B[id]).map((id) => ({ c: fr.chapters.findIndex((ch) => ch.id === id), rect: B[id] })); };
+// The rows of the focused node (l3.close.panel.rows): a mibi's or the bud's portrait, name, mark, age, place, parents and stamp; the words as the strings give them, each drawn line cased (capLine).
+function rowsOf(m, spec, lin, n, { req, slot, pod, home, frame }) {
+  const { st, sv, settings } = m, R = spec.l3.close.panel.rows, P = spec.l3.strings.panel, sid = lin.species, fr = frameOf(sid), node = new Map(lin.nodes.map((q) => [q.id, q]));
+  const out = { portrait: "", portraitSlot: false, name: "", mark: slot(R.mark.slice.replace("{SNN}", sid), R.mark.rect.slice(2)), age: ["", ""], now: "", parents: [], stamp: { picture: "", size: 0, lights: [] } };
+  if (!n || n.kind === "pod") return out;
+  const bud = n.kind === "bud" ? st.bud : null, mb = bud ? null : S.mibiById(st, n.mibi), self = bud ?? mb;
+  if (bud) { out.portrait = pod(sid, R.portraitSlot.pod); out.portraitSlot = true; out.name = fill(P.budName, { Species: fr.species.name }); out.age = [P.growing, ""]; out.now = P.places.bud; }
+  else {
+    const stage = S.mibiStage(st, mb, settings), trips = mb.outings ?? 0;
+    out.portrait = req(faceReq(st, settings, mb, sid, R.portrait.size)); out.name = S.cap(mb.name ?? "");
+    out.age = [capLine(home.strings.stages[stage] ?? stage), (stage === "juvenile" || stage === "adult") && trips > 0 ? fill(P.trips, { n: trips }) : ""];
+    out.now = P.places[mb.released ? "wild" : S.isAway(st, sv, mb) ? "trip" : "home"];
+  }
+  const ps = n.parents.map((id) => node.get(id)).filter(Boolean);
+  if (ps.length && ps[0].kind === "pod") { const g = self.from?.g, w = P.podPlaces[g]; out.parents = [{ face: pod(sid, spec.l3.close.boxes.pod), name: w ? capLine(fill(P.pod, { place: w })) : P.podUnknown, pod: true }]; }
+  else {
+    const shed = !bud && mb.genome?.origin?.kind === "shed", face = (q) => req(faceReq(st, settings, S.mibiById(st, q.mibi), sid, R.parents.size));
+    const nameOf = (q) => S.cap(S.mibiById(st, q.mibi)?.name ?? "");
+    out.parents = ps.filter((q) => q.kind === "mibi").slice(0, 2).map((q) => ({ face: face(q), pod: false, name: shed ? fill(P.shedLine, { Parent: clipTo(measureOf(m.metrics) && measureRole(m.metrics, frame, R.parents.name.role), nameOf(q), R.parents.lineRoom) }) : nameOf(q) }));
+    if (shed) out.parents = out.parents.slice(0, 1);
+  }
+  out.stamp = stampOf(fr, mb, req, spec.colours.stampLabel.k, bud);
+  return out;
+}
+// The fact (l3.strings.fact): the traits that show the same, their catalogue names as the frames spell them (capitalised) in frame order, joined with commas and "and"; four or more the first three and "and more"; the first step that fits
+// F.lines lines of F.width in its role (wrapped as the face's v_wrap wraps), else fewer traits before "and more". "No read look in common" when the traits read on both all differ, "Nothing read on both yet" when none is read on both.
+function factOf(W, cmp, F, measure) {
+  if (!cmp.read.length) return W.unread;
+  if (!cmp.same.length) return W.none;
+  const names = cmp.same.map((t) => t.name), list = (xs) => (xs.length < 2 ? xs[0] : fill(W.and, { a: xs.slice(0, -1).join(", "), b: xs[xs.length - 1] }));
+  const steps = names.length <= 3 ? [fill(W.same, { traits: list(names) })] : [];
+  for (let k = Math.min(3, names.length - 1); k >= 1; k--) steps.push(fill(W.same, { traits: fill(W.more, { a: names.slice(0, k).join(", ") }) }));
+  const lines = (s) => wrapCount(measure, capLine(s), F.width, "and");   // no line ends on "and" (fact.wrap): it goes with the word after it
+  return capLine(steps.find((s) => lines(s) <= F.lines) ?? steps[steps.length - 1]);
 }
