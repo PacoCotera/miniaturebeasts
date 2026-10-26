@@ -230,14 +230,14 @@
   "note": "The layout check (ui/specs/layout.mjs, face/tools/layout-check.mjs): every number its rules use, each { value, from }; the exceptions a reviewer signs ({ screen, state?, rule, node, other?, reason, by: UI/UX, AD or owner, date }; an unused exception fails the run); the screens enforced, rule by rule ({ \"<screen>\": [\"L1\", ...] or \"all\" }; empty: report mode). A screen joins rule by rule as its type pass fixes it and the owner has cleared its findings.",
   "thresholds": {
    "L0": { "value": 0.2, "from": "first value: composed content of 20 % of its container or more with no inner boxes is not measurable" },
-   "L1": { "value": { "bezel": { "left": 24, "top": 24, "right": 24, "bottom": 24 }, "field": { "left": 16, "top": 8, "right": 16, "bottom": 8 }, "pane": 16, "strip": { "gap": 16, "maxH": 64, "ratio": 3 }, "side": 1, "opposite": 2 }, "from": "C2, C4; T3: bezel 24 every side; field 16 left and right, 8 to a bar; pane padding 16; 16 under a strip (one hanging from its container's top, at most 64 high and 3 x as wide); 1 a side, 2 between opposites" },
+   "L1": { "value": { "bezel": { "left": 24, "top": 24, "right": 24, "bottom": 24 }, "field": { "left": 16, "top": 8, "right": 16, "bottom": 8 }, "pane": 16, "strip": { "gap": 16, "maxH": 64, "ratio": 3 }, "side": 1 }, "from": "C2, C4; T3: bezel 24 every side; field 16 left and right, 8 to a bar; pane padding 16; 16 under a strip (one hanging from its container's top, at most 64 high and 3 x as wide); 1 a side. An axis is aligned left, right, centre or fill (declared, else a centred block when the content sits off the margin on both sides, else fill): fill wants both sides at the margin, left or right the leading side at the margin and the trailing side at least the margin, centre both sides at least the margin (equal sides are L7b's); owner, 2026-10-26" },
    "L2": { "value": 2, "from": "C2" },
-   "L3": { "value": { "field": 16, "bezel": 32, "bezelRows": 16, "pane": 8, "tolerance": 2, "overlap": 0.3 }, "from": "C3: 16 field, 32 bezel columns, 8 inside a pane; 2; neighbours overlap 30 % on the other axis. bezelRows: 32 is the bezel's column gutter; rows take the field's 16 until UI/UX sets one" },
-   "L4": { "value": { "intersection": 1, "textToProp": 16 }, "from": "T5" },
-   "L5": { "value": { "axis": 2, "edges": 1, "baselines": 1, "nearEdges": [1, 4], "nearCentres": [1, 6] }, "from": "C6; the near-miss windows a first value" },
+   "L3": { "value": { "field": 16, "bezel": 32, "bezelRows": 16, "pane": 8, "tolerance": 2, "overlap": 0.3, "bezelItems": 16 }, "from": "C3: 16 field, 32 bezel columns, 8 inside a pane; 2; neighbours overlap 30 % on the other axis. bezelRows: 32 is the bezel's column gutter; rows take the field's 16 until UI/UX sets one. bezelItems: on a bezel the 32 column gutter is between modules; other neighbours take the field's 16 (C3)" },
+   "L4": { "value": { "intersection": 1, "textToProp": 16, "depth": 1, "perch": { "share": 0.25, "min": 4 } }, "from": "T5; creatures and scene props are placed by depth, so one behind another is the scene's order (owner, 2026-10-26): two at one depth collide (feet within depth px), and one whose feet land min px or more inside the next one's top share is a perch, the totem (the AD's totem rule)" },
+   "L5": { "value": { "axis": 2, "edges": 1, "baselines": 1, "nearEdges": [1, 4], "nearCentres": [1, 6], "line": 24 }, "from": "C6; the near-miss windows a first value; line: two boxes each under 24 px high on one left or right edge (±edges) are a stack of lines, not compared by centre (x) (owner, habitat-L5-19, 2026-10-26)" },
    "L6": { "value": { "stage": 0.2, "pane": 0.25, "sides": 4 }, "from": "first value; both sides at least 4 x G. Worst good: Habitat 0.09; Home, Cargo, Sitting, L1, Vivarium 0.02 to 0.03; smallest known bad: Pods overview 0.23" },
    "L7a": { "value": 0.1, "from": "first value. Good 0.00 to 0.03, bench 0.06 to 0.09; bad: Incubator 0.11 to 0.19, Create +0.22 (y), Pods overview 0.18 to 0.22, chapter page 0.37 to 0.45. Tune first (bench against Incubator is thin)" },
-   "L7b": { "value": 4, "from": "C5" },
+   "L7b": { "value": 4, "from": "C5; centred axes only (owner, 2026-10-26): a filled or aligned axis is L1's" },
    "L8": { "value": { "label": 8, "float": 2 }, "from": "C7, T5: 8 for a label; within as declared; floats at 2 x G" },
    "L9": { "value": 0, "from": "C8: exact" },
    "L10": { "value": { "headroom": 0, "subjects": [] }, "from": "first value (the AD's 4 px crest headroom may tighten); subjects: the spec components whose pictures are subjects (mibi, pod, face tile), named by UI/UX with the AD: the manifest names no kind and the log no picture, so (b) measures none until then" },
@@ -248,7 +248,14 @@
    "component": { "value": 8, "from": "C7's 8: the boxes of one region that meet or lie within 8 px of each other are one component" },
    "rule": { "value": 2, "from": "T7: a rect or composed node 1 or 2 px thick is a rule, a line and not a component" }
   },
-  "exceptions": [],
+  "exceptions": [
+   {"screen": "home", "rule": "L10", "node": "vivarium", "other": "its picture", "reason": "Owner, layout review 2026-10-26 (home-L10-1), marked fine: \"i don't see the problem that you flag. looks good.\"", "by": "owner", "date": "2026-10-26"},
+   {"screen": "incubator", "rule": "L10", "node": "shell", "other": "its picture", "reason": "Owner, layout review 2026-10-26 (incubator-L10-1), marked fine: \"maintains the position of the incubator fixed, regardless of its door open or closed.\"", "by": "owner", "date": "2026-10-26"},
+   {"screen": "vivarium", "rule": "L2", "node": "window", "reason": "Owner, layout review 2026-10-26 (vivarium-L2-1), marked fine: \"this photo in particular shows the environment, it's a window to the environment, not a typical module.\"", "by": "owner", "date": "2026-10-26"},
+   {"screen": "vivarium", "rule": "L3", "node": "window", "other": "strip", "reason": "Owner, layout review 2026-10-26 (vivarium-L3-1), marked fine, with no note: the window against the strip, the same window the owner called a window to the environment (vivarium-L2-1)", "by": "owner", "date": "2026-10-26"},
+   {"screen": "vivarium", "rule": "L4", "node": "resident#7", "other": "resident#8", "reason": "Owner, layout review 2026-10-26 (vivarium-L4-22), marked fine: \"mibis can overlap if one is behind of the other, we have a 2d vivarium representing a 3d space. size changes relative to depth, and mibis can overlap as they can be behind each other, and the same applies to emenets of the environment.\"", "by": "owner", "date": "2026-10-26"},
+   {"screen": "vivarium", "rule": "L8", "node": "resident#3", "other": "every neighbour", "reason": "Owner, layout review 2026-10-26 (vivarium-L8-1), marked fine: \"a mibi moves, can be anywere on the ground in the vivariu.\"", "by": "owner", "date": "2026-10-26"}
+  ],
   "enforced": {}
  }
 }

@@ -28,3 +28,27 @@ test("the corpus: every ✓m of the spec's validation has a case", () => {
   const marks = cases.flatMap((c) => c.expect.filter((e) => e.mark === "✓m")); assert.ok(marks.length >= 25, marks.length + " ✓m expects");
   for (const c of cases) assert.ok(Array.isArray(c.clear) && Array.isArray(c.pending), c.state);
 });
+
+// The owner's review of 2026-10-26: one case a card (card, verdict); the owner's marks are the ground truth.
+const owner = cases.filter((c) => c.card), by = (v) => owner.filter((c) => c.verdict === v);
+test("the owner's review: 98 cards, one case each: a fault expects (its own kind, or the finding that carries it), a fine clears, a not-sure card is as the tune left it", () => {
+  assert.equal(owner.length, 98); assert.equal(new Set(owner.map((c) => c.card)).size, 98, "one case a card");
+  assert.deepEqual([by("fault").length, by("fine").length, by("unsure").length, by("unmarked").length], [53, 22, 21, 2]);
+  for (const c of by("fault")) assert.ok(c.expect.length || c.fixed, `${c.card}: a fault expects a finding, or names the commit that fixed it`);
+  assert.equal(by("fault").filter((c) => c.fixed).length, 1, "exactly one fault is fixed (by Q1)");
+  for (const c of by("fine")) assert.ok(c.clear.length && !c.expect.length, `${c.card}: a fine clears its kind`);
+  for (const c of [...by("unsure"), ...by("unmarked")]) assert.ok(c.expect.length || c.clear.length, `${c.card}: as the tune left it`);
+  for (const id of ["sitting-L5-8", "vivarium-L10-1", "vivarium-L3-15", "vivarium-L5-6"]) assert.ok(owner.find((c) => c.card === id).expect.length, `${id}: the owner's faults that the tune first cleared fire under their own kind`);
+  assert.equal(by("unsure").filter((c) => c.expect.length && !c.clear.length).length, 8, "the not-sure cards that fire: 8");
+  assert.equal(by("unsure").filter((c) => c.clear.length).length, 13, "and those that clear: 13");
+});
+test("the owner's exceptions: each fine card whose kind the rule still finds is cleared by its frame.json exception, and by nothing else", () => {
+  const bare = JSON.parse(JSON.stringify(frame)); bare.layout.exceptions = [];
+  for (const e of frame.layout.exceptions) {
+    const c = by("fine").find((q) => q.clear.some((x) => x.node === e.node && x.rule === e.rule && (e.other == null || x.other === e.other)) && q.state.startsWith(e.screen + "/"));
+    assert.ok(c, `${e.screen} ${e.rule} ${e.node}: a fine card of the owner's`);
+    const [screen, ...rest] = c.state.split("/"), rec = J(path.join(here, "layout-cases", screen, slug(rest.join("/")) + ".json")), { spec } = specFor(rec), run = (f) => findings(rec.log, spec, f, rec.screen, rec.state, { facts: rec.facts ?? {} });
+    const ex = (f) => f.rule === e.rule && f.node === e.node && (e.other == null || f.other === e.other);
+    assert.ok(run(bare).some(ex), `${c.card}: without its exception the finding is made`); assert.ok(!run(frame).some(ex), `${c.card}: with it, it is not`);
+  }
+});
