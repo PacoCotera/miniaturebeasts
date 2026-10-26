@@ -1,0 +1,20 @@
+[
+ {
+  "name": "vivarium-near-boulders-dusk-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO EDIT (this room's signed painting by day): keep everything, relight only:"
+   ],
+   [
+    "art/station-masters/pods/slices/vivarium-near-dusk-544x408.png",
+    "IMAGE 2, THE LIGHT TO MATCH (room 1's signed painting by dusk): take its light, colour and brightness only, never its planting or composition:"
+   ]
+  ],
+  "prompt": "Output a NEW image: Image 1 at DUSK: the key light low and amber from the left, long soft shadows falling to the right, the back zone warm and dark; no lamps, no glow. Match Image 2's overall brightness and warmth. Keep Image 1 EXACTLY the same in composition and content: every reed, stone, frond, pebble, leaf, the device walls, feed line, mister, vent and soil strip in the same places and sizes, the same matte miniature finish; change ONLY the light and its colour. Do not move or add any piece, do not add a lamp, a moon disc or glowing things, do not recolour the materials. Still no creatures, no text, no water but the one small seep."
+ }
+]

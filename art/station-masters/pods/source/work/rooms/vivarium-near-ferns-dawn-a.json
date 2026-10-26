@@ -1,0 +1,20 @@
+[
+ {
+  "name": "vivarium-near-ferns-dawn-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-ferns-day.png",
+    "IMAGE 1, THE PICTURE TO EDIT (this room's signed painting by day): keep everything, relight only:"
+   ],
+   [
+    "art/station-masters/pods/slices/vivarium-near-dawn-544x408.png",
+    "IMAGE 2, THE LIGHT TO MATCH (room 1's signed painting by dawn): take its light, colour and brightness only, never its planting or composition:"
+   ]
+  ],
+  "prompt": "Output a NEW image: Image 1 at DAWN: the same key light, lower and paler; a thin cool haze in the back zone only; a soft floor; no glow, no lamps. Match Image 2's overall brightness and warmth. Keep Image 1 EXACTLY the same in composition and content: every reed, stone, frond, pebble, leaf, the device walls, feed line, mister, vent and soil strip in the same places and sizes, the same matte miniature finish; change ONLY the light and its colour. Do not move or add any piece, do not add a lamp, a moon disc or glowing things, do not recolour the materials. Still no creatures, no text, no water but the one small seep."
+ }
+]

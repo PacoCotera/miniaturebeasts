@@ -1,0 +1,24 @@
+[
+ {
+  "name": "idle-vivarium-reeds-day-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/slices/idle-vivarium-day-1024x568.png",
+    "IMAGE 1, THE AUTHORITY (room 1's signed painting by day): the device, the camera, the lens, the scale, the finish and the light. Never the layout of its planting:"
+   ],
+   [
+    "art/station-masters/pods/rooms/map-idle-1024x568.png",
+    "IMAGE 2, THE LAYOUT MAP (structure and placement only, never the look): green-grey is the back zone where the tall planting stands; the red line is the floor's back edge (the amber strip above it is the only allowed slack); pale sand is the open floor; dark brown at the foot is the soil strip; dark grey columns are the device walls with the feed line, mister and vent; the white frame is the part that must hold the room's main feature; the hatched corner must not hold it:"
+   ],
+   [
+    "art/station-masters/pods/slices/sitting-backdrop-pond-544x408.png",
+    "IMAGE 3, SUBJECT AND MATERIAL ONLY (reeds, rushes and damp ground): never its finish, never its water, never its pools or banks:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9. The SAME terrarium inside the SAME rugged field device as Image 1, seen from the same eye height with the same lens and the same depth of field: the left wall with its braided feed line and connector, the right wall with its mister arm and slatted vent, the dark soil strip along the foot, each exactly where it is in Image 1. Inside it a NEW planting, painted in the Miniature Lives finish of Image 1: fine grain on the world, soft bokeh behind, a warm key light from the top left with its shafts. Cute by craft, never childish: no cartoon outlines, no toy colours, no gloss, no glow, no chrome, no alien tech. No creatures, no animals, no figures, no text, no letters, no digits, no logos, no frame, no UI. No water except one small flat seep. Pebbles and leaves at the scale of Image 1's. THE NEW PLANTING: a reed and rush margin on damp ground. Tall reeds stand behind the floor, rising to about a quarter of the height from the top: slender straw-gold dry stems among green ones, fine seed heads catching the key light; the stand is densest at the centre-left (from about 37 to 64 percent of the width) and thinner to the right; their dark wet roots meet the floor's back edge. Low rush tufts at the far left, just right of the feed line. The floor: damp dark soil and short wet moss, three flat wet stones lying low with a soft sheen, one small seep of water no bigger than a hand's width (about 110 by 28 px) lying flat between about 41 and 59 percent of the width, reed litter lying flat. NO pool, no pond, no bank, no open water, no ripples, no reflections. Straw-gold and warm olive, never blue-green. Do NOT copy Image 1's burrow, root mound, succulents or its pool: Image 1 is the authority on the device, camera, scale, finish and light only. THE OPEN FLOOR (the pale band of Image 2, from the red line down to the dark soil strip) is low open ground, nothing a small creature could perch on: every piece on it lower than a pebble-and-a-half (about 32 px of a 568 px tall picture), at most two rounded or leafy pieces up to about twice that, never flat-topped; no flat raised top, no ledge, no slab, no step; no log, root or stem lying across the floor; everything tall stands BEHIND the red line, its feet ending on it, never spilling forward onto the floor. The back edge of the floor (where open floor ends and the planting behind begins) runs along the red line of Image 2, or a little above it inside the amber strip, never below it. The two dark side columns of Image 2 hold only the device walls, the feed line at the left and the mister and vent at the right, kept clear of planting."
+ }
+]

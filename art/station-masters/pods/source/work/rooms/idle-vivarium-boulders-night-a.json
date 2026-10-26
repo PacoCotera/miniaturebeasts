@@ -1,0 +1,20 @@
+[
+ {
+  "name": "idle-vivarium-boulders-night-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO EDIT (this room's signed painting by day): keep everything, relight only:"
+   ],
+   [
+    "art/station-masters/pods/slices/idle-vivarium-night-1024x568.png",
+    "IMAGE 2, THE LIGHT TO MATCH (room 1's signed painting by night): take its light, colour and brightness only, never its planting or composition:"
+   ]
+  ],
+  "prompt": "Output a NEW image: Image 1 at NIGHT: warm and low. The floor stays lit like Image 2's night ground (the open floor brighter than the back zone); the back zone warm and dark; the moon only as a thin cool rim on the tops of the tallest pieces; no glow effects, no glowing moss, no lamps, no moon disc. Match Image 2's overall brightness and warmth. Keep Image 1 EXACTLY the same in composition and content: every reed, stone, frond, pebble, leaf, the device walls, feed line, mister, vent and soil strip in the same places and sizes, the same matte miniature finish; change ONLY the light and its colour. Do not move or add any piece, do not add a lamp, a moon disc or glowing things, do not recolour the materials. Still no creatures, no text, no water but the one small seep."
+ }
+]

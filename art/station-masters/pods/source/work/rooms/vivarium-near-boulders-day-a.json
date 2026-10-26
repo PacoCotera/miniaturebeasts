@@ -1,0 +1,24 @@
+[
+ {
+  "name": "vivarium-near-boulders-day-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/slices/vivarium-near-day-544x408.png",
+    "IMAGE 1, THE AUTHORITY (room 1's signed close-up by day): the camera at ground level, the lens, the depth of field, the scale, the finish and the light. Never the layout of its planting:"
+   ],
+   [
+    "art/station-masters/pods/rooms/map-near-544x408.png",
+    "IMAGE 2, THE LAYOUT MAP (structure and placement only, never the look): green-grey above is the soft back; pale sand below is the ground; the darker side panels are where the room's features frame the view; the white block is open floor where one small creature will stand (moss or soil only, nothing taller than a few pixels); the white outline is ground throughout:"
+   ],
+   [
+    "art/station-masters/pods/slices/sitting-backdrop-rock-544x408.png",
+    "IMAGE 3, SUBJECT AND MATERIAL ONLY (sandstone stone and scree): never its flat, toon-like finish, never its angular flat-topped slabs:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 4:3: this room seen much CLOSER and at GROUND LEVEL, at the creatures' scale, in the same warm daylight from the upper left, the same Miniature Lives finish (fine grain, soft bokeh behind) as Image 1. THE NEW PICTURE: the rounded flank of a sandstone boulder filling the left side (the left quarter of the width); a slope of fine scree and cushion plants at the right; the floor across the centre open and finely pebbled. The open floor across the centre of the lower part (the white block of Image 2) is moss or soil only, nothing on it taller than a tiny pebble; nothing busy directly behind the middle of the picture: the features frame it from the sides and from far back. No creatures, no animals, no figures, no text, no letters, no digits, no frame, no UI, no pool, no open water, no cliff or ledge. Cute by craft, never childish: no cartoon outlines, no toy colours, no gloss, no glow."
+ }
+]
