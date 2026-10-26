@@ -11,6 +11,7 @@ import { founderPicture } from "./create-props.mjs";
 import { plateReq, kPct } from "../stamplook.mjs";
 import { fill, spell } from "./words.mjs";
 import { req as reqOf, slotAt as slot } from "./requests.mjs";
+import { assetEntry } from "../../../ui/assets.mjs";
 
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
 const podFrame = (p) => frameOf(S.speciesOf(p));
@@ -75,13 +76,15 @@ export function railOf(m, spec, cur, chapters, req, open, focused, withPips = fa
 }
 
 // The pod under the beam, in the room of this state: its layers as placed masters at the spec's sizes (an empty slot where none is cut to size), the pod, its name, and, on the overview, the origin, the figure and the marks that say who it is.
+// whether the room's bench master (this state's stage, else the plain one) is placed at the bench's size: the face then draws no beam (specimen.c bench_present)
+const benchPlaced = (spec, mode) => { const [, , w, h] = spec.regions.bench.rect; return [`room-bench-stage-${mode}`, "room-bench-stage"].some((id) => { const e = assetEntry(id); return !!e?.file && e.status !== "empty" && e.w === w && e.h === h; }); };
 function specimenOf(m, spec, cur, R, req, mode) {
   const { st, settings } = m, C = spec.colours, fr = cur.idd ? podFrame(cur) : null;
   const sizeClass = shellFrame(st, cur)?.pod?.sizeClass ?? "medium", box = spec.classes.pod[sizeClass], N = R.name;
   const nameText = cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod;   // the species shows once the pod is identified, and not before
   const sp = shellFrame(st, cur) ? S.speciesOf(cur) : null;
   const out = {
-    beam: req({ kind: "beam", id: `beam:${R.beam.rect.slice(2).join("x")}`, size: R.beam.rect.slice(2) }),
+    beam: benchPlaced(spec, mode) ? "" : req({ kind: "beam", id: `beam:${R.beam.rect.slice(2).join("x")}`, size: R.beam.rect.slice(2) }),   // the beam is a stand-in the face draws only with no bench master: none is asked for once one is placed
     room: {
       bench: slot(req, `room-bench-stage-${mode}`, spec.regions.bench.rect, "the state's room master"), benchAny: slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master"),
       cradleFront: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer"),

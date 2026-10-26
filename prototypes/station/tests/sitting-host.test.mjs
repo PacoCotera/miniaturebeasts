@@ -184,7 +184,7 @@ test("the frame's notice counts a ready portrait apart, docked or away: a portra
   G.sv.bay = [crate(1)]; assert.equal(need("vivarium"), "Bay: a crate and a portrait");
   G.sv.bay = [crate(1), crate(2), crate(3)]; assert.equal(need("vivarium"), "Bay: three crates and a portrait");
   G.st.dock = { docked: false, at: T0 }; assert.equal(need("vivarium"), "A portrait waits in the Bay", "away: the walk crates are not counted, the portrait still waits");
-  G.st.dock = { docked: true, at: T0 }; G.sv.bay = [crate(1)]; G.st.sittingCrates[0].start = Date.now() + 1e9; assert.equal(need("vivarium"), "A crate waits in the bay", "a portrait still filling is not counted");
+  G.st.dock = { docked: true, at: T0 }; G.sv.bay = [crate(1)]; G.st.sittingCrates[0].start = Date.now() + 1e9; assert.equal(need("vivarium"), "A crate waits in the Bay", "a portrait still filling is not counted");
 });
 
 test("the both-at-once notice fits the frame's notice zone in every form it takes (a crate, two, three, the count dropped): the notice role's width with the lamp and its gap within the zone, and within the word limit", () => {

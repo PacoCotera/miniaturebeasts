@@ -21,7 +21,7 @@ void word_livingWindow(const char *spec, const char *region, const char *bezel, 
   if (bezel) {
     v_srect(g_spec, v_fmt("%s.rect", bezel), b);
     v_region("bezel", LAYER_CHROME);
-    kit_panel("bezel", b[0], b[1], b[2], b[3], v_scol(g_spec, "colours.bezel.fill"), v_scol(g_spec, "colours.bezel.edge"), 0);
+    kit_panel("bezel", b[0], b[1], b[2], b[3], v_scol(g_spec, "colours.bezel.fill"), v_scol(g_spec, "colours.bezel.edge"), NULL, 0);
     kit_hairline("bezel.light.t", b[0] + 1, b[1] + 1, b[2] - 2, v_scol(g_spec, "colours.bezel.light"), 0, NULL); kit_hairline("bezel.light.l", b[0] + 1, b[1] + 1, b[3] - 2, v_scol(g_spec, "colours.bezel.light"), 1, NULL);
     kit_hairline("bezel.shade.b", b[0] + 1, b[1] + b[3] - 2, b[2] - 2, v_scol(g_spec, "colours.bezel.shade"), 0, NULL); kit_hairline("bezel.shade.r", b[0] + b[2] - 2, b[1] + 1, b[3] - 2, v_scol(g_spec, "colours.bezel.shade"), 1, NULL);
   }
@@ -33,7 +33,7 @@ void word_livingWindow(const char *spec, const char *region, const char *bezel, 
   v_rect(NAME("ground"), ground[0], ground[1], painted ? 0 : ground[2], painted ? 0 : ground[3], COL("ground")); kit_hairline(NAME("groundTop"), ground[0], ground[1], painted ? 0 : ground[2], COL("groundTop"), 0, NULL);
   v_rect(NAME("foot"), foot[0], foot[1], painted ? 0 : foot[2], painted ? 0 : foot[3], COL("foot"));
   if (bezel) {
-    kit_panel(region, g[0], g[1], g[2], g[3], NULL, COL("edge"), painted);   /* the glass edge: the outline-only form, the same four nodes with no size while the painting stands */
+    kit_panel(region, g[0], g[1], g[2], g[3], NULL, COL("edge"), NULL, painted);   /* the glass edge: the outline-only form, the same four nodes with no size while the painting stands */
   }
   int dithering = painted && from && *from && wire_asset_slot(from) >= 0;
   if (painted && !dithering) { v_name(region); v_sprite_window(NAME("master"), glassPicture, sx, sy, g[0], g[1], g[2], g[3]); }

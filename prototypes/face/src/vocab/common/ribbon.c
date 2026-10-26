@@ -10,10 +10,10 @@ void word_ribbon(const char *id, const int rect[4], const char *text, int pad, c
   if (!role) role = "heading";
   char pid[64], tid[64], fit[V_STR]; snprintf(pid, sizeof pid, "%s", id); snprintf(tid, sizeof tid, "%s.text", id);
   if (!*text) {   /* no words: the same two nodes stay, with no size (the text where the shown line stands, so the refresh that shows the ribbon is the panel's box), so showing the ribbon later never changes the order of the screen's nodes */
-    v_layer(LAYER_CHROME); kit_panel(pid, rect[0], rect[1], rect[2], rect[3], fill, edge, 1);   /* the panel's five nodes, every one at the corner */
+    v_layer(LAYER_CHROME); kit_panel(pid, rect[0], rect[1], rect[2], rect[3], fill, edge, NULL, 1);   /* the panel's five nodes, every one at the corner */
     v_layer(LAYER_TYPE); v_say_in(tid, "", rect[0], rect[2], v_role_cap_in(rect[1], rect[3], role), V_ANCHOR_CAP, role, GROUND); return;
   }
-  v_layer(LAYER_CHROME); kit_panel(pid, rect[0], rect[1], rect[2], rect[3], fill, edge, 0);
+  v_layer(LAYER_CHROME); kit_panel(pid, rect[0], rect[1], rect[2], rect[3], fill, edge, NULL, 0);
   v_layer(LAYER_TYPE);
   v_role_clip(text, rect[2] - 2 * pad, role, fit, sizeof fit); v_say_in(tid, fit, rect[0], rect[2], v_role_cap_in(rect[1], rect[3], role), V_ANCHOR_CAP, role, GROUND);
 }

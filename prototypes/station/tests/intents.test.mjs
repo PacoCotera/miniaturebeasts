@@ -486,7 +486,7 @@ test("T-50 cuts 1 and 2: Home's room ✓ opens the bay in one press (Cargo, then
   assert.ok(h.played.some((e) => e.kind === "arrival" && e.target === "crate") && st.tray.length === 1, "the rule opened the crate");
   const h2 = host(world()); h2.motion = () => true; h2.specs.incubator = incubatorSpec; const st2 = h2.st, q = pod(st2, "S01", chapters("S01")), now = Date.now();
   assert.ok(S.grow(st2, q, {}, settings, now).ok); assert.ok(!S.budReady(st2, settings, now));
-  assert.equal(S.needKey(st2, h2.sv, settings, h2.ui).key, "budGrowing"); INTENTS.home.intent(h2, "room", "confirm"); assert.deepEqual(h2.went, [], "a growing bud is not a need: at rest ✓ does nothing");
+  assert.equal(S.needKey(st2, h2.sv, settings, h2.ui), null, "amber only for real needs: a growing bud is no need"); INTENTS.home.intent(h2, "room", "confirm"); assert.deepEqual(h2.went, [], "a growing bud is not a need: at rest ✓ does nothing");
   INTENTS.home.intent(h2, "incubator", "confirm");
   assert.deepEqual([h2.went.at(-1), h2.played.some((e) => e.kind === "hatch"), !!st2.bud], ["incubator", false, true], "a growing bud: the Incubator station's ✓ only looks");
   const h3 = host(world()); h3.motion = () => true; h3.specs.incubator = incubatorSpec; const st3 = h3.st, q3 = pod(st3, "S01", chapters("S01")); S.grow(st3, q3, {}, settings, T0); st3.bud.early = true;   // finished on its own (Hatch now would hatch at once)

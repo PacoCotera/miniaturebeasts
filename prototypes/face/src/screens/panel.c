@@ -2,8 +2,8 @@
    message plate stand over it. Its words are `panel` (the plate and the card wells), `text`, `price` (a card's cost as the bottom line's kit icons and figures), `sprite` (the outcome's picture, 1:1 and never scaled, bottom-centred on the slot's
    floor, and the destination mark) and the focus ring: the veil (a Bayer lattice of 8 of 16 levels toward stageGround), the panel, the title, then each card. Every number is frame.json regions.panel; the title, the cards' names, costs and
    lines, their pictures' ids and sizes, the masters' ids and the focus are props (`overlay.regions`, `overlay.focus`), never the spec. The panel is drawn from the passed masters (T-20261016-47, -70) in T-70's composite rule per card:
-   the glow, the stage, the contact shadow (nine-sliced across the feet's span plus 16), the picture 1:1 with its feet line (its lowest row of alpha >= 128) on y + 168, the light; the cost groups on rubber chips; the veil a flat layer. While a master is not placed the
-   code-drawn plate (stageGround, plateEdge, chrome wells) stands in. While it is open its focus is its own (the cards, in the props' order): the screen beneath draws no ring and takes no key.
+   the glow, the stage, the contact shadow (nine-sliced across the feet's span plus 16), the picture 1:1 with its feet line (its lowest row of alpha >= 128) on y + 168, the light; the cost groups on rubber chips; the veil a flat layer. The plate
+   is code-drawn (the slate pane: ground panel, edge hairline, bevel; wells in ground), each well with its shade inside its edge. While it is open its focus is its own (the cards, in the props' order): the screen beneath draws no ring and takes no key.
    The card at i of n (1 to 3): [x + (w + gap) i, y, w, h] with w = (776 - gap (n - 1)) / n: 776, 380 or 248. */
 #include "screens.h"
 #include "../vocab/vocab.h"
@@ -50,7 +50,8 @@ static void build_plate(void) {
   v_region("panel", LAYER_CHROME);
   if (v_sprite("panel.plate", v_pstr("overlay.regions.art.housing"), r[0], r[1], r[2], r[3])) return;   /* the housing master, 1:1 */
   char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", v_token(F, v_scol_or(F, RP ".ground", "bone"))); snprintf(edge, sizeof edge, "%s", v_token(F, v_scol_or(F, RP ".edge", "bone")));
-  kit_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge, 0);
+  char bev[24]; snprintf(bev, sizeof bev, "%s", v_token(F, v_scol_or(F, RP ".bevel", "")));   /* the slate pane's bevel, inside the edge, top and left */
+  kit_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge, bev[0] ? bev : NULL, 0);
 }
 /* the question: its role on the panel's ground, centred in its rect, the cap on the rect's middle */
 static void build_title(void) {
@@ -82,7 +83,7 @@ static void build_card(int i, int n, int focused) {
   const char *base = v_fmt("overlay.regions.cards.%d.art", i);
   /* the well: the master (the focused one a step up; the ring is over it), else the code-drawn well */
   { const char *id = v_pstr(v_fmt("%s.%s", base, focused ? "focused" : "well")); v_region("cards", LAYER_PAINTED);
-    if (!v_sprite(v_fmt("card.%d.well", i), id, r[0], r[1], w, r[3])) { char well[24], edge[24]; snprintf(well, sizeof well, "%s", v_token(F, v_scol_or(F, RP ".cards.well", "bone"))); snprintf(edge, sizeof edge, "%s", v_token(F, v_scol_or(F, RP ".cards.edge", "bone"))); v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), r[0], r[1], w, r[3], well, edge, 0); } }
+    if (!v_sprite(v_fmt("card.%d.well", i), id, r[0], r[1], w, r[3])) { char well[24], edge[24]; snprintf(well, sizeof well, "%s", v_token(F, v_scol_or(F, RP ".cards.well", "bone"))); snprintf(edge, sizeof edge, "%s", v_token(F, v_scol_or(F, RP ".cards.edge", "bone"))); char shade[24]; snprintf(shade, sizeof shade, "%s", v_token(F, v_scol_or(F, RP ".cards.shade", ""))); v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), r[0], r[1], w, r[3], well, edge, shade[0] ? shade : NULL, 0); } }   /* the well's shade: a recess, inside its edge, top and left */
   /* the glow and the stage: under the picture (the stage at the slot's foot) */
   v_region("cardStage", LAYER_PAINTED);
   const char *scene = v_pstr(v_fmt("%s.scene", base)); int shift = *scene ? v_si(F, RP ".art.scene.shift", 0) : 0;   /* the Return outcome: its place's scene stands in the glow's place and the subject stands right of centre, facing the light */
@@ -124,12 +125,13 @@ static void build_ring(int n) {
 /* the strip: the plate (the code-drawn ground and edge while no master is placed), then each card: its well, its 96 × 96 picture, the name, the costs and the one line */
 static void build_strip(int n) {
   int r[4]; v_srect(F, RP ".strip.rect", r); char fill[24], edge[24]; snprintf(fill, sizeof fill, "%s", v_token(F, v_scol_or(F, RP ".ground", "bone"))); snprintf(edge, sizeof edge, "%s", v_token(F, v_scol_or(F, RP ".edge", "bone")));
-  v_region("panel", LAYER_CHROME); kit_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge, 0);
+  char bev[24], shade[24]; snprintf(bev, sizeof bev, "%s", v_token(F, v_scol_or(F, RP ".bevel", ""))); snprintf(shade, sizeof shade, "%s", v_token(F, v_scol_or(F, RP ".strip.cards.shade", "")));
+  v_region("panel", LAYER_CHROME); kit_panel("panel.plate", r[0], r[1], r[2], r[3], fill, edge, bev[0] ? bev : NULL, 0);
   const char *cur = v_focus_cur_at("overlay.focus.cur");
   for (int i = 0; i < n; i++) {
     int c[4]; card_rect(i, n, c); int dim = v_pbool(v_fmt("overlay.regions.cards.%d.dim", i), 0), tx = c[0] + v_sk(F, RP ".strip.name.at", 0), maxw = v_si(F, RP ".strip.line.max", 252);
     char well[24], wedge[24]; snprintf(well, sizeof well, "%s", v_token(F, v_scol_or(F, RP ".cards.well", "bone"))); snprintf(wedge, sizeof wedge, "%s", v_token(F, v_scol_or(F, RP ".cards.edge", "bone")));
-    v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), c[0], c[1], c[2], c[3], well, wedge, 0);
+    v_region("cards", LAYER_CHROME); kit_panel(v_fmt("card.%d.well", i), c[0], c[1], c[2], c[3], well, wedge, shade[0] ? shade : NULL, 0);
     { const char *pic = v_pstr(v_fmt("overlay.regions.cards.%d.picture", i)); int pw = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.0", i), 0), ph = v_pint(v_fmt("overlay.regions.cards.%d.pictureSize.1", i), 0);
       v_name("cardPictures"); v_slot_at(v_fmt("card.%d.picture", i), pic, NULL, c[0] + v_sk(F, RP ".strip.picture.at", 0), c[1] + v_sk(F, RP ".strip.picture.at", 1), pw, ph, pw > 0 && ph > 0, c[0], c[1]); }
     char g[24]; snprintf(g, sizeof g, "%s", v_sstr(F, RP ".ground"));   /* the strip's words stand on its ground (the cards are its code-drawn wells) */

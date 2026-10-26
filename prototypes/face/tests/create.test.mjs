@@ -278,9 +278,9 @@ test("the rail's mark: one 12 × 12 composed mark a tab (fix 11), a `bone` diamo
   const c = scene({ read: 2, f: 1, roll: 1, clash: true }), g = await start(c); assert.ok(find(g, (x, y) => cross(g, x, y)), "a red cross, the pixels |x - y| <= 1 and |x + y - 11| <= 1");
   const clean = await start(scene({ read: 2, f: 1 })); assert.ok(!find(clean, (x, y) => diamond(clean, x, y)) && !find(clean, (x, y) => cross(clean, x, y)), "a clean chapter draws no mark");
 });
-test("a blocked bottom line has no ✓ cap and keeps the verb where it stood (x 36), the verb and the price in mist; a short one has its verb at the same x", { skip }, async () => {
+test("a blocked bottom line keeps the verb where it stood (x 36), the verb and the price in mist, its ✓ cap the dimmed one (the frame's picture, not on the face in this test: no ink); a short one has its verb at the same x", { skip }, async () => {
   const ground = (f, x, y) => f.pixel(x, y).join() === f.pixel(8, 585).join(), blocked = await start(scene({ read: 2, f: 1, busy: true })), short = await start(scene({ read: 2, f: 1, short: true }));
-  let capInk = 0; for (let y = 574; y < 590; y++) for (let x = 16; x < 32; x++) if (!ground(blocked, x, y)) capInk++; assert.equal(capInk, 0, "no cap");
+  let capInk = 0; for (let y = 574; y < 590; y++) for (let x = 16; x < 32; x++) if (!ground(blocked, x, y)) capInk++; assert.equal(capInk, 0, "no cap picture on the face here");
   let verbInk = 0; for (let y = 574; y < 592; y++) for (let x = 36; x < 44; x++) if (!ground(blocked, x, y)) verbInk++; assert.ok(verbInk > 0, "the verb starts at x 36");
   let verbShort = 0; for (let y = 574; y < 592; y++) for (let x = 36; x < 44; x++) if (!ground(short, x, y)) verbShort++; assert.ok(verbShort > 0, "a short line has its verb at the same x (its cap picture is the frame's, not in this test)");
 });

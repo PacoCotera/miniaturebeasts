@@ -44,14 +44,14 @@ async function open(width, height, { dsf = 1, motion = false, query = "?test" } 
   await st().evaluate(() => window.__st.ready); await mb().waitForFunction(() => window.__mb && window.__mb.S, null, { timeout: 30000 }); await page.waitForTimeout(600);
   return { ctx, page, st, mb };
 }
-// the arrival (the Station takes the keys and behaves as if it had them, and Later returns to the screen it was on): one crate holds input for 3000 + 200 ms, then the strip (Open the bay | Later) with the ring on Open the bay; ▶ then ✓ is Later
+// the arrival (the Station takes the keys and behaves as if it had them, and Later returns to the screen it was on): one crate holds input for 3000 + 200 ms, then the strip (Open now | Later) with the ring on Open now; ▶ then ✓ is Later
 const later = async (page, st, what, back, empty = false) => {
   if (empty) {   // C docks with an empty bay: the show has no choice, so a key skips it and it closes on the screen the player was on
     await page.waitForTimeout(1000); await page.keyboard.press("Enter"); await page.waitForTimeout(800); await back(); return;
   }
   await page.waitForTimeout(3600);   // one crate: the show holds 3200 ms
   await st().waitForFunction(() => window.__st.props?.overlay?.form === "strip", null, { timeout: 15000 }).catch(() => {});
-  eq(await st().evaluate(() => [window.__st.props?.overlay?.form, window.__st.props?.overlay?.focus?.cur]), ["strip", "card.open"], what + ": after the show the strip, the ring on Open the bay");
+  eq(await st().evaluate(() => [window.__st.props?.overlay?.form, window.__st.props?.overlay?.focus?.cur]), ["strip", "card.open"], what + ": after the show the strip, the ring on Open now");
   await page.keyboard.press("ArrowRight"); await page.waitForTimeout(200); await page.keyboard.press("Enter"); await page.waitForTimeout(800);
   await back();
 };

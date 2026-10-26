@@ -29,7 +29,7 @@ void kit_nameTag(const char *spec, const char *glass, const char *name, const in
   if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
   int lt = spec_int(spec, "regions.nameTag.lineTop", 0);
-  v_region("nameTag", LAYER_CHROME); kit_panel("nameTag", x, y, w, h, fill, slot ? NULL : edge, slot);
+  v_region("nameTag", LAYER_CHROME); kit_panel("nameTag", x, y, w, h, fill, slot ? NULL : edge, NULL, slot);
   int ty = lt > 0 ? y + (lt - v_sk(spec, "regions.nameTag.rect", 1)) : y + 5, an = lt > 0 ? V_ANCHOR_LINE : V_ANCHOR_CAP;
   v_region("nameTag", LAYER_TYPE);
   if (sized) v_line_at("nameTag.text", slot ? "" : name, x + v_half(w - tw), ty, an, px, v_scol(spec, "colours.nameTag.text"), V_ALIGN_LEFT);
