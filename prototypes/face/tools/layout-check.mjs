@@ -4,6 +4,8 @@
 // and one overlay a finding, <out>/<screen>/<state>--<rule>-<n>.png (tools/layout-overlay.mjs). Identical findings across a screen's states (rule, node, other, measured) are one, with its states.
 // Report mode: exits 0, and 1 only on a finding of a rule frame.json layout.enforced lists for its screen, an unused exception (frame.json layout.exceptions), a malformed layout block, or L0 on an
 // enforced screen; 2 when the logs are not the goldens' (a hash that differs) or are missing.
+// A finding may carry `says` (the card's plain sentence: plates named by their title, an overlap or a lone mark asked in words), `assumed` (the alignment the rule took: "Aligned: fill (inferred)") and `counted`
+// (what a balance weighed or an empty box counted); the overlay draws a margin's opposite side beside it, a near-miss's two lines, the boxes a balance weighed and a small box magnified.
 // The review set: <out>/review.md and review.json, one card per screen and rule (with its part): its worst instance (the largest |measured − required|; instances are findings grouped
 // ignoring the measure), how many of that kind and the other ids; the nine Station screens first, the Library last under "parked". <out>/index.json and <out>/index.md stay complete.
 //   node prototypes/face/tools/layout-check.mjs <logs dir> --out <dir> [--overlays all | review | none]   (all: an overlay a finding, the default; review: the cards' only; --no-overlays: none)
@@ -63,7 +65,7 @@ export function review(grouped) {
   for (const f of grouped) { const k = `${f.screen}|${f.rule}${f.part ?? ""}`; if (!kinds.has(k)) kinds.set(k, []); kinds.get(k).push(f); }
   const cards = [...kinds.values()].map((fs) => { const worst = fs.reduce((a, f) => (off(f) > off(a) ? f : a)), inst = new Set(fs.map((f) => [f.rule, f.part ?? "", f.node, f.other, f.container.id].join("|")));
     return { screen: worst.screen, kind: worst.rule + (worst.part ?? ""), parked: PARKED.includes(worst.screen), instances: inst.size, findings: fs.length,
-      worst: { id: worst.id, node: worst.node, other: worst.other, container: worst.container, measured: worst.measured, required: worst.required, unit: worst.unit, what: worst.what ?? "", states: worst.states, overlay: worst.overlay },
+      worst: { id: worst.id, node: worst.node, other: worst.other, container: worst.container, measured: worst.measured, required: worst.required, unit: worst.unit, what: worst.what ?? "", ...(worst.says ? { says: worst.says } : {}), ...(worst.assumed ? { assumed: worst.assumed } : {}), ...(worst.counted ? { counted: worst.counted } : {}), states: worst.states, overlay: worst.overlay },
       others: fs.filter((f) => f !== worst).map((f) => f.id) }; });
   const ruleN = (k) => { const m = k.match(/^L(\d+)([ab]?)$/); return m ? +m[1] * 10 + (m[2] === "b" ? 1 : 0) : 999; };
   return cards.sort((a, b) => order(a.screen) - order(b.screen) || a.screen.localeCompare(b.screen) || ruleN(a.kind) - ruleN(b.kind));
@@ -73,7 +75,7 @@ function reviewMd(cards, { commit, taken, total, overlays }) {
   const md = [`# Layout check: the review set`, ``, `${cards.length} cards, one per screen and rule (with its part), of ${total} findings: each the worst instance of its kind, with how many of that kind and the other ids (index.md lists every finding). Commit ${commit ?? "?"}, taken ${taken}; overlays: ${overlays}.`, ``,
     `| Screen | Cards |`, `| --- | ---: |`, ...screens.map((s) => `| ${s}${PARKED.includes(s) ? " (parked)" : ""} | ${cards.filter((c) => c.screen === s).length} |`), ``];
   const section = (s) => { md.push(`### ${s}`, ``); for (const c of cards.filter((q) => q.screen === s)) { const w = c.worst;
-    md.push(`- **${c.kind}** · ${w.node}${w.other ? " / " + w.other : ""} in ${w.container.id}: ${w.what} · ${typeof w.measured === "number" ? w.measured : JSON.stringify(w.measured)} → ${w.required} · ${w.states.length > 3 ? `${w.states.slice(0, 3).join(", ")} and ${w.states.length - 3} more` : w.states.join(", ")} · [overlay](${w.overlay}) · ${w.id}; ${c.instances} instance${c.instances === 1 ? "" : "s"} of this kind (${c.findings} finding${c.findings === 1 ? "" : "s"})${c.others.length ? ": also " + c.others.join(", ") : ""}`); }
+    md.push(`- **${c.kind}** · ${w.node}${w.other ? " / " + w.other : ""} in ${w.container.id}: ${w.what}${w.says ? " · " + w.says : ""}${w.assumed ? " · " + w.assumed : ""}${w.counted ? " · Counted: " + w.counted : ""} · ${typeof w.measured === "number" ? w.measured : JSON.stringify(w.measured)} → ${w.required} · ${w.states.length > 3 ? `${w.states.slice(0, 3).join(", ")} and ${w.states.length - 3} more` : w.states.join(", ")} · [overlay](${w.overlay}) · ${w.id}; ${c.instances} instance${c.instances === 1 ? "" : "s"} of this kind (${c.findings} finding${c.findings === 1 ? "" : "s"})${c.others.length ? ": also " + c.others.join(", ") : ""}`); }
     md.push(``); };
   md.push(`## The Station screens`, ``); live.forEach(section);
   if (parked.length) { md.push(`## Parked`, ``, `The Library waits for its workstream: its cards are listed, not reviewed now.`, ``); parked.forEach(section); }
@@ -113,7 +115,7 @@ if (isMain) {
   if (R.blind.length) md.push(`Not measurable (L0): ${R.blind.join("; ")}`, ``);
   if (unused.length) md.push(`Unused exceptions: ${unused.map((e) => `${e.screen} ${e.rule} ${e.node}`).join("; ")}`, ``);
   for (const s of screens) { const fs = R.grouped.filter((f) => f.screen === s); if (!fs.length) continue; md.push(`## ${s}`, ``);
-    for (const f of fs) md.push(`- ${f.states.length > 3 ? `${f.states.slice(0, 3).join(", ")} and ${f.states.length - 3} more` : f.states.join(", ")} · ${f.rule}${f.part ?? ""}${f.enforced ? " (enforced)" : ""} · ${f.node}${f.other ? " / " + f.other : ""} in ${f.container.id}: ${f.what ?? ""} · ${label(f).replace(/^\S+ /, "")} · [overlay](${f.overlay})`);
+    for (const f of fs) md.push(`- ${f.states.length > 3 ? `${f.states.slice(0, 3).join(", ")} and ${f.states.length - 3} more` : f.states.join(", ")} · ${f.rule}${f.part ?? ""}${f.enforced ? " (enforced)" : ""} · ${f.node}${f.other ? " / " + f.other : ""} in ${f.container.id}: ${f.what ?? ""}${f.says ? " · " + f.says : ""}${f.assumed ? " · " + f.assumed : ""}${f.counted ? " · Counted: " + f.counted : ""} · ${label(f).replace(/^\S+ /, "")} · [overlay](${f.overlay})`);
     md.push(``); }
   writeFileSync(path.join(out, "index.md"), md.join("\n"));
   writeFileSync(path.join(out, "review.json"), JSON.stringify({ commit, taken, overlays, cards }, null, 1) + "\n");

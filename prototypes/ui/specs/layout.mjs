@@ -7,7 +7,11 @@
 //   `snapshot`, the snapshot's source nodes ({ region, from, at, nodes }) while a node shows it.
 // spec: the screen's spec; its top-level `layout` block: { stage: "bezel" | "field" | "painting" | "exempt", opening: [x, y, w, h], margin?, gutter?, containers?: [{ id, region, padding, gutter }],
 //   columns?: [{ id, regions, axis, align: "fill" | "centre" }], topLine?, floorLine?, groups?: [{ id, regions, within, align }], split?: [{ between: [a, b], gutter, reason }], bleed?: [regions],
-//   slots?: [regions], painted?: [{ id, rect, fills, states?, picture }], facts?: [{ region, path }] }, and its regions (`labels`, `under`, `partOf` merge one region into another).
+//   slots?: [regions], painted?: [{ id, rect | region, fills, states?, picture }], facts?: [{ region, path }], align?, clips?: [regions], movers?: [regions], props?: [regions],
+//   anchors?: [{ region, x?: "left" | "right", y?: "top" | "bottom", inset?: [dx, dy] }] }, and its regions (`labels`, `under`, `partOf` merge one region into another).
+//   A container has an alignment per axis (`align` on the stage, `containers[].align`: "left" | "right" | "centre" | "fill", or { x: left | right | centre | fill, y: top | bottom | middle | fill }; a string sets x);
+//   undeclared, an axis is a centred block when the content sits off the margin on both sides, else fill. `containers[].padding` is a number or { left, top, right, bottom }. A region in `clips` is a window that
+//   clips its content by design (L2 and L10a are off inside it); `movers` (creatures) and `props` (scene props) are placed by depth, not by the grid; an anchor is fixed UI pinned in a scene's corner.
 // frameSpec: frame.json; `layout.thresholds` (every number the rules use, each { value, from }), `layout.exceptions` [{ screen, state?, rule, node, other?, reason, by, date }] and
 //   `layout.enforced` { "<screen>": ["L1", ...] | "all" }. screen: the golden screen (the exceptions' and the enforcement's key); state: the golden state.
 // extra: { facts: { "<props path>": value } }: the props facts the generated pictures carry (a spec's `layout.facts` names the path; each entry a rect, or an object with `rect`, in the picture's own
@@ -41,6 +45,10 @@ const overlapShare = (a, b, axis) => { const lo = axis === "y" ? Math.max(a[1], 
 const side = (b, c, s) => (s === "left" ? b[0] - c[0] : s === "top" ? b[1] - c[1] : s === "right" ? R(c) - R(b) : B(c) - B(b));   // the gap from a box to its container's edge on side s (negative: across it)
 const cx = (b) => b[0] + b[2] / 2, cy = (b) => b[1] + b[3] / 2;
 const rnd = (v, k = 2) => Math.round(v * 10 ** k) / 10 ** k;
+// A container's declared alignment, per axis: x left | right | centre | fill, y top | bottom | middle | fill (a string sets x; "centre" on y is "middle"); null: not declared, inferred.
+const ALIGN_X = ["left", "right", "centre", "fill"], ALIGN_Y = ["top", "bottom", "middle", "centre", "fill"];
+const alignOf = (a) => { const v = !a ? {} : typeof a === "string" ? { x: a } : a; return { x: v.x ?? null, y: v.y === "centre" ? "middle" : v.y ?? null }; };
+const START = new Set(["left", "top"]), END = new Set(["right", "bottom"]), PINNED = (al) => START.has(al) || END.has(al);
 
 // ---- the spec and the thresholds ----
 function regionOf(spec, id) { let at = spec?.regions; for (const k of String(id).split(".")) { if (!at || typeof at !== "object") return null; at = at[k]; } return at && typeof at === "object" ? at : null; }
@@ -51,6 +59,9 @@ export function malformed(spec, frameSpec, name = "spec") {
   if (!F || typeof F !== "object") out.push("frame.json has no layout block");
   else {
     for (const k of [...RULES.filter((r) => r !== "L7"), "L7a", "L7b", "mark", "ground", "container", "component", "rule"]) { const t = F.thresholds?.[k]; if (!t || !("value" in t) || typeof t.from !== "string" || !t.from) out.push(`frame.json layout.thresholds.${k} is not { value, from }`); }
+    const t = F.thresholds ?? {}, num = (v) => Number.isFinite(v);
+    if (!num(t.L3?.value?.bezelItems)) out.push("frame.json layout.thresholds.L3.value.bezelItems is not a number");
+    if (!num(t.L4?.value?.depth) || !num(t.L4?.value?.perch?.share) || !num(t.L4?.value?.perch?.min)) out.push("frame.json layout.thresholds.L4.value needs depth and perch { share, min }");
     if (!Array.isArray(F.exceptions)) out.push("frame.json layout.exceptions is not a list");
     else F.exceptions.forEach((e, i) => { if (!e || !RULES.includes(e.rule) || typeof e.screen !== "string" || typeof e.node !== "string" || !e.reason || !["UI/UX", "AD", "owner"].includes(e.by) || !/^\d{4}-\d\d-\d\d/.test(String(e.date ?? ""))) out.push(`frame.json layout.exceptions[${i}] needs screen, rule (L0 to L11), node, reason, by (UI/UX, AD or owner) and date`); });
     if (!F.enforced || typeof F.enforced !== "object" || Array.isArray(F.enforced)) out.push("frame.json layout.enforced is not an object");
@@ -59,10 +70,16 @@ export function malformed(spec, frameSpec, name = "spec") {
   if (!L || typeof L !== "object") { out.push(`${name} has no layout block`); return out; }
   if (!STAGES.includes(L.stage)) out.push(`${name} layout.stage is not one of ${STAGES.join(", ")}`);
   if (L.stage !== "exempt" && !rect(L.opening)) out.push(`${name} layout.opening is not [x, y, w, h]`);
-  for (const k of ["containers", "columns", "groups", "split", "bleed", "slots", "painted", "facts"]) if (k in L && !Array.isArray(L[k])) out.push(`${name} layout.${k} is not a list`);
-  for (const p of L.painted ?? []) if (!p?.id || !rect(p.rect) || typeof p.fills !== "boolean") out.push(`${name} layout.painted: ${p?.id ?? "?"} needs id, rect and fills`);
+  for (const k of ["containers", "columns", "groups", "split", "bleed", "slots", "painted", "facts", "clips", "movers", "props", "anchors"]) if (k in L && !Array.isArray(L[k])) out.push(`${name} layout.${k} is not a list`);
+  for (const k of ["clips", "movers", "props"]) if (Array.isArray(L[k]) && !L[k].every((r) => typeof r === "string" && r)) out.push(`${name} layout.${k} lists region names`);
+  for (const p of L.painted ?? []) if (!p?.id || !(rect(p.rect) || (typeof p.region === "string" && p.region)) || typeof p.fills !== "boolean") out.push(`${name} layout.painted: ${p?.id ?? "?"} needs id, rect or region, and fills`);
   for (const f of L.facts ?? []) if (!f?.region || !f?.path) out.push(`${name} layout.facts: an entry needs region and path`);
-  for (const c of L.containers ?? []) if (!c?.region) out.push(`${name} layout.containers: an entry needs region`);
+  const aligned = (a, where) => { if (a == null) return; const v = typeof a === "string" ? { x: a } : a;
+    if (typeof v !== "object" || Array.isArray(v) || (v.x != null && !ALIGN_X.includes(v.x)) || (v.y != null && !ALIGN_Y.includes(v.y))) out.push(`${name} ${where} align is ${ALIGN_X.join(" | ")}, or { x: ${ALIGN_X.join(" | ")}, y: ${ALIGN_Y.join(" | ")} }`); };
+  aligned(L.align, "layout");
+  for (const c of L.containers ?? []) { if (!c?.region) { out.push(`${name} layout.containers: an entry needs region`); continue; } aligned(c.align, `layout.containers ${c.region}`);
+    const p = c.padding; if (p != null && !(Number.isFinite(p) || (typeof p === "object" && !Array.isArray(p) && Object.entries(p).every(([k, v]) => SIDES.includes(k) && Number.isFinite(v))))) out.push(`${name} layout.containers ${c.region}: padding is a number or { left, top, right, bottom }`); }
+  for (const a of Array.isArray(L.anchors) ? L.anchors : []) if (!a?.region || !(["left", "right"].includes(a.x) || ["top", "bottom"].includes(a.y)) || (a.x != null && !["left", "right"].includes(a.x)) || (a.y != null && !["top", "bottom"].includes(a.y)) || (a.inset != null && !(Array.isArray(a.inset) && a.inset.length === 2 && a.inset.every(Number.isFinite)))) out.push(`${name} layout.anchors: ${a?.region ?? "?"} needs region, x (left, right) or y (top, bottom), and inset [dx, dy]`);
   return out;
 }
 
@@ -78,7 +95,7 @@ const solidCover = (r) => !r.ring && (r.kind === KIND.rect || (r.kind === KIND.n
 // The analysis of one state: its containers, each with its components, rings and marks, and what the rules need. Exported through components() and containers().
 function analyse(log, spec, frameSpec, extra = {}) {
   const L = spec?.layout ?? {}, ruleMax = T(frameSpec, "rule"), markMax = T(frameSpec, "mark"), groundShare = T(frameSpec, "ground"), contMin = T(frameSpec, "container"), near = T(frameSpec, "component");
-  const t1 = T(frameSpec, "L1"), t3 = T(frameSpec, "L3");
+  const t1 = T(frameSpec, "L1"), t3 = T(frameSpec, "L3"), movers = new Set(L.movers ?? []), props = new Set(L.props ?? []);
   const textOf = new Map(); for (const t of log?.type ?? []) textOf.set(`${t.region}|${t.x}|${t.w}`, t);
   let nodes = (log?.nodes ?? []).map((n, i) => parse(n, i, n[1] === KIND.text ? textOf.get(`${n[3]}|${n[4]}|${n[6]}`) : null));
   // the snapshot's source nodes, moved to where the snapshot shows them, inside its node (log addition 3)
@@ -142,7 +159,8 @@ function analyse(log, spec, frameSpec, extra = {}) {
   list.forEach((c) => {
     const decl = contDecl(c.group), m = L.margin;
     if (c.group) { const base = (c.group.src === "screen" ? "" : c.group.src + " ") + c.group.region; idCount[base] = (idCount[base] ?? 0) + 1; c.id = base + (idCount[base] > 1 ? "#" + idCount[base] : ""); } else c.id = "opening";
-    c.margins = c.group ? Object.fromEntries(SIDES.map((s) => [s, decl?.padding ?? t1.pane])) : Object.fromEntries(SIDES.map((s) => [s, (typeof m === "number" ? m : m?.[s]) ?? t1[L.stage === "bezel" ? "bezel" : "field"][s]]));
+    c.align = alignOf(c.group ? decl?.align : L.align);
+    c.margins = c.group ? Object.fromEntries(SIDES.map((s) => [s, (decl?.padding && typeof decl.padding === "object" ? decl.padding[s] : decl?.padding) ?? t1.pane])) : Object.fromEntries(SIDES.map((s) => [s, (typeof m === "number" ? m : m?.[s]) ?? t1[L.stage === "bezel" ? "bezel" : "field"][s]]));
     if (c.strips?.length) c.margins.top = t1.strip.gap;
     c.gutter = c.group ? decl?.gutter ?? t3.pane : L.gutter ?? t3[L.stage === "bezel" ? "bezel" : "field"];
     const ks = c.kids, up = ks.map((_, k) => k), find = (k) => (up[k] === k ? k : (up[k] = find(up[k])));
@@ -151,7 +169,9 @@ function analyse(log, spec, frameSpec, extra = {}) {
     const by = new Map(); ks.forEach((g, k) => { const r = find(k); if (!by.has(r)) by.set(r, []); by.get(r).push(g); });
     const comps = [...by.values()].map((gs) => ({ key: gs[0].key, region: gs[0].key.replace(/^[a-z]+:/, ""), src: gs[0].src, groups: gs, box: gs.reduce((u, g) => union(u, g.box), null), text: gs.every((g) => g.kind === KIND.text), label: gs.flatMap((g) => g.members).find((n) => n.text)?.text ?? null, pane: gs.some((g) => boxes.has(g)) ? boxes.get(gs.find((g) => boxes.has(g))) : null }));
     comps.sort((a, b) => a.box[1] - b.box[1] || a.box[0] - b.box[0]);
-    const seenKey = {}; for (const k of comps) { seenKey[k.key] = (seenKey[k.key] ?? 0) + 1; k.name = (k.src === "snapshot" ? "snapshot " : "") + k.region + (seenKey[k.key] > 1 ? "#" + seenKey[k.key] : ""); k.mark = Math.max(k.box[2], k.box[3]) < markMax; }
+    const seenKey = {}; for (const k of comps) { seenKey[k.key] = (seenKey[k.key] ?? 0) + 1; k.name = (k.src === "snapshot" ? "snapshot " : "") + k.region + (seenKey[k.key] > 1 ? "#" + seenKey[k.key] : ""); k.mark = Math.max(k.box[2], k.box[3]) < markMax; k.mover = movers.has(k.region); k.prop = props.has(k.region); k.anchor = (L.anchors ?? []).find((a) => a.region === k.region) ?? null; }
+    const wordsOf = (g) => g.members.find((n) => n.text)?.text;
+    for (const k of comps) k.title = k.text ? null : live.filter((g) => g.kind === KIND.text && g.src === k.src && encloses(k.box, g.box) && wordsOf(g)).sort((a, b) => a.box[1] - b.box[1] || a.box[0] - b.box[0]).map(wordsOf)[0] ?? null;   // a plate is named by the title text on it
     c.components = comps;
     c.rings = rings.filter((r) => home(r) === c);
     c.groups = ks;
@@ -181,28 +201,39 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
   const L = spec?.layout; if (!L || L.stage === "exempt") return withUsed([], []);
   const A = analyse(log, spec, frameSpec, extra), out = [];
   const t1 = T(frameSpec, "L1"), t2 = T(frameSpec, "L2"), t3 = T(frameSpec, "L3"), t4 = T(frameSpec, "L4"), t5 = T(frameSpec, "L5"), t6 = T(frameSpec, "L6"), t7a = T(frameSpec, "L7a"), t7b = T(frameSpec, "L7b"), t8 = T(frameSpec, "L8"), t10 = T(frameSpec, "L10"), t11 = T(frameSpec, "L11"), t0 = T(frameSpec, "L0");
-  const bleed = new Set(L.bleed ?? []), painted = (L.painted ?? []).filter((p) => !p.states || p.states.includes(state));
+  const bleed = new Set(L.bleed ?? []), clips = new Set(L.clips ?? []), contMin = T(frameSpec, "container"), painted = (L.painted ?? []).filter((p) => !p.states || p.states.includes(state));
   const say = (rule, c, f) => out.push({ rule, ...f, container: { id: c.id, rect: [...c.rect] } });
   const bx = (role, rect) => ({ role, rect: [...rect] });
   const declared = new Set([...(L.groups ?? []).flatMap((g) => g.regions ?? []), ...(L.columns ?? []).flatMap((c) => c.regions ?? [])]);
   for (const c of A.containers) {
-    const R0 = c.rect, all = c.components, comps = all.filter((k) => !k.mark), G = c.gutter;
+    const byDepth = (k) => k.mover || k.prop, R0 = c.rect, all = c.components, comps = all.filter((k) => !k.mark && !byDepth(k) && !k.anchor), G = c.gutter;   // creatures and scene props are placed by depth, and an anchor by its corner: not by the grid
+    const clipsIn = !!c.group && c.group.members.some((n) => clips.has(n.region));   // a window that clips its content by design (layout.clips)
+    const mod = (k) => !k.text && Math.max(k.box[2], k.box[3]) >= contMin;   // a module: a pane, plate, strip or picture container-sized on its larger side
+    const inset = (k, s) => k.anchor.inset?.[s === "left" || s === "right" ? 0 : 1] ?? c.margins[s];
+    for (const k of all.filter((q) => q.anchor)) for (const s of [k.anchor.x, k.anchor.y]) { if (!s) continue; const d = side(k.box, R0, s), want = inset(k, s);   // layout.anchors: held at its corner's insets
+      if (Math.abs(d - want) > t1.side) say("L1", c, { node: k.name, other: s + " (anchored)", measured: d, required: want, unit: "px", what: d < want ? "tight" : "loose", boxes: [bx("component", k.box)], dim: dimTo(k.box, R0, s) }); }
     // L0: composed content of 20 % of its container or more, with no inner boxes: not measurable, never a silent pass
     for (const g of A.blind) if (c.groups.includes(g) && area(inter(g.box, R0) ?? [0, 0, 0, 0]) >= t0 * area(R0)) say("L0", c, { node: g.region, other: "", measured: rnd(area(inter(g.box, R0)) / area(R0)), required: t0, unit: "share", what: "composed content with no inner boxes: not measurable", boxes: [bx("component", g.box)] });
     // L2 then L1, side by side: a box 2 px or less from its container's edge, or across it, where a margin is required (not bleed); else the outermost component at the margin, or centred
     const l2sides = new Set();
     for (const s of SIDES) {
-      const m = c.margins[s]; if (m <= t2) continue;
-      for (const k of [...all, ...c.rings.map((r) => ({ name: "focus ring", region: r.region, box: r.rect, ring: true }))]) { if (bleed.has(k.region)) continue; const d = side(k.box, R0, s); if (d <= t2 && inter(k.box, R0)) { l2sides.add(s); say("L2", c, { node: k.name, other: s, measured: d, required: m, unit: "px", what: d < 0 ? "across the edge" : "on the edge", boxes: [bx("component", k.box)], dim: dimTo(k.box, R0, s) }); } }
+      const m = c.margins[s]; if (m <= t2 || clipsIn) continue;
+      for (const k of [...all, ...c.rings.map((r) => ({ name: "focus ring", region: r.region, box: r.rect, ring: true }))]) { if (bleed.has(k.region) || byDepth(k)) continue; const d = side(k.box, R0, s); if (d <= t2 && inter(k.box, R0)) { l2sides.add(s); say("L2", c, { node: k.name, other: s, measured: d, required: m, unit: "px", what: d < 0 ? "across the edge" : "on the edge", says: `The ${Math.max(k.box[2], k.box[3]) < 24 ? Math.max(k.box[2], k.box[3]) + " px " : ""}${k.name} ${d < 0 ? "crosses" : "touches"} the ${c.id}'s ${s} edge (${d} px; ${m} asked).`, boxes: [bx("component", k.box)], dim: dimTo(k.box, R0, s) }); } }
     }
-    const cs = comps.filter((k) => !bleed.has(k.region));
+    // The alignment of each axis: declared (layout.align, containers[].align), else a centred block when the content (a bleed picture included) sits off the margin on both sides, else fill.
+    // fill: both sides at the margin; left, top, right, bottom: the leading side at the margin, the trailing side at least the margin; centre: both sides at least the margin (equal sides are L7b's)
+    const cs = comps.filter((k) => !bleed.has(k.region)), axisAlign = {}, declaredAxis = {};
+    if (comps.length) for (const [a, b, ax] of [["left", "right", "x"], ["top", "bottom", "y"]]) { const wide = (z) => Math.min(...comps.map((k) => side(k.box, R0, z)));
+      declaredAxis[ax] = c.align[ax] != null; axisAlign[ax] = c.align[ax] ?? (wide(a) > c.margins[a] + t1.side && wide(b) > c.margins[b] + t1.side ? "centre" : "fill"); if (axisAlign[ax] === "middle") axisAlign[ax] = "centre"; }
+    c.axisAlign = axisAlign;
+    const assumed = (ax) => `Aligned: ${axisAlign[ax]}${declaredAxis[ax] ? "" : " (inferred)"}`;
     if (cs.length) {
       const gap = Object.fromEntries(SIDES.map((s) => [s, Math.min(...cs.map((k) => side(k.box, R0, s)))])), outer = (s) => cs.reduce((a, k) => (side(k.box, R0, s) < side(a.box, R0, s) ? k : a));
-      for (const s of SIDES) {
-        if (l2sides.has(s)) continue; const m = c.margins[s], o = OPP[s];
-        if (Math.abs(gap[s] - m) <= t1.side) continue;
-        if (gap[s] > m + t1.side && gap[o] > c.margins[o] + t1.side && Math.abs(gap[s] - gap[o]) <= t1.opposite) continue;   // a centred block: off the margin on both sides, with equal slack
-        const k = outer(s); say("L1", c, { node: k.name, other: s + (s === "top" && c.strips?.length ? " (under the strip)" : ""), measured: gap[s], required: m, unit: "px", what: gap[s] < m ? "tight" : "loose", opposite: gap[o], boxes: [bx("component", k.box)], dim: dimTo(k.box, R0, s) });
+      for (const [a, b, ax] of [["left", "right", "x"], ["top", "bottom", "y"]]) for (const s of [a, b]) {
+        if (l2sides.has(s)) continue; const m = c.margins[s], o = OPP[s], al = axisAlign[ax], lead = al === "fill" || (START.has(al) && s === a) || (END.has(al) && s === b);
+        if (lead ? Math.abs(gap[s] - m) <= t1.side : gap[s] >= m - t1.side) continue;   // the leading side at the margin; a trailing or centred side at least the margin: its slack is no finding here
+        const k = outer(s), ko = outer(o), loose = gap[s] > m, says = loose && !declaredAxis[ax] && al === "fill" && Math.abs(gap[o] - c.margins[o]) <= t1.side ? `The ${k.name} component sits at the ${o} margin and leaves ${gap[s]} on the ${s}. If it is a ${o}-aligned list this is fine; if it is a row of buttons, the row should fill or centre.` : null;
+        say("L1", c, { node: k.name, other: s + (s === "top" && c.strips?.length ? " (under the strip)" : ""), measured: gap[s], required: m, unit: "px", what: loose ? "loose" : "tight", align: al, assumed: assumed(ax), ...(says ? { says } : {}), opposite: gap[o], boxes: [bx("component", k.box)], dim: dimTo(k.box, R0, s), dim2: dimTo(ko.box, R0, o) });
       }
     }
     // L3: gutters between neighbours that overlap 30 % on the other axis: under the gutter (crowding), or unequal along one row or column (a declared split is 2 x G)
@@ -210,12 +241,13 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
     const next = (a, axis) => { let best = null, bg = Infinity; for (const b of comps) { if (b === a) continue; const g = axis === "x" ? b.box[0] - R(a.box) : b.box[1] - B(a.box); if (g < 0 || overlapShare(a.box, b.box, axis === "x" ? "y" : "x") < t3.overlap) continue; if (g < bg) { bg = g; best = b; } } return best ? { b: best, gap: bg } : null; };
     for (const axis of ["x", "y"]) {
       const link = new Map(comps.map((a) => [a, next(a, axis)]));
-      const Ga = axis === "y" && !c.group && L.stage === "bezel" ? t3.bezelRows : G;   // a bezel stage's rows take the field's gutter (32 is its column gutter)
-      for (const [a, n] of link) if (n && n.gap < Ga && !splitOf(a, n.b)) say("L3", c, { part: "a", node: a.name, other: n.b.name, measured: n.gap, required: Ga, unit: "px", what: "crowding", boxes: [bx("component", a.box), bx("other", n.b.box)], dim: dimBetween(a.box, n.b.box, axis) });
+      const bezel = !c.group && L.stage === "bezel", Ga = axis === "y" && bezel ? t3.bezelRows : G;   // a bezel stage's rows take the field's gutter (32 is its column gutter)
+      const need = (a, b) => (axis === "x" && bezel && !(mod(a) && mod(b)) ? t3.bezelItems : Ga);   // the column gutter is between two modules; other neighbours take the field's item gutter
+      for (const [a, n] of link) { const want = n && need(a, n.b); if (n && n.gap < want && !splitOf(a, n.b) && !bleed.has(a.region) && !bleed.has(n.b.region)) say("L3", c, { part: "a", node: a.name, other: n.b.name, measured: n.gap, required: want, unit: "px", what: "crowding", says: a.title && n.b.title ? `The ${a.title} and ${n.b.title} plates are ${n.gap} apart; the gutter is ${want}.` : `The ${a.name} and ${n.b.name} components are ${n.gap} apart; the gutter is ${want}.`, boxes: [bx("component", a.box), bx("other", n.b.box)], dim: dimBetween(a.box, n.b.box, axis) }); }
       const heads = comps.filter((a) => link.get(a) && ![...link.values()].some((n) => n?.b === a));
       for (const h of heads) {
         const chain = []; for (let a = h, seenA = new Set(); link.get(a) && !seenA.has(a); a = link.get(a).b) { seenA.add(a); chain.push({ a, ...link.get(a) }); }
-        const plain = chain.filter((q) => !splitOf(q.a, q.b)); if (plain.length < 2) continue;
+        const plain = chain.filter((q) => !splitOf(q.a, q.b) && (q.a.key === q.b.key || (mod(q.a) && mod(q.b)))); if (plain.length < 2) continue;   // like with like: a run of one kind, or modules; never a caption against a picture
         const gs = plain.map((q) => q.gap).sort((x, y) => x - y), med = gs[Math.floor((gs.length - 1) / 2)];
         if (gs[gs.length - 1] - gs[0] <= t3.tolerance) continue;
         const worst = plain.reduce((p, q) => (Math.abs(q.gap - med) > Math.abs(p.gap - med) ? q : p));
@@ -223,19 +255,26 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
       }
       for (const q of (L.split ?? [])) { const a = comps.find((k) => k.region === q.between?.[0]), b = comps.find((k) => k.region === q.between?.[1]); if (!a || !b || !link.get(a) || link.get(a).b !== b) continue; const want = q.gutter ?? 2 * G; if (Math.abs(link.get(a).gap - want) > t3.tolerance) say("L3", c, { part: "b", node: a.name, other: b.name, measured: link.get(a).gap, required: want, unit: "px", what: "a declared split", boxes: [bx("component", a.box), bx("other", b.box)], dim: dimBetween(a.box, b.box, axis) }); }
     }
-    // L4: overlap: sibling boxes that intersect, neither enclosing the other (the focus ring and marks count); a painted prop: any intersection, and text within 16 of it
-    const sib = [...all.map((k) => ({ name: k.name, box: k.box, text: k.text })), ...c.rings.map((r) => ({ name: "focus ring", box: r.rect }))];
-    for (let i = 0; i < sib.length; i++) for (let j = i + 1; j < sib.length; j++) { const a = sib[i], b = sib[j], x = inter(a.box, b.box); if (!x || x[2] < t4.intersection || x[3] < t4.intersection || encloses(a.box, b.box) || encloses(b.box, a.box)) continue; say("L4", c, { node: a.name, other: b.name, measured: Math.min(x[2], x[3]), required: 0, unit: "px", what: `they overlap ${x[2]} x ${x[3]}`, boxes: [bx("component", a.box), bx("other", b.box), bx("overlap", x)] }); }
-    for (const p of painted) for (const k of all) { const x = inter(k.box, p.rect); if (x) say("L4", c, { node: k.name, other: "painted " + p.id, measured: Math.min(x[2], x[3]), required: 0, unit: "px", what: "over a painted prop", boxes: [bx("component", k.box), bx("prop", p.rect), bx("overlap", x)] }); else if (k.text) { const d = dist(k.box, p.rect); if (d < t4.textToProp) say("L4", c, { node: k.name, other: "painted " + p.id, measured: rnd(d, 0), required: t4.textToProp, unit: "px", what: "text near a painted prop", boxes: [bx("component", k.box), bx("prop", p.rect)] }); } }
+    // L4: overlap: sibling boxes that intersect, neither enclosing the other (the focus ring and marks count); a painted prop (one with a rect): any intersection, and text within 16 of it.
+    // A creature or a scene prop is placed by depth: one behind another is the scene's order, so a pair with one is skipped, except two creatures at one depth (feet within `depth`) and a perch
+    // (the back one's feet land `perch.min` px or more inside the front one's top `perch.share`: the totem)
+    const perch = (back, front) => { const into = B(back) - front[1]; return B(back) < B(front) && into >= t4.perch.min && into <= front[3] * t4.perch.share; };
+    const sib = [...all.map((k) => ({ name: k.name, box: k.box, text: k.text, mover: k.mover, prop: k.prop })), ...c.rings.map((r) => ({ name: "focus ring", box: r.rect }))];
+    for (let i = 0; i < sib.length; i++) for (let j = i + 1; j < sib.length; j++) { const a = sib[i], b = sib[j], x = inter(a.box, b.box);
+      if ((a.mover || a.prop || b.mover || b.prop) && !(a.mover && b.mover && (Math.abs(B(a.box) - B(b.box)) <= t4.depth || perch(a.box, b.box) || perch(b.box, a.box)))) continue;
+      if (!x || x[2] < t4.intersection || x[3] < t4.intersection || encloses(a.box, b.box) || encloses(b.box, a.box)) continue; say("L4", c, { node: a.name, other: b.name, measured: Math.min(x[2], x[3]), required: 0, unit: "px", what: `they overlap ${x[2]} x ${x[3]}`, says: `The ${a.name} (${a.box[2]} x ${a.box[3]}) overlaps the ${b.name} (${b.box[2]} x ${b.box[3]}) by ${x[2]} x ${x[3]}. Is one on the other by design?`, boxes: [bx("component", a.box), bx("other", b.box), bx("overlap", x)] }); }
+    for (const p of painted.filter((q) => q.rect)) for (const k of all) { const x = inter(k.box, p.rect); if (x) say("L4", c, { node: k.name, other: "painted " + p.id, measured: Math.min(x[2], x[3]), required: 0, unit: "px", what: "over a painted prop", boxes: [bx("component", k.box), bx("prop", p.rect), bx("overlap", x)] }); else if (k.text) { const d = dist(k.box, p.rect); if (d < t4.textToProp) say("L4", c, { node: k.name, other: "painted " + p.id, measured: rnd(d, 0), required: t4.textToProp, unit: "px", what: "text near a painted prop", boxes: [bx("component", k.box), bx("prop", p.rect)] }); } }
     // L5: alignment: (a) declared columns on their axis, group left edges, baselines in a group's row; (b) undeclared near-misses between neighbours and on the container's centre lines
     for (const col of L.columns ?? []) for (const k of comps.filter((q) => col.regions?.includes(q.region))) if (Number.isFinite(col.axis) && Math.abs(cx(k.box) - col.axis) > t5.axis) say("L5", c, { part: "a", node: k.name, other: "column " + col.id, measured: rnd(cx(k.box) - col.axis, 1), required: 0, unit: "px", what: "off its column's axis", boxes: [bx("component", k.box)] });
     for (const grp of L.groups ?? []) { const ks = comps.filter((q) => grp.regions?.includes(q.region)); if (ks.length < 2) continue;
       if ((grp.align ?? "left") === "left") { const x0 = Math.min(...ks.map((k) => k.box[0])); for (const k of ks) if (k.box[0] - x0 > t5.edges) say("L5", c, { part: "a", node: k.name, other: "group " + grp.id, measured: k.box[0] - x0, required: 0, unit: "px", what: "left edge off the group's", boxes: ks.map((q) => bx(q === k ? "component" : "other", q.box)) }); }
       const texts = ks.filter((k) => k.text); for (let i = 0; i < texts.length; i++) for (let j = i + 1; j < texts.length; j++) { const a = texts[i], b = texts[j]; if (overlapShare(a.box, b.box, "y") > 0 && Math.abs(B(a.box) - B(b.box)) > t5.baselines) say("L5", c, { part: "a", node: a.name, other: b.name, measured: Math.abs(B(a.box) - B(b.box)), required: 0, unit: "px", what: "baselines in a row", boxes: [bx("component", a.box), bx("other", b.box)] }); } }
-    const within = (d, [lo, hi]) => d >= lo && d <= hi, nearMiss = (a, b, what, va, vb, win) => { const d = Math.abs(va - vb); if (within(d, win)) say("L5", c, { part: "b", node: a.name, other: b.name, measured: rnd(d, 1), required: 0, unit: "px", what: `almost aligned: ${what} ${rnd(va, 1)} and ${rnd(vb, 1)}`, boxes: [bx("component", a.box), ...(b.box ? [bx("other", b.box)] : [])] }); };
+    const within = (d, [lo, hi]) => d >= lo && d <= hi, nearMiss = (a, b, what, va, vb, win) => { const d = Math.abs(va - vb); if (!within(d, win)) return;
+      const ax = /\(y\)|baselines/.test(what) ? "y" : "x", guides = [{ [ax]: va }, { [ax]: vb }], dir = ax === "y" ? (va > vb ? "below" : "above") : (va > vb ? "right of" : "left of");   // both lines are drawn: the two edges, centres or baselines
+      say("L5", c, { part: "b", node: a.name, other: b.name, measured: rnd(d, 1), required: 0, unit: "px", what: `almost aligned: ${what} ${rnd(va, 1)} and ${rnd(vb, 1)}`, ...(b.box ? {} : { says: `The ${a.name} sits ${rnd(d, 1)} px ${dir} the middle of the ${c.id} (${rnd(va, 1)} against ${rnd(vb, 1)}).` }), guides, boxes: [bx("component", a.box), ...(b.box ? [bx("other", b.box)] : [])] }); };
     for (let i = 0; i < comps.length; i++) for (let j = i + 1; j < comps.length; j++) {
       const a = comps[i], b = comps[j];
-      if (overlapShare(a.box, b.box, "x") >= t3.overlap && gapY(a.box, b.box) >= 0) { nearMiss(a, b, "left edges", a.box[0], b.box[0], t5.nearEdges); nearMiss(a, b, "right edges", R(a.box), R(b.box), t5.nearEdges); nearMiss(a, b, "centres (x)", cx(a.box), cx(b.box), t5.nearCentres); }
+      if (overlapShare(a.box, b.box, "x") >= t3.overlap && gapY(a.box, b.box) >= 0) { nearMiss(a, b, "left edges", a.box[0], b.box[0], t5.nearEdges); nearMiss(a, b, "right edges", R(a.box), R(b.box), t5.nearEdges); if (!(a.box[3] < t5.line && b.box[3] < t5.line && (Math.abs(a.box[0] - b.box[0]) <= t5.edges || Math.abs(R(a.box) - R(b.box)) <= t5.edges))) nearMiss(a, b, "centres (x)", cx(a.box), cx(b.box), t5.nearCentres); }   // two lines, each under L5.line high, on one left or right edge are a stack of lines whose centres are ragged by nature
       if (overlapShare(a.box, b.box, "y") >= t3.overlap && gapX(a.box, b.box) >= 0) { nearMiss(a, b, "centres (y)", cy(a.box), cy(b.box), t5.nearCentres); if (a.text && b.text) nearMiss(a, b, "baselines", B(a.box), B(b.box), t5.nearCentres); }
     }
     for (const k of comps) { nearMiss(k, { name: c.id + " centre (x)" }, "the centre (x) and the container's", cx(k.box), cx(R0), t5.nearCentres); nearMiss(k, { name: c.id + " centre (y)" }, "the centre (y) and the container's", cy(k.box), cy(R0), t5.nearCentres); }
@@ -243,31 +282,37 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
     const W = R0[2], H = R0[3];
     if (W > 0 && H > 0) {
       const fill = new Uint8Array(W * H), put = (b) => { const x = inter(b, R0); if (!x) return; for (let y = x[1] - R0[1]; y < B(x) - R0[1]; y++) fill.fill(1, y * W + x[0] - R0[0], y * W + R(x) - R0[0]); };
-      for (const k of comps) put(k.box); if (!c.group) for (const p of painted) if (p.fills) put(p.rect);
+      const weighed = comps.map((k) => ({ role: "weighed", rect: [...k.box] })), fills = [];   // what the area counts: the components that are not marks, and the painted pictures that fill
+      for (const k of comps) put(k.box);
+      for (const p of painted) if (p.fills && (p.region ? c.group?.members.some((n) => n.region === p.region) : p.rect)) { put(p.region ? R0 : p.rect); fills.push(p.id); weighed.push({ role: "weighed", rect: p.region ? [...R0] : [...p.rect] }); }   // a painted picture that fills (the genome, a painting) is content at every level, the container's own picture included
+      const one = !fills.length && comps.length === 1;   // one component in its box, nothing painted: its place is L1's and L7b's question, not its emptiness
       let n = 0, sx = 0, sy = 0; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (fill[y * W + x]) { n++; sx += x; sy += y; }
       const minSide = t6.sides * G, e = largestEmpty(fill, W, H, minSide, minSide), share = e ? (e.w * e.h) / (W * H) : 0, want = c.group ? t6.pane : t6.stage;
-      if (e && share >= want) say("L6", c, { node: c.id, other: "", measured: rnd(share), required: want, unit: "share", what: `an empty ${e.w} x ${e.h}`, boxes: [bx("empty", [R0[0] + e.x, R0[1] + e.y, e.w, e.h])] });
-      if (n) { const fx = R0[0] + sx / n + 0.5, fy = R0[1] + sy / n + 0.5, dx = (fx - cx(R0)) / (W / 2), dy = (fy - cy(R0)) / (H / 2);
-        if (Math.abs(dx) > t7a || Math.abs(dy) > t7a) say("L7", c, { part: "a", node: c.id, other: "", measured: rnd(Math.max(Math.abs(dx), Math.abs(dy))), required: t7a, unit: "share", what: `the filled area's centroid off the centre: x ${rnd(dx) >= 0 ? "+" : ""}${rnd(dx)}, y ${rnd(dy) >= 0 ? "+" : ""}${rnd(dy)}`, dx: rnd(dx), dy: rnd(dy), centroid: [rnd(fx, 1), rnd(fy, 1)], centre: [cx(R0), cy(R0)], boxes: [] }); }
+      const counted = `${comps.length} component${comps.length === 1 ? "" : "s"}${fills.length ? ", painted: " + fills.join(", ") : ""}`;
+      if (!one && e && share >= want) say("L6", c, { node: c.id, other: "", measured: rnd(share), required: want, unit: "share", what: `an empty ${e.w} x ${e.h}`, counted, boxes: [bx("empty", [R0[0] + e.x, R0[1] + e.y, e.w, e.h])] });
+      if (n && !one) { const fx = R0[0] + sx / n + 0.5, fy = R0[1] + sy / n + 0.5, dx0 = (fx - cx(R0)) / (W / 2), dy0 = (fy - cy(R0)) / (H / 2);
+        const dx = PINNED(axisAlign.x) ? 0 : dx0, dy = PINNED(axisAlign.y) ? 0 : dy0;   // an axis aligned to a side has its weight on that side by design
+        if (Math.abs(dx) > t7a || Math.abs(dy) > t7a) say("L7", c, { part: "a", node: c.id, other: "", measured: rnd(Math.max(Math.abs(dx), Math.abs(dy))), required: t7a, unit: "share", what: `the filled area's centroid off the centre: x ${rnd(dx) >= 0 ? "+" : ""}${rnd(dx)}, y ${rnd(dy) >= 0 ? "+" : ""}${rnd(dy)}`, dx: rnd(dx), dy: rnd(dy), centroid: [rnd(fx, 1), rnd(fy, 1)], centre: [cx(R0), cy(R0)], counted, assumed: `Aligned: x ${axisAlign.x ?? "none"}, y ${axisAlign.y ?? "none"}`, boxes: weighed }); }
     }
-    // L7b: slack symmetry: each declared column (centred: slack above = below; fill: on the top and floor lines), or the content as one group (above = below, left = right)
+    // L7b: slack symmetry: each declared column (centred: slack above = below; fill: on the top and floor lines), or the content as one block on a centred axis (above = below, left = right)
     const slack = (box) => ({ top: box[1] - R0[1], bottom: B(R0) - B(box), left: box[0] - R0[0], right: R(R0) - R(box) });
     const cols = (L.columns ?? []).map((col) => ({ col, ks: comps.filter((k) => col.regions?.includes(k.region)) })).filter((q) => q.ks.length);
     if (cols.length && !c.group) for (const { col, ks } of cols) { const box = ks.reduce((u, k) => union(u, k.box), null), s = slack(box);
       if (col.align === "fill") { if (Number.isFinite(L.topLine) && Math.abs(box[1] - L.topLine) > t7b) say("L7", c, { part: "b", node: "column " + col.id, other: "the top line", measured: box[1] - L.topLine, required: 0, unit: "px", what: "a fill column off the top line", boxes: [bx("component", box)] }); if (Number.isFinite(L.floorLine) && Math.abs(B(box) - L.floorLine) > t7b) say("L7", c, { part: "b", node: "column " + col.id, other: "the floor line", measured: B(box) - L.floorLine, required: 0, unit: "px", what: "a fill column off the floor line", boxes: [bx("component", box)] }); }
       else if (Math.abs(s.top - s.bottom) > t7b) say("L7", c, { part: "b", node: "column " + col.id, other: "above / below", measured: Math.abs(s.top - s.bottom), required: t7b, unit: "px", what: `slack ${s.top} above, ${s.bottom} below`, pair: [s.top, s.bottom], boxes: [bx("component", box)] }); }
-    else if (comps.length) { const box = comps.reduce((u, k) => union(u, k.box), null), s = slack(box);
-      if (Math.abs(s.top - s.bottom) > t7b) say("L7", c, { part: "b", node: c.id, other: "above / below", measured: Math.abs(s.top - s.bottom), required: t7b, unit: "px", what: `slack ${s.top} above, ${s.bottom} below`, pair: [s.top, s.bottom], boxes: [bx("component", box)] });
-      if (Math.abs(s.left - s.right) > t7b) say("L7", c, { part: "b", node: c.id, other: "left / right", measured: Math.abs(s.left - s.right), required: t7b, unit: "px", what: `slack ${s.left} left, ${s.right} right`, pair: [s.left, s.right], boxes: [bx("component", box)] }); }
+    else if (comps.length) { const box = comps.reduce((u, k) => union(u, k.box), null), s = slack(box), mid = [Math.round(cx(box)), Math.round(cy(box))];   // only a centred axis wants equal sides: a filled or aligned axis is L1's
+      if (axisAlign.y === "centre" && Math.abs(s.top - s.bottom) > t7b) say("L7", c, { part: "b", node: c.id, other: "above / below", measured: Math.abs(s.top - s.bottom), required: t7b, unit: "px", what: `A centred block: ${s.top} above, ${s.bottom} below; equal sides wanted (±${t7b})`, pair: [s.top, s.bottom], align: "centre", assumed: assumed("y"), boxes: [bx("component", box)], dim: [mid[0], R0[1], mid[0], box[1]], dim2: [mid[0], B(box), mid[0], B(R0)] });
+      if (axisAlign.x === "centre" && Math.abs(s.left - s.right) > t7b) say("L7", c, { part: "b", node: c.id, other: "left / right", measured: Math.abs(s.left - s.right), required: t7b, unit: "px", what: `A centred block: ${s.left} left, ${s.right} right; equal sides wanted (±${t7b})`, pair: [s.left, s.right], align: "centre", assumed: assumed("x"), boxes: [bx("component", box)], dim: [R0[0], mid[1], box[0], mid[1]], dim2: [R(box), mid[1], R(R0), mid[1]] }); }
     // L8: groups: (a) a declared pair (a region that labels another, a group's members) more than `within` apart; (b) a component whose every neighbour is more than float x G away: it floats
     const groupsOfKey = (key) => c.groups.filter((g) => g.key === key);
     for (const g of c.groups) { const reg = regionOf(A.spec, g.region); const to = reg?.labels; if (!to) continue; const target = c.groups.filter((q) => q !== g && (q.region === to || q.members.some((n) => n.id === fnv(to)))); if (!target.length) continue;
       const tb = target.reduce((u, q) => union(u, q.box), null), d = rnd(dist(g.box, tb), 0); if (d > t8.label) say("L8", c, { part: "a", node: g.region, other: to, measured: d, required: t8.label, unit: "px", what: "a caption apart from what it labels", boxes: [bx("component", g.box), bx("other", tb)] }); }
     for (const grp of L.groups ?? []) { const ks = comps.filter((q) => grp.regions?.includes(q.region)); for (let i = 1; i < ks.length; i++) { const d = rnd(Math.min(...ks.slice(0, i).map((q) => dist(q.box, ks[i].box))), 0), w = grp.within ?? t8.label; if (d > w) say("L8", c, { part: "a", node: ks[i].name, other: "group " + grp.id, measured: d, required: w, unit: "px", what: "apart from its group", boxes: ks.map((q) => bx(q === ks[i] ? "component" : "other", q.box)) }); } }
-    if (comps.length > 1) for (const k of comps) { if (declared.has(k.region) || groupsOfKey(k.key).some((g) => regionOf(A.spec, g.region)?.labels)) continue; const d = Math.min(...comps.filter((q) => q !== k).map((q) => dist(k.box, q.box))); if (d > t8.float * G) say("L8", c, { part: "b", node: k.name, other: "every neighbour", measured: rnd(d, 0), required: t8.float * G, unit: "px", what: "it floats", boxes: [bx("component", k.box)] }); }
+    const at = (k, s) => Math.abs(side(k.box, R0, s) - c.margins[s]) <= t1.side, placed = (k) => ((at(k, "left") || at(k, "right")) && (at(k, "top") || at(k, "bottom"))) || (Math.abs(cx(k.box) - cx(R0)) <= t5.nearCentres[1] && Math.abs(cy(k.box) - cy(R0)) <= t5.nearCentres[1]);   // placed, not floating: in a corner at the margins, or centred on both axes
+    if (comps.length > 1) for (const k of comps) { if (placed(k) || declared.has(k.region) || groupsOfKey(k.key).some((g) => regionOf(A.spec, g.region)?.labels)) continue; const d = Math.min(...comps.filter((q) => q !== k).map((q) => dist(k.box, q.box))); if (d > t8.float * G) say("L8", c, { part: "b", node: k.name, other: "every neighbour", measured: rnd(d, 0), required: t8.float * G, unit: "px", what: "it floats", boxes: [bx("component", k.box)] }); }
     // L10: a cut picture: (a) a window that cuts its picture's solid ink; (b) a subject picture whose solid ink touches its own box's edge
     for (const g of c.groups) for (const n of g.members) {
-      if (n.cut && !bleed.has(n.region)) say("L10", c, { part: "a", node: n.region, other: "its picture", measured: 0, required: t10.headroom + 1, unit: "px", what: "the window cuts the picture's solid ink", boxes: [bx("component", n.rect)] });
+      if (n.cut && !bleed.has(n.region) && !clips.has(n.region) && !clipsIn) say("L10", c, { part: "a", node: n.region, other: "its picture", measured: 0, required: t10.headroom + 1, unit: "px", what: "the window cuts the picture's solid ink", boxes: [bx("component", n.rect)] });
       const comp = regionOf(A.spec, n.region)?.component;
       if (n.kind === KIND.sprite && !n.cut && t10.subjects?.includes(comp) && !empty(n.solid)) for (const s of SIDES) { const d = side(n.solid, n.rect, s); if (d <= t10.headroom) say("L10", c, { part: "b", node: n.region, other: s, measured: d, required: t10.headroom + 1, unit: "px", what: "the subject's solid ink touches its picture's edge", boxes: [bx("component", n.rect), bx("other", n.solid)] }); }
     }
@@ -275,7 +320,7 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
     const labelled = (g) => c.groups.some((q) => { const r = regionOf(A.spec, q.region)?.labels; return r && (r === g.region || g.members.some((n) => n.id === fnv(r))); });
     for (const g of c.groups) { if (g.kind !== KIND.sprite && g.kind !== KIND.composed) continue; if (Math.max(g.box[2], g.box[3]) > t11.size || g.container) continue;
       const near = c.groups.some((q) => q.kind === KIND.text && overlapShare(q.box, g.box, "y") > 0 && gapX(q.box, g.box) <= t11.label);
-      if (!near && !labelled(g)) say("L11", c, { node: g.region, other: "", measured: Math.max(g.box[2], g.box[3]), required: t11.size, unit: "px", what: "a lone mark: no text within " + t11.label + " px on its rows", boxes: [bx("component", g.box)] }); }
+      if (!near && !labelled(g)) say("L11", c, { node: g.region, other: "", measured: Math.max(g.box[2], g.box[3]), required: t11.size, unit: "px", what: "a lone mark: no text within " + t11.label + " px on its rows", says: `A small picture (${g.box[2]} x ${g.box[3]}) with no word beside it: what is it?`, boxes: [bx("component", g.box)] }); }
   }
   // the exceptions: frame.json layout.exceptions; a finding one covers is dropped, and used names the ones in use
   return excepted(frameSpec, screen, out.map((f) => ({ ...f, states: [state] })), true);
