@@ -31,15 +31,15 @@
   "end": "while the end shows, any key does what it does and then the bay shows again: ✓ follows the bottom line, ← is Home, a room key opens its room, the pad only closes it"
  },
  "keys": {
-  "confirm": {"bay": "a crate ready to open (walk crates while docked, a ready sitting crate): the opening (events.opening); else nothing, no ✓ cap", "opening": "Skip: the current crate cuts to its end (everything arrived) and the next crate starts; on the last crate, the end", "end": "the portrait first, then Look at the pods. See the portrait (strings.end.confirm): the jump to the sitting's state portrait (frame.json navigation.jumps), when the run opened this mibi's sitting crate, sitting.json regions.portrait.offeredFrom lists cargo-end and its opening is kept (portrait-source.mjs portraitOpening); ← there goes to Habitat with the ring on Portrait. Otherwise Look at the pods: the jump to Pods (frame.json navigation.jumps), the ring on the newest pod; with no pod, no ✓ cap"},
+  "confirm": {"bay": "a crate ready to open (walk crates while docked, a ready sitting crate): the opening (events.opening); else, when a pod waits on the mat (the Pods rack is full), Look at the pods: Pods, as the end's; else nothing, no ✓ cap", "opening": "Skip: the current crate cuts to its end (everything arrived) and the next crate starts; on the last crate, the end", "end": "the portrait first, then Look at the pods. See the portrait (strings.end.confirm): the jump to the sitting's state portrait (frame.json navigation.jumps), when the run opened this mibi's sitting crate, sitting.json regions.portrait.offeredFrom lists cargo-end and its opening is kept (portrait-source.mjs portraitOpening); ← there goes to Habitat with the ring on Portrait. Otherwise Look at the pods: the jump to Pods (frame.json navigation.jumps), the ring on the newest pod; with no pod, no ✓ cap"},
   "back": {"bay": "Home, the ring on the Bay module", "opening": "lets the current crate finish as a cut, opens no further crate, then Home with the ring on the Bay module; the crates not yet opened stay sealed", "end": "Home"},
   "dock": "the Caddy's Dock, a world event, never a Station key. Docked while the bay shows: each crate cuts in, in its berth, sealed (no slide, no door). Lifted while the bay shows: the crates leave the berths as a cut. During the opening it waits until the end shows. No message plate: the bay, the top bar's Companion mark and the context line say it. A refused Dock shows its plate."
  },
  "line": {
-  "bay": {"crates": {"when": "a crate is ready to open: walk crates while docked, a ready sitting crate docked or away", "action": "strings.open (one crate: strings.openOne)", "subject": "the waiting line when a pod waits, else empty", "back": "Home"}, "nothing": {"action": null, "subject": "the waiting line when a pod waits, else empty", "back": "Home"}},
+  "bay": {"crates": {"when": "a crate is ready to open: walk crates while docked, a ready sitting crate docked or away", "action": "strings.open (one crate: strings.openOne)", "subject": "the waiting line when a pod waits, else empty", "back": "Home"}, "nothing": {"action": "strings.newPods when a pod waits on the mat (the Pods rack is full), else none", "subject": "the waiting line when a pod waits, else empty", "back": "Home"}},
   "arrival": {"show": {"action": "strings.arrival.skip while the show runs (any key skips to the choice)", "subject": "strings.subjects.crates, or strings.subjects.empty when none came", "need": null, "back": null}, "choice": "the decision panel's strip form: ✓ + the focused card's name, the card's line, back Later (panel.json strings.dock)"},
   "opening": {"action": "strings.skip", "subject": "the waiting line when a pod has just gone to the mat, else empty", "back": "Home (lets the current crate finish as a cut first)"},
-  "end": {"action": "strings.end.confirm when the portrait is offered (keys.confirm.end); else strings.newPods when a pod came; none otherwise", "subject": "the waiting line when a pod waits, else empty", "back": "Home"}
+  "end": {"action": "strings.end.confirm when the portrait is offered (keys.confirm.end); else strings.newPods when a pod came or a pod waits on the mat (the Pods rack is full); none otherwise", "subject": "the waiting line when a pod waits, else empty", "back": "Home"}
  },
  "handoff": {"to": "pods", "rule": "a crate's pods land in the hatch's six wells: Pods' collection shows them in the same wells, new until identified. ✓ Look at the pods on the end jumps to Pods' collection with the ring on the newest pod; ← there reads Home. A pod with no free well waits on the mat (regions.waiting) and lands, oldest first, as a well frees"},
  "colours": {
@@ -54,7 +54,7 @@
   "openOne": "Open it",
   "newPods": {"one": "Look at the pods", "few": "Look at the pods"},
   "end": {"confirm": "See the portrait"},
-  "subjects": {"waiting": "{count} pods wait for a well", "waitingOne": "a pod waits for a well"}
+  "subjects": {"waiting": "The Pods rack is full", "waitingOne": "The Pods rack is full"}
  },
  "placeholders": {
   "pod": "the display's pod is the collection class, 88×112; the stored pod is the list class (the well masters), 40×48",

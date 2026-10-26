@@ -195,7 +195,7 @@ test("need(): counts spelled out, dropped above the picture, shortfalls as icon 
   const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
   const fake = (n) => Array.from({ length: n }, (_, i) => ({ id: "x" + i, idd: 0, read: [], g: "meadow" }));
   for (const [n, want] of [[1, "a new pod in the case"], [2, "two new pods in the case"], [6, "six new pods in the case"], [7, "new pods in the case"]]) { st.tray = fake(n); assert.equal(S.need(st, sv, settings).text, want, "fresh " + n); assert.equal(S.need(st, sv, settings).label, "Look at the pods"); }
-  st.tray = []; for (const [n, want] of [[1, "a pod waits for a well"], [3, "three pods wait for a well"], [7, "pods wait for a well"]]) { st.waiting = fake(n); assert.equal(S.need(st, sv, settings).text, want, "waiting " + n); }
+  st.tray = []; for (const n of [1, 3, 7]) { st.waiting = fake(n); assert.equal(S.need(st, sv, settings).text, "The Pods rack is full", "waiting " + n + ": no count"); assert.equal(S.need(st, sv, settings).label, "Look at the pods"); }
   st.waiting = [];
   st.docked = true; st.dock = { docked: true, at: 0 };
   const crates = (n) => { sv.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 1, at: 0, e: 0, d: 0, s: 0, pods: [] })); };

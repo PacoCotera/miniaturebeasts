@@ -116,7 +116,8 @@ test("the guide rung names the first living species with an incomplete guide and
   g = S.goalKey(st, sv0()); assert.equal(g.step.key, "read"); assert.equal(g.step.pod, pod.id); assert.ok(frameOf("S04").chapters.some((c) => c.id === g.step.chapter));
   st.readEver = true; st.d = 0; const cost = S.readCost(st, pod, g.step.chapter, settings); g = S.goalKey(st, sv0());
   assert.ok(cost > 0, "the first read ever is free; after it a read costs"); assert.equal(g.step.key, "short"); assert.equal(g.step.icons, "◆");
-  fillGuide(st, "S04"); assert.equal(S.goalKey(st, sv0()), null, "every guide complete");
+  fillGuide(st, "S04"); assert.equal(S.goalKey(st, sv0()).key, "rack", "every guide complete, a pod still in the rack: the rack rung");
+  st.tray = []; assert.equal(S.goalKey(st, sv0()), null, "every guide complete, the rack empty and the Probe at tier 2: no goal");
 });
 test("goalKey: the meanwhile read, the probe goal (save, fit) and its outranking", () => {
   const st = fresh(); const [a, b] = adults(st, 2); named([a, b], ["Dot", "Moss"], [1, 2]); st.turn = 2; st.dock = { docked: false, at: 1 }; st.readEver = true; st.d = 5;
@@ -217,4 +218,15 @@ test("a null Probe with an empty ladder: sv tier 1 is the Probe goal with step g
   assert.equal(S.goalKey(mk(), sv(2), settings, { cross: false }), null, "tier 2 from the world: nothing left to name");
   const st = fresh(), [a, b] = adults(st, 2); named([a, b], ["Dot", "Moss"], [1, 2]); st.turn = 2; st.dock = { docked: false, at: 0 }; st.probe = null;
   const w = S.goalKey(st, sv(1), settings, { cross: false }); assert.equal(w.key, "growUp"); assert.equal(w.probe.key, "save");
+});
+test("goalKey: the rack rung: a pod in the rack and no rung above it (home-states.mjs pods-full: two adults, six pods seen, no species known) is key rack, its step the pod chain's (identify, grow, noBay); no aim; the second goal from it", () => {
+  const st = fresh(); st.e = 9; st.d = 9; st.s = 9; st.probe = { tier: 1, shield: 3, smax: 3 }; adults(st, 2); st.knownIds = [];
+  for (let i = 0; i < 6; i++) assert.equal(S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3 + i), settings, 1000).ok, true);
+  for (const p of st.tray) p.seen = 1;
+  let g = S.goalKey(st, sv0()); assert.equal(g.key, "rack"); assert.deepEqual(g.step, { key: "identify", species: null }, "no species known: Identify a pod");
+  assert.deepEqual(g.probe, { key: "save", e: [9, 12], d: [9, 4] }, "the second goal holds from the rack rung, as from the guide");
+  fillGuide(st, "S01"); assert.equal(S.identify(st, st.tray[0], settings).ok, true); st.d = 9;
+  g = S.goalKey(st, sv0()); assert.equal(g.key, "rack", "the guide is complete: the rack rung holds"); assert.deepEqual(g.step, { key: "grow", species: "S01" });
+  assert.deepEqual(S.goalKey(st, sv0(), { ...settings, bays: 2 }).step, { key: "noBay" }, "every bay taken");
+  st.tray = []; assert.equal(S.goalKey(st, sv0()).key, "probe", "no pod in the rack: the Probe stands in");
 });

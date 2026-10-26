@@ -57,3 +57,5 @@ export const manifest = () => [...ENTRIES.values()].map(({ build, ...rest }) => 
 // Every entry that is not final: a built stand-in (placeholder), or a placed master the studio's record does not call signed (held, new, placeholder). Only `master` and `empty` are not in this register.
 export const NOT_FINAL = ["placeholder", "held", "new"];
 export const placeholders = () => manifest().filter((e) => NOT_FINAL.includes(e.status));
+// The masters index statuses no golden may draw (face/tools/goldens.mjs): a placed master the studio's record calls a placeholder or a stand-in. `held` and `new` are not final but may be shown.
+export const NOT_IN_GOLDENS = ["placeholder", "stand-in"];

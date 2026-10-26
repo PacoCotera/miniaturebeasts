@@ -144,7 +144,8 @@ test("with a portrait crate in: four berths of 188 at x 200, 404, 608 and 812, t
 test("the line: Open them all for several crates, Open it for one, nothing when none; the waiting line in the middle when a pod waits", { skip }, async () => {
   assert.deepEqual([scene({ crates: 1 }).line.ok, scene({ crates: 2 }).line.ok, scene({ crates: 3 }).line.ok, scene({}).line.ok, scene({ away: true, crates: 2 }).line.ok], ["Open it", "Open them all", "Open them all", null, null]);
   assert.equal(scene({ crates: 1, sitting: true }).line.ok, "Open them all", "a walk crate and a portrait crate are two");
-  assert.deepEqual([scene({ pods: 6, waiting: 1 }).line.subject, scene({ pods: 6, waiting: 3 }).line.subject, scene({}).line.subject], ["a pod waits for a well", "three pods wait for a well", ""]);
+  assert.deepEqual([scene({ pods: 6, waiting: 1 }).line.subject, scene({ pods: 6, waiting: 3 }).line.subject, scene({}).line.subject], ["The Pods rack is full", "The Pods rack is full", ""]);
+  assert.deepEqual([scene({ pods: 6, waiting: 1 }).line.ok, scene({ crates: 1, pods: 6, waiting: 1 }).line.ok], ["Look at the pods", "Open it"], "nothing to open and a pod waits: ✓ Look at the pods; a crate first");
 });
 
 // ---- the hatch, its wells and the mat ----
