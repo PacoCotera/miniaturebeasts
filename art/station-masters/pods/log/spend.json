@@ -5767,5 +5767,192 @@
    "thoughtsTokenCount": 223,
    "totalTokenCount": 2107
   }
+ },
+ {
+  "tag": "lib-F1-folio-blank-pages try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.173234,
+  "mxn": 3.4647,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:48:00Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 397,
+   "candidatesTokenCount": 1244,
+   "thoughtsTokenCount": 193,
+   "totalTokenCount": 1834
+  }
+ },
+ {
+  "tag": "lib-F2-adult-S09 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.206592,
+  "mxn": 4.1318,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:48:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 996,
+   "candidatesTokenCount": 1426,
+   "thoughtsTokenCount": 279,
+   "totalTokenCount": 2701
+  }
+ },
+ {
+  "tag": "lib-F3-adult-S12 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.2019,
+  "mxn": 4.038,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:48:36Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 990,
+   "candidatesTokenCount": 1361,
+   "thoughtsTokenCount": 305,
+   "totalTokenCount": 2656
+  }
+ },
+ {
+  "tag": "lib-F4-adult-S07 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.214632,
+  "mxn": 4.2926,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:48:53Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 816,
+   "candidatesTokenCount": 1449,
+   "thoughtsTokenCount": 326,
+   "totalTokenCount": 2591
+  }
+ },
+ {
+  "tag": "lib-F5-pencil-S04 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.174778,
+  "mxn": 3.4956,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:49:06Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 389,
+   "candidatesTokenCount": 1271,
+   "thoughtsTokenCount": 179,
+   "totalTokenCount": 1839
+  }
+ },
+ {
+  "tag": "lib-F6-pencil-S05 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.175618,
+  "mxn": 3.5124,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:49:20Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 389,
+   "candidatesTokenCount": 1280,
+   "thoughtsTokenCount": 177,
+   "totalTokenCount": 1846
+  }
+ },
+ {
+  "tag": "lib-F7-pencil-S10 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.174778,
+  "mxn": 3.4956,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:49:42Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 389,
+   "candidatesTokenCount": 1270,
+   "thoughtsTokenCount": 180,
+   "totalTokenCount": 1839
+  }
+ },
+ {
+  "tag": "lib-F8-pencil-S14 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.177538,
+  "mxn": 3.5508,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:49:56Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 389,
+   "candidatesTokenCount": 1275,
+   "thoughtsTokenCount": 198,
+   "totalTokenCount": 1862
+  }
+ },
+ {
+  "tag": "lib-F9-plate-S01 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.200958,
+  "mxn": 4.0192,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:50:19Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1179,
+   "candidatesTokenCount": 1384,
+   "thoughtsTokenCount": 271,
+   "totalTokenCount": 2834
+  }
+ },
+ {
+  "tag": "lib-D4-dream-stand try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.17547,
+  "mxn": 3.5094,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:50:33Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 135,
+   "candidatesTokenCount": 1282,
+   "thoughtsTokenCount": 178,
+   "totalTokenCount": 1595
+  }
+ },
+ {
+  "tag": "lib-D5-dream-floor try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.171964,
+  "mxn": 3.4393,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-25",
+  "time": "2026-10-26T05:50:54Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 122,
+   "candidatesTokenCount": 1277,
+   "thoughtsTokenCount": 154,
+   "totalTokenCount": 1553
+  }
  }
 ]
