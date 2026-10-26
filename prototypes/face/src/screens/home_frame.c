@@ -60,11 +60,7 @@ static void line_words(void) {
     if (!v_sprite("line.lamp", home_lamp_pic("needsYou"), x0, z[1] + (z[3] - 12 + 1) / 2, lamp, lamp)) v_error("word: the amber lamp is not on the face");
     v_sprite("line.cap", capPic, x0 + lamp + lampGap, z[1] + 4, cap, cap);
     v_region("line", LAYER_TYPE);
-    { int tx = x0 + lamp + lampGap + cap + capGap; char who[V_STR]; snprintf(who, sizeof who, "%s", v_pstr("regions.line.name")); const char *at = who[0] ? strstr(full, who) : NULL;
-      if (at) {   /* a name in the notice (a portrait's) is in the verb colour, the rest in the need colour */
-        char pre[V_STR * 2], suf[V_STR * 2]; snprintf(pre, sizeof pre, "%.*s", (int)(at - full), full); snprintf(suf, sizeof suf, "%s", at + strlen(who));
-        v_run_t a = v_run("line.needs.a", pre, tx, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT); v_run_t b = v_run("line.needs.b", who, a.end, ty, px, v_scol("frame", "colours.verb"), V_ALIGN_LEFT); v_run("line.needs.c", suf, b.end, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT);
-      } else v_run("line.needs", full, tx, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT); }
+    v_run("line.needs", full, x0 + lamp + lampGap + cap + capGap, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT);
     return;
   }
   if (verb[0]) {

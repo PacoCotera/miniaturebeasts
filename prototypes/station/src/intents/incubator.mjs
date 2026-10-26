@@ -4,6 +4,7 @@ import * as S from "../state.mjs";
 import { toPods } from "./create.mjs";
 import { knownChapters } from "../views/incubator-props.mjs";
 import { openPanel } from "./panel.mjs";
+import { readyCrates } from "../sitting.mjs";
 
 // The pod Choose a pod lands on: the first identified pod in rack order, else the first pod (frame.json navigation.jumps); only when the rack holds a pod and a bay is free.
 export function choosePod(h) {
@@ -46,7 +47,7 @@ function startHatch(h, B, mibi) {
 // Hatch now (and the panel's Hatch now card): pay, end the wait and open, in one press. The bar fills in 8 cuts and the door opens (events.growNow, 580 ms), then the hatch plays as on Open.
 export function growNow(h) {
   const spec = h.specs.incubator, motion = h.motion ? h.motion() : true;
-  const B = h.st.bud, before = { known: knownChapters(h.st, B, h.settings, h.now()), cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui).text ?? "", progress: S.budProgress(h.st, h.settings, h.now()), left: S.budMinutesLeft(h.st, h.settings, h.now()), bud: B };
+  const B = h.st.bud, before = { known: knownChapters(h.st, B, h.settings, h.now()), cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui, readyCrates(h.st, h.settings, h.now()).length).text ?? "", progress: S.budProgress(h.st, h.settings, h.now()), left: S.budMinutesLeft(h.st, h.settings, h.now()), bud: B };
   const r = S.instantGrow(h.st, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
   if (motion) {   // the screen shows the bud as it was (the snapshot, `bud` included: the chamber is already empty) until the event is done; the hatch starts when it ends
     const ev = spec.events.growNow; h.ui.inc.grow = { ...before, until: h.now() + ev.ms }; h.ui.meet = r.mibi.id; h.save();

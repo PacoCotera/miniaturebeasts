@@ -560,10 +560,12 @@ export function budLeaves(st, settings, now, max, rowsOf = 20) {
 const COUNT_WORDS = ["", "a", "two", "three", "four", "five", "six"];
 const countWord = (n, max) => (n >= 1 && n <= max ? COUNT_WORDS[n] : "");
 const sentence = (...w) => w.filter(Boolean).join(" ");
-export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
+// portraits: the ready portraits (sitting.mjs readyCrates), docked or away; counted apart from the walk crates, and with walk crates too the notice names both (home.json strings.line.needs.crates.withPortrait).
+export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0) {
   const cs = bayCrates(st, sv);
-  if (docked(st) && cs.length) return { text: sentence(countWord(cs.length, 3), cs.length === 1 ? "crate waits" : "crates wait", "in the bay"), act: "bay", label: "Open the bay" };
+  if (docked(st) && cs.length) return { text: portraits ? sentence("Bay:", countWord(cs.length, 3), cs.length === 1 ? "crate and a portrait" : "crates and a portrait") : sentence(countWord(cs.length, 3), cs.length === 1 ? "crate waits" : "crates wait", "in the bay"), act: "bay", label: portraits ? "Open the Bay" : "Open the bay" };
   if (budReady(st, settings)) return { text: "the bud is ready", act: "inc", label: "Open the incubator" };
+  if (portraits) return { text: "a portrait waits in the Bay", act: "bay", label: "Open the Bay" };
   if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: "meet " + m.name, act: "meet", label: "Meet " + m.name }; }
   const fresh = st.tray.filter((p) => !p.idd);
   if (fresh.length) return { text: sentence(countWord(fresh.length, 6), fresh.length === 1 ? "new pod in the case" : "new pods in the case"), act: "pods", label: "Look at the pods" };
