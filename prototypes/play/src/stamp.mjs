@@ -2,9 +2,13 @@
 // never the viewer's own zone. "build local" with no build.json. Pure (no DOM), so the conversion is unit-tested (tests/stamp.test.mjs).
 const MX = new Intl.DateTimeFormat("en-US", { timeZone: "America/Mexico_City", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
 
+export function mexicoParts(iso) {
+  const d = new Date(iso); if (!iso || isNaN(d)) return null;
+  return Object.fromEntries(MX.formatToParts(d).map((x) => [x.type, x.value]));
+}
+
 export function mexicoCity(iso) {
-  const d = new Date(iso); if (!iso || isNaN(d)) return "";
-  const p = Object.fromEntries(MX.formatToParts(d).map((x) => [x.type, x.value]));
+  const p = mexicoParts(iso); if (!p) return "";
   return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute} Mexico City`;
 }
 

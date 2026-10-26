@@ -546,14 +546,12 @@ footer { padding-bottom: 32px; }
       <p class="caption">A project by Dirty Pawz Press · Mexico City</p>
       <p class="caption">Software AGPL-3.0 · Hardware CERN-OHL-S-2.0 · Documentation and art CC BY-SA 4.0</p>
     </div>
-    <p class="caption build" id="build">build pending</p>
+    <p class="caption build" id="build">© 2026 Dirty Pawz Press · local</p>
   </footer>
 </div>
-<script>
-  fetch('build.json').then(r => r.json()).then(b => {
-    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {timeZone: 'America/Mexico_City', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'}).formatToParts(new Date(b.built)).map(x => [x.type, x.value]));
-    document.getElementById('build').textContent = 'build ' + b.short + ' · ' + p.year + '-' + p.month + '-' + p.day + ' ' + p.hour + ':' + p.minute;
-  }).catch(() => { document.getElementById('build').textContent = 'local build'; });
+<script type="module">
+  // the build footer: the one line every page shows, from the module the sandbox pages share (the text stays as written above when it cannot load)
+  import('./sandbox/play/src/footer.mjs').then(m => m.mountFooter(document.getElementById('build'), {buildUrl: 'build.json'})).catch(() => {});
 </script>
 </body>
 </html>

@@ -24,7 +24,8 @@ for (const path of pages) {
   }
   if (path.includes('play') && page.frames().length < 3) errors.push('play: the Station and Companion frames did not load');
   const text = (await page.textContent('body')) || '';
-  if (path === '/' && !/build/.test(text)) errors.push('home: build stamp missing');
+  const foot = path === '/' ? '#build' : /\/sandbox\/(station|exploration)\/$/.test(path) ? '#buildFoot' : null;
+  if (foot) await page.waitForFunction((s) => /^© 2026 Dirty Pawz Press · [0-9a-f]{7} · \d\d\/\d\d \d\d:\d\d( · save v\d+ · Caddy (online|offline))?$/.test(document.querySelector(s)?.textContent || ''), foot, { timeout: 5000 }).catch(() => errors.push(path + ': build footer missing or local'));
   if (path === '/roadmap/' && (await page.locator('#modules details').count()) === 0) errors.push('roadmap: no items rendered from /roadmap.json');
   console.log(path, errors.length ? 'ERRORS: ' + errors.join(' | ') : 'ok');
   if (errors.length) failed = true;

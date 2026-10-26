@@ -36,7 +36,7 @@ body{
 }
 .page{display:flex; flex-wrap:wrap; gap:28px 40px; justify-content:center; align-items:flex-start; padding:16px 16px 32px; max-width:1900px; margin:0 auto}
 .device-col{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 1 auto; max-width:100%}
-.stamp{font: 500 13px/1.2 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center}
+.build-foot{margin:0 auto; padding:0 16px 20px; max-width:1900px; font: 500 12px/1.4 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center; overflow-wrap:anywhere}   /* page chrome in the bottom margin, outside the device; wraps at phone width */
 
 /* ===== The Station: screen on top, one row of big keys under it (keeps its own look in both themes) =====
    Only the screen scales to the window; the keys keep their real size, so they stay pressable on a phone. */
@@ -209,7 +209,6 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:1024
       <div id="devPanel"></div>
       <pre id="devOut" hidden></pre>
     </section>
-    <div class="stamp" id="stamp" hidden>build …</div>
   </div>
 
   <aside class="panel" aria-label="Playtest notes">
@@ -241,6 +240,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:1024
     </details>
   </aside>
 </main>
+<footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module" src="src/main.mjs"></script>
 </body>
 </html>
