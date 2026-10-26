@@ -15,6 +15,7 @@ import { blank } from "../../face/tools/blank.mjs";
 import { openBay } from "../src/intents/cargo.mjs";
 import { arrivePending } from "../src/intents/arrival.mjs";
 import { setLibrarySpecies } from "../src/views/home-props.mjs";
+import { capLine } from "../src/views/words.mjs";
 import { lineageOf, camFromOffset, panFor } from "../src/lineage.mjs";
 import { buildLineage } from "./fixtures/lineage.mjs";
 
@@ -158,6 +159,11 @@ test("Cargo's opening with reduced motion (the host stages each step as props at
   const steps = (k, base, pods, L) => [200, 500, 700, 850, 1000, 1500, ...Array.from({ length: pods }, (_, i) => 1700 + 300 * i), L].map((at) => [base + at, k, at, "opening"]);
   assert.deepEqual(seen.filter((x) => x[3] === "opening").map((x) => x.join()), [...steps(0, 0, 3, L[0]), [L[0], 1, 0, "opening"], ...steps(1, L[0], 2, L[1])].map((x) => x.join()), "the host's stage by time");
   assert.equal(seen.at(-1)[3], "end"); assert.equal(h.played.some((e) => e.kind === "flash"), false);
+});
+test("Hatch now with a ready portrait: the notice the bud had is the one that names the portrait, so it stays through the bar's fill", () => {
+  const h = host(world()); h.t = T0; h.specs.incubator = incubatorSpec; h.settings = { ...settings, growNowAbove: 99 }; const st = h.st, p = pod(st, "S01", chapters("S01")); st.tray = [p]; assert.ok(S.grow(st, p, {}, settings, T0).ok); st.bud.start = Date.now();   // need() reads the real clock: a bud still growing
+  st.sittingCrates.push({ id: "sit1", mibiId: 1, pose: "calm", place: "wood", start: -1e10, source: "dev", painted: true, opened: false });
+  INTENTS.incubator.intent(h, "bud", "confirm"); assert.equal(h.played.at(-1)?.kind, "growNow"); assert.equal(capLine(h.ui.inc.grow.need), "A portrait waits in the Bay", "the portrait is in the snapshot the bar's fill keeps");
 });
 test("the incubator: Choose a pod (empty), Hatch now (growing: pays, ends the wait and hatches in one press, growNow with the bar and the door, then the hatch held 2780 ms with the hand-off at 2600 on the resident), Open (a bud that finished on its own: no price); ← Home on Home's Incubator module", () => {
   const st = world(), h = host(st); h.t = T0; h.specs.incubator = incubatorSpec;

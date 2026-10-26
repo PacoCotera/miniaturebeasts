@@ -145,7 +145,7 @@ export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
   const out = [], cs = S.bayCrates(st, sv), art = (w) => S.aAn(w).split(" ")[0];
   if (S.docked(st) && cs.length) out.push({ key: "crates", n: cs.length, max: 3, act: "cargo" });
   if (S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });
-  { const rc = readyCrates(st, settings, now)[0]; if (rc) out.push({ key: "portrait", act: "cargo", name: S.mibiById(st, rc.mibiId)?.name ?? "" }); }
+  if (readyCrates(st, settings, now).length) out.push({ key: "portrait", act: "cargo" });
   const meet = ui.meet != null ? S.mibiById(st, ui.meet) : null; if (meet) out.push({ key: "meet", name: meet.name, act: "meet" });
   const unseen = st.tray.filter((p) => !p.idd && !p.seen); if (unseen.length) out.push({ key: "newPods", n: unseen.length, max: 6, act: "pods" });
   const glint = st.tray.filter((p) => S.podGlints(st, p)); if (glint.length) out.push({ key: "glints", n: glint.length, max: 6, act: "pods" });
@@ -232,7 +232,7 @@ function lineWords(m, spec, frame, v) {
   const Sg = spec.strings, { cur } = v;
   if (cur === "room") {
     const W = { strings: { needs: Sg.line.needs } };   // Home's own table: each need's action (the first) and notice (the second), the counts spelled
-    if (v.needs.length) return { needs: v.needs.slice(0, spec.regions.line.needs).map((nd, i) => { const w = wordsOf(nd, W); return i === 0 ? w.action : nd.key === "portrait" && !nd.name ? Sg.line.needs.portrait.noticeNoName : w.notice; }), ...(v.needs.slice(1, 2)[0]?.key === "portrait" && v.needs[1].name && spec.regions.line.needs > 1 ? { name: v.needs[1].name } : {}) };   // name: drawn in orange inside the portrait notice
+    if (v.needs.length) return { needs: v.needs.slice(0, spec.regions.line.needs).map((nd, i) => { const w = wordsOf(nd, W); return i === 0 ? w.action : w.notice; }) };
     const goal = S.goalKey(m.st, m.sv, m.settings), g = goal && goalWords(goal, !!m.docked, frame);
     return g ? { goal: g } : {};
   }
