@@ -8,12 +8,12 @@ const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n+
 const crc32 = (buf) => { let c = 0xffffffff; for (const b of buf) c = CRC[(c ^ b) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
 const chunk = (type, data) => { const len = Buffer.alloc(4); len.writeUInt32BE(data.length); const body = Buffer.concat([Buffer.from(type, "ascii"), data]); const crc = Buffer.alloc(4); crc.writeUInt32BE(crc32(body)); return Buffer.concat([len, body, crc]); };
 
-// RGBA bytes (w*h*4) to a PNG file.
-export function encodePNG(w, h, rgba) {
+// RGBA bytes (w*h*4) to a PNG file (zlib level 9 unless another is asked: the layout check's overlays take 6).
+export function encodePNG(w, h, rgba, level = 9) {
   const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4); ihdr[8] = 8; ihdr[9] = 6;
   const raw = Buffer.alloc((w * 4 + 1) * h);
   for (let y = 0; y < h; y++) { raw[y * (w * 4 + 1)] = 0; Buffer.from(rgba.buffer ?? rgba, rgba.byteOffset ?? 0, w * h * 4).copy(raw, y * (w * 4 + 1) + 1, y * w * 4, (y + 1) * w * 4); }
-  return Buffer.concat([SIG, chunk("IHDR", ihdr), chunk("IDAT", deflateSync(raw, { level: 9 })), chunk("IEND", Buffer.alloc(0))]);
+  return Buffer.concat([SIG, chunk("IHDR", ihdr), chunk("IDAT", deflateSync(raw, { level })), chunk("IEND", Buffer.alloc(0))]);
 }
 
 // A PNG file (gray, gray+alpha, RGB or RGBA at 8 bits, or indexed at 1, 2, 4 or 8 bits with its tRNS alpha) to { width, height, data: Uint8ClampedArray RGBA }.

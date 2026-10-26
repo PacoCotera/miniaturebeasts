@@ -523,6 +523,54 @@ static void kit_words(void) {
     free(pc);
   }
 }
+/* The layout check's log additions (log only, no pixel): a sprite's solid-ink box (alpha >= 128, rows and columns with at least 3 such pixels), a window of a larger picture flagged 8 and, when it cuts solid
+   ink, 16, and the snapshot flagged 32 with its source nodes beside it (log.snapshot) */
+static int log_has(const char *lg, const char *want) { return strstr(lg, want) != NULL; }
+static void layout_log(void) {
+  face_init(); prim_palette_add("kitA", KA); prim_palette_add("kitB", KB);
+  { const char *hi = "{\"t\":\"hello\",\"contract\":1}"; wire_send(hi, (int)strlen(hi)); }
+  static const struct { const char *id; int w, h; } PIC[] = { { "ll-soft", 20, 16 }, { "ll-big", 40, 40 } };
+  for (int i = 0; i < 2; i++) { char m[160]; snprintf(m, sizeof m, "{\"t\":\"asset\",\"id\":\"%s\",\"w\":%d,\"h\":%d,\"policy\":\"art\",\"status\":\"placeholder\"}", PIC[i].id, PIC[i].w, PIC[i].h); check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot(PIC[i].id) >= 0, "layout log: a picture is loaded", PIC[i].id); }
+  { uint8_t *p = prim_asset_ptr(wire_asset_slot("ll-soft"));   /* a faint halo (alpha 40) over the whole, a solid block (alpha 200) at x 5..10, y 4..11, two solid pixels on row 14 and two on column 18 (too few to count) */
+    for (int y = 0; y < 16; y++) for (int x = 0; x < 20; x++) { uint8_t *q = p + (y * 20 + x) * 4; q[0] = 0x33; q[1] = 0x22; q[2] = 0x11; q[3] = 40; if (x >= 5 && x <= 10 && y >= 4 && y <= 11) q[3] = 200; }
+    p[(14 * 20 + 1) * 4 + 3] = 255; p[(14 * 20 + 2) * 4 + 3] = 255; p[(1 * 20 + 18) * 4 + 3] = 255; p[(2 * 20 + 18) * 4 + 3] = 255; }
+  { uint8_t *p = prim_asset_ptr(wire_asset_slot("ll-big"));   /* clear, with a solid block (alpha 255) at x 10..29, y 10..29 */
+    for (int y = 10; y < 30; y++) for (int x = 10; x < 30; x++) { uint8_t *q = p + (y * 40 + x) * 4; q[0] = 0x33; q[1] = 0x22; q[2] = 0x11; q[3] = 255; } }
+  { int sb[4]; check(prim_asset_solid_box(wire_asset_slot("ll-soft"), sb) == 0 && sb[0] == 5 && sb[1] == 4 && sb[2] == 6 && sb[3] == 8, "layout log: prim_asset_solid_box: the soft-alpha picture's solid box is its block, the halo and the lone pixels left out", ""); }
+  static char lg[65536]; char want[200]; int n;
+  prim_begin(); v_region("ll.pic", LAYER_ART);
+  v_sprite("ll.soft", "ll-soft", 100, 200, 20, 16);
+  v_sprite_window("ll.cut", "ll-big", 15, 12, 300, 300, 10, 10);      /* inside the block: every edge's outer row or column is solid */
+  v_sprite_window("ll.part", "ll-big", 12, 5, 400, 300, 10, 10);      /* rows 5..14: the block's rows 10..14 in it, row 15 outside is solid */
+  v_sprite_window("ll.clear", "ll-big", 1, 1, 500, 300, 5, 5);        /* the clear corner: nothing solid in it or around it */
+  prim_end(); n = prim_log_json(lg, (int)sizeof lg);
+  snprintf(want, sizeof want, "[%u,3,1,\"ll.pic\",100,200,20,16,0,100,200,20,16,0,105,204,6,8]", (unsigned)v_id("ll.soft"));
+  check(n > 0 && log_has(lg, want), "layout log: a soft-alpha sprite logs its ink (alpha above 0) and its solid-ink box (alpha >= 128, rows and columns with 3 or more) as values 14 to 17", want);
+  snprintf(want, sizeof want, "[%u,3,1,\"ll.pic\",300,300,10,10,24,300,300,10,10,0,300,300,10,10]", (unsigned)v_id("ll.cut"));
+  check(n > 0 && log_has(lg, want), "layout log: a window of a larger picture is flagged 8, and 16 when solid ink lies just outside it", want);
+  snprintf(want, sizeof want, "[%u,3,1,\"ll.pic\",400,300,10,10,24,400,300,10,10,0,400,305,10,5]", (unsigned)v_id("ll.part"));
+  check(n > 0 && log_has(lg, want), "layout log: a window's solid box is its own rows and columns of solid ink", want);
+  snprintf(want, sizeof want, "[%u,3,1,\"ll.pic\",500,300,5,5,8,500,300,5,5,0,", (unsigned)v_id("ll.clear"));
+  check(n > 0 && log_has(lg, want), "layout log: a window that cuts no solid ink is flagged 8 alone", want);
+  check(n > 0 && !log_has(lg, "\"snapshot\""), "layout log: no snapshot shown, no snapshot in the log", "");
+  /* a text's solid box: its advance by its cap top to its baseline */
+  prim_begin(); v_region("ll.text", LAYER_TYPE); int tw = v_line_at("ll.t", "Hello", 40, 60, V_ANCHOR_CAP, 16, "kitA", V_ALIGN_LEFT); prim_end(); n = prim_log_json(lg, (int)sizeof lg);
+  { char tail[80]; snprintf(want, sizeof want, "[%u,2,3,\"ll.text\",40,", (unsigned)v_id("ll.t")); snprintf(tail, sizeof tail, ",40,60,%d,%d]", tw, v_cap(16)); const char *p = strstr(lg, want), *e = p ? strchr(p, ']') : NULL;
+    check(n > 0 && p && e && (size_t)(e - p) + 1 >= strlen(tail) && strncmp(e - strlen(tail) + 1, tail, strlen(tail)) == 0, "layout log: a text's solid box is its advance by its cap top to its baseline", tail); }
+  /* the snapshot: its node flagged 32, its source nodes cut to its rect beside it (a node outside the rect left out) */
+  prim_snapshot_free();
+  prim_begin(); v_region("ll.src", LAYER_CHROME); v_rect("ll.ground", 0, 0, 60, 40, "kitA"); v_rect("ll.mark", 10, 8, 12, 6, "kitB"); v_rect("ll.out", 200, 200, 10, 10, "kitB"); prim_end();
+  check(prim_snapshot(0, 0, 40, 30) >= 0, "layout log: the snapshot is taken", "");
+  prim_begin(); v_region("ll.panel", LAYER_PAINTED); v_snapshot("ll.snap", 500, 100, 40, 30); prim_end(); n = prim_log_json(lg, (int)sizeof lg);
+  snprintf(want, sizeof want, "[%u,3,2,\"ll.panel\",500,100,40,30,32,", (unsigned)v_id("ll.snap"));
+  check(n > 0 && log_has(lg, want), "layout log: the snapshot's node is flagged 32 (composed content)", want);
+  snprintf(want, sizeof want, "\"snapshot\":{\"region\":\"ll.panel\",\"from\":[0,0,40,30],\"at\":[500,100],\"nodes\":[[%u,1,0,\"ll.src\",0,0,40,30,0,0,0,40,30,0,0,0,40,30],", (unsigned)v_id("ll.ground"));
+  check(n > 0 && log_has(lg, want), "layout log: log.snapshot carries the region and place of its node, the source rect and the source nodes cut to it", want);
+  snprintf(want, sizeof want, "[%u,1,0,\"ll.src\",10,8,12,6,0,10,8,12,6,0,10,8,12,6]", (unsigned)v_id("ll.mark"));
+  { char out[24]; snprintf(out, sizeof out, "[%u,", (unsigned)v_id("ll.out")); check(n > 0 && log_has(lg, want) && !log_has(lg, out), "layout log: a source node inside the rect is kept whole, one outside it is left out", want); }
+  prim_snapshot_free(); prim_begin(); prim_end(); n = prim_log_json(lg, (int)sizeof lg);
+  check(n > 0 && !log_has(lg, "\"snapshot\""), "layout log: a freed snapshot leaves the log", "");
+}
 /* kit_glint (Home's Library glints on it) and the top bar's readout after the title */
 static void glint_readout(void) {
   static const char *GP = "regions.library.specimen.glint";
@@ -788,7 +836,7 @@ static void type_kit(void) {
     char plain[160]; snprintf(plain, sizeof plain, "\"text\":\"Plain\",\"px\":16,\"region\":\"ty.runlog\",\"role\":\"label\",\"ground\":\"field\",\"run\":0,");
     char fig[160]; snprintf(fig, sizeof fig, "\"text\":\"2\",\"px\":16,\"region\":\"ty.runlog\",\"role\":\"label\",\"ground\":\"field\",\"run\":%u,", (unsigned)v_id("ty.runp"));
     char nd[64], r[24]; snprintf(nd, sizeof nd, "[%u,2,3,", (unsigned)v_id("ty.runa.0")); snprintf(r, sizeof r, ",%u]", (unsigned)v_id("ty.runa")); const char *p = strstr(lg, nd), *e = p ? strchr(p, ']') : NULL;
-    int tail = e && (size_t)(e - p) + 1 > strlen(r) && strncmp(e - strlen(r) + 1, r, strlen(r)) == 0;   /* the node's entry ends with its run */
+    int tail = 0; if (p && e) { const char *q = p; for (int k = 0; k < 13 && q && q < e; k++) q = strchr(q + 1, ','); tail = q && q < e && strncmp(q, r, strlen(r) - 1) == 0 && q[strlen(r) - 1] == ','; }   /* the node's 14th value is its run (the solid box follows it) */
     check(n > 0 && strstr(lg, want) && strstr(lg, plain) && strstr(lg, fig) && tail, "run log: a type entry carries the run's v_id (0 for a plain line), a node's 14th value is its run", ""); }
   /* an inline group: a v_run and a v_say inside v_inline carry the group's run, the run after v_inline_end is its own again */
   { static char lg[65536];
@@ -838,6 +886,7 @@ int main(int argc, char **argv) {
   layout_vectors(dir, argc > 2 ? argv[2] : "../ui/specs/station");
   line_words();
   kit_words();
+  layout_log();
   glint_readout();
   resident_window_corner();
   type_kit();

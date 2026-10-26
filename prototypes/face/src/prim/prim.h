@@ -73,13 +73,17 @@ void prim_set_hide(const char *region);   /* the nodes of a region hidden (NULL 
 void prim_asset_layer(int handle, int layer);
 int prim_asset_size(int handle, int out[2]);   /* the size of a held picture: 0, or -1 for an empty slot */
 int prim_asset_box(int handle, int out[4]);   /* the box (x, y, w, h) of a held picture's pixels with alpha above 0 (all 0 when it is clear); 0, or -1 for an empty slot: the dither of a layer need only cover this box */
+int prim_asset_solid_box(int handle, int out[4]);   /* the solid-ink box (C9) of a held picture: the span of its columns and the span of its rows that hold at least 3 pixels of alpha >= 128 (all 0 when none); 0, or -1 for an empty slot */
 int prim_asset_alpha_box(int fh, int th, int out[4]);   /* the silhouette box of two held pictures: pixels clear in one and not the other (0, or -1 when refused) */
 int prim_asset_diff_box(int fh, int th, int out[4]);    /* the change box: pixels whose alpha differs or, neither clear, whose colour differs */
 /* The feet of a held picture (the decision panel's composite rule, T-20261016-70): out = the lowest row holding a pixel of alpha >= `alpha`, and the first and last column of such pixels in that row and the `rows` - 1 above it (inclusive). 0, or -1 for an empty slot or a picture with no such pixel. */
 int prim_asset_feet(int handle, int alpha, int rows, int out[3]);
 int prim_asset_layer_of(int handle);   /* the layer the host gave a picture (art or painted; art when it gave none) */
-/* {"regions":[{"id","layer","rect":[x,y,w,h]}...],"type":[{"text","px","region","role","ground","x","w","cap","base"}...],"nodes":[[id,kind,layer,region,x,y,w,h,flags,inkx,inky,inkw,inkh]...],"refused":n,"objects":n,"table":n,"pictures":n}
+/* {"regions":[{"id","layer","rect":[x,y,w,h]}...],"type":[{"text","px","region","role","ground","x","w","cap","base"}...],"nodes":[[id,kind,layer,region,x,y,w,h,flags,inkx,inky,inkw,inkh,run,solidx,solidy,solidw,solidh]...],
+   "snapshot":{"region","from":[x,y,w,h],"at":[x,y],"nodes":[...]},"refused":n,"objects":n,"table":n,"pictures":n}
    into buf (a clip's children count only where the clip shows them; objects are LVGL's, table is the face's node table; a text's px is its font code, cap and base its cap top and baseline rows, role and
-   ground what the words set it by, "" when set by size; nodes: every node shown with a size in draw order, see prim_log_json); returns its length, or -1 if it does not fit. */
+   ground what the words set it by, "" when set by size; nodes: every node shown with a size in draw order, flags 1 ring, 2 in a clip, 4 hold, 8 a window of a larger picture, 16 the window cuts solid ink,
+   32 composed content (the snapshot), see node_json in prim.c; snapshot, only while a node shows the face's snapshot: the region and place of that node, the source rect and the source screen's nodes cut
+   to it as they were when prim_snapshot ran); returns its length, or -1 if it does not fit. */
 int prim_log_json(char *buf, int cap);
 #endif

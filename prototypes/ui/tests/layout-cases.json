@@ -1,0 +1,115 @@
+{
+ "note": "The layout check's case corpus (ui/tests/layout-cases.test.mjs): golden states with the findings the check must make on them (expect: the known faults it reproduces, each with its source in the validation of the check, ✓m measured in the prototype, ✓e expected from the audit's numbers), the findings it must not make (clear: the owner-cleared items, none yet), and what waits for data (pending: ✓d, once UI/UX declares it, or a ✓e the check does not reproduce). Each state's fixture log is ui/tests/layout-cases/<screen>/<state>.json; layout-check.mjs <logs> --refresh-cases takes them again after a retake. An expect matches a finding with that rule (and part, node, other as a prefix, container, measured: a number or [min, max]).",
+ "cases": [
+  { "state": "pods/overview, identified, pod focused", "from": "owner, Pods overview",
+    "expect": [
+     { "rule": "L6", "container": "opening", "measured": [0.2, 0.35], "mark": "✓m", "why": "the right half empty: L6 0.23 to 0.31 in the prototype" },
+     { "rule": "L7", "part": "a", "container": "opening", "measured": [0.15, 0.25], "mark": "✓m", "why": "the imbalance: L7a 0.18 to 0.22" },
+     { "rule": "L1", "node": "stamp", "other": "right", "measured": 14, "mark": "✓m", "why": "the stamp case 14 from the right (24 required) against the dish 118 on the left (the prototype's 110 was the alpha above 0 box)" },
+     { "rule": "L1", "node": "specimen", "other": "left", "measured": 118, "mark": "✓m", "why": "the left side loose" },
+     { "rule": "L2", "node": "hatch", "other": "bottom", "measured": 0, "mark": "✓m", "why": "the hatch on the opening's bottom edge" }
+    ],
+    "clear": [],
+    "pending": [
+     { "what": "the origin text over the gauge, L4", "needs": "pods.json layout.painted: the gauge [718, 100, 82, 62] (✓d, UI/UX with the AD)" },
+     { "what": "the lone pod disc, L3", "needs": "a declared right column (✓d)" }
+    ] },
+  { "state": "create/create-confirm-keep", "from": "owner, Create confirm-keep: the niche on the window's bottom edge, empty above",
+    "expect": [
+     { "rule": "L1", "container": "panelSnapshot", "node": "snapshot chamber", "other": "bottom", "measured": 6, "mark": "✓m", "why": "6 below, through the snapshot's source nodes (log addition 3)" },
+     { "rule": "L7", "part": "b", "container": "panelSnapshot", "other": "above / below", "measured": [100, 115], "mark": "✓m", "why": "slack 116 above (the trait line's cap top; the prototype's 112 was its line top), 6 below" },
+     { "rule": "L11", "node": "panelPrice", "measured": 17, "mark": "✓e", "why": "unlabelled marks: the Incubate header's pod mark ends the price run with no word" }
+    ],
+    "clear": [], "pending": [] },
+  { "state": "create/create-shape-short", "from": "owner, Create annotated (09:55)",
+    "expect": [
+     { "rule": "L2", "node": "cradleFront", "other": "left", "mark": "✓m", "why": "the dish's lip across the opening's left edge (the left side: 0 / 36)" },
+     { "rule": "L1", "node": "stamp", "other": "right", "measured": 14, "mark": "✓m", "why": "right 14 (the capsule 16)" },
+     { "rule": "L2", "node": "chamber", "other": "bottom", "measured": 0, "mark": "✓m", "why": "the tray on the opening's bottom edge (−1 in the stage picture's paint)" },
+     { "rule": "L2", "node": "roll", "other": "top", "measured": 2, "mark": "✓m", "why": "▲ 2 under the rail's well (C4): a mark 2 px from the strip's edge is L2, which replaces L1 for that side" },
+     { "rule": "L3", "part": "b", "node": "pod", "other": "chamber", "mark": "✓e", "why": "unequal gutters pod → tray → capsule" }
+    ],
+    "clear": [],
+    "pending": [
+     { "what": "the floating caption, L8a", "needs": "create.json traitLine.labels (✓d)" },
+     { "what": "the empty top left, L7b", "needs": "declared columns (✓d); undeclared, L7a fires" }
+    ] },
+  { "state": "pods/collection", "from": "the UI/UX layout sweep",
+    "expect": [
+     { "rule": "L1", "other": "left", "measured": 8, "mark": "✓m", "why": "places 8 from the left" },
+     { "rule": "L1", "other": "right", "measured": 106, "mark": "✓m", "why": "106 from the right" }
+    ], "clear": [], "pending": [] },
+  { "state": "pods/compare", "from": "the UI/UX layout sweep",
+    "expect": [
+     { "rule": "L1", "node": "pageA", "other": "bottom", "measured": 124, "mark": "✓e", "why": "the pages' slack 24 above, 124 below" }
+    ], "clear": [], "pending": [] },
+  { "state": "bench/bench", "from": "the UI/UX layout sweep: the Probe bench",
+    "expect": [
+     { "rule": "L1", "node": "cradle", "other": "left", "measured": [18, 21], "mark": "✓m", "why": "left 19 (20 by the cradle's solid ink)" },
+     { "rule": "L1", "other": "right", "measured": 18, "mark": "✓m", "why": "right 18" },
+     { "rule": "L1", "node": "cradle", "other": "bottom", "measured": [6, 13], "mark": "✓m", "why": "bottom 7 (12 by the solid ink, the cradle's faint shadow left out)" },
+     { "rule": "L3", "part": "b", "node": "cradle", "other": "strip", "mark": "✓e", "why": "gutters 83 / 80" }
+    ], "clear": [],
+    "pending": [ { "what": "the bench's L6 reads its painted tools as empty", "needs": "bench.json layout.painted with fills: true (a false alarm until then)" } ] },
+  { "state": "library/library-l2-loika-mid", "from": "the UI/UX layout sweep: the Library's Level 2",
+    "expect": [
+     { "rule": "L2", "node": "sheet", "other": "top", "measured": 0, "mark": "✓m", "why": "the sheet touching the top bar" },
+     { "rule": "L2", "node": "sheet", "other": "bottom", "measured": 0, "mark": "✓m", "why": "and the bottom line" }
+    ], "clear": [], "pending": [ { "what": "the Library crest cut, L10b (✓e)", "needs": "frame.json layout.thresholds.L10.value.subjects: which components count as subjects (the AD with UI/UX)" } ] },
+  { "state": "library/library-l3-far", "from": "the UI/UX layout sweep: the Library's Level 3",
+    "expect": [ { "rule": "L1", "node": "far", "other": "top", "measured": 4, "mark": "✓e", "why": "far top 4" } ], "clear": [], "pending": [] },
+  { "state": "library/library-l2-met-only", "from": "the component model: a generated sheet with no layout facts",
+    "expect": [ { "rule": "L0", "node": "sheet", "why": "a met sheet carries no plates: not measurable, never a silent pass" } ], "clear": [], "pending": [] },
+  { "state": "incubator/incubator-empty", "from": "the UI/UX layout sweep: the Incubator",
+    "expect": [
+     { "rule": "L2", "other": "top", "measured": 0, "mark": "✓m", "why": "the capsule 0 to the top bar" },
+     { "rule": "L1", "other": "bottom", "measured": 4, "mark": "✓m", "why": "4 to the bottom line" },
+     { "rule": "L7", "part": "a", "container": "opening", "mark": "✓m", "why": "off the screen's axis" }
+    ], "clear": [], "pending": [ { "what": "the door cut, L10a", "needs": "the capsule declared a bleed or its door's window data (✓d)" } ] },
+  { "state": "incubator/incubator-growing", "from": "the UI/UX layout sweep: the Incubator's stamp column",
+    "expect": [
+     { "rule": "L1", "other": "left", "measured": 71, "mark": "✓m", "why": "the stamp column at the left (76 by its case, 71 by its line)" },
+     { "rule": "L1", "other": "right", "mark": "✓m", "why": "the empty right (150 by the capsule's rect; 337 by its solid ink, the shell's right part clear)" }
+    ], "clear": [], "pending": [] },
+  { "state": "cargo/cargo-bay-one", "from": "the UI/UX layout sweep: Cargo",
+    "expect": [
+     { "rule": "L1", "node": "bay", "other": "top", "measured": 6, "mark": "✓m", "why": "the Bay 6 under the top bar" },
+     { "rule": "L1", "node": "bay", "other": "bottom", "measured": 10, "mark": "✓m", "why": "10 over the bottom line" }
+    ], "clear": [], "pending": [ { "what": "the hatch floor line, L7b", "needs": "declared columns with the floor line (✓d)" } ] },
+  { "state": "cargo/cargo-bay-waiting-many", "from": "the UX audit: Cargo",
+    "expect": [ { "rule": "L4", "node": "waiting.pod", "other": "waitingMore", "mark": "✓e", "why": "\"+2\" over the third pod" } ], "clear": [], "pending": [] },
+  { "state": "habitat/habitat-rest", "from": "the UI/UX layout sweep: Habitat",
+    "expect": [
+     { "rule": "L1", "node": "strip", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the strip 10 over the bottom line" },
+     { "rule": "L3", "part": "a", "node": "door.plate", "other": "portrait.plate", "measured": 8, "mark": "✓e", "why": "plate gutters 8" },
+     { "rule": "L6", "container": "cross.plate", "mark": "✓e", "why": "empty bodies: the Cross module with no partner shows its eyebrow and an empty 56 px body" }
+    ], "clear": [], "pending": [ { "what": "the notches, L8a", "needs": "their labels (✓d, UI/UX)" } ] },
+  { "state": "habitat/habitat-card", "from": "the UX audit: Habitat's lone marks",
+    "expect": [ { "rule": "L11", "container": "card", "node": "card", "measured": 17, "mark": "✓e", "why": "the skill notches, 16 x 24 gold marks with no word (style guide section 6)" } ], "clear": [], "pending": [] },
+  { "state": "cargo/cargo-arrival-choice", "from": "the UX audit: Cargo's arrival",
+    "expect": [
+     { "rule": "L6", "container": "cards", "mark": "✓e", "why": "empty rows: a card with no costs leaves an empty 40 px row between its name and its line" },
+     { "rule": "L11", "container": "bay", "node": "band.leaving", "mark": "✓e", "why": "unlabelled marks: the arrival's exit glyph and mibi face with no word" }
+    ], "clear": [], "pending": [] },
+  { "state": "library/library-l3-close-moss", "from": "the UX audit: the Library's Level 3 (parked with the Library)",
+    "expect": [ { "rule": "L1", "container": "opening", "node": "panel", "other": "bottom", "measured": [6, 7], "mark": "✓e", "why": "the info panel's bottom 7 over the line in the audit (6 by the face's log: the panel ends at 556)" } ], "clear": [], "pending": [] },
+  { "state": "sitting/sitting-pose", "from": "the UI/UX layout sweep and the UX audit: the sitting",
+    "expect": [
+     { "rule": "L1", "node": "strip", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the strip 10 over the bottom line" },
+     { "rule": "L7", "part": "b", "container": "strip", "other": "left / right", "mark": "✓m", "why": "the steps 16 / 504 in their strip" },
+     { "rule": "L6", "container": "strip", "mark": "✓m", "why": "the strip's right half empty" },
+     { "rule": "L1", "container": "deck", "node": "cards", "other": "right", "measured": 24, "mark": "✓e", "why": "the deck's cards 16 / 24" }
+    ], "clear": [], "pending": [] },
+  { "state": "vivarium/vivarium-docked", "from": "the UI/UX layout sweep and the art direction audit: the Vivarium",
+    "expect": [
+     { "rule": "L1", "node": "strip", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the strip 10 over the bottom line" },
+     { "rule": "L4", "node": "resident", "other": "resident", "mark": "✓m", "why": "the totem: three residents stacked, each one's feet on the next one's head" }
+    ], "clear": [], "pending": [ { "what": "the strip that vanishes, L9", "needs": "vivarium.json layout.slots (✓d)" }, { "what": "the window's L2 on three sides", "needs": "the window declared a bleed (C2 allows it)" } ] },
+  { "state": "home/home-fresh", "from": "the UX audit: Home",
+    "expect": [
+     { "rule": "L5", "part": "b", "container": "bay", "node": "bay.picture", "other": "bay centre (y)", "measured": 5, "mark": "✓m", "why": "the Bay picture's centre 521 against the module's 526" },
+     { "rule": "L3", "part": "a", "node": "vivarium", "other": "library", "measured": 12, "mark": "✓e", "why": "the window gutter 12" },
+     { "rule": "L11", "container": "library.window", "node": "library.window", "measured": 12, "mark": "✓e", "why": "unlabelled marks: the Library window's glints" }
+    ], "clear": [], "pending": [ { "what": "the Pods+Incubator | Companion+Bay split", "needs": "home.json layout.split (UI/UX)" } ] }
+ ]
+}

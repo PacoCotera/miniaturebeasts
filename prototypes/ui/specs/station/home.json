@@ -1,5 +1,6 @@
 {
  "screen": "home",
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 560], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
  "device": "station",
  "spec": "design/style-guide/station-layouts.md",
  "frame": "frame.json",

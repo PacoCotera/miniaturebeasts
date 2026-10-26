@@ -1,5 +1,6 @@
 {
  "screen": "bench",
+ "layout": { "stage": "bezel", "opening": [64, 77, 890, 455], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
  "device": "station",
  "section": "probe",
  "level": "the bench, the section's one level: it holds one Probe, so its whole is that one item",
