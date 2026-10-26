@@ -151,7 +151,22 @@ jobs:
       - name: Pods and Home goldens (LVGL)
         if: steps.scope.outputs.docs != 'true'
         # Each of Pods' states and Home's capture points drawn by the page's own face (the C words on the page's own pictures; Home with reduced motion, its two timed points on a virtual clock): the framebuffer hash against prototypes/face/golden/pods/pods.json and prototypes/face/golden/home/home.json.
-        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/goldens.mjs --check
+        # With --logs, the face's log and the props facts of each golden's frame are written for the layout check (outside the tree).
+        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/goldens.mjs --check --logs "$RUNNER_TEMP/layout-logs"
+      - name: Layout check (report mode)
+        if: steps.scope.outputs.docs != 'true'
+        # Rules L0 to L11 (ui/specs/layout.mjs) over every golden's log: the index (JSON and Markdown, every finding) and the review set (one card per screen and rule, the worst
+        # instance of each kind), with the cards' overlays only. Report mode: it fails only on a
+        # finding of a rule frame.json layout.enforced lists for its screen, an unused exception, a malformed layout block, or L0 on an enforced screen.
+        run: node prototypes/face/tools/layout-check.mjs "$RUNNER_TEMP/layout-logs" --out "$RUNNER_TEMP/layout-check" --overlays review
+      - name: Layout check output
+        if: always() && steps.scope.outputs.docs != 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: layout-check
+          path: ${{ runner.temp }}/layout-check
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Station layer checks
         if: steps.scope.outputs.docs != 'true'
         # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6):

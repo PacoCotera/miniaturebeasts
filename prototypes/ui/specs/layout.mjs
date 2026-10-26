@@ -1,0 +1,312 @@
+// The layout check (report mode): rules L0 to L11 over the face's node log, beside the clearance of text (clearance.mjs). Pure: the same numbers from every face (the WebAssembly face, the native
+// build, the Pi). face/tools/layout-check.mjs runs it over every golden state; ui/tests/layout.test.mjs and layout-cases.test.mjs hold it to its rules and to the known findings.
+//   findings(log, spec, frameSpec, screen, state, extra) -> [{ rule, node, other, measured, required, unit, container: { id, rect }, boxes: [{ role, rect }], ... }]
+// log: the face's log (prim_log_json): `nodes`, every node shown with a size in draw order, [id, kind, layer, region, x, y, w, h, flags, inkx, inky, inkw, inkh, run, solidx, solidy, solidw, solidh]
+//   (kind 1 rect, 2 text, 3 sprite, 4 nine-slice, 5 clip, 6 composed; flags 1 a focus ring, 2 inside a clip, 4 a hold mark, 8 a window of a larger picture, 16 that window cuts solid ink, 32 composed
+//   content; the solid box: a sprite's solid ink (alpha >= 128, rows and columns with 3 or more such pixels, C9), a text's advance x cap top to baseline, any other node's box); `type`, the text entries;
+//   `snapshot`, the snapshot's source nodes ({ region, from, at, nodes }) while a node shows it.
+// spec: the screen's spec; its top-level `layout` block: { stage: "bezel" | "field" | "painting" | "exempt", opening: [x, y, w, h], margin?, gutter?, containers?: [{ id, region, padding, gutter }],
+//   columns?: [{ id, regions, axis, align: "fill" | "centre" }], topLine?, floorLine?, groups?: [{ id, regions, within, align }], split?: [{ between: [a, b], gutter, reason }], bleed?: [regions],
+//   slots?: [regions], painted?: [{ id, rect, fills, states?, picture }], facts?: [{ region, path }] }, and its regions (`labels`, `under`, `partOf` merge one region into another).
+// frameSpec: frame.json; `layout.thresholds` (every number the rules use, each { value, from }), `layout.exceptions` [{ screen, state?, rule, node, other?, reason, by, date }] and
+//   `layout.enforced` { "<screen>": ["L1", ...] | "all" }. screen: the golden screen (the exceptions' and the enforcement's key); state: the golden state.
+// extra: { facts: { "<props path>": value } }: the props facts the generated pictures carry (a spec's `layout.facts` names the path; each entry a rect, or an object with `rect`, in the picture's own
+//   coordinates), read as the picture's inner boxes.
+// The component model (C9): the frame's bars and zones are not measured; a node a later solid node covers is not seen (a rect, a nine-slice, a picture solid edge to edge; a focus ring never covers);
+// a 1 or 2 px rule is a line, not a component; nodes with one rect are the layers of one picture (its box the union of their solid boxes); a picture painted over its whole rect with a text on it is a
+// plate, measured by its rect; a container is a node at least 48 x 48 (not text) that holds two boxes, or one of another region, and is composed content (the snapshot, a generated
+// picture), a region layout.containers names, or a pane drawn as one (a rect, a nine-slice, a picture painted over its whole rect), and a node covering
+// 90 % of its container and reaching its four edges is its ground; a strip hanging from a container's top edge moves that edge to the strip's lower edge. In a container, the boxes of one region (a
+// region whose spec says `labels`, `under` or `partOf` another belongs to that one) that meet or lie within `component` px of each other are one component, but two pictures of one region that overlap
+// in part stay two; a component under `mark` px on its larger side is a mark. The focus ring counts for L2 and L4 only. Every number is frame.json layout.thresholds'.
+import { FRAME_REGIONS } from "./clearance.mjs";
+
+const KIND = { rect: 1, text: 2, sprite: 3, nine: 4, clip: 5, composed: 6 }, FLAG = { ring: 1, clip: 2, hold: 4, window: 8, cut: 16, composed: 32 };
+const BARS = new Set([...FRAME_REGIONS, "top", "line", "bar"]);
+export const RULES = ["L0", "L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "L11"];   // a finding of L3, L5, L7, L8 or L10 names its part (a or b)
+const STAGES = ["bezel", "field", "painting", "exempt"];
+const SIDES = ["left", "top", "right", "bottom"], OPP = { left: "right", right: "left", top: "bottom", bottom: "top" };
+const fnv = (s) => { let h = 2166136261; for (const ch of new TextEncoder().encode(String(s))) { h ^= ch; h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };   // the face's v_id
+
+// ---- boxes [x, y, w, h] ----
+const R = (b) => b[0] + b[2], B = (b) => b[1] + b[3], area = (b) => Math.max(0, b[2]) * Math.max(0, b[3]);
+const empty = (b) => !b || b[2] <= 0 || b[3] <= 0;
+const same = (a, b) => a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
+const encloses = (o, i) => o[0] <= i[0] && o[1] <= i[1] && R(o) >= R(i) && B(o) >= B(i);
+const inter = (a, b) => { const x = Math.max(a[0], b[0]), y = Math.max(a[1], b[1]), w = Math.min(R(a), R(b)) - x, h = Math.min(B(a), B(b)) - y; return w > 0 && h > 0 ? [x, y, w, h] : null; };
+const union = (a, b) => (empty(a) ? b : empty(b) ? a : (() => { const x = Math.min(a[0], b[0]), y = Math.min(a[1], b[1]); return [x, y, Math.max(R(a), R(b)) - x, Math.max(B(a), B(b)) - y]; })());
+const gapX = (a, b) => Math.max(b[0] - R(a), a[0] - R(b)), gapY = (a, b) => Math.max(b[1] - B(a), a[1] - B(b));
+const dist = (a, b) => Math.hypot(Math.max(0, gapX(a, b)), Math.max(0, gapY(a, b)));   // 0 when the boxes meet
+const overlapShare = (a, b, axis) => { const lo = axis === "y" ? Math.max(a[1], b[1]) : Math.max(a[0], b[0]), hi = axis === "y" ? Math.min(B(a), B(b)) : Math.min(R(a), R(b)), n = axis === "y" ? Math.min(a[3], b[3]) : Math.min(a[2], b[2]); return n > 0 ? Math.max(0, hi - lo) / n : 0; };
+const side = (b, c, s) => (s === "left" ? b[0] - c[0] : s === "top" ? b[1] - c[1] : s === "right" ? R(c) - R(b) : B(c) - B(b));   // the gap from a box to its container's edge on side s (negative: across it)
+const cx = (b) => b[0] + b[2] / 2, cy = (b) => b[1] + b[3] / 2;
+const rnd = (v, k = 2) => Math.round(v * 10 ** k) / 10 ** k;
+
+// ---- the spec and the thresholds ----
+function regionOf(spec, id) { let at = spec?.regions; for (const k of String(id).split(".")) { if (!at || typeof at !== "object") return null; at = at[k]; } return at && typeof at === "object" ? at : null; }
+const T = (frameSpec, rule) => { const t = frameSpec?.layout?.thresholds?.[rule]; if (!t || !("value" in t)) throw new Error(`frame.json layout.thresholds.${rule} is missing`); return t.value; };
+// Every problem of a spec's `layout` block and of frame.json's `layout` (thresholds, exceptions, enforced): a malformed block fails the run, report mode or not.
+export function malformed(spec, frameSpec, name = "spec") {
+  const out = [], L = spec?.layout, F = frameSpec?.layout, rect = (r) => Array.isArray(r) && r.length === 4 && r.every(Number.isInteger) && r[2] > 0 && r[3] > 0;
+  if (!F || typeof F !== "object") out.push("frame.json has no layout block");
+  else {
+    for (const k of [...RULES.filter((r) => r !== "L7"), "L7a", "L7b", "mark", "ground", "container", "component", "rule"]) { const t = F.thresholds?.[k]; if (!t || !("value" in t) || typeof t.from !== "string" || !t.from) out.push(`frame.json layout.thresholds.${k} is not { value, from }`); }
+    if (!Array.isArray(F.exceptions)) out.push("frame.json layout.exceptions is not a list");
+    else F.exceptions.forEach((e, i) => { if (!e || !RULES.includes(e.rule) || typeof e.screen !== "string" || typeof e.node !== "string" || !e.reason || !["UI/UX", "AD", "owner"].includes(e.by) || !/^\d{4}-\d\d-\d\d/.test(String(e.date ?? ""))) out.push(`frame.json layout.exceptions[${i}] needs screen, rule (L0 to L11), node, reason, by (UI/UX, AD or owner) and date`); });
+    if (!F.enforced || typeof F.enforced !== "object" || Array.isArray(F.enforced)) out.push("frame.json layout.enforced is not an object");
+    else for (const [s, v] of Object.entries(F.enforced)) if (v !== "all" && !(Array.isArray(v) && v.every((r) => RULES.includes(r)))) out.push(`frame.json layout.enforced.${s} is "all" or a list of rules`);
+  }
+  if (!L || typeof L !== "object") { out.push(`${name} has no layout block`); return out; }
+  if (!STAGES.includes(L.stage)) out.push(`${name} layout.stage is not one of ${STAGES.join(", ")}`);
+  if (L.stage !== "exempt" && !rect(L.opening)) out.push(`${name} layout.opening is not [x, y, w, h]`);
+  for (const k of ["containers", "columns", "groups", "split", "bleed", "slots", "painted", "facts"]) if (k in L && !Array.isArray(L[k])) out.push(`${name} layout.${k} is not a list`);
+  for (const p of L.painted ?? []) if (!p?.id || !rect(p.rect) || typeof p.fills !== "boolean") out.push(`${name} layout.painted: ${p?.id ?? "?"} needs id, rect and fills`);
+  for (const f of L.facts ?? []) if (!f?.region || !f?.path) out.push(`${name} layout.facts: an entry needs region and path`);
+  for (const c of L.containers ?? []) if (!c?.region) out.push(`${name} layout.containers: an entry needs region`);
+  return out;
+}
+
+// ---- the log ----
+const parse = (n, i, text) => {
+  const rect = [n[4], n[5], n[6], n[7]], flags = n[8] ?? 0, ink = [n[9], n[10], n[11], n[12]];
+  let solid = n.length >= 18 ? [n[14], n[15], n[16], n[17]] : n[1] === KIND.sprite ? ink : rect;
+  if (n[1] === KIND.text && n.length < 18 && text) solid = [text.x, text.cap, text.w, text.base - text.cap];
+  return { order: i, id: n[0], kind: n[1], layer: n[2], region: n[3], rect, flags, ink, run: n[13] ?? 0, solid, ring: !!(flags & (FLAG.ring | FLAG.hold)), cut: !!(flags & FLAG.cut), composed: !!(flags & FLAG.composed), text: text?.text ?? null, src: "screen" };
+};
+const solidCover = (r) => !r.ring && (r.kind === KIND.rect || (r.kind === KIND.nine && same(r.ink, r.rect)) || (r.kind === KIND.sprite && same(r.solid, r.rect)));   // a node that hides what it covers: a rect, a nine-slice (clearance.mjs), a picture solid edge to edge (not a glass front)
+
+// The analysis of one state: its containers, each with its components, rings and marks, and what the rules need. Exported through components() and containers().
+function analyse(log, spec, frameSpec, extra = {}) {
+  const L = spec?.layout ?? {}, ruleMax = T(frameSpec, "rule"), markMax = T(frameSpec, "mark"), groundShare = T(frameSpec, "ground"), contMin = T(frameSpec, "container"), near = T(frameSpec, "component");
+  const t1 = T(frameSpec, "L1"), t3 = T(frameSpec, "L3");
+  const textOf = new Map(); for (const t of log?.type ?? []) textOf.set(`${t.region}|${t.x}|${t.w}`, t);
+  let nodes = (log?.nodes ?? []).map((n, i) => parse(n, i, n[1] === KIND.text ? textOf.get(`${n[3]}|${n[4]}|${n[6]}`) : null));
+  // the snapshot's source nodes, moved to where the snapshot shows them, inside its node (log addition 3)
+  const snapNode = nodes.find((n) => n.composed && n.kind === KIND.sprite);
+  if (snapNode && log?.snapshot?.nodes) {
+    const s = log.snapshot, dx = s.at[0] - s.from[0], dy = s.at[1] - s.from[1], mv = (b) => [b[0] + dx, b[1] + dy, b[2], b[3]];
+    const inner = s.nodes.map((n, k) => { const p = parse(n, snapNode.order + (k + 1) / 1000, null); return { ...p, rect: mv(p.rect), ink: mv(p.ink), solid: mv(p.solid), src: "snapshot", parentNode: snapNode }; });
+    nodes = [...nodes.filter((n) => n.order <= snapNode.order), ...inner, ...nodes.filter((n) => n.order > snapNode.order)];
+  }
+  // a generated picture's inner boxes, from the props facts its spec names (log addition 4)
+  for (const f of L.facts ?? []) {
+    const list = extra?.facts?.[f.path]; for (const pic of nodes.filter((n) => n.region === f.region && n.kind === KIND.sprite && n.src === "screen")) {
+      pic.composed = true; if (!Array.isArray(list)) continue;
+      list.forEach((e, k) => { const r = Array.isArray(e) ? e : e?.rect; if (!Array.isArray(r) || r.length !== 4) return; const b = [pic.rect[0] + r[0], pic.rect[1] + r[1], r[2], r[3]];
+        nodes.push({ order: pic.order + (k + 1) / 1000, id: fnv(`${f.region}.fact.${k}`), kind: KIND.rect, layer: pic.layer, region: `${f.region}.${e?.id ?? k}`, rect: b, flags: 0, ink: b, run: 0, solid: b, ring: false, cut: false, composed: false, text: null, src: "facts", parentNode: pic }); });
+    }
+  }
+  nodes.sort((a, b) => a.order - b.order);
+  // what is not measured: the bars and their zones, clips, nodes a later solid node covers whole, rules (lines), nodes with nothing to show
+  const covered = (n) => nodes.some((r) => r.order > n.order && (r.src === "screen" || (r.src === n.src && r.src !== "facts")) && solidCover(r) && encloses(r.rect, n.rect));   // the snapshot's nodes cover only their own; inner boxes cover nothing
+  const seen = nodes.filter((n) => n.kind !== KIND.clip && !BARS.has(n.region) && !covered(n));
+  const keep = seen.filter((n) => !((n.kind === KIND.rect || n.kind === KIND.composed) && Math.min(n.rect[2], n.rect[3]) <= ruleMax) && !(n.kind !== KIND.text && n.kind !== KIND.rect && empty(n.solid) && !n.composed));
+  // a plate: a picture painted over its whole rect with a text on it is measured by its rect (C9: panel, plate), however faint its paint
+  for (const n of keep) if (n.kind === KIND.sprite && same(n.ink, n.rect) && !same(n.solid, n.rect) && keep.some((t) => t.kind === KIND.text && t.src === n.src && encloses(n.rect, t.solid))) n.solid = [...n.rect];
+  const rings = keep.filter((n) => n.ring), parts = keep.filter((n) => !n.ring);
+  // the key a region is measured under: a region whose spec says labels, under or partOf another is that one's (a node id in `labels` names its node's region)
+  const regionByNode = new Map(parts.map((n) => [n.id, n.region]));
+  const keyOf = (region, src) => { let k = region; for (let i = 0; i < 8; i++) { const r = regionOf(spec, k); const to = r?.partOf ?? r?.under ?? r?.labels; if (!to) break; k = regionByNode.get(fnv(to)) ?? to; } return (src === "screen" ? "" : src + ":") + k; };
+  // layers of one picture: nodes with one rect (and one source) are one group; its box is the union of their solid boxes
+  const groups = []; for (const n of parts) { const g = n.kind !== KIND.text && groups.find((q) => q.kind !== KIND.text && q.src === n.src && same(q.rect, n.rect)); if (g) { g.members.push(n); g.box = union(g.box, n.solid); g.composed ||= n.composed; g.cut ||= n.cut; } else groups.push({ members: [n], rect: n.rect, box: empty(n.solid) ? [n.rect[0], n.rect[1], 0, 0] : n.solid, kind: n.kind, src: n.src, region: n.region, key: keyOf(n.region, n.src), composed: n.composed, cut: n.cut, parentNode: n.parentNode }); }
+  for (const g of groups) if (empty(g.box) && g.composed) g.box = g.rect;
+  const live = groups.filter((g) => !empty(g.box));
+  // the containers: a group at least contMin x contMin (not text) whose rect encloses a group of another region, or the inner boxes of composed content; the stage's opening is the root
+  const stage = { id: "opening", rect: L.opening ? [...L.opening] : [0, 0, 1024, 600], level: "stage", group: null, kids: [] };
+  const childOf = (g, q) => q !== g && ((q.parentNode && g.members.includes(q.parentNode)) || (g.src === q.src && encloses(g.box, q.box) && area(g.box) > area(q.box)));   // inner boxes belong to their picture, or to a container of their own source inside it
+  // only composed content (the snapshot, a layout.facts picture), a region layout.containers names, or a pane drawn as one (a rect, a nine-slice, a picture painted over its whole rect) holds
+  // content: a composed line drawing or a picture with clear margins is not a pane
+  const paneLike = (g) => g.composed || (L.containers ?? []).some((d) => g.members.some((n) => n.region === d.region)) || g.members.some((n) => n.kind === KIND.rect || n.kind === KIND.nine || (n.kind === KIND.sprite && same(n.ink, n.rect)));
+  for (const g of live) { const inside = g.kind !== KIND.text && g.box[2] >= contMin && g.box[3] >= contMin ? live.filter((q) => childOf(g, q)) : []; g.container = (inside.length > 1 || inside.some((q) => q.key !== g.key || q.parentNode)) && paneLike(g); }   // one picture on its own plate is one component
+  const cands = live.filter((g) => g.container);
+  const parentOf = (g) => { let best = null; for (const c of cands) if (c !== g && childOf(c, g) && (!g.container || area(c.box) > area(g.box) || (g.parentNode && c.members.includes(g.parentNode))) && (!best || area(c.box) < area(best.box))) best = c; return best; };
+  for (const g of live) g.parent = parentOf(g);
+  // grounds: a group covering groundShare of its container (the stage's opening, or its container's rect) is not content; what it held belongs to its container
+  for (let again = true; again;) { again = false;
+    for (const g of live) { if (g.ground) continue; const c = g.parent ?? null, cr = c ? c.box : stage.rect, i = inter(g.box, cr);
+      if (i && area(i) >= groundShare * area(cr) && SIDES.every((s) => side(g.box, cr, s) <= T(frameSpec, "L2"))) { g.ground = true; again = true; for (const q of live) if (q.parent === g) q.parent = c; } } }
+  const content = live.filter((g) => !g.ground && (g.parent || inter(g.box, stage.rect)));
+  const boxes = new Map([[null, stage]]);
+  for (const g of content) if (g.container && content.some((q) => q.parent === g)) boxes.set(g, { id: null, rect: [...g.box], level: "pane", group: g, kids: [] });
+  for (const g of content) { let p = g.parent; while (p && !boxes.has(p)) p = p.parent; (boxes.get(p ?? null)).kids.push(g); g.home = boxes.get(p ?? null); }
+  // strips: a group hanging from its container's top edge (its top at or above it, its bottom inside), at most maxH high and ratio x as wide: the container's top becomes its lower edge
+  const strip = t1.strip;
+  for (const c of boxes.values()) {
+    const top = c.rect[1], st = c.kids.filter((g) => g.box[1] <= top && B(g.box) > top && g.box[3] <= strip.maxH && g.box[2] >= strip.ratio * g.box[3] && g.kind !== KIND.text);
+    if (st.length) { const y = Math.max(...st.map((g) => B(g.box))); c.strips = st; c.rect = [c.rect[0], y, c.rect[2], B(c.rect) - y]; c.kids = c.kids.filter((g) => !st.includes(g)); }
+  }
+  // each container's components: the groups of one key that meet or lie within `near` px; named by region (#2, #3 in reading order when a key has more than one in a container)
+  const contDecl = (g) => (L.containers ?? []).find((d) => g && g.members.some((n) => n.region === d.region));
+  const list = [...boxes.values()], idCount = {};
+  const home = (r) => { let best = stage; for (const c of list) if (c.group && c.group.src === "screen" && encloses(c.rect, r.rect) && (best === stage || area(c.rect) < area(best.rect))) best = c; return best; };
+  list.forEach((c) => {
+    const decl = contDecl(c.group), m = L.margin;
+    if (c.group) { const base = (c.group.src === "screen" ? "" : c.group.src + " ") + c.group.region; idCount[base] = (idCount[base] ?? 0) + 1; c.id = base + (idCount[base] > 1 ? "#" + idCount[base] : ""); } else c.id = "opening";
+    c.margins = c.group ? Object.fromEntries(SIDES.map((s) => [s, decl?.padding ?? t1.pane])) : Object.fromEntries(SIDES.map((s) => [s, (typeof m === "number" ? m : m?.[s]) ?? t1[L.stage === "bezel" ? "bezel" : "field"][s]]));
+    if (c.strips?.length) c.margins.top = t1.strip.gap;
+    c.gutter = c.group ? decl?.gutter ?? t3.pane : L.gutter ?? t3[L.stage === "bezel" ? "bezel" : "field"];
+    const ks = c.kids, up = ks.map((_, k) => k), find = (k) => (up[k] === k ? k : (up[k] = find(up[k])));
+    const crossing = (p, q) => p.region === q.region && inter(p.box, q.box) && !encloses(p.box, q.box) && !encloses(q.box, p.box);   // two pictures of one region that overlap in part stay two (L4 sees them: residents stacked into a totem)
+    for (let a = 0; a < ks.length; a++) for (let b = a + 1; b < ks.length; b++) if (ks[a].key === ks[b].key && dist(ks[a].box, ks[b].box) <= near && !crossing(ks[a], ks[b])) up[find(a)] = find(b);
+    const by = new Map(); ks.forEach((g, k) => { const r = find(k); if (!by.has(r)) by.set(r, []); by.get(r).push(g); });
+    const comps = [...by.values()].map((gs) => ({ key: gs[0].key, region: gs[0].key.replace(/^[a-z]+:/, ""), src: gs[0].src, groups: gs, box: gs.reduce((u, g) => union(u, g.box), null), text: gs.every((g) => g.kind === KIND.text), label: gs.flatMap((g) => g.members).find((n) => n.text)?.text ?? null, pane: gs.some((g) => boxes.has(g)) ? boxes.get(gs.find((g) => boxes.has(g))) : null }));
+    comps.sort((a, b) => a.box[1] - b.box[1] || a.box[0] - b.box[0]);
+    const seenKey = {}; for (const k of comps) { seenKey[k.key] = (seenKey[k.key] ?? 0) + 1; k.name = (k.src === "snapshot" ? "snapshot " : "") + k.region + (seenKey[k.key] > 1 ? "#" + seenKey[k.key] : ""); k.mark = Math.max(k.box[2], k.box[3]) < markMax; }
+    c.components = comps;
+    c.rings = rings.filter((r) => home(r) === c);
+    c.groups = ks;
+  });
+  // L0's question: composed content (the snapshot, a generated picture) with no inner boxes
+  const blind = live.filter((g) => g.composed && !g.ground && !live.some((q) => q.parentNode && g.members.includes(q.parentNode)));
+  return { containers: list, stage, blind, groups: live, rings, spec, layout: L };
+}
+export const components = (log, spec, frameSpec, extra) => analyse(log, spec, frameSpec, extra).containers.flatMap((c) => c.components.map((k) => ({ container: c.id, name: k.name, region: k.region, box: k.box, mark: k.mark, text: k.text, label: k.label })));
+export const containers = (log, spec, frameSpec, extra) => analyse(log, spec, frameSpec, extra).containers.map((c) => ({ id: c.id, rect: c.rect, level: c.level, margins: c.margins, gutter: c.gutter, components: c.components.length }));
+
+// The largest empty rectangle of a w x h grid (filled: a Uint8Array, 1 filled) with both sides at least minW and minH: { x, y, w, h } or null (each row's histogram, every maximal rectangle).
+function largestEmpty(filled, w, h, minW, minH) {
+  const hist = new Int32Array(w); let best = null, bestA = 0;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) hist[x] = filled[y * w + x] ? 0 : hist[x] + 1;
+    const st = [];
+    for (let x = 0; x <= w; x++) { const hh = x < w ? hist[x] : 0; let start = x;
+      while (st.length && st[st.length - 1][1] >= hh) { const [sx, sh] = st.pop(), ww = x - sx; if (sh >= minH && ww >= minW && sh * ww > bestA) { bestA = sh * ww; best = { x: sx, y: y - sh + 1, w: ww, h: sh }; } start = sx; }
+      st.push([start, hh]); }
+  }
+  return best;
+}
+
+// ---- the rules ----
+export function findings(log, spec, frameSpec, screen, state, extra = {}) {
+  const L = spec?.layout; if (!L || L.stage === "exempt") return withUsed([], []);
+  const A = analyse(log, spec, frameSpec, extra), out = [];
+  const t1 = T(frameSpec, "L1"), t2 = T(frameSpec, "L2"), t3 = T(frameSpec, "L3"), t4 = T(frameSpec, "L4"), t5 = T(frameSpec, "L5"), t6 = T(frameSpec, "L6"), t7a = T(frameSpec, "L7a"), t7b = T(frameSpec, "L7b"), t8 = T(frameSpec, "L8"), t10 = T(frameSpec, "L10"), t11 = T(frameSpec, "L11"), t0 = T(frameSpec, "L0");
+  const bleed = new Set(L.bleed ?? []), painted = (L.painted ?? []).filter((p) => !p.states || p.states.includes(state));
+  const say = (rule, c, f) => out.push({ rule, ...f, container: { id: c.id, rect: [...c.rect] } });
+  const bx = (role, rect) => ({ role, rect: [...rect] });
+  const declared = new Set([...(L.groups ?? []).flatMap((g) => g.regions ?? []), ...(L.columns ?? []).flatMap((c) => c.regions ?? [])]);
+  for (const c of A.containers) {
+    const R0 = c.rect, all = c.components, comps = all.filter((k) => !k.mark), G = c.gutter;
+    // L0: composed content of 20 % of its container or more, with no inner boxes: not measurable, never a silent pass
+    for (const g of A.blind) if (c.groups.includes(g) && area(inter(g.box, R0) ?? [0, 0, 0, 0]) >= t0 * area(R0)) say("L0", c, { node: g.region, other: "", measured: rnd(area(inter(g.box, R0)) / area(R0)), required: t0, unit: "share", what: "composed content with no inner boxes: not measurable", boxes: [bx("component", g.box)] });
+    // L2 then L1, side by side: a box 2 px or less from its container's edge, or across it, where a margin is required (not bleed); else the outermost component at the margin, or centred
+    const l2sides = new Set();
+    for (const s of SIDES) {
+      const m = c.margins[s]; if (m <= t2) continue;
+      for (const k of [...all, ...c.rings.map((r) => ({ name: "focus ring", region: r.region, box: r.rect, ring: true }))]) { if (bleed.has(k.region)) continue; const d = side(k.box, R0, s); if (d <= t2 && inter(k.box, R0)) { l2sides.add(s); say("L2", c, { node: k.name, other: s, measured: d, required: m, unit: "px", what: d < 0 ? "across the edge" : "on the edge", boxes: [bx("component", k.box)], dim: dimTo(k.box, R0, s) }); } }
+    }
+    const cs = comps.filter((k) => !bleed.has(k.region));
+    if (cs.length) {
+      const gap = Object.fromEntries(SIDES.map((s) => [s, Math.min(...cs.map((k) => side(k.box, R0, s)))])), outer = (s) => cs.reduce((a, k) => (side(k.box, R0, s) < side(a.box, R0, s) ? k : a));
+      for (const s of SIDES) {
+        if (l2sides.has(s)) continue; const m = c.margins[s], o = OPP[s];
+        if (Math.abs(gap[s] - m) <= t1.side) continue;
+        if (gap[s] > m + t1.side && gap[o] > c.margins[o] + t1.side && Math.abs(gap[s] - gap[o]) <= t1.opposite) continue;   // a centred block: off the margin on both sides, with equal slack
+        const k = outer(s); say("L1", c, { node: k.name, other: s + (s === "top" && c.strips?.length ? " (under the strip)" : ""), measured: gap[s], required: m, unit: "px", what: gap[s] < m ? "tight" : "loose", opposite: gap[o], boxes: [bx("component", k.box)], dim: dimTo(k.box, R0, s) });
+      }
+    }
+    // L3: gutters between neighbours that overlap 30 % on the other axis: under the gutter (crowding), or unequal along one row or column (a declared split is 2 x G)
+    const splitOf = (a, b) => (L.split ?? []).find((q) => q.between?.includes(a.region) && q.between?.includes(b.region));
+    const next = (a, axis) => { let best = null, bg = Infinity; for (const b of comps) { if (b === a) continue; const g = axis === "x" ? b.box[0] - R(a.box) : b.box[1] - B(a.box); if (g < 0 || overlapShare(a.box, b.box, axis === "x" ? "y" : "x") < t3.overlap) continue; if (g < bg) { bg = g; best = b; } } return best ? { b: best, gap: bg } : null; };
+    for (const axis of ["x", "y"]) {
+      const link = new Map(comps.map((a) => [a, next(a, axis)]));
+      const Ga = axis === "y" && !c.group && L.stage === "bezel" ? t3.bezelRows : G;   // a bezel stage's rows take the field's gutter (32 is its column gutter)
+      for (const [a, n] of link) if (n && n.gap < Ga && !splitOf(a, n.b)) say("L3", c, { part: "a", node: a.name, other: n.b.name, measured: n.gap, required: Ga, unit: "px", what: "crowding", boxes: [bx("component", a.box), bx("other", n.b.box)], dim: dimBetween(a.box, n.b.box, axis) });
+      const heads = comps.filter((a) => link.get(a) && ![...link.values()].some((n) => n?.b === a));
+      for (const h of heads) {
+        const chain = []; for (let a = h, seenA = new Set(); link.get(a) && !seenA.has(a); a = link.get(a).b) { seenA.add(a); chain.push({ a, ...link.get(a) }); }
+        const plain = chain.filter((q) => !splitOf(q.a, q.b)); if (plain.length < 2) continue;
+        const gs = plain.map((q) => q.gap).sort((x, y) => x - y), med = gs[Math.floor((gs.length - 1) / 2)];
+        if (gs[gs.length - 1] - gs[0] <= t3.tolerance) continue;
+        const worst = plain.reduce((p, q) => (Math.abs(q.gap - med) > Math.abs(p.gap - med) ? q : p));
+        say("L3", c, { part: "b", node: worst.a.name, other: worst.b.name, measured: worst.gap, required: med, unit: "px", what: `unequal gutters in a ${axis === "x" ? "row" : "column"}: ${plain.map((q) => q.gap).join(", ")}`, boxes: plain.flatMap((q) => [bx("component", q.a.box), bx("other", q.b.box)]), dim: dimBetween(worst.a.box, worst.b.box, axis) });
+      }
+      for (const q of (L.split ?? [])) { const a = comps.find((k) => k.region === q.between?.[0]), b = comps.find((k) => k.region === q.between?.[1]); if (!a || !b || !link.get(a) || link.get(a).b !== b) continue; const want = q.gutter ?? 2 * G; if (Math.abs(link.get(a).gap - want) > t3.tolerance) say("L3", c, { part: "b", node: a.name, other: b.name, measured: link.get(a).gap, required: want, unit: "px", what: "a declared split", boxes: [bx("component", a.box), bx("other", b.box)], dim: dimBetween(a.box, b.box, axis) }); }
+    }
+    // L4: overlap: sibling boxes that intersect, neither enclosing the other (the focus ring and marks count); a painted prop: any intersection, and text within 16 of it
+    const sib = [...all.map((k) => ({ name: k.name, box: k.box, text: k.text })), ...c.rings.map((r) => ({ name: "focus ring", box: r.rect }))];
+    for (let i = 0; i < sib.length; i++) for (let j = i + 1; j < sib.length; j++) { const a = sib[i], b = sib[j], x = inter(a.box, b.box); if (!x || x[2] < t4.intersection || x[3] < t4.intersection || encloses(a.box, b.box) || encloses(b.box, a.box)) continue; say("L4", c, { node: a.name, other: b.name, measured: Math.min(x[2], x[3]), required: 0, unit: "px", what: `they overlap ${x[2]} x ${x[3]}`, boxes: [bx("component", a.box), bx("other", b.box), bx("overlap", x)] }); }
+    for (const p of painted) for (const k of all) { const x = inter(k.box, p.rect); if (x) say("L4", c, { node: k.name, other: "painted " + p.id, measured: Math.min(x[2], x[3]), required: 0, unit: "px", what: "over a painted prop", boxes: [bx("component", k.box), bx("prop", p.rect), bx("overlap", x)] }); else if (k.text) { const d = dist(k.box, p.rect); if (d < t4.textToProp) say("L4", c, { node: k.name, other: "painted " + p.id, measured: rnd(d, 0), required: t4.textToProp, unit: "px", what: "text near a painted prop", boxes: [bx("component", k.box), bx("prop", p.rect)] }); } }
+    // L5: alignment: (a) declared columns on their axis, group left edges, baselines in a group's row; (b) undeclared near-misses between neighbours and on the container's centre lines
+    for (const col of L.columns ?? []) for (const k of comps.filter((q) => col.regions?.includes(q.region))) if (Number.isFinite(col.axis) && Math.abs(cx(k.box) - col.axis) > t5.axis) say("L5", c, { part: "a", node: k.name, other: "column " + col.id, measured: rnd(cx(k.box) - col.axis, 1), required: 0, unit: "px", what: "off its column's axis", boxes: [bx("component", k.box)] });
+    for (const grp of L.groups ?? []) { const ks = comps.filter((q) => grp.regions?.includes(q.region)); if (ks.length < 2) continue;
+      if ((grp.align ?? "left") === "left") { const x0 = Math.min(...ks.map((k) => k.box[0])); for (const k of ks) if (k.box[0] - x0 > t5.edges) say("L5", c, { part: "a", node: k.name, other: "group " + grp.id, measured: k.box[0] - x0, required: 0, unit: "px", what: "left edge off the group's", boxes: ks.map((q) => bx(q === k ? "component" : "other", q.box)) }); }
+      const texts = ks.filter((k) => k.text); for (let i = 0; i < texts.length; i++) for (let j = i + 1; j < texts.length; j++) { const a = texts[i], b = texts[j]; if (overlapShare(a.box, b.box, "y") > 0 && Math.abs(B(a.box) - B(b.box)) > t5.baselines) say("L5", c, { part: "a", node: a.name, other: b.name, measured: Math.abs(B(a.box) - B(b.box)), required: 0, unit: "px", what: "baselines in a row", boxes: [bx("component", a.box), bx("other", b.box)] }); } }
+    const within = (d, [lo, hi]) => d >= lo && d <= hi, nearMiss = (a, b, what, va, vb, win) => { const d = Math.abs(va - vb); if (within(d, win)) say("L5", c, { part: "b", node: a.name, other: b.name, measured: rnd(d, 1), required: 0, unit: "px", what: `almost aligned: ${what} ${rnd(va, 1)} and ${rnd(vb, 1)}`, boxes: [bx("component", a.box), ...(b.box ? [bx("other", b.box)] : [])] }); };
+    for (let i = 0; i < comps.length; i++) for (let j = i + 1; j < comps.length; j++) {
+      const a = comps[i], b = comps[j];
+      if (overlapShare(a.box, b.box, "x") >= t3.overlap && gapY(a.box, b.box) >= 0) { nearMiss(a, b, "left edges", a.box[0], b.box[0], t5.nearEdges); nearMiss(a, b, "right edges", R(a.box), R(b.box), t5.nearEdges); nearMiss(a, b, "centres (x)", cx(a.box), cx(b.box), t5.nearCentres); }
+      if (overlapShare(a.box, b.box, "y") >= t3.overlap && gapX(a.box, b.box) >= 0) { nearMiss(a, b, "centres (y)", cy(a.box), cy(b.box), t5.nearCentres); if (a.text && b.text) nearMiss(a, b, "baselines", B(a.box), B(b.box), t5.nearCentres); }
+    }
+    for (const k of comps) { nearMiss(k, { name: c.id + " centre (x)" }, "the centre (x) and the container's", cx(k.box), cx(R0), t5.nearCentres); nearMiss(k, { name: c.id + " centre (y)" }, "the centre (y) and the container's", cy(k.box), cy(R0), t5.nearCentres); }
+    // L6 and L7a: the filled area (components that are not marks, and painted props that fill), its largest empty rectangle and its centroid
+    const W = R0[2], H = R0[3];
+    if (W > 0 && H > 0) {
+      const fill = new Uint8Array(W * H), put = (b) => { const x = inter(b, R0); if (!x) return; for (let y = x[1] - R0[1]; y < B(x) - R0[1]; y++) fill.fill(1, y * W + x[0] - R0[0], y * W + R(x) - R0[0]); };
+      for (const k of comps) put(k.box); if (!c.group) for (const p of painted) if (p.fills) put(p.rect);
+      let n = 0, sx = 0, sy = 0; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (fill[y * W + x]) { n++; sx += x; sy += y; }
+      const minSide = t6.sides * G, e = largestEmpty(fill, W, H, minSide, minSide), share = e ? (e.w * e.h) / (W * H) : 0, want = c.group ? t6.pane : t6.stage;
+      if (e && share >= want) say("L6", c, { node: c.id, other: "", measured: rnd(share), required: want, unit: "share", what: `an empty ${e.w} x ${e.h}`, boxes: [bx("empty", [R0[0] + e.x, R0[1] + e.y, e.w, e.h])] });
+      if (n) { const fx = R0[0] + sx / n + 0.5, fy = R0[1] + sy / n + 0.5, dx = (fx - cx(R0)) / (W / 2), dy = (fy - cy(R0)) / (H / 2);
+        if (Math.abs(dx) > t7a || Math.abs(dy) > t7a) say("L7", c, { part: "a", node: c.id, other: "", measured: rnd(Math.max(Math.abs(dx), Math.abs(dy))), required: t7a, unit: "share", what: `the filled area's centroid off the centre: x ${rnd(dx) >= 0 ? "+" : ""}${rnd(dx)}, y ${rnd(dy) >= 0 ? "+" : ""}${rnd(dy)}`, dx: rnd(dx), dy: rnd(dy), centroid: [rnd(fx, 1), rnd(fy, 1)], centre: [cx(R0), cy(R0)], boxes: [] }); }
+    }
+    // L7b: slack symmetry: each declared column (centred: slack above = below; fill: on the top and floor lines), or the content as one group (above = below, left = right)
+    const slack = (box) => ({ top: box[1] - R0[1], bottom: B(R0) - B(box), left: box[0] - R0[0], right: R(R0) - R(box) });
+    const cols = (L.columns ?? []).map((col) => ({ col, ks: comps.filter((k) => col.regions?.includes(k.region)) })).filter((q) => q.ks.length);
+    if (cols.length && !c.group) for (const { col, ks } of cols) { const box = ks.reduce((u, k) => union(u, k.box), null), s = slack(box);
+      if (col.align === "fill") { if (Number.isFinite(L.topLine) && Math.abs(box[1] - L.topLine) > t7b) say("L7", c, { part: "b", node: "column " + col.id, other: "the top line", measured: box[1] - L.topLine, required: 0, unit: "px", what: "a fill column off the top line", boxes: [bx("component", box)] }); if (Number.isFinite(L.floorLine) && Math.abs(B(box) - L.floorLine) > t7b) say("L7", c, { part: "b", node: "column " + col.id, other: "the floor line", measured: B(box) - L.floorLine, required: 0, unit: "px", what: "a fill column off the floor line", boxes: [bx("component", box)] }); }
+      else if (Math.abs(s.top - s.bottom) > t7b) say("L7", c, { part: "b", node: "column " + col.id, other: "above / below", measured: Math.abs(s.top - s.bottom), required: t7b, unit: "px", what: `slack ${s.top} above, ${s.bottom} below`, pair: [s.top, s.bottom], boxes: [bx("component", box)] }); }
+    else if (comps.length) { const box = comps.reduce((u, k) => union(u, k.box), null), s = slack(box);
+      if (Math.abs(s.top - s.bottom) > t7b) say("L7", c, { part: "b", node: c.id, other: "above / below", measured: Math.abs(s.top - s.bottom), required: t7b, unit: "px", what: `slack ${s.top} above, ${s.bottom} below`, pair: [s.top, s.bottom], boxes: [bx("component", box)] });
+      if (Math.abs(s.left - s.right) > t7b) say("L7", c, { part: "b", node: c.id, other: "left / right", measured: Math.abs(s.left - s.right), required: t7b, unit: "px", what: `slack ${s.left} left, ${s.right} right`, pair: [s.left, s.right], boxes: [bx("component", box)] }); }
+    // L8: groups: (a) a declared pair (a region that labels another, a group's members) more than `within` apart; (b) a component whose every neighbour is more than float x G away: it floats
+    const groupsOfKey = (key) => c.groups.filter((g) => g.key === key);
+    for (const g of c.groups) { const reg = regionOf(A.spec, g.region); const to = reg?.labels; if (!to) continue; const target = c.groups.filter((q) => q !== g && (q.region === to || q.members.some((n) => n.id === fnv(to)))); if (!target.length) continue;
+      const tb = target.reduce((u, q) => union(u, q.box), null), d = rnd(dist(g.box, tb), 0); if (d > t8.label) say("L8", c, { part: "a", node: g.region, other: to, measured: d, required: t8.label, unit: "px", what: "a caption apart from what it labels", boxes: [bx("component", g.box), bx("other", tb)] }); }
+    for (const grp of L.groups ?? []) { const ks = comps.filter((q) => grp.regions?.includes(q.region)); for (let i = 1; i < ks.length; i++) { const d = rnd(Math.min(...ks.slice(0, i).map((q) => dist(q.box, ks[i].box))), 0), w = grp.within ?? t8.label; if (d > w) say("L8", c, { part: "a", node: ks[i].name, other: "group " + grp.id, measured: d, required: w, unit: "px", what: "apart from its group", boxes: ks.map((q) => bx(q === ks[i] ? "component" : "other", q.box)) }); } }
+    if (comps.length > 1) for (const k of comps) { if (declared.has(k.region) || groupsOfKey(k.key).some((g) => regionOf(A.spec, g.region)?.labels)) continue; const d = Math.min(...comps.filter((q) => q !== k).map((q) => dist(k.box, q.box))); if (d > t8.float * G) say("L8", c, { part: "b", node: k.name, other: "every neighbour", measured: rnd(d, 0), required: t8.float * G, unit: "px", what: "it floats", boxes: [bx("component", k.box)] }); }
+    // L10: a cut picture: (a) a window that cuts its picture's solid ink; (b) a subject picture whose solid ink touches its own box's edge
+    for (const g of c.groups) for (const n of g.members) {
+      if (n.cut && !bleed.has(n.region)) say("L10", c, { part: "a", node: n.region, other: "its picture", measured: 0, required: t10.headroom + 1, unit: "px", what: "the window cuts the picture's solid ink", boxes: [bx("component", n.rect)] });
+      const comp = regionOf(A.spec, n.region)?.component;
+      if (n.kind === KIND.sprite && !n.cut && t10.subjects?.includes(comp) && !empty(n.solid)) for (const s of SIDES) { const d = side(n.solid, n.rect, s); if (d <= t10.headroom) say("L10", c, { part: "b", node: n.region, other: s, measured: d, required: t10.headroom + 1, unit: "px", what: "the subject's solid ink touches its picture's edge", boxes: [bx("component", n.rect), bx("other", n.solid)] }); }
+    }
+    // L11: a lone mark: a picture at most `size` on its larger side, with no text within `label` px on its rows and no region that labels it
+    const labelled = (g) => c.groups.some((q) => { const r = regionOf(A.spec, q.region)?.labels; return r && (r === g.region || g.members.some((n) => n.id === fnv(r))); });
+    for (const g of c.groups) { if (g.kind !== KIND.sprite && g.kind !== KIND.composed) continue; if (Math.max(g.box[2], g.box[3]) > t11.size || g.container) continue;
+      const near = c.groups.some((q) => q.kind === KIND.text && overlapShare(q.box, g.box, "y") > 0 && gapX(q.box, g.box) <= t11.label);
+      if (!near && !labelled(g)) say("L11", c, { node: g.region, other: "", measured: Math.max(g.box[2], g.box[3]), required: t11.size, unit: "px", what: "a lone mark: no text within " + t11.label + " px on its rows", boxes: [bx("component", g.box)] }); }
+  }
+  // the exceptions: frame.json layout.exceptions; a finding one covers is dropped, and used names the ones in use
+  return excepted(frameSpec, screen, out.map((f) => ({ ...f, states: [state] })), true);
+}
+// The exceptions frame.json layout.exceptions lists, applied to findings of one screen (each with its states): a finding an exception covers (rule, screen, node, other when named, a state when named)
+// is dropped, and the list's `used` names the exceptions in use. findings() and the slots of slotFindings() go through it.
+export function excepted(frameSpec, screen, list, oneState = false) {
+  const ex = frameSpec?.layout?.exceptions ?? [], used = new Set();
+  const kept = list.filter((f) => { const e = ex.findIndex((x) => x.rule === f.rule && x.screen === screen && (!x.state || (f.states ?? []).includes(x.state)) && x.node === f.node && (x.other == null || x.other === f.other)); if (e < 0) return true; used.add(e); return false; });
+  return withUsed(oneState ? kept.map(({ states, ...f }) => f) : kept, [...used].map((i) => ex[i]));
+}
+const withUsed = (list, used) => { Object.defineProperty(list, "used", { value: used }); return list; };   // the exceptions in use (not enumerable: the result compares as the list of findings)
+// the dimension line from a box to its container's edge on side s, and between two boxes along an axis: [x0, y0, x1, y1]
+function dimTo(b, c, s) { const mx = Math.round(cx(b)), my = Math.round(cy(b)); return s === "left" ? [c[0], my, b[0], my] : s === "right" ? [R(b), my, R(c), my] : s === "top" ? [mx, c[1], mx, b[1]] : [mx, B(b), mx, B(c)]; }
+function dimBetween(a, b, axis) { if (axis === "x") { const y = Math.round((Math.max(a[1], b[1]) + Math.min(B(a), B(b))) / 2); return [R(a), y, b[0], y]; } const x = Math.round((Math.max(a[0], b[0]) + Math.min(R(a), R(b))) / 2); return [x, B(a), x, b[1]]; }
+
+// L9, across the states of one screen: a region the spec lists as a slot keeps one box in every golden state (C8). records: [{ state, log, spec, frameSpec, extra }]; the findings name the states that differ.
+export function slotFindings(records, screen) {
+  const out = [], boxesOf = new Map();
+  for (const r of records) for (const s of r.spec?.layout?.slots ?? []) { const ks = analyse(r.log, r.spec, r.frameSpec, r.extra).containers.flatMap((c) => c.components.filter((k) => k.region === s)); const box = ks.reduce((u, k) => union(u, k.box), null); if (!boxesOf.has(s)) boxesOf.set(s, []); boxesOf.get(s).push({ state: r.state, box }); }
+  for (const [s, list] of boxesOf) { const first = list.find((q) => q.box); if (!first) continue; const off = list.filter((q) => !q.box || !same(q.box, first.box)); if (off.length) out.push({ rule: "L9", node: s, other: "its box in " + first.state, measured: off.length, required: 0, unit: "states", what: "a slot that moves or empties: " + off.map((q) => q.state).join(", "), states: off.map((q) => q.state), container: { id: "opening", rect: records[0]?.spec?.layout?.opening ?? [0, 0, 1024, 600] }, boxes: [{ role: "component", rect: first.box }, ...off.filter((q) => q.box).map((q) => ({ role: "other", rect: q.box }))] }); }
+  return out;
+}
+
+// Identical findings across states (rule, node, other, measured) are one, with the states listed.
+export function group(perState) {
+  const by = new Map();
+  for (const { state, findings: fs } of perState) for (const f of fs) { const k = [f.rule, f.part ?? "", f.node, f.other, JSON.stringify(f.measured), f.container?.id].join("|"); if (!by.has(k)) by.set(k, { ...f, states: [] }); const g = by.get(k); if (!g.states.includes(state)) g.states.push(state); }
+  return [...by.values()];
+}
+// The exceptions frame.json lists that no finding used across a whole run (each must be in use, so the list cannot rot): pass every result of findings().
+export function unusedExceptions(frameSpec, results) { const ex = frameSpec?.layout?.exceptions ?? [], used = new Set(results.flatMap((r) => r.used ?? [])); return ex.filter((e) => !used.has(e)); }
+// Report or fail: a finding of a rule frame.json layout.enforced lists for its screen ("all": every rule) fails the run.
+export function enforcedFinding(frameSpec, screen, f) { const e = frameSpec?.layout?.enforced?.[screen]; return e === "all" || (Array.isArray(e) && e.includes(f.rule)); }

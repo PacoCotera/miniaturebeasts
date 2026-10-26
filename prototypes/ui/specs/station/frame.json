@@ -90,6 +90,7 @@
  "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "fragments": [{ "path": "withdrawn.*", "reason": "the keys of two withdrawn strings, not words: nothing draws them" }], "composed": [{ "path": "turn", "reason": "the turn's figure: a line that starts with a digit, which capLine leaves as it is" }], "titles": { "home": "Home", "cargo": "Bay", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "library.species": "Library", "library.family": "Library", "vivarium": "Vivarium", "habitat": "Vivarium", "cross": "Cross" , "bench": "Probe", "sitting": "Sitting" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
  "light": { "from": [[6, "dawn"], [7, "day"], [18, "dusk"], [20, "night"]], "rule": "the Station's local hour; a light runs until the next start, the last wraps midnight", "bed": { "dawn": "home-bed-dawn", "day": "home-bed-day", "dusk": "home-bed-dusk", "night": "home-bed-night" } },
  "idle": {
+  "layout": { "stage": "exempt", "note": "an art-only screen with no bars: the bed and the walkers are composed in the painting (the layout check measures nothing)" },
   "light": { "pictures": { "dawn": "idle-vivarium-dawn", "day": "idle-vivarium-day", "dusk": "idle-vivarium-dusk", "night": "idle-vivarium-night" } },
   "spec": "design/style-guide/station-layouts.md#idle",
   "status": "Idle is the Vivarium's whole without the frame: one painting, the whole's window a 1:1 part of it; the idle timer, the wake, what moves and the line; wireframe station-layouts/10-idle.svg",
@@ -213,5 +214,30 @@
    "create": "a room key drops the unpaid choices; coming back starts fresh",
    "cross": "a room key drops the unpaid choices; coming back starts fresh"
   }
+ },
+ "layout": {
+  "note": "The layout check (ui/specs/layout.mjs, face/tools/layout-check.mjs): every number its rules use, each { value, from }; the exceptions a reviewer signs ({ screen, state?, rule, node, other?, reason, by: UI/UX, AD or owner, date }; an unused exception fails the run); the screens enforced, rule by rule ({ \"<screen>\": [\"L1\", ...] or \"all\" }; empty: report mode). A screen joins rule by rule as its type pass fixes it and the owner has cleared its findings.",
+  "thresholds": {
+   "L0": { "value": 0.2, "from": "first value: composed content of 20 % of its container or more with no inner boxes is not measurable" },
+   "L1": { "value": { "bezel": { "left": 24, "top": 24, "right": 24, "bottom": 24 }, "field": { "left": 16, "top": 8, "right": 16, "bottom": 8 }, "pane": 16, "strip": { "gap": 16, "maxH": 64, "ratio": 3 }, "side": 1, "opposite": 2 }, "from": "C2, C4; T3: bezel 24 every side; field 16 left and right, 8 to a bar; pane padding 16; 16 under a strip (one hanging from its container's top, at most 64 high and 3 x as wide); 1 a side, 2 between opposites" },
+   "L2": { "value": 2, "from": "C2" },
+   "L3": { "value": { "field": 16, "bezel": 32, "bezelRows": 16, "pane": 8, "tolerance": 2, "overlap": 0.3 }, "from": "C3: 16 field, 32 bezel columns, 8 inside a pane; 2; neighbours overlap 30 % on the other axis. bezelRows: 32 is the bezel's column gutter; rows take the field's 16 until UI/UX sets one" },
+   "L4": { "value": { "intersection": 1, "textToProp": 16 }, "from": "T5" },
+   "L5": { "value": { "axis": 2, "edges": 1, "baselines": 1, "nearEdges": [1, 4], "nearCentres": [1, 6] }, "from": "C6; the near-miss windows a first value" },
+   "L6": { "value": { "stage": 0.2, "pane": 0.25, "sides": 4 }, "from": "first value; both sides at least 4 x G. Worst good: Habitat 0.09; Home, Cargo, Sitting, L1, Vivarium 0.02 to 0.03; smallest known bad: Pods overview 0.23" },
+   "L7a": { "value": 0.1, "from": "first value. Good 0.00 to 0.03, bench 0.06 to 0.09; bad: Incubator 0.11 to 0.19, Create +0.22 (y), Pods overview 0.18 to 0.22, chapter page 0.37 to 0.45. Tune first (bench against Incubator is thin)" },
+   "L7b": { "value": 4, "from": "C5" },
+   "L8": { "value": { "label": 8, "float": 2 }, "from": "C7, T5: 8 for a label; within as declared; floats at 2 x G" },
+   "L9": { "value": 0, "from": "C8: exact" },
+   "L10": { "value": { "headroom": 0, "subjects": [] }, "from": "first value (the AD's 4 px crest headroom may tighten); subjects: the spec components whose pictures are subjects (mibi, pod, face tile), named by UI/UX with the AD: the manifest names no kind and the log no picture, so (b) measures none until then" },
+   "L11": { "value": { "size": 24, "label": 8 }, "from": "style guide section 6, T5" },
+   "mark": { "value": 16, "from": "C8: a component under 16 px on its larger side is a mark (it counts for L2, L4 and L11; empty area for L6 and L7)" },
+   "ground": { "value": 0.9, "from": "C9: a node covering 90 % of its container is its ground (one that reaches its four edges, within L2's 2 px: a pane inside its margins is content)" },
+   "container": { "value": 48, "from": "C3: a pane, window, card, bezel or strip node of 48 x 48 or more that encloses content" },
+   "component": { "value": 8, "from": "C7's 8: the boxes of one region that meet or lie within 8 px of each other are one component" },
+   "rule": { "value": 2, "from": "T7: a rect or composed node 1 or 2 px thick is a rule, a line and not a component" }
+  },
+  "exceptions": [],
+  "enforced": {}
  }
 }

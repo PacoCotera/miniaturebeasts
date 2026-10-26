@@ -2,9 +2,10 @@
 // The goldens (lvgl-switch.md §5): the framebuffer hash of each state of a screen the face draws with words, drawn by the page's own face (the C words from the screen's props) on its own pictures (the placed masters, the
 // generated stand-ins), committed in prototypes/face/golden/<screen>/<screen>.json beside the PNG of each for review: Pods' states, Home's capture points, Cargo's and Idle's. `--check` draws them again and fails on any difference (hash, or a
 // state missing). Home is taken with reduced motion (the walk and the events at their end) and, for its two timed points, on a virtual clock at an exact instant. Taken on WebAssembly; the native x86-64 and aarch64 builds
-// must give the same hashes (B4b).
-//   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/goldens.mjs [--check] [pods|home|cargo|idle]
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+// must give the same hashes (B4b). `--logs <dir>` also writes, per state, <dir>/<screen>/<png name>.json: the face's log (its nodes, type entries and snapshot) and the props facts the specs' layout.facts
+// name, from the frame the hash is taken of, for the layout check (tools/layout-check.mjs); nothing is written into the tree.
+//   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/goldens.mjs [--check] [--logs <dir>] [pods|home|cargo|idle]
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodePNG } from "../../ui/png.mjs";
@@ -21,6 +22,10 @@ import { benchStates } from "./bench-states.mjs";
 import { sittingStates } from "./sitting-states.mjs";
 
 const golden = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golden"), check = process.argv.includes("--check");
+const logsAt = process.argv.indexOf("--logs"), logs = logsAt > 0 ? path.resolve(process.argv[logsAt + 1] ?? "") : null;
+if (logsAt > 0 && !process.argv[logsAt + 1]) { console.error("--logs needs a directory"); process.exit(2); }
+// the props paths of the generated pictures' layout facts (each spec's layout.facts), read from the props of the frame the log is taken of
+const FACT_PATHS = (() => { const dir = path.resolve(golden, "../../ui/specs/station"), out = new Set(); for (const f of readdirSync(dir).filter((f) => f.endsWith(".json"))) { try { for (const q of JSON.parse(readFileSync(path.join(dir, f), "utf8")).layout?.facts ?? []) out.add(q.path); } catch { /* not a spec */ } } return [...out]; })();
 const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' goldens" }, home: { states: homeStates, prefix: "", note: "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones)" },
   cargo: { states: cargoStates, prefix: "", note: "Cargo's goldens: the bay (one to three crates, empty, shut, pods waiting), each step of one crate's opening, the frame after ✓ Skip, the report" },
   create: { states: createStates, prefix: "", note: "Create's goldens: nothing read, the shape (as the pod is, changed, a clash, a doing, one look, short, busy, the first founder), the roll's dither halfway and the grow event at three instants" },
@@ -39,6 +44,10 @@ for (const screen of run) {
   const { fails } = await states(async (name, page, fail, opts) => {
     if (opts?.captureOnly) return;   // a capture state (fix 14), not a golden
     const a = await page.evaluate(() => window.__st.snapshot({ capture: true }));
+    if (logs) { const r = await page.evaluate((paths) => { const p = window.__st.props, lg = window.__st.check().log, get = (o, q) => q.split(".").reduce((v, k) => v?.[k], o), facts = {};
+        for (const q of paths) { const v = get(p, q); if (v !== undefined) facts[q] = v; }
+        return { spec: p?.screen ?? null, idle: !!p?.idle, overlay: p?.overlay?.id ?? null, form: p?.overlay?.form ?? null, log: { nodes: lg?.nodes ?? null, type: lg?.type ?? [], snapshot: lg?.snapshot ?? null }, facts }; }, FACT_PATHS);
+      mkdirSync(path.join(logs, screen), { recursive: true }); writeFileSync(path.join(logs, screen, prefix + slug(name) + ".json"), JSON.stringify({ screen, state: name, hash: a.hash, png: prefix + slug(name) + ".png", ...r }) + "\n"); }
     if (a.errors.length || a.refused) fail(name + ": errors " + a.errors.join("; ") + " refused " + a.refused);
     if (a.owed?.length) fail(name + ": shows an owed habit key (" + a.owed.join(", ") + ")");   // a pose whose habit has no signed key draws the derived stand: never a golden
     if (screen === "pods" || !/pressed|arriving/.test(name)) { const b = await page.evaluate(() => window.__st.snapshot({ capture: true })); if (a.hash !== b.hash) fail(name + ": drawn twice, two hashes (" + a.hash + ", " + b.hash + "): the state is not deterministic"); }

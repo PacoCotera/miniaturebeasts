@@ -1,5 +1,6 @@
 {
  "screen": "panel",
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 522], "note": "the layout check (ui/specs/layout.mjs): an open decision panel stands on the field stage between the bars, whatever the screen under it (C1); the screen it covers is not measured" },
  "device": "station",
  "kind": "overlay",
  "over": [
