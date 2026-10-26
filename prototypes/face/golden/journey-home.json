@@ -23,8 +23,8 @@
     ],
     "screen": "cargo",
     "focus": "room",
-    "ok": "Open the bay",
-    "subject": "Two crates to the case",
+    "ok": "Open now",
+    "subject": "Two crates to open",
     "idle": false
    },
    {

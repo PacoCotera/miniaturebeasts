@@ -10,7 +10,7 @@ import { habitatShown } from "../trickle.mjs";
 import { mibiReq } from "./home-props.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { relitJuvenile } from "./hatch-props.mjs";
-import { fill, plural, spell } from "./words.mjs";
+import { fill, plural, spell, capLine } from "./words.mjs";
 import { req as reqOf, slot as slotOf, slotAt as slot } from "./requests.mjs";
 
 // (the Grow this founder? panel and its JUVENILE and FOUNDER pictures are retired with T-20261016-222)   // the juvenile and the founder as the card shows them (T-20261016-70: each stands at least 80 px tall in the 160 slot; the spec's 104 × 112 stood at 43 %)
@@ -35,24 +35,24 @@ export function incubateBuild(m, spec, frame, pods, createSpec) {
   const line = { ok: cur === "card.keep" ? Sg.keep : Sg.incubate, subject: "", need: "", back: Sg.back };   // the verb of the focused bezel; the price stands in the panel's header, not here
   return { overlay: { id: "panel", state: "open", form: "incubate", regions, focus: { cur, targets: [{ id: "card.incubate", enabled: true }, { id: "card.keep", enabled: true }] } }, line, requests, cards: incubateCards() };
 }
-// The cards of the Release panels (§1.6): Release it (the gain from the rules, its fact in the text colour, the subject on its place's scene) and Keep (the subject as it is). The cost of the act is a gain, ❀ +2 for a mibi and ❀ +1 for a pod.
+// The cards of the Return panels (§1.6): Return it (the gain from the rules, its fact in the text colour, the subject on its place's scene) and Keep (the subject as it is, and what that means). The cost of the act is a gain, ❀ +2 for a mibi and ❀ +1 for a pod.
+// Neither card carries a destination mark: the subject stays in the room either way.
 export const WILD = [144, 152], WILD_POD = [88, 112];
 export function wildCards(m, spec, frame, requests) {
   const { st, settings } = m, id = m.ui.panel.id, mibi = id === "wildMibi", Sg = spec.strings[id], req = reqOf(requests);
-  let subject, keepName, picture, size, releaseName, fact;
+  let subject, keepName, keepLine, picture, size, releaseName, fact;
   if (mibi) {
     subject = habitatShown(st, m.sv, m.ui.hab.id); if (!subject) return [];
-    keepName = fill(Sg.cards.keep.name, { name: subject.name }); size = WILD; releaseName = fill(Sg.cards.return.name, { name: subject.name }); fact = fill(Sg.cards.return.line, { name: subject.name }); picture = mibiReq(req, st, subject, size, settings);
+    keepName = fill(Sg.cards.keep.name, { name: subject.name }); keepLine = fill(Sg.cards.keep.line, { name: subject.name }); size = WILD; releaseName = fill(Sg.cards.return.name, { name: subject.name }); fact = fill(Sg.cards.return.line, { name: subject.name }); picture = mibiReq(req, st, subject, size, settings);
   } else {
     subject = st.tray.find((q) => q.id === m.ui.pods.cur); if (!subject) return [];
-    keepName = Sg.cards.keep.name; size = WILD_POD; releaseName = Sg.cards.return.name; fact = fill(Sg.cards.return.line, { place: S.PLACE_WORD[subject.g] || "wild" });
+    keepName = Sg.cards.keep.name; keepLine = Sg.cards.keep.line; size = WILD_POD; releaseName = Sg.cards.return.name; fact = fill(Sg.cards.return.line, { place: S.PLACE_WORD[subject.g] || "wild" });
     const sp = S.speciesOf(subject), state = subject.idd ? "identified" : "sealed";
     picture = req({ kind: "pod", id: `pod:${sp ?? "-"}:${subject.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state, size });
   }
-  const mark = frame.regions.marks.room[mibi ? "vivarium" : "research"];
   return [
-    { id: "return", act: "return", room: null, picture, pictureSize: size, mark, name: releaseName, cost: S.gainText(mibi ? S.PRICE.wildMibi : S.PRICE.wild), gain: true, short: "", line: fact, loss: false, dim: false, outcome: "wild" },
-    { id: "keep", act: "keep", room: null, picture, pictureSize: size, mark: "", name: keepName, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
+    { id: "return", act: "return", room: null, picture, pictureSize: size, mark: "", name: releaseName, cost: S.gainText(mibi ? S.PRICE.wildMibi : S.PRICE.wild), gain: true, short: "", line: fact, loss: false, dim: false, outcome: "wild" },
+    { id: "keep", act: "keep", room: null, picture, pictureSize: size, mark: "", name: keepName, cost: "", gain: false, short: "", line: keepLine, loss: false, dim: false },
   ];
 }
 // The cards of the Fit the upgrade? panel (§1.6): Fit it (the part fitted, ⚡ and ◆ from the rules, dimmed with what is short) and Not now (the part dimmed). Nothing is a mark: the part stays on the bench.
@@ -98,13 +98,13 @@ export function hatchNowBuild(m, spec, frame, pods) {
   const line = { ok: card.name, subject: "", need: card.dim ? fill(pods.strings.needMore, { icons: card.short }) : "", back: spec.strings.back ?? "Back" };
   return { overlay: { id: "panel", state: "open", form: "hatchnow", regions, focus: { cur, targets: [{ id: "card.grow", enabled: true }, { id: "card.wait", enabled: true }] } }, line, requests, cards };
 }
-// The cards of the dock arrival's choice strip (the dock arrival spec, the strip form): Open the bay (the crates open, small; free; "{n in words} crates to the rack") and Later (the crates sealed, small; free; "they wait while docked").
+// The cards of the dock arrival's choice strip (the dock arrival spec, the strip form): Open now (the crates open, small; free; "{N} crates to open") and Later (the crates sealed, small; free; "They wait while docked").
 export const STRIP_PICTURE = [96, 96];
 export function dockCards(m, spec, frame, requests) {
   const Sg = spec.strings.dock, n = m.ui.cargo?.arrival?.crates ?? 0, C = frame.regions.panel.strip.picture;
   // the card's crate: a 96 × 96 window of the placed crate master, 1:1 (frame.json regions.panel.strip.picture.crops)
   const crop = (k) => { const c = C.crops[k], id = `crate-${k}-crop-${C.size[0]}x${C.size[1]}`; requests.push({ kind: "crop", id, master: c.master, of: c.of, at: c.at, size: C.size, until: "the crate master it is cut from (T-20261016-161)" }); return id; };
-  const open = plural(n, Sg.oneCrate, fill(Sg.cards.open.line, { "n in words": spell(n, "many") }));
+  const open = plural(n, Sg.oneCrate, fill(Sg.cards.open.line, { N: spell(n, "many") }));
   const art = { well: "", focused: "", stage: "", glow: "", light: "" };
   return [
     { id: "open", act: "open", room: null, picture: crop("open"), pictureSize: STRIP_PICTURE, mark: "", name: Sg.cards.open.name, cost: "", gain: false, short: "", line: open, loss: false, dim: false, art },
@@ -112,11 +112,12 @@ export function dockCards(m, spec, frame, requests) {
   ];
 }
 // The masters the panel is drawn from (frame.json regions.panel.art, T-20261016-47 and -70): the housing, the veil, the contact shadow and the chip, and for each card its well (focused or not), stage, glow and light at the card's width.
+// A master the spec names "" is retired (the housing and the card wells: the face draws the slate pane and its wells): its id is "", nothing is requested.
 export function artOf(frame, n, requests, wild = false) {
   const A = frame.regions.panel.art, P = frame.regions.panel, w = listForm(P.cards, n).first[2], pw = w - 32, at = (t) => t.replace("{w}", w).replace("{pw}", pw);
   const req = slotOf(reqOf(requests, true), "the decision panel's master (art director, T-20261016-47, -70)");
   const sz = (id) => id.match(/(\d+)x(\d+)(?:-focused)?$/).slice(1).map(Number);
-  const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return req(id, sz(id)); };
+  const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return id ? req(id, sz(id)) : ""; };
   return { housing: pick(A.housing), veil: pick(A.veil), shadow: pick(A.shadow), chip: pick(A.chip), card: { well: pick(A.card), focused: pick(A.focused), stage: pick(A.stage), glow: pick(A.glow), light: pick(A.light) }, scene: wild ? pick(A.scene) : "" };
 }
 export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "incubate" ? incubateCards() : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
@@ -136,9 +137,9 @@ export function panelBuild(m, spec, frame, pods) {
   const requests = [], cards = cardsOf(m, spec, frame, requests), Sg = spec.strings, ui = m.ui.panel;
   const cur = cards.some((c) => "card." + c.id === ui.focus) ? ui.focus : initialFocus(cards), card = cards.find((c) => "card." + c.id === cur);
   const strip = ui.id === "dock";   // the strip form: no veil, housing or masters of its own (the code-drawn plate and wells), the cards carry no art
-  const art = strip ? { housing: "", veil: "", shadow: "", chip: "" } : artOf(frame, cards.length, requests, cards.some((c) => c.outcome === "wild")), regions = { title: titleOf(m, spec), art: { housing: art.housing, veil: art.veil, shadow: art.shadow, chip: art.chip }, cards: cards.map(({ act, room, art: own, ...c }) => ({ ...c, art: strip ? own : c.outcome === "wild" ? { ...art.card, glow: "", scene: art.scene } : art.card })) };
-  const subject = !strip ? "" : card.line || (card.room ? fill(Sg.toRoom, { room: Sg.rooms[card.room] }) : "");
-  const line = { ok: card.name, ...(card.cost ? { price: card.cost } : {}), subject, back: Sg.back, need: card.short ? fill(pods.strings.needMore, { icons: card.short }) : null };
+  const art = strip ? { housing: "", veil: "", shadow: "", chip: "" } : artOf(frame, cards.length, requests, cards.some((c) => c.outcome === "wild")), regions = { title: titleOf(m, spec), art: { housing: art.housing, veil: art.veil, shadow: art.shadow, chip: art.chip }, cards: cards.map(({ act, room, art: own, ...c }) => ({ ...c, line: capLine(c.line), art: strip ? own : c.outcome === "wild" ? { ...art.card, glow: "", scene: art.scene } : art.card })) };
+  const subject = !strip ? "" : capLine(card.line) || (card.room ? fill(Sg.toRoom, { room: Sg.rooms[card.room] }) : "");
+  const line = { ok: card.name, ...(card.cost ? { price: card.cost } : {}), subject, back: Sg.back, need: card.short ? fill(pods.strings.needMore, { icons: card.short }) : "" };   // "" (not null): no notice under an open panel (host.mjs fills a null need)
   if (card.dim) { line.dim = true; line.short = card.short; }
   return { overlay: { id: "panel", state: "open", ...(strip ? { form: "strip" } : {}), regions, focus: { cur, targets: cards.map((c) => ({ id: "card." + c.id, enabled: true })) } }, line, requests, cards };
 }

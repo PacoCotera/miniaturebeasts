@@ -4,7 +4,7 @@
 // state missing). Home is taken with reduced motion (the walk and the events at their end) and, for its two timed points, on a virtual clock at an exact instant. Taken on WebAssembly; the native x86-64 and aarch64 builds
 // must give the same hashes (B4b). `--logs <dir>` also writes, per state, <dir>/<screen>/<png name>.json: the face's log (its nodes, type entries and snapshot) and the props facts the specs' layout.facts
 // name, from the frame the hash is taken of, for the layout check (tools/layout-check.mjs); nothing is written into the tree. A state that draws a placed picture the masters index flags placeholder or stand-in is
-// refused.
+// refused; so is one that draws a built picture registered stand-in (the code drawing a creature, an item, a light or an effect itself), except the developer switch's mechanism goldens (DEV_SWITCH), which are listed.
 //   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/goldens.mjs [--check] [--logs <dir>] [pods|home|cargo|idle]
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -39,7 +39,9 @@ const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' gold
   idle: { states: idleStates, prefix: "", note: "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk" } };
 const want = process.argv.slice(2).filter((a) => SCREENS[a]), run = want.length ? want : Object.keys(SCREENS);
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
-let failed = 0; const standIns = [];   // [state, [picture ids]]: the pictures a golden draws whose masters index status is placeholder or stand-in (refused)
+// The developer switch "Motion sets (stand-ins)": mechanism goldens (not art) that draw the moving sets' stand-in atlases on purpose; the built-stand-in guard skips them and lists what they draw.
+const DEV_SWITCH = new Set(["vivarium-moving-8000ms", "habitat-moment-S01-0", "habitat-moment-S01-450", "habitat-moment-S01-900", "habitat-moment-S01-1350"]);
+let failed = 0; const devSwitch = [];   // [state, [picture ids]]: the built stand-ins a developer-switch golden draws (listed, not refused)
 for (const screen of run) {
   const { states, prefix, note } = SCREENS[screen], dir = path.join(golden, screen), file = path.join(dir, screen + ".json"), got = {}; const pngs = {};
   const { fails } = await states(async (name, page, fail, opts) => {
@@ -52,6 +54,7 @@ for (const screen of run) {
     if (a.errors.length || a.refused) fail(name + ": errors " + a.errors.join("; ") + " refused " + a.refused);
     if (a.owed?.length) fail(name + ": shows an owed habit key (" + a.owed.join(", ") + ")");   // a pose whose habit has no signed key draws the derived stand: never a golden
     if (a.standIns?.length) fail(name + ": draws a picture the masters index flags placeholder or stand-in (" + a.standIns.join(", ") + ")");   // refused: never a golden
+    if (a.builtStandIns?.length) { if (DEV_SWITCH.has(name)) devSwitch.push([name, a.builtStandIns]); else fail(name + ": draws a built stand-in (" + a.builtStandIns.join(", ") + ")"); }   // refused, but for the developer switch's mechanism goldens
     if (screen === "pods" || !/pressed|arriving/.test(name)) { const b = await page.evaluate(() => window.__st.snapshot({ capture: true })); if (a.hash !== b.hash) fail(name + ": drawn twice, two hashes (" + a.hash + ", " + b.hash + "): the state is not deterministic"); }
     got[name] = { hash: a.hash, png: prefix + slug(name) + ".png" };
     if (name === "create-roll-100" || name === "create-shape-changed") pngs[name] = a.png;
@@ -68,6 +71,6 @@ for (const screen of run) {
   else { const have = JSON.parse(readFileSync(file, "utf8")).states; for (const [n, g] of Object.entries(have)) if (!got[n]) { fails.push(n + " was not drawn"); console.error("FAIL " + n + " was not drawn"); } else if (got[n].hash !== g.hash) { fails.push(n); console.error(`FAIL ${n}: ${got[n].hash}, golden ${g.hash}`); } for (const n of Object.keys(got)) if (!have[n]) { fails.push(n); console.error("FAIL " + n + " has no golden"); } }
   console.log(`${screen}: ` + (fails.length ? fails.length + " failure(s)" : check ? "goldens match" : "goldens taken")); failed += fails.length;
 }
-console.log(`stand-ins (refused): ${standIns.length} golden(s) draw a picture the masters index flags placeholder or stand-in` + (standIns.length ? ":" : ""));
-for (const [n, ids] of standIns) console.log("  " + n.padEnd(34) + " " + ids.join(", "));
+console.log(`built stand-ins: ${devSwitch.length} developer-switch golden(s) draw them (listed, not refused)` + (devSwitch.length ? ":" : ""));
+for (const [n, ids] of devSwitch) console.log("  " + n.padEnd(34) + " " + ids.join(", "));
 process.exit(failed ? 1 : 0);

@@ -57,7 +57,7 @@ test("the studio's record is carried through: held, placeholder and new masters 
   for (const [id, status] of [["t:signed", "master"], ["t:held", "held"], ["t:ph", "placeholder"], ["t:new", "new"]]) placeMaster({ id, w: 2, h: 2, file: "pods/" + id.slice(2) + ".png", hash: "ab", status }, pic(2, 2));
   assert.equal(assetEntry("t:signed").status, "master"); assert.equal(assetEntry("t:held").status, "held");
   const counted = placeholders().map((e) => e.id).filter((i) => i.startsWith("t:")).sort();
-  assert.deepEqual(counted, ["t:held", "t:new", "t:ph"], "the register counts every entry that is not final, and no master"); assert.deepEqual(NOT_FINAL, ["placeholder", "held", "new"]);
+  assert.deepEqual(counted, ["t:held", "t:new", "t:ph"], "the register counts every entry that is not final, and no master"); assert.deepEqual(NOT_FINAL, ["placeholder", "stand-in", "held", "new"]);
   for (const id of ["t:signed", "t:held", "t:ph", "t:new"]) dropAsset(id);
 });
 
@@ -72,6 +72,26 @@ test("--status places signed, placeholder, held and new slices flagged in the in
   const again = place({ from, group: "pods", root, byStatus: true, by: "masters-pods def5678" }); assert.deepEqual(again.placed, ["page-pane-8x4"]);
   const after = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")).masters;
   assert.deepEqual(Object.keys(after), ["page-pane-8x4"], "the held and the withdrawn leave the index"); assert.ok(!existsSync(path.join(root, "pods/room-shelf.png")), "and their files");
+  assert.deepEqual(check(root), []);
+});
+
+test("a slot the Station emptied (status empty) keeps that status when it is placed again, by --status or --ids, until the studio's record says signed", () => {
+  const from = folder(), root = mkdtempSync(path.join(tmpdir(), "placed-"));
+  writeFileSync(path.join(from, "slices/status.json"), JSON.stringify({ "page-pane-8x4": { status: "signed" }, "pod-small-sealed": { status: "held" }, "room-shelf": { status: "new" } }));
+  place({ from, group: "pods", root, byStatus: true, by: "masters-pods abc1234" });
+  const idx = path.join(root, "index.json"), ix = JSON.parse(readFileSync(idx, "utf8"));
+  for (const id of ["pod-small-sealed", "room-shelf"]) ix.masters[id].status = "empty";   // the Station's placement: these slots show nothing
+  writeFileSync(idx, JSON.stringify(ix, null, 1) + "\n");
+  place({ from, group: "pods", root, byStatus: true, by: "masters-pods def5678" });
+  let after = JSON.parse(readFileSync(idx, "utf8")).masters;
+  assert.equal(after["pod-small-sealed"].status, "empty", "held in the record: stays empty"); assert.equal(after["room-shelf"].status, "empty", "new in the record: stays empty");
+  assert.match(after["room-shelf"].signed, /def5678/, "the studio's words are carried (provenance)");
+  place({ from, ids: ["room-shelf"], group: "pods", root });
+  assert.equal(JSON.parse(readFileSync(idx, "utf8")).masters["room-shelf"].status, "empty", "named with --ids: no record says signed, stays empty");
+  writeFileSync(path.join(from, "slices/status.json"), JSON.stringify({ "page-pane-8x4": { status: "signed" }, "pod-small-sealed": { status: "signed" }, "room-shelf": { status: "new" } }));
+  place({ from, group: "pods", root, byStatus: true, by: "masters-pods 0a1b2c3" });
+  after = JSON.parse(readFileSync(idx, "utf8")).masters;
+  assert.equal(after["pod-small-sealed"].status, undefined, "the record says signed: the slot is a master again"); assert.equal(after["room-shelf"].status, "empty");
   assert.deepEqual(check(root), []);
 });
 

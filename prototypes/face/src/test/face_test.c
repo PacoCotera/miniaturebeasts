@@ -307,13 +307,20 @@ static void kit_words(void) {
   face_init(); prim_palette_add("kitA", KA); prim_palette_add("kitB", KB); prim_palette_add("kitC", KC); prim_palette_add("kitD", KD);
   /* kit_panel: the fill and the four edges, in that order, the edge rows inside the box */
   prim_begin(); int n0 = table_nodes();
-  v_region("kp.shown", LAYER_CHROME); kit_panel("kp.shown", 10, 20, 30, 40, "kitA", "kitB", 0);
-  v_region("kp.noedge", LAYER_CHROME); kit_panel("kp.noedge", 10, 20, 30, 40, "kitA", NULL, 0);
-  v_region("kp.outline", LAYER_CHROME); kit_panel("kp.outline", 10, 20, 30, 40, NULL, "kitB", 0);
-  v_region("kp.slot", LAYER_CHROME); kit_panel("kp.slot", 10, 20, 30, 40, "kitA", "kitB", 1);
-  v_region("kp.slotnoedge", LAYER_CHROME); kit_panel("kp.slotnoedge", 10, 20, 30, 40, "kitA", NULL, 1);
+  v_region("kp.shown", LAYER_CHROME); kit_panel("kp.shown", 10, 20, 30, 40, "kitA", "kitB", NULL, 0);
+  v_region("kp.noedge", LAYER_CHROME); kit_panel("kp.noedge", 10, 20, 30, 40, "kitA", NULL, NULL, 0);
+  v_region("kp.outline", LAYER_CHROME); kit_panel("kp.outline", 10, 20, 30, 40, NULL, "kitB", NULL, 0);
+  v_region("kp.slot", LAYER_CHROME); kit_panel("kp.slot", 10, 20, 30, 40, "kitA", "kitB", NULL, 1);
+  v_region("kp.slotnoedge", LAYER_CHROME); kit_panel("kp.slotnoedge", 10, 20, 30, 40, "kitA", NULL, NULL, 1);
+  v_region("kp.bevel", LAYER_CHROME); kit_panel("kp.bevel", 10, 20, 30, 40, "kitA", "kitB", "kitC", 0);
+  v_region("kp.slotbevel", LAYER_CHROME); kit_panel("kp.slotbevel", 10, 20, 30, 40, "kitA", "kitB", "kitC", 1);
+  { const char *m; while ((m = wire_poll()) != NULL) {} } v_region("kp.nofillbevel", LAYER_CHROME); kit_panel("kp.nofillbevel", 10, 20, 30, 40, NULL, "kitB", "kitC", 0);
   int n1 = table_nodes(); prim_end();
-  check(n1 - n0 == 5 + 1 + 4 + 5 + 1, "kit_panel: five nodes with an edge, one without, four for an outline only, the same five as a slot", "");
+  check(n1 - n0 == 5 + 1 + 4 + 5 + 1 + 7 + 7, "kit_panel: five nodes with an edge, one without, four for an outline only, the same five as a slot; seven with a bevel, shown or as a slot", "");
+  check(kat("kp.bevel.bt", FN_RECT, 11, 21, 28, 1) && kat("kp.bevel.bl", FN_RECT, 11, 22, 1, 37) && kat("kp.bevel.er", FN_RECT, 39, 20, 1, 40), "kit_panel: the bevel inside the edge, its top row (x + 1, y + 1, w - 2) and its left column (x + 1, y + 2, h - 3), after the edges", "");
+  check(kat("kp.slotbevel.bt", FN_RECT, 10, 20, 0, 0) && kat("kp.slotbevel.bl", FN_RECT, 10, 20, 0, 0), "kit_panel: a slot's bevel nodes at (x, y) with no size", "");
+  int nr = 0; { const char *m; while ((m = wire_poll()) != NULL) if (strstr(m, "a bevel needs a fill")) nr++; }
+  check(nr == 1 && kabsent("kp.nofillbevel.et") && kabsent("kp.nofillbevel.bt"), "kit_panel: a bevel with no fill is refused and draws no node", "");
   check(kat("kp.shown", FN_RECT, 10, 20, 30, 40) && kat("kp.shown.et", FN_RECT, 10, 20, 30, 1) && kat("kp.shown.eb", FN_RECT, 10, 59, 30, 1) && kat("kp.shown.el", FN_RECT, 10, 20, 1, 40) && kat("kp.shown.er", FN_RECT, 39, 20, 1, 40), "kit_panel: the fill is the box, the edges its four outer rows", "");
   check(kat("kp.noedge", FN_RECT, 10, 20, 30, 40) && kabsent("kp.noedge.et") && kabsent("kp.noedge.er"), "kit_panel: edge NULL leaves the edges out", "");
   check(kabsent("kp.outline") && kat("kp.outline.et", FN_RECT, 10, 20, 30, 1) && kat("kp.outline.eb", FN_RECT, 10, 59, 30, 1) && kat("kp.outline.el", FN_RECT, 10, 20, 1, 40) && kat("kp.outline.er", FN_RECT, 39, 20, 1, 40), "kit_panel: fill NULL draws the four edge rects only", "");

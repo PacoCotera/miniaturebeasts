@@ -70,9 +70,9 @@ test("the shadow (M1 §1.5, the art director's Q6): a flat ellipse of #1e1a22 at
   assert.deepEqual(px(a, 1 + 52, 8), [0x1e, 0x1a, 0x22, 110]); assert.equal(px(a, 1 + 0, 0)[3], 0, "outside the ellipse");
   assert.deepEqual(px(a, 1 + 104 + 52, 8), [0x1e, 0x1a, 0x22, Math.floor(110 * 3 / 4)]);
 });
-test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in, a master when every cell is a placed master; the play gate opens only then", () => {
+test("status (M1 §1.5): an atlas is a stand-in (never in a golden but the developer switch's) while any cell is a stand-in, a master when every cell is a placed master; the play gate opens only then", () => {
   const id = movingIds("S05", "juvenile").nap; assert.equal(atlasIsMaster(id), false); assert.equal(playable("S05", "juvenile"), false);
-  registerMoving(id, src); assert.equal(assetEntry(id).status, "placeholder");
+  registerMoving(id, src); assert.equal(assetEntry(id).status, "stand-in");
   for (const c of cellsOf("S05", "juvenile", "nap", 96, 88)) placeMaster({ id: c.master, w: 96, h: 88, file: c.master + ".png", hash: "0".repeat(64), signed: "test", status: "master" }, coded(96, 88));
   assert.equal(atlasIsMaster(id), true, "every nap cell placed: the nap atlas is a master"); assert.equal(playable("S05", "juvenile"), false, "the set plays only when every atlas is");
   assert.throws(() => compose(id, src, [{ layer: "x" }]), /layers are composed in the bake slot/);
@@ -423,6 +423,13 @@ test("the Portrait test card: it derives to 40×30 with the rim, the four quadra
   assert.deepEqual([d.w, d.h], [40, 30]); assert.deepEqual(at(0, 0), [24, 24, 24]); assert.deepEqual(at(1, 1), [200, 72, 64]); assert.deepEqual(at(38, 1), [72, 168, 80]); assert.deepEqual(at(1, 28), [64, 88, 200]); assert.deepEqual(at(38, 28), [232, 200, 104]);
   const px = d.rgba(); for (let i = 0; i < px.length; i += 4) assert.ok(!(px[i] === 255 && px[i + 1] === 0 && px[i + 2] === 0), "no red from outside the crop");
   const digest = await digestOf(fx); assert.deepEqual(injectPortraitSource(digest, fx), { ok: true, digest }); const a = Buffer.from(portraitSource(digest).rgba()); assert.deepEqual(injectPortraitSource(digest, portraitFixture()), { ok: true, digest }); assert.ok(a.equals(Buffer.from(portraitSource(digest).rgba())));
+});
+
+// The test card is a picture for the tests and the journey only: no golden's states file imports it (a static check over face/tools/*-states.mjs), so it never enters a golden as the player's portrait.
+test("no golden's states file (face/tools/*-states.mjs) imports the Portrait test card (portraitFixture)", async () => {
+  const tools = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../face/tools"), files = readdirSync(tools).filter((f) => /-states\.mjs$/.test(f));
+  assert.ok(files.length >= 11, "the states files are read");
+  for (const f of files) assert.doesNotMatch(readFileSync(path.join(tools, f), "utf8"), /\bportraitFixture\b/, f + " imports the test card");
 });
 
 test("Create founder A (interim): with the species' placed adult master the founder is that one flat picture, clear when everything is read, and the same calm treatment over it otherwise (ghost: alpha unchanged, no hue); never the rig", () => {

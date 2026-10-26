@@ -127,7 +127,7 @@ export function movingFigure(walkId) {
 }
 export function registerMoving(id, src) {
   if (hasAsset(id)) return id; const a = parse(id), n = cellsOf(a.species, a.stage, a.part, a.w, a.h).length;
-  registerAsset({ id, w: 1 + n * a.w, h: a.h, status: atlasIsMaster(id) ? "master" : "placeholder", until: "the motion proof's signed cells (Station M1 §1.3, M1b)", build: () => compose(id, src, []) });
+  registerAsset({ id, w: 1 + n * a.w, h: a.h, status: atlasIsMaster(id) ? "master" : "stand-in", until: "the motion proof's signed cells (Station M1 §1.3, M1b)", build: () => compose(id, src, []) });
   return id;
 }
 // whether a mibi of this species and stage plays its moving set: it has one, and every cell is a placed master or the developer's switch is on (the face tests pass motionSets too)

@@ -5,7 +5,7 @@
 /* common/ */
 int kit_stage(const char *spec, const char *rect, const char *ground, const char *region, const char *groundId, const char *roomId, const char *roomPath);   /* a screen's stage: the ground over the spec's rect, then the room master over it (the first of the props' candidates at roomPath the host has sent; roomId NULL: none); 0 when the spec holds no rect */
 /* The UI kit's panels and rules (contract headers in common/panel.c, bezel.c, windowFrame.c and hairline.c) */
-void kit_panel(const char *id, int x, int y, int w, int h, const char *fill, const char *edge, int slot);   /* a filled pane with a 1 px edge (fill NULL: the four edge rects only; edge NULL: none; slot: the same nodes with no size at (x, y)) */
+void kit_panel(const char *id, int x, int y, int w, int h, const char *fill, const char *edge, const char *bevel, int slot);   /* a filled pane with a 1 px edge (fill NULL: the four edge rects only; edge NULL: none; bevel: a 1 px line inside the edge, top and left, NULL: none; slot: the same nodes with no size at (x, y)) */
 typedef struct { int side; int h; const char *fill; const char *rule; } kit_band_t;   /* a band along a bezel's side: side 0 top, 1 bottom; h rows of fill, then a row of rule (NULL: none); h 0: no band */
 void kit_bezel(const char *id, int x, int y, int w, int h, int r, const char *fill, const char *edge, const char *bevel, const kit_band_t *band);   /* a rounded panel (a nine-slice of the face's own source), a bevel line on top (bevel NULL: none), a band (NULL: none) */
 void kit_bezelComposed(const char *id, int x, int y, int w, int h, int r, const char *fill, const char *edge, const char *bevel);   /* a rounded panel as one composed picture (rrect, then the bevel's h line when bevel is not NULL); no band */
