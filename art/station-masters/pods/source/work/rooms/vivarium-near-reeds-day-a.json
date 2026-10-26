@@ -8,17 +8,17 @@
   "refs": [
    [
     "art/station-masters/pods/slices/vivarium-near-day-544x408.png",
-    "IMAGE 1, THE AUTHORITY (room 1's signed close-up by day): the camera at ground level, the lens, the depth of field, the scale, the finish and the light. Never the layout of its planting:"
+    "IMAGE 1, THE AUTHORITY (room 1's signed close-up by day): the camera at ground level, the lens, the depth of field, the scale, the finish and the light. Never the layout of its planting; none of its floor dressing (roots, succulents, stones, seep) appears:"
    ],
    [
     "art/station-masters/pods/rooms/map-near-544x408.png",
-    "IMAGE 2, THE LAYOUT MAP (structure and placement only, never the look): green-grey above is the soft back; pale sand below is the ground; the darker side panels are where the room's features frame the view; the white block is open floor where one small creature will stand (moss or soil only, nothing taller than a few pixels); the white outline is ground throughout:"
+    "IMAGE 2, THE LAYOUT MAP (structure and placement only, never the look), a diagram; nothing of it is painted: the dark grey above is the soft back; the light grey below is the ground:"
    ],
    [
     "art/station-masters/pods/slices/sitting-backdrop-pond-544x408.png",
     "IMAGE 3, SUBJECT AND MATERIAL ONLY (reeds, rushes and damp ground): never its finish, never its water, never its pools or banks:"
    ]
   ],
-  "prompt": "Output a NEW image, 4:3: this room seen much CLOSER and at GROUND LEVEL, at the creatures' scale, in the same warm daylight from the upper left, the same Miniature Lives finish (fine grain, soft bokeh behind) as Image 1. THE NEW PICTURE: reed stems framing both sides, rising out of the top of the frame; a flat wet stone at the right (from about 81 to 96 percent of the width); seed heads soft in the back; the floor in front, across the centre, open damp moss. The open floor across the centre of the lower part (the white block of Image 2) is moss or soil only, nothing on it taller than a tiny pebble; nothing busy directly behind the middle of the picture: the features frame it from the sides and from far back. No creatures, no animals, no figures, no text, no letters, no digits, no frame, no UI, no pool, no open water, no cliff or ledge. Cute by craft, never childish: no cartoon outlines, no toy colours, no gloss, no glow."
+  "prompt": "Output a NEW image, 4:3: this room seen much CLOSER and at GROUND LEVEL, at the creatures' scale, in the same warm daylight from the upper left, the same Miniature Lives finish (fine grain, soft bokeh behind) as Image 1. THE NEW PICTURE: reed stems framing both sides, rising out of the top of the frame; a flat wet stone at the right (from about 81 to 96 percent of the width); seed heads soft in the back; the floor in front, across the centre, open damp moss. The open floor across the centre of the lower part (from about 25 to 75 percent of the width and from about 72 to 86 percent of the height, inside the light grey of Image 2) is moss or soil only, sunlit as brightly as Image 1's floor, nothing on it taller than a tiny pebble; nothing busy directly behind the middle of the picture: the features frame it from the sides and from far back. No creatures, no animals, no figures, no text, no letters, no digits, no frame, no UI, no pool, no open water, no cliff or ledge. Cute by craft, never childish: no cartoon outlines, no toy colours, no gloss, no glow."
  }
 ]

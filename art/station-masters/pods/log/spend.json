@@ -6005,5 +6005,56 @@
    "thoughtsTokenCount": 311,
    "totalTokenCount": 3349
   }
+ },
+ {
+  "tag": "idle-vivarium-reeds-day-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.205376,
+  "mxn": 4.1075,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-26T23:56:23Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1648,
+   "candidatesTokenCount": 1450,
+   "thoughtsTokenCount": 234,
+   "totalTokenCount": 3332
+  }
+ },
+ {
+  "tag": "idle-vivarium-boulders-day-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.214818,
+  "mxn": 4.2964,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-26T23:56:53Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1629,
+   "candidatesTokenCount": 1499,
+   "thoughtsTokenCount": 264,
+   "totalTokenCount": 3392
+  }
+ },
+ {
+  "tag": "idle-vivarium-ferns-day-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.222718,
+  "mxn": 4.4544,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-26T23:57:16Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1619,
+   "candidatesTokenCount": 1488,
+   "thoughtsTokenCount": 341,
+   "totalTokenCount": 3448
+  }
  }
 ]

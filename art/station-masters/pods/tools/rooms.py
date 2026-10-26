@@ -1,7 +1,9 @@
 """Vivarium rooms 2-4 (ad-rooms-briefs.md): the 0 MXN hand passes and the measurements.
   cut(raw, kind)           a raw Pro output cut like room 1's (centre crop to the target aspect, Lanczos): idle 1024x568, near 544x408
-  device(im, light)        Idle only: room 1's same-light pixels pasted into the device (left wall x 0-76, right wall x 932-1023, mister arm x 880-932 y 120-185,
-                           soil foot rows 552-567) with an 8 px feather, so the device is pixel-true in every room
+  device(im, light)        Idle only: room 1's same-light pixels pasted into the device pixels only, never whole columns (round 1 carried room 1's planting in with them):
+                           the wall where room 1 shows it bare (left x 0-76 y 0-254, x 0-26 y 255-439; right x 932-1023 y 0-359, x 975-1023 y 360-429),
+                           the connector (x 24-56 y 255-292) and the feed line down to y 372 (polyline (40,292)-(38,330)-(43,372), 18 px wide), the mister pipe and elbow
+                           (x 884-914 y 0-131, x 882-950 y 125-182), the vent (inside the right wall), and the soil foot rows 552-567; 8 px feather outward
   measure(im, kind)        mean L* and mean R-B (sRGB 0-255): whole rows 120-560, ground band rows 376-551, the whole painting; near: all of it; Home cut x 64-667 y 194-555
 python3 -I tools/rooms.py proof NAME... -> rooms/proof-<name>.png (1x, with the profile overlay) and a JSON line of measures"""
 import os, sys, json
@@ -18,7 +20,11 @@ def cut(src, kind):
     else: ch = round(W * H0 / W0); y0 = (H - ch) // 2; box = (0, y0, W, y0 + ch)
     return im.crop(box).resize((W0, H0), Image.LANCZOS)
 def device_mask():
-    m = np.zeros((568, 1024), float); m[:, 0:77] = 1; m[:, 932:] = 1; m[120:186, 880:932] = 1; m[552:, :] = 1
+    mi = Image.new("L", (1024, 568), 0); d = ImageDraw.Draw(mi)
+    for r in ((0, 0, 76, 254), (0, 255, 26, 439), (24, 255, 56, 292), (932, 0, 1023, 359), (975, 360, 1023, 429), (884, 0, 914, 131), (882, 125, 950, 182), (0, 552, 1023, 567)):
+        d.rectangle(r, fill=255)
+    d.line([(40, 292), (38, 330), (43, 372)], fill=255, width=18)
+    m = np.asarray(mi) / 255.0
     # 8 px feather: the mask grows outward by a linear 8 px ramp (distance by repeated 1 px max-filters)
     out = m.copy(); cur = Image.fromarray((m * 255).astype(np.uint8))
     for k in range(1, 9):
