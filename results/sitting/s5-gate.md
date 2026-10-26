@@ -25,3 +25,9 @@ The ticket, the S4 gate, the copywriter's F3 note, frame.json `regions.need`, fr
 
 ## For the art director at 1x
 `home-bay-portrait`: Home's top line now reads "Open the Bay · A portrait waits in the Bay", all amber (Dot's orange name is gone); the lamp and ✓ cap sit 8 px further left, the line centred. Nothing else moved.
+
+## Re-check (architect, 2026-10-25 20:34 Mexico City), b8d5b5b8
+Fixes 1–7 built as written (incubator.mjs passes the ready portraits to need(); "Open the Bay" when a portrait is counted; the name split gone; sitting.json:151 as written; the measured guard in sitting-host.test.mjs; the adopted string "Bay: a crate and a portrait" / "Bay: {count} crates and a portrait": with the lamp 208/235/245/203 px of 272, ≤ 6 words). Two one-line edits, then merge without a new gate:
+1. lvgl-switch.md:380 states current behaviour, by the build plan's slot, with no status label or date (docs-standard §2): "From slot 9 (the Sitting), a ready portrait shows in Cargo's fourth berth and Home's Cargo module, opens after the walk crates and is offered first at Cargo's end; the notices count it apart; it never rides the dock arrival."
+2. kit-ratchet.json "text": home_frame 34 → 31 (measured: 34 px-form text calls before, 31 after; the ratchet only goes down).
+The type log needs no re-compare: the station checks read it at every capture point and passed; no golden moved; node sets equal 222/222; no capture point shows the both-at-once string, whose fit the measured guard holds. Own build: face_test 19958/0; touched suites 264 tests, 0 fail; face import guard and public guard (diff mode) exit 0.
