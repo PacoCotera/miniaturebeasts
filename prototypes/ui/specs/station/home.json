@@ -366,8 +366,8 @@
    "glints": {"module":"pods","notice":"{count} pods glint","noticeOne":"a pod glints","action":"Look at the pods"},
    "waitingPods": {
     "module": "pods",
-    "notice": "{count} pods wait for a well",
-    "noticeOne": "a pod waits for a well",
+    "notice": "The Pods rack is full",
+    "noticeOne": "The Pods rack is full",
     "action": "Look at the pods"
    },
    "couldGrow": {
@@ -396,7 +396,7 @@
     "meet": {"action":"Meet {name}","notice":"meet {name}"},
     "newPods": {"action":"Look at the pods","notice":"{count} new pods in the case","noticeOne":"a new pod in the case"},
     "glints": {"action":"Look at the pods","notice":"{count} pods glint","noticeOne":"a pod glints"},
-    "waitingPods": {"action":"Look at the pods","notice":"{count} pods wait for a well","noticeOne":"a pod waits for a well"},
+    "waitingPods": {"action":"Look at the pods","notice":"The Pods rack is full","noticeOne":"The Pods rack is full"},
     "couldGrow": {"action":"Look at the pods","notice":"{a} {species} pod, ready to incubate"}
    }
   }

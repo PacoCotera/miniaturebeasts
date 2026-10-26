@@ -3,7 +3,8 @@
 // generated stand-ins), committed in prototypes/face/golden/<screen>/<screen>.json beside the PNG of each for review: Pods' states, Home's capture points, Cargo's and Idle's. `--check` draws them again and fails on any difference (hash, or a
 // state missing). Home is taken with reduced motion (the walk and the events at their end) and, for its two timed points, on a virtual clock at an exact instant. Taken on WebAssembly; the native x86-64 and aarch64 builds
 // must give the same hashes (B4b). `--logs <dir>` also writes, per state, <dir>/<screen>/<png name>.json: the face's log (its nodes, type entries and snapshot) and the props facts the specs' layout.facts
-// name, from the frame the hash is taken of, for the layout check (tools/layout-check.mjs); nothing is written into the tree.
+// name, from the frame the hash is taken of, for the layout check (tools/layout-check.mjs); nothing is written into the tree. A state that draws a placed picture the masters index flags placeholder or stand-in is
+// refused.
 //   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/goldens.mjs [--check] [--logs <dir>] [pods|home|cargo|idle]
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -34,11 +35,11 @@ const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' gold
   vivarium: { states: vivariumStates, prefix: "", note: "The Vivarium's whole: docked (the carried two asleep), away, an out mibi's tile focused, empty, a housed tile and a sleeper focused, twelve residents, and the walk 8000 ms in" },
   library: { states: libraryStates, prefix: "", note: "The Library. Level 1: only the Loika met, a mid-game catalogue (the wish alone on a found species and beside the Loika's face chip), glints and three new looks, the room key (the ring on the last species visited), and the Home to Level 1 dither at its midpoint (motion on, virtual clock). Level 2: the Loika at mid, its Coat lit with its page, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat lit complete, the Blikur and the Loika late (colour chips). Level 3, far: a Loika lineage of two blocks (the ring on Moss) and of one (on Dot); close: on Moss, links leaving every edge, a tree that fits the view, a pan's three steps (motion on, virtual clock) and FAR to CLOSE at the dither's midpoint" },
   bench: { states: benchStates, prefix: "", note: "The Probe bench: docked with the ring on the plates, the upgrade armed, the Probe away, and the upgrade fitted" },
-  sitting: { states: sittingStates, prefix: "", note: "The sitting (S01 adult Dot, noon, reduced motion unless timed): the pose step (three habits, the curl, one habit, a juvenile), the place step (two places, at night, five places), the confirm step (at rest, armed), begin at 150 ms (motion on, virtual clock), the portrait (the test card at 528×392) and a long name" },
+  sitting: { states: sittingStates, prefix: "", note: "The sitting (S01 adult Dot, noon, reduced motion unless timed): the pose step (three habits, the curl, one habit, a juvenile), the place step (two places, at night, five places), the confirm step (at rest, armed), begin at 150 ms (motion on, virtual clock), the portrait (the bone canvas at 528×392) and a long name" },
   idle: { states: idleStates, prefix: "", note: "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk" } };
 const want = process.argv.slice(2).filter((a) => SCREENS[a]), run = want.length ? want : Object.keys(SCREENS);
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
-let failed = 0;
+let failed = 0; const standIns = [];   // [state, [picture ids]]: the pictures a golden draws whose masters index status is placeholder or stand-in (refused)
 for (const screen of run) {
   const { states, prefix, note } = SCREENS[screen], dir = path.join(golden, screen), file = path.join(dir, screen + ".json"), got = {}; const pngs = {};
   const { fails } = await states(async (name, page, fail, opts) => {
@@ -50,6 +51,7 @@ for (const screen of run) {
       mkdirSync(path.join(logs, screen), { recursive: true }); writeFileSync(path.join(logs, screen, prefix + slug(name) + ".json"), JSON.stringify({ screen, state: name, hash: a.hash, png: prefix + slug(name) + ".png", ...r }) + "\n"); }
     if (a.errors.length || a.refused) fail(name + ": errors " + a.errors.join("; ") + " refused " + a.refused);
     if (a.owed?.length) fail(name + ": shows an owed habit key (" + a.owed.join(", ") + ")");   // a pose whose habit has no signed key draws the derived stand: never a golden
+    if (a.standIns?.length) fail(name + ": draws a picture the masters index flags placeholder or stand-in (" + a.standIns.join(", ") + ")");   // refused: never a golden
     if (screen === "pods" || !/pressed|arriving/.test(name)) { const b = await page.evaluate(() => window.__st.snapshot({ capture: true })); if (a.hash !== b.hash) fail(name + ": drawn twice, two hashes (" + a.hash + ", " + b.hash + "): the state is not deterministic"); }
     got[name] = { hash: a.hash, png: prefix + slug(name) + ".png" };
     if (name === "create-roll-100" || name === "create-shape-changed") pngs[name] = a.png;
@@ -66,4 +68,6 @@ for (const screen of run) {
   else { const have = JSON.parse(readFileSync(file, "utf8")).states; for (const [n, g] of Object.entries(have)) if (!got[n]) { fails.push(n + " was not drawn"); console.error("FAIL " + n + " was not drawn"); } else if (got[n].hash !== g.hash) { fails.push(n); console.error(`FAIL ${n}: ${got[n].hash}, golden ${g.hash}`); } for (const n of Object.keys(got)) if (!have[n]) { fails.push(n); console.error("FAIL " + n + " has no golden"); } }
   console.log(`${screen}: ` + (fails.length ? fails.length + " failure(s)" : check ? "goldens match" : "goldens taken")); failed += fails.length;
 }
+console.log(`stand-ins (refused): ${standIns.length} golden(s) draw a picture the masters index flags placeholder or stand-in` + (standIns.length ? ":" : ""));
+for (const [n, ids] of standIns) console.log("  " + n.padEnd(34) + " " + ids.join(", "));
 process.exit(failed ? 1 : 0);

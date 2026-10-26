@@ -629,7 +629,7 @@ test("the Cargo spec file is the build spec's sections 1 to 6 (T-20261016-197): 
     if (toPortrait.length) { assert.deepEqual([toPortrait[0].action, toPortrait[0].view], [cg.strings.end.confirm, "portrait"]); assert.ok(sit.states.includes("portrait")); assert.equal(ends[0], toPortrait[0], "first, before Look at the pods"); }
     assert.ok(!("sitting" in cg.regions.dockCrates)); assert.deepEqual(cg.regions.dockCrates.slices, { sealed: "crate-sealed-256x176" }); assert.match(cg.regions.dockCrates.portrait, /never rides the dock arrival/);
   }
-  assert.deepEqual([cg.strings.open, cg.strings.openOne, cg.strings.skip, cg.strings.newPods], ["Open them all", "Open it", "Skip", { one: "Look at the pods", few: "Look at the pods" }]); assert.deepEqual(cg.strings.subjects, { waiting: "{count} pods wait for a well", waitingOne: "a pod waits for a well" });
+  assert.deepEqual([cg.strings.open, cg.strings.openOne, cg.strings.skip, cg.strings.newPods], ["Open them all", "Open it", "Skip", { one: "Look at the pods", few: "Look at the pods" }]); assert.deepEqual(cg.strings.subjects, { waiting: "The Pods rack is full", waitingOne: "The Pods rack is full" });
   for (const s of [cg.strings.open, cg.strings.openOne, cg.strings.skip, ...Object.values(cg.strings.newPods)]) assert.ok(wordsIn(s) <= 4, s);
   for (const s of stringsOf(cg.strings.subjects)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
   assert.ok(!/outing|haul|pocket/.test(JSON.stringify(cg.strings)), "cargo, never haul"); assert.equal(cg.strings.done, undefined); assert.equal(cg.strings.ribbon, undefined);

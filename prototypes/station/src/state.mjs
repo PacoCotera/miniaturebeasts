@@ -567,13 +567,18 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0
   if (budReady(st, settings)) return { text: "the bud is ready", act: "inc", label: "Open the incubator" };
   if (portraits) return { text: "a portrait waits in the Bay", act: "bay", label: "Open the Bay" };
   if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: "meet " + m.name, act: "meet", label: "Meet " + m.name }; }
-  const fresh = st.tray.filter((p) => !p.idd);
-  if (fresh.length) return { text: sentence(countWord(fresh.length, 6), fresh.length === 1 ? "new pod in the case" : "new pods in the case"), act: "pods", label: "Look at the pods" };
+  // needKey's one order: the unseen new pods (news) above the full rack, the seen ones below it and below a pod that can be incubated now
+  const fresh = st.tray.filter((p) => !p.idd), unseen = fresh.filter((p) => !p.seen), newPods = (n) => ({ text: sentence(countWord(n, 6), n === 1 ? "new pod in the case" : "new pods in the case"), act: "pods", label: "Look at the pods" });
+  if (unseen.length) return newPods(unseen.length);
   const glinting = st.tray.filter((p) => podGlints(st, p));
   if (glinting.length) return { text: sentence(countWord(glinting.length, 6), glinting.length === 1 ? "pod glints" : "pods glint"), act: "pods", label: "Look at the pods" };
-  if (st.waiting.length) return { text: sentence(countWord(st.waiting.length, 6), st.waiting.length === 1 ? "pod waits" : "pods wait", "for a well"), act: "pods", label: "Look at the pods" };
+  if (st.waiting.length) return { text: "The Pods rack is full", act: "pods", label: "Look at the pods" };   // no count: the rack is full, whatever waits on the mat
   const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
-  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); return { text: canPay(st, c.e, 0, c.s) ? aAn(spName(p)) + " pod, ready to incubate" : "a pod incubates with " + [st.e < c.e ? "⚡ " + (c.e - st.e) : "", st.s < c.s ? "❀ " + (c.s - st.s) : ""].filter(Boolean).join(" ") + " more", act: "pods", label: "Look at the pods" }; }
+  let short = null;
+  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); if (canPay(st, c.e, 0, c.s)) return { text: aAn(spName(p)) + " pod, ready to incubate", act: "pods", label: "Look at the pods" };
+    short = { text: "a pod incubates with " + [st.e < c.e ? "⚡ " + (c.e - st.e) : "", st.s < c.s ? "❀ " + (c.s - st.s) : ""].filter(Boolean).join(" ") + " more", act: "pods", label: "Look at the pods" }; }
+  if (fresh.length) return newPods(fresh.length);
+  if (short) return short;
   const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
   if (unread.length) { const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
     return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " for ◆ " + (cost - st.d) + " more" : " to be read"), act: "pods", label: "Look at the pods" }; }
@@ -700,12 +705,14 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
     if (!g && crossOpen) { const child = living.find((m) => m.from && m.from.how === "cross" && unreadOf(m)); if (child) g = { key: "readChild", name: child.name, step: readStep(child) }; }
     // the guide rung: the living species in lowest-mibi-id order, then the species of the pods in the wells and waiting, in tray order; the first whose guide is not complete
     if (!g) { const sp = [...new Set([...spOrder, ...st.tray.map(speciesOf), ...st.waiting.map(speciesOf)])].find((x) => x && st.knownIds.includes(x) && !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
+    // the rack rung: a pod in the rack and no rung above holds: the pod chain on the first pod there is (step lines only: the chain never goes out)
+    if (!g && st.tray.length) g = { key: "rack", step: chain(null) };
   }
   // the Probe stands in when no rung holds and it is below tier 2; null only when the ladder is empty and the Probe is at tier 2
   if (!g && tierNow(st, sv) < 2) g = { key: "probe", step: st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "goOut" }, e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };   // the Probe stands in; a save with no Probe goes out, never fits
   if (!g) return null;
   // the second goal, from growUp onward while the Probe is below tier 2
-  g.probe = null; if (["growUp", "cross", "readChild", "guide"].includes(g.key) && tierNow(st, sv) < 2) g.probe = st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "save", e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };
+  g.probe = null; if (["growUp", "cross", "readChild", "guide", "rack"].includes(g.key) && tierNow(st, sv) < 2) g.probe = st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "save", e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };
   if (g.probe && g.probe.key === "fit" && (["goOut", "findPod", "bud"].includes(g.step.key) || (g.key === "guide" && g.step.key !== "openBay"))) g.step = { key: "fit" };
   // the read to suggest while the step is a wait
   g.meanwhile = null;

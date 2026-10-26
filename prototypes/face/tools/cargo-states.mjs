@@ -5,10 +5,10 @@
 // the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
-import { portraitFixture } from "./portrait-fixture.mjs";
+import { boneCanvas } from "./portrait-fixture.mjs";
 import { digestOf } from "../../station/src/portrait-source.mjs";
 
-const PICTURED = await digestOf(portraitFixture());   // the test card's digest (the painting is not a portrait, not art), as the Habitat card takes it
+const PICTURED = await digestOf(boneCanvas());   // the bone canvas's digest (the painting is not a portrait, not art), as the Habitat card takes it
 
 // the helpers the scenes call, in the page, beside Home's: crates of pods with a walk behind them
 const CARGO = () => ({
@@ -21,7 +21,7 @@ const CARGO = () => ({
   },
   // the counters and the turn as a fresh scene has them: the goldens do not carry the last scene's gains
   fresh() { const st = window.__st.ST; st.e = 4; st.d = 3; st.s = 6; st.sittingCrates = []; this.persist(); },
-  // a portrait crate, ready: the first mibi's sitting (its painting: the test card when `picture`, else the frame alone)
+  // a portrait crate, ready: the first mibi's sitting (its painting: the bone canvas when `picture`, else the frame alone)
   crateSitting(picture) {
     const S = window.__st, st = S.ST, m = st.mibis[0]; st.sittingCrates = [{ id: "sc1", mibiId: m.id, start: -1e10, painted: true }]; m.portrait = { state: "painting", crate: "sc1", ...(picture ? { digest: window.__portrait.digest } : {}) };
     if (picture) { const r = S.portraitSource(window.__portrait.digest, eval(`(${window.__portrait.fixture})`)()); if (!r.ok) throw new Error("portrait fixture: " + r.error); }
@@ -69,7 +69,7 @@ export async function cargoStates(visit, { motion = false, timed = true } = {}) 
   const r = await still(visit); if (motion || !timed) return r;
   const t = await timedStates(visit); return { fails: [...r.fails, ...t.fails] };
 }
-const world = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); window.__portrait = { digest: src[2], fixture: src[3] }; }, [`(${WORLD.toString()})`, `(${CARGO.toString()})`, PICTURED, portraitFixture.toString()]);
+const world = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); window.__portrait = { digest: src[2], fixture: src[3] }; }, [`(${WORLD.toString()})`, `(${CARGO.toString()})`, PICTURED, boneCanvas.toString()]);
 async function still(visit) {
   const { page, fails, fail, step, close } = await openStation({ motion: false, clock: true });
   await world(page);
