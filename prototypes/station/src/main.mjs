@@ -15,6 +15,7 @@ import { startScene, endScene, sceneTick, sceneTime, sceneBeat, SCENE_MS } from 
 import { setFrames, frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
+import { mountFooter, caddyAnswers } from "../../play/src/footer.mjs";
 import { watch as watchHabitat, openCross as openCrossAt } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
@@ -32,8 +33,8 @@ import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL, NOT_IN_GO
 
 const $ = (id) => document.getElementById(id);
 const vis = $("screen"); let vctx = null;   // the page's screen: the face copies what it redrew onto it (face.display)
-const stampEl = $("stamp"), bootEl = $("boot");
-if (new URLSearchParams(location.search).has("dev")) { stampEl.hidden = false; $("devBtn").hidden = false; }   // the build stamp and the Developer tools button are for ?dev only (the Shift+T key stays on the play page)
+const bootEl = $("boot");
+if (new URLSearchParams(location.search).has("dev")) $("devBtn").hidden = false;   // the Developer tools button is for ?dev only (the Shift+T key stays on the play page)
 
 // --- the frames, fetched beside the page (the sandbox publishes prototypes/* side by side) ---
 async function loadFrames() {
@@ -203,11 +204,7 @@ function showDev(on) { if (inShell) { devOn = on; if (on) refreshDev(); return; 
 function refreshDev() { if (devOut && (inShell ? true : !devEl.hidden) && devOut.dataset.live === "1") devOut.textContent = genomesText(); }
 devBtn.addEventListener("click", (e) => { showDev(devEl.hidden); e.currentTarget.blur(); });
 onChange(refreshDev);
-fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => {
-  const short = j.short || String(j.commit || "").slice(0, 7), d = new Date(j.built);
-  let t = ""; if (!isNaN(d)) t = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Mexico_City", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
-  stampEl.textContent = short ? "build " + short + (t ? " · " + t : "") : "local build";
-}).catch(() => { stampEl.textContent = "local build"; });
+mountFooter($("buildFoot"), { buildUrl: "../../build.json", schema: S.ST_SCHEMA, caddy: caddyAnswers });   // the build footer (page chrome, always shown): build, save version, whether the Caddy service answers
 
 // --- boot ---
 for (const id of ["howTo", "whatTry"]) $(id).open = false;

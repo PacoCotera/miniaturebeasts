@@ -41,7 +41,7 @@ body{
   padding: 16px 16px 32px; max-width: 1180px; margin: 0 auto;
 }
 .device-col{display:flex; flex-direction:column; align-items:center; gap:8px; flex:0 0 auto}
-.stamp{font: 500 13px/1.2 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center}
+.build-foot{margin:0 auto; padding:0 16px 20px; max-width:1900px; font: 500 12px/1.4 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center; overflow-wrap:anywhere}   /* page chrome in the bottom margin, outside the device; wraps at phone width */
 
 /* ===== The Companion (keeps its own look in both themes) ===== */
 .device-fit{position:relative}
@@ -195,7 +195,6 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450p
         </div>
       </div>
     </div>
-    <div class="stamp" id="stamp" hidden>build …</div>
   </div>
 
   <aside class="panel" aria-label="Playtest notes">
@@ -266,6 +265,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450p
     </div>
   </aside>
 </main>
+<footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
@@ -5168,7 +5168,7 @@ window.addEventListener('keyup', e => {
 });
 window.addEventListener('blur', () => { stopRepeat(); document.querySelectorAll('.key.is-down').forEach(b => b.classList.remove('is-down')); });
 
-// ===================== 17. Page: fit, build stamp, observer =====================
+// ===================== 17. Page: fit, build footer, observer =====================
 const fitEl = document.getElementById('deviceFit');
 const EMBED = document.documentElement.classList.contains('embed');
 // Scale the depicted device to the window. When the screen would land close to a whole number of
@@ -5197,15 +5197,11 @@ function armDpr() {
 function onDpr() { setEmbedS(); armDpr(); }
 if (EMBED) { setEmbedS(); armDpr(); window.addEventListener('resize', setEmbedS); }
 
-const stampEl = document.getElementById('stamp');
-fetch('../../build.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('no build'); return r.json(); }).then(j => {
-  const short = j.short || String(j.commit || '').slice(0, 7); const d = new Date(j.built);
-  let hm = ''; if (!isNaN(d)) hm = new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
-  stampEl.textContent = short ? 'build ' + short + (hm ? ' · ' + hm : '') : 'local build';
-}).catch(() => { stampEl.textContent = 'local build'; });
+const footEl = document.getElementById('buildFoot');
+import('../play/src/footer.mjs').then(m => m.mountFooter(footEl, { buildUrl: '../../build.json', schema: SAVE_V, caddy: m.caddyAnswers })).catch(() => { });   // the build footer (page chrome, always shown): build, save version, whether the Caddy service answers
 
 const obsBtn = document.getElementById('obsToggle'), obsEl = document.getElementById('obs');
-function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; stampEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
+function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
 obsBtn.addEventListener('click', e => { setObserver(obsBtn.getAttribute('aria-pressed') !== 'true'); if (e.detail) obsBtn.blur(); });   // a mouse click hands the keys back to the game
 // Developer: the Data step (the tier multiplier). Typing in the field keeps the keys; Enter or leaving it applies.
 const devStepEl = document.getElementById('devStep'), devLadderEl = document.getElementById('devLadder');
@@ -5280,7 +5276,7 @@ function onStateChanged() {
 function notesText() {
   const ex = S.exp, L2 = [];
   L2.push('Miniature Beasts · Companion Field Test · playtest notes');
-  L2.push(stampEl.textContent + ' · seed ' + S.seed + ' · world turn ' + wTurn() + ' · ' + new Date().toISOString().slice(0, 16).replace('T', ' '));
+  L2.push(footEl.textContent + ' · seed ' + S.seed + ' · world turn ' + wTurn() + ' · ' + new Date().toISOString().slice(0, 16).replace('T', ' '));
   L2.push('Expedition: ' + (ex ? ex.n + ' (' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') + '), ' + ex.actions + ' actions, shield ' + ex.shield + '/' + ex.smax : S.expN + ' not started') + ' · total actions ' + S.totalActions);
   L2.push('Probe: tier ' + S.tier + ' · Carried: ' + (ex ? ex.cargo.e + ' energy, ' + ex.cargo.d + ' data, ' + ex.cargo.s + ' essence, ' + ex.cargo.pods.length + ' pods' : 'nothing'));
   L2.push('Map: ' + mapCounts());
