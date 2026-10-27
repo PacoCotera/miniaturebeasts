@@ -5,7 +5,7 @@
       "id": "station",
       "name": "Station",
       "oneLine": "The home device where pods are studied, mibis are grown and families begin.",
-      "image": "assets/strip-station.webp",
+      "image": "assets/strip-station-2026-10.webp",
       "items": [
         { "title": "Bring pods home and read them", "status": "live", "text": "Dock the Companion, open its crates, identify each pod and read its genome chapter by chapter, then compare two pods of the same species side by side.", "link": "prototypes/station/README.md" },
         { "title": "Create and grow a mibi", "status": "live", "text": "Shape the traits you have read, grow the mibi in its bud and open it to meet the juvenile.", "link": "design/proposals/station-loop.md" },
@@ -45,7 +45,7 @@
       "id": "caddy",
       "name": "Caddy",
       "oneLine": "The shared dock that charges both handhelds, connects the kit and prints what you find.",
-      "image": "assets/strip-caddy.webp",
+      "image": "assets/strip-caddy-2026-10.webp",
       "items": [
         { "title": "Docking the Companion", "status": "live", "text": "On the sandbox, a stand-in dock beside the Station page moves your crates across when you dock.", "link": "prototypes/station/README.md" },
         { "title": "Handing each portrait to the Caddy", "status": "live", "text": "When you make a mibi's portrait, the Station hands its genome to the Caddy for the finished pictures. Nothing else is sent, and the game plays on with a placeholder while the painting is made or if the Caddy cannot be reached.", "link": "prototypes/caddy/README.md" },
