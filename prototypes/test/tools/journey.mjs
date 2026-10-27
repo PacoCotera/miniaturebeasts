@@ -163,6 +163,10 @@ for (const m of MENU) {
   eq(await page.evaluate(() => document.getElementById("swDot").hidden), true, "C: showing the Companion clears its dot");
   await page.waitForTimeout(8500);
   eq(await page.evaluate(() => document.getElementById("swDot").hidden), true, "C: the idle Station, hidden, never lights the dot on its own animation");
+  // a need set on the hidden Station (a crate waiting in the Bay) lights its lamp and so the dot on the Station half
+  await st().evaluate(() => { window.__st.seedCrate("S01", 2, 4101); window.__st.ST.dock.docked = true; });   // the Bay shows its crates only while docked
+  const t1 = Date.now(); await page.waitForFunction(() => !document.getElementById("swDot").hidden, null, { timeout: 1000 }).catch(() => {});
+  expect(!(await page.evaluate(() => document.getElementById("swDot").hidden)), `C: a need set on the Station (a crate in the Bay) shows the dot on the Station half within 1 s (${Date.now() - t1} ms)`);
   await ctx.close();
 }
 
@@ -234,13 +238,31 @@ for (const m of MENU) {
   eq(await dv.page.evaluate(() => window.__tp.rect("switch")), [47, 8, 88, 44], "G: ?dev&safe=0,47,21,47 puts the left column inside the inset");
   await dv.ctx.close();
 }
-// ---- the hardware view's keys: every box at least 44 x 44 at 1280 x 720, both devices ----
-for (const dev of ["station", "companion"]) {
-  const { ctx, page } = await open(1280, 720, { query: "" });
+// ---- the hardware view's keys: the Station's at 1280 x 720, the Companion's at 1280 x 800 (every box at least 44 x 44); the Companion at 1280 x 720 is forced to full ----
+for (const [dev, h] of [["station", 720], ["companion", 800]]) {
+  const { ctx, page } = await open(1280, h, { query: "" });
   if (dev === "companion") { await page.keyboard.press("2"); await page.waitForTimeout(400); }
   const R = await rects(page), ks = Object.entries(R).filter(([k]) => k.startsWith("hk-" + dev + "-"));
   expect(ks.length >= 6, `H: the hardware view shows its ${dev} keys (${ks.length})`);
-  for (const [k, r] of ks) expect(r[2] >= 44 - 0.5 && r[3] >= 44 - 0.5, `H: hardware ${dev} 1280x720 ${k} is at least 44 x 44: ${f1(r)}`);
+  for (const [k, r] of ks) expect(r[2] >= 44 - 0.5 && r[3] >= 44 - 0.5, `H: hardware ${dev} 1280x${h} ${k} is at least 44 x 44: ${f1(r)}`);
+  await ctx.close();
+}
+{
+  const { ctx, page } = await open(1280, 720, { query: "" });
+  await page.keyboard.press("2"); await page.waitForTimeout(400);
+  eq(await page.evaluate(() => document.documentElement.dataset.view), "full", "H: the Companion at 1280x720 is forced to the full-screen view");
+  eq(await page.evaluate(() => window.__tp.rect("fullscreen")), null, "H: and the Full screen key is hidden");
+  await page.keyboard.press("f"); await page.waitForTimeout(400);
+  eq(await page.evaluate(() => [document.documentElement.dataset.view, window.__tp.S.view, !!document.fullscreenElement]), ["full", "hardware", false], "H: and F does nothing while it is forced");
+  await ctx.close();
+}
+// ---- the turn-the-phone line: stored only when shown ----
+{
+  const { ctx, page } = await open(1440, 900, { query: "", touch: true });
+  await page.setViewportSize({ width: 390, height: 664 }); await page.waitForTimeout(400);
+  eq(await page.evaluate(() => window.__tp.rect("hint") !== null), true, "I: a fresh browser opened at 1440x900, then resized to 390x664, shows the line");
+  await page.reload({ waitUntil: "load" }); await page.waitForTimeout(600);
+  eq(await page.evaluate(() => window.__tp.rect("hint")), null, "I: reloaded at 390x664, it does not");
   await ctx.close();
 }
 // ---- H. the hardware view's shots (the desktop's default) ----
