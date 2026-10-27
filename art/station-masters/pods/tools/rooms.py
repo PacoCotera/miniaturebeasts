@@ -5,7 +5,8 @@
                            the connector (x 24-56 y 255-292) and the feed line down to y 372 (polyline (40,292)-(38,330)-(43,372), 18 px wide), the mister pipe and elbow
                            (x 884-914 y 0-131, x 882-950 y 125-182), the vent (inside the right wall), and the soil foot rows 552-567; 8 px feather outward
   measure(im, kind)        mean L* and mean R-B (sRGB 0-255): whole rows 120-560, ground band rows 376-551, the whole painting; near: all of it; Home cut x 64-667 y 194-555
-python3 -I tools/rooms.py proof NAME... -> rooms/proof-<name>.png (1x, with the profile overlay) and a JSON line of measures"""
+python3 -I tools/rooms.py proof NAME... -> rooms/proof-<name>.png (1x, with the profile overlay) and a JSON line of measures
+python3 -I tools/rooms.py proof-raw NAME... -> the same with no device paste (owner 18:03: room 1's device is no longer pasted into other rooms; round c on)"""
 import os, sys, json
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
@@ -46,11 +47,11 @@ def overlay(im):
     d.rectangle([64, 194, 667, 555], outline=(255, 255, 255)); d.rectangle([588, 460, 668, 556], outline=(160, 160, 160))
     return o
 if __name__ == "__main__":
-    if sys.argv[1] == "proof":
+    if sys.argv[1] in ("proof", "proof-raw"):
         for n in sys.argv[2:]:
             kind = "idle" if n.startswith("idle-") else "near"; light = n.split("-")[-2]
             im = cut(f"source/raw/{n}.jpg", kind)
-            if kind == "idle": im = device(im, light)
+            if kind == "idle" and sys.argv[1] == "proof": im = device(im, light)
             im.save(f"rooms/work-{n}.png")
             pr = Image.new("RGB", (im.width * 2 + 8, im.height), (0, 0, 0)); pr.paste(im, (0, 0)); pr.paste(overlay(im) if kind == "idle" else im, (im.width + 8, 0)); pr.save(f"rooms/proof-{n}.png")
             print(json.dumps({"name": n, **measure(im, kind)}))

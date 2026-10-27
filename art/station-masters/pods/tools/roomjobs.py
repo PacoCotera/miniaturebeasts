@@ -61,6 +61,47 @@ for room in ("reeds", "boulders", "ferns"):
         "Output a NEW image, 4:3: this room seen much CLOSER and at GROUND LEVEL, at the creatures' scale, in the same warm daylight from the upper left, the same Miniature Lives finish (fine grain, soft bokeh behind) as Image 1. "
         + NEAR[room] + " The open floor across the centre of the lower part (from about 25 to 75 percent of the width and from about 72 to 86 percent of the height, inside the light grey of Image 2) is moss or soil only, sunlit as brightly as Image 1's floor, nothing on it taller than a tiny pebble; nothing busy directly behind the middle of the picture: the features frame it from the sides and from far back. "
         "No creatures, no animals, no figures, no text, no letters, no digits, no frame, no UI, no pool, no open water, no cliff or ledge. Cute by craft, never childish: no cartoon outlines, no toy colours, no gloss, no glow.")
+# Round c (art director's ruling after 1b, lead's go 2026-10-26): two rounds copied room 1's whole painting into the floor (its dressing; in Ferns the map),
+# so Image 1 is no longer room 1's whole picture: it is only the top strip of it (rows 0-189: the device walls, feed line, mister, vent, the soft back and the key light),
+# which holds nothing of the floor. The device is pasted pixel-true at 0 MXN after (rooms.py), and the light is brought to room 1's measured targets by the 0 MXN band grade.
+# Added: the floor's light, a calm floor in colours apart from the minis' browns, the two front occluders (owner 17:55), Ferns told no flat grey area, Reeds at two stones.
+TOP_STRIP = P + "rooms/ref-top-day-1024x190.png"
+HOUSE_C = ("Image 1 is ONLY the top strip of this very picture (the top third): continue it downward into a full 16:9 picture of the SAME terrarium inside the SAME rugged field device, from the same eye height with the same lens and depth of field: "
+           "the left wall with its braided feed line running down to its connector, the right wall with its mister arm and slatted vent, a dark soil strip along the foot. "
+           "Inside it a NEW planting, painted in the Miniature Lives finish of Image 1: fine grain on the world, soft bokeh behind, a warm key light from the top left with its shafts. "
+           "Cute by craft, never childish: no cartoon outlines, no toy colours, no gloss, no glow, no chrome, no alien tech. "
+           "No creatures, no animals, no figures, no text, no letters, no digits, no logos, no frame, no UI. No water except one small flat seep. Pebbles and leaves small: a pebble about 6 to 10 px across in a 568 px tall picture.")
+FLOOR_C = ("THE OPEN FLOOR (the light grey of Image 2, from its boundary with the dark grey down to the dark soil strip) is low open ground in full warm sunlight, as bright and warm as the sunlit top of Image 1, never in shadow, never cool or grey; "
+           "it is CALM and plain: mostly short even green moss with a little soil, few pebbles, no scatter of litter, scree or debris, so that small dark, brown and teal creatures read clearly against it; nothing on it brown and rounded like a small animal. "
+           "Nothing a small creature could perch on: no flat raised top, no ledge, no slab, no step; no log, root or stem lying across the floor; "
+           "everything tall stands BEHIND the back edge, its feet ending on it, never spilling forward onto the floor. "
+           "The back edge of the floor (where open floor ends and the planting behind begins) runs along the boundary between the dark grey and the light grey of Image 2, or a little above it (never more than about 24 px), never below it. "
+           "Nothing on the floor larger than a small pebble except TWO LOW FOREGROUND PIECES at the very front of the floor, their bases on the top edge of the soil strip (about 92 to 96 percent of the height), each no larger than about 96 px wide and 48 px tall: "
+           "one in the left third (between about 12 and 30 percent of the width), one in the right third (between about 68 and 85 percent of the width); a small creature walking behind one is partly hidden by it. "
+           "The device walls at the left and the right hold only the wall, the feed line and its connector at the left, the mister and the vent at the right, kept clear of planting. "
+           "Image 2 is a diagram: no flat grey area, no grey band, no grey slab and no straight-edged shape of any kind is painted; every part of the floor is moss, soil or stone.")
+IDLE_C = {
+ "reeds": ("THE NEW PLANTING: a reed and rush margin on damp ground. Tall reeds stand behind the floor, rising to about a quarter of the height from the top: slender straw-gold dry stems among green ones, "
+           "fine seed heads catching the key light; the stand is densest at the centre-left (from about 37 to 64 percent of the width) and thinner to the right; every stem and root ends at the floor's back edge: their feet end at the back edge, no roots spread onto the floor. "
+           "The far left, just right of the feed line, holds only low rushes behind the back edge. "
+           "The floor: short wet moss, two flat wet stones lying flush with the moss, one small seep of water no bigger than a hand's width (about 110 by 28 px) lying flat between about 41 and 59 percent of the width. "
+           "The two foreground pieces are a small rush tuft (left) and a low clump of short reed shoots (right). NO pool, no pond, no bank, no open water, no ripples, no reflections. Straw-gold and warm olive, never blue-green."),
+ "boulders": ("THE NEW PLANTING: two great rounded sandstone boulders, smooth and weathered, with lichen and moss in their cracks. The large one fills the back left (from about 12 to 41 percent of the width, its top at about 35 percent of the height); "
+              "the smaller one stands right of centre (from about 55 to 70 percent of the width, its top at about half the height). Both are domed and rounded all over: no flat top, no ledge, no cliff, no climbable face, no crag; "
+              "their feet end at the back edge, a little ABOVE the boundary of Image 2, never below it, with only a thin line of fine scree at their feet behind the edge. Cushion plants and small succulents in the gaps between them, behind the edge. "
+              "The floor: short even moss with a few fine pebbles, no scree spread across it. The two foreground pieces are a small rounded mossy stone (left) and a low cushion plant (right). "
+              "The stone is warm ochre-grey sandstone lit from the top left, its shadow side warm, never blue granite; the soft back no brighter than Image 1's."),
+ "ferns": ("THE NEW PLANTING: a fern bank of broad fronds fanning out across the back (from about 29 to 74 percent of the width, rising to about 28 percent of the height from the top): deep green fronds with lighter new fronds and curled croziers. "
+           "A fallen log, mossy and soft-barked, lies along the back edge of the floor from about 14 to 55 percent of the width, its top at about 58 percent of the height and its underside resting ON the back edge, fronds growing over it; it never crosses onto the floor. "
+           "The floor: short even green moss with only a few flat fallen leaves, no carpet of leaf litter, no roots, no stones but small pebbles. The two foreground pieces are a low fern tuft (left) and a small clump of croziers (right). "
+           "No tree trunks, no forest: it is a terrarium planting. Fern greens warm, never cooler than Image 1's foliage; the whole picture as warm as Image 1."),
+}
+for room in ("reeds", "boulders", "ferns"):
+    jobs[f"idle-vivarium-{room}-day-c"] = job(f"idle-vivarium-{room}-day-c", "16:9", [
+        [TOP_STRIP, "IMAGE 1, THE AUTHORITY (the top strip of room 1's signed painting by day, nothing of its floor): the device walls, the feed line, the mister and vent, the soft back, the finish and the light:"],
+        [MAP_IDLE, "IMAGE 2, THE LAYOUT MAP (structure and placement only, never the look), a diagram; nothing of it is painted: the dark grey is the back zone where the tall planting stands; the light grey is the open floor; where they meet is the floor's back edge:"],
+        [BACKDROP[room], f"IMAGE 3, SUBJECT AND MATERIAL ONLY ({SUBJ[room]}): {NEVER[room]}:"]],
+        "Output a NEW image, 16:9. " + HOUSE_C + " " + IDLE_C[room] + " " + FLOOR_C)
 LIGHT = {
  "night": ("NIGHT: warm and low. The floor stays lit like Image 2's night ground (the open floor brighter than the back zone); the back zone warm and dark; the moon only as a thin cool rim on the tops of the tallest pieces; "
            "no glow effects, no glowing moss, no lamps, no moon disc."),

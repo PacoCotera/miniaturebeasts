@@ -7,7 +7,8 @@ Idle map 1024x568 (painting coordinates):
   open floor (room 1's tops down to y 567)                                                                     light grey (196,196,196)
 Near map 544x408 (glass coordinates):
   back zone y 0-247 dark grey (88,88,88); ground band y 248-407 light grey (196,196,196).
-python3 -I tools/roommaps.py -> rooms/map-idle-1024x568.png, rooms/map-near-544x408.png"""
+Round c: rooms/ref-top-day-1024x190.png, rows 0-189 of room 1's signed day (the device and the soft back, nothing of the floor), Image 1 of the c jobs.
+python3 -I tools/roommaps.py -> rooms/map-idle-1024x568.png, rooms/map-near-544x408.png, rooms/ref-top-day-1024x190.png"""
 import os
 from PIL import Image, ImageDraw
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
@@ -18,3 +19,4 @@ for i, t in enumerate(TOP): d.rectangle([BX[i], t, BX[i + 1] - 1, 567], fill=LIG
 im.save("rooms/map-idle-1024x568.png", optimize=True)
 n = Image.new("RGB", (544, 408), DARK); ImageDraw.Draw(n).rectangle([0, 248, 543, 407], fill=LIGHT)
 n.save("rooms/map-near-544x408.png", optimize=True)
+Image.open("slices/idle-vivarium-day-1024x568.png").convert("RGB").crop((0, 0, 1024, 190)).save("rooms/ref-top-day-1024x190.png", optimize=True)

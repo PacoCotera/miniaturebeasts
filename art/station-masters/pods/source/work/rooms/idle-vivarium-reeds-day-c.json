@@ -1,0 +1,24 @@
+[
+ {
+  "name": "idle-vivarium-reeds-day-c",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/ref-top-day-1024x190.png",
+    "IMAGE 1, THE AUTHORITY (the top strip of room 1's signed painting by day, nothing of its floor): the device walls, the feed line, the mister and vent, the soft back, the finish and the light:"
+   ],
+   [
+    "art/station-masters/pods/rooms/map-idle-1024x568.png",
+    "IMAGE 2, THE LAYOUT MAP (structure and placement only, never the look), a diagram; nothing of it is painted: the dark grey is the back zone where the tall planting stands; the light grey is the open floor; where they meet is the floor's back edge:"
+   ],
+   [
+    "art/station-masters/pods/slices/sitting-backdrop-pond-544x408.png",
+    "IMAGE 3, SUBJECT AND MATERIAL ONLY (reeds, rushes and damp ground): never its finish, never its water, never its pools or banks:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9. Image 1 is ONLY the top strip of this very picture (the top third): continue it downward into a full 16:9 picture of the SAME terrarium inside the SAME rugged field device, from the same eye height with the same lens and depth of field: the left wall with its braided feed line running down to its connector, the right wall with its mister arm and slatted vent, a dark soil strip along the foot. Inside it a NEW planting, painted in the Miniature Lives finish of Image 1: fine grain on the world, soft bokeh behind, a warm key light from the top left with its shafts. Cute by craft, never childish: no cartoon outlines, no toy colours, no gloss, no glow, no chrome, no alien tech. No creatures, no animals, no figures, no text, no letters, no digits, no logos, no frame, no UI. No water except one small flat seep. Pebbles and leaves small: a pebble about 6 to 10 px across in a 568 px tall picture. THE NEW PLANTING: a reed and rush margin on damp ground. Tall reeds stand behind the floor, rising to about a quarter of the height from the top: slender straw-gold dry stems among green ones, fine seed heads catching the key light; the stand is densest at the centre-left (from about 37 to 64 percent of the width) and thinner to the right; every stem and root ends at the floor's back edge: their feet end at the back edge, no roots spread onto the floor. The far left, just right of the feed line, holds only low rushes behind the back edge. The floor: short wet moss, two flat wet stones lying flush with the moss, one small seep of water no bigger than a hand's width (about 110 by 28 px) lying flat between about 41 and 59 percent of the width. The two foreground pieces are a small rush tuft (left) and a low clump of short reed shoots (right). NO pool, no pond, no bank, no open water, no ripples, no reflections. Straw-gold and warm olive, never blue-green. THE OPEN FLOOR (the light grey of Image 2, from its boundary with the dark grey down to the dark soil strip) is low open ground in full warm sunlight, as bright and warm as the sunlit top of Image 1, never in shadow, never cool or grey; it is CALM and plain: mostly short even green moss with a little soil, few pebbles, no scatter of litter, scree or debris, so that small dark, brown and teal creatures read clearly against it; nothing on it brown and rounded like a small animal. Nothing a small creature could perch on: no flat raised top, no ledge, no slab, no step; no log, root or stem lying across the floor; everything tall stands BEHIND the back edge, its feet ending on it, never spilling forward onto the floor. The back edge of the floor (where open floor ends and the planting behind begins) runs along the boundary between the dark grey and the light grey of Image 2, or a little above it (never more than about 24 px), never below it. Nothing on the floor larger than a small pebble except TWO LOW FOREGROUND PIECES at the very front of the floor, their bases on the top edge of the soil strip (about 92 to 96 percent of the height), each no larger than about 96 px wide and 48 px tall: one in the left third (between about 12 and 30 percent of the width), one in the right third (between about 68 and 85 percent of the width); a small creature walking behind one is partly hidden by it. The device walls at the left and the right hold only the wall, the feed line and its connector at the left, the mister and the vent at the right, kept clear of planting. Image 2 is a diagram: no flat grey area, no grey band, no grey slab and no straight-edged shape of any kind is painted; every part of the floor is moss, soil or stone."
+ }
+]
