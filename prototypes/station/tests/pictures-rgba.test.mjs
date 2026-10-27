@@ -244,7 +244,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
   describe("an owned mibi is never absent (Fix 1b part 3, stands.mjs)", () => {
     before(placeAll); after(dropAll);
     const SPECIES = Array.from({ length: 16 }, (_, i) => "S" + String(i + 1).padStart(2, "0")), PLACES = [[144, 152], [96, 88], [304, 312], [48, 48]];
-    const ADULT_STANDS = SPECIES.filter((s) => PLACES.every(([w, h]) => `mibi-adult-${s}-${w}x${h}` in index)), settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8 }, T0 = 1_000_000;
+    const ADULT_STANDS = SPECIES.filter((s) => PLACES.every(([w, h]) => `mibi-adult-${s}-${w}x${h}` in index)), settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 }, T0 = 1_000_000;
 
     test("no S01 to S16 species reaches the genome stand-in: every one has a signed adult stand or a signed juvenile stand at every place", () => {
       for (const sp of SPECIES) for (const size of PLACES) for (const stage of ["adult", "elder"]) {

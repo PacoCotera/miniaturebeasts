@@ -26,7 +26,7 @@
    "png": "vivarium-sleeper.png"
   },
   "vivarium-twelve": {
-   "hash": "d3a416f0",
+   "hash": "96926a97",
    "png": "vivarium-twelve.png"
   },
   "vivarium-empty-away": {
@@ -50,11 +50,11 @@
    "png": "vivarium-docked-night.png"
   },
   "vivarium-walk-8000ms": {
-   "hash": "bb31f638",
+   "hash": "682dd7c8",
    "png": "vivarium-walk-8000ms.png"
   },
   "vivarium-moving-8000ms": {
-   "hash": "00a1ecff",
+   "hash": "9d3a550b",
    "png": "vivarium-moving-8000ms.png"
   }
  }

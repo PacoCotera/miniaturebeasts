@@ -30,7 +30,7 @@ export function beats() {
   const B = [];
   const at = (t, beat, go) => B.push({ at: t, beat, go });
   // 1. the hatch: a ready S01 bud; ✓ opens it; the hand-off lands the meet at 6400 after the press
-  at(0, 1, (h) => { saveSettings({ motionSets: true, stationTime: "12:00", bays: 12, light: null }); world((st) => { named(S.seedAdults(st, "S01", 5, 1, h.settings).mibis[0], "Pip"); S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), h.settings, Date.now()); const p = st.tray[0]; S.skipIdentify(st, p); S.grow(st, p, {}, h.settings, Date.now()); S.skipBud(st, h.settings, "ready"); });
+  at(0, 1, (h) => { saveSettings({ motionSets: true, stationTime: "12:00", rooms: 2, light: null }); world((st) => { named(S.seedAdults(st, "S01", 5, 1, h.settings).mibis[0], "Pip"); S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), h.settings, Date.now()); const p = st.tray[0]; S.skipIdentify(st, p); S.grow(st, p, {}, h.settings, Date.now()); S.skipBud(st, h.settings, "ready"); });
     stationClock.scene = null; UI.idle = false; UI.inc = {}; h.goto("incubator"); });
   at(1200, 1, (h) => key(h, "confirm"));
   // 2. a day in the Vivarium, 60 s: the young one hatched is young Pip; focus on Pip and the acknowledge, then Greet up close

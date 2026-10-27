@@ -124,7 +124,7 @@ export function homeBody(light = lightNow()) {
 }
 
 // ---- The Vivarium's whole ----
-// Every mibi at home in one window and the bays along the foot. The ring is the face's (focus.graph); the host keeps what the face says in UI.viv.f, and a way in (null) takes the ring to the mibi last seen up close (vivarium.json focus.entry).
+// Every mibi at home in one window and the places along the foot. The ring is the face's (focus.graph); the host keeps what the face says in UI.viv.f, and a way in (null) takes the ring to the mibi last seen up close (vivarium.json focus.entry).
 export function vivariumBody(light = lightNow()) {
   const body = vivariumBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.viv.f, seen: UI.hab.id, ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home);
   UI.viv.f = body.props.focus.cur;

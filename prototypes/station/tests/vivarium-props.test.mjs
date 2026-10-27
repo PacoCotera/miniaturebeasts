@@ -20,7 +20,7 @@ import { decodePNG } from "../../ui/png.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("vivarium.json"), frameSpec = J("frame.json"), home = J("home.json"), schema = J("vivarium.props.json");
-const T0 = 1_000_000, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", bays });
+const T0 = 1_000_000, cfg = (rooms) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", rooms });
 
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
@@ -38,7 +38,7 @@ function validate(v, sc, at = "$", out = []) {
   }
   return out;
 }
-const world = (bays = 8) => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; return { st, settings: cfg(bays) }; };
+const world = (rooms = 1) => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; return { st, settings: cfg(rooms) }; };
 const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, ...over });
 const dock = (st, d = true) => { st.dock = { docked: d, at: T0 }; };
 const build = ({ st, settings }, sv, over = {}) => vivariumBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, seen: null, ...over }, spec, frameSpec, home);
@@ -46,11 +46,11 @@ const mibis = (w, n) => { S.seedAdults(w.st, "S01", 5, n, w.settings); for (cons
 
 function scenes() {
   const out = {};
-  { const w = world(6); dock(w.st); out.empty = { w, sv: sv0() }; }
-  { const w = world(6); dock(w.st, false); out.emptyAway = { w, sv: sv0() }; }
+  { const w = world(1); dock(w.st); out.empty = { w, sv: sv0() }; }
+  { const w = world(1); dock(w.st, false); out.emptyAway = { w, sv: sv0() }; }
   { const w = world(); dock(w.st); const m = mibis(w, 7); out.docked = { w, sv: sv0({ carried: [m[5].id, m[6].id] }) }; }
   { const w = world(); dock(w.st, false); const m = mibis(w, 7); out.away = { w, sv: sv0({ carried: [m[5].id, m[6].id] }) }; }
-  { const w = world(12); dock(w.st); mibis(w, 12); out.twelve = { w, sv: sv0() }; }
+  { const w = world(2); dock(w.st); mibis(w, 12); out.twelve = { w, sv: sv0() }; }
   { const w = world(); dock(w.st); const m = mibis(w, 3); out.noneCarried = { w, sv: sv0() }; }
   return out;
 }
@@ -65,7 +65,7 @@ test("the whole's props validate against vivarium.props.json in every scene, nam
   }
 });
 
-test("every mibi at home walks (a seed each, in bay order), the docked carried set sleeps on the bed, an out mibi is only a tile; a tile a bay, housed first then free", () => {
+test("every mibi at home walks (a seed each, in bay order), the docked carried set sleeps on the bed, an out mibi is only a tile; a tile a place, housed first then free", () => {
   const S0 = scenes();
   { const { w, sv } = S0.docked, b = build(w, sv).props, R = b.regions;
     assert.equal(b.state, "rest"); assert.equal(R.residents.length, 5); assert.ok(R.residents.every((p) => Number.isInteger(p.seed) && p.seed !== 0)); assert.equal(R.bed.state, "docked"); assert.equal(R.bed.sleepers.length, 2); assert.equal(R.bed.mark, "");
@@ -74,8 +74,8 @@ test("every mibi at home walks (a seed each, in bay order), the docked carried s
     assert.equal(R.residents.length, 5, "the carried two are not in the window"); assert.equal(R.bed.state, "away"); assert.equal(R.bed.sleepers.length, 0); assert.equal(R.bed.mark, "", "the Companion's mark is not drawn on the bed");
     assert.deepEqual(R.tiles.items.map((t) => t.state), ["housed", "housed", "housed", "housed", "housed", "out", "out", "free"]); assert.equal(R.tiles.items[5].picture, "", "an out tile shows the glyph, not a thumbnail"); assert.equal(R.tiles.glyph, "frame-companion-outline-16x24"); }
   { const { w, sv } = S0.noneCarried, b = build(w, sv).props; assert.equal(b.regions.bed.state, "none"); assert.equal(b.regions.residents.length, 3); }
-  { const { w, sv } = S0.twelve, b = build(w, sv).props; assert.equal(b.regions.residents.length, 12); assert.equal(b.regions.tiles.items.length, 12); }
-  { const { w, sv } = S0.empty, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.residents.length, 0); assert.equal(b.regions.tiles.items.length, 6); assert.deepEqual([b.regions.bed.state, b.regions.bed.mark, b.regions.bed.sleepers.length], ["none", "", 0], "the nest alone while docked"); assert.ok(b.regions.tiles.items.every((t) => t.state === "free")); assert.deepEqual(b.focus.targets, []); assert.equal(b.focus.cur, "room"); }
+  { const { w, sv } = S0.twelve, b = build(w, sv).props; assert.equal(b.regions.residents.length, 8, "a room shows its eight"); assert.equal(b.regions.tiles.items.length, 8); assert.ok(b.regions.tiles.items.every((t) => t.state === "housed")); w.st.face.room = 1; const o = build(w, sv).props; assert.equal(o.regions.residents.length, 4, "the second room: the other four"); assert.deepEqual(o.regions.tiles.items.map((t) => t.state), ["housed", "housed", "housed", "housed", "free", "free", "free", "free"]); w.st.face.room = 0; }
+  { const { w, sv } = S0.empty, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.residents.length, 0); assert.equal(b.regions.tiles.items.length, 8); assert.deepEqual([b.regions.bed.state, b.regions.bed.mark, b.regions.bed.sleepers.length], ["none", "", 0], "the nest alone while docked"); assert.ok(b.regions.tiles.items.every((t) => t.state === "free")); assert.deepEqual(b.focus.targets, []); assert.equal(b.focus.cur, "room"); }
   { const { w, sv } = S0.emptyAway, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.bed.state, "away"); assert.equal(b.regions.bed.mark, "", "the nest while away, its mark not drawn"); assert.equal(b.regions.tiles.glyph, "frame-companion-outline-16x24"); }
 });
 
@@ -126,7 +126,7 @@ test("the whole's residents with moving sets fit vivarium.props.json: moving and
 });
 
 test("fix 7: the Vivarium's residents take the scene's light (id suffix and request light; the count as at day), the 48×48 tiles never do", () => {
-  const w = world(12); mibis(w, 6); dock(w.st); const sv = sv0({ carried: [w.st.mibis[0].id] });
+  const w = world(2); mibis(w, 6); dock(w.st); const sv = sv0({ carried: [w.st.mibis[0].id] });
   const reqs = (light) => build(w, sv, { light }).requests.filter((r) => r.kind === "mibi"), day = reqs("day");
   assert.ok(day.length >= 6 && day.every((r) => !("light" in r)));
   for (const light of ["dawn", "dusk", "night"]) { const got = reqs(light); assert.equal(got.length, day.length); for (const r of got) assert.equal(r.size[0] === 48 && r.size[1] === 48 ? !("light" in r) : r.light === light && r.id.endsWith(":" + light), true, r.id); assert.ok(got.some((r) => r.light === light) && got.some((r) => r.size[0] === 48)); }

@@ -178,7 +178,7 @@ test("a portrayed mibi may be returned to the wild; its portrait stays in the bo
 
 test("an older save loads: the sitting's fields default; a mibi has no habits, no walks and no portrait yet", () => {
   const st = { ...S.freshSt("w1", 3, T0) }; delete st.sittingCrates; delete st.face; delete st.moments; st.mibis = [{ id: 1, name: "Old", sp: 0, species: "S01", from: { g: "meadow" } }];
-  S.normalize(st); assert.deepEqual([st.sittingCrates, st.face, st.moments], [[], {}, {}]); assert.deepEqual([st.mibis[0].habits, st.mibis[0].walked, st.mibis[0].portrait], [[], [], null]);
+  S.normalize(st); assert.deepEqual([st.sittingCrates, st.face, st.moments], [[], { room: 0 }, {}]); assert.deepEqual([st.mibis[0].habits, st.mibis[0].walked, st.mibis[0].portrait], [[], [], null]);
 });
 
 test("a deep line pays once: siblings at depth four, and every later child of the line, earn one moment between them", () => {

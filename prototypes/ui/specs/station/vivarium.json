@@ -151,7 +151,7 @@
     "out": "the outline Companion glyph (outGlyph) centred where the thumbnail stands",
     "note": "the same forms and tile as habitat.json regions.tiles"
    },
-   "count": "one tile a bay (state.bayCount, 1 to 12): the housed mibis in bay order, then the free bays",
+   "count": "one tile a place (state.ROOM, 8): the mibis of the room shown (st.face.room) in slot order (state.inRoom), then the free places",
    "states": {"housed": "fill `panel`, the thumbnail", "out": "fill `panel`, the outline glyph", "free": "nothing drawn"},
    "noShown": "the whole shows no mibi up close, so no tile is `shown`: the ring is the only highlight"
   }
@@ -308,6 +308,7 @@
  },
  "strings": {
   "title": "Vivarium",
+  "rooms": ["Roots", "Reeds", "Boulders", "Ferns"],
   "back": "Home",
   "look": "Look at {name}",
   "resident": "{a} {stage} {species}",

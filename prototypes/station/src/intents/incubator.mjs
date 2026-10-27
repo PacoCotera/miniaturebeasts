@@ -8,7 +8,7 @@ import { readyCrates } from "../sitting.mjs";
 
 // The pod Choose a pod lands on: the first identified pod in rack order, else the first pod (frame.json navigation.jumps); only when the rack holds a pod and a bay is free.
 export function choosePod(h) {
-  if (!h.st.tray.length || S.bayFull(h.st, h.settings)) return null;
+  if (!h.st.tray.length || S.vivFull(h.st, h.settings)) return null;
   const i = h.st.tray.findIndex((q) => q.idd); return i >= 0 ? i : 0;
 }
 // The hatch's cutting key (UI/UX "Hatch cutting key"): on a hatch with a moving set, the first key after the hold and before its end only lands the meet: ✓ opens no namer, ← does not leave, the pad does not end the meet, a room key is used up.
@@ -28,7 +28,7 @@ export function intent(h, target, verb) {
   }
   const above = h.settings.growNowAbove ?? h.specs.panel?.growNowAbove ?? 4;   // a large Hatch now asks first (decision panel spec §1.6); at or below the threshold ✓ acts as before
   const cost = S.instantGrowCost(h.st, h.settings, h.now());
-  if (cost.s > above && S.canPay(h.st, cost.e, cost.d, cost.s) && !S.bayFull(h.st, h.settings)) { openPanel(h, "incubator", "growNow"); if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }   // a large Hatch now asks first: the Hatch now | Wait panel, by the 180 ms stage dither (a cut with reduced motion); short of Essence or with no bay free the refusal plate shows (as Open's words) and the panel does not open
+  if (cost.s > above && S.canPay(h.st, cost.e, cost.d, cost.s) && !S.vivFull(h.st, h.settings)) { openPanel(h, "incubator", "growNow"); if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }   // a large Hatch now asks first: the Hatch now | Wait panel, by the 180 ms stage dither (a cut with reduced motion); short of Essence or with no bay free the refusal plate shows (as Open's words) and the panel does not open
   return growNow(h);
 }
 // The hatch both presses play: Open (a ready bud) at once, Hatch now after the leaves have turned. The rule has already made the mibi and emptied the chamber.

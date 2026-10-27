@@ -30,7 +30,7 @@ function validate(v, sc, at = "$", out = []) {
   }
   return out;
 }
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
 const SPECIES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => f.slice(8, 11));
 
 function world(species = SPECIES[0]) {

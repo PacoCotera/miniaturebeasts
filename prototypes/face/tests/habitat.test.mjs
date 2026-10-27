@@ -24,7 +24,7 @@ const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.pars
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const T0 = 1_000_000, R = spec.regions, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", bays });
+const T0 = 1_000_000, R = spec.regions, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", rooms: Math.ceil(bays / S.ROOM) });
 
 // ---- scenes: the state through the rules, the props through the views ----
 function scene(o = {}) {
@@ -249,12 +249,12 @@ test("fix 2 F5, F8: the namer's plate and its name well draw only while the name
   assert.equal(chromeOf(lg, "panel").length, 0, "no panel fill, edge, bevel row or shadow");
   assert.ok(!lg.regions.some((r) => r.id === "panel.shadow"));
 });
-test("fix 2 F4: the strip's tiles name their well by form and state (full or compact; the shown tile its -shown well), a free bay none; the strip names its plate", { skip }, () => {
-  for (const [bays, form] of [[8, "compact"], [4, "full"]]) {
-    const b = scene({ bays, adults: 3, focus: "resident" }), w = form === "full" ? 152 : 72, T = b.props.regions.tiles.items;
-    assert.equal(b.props.regions.strip.plate, "plate-device-992x64");
-    T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-${w}x48${t.shown ? "-shown" : ""}`));
-    assert.equal(T.filter((t) => t.shown).length, 1); assert.ok(T.some((t) => t.state === "free"), "a free bay");
+test("fix 2 F4 (rooms of eight): the strip is the shown mibi's room, eight tiles on the compact form (the shown tile its -shown well), a free place none; the strip names its plate", { skip }, () => {
+  for (const [bays, adults, shown, free] of [[8, 3, 0, 5], [8, 8, 7, 0], [16, 12, 9, 4]]) {
+    const b = scene({ bays, adults, shown, focus: "resident" }), T = b.props.regions.tiles.items;
+    assert.equal(b.props.regions.strip.plate, "plate-device-992x64"); assert.equal(T.length, 8);
+    T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-72x48${t.shown ? "-shown" : ""}`));
+    assert.equal(T.filter((t) => t.shown).length, 1, `${adults} housed, the shown one in room ${b.st.mibis[shown].room}: its tile`); assert.equal(T.filter((t) => t.state === "free").length, free, "the free places");
   }
 });
 test("fix 2 F6: no plate picture, no plate: a module whose plate master is not there draws no fill and keeps no plate", { skip }, async () => {

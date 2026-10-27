@@ -43,10 +43,10 @@ test("shape: a read trait changes to a look the pod carries, +1 Data; the founde
   assert.equal(a.shaped.length, 1); assert.equal(a.parents, null); assert.equal(a.read.length, J.chapters.length, "a founder opens fully known");
 });
 
-test("the second founder: 2 Energy and 4 Essence; a bud of twenty minutes; both open into bays fully known", () => {
+test("the second founder: 2 Energy and 4 Essence; a bud of twenty minutes; both open into places fully known", () => {
   const g = one(/^grow the second founder/); assert.deepEqual([g.e, g.d, g.s], [-2, 0, -4]);
-  for (const m of [a, b]) { assert.ok(S.mibiFullyRead(m, P.settings)); assert.ok(m.bay >= 0 && m.bay < S.BAYS); }
-  assert.notEqual(a.bay, b.bay);
+  for (const m of [a, b]) { assert.ok(S.mibiFullyRead(m, P.settings)); assert.ok(m.room === 0 && m.slot >= 0 && m.slot < S.ROOM); }
+  assert.notEqual(a.slot, b.slot);
 });
 
 test("the welcome sitting comes at the first dock where a mibi comes home from a walk: the founder goes out with you, the dock records its habit and place, and the sitting is begun at once", () => {

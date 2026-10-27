@@ -90,9 +90,9 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
   const wildBlock = S.returnMibiBlock(st, sv, shown);
   regions.wild = { plate: plate(136, 96), state: "shut", gate: slotAt(req, "gate-wild-shut-48x48", [0, 0, 48, 48], "the gate master (AD W1)") };
 
-  // the strip: one tile a bay, the housed mibis in bay order then the free bays; the mibi up close is the shown tile
-  const housed = S.housed(st).slice().sort((a, b) => a.bay - b.bay), n = S.bayCount(st, settings);
-  const tw = listForm(R.tiles, n).first[2];   // the tile width of the form n bays take (vivarium.json tiles.forms)
+  // the strip: one tile a place, the room shown's mibis in slot order then the free places; the mibi up close is the shown tile
+  const housed = S.inRoom(st, shown.room ?? st.face?.room ?? 0), n = S.ROOM;   // the room of the mibi up close: a mibi met shows its own room
+  const tw = listForm(R.tiles, n).first[2];   // the tile width of the form n places take (vivarium.json tiles.forms)
   const tiles = housed.slice(0, n).map((mb) => { const away = S.isAway(st, sv, mb), isShown = mb.id === shown.id; return { id: String(mb.id), state: away ? "out" : "housed", shown: isShown, picture: away ? "" : mibiReq(req, st, mb, [48, 48], settings), well: well(`plate-well-${tw}x48${isShown ? "-shown" : ""}`) }; });
   while (tiles.length < n) tiles.push({ id: "", state: "free", shown: false, picture: "", well: "" });
   regions.strip = { plate: n ? plate(992, 64) : "" };

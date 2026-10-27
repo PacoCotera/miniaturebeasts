@@ -14,7 +14,7 @@ const benchBuild = lineCased(benchBuildUnchecked, "bench");   // every body it b
 
 const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station");
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("bench.json"), frameSpec = J("frame.json"), schema = J("bench.props.json"), Sg = spec.strings;
-const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 };
+const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 };
 
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);

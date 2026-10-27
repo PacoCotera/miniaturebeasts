@@ -22,7 +22,7 @@ const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.pars
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const T0 = 1_000_000, R = spec.regions, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", bays });
+const T0 = 1_000_000, R = spec.regions, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", rooms: Math.ceil(bays / S.ROOM) });
 
 // ---- scenes: the state through the rules, the props through the view ----
 function scene(o = {}) {
@@ -32,6 +32,7 @@ function scene(o = {}) {
   for (const m of st.mibis) m.paint = { state: "landed" };
   for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };   // its painting is on its way: the waiting lamp
   for (const m of (o.young ? st.mibis.slice(-o.young) : [])) m.born = st.turn;
+  if (o.room != null) st.face.room = o.room;   // the room the whole shows (after the seeding: a seed fills the shown room first)
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
   const b = vivariumBuild({ st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ? (/^(resident|tile)\./.test(o.focus) ? o.focus : o.focus.replace(/^(\w+):(\d+)$/, (_, k, i) => k + "." + st.mibis[+i].id)) : null, seen: null }, spec, frameSpec, homeSpec);
   return { ...b, st };
@@ -62,7 +63,7 @@ const SCENES = {
   "away: two out with the Companion, the mark on the bed": { adults: 4, young: 3, carry: [0, 1], away: true },
   "a fresh world's: empty, six free bays, the nest alone": { bays: 6 },
   "a fresh world's, the Companion away: the nest and its mark": { bays: 6, away: true },
-  "twelve adults, twelve compact tiles": { bays: 12, adults: 12 },
+  "eight adults, a full room's eight tiles": { bays: 8, adults: 8 },
   "docked, nobody carried: the nest drawn empty": { adults: 3 },
   "the ring on a sleeper": { adults: 4, young: 3, carry: [0, 1], focus: "resident:1" },
   "the ring on a housed tile": { adults: 4, young: 3, carry: [0, 1], focus: "tile:4" },
@@ -79,11 +80,11 @@ for (const [name, o] of Object.entries(SCENES)) {
     assert.equal(lg.regions.some((r) => r.id === "nameTag"), /^resident\./.test(b.props.focus.cur), "the name tag stands only on a resident or a sleeper");
   });
 }
-test("the tiles stand on listPitch's forms: up to six bays 152 wide on a 160 pitch, seven to twelve 72 wide on an 80 pitch; a free bay draws nothing, a tile out the glyph, a tile in the thumbnail", { skip }, async () => {
-  for (const [bays, adults, w] of [[6, 4, 152], [8, 5, 72], [12, 12, 72], [1, 1, 152]]) {
-    const b = scene({ bays, adults }), f = await start(b), lg = logOf(f), items = Array.from({ length: bays }, (_, i) => listPitch(R.tiles, bays, i));
-    assert.equal(items[0][2], w); for (let i = 0; i < bays; i++) assert.deepEqual(lg.regions.find((r) => r.id === `tile.${i}` && r.layer === "chrome").rect, items[i], `${bays} bays: tile ${i}`);
-    assert.equal(lg.regions.filter((r) => r.id.startsWith("tile.") && r.layer === "art").length, adults, "a thumbnail a housed mibi");
+test("the tiles stand on listPitch's compact form: a room's eight places 72 wide on an 80 pitch, whatever the rooms; the room shown's mibis only; a free place draws nothing, a tile in the thumbnail", { skip }, async () => {
+  for (const [bays, adults, room, art] of [[8, 5, 0, 5], [8, 8, 0, 8], [16, 12, 0, 8], [16, 12, 1, 4], [8, 1, 0, 1]]) {
+    const b = scene({ bays, adults, room }), f = await start(b), lg = logOf(f), items = Array.from({ length: 8 }, (_, i) => listPitch(R.tiles, 8, i));
+    assert.equal(b.props.regions.tiles.items.length, 8); assert.equal(items[0][2], 72); for (let i = 0; i < 8; i++) assert.deepEqual(lg.regions.find((r) => r.id === `tile.${i}` && r.layer === "chrome").rect, items[i], `${adults} housed, room ${room}: tile ${i}`);
+    assert.equal(lg.regions.filter((r) => r.id.startsWith("tile.") && r.layer === "art").length, art, "a thumbnail a housed mibi of the room shown");
   }
 });
 test("the departure check bites: the strip moved, a tile off its pitch, the name tag off the window, a resident out of the walk ground and a word in the window are each found", { skip }, async () => {
@@ -126,7 +127,7 @@ test("an empty whole has no ring, no ✓ cap and no pad; ← and the room keys s
 // one group tick a frame at most: a late frame steps the next group only, and the time past that tick is dropped by moving the walk's origin later in whole ticks
 test("a late frame steps one group, and the walk after it is the walk, later", { skip }, async () => {
   const run = async (L) => {
-    const f = await start(scene({ bays: 12, adults: 12 }), { t0: 5000 }); for (let t = 40; t <= 4000; t += 40) f.frame(5000 + t);   // the walk is under way (they idle for the first two seconds)
+    const f = await start(scene({ bays: 8, adults: 8 }), { t0: 5000 }); for (let t = 40; t <= 4000; t += 40) f.frame(5000 + t);   // the walk is under way (they idle for the first two seconds)
     f.frame(5000 + 4000 + L); const steps = f.M._face_test_steps(), a = dirty(f); for (let i = 1; i <= 50; i++) f.frame(5000 + 4000 + L + 40 * i);
     return { steps, a, hash: f.hash() };
   };
@@ -135,7 +136,7 @@ test("a late frame steps one group, and the walk after it is the walk, later", {
 });
 // the top bar live on a late frame: the counters change and flash on the frame that is late, which is the worst case for the number of areas LVGL lists
 test("a late walk frame with the top bar live (counters and their flashes changing) stays inside 153,600 px and LVGL's invalid-area buffer", { skip }, async () => {
-  const f = await start(scene({ bays: 12, adults: 12 }), { t0: 5000 }), M = f.M, base = f.build; let worst = 0, areas = 0, k = 0;
+  const f = await start(scene({ bays: 8, adults: 8 }), { t0: 5000 }), M = f.M, base = f.build; let worst = 0, areas = 0, k = 0;
   const MAT = [{ e: 14, d: 16, s: 10 }, { e: 2, d: 6, s: 9 }], top = (m) => ({ ...frameProps().top, materials: m, flash: { e: true, d: true, s: true } });
   for (let t = 21; t < 30000; t += 16, k++) {   // the brief's cadence: 16 ms frames, every 63rd 120 ms late, 30 s
     const late = k % 63 === 62; if (late) { t += 120; assert.equal(f.props({ screen: "vivarium", ...base.props, motion: true, frame: { ...frameProps(base.line), top: top(MAT[(k / 63 | 0) % 2]) } }), 0, f.errors().join("; ")); }
@@ -144,7 +145,7 @@ test("a late walk frame with the top bar live (counters and their flashes changi
   }
   assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); console.log(`# the Vivarium's late frame with the top bar live: worst ${worst} px in ${areas} flushes, ${f.invOverflows()} overflows`);
 });
-const WALKS = { "twelve adults": { bays: 12, adults: 12 }, "six adults and six juveniles": { bays: 12, adults: 6, young: 6 }, "twelve, one focused": { bays: 12, adults: 12, focus: "resident:5" }, "twelve, three waiting": { bays: 12, adults: 12, waiting: 3 }, "twelve adults, the ring on a tile": { bays: 12, adults: 12, focus: "tile:3" }, "twelve, two asleep on the bed": { bays: 12, adults: 12, carry: [0, 1] }, "twelve, one focused, seeds whose feet cross": { bays: 12, adults: 12, focus: "resident:5", seeds: [64845, 5640, 43497, 5522, 42627, 49915, 953, 51488, 15488, 10859, 36680, 51651] } };
+const WALKS = { "eight adults": { bays: 8, adults: 8 }, "four adults and four juveniles": { bays: 8, adults: 4, young: 4 }, "eight, one focused": { bays: 8, adults: 8, focus: "resident:5" }, "eight, three waiting": { bays: 8, adults: 8, waiting: 3 }, "eight adults, the ring on a tile": { bays: 8, adults: 8, focus: "tile:3" }, "eight, two asleep on the bed": { bays: 8, adults: 8, carry: [0, 1] }, "eight, one focused, seeds whose feet cross": { bays: 8, adults: 8, focus: "resident:5", seeds: [64845, 5640, 43497, 5522, 42627, 49915, 953, 51488] } };   // a room holds eight: the window shows the room shown
 for (const [name, o] of Object.entries(WALKS)) for (const [step, off, late = 0] of [[40, 0], [16, 5], [16, 5, 120]]) {
   test(`the walk, ${name}, frames every ${step} ms${late ? ` (every 63rd ${late} ms late)` : ""} for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
     const b = scene(o); (o.seeds ?? []).forEach((sd, i) => { b.props.regions.residents[i].seed = sd; });
@@ -181,29 +182,30 @@ test("a walking resident keeps its box in 16..1008 and its feet in the band 296.
 import { MOVING as MOVING_SETS, movingScene, bootScene, resend, runFrames, STATE, CLIP, ids as movingIds, rule2Run, atlasPicture } from "./moving-scene.mjs";
 import { footOf } from "../../station/src/moving.mjs";
 import { footprintRing } from "../../ui/rings.mjs";
-const HOUSE = { adults: 6, juveniles: 5, s05: 1, sleepers: 3 };   // S01 adult ×6, S01 juvenile ×5, S05 juvenile ×1, three bed sleepers breathing
+const HOUSE = { adults: 4, juveniles: 3, s05: 1, sleepers: 3 };   // a room of eight: S01 adult ×4, S01 juvenile ×3, S05 juvenile ×1, three bed sleepers breathing
 for (const cadence of [[16, 0, 0], [16, 5, 120]]) {
-  test(`MOVING (M1 §3): twelve residents with moving sets and three bed sleepers, 30 s of frames every ${cadence[0]} ms${cadence[2] ? " (every 63rd 120 ms late)" : ""}, the top bar live: no frame over 153,600 px, no overflow, at most six residents changed in a frame, nothing off a group tick, no tick over 148,000 px`, { skip }, async () => {
+  test(`MOVING (M1 §3): eight residents with moving sets and three bed sleepers, 30 s of frames every ${cadence[0]} ms${cadence[2] ? " (every 63rd 120 ms late)" : ""}, the top bar live: no frame over 153,600 px, no overflow, at most six residents changed in a frame, nothing off a group tick, no tick over 148,000 px`, { skip }, async () => {
     const f = await bootScene(movingScene("vivarium", HOUSE)); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
     const r = runFrames(f, 30000, { cadence, top: true });
     assert.ok(r.worst <= 153600, `a frame redrew ${r.worst} px`); assert.ok(r.steps <= 6, `${r.steps} residents changed in one frame`); assert.equal(r.offgroup, 0); assert.ok(r.worstTick <= 148000, `a tick of ${r.worstTick} px`); assert.equal(f.invOverflows(), 0);
     console.log(`# the Vivarium (moving, cadence ${cadence.join("/")}): worst frame ${r.worst} px, worst tick ${r.worstTick} px, ${r.deferred} deferred`);
   });
 }
-test("rule 2 (M1 §3): six adult walkers at 5 px a tick on one group tick with the bed sleepers breathing: the tick stays inside 148,000 px and the budget defers, deterministically", { skip }, async () => {
-  const a = await rule2Run("vivarium"), b = await rule2Run("vivarium");
-  assert.ok(a.r.worstTick <= 148000, `a tick of ${a.r.worstTick} px`); assert.ok(a.r.deferred > 0, "the budget deferred changes"); assert.equal(a.hash, b.hash, "deterministic"); assert.equal(a.r.deferred, b.r.deferred);
-  console.log(`# rule 2: worst tick ${a.r.worstTick} px, ${a.r.deferred} changes deferred in 20 s, worst frame ${a.r.worst} px`);
+test("rule 2 (M1 §3), a room of eight: four adult walkers at 5 px a tick on a group tick with the bed sleepers breathing stay inside the 148,000 px tick; under a 74,000 px budget the budget defers and holds, deterministically", { skip }, async () => {
+  const a = await rule2Run("vivarium"); assert.ok(a.r.worstTick <= 148000, `a tick of ${a.r.worstTick} px`);
+  const b = await rule2Run("vivarium", 74000), c = await rule2Run("vivarium", 74000);
+  assert.ok(b.r.worstTick <= 74000, `a tick of ${b.r.worstTick} px over the lowered budget`); assert.ok(b.r.deferred > 0, "the budget deferred changes"); assert.equal(b.hash, c.hash, "deterministic"); assert.equal(b.r.deferred, c.r.deferred);
+  console.log(`# rule 2: worst tick ${a.r.worstTick} px (${a.r.deferred} deferred) at 148,000; ${b.r.worstTick} px, ${b.r.deferred} deferred in 20 s at 74,000`);
 });
 const SPEC_VIV = () => JSON.parse(JSON.stringify(spec));
-test("twelve at 160 × 154 (synthesized, S09's size) walking 5 px a tick, groups balanced: no frame over 153,600 px, no overflow, deferrals logged and deterministic (the same case on signed S09 cells: deferred to M3)", { skip }, async () => {
+test("eight at 160 × 154 (synthesized, S09's size) walking 5 px a tick, groups balanced: no frame over 153,600 px, no overflow, deferrals logged and deterministic (the same case on signed S09 cells: deferred to M3)", { skip }, async () => {
   const sets = (() => { const m = JSON.parse(JSON.stringify(MOVING_SETS)), j = m.S05.juvenile; m.S09 = { species: "S09", native: "right", gait: "walk", adult: { ...JSON.parse(JSON.stringify(j)), walk: { ...j.walk, size: [160, 154] }, walkCycle: { ...j.walkCycle, stride: 15 }, shadow: { walk: [160, 16], close: [304, 24] } } }; return m; })();
   const run = async () => {
     const v = SPEC_VIV(); v.regions.resident.adult = [160, 154];
-    const sc = movingScene("vivarium", { adults: 12, vivSpec: v }); sc.props.regions.residents.forEach((r) => { r.moving = { set: "S09", walk: "moving:adult:S09:walk:160x154:species", shadow: "moving:adult:S09:shadow:160x16" }; r.picture = r.picture.replace("144x152", "160x154"); });
+    const sc = movingScene("vivarium", { adults: 8, vivSpec: v }); sc.props.regions.residents.forEach((r) => { r.moving = { set: "S09", walk: "moving:adult:S09:walk:160x154:species", shadow: "moving:adult:S09:shadow:160x16" }; r.picture = r.picture.replace("144x152", "160x154"); });
     sc.requests = sc.requests.map((q) => (q.size && q.size[0] === 144 ? { ...q, id: q.id.replace("144x152", "160x154"), size: [160, 154] } : q)); sc.requests.push({ kind: "moving", id: "moving:adult:S09:walk:160x154:species" }, { kind: "moving", id: "moving:adult:S09:shadow:160x16" });
-    const f = await bootScene(sc, { moving: sets }); assert.deepEqual(f.errors(), []); for (let i = 0; i < 12; i++) assert.ok(f.M._face_test_cell(i) >= 0, "resident " + i + " moves");
-    const groups = Array.from({ length: 12 }, (_, i) => f.M._face_test_mv(i, 10)); assert.equal(groups.filter((g) => g === 0).length, 6, "the large residents alternate groups");
+    const f = await bootScene(sc, { moving: sets }); assert.deepEqual(f.errors(), []); for (let i = 0; i < 8; i++) assert.ok(f.M._face_test_cell(i) >= 0, "resident " + i + " moves");
+    const groups = Array.from({ length: 8 }, (_, i) => f.M._face_test_mv(i, 10)); assert.equal(groups.filter((g) => g === 0).length, 4, "the large residents alternate groups");
     const r = runFrames(f, 30000, { cadence: [16, 5, 120], top: true }); return { r, hash: f.hash() };
   };
   const a = await run(), b = await run();
@@ -218,7 +220,7 @@ test("determinism (M1 §3): the same props and frame times give the same hash in
 test("motion off (M1 §3): every moving resident stands (curls when asleep), and nothing is redrawn over 10 s", { skip }, async () => {
   for (const time of [12 * 3600, 23 * 3600]) {
     const sc = movingScene("vivarium", { ...HOUSE, time }), f = await bootScene(sc, { motion: false }), M = f.M, I = movingIds("S01", "adult");
-    for (let i = 0; i < 12; i++) { const s = STATE(M._face_test_state(i)), r = sc.props.regions.residents[i], set = MOVING_SETS[r.moving.set][r.stage === "juvenile" ? "juvenile" : "adult"].walk.cells;
+    assert.equal(sc.props.regions.residents.length, 8); for (let i = 0; i < 8; i++) { const s = STATE(M._face_test_state(i)), r = sc.props.regions.residents[i], set = MOVING_SETS[r.moving.set][r.stage === "juvenile" ? "juvenile" : "adult"].walk.cells;
       assert.equal(s.clip, time > 20 * 3600 ? CLIP.asleep : CLIP.rest); const c = M._face_test_cell(i), name = c < set.length ? set[c] : MOVING_SETS[r.moving.set][r.stage === "juvenile" ? "juvenile" : "adult"].walk.mirror[c - set.length]; assert.equal(name, time > 20 * 3600 ? "curl" : "stand", `resident ${i} at ${time / 3600} h`); }
     const r = runFrames(f, 10000); assert.equal(r.worst, 0, "dirty 0"); void I;
   }
@@ -268,8 +270,8 @@ test("focus holds rest changes (game designer R4): a resident focused across its
   for (let t = 0; t < 62000 && at < 0; t += 40) { f2.frame((f2.t += 40)); if (STATE(f2.M._face_test_state(0)).clip === CLIP.curl) at = t; }
   assert.ok(at >= 60000 && at <= 60200, `under the ring it curls 60 s after its flip: ${at} ms`); assert.ok(STATE(f2.M._face_test_state(0)).focused);
 });
-test("G10 (M1 §3): twelve awake for 120 s: from 2.0 s on, at every frame, ⌈N/3⌉ ≤ travelling ≤ max(4, ⌈N/2⌉), at most 2 in the air, each resident travels in every 20 s window, no trip ends off its waypoint", { skip }, async () => {
-  const sc = movingScene("vivarium", { adults: 6, juveniles: 5, s05: 1, focus: "tile:0" }), f = await bootScene(sc), M = f.M, N = 12, floor = Math.ceil(N / 3), cap = Math.max(4, Math.ceil(N / 2));
+test("G10 (M1 §3): eight awake for 120 s: from 2.0 s on, at every frame, ⌈N/3⌉ ≤ travelling ≤ max(4, ⌈N/2⌉), at most 2 in the air, each resident travels in every 20 s window, no trip ends off its waypoint", { skip }, async () => {
+  const sc = movingScene("vivarium", { adults: 4, juveniles: 3, s05: 1, focus: "tile:0" }), f = await bootScene(sc), M = f.M, N = 8, floor = Math.ceil(N / 3), cap = Math.max(4, Math.ceil(N / 2));
   const last = Array(N).fill(0), was = Array(N).fill(false); let minT = 99, maxT = 0, maxAir = 0, gap = 0, ends = 0, starts = 0;
   runFrames(f, 120000, { each: (t) => {
     let trav = 0, air = 0;
@@ -325,14 +327,14 @@ test("the ring is (W + 10) × (fh + 10) on the figure's feet, the tag top is fee
 test("every start over 10,000 seeds is walkable on the ground profile and off the keep-out; waypoints and every 2 px of every path stay walkable over a minute of walking", { skip }, async () => {
   const G = R.resident.walk.ground, K = R.resident.walk.keepOut, ok = (rect) => { const { fx, feetY } = feetOf(rect), W = FIG[2], x = fx - Math.floor(W / 2); return x >= G[0] && x + W <= G[0] + G[2] && feetY >= groundTop(fx) && feetY <= 471 && !(x + W > K[0] && feetY > K[1]); };
   const rects = (f, b) => b.st.mibis.map((m) => { const bx = f.nodeBox("g." + m.id)?.box; return bx && [bx[0], bx[1] + R.window.rect[1], bx[2], bx[3]]; });   // a node box is the window's (clipped) own
-  let n = 0; const b0 = withFigure(scene({ adults: 12, bays: 12, focus: "tile:0" })), f0 = await start(b0, { motion: false, node: true });   // one face, the seeds sent again: a new seed starts from its own seed
-  for (let k = 0; k < 834; k++) {
-    b0.props.regions.residents.forEach((r, i) => { r.seed = 1 + k * 12 + i; }); assert.equal(f0.props({ screen: "vivarium", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f0);
+  let n = 0; const b0 = withFigure(scene({ adults: 8, bays: 8, focus: "tile:0" })), f0 = await start(b0, { motion: false, node: true });   // one face, the seeds sent again: a new seed starts from its own seed
+  for (let k = 0; k < 1250; k++) {
+    b0.props.regions.residents.forEach((r, i) => { r.seed = 1 + k * 8 + i; }); assert.equal(f0.props({ screen: "vivarium", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f0);
     for (const r of rects(f0, b0)) { n++; assert.ok(r && ok(r), `a start at ${r} is not walkable`); }
   }
   assert.ok(n >= 10000, n + " starts");
   for (let k = 0; k < 6; k++) {
-    const b = withFigure(scene({ adults: 12, bays: 12, focus: "tile:0" })); b.props.regions.residents.forEach((r, i) => { r.seed = 90001 + k * 12 + i; });
+    const b = withFigure(scene({ adults: 8, bays: 8, focus: "tile:0" })); b.props.regions.residents.forEach((r, i) => { r.seed = 90001 + k * 8 + i; });
     const f = await start(b, { t0: 5000, node: true }); let moved = 0, last = null;
     for (let ms = 40; ms <= 60000; ms += 40) { f.frame(5000 + ms); f.drain?.(); const rs = rects(f, b);
       for (const r of rs) assert.ok(r && ok(r), `seed block ${k} at ${ms}: ${r} left the walkable ground`); const key = rs.map((r) => r.join()).join("|"); if (last !== null && key !== last) moved++; last = key; }
@@ -340,8 +342,8 @@ test("every start over 10,000 seeds is walkable on the ground profile and off th
   }
 });
 
-test("the walk of twelve figures with their shadow layers: no refresh redraws more than 153,600 px (printed)", { skip }, async () => {
-  const b = withFigure(scene({ adults: 12, bays: 12 })), f = await start(b, { t0: 5000 }); let area = 0, steps = 0;
+test("the walk of eight figures with their shadow layers: no refresh redraws more than 153,600 px (printed)", { skip }, async () => {
+  const b = withFigure(scene({ adults: 8, bays: 8 })), f = await start(b, { t0: 5000 }); let area = 0, steps = 0;
   for (let t = 16; t < 120000; t += 16) { f.frame(5000 + t); area = Math.max(area, dirty(f)); steps = Math.max(steps, f.M._face_test_steps()); }
   assert.ok(area <= 153600, `dirty area ${area}`); assert.ok(steps <= 6, `${steps} residents stepped in one frame`);
   console.log(`# the Vivarium's walk with the shadow layers, twelve figures, frames every 16 ms for 120 s: worst refresh ${area} px (${(100 * area / (1024 * 600)).toFixed(1)}% of the screen), worst ${steps} steps`);

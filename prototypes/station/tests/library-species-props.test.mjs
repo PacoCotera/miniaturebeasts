@@ -28,7 +28,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.reso
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("library.json"), frameSpec = J("frame.json"), schema = J("library-species.props.json"), Sg = spec.l2.strings;
 const metrics = JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")), measure = createMeasure(metrics);
-const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12, sealedOpen: false };
+const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2, sealedOpen: false };
 
 function validate(v, sc, at = "$", out = []) {
   if (v === null && sc.nullable) return out;

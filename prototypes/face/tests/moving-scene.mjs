@@ -35,7 +35,7 @@ export const T0 = 1_000_000;
 export const VIV_RULES = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station/vivarium.json"), "utf8")).rules;
 // o: { adults, juveniles, s05, sleepers, time (seconds of the day), docked, motionSets, carry, ui }; returns { st, sv, settings, m } for a view
 export function household(o = {}) {
-  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: o.docked ?? true, at: T0 };
+  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 }, st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: o.docked ?? true, at: T0 };
   if (o.adults) S.seedAdults(st, "S01", 5, o.adults, settings);
   const nj = o.juveniles ?? 0, n5 = o.s05 ?? 0;
   if (nj) S.seedAdults(st, "S01", 77, nj, settings);
@@ -49,7 +49,7 @@ export function household(o = {}) {
 }
 // the bed's sleepers of a second world (3 juveniles carried), with their requests, spliced into a view's props
 export function sleepersOf(build, n = 3) {
-  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, st = S.freshSt("w2", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: true, at: T0 };
+  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 }, st = S.freshSt("w2", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: true, at: T0 };
   st.nextMibi = 100; S.seedAdults(st, "S01", 31, n, settings); for (const m of st.mibis) { m.paint = { state: "landed" }; m.born = st.turn; }
   const sv = { v: 8, seed: 7, wid: "w2", turn: 3, bay: [], mibis: [], carried: st.mibis.map((m) => m.id), tier: 1, shield: 3 };
   const b = build({ st, sv, settings, docked: true, light: "day", time: 12 * 3600, restRules: VIV_RULES.rest, motionSets: true });
@@ -126,10 +126,10 @@ export function runFrames(f, ms, { cadence = [16, 0, 0], top = false, each = nul
 
 // ---- rule 2 (M1 §3) on any of the three screens: the travel rules opened so every walker travels at once (vivarium.json rules, read by all three), an S05 adult at 144 × 152 walking 5 px a tick (stride 15): the per-tick budget must defer ----
 export const rule2Sets = () => { const m = JSON.parse(JSON.stringify(MOVING)), j = m.S05.juvenile; m.S05.adult = { ...JSON.parse(JSON.stringify(j)), walk: { ...j.walk, size: [144, 152] }, walkCycle: { ...j.walkCycle, stride: 15 }, shadow: { walk: [144, 16], close: [304, 24] } }; m.S05.juvenile.walkCycle.stride = 15; return m; };
-export const openRules = (spec) => { const v = JSON.parse(JSON.stringify(spec)); v.rules.travel = { floorDiv: 1, capMin: 12, capDiv: 1, airborne: 2, minRest: 1 }; return v; };
-// twelve adults and three bed sleepers; the six of group 0 walk S05 at 5 px a tick, the odd ones are stills; 20 s of frames every 16 ms
-export async function rule2Run(screen) {
-  const sc = movingScene(screen, { adults: 12, sleepers: 3, vivSpec: openRules(SPEC("vivarium")) });
+export const openRules = (spec, tickBudget = null) => { const v = JSON.parse(JSON.stringify(spec)); v.rules.travel = { floorDiv: 1, capMin: 12, capDiv: 1, airborne: 2, minRest: 1 }; if (tickBudget != null) v.rules.tickBudget = tickBudget; return v; };
+// a room of eight adults and three bed sleepers; the four of group 0 walk S05 at 5 px a tick, the odd ones are stills; 20 s of frames every 16 ms
+export async function rule2Run(screen, tickBudget = null) {
+  const sc = movingScene(screen, { adults: 8, sleepers: 3, vivSpec: openRules(SPEC("vivarium"), tickBudget) });
   sc.props.regions.residents.forEach((r, i) => { if (i % 2) delete r.moving; else r.moving = { set: "S05", walk: "moving:adult:S05:walk:144x152:species", shadow: "moving:adult:S05:shadow:144x16" }; });
   sc.requests.push({ kind: "moving", id: "moving:adult:S05:walk:144x152:species" }, { kind: "moving", id: "moving:adult:S05:shadow:144x16" });
   const f = await bootScene(sc, { moving: rule2Sets() }); if (f.errors().length) throw new Error(f.errors().join("; "));

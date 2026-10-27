@@ -729,14 +729,14 @@
     "pending": [] },
   { "state": "vivarium/vivarium-twelve", "card": "vivarium-L3-15", "verdict": "fault", "from": "owner card vivarium-L3-15, marked fault: unequal gutters in a row: 305, 43, 305 → 43",
     "expect": [
-     { "rule": "L3", "part": "b", "container": "window", "node": "resident#4", "other": "nameTag", "mark": "owner", "why": "marked a fault by the owner: unequal gutters in a row: 305, 43, 305 → 43 in the reviewed run" }
+     { "rule": "L3", "part": "b", "container": "window", "node": "resident#3", "other": "nameTag", "mark": "owner", "why": "marked a fault by the owner: unequal gutters in a row: 305, 43, 305 → 43 in the reviewed run" }
     ],
     "clear": [],
     "pending": [] },
   { "state": "vivarium/vivarium-walk-8000ms", "card": "vivarium-L4-22", "verdict": "fine", "from": "owner card vivarium-L4-22, marked fine: they overlap 49 x 52, 49 → 0",
     "expect": [],
     "clear": [
-     { "rule": "L4", "container": "window", "node": "resident#7", "other": "resident#8", "mark": "owner", "why": "cleared: exception in frame.json (by owner): the residents stay a grid so the gutter fault vivarium-L3-15 stands" }
+     { "rule": "L4", "container": "window", "node": "resident#4", "other": "resident#5", "mark": "owner", "why": "cleared: exception in frame.json (by owner): the residents stay a grid so the gutter fault vivarium-L3-15 stands" }
     ],
     "pending": [] },
   { "state": "vivarium/vivarium-away", "card": "vivarium-L5-6", "verdict": "fault", "from": "owner card vivarium-L5-6, marked fault: almost aligned: centres (y) 444 and 438, 6 → 0",

@@ -189,14 +189,14 @@ function drawLoci(frame, a, b, k, opts) {
 export const SELF_KINSHIP = 1 / 8;
 export const SHED_TRIES = 24;
 export function shedPod(frame, x, opts = {}) {
-  const { rng = Math.random, spread = SPREAD, penalty = PENALTY, strength = 1 } = opts;
+  const { rng = Math.random, spread = SPREAD, penalty = PENALTY, strength = 1, kinship = SELF_KINSHIP } = opts;
   const a = genomeOf(x);
   if (a.species !== frame.species.id) throw new Error("a shed pod is of its parent's species");
   for (const l of frame.loci) if (l.kind === "locked" && !samePair(a.loci[l.id], l.copies)) throw new Error(`${l.id}: the parent's locked copy differs from the frame (not this species)`);
   const parentKey = valuesKey(frame, a), d = genomeDigest(a), id = idOf(x);
   for (let i = 0; i < SHED_TRIES; i++) {
-    const loci = drawLoci(frame, a, a, SELF_KINSHIP, { rng, spread, penalty, strength });
-    const g = { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin: { kind: "shed", parents: [d, d], ...(id != null ? { parentIds: [id, id] } : {}), kinship: round6(SELF_KINSHIP), spread, penalty, strength } };
+    const loci = drawLoci(frame, a, a, kinship, { rng, spread, penalty, strength });
+    const g = { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin: { kind: "shed", parents: [d, d], ...(id != null ? { parentIds: [id, id] } : {}), kinship: round6(kinship), spread, penalty, strength } };
     if (valuesKey(frame, g) === parentKey) continue;
     try { if (buildIndividual(frame, g).validation.status === "valid") return g; } catch { /* a body that cannot be built: the next draw */ }
   }

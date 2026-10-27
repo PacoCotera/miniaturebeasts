@@ -187,7 +187,7 @@ test("the migration: pods keep their seeds and get genomes, studies start again,
   assert.deepEqual(st.known, [0, 1]); assert.deepEqual(st.knownIds, ["S01", "S03"]);
   assert.equal(st.readEver, true, "a study was paid once, so the free first read is spent");
   assert.ok(Object.keys(st.guide.S01).length >= 1, "the guide holds the founder's looks");
-  assert.equal(st.bays, 6); assert.equal(st.bud, null); assert.deepEqual(st.outbox, []);
+  assert.equal(st.rooms, 1); assert.equal(st.bays, 8); assert.deepEqual([m.room, m.slot], [0, 0]); assert.deepEqual(st.sheds, []); assert.equal(st.bud, null); assert.deepEqual(st.outbox, []);
   for (const k of ["accepted", "dockN", "probe"]) assert.deepEqual(st[k], raw.st[k]);
   assert.deepEqual(st.returned, [{ id: "xw2n9c-2:q4", sp: 2, g: "pond", k: "31", species: "S02" }], "a returned entry gains its species, nothing else");
   assert.deepEqual(st.carryReqs, [], "its request (seq 1) was applied (withSeen 1): nothing to carry over"); assert.equal(st.carrySeq, 0); assert.equal("withReq" in st, false, "the request field is gone");
@@ -278,20 +278,21 @@ test("Grow: validated and paid once; the first bud ever five minutes, then twent
   const ig = S.instantGrow(st, settings, 2000 + 60000); assert.equal(ig.ok, true); assert.equal(st.s, 16 - 10, "20 minutes left: 10 Essence, no Energy, no Data"); assert.equal(st.e, 16); assert.equal(st.bud, null, "Hatch now hatches it"); assert.equal(ig.mibi.bay, 1);
 });
 
-test("six bays: a full vivarium refuses Grow before payment and Open until one is returned; a returned mibi is released, +2 Essence, never bonded or juvenile or with you", () => {
+test("eight places: a full vivarium refuses Grow before payment and Open until one is returned; a returned mibi is released, +2 Essence, never bonded or with you; a young one may go", () => {
   const { st } = readPod([crate(1, Array.from({ length: 6 }, (_, i) => loikaPod(i, 50 + i)))]);
-  assert.equal(S.seedAdults(st, "S01", 9, 6, settings).mibis.length, 6);
-  assert.equal(S.bayFull(st, settings), true);
-  const e0 = st.e; assert.match(S.growBlock(st, st.tray[0], {}, settings), /no bay free/); assert.equal(S.grow(st, st.tray[0], {}, settings).ok, false); assert.equal(st.e, e0, "nothing paid");
-  assert.equal(S.bayFull(st, { ...settings, bays: 8 }), false, "the developer's bays");
+  assert.equal(S.seedAdults(st, "S01", 9, 8, settings).mibis.length, 8);
+  assert.equal(S.vivFull(st, settings), true);
+  const e0 = st.e; assert.equal(S.growBlock(st, st.tray[0], {}, settings), "the Vivarium is full"); assert.equal(S.grow(st, st.tray[0], {}, settings).ok, false); assert.equal(st.e, e0, "nothing paid");
+  assert.equal(S.vivFull(st, { ...settings, rooms: 2 }), false, "the developer's rooms");
   const m = st.mibis[0], s0 = st.s;
   m.bonded = true; assert.match(S.returnMibi(st, null, m, settings).why, /bonded/); m.bonded = false;
-  m.born = st.turn; assert.match(S.returnMibi(st, null, m, settings).why, /adult/); m.born = st.turn - 2;
+  m.born = st.turn; assert.equal(S.returnMibiBlock(st, null, m), "", "a young mibi may be returned"); m.born = st.turn - 2;
+  const [room, slot, bay] = [m.room, m.slot, m.bay];
   const sv = { with: m.id }; const blocked = S.returnMibi(st, sv, m, settings); assert.deepEqual([blocked.ok, blocked.why, "msg" in blocked], [false, "already with you", false], "a blocked return is { ok: false, why }: no plate");
   const r = S.returnMibi(st, { with: null }, m, settings); assert.equal(r.ok, true); assert.equal(st.s, s0 + 2); assert.equal(m.released, true);
-  assert.equal(S.housed(st).length, 5); assert.equal(S.freeBay(st, settings), m.bay); assert.deepEqual(st.releases.at(-1).id, m.id); assert.equal(st.guideNotes.S01.length, 1);
+  assert.equal(S.housed(st).length, 7); assert.deepEqual(S.freePlace(st, settings), { room, slot }); assert.deepEqual([m.room, m.slot], [null, null]); assert.deepEqual(st.releases.at(-1).id, m.id); assert.equal(st.guideNotes.S01.length, 1);
   assert.equal(S.grow(st, st.tray[0], {}, settings, 5000).ok, true);
-  assert.equal(S.openBud(st, { with: null }, settings, 5000 + 21 * 60000).mibi.bay, m.bay, "the freed bay is taken");
+  assert.equal(S.openBud(st, { with: null }, settings, 5000 + 21 * 60000).mibi.bay, bay, "the freed place is taken");
 });
 
 // --- M4 Cross ---
@@ -338,7 +339,7 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.equal(S.kinshipOf(st, child, a), 0.25);
   child.born = st.turn - 2;
   const fc2 = S.forecastOf(st, child, a, settings); assert.equal(fc2.kinship, 0.25);
-  const sib = S.seedSiblings(st, "S01", 99, { ...settings, bays: 10 }); assert.equal(sib.ok, true, sib.msg);
+  const sib = S.seedSiblings(st, "S01", 99, { ...settings, rooms: 2 }); assert.equal(sib.ok, true, sib.msg);
   assert.equal(S.kinshipOf(st, sib.mibis[0], sib.mibis[1]), 0.25, "full siblings");
   assert.equal(S.kinshipOf(st, sib.mibis[0], sib.parents[0]), 0.25);
   assert.equal(S.kinshipOf(st, sib.mibis[0], a), 0, "unrelated lines");
@@ -347,7 +348,7 @@ test("the cross: refusals before cost; a child of two founders with real parents
 
 test("kinship by id: two mibis with identical genomes are two mibis, unrelated as founders and full siblings by their recorded parents", () => {
   const { st } = readPod([crate(1, [loikaPod(1, 21)])]);
-  const big = { ...settings, bays: 10 };
+  const big = { ...settings, rooms: 2 };
   const [a, b] = S.seedAdults(st, "S01", 41, 2, big).mibis;
   const twin = S.seedAdults(st, "S01", 42, 1, big).mibis[0];
   twin.genome = structuredClone(a.genome); twin.sha = a.sha; twin.code = a.code;   // the same genome, another mibi
@@ -372,7 +373,7 @@ test("kinship by id: two mibis with identical genomes are two mibis, unrelated a
 test("a starting mibi reads every open chapter, never a shut sealed one: its stamp has no sealed chapter until one is opened in play and read", () => {
   const { st } = readPod([crate(1, [loikaPod(1, 21)])]);
   const fr = frameOf("S02"), sealed = fr.chapters.find((c) => c.sealed); assert.ok(sealed, "the Untuva seals a chapter");
-  const m = S.seedAdults(st, "S02", 51, 1, { ...settings, bays: 10 }).mibis[0];
+  const m = S.seedAdults(st, "S02", 51, 1, { ...settings, rooms: 2 }).mibis[0];
   assert.deepEqual(m.read, fr.chapters.filter((c) => !c.sealed).map((c) => c.id), "every open chapter, the sealed one shut");
   const shut = decode(rasterize(stampGeometry(stampGenome(fr, m.genome, m.read)), 240)).stamps[0].genome;
   assert.ok(!shut.read.includes(sealed.name)); assert.ok(shut.unread.includes(sealed.name), "the stamp holds no shut sealed chapter");
@@ -546,14 +547,14 @@ test("the migration of an older write defaults the care fields and back-fills a 
   const snap = JSON.stringify(st); S.normalize(st); assert.equal(snap, JSON.stringify(st), "idempotent");
 });
 
-test("growBlockKey names what stops Grow in the rules' order (unidentified, busy, no bay, clash, short) with the icons a short price lacks; growBlock's words are unchanged; shortIcons lists ⚡ ◆ ❀ as shortText does", () => {
+test("growBlockKey names what stops Grow in the rules' order (unidentified, busy, full, clash, short) with the icons a short price lacks; growBlock's words are unchanged; shortIcons lists ⚡ ◆ ❀ as shortText does", () => {
   const st = S.freshSt("w1", 1, 1000); S.normalize(st); st.firstMibi = false; S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, 1000); const p = st.tray[0];
   assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "unidentified", short: null }); assert.equal(S.growBlock(st, p, {}, settings), "identify it first");
   S.skipIdentify(st, p); st.e = 99; st.d = 99; st.s = 99; assert.equal(S.growBlockKey(st, p, {}, settings), null); assert.equal(S.growBlock(st, p, {}, settings), "");
   st.e = 0; st.s = 0; assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "short", short: "⚡ ❀", from: "field" }); assert.equal(S.growBlock(st, p, {}, settings), S.shortText(st, 2, 0, 4));
   const free = { ...settings, economy: "free" }; assert.equal(S.growBlockKey(st, p, {}, free), null, "a free economy is short of nothing");
   st.bud = { kind: "founder" }; assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "busy", short: null }, "busy before short"); assert.equal(S.growBlock(st, p, {}, settings), "the incubator is busy"); st.bud = null;
-  for (let i = 0; i < 12; i++) st.mibis.push({ id: 100 + i, bay: i, released: false }); assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "noBay", short: null }); assert.equal(S.growBlock(st, p, {}, settings), "no bay free · return one"); st.mibis = [];
+  for (let i = 0; i < 8; i++) st.mibis.push({ id: 100 + i, room: 0, slot: i, bay: i, released: false }); assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "full", short: null }); assert.equal(S.growBlock(st, p, {}, settings), "the Vivarium is full"); st.mibis = [];
   assert.deepEqual(S.growBlockKey(st, p, {}, settings, ["crown"]), { key: "clash", short: null }); assert.match(S.growBlock(st, p, {}, settings, ["crown"]), /^this shape won't grow · /);
   st.e = 1; st.d = 0; st.s = 9; assert.equal(S.shortIcons(st, 2, 1, 4), "⚡ ◆"); assert.equal(S.shortIcons(st, 1, 0, 9), ""); assert.equal(S.shortIcons(st, 0, 0, 10), "❀");
 });
@@ -654,4 +655,103 @@ test("Grow and Cross leave the outbox empty (the Caddy is called only for the si
   assert.equal(S.doCross(x, null, a, b, settings, 1000, rng).ok, true); assert.deepEqual(x.outbox, [], "Cross");
   x.outbox = [{ sha: "old", species: "S01", genome: {}, at: 1 }, { sitting: true, sha: "portrait" }]; S.normalize(x);
   assert.deepEqual(x.outbox, [{ sitting: true, sha: "portrait" }], "an old Grow entry never goes; a sitting's stays");
+});
+
+// --- the rooms ---
+const roomsWorld = (n, over = {}) => { const st = S.freshSt("w1", 4, 1000); S.normalize(st); st.firstMibi = false; S.seedAdults(st, "S01", 5, n, { ...settings, rooms: 4, ...over }); st.turn = 4; return st; };
+test("rooms: a new world has one room and eight places; the ninth mibi has none; vivFull with eight in one room is true", () => {
+  const st = S.freshSt("w1", 4, 1000); S.normalize(st);
+  assert.deepEqual([S.ROOM, S.ROOMS_MAX, st.rooms, S.roomCount(st, settings), st.face.room], [8, 4, 1, 1, 0]);
+  assert.deepEqual(S.freePlace(st, settings), { room: 0, slot: 0 }); assert.equal(S.vivFull(st, settings), false);
+  S.seedAdults(st, "S01", 5, 8, settings); assert.equal(S.housed(st).length, 8); assert.equal(S.vivFull(st, settings), true); assert.equal(S.freePlace(st, settings), null);
+  assert.deepEqual(S.housed(st).map((m) => [m.room, m.slot, m.bay]), Array.from({ length: 8 }, (_, i) => [0, i, i]));
+  assert.equal(S.seedAdults(st, "S01", 6, 1, settings).ok, false); assert.deepEqual(S.ROOM_NAMES, ["Roots", "Reeds", "Boulders", "Ferns"]);
+  assert.equal(S.roomCount(st, { ...settings, rooms: 9 }), 4); assert.equal(S.roomCount(st, { ...settings, rooms: 3 }), 3, "the developer's rooms win"); assert.equal(S.vivFull(st, { ...settings, rooms: 2 }), false);
+});
+test("rooms: addRoom spends 4, 8, 12 Energy under a tuned economy, refuses at four rooms (all) and when short (short)", () => {
+  const st = S.freshSt("w1", 4, 1000); S.normalize(st); const tuned = { ...settings, economy: "tuned" };
+  st.e = 3; assert.deepEqual(S.addRoomBlock(st, tuned), { key: "short", short: ["e"] }); assert.deepEqual(S.addRoom(st, tuned), { ok: false, key: "short", short: ["e"] }); assert.deepEqual([st.e, st.rooms], [3, 1]);
+  st.e = 100; const spent = [];
+  for (const want of [4, 8, 12]) { assert.equal(S.addRoomBlock(st, tuned), null); assert.equal(S.roomPrice(st, tuned), want); const e0 = st.e, r = S.addRoom(st, tuned); spent.push(e0 - st.e); assert.deepEqual(r, { ok: true, room: st.rooms - 1 }); }
+  assert.deepEqual(spent, [4, 8, 12]); assert.equal(st.rooms, 4); assert.equal(S.roomPrice(st, tuned), null);
+  assert.deepEqual(S.addRoomBlock(st, tuned), { key: "all" }); assert.deepEqual(S.addRoom(st, tuned), { ok: false, key: "all" }); assert.equal(st.e, 76);
+  assert.match(st.log.at(-1), /^T5 · Added the Ferns room · ⚡ −12$/); assert.equal(S.addRoomBlock({ ...st, rooms: 1, e: 0 }, { ...tuned, economy: "free" }), null, "a free economy asks nothing");
+});
+test("rooms: moveBlock gives own, full, noRoom, released; moveMibi is free and instant, takes the lowest free slot, and keeps a carried mibi's place", () => {
+  const st = roomsWorld(9, { rooms: 2 }); st.rooms = 2; const two = { ...settings, rooms: 2 }, [a] = st.mibis, last = st.mibis[8];
+  assert.deepEqual([last.room, last.slot], [1, 0]);
+  assert.deepEqual(S.moveBlock(st, a, 0, two), { key: "own" }); assert.deepEqual(S.moveBlock(st, a, 2, two), { key: "noRoom" }); assert.deepEqual(S.moveBlock(st, a, -1, two), { key: "noRoom" });
+  assert.equal(S.moveBlock(st, a, 1, two), null); assert.deepEqual(S.moveBlock(st, last, 0, two), { key: "full" });
+  const e0 = st.e, s0 = st.s, r = S.moveMibi(st, a, 1, two); assert.deepEqual(r, { ok: true, room: 1, slot: 1 }); assert.deepEqual([a.room, a.slot, a.bay], [1, 1, 9]); assert.deepEqual([st.e, st.s], [e0, s0]);
+  assert.equal(st.log.at(-1), `T5 · ${a.name} moves to the Reeds room`); assert.deepEqual(S.freePlace(st, two), { room: 0, slot: 0 }, "the place it left is free");
+  assert.deepEqual(S.inRoom(st, 1).map((m) => m.slot), [0, 1]); assert.deepEqual(S.moveMibi(st, a, 1, two), { ok: false, key: "own" });
+  const b = st.mibis[1]; b.bonded = true; b.outings = 3; const sv = svOf({ carried: [b.id] }); assert.equal(S.moveMibi(st, b, 1, two).ok, true); assert.deepEqual(S.carriedIds(st, sv), [b.id], "still with the Companion"); assert.equal(S.moveBlock(st, b, 0, two) === null, true, "and may come back");
+  last.released = true; assert.deepEqual(S.moveBlock(st, last, 0, two), { key: "released" });
+});
+test("rooms: a hatch fills the shown room first, then the first room with a place; the log ends with the room", () => {
+  const st = roomsWorld(3, { rooms: 2 }); const two = { ...settings, rooms: 2 };
+  st.face.room = 1; S.seedAdults(st, "S01", 21, 1, two); assert.deepEqual([st.mibis[3].room, st.mibis[3].slot, st.mibis[3].bay], [1, 0, 8], "the shown room first");
+  const bud = (n) => { const p = { ...st.tray[0] }; void p; st.e = 50; st.s = 50; st.d = 50; st.bud = { kind: "founder", species: "S01", sp: 0, gs: 60 + n, genome: podGenome(frameOf("S01"), 60 + n), sha: genomeSha(podGenome(frameOf("S01"), 60 + n)), code: "X", start: 0, minutes: 5, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: [], early: true }; };
+  bud(1); const o = S.openBud(st, { with: null }, two, 10 * 60000); assert.equal(o.ok, true); assert.deepEqual([o.mibi.room, o.mibi.slot], [1, 1]); assert.match(st.log.at(-1), /^T5 · Opened · \S+ · Loika · juvenile · the Reeds room$/);
+  for (let i = 0; i < 6; i++) { bud(2 + i); S.openBud(st, { with: null }, two, 10 * 60000); } assert.equal(S.inRoom(st, 1).length, 8);
+  st.face.room = 1; bud(9); const full = S.openBud(st, { with: null }, two, 10 * 60000); assert.deepEqual([full.mibi.room, full.mibi.slot], [0, 3], "the shown room is full: the first with a place");
+  assert.equal(S.vivFull(st, two), false); st.face.room = 0; bud(10); for (let i = 0; i < 4; i++) { S.openBud(st, { with: null }, two, 10 * 60000); bud(11 + i); } assert.equal(S.vivFull(st, two), true);
+  const refused = S.openBud(st, { with: null }, two, 10 * 60000); assert.deepEqual([refused.ok, refused.msg], [false, "The Vivarium is full"]); assert.deepEqual(refused.plate, ["The Vivarium is full", "Return a mibi to make room", "or add a room"]);
+  st.rooms = 4; assert.equal(S.openBud(st, { with: null }, { ...two, rooms: 2 }, 10 * 60000).plate.length, 2, "no third line at four rooms");
+  st.rooms = 2; st.bud = { kind: "founder", species: "S01", sp: 0, minutes: 20, early: false, start: Date.now() }; assert.deepEqual(S.instantGrow(st, { ...two, economy: "free" }).plate, ["The Vivarium is full", "Return a mibi to make room", "or add a room"]);
+});
+test("rooms: a young mibi returns for +2 Essence and its place is free at once; the shed pod is due at max(born + adultTurns, releasedAt) + 2", () => {
+  for (const [aT, turn, want] of [[2, 1, 4], [5, 1, 7], [2, 10, 12], [5, 6, 8]]) {
+    const set = { ...settings, adultTurns: aT }, st = roomsWorld(2); st.turn = turn; const m = st.mibis[0]; m.born = 0;
+    const young = S.mibiStage(st, m, set) === "juvenile"; assert.equal(S.returnMibiBlock(st, null, m), ""); const s0 = st.s;
+    const r = S.returnMibi(st, { with: null }, m, set); assert.equal(r.ok, true, "adultTurns " + aT + " young " + young); assert.equal(st.s, s0 + 2);
+    assert.deepEqual([m.released, m.room, m.slot, m.releasedAt], [true, null, null, turn]); assert.deepEqual(S.freePlace(st, set), { room: 0, slot: 0 }, "its place is free at once");
+    assert.equal(st.sheds.length, 1); const sh = st.sheds[0]; assert.deepEqual([sh.id, sh.name, sh.sp, sh.species, sh.g, sh.due], [m.id, m.name, m.sp, m.species, m.from.g, want], "aT " + aT + " turn " + turn);
+    assert.equal(sh.state, sh.genome ? "due" : "none"); assert.ok(sh.genome, "a pod is shed");
+  }
+  const a = roomsWorld(1), b = roomsWorld(1); S.returnMibi(a, null, a.mibis[0], settings); S.returnMibi(b, null, b.mibis[0], settings); assert.deepEqual(a.sheds[0].genome, b.sheds[0].genome, "the same release always sheds the same pod");
+  const sv = S.seededRng(7), sw = S.seededRng(7); assert.deepEqual([sv(), sv()], [sw(), sw()]);
+});
+test("rooms: the shed genome's origin.kinship is max(1/8, the mibi's own): a founder 0.125, a child of full siblings 0.25", () => {
+  const st = roomsWorld(0); const big = { ...settings, rooms: 4 };
+  const f = S.seedAdults(st, "S01", 5, 1, big).mibis[0]; S.returnMibi(st, null, f, big);
+  assert.deepEqual([st.sheds[0].kinship, st.sheds[0].genome.origin.kinship, st.sheds[0].genome.origin.kind], [0.125, 0.125, "shed"]);
+  const sib = S.seedSiblings(st, "S01", 99, big); assert.equal(sib.ok, true, sib.msg); const [x, y] = sib.mibis; assert.equal(S.kinshipOf(st, x, y), 0.25);
+  let r = null; for (let i = 0; i < 20 && !r?.ok; i++) { st.e = 99; st.s = 99; st.bud = null; r = S.doCross(st, svOf(), x, y, big, 1, S.seededRng(1 + i)); } assert.equal(r.ok, true);
+  const kid = S.seedAdults(st, "S01", 12, 1, big).mibis[0]; kid.genome = st.bud.genome; assert.equal(kid.genome.origin.kinship, 0.25);
+  S.returnMibi(st, null, kid, big); const sh = st.sheds.at(-1); assert.deepEqual([sh.kinship, sh.genome.origin.kinship], [0.25, 0.25]);
+});
+test("rooms: the v3 migration: 0, 6 and 12 housed give 1, 1 and 2 rooms, the slots in bay order, bay kept, nothing lost, and a second migrate changes nothing", () => {
+  for (const [n, rooms] of [[0, 1], [6, 1], [12, 2]]) {
+    const st = roomsWorld(n); st.schema = 3; delete st.rooms; delete st.sheds; st.bays = n > 8 ? 12 : 6;
+    housedOld(st).forEach((m, i) => { m.bay = n - 1 - i; delete m.room; delete m.slot; }); const ids = st.mibis.map((m) => m.id).sort(), bayBefore = new Map(st.mibis.map((m) => [m.id, m.bay]));   // migrate writes in place: the v3 bays are read before it
+    const once = S.normalize(S.migrate(st, 5)); assert.equal(once.schema, S.ST_SCHEMA); assert.equal(once.rooms, rooms, n + " housed"); assert.deepEqual(once.sheds, []); assert.equal(once.bays, Math.min(12, 8 * rooms));
+    assert.deepEqual(once.mibis.map((m) => m.id).sort(), ids, "no mibi lost");
+    for (const m of once.mibis) { const old = bayBefore.get(m.id); assert.deepEqual([m.room, m.slot], [Math.floor(old / 8), old % 8], "bay order"); assert.equal(m.bay, m.room * 8 + m.slot); }
+    const snap = JSON.stringify(once); assert.equal(JSON.stringify(S.normalize(S.migrate(once, 6))), snap, "a second migrate is a no-op");
+  }
+  const st = roomsWorld(3); st.schema = 3; st.mibis[0].bay = 5; st.mibis[1].bay = 0; st.mibis[2].bay = 2; st.mibis[2].released = true; delete st.mibis[2].room; const out = S.migrate(st, 1);
+  assert.deepEqual(out.mibis.map((m) => [m.room, m.slot]), [[0, 1], [0, 0], [null, null]], "gaps close; a released mibi holds no place"); assert.equal(out.rooms, 1);
+  { const st = roomsWorld(12); st.schema = 3; delete st.rooms; delete st.sheds; st.bays = 12; for (const m of st.mibis) { m.bay = m.room * 8 + m.slot; delete m.room; delete m.slot; }
+    for (const b of [2, 5, 9]) Object.assign(st.mibis.find((m) => m.bay === b), { released: true, releasedAt: 4 });
+    const order = S.housed(st).sort((a, b) => a.bay - b.bay).map((m) => m.id), out = S.normalize(S.migrate(st, 1));
+    assert.equal(out.rooms, 2); assert.deepEqual([0, 1, 2, 3].map((r) => S.inRoom(out, r).length), [8, 1, 0, 0], "nine housed with gaps at bays 2, 5, 9: the first room full, one in the second");
+    assert.deepEqual([...S.inRoom(out, 0), ...S.inRoom(out, 1)].map((m) => m.id), order, "in bay order"); assert.equal(out.mibis.length, 12, "nobody lost"); assert.equal(out.bays, 12); }
+  assert.equal(S.normalize({ ...S.freshSt("w", 1, 1), face: { room: 7 } }).face.room, 0, "an unknown room shown falls back to the first");
+});
+const housedOld = (st) => st.mibis.filter((m) => !m.released);
+test("rooms: need() and needKey() say full after the docked crates and ahead of the bud; the label and the ring follow addRoomBlock; a shed pod opened is marked found", () => {
+  const st = roomsWorld(8, { rooms: 1 }); st.rooms = 1; st.e = 20; const sv = svOf();
+  assert.equal(S.needKey(st, sv, settings), null, "nothing waits for a place yet");
+  st.bud = { kind: "founder", species: "S01", sp: 0, minutes: 5, early: true, start: 0 }; assert.equal(S.budReady(st, settings), true);
+  assert.deepEqual(S.needKey(st, sv, settings), { key: "full", act: "vivarium", ring: "room.new" });
+  let n = S.need(st, sv, settings); assert.deepEqual([n.text, n.act, n.label, n.ring], ["The Vivarium is full", "vivarium", "Add a room", "room.new"]);
+  st.e = 0; assert.deepEqual(S.needKey(st, sv, settings), { key: "full", act: "vivarium", ring: "resident" }); n = S.need(st, sv, settings); assert.deepEqual([n.label, n.ring], ["Make room", "resident"]);
+  st.rooms = 4; st.e = 99; assert.equal(S.needKey(st, sv, { ...settings, rooms: 4 }).key, "budReady", "four rooms are not full with eight");
+  const full = { ...settings, rooms: 1 }; st.rooms = 4; assert.equal(S.needKey(st, sv, full).ring, "resident", "no room can be added at four rooms");
+  const cs = [crate(1, [])]; sv.bay = cs; st.dock = { docked: true, at: 0 }; assert.equal(S.needKey(st, sv, full).key, "crates"); assert.equal(S.need(st, sv, full).act, "bay", "the docked crates come first");
+  const q = { id: "q1", sp: 0, species: "S01", g: "meadow", how: "calm", gs: 3, k: null, shed: 5 }; const st2 = S.freshSt("w", 4, 1); S.normalize(st2); st2.dock = { docked: true, at: 0 };
+  st2.sheds.push({ id: 5, name: "Dot", sp: 0, species: "S01", g: "meadow", due: 3, kinship: 0.125, genome: null, state: "due" });
+  S.openCrates(st2, svOf({ bay: [crate(1, [q])] }), settings, 1); assert.equal(st2.tray[0].shed, 5); assert.equal(st2.sheds[0].state, "found");
+  const p = { ...q, id: "q2", shed: undefined }; S.openCrates(st2, svOf({ bay: [crate(2, [p])] }), settings, 2); assert.equal(st2.tray.at(-1).shed, null);
 });
