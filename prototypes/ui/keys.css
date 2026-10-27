@@ -1,0 +1,96 @@
+/* The key look, in one place. Linked by the Station page, the Companion page and the test page
+   (relative "../ui/keys.css": it works in the repo and, with prototypes/* copied to sandbox/*, on the site).
+   Looks only: colours, shadows, radii, gloss, glyph strokes, the press. Each page keeps where a key sits and how big it is
+   (the Station reads --pk, --vk, --bk, --ck; the Companion and the test page set their own boxes). */
+
+/* ===== The Station's keys (.k) ===== */
+.k{appearance:none; border:none; padding:0; margin:0; cursor:pointer; position:relative; outline:none; touch-action:none; -webkit-tap-highlight-color:transparent}
+.k:focus-visible{outline:3px solid #ffd166; outline-offset:3px}
+div.pad::before{content:""; position:absolute; inset:-10px; border-radius:50%; background:radial-gradient(circle, rgba(40,50,35,.25), rgba(40,50,35,0) 70%)}
+.pad .hub{background:linear-gradient(135deg,#303439,#24262a) calc(var(--pk) * -1) calc(var(--pk) * -1) / calc(var(--pk) * 3) calc(var(--pk) * 3) no-repeat}
+.pad .hub::after{content:""; position:absolute; left:calc(50% - 10px); top:calc(50% - 10px); width:20px; height:20px; border-radius:50%; background:radial-gradient(circle at 40% 35%, #3d4146, #24272a)}
+.pad .k{background:linear-gradient(135deg,#303439,#24262a) 0 0 / calc(var(--pk) * 3) calc(var(--pk) * 3) no-repeat; box-shadow:0 4px 0 #191a1d, inset 0 0 0 1px #141618; display:grid; place-items:center}
+.pad .k svg{position:relative; width:24px; height:24px; fill:#f4f1ec}
+.pad .up{border-radius:10px 10px 0 0; background-position:calc(var(--pk) * -1) 0; overflow:hidden} .pad .down{border-radius:0 0 10px 10px; background-position:calc(var(--pk) * -1) calc(var(--pk) * -2)}
+.pad .left{border-radius:10px 0 0 10px; background-position:0 calc(var(--pk) * -1)} .pad .right{border-radius:0 10px 10px 0; background-position:calc(var(--pk) * -2) calc(var(--pk) * -1)}
+.pad .up::before{content:""; position:absolute; left:5.5%; right:5.5%; top:3.3%; height:20%; border-radius:6px; background:rgba(255,255,255,.27); filter:blur(2px); pointer-events:none}
+.pad .k.is-down{transform:translateY(2px); box-shadow:0 2px 0 #191a1d, inset 0 0 0 1px #141618, inset 0 2px 3px rgba(0,0,0,.5)}
+.views .k{border-radius:10px; display:grid; place-items:center; overflow:hidden; background:linear-gradient(135deg,var(--face-tl),var(--face-br)); box-shadow:0 5px 0 var(--wall), inset 0 0 0 1px var(--rim)}
+.views .k::before{content:""; position:absolute; left:5.5%; right:5.5%; top:3.3%; height:20%; border-radius:6px; background:rgba(255,255,255,.27); filter:blur(2px); pointer-events:none}
+.views .k img{position:relative; display:block; width:24px; height:24px; image-rendering:pixelated; pointer-events:none}
+.views .k.is-down{transform:translateY(3px); box-shadow:0 2px 0 var(--wall), inset 0 0 0 1px var(--rim), inset 0 2px 4px rgba(0,0,0,.35)}
+.k.home{--face-tl:#f8bd30; --face-br:#b98d24; --rim:#685014; --wall:#806119}
+.k.vivarium{--face-tl:#64b050; --face-br:#4a833c; --rim:#2a4a22; --wall:#335b29}
+.k.research{--face-tl:#3287e6; --face-br:#2564ab; --rim:#153961; --wall:#194576}
+.k.library{--face-tl:#814398; --face-br:#603271; --rim:#361c40; --wall:#43224e}
+.k.back{border-radius:50%; overflow:hidden; background:linear-gradient(135deg,#36393e,#282a2e); box-shadow:0 5px 0 #1c1d20, inset 0 0 0 1px #16181a; display:grid; place-items:center}
+.k.back::before{content:""; position:absolute; left:5.5%; right:5.5%; top:3.3%; height:20%; border-radius:999px; background:rgba(255,255,255,.27); filter:blur(2px); pointer-events:none}
+.k.back svg{position:relative; width:28px; height:28px; stroke:#f4f1ec; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+.k.confirm{border-radius:50%; background:radial-gradient(circle at 40% 30%,#ff8a45,#f0661a 55%,#c94f0d); box-shadow:0 6px 0 #8c3608, inset 0 1px 0 rgba(255,255,255,.35); display:grid; place-items:center; overflow:hidden}
+.k.confirm::before{content:""; position:absolute; left:5.5%; right:5.5%; top:3.3%; height:20%; border-radius:999px; background:rgba(255,255,255,.27); filter:blur(2px); pointer-events:none}
+.k.confirm svg{position:relative; width:46px; height:46px; stroke:#fff8ef; fill:none; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round}
+.k.back.is-down{transform:translateY(3px); box-shadow:0 2px 0 #1c1d20, inset 0 0 0 1px #16181a, inset 0 2px 4px rgba(0,0,0,.5)}
+.k.confirm.is-down{transform:translateY(4px); box-shadow:0 2px 0 #8c3608, inset 0 2px 5px rgba(0,0,0,.35)}
+
+/* ===== The Companion's keys (.key) ===== */
+.key{appearance:none; border:none; padding:0; margin:0; cursor:pointer; position:absolute; color:#f4efe6;
+  touch-action:none; -webkit-tap-highlight-color: transparent; outline:none}
+.key:focus-visible{outline:3px solid #ffd166; outline-offset:3px}
+.dpad::before{content:""; position:absolute; inset:-8px; border-radius:50%; background: radial-gradient(circle, rgba(70,58,40,.25), rgba(70,58,40,0) 70%)}
+.dpad .hub{background:var(--charcoal)}
+.dpad .hub::after{content:""; position:absolute; left:calc(50% - 8px); top:calc(50% - 8px); width:16px; height:16px; border-radius:50%; background: radial-gradient(circle at 40% 35%, #3d4146, #24272a)}
+.dpad .key{background: linear-gradient(180deg,#3a3d42,#2e3136); box-shadow: 0 3px 0 #17181a, inset 0 1px 0 rgba(255,255,255,.12)}
+.dpad .key svg{width:16px; height:16px; fill:#f4f1ec}
+.dpad .up{border-radius:8px 8px 0 0}
+.dpad .down{border-radius:0 0 8px 8px}
+.dpad .left{border-radius:8px 0 0 8px}
+.dpad .right{border-radius:0 8px 8px 0}
+.dpad .key.is-down{transform:translateY(2px); box-shadow: 0 1px 0 #17181a, inset 0 2px 3px rgba(0,0,0,.5)}
+.btn-round{border-radius:50%; display:grid; place-items:center}
+.key.back{background:#33363b; box-shadow: 0 4px 0 #1d1f22, inset 0 1px 0 rgba(255,255,255,.15)}
+/* Call: same size as Back, directly above it; teal with a raised ring texture so the two are told apart by feel. */
+.key.call{background: radial-gradient(circle at 40% 30%, rgba(255,255,255,.28), rgba(255,255,255,0) 45%),
+    repeating-radial-gradient(circle at 50% 50%, #26b5a4 0 3px, #178a7d 3px 4px, #1fa293 4px 6px);
+  box-shadow: 0 4px 0 #0c4f48, inset 0 1px 0 rgba(255,255,255,.25), inset 0 0 0 2px #14786d}
+.key.confirm{background: radial-gradient(circle at 40% 30%, #ff8a45, var(--orange) 55%, var(--orange-2)); box-shadow: 0 5px 0 #8c3608, inset 0 1px 0 rgba(255,255,255,.35)}
+/* Back and Confirm carry the signed cap icons (shell/, byte-identical to art/device-buttons/caps), each a 1-bit master drawn as a luminance mask over its ink, in a 36×36 slot. */
+.cap-ico{display:block; width:36px; height:36px; pointer-events:none}
+.key.back .cap-ico{background:#f4f1ec; mask: url(../exploration/shell/cap-back-10mm.png) center / 36px 36px no-repeat luminance}
+.key.confirm .cap-ico{background:#ffffff; mask: url(../exploration/shell/cap-confirm-10mm.png) center / 36px 36px no-repeat luminance}
+.key.call svg{width:26px; height:26px; stroke:#eafff9; fill:none; stroke-width:2.6; stroke-linecap:round}
+.key.back.is-down, .key.call.is-down{transform:translateY(3px); box-shadow: 0 1px 0 #1d1f22, inset 0 2px 4px rgba(0,0,0,.5)}
+.key.confirm.is-down{transform:translateY(4px); box-shadow: 0 1px 0 #8c3608, inset 0 2px 5px rgba(0,0,0,.35)}
+
+/* ===== The test page's keys (.fk), sized and placed by the page ===== */
+.fk{position:absolute; border:0; display:grid; place-items:center; overflow:visible; outline:none; touch-action:none; z-index:10}
+.fk:focus-visible{outline:3px solid #ffd166; outline-offset:3px}
+.fk svg{position:relative; width:var(--g,24px); height:var(--g,24px); fill:#f4f1ec}
+.fk img{position:relative; display:block; width:var(--g,24px); height:var(--g,24px); image-rendering:pixelated; pointer-events:none}
+.fk.pad{background:linear-gradient(135deg,#303439,#24262a); box-shadow:0 4px 0 #191a1d, inset 0 0 0 1px #141618; border-radius:8px}
+.fk.pad.dn{transform:translateY(2px); box-shadow:0 2px 0 #191a1d, inset 0 0 0 1px #141618, inset 0 2px 3px rgba(0,0,0,.5)}
+.fk.cpad{background:linear-gradient(180deg,#3a3d42,#2f3236); box-shadow:0 3px 0 #17181a, inset 0 1px 0 rgba(255,255,255,.12); border-radius:8px}
+.fk.cpad svg{fill:#9a9ea6}
+.fk.cpad.dn{transform:translateY(2px); box-shadow:0 1px 0 #17181a, inset 0 2px 3px rgba(0,0,0,.5)}
+.hub{background:linear-gradient(135deg,#303439,#24262a)}
+.hub.c{background:#2f3236}
+.fk.room{border-radius:10px; overflow:hidden; background:linear-gradient(135deg,var(--tl),var(--br)); box-shadow:0 5px 0 var(--wall), inset 0 0 0 1px var(--rim)}
+.fk.room.dn{transform:translateY(3px); box-shadow:0 2px 0 var(--wall), inset 0 0 0 1px var(--rim), inset 0 2px 4px rgba(0,0,0,.35)}
+.room.home{--tl:#f8bd30; --br:#b98d24; --rim:#685014; --wall:#806119}
+.room.vivarium{--tl:#64b050; --br:#4a833c; --rim:#2a4a22; --wall:#335b29}
+.room.research{--tl:#3287e6; --br:#2564ab; --rim:#153961; --wall:#194576}
+.room.library{--tl:#814398; --br:#603271; --rim:#361c40; --wall:#43224e}
+.fk.round{border-radius:50%; overflow:hidden}
+.fk.back{background:linear-gradient(135deg,#36393e,#282a2e); box-shadow:0 5px 0 #1c1d20, inset 0 0 0 1px #16181a}
+.fk.back svg{fill:none; stroke:#f4f1ec; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+.fk.back.dn{transform:translateY(3px); box-shadow:0 2px 0 #1c1d20, inset 0 0 0 1px #16181a, inset 0 2px 4px rgba(0,0,0,.5)}
+.fk.cback{background:#33363b; box-shadow:0 4px 0 #1d1f22, inset 0 1px 0 rgba(255,255,255,.15)}
+.fk.cback.dn,.fk.call.dn{transform:translateY(3px); box-shadow:0 1px 0 #1d1f22, inset 0 2px 4px rgba(0,0,0,.5)}
+.fk.call{background:radial-gradient(circle at 40% 30%,rgba(255,255,255,.28),rgba(255,255,255,0) 45%),repeating-radial-gradient(circle at 50% 50%,#26b5a4 0 3px,#178a7d 3px 4px,#1fa293 4px 6px); box-shadow:0 4px 0 #0c4f48, inset 0 1px 0 rgba(255,255,255,.25), inset 0 0 0 2px #14786d}
+.fk.call svg{fill:none; stroke:#eafff9; stroke-width:2.6; stroke-linecap:round}
+.fk.confirm{background:radial-gradient(circle at 40% 30%,#ff8a45,#f0661a 55%,#c94f0d); box-shadow:0 5px 0 #8c3608, inset 0 1px 0 rgba(255,255,255,.35)}
+.fk.confirm svg{fill:none; stroke:#fff8ef; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round}
+.fk.confirm.dn{transform:translateY(4px); box-shadow:0 1px 0 #8c3608, inset 0 2px 5px rgba(0,0,0,.35)}
+.fk.pad::before,.fk.room::before,.fk.back::before,.fk.confirm::before{content:""; position:absolute; left:5.5%; right:5.5%; top:3.3%; height:20%; border-radius:6px; background:rgba(255,255,255,.27); filter:blur(2px); pointer-events:none}
+.cap{display:block; width:var(--g,36px); height:var(--g,36px); pointer-events:none}
+.cap.b{background:#f4f1ec; -webkit-mask:url("../exploration/shell/cap-back-10mm.png") center / 100% 100% no-repeat; mask:url("../exploration/shell/cap-back-10mm.png") center / 100% 100% no-repeat; mask-mode:luminance}
+.cap.c{background:#fff; -webkit-mask:url("../exploration/shell/cap-confirm-10mm.png") center / 100% 100% no-repeat; mask:url("../exploration/shell/cap-confirm-10mm.png") center / 100% 100% no-repeat; mask-mode:luminance}
