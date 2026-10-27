@@ -656,5 +656,55 @@
     "IMAGE 1, THE APPROVED CONCEPT (option aA): the room's planting, palette, season, mood and light; never its frame, posts or the small blocks at its front:"
    ]
   ]
+ },
+ "pieces-roots-a": {
+  "sha256": "959786e7fcb152a7fb34b6002beec6ea2cdc61da8c132adc78fd1ae63e4eb926",
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 5 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN MAGENTA (#FF00FF) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, warm golden late-morning light from the upper left. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: 1. A LOW TUFT of small young ferns and moss, rounded and leafy, wider than tall (about 2 to 1), its base a soft mossy clump. 2. A SMALL ROUNDED MOSSY STONE, honey-grey, wider than tall (about 2 to 1), moss on its top, its base flat. 3. A SLEEPING NEST: a very shallow oval mat of soft moss and fine dry golden grass, seen from a low eye height so it is very wide and thin (about 3.5 to 1), plain and soft, a few tiny dry leaves woven in, no bowl, no rim, no pit. 4. A SMALL MISTER: a short thin weathered copper pipe, bent once, ending in a tiny brass nozzle, with a fine soft fan of mist spraying from the nozzle; small and plain, half wrapped by a thin root and a sprig of moss. 5. The same short copper pipe and tiny brass nozzle as object 4 with NO mist, alone.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-roots-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ]
+ },
+ "pieces-reeds-a": {
+  "sha256": "4e9d0d70389fc79fb1b105b4f7f0eb184191cb693beaf375319c7c61c05abf4a",
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 4 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN MAGENTA (#FF00FF) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, soft bright overcast light from above, cool grey-green, raindrops beaded on the leaves. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: 1. A LOW TUFT of silver-green sedge blades beaded with raindrops, arching, wider than tall (about 2 to 1), its base a small mossy clump. 2. A SMALL WET ROUNDED STONE, rain-darkened grey with a soft wet sheen, a little moss at its base, wider than tall (about 2 to 1), its base flat. 3. A SMALL RAIN CUP: a little dark grey matte ceramic cup on a short thin bamboo stake, tilted slightly, rain water filling it to the lip, ONE drop hanging from its lip; plain and modest. 4. ONE single clear water drop, large, alone.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-reeds-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ]
+ },
+ "pieces-boulders-a": {
+  "sha256": "d86a00bb6ecbf1a27ba03063214443b7d82d9c91c312bd7b4e9acd8e764798b3",
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 6 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN MAGENTA (#FF00FF) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, warm low autumn light from the left, soft shade. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: 1. A LOW ROUNDED MOSSY STONE, grey granite with a thick moss cap, wider than tall (about 2 to 1), its base flat. 2. A LOW CLIPPED MOSS-AND-FERN CUSHION, rounded, a few small gold maple leaves resting on it, wider than tall (about 2 to 1). 3. A SMALL STONE LANTERN (a plain Japanese garden lantern, toro), weathered grey granite with moss on its roof, UNLIT, its window dark, a little taller than wide. 4. A SHISHI-ODOSHI WITHOUT ITS ARM: a thin bamboo flume (kakehi) on a short bamboo post pouring a thin trickle of water down, and below it a small carved stone basin with water inside its lip only, and the two short bamboo posts of the pivot standing empty beside the basin. 5. THE ARM ALONE: one short thick bamboo tube cut at a slant at one end, closed at the other, lying level, about five times as long as it is thick. 6. A small thin trickle of falling water, alone, a short vertical thread.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ]
+ },
+ "pieces-koi-a": {
+  "sha256": "368e92f51ae772de0a4b0fbd7405916149b5007fd1dc6ba45b3b737c5421cd75",
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 16 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN PURE GREEN (#00FF00) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, seen from above at a steep angle, as fish just under the surface of a dark still pond, soft warm light from the left. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: SIXTEEN small koi in FOUR ROWS of FOUR. Each ROW is ONE koi shown in four swimming poses, one after another, all facing RIGHT, each a slightly different bend of the body and tail as it swims (straight, tail left, straight, tail right). Row 1: a white koi with orange-red patches. Row 2: a pale gold koi. Row 3: a white koi with a red head spot and a few black marks. Row 4: an orange koi. Each fish slender, about five times as long as wide, soft fins, painted, never cartoon.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ]
+ },
+ "pieces-ferns-a": {
+  "sha256": "434e0256154be58c44fca68c8d225fc9ce8e1293ad04515a9c129dbafe8182ac",
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 5 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN MAGENTA (#FF00FF) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, dappled green-gold light from the upper left, cool shade. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: 1. A LOW TUFT of small ferns, rounded and leafy, deep green with lighter new fronds, wider than tall (about 2 to 1), its base a mossy clump. 2. A SMALL CLUMP of curled croziers and tiny young fronds, low, wider than tall (about 3 to 2), its base a mossy clump. 3. A SMALL FOGGER BOWL: a low wide matte grey-green ceramic bowl, partly mossed, with a soft low fog brimming over its rim; plain and modest, wider than tall (about 2 to 1). 4. TWO THIN COPPER DRIP LINES side by side: each a very thin weathered copper tube hanging down, bent gently once, ending in a small drop at its tip; long and thin, about twelve times as long as wide. 5. ONE single clear water drop, large, alone.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-ferns-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ]
  }
 }

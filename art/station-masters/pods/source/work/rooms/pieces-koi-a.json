@@ -1,0 +1,16 @@
+[
+ {
+  "name": "pieces-koi-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ],
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 16 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN PURE GREEN (#00FF00) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, seen from above at a steep angle, as fish just under the surface of a dark still pond, soft warm light from the left. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: SIXTEEN small koi in FOUR ROWS of FOUR. Each ROW is ONE koi shown in four swimming poses, one after another, all facing RIGHT, each a slightly different bend of the body and tail as it swims (straight, tail left, straight, tail right). Row 1: a white koi with orange-red patches. Row 2: a pale gold koi. Row 3: a white koi with a red head spot and a few black marks. Row 4: an orange koi. Each fish slender, about five times as long as wide, soft fins, painted, never cartoon."
+ }
+]

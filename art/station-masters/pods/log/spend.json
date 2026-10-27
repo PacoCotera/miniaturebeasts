@@ -6481,5 +6481,90 @@
    "thoughtsTokenCount": 273,
    "totalTokenCount": 2842
   }
+ },
+ {
+  "tag": "pieces-roots-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.212966,
+  "mxn": 4.2593,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:55:53Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 763,
+   "candidatesTokenCount": 1439,
+   "thoughtsTokenCount": 323,
+   "totalTokenCount": 2525
+  }
+ },
+ {
+  "tag": "pieces-reeds-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.198912,
+  "mxn": 3.9782,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:56:10Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 696,
+   "candidatesTokenCount": 1381,
+   "thoughtsTokenCount": 265,
+   "totalTokenCount": 2342
+  }
+ },
+ {
+  "tag": "pieces-boulders-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.215776,
+  "mxn": 4.3155,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:56:30Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 788,
+   "candidatesTokenCount": 1534,
+   "thoughtsTokenCount": 251,
+   "totalTokenCount": 2573
+  }
+ },
+ {
+  "tag": "pieces-koi-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.204776,
+  "mxn": 4.0955,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:56:46Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 688,
+   "candidatesTokenCount": 1433,
+   "thoughtsTokenCount": 262,
+   "totalTokenCount": 2383
+  }
+ },
+ {
+  "tag": "pieces-ferns-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.218084,
+  "mxn": 4.3617,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:57:03Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 742,
+   "candidatesTokenCount": 1447,
+   "thoughtsTokenCount": 358,
+   "totalTokenCount": 2547
+  }
  }
 ]

@@ -1,0 +1,16 @@
+[
+ {
+  "name": "pieces-boulders-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ],
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 6 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN MAGENTA (#FF00FF) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, warm low autumn light from the left, soft shade. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: 1. A LOW ROUNDED MOSSY STONE, grey granite with a thick moss cap, wider than tall (about 2 to 1), its base flat. 2. A LOW CLIPPED MOSS-AND-FERN CUSHION, rounded, a few small gold maple leaves resting on it, wider than tall (about 2 to 1). 3. A SMALL STONE LANTERN (a plain Japanese garden lantern, toro), weathered grey granite with moss on its roof, UNLIT, its window dark, a little taller than wide. 4. A SHISHI-ODOSHI WITHOUT ITS ARM: a thin bamboo flume (kakehi) on a short bamboo post pouring a thin trickle of water down, and below it a small carved stone basin with water inside its lip only, and the two short bamboo posts of the pivot standing empty beside the basin. 5. THE ARM ALONE: one short thick bamboo tube cut at a slant at one end, closed at the other, lying level, about five times as long as it is thick. 6. A small thin trickle of falling water, alone, a short vertical thread."
+ }
+]

@@ -1,0 +1,16 @@
+[
+ {
+  "name": "pieces-reeds-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-reeds-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ],
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 4 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN MAGENTA (#FF00FF) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, soft bright overcast light from above, cool grey-green, raindrops beaded on the leaves. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: 1. A LOW TUFT of silver-green sedge blades beaded with raindrops, arching, wider than tall (about 2 to 1), its base a small mossy clump. 2. A SMALL WET ROUNDED STONE, rain-darkened grey with a soft wet sheen, a little moss at its base, wider than tall (about 2 to 1), its base flat. 3. A SMALL RAIN CUP: a little dark grey matte ceramic cup on a short thin bamboo stake, tilted slightly, rain water filling it to the lip, ONE drop hanging from its lip; plain and modest. 4. ONE single clear water drop, large, alone."
+ }
+]

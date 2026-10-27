@@ -1,0 +1,16 @@
+[
+ {
+  "name": "pieces-roots-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-roots-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ],
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 5 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN MAGENTA (#FF00FF) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, warm golden late-morning light from the upper left. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: 1. A LOW TUFT of small young ferns and moss, rounded and leafy, wider than tall (about 2 to 1), its base a soft mossy clump. 2. A SMALL ROUNDED MOSSY STONE, honey-grey, wider than tall (about 2 to 1), moss on its top, its base flat. 3. A SLEEPING NEST: a very shallow oval mat of soft moss and fine dry golden grass, seen from a low eye height so it is very wide and thin (about 3.5 to 1), plain and soft, a few tiny dry leaves woven in, no bowl, no rim, no pit. 4. A SMALL MISTER: a short thin weathered copper pipe, bent once, ending in a tiny brass nozzle, with a fine soft fan of mist spraying from the nozzle; small and plain, half wrapped by a thin root and a sprig of moss. 5. The same short copper pipe and tiny brass nozzle as object 4 with NO mist, alone."
+ }
+]

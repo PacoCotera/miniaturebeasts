@@ -1,0 +1,16 @@
+[
+ {
+  "name": "pieces-ferns-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-ferns-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ],
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 5 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN MAGENTA (#FF00FF) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, dappled green-gold light from the upper left, cool shade. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: 1. A LOW TUFT of small ferns, rounded and leafy, deep green with lighter new fronds, wider than tall (about 2 to 1), its base a mossy clump. 2. A SMALL CLUMP of curled croziers and tiny young fronds, low, wider than tall (about 3 to 2), its base a mossy clump. 3. A SMALL FOGGER BOWL: a low wide matte grey-green ceramic bowl, partly mossed, with a soft low fog brimming over its rim; plain and modest, wider than tall (about 2 to 1). 4. TWO THIN COPPER DRIP LINES side by side: each a very thin weathered copper tube hanging down, bent gently once, ending in a small drop at its tip; long and thin, about twelve times as long as wide. 5. ONE single clear water drop, large, alone."
+ }
+]
