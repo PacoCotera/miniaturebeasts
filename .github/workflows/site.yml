@@ -121,9 +121,11 @@ jobs:
         # The milestones whose screens are not on the face are listed from prototypes/station/tools/journey-pending/ on every run.
         run: |
           set -euo pipefail
-          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test .github/roadmap.test.mjs prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs
+          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test .github/roadmap.test.mjs prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/play/tools/journey.mjs
+          # The test page's journey (prototypes/test/tools/journey.mjs): every region at the proof sizes against the signed numbers, the menu, the switch, the dock, F and the full-screen view, the pixel rule and the safe-area override.
+          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/test/tools/journey.mjs
       - name: Placed masters match their index
         if: steps.scope.outputs.docs != 'true'
         # Every master placed in prototypes/ui/assets/masters (by ui/tools/place-masters.mjs) is checked against its index entry: file present, size, SHA-256.

@@ -4,15 +4,19 @@
 // The save schema is left out where the page writes no save (the website), and so is the Caddy's state while it is not known. Pure text (no DOM), so the formatting is unit-tested (tests/footer.test.mjs).
 import { mexicoParts } from "./stamp.mjs";
 
-export function footerText({ build = null, schema = null, caddy = null } = {}) {
+// The parts of the line, in order. `compact` is the phone's form: no copyright and no save version ("{hash} · {dd/mm HH:MM} · Caddy {online|offline}").
+export function footerParts({ build = null, schema = null, caddy = null, compact = false } = {}) {
   const short = build && (build.short || String(build.commit || "").slice(0, 7));
   const p = short && mexicoParts(build.built);
-  const parts = ["© 2026 Dirty Pawz Press", short || "local"];
+  const parts = compact ? [] : ["© 2026 Dirty Pawz Press"];
+  parts.push(short || "local");
   if (p) parts.push(`${p.day}/${p.month} ${p.hour}:${p.minute}`);
-  if (schema != null) parts.push("save v" + schema);
+  if (schema != null && !compact) parts.push("save v" + schema);
   if (caddy === true || caddy === false) parts.push("Caddy " + (caddy ? "online" : "offline"));
-  return parts.join(" · ");
+  return parts;
 }
+
+export const footerText = (o) => footerParts(o).join(" · ");
 
 // build.json beside the site's root, fetched from `url`; null when there is none.
 export async function loadBuild(url) {
