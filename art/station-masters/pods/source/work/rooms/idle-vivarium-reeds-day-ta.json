@@ -1,0 +1,16 @@
+[
+ {
+  "name": "idle-vivarium-reeds-day-ta",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/pick-reeds-aB.png",
+    "IMAGE 1, THE APPROVED CONCEPT (option aB): the room's planting, palette, season, mood and light; never its frame, posts or the small blocks at its front:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9. Image 1 is the approved concept for this room. Paint THIS room as a finished painting with the same planting, palette, season, mood and light as Image 1, showing ONLY the inside of the terrarium, edge to edge, wide, from a low eye height, straight on: no case, no frame, no window posts, no glass edges, no box. Finish: a hand-painted miniature diorama, fine painterly grain on everything, the back softly out of focus with gentle bokeh, the ground sharp; never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no fish, no figures, no text, no letters, no digits, no UI. NO fittings or objects of any kind: no lantern, no bamboo, no pipes, no gates, no planters, no boxes, no blocks; and NO small pieces standing at the front of the ground: the front of the ground is plain. THE ROOM: a sedge meadow just after rain, a CONCAVE composition: silver-green sedges beaded with raindrops stand tall at BOTH sides (the left quarter and the right quarter), lower towards the middle, around an OPEN CENTRE where a pale soft haze fills the back and gives depth. The focal point: one rain-darkened rounded rock, smooth and weathered, at about 38 percent of the width, its top at about 55 percent of the height, half among low sedges, sitting behind the ground's back edge. LEVELS: the MAIN GROUND is short wet moss in large soft patches, calm and low in contrast, with one darker strip of damp fine soil winding back from the front centre towards the rock like a path, narrowing as it goes; NO puddles, no water patches, no blue; it runs across the full width from about 72 percent of the height down to about 97 percent. At the RIGHT, from about 70 percent of the width to the right edge, a LOW MOSSY BANK, a raised level whose flat walkable top runs from about 62 to 70 percent of the height, its front lip soft and rounded, with sedges behind it; a gentle mossy slope from about 62 to 70 percent of the width joins the bank down to the main ground. The bottom 3 percent is a thin dark soil strip across the full width. Everything taller than the moss stands behind the ground's back edge or behind the bank, never on the open ground. Soft bright overcast light, cool grey-green above, a warm moss ground."
+ }
+]

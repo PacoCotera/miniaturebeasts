@@ -1,0 +1,16 @@
+[
+ {
+  "name": "idle-vivarium-ferns-day-ta",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/pick-ferns-aA.png",
+    "IMAGE 1, THE APPROVED CONCEPT (option aA): the room's planting, palette, season, mood and light; never its frame, posts or the small blocks at its front:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9. Image 1 is the approved concept for this room. Paint THIS room as a finished painting with the same planting, palette, season, mood and light as Image 1, showing ONLY the inside of the terrarium, edge to edge, wide, from a low eye height, straight on: no case, no frame, no window posts, no glass edges, no box. Finish: a hand-painted miniature diorama, fine painterly grain on everything, the back softly out of focus with gentle bokeh, the ground sharp; never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no fish, no figures, no text, no letters, no digits, no UI. NO fittings or objects of any kind: no lantern, no bamboo, no pipes, no gates, no planters, no boxes, no blocks; and NO small pieces standing at the front of the ground: the front of the ground is plain. THE ROOM: a shaded fern dell, a TRIANGULAR composition rising to the RIGHT: low ferns at the left, the fern bank climbing higher and denser to the right, deep green with golden flecks of sun, dappled green-gold light, cool shade. A mossy fallen log lies on the ground's back edge as a leading line, rising gently from the low left (about 12 percent of the width) up towards the right (about 64 percent), never crossing the open ground. The focal point: a cluster of curled croziers and lit young fronds at about 62 percent of the width, just behind the log's upper end; a shaded hollow behind the log at the right of centre with a faint low mist lying along the back. LEVELS: the MAIN GROUND is short bright moss with one darker strip of peat winding back from the front left towards the focal point, narrowing as it goes; calm, low in contrast, no leaves, nothing scattered on it; it runs across the full width from about 74 percent of the height down to about 97 percent. At the RIGHT, from about 72 percent of the width to the right edge, a RAISED MOSSY SHELF, a level whose flat walkable top runs from about 60 to 68 percent of the height, its front lip soft and rounded, with ferns behind it; a gentle mossy slope from about 64 to 72 percent of the width joins it down to the main ground. The bottom 3 percent is a thin dark soil strip. No tree trunks, no forest: it is a terrarium planting. No hanging lines, no bowls."
+ }
+]

@@ -6413,5 +6413,39 @@
    "thoughtsTokenCount": 327,
    "totalTokenCount": 2694
   }
+ },
+ {
+  "tag": "idle-vivarium-reeds-day-ta try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.199356,
+  "mxn": 3.9871,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:46:04Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 858,
+   "candidatesTokenCount": 1423,
+   "thoughtsTokenCount": 224,
+   "totalTokenCount": 2505
+  }
+ },
+ {
+  "tag": "idle-vivarium-ferns-day-ta try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.21942,
+  "mxn": 4.3884,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:46:20Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 870,
+   "candidatesTokenCount": 1513,
+   "thoughtsTokenCount": 301,
+   "totalTokenCount": 2684
+  }
  }
 ]

@@ -155,5 +155,143 @@
   ],
   "pieces_to_place": "the two front occluders, the stone lantern and the koi are painted separately (composite method) and placed by hand; the pond's koi layer is masked to the pond [330,320,230,70]",
   "ambient": "koi under the pond surface; maple leaves stirring and a leaf falling onto the island; warm light shift across the moss"
+ },
+ "reeds": {
+  "concept": "sedge meadow after rain (option sheet a, tile B, owner's pick 18:15, plus the rock)",
+  "form": "concave: sedges tall at both sides, the open centre with haze; the rock at ~32 % (focal), a damp-soil path winding back to it",
+  "day": "rooms/signed-idle-reeds-day.png",
+  "source": "idle-vivarium-reeds-day-ta (gemini-3-pro-image), ground-band grade gain 1.2604 (target L* 40)",
+  "sha256": "b6730d17154bc9791639eb9a3d0edfd098c5045b5f407bc0b5fe26e41f7f7f9b",
+  "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings (composite method), no front pieces; day floor L* 40.1, whole 57.4 (the haze); painted finish; Home cut holds the rock, the path and the haze; no water patches; all six minis read on the moss, the path and the bank",
+  "levels": [
+   {
+    "id": "main",
+    "profile": {
+     "x": [
+      16,
+      200,
+      430,
+      560,
+      700,
+      1009
+     ],
+     "top_painting": [
+      470,
+      432,
+      405,
+      395,
+      478
+     ]
+    },
+    "bottom_painting": 551
+   },
+   {
+    "id": "bank",
+    "profile": {
+     "x": [
+      720,
+      990
+     ],
+     "top_painting": [
+      338
+     ]
+    },
+    "bottom_painting": 372,
+    "note": "the low mossy bank at the right; its front lip is a soft moss face",
+    "joins": [
+     {
+      "to": "main",
+      "kind": "ramp",
+      "rect_painting": [
+       600,
+       360,
+       120,
+       80
+      ]
+     }
+    ]
+   }
+  ],
+  "occluders": [
+   {
+    "id": "reeds-sedge-1",
+    "level": "main",
+    "rect_painting": [
+     0,
+     380,
+     200,
+     140
+    ],
+    "foot_painting": 520,
+    "keepOut_painting": [
+     16,
+     500,
+     170,
+     20
+    ],
+    "edge": "hard",
+    "what": "the left sedge spill, leafy"
+   }
+  ],
+  "pieces_to_place": "the rain cup (half hidden in the right sedges behind the bank), two front occluders",
+  "superseded": "sa, sb, sc"
+ },
+ "ferns": {
+  "concept": "fern dell (option sheet a, tile A, owner's pick 18:15)",
+  "form": "triangular rising to the right; the log leads up to the crozier cluster at ~45 % (focal); a peat path winds back",
+  "day": "rooms/signed-idle-ferns-day.png",
+  "source": "idle-vivarium-ferns-day-ta (gemini-3-pro-image), ground-band grade gain 1.31 (target L* 40)",
+  "sha256": "1f05406ac192eca39aa6a96c3f58935c7648d639621ed643580e697e6d5ce199",
+  "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings, no front pieces, no hanging lines; day floor L* 40.0, whole 39.0; painted finish; Home cut holds the log, the croziers and the path; all six minis read on the moss, the path and the shelf",
+  "levels": [
+   {
+    "id": "main",
+    "profile": {
+     "x": [
+      16,
+      180,
+      460,
+      700,
+      1009
+     ],
+     "top_painting": [
+      420,
+      380,
+      360,
+      455
+     ]
+    },
+    "bottom_painting": 551
+   },
+   {
+    "id": "shelf",
+    "profile": {
+     "x": [
+      720,
+      1009
+     ],
+     "top_painting": [
+      292
+     ]
+    },
+    "bottom_painting": 330,
+    "note": "the raised mossy shelf at the right; its front face is moss",
+    "joins": [
+     {
+      "to": "main",
+      "kind": "ramp",
+      "rect_painting": [
+       600,
+       330,
+       120,
+       90
+      ]
+     }
+    ]
+   }
+  ],
+  "occluders": [],
+  "pieces_to_place": "the fogger bowl in the hollow behind the log at the right of centre (seat ~[520,300,100,60]), two thin copper lines in shade among the right fronds below row 200, two front occluders",
+  "superseded": "sa, sb, sc"
  }
 }
