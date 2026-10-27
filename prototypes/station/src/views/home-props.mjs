@@ -72,7 +72,7 @@ export function wordsOf(need, spec) {
   return { notice, action: fill(N.action, vals) };
 }
 
-// The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state, its picture by the light and, away, its mark. R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
+// The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state and its picture by the light (the Companion's mark is not drawn: the bed's `mark` is always ""). R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
 // The light of an hour (frame.json light.from: [[start hour, light], …]): a light runs until the next start, the last wraps midnight. The hour is the host's; a view never reads a clock.
 export function lightAt(hour, L) {
   const from = [...L.from].sort((a, b) => a[0] - b[0]), at = from.filter(([h]) => h <= hour).at(-1) ?? from.at(-1);
@@ -127,7 +127,7 @@ export function livingOf(m, R, req, ph, L) {
   const bed = m.noBed ? null : {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
     picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state
-    mark: docked ? "" : ph(R.bed.markPicture, R.bed.mark),   // away only: the Companion's mark (home-bed-mark-16x24), 1:1 over the bed
+    mark: "",   // the Companion's mark is not drawn on the painting, docked or away (the strip tile's outline glyph and the line say it)
     sleepers, ...(m.sendoff ? { sendoff: true } : {}),
   };
   return { residents, sleepers, bed };
@@ -145,7 +145,7 @@ export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
   const out = [], cs = S.bayCrates(st, sv), art = (w) => S.aAn(w).split(" ")[0];
   if (S.docked(st) && cs.length) out.push({ key: "crates", n: cs.length, max: 3, act: "cargo" });
   if (S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });
-  { const rc = readyCrates(st, settings, now)[0]; if (rc) out.push({ key: "portrait", act: "cargo", name: S.mibiById(st, rc.mibiId)?.name ?? "" }); }
+  if (readyCrates(st, settings, now).length) out.push({ key: "portrait", act: "cargo" });
   const meet = ui.meet != null ? S.mibiById(st, ui.meet) : null; if (meet) out.push({ key: "meet", name: meet.name, act: "meet" });
   const unseen = st.tray.filter((p) => !p.idd && !p.seen); if (unseen.length) out.push({ key: "newPods", n: unseen.length, max: 6, act: "pods" });
   const glint = st.tray.filter((p) => S.podGlints(st, p)); if (glint.length) out.push({ key: "glints", n: glint.length, max: 6, act: "pods" });
@@ -232,7 +232,7 @@ function lineWords(m, spec, frame, v) {
   const Sg = spec.strings, { cur } = v;
   if (cur === "room") {
     const W = { strings: { needs: Sg.line.needs } };   // Home's own table: each need's action (the first) and notice (the second), the counts spelled
-    if (v.needs.length) return { needs: v.needs.slice(0, spec.regions.line.needs).map((nd, i) => { const w = wordsOf(nd, W); return i === 0 ? w.action : nd.key === "portrait" && !nd.name ? Sg.line.needs.portrait.noticeNoName : w.notice; }), ...(v.needs.slice(1, 2)[0]?.key === "portrait" && v.needs[1].name && spec.regions.line.needs > 1 ? { name: v.needs[1].name } : {}) };   // name: drawn in orange inside the portrait notice
+    if (v.needs.length) return { needs: v.needs.slice(0, spec.regions.line.needs).map((nd, i) => { const w = wordsOf(nd, W); return i === 0 ? w.action : w.notice; }) };
     const goal = S.goalKey(m.st, m.sv, m.settings), g = goal && goalWords(goal, !!m.docked, frame);
     return g ? { goal: g } : {};
   }

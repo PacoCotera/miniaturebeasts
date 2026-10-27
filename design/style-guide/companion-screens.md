@@ -410,7 +410,7 @@ Wireframes, 450×600 at 1×, measured boxes and slot labels only, no art: [`wire
 
 ### What never shows
 
-- No meter, bar, number, need or count for care, Tends or the bond. Nothing says how close a mibi is to bonding or to growing up. Nothing is amber because a mibi has not been tended.
+- No meter, bar, number, need or count for care, Tends or the bond. Nothing says how close a mibi is to bonding or to growing up. *Decided, not yet built:* the Tend that makes the bond carries one warning first, in the words "a bond is for good". Nothing is amber because a mibi has not been tended.
 - An unbonded mibi shows no heart at all, never a dim one: the bond is never a need.
 - Undocked, a mibi at home is never shown: not in the roster, not as a page, not as a dot.
 - A mibi the Station has released is never shown, docked or not: not a row, a page, a dot, a face or a name, and no count includes it.

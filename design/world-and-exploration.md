@@ -320,7 +320,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
   square: an idea to design.
 - **Research "studies"**: what a study is and what it reveals (today a 2 Data
   placeholder at the Station).
-- **The swimmer**: the fast-water gate has no species that opens it yet.
+- **The swimmer**: the taxonomy gives the fast-water gate to S10 (Igara); the Companion does not play a swimmer ability yet.
 - **Night and Waterside** expedition types (Night needs a glowing partner, uses
   short sight and nocturnal routines); the rest of the three to five V1 types and
   about ten kinds of event.

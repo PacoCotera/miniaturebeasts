@@ -1,5 +1,5 @@
 {
- "note": "The frame as components/frame.mjs draws it (the JavaScript, through the node path of face-lvgl.mjs, on the WebAssembly face with the stand-in pictures of words.test.mjs and the face's own Inter widths): the props of each case and the framebuffer's hash. The words must draw the same pixels. Frozen: regenerated only when the frame spec or the stand-ins change. Retaken from the words on B4a-2 when the frame spec moved the notice and the way back (Vivarium): the old spec reproduced every hash, and the pixels that differ lie in the notice and way-back zone only. Retaken again on B4a-2 for the Station palette of ui-kit.md §2 (the Station's 14): each case drawn under the old and the new palette, and every old colour maps to one new colour, so only the colours changed.",
+ "note": "The frame as components/frame.mjs draws it (the JavaScript, through the node path of face-lvgl.mjs, on the WebAssembly face with the stand-in pictures of words.test.mjs and the face's own Inter widths): the props of each case and the framebuffer's hash. The words must draw the same pixels. Frozen: regenerated only when the frame spec or the stand-ins change. Retaken from the words on B4a-2 when the frame spec moved the notice and the way back (Vivarium): the old spec reproduced every hash, and the pixels that differ lie in the notice and way-back zone only. Retaken again on B4a-2 for the Station palette of ui-kit.md §2 (the Station's 14): each case drawn under the old and the new palette, and every old colour maps to one new colour, so only the colours changed. Retaken for the frame's fixes: the turn reads \"Turn {n}\", the price stands 12 from the verb, a blocked action takes the dimmed cap, a changed figure is drawn in its role's `changed` variant with no plate.",
  "cases": [
   {
    "name": "a plain screen",
@@ -34,7 +34,7 @@
      }
     }
    },
-   "hash": "d6a8c785"
+   "hash": "0122f94d"
   },
   {
    "name": "flashes, a big turn, the Companion away with a mibi",
@@ -72,7 +72,7 @@
      }
     }
    },
-   "hash": "594798c2"
+   "hash": "13284f24"
   },
   {
    "name": "a long subject, a price too short for it, a notice, a long way back",
@@ -109,7 +109,7 @@
      }
     }
    },
-   "hash": "9ff87d94"
+   "hash": "aa8ec124"
   },
   {
    "name": "a dimmed action with a price",
@@ -144,10 +144,10 @@
      }
     }
    },
-   "hash": "2bec14c4"
+   "hash": "6bd08db4"
   },
   {
-   "name": "a blocked action with a price: no cap, the verb and the price in mist, the verb where it stood (face; 1x capture to the UI designer)",
+   "name": "a blocked action with a price: the dimmed cap, the verb and the price in mist, the verb where it stood (face; 1x capture to the UI designer)",
    "props": {
     "screen": "pods",
     "frame": {
@@ -181,7 +181,7 @@
      }
     }
    },
-   "hash": "30fc17bf"
+   "hash": "62c25e1f"
   },
   {
    "name": "a dimmed action, one figure short: only that figure amber (face; 1x capture to the UI designer)",
@@ -219,7 +219,7 @@
      }
     }
    },
-   "hash": "cc3413f6"
+   "hash": "b9e5e31e"
   },
   {
    "name": "a one-line message",
@@ -254,7 +254,7 @@
      }
     }
    },
-   "hash": "dbf5c857"
+   "hash": "a4a21e1f"
   },
   {
    "name": "a message of three lines",
@@ -289,7 +289,7 @@
      }
     }
    },
-   "hash": "7a3e22c7"
+   "hash": "6dc27b4f"
   },
   {
    "name": "a message over the focal box goes to the top",
@@ -329,7 +329,7 @@
      }
     }
    },
-   "hash": "d9c8ce13"
+   "hash": "deef02cb"
   }
  ]
 }

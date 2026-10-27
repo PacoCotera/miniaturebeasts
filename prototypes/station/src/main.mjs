@@ -15,6 +15,7 @@ import { startScene, endScene, sceneTick, sceneTime, sceneBeat, SCENE_MS } from 
 import { setFrames, frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
+import { mountFooter, caddyAnswers } from "../../play/src/footer.mjs";
 import { watch as watchHabitat, openCross as openCrossAt } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
@@ -28,12 +29,12 @@ import * as create from "./intents/create.mjs";
 import * as frameIntents from "./intents/frame.mjs";
 import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, lightIds, pinned, picture, setEnv, setMetrics, libraryAhead } from "./host.mjs";
 import { warmLibraryNext, wantLibrary, libraryWaiting, warmLibraryPaper } from "./pictures.mjs";
-import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL } from "../../ui/assets.mjs";
+import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
 
 const $ = (id) => document.getElementById(id);
 const vis = $("screen"); let vctx = null;   // the page's screen: the face copies what it redrew onto it (face.display)
-const stampEl = $("stamp"), bootEl = $("boot");
-if (new URLSearchParams(location.search).has("dev")) { stampEl.hidden = false; $("devBtn").hidden = false; }   // the build stamp and the Developer tools button are for ?dev only (the Shift+T key stays on the play page)
+const bootEl = $("boot");
+if (new URLSearchParams(location.search).has("dev")) $("devBtn").hidden = false;   // the Developer tools button is for ?dev only (the Shift+T key stays on the play page)
 
 // --- the frames, fetched beside the page (the sandbox publishes prototypes/* side by side) ---
 async function loadFrames() {
@@ -46,7 +47,7 @@ async function loadFrames() {
 
 // --- the face ---
 let dockElsewhere = false;   // ?embed: the play page's Dock control asked while another device had the keys (frame.json navigation.dock); never set standalone
-let FACE = null, H = null, lastLog = null, lastProps = null, lastOwed = [], msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set(), sitHeld = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
+let FACE = null, H = null, lastLog = null, lastProps = null, lastOwed = [], lastSent = [], msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set(), sitHeld = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
 const renderErrors = [];   // every error the face or a frame raised, kept for the checks to read
 const said = [];   // the focus and the intents the face said, for the journey's golden (window.__st.said() takes and clears them)
 const faceErrors = [];
@@ -86,7 +87,7 @@ function syncProps() {
   queueWarm();   // after the props are built, before the early return: a warm that was held waits for the hold, not for a change of props
   for (const id of p.dropped ?? []) FACE.drop(id);   // a picture a newer one superseded leaves the face (the Library 3 gate's P4)
   if (key === lastProps && !p.dropped?.length) return;
-  { FACE.beginScene(); for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
+  { FACE.beginScene(); lastSent = []; for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) if (FACE.handleOf(id, picture) >= 0) lastSent.push(id); }   // Idle needs only its own pictures; lastSent: the pictures this scene gave the face (an empty slot gives none)
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());
   else { const light = p.light ?? lastLight; if (lastLight && lastLight !== light) for (const id of lightIds(lastLight)) FACE.drop(id); if (lastLight && lastLight !== light) for (const id of litHeld) if (!p.ids.includes(id)) { FACE.drop(id); litHeld.delete(id); } for (const id of p.lit ?? []) litHeld.add(id); lastLight = light;   // fix 7: at a light change the graded residents the new props do not name go with the old light
   // one light's pictures in memory, plus one frame of the next
@@ -203,11 +204,7 @@ function showDev(on) { if (inShell) { devOn = on; if (on) refreshDev(); return; 
 function refreshDev() { if (devOut && (inShell ? true : !devEl.hidden) && devOut.dataset.live === "1") devOut.textContent = genomesText(); }
 devBtn.addEventListener("click", (e) => { showDev(devEl.hidden); e.currentTarget.blur(); });
 onChange(refreshDev);
-fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => {
-  const short = j.short || String(j.commit || "").slice(0, 7), d = new Date(j.built);
-  let t = ""; if (!isNaN(d)) t = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Mexico_City", hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
-  stampEl.textContent = short ? "build " + short + (t ? " · " + t : "") : "local build";
-}).catch(() => { stampEl.textContent = "local build"; });
+mountFooter($("buildFoot"), { buildUrl: "../../build.json", schema: S.ST_SCHEMA, caddy: caddyAnswers });   // the build footer (page chrome, always shown): build, save version, whether the Caddy service answers
 
 // --- boot ---
 for (const id of ["howTo", "whatTry"]) $(id).open = false;
@@ -259,8 +256,9 @@ window.__st = { ready, renderErrors, portraitSource: (digest, rgba) => { const r
   say: (t) => msg(t), act: (k) => act(k), press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(H, fromIdle), openBay: () => { const r = S.openBay(G.st, G.sv, G.settings, Date.now()); save(); return r; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => H.goto(s),
   get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel, invOverflows: () => FACE.invOverflows(), invCap: () => FACE.invCap(), pass: FACE.pass, hide: FACE.hide, offPalette: FACE.offPalette, forceFull: FACE.forceFull, errors: faceErrors.slice(), log: () => lastLog,
     frameTable: () => { const P = lastProps ? JSON.parse(lastProps) : null; if (!P) return null; FACE.props({ ...P, regions: undefined, motion: motion() }); FACE.frame(clock.now); pump(); const n = lastLog?.table ?? null; FACE.props({ ...P, motion: motion() }); FACE.frame(clock.now); pump(); return n; } } : null; },   // the layer check: the node table of the frame alone (the same props with no regions), the scene's own then put back,
-  // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, the ids of the scene's requests that carry an owed habit key, and with `capture` the PNG.
-  snapshot: ({ capture = false } = {}) => { const f = FACE, out = { hash: f.hash(), errors: faceErrors.slice(), refused: f.refused(), owed: lastOwed.slice() }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },
+  // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, the ids of the scene's requests that carry an owed habit key,
+  // the pictures the scene gave the face that no golden may draw (standIns: the placed masters the masters index flags placeholder or stand-in; builtStandIns: the built pictures registered stand-in), and with `capture` the PNG.
+  snapshot: ({ capture = false } = {}) => { const f = FACE, out = { hash: f.hash(), errors: faceErrors.slice(), refused: f.refused(), owed: lastOwed.slice(), standIns: lastSent.filter((id) => { const e = assetEntry(id); return !!e?.file && NOT_IN_GOLDENS.includes(e.status); }), builtStandIns: lastSent.filter((id) => { const e = assetEntry(id); return !!e && !e.file && BUILT_NOT_IN_GOLDENS.includes(e.status); }) }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },
   libraryWarm: () => { let n = 0; while (warmLibraryNext(LIB_ENV)) n++; return n; }, libraryWaiting,   // the Library's pictures waiting to be made, made now (the goldens take a scene once they are)
   get msg() { return FX.msg; }, capture: () => vis.toDataURL("image/png"), holding: () => H.holding(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, frameOf, frameIds, podById, genomesText, podGenome, genomeSha, nameCode,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); const pb = stampArt(fr, p.genome, p.read, side); return { width: pb.w, height: pb.h, data: pb.rgba() }; },

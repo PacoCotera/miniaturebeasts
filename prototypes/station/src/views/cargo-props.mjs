@@ -105,8 +105,8 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
   const waitingNow = state === "bay" ? st.waiting.length : state === "end" ? run.plan.sim.waiting.length : run.pre.waiting.length + run.items.reduce((a, it) => a + it.st.mat.size, 0);
   const came = run ? run.items.some((it) => it.pods.some((p) => p.well >= 0)) : false, nPods = run ? run.items.reduce((a, it) => a + it.pods.filter((p) => p.well >= 0).length, 0) : 0;
   if (state === "opening") line = { ok: m.ui.skip ? Sg.skip : null, back: "Home", subject: waitingNow > run.pre.waiting.length ? wait(waitingNow) : "", need: "" };
-  else if (state === "end") line = { ok: endPortrait(st, run, sittingSpec) && Sg.end?.confirm ? Sg.end.confirm : came ? plural(nPods, Sg.newPods.one, Sg.newPods.few) : null, back: "Home", subject: waitingNow ? wait(waitingNow) : "", need: "" };   // keys.confirm.end: the portrait first, then Look at the pods
-  else { const n = ready.length; line = { ok: n ? plural(n, Sg.openOne, Sg.open) : null, back: "Home", subject: st.waiting.length ? wait(st.waiting.length) : "", need: notice() }; }
+  else if (state === "end") line = { ok: endPortrait(st, run, sittingSpec) && Sg.end?.confirm ? Sg.end.confirm : came ? plural(nPods, Sg.newPods.one, Sg.newPods.few) : waitingNow ? Sg.newPods.few : null, back: "Home", subject: waitingNow ? wait(waitingNow) : "", need: "" };   // keys.confirm.end: the portrait first, then Look at the pods (a pod came, or the rack is full)
+  else { const n = ready.length; line = { ok: n ? plural(n, Sg.openOne, Sg.open) : st.waiting.length ? Sg.newPods.few : null, back: "Home", subject: st.waiting.length ? wait(st.waiting.length) : "", need: notice() }; }
   return { props, line, requests, need };
 }
 

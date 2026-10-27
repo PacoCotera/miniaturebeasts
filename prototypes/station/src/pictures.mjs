@@ -63,6 +63,9 @@ export function stampPicture(frame, genome, readIds) {
 
 // A picture that is a placed master of another id at exactly this size takes that master (a mark, a place picture, the unknown pod); otherwise the stand-in builds.
 const masterAt = (masterId, w, h) => { const m = assetEntry(masterId); return m && m.status !== "empty" && m.file && m.w === w && m.h === h ? m : null; };   // a placed master of any record status (signed, new, held, placeholder), not a built stand-in
+// A built picture the code draws itself (a creature, an item, a light or an effect) in place of its master is a stand-in, never drawn in a golden (assets.mjs BUILT_NOT_IN_GOLDENS); one it only places,
+// recolours, reduces or grades from signed pixels, a plain plate or a type glyph stays a placeholder.
+const STAND_IN = { status: "stand-in" };
 const putOrMaster = (id, masterId, w, h, until, build, extra = {}, pixelsOf = masterId) => { const m = masterId && masterAt(masterId, w, h); if (m) { if (!hasAsset(id)) placeMaster({ id, w, h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile, status: m.status }, assetOf(pixelsOf)); return id; } return put(id, w, h, until, build, extra); };   // pixelsOf: the picture the id shows (the master itself, or its per-light grade, fix 7)
 
 // The sources of a moving set's stand-in cells (Station M1 §1.5): the placed juvenile stand-in at the size, or for an adult Pip's placed stand (the adult plan), else the rig of the species' type specimen at that size; the 96 × 88 juvenile stand-in for the curl.
@@ -106,10 +109,10 @@ export function registerPictures(reqs, env) {
           data = relit({ parts: r.parts.map((p) => ({ ...src(p.id), over: (p.over ?? []).filter((o) => isFilled(o) || hasAsset(o)).map((o) => src(o).rgba) })), scale: r.scale ?? 1, figH: r.figH ?? 0, sink: r.sink ?? 0, inset: r.inset ?? 12, area: r.area, anchor: r.anchor, bg: r.bg && (isFilled(r.bg.id) || hasAsset(r.bg.id)) ? { ...src(r.bg.id), x: r.bg.at[0], y: r.bg.at[1] } : null }); return data; } }; } });
         break;
       }
-      case "place": putOrMaster(r.id, `place-${r.place}-${r.size || 16}x${r.size || 16}`, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;
-      case "kinring": putOrMaster(r.id, `ring-kin-${r.size}x${r.size}`, r.size, r.size, "the pod list master", () => kinRingPB(r.size, r.band)); break;
-      case "grow": putOrMaster(r.id, "mark-can-grow-16", 16, 16, "the can-grow mark's master", growPB); break;
-      case "waiting": putOrMaster(r.id, "mark-waiting-24", 24, 24, "the waiting mark's master", waitingPB); break;
+      case "place": putOrMaster(r.id, `place-${r.place}-${r.size || 16}x${r.size || 16}`, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16), STAND_IN); break;
+      case "kinring": putOrMaster(r.id, `ring-kin-${r.size}x${r.size}`, r.size, r.size, "the pod list master", () => kinRingPB(r.size, r.band), STAND_IN); break;
+      case "grow": putOrMaster(r.id, "mark-can-grow-16", 16, 16, "the can-grow mark's master", growPB, STAND_IN); break;
+      case "waiting": putOrMaster(r.id, "mark-waiting-24", 24, 24, "the waiting mark's master", waitingPB, STAND_IN); break;
       case "figure": put(r.id, r.size[0], r.size[1], "the figure masters (mist and clear)", () => figureFromLayers(r.mist, r.clear, r.alpha, r.size), { status: figureStatus(r.mist, r.clear) }); break;
       case "slot": {   // a master at exactly this size takes the id; otherwise the id is an empty slot, waiting
         const m = assetEntry(r.master), e = assetEntry(r.id);
@@ -123,14 +126,14 @@ export function registerPictures(reqs, env) {
         registerAsset({ id: r.id, w, h, status: "placeholder", until: LAYER_UNTIL, build: () => traitTile(r.species, "adult", r.trait, r.look, r.size) });
         break;
       }
-      case "hatch": putOrMaster(r.id, `ring-hatch-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1], "the pod list master", () => hatchPB(r.size[0])); break;
-      case "beam": put(r.id, r.size[0], r.size[1], until, () => beamArt(r.size[0], r.size[1])); break;
-      case "emblem": putOrMaster(r.id, `rail-emblem-${r.chapter}-${r.state || "unread"}-24x24`, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24)); break;
-      case "star": putOrMaster(r.id, "glint-star-12x12", 12, 12, "the glint master", starPB); break;
+      case "hatch": putOrMaster(r.id, `ring-hatch-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1], "the pod list master", () => hatchPB(r.size[0]), STAND_IN); break;
+      case "beam": put(r.id, r.size[0], r.size[1], until, () => beamArt(r.size[0], r.size[1]), STAND_IN); break;   // a code-drawn light: never in a golden
+      case "emblem": putOrMaster(r.id, `rail-emblem-${r.chapter}-${r.state || "unread"}-24x24`, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24), STAND_IN); break;
+      case "star": putOrMaster(r.id, "glint-star-12x12", 12, 12, "the glint master", starPB, STAND_IN); break;
       case "stampplate": put(r.id, r.size, r.size, "the stamp label's plate (the stampCase look)", () => labelPlate(r.size, RGB[C.bone], RGB[C.hairline], r.k)); break;   // the plate of the 120 label, dimmed by K × WARM with its hairline edge (stamplook.mjs)
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const fr = env.frameOf(r.species), g = r.bud ? env.budGenome() : r.mibi != null ? env.mibiGenome(r.mibi) : (() => { const p = env.podById(r.pod); return r.choices ? env.founderGenome(p, r.choices) : p.genome; })(); const pic = stampPicture(fr, g, r.read).build(); return r.k ? dimPicture(pic, r.k) : pic; }); break;   // with a k the stamp is dimmed in linear light when it is rasterised (stamplook.mjs)
       case "founder": { const painted = placedPic(`mibi-adult-${r.species}-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1]);   // Create founder A (interim): the species' painted adult, one flat picture, in place of the rig render
-        put(r.id, r.size[0], r.size[1], "the founder's painting (the species' painted adult where it is placed, else the stylised rig pass; the calm unknown where a chapter is unread: unknown.mjs)", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), g = env.founderGenome(p, r.choices || {}); return founderArt(fr, g, r.read, r.size[0], r.size[1], painted); }, painted ? { status: "master" } : {}); break; }   // the placeholder rig; the signed treatment (ghost, veil) on the painted layer, clear on the art layer
+        put(r.id, r.size[0], r.size[1], "the founder's painting (the species' painted adult where it is placed, else the stylised rig pass; the calm unknown where a chapter is unread: unknown.mjs)", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), g = env.founderGenome(p, r.choices || {}); return founderArt(fr, g, r.read, r.size[0], r.size[1], painted); }, painted ? { status: "master" } : STAND_IN); break; }   // the rig pass (no painted adult) is a stand-in   // the placeholder rig; the signed treatment (ghost, veil) on the painted layer, clear on the art layer
       case "crop": {   // a window of a placed master, 1:1 (never scaled): the master's pixels at `at`, `size` wide and high, transparent where the window passes the master's edge; a master not placed leaves the labelled stand-in
         const m = masterAt(r.master, r.of[0], r.of[1]), [w, h] = r.size, [x0, y0] = r.at; if (hasAsset(r.id)) break;
         if (!m) { put(r.id, w, h, r.until, () => { const pb = new PB(w, h); pb.rect(0, 0, w, h, C.stone); return pb; }); break; }

@@ -28,6 +28,7 @@ typedef struct {
   lv_image_dsc_t crop;
   uint8_t *composed; lv_image_dsc_t cdsc; uint32_t ops_hash; int ring, dd;   /* dd: the ops drew a dash or a dot (the log flags a closed box of them, fix 14 rule 4); ring: the composed ops drew a ring or tabRing (the test-mode log flags it, fix 14 rule 1) */
   uint32_t run;                 /* the run (one v_run or v_price call, prim_run) the node was sent in, 0 for none */
+  uint32_t win_gen; int win_key[4], win_solid[4], win_cut;   /* a window of a larger picture (a sprite with a source origin): its solid-ink box in the window and whether the window cuts solid ink, kept for the asset's gen and the window (the log) */
   int hold;                     /* the node is a hold mark (prim_hold: kit_focusRingHold), not a focus ring: the log counts it as a hold */
   char role[24], ground[16];    /* a text node: the role and ground the words set it by (prim_text_role), "" for a text set by size */
 } node_t;
@@ -40,9 +41,11 @@ static uint32_t g_run;   /* the run the nodes sent from now on belong to (prim_r
 static int g_hold;       /* the nodes sent from now on are a hold mark (prim_hold) */
 static char g_trole[24], g_tground[16];   /* the role and ground of the next text node (prim_text_role), cleared when it is sent */
 static char g_ops[OPS_CAP];   /* the ops of a composed picture, JSON: their own buffer, 128 KiB (the splice's wires and ticks are thousands of ops, a text run at most 1 KiB) */
-typedef struct { int w, h, layer, ring; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; int ink[4], ink_ok; } asset_t;   /* ink: the box of the pixels with alpha above 0, for the log; ink_ok 0 once the pixels may have been written */
+typedef struct { int w, h, layer, ring; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; int ink[4], ink_ok, solid[4], solid_ok; uint32_t gen; } asset_t;   /* ink: the box of the pixels with alpha above 0, solid: the solid-ink box (prim_asset_solid_box), for the log; ink_ok and solid_ok 0 once the pixels may have been written, and gen a new number then (a window's box is kept by its node against it) */
 #define SNAP_SLOT (MAX_ASSET + MAX_SRC)   /* the one face-owned picture a snapshot fills (prim_snapshot), after the sources */
 static asset_t g_a[MAX_ASSET + MAX_SRC + 1];
+static uint32_t g_gen;   /* the last gen given a picture whose pixels may have changed */
+static void touched(asset_t *s) { s->ink_ok = 0; s->solid_ok = 0; s->gen = ++g_gen; }   /* the pixels may have been written: the log's boxes are taken again */
 /* the tag of the nodes now arriving, and the clip they are inside */
 static int g_layer = LAYER_CHROME, g_region;
 static char g_reg[MAX_REGION][48];
@@ -220,7 +223,7 @@ static void dsc_of(lv_image_dsc_t *d, uint8_t *data, int w, int h, int stride) {
 uint8_t *prim_asset(int handle, int w, int h) {
   if (handle < 0 || handle >= MAX_ASSET || w <= 0 || h <= 0 || (long)w * h > 4L * 1024 * 1024) return NULL;
   free(g_a[handle].px);
-  g_a[handle].px = (uint8_t *)calloc((size_t)w * h, 4); g_a[handle].w = w; g_a[handle].h = h; g_a[handle].view_key = 0; g_a[handle].ink_ok = 0;
+  g_a[handle].px = (uint8_t *)calloc((size_t)w * h, 4); g_a[handle].w = w; g_a[handle].h = h; g_a[handle].view_key = 0; touched(&g_a[handle]);
   if (!g_a[handle].px) return NULL;
   dsc_of(&g_a[handle].dsc, g_a[handle].px, w, h, w * 4);
   return g_a[handle].px;
@@ -249,6 +252,30 @@ int prim_asset_box(int handle, int out[4]) {
   if (x1 >= 0) { out[0] = x0; out[1] = y0; out[2] = x1 - x0 + 1; out[3] = y1 - y0 + 1; }
   return 0;
 }
+/* The solid-ink box of a w x h window at (sx, sy) of a picture (C9): the span of the columns and the span of the rows that hold at least 3 pixels of alpha >= 128, as x, y, w, h in the window (all 0 when
+   none); *cut (when not NULL) is 1 when a pixel of alpha >= 128 lies on the row or the column just outside the window and inside the picture: the window cuts solid ink. -1 when the counts cannot be held. */
+static int solid_of(const asset_t *s, int sx, int sy, int w, int h, int out[4], int *cut) {
+  out[0] = out[1] = out[2] = out[3] = 0; if (cut) *cut = 0;
+  int *cols = (int *)calloc((size_t)w, sizeof *cols); if (!cols) return -1;
+  int y0 = -1, y1 = -1;
+  for (int y = 0; y < h; y++) { const uint8_t *row = s->px + ((size_t)(sy + y) * s->w + sx) * 4; int k = 0;
+    for (int x = 0; x < w; x++) if (row[x * 4 + 3] >= 128) { k++; cols[x]++; }
+    if (k >= 3) { if (y0 < 0) y0 = y; y1 = y; } }
+  int x0 = -1, x1 = -1; for (int x = 0; x < w; x++) if (cols[x] >= 3) { if (x0 < 0) x0 = x; x1 = x; }
+  free(cols);
+  if (x0 >= 0 && y0 >= 0) { out[0] = x0; out[1] = y0; out[2] = x1 - x0 + 1; out[3] = y1 - y0 + 1; }
+  if (cut) {
+    const int ys[2] = { sy - 1, sy + h }, xs[2] = { sx - 1, sx + w };
+    for (int k = 0; k < 2 && !*cut; k++) { if (ys[k] < 0 || ys[k] >= s->h) continue; for (int x = sx; x < sx + w; x++) if (s->px[((size_t)ys[k] * s->w + x) * 4 + 3] >= 128) { *cut = 1; break; } }
+    for (int k = 0; k < 2 && !*cut; k++) { if (xs[k] < 0 || xs[k] >= s->w) continue; for (int y = sy; y < sy + h; y++) if (s->px[((size_t)y * s->w + xs[k]) * 4 + 3] >= 128) { *cut = 1; break; } }
+  }
+  return 0;
+}
+int prim_asset_solid_box(int handle, int out[4]) {
+  out[0] = out[1] = out[2] = out[3] = 0; if (handle < 0 || handle >= MAX_ASSET + MAX_SRC + 1 || !g_a[handle].px) return -1;
+  asset_t *s = &g_a[handle]; if (!s->solid_ok) { if (solid_of(s, 0, 0, s->w, s->h, s->solid, NULL) < 0) return -1; s->solid_ok = 1; }
+  memcpy(out, s->solid, sizeof s->solid); return 0;
+}
 int prim_asset_alpha_box(int fh, int th, int out[4]) { return box_of(fh, th, out, 0); }
 int prim_asset_diff_box(int fh, int th, int out[4]) { return box_of(fh, th, out, 1); }
 int prim_asset_feet(int handle, int alpha, int rows, int out[3]) {
@@ -270,24 +297,32 @@ int prim_source(const char *ops, int w, int h) {
   int free_slot = -1;
   for (int i = MAX_ASSET; i < MAX_ASSET + MAX_SRC; i++) { if (g_a[i].px && g_a[i].src_key == key && g_a[i].w == w && g_a[i].h == h) return i; if (!g_a[i].px && free_slot < 0) free_slot = i; }
   if (free_slot < 0) return -1;
-  asset_t *s = &g_a[free_slot]; s->px = (uint8_t *)calloc((size_t)w * h, 4); s->ink_ok = 0; if (!s->px) return -1;
+  asset_t *s = &g_a[free_slot]; s->px = (uint8_t *)calloc((size_t)w * h, 4); touched(s); if (!s->px) return -1;
   if (prim_compose(s->px, w, h, ops) < 0) { free(s->px); s->px = NULL; return -1; }
   s->w = w; s->h = h; s->src_key = key; s->ring = g_ringdrawn; s->view_key = 0; dsc_of(&s->dsc, s->px, w, h, w * 4); return free_slot;
 }
 /* The framebuffer rect (x, y, w, h) as the screen's objects draw it now, copied into the face's one snapshot picture (lv_snapshot): the Incubate panel's right window shows Create as it stood when it was left. Returns the picture's handle, or -1 (a rect outside the screen, no memory). A later call replaces the picture; prim_snapshot_free releases it. */
+static char g_snap_js[65536]; static int g_snap_len = -1, g_snap_from[4];   /* the snapshot's source nodes (the log's entries, cut to its rect) as they were when it was taken, and that rect; -1: none */
+static node_t *find_node(uint32_t id);
+static int node_json(char *buf, int cap, int *pn, node_t *nd, const int *cut, int first);
+static void snap_record(int x, int y, int w, int h) {   /* the screen's nodes now, cut to the snapshot's rect, for the log (log.snapshot): log only, no pixel */
+  int n = 0, first = 1, cut[4] = { x, y, w, h }; g_snap_len = -1; lv_obj_update_layout(lv_screen_active());
+  for (int k = 0; k < g_nseq; k++) { node_t *nd = find_node(g_seq[k]); if (!nd || !nd->seen) continue; int r = node_json(g_snap_js, (int)sizeof g_snap_js, &n, nd, cut, first); if (r < 0) return; if (r) first = 0; }
+  g_snap_len = n; memcpy(g_snap_from, cut, sizeof cut);
+}
 int prim_snapshot(int x, int y, int w, int h) {
   if (x < 0 || y < 0 || w <= 0 || h <= 0 || x + w > 1024 || y + h > 600) return -1;
   lv_draw_buf_t *b = lv_snapshot_take(lv_screen_active(), LV_COLOR_FORMAT_ARGB8888); if (!b) return -1;
-  asset_t *s = &g_a[SNAP_SLOT]; free(s->px); s->px = (uint8_t *)calloc((size_t)w * h, 4); s->ink_ok = 0;
+  asset_t *s = &g_a[SNAP_SLOT]; free(s->px); s->px = (uint8_t *)calloc((size_t)w * h, 4); touched(s);
   if (!s->px) { lv_draw_buf_destroy(b); return -1; }
   const uint8_t *src = (const uint8_t *)b->data; const uint32_t stride = b->header.stride;
   for (int yy = 0; yy < h; yy++) memcpy(s->px + (size_t)yy * w * 4, src + (size_t)(y + yy) * stride + (size_t)x * 4, (size_t)w * 4);
   lv_draw_buf_destroy(b);
-  s->w = w; s->h = h; s->layer = LAYER_PAINTED; s->view_key = 0; dsc_of(&s->dsc, s->px, w, h, w * 4); return SNAP_SLOT;
+  s->w = w; s->h = h; s->layer = LAYER_PAINTED; s->view_key = 0; dsc_of(&s->dsc, s->px, w, h, w * 4); snap_record(x, y, w, h); return SNAP_SLOT;
 }
-void prim_snapshot_free(void) { asset_t *s = &g_a[SNAP_SLOT]; free(s->px); memset(s, 0, sizeof *s); }
+void prim_snapshot_free(void) { asset_t *s = &g_a[SNAP_SLOT]; free(s->px); memset(s, 0, sizeof *s); g_snap_len = -1; }
 int prim_snapshot_handle(void) { return g_a[SNAP_SLOT].px ? SNAP_SLOT : -1; }
-uint8_t *prim_asset_ptr(int handle) { if (handle < 0 || handle >= MAX_ASSET) return NULL; g_a[handle].ink_ok = 0; return g_a[handle].px; }   /* the caller may write the pixels: the log's ink box is taken again */
+uint8_t *prim_asset_ptr(int handle) { if (handle < 0 || handle >= MAX_ASSET) return NULL; touched(&g_a[handle]); return g_a[handle].px; }   /* the caller may write the pixels: the log's ink and solid boxes are taken again */
 /* the nine parts of a picture as views into its own pixels (no copy): the corners at the insets l, t, r, b, and the edges and the middle as one tile each (the first `tile` px
    of the strip, or all of it when tile is 0), repeated by the objects over the target */
 #define INSETS(l, t, r, b) ((uint32_t)(l) << 24 | (uint32_t)(t) << 16 | (uint32_t)(r) << 8 | (uint32_t)(b))
@@ -491,6 +526,53 @@ static int closed_box(const node_t *nd) {
   for (int y = 0; y < h; y++) { if (px[(y * w) * 4 + 3]) lft++; if (px[(y * w + w - 1) * 4 + 3]) rgt++; }
   return 2 * top >= w && 2 * bot >= w && 2 * lft >= h && 2 * rgt >= h;
 }
+/* A box x, y, w, h cut to the rect [x0, x1) x [y0, y1): w and h 0 when nothing is left. */
+static void cut_box(int b[4], int x0, int y0, int x1, int y1) {
+  int jx = b[0] > x0 ? b[0] : x0, jy = b[1] > y0 ? b[1] : y0, kx = b[0] + b[2] < x1 ? b[0] + b[2] : x1, ky = b[1] + b[3] < y1 ? b[1] + b[3] : y1;
+  if (b[2] > 0 && b[3] > 0 && kx > jx && ky > jy) { b[0] = jx; b[1] = jy; b[2] = kx - jx; b[3] = ky - jy; } else { b[2] = 0; b[3] = 0; }
+}
+/* One node's entry of the log's node list: [id, kind, layer, region, x, y, w, h, flags, ink x, y, w, h, run, solid x, y, w, h]. The box on the screen (a clip's child cut to its clip; `cut`, when not NULL,
+   cuts it further to that rect x, y, w, h: the snapshot's source rect). Flags: 1 a ring (a composed ring op, or a nine-slice or sprite of a ring source), 2 inside a clip, 4 a hold mark (prim_hold: not a ring),
+   8 a window of a larger picture (a sprite with a source origin), 16 that window cuts solid ink (a pixel of alpha >= 128 on the source row or column just outside it), 32 composed content (the face's snapshot).
+   Then the run (prim_run). The ink is a picture's (a sprite shown whole) box of pixels with alpha above 0 on the screen, else the box. The solid box (C9): a sprite's solid ink (prim_asset_solid_box, or a
+   window's own rows and columns), a text's advance x cap top to baseline, any other node's box. 1 when written, 0 when the node shows nothing (there), -1 when buf is full. */
+static int node_json(char *buf, int cap, int *pn, node_t *nd, const int *cut, int first) {
+  int n = *pn;
+  int ax = nd->x, ay = nd->y, aw = nd->kind == FN_TEXT ? (int)lv_obj_get_width(nd->obj) : nd->w, ah = nd->kind == FN_TEXT ? (int)lv_obj_get_height(nd->obj) : nd->h; node_t *c = nd->parent ? find_node(nd->parent) : NULL;
+  if (nd->kind == FN_TEXT && !lv_label_get_text(nd->obj)[0]) return 0;
+  if (aw <= 0 || ah <= 0) return 0;
+  int ox = c ? c->x : 0, oy = c ? c->y : 0; ax += ox; ay += oy;
+  int ex = ax + aw, ey = ay + ah; if (c) { if (ax < c->x) ax = c->x; if (ay < c->y) ay = c->y; if (ex > c->x + c->w) ex = c->x + c->w; if (ey > c->y + c->h) ey = c->y + c->h; if (ex <= ax || ey <= ay) return 0; }
+  if (cut) { if (ax < cut[0]) ax = cut[0]; if (ay < cut[1]) ay = cut[1]; if (ex > cut[0] + cut[2]) ex = cut[0] + cut[2]; if (ey > cut[1] + cut[3]) ey = cut[1] + cut[3]; if (ex <= ax || ey <= ay) return 0; }
+  int ring = !nd->hold && ((nd->kind == FN_COMPOSED && nd->ring) || ((nd->kind == FN_NINE || nd->kind == FN_SPRITE) && nd->a >= 0 && nd->a < MAX_ASSET + MAX_SRC && g_a[nd->a].ring));
+  int flags = ring | (c ? 2 : 0) | (nd->hold ? 4 : 0);
+  int ink[4] = { ax, ay, ex - ax, ey - ay }, solid[4] = { ax, ay, ex - ax, ey - ay };
+  int pic = nd->kind == FN_SPRITE && nd->a >= 0 && nd->a < MAX_ASSET + MAX_SRC + 1 && g_a[nd->a].px;
+  if (pic && nd->rgb == 0) {   /* a picture shown whole: its pixels' box (a window of a larger picture keeps its box) */
+    asset_t *s = &g_a[nd->a]; if (!s->ink_ok) { prim_asset_box(nd->a, s->ink); s->ink_ok = 1; }
+    int ix = nd->x + ox + s->ink[0], iy = nd->y + oy + s->ink[1], iw = s->ink[2], ih = s->ink[3];
+    int jx = ix > ax ? ix : ax, jy = iy > ay ? iy : ay, kx = ix + iw < ex ? ix + iw : ex, ky = iy + ih < ey ? iy + ih : ey;
+    if (iw > 0 && kx > jx && ky > jy) { ink[0] = jx; ink[1] = jy; ink[2] = kx - jx; ink[3] = ky - jy; } else { ink[2] = 0; ink[3] = 0; }
+    int sb[4]; prim_asset_solid_box(nd->a, sb); solid[0] = nd->x + ox + sb[0]; solid[1] = nd->y + oy + sb[1]; solid[2] = sb[2]; solid[3] = sb[3]; cut_box(solid, ax, ay, ex, ey);
+  } else if (pic) {   /* a window of a larger picture at source (sx, sy): its own solid rows and columns, and whether it cuts solid ink, kept for the picture's gen and the window */
+    asset_t *s = &g_a[nd->a]; int sx = (int)(nd->rgb >> 16), sy = (int)(nd->rgb & 0xffff);
+    if (nd->win_gen != s->gen || nd->win_key[0] != sx || nd->win_key[1] != sy || nd->win_key[2] != nd->w || nd->win_key[3] != nd->h) {
+      if (solid_of(s, sx, sy, nd->w, nd->h, nd->win_solid, &nd->win_cut) < 0) { nd->win_solid[2] = nd->win_solid[3] = 0; nd->win_cut = 0; }
+      nd->win_gen = s->gen; nd->win_key[0] = sx; nd->win_key[1] = sy; nd->win_key[2] = nd->w; nd->win_key[3] = nd->h;
+    }
+    flags |= 8 | (nd->win_cut ? 16 : 0);
+    solid[0] = nd->x + ox + nd->win_solid[0]; solid[1] = nd->y + oy + nd->win_solid[1]; solid[2] = nd->win_solid[2]; solid[3] = nd->win_solid[3]; cut_box(solid, ax, ay, ex, ey);
+  } else if (nd->kind == FN_TEXT) {   /* the advance (the label's width) by the cap top to the baseline */
+    const lv_font_t *f = font_of(nd->a); solid[0] = nd->x + ox; solid[1] = nd->y + oy - nd->b + (f ? f->line_height - f->base_line : 0); solid[2] = aw; solid[3] = nd->b; cut_box(solid, ax, ay, ex, ey);
+  }
+  if (pic && nd->a == SNAP_SLOT) flags |= 32;
+  if (cut) cut_box(ink, ax, ay, ex, ey);
+#define NPUT(...) do { int w_ = snprintf(buf + n, (size_t)(cap - n), __VA_ARGS__); if (w_ < 0 || n + w_ >= cap) return -1; n += w_; } while (0)
+  NPUT("%s[%u,%d,%d,", first ? "" : ",", (unsigned)nd->id, nd->kind, nd->layer); if (!jstr(buf, cap, &n, g_reg[nd->region])) return -1;
+  NPUT(",%d,%d,%d,%d,%d,%d,%d,%d,%d,%u,%d,%d,%d,%d]", ax, ay, ex - ax, ey - ay, flags, ink[0], ink[1], ink[2], ink[3], (unsigned)nd->run, solid[0], solid[1], solid[2], solid[3]);
+#undef NPUT
+  *pn = n; return 1;
+}
 int prim_log_json(char *buf, int cap) {
   static const char *LAYERS[] = { "chrome", "art", "painted", "type" };
   int n = 0;
@@ -522,29 +604,21 @@ int prim_log_json(char *buf, int cap) {
       PUT(",\"role\":"); STR(nd->role); PUT(",\"ground\":"); STR(nd->ground); PUT(",\"run\":%u", (unsigned)nd->run); PUT(",\"x\":%d,\"w\":%d,\"cap\":%d,\"base\":%d", nd->x + ox, (int)lv_obj_get_width(nd->obj), top, top + nd->b); }
     PUT("}"); first = 0;
   }
-  /* every node shown with a size, in draw order, for the clearance checks: [id, kind, layer, region, x, y, w, h, flags, ink x, y, w, h, run]: the box on the screen (a clip's child cut to its clip),
-     flags 1 a ring (a composed ring op, or a nine-slice or sprite of a ring source), 2 inside a clip, 4 a hold mark (prim_hold: not a ring), then the run (prim_run); the ink is a picture's (sprite, nine-slice) box of pixels with alpha above 0 on the screen, else the box */
+  /* every node shown with a size, in draw order, for the clearance and layout checks (node_json): the face's own nodes, then the snapshot's source nodes when a node shows the snapshot */
   PUT("],\"nodes\":[");
-  first = 1;
+  first = 1; node_t *snap = NULL;
   for (int k = 0; k < g_nseq; k++) {
     node_t *nd = find_node(g_seq[k]); if (!nd || !nd->seen) continue;
-    int ax = nd->x, ay = nd->y, aw = nd->kind == FN_TEXT ? (int)lv_obj_get_width(nd->obj) : nd->w, ah = nd->kind == FN_TEXT ? (int)lv_obj_get_height(nd->obj) : nd->h; node_t *c = nd->parent ? find_node(nd->parent) : NULL;
-    if (nd->kind == FN_TEXT && !lv_label_get_text(nd->obj)[0]) continue;
-    if (aw <= 0 || ah <= 0) continue;
-    if (c) { ax += c->x; ay += c->y; }
-    int ex = ax + aw, ey = ay + ah; if (c) { if (ax < c->x) ax = c->x; if (ay < c->y) ay = c->y; if (ex > c->x + c->w) ex = c->x + c->w; if (ey > c->y + c->h) ey = c->y + c->h; if (ex <= ax || ey <= ay) continue; }
-    int ring = !nd->hold && ((nd->kind == FN_COMPOSED && nd->ring) || ((nd->kind == FN_NINE || nd->kind == FN_SPRITE) && nd->a >= 0 && nd->a < MAX_ASSET + MAX_SRC && g_a[nd->a].ring));
-    int ink[4] = { ax, ay, ex - ax, ey - ay };
-    if (nd->kind == FN_SPRITE && nd->rgb == 0 && nd->a >= 0 && nd->a < MAX_ASSET + MAX_SRC + 1 && g_a[nd->a].px) {   /* a picture shown whole: its pixels' box (a window of a larger picture keeps its box) */
-      asset_t *s = &g_a[nd->a]; if (!s->ink_ok) { prim_asset_box(nd->a, s->ink); s->ink_ok = 1; }
-      int ix = nd->x + (c ? c->x : 0) + s->ink[0], iy = nd->y + (c ? c->y : 0) + s->ink[1], iw = s->ink[2], ih = s->ink[3];
-      int jx = ix > ax ? ix : ax, jy = iy > ay ? iy : ay, kx = ix + iw < ex ? ix + iw : ex, ky = iy + ih < ey ? iy + ih : ey;
-      if (iw > 0 && kx > jx && ky > jy) { ink[0] = jx; ink[1] = jy; ink[2] = kx - jx; ink[3] = ky - jy; } else { ink[2] = 0; ink[3] = 0; }
-    }
-    PUT("%s[%u,%d,%d,", first ? "" : ",", (unsigned)nd->id, nd->kind, nd->layer); STR(g_reg[nd->region]);
-    PUT(",%d,%d,%d,%d,%d,%d,%d,%d,%d,%u]", ax, ay, ex - ax, ey - ay, ring | (c ? 2 : 0) | (nd->hold ? 4 : 0), ink[0], ink[1], ink[2], ink[3], (unsigned)nd->run); first = 0;
+    int r = node_json(buf, cap, &n, nd, NULL, first); if (r < 0) return -1; if (r) first = 0;
+    if (r && nd->kind == FN_SPRITE && nd->a == SNAP_SLOT && !snap) snap = nd;
   }
-  PUT("],\"refused\":%d,\"objects\":%d,\"table\":%d,\"pictures\":%d}", g_unknown, prim_lvgl_objects(), g_n, prim_pictures());   /* objects: the LVGL objects alive (a nine-slice is nine); table: the face's own, one a node */
+  PUT("]");
+  if (snap && g_snap_len >= 0) {   /* the snapshot: the region and place of the node that shows it, the source rect, and the source screen's nodes cut to that rect, as they were when it was taken */
+    node_t *c = snap->parent ? find_node(snap->parent) : NULL;
+    PUT(",\"snapshot\":{\"region\":"); STR(g_reg[snap->region]); PUT(",\"from\":[%d,%d,%d,%d],\"at\":[%d,%d],\"nodes\":[", g_snap_from[0], g_snap_from[1], g_snap_from[2], g_snap_from[3], snap->x + (c ? c->x : 0), snap->y + (c ? c->y : 0));
+    if (n + g_snap_len + 3 >= cap) return -1; memcpy(buf + n, g_snap_js, (size_t)g_snap_len); n += g_snap_len; PUT("]}");
+  }
+  PUT(",\"refused\":%d,\"objects\":%d,\"table\":%d,\"pictures\":%d}", g_unknown, prim_lvgl_objects(), g_n, prim_pictures());   /* objects: the LVGL objects alive (a nine-slice is nine); table: the face's own, one a node */
 #undef PUT
 #undef STR
   return n;

@@ -255,7 +255,7 @@ static void panel_pic(const char *id, const char *pic, int x, int y, int w, int 
    <pp>.stamp.lights: { c, rect } in the stamp's own pixels) as kit_panel twice, <light>.<c> and <light>.<c>.in one pixel inside; no size when unlit */
 static void stamp_slot(const char *base, const char *pp, const int r[4], int shown, const char *light) {
   char edge[24], mint[24], pic[96]; snprintf(edge, sizeof edge, "%s", v_scol(S, PR ".stamp.edge")); snprintf(mint, sizeof mint, "%s", v_scol(S, CH ".light.colour"));
-  v_region("panel", LAYER_CHROME); kit_panel(v_fmt("%s.slot", base), r[0], r[1], r[2], r[3], NULL, edge, !shown);
+  v_region("panel", LAYER_CHROME); kit_panel(v_fmt("%s.slot", base), r[0], r[1], r[2], r[3], NULL, edge, NULL, !shown);
   snprintf(pic, sizeof pic, "%s", shown ? v_pstr(v_fmt("%s.stamp.picture", pp)) : ""); int size = shown ? v_pint(v_fmt("%s.stamp.size", pp), 0) : 0, x = r[0] + v_half(r[2] - size), y = r[1] + v_half(r[3] - size);
   panel_pic(v_fmt("%s.picture", base), pic, shown ? x : r[0], shown ? y : r[1], size, size, shown && size > 0);
   int n = shown ? v_plen(v_fmt("%s.stamp.lights", pp)) : 0;
@@ -263,8 +263,8 @@ static void stamp_slot(const char *base, const char *pp, const int r[4], int sho
     int b[4] = { 0, 0, 0, 0 }, on = 0;
     for (int i = 0; i < n; i++) if (v_pint(v_fmt("%s.stamp.lights.%d.c", pp, i), -1) == c) { for (int q = 0; q < 4; q++) b[q] = v_pint(v_fmt("%s.stamp.lights.%d.rect.%d", pp, i, q), 0); on = b[2] > 0 && b[3] > 0; }
     v_region("panel", LAYER_ART);   /* over the stamp, a picture: art, as the inset's view box */
-    kit_panel(v_fmt("%s.%d", light, c), on ? x + b[0] : r[0], on ? y + b[1] : r[1], b[2], b[3], NULL, mint, !on);
-    kit_panel(v_fmt("%s.%d.in", light, c), on ? x + b[0] + 1 : r[0], on ? y + b[1] + 1 : r[1], b[2] - 2, b[3] - 2, NULL, mint, !on || b[2] < 3 || b[3] < 3);
+    kit_panel(v_fmt("%s.%d", light, c), on ? x + b[0] : r[0], on ? y + b[1] : r[1], b[2], b[3], NULL, mint, NULL, !on);
+    kit_panel(v_fmt("%s.%d.in", light, c), on ? x + b[0] + 1 : r[0], on ? y + b[1] + 1 : r[1], b[2] - 2, b[3] - 2, NULL, mint, NULL, !on || b[2] < 3 || b[3] < 3);
   }
 }
 /* the held mibi (l3.compare.held): its label, name and mark at the drawn name's end, portrait, stamp label and stamp */
@@ -303,7 +303,7 @@ static void rows(int dy) {
   int x = v_si(S, PR ".x", 0), r[4];
   /* the bud's portrait (rows.portraitSlot): the stamp slot's outline round the portrait rect, its rack pod centred in it at its own size; a mibi's face carries its own frame (the slot keeps its node, no size) */
   int bud = v_pbool("regions.panel.rows.portraitSlot", 0), pod[2]; v_srect(S, PR ".portrait.rect", r); pod[0] = v_sk(S, PR ".portraitSlot.pod", 0); pod[1] = v_sk(S, PR ".portraitSlot.pod", 1);
-  { char pedge[24]; snprintf(pedge, sizeof pedge, "%s", v_scol(S, PR ".portraitSlot.edge")); v_region("panel", LAYER_CHROME); kit_panel("panel.portrait.slot", r[0], r[1] + dy, r[2], r[3], NULL, pedge, !bud); }
+  { char pedge[24]; snprintf(pedge, sizeof pedge, "%s", v_scol(S, PR ".portraitSlot.edge")); v_region("panel", LAYER_CHROME); kit_panel("panel.portrait.slot", r[0], r[1] + dy, r[2], r[3], NULL, pedge, NULL, !bud); }
   snprintf(pic, sizeof pic, "%s", v_pstr("regions.panel.rows.portrait"));
   if (bud) panel_pic("panel.portrait", pic, r[0] + v_half(r[2] - pod[0]), r[1] + dy + v_half(r[3] - pod[1]), pod[0], pod[1], 1); else panel_pic("panel.portrait", pic, r[0], r[1] + dy, r[2], r[3], 1);
   panel_say_in("panel.head", "panel.name", v_pstr("regions.panel.rows.name"), v_si(S, PR ".name.x", 0), v_si(S, PR ".name.lineTop", 0) + dy, nrole, v_si(S, PR ".name.clip", 0));
@@ -331,8 +331,8 @@ static void panel(void) {
   int in[4], b[4]; v_srect(S, C3 ".inset.rect", in); char mini[96], edge[24], box[24]; snprintf(mini, sizeof mini, "%s", v_pstr("regions.panel.ov.picture")); snprintf(edge, sizeof edge, "%s", v_scol(S, C3 ".inset.edge")); snprintf(box, sizeof box, "%s", v_scol(S, C3 ".inset.box"));
   int shown = *mini != 0; for (int q = 0; q < 4; q++) b[q] = v_pint(v_fmt("regions.panel.ov.box.%d", q), 0);
   v_name("panel"); v_slot("panel.ov.picture", mini, v_pstr("regions.stage.picture.0"), in[0], in[1], in[2], in[3], shown);
-  v_region("panel", LAYER_CHROME); kit_panel("panel.ov.edge", in[0], in[1], in[2], in[3], NULL, edge, !shown);
-  v_region("panel", LAYER_ART); kit_panel("panel.ov.box", in[0] + b[0], in[1] + b[1], b[2], b[3], NULL, box, !shown || b[2] <= 0 || b[3] <= 0);   /* the view box is over the mini, a picture: art, never the ring's chrome */
+  v_region("panel", LAYER_CHROME); kit_panel("panel.ov.edge", in[0], in[1], in[2], in[3], NULL, edge, NULL, !shown);
+  v_region("panel", LAYER_ART); kit_panel("panel.ov.box", in[0] + b[0], in[1] + b[1], b[2], b[3], NULL, box, NULL, !shown || b[2] <= 0 || b[3] <= 0);   /* the view box is over the mini, a picture: art, never the ring's chrome */
 }
 
 static void close_words(void) {

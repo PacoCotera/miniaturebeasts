@@ -65,7 +65,7 @@ void word_specimen(const char *base) {
   if (has(ribbon) && anim_get(ANIM_RIBBON, rpid, &ra_) && ra_.elapsed >= ra_.from) {   /* a ribbon in the origin's place, from `from` ms into its event */
     int rr[4]; v_srect(S, v_fmt("%s.ribbon.rect", base), rr); int rpx = v_si(S, v_fmt("%s.ribbon.px", base), 20); char fill[24], edge[24], rtext[24];
     snprintf(fill, sizeof fill, "%s", v_scol(S, "colours.ribbonFill")); snprintf(edge, sizeof edge, "%s", v_scol(S, "colours.ribbonEdge")); snprintf(rtext, sizeof rtext, "%s", v_scol(S, "colours.ribbonText"));
-    v_region("ribbon", LAYER_CHROME); kit_panel("specimen.ribbon", rr[0], rr[1], rr[2], rr[3], fill, edge, 0);
+    v_region("ribbon", LAYER_CHROME); kit_panel("specimen.ribbon", rr[0], rr[1], rr[2], rr[3], fill, edge, NULL, 0);
     v_region("ribbon", LAYER_TYPE); v_line_at("specimen.ribbon.text", ribbon, rr[0] + v_half(rr[2]), v_cap_in(rr[1], rr[3], rpx), V_ANCHOR_CAP, rpx, rtext, V_ALIGN_CENTRE);
   } else if (spec_len(S, v_fmt("%s.origin", base)) >= 0) {
     int orr[4]; v_srect(S, v_fmt("%s.origin.rect", base), orr); int opx = v_si(S, v_fmt("%s.origin.px", base), 16), pitch = v_si(S, v_fmt("%s.origin.pitch", base), 20), maxLines = v_si(S, v_fmt("%s.origin.lines", base), 2), line = 0;

@@ -1,5 +1,6 @@
 {
  "screen": "sitting",
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 522], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#sitting",
  "frame": "frame.json",
@@ -148,6 +149,6 @@
   "pose cards and thumbs are derived per mibi and habit (mibiReq with a pose); the window's resident is the same picture at the Habitat factor",
   "the place step and after request the resident ungraded",
   "a portrayed mibi's stamp label carries spread-gilt-corner-16x16 (regions.stamp.portrayed; habitat.json regions.stamp.portrayed)",
-  "Cargo's end jumps to state portrait when regions.portrait.offeredFrom lists cargo-end; the hold on sitting crates (cargo.json dockCrates.sitting.revealNote, home.json regions.bay) lifts"
+  "Cargo's end jumps to state portrait when regions.portrait.offeredFrom lists cargo-end; the hold on sitting crates is lifted (Sitting S5): a ready portrait is counted apart in Home's line and the frame's notice (home.json strings.line.needs.portrait, strings.line.needs.crates.withPortrait) and never rides the dock arrival (cargo.json regions.dockCrates.portrait)"
  ]
 }

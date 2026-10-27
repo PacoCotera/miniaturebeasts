@@ -1,5 +1,6 @@
 {
  "screen": "pods",
+ "layout": { "stage": "bezel", "opening": [64, 69, 890, 467], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
  "overlays": { "panel": { "spec": "panel.json", "id": "wildPod", "from": "✓ on the leaf plate (the hatch)", "closes": "Keep it, ← or a room key: the screen as before, nothing spent; Return it: the pod goes back to the wild" } },
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#pods-collection-pod-overview-chapter-page",

@@ -93,8 +93,10 @@ test("the needs hold in the spec's order: crates, the bud, a portrait, a new mib
 
 test("the line at rest: at most two needs, the first by its action and the second by its notice; with none, the goal; the verb of a target on a focus; the Companion away says it is on a trip", () => {
   const sc = scenes(), line = (x, over) => build(x.st, x.sv, over).props.regions.line;
-  assert.deepEqual(line(sc.crates), { needs: ["Open the Bay"] }); assert.deepEqual(line(sc.portrait), { needs: ["Open the Bay", "Dot's portrait has come"], name: "Dot" });
+  assert.deepEqual(line(sc.crates), { needs: ["Open the Bay"] }); assert.deepEqual(line(sc.portrait), { needs: ["Open the Bay", "A portrait waits in the Bay"] }, "walk crates and a portrait: the action, then the portrait's notice; no name");
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0({ bay: [crate(1), crate(2)] }) }), { needs: ["Open the Bay", "The bud is ready"] }, "two at most, the example of the spec; each zone a line with its capital"); }
+  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); portrait(st); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay"] }, "a portrait alone: the Bay's action"); st.waiting.push({ id: "w1" }); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay", "The Pods rack is full"] }, "then the next need's notice"); dock(st, false); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay", "The Pods rack is full"] }, "away, a portrait still waits"); }
+  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the bud", "A portrait waits in the Bay"] }, "a ready bud takes the first slot, the portrait the second"); }
   { const { st, sv } = sc.docked; assert.ok(line({ st, sv }).goal, "nothing needs the player: the goal"); }
   for (const [id, verb] of Object.entries({ vivarium: "Go to the Vivarium", library: "Go to the Library", pods: "Go to Pods", incubator: "Go to the Incubator", companion: "Go to the Probe bench", bay: "Open the Bay" })) assert.deepEqual(line(sc.docked, { focus: id }), { verb }, id);
   assert.deepEqual(line(sc.away, { focus: "companion" }), { note: "The Companion is on a trip" }); assert.deepEqual(line(sc.away, { focus: "bay" }), { verb: "Open the Bay" });
@@ -155,7 +157,7 @@ const idle = (st, sv, over = {}) => idleBuild({ st, sv, settings, docked: S.dock
 test("the residents at home walk (a seed each), the carried set sleeps on the bed (a seed each too: its breath's phase, Station M1 §2.6), the bed is a PH plate in every state, the seed is the mibi's, the same every time", () => {
   const sc = scenes(), d = idle(sc.docked.st, sc.docked.sv).props.regions;
   assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.ok(d.bed.sleepers.every((s) => s.seed > 0)); assert.notDeepEqual(d.bed.sleepers.map((s) => s.seed), d.residents.map((r) => r.seed)); assert.equal(d.bed.state, "docked"); assert.equal(d.bed.mark, "", "docked: no mark on the bed"); assert.match(d.bed.picture, /^home-bed-day-192x56/);
-  const a = idle(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "away"); assert.deepEqual(a.bed.sleepers, []); assert.equal(a.bed.mark, "home-bed-mark-16x24", "away: the bed shows its mark");
+  const a = idle(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "away"); assert.deepEqual(a.bed.sleepers, []); assert.equal(a.bed.mark, "", "away: the bed's mark is not drawn");
   const n = idle(sc.empty.st, sc.empty.sv).props.regions; assert.equal(n.bed.state, "none"); assert.deepEqual(n.residents, []);
   assert.deepEqual(idle(sc.docked.st, sc.docked.sv).props.regions.residents.map((r) => r.seed), d.residents.map((r) => r.seed));
 });

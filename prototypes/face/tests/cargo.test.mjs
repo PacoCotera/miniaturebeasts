@@ -144,7 +144,8 @@ test("with a portrait crate in: four berths of 188 at x 200, 404, 608 and 812, t
 test("the line: Open them all for several crates, Open it for one, nothing when none; the waiting line in the middle when a pod waits", { skip }, async () => {
   assert.deepEqual([scene({ crates: 1 }).line.ok, scene({ crates: 2 }).line.ok, scene({ crates: 3 }).line.ok, scene({}).line.ok, scene({ away: true, crates: 2 }).line.ok], ["Open it", "Open them all", "Open them all", null, null]);
   assert.equal(scene({ crates: 1, sitting: true }).line.ok, "Open them all", "a walk crate and a portrait crate are two");
-  assert.deepEqual([scene({ pods: 6, waiting: 1 }).line.subject, scene({ pods: 6, waiting: 3 }).line.subject, scene({}).line.subject], ["a pod waits for a well", "three pods wait for a well", ""]);
+  assert.deepEqual([scene({ pods: 6, waiting: 1 }).line.subject, scene({ pods: 6, waiting: 3 }).line.subject, scene({}).line.subject], ["The Pods rack is full", "The Pods rack is full", ""]);
+  assert.deepEqual([scene({ pods: 6, waiting: 1 }).line.ok, scene({ crates: 1, pods: 6, waiting: 1 }).line.ok], ["Look at the pods", "Open it"], "nothing to open and a pod waits: ✓ Look at the pods; a crate first");
 });
 
 // ---- the hatch, its wells and the mat ----
@@ -268,10 +269,14 @@ test("a portrait crate with no digest shows the frame alone; the opening puts th
   assert.deepEqual(nb(f, "berth.3.crate"), [812 + 6, 252 + 132, 176, 138], "the portrait crate lifts in the fourth berth");
 });
 
-test("each material travels to its top-bar icon's centre: at the last frame of its 600 ms its centre is the icon's (Energy, Data, Essence), and a flash event lights the counter's figure for the frame's 240 ms without changing it", { skip }, async () => {
+test("each material travels to its top-bar icon's centre: at the last frame of its 600 ms its centre is the icon's (Energy, Data, Essence), and a flash event draws the counter's figure in its changed variant (mint, no plate) for the frame's 240 ms without changing it", { skip }, async () => {
   const { f, at } = await opening({ crates: 1, open: true, podsEach: 0 }); const icon = (m) => { const b = nb(f, `top.m.${m}.icon`); return [b[0] + b[2] / 2, b[1] + b[3] / 2]; };
   for (const [q, m, go] of [[0, "e", 700], [1, "d", 850], [2, "s", 1000]]) { at(go + 598); const b = nb(f, `t.mat.${q}`), c = [b[0] + b[2] / 2, b[1] + b[3] / 2], t = icon(m); assert.ok(Math.abs(c[0] - t[0]) <= 3 && Math.abs(c[1] - t[1]) <= 3, `${m}: ${c} is the icon's centre ${t}`); }
-  const g = await start(scene({ crates: 1 }), { t0: 1000, node: true }); logOf(g); assert.equal(nb(g, "top.m.e.flash"), null); g.send({ t: "event", kind: "flash", target: "e", ms: 240, hold: 0 }); g.frame(g.t + 16); assert.ok(nb(g, "top.m.e.flash"), "the figure flashes"); assert.equal(nb(g, "top.m.d.flash"), null, "only the counter named"); g.frame(g.t + 400); assert.equal(nb(g, "top.m.e.flash"), null, "for 240 ms"); assert.deepEqual(g.errors(), []);
+  const g = await start(scene({ crates: 1 }), { t0: 1000, node: true }), roles = () => (logOf(g)?.type ?? []).filter((e) => e.region === "materials").map((e) => e.role);
+  g.frame(g.t + 16); assert.deepEqual(roles(), ["figure", "figure", "figure"]);
+  g.send({ t: "event", kind: "flash", target: "e", ms: 240, hold: 0 }); g.frame(g.t + 16); assert.deepEqual(roles(), ["figure.changed", "figure", "figure"], "the figure that changed, and only the counter named");
+  for (const m of ["e", "d", "s"]) assert.equal(nb(g, `top.m.${m}.flash`), null, "no plate behind it");
+  g.frame(g.t + 400); assert.deepEqual(roles(), ["figure", "figure", "figure"], "for 240 ms"); assert.deepEqual(g.errors(), []);
 });
 
 // ---- reduced motion: every travel and every dither is a cut at its time, staged by the host's props (build spec 8.3) ----

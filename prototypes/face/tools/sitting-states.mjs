@@ -2,15 +2,15 @@
 // from Habitat's Portrait ✓ by the page's own keys: `sitting-pose` (three habits seen, the ring on card.0, the window Habitat's own), `sitting-pose-curl` (the ring on sleep-curled: the curl in the window, feet 380),
 // `sitting-pose-one` (one habit, sleep-curled: one card), `sitting-pose-juvenile` (a juvenile's cards and window), `sitting-place` (two places, the ring on card.1: the pond in its day light, step 0 done),
 // `sitting-place-night` (the same at night: the place step stays day light, the resident ungraded), `sitting-place-five` (five places, the ring on card.4), `sitting-confirm` (calm at the pond: the gilt at rest, the pair),
-// `sitting-confirm-armed` (the first ✓: the lit gilt, "Again: portray Dot"), `sitting-begin-150ms` (the second ✓, motion on, a virtual clock: the lit gilt mid-dither), `sitting-portrait` (portrayed, the test card at 528×392
+// `sitting-confirm-armed` (the first ✓: the lit gilt, "Again: portray Dot"), `sitting-begin-150ms` (the second ✓, motion on, a virtual clock: the lit gilt mid-dither), `sitting-portrait` (portrayed, the bone canvas at 528×392
 // as habitat-portrait-pictured's, 1:1 in the gilt's opening; the stamp with the portrayed corner; every step done) and `sitting-portrait-long-name` (a ten-letter widest name: the heading at 16 px in 248).
 // Each is asserted (screen, state, ring, armed, the heading's text) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
-import { portraitFixture } from "./portrait-fixture.mjs";
+import { boneCanvas } from "./portrait-fixture.mjs";
 import { digestOf } from "../../station/src/portrait-source.mjs";
 
-const PICTURED = await digestOf(portraitFixture());   // the test card's digest (habitat-states.mjs)
+const PICTURED = await digestOf(boneCanvas());   // the bone canvas's digest (habitat-states.mjs)
 const THREE = ["shake-dry", "calm", "sleep-curled"], POND = ["pond"], FOUR = ["pond", "rock", "wood", "cave"];   // the pod's place is the meadow (seedAdults): the places are the meadow, then the walk
 // keys: the presses after Habitat's Portrait ✓ ("pose:<habit>" and "place:<place>" move the ring to that card with the pad, then nothing more; "confirm" is ✓)
 const SCENES = {
@@ -26,7 +26,7 @@ const SCENES = {
   portrait: { habits: THREE, walked: POND, portrait: true, keys: [], state: "portrait", cur: "room" },
   "portrait-long-name": { name: "WWWWWWWWWW", habits: THREE, walked: POND, portrait: true, keys: [], state: "portrait", cur: "room" },
 };
-// The world: Dot alone in eight bays, docked, its habits seen and its places been; a sitting held (or, portrayed, calm at the pond with the test card's picture held); Habitat up close with the ring on Portrait, then ✓
+// The world: Dot alone in eight bays, docked, its habits seen and its places been; a sitting held (or, portrayed, calm at the pond with the bone canvas held as its picture); Habitat up close with the ring on Portrait, then ✓
 async function enter(page, sc) {
   await page.evaluate(([spec, digest, fx]) => {
     const w = window.__world; w.reset(); w.bays(8); if (spec.juvenile) w.young(1); else w.adults(1);
@@ -35,7 +35,7 @@ async function enter(page, sc) {
     else st.sitting = { source: "dev", key: null, at: 0 };
     S.settings.light = spec.light ?? "day"; S.settings.stationTime = "12:00"; S.UI.idle = false; S.UI.panel = null; S.UI.hab.namer = null; S.UI.meet = null; S.UI.hab.id = m.id; S.goto("habitat"); S.UI.hab.f = "portrait"; w.persist();
     S.intent({ screen: "habitat", target: "portrait", verb: "confirm" });
-  }, [{ juvenile: !!sc.juvenile, name: sc.name ?? null, habits: sc.habits, walked: sc.walked, portrait: !!sc.portrait, light: sc.light ?? null }, PICTURED, portraitFixture.toString()]);
+  }, [{ juvenile: !!sc.juvenile, name: sc.name ?? null, habits: sc.habits, walked: sc.walked, portrait: !!sc.portrait, light: sc.light ?? null }, PICTURED, boneCanvas.toString()]);
 }
 // the presses: a card named by its habit or place is reached with the pad from the ring's card (the cards' grid is 3 × 2, focus.pose.graph), one press a frame
 async function press(page, keys, wait) {

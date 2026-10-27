@@ -27,7 +27,7 @@ int v_change_box(const char *from, const char *to, int out[4]);
 /* A picture placed 1:1 by its asset id; 1 when it was drawn, 0 when the host has not sent it (a mark whose master is not placed draws nothing and the layout does not move). */
 int v_sprite(const char *id, const char *asset, int x, int y, int w, int h);
 int v_asset_size(const char *asset, int out[2]);   /* a picture's own size: 0, or -1 when the host has not sent it (a word that places a picture at its own size, 1:1) */
-int v_sprite_window(const char *id, const char *asset, int sx, int sy, int x, int y, int w, int h);   /* a w x h window of a larger picture, its source origin (sx, sy), drawn 1:1 at (x, y): 0 when the asset was not sent; at (0, 0) it is v_sprite */
+int v_sprite_window(const char *id, const char *asset, int sx, int sy, int x, int y, int w, int h);   /* a w x h window of a larger picture, its source origin (sx, sy), drawn 1:1 at (x, y): 0 when the asset was not sent; at (0, 0) it is v_sprite. The log flags the node 8 (a window), and 16 when the window cuts solid ink (prim_log_json) */
 /* The same picture's node with no size: a slot kept for a step that has not come, so showing it later never adds a node and never changes the order of the screen's nodes (§2.2). 1 when the node was sent, 0 when the host has not sent the picture. */
 int v_sprite_hidden(const char *id, const char *asset, int x, int y);
 /* ---- K1: the spec accessors, the composed node and the picture-or-slot (UI kit K1, section 3.1) ---- */
@@ -61,7 +61,8 @@ int v_slot(const char *id, const char *asset, const char *fallback, int x, int y
 int v_slot_at(const char *id, const char *asset, const char *fallback, int x, int y, int w, int h, int shown, int hx, int hy);
 /* v_clip_box(id, x, y, w, h, count): a clip over the box (x, y, w, h) that holds the next `count` nodes the caller draws (prim_node FN_CLIP). Reads nothing. Node id: v_id(id), one node, always sent; the region and layer are the caller's. Returns void. */
 void v_clip_box(const char *id, int x, int y, int w, int h, int count);
-/* v_snapshot(id, x, y, w, h): the face's own snapshot (prim_snapshot), 1:1 as a sprite at (x, y), w x h. Reads the snapshot handle; no node when there is no snapshot. Node id: v_id(id), at most one; the region and layer are the caller's (v_region). Returns 1 when drawn, 0 when there is no snapshot. */
+/* v_snapshot(id, x, y, w, h): the face's own snapshot (prim_snapshot), 1:1 as a sprite at (x, y), w x h. Reads the snapshot handle; no node when there is no snapshot. The log flags the node 32 (composed
+   content) and carries the snapshot's source nodes beside it (log.snapshot, prim_log_json). Node id: v_id(id), at most one; the region and layer are the caller's (v_region). Returns 1 when drawn, 0 when there is no snapshot. */
 int v_snapshot(const char *id, int x, int y, int w, int h);
 /* A picture nine-sliced over a w x h box: the asset's own insets and tile when the host sent them (a `slice`), else the insets l, t, r, b given; 0 when the host has not sent it. */
 int v_nine(const char *id, const char *asset, int x, int y, int w, int h, const int insets[4]);

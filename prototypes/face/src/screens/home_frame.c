@@ -22,7 +22,7 @@ static void bar_words(void) {
   char slice[96]; spec_str(H, "regions.bar.slice", slice, sizeof slice); int bar = slice[0] && wire_asset_slot(slice) >= 0;   /* the bar is on the face: its picture carries the panel and its rule; the code panel and rule stay as the same nodes of no size */
   if (bar) { v_region("bar", LAYER_PAINTED); v_sprite("bar.picture", slice, r[0], r[1], r[2], r[3]); }
   v_region("bar", LAYER_CHROME);
-  kit_panel("bar", r[0], r[1], r[2], r[3], v_scol("frame", "colours.chrome"), NULL, bar);
+  kit_panel("bar", r[0], r[1], r[2], r[3], v_scol("frame", "colours.chrome"), NULL, NULL, bar);
   kit_hairline("bar.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], v_scol("frame", "colours.rule"), 0, NULL);
   v_region("bar", LAYER_TYPE);
   char title[40], place[V_STR], date[40], clock[16];
@@ -60,11 +60,7 @@ static void line_words(void) {
     if (!v_sprite("line.lamp", home_lamp_pic("needsYou"), x0, z[1] + (z[3] - 12 + 1) / 2, lamp, lamp)) v_error("word: the amber lamp is not on the face");
     v_sprite("line.cap", capPic, x0 + lamp + lampGap, z[1] + 4, cap, cap);
     v_region("line", LAYER_TYPE);
-    { int tx = x0 + lamp + lampGap + cap + capGap; char who[V_STR]; snprintf(who, sizeof who, "%s", v_pstr("regions.line.name")); const char *at = who[0] ? strstr(full, who) : NULL;
-      if (at) {   /* a name in the notice (a portrait's) is in the verb colour, the rest in the need colour */
-        char pre[V_STR * 2], suf[V_STR * 2]; snprintf(pre, sizeof pre, "%.*s", (int)(at - full), full); snprintf(suf, sizeof suf, "%s", at + strlen(who));
-        v_run_t a = v_run("line.needs.a", pre, tx, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT); v_run_t b = v_run("line.needs.b", who, a.end, ty, px, v_scol("frame", "colours.verb"), V_ALIGN_LEFT); v_run("line.needs.c", suf, b.end, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT);
-      } else v_run("line.needs", full, tx, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT); }
+    v_run("line.needs", full, x0 + lamp + lampGap + cap + capGap, ty, px, v_scol("frame", "colours.need"), V_ALIGN_LEFT);
     return;
   }
   if (verb[0]) {
@@ -152,7 +148,7 @@ static void bezel_words(const char *key) {
   kit_bezel(key, r[0], r[1], r[2], r[3], rad, v_scol(H, "regions.bezel.fill"), v_scol(H, "regions.bezel.edge"), v_scol(H, "regions.bezel.bevel"), NULL);   /* with the bevel line on top: the first row inside the edge, between the corners */
   { char f[24], e[24]; spec_str(H, v_fmt("regions.%s.placeholder.fill", key), f, sizeof f); spec_str(H, v_fmt("regions.%s.placeholder.edge", key), e, sizeof e);
     int gone = (strcmp(key, "vivarium") == 0 && home_window_painted()) || (strcmp(key, "library") == 0 && lib_painted());   /* a window is its picture once that is on the face: the placeholder stays as a node of no size */
-    kit_panel(v_fmt("%s.window", key), win[0], win[1], win[2], win[3], f, e, gone); }   /* the window: a placeholder until its picture lands */
+    kit_panel(v_fmt("%s.window", key), win[0], win[1], win[2], win[3], f, e, NULL, gone); }   /* the window: a placeholder until its picture lands */
   if (strcmp(key, "vivarium") == 0) home_window();
   if (strcmp(key, "library") == 0) library_window();
   v_region(key, LAYER_CHROME);

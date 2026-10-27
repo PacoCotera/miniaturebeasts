@@ -54,7 +54,7 @@ void word_topBar(void) {
   snprintf(a, sizeof a, "%s", v_sstr(F, "regions.top.slice")); int bar = a[0] && wire_asset_slot(a) >= 0;   /* the bar is on the face: its own picture carries the panel and its edge rows; the code panel and rule stay as the same nodes of no size */
   if (bar) { v_region("top", LAYER_PAINTED); v_sprite("top.bar", a, r[0], r[1], r[2], r[3]); }
   v_region("top", LAYER_CHROME);
-  snprintf(c, 24, "%s", v_scol(F, "colours.chrome")); kit_panel("top", r[0], r[1], r[2], r[3], c, NULL, bar);
+  snprintf(c, 24, "%s", v_scol(F, "colours.chrome")); kit_panel("top", r[0], r[1], r[2], r[3], c, NULL, NULL, bar);
   snprintf(c, 24, "%s", v_scol(F, "colours.rule")); kit_hairline("top.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], c, 0, NULL);
   snprintf(c, 24, "%s", v_scol(F, "colours.topRule"));
   for (int i = 0; i < spec_len(F, "regions.topRules.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.topRules.x.%d", i); snprintf(id, sizeof id, "top.sep.%d", i); int y0 = v_si(F, "regions.topRules.y0", 0), y1 = v_si(F, "regions.topRules.y1", 0); kit_hairline(id, v_si(F, p, 0), y0, y1 - y0, c, 1, NULL); }
@@ -108,11 +108,9 @@ void word_topBar(void) {
     snprintf(id, sizeof id, "top.m.%c.icon", K[i]); snprintf(a, sizeof a, "icon:%s:%d", ICON[i], M_icon);
     if (!v_sprite(id, a, mx, mrect[1] + 4, M_icon, M_icon)) { snprintf(b, sizeof b, "word: the picture %.50s is not on the face", a); v_error(b); }
     int fx = mx + M_icon + M_gap, fw = widths[i] - M_icon - M_gap;
-    v_region("materials", LAYER_CHROME);
-    if (fl[i]) { snprintf(id, sizeof id, "top.m.%c.flash", K[i]); snprintf(c, 24, "%s", v_scol(F, "colours.flash")); v_rect(id, fx - 3, mrect[1], fw + 6, mrect[3], c); }
-    v_region("materials", LAYER_TYPE);
+    v_region("materials", LAYER_TYPE);   /* a figure that changed is drawn in its role's `changed` variant, with no plate behind it */
     snprintf(id, sizeof id, "top.m.%c", K[i]);
-    { char vr[40]; snprintf(vr, sizeof vr, "%s.flash", mrole); v_say(id, txt[i], fx, mtop, V_ANCHOR_CAP, fl[i] ? vr : mrole, tg, V_ALIGN_LEFT); }
+    { char vr[40]; snprintf(vr, sizeof vr, "%s.changed", mrole); v_say(id, txt[i], fx, mtop, V_ANCHOR_CAP, fl[i] ? vr : mrole, tg, V_ALIGN_LEFT); }
     (void)fw; v_inline_end();
     mx += widths[i] + M_between;
   }
@@ -138,8 +136,7 @@ void word_topBar(void) {
   { anim_state_t t; if (anim_get(ANIM_FLASH, "turn", &t) && (t.elapsed / 160) % 2 == 0) tflash = 1; }   /* the turn's flash: a second, blinking on for 160 ms and off for 160 */
   v_name("time"); v_inline("top.time");
   { int sun[4] = { fx - W_gap - mk[0], tr[1] + 4, mk[0], mk[1] }; snprintf(a, sizeof a, "%s", v_sstr(F, "regions.marks.sun")); mark("top.sun", a, sun); }
-  if (tflash) { v_region("time", LAYER_CHROME); snprintf(c, 24, "%s", v_scol(F, "colours.flash")); v_rect("top.turn.flash", fx - 3, tr[1], fw + 6, tr[3], c); }
-  v_region("time", LAYER_TYPE); { int top = v_role_cap_in(tr[1], tr[3], wrole); char vr[40]; snprintf(vr, sizeof vr, "%s.flash", wrole); v_say("top.turn", fig, fx, top, V_ANCHOR_CAP, tflash ? vr : wrole, tg, V_ALIGN_LEFT); }
+  v_region("time", LAYER_TYPE); { int top = v_role_cap_in(tr[1], tr[3], wrole); char vr[40]; snprintf(vr, sizeof vr, "%s.changed", wrole);   /* the turn that changed: its role's `changed` variant, no plate */ v_say("top.turn", fig, fx, top, V_ANCHOR_CAP, tflash ? vr : wrole, tg, V_ALIGN_LEFT); }
   v_inline_end();
 }
 
@@ -149,7 +146,7 @@ void word_bottomLine(void) {
   snprintf(a, sizeof a, "%s", v_sstr(F, "regions.line.slice")); int bar = a[0] && wire_asset_slot(a) >= 0;   /* as the top bar's */
   if (bar) { v_region("line", LAYER_PAINTED); v_sprite("line.bar", a, r[0], r[1], r[2], r[3]); }
   v_region("line", LAYER_CHROME);
-  snprintf(c, 24, "%s", v_scol(F, "colours.chrome")); kit_panel("line", r[0], r[1], r[2], r[3], c, NULL, bar);
+  snprintf(c, 24, "%s", v_scol(F, "colours.chrome")); kit_panel("line", r[0], r[1], r[2], r[3], c, NULL, NULL, bar);
   snprintf(c, 24, "%s", v_scol(F, "colours.rule")); kit_hairline("line.rule", r[0], r[1], bar ? 0 : r[2], c, 0, NULL);
   snprintf(c, 24, "%s", v_scol(F, "colours.dot"));
   for (int i = 0; i < spec_len(F, "regions.separators.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.separators.x.%d", i); snprintf(id, sizeof id, "line.sep.%d", i); int y0 = v_si(F, "regions.separators.y0", 0); kit_hairline(id, v_si(F, p, 0), y0, v_si(F, "regions.separators.y1", 0) - y0, c, 1, NULL); }
@@ -159,7 +156,7 @@ void word_bottomLine(void) {
   int A_gap = v_si(F, "regions.action.gap", 0), A_capGap = v_si(F, "regions.action.capGap", 0), A_capW = v_si(F, "regions.action.capSize.0", 0), cap[4];
   v_srect(F, "regions.action.rect", r2); v_srect(F, "regions.action.cap", cap);
   int ax = r2[0], ty = v_role_cap_in(r2[1], r2[3], arole), k = 0;
-  /* `short`: null, or the icons of the materials the price is short of, space-separated ("◆", "⚡ ◆"): only the figure after each named icon is `need`; `blocked`: an action that cannot be taken, no cap (its room stays empty, so the verb stays where it was),
+  /* `short`: null, or the icons of the materials the price is short of, space-separated ("◆", "⚡ ◆"): only the figure after each named icon is `need`; `blocked`: an action that cannot be taken: the dimmed cap,
      the verb and the price in `dim`; blocked and dim together are refused */
   char shorts[32] = ""; { int sl; const char *sr = spec_raw(P, "frame.line.short", &sl);
     if (sr && sr[0] == '"') spec_str(P, "frame.line.short", shorts, sizeof shorts); else if (sr && strncmp(sr, "null", 4) != 0) v_error("word: frame.line.short is a string of icons or null"); }
@@ -167,9 +164,8 @@ void word_bottomLine(void) {
   if (blocked && dim) { v_error("word: frame.line says dim and blocked together"); blocked = 0; }
   if (ok) {
     v_inline("line.action");   /* the cap, the verb and the price are one group */
-    if (!blocked) {
-      v_region("action", LAYER_ART);
-      int cr[4] = { ax, cap[1], cap[2], cap[3] }; snprintf(a, sizeof a, "%s", v_sstr(F, dim ? "regions.marks.capConfirmDim" : "regions.marks.capConfirm")); mark("line.cap.ok", a, cr);
+    { v_region("action", LAYER_ART);   /* the cap: dimmed when the action is dim or blocked */
+      int cr[4] = { ax, cap[1], cap[2], cap[3] }; snprintf(a, sizeof a, "%s", v_sstr(F, dim || blocked ? "regions.marks.capConfirmDim" : "regions.marks.capConfirm")); mark("line.cap.ok", a, cr);
     }
     ax += A_capW + A_capGap;
     v_region("action", LAYER_TYPE);
@@ -232,7 +228,7 @@ void word_messagePlate(void) {
   int rc[4]; layout_plate_position(maxW, pad, lead, line, centre, v_si(F, "regions.plate.bottom", 0), v_si(F, "regions.plate.topOverFocal", 0), n, widest, hasf ? focal : v_focal(), rc);   /* the props may name a box; else the screen's own focal region */
   v_region("plate", LAYER_CHROME);
   snprintf(c, 24, "%s", v_scol(F, "colours.plateShadow")); v_rect("plate.shadow", rc[0], rc[1] + 3, rc[2], rc[3], c);
-  snprintf(c, 24, "%s", v_scol(F, "colours.plate")); snprintf(c2, 24, "%s", v_scol(F, "colours.plateEdge")); kit_panel("plate", rc[0], rc[1], rc[2], rc[3], c, c2, 0);
+  snprintf(c, 24, "%s", v_scol(F, "colours.plate")); snprintf(c2, 24, "%s", v_scol(F, "colours.plateEdge")); kit_panel("plate", rc[0], rc[1], rc[2], rc[3], c, c2, NULL, 0);
   v_region("plate", LAYER_TYPE); l = buf;
   for (int i = 0; i < n; i++) { char id[24]; snprintf(id, sizeof id, "plate.l%d", i); v_say_run(id, l, centre, rc[1] + lead / 2 + i * line, prole, pg, V_ALIGN_CENTRE); l += strlen(l) + 1; }
 }

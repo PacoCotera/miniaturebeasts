@@ -2,59 +2,59 @@
  "_note": "The Vivarium's whole: docked (the carried two asleep), away, an out mibi's tile focused, empty, a housed tile and a sleeper focused, twelve residents, and the walk 8000 ms in: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "vivarium-docked": {
-   "hash": "7e3b4b12",
+   "hash": "240a9742",
    "png": "vivarium-docked.png"
   },
   "vivarium-away": {
-   "hash": "4b752ff6",
+   "hash": "3dc99717",
    "png": "vivarium-away.png"
   },
   "vivarium-mibi-out": {
-   "hash": "097d77d7",
+   "hash": "af153b1e",
    "png": "vivarium-mibi-out.png"
   },
   "vivarium-empty": {
-   "hash": "d334a09e",
+   "hash": "4a2f6dee",
    "png": "vivarium-empty.png"
   },
   "vivarium-tile": {
-   "hash": "f3de8f79",
+   "hash": "dce4b7e9",
    "png": "vivarium-tile.png"
   },
   "vivarium-sleeper": {
-   "hash": "238797ff",
+   "hash": "bdf85c4f",
    "png": "vivarium-sleeper.png"
   },
   "vivarium-twelve": {
-   "hash": "1e4bf040",
+   "hash": "d3a416f0",
    "png": "vivarium-twelve.png"
   },
   "vivarium-empty-away": {
-   "hash": "2f8d8e87",
+   "hash": "baaac3a6",
    "png": "vivarium-empty-away.png"
   },
   "vivarium-docked-dawn": {
-   "hash": "5584378a",
+   "hash": "579c5c1a",
    "png": "vivarium-docked-dawn.png"
   },
   "vivarium-docked-day": {
-   "hash": "7e3b4b12",
+   "hash": "240a9742",
    "png": "vivarium-docked-day.png"
   },
   "vivarium-docked-dusk": {
-   "hash": "e029c907",
+   "hash": "871b4737",
    "png": "vivarium-docked-dusk.png"
   },
   "vivarium-docked-night": {
-   "hash": "99b9395a",
+   "hash": "d8aa968a",
    "png": "vivarium-docked-night.png"
   },
   "vivarium-walk-8000ms": {
-   "hash": "82df7088",
+   "hash": "bb31f638",
    "png": "vivarium-walk-8000ms.png"
   },
   "vivarium-moving-8000ms": {
-   "hash": "3654c2af",
+   "hash": "00a1ecff",
    "png": "vivarium-moving-8000ms.png"
   }
  }
