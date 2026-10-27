@@ -1,6 +1,100 @@
 {
  "note": "Pieces by the composite method, cut and placed by hand at 0 MXN (tools/roomcut.py). Painting coordinates (1024x568); the whole's window y = painting y - 80. rect [x, y, w, h]; foot = the lowest row of the piece's ink; occluders are hard-edged straight alpha (ARGB8888); draw order by foot row with the walkers.",
  "light": "dawn",
+ "roots": [
+  {
+   "id": "roots-sorrel-1",
+   "kind": "occluder",
+   "level": "main",
+   "rect_painting": [
+    118,
+    496,
+    96,
+    46
+   ],
+   "foot_painting": 541,
+   "file": "rooms/pieces/roots/roots-sorrel-1-{light}.png",
+   "what": "low moss-and-wood-sorrel tuft, leafy, no flowers",
+   "keepOut_painting": [
+    124,
+    526,
+    84,
+    18
+   ],
+   "edge": "hard"
+  },
+  {
+   "id": "roots-stone-2",
+   "kind": "occluder",
+   "level": "main",
+   "rect_painting": [
+    684,
+    499,
+    68,
+    41
+   ],
+   "foot_painting": 539,
+   "file": "rooms/pieces/roots/roots-stone-2-{light}.png",
+   "what": "small rounded silver-grey stone, moss cap; clear of the bed's keepOut (x 752) and the away corner (x 668)",
+   "keepOut_painting": [
+    690,
+    524,
+    56,
+    18
+   ],
+   "edge": "hard"
+  },
+  {
+   "id": "roots-bed",
+   "kind": "bed",
+   "level": "main",
+   "rect_painting": [
+    792,
+    496,
+    192,
+    56
+   ],
+   "foot_painting": 551,
+   "file": "rooms/pieces/roots/roots-bed-{light}.png",
+   "what": "the sleeping nest (pieces-roots-a's cut) regraded to the bluebell room; the shipped home-bed shape and seat [792,496,192,56]",
+   "edge": "soft (the shipped home-bed alpha shape)",
+   "keepOut_painting": [
+    752,
+    436,
+    256,
+    116
+   ]
+  },
+  {
+   "id": "roots-mister",
+   "kind": "fitting",
+   "level": null,
+   "rect_painting": [
+    920,
+    323,
+    50,
+    34
+   ],
+   "foot_painting": 356,
+   "file": "rooms/pieces/roots/roots-mister-{light}.png",
+   "what": "a small pewter-grey line ending in a dull brass nozzle, wrapped by a root and a moss sprig, lying in the back moss mound at the right under the bluebells, resting on the moss, pointing left; its spray is a mist wisp (ambient)",
+   "edge": "hard",
+   "share_of_window_pct": 0.38
+  },
+  {
+   "id": "roots-mist-2",
+   "kind": "mist",
+   "wisp": "rooms/mist/mist-wisp-2.png",
+   "rect_painting": [
+    850,
+    324,
+    80,
+    18
+   ],
+   "alpha": 0.6,
+   "what": "the mister's spray, drifting left from the nozzle and fading"
+  }
+ ],
  "reeds": [
   {
    "id": "reeds-sedge-2",

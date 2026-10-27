@@ -1023,12 +1023,12 @@
   }
  },
  "roots": {
-  "concept": "root-and-burrow bank in warm golden light (option sheet roots a, tile A, picked by the art director; owner to confirm)",
-  "form": "triangular, high at the left: the root base and the burrow at ~41 % (focal), a soil path winding from the front right back to the burrow",
+  "concept": "bluebell bank under a silver-grey beech (option sheet roots b, tile A, the owner's pick: \"bluebells is lovely\"); rooms/pick-roots-bA.png, the tile's second hollow cloned over with moss at 0 MXN (tools/roomscene.py)",
+  "form": "triangular, high at the left: the beech's root base and the burrow at ~37 % (focal, inside Home's cut), a soil path winding from the front right back to the burrow; bluebells only behind the back edge",
   "day": "rooms/signed-idle-roots-day.png",
-  "source": "idle-vivarium-roots-day-ta (gemini-3-pro-image), ground-band grade gain 1.202 (target L* 40)",
-  "sha256": "ddcd87ee7ef8f67e47769bda7e8e5b74408760cbb1264ee7c554ecccfb053d04",
-  "signed": "art director, Mon 26 Oct 2026 18:50 (Mexico City), day composition (replaces the signed idle-vivarium-day-1024x568 for the room once its lights, near view and the bed are done; nothing placed yet): no fittings, no front pieces; day floor L* 40.0, whole 38.8; Home cut holds the burrow and the path; the bed's seat [792,496,192,56] lies on a calm moss patch; all six minis read on the terrace, the path and the moss",
+  "source": "idle-vivarium-roots-day-ub (gemini-3-pro-image): a Pro edit of idle-vivarium-roots-day-ua (the scene from tile A) giving the terrace a rounded lip and a ramp; ground-band grade gain 0.938 (target L* 40)",
+  "sha256": "ab64d5f701018c23b83d57ee80389e23ca10508d39418c890177f7f78f15c55e",
+  "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City), day composition: no fittings, no front pieces painted; day floor L* 39.9, whole 51.0; one burrow only (the focal, ~37 %, inside Home's cut), no second hollow; the bed's seat [792,496,192,56] on a plain moss patch; the terrace's lip rounded and its ramp mossy; no flowers on the walk floor (bluebells only behind the back edge); the beech a size smaller than the gold Roots, minis at the other rooms' scale; all six minis read on the terrace, the ramp, the path and the moss",
   "keeps": {
    "bed_painting": [
     792,
@@ -1062,16 +1062,16 @@
     "profile": {
      "x": [
       16,
-      250,
-      520,
-      760,
+      150,
+      330,
+      540,
       1009
      ],
      "top_painting": [
-      420,
-      350,
-      345,
-      340
+      432,
+      416,
+      392,
+      352
      ]
     },
     "bottom_painting": 551
@@ -1081,68 +1081,73 @@
     "profile": {
      "x": [
       16,
-      240
+      200
      ],
      "top_painting": [
-      296
+      292
      ]
     },
-    "bottom_painting": 356,
-    "note": "the mound's lower flank at the left",
+    "bottom_painting": 340,
+    "note": "the mound's lower flank at the left, its front lip low, rounded and mossy",
     "joins": [
      {
       "to": "main",
       "kind": "ramp",
       "rect_painting": [
-       230,
-       300,
-       140,
-       110
+       150,
+       296,
+       190,
+       130
       ]
      }
     ]
    }
   ],
   "occluders": [],
+  "superseded": {
+   "note": "the gold Roots (option sheet roots a tile A, day ta, pieces-roots-a's fern tuft, stone and mister, the near candidate ta), superseded by the owner's pick from sheet b; only pieces-roots-a's bed cut is reused, regraded",
+   "day": "rooms/superseded-idle-roots-gold-day.png",
+   "near": "rooms/superseded-near-roots-gold-day.png"
+  },
   "pieces": [
    {
-    "id": "roots-fern-1",
+    "id": "roots-sorrel-1",
     "kind": "occluder",
     "level": "main",
     "rect_painting": [
      118,
-     494,
-     85,
-     48
+     496,
+     96,
+     46
     ],
     "foot_painting": 541,
-    "file": "rooms/pieces/roots/roots-fern-1-{light}.png",
-    "what": "low fern-and-moss tuft, leafy",
+    "file": "rooms/pieces/roots/roots-sorrel-1-{light}.png",
+    "what": "low moss-and-wood-sorrel tuft, leafy, no flowers",
     "keepOut_painting": [
      124,
      526,
-     73,
+     84,
      18
     ],
     "edge": "hard"
    },
    {
-    "id": "roots-stone-1",
+    "id": "roots-stone-2",
     "kind": "occluder",
     "level": "main",
     "rect_painting": [
-     686,
-     497,
-     66,
-     43
+     684,
+     499,
+     68,
+     41
     ],
     "foot_painting": 539,
-    "file": "rooms/pieces/roots/roots-stone-1-{light}.png",
-    "what": "small honey-grey stone, moss cap, rounded; clear of the bed's keepOut (x 752)",
+    "file": "rooms/pieces/roots/roots-stone-2-{light}.png",
+    "what": "small rounded silver-grey stone, moss cap; clear of the bed's keepOut (x 752) and the away corner (x 668)",
     "keepOut_painting": [
-     692,
+     690,
      524,
-     54,
+     56,
      18
     ],
     "edge": "hard"
@@ -1159,7 +1164,7 @@
     ],
     "foot_painting": 551,
     "file": "rooms/pieces/roots/roots-bed-{light}.png",
-    "what": "the sleeping nest: moss and dry golden grass, to the new look; the shipped home-bed shape and seat [792,496,192,56]",
+    "what": "the sleeping nest (pieces-roots-a's cut) regraded to the bluebell room; the shipped home-bed shape and seat [792,496,192,56]",
     "edge": "soft (the shipped home-bed alpha shape)",
     "keepOut_painting": [
      752,
@@ -1173,43 +1178,158 @@
     "kind": "fitting",
     "level": null,
     "rect_painting": [
-     900,
-     271,
-     44,
-     36
+     920,
+     323,
+     50,
+     34
     ],
-    "foot_painting": 306,
+    "foot_painting": 356,
     "file": "rooms/pieces/roots/roots-mister-{light}.png",
-    "what": "a small copper line ending in a brass nozzle, wrapped by a root, in the right back planting, pointing left; its spray is a mist wisp (ambient)",
+    "what": "a small pewter-grey line ending in a dull brass nozzle, wrapped by a root and a moss sprig, lying in the back moss mound at the right under the bluebells, resting on the moss, pointing left; its spray is a mist wisp (ambient)",
     "edge": "hard",
-    "share_of_window_pct": 0.35
+    "share_of_window_pct": 0.38
    },
    {
     "id": "roots-mist-2",
     "kind": "mist",
     "wisp": "rooms/mist/mist-wisp-2.png",
     "rect_painting": [
-     826,
-     268,
-     76,
+     850,
+     324,
+     80,
      18
     ],
-    "alpha": 0.8,
+    "alpha": 0.6,
     "what": "the mister's spray, drifting left from the nozzle and fading"
    }
   ],
   "seated": "rooms/seated-idle-roots-{light}.png (the signed scene plus the seats' contact shadows; the engine's base under the pieces)",
   "composite_proof": "rooms/composite-idle-roots-{light}.png (proof only; never placed)",
   "piece_sheets": [
-   "source/raw/pieces-roots-a.jpg (pieces-roots-a, gemini-3-pro-image)"
+   "source/raw/pieces-roots-b.jpg (pieces-roots-b, gemini-3-pro-image): the sorrel tuft, the stone, the mister",
+   "source/raw/pieces-roots-a.jpg (pieces-roots-a): the bed cut only, regraded to the bluebell room (white balance 0.85 to its seat)"
   ],
-  "near_day_candidate": {
-   "file": "rooms/candidate-near-roots-day.png",
-   "source": "vivarium-near-roots-day-ta (gemini-3-pro-image)",
-   "status": "HELD: Roots is to be repainted from option sheet b (owner: 'roots and maple look the same-ish'); not signed"
+  "near_day": {
+   "file": "rooms/signed-near-roots-day.png",
+   "source": "vivarium-near-roots-day-ua (gemini-3-pro-image), cut by rooms.py, no grade",
+   "specimen_floor_near": [
+    136,
+    296,
+    272,
+    56
+   ],
+   "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; the beech roots frame the left, the burrow far back, bluebells only in the far back; no fittings, pond or water"
   },
-  "options_b": "source/raw/options-roots-b.jpg (options-roots-b, gemini-3-pro-image): A bluebell carpet, B spring wildflower bank, C sunny dewy morning, D silver birch bank; owner to pick",
-  "lights": "HELD: Roots is to be repainted from option sheet b (the owner's pick pending); no Roots light spent"
+  "lights": {
+   "day": {
+    "idle": "rooms/signed-idle-roots-day.png",
+    "near": "rooms/signed-near-roots-day.png",
+    "measures_idle": {
+     "whole": 51.0,
+     "floor": 39.93,
+     "back": 65.71,
+     "R-B whole": 19.7,
+     "warmth": 0.172
+    },
+    "measures_near": {
+     "whole": 51.67,
+     "floor": 39.44,
+     "back": 62.73,
+     "R-B whole": 20.3,
+     "warmth": 0.174
+    }
+   },
+   "night": {
+    "idle": "rooms/signed-idle-roots-night.png",
+    "near": "rooms/signed-near-roots-night.png",
+    "source_idle": "idle-vivarium-roots-night-u (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-roots-night-u (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain_back": 0.82,
+     "gain_floor": 1.101,
+     "gamma": 1.0
+    },
+    "grade_near": {
+     "gain_back": 0.82,
+     "gain_floor": 1.069,
+     "gamma": 1.0
+    },
+    "measures_idle": {
+     "whole": 27.42,
+     "floor": 30.55,
+     "back": 26.31,
+     "R-B whole": -24.1
+    },
+    "measures_near": {
+     "whole": 31.97,
+     "floor": 33.59,
+     "back": 29.65,
+     "R-B whole": -13.0
+    },
+    "pieces": "rooms/pieces/roots/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
+    "seated": "rooms/seated-idle-roots-night.png",
+    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level"
+   },
+   "dusk": {
+    "idle": "rooms/signed-idle-roots-dusk.png",
+    "near": "rooms/signed-near-roots-dusk.png",
+    "source_idle": "idle-vivarium-roots-dusk-u (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-roots-dusk-u (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 32.87,
+     "floor": 26.12,
+     "back": 42.06,
+     "R-B whole": 22.2
+    },
+    "measures_near": {
+     "whole": 34.55,
+     "floor": 25.76,
+     "back": 42.7,
+     "R-B whole": 20.9
+    },
+    "pieces": "rooms/pieces/roots/*-dusk.png (graded by hand from the same cuts, tools/roomcut.py dusk)",
+    "seated": "rooms/seated-idle-roots-dusk.png",
+    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean; no grade needed; the minis read on every level"
+   },
+   "dawn": {
+    "idle": "rooms/signed-idle-roots-dawn.png",
+    "near": "rooms/signed-near-roots-dawn.png",
+    "source_idle": "idle-vivarium-roots-dawn-u (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-roots-dawn-u (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 0.941,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 0.945,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 48.15,
+     "floor": 37.38,
+     "back": 61.64,
+     "R-B whole": 8.0
+    },
+    "measures_near": {
+     "whole": 48.81,
+     "floor": 37.03,
+     "back": 59.52,
+     "R-B whole": 14.6
+    },
+    "pieces": "rooms/pieces/roots/*-dawn.png (graded by hand from the same cuts, tools/roomcut.py dawn)",
+    "seated": "rooms/seated-idle-roots-dawn.png",
+    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level"
+   }
+  },
+  "options_b": "source/raw/options-roots-b.jpg (options-roots-b): A bluebell carpet (the owner's pick), B spring wildflower bank, C sunny dewy morning, D silver birch bank"
  },
  "enclosure": "art director's ruling: the enclosure reads, light-touch, by (1) the foot strip, rows 552-567, painted in every room as a substrate cross-section seen through the front glass (soil over a darker drainage layer), (2) each room's placed life-support piece as the device cue, (3) the face's own window chrome (home.json shade, 2 px). No painted glass edges, posts or box (they turned every picture into a cabinet in rounds c and sa). Optional for the owner: a faint glass corner sheen at the far side edges, a 0 MXN hand layer.",
  "pieces_note": "Pieces by the composite method, cut and placed by hand at 0 MXN (tools/roomcut.py). Painting coordinates (1024x568); the whole's window y = painting y - 80. rect [x, y, w, h]; foot = the lowest row of the piece's ink; occluders are hard-edged straight alpha (ARGB8888); draw order by foot row with the walkers. Cut and placed by the art director, Mon 26 Oct 2026 19:04 (Mexico City), tools/roomcut.py."

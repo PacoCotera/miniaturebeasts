@@ -15,6 +15,11 @@ FEATURE = {
  "ferns": ("deep green fern fronds framing the left and right sides (the left and right fifths of the width), a curled crozier soft behind at the right, the mossy log far back and soft, a faint low mist along the back, golden flecks of sun",
            "short bright moss in large soft patches, calm"),
 }
+# Roots round u (the bluebell room, owner's pick from sheet b): the gold Roots' near ta superseded.
+if room == "roots" and L.startswith("u"):
+    FEATURE["roots"] = ("a curve of the silver-grey mossy beech roots framing the left side (the left fifth of the width), the dark round burrow mouth soft and far back left of centre, "
+                        "blue-violet bluebells soft and out of focus far behind the ground at the right side, a few spring-green leaves soft above; soft bright cool morning light; never gold or amber",
+                        "calm fresh moss and fine soil in large soft patches, a faint lighter strip of soil; NO flowers on the ground")
 feat, ground = FEATURE[room]
 prompt = ("Output a NEW image, 4:3: THIS room of Image 1 seen much CLOSER and at GROUND LEVEL, at the scale of a small creature, in the same light, palette and hand-painted miniature finish (fine painterly grain, soft bokeh behind, the ground sharp). "
  f"In view: {feat}. The features frame the view from the sides and from far back, never a busy shape behind the middle. "

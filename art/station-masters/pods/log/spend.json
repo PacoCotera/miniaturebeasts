@@ -6974,5 +6974,175 @@
    "thoughtsTokenCount": 207,
    "totalTokenCount": 1939
   }
+ },
+ {
+  "tag": "idle-vivarium-roots-day-ua try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.221498,
+  "mxn": 4.43,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:34:29Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1129,
+   "candidatesTokenCount": 1558,
+   "thoughtsTokenCount": 269,
+   "totalTokenCount": 2956
+  }
+ },
+ {
+  "tag": "idle-vivarium-roots-day-ub try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.196988,
+  "mxn": 3.9398,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:35:49Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 574,
+   "candidatesTokenCount": 1357,
+   "thoughtsTokenCount": 275,
+   "totalTokenCount": 2206
+  }
+ },
+ {
+  "tag": "pieces-roots-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.211116,
+  "mxn": 4.2223,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:37:07Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 738,
+   "candidatesTokenCount": 1470,
+   "thoughtsTokenCount": 277,
+   "totalTokenCount": 2485
+  }
+ },
+ {
+  "tag": "vivarium-near-roots-day-ua try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.197568,
+  "mxn": 3.9514,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:40:33Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 684,
+   "candidatesTokenCount": 1369,
+   "thoughtsTokenCount": 266,
+   "totalTokenCount": 2319
+  }
+ },
+ {
+  "tag": "idle-vivarium-roots-night-u try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.193446,
+  "mxn": 3.8689,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:41:38Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 543,
+   "candidatesTokenCount": 1319,
+   "thoughtsTokenCount": 284,
+   "totalTokenCount": 2146
+  }
+ },
+ {
+  "tag": "vivarium-near-roots-night-u try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.187684,
+  "mxn": 3.7537,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:41:55Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 542,
+   "candidatesTokenCount": 1348,
+   "thoughtsTokenCount": 207,
+   "totalTokenCount": 2097
+  }
+ },
+ {
+  "tag": "idle-vivarium-roots-dusk-u try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.187504,
+  "mxn": 3.7501,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:42:10Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 452,
+   "candidatesTokenCount": 1330,
+   "thoughtsTokenCount": 225,
+   "totalTokenCount": 2007
+  }
+ },
+ {
+  "tag": "vivarium-near-roots-dusk-u try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.183902,
+  "mxn": 3.678,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:42:25Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 451,
+   "candidatesTokenCount": 1308,
+   "thoughtsTokenCount": 217,
+   "totalTokenCount": 1976
+  }
+ },
+ {
+  "tag": "idle-vivarium-roots-dawn-u try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.175144,
+  "mxn": 3.5029,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:42:40Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 452,
+   "candidatesTokenCount": 1285,
+   "thoughtsTokenCount": 167,
+   "totalTokenCount": 1904
+  }
+ },
+ {
+  "tag": "vivarium-near-roots-dawn-u try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.178742,
+  "mxn": 3.5748,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:42:56Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 451,
+   "candidatesTokenCount": 1292,
+   "thoughtsTokenCount": 190,
+   "totalTokenCount": 1933
+  }
  }
 ]

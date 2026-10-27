@@ -941,5 +941,105 @@
     "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
    ]
   ]
+ },
+ "idle-vivarium-roots-day-ua": {
+  "sha256": "d693c122348fe8aaca1944552462157538120206869333872fb6fb9ea2c358d8",
+  "prompt": "Output a NEW image, 16:9. Image 1 is the approved concept for this room. Paint THIS room as a finished painting with the same planting, palette, season, mood and light as Image 1, showing ONLY the inside of the terrarium, edge to edge, wide, from a low eye height, straight on: no case, no frame, no window posts, no glass edges, no box. Finish: a hand-painted miniature diorama, fine painterly grain on everything, the back softly out of focus with gentle bokeh, the ground sharp; never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no fish, no figures, no text, no letters, no digits, no UI. NO fittings or objects of any kind: no lantern, no bamboo, no pipes, no gates, no planters, no boxes, no blocks; and NO small pieces standing at the front of the ground: the front of the ground is plain. THE ROOM: a bluebell bank in spring, as in Image 1: an old silver-grey beech, only the base of its trunk and its roots in view, the trunk cut by the top of the picture; the tree is SMALLER than in Image 1, its trunk at the top of the picture about a seventh of the width, so the room reads at the scale of small creatures; a few fresh spring-green beech leaves hang from the top; soft bright morning light from the upper left; a pale silver, sage and blue-green bokeh behind; drifts of blue-violet bluebells ONLY in the back, behind the ground's back edge and on the mound behind the roots, soft and out of focus. A TRIANGULAR composition HIGH at the LEFT: the roots and a mossy mound rise at the left (the trunk's base from about 12 to 30 percent of the width), the roots spreading down and to the right behind the ground. The focal point: ONE dark round BURROW MOUTH in the mossy mound between the roots at about 28 percent of the width, its bottom at about 64 percent of the height, about an eighth of the picture's height tall. There is only this ONE burrow: no second hollow, hole, cave, den or burrow anywhere else in the picture. LEVELS: at the LEFT, from the left edge to about 23 percent of the width, a LOW MOSSY TERRACE (the mound's lower flank) whose flat walkable top runs from about 54 to 62 percent of the height, its front lip soft and rounded; a gentle mossy ramp from about 23 to 36 percent of the width joins it down to the main ground. The MAIN GROUND is calm fresh moss and fine soil in large soft patches, with a faint lighter path of soil winding from the front right back to the burrow, low in contrast, NOTHING on it: NO flowers, no bluebells, no petals, no pebbles, no twigs, no mushrooms; no flower stands anywhere in front of the ground's back edge or at the front of the picture (unlike Image 1's front left); it runs across the full width from about 64 percent of the height down to about 97 percent. At the lower right, from about 77 to 96 percent of the width and over the bottom tenth of the height, a soft calm mossy patch, flat and plain (a sleeping place; nothing in it, no pit, no hollow). The right side of the picture is low and open, soft spring-green foliage and bluebell haze in bokeh behind. The bottom 3 percent is a thin dark soil strip across the full width. Roots and everything taller than the moss stay behind the ground's back edge, never lying across the open ground. Never gold, amber, honey or orange light; never gloomy or dark.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/pick-roots-bA.png",
+    "IMAGE 1, THE APPROVED CONCEPT (option bA): the room's planting, palette, season, mood and light; never its frame, posts or the small blocks at its front:"
+   ]
+  ]
+ },
+ "idle-vivarium-roots-day-ub": {
+  "sha256": "1eb2e42bb9ea27c66b07e2437cc7899d98dd7af4d582e99b4936f7d14f662e75",
+  "prompt": "Output a NEW image, 16:9: Image 1 edited. KEEP EVERYTHING in Image 1 exactly as it is (the beech, its roots, the burrow, the bluebells, the leaves, the soil path, the moss patches, the plain mossy patch at the lower right, the palette, the light, the hand-painted miniature finish, the soft back, the camera) and CHANGE ONLY the raised mossy terrace at the left: keep its flat mossy top where it is (from the left edge to about 24 percent of the width, at about 52 to 57 percent of the height), and replace the bare brown earth faces under it with moss: its front lip becomes LOW, soft and ROUNDED, mossy, with a soft shadow under it, never a wall; and from about 16 to 34 percent of the width a broad, GENTLE mossy RAMP slopes smoothly down from the terrace's top to the main ground in front of the burrow, reaching the ground at about 70 percent of the height, moss all over, no earth wall, no step, no ledge. The burrow mouth stays exactly as it is, open and dark. Do not add anything else; no flowers on the ground, no second hollow, no creatures, no text, no frame, no box.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/work-idle-vivarium-roots-day-ua.png",
+    "IMAGE 1, THE PICTURE TO EDIT (this room's day, round ua): keep everything but the listed change:"
+   ]
+  ]
+ },
+ "pieces-roots-b": {
+  "sha256": "1d27776a2c66f241d07c472e8fedd80a0ddf886d84c78058cad9fb14b8df50f0",
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 4 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN MAGENTA (#FF00FF) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, soft bright spring morning light from the upper left, fresh and cool, silver-grey and spring green. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: 1. A LOW TUFT of fresh moss and small wood-sorrel leaves (clover-like, spring green), rounded and leafy, wider than tall (about 2 to 1), its base a soft mossy clump; NO flowers. 2. A SMALL ROUNDED MOSSY STONE, pale silver-grey like beech bark, wider than tall (about 2 to 1), a soft cap of bright green moss on its top, its base flat. 3. A SMALL MISTER: a short thin weathered pewter-grey metal line, bent once, ending in a tiny dull brass nozzle, half wrapped by a thin silver-grey root and a sprig of moss, with a fine soft fan of mist spraying sideways from the nozzle; small, plain and matte. 4. The same short line and tiny nozzle as object 3 with NO mist, alone.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-roots-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ]
+ },
+ "vivarium-near-roots-day-ua": {
+  "sha256": "8f9c54b528ce004798863e260adcbfdecf05a065358c247bf10278af36405b3f",
+  "prompt": "Output a NEW image, 4:3: THIS room of Image 1 seen much CLOSER and at GROUND LEVEL, at the scale of a small creature, in the same light, palette and hand-painted miniature finish (fine painterly grain, soft bokeh behind, the ground sharp). In view: a curve of the silver-grey mossy beech roots framing the left side (the left fifth of the width), the dark round burrow mouth soft and far back left of centre, blue-violet bluebells soft and out of focus far behind the ground at the right side, a few spring-green leaves soft above; soft bright cool morning light; never gold or amber. The features frame the view from the sides and from far back, never a busy shape behind the middle. The ground fills the lower 40 percent of the picture: calm fresh moss and fine soil in large soft patches, a faint lighter strip of soil; NO flowers on the ground. Across the centre of the ground (from about 25 to 75 percent of the width and from about 72 to 86 percent of the height) it is OPEN and plain, nothing on it taller than a tiny pebble, where one small creature will stand. It is a PAINTING, not a photograph: the same visible painterly brushwork and grain as Image 1, the bokeh painted as soft dabs like Image 1's, edges painted, nothing with photographic depth-of-field blur or photographic texture. No fittings, no objects, no pipes, no lantern, no bowls, no pond, no open water. No creatures, no animals, no fish, no figures, no text, no letters, no digits, no frame, no box, no UI, no cliff or ledge. Never photographic, never toon, never childish: no cartoon outlines, no toy colours, no gloss, no glow.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-roots-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): the place, palette, light and finish; seen closer in the new picture:"
+   ]
+  ]
+ },
+ "idle-vivarium-roots-night-u": {
+  "sha256": "3a344d65ae68fa5f4b953980d1a585f8c22bd62a50e9dd9bf246579a543242da",
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. NIGHT in this bluebell bank, calm, safe and welcoming, never spooky, never eerie: soft cool moonlight from the upper left, a gentle blue-silver light; the bluebells deep soft violet catching a faint cool light; the beech's silver bark with a soft cool rim of light; the spring leaves dark green with silver edges; the burrow mouth stays the same dark round opening, nothing in it, no eyes, no glow; the back a soft deep blue-green, never black. The open moss ground in the front half stays the BRIGHTEST part of the picture, softly lit, clearly brighter than the back, so small creatures read on it; the back goes darker. No moon disc in view, no lamps, no glow, no stars, no fireflies. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-roots-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "idle-vivarium-roots-dusk-u": {
+  "sha256": "f0e6c29077eba3061dbb250adfa4e1a11714378457e7bc829cd1dffb8edd7615",
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. DUSK in this bluebell bank: a low warm rose-apricot light from the left grazing the moss ground and the left side of the beech, the bluebells deepening to violet in soft lilac shade, the back warm lilac-grey and darkening, long soft violet shadows falling to the right. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-roots-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "idle-vivarium-roots-dawn-u": {
+  "sha256": "8c87d215b84ded84ac2a937c5efd6e464aae640d46a08b18bdf45d68f88fdada",
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. DAWN in this bluebell bank: soft pale early light, a thin low mist lying among the bluebells behind the ground only, the back cooler and paler, silver-blue, the bluebells soft and pale, the moss ground fresh with dew in soft even light, a faint pale pink high up. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-roots-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "vivarium-near-roots-night-u": {
+  "sha256": "acc95bacd178e7eeb6a3abb24b4f28f04308178a9d275de261aa42207492c10b",
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. NIGHT in this bluebell bank, calm, safe and welcoming, never spooky, never eerie: soft cool moonlight from the upper left, a gentle blue-silver light; the bluebells deep soft violet catching a faint cool light; the beech's silver bark with a soft cool rim of light; the spring leaves dark green with silver edges; the burrow mouth stays the same dark round opening, nothing in it, no eyes, no glow; the back a soft deep blue-green, never black. The open moss ground in the front half stays the BRIGHTEST part of the picture, softly lit, clearly brighter than the back, so small creatures read on it; the back goes darker. No moon disc in view, no lamps, no glow, no stars, no fireflies. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-roots-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "vivarium-near-roots-dusk-u": {
+  "sha256": "fca766c94aa5309379158336c92bdc3338aa5aeb175679d856eb541228cd8db4",
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. DUSK in this bluebell bank: a low warm rose-apricot light from the left grazing the moss ground and the left side of the beech, the bluebells deepening to violet in soft lilac shade, the back warm lilac-grey and darkening, long soft violet shadows falling to the right. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-roots-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "vivarium-near-roots-dawn-u": {
+  "sha256": "54e73637a102742c1304b4b33caf35c757eb9f0d0f2c43ea40bb0a35582fcca2",
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. DAWN in this bluebell bank: soft pale early light, a thin low mist lying among the bluebells behind the ground only, the back cooler and paler, silver-blue, the bluebells soft and pale, the moss ground fresh with dew in soft even light, a faint pale pink high up. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-roots-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
  }
 }

@@ -1,0 +1,16 @@
+[
+ {
+  "name": "idle-vivarium-roots-day-ub",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/work-idle-vivarium-roots-day-ua.png",
+    "IMAGE 1, THE PICTURE TO EDIT (this room's day, round ua): keep everything but the listed change:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: Image 1 edited. KEEP EVERYTHING in Image 1 exactly as it is (the beech, its roots, the burrow, the bluebells, the leaves, the soil path, the moss patches, the plain mossy patch at the lower right, the palette, the light, the hand-painted miniature finish, the soft back, the camera) and CHANGE ONLY the raised mossy terrace at the left: keep its flat mossy top where it is (from the left edge to about 24 percent of the width, at about 52 to 57 percent of the height), and replace the bare brown earth faces under it with moss: its front lip becomes LOW, soft and ROUNDED, mossy, with a soft shadow under it, never a wall; and from about 16 to 34 percent of the width a broad, GENTLE mossy RAMP slopes smoothly down from the terrace's top to the main ground in front of the burrow, reaching the ground at about 70 percent of the height, moss all over, no earth wall, no step, no ledge. The burrow mouth stays exactly as it is, open and dark. Do not add anything else; no flowers on the ground, no second hollow, no creatures, no text, no frame, no box."
+ }
+]

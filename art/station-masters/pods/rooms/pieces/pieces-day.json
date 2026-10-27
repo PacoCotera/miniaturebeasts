@@ -3,43 +3,43 @@
  "light": "day",
  "roots": [
   {
-   "id": "roots-fern-1",
+   "id": "roots-sorrel-1",
    "kind": "occluder",
    "level": "main",
    "rect_painting": [
     118,
-    494,
-    85,
-    48
+    496,
+    96,
+    46
    ],
    "foot_painting": 541,
-   "file": "rooms/pieces/roots/roots-fern-1-{light}.png",
-   "what": "low fern-and-moss tuft, leafy",
+   "file": "rooms/pieces/roots/roots-sorrel-1-{light}.png",
+   "what": "low moss-and-wood-sorrel tuft, leafy, no flowers",
    "keepOut_painting": [
     124,
     526,
-    73,
+    84,
     18
    ],
    "edge": "hard"
   },
   {
-   "id": "roots-stone-1",
+   "id": "roots-stone-2",
    "kind": "occluder",
    "level": "main",
    "rect_painting": [
-    686,
-    497,
-    66,
-    43
+    684,
+    499,
+    68,
+    41
    ],
    "foot_painting": 539,
-   "file": "rooms/pieces/roots/roots-stone-1-{light}.png",
-   "what": "small honey-grey stone, moss cap, rounded; clear of the bed's keepOut (x 752)",
+   "file": "rooms/pieces/roots/roots-stone-2-{light}.png",
+   "what": "small rounded silver-grey stone, moss cap; clear of the bed's keepOut (x 752) and the away corner (x 668)",
    "keepOut_painting": [
-    692,
+    690,
     524,
-    54,
+    56,
     18
    ],
    "edge": "hard"
@@ -56,7 +56,7 @@
    ],
    "foot_painting": 551,
    "file": "rooms/pieces/roots/roots-bed-{light}.png",
-   "what": "the sleeping nest: moss and dry golden grass, to the new look; the shipped home-bed shape and seat [792,496,192,56]",
+   "what": "the sleeping nest (pieces-roots-a's cut) regraded to the bluebell room; the shipped home-bed shape and seat [792,496,192,56]",
    "edge": "soft (the shipped home-bed alpha shape)",
    "keepOut_painting": [
     752,
@@ -70,28 +70,28 @@
    "kind": "fitting",
    "level": null,
    "rect_painting": [
-    900,
-    271,
-    44,
-    36
+    920,
+    323,
+    50,
+    34
    ],
-   "foot_painting": 306,
+   "foot_painting": 356,
    "file": "rooms/pieces/roots/roots-mister-{light}.png",
-   "what": "a small copper line ending in a brass nozzle, wrapped by a root, in the right back planting, pointing left; its spray is a mist wisp (ambient)",
+   "what": "a small pewter-grey line ending in a dull brass nozzle, wrapped by a root and a moss sprig, lying in the back moss mound at the right under the bluebells, resting on the moss, pointing left; its spray is a mist wisp (ambient)",
    "edge": "hard",
-   "share_of_window_pct": 0.35
+   "share_of_window_pct": 0.38
   },
   {
    "id": "roots-mist-2",
    "kind": "mist",
    "wisp": "rooms/mist/mist-wisp-2.png",
    "rect_painting": [
-    826,
-    268,
-    76,
+    850,
+    324,
+    80,
     18
    ],
-   "alpha": 0.8,
+   "alpha": 0.6,
    "what": "the mister's spray, drifting left from the nozzle and fading"
   }
  ],

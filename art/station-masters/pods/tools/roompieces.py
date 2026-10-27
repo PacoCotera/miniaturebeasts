@@ -43,6 +43,14 @@ SHEET = {
    "4. TWO THIN COPPER DRIP LINES side by side: each a very thin weathered copper tube hanging down, bent gently once, ending in a small drop at its tip; long and thin, about twelve times as long as wide. "
    "5. ONE single clear water drop, large, alone."),
 }
+# Roots sheet b (the bluebell room, round u; pieces-roots-a superseded except what suits the new look): two front occluders and a small mister that shows its spray.
+# The bed is not repainted: pieces-roots-a's bed cut, in the shipped home-bed shape, is regraded to the new look by hand (tools/roomcut.py).
+if room == "roots" and L == "b":
+    SHEET["roots"] = (MAG, 4, "soft bright spring morning light from the upper left, fresh and cool, silver-grey and spring green",
+   "1. A LOW TUFT of fresh moss and small wood-sorrel leaves (clover-like, spring green), rounded and leafy, wider than tall (about 2 to 1), its base a soft mossy clump; NO flowers. "
+   "2. A SMALL ROUNDED MOSSY STONE, pale silver-grey like beech bark, wider than tall (about 2 to 1), a soft cap of bright green moss on its top, its base flat. "
+   "3. A SMALL MISTER: a short thin weathered pewter-grey metal line, bent once, ending in a tiny dull brass nozzle, half wrapped by a thin silver-grey root and a sprig of moss, with a fine soft fan of mist spraying sideways from the nozzle; small, plain and matte. "
+   "4. The same short line and tiny nozzle as object 3 with NO mist, alone.")
 key, n, light, objs = SHEET[room]
 name = f"pieces-{room}-{L}"; prompt = common(key, n, light) + objs
 day = "boulders" if room == "koi" else room

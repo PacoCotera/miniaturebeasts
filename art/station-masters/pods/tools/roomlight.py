@@ -25,6 +25,11 @@ CHAR = {
   "dusk": "DUSK in this fern dell: warm amber flecks of low sun from the left through the fronds onto the moss ground and the log, the shade cool blue-green, the back darkening warm; the fronds' edges warm where the low sun touches them. No lamps, no glow.",
   "dawn": "DAWN in this fern dell: the fog at its deepest, pale cool mist lying low along the back and among the fronds behind the log, the back cooler and paler, grey-green, the moss ground fresh with dew in soft even light. No lamps, no glow."},
 }
+# Roots, the bluebell room (round u; the owner turned down a spooky option, so the night stays welcoming, never spooky).
+CHAR["roots"] = {
+  "night": "NIGHT in this bluebell bank, calm, safe and welcoming, never spooky, never eerie: soft cool moonlight from the upper left, a gentle blue-silver light; the bluebells deep soft violet catching a faint cool light; the beech's silver bark with a soft cool rim of light; the spring leaves dark green with silver edges; the burrow mouth stays the same dark round opening, nothing in it, no eyes, no glow; the back a soft deep blue-green, never black. " + FLOOR_NIGHT,
+  "dusk": "DUSK in this bluebell bank: a low warm rose-apricot light from the left grazing the moss ground and the left side of the beech, the bluebells deepening to violet in soft lilac shade, the back warm lilac-grey and darkening, long soft violet shadows falling to the right. No lamps, no glow.",
+  "dawn": "DAWN in this bluebell bank: soft pale early light, a thin low mist lying among the bluebells behind the ground only, the back cooler and paler, silver-blue, the bluebells soft and pale, the moss ground fresh with dew in soft even light, a faint pale pink high up. No lamps, no glow."}
 def edit(room, pic, light, L):
     big = pic == "idle"; n = f"idle-vivarium-{room}-{light}-{L}" if big else f"vivarium-near-{room}-{light}-{L}"
     src = P + f"rooms/signed-{pic}-{room}-day.png"

@@ -1,0 +1,16 @@
+[
+ {
+  "name": "pieces-roots-b",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-roots-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
+   ]
+  ],
+  "prompt": "Output ONE image, 16:9: a PIECE SHEET for a painted terrarium scene: 4 separate small objects, each painted on its own, well apart from each other with wide empty space between them, laid out in a loose grid, every object whole and nothing cut by the picture's edge, on a FLAT, PURE, EVEN MAGENTA (#FF00FF) background edge to edge: no gradient, no texture, no floor, no ground plane, no cast shadow on the background, no vignette. Painted in the SAME hand-painted miniature-diorama finish, palette and light as Image 1: fine painterly grain, believable materials, sharp edges, soft bright spring morning light from the upper left, fresh and cool, silver-grey and spring green. Each object is lit and shaded as it would sit in Image 1: its lower part darker, as if partly in shadow. Never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures, no text, no letters, no digits, no labels, no frame. Do NOT paint the room of Image 1: only the objects listed, each isolated on the flat background. THE OBJECTS: 1. A LOW TUFT of fresh moss and small wood-sorrel leaves (clover-like, spring green), rounded and leafy, wider than tall (about 2 to 1), its base a soft mossy clump; NO flowers. 2. A SMALL ROUNDED MOSSY STONE, pale silver-grey like beech bark, wider than tall (about 2 to 1), a soft cap of bright green moss on its top, its base flat. 3. A SMALL MISTER: a short thin weathered pewter-grey metal line, bent once, ending in a tiny dull brass nozzle, half wrapped by a thin silver-grey root and a sprig of moss, with a fine soft fan of mist spraying sideways from the nozzle; small, plain and matte. 4. The same short line and tiny nozzle as object 3 with NO mist, alone."
+ }
+]

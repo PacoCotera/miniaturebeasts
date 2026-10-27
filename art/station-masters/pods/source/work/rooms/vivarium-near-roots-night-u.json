@@ -1,0 +1,16 @@
+[
+ {
+  "name": "vivarium-near-roots-night-u",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-roots-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. NIGHT in this bluebell bank, calm, safe and welcoming, never spooky, never eerie: soft cool moonlight from the upper left, a gentle blue-silver light; the bluebells deep soft violet catching a faint cool light; the beech's silver bark with a soft cool rim of light; the spring leaves dark green with silver edges; the burrow mouth stays the same dark round opening, nothing in it, no eyes, no glow; the back a soft deep blue-green, never black. The open moss ground in the front half stays the BRIGHTEST part of the picture, softly lit, clearly brighter than the back, so small creatures read on it; the back goes darker. No moon disc in view, no lamps, no glow, no stars, no fireflies. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text."
+ }
+]

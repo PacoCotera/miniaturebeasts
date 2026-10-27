@@ -18,7 +18,7 @@ def keymask(a, kind):
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
     if kind == "g": return (g - np.maximum(r, b)) > 0.35 * g + 8
     mn = np.minimum(r, b); return ((mn - g) > 0.35 * mn + 8) & (np.abs(r - b) < 0.35 * np.maximum(r, b) + 20)
-def cut(sheet, box, kind="m", water=False):
+def cut(sheet, box, kind="m", water=False, erode=1):
     a = np.asarray(Image.open(f"source/raw/{sheet}.jpg").convert("RGB")).astype(float)[box[1]:box[3], box[0]:box[2]]
     if water:   # translucent water: alpha from the distance to the key colour, colour neutral
         kc = np.array([255, 0, 255.]); d = np.sqrt(((a - kc) ** 2).sum(2)) / 300; al = np.clip((d - 0.12) / 0.6, 0, 1)
@@ -27,11 +27,11 @@ def cut(sheet, box, kind="m", water=False):
     fg = ~keymask(a, kind); fg = ndimage.binary_opening(fg, iterations=1)
     lab, k = ndimage.label(fg); sizes = ndimage.sum(fg, lab, range(1, k + 1)); keep = np.isin(lab, 1 + np.where(sizes >= max(sizes) * 0.02)[0])
     keep = ndimage.binary_fill_holes(keep) if kind == "g" else keep
-    keep = ndimage.binary_erosion(keep, iterations=1)
+    keep = ndimage.binary_erosion(keep, iterations=erode)     # soft fuzzy moss edges on magenta keep a pink rim at 1 px: such pieces erode 3
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
     if kind == "m": ex = np.clip(np.minimum(r, b) - g, 0, None); a[..., 0] -= ex; a[..., 2] -= ex      # despill: no pixel keeps a magenta cast
     else: a[..., 1] = np.minimum(g, np.maximum(r, b) + 4)                                                 # despill green
-    inner = ndimage.binary_erosion(keep, iterations=3)                                                      # the edge ring takes its colour from the nearest inner pixel:
+    inner = ndimage.binary_erosion(keep, iterations=1 + 2 * erode)                                                      # the edge ring takes its colour from the nearest inner pixel:
     if inner.any():                                                                                          # no key-tinted or despilled-grey fringe survives the cut
         _, (iy, ix) = ndimage.distance_transform_edt(~inner, return_indices=True); ring = keep & ~inner; a[ring] = a[iy[ring], ix[ring]]
     return np.dstack([a.clip(0, 255), keep * 255.0])
@@ -79,11 +79,11 @@ def save(p, path): Image.fromarray(p.round().clip(0, 255).astype(np.uint8), "RGB
 def keepout(x, foot, w): return [x + 6, foot - 15, w - 12, 18]
 # ---- the pieces: sheet box (from the 1376x768 sheet), size box, placement (x, foot row) in painting coordinates (1024x568), measured by hand at 1x ----
 ROOMS = {
- "roots": {"sheet": "pieces-roots-a", "pieces": [
-   {"id": "roots-fern-1", "kind": "occluder", "level": "main", "box": (73, 33, 544, 306), "fit": (96, 48), "x": 118, "foot": 541, "hard_at": 0.4, "what": "low fern-and-moss tuft, leafy"},
-   {"id": "roots-stone-1", "kind": "occluder", "level": "main", "box": (924, 74, 1226, 277), "fit": (66, 44), "x": 686, "foot": 539, "what": "small honey-grey stone, moss cap, rounded; clear of the bed's keepOut (x 752)"},
-   {"id": "roots-bed", "kind": "bed", "level": "main", "box": (435, 314, 1001, 492), "fit": (192, 56), "x": 792, "foot": 551, "what": "the sleeping nest: moss and dry golden grass, to the new look; the shipped home-bed shape and seat [792,496,192,56]"},
-   {"id": "roots-mister", "kind": "fitting", "level": None, "box": (912, 492, 1158, 696), "fit": (44, 38), "x": 900, "foot": 306, "flip": True, "what": "a small copper line ending in a brass nozzle, wrapped by a root, in the right back planting, pointing left; its spray is a mist wisp (ambient)", "shade": (0.8, 0.6)}]},
+ "roots": {"sheet": "pieces-roots-b", "pieces": [      # the bluebell room (round u): sheet b's occluders and mister; sheet a's bed cut regraded to the new look (wb 0.85)
+   {"id": "roots-sorrel-1", "kind": "occluder", "level": "main", "box": (140, 95, 662, 352), "fit": (96, 48), "x": 118, "foot": 541, "hard_at": 0.4, "erode": 4, "what": "low moss-and-wood-sorrel tuft, leafy, no flowers"},
+   {"id": "roots-stone-2", "kind": "occluder", "level": "main", "box": (835, 108, 1206, 336), "fit": (68, 42), "x": 684, "foot": 539, "what": "small rounded silver-grey stone, moss cap; clear of the bed's keepOut (x 752) and the away corner (x 668)"},
+   {"id": "roots-bed", "kind": "bed", "level": "main", "sheet": "pieces-roots-a", "box": (435, 314, 1001, 492), "fit": (192, 56), "x": 792, "foot": 551, "wb": 0.85, "what": "the sleeping nest (pieces-roots-a's cut) regraded to the bluebell room; the shipped home-bed shape and seat [792,496,192,56]"},
+   {"id": "roots-mister", "kind": "fitting", "level": None, "box": (150, 455, 490, 692), "fit": (50, 35), "x": 920, "foot": 356, "flip": True, "what": "a small pewter-grey line ending in a dull brass nozzle, wrapped by a root and a moss sprig, lying in the back moss mound at the right under the bluebells, resting on the moss, pointing left; its spray is a mist wisp (ambient)", "shade": (0.85, 0.62)}]},
  "reeds": {"sheet": "pieces-reeds-a", "pieces": [
    {"id": "reeds-sedge-2", "kind": "occluder", "level": "main", "box": (93, 73, 755, 564), "fit": (96, 48), "x": 214, "foot": 543, "hard_at": 0.3, "what": "low sedge tuft beaded with rain, leafy"},
    {"id": "reeds-stone-1", "kind": "occluder", "level": "main", "box": (855, 90, 1265, 353), "fit": (78, 48), "x": 770, "foot": 541, "what": "small wet rounded stone, moss at its base"},
@@ -109,7 +109,7 @@ KOI = {"sheet": "pieces-koi-a", "rows": [[(48, 63, 350, 178), (399, 47, 654, 193
        "names": ["kohaku", "ogon", "tancho", "chagoi"], "len": 26, "squash": 0.45, "pond": [345, 332, 205, 34]}
 # the shishi-odoshi arm: length and pivot in painting coordinates (the pivot sits between the two pivot posts of the base); open end left, under the flume's spout
 ARM = {"len": 30, "thick": 6, "pivot": (216, 288), "poses": {"fill": -16, "tip": 4, "empty": 26, "knock": -20}, "open_from_pivot": 19}
-MIST = {"roots": [{"wisp": 2, "rect": [826, 268, 76, 18], "alpha": 0.8, "what": "the mister's spray, drifting left from the nozzle and fading"}],
+MIST = {"roots": [{"wisp": 2, "rect": [850, 324, 80, 18], "alpha": 0.6, "what": "the mister's spray, drifting left from the nozzle and fading"}],
         "ferns": [{"wisp": 1, "rect": [530, 312, 104, 26], "alpha": 0.7, "what": "fog brimming from the bowl"}, {"wisp": 4, "rect": [600, 338, 150, 24], "alpha": 0.45, "what": "fog drifting right along the back edge, never below row 362"}]}
 def wisp(i, w, h, alpha):
     im = Image.open(f"rooms/mist/mist-wisp-{i}.png").convert("RGBA").resize((w, h), Image.LANCZOS); q = np.asarray(im).astype(float); q[..., 3] *= alpha; return q
@@ -122,7 +122,7 @@ def run():
         os.makedirs(f"rooms/pieces/{room}", exist_ok=True); scene = scene_of(room); comp = scene.copy(); seated = scene.copy(); rec = []
         for pc in R["pieces"]:
             if pc["kind"] == "anim": continue
-            water = pc["kind"] == "drop"; p = cut(R["sheet"], pc["box"], "m", water)
+            water = pc["kind"] == "drop"; p = cut(pc.get("sheet", R["sheet"]), pc["box"], "m", water, pc.get("erode", 1))
             if pc["id"] == "boulders-trickle": p = fit(p, *pc["fit"], hard=False); save(p, f"rooms/pieces/{room}/{pc['id']}-{LIGHT}.png"); rec.append({"id": pc["id"], "kind": pc["kind"], "size": [p.shape[1], p.shape[0]], "what": pc["what"]}); continue
             HARD_AT = pc.get("hard_at", 0.5)                      # thin blades keep their width at 1x with a lower cut
             p = fit(p, *pc["fit"], hard=not water and pc["kind"] != "bed"); h, w = p.shape[:2]
@@ -138,7 +138,7 @@ def run():
                 if pc["x"]: over(comp, p, x, y)
                 continue
             seat = [x - 24, y - 16, w + 48, h + 24] if pc["kind"] != "occluder" else [x - 40, y - 40, w + 80, h + 50]
-            p = grade(p, scene, seat, pc.get("gain", 1.12 if pc["kind"] == "occluder" else 1.0), 0.5)
+            p = grade(p, scene, seat, pc.get("gain", 1.12 if pc["kind"] == "occluder" else 1.0), pc.get("wb", 0.5))
             p = shade(p, *(pc.get("shade") or ((1.06, 0.86) if pc["kind"] == "occluder" else (1.0, 1.0))))
             if pc["kind"] in ("occluder", "fitting") and not pc.get("behind"): contact(comp, x, pc["foot"], w); contact(seated, x, pc["foot"], w)
             beh = foliage(scene, x, y, w, h, pc["behind"]) if pc.get("behind") else None
