@@ -1,5 +1,6 @@
 """0 MXN finish of the website kit edit (website-hero-kit-caddy-a): the printed stamp is replaced by the true stamp
-(Pip's genome, encoder output, bilevel) warped onto the edit's paper; the retired words on the device are wiped by hand.
+(Pip's genome, encoder output, bilevel) warped onto the edit's paper; the retired words on the device are wiped by hand,
+and the key words PRINT, FEED, CALL, BACK and CONFIRM healed from their ground (step 4).
 usage: python3 -I tools/website-kit.py  -> source/website/hero-kit-2026-10-1536x1024.png"""
 from PIL import Image, ImageFilter, ImageDraw
 import numpy as np, os
@@ -59,5 +60,22 @@ out = clear_band(out, 776, 821, 214, 14)
 f = ImageFont.truetype('/usr/share/fonts/opentype/inter/Inter-SemiBold.otf', 11)
 d = ImageDraw.Draw(out); w = d.textlength('Essence', font=f)
 d.text((797 - w / 2, 212), 'Essence', font=f, fill=(226, 231, 240))
+# 4 the key words left by the first pass (the 10-10 ruling: keys carry no words): PRINT on the print key, FEED under the
+#   feed key, CALL, BACK and CONFIRM on the Companion; each label's box refilled from the ground on its four edges
+#   (a Coons patch smoothed by diffusion), boxes measured at 1x so no edge touches the d-pad, the ledge or a key's rim
+def heal(img, box, it=400):
+    a = np.array(img.convert('RGB')).astype(np.float32); x0, y0, x1, y1 = box
+    T = a[y0-1, x0-1:x1+1]; B = a[y1, x0-1:x1+1]; Lf = a[y0-1:y1+1, x0-1]; R = a[y0-1:y1+1, x1]
+    v = np.linspace(0, 1, y1 - y0 + 2)[:, None, None]; u = np.linspace(0, 1, x1 - x0 + 2)[None, :, None]
+    Q = (1-v)*T[None] + v*B[None] + (1-u)*Lf[:, None] + u*R[:, None] - ((1-u)*(1-v)*T[0] + u*(1-v)*T[-1] + (1-u)*v*B[0] + u*v*B[-1])
+    for _ in range(it): Q[1:-1, 1:-1] = (Q[:-2, 1:-1] + Q[2:, 1:-1] + Q[1:-1, :-2] + Q[1:-1, 2:]) / 4
+    a[y0:y1, x0:x1] = Q[1:-1, 1:-1]
+    return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
+for box in [(956, 770, 1001, 788),    # PRINT, light on the dark key
+            (955, 859, 998, 876),     # FEED
+            (1026, 643, 1058, 655),   # CALL
+            (1153, 647, 1190, 660),   # BACK
+            (1211, 638, 1270, 651)]:  # CONFIRM
+    out = heal(out, box)
 out.save(P + 'source/website/hero-kit-2026-10-1536x1024.png')
 print('ok')

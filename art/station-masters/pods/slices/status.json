@@ -4677,8 +4677,9 @@
   "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
  },
  "mibi-adult-S01-144x152": {
-  "status": "new",
-  "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-27 00:05: T-20261026-website, in the Roots room shot (hero-roots-day-1024x568, feet at (560, 548))",
+  "note": "signed (art director) at 1x: a straight cut of the accepted Pip, sha256 967e5ee02d2d; 0 px magenta, alpha 0 or 60-255 (the family's graded shadow), 1 bright edge pixel of 709, no fringe or halo on light, dark or the Roots moss; three leaves, amber eyes, cream belly as Pip; placed at the adult family's 144 fit"
  },
  "mibi-adult-S01-96x88": {
   "status": "new",
@@ -4689,8 +4690,9 @@
   "note": "fix 1a: Pip as the S01 adult; candidate until signed in the whole-screen captures"
  },
  "mibi-juvenile-S01-304x312": {
-  "status": "new",
-  "note": "fix 1a: S01 juvenile regraded toward Pip; candidate until signed in the whole-screen captures"
+  "status": "signed",
+  "signed_in": "art director at 1x, 2026-10-27 00:05: T-20261026-website, on the species shelf at 288x296 (young-S01) on the page's light and dark grounds",
+  "note": "signed (art director) at 1x: the regrade, sha256 13d8fb322b0d (slices/, the iris finished onto Pip's amber); 0 px magenta, alpha 0 or 60-255, no fringe or halo on light or dark; reads as the young Loika beside Pip (charcoal back, cream body, olive leaves, amber eye); juvenile/mibi-juvenile-S01-304x312.png (e4712cfb89e3) is the pale-eyed file it replaced and is not the signed master"
  },
  "mibi-juvenile-S01-104x112": {
   "status": "new",
