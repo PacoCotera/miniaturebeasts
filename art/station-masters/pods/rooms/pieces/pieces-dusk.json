@@ -1,0 +1,336 @@
+{
+ "note": "Pieces by the composite method, cut and placed by hand at 0 MXN (tools/roomcut.py). Painting coordinates (1024x568); the whole's window y = painting y - 80. rect [x, y, w, h]; foot = the lowest row of the piece's ink; occluders are hard-edged straight alpha (ARGB8888); draw order by foot row with the walkers.",
+ "light": "dusk",
+ "reeds": [
+  {
+   "id": "reeds-sedge-2",
+   "kind": "occluder",
+   "level": "main",
+   "rect_painting": [
+    214,
+    496,
+    66,
+    48
+   ],
+   "foot_painting": 543,
+   "file": "rooms/pieces/reeds/reeds-sedge-2-{light}.png",
+   "what": "low sedge tuft beaded with rain, leafy",
+   "keepOut_painting": [
+    220,
+    528,
+    54,
+    18
+   ],
+   "edge": "hard"
+  },
+  {
+   "id": "reeds-stone-1",
+   "kind": "occluder",
+   "level": "main",
+   "rect_painting": [
+    770,
+    494,
+    76,
+    48
+   ],
+   "foot_painting": 541,
+   "file": "rooms/pieces/reeds/reeds-stone-1-{light}.png",
+   "what": "small wet rounded stone, moss at its base",
+   "keepOut_painting": [
+    776,
+    526,
+    64,
+    18
+   ],
+   "edge": "hard"
+  },
+  {
+   "id": "reeds-raincup",
+   "kind": "fitting",
+   "level": null,
+   "rect_painting": [
+    918,
+    303,
+    30,
+    36
+   ],
+   "foot_painting": 338,
+   "file": "rooms/pieces/reeds/reeds-raincup-{light}.png",
+   "what": "a small dark ceramic rain cup on a bamboo stake, in the right sedges at the bank's back edge; drips (ambient)",
+   "edge": "hard",
+   "share_of_window_pct": 0.24
+  },
+  {
+   "id": "reeds-drop",
+   "kind": "drop",
+   "size": [
+    4,
+    6
+   ],
+   "what": "the drop cell: falls from the cup's lip (x 944, y 309) to the bank's moss at y 340, every ~4 s"
+  }
+ ],
+ "boulders": [
+  {
+   "id": "boulders-stone-2",
+   "kind": "occluder",
+   "level": "main",
+   "rect_painting": [
+    150,
+    502,
+    80,
+    40
+   ],
+   "foot_painting": 541,
+   "file": "rooms/pieces/boulders/boulders-stone-2-{light}.png",
+   "what": "low moss-capped granite stone",
+   "keepOut_painting": [
+    156,
+    526,
+    68,
+    18
+   ],
+   "edge": "hard"
+  },
+  {
+   "id": "boulders-cushion-1",
+   "kind": "occluder",
+   "level": "main",
+   "rect_painting": [
+    846,
+    496,
+    82,
+    46
+   ],
+   "foot_painting": 541,
+   "file": "rooms/pieces/boulders/boulders-cushion-1-{light}.png",
+   "what": "low clipped moss-and-fern cushion, two gold leaves",
+   "keepOut_painting": [
+    852,
+    526,
+    70,
+    18
+   ],
+   "edge": "hard"
+  },
+  {
+   "id": "boulders-lantern",
+   "kind": "fitting",
+   "level": null,
+   "rect_painting": [
+    940,
+    329,
+    34,
+    44
+   ],
+   "foot_painting": 372,
+   "file": "rooms/pieces/boulders/boulders-lantern-{light}.png",
+   "what": "small stone lantern (toro), unlit, at the back right on the island's far slope",
+   "edge": "hard",
+   "share_of_window_pct": 0.33
+  },
+  {
+   "id": "boulders-shishi",
+   "kind": "fitting",
+   "level": null,
+   "rect_painting": [
+    166,
+    262,
+    64,
+    56
+   ],
+   "foot_painting": 317,
+   "file": "rooms/pieces/boulders/boulders-shishi-{light}.png",
+   "what": "shishi-odoshi base: flume, post, stone basin, the pivot posts; at the back of the terrace among the shrubs; the one moving fitting",
+   "edge": "hard",
+   "share_of_window_pct": 0.8
+  },
+  {
+   "id": "boulders-trickle",
+   "kind": "drop",
+   "size": [
+    2,
+    5
+   ],
+   "what": "the flume's trickle cell"
+  },
+  {
+   "id": "boulders-arm",
+   "kind": "anim",
+   "cell": [
+    48,
+    48
+   ],
+   "pivot_painting": [
+    216,
+    288
+   ],
+   "rect_painting": [
+    192,
+    264,
+    48,
+    48
+   ],
+   "poses_deg": {
+    "fill": -16,
+    "tip": 4,
+    "empty": 26,
+    "knock": -20
+   },
+   "cycle": "fill (hold ~45 s while the trickle falls into the open end) -> tip (300 ms) -> empty (hold 1.2 s, the basin glints) -> knock (200 ms, the knock) -> fill",
+   "file": "rooms/pieces/boulders/boulders-arm-{pose}-{light}.png",
+   "what": "the bamboo arm on its pivot posts; open end under the flume's spout"
+  },
+  {
+   "id": "boulders-koi",
+   "kind": "anim",
+   "cells": [
+    30,
+    14
+   ],
+   "fish": [
+    "kohaku",
+    "ogon",
+    "tancho",
+    "chagoi"
+   ],
+   "frames": 4,
+   "file": "rooms/pieces/boulders/koi-{name}-{1..4}-{light}.png",
+   "mask_painting": [
+    345,
+    332,
+    205,
+    34
+   ],
+   "swim": "3 of the 4 visible at once; each swims the pond's long axis at ~6 px/s on a 4-cell cycle (one cell each 500 ms), flipped for leftward, turns at the rim with a 2 s hold; never outside the pond mask; drawn under the pond's surface (behind everything on the ground)",
+   "what": "koi just under the pond's dark surface, mixed 38 % into the water's colour"
+  }
+ ],
+ "ferns": [
+  {
+   "id": "ferns-fern-1",
+   "kind": "occluder",
+   "level": "main",
+   "rect_painting": [
+    30,
+    496,
+    71,
+    48
+   ],
+   "foot_painting": 543,
+   "file": "rooms/pieces/ferns/ferns-fern-1-{light}.png",
+   "what": "low fern tuft, leafy",
+   "keepOut_painting": [
+    36,
+    528,
+    59,
+    18
+   ],
+   "edge": "hard"
+  },
+  {
+   "id": "ferns-crozier-1",
+   "kind": "occluder",
+   "level": "main",
+   "rect_painting": [
+    818,
+    496,
+    64,
+    46
+   ],
+   "foot_painting": 541,
+   "file": "rooms/pieces/ferns/ferns-crozier-1-{light}.png",
+   "what": "small crozier clump, curled heads low",
+   "keepOut_painting": [
+    824,
+    526,
+    52,
+    18
+   ],
+   "edge": "hard"
+  },
+  {
+   "id": "ferns-fogger",
+   "kind": "fitting",
+   "level": null,
+   "rect_painting": [
+    556,
+    332,
+    46,
+    29
+   ],
+   "foot_painting": 360,
+   "file": "rooms/pieces/ferns/ferns-fogger-{light}.png",
+   "what": "the fogger bowl in the hollow right of the croziers at the back edge; its fog is the mist wisps (ambient)",
+   "edge": "hard",
+   "share_of_window_pct": 0.3
+  },
+  {
+   "id": "ferns-copper-1",
+   "kind": "fitting",
+   "level": null,
+   "rect_painting": [
+    836,
+    213,
+    4,
+    78
+   ],
+   "foot_painting": 290,
+   "file": "rooms/pieces/ferns/ferns-copper-1-{light}.png",
+   "what": "thin copper drip line among the right fronds, its top behind the fronds",
+   "edge": "hard",
+   "share_of_window_pct": 0.07
+  },
+  {
+   "id": "ferns-copper-2",
+   "kind": "fitting",
+   "level": null,
+   "rect_painting": [
+    884,
+    216,
+    6,
+    47
+   ],
+   "foot_painting": 262,
+   "file": "rooms/pieces/ferns/ferns-copper-2-{light}.png",
+   "what": "second thin copper drip line, shorter",
+   "edge": "hard",
+   "share_of_window_pct": 0.06
+  },
+  {
+   "id": "ferns-drop",
+   "kind": "drop",
+   "size": [
+    4,
+    6
+   ],
+   "what": "the drop cell: from each line's tip to the shelf's moss, every ~8 s"
+  },
+  {
+   "id": "ferns-mist-1",
+   "kind": "mist",
+   "wisp": "rooms/mist/mist-wisp-1.png",
+   "rect_painting": [
+    530,
+    312,
+    104,
+    26
+   ],
+   "alpha": 0.7,
+   "what": "fog brimming from the bowl"
+  },
+  {
+   "id": "ferns-mist-4",
+   "kind": "mist",
+   "wisp": "rooms/mist/mist-wisp-4.png",
+   "rect_painting": [
+    600,
+    338,
+    150,
+    24
+   ],
+   "alpha": 0.45,
+   "what": "fog drifting right along the back edge, never below row 362"
+  }
+ ]
+}

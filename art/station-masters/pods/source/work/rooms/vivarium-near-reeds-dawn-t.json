@@ -1,0 +1,16 @@
+[
+ {
+  "name": "vivarium-near-reeds-dawn-t",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-reeds-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. DAWN after rain: pearly early haze, cool and pale, the back softer and cooler blue-grey than in Image 1, the sedges silver with bright beads of rain, the moss ground fresh and soft, a faint pale pink in the haze high up; gentle low light. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text."
+ }
+]

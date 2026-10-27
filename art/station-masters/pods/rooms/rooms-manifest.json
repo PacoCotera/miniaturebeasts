@@ -337,13 +337,15 @@
      "whole": 39.84,
      "floor": 40.05,
      "back": 41.29,
-     "R-B whole": 60.9
+     "R-B whole": 60.9,
+     "warmth": 0.741
     },
     "measures_near": {
      "whole": 50.7,
      "floor": 36.44,
      "back": 60.81,
-     "R-B whole": 83.5
+     "R-B whole": 83.5,
+     "warmth": 0.772
     }
    },
    "night": {
@@ -355,17 +357,81 @@
      "whole": 24.82,
      "floor": 26.68,
      "back": 23.81,
-     "R-B whole": -16.2
+     "R-B whole": -16.2,
+     "warmth": -0.283
     },
     "measures_near": {
      "whole": 24.33,
      "floor": 26.8,
      "back": 22.69,
-     "R-B whole": -6.9
+     "R-B whole": -6.9,
+     "warmth": -0.12
     },
     "pieces": "rooms/pieces/boulders/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
     "seated": "rooms/seated-idle-boulders-night.png",
     "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept"
+   },
+   "dusk": {
+    "idle": "rooms/signed-idle-boulders-dusk.png",
+    "near": "rooms/signed-near-boulders-dusk.png",
+    "source_idle": "idle-vivarium-boulders-dusk-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-boulders-dusk-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 1.0,
+     "warm_balance": 1.072
+    },
+    "grade_near": {
+     "gain": 1.043,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 29.6,
+     "floor": 24.46,
+     "back": 35.07,
+     "R-B whole": 50.7,
+     "warmth": 0.772
+    },
+    "measures_near": {
+     "whole": 27.17,
+     "floor": 21.87,
+     "back": 29.78,
+     "R-B whole": 59.0,
+     "warmth": 0.947
+    },
+    "pieces": "rooms/pieces/boulders/*-dusk.png",
+    "seated": "rooms/seated-idle-boulders-dusk.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
+   },
+   "dawn": {
+    "idle": "rooms/signed-idle-boulders-dawn.png",
+    "near": "rooms/signed-near-boulders-dawn.png",
+    "source_idle": "idle-vivarium-boulders-dawn-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-boulders-dawn-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 0.765,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 0.936,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 37.65,
+     "floor": 28.2,
+     "back": 47.03,
+     "R-B whole": -0.1,
+     "warmth": -0.001
+    },
+    "measures_near": {
+     "whole": 48.87,
+     "floor": 34.85,
+     "back": 57.87,
+     "R-B whole": 29.9,
+     "warmth": 0.271
+    },
+    "pieces": "rooms/pieces/boulders/*-dawn.png",
+    "seated": "rooms/seated-idle-boulders-dawn.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
    }
   }
  },
@@ -540,13 +606,15 @@
      "whole": 57.44,
      "floor": 40.07,
      "back": 77.3,
-     "R-B whole": 20.1
+     "R-B whole": 20.1,
+     "warmth": 0.151
     },
     "measures_near": {
      "whole": 60.86,
      "floor": 42.11,
      "back": 76.96,
-     "R-B whole": 15.2
+     "R-B whole": 15.2,
+     "warmth": 0.107
     }
    },
    "night": {
@@ -558,17 +626,81 @@
      "whole": 28.61,
      "floor": 34.08,
      "back": 25.41,
-     "R-B whole": -9.9
+     "R-B whole": -9.9,
+     "warmth": -0.15
     },
     "measures_near": {
      "whole": 24.38,
      "floor": 26.23,
      "back": 23.5,
-     "R-B whole": -12.9
+     "R-B whole": -12.9,
+     "warmth": -0.226
     },
     "pieces": "rooms/pieces/reeds/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
     "seated": "rooms/seated-idle-reeds-night.png",
     "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept"
+   },
+   "dusk": {
+    "idle": "rooms/signed-idle-reeds-dusk.png",
+    "near": "rooms/signed-near-reeds-dusk.png",
+    "source_idle": "idle-vivarium-reeds-dusk-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-reeds-dusk-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 38.98,
+     "floor": 25.53,
+     "back": 52.44,
+     "R-B whole": 25.3,
+     "warmth": 0.273
+    },
+    "measures_near": {
+     "whole": 43.14,
+     "floor": 30.24,
+     "back": 54.68,
+     "R-B whole": 16.7,
+     "warmth": 0.162
+    },
+    "pieces": "rooms/pieces/reeds/*-dusk.png",
+    "seated": "rooms/seated-idle-reeds-dusk.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
+   },
+   "dawn": {
+    "idle": "rooms/signed-idle-reeds-dawn.png",
+    "near": "rooms/signed-near-reeds-dawn.png",
+    "source_idle": "idle-vivarium-reeds-dawn-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-reeds-dawn-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 54.69,
+     "floor": 37.45,
+     "back": 74.23,
+     "R-B whole": -10.9,
+     "warmth": -0.084
+    },
+    "measures_near": {
+     "whole": 56.95,
+     "floor": 38.73,
+     "back": 72.48,
+     "R-B whole": -3.3,
+     "warmth": -0.024
+    },
+    "pieces": "rooms/pieces/reeds/*-dawn.png",
+    "seated": "rooms/seated-idle-reeds-dawn.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
    }
   }
  },
@@ -792,13 +924,15 @@
      "whole": 38.97,
      "floor": 40.05,
      "back": 42.26,
-     "R-B whole": 42.5
+     "R-B whole": 42.5,
+     "warmth": 0.531
     },
     "measures_near": {
      "whole": 36.91,
      "floor": 33.31,
      "back": 40.4,
-     "R-B whole": 31.9
+     "R-B whole": 31.9,
+     "warmth": 0.414
     }
    },
    "night": {
@@ -810,17 +944,81 @@
      "whole": 24.89,
      "floor": 27.58,
      "back": 24.79,
-     "R-B whole": -11.3
+     "R-B whole": -11.3,
+     "warmth": -0.212
     },
     "measures_near": {
      "whole": 24.33,
      "floor": 26.23,
      "back": 22.84,
-     "R-B whole": -9.1
+     "R-B whole": -9.1,
+     "warmth": -0.173
     },
     "pieces": "rooms/pieces/ferns/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
     "seated": "rooms/seated-idle-ferns-night.png",
     "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept"
+   },
+   "dusk": {
+    "idle": "rooms/signed-idle-ferns-dusk.png",
+    "near": "rooms/signed-near-ferns-dusk.png",
+    "source_idle": "idle-vivarium-ferns-dusk-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-ferns-dusk-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 1.258,
+     "warm_balance": 1.094
+    },
+    "grade_near": {
+     "gain": 1.132,
+     "warm_balance": 1.051
+    },
+    "measures_idle": {
+     "whole": 28.1,
+     "floor": 28.53,
+     "back": 29.79,
+     "R-B whole": 34.1,
+     "warmth": 0.567
+    },
+    "measures_near": {
+     "whole": 27.22,
+     "floor": 22.07,
+     "back": 31.15,
+     "R-B whole": 27.2,
+     "warmth": 0.457
+    },
+    "pieces": "rooms/pieces/ferns/*-dusk.png",
+    "seated": "rooms/seated-idle-ferns-dusk.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
+   },
+   "dawn": {
+    "idle": "rooms/signed-idle-ferns-dawn.png",
+    "near": "rooms/signed-near-ferns-dawn.png",
+    "source_idle": "idle-vivarium-ferns-dawn-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-ferns-dawn-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 0.714,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 0.916,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 36.74,
+     "floor": 30.04,
+     "back": 47.34,
+     "R-B whole": 15.9,
+     "warmth": 0.199
+    },
+    "measures_near": {
+     "whole": 35.19,
+     "floor": 30.4,
+     "back": 39.82,
+     "R-B whole": 11.2,
+     "warmth": 0.146
+    },
+    "pieces": "rooms/pieces/ferns/*-dawn.png",
+    "seated": "rooms/seated-idle-ferns-dawn.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
    }
   }
  },
@@ -1010,7 +1208,8 @@
    "source": "vivarium-near-roots-day-ta (gemini-3-pro-image)",
    "status": "HELD: Roots is to be repainted from option sheet b (owner: 'roots and maple look the same-ish'); not signed"
   },
-  "options_b": "source/raw/options-roots-b.jpg (options-roots-b, gemini-3-pro-image): A bluebell carpet, B spring wildflower bank, C sunny dewy morning, D silver birch bank; owner to pick"
+  "options_b": "source/raw/options-roots-b.jpg (options-roots-b, gemini-3-pro-image): A bluebell carpet, B spring wildflower bank, C sunny dewy morning, D silver birch bank; owner to pick",
+  "lights": "HELD: Roots is to be repainted from option sheet b (the owner's pick pending); no Roots light spent"
  },
  "enclosure": "art director's ruling: the enclosure reads, light-touch, by (1) the foot strip, rows 552-567, painted in every room as a substrate cross-section seen through the front glass (soil over a darker drainage layer), (2) each room's placed life-support piece as the device cue, (3) the face's own window chrome (home.json shade, 2 px). No painted glass edges, posts or box (they turned every picture into a cabinet in rounds c and sa). Optional for the owner: a faint glass corner sheen at the far side edges, a 0 MXN hand layer.",
  "pieces_note": "Pieces by the composite method, cut and placed by hand at 0 MXN (tools/roomcut.py). Painting coordinates (1024x568); the whole's window y = painting y - 80. rect [x, y, w, h]; foot = the lowest row of the piece's ink; occluders are hard-edged straight alpha (ARGB8888); draw order by foot row with the walkers. Cut and placed by the art director, Mon 26 Oct 2026 19:04 (Mexico City), tools/roomcut.py."

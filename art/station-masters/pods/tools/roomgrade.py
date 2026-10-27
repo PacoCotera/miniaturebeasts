@@ -32,3 +32,14 @@ if __name__ == "__main__":
     src, out, k = sys.argv[1:4]; drop = float(sys.argv[4]) if len(sys.argv) > 4 else 0.82
     a = np.asarray(Image.open(src).convert("RGB")).astype(float); b, info = solve(a, k, drop)
     Image.fromarray(b.round().astype(np.uint8)).save(out); print(json.dumps({"src": src, "out": out, **info}))
+# Dusk and dawn (art director's ruling at this pass): the gate's order (day > dawn and dusk > night, whole L*) is met by one value gain to a target whole L*;
+# "dusk warmer than day" is measured as (R-B)/mean(RGB) over the whole, since raw R-B falls with value in a darker light; met by one warm channel balance (R up, B down).
+def warmth(a, k): r = R[k]; s = a[r["whole"][0]:r["whole"][1]]; return float((s[..., 0] - s[..., 2]).mean() / s.mean())
+def tone(a, k, whole=None, warm=None):
+    b = a.copy(); g = 1.0; w = 1.0
+    for _ in range(25):
+        b = (a * g).clip(0, 255); b[..., 0] = (b[..., 0] * w).clip(0, 255); b[..., 2] = (b[..., 2] / w).clip(0, 255); m = meas(b, k); done = True
+        if whole is not None and abs(m["whole"] - whole) > 0.3: g *= (whole / max(m["whole"], 1)) ** 1.3; done = False
+        if warm is not None and warmth(b, k) < warm: w *= 1.01; done = False
+        if done: break
+    return b, {"gain": round(g, 3), "warm_balance": round(w, 3), "after": meas(b, k), "warmth": round(warmth(b, k), 3)}

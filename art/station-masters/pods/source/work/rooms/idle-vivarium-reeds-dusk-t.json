@@ -1,0 +1,16 @@
+[
+ {
+  "name": "idle-vivarium-reeds-dusk-t",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-reeds-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. DUSK after rain: grey-violet cloud light with one warm break, a low warm rose-amber light from the left grazing the moss ground and the left side of the rock; the haze behind grey-violet, warmer near the horizon; the sedges grey-green with warm tips; long soft violet shadows. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text."
+ }
+]

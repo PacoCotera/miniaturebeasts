@@ -821,5 +821,125 @@
     "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
    ]
   ]
+ },
+ "idle-vivarium-reeds-dusk-t": {
+  "sha256": "27657e4deaf795b0bad25b4ac4302a7f403bb50bfb471f4db291be6a5d218764",
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. DUSK after rain: grey-violet cloud light with one warm break, a low warm rose-amber light from the left grazing the moss ground and the left side of the rock; the haze behind grey-violet, warmer near the horizon; the sedges grey-green with warm tips; long soft violet shadows. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-reeds-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "vivarium-near-reeds-dusk-t": {
+  "sha256": "2470691e11ea606e7b21cb215f8f10b095723d13cbf81c750549968578305d7c",
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. DUSK after rain: grey-violet cloud light with one warm break, a low warm rose-amber light from the left grazing the moss ground and the left side of the rock; the haze behind grey-violet, warmer near the horizon; the sedges grey-green with warm tips; long soft violet shadows. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-reeds-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "idle-vivarium-boulders-dusk-t": {
+  "sha256": "47b5c23e3e46d8a2883aed43cd9f05271450e383a2b8c6053162a686e04f6d5c",
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. DUSK in this shrine garden: the sun very low and warm from the left, long soft blue-violet shadows of the stones and the maple falling to the right across the moss, the maple's canopy (the same leaves, shape and colour) glowing on its left side only, the back darkening to warm brown-violet; the pond holding a warm reflection. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "vivarium-near-boulders-dusk-t": {
+  "sha256": "aeb7419d5b8c8c9cdcc0e6c87c2e47c6d5f518e9f0ee42881510505bc8419994",
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. DUSK in this shrine garden: the sun very low and warm from the left, long soft blue-violet shadows of the stones and the maple falling to the right across the moss, the maple's canopy (the same leaves, shape and colour) glowing on its left side only, the back darkening to warm brown-violet; the pond holding a warm reflection. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "idle-vivarium-ferns-dusk-t": {
+  "sha256": "b3b84db63eaf8b1f423a817ff32dbf518342bdb8c01cb089bb7e15cdf6032fdd",
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. DUSK in this fern dell: warm amber flecks of low sun from the left through the fronds onto the moss ground and the log, the shade cool blue-green, the back darkening warm; the fronds' edges warm where the low sun touches them. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-ferns-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "vivarium-near-ferns-dusk-t": {
+  "sha256": "d2b2197604ce101424955fbeedb6cebb9771d47ee1a4a01c9c53604122efd0a6",
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. DUSK in this fern dell: warm amber flecks of low sun from the left through the fronds onto the moss ground and the log, the shade cool blue-green, the back darkening warm; the fronds' edges warm where the low sun touches them. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-ferns-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "idle-vivarium-reeds-dawn-t": {
+  "sha256": "90751eb131883fdc1d8f059c5425d5e97a0db7b2148687ef9d3109216bbaa0b6",
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. DAWN after rain: pearly early haze, cool and pale, the back softer and cooler blue-grey than in Image 1, the sedges silver with bright beads of rain, the moss ground fresh and soft, a faint pale pink in the haze high up; gentle low light. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-reeds-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "vivarium-near-reeds-dawn-t": {
+  "sha256": "7f80309283e9b40c658bdb321800aeb90963ddc3f613d2e924a68e467abef4d1",
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. DAWN after rain: pearly early haze, cool and pale, the back softer and cooler blue-grey than in Image 1, the sedges silver with bright beads of rain, the moss ground fresh and soft, a faint pale pink in the haze high up; gentle low light. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-reeds-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "idle-vivarium-boulders-dawn-t": {
+  "sha256": "039bd0ed2934059aaa636f5c239b6f5b420e56defd0390dcde0f878dc8955443",
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. DAWN in this shrine garden: soft pale early light, a thin low mist lying over the moss behind the island only, the back cooler and paler, grey-blue, the maple (the same leaves, shape and colour) soft in the cool light, the moss fresh and dewy, the pond pale and still. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "vivarium-near-boulders-dawn-t": {
+  "sha256": "64db79d0fc352c3522cd8f9470aac9343755757e2c66c1e692f2c028e35d5644",
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. DAWN in this shrine garden: soft pale early light, a thin low mist lying over the moss behind the island only, the back cooler and paler, grey-blue, the maple (the same leaves, shape and colour) soft in the cool light, the moss fresh and dewy, the pond pale and still. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "idle-vivarium-ferns-dawn-t": {
+  "sha256": "c5fa172c7aad5ab871ed27ddb0713f60ddad8af93a523f611d3b3e376eab7dc0",
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. DAWN in this fern dell: the fog at its deepest, pale cool mist lying low along the back and among the fronds behind the log, the back cooler and paler, grey-green, the moss ground fresh with dew in soft even light. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-ferns-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "vivarium-near-ferns-dawn-t": {
+  "sha256": "947fabc5ed5505cc5fb7ebf37a5f00c4d30334afcdc29ef52646d135e74568c0",
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. DAWN in this fern dell: the fog at its deepest, pale cool mist lying low along the back and among the fronds behind the log, the back cooler and paler, grey-green, the moss ground fresh with dew in soft even light. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-ferns-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
  }
 }

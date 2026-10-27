@@ -1,0 +1,16 @@
+[
+ {
+  "name": "idle-vivarium-boulders-dusk-t",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. DUSK in this shrine garden: the sun very low and warm from the left, long soft blue-violet shadows of the stones and the maple falling to the right across the moss, the maple's canopy (the same leaves, shape and colour) glowing on its left side only, the back darkening to warm brown-violet; the pond holding a warm reflection. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text."
+ }
+]

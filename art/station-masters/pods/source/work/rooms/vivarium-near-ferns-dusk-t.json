@@ -1,0 +1,16 @@
+[
+ {
+  "name": "vivarium-near-ferns-dusk-t",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-ferns-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. DUSK in this fern dell: warm amber flecks of low sun from the left through the fronds onto the moss ground and the log, the shade cool blue-green, the back darkening warm; the fronds' edges warm where the low sun touches them. No lamps, no glow. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text."
+ }
+]
