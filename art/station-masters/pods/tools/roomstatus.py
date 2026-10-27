@@ -1,9 +1,9 @@
 """Vivarium rooms 2-4: running totals from log/calls.jsonl and log/spend.json, and the plan's stop lines (ad-rooms-briefs.md §1, §4 rule 6).
-python3 -I tools/roomstatus.py [ROUND_REQUESTS ROOM...] -> totals; with a round, exit 1 if the round's reserve at 4.80 MXN a request would pass a line."""
+python3 -I tools/roomstatus.py [ROUND_REQUESTS ROOM...] -> totals; with a round, exit 1 if the round's reserve at RES MXN a request would pass a line."""
 import os, sys, json, datetime
 from zoneinfo import ZoneInfo
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
-ROOMS = ("reeds", "boulders", "ferns"); JOB, ROOM, CAP, RES = 212.0, 66.0, 250.0, 4.80
+ROOMS = ("reeds", "boulders", "ferns"); JOB, ROOM, CAP, RES = 300.0, 100.0, 250.0, 5.30   # owner 18:23 "ok to both": job 300, rooms 100, reserve 5.30
 DAYLINE = {"2026-10-26": (25, 120.0)}            # P1: 25 requests / 120 MXN; P2: the job ceiling
 def room_of(n):
     for r in ROOMS:
