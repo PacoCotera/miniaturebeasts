@@ -21,7 +21,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
@@ -111,7 +111,7 @@ jobs:
         run: node prototypes/face/tools/guard.mjs
       - name: Station rules and journey
         if: steps.scope.outputs.docs != 'true'
-        timeout-minutes: 15   # the step takes about 4 minutes with the play-page journey; a hang fails fast instead of holding the runner for the job's six hours
+        timeout-minutes: 30   # the step takes about 21 minutes (the tests about 8, the Station journey about 4, the play-page journey about 3, the test-page journey about 5); a hang fails fast instead of holding the runner for the job's six hours
         # The Station's rules and the Caddy service in Node, and the Station's browser journey on the face with the service
         # in mock mode beside it (a fixture save, a seeded pod, dock, the crates opened, Pods by keys, the rules of the screens that are
         # not built yet through their intents, Grow and Cross painting nothing, every not-built screen, Idle); station-build.md §5.
