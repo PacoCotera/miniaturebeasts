@@ -38,7 +38,7 @@ The bottom line has three sections, left to right, with a thin divider between t
 - **Pods**: one outline per pod you can carry, filled with the pod's shell when you take one.
 - **Partner**: the mibi with you on a teal ring, with its name if there is room.
 - **The three counters**: Energy, Data and Essence. They count up with a flash when you gain something, even when it happens out of sight.
-- **The turn clock**: a small sun and "T1", "T2"…, the world turn. It starts at T1 on your first expedition and flashes when the world turns.
+- **The turn clock**: a small sun and "Turn 1", "Turn 2"…, the world turn. It starts at Turn 1 on your first expedition and flashes when the world turns.
 - **Battery and radio**: the Companion's own power and connection.
 
 There is no Call label in the header; the Call button has no word on it either. After a hit, a small "Shield 2/3" note shows under the header for a few actions.
@@ -291,13 +291,13 @@ To choose, open the **Vivarium** on the Station, up close on the mibi, move to t
 ### The active mibi screen
 
 Between expeditions the Companion shows the mibi with you, large: its name, stage, species, ability and how it is doing ("with you · joins the Probe"). The pad shows your other mibis. **Call** makes it answer (a juvenile sometimes looks the wrong way first).
-- ✓ **Walk** with it, once per world turn while the Companion is lifted: a short moment where it does what its species does. A walk helps a mibi grow, but never bonds it.
+- ✓ **Walk** with it, once per world turn while the Companion is lifted: a short moment where it does what its species does. A walk neither grows nor bonds a mibi.
 - ✓ **Tend** it, once a day for each mibi with you. A few Tends (three) bond it, and a small heart marks it; a bond is never lost.
 
 ### Getting better and bonding
 
 - **Skill**: each expedition where your partner's ability really helped (a Loika's calm let a wary creature eat from your hand, a Tuikis dug the burrow, an Untuva sniffed out a pod) gives it a **skill notch** when you end the expedition, three at most. A notch is earned only on an expedition that explored something, and a break keeps it. The notches show on the mibi's card in the vivarium, never as a number.
-- **Bond**: a mibi bonds only through **Tends** on the Companion. ✓ **Tend** works on any mibi with you, once a day; a few Tends (three) bond it, and a small heart then marks its card in the vivarium. Walks make a mibi grow but never bond it, and the vivarium never makes a bond. There is no limit on bonds, a bond is never lost, and a bonded mibi is never returned to the wild. A bonded juvenile grows up through care, and waits at home, not growing, until it is with you and tended.
+- **Bond**: a mibi bonds only through **Tends** on the Companion. ✓ **Tend** works on any mibi with you, once a day; a few Tends (three) bond it, and a small heart then marks its card in the vivarium. A walk neither grows nor bonds a mibi, and the vivarium never makes a bond. There is no limit on bonds, a bond is never lost, and a bonded mibi is never returned to the wild. A bonded juvenile grows up through care, and waits at home, not growing, until it is with you and tended.
 
 ### Partners and what they do
 
