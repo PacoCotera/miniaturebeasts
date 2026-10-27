@@ -1,7 +1,7 @@
 // The build footer's text (src/footer.mjs): build.json's UTC time in Mexico City time, the "local" case, the parts left out.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { footerText } from "../src/footer.mjs";
+import { footerText, footerParts } from "../src/footer.mjs";
 
 const B = { commit: "a9d087f9aa", short: "a9d087f", built: "2026-10-24T23:59:00Z" };
 
@@ -32,4 +32,10 @@ test("parts left out: no save version on the website, no Caddy while it is not k
   assert.equal(footerText({ build: B }), "© 2026 Dirty Pawz Press · a9d087f · 24/10 17:59");
   assert.equal(footerText({ build: B, schema: 3, caddy: null }), "© 2026 Dirty Pawz Press · a9d087f · 24/10 17:59 · save v3");
   assert.equal(footerText({ build: B, caddy: true }), "© 2026 Dirty Pawz Press · a9d087f · 24/10 17:59 · Caddy online");
+});
+
+test("the compact form (phones): hash, time, Caddy; no copyright and no save version; the parts one by one", () => {
+  assert.equal(footerText({ build: B, schema: 3, caddy: true, compact: true }), "a9d087f · 24/10 17:59 · Caddy online");
+  assert.deepEqual(footerParts({ build: B, schema: 8, caddy: false, compact: true }), ["a9d087f", "24/10 17:59", "Caddy offline"]);
+  assert.equal(footerText({ compact: true }), "local");
 });
