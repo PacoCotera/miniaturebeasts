@@ -27,9 +27,28 @@ OPT = {
   "BOTTOM LEFT: autumn bracken in rust, copper and gold under warm low light; a clay drip pot hanging from a cord at the back right. "
   "BOTTOM RIGHT: lush hart's-tongue and bird's-nest ferns in deep emerald in warm humid haze; a ribbed ceramic humidifier column standing at the back left among the fronds."),
 }
+# Boulders re-brief (owner 18:33 shrine garden; 18:40 composition from hobby practice; 18:41 walkable levels and the composite method): sheet b, text only.
+COMMON_B = ("A contact sheet of FOUR separate paintings in a 2 by 2 grid, each the same size, separated by thin plain dark gutters; no labels, no letters, no numbers, no text anywhere. "
+ "Each painting is a different concept for the same view: the inside of one terrarium room, edge to edge (no case, no frame, no box edges), seen straight on from a low eye height, wide, the back softly out of focus and the ground sharp. "
+ "Each is a small SHRINE GARDEN, composed like a fine nature aquarium: a CONVEX composition, one mossy island rising in the middle-right carrying ONE small tree and one large mossy hero stone at about 62 percent of the width, the strongest point of the picture; "
+ "smaller mossy stones of the same kind beside it, odd in number, leaning slightly; a small still dark koi pond set BACK at the foot of the island behind the ground, with a mossy stone rim, no fish painted; "
+ "the planting rising in levels from the front to the back: low moss at the front, ferns and low shrubs in the middle, the tree and soft foliage at the back. "
+ "THE GROUND: a living, CALM moss ground in large soft patches with a little fine soil, low in contrast, nothing scattered on it, so small dark, brown and teal creatures read clearly; NO raked sand, NO gravel. "
+ "One RAISED MOSS TERRACE at the left, a low level about a tenth of the picture higher than the main ground, with a rounded front lip, joined to the main ground by a gentle mossy ramp; its top flat enough to walk on. "
+ "Two small low foreground pieces at the very front, one in the left third and one in the right third. "
+ "NO fittings at all: no lantern, no bamboo, no pipes, no gates, no torii, no bridge, no shrine building, no rope. "
+ "Painted in a warm hand-crafted miniature-diorama finish: fine painterly grain, soft bokeh behind; never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. "
+ "No creatures, no animals, no fish, no figures. The four concepts must be clearly different in palette, season, mood and light. ")
+OPT_B = {"boulders": ("TOP LEFT: early summer, a small Japanese maple in fresh green over silver-grey stones, soft green dappled light. "
+  "TOP RIGHT: autumn, the maple turned warm amber and gold (never bright red), a few gold leaves resting on the moss at the island's foot only, low warm side light. "
+  "BOTTOM LEFT: a misty morning under a small cedar, cool silver-green moss, pale haze between the levels, soft diffuse light. "
+  "BOTTOM RIGHT: late afternoon under a small gingko in pale yellow, long warm light and blue shadows across the moss, dark stones with lichen.")}
+SHEET = os.environ.get("ROOMOPT_SHEET", "a")
+if SHEET == "b": OPT, COMMON = OPT_B, COMMON_B
 idx_p = "source/work/rooms/prompts.json"; idx = json.load(open(idx_p))
 for room, txt in OPT.items():
-    n = f"options-{room}-a"; prompt = "Output ONE image, 16:9. " + COMMON + txt
+    n = f"options-{room}-{SHEET}"; prompt = "Output ONE image, 16:9. " + COMMON + txt
+    if n in idx and idx[n]["prompt"] != prompt: raise SystemExit(f"{n} already written with another prompt")
     j = {"name": n, "model": "gemini-3-pro-image", "aspect": "16:9", "size": "1K", "tries": 1, "refs": [], "prompt": prompt}
     json.dump([j], open(f"source/work/rooms/{n}.json", "w"), indent=1); idx[n] = {"sha256": hashlib.sha256(prompt.encode()).hexdigest(), "prompt": prompt, "refs": []}
-json.dump(idx, open(idx_p, "w"), indent=1); print("3 jobs")
+json.dump(idx, open(idx_p, "w"), indent=1); print(len(OPT), "jobs", SHEET)

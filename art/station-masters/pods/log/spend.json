@@ -6379,5 +6379,39 @@
    "thoughtsTokenCount": 248,
    "totalTokenCount": 2031
   }
+ },
+ {
+  "tag": "options-boulders-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.256092,
+  "mxn": 5.1218,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:42:29Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 606,
+   "candidatesTokenCount": 1739,
+   "thoughtsTokenCount": 385,
+   "totalTokenCount": 2730
+  }
+ },
+ {
+  "tag": "idle-vivarium-boulders-day-ta try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.22062,
+  "mxn": 4.4124,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:43:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 870,
+   "candidatesTokenCount": 1497,
+   "thoughtsTokenCount": 327,
+   "totalTokenCount": 2694
+  }
  }
 ]

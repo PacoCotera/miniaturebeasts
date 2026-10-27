@@ -4,7 +4,9 @@ import os, sys, json, datetime
 from zoneinfo import ZoneInfo
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
 ROOMS = ("reeds", "boulders", "ferns"); JOB, ROOM, CAP, RES = 300.0, 100.0, 250.0, 5.30   # owner 18:23 "ok to both": job 300, rooms 100, reserve 5.30
-DAYLINE = {"2026-10-26": (25, 120.0)}            # P1: 25 requests / 120 MXN; P2: the job ceiling
+DAYLINE = {"2026-10-26": (10**6, 500.0)}         # owner 18:41: "cap today art api at 500": Pacific day 10-26's 500 MXN replaces the job and room lines (the owner sets the job total after today)
+CAP_DAY = {"2026-10-26": 500.0}
+NO_JOB_LINE = {"2026-10-26"}
 def room_of(n):
     for r in ROOMS:
         if f"-{r}-" in n: return r
@@ -19,13 +21,14 @@ print(json.dumps({"pacific_day": today, "job_requests": len(mine), "job_mxn": ro
                   "job_today_requests": len(jd), "job_today_mxn": round(jday, 2), "pacific_day_all_work_mxn": round(dall, 2)}))
 if len(sys.argv) > 1:
     n = int(sys.argv[1]); rooms = sys.argv[2:]; bad = []
-    if job + n * RES > JOB + 1e-9: bad.append(f"job {job:.2f} + {n}x{RES} > {JOB}")
-    for r in rooms:
+    if today not in NO_JOB_LINE and job + n * RES > JOB + 1e-9: bad.append(f"job {job:.2f} + {n}x{RES} > {JOB}")
+    for r in ([] if today in NO_JOB_LINE else rooms):
         k = rooms.count(r)
         if per[r] + k * RES > ROOM + 1e-9: bad.append(f"room {r} {per[r]:.2f} + {k}x{RES} > {ROOM}")
     if today in DAYLINE:
         mr, mm = DAYLINE[today]
         if len(jd) + n > mr: bad.append(f"day requests {len(jd)} + {n} > {mr}")
         if jday + n * RES > mm + 1e-9: bad.append(f"day {jday:.2f} + {n}x{RES} > {mm}")
-    if dall + n * RES > CAP + 1e-9: bad.append(f"Pacific day all work {dall:.2f} + {n}x{RES} > {CAP}")
+    cap = CAP_DAY.get(today, CAP)
+    if dall + n * RES > cap + 1e-9: bad.append(f"Pacific day all work {dall:.2f} + {n}x{RES} > {cap}")
     print("STOP: " + "; ".join(bad) if bad else "reserve OK"); sys.exit(1 if bad else 0)

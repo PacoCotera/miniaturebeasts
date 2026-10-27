@@ -1,6 +1,10 @@
 {
  "note": "Vivarium rooms 2-4 (showpieces): per-room data for the rooms-ticket gate (architect package.md 2.9; lead's rulings after sb: in-band occluders with keepOut, per-room measured tops). Painting coordinates (1024x568); the whole's window y = painting y - 80. Measured by the art director at 1x on the signed day, +-5 px.",
- "boulders": {
+ "mist": {
+  "sheet": "source/raw/mist-sheet-a.jpg (mist-sheet-a, gemini-3-pro-image)",
+  "wisps": "rooms/mist/mist-wisp-1..6.png: white, alpha from the sheet's luminance (black key at 12), cut at 0 MXN; graded per room and light by hand before use"
+ },
+ "boulders_zen_superseded": {
   "day": "rooms/signed-idle-boulders-day.png",
   "source": "rooms/work-idle-vivarium-boulders-day-sa.png (idle-vivarium-boulders-day-sa, gemini-3-pro-image), ground-band grade gain 0.9079 (rooms.py grade, target L* 47)",
   "signed": "art director, Mon 26 Oct 2026 18:33 (Mexico City), day only; G1 fittings: flume ~[60,70,190,200] the moving exception (trickle ambient), lantern ~[860,95,115,170] 3.4 % of the window, back right, behind stones (over the 72x120 box, passed on area and placement); G2 per-room tops; G3 day floor L* 47.0; G6 Home cut holds the flume, basin and stones; G7 basin water only inside the stone's lip; G10 all six minis read on the gravel",
@@ -69,8 +73,87 @@
   ],
   "status": "SUPERSEDED (owner 2026-10-26 18:33: a shrine garden, not a zen garden): the Japanese-garden day, its near day (rooms/signed-near-boulders-day.png, near sb) and its two night edits are kept as a record only, never placed"
  },
- "mist": {
-  "sheet": "source/raw/mist-sheet-a.jpg (mist-sheet-a, gemini-3-pro-image)",
-  "wisps": "rooms/mist/mist-wisp-1..6.png: white, alpha from the sheet's luminance (black key at 12), cut at 0 MXN; graded per room and light by hand before use"
+ "boulders": {
+  "concept": "shrine garden, autumn (option sheet b, tile B, picked by the art director; owner to confirm)",
+  "form": "convex: the mossy island right of centre, the maple and the upright hero stone at ~62 %",
+  "day": "rooms/signed-idle-boulders-day.png",
+  "source": "idle-vivarium-boulders-day-ta (gemini-3-pro-image), ground-band grade gain 1.3442 (rooms.py grade, target L* 40)",
+  "sha256": "184ca18334b15b7a9cf0fb7206f6feb8c81b72b327af67c4e2bf9e1268bd4c57",
+  "signed": "art director, Mon 26 Oct 2026 18:44 (Mexico City), day composition: G1 no fittings (composite method); G2 per-room levels below; G3 day floor L* 40.0, whole 39.8; G4 painted finish; G6 Home cut holds the maple, pond and terrace (the hero stone sits just outside it at x 690-830); G7 the pond set back behind the ground, no fish painted, no shore onto the ground; G10 all six minis read on the moss and on the terrace",
+  "levels": [
+   {
+    "id": "main",
+    "profile": {
+     "x": [
+      16,
+      190,
+      330,
+      470,
+      690,
+      800,
+      1009
+     ],
+     "top_painting": [
+      446,
+      436,
+      402,
+      456,
+      470,
+      466
+     ]
+    },
+    "bottom_painting": 551,
+    "note": "the island's foot leaves ~80 px of depth at the right"
+   },
+   {
+    "id": "terrace",
+    "profile": {
+     "x": [
+      16,
+      260
+     ],
+     "top_painting": [
+      318
+     ]
+    },
+    "bottom_painting": 376,
+    "note": "the raised moss terrace at the left; its front lip ~378-440 is a rounded kerb, not walkable",
+    "joins": [
+     {
+      "to": "main",
+      "kind": "ramp",
+      "rect_painting": [
+       190,
+       330,
+       140,
+       110
+      ]
+     }
+    ]
+   }
+  ],
+  "occluders": [
+   {
+    "id": "boulders-stone-1",
+    "level": "main",
+    "rect_painting": [
+     705,
+     388,
+     105,
+     95
+    ],
+    "foot_painting": 482,
+    "keepOut_painting": [
+     715,
+     468,
+     85,
+     16
+    ],
+    "edge": "hard",
+    "what": "leaning mossy stone at the island's foot, pointed top, not a perch"
+   }
+  ],
+  "pieces_to_place": "the two front occluders, the stone lantern and the koi are painted separately (composite method) and placed by hand; the pond's koi layer is masked to the pond [330,320,230,70]",
+  "ambient": "koi under the pond surface; maple leaves stirring and a leaf falling onto the island; warm light shift across the moss"
  }
 }
