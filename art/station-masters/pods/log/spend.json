@@ -6260,5 +6260,124 @@
    "thoughtsTokenCount": 363,
    "totalTokenCount": 2519
   }
+ },
+ {
+  "tag": "idle-vivarium-reeds-day-sc try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.242076,
+  "mxn": 4.8415,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:31:44Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1098,
+   "candidatesTokenCount": 1599,
+   "thoughtsTokenCount": 400,
+   "totalTokenCount": 3097
+  }
+ },
+ {
+  "tag": "idle-vivarium-ferns-day-sc try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.218652,
+  "mxn": 4.373,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:32:02Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1146,
+   "candidatesTokenCount": 1505,
+   "thoughtsTokenCount": 298,
+   "totalTokenCount": 2949
+  }
+ },
+ {
+  "tag": "vivarium-near-boulders-day-sa try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.186792,
+  "mxn": 3.7358,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:33:53Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 576,
+   "candidatesTokenCount": 1324,
+   "thoughtsTokenCount": 223,
+   "totalTokenCount": 2123
+  }
+ },
+ {
+  "tag": "vivarium-near-boulders-day-sb try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.196082,
+  "mxn": 3.9216,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:34:26Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 661,
+   "candidatesTokenCount": 1372,
+   "thoughtsTokenCount": 251,
+   "totalTokenCount": 2284
+  }
+ },
+ {
+  "tag": "mist-sheet-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.172212,
+  "mxn": 3.4442,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:35:23Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 126,
+   "candidatesTokenCount": 1289,
+   "thoughtsTokenCount": 144,
+   "totalTokenCount": 1559
+  }
+ },
+ {
+  "tag": "idle-vivarium-boulders-night-sa try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182874,
+  "mxn": 3.6575,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:35:39Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 477,
+   "candidatesTokenCount": 1312,
+   "thoughtsTokenCount": 204,
+   "totalTokenCount": 1993
+  }
+ },
+ {
+  "tag": "vivarium-near-boulders-night-sa try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.187552,
+  "mxn": 3.751,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:35:54Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 476,
+   "candidatesTokenCount": 1307,
+   "thoughtsTokenCount": 248,
+   "totalTokenCount": 2031
+  }
  }
 ]

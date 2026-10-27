@@ -1,0 +1,76 @@
+{
+ "note": "Vivarium rooms 2-4 (showpieces): per-room data for the rooms-ticket gate (architect package.md 2.9; lead's rulings after sb: in-band occluders with keepOut, per-room measured tops). Painting coordinates (1024x568); the whole's window y = painting y - 80. Measured by the art director at 1x on the signed day, +-5 px.",
+ "boulders": {
+  "day": "rooms/signed-idle-boulders-day.png",
+  "source": "rooms/work-idle-vivarium-boulders-day-sa.png (idle-vivarium-boulders-day-sa, gemini-3-pro-image), ground-band grade gain 0.9079 (rooms.py grade, target L* 47)",
+  "signed": "art director, Mon 26 Oct 2026 18:33 (Mexico City), day only; G1 fittings: flume ~[60,70,190,200] the moving exception (trickle ambient), lantern ~[860,95,115,170] 3.4 % of the window, back right, behind stones (over the 72x120 box, passed on area and placement); G2 per-room tops; G3 day floor L* 47.0; G6 Home cut holds the flume, basin and stones; G7 basin water only inside the stone's lip; G10 all six minis read on the gravel",
+  "sha256": "935dbfd878a4dcd00e86261cc4e5d4b428bb70ae5b1b29507c51b93cccbc73ce",
+  "profile": {
+   "x": [
+    16,
+    100,
+    330,
+    560,
+    900,
+    1009
+   ],
+   "top_painting": [
+    446,
+    422,
+    402,
+    446,
+    452
+   ],
+   "top_whole": [
+    366,
+    342,
+    322,
+    366,
+    372
+   ]
+  },
+  "occluders": [
+   {
+    "id": "boulders-stone-1",
+    "rect_painting": [
+     150,
+     427,
+     152,
+     61
+    ],
+    "foot_painting": 486,
+    "keepOut_painting": [
+     160,
+     470,
+     132,
+     18
+    ],
+    "edge": "hard",
+    "what": "low moss-capped stone, rounded"
+   },
+   {
+    "id": "boulders-cushion-1",
+    "rect_painting": [
+     672,
+     395,
+     176,
+     87
+    ],
+    "foot_painting": 480,
+    "keepOut_painting": [
+     684,
+     462,
+     152,
+     20
+    ],
+    "edge": "hard",
+    "what": "clipped moss cushion, leafy top"
+   }
+  ],
+  "status": "SUPERSEDED (owner 2026-10-26 18:33: a shrine garden, not a zen garden): the Japanese-garden day, its near day (rooms/signed-near-boulders-day.png, near sb) and its two night edits are kept as a record only, never placed"
+ },
+ "mist": {
+  "sheet": "source/raw/mist-sheet-a.jpg (mist-sheet-a, gemini-3-pro-image)",
+  "wisps": "rooms/mist/mist-wisp-1..6.png: white, alpha from the sheet's luminance (black key at 12), cut at 0 MXN; graded per room and light by hand before use"
+ }
+}

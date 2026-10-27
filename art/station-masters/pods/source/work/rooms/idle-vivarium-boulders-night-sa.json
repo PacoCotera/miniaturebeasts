@@ -1,0 +1,16 @@
+[
+ {
+  "name": "idle-vivarium-boulders-night-sa",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. NIGHT in this garden: cool moonlight from the upper left; the combed gravel floor pale and silvery, clearly BRIGHTER than the dark stones and the dark bamboo back; the moss caps dark green with a faint cool rim on their tops; the stone lantern stays UNLIT and dark; the water trickle catches a thin cool highlight. No moon disc in view, no lamps, no glow, no stars. Keep Image 1 EXACTLY the same in composition and content: every stone, moss cap, gravel line, the bamboo flume and its basin, the lantern, the two low pieces on the gravel, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text."
+ }
+]

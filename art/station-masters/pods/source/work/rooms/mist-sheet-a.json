@@ -1,0 +1,11 @@
+[
+ {
+  "name": "mist-sheet-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [],
+  "prompt": "Output ONE image, 16:9: a reference sheet of SIX separate soft wisps of low mist, painted in a fine hand-painted miniature finish, pure soft white, each wisp a long low horizontal drift about four times as wide as it is tall, with soft feathered edges fading to nothing, laid out in two rows of three, well apart, on a flat PURE BLACK background (#000000) edge to edge. Nothing else: no ground, no plants, no objects, no glow, no text, no frame."
+ }
+]

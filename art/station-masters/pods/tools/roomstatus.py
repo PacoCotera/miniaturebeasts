@@ -9,7 +9,7 @@ def room_of(n):
     for r in ROOMS:
         if f"-{r}-" in n: return r
 calls = [json.loads(l) for l in open("log/calls.jsonl")]
-mine = [c for c in calls if c.get("name") and (c["name"].startswith(("idle-vivarium-", "vivarium-near-", "options-"))) and room_of(c["name"])]
+mine = [c for c in calls if c.get("name") and ((c["name"].startswith(("idle-vivarium-", "vivarium-near-", "options-")) and room_of(c["name"])) or c["name"].startswith("mist-sheet-"))]   # mist sheets: job and day, no room
 today = datetime.datetime.now(ZoneInfo("America/Los_Angeles")).date().isoformat()
 def pday(c): return datetime.datetime.strptime(c["time"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.timezone.utc).astimezone(ZoneInfo("America/Los_Angeles")).date().isoformat()
 job = sum(c["costMxn"] or 0 for c in mine); per = {r: sum(c["costMxn"] or 0 for c in mine if room_of(c["name"]) == r) for r in ROOMS}

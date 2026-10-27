@@ -541,5 +541,70 @@
     "IMAGE 1, THE PICTURE TO EDIT (this room's day, round sa): keep everything but the listed changes:"
    ]
   ]
+ },
+ "idle-vivarium-reeds-day-sc": {
+  "sha256": "b43bdaeb3e064104cb08595d9c1b3b03dc364514c3aa074cb43a1d023dce05a8",
+  "prompt": "Output a NEW image, 16:9. Image 1 is the owner's approved concept for this room. Paint THIS room as a finished painting: the same planting, palette, mood and light as Image 1, but showing ONLY the inside of the terrarium, edge to edge, wide, from a low eye height, straight on: no case, no bezel, no frame, no window posts, no box, no ceiling, no side walls of a box, no glass edges. Finish: a hand-painted miniature diorama, fine painterly grain on everything, the back softly out of focus with gentle bokeh, the floor sharp; believable materials; never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow, no chrome, no alien tech. No creatures, no animals, no figures, no text, no letters, no digits, no logos, no UI. No pool, no pond, no open water surface, no cliff, no crag, no ledge. LAYOUT, as fractions of the picture: the open floor's back edge (where the open floor ends and everything taller begins) runs at about 80 percent of the height down from the top over the left tenth of the width, about 76 percent from 10 to 32 percent of the width, about 70 percent from 32 to 55 percent, about 71 percent from 55 to 88 percent, and about 75 percent over the right eighth; it may sit a little higher, never lower. Below that edge, down to about 97 percent of the height, is the OPEN FLOOR: low, CALM and plain, nothing on it taller than a small pebble, no scatter of litter, debris or stones, no roots or stems lying across it, so small dark, brown and teal creatures read clearly on it. The bottom 3 percent is a thin dark soil strip across the full width. Everything tall stands BEHIND the back edge, its feet ending on it, never spilling onto the floor. EXCEPT TWO LOW FOREGROUND PIECES at the very front of the floor, their bases at about 94 to 96 percent of the height, each no wider than a tenth of the width and no taller than about 8 percent of the height: one between about 12 and 30 percent of the width, one between about 68 and 85 percent. Nothing important between 57 and 65 percent of the width in the lowest fifth. FITTINGS are incidental: small, half in shadow, off-centre, standing at or behind the back edge, never in the open floor and never as hoses or pipes along the side edges; each small, no more than about 7 percent of the width and a fifth of the height. THE ROOM: a sedge meadow just after rain, as in Image 1: silver-green sedges beaded with raindrops under soft bright overcast light, cool grey-green above, a warm short wet moss floor, a thin pale haze in the soft back. ADD one rain-darkened rounded rock, smooth and weathered, half among the sedges at the back left of centre (from about 18 to 34 percent of the width, its top at about 55 percent of the height), sitting behind the back edge. The only fitting is a TINY dark grey ceramic rain cup on a short stake, LESS THAN A QUARTER OF THE ROCK'S HEIGHT, at the back right, half hidden among the sedges and in shadow, one drop at its lip; no funnel on a stand, no posts, no cylinders, no glass edges. The two foreground pieces: a low sedge tuft (left) and a small wet rounded stone (right).",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/pick-reeds.png",
+    "IMAGE 1, THE APPROVED CONCEPT (the owner's pick, option B): the room's planting, palette, mood and light; never its case, frame or box:"
+   ]
+  ]
+ },
+ "idle-vivarium-ferns-day-sc": {
+  "sha256": "041793e6dfcc3bee86fa7b81cc92bbfae07a9495496b24b10e07c928d53c3ac6",
+  "prompt": "Output a NEW image, 16:9. Image 1 is the owner's approved concept for this room. Paint THIS room as a finished painting: the same planting, palette, mood and light as Image 1, but showing ONLY the inside of the terrarium, edge to edge, wide, from a low eye height, straight on: no case, no bezel, no frame, no window posts, no box, no ceiling, no side walls of a box, no glass edges. Finish: a hand-painted miniature diorama, fine painterly grain on everything, the back softly out of focus with gentle bokeh, the floor sharp; believable materials; never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow, no chrome, no alien tech. No creatures, no animals, no figures, no text, no letters, no digits, no logos, no UI. No pool, no pond, no open water surface, no cliff, no crag, no ledge. LAYOUT, as fractions of the picture: the open floor's back edge (where the open floor ends and everything taller begins) runs at about 80 percent of the height down from the top over the left tenth of the width, about 76 percent from 10 to 32 percent of the width, about 70 percent from 32 to 55 percent, about 71 percent from 55 to 88 percent, and about 75 percent over the right eighth; it may sit a little higher, never lower. Below that edge, down to about 97 percent of the height, is the OPEN FLOOR: low, CALM and plain, nothing on it taller than a small pebble, no scatter of litter, debris or stones, no roots or stems lying across it, so small dark, brown and teal creatures read clearly on it. The bottom 3 percent is a thin dark soil strip across the full width. Everything tall stands BEHIND the back edge, its feet ending on it, never spilling onto the floor. EXCEPT TWO LOW FOREGROUND PIECES at the very front of the floor, their bases at about 94 to 96 percent of the height, each no wider than a tenth of the width and no taller than about 8 percent of the height: one between about 12 and 30 percent of the width, one between about 68 and 85 percent. Nothing important between 57 and 65 percent of the width in the lowest fifth. FITTINGS are incidental: small, half in shadow, off-centre, standing at or behind the back edge, never in the open floor and never as hoses or pipes along the side edges; each small, no more than about 7 percent of the width and a fifth of the height. THE ROOM: a shaded fern dell, as in Image 1: a deep green fern bank with golden flecks of sun, dappled green-gold light, cool shade, a mossy fallen log lying level along the back edge (from about 15 to 60 percent of the width), its underside resting ON the back edge at about 72 percent of the height along its whole length, never sloping down onto the floor. The ceramic fogger bowl is TINY: no wider than a tenth of the log's length, half hidden BEHIND the log at the right of centre so only its rim shows, a low soft fog drifting from it along the back only, never over the open floor. Exactly TWO very thin copper drip lines, in shade among the fronds; they appear only below about 35 percent of the height, coming out from behind fronds, never hanging from the top of the picture; one drop at each tip. The floor short bright sunlit moss, no leaves. No tree trunks, no forest: it is a terrarium planting. The two foreground pieces: a low fern tuft (left) and a small clump of curled croziers (right).",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/pick-ferns.png",
+    "IMAGE 1, THE APPROVED CONCEPT (the owner's pick, option A): the room's planting, palette, mood and light; never its case, frame or box:"
+   ]
+  ]
+ },
+ "vivarium-near-boulders-day-sa": {
+  "sha256": "1864529ca1e8e56f74f38a81e60338a8cd9a9c15afabfb3efbefa7c8a68a1757",
+  "prompt": "Output a NEW image, 4:3: THIS room of Image 1 seen much CLOSER and at GROUND LEVEL, at the scale of a small creature, in the same light, palette and hand-painted miniature finish (fine painterly grain, soft bokeh behind, the ground sharp). In view: the rounded flank of one moss-capped pink-grey granite stone filling the left side (the left fifth of the width), a corner of the combed gravel and the edge of the stone lantern soft and far back at the right, a few bamboo stems in the far bokeh. The features frame the view from the sides (the left and right fifths) and from far back, never a busy shape behind the middle. The ground fills the lower 40 percent of the picture. Across the centre of the ground (from about 25 to 75 percent of the width and from about 72 to 86 percent of the height) it is OPEN and plain, nothing on it taller than a tiny pebble, where one small creature will stand. No creatures, no animals, no figures, no text, no letters, no digits, no frame, no box, no UI, no pool, no open water, no cliff or ledge. Never photographic, never toon, never childish: no cartoon outlines, no toy colours, no gloss, no glow.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): the place, palette, light and finish; seen closer in the new picture:"
+   ]
+  ]
+ },
+ "vivarium-near-boulders-day-sb": {
+  "sha256": "1e3ad6871f7a013108a8f4affbf2161fff699f09e70f2bfb7e2bd5989dbdb350",
+  "prompt": "Output a NEW image, 4:3: THIS room of Image 1 seen much CLOSER and at GROUND LEVEL, at the scale of a small creature, in the same light, palette and hand-painted miniature finish (fine painterly grain, soft bokeh behind, the ground sharp). In view: the rounded flank of one moss-capped pink-grey granite stone filling the left side (the left fifth of the width), a corner of the combed gravel and the edge of the stone lantern soft and far back at the right, a few bamboo stems in the far bokeh. The features frame the view from the sides (the left and right fifths) and from far back, never a busy shape behind the middle. The ground fills the lower 40 percent of the picture. Across the centre of the ground (from about 25 to 75 percent of the width and from about 72 to 86 percent of the height) it is OPEN and plain, nothing on it taller than a tiny pebble, where one small creature will stand. It is a PAINTING, not a photograph: the same visible painterly brushwork and grain as Image 1, the bokeh painted as soft dabs like Image 1's, edges painted, nothing with photographic depth-of-field blur or photographic texture. The ground is Image 1's fine pale gravel combed in long straight low-contrast lines running across the picture, calm, no loose coarse pebbles. No creatures, no animals, no figures, no text, no letters, no digits, no frame, no box, no UI, no pool, no open water, no cliff or ledge. Never photographic, never toon, never childish: no cartoon outlines, no toy colours, no gloss, no glow.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): the place, palette, light and finish; seen closer in the new picture:"
+   ]
+  ]
+ },
+ "mist-sheet-a": {
+  "sha256": "5f564c73f47230d7d9e2bdc9e1e2dd2b0dd765dd4ab8d78d04034d3d20161117",
+  "prompt": "Output ONE image, 16:9: a reference sheet of SIX separate soft wisps of low mist, painted in a fine hand-painted miniature finish, pure soft white, each wisp a long low horizontal drift about four times as wide as it is tall, with soft feathered edges fading to nothing, laid out in two rows of three, well apart, on a flat PURE BLACK background (#000000) edge to edge. Nothing else: no ground, no plants, no objects, no glow, no text, no frame.",
+  "refs": []
+ },
+ "idle-vivarium-boulders-night-sa": {
+  "sha256": "e52647e635eb692c19922df5766a295198bfc92b3dff2a187c5fd80fe6e93aec",
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. NIGHT in this garden: cool moonlight from the upper left; the combed gravel floor pale and silvery, clearly BRIGHTER than the dark stones and the dark bamboo back; the moss caps dark green with a faint cool rim on their tops; the stone lantern stays UNLIT and dark; the water trickle catches a thin cool highlight. No moon disc in view, no lamps, no glow, no stars. Keep Image 1 EXACTLY the same in composition and content: every stone, moss cap, gravel line, the bamboo flume and its basin, the lantern, the two low pieces on the gravel, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
+ },
+ "vivarium-near-boulders-night-sa": {
+  "sha256": "44a880ffcfae90b9f3e43ad2716a2fabe6e411a126b033677f1ead0b566f17bd",
+  "prompt": "Output a NEW image, 4:3: Image 1 at a different time of day. NIGHT in this garden: cool moonlight from the upper left; the combed gravel floor pale and silvery, clearly BRIGHTER than the dark stones and the dark bamboo back; the moss caps dark green with a faint cool rim on their tops; the stone lantern stays UNLIT and dark; the water trickle catches a thin cool highlight. No moon disc in view, no lamps, no glow, no stars. Keep Image 1 EXACTLY the same in composition and content: every stone, moss cap, gravel line, the bamboo flume and its basin, the lantern, the two low pieces on the gravel, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-near-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ]
  }
 }

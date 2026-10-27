@@ -37,6 +37,21 @@ ROOMS = {
            "Two or three very thin copper drip lines hang in the shade among the fronds, one drop at a tip. The floor short moss and dark peat with only two or three flat leaves. "
            "No tree trunks, no forest: it is a terrarium planting. The two foreground pieces: a low fern tuft (left) and a small clump of curled croziers (right)."),
 }
+# Round sc (art director's written ruling, lead's go after sb): Reeds and Ferns only. Occluders are the in-band pieces (lead's ruling 1), each room declares
+# its own measured tops (ruling 2), so the layout keeps its back-edge fractions as guidance only. Sizes are given against the room's own pieces, which the model
+# holds better than percentages: Reeds' fitting smaller than a quarter of the rock's height; Ferns' bowl a tenth of the log's length, two copper lines below 35 %.
+if ROUND == "sc":
+    ROOMS = {
+     "reeds": ROOMS["reeds"].replace("The rain-catch funnel is made SMALL and quiet: about 5 percent of the width, at the far right back, half hidden among the sedges and in shadow, a single drop at its lip; no tall copper stand in view. ",
+        "The only fitting is a TINY dark grey ceramic rain cup on a short stake, LESS THAN A QUARTER OF THE ROCK'S HEIGHT, at the back right, half hidden among the sedges and in shadow, one drop at its lip; no funnel on a stand, no posts, no cylinders, no glass edges. "),
+     "ferns": ROOMS["ferns"].replace("The ceramic fogger bowl is made SMALL: about 6 percent of the width, half hidden behind the log at the right of centre, a low soft fog drifting from it along the back only, never over the open floor. ",
+        "The ceramic fogger bowl is TINY: no wider than a tenth of the log's length, half hidden BEHIND the log at the right of centre so only its rim shows, a low soft fog drifting from it along the back only, never over the open floor. ")
+        .replace("Two or three very thin copper drip lines hang in the shade among the fronds, one drop at a tip. ",
+        "Exactly TWO very thin copper drip lines, in shade among the fronds; they appear only below about 35 percent of the height, coming out from behind fronds, never hanging from the top of the picture; one drop at each tip. ")
+        .replace("a mossy fallen log lying along the back edge (from about 15 to 60 percent of the width), its underside on the back edge. ",
+        "a mossy fallen log lying level along the back edge (from about 15 to 60 percent of the width), its underside resting ON the back edge at about 72 percent of the height along its whole length, never sloping down onto the floor. ")
+        .replace("The floor short moss and dark peat with only two or three flat leaves. ", "The floor short bright sunlit moss, no leaves. "),
+    }
 idx_p = "source/work/rooms/prompts.json"; idx = json.load(open(idx_p))
 for room, txt in ROOMS.items():
     n = f"idle-vivarium-{room}-day-{ROUND}"; prompt = "Output a NEW image, 16:9. " + COMMON + txt
@@ -44,4 +59,4 @@ for room, txt in ROOMS.items():
     j = {"name": n, "model": MODEL, "aspect": "16:9", "size": "1K", "tries": 1, "refs": refs, "prompt": prompt}
     if n in idx and idx[n]["prompt"] != prompt: raise SystemExit(f"{n} already written with another prompt")
     json.dump([j], open(f"source/work/rooms/{n}.json", "w"), indent=1); idx[n] = {"sha256": hashlib.sha256(prompt.encode()).hexdigest(), "prompt": prompt, "refs": refs}
-json.dump(idx, open(idx_p, "w"), indent=1); print("3 jobs", ROUND)
+json.dump(idx, open(idx_p, "w"), indent=1); print(len(ROOMS), "jobs", ROUND)

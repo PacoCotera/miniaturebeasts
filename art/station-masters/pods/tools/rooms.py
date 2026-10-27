@@ -6,6 +6,7 @@
                            (x 884-914 y 0-131, x 882-950 y 125-182), the vent (inside the right wall), and the soil foot rows 552-567; 8 px feather outward
   measure(im, kind)        mean L* and mean R-B (sRGB 0-255): whole rows 120-560, ground band rows 376-551, the whole painting; near: all of it; Home cut x 64-667 y 194-555
 python3 -I tools/rooms.py proof NAME... -> rooms/proof-<name>.png (1x, with the profile overlay) and a JSON line of measures
+python3 -I tools/rooms.py grade NAME TARGET_L OUT -> the 0 MXN ground-band-only grade (rows 340-375 feathered in, rows 376-567 at one RGB gain, so the room keeps its colour), the gain fitted so the ground band hits TARGET_L
 python3 -I tools/rooms.py proof-raw NAME... -> the same with no device paste (owner 18:03: room 1's device is no longer pasted into other rooms; round c on)"""
 import os, sys, json
 import numpy as np
@@ -46,7 +47,15 @@ def overlay(im):
         d.line([BX[i], t, BX[i + 1] - 1, t], fill=(255, 40, 40), width=1); d.line([BX[i], t - 24, BX[i + 1] - 1, t - 24], fill=(255, 190, 40), width=1)
     d.rectangle([64, 194, 667, 555], outline=(255, 255, 255)); d.rectangle([588, 460, 668, 556], outline=(160, 160, 160))
     return o
+def bandgrade(im, target):
+    a = np.asarray(im.convert("RGB")).astype(float); y = np.arange(a.shape[0]); w = np.clip((y - 340) / 36, 0, 1)[:, None, None]; g = 1.0
+    for _ in range(10):
+        b = (a * (1 + w * (g - 1))).clip(0, 255); g *= (target / stats(b[376:552])[0]) ** 1.6
+    return Image.fromarray(b.round().astype(np.uint8)), round(g, 4)
 if __name__ == "__main__":
+    if sys.argv[1] == "grade":
+        n, t, out = sys.argv[2], float(sys.argv[3]), sys.argv[4]; im, g = bandgrade(Image.open(f"rooms/work-{n}.png"), t); im.save(out)
+        print(json.dumps({"name": n, "gain": g, "out": out, **measure(im, "idle")})); sys.exit(0)
     if sys.argv[1] in ("proof", "proof-raw"):
         for n in sys.argv[2:]:
             kind = "idle" if n.startswith("idle-") else "near"; light = n.split("-")[-2]
