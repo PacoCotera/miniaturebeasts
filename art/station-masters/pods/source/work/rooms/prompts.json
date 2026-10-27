@@ -706,5 +706,60 @@
     "IMAGE 1, THE ROOM (its signed day painting): palette, light and finish only; do not paint the room:"
    ]
   ]
+ },
+ "vivarium-near-roots-day-ta": {
+  "sha256": "db27bb940edd032c2fb696da97b2fe8ac23ed5122d3548edc84e4773bbdb5d44",
+  "prompt": "Output a NEW image, 4:3: THIS room of Image 1 seen much CLOSER and at GROUND LEVEL, at the scale of a small creature, in the same light, palette and hand-painted miniature finish (fine painterly grain, soft bokeh behind, the ground sharp). In view: a curve of the old mossy honey-brown tree roots framing the left side (the left fifth of the width), the dark round burrow mouth soft and far back left of centre, soft green foliage in warm golden bokeh at the right side. The features frame the view from the sides and from far back, never a busy shape behind the middle. The ground fills the lower 40 percent of the picture: calm moss and fine soil in large soft patches, a faint lighter strip of soil. Across the centre of the ground (from about 25 to 75 percent of the width and from about 72 to 86 percent of the height) it is OPEN and plain, nothing on it taller than a tiny pebble, where one small creature will stand. It is a PAINTING, not a photograph: the same visible painterly brushwork and grain as Image 1, the bokeh painted as soft dabs like Image 1's, edges painted, nothing with photographic depth-of-field blur or photographic texture. No fittings, no objects, no pipes, no lantern, no bowls, no pond, no open water. No creatures, no animals, no fish, no figures, no text, no letters, no digits, no frame, no box, no UI, no cliff or ledge. Never photographic, never toon, never childish: no cartoon outlines, no toy colours, no gloss, no glow.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-roots-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): the place, palette, light and finish; seen closer in the new picture:"
+   ]
+  ]
+ },
+ "vivarium-near-reeds-day-ta": {
+  "sha256": "16fb504cb5d3a2939ee378e9b94628a9efa6567e550e2dec57f974bd7d97fe28",
+  "prompt": "Output a NEW image, 4:3: THIS room of Image 1 seen much CLOSER and at GROUND LEVEL, at the scale of a small creature, in the same light, palette and hand-painted miniature finish (fine painterly grain, soft bokeh behind, the ground sharp). In view: silver-green sedge blades beaded with raindrops framing both sides (the left and right fifths of the width), the rain-darkened rounded rock soft and far back left of centre, pale soft haze in the open centre behind. The features frame the view from the sides and from far back, never a busy shape behind the middle. The ground fills the lower 40 percent of the picture: short wet moss in large soft patches, calm. Across the centre of the ground (from about 25 to 75 percent of the width and from about 72 to 86 percent of the height) it is OPEN and plain, nothing on it taller than a tiny pebble, where one small creature will stand. It is a PAINTING, not a photograph: the same visible painterly brushwork and grain as Image 1, the bokeh painted as soft dabs like Image 1's, edges painted, nothing with photographic depth-of-field blur or photographic texture. No fittings, no objects, no pipes, no lantern, no bowls, no pond, no open water. No creatures, no animals, no fish, no figures, no text, no letters, no digits, no frame, no box, no UI, no cliff or ledge. Never photographic, never toon, never childish: no cartoon outlines, no toy colours, no gloss, no glow.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-reeds-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): the place, palette, light and finish; seen closer in the new picture:"
+   ]
+  ]
+ },
+ "vivarium-near-boulders-day-ta": {
+  "sha256": "a0a47f0f8ae05b5e654d103fb2806b40d8506b5059a779ec7e0d7bbfb648e1fd",
+  "prompt": "Output a NEW image, 4:3: THIS room of Image 1 seen much CLOSER and at GROUND LEVEL, at the scale of a small creature, in the same light, palette and hand-painted miniature finish (fine painterly grain, soft bokeh behind, the ground sharp). In view: the mossy flank of the garden's island with a few fallen amber maple leaves framing the right side (the right fifth of the width), a low mossy granite stone at the left side (the left fifth), the maple's gold canopy soft in the far warm bokeh. The features frame the view from the sides and from far back, never a busy shape behind the middle. The ground fills the lower 40 percent of the picture: calm moss in large soft patches with a little fine soil, a fallen gold leaf or two only at the sides. Across the centre of the ground (from about 25 to 75 percent of the width and from about 72 to 86 percent of the height) it is OPEN and plain, nothing on it taller than a tiny pebble, where one small creature will stand. It is a PAINTING, not a photograph: the same visible painterly brushwork and grain as Image 1, the bokeh painted as soft dabs like Image 1's, edges painted, nothing with photographic depth-of-field blur or photographic texture. No fittings, no objects, no pipes, no lantern, no bowls, no pond, no open water. No creatures, no animals, no fish, no figures, no text, no letters, no digits, no frame, no box, no UI, no cliff or ledge. Never photographic, never toon, never childish: no cartoon outlines, no toy colours, no gloss, no glow.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): the place, palette, light and finish; seen closer in the new picture:"
+   ]
+  ]
+ },
+ "vivarium-near-ferns-day-ta": {
+  "sha256": "8526bd64129ca4163e9eb53ba04f14786971ad920ae51b646ef3d13034fe5483",
+  "prompt": "Output a NEW image, 4:3: THIS room of Image 1 seen much CLOSER and at GROUND LEVEL, at the scale of a small creature, in the same light, palette and hand-painted miniature finish (fine painterly grain, soft bokeh behind, the ground sharp). In view: deep green fern fronds framing the left and right sides (the left and right fifths of the width), a curled crozier soft behind at the right, the mossy log far back and soft, a faint low mist along the back, golden flecks of sun. The features frame the view from the sides and from far back, never a busy shape behind the middle. The ground fills the lower 40 percent of the picture: short bright moss in large soft patches, calm. Across the centre of the ground (from about 25 to 75 percent of the width and from about 72 to 86 percent of the height) it is OPEN and plain, nothing on it taller than a tiny pebble, where one small creature will stand. It is a PAINTING, not a photograph: the same visible painterly brushwork and grain as Image 1, the bokeh painted as soft dabs like Image 1's, edges painted, nothing with photographic depth-of-field blur or photographic texture. No fittings, no objects, no pipes, no lantern, no bowls, no pond, no open water. No creatures, no animals, no fish, no figures, no text, no letters, no digits, no frame, no box, no UI, no cliff or ledge. Never photographic, never toon, never childish: no cartoon outlines, no toy colours, no gloss, no glow.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-ferns-day.png",
+    "IMAGE 1, THE ROOM (its signed day painting): the place, palette, light and finish; seen closer in the new picture:"
+   ]
+  ]
+ },
+ "vivarium-near-boulders-day-tb": {
+  "sha256": "9127c49c6fe99f63ea12f76dd1535f995b2cd477f6a91f19f54a7c3c8a62c165",
+  "prompt": "Output a NEW image, 4:3: Image 1 edited. KEEP EVERYTHING in Image 1 exactly as it is (the maple, the mossy stone at the left, the mossy island and the fallen leaves at the right, the palette, the light, the hand-painted miniature finish, the bokeh, the camera) and CHANGE ONLY this: the ground across the centre, from about 22 to 78 percent of the width and from about 68 to 90 percent of the height, becomes ONE flat, calm, level stretch of short even moss over fine soil, low in contrast, lying flat like a lawn: remove the two raised moss mounds there and the loose pebbles, and paint the flat ground where they were, matching the light and the moss around. Nothing on it taller than a tiny pebble. Do not add anything; no creatures, no text, no frame, no pond.",
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/work-vivarium-near-boulders-day-ta.png",
+    "IMAGE 1, THE PICTURE TO EDIT (this room's near day, round ta): keep everything but the listed change:"
+   ]
+  ]
+ },
+ "options-roots-b": {
+  "sha256": "8b3e75b279843299e2845e632c8c5002e624543ea1728c5f87a51d62e72e890d",
+  "prompt": "Output ONE image, 16:9. A contact sheet of FOUR separate paintings in a 2 by 2 grid, each the same size, separated by thin plain dark gutters; no labels, no letters, no numbers, no text anywhere. Each painting is a different concept for the same view: the inside of one terrarium room, edge to edge (no case, no frame, no box edges), seen straight on from a low eye height, wide, the back softly out of focus and the ground sharp. Each is a small ROOT-AND-BURROW room, composed like a fine naturalistic vivarium: a TRIANGULAR composition, HIGH at the LEFT and low at the right: a mossy mound with an old root tangle rising at the left, and in it a dark round BURROW MOUTH at about a third of the width, the strongest point of the picture; the planting rising in levels from the front to the back; the right side low and open, with a soft calm mossy hollow at the lower right (from about 77 to 96 percent of the width, the bottom tenth of the height) where small creatures sleep, nothing standing in it. THE GROUND: a living, CALM ground of moss and fine soil in large soft patches, low in contrast, nothing scattered on it (no pebbles, no twigs, no succulents), so small dark, brown and teal creatures read clearly. One RAISED level: the lower flank of the mound at the left forms a low mossy terrace with a flat walkable top, joined to the main ground by a gentle mossy ramp. NO fittings at all: no pipes, no hoses, no misters, no vents, no lamps, no objects; no small pieces at the front. Painted in a hand-crafted miniature-diorama finish: fine painterly grain, soft bokeh behind; never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no figures. The four concepts must be clearly different in palette, mood and light. EVERY painting is welcoming, bright and alive, never spooky, never gloomy, never dark; NO gold, NO amber, NO honey or orange light (that is another room), NO deep dark fern green (that is another room). The tree is SMALL: only a slender trunk's base and its roots, the burrow mouth about an eighth of the picture's height, so the room reads at the scale of small creatures. TOP LEFT: a BLUEBELL CARPET: drifts of blue-violet bluebells behind the ground's back edge under pale silver-grey beech roots, fresh spring-green leaves above, soft bright morning light; the ground calm moss. TOP RIGHT: a SPRING WILDFLOWER BANK: small white and pink wildflowers (wood anemones, campion) on the mound and behind the ground, fresh lime-green moss, light grey-brown roots, clear bright light. BOTTOM LEFT: a SUNNY DEWY MORNING: clear cool light from the upper left, dew sparkling on lime and sage moss, pale grey-brown roots, a bright pale blue-green airy back. BOTTOM RIGHT: a SILVER BIRCH BANK at noon: white-and-grey birch roots and a slim white trunk base, fresh light-green young leaves, a few violets and white stitchwort behind the ground, crisp clear daylight.",
+  "refs": []
  }
 }

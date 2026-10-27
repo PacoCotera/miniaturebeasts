@@ -71,7 +71,8 @@
     "what": "clipped moss cushion, leafy top"
    }
   ],
-  "status": "SUPERSEDED (owner 2026-10-26 18:33: a shrine garden, not a zen garden): the Japanese-garden day, its near day (rooms/signed-near-boulders-day.png, near sb) and its two night edits are kept as a record only, never placed"
+  "status": "SUPERSEDED (owner 2026-10-26 18:33: a shrine garden, not a zen garden): the Japanese-garden day, its near day (rooms/signed-near-boulders-day.png, near sb) and its two night edits are kept as a record only, never placed",
+  "near": "rooms/superseded-near-boulders-zen-day.png (moved from rooms/signed-near-boulders-day.png, which is now the shrine garden's near day)"
  },
  "boulders": {
   "concept": "shrine garden, autumn (option sheet b, tile B, picked by the art director; owner to confirm)",
@@ -295,7 +296,39 @@
   "piece_sheets": [
    "source/raw/pieces-boulders-a.jpg (pieces-boulders-a, gemini-3-pro-image)",
    "source/raw/pieces-koi-a.jpg (pieces-koi-a, gemini-3-pro-image)"
-  ]
+  ],
+  "near_day": {
+   "file": "rooms/signed-near-boulders-day.png",
+   "source": "vivarium-near-boulders-day-tb (a Pro edit of ta flattening the specimen's floor: ta painted two moss mounds ~28 px tall in it) (gemini-3-pro-image), cut by rooms.py, no grade",
+   "specimen_floor_near": [
+    136,
+    296,
+    272,
+    56
+   ],
+   "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads"
+  },
+  "seasonal": {
+   "note": "owner 19:06: 'the maple is fine too, and we make it seasonal' (a later job). The maple is a region a seasonal edit changes on its own; the lights and pieces never paint into it (no piece overlaps it). Masks cut at 0 MXN, Mon 26 Oct 2026 19:09.",
+   "idle_region_painting": [
+    394,
+    0,
+    450,
+    221
+   ],
+   "idle_mask": "rooms/regions/boulders-maple-idle-mask.png",
+   "idle_mask_px": 47369,
+   "near_region": [
+    201,
+    1,
+    317,
+    161
+   ],
+   "near_mask": "rooms/regions/boulders-maple-near-mask.png",
+   "near_mask_px": 23259,
+   "method": "per season: one Pro edit of the signed day changing only the maple (and the fallen leaves on the island), then pasted back through the mask so nothing else moves; the same for the near day; each light by the same edit of that light's picture, or graded by hand from the season's day through the mask",
+   "mask_rule": "the canopy's saturated warm leaves (R-B > 95), the largest connected canopy, dilated 2 px; the trunk and the back bokeh stay; near: also local texture (5x5 luminance s.d. > 6), so the warm bokeh stays"
+  }
  },
  "reeds": {
   "concept": "sedge meadow after rain (option sheet a, tile B, owner's pick 18:15, plus the rock)",
@@ -448,7 +481,18 @@
   "composite_proof": "rooms/composite-idle-reeds-{light}.png (proof only; never placed)",
   "piece_sheets": [
    "source/raw/pieces-reeds-a.jpg (pieces-reeds-a, gemini-3-pro-image)"
-  ]
+  ],
+  "near_day": {
+   "file": "rooms/signed-near-reeds-day.png",
+   "source": "vivarium-near-reeds-day-ta (gemini-3-pro-image), cut by rooms.py, no grade",
+   "specimen_floor_near": [
+    136,
+    296,
+    272,
+    56
+   ],
+   "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads"
+  }
  },
  "ferns": {
   "concept": "fern dell (option sheet a, tile A, owner's pick 18:15)",
@@ -650,7 +694,18 @@
   "composite_proof": "rooms/composite-idle-ferns-{light}.png (proof only; never placed)",
   "piece_sheets": [
    "source/raw/pieces-ferns-a.jpg (pieces-ferns-a, gemini-3-pro-image)"
-  ]
+  ],
+  "near_day": {
+   "file": "rooms/signed-near-ferns-day.png",
+   "source": "vivarium-near-ferns-day-ta (gemini-3-pro-image), cut by rooms.py, no grade",
+   "specimen_floor_near": [
+    136,
+    296,
+    272,
+    56
+   ],
+   "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads"
+  }
  },
  "roots": {
   "concept": "root-and-burrow bank in warm golden light (option sheet roots a, tile A, picked by the art director; owner to confirm)",
@@ -832,7 +887,13 @@
   "composite_proof": "rooms/composite-idle-roots-{light}.png (proof only; never placed)",
   "piece_sheets": [
    "source/raw/pieces-roots-a.jpg (pieces-roots-a, gemini-3-pro-image)"
-  ]
+  ],
+  "near_day_candidate": {
+   "file": "rooms/candidate-near-roots-day.png",
+   "source": "vivarium-near-roots-day-ta (gemini-3-pro-image)",
+   "status": "HELD: Roots is to be repainted from option sheet b (owner: 'roots and maple look the same-ish'); not signed"
+  },
+  "options_b": "source/raw/options-roots-b.jpg (options-roots-b, gemini-3-pro-image): A bluebell carpet, B spring wildflower bank, C sunny dewy morning, D silver birch bank; owner to pick"
  },
  "enclosure": "art director's ruling: the enclosure reads, light-touch, by (1) the foot strip, rows 552-567, painted in every room as a substrate cross-section seen through the front glass (soil over a darker drainage layer), (2) each room's placed life-support piece as the device cue, (3) the face's own window chrome (home.json shade, 2 px). No painted glass edges, posts or box (they turned every picture into a cabinet in rounds c and sa). Optional for the owner: a faint glass corner sheen at the far side edges, a 0 MXN hand layer.",
  "pieces_note": "Pieces by the composite method, cut and placed by hand at 0 MXN (tools/roomcut.py). Painting coordinates (1024x568); the whole's window y = painting y - 80. rect [x, y, w, h]; foot = the lowest row of the piece's ink; occluders are hard-edged straight alpha (ARGB8888); draw order by foot row with the walkers. Cut and placed by the art director, Mon 26 Oct 2026 19:04 (Mexico City), tools/roomcut.py."

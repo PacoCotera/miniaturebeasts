@@ -56,12 +56,21 @@ OPT_R = {"roots": ("TOP LEFT: warm golden late-morning light through a high cano
   "TOP RIGHT: a cool, damp, shaded forest floor, dark roots with silver lichen, blue-green moss, soft diffuse light. "
   "BOTTOM LEFT: early evening, low copper light from the left raking across the roots, long soft shadows, rust and olive tones. "
   "BOTTOM RIGHT: a dry late-summer bank, pale roots and seed grasses behind the mound, straw and sage tones, bright hazy light.")}
+# Roots sheet b (owner: "roots and maple look the same-ish"; option B "too spooky"; A too close to the maple, C as warm, D straw fights the brown minis; lead's go, 1 request):
+# four WELCOMING, bright, alive starting rooms, none gold or amber (Boulders) and none deep fern green (Ferns); a smaller tree so the minis read at the other rooms' scale.
+OPT_R2 = {"roots": ("EVERY painting is welcoming, bright and alive, never spooky, never gloomy, never dark; NO gold, NO amber, NO honey or orange light (that is another room), NO deep dark fern green (that is another room). "
+  "The tree is SMALL: only a slender trunk's base and its roots, the burrow mouth about an eighth of the picture's height, so the room reads at the scale of small creatures. "
+  "TOP LEFT: a BLUEBELL CARPET: drifts of blue-violet bluebells behind the ground's back edge under pale silver-grey beech roots, fresh spring-green leaves above, soft bright morning light; the ground calm moss. "
+  "TOP RIGHT: a SPRING WILDFLOWER BANK: small white and pink wildflowers (wood anemones, campion) on the mound and behind the ground, fresh lime-green moss, light grey-brown roots, clear bright light. "
+  "BOTTOM LEFT: a SUNNY DEWY MORNING: clear cool light from the upper left, dew sparkling on lime and sage moss, pale grey-brown roots, a bright pale blue-green airy back. "
+  "BOTTOM RIGHT: a SILVER BIRCH BANK at noon: white-and-grey birch roots and a slim white trunk base, fresh light-green young leaves, a few violets and white stitchwort behind the ground, crisp clear daylight.")}
 SHEET = os.environ.get("ROOMOPT_SHEET", "a")
+if SHEET == "r2": OPT, COMMON = OPT_R2, COMMON_R.replace("Painted in a warm hand-crafted", "Painted in a hand-crafted")
 if SHEET == "r": OPT, COMMON = OPT_R, COMMON_R
 if SHEET == "b": OPT, COMMON = OPT_B, COMMON_B
 idx_p = "source/work/rooms/prompts.json"; idx = json.load(open(idx_p))
 for room, txt in OPT.items():
-    n = f"options-{room}-{'a' if SHEET == 'r' else SHEET}"; prompt = "Output ONE image, 16:9. " + COMMON + txt
+    n = f"options-{room}-{'a' if SHEET == 'r' else 'b' if SHEET == 'r2' else SHEET}"; prompt = "Output ONE image, 16:9. " + COMMON + txt
     if n in idx and idx[n]["prompt"] != prompt: raise SystemExit(f"{n} already written with another prompt")
     j = {"name": n, "model": "gemini-3-pro-image", "aspect": "16:9", "size": "1K", "tries": 1, "refs": [], "prompt": prompt}
     json.dump([j], open(f"source/work/rooms/{n}.json", "w"), indent=1); idx[n] = {"sha256": hashlib.sha256(prompt.encode()).hexdigest(), "prompt": prompt, "refs": []}

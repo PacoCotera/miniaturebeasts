@@ -1,0 +1,16 @@
+[
+ {
+  "name": "vivarium-near-boulders-day-tb",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/work-vivarium-near-boulders-day-ta.png",
+    "IMAGE 1, THE PICTURE TO EDIT (this room's near day, round ta): keep everything but the listed change:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 4:3: Image 1 edited. KEEP EVERYTHING in Image 1 exactly as it is (the maple, the mossy stone at the left, the mossy island and the fallen leaves at the right, the palette, the light, the hand-painted miniature finish, the bokeh, the camera) and CHANGE ONLY this: the ground across the centre, from about 22 to 78 percent of the width and from about 68 to 90 percent of the height, becomes ONE flat, calm, level stretch of short even moss over fine soil, low in contrast, lying flat like a lawn: remove the two raised moss mounds there and the loose pebbles, and paint the flat ground where they were, matching the light and the moss around. Nothing on it taller than a tiny pebble. Do not add anything; no creatures, no text, no frame, no pond."
+ }
+]
