@@ -1,7 +1,7 @@
 // Snapshots the species frames into src/frames-data.mjs, so the encoder, the decoder and the offline
 // scan page carry one registry, append-only:
 //   - the current frames, from the workbench registry (prototypes/workbench/frames/*.json,
-//     mb-species-frame/2 on catalogue mb-genome-framework@9): species number = the species' order
+//     mb-species-frame/2 on catalogue mb-genome-framework@10): species number = the species' order
 //     (S01 = 1 … S16 = 16), frame version = the registry's frame version;
 //   - every frame already in the snapshot that the registry no longer builds at that version (the
 //     legacy frames, species 11–13, version 1, on catalogue 6; the sixteen at frame version 2), kept

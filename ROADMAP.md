@@ -192,8 +192,8 @@ way can take a service's place without changing the game.
    face, the only face in the sandbox. Every section's main screen is built on
    it: Home and Idle, Cargo, Pods, Create and the Incubator, the Vivarium, the
    Library and the Probe bench, most of them still on placeholder pictures until
-   the finished art is drawn. The Cross, each species' Book and the portrait
-   sitting come next, in the order of `design/proposals/lvgl-switch.md`, and
+   the finished art is drawn. The Cross, each species' Book and the Portrait
+   screen come next, in the order of `design/proposals/lvgl-switch.md`, and
    show "not built yet" until then.
 2. **The cloud layer**, later: the optional, gated enhancements on top of the
    standalone kit.

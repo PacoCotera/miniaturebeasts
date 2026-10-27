@@ -112,7 +112,7 @@ Principles 4 and 6 draw the line; the cut-off is what §9 tests. The default bel
 | Station resident (vivarium, the vivarium, up close, Visit) | 300×310, master 600×620 | **unique** | the service, main view, one per life stage |
 | Station side view (walking, routines) | 300×310 | unique, a second call; or the plain side view if the eye accepts it | the service or the rig |
 | Companion resident | 280×300 | **unique, derived**: the master down-rendered on the Station (k-centroid reduction, the 48 ramps, the outline from the index pass, no alpha) | the Station |
-| Caddy four-grey and print | the Caddy's sizes, 203 dpi | unique, derived through the signed value table and Bayer | the Station |
+| Caddy four-grey and print | the Caddy's sizes, 203 dpi | unique, derived through the signed value table into the panel's four greys, with no dither | the Station |
 | Field token (world, partner) | 48 px, idle 2 frames, walk 3 | **generic per species**, pigment slots remapped to the individual's pool values | the pixel artist's token rig |
 | Partner face on the HUD ring, list and tree thumbnails | 16–40 px | generic, remapped | the token rig |
 | Spread and book faces (generic species pictures; formerly "portraits"; the spread was formerly the cabinet), field-guide look plates, the misty seed | 120–310 px | generic per species and per look; a portrayed mibi's portrait replaces the face in its spread plate and book | the species plates |

@@ -44,7 +44,7 @@ The face is a grid of square cells, N×N with N in a size series, chosen by payl
 
 ## Size series
 
-N steps by 4. Each species lands on the smallest size its read mask and genome fit; a postmark adds 64 bits (the registry's frame version 3 in format 2, `node tools/size-table.mjs`; per species also in `tests/bins.test.mjs`, "the step's cost"). Format 2's 6 bits per blended copy move every species up from format 1 (where the Loika was 17×17 and most species 25×25):
+N steps by 4. Each species lands on the smallest size its read mask and genome fit; a postmark adds 64 bits (the registry's frame version 4 in format 2, `node tools/size-table.mjs`; per species also in `tests/bins.test.mjs`, "the step's cost"). Format 2's 6 bits per blended copy move every species up from format 1 (where the Loika was 17×17 and most species 25×25):
 - **Loika, Hiljan, Peplos, Usvel** (5 to 11 open loci): 25×25 (0.80 mm cells at 20 mm, 6.4 dots at 203 dpi); the Hiljan and Usvel go to 29×29 with a postmark.
 - **Untuva, Tepor, Pesko, Rupar, Igara, Oskol** (13 to 22 open loci): 29×29 (0.69 mm, 5.5 dots); all but the Tepor go to 33×33 with a postmark.
 - **Azkon, Kilpo, Lehten, Blikur** (24 to 26 open loci): 33×33 (0.61 mm, 4.8 dots), with a postmark too.
@@ -257,7 +257,7 @@ On the Caddy everything is plain black dots: the decoration lives on screen.
 | `src/codec.mjs`, `rs.mjs` | Layout per size, header, CRC-16, the cells ↔ codeword mapping, the blend step (format 2), the stamp code (`stampCode`, `decodeStampCode`: the stamp's message bytes as Crockford base 32 with a CRC-10 check); Reed–Solomon (BM, Chien, Forney) |
 | `inspect.html`, `inspect.mjs` | The inspector: paste a stamp code and read what the stamp holds, as a scan does. It only shows |
 | `src/stamp.mjs`, `decode.mjs` | Marks → SVG/raster; the reader (frame lines, perforation timing, glyph/border orientation, local-contrast cells) |
-| `src/frames.mjs`, `frames-data.mjs` | The frame registry: the sixteen species from the workbench registry (frame version 3, and 2 kept for old prints), the three legacy frames (version 1), plus synthetic 100 and 150 loci. `examples/glowtail-postmark.json` carries a postmark |
+| `src/frames.mjs`, `frames-data.mjs` | The frame registry: the sixteen species from the workbench registry (frame version 4, the Tuikis at 5, and earlier versions kept for old prints), the three legacy frames (version 1), plus synthetic 100 and 150 loci. `examples/glowtail-postmark.json` carries a postmark |
 | `tests/run.mjs`, `cases.mjs`, `distort.mjs` | The harness. The distortions and print pipeline are carried over from the ring |
 | `tests/scan.html`, `scan-check.mjs`, `print-manifest.json` | The scan page, its headless check, and the sheet's expected genomes |
 | `tools/` | Frame snapshot, size table, print sheet, scan-page bundler, README images |
