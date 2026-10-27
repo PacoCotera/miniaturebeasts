@@ -7144,5 +7144,22 @@
    "thoughtsTokenCount": 190,
    "totalTokenCount": 1933
   }
+ },
+ {
+  "tag": "website-hero-kit-caddy-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.207278,
+  "mxn": 4.1456,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T05:36:57Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 979,
+   "candidatesTokenCount": 1457,
+   "thoughtsTokenCount": 254,
+   "totalTokenCount": 2690
+  }
  }
 ]
