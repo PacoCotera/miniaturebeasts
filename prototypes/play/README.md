@@ -24,6 +24,8 @@ The thresholds are CSS px of the window (`innerWidth`, `innerHeight`, the bar in
 
 **The build stamp.** At the page's foot, in its bottom margin under every block, right-aligned to the content: `build <short> · YYYY-MM-DD HH:MM Mexico City` from the site's `build.json` (its UTC `built` converted to Mexico City time, `src/stamp.mjs`; the viewer's own zone is never used), `build local` with no `build.json`.
 
+**The build footer.** `src/footer.mjs` is the one line the website, the Station page and the Companion page show in their bottom margin: `© 2026 Dirty Pawz Press · {short hash} · {dd/mm HH:MM} · save v{schema} · Caddy {online|offline}` (the time in Mexico City, `local` with no `build.json`; the save version and the Caddy part only where the page has them). Its formatting is tested in `tests/footer.test.mjs`.
+
 | Layout | When (CSS px) | Shows |
 | --- | --- | --- |
 | Row | W ≥ 1878 and H ≥ 800 | the Station and the Companion side by side (1040 + 24 + 466, centred); the Caddy's block under the Station, right-aligned to its shell; developer tools as a column |

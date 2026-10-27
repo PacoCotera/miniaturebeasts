@@ -1,19 +1,19 @@
 {
-  "updated": "2026-10-10",
+  "updated": "2026-10-26",
   "modules": [
     {
       "id": "station",
       "name": "Station",
       "oneLine": "The home device where pods are studied, mibis are grown and families begin.",
-      "image": "assets/strip-station.webp",
+      "image": "assets/strip-station-2026-10.webp",
       "items": [
         { "title": "Bring pods home and read them", "status": "live", "text": "Dock the Companion, open its crates, identify each pod and read its genome chapter by chapter, then compare two pods of the same species side by side.", "link": "prototypes/station/README.md" },
         { "title": "Create and grow a mibi", "status": "live", "text": "Shape the traits you have read, grow the mibi in its bud and open it to meet the juvenile.", "link": "design/proposals/station-loop.md" },
-        { "title": "The Vivarium and its bays", "status": "live", "text": "Six bays hold your mibis in the Vivarium, and up to three of them travel on the Companion and keep their beds. Any pod, or any grown mibi you have not bonded, can be returned to the wild.", "link": "design/style-guide/station-layouts.md" },
+        { "title": "The Vivarium and its rooms", "status": "next", "text": "The Vivarium grows into four rooms of eight mibis each, 32 living at most. Each room is its own painted world, with levels the mibis walk on. You start with one room and add more for Energy; crossing mibis and moving them between rooms cost nothing.", "link": "design/style-guide/station-layouts.md" },
         { "title": "Cross two mibis", "status": "live", "text": "Pick two adults of one species and see what their child could inherit, drawn only from the chapters you have read.", "link": "design/proposals/the-cross.md" },
-        { "title": "A new face for every Station screen", "status": "building", "text": "The Station runs on the graphics engine the real device will run, and every section's main screen is built on it. The Cross, each species' Book and the portrait sitting come next, and show that they are not built yet until then. Most pictures are still placeholders until the finished art is drawn.", "link": "design/proposals/lvgl-switch.md" },
-        { "title": "Portrait sittings", "status": "building", "text": "Research milestones earn a mibi a sitting for its own portrait, which comes home as a crate at the dock.", "link": "design/proposals/the-portrait.md" },
-        { "title": "Every mibi drawn true to its looks", "status": "next", "text": "Each mibi is drawn from painted layers on its species' poses, so it looks like itself in every pose on both devices. A mibi gets a painting of its own when it sits for its portrait.", "link": "design/proposals/the-portrait.md" },
+        { "title": "A new face for every Station screen", "status": "building", "text": "The Station runs on the graphics engine the real device will run, and every section's main screen is built on it. The Cross, each species' Book and the Portrait screen come next, and show that they are not built yet until then. Most pictures are still placeholders until the finished art is drawn.", "link": "design/proposals/lvgl-switch.md" },
+        { "title": "Portraits", "status": "building", "text": "Research milestones earn you a portrait to make. On the Portrait screen you pose the mibi, place it and portray it, and the finished portrait waits in the Bay when the Companion docks.", "link": "design/proposals/the-portrait.md" },
+        { "title": "Every mibi drawn true to its looks", "status": "next", "text": "Each mibi is drawn from painted layers on its species' poses, so it looks like itself in every pose on both devices. A mibi gets a painting of its own when you make its portrait.", "link": "design/proposals/the-portrait.md" },
         { "title": "Home and Idle on the new face", "status": "live", "text": "Home with the Vivarium at its centre and the sections beside it, Cargo where the Companion's crates open, and the Idle view that keeps the Vivarium on show all day.", "link": "design/style-guide/station-layouts.md" },
         { "title": "Create and the Incubator on the new face", "status": "live", "text": "Shape a mibi's traits, then watch it grow in the Incubator leaf by leaf until it is ready to open.", "link": "design/style-guide/station-layouts.md" },
         { "title": "The Vivarium on the new face", "status": "live", "text": "The whole Vivarium, and each mibi up close with its card.", "link": "design/style-guide/station-layouts.md" },
@@ -45,10 +45,10 @@
       "id": "caddy",
       "name": "Caddy",
       "oneLine": "The shared dock that charges both handhelds, connects the kit and prints what you find.",
-      "image": "assets/strip-caddy.webp",
+      "image": "assets/strip-caddy-2026-10.webp",
       "items": [
         { "title": "Docking the Companion", "status": "live", "text": "On the sandbox, a stand-in dock beside the Station page moves your crates across when you dock.", "link": "prototypes/station/README.md" },
-        { "title": "Handing each new mibi to the Caddy", "status": "live", "text": "When a mibi grows, the Station hands it to the Caddy for its finished pictures, and the game plays on with a placeholder if the Caddy cannot be reached.", "link": "prototypes/caddy/README.md" },
+        { "title": "Handing each portrait to the Caddy", "status": "live", "text": "When you make a mibi's portrait, the Station hands its genome to the Caddy for the finished pictures. Nothing else is sent, and the game plays on with a placeholder while the painting is made or if the Caddy cannot be reached.", "link": "prototypes/caddy/README.md" },
         { "title": "The e-paper summary", "status": "later", "text": "A quiet four-grey screen on the Caddy will show your residents, waiting pods and supplies at a glance.", "link": "design/devices.md" },
         { "title": "Printed cards", "status": "later", "text": "The Caddy's printer will feed out a card for a mibi, carrying its genome stamp so it can be scanned back.", "link": "prototypes/genome-stamp/README.md" },
         { "title": "Caddy software for the device", "status": "later", "text": "Once the game loop is settled, the Caddy's screen and printer move to native code for the real dock.", "link": "design/proposals/technical-architecture.md" }

@@ -114,14 +114,15 @@ export function intent(h, target, verb) {
   if (c.state === "arrival") { skipShow(h); return; }   // a key in the show (reduced motion, or after the face's hold): the show cuts to its choice
   if (c.state === "opening") { if (verb === "confirm") skipCrate(h); else if (verb === "back") { abortRun(h); h.ui.home.f = "bay"; h.goto("home"); } return; }   // the face says ✓ and ← on the room while the opening holds; the pad does nothing
   if (c.state === "end") {   // any key does what it does, and then the bay shows again: ✓ follows the bottom line, ← is Home, the pad only closes it
-    const run = c.run, newest = run?.newest ?? null, came = run ? run.items.some((it) => it.pods.some((p) => p.well >= 0)) : false;
+    const run = c.run, newest = run?.newest ?? null, came = run ? run.items.some((it) => it.pods.some((p) => p.well >= 0)) : false, waiting = run?.plan?.sim?.waiting?.length ?? 0;   // waiting: the pods on the mat at the end (the Pods rack is full), as the props count them
     const pm = verb === "confirm" && h.specs.cargo.strings.end?.confirm ? endPortrait(h.st, run, h.specs.sitting) : null;   // keys.confirm.end: ✓ See the portrait first (the sitting's state portrait), else Look at the pods
     closeEnd(h);
     if (pm && h.enterSitting && h.enterSitting(pm, { state: "portrait", from: "cargo" })) return;
-    if (verb === "confirm" && came) toPods(h, newest);
+    if (verb === "confirm" && (came || waiting)) toPods(h, newest);
     else if (verb === "back") { h.ui.home.f = "bay"; h.goto("home"); }
     return;
   }
   if (verb === "back") { h.ui.home.f = "bay"; h.goto("home"); return; }   // ← Home, the ring on the Bay module
   if (verb === "confirm" && readyCount(h)) return openBay(h);
+  if (verb === "confirm" && h.st.waiting.length) toPods(h);   // nothing to open and a pod waits on the mat: ✓ Look at the pods, as the end's
 }

@@ -102,7 +102,7 @@ test("the bay: a berth for each walk crate (at most three, in arrival order), th
 
 test("the counts in words: waiting pods and arriving crates read seven to twelve in words, and many from thirteen", () => {
   const away = (n) => { const st = world(); st.dock = { docked: false, at: T0 }; for (let i = 0; i < n; i++) st.waiting.push({ id: "w" + i, species: "S01", sp: 0, g: "meadow", how: "calm", gs: 3, idd: 0, read: [] }); return build(st, sv0()).line.subject; };
-  assert.equal(away(6), "six pods wait for a well"); assert.equal(away(7), "seven pods wait for a well"); assert.equal(away(12), "twelve pods wait for a well"); assert.equal(away(13), "many pods wait for a well");
+  for (const n of [1, 6, 7, 12, 13]) assert.equal(away(n), "The Pods rack is full", "no count: " + n);
   const crates = (n) => build(world(), sv0(), cargoUI({ state: "arrival", arrival: { phase: "show", crates: n, shown: Math.min(n, 3), newCrates: [], back: [], leaving: [], plates: { max: 3, whole: 3, mended: 0 }, broke: false } })).line.subject;
   assert.equal(crates(7), "seven sealed crates"); assert.equal(crates(12), "twelve sealed crates"); assert.equal(crates(13), "many sealed crates");
 });
@@ -110,7 +110,7 @@ test("the line: Open them all (Open it for one) when a crate is ready, none othe
   const sc = scenes(), L = (n, ui) => build(sc[n].st, sc[n].sv, ui).line;
   assert.deepEqual(L("one"), { ok: "Open it", back: "Home", subject: "", need: "" }); assert.equal(L("two").ok, "Open them all"); assert.equal(L("three").ok, "Open them all");
   assert.deepEqual(L("empty"), { ok: null, back: "Home", subject: "", need: "" }); assert.deepEqual(L("away"), { ok: null, back: "Home", subject: "", need: "" });
-  assert.deepEqual([L("waiting").ok, L("waiting").subject], [null, "a pod waits for a well"]); assert.equal(L("waitingAway").subject, "four pods wait for a well");
+  assert.deepEqual([L("waiting").ok, L("waiting").subject], ["Look at the pods", "The Pods rack is full"], "a pod waits, nothing to open: ✓ Look at the pods"); assert.deepEqual([L("waitingAway").ok, L("waitingAway").subject], ["Look at the pods", "The Pods rack is full"]);
   { const st = world(); sitting(st); assert.equal(build(st, sv0()).line.ok, "Open it", "a portrait crate alone: Open it"); assert.equal(build(st, sv0([crate(1)])).line.ok, "Open them all"); }
   const st = world(); S.seedPodFromGenome(st, podGenome(frameOf("S01"), 5), settings, T0); assert.equal(build(st, sv0([crate(1)])).line.need, "a new pod in the case", "the notice after the crates, not the crates' own");
   assert.ok(spec.strings.skip === "Skip" && spec.strings.open === "Open them all" && spec.strings.openOne === "Open it" && spec.strings.newPods.one === "Look at the pods" && spec.strings.newPods.few === "Look at the pods");
@@ -190,12 +190,18 @@ test("the end: any key does what it does and then the bay shows again: ✓ Look 
   { const { h } = mk(); INTENTS.cargo.intent(h, "room", "back"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, ["home"]); }
   { const { h } = mk(); INTENTS.cargo.intent(h, "room", "pad"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, [], "the pad only closes it"); }
   { const st = world(), sv = sv0([crate(1, 0)]), h = opened(st, sv); runTo(h, 1e9); const b = build(st, sv, h.ui); assert.equal(b.line.ok, null, "no pod came: no ✓ cap"); INTENTS.cargo.intent(h, "room", "confirm"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, []); }
+  { const st = world(); for (let i = 0; i < 6; i++) S.seedPodFromGenome(st, podGenome(frameOf("S01"), 30 + i), settings, T0);   // every well taken: the crate's two pods go to the mat
+    const sv = sv0([crate(1, 2)]), h = opened(st, sv); runTo(h, 1e9); const b = build(st, sv, h.ui);
+    assert.deepEqual([b.line.ok, b.line.subject], ["Look at the pods", "The Pods rack is full"], "no pod came to a well, two wait on the mat: ✓ Look at the pods");
+    INTENTS.cargo.intent(h, "room", "confirm"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, ["pods"], "the same target as when a pod came"); }
+  { const st = world(); for (let i = 0; i < 6; i++) S.seedPodFromGenome(st, podGenome(frameOf("S01"), 30 + i), settings, T0); st.waiting.push({ ...st.tray[0], id: "w0" });
+    const h = opened(st, sv0()); assert.equal(h.ui.cargo.state, "bay", "nothing to open"); assert.deepEqual(h.went, ["pods"], "the bay's ✓ Look at the pods goes to Pods"); }
   { const st = world(), sv = sv0([crate(1, 1)]), h = opened(st, sv); runTo(h, 1e9); h.ui.screen = "cargo"; INTENTS.frame.intent(h, "room", "room:library"); assert.equal(h.ui.cargo.state, "bay", "a room key closes the end and opens its section"); }
 });
 test("the waiting line in the opening and the end: a pod that has gone to the mat says so (a pod waits for a well); the count is the pods waiting", () => {
   const st = world(); for (let i = 0; i < 6; i++) S.seedPodFromGenome(st, podGenome(frameOf("S01"), 30 + i), settings, T0);   // every well taken
-  const sv = sv0([crate(1, 2)]), h = opened(st, sv); assert.equal(build(st, sv, h.ui).line.subject, "", "before a pod has gone to the mat"); runTo(h, 1700 + 600); assert.equal(build(st, sv, h.ui).line.subject, "a pod waits for a well"); runTo(h, 2000 + 600); assert.equal(build(st, sv, h.ui).line.subject, "two pods wait for a well");
-  runTo(h, 1e9); assert.equal(build(st, sv, h.ui).line.subject, "two pods wait for a well", "and in the end"); assert.equal(build(st, sv, h.ui).line.ok, null, "no pod came to a well: no ✓ cap");
+  const sv = sv0([crate(1, 2)]), h = opened(st, sv); assert.equal(build(st, sv, h.ui).line.subject, "", "before a pod has gone to the mat"); runTo(h, 1700 + 600); assert.equal(build(st, sv, h.ui).line.subject, "The Pods rack is full"); runTo(h, 2000 + 600); assert.equal(build(st, sv, h.ui).line.subject, "The Pods rack is full");
+  runTo(h, 1e9); assert.equal(build(st, sv, h.ui).line.subject, "The Pods rack is full", "and in the end"); assert.equal(build(st, sv, h.ui).line.ok, "Look at the pods", "no pod came to a well, two wait on the mat: ✓ Look at the pods");
   assert.equal(build(st, sv, h.ui).props.regions.hatch.wells.every((w) => w.from === null), true);
 });
 test("at most the plays that fit the hold's ceiling are played; the rest are taken in by the rule when the run ends", () => {

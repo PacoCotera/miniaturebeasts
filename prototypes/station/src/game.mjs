@@ -103,7 +103,7 @@ export function goScreen(name) {
   if (fresh && name !== "habitat") { UI.hab.namer = null; UI.hab.prev = null; }   // the namer closes with the level (writing nothing)
   if (fresh && name !== "sitting") UI.sit = null;   // leaving the sitting drops every choice, nothing spent (sitting.json notes.visit)
 }
-export const need = () => S.need(G.st, G.sv, G.settings, UI);
+export const need = () => S.need(G.st, G.sv, G.settings, UI, T.readyCrates(G.st, G.settings, Date.now()).length);
 export const lineFor = () => (UI.idle ? {} : SCREENS[UI.screen].line());
 // Convenience views over the state for the screens.
 export const docked = () => S.docked(G.st);

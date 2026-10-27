@@ -1,5 +1,6 @@
 {
  "screen": "panel",
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 522], "clips": ["panelHatched"], "note": "the layout check (ui/specs/layout.mjs): an open decision panel stands on the field stage between the bars, whatever the screen under it (C1); the screen it covers is not measured" },
  "device": "station",
  "kind": "overlay",
  "over": [
@@ -90,30 +91,32 @@
    "library": "Library"
   },
   "arrival": {
-   "text": "Incubator: your {Species} bud is growing",
+   "text": "Incubator: your {Species} is growing",
    "ms": 2000
   },
   "wildMibi": {
-   "title": "",
+   "title": "Return {name}?",
    "cards": {
     "return": {
-     "name": "Release {name}",
-     "line": "{name} lives in the wild from now on"
+     "name": "Return {name}",
+     "line": "{name} will live in the wild"
     },
     "keep": {
-     "name": "Keep {name}"
+     "name": "Keep {name}",
+     "line": "{name} stays at home"
     }
    }
   },
   "wildPod": {
-   "title": "",
+   "title": "Return this pod?",
    "cards": {
     "return": {
-     "name": "Release it",
-     "line": "it goes back to the {place}"
+     "name": "Return it",
+     "line": "It goes back to the {place}"
     },
     "keep": {
-     "name": "Keep it"
+     "name": "Keep it",
+     "line": "It stays in its nest"
     }
    }
   },
@@ -122,7 +125,7 @@
    "cards": {
     "fit": {
      "name": "Fit it",
-     "line": "reaches further"
+     "line": "The Probe reaches further"
     },
     "later": {
      "name": "Not now"
@@ -133,15 +136,15 @@
    "title": "",
    "cards": {
     "open": {
-     "name": "Open the bay",
-     "line": "{n in words} crates to the case"
+     "name": "Open now",
+     "line": "{N} crates to open"
     },
     "later": {
      "name": "Later",
-     "line": "they wait while docked"
+     "line": "They wait while docked"
     }
    },
-   "oneCrate": "a crate to the case"
+   "oneCrate": "A crate to open"
   },
   "growNow": {
    "title": "Hatch the {Species} now?",

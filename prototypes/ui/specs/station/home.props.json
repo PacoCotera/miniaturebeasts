@@ -19,7 +19,7 @@
   "regions": { "type": "object", "required": ["bar", "line", "vivarium", "library", "glass", "residents", "pods", "incubator", "companion", "bay"], "additionalProperties": false, "properties": {
    "bar": { "type": "object", "required": ["place", "date", "clock"], "additionalProperties": false, "properties": { "place": { "type": "string" }, "date": { "type": "string" }, "clock": { "type": "string" } } },
    "line": { "oneOf": [
-    { "type": "object", "required": ["needs"], "additionalProperties": false, "properties": { "needs": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 2 }, "name": { "type": "string" } } },
+    { "type": "object", "required": ["needs"], "additionalProperties": false, "properties": { "needs": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 2 } } },
     { "type": "object", "required": ["goal"], "additionalProperties": false, "properties": { "goal": { "$ref": "goal" } } },
     { "type": "object", "required": ["verb"], "additionalProperties": false, "properties": { "verb": { "type": "string" }, "subject": { "type": "string" } } },
     { "type": "object", "required": ["note"], "additionalProperties": false, "properties": { "note": { "type": "string" } } },

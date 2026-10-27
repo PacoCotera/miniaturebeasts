@@ -2295,7 +2295,8 @@
    "w": 128,
    "h": 160,
    "sha256": "a8d29e9439c548bd75fc447c42de8176a6a1ee3276fedcfaa19e2297f2d1bc62",
-   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+   "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4",
+   "status": "empty"
   },
   "mibi-halo-S01-128x160-clear": {
    "file": "pods/mibi-halo-S01-128x160-clear.png",
@@ -2333,7 +2334,7 @@
    "h": 160,
    "sha256": "2c7c7d161e02b0e5549e595e558f747b617d80f621e787975f37428075ba8898",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S03-128x160-mist": {
    "file": "pods/mibi-halo-S03-128x160-mist.png",
@@ -2341,7 +2342,7 @@
    "h": 160,
    "sha256": "fe24941aea9e171818ad8deeee18fa5abb8d19bd6501bd52ca1f89d46acf05a6",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S04-128x160-clear": {
    "file": "pods/mibi-halo-S04-128x160-clear.png",
@@ -2363,7 +2364,7 @@
    "h": 160,
    "sha256": "1183cd5f09c3808c9b91b3fff3fef116a0b066a3e26eff037f2d12d5b6819ddb",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S05-128x160-mist": {
    "file": "pods/mibi-halo-S05-128x160-mist.png",
@@ -2371,7 +2372,7 @@
    "h": 160,
    "sha256": "369706b46151d1c14928c17772d6195220ebbc7d5e36729a1bd010182f2e6fff",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S06-128x160-clear": {
    "file": "pods/mibi-halo-S06-128x160-clear.png",
@@ -2379,7 +2380,7 @@
    "h": 160,
    "sha256": "deafeb1b05e98cec4be4dff3458363663cd4ffcaa631480310b1e5e9ca92e546",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S06-128x160-mist": {
    "file": "pods/mibi-halo-S06-128x160-mist.png",
@@ -2387,7 +2388,7 @@
    "h": 160,
    "sha256": "c6a56dc33e1f4aa46089f3bbfb4784b7a9059dfe4dd29236329161a580c6605d",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S07-128x160-clear": {
    "file": "pods/mibi-halo-S07-128x160-clear.png",
@@ -2409,7 +2410,7 @@
    "h": 160,
    "sha256": "7513b13735882338fba06593cf9a19f732ecbe0b53be50bf173be6d67903e531",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S08-128x160-mist": {
    "file": "pods/mibi-halo-S08-128x160-mist.png",
@@ -2417,7 +2418,7 @@
    "h": 160,
    "sha256": "d6fe20e434e8e28b00d71c7d6bb360a0746a592392076a729f765b23f4ecb466",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S09-128x160-clear": {
    "file": "pods/mibi-halo-S09-128x160-clear.png",
@@ -2439,7 +2440,7 @@
    "h": 160,
    "sha256": "80ff01077d8b752093fceac2e5f97dedf00a9df905f99f085e66977666d54734",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S10-128x160-mist": {
    "file": "pods/mibi-halo-S10-128x160-mist.png",
@@ -2447,7 +2448,7 @@
    "h": 160,
    "sha256": "0b2d9b6cf39d1f93bcf54cfea3a392b26178324d30921c25849a3aff019e6019",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S11-128x160-clear": {
    "file": "pods/mibi-halo-S11-128x160-clear.png",
@@ -2455,7 +2456,7 @@
    "h": 160,
    "sha256": "786b2c2ed77ef5b2e38e9a75d6bb4527f298212b5abe5459f5cf136de67b7c4f",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S11-128x160-mist": {
    "file": "pods/mibi-halo-S11-128x160-mist.png",
@@ -2463,7 +2464,7 @@
    "h": 160,
    "sha256": "8f3aad67db3335b74f35a5000429733a9bd5e02755142a92b93eb4162554f54b",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S12-128x160-clear": {
    "file": "pods/mibi-halo-S12-128x160-clear.png",
@@ -2485,7 +2486,7 @@
    "h": 160,
    "sha256": "2457a36267085a64a742c2039681885e32360c08389eab5f43628966b0fcb2b8",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S13-128x160-mist": {
    "file": "pods/mibi-halo-S13-128x160-mist.png",
@@ -2493,7 +2494,7 @@
    "h": 160,
    "sha256": "032cb4c2e929cb5000e16f98de9d79f2d7488f37a488e3ebe6025a24a8e17425",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S14-128x160-clear": {
    "file": "pods/mibi-halo-S14-128x160-clear.png",
@@ -2501,7 +2502,7 @@
    "h": 160,
    "sha256": "b7f8026d712ce37f52398910d1e78ca5fa1e01f537a822864a0623aa8f3479ae",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S14-128x160-mist": {
    "file": "pods/mibi-halo-S14-128x160-mist.png",
@@ -2509,7 +2510,7 @@
    "h": 160,
    "sha256": "a5b652ab09b9aba4ea94bd41ef3e1e333385633d2431fe2b8fd507b1ba040596",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S15-128x160-clear": {
    "file": "pods/mibi-halo-S15-128x160-clear.png",
@@ -2517,7 +2518,7 @@
    "h": 160,
    "sha256": "1efcb8c1197de140eaa6b58bd75de3d1aa331ee0352ab6ceda829c6698e4de61",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S15-128x160-mist": {
    "file": "pods/mibi-halo-S15-128x160-mist.png",
@@ -2525,7 +2526,7 @@
    "h": 160,
    "sha256": "61bff9237bafd7eba65feb9ce2728044593ddef6bdbbe6882da8934745ee9864",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S16-128x160-clear": {
    "file": "pods/mibi-halo-S16-128x160-clear.png",
@@ -2533,7 +2534,7 @@
    "h": 160,
    "sha256": "a8f7cd38110febcd7e755b6371c20e918b4e16959b389dd419ed61763938e57a",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-halo-S16-128x160-mist": {
    "file": "pods/mibi-halo-S16-128x160-mist.png",
@@ -2541,7 +2542,7 @@
    "h": 160,
    "sha256": "e6d1dfe1bc5357e00114b4ada2a54f841ef7b11adbdc6b96600ba502c12d38e1",
    "signed": "placeholder (masters-pods b3b7e04), not final",
-   "status": "placeholder"
+   "status": "empty"
   },
   "mibi-juvenile-S01-104x112": {
    "file": "pods/mibi-juvenile-S01-104x112.png",

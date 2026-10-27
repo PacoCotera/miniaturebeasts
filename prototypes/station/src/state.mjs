@@ -6,6 +6,8 @@
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
 import { currentLooks } from "../../workbench/framework/describe.mjs";
+import { fill, capLine } from "./views/words.mjs";
+import FRAME from "../../ui/specs/station/frame.json" with { type: "json" };
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 3;
@@ -556,27 +558,37 @@ export function budLeaves(st, settings, now, max, rowsOf = 20) {
 }
 
 // --- what most needs the player (the bottom line's right part; ✓ on the room does it) -----------------
-// A count in a sentence is spelled out (a, two to six); above what the picture holds the count is dropped, never digits, never "many".
+// The words are frame.json strings.needs (one table); need() keeps the order and the facts. A count in a sentence is spelled out (a, two to six); above what the picture holds the count is dropped, never digits, never "many".
 const COUNT_WORDS = ["", "a", "two", "three", "four", "five", "six"];
 const countWord = (n, max) => (n >= 1 && n <= max ? COUNT_WORDS[n] : "");
-const sentence = (...w) => w.filter(Boolean).join(" ");
-export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
-  const cs = bayCrates(st, sv);
-  if (docked(st) && cs.length) return { text: sentence(countWord(cs.length, 3), cs.length === 1 ? "crate waits" : "crates wait", "in the bay"), act: "bay", label: "Open the bay" };
-  if (budReady(st, settings)) return { text: "the bud is ready", act: "inc", label: "Open the incubator" };
-  if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: "meet " + m.name, act: "meet", label: "Meet " + m.name }; }
-  const fresh = st.tray.filter((p) => !p.idd);
-  if (fresh.length) return { text: sentence(countWord(fresh.length, 6), fresh.length === 1 ? "new pod in the case" : "new pods in the case"), act: "pods", label: "Look at the pods" };
+const NEEDS = FRAME.strings.needs;
+// a line of the table filled and cased: a dropped count leaves no space behind
+const needLine = (t, values = {}) => capLine(fill(t, values).replace(/ {2,}/g, " ").trim());
+// the notice of a count: its one-form at one, else its many-form with the spelled count ({N}, dropped above max)
+const counted = (T, n, max) => (n === 1 ? needLine(T.noticeOne) : needLine(T.notice, { N: countWord(n, max) }));
+// portraits: the ready portraits (sitting.mjs readyCrates), docked or away; counted apart from the walk crates, and with walk crates too the notice names both (strings.needs.crates.withPortrait).
+export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0) {
+  const cs = bayCrates(st, sv), N = NEEDS;
+  if (docked(st) && cs.length) return { text: portraits ? (cs.length === 1 ? needLine(N.crates.withPortrait.noticeOne) : needLine(N.crates.withPortrait.notice, { count: countWord(cs.length, 3) })) : counted(N.crates, cs.length, 3), act: "bay", label: needLine(N.crates.label) };
+  if (budReady(st, settings)) return { text: needLine(N.budReady.notice), act: "inc", label: needLine(N.budReady.label) };
+  if (portraits) return { text: needLine(N.portrait.notice), act: "bay", label: needLine(N.portrait.label) };
+  if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: needLine(N.meet.notice, { name: m.name }), act: "meet", label: needLine(N.meet.label, { name: m.name }) }; }
+  // needKey's one order: the unseen new pods (news) above the full rack, the seen ones below it and below a pod that can be incubated now
+  const fresh = st.tray.filter((p) => !p.idd), unseen = fresh.filter((p) => !p.seen), pods = (T, n) => ({ text: counted(T, n, 6), act: "pods", label: needLine(n === 1 ? T.labelOne : T.label) });
+  if (unseen.length) return pods(N.fresh, unseen.length);
   const glinting = st.tray.filter((p) => podGlints(st, p));
-  if (glinting.length) return { text: sentence(countWord(glinting.length, 6), glinting.length === 1 ? "pod glints" : "pods glint"), act: "pods", label: "Look at the pods" };
-  if (st.waiting.length) return { text: sentence(countWord(st.waiting.length, 6), st.waiting.length === 1 ? "pod waits" : "pods wait", "for a well"), act: "pods", label: "Look at the pods" };
-  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
-  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); return { text: canPay(st, c.e, 0, c.s) ? aAn(spName(p)) + " pod, ready to incubate" : "a pod incubates with " + [st.e < c.e ? "⚡ " + (c.e - st.e) : "", st.s < c.s ? "❀ " + (c.s - st.s) : ""].filter(Boolean).join(" ") + " more", act: "pods", label: "Look at the pods" }; }
+  if (glinting.length) return pods(N.glints, glinting.length);
+  if (st.waiting.length) return { text: needLine(N.waiting.notice), act: "pods", label: needLine(N.waiting.label) };   // no count: the rack is full, whatever waits on the mat
+  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud), named = (p) => { const sp = cap(spName(p)); return { A: cap(aAn(sp).split(" ")[0]), Species: sp }; };
+  let short = null;
+  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); if (canPay(st, c.e, 0, c.s)) return { text: needLine(N.couldGrow.notice, named(p)), act: "pods", label: needLine(N.couldGrow.label) };
+    short = { text: needLine(N.couldGrow.short, { ...named(p), icons: shortIcons(st, c.e, 0, c.s) }), act: "pods", label: needLine(N.couldGrow.label) }; }
+  if (fresh.length) return pods(N.fresh, fresh.length);
+  if (short) return short;
   const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
   if (unread.length) { const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
-    return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " for ◆ " + (cost - st.d) + " more" : " to be read"), act: "pods", label: "Look at the pods" }; }
-  if (st.bud) return { text: "a bud is growing", act: "inc", label: "Look at the incubator" };
-  if (!hasWorld(sv) && !st.devBay.length && !st.tray.length && !st.waiting.length && !st.mibis.length) return { text: "set out with the Companion", act: null };
+    return { text: cost && st.d < cost ? needLine(N.toRead.short, { ...named(p), icons: "◆" }) : needLine(N.toRead.notice, named(p)), act: "pods", label: needLine(N.toRead.label) }; }
+  if (!hasWorld(sv) && !st.devBay.length && !st.tray.length && !st.waiting.length && !st.mibis.length) return { text: needLine(N.firstOut.notice), act: null };
   return { text: "", act: null };
 }
 
@@ -607,7 +619,6 @@ export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrate
     const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
     return { key: "toRead", species: spName(p), a: art(spName(p)), short: cost && st.d < cost ? "◆" : null, act: "pods" };
   }
-  if (st.bud) return { key: "budGrowing", act: "incubator" };
   return null;
 }
 // The one fact Idle's line says (frame.json idle.strings.order: crates, budReady, budGrowing, out; the first that holds), as a key for the view to put in words; null: none. Never a demand, and it is not needKey's order (which would hide a growing bud behind a new pod).
@@ -698,12 +709,14 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
     if (!g && crossOpen) { const child = living.find((m) => m.from && m.from.how === "cross" && unreadOf(m)); if (child) g = { key: "readChild", name: child.name, step: readStep(child) }; }
     // the guide rung: the living species in lowest-mibi-id order, then the species of the pods in the wells and waiting, in tray order; the first whose guide is not complete
     if (!g) { const sp = [...new Set([...spOrder, ...st.tray.map(speciesOf), ...st.waiting.map(speciesOf)])].find((x) => x && st.knownIds.includes(x) && !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
+    // the rack rung: a pod in the rack and no rung above holds: the pod chain on the first pod there is (step lines only: the chain never goes out)
+    if (!g && st.tray.length) g = { key: "rack", step: chain(null) };
   }
   // the Probe stands in when no rung holds and it is below tier 2; null only when the ladder is empty and the Probe is at tier 2
   if (!g && tierNow(st, sv) < 2) g = { key: "probe", step: st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "goOut" }, e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };   // the Probe stands in; a save with no Probe goes out, never fits
   if (!g) return null;
   // the second goal, from growUp onward while the Probe is below tier 2
-  g.probe = null; if (["growUp", "cross", "readChild", "guide"].includes(g.key) && tierNow(st, sv) < 2) g.probe = st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "save", e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };
+  g.probe = null; if (["growUp", "cross", "readChild", "guide", "rack"].includes(g.key) && tierNow(st, sv) < 2) g.probe = st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "save", e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };
   if (g.probe && g.probe.key === "fit" && (["goOut", "findPod", "bud"].includes(g.step.key) || (g.key === "guide" && g.step.key !== "openBay"))) g.step = { key: "fit" };
   // the read to suggest while the step is a wait
   g.meanwhile = null;

@@ -69,7 +69,7 @@ Each cradle gets seat sensing and a lamp; sound and haptics come later. The Cadd
 - **Behaviour:** the lamp lights at a seat and goes out at a lift ([dock moments](../specs/dock-moments.md) §1–2), driven by the Caddy itself at the same instant it sends the event, so it never waits on Wi-Fi. Its colours, levels and any other states are given by the art direction; the firmware takes them as data.
 - **Power budget:** a lamp at full white is at most 3 × 5 mA at 3.3 V, about 50 mW; both lamps about 0.1 W. The two hall sensors about 20 mW together. Sensing and lamps together stay under 0.15 W, small beside charging two handhelds.
 
-**Deferred: sound and haptics.** No speaker or amplifier on any device, and no vibration motor or driver in the Companion. Nothing is reserved on a board for them yet; when they are wanted, they are placed at gate 1 with the rest of the pins. The seated and lifted events already carry what a sound or a buzz would be keyed on.
+**Deferred: sound and haptics.** Sound and music are musts, scheduled later, and a speaker is reserved on the Companion. No other device has a speaker or amplifier, and there is no vibration motor or driver in the Companion. Nothing else is reserved on a board for them yet; when they are wanted, they are placed at gate 1 with the rest of the pins. The seated and lifted events already carry what a sound or a buzz would be keyed on.
 
 **Not measured:** none of this has run on a board. The magnet's field at the sensor, the sensor's behaviour beside a live charging coil, the lamp's look through the printed window and the 0.5 s from seat to Station are measured at gates 2–4.
 

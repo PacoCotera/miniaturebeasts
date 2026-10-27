@@ -1600,7 +1600,7 @@ test("shell: no engravings, the brand line kept, the key icons in their inks, Ca
   for (const k of ["Up", "Left", "Right", "Down", "Call", "Back", "Confirm"]) assert.match(PAGE, new RegExp(`aria-label="${k}"`), k + ": aria-label kept");
   assert.match(PAGE, /\.dpad \.key svg\{width:16px; height:16px; fill:#f4f1ec\}/, "pad ink");
   assert.match(PAGE, /\.dpad \.key\{[^}]*#3a3d42,#2e3136\)/, "pad cap base");
-  assert.match(PAGE, /<div class="stamp" id="stamp" hidden>/); assert.match(PAGE, /obsEl\.hidden = !on; stampEl\.hidden = !on;/, "the build stamp shows only with the Observer");
+  assert.match(PAGE, /<footer class="build-foot" id="buildFoot">[^<]*<\/footer>/); assert.doesNotMatch(PAGE, /obsEl\.hidden = !on; [a-zA-Z]+\.hidden = !on;/, "the build footer is always shown, not tied to the Observer");
   assert.match(PAGE, /\.back\{[^}]*background:#33363b;/, "Back's cap");
   assert.match(PAGE, /\.back \.cap-ico\{background:#f4f1ec; mask: url\(shell\/cap-back-10mm\.png\) center \/ 36px 36px no-repeat luminance\}/, "Back's icon and ink");
   assert.match(PAGE, /\.confirm \.cap-ico\{background:#ffffff; mask: url\(shell\/cap-confirm-10mm\.png\) center \/ 36px 36px no-repeat luminance\}/, "Confirm's icon and ink");

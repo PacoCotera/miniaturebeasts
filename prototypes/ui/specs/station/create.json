@@ -1,5 +1,6 @@
 {
  "screen": "create",
+ "layout": { "stage": "bezel", "opening": [64, 58, 890, 494], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#create",
  "frame": "frame.json",

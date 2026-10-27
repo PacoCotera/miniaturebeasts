@@ -1,5 +1,6 @@
 {
  "screen": "incubator",
+ "layout": { "stage": "painting", "opening": [0, 40, 1024, 522], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
  "device": "station",
  "frame": "frame.json",
  "status": "T-20261016-222 (batch B-20261018-1): the Incubator as the painted capsule, built exactly from results/T-20261017-incubator-object/build-spec.md (the UI/UX build spec, the authority) and capsule-masters.md (the art director's masters). The states empty, growing, ready and hatch, the Incubate moment (events.incubate), Hatch now in place (events.growNow, which now includes the hatch's start) and the hatch. The old chamber, nest, base, plaque, rail and leaf regions are retired (the leaf arc's layout rule and its vectors stay, with their data under regions.leaves, which is no longer drawn).",

@@ -54,6 +54,11 @@ export function asset(id, env = null) {
 export const dropAsset = (id) => { BUILT.delete(id); ENTRIES.delete(id); };
 // The manifest as data: every entry without its builder.
 export const manifest = () => [...ENTRIES.values()].map(({ build, ...rest }) => rest);
-// Every entry that is not final: a built stand-in (placeholder), or a placed master the studio's record does not call signed (held, new, placeholder). Only `master` and `empty` are not in this register.
-export const NOT_FINAL = ["placeholder", "held", "new"];
+// Every entry that is not final: a built placeholder or stand-in, or a placed master the studio's record does not call signed (held, new, placeholder). Only `master` and `empty` are not in this register.
+export const NOT_FINAL = ["placeholder", "stand-in", "held", "new"];
 export const placeholders = () => manifest().filter((e) => NOT_FINAL.includes(e.status));
+// The masters index statuses no golden may draw (face/tools/goldens.mjs): a placed master the studio's record calls a placeholder or a stand-in. `held` and `new` are not final but may be shown.
+export const NOT_IN_GOLDENS = ["placeholder", "stand-in"];
+// The status no golden may draw on a built picture (no file): a stand-in, the code drawing a creature, an item, a light or an effect itself. A built placeholder (a picture the code only places, recolours,
+// reduces or grades from signed pixels, a plain plate or a type glyph) may be drawn.
+export const BUILT_NOT_IN_GOLDENS = ["stand-in"];

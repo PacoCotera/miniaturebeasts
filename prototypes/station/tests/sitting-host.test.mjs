@@ -15,6 +15,7 @@ import { dispatch } from "../src/intents/index.mjs";
 import { createHost, onFaceMessage, screenProps, sittingBody, enterSitting } from "../src/host.mjs";
 import { newSit } from "../src/intents/sitting.mjs";
 import { capLine } from "../src/views/words.mjs";
+import { measureRole } from "../../ui/specs/measure.mjs";
 import { isBuilt, DROPS_ON_ROOM_KEY } from "../src/nav.mjs";
 import { loadStandLayersFs, loadStandLooksFs } from "../tools/stand-layers-fs.mjs";
 import { injectPortraitSource, dropPortraitSources } from "../src/portrait-source.mjs";
@@ -172,4 +173,29 @@ test("Cargo's end after a run that opened Dot's sitting crate: ✓ See the portr
     say("room", "back"); assert.deepEqual([UI.screen, UI.hab.f, UI.sit], ["habitat", "portrait", null], "← Habitat with the ring on Portrait");
   }
   dropPortraitSources();
+});
+
+test("the frame's notice counts a ready portrait apart, docked or away: a portrait alone, then both with walk crates; a portrait still filling is not counted", () => {
+  const { mb } = rig({ motion: false, held: false }), crate = (n) => ({ id: "c" + n, n, turn: n, at: T0, e: 3, d: 3, s: 4, met: [], explored: 5, of: 20, lines: [], pods: [] });
+  const need = (screen) => { UI.screen = screen; return screenProps("").msg.frame.line.need; };
+  G.st.dock = { docked: true, at: T0 }; assert.equal(need("vivarium"), "", "nothing: no notice");
+  G.st.sittingCrates.push({ id: "sit1", mibiId: mb.id, pose: "calm", place: "wood", start: Date.now() - 1e10, source: "dev", painted: true, opened: false });
+  assert.equal(need("vivarium"), "A portrait waits in the Bay", "a ready portrait alone");
+  G.sv.bay = [crate(1)]; assert.equal(need("vivarium"), "Bay: a crate and a portrait");
+  G.sv.bay = [crate(1), crate(2), crate(3)]; assert.equal(need("vivarium"), "Bay: three crates and a portrait");
+  G.st.dock = { docked: false, at: T0 }; assert.equal(need("vivarium"), "A portrait waits in the Bay", "away: the walk crates are not counted, the portrait still waits");
+  G.st.dock = { docked: true, at: T0 }; G.sv.bay = [crate(1)]; G.st.sittingCrates[0].start = Date.now() + 1e9; assert.equal(need("vivarium"), "A crate waits in the Bay", "a portrait still filling is not counted");
+});
+
+test("the both-at-once notice fits the frame's notice zone in every form it takes (a crate, two, three, the count dropped): the notice role's width with the lamp and its gap within the zone, and within the word limit", () => {
+  const metrics = JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")), R = SPECS.frame.regions.need, width = measureRole(metrics, SPECS.frame, R.role);
+  const st = S.freshSt("w1", 3, T0); S.normalize(st); st.dock = { docked: true, at: T0 }; const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
+  const bad = [];
+  for (const n of [1, 2, 3, 4]) {
+    sv.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 1, at: 0, e: 0, d: 0, s: 0, pods: [] }));
+    const text = capLine(S.need(st, sv, settings, {}, 1).text), w = width(text) + R.lampGap + R.lamp[0];
+    console.log(`  both-at-once notice, ${n} crate${n > 1 ? "s" : ""}: "${text}" ${width(text)} px + lamp ${R.lampGap + R.lamp[0]} = ${w} of ${R.rect[2]}, ${text.trim().split(/\s+/).length} words (limit ${R.words})`);
+    if (w > R.rect[2]) bad.push(`${text}: ${w} px with its lamp, the zone is ${R.rect[2]}`); if (text.trim().split(/\s+/).length > R.words) bad.push(`${text}: more than ${R.words} words`);
+  }
+  assert.deepEqual(bad, []);
 });

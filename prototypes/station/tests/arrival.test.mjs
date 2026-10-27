@@ -51,6 +51,8 @@ test("the props of the show: validate against cargo.props.json, name no rectangl
   assert.equal(R.plates.max, 3); assert.equal(R.plates.whole, 1); assert.equal(R.plates.mended, 1); assert.equal(R.plates.words, "one mended, free"); assert.equal(R.leaving.faces.length, 1); assert.equal(R.leaving.faces[0], "face-S01-24"); assert.equal(R.leaving.mark, "mark-out-16");
   assert.equal(R.apron, "cargo-bay-apron-992x180"); assert.equal(R.light, "cargo-link-light-976x8"); assert.equal(R.glint, "glint-star-12x12"); assert.equal(R.phase, "show");
   assert.ok(!JSON.stringify(b.props).match(/"rect"/), "no rectangle in the props"); assert.equal(b.props.regions.dockCrates.places.length, 2);
+  { const wp = world({ crates: 2 }); wp.st.sittingCrates.push({ id: "sit1", mibiId: wp.st.mibis[0].id, pose: "calm", place: "wood", start: 0, source: "dev", painted: true, opened: false }); const p = build(wp, { ...arrivalOf(wp.st, wp.sv, wp.r), phase: "show", from: "home", choice: true });
+    assert.equal(p.props.regions.dockCrates.places.length, 2, "a ready portrait never rides the dock arrival: the walk crates only"); assert.ok(p.props.regions.dockCrates.places.every((id) => /^crate-sealed-/.test(id)), p.props.regions.dockCrates.places.join()); assert.ok(!/portrait|sitting/i.test(JSON.stringify(p.props.regions.dockCrates))); }
   const broken = build(w, { ...a, broke: true }); assert.equal(broken.props.regions.arrival.ribbon, cargo.strings.arrival.broken);
   const none = world({ mend: { free: 0, paid: 0, broke: false }, shield: 3, reqs: [] }); const n = build(none, { ...arrivalOf(none.st, none.sv, none.r), phase: "show", from: "home", choice: true }); assert.equal(n.props.regions.arrival.plates.words, "", "none mended: no words"); assert.equal(n.props.regions.arrival.leaving.mark, "", "no one leaves: the corner is empty");
 });
@@ -60,13 +62,13 @@ test("the show's bottom line: ✓ Skip while the hold runs, the crates counted i
   l = cargoBuild({ st: w.st, sv: w.sv, settings, docked: true, light: "day", ui: { ...ui(a), skip: { kind: "arrival", target: "show" } } }, cargo, home, frame).line; assert.equal(l.ok, "Skip");
   const e = world({ crates: 0, reqs: [] }); l = build(e, { ...arrivalOf(e.st, e.sv, e.r), phase: "show", from: "home", choice: false }).line; assert.equal(l.subject, "the bay is empty");
 });
-test("the choice strip: Open the bay (free, the crates to the case) and Later (they wait while docked), the ring on Open the bay, no veil, housing or title; ← is Later", () => {
+test("the choice strip: Open now (free, the crates to open) and Later (they wait while docked), the ring on Open now, no veil, housing or title; ← is Later", () => {
   const w = world({ crates: 3, reqs: [] }), a = { ...arrivalOf(w.st, w.sv, w.r), phase: "choice", from: "home", choice: true };
   const u = { ...ui(a), panel: { screen: "cargo", id: "dock", focus: "" }, pods: { cur: null } }, v = panelBuild({ st: w.st, sv: w.sv, settings, ui: u, jump: "arrival" }, panel, frame, pods);
   assert.equal(v.overlay.form, "strip"); assert.equal(v.overlay.regions.title, ""); assert.deepEqual(v.cards.map((c) => c.id), ["open", "later"]); assert.deepEqual(v.cards.map((c) => c.cost), ["", ""], "both free");
-  assert.deepEqual(v.cards.map((c) => c.line), ["three crates to the case", "they wait while docked"]); assert.equal(v.overlay.focus.cur, "card.open"); assert.deepEqual(v.cards.map((c) => c.picture), ["crate-open-crop-96x96", "crate-sealed-crop-96x96"]);
-  assert.equal(v.line.ok, "Open the bay"); assert.equal(v.line.subject, "three crates to the case"); assert.equal(v.overlay.regions.art.housing, "");
-  const one = world({ crates: 1, reqs: [] }), o = panelBuild({ st: one.st, sv: one.sv, settings, ui: { ...u, cargo: { ...u.cargo, arrival: { ...a, crates: 1 } } }, jump: "arrival" }, panel, frame, pods); assert.equal(o.cards[0].line, "a crate to the case");
+  assert.deepEqual(v.cards.map((c) => c.line), ["three crates to open", "They wait while docked"]); assert.deepEqual(v.overlay.regions.cards.map((c) => c.line), ["Three crates to open", "They wait while docked"], "the card lines as drawn: sentence case"); assert.equal(v.overlay.focus.cur, "card.open"); assert.deepEqual(v.cards.map((c) => c.picture), ["crate-open-crop-96x96", "crate-sealed-crop-96x96"]);
+  assert.equal(v.line.ok, "Open now"); assert.equal(v.line.subject, "Three crates to open"); assert.equal(v.overlay.regions.art.housing, "");
+  const one = world({ crates: 1, reqs: [] }), o = panelBuild({ st: one.st, sv: one.sv, settings, ui: { ...u, cargo: { ...u.cargo, arrival: { ...a, crates: 1 } } }, jump: "arrival" }, panel, frame, pods); assert.equal(o.cards[0].line, "A crate to open");
 });
 test("the beats' times come from the spec: the link light, the crates' stagger, the mibis' dither and hop, the mend, the end at 3500 (an empty trip closes at 2500)", () => {
   const w = world({ reqs: [] }), a = { ...arrivalOf(w.st, w.sv, w.r), back: [1, 2, 3] }, T = timesOf(cargo, a);

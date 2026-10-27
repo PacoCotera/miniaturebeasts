@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Station Field Test</title>
 <script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>
+<script>if (new URLSearchParams(location.search).has("raw")) document.documentElement.classList.add("raw");</script>
 <meta name="description" content="Miniature Beasts Station build (M1 Read): a simulated 1024×600 Station screen on the real species frames, sharing its save with the Companion page. Dock, open the crates, identify a pod, read its chapters, compare and return.">
 <style>
 /* ===== The device's type is not a web font: the face draws Inter from the fonts compiled into it from the OFL sources in ../ui/fonts/; the surround uses the system's fonts. ===== */
@@ -36,7 +37,7 @@ body{
 }
 .page{display:flex; flex-wrap:wrap; gap:28px 40px; justify-content:center; align-items:flex-start; padding:16px 16px 32px; max-width:1900px; margin:0 auto}
 .device-col{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 1 auto; max-width:100%}
-.stamp{font: 500 13px/1.2 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center}
+.build-foot{margin:0 auto; padding:0 16px 20px; max-width:1900px; font: 500 12px/1.4 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center; overflow-wrap:anywhere}   /* page chrome in the bottom margin, outside the device; wraps at phone width */
 
 /* ===== The Station: screen on top, one row of big keys under it (keeps its own look in both themes) =====
    Only the screen scales to the window; the keys keep their real size, so they stay pressable on a phone. */
@@ -163,6 +164,7 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
 html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}
 html.embed body{visibility:hidden}
 html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:1024px; height:auto; max-width:none; border-radius:0; transform:scale(var(--embed-s,1)); transform-origin:0 0}
+html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the screen at its own size and the host scales the frame (the test page) */
 </style>
 </head>
 <body>
@@ -209,7 +211,6 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:1024
       <div id="devPanel"></div>
       <pre id="devOut" hidden></pre>
     </section>
-    <div class="stamp" id="stamp" hidden>build …</div>
   </div>
 
   <aside class="panel" aria-label="Playtest notes">
@@ -241,6 +242,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:1024
     </details>
   </aside>
 </main>
+<footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module" src="src/main.mjs"></script>
 </body>
 </html>

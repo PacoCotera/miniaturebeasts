@@ -323,6 +323,13 @@ footer { padding-bottom: 32px; }
   .play figure { justify-self: start; max-width: 260px; }
   .build { text-align: left; }
 }
+.rooms4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px}.rooms4 img{border-radius:8px}
+.living{display:grid;grid-template-columns:minmax(0,1024px) 152px;gap:24px;margin-top:48px}.living .lights{display:grid;gap:12px;align-content:start}
+.living .lights figure{margin:0}.living .lights img{border-radius:6px}.living .lights .on img{outline:2px solid var(--orange);outline-offset:2px}.living .lights figcaption{padding-top:4px}
+.screens{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}.screens img{border-radius:8px}
+.shelf{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:48px}
+.stamp img{max-width:320px;margin:0 auto;image-rendering:pixelated}
+@media (max-width:760px){.rooms4{grid-template-columns:1fr 1fr;gap:12px}.screens{grid-template-columns:1fr;gap:16px}.living{grid-template-columns:1fr}.living .lights{grid-template-columns:repeat(4,1fr);gap:8px}.shelf{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
@@ -346,8 +353,8 @@ footer { padding-bottom: 32px; }
       <h1 id="hero-title">One for the field.<br><span>One for home.</span></h1>
     </div>
     <figure class="hero-art">
-      <img src="assets/hero-kit.webp" width="1536" height="1024" fetchpriority="high"
-        alt="Concept render of the kit on a wooden table: the sage Station showing Pip plain beside a pale-marked Pip, the cream Companion showing Pip in a pixel-art clearing, both docked in the Caddy, whose e-paper lists the counts and whose printer feeds out a paper card of Pip.">
+      <img src="assets/hero-kit-2026-10.webp" width="1344" height="896" fetchpriority="high"
+        alt="Concept render of the kit on a wooden table: the sage Station showing Pip plain beside a pale-marked Pip, the cream Companion showing Pip in a pixel-art clearing, both docked in the Caddy, whose e-ink panel reads Pip, adult Loika, at home, and whose printer feeds out a strip of paper printed with Pip’s stamp.">
       <figcaption><span class="label">Concept</span>The kit: Station, Companion and Caddy</figcaption>
     </figure>
     <div class="hero-copy">
@@ -367,11 +374,11 @@ footer { padding-bottom: 32px; }
             <figcaption><span class="title">Companion</span><span>Explore the fogged world.</span></figcaption>
           </figure>
           <figure>
-            <img src="assets/strip-station.webp" width="800" height="800" loading="lazy" alt="The Station held in two hands at a wooden table, its screen showing a sealed Hopper pod beside Pip.">
+            <img src="assets/strip-station-2026-10.webp" width="800" height="800" loading="lazy" alt="The Station held in two hands at a wooden table, its screen showing a sealed green pod in a padded cradle beside Pip, with the line Needs 2 more Essence.">
             <figcaption><span class="title">Station</span><span>Research, hatch and raise.</span></figcaption>
           </figure>
           <figure>
-            <img src="assets/strip-caddy.webp" width="800" height="800" loading="lazy" alt="The Caddy dock with its e-paper counts and its print and feed buttons, feeding out a printed paper card of Pip.">
+            <img src="assets/strip-caddy-2026-10.webp" width="404" height="404" loading="lazy" alt="The Caddy’s printer slot feeding out a strip of paper printed with a square stamp of black cells, beside two printer keys.">
             <figcaption><span class="title">Caddy</span><span>Charge, connect and print.</span></figcaption>
           </figure>
         </div>
@@ -400,7 +407,7 @@ footer { padding-bottom: 32px; }
       <div class="head">
         <h2 id="station-title">Open the pod.<br>Decide what it becomes.</h2>
         <div>
-          <p class="copy">One pod makes one mibi. Hatch it as it is, or study it first and choose from what it already carries. Energy, Data and Essence from the field power it all. <a href="sandbox/station/">The Station build</a> runs in your browser on the device's own graphics engine. Its Pods screen is ready to play; the other screens follow one at a time.</p>
+          <p class="copy">One pod makes one mibi. Hatch it as it is, or study it first and choose from what it already carries. Energy, Data and Essence from the field power it all. <a href="sandbox/station/">The Station build</a> runs in your browser on the device’s own graphics engine. Each section’s main screen is built, and the rest follows one screen at a time. The four Vivarium rooms below are painted but not in the game yet.</p>
           <ul class="supplies" aria-label="Supplies">
             <li><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#3f7fd6"><rect x="8" y="8" width="16" height="16" rx="2"/><rect x="11" y="3" width="2" height="5"/><rect x="15" y="3" width="2" height="5"/><rect x="19" y="3" width="2" height="5"/><rect x="11" y="24" width="2" height="5"/><rect x="15" y="24" width="2" height="5"/><rect x="19" y="24" width="2" height="5"/><rect x="3" y="11" width="5" height="2"/><rect x="3" y="15" width="5" height="2"/><rect x="3" y="19" width="5" height="2"/><rect x="24" y="11" width="5" height="2"/><rect x="24" y="15" width="5" height="2"/><rect x="24" y="19" width="5" height="2"/></g><rect x="11" y="11" width="10" height="10" rx="1" fill="#9cc3f2"/></svg>Data</li>
             <li><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l9 8-9 18-9-18z" fill="#e8a92a"/><path d="M16 3l9 8h-9zM7 11h9l0 18z" fill="#f6cf6a"/></svg>Energy</li>
@@ -409,10 +416,32 @@ footer { padding-bottom: 32px; }
         </div>
       </div>
       <figure class="shot">
-        <img src="assets/station-research-hands.webp" width="1536" height="1024" loading="lazy"
-          alt="Two hands hold the sage Station at a wooden table in lamp light; its screen shows a sealed green Hopper pod in a padded cradle under a pool of light, marked Needs 2 more Essence, with Pip at the right labelled Hopper, known.">
+        <img src="assets/station-research-hands-2026-10.webp" width="1536" height="1024" loading="lazy"
+          alt="Two hands hold the sage Station at a wooden table in lamp light; its screen shows a sealed green pod in a padded cradle under a pool of light, marked Needs 2 more Essence, with Pip at the right.">
         <figcaption><span class="label">Concept</span>The Station at home: a sealed pod at the research bench</figcaption>
       </figure>
+      <div class="screens">
+        <figure><img src="assets/station-home.webp" width="1024" height="600" loading="lazy" alt="A Station screen titled Station: a window onto the Vivarium with three Loika among moss and roots, a Library tree of Loika genomes marked 20 new, and four modules below: Pods empty, Incubator empty, Companion with Dot at home, Bay with berths clear."><figcaption><span class="label">In the build</span>Home: the Vivarium and the Library above; Pods, Incubator, Companion and Bay below.</figcaption></figure>
+        <figure><img src="assets/station-pods.webp" width="1024" height="600" loading="lazy" alt="A Station screen titled Pods: a blue pod with orange spots tagged Loika, a Loika beside it labelled every Loika, a note that it was found at the pond edge as a Loika shook dry, and four tabs along the top: Coat, Face, Movement, Stamina."><figcaption><span class="label">In the build</span>Pods: an identified Loika pod, with Coat, Face, Movement and Stamina still to study.</figcaption></figure>
+        <figure><img src="assets/station-vivarium.webp" width="1024" height="600" loading="lazy" alt="A Station screen titled Vivarium: a mossy burrow with roots and a small pool, seven Loika of different coats, one named Dot, a mister breathing fine spray at the top right, and a strip of seven resident cards along the bottom."><figcaption><span class="label">In the build</span>The Vivarium: a family of Loika at home, with a strip of residents below.</figcaption></figure>
+      </div>
+      <div class="living">
+        <figure><img src="assets/vivarium-roots-day.webp" width="1024" height="568" loading="lazy" style="border-radius:12px" alt="A bluebell wood at the foot of an old tree whose roots wrap a dark burrow; six different mibis walk and rest on moss and a dirt path: a black Loika with leaf ears, a blue bird, a teal long-legged one, a russet mushroom-capped one, a small violet one on a ledge and a tiny pink one."><figcaption><span class="label">Station art</span>Roots, the first Vivarium room, with six species at home. Not in the game yet.</figcaption></figure>
+        <div class="lights" role="group" aria-label="Roots through the day">
+          <p class="caption">Roots through the day.</p>
+          <figure><img src="assets/roots-dawn.webp" width="152" height="84" loading="lazy" alt="Roots at dawn, a pale pink haze."><figcaption>Dawn</figcaption></figure>
+          <figure class="on"><img src="assets/roots-day.webp" width="152" height="84" loading="lazy" alt="Roots by day, the picture above."><figcaption>Day</figcaption></figure>
+          <figure><img src="assets/roots-dusk.webp" width="152" height="84" loading="lazy" alt="Roots at dusk, deeper blue and violet."><figcaption>Dusk</figcaption></figure>
+          <figure><img src="assets/roots-night.webp" width="152" height="84" loading="lazy" alt="Roots at night, dark blue with the burrow still visible."><figcaption>Night</figcaption></figure>
+        </div>
+      </div>
+      <p class="caption" style="margin-top:48px"><span class="label">Station art</span>Four rooms are planned, eight mibis in each, added as you go. Painted, not in the game yet.</p>
+      <div class="rooms4">
+        <figure><img src="assets/room-roots.webp" width="576" height="320" loading="lazy" alt="A tree’s mossy roots around a dark hollow, with bluebells in soft light behind."><figcaption><span class="title">Roots</span> A hollow under old roots, bluebells in the haze.</figcaption></figure>
+        <figure><img src="assets/room-boulders.webp" width="576" height="320" loading="lazy" alt="A small garden island of moss with tall mossy standing stones, a maple turning gold, fallen leaves, a stone-edged pond and a lantern at the right edge."><figcaption><span class="title">Boulders</span> A shrine garden: maple, mossy stones, a koi pond.</figcaption></figure>
+        <figure><img src="assets/room-ferns.webp" width="576" height="320" loading="lazy" alt="Green ferns, some uncurling, on a mossy log in a misty clearing, with a small dark stone in the grass."><figcaption><span class="title">Ferns</span> A fern dell, soft with mist.</figcaption></figure>
+        <figure><img src="assets/room-reeds.webp" width="576" height="320" loading="lazy" alt="Tall blue-green reeds on both sides of a damp winding path, with a grey boulder to the left and a mossy bank on the right, under pale mist."><figcaption><span class="title">Reeds</span> Tall grass after rain, a rock, a wet path.</figcaption></figure>
+      </div>
     </div>
   </section>
 
@@ -421,18 +450,18 @@ footer { padding-bottom: 32px; }
       <p class="eyebrow">Caddy</p>
       <div class="head">
         <h2 id="caddy-title">Dock the kit.<br>Print what you find.</h2>
-        <p class="copy">The Caddy charges both handhelds, lets them talk to each other and connects the kit to the cloud. Its printer is part of play: a module that answers what you do, card by card.</p>
+        <p class="copy">The Caddy charges both handhelds, lets them talk to each other and, in time, brings a mibi’s portrait to the Station. Its printer is part of play: a module that answers what you do, stamp by stamp.</p>
       </div>
       <div class="panel pair">
         <figure>
-          <img src="assets/caddy-print.webp" width="1200" height="800" loading="lazy"
-            alt="Close up of the Caddy: beside its print and feed buttons, the printer slot feeds out a white card with a dithered Pip above the words Pip and PIP-001.">
-          <figcaption><span class="label">Concept</span>The Caddy prints a mibi’s card</figcaption>
+          <img src="assets/caddy-print-2026-10.webp" width="740" height="493" loading="lazy"
+            alt="Close up of the Caddy: beside its printer keys, the paper slot feeds out a strip of paper printed with a square stamp of black cells and dots.">
+          <figcaption><span class="label">Concept</span>The Caddy prints a mibi’s stamp</figcaption>
         </figure>
         <figure class="flat">
-          <img src="assets/caddy-summary-epaper.webp" width="1200" height="359" loading="lazy"
-            alt="The Caddy’s e-paper summary in four greys: a dithered Pip with Pip, PIP-001, 1 resident; a sealed Hopper pod, waiting; and the counts 4, 5 and 2 beside chip, crystal and droplet icons.">
-          <figcaption><span class="label">Concept</span>The e-paper summary on the Caddy, in four greys</figcaption>
+          <img src="assets/caddy-summary-epaper-2026-10.webp" width="574" height="172" loading="lazy"
+            alt="The Caddy’s e-ink panel in four greys: a grey Pip beside the words Pip, adult Loika, at home, and a small line reading 3 at home, berths clear.">
+          <figcaption><span class="label">Concept</span>The e-ink panel on the Caddy, in four greys</figcaption>
         </figure>
       </div>
     </div>
@@ -443,7 +472,7 @@ footer { padding-bottom: 32px; }
       <p class="eyebrow">Genetics</p>
       <div class="head">
         <h2 id="genetics-title">One species.<br>Endless families.</h2>
-        <p class="copy">Every pup is new: coat, markings, crown, ears, size. Some traits hide for a generation and come back. Breed for what you love; your family is yours to shape. The rules already run in the <a href="sandbox/workbench/">species workbench</a>.</p>
+        <p class="copy">Every mibi is new: coat, markings, crown, ears, size. Some traits hide for a generation and come back. Breed for what you love; your family is yours to shape. The rules already run in the <a href="sandbox/workbench/">species workbench</a>.</p>
       </div>
       <div class="tree" role="group" aria-label="An imagined family of three generations">
         <figure class="kin" style="grid-area:1/1/2/3"><img src="assets/tree-pip.webp" width="320" height="320" loading="lazy" alt="Pip: charcoal coat, plain, three leaves, short ears."><figcaption><span class="label">Pip</span><span>charcoal</span></figcaption></figure>
@@ -462,7 +491,14 @@ footer { padding-bottom: 32px; }
         <figure class="kin ring" style="grid-area:5/5/6/7"><img src="assets/tree-dapple.webp" width="320" height="320" loading="lazy" alt="Dapple, child of Ember and Thistle: russet with cream pale islands, long ears, five leaves."><figcaption><span class="label">Dapple</span><span>pale</span></figcaption></figure>
         <p class="caption note" style="grid-area:5/7/6/9">Pale islands, last seen on grandmother Sable.</p>
       </div>
-      <p class="caption tree-cap"><span class="label">Concept</span>An imagined family of Pip’s species; generated portraits, not from the game.</p>
+      <p class="caption tree-cap"><span class="label">Concept</span>An imagined family of Loika; generated portraits, not from the game.</p>
+
+      <div class="panel pair" style="margin-top:48px">
+        <figure><p class="title">The genome ring</p><img src="assets/genome-ring-belatz.webp" width="1024" height="600" loading="lazy" alt="A Station screen titled Library, Belatz: a ring of fine branches, one wedge lit; at the left the Coat section is open, and at the right a panel lists Colour, Fluff, Sheen, Feathers, Tufts and Trim, with a grid of coat colours found at the bottom."><figcaption><span class="label">In the build</span>Belatz’s genome in the Library, with its Coat read.</figcaption></figure>
+        <figure class="stamp"><p class="title">The stamp</p><img src="assets/stamp-pip.png" width="320" height="320" loading="lazy" alt="Pip’s stamp: a square of black cells inside a dotted border on cream paper, with a small block of coloured cells at the top."><figcaption><span class="label">In the build</span>Pip’s genome stamp. Its cells hold the genome itself; only the game reads it.</figcaption></figure>
+      </div>
+      <div class="shelf" role="group" aria-label="The sixteen species as young mibis."><img src="assets/young-S01.webp" width="288" height="296" loading="lazy" alt="Loika, young"><img src="assets/young-S02.webp" width="288" height="296" loading="lazy" alt="Untuva, young"><img src="assets/young-S03.webp" width="288" height="296" loading="lazy" alt="Tuikis, young"><img src="assets/young-S04.webp" width="288" height="296" loading="lazy" alt="Hiljan, young"><img src="assets/young-S05.webp" width="288" height="296" loading="lazy" alt="Tepor, young"><img src="assets/young-S06.webp" width="288" height="296" loading="lazy" alt="Pesko, young"><img src="assets/young-S07.webp" width="288" height="296" loading="lazy" alt="Azkon, young"><img src="assets/young-S08.webp" width="288" height="296" loading="lazy" alt="Rupar, young"><img src="assets/young-S09.webp" width="288" height="296" loading="lazy" alt="Belatz, young"><img src="assets/young-S10.webp" width="288" height="296" loading="lazy" alt="Igara, young"><img src="assets/young-S11.webp" width="288" height="296" loading="lazy" alt="Kilpo, young"><img src="assets/young-S12.webp" width="288" height="296" loading="lazy" alt="Peplos, young"><img src="assets/young-S13.webp" width="288" height="296" loading="lazy" alt="Oskol, young"><img src="assets/young-S14.webp" width="288" height="296" loading="lazy" alt="Usvel, young"><img src="assets/young-S15.webp" width="288" height="296" loading="lazy" alt="Lehten, young"><img src="assets/young-S16.webp" width="288" height="296" loading="lazy" alt="Blikur, young"></div>
+      <p class="caption"><span class="label">Station art</span>Sixteen species, young.</p>
     </div>
   </section>
 
@@ -471,14 +507,14 @@ footer { padding-bottom: 32px; }
       <p class="eyebrow">Life</p>
       <div class="head">
         <h2 id="life-title">Raise partners.<br>Grow families.</h2>
-        <p class="copy">Carry a mibi, tend it, and it bonds with you. With care it grows up and comes along, digging, calming, sniffing out buried pods. It lives from juvenile to elder, and its children remember where their genes came from.</p>
+        <p class="copy">Carry a mibi, tend it, and it bonds with you. Care grows it up; walks do not. Grown, it comes along as your partner, each with its own knack: digging, calming, sniffing out buried pods. It lives from juvenile to elder, and its children remember where their genes came from.</p>
       </div>
       <div class="panel pair">
         <figure>
           <p class="title">Partner at work</p>
           <img src="assets/companion-partner-hands.webp" width="1200" height="800" loading="lazy"
             alt="Two hands hold the Companion in a garden; its screen shows Pip beside the orange player pawn inside the teal Call ring on a meadow, near a glinting patch of soil, with the line Dig here, meadow.">
-          <figcaption><span class="label">Concept</span>Pip beside you at a patch to dig</figcaption>
+          <figcaption><span class="label">Concept</span>Pip beside you at a glinting patch</figcaption>
         </figure>
         <figure class="flat">
           <p class="title">A whole life</p>
@@ -495,7 +531,7 @@ footer { padding-bottom: 32px; }
     <div class="wrap faq-grid">
       <h2 id="faq-title">A few fair questions.</h2>
       <div class="panel faq">
-        <details><summary>Is it real?</summary><p>The exploration field test is real: pictures marked ROUGH PLAYABLE come from it. Pictures marked CONCEPT are generated art; no device exists yet. The game gets proven in software first, then boards and cases.</p></details>
+        <details><summary>Is it real?</summary><p>The exploration field test and the Station build run in your browser today. ROUGH PLAYABLE pictures come from the field test; IN THE BUILD pictures are screens from the Station build. STATION ART is finished art for places not in the game yet, such as the Vivarium rooms. CONCEPT pictures are generated art; no device exists yet. The game gets proven in software first, then boards and cases.</p></details>
         <details><summary>When can I get one?</summary><p>There’s no date and no price yet. The <a href="roadmap/">roadmap</a> shows what is being built now and what comes next.</p></details>
         <details><summary>Can I build one myself?</summary><p>Not yet: the hardware isn’t designed. When it is, the boards and cases will be published as open hardware, to print and put together with common tools. The software is open source already.</p></details>
         <details><summary>Do I need to know genetics?</summary><p>No. You play by looking, comparing and breeding. The real framework underneath is there for the curious: read the <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/design/creatures-and-genomics.md">genetics design</a>.</p></details>
@@ -519,7 +555,7 @@ footer { padding-bottom: 32px; }
           <div>
             <p class="eyebrow" id="tools-title">Also in the sandbox</p>
             <ul class="copy" aria-labelledby="tools-title">
-              <li><a class="link" href="sandbox/station/">Station build</a>: dock the Companion, open its crates, read and compare your pods.</li>
+              <li><a class="link" href="sandbox/station/">Station build</a>: dock the Companion, open its crates, read and compare your pods, watch the Vivarium, browse the Library.</li>
               <li><a class="link" href="sandbox/workbench/">Species workbench</a>: build a species from its genome and cross two mibis.</li>
               <li><a class="link" href="sandbox/compare/">Design proposals</a>: art and type choices for the screens, side by side.</li>
             </ul>
@@ -527,8 +563,8 @@ footer { padding-bottom: 32px; }
         </div>
       </div>
       <figure>
-        <img src="assets/prototype-map.webp" width="1044" height="1664" loading="lazy"
-          alt="Screenshot of the field test in a Companion frame: a world map mostly under purple fog, a few revealed cells of wood, meadow and a pond, small sign icons and a dotted storm band.">
+        <img src="assets/field-test-2026-10.webp" width="520" height="852" loading="lazy"
+          alt="Screenshot of the field test in a Companion frame: a small revealed patch of green meadow and grey stone on a dark fogged map, the orange explorer near the top left, lightning bolts on two cells, a flag, a beacon and a minimap at the right, and the line Edge of the Probe’s range · tier 2 reaches further.">
         <figcaption><span class="label">Rough playable</span>The fogged world map in the field test</figcaption>
       </figure>
     </div>
@@ -546,14 +582,12 @@ footer { padding-bottom: 32px; }
       <p class="caption">A project by Dirty Pawz Press · Mexico City</p>
       <p class="caption">Software AGPL-3.0 · Hardware CERN-OHL-S-2.0 · Documentation and art CC BY-SA 4.0</p>
     </div>
-    <p class="caption build" id="build">build pending</p>
+    <p class="caption build" id="build">© 2026 Dirty Pawz Press · local</p>
   </footer>
 </div>
-<script>
-  fetch('build.json').then(r => r.json()).then(b => {
-    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {timeZone: 'America/Mexico_City', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'}).formatToParts(new Date(b.built)).map(x => [x.type, x.value]));
-    document.getElementById('build').textContent = 'build ' + b.short + ' · ' + p.year + '-' + p.month + '-' + p.day + ' ' + p.hour + ':' + p.minute;
-  }).catch(() => { document.getElementById('build').textContent = 'local build'; });
+<script type="module">
+  // the build footer: the one line every page shows, from the module the sandbox pages share (the text stays as written above when it cannot load)
+  import('./sandbox/play/src/footer.mjs').then(m => m.mountFooter(document.getElementById('build'), {buildUrl: 'build.json'})).catch(() => {});
 </script>
 </body>
 </html>

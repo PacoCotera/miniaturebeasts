@@ -147,7 +147,7 @@ s = await st(); expect(s.dock.docked, "docked");
 await page.waitForTimeout(1800); await frameShot("cargo-arrival-show", true);
 await hpress("confirm", 400);   // any key skips the show to its choice
 { const p = await props(), u = await ui();
-  expect(u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "choice" && p.overlay?.form === "strip" && p.overlay.focus.cur === "card.open" && p.frame.line.ok === "Open the bay" && p.frame.line.subject === "Two crates to the case" && !(await page.evaluate(() => window.__st.holding())), "home-dock-arrival: the show cuts to the choice: the strip, the ring on Open the bay: " + JSON.stringify([p.overlay?.focus, p.frame.line])); }
+  expect(u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "choice" && p.overlay?.form === "strip" && p.overlay.focus.cur === "card.open" && p.frame.line.ok === "Open now" && p.frame.line.subject === "Two crates to open" && !(await page.evaluate(() => window.__st.holding())), "home-dock-arrival: the show cuts to the choice: the strip, the ring on Open now: " + JSON.stringify([p.overlay?.focus, p.frame.line])); }
 await frameShot("cargo-arrival-choice", true);
 await hpress("right", 200); { const p = await props(); expect(p.overlay.focus.cur === "card.later" && p.frame.line.ok === "Later" && p.frame.line.subject === "They wait while docked", "home-dock-arrival: ▶ is Later: " + JSON.stringify(p.frame.line)); }
 await hpress("back", 600);   // ← is Later: the dither back to Home, as it was
@@ -356,9 +356,9 @@ for (const [i, name] of [[1, "pods-belatz-face"], [3, "pods-belatz-legs-tail"]])
 await page.evaluate(() => window.__st.seedCrate("S01", 1, 31337)); await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(300);
 s = await st(); expect(s.waiting.length === 1, "the rack is full: the new pod waits for a well");
 await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, coatSix.id); await page.waitForTimeout(400);
-// the hatch: ✓ opens the Release panel (the ring on Release), ← and Keep spend nothing, ✓ on Release returns
+// the hatch: ✓ opens the Return panel (the ring on Return), ← and Keep spend nothing, ✓ on Return returns
 l = await line(); expect(l.ok === "Return to the wild" && l.price === "❀ +1", "the hatch offers the return: " + JSON.stringify(l));
-await press("confirm", 300); l = await line(); expect(l.ok === "Release it" && !!(await props()).overlay, "the Release panel opens with the ring on Release: " + JSON.stringify(l)); await frameShot("pods-panel-release");
+await press("confirm", 300); l = await line(); expect(l.ok === "Return it" && !!(await props()).overlay, "the Return panel opens with the ring on Return: " + JSON.stringify(l)); await frameShot("pods-panel-release");
 await press("back", 300); l = await line(); expect(l.ok === "Return to the wild" && !(await props()).overlay, "← closes the panel, nothing spent: " + JSON.stringify(l)); await page.evaluate((id) => window.__st.podsGo(id, "hatch"), coatSix.id); await page.waitForTimeout(300);
 const sBefore = (await st()).s; await press("confirm", 200); await press("right", 200); await press("confirm", 300); expect((await st()).s === sBefore && (await st()).tray.some((p) => p.id === coatSix.id), "Keep spends nothing"); await page.evaluate((id) => window.__st.podsGo(id, "hatch"), coatSix.id); await page.waitForTimeout(300); await press("confirm", 200); await press("left", 200); await press("confirm", 400); s = await st();
 expect(s.s === sBefore + 1 && !s.tray.some((p) => p.id === coatSix.id), "the second ✓ returned the pod for +1 Essence: " + JSON.stringify({ s: s.s, sBefore, still: s.tray.some((p) => p.id === coatSix.id), line: await line(), view: await viewNow(), f: await focusNow() }));
@@ -611,7 +611,7 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
     await hp("down", 300); const tileKey = "tile." + adultM.id; let c = (await props()).focus?.cur; for (const dir of ["right", "left"]) for (let i = 0; i < 14 && c !== tileKey; i++) { await hp(dir, 300); const n = (await props()).focus?.cur; if (n === c) break; c = n; }   // along the strip one way to its end, then the other
     expect(c === tileKey, "vivarium-card: ▼ then ◀ ▶ along the strip lands on the adult's tile: " + c);
     await hp("up", 300); const w = await toward("wild", toWild); expect(w === "wild", "vivarium-card: the pad walks back to the Wild gate with the adult shown: " + w);
-    r = await hp("confirm", 500); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.return", "vivarium-card: ✓ on the Wild gate opens the Release panel, the ring on Release: " + JSON.stringify([r.p.overlay?.focus, r.p.frame.line])); r = await hp("left", 300); r = await hp("confirm", 800); const now = await st();
+    r = await hp("confirm", 500); expect(r.p.overlay?.id === "panel" && r.p.overlay.focus.cur === "card.return", "vivarium-card: ✓ on the Wild gate opens the Return panel, the ring on Return: " + JSON.stringify([r.p.overlay?.focus, r.p.frame.line])); r = await hp("left", 300); r = await hp("confirm", 800); const now = await st();
     expect(now.s === was.s + 2 && now.mibis.find((m) => m.id === adultM.id).released, "vivarium-card: the Return card returns the adult for +2 Essence: " + JSON.stringify([now.s, was.s]));
     cur.push({ gate: "adult", released: true, essence: now.s - was.s }); }
   await toHome( 300); }
@@ -658,12 +658,12 @@ const vpress = async (k, ms = 200) => { await said(); await press(k, ms); const 
   r = await vpress("back", 500); expect(r.u.screen === "home" && r.u.home === "vivarium", "vivarium-whole: ← from the whole is Home with the ring on the panel: " + JSON.stringify([r.u.screen, r.u.home]));
   await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitForTimeout(500);
   { const dk = JSON.stringify((await st()).dock); r = await vpress("dock", 500); expect(JSON.stringify((await st()).dock) !== dk && r.u.screen === "vivarium", "vivarium-whole: the Dock key lifts the Companion on the whole, on the frame of the key: " + JSON.stringify([r.u.screen, (await st()).dock])); }
-  { const p = await props(); expect(p.regions.bed.state === "away" && p.regions.tiles.items.some((t) => t.state === "out") && p.regions.bed.mark, "vivarium-whole: away, the bed shows the Companion's mark and the carried mibis' tiles the glyph: " + JSON.stringify([p.regions.bed.state, p.regions.tiles.items.map((t) => t.state)]));
+  { const p = await props(); expect(p.regions.bed.state === "away" && p.regions.tiles.items.some((t) => t.state === "out") && p.regions.bed.mark === "", "vivarium-whole: away, the bed draws no Companion's mark and the carried mibis' tiles the glyph: " + JSON.stringify([p.regions.bed.state, p.regions.tiles.items.map((t) => t.state)]));
     const out = p.focus.targets.find((t) => t.id.startsWith("tile.") && p.regions.tiles.items.find((x) => "tile." + x.id === t.id)?.state === "out"); { const res = p.focus.targets.find((t) => t.id.startsWith("resident.")); if (res) { await page.evaluate((id) => { window.__st.UI.viv.f = id; }, res.id); await page.waitForTimeout(400); } }   // the ring on the first resident, so this capture shows what page-mibi-out (the ring on the out tile) does not
     await frameShot("page-vivarium-away", true);
     if (out) { await page.evaluate((id) => { window.__st.UI.viv.f = id; }, out.id); await page.waitForTimeout(400); expect((await props()).frame.line.subject === "Out with the Companion", "vivarium-whole: an out mibi's tile is a target (out with the Companion)"); await frameShot("page-mibi-out", true); }
-    { const was = await page.evaluate(() => window.__st.settings.light ?? null); await page.evaluate(() => { window.__st.settings.light = "night"; window.__st.UI.viv.f = window.__st.UI.viv.f; }); await page.waitForTimeout(700);   // the darkest light, still away: the Companion's mark on the bed and the out glyph on the carried tiles
-      const pn = await props(); expect(String(pn.regions.window.picture).includes("night") && pn.regions.bed.state === "away" && pn.regions.tiles.items.some((t) => t.state === "out"), "vivarium-whole: away at night, the mark and the out glyph in the darkest light: " + JSON.stringify([pn.regions.window.picture, pn.regions.bed.state]));
+    { const was = await page.evaluate(() => window.__st.settings.light ?? null); await page.evaluate(() => { window.__st.settings.light = "night"; window.__st.UI.viv.f = window.__st.UI.viv.f; }); await page.waitForTimeout(700);   // the darkest light, still away: the out glyph on the carried tiles
+      const pn = await props(); expect(String(pn.regions.window.picture).includes("night") && pn.regions.bed.state === "away" && pn.regions.tiles.items.some((t) => t.state === "out"), "vivarium-whole: away at night, the out glyph in the darkest light: " + JSON.stringify([pn.regions.window.picture, pn.regions.bed.state]));
       await frameShot("page-vivarium-away-night", true); await page.evaluate((l) => { window.__st.settings.light = l; }, was); await page.waitForTimeout(400); } }
   r = await vpress("dock", 500); expect((await st()).dock.docked && r.u.screen === "cargo" && (await props()).state === "arrival", "vivarium-whole: the Dock key docks again and the arrival plays over the Vivarium: " + r.u.screen);
   r = await vpress("confirm", 600); expect(r.u.screen === "vivarium" && (await st()).dock.docked, "vivarium-whole: an empty trip has no choice: ✓ skips the show and it closes, the Vivarium as it was: " + r.u.screen); }
@@ -829,7 +829,7 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
   await page.evaluate(() => window.__st.seedCrate("S01", 1, 4242));
   await loop("dock", "the Dock key docks and the arrival plays over Home", () => window.__st.ST.dock.docked && window.__st.props?.state === "arrival");
   await loop("confirm", "any key skips the show to the choice", () => window.__st.props?.overlay?.form === "strip");
-  await loop("confirm", "✓ Open the bay on the strip opens the crate and the end shows (T-50 cut 1; the opening holds input)", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "end");
+  await loop("confirm", "✓ Open now on the strip opens the crate and the end shows (T-50 cut 1; the opening holds input)", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "end");
   await loop("confirm", "✓ on the end lands on Pods", () => window.__st.UI.screen === "pods");
   await loop("confirm", "✓ on the new pod opens its overview", () => window.__st.props?.state === "overview");
   await loop("confirm", "✓ Identify", () => window.__st.props?.frame?.line?.ok === "Create from this pod");

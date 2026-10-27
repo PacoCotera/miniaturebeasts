@@ -53,7 +53,7 @@ async function walk(visit) {
     await enter(page, SCENES.twelve); await step(40); await step(8000);
     const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, n: window.__st.props?.regions?.residents?.length })); if (u.screen !== "vivarium" || u.n !== 12) fail("vivarium-walk-8000ms: " + JSON.stringify(u));
     await visit("vivarium-walk-8000ms", page, fail);
-    // Station M1: the moving household on its stand-in cells under the developer switch (S01 adult ×6, S01 juvenile ×5, S05 juvenile ×1), the Station time noon, 8000 ms in
+    // The developer switch "Motion sets (stand-ins)", a mechanism golden (not art): the moving household on its stand-in cells (S01 adult ×6, S01 juvenile ×5, S05 juvenile ×1), the Station time noon, 8000 ms in
     await page.evaluate(() => { const w = window.__world, S = window.__st; w.reset(); w.bays(12); w.adults(6); w.young(5); const st = S.ST, k = st.mibis.length; S.seedAdults("S05", 9, 1); for (const m of st.mibis.slice(k)) { m.born = st.turn; m.paint = { state: "landed" }; }
       S.settings.motionSets = true; S.settings.stationTime = "12:00"; S.UI.idle = false; S.UI.hab.id = null; S.UI.viv.f = "tile." + st.mibis[0].id; S.goto("vivarium"); S.UI.viv.f = "tile." + st.mibis[0].id; });
     await step(40); await step(8000);

@@ -1,5 +1,6 @@
 {
  "screen": "habitat",
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 522], "containers": [{ "region": "strip", "align": { "x": "left" } }], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
  "device": "station",
  "section": "vivarium",
  "level": "mibi",

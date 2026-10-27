@@ -1,0 +1,773 @@
+{
+ "note": "The layout check's case corpus (ui/tests/layout-cases.test.mjs): golden states with the findings the check must make on them (expect: the known faults it reproduces, each with its source in the validation of the check, ✓m measured in the prototype, ✓e expected from the audit's numbers), the findings it must not make (clear: the findings the owner cleared), and what waits for data (pending: ✓d, once UI/UX declares it, or a ✓e the check does not reproduce). The owner's review of 2026-10-26 is the last 98 cases, one a card (card, verdict): a fault expects its own kind, or the finding that now carries the same fault; a fine clears its kind, by a rule, by a spec's data or by a frame.json exception; not sure is as the tune left it. They match by kind (rule, part, node, other, container), not by measure: the goldens moved (Q1, TY1.1) since the review. Each state's fixture log is ui/tests/layout-cases/<screen>/<state>.json; layout-check.mjs <logs> --refresh-cases takes them again after a retake. An expect matches a finding with that rule (and part, node, other as a prefix, container, measured: a number or [min, max]).",
+ "cases": [
+  { "state": "pods/overview, identified, pod focused", "from": "owner, Pods overview",
+    "expect": [
+     { "rule": "L6", "container": "opening", "measured": [0.2, 0.35], "mark": "✓m", "why": "the right half empty: L6 0.23 to 0.31 in the prototype" },
+     { "rule": "L7", "part": "a", "container": "opening", "measured": [0.15, 0.25], "mark": "✓m", "why": "the imbalance: L7a 0.18 to 0.22" },
+     { "rule": "L1", "node": "stamp", "other": "right", "measured": 14, "mark": "✓m", "why": "the stamp case 14 from the right (24 required) against the dish 118 on the left (the prototype's 110 was the alpha above 0 box)" },
+     { "rule": "L1", "node": "specimen", "other": "left", "measured": 118, "mark": "✓m", "why": "the left side loose" },
+     { "rule": "L2", "node": "hatch", "other": "bottom", "measured": 0, "mark": "✓m", "why": "the hatch on the opening's bottom edge" }
+    ],
+    "clear": [],
+    "pending": [
+     { "what": "the origin text over the gauge, L4", "needs": "pods.json layout.painted: the gauge [718, 100, 82, 62] (✓d, UI/UX with the AD)" },
+     { "what": "the lone pod disc, L3", "needs": "a declared right column (✓d)" }
+    ] },
+  { "state": "create/create-confirm-keep", "from": "owner, Create confirm-keep: the niche on the window's bottom edge, empty above",
+    "expect": [
+     { "rule": "L1", "container": "panelSnapshot", "node": "snapshot chamber", "other": "bottom", "measured": 6, "mark": "✓m", "why": "6 below, through the snapshot's source nodes (log addition 3)" },
+     { "rule": "L7", "part": "a", "container": "panelSnapshot", "measured": [0.2, 0.35], "mark": "✓m", "why": "the empty top of the window: the centroid 0.27 below the centre (the slack 116 above, 6 below is one finding, carried by L1 bottom 6 and this)" },
+     { "rule": "L11", "node": "panelPrice", "measured": 17, "mark": "✓e", "why": "unlabelled marks: the Incubate header's pod mark ends the price run with no word" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "create/create-shape-short", "from": "owner, Create annotated (09:55)",
+    "expect": [
+     { "rule": "L2", "node": "cradleFront", "other": "left", "mark": "✓m", "why": "the dish's lip across the opening's left edge (the left side: 0 / 36)" },
+     { "rule": "L1", "node": "stamp", "other": "right", "measured": 14, "mark": "✓m", "why": "right 14 (the capsule 16)" },
+     { "rule": "L2", "node": "chamber", "other": "bottom", "measured": 0, "mark": "✓m", "why": "the tray on the opening's bottom edge (−1 in the stage picture's paint)" },
+     { "rule": "L2", "node": "roll", "other": "top", "measured": 2, "mark": "✓m", "why": "▲ 2 under the rail's well (C4): a mark 2 px from the strip's edge is L2, which replaces L1 for that side" },
+     { "rule": "L3", "part": "b", "node": "pod", "other": "chamber", "mark": "✓e", "why": "unequal gutters pod → tray → capsule" }
+    ],
+    "clear": [],
+    "pending": [
+     { "what": "the floating caption, L8a", "needs": "create.json traitLine.labels (✓d)" },
+     { "what": "the empty top left, L7b", "needs": "declared columns (✓d); undeclared, L7a fires" }
+    ] },
+  { "state": "pods/collection", "from": "the UI/UX layout sweep",
+    "expect": [
+     { "rule": "L1", "other": "left", "measured": 8, "mark": "✓m", "why": "places 8 from the left" },
+     { "rule": "L1", "other": "right", "measured": 106, "mark": "✓m", "why": "106 from the right" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "pods/compare", "from": "the UI/UX layout sweep",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "opening", "other": "above / below", "measured": 100, "mark": "✓e", "why": "the pages' slack 24 above, 124 below: a centred block, reported by L7b (L1 reads the axis as centred and holds the margins)" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "bench/bench", "from": "the UI/UX layout sweep: the Probe bench",
+    "expect": [
+     { "rule": "L1", "node": "cradle", "other": "left", "measured": [18, 21], "mark": "✓m", "why": "left 19 (20 by the cradle's solid ink)" },
+     { "rule": "L1", "other": "right", "measured": 18, "mark": "✓m", "why": "right 18" },
+     { "rule": "L1", "node": "cradle", "other": "bottom", "measured": [6, 13], "mark": "✓m", "why": "bottom 7 (12 by the solid ink, the cradle's faint shadow left out)" },
+     { "rule": "L3", "part": "b", "node": "cradle", "other": "strip", "mark": "✓e", "why": "gutters 83 / 80" }
+    ],
+    "clear": [],
+    "pending": [
+     { "what": "the bench's L6 reads its painted tools as empty", "needs": "bench.json layout.painted with fills: true (a false alarm until then)" }
+    ] },
+  { "state": "library/library-l2-loika-mid", "from": "the UI/UX layout sweep: the Library's Level 2",
+    "expect": [
+     { "rule": "L2", "node": "sheet", "other": "top", "measured": 0, "mark": "✓m", "why": "the sheet touching the top bar" },
+     { "rule": "L2", "node": "sheet", "other": "bottom", "measured": 0, "mark": "✓m", "why": "and the bottom line" }
+    ],
+    "clear": [],
+    "pending": [
+     { "what": "the Library crest cut, L10b (✓e)", "needs": "frame.json layout.thresholds.L10.value.subjects: which components count as subjects (the AD with UI/UX)" }
+    ] },
+  { "state": "library/library-l3-far", "from": "the UI/UX layout sweep: the Library's Level 3",
+    "expect": [
+     { "rule": "L1", "node": "far", "other": "top", "measured": 4, "mark": "✓e", "why": "far top 4" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "library/library-l2-met-only", "from": "the component model: a generated sheet with no layout facts",
+    "expect": [
+     { "rule": "L0", "node": "sheet", "why": "a met sheet carries no plates: not measurable, never a silent pass" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "incubator/incubator-empty", "from": "the UI/UX layout sweep: the Incubator",
+    "expect": [
+     { "rule": "L2", "other": "top", "measured": 0, "mark": "✓m", "why": "the capsule 0 to the top bar" },
+     { "rule": "L1", "other": "bottom", "measured": 4, "mark": "✓m", "why": "4 to the bottom line" },
+     { "rule": "L7", "part": "a", "container": "opening", "mark": "✓m", "why": "off the screen's axis" }
+    ],
+    "clear": [],
+    "pending": [
+     { "what": "the door cut, L10a", "needs": "the capsule declared a bleed or its door's window data (✓d)" }
+    ] },
+  { "state": "incubator/incubator-growing", "from": "the UI/UX layout sweep: the Incubator's stamp column",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "opening", "other": "left / right", "measured": 266, "mark": "✓m", "why": "a centred block: the stamp column at the left (71 by its line) and the capsule, 337 on the right" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-bay-one", "from": "the UI/UX layout sweep: Cargo",
+    "expect": [
+     { "rule": "L1", "node": "bay", "other": "top", "measured": 6, "mark": "✓m", "why": "the Bay 6 under the top bar" },
+     { "rule": "L1", "node": "bay", "other": "bottom", "measured": 10, "mark": "✓m", "why": "10 over the bottom line" }
+    ],
+    "clear": [],
+    "pending": [
+     { "what": "the hatch floor line, L7b", "needs": "declared columns with the floor line (✓d)" }
+    ] },
+  { "state": "cargo/cargo-bay-waiting-many", "from": "the UX audit: Cargo",
+    "expect": [
+     { "rule": "L4", "node": "waiting.pod", "other": "waitingMore", "mark": "✓e", "why": "\"+2\" over the third pod" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "habitat/habitat-rest", "from": "the UI/UX layout sweep: Habitat",
+    "expect": [
+     { "rule": "L1", "node": "strip", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the strip 10 over the bottom line" },
+     { "rule": "L3", "part": "a", "node": "door.plate", "other": "portrait.plate", "measured": 8, "mark": "✓e", "why": "plate gutters 8" },
+     { "rule": "L6", "container": "cross.plate", "mark": "✓e", "why": "empty bodies: the Cross module with no partner shows its eyebrow and an empty 56 px body" }
+    ],
+    "clear": [],
+    "pending": [
+     { "what": "the notches, L8a", "needs": "their labels (✓d, UI/UX)" }
+    ] },
+  { "state": "habitat/habitat-card", "from": "the UX audit: Habitat's lone marks",
+    "expect": [
+     { "rule": "L11", "container": "card", "node": "card", "measured": 17, "mark": "✓e", "why": "the skill notches, 16 x 24 gold marks with no word (style guide section 6)" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-arrival-choice", "from": "the UX audit: Cargo's arrival",
+    "expect": [
+     { "rule": "L1", "container": "cards", "node": "cardPictures", "other": "right", "measured": 284, "mark": "✓e", "why": "the cards' pictures stand at the left of the cards and leave 284 on the right" },
+     { "rule": "L11", "container": "bay", "node": "band.leaving", "mark": "✓e", "why": "unlabelled marks: the arrival's exit glyph and mibi face with no word" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "library/library-l3-close-moss", "from": "the UX audit: the Library's Level 3 (parked with the Library)",
+    "expect": [
+     { "rule": "L1", "container": "opening", "node": "panel", "other": "bottom", "measured": [6, 7], "mark": "✓e", "why": "the info panel's bottom 7 over the line in the audit (6 by the face's log: the panel ends at 556)" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "sitting/sitting-pose", "from": "the UI/UX layout sweep and the UX audit: the sitting",
+    "expect": [
+     { "rule": "L1", "node": "strip", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the strip 10 over the bottom line" },
+     { "rule": "L1", "container": "strip", "node": "steps", "other": "right", "measured": 504, "mark": "✓m", "why": "the steps 16 / 504 in their strip: the right side loose; the strip's right half empty is this one finding (one component in its box is not an empty box, and L7b measures centred axes only)" },
+     { "rule": "L1", "container": "deck", "node": "cards", "other": "right", "measured": 24, "mark": "✓e", "why": "the deck's cards 16 / 24" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "vivarium/vivarium-docked", "from": "the UI/UX layout sweep and the art direction audit: the Vivarium",
+    "expect": [
+     { "rule": "L1", "node": "strip", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the strip 10 over the bottom line" },
+     { "rule": "L4", "node": "resident", "other": "resident", "mark": "✓m", "why": "the totem: three residents stacked, each one's feet on the next one's head" },
+     { "rule": "L4", "node": "resident#2", "other": "resident#4", "measured": 9, "mark": "✓m", "why": "the totem: feet on the next one's head (36 x 9), a perch" }
+    ],
+    "clear": [],
+    "pending": [
+     { "what": "the strip that vanishes, L9", "needs": "vivarium.json layout.slots (✓d)" }
+    ] },
+  { "state": "home/home-fresh", "from": "the UX audit: Home",
+    "expect": [
+     { "rule": "L5", "part": "b", "container": "bay", "node": "bay.picture", "other": "bay centre (y)", "measured": 5, "mark": "✓m", "why": "the Bay picture's centre 521 against the module's 526" },
+     { "rule": "L11", "container": "library.window", "node": "library.window", "measured": 12, "mark": "✓e", "why": "unlabelled marks: the Library window's glints" }
+    ],
+    "clear": [
+     { "rule": "L3", "part": "a", "node": "vivarium", "other": "library", "mark": "owner", "why": "the owner's home-L3-1: 12 before the Library is the build spec's, home.json layout.gutter 12" }
+    ],
+    "pending": [
+     { "what": "the Pods+Incubator | Companion+Bay split", "needs": "home.json layout.split (UI/UX)" }
+    ] },
+  { "state": "bench/bench", "card": "bench-L1-5", "verdict": "fault", "from": "owner card bench-L1-5, marked fault: loose, 177 → 16",
+    "expect": [
+     { "rule": "L1", "container": "switch.plate", "node": "switch#4", "other": "right", "mark": "owner", "why": "marked a fault by the owner: loose, 177 → 16 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "bench/bench", "card": "bench-L11-1", "verdict": "fault", "from": "owner card bench-L11-1, marked fault: a lone mark: no text within 8 px on its rows, 12 → 24",
+    "expect": [
+     { "rule": "L11", "container": "switch.plate", "node": "switch.lamp", "mark": "owner", "why": "marked a fault by the owner: a lone mark: no text within 8 px on its rows, 12 → 24 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "bench/bench", "card": "bench-L3-3", "verdict": "unsure", "from": "owner card bench-L3-3, marked not sure: crowding, 22 → 32",
+    "expect": [],
+    "clear": [
+     { "rule": "L3", "part": "a", "container": "opening", "node": "plates", "other": "plates#2", "mark": "owner", "why": "cleared: L3a: the bezel's column gutter 32 is between two modules, other neighbours take 16" }
+    ],
+    "pending": [] },
+  { "state": "bench/bench", "card": "bench-L3-9", "verdict": "unsure", "from": "owner card bench-L3-9, marked not sure: unequal gutters in a row: 22, 23, 90, 90 → 23",
+    "expect": [],
+    "clear": [
+     { "rule": "L3", "part": "b", "container": "opening", "node": "plates#3", "other": "slot.plate", "mark": "owner", "why": "cleared: L3b compares like with like" }
+    ],
+    "pending": [] },
+  { "state": "bench/bench", "card": "bench-L4-1", "verdict": "fault", "from": "owner card bench-L4-1, marked fault: they overlap 34 x 28, 28 → 0",
+    "expect": [
+     { "rule": "L4", "container": "switch.plate", "node": "switch#2", "other": "switch#3", "mark": "owner", "why": "marked a fault by the owner: they overlap 34 x 28, 28 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "bench/bench", "card": "bench-L5-8", "verdict": "fault", "from": "owner card bench-L5-8, marked fault: almost aligned: the centre (y) and the container's 310 and 304.5, 5.5 → 0",
+    "expect": [
+     { "rule": "L5", "part": "b", "container": "opening", "node": "cradle", "other": "opening centre (y)", "mark": "owner", "why": "marked a fault by the owner: almost aligned: the centre (y) and the container's 310 and 304.5, 5.5 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "bench/bench", "card": "bench-L6-2", "verdict": "fault", "from": "owner card bench-L6-2, marked fault: an empty 177 x 128, 0.57 → 0.25",
+    "expect": [
+     { "rule": "L6", "container": "switch.plate", "node": "switch.plate", "mark": "owner", "why": "marked a fault by the owner: an empty 177 x 128, 0.57 → 0.25 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "bench/bench", "card": "bench-L7-2", "verdict": "unsure", "from": "owner card bench-L7-2, marked not sure: the filled area's centroid off the centre: x -0.63, y +0.05, 0.63 → 0.1",
+    "expect": [
+     { "rule": "L7", "part": "a", "container": "switch.plate", "node": "switch.plate", "mark": "owner", "why": "the owner was not sure: it fires, with its wording and overlay changed" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "bench/bench", "card": "bench-L7-4", "verdict": "fault", "from": "owner card bench-L7-4, marked fault: slack 16 left, 177 right, 161 → 4",
+    "expect": [
+     { "rule": "L1", "container": "switch.plate", "node": "switch#4", "other": "right", "mark": "owner", "why": "carried by bench-L1-5: the same fault is reported once" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "bench/bench", "card": "bench-L8-1", "verdict": "fault", "from": "owner card bench-L8-1, marked fault: it floats, 83 → 64",
+    "expect": [
+     { "rule": "L8", "part": "b", "container": "opening", "node": "cradle", "other": "every neighbour", "mark": "owner", "why": "marked a fault by the owner: it floats, 83 → 64 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-arrival-empty-trip", "card": "cargo-L1-9", "verdict": "fault", "from": "owner card cargo-L1-9, marked fault: loose, 364 → 16",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "bay", "node": "bay", "other": "left / right", "mark": "owner", "why": "carried by cargo-L7-11 and cargo-L8-4: the same fault is reported once" },
+     { "rule": "L8", "part": "b", "container": "bay", "node": "ribbon", "other": "every neighbour", "mark": "owner", "why": "carried by cargo-L7-11 and cargo-L8-4: the same fault is reported once" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-arrival-choice", "card": "cargo-L11-1", "verdict": "fault", "from": "owner card cargo-L11-1, marked fault: a lone mark: no text within 8 px on its rows, 2 → 24",
+    "expect": [
+     { "rule": "L11", "container": "bay", "node": "glint", "mark": "owner", "why": "marked a fault by the owner: a lone mark: no text within 8 px on its rows, 2 → 24 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-opening-find", "card": "cargo-L2-1", "verdict": "fault", "from": "owner card cargo-L2-1, marked fault: across the edge, -12 → 16",
+    "expect": [
+     { "rule": "L2", "container": "opening", "node": "travel", "other": "left", "mark": "owner", "why": "marked a fault by the owner: across the edge, -12 → 16 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-arrival-2200", "card": "cargo-L3-1", "verdict": "fault", "from": "owner card cargo-L3-1, marked fault: crowding, 0 → 16",
+    "expect": [
+     { "rule": "L3", "part": "a", "container": "opening", "node": "bay", "other": "apron", "mark": "owner", "why": "marked a fault by the owner: crowding, 0 → 16 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-opening-mat", "card": "cargo-L3-11", "verdict": "fault", "from": "owner card cargo-L3-11, marked fault: unequal gutters in a row: 237, 14, 237 → 14",
+    "expect": [
+     { "rule": "L3", "part": "b", "container": "bay", "node": "travel", "other": "berth#2", "mark": "owner", "why": "marked a fault by the owner: unequal gutters in a row: 237, 14, 237 → 14 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-arrival-2200", "card": "cargo-L4-3", "verdict": "fine", "from": "owner card cargo-L4-3, marked fine: they overlap 304 x 160, 160 → 0",
+    "expect": [],
+    "clear": [
+     { "rule": "L4", "container": "opening", "node": "mibis", "other": "apron", "mark": "owner", "why": "cleared: movers: the mibis are placed by depth, a mibi in front of a crate is the scene's order (cargo.json layout.movers)" }
+    ],
+    "pending": [] },
+  { "state": "cargo/cargo-bay-waiting-many", "card": "cargo-L5-6", "verdict": "fault", "from": "owner card cargo-L5-6, marked fault: almost aligned: the centre (y) and the container's 458 and 464, 6 → 0",
+    "expect": [
+     { "rule": "L5", "part": "b", "container": "waiting", "node": "waiting.pod", "other": "waiting centre (y)", "mark": "owner", "why": "marked a fault by the owner: almost aligned: the centre (y) and the container's 458 and 464, 6 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-arrival-empty-trip", "card": "cargo-L6-4", "verdict": "fine", "from": "owner card cargo-L6-4, marked fine: an empty 992 x 272, 0.85 → 0.25",
+    "expect": [],
+    "clear": [
+     { "rule": "L6", "container": "bay", "node": "bay", "mark": "owner", "why": "cleared: the bay's painting is a painted fill (cargo.json layout.painted, region bay)" }
+    ],
+    "pending": [] },
+  { "state": "cargo/cargo-arrival-empty-trip", "card": "cargo-L7-11", "verdict": "fault", "from": "owner card cargo-L7-11, marked fault: slack 25 left, 364 right, 339 → 4",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "bay", "node": "bay", "other": "left / right", "mark": "owner", "why": "marked a fault by the owner: slack 25 left, 364 right, 339 → 4 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-arrival-empty-trip", "card": "cargo-L7-9", "verdict": "fault", "from": "owner card cargo-L7-9, marked fault: the filled area's centroid off the centre: x -0.04, y -0.83, 0.83 → 0.1",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "bay", "node": "bay", "other": "left / right", "mark": "owner", "why": "carried by cargo-L7-11 and cargo-L8-4: the same fault is reported once" },
+     { "rule": "L8", "part": "b", "container": "bay", "node": "ribbon", "other": "every neighbour", "mark": "owner", "why": "carried by cargo-L7-11 and cargo-L8-4: the same fault is reported once" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "cargo/cargo-arrival-empty-trip", "card": "cargo-L8-4", "verdict": "fault", "from": "owner card cargo-L8-4, marked fault: it floats, 306 → 16",
+    "expect": [
+     { "rule": "L8", "part": "b", "container": "bay", "node": "ribbon", "other": "every neighbour", "mark": "owner", "why": "marked a fault by the owner: it floats, 306 → 16 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "create/create-confirm-keep", "card": "create-L1-3", "verdict": "unsure", "from": "owner card create-L1-3, marked not sure: loose, 93 → 16",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "panelRoom", "node": "panelRoom", "other": "left / right", "mark": "owner", "why": "the margin of a centred block is L7b's question now: equal sides" }
+    ],
+    "clear": [
+     { "rule": "L1", "container": "panelRoom", "node": "panelRoom", "other": "left", "mark": "owner", "why": "cleared: L1 holds the margin of an aligned side only: a centred block is L7b's, equal sides" }
+    ],
+    "pending": [] },
+  { "state": "create/create-confirm-keep", "card": "create-L11-3", "verdict": "fault", "from": "owner card create-L11-3, marked fault: a lone mark: no text within 8 px on its rows, 12 → 24",
+    "expect": [
+     { "rule": "L11", "container": "panelSnapshot", "node": "roll", "mark": "owner", "why": "marked a fault by the owner: a lone mark: no text within 8 px on its rows, 12 → 24 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "create/create-shape-short", "card": "create-L2-4", "verdict": "fault", "from": "owner card create-L2-4, marked fault: across the edge, -12 → 24",
+    "expect": [
+     { "rule": "L2", "container": "opening", "node": "cradleFront", "other": "left", "mark": "owner", "why": "marked a fault by the owner: across the edge, -12 → 24 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "create/create-shape-doing", "card": "create-L3-13", "verdict": "fault", "from": "owner card create-L3-13, marked fault: crowding, 16 → 32",
+    "expect": [
+     { "rule": "L3", "part": "a", "container": "opening", "node": "roll", "other": "roll#2", "mark": "owner", "why": "marked a fault by the owner: crowding, 16 → 32 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "create/create-confirm-keep", "card": "create-L3-3", "verdict": "unsure", "from": "owner card create-L3-3, marked not sure: unequal gutters in a row: 326, 12, 24, 326 → 24",
+    "expect": [],
+    "clear": [
+     { "rule": "L3", "part": "b", "container": "opening", "node": "panelHeader", "other": "panelPrice#2", "mark": "owner", "why": "cleared: L3b compares like with like: a title against its price is no gutter" }
+    ],
+    "pending": [] },
+  { "state": "create/create-shape-doing", "card": "create-L4-5", "verdict": "fault", "from": "owner card create-L4-5, marked fault: they overlap 128 x 82, 82 → 0",
+    "expect": [
+     { "rule": "L4", "container": "opening", "node": "roll", "other": "focus ring", "mark": "owner", "why": "marked a fault by the owner: they overlap 128 x 82, 82 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "create/create-confirm-keep", "card": "create-L5-4", "verdict": "fault", "from": "owner card create-L5-4, marked fault: almost aligned: right edges 494 and 498, 4 → 0",
+    "expect": [
+     { "rule": "L5", "part": "b", "container": "opening", "node": "panelPrice#3", "other": "panelRoom", "mark": "owner", "why": "marked a fault by the owner: almost aligned: right edges 494 and 498, 4 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "create/create-grow-150", "card": "create-L6-2", "verdict": "fault", "from": "owner card create-L6-2, marked fault: an empty 120 x 61, 0.51 → 0.25",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "stamp.plate", "node": "stamp.plate", "other": "above / below", "mark": "owner", "why": "carried by the stamp plate's L7b: the same fault is reported once" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "create/create-confirm-keep", "card": "create-L7-3", "verdict": "fault", "from": "owner card create-L7-3, marked fault: slack 116 above, 6 below, 110 → 4",
+    "expect": [
+     { "rule": "L1", "container": "panelSnapshot", "node": "snapshot chamber", "other": "bottom", "mark": "owner", "why": "carried by the snapshot's L1, L7a and L2: the same fault is reported once" },
+     { "rule": "L7", "part": "a", "container": "panelSnapshot", "node": "panelSnapshot", "mark": "owner", "why": "carried by the snapshot's L1, L7a and L2: the same fault is reported once" },
+     { "rule": "L2", "container": "panelSnapshot", "node": "snapshot roll", "other": "top", "mark": "owner", "why": "carried by the snapshot's L1, L7a and L2: the same fault is reported once" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "create/create-grow-150", "card": "create-L7-9", "verdict": "fault", "from": "owner card create-L7-9, marked fault: the filled area's centroid off the centre: x +0.01, y -0.34, 0.34 → 0.1",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "stamp.plate", "node": "stamp.plate", "other": "above / below", "mark": "owner", "why": "carried by the stamp plate's L7b: the same fault is reported once" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "habitat/habitat-card", "card": "habitat-L1-16", "verdict": "unsure", "from": "owner card habitat-L1-16, marked not sure: loose, 344 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L1", "container": "strip", "node": "tile.7", "other": "right", "mark": "owner", "why": "cleared: the strip is aligned left (habitat.json layout.containers)" }
+    ],
+    "pending": [] },
+  { "state": "habitat/habitat-cross", "card": "habitat-L11-7", "verdict": "fault", "from": "owner card habitat-L11-7, marked fault: a lone mark: no text within 8 px on its rows, 6 → 24",
+    "expect": [
+     { "rule": "L11", "container": "door.plate", "node": "door", "mark": "owner", "why": "marked a fault by the owner: a lone mark: no text within 8 px on its rows, 6 → 24 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "habitat/habitat-portrait-pictured", "card": "habitat-L2-1", "verdict": "unsure", "from": "owner card habitat-L2-1, marked not sure: on the edge, 0 → 16",
+    "expect": [
+     { "rule": "L2", "container": "stamp", "node": "stamp.portrayed", "other": "top", "mark": "owner", "why": "the owner was not sure: it fires, with its wording and overlay changed" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "habitat/habitat-cross", "card": "habitat-L3-10", "verdict": "fault", "from": "owner card habitat-L3-10, marked fault: crowding, 6 → 16",
+    "expect": [
+     { "rule": "L3", "part": "a", "container": "opening", "node": "door.plate", "other": "cross.plate", "mark": "owner", "why": "marked a fault by the owner: crowding, 6 → 16 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "habitat/habitat-card", "card": "habitat-L3-8", "verdict": "fine", "from": "owner card habitat-L3-8, marked fine: unequal gutters in a row: 88, 14, 14, 19, 88 → 14",
+    "expect": [],
+    "clear": [
+     { "rule": "L3", "part": "b", "container": "card", "node": "code", "other": "card#2", "mark": "owner", "why": "cleared: L3b compares like with like: a caption against a picture is no gutter" }
+    ],
+    "pending": [] },
+  { "state": "habitat/habitat-panel-wild", "card": "habitat-L4-6", "verdict": "fault", "from": "owner card habitat-L4-6, marked fault: they overlap 124 x 130, 124 → 0",
+    "expect": [
+     { "rule": "L4", "container": "cards", "node": "cardStage", "other": "cardPictures", "mark": "owner", "why": "marked a fault by the owner: they overlap 124 x 130, 124 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "habitat/habitat-rest", "card": "habitat-L5-19", "verdict": "fine", "from": "owner card habitat-L5-19, marked fine: almost aligned: centres (x) 679 and 674, 5 → 0",
+    "expect": [],
+    "clear": [
+     { "rule": "L5", "part": "b", "container": "card", "node": "speciesLine", "other": "story", "mark": "owner", "why": "cleared by L5b: two lines on one left edge (L5.line 24)" }
+    ],
+    "pending": [] },
+  { "state": "habitat/habitat-namer", "card": "habitat-L6-12", "verdict": "unmarked", "from": "owner card habitat-L6-12, marked not marked: an empty 261 x 48, 0.8 → 0.25",
+    "expect": [],
+    "clear": [
+     { "rule": "L6", "container": "field", "node": "field", "mark": "owner", "why": "cleared: one component, nothing painted: a header and an input box" }
+    ],
+    "pending": [] },
+  { "state": "habitat/habitat-card", "card": "habitat-L7-14", "verdict": "fine", "from": "owner card habitat-L7-14, marked fine: slack 16 left, 344 right, 328 → 4",
+    "expect": [],
+    "clear": [
+     { "rule": "L7", "part": "b", "container": "strip", "node": "strip", "other": "left / right", "mark": "owner", "why": "cleared: the strip is aligned left (habitat.json layout.containers), and L7b measures centred axes only" }
+    ],
+    "pending": [] },
+  { "state": "habitat/habitat-namer", "card": "habitat-L7-27", "verdict": "unmarked", "from": "owner card habitat-L7-27, marked not marked: the filled area's centroid off the centre: x -0.76, y +0, 0.76 → 0.1",
+    "expect": [],
+    "clear": [
+     { "rule": "L7", "part": "a", "container": "field", "node": "field", "mark": "owner", "why": "cleared: one component, nothing painted: an input with its text aligned left" }
+    ],
+    "pending": [] },
+  { "state": "habitat/habitat-rest", "card": "habitat-L8-10", "verdict": "fine", "from": "owner card habitat-L8-10, marked fine: it floats, 84 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L8", "part": "b", "container": "card", "node": "stamp", "other": "every neighbour", "mark": "owner", "why": "cleared: L8b: the stamp is placed, in the card's corner at the margins" }
+    ],
+    "pending": [] },
+  { "state": "home/home-vivarium-none-home", "card": "home-L1-64", "verdict": "fine", "from": "owner card home-L1-64, marked fine: loose, 532 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L1", "container": "vivarium#2", "node": "away", "other": "left", "mark": "owner", "why": "cleared: anchors: away is pinned at its corner's insets (home.json layout.anchors) and out of the block" }
+    ],
+    "pending": [] },
+  { "state": "home/home-fresh", "card": "home-L10-1", "verdict": "fine", "from": "owner card home-L10-1, marked fine: the window cuts the picture's solid ink, 0 → 1",
+    "expect": [],
+    "clear": [
+     { "rule": "L10", "part": "a", "container": "vivarium", "node": "vivarium", "other": "its picture", "mark": "owner", "why": "cleared: exception in frame.json (by owner): L10a stands, the same cut is the fault of vivarium-L10-1" }
+    ],
+    "pending": [] },
+  { "state": "home/home-fresh", "card": "home-L11-3", "verdict": "fault", "from": "owner card home-L11-3, marked fault: a lone mark: no text within 8 px on its rows, 12 → 24",
+    "expect": [
+     { "rule": "L11", "container": "library.window", "node": "library.window", "mark": "owner", "why": "marked a fault by the owner: a lone mark: no text within 8 px on its rows, 12 → 24 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "home/home-companion-away", "card": "home-L2-1", "verdict": "fine", "from": "owner card home-L2-1, marked fine: on the edge, 1 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L2", "container": "away", "node": "away.figure", "other": "bottom", "mark": "owner", "why": "cleared: the away container's padding is 0 at the bottom: the figure stands on the frame's floor (home.json layout.containers)" }
+    ],
+    "pending": [] },
+  { "state": "home/home-fresh", "card": "home-L3-1", "verdict": "fine", "from": "owner card home-L3-1, marked fine: crowding, 12 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L3", "part": "a", "container": "opening", "node": "vivarium", "other": "library", "mark": "owner", "why": "cleared: home.json layout.gutter 12 (12 before the Library)" }
+    ],
+    "pending": [] },
+  { "state": "home/home-vivarium-all-home", "card": "home-L3-12", "verdict": "unsure", "from": "owner card home-L3-12, marked not sure: unequal gutters in a row: 35, 223, 223 → 35",
+    "expect": [],
+    "clear": [
+     { "rule": "L3", "part": "b", "container": "vivarium#2", "node": "resident#6", "other": "resident#4", "mark": "owner", "why": "cleared: movers: no gutters among creatures placed by depth" }
+    ],
+    "pending": [] },
+  { "state": "home/home-vivarium-all-home", "card": "home-L4-4", "verdict": "fine", "from": "owner card home-L4-4, marked fine: they overlap 27 x 43, 27 → 0",
+    "expect": [],
+    "clear": [
+     { "rule": "L4", "container": "vivarium#2", "node": "resident#3", "other": "resident#4", "mark": "owner", "why": "cleared: movers: one behind another is depth (feet 351 against 363)" }
+    ],
+    "pending": [] },
+  { "state": "home/home-fresh", "card": "home-L5-11", "verdict": "fault", "from": "owner card home-L5-11, marked fault: almost aligned: the centre (y) and the container's 521 and 526, 5 → 0",
+    "expect": [
+     { "rule": "L5", "part": "b", "container": "bay", "node": "bay.picture", "other": "bay centre (y)", "mark": "owner", "why": "marked a fault by the owner: almost aligned: the centre (y) and the container's 521 and 526, 5 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "home/home-library-3-new", "card": "home-L6-11", "verdict": "unsure", "from": "owner card home-L6-11, marked not sure: an empty 344 x 338, 0.93 → 0.25",
+    "expect": [],
+    "clear": [
+     { "rule": "L6", "container": "library.window", "node": "library.window", "mark": "owner", "why": "cleared: the genome is a painted fill" }
+    ],
+    "pending": [] },
+  { "state": "home/home-library-3-new", "card": "home-L7-32", "verdict": "fine", "from": "owner card home-L7-32, marked fine: the filled area's centroid off the centre: x +0.2, y +0.9, 0.9 → 0.1",
+    "expect": [],
+    "clear": [
+     { "rule": "L7", "part": "a", "container": "library.window", "node": "library.window", "mark": "owner", "why": "cleared: the genome is a painted fill (home.json layout.painted, region library.window)" }
+    ],
+    "pending": [] },
+  { "state": "home/home-vivarium-none-home", "card": "home-L7-42", "verdict": "fine", "from": "owner card home-L7-42, marked fine: slack 532 left, 8 right, 524 → 4",
+    "expect": [],
+    "clear": [
+     { "rule": "L7", "part": "b", "container": "vivarium#2", "node": "vivarium#2", "other": "left / right", "mark": "owner", "why": "cleared: anchors: away is pinned at its corner's insets and out of the block" }
+    ],
+    "pending": [] },
+  { "state": "home/home-rest-goal", "card": "home-L8-34", "verdict": "unsure", "from": "owner card home-L8-34, marked not sure: it floats, 342 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L8", "part": "b", "container": "vivarium#2", "node": "resident", "other": "every neighbour", "mark": "owner", "why": "cleared: movers: placed by depth, they do not float" }
+    ],
+    "pending": [] },
+  { "state": "incubator/incubator-empty", "card": "incubator-L1-8", "verdict": "unsure", "from": "owner card incubator-L1-8, marked not sure: loose, 345 → 16",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "opening", "node": "opening", "other": "left / right", "mark": "owner", "why": "the margin of a centred block is L7b's question now: equal sides" }
+    ],
+    "clear": [
+     { "rule": "L1", "container": "opening", "node": "interior", "other": "left", "mark": "owner", "why": "cleared: L1 holds the margin of an aligned side only: a centred block is L7b's, equal sides" }
+    ],
+    "pending": [] },
+  { "state": "incubator/incubator-empty", "card": "incubator-L10-1", "verdict": "fine", "from": "owner card incubator-L10-1, marked fine: the window cuts the picture's solid ink, 0 → 1",
+    "expect": [],
+    "clear": [
+     { "rule": "L10", "part": "a", "container": "opening", "node": "shell", "other": "its picture", "mark": "owner", "why": "cleared: exception in frame.json (by owner): L10a stands, the same cut is the fault of vivarium-L10-1" }
+    ],
+    "pending": [] },
+  { "state": "incubator/incubator-growing", "card": "incubator-L11-1", "verdict": "fault", "from": "owner card incubator-L11-1, marked fault: a lone mark: no text within 8 px on its rows, 13 → 24",
+    "expect": [
+     { "rule": "L11", "container": "interior", "node": "glass", "mark": "owner", "why": "marked a fault by the owner: a lone mark: no text within 8 px on its rows, 13 → 24 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "incubator/incubator-panel-dither-90", "card": "incubator-L2-2", "verdict": "fine", "from": "owner card incubator-L2-2, marked fine: on the edge, 0 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L2", "container": "panelHatched", "node": "panelHatched#2", "other": "right", "mark": "owner", "why": "cleared: the hatched panel clips by design (panel.json layout.clips)" }
+    ],
+    "pending": [] },
+  { "state": "incubator/incubator-panel-dither-90", "card": "incubator-L3-11", "verdict": "unsure", "from": "owner card incubator-L3-11, marked not sure: unequal gutters in a row: 356, 24, 356 → 24",
+    "expect": [],
+    "clear": [
+     { "rule": "L3", "part": "b", "container": "opening", "node": "panelHeader", "other": "panelPrice", "mark": "owner", "why": "cleared: L3b compares like with like" }
+    ],
+    "pending": [] },
+  { "state": "incubator/incubator-hatch-skip", "card": "incubator-L3-3", "verdict": "unsure", "from": "owner card incubator-L3-3, marked not sure: crowding, 8 → 16",
+    "expect": [
+     { "rule": "L3", "part": "a", "container": "opening", "node": "door.plate", "other": "portrait.plate", "mark": "owner", "why": "the owner was not sure: it fires, with its wording and overlay changed" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "incubator/incubator-hatch-1090", "card": "incubator-L4-5", "verdict": "fault", "from": "owner card incubator-L4-5, marked fault: they overlap 342 x 216, 216 → 0",
+    "expect": [
+     { "rule": "L4", "container": "opening", "node": "interior", "other": "pod", "mark": "owner", "why": "marked a fault by the owner: they overlap 342 x 216, 216 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "incubator/incubator-panel-dither-90", "card": "incubator-L5-22", "verdict": "fault", "from": "owner card incubator-L5-22, marked fault: almost aligned: the centre (x) and the container's 258.5 and 264.5, 6 → 0",
+    "expect": [
+     { "rule": "L5", "part": "b", "container": "panelHatched#2", "node": "panelHatched#3", "other": "panelHatched#2 centre (x)", "mark": "owner", "why": "marked a fault by the owner: almost aligned: the centre (x) and the container's 258.5 and 264.5, 6 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "incubator/incubator-hatch-skip", "card": "incubator-L6-9", "verdict": "unsure", "from": "owner card incubator-L6-9, marked not sure: an empty 212 x 96, 0.78 → 0.25",
+    "expect": [],
+    "clear": [
+     { "rule": "L6", "container": "cross.plate", "node": "cross.plate", "mark": "owner", "why": "cleared: one component, nothing painted: its place is L1's and L7b's, not its emptiness" }
+    ],
+    "pending": [] },
+  { "state": "incubator/incubator-growing", "card": "incubator-L7-1", "verdict": "unsure", "from": "owner card incubator-L7-1, marked not sure: slack 71 left, 337 right, 266 → 4",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "opening", "node": "opening", "other": "left / right", "mark": "owner", "why": "the owner was not sure: it fires, with its wording and overlay changed" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "incubator/incubator-hatch-skip", "card": "incubator-L7-25", "verdict": "unsure", "from": "owner card incubator-L7-25, marked not sure: the filled area's centroid off the centre: x -0.72, y -0.52, 0.72 → 0.1",
+    "expect": [],
+    "clear": [
+     { "rule": "L7", "part": "a", "container": "cross.plate", "node": "cross.plate", "mark": "owner", "why": "cleared: one component, nothing painted: its place is L1's and L7b's" }
+    ],
+    "pending": [] },
+  { "state": "incubator/incubator-growing-late", "card": "incubator-L8-2", "verdict": "fine", "from": "owner card incubator-L8-2, marked fine: it floats, 117 → 32",
+    "expect": [],
+    "clear": [
+     { "rule": "L8", "part": "b", "container": "opening", "node": "interior", "other": "every neighbour", "mark": "owner", "why": "cleared: L8b: the capsule is placed, centred on both axes" }
+    ],
+    "pending": [] },
+  { "state": "pods/chapter page, sealed", "card": "pods-L1-6", "verdict": "unsure", "from": "owner card pods-L1-6, marked not sure: loose, 442 → 24",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "opening", "node": "opening", "other": "above / below", "mark": "owner", "why": "the margin of a centred block is L7b's question now: equal sides" }
+    ],
+    "clear": [
+     { "rule": "L1", "container": "opening", "node": "page#2", "other": "right", "mark": "owner", "why": "cleared: L1 holds the margin of an aligned side only: a centred block is L7b's, equal sides" }
+    ],
+    "pending": [] },
+  { "state": "pods/chapter page, sealed", "card": "pods-L11-3", "verdict": "unsure", "from": "owner card pods-L11-3, marked not sure: a lone mark: no text within 8 px on its rows, 16 → 24",
+    "expect": [
+     { "rule": "L11", "container": "opening", "node": "page", "mark": "owner", "why": "the owner was not sure: it fires, with its wording and overlay changed" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "pods/overview, hatch focused", "card": "pods-L2-4", "verdict": "fault", "from": "owner card pods-L2-4, marked fault: across the edge, -5 → 24",
+    "expect": [
+     { "rule": "L2", "container": "opening", "node": "focus ring", "other": "bottom", "mark": "owner", "why": "marked a fault by the owner: across the edge, -5 → 24 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "pods/chapter page, a doing", "card": "pods-L3-1", "verdict": "fault", "from": "owner card pods-L3-1, marked fault: crowding, 12 → 32",
+    "expect": [
+     { "rule": "L3", "part": "a", "container": "opening", "node": "page", "other": "page#2", "mark": "owner", "why": "marked a fault by the owner: crowding, 12 → 32 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "pods/overview, identified, pod focused", "card": "pods-L3-11", "verdict": "fault", "from": "owner card pods-L3-11, marked fault: unequal gutters in a row: 314, 108, 314 → 108",
+    "expect": [
+     { "rule": "L8", "part": "b", "container": "opening", "node": "hatch", "other": "every neighbour", "mark": "owner", "why": "carried by pods-L8-3 and the overview's L6 and L7: the same fault is reported once" },
+     { "rule": "L6", "container": "opening", "node": "opening", "mark": "owner", "why": "carried by pods-L8-3 and the overview's L6 and L7: the same fault is reported once" },
+     { "rule": "L7", "part": "a", "container": "opening", "node": "opening", "mark": "owner", "why": "carried by pods-L8-3 and the overview's L6 and L7: the same fault is reported once" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "pods/panel, release", "card": "pods-L4-4", "verdict": "unsure", "from": "owner card pods-L4-4, marked not sure: they overlap 88 x 92, 88 → 0",
+    "expect": [
+     { "rule": "L4", "container": "cards", "node": "cardStage", "other": "cardPictures", "mark": "owner", "why": "the owner was not sure: it fires, with its wording and overlay changed" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "pods/compare", "card": "pods-L5-7", "verdict": "unsure", "from": "owner card pods-L5-7, marked not sure: almost aligned: the centre (y) and the container's 268 and 262, 6 → 0",
+    "expect": [
+     { "rule": "L5", "part": "b", "container": "pageB", "node": "page.cell", "other": "pageB centre (y)", "mark": "owner", "why": "the owner was not sure: it fires, with its wording and overlay changed" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "pods/chapter page, sealed", "card": "pods-L6-2", "verdict": "fault", "from": "owner card pods-L6-2, marked fault: an empty 442 x 448, 0.5 → 0.2",
+    "expect": [
+     { "rule": "L6", "container": "opening", "node": "opening", "mark": "owner", "why": "marked a fault by the owner: an empty 442 x 448, 0.5 → 0.2 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "pods/chapter page, sealed", "card": "pods-L7-4", "verdict": "fault", "from": "owner card pods-L7-4, marked fault: the filled area's centroid off the centre: x -0.48, y +0.06, 0.48 → 0.1",
+    "expect": [
+     { "rule": "L7", "part": "a", "container": "opening", "node": "opening", "mark": "owner", "why": "marked a fault by the owner: the filled area's centroid off the centre: x -0.48, y +0.06, 0.48 → 0.1 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "pods/chapter page, sealed", "card": "pods-L7-6", "verdict": "fault", "from": "owner card pods-L7-6, marked fault: slack 78 left, 442 right, 364 → 4",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "opening", "node": "opening", "other": "left / right", "mark": "owner", "why": "marked a fault by the owner: slack 78 left, 442 right, 364 → 4 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "pods/overview, identify warns", "card": "pods-L8-3", "verdict": "fault", "from": "owner card pods-L8-3, marked fault: it floats, 275 → 64",
+    "expect": [
+     { "rule": "L8", "part": "b", "container": "opening", "node": "hatch", "other": "every neighbour", "mark": "owner", "why": "marked a fault by the owner: it floats, 275 → 64 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "sitting/sitting-pose", "card": "sitting-L1-12", "verdict": "unsure", "from": "owner card sitting-L1-12, marked not sure: loose, 504 → 16",
+    "expect": [
+     { "rule": "L1", "container": "strip", "node": "steps", "other": "right", "mark": "owner", "why": "the owner was not sure: it fires, with its wording and overlay changed" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "sitting/sitting-portrait-long-name", "card": "sitting-L11-1", "verdict": "fault", "from": "owner card sitting-L11-1, marked fault: a lone mark: no text within 8 px on its rows, 14 → 24",
+    "expect": [
+     { "rule": "L11", "container": "stamp", "node": "stamp.portrayed", "mark": "owner", "why": "marked a fault by the owner: a lone mark: no text within 8 px on its rows, 14 → 24 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "sitting/sitting-begin-150ms", "card": "sitting-L2-2", "verdict": "fault", "from": "owner card sitting-L2-2, marked fault: on the edge, 0 → 16",
+    "expect": [
+     { "rule": "L2", "container": "steps#2", "node": "steps", "other": "top", "mark": "owner", "why": "marked a fault by the owner: on the edge, 0 → 16 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "sitting/sitting-place-five", "card": "sitting-L4-1", "verdict": "fault", "from": "owner card sitting-L4-1, marked fault: they overlap 130 x 127, 127 → 0",
+    "expect": [
+     { "rule": "L4", "container": "deck", "node": "cards", "other": "focus ring", "mark": "owner", "why": "marked a fault by the owner: they overlap 130 x 127, 127 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "sitting/sitting-pose-one", "card": "sitting-L5-8", "verdict": "fault", "from": "owner card sitting-L5-8, marked fault: almost aligned: centres (x) 662.5 and 668, 5.5 → 0",
+    "expect": [
+     { "rule": "L5", "part": "b", "container": "deck", "node": "heading", "other": "cards", "mark": "owner", "why": "marked a fault by the owner: almost aligned: centres (x) 662.5 and 668, 5.5 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "sitting/sitting-pose-one", "card": "sitting-L6-11", "verdict": "fault", "from": "owner card sitting-L6-11, marked fault: an empty 280 x 424, 0.67 → 0.25",
+    "expect": [
+     { "rule": "L6", "container": "deck", "node": "deck", "mark": "owner", "why": "marked a fault by the owner: an empty 280 x 424, 0.67 → 0.25 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "sitting/sitting-pose-one", "card": "sitting-L7-26", "verdict": "fault", "from": "owner card sitting-L7-26, marked fault: the filled area's centroid off the centre: x -0.64, y -0.47, 0.64 → 0.1",
+    "expect": [
+     { "rule": "L7", "part": "a", "container": "deck", "node": "deck", "mark": "owner", "why": "marked a fault by the owner: the filled area's centroid off the centre: x -0.64, y -0.47, 0.64 → 0.1 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "sitting/sitting-pose", "card": "sitting-L7-7", "verdict": "fault", "from": "owner card sitting-L7-7, marked fault: slack 16 left, 504 right, 488 → 4",
+    "expect": [
+     { "rule": "L1", "container": "strip", "node": "steps", "other": "right", "mark": "owner", "why": "carried by sitting-L1-12: the same fault is reported once" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "sitting/sitting-begin-150ms", "card": "sitting-L8-5", "verdict": "fault", "from": "owner card sitting-L8-5, marked fault: it floats, 51 → 16",
+    "expect": [
+     { "rule": "L8", "part": "b", "container": "steps", "node": "steps", "other": "every neighbour", "mark": "owner", "why": "marked a fault by the owner: it floats, 51 → 16 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L1-10", "verdict": "fault", "from": "owner card vivarium-L1-10, marked fault: loose, 806 → 16",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "window", "node": "window", "other": "left / right", "mark": "owner", "why": "carried by vivarium-L7-11: the same fault is reported once" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "vivarium/vivarium-docked", "card": "vivarium-L10-1", "verdict": "fault", "from": "owner card vivarium-L10-1, marked fault: the window cuts the picture's solid ink, 0 → 1",
+    "expect": [
+     { "rule": "L10", "part": "a", "container": "opening", "node": "window", "other": "its picture", "mark": "owner", "why": "marked a fault by the owner: the window cuts the picture's solid ink, 0 → 1 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "vivarium/vivarium-away", "card": "vivarium-L11-1", "verdict": "fault", "fixed": "Q1 ad4962df", "from": "owner card vivarium-L11-1, marked fault: a lone mark: no text within 8 px on its rows, 20 → 24",
+    "expect": [],
+    "clear": [
+     { "rule": "L11", "container": "window", "node": "bed", "mark": "owner", "why": "fixed by Q1 (T-20261026-308): the Companion's mark is no longer drawn on the bed; its 16 x 24 sprite at (880, 432) is gone from vivarium-away, -empty-away and -mibi-out" }
+    ],
+    "pending": [] },
+  { "state": "vivarium/vivarium-docked", "card": "vivarium-L2-1", "verdict": "fine", "from": "owner card vivarium-L2-1, marked fine: on the edge, 0 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L2", "container": "opening", "node": "window", "other": "left", "mark": "owner", "why": "cleared: exception in frame.json (by owner): the window's own mark, with the L10a fault standing on the same window" }
+    ],
+    "pending": [] },
+  { "state": "vivarium/vivarium-docked", "card": "vivarium-L3-1", "verdict": "fine", "from": "owner card vivarium-L3-1, marked fine: crowding, 8 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L3", "part": "a", "container": "opening", "node": "window", "other": "strip", "mark": "owner", "why": "cleared: exception in frame.json (by owner): the window against the strip" }
+    ],
+    "pending": [] },
+  { "state": "vivarium/vivarium-twelve", "card": "vivarium-L3-15", "verdict": "fault", "from": "owner card vivarium-L3-15, marked fault: unequal gutters in a row: 305, 43, 305 → 43",
+    "expect": [
+     { "rule": "L3", "part": "b", "container": "window", "node": "resident#4", "other": "nameTag", "mark": "owner", "why": "marked a fault by the owner: unequal gutters in a row: 305, 43, 305 → 43 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "vivarium/vivarium-walk-8000ms", "card": "vivarium-L4-22", "verdict": "fine", "from": "owner card vivarium-L4-22, marked fine: they overlap 49 x 52, 49 → 0",
+    "expect": [],
+    "clear": [
+     { "rule": "L4", "container": "window", "node": "resident#7", "other": "resident#8", "mark": "owner", "why": "cleared: exception in frame.json (by owner): the residents stay a grid so the gutter fault vivarium-L3-15 stands" }
+    ],
+    "pending": [] },
+  { "state": "vivarium/vivarium-away", "card": "vivarium-L5-6", "verdict": "fault", "from": "owner card vivarium-L5-6, marked fault: almost aligned: centres (y) 444 and 438, 6 → 0",
+    "expect": [
+     { "rule": "L5", "part": "b", "container": "window", "node": "bed", "other": "nameTag", "mark": "owner", "why": "marked a fault by the owner: almost aligned: centres (y) 444 and 438, 6 → 0 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L6-3", "verdict": "fine", "from": "owner card vivarium-L6-3, marked fine: an empty 1024 x 380, 0.86 → 0.25",
+    "expect": [],
+    "clear": [
+     { "rule": "L6", "container": "window", "node": "window", "mark": "owner", "why": "cleared: the window's painting is a painted fill (vivarium.json layout.painted, region window)" }
+    ],
+    "pending": [] },
+  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L7-11", "verdict": "fault", "from": "owner card vivarium-L7-11, marked fault: slack 806 left, 54 right, 752 → 4",
+    "expect": [
+     { "rule": "L7", "part": "b", "container": "window", "node": "window", "other": "left / right", "mark": "owner", "why": "marked a fault by the owner: slack 806 left, 54 right, 752 → 4 in the reviewed run" }
+    ],
+    "clear": [],
+    "pending": [] },
+  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L7-9", "verdict": "fine", "from": "owner card vivarium-L7-9, marked fine: the filled area's centroid off the centre: x +0.73, y +0.84, 0.84 → 0.1",
+    "expect": [],
+    "clear": [
+     { "rule": "L7", "part": "a", "container": "window", "node": "window", "mark": "owner", "why": "cleared: the window's painting is a painted fill" }
+    ],
+    "pending": [] },
+  { "state": "vivarium/vivarium-docked", "card": "vivarium-L8-1", "verdict": "fine", "from": "owner card vivarium-L8-1, marked fine: it floats, 236 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L8", "part": "b", "container": "window", "node": "resident#3", "other": "every neighbour", "mark": "owner", "why": "cleared: exception in frame.json (by owner): the residents stay a grid so the gutter fault vivarium-L3-15 stands" }
+    ],
+    "pending": [] }
+ ]
+}

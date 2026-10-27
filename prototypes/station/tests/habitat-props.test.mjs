@@ -66,7 +66,7 @@ test("the state: rest, meet (the new mibi until its first press), out (with the 
   const S0 = scenes();
   assert.equal(build(S0.rest.w, S0.rest.sv).props.state, "rest");
   { const b = build(S0.meet.w, S0.meet.sv, S0.meet.over).props; assert.equal(b.state, "meet"); assert.ok(b.regions.meetRibbon.text.startsWith("Meet ")); assert.ok(!b.focus.targets.some((t) => t.id === "name"), "the ribbon stands in the tag's place: not a target"); assert.ok(b.focus.targets.some((t) => t.id === "resident")); assert.equal(b.focus.cur, "resident"); }
-  { const b = build(S0.out.w, S0.out.sv).props, R = b.regions.resident; assert.equal(b.state, "out"); assert.equal(R.picture, ""); assert.equal(R.out, "mark-out-with-companion-64x96"); assert.equal(R.waiting, false); assert.ok(!b.focus.targets.some((t) => t.id === "resident")); assert.equal(b.focus.cur, "name", "out: the ring on the name");
+  { const b = build(S0.out.w, S0.out.sv).props, R = b.regions.resident; assert.equal(b.state, "out"); assert.equal(R.picture, ""); assert.equal(R.out, "", "out: nothing drawn at its spot"); assert.equal(R.waiting, false); assert.ok(!b.focus.targets.some((t) => t.id === "resident")); assert.equal(b.focus.cur, "name", "out: the ring on the name");
     assert.equal(b.regions.cross.state, "out"); assert.equal(b.regions.tiles.items[0].state, "out"); assert.equal(b.regions.tiles.items[0].shown, true); }
   assert.equal(build(S0.rest.w, S0.rest.sv, { meetId: 999 }).props.state, "rest", "a meet for another mibi is not this one's");
 });
