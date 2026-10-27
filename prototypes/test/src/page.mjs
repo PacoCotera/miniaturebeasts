@@ -96,7 +96,7 @@ function measure() { W = innerWidth; H = innerHeight; dpr = devicePixelRatio || 
 const setR = (el, r) => { if (!r) { el.hidden = true; return false; } el.hidden = false; const s = el.style; s.left = R2(r[0] * dpr) / dpr + "px"; s.top = R2(r[1] * dpr) / dpr + "px"; s.width = r[2] + "px"; s.height = r[3] + "px"; return true; };
 
 // ---- apply: the layout of the moment ----
-function effectiveView(kind) { return kind !== "desktop" ? "full" : (W < 880 || H < 560) ? "full" : S.view; }
+function effectiveView(kind) { return kind !== "desktop" ? "full" : (W < 880 || H < 560 || (S.shown === "companion" && H < (coarse ? 52 : 40) + 704 + 28)) ? "full" : S.view; }
 function frameStyle(dev, face, s) {
   const fr = frames[dev], st = fr.style;
   const x = R2(face[0] * dpr) / dpr, y = R2(face[1] * dpr) / dpr;
@@ -125,13 +125,13 @@ function apply() {
   setR($("flagBtn"), DEV ? rg.flag : null); $("flagWord").hidden = !(kind === "desktop" || wide); $("flagHint").hidden = kind !== "desktop";
   setR($("drawerBtn"), DEV && kind === "desktop" ? rg.drawer : null);
   const menuShown = kind !== "desktop" && menuHasRows(dev); setR($("menuBtn"), menuShown ? rg.menu : null); $("menuWord").hidden = !wide;
-  const fsBtn = $("fsBtn"); setR(fsBtn, kind === "desktop" ? rg.fullscreen : null); const exitWord = view === "full"; $("fsWord").textContent = exitWord ? "Exit" : "Full screen"; fsBtn.querySelector(".hint").hidden = !exitWord;
+  const fsBtn = $("fsBtn"); setR(fsBtn, kind === "desktop" && view === S.view ? rg.fullscreen : null); const exitWord = view === "full"; $("fsWord").textContent = exitWord ? "Exit" : "Full screen"; fsBtn.querySelector(".hint").hidden = !exitWord; fsBtn.title = exitWord ? "Exit full screen (F)" : "Full screen (F)";
   fsBtn.setAttribute("aria-label", view === "full" ? "Exit full screen" : "Full screen");
   for (const id of ["dockCtl", "flagBtn", "drawerBtn", "menuBtn", "fsBtn"]) $(id).style.fontSize = kind === "desktop" ? "13px" : "14px";
   const last = $("last"); setR(last, DEV ? rg.last : null); last.classList.toggle("wrap", kind === "landscape"); last.style.fontSize = kind === "desktop" ? "13px" : "12px";
   if (kind === "desktop") last.style.lineHeight = "18px"; else last.style.lineHeight = "16px";
   const foot = $("foot"); setR(foot, rg.foot); foot.classList.toggle("compact", kind !== "desktop"); foot.classList.toggle("stack", kind === "landscape");
-  setR($("hint"), kind === "portrait" && dev === "station" && S.hint ? rg.hint : null);
+  const showHint = kind === "portrait" && dev === "station" && S.hint; if (showHint) store.set("mb-test-hint", "1"); if (kind === "landscape") S.hint = false; setR($("hint"), showHint ? rg.hint : null);
   // faces and keys
   for (const [d, LL] of [["station", Ls], ["companion", Lc]]) {
     if (hw) continue;
@@ -177,7 +177,7 @@ function applyHardware() {
     dv.style.left = R2(x) + "px"; dv.style.top = y + "px"; dv.style.transform = "scale(" + s + ")";
     const p = z.pad, pos = { up: [p, 0, p, p], left: [0, p, p, p], right: [2 * p, p, p, p], down: [p, 2 * p, p, p] };
     const off = 40; for (const id of ["up", "left", "right", "down"]) pos[id] = [pos[id][0] + off, pos[id][1], p, p];
-    pos.call = [322, 6, z.call, z.call]; pos.back = [322, 84, z.back, z.back]; pos.confirm = [398, 30, z.confirm, z.confirm];
+    pos.call = [322, 9, z.call, z.call]; pos.back = [322, 87, z.back, z.back]; pos.confirm = [398, 32, z.confirm, z.confirm];
     for (const k of keyEls) if (k.set === "hw" && k.dev === "companion") place(k.el, pos[k.id], k.def.g);
     const hb = hubHw.companion; hb.hidden = false; place(hb, [off + p, p, p, p]); const pg = pglow.companion; pg.style.cssText = `left:${off - 8}px;top:-8px;width:${3 * p + 16}px;height:${3 * p + 16}px`;
     frameStyle("companion", [x + 36 * s, y + 48 * s, 450 * s, 600 * s], s);
@@ -322,6 +322,7 @@ $("fsBtn").addEventListener("click", (e) => { fullPress(); if (e.detail) e.curre
 $("flagBtn").addEventListener("click", (e) => { e.preventDefault(); if (e.detail) e.currentTarget.blur(); });
 function fullPress() {
   if (!cur) return;
+  if (cur.kind === "desktop" && cur.view !== S.view) return;
   if (cur.kind !== "desktop") { toggleFullscreen(); return; }
   const to = cur.view === "full" ? "hardware" : "full"; S.view = to; store.set("mb-test-view", to);
   if (to === "full" && !fsOn()) toggleFullscreen(); else if (to === "hardware" && fsOn()) toggleFullscreen();
@@ -362,7 +363,7 @@ const base = { station: null, companion: null };
 // the device's own state, not its pixels: the Station's screen, its state and its overlay; the Companion's phase
 function fingerprint(d) {
   try {
-    if (d === "station") { const p = win("station").__st.props; return p ? [p.screen, p.state ?? null, p.overlay?.id ?? null].join("|") : null; }
+    if (d === "station") { const p = win("station").__st.props; if (!p) return null; const lit = Object.entries(p.regions ?? {}).filter(([, r]) => r && r.lamp === "needsYou").map(([k]) => k).sort().join(","); return [p.screen, p.state ?? null, p.overlay?.id ?? null, lit].join("|"); }
     return win("companion").__mb.S.phase ?? null;
   } catch { return null; }
 }
@@ -374,7 +375,6 @@ setInterval(() => { const h = S.shown === "station" ? "companion" : "station"; i
 addEventListener("resize", () => apply()); addEventListener("orientationchange", () => setTimeout(apply, 100)); if (window.visualViewport) visualViewport.addEventListener("resize", () => apply());
 try { matchMedia("(resolution: " + (devicePixelRatio || 1) + "dppx)").addEventListener("change", () => apply()); } catch { /* resize covers it */ }
 for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { apply(); setTimeout(() => { base[d] = fingerprint(d); }, 1500); });
-if (S.hint) store.set("mb-test-hint", "1");
 apply();
 window.__tp = { S, get cur() { return cur; }, apply, show, dockPress, frames, fingerprint, base, menu: { open: openMenu, close: closeMenu }, drawer: setDrawer, fire, win, canvasOf, fsApi,
   rect: (id) => { const el = document.querySelector('[data-r="' + id + '"]'); if (!el || el.hidden) return null; const b = el.getBoundingClientRect(); return [b.x, b.y, b.width, b.height]; },
