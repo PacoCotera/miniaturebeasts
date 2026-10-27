@@ -293,5 +293,89 @@
   "occluders": [],
   "pieces_to_place": "the fogger bowl in the hollow behind the log at the right of centre (seat ~[520,300,100,60]), two thin copper lines in shade among the right fronds below row 200, two front occluders",
   "superseded": "sa, sb, sc"
- }
+ },
+ "roots": {
+  "concept": "root-and-burrow bank in warm golden light (option sheet roots a, tile A, picked by the art director; owner to confirm)",
+  "form": "triangular, high at the left: the root base and the burrow at ~41 % (focal), a soil path winding from the front right back to the burrow",
+  "day": "rooms/signed-idle-roots-day.png",
+  "source": "idle-vivarium-roots-day-ta (gemini-3-pro-image), ground-band grade gain 1.202 (target L* 40)",
+  "sha256": "ddcd87ee7ef8f67e47769bda7e8e5b74408760cbb1264ee7c554ecccfb053d04",
+  "signed": "art director, Mon 26 Oct 2026 18:50 (Mexico City), day composition (replaces the signed idle-vivarium-day-1024x568 for the room once its lights, near view and the bed are done; nothing placed yet): no fittings, no front pieces; day floor L* 40.0, whole 38.8; Home cut holds the burrow and the path; the bed's seat [792,496,192,56] lies on a calm moss patch; all six minis read on the terrace, the path and the moss",
+  "keeps": {
+   "bed_painting": [
+    792,
+    496,
+    192,
+    56
+   ],
+   "keepOut_painting": [
+    752,
+    436,
+    256,
+    116
+   ],
+   "home_cut": [
+    64,
+    194,
+    604,
+    362
+   ],
+   "near_specimen_floor_glass": [
+    136,
+    296,
+    272,
+    56
+   ]
+  },
+  "levels": [
+   {
+    "id": "main",
+    "profile": {
+     "x": [
+      16,
+      250,
+      520,
+      760,
+      1009
+     ],
+     "top_painting": [
+      420,
+      350,
+      345,
+      340
+     ]
+    },
+    "bottom_painting": 551
+   },
+   {
+    "id": "terrace",
+    "profile": {
+     "x": [
+      16,
+      240
+     ],
+     "top_painting": [
+      296
+     ]
+    },
+    "bottom_painting": 356,
+    "note": "the mound's lower flank at the left",
+    "joins": [
+     {
+      "to": "main",
+      "kind": "ramp",
+      "rect_painting": [
+       230,
+       300,
+       140,
+       110
+      ]
+     }
+    ]
+   }
+  ],
+  "occluders": [],
+  "pieces_to_place": "the bed (home-bed-*, to be repainted to this room's look), the feed line and mister reduced and half hidden (or a new fitting), two front occluders"
+ },
+ "enclosure": "art director's ruling: the enclosure reads, light-touch, by (1) the foot strip, rows 552-567, painted in every room as a substrate cross-section seen through the front glass (soil over a darker drainage layer), (2) each room's placed life-support piece as the device cue, (3) the face's own window chrome (home.json shade, 2 px). No painted glass edges, posts or box (they turned every picture into a cabinet in rounds c and sa). Optional for the owner: a faint glass corner sheen at the far side edges, a 0 MXN hand layer."
 }

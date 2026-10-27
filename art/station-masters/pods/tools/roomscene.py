@@ -5,7 +5,7 @@ import os, sys, json, hashlib
 from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
 P = "art/station-masters/pods/"; room, L = sys.argv[1], sys.argv[2]
-PICK = {"boulders": ("b", "B", (688, 0), (12, 16, 666, 372)), "reeds": ("a", "B", (688, 0), (32, 26, 656, 356)), "ferns": ("a", "A", (0, 0), (84, 48, 600, 330))}
+PICK = {"boulders": ("b", "B", (688, 0), (12, 16, 666, 372)), "reeds": ("a", "B", (688, 0), (32, 26, 656, 356)), "ferns": ("a", "A", (0, 0), (84, 48, 600, 330)), "roots": ("a", "A", (0, 0), (24, 24, 676, 372))}
 sh, opt, (ox, oy), (x0, y0, x1, y1) = PICK[room]; pick = f"rooms/pick-{room}-{sh}{opt}.png"
 Image.open(f"source/raw/options-{room}-{sh}.jpg").convert("RGB").crop((ox + x0, oy + y0, ox + x1, oy + y1)).save(pick)
 COMMON = ("Image 1 is the approved concept for this room. Paint THIS room as a finished painting with the same planting, palette, season, mood and light as Image 1, "
@@ -30,7 +30,13 @@ SCENE = {"boulders": ("THE ROOM: a small shrine garden in autumn, a CONVEX compo
   "The focal point: a cluster of curled croziers and lit young fronds at about 62 percent of the width, just behind the log's upper end; a shaded hollow behind the log at the right of centre with a faint low mist lying along the back. "
   "LEVELS: the MAIN GROUND is short bright moss with one darker strip of peat winding back from the front left towards the focal point, narrowing as it goes; calm, low in contrast, no leaves, nothing scattered on it; "
   "it runs across the full width from about 74 percent of the height down to about 97 percent. At the RIGHT, from about 72 percent of the width to the right edge, a RAISED MOSSY SHELF, a level whose flat walkable top runs from about 60 to 68 percent of the height, its front lip soft and rounded, with ferns behind it; "
-  "a gentle mossy slope from about 64 to 72 percent of the width joins it down to the main ground. The bottom 3 percent is a thin dark soil strip. No tree trunks, no forest: it is a terrarium planting. No hanging lines, no bowls.")}
+  "a gentle mossy slope from about 64 to 72 percent of the width joins it down to the main ground. The bottom 3 percent is a thin dark soil strip. No tree trunks, no forest: it is a terrarium planting. No hanging lines, no bowls."),
+ "roots": ("THE ROOM: an old root-and-burrow bank in warm golden late-morning light through a high soft canopy, a TRIANGULAR composition HIGH at the LEFT: the base of an old tree's roots, honey-brown and mossy, rises at the left (the trunk only a base, cut by the top of the picture), its roots spreading down and to the right behind the ground. "
+  "The focal point: a dark round BURROW MOUTH in the mossy mound under the roots at about 28 percent of the width, its bottom at about 66 percent of the height. "
+  "LEVELS: at the LEFT, from the left edge to about 24 percent of the width, a LOW MOSSY TERRACE (the mound's lower flank) whose flat walkable top runs from about 60 to 68 percent of the height, its front lip soft and rounded; a gentle mossy ramp from about 24 to 34 percent of the width joins it down to the main ground. "
+  "The MAIN GROUND is calm moss and fine soil in large soft patches, with a faint lighter path of soil winding from the front right back to the burrow, low in contrast, NOTHING scattered on it (no pebbles, no twigs, no succulents, no mushrooms); it runs across the full width from about 72 percent of the height down to about 97 percent. "
+  "At the lower right, from about 77 to 96 percent of the width and over the bottom tenth of the height, a soft calm mossy patch, flat and plain (a sleeping place; nothing in it, no pit, no hollow). "
+  "The right side of the picture is low and open, soft green foliage in bokeh behind. The bottom 3 percent is a thin dark soil strip across the full width. Roots and everything taller than the moss stay behind the ground's back edge, never lying across the open ground.")}
 n = f"idle-vivarium-{room}-day-{L}"; prompt = "Output a NEW image, 16:9. " + COMMON + SCENE[room]
 refs = [[P + pick, f"IMAGE 1, THE APPROVED CONCEPT (option {sh}{opt}): the room's planting, palette, season, mood and light; never its frame, posts or the small blocks at its front:"]]
 idx_p = "source/work/rooms/prompts.json"; idx = json.load(open(idx_p))

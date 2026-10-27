@@ -43,11 +43,25 @@ OPT_B = {"boulders": ("TOP LEFT: early summer, a small Japanese maple in fresh g
   "TOP RIGHT: autumn, the maple turned warm amber and gold (never bright red), a few gold leaves resting on the moss at the island's foot only, low warm side light. "
   "BOTTOM LEFT: a misty morning under a small cedar, cool silver-green moss, pale haze between the levels, soft diffuse light. "
   "BOTTOM RIGHT: late afternoon under a small gingko in pale yellow, long warm light and blue shadows across the moss, dark stones with lichen.")}
+# Roots repaint (owner 18:33 "our first room looks busy and out of place"; lead's go): sheet a for roots, text only. Keeps the burrow (focal), the bed's calm seat at the right, the Home cut.
+COMMON_R = COMMON_B.split("Each is a small SHRINE GARDEN")[0] + ("Each is a small ROOT-AND-BURROW room, composed like a fine naturalistic vivarium: a TRIANGULAR composition, HIGH at the LEFT and low at the right: "
+ "a mossy mound with an old root tangle rising at the left, and in it a dark round BURROW MOUTH at about a third of the width, the strongest point of the picture; the planting rising in levels from the front to the back; "
+ "the right side low and open, with a soft calm mossy hollow at the lower right (from about 77 to 96 percent of the width, the bottom tenth of the height) where small creatures sleep, nothing standing in it. "
+ "THE GROUND: a living, CALM ground of moss and fine soil in large soft patches, low in contrast, nothing scattered on it (no pebbles, no twigs, no succulents), so small dark, brown and teal creatures read clearly. "
+ "One RAISED level: the lower flank of the mound at the left forms a low mossy terrace with a flat walkable top, joined to the main ground by a gentle mossy ramp. "
+ "NO fittings at all: no pipes, no hoses, no misters, no vents, no lamps, no objects; no small pieces at the front. "
+ "Painted in a warm hand-crafted miniature-diorama finish: fine painterly grain, soft bokeh behind; never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. "
+ "No creatures, no animals, no figures. The four concepts must be clearly different in palette, mood and light. ")
+OPT_R = {"roots": ("TOP LEFT: warm golden late-morning light through a high canopy, honey-brown roots, bright green moss. "
+  "TOP RIGHT: a cool, damp, shaded forest floor, dark roots with silver lichen, blue-green moss, soft diffuse light. "
+  "BOTTOM LEFT: early evening, low copper light from the left raking across the roots, long soft shadows, rust and olive tones. "
+  "BOTTOM RIGHT: a dry late-summer bank, pale roots and seed grasses behind the mound, straw and sage tones, bright hazy light.")}
 SHEET = os.environ.get("ROOMOPT_SHEET", "a")
+if SHEET == "r": OPT, COMMON = OPT_R, COMMON_R
 if SHEET == "b": OPT, COMMON = OPT_B, COMMON_B
 idx_p = "source/work/rooms/prompts.json"; idx = json.load(open(idx_p))
 for room, txt in OPT.items():
-    n = f"options-{room}-{SHEET}"; prompt = "Output ONE image, 16:9. " + COMMON + txt
+    n = f"options-{room}-{'a' if SHEET == 'r' else SHEET}"; prompt = "Output ONE image, 16:9. " + COMMON + txt
     if n in idx and idx[n]["prompt"] != prompt: raise SystemExit(f"{n} already written with another prompt")
     j = {"name": n, "model": "gemini-3-pro-image", "aspect": "16:9", "size": "1K", "tries": 1, "refs": [], "prompt": prompt}
     json.dump([j], open(f"source/work/rooms/{n}.json", "w"), indent=1); idx[n] = {"sha256": hashlib.sha256(prompt.encode()).hexdigest(), "prompt": prompt, "refs": []}

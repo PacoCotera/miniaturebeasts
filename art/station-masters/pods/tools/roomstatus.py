@@ -3,7 +3,7 @@ python3 -I tools/roomstatus.py [ROUND_REQUESTS ROOM...] -> totals; with a round,
 import os, sys, json, datetime
 from zoneinfo import ZoneInfo
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
-ROOMS = ("reeds", "boulders", "ferns"); JOB, ROOM, CAP, RES = 300.0, 100.0, 250.0, 5.30   # owner 18:23 "ok to both": job 300, rooms 100, reserve 5.30
+ROOMS = ("reeds", "boulders", "ferns", "roots"); JOB, ROOM, CAP, RES = 300.0, 100.0, 250.0, 5.30   # owner 18:23 "ok to both": job 300, rooms 100, reserve 5.30
 DAYLINE = {"2026-10-26": (10**6, 500.0)}         # owner 18:41: "cap today art api at 500": Pacific day 10-26's 500 MXN replaces the job and room lines (the owner sets the job total after today)
 CAP_DAY = {"2026-10-26": 500.0}
 NO_JOB_LINE = {"2026-10-26"}

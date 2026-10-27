@@ -6447,5 +6447,39 @@
    "thoughtsTokenCount": 301,
    "totalTokenCount": 2684
   }
+ },
+ {
+  "tag": "options-roots-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.268334,
+  "mxn": 5.3667,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:48:57Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 547,
+   "candidatesTokenCount": 1775,
+   "thoughtsTokenCount": 452,
+   "totalTokenCount": 2774
+  }
+ },
+ {
+  "tag": "idle-vivarium-roots-day-ta try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.232834,
+  "mxn": 4.6567,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T00:49:39Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 917,
+   "candidatesTokenCount": 1652,
+   "thoughtsTokenCount": 273,
+   "totalTokenCount": 2842
+  }
  }
 ]

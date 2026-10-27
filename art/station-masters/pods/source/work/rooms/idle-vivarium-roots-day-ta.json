@@ -1,0 +1,16 @@
+[
+ {
+  "name": "idle-vivarium-roots-day-ta",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/pick-roots-aA.png",
+    "IMAGE 1, THE APPROVED CONCEPT (option aA): the room's planting, palette, season, mood and light; never its frame, posts or the small blocks at its front:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9. Image 1 is the approved concept for this room. Paint THIS room as a finished painting with the same planting, palette, season, mood and light as Image 1, showing ONLY the inside of the terrarium, edge to edge, wide, from a low eye height, straight on: no case, no frame, no window posts, no glass edges, no box. Finish: a hand-painted miniature diorama, fine painterly grain on everything, the back softly out of focus with gentle bokeh, the ground sharp; never photographic, never toon, never childish, no cartoon outlines, no toy colours, no gloss, no glow. No creatures, no animals, no fish, no figures, no text, no letters, no digits, no UI. NO fittings or objects of any kind: no lantern, no bamboo, no pipes, no gates, no planters, no boxes, no blocks; and NO small pieces standing at the front of the ground: the front of the ground is plain. THE ROOM: an old root-and-burrow bank in warm golden late-morning light through a high soft canopy, a TRIANGULAR composition HIGH at the LEFT: the base of an old tree's roots, honey-brown and mossy, rises at the left (the trunk only a base, cut by the top of the picture), its roots spreading down and to the right behind the ground. The focal point: a dark round BURROW MOUTH in the mossy mound under the roots at about 28 percent of the width, its bottom at about 66 percent of the height. LEVELS: at the LEFT, from the left edge to about 24 percent of the width, a LOW MOSSY TERRACE (the mound's lower flank) whose flat walkable top runs from about 60 to 68 percent of the height, its front lip soft and rounded; a gentle mossy ramp from about 24 to 34 percent of the width joins it down to the main ground. The MAIN GROUND is calm moss and fine soil in large soft patches, with a faint lighter path of soil winding from the front right back to the burrow, low in contrast, NOTHING scattered on it (no pebbles, no twigs, no succulents, no mushrooms); it runs across the full width from about 72 percent of the height down to about 97 percent. At the lower right, from about 77 to 96 percent of the width and over the bottom tenth of the height, a soft calm mossy patch, flat and plain (a sleeping place; nothing in it, no pit, no hollow). The right side of the picture is low and open, soft green foliage in bokeh behind. The bottom 3 percent is a thin dark soil strip across the full width. Roots and everything taller than the moss stay behind the ground's back edge, never lying across the open ground."
+ }
+]
