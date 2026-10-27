@@ -1,0 +1,16 @@
+[
+ {
+  "name": "idle-vivarium-ferns-day-sb",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/work-idle-vivarium-ferns-day-sa.png",
+    "IMAGE 1, THE PICTURE TO EDIT (this room's day, round sa): keep everything but the listed changes:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: Image 1 edited. KEEP EVERYTHING in Image 1 exactly as it is (the planting, the composition, the palette, the light, the hand-painted miniature finish, the soft back, the camera) and CHANGE ONLY the following. 1. Take out the two low pieces standing on the open floor (the fern tuft at the left and the clump of croziers right of centre) and paint plain open floor where they stood, matching the floor around them. 2. Then add two SMALL low pieces at the very front of the floor, their bases resting on the top edge of the dark soil strip at the bottom: one between about 12 and 30 percent of the width, one between about 68 and 85 percent; each no wider than about 9 percent of the width and no taller than about 8 percent of the height, about the size of a fist beside a pebble; nothing else new on the floor. The two new front pieces: a small low fern tuft (left) and a small clump of croziers (right). 3. Make the ceramic fogger bowl about a third of its size, half hidden behind the log, its low fog kept along the back. 4. Keep only two thin copper drip lines, in shade among the fronds, hidden behind the fronds above about 35 percent of the height (none crossing the band from 20 to 35 percent of the height), each ending in one drop; remove the others. 5. Remove the brown fallen leaves from the floor; paint plain short moss there. 6. Lift the mossy log a little so its underside rests higher, about 70 percent of the height from the top, and the open floor runs a little further back beneath it. 7. Make the open floor a little brighter, sunlit, like the light on the log. Do not add anything else; no creatures, no text, no frame, no box, no pool."
+ }
+]
