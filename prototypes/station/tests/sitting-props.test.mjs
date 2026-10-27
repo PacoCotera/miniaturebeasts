@@ -23,7 +23,7 @@ import { asset as assetOf, assetEntry, dropAsset, manifest } from "../../ui/asse
 const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("sitting.json"), habitat = J("habitat.json"), frameSpec = J("frame.json"), schema = J("sitting.props.json"), Sg = spec.strings;
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
 
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);

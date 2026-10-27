@@ -312,7 +312,7 @@
     "free": "nothing drawn: the node keeps its box with no ops (Every state composed, 2); not a target",
     "away": "each mibi with you (up to three) while the Companion is away: the outline Companion glyph 16×24 in place of its thumbnail, centred where the thumbnail stands; it stays a target, and focusing it shows that mibi in state out"
    },
-   "count": "one tile a bay (state.bayCount, 0 to 12): the housed mibis in bay order, then the free bays",
+   "count": "one tile a place (state.ROOM, 8): the mibis of the room of the mibi up close in slot order (state.inRoom), then the free places",
    "states": {
     "shown": "the mibi up close: fill `hairline`, one step up (with its outline glyph when it is out)",
     "housed": "fill `panel`",

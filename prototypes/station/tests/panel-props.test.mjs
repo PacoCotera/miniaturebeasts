@@ -23,7 +23,7 @@ setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f)
 // The Grow this founder? panel (T-195 r2 sections 2 and 3: Grow it, Grow and watch, Grow keep reading, the arrival and fork jump modes) is retired with its fixture (T-20261016-222): Create's Incubate opens the Incubate | Keep shaping panel (build spec 6a).
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), panelSpec = J("panel.json"), frameSpec = J("frame.json"), podsSpec = J("pods.json"), createSpec = J("create.json"), schema = J("panel.props.json"), incSchema = J("panel.incubate.props.json"), hnSchema = J("panel.hatchnow.props.json"), incubatorSpec = J("incubator.json");
 const measure = createMeasure(JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")));
-const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, P = frameSpec.regions.panel;
+const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, P = frameSpec.regions.panel;
 const words = (t) => t.trim().split(/\s+/).filter(Boolean).length;
 
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = st.d = st.s = 99; st.firstMibi = false; return st; };

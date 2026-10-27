@@ -21,7 +21,7 @@ const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.pars
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 20 }, T0 = 1_000_000;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 }, T0 = 1_000_000;   // Idle shows the room shown: eight at most
 
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: true, at: T0 }; return st; };
 function scene(o = {}) {
@@ -99,7 +99,7 @@ test("the same props on the same clock give the same hash; with motion off the r
   assert.equal(await run(8000), await run(8000)); assert.notEqual(await run(8000), await run(1200)); assert.equal(await run(8000, false), await run(40, false), "motion off: nothing moves");
 });
 // the bays hold twelve in all, so with three asleep on the bed at most nine walk
-const WALKS = { "twelve adults": { adults: 12 }, "six adults and six juveniles": { adults: 6, young: 6 }, "twelve, three waiting": { adults: 12, waiting: 3 }, "nine adults, three asleep": { adults: 12, carry: [9, 10, 11] }, "three adults and six juveniles, three asleep": { adults: 6, young: 6, carry: [3, 4, 5] }, "nine, three waiting, three asleep": { adults: 12, waiting: 3, carry: [9, 10, 11] } };
+const WALKS = { "eight adults": { adults: 8 }, "four adults and four juveniles": { adults: 4, young: 4 }, "eight, three waiting": { adults: 8, waiting: 3 }, "five adults, three asleep": { adults: 8, carry: [5, 6, 7] }, "one adult and four juveniles, three asleep": { adults: 4, young: 4, carry: [1, 2, 3] }, "five, three waiting, three asleep": { adults: 8, waiting: 3, carry: [5, 6, 7] } };
 for (const [name, o] of Object.entries(WALKS)) for (const [step, off, late = 0] of [[40, 0], [16, 5], [16, 5, 120]]) test(`the walk on Idle, ${name}, frames every ${step} ms${late ? ` (every 63rd ${late} ms late)` : ""} for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
   const f = await start(scene(o), { t0: 5000 }), M = f.M; let area = 0, moved = 0, lateArea = 0, ordinary = 0;
   for (let t = step + off, k = 0; t < 120000; t += step, k++) {
@@ -138,9 +138,10 @@ test("determinism and motion off on Idle (M1 §3): two faces walk alike; with mo
   assert.equal(await run(), await run());
   const f = await bootScene(movingScene("idle", { adults: 6, juveniles: 5, s05: 1, sleepers: 3 }), { motion: false }); assert.equal(runFrames(f, 10000).worst, 0);
 });
-test("rule 2 on Idle (M1 §3): six adult walkers at 5 px a tick on one group tick with the bed sleepers breathing: the tick stays inside 148,000 px and the budget defers, deterministically", { skip }, async () => {
-  const a = await rule2Run("idle"), b = await rule2Run("idle");
-  assert.ok(a.r.worstTick <= 148000, `a tick of ${a.r.worstTick} px`); assert.ok(a.r.deferred > 0, "the budget deferred changes"); assert.equal(a.hash, b.hash, "deterministic"); assert.equal(a.r.deferred, b.r.deferred);
+test("rule 2 on Idle (M1 §3), a room of eight: four adult walkers at 5 px a tick on a group tick with the bed sleepers breathing stay inside the 148,000 px tick; under a 74,000 px budget the budget defers and holds, deterministically", { skip }, async () => {
+  const a = await rule2Run("idle"); assert.ok(a.r.worstTick <= 148000, `a tick of ${a.r.worstTick} px`);
+  const lo = await rule2Run("idle", 74000), lo2 = await rule2Run("idle", 74000);
+  assert.ok(lo.r.worstTick <= 74000, `a tick of ${lo.r.worstTick} px over the lowered budget`); assert.ok(lo.r.deferred > 0, "the budget deferred changes"); assert.equal(lo.hash, lo2.hash, "deterministic"); assert.equal(lo.r.deferred, lo2.r.deferred);
   console.log(`# rule 2 (Idle): worst tick ${a.r.worstTick} px, ${a.r.deferred} changes deferred in 20 s, worst frame ${a.r.worst} px`);
 });
 // the bound of one hopping resident's frame (the architect's Q5): (cell w + the most it travels in a tick) × (cell h + the lift cap a tick, 12) + (cell w + that travel) × 16 for its shadow node; the travel is the hop's over its air ticks, rounded up
@@ -170,12 +171,12 @@ test("G7 night (M1 §3, game designer R3): Pip alone, asleep, 6 min 10 s: 7–18
   console.log(`# G7 night: ${stirs.length} stirs ${Math.min(...gaps)}–${Math.max(...gaps)} ms apart, ${wanders.length} wanderer${wanders.length > 1 ? "s" : ""} (${wanders.map((w) => w.max + " px").join(", ")}), worst frame ${worst} px, ${(drawn / 370).toFixed(2)} frames drawn a second`);
 });
 test("asleep spots (UI/UX item 11): at night no sleeper's ground point lies in another's spot, and no waypoint (a wanderer's included) lands in another's spot", { skip }, async () => {
-  const f = await bootScene(movingScene("idle", { adults: 6, juveniles: 4, time: 23 * 3600 })), M = f.M, w = (i) => (i < 6 ? 144 : 104);
+  const f = await bootScene(movingScene("idle", { adults: 4, juveniles: 4, time: 23 * 3600 })), M = f.M, w = (i) => (i < 4 ? 144 : 104);   // a room of eight
   const spot = (i) => { const fx = M._face_test_mv(i, 0) + w(i) / 2, feet = M._face_test_mv(i, 1); return [fx - 56, feet - 12, 112, 24]; }, meets = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
   const inSpot = (i, j) => { const p = spot(j), gx = M._face_test_mv(i, 0) + w(i) / 2, gf = M._face_test_mv(i, 1); return gx >= p[0] && gx < p[0] + p[2] && gf >= p[1] && gf < p[1] + p[3]; };
-  for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) if (i !== j) assert.ok(!inSpot(i, j), `resident ${i}'s ground point lies in ${j}'s spot at screen show`); void meets;
-  runFrames(f, 400000, { cadence: [40, 0, 0], each: () => { for (let i = 0; i < 10; i++) { const s = STATE(M._face_test_state(i)); if (!s.travelling && !s.wanderer) continue; if (s.clip !== CLIP.hop && s.clip !== CLIP.walk) continue; const gx = M._face_test_mv(i, 8) + w(i) / 2, gf = M._face_test_mv(i, 9);
-    for (let j = 0; j < 10; j++) if (j !== i && [CLIP.asleep, CLIP.curl, CLIP.stir, CLIP.wake].includes(STATE(M._face_test_state(j)).clip)) { const p = spot(j); assert.ok(!(gx >= p[0] && gx < p[0] + p[2] && gf >= p[1] && gf < p[1] + p[3]), `resident ${i}'s waypoint lands in ${j}'s spot`); } } } });
+  for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) if (i !== j) assert.ok(!inSpot(i, j), `resident ${i}'s ground point lies in ${j}'s spot at screen show`); void meets;
+  runFrames(f, 400000, { cadence: [40, 0, 0], each: () => { for (let i = 0; i < 8; i++) { const s = STATE(M._face_test_state(i)); if (!s.travelling && !s.wanderer) continue; if (s.clip !== CLIP.hop && s.clip !== CLIP.walk) continue; const gx = M._face_test_mv(i, 8) + w(i) / 2, gf = M._face_test_mv(i, 9);
+    for (let j = 0; j < 8; j++) if (j !== i && [CLIP.asleep, CLIP.curl, CLIP.stir, CLIP.wake].includes(STATE(M._face_test_state(j)).clip)) { const p = spot(j); assert.ok(!(gx >= p[0] && gx < p[0] + p[2] && gf >= p[1] && gf < p[1] + p[3]), `resident ${i}'s waypoint lands in ${j}'s spot`); } } } });
 });
 test("no stir begins on a focused sleeper (game designer R4; the living window's code in the Vivarium's whole, where the ring is)", { skip }, async () => {
   const f = await bootScene(movingScene("vivarium", { adults: 3, time: 23 * 3600, focus: "resident:0" })); let s1 = 0; const p = [0, 0, 0];

@@ -24,7 +24,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(h
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 const J = (k) => JSON.parse(readFileSync(path.join(specs, k + ".json"), "utf8"));
 for (const k of ["frame", "pods", "home", "cargo", "create", "vivarium", "habitat", "namer", "panel", "sitting"]) SPECS[k] = J(k);
-const SIT = SPECS.sitting, HAB = SPECS.habitat, T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 };
+const SIT = SPECS.sitting, HAB = SPECS.habitat, T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 };
 before(() => { loadStandLooksFs(); loadStandLayersFs(); });
 
 // Dot (S01 adult) up close at night with a sitting held, its habits seen and its places been; the host on a clock the test moves

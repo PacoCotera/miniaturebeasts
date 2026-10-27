@@ -171,10 +171,10 @@ test("each stage at the cross: a juvenile is barred, an adult and an elder may c
 });
 
 // ---- 7. twelve mibis a vivarium ----
-test("the bays clamp to 12 (1 at least), whatever the setting or the save holds", () => {
+test("the rooms clamp to 4 (1 at least), whatever the setting or the save holds", () => {
   const st = fresh();
-  for (const [bays, want] of [[6, 6], [12, 12], [20, 12], [99, 12], [1, 1]]) assert.equal(S.bayCount(st, { ...settings, bays }), want, "bays " + bays);
-  st.bays = 30; assert.equal(S.bayCount(st, { ...settings, bays: 0 }), 12, "a save that holds more than 12");
+  for (const [rooms, want] of [[1, 1], [2, 2], [4, 4], [20, 4], [99, 4]]) assert.equal(S.roomCount(st, { ...settings, rooms }), want, "rooms " + rooms);
+  assert.equal(S.roomCount(st, { ...settings, rooms: null }), 1, "no setting and no save: one room"); st.rooms = 30; assert.equal(S.roomCount(st, { ...settings, rooms: 0 }), 4, "a save that holds more than 4"); st.rooms = 3; assert.equal(S.roomCount(st, settings), 3, "the save\'s rooms");
 });
 test("the forms: gains read '❀ +1', spends '⚡ −1 ❀ −2' with a true minus on the figure", () => {
   assert.equal(S.gainText(2), "❀ +2"); assert.equal(S.spendText(1, 0, 2), "⚡ −1 ❀ −2"); assert.equal(S.spendText(0, 3, 0), "◆ −3"); assert.equal(S.spendText(0, 0, 0), "free");
@@ -264,7 +264,7 @@ test("a mibi out with the Companion sits only while the Companion is docked; at 
 
 // ---- review fixes ----
 test("seedSiblings: each sibling's read is the list doCross gives a child at kinship 0", () => {
-  const st = fresh(); st.settings = undefined; const r = S.seedSiblings(st, "S01", 4242, { ...settings, bays: 12 }); assert.ok(r.ok, r.msg);
+  const st = fresh(); st.settings = undefined; const r = S.seedSiblings(st, "S01", 4242, { ...settings, rooms: 2 }); assert.ok(r.ok, r.msg);
   const [a, b] = r.parents, fr = frameOf("S01");
   for (const m of r.mibis) { assert.deepEqual(m.read, S.childKnownChapters(fr, crossForecast(fr, a.genome, b.genome, { kinship: 0 }))); assert.ok(m.read.length < fr.chapters.length, "not every chapter is firm"); }
 });
@@ -289,14 +289,14 @@ test("W1 every habit of every frame has its words in habitat.json strings.watchH
 });
 
 // ---- 7. Incubate and Hatch now (T-20261016-219; results/incubate-and-hatch-now-game-text.md §1, §4) ----
-const hatchLog = (st, m, spend) => `T${st.turn + 1} · Hatched ${m.name} now · ${frameOf(m.species).species.name} · juvenile · bay ${m.bay + 1} · ${spend}`;
+const hatchLog = (st, m, spend) => `T${st.turn + 1} · Hatched ${m.name} now · ${frameOf(m.species).species.name} · juvenile · the ${S.ROOM_NAMES[m.room]} room · ${spend}`;
 const twin = (cross = false) => { const st = cross ? crossed() : fresh(); if (!cross) { st.firstMibi = false; S.seedAdults(st, "S01", 5, 1, settings); S.grow(st, podOf(st, "S01", ["coat"]), {}, settings, T0); } return st; };
 for (const cross of [false, true]) {
-  test(`T-219 case ${cross ? 2 : 1}: Hatch now on ${cross ? "a bred" : "a founder's"} bud pays once, ends the wait and opens it in the first free bay, as Open does, with one log line`, () => {
+  test(`T-219 case ${cross ? 2 : 1}: Hatch now on ${cross ? "a bred" : "a founder's"} bud pays once, ends the wait and opens it in the first free place, as Open does, with one log line`, () => {
     const a = twin(cross), b = twin(cross), now = T0 + MIN, cost = S.instantGrowCost(a, settings, now), e0 = [a.e, a.d, a.s], log0 = a.log.length, n0 = a.mibis.length;
-    assert.ok(cost.s > 0); const freeBay = S.freeBay(a, settings), r = S.instantGrow(a, settings, now);
+    assert.ok(cost.s > 0); const freePlace = S.freePlace(a, settings), r = S.instantGrow(a, settings, now);
     assert.equal(r.ok, true); assert.deepEqual([a.e - e0[0], a.d - e0[1], a.s - e0[2]], [0, 0, -cost.s], "the price is paid once"); assert.equal(a.bud, null, "the chamber is empty");
-    const m = r.mibi; assert.equal(a.mibis.length, n0 + 1); assert.equal(a.mibis.at(-1), m); assert.deepEqual([m.bay, m.born, S.mibiStage(a, m)], [freeBay, a.turn, "juvenile"], "the first free bay, born this turn, a juvenile");
+    const m = r.mibi; assert.equal(a.mibis.length, n0 + 1); assert.equal(a.mibis.at(-1), m); assert.deepEqual([m.room, m.slot, m.born, S.mibiStage(a, m)], [freePlace.room, freePlace.slot, a.turn, "juvenile"], "the first free place, born this turn, a juvenile");
     // Open on the twin, once it has finished on its own: the same chapters known, the same field guide
     const o = S.openBud(b, null, settings, T0 + 60 * MIN); assert.equal(o.ok, true);
     assert.deepEqual(m.read, o.mibi.read, "known as Open makes it known"); if (cross) assert.deepEqual(m.read, ["coat"], "the cross child's unread chapters stay unread"); else assert.deepEqual(m.read, chapters("S01"));
@@ -310,24 +310,24 @@ test("T-219 case 3: Open after a natural finish is as before: no price, its own 
   assert.equal(S.budReady(st, settings, now), true); assert.deepEqual(S.instantGrowCost(st, settings, now), { e: 0, d: 0, s: 0 });
   const log0 = st.log.length, bud = st.bud, no = S.instantGrow(st, settings, now); assert.deepEqual(no, { ok: false }); assert.equal(st.bud, bud); assert.equal(st.log.length, log0, "Hatch now does nothing on a ready bud");
   const o = S.openBud(st, null, settings, now); assert.equal(o.ok, true); assert.deepEqual([st.e, st.d, st.s], s0, "no price"); assert.equal(st.log.length, log0 + 1);
-  assert.equal(st.log.at(-1), `T${st.turn + 1} · Opened · ${o.mibi.name} · Loika · juvenile · bay ${o.mibi.bay + 1}`);
+  assert.equal(st.log.at(-1), `T${st.turn + 1} · Opened · ${o.mibi.name} · Loika · juvenile · the ${S.ROOM_NAMES[o.mibi.room]} room`);
 });
 test("T-219 case 4: refusals keep the rules, with the new words: nothing is spent and nothing hatches", () => {
   const st = twin(), s0 = [st.e, st.d, st.s]; st.s = 0; const log0 = st.log.length, n0 = st.mibis.length, bud = st.bud;
   const no = S.instantGrow(st, settings, T0 + MIN); assert.equal(no.ok, false); assert.match(no.msg, /^Hatch now · /); assert.deepEqual([st.s, st.mibis.length, st.bud, st.log.length], [0, n0, bud, log0]); void s0;
   // Incubate with a bud in the chamber
   const p2 = podOf(st, "S01", ["coat"]); st.s = 99; const busy = S.grow(st, p2, {}, settings, T0); assert.deepEqual([busy.ok, busy.msg], [false, "Incubate · the incubator is busy"]);
-  // Incubate with no free bay
-  const f = fresh(); f.firstMibi = false; S.seedAdults(f, "S01", 5, S.bayCount(f, settings), settings); assert.equal(S.bayFull(f, settings), true);
-  const p3 = podOf(f, "S01", ["coat"]), nb = S.grow(f, p3, {}, settings, T0); assert.deepEqual([nb.ok, nb.msg], [false, "Incubate · no bay free · return one"]); assert.equal(f.bud, null);
-  // Open with no free bay
-  const g = twin(); S.seedAdults(g, "S01", 9, S.bayCount(g, settings), settings); assert.equal(S.bayFull(g, settings), true);
-  const op = S.openBud(g, null, settings, T0 + 20 * MIN); assert.deepEqual([op.ok, op.msg], [false, "No bay free · return a mibi to the wild first"]); assert.notEqual(g.bud, null);
+  // Incubate with no free place
+  const f = fresh(); f.firstMibi = false; S.seedAdults(f, "S01", 5, S.roomCount(f, settings) * S.ROOM, settings); assert.equal(S.vivFull(f, settings), true);
+  const p3 = podOf(f, "S01", ["coat"]), nb = S.grow(f, p3, {}, settings, T0); assert.deepEqual([nb.ok, nb.msg], [false, "Incubate · the Vivarium is full"]); assert.equal(f.bud, null);
+  // Open with no free place
+  const g = twin(); S.seedAdults(g, "S01", 9, S.roomCount(g, settings) * S.ROOM, settings); assert.equal(S.vivFull(g, settings), true);
+  const op = S.openBud(g, null, settings, T0 + 20 * MIN); assert.deepEqual([op.ok, op.msg], [false, "The Vivarium is full"]); assert.notEqual(g.bud, null);
 });
-test("T-219 case 5: a refused hatch never spends: every bay full while a bud grows, Hatch now refuses with Open's words and Essence is unchanged", () => {
-  const st = twin(); S.seedAdults(st, "S01", 9, S.bayCount(st, settings), settings); assert.equal(S.bayFull(st, settings), true); assert.notEqual(st.bud, null);
+test("T-219 case 5: a refused hatch never spends: every place full while a bud grows, Hatch now refuses with Open's words and Essence is unchanged", () => {
+  const st = twin(); S.seedAdults(st, "S01", 9, S.roomCount(st, settings) * S.ROOM, settings); assert.equal(S.vivFull(st, settings), true); assert.notEqual(st.bud, null);
   const s0 = [st.e, st.d, st.s], log0 = st.log.length, n0 = st.mibis.length, g0 = JSON.stringify(st.guide), bud = { ...st.bud };
-  const r = S.instantGrow(st, settings, T0 + MIN); assert.deepEqual([r.ok, r.msg], [false, "No bay free · return a mibi to the wild first"]);
+  const r = S.instantGrow(st, settings, T0 + MIN); assert.deepEqual([r.ok, r.msg], [false, "The Vivarium is full"]);
   assert.deepEqual([st.e, st.d, st.s], s0); assert.deepEqual([st.mibis.length, st.log.length, JSON.stringify(st.guide)], [n0, log0, g0]); assert.deepEqual(st.bud, bud, "the bud is untouched, not even ended");
 });
 test("T-219 case 6: with the free preset Hatch now hatches with no price, and the log line ends with no spend", () => {

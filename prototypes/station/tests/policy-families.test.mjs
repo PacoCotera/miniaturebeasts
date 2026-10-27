@@ -125,7 +125,7 @@ test("a founder is art while it is clear (painted once a master), painted at eit
   for (const old of ["founder:S01:S01-1a2b3c4d:all:304x312", "founder:S01:S01-1a2b3c4d:9f3c:304x312", "founder:S01:S01-1a2b3c4d:veil-Face:304x312", "founder:S01:S01-1a2b3c4d:ghost"]) assert.throws(() => policyOf(old), /no layer family/, old);
 });
 test("a Create walk on S01 and S03 (nothing read, shape, shape and a doing): every picture is in a family, and any founder with an unread look is painted", () => {
-  const specCreate = J("create.json"), pods = J("pods.json"), T0 = 1_000_000, cfg = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }; let founders = 0;
+  const specCreate = J("create.json"), pods = J("pods.json"), T0 = 1_000_000, cfg = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }; let founders = 0;
   for (const sp of ["S01", "S03"]) for (const [name, read] of [["nothing read", 0], ["one chapter", 1], ["shape", 2], ["shape and a doing", 3], ["every chapter", frameOf(sp).chapters.length]]) {
     const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; S.seedPodFromGenome(st, podGenome(frameOf(sp), 3), cfg, T0); const p = st.tray[0]; S.skipIdentify(st, p);
     frameOf(sp).chapters.slice(0, read).forEach((c) => S.read(st, p, c.id, cfg));

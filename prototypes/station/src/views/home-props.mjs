@@ -63,7 +63,8 @@ const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 // The notice and the action of a need, from strings.needs. A count is spelled to the picture's most; above it the count is dropped.
 export function wordsOf(need, spec) {
   if (!need) return { notice: "", action: null };
-  const N = spec.strings.needs[need.key], word = need.n != null && need.n >= 1 && need.n <= need.max ? count(need.n) : "";
+  const N = spec.strings.needs[need.key]; if (!N) return { notice: "", action: null };   // a key home.json has no words for yet (full: the words are R5's)
+  const word = need.n != null && need.n >= 1 && need.n <= need.max ? count(need.n) : "";
   let notice = need.n === 1 && N.noticeOne ? N.noticeOne : N.notice;
   const vals = { count: word, name: need.name, a: need.a, species: need.species };
   if (need.short && N.short) notice = N.short;
@@ -106,7 +107,7 @@ export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
 }
 
 export function livingOf(m, R, req, ph, L) {
-  const { st, sv, settings } = m, docked = !!m.docked || !!m.sendoff, carried = S.carriedIds(st, sv), here = m.noBed ? S.housed(st).filter((mb) => !S.isAway(st, sv, mb)) : S.homeMibis(st, sv);   // Home's window (noBed): everyone at home walks, the carried set too while docked (it has no bed there)   // the lift's send-off keeps the bed docked until it ends (m.sendoff: home.json events.sendoff)
+  const { st, sv, settings } = m, docked = !!m.docked || !!m.sendoff, carried = S.carriedIds(st, sv), here = (m.noBed ? S.housed(st).filter((mb) => !S.isAway(st, sv, mb)) : S.homeMibis(st, sv)).filter((mb) => mb.room === (st.face?.room ?? 0));   // Home's window (noBed): everyone at home walks, the carried set too while docked (it has no bed there)   // the lift's send-off keeps the bed docked until it ends (m.sendoff: home.json events.sendoff)
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings, m.light, m.view ?? "home");
@@ -153,9 +154,9 @@ export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
   const grow = couldIncubate(st, settings); if (grow) out.push({ key: "couldGrow", species: S.spName(grow), a: art(S.spName(grow)), act: "pods" });
   return out;
 }
-// The pod that could be incubated now (read, a bay free, the price in hand), or null: needKey's couldGrow with no short.
+// The pod that could be incubated now (read, a place free, the price in hand), or null: needKey's couldGrow with no short.
 function couldIncubate(st, settings) {
-  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud); if (!grown.length || S.bayFull(st, settings)) return null;
+  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud); if (!grown.length || S.vivFull(st, settings)) return null;
   const c = S.growCost(st, {}, settings); return S.canPay(st, c.e, 0, c.s) ? grown[0] : null;
 }
 

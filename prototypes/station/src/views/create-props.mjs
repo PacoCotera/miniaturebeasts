@@ -111,7 +111,7 @@ export function createBuild(m, spec, pods) {
   // grow: the line is Growing, with no action, price or way back (null: the frame drops their nodes), an empty right slot and its own context (fix 5 C6); else C5: the right slot is Create's own, block reasons first, then the shortfall, then the warning, else empty
   const bottom = grown ? { ok: null, price: null, back: null, subject: Sg.growing, need: "" } : { ok: Sg.action, price: S.priceText(cost.e, cost.d, cost.s, S.budMinutes(st, changed.length, settings)), back: S.cap(name), subject, need: "" };
   if (!grown && key && key.key === "short") { bottom.dim = true; bottom.short = key.short; bottom.need = fill(Sg.notices.shortFrom[key.from], { icons: key.short }); }   // short: the dimmed ✓, the short figures amber
-  else if (!grown && key) { bottom.blocked = true; bottom.need = key.key === "busy" ? Sg.notices.busy : key.key === "noBay" ? Sg.notices.noBay : key.key === "clash" ? Sg.notices.clash : ""; }   // busy, no bay, clash: no ✓ cap, the verb and the price in mist
+  else if (!grown && key) { bottom.blocked = true; bottom.need = key.key === "busy" ? Sg.notices.busy : key.key === "full" ? Sg.notices.noBay : key.key === "clash" ? Sg.notices.clash : ""; }   // busy, no bay, clash: no ✓ cap, the verb and the price in mist
 
   if (!key && !grown && m.frame) bottom.need = warnWords(st, m.sv, settings, m.frame, cost, { key: "grow", pod: p }) || "";   // ✓ would leave the goal's next price short: one amber line, nothing asked
   const props = { state, regions, focus: { cur: list.length && !grown ? "roll" : "room", targets: list.length && !grown ? [{ id: "roll", group: "roll" }] : [] } };

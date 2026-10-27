@@ -33,7 +33,7 @@ export function cargoBuild(m, spec, home, frame, sittingSpec = null) {
   const pic = (id) => slot(id, sizeOfSlice(id));
   const podPic = (q, size) => { const sp = shellSpecies(st, q); return req({ kind: "pod", id: `pod:${sp ?? "-"}:${q.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state: q.idd ? "identified" : "sealed", size }); };
   const wait = (n) => plural(n, Sg.subjects.waitingOne, fill(Sg.subjects.waiting, { count: spelled(n) }));
-  const notice = () => { const a = S.needKey(st, sv, settings, m.ui, true), w = a && { ...a, module: home.strings.needs[a.key].module }; return wordsOf(w, home).notice; };
+  const notice = () => { const a = S.needKey(st, sv, settings, m.ui, true), w = a && { ...a, module: home.strings.needs[a.key]?.module }; return wordsOf(w, home).notice; };
   const props = { state, berths: 3, sittingCrate: null, regions: {}, focus: { cur: "room", targets: [] } };
 
   if (state === "arrival") {   // the dock arrival keeps its own pictures and regions (cargo.json regions.dock*), as station-gate drew them

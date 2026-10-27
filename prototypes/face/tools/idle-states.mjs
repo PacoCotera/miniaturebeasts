@@ -41,7 +41,7 @@ async function walk(visit) {
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
   try {
     await enter(page, SCENES.twelve); await step(40); await step(8000);
-    const u = await page.evaluate(() => ({ idle: window.__st.UI.idle, n: window.__st.props?.regions?.residents?.length })); if (!u.idle || u.n !== 12) fail("idle-walk-8000ms: " + JSON.stringify(u));
+    const u = await page.evaluate(() => ({ idle: window.__st.UI.idle, n: window.__st.props?.regions?.residents?.length })); if (!u.idle || u.n !== 8) fail("idle-walk-8000ms: " + JSON.stringify(u));
     await visit("idle-walk-8000ms", page, fail);
     // Station M1: the night on Idle, Pip alone asleep on its stand-in cells under the developer switch, the Station time 23:00, 60 s of the face's clock (a stir or two)
     await page.evaluate(() => { const S = window.__st; S.settings.motionSets = true; S.settings.stationTime = "23:00"; S.settings.light = "night"; });
