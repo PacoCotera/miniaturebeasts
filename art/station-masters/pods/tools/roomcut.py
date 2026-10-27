@@ -99,7 +99,7 @@ ROOMS = {
  "ferns": {"sheet": "pieces-ferns-a", "pieces": [
    {"id": "ferns-fern-1", "kind": "occluder", "level": "main", "box": (97, 41, 527, 339), "fit": (72, 48), "x": 30, "foot": 543, "what": "low fern tuft, leafy"},
    {"id": "ferns-crozier-1", "kind": "occluder", "level": "main", "box": (921, 53, 1286, 319), "fit": (68, 46), "x": 818, "foot": 541, "what": "small crozier clump, curled heads low"},
-   {"id": "ferns-fogger", "kind": "fitting", "level": None, "box": (548, 330, 863, 525), "fit": (46, 30), "x": 556, "foot": 360, "gain": 1.1, "what": "the fogger bowl in the hollow right of the croziers at the back edge; its fog is the mist wisps (ambient)", "shade": (0.82, 0.6)},
+   {"id": "ferns-fogger", "kind": "fitting", "level": None, "box": (548, 330, 863, 525), "fit": (46, 30), "x": 556, "foot": 360, "gain": 0.8, "what": "the fogger bowl in the hollow right of the croziers at the back edge; its fog is the mist wisps (ambient)", "shade": (0.82, 0.6)},
    {"id": "ferns-copper-1", "kind": "fitting", "level": None, "box": (248, 382, 279, 734), "fit": (4, 78), "x": 836, "foot": 290, "gain": 1.3, "what": "thin copper drip line among the right fronds, its top behind the fronds", "shade": (0.95, 0.8), "behind": (0, 34)},
    {"id": "ferns-copper-2", "kind": "fitting", "level": None, "box": (325, 382, 371, 622), "fit": (6, 52), "x": 884, "foot": 262, "gain": 1.3, "what": "second thin copper drip line, shorter", "shade": (0.95, 0.8), "behind": (0, 24)},
    {"id": "ferns-drop", "kind": "drop", "level": None, "box": (1040, 484, 1173, 666), "fit": (4, 6), "x": 0, "foot": 0, "what": "the drop cell: from each line's tip to the shelf's moss, every ~8 s"}]},
@@ -110,7 +110,7 @@ KOI = {"sheet": "pieces-koi-a", "rows": [[(48, 63, 350, 178), (399, 47, 654, 193
 # the shishi-odoshi arm: length and pivot in painting coordinates (the pivot sits between the two pivot posts of the base); open end left, under the flume's spout
 ARM = {"len": 30, "thick": 6, "pivot": (216, 288), "poses": {"fill": -16, "tip": 4, "empty": 26, "knock": -20}, "open_from_pivot": 19}
 MIST = {"roots": [{"wisp": 2, "rect": [826, 268, 76, 18], "alpha": 0.8, "what": "the mister's spray, drifting left from the nozzle and fading"}],
-        "ferns": [{"wisp": 1, "rect": [536, 318, 96, 24], "alpha": 0.75, "what": "fog brimming from the bowl"}, {"wisp": 3, "rect": [548, 346, 70, 14], "alpha": 0.5, "what": "fog rolling down over the bowl's foot"}, {"wisp": 4, "rect": [600, 338, 150, 24], "alpha": 0.45, "what": "fog drifting right along the back edge, never below row 362"}]}
+        "ferns": [{"wisp": 1, "rect": [530, 312, 104, 26], "alpha": 0.7, "what": "fog brimming from the bowl"}, {"wisp": 4, "rect": [600, 338, 150, 24], "alpha": 0.45, "what": "fog drifting right along the back edge, never below row 362"}]}
 def wisp(i, w, h, alpha):
     im = Image.open(f"rooms/mist/mist-wisp-{i}.png").convert("RGBA").resize((w, h), Image.LANCZOS); q = np.asarray(im).astype(float); q[..., 3] *= alpha; return q
 def scene_of(room): return np.asarray(Image.open(f"rooms/signed-idle-{room}-{LIGHT}.png").convert("RGB")).astype(float)
@@ -118,6 +118,7 @@ def run():
     global HARD_AT
     out = {"note": "Pieces by the composite method, cut and placed by hand at 0 MXN (tools/roomcut.py). Painting coordinates (1024x568); the whole's window y = painting y - 80. rect [x, y, w, h]; foot = the lowest row of the piece's ink; occluders are hard-edged straight alpha (ARGB8888); draw order by foot row with the walkers.", "light": LIGHT}
     for room, R in ROOMS.items():
+        if not os.path.exists(f"rooms/signed-idle-{room}-{LIGHT}.png"): print("no", LIGHT, "scene for", room, "(skipped)"); continue
         os.makedirs(f"rooms/pieces/{room}", exist_ok=True); scene = scene_of(room); comp = scene.copy(); seated = scene.copy(); rec = []
         for pc in R["pieces"]:
             if pc["kind"] == "anim": continue
@@ -182,5 +183,5 @@ def run():
             rec.append({"id": f"{room}-mist-{m['wisp']}", "kind": "mist", "wisp": f"rooms/mist/mist-wisp-{m['wisp']}.png", "rect_painting": m["rect"], "alpha": m["alpha"], "what": m["what"]})
         Image.fromarray(seated.round().clip(0, 255).astype(np.uint8)).save(f"rooms/seated-idle-{room}-{LIGHT}.png")     # the painting the engine draws under the pieces: the signed scene plus the seats' contact shadows
         Image.fromarray(comp.round().clip(0, 255).astype(np.uint8)).save(f"rooms/composite-idle-{room}-{LIGHT}.png"); out[room] = rec
-    json.dump(out, open(f"rooms/pieces/pieces-{LIGHT}.json", "w"), indent=1); print("ok", LIGHT)
+    json.dump(out, open(f"rooms/pieces/pieces-{LIGHT}.json", "w"), indent=1)     # rects and feet are the day's: every light is cut from the same sheet and placed 1:1 at the same rects; print("ok", LIGHT)
 run()

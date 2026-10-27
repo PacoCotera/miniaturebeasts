@@ -405,26 +405,13 @@
    "kind": "mist",
    "wisp": "rooms/mist/mist-wisp-1.png",
    "rect_painting": [
-    536,
-    318,
-    96,
-    24
+    530,
+    312,
+    104,
+    26
    ],
-   "alpha": 0.75,
+   "alpha": 0.7,
    "what": "fog brimming from the bowl"
-  },
-  {
-   "id": "ferns-mist-3",
-   "kind": "mist",
-   "wisp": "rooms/mist/mist-wisp-3.png",
-   "rect_painting": [
-    548,
-    346,
-    70,
-    14
-   ],
-   "alpha": 0.5,
-   "what": "fog rolling down over the bowl's foot"
   },
   {
    "id": "ferns-mist-4",

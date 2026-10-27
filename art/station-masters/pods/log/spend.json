@@ -6668,5 +6668,107 @@
    "thoughtsTokenCount": 279,
    "totalTokenCount": 2524
   }
+ },
+ {
+  "tag": "idle-vivarium-reeds-night-t try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.179446,
+  "mxn": 3.5889,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:11:32Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 503,
+   "candidatesTokenCount": 1308,
+   "thoughtsTokenCount": 179,
+   "totalTokenCount": 1990
+  }
+ },
+ {
+  "tag": "vivarium-near-reeds-night-t try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.188564,
+  "mxn": 3.7713,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:11:49Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 502,
+   "candidatesTokenCount": 1353,
+   "thoughtsTokenCount": 210,
+   "totalTokenCount": 2065
+  }
+ },
+ {
+  "tag": "idle-vivarium-boulders-night-t try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.183676,
+  "mxn": 3.6735,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:12:04Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 518,
+   "candidatesTokenCount": 1338,
+   "thoughtsTokenCount": 184,
+   "totalTokenCount": 2040
+  }
+ },
+ {
+  "tag": "vivarium-near-boulders-night-t try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.192194,
+  "mxn": 3.8439,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:12:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 517,
+   "candidatesTokenCount": 1358,
+   "thoughtsTokenCount": 235,
+   "totalTokenCount": 2110
+  }
+ },
+ {
+  "tag": "idle-vivarium-ferns-night-t try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.18472,
+  "mxn": 3.6944,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:12:37Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 500,
+   "candidatesTokenCount": 1350,
+   "thoughtsTokenCount": 181,
+   "totalTokenCount": 2031
+  }
+ },
+ {
+  "tag": "vivarium-near-ferns-night-t try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.185798,
+  "mxn": 3.716,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-26",
+  "time": "2026-10-27T01:12:53Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 499,
+   "candidatesTokenCount": 1331,
+   "thoughtsTokenCount": 209,
+   "totalTokenCount": 2039
+  }
  }
 ]

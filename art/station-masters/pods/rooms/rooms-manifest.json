@@ -328,6 +328,45 @@
    "near_mask_px": 23259,
    "method": "per season: one Pro edit of the signed day changing only the maple (and the fallen leaves on the island), then pasted back through the mask so nothing else moves; the same for the near day; each light by the same edit of that light's picture, or graded by hand from the season's day through the mask",
    "mask_rule": "the canopy's saturated warm leaves (R-B > 95), the largest connected canopy, dilated 2 px; the trunk and the back bokeh stay; near: also local texture (5x5 luminance s.d. > 6), so the warm bokeh stays"
+  },
+  "lights": {
+   "day": {
+    "idle": "rooms/signed-idle-boulders-day.png",
+    "near": "rooms/signed-near-boulders-day.png",
+    "measures_idle": {
+     "whole": 39.84,
+     "floor": 40.05,
+     "back": 41.29,
+     "R-B whole": 60.9
+    },
+    "measures_near": {
+     "whole": 50.7,
+     "floor": 36.44,
+     "back": 60.81,
+     "R-B whole": 83.5
+    }
+   },
+   "night": {
+    "idle": "rooms/signed-idle-boulders-night.png",
+    "near": "rooms/signed-near-boulders-night.png",
+    "source_idle": "idle-vivarium-boulders-night-t (gemini-3-pro-image), an edit of the signed day; graded at 0 MXN by tools/roomgrade.py",
+    "source_near": "vivarium-near-boulders-night-t (gemini-3-pro-image); the pond, rim stones and bank the edit painted in at the back [140,205,232,63] replaced by the day's pixels relit by a fitted day-to-night map at 0 MXN; graded by tools/roomgrade.py",
+    "measures_idle": {
+     "whole": 24.82,
+     "floor": 26.68,
+     "back": 23.81,
+     "R-B whole": -16.2
+    },
+    "measures_near": {
+     "whole": 24.33,
+     "floor": 26.8,
+     "back": 22.69,
+     "R-B whole": -6.9
+    },
+    "pieces": "rooms/pieces/boulders/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
+    "seated": "rooms/seated-idle-boulders-night.png",
+    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept"
+   }
   }
  },
  "reeds": {
@@ -492,6 +531,45 @@
     56
    ],
    "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads"
+  },
+  "lights": {
+   "day": {
+    "idle": "rooms/signed-idle-reeds-day.png",
+    "near": "rooms/signed-near-reeds-day.png",
+    "measures_idle": {
+     "whole": 57.44,
+     "floor": 40.07,
+     "back": 77.3,
+     "R-B whole": 20.1
+    },
+    "measures_near": {
+     "whole": 60.86,
+     "floor": 42.11,
+     "back": 76.96,
+     "R-B whole": 15.2
+    }
+   },
+   "night": {
+    "idle": "rooms/signed-idle-reeds-night.png",
+    "near": "rooms/signed-near-reeds-night.png",
+    "source_idle": "idle-vivarium-reeds-night-t (gemini-3-pro-image), an edit of the signed day; graded at 0 MXN by tools/roomgrade.py",
+    "source_near": "vivarium-near-reeds-night-t (gemini-3-pro-image); graded by tools/roomgrade.py",
+    "measures_idle": {
+     "whole": 28.61,
+     "floor": 34.08,
+     "back": 25.41,
+     "R-B whole": -9.9
+    },
+    "measures_near": {
+     "whole": 24.38,
+     "floor": 26.23,
+     "back": 23.5,
+     "R-B whole": -12.9
+    },
+    "pieces": "rooms/pieces/reeds/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
+    "seated": "rooms/seated-idle-reeds-night.png",
+    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept"
+   }
   }
  },
  "ferns": {
@@ -705,6 +783,45 @@
     56
    ],
    "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads"
+  },
+  "lights": {
+   "day": {
+    "idle": "rooms/signed-idle-ferns-day.png",
+    "near": "rooms/signed-near-ferns-day.png",
+    "measures_idle": {
+     "whole": 38.97,
+     "floor": 40.05,
+     "back": 42.26,
+     "R-B whole": 42.5
+    },
+    "measures_near": {
+     "whole": 36.91,
+     "floor": 33.31,
+     "back": 40.4,
+     "R-B whole": 31.9
+    }
+   },
+   "night": {
+    "idle": "rooms/signed-idle-ferns-night.png",
+    "near": "rooms/signed-near-ferns-night.png",
+    "source_idle": "idle-vivarium-ferns-night-t (gemini-3-pro-image), an edit of the signed day; graded at 0 MXN by tools/roomgrade.py",
+    "source_near": "vivarium-near-ferns-night-t (gemini-3-pro-image); graded by tools/roomgrade.py",
+    "measures_idle": {
+     "whole": 24.89,
+     "floor": 27.58,
+     "back": 24.79,
+     "R-B whole": -11.3
+    },
+    "measures_near": {
+     "whole": 24.33,
+     "floor": 26.23,
+     "back": 22.84,
+     "R-B whole": -9.1
+    },
+    "pieces": "rooms/pieces/ferns/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
+    "seated": "rooms/seated-idle-ferns-night.png",
+    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept"
+   }
   }
  },
  "roots": {

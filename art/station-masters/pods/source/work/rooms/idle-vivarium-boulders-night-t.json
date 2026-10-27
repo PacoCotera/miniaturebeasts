@@ -1,0 +1,16 @@
+[
+ {
+  "name": "idle-vivarium-boulders-night-t",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/rooms/signed-idle-boulders-day.png",
+    "IMAGE 1, THE PICTURE TO RELIGHT (this room's signed day): keep everything, relight only:"
+   ]
+  ],
+  "prompt": "Output a NEW image, 16:9: Image 1 at a different time of day. NIGHT in this shrine garden: cool moonlight from the upper left; the warm autumn bokeh behind goes dark blue-grey; the maple keeps EXACTLY its leaves, shape and amber-gold colour, only darkened and cooled by moonlight with a faint cool rim on the top of the canopy; the stones dark with cool rims on their tops; the pond dark with one thin cool reflection. The open moss ground in the front half stays the BRIGHTEST part of the picture, softly lit, clearly brighter than the back, so small creatures read on it; the back goes darker. No moon disc in view, no lamps, no glow, no stars, no fireflies. Keep Image 1 EXACTLY the same in composition and content: every plant, stone, root, leaf, the ground's shapes and levels, in the same places and sizes, in the same hand-painted miniature finish; change ONLY the light and its colour. Do not move, add or remove anything. No creatures, no text."
+ }
+]
