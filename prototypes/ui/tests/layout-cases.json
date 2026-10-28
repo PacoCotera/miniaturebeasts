@@ -1,5 +1,10 @@
 {
  "note": "The layout check's case corpus (ui/tests/layout-cases.test.mjs): golden states with the findings the check must make on them (expect: the known faults it reproduces, each with its source in the validation of the check, ✓m measured in the prototype, ✓e expected from the audit's numbers), the findings it must not make (clear: the findings the owner cleared), and what waits for data (pending: ✓d, once UI/UX declares it, or a ✓e the check does not reproduce). The owner's review of 2026-10-26 is the last 98 cases, one a card (card, verdict): a fault expects its own kind, or the finding that now carries the same fault; a fine clears its kind, by a rule, by a spec's data or by a frame.json exception; not sure is as the tune left it. They match by kind (rule, part, node, other, container), not by measure: the goldens moved (Q1, TY1.1) since the review. Each state's fixture log is ui/tests/layout-cases/<screen>/<state>.json; layout-check.mjs <logs> --refresh-cases takes them again after a retake. An expect matches a finding with that rule (and part, node, other as a prefix, container, measured: a number or [min, max]).",
+ "frozen": {
+  "vivarium/vivarium-docked": {"from": "961525c3", "hash": "4cf367cb", "why": "the owner's and UI/UX's marks were made on these residents' places; the walk on levels (R4) moved the starts"},
+  "vivarium/vivarium-twelve": {"from": "961525c3", "hash": "bb53921f", "why": "the owner's and UI/UX's marks were made on these residents' places; the walk on levels (R4) moved the starts"},
+  "vivarium/vivarium-walk-8000ms": {"from": "961525c3", "hash": "c6628872", "why": "the owner's and UI/UX's marks were made on these residents' places; the walk on levels (R4) moved the starts"}
+ },
  "cases": [
   { "state": "pods/overview, identified, pod focused", "from": "owner, Pods overview",
     "expect": [

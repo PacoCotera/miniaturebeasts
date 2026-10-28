@@ -93,8 +93,8 @@ if (isMain) {
   const stale = []; for (const r of records) { const g = existsSync(path.join(goldenDir, r.screen, r.screen + ".json")) ? J(path.join(goldenDir, r.screen, r.screen + ".json")).states?.[r.state] : null; if (!g || g.hash !== r.hash) stale.push(`${r.screen}/${r.state}`); }
   if (stale.length) { console.error(`the logs are not the goldens' (${stale.length} states differ or have no golden: ${stale.slice(0, 4).join(", ")}${stale.length > 4 ? ", …" : ""}): take them with goldens.mjs --check --logs`); process.exit(2); }
   if (args.includes("--refresh-cases")) {
-    const casesFile = path.join(root, "ui/tests/layout-cases.json"), fixDir = path.join(root, "ui/tests/layout-cases"), cases = J(casesFile); let n = 0;
-    for (const c of cases.cases) { const [screen, ...rest] = c.state.split("/"), state = rest.join("/"), r = records.find((q) => q.screen === screen && q.state === state); if (!r) { console.error("FAIL the case corpus names " + c.state + ", which the logs do not hold"); process.exit(1); }
+    const casesFile = path.join(root, "ui/tests/layout-cases.json"), fixDir = path.join(root, "ui/tests/layout-cases"), cases = J(casesFile), frozen = cases.frozen ?? {}; let n = 0;
+    for (const c of cases.cases) { if (frozen[c.state]) { console.log(`skipped ${c.state}: frozen at ${frozen[c.state].from}`); continue; } const [screen, ...rest] = c.state.split("/"), state = rest.join("/"), r = records.find((q) => q.screen === screen && q.state === state); if (!r) { console.error("FAIL the case corpus names " + c.state + ", which the logs do not hold"); process.exit(1); }
       mkdirSync(path.join(fixDir, screen), { recursive: true }); writeFileSync(path.join(fixDir, screen, slug(state) + ".json"), JSON.stringify(r) + "\n"); n++; }
     console.log(`refreshed ${n} fixture logs in ${path.relative(process.cwd(), fixDir) || fixDir}`); process.exit(0);
   }

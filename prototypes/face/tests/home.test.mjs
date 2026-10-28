@@ -283,8 +283,10 @@ test("the ring moves between targets as the same eight LVGL objects; going away 
 
 // ---- the Vivarium window (build spec 3, H2): the crop of Idle's painting, the inner shade, six walkers on the moved profile, the away frame and its keep-out, the event tag, and the budgets of section 7 ----
 import { movingScene, bootScene, runFrames, STATE, SPEC } from "./moving-scene.mjs";
-const vivSpec = SPEC("vivarium"), PROF = vivSpec.regions.resident.walk.profile, WIN = homeSpec.regions.window, RW = homeSpec.regions.resident.walk;
-const groundTopHome = (fx) => { const x = fx - 24 + WIN.painting.cx; let t = PROF.top[0]; PROF.x.forEach((b, i) => { if (x >= b) t = PROF.top[i]; }); return t - 36; };   // groundTop_home(x) = groundTop_viv(x - 24 + cx) - 36
+const vivSpec = SPEC("vivarium"), WIN = homeSpec.regions.window, RW = homeSpec.regions.resident.walk;
+// Home's ground is the main level of the room (rooms.json, painting coordinates) in the window's: the painting less the crop's offset, x less 40 and y less 116 (home.json window.rect less painting.at)
+const ROOMMAIN = SPEC("rooms").rooms.roots.levels[0], HDX = WIN.rect[0] - WIN.painting.cx, HDY = WIN.rect[1] - WIN.painting.rows[0];
+const groundTopHome = (fx) => { const x = fx - HDX; let t = ROOMMAIN.top[0]; ROOMMAIN.x.slice(0, -1).forEach((b, i) => { if (x >= b) t = ROOMMAIN.top[i]; }); return t + HDY; };
 const homeScene = (o = {}) => movingScene("home", { motionSets: false, ...o });
 test("the window is the 1:1 crop at (64, 194) of Idle's painting of the light, 604 by 362 at (24, 78), with a 2 px inner shade on the top and left drawn as rects; the placeholder goes, the Library's stays", { skip }, async () => {
   assert.deepEqual([WIN.painting.cx, WIN.painting.at, WIN.painting.rows, WIN.rect], [64, [64, 194], [194, 555], [24, 78, 604, 362]]);
@@ -303,7 +305,7 @@ test("the window shows at most six of the mibis at home, the ones with the most 
   assert.equal(homeScene({ adults: 3, carry: [0], docked: true }).props.regions.residents.length, 3, "docked, the carried one is at home and walks (the bed is the Vivarium's)");
   assert.ok(!sc.props.focus.targets.some((t) => /resident/.test(t.id)));
 });
-test("the walkers keep to the moved ground profile, x 32 to 620, feet to 435, and out of the away frame's keep-out while it shows, over a minute of walking", { skip }, async () => {
+test("the walkers keep to the room's main floor in the window, x 32 to 620, feet to 435, and out of the away frame's keep-out while it shows, and never stand on a raised level (lv 0, no leg), over a minute of walking", { skip }, async () => {
   for (const [name, o] of [["stills", { motionSets: false }], ["moving", { motionSets: true }]]) for (const away of [false, true]) {
     const sc = homeScene({ adults: 5, juveniles: 3, ...o, ...(away ? { docked: false, carry: [0, 1] } : {}) }), f = await bootScene(sc, { motion: true, dir: node }), res = sc.props.regions.residents, M = f.M;
     assert.equal(!!sc.props.regions.glass.away, away); assert.equal(res.length, 6); assert.deepEqual(f.errors(), []);
@@ -311,7 +313,8 @@ test("the walkers keep to the moved ground profile, x 32 to 620, feet to 435, an
     let moved = 0; const seen = new Set();
     runFrames(f, 60000, { each: () => { res.forEach((p, i) => { let x = M._face_test_mv(i, 0), feet = M._face_test_mv(i, 1); if (x < -1000) { const b = box(f, `g.${p.id}`); x = b[0] + WIN.rect[0]; feet = b[1] + b[3] + WIN.rect[1]; }   /* a still: its picture box (the clip's own coordinates), the feet its bottom edge */ const W = fig[i][2], fx = x + Math.floor(W / 2); seen.add(i);
       assert.ok(x >= RW.ground[0] && x + W <= RW.ground[0] + RW.ground[2], `${name}: ${p.id} x ${x} + ${W} leaves 32 .. 620`); assert.ok(feet <= 435, `${p.id} feet ${feet} below the foot 435`);
-      assert.ok(feet >= groundTopHome(fx), `${name}: ${p.id} feet ${feet} above the profile ${groundTopHome(fx)} at ${fx}`);
+      assert.ok(feet >= groundTopHome(fx), `${name}: ${p.id} feet ${feet} above the main floor ${groundTopHome(fx)} at ${fx}`); assert.ok(feet >= RW.ground[1], `${name}: ${p.id} feet ${feet} above Home's band ${RW.ground[1]}`);
+      { const st = STATE(M._face_test_state(i)); assert.deepEqual([st.lv, st.leg], [0, 0], `${name}: ${p.id} is on a raised level or a join`); }
       if (away) assert.ok(!(x + W > RW.keepOut[0] && feet >= RW.keepOut[1]), `${name}: ${p.id} at (${x}, ${feet}) meets the away frame's keep-out`); moved++; }); } });
     assert.ok(moved > 0 && seen.size === 6, `${name}: all six walked and were read`); assert.deepEqual(f.errors(), []);
   }

@@ -9,17 +9,20 @@ import { findings } from "../specs/layout.mjs";
 import { specFor } from "../../face/tools/layout-check.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), J = (f) => JSON.parse(readFileSync(f, "utf8"));
-const cases = J(path.join(here, "layout-cases.json")).cases, frame = J(path.join(here, "../specs/station/frame.json"));
+const corpus = J(path.join(here, "layout-cases.json")), cases = corpus.cases, frozen = corpus.frozen ?? {}, frame = J(path.join(here, "../specs/station/frame.json"));
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
 const matches = (f, e) => f.rule === e.rule && (e.part == null || f.part === e.part) && (e.node == null || f.node === e.node) && (e.other == null || String(f.other).startsWith(e.other)) && (e.container == null || f.container.id === e.container)
   && (e.measured == null || (Array.isArray(e.measured) ? f.measured >= e.measured[0] && f.measured <= e.measured[1] : f.measured === e.measured));
+// a frozen state keeps the fixture it was marked on (layout-cases/<screen>/frozen/), and its hash is the freeze's, not the golden's
+const fixtureOf = (state) => { const [screen, ...rest] = state.split("/"), s = rest.join("/"); return path.join(here, "layout-cases", screen, ...(frozen[state] ? ["frozen"] : []), slug(s) + ".json"); };
 const say = (f) => `${f.rule}${f.part ?? ""} [${f.container.id}] ${f.node} / ${f.other} ${f.measured} → ${f.required}`;
 
 for (const c of cases) test(`${c.state} (${c.from})`, () => {
-  const [screen, ...rest] = c.state.split("/"), state = rest.join("/"), file = path.join(here, "layout-cases", screen, slug(state) + ".json");
+  const [screen, ...rest] = c.state.split("/"), state = rest.join("/"), file = fixtureOf(c.state);
   assert.ok(existsSync(file), `no fixture log for ${c.state}: layout-check.mjs <logs> --refresh-cases`);
   const rec = J(file), golden = J(path.join(here, "../../face/golden", screen, screen + ".json")).states[state];
-  assert.equal(rec.hash, golden?.hash, `the fixture of ${c.state} is not its golden's (a retake): layout-check.mjs <logs> --refresh-cases`);
+  if (frozen[c.state]) assert.equal(rec.hash, frozen[c.state].hash, `the frozen fixture of ${c.state} is not the one frozen`);
+  else assert.equal(rec.hash, golden?.hash, `the fixture of ${c.state} is not its golden's (a retake): layout-check.mjs <logs> --refresh-cases`);
   const { spec } = specFor(rec), fs = findings(rec.log, spec, frame, rec.screen, rec.state, { facts: rec.facts ?? {} });
   for (const e of c.expect) assert.ok(fs.some((f) => matches(f, e)), `${c.state}: expected ${e.rule}${e.part ?? ""} ${e.node ?? ""} ${e.other ?? ""} ${JSON.stringify(e.measured ?? "")} (${e.why}); found:\n  ${fs.filter((f) => f.rule === e.rule).map(say).join("\n  ")}`);
   for (const e of c.clear) assert.ok(!fs.some((f) => matches(f, e)), `${c.state}: cleared by the owner, but found: ${fs.filter((f) => matches(f, e)).map(say).join("; ")}`);
@@ -47,7 +50,7 @@ test("the owner's exceptions: each fine card whose kind the rule still finds is 
   for (const e of frame.layout.exceptions) {
     const c = by("fine").find((q) => q.clear.some((x) => x.node === e.node && x.rule === e.rule && (e.other == null || x.other === e.other)) && q.state.startsWith(e.screen + "/"));
     assert.ok(c, `${e.screen} ${e.rule} ${e.node}: a fine card of the owner's`);
-    const [screen, ...rest] = c.state.split("/"), rec = J(path.join(here, "layout-cases", screen, slug(rest.join("/")) + ".json")), { spec } = specFor(rec), run = (f) => findings(rec.log, spec, f, rec.screen, rec.state, { facts: rec.facts ?? {} });
+    const [screen, ...rest] = c.state.split("/"), rec = J(fixtureOf(c.state)), { spec } = specFor(rec), run = (f) => findings(rec.log, spec, f, rec.screen, rec.state, { facts: rec.facts ?? {} });
     const ex = (f) => f.rule === e.rule && f.node === e.node && (e.other == null || f.other === e.other);
     assert.ok(run(bare).some(ex), `${c.card}: without its exception the finding is made`); assert.ok(!run(frame).some(ex), `${c.card}: with it, it is not`);
   }

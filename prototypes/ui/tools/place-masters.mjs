@@ -98,7 +98,7 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
       switch (p.kind) {
         case "occluder": occ(p, p.level); break;
         case "bed": { const q = take(p, tpl); if (q.why) throw new Error(`${room}: the bed: ${q.why}`); bed = { rect: p.rect_painting, foot: p.foot_painting, picture: q.picture }; break; }
-        case "fitting": case "mist": { const q = take(p, tpl); if (q.why) { leftOut.push({ room, id: p.id, why: q.why, kept: "left out" }); break; } pieces.push(piece(p, "back", { rect: p.rect_painting, ...(p.kind === "mist" ? { opa: Math.round(p.alpha * 255) } : {}), picture: q.picture })); break; }
+        case "fitting": case "mist": { const q = take(p, tpl); if (q.why) { leftOut.push({ room, id: p.id, why: q.why, kept: "left out" }); break; } pieces.push(piece(p, "back", { rect: p.rect_painting, ...(p.kind === "mist" && !p.alpha_in_file ? { opa: Math.round(p.alpha * 255) } : {}), picture: q.picture })); break; }
         case "drop": case "anim": {
           ambient.push(p);   // carried verbatim for the movement workstream; never drawn here
           if (p.poses_deg?.fill !== undefined && p.file?.includes("{pose}")) { const id = `${p.id}-fill`, fp = { ...p, id, rect_painting: p.rect_painting }, q = take(fp, p.file.replace("{pose}", "fill")); if (q.why) leftOut.push({ room, id, why: q.why, kept: "left out" }); else pieces.push({ id, kind: "back", rect: p.rect_painting, picture: q.picture }); }   // the arm's fill pose: the spout is never armless

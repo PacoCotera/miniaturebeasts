@@ -2,7 +2,7 @@
  "schema": "mb-rooms/1",
  "source": {
   "repo": "masters-pods",
-  "commit": "66d1bad5",
+  "commit": "b7bc7c9e",
   "manifest": "art/station-masters/pods/rooms/rooms-manifest.json"
  },
  "order": ["roots", "reeds", "boulders", "ferns"],
@@ -70,7 +70,6 @@
      "id": "roots-mist-2",
      "kind": "back",
      "rect": [850, 324, 80, 18],
-     "opa": 153,
      "picture": "room-roots-mist-2-{light}-80x18"
     }
    ],
@@ -328,10 +327,15 @@
      "picture": "room-ferns-copper-2-{light}-6x47"
     },
     {
+     "id": "ferns-mist-1",
+     "kind": "back",
+     "rect": [530, 312, 104, 26],
+     "picture": "room-ferns-mist-1-{light}-104x26"
+    },
+    {
      "id": "ferns-mist-4",
      "kind": "back",
      "rect": [600, 338, 150, 24],
-     "opa": 115,
      "picture": "room-ferns-mist-4-{light}-150x24"
     }
    ],

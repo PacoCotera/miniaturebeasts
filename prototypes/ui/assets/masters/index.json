@@ -5567,7 +5567,7 @@
    "h": 48,
    "sha256": "eee517d24f63618463951e2789403e6f1fe9d6ac55fbe309003e6e5c87c09a77",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/boulders/boulders-arm-fill-dawn.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-arm-fill-dawn.png@b7bc7c9e"
   },
   "room-boulders-arm-fill-day-48x48": {
    "file": "rooms/room-boulders-arm-fill-day-48x48.png",
@@ -5575,7 +5575,7 @@
    "h": 48,
    "sha256": "3a7cceea6f5a3129fa3848383b8255348cbbeb2af5a8279aaf85bc9bf0c209ed",
    "signed": "art director, Mon 26 Oct 2026 18:44 (Mexico City), day composition: G1 no fittings (composite method); G2 per-room levels below; G3 day floor L* 40.0, whole 39.8; G4 painted finish; G6 Home cut holds the maple, pond and terrace (the hero stone sits just outside it at x 690-830); G7 the pond set back behind the ground, no fish painted, no shore onto the ground; G10 all six minis read on the moss and on the terrace",
-   "from": "rooms/pieces/boulders/boulders-arm-fill-day.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-arm-fill-day.png@b7bc7c9e"
   },
   "room-boulders-arm-fill-dusk-48x48": {
    "file": "rooms/room-boulders-arm-fill-dusk-48x48.png",
@@ -5583,7 +5583,7 @@
    "h": 48,
    "sha256": "30514d5266f1bd8b51929b4c5b260d27196c10bf8c124e346a6d82d099a383fe",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/boulders/boulders-arm-fill-dusk.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-arm-fill-dusk.png@b7bc7c9e"
   },
   "room-boulders-arm-fill-night-48x48": {
    "file": "rooms/room-boulders-arm-fill-night-48x48.png",
@@ -5591,7 +5591,7 @@
    "h": 48,
    "sha256": "5823af9f0daba7d1eccb4829c746ce6f68af3efa892d1ad1076ae948120ece4e",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/boulders/boulders-arm-fill-night.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-arm-fill-night.png@b7bc7c9e"
   },
   "room-boulders-cushion-1-dawn-82x46": {
    "file": "rooms/room-boulders-cushion-1-dawn-82x46.png",
@@ -5599,7 +5599,7 @@
    "h": 46,
    "sha256": "c2d51715dbf43d9babc0d0cfe2f8847283b1dc2ea4f4b9cc75c5a771988ed530",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/boulders/boulders-cushion-1-dawn.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-cushion-1-dawn.png@b7bc7c9e"
   },
   "room-boulders-cushion-1-day-82x46": {
    "file": "rooms/room-boulders-cushion-1-day-82x46.png",
@@ -5607,7 +5607,7 @@
    "h": 46,
    "sha256": "844416b39e5e83deedc814f899b4ecf032c6d97699d28ab6444fc74bd0b8c713",
    "signed": "art director, Mon 26 Oct 2026 18:44 (Mexico City), day composition: G1 no fittings (composite method); G2 per-room levels below; G3 day floor L* 40.0, whole 39.8; G4 painted finish; G6 Home cut holds the maple, pond and terrace (the hero stone sits just outside it at x 690-830); G7 the pond set back behind the ground, no fish painted, no shore onto the ground; G10 all six minis read on the moss and on the terrace",
-   "from": "rooms/pieces/boulders/boulders-cushion-1-day.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-cushion-1-day.png@b7bc7c9e"
   },
   "room-boulders-cushion-1-dusk-82x46": {
    "file": "rooms/room-boulders-cushion-1-dusk-82x46.png",
@@ -5615,7 +5615,7 @@
    "h": 46,
    "sha256": "892495f2d6433b0bb9e4b31eb09675ab1097af129eb8fc00d39fd232fea389b0",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/boulders/boulders-cushion-1-dusk.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-cushion-1-dusk.png@b7bc7c9e"
   },
   "room-boulders-cushion-1-night-82x46": {
    "file": "rooms/room-boulders-cushion-1-night-82x46.png",
@@ -5623,7 +5623,7 @@
    "h": 46,
    "sha256": "c7a50b1b91bd40e4cd53b9e607d58c14fa8149653c07b7c5a1fba830079b6a30",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/boulders/boulders-cushion-1-night.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-cushion-1-night.png@b7bc7c9e"
   },
   "room-boulders-idle-dawn-1024x568": {
    "file": "rooms/room-boulders-idle-dawn-1024x568.png",
@@ -5631,7 +5631,7 @@
    "h": 568,
    "sha256": "57cc6bb4da6dace8e935ddd15c35be04e7d92c4ec3f34d5e6dff01de19e15e91",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/seated-idle-boulders-dawn.png@66d1bad5"
+   "from": "rooms/seated-idle-boulders-dawn.png@b7bc7c9e"
   },
   "room-boulders-idle-day-1024x568": {
    "file": "rooms/room-boulders-idle-day-1024x568.png",
@@ -5639,7 +5639,7 @@
    "h": 568,
    "sha256": "d28fe65e5d7f604d431b8e99bfb9db8df987b84175828159c8e54535690fd29e",
    "signed": "art director, Mon 26 Oct 2026 18:44 (Mexico City), day composition: G1 no fittings (composite method); G2 per-room levels below; G3 day floor L* 40.0, whole 39.8; G4 painted finish; G6 Home cut holds the maple, pond and terrace (the hero stone sits just outside it at x 690-830); G7 the pond set back behind the ground, no fish painted, no shore onto the ground; G10 all six minis read on the moss and on the terrace",
-   "from": "rooms/seated-idle-boulders-day.png@66d1bad5"
+   "from": "rooms/seated-idle-boulders-day.png@b7bc7c9e"
   },
   "room-boulders-idle-dusk-1024x568": {
    "file": "rooms/room-boulders-idle-dusk-1024x568.png",
@@ -5647,7 +5647,7 @@
    "h": 568,
    "sha256": "ba1afec8d055e533a03e92b913e52f3bfefc92b652938ce48e67b2f419e6bb34",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/seated-idle-boulders-dusk.png@66d1bad5"
+   "from": "rooms/seated-idle-boulders-dusk.png@b7bc7c9e"
   },
   "room-boulders-idle-night-1024x568": {
    "file": "rooms/room-boulders-idle-night-1024x568.png",
@@ -5655,7 +5655,7 @@
    "h": 568,
    "sha256": "613c2affe08f21c7f68ee2ff4ab009c6b12f05814dace163269837ee867cb129",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/seated-idle-boulders-night.png@66d1bad5"
+   "from": "rooms/seated-idle-boulders-night.png@b7bc7c9e"
   },
   "room-boulders-lantern-dawn-34x44": {
    "file": "rooms/room-boulders-lantern-dawn-34x44.png",
@@ -5663,7 +5663,7 @@
    "h": 44,
    "sha256": "c62c2d5d8c2101b986b8546c93ef46676c88a6622ef8d7614738f273cc6c6a3d",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/boulders/boulders-lantern-dawn.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-lantern-dawn.png@b7bc7c9e"
   },
   "room-boulders-lantern-day-34x44": {
    "file": "rooms/room-boulders-lantern-day-34x44.png",
@@ -5671,7 +5671,7 @@
    "h": 44,
    "sha256": "503271749a33fceb249b7cb7d9e6bac11da7ee7a0c7e8a35e9c7485afb856998",
    "signed": "art director, Mon 26 Oct 2026 18:44 (Mexico City), day composition: G1 no fittings (composite method); G2 per-room levels below; G3 day floor L* 40.0, whole 39.8; G4 painted finish; G6 Home cut holds the maple, pond and terrace (the hero stone sits just outside it at x 690-830); G7 the pond set back behind the ground, no fish painted, no shore onto the ground; G10 all six minis read on the moss and on the terrace",
-   "from": "rooms/pieces/boulders/boulders-lantern-day.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-lantern-day.png@b7bc7c9e"
   },
   "room-boulders-lantern-dusk-34x44": {
    "file": "rooms/room-boulders-lantern-dusk-34x44.png",
@@ -5679,7 +5679,7 @@
    "h": 44,
    "sha256": "1a4dbc07b8c53eff542b096b5f0fa6803737accf60f9f5137a79120e59c07ea3",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/boulders/boulders-lantern-dusk.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-lantern-dusk.png@b7bc7c9e"
   },
   "room-boulders-lantern-night-34x44": {
    "file": "rooms/room-boulders-lantern-night-34x44.png",
@@ -5687,7 +5687,7 @@
    "h": 44,
    "sha256": "73d07004d753e11a0ca6eea734085c78ab8dc2555e3daf15692e79ce4fac5bf4",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/boulders/boulders-lantern-night.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-lantern-night.png@b7bc7c9e"
   },
   "room-boulders-near-dawn-544x408": {
    "file": "rooms/room-boulders-near-dawn-544x408.png",
@@ -5695,7 +5695,7 @@
    "h": 408,
    "sha256": "c34449ac4174ca12c1e4062ff3f962df2b83a2c1f56a80b417dad6d2273359d3",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/signed-near-boulders-dawn.png@66d1bad5"
+   "from": "rooms/signed-near-boulders-dawn.png@b7bc7c9e"
   },
   "room-boulders-near-day-544x408": {
    "file": "rooms/room-boulders-near-day-544x408.png",
@@ -5703,7 +5703,7 @@
    "h": 408,
    "sha256": "26fa7c65804be6790303a1aec32ec949ad8a1ed11645d81c71b726392c74b067",
    "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads",
-   "from": "rooms/signed-near-boulders-day.png@66d1bad5"
+   "from": "rooms/signed-near-boulders-day.png@b7bc7c9e"
   },
   "room-boulders-near-dusk-544x408": {
    "file": "rooms/room-boulders-near-dusk-544x408.png",
@@ -5711,7 +5711,7 @@
    "h": 408,
    "sha256": "a92e4781cda1c50cbd79cb3cf867a2d23e83d4abdd52a4ba72f78d90c9281ad2",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/signed-near-boulders-dusk.png@66d1bad5"
+   "from": "rooms/signed-near-boulders-dusk.png@b7bc7c9e"
   },
   "room-boulders-near-night-544x408": {
    "file": "rooms/room-boulders-near-night-544x408.png",
@@ -5719,7 +5719,7 @@
    "h": 408,
    "sha256": "03bc04d68228efe3ae5aa6760e528827e78aa0bfe4f151a784e2eae3b17bc44b",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/signed-near-boulders-night.png@66d1bad5"
+   "from": "rooms/signed-near-boulders-night.png@b7bc7c9e"
   },
   "room-boulders-shishi-dawn-64x56": {
    "file": "rooms/room-boulders-shishi-dawn-64x56.png",
@@ -5727,7 +5727,7 @@
    "h": 56,
    "sha256": "46703181651c2e918a32338386dc2d5c641cdbe7c379f65aa295f07a6dedae21",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/boulders/boulders-shishi-dawn.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-shishi-dawn.png@b7bc7c9e"
   },
   "room-boulders-shishi-day-64x56": {
    "file": "rooms/room-boulders-shishi-day-64x56.png",
@@ -5735,7 +5735,7 @@
    "h": 56,
    "sha256": "1a3ede848788dd1a859cfef96c9e717dcad33cca23ed474d76e3d8eab78915e3",
    "signed": "art director, Mon 26 Oct 2026 18:44 (Mexico City), day composition: G1 no fittings (composite method); G2 per-room levels below; G3 day floor L* 40.0, whole 39.8; G4 painted finish; G6 Home cut holds the maple, pond and terrace (the hero stone sits just outside it at x 690-830); G7 the pond set back behind the ground, no fish painted, no shore onto the ground; G10 all six minis read on the moss and on the terrace",
-   "from": "rooms/pieces/boulders/boulders-shishi-day.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-shishi-day.png@b7bc7c9e"
   },
   "room-boulders-shishi-dusk-64x56": {
    "file": "rooms/room-boulders-shishi-dusk-64x56.png",
@@ -5743,7 +5743,7 @@
    "h": 56,
    "sha256": "56e60363e883806e8230d964339377668ce5a40fbb2e79c827dd28a98828a2a4",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/boulders/boulders-shishi-dusk.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-shishi-dusk.png@b7bc7c9e"
   },
   "room-boulders-shishi-night-64x56": {
    "file": "rooms/room-boulders-shishi-night-64x56.png",
@@ -5751,7 +5751,7 @@
    "h": 56,
    "sha256": "74c9ccac4fa1d7f67f5da8e36b13fc670b28672811366ec4318cf50889bd2dee",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/boulders/boulders-shishi-night.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-shishi-night.png@b7bc7c9e"
   },
   "room-boulders-stone-2-dawn-80x40": {
    "file": "rooms/room-boulders-stone-2-dawn-80x40.png",
@@ -5759,7 +5759,7 @@
    "h": 40,
    "sha256": "b05cbd0911e52fb61025e9312084b3bd661a00890ae370e35c97862fb258fca6",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/boulders/boulders-stone-2-dawn.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-stone-2-dawn.png@b7bc7c9e"
   },
   "room-boulders-stone-2-day-80x40": {
    "file": "rooms/room-boulders-stone-2-day-80x40.png",
@@ -5767,7 +5767,7 @@
    "h": 40,
    "sha256": "353b95b496dc3d67db241de176474e02244805cc1e8627380b7f691654323f90",
    "signed": "art director, Mon 26 Oct 2026 18:44 (Mexico City), day composition: G1 no fittings (composite method); G2 per-room levels below; G3 day floor L* 40.0, whole 39.8; G4 painted finish; G6 Home cut holds the maple, pond and terrace (the hero stone sits just outside it at x 690-830); G7 the pond set back behind the ground, no fish painted, no shore onto the ground; G10 all six minis read on the moss and on the terrace",
-   "from": "rooms/pieces/boulders/boulders-stone-2-day.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-stone-2-day.png@b7bc7c9e"
   },
   "room-boulders-stone-2-dusk-80x40": {
    "file": "rooms/room-boulders-stone-2-dusk-80x40.png",
@@ -5775,7 +5775,7 @@
    "h": 40,
    "sha256": "c6568b55b4a953b7763ce65d1d07f9dc10de1a01a8736bbd0f2c59945b0286c2",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/boulders/boulders-stone-2-dusk.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-stone-2-dusk.png@b7bc7c9e"
   },
   "room-boulders-stone-2-night-80x40": {
    "file": "rooms/room-boulders-stone-2-night-80x40.png",
@@ -5783,7 +5783,7 @@
    "h": 40,
    "sha256": "582a04517707892a3c728aa8724a9e34376942c9aa7d595bdfea1b4b61c7a32e",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/boulders/boulders-stone-2-night.png@66d1bad5"
+   "from": "rooms/pieces/boulders/boulders-stone-2-night.png@b7bc7c9e"
   },
   "room-cradle-front": {
    "file": "pods/room-cradle-front.png",
@@ -5805,7 +5805,7 @@
    "h": 78,
    "sha256": "ceee3ff0c7d54475011fb87c180e6884d9c0f943dcbc955e5c598b1cb7618738",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-copper-1-dawn.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-copper-1-dawn.png@b7bc7c9e"
   },
   "room-ferns-copper-1-day-4x78": {
    "file": "rooms/room-ferns-copper-1-day-4x78.png",
@@ -5813,7 +5813,7 @@
    "h": 78,
    "sha256": "bb10619b45062221bc528282ffd2cbf8ca2587ef70a55feaa45e1b7582caf9b8",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings, no front pieces, no hanging lines; day floor L* 40.0, whole 39.0; painted finish; Home cut holds the log, the croziers and the path; all six minis read on the moss, the path and the shelf",
-   "from": "rooms/pieces/ferns/ferns-copper-1-day.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-copper-1-day.png@b7bc7c9e"
   },
   "room-ferns-copper-1-dusk-4x78": {
    "file": "rooms/room-ferns-copper-1-dusk-4x78.png",
@@ -5821,7 +5821,7 @@
    "h": 78,
    "sha256": "ad0dbbe796b53ac74a7255378c3a0ae70cc66e07dcf2c3a096880d1e07ac25cc",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-copper-1-dusk.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-copper-1-dusk.png@b7bc7c9e"
   },
   "room-ferns-copper-1-night-4x78": {
    "file": "rooms/room-ferns-copper-1-night-4x78.png",
@@ -5829,7 +5829,7 @@
    "h": 78,
    "sha256": "0a3b2dda375491681ffb75b1e3d62f8d4739a144b19fe3951066c69e0ec0d45e",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/ferns/ferns-copper-1-night.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-copper-1-night.png@b7bc7c9e"
   },
   "room-ferns-copper-2-dawn-6x47": {
    "file": "rooms/room-ferns-copper-2-dawn-6x47.png",
@@ -5837,7 +5837,7 @@
    "h": 47,
    "sha256": "bf8ced61af7bee984b235ab33ec890b4b113eabad4914959dbb8563bde288cef",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-copper-2-dawn.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-copper-2-dawn.png@b7bc7c9e"
   },
   "room-ferns-copper-2-day-6x47": {
    "file": "rooms/room-ferns-copper-2-day-6x47.png",
@@ -5845,7 +5845,7 @@
    "h": 47,
    "sha256": "507ab36aa3c2ab081ee9cb2d9e66c11e74200fe2f5939014d71a1e101bae3545",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings, no front pieces, no hanging lines; day floor L* 40.0, whole 39.0; painted finish; Home cut holds the log, the croziers and the path; all six minis read on the moss, the path and the shelf",
-   "from": "rooms/pieces/ferns/ferns-copper-2-day.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-copper-2-day.png@b7bc7c9e"
   },
   "room-ferns-copper-2-dusk-6x47": {
    "file": "rooms/room-ferns-copper-2-dusk-6x47.png",
@@ -5853,7 +5853,7 @@
    "h": 47,
    "sha256": "718c58c1e41f26fcea76e4b4e705944cea28e1d76d0bacd8b97ea6b20432d502",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-copper-2-dusk.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-copper-2-dusk.png@b7bc7c9e"
   },
   "room-ferns-copper-2-night-6x47": {
    "file": "rooms/room-ferns-copper-2-night-6x47.png",
@@ -5861,7 +5861,7 @@
    "h": 47,
    "sha256": "51c061025fb1bec7bee99737410b57a62d7a762eb4c62728d82edb5ae8091a98",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/ferns/ferns-copper-2-night.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-copper-2-night.png@b7bc7c9e"
   },
   "room-ferns-crozier-1-dawn-64x46": {
    "file": "rooms/room-ferns-crozier-1-dawn-64x46.png",
@@ -5869,7 +5869,7 @@
    "h": 46,
    "sha256": "91727dcae4d9913913b89a8ca3f57a61d89b9c0aa38a71bd842e5ccb6e01f93b",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-crozier-1-dawn.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-crozier-1-dawn.png@b7bc7c9e"
   },
   "room-ferns-crozier-1-day-64x46": {
    "file": "rooms/room-ferns-crozier-1-day-64x46.png",
@@ -5877,7 +5877,7 @@
    "h": 46,
    "sha256": "30e85207bbbdfe4042da79ab9ffe61a04b5f3d181104dfbb4be55f9e525f2ade",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings, no front pieces, no hanging lines; day floor L* 40.0, whole 39.0; painted finish; Home cut holds the log, the croziers and the path; all six minis read on the moss, the path and the shelf",
-   "from": "rooms/pieces/ferns/ferns-crozier-1-day.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-crozier-1-day.png@b7bc7c9e"
   },
   "room-ferns-crozier-1-dusk-64x46": {
    "file": "rooms/room-ferns-crozier-1-dusk-64x46.png",
@@ -5885,7 +5885,7 @@
    "h": 46,
    "sha256": "cec848025472d40a88202f6a9d6505b8654f0335b6e67690bec6f1efb6cc823f",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-crozier-1-dusk.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-crozier-1-dusk.png@b7bc7c9e"
   },
   "room-ferns-crozier-1-night-64x46": {
    "file": "rooms/room-ferns-crozier-1-night-64x46.png",
@@ -5893,7 +5893,7 @@
    "h": 46,
    "sha256": "5ab4b6e651d6d3b8205b15e110d0b002124bc3d65c19933d77820d40fdb40447",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/ferns/ferns-crozier-1-night.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-crozier-1-night.png@b7bc7c9e"
   },
   "room-ferns-fern-1-dawn-71x48": {
    "file": "rooms/room-ferns-fern-1-dawn-71x48.png",
@@ -5901,7 +5901,7 @@
    "h": 48,
    "sha256": "72a1cac17207ccb264697440794a682ce6fdcee97b88ccc755dc4bfc6af937b6",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-fern-1-dawn.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-fern-1-dawn.png@b7bc7c9e"
   },
   "room-ferns-fern-1-day-71x48": {
    "file": "rooms/room-ferns-fern-1-day-71x48.png",
@@ -5909,7 +5909,7 @@
    "h": 48,
    "sha256": "b79f03dd5bdc45fa1e98d4e66bb1f9e0e3c503feb9713127c12dbd94d5d1dff7",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings, no front pieces, no hanging lines; day floor L* 40.0, whole 39.0; painted finish; Home cut holds the log, the croziers and the path; all six minis read on the moss, the path and the shelf",
-   "from": "rooms/pieces/ferns/ferns-fern-1-day.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-fern-1-day.png@b7bc7c9e"
   },
   "room-ferns-fern-1-dusk-71x48": {
    "file": "rooms/room-ferns-fern-1-dusk-71x48.png",
@@ -5917,7 +5917,7 @@
    "h": 48,
    "sha256": "c78f4a6858618f00a09f2140f85fff33b02f51cef1d75f427d99d70a56feca74",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-fern-1-dusk.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-fern-1-dusk.png@b7bc7c9e"
   },
   "room-ferns-fern-1-night-71x48": {
    "file": "rooms/room-ferns-fern-1-night-71x48.png",
@@ -5925,7 +5925,7 @@
    "h": 48,
    "sha256": "215fca8d852335078d6b4493bde76ab7bc6b58bedd30beeb0ee55f7527e2c477",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/ferns/ferns-fern-1-night.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-fern-1-night.png@b7bc7c9e"
   },
   "room-ferns-fogger-dawn-46x29": {
    "file": "rooms/room-ferns-fogger-dawn-46x29.png",
@@ -5933,7 +5933,7 @@
    "h": 29,
    "sha256": "8d6d6e5c42d354e593d2f5dcd250ca4f721fe2facf129eeeae07afec98bfa12e",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-fogger-dawn.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-fogger-dawn.png@b7bc7c9e"
   },
   "room-ferns-fogger-day-46x29": {
    "file": "rooms/room-ferns-fogger-day-46x29.png",
@@ -5941,7 +5941,7 @@
    "h": 29,
    "sha256": "e83f349bd2975ae96d6facc3dce67033bbd21199e0bb55295f6980013824a7df",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings, no front pieces, no hanging lines; day floor L* 40.0, whole 39.0; painted finish; Home cut holds the log, the croziers and the path; all six minis read on the moss, the path and the shelf",
-   "from": "rooms/pieces/ferns/ferns-fogger-day.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-fogger-day.png@b7bc7c9e"
   },
   "room-ferns-fogger-dusk-46x29": {
    "file": "rooms/room-ferns-fogger-dusk-46x29.png",
@@ -5949,7 +5949,7 @@
    "h": 29,
    "sha256": "3e1f2bcf6816748c5d3006a0526f08576accf508ca3fda6c388af4e6d2bcb1b7",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-fogger-dusk.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-fogger-dusk.png@b7bc7c9e"
   },
   "room-ferns-fogger-night-46x29": {
    "file": "rooms/room-ferns-fogger-night-46x29.png",
@@ -5957,7 +5957,7 @@
    "h": 29,
    "sha256": "6640eb0d9fdb7bfa6e98771bdcb388c6e1254c1b610a8327056537e37489381f",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/ferns/ferns-fogger-night.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-fogger-night.png@b7bc7c9e"
   },
   "room-ferns-idle-dawn-1024x568": {
    "file": "rooms/room-ferns-idle-dawn-1024x568.png",
@@ -5965,7 +5965,7 @@
    "h": 568,
    "sha256": "c090eca3b400e67e0db854aa1c7867ab45971b9429b8001911b2709b93c96100",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/seated-idle-ferns-dawn.png@66d1bad5"
+   "from": "rooms/seated-idle-ferns-dawn.png@b7bc7c9e"
   },
   "room-ferns-idle-day-1024x568": {
    "file": "rooms/room-ferns-idle-day-1024x568.png",
@@ -5973,7 +5973,7 @@
    "h": 568,
    "sha256": "db5a9e40c05622af7292cbf83fdac9b34def404528f3897a94905df754cd29d8",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings, no front pieces, no hanging lines; day floor L* 40.0, whole 39.0; painted finish; Home cut holds the log, the croziers and the path; all six minis read on the moss, the path and the shelf",
-   "from": "rooms/seated-idle-ferns-day.png@66d1bad5"
+   "from": "rooms/seated-idle-ferns-day.png@b7bc7c9e"
   },
   "room-ferns-idle-dusk-1024x568": {
    "file": "rooms/room-ferns-idle-dusk-1024x568.png",
@@ -5981,7 +5981,7 @@
    "h": 568,
    "sha256": "df34388963419519cf0e71f29963aca5689294b7737f2c19b6a791fcd15fae03",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/seated-idle-ferns-dusk.png@66d1bad5"
+   "from": "rooms/seated-idle-ferns-dusk.png@b7bc7c9e"
   },
   "room-ferns-idle-night-1024x568": {
    "file": "rooms/room-ferns-idle-night-1024x568.png",
@@ -5989,7 +5989,39 @@
    "h": 568,
    "sha256": "32f44c6279db5f4da0099d08c60ce3a39b556dce4b0dfa9a240fa14141625a90",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/seated-idle-ferns-night.png@66d1bad5"
+   "from": "rooms/seated-idle-ferns-night.png@b7bc7c9e"
+  },
+  "room-ferns-mist-1-dawn-104x26": {
+   "file": "rooms/room-ferns-mist-1-dawn-104x26.png",
+   "w": 104,
+   "h": 26,
+   "sha256": "f3cccbfd7276f812012cd5f62fefc570bc0e3aa6f45077f4af5e7466ea0a1b86",
+   "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
+   "from": "rooms/pieces/ferns/ferns-mist-1-dawn.png@b7bc7c9e"
+  },
+  "room-ferns-mist-1-day-104x26": {
+   "file": "rooms/room-ferns-mist-1-day-104x26.png",
+   "w": 104,
+   "h": 26,
+   "sha256": "21d3d7164da221acff848ab8f3ac7ace302af554bd464cef200dea65fa9056d9",
+   "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings, no front pieces, no hanging lines; day floor L* 40.0, whole 39.0; painted finish; Home cut holds the log, the croziers and the path; all six minis read on the moss, the path and the shelf",
+   "from": "rooms/pieces/ferns/ferns-mist-1-day.png@b7bc7c9e"
+  },
+  "room-ferns-mist-1-dusk-104x26": {
+   "file": "rooms/room-ferns-mist-1-dusk-104x26.png",
+   "w": 104,
+   "h": 26,
+   "sha256": "748833641e419ae2f30f820cbe1b6a9aeeef5453b1051f1113c4e0cf6df8a53e",
+   "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
+   "from": "rooms/pieces/ferns/ferns-mist-1-dusk.png@b7bc7c9e"
+  },
+  "room-ferns-mist-1-night-104x26": {
+   "file": "rooms/room-ferns-mist-1-night-104x26.png",
+   "w": 104,
+   "h": 26,
+   "sha256": "33d9379e01c92dae3b84a0046c22b4e2302dc3c52071068f825bdab59cb46ab3",
+   "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
+   "from": "rooms/pieces/ferns/ferns-mist-1-night.png@b7bc7c9e"
   },
   "room-ferns-mist-4-dawn-150x24": {
    "file": "rooms/room-ferns-mist-4-dawn-150x24.png",
@@ -5997,7 +6029,7 @@
    "h": 24,
    "sha256": "188413c55de7f88f97c2195ee819391262032eac4219a0bcc3eff974fd4cc0dd",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-mist-4-dawn.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-mist-4-dawn.png@b7bc7c9e"
   },
   "room-ferns-mist-4-day-150x24": {
    "file": "rooms/room-ferns-mist-4-day-150x24.png",
@@ -6005,7 +6037,7 @@
    "h": 24,
    "sha256": "aaaa86134e27813dabfdd576537a772a2ebe508d936fa9ecdae272ece5f15609",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings, no front pieces, no hanging lines; day floor L* 40.0, whole 39.0; painted finish; Home cut holds the log, the croziers and the path; all six minis read on the moss, the path and the shelf",
-   "from": "rooms/pieces/ferns/ferns-mist-4-day.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-mist-4-day.png@b7bc7c9e"
   },
   "room-ferns-mist-4-dusk-150x24": {
    "file": "rooms/room-ferns-mist-4-dusk-150x24.png",
@@ -6013,7 +6045,7 @@
    "h": 24,
    "sha256": "f7a82f09a4cb9484133b46b87445e25e656a3f2d2925bcebd8035a77b32047a9",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/ferns/ferns-mist-4-dusk.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-mist-4-dusk.png@b7bc7c9e"
   },
   "room-ferns-mist-4-night-150x24": {
    "file": "rooms/room-ferns-mist-4-night-150x24.png",
@@ -6021,7 +6053,7 @@
    "h": 24,
    "sha256": "06a6fa65410860f377a4fd4556295775db9aa6928620335c02fb037ef2c4beae",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/ferns/ferns-mist-4-night.png@66d1bad5"
+   "from": "rooms/pieces/ferns/ferns-mist-4-night.png@b7bc7c9e"
   },
   "room-ferns-near-dawn-544x408": {
    "file": "rooms/room-ferns-near-dawn-544x408.png",
@@ -6029,7 +6061,7 @@
    "h": 408,
    "sha256": "01c816a96551e7e19a424deb4ebdf66e2a0a11745dc93939ffd2b2e29bcfe9b2",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/signed-near-ferns-dawn.png@66d1bad5"
+   "from": "rooms/signed-near-ferns-dawn.png@b7bc7c9e"
   },
   "room-ferns-near-day-544x408": {
    "file": "rooms/room-ferns-near-day-544x408.png",
@@ -6037,7 +6069,7 @@
    "h": 408,
    "sha256": "c65967777b584a4c6f4ecd78a792935060f0c6330166e9284538576a5a68998a",
    "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads",
-   "from": "rooms/signed-near-ferns-day.png@66d1bad5"
+   "from": "rooms/signed-near-ferns-day.png@b7bc7c9e"
   },
   "room-ferns-near-dusk-544x408": {
    "file": "rooms/room-ferns-near-dusk-544x408.png",
@@ -6045,7 +6077,7 @@
    "h": 408,
    "sha256": "3288cf06a3252723b0da0d08495c5df8980ec9a6bd820efda6f1ca03c2fc328f",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/signed-near-ferns-dusk.png@66d1bad5"
+   "from": "rooms/signed-near-ferns-dusk.png@b7bc7c9e"
   },
   "room-ferns-near-night-544x408": {
    "file": "rooms/room-ferns-near-night-544x408.png",
@@ -6053,7 +6085,7 @@
    "h": 408,
    "sha256": "b8e61c718136df47f32d655370b13d21de0c42f55df792deea4710f7b49eb589",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/signed-near-ferns-night.png@66d1bad5"
+   "from": "rooms/signed-near-ferns-night.png@b7bc7c9e"
   },
   "room-reeds-idle-dawn-1024x568": {
    "file": "rooms/room-reeds-idle-dawn-1024x568.png",
@@ -6061,7 +6093,7 @@
    "h": 568,
    "sha256": "2a797923f764ca3cd0d935d8aebf8174d11f72a07ed34e236aab461efbaa1ccf",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/seated-idle-reeds-dawn.png@66d1bad5"
+   "from": "rooms/seated-idle-reeds-dawn.png@b7bc7c9e"
   },
   "room-reeds-idle-day-1024x568": {
    "file": "rooms/room-reeds-idle-day-1024x568.png",
@@ -6069,7 +6101,7 @@
    "h": 568,
    "sha256": "0e26f3b5a858f772e7429fd1486f1a34d9fb17883cfac48482279aac996012ec",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings (composite method), no front pieces; day floor L* 40.1, whole 57.4 (the haze); painted finish; Home cut holds the rock, the path and the haze; no water patches; all six minis read on the moss, the path and the bank",
-   "from": "rooms/seated-idle-reeds-day.png@66d1bad5"
+   "from": "rooms/seated-idle-reeds-day.png@b7bc7c9e"
   },
   "room-reeds-idle-dusk-1024x568": {
    "file": "rooms/room-reeds-idle-dusk-1024x568.png",
@@ -6077,7 +6109,7 @@
    "h": 568,
    "sha256": "d008930a8f8ebeaa4e8ec458a60d72742b187b966f479f246ceabe74123173d0",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/seated-idle-reeds-dusk.png@66d1bad5"
+   "from": "rooms/seated-idle-reeds-dusk.png@b7bc7c9e"
   },
   "room-reeds-idle-night-1024x568": {
    "file": "rooms/room-reeds-idle-night-1024x568.png",
@@ -6085,7 +6117,7 @@
    "h": 568,
    "sha256": "32e456785beb7007ad45a1353d364a7884c547cd3278eee7344f49ec6277e3c3",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/seated-idle-reeds-night.png@66d1bad5"
+   "from": "rooms/seated-idle-reeds-night.png@b7bc7c9e"
   },
   "room-reeds-near-dawn-544x408": {
    "file": "rooms/room-reeds-near-dawn-544x408.png",
@@ -6093,7 +6125,7 @@
    "h": 408,
    "sha256": "81f459865ef7e2b6a29c0bc41f8e49a6077d9159d5d28ddccf243cd5223ceafd",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/signed-near-reeds-dawn.png@66d1bad5"
+   "from": "rooms/signed-near-reeds-dawn.png@b7bc7c9e"
   },
   "room-reeds-near-day-544x408": {
    "file": "rooms/room-reeds-near-day-544x408.png",
@@ -6101,7 +6133,7 @@
    "h": 408,
    "sha256": "2f7cc4796a0c570767546b48d1bb7565736be85e77e687152ec36c194be50170",
    "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads",
-   "from": "rooms/signed-near-reeds-day.png@66d1bad5"
+   "from": "rooms/signed-near-reeds-day.png@b7bc7c9e"
   },
   "room-reeds-near-dusk-544x408": {
    "file": "rooms/room-reeds-near-dusk-544x408.png",
@@ -6109,7 +6141,7 @@
    "h": 408,
    "sha256": "ed3026a4f1bdc5cfdd787dff6ced7e5ca3f88efe40610c7a4614b089c5a23511",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/signed-near-reeds-dusk.png@66d1bad5"
+   "from": "rooms/signed-near-reeds-dusk.png@b7bc7c9e"
   },
   "room-reeds-near-night-544x408": {
    "file": "rooms/room-reeds-near-night-544x408.png",
@@ -6117,7 +6149,7 @@
    "h": 408,
    "sha256": "ae6aa1e2e28abc4ccc53b5c9b2526b5b5b143ef982ef5ce427b77685272d118b",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/signed-near-reeds-night.png@66d1bad5"
+   "from": "rooms/signed-near-reeds-night.png@b7bc7c9e"
   },
   "room-reeds-raincup-dawn-30x36": {
    "file": "rooms/room-reeds-raincup-dawn-30x36.png",
@@ -6125,7 +6157,7 @@
    "h": 36,
    "sha256": "9087183f57a18034f6af2ab99c969d48a21a68b043e0ed97f0eeb0f4a28c0746",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/reeds/reeds-raincup-dawn.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-raincup-dawn.png@b7bc7c9e"
   },
   "room-reeds-raincup-day-30x36": {
    "file": "rooms/room-reeds-raincup-day-30x36.png",
@@ -6133,7 +6165,7 @@
    "h": 36,
    "sha256": "08751efb9877642ac3ab19668673c8eef06944c1648e9c3da372f1bc9baa2a39",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings (composite method), no front pieces; day floor L* 40.1, whole 57.4 (the haze); painted finish; Home cut holds the rock, the path and the haze; no water patches; all six minis read on the moss, the path and the bank",
-   "from": "rooms/pieces/reeds/reeds-raincup-day.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-raincup-day.png@b7bc7c9e"
   },
   "room-reeds-raincup-dusk-30x36": {
    "file": "rooms/room-reeds-raincup-dusk-30x36.png",
@@ -6141,7 +6173,7 @@
    "h": 36,
    "sha256": "94bbae6a27c3c353521facca0fcfee9c5162886cdad27da6b4774783213462e9",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/reeds/reeds-raincup-dusk.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-raincup-dusk.png@b7bc7c9e"
   },
   "room-reeds-raincup-night-30x36": {
    "file": "rooms/room-reeds-raincup-night-30x36.png",
@@ -6149,7 +6181,7 @@
    "h": 36,
    "sha256": "2a0d945419bbe4b4c9ae50fe30e356338cd0ac45f2e27d9d079461c70113d938",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/reeds/reeds-raincup-night.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-raincup-night.png@b7bc7c9e"
   },
   "room-reeds-sedge-2-dawn-66x48": {
    "file": "rooms/room-reeds-sedge-2-dawn-66x48.png",
@@ -6157,7 +6189,7 @@
    "h": 48,
    "sha256": "5f8a5c68085e08ad00732d492e03a5b843defd932880f303b81f4b57d1476675",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/reeds/reeds-sedge-2-dawn.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-sedge-2-dawn.png@b7bc7c9e"
   },
   "room-reeds-sedge-2-day-66x48": {
    "file": "rooms/room-reeds-sedge-2-day-66x48.png",
@@ -6165,7 +6197,7 @@
    "h": 48,
    "sha256": "9b30bd2e5b3e815a9c415a0ec4686149373df111f79bbbf9e228591d3e306fee",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings (composite method), no front pieces; day floor L* 40.1, whole 57.4 (the haze); painted finish; Home cut holds the rock, the path and the haze; no water patches; all six minis read on the moss, the path and the bank",
-   "from": "rooms/pieces/reeds/reeds-sedge-2-day.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-sedge-2-day.png@b7bc7c9e"
   },
   "room-reeds-sedge-2-dusk-66x48": {
    "file": "rooms/room-reeds-sedge-2-dusk-66x48.png",
@@ -6173,7 +6205,7 @@
    "h": 48,
    "sha256": "bb5aeeeb07d60516972b95043bc6c4cacb844cf8f06869f06150cda846f7cb5c",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/reeds/reeds-sedge-2-dusk.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-sedge-2-dusk.png@b7bc7c9e"
   },
   "room-reeds-sedge-2-night-66x48": {
    "file": "rooms/room-reeds-sedge-2-night-66x48.png",
@@ -6181,7 +6213,7 @@
    "h": 48,
    "sha256": "f0cd8b80b88314dcc713d84749798799f59a0e1000cfd0dcc018a273c5b87e90",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/reeds/reeds-sedge-2-night.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-sedge-2-night.png@b7bc7c9e"
   },
   "room-reeds-stone-1-dawn-76x48": {
    "file": "rooms/room-reeds-stone-1-dawn-76x48.png",
@@ -6189,7 +6221,7 @@
    "h": 48,
    "sha256": "c2c3e400af73b5d6bb4e74e4b164687243a828b8c5d5533b2281b1c412cd2d17",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/reeds/reeds-stone-1-dawn.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-stone-1-dawn.png@b7bc7c9e"
   },
   "room-reeds-stone-1-day-76x48": {
    "file": "rooms/room-reeds-stone-1-day-76x48.png",
@@ -6197,7 +6229,7 @@
    "h": 48,
    "sha256": "dff8542924bb245c29aaaa482c87de8ae252a2cea09f69bce5dcdaa650d7e7cb",
    "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings (composite method), no front pieces; day floor L* 40.1, whole 57.4 (the haze); painted finish; Home cut holds the rock, the path and the haze; no water patches; all six minis read on the moss, the path and the bank",
-   "from": "rooms/pieces/reeds/reeds-stone-1-day.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-stone-1-day.png@b7bc7c9e"
   },
   "room-reeds-stone-1-dusk-76x48": {
    "file": "rooms/room-reeds-stone-1-dusk-76x48.png",
@@ -6205,7 +6237,7 @@
    "h": 48,
    "sha256": "e9e2a8d20d898dec37d6f0e7727c260047d3f8cb4377da8be1fb36f3d47d68d2",
    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/pieces/reeds/reeds-stone-1-dusk.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-stone-1-dusk.png@b7bc7c9e"
   },
   "room-reeds-stone-1-night-76x48": {
    "file": "rooms/room-reeds-stone-1-night-76x48.png",
@@ -6213,7 +6245,7 @@
    "h": 48,
    "sha256": "c964d467dbec36e781d3b9c7f8eb1195d7a51dc281b490d1481edb8fc7939efa",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/pieces/reeds/reeds-stone-1-night.png@66d1bad5"
+   "from": "rooms/pieces/reeds/reeds-stone-1-night.png@b7bc7c9e"
   },
   "room-roots-bed-dawn-192x56": {
    "file": "rooms/room-roots-bed-dawn-192x56.png",
@@ -6221,7 +6253,7 @@
    "h": 56,
    "sha256": "fd0ceaca59744a8bc2fff727d2b27d1ec52015993900821093eded2358080dde",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-bed-dawn.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-bed-dawn.png@b7bc7c9e"
   },
   "room-roots-bed-day-192x56": {
    "file": "rooms/room-roots-bed-day-192x56.png",
@@ -6229,7 +6261,7 @@
    "h": 56,
    "sha256": "81af394f684ee28703a927a1607be6070c19cc1bd1e5aab46ad482d431798ade",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City), day composition: no fittings, no front pieces painted; day floor L* 39.9, whole 51.0; one burrow only (the focal, ~37 %, inside Home's cut), no second hollow; the bed's seat [792,496,192,56] on a plain moss patch; the terrace's lip rounded and its ramp mossy; no flowers on the walk floor (bluebells only behind the back edge); the beech a size smaller than the gold Roots, minis at the other rooms' scale; all six minis read on the terrace, the ramp, the path and the moss",
-   "from": "rooms/pieces/roots/roots-bed-day.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-bed-day.png@b7bc7c9e"
   },
   "room-roots-bed-dusk-192x56": {
    "file": "rooms/room-roots-bed-dusk-192x56.png",
@@ -6237,7 +6269,7 @@
    "h": 56,
    "sha256": "31d26d22a2ff40de5d715de98e7327b48c5a64887553d2590b94816ac0bd1655",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean; no grade needed; the minis read on every level",
-   "from": "rooms/pieces/roots/roots-bed-dusk.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-bed-dusk.png@b7bc7c9e"
   },
   "room-roots-bed-night-192x56": {
    "file": "rooms/room-roots-bed-night-192x56.png",
@@ -6245,7 +6277,7 @@
    "h": 56,
    "sha256": "9e43e9b1c477ccfcd2676c737ee2b25117d2740202c6ba6e2612f0bc5ec25164",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-bed-night.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-bed-night.png@b7bc7c9e"
   },
   "room-roots-idle-dawn-1024x568": {
    "file": "rooms/room-roots-idle-dawn-1024x568.png",
@@ -6253,7 +6285,7 @@
    "h": 568,
    "sha256": "130853a8c49a2677d3ba3d0f3c41cdd7afda306dbb40a5f60d167b94135187c2",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level",
-   "from": "rooms/seated-idle-roots-dawn.png@66d1bad5"
+   "from": "rooms/seated-idle-roots-dawn.png@b7bc7c9e"
   },
   "room-roots-idle-day-1024x568": {
    "file": "rooms/room-roots-idle-day-1024x568.png",
@@ -6261,7 +6293,7 @@
    "h": 568,
    "sha256": "ca190df530d12a1e30b147ac91d9db059c399cd3941b3604390c53fd1ee843af",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City), day composition: no fittings, no front pieces painted; day floor L* 39.9, whole 51.0; one burrow only (the focal, ~37 %, inside Home's cut), no second hollow; the bed's seat [792,496,192,56] on a plain moss patch; the terrace's lip rounded and its ramp mossy; no flowers on the walk floor (bluebells only behind the back edge); the beech a size smaller than the gold Roots, minis at the other rooms' scale; all six minis read on the terrace, the ramp, the path and the moss",
-   "from": "rooms/seated-idle-roots-day.png@66d1bad5"
+   "from": "rooms/seated-idle-roots-day.png@b7bc7c9e"
   },
   "room-roots-idle-dusk-1024x568": {
    "file": "rooms/room-roots-idle-dusk-1024x568.png",
@@ -6269,7 +6301,7 @@
    "h": 568,
    "sha256": "5c1c7418c309555637ad7bf714d96390f9c68acbe8bb4747fa373b121666538e",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean; no grade needed; the minis read on every level",
-   "from": "rooms/seated-idle-roots-dusk.png@66d1bad5"
+   "from": "rooms/seated-idle-roots-dusk.png@b7bc7c9e"
   },
   "room-roots-idle-night-1024x568": {
    "file": "rooms/room-roots-idle-night-1024x568.png",
@@ -6277,7 +6309,7 @@
    "h": 568,
    "sha256": "b4fb4edc952be29b1e3fece56d0093e042e31155c2fde0e68cd85a88c0760a14",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
-   "from": "rooms/seated-idle-roots-night.png@66d1bad5"
+   "from": "rooms/seated-idle-roots-night.png@b7bc7c9e"
   },
   "room-roots-mist-2-dawn-80x18": {
    "file": "rooms/room-roots-mist-2-dawn-80x18.png",
@@ -6285,7 +6317,7 @@
    "h": 18,
    "sha256": "d9427a17f39ee1a228f641f5114827dfbe67f86205adf5d24178b442bf925504",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-mist-2-dawn.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-mist-2-dawn.png@b7bc7c9e"
   },
   "room-roots-mist-2-day-80x18": {
    "file": "rooms/room-roots-mist-2-day-80x18.png",
@@ -6293,7 +6325,7 @@
    "h": 18,
    "sha256": "c9efaaf5dae725f48a37c90a771f0044390e0c219e69658b1d3e8755d4dbd7d9",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City), day composition: no fittings, no front pieces painted; day floor L* 39.9, whole 51.0; one burrow only (the focal, ~37 %, inside Home's cut), no second hollow; the bed's seat [792,496,192,56] on a plain moss patch; the terrace's lip rounded and its ramp mossy; no flowers on the walk floor (bluebells only behind the back edge); the beech a size smaller than the gold Roots, minis at the other rooms' scale; all six minis read on the terrace, the ramp, the path and the moss",
-   "from": "rooms/pieces/roots/roots-mist-2-day.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-mist-2-day.png@b7bc7c9e"
   },
   "room-roots-mist-2-dusk-80x18": {
    "file": "rooms/room-roots-mist-2-dusk-80x18.png",
@@ -6301,7 +6333,7 @@
    "h": 18,
    "sha256": "297d42ce4b0212ea4eab62f265baaa99826ac292e8306f27c44d3f4cc6860d20",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean; no grade needed; the minis read on every level",
-   "from": "rooms/pieces/roots/roots-mist-2-dusk.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-mist-2-dusk.png@b7bc7c9e"
   },
   "room-roots-mist-2-night-80x18": {
    "file": "rooms/room-roots-mist-2-night-80x18.png",
@@ -6309,7 +6341,7 @@
    "h": 18,
    "sha256": "81191314719ac246f44bebf48ef2f6644f4bcdc2148e1128f535827d08811c65",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-mist-2-night.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-mist-2-night.png@b7bc7c9e"
   },
   "room-roots-mister-dawn-50x34": {
    "file": "rooms/room-roots-mister-dawn-50x34.png",
@@ -6317,7 +6349,7 @@
    "h": 34,
    "sha256": "1523c3e35c49896567f733533d3ccc868bea6023c3901ed6b76820a4f29f1ed2",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-mister-dawn.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-mister-dawn.png@b7bc7c9e"
   },
   "room-roots-mister-day-50x34": {
    "file": "rooms/room-roots-mister-day-50x34.png",
@@ -6325,7 +6357,7 @@
    "h": 34,
    "sha256": "ef23be41d0f8da9940a80132c59215b4dbd33d0888eff0007b012fc848bd1931",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City), day composition: no fittings, no front pieces painted; day floor L* 39.9, whole 51.0; one burrow only (the focal, ~37 %, inside Home's cut), no second hollow; the bed's seat [792,496,192,56] on a plain moss patch; the terrace's lip rounded and its ramp mossy; no flowers on the walk floor (bluebells only behind the back edge); the beech a size smaller than the gold Roots, minis at the other rooms' scale; all six minis read on the terrace, the ramp, the path and the moss",
-   "from": "rooms/pieces/roots/roots-mister-day.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-mister-day.png@b7bc7c9e"
   },
   "room-roots-mister-dusk-50x34": {
    "file": "rooms/room-roots-mister-dusk-50x34.png",
@@ -6333,7 +6365,7 @@
    "h": 34,
    "sha256": "79176b7a70178bcb73a5f7d0b4143d03c366a82e77ad885b9bb8f2f611366773",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean; no grade needed; the minis read on every level",
-   "from": "rooms/pieces/roots/roots-mister-dusk.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-mister-dusk.png@b7bc7c9e"
   },
   "room-roots-mister-night-50x34": {
    "file": "rooms/room-roots-mister-night-50x34.png",
@@ -6341,7 +6373,7 @@
    "h": 34,
    "sha256": "ead6fe428af16c3fc0d8f3d68a586ba0582a752670ff7b160ebcc92aa60c87ec",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-mister-night.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-mister-night.png@b7bc7c9e"
   },
   "room-roots-near-dawn-544x408": {
    "file": "rooms/room-roots-near-dawn-544x408.png",
@@ -6349,7 +6381,7 @@
    "h": 408,
    "sha256": "46bf20571955b7e2a69997f7c548c11ece6e2930da0a75cdbdc88a1481741159",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level",
-   "from": "rooms/signed-near-roots-dawn.png@66d1bad5"
+   "from": "rooms/signed-near-roots-dawn.png@b7bc7c9e"
   },
   "room-roots-near-day-544x408": {
    "file": "rooms/room-roots-near-day-544x408.png",
@@ -6357,7 +6389,7 @@
    "h": 408,
    "sha256": "70c28ac88799aacdd9a5a42023409f6f34b1c10899f3f3fb0df64d1ac51f651c",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; the beech roots frame the left, the burrow far back, bluebells only in the far back; no fittings, pond or water",
-   "from": "rooms/signed-near-roots-day.png@66d1bad5"
+   "from": "rooms/signed-near-roots-day.png@b7bc7c9e"
   },
   "room-roots-near-dusk-544x408": {
    "file": "rooms/room-roots-near-dusk-544x408.png",
@@ -6365,7 +6397,7 @@
    "h": 408,
    "sha256": "a1a597963fdadbefd77779567a2ee1482e61f93748f477ca6dac323bc2b4dde6",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean; no grade needed; the minis read on every level",
-   "from": "rooms/signed-near-roots-dusk.png@66d1bad5"
+   "from": "rooms/signed-near-roots-dusk.png@b7bc7c9e"
   },
   "room-roots-near-night-544x408": {
    "file": "rooms/room-roots-near-night-544x408.png",
@@ -6373,7 +6405,7 @@
    "h": 408,
    "sha256": "a23989aedd104b57da62f55eefd4c3bfd05f2ced92d1e523c05e350b2dbe43c4",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
-   "from": "rooms/signed-near-roots-night.png@66d1bad5"
+   "from": "rooms/signed-near-roots-night.png@b7bc7c9e"
   },
   "room-roots-sorrel-1-dawn-96x46": {
    "file": "rooms/room-roots-sorrel-1-dawn-96x46.png",
@@ -6381,7 +6413,7 @@
    "h": 46,
    "sha256": "3e2f0de19dc9ab20e52a14a662469b95c046be00719e72fb1fad22d6afc3d2cc",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-sorrel-1-dawn.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-sorrel-1-dawn.png@b7bc7c9e"
   },
   "room-roots-sorrel-1-day-96x46": {
    "file": "rooms/room-roots-sorrel-1-day-96x46.png",
@@ -6389,7 +6421,7 @@
    "h": 46,
    "sha256": "4f5d951219d0656e31b03aa075cf2c94ebf1fd44f48e46f74512b44a5fd93e07",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City), day composition: no fittings, no front pieces painted; day floor L* 39.9, whole 51.0; one burrow only (the focal, ~37 %, inside Home's cut), no second hollow; the bed's seat [792,496,192,56] on a plain moss patch; the terrace's lip rounded and its ramp mossy; no flowers on the walk floor (bluebells only behind the back edge); the beech a size smaller than the gold Roots, minis at the other rooms' scale; all six minis read on the terrace, the ramp, the path and the moss",
-   "from": "rooms/pieces/roots/roots-sorrel-1-day.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-sorrel-1-day.png@b7bc7c9e"
   },
   "room-roots-sorrel-1-dusk-96x46": {
    "file": "rooms/room-roots-sorrel-1-dusk-96x46.png",
@@ -6397,7 +6429,7 @@
    "h": 46,
    "sha256": "0fb3578d3d04b5a7f87432fd480985e2f82c2eeb86d062ac53ac6f2b62a26d83",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean; no grade needed; the minis read on every level",
-   "from": "rooms/pieces/roots/roots-sorrel-1-dusk.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-sorrel-1-dusk.png@b7bc7c9e"
   },
   "room-roots-sorrel-1-night-96x46": {
    "file": "rooms/room-roots-sorrel-1-night-96x46.png",
@@ -6405,7 +6437,7 @@
    "h": 46,
    "sha256": "1dfc7a801e98dce32b852ad90b1d795d94298117b1659e09dc634f3da4340b7e",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-sorrel-1-night.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-sorrel-1-night.png@b7bc7c9e"
   },
   "room-roots-stone-2-dawn-68x41": {
    "file": "rooms/room-roots-stone-2-dawn-68x41.png",
@@ -6413,7 +6445,7 @@
    "h": 41,
    "sha256": "fbdecc1370368967041de199e9abfb65f205d1ba6aea3ea8c2d6205d310e4b75",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-stone-2-dawn.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-stone-2-dawn.png@b7bc7c9e"
   },
   "room-roots-stone-2-day-68x41": {
    "file": "rooms/room-roots-stone-2-day-68x41.png",
@@ -6421,7 +6453,7 @@
    "h": 41,
    "sha256": "4864e38ad8ba24d1b67bbb05ba54d07fb3d951627714438ca4108e6625ffc474",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City), day composition: no fittings, no front pieces painted; day floor L* 39.9, whole 51.0; one burrow only (the focal, ~37 %, inside Home's cut), no second hollow; the bed's seat [792,496,192,56] on a plain moss patch; the terrace's lip rounded and its ramp mossy; no flowers on the walk floor (bluebells only behind the back edge); the beech a size smaller than the gold Roots, minis at the other rooms' scale; all six minis read on the terrace, the ramp, the path and the moss",
-   "from": "rooms/pieces/roots/roots-stone-2-day.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-stone-2-day.png@b7bc7c9e"
   },
   "room-roots-stone-2-dusk-68x41": {
    "file": "rooms/room-roots-stone-2-dusk-68x41.png",
@@ -6429,15 +6461,15 @@
    "h": 41,
    "sha256": "c320ffe30aac80920ab89c282bfdd5d7492604f89d6a5e34e17bcb7680dc3fee",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean; no grade needed; the minis read on every level",
-   "from": "rooms/pieces/roots/roots-stone-2-dusk.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-stone-2-dusk.png@b7bc7c9e"
   },
   "room-roots-stone-2-night-68x41": {
    "file": "rooms/room-roots-stone-2-night-68x41.png",
    "w": 68,
    "h": 41,
-   "sha256": "92d3bba322aea69020486bd3800fc991d7a36eba34cd84691cfc050b2856482b",
+   "sha256": "5b1eff398b9794b59091ba5d9993b1f319d5fb832bcf8868b0ebf2a93328fe8d",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-stone-2-night.png@66d1bad5"
+   "from": "rooms/pieces/roots/roots-stone-2-night.png@b7bc7c9e"
   },
   "room-stamp-case-152x152": {
    "file": "pods/room-stamp-case-152x152.png",

@@ -62,7 +62,7 @@ for (const [name, o] of Object.entries(SCENES)) test(`Idle, ${name}: draws witho
 test("the departure check bites: a resident leaving the walk ground, the strip moved, a ring and a frame word are each found", { skip }, async () => {
   const f = await start(scene({ adults: 3, crates: 1 })), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, frameSpec); };
   assert.deepEqual(departures(lg, frameSpec), []);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "resident" && r.layer !== "chrome").rect[1] = 100; })[0], /feet are not in the walk ground/);
+  assert.match(bad((c) => { { const r = c.regions.find((q) => q.id === "resident" && q.layer !== "chrome"); r.rect[1] = 0; r.rect[3] = 100; } })[0], /feet are not in the walk ground/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "idle.strip").rect[1] = 560; })[0], /strip/);
   assert.match(bad((c) => { c.regions.push({ id: "focus", layer: "chrome", rect: [0, 0, 10, 10] }); })[0], /no focus/);
   assert.match(bad((c) => { c.regions.push({ id: "top", layer: "chrome", rect: [0, 0, 1024, 40] }); })[0], /no top/);
@@ -85,11 +85,12 @@ test("the flat plates stand until the master: forest back, clay ground with a sa
 });
 
 // ---- the walk ----
-test("a resident walks with its feet in 16..1008 × 376..551, never behind the bed (box right edge past 792 with feet below 448), 120 s at 40 ms", { skip }, async () => {
+const ROOT = J("rooms").rooms.roots, ROOT_TOP = Math.min(...ROOT.levels.map((l) => Math.min(...l.top)));   // Idle draws the painting at 0, 0: the room's rows are Idle's; the feet band is the union of the levels (R4), here from the highest level's top
+test("a resident walks with its feet in 16..1008 × the room's levels (292..551 in Roots), never behind the bed (box right edge past 792 with feet below 448), 120 s at 40 ms", { skip }, async () => {
   const f = await start(scene({ adults: 1 }), { t0: 5000 }), w = R.resident.walk.ground, adult = R.resident.adult; let moved = 0, last = null; const seen = new Set();
   for (let t = 40; t < 120000; t += 40) {
     f.frame(5000 + t); const lg = logOf(f); if (!lg) continue; const r = lg.regions.find((x) => x.id === "resident" && x.layer !== "chrome"); if (!r) continue;
-    const [x, y, rw, rh] = r.rect, feet = y + rh; assert.ok(x >= w[0] && x + rw <= w[0] + w[2] && feet >= w[1] && feet <= w[1] + w[3], `box ${r.rect} is inside the walk ground`);
+    const [x, y, rw, rh] = r.rect, feet = y + rh; assert.ok(x >= w[0] && x + rw <= w[0] + w[2] && feet >= ROOT_TOP && feet <= w[1] + w[3], `box ${r.rect} is inside the walk ground`);
     assert.ok(!(x + rw > R.bed.rect[0] && feet > R.bed.rect[1] - 48), `box ${r.rect} is not behind the bed`);
     if (last && (x !== last[0] || y !== last[1])) moved++; last = r.rect; seen.add(x + "," + y);
   }
@@ -168,7 +169,8 @@ test("G7 night (M1 §3, game designer R3): Pip alone, asleep, 6 min 10 s: 7–18
   assert.ok(stirs.length >= 7 && stirs.length <= 18, `${stirs.length} stirs`); for (const g of gaps) assert.ok(g >= 20000 - 80 && g <= 40000 + 80, `stirs ${g} ms apart`);
   assert.ok(gaps.filter((g) => g > 40080).length <= wanders.length + 1, "a stir waits only while Pip wanders or after its curl");
   assert.ok(wanders.length >= 1, "a wanderer"); for (const w of wanders) { assert.ok(w.max <= 200 * 2, `it wandered ${w.max} px`); assert.ok(w.rested, "it rested"); }
-  assert.ok(worst <= HOP_BOX, `a frame of ${worst} px`); assert.ok(drawn / 370 <= 15, `${(drawn / 370).toFixed(1)} frames a second`);
+  const OCC = Math.max(...ROOT.pieces.filter((q) => q.kind === "occluder" && q.picture).map((q) => q.rect[2] * q.rect[3]));   // a walker that crosses an occluder's foot swaps two nodes and redraws only their overlap (the rooms design §3): at most the occluder
+  assert.ok(worst <= HOP_BOX + OCC, `a frame of ${worst} px`); assert.ok(drawn / 370 <= 15, `${(drawn / 370).toFixed(1)} frames a second`);
   console.log(`# G7 night: ${stirs.length} stirs ${Math.min(...gaps)}–${Math.max(...gaps)} ms apart, ${wanders.length} wanderer${wanders.length > 1 ? "s" : ""} (${wanders.map((w) => w.max + " px").join(", ")}), worst frame ${worst} px, ${(drawn / 370).toFixed(2)} frames drawn a second`);
 });
 test("asleep spots (UI/UX item 11): at night no sleeper's ground point lies in another's spot, and no waypoint (a wanderer's included) lands in another's spot", { skip }, async () => {

@@ -171,7 +171,6 @@
    "walk": {
     "ground": [32,280,588,156],
     "keepOut": [548,344,80,96],
-    "profile": {"from": "vivarium.json regions.resident.walk.profile", "dx": 40, "dy": -36, "note": "groundTop_home(x) = groundTop_viv(x - 24 + cx) - 36 with cx = 64; the window's foot is feetY 435; F.x is held to 32 + floor(W/2) .. 620 - ceil(W/2), so the box x runs 32 .. 620 - W; the rows are the lowest groundTop (316 - 36 = 280) to the foot"},
     "keepOutRule": "a figure meets the keep-out when its box reaches x 548 and its feet reach y 344; the keep-out stands only while the away frame shows"
    }
   },
