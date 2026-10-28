@@ -434,6 +434,56 @@
     "seated": "rooms/seated-idle-boulders-dawn.png",
     "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
    }
+  },
+  "rest": {
+   "edge": "left",
+   "level": "main",
+   "spots": [
+    {
+     "level": "terrace",
+     "x_painting": 56,
+     "foot_painting": 348,
+     "rect_painting": [
+      43,
+      321,
+      26,
+      28
+     ]
+    },
+    {
+     "level": "terrace",
+     "x_painting": 152,
+     "foot_painting": 348,
+     "rect_painting": [
+      139,
+      321,
+      26,
+      28
+     ]
+    }
+   ],
+   "note": "Boulders' rest place: the terrace's two spots, then rules.show.where's own way, else off main's left end (edge). No behind: neither boulders-cushion-1 nor boulders-stone-2 hides a whole curl (0 points where every placed curl lies on alpha >= 250 above its keep-out); boulders-stone-1 has no picture. The spots sit on the terrace's grass in front of the shrubs, clear of the shishi [166,262,64,56] (foot 317, above the curl's top 321) and of the ramp's upper end (190, 376) by 38",
+   "rule": "spots: up to 2 curls (rules.show.curl.max 2), each a foot point (x, foot) on its level with rect the widest placed curl ink [x-13, foot-27, 26, 28], the curl centred on x with its last ink row on foot. Checked: foot inside the level's band at x; x at least ceil(w/4) (15 for any 54-tall stand) inside the span; off every keep-out; clear of the joins' ends and the fittings; the two spots >= 82 apart (ink to ink 48 with 34-wide inks, so any nap master at world size; 74 with today's 26), so curl.gapRule holds; pasted at 1x in dawn, day, dusk and night with mibi-adult-S01 (with its shadow) and mibi-juvenile-S01, reading as lying on the top of the raised level. A rester with no curl picture never takes a spot (rules.show.where)",
+   "curls": "the placed curl pictures (curlOfMibi: each 96x88 nap master reduced by 54/152 adult, 40/112 juvenile, layered-stand.mjs curlPicture, at sg b4d50397): ink at most 26 x 28 (mibi-adult-S01; the others 9-22 wide), the picture with S01's curl shadow at most 42 x 36 around the foot; any 96x88 nap master reduced so is at most 34 wide",
+   "signed": "art director, Wed 28 Oct 2026 (Mexico City), ad-r4b2.md"
+  },
+  "chip": {
+   "file": "rooms/chips/room-boulders-chip-{light}-56x40.png",
+   "picture": "room-boulders-chip-{light}-56x40",
+   "size": [
+    56,
+    40
+   ],
+   "crop_painting": [
+    330,
+    100,
+    560,
+    400
+   ],
+   "what": "the maple, the hero stone and its two, the pond's edge",
+   "source": "rooms/signed-idle-boulders-{light}.png, the same crop in every light, Lanczos to 56x40 and unsharp (radius 0.8, 60 %, threshold 2), opaque RGB; tools/roomchip.py; no new painting, 0 MXN",
+   "place": "drawn inside the chip's recess (vivarium.json regions.chips: chip i [32 + 72i, 496, 64, 48]) at its inset 4, [36 + 72i, 500, 56, 40]; rooms.json rooms.<id>.chip names the picture",
+   "signed": "art director, Wed 28 Oct 2026 (Mexico City), ad-r4b2.md: read at 1x and 4x in the four lights beside each other; each room reads as itself (the burrow, the rock, the maple and stone, the croziers) and its light"
   }
  },
  "reeds": {
@@ -703,6 +753,69 @@
     "seated": "rooms/seated-idle-reeds-dawn.png",
     "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
    }
+  },
+  "rest": {
+   "edge": "left",
+   "level": "main",
+   "spots": [
+    {
+     "level": "bank",
+     "x_painting": 776,
+     "foot_painting": 352,
+     "rect_painting": [
+      763,
+      325,
+      26,
+      28
+     ]
+    },
+    {
+     "level": "bank",
+     "x_painting": 872,
+     "foot_painting": 352,
+     "rect_painting": [
+      859,
+      325,
+      26,
+      28
+     ]
+    }
+   ],
+   "behind": {
+    "occluder": "reeds-stone-1",
+    "level": "main",
+    "x_painting": 822,
+    "foot_painting": 525,
+    "rect_painting": [
+     809,
+     498,
+     26,
+     28
+    ],
+    "note": "a third rester curls at (822, 525), wholly behind reeds-stone-1 (foot 541, drawn over it): every placed curl picture, shadow included (alpha > 0), lies on the stone's opaque pixels (alpha >= 250) in all four lights, with 1 px to spare at the worst edge; the foot is one row above the stone's keep-out (526). Out of sight: it counts as neither a shown resident nor a curl off the bed (rules.show.curl.max and gap are for curls that can be seen), as the edge's out. reeds-sedge-2 hides no whole curl (0 points); reeds-sedge-1 has no picture"
+   },
+   "note": "Reeds' rest place: the bank's two spots, then behind reeds-stone-1, then rules.show.where's own way, else off main's left end (edge). The spots sit at the bank's back half, clear of the ramp's upper end (720, 372) by 56 and of reeds-raincup [918,303,30,36] and its drop (x 944) by 33",
+   "rule": "spots: up to 2 curls (rules.show.curl.max 2), each a foot point (x, foot) on its level with rect the widest placed curl ink [x-13, foot-27, 26, 28], the curl centred on x with its last ink row on foot. Checked: foot inside the level's band at x; x at least ceil(w/4) (15 for any 54-tall stand) inside the span; off every keep-out; clear of the joins' ends and the fittings; the two spots >= 82 apart (ink to ink 48 with 34-wide inks, so any nap master at world size; 74 with today's 26), so curl.gapRule holds; pasted at 1x in dawn, day, dusk and night with mibi-adult-S01 (with its shadow) and mibi-juvenile-S01, reading as lying on the top of the raised level. A rester with no curl picture never takes a spot (rules.show.where)",
+   "curls": "the placed curl pictures (curlOfMibi: each 96x88 nap master reduced by 54/152 adult, 40/112 juvenile, layered-stand.mjs curlPicture, at sg b4d50397): ink at most 26 x 28 (mibi-adult-S01; the others 9-22 wide), the picture with S01's curl shadow at most 42 x 36 around the foot; any 96x88 nap master reduced so is at most 34 wide",
+   "signed": "art director, Wed 28 Oct 2026 (Mexico City), ad-r4b2.md"
+  },
+  "chip": {
+   "file": "rooms/chips/room-reeds-chip-{light}-56x40.png",
+   "picture": "room-reeds-chip-{light}-56x40",
+   "size": [
+    56,
+    40
+   ],
+   "crop_painting": [
+    120,
+    170,
+    448,
+    320
+   ],
+   "what": "the wet rock in the sedges, the path and the rain haze",
+   "source": "rooms/signed-idle-reeds-{light}.png, the same crop in every light, Lanczos to 56x40 and unsharp (radius 0.8, 60 %, threshold 2), opaque RGB; tools/roomchip.py; no new painting, 0 MXN",
+   "place": "drawn inside the chip's recess (vivarium.json regions.chips: chip i [32 + 72i, 496, 64, 48]) at its inset 4, [36 + 72i, 500, 56, 40]; rooms.json rooms.<id>.chip names the picture",
+   "signed": "art director, Wed 28 Oct 2026 (Mexico City), ad-r4b2.md: read at 1x and 4x in the four lights beside each other; each room reads as itself (the burrow, the rock, the maple and stone, the croziers) and its light"
   }
  },
  "ferns": {
@@ -743,7 +856,7 @@
       292
      ]
     },
-    "bottom_painting": 330,
+    "bottom_painting": 312,
     "note": "the raised mossy shelf at the right; its front face is moss",
     "joins": [
      {
@@ -751,12 +864,13 @@
       "kind": "ramp",
       "rect_painting": [
        600,
-       330,
+       312,
        120,
-       90
+       108
       ]
      }
-    ]
+    ],
+    "ruling": "art director, Wed 28 Oct 2026 (Mexico City), ad-r4b2.md: the shelf's band is 292-312 at every x (was 292-330). At x > 770 the rows 313-330 are the moss block's front face, not its top (ad-r4-sign.md, Owed); at the left shoulder (x 720-770) 312 is still on the lit top. A per-x bottom was not chosen: it would need a bottom array in the placer (place-masters.mjs placeRooms) and the face (room.c rm_level_t), and one row does it as data. The ramp's rect moves with it, [600,330,120,90] -> [600,312,120,108], so the join's upper end is (720, 312) and its lower end stays (600, 420); the ramp's line now runs along the slope's lit crest (x 680: 360 -> 348). Owed by the builder: retake vivarium-ramp-ferns-4000ms and vivarium-room-ferns (their shelf and ramp feet move), and add one golden with a walker on the shelf at x >= 800 as the proof; the art director reads them at 1x"
    }
   ],
   "occluders": [],
@@ -1011,7 +1125,57 @@
     "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
    }
   },
-  "pieces_ruling": "art director, Tue 27 Oct 2026 18:54 (Mexico City), ad-r3-sign.md rulings 2-3: ferns-mist-1 at the cut's own rect [530,312,104,26] and alpha 0.7 (tools/roomcut.py MIST and pieces-<light>.json; the 96x24 rect was a stale record); ferns-mist-3 dropped (never cut, not in the signed composite)"
+  "pieces_ruling": "art director, Tue 27 Oct 2026 18:54 (Mexico City), ad-r3-sign.md rulings 2-3: ferns-mist-1 at the cut's own rect [530,312,104,26] and alpha 0.7 (tools/roomcut.py MIST and pieces-<light>.json; the 96x24 rect was a stale record); ferns-mist-3 dropped (never cut, not in the signed composite)",
+  "rest": {
+   "edge": "left",
+   "level": "main",
+   "spots": [
+    {
+     "level": "shelf",
+     "x_painting": 790,
+     "foot_painting": 302,
+     "rect_painting": [
+      777,
+      275,
+      26,
+      28
+     ]
+    },
+    {
+     "level": "shelf",
+     "x_painting": 950,
+     "foot_painting": 302,
+     "rect_painting": [
+      937,
+      275,
+      26,
+      28
+     ]
+    }
+   ],
+   "note": "Ferns' rest place (on the ruled shelf band 292-312): the shelf's two spots, then rules.show.where's own way, else off main's left end (edge). Not under the copper lines (x 836-840 and 884-890, their drops onto the shelf): the spots' inks end at 802 and start at 937. No behind: neither ferns-crozier-1 nor ferns-fern-1 hides a whole curl (0 points)",
+   "rule": "spots: up to 2 curls (rules.show.curl.max 2), each a foot point (x, foot) on its level with rect the widest placed curl ink [x-13, foot-27, 26, 28], the curl centred on x with its last ink row on foot. Checked: foot inside the level's band at x; x at least ceil(w/4) (15 for any 54-tall stand) inside the span; off every keep-out; clear of the joins' ends and the fittings; the two spots >= 82 apart (ink to ink 48 with 34-wide inks, so any nap master at world size; 74 with today's 26), so curl.gapRule holds; pasted at 1x in dawn, day, dusk and night with mibi-adult-S01 (with its shadow) and mibi-juvenile-S01, reading as lying on the top of the raised level. A rester with no curl picture never takes a spot (rules.show.where)",
+   "curls": "the placed curl pictures (curlOfMibi: each 96x88 nap master reduced by 54/152 adult, 40/112 juvenile, layered-stand.mjs curlPicture, at sg b4d50397): ink at most 26 x 28 (mibi-adult-S01; the others 9-22 wide), the picture with S01's curl shadow at most 42 x 36 around the foot; any 96x88 nap master reduced so is at most 34 wide",
+   "signed": "art director, Wed 28 Oct 2026 (Mexico City), ad-r4b2.md"
+  },
+  "chip": {
+   "file": "rooms/chips/room-ferns-chip-{light}-56x40.png",
+   "picture": "room-ferns-chip-{light}-56x40",
+   "size": [
+    56,
+    40
+   ],
+   "crop_painting": [
+    300,
+    90,
+    504,
+    360
+   ],
+   "what": "the croziers, the fern fronds, the mossy log and the path",
+   "source": "rooms/signed-idle-ferns-{light}.png, the same crop in every light, Lanczos to 56x40 and unsharp (radius 0.8, 60 %, threshold 2), opaque RGB; tools/roomchip.py; no new painting, 0 MXN",
+   "place": "drawn inside the chip's recess (vivarium.json regions.chips: chip i [32 + 72i, 496, 64, 48]) at its inset 4, [36 + 72i, 500, 56, 40]; rooms.json rooms.<id>.chip names the picture",
+   "signed": "art director, Wed 28 Oct 2026 (Mexico City), ad-r4b2.md: read at 1x and 4x in the four lights beside each other; each room reads as itself (the burrow, the rock, the maple and stone, the croziers) and its light"
+  }
  },
  "roots": {
   "concept": "bluebell bank under a silver-grey beech (option sheet roots b, tile A, the owner's pick: \"bluebells is lovely\"); rooms/pick-roots-bA.png, the tile's second hollow cloned over with moss at 0 MXN (tools/roomscene.py)",
@@ -1322,12 +1486,52 @@
     "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level"
    }
   },
-  "options_b": "source/raw/options-roots-b.jpg (options-roots-b): A bluebell carpet (the owner's pick), B spring wildflower bank, C sunny dewy morning, D silver birch bank"
+  "options_b": "source/raw/options-roots-b.jpg (options-roots-b): A bluebell carpet (the owner's pick), B spring wildflower bank, C sunny dewy morning, D silver birch bank",
+  "rest": {
+   "edge": "left",
+   "level": "main",
+   "note": "no art spot, and none needed: the bed's 3 places (rules.show.bed, the nappers' alone) hold every rester (8 housed - 5 shown = 3), then their own way (rules.show.curl: nice spots beside roots-sorrel-1 or roots-stone-2 or at main's back edge), else off main's leftmost point (x 16) until the figure leaves the window clip. Measured for R4b-2: neither roots-sorrel-1 nor roots-stone-2 hides a whole placed curl (0 points), so Roots has no behind",
+   "signed": "art director, Wed 28 Oct 2026 (Mexico City), ad-r4b2.md"
+  },
+  "chip": {
+   "file": "rooms/chips/room-roots-chip-{light}-56x40.png",
+   "picture": "room-roots-chip-{light}-56x40",
+   "size": [
+    56,
+    40
+   ],
+   "crop_painting": [
+    140,
+    90,
+    392,
+    280
+   ],
+   "what": "the beech's foot, its roots, the burrow and the bluebells",
+   "source": "rooms/signed-idle-roots-{light}.png, the same crop in every light, Lanczos to 56x40 and unsharp (radius 0.8, 60 %, threshold 2), opaque RGB; tools/roomchip.py; no new painting, 0 MXN",
+   "place": "drawn inside the chip's recess (vivarium.json regions.chips: chip i [32 + 72i, 496, 64, 48]) at its inset 4, [36 + 72i, 500, 56, 40]; rooms.json rooms.<id>.chip names the picture",
+   "signed": "art director, Wed 28 Oct 2026 (Mexico City), ad-r4b2.md: read at 1x and 4x in the four lights beside each other; each room reads as itself (the burrow, the rock, the maple and stone, the croziers) and its light"
+  }
  },
  "enclosure": "art director's ruling: the enclosure reads, light-touch, by (1) the foot strip, rows 552-567, painted in every room as a substrate cross-section seen through the front glass (soil over a darker drainage layer), (2) each room's placed life-support piece as the device cue, (3) the face's own window chrome (home.json shade, 2 px). No painted glass edges, posts or box (they turned every picture into a cabinet in rounds c and sa). Optional for the owner: a faint glass corner sheen at the far side edges, a 0 MXN hand layer.",
  "pieces_note": "Pieces by the composite method, cut and placed by hand at 0 MXN (tools/roomcut.py). Painting coordinates (1024x568); the whole's window y = painting y - 80. rect [x, y, w, h]; foot = the lowest row of the piece's ink; occluders are hard-edged straight alpha (ARGB8888); draw order by foot row with the walkers. Cut and placed by the art director, Mon 26 Oct 2026 19:04 (Mexico City), tools/roomcut.py.",
- "hashes_note": "hashes: the sha256 of every rooms file the placer copies (prototypes/ui/tools/place-masters.mjs placeRooms), keyed by its masters-pods path; a copied file with another hash is refused. 16 seated, 16 near, 80 pieces. signed-idle-<room>-<light>.png stays pinned by each room's sha256. Filled by the art director, Tue 27 Oct 2026 18:54 (Mexico City).",
+ "hashes_note": "hashes: the sha256 of every rooms file the placer copies (prototypes/ui/tools/place-masters.mjs placeRooms), keyed by its masters-pods path; a copied file with another hash is refused. 16 seated, 16 near, 80 pieces, 16 chips (R4b-2: rooms/chips/room-<id>-chip-<light>-56x40.png, each room's chip.file). signed-idle-<room>-<light>.png stays pinned by each room's sha256. Filled by the art director, Tue 27 Oct 2026 18:54 (Mexico City).",
  "hashes": {
+  "rooms/chips/room-boulders-chip-dawn-56x40.png": "d4726d0115d8da2d2c4e70b3852020eaaa82ff7e21707e472f5db1f9cc4b3e2f",
+  "rooms/chips/room-boulders-chip-day-56x40.png": "8382b1d7fff77d76f3c5aee17e8212b9d6d49d45e9052695855bc64bb4991bcb",
+  "rooms/chips/room-boulders-chip-dusk-56x40.png": "82ab596454490126b5a5c17e04e81ccc7f483fd791452ded5b47b268536d7781",
+  "rooms/chips/room-boulders-chip-night-56x40.png": "d33b23d96e31600880bd9638e7f08efe6591c10da7721a4f1cee5d833754e430",
+  "rooms/chips/room-ferns-chip-dawn-56x40.png": "2be45f6f753e43491181e9aa23f6cb4fbbd078a6b84c1d4634f97d689e268c04",
+  "rooms/chips/room-ferns-chip-day-56x40.png": "88dbacbcefc3b8c8916ea244d159959ece7dd69916aee4afa592e073b9b5b4c5",
+  "rooms/chips/room-ferns-chip-dusk-56x40.png": "dae703d79dd6a5732fa8b452aff0457b5aa384f78060b9d27081b28b4aa6cdcf",
+  "rooms/chips/room-ferns-chip-night-56x40.png": "775463a306d364387fc78f9ff883585fa007ea7f06b7444129c1334fa12e38d0",
+  "rooms/chips/room-reeds-chip-dawn-56x40.png": "d5666a2cf47a6369b6bacee21d123732920f1dd000ec4c0059978a05598128ec",
+  "rooms/chips/room-reeds-chip-day-56x40.png": "8bcff5255b8a91b9709d2af22d1a2511cc9e7a7a445dc3cfa5d018f52cfe7f16",
+  "rooms/chips/room-reeds-chip-dusk-56x40.png": "90ea25e55cfe029aac0116b39980a982a7ed9562cbfad3078d56313f06593386",
+  "rooms/chips/room-reeds-chip-night-56x40.png": "0ef7931bd325f84c5765db28e4a64aa415db1856043cdad506ae531ce7730640",
+  "rooms/chips/room-roots-chip-dawn-56x40.png": "39091be9655cac36000963282cc3ba0bd250948a5b7d2937ba0ec5e02a11127e",
+  "rooms/chips/room-roots-chip-day-56x40.png": "fcc6f0910502e20c762c375cc3aba50cb44914207f0486b09c05b93968607b25",
+  "rooms/chips/room-roots-chip-dusk-56x40.png": "a91085d15fd4ded32385c2eaea7c2250ec5ddf813330a19dd947795c4a72f254",
+  "rooms/chips/room-roots-chip-night-56x40.png": "cab02afbd6a06d8915de1330fdf1d6d22de74c241d727495c08fe10bc177307e",
   "rooms/pieces/boulders/boulders-arm-fill-dawn.png": "eee517d24f63618463951e2789403e6f1fe9d6ac55fbe309003e6e5c87c09a77",
   "rooms/pieces/boulders/boulders-arm-fill-day.png": "3a7cceea6f5a3129fa3848383b8255348cbbeb2af5a8279aaf85bc9bf0c209ed",
   "rooms/pieces/boulders/boulders-arm-fill-dusk.png": "30514d5266f1bd8b51929b4c5b260d27196c10bf8c124e346a6d82d099a383fe",
