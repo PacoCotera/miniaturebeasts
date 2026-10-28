@@ -16,7 +16,7 @@
  "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
  "properties": {
   "state": { "enum": ["home"] },
-  "regions": { "type": "object", "required": ["bar", "line", "vivarium", "library", "glass", "residents", "pods", "incubator", "companion", "bay"], "additionalProperties": false, "properties": {
+  "regions": { "type": "object", "required": ["bar", "line", "vivarium", "library", "glass", "room", "residents", "pods", "incubator", "companion", "bay"], "additionalProperties": false, "properties": {
    "bar": { "type": "object", "required": ["place", "date", "clock"], "additionalProperties": false, "properties": { "place": { "type": "string" }, "date": { "type": "string" }, "clock": { "type": "string" } } },
    "line": { "oneOf": [
     { "type": "object", "required": ["needs"], "additionalProperties": false, "properties": { "needs": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 2 } } },
@@ -26,6 +26,7 @@
     { "type": "object", "additionalProperties": false, "properties": {} } ] },
    "vivarium": { "type": "object", "required": ["readout"], "additionalProperties": false, "properties": { "readout": { "type": "string" } } },
    "library": { "type": "object", "additionalProperties": false, "properties": { "species": { "type": "string" }, "picture": { "type": "string", "description": "the specimen picture's id (the main level)" }, "levels": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "string" }, "description": "the four breathing levels' picture ids, the main one first" }, "glints": { "type": "array", "maxItems": 8, "items": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "integer" } }, "description": "the bead centres, in the window's pixels, of the looks found since the Library was last opened full screen (at most 8)" }, "star": { "type": "string" }, "new": { "type": "string", "description": "{n} new, only when n is above 0" }, "genome": { "type": "string" } } },
+   "room": { "type": "object", "required": ["id", "base", "pieces"], "additionalProperties": false, "properties": { "id": { "type": "string", "description": "the room shown: its name in rooms.json (roots, reeds, boulders, ferns)" }, "base": { "type": "string", "description": "the room's painting (the near view in Habitat) in the light" }, "pieces": { "type": "object", "description": "the room's pieces that have a picture, by piece id (rooms.json), the picture id in the light; Habitat has none" } } },
    "glass": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "tag": { "type": "string" }, "away": { "type": "object", "required": ["picture", "figure"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "figure": { "type": "array", "items": { "type": "integer" }, "minItems": 4, "maxItems": 4 } } } } },
    "residents": { "type": "array", "maxItems": 6, "items": { "$ref": "person" } },
    

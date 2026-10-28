@@ -11,6 +11,7 @@ import * as Lib from "./library.mjs";
 import { lightAt } from "./views/home-props.mjs";
 import { warmLibrary } from "./views/specimen-props.mjs";
 import { setMoving } from "./moving.mjs";
+import { setRooms } from "./views/room-props.mjs";
 import { startScene, endScene, sceneTick, sceneTime, sceneBeat, SCENE_MS } from "./motion-scene.mjs";
 import { setFrames, frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
@@ -27,7 +28,7 @@ import { bootFace } from "./face-lvgl.mjs";
 import * as cargo from "./intents/cargo.mjs";
 import * as create from "./intents/create.mjs";
 import * as frameIntents from "./intents/frame.mjs";
-import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, lightIds, pinned, picture, setEnv, setMetrics, libraryAhead } from "./host.mjs";
+import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, lightIds, shownRoomNow, pinned, picture, setEnv, setMetrics, libraryAhead } from "./host.mjs";
 import { warmLibraryNext, wantLibrary, libraryWaiting, warmLibraryPaper } from "./pictures.mjs";
 import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
 
@@ -47,7 +48,7 @@ async function loadFrames() {
 
 // --- the face ---
 let dockElsewhere = false;   // ?embed: the play page's Dock control asked while another device had the keys (frame.json navigation.dock); never set standalone
-let FACE = null, H = null, lastLog = null, lastProps = null, lastOwed = [], lastSent = [], msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set(), sitHeld = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
+let lastRoom = null, FACE = null, H = null, lastLog = null, lastProps = null, lastOwed = [], lastSent = [], msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set(), sitHeld = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
 const renderErrors = [];   // every error the face or a frame raised, kept for the checks to read
 const said = [];   // the focus and the intents the face said, for the journey's golden (window.__st.said() takes and clears them)
 const faceErrors = [];
@@ -89,7 +90,7 @@ function syncProps() {
   if (key === lastProps && !p.dropped?.length) return;
   { FACE.beginScene(); lastSent = []; for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) if (FACE.handleOf(id, picture) >= 0) lastSent.push(id); }   // Idle needs only its own pictures; lastSent: the pictures this scene gave the face (an empty slot gives none)
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());
-  else { const light = p.light ?? lastLight; if (lastLight && lastLight !== light) for (const id of lightIds(lastLight)) FACE.drop(id); if (lastLight && lastLight !== light) for (const id of litHeld) if (!p.ids.includes(id)) { FACE.drop(id); litHeld.delete(id); } for (const id of p.lit ?? []) litHeld.add(id); lastLight = light;   // fix 7: at a light change the graded residents the new props do not name go with the old light
+  else { const light = p.light ?? lastLight; const room = shownRoomNow(); if (lastLight && (lastLight !== light || (lastRoom != null && lastRoom !== room))) for (const id of lightIds(lastLight, lastRoom ?? room)) FACE.drop(id); lastRoom = room; if (lastLight && lastLight !== light) for (const id of litHeld) if (!p.ids.includes(id)) { FACE.drop(id); litHeld.delete(id); } for (const id of p.lit ?? []) litHeld.add(id); lastLight = light;   // fix 7: at a light change the graded residents the new props do not name go with the old light
   // one light's pictures in memory, plus one frame of the next
     const now = new Set(p.ids.filter((id) => id.startsWith("moving:"))); for (const id of movingHeld) if (!now.has(id) && !movingPrev.has(id)) { FACE.drop(id); movingHeld.delete(id); } for (const id of now) movingHeld.add(id); movingPrev = now;   // a moving atlas neither these props nor the previous screen's ask for is dropped (architecture.md §3: the main.mjs gap)
     const loads = new Set(SPECS.sitting?.regions?.glass?.backdrops ?? []);   // sitting.json regions.glass.load: the place backdrops the place step loads are dropped on leaving the screen
@@ -219,6 +220,7 @@ const bootAssets = async () => {
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
   for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "panel", "library", "bench", "cross", "sitting"]) SPECS[k] = await spec(k + ".json");
   { const ix = await spec("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = await spec(`moving/${id}.json`); SPECS.moving = sets; setMoving(sets); }   // the moving sets (Station M1 §2.2): one file a species, one spec on the face
+  SPECS.rooms = await spec("rooms.json"); setRooms(SPECS.rooms);   // the four rooms (the rooms design), generated by place-masters --rooms and merged as `moving` is: one spec on the face, which checks it whole (room_load)
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
   setMetrics(await (await fetch(new URL("../../face/dist/metrics.json", import.meta.url), { cache: "no-store" })).json());   // the face's Inter metrics: Level 2 measures its bottom-line ladders with them (ui/specs/measure.mjs)
   setStandLooks(await spec("stand-looks.json")); setStandSizes(await spec("stand-sizes.json")); await loadStandLayers(new URL("../../ui/assets/stands/", import.meta.url));   // each mibi drawn as itself: the unread default looks and the layered stands' cut-outs (looks.mjs, layered-stand.mjs)

@@ -181,8 +181,8 @@
    "type": "object",
    "required": [
     "window",
+    "room",
     "residents",
-    "bed",
     "strip",
     "tiles"
    ],
@@ -197,6 +197,29 @@
      "properties": {
       "picture": {
        "type": "string"
+      }
+     }
+    },
+    "room": {
+     "type": "object",
+     "required": [
+      "id",
+      "base",
+      "pieces"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string",
+       "description": "the room shown: its name in rooms.json (roots, reeds, boulders, ferns)"
+      },
+      "base": {
+       "type": "string",
+       "description": "the room's painting (the near view in Habitat) in the light"
+      },
+      "pieces": {
+       "type": "object",
+       "description": "the room's pieces that have a picture, by piece id (rooms.json), the picture id in the light; Habitat has none"
       }
      }
     },
@@ -237,7 +260,8 @@
         "$ref": "person"
        }
       }
-     }
+     },
+     "description": "given only when the room has a bed (Roots)"
     },
     "tiles": {
      "type": "object",

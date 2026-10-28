@@ -3,6 +3,7 @@
 // (only while away); none, empty; six words or fewer, no digits.
 //   node --test prototypes/station/tests/
 import { lineCased } from "./fixtures/line-case.mjs";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -48,7 +49,20 @@ test("Idle's props validate against idle.props.json, name no rectangle, carry th
 test("the living window is the Vivarium's whole's: the same residents with the same seeds, the same bed and sleepers", () => {
   const st = world(); adults(st, 5); const sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] }), v = vivariumBuild({ st, sv, settings, docked: true, light: "day", focus: null, seen: null }, vivSpec, frame, home).props.regions, i = build(st, sv).props.regions;
   assert.deepEqual(i.residents, v.residents); assert.deepEqual(i.bed, v.bed); assert.equal(i.bed.state, "docked"); assert.equal(i.bed.sleepers.length, 2);
-  assert.equal(i.vivarium.picture, "idle-vivarium-day:1024x568");
+  assert.equal(i.vivarium.picture, "room-roots-idle-day-1024x568"); assert.equal(i.room.base, i.vivarium.picture);
+});
+const ROOMS = J("rooms.json"), LIGHTS = ["dawn", "day", "dusk", "night"];
+test("R3: the shown room's ids per light (its painting and the pieces that have a picture), one request each; the bed only in Roots, so no bed outside it", () => {
+  for (const [ri, name] of ROOMS.order.entries()) for (const light of LIGHTS) {
+    const st = world(); st.rooms = 4; adults(st, 3); for (const m of st.mibis) { m.room = ri; } st.face.room = ri; const sv = sv0({ carried: [st.mibis[0].id] }), b = build(st, sv, light), r = b.props.regions, R = ROOMS.rooms[name];
+    assert.deepEqual(validate(b.props, schema), [], `${name} ${light}`); assert.equal(r.room.id, name); assert.equal(r.room.base, `room-${name}-idle-${light}-1024x568`); assert.equal(r.vivarium.picture, r.room.base, "the painting is the room's base");
+    const want = R.pieces.filter((p) => p.picture).map((p) => [p.id, p.picture.replace("{light}", light)]); assert.deepEqual(Object.entries(r.room.pieces), want, `${name} ${light}: the pieces with a picture, in data order, the light filled in`);
+    assert.ok(!JSON.stringify(r.room).includes("{light}"));
+    for (const id of [r.room.base, ...Object.values(r.room.pieces)]) { const q = b.requests.filter((x) => x.id === id); assert.equal(q.length, 1, id + " is requested once"); assert.deepEqual([q[0].kind, q[0].master, q[0].size.join("x")], ["slot", id, id.match(/(\d+x\d+)$/)[1]]); }
+    assert.equal(r.residents.length, 2, "the residents of the room shown only");
+    if (name === "roots") { assert.equal(r.bed.picture, `room-roots-bed-${light}-192x56`); assert.equal(r.bed.state, "docked"); assert.equal(r.bed.sleepers.length, 1); } else { assert.ok(!("bed" in r), `${name}: no bed`); assert.ok(!b.requests.some((x) => /bed/.test(x.id)), `${name}: no bed picture`); }
+    assert.ok(!b.requests.some((x) => /^(idle-vivarium|home-bed|vivarium-near)/.test(x.id)), "the legacy ids are no longer referenced");
+  }
 });
 test("the line: the first that holds of crates (docked), the bud ready, the bud growing, out with the Companion (away, mibis carried); none, empty; six words or fewer and no digits", () => {
   const L = (st, sv) => idleLine({ st, sv, settings, docked: S.docked(st) }, frame.idle);

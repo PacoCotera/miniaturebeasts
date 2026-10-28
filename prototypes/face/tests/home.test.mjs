@@ -4,6 +4,7 @@
 // words and the dirty area of a lamp change and of the ring moving between a bezel and a station. Skipped when the face has not been built (build.sh).
 //   node --test prototypes/face/tests/home.test.mjs
 import { test } from "node:test";
+import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the props builders, as the page registers it
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -61,7 +62,7 @@ function stationPictures(b) {
 }
 async function start(b, { motion = true, t0 = 0, dir = dist } = {}) {
   const f = await bootFace(pathToFileURL(dir + "/"), { test: true });
-  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
+  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec], ["rooms", J("rooms")]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   for (const [id, size] of MARKS) f.handleOf(id, withPolicy((i) => standIn(i, size)));
   for (const [id, size] of stationPictures(b)) f.handleOf(id, withPolicy((i) => standIn(i, size)));
@@ -289,7 +290,7 @@ test("the window is the 1:1 crop at (64, 194) of Idle's painting of the light, 6
   assert.deepEqual([WIN.painting.cx, WIN.painting.at, WIN.painting.rows, WIN.rect], [64, [64, 194], [194, 555], [24, 78, 604, 362]]);
   for (const light of ["dawn", "day", "dusk", "night"]) {
     const sc = homeScene({ adults: 3, juveniles: 1, light }), f = await bootScene(sc, { motion: false, dir: node });
-    assert.equal(sc.props.regions.glass.picture, `idle-vivarium-${light}:1024x568`, "the same painting the Vivarium uses, by the light: no new master");
+    assert.equal(sc.props.regions.glass.picture, `room-roots-idle-${light}-1024x568`, "the same painting the Vivarium uses, by the light: no new master");
     assert.deepEqual(f.errors(), []); assert.deepEqual(box(f, "vivarium.glass"), [24, 78, 604, 362]);
     assert.deepEqual(box(f, "vivarium.shade.t"), [24, 78, 604, 2]); assert.deepEqual(box(f, "vivarium.shade.l"), [24, 78, 2, 362]);
     assert.deepEqual(box(f, "vivarium.window").slice(2), [0, 0], "no placeholder under the painting"); assert.deepEqual(box(f, "library.window").slice(2), sc.props.regions.library.picture ? [0, 0] : [344, 362], "the Library is its placeholder only while no species has a look found");
@@ -516,4 +517,15 @@ test("the budgets of section 7 with the Library's module: at most 400 objects an
     assert.ok(f.objects() <= 400, `${f.objects()} objects`); assert.ok(pr <= 32 * 1024, `props ${pr} B`); assert.ok(f.stats().pictures <= 1024);
     if (sc.props.regions.library.glints?.length) { dirty(f); f.frame((f.t += 64)); const d = dirty(f); assert.ok(d > 0 && d <= 153600, `a glint step redrew ${d} px`); console.log(`# Home's Library glint step: ${d} px, ${f.objects()} objects, props ${pr} B`); }
   }
+});
+
+// ---- R3 (the rooms design): Home draws the pieces of the room that fall in its window (the painting less (40, 116)), clipped by the glass ----
+test("R3: Home draws the room's pieces that fall in its window, at the painting's coordinates less (40, 116): Roots' sorrel tuft, not the stone or the mister that lie right of it", { skip }, async () => {
+  const fnv = (q) => { let h = 2166136261; for (const c of q) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };
+  const b = scene({ adults: 3 }), f = await start(b), sizeOfId = (id) => id.match(/(\d+)x(\d+)$/).slice(1).map(Number);
+  assert.equal(b.props.regions.room.id, "roots"); assert.equal(b.props.regions.glass.picture, b.props.regions.room.base);
+  for (const id of Object.values(b.props.regions.room.pieces)) f.handleOf(id, withPolicy((i) => standIn(i, sizeOfId(id)))); resend(f, b);
+  const lg = logOf(f), pieces = lg.nodes.filter((n) => n[3] === "room");
+  assert.deepEqual(pieces.map((n) => n[0]), [fnv("p.roots-sorrel-1")], "only the sorrel tuft falls in the window"); assert.deepEqual(pieces[0].slice(4, 8), [78, 380, 96, 46], "(118, 496) less (40, 116)");
+  assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });

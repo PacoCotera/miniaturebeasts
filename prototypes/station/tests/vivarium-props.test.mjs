@@ -2,6 +2,7 @@
 // holds no rectangle, fits the props budget, lists every mibi at home as a walker and the docked carried set as sleepers, a tile a bay (housed, out, free), the targets in bay order and the ring where the way in puts it.
 //   node --test prototypes/station/tests/
 import { lineCased } from "./fixtures/line-case.mjs";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -100,7 +101,7 @@ test("the targets are the residents in bay order (sleepers in their bays' places
 
 test("the window's picture is Idle's painting of the light (no slot of its own), a painting on its way is no longer the line's context (Grow paints nothing)", () => {
   const { w, sv } = scenes().docked;
-  for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }), id = b.props.regions.window.picture; assert.equal(id, `idle-vivarium-${light}:1024x568`); assert.ok(b.requests.some((r) => r.id === id && r.kind === "slot")); assert.ok(!b.requests.some((r) => /vivarium-whole/.test(r.id)), "no register entry of its own"); }
+  for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }), id = b.props.regions.window.picture; assert.equal(id, `room-roots-idle-${light}-1024x568`); assert.equal(b.props.regions.room.base, id); assert.ok(b.requests.some((r) => r.id === id && r.kind === "slot")); assert.ok(!b.requests.some((r) => /vivarium-whole/.test(r.id)), "no register entry of its own"); }
   const id = w.st.mibis[0].id; w.st.mibis[0].paint = { state: "sent" };
   assert.notEqual(build(w, sv, { focus: "resident." + id }).line.subject, "its painting is on its way");
 });

@@ -136,6 +136,7 @@ int face_spec_int(const char *screen, const char *path, int dflt) { return spec_
 static char g_region[48];
 char *face_region(void) { return g_region; }
 void face_node_tag(int layer) { prim_tag(layer, g_region); }
+int face_test_node_opa(const char *id) { return prim_node_opa(v_id(id)); }   /* a node's opacity by its id string (-1 absent) */
 int face_test_node_box(const char *id, int *out) { return prim_node_box(v_id(id), out); }   /* a node of the last scene by its id string: its kind (-1 absent) and box x, y, w, h in out[0..3] */
 #endif
 int face_test_steps(void) { return g_home_steps; }

@@ -6,6 +6,7 @@
 // face has not been built (build.sh).
 //   node --test prototypes/face/tests/sitting.test.mjs
 import { test, before } from "node:test";
+import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the props builders, as the page registers it
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";

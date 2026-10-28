@@ -15,6 +15,7 @@ import { portraitOpening } from "../portrait-source.mjs";
 import { mibiReq, figureOf } from "./home-props.mjs";
 import { fill } from "./words.mjs";
 import { req as reqOf, slot as slotOf, plateDevice } from "./requests.mjs";
+import { nearOf } from "./room-props.mjs";
 
 export const SITTING_STATES = ["pose", "place", "confirm", "begin", "portrait"];
 const STEPS = ["pose", "place", "confirm"];
@@ -53,7 +54,7 @@ export function sittingBuild(m, spec, habitat) {
   const regions = {};
   regions.stage = { room: [slot("room-vivarium-stage-habitat", R.stage.rect.slice(2), "the up-close stage master")] };
   // the glass: Habitat's own in the hour's light on the pose step; the focused or chosen place's backdrop in its day light after
-  regions.glass = { picture: state === "pose" ? slot(`${habitat.light.pictures[m.light]}-${habitat.light.size.join("x")}`, habitat.light.size, "the near Vivarium master (the light)") : backdrop(state === "place" ? focused : chosenPlace) };
+  regions.glass = { picture: state === "pose" ? nearOf(req, mb.room ?? st.face?.room ?? 0, m.light) : backdrop(state === "place" ? focused : chosenPlace) };
   if (state === "place") for (const g of places) if (g !== focused) backdrop(g);   // regions.glass.load: every place card's backdrop on the place step (at most five), so a ring move never waits on a load; the host drops them with the screen
   // the resident: the focused card's habit (pose) or the chosen pose (place, confirm, begin) at the Habitat factor; the hour's light on the pose step, ungraded after; a slot in state portrait
   const habit = state === "pose" ? focused : chosenPose;

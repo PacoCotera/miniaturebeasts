@@ -736,15 +736,15 @@
   { "state": "vivarium/vivarium-walk-8000ms", "card": "vivarium-L4-22", "verdict": "fine", "from": "owner card vivarium-L4-22, marked fine: they overlap 49 x 52, 49 → 0",
     "expect": [],
     "clear": [
-     { "rule": "L4", "container": "window", "node": "resident#4", "other": "resident#5", "mark": "owner", "why": "cleared: exception in frame.json (by owner): the residents stay a grid so the gutter fault vivarium-L3-15 stands" }
+     { "rule": "L4", "container": "window", "node": "resident", "other": "resident#4", "mark": "owner", "why": "cleared: exception in frame.json (by owner): the residents stay a grid so the gutter fault vivarium-L3-15 stands" }
     ],
     "pending": [] },
   { "state": "vivarium/vivarium-away", "card": "vivarium-L5-6", "verdict": "fault", "from": "owner card vivarium-L5-6, marked fault: almost aligned: centres (y) 444 and 438, 6 → 0",
-    "expect": [
-     { "rule": "L5", "part": "b", "container": "window", "node": "bed", "other": "nameTag", "mark": "owner", "why": "marked a fault by the owner: almost aligned: centres (y) 444 and 438, 6 → 0 in the reviewed run" }
-    ],
+    "expect": [],
     "clear": [],
-    "pending": [] },
+    "pending": [
+     { "rule": "L5", "part": "b", "container": "window", "node": "bed", "other": "nameTag", "mark": "owner", "why": "the owner's fault in kind, 8 px after the Roots bed, outside nearCentres [1, 6]; the owner re-marks the retaken vivarium-away at 1x" }
+    ] },
   { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L6-3", "verdict": "fine", "from": "owner card vivarium-L6-3, marked fine: an empty 1024 x 380, 0.86 → 0.25",
     "expect": [],
     "clear": [

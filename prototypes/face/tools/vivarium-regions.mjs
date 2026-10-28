@@ -1,11 +1,12 @@
 // Check 1 for the Vivarium's whole (lvgl-switch.md §4): every region the face's log says it drew, against the rectangles vivarium.json gives it. `departures` returns the list of departures, empty when none.
+// hasBed: the room has a bed (Roots only, the rooms design); the others draw none.
 // log: the face's `log` message { regions: [{ id, layer, rect }], type: [{ text, px, region, rect? }] }; spec: vivarium.json; state: "rest" | "empty"; cur: the ring ("room" when none); n: the bays (the tiles drawn).
 import { listPitch } from "../../ui/specs/derive.mjs";
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 
 const parts1 = (regions, n) => Math.min(1, n);
-export function departures(log, spec, state = "rest", cur = "room", n = 0, figs = []) {   // figs: each resident's stage and figure [dx, dy, W, H] (T-20261018-235): the figures, not their pictures, stay on the walk ground
+export function departures(log, spec, state = "rest", cur = "room", n = 0, figs = [], hasBed = true) {   // figs: each resident's stage and figure [dx, dy, W, H] (T-20261018-235): the figures, not their pictures, stay on the walk ground
   const out = [], R = spec.regions, regions = log.regions ?? [], type = log.type ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer)), win = R.window.rect;
   const must = (ok, m) => { if (!ok) out.push(m); };
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
@@ -18,7 +19,7 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0, figs 
   { const w = R.resident.walk.ground, size = (f) => R.resident[f.stage === "juvenile" ? "juvenile" : "adult"], slack = figs.reduce((a, f) => { if (!f.figure) return a; const [dx, dy, W, H] = f.figure, [pw, ph] = size(f); return [Math.max(a[0], dx), Math.max(a[1], pw - dx - W), Math.max(a[2], ph - dy - H)]; }, [0, 0, 0]);   // how far a picture reaches past its figure: left, right, below
     for (const r of [...got("resident", "art"), ...got("resident", "painted")]) must(r.rect[0] + slack[0] >= w[0] && r.rect[0] + r.rect[2] - slack[1] <= w[0] + w[2] && r.rect[1] + r.rect[3] >= w[1] && r.rect[1] + r.rect[3] - slack[2] <= w[1] + w[3] + 1, `the residents ${r.rect} leave the walk ground ${w}`); }
   { const b = R.bed.rect, k = R.bed.markRect, pics = [...got("bed", "art"), ...got("bed", "painted")], up = [b[0], b[1] - 48, b[2], b[3] + 48];   // the nest exactly at its rect, the Companion's mark exactly at its own; the sleepers (their own region) within the nap's height above the bed
-    must(pics.some((r) => eq(r.rect, b)), `the bed is not drawn exactly at ${b}`);
+    must(hasBed ? pics.some((r) => eq(r.rect, b)) : pics.length === 0, hasBed ? `the bed is not drawn exactly at ${b}` : "a room with no bed draws no bed");
     for (const r of pics) must(eq(r.rect, b) || eq(r.rect, k), `a bed picture (${r.layer}) ${r.rect} is neither the bed ${b} nor the Companion mark ${k}`);
     for (const r of [...got("bed.sleepers", "art"), ...got("bed.sleepers", "painted")]) must(r.rect[3] > up[3] || within(r.rect, up), `a sleeper (${r.layer}) ${r.rect} leaves the bed ${b} and the nap's height above it`); }
   if (state === "empty") for (const id of ["resident", "bed.sleepers", "nameTag", "focus"]) must(got(id).length === 0, `the empty whole draws no ${id}`);   // the bed stands, the nest alone (or with its mark while away)

@@ -2,6 +2,7 @@
 // against namer.props.json) in every scene, holds no rectangle, fits the props budget, names the state (rest, meet, out), the card, the plates, the four modules and the strip, and the ring's targets and bottom line by the spec's rules.
 //   node --test prototypes/station/tests/
 import { lineCased } from "./fixtures/line-case.mjs";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -151,9 +152,19 @@ test("the strip: a tile a place, the room shown's mibis in slot order then the f
     w.st.face.room = 1; assert.deepEqual(build(w, S0.twelve.sv).props.regions.tiles.items.map((t) => t.id), S.inRoom(w.st, 0).map((x) => String(x.id)), "the room the whole shows does not take the strip off the mibi up close"); }
 });
 
-test("the window: the near Vivarium of the light, its master named by habitat.json light.pictures; the resident's picture the mibi at the box; no waiting lamp whatever the painting's state (Grow paints nothing)", () => {
+test("R3: the mibi's room's ids per light: its near view as the glass and the room's base, no pieces up close and no bed outside Roots (the bed is the whole's)", () => {
+  const ROOMS = JSON.parse(readFileSync(path.join(specs, "rooms.json"), "utf8"));
+  for (const [ri, name] of ROOMS.order.entries()) for (const light of ["dawn", "day", "dusk", "night"]) {
+    const w = world(4); dock(w.st); mibis(w, 3); for (const mb of w.st.mibis) mb.room = ri; w.st.face.room = (ri + 1) % 4;   // the room the whole shows is another: the mibi's own room is the one up close
+    const b = build(w, sv0(), { light }), r = b.props.regions; assert.deepEqual(validate(b.props, schema), [], `${name} ${light}`);
+    assert.equal(r.glass.picture, `room-${name}-near-${light}-544x408`); assert.deepEqual(r.room, { id: name, base: r.glass.picture, pieces: {} });
+    assert.ok(!("bed" in r) && !b.requests.some((q) => /bed/.test(q.id) && q.id.startsWith("room-")), "Habitat draws no bed"); assert.ok(!b.requests.some((q) => /^(idle-vivarium|home-bed|vivarium-near)/.test(q.id)));
+  }
+});
+
+test("the window: the near Vivarium of the light is the mibi's room's (room-<room>-near-<light>-544x408); the resident's picture the mibi at the box; no waiting lamp whatever the painting's state (Grow paints nothing)", () => {
   const { w, sv } = scenes().rest;
-  for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }); assert.equal(b.props.regions.glass.picture, `vivarium-near-${light}-544x408`); assert.ok(b.requests.some((r) => r.id === `vivarium-near-${light}-544x408` && r.kind === "slot")); }
+  for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }); assert.equal(b.props.regions.glass.picture, `room-roots-near-${light}-544x408`); assert.ok(b.requests.some((r) => r.id === `room-roots-near-${light}-544x408` && r.kind === "slot" && r.master === r.id)); }
   const m = w.st.mibis[0], b = build(w, sv); assert.equal(b.props.regions.resident.picture, `mibi:${genomeDigest(m.genome)}:adult:304x312`); assert.equal(b.props.regions.resident.waiting, false);
   m.paint = { state: "sent" }; const x = build(w, sv); assert.equal(x.props.regions.resident.waiting, false); assert.notEqual(x.line.subject, spec.strings.painting);
 });

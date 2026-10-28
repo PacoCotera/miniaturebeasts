@@ -2,59 +2,71 @@
  "_note": "The Vivarium's whole: docked (the carried two asleep), away, an out mibi's tile focused, empty, a housed tile and a sleeper focused, twelve residents, and the walk 8000 ms in: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "vivarium-docked": {
-   "hash": "240a9742",
+   "hash": "4ab51dc1",
    "png": "vivarium-docked.png"
   },
   "vivarium-away": {
-   "hash": "3dc99717",
+   "hash": "e4fd1124",
    "png": "vivarium-away.png"
   },
   "vivarium-mibi-out": {
-   "hash": "af153b1e",
+   "hash": "9bacc640",
    "png": "vivarium-mibi-out.png"
   },
   "vivarium-empty": {
-   "hash": "4a2f6dee",
+   "hash": "cd777afd",
    "png": "vivarium-empty.png"
   },
   "vivarium-tile": {
-   "hash": "dce4b7e9",
+   "hash": "fb8cdb57",
    "png": "vivarium-tile.png"
   },
   "vivarium-sleeper": {
-   "hash": "bdf85c4f",
+   "hash": "da29cb11",
    "png": "vivarium-sleeper.png"
   },
   "vivarium-twelve": {
-   "hash": "96926a97",
+   "hash": "fc0d88a5",
    "png": "vivarium-twelve.png"
   },
   "vivarium-empty-away": {
-   "hash": "baaac3a6",
+   "hash": "4c3e61a5",
    "png": "vivarium-empty-away.png"
   },
   "vivarium-docked-dawn": {
-   "hash": "579c5c1a",
+   "hash": "3d68ef98",
    "png": "vivarium-docked-dawn.png"
   },
   "vivarium-docked-day": {
-   "hash": "240a9742",
+   "hash": "4ab51dc1",
    "png": "vivarium-docked-day.png"
   },
   "vivarium-docked-dusk": {
-   "hash": "871b4737",
+   "hash": "20ad750f",
    "png": "vivarium-docked-dusk.png"
   },
   "vivarium-docked-night": {
-   "hash": "d8aa968a",
+   "hash": "355ee960",
    "png": "vivarium-docked-night.png"
   },
+  "vivarium-room-reeds": {
+   "hash": "c13c3412",
+   "png": "vivarium-room-reeds.png"
+  },
+  "vivarium-room-boulders": {
+   "hash": "9ce39812",
+   "png": "vivarium-room-boulders.png"
+  },
+  "vivarium-room-ferns": {
+   "hash": "c22b9ee8",
+   "png": "vivarium-room-ferns.png"
+  },
   "vivarium-walk-8000ms": {
-   "hash": "682dd7c8",
+   "hash": "43043b3c",
    "png": "vivarium-walk-8000ms.png"
   },
   "vivarium-moving-8000ms": {
-   "hash": "9d3a550b",
+   "hash": "4fc3e03d",
    "png": "vivarium-moving-8000ms.png"
   }
  }

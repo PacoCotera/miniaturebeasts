@@ -2,19 +2,19 @@
  "_note": "The sitting (S01 adult Dot, noon, reduced motion unless timed): the pose step (three habits, the curl, one habit, a juvenile), the place step (two places, at night, five places), the confirm step (at rest, armed), begin at 150 ms (motion on, virtual clock), the portrait (the bone canvas at 528×392) and a long name: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "sitting-pose": {
-   "hash": "97d11c2d",
+   "hash": "864d344c",
    "png": "sitting-pose.png"
   },
   "sitting-pose-curl": {
-   "hash": "0a472ab5",
+   "hash": "542ed1a8",
    "png": "sitting-pose-curl.png"
   },
   "sitting-pose-one": {
-   "hash": "362e7fa8",
+   "hash": "6cfdea51",
    "png": "sitting-pose-one.png"
   },
   "sitting-pose-juvenile": {
-   "hash": "387a1eb7",
+   "hash": "99ce917d",
    "png": "sitting-pose-juvenile.png"
   },
   "sitting-place": {
