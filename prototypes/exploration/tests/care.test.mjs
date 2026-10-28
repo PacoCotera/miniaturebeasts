@@ -1524,3 +1524,13 @@ test("juvenile pictures at the sites: setup card and faces, header mini, roster,
   p = X26.world([pip(), dot(), X26.mib(3, "Moss", 2)], [1, 2, 3]); p.run("S.ui.aId = 1; FX.walk = { id: 1, at: 0, others: [2, 3] }");
   d = p.draw("active", 100); assert.deepEqual(d.filter(c => c[0] === "plate" && c[1] === "c-token-48").map(c => [c[2], c[5], c[7]]), [[36, 0, false], [366, 2, true]], "left Pip (adult), right Moss (juvenile)");
 });
+
+test("R2: the Tend that will make the bond says 'a bond is for good'; the others say 'once a day'", () => {
+  const p = X26.world([dot()], [1]);
+  const ctx = (tends, bonded = false) => p.run(`{ const m = mibiById(1); m.tends = ${tends}; m.bonded = ${bonded}; delete m.tendDay; S.phase = 'active'; S.walkTurn = S.turn; lineFor().ctx; }`);
+  assert.equal(ctx(0), "once a day"); assert.equal(ctx(1), "once a day");
+  assert.equal(ctx(2), "a bond is for good", "the third Tend sets bonded");
+  assert.equal(ctx(2, true), "once a day", "already bonded: nothing to warn of");
+  p.run("{ const m = mibiById(1); m.bonded = false; m.tends = 2; m.care = 2; delete m.tendDay; tend(m); }");
+  assert.equal(p.run("mibiById(1).bonded"), true, "the press the line warns of is the one that bonds");
+});
