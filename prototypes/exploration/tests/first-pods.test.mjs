@@ -491,3 +491,67 @@ test("the setup strip: the turn and tier, then the Probe's plates as the top bar
   p.run("S.shield = 1;"); said();
   assert.equal(p.run("(() => { const s = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier, w = textW(s, 2) + 12 + 27, x0 = Math.round(225 - w / 2); return x0 > 14 && x0 + w < 436; })()"), true, "inside the screen at tier 1");
 });
+
+// ---- R2: the shed pod of a returned mibi's line ----
+const GENOME = { origin: { kinship: 0.5 }, marker: "shed-genome" };
+const REC = (o = {}) => ({ id: 7, name: "Dot", sp: 1, species: "S02", g: "rock", due: 5, kinship: 0.5, genome: GENOME, state: "due", ...o });
+// A new world with the Station's part holding the given records, the Companion at the given turn.
+function shedWorld(seed, recs, turn) {
+  const p = page();
+  p.run(`newWorld(${seed}); TEST.calm = true; S.st = { wid: S.wid, sheds: ${JSON.stringify(recs)} }; S.turn = ${turn}; localStorage.setItem(SAVE_KEY, JSON.stringify(S));`);   // stored, so save() keeps the Station's part as the Station wrote it
+  return p;
+}
+const shedPods = p => plain(p.S.pods.filter(q => q.how === "shed"));
+const nextExpedition = (p, turn) => { p.run(`mapStep('right'); mapStep('left'); endExpedition('home'); S.turn = ${turn};`); p.run("startExpedition('weather', G.spawns[0])"); };
+
+test("R2.1 a due record places exactly one shed pod on the first expedition at or after its due turn, and none before", () => {
+  const p = shedWorld(7, [REC()], 4);
+  p.run("startExpedition('weather', G.spawns[0])");
+  assert.equal(shedPods(p).length, 0, "turn 4 < due 5: none");
+  nextExpedition(p, 5);
+  const pods = shedPods(p); assert.equal(pods.length, 1, "turn 5 = due: one");
+  assert.deepEqual(pods[0], { id: "s7", k: pods[0].k, x: pods[0].x, y: pods[0].y, sp: 1, h: 0, bur: 0, g: "rock", how: "shed", shed: 7, of: "Dot", genome: GENOME });
+  const q = shedWorld(7, [REC({ id: 8, name: "Ro" }), REC()], 9); q.run("startExpedition('weather', G.spawns[0])");
+  assert.equal(shedPods(q).length, 1, "one an expedition at most"); assert.equal(shedPods(q)[0].shed, 8);
+});
+
+test("R2.2 the cell has ground g when one is in reach, and is the nearest such cell", () => {
+  let seen = 0;
+  for (const s of [1, 2, 3, 7, 11, 42, 99]) for (const g of ["meadow", "pond", "rock", "wood"]) {
+    const p = shedWorld(s, [REC({ g })], 9); p.run("startExpedition('weather', G.spawns[0])");
+    const pod = shedPods(p)[0], r = plain(p.run(`(() => { const cell = G.spawns[0], buried = S.pods.filter(q => q.h === 1 && q.bur === 1), fit = reachCells(cell, TIER[1].range).filter(c => podSite(c, buried)), a = cxy(cell);
+      return { fit: fit.map(c => ({ c, g: groundName(G.land[c], false), d: cheb(cxy(c), a) })) }; })()`));
+    assert.ok(pod, `seed ${s} ${g}: a pod is placed`);
+    const own = r.fit.filter(f => f.g === g);
+    if (own.length) { const best = Math.min(...own.map(f => f.d)), here = r.fit.find(f => f.c === +pod.k);
+      assert.equal(here.g, g, `seed ${s}: ground ${g}`); assert.equal(here.d, best, `seed ${s}: the nearest ${g}`); seen++; }
+    else { const here = r.fit.find(f => f.c === +pod.k); assert.ok(here, "else an ok cell in reach"); assert.equal(here.d, Math.min(...r.fit.map(f => f.d))); }
+  }
+  assert.ok(seen > 10, "the ground case was exercised: " + seen);
+});
+
+test("R2.3 a second expedition places no duplicate, whether the pod is on the ground, held, crated or in the cargo", () => {
+  const p = shedWorld(7, [REC()], 5);
+  p.run("startExpedition('weather', G.spawns[0])"); assert.equal(shedPods(p).length, 1);
+  nextExpedition(p, 6); assert.equal(shedPods(p).length, 1, "on the ground: no second");
+  p.run("S.exp.cargo.pods.push({ id: 's7', sp: 1, g: 'rock', how: 'shed', bur: 0, gs: 1, k: '1', shed: 7 }); S.pods = S.pods.filter(q => q.how !== 'shed');");
+  assert.equal(p.run("shedsDue().length"), 0, "in the cargo: known");
+  p.run("S.hold = S.exp.cargo; S.exp = null;"); assert.equal(p.run("shedsDue().length"), 0, "in the hold: known");
+  p.run("S.bay.push({ id: 'x', pods: S.hold.pods }); S.hold = null;"); assert.equal(p.run("shedsDue().length"), 0, "in a crate: known");
+  p.run("S.bay = [];"); assert.equal(p.run("shedsDue().length"), 1, "nowhere: due again");
+});
+
+test("R2.4 the pod reaches the crate with its genome, shed and of, through take, swap, drop and seal", () => {
+  const p = shedWorld(7, [REC()], 5);
+  p.run("startExpedition('weather', G.spawns[0]); advance = () => {};");
+  // the copies run on the pod itself, standing beside it in its place
+  const pod = "S.pods.find(q => q.how === 'shed')";
+  p.run(`${pod}.x = 3; ${pod}.y = 3; S.exp.patch = { key: ${pod}.k, x: 4, y: 3 }; takePod(${pod});`);
+  assert.deepEqual(plain(p.run("S.exp.cargo.pods[0].genome")), GENOME, "take");
+  p.run("dropPods(S.exp, {})");
+  const dropped = plain(p.run("S.pods.find(q => q.how === 'shed')")); assert.equal(dropped.shed, 7); assert.equal(dropped.of, "Dot"); assert.deepEqual(dropped.genome, GENOME);
+  p.run("S.exp.cargo.pods = []; S.exp.patch.x = 4; takePod(S.pods.find(q => q.how === 'shed')); S.exp.stats.calls = 1; endExpedition('sent');");
+  const crate = p.S.bay.at(-1); assert.ok(crate, "sealed");
+  const c = plain(crate.pods[0]); assert.equal(c.shed, 7); assert.equal(c.of, "Dot"); assert.deepEqual(c.genome, GENOME);
+  assert.equal(p.run("podTagOf({ how: 'shed', of: 'Dot' })"), "of Dot's line");
+});

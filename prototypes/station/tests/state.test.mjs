@@ -755,3 +755,16 @@ test("rooms: need() and needKey() say full after the docked crates and ahead of 
   S.openCrates(st2, svOf({ bay: [crate(1, [q])] }), settings, 1); assert.equal(st2.tray[0].shed, 5); assert.equal(st2.sheds[0].state, "found");
   const p = { ...q, id: "q2", shed: undefined }; S.openCrates(st2, svOf({ bay: [crate(2, [p])] }), settings, 2); assert.equal(st2.tray.at(-1).shed, null);
 });
+
+test("R2: a crate pod with shed and genome opens into the tray with that genome and marks the record found", () => {
+  const st = roomsWorld(2); st.turn = 1; const m = st.mibis[0]; m.born = 0;
+  assert.equal(S.returnMibi(st, { with: null }, m, settings).ok, true);
+  const rec = st.sheds[0]; assert.equal(rec.state, "due"); const genome = rec.genome;
+  const pod = { id: "s" + rec.id, sp: rec.sp, g: "rock", how: "shed", gs: 5, k: null, shed: rec.id, of: rec.name, genome };
+  const sv = { v: 8, seed: 7, wid: "w1", turn: 9, bay: [crate(1, [pod])], mibis: [], with: null, tier: 1, shield: 3 };
+  assert.equal(S.dockKey(st, sv, settings, 5).ok, true); const o = S.openBay(st, sv, settings, 5);
+  assert.equal(o.plays[0].ids.length, 1, "the pod lands");
+  const landed = st.tray.concat(st.waiting).find((t) => t.id === o.plays[0].ids[0]);
+  assert.deepEqual(landed.genome, genome, "the mibi's own line"); assert.equal(landed.shed, rec.id);
+  assert.equal(st.sheds.find((r) => r.id === rec.id).state, "found");
+});

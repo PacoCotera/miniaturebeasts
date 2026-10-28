@@ -410,10 +410,11 @@ function groundName(land, cave) { return cave ? 'cave' : ['meadow', 'pond', 'roc
 // Pods, "The first expedition finds pods"): pod A, a Loika's, at distance 1 unless a buried Loika pod is already there; pod B,
 // a Tuikis's, at the reach's edge while the reach holds fewer than 2. Pure: reads G, never S, and never mutates `pods`;
 // its own seed, so genLife's seven world pods stay where they are. startExpedition adds them on the first placement only.
+function podSite(c, buried) { return !G.spawns.includes(c) && c !== G.gate && c !== G.deep && c !== G.swim && !G.island[c] && G.land[c] !== L.WATER && G.comp[c] === 1 && passable(c) && !buried.some(p => p.k === String(c)); }
 function firstPods(seed, cell, pods) {
   const R = makeRng(hash(seed, 'firstPods', cell)), s0 = cxy(cell), reach = reachCells(cell, TIER[1].range).sort((a, b) => a - b), out = [];
   const buried = () => [...pods, ...out].filter(p => p.h === 1 && p.bur === 1), dist = c => cheb(cxy(c), s0);
-  const ok = c => !G.spawns.includes(c) && c !== G.gate && c !== G.deep && c !== G.swim && !G.island[c] && G.land[c] !== L.WATER && G.comp[c] === 1 && passable(c) && !buried().some(p => p.k === String(c));
+  const ok = c => podSite(c, buried());
   const pick = (pools, id, sp) => { const pool = pools.find(a => a.length); if (pool) { const c = R.pick(pool); out.push({ id, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); } };
   const d1 = reach.filter(c => dist(c) === 1);
   if (!buried().some(p => p.sp === 0 && d1.includes(+p.k))) { const e = d1.filter(ok);
@@ -422,6 +423,22 @@ function firstPods(seed, cell, pods) {
     pick([e.filter(c => G.land[c] === L.ROCK || G.land[c] === L.WOOD), e], 'fb', 1); }
   return out;
 }
+
+// The shed pod of a returned mibi's line: the nearest cell to the start within reach (Chebyshev, ties by lower index)
+// whose ground is the record's, else the nearest cell that passes firstPods' ok. Pure: reads G, never S. null when no cell is fit.
+function shedCell(cell, range, pods, g) {
+  const s0 = cxy(cell), buried = pods.filter(p => p.h === 1 && p.bur === 1), fit = reachCells(cell, range).sort((a, b) => a - b).filter(c => podSite(c, buried)), d = c => cheb(cxy(c), s0);
+  const near = list => list.reduce((b, c) => (b == null || d(c) < d(b) ? c : b), null);
+  const own = near(fit.filter(c => groundName(G.land[c], false) === g));
+  return own != null ? own : near(fit);
+}
+// A shed pod is due once its record says so and its turn has come; it is known once any pod of the Companion carries its id.
+function shedKnown(id) {
+  const has = a => (a || []).some(p => p.shed === id);
+  return has(S.pods) || has(S.hold && S.hold.pods) || S.bay.some(c => has(c.pods)) || has(S.exp && S.exp.cargo && S.exp.cargo.pods);
+}
+const shedOf = p => p.shed != null ? { shed: p.shed, of: p.of, genome: p.genome } : {};   // a shed pod keeps its line wherever it is copied
+function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state === 'due' && S.turn >= r.due && !shedKnown(r.id)); }
 
 // ===================== 4. Patch layouts (pure: seed + cell) =====================
 const layoutCache = new Map();
@@ -613,7 +630,7 @@ function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
 // takes the mibi's name (or the mibi, or the names).
 const TEND_MOMENT = ['leans on the glass', 'glows softly', 'puffs'];   // the species moment's words, as built (Loika, Tuikis, Untuva)
 const CARE_TEXT = {
-  tendLabel: n => 'Tend ' + n, tendOnce: 'once a day', tendedToday: 'tended today', tendAfter: 'after the expedition',
+  tendLabel: n => 'Tend ' + n, tendOnce: 'once a day', tendBond: 'a bond is for good', tendedToday: 'tended today', tendAfter: 'after the expedition',
   tended: m => m.name + ' ' + (TEND_MOMENT[m.sp] ?? CARE_TEXT.tendMomentOther) + ' · ' + (m.mem ? 'it remembers the ' + m.mem : 'it hasn’t been out yet'),
   tendedRefused: n => n + ' was tended today', tendMidExp: n => 'Tend ' + n + ' when the expedition is over',
   walkLabel: names => names.length === 1 ? 'Walk with ' + names[0] : 'Walk together', walkOnce: 'once a turn',
@@ -1205,6 +1222,9 @@ function ensureCharge(ex) {
 function startExpedition(type, cell) {
   const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
   if (firstPlacement()) S.pods.push(...firstPods(S.seed, cell, S.pods));   // a new world's first expedition: two pods in reach (X2)
+  const sr = shedsDue()[0];   // one shed pod an expedition; the rest wait for the next
+  if (sr) { const c = shedCell(cell, tier.range, S.pods, sr.g);
+    if (c != null) S.pods.push({ id: 's' + sr.id, k: String(c), x: -1, y: -1, sp: sr.sp, h: 0, bur: 0, g: sr.g, how: 'shed', shed: sr.id, of: sr.name, genome: sr.genome }); }
   const stormOn = type === 'weather' || R.chance(.3);
   const fogOn = type === 'deep' || R.chance(.45);
   const pm = partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // no partner: the first mibi with you rides in the Companion (always a juvenile)
@@ -1359,7 +1379,7 @@ function ensureLive(key) {
   // Buried pods lie 3–6 tiles from where you first come in, so the first Call can find them.
   const ent = lay.cave ? { x: 14, y: 27 } : entryPoint(lay, key, ex.lastDir);
   for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
-    if (s) { p.x = s.x; p.y = s.y; } else { S.pods.splice(S.pods.indexOf(p), 1); logEv('A pod had no room in this place and was dropped'); } }
+    if (s) { p.x = s.x; p.y = s.y; if (p.how === 'shed') { fxGlint(s.x, s.y); logEv('A pod of ' + p.of + "'s line"); } } else { S.pods.splice(S.pods.indexOf(p), 1); logEv('A pod had no room in this place and was dropped'); } }
   const nests = lay.feats.filter(f => f.kind === 'e');
   for (const w of S.cr) {
     if (w.c !== lay.cell || !!w.cv !== lay.cave) continue;
@@ -1651,8 +1671,8 @@ function lightBeacon(f) {
 // Pods, named for the player: the species if identified, and one tag that tells two pods apart (where it came from).
 function podName(p, short) { return S.known.includes(p.sp) ? spOf(p.sp).name + (short ? '' : ' pod') : short ? 'unknown' : 'Unknown pod'; }
 function podTagOf(p) {
-  const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal' }[p.how];
-  return how || (p.g === 'cave' ? 'cave' : p.bur ? 'from a hole' : 'from the ' + ({ pond: 'pond edge', rock: 'rock field' }[p.g] || p.g));
+  const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal', shed: "of {of}'s line" }[p.how];
+  return how ? how.replace('{of}', p.of) : (p.g === 'cave' ? 'cave' : p.bur ? 'from a hole' : 'from the ' + ({ pond: 'pond edge', rock: 'rock field' }[p.g] || p.g));
 }
 // Confirm on a pod with a full hold opens the chooser: pad picks which held pod to leave, ✓ swaps, ← keeps.
 function swapState() { const ex = S.exp, sw = S.ui.swap; if (!ex || !ex.patch || !sw) return null; const p = S.pods.find(q => q.id === sw.id); if (!p) return null;
@@ -1663,8 +1683,8 @@ function takePod(p, leave) {
   const out = full ? ex.cargo.pods.splice(leave, 1)[0] : null;
   S.pods = S.pods.filter(q => q !== p);
   // the genome seed is fixed the first time a pod is taken: the Station reads its genome from it
-  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key });
-  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
+  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key, ...shedOf(p) });
+  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...shedOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
@@ -2158,7 +2178,7 @@ function dropPods(ex, rep) {
   const free = []; for (let i = 0; i < PW * PH; i++) if (lay.reach[i] && !taken.has(i)) free.push(i);
   rep.dropped = ex.cargo.pods.length; rep.at = cxy(cell);
   for (const pod of ex.cargo.pods) { const i = free.length ? free.splice(R.int(free.length), 1)[0] : lay.spawnPt.y * PW + lay.spawnPt.x;   // no free tile: the entry tile, stacked
-    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % PW, y: (i / PW) | 0, sp: pod.sp, ...(pod.species ? { species: pod.species } : {}), h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1, gs: pod.gs }); }
+    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % PW, y: (i / PW) | 0, sp: pod.sp, ...(pod.species ? { species: pod.species } : {}), h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1, gs: pod.gs, ...shedOf(pod) }); }
   if (rep.dropped) (S.skulls = S.skulls || {})[cell] = key;   // which place holds the pods (the cave sits under the gate cell)
   logEv('Probe broke at ' + rep.at.x + ',' + rep.at.y + ' · ' + rep.dropped + ' pod' + (rep.dropped === 1 ? '' : 's') + ' left there (skull on the map)');
   ex.cargo.pods = [];
@@ -2197,7 +2217,7 @@ function endExpedition(reason) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n, n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null, ...shedOf(q) })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
@@ -4905,7 +4925,7 @@ function lineBase() {
     case 'active': { const m = shownMibi(); if (!m) return L1(S.exp ? '' : 'Next expedition', '', 'menu');
       if (isCarried(m)) { if (S.exp) return L1(CARE_TEXT.tendLabel(m.name), CARE_TEXT.tendAfter, 'Mibis', true);
         if (canWalk()) return L1(CARE_TEXT.walkLabel(carriedMibis().map(q => q.name)), CARE_TEXT.walkOnce, 'Mibis');
-        return canTend(m) ? L1(CARE_TEXT.tendLabel(m.name), CARE_TEXT.tendOnce, 'Mibis') : L1(CARE_TEXT.tendLabel(m.name), CARE_TEXT.tendedToday, 'Mibis', true); }
+        return canTend(m) ? L1(CARE_TEXT.tendLabel(m.name), !m.bonded && (m.tends || 0) + 1 >= BOND_TENDS ? CARE_TEXT.tendBond : CARE_TEXT.tendOnce, 'Mibis') : L1(CARE_TEXT.tendLabel(m.name), CARE_TEXT.tendedToday, 'Mibis', true); }
       return L1(CARE_TEXT.takeLabel(m.name), S.carried.length >= CARRY_MAX ? CARE_TEXT.full : CARE_TEXT.takeCtx, 'Mibis', !canSwap() || S.carried.length >= CARRY_MAX); }
     case 'newworld': return L1(S.ui.nw ? 'Start a new world' : 'Keep this world', '', 'close');
     case 'worldmap': return L1('', 'the whole map', 'close');
