@@ -21,7 +21,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 35   # measured 28 minutes with the play page's journey (about 3); without it about 25, the longest a pull request now runs
+    timeout-minutes: 50   # the tests step ran past 15 minutes on 2026-10-28 (the walk proofs of the rooms, R4, add about 7 minutes); about 25 before them
     steps:
       - uses: actions/checkout@v4
         with:
@@ -134,7 +134,7 @@ jobs:
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test .github/roadmap.test.mjs
       - name: Station rules (node tests)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        timeout-minutes: 15   # measured about 8 minutes
+        timeout-minutes: 30   # timed out at 15 on 2026-10-28 with the rooms' walk proofs (R4) running, about 8 before them
         # The Station's rules and the Caddy service in Node, and the other prototypes' tests.
         # The tests have the browser too: the specimen generator's oracle (prototypes/station/tests/specimen.test.mjs) runs the original in Chromium and compares the port to it.
         run: |
