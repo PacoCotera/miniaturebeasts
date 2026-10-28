@@ -4,6 +4,7 @@
 // Skipped when the face has not been built (build.sh).
 //   node --test prototypes/face/tests/vivarium.test.mjs
 import { test } from "node:test";
+import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the props builders, as the page registers it
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -32,7 +33,7 @@ function scene(o = {}) {
   for (const m of st.mibis) m.paint = { state: "landed" };
   for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };   // its painting is on its way: the waiting lamp
   for (const m of (o.young ? st.mibis.slice(-o.young) : [])) m.born = st.turn;
-  if (o.room != null) st.face.room = o.room;   // the room the whole shows (after the seeding: a seed fills the shown room first)
+  if (o.room != null) { st.face.room = o.room; if (o.move) st.mibis.forEach((m, i) => { m.room = o.room; m.slot = i; }); }   // the room the whole shows (after the seeding: a seed fills the shown room first); move: the seeded mibis live in it
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
   const b = vivariumBuild({ st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ? (/^(resident|tile)\./.test(o.focus) ? o.focus : o.focus.replace(/^(\w+):(\d+)$/, (_, k, i) => k + "." + st.mibis[+i].id)) : null, seen: null }, spec, frameSpec, homeSpec);
   return { ...b, st };
@@ -43,9 +44,9 @@ const frameProps = (line = {}) => ({ top: { screen: "vivarium", title: "Vivarium
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
 const sizeOf = (r) => r.size ?? [16, 16];
-async function start(b, { motion = true, t0 = 0, sleepersPainted = false, node = false } = {}) {
+async function start(b, { motion = true, t0 = 0, sleepersPainted = false, node = false, rooms = J("rooms") } = {}) {
   const f = await bootFace(pathToFileURL(dist + (node ? "/node/" : "/")), { test: true });
-  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["vivarium", spec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
+  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["vivarium", spec], ["rooms", rooms]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   f.handleOf(R.tiles.glyph ?? "frame-companion-outline-16x24", withPolicy((i) => standIn(i, [16, 24])));
   for (const id of ["frame-companion-outline-16x24", "home-lamp-sky-12x12", "home-lamp-hairline-12x12", "home-lamp-sprout-12x12", "home-lamp-amber-12x12"]) f.handleOf(id, withPolicy((i) => standIn(i, id.includes("outline") ? [16, 24] : [12, 12])));
@@ -370,4 +371,49 @@ test("an asleep resident with a curl draws the curl in place, its foot on the st
   assert.equal(fs.feetY, fa.feetY, "the curl's foot is on the stand's feet line"); assert.ok(Math.abs(fs.fx - fa.fx) <= 1, "on the same feet point");
   const fh = Math.min(16, Math.max(6, 2 * Math.floor((CF[2] + 6) / 12))); assert.deepEqual(asleep.ring, [fs.fx - Math.floor(CF[2] / 2) - 5, fs.feetY - (fh + 10) / 2, CF[2] + 10, fh + 10], "the ring on the curl's feet, no lift");
   assert.equal(asleep.tag[1], fs.feetY + 1 - CF[3] - 32, "the tag over the curl, 32 above its top");
+});
+
+// ---- R3 (the rooms design): the room's pieces in the glass: back pieces over the base and under every walker, occluders sorted with the walkers by the feet's row ----
+const fnv = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };
+const nodesOf = (f) => logOf(f)?.nodes ?? [], at = (nodes, id) => nodes.findIndex((n) => n[0] === fnv(id)), residents = (nodes) => nodes.filter((n) => n[3] === "resident");
+const withFoot = (id, foot) => { const r = J("rooms"); r.rooms.roots.pieces.find((p) => p.id === id).foot = foot; return r; };
+test("R3: a walker whose feet are 6 rows above an occluder's foot draws before it, 6 below draws after it, and on a tie the occluder is after", { skip }, async () => {
+  const b = scene({ adults: 1, focus: "tile:0" }), probe = await start(b, { motion: false, sleepersPainted: true }), me = residents(nodesOf(probe)); assert.equal(me.length, 1, "one resident");
+  const feet = me[0][5] + me[0][7] - 1, dy = -80;   // the node's top and height less 1: the feet's row (the box's bottom edge is the feet + 1); the whole's window is the painting less 80 rows
+  const order = async (d) => { const f = await start(b, { motion: false, sleepersPainted: true, rooms: withFoot("roots-sorrel-1", feet - dy + d) }), nodes = nodesOf(f), piece = at(nodes, "p.roots-sorrel-1"), walker = nodes.findIndex((n) => n[3] === "resident"); assert.ok(piece >= 0 && walker >= 0, "both drawn"); assert.deepEqual(f.errors(), []); return piece < walker ? "piece first" : "walker first"; };
+  assert.equal(await order(6), "walker first", "the walker's feet are 6 rows above the occluder's foot: the walker draws before it");
+  assert.equal(await order(-6), "piece first", "6 rows below: after it");
+  assert.equal(await order(0), "walker first", "a tie: the occluder goes after the walker");
+});
+test("R3: a back piece always draws before every walker; the nodes' names (p.<pieceId>) are stable across two frames, the bed kept in Roots", { skip }, async () => {
+  const b = scene({ adults: 6, carry: [0, 1] }), f = await start(b, { motion: true, node: true });
+  const n1 = nodesOf(f), back = at(n1, "p.roots-mister"); assert.ok(back >= 0, "the mister is drawn"); assert.ok(at(n1, "p.roots-sorrel-1") >= 0 && at(n1, "p.roots-stone-2") >= 0, "the occluders are drawn");
+  assert.ok(at(n1, "p.roots-mist-2") >= 0, "the mist is drawn"); assert.equal(f.nodeOpa("p.roots-mist-2"), 153, "with its opacity"); assert.equal(f.nodeOpa("p.roots-mister"), 255, "a piece with none is opaque");
+  const walkers = n1.map((n, i) => [n, i]).filter(([n]) => n[3] === "resident" || n[3] === "bed.sleepers" || n[3] === "bed"); assert.ok(walkers.length >= 5); assert.ok(walkers.every(([, i]) => back < i && at(n1, "p.roots-mist-2") < i), "the back pieces (the mist too) are before every walker, the bed and its sleepers");
+  const ids = (nodes) => nodes.filter((n) => n[3] === "room").map((n) => n[0]).sort((a, c) => a - c);
+  frames(f, 3, 40); const n2 = nodesOf(f); assert.deepEqual(ids(n2), ids(n1), "the same pieces, the same names, on the next frames");
+  for (const id of ["roots-sorrel-1", "roots-stone-2", "roots-mister"]) assert.ok(ids(n1).includes(fnv("p." + id)), id);
+  frames(f, 200, 80); const n3 = nodesOf(f); assert.deepEqual(ids(n3), ids(n1), "and after the walkers have walked on and changed places");
+});
+test("R3: a room's keep-outs hold for the walkers (the ground point inside the rect), a piece with a null picture keeps its keep-out and draws no node; a room with no bed draws none and keeps no bed keep-out", { skip }, async () => {
+  const ROOMS = J("rooms"), r = ROOMS.rooms.reeds, dy = -80, keeps = r.levels.flatMap((l) => l.keepOuts).map((k) => [k[0], k[1] + dy, k[2], k[3]]);
+  const b = scene({ adults: 6, room: 1, move: true, focus: "tile:0" }), f = await start(b, { motion: true }); assert.deepEqual(f.errors(), []);
+  assert.equal(b.props.regions.room.id, "reeds"); assert.ok(!("bed" in b.props.regions), "no bed outside Roots");
+  let n = nodesOf(f); assert.ok(!n.some((x) => x[3] === "bed" || x[3] === "bed.sleepers"), "no bed or sleepers drawn"); assert.equal(at(n, "p.reeds-sedge-1"), -1, "a null picture: no node"); assert.ok(at(n, "p.reeds-sedge-2") >= 0 && at(n, "p.reeds-stone-1") >= 0 && at(n, "p.reeds-raincup") >= 0, "the others are drawn");
+  assert.equal(r.pieces.find((p) => p.id === "reeds-sedge-1").picture, null); assert.ok(keeps.length >= 3, "the sedge's keep-out is kept");
+  let right = 0;
+  for (let i = 0; i < 1500; i++) { frames(f, 1, 80); n = nodesOf(f); if (!n.length) continue; for (const w of residents(n)) { const fx = w[4] + (w[6] >> 1), feet = w[5] + w[7]; if (fx > 752 && feet > 353) right++; for (const k of keeps) assert.ok(!(fx >= k[0] && fx < k[0] + k[2] && feet >= k[1] && feet < k[1] + k[3]), `a walker's ground point (${fx}, ${feet}) is in the keep-out ${k} at step ${i}`); } }
+  assert.ok(right > 0, "with no bed, the walkers go where the sleepers' keep-out was");
+});
+test("R3: each of the four rooms in all four lights draws without an error or a refusal inside the budgets, with no region departing from vivarium.json; only Roots has a bed; the room's pieces are the nodes p.<pieceId> that have a picture", { skip }, async () => {
+  const ROOMS = J("rooms");
+  for (const [ri, name] of ROOMS.order.entries()) for (const light of ["dawn", "day", "dusk", "night"]) {
+    const b = scene({ adults: 6, room: ri, move: true, light, carry: ri === 0 ? [0] : [], focus: "tile:0" }), f = await start(b, { sleepersPainted: true }), lg = logOf(f), id = `${name} ${light}`;
+    assert.deepEqual(f.errors(), [], id); assert.equal(f.refused(), 0, id); assert.equal(b.props.regions.room.id, name);
+    assert.deepEqual(departures(lg, spec, "rest", b.props.focus.cur, b.props.regions.tiles.items.length, [], name === "roots"), [], id);
+    const st = f.stats(); assert.ok(st.pictures <= 200, `${id}: ${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${id}: ${f.objects()} objects`);
+    const want = ROOMS.rooms[name].pieces.filter((p) => p.picture).map((p) => fnv("p." + p.id)).sort((a, c) => a - c);
+    assert.deepEqual(lg.nodes.filter((n) => n[3] === "room").map((n) => n[0]).sort((a, c) => a - c), want, `${id}: the pieces that have a picture`);
+    assert.equal(lg.nodes.some((n) => n[3] === "bed"), name === "roots", `${id}: the bed only in Roots`);
+  }
 });

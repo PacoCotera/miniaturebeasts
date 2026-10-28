@@ -4,6 +4,7 @@
 // is open; ✓ ← and the room keys are intents with the overlay's id) and the events: the placeholder's two hops, the stamp's print, the swap's dither and the tag's flash. Skipped when the face has not been built (build.sh).
 //   node --test prototypes/face/tests/habitat.test.mjs
 import { test } from "node:test";
+import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the props builders, as the page registers it
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";

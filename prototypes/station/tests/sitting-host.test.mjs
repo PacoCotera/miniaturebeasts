@@ -3,6 +3,7 @@
 // and the resident's light change in both forms, "dither" and "cut"; the pose step's stand/curl change), reduced motion (cuts), the room key and leaving (the choices dropped), and sitting.json focus.vectors that leave the screen.
 //   node --test prototypes/station/tests/sitting-host.test.mjs
 import { test, before } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -113,11 +114,11 @@ test("reduced motion: begin lands on Habitat on the frame of the second ✓ with
   assert.equal(UI.screen, "habitat"); assert.equal(G.st.sitting, null); assert.equal(dithers("gilt").length, 0); assert.equal(dithers("stage").length, s0, "the screen change is a cut"); assert.equal(h.holding(), false); assert.equal(FX.msg, "Dot's portrait is on its way");
 });
 
-test("the place step's window: entering it dithers the glass from Habitat's vivarium-near-{light} to the focused place's backdrop and the resident from the hour's light to ungraded on one 200 ms clock; the ring moving among the places dithers the glass alone; going back dithers both back; every from is the glass's own size", () => {
+test("the place step's window: entering it dithers the glass from Habitat's room-<room>-near-{light} to the focused place's backdrop and the resident from the hour's light to ungraded on one 200 ms clock; the ring moving among the places dithers the glass alone; going back dithers both back; every from is the glass's own size", () => {
   const { h, mb, say, focus, dithers, at, body } = rig(); enterSitting(h, mb); const o = offerOf(mb), size = HAB.light.size.join("x");
   const r0 = body().props.regions.resident.picture; assert.match(r0, /:night$/, "the pose step: the hour's light");
   say("card.0", "confirm"); const g = dithers("glass").at(-1), r = dithers("resident").at(-1), B = SIT.events.backdrop;
-  assert.deepEqual([g.from, g.ms, g.hold], [`vivarium-near-night-${size}`, B.ms, B.hold]); assert.deepEqual([r.from, r.ms], [r0, B.ms], "the resident rides the backdrop's clock (events.backdrop.resident dither)");
+  assert.deepEqual([g.from, g.ms, g.hold], [`room-roots-near-night-${size}`, B.ms, B.hold]); assert.deepEqual([r.from, r.ms], [r0, B.ms], "the resident rides the backdrop's clock (events.backdrop.resident dither)");
   assert.deepEqual(UI.sit.prev, { glass: g.from, resident: r0, cut: false }, "the froms stay on the face for the event");
   assert.equal(body().props.regions.glass.picture, `sitting-backdrop-${o.places[0]}-${size}`); assert.doesNotMatch(body().props.regions.resident.picture, /:night$/, "ungraded on the place step");
   at(200); assert.deepEqual(UI.sit.prev, { glass: null, resident: null, cut: false });

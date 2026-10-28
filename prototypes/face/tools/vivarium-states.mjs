@@ -1,6 +1,6 @@
 // The Vivarium's whole in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `vivarium-docked` (seven mibis at home, the carried two asleep on the bed, eight bays, the ring on the first
 // resident), `vivarium-away` (the Companion out: the bed shows its mark, the carried two are tiles with the outline glyph), `vivarium-mibi-out` (the same, the ring on an out mibi's tile), `vivarium-empty` (a fresh world's, six free bays, no ring),
-// `vivarium-tile` (the ring on a housed tile), `vivarium-sleeper` (the ring on a sleeper) and `vivarium-twelve` (twelve residents, twelve compact tiles) `vivarium-empty-away` (the nest and its mark), `vivarium-docked-dawn|day|dusk|night` (the same scene in the four lights, for the art director) and, on a virtual clock with motion, `vivarium-walk-8000ms` (twelve walking, 8000 ms in).
+// `vivarium-tile` (the ring on a housed tile), `vivarium-sleeper` (the ring on a sleeper) and `vivarium-twelve` (twelve residents, twelve compact tiles) `vivarium-empty-away`, `vivarium-room-reeds|boulders|ferns` (the other three rooms by day, six residents, one behind the room's first occluder), (the nest and its mark), `vivarium-docked-dawn|day|dusk|night` (the same scene in the four lights, for the art director) and, on a virtual clock with motion, `vivarium-walk-8000ms` (twelve walking, 8000 ms in).
 // Each is reached by the page's own state and asserted (screen, state, ring) before `visit(name, page, fail)` is called. Taken with reduced motion (the walk at its start), the last on a virtual clock. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
@@ -18,6 +18,10 @@ const SCENES = {
   "docked-day":   { f: null, state: "rest", light: "day",   set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
   "docked-dusk":  { f: null, state: "rest", light: "dusk",  set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
   "docked-night": { f: null, state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
+  // R3 (the rooms design): the other three rooms by day, six residents, one behind the room's first occluder that has a picture (its id is chosen so that its start seed, hash(id), puts its feet just above the occluder's foot, as `twelve`'s ids spread the twelve)
+  "room-reeds":    { f: null, state: "rest", room: "reeds",    set: (w) => { w.rooms(4); window.__st.ST.face.room = 1; w.adults(6); window.__st.ST.mibis[3].id = 118; } },   // behind reeds-sedge-2
+  "room-boulders": { f: null, state: "rest", room: "boulders", set: (w) => { w.rooms(4); window.__st.ST.face.room = 2; w.adults(6); window.__st.ST.mibis[3].id = 139; } },   // behind boulders-stone-2
+  "room-ferns":    { f: null, state: "rest", room: "ferns",    set: (w) => { w.rooms(4); window.__st.ST.face.room = 3; w.adults(6); window.__st.ST.mibis[3].id = 154; } },   // behind ferns-fern-1
   // fix 14 (§14.4): capture states, not goldens: the vivarium-docked seed with a juvenile resident focused, one a light; its ring crosses the dark grain and the lit moss (the 2 px floor, layer-check rule F2; the CD's frames)
   "four-loikas": { f: null, state: "rest", captureOnly: true, set: (w) => { w.bays(8); const st = window.__st.ST, k = st.mibis.length; for (const seed of [1, 22, 25, 52]) window.__st.seedAdults("S01", seed, 1); st.mibis.slice(k).forEach((m, i) => { m.paint = { state: "landed" }; m.id = [1075, 479, 2, 5426][i]; }); } },   // T-20261016-201 proof: four Loikas whose read looks differ (patches with the crest; stripes on a bare head; stripes and patches with the crest; patches on a bare head), each drawn as itself
   ...Object.fromEntries(["dawn", "day", "dusk", "night"].map((l) => ["resident-focused-" + l, { f: "resident:4", state: "rest", light: l, captureOnly: true, set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } }])),
@@ -38,8 +42,8 @@ async function still(visit) {
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
       await enter(page, sc); await page.waitForTimeout(900);
-      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, state: window.__st.props?.state, cur: window.__st.props?.focus?.cur, n: window.__st.props?.regions?.tiles?.items?.length }));
-      if (u.screen !== "vivarium" || u.state !== sc.state) fail(`vivarium-${name}: on ${u.screen}, ${u.state}`);
+      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, state: window.__st.props?.state, cur: window.__st.props?.focus?.cur, n: window.__st.props?.regions?.tiles?.items?.length, room: window.__st.props?.regions?.room?.id, residents: window.__st.props?.regions?.residents?.length }));
+      if (u.screen !== "vivarium" || u.state !== sc.state || (sc.room && (u.room !== sc.room || u.residents !== 6))) fail(`vivarium-${name}: on ${u.screen}, ${u.state}, the room ${u.room}, ${u.residents} residents`);
       await visit("vivarium-" + name, page, fail, sc.captureOnly ? { captureOnly: true } : undefined);
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));

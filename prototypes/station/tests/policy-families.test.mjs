@@ -2,6 +2,7 @@
 // The ids are the ones the view requests and the ones its props and the frame's spec name that the asset manifest holds, as the host collects them (host.mjs).
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -76,6 +77,10 @@ test("Cargo's painted pieces (fix 5, the art director's table), the founder's sh
 test("the bed of a light is a painted picture; the one bed of old is in no family", () => {
   for (const l of ["dawn", "day", "dusk", "night"]) assert.equal(policyOf(`home-bed-${l}-192x56`, "master"), "painted");
   assert.throws(() => policyOf("home-bed-192x56"), /no layer family/);
+});
+
+test("a room's painting, near view, bed and pieces (R3) are painted pictures (the room- family)", () => {
+  for (const id of ["room-roots-idle-day-1024x568", "room-reeds-near-night-544x408", "room-roots-bed-dusk-192x56", "room-ferns-fern-1-dawn-71x48", "room-boulders-arm-fill-day-48x48"]) assert.equal(policyOf(id, "master"), "painted", id);
 });
 
 test("a juvenile mibi takes the art director's juvenile stand-in at its size when one is placed, else the rig; an adult takes Pip's stand at its size when placed (the adult hook, Station M1 §2.6), else the rig; the stand-ins are painted masters", () => {

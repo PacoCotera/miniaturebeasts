@@ -2,6 +2,7 @@
 // run by frame(), never waited for on `done`; during a hold every intent is dropped but a room key, of which the last is kept and dispatched when the hold ends, except in Home's rest, which ends on Idle and drops it.
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";

@@ -2,131 +2,131 @@
  "_note": "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "home-fresh": {
-   "hash": "45420e8a",
+   "hash": "5a51430e",
    "png": "home-fresh.png"
   },
   "home-rest-goal": {
-   "hash": "67f1c58b",
+   "hash": "10169f9c",
    "png": "home-rest-goal.png"
   },
   "home-rest-needs": {
-   "hash": "2146a35f",
+   "hash": "da96d627",
    "png": "home-rest-needs.png"
   },
   "home-focus-vivarium": {
-   "hash": "db2b7ffd",
+   "hash": "0cb173a9",
    "png": "home-focus-vivarium.png"
   },
   "home-focus-library": {
-   "hash": "ff704c05",
+   "hash": "fcdcaf61",
    "png": "home-focus-library.png"
   },
   "home-focus-pods": {
-   "hash": "768372d4",
+   "hash": "bd65cf98",
    "png": "home-focus-pods.png"
   },
   "home-focus-incubator": {
-   "hash": "cc10af28",
+   "hash": "adce2e10",
    "png": "home-focus-incubator.png"
   },
   "home-focus-companion": {
-   "hash": "92b0f24a",
+   "hash": "8e98c296",
    "png": "home-focus-companion.png"
   },
   "home-focus-companion-away": {
-   "hash": "b39a6cd9",
+   "hash": "e47f63b0",
    "png": "home-focus-companion-away.png"
   },
   "home-focus-bay": {
-   "hash": "4fdf18ec",
+   "hash": "f69c0408",
    "png": "home-focus-bay.png"
   },
   "home-vivarium-all-home": {
-   "hash": "c586c2bc",
+   "hash": "c94cc58b",
    "png": "home-vivarium-all-home.png"
   },
   "home-vivarium-some-away": {
-   "hash": "cd371a57",
+   "hash": "68df4076",
    "png": "home-vivarium-some-away.png"
   },
   "home-window-dawn": {
-   "hash": "717db291",
+   "hash": "a7403801",
    "png": "home-window-dawn.png"
   },
   "home-window-dusk": {
-   "hash": "d119c77c",
+   "hash": "168adba2",
    "png": "home-window-dusk.png"
   },
   "home-window-night": {
-   "hash": "5f55845c",
+   "hash": "08745f5a",
    "png": "home-window-night.png"
   },
   "home-window-six-of-eight": {
-   "hash": "5a6bd0dc",
+   "hash": "058e482d",
    "png": "home-window-six-of-eight.png"
   },
   "home-event-tag": {
-   "hash": "e92c5902",
+   "hash": "bf6d7c09",
    "png": "home-event-tag.png"
   },
   "home-vivarium-none-home": {
-   "hash": "e097e209",
+   "hash": "abe823bc",
    "png": "home-vivarium-none-home.png"
   },
   "home-incubator-empty": {
-   "hash": "e4c318fe",
+   "hash": "9f59284e",
    "png": "home-incubator-empty.png"
   },
   "home-incubator-can": {
-   "hash": "63418c83",
+   "hash": "1aa9c323",
    "png": "home-incubator-can.png"
   },
   "home-incubator-growing": {
-   "hash": "1e8d1139",
+   "hash": "c53b5909",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-half": {
-   "hash": "2e92201e",
+   "hash": "c9fadd6e",
    "png": "home-incubator-half.png"
   },
   "home-incubator-ready": {
-   "hash": "ac0e920e",
+   "hash": "12ed599e",
    "png": "home-incubator-ready.png"
   },
   "home-bay-waiting": {
-   "hash": "9606749a",
+   "hash": "f56facd2",
    "png": "home-bay-waiting.png"
   },
   "home-bay-portrait": {
-   "hash": "19cac195",
+   "hash": "914e1905",
    "png": "home-bay-portrait.png"
   },
   "home-companion-docked": {
-   "hash": "475b0536",
+   "hash": "10d24fb2",
    "png": "home-companion-docked.png"
   },
   "home-companion-away": {
-   "hash": "c7036c97",
+   "hash": "72166a4a",
    "png": "home-companion-away.png"
   },
   "home-pods-empty": {
-   "hash": "e4c318fe",
+   "hash": "9f59284e",
    "png": "home-pods-empty.png"
   },
   "home-pods-full": {
-   "hash": "2f721edd",
+   "hash": "ae49ef5d",
    "png": "home-pods-full.png"
   },
   "home-library-0-new": {
-   "hash": "ade495a3",
+   "hash": "c7d13f77",
    "png": "home-library-0-new.png"
   },
   "home-library-3-new": {
-   "hash": "4755e18b",
+   "hash": "0c4a132f",
    "png": "home-library-3-new.png"
   },
   "home-library-focused": {
-   "hash": "787d850a",
+   "hash": "e2e15f0e",
    "png": "home-library-focused.png"
   }
  }

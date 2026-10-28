@@ -2,6 +2,7 @@
 // each a flat block of its own colour so a test can tell the cell shown by its pixels; the shadow's two cells likewise. No art: the face's tests never read a master.
 //   import { MOVING, sendMoving, atlasPicture, ids } from "./moving-scene.mjs";
 import { readFileSync, readdirSync } from "node:fs";
+import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the props builders, as the page registers it
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -90,7 +91,7 @@ export function movingScene(screen, o = {}) {
   const b = build(hh.m), requests = [...b.requests];
   if (o.sleepers) { const s = sleepersOf(build, o.sleepers); b.props.regions.bed.sleepers = s.sleepers; b.props.regions.bed.state = "docked"; requests.push(...s.requests); }
   const props = screen === "home" ? { screen: "home", ...b.props, frame: { plate: { text: "" } } } : screen === "idle" ? { screen: "home", ...b.props } : { screen, ...b.props, frame: { ...frameTop(screen), line: { ...frameTop(screen).line, ...(b.line ?? {}) } } };
-  return { props, requests, st, hh, specs: { frame, vivarium: viv, home }, screen };
+  return { props, requests, st, hh, specs: { frame, vivarium: viv, home, rooms: SPEC("rooms") }, screen };
 }
 export async function bootScene(sc, { motion = true, moving = MOVING, atlas = {}, t = 5000, dir = DIST } = {}) {   // dir: the test build (dist/node) can name a node by its id (nodeBox)
   atlas = { sets: moving, ...atlas };

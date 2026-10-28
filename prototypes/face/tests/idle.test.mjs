@@ -4,6 +4,7 @@
 // Skipped when the face has not been built (build.sh).
 //   node --test prototypes/face/tests/idle.test.mjs
 import { test } from "node:test";
+import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the props builders, as the page registers it
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -38,8 +39,8 @@ function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * 
 const sizeOf = (r) => r.size ?? [16, 16];
 async function start(b, { motion = true, t0 = 0, noPainting = false } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
-  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
-  for (const r of b.requests) if (!(noPainting && /^idle-vivarium/.test(r.id))) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-bed-/.test(i) ? { policy: "art" } : {}) })));
+  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec], ["rooms", J("rooms")]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
+  for (const r of b.requests) if (!(noPainting && /^room-roots-idle-/.test(r.id))) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^room-roots-bed-/.test(i) ? { policy: "art" } : {}) })));
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "home", ...b.props, motion }), 0, f.errors().join("; ")); frames(f); return f;
 }
@@ -117,7 +118,7 @@ test("a light change is a cut: Idle redraws the whole of its painting at most (5
   const LIGHTS = ["dawn", "day", "dusk", "night"];
   for (const from of LIGHTS) for (const to of LIGHTS) if (from !== to) {
     const f = await start(scene({ adults: 4, young: 2, carry: [0, 1], light: from }), { motion: false, t0: 1000 }), b = scene({ adults: 4, young: 2, carry: [0, 1], light: to });
-    for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-bed-/.test(i) ? { policy: "art" } : {}) })));
+    for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^room-roots-bed-/.test(i) ? { policy: "art" } : {}) })));
     assert.equal(f.props({ screen: "home", ...b.props, motion: false }), 0, f.errors().join("; ")); f.frame((f.t += 16));
     const a = dirty(f); assert.ok(a <= 581632, `${from} to ${to}: dirty ${a}`); assert.deepEqual(f.errors(), []);
   }

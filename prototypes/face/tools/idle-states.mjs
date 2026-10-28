@@ -12,6 +12,8 @@ const SCENES = {
   none:   { line: "A bud is growing", set: (w) => { w.adults(3); w.bud(false); } },
   empty:  { line: "", set: (w) => { w.adults(2); } },
   twelve: { line: "", timed: true, set: (w) => { w.bays(12); w.adults(12); } },
+  // R3 (the rooms design): Boulders by night, six residents, one behind the stone (its id is chosen so that its start seed puts its feet just above the stone's foot); the room has no bed
+  "room-boulders-night": { line: "", light: "night", room: "boulders", set: (w) => { w.rooms(4); window.__st.ST.face.room = 2; w.adults(6); window.__st.ST.mibis[3].id = 139; } },
 };
 async function enter(page, sc) {
   await page.evaluate(([setSrc, light]) => { const w = window.__world; w.reset(); eval(`(${setSrc})`)(w); const S = window.__st; S.settings.light = light; S.UI.home.f = "room"; S.goto("home"); S.UI.idle = true; }, [sc.set.toString(), sc.light ?? "day"]);
@@ -27,9 +29,9 @@ async function still(visit) {
     for (const [name, sc] of Object.entries(SCENES)) {
       if (sc.timed) continue;
       await enter(page, sc); await page.waitForTimeout(900);
-      const u = await page.evaluate(() => ({ idle: window.__st.UI.idle, props: window.__st.props && { idle: window.__st.props.idle, line: window.__st.props.frame?.idle?.line, bed: window.__st.props.regions?.bed?.state } }));
+      const u = await page.evaluate(() => ({ idle: window.__st.UI.idle, props: window.__st.props && { idle: window.__st.props.idle, line: window.__st.props.frame?.idle?.line, bed: window.__st.props.regions?.bed?.state, room: window.__st.props.regions?.room?.id, residents: window.__st.props.regions?.residents?.length } }));
       const bed = { docked: "docked", away: "away", none: "none", empty: "none" }[name.replace(/-(dawn|dusk|night)$/, "")];
-      if (!u.idle || !u.props?.idle || (sc.line instanceof RegExp ? !sc.line.test(u.props.line) : u.props.line !== sc.line) || (name !== "empty" && name !== "none" ? u.props.bed !== bed : false)) fail(`idle-${name}: ${JSON.stringify(u)}`);
+      if (!u.idle || !u.props?.idle || (sc.line instanceof RegExp ? !sc.line.test(u.props.line) : u.props.line !== sc.line) || (name !== "empty" && name !== "none" ? u.props.bed !== bed : false) || (sc.room && (u.props.room !== sc.room || u.props.residents !== 6))) fail(`idle-${name}: ${JSON.stringify(u)}`);
       await visit("idle-" + name, page, fail);
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));

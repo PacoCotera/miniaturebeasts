@@ -30,6 +30,7 @@ typedef struct {
   uint32_t run;                 /* the run (one v_run or v_price call, prim_run) the node was sent in, 0 for none */
   uint32_t win_gen; int win_key[4], win_solid[4], win_cut;   /* a window of a larger picture (a sprite with a source origin): its solid-ink box in the window and whether the window cuts solid ink, kept for the asset's gen and the window (the log) */
   int hold;                     /* the node is a hold mark (prim_hold: kit_focusRingHold), not a focus ring: the log counts it as a hold */
+  int opa;                      /* a sprite's opacity, 0..255 (prim_sprite_opa), 255 when the node is made */
   char role[24], ground[16];    /* a text node: the role and ground the words set it by (prim_text_role), "" for a text set by size */
 } node_t;
 static node_t g_o[MAX_OBJ];
@@ -39,6 +40,7 @@ static lv_obj_t *g_nursery;
 static char g_text[1024];
 static uint32_t g_run;   /* the run the nodes sent from now on belong to (prim_run), 0 for none */
 static int g_hold;       /* the nodes sent from now on are a hold mark (prim_hold) */
+static int g_sopa = 255;   /* the opacity of the next sprite node (prim_sprite_opa), 255 again once it is sent */
 static char g_trole[24], g_tground[16];   /* the role and ground of the next text node (prim_text_role), cleared when it is sent */
 static char g_ops[OPS_CAP];   /* the ops of a composed picture, JSON: their own buffer, 128 KiB (the splice's wires and ticks are thousands of ops, a text run at most 1 KiB) */
 typedef struct { int w, h, layer, ring; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; int ink[4], ink_ok, solid[4], solid_ok; uint32_t gen; } asset_t;   /* ink: the box of the pixels with alpha above 0, solid: the solid-ink box (prim_asset_solid_box), for the log; ink_ok and solid_ok 0 once the pixels may have been written, and gen a new number then (a window's box is kept by its node against it) */
@@ -60,6 +62,7 @@ static uint32_t g_hash[1024];   /* rgb + 1, open addressing */
 void prim_init(void) { g_run = 0; g_hold = 0; g_n = 0; g_unknown = 0; g_nreg = 1; strcpy(g_reg[0], "?"); g_region = 0; g_layer = LAYER_CHROME; g_pass = 3; g_nursery = NULL; }
 char *prim_text(void) { return g_text; }
 void prim_text_role(const char *role, const char *ground) { snprintf(g_trole, sizeof g_trole, "%s", role ? role : ""); snprintf(g_tground, sizeof g_tground, "%s", ground ? ground : ""); }
+void prim_sprite_opa(int opa) { g_sopa = opa < 0 ? 0 : opa > 255 ? 255 : opa; }
 void prim_run(uint32_t run) { g_run = run; }
 uint32_t prim_run_get(void) { return g_run; }
 void prim_hold(int on) { g_hold = on ? 1 : 0; }
@@ -350,6 +353,7 @@ static lv_obj_t *nursery(void) {
 static node_t *find_node(uint32_t id) { for (int i = 0; i < g_n; i++) if (g_o[i].id == id) return &g_o[i]; return NULL; }
 #ifdef FACE_NODE_API
 /* a node's box as the scene holds it (the test build's per-part region check): its kind, or -1 when no node has the id */
+int prim_node_opa(uint32_t id) { node_t *n = find_node(id); return n ? n->opa : -1; }   /* a sprite node's opacity (-1 when no node has the id) */
 int prim_node_box(uint32_t id, int out[4]) { node_t *n = find_node(id); if (!n) return -1; out[0] = n->x; out[1] = n->y; out[2] = n->w; out[3] = n->h; return n->kind; }
 #endif
 static int find(uint32_t id) { for (int i = 0; i < g_n; i++) if (g_o[i].id == id) return i; return -1; }
@@ -393,7 +397,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   /* the clip's bookkeeping comes first: a node sent while a clip is open counts against it whether or not it is drawn, so a refused child never leaves the next root node inside the clip;
      a refused clip refuses the children it announced. A clip does not hold a clip. */
   uint32_t parent = 0; lv_obj_t *pobj = lv_screen_active(); int ox = 0, oy = 0, in_clip = 0;
-#define REFUSE() do { g_unknown++; if (kind == FN_CLIP && !in_clip) { g_clip_left = a > 0 ? a : 0; g_clip_id = 0; } if (kind == FN_TEXT) { g_trole[0] = 0; g_tground[0] = 0; } return; } while (0)
+#define REFUSE() do { g_unknown++; if (kind == FN_CLIP && !in_clip) { g_clip_left = a > 0 ? a : 0; g_clip_id = 0; } if (kind == FN_TEXT) { g_trole[0] = 0; g_tground[0] = 0; } if (kind == FN_SPRITE) g_sopa = 255; return; } while (0)
   if (g_clip_left > 0) {
     in_clip = 1; g_clip_left--;
     node_t *c = g_clip_id ? find_node(g_clip_id) : NULL;
@@ -413,10 +417,11 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   if (i >= 0 && (g_o[i].kind != kind || g_o[i].parent != parent || (kind == FN_NINE && g_o[i].ringed != want_ring))) { drop(i); i = -1; }
   if (i < 0) {
     if (g_n >= MAX_OBJ) REFUSE();
-    i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].born = 1; g_o[i].ringed = want_ring; g_o[i].obj = make(&g_o[i], a, nursery());   /* a clip's child too: made on the nursery and moved into its clip at the end of the frame, so its birth invalidates nothing at the clip's origin */
+    i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].opa = 255; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].born = 1; g_o[i].ringed = want_ring; g_o[i].obj = make(&g_o[i], a, nursery());   /* a clip's child too: made on the nursery and moved into its clip at the end of the frame, so its birth invalidates nothing at the clip's origin */
   }
   node_t *n = &g_o[i]; lv_obj_t *o = n->obj; n->seen = 1; g_seq[g_nseq++] = id; n->layer = g_layer; n->region = g_region; n->run = g_run; n->hold = g_hold;
   if ((kind == FN_SPRITE || kind == FN_NINE) && a >= 0 && a < MAX_ASSET && g_a[a].layer) n->layer = g_a[a].layer;   /* a picture takes its layer from its asset (lvgl-switch.md §2.1); words choose a layer only for rects, text and composed pictures */
+  if (kind == FN_SPRITE) { int opa = g_sopa; g_sopa = 255; if (n->fresh || n->opa != opa) { lv_obj_set_style_image_opa(o, (lv_opa_t)opa, 0); n->opa = opa; } }   /* the opacity is the next sprite node's only */
   int px = x - ox, py = y - oy;
   if (kind == FN_TEXT) {
     snprintf(n->role, sizeof n->role, "%s", g_trole); snprintf(n->ground, sizeof n->ground, "%s", g_tground); g_trole[0] = 0; g_tground[0] = 0;   /* the tag is the next text node's only */

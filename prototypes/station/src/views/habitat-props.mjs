@@ -18,6 +18,7 @@ import { doorOpen } from "../nav.mjs";
 import { fill, spell } from "./words.mjs";
 import { req as reqOf, slot as slotOf, plateDevice, slotAt } from "./requests.mjs";
 import { portraitOffered } from "./sitting-props.mjs";
+import { roomIds, nearOf } from "./room-props.mjs";
 
 // The species' face (the top bar's mark, frame.json regions.marks.face), docked or dimmed.
 const faceId = (frame, mb, away) => (away ? frame.regions.marks.face.away : frame.regions.marks.face.docked).replace("{mibi}", S.spName(mb).toLowerCase());
@@ -37,7 +38,9 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
 
   const regions = {};
   regions.stage = { room: [slot("room-vivarium-stage-habitat", R.stage.rect.slice(2), "the up-close stage master")] };
-  regions.glass = { picture: slot(`${spec.light.pictures[m.light]}-${spec.light.size.join("x")}`, spec.light.size, "the near Vivarium master (the light)") };
+  const roomOf = shown.room ?? st.face?.room ?? 0, near = nearOf(req, roomOf, m.light);   // the room of the mibi up close: its near view of the light (544 × 408)
+  regions.glass = { picture: near };
+  regions.room = { id: roomIds(roomOf, m.light).id, base: near, pieces: {} };   // the near view is the room's picture here; the pieces stand in the painting, not up close
   regions.resident = out
     ? { id: sid, name: shown.name, stage, picture: "", waiting: false, out: "" }   // out with the Companion: nothing is drawn at the mibi's spot (the line says it)
     : { id: sid, name: shown.name, stage, picture: mibiReq(req, st, shown, R.resident.rect.slice(2), settings, m.light, "habitat"), waiting, out: "" };

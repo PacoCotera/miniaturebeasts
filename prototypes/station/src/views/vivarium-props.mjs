@@ -5,7 +5,7 @@
 //   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), seen (the mibi last seen up close, or null) }
 import * as S from "../state.mjs";
 import { livingOf, mibiReq } from "./home-props.mjs";
-import { paintingOf } from "./idle-props.mjs";
+import { roomRegion, shownRoom } from "./room-props.mjs";
 import { listForm } from "../../../ui/specs/derive.mjs";
 import { fill } from "./words.mjs";
 import { req as reqOf, slot as slotOf, ph as phOf, plateDevice } from "./requests.mjs";
@@ -16,12 +16,13 @@ export function vivariumBuild(m, spec, frame, home) {
   const ph = phOf(req, "its master (station-layouts.md, The Vivarium: the whole)");
   const carried = S.carriedIds(st, sv), housed = S.inRoom(st, st.face?.room ?? 0), out = (mb) => carried.includes(mb.id) && !docked;   // out: with the Companion, away
   const state = housed.length ? "rest" : "empty";
-  const L = frame.light, lw = livingOf({ view: "vivarium", st, sv, settings, docked, light: m.light, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, L);
+  const L = frame.light, room = shownRoom(st), lw = livingOf({ view: "vivarium", st, sv, settings, docked, light: m.light, room, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, L);
   const bayOf = new Map(housed.map((mb, i) => [String(mb.id), i]));
   const residents = lw.residents.slice().sort((a, b) => bayOf.get(a.id) - bayOf.get(b.id));   // the walkers in bay order: the face steps them in this order
+  const region = roomRegion(req, room, m.light);
   const regions = {
-    window: { picture: paintingOf(req, frame, m.light) },   // rows 120 to 560 of Idle's painting of the light, 1:1 (the face shows the window; the plates stand while it is not on the face)
-    residents, bed: lw.bed,   // the bed in every state: the nest alone while docked, with its mark while away (an empty whole has no residents and no sleepers)
+    window: { picture: region.base },   // rows 120 to 560 of Idle's painting of the light, 1:1 (the face shows the window; the plates stand while it is not on the face)
+    room: region, residents, ...(lw.bed ? { bed: lw.bed } : {}),   // the bed in every state of a room that has one (Roots): the nest alone while docked, with its mark while away (an empty whole has no residents and no sleepers)
     tiles: { glyph: frame.regions.marks.companion.away, items: [] },   // an out mibi's tile shows the Companion's outline glyph (the top bar's away mark)
   };
   // a tile a place: the room shown's mibis in slot order, then the free places; a housed one shows its thumbnail, one out with the Companion its glyph

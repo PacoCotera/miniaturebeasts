@@ -6,10 +6,11 @@
  "type": "object", "required": ["idle", "regions", "frame"], "additionalProperties": false,
  "properties": {
   "idle": { "enum": [true] },
-  "regions": { "type": "object", "required": ["vivarium", "residents", "bed"], "additionalProperties": false, "properties": { 
+  "regions": { "type": "object", "required": ["vivarium", "room", "residents"], "additionalProperties": false, "properties": { 
    "vivarium": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "room": { "type": "object", "required": ["id", "base", "pieces"], "additionalProperties": false, "properties": { "id": { "type": "string", "description": "the room shown: its name in rooms.json (roots, reeds, boulders, ferns)" }, "base": { "type": "string", "description": "the room's painting (the near view in Habitat) in the light" }, "pieces": { "type": "object", "description": "the room's pieces that have a picture, by piece id (rooms.json), the picture id in the light; Habitat has none" } } },
    "residents": { "type": "array", "items": { "$ref": "person" } },
-   "bed": { "type": "object", "required": ["state", "picture", "mark", "sleepers"], "additionalProperties": false, "properties": { "state": { "enum": ["docked", "away", "none"] }, "picture": { "type": "string" }, "mark": { "type": "string" }, "sleepers": { "type": "array", "items": { "$ref": "person" } }, "sendoff": { "type": "boolean" } } }
+   "bed": { "description": "given only when the room has a bed (Roots)", "type": "object", "required": ["state", "picture", "mark", "sleepers"], "additionalProperties": false, "properties": { "state": { "enum": ["docked", "away", "none"] }, "picture": { "type": "string" }, "mark": { "type": "string" }, "sleepers": { "type": "array", "items": { "$ref": "person" } }, "sendoff": { "type": "boolean" } } }
   } },
   "frame": { "type": "object", "required": ["idle"], "additionalProperties": false, "properties": { "idle": { "type": "object", "required": ["line"], "additionalProperties": false, "properties": { "line": { "type": "string" } } } } }
  }

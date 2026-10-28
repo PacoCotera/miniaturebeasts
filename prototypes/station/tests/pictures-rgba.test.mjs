@@ -1,6 +1,7 @@
 // Pictures are {w, h, rgba()} (ui/assets.mjs): RGBA bytes with straight alpha, with no canvas. In Node there is no document, so a picture that answers rgba() here touched none.
 //   node --test prototypes/station/tests/
 import { test, describe, before, after } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { PB, C, RGB } from "../src/pixels.mjs";
 import { figureFromLayers } from "../src/podmasters.mjs";

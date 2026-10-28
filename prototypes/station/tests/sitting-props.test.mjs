@@ -3,6 +3,7 @@
 // share one pose and one set of looks; the window is the hour's light on the pose step and ungraded after; the portrait state is offered only while its opening is held (portrait-source.mjs keeps the last two).
 //   node --test prototypes/station/tests/sitting-props.test.mjs
 import { lineCased } from "./fixtures/line-case.mjs";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test, describe, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -96,7 +97,7 @@ describe("each state's props validate against sitting.props.json, name no rectan
 test("the regions by state: the glass, the gilt, the heading, the cards, the chosen pair, the stamp, the steps and the focus", () => {
   const w = dot({ habits: ["sleep-curled", "shake-dry"], walked: ["wood", "pond"] }), b = states(w, "sleep-curled", "wood"), R = (s) => b[s].props.regions;
   // the glass: Habitat's own picture in the hour's light on the pose step (here day), the focused place's backdrop on the place step, the chosen place's after
-  assert.equal(R("pose").glass.picture, "vivarium-near-day-544x408"); assert.equal(R("place").glass.picture, "sitting-backdrop-meadow-544x408", "the focused place card: card.0, the pod's place");
+  assert.equal(R("pose").glass.picture, "room-roots-near-day-544x408"); assert.equal(R("place").glass.picture, "sitting-backdrop-meadow-544x408", "the focused place card: card.0, the pod's place");
   assert.equal(build(w, { step: "place", pose: "sleep-curled", focus: "card.2" }).props.regions.glass.picture, "sitting-backdrop-pond-544x408");
   for (const s of ["confirm", "armed", "begin"]) assert.equal(R(s).glass.picture, "sitting-backdrop-wood-544x408", s);
   // the gilt: none on pose and place, at rest on confirm, lit when armed and through begin

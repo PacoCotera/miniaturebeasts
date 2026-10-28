@@ -1,6 +1,7 @@
 // The Library module's selectors on Home (build spec 4.2, views/specimen-props.mjs): the species the window shows, the looks that are new, the counts, the specimen's request and the region of Home's props.
 //   node --test prototypes/station/tests/specimen-props.test.mjs
 import { test } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";

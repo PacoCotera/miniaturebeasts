@@ -1,6 +1,7 @@
 // Each mibi drawn as itself (T-20261016-201): `drawnLooks(frame, mibi)` and the layered stand, in the logic process; the face is given the composed picture by id, as it is given the stamp.
 //   node --test prototypes/station/tests/drawn-looks.test.mjs
 import { test, describe, before, after } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";

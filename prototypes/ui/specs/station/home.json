@@ -1,6 +1,6 @@
 {
  "screen": "home",
- "layout": { "stage": "field", "opening": [0, 40, 1024, 560], "gutter": 12, "movers": ["resident"], "painted": [{ "id": "genome", "region": "library.window", "fills": true }, { "id": "painting", "region": "vivarium", "fills": true }], "anchors": [{ "region": "away", "x": "right", "y": "bottom", "inset": [8, 6] }], "containers": [{ "region": "away", "padding": { "left": 4, "top": 4, "right": 4, "bottom": 0 }, "align": { "x": "centre", "y": "bottom" } }], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 560], "gutter": 12, "movers": ["resident"], "props": ["room"], "painted": [{ "id": "genome", "region": "library.window", "fills": true }, { "id": "painting", "region": "vivarium", "fills": true }], "anchors": [{ "region": "away", "x": "right", "y": "bottom", "inset": [8, 6] }], "containers": [{ "region": "away", "padding": { "left": 4, "top": 4, "right": 4, "bottom": 0 }, "align": { "x": "centre", "y": "bottom" } }], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
  "device": "station",
  "spec": "design/style-guide/station-layouts.md",
  "frame": "frame.json",

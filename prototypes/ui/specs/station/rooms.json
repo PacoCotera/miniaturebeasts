@@ -1,0 +1,348 @@
+{
+ "schema": "mb-rooms/1",
+ "source": {
+  "repo": "masters-pods",
+  "commit": "66d1bad5",
+  "manifest": "art/station-masters/pods/rooms/rooms-manifest.json"
+ },
+ "order": ["roots", "reeds", "boulders", "ferns"],
+ "rooms": {
+  "roots": {
+   "base": "room-roots-idle-{light}-1024x568",
+   "near": "room-roots-near-{light}-544x408",
+   "chip": null,
+   "preview": null,
+   "bed": {
+    "rect": [792, 496, 192, 56],
+    "foot": 551,
+    "picture": "room-roots-bed-{light}-192x56"
+   },
+   "levels": [
+    {
+     "id": "main",
+     "x": [16, 150, 330, 540, 1009],
+     "top": [432, 416, 392, 352],
+     "bottom": 551,
+     "keepOuts": [[124, 526, 84, 18], [690, 524, 56, 18]]
+    },
+    {
+     "id": "terrace",
+     "x": [16, 200],
+     "top": [292],
+     "bottom": 340,
+     "keepOuts": []
+    }
+   ],
+   "joins": [
+    {
+     "id": "roots-ramp-1",
+     "kind": "ramp",
+     "upper": "terrace",
+     "lower": "main",
+     "rect": [150, 296, 190, 130],
+     "ends": [[150, 340], [340, 426]]
+    }
+   ],
+   "pieces": [
+    {
+     "id": "roots-sorrel-1",
+     "kind": "occluder",
+     "level": "main",
+     "rect": [118, 496, 96, 46],
+     "foot": 541,
+     "picture": "room-roots-sorrel-1-{light}-96x46"
+    },
+    {
+     "id": "roots-stone-2",
+     "kind": "occluder",
+     "level": "main",
+     "rect": [684, 499, 68, 41],
+     "foot": 539,
+     "picture": "room-roots-stone-2-{light}-68x41"
+    },
+    {
+     "id": "roots-mister",
+     "kind": "back",
+     "rect": [920, 323, 50, 34],
+     "picture": "room-roots-mister-{light}-50x34"
+    },
+    {
+     "id": "roots-mist-2",
+     "kind": "back",
+     "rect": [850, 324, 80, 18],
+     "opa": 153,
+     "picture": "room-roots-mist-2-{light}-80x18"
+    }
+   ],
+   "ambient": []
+  },
+  "reeds": {
+   "base": "room-reeds-idle-{light}-1024x568",
+   "near": "room-reeds-near-{light}-544x408",
+   "chip": null,
+   "preview": null,
+   "levels": [
+    {
+     "id": "main",
+     "x": [16, 200, 430, 560, 700, 1009],
+     "top": [470, 432, 405, 395, 478],
+     "bottom": 551,
+     "keepOuts": [[16, 500, 170, 20], [220, 528, 54, 18], [776, 526, 64, 18]]
+    },
+    {
+     "id": "bank",
+     "x": [720, 990],
+     "top": [338],
+     "bottom": 372,
+     "keepOuts": []
+    }
+   ],
+   "joins": [
+    {
+     "id": "reeds-ramp-1",
+     "kind": "ramp",
+     "upper": "bank",
+     "lower": "main",
+     "rect": [600, 360, 120, 80],
+     "ends": [[720, 372], [600, 440]]
+    }
+   ],
+   "pieces": [
+    {
+     "id": "reeds-sedge-1",
+     "kind": "occluder",
+     "level": "main",
+     "rect": [0, 380, 200, 140],
+     "foot": 520,
+     "picture": null,
+     "seam": true
+    },
+    {
+     "id": "reeds-sedge-2",
+     "kind": "occluder",
+     "level": "main",
+     "rect": [214, 496, 66, 48],
+     "foot": 543,
+     "picture": "room-reeds-sedge-2-{light}-66x48"
+    },
+    {
+     "id": "reeds-stone-1",
+     "kind": "occluder",
+     "level": "main",
+     "rect": [770, 494, 76, 48],
+     "foot": 541,
+     "picture": "room-reeds-stone-1-{light}-76x48"
+    },
+    {
+     "id": "reeds-raincup",
+     "kind": "back",
+     "rect": [918, 303, 30, 36],
+     "picture": "room-reeds-raincup-{light}-30x36"
+    }
+   ],
+   "ambient": [
+    {
+     "id": "reeds-drop",
+     "kind": "drop",
+     "size": [4, 6],
+     "what": "the drop cell: falls from the cup's lip (x 944, y 309) to the bank's moss at y 340, every ~4 s"
+    }
+   ]
+  },
+  "boulders": {
+   "base": "room-boulders-idle-{light}-1024x568",
+   "near": "room-boulders-near-{light}-544x408",
+   "chip": null,
+   "preview": null,
+   "levels": [
+    {
+     "id": "main",
+     "x": [16, 190, 330, 470, 690, 800, 1009],
+     "top": [446, 436, 402, 456, 470, 466],
+     "bottom": 551,
+     "keepOuts": [[715, 468, 85, 16], [156, 526, 68, 18], [852, 526, 70, 18]]
+    },
+    {
+     "id": "terrace",
+     "x": [16, 260],
+     "top": [318],
+     "bottom": 376,
+     "keepOuts": []
+    }
+   ],
+   "joins": [
+    {
+     "id": "boulders-ramp-1",
+     "kind": "ramp",
+     "upper": "terrace",
+     "lower": "main",
+     "rect": [190, 330, 140, 110],
+     "ends": [[190, 376], [330, 440]]
+    }
+   ],
+   "pieces": [
+    {
+     "id": "boulders-stone-1",
+     "kind": "occluder",
+     "level": "main",
+     "rect": [705, 388, 105, 95],
+     "foot": 482,
+     "picture": null,
+     "seam": true
+    },
+    {
+     "id": "boulders-stone-2",
+     "kind": "occluder",
+     "level": "main",
+     "rect": [150, 502, 80, 40],
+     "foot": 541,
+     "picture": "room-boulders-stone-2-{light}-80x40"
+    },
+    {
+     "id": "boulders-cushion-1",
+     "kind": "occluder",
+     "level": "main",
+     "rect": [846, 496, 82, 46],
+     "foot": 541,
+     "picture": "room-boulders-cushion-1-{light}-82x46"
+    },
+    {
+     "id": "boulders-lantern",
+     "kind": "back",
+     "rect": [940, 329, 34, 44],
+     "picture": "room-boulders-lantern-{light}-34x44"
+    },
+    {
+     "id": "boulders-shishi",
+     "kind": "back",
+     "rect": [166, 262, 64, 56],
+     "picture": "room-boulders-shishi-{light}-64x56"
+    },
+    {
+     "id": "boulders-arm-fill",
+     "kind": "back",
+     "rect": [192, 264, 48, 48],
+     "picture": "room-boulders-arm-fill-{light}-48x48"
+    }
+   ],
+   "ambient": [
+    {
+     "id": "boulders-trickle",
+     "kind": "drop",
+     "size": [2, 5],
+     "what": "the flume's trickle cell"
+    },
+    {
+     "id": "boulders-arm",
+     "kind": "anim",
+     "cell": [48, 48],
+     "pivot_painting": [216, 288],
+     "rect_painting": [192, 264, 48, 48],
+     "poses_deg": {
+      "fill": -16,
+      "tip": 4,
+      "empty": 26,
+      "knock": -20
+     },
+     "cycle": "fill (hold ~45 s while the trickle falls into the open end) -> tip (300 ms) -> empty (hold 1.2 s, the basin glints) -> knock (200 ms, the knock) -> fill",
+     "file": "rooms/pieces/boulders/boulders-arm-{pose}-{light}.png",
+     "what": "the bamboo arm on its pivot posts; open end under the flume's spout"
+    },
+    {
+     "id": "boulders-koi",
+     "kind": "anim",
+     "cells": [30, 14],
+     "fish": ["kohaku", "ogon", "tancho", "chagoi"],
+     "frames": 4,
+     "file": "rooms/pieces/boulders/koi-{name}-{1..4}-{light}.png",
+     "mask_painting": [345, 332, 205, 34],
+     "swim": "3 of the 4 visible at once; each swims the pond's long axis at ~6 px/s on a 4-cell cycle (one cell each 500 ms), flipped for leftward, turns at the rim with a 2 s hold; never outside the pond mask; drawn under the pond's surface (behind everything on the ground)",
+     "what": "koi just under the pond's dark surface, mixed 38 % into the water's colour"
+    }
+   ]
+  },
+  "ferns": {
+   "base": "room-ferns-idle-{light}-1024x568",
+   "near": "room-ferns-near-{light}-544x408",
+   "chip": null,
+   "preview": null,
+   "levels": [
+    {
+     "id": "main",
+     "x": [16, 180, 460, 700, 1009],
+     "top": [420, 380, 360, 455],
+     "bottom": 551,
+     "keepOuts": [[36, 528, 59, 18], [824, 526, 52, 18]]
+    },
+    {
+     "id": "shelf",
+     "x": [720, 1009],
+     "top": [292],
+     "bottom": 330,
+     "keepOuts": []
+    }
+   ],
+   "joins": [
+    {
+     "id": "ferns-ramp-1",
+     "kind": "ramp",
+     "upper": "shelf",
+     "lower": "main",
+     "rect": [600, 330, 120, 90],
+     "ends": [[720, 330], [600, 420]]
+    }
+   ],
+   "pieces": [
+    {
+     "id": "ferns-fern-1",
+     "kind": "occluder",
+     "level": "main",
+     "rect": [30, 496, 71, 48],
+     "foot": 543,
+     "picture": "room-ferns-fern-1-{light}-71x48"
+    },
+    {
+     "id": "ferns-crozier-1",
+     "kind": "occluder",
+     "level": "main",
+     "rect": [818, 496, 64, 46],
+     "foot": 541,
+     "picture": "room-ferns-crozier-1-{light}-64x46"
+    },
+    {
+     "id": "ferns-fogger",
+     "kind": "back",
+     "rect": [556, 332, 46, 29],
+     "picture": "room-ferns-fogger-{light}-46x29"
+    },
+    {
+     "id": "ferns-copper-1",
+     "kind": "back",
+     "rect": [836, 213, 4, 78],
+     "picture": "room-ferns-copper-1-{light}-4x78"
+    },
+    {
+     "id": "ferns-copper-2",
+     "kind": "back",
+     "rect": [884, 216, 6, 47],
+     "picture": "room-ferns-copper-2-{light}-6x47"
+    },
+    {
+     "id": "ferns-mist-4",
+     "kind": "back",
+     "rect": [600, 338, 150, 24],
+     "opa": 115,
+     "picture": "room-ferns-mist-4-{light}-150x24"
+    }
+   ],
+   "ambient": [
+    {
+     "id": "ferns-drop",
+     "kind": "drop",
+     "size": [4, 6],
+     "what": "the drop cell: from each line's tip to the shelf's moss, every ~8 s"
+    }
+   ]
+  }
+ }
+}
