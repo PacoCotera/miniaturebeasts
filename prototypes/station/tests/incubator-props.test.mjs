@@ -105,3 +105,13 @@ test("the hatch's juvenile is the meet's mibi: its source request is the incubat
     assert.equal(S.mibiStage(st, o.mibi, cfg), adultTurns === 2 ? "juvenile" : "adult", "the stage of the world"); assert.equal(src.stage, S.mibiStage(st, o.mibi, cfg));
   }
 });
+
+test("R6 the Vivarium full: the notice The Vivarium is full at the ready bud (its Open held), at Hatch now (held) and on the empty Incubator; the plate lines are the rules' (the rooms words C9, C10, C17)", () => {
+  const full = (st) => { st.mibis = Array.from({ length: S.roomCount(st, settings) * S.ROOM }, (_, i) => ({ id: 900 + i, room: i >> 3, slot: i & 7, bay: i, released: false })); };
+  assert.deepEqual([spec.strings.full, spec.strings.noBay, spec.strings.noBayPlate], ["The Vivarium is full", undefined, undefined], "the keys are renamed and the words are the owner's");
+  { const { st } = world(); full(st); const e = build(st); assert.deepEqual([e.line.ok, e.line.need], [null, "The Vivarium is full"], "empty: no Choose a pod while no place is free, the notice says why"); }
+  { const { st, p } = world(); S.grow(st, p, {}, settings, T0); const free = build(st), g0 = free.line; assert.equal(g0.dim, undefined); full(st); const g = build(st).line;
+    assert.deepEqual([g.ok, g.dim, g.need], [spec.strings.grow, true, "The Vivarium is full"], "Hatch now is held while the Vivarium is full: the verb dimmed, the notice, ✓ plays the plate");
+    S.skipBud(st, settings, "ready"); const r = build(st).line; assert.deepEqual([r.ok, r.dim, r.need], [spec.strings.open, true, "The Vivarium is full"], "the ready bud's Open is held"); }
+  { const { st } = world(); assert.deepEqual(S.fullWords(st), { msg: "The Vivarium is full", plate: spec.strings.fullPlate }, "three lines while a room can be bought"); st.rooms = S.ROOMS_MAX; assert.deepEqual(S.fullWords(st).plate, spec.strings.fullPlate.slice(0, 2), "the third line shows only while fewer than four rooms"); }
+});

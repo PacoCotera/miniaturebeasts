@@ -5,7 +5,7 @@
 //   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), seen (the mibi last seen up close, or null), prev (the room shown before the ring moved to another room's chip, while the 200 ms swap runs: { tiles: [the old places' thumbnail ids] }, or null) }
 import * as S from "../state.mjs";
 import { livingOf, mibiReq } from "./home-props.mjs";
-import { roomRegion, roomData, withLight } from "./room-props.mjs";
+import { roomRegion, chipsOf } from "./room-props.mjs";
 import { listForm } from "../../../ui/specs/derive.mjs";
 import { fill, spell } from "./words.mjs";
 import { req as reqOf, slot as slotOf, ph as phOf } from "./requests.mjs";
@@ -34,10 +34,8 @@ export function vivariumBuild(m, spec, frame, home, pods) {
   while (tiles.length < n) tiles.push({ id: "", state: "free", picture: "", well: "", from: "" });
   tiles.forEach((t, i) => { t.from = m.prev?.tiles?.[i] ?? ""; });   // the swap: the old room's place i's thumbnail, dithered out while this one dithers in (clear when either has none)
   regions.tiles.items = tiles;
-  // the rooms pane: a chip a room (the room shown one step up), then the new-room chip while a room can still be added; its lamp is mint when the next room can be paid, stone otherwise (never amber)
-  const chipPic = (i) => { const c = roomData(i).chip; return c ? slot(withLight(c, m.light), [56, 40]) : ""; };   // rooms.json rooms.<id>.chip: null until the art director cuts it
-  const chips = Array.from({ length: nRooms }, (_, i) => ({ id: String(i), state: i === shown ? "shown" : "room", picture: chipPic(i), lamp: "" }));
-  if (nRooms < S.ROOMS_MAX) chips.push({ id: "new", state: "new", picture: "", lamp: slot(spec.regions.chips.lamps[S.addRoomBlock(st, settings) ? "short" : "payable"], [8, 8]) });
+  // the rooms pane: a chip a room (the room shown one step up), then the new-room chip while a room can still be added (room-props.mjs chipsOf)
+  const chips = chipsOf(st, settings, m.light, shown, spec.regions, slot);
   regions.rooms = { items: chips };
   // the focus: the residents in bay order (a sleeper in its bay's place), then the tiles in bay order; the ring on the target the way in names
   const asleep = new Set(lw.sleepers.map((p) => p.id)), atHome = new Set(residents.filter((p) => p.shown !== false).map((p) => p.id)), targets = [];   // the targets: the shown residents and the resters on the bed (a rester curled or out of sight is reached by its tile: it comes out, rules.show.pin)
@@ -68,7 +66,8 @@ export function vivariumBuild(m, spec, frame, home, pods) {
     const id = +cur.slice(cur.indexOf(".") + 1), mb = S.mibiById(st, id), isOut = !!mb && out(mb), sl = asleep.has(String(id));
     const wait = !!mb && !isOut && lw.residents.concat(lw.sleepers).find((p) => p.id === String(id))?.waiting;
     const words = { a: mb ? S.aAn(stageWord(mb)).split(" ")[0] : "", stage: mb ? stageWord(mb) : "", species: mb ? S.spName(mb) : "" };
-    const subject = isOut ? Sg.subjectTraveller[docked ? "docked" : "away"] : wait ? Sg.painting : fill(sl ? Sg.sleeper : Sg.resident, words);
+    const subject = isOut ? (docked && mb.room !== 0 ? fill(Sg.asleepIn, { Room: S.ROOM_NAMES[0] }) : Sg.subjectTraveller[docked ? "docked" : "away"]) :   // C16: the carried set sleeps on room 1's bed when docked, whatever its room
+       wait ? Sg.painting : fill(sl ? Sg.sleeper : Sg.resident, words);
     line = { ok: mb ? fill(Sg.look, { name: mb.name }) : null, subject, back: Sg.back, need: null };
   }
   const top = nRooms >= 2 ? { readout: { text: S.ROOM_NAMES[shown], mark: null } } : {};   // the crumb: the room shown's name after the title (frame.json regions.top.readout, as the Library's), only once there is more than one room

@@ -163,6 +163,15 @@ export function traitTile(species, stage, trait, look, size) {
 // the figure height a view draws a stage at (54 adult, 40 juvenile in the world views), or null
 export const viewFigureHeight = (stage, view = "vivarium") => SIZES?.views?.[view]?.[stageKey(stage)] ?? null;
 export function curlFactor(stage, view, slotH) { const h = SIZES?.views?.[view]?.[stageKey(stage)]; return h ? h / slotH : null; }
+// A layered species' curl at the stand's own scale (the owner's full-size ruling): the composed `curl` pose of the stand, cut to the canvas reduced by the stand's factor (54/288, 40/189), bottom-centred as composeStand draws it; { w, h, rgba() }.
+// curlPicture takes it with the factor 1 and lays the curl's shadow under it.
+const STAND_CURLS = new Map();
+export function curlOfStand(stand, looks) {
+  const key = `${stand.stage}:${stand.view}|${standVariant(stand, looks).key}`; if (STAND_CURLS.has(key)) return STAND_CURLS.get(key);
+  const c = composeStand(stand, looks), s = scaleOf(stand), [cw, ch] = ART_SIZE.split("x").map(Number), nw = Math.max(1, Math.round(cw * s)), nh = Math.max(1, Math.round(ch * s)), ox = (c.w - nw) >> 1, oy = c.h - nh, px = c.rgba(), out = new Uint8ClampedArray(nw * nh * 4);
+  for (let y = 0; y < nh; y++) out.set(px.subarray(((oy + y) * c.w + ox) * 4, ((oy + y) * c.w + ox + nw) * 4), y * nw * 4);
+  const r = { w: nw, h: nh, rgba: () => out }; STAND_CURLS.set(key, r); return r;
+}
 const CURLS = new Map();   // kept by the master, the stage, the factor and the view; a different master picture under the same id is a new entry
 export function curlPicture(src, species, stage, factor, view = "vivarium", id = "") {
   const key = `${id}|${species}|${stage}|${factor}|${view}`, have = CURLS.get(key); if (id && have && have.src === src) return have.pic;

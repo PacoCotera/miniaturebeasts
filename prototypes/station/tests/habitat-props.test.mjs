@@ -11,11 +11,16 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, genomeDigest } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { habitatBuild as habitatBuildUnchecked } from "../src/views/habitat-props.mjs";
+import { INTENTS } from "../src/intents/index.mjs";
+import { returnNow } from "../src/intents/habitat.mjs";
+import { panelBuild } from "../src/views/panel-props.mjs";
+import { roomIds } from "../src/views/room-props.mjs";
+import { capLine } from "../src/views/words.mjs";
 const habitatBuild = lineCased(habitatBuildUnchecked, "habitat");   // every body it builds goes through assertLineCase (report mode)
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), sittingSpec = J("sitting.json"), spec = J("habitat.json"), frameSpec = J("frame.json"), home = J("home.json"), schema = J("habitat.props.json"), namerSchema = J("namer.props.json");
+const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), sittingSpec = J("sitting.json"), spec = J("habitat.json"), frameSpec = J("frame.json"), home = J("home.json"), schema = J("habitat.props.json"), namerSchema = J("namer.props.json"), panelSpec = J("panel.json"), podsSpec = J("pods.json");
 const T0 = 1_000_000, cfg = (rooms) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", rooms });
 
 export function validate(v, sc, root = schema, at = "$", out = []) {
@@ -40,7 +45,7 @@ const world = (rooms = 1) => { const st = S.freshSt("w1", 3, T0); S.normalize(st
 const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], ...over });
 const dock = (st, d = true) => { st.dock = { docked: d, at: T0 }; };
 const mibis = (w, n) => { S.seedAdults(w.st, "S01", 5, n, w.settings); for (const m of w.st.mibis) m.paint = { state: "landed" }; return w.st.mibis; };
-const build = ({ st, settings }, sv, over = {}) => habitatBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, habId: st.mibis[0]?.id ?? null, meetId: null, armed: false, ...over }, spec, frameSpec, home, sittingSpec);
+const build = ({ st, settings }, sv, over = {}) => habitatBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, habId: st.mibis[0]?.id ?? null, meetId: null, armed: false, ...over }, spec, frameSpec, home, sittingSpec, podsSpec);
 
 function scenes() {
   const out = {};
@@ -97,24 +102,25 @@ test("the Companion module: the set as it will be in its order (an add request w
   let b = build(w, sv, { focus: "door" }); assert.equal(b.props.regions.door.state, "docked"); assert.equal(b.props.regions.door.glyph, "frame-companion-solid-16x24"); assert.equal(b.props.regions.door.places[0].picture, `mibi:${genomeDigest(m[1].genome)}:adult:48x48`); assert.deepEqual(b.props.regions.door.places[1], { picture: "", waiting: false, well: "plate-well-48x48" }, "a free place is the well alone (fix 2 F4)");
   assert.equal(b.line.ok, `Take ${m[0].name} with you`); assert.equal(b.line.subject, "goes with you now"); assert.equal(b.props.focus.targets.find((t) => t.id === "door").enabled, true);
   b = build(w, sv, { focus: "door", habId: m[1].id }); assert.equal(b.line.ok, `Bring ${m[1].name} home`); assert.equal(b.line.subject, "comes home now");
-  const full = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, full, { focus: "door" }); assert.equal(b.line.ok, null); assert.equal(b.line.subject, "the Companion is full"); assert.equal(b.props.focus.targets.find((t) => t.id === "door").enabled, false);
+  const full = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, full, { focus: "door" }); assert.deepEqual([b.line.ok, b.line.dim, b.line.subject], [`Take ${m[0].name} with you`, true, "the Companion is full"], "the house rule: the verb stays, dimmed, the context gives the reason"); assert.equal(b.props.regions.door.held, true); assert.equal(b.props.focus.targets.find((t) => t.id === "door").enabled, false);
   S.carryAdd(w.st, sv, m[0]); b = build(w, sv, { focus: "door" }); assert.equal(b.props.regions.door.places[1].waiting, true, "the request waits: its picture with the lamp"); assert.equal(b.line.ok, null);
   dock(w.st, false); b = build(w, sv, { focus: "door" }); assert.equal(b.props.regions.door.glyph, "frame-companion-outline-16x24"); assert.equal(b.props.regions.door.state, "away"); assert.equal(b.line.subject, "goes at the next dock");
 });
 
 test("Cross: a face a partner (an adult or an elder of the species), a partner out with the Companion while it is away dimmed and not counted, a juvenile none; the module's context says why it cannot", () => {
   const w = world(); dock(w.st); const m = mibis(w, 4), sv = sv0({ carried: [m[1].id] });
-  let b = build(w, sv, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "adult"); assert.equal(b.props.regions.cross.faces.length, 3); assert.equal(b.props.regions.cross.faces.filter((f) => f.away).length, 1, "R4b: a carried partner is dimmed docked too (no breeding while carried)"); assert.equal(b.line.ok, null, "the door is shut: no ✓ cap"); assert.equal(b.line.subject, "crossing is not open yet"); assert.equal(b.props.focus.targets.find((t) => t.id === "cross").enabled, false);
+  let b = build(w, sv, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "adult"); assert.equal(b.props.regions.cross.faces.length, 3); assert.equal(b.props.regions.cross.faces.filter((f) => f.away).length, 1, "R4b: a carried partner is dimmed docked too (no breeding while carried)"); assert.deepEqual([b.line.ok, b.line.dim, b.props.regions.cross.held], [`Cross ${m[0].name}`, true, true], "the door is shut: the verb stays, dimmed (the house rule)"); assert.equal(b.line.subject, "crossing is not open yet"); assert.equal(b.props.focus.targets.find((t) => t.id === "cross").enabled, false);
   dock(w.st, false); b = build(w, sv, { focus: "cross" }); assert.deepEqual(b.props.regions.cross.faces.map((f) => f.away), [true, false, false]); assert.equal(b.line.subject, "crossing is not open yet", "the shut line stands whatever the partners");
-  const none = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, none, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "away"); assert.equal(b.line.subject, "its partners are travelling"); assert.equal(b.line.ok, null);
+  const none = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, none, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "away"); assert.equal(b.line.subject, "its partners are travelling"); assert.deepEqual([b.line.ok, b.line.dim], [`Cross ${m[0].name}`, true]);
   b = build(w, sv0({ carried: [m[0].id] }), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "out"); assert.deepEqual([b.line.ok, b.line.dim, b.line.subject], [`Cross ${m[0].name}`, true, "out exploring"], "held while carried: the verb dimmed, the reason in the context");
-  m[0].born = w.st.turn; dock(w.st); b = build(w, sv0(), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "young"); assert.equal(b.line.subject, "crosses once adult"); assert.deepEqual(b.props.regions.cross.faces, []);
+  m[0].born = w.st.turn; dock(w.st); b = build(w, sv0(), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "young"); assert.equal(b.line.subject, "crosses once adult"); assert.deepEqual(b.props.regions.cross.faces, []); assert.deepEqual([b.line.ok, b.line.dim, b.props.regions.cross.held], [`Cross ${m[0].name}`, true, true], "a young mibi's Cross is held before it is focused");
 });
 
 test("Wild: shut (no armed state), its context from the rules (a young, a bonded, a carried mibi stays) and the price ❀ +2 on the line", () => {
   const w = world(); dock(w.st); const m = mibis(w, 3), sv = sv0();
-  let b = build(w, sv, { focus: "wild" }); assert.equal(b.props.regions.wild.state, "shut"); assert.equal(b.line.ok, `Return ${m[0].name}`); assert.equal(b.line.price, "❀ +2"); assert.equal(b.line.subject, "goes back to the wild");
-  m[0].bonded = true; b = build(w, sv, { focus: "wild" }); assert.equal(b.props.regions.wild.state, "shut"); assert.equal(b.line.subject, "a bonded mibi stays"); assert.equal(b.props.focus.targets.find((t) => t.id === "wild").enabled, false);
+  let b = build(w, sv, { focus: "wild" }); assert.equal(b.props.regions.wild.state, "shut"); assert.equal(b.line.ok, `Return ${m[0].name}`); assert.equal(b.line.price, "❀ +2"); assert.equal(b.line.subject, "leaves a pod of its line", "C13a"); assert.equal(b.props.regions.wild.held, false);
+  m[0].born = w.st.turn; b = build(w, sv, { focus: "wild" }); assert.deepEqual([b.props.regions.wild.state, b.props.regions.wild.held, b.line.ok, b.line.dim], ["shut", false, `Return ${m[0].name}`, undefined], "C12a: a young mibi may be returned: not held");
+  m[0].born = w.st.turn - 99; m[0].bonded = true; b = build(w, sv, { focus: "wild" }); assert.deepEqual([b.props.regions.wild.state, b.props.regions.wild.held, b.line.ok, b.line.dim, b.line.price, b.line.subject], ["held", true, `Return ${m[0].name}`, true, "❀ +2", "a bonded mibi stays"], "the verb stays, dimmed"); assert.equal(b.props.focus.targets.find((t) => t.id === "wild").enabled, false);
 });
 
 test("Portrait: none, held, its portrait on the way, portrayed; the context names why it cannot sit", () => {
@@ -143,10 +149,11 @@ test("Portrait picture: \"\" for none, held, painting and portrayed with no dige
 test("the strip: a tile a place, the room shown's mibis in slot order then the free places, the shown mibi's tile marked, an out mibi's tile the glyph; the targets in the graph's groups; a tile shows its mibi (focus.resolve tile.shown)", () => {
   const S0 = scenes(), b = build(S0.rest.w, S0.rest.sv), m = S0.rest.w.st.mibis, T = b.props.regions.tiles.items;
   assert.equal(T.length, 8); assert.deepEqual(T.map((t) => t.state), ["housed", "housed", "housed", "housed", "free", "free", "free", "free"]); assert.deepEqual(T.map((t) => t.shown), [true, false, false, false, false, false, false, false]);
-  assert.deepEqual(b.props.focus.targets.map((t) => t.id), ["resident", "name", "species", "family", ...frameOf("S01").chapters.map((c, i) => "plate." + i), "door", "portrait", "cross", "wild", ...m.map((x) => "tile." + x.id)]);
-  assert.deepEqual(b.props.focus.targets.map((t) => t.group).filter((g, i, a) => a.indexOf(g) === i), ["resident", "name", "species", "family", "plate", "top", "low", "tile"]);
+  assert.deepEqual(b.props.focus.targets.map((t) => t.id), ["resident", "name", "species", "family", ...frameOf("S01").chapters.map((c, i) => "plate." + i), "door", "portrait", "cross", "wild", ...m.map((x) => "tile." + x.id), "room.0", "room.new"]);
+  assert.deepEqual(b.props.focus.targets.map((t) => t.group).filter((g, i, a) => a.indexOf(g) === i), ["resident", "name", "species", "family", "plate", "top", "low", "tile", "room"]);
   const fam = b.props.focus.targets.find((t) => t.id === "family"); assert.deepEqual([fam.group, fam.enabled, fam.lines], ["family", true, m[0].from?.of?.length === 2 ? 2 : 1], "the story's origin lines: See the family");
   assert.deepEqual(build(S0.rest.w, S0.rest.sv, { focus: "family" }).line, { ok: "See the family", subject: "", back: "Vivarium", need: null }, "✓ See the family, the jump to Level 3");
+  assert.deepEqual(b.props.regions.rooms.items.map((c) => [c.id, c.state]), [["0", "shown"], ["new", "new"]], "R6: a chip a room, the mibi's own one step up, then the new-room chip"); assert.equal(b.props.regions.strip, undefined, "the strip row is two panes"); assert.equal(b.props.focus.resolve["room.shown"], "room.0");
   assert.equal(b.props.focus.resolve["tile.shown"], "tile." + m[0].id); assert.equal(build(S0.rest.w, S0.rest.sv, { habId: m[2].id }).props.focus.resolve["tile.shown"], "tile." + m[2].id);
   { const T12 = build(S0.twelve.w, S0.twelve.sv).props.regions.tiles.items, w = S0.twelve.w; assert.equal(T12.length, 8, "a room holds eight places"); assert.deepEqual(T12.map((t) => t.id), S.inRoom(w.st, 0).map((x) => String(x.id)), "the first room's eight"); const far = S.inRoom(w.st, 1)[0], T2 = build(w, S0.twelve.sv, { habId: far.id }).props.regions.tiles.items; assert.deepEqual(T2.map((t) => t.state), ["housed", "housed", "housed", "housed", "free", "free", "free", "free"], "a mibi of the second room: its room's four"); assert.deepEqual(T2.map((t) => t.shown), [true, false, false, false, false, false, false, false], "its own tile shown");
     w.st.face.room = 1; assert.deepEqual(build(w, S0.twelve.sv).props.regions.tiles.items.map((t) => t.id), S.inRoom(w.st, 0).map((x) => String(x.id)), "the room the whole shows does not take the strip off the mibi up close"); }
@@ -210,9 +217,9 @@ test("the portrayed corner and ✓ Look at the portrait: the stamp label carries
   dropPortraitSources(); assert.equal(corner(), "", "none"); w.st.sitting = { source: "dev", key: null, at: 0 }; assert.equal(corner(), "", "held");
   m[0].portrait = { state: "painting" }; assert.equal(corner(), "", "painting");
   m[0].portrait = { state: "delivered" }; assert.equal(corner(), P.slice, "portrayed, its picture not come"); assert.ok(b().requests.some((r) => r.id === P.slice && r.kind === "slot"), "the corner is a slot request");
-  assert.deepEqual([b().line.ok, b().line.subject], [null, spec.strings.portrayed], "no picture held: no ✓");
+  assert.deepEqual([b().line.ok, b().line.dim, b().line.subject], [`Portray ${m[0].name}`, true, spec.strings.portrayed], "no picture held: the verb stays, dimmed");
   const digest = "0123456789abcdef0011223344556677"; m[0].portrait = { state: "delivered", digest };
-  assert.deepEqual([b().line.ok, b().line.subject], [null, spec.strings.portrayed], "its digest but no opening held: no ✓");
+  assert.deepEqual([b().line.ok, b().line.dim, b().line.subject], [`Portray ${m[0].name}`, true, spec.strings.portrayed], "its digest but no opening held: the verb stays, dimmed");
   const a = new Uint8ClampedArray(528 * 392 * 4); for (let i = 0; i < a.length; i += 4) { a[i] = 7; a[i + 1] = (i >> 2) & 255; a[i + 2] = 40; a[i + 3] = 255; } assert.equal(injectPortraitSource(digest, a).ok, true);
   assert.deepEqual([b().line.ok, b().line.subject, b().line.back], [sittingSpec.strings.lookPortrait, spec.strings.portrayed, spec.strings.back], "the opening held: ✓ Look at the portrait"); assert.equal(sittingSpec.strings.lookPortrait, "Look at the portrait");
   assert.equal(b().props.focus.targets.find((t) => t.id === "portrait").enabled, true); assert.deepEqual(validate(b().props, schema), [], "the props schema takes the corner");
@@ -224,10 +231,88 @@ test("✓ Look at the portrait is never a cap that does nothing: portrayed with 
   const { injectPortraitSource, dropPortraitSources } = await import("../src/portrait-source.mjs");
   const w = world(); dock(w.st); const m = mibis(w, 2), digest = "00112233445566778899aabbccddeeff"; m[0].portrait = { state: "delivered", digest };
   const a = new Uint8ClampedArray(528 * 392 * 4); for (let i = 0; i < a.length; i += 4) { a[i] = 7; a[i + 1] = (i >> 2) & 255; a[i + 2] = 40; a[i + 3] = 255; } dropPortraitSources(); assert.equal(injectPortraitSource(digest, a).ok, true);
-  const off = (b) => { assert.equal(b.props.focus.targets.find((t) => t.id === "portrait").enabled, false); assert.deepEqual([b.line.ok, b.line.subject], [null, spec.strings.portrayed]); };
+  const off = (b, why = spec.strings.portrayed) => { assert.equal(b.props.focus.targets.find((t) => t.id === "portrait").enabled, false); assert.deepEqual([b.line.ok, b.line.dim, b.line.subject], [`Portray ${b.shown.name}`, true, why]); };
   assert.equal(build(w, sv0(), { focus: "portrait" }).line.ok, sittingSpec.strings.lookPortrait, "docked: the cap");
   w.st.dock = { docked: false, at: 1 }; const away = { ...sv0(), carried: [m[0].id] }; assert.ok(S.isAway(w.st, away, m[0]));
-  off(build(w, away, { focus: "portrait" }));
+  off(build(w, away, { focus: "portrait" }), "out exploring");   // a carried mibi's card is held (heldRule): the traveller's context
   dock(w.st); off(habitatBuild({ st: w.st, sv: sv0(), settings: w.settings, docked: true, light: "day", focus: "portrait", habId: m[0].id, meetId: null, armed: false }, spec, frameSpec, home));
   dropPortraitSources();
+});
+
+// ---- R6 (T-20261027-319): moving a mibi between rooms, the house rule's held rows and their plates, the Return with its pod ----
+const upClose = (w, id) => (over = {}, sv = sv0()) => build(w, sv, { habId: id, ...over });
+// A recording host over the real rules: what ✓ does to the state, the plate and the events.
+function hostFor(w, sv, id) {
+  const ui = { screen: "habitat", hab: { id, f: "resident", prev: null, prevRoom: null, namer: null }, panel: null, viv: { f: null } };
+  const h = { st: w.st, sv, settings: w.settings, ui, specs: { habitat: spec, sitting: sittingSpec, panel: panelSpec, frame: frameSpec, pods: podsSpec, home }, said: [], played: [], timers: [], saved: 0, went: [], motion: () => true, light: () => "day", now: () => T0 };
+  return Object.assign(h, { say: (x) => h.said.push(x), play: (e) => h.played.push(e), at: (ms, fn) => h.timers.push({ ms, fn }), save: () => { h.saved++; }, goto: (s) => { h.went.push(s); ui.screen = s; } });
+}
+const press = (h, target) => INTENTS.habitat.intent(h, target, "confirm");
+
+test("R6 the chips up close (the rooms screens 1b, the rooms words C5): the ring on a chip does not change the room shown; its own room has no action, a room with space offers ✓ Move {name} here with the room's count, a full room the same verb dimmed, the new-room chip is the whole's", () => {
+  const w = world(3); dock(w.st); const m = mibis(w, 15), sv = sv0();   // Roots 8 (full), Reeds 7, Boulders empty
+  assert.deepEqual([S.inRoom(w.st, 0).length, S.inRoom(w.st, 1).length, S.inRoom(w.st, 2).length], [8, 7, 0]);
+  const at = (mb, chip) => build(w, sv, { habId: mb.id, focus: "room." + chip }), reeds = m[8], roots = m[0];
+  let b = at(roots, 0); assert.deepEqual([b.line.ok, b.line.subject, b.line.dim], [null, "its home room", undefined], "its own room: no action"); assert.equal(b.props.regions.glass.picture, roomIds(0, "day").near, "the ring on a chip does not change the room shown");
+  b = at(roots, 1); assert.deepEqual([b.line.ok, b.line.subject, b.line.dim], [`Move ${roots.name} here`, "Reeds: one place free", undefined], "a room with space: one place free"); assert.equal(b.props.regions.glass.picture, roomIds(0, "day").near);
+  b = at(roots, 2); assert.deepEqual([b.line.ok, b.line.subject, b.line.dim], [`Move ${roots.name} here`, "Boulders: eight places free", undefined]);
+  b = at(reeds, 0); assert.deepEqual([b.line.ok, b.line.subject, b.line.dim], [`Move ${reeds.name} here`, "Roots: no place free", true], "a full room: the same verb, dimmed"); assert.equal(b.props.focus.targets.find((t) => t.id === "room.0").enabled, false);
+  b = at(reeds, 2); assert.equal(b.line.subject, "Boulders: eight places free"); assert.equal(b.props.focus.targets.find((t) => t.id === "room.2").enabled, true);
+  assert.deepEqual(b.props.regions.rooms.items.map((c) => [c.id, c.state]), [["0", "room"], ["1", "shown"], ["2", "room"], ["new", "new"]], "the mibi's own room one step up");
+  assert.equal(b.props.regions.tiles.items.filter((x) => x.state !== "free").length, 7, "the places pane is the mibi's own room's");
+  b = at(roots, "new"); assert.deepEqual([b.line.ok, b.line.price, b.line.subject, b.line.dim], ["Add a room", S.priceText(S.roomPrice(w.st, w.settings), 0, 0), "eight more places", undefined], "the new-room chip, as the whole's");
+  w.st.e = 0; b = at(roots, "new"); assert.equal(b.line.dim, true); assert.ok(b.line.short, "short of Energy: the dimmed cap and the short icons"); w.st.e = 99;
+  for (const x of at(roots, 1).props.focus.targets) assert.ok(["resident", "name", "species", "family", "plate", "top", "low", "tile", "room"].includes(x.group));
+  w.st.dock.docked = false; const away = sv0({ carried: [roots.id] });   // a carried mibi's Move is held (heldRule): the verb dimmed, the traveller context
+  b = build(w, away, { habId: roots.id, focus: "room.2" }); assert.deepEqual([b.line.ok, b.line.dim, b.line.subject], [`Move ${roots.name} here`, true, "out exploring"]);
+});
+
+test("R6 ✓ Move {name} here moves the mibi (the near painting cross-dithers 200 ms, the places pane cuts to the new room, the ring stays on the chip, the plate says where); a full room's ✓ plays the rooms words C7; the new-room chip opens Add a room?", () => {
+  const w = world(3); dock(w.st); const m = mibis(w, 15), sv = sv0(), roots = m[0], reeds = m[8];
+  let h = hostFor(w, sv, reeds.id); h.ui.hab.f = "room.0";
+  press(h, "room.0"); assert.deepEqual(h.said, ["The Roots room is full\nMove one of its mibis out"], "C7: two lines, the room named"); assert.equal(reeds.room, 1, "nothing moved"); assert.deepEqual(h.played, []);
+  h = hostFor(w, sv, reeds.id); press(h, "room.1"); assert.deepEqual([h.said, reeds.room], [[], 1], "its home room: nothing");
+  h = hostFor(w, sv, roots.id); h.ui.hab.f = "room.2"; press(h, "room.2");
+  assert.deepEqual([roots.room, roots.slot, S.inRoom(w.st, 2).map((x) => x.id)], [2, 0, [roots.id]]); assert.deepEqual(h.said, [`${roots.name} moves to the Boulders room`], "C6");
+  assert.deepEqual(h.played.map((e) => [e.kind, e.target, e.from, e.ms, e.hold]), [["dither", "glass", roomIds(0, "day").near, 200, 0]], "the near painting from the old room's view, 200 ms"); assert.equal(h.ui.hab.prevRoom, roomIds(0, "day").near); h.timers[0].fn(); assert.equal(h.ui.hab.prevRoom, null);
+  assert.equal(h.ui.hab.f, "room.2", "the ring stays on the chip"); assert.equal(w.st.face.room, 2);
+  const b = build(w, sv, { habId: roots.id, focus: h.ui.hab.f }); assert.deepEqual([b.line.ok, b.line.subject], [null, "its home room"], "now its home room"); assert.equal(b.props.regions.glass.picture, roomIds(2, "day").near, "the places pane and the painting are the new room's"); assert.deepEqual(b.props.regions.tiles.items.filter((x) => x.state !== "free").map((x) => x.id), [String(roots.id)]); assert.deepEqual(b.top, { readout: { text: "Boulders", mark: null } });
+  assert.ok(S.moveBlock(w.st, roots, 2, w.settings)?.key === "own");
+  h = hostFor(w, sv, roots.id); press(h, "room.new"); assert.deepEqual([h.ui.panel?.screen, h.ui.panel?.id], ["habitat", "addRoom"], "the Add a room? panel opens over one mibi up close");
+  // after buying: the ring stays on the place, now the new room's chip, and ✓ Move {name} here is offered
+  const v = { st: S.freshSt("w1", 3, T0), settings: cfg(null) }; S.normalize(v.st); v.st.e = 99; v.st.d = 99; v.st.s = 99; v.st.firstMibi = false; dock(v.st); const k = mibis(v, 8);
+  h = hostFor(v, sv0(), k[0].id); h.ui.hab.f = "room.new"; press(h, "room.new"); assert.equal(h.ui.panel.id, "addRoom");
+  INTENTS.panel.intent(h, "card.add", "confirm"); assert.deepEqual([v.st.rooms, h.ui.panel, h.ui.hab.f, h.said.length], [2, null, "room.1", 1], "the room is bought, the ring stays on the place");
+  const c = build(v, sv0(), { habId: k[0].id, focus: h.ui.hab.f }); assert.deepEqual([c.line.ok, c.line.subject], [`Move ${k[0].name} here`, "Reeds: eight places free"], "✓ Move {name} here is offered");
+  press(h, "room.1"); assert.equal(k[0].room, 1);
+});
+
+test("R6 the house rule on one mibi up close: a held module is drawn held before it is focused (props held), focused its verb stays dimmed with the reason, ✓ plays its plate and never stays silent", () => {
+  const w = world(); dock(w.st); const m = mibis(w, 4), sv = sv0(), id = m[0].id;
+  const row = (target, over = {}, svx = sv) => { const b = build(w, svx, { habId: id, focus: target, ...over }), h = hostFor(w, svx, id); h.ui.hab.f = target; press(h, target); return { b, said: h.said, held: b.props.regions[target].held, panel: h.ui.panel }; };
+  // Wild: bonded (C12b), a young bonded one with the third line, going at the next dock (C12d), and live
+  let r = row("wild"); assert.deepEqual([r.held, r.said, r.panel?.id], [false, [], "wildMibi"], "live: ✓ opens the Return panel");
+  m[0].bonded = true; m[0].grownTurn = 0; r = row("wild"); assert.deepEqual([r.held, r.b.line.ok, r.b.line.dim, r.b.line.subject, r.said], [true, `Return ${m[0].name}`, true, "a bonded mibi stays", [`A bond is for good\n${m[0].name} stays with you`]]);
+  delete m[0].grownTurn; r = row("wild"); assert.equal(S.mibiStage(w.st, m[0], w.settings), "juvenile", "a bonded mibi waits young until it is carried and tended"); assert.deepEqual(r.said, [`A bond is for good\n${m[0].name} stays with you\nCarried and tended, ${m[0].name} grows up`], "a bonded juvenile: the third line"); m[0].bonded = false;
+  S.carryAdd(w.st, sv, m[0]); r = row("wild"); assert.deepEqual([r.held, r.b.line.subject, r.said], [true, "goes at the next dock", [`${m[0].name} goes at the next dock`]], "the plate lines are separate lines");
+  const carried = sv0({ carried: [m[0].id] }); r = row("wild", {}, carried); assert.deepEqual([r.held, r.b.line.subject, r.said], [true, "ready to go exploring", [`${m[0].name} is ready to go exploring\nBring ${m[0].name} home first`]], "with the Companion: the held look of R4b, one plate");
+  S.carryHome(w.st, carried, m[0]); w.st.carryReqs = []; sv.carryReqs = [];
+  // the other held modules: the reason's own sentence capitalised (the plates owed to the copywriter)
+  const w2 = world(); dock(w2.st); const n = mibis(w2, 2); n[1].born = w2.st.turn;
+  const row2 = (target, mb = n[0]) => { const b = build(w2, sv0(), { habId: mb.id, focus: target }), h = hostFor(w2, sv0(), mb.id); h.ui.hab.f = target; press(h, target); return { b, said: h.said, held: b.props.regions[target].held }; };
+  r = row2("portrait"); assert.deepEqual([r.held, r.b.line.ok, r.b.line.dim, r.b.line.subject, r.said], [true, `Portray ${n[0].name}`, true, "no sitting held", ["No sitting held"]], "the empty Portrait module is held");
+  r = row2("cross", n[1]); assert.deepEqual([r.held, r.b.line.ok, r.b.line.dim, r.said], [true, `Cross ${n[1].name}`, true, [capLine(spec.strings.crossLater)]]);
+  const w3 = world(); dock(w3.st); const k = mibis(w3, 5); const full = sv0({ carried: [k[1].id, k[2].id, k[3].id] });
+  { const b = build(w3, full, { habId: k[0].id, focus: "door" }), h = hostFor(w3, full, k[0].id); press(h, "door"); assert.deepEqual([b.props.regions.door.held, b.line.dim, h.said, w3.st.mibis.length], [true, true, ["The Companion is full"], 5], "the Companion full: held, ✓ plays its plate and takes nobody"); }
+  { const b = build(w3, sv0(), { habId: k[0].id, focus: "door" }); assert.equal(b.props.regions.door.held, false, "a set with a place is live"); }
+});
+
+test("R6 the Return with its pod: the Wild context (C13a), the Return card's line for a grown (C13b) and a young mibi (C13c), the release plate (C13d, C13e)", () => {
+  const w = world(); dock(w.st); const m = mibis(w, 3), sv = sv0();
+  assert.equal(build(w, sv, { focus: "wild" }).line.subject, "leaves a pod of its line");
+  const card = (id) => { const ui = { panel: { screen: "habitat", id: "wildMibi", focus: "" }, hab: { id } }; return panelBuild({ st: w.st, sv, settings: w.settings, ui, jump: "arrival" }, panelSpec, frameSpec, podsSpec).cards.find((c) => c.id === "return"); };
+  assert.equal(card(m[0].id).line, `${m[0].name}'s pod waits in the wild`); m[1].born = w.st.turn; assert.equal(card(m[1].id).line, `${m[1].name}'s pod comes once grown`); assert.equal(card(m[1].id).name, `Return ${m[1].name}`); assert.equal(card(m[1].id).cost, "❀ +2", "the same card otherwise");
+  let h = hostFor(w, sv, m[0].id); returnNow(h); assert.deepEqual(h.said, [`${m[0].name} goes back to the meadow\nLook for its pod in two turns`], "C13d");
+  h = hostFor(w, sv, m[1].id); returnNow(h); assert.deepEqual(h.said, [`${m[1].name} goes back to the meadow\n${m[1].name} grows up in its place\nbefore it leaves a pod`], "C13e"); assert.ok(m[1].released);
+  assert.equal(w.st.sheds.length, 2, "both leave a shed record"); assert.equal(spec.strings.wildBlocks.young, undefined, "C12a: the young row retires");
 });
