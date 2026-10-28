@@ -157,6 +157,12 @@ test("placeRooms writes the index entries (their light's signed text) and a room
   const g = checkRooms(data, ix, [0, 0, PW, PH], r.root); assert.deepEqual(g.problems, []);
 });
 
+test("a mist marked alpha_in_file is placed with no opa (its alpha is in the file); the same mist unmarked keeps its opa", () => {
+  const f = roomsFolder(), mist = f.mf.roots.pieces.find((p) => p.id === "roots-mist-2"); mist.alpha_in_file = true; writeFileSync(f.manifest, JSON.stringify(f.mf));
+  const data = JSON.parse(readFileSync(placeFixture(f).roomsFile, "utf8")), p = data.rooms.roots.pieces.find((q) => q.id === "roots-mist-2");
+  assert.equal(p.kind, "back"); assert.equal(p.opa, undefined, "no opa: the mist is drawn once, at the strength cut into the file");
+});
+
 test("placeRooms refuses a tampered signed scene, an unsigned light and a room the manifest lacks, and writes nothing", () => {
   const f = roomsFolder(); writeFileSync(path.join(f.rooms, "signed-idle-reeds-day.png"), encodePNG(PW, PH, new Uint8Array(PW * PH * 4).fill(3)));
   const root = mkdtempSync(path.join(tmpdir(), "placed-")), roomsFile = path.join(root, "rooms.json"), go = (m = f.manifest, only = ["roots", "reeds"]) => placeRooms({ manifest: m, root, roomsFile, commit: "abc1234", only });

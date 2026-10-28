@@ -22,6 +22,8 @@ const SCENES = {
   "room-reeds":    { f: null, state: "rest", room: "reeds",    set: (w) => { w.rooms(4); window.__st.ST.face.room = 1; w.adults(6); window.__st.ST.mibis[3].id = 118; } },   // behind reeds-sedge-2
   "room-boulders": { f: null, state: "rest", room: "boulders", set: (w) => { w.rooms(4); window.__st.ST.face.room = 2; w.adults(6); window.__st.ST.mibis[3].id = 139; } },   // behind boulders-stone-2
   "room-ferns":    { f: null, state: "rest", room: "ferns",    set: (w) => { w.rooms(4); window.__st.ST.face.room = 3; w.adults(6); window.__st.ST.mibis[3].id = 154; } },   // behind ferns-fern-1
+  // R4 (the rooms design §2): Roots, six residents at their start, one of them on the terrace (ids whose seeds, hash(id), start one on the raised level: the first draw's r mod 4 is 0 for id 3 and not for the others); the main floor's walkers are in front of it by their feet
+  "level-roots":   { f: null, state: "rest", room: "roots", set: (w) => { w.bays(8); w.adults(6); window.__st.ST.mibis.forEach((m, i) => { m.id = [3, 1, 2, 4, 5, 7][i]; }); } },
   // fix 14 (§14.4): capture states, not goldens: the vivarium-docked seed with a juvenile resident focused, one a light; its ring crosses the dark grain and the lit moss (the 2 px floor, layer-check rule F2; the CD's frames)
   "four-loikas": { f: null, state: "rest", captureOnly: true, set: (w) => { w.bays(8); const st = window.__st.ST, k = st.mibis.length; for (const seed of [1, 22, 25, 52]) window.__st.seedAdults("S01", seed, 1); st.mibis.slice(k).forEach((m, i) => { m.paint = { state: "landed" }; m.id = [1075, 479, 2, 5426][i]; }); } },   // T-20261016-201 proof: four Loikas whose read looks differ (patches with the crest; stripes on a bare head; stripes and patches with the crest; patches on a bare head), each drawn as itself
   ...Object.fromEntries(["dawn", "day", "dusk", "night"].map((l) => ["resident-focused-" + l, { f: "resident:4", state: "rest", light: l, captureOnly: true, set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } }])),
@@ -65,6 +67,12 @@ async function walk(visit) {
     { const m = await page.evaluate(() => ({ screen: window.__st.UI.screen, moving: (window.__st.props?.regions?.residents ?? []).filter((r) => r.moving).length })); if (m.screen !== "vivarium" || m.moving !== 1) fail("vivarium-moving-8000ms: " + JSON.stringify(m)); }
     await visit("vivarium-moving-8000ms", page, fail);
     await page.evaluate(() => { window.__st.settings.motionSets = false; window.__st.settings.stationTime = "12:00"; });
+    // R4: Ferns, five adults and a juvenile; the juvenile (id 315, 2 px a tick) is on the shelf's ramp 4000 ms in, coming down it (ids whose seeds put the four others elsewhere)
+    await page.evaluate(() => { const w = window.__world, S = window.__st; w.reset(); w.rooms(4); S.ST.face.room = 3; w.adults(5); w.young(1); S.ST.mibis.forEach((m, i) => { m.id = [10, 20, 30, 40, 50, 315][i]; }); S.UI.idle = false; S.settings.light = "day"; S.UI.viv.f = null; S.UI.hab.id = null; S.goto("home"); });
+    await step(80);   // Home is drawn once, so that the walk starts again from the seeds (the clock of the earlier scenes is not this scene's: the stills replay the ticks since the walk's origin)
+    await page.evaluate(() => window.__st.goto("vivarium")); await step(40); await step(4000);
+    { const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, room: window.__st.props?.regions?.room?.id, n: window.__st.props?.regions?.residents?.length })); if (u.screen !== "vivarium" || u.room !== "ferns" || u.n !== 6) fail("vivarium-ramp-ferns-4000ms: " + JSON.stringify(u)); }
+    await visit("vivarium-ramp-ferns-4000ms", page, fail);
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }
   return { fails };

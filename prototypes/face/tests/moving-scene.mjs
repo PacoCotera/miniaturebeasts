@@ -65,8 +65,8 @@ export function sendRequests(f, requests, opts = {}) {
     f.handleOf(r.id, withPolicy((i) => (r.kind === "moving" ? atlasPicture(i, opts) : flatPicture(i, r.size ?? (r.kind === "star" ? [12, 12] : [16, 16])))));
   }
 }
-// the state word of face_test_state
-export const STATE = (v) => ({ clip: v & 15, travelling: !!(v & 16), airborne: !!(v & 32), asleep: !!(v & 64), wanderer: !!(v & 128), focused: !!(v & 256), phase: (v >> 12) & 15 });
+// the state word of face_test_state (lv and leg: the level and the leg of a change of level, (the rooms design §9)
+export const STATE = (v) => ({ clip: v & 15, travelling: !!(v & 16), airborne: !!(v & 32), asleep: !!(v & 64), wanderer: !!(v & 128), focused: !!(v & 256), phase: (v >> 12) & 15, lv: (v >> 16) & 15, leg: (v >> 20) & 3 });
 export const CLIP = { rest: 0, hop: 1, walk: 2, curl: 3, asleep: 4, wake: 5, stir: 6, ack: 7 };
 
 // ---- the two living-window screens (the Vivarium's whole and Idle) with a moving household, booted on the WebAssembly face ----

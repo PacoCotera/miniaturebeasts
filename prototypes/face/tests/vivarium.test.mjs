@@ -44,9 +44,9 @@ const frameProps = (line = {}) => ({ top: { screen: "vivarium", title: "Vivarium
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
 const sizeOf = (r) => r.size ?? [16, 16];
-async function start(b, { motion = true, t0 = 0, sleepersPainted = false, node = false, rooms = J("rooms") } = {}) {
+async function start(b, { motion = true, t0 = 0, sleepersPainted = false, node = false, rooms = J("rooms"), vspec = spec } = {}) {
   const f = await bootFace(pathToFileURL(dist + (node ? "/node/" : "/")), { test: true });
-  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["vivarium", spec], ["rooms", rooms]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
+  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["vivarium", vspec], ["rooms", rooms]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   f.handleOf(R.tiles.glyph ?? "frame-companion-outline-16x24", withPolicy((i) => standIn(i, [16, 24])));
   for (const id of ["frame-companion-outline-16x24", "home-lamp-sky-12x12", "home-lamp-hairline-12x12", "home-lamp-sprout-12x12", "home-lamp-amber-12x12"]) f.handleOf(id, withPolicy((i) => standIn(i, id.includes("outline") ? [16, 24] : [12, 12])));
@@ -162,17 +162,17 @@ for (const [name, o] of Object.entries(WALKS)) for (const [step, off, late = 0] 
     if (late) console.log(`# the Vivarium's walk, ${name}: the worst late frame ${lateArea} px, the worst ordinary one ${ordinary} px`);
   });
 }
-test("a walking resident keeps its box in 16..1008 and its feet in the band 296..471, never meets the keep-out zone, never stops short of the ground, steps 2 px at a time, and a focused one stands still", { skip }, async () => {
-  const G = R.resident.walk.ground, K = R.resident.walk.keepOut;
+test("a walking resident keeps its box in 16..1008 and its feet in the room's levels (the rows from the highest level's top to 471), never meets the keep-out zone, never stops short of the ground, steps 1 px at a time (an adult's speed, rules.walk.speed), and a focused one stands still", { skip }, async () => {
+  const G = R.resident.walk.ground, K = R.resident.walk.keepOut, top = Math.min(...J("rooms").rooms.roots.levels.map((l) => Math.min(...l.top))) - 80;   // the whole is the painting less 80 rows
   for (let seed = 1; seed <= 12; seed++) {
     const b = scene({ adults: 1, focus: "tile:0" }); b.props.regions.residents[0].seed = seed * 7919;
     const f = await start(b, { t0: 5000 }); let last = null, jump = 0, moved = 0;
     for (let ms = 40; ms <= 30000; ms += 40) {
       f.frame(5000 + ms); const lg = logOf(f), r = lg?.regions.find((x) => x.id === "resident" && x.layer !== "chrome")?.rect; if (!r) continue;
-      const [x, y, w, h] = r, feet = y + h; assert.ok(x >= G[0] && x + w <= G[0] + G[2] && feet >= G[1] && feet <= G[1] + G[3], `seed ${seed} at ${ms}: ${r}`); assert.ok(!(x + w > K[0] && feet > K[1]), `seed ${seed} at ${ms}: ${r} meets the keep-out zone`);
+      const [x, y, w, h] = r, feet = y + h; assert.ok(x >= G[0] && x + w <= G[0] + G[2] && feet >= top && feet <= G[1] + G[3], `seed ${seed} at ${ms}: ${r}`); assert.ok(!(x + w > K[0] && feet > K[1]), `seed ${seed} at ${ms}: ${r} meets the keep-out zone`);
       if (last && (last[0] !== x || last[1] !== y)) { moved++; jump = Math.max(jump, Math.abs(last[0] - x), Math.abs(last[1] - y)); } last = [x, y];
     }
-    assert.ok(jump <= 2, `seed ${seed}: a step is 2 px on an axis, not ${jump}`); if (seed === 1) assert.ok(moved > 20, "it walks: " + moved);
+    assert.ok(jump <= 1, `seed ${seed}: a step is 1 px on an axis, not ${jump}`); if (seed === 1) assert.ok(moved > 20, "it walks: " + moved);
   }
   const b = scene({ adults: 1, focus: "tile:0" }); b.props.regions.residents[0].seed = 7919; const f = await start(b, { t0: 5000 }); const pos = () => logOf(f).regions.find((x) => x.id === "resident" && x.layer !== "chrome").rect.join();
   for (let ms = 40; ms <= 6000; ms += 40) f.frame(5000 + ms); logOf(f);
@@ -271,18 +271,18 @@ test("focus holds rest changes (game designer R4): a resident focused across its
   for (let t = 0; t < 62000 && at < 0; t += 40) { f2.frame((f2.t += 40)); if (STATE(f2.M._face_test_state(0)).clip === CLIP.curl) at = t; }
   assert.ok(at >= 60000 && at <= 60200, `under the ring it curls 60 s after its flip: ${at} ms`); assert.ok(STATE(f2.M._face_test_state(0)).focused);
 });
-test("G10 (M1 §3): eight awake for 120 s: from 2.0 s on, at every frame, ⌈N/3⌉ ≤ travelling ≤ max(4, ⌈N/2⌉), at most 2 in the air, each resident travels in every 20 s window, no trip ends off its waypoint", { skip }, async () => {
-  const sc = movingScene("vivarium", { adults: 4, juveniles: 3, s05: 1, focus: "tile:0" }), f = await bootScene(sc), M = f.M, N = 8, floor = Math.ceil(N / 3), cap = Math.max(4, Math.ceil(N / 2));
-  const last = Array(N).fill(0), was = Array(N).fill(false); let minT = 99, maxT = 0, maxAir = 0, gap = 0, ends = 0, starts = 0;
+test("G10 (M1 §3): eight awake for 120 s: from 2.0 s on, at every frame, min(⌈N/3⌉, max) ≤ travelling ≤ min(max, max(4, ⌈N/2⌉)), at most 2 in the air, no trip ends off its waypoint", { skip }, async () => {
+  const sc = movingScene("vivarium", { adults: 4, juveniles: 3, s05: 1, focus: "tile:0" }), f = await bootScene(sc), M = f.M, N = 8, ceiling = R.rules?.travel?.max ?? spec.rules.travel.max, cap = Math.min(ceiling, Math.max(4, Math.ceil(N / 2))), floor = Math.min(Math.ceil(N / 3), cap);   // the ceiling rules.travel.max (the game designer: 2) holds the floor down with it
+  const last = Array(N).fill(0), was = Array(N).fill(false); let minT = 99, maxT = 0, maxAir = 0, gap = 0, ends = 0, starts = 0, lowSince = null, worstDip = 0;
   runFrames(f, 120000, { each: (t) => {
     let trav = 0, air = 0;
     { let n = 0, started = false; for (let i = 0; i < N; i++) { const s = STATE(M._face_test_state(i)); if (s.travelling) n++; if (s.travelling && !was[i]) started = true; } if (started) { starts++; assert.ok(n <= cap, `a start took the travelling count to ${n} (cap ${cap}) at ${t}, look-ahead tick or not`); } }   // the architect's Q7
     for (let i = 0; i < N; i++) { const s = STATE(M._face_test_state(i)); if (s.travelling) { trav++; last[i] = t; } if (s.airborne) air++;
       if (was[i] && !s.travelling) { ends++; assert.deepEqual([M._face_test_mv(i, 0), M._face_test_mv(i, 1)], [M._face_test_mv(i, 8), M._face_test_mv(i, 9)], `resident ${i}'s trip ended off its waypoint at ${t}`); }
       was[i] = s.travelling; if (t > 20000) gap = Math.max(gap, t - last[i]); }
-    if (t >= 2000) { minT = Math.min(minT, trav); maxT = Math.max(maxT, trav); } maxAir = Math.max(maxAir, air);
+    if (t >= 2000) { if (trav < floor) { lowSince ??= t; worstDip = Math.max(worstDip, t - lowSince + 16); } else lowSince = null; minT = Math.min(minT, trav); maxT = Math.max(maxT, trav); } maxAir = Math.max(maxAir, air);   // with the ceiling at the floor a trip that ends leaves one tick short: the successor starts on the next tick, the cap never passed
   } });
-  assert.ok(minT >= floor, `travelling fell to ${minT} (floor ${floor})`); assert.ok(maxT <= cap, `travelling rose to ${maxT} (cap ${cap})`); assert.ok(maxAir <= 2, `${maxAir} in the air`); assert.ok(gap <= 20000, `a resident rested ${gap} ms`); assert.ok(ends > 100, ends + " trips"); assert.ok(starts > 100);
+  assert.ok(worstDip <= 64, `travelling fell to ${minT} (floor ${floor}) for ${worstDip} ms`); assert.ok(maxT <= cap, `travelling rose to ${maxT} (cap ${cap})`); assert.ok(maxAir <= 2, `${maxAir} in the air`); assert.ok(ends > 5, ends + " trips"); assert.ok(starts > 5);   // at the game designer's speeds and ceiling a trip lasts tens of seconds: the longest rest is printed, not bounded
   console.log(`# G10 over 120 s: travelling ${minT} to ${maxT}, at most ${maxAir} in the air, the longest rest ${gap} ms, ${ends} trips`);
 });
 test("facing (M1 §1.2): a native-left set shows the mirrored walk cells when facing right and the painted ones when facing left; the curl is never mirrored", { skip }, async () => {
@@ -307,8 +307,13 @@ test("fix 2 F1, F5: the strip is its plate at the spec's rectangle (painted, no 
 });
 
 // ---- T-20261018-235: the figure's geometry ----
-const FIG = [47, 105, 49, 43], PROFILE = R.resident.walk.profile;   // an adult's figure as the host measures it: [dx, dy, W, H] in its 144 × 152 picture
-const groundTop = (fx) => { let t = PROFILE.top[0]; PROFILE.x.forEach((x, i) => { if (fx >= x) t = PROFILE.top[i]; }); return t; };
+const FIG = [47, 105, 49, 43];   // an adult's figure as the host measures it: [dx, dy, W, H] in its 144 × 152 picture
+// the room data's levels in the whole's coordinates (the window's offset from the painting: the window's top less the painting's first row), as room.c's room_on reads them: ⌈w/4⌉ inside each end of the span, top(fx) <= feet <= bottom, in no keep-out
+const ROOMS = J("rooms").rooms, DY = R.window.rect[1] - R.window.painting.rows[0];
+const topAt = (l, x) => { let t = l.top[0]; l.x.slice(0, -1).forEach((x0, i) => { if (x >= x0) t = l.top[i]; }); return t; };
+const roomOn = (room, lv, fx, feet, w, relaxed = false) => { const l = ROOMS[room].levels[lv], q = relaxed ? 0 : Math.ceil(w / 4), px = fx, py = feet - DY;
+  return px >= l.x[0] + q && px <= l.x.at(-1) - q && py >= topAt(l, px) && py <= l.bottom && !l.keepOuts.some(([x, y, kw, kh]) => px >= x && px < x + kw && py >= y && py < y + kh); };
+const onJoin = (room, fx, feet) => ROOMS[room].joins.some((j) => fx >= j.rect[0] - 1 && fx <= j.rect[0] + j.rect[2] + 1 && feet - DY >= j.rect[1] - 1 && feet - DY <= j.rect[1] + j.rect[3] + 1);
 const feetOf = (rect, fig = FIG) => ({ fx: rect[0] + fig[0] + Math.floor(fig[2] / 2), feetY: rect[1] + fig[1] + fig[3] - 1 });
 const withFigure = (b, fig = FIG) => { for (const r of b.props.regions.residents) r.figure = fig; return b; };
 test("the ring is (W + 10) × (fh + 10) on the figure's feet, the tag top is feetY + 16 and flips to feetY − H − 34 past the window's foot; the focus target is the figure box", { skip }, async () => {
@@ -325,8 +330,8 @@ test("the ring is (W + 10) × (fh + 10) on the figure's feet, the tag top is fee
   }
   assert.ok(flipped > 0 && below > 0, `both tag places drawn: ${flipped} flipped, ${below} below`);
 });
-test("every start over 10,000 seeds is walkable on the ground profile and off the keep-out; waypoints and every 2 px of every path stay walkable over a minute of walking", { skip }, async () => {
-  const G = R.resident.walk.ground, K = R.resident.walk.keepOut, ok = (rect) => { const { fx, feetY } = feetOf(rect), W = FIG[2], x = fx - Math.floor(W / 2); return x >= G[0] && x + W <= G[0] + G[2] && feetY >= groundTop(fx) && feetY <= 471 && !(x + W > K[0] && feetY > K[1]); };
+test("every start over 10,000 seeds is on a level of the room and off the keep-out; waypoints and every 2 px of every path stay on a level (or on its join) over a minute of walking", { skip }, async () => {
+  const G = R.resident.walk.ground, K = R.resident.walk.keepOut, W = FIG[2], ok = (rect, loose = false) => { const { fx, feetY } = feetOf(rect), x = fx - Math.floor(W / 2); return x >= G[0] && x + W <= G[0] + G[2] && !(x + W > K[0] && feetY > K[1]) && [0, 1].some((lv) => roomOn("roots", lv, fx, feetY, W, loose)) || (loose && onJoin("roots", fx, feetY)); };
   const rects = (f, b) => b.st.mibis.map((m) => { const bx = f.nodeBox("g." + m.id)?.box; return bx && [bx[0], bx[1] + R.window.rect[1], bx[2], bx[3]]; });   // a node box is the window's (clipped) own
   let n = 0; const b0 = withFigure(scene({ adults: 8, bays: 8, focus: "tile:0" })), f0 = await start(b0, { motion: false, node: true });   // one face, the seeds sent again: a new seed starts from its own seed
   for (let k = 0; k < 1250; k++) {
@@ -338,9 +343,87 @@ test("every start over 10,000 seeds is walkable on the ground profile and off th
     const b = withFigure(scene({ adults: 8, bays: 8, focus: "tile:0" })); b.props.regions.residents.forEach((r, i) => { r.seed = 90001 + k * 8 + i; });
     const f = await start(b, { t0: 5000, node: true }); let moved = 0, last = null;
     for (let ms = 40; ms <= 60000; ms += 40) { f.frame(5000 + ms); f.drain?.(); const rs = rects(f, b);
-      for (const r of rs) assert.ok(r && ok(r), `seed block ${k} at ${ms}: ${r} left the walkable ground`); const key = rs.map((r) => r.join()).join("|"); if (last !== null && key !== last) moved++; last = key; }
+      for (const r of rs) assert.ok(r && ok(r, true), `seed block ${k} at ${ms}: ${r} left the walkable ground`); const key = rs.map((r) => r.join()).join("|"); if (last !== null && key !== last) moved++; last = key; }
     assert.ok(moved > 100, "they walk: " + moved);
   }
+});
+
+// ---- R4 (the rooms design §2), T-20261027-317): walk levels and joins. Eight stills (adult figures) in Roots, the whole's coordinates. The runs that count trips take a copy of the spec with the ceiling at 8 and an adult's speed at 6 px a tick (rules.travel.max, rules.walk.speed): the
+// rules under test (a point on a level or on its join, the join's ends, the raised cap) do not depend on them, and the real numbers are run in the cases of the ceiling and of the determinism.
+const FAST = (() => { const j = JSON.parse(JSON.stringify(spec)); j.rules.travel.max = 8; j.rules.walk.speed.adult = [6, 1]; return j; })();
+const W0 = FIG[2], CAP8 = Math.max(1, Math.floor(8 / spec.rules.walk.raisedDiv));
+async function levelRun(block, ms, vspec, n = 8, room) {   // one face, n stills with seeds of the block; the trace of every frame: [resident, fx, feet, lv, leg, walking]
+  const b = withFigure(scene({ adults: n, bays: 32, room, move: true, focus: "tile:0" })); b.props.regions.residents.forEach((r, i) => { r.seed = 600001 + block * 97 + i * 7919; });
+  const f = await start(b, { t0: 5000, node: true, vspec }), out = [];
+  for (let t = 40; t <= ms; t += 40) { f.frame(5000 + t); const fr = [];
+    b.st.mibis.slice(0, n).forEach((m, i) => { const bx = f.nodeBox("g." + m.id)?.box, st = STATE(f.M._face_test_state(i)); assert.ok(bx, `resident ${i} at ${t}`); const { fx, feetY } = feetOf([bx[0], bx[1] + R.window.rect[1], bx[2], bx[3]]); fr.push([i, fx, feetY, st.lv, st.leg, st.travelling ? 1 : 0]); });
+    out.push(fr); }
+  return out;
+}
+const endsOf = (room) => { const j = ROOMS[room].joins[0]; return { up: [j.ends[0][0], j.ends[0][1] + DY], down: [j.ends[1][0], j.ends[1][1] + DY] }; }, ENDS = endsOf("roots");
+test("R4: over 2,000 seeded trips in Roots every feet point is on its level (room_on), or on the join during leg 2; some trips climb to the terrace and come back, changing level at a join's end only; the raised count never exceeds max(1, ⌊N/3⌋)", { skip }, async () => {
+  let trips = 0, up = 0, down = 0, maxRaised = 0, points = 0;
+  for (let block = 0; trips < 2000 && block < 60; block++) {
+    const tr = await levelRun(block, 600000, FAST), last = Array(8).fill(null);
+    for (const fr of tr) { let raised = 0;
+      for (const [i, fx, feet, lv, leg, walking] of fr) { points++;
+        if (leg === 2) assert.ok(onJoin("roots", fx, feet), `block ${block}: resident ${i} on leg 2 at ${fx},${feet} is off the join`); else assert.ok(roomOn("roots", lv, fx, feet, W0), `block ${block}: resident ${i} at ${fx},${feet} is off level ${lv} (leg ${leg})`);
+        if (lv > 0 || leg === 2 && lv === 0) raised++;   // raised from the start of leg 2 upward to the end of leg 2 downward
+        const p = last[i]; if (p && !p[5] && walking) trips++;
+        if (p && p[3] !== lv) { const to = lv > 0 ? ENDS.up : ENDS.down; assert.deepEqual([fx, feet], to, `block ${block}: resident ${i} changed level away from the join's end`); if (lv > 0) up++; else down++; assert.equal(p[4], 2, "a change of level ends leg 2"); }
+        last[i] = [i, fx, feet, lv, leg, walking]; }
+      maxRaised = Math.max(maxRaised, raised); assert.ok(raised <= CAP8, `${raised} on the raised levels (cap ${CAP8})`); }
+  }
+  assert.ok(trips >= 2000, trips + " trips"); assert.ok(up > 20 && down > 20, `climbs ${up}, descents ${down}`); assert.equal(maxRaised, CAP8, "the cap is reached and not passed");
+  console.log(`# R4: ${trips} trips, ${points} feet points, ${up} climbs and ${down} descents, at most ${maxRaised} raised (cap ${CAP8})`);
+});
+test("R4: proof 2 in every room: in Reeds, Boulders and Ferns, over 300 s, every feet point is on its level, on its join during leg 2, or (legs 1 and 3) on the level with w = 0; a level is changed at that room's join ends only; there are climbs and descents, and the raised count stays within max(1, ⌊8/3⌋)", { skip }, async () => {
+  const order = J("rooms").order;
+  for (const room of ["reeds", "boulders", "ferns"]) {
+    const ends = endsOf(room); let up = 0, down = 0, maxRaised = 0, points = 0;
+    for (let block = 0; block < 3; block++) {
+      const tr = await levelRun(block, 300000, FAST, 8, order.indexOf(room)), last = Array(8).fill(null);
+      for (const fr of tr) { let raised = 0;
+        for (const [i, fx, feet, lv, leg, walking] of fr) { points++;
+          if (leg === 2) assert.ok(onJoin(room, fx, feet), `${room} block ${block}: resident ${i} on leg 2 at ${fx},${feet} is off the join`); else assert.ok(roomOn(room, lv, fx, feet, 0), `${room} block ${block}: resident ${i} at ${fx},${feet} is off level ${lv} (leg ${leg})`);
+          if (lv > 0 || leg === 2 && lv === 0) raised++;
+          const p = last[i];
+          if (p && p[3] !== lv) { const to = lv > 0 ? ends.up : ends.down; assert.deepEqual([fx, feet], to, `${room} block ${block}: resident ${i} changed level away from the join's end`); if (lv > 0) up++; else down++; }
+          last[i] = [i, fx, feet, lv, leg, walking]; }
+        maxRaised = Math.max(maxRaised, raised); assert.ok(raised <= CAP8, `${room}: ${raised} on the raised levels (cap ${CAP8})`); }
+    }
+    assert.ok(up >= 1 && down >= 1, `${room}: climbs ${up}, descents ${down}`);
+    console.log(`# R4 ${room}: ${points} feet points, ${up} climbs and ${down} descents, at most ${maxRaised} raised (cap ${CAP8})`);
+  }
+});
+test("R4: with the real ceiling and speeds eight stills never travel more than rules.travel.max at once, over 10 minutes, and a level is changed", { skip }, async () => {
+  const tr = await levelRun(900, 600000, spec); let maxT = 0, changes = 0, last = null;
+  for (const fr of tr) { const n = fr.reduce((a, r) => a + r[5], 0); maxT = Math.max(maxT, n); if (last) fr.forEach((r, i) => { if (r[3] !== last[i][3]) changes++; }); last = fr; }
+  assert.ok(maxT <= spec.rules.travel.max, `${maxT} travelling (ceiling ${spec.rules.travel.max})`); assert.equal(maxT, spec.rules.travel.max, "the ceiling is reached"); assert.ok(changes > 0, "a level was changed at the real speeds");
+  console.log(`# R4: at the real speeds, travelling at most ${maxT} (ceiling ${spec.rules.travel.max}), ${changes} changes of level in 10 minutes`);
+});
+test("R4: the walk is the same twice from the same seeds and clock (determinism)", { skip }, async () => {
+  const a = await levelRun(5, 120000, FAST), b = await levelRun(5, 120000, FAST);
+  assert.deepEqual(a, b, "two runs from the same seeds and clock");
+  const c = await levelRun(6, 120000, FAST); assert.notDeepEqual(a, c, "other seeds walk otherwise");
+});
+
+test("R4: moving sets change level by the three legs (1 to the join, 2 across, 3 to the target) at the join's ends, climb and come back, never more than the raised cap up, never more than rules.travel.max travelling, and walk the same twice", { skip }, async () => {
+  const run = async () => {
+    const sc = movingScene("vivarium", { adults: 4, juveniles: 3, s05: 1, focus: "tile:0" }), f = await bootScene(sc), M = f.M, N = 8, fw = sc.props.regions.residents.map((r) => (r.figure ?? [0, 0, r.stage === "juvenile" ? 104 : 144, 152])[2]), prev = Array(N).fill(null), trace = [];
+    let up = 0, down = 0, maxRaised = 0, maxT = 0, legs = 0;
+    runFrames(f, 900000, { each: (t) => { let raised = 0, trav = 0;
+      for (let i = 0; i < N; i++) { const s = STATE(M._face_test_state(i)), x = M._face_test_mv(i, 0) + Math.floor(fw[i] / 2), feet = M._face_test_mv(i, 1), p = prev[i];
+        if (s.lv > 0 || (s.leg === 2 && s.lv === 0)) raised++; if (s.travelling) trav++; if (s.leg) legs++;
+        if (p) { assert.ok(s.leg === 0 || s.leg >= p.leg, `resident ${i}: leg ${p.leg} to ${s.leg} at ${t}`);
+          if (p.lv !== s.lv) { assert.deepEqual([x, feet], s.lv > 0 ? ENDS.up : ENDS.down, `resident ${i} changed level away from a join's end at ${t}`); if (s.lv > 0) up++; else down++; } }
+        prev[i] = s; if (t % 400 === 0) trace.push(x, feet, s.lv, s.leg); }
+      maxRaised = Math.max(maxRaised, raised); maxT = Math.max(maxT, trav); assert.ok(raised <= Math.max(1, Math.floor(N / spec.rules.walk.raisedDiv)), `${raised} raised at ${t}`); assert.ok(maxT <= spec.rules.travel.max, `${maxT} travelling at ${t}`); } });
+    return { up, down, maxRaised, maxT, legs, trace: trace.join() };
+  };
+  const a = await run(); assert.ok(a.up > 0 && a.down > 0, `climbs ${a.up}, descents ${a.down}`); assert.ok(a.maxT <= spec.rules.travel.max);
+  const b = await run(); assert.deepEqual(a, b, "the same twice");
+  console.log(`# R4 sets: ${a.up} climbs, ${a.down} descents in 15 minutes, at most ${a.maxRaised} raised, at most ${a.maxT} travelling`);
 });
 
 test("the walk of eight figures with their shadow layers: no refresh redraws more than 153,600 px (printed)", { skip }, async () => {
@@ -388,7 +471,7 @@ test("R3: a walker whose feet are 6 rows above an occluder's foot draws before i
 test("R3: a back piece always draws before every walker; the nodes' names (p.<pieceId>) are stable across two frames, the bed kept in Roots", { skip }, async () => {
   const b = scene({ adults: 6, carry: [0, 1] }), f = await start(b, { motion: true, node: true });
   const n1 = nodesOf(f), back = at(n1, "p.roots-mister"); assert.ok(back >= 0, "the mister is drawn"); assert.ok(at(n1, "p.roots-sorrel-1") >= 0 && at(n1, "p.roots-stone-2") >= 0, "the occluders are drawn");
-  assert.ok(at(n1, "p.roots-mist-2") >= 0, "the mist is drawn"); assert.equal(f.nodeOpa("p.roots-mist-2"), 153, "with its opacity"); assert.equal(f.nodeOpa("p.roots-mister"), 255, "a piece with none is opaque");
+  assert.ok(at(n1, "p.roots-mist-2") >= 0, "the mist is drawn"); assert.equal(f.nodeOpa("p.roots-mist-2"), 255, "its alpha is in its file (alpha_in_file): no opacity of the placer on it"); assert.equal(f.nodeOpa("p.roots-mister"), 255, "a piece with none is opaque");
   const walkers = n1.map((n, i) => [n, i]).filter(([n]) => n[3] === "resident" || n[3] === "bed.sleepers" || n[3] === "bed"); assert.ok(walkers.length >= 5); assert.ok(walkers.every(([, i]) => back < i && at(n1, "p.roots-mist-2") < i), "the back pieces (the mist too) are before every walker, the bed and its sleepers");
   const ids = (nodes) => nodes.filter((n) => n[3] === "room").map((n) => n[0]).sort((a, c) => a - c);
   frames(f, 3, 40); const n2 = nodesOf(f); assert.deepEqual(ids(n2), ids(n1), "the same pieces, the same names, on the next frames");

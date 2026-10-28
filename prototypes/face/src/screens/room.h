@@ -17,6 +17,19 @@ int room_select(const char *id, int dx, int dy, int main_only);
 int room_levels(void);
 /* The selected room's pieces of `kind` that have a picture (a null picture is a keep-out alone), in the window's coordinates, in data order. Returns their number; *out points at them until the next room_select. */
 int room_pieces(int kind, const rp_t **out);
-/* Whether the ground point (fx, feet), in the window's coordinates, stands in a piece's keep-out (the occluders' keep-outs, kept by their level). The bed's keep-out keeps its box rule in home.c. */
-int room_keep(int fx, int feet);
+/* Whether the ground point (fx, feet), in the window's coordinates, stands in a keep-out of level lv (the occluders' keep-outs, kept by their level). The bed's keep-out keeps its box rule in home.c. */
+int room_keep(int lv, int fx, int feet);
+/* R4 (the rooms design §2): the levels, the walk's ground and the joins; every point in the window's coordinates, fx = box.x + w/2, feet the feet's row. Level 0 is main. */
+/* A room is chosen (room_select found a spec and a name) and the walk is on its levels; 0 with none (the walk then keeps the spec's own ground band). */
+int room_have(void);
+/* The ground point (fx, feet) stands on level lv: its x span with ⌈w/4⌉ inside each end (w = 0: the span itself), top(fx) <= feet <= bottom, in no keep-out of lv. */
+int room_on(int lv, int fx, int feet, int w);
+/* A ground point on lv from two LCG draws: fx uniform over the span less ⌈w/4⌉ at each end, feet uniform over [top(fx), bottom]. */
+void room_point(int lv, unsigned r1, unsigned r2, int w, int *fx, int *feet);
+/* The same draw held to the window [xa, xb] x [fa, fb] (fx and feet): the walk's own ground (a box inside the glass, a moving set's reach); an empty window gives its low corner. */
+void room_point_in(int lv, unsigned r1, unsigned r2, int w, int xa, int xb, int fa, int fb, int *fx, int *feet);
+/* The join for a change of level from `from` to `to`: leg[0] the join's end on `from` and then its end on `to`, leg[1] the end on `to` and then the end on `from` (each [x, feet]); returns the join's index, or -1 (no join links the two). */
+int room_route(int from, int to, int leg[2][2][2]);
+/* The join is a hop (its leg 2 is one hop clip for a set that has one); 0 for a ramp. */
+int room_join_hop(int jn);
 #endif
