@@ -1,6 +1,7 @@
 // Each mibi drawn as itself (T-20261016-201): `drawnLooks(frame, mibi)` and the layered stand, in the logic process; the face is given the composed picture by id, as it is given the stamp.
 //   node --test prototypes/station/tests/drawn-looks.test.mjs
 import { test, describe, before, after } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -24,7 +25,7 @@ import { gradedOf } from "../src/light-grade.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), home = J("home.json"), frameSpec = J("frame.json"), viv = J("vivarium.json"), hab = J("habitat.json");
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
 const fr = frameOf("S01"), allRead = fr.chapters.map((c) => c.id);
 const mibi = (gs, read = allRead) => ({ id: gs, genome: podGenome(fr, gs), read: [...read] });
 const sha = (a) => createHash("sha256").update(a).digest("hex");

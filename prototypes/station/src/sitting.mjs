@@ -13,7 +13,7 @@
 //   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at, digest }; digest: the first 16 hex of the SHA-256 of the 528×392 RGBA of the portrait's opening, written only by a rule when the source lands (not yet written in play)
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
 import { frameOf } from "./genome.mjs";
-import { mibiById, speciesOf, mergeCare, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, mibiStage, dockKey, DEFAULT_SETTINGS } from "./state.mjs";
+import { mibiById, speciesOf, mergeCare, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, noteCarried, mibiStage, dockKey, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
 import { parentsOf, crossDepth, walkMemo } from "./lineage.mjs";
 
@@ -109,10 +109,11 @@ export function giveOwed(st, now = Date.now()) {
 
 // --- a mibi may sit once, when it has a habit and a place -----------------------------------------------------------------------
 // A juvenile may sit (the portrait keeps the stage it sat at); a mibi out with the Companion sits only while the Companion is docked (a sitting begun while docked goes on after undocking).
+export const CARRIED_BLOCK = "with the Companion";
 export function portraitBlock(st, m, sv) {
   if (!m) return "pick a mibi";
   if (m.released) return "back in the wild";
-  if (!docked(st) && carriedIds(st, sv).includes(m.id)) return "sits when you dock";
+  if (carriedIds(st, sv).includes(m.id)) return CARRIED_BLOCK;   // R4b: a carried mibi sits for nobody, docked or away (the owner: every action on it is held)
   if (m.portrait) return "one sitting each, ever";
   if (!habitsOf(m).length) return "no pose seen yet";
   if (!placesOf(m).length) return "no expedition yet";
@@ -130,13 +131,15 @@ export function checkWelcome(st, now = Date.now(), home = []) {
 // The dock, with the welcome: the Companion docks, what came home is recorded (habits, places), and the first walk home gives the welcome.
 export function dock(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const r = dockKey(st, sv, settings, now);
+  r.back = noteCarried(st, sv, now);   // R4b: a traveller that left the carried set since the last read is a fresh arrival (roomSince = now)
   if (r.ok && r.docked) r.welcome = checkWelcome(st, now, r.home || []);
   return r;
 }
 // The save read while docked (the other page wrote it, or the page loaded): the care that came home, and the welcome if a mibi came home from a walk.
 export function mergeHome(st, sv, now = Date.now()) {
+  const back = noteCarried(st, sv, now);   // R4b: the same read, the travellers that came home
   const home = mergeCare(st, sv);
-  return { home, welcome: home.length ? checkWelcome(st, now, home) : null };
+  return { home, back, welcome: home.length ? checkWelcome(st, now, home) : null };
 }
 
 // --- the ceremony: pose, place, confirm ---------------------------------------------------------------------------------------

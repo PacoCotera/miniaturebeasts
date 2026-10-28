@@ -12,8 +12,8 @@ import { createFocus } from "../../ui/focus.mjs";
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
-  create: null, panel: null, arrival: null, cross: null, inc: {}, lib: { l1: null, pending: null, l2: {}, species: null, state: "sheet", lit: null, cur: null, l3: {}, l3last: null }, sit: null, hab: { id: null, f: "resident", namer: null, prev: null }, viv: { f: null }, bench: { f: null, install: false },
-  cargo: { state: "bay", crate: 0, at: 0, run: null, shown: null, arrival: null }, pendingArrival: null, sendoff: false, meet: null, lastInput: 0, idle: false };
+  create: null, panel: null, arrival: null, cross: null, inc: {}, lib: { l1: null, pending: null, l2: {}, species: null, state: "sheet", lit: null, cur: null, l3: {}, l3last: null }, sit: null, hab: { id: null, f: "resident", namer: null, prev: null }, viv: { f: null, prev: null }, bench: { f: null, install: false },
+  cargo: { state: "bay", crate: 0, at: 0, run: null, shown: null, arrival: null }, pendingArrival: null, arrived: [], meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
 export const TL = createTimeline();
 // What the screen layer needs from the page's boot: the spec files, the components' context and the frame's presenter.
@@ -41,9 +41,12 @@ function adopt(sv) {
   const migrated = sv.st.schema !== S.ST_SCHEMA;
   sv.st = S.normalize(S.migrate(sv.st, Date.now(), sv));
   G.sv = sv; G.st = sv.st;
-  const home = S.docked(G.st) ? T.mergeHome(G.st, G.sv).home : [];   // docked: the care the Companion earned since, and the welcome
+  const mh = S.docked(G.st) ? T.mergeHome(G.st, G.sv) : null, home = mh ? mh.home : [];   // docked: the care the Companion earned since, and the welcome
+  if (mh) noteArrived(mh.back);
   if (migrated || home.length) save();
 }
+// R4b: the travellers that came home (state.noteCarried) walk in from their room's rest edge: the views mark them (props `enter`) for the face, which honours it only while a walk is running.
+export function noteArrived(back = []) { UI.arrived = [...new Set([...(UI.arrived ?? []), ...back.map(String)])]; }
 export function load() {
   const o = readStored();
   if (!o) { G.sv = { v: S.SAVE_V, wid: null, st: S.freshSt(null, 0) }; G.st = G.sv.st; return; }
@@ -67,7 +70,8 @@ export function storageChanged() {
   if (!cur) { G.sv = { v: S.SAVE_V, wid: null, st: S.freshSt(null, 0) }; G.st = G.sv.st; UI.lib.pending = null; goScreen("home"); changed(); return; }   // a new world drops the Library's visit note unrecorded
   if (cur.wid !== G.st.wid) { adopt(cur); UI.lib.pending = null; goScreen("home"); save(); return; }
   const mine = G.st; G.sv = cur; G.sv.st = mine;
-  if (S.docked(mine) && T.mergeHome(mine, cur).home.length) { save(); return; }   // docked: the care and the welcome; save() calls changed()
+  const mh = S.docked(mine) ? T.mergeHome(mine, cur) : null; if (mh) noteArrived(mh.back);
+  if (mh && mh.home.length) { save(); return; }   // docked: the care and the welcome; save() calls changed()
   changed();
 }
 export function resetSave() {
@@ -98,7 +102,9 @@ export function goScreen(name) {
   if (fresh && !inLibrary(name) && inLibrary(was) && UI.lib.pending) { S.libRecord(G.st, UI.lib.pending); UI.lib.pending = null; save(); }   // leaving: the note is seen
   if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
   if (SCREENS[name]?.enter) SCREENS[name].enter();
-  if (fresh && name === "vivarium") UI.viv.f = null;   // the way in puts the ring on the mibi last seen up close (vivarium.json focus.entry)
+  if (name === "habitat" && UI.hab.id != null) S.seeRoom(G.st, S.mibiById(G.st, UI.hab.id));   // one mibi up close: the room the whole last showed is its room
+  if (fresh && name === "vivarium") UI.viv.f = null;   // the way in reads only st.face.room; the ring on the mibi last seen up close if it is in that room, else the room's first resident, else its chip (vivarium.json focus.entry)
+  if (fresh) UI.viv.prev = null;   // a swap's old room leaves with the screen
   if (fresh) { UI.panel = null; UI.arrival = null; }   // a panel closes with its screen, nothing spent; the arrival's ← lasts only on the screen it landed on
   if (fresh && name !== "habitat") { UI.hab.namer = null; UI.hab.prev = null; }   // the namer closes with the level (writing nothing)
   if (fresh && name !== "sitting") UI.sit = null;   // leaving the sitting drops every choice, nothing spent (sitting.json notes.visit)

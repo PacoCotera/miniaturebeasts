@@ -222,7 +222,12 @@ void word_messagePlate(void) {
   if (spec_bool(P, "frame.plate.timed", 0) && !anim_get(ANIM_PLATE, "msg", NULL)) return;   /* a timed plate is shown while its `plate` event plays (4 s) */
   char prole[24], pg[24]; snprintf(prole, sizeof prole, "%s", v_sstr(F, "regions.plate.role")); snprintf(pg, sizeof pg, "%s", v_sstr(F, "regions.plate.ground"));
   int maxW = v_si(F, "regions.plate.maxWidth", 0), pad = v_si(F, "regions.plate.pad", 0), centre = v_si(F, "regions.plate.centre", 0), lead = v_si(F, "regions.plate.lead", 0), line = v_si(F, "regions.plate.line", 0);
-  char buf[V_STR * 4]; int n = v_role_wrap(s, maxW - 2 * pad, prole, buf, sizeof buf, 8), widest = 0; const char *l = buf;
+  char buf[V_STR * 4]; int n = 0, widest = 0, bo = 0; const char *l = buf;
+  for (const char *seg = s;;) {   /* a hard line break ("\n", R4b-1b: the held plate's two lines in one plate) ends a line; each part wraps by itself, eight lines in all */
+    const char *nl = strchr(seg, '\n'); char part[V_STR]; size_t pl = nl ? (size_t)(nl - seg) : strlen(seg); if (pl >= sizeof part) pl = sizeof part - 1; memcpy(part, seg, pl); part[pl] = 0;
+    int k = v_role_wrap(part, maxW - 2 * pad, prole, buf + bo, (int)sizeof buf - bo, 8 - n); for (int i = 0; i < k; i++) bo += (int)strlen(buf + bo) + 1; n += k;
+    if (!nl) break; seg = nl + 1;
+  }
   for (int i = 0; i < n; i++) { int w = v_role_width(l, prole); if (w > widest) widest = w; l += strlen(l) + 1; }
   int focal[4], hasf = spec_len(P, "frame.plate.focal") == 4; for (int i = 0; i < 4 && hasf; i++) { char p[40]; snprintf(p, sizeof p, "frame.plate.focal.%d", i); focal[i] = spec_int(P, p, 0); }
   int rc[4]; layout_plate_position(maxW, pad, lead, line, centre, v_si(F, "regions.plate.bottom", 0), v_si(F, "regions.plate.topOverFocal", 0), n, widest, hasf ? focal : v_focal(), rc);   /* the props may name a box; else the screen's own focal region */

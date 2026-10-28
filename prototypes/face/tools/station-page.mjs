@@ -31,7 +31,7 @@ export async function openStation({ motion = true, clock = false } = {}) {
   if (clock) await page.addInitScript(VIRTUAL_CLOCK);
   const fixture = readFileSync(path.join(root, "station/tests/fixtures/save-v8-schema1.json"), "utf8");
   await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
-  await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test`, { waitUntil: "load" });
+  await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test&names=en-short-1`, { waitUntil: "load" });
   await page.evaluate(() => window.__st.ready); await page.waitForTimeout(500);
   const step = (ms) => page.evaluate((m) => window.__step(m), ms);
   if (clock) await step(200);

@@ -11,7 +11,7 @@ import { layeredStand, standPictureId, standFigure, curlFactor, curlPicture } fr
 import { keyToken } from "../looks.mjs";
 import { goalWords } from "./goal-words.mjs";
 import { readyCrates, bayState } from "../sitting.mjs";
-import { paintingOf } from "./idle-props.mjs";
+import { roomRegion, roomData, shownRoom, bedOf } from "./room-props.mjs";
 import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { fill, count, plural, capLine } from "./words.mjs";
 import { req as reqOf, ph as phOf, slotAt } from "./requests.mjs";
@@ -63,13 +63,14 @@ const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 // The notice and the action of a need, from strings.needs. A count is spelled to the picture's most; above it the count is dropped.
 export function wordsOf(need, spec) {
   if (!need) return { notice: "", action: null };
-  const N = spec.strings.needs[need.key], word = need.n != null && need.n >= 1 && need.n <= need.max ? count(need.n) : "";
+  const N = spec.strings.needs[need.key]; if (!N) return { notice: "", action: null };   // a key home.json has no words for
+  const word = need.n != null && need.n >= 1 && need.n <= need.max ? count(need.n) : "";
   let notice = need.n === 1 && N.noticeOne ? N.noticeOne : N.notice;
   const vals = { count: word, name: need.name, a: need.a, species: need.species };
   if (need.short && N.short) notice = N.short;
   notice = fill(notice, vals).replace(/\s{2,}/g, " ").trim();
   if (need.short) notice += " " + need.short;
-  return { notice, action: fill(N.action, vals) };
+  return { notice, action: fill(N.actions ? N.actions[need.ring === "room.new" ? "add" : "make"] : N.action, vals) };   // full: Add a room or Make room by where its ✓ goes (state.needKey's ring)
 }
 
 // The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state and its picture by the light (the Companion's mark is not drawn: the bed's `mark` is always ""). R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
@@ -84,8 +85,10 @@ export function lightAt(hour, L) {
 // Groups: nocturnal (rules.nocturnal, every stage), early (every elder and rules.early.species, every stage), diurnal (the rest). The diurnal 06:00 wake window holds the diurnal and early groups together.
 // here: [{ id, seed, species, stage }]; time: seconds of the day; rules: vivarium.json rules.rest. Returns { <id>: "awake" | "asleep" }.
 const secOf = (hhmm) => { const [h, mm] = hhmm.split(":").map(Number); return h * 3600 + mm * 60; };
+// The sleep group of a resident (R4b: shownOf reads it too): nocturnal (rules.nocturnal, every stage), early (every elder and rules.early.species), diurnal (the rest).
+export const groupOf = (r, rules) => (rules.nocturnal.includes(r.species) ? "nocturnal" : rules.early.stages.includes(r.stage) || rules.early.species.includes(r.species) ? "early" : "diurnal");
 export function restOf(here, time, rules) {
-  const W = rules.windowS, out = {}, groupOf = (r) => (rules.nocturnal.includes(r.species) ? "nocturnal" : rules.early.stages.includes(r.stage) || rules.early.species.includes(r.species) ? "early" : "diurnal");
+  const W = rules.windowS, out = {}, groupOf_ = (r) => groupOf(r, rules);
   const flips = {};   // id -> { settle, wake } in seconds of the day
   const rank = (dir, start, members) => {
     const order = rules.order[dir], n = members.length, slot = Math.max(1, Math.floor(W / (2 * n)));
@@ -93,20 +96,56 @@ export function restOf(here, time, rules) {
       .forEach((r, k) => { (flips[r.id] ??= {})[dir] = (start + Math.floor(k * W / n) + (r.seed % slot)) % 86400; });
   };
   for (const dir of ["settle", "wake"]) {
-    const byStart = new Map(); for (const r of here) { const t = secOf(rules[dir][groupOf(r)]); if (!byStart.has(t)) byStart.set(t, []); byStart.get(t).push(r); }
+    const byStart = new Map(); for (const r of here) { const t = secOf(rules[dir][groupOf_(r)]); if (!byStart.has(t)) byStart.set(t, []); byStart.get(t).push(r); }
     for (const [t, members] of byStart) rank(dir, t, members);
   }
   for (const r of here) { const { settle, wake } = flips[r.id], t = ((time % 86400) + 86400) % 86400; out[r.id] = (settle <= wake ? t >= settle && t < wake : t >= settle || t < wake) ? "asleep" : "awake"; }   // asleep from the settle flip to the wake flip, wrapping midnight
   return out;
 }
+// ---- R4b: who is shown and who rests (the game designer's the R4b rest rules; vivarium.json rules.show) ----
+// Is a resident's sleep group in its night at `time` (seconds of the day; rules: vivarium.json rules): from rules.rest.settle[group] to wake[group], wrapping midnight (the group's phase, not the mibi's own flip, so the ranking does not churn across the 30 minute window).
+export function nightOf(r, time, rules) {
+  const R = rules.rest, g = groupOf(r, R), a = secOf(R.settle[g]), b = secOf(R.wake[g]), t = ((time % 86400) + 86400) % 86400;
+  return a <= b ? t >= a && t < b : t >= a || t < b;
+}
+// Is a mibi fresh: its roomSince (ms) is set and `now` (ms) is before the first settle time of its group at least show.freshMinS after roomSince. dayStart is local midnight today in ms (now less the seconds of the day); a clock or a time not given: not fresh.
+export function freshOf(r, roomSince, now, time, rules) {
+  if (!(roomSince > 0) || now == null || time == null) return false;
+  const day = 86400000, settle = secOf(rules.rest.settle[groupOf(r, rules.rest)]) * 1000, d0 = now - time * 1000 + settle, base = roomSince + rules.show.freshMinS * 1000;
+  return now < d0 + Math.ceil((base - d0) / day) * day;
+}
+// The residents that rest, in rest order (pure). here: [{ id, stage, born, night, fresh, roomSince }]; ui: { focus, meet } mibi ids or null; rules: vivarium.json rules; max: the most shown.
+// Pinned first, in pin order (the focused mibi, ui.meet, then the fresh by roomSince descending and id), up to max; every other resident ranks by its night first, then stage in rest order, then born ascending, then id (restOf's compare); the first (n - max) of that order rest.
+export function restersOf(here, ui, rules, max = rules.show.max) {
+  const n = here.length, show = rules.show; if (n <= max) return [];
+  const byId = new Map(here.map((r) => [String(r.id), r])), pinned = [], add = (id) => { id = id == null ? null : String(id); if (id != null && byId.has(id) && !pinned.includes(id) && pinned.length < max) pinned.push(id); };
+  for (const k of show.pin) {
+    if (k === "focus") add(ui.focus); else if (k === "meet") add(ui.meet);
+    else if (k === "fresh") here.filter((r) => r.fresh).sort((a, b) => b.roomSince - a.roomSince || String(a.id).localeCompare(String(b.id))).forEach((r) => add(r.id));
+  }
+  const order = (r) => show.rest.indexOf(r.stage);
+  return here.filter((r) => !pinned.includes(String(r.id)))
+    .sort((a, b) => (b.night ? 1 : 0) - (a.night ? 1 : 0) || order(a) - order(b) || (a.born ?? 0) - (b.born ?? 0) || String(a.id).localeCompare(String(b.id)))
+    .slice(0, n - max).map((r) => String(r.id));
+}
+// { <id>: true | false }: false for each rester.
+export function shownOf(here, ui, rules, max = rules.show.max) {
+  const rest = new Set(restersOf(here, ui, rules, max)), out = {};
+  for (const r of here) out[String(r.id)] = !rest.has(String(r.id));
+  return out;
+}
+
 // A resident's moving set (Station M1 §2.2): { set, walk, shadow } when its species and stage have one and it may play (every cell a placed master, or the developer's "Motion sets (stand-ins)", or the face tests); else "" (a still, main's walk)
 export function movingProp(mb, stage, req, m, parts = ["walk", "shadow"]) {
   const sp = S.speciesOf(mb), I = movingIds(sp, stage, mb.look ?? "species", m.light ?? "day"); if (!I || !(m.motionSets || playable(sp, stage))) return "";   // named by the mibi's look (the layer bake): `species` until the bake slot gives mibis a look
   const out = { set: sp }; for (const k of parts) out[k] = req({ kind: "moving", id: I[k] }); return out;
 }
 
+// m: { st, sv, settings, light, view, time, now (ms), restRules, rules (vivarium.json rules: rules.show gives the cap), ui: { focus, meet } mibi ids, arrived (the travellers that came home since the walk began), motionSets, noBed, room }. R: the spec's regions; max: Home's own cap (home.json regions.resident.max) when lower than rules.show.max.
+// A mibi in the carried set is never drawn in a room (R4b, docked or away): `here` leaves it out, its place stays reserved in the room (state.inRoom) and its tile in the rail says where it is. Resters (shownOf) stay in `residents` with shown false and where they rest
+// (restAt: bed, curl or out): the face finishes their trip first. The bed is the resters' alone: a rester that has a curl takes a place on it in rest order (Roots only), and its sleeper is listed in bed.sleepers (rester, shown false) beside its entry in residents.
 export function livingOf(m, R, req, ph, L) {
-  const { st, sv, settings } = m, docked = !!m.docked || !!m.sendoff, carried = S.carriedIds(st, sv), here = m.noBed ? S.housed(st).filter((mb) => !S.isAway(st, sv, mb)) : S.homeMibis(st, sv);   // Home's window (noBed): everyone at home walks, the carried set too while docked (it has no bed there)   // the lift's send-off keeps the bed docked until it ends (m.sendoff: home.json events.sendoff)
+  const { st, sv, settings } = m, room = m.room ?? st.face?.room ?? 0, hasBed = !m.noBed && !!roomData(room).bed, here = S.homeMibis(st, sv).filter((mb) => mb.room === room);
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings, m.light, m.view ?? "home");
@@ -119,20 +158,34 @@ export function livingOf(m, R, req, ph, L) {
     const look = lookOf(st, mb, size, settings), figure = curl ? curl.figure : nap && !standing ? null : figureOf(st, mb, size, settings, m.view ?? "home");
     return { id: String(mb.id), name: mb.name, stage: look.stage, picture: curl ? req(curl.request) : pic(mb, size), ...(figure ? { figure } : {}), waiting: false, ...extra };
   };
-  const rest = m.time != null && m.restRules ? restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) })), m.time, m.restRules) : null;   // the residents at home; never the bed's carried sleepers, never one out
+  const rules = m.rules ?? null, rest = m.time != null && m.restRules ? restOf(here.map((mb) => ({ id: String(mb.id), seed: hash(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) })), m.time, m.restRules) : null;   // the residents at home; never one out
+  // who is shown (R4b): at most rules.show.max, Home's own cap when lower; the focused mibi and the one met are always among them, then the fresh
+  const max = rules ? Math.min(rules.show.max, R.resident.max ?? rules.show.max) : Infinity, ui = { focus: m.ui?.focus ?? null, meet: m.ui?.meet ?? null };
+  const rec = rules && m.time != null ? here.map((mb) => { const r = { id: String(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) }; return { id: r.id, stage: r.stage, born: mb.born ?? 0, night: nightOf(r, m.time, rules), fresh: freshOf(r, mb.roomSince, m.now, m.time, rules), roomSince: mb.roomSince ?? null }; }) : [];
+  const resters = rules && m.time != null ? restersOf(rec, ui, rules, max) : [], rested = new Set(resters);
+  const arrived = new Set((m.arrived ?? []).map(String));
   const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m); if (mv) { p.moving = mv; const mf = movingFigure(mv.walk); if (mf) p.figure = mf; else delete p.figure; } /* a moving resident's figure is its atlas's (measured once), not its stand's */ if (rest) p.rest = rest[String(mb.id)];
     if (p.rest === "asleep" && !mv && standOf(mb)) { const c = curlOfMibi(st, mb, R.bed.sleepers.ink.max, sizeOf(mb), settings, m.light ?? "day", m.view ?? "home"); if (c) { p.curl = req(c.request); p.curlFigure = c.figure; } }   // a sleeping resident with a curl draws it in place, its foot on its feet line; on waking it cuts back to its stand
+    if (rules) p.shown = !rested.has(p.id);
+    if (arrived.has(p.id)) p.enter = "edge";   // a traveller home since the walk began: it walks in from the room's rest edge (rooms.json rest.edge)
     return p; });
-  const sleepers = docked && !m.noBed ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => { const mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m, ["nap"]), p = person(mb, { seed: hash(mb.id), nap: true, noCurl: !!mv }); if (mv) p.moving = mv; if (m.sendoff) p.stand = pic(mb, sizeOf(mb)); return p; }) : [];
-  const bed = m.noBed ? null : {
-    state: docked ? (sleepers.length ? "docked" : "none") : "away",
-    picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state
-    mark: "",   // the Companion's mark is not drawn on the painting, docked or away (the strip tile's outline glyph and the line say it)
-    sleepers, ...(m.sendoff ? { sendoff: true } : {}),
+  // where each rester rests, in rest order: the bed first (Roots; a place for each, up to sleepers.max), else its own way: a curl (hash(id) mod 100 < show.curl.pct[stage], at most show.curl.max a room) or out. A mibi with no curl picture (a still's nap master, a moving set's nap) always goes out.
+  const sleepers = [], curlMax = rules ? rules.show.curl.max : 0; let curled = 0;
+  for (const id of resters) {
+    const mb = here.find((q) => String(q.id) === id), p = residents.find((q) => q.id === id), mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m, ["nap"]);
+    const curl = mv ? null : curlOfMibi(st, mb, R.bed.sleepers.ink.max, sizeOf(mb), settings, m.light ?? "day", m.view ?? "home"), has = !!mv || (!!curl && !!standOf(mb));
+    if (!has) { p.restAt = "out"; continue; }
+    if (hasBed && sleepers.length < R.bed.sleepers.max) { const q = person(mb, { seed: hash(mb.id), nap: true, noCurl: !!mv, rester: true, shown: false }); if (mv) q.moving = mv; sleepers.push(q); p.restAt = "bed"; continue; }
+    if (hash(mb.id) % 100 < rules.show.curl.pct[p.stage] && curled < curlMax) { curled++; p.restAt = "curl"; if (curl) { p.curl = req(curl.request); p.curlFigure = curl.figure; } }
+    else p.restAt = "out";
+  }
+  const bed = !hasBed ? null : {   // the bed is the room's: Roots has one, the other rooms none (the rooms design); the nappers' alone
+    state: sleepers.length ? "resting" : "empty",
+    picture: bedOf(req, room, m.light),   // the bed of the light, in every state
+    sleepers,
   };
-  return { residents, sleepers, bed };
+  return { residents, sleepers, bed, resters };
 }
-
 
 // ---- Home: the top bar's words, the line, the two windows and the four stations ----
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -144,37 +197,36 @@ export const clockWords = (secs) => { const h = Math.floor(secs / 3600) % 24, mm
 export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
   const out = [], cs = S.bayCrates(st, sv), art = (w) => S.aAn(w).split(" ")[0];
   if (S.docked(st) && cs.length) out.push({ key: "crates", n: cs.length, max: 3, act: "cargo" });
-  if (S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });
+  const full = S.waitsForPlace(st, settings);
+  if (full) out.push({ key: "full", act: "vivarium", ring: S.addRoomBlock(st, settings) ? "resident" : "room.new" });   // no place is free and something waits for one: ahead of the bud and of a pod that could be incubated
+  if (!full && S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });
   if (readyCrates(st, settings, now).length) out.push({ key: "portrait", act: "cargo" });
   const meet = ui.meet != null ? S.mibiById(st, ui.meet) : null; if (meet) out.push({ key: "meet", name: meet.name, act: "meet" });
   const unseen = st.tray.filter((p) => !p.idd && !p.seen); if (unseen.length) out.push({ key: "newPods", n: unseen.length, max: 6, act: "pods" });
   const glint = st.tray.filter((p) => S.podGlints(st, p)); if (glint.length) out.push({ key: "glints", n: glint.length, max: 6, act: "pods" });
   if (st.waiting.length) out.push({ key: "waitingPods", n: st.waiting.length, max: 6, act: "pods" });
-  const grow = couldIncubate(st, settings); if (grow) out.push({ key: "couldGrow", species: S.spName(grow), a: art(S.spName(grow)), act: "pods" });
+  const grow = !full && couldIncubate(st, settings); if (grow) out.push({ key: "couldGrow", species: S.spName(grow), a: art(S.spName(grow)), act: "pods" });
   return out;
 }
-// The pod that could be incubated now (read, a bay free, the price in hand), or null: needKey's couldGrow with no short.
+// The pod that could be incubated now (read, a place free, the price in hand), or null: needKey's couldGrow with no short.
 function couldIncubate(st, settings) {
-  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud); if (!grown.length || S.bayFull(st, settings)) return null;
+  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud); if (!grown.length || S.vivFull(st, settings)) return null;
   const c = S.growCost(st, {}, settings); return S.canPay(st, c.e, 0, c.s) ? grown[0] : null;
 }
 
-// The Vivarium window's people (build spec section 3): the residents at home that walk, at most six (more: the mibi being met, ui.meet, first, then the newest of born and grown up, ties in bay order),
-// in bay order; the picture of the light; the one event tag (ui.meet: born or grown up); the first mibi out on a trip in the away frame, its stand's figure at its world size.
+// The Vivarium window's people (build spec section 3): the residents at home that walk, at most five shown (rules.show.max, and what fits at 1x: home.json regions.resident.max; the mibi being met, ui.meet, always among them, then the fresh, then by who rests
+// last: views/home-props.mjs shownOf), in bay order; the rest stay in the props with shown false and the face walks them out; the picture of the light; the one event tag (ui.meet: born or grown up); the first mibi out on a trip in the away frame, its stand's figure at its world size.
 function glassOf(m, spec, frame, housed, requests) {
   const { st, sv, settings } = m, R = spec.regions, light = m.light ?? "day", docked = !!m.docked, req = reqOf(requests);
   const ph = phOf(req, "its master (station-layouts.md, The Vivarium: the whole)");
-  const lw = livingOf({ st, sv, settings, docked, light, view: "home", noBed: true, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, { resident: R.resident, bed: { sleepers: { ink: { max: R.resident.asleep.ink } } } }, req, ph, frame.light);
-  const meet = m.ui?.meet != null ? String(m.ui.meet) : null, bayOf = new Map(housed.map((mb) => [String(mb.id), mb.bay]));
-  // the newest life event: born, or grown up (born + adultTurns, derived: no field stores it) once that has come; the mibi being met always first; ties in bay order
-  const aT = settings.adultTurns ?? S.JUVENILE_TURNS, lifeOf = new Map(housed.map((mb) => [String(mb.id), (mb.born ?? 0) + aT <= st.turn ? (mb.born ?? 0) + aT : (mb.born ?? 0)]));
-  const rank = (p) => (p.id === meet ? Infinity : lifeOf.get(p.id) ?? 0), keep = new Set(lw.residents.slice().sort((a, b) => rank(b) - rank(a) || bayOf.get(a.id) - bayOf.get(b.id)).slice(0, R.resident.max).map((p) => p.id));
-  const residents = lw.residents.filter((p) => keep.has(p.id)).sort((a, b) => bayOf.get(a.id) - bayOf.get(b.id));
-  const glass = { picture: paintingOf(req, frame, light) };
+  const meet = m.ui?.meet != null ? String(m.ui.meet) : null, room = shownRoom(st, m.ui?.meet ?? null), lw = livingOf({ st, sv, settings, docked, light, view: "home", noBed: true, room, time: m.time, now: m.now, restRules: m.restRules, rules: m.rules, ui: { meet }, arrived: m.arrived, motionSets: m.motionSets }, { resident: R.resident, bed: { sleepers: { ink: { max: R.resident.asleep.ink } } } }, req, ph, frame.light);
+  const bayOf = new Map(housed.map((mb) => [String(mb.id), mb.bay]));
+  const residents = lw.residents.slice().sort((a, b) => bayOf.get(a.id) - bayOf.get(b.id));
+  const region = roomRegion(req, room, light), glass = { picture: region.base };
   if (meet != null && residents.some((p) => p.id === meet)) glass.tag = meet;
   const out = housed.slice().sort((a, b) => a.bay - b.bay).find((mb) => S.isAway(st, sv, mb));
   if (out) { const size = R.resident[S.mibiStage(st, out, settings) === "juvenile" ? "juvenile" : "adult"], p = mibiPictureOf(st, out, size, settings, light, "home"), fig = figureOf(st, out, size, settings, "home"); glass.away = { picture: mibiReq(req, st, out, size, settings, light, "home"), figure: fig ?? [0, 0, ...p.size] }; }
-  return { glass, residents };
+  return { glass, residents, room: region };
 }
 
 // m: { st, sv, settings, docked, ui, focus: id | null, time (seconds of the day), date { y, m, d }, now (ms), place, spec home.json, frame frame.json }
@@ -193,7 +245,7 @@ export function homeBuild(m, spec, frame) {
   })();
   const incubator = (() => {
     const bud = st.bud, ready = S.budReady(st, settings), state = !bud ? "empty" : ready ? "ready" : "growing", name = bud ? S.spName(bud) : "", I = T.incubator, grow = !bud && couldIncubate(st, settings);
-    return { state, line1: state === "empty" ? I.empty : state === "growing" ? I.growing : I.ready, line2: state === "empty" ? (grow ? I.canIncubate : "") : fill(I.species, { a: S.aAn(name).split(" ")[0], Species: name }), lamp: ready ? "needsYou" : "off", capsule: capsuleOf(req, spec.regions.incubator.capsule, state, bud, ready ? 1 : S.budProgress(st, settings, now)) };
+    return { state, line1: state === "empty" ? I.empty : state === "growing" ? I.growing : S.vivFull(st, settings) ? I.waitsForRoom : I.ready, line2: state === "empty" ? (grow ? I.canIncubate : "") : fill(I.species, { a: S.aAn(name).split(" ")[0], Species: name }), lamp: ready ? "needsYou" : "off", capsule: capsuleOf(req, spec.regions.incubator.capsule, state, bud, ready ? 1 : S.budProgress(st, settings, now)) };
   })();
   const companion = (() => {
     const c = S.carriedIds(st, sv), id = c.includes(sv?.lead) ? sv.lead : c[0] ?? null, mb = id == null ? null : S.mibiById(st, id), C = T.companion, P = spec.regions.companion.plates, pr = docked ? S.probeNow(st, sv) : null;
@@ -214,7 +266,7 @@ export function homeBuild(m, spec, frame) {
   const targets = ["vivarium", "library", "pods", "incubator", "companion", "bay"].map((id) => ({ id, group: id }));
   const cur = m.focus && targets.some((t) => t.id === m.focus) ? m.focus : "room";
   const line = lineOf(m, spec, frame, { cur, needs, docked, companion });
-  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: lib.region, glass: living.glass, residents: living.residents, pods, incubator, companion, bay };
+  const regions = { bar: { place: m.place ?? "", date: m.date ? dateWords(m.date) : "", clock: m.time != null ? clockWords(m.time) : "" }, line, vivarium: { readout }, library: lib.region, glass: living.glass, room: living.room, residents: living.residents, pods, incubator, companion, bay };
   return { props: { state: "home", regions, focus: { cur, targets } }, requests, needs, targets };
 }
 

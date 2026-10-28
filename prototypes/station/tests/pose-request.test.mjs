@@ -17,7 +17,7 @@ import { asset as assetOf, assetEntry, dropAsset, manifest } from "../../ui/asse
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
 const sha = (a) => createHash("sha256").update(a).digest("hex");
 const CREST = { crown: "leaf crest" };   // the figures are measured with the crest, the tallest look
 const wh = (f) => [f[2], f[3]];

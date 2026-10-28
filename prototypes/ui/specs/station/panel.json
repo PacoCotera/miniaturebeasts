@@ -6,6 +6,7 @@
  "over": [
   "create",
   "habitat",
+  "vivarium",
   "pods",
   "bench",
   "incubator",
@@ -55,6 +56,10 @@
   "fitUpgrade": {
    "opens": "bench",
    "by": "✓ on the slot"
+  },
+  "addRoom": {
+   "opens": "vivarium",
+   "by": "✓ on the new-room chip (T-20261027-318, the rooms design): the two-card form of fitUpgrade on the slate pane; the left card's picture is rooms.json rooms.<id>.preview of the room it adds (348 × 160: a 1:1 cut of that room's Idle painting, rooms.json rooms.<id>.preview { from, rect }; no stage, no pedestal on the card); the done plate says the new room is ready"
   },
   "dock": {
    "opens": "cargo",
@@ -119,6 +124,20 @@
      "line": "It stays in its nest"
     }
    }
+  },
+  "addRoom": {
+   "title": "Add a room?",
+   "cards": {
+    "add": {
+     "name": "Add the room",
+     "line": "Eight more places to live"
+    },
+    "keep": {
+     "name": "Not now",
+     "line": "The Vivarium stays as it is"
+    }
+   },
+   "done": "The {Room} room is ready"
   },
   "fitUpgrade": {
    "title": "Fit the upgrade?",

@@ -4,6 +4,7 @@
 // is open; ✓ ← and the room keys are intents with the overlay's id) and the events: the placeholder's two hops, the stamp's print, the swap's dither and the tag's flash. Skipped when the face has not been built (build.sh).
 //   node --test prototypes/face/tests/habitat.test.mjs
 import { test } from "node:test";
+import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the props builders, as the page registers it
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -24,7 +25,7 @@ const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.pars
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const T0 = 1_000_000, R = spec.regions, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", bays });
+const T0 = 1_000_000, R = spec.regions, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", rooms: Math.ceil(bays / S.ROOM) });
 
 // ---- scenes: the state through the rules, the props through the views ----
 function scene(o = {}) {
@@ -46,8 +47,8 @@ const SIZES = { "frame-companion-outline-16x24": [16, 24], "frame-companion-soli
 const sizeOf = (r) => Array.isArray(r.size) ? r.size : typeof r.size === "number" ? [r.size, r.size] : r.kind === "emblem" ? [24, 24] : [16, 16];
 let UNSIGNED = null;   // ids whose master is not placed: no picture is handed to the face for them (fix 3c-habitat)
 const push = (f, b, over = {}) => { const props = { screen: "habitat", ...b.props, motion: f.motion, frame: frameProps(b.line), ...over }; for (const r of b.requests) if (!UNSIGNED?.has(r.id)) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r)))); for (const [id, sz] of Object.entries(SIZES)) f.handleOf(id, withPolicy((i) => standIn(i, sz))); return f.props(props); };
-async function start(b, { motion = true, t0 = 0 } = {}) {
-  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+async function start(b, { motion = true, t0 = 0, node = false } = {}) {
+  const f = await bootFace(pathToFileURL(dist + (node ? "/node/" : "/")), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["habitat", spec], ["namer", namerSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0, f.errors().join("; "));
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   f.t = t0; f.motion = motion; f.build = b;
@@ -81,6 +82,18 @@ for (const [name, o] of Object.entries(SCENES)) {
     console.log(`# ${name}: ${f.objects()} objects, ${st.pictures} pictures`);
   });
 }
+
+test("R4b-1b one mibi up close, a carried mibi (state out): the glass draws the out mark at habitat.json regions.resident.out and no mibi; Portrait, Cross and Wild draw dimmed (v_dither_window at level 8 of 16 over their own boxes) with their words in mist, and the name tag keeps its plate; at home none of that", { skip }, async () => {
+  const dims = (f, b) => { const wild = spec.regions.wild.rect, ports = spec.regions.portrait.rect, g = spec.regions.wild.gate, fr = spec.regions.portrait.frame;
+    return { out: f.nodeBox("resident.out")?.box, gate: f.nodeBox("wild.gate.dither")?.box, frame: f.nodeBox("portrait.frame.dither")?.box, face: f.nodeBox("cross.face.0.dither")?.box, wild, ports, g, fr }; };
+  for (const away of [false, true]) {
+    const b = scene({ carry: [0], away, focus: "name", adults: 4 }), f = await start(b, { node: true }), d = dims(f, b); assert.equal(b.props.state, "out"); assert.deepEqual(f.errors(), []);
+    assert.deepEqual(d.out, spec.regions.resident.out.rect, `the out mark stands at ${spec.regions.resident.out.rect} (${away ? "away" : "docked"})`); assert.ok(!f.nodeBox("resident.dither"), "no mibi in the glass");
+    assert.deepEqual(d.gate, [d.wild[0] + d.g.at[0], d.wild[1] + d.g.at[1], 48, 48], "the Wild gate dimmed"); assert.deepEqual(d.frame, [d.ports[0] + d.fr.at[0], d.ports[1] + d.fr.at[1], 48, 40], "the Portrait frame dimmed");
+    assert.ok(d.face && d.face[2] === 24, "a Cross face dimmed");
+  }
+  const h = scene({ focus: "resident", adults: 4 }), g = await start(h, { node: true }); assert.equal(h.props.state, "rest"); assert.equal(g.nodeBox("resident.out")?.box[2] ?? 0, 0, "at home no out mark is drawn"); for (const id of ["wild.gate.dither", "portrait.frame.dither", "cross.face.0.dither"]) assert.equal(g.nodeBox(id), null, `${id}: nothing dimmed at home`);
+});
 
 test("the departure check bites: the card moved, a plate off its pitch, a module off its rectangle, the name tag off the glass, a word past the field are each found", { skip }, async () => {
   const b = scene({ focus: "resident", namer: true }), f = await start(b), lg = logOf(f), n = b.props.regions.tiles.items.length;
@@ -249,12 +262,12 @@ test("fix 2 F5, F8: the namer's plate and its name well draw only while the name
   assert.equal(chromeOf(lg, "panel").length, 0, "no panel fill, edge, bevel row or shadow");
   assert.ok(!lg.regions.some((r) => r.id === "panel.shadow"));
 });
-test("fix 2 F4: the strip's tiles name their well by form and state (full or compact; the shown tile its -shown well), a free bay none; the strip names its plate", { skip }, () => {
-  for (const [bays, form] of [[8, "compact"], [4, "full"]]) {
-    const b = scene({ bays, adults: 3, focus: "resident" }), w = form === "full" ? 152 : 72, T = b.props.regions.tiles.items;
-    assert.equal(b.props.regions.strip.plate, "plate-device-992x64");
-    T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-${w}x48${t.shown ? "-shown" : ""}`));
-    assert.equal(T.filter((t) => t.shown).length, 1); assert.ok(T.some((t) => t.state === "free"), "a free bay");
+test("fix 2 F4 (rooms of eight): the strip is the shown mibi's room, eight tiles on the compact form (the shown tile its -shown well), a free place none; the strip names its plate", { skip }, () => {
+  for (const [bays, adults, shown, free] of [[8, 3, 0, 5], [8, 8, 7, 0], [16, 12, 9, 4]]) {
+    const b = scene({ bays, adults, shown, focus: "resident" }), T = b.props.regions.tiles.items;
+    assert.equal(b.props.regions.strip.plate, "plate-device-992x64"); assert.equal(T.length, 8);
+    T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-72x48${t.shown ? "-shown" : ""}`));
+    assert.equal(T.filter((t) => t.shown).length, 1, `${adults} housed, the shown one in room ${b.st.mibis[shown].room}: its tile`); assert.equal(T.filter((t) => t.state === "free").length, free, "the free places");
   }
 });
 test("fix 2 F6: no plate picture, no plate: a module whose plate master is not there draws no fill and keeps no plate", { skip }, async () => {

@@ -71,6 +71,7 @@ void face_test_pass(int pass);
 void face_test_hide(const char *region);
 int face_test_steps(void);
 int face_test_offgroup(void); int face_test_tick_area(void); int face_test_worst_tick(void); int face_test_deferred(void); int face_test_cell(int i); int face_test_state(int i); int face_test_mv(int i, int field); int face_test_nap(int i); int face_test_close_cell(void); int face_test_close_lift(void); int face_test_hatch_cell(void);   /* the moving residents (M1 §2.3 item 11) */
+int face_test_rest(int i, int field);   /* a resident the room does not show: rest phase, where it rests, shown, hidden, x, feet, walking, level (R4b) */
 int face_test_offpalette(void);
 int face_test_ring(const char *form_json, int x, int y, int w, int h, const char *picture, const char *cell);   /* one focus ring word on a rect, the target given as JSON (the checks of the word alone); a footprint reads the picture's foot; the nodes refused */
 #ifdef __cplusplus

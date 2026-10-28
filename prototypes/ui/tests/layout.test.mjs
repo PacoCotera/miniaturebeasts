@@ -22,7 +22,7 @@ const FULL = () => [box("left", [16, 48, 496, 506]), box("right", [528, 48, 480,
 test("thresholds: every rule's numbers are frame.json's, each { value, from }; the data are well formed", () => {
   assert.deepEqual(malformed(FIELD, frame), []);
   for (const k of ["L0", "L1", "L2", "L3", "L4", "L5", "L6", "L7a", "L7b", "L8", "L9", "L10", "L11"]) assert.ok(frame.layout.thresholds[k]?.from, k);
-  assert.ok(frame.layout.exceptions.length > 0 && frame.layout.exceptions.every((e) => e.by === "owner" && /^Owner/.test(e.reason) && e.date === "2026-10-26"), "the exceptions are the owner's, with the owner's words"); assert.deepEqual(frame.layout.enforced, {});
+  { const ex = frame.layout.exceptions, own = ex.filter((e) => e.by === "owner"); assert.ok(own.length >= 6 && own.every((e) => /^Owner, layout review 2026-10-26 \(/.test(e.reason) && e.date === "2026-10-26"), "the owner's exceptions, with the owner's words (none dropped)"); assert.ok(ex.every((e) => e.by === "owner" || (e.by === "UI/UX" && /^UI\/UX, /.test(e.reason) && /^2026-\d\d-\d\d$/.test(e.date) && e.date >= "2026-10-27")), "every other exception is UI/UX's (its layout spec), with its result named and dated"); } assert.deepEqual(frame.layout.enforced, {});
   assert.ok(malformed({ layout: { stage: "stage", opening: [0, 0, 1, 1] } }, frame).some((m) => /stage/.test(m)), "an unknown stage is malformed");
   assert.ok(malformed({ layout: { stage: "field" } }, frame).some((m) => /opening/.test(m)), "a stage with no opening is malformed");
   assert.ok(malformed({ layout: { stage: "field", opening: [0, 40, 1024, 522], painted: [{ id: "gauge" }] } }, frame).some((m) => /painted/.test(m)), "a painted prop needs its rect and fills");

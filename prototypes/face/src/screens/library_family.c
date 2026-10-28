@@ -311,6 +311,12 @@ static void rows(int dy) {
   for (int k = 0; k < 2; k++) panel_say_in("panel.head", v_fmt("panel.age.%d", k), v_pstr(v_fmt("regions.panel.rows.age.%d", k)), v_si(S, PR ".age.x", x), v_sk(S, PR ".age.lineTop", k) + dy, qrole, 0);
   int nt = v_si(S, PR ".now.lineTop", 0) + dy;
   panel_say("panel.now.label", v_sstr(S, "l3.strings.panel.now"), x, nt, lrole, 0); panel_say("panel.now.value", v_pstr("regions.panel.rows.now"), v_si(S, PR ".now.x", 0), nt, brole, 0);
+  /* the stage row and the Yours row (rows.stage, rows.yours): a living mibi's in close; the props leave their words empty for a bud, a released mibi and compare, so the nodes keep their ids at no size */
+  char vrole[24], srole[24]; snprintf(vrole, sizeof vrole, "%s", v_sstr(S, PR ".stage.value.role")); snprintf(srole, sizeof srole, "%s", v_sstr(S, PR ".yours.since.role"));
+  int st = v_si(S, PR ".stage.lineTop", 0) + dy, yt = v_si(S, PR ".yours.lineTop", 0) + dy, yl = v_si(S, PR ".yours.since.lineTop", 0) + dy;
+  panel_say("panel.stage.label", v_pstr("regions.panel.rows.stage.label"), x, st, lrole, 0); panel_say("panel.stage.value", v_pstr("regions.panel.rows.stage.value"), v_si(S, PR ".stage.value.x", 0), st, vrole, 0);
+  panel_say("panel.yours.label", v_pstr("regions.panel.rows.yours.label"), x, yt, lrole, 0); panel_say("panel.yours.value", v_pstr("regions.panel.rows.yours.value"), v_si(S, PR ".yours.value.x", 0), yt, v_sstr(S, PR ".yours.value.role"), 0);
+  panel_say("panel.yours.since", v_pstr("regions.panel.rows.yours.since"), v_si(S, PR ".yours.since.x", 0), yl, srole, 0);
   panel_say_in("panel.par.0", "panel.par.label", v_sstr(S, "l3.strings.panel.parents"), x, v_si(S, PR ".parents.lineTop", 0) + dy, lrole, 0);
   int np = v_plen("regions.panel.rows.parents"), pitch = v_si(S, PR ".parents.pitch", 0), face[4], podb[4]; v_srect(S, PR ".parents.face", face); v_srect(S, PR ".parents.pod", podb);
   for (int k = 0; k < 2; k++) {
@@ -319,8 +325,9 @@ static void rows(int dy) {
     panel_pic(v_fmt("panel.par.%d.face", k), pic, b[0], b[1] + (pod ? 0 : pitch * k) + dy, b[2], b[3], on);
     panel_say_in(k ? "panel.par.1" : "panel.par.0", v_fmt("panel.par.%d.name", k), on ? v_pstr(v_fmt("regions.panel.rows.parents.%d.name", k)) : "", v_si(S, PR ".parents.name.x", 0), v_si(S, PR ".parents.name.lineTop", 0) + pitch * k + dy, prole, v_si(S, PR ".parents.name.clip", 0));
   }
-  panel_say("panel.stamp.label", v_sstr(S, "l3.strings.panel.stamp"), x, v_si(S, PR ".stamp.lineTop", 0) + dy, lrole, 0);
-  v_srect(S, PR ".stamp.slot", r); r[1] += dy; stamp_slot("panel.stamp", "regions.panel.rows", r, 1, "panel.light");
+  /* the stamp: its close place, or in compare (dy > 0) the place l3.compare.stamp gives it (the close place plus the shift would end past the panel) */
+  panel_say("panel.stamp.label", v_sstr(S, "l3.strings.panel.stamp"), x, dy ? v_si(S, CH ".stamp.lineTop", 0) : v_si(S, PR ".stamp.lineTop", 0), lrole, 0);
+  v_srect(S, dy ? CH ".stamp.slot" : PR ".stamp.slot", r); stamp_slot("panel.stamp", "regions.panel.rows", r, 1, "panel.light");
 }
 static void panel(void) {
   int r[4], cmp = is_compare(); v_srect(S, C3 ".panel.rect", r); if (!cmp && !*v_pstr("regions.panel.ov.picture")) v_srect(S, C3 ".panel.rectFits", r);   /* no inset: the panel is the height of its rows */

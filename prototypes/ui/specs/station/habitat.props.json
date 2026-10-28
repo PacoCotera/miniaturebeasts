@@ -58,6 +58,13 @@
     "shown": {
      "type": "boolean"
     },
+    "where": {
+     "enum": [
+      "docked",
+      "away"
+     ],
+     "description": "R4b: on a carried place (state out), where the Companion is: docked draws the solid glyph, away the outline; the thumbnail is given too and drawn dimmed"
+    },
     "picture": {
      "type": "string"
     },
@@ -151,6 +158,7 @@
    "required": [
     "stage",
     "glass",
+    "room",
     "resident",
     "nameTag",
     "meetRibbon",
@@ -190,6 +198,29 @@
      "properties": {
       "picture": {
        "type": "string"
+      }
+     }
+    },
+    "room": {
+     "type": "object",
+     "required": [
+      "id",
+      "base",
+      "pieces"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string",
+       "description": "the room shown: its name in rooms.json (roots, reeds, boulders, ferns)"
+      },
+      "base": {
+       "type": "string",
+       "description": "the room's painting (the near view in Habitat) in the light"
+      },
+      "pieces": {
+       "type": "object",
+       "description": "the room's pieces that have a picture, by piece id (rooms.json), the picture id in the light; Habitat has none"
       }
      }
     },
@@ -533,6 +564,10 @@
      "properties": {
       "glyph": {
        "type": "string"
+      },
+      "glyphDocked": {
+       "type": "string",
+       "description": "R4b: the solid Companion glyph (frame.json marks.companion.docked), a carried tile's while docked"
       },
       "items": {
        "type": "array",

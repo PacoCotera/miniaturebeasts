@@ -329,8 +329,8 @@
     ],
     "screen": "vivarium",
     "state": "rest",
-    "ring": "resident.8",
-    "ok": "Look at Pip",
+    "ring": "resident.10",
+    "ok": "Look at Burr",
     "price": null,
     "subject": "A young Loika",
     "back": "Home"
@@ -341,14 +341,14 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "resident.8",
+      "target": "resident.10",
       "verb": "confirm"
      }
     ],
     "screen": "habitat",
     "state": "rest",
     "ring": "resident",
-    "ok": "Greet Pip",
+    "ok": "Greet Burr",
     "price": null,
     "subject": "A young Loika",
     "back": "Vivarium"
@@ -365,7 +365,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "name",
-    "ok": "Rename Pip",
+    "ok": "Rename Burr",
     "price": null,
     "subject": "A young Loika",
     "back": "Vivarium"
@@ -451,7 +451,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "resident",
-    "ok": "Greet Pip",
+    "ok": "Greet Burr",
     "price": null,
     "subject": "A young Loika",
     "back": "Vivarium"
@@ -468,7 +468,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "name",
-    "ok": "Rename Pip",
+    "ok": "Rename Burr",
     "price": null,
     "subject": "A young Loika",
     "back": "Vivarium"
@@ -536,7 +536,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "door",
-    "ok": "Take Pip with you",
+    "ok": "Take Burr with you",
     "price": null,
     "subject": "Goes with you now",
     "back": "Vivarium"
@@ -544,7 +544,7 @@
    {
     "walk": "door",
     "ring": "door",
-    "ok": "Take Pip with you"
+    "ok": "Take Burr with you"
    },
    {
     "key": "confirm",
@@ -593,9 +593,9 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": null,
-    "price": null,
-    "subject": "Not until it is adult",
+    "ok": "Return Burr",
+    "price": "❀ +2",
+    "subject": "Goes back to the wild",
     "back": "Vivarium"
    },
    {
@@ -611,33 +611,44 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "wild",
-    "ok": null,
-    "price": null,
-    "subject": "Not until it is adult",
-    "back": "Vivarium"
+    "ok": "Return Burr",
+    "price": "❀ +2",
+    "subject": "",
+    "back": "Back"
+   },
+   {
+    "key": "left",
+    "said": [],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Return Burr",
+    "price": "❀ +2",
+    "subject": "",
+    "back": "Back"
    },
    {
     "key": "confirm",
     "said": [
      {
       "t": "intent",
-      "screen": "habitat",
-      "target": "wild",
+      "screen": "panel",
+      "target": "card.return",
       "verb": "confirm"
      }
     ],
     "screen": "habitat",
-    "state": "rest",
-    "ring": "wild",
-    "ok": null,
+    "state": "out",
+    "ring": "name",
+    "ok": "Rename Dot",
     "price": null,
-    "subject": "Not until it is adult",
+    "subject": "Ready to go exploring",
     "back": "Vivarium"
    },
    {
     "gate": "juvenile",
-    "released": false,
-    "essence": 0
+    "released": true,
+    "essence": 2
    },
    {
     "key": "down",
@@ -645,13 +656,47 @@
      {
       "t": "focus",
       "screen": "habitat",
-      "target": "tile.8"
+      "target": "tile.1"
+     }
+    ],
+    "screen": "habitat",
+    "state": "out",
+    "ring": "tile.1",
+    "ok": "Greet Dot",
+    "price": null,
+    "subject": "An adult Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "tile.2"
      }
     ],
     "screen": "habitat",
     "state": "rest",
-    "ring": "tile.8",
-    "ok": "Greet Pip",
+    "ring": "tile.2",
+    "ok": "Greet Moss",
+    "price": null,
+    "subject": "A young Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "tile.9"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "tile.9",
+    "ok": "Greet Sorrel",
     "price": null,
     "subject": "A young Loika",
     "back": "Vivarium"
@@ -849,11 +894,11 @@
      }
     ],
     "screen": "habitat",
-    "state": "rest",
-    "ring": "resident",
-    "ok": "Greet Dot",
+    "state": "out",
+    "ring": "name",
+    "ok": "Rename Dot",
     "price": null,
-    "subject": "An adult Loika",
+    "subject": "Ready to go exploring",
     "back": "Vivarium"
    },
    {
@@ -882,9 +927,9 @@
      }
     ],
     "screen": "vivarium",
-    "focus": "resident.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
     "back": "Home"
    },
    {
@@ -893,13 +938,13 @@
      {
       "t": "focus",
       "screen": "vivarium",
-      "target": "tile.1"
+      "target": "tile.2"
      }
     ],
     "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "tile.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
     "back": "Home"
    },
    {
@@ -908,13 +953,13 @@
      {
       "t": "focus",
       "screen": "vivarium",
-      "target": "resident.1"
+      "target": "resident.2"
      }
     ],
     "screen": "vivarium",
-    "focus": "resident.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
     "back": "Home"
    },
    {
@@ -923,17 +968,32 @@
      {
       "t": "focus",
       "screen": "vivarium",
-      "target": "tile.1"
+      "target": "tile.2"
      }
     ],
     "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "tile.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
     "back": "Home"
    },
    {
     "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.9"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.9",
+    "ok": "Look at Sorrel",
+    "subject": "A young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "left",
     "said": [
      {
       "t": "focus",
@@ -959,43 +1019,115 @@
     "screen": "vivarium",
     "focus": "tile.1",
     "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "subject": "Ready to go exploring",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.0"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
     "back": "Home"
    },
    {
     "key": "left",
     "said": [],
     "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [],
-    "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [],
-    "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
     "back": "Home"
    },
    {
     "key": "down",
     "said": [],
     "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.1",
+    "ok": null,
+    "subject": "Six places free",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.new"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.new",
+    "ok": "Add a room",
+    "subject": "Eight more places",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.13"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.13",
+    "ok": "Look at Lori",
+    "subject": "An adult Loika",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.1",
+    "ok": null,
+    "subject": "Six places free",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.0"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
     "back": "Home"
    },
    {
@@ -1004,14 +1136,14 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "tile.1",
+      "target": "room.0",
       "verb": "room:habitat"
      }
     ],
     "screen": "vivarium",
-    "focus": "resident.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
     "back": "Home"
    }
   ],
@@ -1022,14 +1154,14 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "resident.1",
+      "target": "resident.2",
       "verb": "confirm"
      }
     ],
     "screen": "habitat",
     "focus": "vivarium",
-    "ok": "Greet Dot",
-    "subject": "An adult Loika",
+    "ok": "Greet Moss",
+    "subject": "A young Loika",
     "back": "Vivarium"
    },
    {
@@ -1050,9 +1182,9 @@
      }
     ],
     "screen": "vivarium",
-    "focus": "resident.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
     "back": "Home"
    },
    {
@@ -1061,7 +1193,7 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "resident.1",
+      "target": "resident.2",
       "verb": "back"
      }
     ],
@@ -1075,9 +1207,9 @@
     "key": "dock",
     "said": [],
     "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "Out with the Companion",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
     "back": "Home"
    },
    {
@@ -1100,9 +1232,9 @@
      }
     ],
     "screen": "vivarium",
-    "focus": "resident.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
     "back": "Home"
    }
   ]

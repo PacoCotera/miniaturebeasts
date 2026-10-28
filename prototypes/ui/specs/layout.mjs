@@ -12,7 +12,7 @@
 //   A container has an alignment per axis (`align` on the stage, `containers[].align`: "left" | "right" | "centre" | "fill", or { x: left | right | centre | fill, y: top | bottom | middle | fill }; a string sets x);
 //   undeclared, an axis is a centred block when the content sits off the margin on both sides, else fill. `containers[].padding` is a number or { left, top, right, bottom }. A region in `clips` is a window that
 //   clips its content by design (L2 and L10a are off inside it); `movers` (creatures) and `props` (scene props) are placed by depth, not by the grid; an anchor is fixed UI pinned in a scene's corner.
-// frameSpec: frame.json; `layout.thresholds` (every number the rules use, each { value, from }), `layout.exceptions` [{ screen, state?, rule, node, other?, reason, by, date }] and
+// frameSpec: frame.json; `layout.thresholds` (every number the rules use, each { value, from }), `layout.exceptions` [{ screen, state?, rule, node, other? (a name or a list of names), reason, by, date }] and
 //   `layout.enforced` { "<screen>": ["L1", ...] | "all" }. screen: the golden screen (the exceptions' and the enforcement's key); state: the golden state.
 // extra: { facts: { "<props path>": value } }: the props facts the generated pictures carry (a spec's `layout.facts` names the path; each entry a rect, or an object with `rect`, in the picture's own
 //   coordinates), read as the picture's inner boxes.
@@ -329,7 +329,7 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
 // is dropped, and the list's `used` names the exceptions in use. findings() and the slots of slotFindings() go through it.
 export function excepted(frameSpec, screen, list, oneState = false) {
   const ex = frameSpec?.layout?.exceptions ?? [], used = new Set();
-  const kept = list.filter((f) => { const e = ex.findIndex((x) => x.rule === f.rule && x.screen === screen && (!x.state || (f.states ?? []).includes(x.state)) && x.node === f.node && (x.other == null || x.other === f.other)); if (e < 0) return true; used.add(e); return false; });
+  const kept = list.filter((f) => { const e = ex.findIndex((x) => x.rule === f.rule && x.screen === screen && (!x.state || (f.states ?? []).includes(x.state)) && x.node === f.node && (x.other == null || [x.other].flat().includes(f.other))); if (e < 0) return true; used.add(e); return false; });
   return withUsed(oneState ? kept.map(({ states, ...f }) => f) : kept, [...used].map((i) => ex[i]));
 }
 const withUsed = (list, used) => { Object.defineProperty(list, "used", { value: used }); return list; };   // the exceptions in use (not enumerable: the result compares as the list of findings)

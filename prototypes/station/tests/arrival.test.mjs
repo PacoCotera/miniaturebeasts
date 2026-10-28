@@ -20,7 +20,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.reso
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), cargo = J("cargo"), home = J("home"), frame = J("frame"), panel = J("panel"), pods = J("pods"), schema = J("cargo.props"), A = cargo.regions.arrival;
 const metrics = JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")), measure = createMeasure(metrics), byRole = (role) => measureRole(metrics, frame, role);   // a text role's measure (frame.json type.roles)
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000, words = (t) => t.trim().split(/\s+/).filter(Boolean).length;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000, words = (t) => t.trim().split(/\s+/).filter(Boolean).length;
 const SPELL = ["no", "one", "two", "three"];
 
 const crate = (n, species = "S01") => ({ id: "c" + n, n, turn: 0, at: T0, e: 3, d: 3, s: 4, met: [], explored: 0, of: 0, lines: [], pods: [{ id: "p0", species, sp: speciesIndex(species), g: "meadow", how: "calm", gs: 11 + n, k: null }] });

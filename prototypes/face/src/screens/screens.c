@@ -7,6 +7,7 @@
 #include "../anim/anim.h"
 #include "../layout/layout.h"
 #include "moving.h"
+#include "room.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -79,6 +80,7 @@ static int vet_ring(const char *screen, const char *name, char *err, int cap) {
 }
 int screens_overlay_known(const char *id) { return strcmp(id, "namer") == 0 || strcmp(id, "panel") == 0; }
 int screens_vet_spec(const char *screen, char *err, int cap) {
+  if (strcmp(screen, "rooms") == 0) return room_load(err, cap);   /* the rooms (the rooms design, R3): guards 1 to 3 and 6 again, refused with the reason */
   if (strcmp(screen, "moving") == 0) return moving_load(err, cap);   /* the moving sets (M1 §2.2): checked whole, refused with the reason */
   { char kind[16]; if (spec_str(screen, "kind", kind, sizeof kind) > 0 && strcmp(kind, "overlay") == 0 && spec_len(screen, "over") <= 0) { snprintf(err, (size_t)cap, "spec %s: an overlay lists the screens it opens over (over)", screen); return -1; } }
   for (int i = 0, n = spec_len(screen, "targets"); i < n; i++) { char key[48], dummy[2]; if (spec_member(screen, "targets", i, key, sizeof key, dummy, sizeof dummy) && vet_ring(screen, key, err, cap) < 0) return -1; }

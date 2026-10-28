@@ -87,11 +87,15 @@ int home_focus(focus_target_t *out, int cap);
 void home_key(int code);
 int home_tick(uint32_t now);
 int home_test_cell(int i); int home_test_state(int i); int home_test_mv(int i, int field); int home_test_nap(int i);   /* test hooks on the moving residents (M1 §2.3 item 11) */
+int home_test_rest(int i, int field);   /* R4b: the rest state of a resident by its props index */
 /* Home's compositions (screens/home_builds.c): a module, the name tag, the rounded panel and a resident's waiting lamp */
 void build_module(const char *spec, const char *key, int dy, const char *lamp);   /* the module of `spec`'s region `key` (a spec with "lamp": null has no lamp node) */
+void build_module_held(const char *spec, const char *key, int dy, const char *lamp, int held);   /* the same, its word in the dimmed role while held (a carried mibi up close) */
 const char *home_lamp_pic(const char *state);   /* frame.json regions.marks.lamp12.<state>, the signed 12 × 12 lamp picture of a state */
 void build_bayStrip(const char *spec, const char *cur, int box[4]);   /* the Vivarium's strip of bays (vivarium.json regions.strip, tiles); box: the focused tile's box, or zeros */
 void build_waitingLamp(const char *id, int x, int y, int shown);
+void build_rooms(const char *spec, const char *cur, int box[4]);    /* the Vivarium whole's rooms pane: the slate pane and a chip a room, then the new-room chip (vivarium.json regions.rooms, chips); box: the focused chip's box (lifted), or zeros */
+void build_places(const char *spec, const char *cur, int box[4]);   /* the whole's places pane: the slate pane and the eight places (vivarium.json regions.places, tiles); box: the focused place's box (lifted), or zeros */
 /* Cargo (screens/cargo.c): its words by the state the props name, and its keys */
 void cargo_words(void);
 void cargo_key(int code);

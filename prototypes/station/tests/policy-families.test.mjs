@@ -2,6 +2,7 @@
 // The ids are the ones the view requests and the ones its props and the frame's spec name that the asset manifest holds, as the host collects them (host.mjs).
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -78,6 +79,10 @@ test("the bed of a light is a painted picture; the one bed of old is in no famil
   assert.throws(() => policyOf("home-bed-192x56"), /no layer family/);
 });
 
+test("a room's painting, near view, bed and pieces (R3) are painted pictures (the room- family)", () => {
+  for (const id of ["room-roots-idle-day-1024x568", "room-reeds-near-night-544x408", "room-roots-bed-dusk-192x56", "room-ferns-fern-1-dawn-71x48", "room-boulders-arm-fill-day-48x48"]) assert.equal(policyOf(id, "master"), "painted", id);
+});
+
 test("a juvenile mibi takes the art director's juvenile stand-in at its size when one is placed, else the rig; an adult takes Pip's stand at its size when placed (the adult hook, Station M1 §2.6), else the rig; the stand-ins are painted masters", () => {
   const MASTER = "mibi-juvenile-S01-304x312", env = { podById: () => null, frameOf, mibiGenome: () => podGenome(frameOf("S01"), 3) };
   const ask = (id, stage, [w, h] = [304, 312]) => ({ kind: "mibi", id: `mibi:${id}:${stage}:${w}x${h}`, mibi: id, stage, species: "S01", size: [w, h] });
@@ -125,7 +130,7 @@ test("a founder is art while it is clear (painted once a master), painted at eit
   for (const old of ["founder:S01:S01-1a2b3c4d:all:304x312", "founder:S01:S01-1a2b3c4d:9f3c:304x312", "founder:S01:S01-1a2b3c4d:veil-Face:304x312", "founder:S01:S01-1a2b3c4d:ghost"]) assert.throws(() => policyOf(old), /no layer family/, old);
 });
 test("a Create walk on S01 and S03 (nothing read, shape, shape and a doing): every picture is in a family, and any founder with an unread look is painted", () => {
-  const specCreate = J("create.json"), pods = J("pods.json"), T0 = 1_000_000, cfg = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }; let founders = 0;
+  const specCreate = J("create.json"), pods = J("pods.json"), T0 = 1_000_000, cfg = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }; let founders = 0;
   for (const sp of ["S01", "S03"]) for (const [name, read] of [["nothing read", 0], ["one chapter", 1], ["shape", 2], ["shape and a doing", 3], ["every chapter", frameOf(sp).chapters.length]]) {
     const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; S.seedPodFromGenome(st, podGenome(frameOf(sp), 3), cfg, T0); const p = st.tray[0]; S.skipIdentify(st, p);
     frameOf(sp).chapters.slice(0, read).forEach((c) => S.read(st, p, c.id, cfg));

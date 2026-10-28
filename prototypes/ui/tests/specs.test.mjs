@@ -397,35 +397,37 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
 test("the Vivarium's whole (vivarium.json) agrees with its wireframes; the strip is one mibi up close's; its focus graph plays its vectors with ui/focus.mjs", () => {
   const vv = rd("../specs/station/vivarium.json"), hab = rd("../specs/station/habitat.json"), R = vv.regions, B = boxesOf("18-vivarium-whole.svg"), A = boxesOf("18a-vivarium-whole-away.svg"), E = boxesOf("18b-vivarium-whole-empty.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  assert.deepEqual(vv.regions.tiles.forms, hab.regions.tiles.forms, "the whole's strip is one mibi up close's: the same forms"); lintRegions(rectsOnly(vv)); assert.deepEqual(vv.states, ["rest", "empty"]); assert.deepEqual(vv.rules.needed, []); assert.deepEqual([vv.section, vv.level, vv.strings.title, vv.strings.back], ["vivarium", "whole", "Vivarium", "Home"]);
-  for (const set of [B, A, E]) { is(R.window.rect, "window", set); is(R.strip.rect, "strip", set); }
-  is(R.bed.rect, "bed"); is(R.bed.rect, "bed", A); is(R.bed.markRect, "the Companion mark", A); is(R.bed.rect, "the bed on the empty whole (the nest alone, docked)", E); assert.ok(!E.has(R.bed.markRect.join(",")), "no Companion mark on the empty whole while docked");
+  assert.deepEqual(vv.regions.tiles.forms, { compact: { upTo: 8, first: [360, 496, 72, 48], pitch: [80, 0], grid: [8, 1] } }, "R5: the one compact form, eight places on the places pane"); assert.deepEqual(vv.regions.chips.forms.row, { upTo: 4, first: [32, 496, 64, 48], pitch: [72, 0], grid: [4, 1] }); assert.deepEqual([vv.regions.rooms.rect, vv.regions.places.rect], [[16, 488, 312, 64], [344, 488, 664, 64]]); assert.equal(vv.regions.strip, undefined, "the strip row retires"); lintRegions(rectsOnly(vv)); assert.deepEqual(vv.states, ["rest", "empty"]); assert.deepEqual(vv.rules.needed, []); assert.deepEqual([vv.section, vv.level, vv.strings.title, vv.strings.back], ["vivarium", "whole", "Vivarium", "Home"]);
+  for (const set of [B, A, E]) { is(R.window.rect, "window", set); is(hab.regions.strip.rect, "the strip row the two panes replace", set); }
+  is(R.bed.rect, "bed"); is(R.bed.rect, "bed", A); assert.equal(R.bed.markRect, undefined, "R4b: the Companion mark on the bed goes (the carried set is never drawn in a room)"); is(R.bed.rect, "the bed on the empty whole (the nest alone)", E);
   // the same place as Idle, 80 px higher; the strip where one mibi up close has it
   const I = frame.idle.regions, off = I.vivarium.theWhole.rows[0] - I.vivarium.theWhole.at[1];
   assert.deepEqual(R.window.rect, I.vivarium.theWhole.at); assert.deepEqual(R.window.ground, [I.vivarium.ground[0], I.vivarium.ground[1] - off, ...I.vivarium.ground.slice(2)]);
   assert.deepEqual(R.bed.rect, [I.bed.rect[0], I.bed.rect[1] - off, ...I.bed.rect.slice(2)]); assert.equal(R.bed.sleepers.footY, I.bed.sleepers.footY - off); assert.deepEqual(R.bed.sleepers.places, I.bed.sleepers.places);
   assert.deepEqual(R.resident.walk.ground, [I.resident.walk.ground[0], I.resident.walk.ground[1] - off, ...I.resident.walk.ground.slice(2)]); assert.ok(inside(R.resident.walk.ground, R.window.rect));
-  assert.deepEqual(R.strip.rect, hab.regions.strip.rect); assert.deepEqual(R.tiles.rect, hab.regions.tiles.rect); assert.deepEqual(R.tiles.forms, hab.regions.tiles.forms, "the same tile forms as up close"); assert.deepEqual(R.tiles.tile.thumb, hab.regions.tiles.tile.thumb, "the same thumbnails");
-  for (const [id, r] of Object.entries(R)) assert.ok(r.component || r.build, id + " names its word or composition, with a rect or without"); assert.ok(R.window.rect[1] + R.window.rect[3] + 8 <= R.strip.rect[1], "the strip 8 px under the window");
+  { const [a, b] = [R.rooms.rect, R.places.rect]; assert.deepEqual([a[0], a[1], b[0] + b[2] - a[0], a[3]], hab.regions.strip.rect, "the two panes are the strip row, split"); assert.equal(a[0] + a[2] + 16, b[0]); }  assert.deepEqual(R.tiles.forms.compact.pitch, hab.regions.tiles.forms.compact.pitch, "the same pitch as up close"); assert.deepEqual(R.tiles.tile.thumb.compact, hab.regions.tiles.tile.thumb.compact, "the same thumbnails");
+  for (const [id, r] of Object.entries(R)) assert.ok(r.component || r.build, id + " names its word or composition, with a rect or without"); assert.ok(R.window.rect[1] + R.window.rect[3] + 8 <= R.rooms.rect[1], "the panes 8 px under the window");
   for (const [n, xs] of Object.entries(R.bed.sleepers.places)) for (const x of xs) is([x - 48, R.bed.sleepers.footY - 88, 96, 88], "nap ink (" + n + ")", n === "2" ? B : new Set([[x - 48, R.bed.sleepers.footY - 88, 96, 88].join(",")]));
   // the residents and tiles the vectors are played on: in the wireframe, the residents on the ground band, the tiles by the compact form
-  const L = Object.entries(vv.focus.layout).filter(([k]) => k !== "note"), C = hab.regions.tiles.forms.compact;
-  for (const [id, box] of L) { is(box, id); if (id.startsWith("resident.")) { assert.ok(inside(box, R.window.rect)); const feet = box[1] + box[3]; assert.ok(feet > R.resident.walk.ground[1] && feet <= R.resident.walk.ground[1] + R.resident.walk.ground[3], id + " feet on the band"); } }
+  const L = Object.entries(vv.focus.layout).filter(([k]) => k !== "note"), C = vv.regions.tiles.forms.compact, K = vv.regions.chips.forms.row;
+  for (const [id, box] of L) { if (!/^(tile|room)\./.test(id)) is(box, id);   // the places and chips are the two panes', not in the wireframe 18
+    if (id.startsWith("resident.")) { assert.ok(inside(box, R.window.rect)); const feet = box[1] + box[3]; assert.ok(feet > R.resident.walk.ground[1] && feet <= R.resident.walk.ground[1] + R.resident.walk.ground[3], id + " feet on the band"); } }
   L.filter(([k]) => k.startsWith("tile.")).forEach(([, box], i) => assert.deepEqual(box, [C.first[0] + C.pitch[0] * i, C.first[1], C.first[2], C.first[3]]));
+  L.filter(([k]) => k.startsWith("room.")).forEach(([, box], i) => assert.deepEqual(box, [K.first[0] + K.pitch[0] * i, K.first[1], K.first[2], K.first[3]]));
   const G = vv.focus.graph; assert.equal(graphProblem(G), null); assert.deepEqual([G.roomKey, G.fallback], ["room", "none"]);
   const groups = new Set(Object.keys(G).filter((k) => typeof G[k] === "object")); for (const [g, e] of Object.entries(G)) if (typeof e === "object") for (const k of STEP_KEYS) if (k in e) assert.ok(edgeOk(e[k], groups) || /^(tile|resident)\.of$/.test(e[k]) || (Array.isArray(e[k]) && e[k][0] === "resident.of"), `${g}.${k}`);
   for (const [k, t] of Object.entries(vv.focus.targets)) assert.ok(isShape(t.shape) && !("ring" in t), k);
   const all = L.map(([id, rect]) => ({ id, rect, group: id.split(".")[0] }));
   let played = 0;
   for (const v of vv.focus.vectors) {
-    if (v.state === "empty") { assert.equal(moveFocus(G, [], "room", v.key, () => null, { roomAt: vv.focus.roomAt }).to, v.to); continue; }
+    if (v.state === "empty") { const chips = all.filter((t) => t.group === "room"); assert.equal(moveFocus(G, v.from === "room" ? [] : chips, v.from, v.key, (sel) => (sel === "room.shown" ? "room.0" : null), { roomAt: vv.focus.roomAt }).to, v.to, `empty: ${v.from} ${v.key}`); played++; continue; }
     const out = new Set(v.away ?? []), list = all.filter((t) => !(t.group === "resident" && out.has(t.id.split(".")[1])));
-    const res = (sel) => { const m = v.from.split(".")[1]; if (sel === "tile.of") return "tile." + m; if (sel === "resident.of") return list.some((t) => t.id === "resident." + m) ? "resident." + m : null; return null; };
+    const res = (sel) => { if (sel === "room.shown") return "room.0"; const m = v.from.split(".")[1]; if (sel === "tile.of") return "tile." + m; if (sel === "resident.of") return list.some((t) => t.id === "resident." + m) ? "resident." + m : null; return null; };
     assert.equal(moveFocus(G, list, v.from, v.key, res).to, v.to, `${v.from} ${v.key} → ${v.to}`); played++;
   }
   assert.ok(played >= 20, "the vectors are played: " + played);
   // the words: a verb of four words or fewer, contexts of six or fewer, no digits, nothing amber
-  assert.ok(wordsIn(vv.strings.look) <= 4); for (const k of ["resident", "sleeper", "painting", "out", "empty"]) { assert.ok(wordsIn(vv.strings[k]) <= 6, k); assert.ok(!/\d/.test(vv.strings[k]), k); }
+  assert.ok(wordsIn(vv.strings.look) <= 4); for (const k of ["resident", "sleeper", "painting", "empty"]) { assert.ok(wordsIn(vv.strings[k]) <= 6, k); assert.ok(!/\d/.test(vv.strings[k]), k); } for (const k of ["docked", "away"]) { assert.ok(wordsIn(vv.strings.subjectTraveller[k]) <= 6, k); assert.ok(!/\d/.test(vv.strings.subjectTraveller[k]), k); assert.equal(vv.strings.subjectTraveller[k], hab.strings.travellerContext[k], "the tile and the card say it in the same words");}
   assert.equal(vv.strings.look, "Look at {name}", "the Vivarium's own verb for a resident (Home keeps no focus on a mibi)");
   assert.ok(!JSON.stringify(vv.colours).includes("amber")); assert.deepEqual(paletteBad(vv.colours), []); assert.ok(!/outing/.test(JSON.stringify(vv.strings)));
 });
@@ -575,15 +577,15 @@ test("the Home spec file is the build spec's frame: the top bar and its line, th
   for (const s of stringsOf(home.strings.stations)) assert.ok(wordsIn(s.replace(/\{(\w+)\}/g, "x")) <= 4, s);
   for (const s of stringsOf(home.strings.needs)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
   assert.ok(!/outing|pocket/.test(JSON.stringify(home.strings)));
-  is(home.strings.line.order, ["crates", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"], "the needs in order"); for (const k of home.strings.line.order) assert.ok(home.strings.line.needs[k], k);
+  is(home.strings.line.order, ["crates", "full", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"], "the needs in order"); for (const k of home.strings.line.order) assert.ok(home.strings.line.needs[k], k);
   assert.equal(home.strings.line.needs.crates.action, "Open the Bay"); assert.ok(!("lineAction" in home.strings.needs.crates)); assert.equal(home.strings.needs.crates.action, "Open the bay", "Cargo's own words are unchanged"); is(home.strings.actions, { vivarium: "Go to the Vivarium", library: "Go to the Library", pods: "Go to Pods", incubator: "Go to the Incubator", companion: "Go to the Probe bench", bay: "Open the Bay" }); assert.equal(home.strings.line.needs.budReady.action, "Open the bud"); is(home.strings.line.needs.portrait, { action: "Open the Bay", notice: "a portrait waits in the Bay" }); is(home.strings.line.needs.crates.withPortrait, { notice: "Bay: {count} crates and a portrait", noticeOne: "Bay: a crate and a portrait" }); assert.match(home.strings.needs.crates.rule, /A ready portrait is counted apart/); assert.deepEqual(home.strings.stages, { juvenile: "young", adult: "adult", elder: "elder" });
   assert.equal(home.strings.titles.bar, "Station"); is(home.strings.readout, { home: "{n} at home", trip: "{m} on a trip", allTrip: "all on a trip", sep: " \u00b7 " });
   is(home.events.rest, { ...home.events.rest, kind: "rest", target: "home", ms: 200, hold: 380 }); assert.ok(!("crateIn" in home.events), "the crates' slide went with the Cargo module");
   // §3 (H2): the Vivarium window as written: the crop of Idle's painting at columns 64 .. 667 (cx = 64), rows 194 .. 555, the 2 px inner shade, the six walkers on the moved profile, the keep-out and the away frame
   is([R.window.rect, R.window.painting.cx, R.window.painting.at, R.window.painting.rows, R.window.shade.px, R.window.shade.edges], [R.vivarium.window, 64, [64, 194], [194, 555], 2, ["top", "left"]]); assert.equal(R.window.painting.rows[1] - R.window.painting.rows[0] + 1, R.window.rect[3], "362 rows"); assert.equal(R.window.painting.at[0] + R.window.rect[2] - 1, 667);
   assert.ok(palette.colours.some(([n]) => n === R.window.shade.colour), "the shade is a palette colour");
-  is([R.resident.max, R.resident.adult, R.resident.juvenile, R.resident.walk.ground, R.resident.walk.keepOut, R.resident.walk.profile.dx, R.resident.walk.profile.dy, R.window.foot[1]], [6, [144, 152], [104, 112], [32, 280, 588, 156], [548, 344, 80, 96], R.window.painting.cx - R.window.rect[0], -36, 435]);
-  { const vr = rd("../specs/station/vivarium.json").regions.resident, tops = vr.walk.profile.top; assert.equal(R.resident.walk.ground[1], Math.min(...tops.slice(1, 4)) - 36, "the rows start at the lowest groundTop of the columns the window shows (316 - 36)"); assert.equal(R.resident.walk.ground[1] + R.resident.walk.ground[3] - 1, R.window.foot[1], "to the foot, feetY 435"); assert.equal(R.resident.walk.ground[0] + R.resident.walk.ground[2], 620, "F.x held to 32 .. 620"); }
+  is([R.resident.max, R.resident.adult, R.resident.juvenile, R.resident.walk.ground, R.resident.walk.keepOut, R.resident.walk.profile, R.window.foot[1]], [5, [144, 152], [104, 112], [32, 280, 588, 156], [548, 344, 80, 96], undefined, 435]);   // R4: the ground profile is retired, the room's levels replace it
+  assert.equal(R.resident.walk.ground[1] + R.resident.walk.ground[3] - 1, R.window.foot[1], "to the foot, feetY 435"); assert.equal(R.resident.walk.ground[0] + R.resident.walk.ground[2], 620, "F.x held to 32 .. 620"); assert.equal(rd("../specs/station/vivarium.json").regions.resident.walk.profile, undefined, "the whole's profile is retired too");
   is([R.away.rect, R.away.fill, R.away.edge, R.away.size, R.away.caption], [[556, 352, 64, 64], "panel", "hairline", { adult: 54, juvenile: 40 }, { px: 16, colour: "frost", y: 418, centre: 588 }]); assert.equal(home.strings.away, "away"); assert.ok(inside(R.away.rect, R.window.rect) && inside(R.resident.walk.keepOut, R.window.rect), "the away frame and the keep-out are inside the window"); assert.ok(inside(R.away.rect, R.resident.walk.keepOut), "the keep-out holds the frame and its caption");
   assert.ok(!("knob" in R) && !("glass" in R) && !("bed" in R) && !("cargo" in R) && !("probe" in R), "the knob, the glass, the bed and the old column are gone"); assert.deepEqual(paletteBad(home.colours), []);
 });
@@ -656,7 +658,7 @@ test("Idle is the Vivarium's whole without the frame: one painting, the bed and 
   const w = V.theWhole; assert.equal(w.rows[1] - w.rows[0], w.at[3], "the whole's window is a 1:1 part of the painting"); assert.equal(V.ground[1] - w.rows[0] + w.at[1], 296, "its ground band where the whole's is");
   const S = R.bed.sleepers; assert.equal(R.bed.rect[1] + R.bed.rect[3], V.foot[1], "the bed on the ground band's foot"); assert.equal(S.centre, R.bed.rect[0] + R.bed.rect[2] / 2); assert.equal(S.footY, R.bed.rect[1] + 40);
   for (const [n, xs] of Object.entries(S.places)) xs.forEach((x, i) => { assert.equal(x, S.centre + S.pitch * (i - (n - 1) / 2)); assert.ok(x - 72 >= 16 && x + 72 <= 1008, "an adult sleeper 16 px inside the screen"); });
-  assert.equal(R.bed.markRect[0] + 8, S.centre); assert.ok(inside(R.resident.walk.ground, V.ground));
+  assert.equal(R.bed.markRect, undefined, "R4b: no Companion mark on the bed"); assert.ok(inside(R.resident.walk.ground, V.ground));
   assert.deepEqual(S.ink.rects[3], S.places[3].map((x) => [x - 48, S.footY - 88, 96, 88])); assert.deepEqual([S.ink.rects[3][0][0], S.ink.rects[3][2][0] + 96], [R.bed.rect[0], R.bed.rect[0] + R.bed.rect[2]]);
   for (const x of S.places[2]) assert.ok(B.has([x - 48, S.footY - 88, 96, 88].join(",")), "two sleepers' nap ink in the wireframe"); assert.ok(!("asleepMark" in S) && S.mark === null, "no asleep mark");
   assert.deepEqual(I.strings.out, { 1: "{name} is out with the Companion", 2: "Two mibis are with the Companion", 3: "Three mibis are with the Companion" });
@@ -736,7 +738,7 @@ const walk = (o, fn, trail = []) => { if (o && typeof o === "object") for (const
 // every target the screens ring, with the shape its object makes of it (§8): the radius of a plate (6) or of a square panel (0), the pod's oval, the circles, the footprint and the tab
 const SHAPES = {
   "home.json": { vivarium: { rect: 10 }, library: { rect: 10 }, pods: { rect: 8 }, incubator: { rect: 8 }, companion: { rect: 8 }, bay: { rect: 8 } },   // the bezels' radius 10 and the stations' 8: the ring (4 out) is 14 and 12
-  "vivarium.json": { resident: "footprint", tile: { rect: 6 } },
+  "vivarium.json": { resident: "footprint", tile: { rect: 6 }, room: { rect: 6 } },
   "habitat.json": { resident: "footprint", name: { rect: 0 }, species: { rect: 0, chip: 4 }, family: { rect: 0, chip: 4 }, plate: { rect: 0 }, door: { rect: 6 }, portrait: { rect: 6 }, cross: { rect: 6 }, wild: { rect: 6 }, tile: { rect: 6 } },
   "namer.json": { key: { rect: 0 }, "mod.shift": { rect: 0 }, "mod.space": { rect: 0 }, "mod.page": { rect: 0 }, "act.done": { rect: 0 }, "act.suggest": { rect: 0 } },
   "pods.json": { place: { circle: { centre: [96, 88], r: 88 } }, pod: "oval", tab: "tab", kin: { circle: "box" }, hatch: { rect: 6 }, figure: "footprint" },
@@ -796,7 +798,7 @@ test("fix 2: every region that names a device plate names the plate's own size a
     const m = /^plate-(?:device|well)-(\d+)x(\d+)$/.exec(r.plate); assert.ok(m, `${n}.${k}.plate is a kit id: ${r.plate}`);
     assert.deepEqual([+m[1], +m[2]], r.rect.slice(2), `${n}.${k}: the plate is its rectangle's size`); assert.equal(policyOf(r.plate, "master"), "painted", `${r.plate} is painted`); seen++;
   }
-  assert.equal(seen, 10, "the regions of one mibi up close, the Vivarium and the namer that name a plate; Home names none (its column of five modules went): " + seen);
+  assert.equal(seen, 9, "the regions of one mibi up close and the namer that name a plate (the Vivarium names none since R5: the strip row is two code-drawn panes); Home names none (its column of five modules went): " + seen);
   for (const [n, k] of [["habitat", "strip"], ["habitat", "tile"], ["habitat", "door"], ["vivarium", "strip"], ["vivarium", "tile"], ["habitat", "card"]]) assert.ok(!specs[n].colours[k]?.fill && !specs[n].colours[k]?.recess && !specs[n].colours[k]?.free, `${n}.colours.${k} keeps no fill role`);
   for (const [n, s] of Object.entries(specs)) assert.ok(!s.colours.module?.fill && !s.colours.panel?.shadow && !s.colours.panel?.fill, `${n}: no module fill, panel fill or shadow`);
 });
