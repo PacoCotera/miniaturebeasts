@@ -62,6 +62,7 @@ typedef struct { char id[24]; unsigned seed, s; int w, h, x, feet, facing, walki
 static wk_t g_w[MAXR]; static int g_nw; static uint32_t g_t0; static int g_have_t0;
 static long g_wticks;   /* the walk's group ticks applied since its origin g_t0: tick j is at 40 j ms and steps group j mod 2 */
 static int g_ctx = -1;   /* the walk's last context (0 none, 1 Idle, 2 the Vivarium's whole): it starts again from the seeds when the other shows */
+static char g_room[24];   /* the shown room (regions.room.id) the walk was last loaded for: another room restarts the walks (R4c) */
 void home_hidden(void) { g_have_t0 = 0; g_ctx = -1; library_reset(); }   /* the moving household starts again from the seeds too (No replay) */
 static unsigned wr(wk_t *k) { k->s = k->s * 1664525u + 1013904223u; return k->s >> 16; }
 static int iabs(int v) { return v < 0 ? -v : v; }
@@ -469,7 +470,8 @@ static int ent_focused(const ent_t *e, const char *cur);
 static int ent_load(const char *cur) {
   g_ne = 0; walk_load();
   int motion = v_pbool("motion", 1); uint32_t now = anim_now(); g_mv_motion = motion;
-  { int ctx = g_viv ? 2 : g_idle ? 1 : g_home ? 3 : 0; if (g_ctx != ctx) { g_have_t0 = 0; g_ctx = ctx; } }
+  { int ctx = g_viv ? 2 : g_idle ? 1 : g_home ? 3 : 0; const char *rid = v_pstr("regions.room.id");   /* a new screen context or a new shown room: the walks start from their seeds on the room's own levels (R4c) */
+    if (g_ctx != ctx || strcmp(g_room, rid)) { g_have_t0 = 0; g_ctx = ctx; snprintf(g_room, sizeof g_room, "%s", rid); } }
   if (!g_have_t0) { g_nw = 0; g_nm = 0; g_nnap = 0; g_t0 = now; g_wticks = 0; g_have_t0 = 1; memset(&g_hh, 0, sizeof g_hh); g_hh.next_stir = -1; }   /* Home shown again (home_hidden ran in between): the walks start from their seeds */
   if (motion) walk_clock(now);
   int nres = v_plen("regions.residents"); if (nres > MAXR) nres = MAXR; g_nres = nres;
