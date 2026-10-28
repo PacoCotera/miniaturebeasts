@@ -2,7 +2,8 @@
  "note": "Vivarium rooms 2-4 (showpieces): per-room data for the rooms-ticket gate (architect package.md 2.9; lead's rulings after sb: in-band occluders with keepOut, per-room measured tops). Painting coordinates (1024x568); the whole's window y = painting y - 80. Measured by the art director at 1x on the signed day, +-5 px.",
  "mist": {
   "sheet": "source/raw/mist-sheet-a.jpg (mist-sheet-a, gemini-3-pro-image)",
-  "wisps": "rooms/mist/mist-wisp-1..6.png: white, alpha from the sheet's luminance (black key at 12), cut at 0 MXN; graded per room and light by hand before use"
+  "wisps": "rooms/mist/mist-wisp-1..6.png: white, alpha from the sheet's luminance (black key at 12), cut at 0 MXN; graded per room and light by hand before use",
+  "alpha_in_file": "alpha_in_file: true on a mist piece means the manifest's alpha is already multiplied into the file's alpha channel (tools/roomcut.py wisp); the placer writes no opa for it (opa 255), so the mist is drawn once at the signed strength (ad-r3-sign.md ruling 1)"
  },
  "boulders_zen_superseded": {
   "day": "rooms/signed-idle-boulders-day.png",
@@ -865,26 +866,14 @@
     "kind": "mist",
     "wisp": "rooms/mist/mist-wisp-1.png",
     "rect_painting": [
-     536,
-     318,
-     96,
-     24
+     530,
+     312,
+     104,
+     26
     ],
-    "alpha": 0.75,
+    "alpha": 0.7,
+    "alpha_in_file": true,
     "what": "fog brimming from the bowl"
-   },
-   {
-    "id": "ferns-mist-3",
-    "kind": "mist",
-    "wisp": "rooms/mist/mist-wisp-3.png",
-    "rect_painting": [
-     548,
-     346,
-     70,
-     14
-    ],
-    "alpha": 0.5,
-    "what": "fog rolling down over the bowl's foot"
    },
    {
     "id": "ferns-mist-4",
@@ -897,6 +886,7 @@
      24
     ],
     "alpha": 0.45,
+    "alpha_in_file": true,
     "what": "fog drifting right along the back edge, never below row 362"
    }
   ],
@@ -1020,7 +1010,8 @@
     "seated": "rooms/seated-idle-ferns-dawn.png",
     "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
    }
-  }
+  },
+  "pieces_ruling": "art director, Tue 27 Oct 2026 18:54 (Mexico City), ad-r3-sign.md rulings 2-3: ferns-mist-1 at the cut's own rect [530,312,104,26] and alpha 0.7 (tools/roomcut.py MIST and pieces-<light>.json; the 96x24 rect was a stale record); ferns-mist-3 dropped (never cut, not in the signed composite)"
  },
  "roots": {
   "concept": "bluebell bank under a silver-grey beech (option sheet roots b, tile A, the owner's pick: \"bluebells is lovely\"); rooms/pick-roots-bA.png, the tile's second hollow cloned over with moss at 0 MXN (tools/roomscene.py)",
@@ -1200,6 +1191,7 @@
      18
     ],
     "alpha": 0.6,
+    "alpha_in_file": true,
     "what": "the mister's spray, drifting left from the nozzle and fading"
    }
   ],
@@ -1268,7 +1260,8 @@
     },
     "pieces": "rooms/pieces/roots/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
     "seated": "rooms/seated-idle-roots-night.png",
-    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level"
+    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
+    "pieces_regrade": "art director, Tue 27 Oct 2026 18:54 (Mexico City), ad-r3-sign.md: roots-stone-2-night regraded at 0 MXN (tools/roomcut.py gain_night 0.98): mean L 103 -> 90 against the floor's 87, so it no longer outranks the sleepers; composite-idle-roots-night retaken; the other night pieces unchanged"
    },
    "dusk": {
     "idle": "rooms/signed-idle-roots-dusk.png",
@@ -1332,5 +1325,120 @@
   "options_b": "source/raw/options-roots-b.jpg (options-roots-b): A bluebell carpet (the owner's pick), B spring wildflower bank, C sunny dewy morning, D silver birch bank"
  },
  "enclosure": "art director's ruling: the enclosure reads, light-touch, by (1) the foot strip, rows 552-567, painted in every room as a substrate cross-section seen through the front glass (soil over a darker drainage layer), (2) each room's placed life-support piece as the device cue, (3) the face's own window chrome (home.json shade, 2 px). No painted glass edges, posts or box (they turned every picture into a cabinet in rounds c and sa). Optional for the owner: a faint glass corner sheen at the far side edges, a 0 MXN hand layer.",
- "pieces_note": "Pieces by the composite method, cut and placed by hand at 0 MXN (tools/roomcut.py). Painting coordinates (1024x568); the whole's window y = painting y - 80. rect [x, y, w, h]; foot = the lowest row of the piece's ink; occluders are hard-edged straight alpha (ARGB8888); draw order by foot row with the walkers. Cut and placed by the art director, Mon 26 Oct 2026 19:04 (Mexico City), tools/roomcut.py."
+ "pieces_note": "Pieces by the composite method, cut and placed by hand at 0 MXN (tools/roomcut.py). Painting coordinates (1024x568); the whole's window y = painting y - 80. rect [x, y, w, h]; foot = the lowest row of the piece's ink; occluders are hard-edged straight alpha (ARGB8888); draw order by foot row with the walkers. Cut and placed by the art director, Mon 26 Oct 2026 19:04 (Mexico City), tools/roomcut.py.",
+ "hashes_note": "hashes: the sha256 of every rooms file the placer copies (prototypes/ui/tools/place-masters.mjs placeRooms), keyed by its masters-pods path; a copied file with another hash is refused. 16 seated, 16 near, 80 pieces. signed-idle-<room>-<light>.png stays pinned by each room's sha256. Filled by the art director, Tue 27 Oct 2026 18:54 (Mexico City).",
+ "hashes": {
+  "rooms/pieces/boulders/boulders-arm-fill-dawn.png": "eee517d24f63618463951e2789403e6f1fe9d6ac55fbe309003e6e5c87c09a77",
+  "rooms/pieces/boulders/boulders-arm-fill-day.png": "3a7cceea6f5a3129fa3848383b8255348cbbeb2af5a8279aaf85bc9bf0c209ed",
+  "rooms/pieces/boulders/boulders-arm-fill-dusk.png": "30514d5266f1bd8b51929b4c5b260d27196c10bf8c124e346a6d82d099a383fe",
+  "rooms/pieces/boulders/boulders-arm-fill-night.png": "5823af9f0daba7d1eccb4829c746ce6f68af3efa892d1ad1076ae948120ece4e",
+  "rooms/pieces/boulders/boulders-cushion-1-dawn.png": "c2d51715dbf43d9babc0d0cfe2f8847283b1dc2ea4f4b9cc75c5a771988ed530",
+  "rooms/pieces/boulders/boulders-cushion-1-day.png": "844416b39e5e83deedc814f899b4ecf032c6d97699d28ab6444fc74bd0b8c713",
+  "rooms/pieces/boulders/boulders-cushion-1-dusk.png": "892495f2d6433b0bb9e4b31eb09675ab1097af129eb8fc00d39fd232fea389b0",
+  "rooms/pieces/boulders/boulders-cushion-1-night.png": "c7a50b1b91bd40e4cd53b9e607d58c14fa8149653c07b7c5a1fba830079b6a30",
+  "rooms/pieces/boulders/boulders-lantern-dawn.png": "c62c2d5d8c2101b986b8546c93ef46676c88a6622ef8d7614738f273cc6c6a3d",
+  "rooms/pieces/boulders/boulders-lantern-day.png": "503271749a33fceb249b7cb7d9e6bac11da7ee7a0c7e8a35e9c7485afb856998",
+  "rooms/pieces/boulders/boulders-lantern-dusk.png": "1a4dbc07b8c53eff542b096b5f0fa6803737accf60f9f5137a79120e59c07ea3",
+  "rooms/pieces/boulders/boulders-lantern-night.png": "73d07004d753e11a0ca6eea734085c78ab8dc2555e3daf15692e79ce4fac5bf4",
+  "rooms/pieces/boulders/boulders-shishi-dawn.png": "46703181651c2e918a32338386dc2d5c641cdbe7c379f65aa295f07a6dedae21",
+  "rooms/pieces/boulders/boulders-shishi-day.png": "1a3ede848788dd1a859cfef96c9e717dcad33cca23ed474d76e3d8eab78915e3",
+  "rooms/pieces/boulders/boulders-shishi-dusk.png": "56e60363e883806e8230d964339377668ce5a40fbb2e79c827dd28a98828a2a4",
+  "rooms/pieces/boulders/boulders-shishi-night.png": "74c9ccac4fa1d7f67f5da8e36b13fc670b28672811366ec4318cf50889bd2dee",
+  "rooms/pieces/boulders/boulders-stone-2-dawn.png": "b05cbd0911e52fb61025e9312084b3bd661a00890ae370e35c97862fb258fca6",
+  "rooms/pieces/boulders/boulders-stone-2-day.png": "353b95b496dc3d67db241de176474e02244805cc1e8627380b7f691654323f90",
+  "rooms/pieces/boulders/boulders-stone-2-dusk.png": "c6568b55b4a953b7763ce65d1d07f9dc10de1a01a8736bbd0f2c59945b0286c2",
+  "rooms/pieces/boulders/boulders-stone-2-night.png": "582a04517707892a3c728aa8724a9e34376942c9aa7d595bdfea1b4b61c7a32e",
+  "rooms/pieces/ferns/ferns-copper-1-dawn.png": "ceee3ff0c7d54475011fb87c180e6884d9c0f943dcbc955e5c598b1cb7618738",
+  "rooms/pieces/ferns/ferns-copper-1-day.png": "bb10619b45062221bc528282ffd2cbf8ca2587ef70a55feaa45e1b7582caf9b8",
+  "rooms/pieces/ferns/ferns-copper-1-dusk.png": "ad0dbbe796b53ac74a7255378c3a0ae70cc66e07dcf2c3a096880d1e07ac25cc",
+  "rooms/pieces/ferns/ferns-copper-1-night.png": "0a3b2dda375491681ffb75b1e3d62f8d4739a144b19fe3951066c69e0ec0d45e",
+  "rooms/pieces/ferns/ferns-copper-2-dawn.png": "bf8ced61af7bee984b235ab33ec890b4b113eabad4914959dbb8563bde288cef",
+  "rooms/pieces/ferns/ferns-copper-2-day.png": "507ab36aa3c2ab081ee9cb2d9e66c11e74200fe2f5939014d71a1e101bae3545",
+  "rooms/pieces/ferns/ferns-copper-2-dusk.png": "718c58c1e41f26fcea76e4b4e705944cea28e1d76d0bacd8b97ea6b20432d502",
+  "rooms/pieces/ferns/ferns-copper-2-night.png": "51c061025fb1bec7bee99737410b57a62d7a762eb4c62728d82edb5ae8091a98",
+  "rooms/pieces/ferns/ferns-crozier-1-dawn.png": "91727dcae4d9913913b89a8ca3f57a61d89b9c0aa38a71bd842e5ccb6e01f93b",
+  "rooms/pieces/ferns/ferns-crozier-1-day.png": "30e85207bbbdfe4042da79ab9ffe61a04b5f3d181104dfbb4be55f9e525f2ade",
+  "rooms/pieces/ferns/ferns-crozier-1-dusk.png": "cec848025472d40a88202f6a9d6505b8654f0335b6e67690bec6f1efb6cc823f",
+  "rooms/pieces/ferns/ferns-crozier-1-night.png": "5ab4b6e651d6d3b8205b15e110d0b002124bc3d65c19933d77820d40fdb40447",
+  "rooms/pieces/ferns/ferns-fern-1-dawn.png": "72a1cac17207ccb264697440794a682ce6fdcee97b88ccc755dc4bfc6af937b6",
+  "rooms/pieces/ferns/ferns-fern-1-day.png": "b79f03dd5bdc45fa1e98d4e66bb1f9e0e3c503feb9713127c12dbd94d5d1dff7",
+  "rooms/pieces/ferns/ferns-fern-1-dusk.png": "c78f4a6858618f00a09f2140f85fff33b02f51cef1d75f427d99d70a56feca74",
+  "rooms/pieces/ferns/ferns-fern-1-night.png": "215fca8d852335078d6b4493bde76ab7bc6b58bedd30beeb0ee55f7527e2c477",
+  "rooms/pieces/ferns/ferns-fogger-dawn.png": "8d6d6e5c42d354e593d2f5dcd250ca4f721fe2facf129eeeae07afec98bfa12e",
+  "rooms/pieces/ferns/ferns-fogger-day.png": "e83f349bd2975ae96d6facc3dce67033bbd21199e0bb55295f6980013824a7df",
+  "rooms/pieces/ferns/ferns-fogger-dusk.png": "3e1f2bcf6816748c5d3006a0526f08576accf508ca3fda6c388af4e6d2bcb1b7",
+  "rooms/pieces/ferns/ferns-fogger-night.png": "6640eb0d9fdb7bfa6e98771bdcb388c6e1254c1b610a8327056537e37489381f",
+  "rooms/pieces/ferns/ferns-mist-1-dawn.png": "f3cccbfd7276f812012cd5f62fefc570bc0e3aa6f45077f4af5e7466ea0a1b86",
+  "rooms/pieces/ferns/ferns-mist-1-day.png": "21d3d7164da221acff848ab8f3ac7ace302af554bd464cef200dea65fa9056d9",
+  "rooms/pieces/ferns/ferns-mist-1-dusk.png": "748833641e419ae2f30f820cbe1b6a9aeeef5453b1051f1113c4e0cf6df8a53e",
+  "rooms/pieces/ferns/ferns-mist-1-night.png": "33d9379e01c92dae3b84a0046c22b4e2302dc3c52071068f825bdab59cb46ab3",
+  "rooms/pieces/ferns/ferns-mist-4-dawn.png": "188413c55de7f88f97c2195ee819391262032eac4219a0bcc3eff974fd4cc0dd",
+  "rooms/pieces/ferns/ferns-mist-4-day.png": "aaaa86134e27813dabfdd576537a772a2ebe508d936fa9ecdae272ece5f15609",
+  "rooms/pieces/ferns/ferns-mist-4-dusk.png": "f7a82f09a4cb9484133b46b87445e25e656a3f2d2925bcebd8035a77b32047a9",
+  "rooms/pieces/ferns/ferns-mist-4-night.png": "06a6fa65410860f377a4fd4556295775db9aa6928620335c02fb037ef2c4beae",
+  "rooms/pieces/reeds/reeds-raincup-dawn.png": "9087183f57a18034f6af2ab99c969d48a21a68b043e0ed97f0eeb0f4a28c0746",
+  "rooms/pieces/reeds/reeds-raincup-day.png": "08751efb9877642ac3ab19668673c8eef06944c1648e9c3da372f1bc9baa2a39",
+  "rooms/pieces/reeds/reeds-raincup-dusk.png": "94bbae6a27c3c353521facca0fcfee9c5162886cdad27da6b4774783213462e9",
+  "rooms/pieces/reeds/reeds-raincup-night.png": "2a0d945419bbe4b4c9ae50fe30e356338cd0ac45f2e27d9d079461c70113d938",
+  "rooms/pieces/reeds/reeds-sedge-2-dawn.png": "5f8a5c68085e08ad00732d492e03a5b843defd932880f303b81f4b57d1476675",
+  "rooms/pieces/reeds/reeds-sedge-2-day.png": "9b30bd2e5b3e815a9c415a0ec4686149373df111f79bbbf9e228591d3e306fee",
+  "rooms/pieces/reeds/reeds-sedge-2-dusk.png": "bb5aeeeb07d60516972b95043bc6c4cacb844cf8f06869f06150cda846f7cb5c",
+  "rooms/pieces/reeds/reeds-sedge-2-night.png": "f0cd8b80b88314dcc713d84749798799f59a0e1000cfd0dcc018a273c5b87e90",
+  "rooms/pieces/reeds/reeds-stone-1-dawn.png": "c2c3e400af73b5d6bb4e74e4b164687243a828b8c5d5533b2281b1c412cd2d17",
+  "rooms/pieces/reeds/reeds-stone-1-day.png": "dff8542924bb245c29aaaa482c87de8ae252a2cea09f69bce5dcdaa650d7e7cb",
+  "rooms/pieces/reeds/reeds-stone-1-dusk.png": "e9e2a8d20d898dec37d6f0e7727c260047d3f8cb4377da8be1fb36f3d47d68d2",
+  "rooms/pieces/reeds/reeds-stone-1-night.png": "c964d467dbec36e781d3b9c7f8eb1195d7a51dc281b490d1481edb8fc7939efa",
+  "rooms/pieces/roots/roots-bed-dawn.png": "fd0ceaca59744a8bc2fff727d2b27d1ec52015993900821093eded2358080dde",
+  "rooms/pieces/roots/roots-bed-day.png": "81af394f684ee28703a927a1607be6070c19cc1bd1e5aab46ad482d431798ade",
+  "rooms/pieces/roots/roots-bed-dusk.png": "31d26d22a2ff40de5d715de98e7327b48c5a64887553d2590b94816ac0bd1655",
+  "rooms/pieces/roots/roots-bed-night.png": "9e43e9b1c477ccfcd2676c737ee2b25117d2740202c6ba6e2612f0bc5ec25164",
+  "rooms/pieces/roots/roots-mist-2-dawn.png": "d9427a17f39ee1a228f641f5114827dfbe67f86205adf5d24178b442bf925504",
+  "rooms/pieces/roots/roots-mist-2-day.png": "c9efaaf5dae725f48a37c90a771f0044390e0c219e69658b1d3e8755d4dbd7d9",
+  "rooms/pieces/roots/roots-mist-2-dusk.png": "297d42ce4b0212ea4eab62f265baaa99826ac292e8306f27c44d3f4cc6860d20",
+  "rooms/pieces/roots/roots-mist-2-night.png": "81191314719ac246f44bebf48ef2f6644f4bcdc2148e1128f535827d08811c65",
+  "rooms/pieces/roots/roots-mister-dawn.png": "1523c3e35c49896567f733533d3ccc868bea6023c3901ed6b76820a4f29f1ed2",
+  "rooms/pieces/roots/roots-mister-day.png": "ef23be41d0f8da9940a80132c59215b4dbd33d0888eff0007b012fc848bd1931",
+  "rooms/pieces/roots/roots-mister-dusk.png": "79176b7a70178bcb73a5f7d0b4143d03c366a82e77ad885b9bb8f2f611366773",
+  "rooms/pieces/roots/roots-mister-night.png": "ead6fe428af16c3fc0d8f3d68a586ba0582a752670ff7b160ebcc92aa60c87ec",
+  "rooms/pieces/roots/roots-sorrel-1-dawn.png": "3e2f0de19dc9ab20e52a14a662469b95c046be00719e72fb1fad22d6afc3d2cc",
+  "rooms/pieces/roots/roots-sorrel-1-day.png": "4f5d951219d0656e31b03aa075cf2c94ebf1fd44f48e46f74512b44a5fd93e07",
+  "rooms/pieces/roots/roots-sorrel-1-dusk.png": "0fb3578d3d04b5a7f87432fd480985e2f82c2eeb86d062ac53ac6f2b62a26d83",
+  "rooms/pieces/roots/roots-sorrel-1-night.png": "1dfc7a801e98dce32b852ad90b1d795d94298117b1659e09dc634f3da4340b7e",
+  "rooms/pieces/roots/roots-stone-2-dawn.png": "fbdecc1370368967041de199e9abfb65f205d1ba6aea3ea8c2d6205d310e4b75",
+  "rooms/pieces/roots/roots-stone-2-day.png": "4864e38ad8ba24d1b67bbb05ba54d07fb3d951627714438ca4108e6625ffc474",
+  "rooms/pieces/roots/roots-stone-2-dusk.png": "c320ffe30aac80920ab89c282bfdd5d7492604f89d6a5e34e17bcb7680dc3fee",
+  "rooms/pieces/roots/roots-stone-2-night.png": "5b1eff398b9794b59091ba5d9993b1f319d5fb832bcf8868b0ebf2a93328fe8d",
+  "rooms/seated-idle-boulders-dawn.png": "57cc6bb4da6dace8e935ddd15c35be04e7d92c4ec3f34d5e6dff01de19e15e91",
+  "rooms/seated-idle-boulders-day.png": "d28fe65e5d7f604d431b8e99bfb9db8df987b84175828159c8e54535690fd29e",
+  "rooms/seated-idle-boulders-dusk.png": "ba1afec8d055e533a03e92b913e52f3bfefc92b652938ce48e67b2f419e6bb34",
+  "rooms/seated-idle-boulders-night.png": "613c2affe08f21c7f68ee2ff4ab009c6b12f05814dace163269837ee867cb129",
+  "rooms/seated-idle-ferns-dawn.png": "c090eca3b400e67e0db854aa1c7867ab45971b9429b8001911b2709b93c96100",
+  "rooms/seated-idle-ferns-day.png": "db5a9e40c05622af7292cbf83fdac9b34def404528f3897a94905df754cd29d8",
+  "rooms/seated-idle-ferns-dusk.png": "df34388963419519cf0e71f29963aca5689294b7737f2c19b6a791fcd15fae03",
+  "rooms/seated-idle-ferns-night.png": "32f44c6279db5f4da0099d08c60ce3a39b556dce4b0dfa9a240fa14141625a90",
+  "rooms/seated-idle-reeds-dawn.png": "2a797923f764ca3cd0d935d8aebf8174d11f72a07ed34e236aab461efbaa1ccf",
+  "rooms/seated-idle-reeds-day.png": "0e26f3b5a858f772e7429fd1486f1a34d9fb17883cfac48482279aac996012ec",
+  "rooms/seated-idle-reeds-dusk.png": "d008930a8f8ebeaa4e8ec458a60d72742b187b966f479f246ceabe74123173d0",
+  "rooms/seated-idle-reeds-night.png": "32e456785beb7007ad45a1353d364a7884c547cd3278eee7344f49ec6277e3c3",
+  "rooms/seated-idle-roots-dawn.png": "130853a8c49a2677d3ba3d0f3c41cdd7afda306dbb40a5f60d167b94135187c2",
+  "rooms/seated-idle-roots-day.png": "ca190df530d12a1e30b147ac91d9db059c399cd3941b3604390c53fd1ee843af",
+  "rooms/seated-idle-roots-dusk.png": "5c1c7418c309555637ad7bf714d96390f9c68acbe8bb4747fa373b121666538e",
+  "rooms/seated-idle-roots-night.png": "b4fb4edc952be29b1e3fece56d0093e042e31155c2fde0e68cd85a88c0760a14",
+  "rooms/signed-near-boulders-dawn.png": "c34449ac4174ca12c1e4062ff3f962df2b83a2c1f56a80b417dad6d2273359d3",
+  "rooms/signed-near-boulders-day.png": "26fa7c65804be6790303a1aec32ec949ad8a1ed11645d81c71b726392c74b067",
+  "rooms/signed-near-boulders-dusk.png": "a92e4781cda1c50cbd79cb3cf867a2d23e83d4abdd52a4ba72f78d90c9281ad2",
+  "rooms/signed-near-boulders-night.png": "03bc04d68228efe3ae5aa6760e528827e78aa0bfe4f151a784e2eae3b17bc44b",
+  "rooms/signed-near-ferns-dawn.png": "01c816a96551e7e19a424deb4ebdf66e2a0a11745dc93939ffd2b2e29bcfe9b2",
+  "rooms/signed-near-ferns-day.png": "c65967777b584a4c6f4ecd78a792935060f0c6330166e9284538576a5a68998a",
+  "rooms/signed-near-ferns-dusk.png": "3288cf06a3252723b0da0d08495c5df8980ec9a6bd820efda6f1ca03c2fc328f",
+  "rooms/signed-near-ferns-night.png": "b8e61c718136df47f32d655370b13d21de0c42f55df792deea4710f7b49eb589",
+  "rooms/signed-near-reeds-dawn.png": "81f459865ef7e2b6a29c0bc41f8e49a6077d9159d5d28ddccf243cd5223ceafd",
+  "rooms/signed-near-reeds-day.png": "2f7cc4796a0c570767546b48d1bb7565736be85e77e687152ec36c194be50170",
+  "rooms/signed-near-reeds-dusk.png": "ed3026a4f1bdc5cfdd787dff6ced7e5ca3f88efe40610c7a4614b089c5a23511",
+  "rooms/signed-near-reeds-night.png": "ae6aa1e2e28abc4ccc53b5c9b2526b5b5b143ef982ef5ce427b77685272d118b",
+  "rooms/signed-near-roots-dawn.png": "46bf20571955b7e2a69997f7c548c11ece6e2930da0a75cdbdc88a1481741159",
+  "rooms/signed-near-roots-day.png": "70c28ac88799aacdd9a5a42023409f6f34b1c10899f3f3fb0df64d1ac51f651c",
+  "rooms/signed-near-roots-dusk.png": "a1a597963fdadbefd77779567a2ee1482e61f93748f477ca6dac323bc2b4dde6",
+  "rooms/signed-near-roots-night.png": "a23989aedd104b57da62f55eefd4c3bfd05f2ced92d1e523c05e350b2dbe43c4"
+ }
 }

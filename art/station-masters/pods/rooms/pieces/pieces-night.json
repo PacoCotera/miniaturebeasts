@@ -92,6 +92,7 @@
     18
    ],
    "alpha": 0.6,
+   "alpha_in_file": true,
    "what": "the mister's spray, drifting left from the nozzle and fading"
   }
  ],
@@ -411,6 +412,7 @@
     26
    ],
    "alpha": 0.7,
+   "alpha_in_file": true,
    "what": "fog brimming from the bowl"
   },
   {
@@ -424,6 +426,7 @@
     24
    ],
    "alpha": 0.45,
+   "alpha_in_file": true,
    "what": "fog drifting right along the back edge, never below row 362"
   }
  ]

@@ -81,7 +81,7 @@ def keepout(x, foot, w): return [x + 6, foot - 15, w - 12, 18]
 ROOMS = {
  "roots": {"sheet": "pieces-roots-b", "pieces": [      # the bluebell room (round u): sheet b's occluders and mister; sheet a's bed cut regraded to the new look (wb 0.85)
    {"id": "roots-sorrel-1", "kind": "occluder", "level": "main", "box": (140, 95, 662, 352), "fit": (96, 48), "x": 118, "foot": 541, "hard_at": 0.4, "erode": 4, "what": "low moss-and-wood-sorrel tuft, leafy, no flowers"},
-   {"id": "roots-stone-2", "kind": "occluder", "level": "main", "box": (835, 108, 1206, 336), "fit": (68, 42), "x": 684, "foot": 539, "what": "small rounded silver-grey stone, moss cap; clear of the bed's keepOut (x 752) and the away corner (x 668)"},
+   {"id": "roots-stone-2", "kind": "occluder", "level": "main", "box": (835, 108, 1206, 336), "fit": (68, 42), "x": 684, "foot": 539, "gain_night": 0.98, "what": "small rounded silver-grey stone, moss cap; clear of the bed's keepOut (x 752) and the away corner (x 668)"},
    {"id": "roots-bed", "kind": "bed", "level": "main", "sheet": "pieces-roots-a", "box": (435, 314, 1001, 492), "fit": (192, 56), "x": 792, "foot": 551, "wb": 0.85, "what": "the sleeping nest (pieces-roots-a's cut) regraded to the bluebell room; the shipped home-bed shape and seat [792,496,192,56]"},
    {"id": "roots-mister", "kind": "fitting", "level": None, "box": (150, 455, 490, 692), "fit": (50, 35), "x": 920, "foot": 356, "flip": True, "what": "a small pewter-grey line ending in a dull brass nozzle, wrapped by a root and a moss sprig, lying in the back moss mound at the right under the bluebells, resting on the moss, pointing left; its spray is a mist wisp (ambient)", "shade": (0.85, 0.62)}]},
  "reeds": {"sheet": "pieces-reeds-a", "pieces": [
@@ -138,7 +138,7 @@ def run():
                 if pc["x"]: over(comp, p, x, y)
                 continue
             seat = [x - 24, y - 16, w + 48, h + 24] if pc["kind"] != "occluder" else [x - 40, y - 40, w + 80, h + 50]
-            p = grade(p, scene, seat, pc.get("gain", 1.12 if pc["kind"] == "occluder" else 1.0), pc.get("wb", 0.5))
+            p = grade(p, scene, seat, pc.get("gain_" + LIGHT, pc.get("gain", 1.12 if pc["kind"] == "occluder" else 1.0)), pc.get("wb", 0.5))     # gain_<light>: one light's own gain
             p = shade(p, *(pc.get("shade") or ((1.06, 0.86) if pc["kind"] == "occluder" else (1.0, 1.0))))
             if pc["kind"] in ("occluder", "fitting") and not pc.get("behind"): contact(comp, x, pc["foot"], w); contact(seated, x, pc["foot"], w)
             beh = foliage(scene, x, y, w, h, pc["behind"]) if pc.get("behind") else None
@@ -180,7 +180,7 @@ def run():
         for m in MIST.get(room, []):
             x, y, w, h = m["rect"]; q = wisp(m["wisp"], w, h, m["alpha"]); q = mistgrade(q, scene, [x, y - 20, w, h + 40]); over(comp, q, x, y)
             save(q, f"rooms/pieces/{room}/{room}-mist-{m['wisp']}-{LIGHT}.png")
-            rec.append({"id": f"{room}-mist-{m['wisp']}", "kind": "mist", "wisp": f"rooms/mist/mist-wisp-{m['wisp']}.png", "rect_painting": m["rect"], "alpha": m["alpha"], "what": m["what"]})
+            rec.append({"id": f"{room}-mist-{m['wisp']}", "kind": "mist", "wisp": f"rooms/mist/mist-wisp-{m['wisp']}.png", "rect_painting": m["rect"], "alpha": m["alpha"], "alpha_in_file": True, "what": m["what"]})
         Image.fromarray(seated.round().clip(0, 255).astype(np.uint8)).save(f"rooms/seated-idle-{room}-{LIGHT}.png")     # the painting the engine draws under the pieces: the signed scene plus the seats' contact shadows
         Image.fromarray(comp.round().clip(0, 255).astype(np.uint8)).save(f"rooms/composite-idle-{room}-{LIGHT}.png"); out[room] = rec
     json.dump(out, open(f"rooms/pieces/pieces-{LIGHT}.json", "w"), indent=1)     # rects and feet are the day's: every light is cut from the same sheet and placed 1:1 at the same rects; print("ok", LIGHT)
