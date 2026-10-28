@@ -319,6 +319,16 @@ test("the walkers keep to the room's main floor in the window, x 32 to 620, feet
     assert.ok(moved > 0 && seen.size === 5, `${name}: all five shown walked and were read`); assert.deepEqual(f.errors(), []);
   }
 });
+test("Home's starts (R4b-1b, home.json regions.resident.walk.start): five shown open apart, no shown resident's ink box overlapping another's widened by 25 px each side, on the first frame; Idle and the whole have no such rule", { skip }, async () => {
+  assert.equal(RW.startWiden, 25, "home.json regions.resident.walk.startWiden"); assert.match(RW.start, /8 draws/);
+  for (const [name, o] of [["stills", { motionSets: false }], ["moving", { motionSets: true }]]) {
+    const sc = homeScene({ adults: 5, juveniles: 3, ...o }), f = await bootScene(sc, { motion: true, dir: node }), res = sc.props.regions.residents, M = f.M, shown = res.map((p, i) => i).filter((i) => res[i].shown !== false);
+    runFrames(f, 1000); const ink = shown.map((i) => { const x = M._face_test_rest(i, 4), feet = M._face_test_rest(i, 5), w = M._face_test_rest(i, 11), h = M._face_test_rest(i, 10); return [x, feet + 1 - h, w, h]; });
+    assert.equal(shown.length, 5); for (const b of ink) assert.ok(b[2] > 0 && b[3] > 0, `${name}: ink boxes read`);
+    for (let a = 0; a < 5; a++) for (let b = 0; b < 5; b++) if (a < b) { const A = ink[a], B = ink[b], meet = A[0] < B[0] + B[2] + 25 && B[0] - 25 < A[0] + A[2] && A[1] < B[1] + B[3] && B[1] < A[1] + A[3]; assert.ok(!meet, `${name}: ${a} ${JSON.stringify(A)} and ${b} ${JSON.stringify(B)} open on a heap`); }
+    assert.deepEqual(f.errors(), []);
+  }
+});
 test("the away frame: 64 x 64 at (556, 352), a panel ground and a hairline edge, the first mibi out on a trip at its world size bottom-centred, the caption 'away' in frost centred under it at y 418; with nobody away there is none", { skip }, async () => {
   const sc = homeScene({ adults: 4, docked: false, carry: [1, 2] }); sc.props.regions.glass.away.figure = [47, 105, 49, 43];   /* an adult's figure as the host measures it: [dx, dy, W, H] in its 144 x 152 picture (the Node test has no layered stand to measure) */
   const f = await bootScene(sc, { motion: false, dir: node }), fr = homeSpec.regions.away;

@@ -28,7 +28,11 @@ void build_waitingLamp(const char *id, int x, int y, int shown) {
 
 /* the module of the screen whose spec is `sp`: its device plate (fix 2: a painted picture placed 1:1, no fill, edge or bevel row), its engraved word at the spec's offset and its lamp (a module whose spec says `"lamp": null` has none, and no lamp node); the objects are the screen's. `dy` is the
    focused module's lift (negative). Draws region `key`. Home's and one mibi up close's modules are this one build. */
-void build_module(const char *sp, const char *key, int dy, const char *lampState) {
+static void module_build(const char *sp, const char *key, int dy, const char *lampState, int held);
+void build_module(const char *sp, const char *key, int dy, const char *lampState) { module_build(sp, key, dy, lampState, 0); }
+/* held: the module's action is held (a carried mibi's card, habitat.json heldRule): its engraved word in the frame's dimmed role (colours.dim, mist) */
+void build_module_held(const char *sp, const char *key, int dy, const char *lampState, int held) { module_build(sp, key, dy, lampState, held); }
+static void module_build(const char *sp, const char *key, int dy, const char *lampState, int held) {
   int r[4], word[2], lampAt[2] = { 0, 0 }; char p[64]; snprintf(p, sizeof p, "regions.%s.rect", key); v_srect(sp, p, r);
   word[0] = v_sk(sp, v_fmt("regions.%s.word", key), 0); word[1] = v_sk(sp, v_fmt("regions.%s.word", key), 1);
   const char *lraw = spec_raw(sp, v_fmt("regions.%s.lamp", key), NULL); int hasLamp = lraw && lraw[0] == '[';
@@ -37,7 +41,7 @@ void build_module(const char *sp, const char *key, int dy, const char *lampState
   { const char *plate = v_pstr(v_fmt("regions.%s.plate", key)); v_region(v_fmt("%s.plate", key), LAYER_PAINTED); if (*plate) v_sprite(v_fmt("%s", key), plate, x, y, r[2], r[3]); }   /* its own region "<module>.plate", so the module's objects keep theirs */   /* the module is its device plate (fix 2 F1), the region's first node, lifting with it; no picture, no plate: no fill falls back (F6) */
   if (hasLamp) { v_name(v_fmt("%s.lamp", key)); lamp(v_fmt("%s.lamp", key), x + lampAt[0], y + lampAt[1], lampState); }   /* the lamp logs as its own region, with the module's lift */
   char w[40]; spec_str(sp, v_fmt("strings.modules.%s", key), w, sizeof w);
-  v_region(key, LAYER_TYPE); v_text(v_fmt("%s.word", key), w, x + word[0], y + word[1] + 5, v_measure(w, 16), 16, v_scol(sp, "colours.module.word"));   /* a 24 px zone: the cap top 5 below its top */
+  v_region(key, LAYER_TYPE); v_text(v_fmt("%s.word", key), w, x + word[0], y + word[1] + 5, v_measure(w, 16), 16, held ? v_scol("frame", "colours.dim") : v_scol(sp, "colours.module.word"));   /* a 24 px zone: the cap top 5 below its top */
 }
 
 /* The bay strip (vivarium.json regions.strip and tiles; the composition `bayStrip`, rule `listPitch`): the strip's panel and a tile a bay, the housed mibis in bay order then the free bays, the tiles by the rule's form for the count. Every tile is the same
@@ -64,7 +68,9 @@ void build_bayStrip(const char *sp, const char *cur, int box[4]) {
     snprintf(nm, sizeof nm, "tile.%d", i); { const char *wl = v_pstr(v_fmt("%s.well", P)); v_slot(nm, wl, glyph, x, y, w, h, !free_ && *wl); }
     v_region(reg, LAYER_CHROME);   /* fix 2 F4: the tile is its well, by form (the mibi up close: the -shown well); a free bay draws nothing */
     v_name(reg); snprintf(nm, sizeof nm, "tile.%d.thumb", i);
-    v_slot(nm, pic, glyph, out ? x + vx : x + tx, out ? y + vy : y + ty, tw, th, (housed || out) && *pic);
+    int dim = out && *pic && wire_asset_slot(pic) >= 0;   /* R4b-1b: a carried mibi's thumbnail dimmed, the vocabulary's own v_dither_window at level 8 of 16 over the tile's fill (r4b-gate Rulings 4); the dither node stands in the thumbnail's slot, so the four nodes keep their order */
+    if (dim) { snprintf(nm, sizeof nm, "tile.%d.dither", i); v_dither_window(nm, pic, 0, 0, NULL, 0, 0, 8, x + vx, y + vy, tw, th); v_layer(LAYER_CHROME); }   /* the dither takes its picture's layer; the tile's own nodes after it stay chrome */
+    else v_slot(nm, pic, glyph, out ? x + vx : x + tx, out ? y + vy : y + ty, tw, th, (housed || out) && *pic);
     snprintf(nm, sizeof nm, "tile.%d.glyph", i);
     v_slot_at(nm, strcmp(v_pstr(v_fmt("%s.where", P)), "docked") == 0 ? glyphDocked : glyph, NULL, x + lx, y + ly, lw, lh, out, x + lx, y + ly);
     snprintf(nm, sizeof nm, "tile.%d.free", i);   /* a free bay draws nothing: the node keeps its box with no ops (fix 6, N7) */
@@ -122,8 +128,10 @@ static void place_draw(int i, const int b[4], void *vc) {
   snprintf(nm, sizeof nm, "tile.%d.recess", i); recess_draw(c, nm, x, y, w, h, !free_);   /* a free place is its recess, nothing in it */
   v_name(reg); snprintf(nm, sizeof nm, "tile.%d.thumb", i);
   int hasFrom = c->level < 16 && *from && wire_asset_slot(from) >= 0, hasTo = housed && *pic && wire_asset_slot(pic) >= 0, dith = c->level < 16 && (hasFrom || hasTo);
-  v_slot(nm, pic, glyph, out ? x + vx : x + tx, out ? y + vy : y + ty, tw, th, (housed || out) && *pic && !dith);
-  if (dith) { v_name(reg); snprintf(nm, sizeof nm, "tile.%d.dither", i); v_dither_window(nm, hasFrom ? from : NULL, 0, 0, hasTo ? pic : NULL, 0, 0, c->level, x + tx, y + ty, tw, th); }
+  int dim = out && *pic && wire_asset_slot(pic) >= 0 && !dith;   /* R4b-1b: a carried mibi's thumbnail dimmed, v_dither_window level 8 of 16 (r4b-gate Rulings 4) */
+  v_slot(nm, pic, glyph, out ? x + vx : x + tx, out ? y + vy : y + ty, tw, th, (housed || out) && *pic && !dith && !dim);
+  if (dim) { v_name(reg); snprintf(nm, sizeof nm, "tile.%d.dither", i); v_dither_window(nm, pic, 0, 0, NULL, 0, 0, 8, x + vx, y + vy, tw, th); v_layer(LAYER_CHROME); }   /* the dither takes its picture's layer; the tile's own nodes after it stay chrome */
+  else if (dith) { v_name(reg); snprintf(nm, sizeof nm, "tile.%d.dither", i); v_dither_window(nm, hasFrom ? from : NULL, 0, 0, hasTo ? pic : NULL, 0, 0, c->level, x + tx, y + ty, tw, th); }
   snprintf(nm, sizeof nm, "tile.%d.glyph", i);
   v_slot_at(nm, strcmp(where, "docked") == 0 ? glyphDocked : glyph, NULL, x + lx, y + ly, lw, lh, out, x + lx, y + ly);
   snprintf(nm, sizeof nm, "tile.%d.free", i); v_composed(nm, x, y, w, h, "[]");   /* the place's box in the log, drawn or not */

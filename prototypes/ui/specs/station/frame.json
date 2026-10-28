@@ -32,7 +32,7 @@
    "name": { "font": "SB28", "pitch": 36, "colour": { "field": "bone", "pane": "bone", "band": "bone" } },
    "title": { "font": "M20", "colour": { "band": "bone" } },
    "heading": { "font": "M20", "pitch": 28, "colour": { "field": "bone", "pane": "bone", "band": "bone" }, "variants": { "dim": "mist", "flash": "ink" } },
-   "nameTag": { "font": "M20", "colour": { "pane": "bone", "band": "bone" }, "variants": { "crowd": { "font": "M16" }, "flash": "ink" } },
+   "nameTag": { "font": "M20", "colour": { "pane": "bone", "band": "bone" }, "variants": { "crowd": { "font": "M16" }, "flash": "ink", "dim": "mist" } },
    "eyebrow": { "font": "M16", "pitch": 20, "after": 8, "colour": { "field": "fog", "pane": "fog", "band": "fog", "painted": "fog" }, "shadow": { "painted": "void" } },
    "label": { "font": "R16", "colour": { "field": "bone", "pane": "bone", "band": "bone" }, "variants": { "state": "mist", "open": "ink" } },
    "body": { "font": "R16", "pitch": 20, "colour": { "field": "bone", "pane": "bone", "band": "bone", "painted": "bone" }, "shadow": { "painted": "void" }, "variants": { "facts": { "pitch": 24 } } },

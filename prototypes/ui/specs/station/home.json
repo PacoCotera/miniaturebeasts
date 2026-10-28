@@ -173,7 +173,9 @@
    "walk": {
     "ground": [32,280,588,156],
     "keepOut": [548,344,80,96],
-    "keepOutRule": "a figure meets the keep-out when its box reaches x 548 and its feet reach y 344; the keep-out stands only while the away frame shows"
+    "keepOutRule": "a figure meets the keep-out when its box reaches x 548 and its feet reach y 344; the keep-out stands only while the away frame shows",
+    "start": "…the room's draw, and rejected (up to 8 draws) while its ink box would overlap a shown resident's ink box widened by 25 px each side; fallback as today (UI/UX read: home-window-five-of-eight; walking overlaps stay fine, L4-22). The rule only stops Home from opening on a heap",
+    "startWiden": 25
    }
   },
   "nameTag": {
