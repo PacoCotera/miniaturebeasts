@@ -461,7 +461,7 @@ test("R4: the walk is the same twice from the same seeds and clock (determinism)
   const c = await levelRun(6, 120000, FAST); assert.notDeepEqual(a, c, "other seeds walk otherwise");
 });
 
-test("R4: moving sets change level by the three legs (1 to the join, 2 across, 3 to the target) at the join's ends, climb and come back, never more than the raised cap up, never more than rules.travel.max travelling, and walk the same twice", { skip }, async () => {
+test("R4: moving sets change level by the three legs (1 to the join, 2 across, 3 to the target) at the join's ends, climb and come back, never more than the raised cap up, never more than rules.travel.max travelling, and walk the same twice", { skip: slow }, async () => {
   const run = async () => {
     const sc = movingScene("vivarium", { adults: 4, juveniles: 3, s05: 1, focus: "tile:0" }), f = await bootScene(sc), M = f.M, N = 8, fw = sc.props.regions.residents.map((r) => (r.figure ?? [0, 0, r.stage === "juvenile" ? 104 : 144, 152])[2]), prev = Array(N).fill(null), trace = [];
     let up = 0, down = 0, maxRaised = 0, maxT = 0, legs = 0;
