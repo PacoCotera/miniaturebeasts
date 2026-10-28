@@ -2,7 +2,7 @@
 // function over it. No drawing, no DOM: the tests run this in Node. Screens call these and read
 // the results; presentation events come back as return values, never as side effects on a renderer.
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
-// accepted, dockN, known, probe, carryReqs, returned (with species, gs), and each mibi's id, name, sp, species, spName, born, from, bonded.
+// accepted, dockN, known, probe, carryReqs, returned (with species, gs), and each mibi's id, name, sp, species, spName, born, since, sinceFloor, from, bonded.
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
 import { currentLooks } from "../../workbench/framework/describe.mjs";
@@ -28,7 +28,9 @@ export const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
 export const DOCK_MEND_FLOOR = 2;
 // What Probe tier 2 gains, as data the bench shows (the fourth is reading the deep "?"). PLACEHOLDER wording; the copywriter's lists replace the strings.
 export const TIER2_GAINS = [{ id: "reach", text: "reaches 4 cells" }, { id: "pods", text: "carries 3 pods" }, { id: "plates", text: "4 plates" }, { id: "deep", text: "reads the deep" }];
-export const JUVENILE_TURNS = 2, ELDER_TURNS = 6, CARRY_MAX = 3;
+export const JUVENILE_TURNS = 2, ELDER_TURNS = 16, CARRY_MAX = 3;   // young for 2 world turns, an adult for 16 more: an elder at turn 18 (game designer, option A)
+// A device clock before 2026 is unset: no `since` is written from it (normalize back-fills at the first good clock).
+export const GOOD_CLOCK = Date.UTC(2026, 0, 1);
 export const MIBI_NAMES = ["Dot", "Moss", "Bean", "Fig", "Nib", "Tuft", "Pebble", "Wren", "Pip", "Sorrel", "Burr", "Quill"];
 // --- names (the game designer's brief): a name never carries a digit and is never reused among living mibis, released ones included -----------------------------------------------------------
 export const NAME_MAX = 10;
@@ -57,7 +59,7 @@ export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock fie
 export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
 export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried" };
 // Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
-export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, rooms: null, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, trickleCap: 2 };
+export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, rooms: null, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, elderTurns: ELDER_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, trickleCap: 2 };
 
 export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 export const plural = (n, w, p) => n + " " + (n === 1 ? w : p || w + "s");
@@ -153,6 +155,7 @@ export function normalize(st, now = Date.now()) {
   for (const r of st.returned) if (r && r.species === undefined) r.species = speciesId(r.sp);   /* a returned pod from before it carried its species: 0-2 resolve, -1 stays null; additive, no schema bump */
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); }
   for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); m.spName = fr ? fr.species.name : null; if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null;
+    if (!Number.isInteger(m.since) || m.since <= 0) { delete m.since; delete m.sinceFloor; if (now >= GOOD_CLOCK) { m.since = now; m.sinceFloor = true; } }   /* an older save holds no clock for the mibi: it has been yours for at least this long, written once and never again (additive, no schema bump); an unset clock writes nothing and the first good one does */
     m.care = m.care > 0 ? m.care | 0 : 0; m.tends = m.tends > 0 ? m.tends | 0 : 0; if (m.grownTurn === undefined) m.grownTurn = null;
     if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && st.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; } }   /* a bond made on the Station before the care rules: the marker is bonded with no bondCare, only old bonds match, and after this it is false (idempotent) */
   if (!Array.isArray(st.carryReqs)) st.carryReqs = []; if (!(st.carrySeq >= 0)) st.carrySeq = 0; if (!(st.carryRefusedSeen >= 0)) st.carryRefusedSeen = 0;
@@ -296,7 +299,7 @@ export function stageAt(m, turn, j, e) {
   if (m.bonded) return 'juvenile';                       // a bonded juvenile waits (14)
   const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
 }
-export const mibiStage = (st, m, settings = DEFAULT_SETTINGS) => stageAt(m, st.turn, settings.adultTurns ?? JUVENILE_TURNS, ELDER_TURNS);
+export const mibiStage = (st, m, settings = DEFAULT_SETTINGS) => stageAt(m, st.turn, settings.adultTurns ?? JUVENILE_TURNS, settings.elderTurns ?? ELDER_TURNS);
 // Who walked with a trip record: its carried set, else (an older record) its partner.
 export const tripCarried = (rec) => (Array.isArray(rec.carried) ? rec.carried : rec.partner != null ? [rec.partner] : []);
 export const tierNow = (st, sv) => (st.probe && st.probe.tier) || (sv && sv.tier) || 1;
@@ -941,22 +944,22 @@ export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (vivFull(st, settings)) return { ok: false, ...fullWords(st) };
   const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Hatch now · " + shortText(st, c.e, c.d, c.s) };
   st.e -= c.e; st.d -= c.d; st.s -= c.s; const bud = st.bud; bud.early = true;
-  const r = hatchBud(st, settings, (m, sp, room) => "Hatched " + m.name + " now · " + sp + " · juvenile · the " + room + " room · " + spendText(c.e, c.d, c.s));
+  const r = hatchBud(st, settings, now, (m, sp, room) => "Hatched " + m.name + " now · " + sp + " · juvenile · the " + room + " room · " + spendText(c.e, c.d, c.s));
   return { ok: true, mibi: r.mibi, bud, cost: c };
 }
 // Open: a press; the juvenile steps out fully known, into a free place, wearing the placeholder until its painting lands (M3).
 export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!budReady(st, settings, now)) return { ok: false, msg: "The bud is still growing" };
   if (vivFull(st, settings)) return { ok: false, ...fullWords(st) };
-  return hatchBud(st, settings, (m, sp, room) => "Opened · " + m.name + " · " + sp + " · juvenile · the " + room + " room");
+  return hatchBud(st, settings, now, (m, sp, room) => "Opened · " + m.name + " · " + sp + " · juvenile · the " + room + " room");
 }
-// The hatch both presses share (a place is already known free): the bud's mibi, known as the rules say, the field guide, the chamber emptied, the one log line `line(mibi, species name, room name)`.
-function hatchBud(st, settings, line) {
+// The hatch both presses share (a place is already known free; `now` is the Station's clock, the mibi's `since` in ms UTC, left out while the clock is unset): the bud's mibi, known as the rules say, the field guide, the chamber emptied, the one log line `line(mibi, species name, room name)`.
+function hatchBud(st, settings, now, line) {
   const place = freePlace(st, settings, st.face?.room ?? 0), B = st.bud, fr = frameOf(B.species), id = st.nextMibi++;
   const name = drawName(st);
   // a founder opens known in every chapter but a shut sealed one; a bred child only where the Station could be sure (switch parents matched), the rest read later
   const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !shutSealed(c, settings)).map((c) => c.id);
-  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
+  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
   for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
   st.mibis.push(m); st.bud = null;
   logEv(st, line(m, fr.species.name, ROOM_NAMES[place.room]));
@@ -992,7 +995,7 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
   const made = [];
   for (let i = 0; i < n; i++) { if (vivFull(st, settings)) break; const gs = (Math.imul((seed >>> 0) + i * 104729, 2654435761) ^ (i * 7)) >>> 0, genome = podGenome(fr, gs), sha = genomeSha(genome), id = st.nextMibi++;
     const name = drawName(st);
-    const m = { id, name, sp: speciesIndex(species), species, gs, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: "meadow", how: "ground", podId: null }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: openChapterIds(fr), parents: null, ...placeOf(freePlace(st, settings, st.face?.room ?? 0)), paint: null, released: false, shaped: [] };
+    const m = { id, name, sp: speciesIndex(species), species, gs, born: st.turn - JUVENILE_TURNS, ...(Date.now() >= GOOD_CLOCK ? { since: Date.now() } : {}), from: { n: 0, g: "meadow", how: "ground", podId: null }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: openChapterIds(fr), parents: null, ...placeOf(freePlace(st, settings, st.face?.room ?? 0)), paint: null, released: false, shaped: [] };
     st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
   if (made.length && !st.knownIds.includes(species)) { st.knownIds.push(species); syncKnown(st); }   // a species that arrives as adults is known (its Library frame and Book open)
   st.firstMibi = false; logEv(st, "Developer: " + plural(made.length, "adult " + fr.species.name) + " · seed " + (seed >>> 0));
@@ -1104,7 +1107,7 @@ export function seedSiblings(st, species, seed, settings = DEFAULT_SETTINGS) {
     if (!genome) break;
     const sha = genomeSha(genome), id = st.nextMibi++, name = drawName(st), read = childKnownChapters(fr, crossForecast(fr, a.genome, b.genome, { kinship: 0 }));   // the rule doCross uses for B.read
     const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
-    const m = { id, name, sp: a.sp, species, gs: null, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: a.from.g, how: "cross", podId: null, of: [a.name, b.name] }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read, parents: [snap(a), snap(b)], ...placeOf(freePlace(st, settings, st.face?.room ?? 0)), paint: null, released: false, shaped: [] };
+    const m = { id, name, sp: a.sp, species, gs: null, born: st.turn - JUVENILE_TURNS, ...(Date.now() >= GOOD_CLOCK ? { since: Date.now() } : {}), from: { n: 0, g: a.from.g, how: "cross", podId: null, of: [a.name, b.name] }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read, parents: [snap(a), snap(b)], ...placeOf(freePlace(st, settings, st.face?.room ?? 0)), paint: null, released: false, shaped: [] };
     st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls);
   }
   logEv(st, "Developer: siblings " + made.map((m) => m.name).join(" and ") + " of " + a.name + " and " + b.name);

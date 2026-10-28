@@ -191,7 +191,8 @@ export function speciesBody() {
 // Null when no found species is shown (a developer's jump): the frame's notBuilt composition, as before.
 export function familyBody() {
   const sid = UI.lib.species; if (!sid || !frameOf(sid) || speciesStatus(G.st, sid) !== "found") return null;
-  return familyBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI.lib, metrics: METRICS }, SPECS.library, SPECS.frame, SPECS.home);
+  const sd = stationDate();   // the clock the Yours row counts to: the device's, or noon of the developer's Station date (the goldens' fixed day)
+  return familyBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI.lib, metrics: METRICS, now: G.settings.stationDate ? new Date(sd.y, sd.m, sd.d, 12).getTime() : Date.now() }, SPECS.library, SPECS.frame, SPECS.home);
 }
 
 // ---- Cargo ----
