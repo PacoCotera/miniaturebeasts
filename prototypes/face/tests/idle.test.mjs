@@ -140,10 +140,10 @@ test("determinism and motion off on Idle (M1 §3): two faces walk alike; with mo
   assert.equal(await run(), await run());
   const f = await bootScene(movingScene("idle", { adults: 6, juveniles: 5, s05: 1, sleepers: 3 }), { motion: false }); assert.equal(runFrames(f, 10000).worst, 0);
 });
-test("rule 2 on Idle (M1 §3), a room of eight: four adult walkers at 5 px a tick on a group tick with the bed sleepers breathing stay inside the 148,000 px tick; under a 74,000 px budget the budget defers and holds, deterministically", { skip }, async () => {
+test("rule 2 on Idle (M1 §3), a room of eight: the adult walkers at 5 px a tick on a group tick with the bed's resters breathing stay inside the 148,000 px tick; under a 50,000 px budget (R4b: five of the eight walk, so the 74,000 one no longer binds) the budget defers and holds, deterministically", { skip }, async () => {
   const a = await rule2Run("idle"); assert.ok(a.r.worstTick <= 148000, `a tick of ${a.r.worstTick} px`);
-  const lo = await rule2Run("idle", 74000), lo2 = await rule2Run("idle", 74000);
-  assert.ok(lo.r.worstTick <= 74000, `a tick of ${lo.r.worstTick} px over the lowered budget`); assert.ok(lo.r.deferred > 0, "the budget deferred changes"); assert.equal(lo.hash, lo2.hash, "deterministic"); assert.equal(lo.r.deferred, lo2.r.deferred);
+  const lo = await rule2Run("idle", 50000), lo2 = await rule2Run("idle", 50000);
+  assert.ok(lo.r.worstTick <= 50000, `a tick of ${lo.r.worstTick} px over the lowered budget`); assert.ok(lo.r.deferred > 0, "the budget deferred changes"); assert.equal(lo.hash, lo2.hash, "deterministic"); assert.equal(lo.r.deferred, lo2.r.deferred);
   console.log(`# rule 2 (Idle): worst tick ${a.r.worstTick} px, ${a.r.deferred} changes deferred in 20 s, worst frame ${a.r.worst} px`);
 });
 // the bound of one hopping resident's frame (the architect's Q5): (cell w + the most it travels in a tick) × (cell h + the lift cap a tick, 12) + (cell w + that travel) × 16 for its shadow node; the travel is the hop's over its air ticks, rounded up

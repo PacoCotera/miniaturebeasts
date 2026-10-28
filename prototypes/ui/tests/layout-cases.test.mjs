@@ -2,7 +2,7 @@
 // layout-check.mjs --refresh-cases), every expected finding is made and no cleared one is. A fixture whose hash is no longer its golden's is stale: take it again after a retake.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { findings } from "../specs/layout.mjs";
@@ -54,4 +54,21 @@ test("the owner's exceptions: each fine card whose kind the rule still finds is 
     const ex = (f) => f.rule === e.rule && f.node === e.node && (e.other == null || [e.other].flat().includes(f.other));
     assert.ok(run(bare).some(ex), `${c.card}: without its exception the finding is made`); assert.ok(!run(frame).some(ex), `${c.card}: with it, it is not`);
   }
+});
+
+// R4b (UI/UX, the R4b layout read Overlaps): the focus set is drawn above the walkers (vivarium.json regions.resident.order, home.json regions.resident.order): a walker may pass in front of the focused one by depth and is drawn under it, and walkers do not avoid it.
+// In every vivarium and home log (the fixtures, frozen or not), every name tag comes after every resident node, and after the first ring node only the focused resident's own nodes (its picture or dither, its lamp) are resident nodes: a walker drawn over the ring or the tag is the fault.
+test("the focus set is drawn after every other resident: ring, then the focused picture, then the name tag (resident.order)", () => {
+  let n = 0;
+  for (const screen of ["vivarium", "home"]) for (const dir of [path.join(here, "layout-cases", screen), path.join(here, "layout-cases", screen, "frozen")]) {
+    if (!existsSync(dir)) continue;
+    for (const f of readdirSync(dir).filter((x) => x.endsWith(".json"))) {
+      const nodes = J(path.join(dir, f)).log.nodes, reg = (x) => x[3], idx = (name) => nodes.map((x, i) => (reg(x) === name ? i : -1)).filter((i) => i >= 0);
+      const residents = nodes.map((x, i) => (/^resident(\.lamp)?$/.test(reg(x)) ? i : -1)).filter((i) => i >= 0), tags = idx("nameTag"), rings = idx("focus"), first = rings.length ? rings[0] : -1;
+      for (const t of tags) assert.ok(residents.every((r) => r < t), `${screen}/${f}: a name tag is drawn before a resident node`);
+      if (first >= 0) assert.ok(residents.filter((r) => r > first).length <= 3, `${screen}/${f}: more than the focused resident's own nodes (${residents.filter((r) => r > first).length}) are drawn after the ring`);
+      n++;
+    }
+  }
+  assert.ok(n >= 3, n + " logs read");
 });

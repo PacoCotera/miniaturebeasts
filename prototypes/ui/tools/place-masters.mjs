@@ -106,7 +106,9 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
         default: throw new Error(`${room}: ${p.id}: the piece kind ${p.kind} is not known`);
       }
     }
-    data.rooms[room] = { ...out, ...(bed ? { bed } : {}), levels: lv, joins, pieces, ambient };
+    // R4b-1 (the game designer's rest rule, the R4b rest rules): no art row yet, so every room carries the fallback rest place, off main's left end; the art director's `rest` row (R4b-2) replaces `edge` with spots or an occluder to hide behind
+    const rest = { edge: "left", level: "main", note: bed ? "no art spot: resters take the bed (rules.show.bed), then their own way (rules.show.curl: nice spots beside roots-sorrel-1 or roots-stone-2 or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own" : "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own" };
+    data.rooms[room] = { ...out, ...(bed ? { bed } : {}), rest, levels: lv, joins, pieces, ambient };
   }
   // all read and checked: now write
   const idxFile = path.join(root, "index.json"), index = existsSync(idxFile) ? JSON.parse(readFileSync(idxFile, "utf8")) : { schema: "mb-masters/1", masters: {} }, placed = [];

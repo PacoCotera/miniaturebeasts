@@ -34,7 +34,7 @@ setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f)
 setMoving(MOVING);
 export const T0 = 1_000_000;
 export const VIV_RULES = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station/vivarium.json"), "utf8")).rules;
-// o: { adults, juveniles, s05, sleepers, time (seconds of the day), docked, motionSets, carry, ui }; returns { st, sv, settings, m } for a view
+// o: { adults, juveniles, s05, time (seconds of the day), docked, motionSets, carry, ui }; returns { st, sv, settings, m } for a view. R4b: a room shows five at most, so a household of eight has three resters, on the bed in Roots (the carried set is never drawn)
 export function household(o = {}) {
   const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 }, st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: o.docked ?? true, at: T0 };
   if (o.adults) S.seedAdults(st, "S01", 5, o.adults, settings);
@@ -45,16 +45,9 @@ export function household(o = {}) {
   for (const m of st.mibis.slice(o.adults ?? 0)) m.born = st.turn;   // the juveniles
   if (o.libNew != null) { st.libSeen = S.libSnapshot(st); let k = o.libNew; for (const t of Object.keys(st.libSeen.S01 ?? {})) while (k > 0 && st.libSeen.S01[t].length > 1) { st.libSeen.S01[t].pop(); k--; } }   // the Library opened full screen, then libNew looks found since (the last found of the traits that have more than one)
   warmLibrary(st, settings);   // the host warms the specimen when a look is found; Home's props only read it
+  if (o.room) { settings.rooms = o.room + 1; st.face.room = o.room; st.mibis.forEach((m, i) => { m.room = o.room; m.slot = i; m.bay = o.room * 8 + i; }); }   // R4b: the household lives in another room (Reeds: no bed)
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };   // carry: the indexes of the mibis with the Companion
-  return { st, sv, settings, m: { st, sv, settings, ui: o.ui ?? {}, docked: o.docked ?? true, light: o.light ?? "day", time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: o.motionSets ?? true } };
-}
-// the bed's sleepers of a second world (3 juveniles carried), with their requests, spliced into a view's props
-export function sleepersOf(build, n = 3) {
-  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 }, st = S.freshSt("w2", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: true, at: T0 };
-  st.nextMibi = 100; S.seedAdults(st, "S01", 31, n, settings); for (const m of st.mibis) { m.paint = { state: "landed" }; m.born = st.turn; }
-  const sv = { v: 8, seed: 7, wid: "w2", turn: 3, bay: [], mibis: [], carried: st.mibis.map((m) => m.id), tier: 1, shield: 3 };
-  const b = build({ st, sv, settings, docked: true, light: "day", time: 12 * 3600, restRules: VIV_RULES.rest, motionSets: true });
-  return { sleepers: b.props.regions.bed.sleepers, requests: b.requests };
+  return { st, sv, settings, m: { st, sv, settings, ui: o.ui ?? {}, docked: o.docked ?? true, light: o.light ?? "day", time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, rules: VIV_RULES, now: T0 + (o.time ?? 12 * 3600) * 1000, motionSets: o.motionSets ?? true } };
 }
 // a picture for a request: a moving atlas synthesized (moving-scene's), any other a flat block
 const hash2 = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -83,13 +76,12 @@ export const DIST = path.resolve(here2, "../dist"), BUILT = existsSync(path.join
 import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 const frameTop = (screen) => ({ top: { screen, title: screen === "home" ? "Home" : "Vivarium", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: screen === "home" ? null : "Home", need: "" }, plate: { text: "" } });
-// screen: "home" | "vivarium" | "idle"; o: household's options plus { sleepers (count), focus ("tile:<i>" | "resident:<i>" | "room" | null) }
+// screen: "home" | "vivarium" | "idle"; o: household's options plus { focus ("tile:<i>" | "resident:<i>" | "room" | null) }
 export function movingScene(screen, o = {}) {
   const hh = household(o), { st } = hh, frame = SPEC("frame"), viv = o.vivSpec ?? SPEC("vivarium"), home = SPEC("home");
   const focusOf = (f) => (!f ? null : f === "room" ? "room" : f.replace(/^(\w+):(\d+)$/, (_, k, i) => k + "." + st.mibis[+i].id));
   const build = (m) => (screen === "home" ? homeBuild({ ...m, date: { y: 2026, m: 9, d: 17 }, now: Date.now() }, home, frame) : screen === "vivarium" ? vivariumBuild({ ...m, focus: focusOf(o.focus ?? "tile:0"), seen: null }, viv, frame, home) : idleBuild(m, frame));
   const b = build(hh.m), requests = [...b.requests];
-  if (o.sleepers) { const s = sleepersOf(build, o.sleepers); b.props.regions.bed.sleepers = s.sleepers; b.props.regions.bed.state = "docked"; requests.push(...s.requests); }
   const props = screen === "home" ? { screen: "home", ...b.props, frame: { plate: { text: "" } } } : screen === "idle" ? { screen: "home", ...b.props } : { screen, ...b.props, frame: { ...frameTop(screen), line: { ...frameTop(screen).line, ...(b.line ?? {}) } } };
   return { props, requests, st, hh, specs: { frame, vivarium: viv, home, rooms: SPEC("rooms") }, screen };
 }

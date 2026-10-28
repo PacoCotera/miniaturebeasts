@@ -148,6 +148,7 @@ int face_test_deferred(void) { return g_mv_deferred; }   /* changes deferred by 
 int face_test_cell(int i) { return home_test_cell(i); }   /* resident i's atlas cell shown (−1 − level while it dithers), −100 for a still */
 int face_test_state(int i) { return home_test_state(i); }   /* clip | travelling << 4 | airborne << 5 | asleep << 6 | wanderer << 7 | focused << 8 | phase << 12 | lv << 16 | leg << 20 (a still: travelling, lv, leg; -1 for no resident) */
 int face_test_mv(int i, int field) { return home_test_mv(i, field); }
+int face_test_rest(int i, int field) { return home_test_rest(i, field); }   /* R4b: rest phase | where it rests | shown | hidden | x | feet | walking | level of a resident by its props index */
 int face_test_nap(int i) { return home_test_nap(i); }
 int face_test_close_cell(void) { return habitat_test_cell(); }   /* up close: the close cell shown (−1 − level while it dithers), −100 with no set */
 int face_test_close_lift(void) { return habitat_test_lift(); }

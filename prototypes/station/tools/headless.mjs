@@ -82,7 +82,7 @@ export class Player {
   open() { if (this.hatchedNow) { const mibi = this.hatchedNow; this.hatchedNow = null; return { ok: true, mibi }; } return this.step("open the bud", () => S.openBud(this.st, this.sv, this.settings, this.now)); }
   // Walks until a mibi is adult (the Companion's world turns: one expedition each).
   growUp(m) { let n = 0; while (!S.isAdult(this.st, m, this.settings) && n < 10) { this.takeWalk(); n++; } return n; }
-  cross(a, b) { const c = S.crossCost(this.settings); this.afford(c.e, c.d, c.s); return this.step("cross " + a.name + " × " + b.name, () => { const was = S.docked(this.st); this.st.dock = { ...(this.st.dock || {}), docked: true }; const r = S.doCross(this.st, this.sv, a, b, this.settings, this.now, mulberry(this.seed)); this.st.dock.docked = was; return r; }); }   // a mibi out with the Companion cannot be crossed until it docks: the cross is made at the dock
+  cross(a, b) { const c = S.crossCost(this.settings); this.afford(c.e, c.d, c.s); return this.step("cross " + a.name + " × " + b.name, () => { this.with = null; this.sv.carried = [];   /* R4b: no breeding while a mibi is carried, so the pair is brought home first */ const was = S.docked(this.st); this.st.dock = { ...(this.st.dock || {}), docked: true }; const r = S.doCross(this.st, this.sv, a, b, this.settings, this.now, mulberry(this.seed)); this.st.dock.docked = was; return r; }); }   // a mibi out with the Companion cannot be crossed until it docks: the cross is made at the dock
   readMibi(m, ch) { this.afford(0, S.mibiReadCost(this.st, m, ch, this.settings) || 0); return this.step("read " + ch + " on " + m.name, () => S.readMibi(this.st, m, ch, this.settings)); }
   // The bench's Data trickle (opt-in, as it is a minute of the player's day): one mibi watched for its minute, one pair compared; each earns what the day's cap allows.
   benchDay(m, a, b) {
@@ -92,7 +92,7 @@ export class Player {
   }
   // The sitting: the held sitting (from the welcome), a ceremony, a wait that overlaps the rest, the crate.
   // The sitting is begun at the dock (a mibi that is out with the Companion sits only while it is docked; the sitting goes on after the Companion sets out again).
-  sit(m, pose, place) { return this.step("begin the sitting", () => { const was = S.docked(this.st); this.st.dock = { ...(this.st.dock || {}), docked: true }; const r = T.beginSitting(this.st, m, pose, place, this.settings, this.now, this.sv); this.st.dock.docked = was; return r; }); }
+  sit(m, pose, place) { return this.step("begin the sitting", () => { this.with = null; this.sv.carried = [];   /* R4b: a carried mibi sits for nobody, docked or away, so it is brought home first */ const was = S.docked(this.st); this.st.dock = { ...(this.st.dock || {}), docked: true }; const r = T.beginSitting(this.st, m, pose, place, this.settings, this.now, this.sv); this.st.dock.docked = was; return r; }); }
   waitCrate(c) { const ms = Math.max(0, c.start + T.sittingWaitMs(this.settings) - this.now); return this.step("the crate fills (" + Math.round(T.sittingWaitMs(this.settings) / MIN) + " min" + (ms ? ", " + Math.round(ms / MIN) + " left" : ", done") + ")", () => ({ ok: true }), { wait: ms }); }
   openCrate(c) { const r = this.step("the crate opens", () => T.openSittingCrate(this.st, c.id, this.settings, this.now)); if (r.ok) this.mark("crate"); return r; }
 }

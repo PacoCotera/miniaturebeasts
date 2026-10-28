@@ -21,7 +21,8 @@ export const SCENES = {
   "window-dawn":         { f: "room", light: "dawn", time: "06:30", set: (w) => { w.adults(4); w.young(2); } },   // the window in each light (day is the scenes above)
   "window-dusk":         { f: "room", light: "dusk", time: "18:30", set: (w) => { w.adults(4); w.young(2); } },
   "window-night":        { f: "room", light: "night", time: "23:30", set: (w) => { w.adults(4); w.young(2); } },   // the residents asleep in place
-  "window-six-of-eight": { f: "room", set: (w) => { w.adults(5); w.young(3); } },   // eight at home: the window shows six
+  "window-five-of-eight": { f: "room", set: (w) => { w.adults(5); w.young(3); } },   // eight at home: the window shows five (R4b: rules.show.max, and what fits at 1x); the three that rest are out of sight or curled
+  "room-reeds":          { f: "room", set: (w) => { const st = window.__st.ST; w.rooms(2); st.face.room = 1; w.adults(4); w.young(1); } },   // R5 carried (T-20261027-318, UI/UX's R5 read): the room on the face is Reeds (1): Home's window shows Reeds' painting (its sedge-seam occluder against the window's left edge and the walk band)
   "event-tag":           { f: "room", set: (w) => { w.adults(3); w.young(1); w.meet(3); } },   // a mibi grew up: its name tag until the player visits it
   "vivarium-none-home":  { f: "room", set: (w) => { w.adults(2); w.carry([0, 1]); w.away(); } },
   "incubator-empty":     { f: "room", set: (w) => { w.adults(2); } },

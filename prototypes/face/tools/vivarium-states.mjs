@@ -1,6 +1,6 @@
 // The Vivarium's whole in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `vivarium-docked` (seven mibis at home, the carried two asleep on the bed, eight bays, the ring on the first
 // resident), `vivarium-away` (the Companion out: the bed shows its mark, the carried two are tiles with the outline glyph), `vivarium-mibi-out` (the same, the ring on an out mibi's tile), `vivarium-empty` (a fresh world's, six free bays, no ring),
-// `vivarium-tile` (the ring on a housed tile), `vivarium-sleeper` (the ring on a sleeper) and `vivarium-eight` (eight residents, a full room's eight places) `vivarium-empty-away`, `vivarium-room-reeds|boulders|ferns` (the other three rooms by day, six residents, one behind the room's first occluder), (the nest and its mark), `vivarium-docked-dawn|day|dusk|night` (the same scene in the four lights, for the art director) and, on a virtual clock with motion, `vivarium-walk-8000ms` (twelve walking, 8000 ms in).
+// `vivarium-tile` (the ring on a housed tile) and `vivarium-eight` (eight: five walk, three rest on the bed; R4b retired `vivarium-sleeper`: the carried set is never drawn and a rester that is focused comes off the bed) (eight residents, a full room's eight places) `vivarium-empty-away`, `vivarium-focus-crossed` (a walker in front crosses the focused one's ring and tag), `vivarium-room-reeds|boulders|ferns` (the other three rooms by day, six residents, one behind the room's first occluder), (the nest and its mark), `vivarium-docked-dawn|day|dusk|night` (the same scene in the four lights, for the art director) and, on a virtual clock with motion, `vivarium-walk-8000ms` (twelve walking, 8000 ms in).
 // Each is reached by the page's own state and asserted (screen, state, ring) before `visit(name, page, fail)` is called. Taken with reduced motion (the walk at its start), the last on a virtual clock. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
@@ -11,9 +11,10 @@ const SCENES = {
   "mibi-out": { f: "tile:0", state: "rest", set: (w) => { w.rooms(1); w.adults(4); w.young(3); w.carry([0, 1]); w.away(); } },
   empty:   { f: null, state: "empty", set: (w) => { w.rooms(1); } },
   tile:    { f: "tile:3", state: "rest", set: (w) => { w.rooms(1); w.adults(4); w.young(3); w.carry([0, 1]); } },
-  sleeper: { f: "resident:1", state: "rest", set: (w) => { w.rooms(1); w.adults(4); w.young(3); w.carry([0, 1]); } },
   eight:   { f: null, state: "rest", set: (w) => { w.rooms(1); w.adults(8); window.__st.ST.mibis.forEach((m, i) => { m.id = [1075, 188, 479, 7, 191, 2808, 2, 2135][i]; }); } },   // ids whose start seeds (hash(id)) put the eight across the 992 px walk band
   "empty-away": { f: null, state: "empty", set: (w) => { w.rooms(1); w.away(); } },
+  // R4b (UI/UX, the R4b layout read Overlaps): a walker in front by depth crosses the focused one's ring and its name tag: the focus set is drawn above the walkers (resident.order), so it is not a fault. Five on Roots (ids whose start seeds put the third walker over the fourth's ring and tag), the ring on the fourth
+  "focus-crossed": { f: "resident:3", state: "rest", set: (w) => { w.rooms(1); w.adults(5); window.__st.ST.mibis.forEach((m, i) => { m.id = [301, 1627, 1643, 1923, 762][i]; }); } },
   "docked-dawn":  { f: null, state: "rest", light: "dawn",  set: (w) => { w.rooms(1); w.adults(4); w.young(3); w.carry([0, 1]); } },
   "docked-day":   { f: null, state: "rest", light: "day",   set: (w) => { w.rooms(1); w.adults(4); w.young(3); w.carry([0, 1]); } },
   "docked-dusk":  { f: null, state: "rest", light: "dusk",  set: (w) => { w.rooms(1); w.adults(4); w.young(3); w.carry([0, 1]); } },
@@ -38,7 +39,7 @@ async function enter(page, sc) {
   await page.evaluate(([setSrc, f, light, panel]) => {
     const w = window.__world; w.reset(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.settings.light = light ?? "day";   // null: the page's own light (the clock, fixed to day in test mode); the four lights by hand for the art director's capture points
     const fid = (f) => (/^room\./.test(f) ? f : (f.startsWith("tile:") ? "tile." : "resident.") + S.ST.mibis[+f.slice(f.indexOf(":") + 1)].id);
-    S.UI.viv.f = f ? fid(f) : null; S.UI.hab.id = null; S.goto("vivarium"); if (f) S.UI.viv.f = fid(f);
+    S.UI.viv.f = f ? fid(f) : null; S.UI.hab.id = null; S.UI.panel = null; S.goto("vivarium"); if (f) S.UI.viv.f = fid(f);   // a panel left open by the scene before is closed (goto from the whole to itself does not)
     if (panel) S.UI.panel = { screen: "vivarium", id: panel, focus: "" };   // after the screen change, which closes a panel
   }, [sc.set.toString(), sc.f, sc.light ?? null, sc.panel ?? null]);
 }

@@ -255,7 +255,7 @@ test("the Vivarium's readout: each part only when non-zero, 'all on a trip' when
 test("the needs hold in the spec's order and clear when acted on: crates, the bud, a portrait, a new mibi to meet, new or glinting pods, pods waiting for a well, a pod that could be incubated", { skip }, async () => {
   const b = scene({ adults: 3, crates: 2, bud: 1e8 / 60000, portrait: true, unseen: true, waiting: true, ui: { meet: 1 } });
   const keys = (x) => homeNeeds(x.st, x.sv, settings, x.ui ?? { meet: 1 }, Date.now() + 1000).map((n) => n.key); assert.deepEqual(keys(b), ["crates", "budReady", "portrait", "meet", "newPods", "waitingPods"]);
-  assert.deepEqual(homeSpec.strings.line.order, ["crates", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
+  assert.deepEqual(homeSpec.strings.line.order, ["crates", "full", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
   assert.deepEqual(b.props.regions.line, { needs: ["Open the Bay", "The bud is ready"] }, "at most two");
   b.sv.bay = []; assert.deepEqual(keys(b).slice(0, 2), ["budReady", "portrait"], "the crates are gone once opened");
 });
@@ -298,25 +298,25 @@ test("the window is the 1:1 crop at (64, 194) of Idle's painting of the light, 6
     assert.deepEqual(box(f, "vivarium.window").slice(2), [0, 0], "no placeholder under the painting"); assert.deepEqual(box(f, "library.window").slice(2), sc.props.regions.library.picture ? [0, 0] : [344, 362], "the Library is its placeholder only while no species has a look found");
   }
 });
-test("the window shows at most six of the mibis at home, the ones with the most recent activity, in bay order; none at home shows none; the residents are never focus targets", { skip }, async () => {
-  const sc = homeScene({ adults: 8 }), ids = sc.props.regions.residents.map((p) => p.id), all = sc.st.mibis.map((m) => String(m.id));
-  assert.equal(ids.length, 6); assert.deepEqual(ids, all.filter((i) => ids.includes(i)), "bay order"); assert.deepEqual(ids, all.slice(0, 6), "every life event the same turn: ties in bay order");
+test("the window shows at most five of the mibis at home (R4b: the others rest, vivarium.json rules.show), in bay order; none at home shows none; the carried are never drawn; the residents are never focus targets", { skip }, async () => {
+  const sc = homeScene({ adults: 8 }), res = sc.props.regions.residents, ids = res.filter((p) => p.shown).map((p) => p.id), all = sc.st.mibis.map((m) => String(m.id));
+  assert.equal(res.length, 8); assert.equal(ids.length, 5); assert.deepEqual(res.map((p) => p.id), all, "bay order"); assert.deepEqual(ids, all.slice(3), "the same stage and born: the first three by id rest");
   assert.equal(homeScene({ adults: 3, carry: [0, 1, 2], docked: false }).props.regions.residents.length, 0, "all on a trip: nobody walks");
-  assert.equal(homeScene({ adults: 3, carry: [0], docked: true }).props.regions.residents.length, 3, "docked, the carried one is at home and walks (the bed is the Vivarium's)");
+  assert.equal(homeScene({ adults: 3, carry: [0], docked: true }).props.regions.residents.length, 2, "docked, the carried one is not drawn either (R4b)");
   assert.ok(!sc.props.focus.targets.some((t) => /resident/.test(t.id)));
 });
 test("the walkers keep to the room's main floor in the window, x 32 to 620, feet to 435, and out of the away frame's keep-out while it shows, and never stand on a raised level (lv 0, no leg), over a minute of walking", { skip }, async () => {
   for (const [name, o] of [["stills", { motionSets: false }], ["moving", { motionSets: true }]]) for (const away of [false, true]) {
-    const sc = homeScene({ adults: 5, juveniles: 3, ...o, ...(away ? { docked: false, carry: [0, 1] } : {}) }), f = await bootScene(sc, { motion: true, dir: node }), res = sc.props.regions.residents, M = f.M;
-    assert.equal(!!sc.props.regions.glass.away, away); assert.equal(res.length, 6); assert.deepEqual(f.errors(), []);
+    const sc = homeScene({ adults: 5, juveniles: 3, ...o, ...(away ? { docked: false, carry: [0, 1] } : {}) }), f = await bootScene(sc, { motion: true, dir: node }), res = sc.props.regions.residents, M = f.M, shownIx = res.map((p, i) => i).filter((i) => res[i].shown !== false);
+    assert.equal(!!sc.props.regions.glass.away, away); assert.equal(res.length, away ? 6 : 8); assert.equal(shownIx.length, 5); assert.deepEqual(f.errors(), []);
     const fig = res.map((p) => p.figure ?? [0, 0, p.stage === "juvenile" ? 104 : 144, p.stage === "juvenile" ? 112 : 152]);
     let moved = 0; const seen = new Set();
-    runFrames(f, 60000, { each: () => { res.forEach((p, i) => { let x = M._face_test_mv(i, 0), feet = M._face_test_mv(i, 1); if (x < -1000) { const b = box(f, `g.${p.id}`); x = b[0] + WIN.rect[0]; feet = b[1] + b[3] + WIN.rect[1]; }   /* a still: its picture box (the clip's own coordinates), the feet its bottom edge */ const W = fig[i][2], fx = x + Math.floor(W / 2); seen.add(i);
+    runFrames(f, 60000, { each: () => { res.forEach((p, i) => { if (!shownIx.includes(i)) return; let x = M._face_test_mv(i, 0), feet = M._face_test_mv(i, 1); if (x < -1000) { const b = box(f, `g.${p.id}`); x = b[0] + WIN.rect[0]; feet = b[1] + b[3] + WIN.rect[1]; }   /* a still: its picture box (the clip's own coordinates), the feet its bottom edge */ const W = fig[i][2], fx = x + Math.floor(W / 2); seen.add(i);
       assert.ok(x >= RW.ground[0] && x + W <= RW.ground[0] + RW.ground[2], `${name}: ${p.id} x ${x} + ${W} leaves 32 .. 620`); assert.ok(feet <= 435, `${p.id} feet ${feet} below the foot 435`);
       assert.ok(feet >= groundTopHome(fx), `${name}: ${p.id} feet ${feet} above the main floor ${groundTopHome(fx)} at ${fx}`); assert.ok(feet >= RW.ground[1], `${name}: ${p.id} feet ${feet} above Home's band ${RW.ground[1]}`);
       { const st = STATE(M._face_test_state(i)); assert.deepEqual([st.lv, st.leg], [0, 0], `${name}: ${p.id} is on a raised level or a join`); }
       if (away) assert.ok(!(x + W > RW.keepOut[0] && feet >= RW.keepOut[1]), `${name}: ${p.id} at (${x}, ${feet}) meets the away frame's keep-out`); moved++; }); } });
-    assert.ok(moved > 0 && seen.size === 6, `${name}: all six walked and were read`); assert.deepEqual(f.errors(), []);
+    assert.ok(moved > 0 && seen.size === 5, `${name}: all five shown walked and were read`); assert.deepEqual(f.errors(), []);
   }
 });
 test("the away frame: 64 x 64 at (556, 352), a panel ground and a hairline edge, the first mibi out on a trip at its world size bottom-centred, the caption 'away' in frost centred under it at y 418; with nobody away there is none", { skip }, async () => {

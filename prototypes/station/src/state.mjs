@@ -278,6 +278,13 @@ export function projectCarried(st, sv) {
   }
   return out;
 }
+// R4b: the travellers' return. `st.face.carriedSeen` holds the ids the Companion carried when this was last read; each id in it that the carried set no longer holds has come home (the Companion applied its "home" at a dock): it walks in as a fresh arrival,
+// its roomSince = now (the clock must be good), and the ids now carried are written back. Read on every save read while docked (sitting.mjs mergeHome) and at the dock. Returns the ids that came home.
+export function noteCarried(st, sv, now = Date.now()) {
+  const f = (st.face ??= {}), was = Array.isArray(f.carriedSeen) ? f.carriedSeen : [], held = carriedIds(st, sv), back = was.filter((id) => !held.includes(id));
+  for (const id of back) { const m = mibiById(st, id); if (m && !m.released && now >= GOOD_CLOCK) m.roomSince = now; }
+  f.carriedSeen = held.slice(); return back;
+}
 export const homeMibis = (st, sv) => { const c = carriedIds(st, sv); return st.mibis.filter((m) => !m.released && !c.includes(m.id)); };
 // A Station request to take a mibi with the Companion or bring it home: queued, applied by the Companion at the dock. why: "full" | "carried" | "not-carried" | "released" | "unknown".
 function carryOp(st, sv, m, op) {
@@ -881,10 +888,11 @@ export function moveBlock(st, m, i, settings = DEFAULT_SETTINGS) {
 // The room the whole last showed follows what is seen: a mibi seen up close or met, or moved, sets st.face.room to its room (a released mibi has none). The way in reads only st.face.room.
 export function seeRoom(st, m) { if (m && !m.released && m.room != null) st.face.room = m.room; }
 // A move is free and instant: the room and its lowest free slot; a mibi with the Companion moves too and keeps its place in the carried set.
-export function moveMibi(st, m, i, settings = DEFAULT_SETTINGS) {
+export function moveMibi(st, m, i, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const b = moveBlock(st, m, i, settings); if (b) return { ok: false, ...b };
   const taken = new Set(inRoom(st, i).map((x) => x.slot)); let slot = 0; while (taken.has(slot)) slot++;
   m.room = i; m.slot = slot; m.bay = i * ROOM + slot; seeRoom(st, m);   // the room the whole shows is the one the mibi moved to
+  if (now >= GOOD_CLOCK) m.roomSince = now;   // R4b: when it moved in (ms UTC, additive, no schema bump): fresh in the room until the first settle an hour on (vivarium.json rules.show.freshMinS); an unset clock writes nothing
   logEv(st, m.name + " moves to the " + ROOM_NAMES[i] + " room");
   return { ok: true, room: i, slot };
 }
@@ -968,7 +976,7 @@ function hatchBud(st, settings, now, line) {
   const name = drawName(st);
   // a founder opens known in every chapter but a shut sealed one; a bred child only where the Station could be sure (switch parents matched), the rest read later
   const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !shutSealed(c, settings)).map((c) => c.id);
-  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
+  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now, roomSince: now } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
   for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
   st.mibis.push(m); st.bud = null;
   logEv(st, line(m, fr.species.name, ROOM_NAMES[place.room]));
@@ -1027,20 +1035,22 @@ export function genomeLookup(st) {
 export const isAdult = (st, m, settings) => { const s = mibiStage(st, m, settings); return s === "adult" || s === "elder"; };
 // Out with the Companion while it is away: a mibi in the carried set cannot be crossed until the Companion docks.
 export const isAway = (st, sv, m) => !!m && !docked(st) && carriedIds(st, sv).includes(m.id);
-// Refused before cost, on the pick itself: the same individual, another species, not adult, released, out with the Companion (away).
+// R4b: a mibi in the carried set, docked or away: never drawn in a room, its place reserved, its tile and card say where it is and hold every action (isAway is only the Companion's being out)
+export const isCarried = (st, sv, m) => !!m && carriedIds(st, sv).includes(m.id);
+// Refused before cost, on the pick itself: the same individual, another species, not adult, released, carried (R4b, the owner: no breeding while a mibi is carried, docked or away).
 export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!a || !b) return "pick two";
   if (a === b || a.id === b.id) return "one mibi is not a pair";
   if (speciesOf(a) !== speciesOf(b)) return "another species";
   if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (a.released || b.released) return "gone to the wild";
-  if (isAway(st, sv, a) || isAway(st, sv, b)) return "away";
+  if (isCarried(st, sv, a) || isCarried(st, sv, b)) return "away";
   if (st.bud) return "the incubator is busy";
   if (vivFull(st, settings)) return "the Vivarium is full";
   return "";
 }
-// The partners of an adult or an elder, in place order. A partner out with the Companion while it is away is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
-export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isAway(st, sv, m) ? { ...m, away: true } : m));
+// The partners of an adult or an elder, in place order. A carried partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
+export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isCarried(st, sv, m) ? { ...m, away: true } : m));
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
 export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
 // The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you

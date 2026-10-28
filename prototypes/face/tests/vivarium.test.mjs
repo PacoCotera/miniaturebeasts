@@ -49,7 +49,8 @@ async function start(b, { motion = true, t0 = 0, sleepersPainted = false, node =
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["vivarium", vspec], ["rooms", rooms]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   f.handleOf(R.tiles.glyph ?? "frame-companion-outline-16x24", withPolicy((i) => standIn(i, [16, 24])));
-  for (const id of ["frame-companion-outline-16x24", "home-lamp-sky-12x12", "home-lamp-hairline-12x12", "home-lamp-sprout-12x12", "home-lamp-amber-12x12"]) f.handleOf(id, withPolicy((i) => standIn(i, id.includes("outline") ? [16, 24] : [12, 12])));
+  f.handleOf(R.tiles.glyphDocked ?? "frame-companion-solid-16x24", withPolicy((i) => standIn(i, [16, 24])));   // R4b: a carried tile's glyph while docked
+  for (const id of ["frame-companion-outline-16x24", "frame-companion-solid-16x24", "home-lamp-sky-12x12", "home-lamp-hairline-12x12", "home-lamp-sprout-12x12", "home-lamp-amber-12x12"]) f.handleOf(id, withPolicy((i) => standIn(i, id.includes("outline") ? [16, 24] : [12, 12])));
   for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(sleepersPainted && /^mibi:/.test(i) ? { status: "master" } : {}) })));
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "vivarium", ...b.props, motion, frame: frameProps(b.line) }), 0, f.errors().join("; ")); frames(f); return f;
@@ -98,11 +99,12 @@ test("the departure check bites: a pane moved, a chip and a tile off their pitch
   assert.match(bad((c) => { c.regions.push({ id: "strip", layer: "painted", rect: [16, 488, 992, 64] }); })[0], /strip row is retired/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "tile.2" && r.layer === "chrome").rect[0] += 4; })[0], /tile 2/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "nameTag" && r.layer === "chrome").rect[0] = 2; })[0], /name tag/);
-  assert.match(bad((c) => { const r = c.regions.find((x) => x.id === "resident" && x.layer !== "chrome"); r.rect[0] = 0; })[0], /walk ground/);
+  assert.match(bad((c) => { const r = c.regions.find((x) => x.id === "resident" && x.layer !== "chrome"); r.rect[0] = 1; })[0], /walk ground/);
   assert.match(bad((c) => { c.regions.push({ id: "word", layer: "type", rect: [300, 200, 80, 20] }); })[0], /no word/);
 });
-test("the bed and its sleepers are two regions: a bed moved 8 px, a sleeper 56 px up are found, and sleepers on the painted layer with the bed (their masters placed) are no departure", { skip }, async () => {
-  const b = scene({ adults: 4, young: 3, carry: [0, 1] }), n = b.props.regions.tiles.items.length;
+test("the bed and its resters are two regions: a bed moved 8 px, a sleeper 56 px up are found, and sleepers on the painted layer with the bed (their masters placed) are no departure", { skip }, async () => {
+  const b = scene({ adults: 8 }), n = b.props.regions.tiles.items.length;
+  { const rs = b.props.regions.residents.slice(0, 3); rs.forEach((p) => { p.shown = false; p.restAt = "bed"; }); b.props.regions.bed.sleepers = rs.map((p) => ({ ...p, rester: true, shown: false })); b.props.regions.bed.state = "resting"; }   // R4b: three resters on the bed (no master is placed in this scene, so no curl picture: the host would send them out; they are put on the bed by hand, sleeping as their standing figures)
   for (const painted of [false, true]) {
     const f = await start(b, { sleepersPainted: painted }), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, b.props.state, b.props.focus.cur, n); };
     assert.ok(lg.regions.some((r) => r.id === "bed.sleepers" && r.layer === (painted ? "painted" : "art")), `the sleepers are their own region on the ${painted ? "painted" : "art"} layer`);
@@ -547,5 +549,17 @@ test("R3: each of the four rooms in all four lights draws without an error or a 
     const want = ROOMS.rooms[name].pieces.filter((p) => p.picture).map((p) => fnv("p." + p.id)).sort((a, c) => a - c);
     assert.deepEqual(lg.nodes.filter((n) => n[3] === "room").map((n) => n[0]).sort((a, c) => a - c), want, `${id}: the pieces that have a picture`);
     assert.equal(lg.nodes.some((n) => n[3] === "bed"), name === "roots", `${id}: the bed only in Roots`);
+  }
+});
+
+test("R4b travellers in the rail: a carried place keeps its thumbnail at place + [4, 0, 48, 48] and shows the Companion's glyph at place + [52, 12, 16, 24], solid while docked and outline while away; no resident, bed sleeper or target carries a carried id", { skip }, async () => {
+  for (const away of [false, true]) {
+    const b = scene({ adults: 4, young: 3, carry: [0, 1], away }), f = await start(b, { node: true }), items = b.props.regions.tiles.items, lg = logOf(f);
+    assert.deepEqual(items.slice(0, 2).map((t) => [t.state, t.where]), [["out", away ? "away" : "docked"], ["out", away ? "away" : "docked"]]);
+    const placeOf = (i) => { return listPitch(R.tiles, 8, i); };
+    for (const i of [0, 1]) { const p = placeOf(i), th = f.nodeBox(`tile.${i}.thumb`)?.box, gl = f.nodeBox(`tile.${i}.glyph`)?.box;
+      assert.ok(th && gl, `place ${i}: thumb and glyph nodes`); assert.deepEqual([th[0] - p[0], th[1] - p[1], th[2], th[3]], [4, 0, 48, 48], `place ${i}: the thumbnail`); assert.deepEqual([gl[0] - p[0], gl[1] - p[1], gl[2], gl[3]], [52, 12, 16, 24], `place ${i}: the glyph`); }
+    for (const m of b.st.mibis.slice(0, 2)) { assert.ok(!b.props.regions.residents.some((r) => r.id === String(m.id))); assert.ok(!b.props.focus.targets.some((t) => t.id === "resident." + m.id)); assert.equal(f.nodeBox("g." + m.id), null, "a carried mibi is not drawn in the room"); }
+    assert.deepEqual(f.errors(), []); assert.ok(lg);
   }
 });

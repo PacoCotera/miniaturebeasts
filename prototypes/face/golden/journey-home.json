@@ -597,7 +597,7 @@
     "screen": "vivarium",
     "focus": "vivarium",
     "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "subject": "Ready to go exploring",
     "idle": false
    },
    {
@@ -606,7 +606,7 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "resident.1",
+      "target": "tile.1",
       "verb": "back"
      }
     ],

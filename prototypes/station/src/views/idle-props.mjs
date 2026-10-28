@@ -1,5 +1,5 @@
 // The Idle props (lvgl-switch.md §2.1, §4 L2.2; frame.json `idle`): pure selectors from the state to the props of Idle's composition, the whole 1024×600 with no frame. Props name *what*, never *where*: the people of the living window (the
-// residents at home, each a seed; the bed and the carried set asleep), the painting's slot and the one line; no rectangle, no measure, no layout rule, no colour (the face reads those from frame.json `idle`). Plain JSON:
+// residents at home, each a seed; the bed and the resters on it), the painting's slot and the one line; no rectangle, no measure, no layout rule, no colour (the face reads those from frame.json `idle`). Plain JSON:
 // { props (idle: true, regions, frame.idle.line), requests }. Runs in Node, tested there (tests/idle-props.test.mjs); the shape is idle.props.json.
 //   m: { st, sv, settings, docked }; spec: frame.json
 import * as S from "../state.mjs";
@@ -20,7 +20,7 @@ export function idleLine(m, I) {
 export function idleBuild(m, frame) {
   const I = frame.idle, R = I.regions, requests = [], req = reqOf(requests);
   const ph = phOf(req, "its master (station-layouts.md, Placeholders on Idle)");
-  const room = shownRoom(m.st, m.meet ?? null), lw = livingOf({ ...m, view: "idle", room }, R, req, ph, frame.light);
+  const room = shownRoom(m.st, m.meet ?? null), lw = livingOf({ ...m, view: "idle", room, ui: { meet: m.meet ?? null } }, R, req, ph, frame.light);
   const region = roomRegion(req, room, m.light), vivarium = { picture: region.base };   // the room's painting of the light: the picture Idle shows whole and the Vivarium's whole shows rows 120 to 560 of; one request for both, so a light's painting is on the face once
   return { props: { idle: true, regions: { vivarium, room: region, residents: lw.residents, ...(lw.bed ? { bed: lw.bed } : {}) }, frame: { idle: { line: idleLine(m, I) } } }, requests };
 }

@@ -219,17 +219,18 @@ test("the pictures register: every request of every state (the layered cards, th
   dropPortraitSources(); wipe();
 });
 
-test("a Lift mid-ceremony: in state confirm, while beginBlock says the mibi sits when you dock, the line is { ok null, habitat.json strings.portraitOut, ← strings.steps.place } and the gilt does not light, even armed; docked again, ✓ Portray", () => {
+test("a Lift mid-ceremony: in state confirm, while beginBlock says the mibi sits when you dock, the line is { ok null, habitat.json strings.travellerContext, ← strings.steps.place } and the gilt does not light, even armed; docked it is still held; brought home, ✓ Portray", () => {
   const w = dot({ habits: ["sleep-curled", "calm"], walked: ["wood"] }), ui = { step: "confirm", pose: "calm", place: "wood", focus: null, armed: null }; w.st.sitting = { source: "dev", key: null, at: T0 }; w.st.dock = { docked: true, at: T0 };
   const at = (docked, armed = null) => { w.st.dock = { docked, at: T0 }; return sittingBuild({ st: w.st, sv: { ...sv0(), carried: docked ? [] : [w.mb.id] }, settings, light: "day", mibiId: w.mb.id, ui: { ...ui, armed } }, spec, habitat); };
-  assert.equal(T.beginBlock(w.st, w.mb, "calm", "wood", { ...sv0(), carried: [w.mb.id] }), "", "docked, nothing blocks");
-  w.st.dock = { docked: false, at: T0 }; assert.equal(T.beginBlock(w.st, w.mb, "calm", "wood", { ...sv0(), carried: [w.mb.id] }), habitat.strings.portraitOut, "the rule's word is habitat.json's portraitOut");
+  assert.equal(T.beginBlock(w.st, w.mb, "calm", "wood", { ...sv0(), carried: [w.mb.id] }), T.CARRIED_BLOCK, "carried, docked or away, is held (R4b)");
+  w.st.dock = { docked: false, at: T0 }; assert.equal(T.beginBlock(w.st, w.mb, "calm", "wood", { ...sv0(), carried: [w.mb.id] }), T.CARRIED_BLOCK);
   for (const armed of [null, "room"]) {
     const b = at(false, armed); assert.deepEqual(validate(b.props, schema), []);
-    assert.deepEqual(b.line, { ok: null, subject: habitat.strings.portraitOut, back: Sg.steps.place, need: null }, "the confirm step reads portraitOut, ✓ has no cap");
+    assert.deepEqual(b.line, { ok: null, subject: habitat.strings.travellerContext.away, back: Sg.steps.place, need: null }, "the confirm step reads the traveller's words, ✓ has no cap");
     assert.equal(b.props.regions.gilt.picture, spec.regions.gilt.slices.rest, "the gilt does not light"); assert.equal(b.props.focus.armed, null);
     assert.deepEqual(b.props.regions.chosen.items.map((x) => x.picture).length, 2, "both choices kept");
   }
+  { const dk = sittingBuild({ st: w.st, sv: { ...sv0(), carried: [w.mb.id] }, settings, light: "day", mibiId: w.mb.id, ui: { ...ui } }, spec, habitat); w.st.dock = { docked: true, at: T0 }; const dd = sittingBuild({ st: w.st, sv: { ...sv0(), carried: [w.mb.id] }, settings, light: "day", mibiId: w.mb.id, ui: { ...ui } }, spec, habitat); assert.equal(dd.line.subject, habitat.strings.travellerContext.docked, "docked and carried: still held"); assert.ok(dk); }
   const d = at(true); assert.deepEqual(d.line, { ok: "Portray Dot", subject: Sg.once, back: Sg.steps.place, need: null }, "docked: ✓ Portray again"); assert.equal(d.props.regions.gilt.picture, spec.regions.gilt.slices.rest);
   w.st.dock = { docked: false, at: T0 };
   const notCarried = sittingBuild({ st: w.st, sv: sv0(), settings, light: "day", mibiId: w.mb.id, ui }, spec, habitat); assert.equal(notCarried.line.ok, "Portray Dot", "lifted but not carried: nothing blocks");

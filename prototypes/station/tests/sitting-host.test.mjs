@@ -60,13 +60,15 @@ test("Habitat's Portrait ✓ on a portrayed mibi opens the portrait only while i
   dropPortraitSources();
 });
 
-test("a Lift between the place step and confirm keeps both choices: the confirm step reads portraitOut, ✓ neither arms nor begins; the Dock restores ✓ Portray", () => {
+test("a Lift between the place step and confirm keeps both choices: the confirm step reads the traveller's words, ✓ neither arms nor begins; docked it is still held; home again, ✓ Portray", () => {
   const { h, mb, say } = rig(); enterSitting(h, mb); const o = offerOf(mb);
   say("card.0", "confirm"); G.sv.carried = [mb.id]; G.st.dock = { docked: false, at: T0 };   // the Caddy lifted with the mibi aboard
   say("card.0", "confirm"); assert.deepEqual([UI.sit.step, UI.sit.pose, UI.sit.place], ["confirm", o.poses[0], o.places[0]], "both choices kept");
-  let p = screenProps("").msg; assert.deepEqual([p.frame.line.ok, p.frame.line.subject, p.regions.gilt.picture], [null, capLine(HAB.strings.portraitOut), SIT.regions.gilt.slices.rest]);   // the host cases the line (capLine)
+  let p = screenProps("").msg; assert.deepEqual([p.frame.line.ok, p.frame.line.subject, p.regions.gilt.picture], [null, capLine(HAB.strings.travellerContext.away), SIT.regions.gilt.slices.rest]);   // the host cases the line (capLine)
   say("room", "confirm"); say("room", "confirm"); assert.deepEqual([UI.sit.step, UI.sit.armed], ["confirm", null], "✓ does nothing"); assert.ok(G.st.sitting, "nothing spent");
-  G.st.dock = { docked: true, at: T0 + 1 };   // docked again
+  G.st.dock = { docked: true, at: T0 + 1 };   // docked again: the mibi is still carried, so still held (R4b)
+  p = screenProps("").msg; assert.deepEqual([p.frame.line.ok, p.frame.line.subject], [null, capLine(HAB.strings.travellerContext.docked)]);
+  G.sv.carried = [];   // brought home
   p = screenProps("").msg; assert.deepEqual([p.frame.line.ok, p.frame.line.subject], ["Portray Dot", capLine(SIT.strings.once)]);
   say("room", "confirm"); assert.equal(UI.sit.armed, "room", "✓ arms again");
 });

@@ -1,7 +1,7 @@
 {
  "note": "The layout check's case corpus (ui/tests/layout-cases.test.mjs): golden states with the findings the check must make on them (expect: the known faults it reproduces, each with its source in the validation of the check, ✓m measured in the prototype, ✓e expected from the audit's numbers), the findings it must not make (clear: the findings the owner cleared), and what waits for data (pending: ✓d, once UI/UX declares it, or a ✓e the check does not reproduce). The owner's review of 2026-10-26 is the last 98 cases, one a card (card, verdict): a fault expects its own kind, or the finding that now carries the same fault; a fine clears its kind, by a rule, by a spec's data or by a frame.json exception; not sure is as the tune left it. They match by kind (rule, part, node, other, container), not by measure: the goldens moved (Q1, TY1.1) since the review. Each state's fixture log is ui/tests/layout-cases/<screen>/<state>.json; layout-check.mjs <logs> --refresh-cases takes them again after a retake. An expect matches a finding with that rule (and part, node, other as a prefix, container, measured: a number or [min, max]).",
  "frozen": {
-  "vivarium/vivarium-docked": {"from": "961525c3", "hash": "4cf367cb", "why": "the owner's and UI/UX's marks were made on these residents' places; the walk on levels (R4) moved the starts"},
+  "vivarium/vivarium-docked-r4": {"from": "961525c3", "hash": "4cf367cb", "why": "owner card vivarium-L8-1 was marked on this picture; R4b (the owner: travellers are not drawn) changed the live vivarium-docked, so the card stays on the picture it was marked on", "golden": "retired at R4b (T-20261027-323): git show 961525c3:prototypes/face/golden/vivarium/vivarium-docked.png"},
   "vivarium/vivarium-twelve": {"from": "961525c3", "hash": "bb53921f", "why": "the owner's and UI/UX's marks were made on these residents' places; the walk on levels (R4) moved the starts", "golden": "retired at R5 (T-20261027-318): vivarium-twelve became vivarium-eight; the card stays on the picture it was marked on, git show 961525c3:prototypes/face/golden/vivarium/vivarium-twelve.png"},
   "vivarium/vivarium-walk-8000ms": {"from": "961525c3", "hash": "c6628872", "why": "the owner's and UI/UX's marks were made on these residents' places; the walk on levels (R4) moved the starts"}
  },
@@ -155,13 +155,11 @@
     "pending": [] },
   { "state": "vivarium/vivarium-docked", "from": "the UI/UX layout sweep and the art direction audit: the Vivarium",
     "expect": [
-     { "rule": "L1", "node": "strip", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the strip 10 over the bottom line" },
-     { "rule": "L4", "node": "resident", "other": "resident", "mark": "✓m", "why": "the totem: three residents stacked, each one's feet on the next one's head" },
-     { "rule": "L4", "node": "resident#2", "other": "resident#4", "measured": 9, "mark": "✓m", "why": "the totem: feet on the next one's head (36 x 9), a perch" }
     ],
     "clear": [],
     "pending": [
-     { "what": "the strip that vanishes, L9", "needs": "vivarium.json layout.slots (✓d)" }
+     { "what": "the strip that vanishes, L9", "needs": "vivarium.json layout.slots (✓d)" },
+     { "what": "the ✓m L1 strip / bottom 10 (the strip 10 over the bottom line): R5 replaced the strip row with the rooms and places panes, so the refreshed picture has no strip node; the places pane's own L1 is tile / bottom 8", "needs": "UI/UX to re-mark it on the places pane" }
     ] },
   { "state": "home/home-fresh", "from": "the UX audit: Home",
     "expect": [
@@ -738,6 +736,13 @@
     ],
     "clear": [],
     "pending": [] },
+  { "state": "vivarium/vivarium-focus-crossed", "from": "UI/UX, R4b (the R4b layout read Overlaps): the focus set is drawn above the walkers",
+    "expect": [],
+    "clear": [
+     { "rule": "L4", "node": "resident#4", "other": "focus ring", "mark": "UI/UX", "why": "the focus set is drawn above walkers (resident.order)" },
+     { "rule": "L4", "node": "resident", "other": "nameTag", "mark": "UI/UX", "why": "the focus set is drawn above walkers (resident.order)" }
+    ],
+    "pending": [] },
   { "state": "vivarium/vivarium-walk-8000ms", "card": "vivarium-L4-22", "verdict": "fine", "from": "owner card vivarium-L4-22, marked fine: they overlap 49 x 52, 49 → 0",
     "expect": [],
     "clear": [
@@ -768,7 +773,7 @@
      { "rule": "L7", "part": "a", "container": "window", "node": "window", "mark": "owner", "why": "cleared: the window's painting is a painted fill" }
     ],
     "pending": [] },
-  { "state": "vivarium/vivarium-docked", "card": "vivarium-L8-1", "verdict": "fine", "from": "owner card vivarium-L8-1, marked fine: it floats, 236 → 16",
+  { "state": "vivarium/vivarium-docked-r4", "card": "vivarium-L8-1", "verdict": "fine", "from": "owner card vivarium-L8-1, marked fine: it floats, 236 → 16",
     "expect": [],
     "clear": [
      { "rule": "L8", "part": "b", "container": "window", "node": "resident#3", "other": "every neighbour", "mark": "owner", "why": "cleared: exception in frame.json (by owner): the residents stay a grid so the gutter fault vivarium-L3-15 stands" }
