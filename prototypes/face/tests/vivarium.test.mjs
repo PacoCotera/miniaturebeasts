@@ -19,6 +19,8 @@ import { listPitch } from "../../ui/specs/derive.mjs";
 import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
+// The long walk proofs (minutes of seeded walking) run in full before every merge, by the builder and the gate; a pull request into main (MB_CI_FAST=1) skips them: the owner, 2026-10-28, "stop testing everything for everything".
+const slow = skip || (process.env.MB_CI_FAST === "1" && "a long walk proof: run in full locally before every merge");
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("vivarium"), homeSpec = J("home");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
@@ -371,7 +373,7 @@ test("the ring is (W + 10) × (fh + 10) on the figure's feet, the tag top is fee
   }
   assert.ok(flipped > 0 && below > 0, `both tag places drawn: ${flipped} flipped, ${below} below`);
 });
-test("every start over 10,000 seeds is on a level of the room and off the keep-out; waypoints and every 2 px of every path stay on a level (or on its join) over a minute of walking", { skip }, async () => {
+test("every start over 10,000 seeds is on a level of the room and off the keep-out; waypoints and every 2 px of every path stay on a level (or on its join) over a minute of walking", { skip: slow }, async () => {
   const G = R.resident.walk.ground, K = R.resident.walk.keepOut, W = FIG[2], ok = (rect, loose = false) => { const { fx, feetY } = feetOf(rect), x = fx - Math.floor(W / 2); return x >= G[0] && x + W <= G[0] + G[2] && !(x + W > K[0] && feetY > K[1]) && [0, 1].some((lv) => roomOn("roots", lv, fx, feetY, W, loose)) || (loose && onJoin("roots", fx, feetY)); };
   const rects = (f, b) => b.st.mibis.map((m) => { const bx = f.nodeBox("g." + m.id)?.box; return bx && [bx[0], bx[1] + R.window.rect[1], bx[2], bx[3]]; });   // a node box is the window's (clipped) own
   let n = 0; const b0 = withFigure(scene({ adults: 8, bays: 8, focus: "tile:0" })), f0 = await start(b0, { motion: false, node: true });   // one face, the seeds sent again: a new seed starts from its own seed
@@ -402,7 +404,7 @@ async function levelRun(block, ms, vspec, n = 8, room) {   // one face, n stills
   return out;
 }
 const endsOf = (room) => { const j = ROOMS[room].joins[0]; return { up: [j.ends[0][0], j.ends[0][1] + DY], down: [j.ends[1][0], j.ends[1][1] + DY] }; }, ENDS = endsOf("roots");
-test("R4: over 2,000 seeded trips in Roots every feet point is on its level (room_on), or on the join during leg 2; some trips climb to the terrace and come back, changing level at a join's end only; the raised count never exceeds max(1, ⌊N/3⌋)", { skip }, async () => {
+test("R4: over 2,000 seeded trips in Roots every feet point is on its level (room_on), or on the join during leg 2; some trips climb to the terrace and come back, changing level at a join's end only; the raised count never exceeds max(1, ⌊N/3⌋)", { skip: slow }, async () => {
   let trips = 0, up = 0, down = 0, maxRaised = 0, points = 0;
   for (let block = 0; trips < 2000 && block < 60; block++) {
     const tr = await levelRun(block, 600000, FAST), last = Array(8).fill(null);
@@ -418,7 +420,7 @@ test("R4: over 2,000 seeded trips in Roots every feet point is on its level (roo
   assert.ok(trips >= 2000, trips + " trips"); assert.ok(up > 20 && down > 20, `climbs ${up}, descents ${down}`); assert.equal(maxRaised, CAP8, "the cap is reached and not passed");
   console.log(`# R4: ${trips} trips, ${points} feet points, ${up} climbs and ${down} descents, at most ${maxRaised} raised (cap ${CAP8})`);
 });
-test("R4: proof 2 in every room: in Reeds, Boulders and Ferns, over 300 s, every feet point is on its level, on its join during leg 2, or (legs 1 and 3) on the level with w = 0; a level is changed at that room's join ends only; there are climbs and descents, and the raised count stays within max(1, ⌊8/3⌋)", { skip }, async () => {
+test("R4: proof 2 in every room: in Reeds, Boulders and Ferns, over 300 s, every feet point is on its level, on its join during leg 2, or (legs 1 and 3) on the level with w = 0; a level is changed at that room's join ends only; there are climbs and descents, and the raised count stays within max(1, ⌊8/3⌋)", { skip: slow }, async () => {
   const order = J("rooms").order;
   for (const room of ["reeds", "boulders", "ferns"]) {
     const ends = endsOf(room); let up = 0, down = 0, maxRaised = 0, points = 0;
@@ -447,19 +449,19 @@ test("R4c: a scene switched from Roots to Reeds (the same residents, ids and see
   assert.equal(f.props({ screen: "vivarium", ...reeds.props, motion: true, frame: frameProps(reeds.line) }), 0, f.errors().join("; ")); f.frame(5000 + 20040);   // the first frame after the switch
   const first = rects(f, reeds), ok = onReeds(first); assert.ok(first.every(Boolean), "six walkers drawn"); assert.deepEqual(ok, ok.map(() => true), `every walker on a Reeds level at the first frame: ${first.map((r) => feetOf(r).fx + "," + (feetOf(r).feetY - DY)).join(" ")}`);
 });
-test("R4: with the real ceiling and speeds eight stills never travel more than rules.travel.max at once, over 10 minutes, and a level is changed", { skip }, async () => {
+test("R4: with the real ceiling and speeds eight stills never travel more than rules.travel.max at once, over 10 minutes, and a level is changed", { skip: slow }, async () => {
   const tr = await levelRun(900, 600000, spec); let maxT = 0, changes = 0, last = null;
   for (const fr of tr) { const n = fr.reduce((a, r) => a + r[5], 0); maxT = Math.max(maxT, n); if (last) fr.forEach((r, i) => { if (r[3] !== last[i][3]) changes++; }); last = fr; }
   assert.ok(maxT <= spec.rules.travel.max, `${maxT} travelling (ceiling ${spec.rules.travel.max})`); assert.equal(maxT, spec.rules.travel.max, "the ceiling is reached"); assert.ok(changes > 0, "a level was changed at the real speeds");
   console.log(`# R4: at the real speeds, travelling at most ${maxT} (ceiling ${spec.rules.travel.max}), ${changes} changes of level in 10 minutes`);
 });
-test("R4: the walk is the same twice from the same seeds and clock (determinism)", { skip }, async () => {
+test("R4: the walk is the same twice from the same seeds and clock (determinism)", { skip: slow }, async () => {
   const a = await levelRun(5, 120000, FAST), b = await levelRun(5, 120000, FAST);
   assert.deepEqual(a, b, "two runs from the same seeds and clock");
   const c = await levelRun(6, 120000, FAST); assert.notDeepEqual(a, c, "other seeds walk otherwise");
 });
 
-test("R4: moving sets change level by the three legs (1 to the join, 2 across, 3 to the target) at the join's ends, climb and come back, never more than the raised cap up, never more than rules.travel.max travelling, and walk the same twice", { skip }, async () => {
+test("R4: moving sets change level by the three legs (1 to the join, 2 across, 3 to the target) at the join's ends, climb and come back, never more than the raised cap up, never more than rules.travel.max travelling, and walk the same twice", { skip: slow }, async () => {
   const run = async () => {
     const sc = movingScene("vivarium", { adults: 4, juveniles: 3, s05: 1, focus: "tile:0" }), f = await bootScene(sc), M = f.M, N = 8, fw = sc.props.regions.residents.map((r) => (r.figure ?? [0, 0, r.stage === "juvenile" ? 104 : 144, 152])[2]), prev = Array(N).fill(null), trace = [];
     let up = 0, down = 0, maxRaised = 0, maxT = 0, legs = 0;
