@@ -1,6 +1,7 @@
 // Pictures are {w, h, rgba()} (ui/assets.mjs): RGBA bytes with straight alpha, with no canvas. In Node there is no document, so a picture that answers rgba() here touched none.
 //   node --test prototypes/station/tests/
 import { test, describe, before, after } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { PB, C, RGB } from "../src/pixels.mjs";
 import { figureFromLayers } from "../src/podmasters.mjs";
@@ -244,7 +245,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
   describe("an owned mibi is never absent (Fix 1b part 3, stands.mjs)", () => {
     before(placeAll); after(dropAll);
     const SPECIES = Array.from({ length: 16 }, (_, i) => "S" + String(i + 1).padStart(2, "0")), PLACES = [[144, 152], [96, 88], [304, 312], [48, 48]];
-    const ADULT_STANDS = SPECIES.filter((s) => PLACES.every(([w, h]) => `mibi-adult-${s}-${w}x${h}` in index)), settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8 }, T0 = 1_000_000;
+    const ADULT_STANDS = SPECIES.filter((s) => PLACES.every(([w, h]) => `mibi-adult-${s}-${w}x${h}` in index)), settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 }, T0 = 1_000_000;
 
     test("no S01 to S16 species reaches the genome stand-in: every one has a signed adult stand or a signed juvenile stand at every place", () => {
       for (const sp of SPECIES) for (const size of PLACES) for (const stage of ["adult", "elder"]) {
@@ -261,13 +262,13 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
     const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], ...over });
     const pics = (b) => b.requests.filter((r) => r.kind === "mibi");
 
-    test("Home and the Vivarium whole: an S04 adult is its juvenile 104×112 (a resident) and, with no nap picture, a sleeper that sleeps as that standing figure (never at the old 96×88), an S03 adult its own stand; the drawn stage follows", () => {
+    test("Home and the Vivarium whole: an S04 adult is its juvenile 104×112 (a resident) and, with no nap picture, never a sleeper (R4b: a rester with no curl picture goes out), an S03 adult its own stand; the drawn stage follows", () => {
       const st = world(); S.seedAdults(st, "S04", 5, 1, settings); S.seedAdults(st, "S03", 9, 1, settings); const [s4, s3] = st.mibis;
-      const b = idleBuild({ st, sv: sv0({ carried: [s4.id] }), settings, docked: true, light: "day" }, frameSpec), R = b.props.regions;
-      const res = (m) => R.residents.find((r) => r.id === String(m.id)), slp = R.bed.sleepers[0];
+      const b = idleBuild({ st, sv: sv0(), settings, docked: true, light: "day" }, frameSpec), R = b.props.regions;
+      const res = (m) => R.residents.find((r) => r.id === String(m.id));
       assert.equal(res(s3).stage, "adult"); assert.equal(res(s3).picture, `mibi:${genomeDigest(s3.genome)}:adult:144x152`);
-      const r4 = b.requests.find((r) => r.id === `mibi:${genomeDigest(s4.genome)}:juvenile:104x112`); assert.ok(r4, "the sleeper asks for the juvenile standing, at 104×112"); assert.deepEqual([r4.size, r4.stage, r4.species], [[104, 112], "juvenile", "S04"]);
-      assert.equal(slp.stage, "juvenile");
+      const r4 = b.requests.find((r) => r.id === `mibi:${genomeDigest(s4.genome)}:juvenile:104x112`); assert.ok(r4, "the resident asks for the juvenile standing, at 104×112"); assert.deepEqual([r4.size, r4.stage, r4.species], [[104, 112], "juvenile", "S04"]);
+      assert.equal(res(s4).stage, "juvenile"); assert.deepEqual(R.bed.sleepers, []);
       const w = world(); S.seedAdults(w, "S04", 5, 1, settings); const m = w.mibis[0];
       const b2 = idleBuild({ st: w, sv: sv0(), settings, docked: true, light: "day" }, frameSpec), p = b2.props.regions.residents[0];
       assert.deepEqual([p.stage, p.picture], ["juvenile", `mibi:${genomeDigest(m.genome)}:juvenile:104x112`]);

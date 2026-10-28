@@ -139,6 +139,8 @@ static void build_resident(const char *cur) {
 }
 
 /* ---- the name tag, or the meet ribbon in its place ---- */
+static int held_state(void) { return strcmp(v_pstr("state"), "out") == 0; }   /* a carried mibi up close: every action on its card is held (habitat.json heldRule) */
+
 static void build_tag(void) {
   int box[4], rib[4]; v_srect(S, "regions.resident.rect", box); v_srect(S, "regions.meetRibbon.rect", rib);
   const char *name = v_pstr("regions.nameTag.text"), *words = v_pstr("regions.meetRibbon.text"); int meet = strcmp(v_pstr("state"), "meet") == 0 && *words;
@@ -147,7 +149,7 @@ static void build_tag(void) {
   v_region("meetRibbon", LAYER_CHROME);
   word_ribbon("meetRibbon", rib, meet ? words : "", v_si(S, "regions.meetRibbon.pad", 0), flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.ribbon.fill"), v_scol(S, "colours.ribbon.edge"), flash ? "heading.flash" : NULL);
   int below = box[1] + box[3] + v_si(S, "regions.nameTag.under", 0), over = box[1] - v_si(S, "regions.resident.lift", 4) - v_si(S, "regions.nameTag.overGap", 0) - v_si(S, "regions.nameTag.h", 0);   /* the tag's top under the feet (nameTag.under), or its bottom a gap (nameTag.overGap) above the lifted box when it would pass the glass's bottom margin */
-  if (!meet) kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 0, flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), flash ? "nameTag.flash" : NULL, g_tag);
+  if (!meet) kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 0, flash ? v_scol("frame", "colours.flash") : v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), flash ? "nameTag.flash" : held_state() ? "nameTag.dim" : NULL, g_tag);   /* Rename held while carried: the plate kept, the name in the dimmed role (mist), no dither */
   else { kit_nameTag(S, "regions.glass", name, box, below, over, KIT_TAG_AUTO, 1, v_scol(S, "colours.nameTag.fill"), v_scol(S, "colours.nameTag.edge"), NULL, g_tag); memset(g_tag, 0, sizeof g_tag); }   /* the same nodes with no size, at the tag's place: the opening redraws nothing at the origin */
 }
 
@@ -217,18 +219,24 @@ static void door_objects(int dy) {
     v_region("door", LAYER_CHROME); free_node(v_fmt("door.free.%d", i), x, y, pw, ph);
   }
 }
+/* a carried mibi up close (state out): Portrait, Cross and Wild draw in the dimmed role, the picture dithered at level 8 of 16 (v_dither_window, as the carried tile's thumbnail), the node standing hidden before it so the order holds (R4b-1b) */
+static void dim_slot(const char *region, const char *id, const char *pic, const char *under, int x, int y, int w, int h, int hx, int hy) {
+  int dim = held_state() && has(pic);
+  v_slot_at(id, pic, under, x, y, w, h, !dim, hx, hy);
+  if (dim) { char d[48]; snprintf(d, sizeof d, "%s.dither", id); v_name(region); v_dither_window(d, pic, 0, 0, NULL, 0, 0, 8, x, y, w, h); }
+}
 static void portrait_objects(int dy) {
   int r[4]; v_srect(S, "regions.portrait.rect", r); const char *f = v_pstr("regions.portrait.frame"); int fx = v_sk(S, "regions.portrait.frame.at", 0), fy = v_sk(S, "regions.portrait.frame.at", 1), fw = v_sk(S, "regions.portrait.frame.size", 0), fh = v_sk(S, "regions.portrait.frame.size", 1);
-  v_name("portrait"); v_slot_at("portrait.frame", f, v_pstr("regions.glass.picture"), r[0] + fx, r[1] + dy + fy, fw, fh, 1, r[0], r[1]);
+  v_name("portrait"); dim_slot("portrait", "portrait.frame", f, v_pstr("regions.glass.picture"), r[0] + fx, r[1] + dy + fy, fw, fh, r[0], r[1]);
   /* its picture, over the frame's window (frame.picture: at and size from the spec, 1:1): painted from the asset; not landed (""), a 0x0 window that draws nothing and the frame master's own window shows */
   const char *p = v_pstr("regions.portrait.picture"); int px = v_sk(S, "regions.portrait.frame.picture.at", 0), py = v_sk(S, "regions.portrait.frame.picture.at", 1), pw = v_sk(S, "regions.portrait.frame.picture.size", 0), ph = v_sk(S, "regions.portrait.frame.picture.size", 1);
-  v_name("portrait"); v_slot_at("portrait.picture", p, has(f) ? f : v_pstr("regions.glass.picture"), r[0] + fx + px, r[1] + dy + fy + py, pw, ph, 1, r[0], r[1]);
+  v_name("portrait"); dim_slot("portrait", "portrait.picture", p, has(f) ? f : v_pstr("regions.glass.picture"), r[0] + fx + px, r[1] + dy + fy + py, pw, ph, r[0], r[1]);
 }
 static void cross_face(int i, const int b[4], void *ctx) {
   int dy = *(int *)ctx, x = b[0], y = b[1] + dy, w = b[2], h = b[3];   /* the module's lift moves the faces with it */
   char id[32], P[48]; snprintf(P, sizeof P, "regions.cross.faces.%d", i); const char *pic = v_pstr(v_fmt("%s.picture", P)); int away = v_pbool(v_fmt("%s.away", P), 0);
   snprintf(id, sizeof id, "cross.face.%d", i); v_name("cross");
-  if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_faceHolder(id, S, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
+  if (has(pic)) { if (held_state()) dim_slot("cross", id, pic, NULL, x, y, w, h, x, y); else v_sprite(id, pic, x, y, w, h); } else v_faceHolder(id, S, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
 }
 static void cross_objects(int dy) {
   int n = v_plen("regions.cross.faces"); if (n > MAXF) n = MAXF; if (n < 0) n = 0;
@@ -236,13 +244,13 @@ static void cross_objects(int dy) {
 }
 static void wild_objects(int dy) {
   int r[4]; v_srect(S, "regions.wild.rect", r); const char *g = v_pstr("regions.wild.gate"); int gx = v_sk(S, "regions.wild.gate.at", 0), gy = v_sk(S, "regions.wild.gate.at", 1), gw = v_sk(S, "regions.wild.gate.size", 0), gh = v_sk(S, "regions.wild.gate.size", 1);
-  v_name("wild"); v_slot_at("wild.gate", g, v_pstr("regions.glass.picture"), r[0] + gx, r[1] + dy + gy, gw, gh, 1, r[0], r[1]);
+  v_name("wild"); dim_slot("wild", "wild.gate", g, v_pstr("regions.glass.picture"), r[0] + gx, r[1] + dy + gy, gw, gh, r[0], r[1]);
 }
 static const char *MODS[4] = { "door", "portrait", "cross", "wild" };
 static void build_modules(const char *cur) {
   for (int m = 0; m < 4; m++) {
     int dy = strcmp(cur, MODS[m]) == 0 ? -v_si(S, v_fmt("focus.targets.%s.lift", MODS[m]), 2) : 0;
-    build_module(S, MODS[m], dy, "");
+    build_module_held(S, MODS[m], dy, "", m > 0 && held_state());   /* Portrait, Cross and Wild held while carried; the Companion's Bring is live docked (heldRule) */
     if (m == 0) door_objects(dy); else if (m == 1) portrait_objects(dy); else if (m == 2) cross_objects(dy); else wild_objects(dy);
   }
 }

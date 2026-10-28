@@ -453,6 +453,12 @@ test("every cross of two valid members builds: the frames' viability counts cros
   }
 });
 
+test("the shed pod takes its kinship from opts: the default stays 1/8, a higher one is used for the draw and written to origin.kinship", () => {
+  const f = frameOf("S01"), m = typeSpecimen(f);
+  assert.equal(shedPod(f, m, { rng: rng("shed-kinship") }).origin.kinship, 1 / 8);
+  assert.equal(shedPod(f, m, { kinship: 0.25, rng: rng("shed-kinship") }).origin.kinship, 0.25);
+  assert.equal(shedPod(f, m, { kinship: 1 / 8, rng: rng("shed-kinship") }).origin.kinship, 0.125);
+});
 test("the shed pod: a returned mibi's self cross never equals its parent, always builds, is seeded, takes only the parent's copies and keeps the line", () => {
   assert.equal(SELF_KINSHIP, 1 / 8);
   const valueOf = (locus, c) => (typeof c === "number" ? c : locus.alleles.find((a) => a.id === c).value);

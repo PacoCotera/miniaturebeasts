@@ -21,7 +21,8 @@ export const SCENES = {
   "window-dawn":         { f: "room", light: "dawn", time: "06:30", set: (w) => { w.adults(4); w.young(2); } },   // the window in each light (day is the scenes above)
   "window-dusk":         { f: "room", light: "dusk", time: "18:30", set: (w) => { w.adults(4); w.young(2); } },
   "window-night":        { f: "room", light: "night", time: "23:30", set: (w) => { w.adults(4); w.young(2); } },   // the residents asleep in place
-  "window-six-of-eight": { f: "room", set: (w) => { w.adults(5); w.young(3); } },   // eight at home: the window shows six
+  "window-five-of-eight": { f: "room", set: (w) => { w.adults(5); w.young(3); } },   // eight at home: the window shows five (R4b: rules.show.max, and what fits at 1x); the three that rest are out of sight or curled
+  "room-reeds":          { f: "room", set: (w) => { const st = window.__st.ST; w.rooms(2); st.face.room = 1; w.adults(4); w.young(1); } },   // R5 carried (T-20261027-318, UI/UX's R5 read): the room on the face is Reeds (1): Home's window shows Reeds' painting (its sedge-seam occluder against the window's left edge and the walk band)
   "event-tag":           { f: "room", set: (w) => { w.adults(3); w.young(1); w.meet(3); } },   // a mibi grew up: its name tag until the player visits it
   "vivarium-none-home":  { f: "room", set: (w) => { w.adults(2); w.carry([0, 1]); w.away(); } },
   "incubator-empty":     { f: "room", set: (w) => { w.adults(2); } },
@@ -38,12 +39,14 @@ export const SCENES = {
   "library-0-new":       { f: "room", set: (w) => { w.adults(3); w.libNew(0); } },   // the Library opened full screen: the specimen of the species with the fewest looks unfound, no new caption, no glint (build spec 4.2)
   "library-3-new":       { f: "room", set: (w) => { w.adults(3); w.libNew(3); } },   // three looks found since: "3 new" and a glint on each bead (reduced motion: the glints simply show)
   "library-focused":     { f: "library", set: (w) => { w.adults(3); w.libNew(3); } },
+  // R5 (T-20261027-318): every place taken and a bud ready (the last scene, so the rooms and the Energy it sets are in no earlier one): the line leads to the Vivarium (✓ Make room: no Energy for a room), the Incubator module says it waits for room
+  "full-bud":            { f: "room", set: (w) => { const st = window.__st.ST; w.rooms(1); st.rooms = 1; st.e = 0; w.adults(8); w.bud(true); } },
 };
 // the helpers the scenes call, in the page
 export const WORLD = () => ({
   // the Companion's part of the save is re-read from storage on every save: an edit to it is written there at once
   persist() { const S = window.__st; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); },
-  reset() { const S = window.__st, st = S.ST, sv = S.SV; S.UI.meet = null; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; st.sittingCrates = []; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.nameN = 0; st.namesUsed = []; st.knownIds = []; st.libSeen = {}; S.UI.meet = null; S.UI.home.f = "room"; this.persist(); },
+  reset() { const S = window.__st, st = S.ST, sv = S.SV; S.UI.meet = null; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; st.sittingCrates = []; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.nameN = 0; st.namesUsed = []; st.knownIds = []; st.libSeen = {}; S.UI.meet = null; S.UI.home.f = "room"; st.face.room = 0; this.persist(); },
   libNew(n) { const st = window.__st.ST; st.libSeen = JSON.parse(JSON.stringify(st.guide)); let k = n; for (const t of Object.keys(st.libSeen.S01 ?? {})) while (k > 0 && st.libSeen.S01[t].length > 1) { st.libSeen.S01[t].pop(); k--; } },   // the Library opened full screen, then n looks found since
   adults(n) { const st = window.__st.ST, k = st.mibis.length; window.__st.seedAdults("S01", 5, n); for (const m of st.mibis.slice(k)) m.paint = { state: "landed" }; },
   young(n) { const st = window.__st.ST; const k = st.mibis.length; window.__st.seedAdults("S01", 77, n); for (const m of st.mibis.slice(k)) { m.born = st.turn; m.paint = { state: "landed" }; } },
@@ -51,7 +54,7 @@ export const WORLD = () => ({
   carry(ix) { const st = window.__st.ST; window.__st.SV.carried = ix.map((i) => st.mibis[i].id); this.persist(); },
   away() { window.__st.ST.dock = { docked: false, at: 1 }; },
   crates(n) { window.__st.SV.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 0, at: 1, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] })); this.persist(); },
-  bays(n) { window.__st.settings.bays = n; },
+  rooms(k) { window.__st.settings.rooms = k; },
   waiting(n) { const st = window.__st.ST; for (let i = 0; i < n; i++) st.waiting.push({ ...st.tray[i], id: "wait" + i }); },
   sitting() { window.__st.ST.sitting = { mibi: window.__st.ST.mibis[0]?.id ?? 1 }; },
   unread(i) { const m = window.__st.ST.mibis[i]; if (m) m.read = []; this.persist(); },

@@ -3,6 +3,7 @@
 // rules on what the room's ✓ does. The living window's shared selectors (residents' seeds, rest, light, picture ids), which Idle and the Vivarium's whole use, are tested through Idle's view beneath.
 //   node --test prototypes/station/tests/
 import { lineCased } from "./fixtures/line-case.mjs";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -19,7 +20,7 @@ import { goalWords } from "../src/views/goal-words.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("home.json"), frameSpec = J("frame.json"), schema = J("home.props.json");
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
   if (sc.oneOf) { const ok = sc.oneOf.filter((o) => validate(v, o, at, []).length === 0).length; if (ok !== 1) out.push(`${at}: matches ${ok} of oneOf`); return out; }   // the moving prop: "" or one object form (Station M1 §2.2)
@@ -40,7 +41,8 @@ const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e =
 const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, ...over });
 const pod = (st, id, gs = 5, identified = true) => { S.seedPodFromGenome(st, podGenome(frameOf(id), gs), settings, T0); const p = st.tray[st.tray.length - 1]; if (identified) S.skipIdentify(st, p); return p; };
 const crate = (n, turn = 0) => ({ id: "c" + n, n, turn, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] });
-const build = (st, sv, over = {}) => homeBuild({ st, sv, settings, docked: S.docked(st), ui: {}, focus: null, time: 12 * 3600 + 41 * 60, date: { y: 2026, m: 9, d: 17 }, now: Date.now(), place: "", ...over }, spec, frameSpec);
+const RULES = J("vivarium.json").rules;   // rules.show: who is shown and who rests (R4b)
+const build = (st, sv, over = {}) => homeBuild({ st, sv, settings, docked: S.docked(st), ui: {}, focus: null, time: 12 * 3600 + 41 * 60, date: { y: 2026, m: 9, d: 17 }, now: Date.now(), place: "", rules: RULES, ...over }, spec, frameSpec);
 const dock = (st, d = true) => { st.dock = { docked: d, at: T0 }; };
 const portrait = (st) => st.sittingCrates.push({ id: "sit1", mibiId: st.mibis[0].id, pose: "stand", place: "meadow", start: 0, source: "x", painted: true, opened: false });
 
@@ -80,9 +82,9 @@ test("the top bar's words: the date as Sat 17 Oct and the clock as 24 hours from
   assert.equal(build(st, sv, { place: "Burrow Station" }).props.regions.bar.place, "Burrow Station");
 });
 
-test("the needs hold in the spec's order: crates, the bud, a portrait, a new mibi to meet, new pods, glinting pods, pods waiting for a well, a pod that could be incubated; a soft need is not a need", () => {
+test("the needs hold in the spec's order: crates, a full Vivarium, the bud, a portrait, a new mibi to meet, new pods, glinting pods, pods waiting for a well, a pod that could be incubated; a soft need is not a need", () => {
   const needs = (st, sv, ui = {}) => homeNeeds(st, sv, settings, ui, Date.now() + 1000).map((n) => n.key), sc = scenes();
-  assert.deepEqual(spec.strings.line.order, ["crates", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
+  assert.deepEqual(spec.strings.line.order, ["crates", "full", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
   assert.deepEqual(needs(sc.empty.st, sc.empty.sv), []); assert.deepEqual(needs(sc.crates.st, sc.crates.sv), ["crates"]); assert.deepEqual(needs(sc.crates.st, { ...sc.crates.sv, bay: [] }), []); assert.deepEqual(needs(sc.away.st, sc.away.sv), [], "away: the crates are not in the bay");
   assert.deepEqual(needs(sc.waiting.st, sc.waiting.sv), ["waitingPods"]); assert.deepEqual(needs(sc.portrait.st, sc.portrait.sv), ["crates", "portrait"]);
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); st.waiting.push({ id: "w" }); pod(st, "S01", 5, false);
@@ -91,6 +93,12 @@ test("the needs hold in the spec's order: crates, the bud, a portrait, a new mib
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 1, settings); const p = pod(st, "S01"); p.read = [frameOf("S01").chapters[0].id]; p.seen = 1; assert.deepEqual(needs(st, sv0()), ["couldGrow"], "a pod that can be incubated, the price in hand"); st.e = 0; assert.deepEqual(needs(st, sv0()), [], "short of the price: no need"); }
 });
 
+test("F7: while the Vivarium is full and the bud waits for a place, the line is full alone: budReady and couldGrow drop out", () => {
+  const st = world(); dock(st); st.rooms = 1; S.seedAdults(st, "S01", 5, S.ROOM, { ...settings, rooms: 1 }); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 };
+  const keys = (x) => homeNeeds(x, sv0(), { ...settings, rooms: 1 }, {}, Date.now() + 1000).map((n) => n.key);
+  assert.ok(S.waitsForPlace(st, { ...settings, rooms: 1 }), "the premise: the bud waits for a place"); assert.deepEqual(keys(st), ["full"]);
+  const p = pod(st, "S01", 5, false); p.read = [frameOf("S01").chapters[0].id]; p.seen = 1; st.bud = null; assert.ok(!keys(st).includes("couldGrow"));
+});
 test("the line at rest: at most two needs, the first by its action and the second by its notice; with none, the goal; the verb of a target on a focus; the Companion away says it is on a trip", () => {
   const sc = scenes(), line = (x, over) => build(x.st, x.sv, over).props.regions.line;
   assert.deepEqual(line(sc.crates), { needs: ["Open the Bay"] }); assert.deepEqual(line(sc.portrait), { needs: ["Open the Bay", "A portrait waits in the Bay"] }, "walk crates and a portrait: the action, then the portrait's notice; no name");
@@ -153,28 +161,43 @@ test("lightAt: the hour's light from frame.json light.from, the last wrapping mi
 });
 
 // ---- the living window's shared selectors, through Idle's view (Idle and the Vivarium's whole use them; Home no longer shows residents) ----
-const idle = (st, sv, over = {}) => idleBuild({ st, sv, settings, docked: S.docked(st), light: "day", ...over }, frameSpec);
-test("the residents at home walk (a seed each), the carried set sleeps on the bed (a seed each too: its breath's phase, Station M1 §2.6), the bed is a PH plate in every state, the seed is the mibi's, the same every time", () => {
+const idle = (st, sv, over = {}) => idleBuild({ st, sv, settings, docked: S.docked(st), light: "day", time: 12 * 3600, now: T0 + 12 * 3600 * 1000, restRules: RULES.rest, rules: RULES, ...over }, frameSpec);
+test("the residents at home walk (a seed each); the carried set is never drawn (docked or away: not a resident, not a sleeper) and the bed is the nappers' alone: empty with nobody resting, a PH plate in every state; the seed is the mibi's, the same every time", () => {
   const sc = scenes(), d = idle(sc.docked.st, sc.docked.sv).props.regions;
-  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.ok(d.bed.sleepers.every((s) => s.seed > 0)); assert.notDeepEqual(d.bed.sleepers.map((s) => s.seed), d.residents.map((r) => r.seed)); assert.equal(d.bed.state, "docked"); assert.equal(d.bed.mark, "", "docked: no mark on the bed"); assert.match(d.bed.picture, /^home-bed-day-192x56/);
-  const a = idle(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "away"); assert.deepEqual(a.bed.sleepers, []); assert.equal(a.bed.mark, "", "away: the bed's mark is not drawn");
-  const n = idle(sc.empty.st, sc.empty.sv).props.regions; assert.equal(n.bed.state, "none"); assert.deepEqual(n.residents, []);
+  assert.equal(d.residents.length, 2, "four housed, two carried: two at home"); assert.ok(d.residents.every((r) => r.seed > 0)); assert.equal(d.bed.state, "empty"); assert.deepEqual(d.bed.sleepers, []); assert.ok(!("mark" in d.bed), "R4b: the bed has no Companion mark"); assert.match(d.bed.picture, /^room-roots-bed-day-192x56/);
+  for (const m of sc.docked.sv.carried) assert.ok(!d.residents.some((r) => r.id === String(m)), "a carried mibi is not a resident");
+  const a = idle(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "empty"); assert.deepEqual(a.bed.sleepers, []); assert.equal(a.residents.length, 2, "one of three carried");
+  const n = idle(sc.empty.st, sc.empty.sv).props.regions; assert.equal(n.bed.state, "empty"); assert.deepEqual(n.residents, []);
   assert.deepEqual(idle(sc.docked.st, sc.docked.sv).props.regions.residents.map((r) => r.seed), d.residents.map((r) => r.seed));
 });
-test("the light picks the pictures: Idle's painting and the bed are the masters of that light", () => {
-  const sc = scenes();
+test("the light picks the pictures: Idle's painting and the bed are the room's masters of that light (R3: Roots), each a placed master of its own size", () => {
+  const sc = scenes(), ix = JSON.parse(readFileSync(path.join(specs, "../../assets/masters/index.json"), "utf8")).masters;
   for (const light of ["dawn", "day", "dusk", "night"]) {
-    const i = idle(sc.docked.st, sc.docked.sv, { light }), ids = i.requests.filter((r) => r.kind === "slot"), bed = ids.find((r) => r.id.startsWith("home-bed-")), viv = ids.find((r) => r.id.startsWith("idle-vivarium-"));
-    assert.deepEqual([bed.id, bed.master], [`home-bed-${light}-192x56`, `home-bed-${light}-192x56`]); assert.deepEqual([viv.id, viv.master], [`idle-vivarium-${light}:1024x568`, `idle-vivarium-${light}-1024x568`]);
+    const i = idle(sc.docked.st, sc.docked.sv, { light }), ids = i.requests.filter((r) => r.kind === "slot"), bed = ids.find((r) => r.id.startsWith("room-roots-bed-")), viv = ids.find((r) => r.id.startsWith("room-roots-idle-"));
+    assert.deepEqual([bed.id, bed.master], [`room-roots-bed-${light}-192x56`, `room-roots-bed-${light}-192x56`]); assert.deepEqual([viv.id, viv.master], [`room-roots-idle-${light}-1024x568`, `room-roots-idle-${light}-1024x568`]);
+    for (const q of ids.filter((r) => r.id.startsWith("room-"))) assert.deepEqual([ix[q.id]?.w, ix[q.id]?.h], q.size, q.id + " is placed at its size");
+    assert.ok(!ids.some((r) => /^(idle-vivarium|home-bed)/.test(r.id)), "the legacy ids are no longer referenced");
   }
+});
+test("R3: Home shows the room the whole last showed, except that a mibi being met shows its own (UX 1e): the room's ids, its residents, no bed", () => {
+  const st = world(); dock(st); st.rooms = 2; S.seedAdults(st, "S01", 5, 4, settings); for (const m of st.mibis) m.paint = { state: "landed" };
+  st.mibis[0].room = 1; st.mibis[0].slot = 0; st.mibis[1].room = 1; st.mibis[1].slot = 1; const sv = sv0(), r = (over) => build(st, sv, over).props.regions;
+  assert.equal(r({}).room.id, "roots"); assert.equal(r({}).residents.length, 2, "the whole last showed Roots: its two");
+  const met = r({ ui: { meet: st.mibis[0].id } }); assert.equal(met.room.id, "reeds"); assert.equal(met.room.base, "room-reeds-idle-day-1024x568"); assert.equal(met.glass.picture, met.room.base); assert.equal(met.residents.length, 2, "its room's two"); assert.ok(!("bed" in met));
+  assert.deepEqual(Object.keys(met.room.pieces), ["reeds-sedge-2", "reeds-stone-1", "reeds-raincup"], "the pieces that have a picture: the sedge cut-out of the scene has none");
+  st.face.room = 1; assert.equal(r({}).room.id, "reeds", "the room the whole shows"); assert.equal(r({ ui: { meet: st.mibis[3].id } }).room.id, "roots", "a mibi met in another room");
+});
+test("every room has its pictures in every light of frame.light.from, all placed at their size", () => {
+  const lights = frameSpec.light.from.map(([, l]) => l), ROOMS = JSON.parse(readFileSync(path.join(specs, "rooms.json"), "utf8")), ix = JSON.parse(readFileSync(path.join(specs, "../../assets/masters/index.json"), "utf8")).masters;
+  for (const name of ROOMS.order) { const r = ROOMS.rooms[name]; for (const l of lights) for (const t of [r.base, r.near, ...(r.bed ? [r.bed.picture] : []), ...r.pieces.filter((p) => p.picture).map((p) => p.picture)]) { const id = t.replace("{light}", l); assert.ok(ix[id], id + " is placed"); assert.equal(`${ix[id].w}x${ix[id].h}`, id.match(/(\d+x\d+)$/)[1]); } }
 });
 test("every light of frame.light.from has its pictures on Idle and its bed, and no more", () => {
   const lights = frameSpec.light.from.map(([, l]) => l).sort();
   for (const m of [frameSpec.idle.light.pictures, frameSpec.light.bed]) assert.deepEqual(Object.keys(m).sort(), lights);
 });
-test("a mibi that grows up changes every picture id from :juvenile: to :adult: with the sleepers' size unchanged and a resident's following its stage (the residents and the sleepers on the bed)", () => {
+test("a mibi that grows up changes every picture id from :juvenile: to :adult: with a resident's size following its stage", () => {
   const st = world(); dock(st); S.seedAdults(st, "S01", 5, 4, settings); for (const m of st.mibis) { m.paint = { state: "landed" }; m.born = st.turn; }
-  const ids = (b) => b.requests.filter((r) => r.kind === "mibi").map((r) => r.id), sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] });
+  const ids = (b) => b.requests.filter((r) => r.kind === "mibi").map((r) => r.id), sv = sv0();
   const young = ids(idle(st, sv)); assert.ok(young.length >= 4 && young.every((id) => /^mibi:S\d+-[0-9a-f]{8}:juvenile:\d+x\d+$/.test(id)), young.join(" "));
   st.turn += settings.adultTurns ?? S.JUVENILE_TURNS; for (const m of st.mibis) assert.equal(S.mibiStage(st, m, settings), "adult");
   const grown = ids(idle(st, sv));
@@ -183,7 +206,7 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
 });
 test("a picture id is keyed by the genome, not the mibi id: two worlds with the same mibi id and different genomes give different picture ids, the same genome the same id", () => {
   const mk = (gs) => { const st = world(); dock(st); S.seedAdults(st, "S01", gs, 1, settings); st.mibis[0].paint = { state: "landed" }; return st; };
-  const a = mk(5), b = mk(6), c = mk(5), ids = (st) => idle(st, sv0({ carried: [st.mibis[0].id] })).requests.filter((r) => r.kind === "mibi").map((r) => r.id);
+  const a = mk(5), b = mk(6), c = mk(5), ids = (st) => idle(st, sv0()).requests.filter((r) => r.kind === "mibi").map((r) => r.id);
   assert.equal(a.mibis[0].id, b.mibis[0].id); assert.notEqual(a.mibis[0].genome && JSON.stringify(a.mibis[0].genome.loci), JSON.stringify(b.mibis[0].genome.loci));
   assert.notDeepEqual(ids(a), ids(b)); assert.deepEqual(ids(a), ids(c));
 });
@@ -256,18 +279,46 @@ test("the goal sentence names no species before it is known: identify a pod (fre
   st.knownIds.push("S01"); st.tray.length = 0; pod(st, "S01", 6, false); const g2 = S.goalKey(st, sv, settings); assert.equal(g2.step.species, "S01"); assert.ok(/Identify the Loika pod/.test(JSON.stringify(goalWords(g2, false, frameSpec))));
 });
 
-test("the Vivarium window's props (build spec 3): the painting of the light, the residents at home (at most six, the carried too while docked), the event tag on the mibi to meet, the first mibi out in the away frame; nothing names a rectangle", () => {
+test("the Vivarium window's props (build spec 3): the painting of the light, the residents at home (all of them in the props, at most five shown; the carried never), the event tag on the mibi to meet, the first mibi out in the away frame; nothing names a rectangle", () => {
   const sc = scenes(), W = (x, over) => build(x.st, x.sv, over).props.regions;
-  for (const light of ["dawn", "day", "dusk", "night"]) assert.equal(W(sc.docked, { light }).glass.picture, `idle-vivarium-${light}:1024x568`, "the Idle painting the Vivarium uses: no new master");
-  assert.equal(W(sc.docked).residents.length, 4, "docked: the carried two are at home and walk"); assert.equal(W(sc.docked).glass.away, undefined, "docked: no away frame");
+  for (const light of ["dawn", "day", "dusk", "night"]) { const r = W(sc.docked, { light }); assert.equal(r.glass.picture, `room-roots-idle-${light}-1024x568`, "the room's painting the Vivarium uses: no new master"); assert.equal(r.room.base, r.glass.picture); assert.ok(!("bed" in r), "Home has no bed"); }
+  assert.equal(W(sc.docked).residents.length, 2, "R4b: docked, the carried two are not drawn on the glass"); assert.equal(W(sc.docked).glass.away, undefined, "docked: no away frame");
   assert.equal(W(sc.away).residents.length, 2, "one of three is out on the trip"); const a = W(sc.away).glass.away; assert.ok(a && /^mibi:/.test(a.picture) && a.figure.length === 4, "the first mibi out, its stand and its figure");
-  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 9, settings); const r = build(st, sv0()).props.regions; assert.equal(r.residents.length, 6, "nine at home: six show"); assert.match(r.vivarium.readout, /^9 at home$/, "the readout counts all nine"); assert.deepEqual(r.residents.map((p) => p.id), st.mibis.slice(0, 6).map((m) => String(m.id)), "every life event the same turn: ties in bay order"); }
+  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 9, settings); const r = build(st, sv0()).props.regions; assert.equal(r.residents.length, 8, "nine at home, eight in the room shown: all eight are in the props"); assert.equal(r.residents.filter((p) => p.shown).length, 5, "five are shown (rules.show.max, and what fits at 1x)"); assert.match(r.vivarium.readout, /^9 at home$/, "the readout counts all nine"); assert.deepEqual(r.residents.filter((p) => p.shown).map((p) => p.id), st.mibis.slice(3, 8).map((m) => String(m.id)), "the same stage and born: the first three by id rest"); }
   { const { st, sv } = sc.docked, id = st.mibis[2].id; assert.equal(W({ st, sv }, { ui: { meet: id } }).glass.tag, String(id)); assert.equal(W({ st, sv }).glass.tag, undefined, "no event, no tag"); }
   assert.ok(!("bed" in W(sc.docked)), "the bed leaves Home");
   assert.deepEqual(W(sc.empty).residents, []);
-  // the newest life event, born or grown up (born + adultTurns): a mibi that grew up recently outranks one born more recently that has not grown up yet
-  { const st = world(); dock(st); st.turn = 5; S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis; a.born = 3; b.born = 4; a.bay = 1; b.bay = 0;   // a grew up at turn 5 (3 + 2), b, born later, is still a juvenile (4 + 2 = 6)
-    const one = JSON.parse(JSON.stringify(spec)); one.regions.resident.max = 1; const ids = (sp, over = {}) => homeBuild({ st, sv: sv0(), settings, docked: true, ui: over, focus: null, time: 43200, date: { y: 2026, m: 9, d: 17 }, now: Date.now(), place: "" }, sp, frameSpec).props.regions.residents.map((p) => p.id);
-    assert.deepEqual(ids(one), [String(a.id)], "grown up at 5 outranks born at 4"); assert.deepEqual(ids(one, { meet: b.id }), [String(b.id)], "the mibi being met first");
-    b.born = 2; assert.deepEqual(ids(one), [String(a.id)], "born 2, grown up 4: a still first"); b.born = 3; assert.deepEqual(ids(one), [String(b.id)], "the same event turn: bay order (b is in bay 0)"); }
+  // who rests: the rest order (elder, adult, juvenile; born ascending), the mibi being met always shown (Home's cap is home.json regions.resident.max when lower than rules.show.max)
+  { const st = world(); dock(st); st.turn = 5; S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis; a.born = 3; b.born = 4; a.bay = 1; b.bay = 0;   // a is adult at turn 5 (3 + 2), b, born later, is still a juvenile (4 + 2 = 6)
+    const one = JSON.parse(JSON.stringify(spec)); one.regions.resident.max = 1; const ids = (sp, over = {}) => homeBuild({ st, sv: sv0(), settings, docked: true, ui: over, focus: null, time: 43200, date: { y: 2026, m: 9, d: 17 }, now: Date.now(), place: "", rules: RULES }, sp, frameSpec).props.regions.residents.filter((p) => p.shown).map((p) => p.id);
+    assert.deepEqual(ids(one), [String(b.id)], "the adult rests before the juvenile"); assert.deepEqual(ids(one, { meet: a.id }), [String(a.id)], "the mibi being met always shown"); }
+});
+
+// ---- R4b: who is shown and who rests (the game designer's the R4b rest rules; vivarium.json rules.show) ----
+import { shownOf, restersOf, nightOf, freshOf } from "../src/views/home-props.mjs";
+const hhmm = (h, m = 0) => h * 3600 + m * 60;
+// the worked case: eight in Roots, docked, nobody carried; m8 hatched at 10:00 the same day (fresh)
+const EIGHT = (time, nowMs) => [["m1", "elder", 0, "S01"], ["m2", "elder", 2, "S01"], ["m3", "adult", 4, "S01"], ["m4", "adult", 6, "S01"], ["m5", "adult", 9, "S03"], ["m6", "adult", 10, "S01"], ["m7", "juvenile", 19, "S01"], ["m8", "juvenile", 20, "S01"]].map(([id, stage, born, species]) => {
+  const r = { id, species, stage }, roomSince = id === "m8" ? nowMs - (time - hhmm(10)) * 1000 : null;
+  return { id, stage, born, night: nightOf(r, time, RULES), fresh: freshOf(r, roomSince, nowMs, time, RULES), roomSince };
+});
+test("R4b shownOf: the worked case at 12:00 and at 21:00 (the R4b rest rules), exactly: the rest order is the group's night first, then elder, adult, juvenile, then born, then id; the fresh one is pinned", () => {
+  const now = Date.UTC(2026, 9, 28, 12, 0) , rest = (t) => restersOf(EIGHT(t, now), {}, RULES), shown = (t) => Object.entries(shownOf(EIGHT(t, now), {}, RULES)).filter(([, v]) => v).map(([k]) => k);
+  assert.deepEqual(rest(hhmm(12)), ["m5", "m1", "m2"], "12:00: m5's group is in its night, then the elders"); assert.deepEqual(shown(hhmm(12)), ["m3", "m4", "m6", "m7", "m8"]);
+  assert.deepEqual(rest(hhmm(21)), ["m1", "m2", "m3"], "21:00: m8 is no longer fresh; the diurnal and early groups are in their night, m5's is in its day"); assert.deepEqual(shown(hhmm(21)), ["m4", "m6", "m7", "m8", "m5"].sort());
+  assert.equal(shown(hhmm(12)).length, 5); assert.deepEqual(shownOf(EIGHT(hhmm(12), now).slice(0, 5), {}, RULES), { m1: true, m2: true, m3: true, m4: true, m5: true }, "five or fewer: all shown");
+});
+test("R4b shownOf: the focused mibi and ui.meet first, then the fresh newest roomSince first, inside the five (a hard cap); all fresh: the five newest", () => {
+  const t = hhmm(12), now = Date.UTC(2026, 9, 28, 12, 0), mk = (since) => EIGHT(t, now).map((r) => { const rs = since[r.id] ?? null; return { ...r, roomSince: rs, fresh: rs != null && freshOf({ species: r.id === "m5" ? "S03" : "S01", stage: r.stage }, rs, now, t, RULES) }; });
+  const shown = (here, ui) => Object.entries(shownOf(here, ui, RULES)).filter(([, v]) => v).map(([k]) => k).sort();
+  const base = now - 5 * 60000; assert.deepEqual(shown(mk({ m6: base - 3, m7: base - 2, m8: base - 1 }), { focus: "m1", meet: "m2" }), ["m1", "m2", "m6", "m7", "m8"], "focus m1, meet m2, then m8, m7, m6 (newest first)");
+  assert.deepEqual(shown(mk(Object.fromEntries(["m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8"].map((id, i) => [id, base + i]))), {}), ["m4", "m5", "m6", "m7", "m8"], "all fresh, no focus: the five newest roomSince");
+  for (let k = 0; k < 8; k++) { const ids = ["m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8"], s2 = shown(mk(Object.fromEntries(ids.map((id, i) => [id, base + i]))), { focus: ids[k], meet: ids[(k + 3) % 8] }); assert.equal(s2.length, 5, "never more than five"); assert.ok(s2.includes(ids[k]) && s2.includes(ids[(k + 3) % 8])); }
+});
+test("R4b freshOf: a mibi is fresh until the first settle of its group at least an hour after roomSince; no roomSince, no clock: not fresh", () => {
+  const r = { species: "S01", stage: "adult" }, now = Date.UTC(2026, 9, 28, 21, 0), t = hhmm(21);
+  assert.equal(freshOf(r, now - 3600e3 * 11, now, hhmm(21), RULES), false, "hatched at 10:00: the 20:00 settle is >= 1 h after, and it has passed");
+  assert.equal(freshOf(r, now - 3600e3 * 2, now, hhmm(21), RULES), false, "hatched 19:00: the first settle an hour on is 20:00 (>= 20:00): passed at 21:00");
+  assert.equal(freshOf(r, now - 3600e3 * 2.5 + 0, Date.UTC(2026, 9, 28, 19, 30), hhmm(19, 30), RULES), true, "hatched 17:00, now 19:30: still before 20:00");
+  assert.equal(freshOf(r, null, now, t, RULES), false); assert.equal(freshOf(r, now - 1000, null, t, RULES), false);
 });

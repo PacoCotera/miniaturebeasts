@@ -50,7 +50,7 @@ test("grown and elder: a mibi growing up this turn, with n 0 at home, 1 when it 
   let p = fresh(turnN); mibis(p, [mibi(5, { born })]); assert.deepEqual(turnOf(p).ev, [["grown", null, 5, 0]], "at home");
   p = fresh(turnN); mibis(p, [mibi(5, { born })], [5], 5); assert.deepEqual(turnOf(p).ev, [["grown", null, 5, 1]], "carried and the partner: leads");
   p = fresh(turnN); mibis(p, [mibi(5, { born }), mibi(6, { born: -30, grownTurn: -20 })], [5, 6], 6); assert.deepEqual(turnOf(p).ev, [["grown", null, 5, 2]], "carried, another leads: can lead");
-  p = fresh(turnN); mibis(p, [mibi(5, { born: -30, grownTurn: turnN + 1 - 6 })]); assert.deepEqual(turnOf(p).ev, [["elder", null, 5, 0]], "ELDER_TURNS after growing");
+  p = fresh(turnN); mibis(p, [mibi(5, { born: -30, grownTurn: turnN + 1 - 16 })]); assert.deepEqual(turnOf(p).ev, [["elder", null, 5, 0]], "ELDER_TURNS after growing");
 });
 
 test("lampLow and lampOut: an outpost with one turn left burns low, one whose light ends this turn has gone out, each at its land", () => {

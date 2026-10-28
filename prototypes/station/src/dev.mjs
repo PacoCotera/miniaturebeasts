@@ -20,6 +20,12 @@ function select(key, options, fmt = (v) => String(v)) {
   for (const o of options) s.append(opt(String(o), fmt(o), String(G.settings[key]) === String(o)));
   return s;
 }
+// The room the whole shows (st.face.room, 0-3), picked as 1-4.
+function roomShown() {
+  const s = h("select", { onchange: () => { G.st.face.room = +s.value - 1; save(); redraw(); } });
+  for (const o of [1, 2, 3, 4]) s.append(opt(String(o), String(o), (G.st.face?.room ?? 0) === o - 1));
+  return s;
+}
 function toggle(key, label) { const c = h("input", { type: "checkbox", onchange: () => { saveSettings({ [key]: c.checked }); redraw(); } }); c.checked = !!G.settings[key]; return h("label", { class: "dev-row" }, c, " " + label); }
 let redraw = () => {};
 export function buildDevPanel(container, hooks) {
@@ -31,6 +37,7 @@ export function buildDevPanel(container, hooks) {
   // Timers
   group("Timers", h("div", { class: "dev-row" }, "Bud scale ", select("budScale", [1, 10, 60, "instant"], (v) => (v === 1 ? "real" : v === "instant" ? "instant" : "×" + v))), toggle("firstBud", "the first bud ever grows in five minutes"),
     h("div", { class: "dev-row" }, "Sitting wait ", select("sittingWait", ["hours", "minute", "now"])), h("div", { class: "dev-row" }, "Juvenile to adult ", select("adultTurns", [2, 1, 0], (v) => (v === 0 ? "now" : v + " world turns"))),
+    h("div", { class: "dev-row" }, "Adult to elder ", select("elderTurns", [16, 4, 0], (v) => (v === 0 ? "now" : v + " world turns"))),
     h("div", { class: "dev-row" }, "Mock painter delay ", select("mockDelay", [20, 5, 60], (v) => v + " s")), h("p", { class: "dev-note" }, "The timers apply from M2 (the bud) and M3 (the painting); stored now so a tester's toggles are ready."));
   // Motion (Station M1): the moving sets on their stand-in cells, the Station time that drives the light and the rest, and the motion proof's scene in a throwaway world
   const timeIn = h("input", { type: "time", value: G.settings.stationTime ?? "", onchange: () => { saveSettings({ stationTime: timeIn.value || null }); redraw(); note(timeIn.value ? "Station time " + timeIn.value : "Station time: the clock"); } });
@@ -46,7 +53,7 @@ export function buildDevPanel(container, hooks) {
     h("div", { class: "dev-row" }, "Instant grow ", select("instantGrowPreset", ["rule", "free"], (v) => ({ rule: "1 ❀ per 2 minutes left, rounded up (decided)", free: "free" })[v])),
     h("p", { class: "dev-note" }, "Decided: Identify 1 ◆ always · a chapter 1 ◆ a trait, half rounded up once read on an earlier pod of the species, the first read ever free · return a pod +1 ❀. Loose adds +2 ⚡ +3 ◆ +2 ❀ to every crate opened."), mats);
   // Limits
-  group("Limits", h("div", { class: "dev-row" }, "Bays ", select("bays", [6, 8, 10, 12, 1, 2, 3, 4, 5, 7, 9, 11])), h("div", { class: "dev-row" }, "Rack ", select("rack", [6, 4, 8])),
+  group("Limits", h("div", { class: "dev-row" }, "Rooms ", select("rooms", [1, 2, 3, 4])), h("div", { class: "dev-row" }, "Room shown ", roomShown()), h("div", { class: "dev-row" }, "Rack ", select("rack", [6, 4, 8])),
     h("div", { class: "dev-row" }, "Daily grow cap ", select("growCap", [10, 2, 20])), h("div", { class: "dev-row" }, "Painter ", select("painter", ["mock", "real", "off"])), h("div", { class: "dev-row" }, "Bench watch ", select("watchMs", [60000, 5000], (v) => v / 1000 + " s")), h("div", { class: "dev-row" }, "Bench Data a day ", select("trickleCap", [2, 10, 0], (v) => (v === 0 ? "none" : String(v)))),
     h("div", { class: "dev-row" }, h("button", { class: "btn", type: "button", onclick: () => { G.st.bench = null; S.logEv(G.st, "Developer: new bench day"); save(); note("a new bench day: the watched and compared lists and the day's Data are cleared"); } }, "New bench day")), toggle("sealedOpen", "sealed chapters open (the find is in hand)"));
   // Seeds
@@ -119,7 +126,7 @@ export function genomesText() {
   L.push("known " + st.knownIds.join(", ") + " · met " + st.metIds.join(", ") + " · readOnce " + JSON.stringify(st.readOnce));
   L.push(""); L.push("Rack:"); for (const p of st.tray) L.push("  " + p.id + " " + S.spName(p) + (p.idd ? "" : " (unidentified)") + " · read " + (p.read.join(", ") || "-") + " · " + (p.genome ? S.stampCodeOf(p) : "no genome"));
   if (st.waiting.length) L.push("  sealed, waiting for a well: " + st.waiting.length);
-  L.push(""); L.push("Mibis:"); for (const m of st.mibis) L.push("  " + m.id + " " + m.name + " · " + S.spName(m) + " · " + S.mibiStage(st, m) + " · " + m.code + " · bay " + m.bay + (m.bonded ? " · bonded" : ""));
+  L.push(""); L.push("Mibis:"); for (const m of st.mibis) L.push("  " + m.id + " " + m.name + " · " + S.spName(m) + " · " + S.mibiStage(st, m, G.settings) + " · " + m.code + " · " + (m.room == null ? "no place" : "room " + (m.room + 1) + " slot " + (m.slot + 1)) + (m.bonded ? " · bonded" : ""));
   L.push(""); L.push("Guide:"); for (const [sp, g2] of Object.entries(st.guide)) L.push("  " + sp + ": " + Object.entries(g2).map(([t, ls]) => t + " " + ls.join("/")).join(" · "));
   L.push(""); L.push("Recent:"); for (const s of st.log.slice(-12)) L.push("  " + s);
   return L.join("\n");

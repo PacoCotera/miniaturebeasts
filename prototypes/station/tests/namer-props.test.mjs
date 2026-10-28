@@ -18,7 +18,7 @@ import { validate } from "./habitat-props.test.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("namer.json"), frameSpec = J("frame.json"), schema = J("namer.props.json"), habitatSpec = J("habitat.json");
-const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8 };
+const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 };
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = st.d = st.s = 99; st.firstMibi = false; S.seedAdults(st, "S01", 5, 3, settings); return st; };
 function host(st) {
   const h = { st, sv: { v: 8, carried: [], carryReqs: [] }, settings, ui: { hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, screen: "habitat" }, specs: { namer: spec, frame: frameSpec, habitat: habitatSpec }, said: [], played: [], timers: [], saved: 0, now: () => T0, moving: true };

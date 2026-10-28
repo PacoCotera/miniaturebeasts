@@ -2,6 +2,7 @@
 // run by frame(), never waited for on `done`; during a hold every intent is dropped but a room key, of which the last is kept and dispatched when the hold ends, except in Home's rest, which ends on Idle and drops it.
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -121,7 +122,7 @@ test("the Dock key from Idle with crates in the bay plays the arrival over Home:
 });
 
 test("Create's Incubate on the host: ✓ opens the Incubate | Keep shaping panel with the 180 ms stage dither held (a cut with reduced motion); ✓ Incubate after it plays the grow event (holds 1080 ms), the jump to the Incubator is the timer's at 900 ms and plays the incubate moment, a room key pressed in the hold is kept and acts at 1080; with reduced motion the jump is on ✓'s frame and nothing is held", () => {
-  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, mk = (motion) => {
+  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, mk = (motion) => {
     const r = rig({ motion }); G.st.e = 99; G.st.d = 99; G.st.s = 99; G.st.firstMibi = false; S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), settings, 1000); const p = G.st.tray[0]; S.skipIdentify(G.st, p);
     UI.screen = "create"; UI.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; return r;
   };
@@ -146,7 +147,7 @@ test("Create's Incubate on the host: ✓ opens the Incubate | Keep shaping panel
 // ---- the meet and the namer on the host (habitat.json events.meet, namer.json): the meet persists until the first press, the first ✓ in it opens the namer with the ring on Done, the namer is the only graph while it is open,
 // Done closes it with the ring on the resident (the name after a rename) and the named flash, ← walks back through the field, and a namer message after it closed is dropped ----
 const namerRig = ({ motion = true, light = "day" } = {}) => {
-  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8 };
+  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 };
   G.st = S.freshSt("w1", 3, 1000); S.normalize(G.st); G.st.firstMibi = false; G.settings = settings; S.seedAdults(G.st, "S01", 5, 3, settings); for (const m of G.st.mibis) m.paint = { state: "landed" };
   G.sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], st: G.st };
   const m = G.st.mibis[0]; UI.screen = "habitat"; UI.idle = false; UI.resting = false; UI.hab = { id: m.id, f: "resident", wildArm: 0, namer: null, prev: null }; UI.meet = m.id;
@@ -195,7 +196,7 @@ import { setMoving } from "../src/moving.mjs";
 SPECS.incubator = JSON.parse(readFileSync(path.join(specs, "incubator.json"), "utf8"));
 { const ix = JSON.parse(readFileSync(path.join(specs, "moving/index.json"), "utf8")), sets = {}; for (const id of ix.sets) sets[id] = JSON.parse(readFileSync(path.join(specs, `moving/${id}.json`), "utf8")); setMoving(sets); }
 const hatchRig = ({ first = false } = {}) => {
-  const k = rig(); G.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8, motionSets: true }; G.st.firstMibi = first; G.st.e = 99; G.st.d = 99; G.st.s = 99;
+  const k = rig(); G.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1, motionSets: true }; G.st.firstMibi = first; G.st.e = 99; G.st.d = 99; G.st.s = 99;
   S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), G.settings, Date.now()); const p = G.st.tray[0]; S.skipIdentify(G.st, p); assert.ok(S.grow(G.st, p, {}, G.settings, Date.now()).ok); S.skipBud(G.st, G.settings, "ready");
   UI.screen = "incubator"; UI.inc = {}; UI.hab.namer = null; UI.meet = null; k.at(0); INTENTS.incubator.intent(k.h, "room", "confirm");
   return k;
@@ -203,7 +204,7 @@ const hatchRig = ({ first = false } = {}) => {
 const inc = (verb) => ({ t: "intent", seq: 1, screen: "incubator", target: "room", verb });
 // the hatch with a moving set (Station M1 section 2.5, R2, R5) is not built on the capsule (T-20261016-222: its close atlas is 304 x 312, the mibi in the capsule 146 tall); a juvenile with a set hatches by the capsule's steps
 test("a hatch with no moving set keeps 2600 / 2780 and no cut", () => {
-  const k = rig(); G.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8, motionSets: false }; G.st.firstMibi = false; G.st.e = 99; G.st.d = 99; G.st.s = 99;
+  const k = rig(); G.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1, motionSets: false }; G.st.firstMibi = false; G.st.e = 99; G.st.d = 99; G.st.s = 99;
   S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), G.settings, Date.now()); const p = G.st.tray[0]; S.skipIdentify(G.st, p); assert.ok(S.grow(G.st, p, {}, G.settings, Date.now()).ok); S.skipBud(G.st, G.settings, "ready");
   UI.screen = "incubator"; UI.inc = {}; k.at(0); INTENTS.incubator.intent(k.h, "room", "confirm"); const ev = k.sent.find((m) => m.kind === "hatch"); assert.deepEqual([ev.ms, ev.hold, ev.cut], [2600, 2780, undefined]);
 });
@@ -259,7 +260,7 @@ test("no other hold takes ✓ Skip: a seal's hold, growNow's or Create's grow ig
 const hatchEnd = () => ({ screen: UI.screen, meet: UI.meet, f: UI.hab.f, id: UI.hab.id, namer: UI.hab.namer, hatch: UI.inc.hatch ?? null, mibis: G.st.mibis.length });
 for (const moving of [false]) test(`✓ Skip in the hatch (${moving ? "with a moving set: hold 2720 of 6400" : "no moving set: hold 2780, 2600 long"}), at 1 ms, mid-way and on the hold's last frame, lands where waiting it out lands: the meet`, () => {
   const end = moving ? 6400 : 2780, last = moving ? 2719 : 2779;
-  const mkH = () => { if (moving) return hatchRig(); const k = rig(); G.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8, motionSets: false }; G.st.firstMibi = false; G.st.e = 99; G.st.d = 99; G.st.s = 99;
+  const mkH = () => { if (moving) return hatchRig(); const k = rig(); G.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1, motionSets: false }; G.st.firstMibi = false; G.st.e = 99; G.st.d = 99; G.st.s = 99;
     S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), G.settings, Date.now()); const p = G.st.tray[0]; S.skipIdentify(G.st, p); assert.ok(S.grow(G.st, p, {}, G.settings, Date.now()).ok); S.skipBud(G.st, G.settings, "ready");
     UI.screen = "incubator"; UI.inc = {}; UI.hab.namer = null; UI.meet = null; k.at(0); INTENTS.incubator.intent(k.h, "room", "confirm"); return k; };
   const w = mkH(); assert.deepEqual(UI.skip, { kind: "hatch", target: "room" }); assert.equal(screenProps().msg.frame.line.ok, SPECS.incubator.strings.skip, "the line shows ✓ Skip in the hatch's hold"); assert.equal(w.sent.find((m) => m.kind === "hatch").skip, true); w.at(end); const waited = hatchEnd(); assert.equal(waited.screen, "habitat"); assert.ok(waited.meet != null);

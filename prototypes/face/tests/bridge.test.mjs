@@ -324,6 +324,26 @@ test("the moving spec (M1 §2.2): a good set loads; each refusal raises its erro
   for (const [what, fn, re] of cases) { assert.equal(f.send({ t: "spec", screen: "moving", json: mutated(fn) }), -1, what); const e = f.errors(); assert.match(e.join("; "), re, what); }
   assert.equal(f.send({ t: "spec", screen: "moving", json: MOVING }), 0, "the good set loads again");
 });
+// ---- R3 (the rooms design): the rooms spec, checked whole when it arrives ----
+test("the rooms spec (R3): the generated file loads; each of the data guards the face repeats (1, 2, 3, 6) refuses it whole with its reason", { skip }, async () => {
+  const specs = path.resolve(here, "../../ui/specs/station"), ROOMS = JSON.parse(readFileSync(path.join(specs, "rooms.json"), "utf8")), VIV = JSON.parse(readFileSync(path.join(specs, "vivarium.json"), "utf8"));
+  const f = await boot(); assert.equal(f.send({ t: "spec", screen: "vivarium", json: VIV }), 0, f.errors().join("; ")); assert.equal(f.send({ t: "spec", screen: "rooms", json: ROOMS }), 0, f.errors().join("; "));
+  const mut = (fn) => { const m = JSON.parse(JSON.stringify(ROOMS)); fn(m.rooms.reeds); return m; };
+  const cases = [
+    ["guard 1: x does not strictly increase", (r) => { r.levels[0].x[2] = r.levels[0].x[1]; }, /guard 1: .*x does not strictly increase/],
+    ["guard 1: x has not one more value than top", (r) => { r.levels[0].x.pop(); }, /guard 1: .*x has 5 values for 5 tops/],
+    ["guard 1: a top is not above the bottom", (r) => { r.levels[1].top[0] = r.levels[1].bottom; }, /guard 1: .*top.0 \(372\) is not above the bottom \(372\)/],
+    ["guard 2: a raised level's bottom is not above the main floor under it", (r) => { r.levels[1].bottom = 480; }, /guard 2: .*level bank: the bottom 480 is not above the main floor's top 478/],
+    ["guard 3: a join end off its level", (r) => { r.joins[0].ends[0] = [720, 300]; }, /guard 3: .*end 0 \(720, 300\) is not on the level bank/],
+    ["guard 3: a join end outside its level's span", (r) => { r.joins[0].ends[1] = [30, 440]; r.joins[0].lower = "bank"; }, /guard 3: .*end 1 \(30, 440\) is not on the level bank/],
+    ["guard 6: more than six occluders", (r) => { for (let i = 0; i < 5; i++) r.pieces.push({ ...r.pieces[1], id: "x" + i }); }, /guard 6: .* 8 occluders \(at most 6\)/],
+    ["guard 6: the occluders over 15 % of the window", (r) => { r.pieces[0].rect = [0, 380, 1000, 100]; }, /guard 6: .*over 15 % of the window \(450560 px\)/],
+    ["the first level is not main", (r) => { r.levels[0].id = "floor"; r.pieces.forEach((p) => { if (p.level) p.level = "floor"; }); }, /levels.0 is floor, not main/],
+    ["a piece kind that is not known", (r) => { r.pieces[3].kind = "fitting"; }, /kind is occluder or back, not fitting/],
+  ];
+  for (const [what, fn, re] of cases) { assert.equal(f.send({ t: "spec", screen: "rooms", json: mut(fn) }), -1, what); assert.match(f.errors().join("; "), re, what); }
+  assert.equal(f.send({ t: "spec", screen: "rooms", json: ROOMS }), 0, "the good file loads again");
+});
 test("a moving atlas (M1 §1.2): its width is 1 + n·w for its set's cells, or it is refused", { skip }, async () => {
   const f = await boot(); assert.equal(f.send({ t: "spec", screen: "moving", json: MOVING }), 0);
   assert.equal(f.send({ t: "asset", id: "moving:juvenile:S01:walk:104x112:species", w: 1 + 11 * 104, h: 112, policy: "art", status: "placeholder" }), -1); assert.match(f.errors().join(), /is 1145 px, the set says 12 cells/);

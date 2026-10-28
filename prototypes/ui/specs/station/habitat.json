@@ -26,12 +26,13 @@
   "namer": "the namer (namer.json) is an overlay on one mibi up close, not a screen of its own, over its right column, its panel at 592, 48, 416, 424; the living window stays left of x 592 and in view, and the strip stays visible under it",
   "painting": "a mibi whose painting has not landed shows its placeholder with the waiting lamp; the words are on the bottom line only. A painting that lands while the mibi is on screen waits for the next fresh draw (this level opened again, the strip bringing the mibi back, a wake): never a swap in view",
   "amber": "nothing on one mibi up close is amber: no module, tile, count, heart or notch is a need. The notice is the frame's (what needs the player anywhere)",
-  "out": "a mibi out with the Companion is still up close: its place in the window is empty but for the out mark, its name, card, chapters and modules as at home; its chapters can be read while it is out (research is knowledge kept at the Station). Greet needs the mibi here, so it has no greet",
+  "out": "a carried mibi, docked or away (R4b: it is never drawn in a room), is still up close: its place in the window is empty but for the out mark, its name, card, chapters and modules; its chapters can be read while it is carried (research is knowledge kept at the Station), and every action on it is held (heldRule). Greet needs the mibi here, so it has no greet",
   "notches": "the skill notches are the mibi's skill as filled notches only, one to three, on the card; none drawn at zero; never an empty notch, never a figure; they show here and nowhere else on the Station (not in the Library or the Book)",
   "cut.hatch": "the one exception (UI/UX, Station M1 \"Hatch cutting key\"): from the hold to the hand-off of a hatch with a moving set (incubator.json events.hatch.moving) the first key cuts to the meet and does nothing else: ✓ opens no namer, ← does not leave, the pad does not move the ring or end the meet, a room key is used up; the Dock is not a cutting key",
   "cut": "UI designer, 2026-10-10 02:29: a cutting press also acts. An event with `cut: true` (the moment) ends on the first key after its hold: the event jumps to its end on that frame and the key then does what it does, as on any other frame (✓ its action, ← back, the pad moves the ring, a coloured key its section). One press is never spent on skipping; the hold already keeps a reflexive double press from acting",
   "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. The moment (and its placeholder hops), read, release, back and swap are cuts; the meet lands at once; the namer's flash is a cut",
-  "carriedDocked": "a carried mibi while the Companion is docked is in state rest: greet, Cross, Portrait, Bring home and its plates as for any mibi at home; Wild is refused (strings.wildBlocks.withYou) and the watch never runs on it",
+  "carriedDocked": "a carried mibi while the Companion is docked is in state out like one away (the owner, R4b: \"actions on it are disabled. no breeding\"): it is not drawn in the room and every action on its card is held (heldRule); the watch never runs on it",
+  "heldRule": "while a mibi is carried, docked or away, each action on its card is held: Cross (the module and its faces), Wild, Portrait (Portray), Rename (the name tag's ✓) and Move (the R6 chips) are dimmed before they are focused; focused, the verb stays in mist (frame-cap-confirm-16-dim) and the context gives strings.travellerContext (docked or away); ✓ plays the message plate strings.travellerPlate, two lines, never silent. Bring {name} home is the one action that is live, and only while the Companion is docked (the owner, R4b: on the Companion or the Station); while away it is held like the rest. Reading stays live: the chapter plates, the species line to the guide, the stamp, the family",
   "take": "✓ on the Companion module queues the request (carryAdd or carryHome): the door shows the mibi in its place with the pending lamp, and the strip's marks change on the frame of the press; no event plays"
  },
  "rules": {
@@ -42,8 +43,8 @@
   "listPitch": "the plates and the strip's tiles are lists by pitch: { first, pitch, grid }. The strip's `forms` are { name: { upTo, first, pitch, grid } }: n tiles take the form with the smallest upTo at least n. Refused at load: a form with no upTo, two forms with one upTo, a grid shorter than its upTo; refused in props: n > 12 (the bay count is 0 to 12)"
  },
  "states": ["rest", "meet", "out"],
- "initial": "by the way in: arriving from the Incubator's hatch (or Home's ✓ Meet), meet; the shown mibi out with the Companion (in carriedIds while the Companion is away), out; else rest. One mibi up close always shows one mibi: with none housed the Vivarium's whole shows its empty state",
- "stateRule": "rest: one housed mibi at home shown. meet: the same layout on the first look at a new mibi (never out: a new mibi is at home), from the hatch's hand-off until the first press; the meet ribbon stands in the name tag's place, and the first ✓ opens the namer. out: the shown mibi is out with the Companion: the window shows its place empty with the out mark (regions.resident.out), the tag, the card and the modules as in rest; no greet. A region with `inStates` exists only in those states; the arm of Wild is focus.armed, not a state; the namer is an overlay (overlays.namer), not a state; docked and away are conditions of every state (the Companion module, the tiles, the top bar). A carried mibi while the Companion is docked is at home, asleep on the bed: state rest, with greet, Cross, Portrait, Bring home and its plates; Wild refuses it (\"already with you\") and it is never watched",
+ "initial": "by the way in: arriving from the Incubator's hatch (or Home's ✓ Meet), meet; the shown mibi carried (in carriedIds, docked or away), out; else rest. One mibi up close always shows one mibi: with none housed the Vivarium's whole shows its empty state",
+ "stateRule": "rest: one housed mibi at home shown. meet: the same layout on the first look at a new mibi (never out: a new mibi is at home), from the hatch's hand-off until the first press; the meet ribbon stands in the name tag's place, and the first ✓ opens the namer. out: the shown mibi is carried, docked or away: the window shows its place empty with the out mark (regions.resident.out), the tag, the card and the modules as in rest with every action held (heldRule); no greet. A region with `inStates` exists only in those states; the arm of Wild is focus.armed, not a state; the namer is an overlay (overlays.namer), not a state; docked and away are conditions of every state (the Companion module, the tiles, the top bar). A carried mibi, docked or away, is in state out and is never watched",
  "light": {
   "pictures": { "dawn": "vivarium-near-dawn", "day": "vivarium-near-day", "dusk": "vivarium-near-dusk", "night": "vivarium-near-night" },
   "size": [544, 408],
@@ -310,14 +311,15 @@
     "outGlyph": [16, 24],
     "name": null,
     "free": "nothing drawn: the node keeps its box with no ops (Every state composed, 2); not a target",
-    "away": "each mibi with you (up to three) while the Companion is away: the outline Companion glyph 16×24 in place of its thumbnail, centred where the thumbnail stands; it stays a target, and focusing it shows that mibi in state out"
+    "away": "each carried mibi (up to three), docked or away (R4b, the R4b layout read Travellers in the rail): the thumbnail in the dimmed role at traveller.thumb and the Companion glyph at traveller.glyph; it stays a target, and focusing it shows that mibi in state out",
+    "traveller": {"thumb": [4, 0, 48, 48], "glyph": [52, 12, 16, 24], "dim": "the 50 % ordered dither toward the tile fill (the Cross's away faces, the frame's dimmed role); no new art", "glyphs": {"docked": "frame-companion-solid-16x24", "away": "frame-companion-outline-16x24"}, "note": "the compact form's rects, relative to the place; as vivarium.json regions.tiles.tile.traveller"}
    },
-   "count": "one tile a bay (state.bayCount, 0 to 12): the housed mibis in bay order, then the free bays",
+   "count": "one tile a place (state.ROOM, 8): the mibis of the room of the mibi up close in slot order (state.inRoom), then the free places",
    "states": {
     "shown": "the mibi up close: fill `hairline`, one step up (with its outline glyph when it is out)",
     "housed": "fill `panel`",
     "free": "nothing drawn",
-    "away": "the outline glyph, one tile for each mibi with you"
+    "away": "the dimmed thumbnail and the Companion glyph, one tile for each carried mibi"
    }
   }
  },
@@ -567,7 +569,7 @@
    "action": "strings.greet; in the meet, strings.name",
    "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); while the placeholder is drawn, strings.painting (strings.offline while the Caddy is unreachable)"
   },
-  "name": {"action": "strings.rename", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); out, strings.out"},
+  "name": {"action": "strings.rename", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi)", "held": {"action": "strings.rename, dimmed (frame-cap-confirm-16-dim)", "context": "strings.travellerContext docked or away", "when": "state out: the shown mibi is carried (heldRule)"}},
   "tile": "as resident, for the tile's mibi",
   "species": {"action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → library, Level 1 with the ring on this species"},
   "family": {"action": "strings.family", "context": "none (the ruling names no subject)", "jump": "frame.json navigation.jumps: habitat → library.family, close on the shown mibi; ← there returns to Level 2 of its species"},
@@ -583,7 +585,8 @@
   },
   "door": {
    "take": {"action": "strings.take", "context": "strings.takeNow docked, strings.takeNext away"},
-   "bring": {"action": "strings.bring", "context": "strings.bringNow docked, strings.bringNext away"},
+   "bring": {"action": "strings.bring", "context": "strings.bringNow", "when": "the Companion is docked (the owner, R4b: live only while docked)"},
+   "bringHeld": {"action": "strings.bring, dimmed (frame-cap-confirm-16-dim)", "context": "strings.travellerContext.away", "when": "the Companion is away: held like every action on a carried mibi (heldRule)"},
    "toGo": {"action": null, "context": "strings.takeNow docked, strings.takeNext away", "when": "an add request waits (state.pendingCarry)"},
    "toCome": {"action": null, "context": "strings.bringNext", "when": "a home request waits"},
    "full": {"action": null, "context": "strings.full", "when": "the set as it will be holds three and the shown mibi is not in it"}
@@ -596,15 +599,16 @@
     "context": "strings.portrayContext",
     "opens": "the sitting, its own screen under one mibi up close (parent habitat, ← {name}; sitting.json)"
    },
-   "blocked": {"action": null, "context": "sitting.portraitBlock's words: strings.noPose, strings.noPlace, strings.portrayed; out, strings.portraitOut"},
+   "blocked": {"action": null, "context": "sitting.portraitBlock's words: strings.noPose, strings.noPlace, strings.portrayed"},
+   "carried": {"action": "strings.portray, dimmed (frame-cap-confirm-16-dim)", "context": "strings.travellerContext docked or away", "when": "state out: the shown mibi is carried (heldRule)"},
    "painting": {"action": null, "context": "strings.portraitOnWay"},
    "portrayed": {"action": "strings.lookPortrait", "context": "strings.portrayed", "when": "portrayed, its 528×392 opening kept (sitting-props portraitOffered: portrait-source.mjs portraitOpening) and the mibi not away; else action null"},
    "shut": {"action": null, "context": "strings.shut.portrait", "when": "state held with sitting.portraitBlock empty and doorOpen(sitting) false (unreached since S3: nav.mjs BUILT lists sitting)"}
   },
   "cross": {
    "adult": {"action": "strings.cross", "context": "strings.partners"},
-   "out": {"action": null, "context": "strings.crossOut", "when": "state out: the shown mibi is out with the Companion"},
-   "away": {"action": null, "context": "strings.crossAway", "when": "an adult at home whose partners are all out with the Companion, away"},
+   "out": {"action": "strings.cross, dimmed (frame-cap-confirm-16-dim)", "context": "strings.travellerContext docked or away", "when": "state out: the shown mibi is carried (heldRule)"},
+   "away": {"action": null, "context": "strings.crossAway", "when": "an adult at home whose partners are all carried (the owner: a carried mibi is never picked as a partner, docked or away)"},
    "alone": {"action": null, "context": "strings.noPartner"},
    "young": {"action": null, "context": "strings.crossLater"},
    "shut": {"action": null, "context": "strings.shut.cross", "when": "state adult and doorOpen(cross) false (until slot 7); the partner faces drawn as for adult"}
@@ -718,6 +722,8 @@
   "full": "the Companion is full",
   "carryRefused": "{name} stayed home, no room",
   "withYou": "already with you",
+  "travellerContext": {"docked": "ready to go exploring", "away": "out exploring"},
+  "travellerPlate": {"docked": ["{name} is ready to go exploring", "Bring {name} home first"], "away": ["{name} is out exploring", "Bring {name} home when you dock"]},
   "noSitting": "no sitting held",
   "portray": "Portray {name}",
   "portrayContext": "one sitting each, ever",
@@ -731,20 +737,17 @@
   "crossLater": "crosses once adult",
   "wild": "Return {name}",
   "wildContext": "goes back to the wild",
-  "wildBlocks": {"bonded": "a bonded mibi stays", "young": "not until it is adult", "withYou": "already with you", "waiting": "goes at the next dock"},
+  "wildBlocks": {"bonded": "a bonded mibi stays", "young": "not until it is adult", "withYou": {"docked": "ready to go exploring", "away": "out exploring"}, "waiting": "goes at the next dock"},
   "releasePlate": "{name} goes back to the {place}",
   "watchPlate": "{name} is seen {habit}",
   "watchPlateExamples": ["Fig is seen digging", "Moss is seen curled up asleep"],
   "watchHabits": { "shake-dry": "shaking itself dry", "calm": "calming a creature", "sleep-curled": "curled up asleep", "sniff": "sniffing", "puff": "puffing out its down", "dig": "digging", "glow": "glowing" },
-  "out": "out with the Companion",
   "modules": { "door": "Companion", "portrait": "Portrait", "cross": "Cross", "wild": "Wild", "note": "the engraved words of the four modules, as the wireframe 19 draws them" },
   "names": "every box that sets a name holds ten of the widest letter at its size: 160 px at 16, 200 at 20, 296 at 28 (NAME_MAX 10); a name is never clipped",
   "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer for the action, a label of six words or fewer for the context; no dot-joined parts; \"Again: …\" is the arm's wording on every screen",
-  "partnersRule": "n counts only the partners that can be picked (not out with the Companion while it is away)",
-  "portraitOut": "sits when you dock",
-  "crossOut": "crosses when you dock",
-  "crossAway": "pairs when you dock",
-  "measuredOut": "16 px, the face's metrics: out 177, crossOut 176, crossAway 155, portraitOut 143, noPose 126, noPlace 129, all in the context's 208"
+  "partnersRule": "n counts only the partners that can be picked (not carried: a carried mibi is never picked as a partner, docked or away)",
+  "crossAway": "its partners are travelling",
+  "measuredOut": "16 px, the face's metrics: subjectTraveller and travellerContext docked 161, away 99, in the context's 208; travellerPlate 321 and 263 docked, 259 and 348 away, in the plate's 608 (a name as Mmmmmmmmmm); crossAway 184, noPose 126, noPlace 129, all in the context's 208"
  },
  "buildChanges": [
   "the level is the Vivarium's closest: frame.json navigation.screens.habitat moves under the new `vivarium` (the whole; parent vivarium, back Vivarium); ← lands on the whole with the ring on this mibi, never on Home (vivarium.json buildChanges)",
@@ -753,7 +756,7 @@
   "the card gains the skill notches (regions.card.notches) and the code's box narrows to 152",
   "the Companion module draws the carried set while the Companion is away too, and its free places as the well alone (fix 2 F4)",
   "the title reads Vivarium and the way back Vivarium",
-  "Cross: a mibi out with the Companion, away, may not cross, as the shown mibi or as a partner (state.crossBlock and crossPartners gain the check); docked it crosses as any adult. Away partners' faces are drawn dimmed on a `stone` ring and are not picked on Cross",
+  "Cross: a carried mibi, docked or away, may not cross, as the shown mibi or as a partner (R4b, the owner: no breeding while carried: state.crossBlock and crossPartners check isCarried). Carried partners' faces are drawn dimmed on a `stone` ring and are not picked on Cross",
   "the watch runs only on one mibi up close, never on a carried mibi (state.benchWatch is called from this level alone)",
   "frame.json navigation, held for the build PR (the sandbox keeps main's tree until then), its exact target values: screens.vivarium {\"parent\": \"home\", \"back\": \"Home\"}; screens.habitat {\"parent\": \"vivarium\", \"back\": \"Vivarium\"}; screens.cross.back \"{name}\" and screens.sitting.back \"{name}\"; roomKeys.habitat.screen \"vivarium\" (the key id stays habitat); a nameBack rule beside podBack: {name} is the shown mibi's name, and a name wider than the way back's 68 px for its word reads \"Back\"; the jump {from incubator, action Open, to habitat} gains \"state\": \"meet\", \"focus\": \"the resident: the new mibi\"",
   "the navigation (frame.json navigation): nav.mjs (backWord reads {name} as it reads {pod}: the shown mibi's name, \"Back\" when it is wider than 68 px; ROOM_KEYS.habitat opens vivarium), intents/frame.mjs (the Vivarium key opens vivarium), intents/habitat.mjs (← to vivarium, not home), host.mjs notBuiltLine (the name for {name}), nav.test.mjs (its tree and back words follow frame.json), specs.test.mjs (the sitting's back word) and journey.mjs (the room key and ← steps for vivarium and habitat)",

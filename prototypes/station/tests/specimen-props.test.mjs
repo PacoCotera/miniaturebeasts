@@ -1,6 +1,7 @@
 // The Library module's selectors on Home (build spec 4.2, views/specimen-props.mjs): the species the window shows, the looks that are new, the counts, the specimen's request and the region of Home's props.
 //   node --test prototypes/station/tests/specimen-props.test.mjs
 import { test } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -16,7 +17,7 @@ setLibrary(libraryOf);   // the host registers it
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("home.json"), frameSpec = J("frame.json");
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; return st; };
 const total = (st, id) => { const g = fieldGuide(st, id, settings); return g.foundCurrent + g.unseen; };
 const found = (st, id) => fieldGuide(st, id, settings).found;

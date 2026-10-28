@@ -4,13 +4,14 @@
 // props in host.mjs.
 import { PALETTE, clock, motion } from "./pixels.mjs";
 import { ICON } from "./art.mjs";
-import { stationSeconds } from "./game.mjs";
+import { stationSeconds, readStored } from "./game.mjs";
 import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, saveSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, LAYER } from "./game.mjs";
 import * as S from "./state.mjs";
 import * as Lib from "./library.mjs";
 import { lightAt } from "./views/home-props.mjs";
 import { warmLibrary } from "./views/specimen-props.mjs";
 import { setMoving } from "./moving.mjs";
+import { setRooms } from "./views/room-props.mjs";
 import { startScene, endScene, sceneTick, sceneTime, sceneBeat, SCENE_MS } from "./motion-scene.mjs";
 import { setFrames, frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
@@ -19,7 +20,7 @@ import { mountFooter, caddyAnswers } from "../../play/src/footer.mjs";
 import { watch as watchHabitat, openCross as openCrossAt } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
-import { loadMasters, loadStandLayers } from "./masters.mjs";
+import { loadMasters, loadStandLayers, ensureRoom, loadRoomsInBackground } from "./masters.mjs";
 import { setStandSizes } from "./layered-stand.mjs";
 import { setStandLooks } from "./looks.mjs";
 import { injectPortraitSource } from "./portrait-source.mjs";
@@ -27,7 +28,7 @@ import { bootFace } from "./face-lvgl.mjs";
 import * as cargo from "./intents/cargo.mjs";
 import * as create from "./intents/create.mjs";
 import * as frameIntents from "./intents/frame.mjs";
-import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, lightIds, pinned, picture, setEnv, setMetrics, libraryAhead } from "./host.mjs";
+import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, lightIds, shownRoomNow, roomsPending, pinned, picture, setEnv, setMetrics, libraryAhead } from "./host.mjs";
 import { warmLibraryNext, wantLibrary, libraryWaiting, warmLibraryPaper } from "./pictures.mjs";
 import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
 
@@ -47,7 +48,7 @@ async function loadFrames() {
 
 // --- the face ---
 let dockElsewhere = false;   // ?embed: the play page's Dock control asked while another device had the keys (frame.json navigation.dock); never set standalone
-let FACE = null, H = null, lastLog = null, lastProps = null, lastOwed = [], lastSent = [], msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set(), sitHeld = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
+let lastRoom = null, FACE = null, H = null, lastLog = null, lastProps = null, lastOwed = [], lastSent = [], msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set(), sitHeld = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
 const renderErrors = [];   // every error the face or a frame raised, kept for the checks to read
 const said = [];   // the focus and the intents the face said, for the journey's golden (window.__st.said() takes and clears them)
 const faceErrors = [];
@@ -79,9 +80,12 @@ function queueWarm() {
   if (warmAt != null || !G.ready) return;
   warmAt = setTimeout(() => { warmAt = null; if (H && H.holding()) return; try { warmLibrary(G.st, G.settings); } catch (e) { renderErrors.push("specimen: " + e.message); } try { warmLibraryOne(); } catch (e) { renderErrors.push("library: " + e.message); } }, 30);
 }
+const roomAsked = new Set();
 function syncProps() {
   if (msgSent !== FX.msgAt) { msgSent = FX.msgAt; if (FX.msg) H.play({ kind: "plate", target: "msg", ms: FX.msgMs || 4000 }); }
   for (const e of LAYER.presenter.events(topValues())) H.play(e);
+  const wait = roomsPending();   // a room that must draw before its pictures are in: ask for them (the front of the queue) and keep the face as it is until they are placed (no stand-in is drawn)
+  if (wait.length) { for (const r of wait) if (!roomAsked.has(r)) { roomAsked.add(r); ensureRoom(r).then(() => roomAsked.delete(r), (e) => { renderErrors.push(String(e && e.message || e)); console.error(e); }); } return; }
   const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
   lastOwed = p.owed ?? [];   // the current scene's requests that carry an owed habit key (snapshot): read on every sync, as the same props may be asked with or without it
   queueWarm();   // after the props are built, before the early return: a warm that was held waits for the hold, not for a change of props
@@ -89,7 +93,7 @@ function syncProps() {
   if (key === lastProps && !p.dropped?.length) return;
   { FACE.beginScene(); lastSent = []; for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) if (FACE.handleOf(id, picture) >= 0) lastSent.push(id); }   // Idle needs only its own pictures; lastSent: the pictures this scene gave the face (an empty slot gives none)
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());
-  else { const light = p.light ?? lastLight; if (lastLight && lastLight !== light) for (const id of lightIds(lastLight)) FACE.drop(id); if (lastLight && lastLight !== light) for (const id of litHeld) if (!p.ids.includes(id)) { FACE.drop(id); litHeld.delete(id); } for (const id of p.lit ?? []) litHeld.add(id); lastLight = light;   // fix 7: at a light change the graded residents the new props do not name go with the old light
+  else { const light = p.light ?? lastLight; const room = shownRoomNow(); if (lastLight && (lastLight !== light || (lastRoom != null && lastRoom !== room))) for (const id of lightIds(lastLight, lastRoom ?? room)) FACE.drop(id); lastRoom = room; if (lastLight && lastLight !== light) for (const id of litHeld) if (!p.ids.includes(id)) { FACE.drop(id); litHeld.delete(id); } for (const id of p.lit ?? []) litHeld.add(id); lastLight = light;   // fix 7: at a light change the graded residents the new props do not name go with the old light
   // one light's pictures in memory, plus one frame of the next
     const now = new Set(p.ids.filter((id) => id.startsWith("moving:"))); for (const id of movingHeld) if (!now.has(id) && !movingPrev.has(id)) { FACE.drop(id); movingHeld.delete(id); } for (const id of now) movingHeld.add(id); movingPrev = now;   // a moving atlas neither these props nor the previous screen's ask for is dropped (architecture.md §3: the main.mjs gap)
     const loads = new Set(SPECS.sitting?.regions?.glass?.backdrops ?? []);   // sitting.json regions.glass.load: the place backdrops the place step loads are dropped on leaving the screen
@@ -213,13 +217,16 @@ requestAnimationFrame(frame);
 const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the face is up the screen is blank; the words go to the page
 bootText("loading the species frames…");
 const TEST = new URLSearchParams(location.search).has("test");
+// The name list births draw from is the current one; ?names=<list key> pins another (the tools that show the archived English names ask for en-short-1).
+{ const n = new URLSearchParams(location.search).get("names"); if (n && S.NAME_LISTS[n]) S.useNameList(n); }
 const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]; if (!hex) throw new Error("no palette colour " + name); return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)); };
 // The spec files the face takes (frame, pods, home, cargo, create, incubator, vivarium, habitat, namer, library, bench, cross (the rack pod reads its pigment chips) and sitting), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 const bootAssets = async () => {
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
   for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "panel", "library", "bench", "cross", "sitting"]) SPECS[k] = await spec(k + ".json");
   { const ix = await spec("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = await spec(`moving/${id}.json`); SPECS.moving = sets; setMoving(sets); }   // the moving sets (Station M1 §2.2): one file a species, one spec on the face
-  await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
+  SPECS.rooms = await spec("rooms.json"); setRooms(SPECS.rooms);   // the four rooms (the rooms design), generated by place-masters --rooms and merged as `moving` is: one spec on the face, which checks it whole (room_load)
+  await loadMasters(new URL("../../ui/assets/masters/", import.meta.url), { all: TEST, order: SPECS.rooms.order, room: readStored()?.st?.face?.room ?? 0 });   // the signed masters take their stand-ins' ids before any screen registers them
   setMetrics(await (await fetch(new URL("../../face/dist/metrics.json", import.meta.url), { cache: "no-store" })).json());   // the face's Inter metrics: Level 2 measures its bottom-line ladders with them (ui/specs/measure.mjs)
   setStandLooks(await spec("stand-looks.json")); setStandSizes(await spec("stand-sizes.json")); await loadStandLayers(new URL("../../ui/assets/stands/", import.meta.url));   // each mibi drawn as itself: the unread default looks and the layered stands' cut-outs (looks.mjs, layered-stand.mjs)
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
@@ -240,6 +247,7 @@ const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
   loadSettings(); load();
   { const j = new URLSearchParams(location.search).get("jump"); if (j === "arrival" || j === "fork") saveSettings({ jump: j }); }   // the jump test (decision panel spec Part 3): the play page's ?jump= is saved with the settings
   UI.lastInput = performance.now(); G.ready = true;
+  loadRoomsInBackground();   // the other rooms, now that the first screen can draw (the room after the shown one first; 16 in flight)
   buildDevPanel((inShell && parent.document.getElementById("devStation")) || $("devPanel"), { changed: refreshDev, openCrates: () => { H.goto("cargo"); cargo.openBay(H); }, motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()) });
   caddy.startClient();
   if (EMBED) { caddyKey = ""; updateCaddy(); postCaddy(true); }   // the shell hears the Caddy's state at ready

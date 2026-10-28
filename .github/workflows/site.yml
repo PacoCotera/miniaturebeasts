@@ -21,7 +21,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
+    timeout-minutes: 50   # the tests step ran past 15 minutes on 2026-10-28 (the walk proofs of the rooms, R4, add about 7 minutes); about 25 before them
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,14 +30,32 @@ jobs:
       - name: Scope (a pull request that changes only documents skips the build)
         # .github/docs-only.sh takes the pull request's changed files and applies the three conditions (a .md, outside the build's own folders, not read by the build). A push to main and a manual run never skip.
         # The job still ends green under the same name, so the required check passes. Every step below carries the condition.
+        # The same step writes which checks the pull request needs (tests, station, testpage), from .github/ci-filter.sh over the changed paths: a pull request runs only what its paths need, a manual run runs all of them,
+        # and a push to main runs none (main only receives pull requests that passed them): it assembles and deploys.
         id: scope
         run: |
           set -u
           result=docs=false
-          if [ "$GITHUB_EVENT_NAME" = pull_request ] && list=$(git diff --name-status --no-renames HEAD^1 HEAD); then
-            result=$(printf '%s\n' "$list" | sh .github/docs-only.sh) || result=docs=false
-          fi
+          filter='tests=true
+          station=true
+          testpage=true'
+          case $GITHUB_EVENT_NAME in
+            push) filter='tests=false
+          station=false
+          testpage=false' ;;
+            pull_request)
+              if list=$(git diff --name-status --no-renames HEAD^1 HEAD); then
+                result=$(printf '%s\n' "$list" | sh .github/docs-only.sh) || result=docs=false
+              fi
+              if names=$(git diff --name-only --no-renames HEAD^1 HEAD); then
+                filter=$(printf '%s\n' "$names" | sh .github/ci-filter.sh) || filter='tests=true
+          station=true
+          testpage=true'
+              fi ;;
+          esac
           echo "$result" >> "$GITHUB_OUTPUT"
+          echo "$filter" >> "$GITHUB_OUTPUT"
+          { echo "Checks: docs-only $result; $(echo $filter)"; } >> "$GITHUB_STEP_SUMMARY"
           if [ "$result" = docs=true ]; then
             { echo "Documents only: the build was skipped. Changed files:"; printf '%s\n' "$list" | cut -f2 | sed 's/^/- /'; } >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -104,34 +122,43 @@ jobs:
           time PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
       - name: Import guard (the JavaScript drawing layer is removed)
-        if: steps.scope.outputs.docs != 'true'
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
         # prototypes/face/removed.json lists every removed drawing module (lvgl-switch.md §5.1); the guard fails when one exists again or anything imports one, when the canvas is touched outside the face's
         # present and the named decoders, when JavaScript outside face/tests names an export of the node path, when a screen is registered with draw, nodes or faceNodes, or when an lv_*_create call
         # appears outside face/src/prim/. No exemptions. It reads the tree only, so it needs no base.
         run: node prototypes/face/tools/guard.mjs
-      - name: Station rules and journey
+      - name: Roadmap data test
         if: steps.scope.outputs.docs != 'true'
-        timeout-minutes: 30   # the step takes about 21 minutes (the tests about 8, the Station journey about 4, the play-page journey about 3, the test-page journey about 5); a hang fails fast instead of holding the runner for the job's six hours
-        # The Station's rules and the Caddy service in Node, and the Station's browser journey on the face with the service
-        # in mock mode beside it (a fixture save, a seeded pod, dock, the crates opened, Pods by keys, the rules of the screens that are
-        # not built yet through their intents, Grow and Cross painting nothing, every not-built screen, Idle); station-build.md §5.
-        # The play page's journey (prototypes/play/tools/journey.mjs) follows it: both devices on one page at 1×, the dock round trip with the keys and the landing rule, the narrow and short tiers,
-        # a change of device pixel ratio, and printed figures.
+        timeout-minutes: 3   # measured a few seconds
+        # .github/roadmap.test.mjs reads website/roadmap.json, the roadmap and home pages and the build's read list, so it runs whenever the build does, whatever the filter says (and so on a push to main too).
+        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test .github/roadmap.test.mjs
+      - name: Station rules (node tests)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
+        timeout-minutes: 30   # timed out at 15 on 2026-10-28 with the rooms' walk proofs (R4) running, about 8 before them
+        # The Station's rules and the Caddy service in Node, and the other prototypes' tests.
         # The tests have the browser too: the specimen generator's oracle (prototypes/station/tests/specimen.test.mjs) runs the original in Chromium and compares the port to it.
-        # The milestones whose screens are not on the face are listed from prototypes/station/tools/journey-pending/ on every run.
         run: |
           set -euo pipefail
-          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test .github/roadmap.test.mjs prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
-          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
-          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/play/tools/journey.mjs
-          # The test page's journey (prototypes/test/tools/journey.mjs): every region at the proof sizes against the signed numbers, the menu, the switch, the dock, F and the full-screen view, the pixel rule and the safe-area override.
-          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/test/tools/journey.mjs
+          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
+      - name: Station journey
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
+        timeout-minutes: 10   # measured about 4 minutes
+        # The Station's browser journey on the face with the service in mock mode beside it (a fixture save, a seeded pod, dock, the crates opened, Pods by keys, the rules of the screens that are
+        # not built yet through their intents, Grow and Cross painting nothing, every not-built screen, Idle); station-build.md §5.
+        # The milestones whose screens are not on the face are listed from prototypes/station/tools/journey-pending/ on every run.
+        # The play page's journey (prototypes/play/tools/journey.mjs) is not run here: the play page stays published.
+        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
+      - name: Test page journey
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.testpage == 'true'
+        timeout-minutes: 12   # measured about 5 minutes
+        # The test page's journey (prototypes/test/tools/journey.mjs): every region at the proof sizes against the signed numbers, the menu, the switch, the dock, F and the full-screen view, the pixel rule and the safe-area override.
+        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/test/tools/journey.mjs
       - name: Placed masters match their index
-        if: steps.scope.outputs.docs != 'true'
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
         # Every master placed in prototypes/ui/assets/masters (by ui/tools/place-masters.mjs) is checked against its index entry: file present, size, SHA-256.
         run: node prototypes/ui/tools/place-masters.mjs --check
       - name: Station face fonts re-baked and compared
-        if: steps.scope.outputs.docs != 'true'
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
         # The face's Inter fonts are generated C (prototypes/face/src/fonts) from the committed TrueType files by lv_font_conv,
         # pinned here to the version the sources were baked with; the bake is reproducible, so a diff means the sources or the
         # script changed without the fonts being re-baked.
@@ -140,29 +167,29 @@ jobs:
           sh prototypes/face/tools/bake-fonts.sh "$RUNNER_TEMP/lvfc/node_modules/.bin/lv_font_conv"
           git diff --exit-code -- prototypes/face/src/fonts
       - name: Station face in a browser (LVGL)
-        if: steps.scope.outputs.docs != 'true'
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
         # The Station page boots the WebAssembly face and draws nothing else: LVGL 9.6.0, a 1024×600 display, keys in, the same pixels as
         # the native Linux build; the load time, the size on the wire and the cost of a full-frame copy (CPU throttled
         # 4× as a phone's stand-in) are printed.
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/face-check.mjs
       - name: Station layer table in a browser (LVGL)
-        if: steps.scope.outputs.docs != 'true'
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
         # Pods in each of its states and Home at each of its capture points on the Station page itself (the face in test mode, ?test): the pixels outside the palette on pass 1 (chrome)
         # and pass 2 (chrome and art) read 0, Home's regions have no departure from home.json and its budgets are printed, painted masters showing only on pass 3 (the art director's layer table); a page error, a render error or an error the face sent fails it.
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/layer-check.mjs
       - name: Pods and Home goldens (LVGL)
-        if: steps.scope.outputs.docs != 'true'
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
         # Each of Pods' states and Home's capture points drawn by the page's own face (the C words on the page's own pictures; Home with reduced motion, its two timed points on a virtual clock): the framebuffer hash against prototypes/face/golden/pods/pods.json and prototypes/face/golden/home/home.json.
         # With --logs, the face's log and the props facts of each golden's frame are written for the layout check (outside the tree).
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/goldens.mjs --check --logs "$RUNNER_TEMP/layout-logs"
       - name: Layout check (report mode)
-        if: steps.scope.outputs.docs != 'true'
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
         # Rules L0 to L11 (ui/specs/layout.mjs) over every golden's log: the index (JSON and Markdown, every finding) and the review set (one card per screen and rule, the worst
         # instance of each kind), with the cards' overlays only. Report mode: it fails only on a
         # finding of a rule frame.json layout.enforced lists for its screen, an unused exception, a malformed layout block, or L0 on an enforced screen.
         run: node prototypes/face/tools/layout-check.mjs "$RUNNER_TEMP/layout-logs" --out "$RUNNER_TEMP/layout-check" --overlays review
       - name: Layout check output
-        if: always() && steps.scope.outputs.docs != 'true'
+        if: always() && steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: layout-check
@@ -170,7 +197,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
       - name: Station layer checks
-        if: steps.scope.outputs.docs != 'true'
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
         # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6):
         # the chrome and art layers at exactly 0 off-palette pixels; the face's log (every string Inter at 16, 20 or 28 px,
         # none refused, no error, no canvas text call); every drawn region's box against its spec file; the stamp label

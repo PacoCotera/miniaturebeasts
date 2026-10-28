@@ -93,12 +93,14 @@ if (isMain) {
   const stale = []; for (const r of records) { const g = existsSync(path.join(goldenDir, r.screen, r.screen + ".json")) ? J(path.join(goldenDir, r.screen, r.screen + ".json")).states?.[r.state] : null; if (!g || g.hash !== r.hash) stale.push(`${r.screen}/${r.state}`); }
   if (stale.length) { console.error(`the logs are not the goldens' (${stale.length} states differ or have no golden: ${stale.slice(0, 4).join(", ")}${stale.length > 4 ? ", …" : ""}): take them with goldens.mjs --check --logs`); process.exit(2); }
   if (args.includes("--refresh-cases")) {
-    const casesFile = path.join(root, "ui/tests/layout-cases.json"), fixDir = path.join(root, "ui/tests/layout-cases"), cases = J(casesFile); let n = 0;
-    for (const c of cases.cases) { const [screen, ...rest] = c.state.split("/"), state = rest.join("/"), r = records.find((q) => q.screen === screen && q.state === state); if (!r) { console.error("FAIL the case corpus names " + c.state + ", which the logs do not hold"); process.exit(1); }
+    const casesFile = path.join(root, "ui/tests/layout-cases.json"), fixDir = path.join(root, "ui/tests/layout-cases"), cases = J(casesFile), frozen = cases.frozen ?? {}; let n = 0;
+    for (const c of cases.cases) { if (frozen[c.state]) { console.log(`skipped ${c.state}: frozen at ${frozen[c.state].from}`); continue; } const [screen, ...rest] = c.state.split("/"), state = rest.join("/"), r = records.find((q) => q.screen === screen && q.state === state); if (!r) { console.error("FAIL the case corpus names " + c.state + ", which the logs do not hold"); process.exit(1); }
       mkdirSync(path.join(fixDir, screen), { recursive: true }); writeFileSync(path.join(fixDir, screen, slug(state) + ".json"), JSON.stringify(r) + "\n"); n++; }
     console.log(`refreshed ${n} fixture logs in ${path.relative(process.cwd(), fixDir) || fixDir}`); process.exit(0);
   }
-  const R = run(records), unused = unusedExceptions(frame, R.results), enforcedHits = R.grouped.filter((f) => f.enforced), blindEnforced = R.grouped.filter((f) => f.rule === "L0" && frame.layout?.enforced?.[f.screen]);
+  const corpus = J(path.join(root, "ui/tests/layout-cases.json")), anchored = (e) => corpus.cases.some((c) => (corpus.frozen ?? {})[c.state] && c.verdict === "fine" && c.state.startsWith(e.screen + "/") && c.clear.some((x) => x.rule === e.rule && x.node === e.node && (e.other == null || [e.other].flat().includes(x.other))));
+  const R = run(records), idle = unusedExceptions(frame, R.results), unused = idle.filter((e) => !anchored(e)), enforcedHits = R.grouped.filter((f) => f.enforced), blindEnforced = R.grouped.filter((f) => f.rule === "L0" && frame.layout?.enforced?.[f.screen]);
+  for (const e of idle.filter(anchored)) console.log(`kept ${e.screen} ${e.rule} ${e.node}: proven on the frozen fixture ${corpus.cases.find((c) => (corpus.frozen ?? {})[c.state] && c.verdict === "fine" && c.state.startsWith(e.screen + "/") && c.clear.some((x) => x.rule === e.rule && x.node === e.node && (e.other == null || [e.other].flat().includes(x.other)))).state} (layout-cases.test)`);
   rmSync(out, { recursive: true, force: true }); mkdirSync(out, { recursive: true });
   const cards = review(R.grouped), drawn = overlays === "review" ? new Set(cards.map((c) => c.worst.id)) : null;
   if (overlays !== "none") { const base = new Map();   // each golden decoded and dimmed once

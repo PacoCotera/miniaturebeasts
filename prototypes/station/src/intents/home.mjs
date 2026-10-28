@@ -15,6 +15,7 @@ export function doNeed(h, nd) {
   else if (nd.act === "incubator") { h.goto("incubator"); if (nd.key === "budReady") incubatorIntent(h, "room", "confirm"); }   // the bud-ready need: ✓ Open the bud, the hatch on the same key (cut 2); a growing bud only looks
   else if (nd.act === "meet") { toVivarium(h, h.ui.meet); }
   else if (nd.act === "pods") toPods(h);
+  else if (nd.act === "vivarium") { h.goto("vivarium"); const first = S.inRoom(h.st, h.st.face?.room ?? 0)[0]; h.ui.viv.f = nd.ring === "room.new" ? "room.new" : first ? "resident." + first.id : null; }   // the full need: ✓ Add a room puts the ring on the new-room chip, ✓ Make room on the first resident of the room shown (home.json strings.needs.full)
 }
 // ✓ on a target of Home: room | vivarium | library | pods | incubator | companion | bay. A bezel opens full screen, a station opens its room; the Companion opens the Probe bench while docked and does nothing away (the line says it is on a trip).
 // `back` does nothing on Home (the top).

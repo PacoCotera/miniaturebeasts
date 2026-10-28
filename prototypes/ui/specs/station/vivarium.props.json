@@ -109,6 +109,28 @@
      "minItems": 4,
      "maxItems": 4,
      "description": "T-20261018-235: [dx, dy, W, H], the drawn bbox of the figure (ink alpha >= 128, its contact shadow left out) in its picture; the geometry of the ring, the tag, the walk and the keep-out is measured from it. Absent: the picture is the figure"
+    },
+    "shown": {
+     "type": "boolean",
+     "description": "R4b (vivarium.json rules.show): false for a rester, one of the housed that the room does not show; absent: shown. A rester finishes its trip, then rests where restAt says; N for the raised cap and the travelling ceiling counts the shown only"
+    },
+    "restAt": {
+     "enum": [
+      "bed",
+      "curl",
+      "out"
+     ],
+     "description": "R4b: where a rester rests, in the order rules.show.where gives: the bed (it is also in bed.sleepers), a curl in a nice spot (its curl and curlFigure given), or out of sight off the room's rest edge"
+    },
+    "enter": {
+     "enum": [
+      "edge"
+     ],
+     "description": "R4b: a traveller home since the walk began: it walks in from the room's rest edge (rooms.json rest.edge); honoured only while a walk is running"
+    },
+    "rester": {
+     "type": "boolean",
+     "description": "R4b: a bed sleeper that is a rester (the bed is the nappers' alone)"
     }
    }
   },
@@ -137,6 +159,17 @@
     },
     "well": {
      "type": "string"
+    },
+    "from": {
+     "type": "string",
+     "description": "R5: while the room shown changes (events.swap): the id of the old room's place's thumbnail, dithered out as this place's own dithers in; \"\" when there is none or no swap runs"
+    },
+    "where": {
+     "enum": [
+      "docked",
+      "away"
+     ],
+     "description": "R4b: on a carried place (state out), where the Companion is: docked draws the solid glyph, away the outline; the thumbnail is given too and drawn dimmed"
     }
    }
   },
@@ -154,11 +187,44 @@
     "group": {
      "enum": [
       "resident",
-      "tile"
+      "tile",
+      "room"
      ]
     },
     "enabled": {
      "type": "boolean"
+    }
+   }
+  },
+  "chip": {
+   "type": "object",
+   "required": [
+    "id",
+    "state",
+    "picture",
+    "lamp"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "the room's number (0 to 3), or \"new\" for the new-room chip"
+    },
+    "state": {
+     "enum": [
+      "shown",
+      "room",
+      "new"
+     ],
+     "description": "shown: the room shown (one step up); room: another room; new: the new-room chip"
+    },
+    "picture": {
+     "type": "string",
+     "description": "the room's chip picture (rooms.json rooms.<id>.chip) in the light; \"\" until the art director cuts it (the recess alone)"
+    },
+    "lamp": {
+     "type": "string",
+     "description": "the new-room chip's lamp picture (mint when the next room can be paid, stone otherwise); \"\" on a room's chip"
     }
    }
   }
@@ -181,10 +247,10 @@
    "type": "object",
    "required": [
     "window",
+    "room",
     "residents",
-    "bed",
-    "strip",
-    "tiles"
+    "tiles",
+    "rooms"
    ],
    "additionalProperties": false,
    "properties": {
@@ -200,6 +266,29 @@
       }
      }
     },
+    "room": {
+     "type": "object",
+     "required": [
+      "id",
+      "base",
+      "pieces"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string",
+       "description": "the room shown: its name in rooms.json (roots, reeds, boulders, ferns)"
+      },
+      "base": {
+       "type": "string",
+       "description": "the room's painting (the near view in Habitat) in the light"
+      },
+      "pieces": {
+       "type": "object",
+       "description": "the room's pieces that have a picture, by piece id (rooms.json), the picture id in the light; Habitat has none"
+      }
+     }
+    },
     "residents": {
      "type": "array",
      "maxItems": 12,
@@ -212,22 +301,17 @@
      "required": [
       "state",
       "picture",
-      "mark",
       "sleepers"
      ],
      "additionalProperties": false,
      "properties": {
       "state": {
        "enum": [
-        "docked",
-        "away",
-        "none"
+        "empty",
+        "resting"
        ]
       },
       "picture": {
-       "type": "string"
-      },
-      "mark": {
        "type": "string"
       },
       "sleepers": {
@@ -237,7 +321,8 @@
         "$ref": "person"
        }
       }
-     }
+     },
+     "description": "given only when the room has a bed (Roots)"
     },
     "tiles": {
      "type": "object",
@@ -252,22 +337,30 @@
       },
       "items": {
        "type": "array",
-       "maxItems": 12,
+       "maxItems": 8,
        "items": {
         "$ref": "tile"
        }
+      },
+      "glyphDocked": {
+       "type": "string",
+       "description": "R4b: the solid Companion glyph (frame.json marks.companion.docked), a carried tile's while docked"
       }
      }
     },
-    "strip": {
+    "rooms": {
      "type": "object",
      "required": [
-      "plate"
+      "items"
      ],
      "additionalProperties": false,
      "properties": {
-      "plate": {
-       "type": "string"
+      "items": {
+       "type": "array",
+       "maxItems": 4,
+       "items": {
+        "$ref": "chip"
+       }
       }
      }
     }

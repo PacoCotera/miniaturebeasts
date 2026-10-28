@@ -3,6 +3,7 @@
 // share one pose and one set of looks; the window is the hour's light on the pose step and ungraded after; the portrait state is offered only while its opening is held (portrait-source.mjs keeps the last two).
 //   node --test prototypes/station/tests/sitting-props.test.mjs
 import { lineCased } from "./fixtures/line-case.mjs";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it
 import { test, describe, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -23,7 +24,7 @@ import { asset as assetOf, assetEntry, dropAsset, manifest } from "../../ui/asse
 const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("sitting.json"), habitat = J("habitat.json"), frameSpec = J("frame.json"), schema = J("sitting.props.json"), Sg = spec.strings;
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
 
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
@@ -96,7 +97,7 @@ describe("each state's props validate against sitting.props.json, name no rectan
 test("the regions by state: the glass, the gilt, the heading, the cards, the chosen pair, the stamp, the steps and the focus", () => {
   const w = dot({ habits: ["sleep-curled", "shake-dry"], walked: ["wood", "pond"] }), b = states(w, "sleep-curled", "wood"), R = (s) => b[s].props.regions;
   // the glass: Habitat's own picture in the hour's light on the pose step (here day), the focused place's backdrop on the place step, the chosen place's after
-  assert.equal(R("pose").glass.picture, "vivarium-near-day-544x408"); assert.equal(R("place").glass.picture, "sitting-backdrop-meadow-544x408", "the focused place card: card.0, the pod's place");
+  assert.equal(R("pose").glass.picture, "room-roots-near-day-544x408"); assert.equal(R("place").glass.picture, "sitting-backdrop-meadow-544x408", "the focused place card: card.0, the pod's place");
   assert.equal(build(w, { step: "place", pose: "sleep-curled", focus: "card.2" }).props.regions.glass.picture, "sitting-backdrop-pond-544x408");
   for (const s of ["confirm", "armed", "begin"]) assert.equal(R(s).glass.picture, "sitting-backdrop-wood-544x408", s);
   // the gilt: none on pose and place, at rest on confirm, lit when armed and through begin
@@ -218,17 +219,18 @@ test("the pictures register: every request of every state (the layered cards, th
   dropPortraitSources(); wipe();
 });
 
-test("a Lift mid-ceremony: in state confirm, while beginBlock says the mibi sits when you dock, the line is { ok null, habitat.json strings.portraitOut, ← strings.steps.place } and the gilt does not light, even armed; docked again, ✓ Portray", () => {
+test("a Lift mid-ceremony: in state confirm, while beginBlock says the mibi sits when you dock, the line is { ok null, habitat.json strings.travellerContext, ← strings.steps.place } and the gilt does not light, even armed; docked it is still held; brought home, ✓ Portray", () => {
   const w = dot({ habits: ["sleep-curled", "calm"], walked: ["wood"] }), ui = { step: "confirm", pose: "calm", place: "wood", focus: null, armed: null }; w.st.sitting = { source: "dev", key: null, at: T0 }; w.st.dock = { docked: true, at: T0 };
   const at = (docked, armed = null) => { w.st.dock = { docked, at: T0 }; return sittingBuild({ st: w.st, sv: { ...sv0(), carried: docked ? [] : [w.mb.id] }, settings, light: "day", mibiId: w.mb.id, ui: { ...ui, armed } }, spec, habitat); };
-  assert.equal(T.beginBlock(w.st, w.mb, "calm", "wood", { ...sv0(), carried: [w.mb.id] }), "", "docked, nothing blocks");
-  w.st.dock = { docked: false, at: T0 }; assert.equal(T.beginBlock(w.st, w.mb, "calm", "wood", { ...sv0(), carried: [w.mb.id] }), habitat.strings.portraitOut, "the rule's word is habitat.json's portraitOut");
+  assert.equal(T.beginBlock(w.st, w.mb, "calm", "wood", { ...sv0(), carried: [w.mb.id] }), T.CARRIED_BLOCK, "carried, docked or away, is held (R4b)");
+  w.st.dock = { docked: false, at: T0 }; assert.equal(T.beginBlock(w.st, w.mb, "calm", "wood", { ...sv0(), carried: [w.mb.id] }), T.CARRIED_BLOCK);
   for (const armed of [null, "room"]) {
     const b = at(false, armed); assert.deepEqual(validate(b.props, schema), []);
-    assert.deepEqual(b.line, { ok: null, subject: habitat.strings.portraitOut, back: Sg.steps.place, need: null }, "the confirm step reads portraitOut, ✓ has no cap");
+    assert.deepEqual(b.line, { ok: null, subject: habitat.strings.travellerContext.away, back: Sg.steps.place, need: null }, "the confirm step reads the traveller's words, ✓ has no cap");
     assert.equal(b.props.regions.gilt.picture, spec.regions.gilt.slices.rest, "the gilt does not light"); assert.equal(b.props.focus.armed, null);
     assert.deepEqual(b.props.regions.chosen.items.map((x) => x.picture).length, 2, "both choices kept");
   }
+  { const dk = sittingBuild({ st: w.st, sv: { ...sv0(), carried: [w.mb.id] }, settings, light: "day", mibiId: w.mb.id, ui: { ...ui } }, spec, habitat); w.st.dock = { docked: true, at: T0 }; const dd = sittingBuild({ st: w.st, sv: { ...sv0(), carried: [w.mb.id] }, settings, light: "day", mibiId: w.mb.id, ui: { ...ui } }, spec, habitat); assert.equal(dd.line.subject, habitat.strings.travellerContext.docked, "docked and carried: still held"); assert.ok(dk); }
   const d = at(true); assert.deepEqual(d.line, { ok: "Portray Dot", subject: Sg.once, back: Sg.steps.place, need: null }, "docked: ✓ Portray again"); assert.equal(d.props.regions.gilt.picture, spec.regions.gilt.slices.rest);
   w.st.dock = { docked: false, at: T0 };
   const notCarried = sittingBuild({ st: w.st, sv: sv0(), settings, light: "day", mibiId: w.mb.id, ui }, spec, habitat); assert.equal(notCarried.line.ok, "Portray Dot", "lifted but not carried: nothing blocks");

@@ -26,6 +26,7 @@ export function dock(h, fromIdle = false, keysElsewhere = false) {
   const r = T.dock(h.st, h.sv, h.settings, h.now());
   if (!r.ok) { h.say(r.msg); return r; }
   h.ui.caddyOpened = null;   // a dock or a lift: the Caddy's "after the opening" lines are over
+  if (r.back && r.back.length) h.ui.arrived = [...new Set([...(h.ui.arrived ?? []), ...r.back.map(String)])];   // R4b: the travellers home walk in from their room's rest edge
   if (r.docked) {
     h.play({ kind: "tick", target: "dock", ms: 0 });
     arrive(h, r, fromIdle);
@@ -35,13 +36,10 @@ export function dock(h, fromIdle = false, keysElsewhere = false) {
   if (h.ui.screen === "bench") { const b = h.ui.bench; if (!r.docked && b.f === "plates") b.f = "switch"; }   // a cut to the new state: lifted, the plates are gone from the bench and the ring moves to the switch; docked, the ring stays
   h.save(); return r;
 }
-// The lift's send-off (home.json events.sendoff; frame.json navigation.dock.plates; specs/station-dock-arrival-spec.md §4): the frame and the living window only, the screen never changes. On Idle the sleepers on the bed wake, hop and dither out;
-// the plate says what went unfinished: the crates that went out unopened, a Take or Bring asked and not yet done.
+// The lift's send-off (frame.json navigation.dock.plates; specs/station-dock-arrival-spec.md §4, amended by R4b): the frame only, the screen never changes and nothing in the living window moves (the carried set is never drawn in a room: its tiles' glyph
+// cuts from solid to outline). The plate says what went unfinished: the crates that went out unopened, a Take or Bring asked and not yet done.
 export function sendOff(h) {
-  const ev = h.specs.home.events.sendoff, P = h.specs.frame.navigation.dock.plates, motion = h.motion ? h.motion() : true;
-  if (motion && h.ui.idle && S.carriedIds(h.st, h.sv).length) {
-    h.ui.sendoff = true; h.play({ kind: ev.kind, target: ev.target, ms: ev.ms, hold: ev.hold }); h.at(ev.ms, () => { h.ui.sendoff = false; });
-  }
+  const P = h.specs.frame.navigation.dock.plates;
   const lines = [];
   if (S.bayCrates(h.st, h.sv).length) lines.push(P.crates);
   for (const q of S.pendingCarry(h.st, h.sv)) { const m = S.mibiById(h.st, q.id); if (m && !m.released) lines.push(P.goes.replace("{Name}", m.name)); }

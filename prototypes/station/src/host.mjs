@@ -16,6 +16,8 @@ setLibrary(libraryOf);   // Home's Library module: the specimen of the species w
 setLibrarySpecies((st, settings) => specimenSpecies(st, settings) ?? STARTER);   // the species it is for: where ✓ on its bezel puts the Library's ring
 import { dropLight } from "./light-grade.mjs";
 import { vivariumBuild } from "./views/vivarium-props.mjs";
+import { shownRoom, roomPictureIds, roomIds } from "./views/room-props.mjs";
+import { ensureRoom, roomLoaded } from "./masters.mjs";
 import { habitatBuild } from "./views/habitat-props.mjs";
 import { namerBuild } from "./views/namer-props.mjs";
 import { panelBuild } from "./views/panel-props.mjs";
@@ -112,23 +114,39 @@ export function podsBody() {
 
 // The living window's inputs the views take from the host (Station M1 §2.6): the Station time (seconds of the day; the developer's "Station time" or the clock), the rest rules (vivarium.json rules.rest) and whether
 // the moving sets play on stand-ins (the developer switch "Motion sets (stand-ins)", off by default; a set whose cells are all placed masters plays without it). A view never reads a clock.
-const living = () => ({ time: timeNow(), restRules: SPECS.vivarium?.rules?.rest, motionSets: !!G.settings.motionSets, sendoff: !!UI.sendoff });   // sendoff: the lift's send-off plays on the bed (intents/frame.mjs; home.json events.sendoff)
+const living = () => ({ time: timeNow(), now: Date.now(), restRules: SPECS.vivarium?.rules?.rest, rules: SPECS.vivarium?.rules, arrived: UI.arrived, motionSets: !!G.settings.motionSets });   // rules: vivarium.json rules (rules.show: who is shown and who rests); arrived: the travellers home since the walk began (they walk in from the room's rest edge)
 
 // ---- Home ----
 // Keep Home's focus valid (the ring on a target present, else on the room) and return its props body. The pad is the face's; the host keeps what the face says in UI.home.f.
 export function homeBody(light = lightNow()) {
-  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, time: timeNow(), date: stationDate(), now: Date.now(), place: "", light, restRules: SPECS.vivarium?.rules?.rest, motionSets: !!G.settings.motionSets });   // place: the save has no place name yet
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, time: timeNow(), date: stationDate(), now: Date.now(), place: "", light, restRules: SPECS.vivarium?.rules?.rest, rules: SPECS.vivarium?.rules, arrived: UI.arrived, motionSets: !!G.settings.motionSets });   // place: the save has no place name yet
   const body = homeBuild(model(), SPECS.home, SPECS.frame);
   if (body.props.focus.cur === "room") UI.home.f = "room";
   return body;
 }
 
 // ---- The Vivarium's whole ----
-// Every mibi at home in one window and the bays along the foot. The ring is the face's (focus.graph); the host keeps what the face says in UI.viv.f, and a way in (null) takes the ring to the mibi last seen up close (vivarium.json focus.entry).
+// Every mibi at home in one window and the places along the foot. The ring is the face's (focus.graph); the host keeps what the face says in UI.viv.f, and a way in (null) takes the ring to the mibi last seen up close (vivarium.json focus.entry).
 export function vivariumBody(light = lightNow()) {
-  const body = vivariumBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.viv.f, seen: UI.hab.id, ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home);
+  const body = vivariumBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.viv.f, seen: UI.hab.id, prev: UI.viv.prev, ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home, SPECS.pods), pn = UI.panel;
   UI.viv.f = body.props.focus.cur;
+  if (pn && pn.screen === "vivarium") {   // the Add a room? panel is open: its props ride on the whole's (an overlay) and its bottom line is built from the focused card
+    const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump, light }, SPECS.panel, SPECS.frame, SPECS.pods);
+    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
+  }
   return body;
+}
+// The room the whole shows changes (the ring on a room's chip, a room added): st.face.room is the rules' one home for it, set here, by seeing a mibi (state.seeRoom, from game.mjs goScreen and the hatch), by a move and by ?dev Room shown; the window and the places pane cross-dither from the room that was shown (vivarium.json events.swap:
+// habitat's swap event, the same dither), the old pictures kept on the face until the event ends; a cut with reduced motion. The chips, the crumb and the line are cuts on the frame of the key.
+export function showRoom(h, i) {
+  const st = G.st, was = st.face?.room ?? 0; if (!(i >= 0 && i < S.ROOMS_MAX) || i === was) return;
+  if (!roomLoaded(i)) { ensureRoom(i).then(() => showRoom(h, i)); return; }   // the room's pictures are fetched first (moved to the front of the queue): the screen shows what it showed until they are in, then the swap runs (a refused picture rejects loudly)
+  const e = SPECS.vivarium.events.swap, base = roomIds(was, shownLight ?? lightNow()).base;
+  const thumbs = Array.from({ length: S.ROOM }, (_, k) => { const mb = S.inRoom(st, was)[k]; return mb ? mibiPictureOf(st, mb, [48, 48], G.settings).id : ""; });   // a carried mibi's tile shows its (dimmed) thumbnail too
+  st.face.room = i; const prev = { base, tiles: thumbs }; UI.viv.prev = prev;
+  h.play({ kind: e.kind, target: e.target, from: base, ms: e.ms, hold: h.motion() ? e.hold : 0 });
+  h.at(e.ms, () => { if (UI.viv.prev === prev) UI.viv.prev = null; });
+  h.save();
 }
 
 // ---- One mibi up close ----
@@ -190,7 +208,8 @@ export function speciesBody() {
 // Null when no found species is shown (a developer's jump): the frame's notBuilt composition, as before.
 export function familyBody() {
   const sid = UI.lib.species; if (!sid || !frameOf(sid) || speciesStatus(G.st, sid) !== "found") return null;
-  return familyBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI.lib, metrics: METRICS }, SPECS.library, SPECS.frame, SPECS.home);
+  const sd = stationDate();   // the clock the Yours row counts to: the device's, or noon of the developer's Station date (the goldens' fixed day)
+  return familyBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI.lib, metrics: METRICS, now: G.settings.stationDate ? new Date(sd.y, sd.m, sd.d, 12).getTime() : Date.now() }, SPECS.library, SPECS.frame, SPECS.home);
 }
 
 // ---- Cargo ----
@@ -254,7 +273,7 @@ export function screenProps(plate) {
   const screen = UI.screen, light = lightNow();   // the light is read once per sync: the props and the pictures dropped after them agree on it
   if (shownLight !== light) { if (shownLight) dropLight(shownLight); shownLight = light; }   // one light's graded residents in the manifest (fix 7): re-derived from the cached master if a light returns
   if (UI.idle) {   // Idle: the whole screen, no frame but its line (frame.json idle): the living window's people, the painting's slot and the one line
-    const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, ...living() }, SPECS.frame);
+    const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, meet: UI.meet, ...living() }, SPECS.frame);
     registerPictures(body.requests, { podById, frameOf, mibiGenome: (id) => mibiById(id)?.genome });
     const ids = new Set(body.requests.map((r) => r.id)); walk(body.props, ids);
     return { msg: { screen, ...body.props }, ids: [...ids], light, lit: litOf(body.requests), owed: owedOf(body.requests) };
@@ -268,6 +287,7 @@ export function screenProps(plate) {
   const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids); const dropped = droppedPictures();   // the pictures a newer one superseded (P4): the host drops them on the face before it sends the props' pictures
+  if (screen === "vivarium" && UI.viv.prev) for (const id of [UI.viv.prev.base, ...UI.viv.prev.tiles]) if (id) ids.add(id);   // the room the swap's dither starts from stays on the face until the event ends
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   if (screen === "sitting") for (const id of [UI.sit.prev.glass, UI.sit.prev.resident]) if (id) ids.add(id);   // the pictures the window's dithers start from stay on the face until their events end
@@ -281,7 +301,11 @@ let shownLight = null;   // the light of the props the face was last given (fix 
 const litOf = (reqs) => reqs.filter((r) => r.kind === "mibi" && r.light).map((r) => r.id);   // the graded residents the props name
 const owedOf = (reqs) => reqs.filter((r) => r.owed).map((r) => r.id);   // the scene's pictures that show an owed habit key (the request's `owed`): a golden refuses them
 // The pictures a light puts on the face, by their ids (their sizes from the specs that place them): the host drops them once props with the next light are taken.
-export const lightIds = (light) => { const v = SPECS.frame.idle.regions.vivarium.rect, b = SPECS.frame.idle.regions.bed.rect; return [`idle-vivarium-${light}:${v[2]}x${v[3]}`, `home-bed-${light}-${b[2]}x${b[3]}`, ...(SPECS.habitat?.light ? [`${SPECS.habitat.light.pictures[light]}-${SPECS.habitat.light.size.join("x")}`] : [])]; };   // and one mibi up close's near Vivarium
+export const shownRoomNow = () => shownRoom(G.st, UI.screen === "habitat" || UI.screen === "sitting" ? UI.hab.id : UI.meet ?? null);   // the room on the face: st.face.room, or the room of the mibi met (Home) or up close (Habitat, the sitting)
+// The rooms the next draw needs pictures of: the room shown, and the room Add a room? previews while its panel is open. The page draws nothing new until they are placed (masters.mjs ensureRoom).
+export const roomsWanted = () => { const r = [shownRoomNow()]; if (UI.screen === "vivarium" && UI.panel?.screen === "vivarium") { const n = S.roomCount(G.st, G.settings); if (n < S.ROOMS_MAX) r.push(n); } return r; };
+export const roomsPending = () => roomsWanted().filter((r) => !roomLoaded(r));
+export const lightIds = (light, room = shownRoomNow()) => roomPictureIds(room, light);   // the shown room's painting, near view, pieces and (Roots) bed in a light: the host drops them once props with the next light (or room) are taken
 // The pictures of the frame and the Companion's face, the same on every screen.
 export function frameIds() {
   const ids = new Set(); walk(SPECS.frame.regions, ids); for (const id of companionIds()) if (assetEntry(id)) ids.add(id);
@@ -296,7 +320,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "incubate", "moment", "read", "mend", "switch", "install", "sendoff", "pan"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "incubate", "moment", "read", "mend", "switch", "install", "pan"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
 // The light of the moment, read once for both screens that show it (the Vivarium by the clock: Home's glass and bed, Idle's painting): the host's, so a view never reads a clock.
 let lightNow = () => { throw new Error("the host has no light: createHost({ light }) names it"); };
 let timeNow = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };   // the Station time in seconds of the day: createHost({ time }) names it (main.mjs: the developer's Station time, else the clock)
@@ -324,7 +348,7 @@ export function createHost({ send, nowMs, light, time = null, afterSave = () => 
   };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), motion, say: msg, play, at, skip, save: () => { save(); afterSave(); }, holding, arriving, light: () => shownLight ?? lightNow(), enterSitting: (m, o) => enterSitting(h, m, o),
+    now: () => Date.now(), motion, say: msg, play, at, skip, showRoom: (i) => showRoom(h, i), save: () => { save(); afterSave(); }, holding, arriving, light: () => shownLight ?? lightNow(), enterSitting: (m, o) => enterSitting(h, m, o),
     // The frame loop's call: what was scheduled and is due runs, in order; then the room key kept through a hold is dispatched once the hold is over.
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
@@ -346,7 +370,7 @@ function habitatFocus(h, target) {
   const a = UI.hab; a.f = target; endMeet(h);
   if (!target.startsWith("tile.")) return;
   const id = +target.slice(5), was = S.mibiById(G.st, a.id), now = S.mibiById(G.st, id); if (!now || id === a.id) return;
-  const px = (mb) => (mb && !S.isAway(G.st, G.sv, mb) ? mibiPictureOf(G.st, mb, SPECS.habitat.regions.resident.rect.slice(2), G.settings, shownLight ?? "day", "habitat").id : "");
+  const px = (mb) => (mb && !S.isCarried(G.st, G.sv, mb) ? mibiPictureOf(G.st, mb, SPECS.habitat.regions.resident.rect.slice(2), G.settings, shownLight ?? "day", "habitat").id : "");
   const from = px(was); a.id = id;
   if (from && px(now)) { const e = SPECS.habitat.events.swap; a.prev = from; h.play({ kind: e.kind, target: e.target, from, ms: e.ms, hold: h.motion() ? e.hold : 0 }); h.at(e.ms, () => { if (a.prev === from) a.prev = null; }); }
 }
@@ -361,13 +385,14 @@ export function onFaceMessage(h, m) {
   if (m.t === "focus") {
     if (m.screen === "panel") { if (UI.panel) UI.panel.focus = m.target; return; }   // a panel message after it closed is dropped
     if (m.screen === "namer") { if (UI.screen === "habitat" && UI.hab.namer) UI.hab.namer.f = m.target; return; }   // a namer message after it closed is dropped
+    if (m.screen === "vivarium") { if (UI.screen === "vivarium") { UI.viv.f = m.target; const r = /^room\.(\d)$/.exec(m.target); if (r) showRoom(h, +r[1]); } return; }   // the ring on a room's chip shows that room
     if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
     if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
     if (m.screen === "library") { if (UI.screen === "library") INTENTS.library.focus(h, m.target); return; }
     if (m.screen === "sitting") { if (UI.screen === "sitting") INTENTS.sitting.focus(h, m.target); return; }
     if (m.screen === "library.species") { if (UI.screen === "library.species") INTENTS.library.species.focus(h, m.target); return; }
     if (m.screen === "library.family") { if (UI.screen === "library.family") INTENTS.library.family.focus(h, m.target); return; }
-    if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return;
+    if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return;
   }
   if (m.t !== "intent") return;
   if (m.screen === "panel" && !UI.panel) return;   // a panel intent after it closed is dropped

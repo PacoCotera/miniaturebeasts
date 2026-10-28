@@ -12,6 +12,7 @@ import { layers, relitPod, podArea, bgOf } from "./capsule-props.mjs";
 import { relitJuvenile } from "./hatch-props.mjs";
 import { fill, plural, spell, capLine } from "./words.mjs";
 import { req as reqOf, slot as slotOf, slotAt as slot } from "./requests.mjs";
+import { roomData, roomName, withLight } from "./room-props.mjs";
 
 // (the Grow this founder? panel and its JUVENILE and FOUNDER pictures are retired with T-20261016-222)   // the juvenile and the founder as the card shows them (T-20261016-70: each stands at least 80 px tall in the 160 slot; the spec's 104 × 112 stood at 43 %)
 
@@ -64,6 +65,19 @@ export function fitCards(m, spec, frame, requests) {
   return [
     { id: "fit", act: "fit", room: null, picture: part("bench-part-t2-fitted-128"), pictureSize: PART, mark: "", name: Sg.cards.fit.name, cost: S.priceText(e, d, 0), gain: false, short, line: Sg.cards.fit.line, loss: false, dim: !S.tier2Ready(st, settings) },
     { id: "later", act: "notNow", room: null, picture: part("bench-part-t2-dim-128"), pictureSize: PART, mark: "", name: Sg.cards.later.name, cost: "", gain: false, short: "", line: "", loss: false, dim: false },
+  ];
+}
+// The cards of the Add a room? panel (T-20261027-318, panel.json addRoom): Add the room (the room it adds, its price ⚡ from the rules, dimmed with what is short; its picture is rooms.json rooms.<id>.preview, a cut of the room's Idle painting)
+// and Not now (nothing spent: the Vivarium stays as it is). Where the room comes from, the rules: state.roomCount is the index of the room to add.
+export const ROOM_PREVIEW = [348, 160];
+// The preview of the room to add: a 1:1 cut (the crop request) of the room's own Idle painting of the light, rooms.json rooms.<id>.preview { from, rect }; the card has no stage and no pedestal
+const previewOf = (req, pv, light, room) => { const master = withLight(pv.from, light), id = `room-${room}-preview-${light}-${pv.rect[2]}x${pv.rect[3]}`, of = master.match(/-(\d+)x(\d+)$/).slice(1).map(Number); return req({ kind: "crop", id, master, of, at: pv.rect.slice(0, 2), size: pv.rect.slice(2), until: "the room's Idle painting it is cut from (rooms.json rooms.<id>.preview)" }); };
+export function addRoomCards(m, spec, frame, requests) {
+  const { st, settings } = m, Sg = spec.strings.addRoom, req = reqOf(requests), next = S.roomCount(st, settings), p = S.roomPrice(st, settings) ?? 0, pv = next < S.ROOMS_MAX ? roomData(next).preview : null;   // { from: the room's Idle painting, rect: the cut }
+  const short = S.canPay(st, p, 0, 0) ? "" : S.shortIcons(st, p, 0, 0);
+  return [
+    { id: "add", act: "addRoom", room: null, picture: pv ? previewOf(req, pv, m.light ?? "day", roomName(next)) : "", pictureSize: ROOM_PREVIEW, bare: true, mark: "", name: Sg.cards.add.name, cost: S.priceText(p, 0, 0), gain: false, short, line: Sg.cards.add.line, loss: false, dim: !!short },
+    { id: "keep", act: "keep", room: null, picture: "", pictureSize: ROOM_PREVIEW, mark: "", name: Sg.cards.keep.name, cost: "", gain: false, short: "", line: Sg.cards.keep.line, loss: false, dim: false },
   ];
 }
 // The cards of the Hatch now | Wait panel (T-20261016-222; the Incubator's `confirm` state): Hatch now (the bud at its ready step, ❀ n from the rules; dimmed when short) and Wait (nothing spent, "ready in about {n} min": the one minute count, owner ruling 3). The pictures are the windows' (hatchNowBuild), not the cards'.
@@ -120,7 +134,7 @@ export function artOf(frame, n, requests, wild = false) {
   const pick = (t) => { const id = at(typeof t === "string" ? t : t.id); return id ? req(id, sz(id)) : ""; };
   return { housing: pick(A.housing), veil: pick(A.veil), shadow: pick(A.shadow), chip: pick(A.chip), card: { well: pick(A.card), focused: pick(A.focused), stage: pick(A.stage), glow: pick(A.glow), light: pick(A.light) }, scene: wild ? pick(A.scene) : "" };
 }
-export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "incubate" ? incubateCards() : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
+export const cardsOf = (m, spec, frame, requests) => (m.ui.panel.id === "incubate" ? incubateCards() : m.ui.panel.id === "fitUpgrade" ? fitCards(m, spec, frame, requests) : m.ui.panel.id === "addRoom" ? addRoomCards(m, spec, frame, requests) : m.ui.panel.id === "growNow" ? growNowCards(m, spec) : m.ui.panel.id === "dock" ? dockCards(m, spec, frame, requests) : wildCards(m, spec, frame, requests));
 export const titleOf = (m, spec) => {
   const id = m.ui.panel.id, t = spec.strings[id].title;
   if (id === "wildMibi") return fill(t, { name: habitatShown(m.st, m.sv, m.ui.hab.id)?.name ?? "" });
@@ -137,7 +151,7 @@ export function panelBuild(m, spec, frame, pods) {
   const requests = [], cards = cardsOf(m, spec, frame, requests), Sg = spec.strings, ui = m.ui.panel;
   const cur = cards.some((c) => "card." + c.id === ui.focus) ? ui.focus : initialFocus(cards), card = cards.find((c) => "card." + c.id === cur);
   const strip = ui.id === "dock";   // the strip form: no veil, housing or masters of its own (the code-drawn plate and wells), the cards carry no art
-  const art = strip ? { housing: "", veil: "", shadow: "", chip: "" } : artOf(frame, cards.length, requests, cards.some((c) => c.outcome === "wild")), regions = { title: titleOf(m, spec), art: { housing: art.housing, veil: art.veil, shadow: art.shadow, chip: art.chip }, cards: cards.map(({ act, room, art: own, ...c }) => ({ ...c, line: capLine(c.line), art: strip ? own : c.outcome === "wild" ? { ...art.card, glow: "", scene: art.scene } : art.card })) };
+  const art = strip ? { housing: "", veil: "", shadow: "", chip: "" } : artOf(frame, cards.length, requests, cards.some((c) => c.outcome === "wild")), regions = { title: titleOf(m, spec), art: { housing: art.housing, veil: art.veil, shadow: art.shadow, chip: art.chip }, cards: cards.map(({ act, room, art: own, bare, ...c }) => ({ ...c, line: capLine(c.line), art: strip ? own : c.outcome === "wild" ? { ...art.card, glow: "", scene: art.scene } : bare ? { ...art.card, stage: "", glow: "", light: "" } : art.card })) };
   const subject = !strip ? "" : capLine(card.line) || (card.room ? fill(Sg.toRoom, { room: Sg.rooms[card.room] }) : "");
   const line = { ok: card.name, ...(card.cost ? { price: card.cost } : {}), subject, back: Sg.back, need: card.short ? fill(pods.strings.needMore, { icons: card.short }) : "" };   // "" (not null): no notice under an open panel (host.mjs fills a null need)
   if (card.dim) { line.dim = true; line.short = card.short; }

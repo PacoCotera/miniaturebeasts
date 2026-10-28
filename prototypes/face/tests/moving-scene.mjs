@@ -2,6 +2,7 @@
 // each a flat block of its own colour so a test can tell the cell shown by its pixels; the shadow's two cells likewise. No art: the face's tests never read a master.
 //   import { MOVING, sendMoving, atlasPicture, ids } from "./moving-scene.mjs";
 import { readFileSync, readdirSync } from "node:fs";
+import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the props builders, as the page registers it
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -33,9 +34,9 @@ setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f)
 setMoving(MOVING);
 export const T0 = 1_000_000;
 export const VIV_RULES = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station/vivarium.json"), "utf8")).rules;
-// o: { adults, juveniles, s05, sleepers, time (seconds of the day), docked, motionSets, carry, ui }; returns { st, sv, settings, m } for a view
+// o: { adults, juveniles, s05, time (seconds of the day), docked, motionSets, carry, ui }; returns { st, sv, settings, m } for a view. R4b: a room shows five at most, so a household of eight has three resters, on the bed in Roots (the carried set is never drawn)
 export function household(o = {}) {
-  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: o.docked ?? true, at: T0 };
+  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 }, st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: o.docked ?? true, at: T0 };
   if (o.adults) S.seedAdults(st, "S01", 5, o.adults, settings);
   const nj = o.juveniles ?? 0, n5 = o.s05 ?? 0;
   if (nj) S.seedAdults(st, "S01", 77, nj, settings);
@@ -44,16 +45,9 @@ export function household(o = {}) {
   for (const m of st.mibis.slice(o.adults ?? 0)) m.born = st.turn;   // the juveniles
   if (o.libNew != null) { st.libSeen = S.libSnapshot(st); let k = o.libNew; for (const t of Object.keys(st.libSeen.S01 ?? {})) while (k > 0 && st.libSeen.S01[t].length > 1) { st.libSeen.S01[t].pop(); k--; } }   // the Library opened full screen, then libNew looks found since (the last found of the traits that have more than one)
   warmLibrary(st, settings);   // the host warms the specimen when a look is found; Home's props only read it
+  if (o.room) { settings.rooms = o.room + 1; st.face.room = o.room; st.mibis.forEach((m, i) => { m.room = o.room; m.slot = i; m.bay = o.room * 8 + i; }); }   // R4b: the household lives in another room (Reeds: no bed)
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };   // carry: the indexes of the mibis with the Companion
-  return { st, sv, settings, m: { st, sv, settings, ui: o.ui ?? {}, docked: o.docked ?? true, light: o.light ?? "day", time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: o.motionSets ?? true } };
-}
-// the bed's sleepers of a second world (3 juveniles carried), with their requests, spliced into a view's props
-export function sleepersOf(build, n = 3) {
-  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, st = S.freshSt("w2", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: true, at: T0 };
-  st.nextMibi = 100; S.seedAdults(st, "S01", 31, n, settings); for (const m of st.mibis) { m.paint = { state: "landed" }; m.born = st.turn; }
-  const sv = { v: 8, seed: 7, wid: "w2", turn: 3, bay: [], mibis: [], carried: st.mibis.map((m) => m.id), tier: 1, shield: 3 };
-  const b = build({ st, sv, settings, docked: true, light: "day", time: 12 * 3600, restRules: VIV_RULES.rest, motionSets: true });
-  return { sleepers: b.props.regions.bed.sleepers, requests: b.requests };
+  return { st, sv, settings, m: { st, sv, settings, ui: o.ui ?? {}, docked: o.docked ?? true, light: o.light ?? "day", time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, rules: VIV_RULES, now: T0 + (o.time ?? 12 * 3600) * 1000, motionSets: o.motionSets ?? true } };
 }
 // a picture for a request: a moving atlas synthesized (moving-scene's), any other a flat block
 const hash2 = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -64,8 +58,8 @@ export function sendRequests(f, requests, opts = {}) {
     f.handleOf(r.id, withPolicy((i) => (r.kind === "moving" ? atlasPicture(i, opts) : flatPicture(i, r.size ?? (r.kind === "star" ? [12, 12] : [16, 16])))));
   }
 }
-// the state word of face_test_state
-export const STATE = (v) => ({ clip: v & 15, travelling: !!(v & 16), airborne: !!(v & 32), asleep: !!(v & 64), wanderer: !!(v & 128), focused: !!(v & 256), phase: (v >> 12) & 15 });
+// the state word of face_test_state (lv and leg: the level and the leg of a change of level, (the rooms design §9)
+export const STATE = (v) => ({ clip: v & 15, travelling: !!(v & 16), airborne: !!(v & 32), asleep: !!(v & 64), wanderer: !!(v & 128), focused: !!(v & 256), phase: (v >> 12) & 15, lv: (v >> 16) & 15, leg: (v >> 20) & 3 });
 export const CLIP = { rest: 0, hop: 1, walk: 2, curl: 3, asleep: 4, wake: 5, stir: 6, ack: 7 };
 
 // ---- the two living-window screens (the Vivarium's whole and Idle) with a moving household, booted on the WebAssembly face ----
@@ -82,15 +76,14 @@ export const DIST = path.resolve(here2, "../dist"), BUILT = existsSync(path.join
 import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 const frameTop = (screen) => ({ top: { screen, title: screen === "home" ? "Home" : "Vivarium", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: screen === "home" ? null : "Home", need: "" }, plate: { text: "" } });
-// screen: "home" | "vivarium" | "idle"; o: household's options plus { sleepers (count), focus ("tile:<i>" | "resident:<i>" | "room" | null) }
+// screen: "home" | "vivarium" | "idle"; o: household's options plus { focus ("tile:<i>" | "resident:<i>" | "room" | null) }
 export function movingScene(screen, o = {}) {
   const hh = household(o), { st } = hh, frame = SPEC("frame"), viv = o.vivSpec ?? SPEC("vivarium"), home = SPEC("home");
   const focusOf = (f) => (!f ? null : f === "room" ? "room" : f.replace(/^(\w+):(\d+)$/, (_, k, i) => k + "." + st.mibis[+i].id));
   const build = (m) => (screen === "home" ? homeBuild({ ...m, date: { y: 2026, m: 9, d: 17 }, now: Date.now() }, home, frame) : screen === "vivarium" ? vivariumBuild({ ...m, focus: focusOf(o.focus ?? "tile:0"), seen: null }, viv, frame, home) : idleBuild(m, frame));
   const b = build(hh.m), requests = [...b.requests];
-  if (o.sleepers) { const s = sleepersOf(build, o.sleepers); b.props.regions.bed.sleepers = s.sleepers; b.props.regions.bed.state = "docked"; requests.push(...s.requests); }
   const props = screen === "home" ? { screen: "home", ...b.props, frame: { plate: { text: "" } } } : screen === "idle" ? { screen: "home", ...b.props } : { screen, ...b.props, frame: { ...frameTop(screen), line: { ...frameTop(screen).line, ...(b.line ?? {}) } } };
-  return { props, requests, st, hh, specs: { frame, vivarium: viv, home }, screen };
+  return { props, requests, st, hh, specs: { frame, vivarium: viv, home, rooms: SPEC("rooms") }, screen };
 }
 export async function bootScene(sc, { motion = true, moving = MOVING, atlas = {}, t = 5000, dir = DIST } = {}) {   // dir: the test build (dist/node) can name a node by its id (nodeBox)
   atlas = { sets: moving, ...atlas };
@@ -126,10 +119,10 @@ export function runFrames(f, ms, { cadence = [16, 0, 0], top = false, each = nul
 
 // ---- rule 2 (M1 §3) on any of the three screens: the travel rules opened so every walker travels at once (vivarium.json rules, read by all three), an S05 adult at 144 × 152 walking 5 px a tick (stride 15): the per-tick budget must defer ----
 export const rule2Sets = () => { const m = JSON.parse(JSON.stringify(MOVING)), j = m.S05.juvenile; m.S05.adult = { ...JSON.parse(JSON.stringify(j)), walk: { ...j.walk, size: [144, 152] }, walkCycle: { ...j.walkCycle, stride: 15 }, shadow: { walk: [144, 16], close: [304, 24] } }; m.S05.juvenile.walkCycle.stride = 15; return m; };
-export const openRules = (spec) => { const v = JSON.parse(JSON.stringify(spec)); v.rules.travel = { floorDiv: 1, capMin: 12, capDiv: 1, airborne: 2, minRest: 1 }; return v; };
-// twelve adults and three bed sleepers; the six of group 0 walk S05 at 5 px a tick, the odd ones are stills; 20 s of frames every 16 ms
-export async function rule2Run(screen) {
-  const sc = movingScene(screen, { adults: 12, sleepers: 3, vivSpec: openRules(SPEC("vivarium")) });
+export const openRules = (spec, tickBudget = null) => { const v = JSON.parse(JSON.stringify(spec)); v.rules.travel = { floorDiv: 1, capMin: 12, capDiv: 1, airborne: 2, minRest: 1 }; if (tickBudget != null) v.rules.tickBudget = tickBudget; return v; };
+// a room of eight adults and three bed sleepers; the four of group 0 walk S05 at 5 px a tick, the odd ones are stills; 20 s of frames every 16 ms
+export async function rule2Run(screen, tickBudget = null) {
+  const sc = movingScene(screen, { adults: 8, sleepers: 3, vivSpec: openRules(SPEC("vivarium"), tickBudget) });
   sc.props.regions.residents.forEach((r, i) => { if (i % 2) delete r.moving; else r.moving = { set: "S05", walk: "moving:adult:S05:walk:144x152:species", shadow: "moving:adult:S05:shadow:144x16" }; });
   sc.requests.push({ kind: "moving", id: "moving:adult:S05:walk:144x152:species" }, { kind: "moving", id: "moving:adult:S05:shadow:144x16" });
   const f = await bootScene(sc, { moving: rule2Sets() }); if (f.errors().length) throw new Error(f.errors().join("; "));

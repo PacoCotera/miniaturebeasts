@@ -16,7 +16,7 @@ const { newLooksOf, libraryOf, warmLibrary } = await import("../src/views/specim
 const { currentLooks } = await import("../../workbench/framework/describe.mjs");
 const here = path.dirname(fileURLToPath(import.meta.url)), fd = path.resolve(here, "../../workbench/frames"), home = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/home.json"), "utf8"));
 setFrames(readdirSync(fd).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fd, f), "utf8"))));
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 };
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 };
 function start() {
   const st = S.freshSt("w1", 3, 1e6); S.normalize(st); S.seedAdults(st, "S01", 5, 2, settings); st.libSeen = {};   // every look the Loika's mibis show is new
   game.G.st = st; game.G.settings = settings; game.G.sv = { v: S.SAVE_V, wid: "w1", turn: 3, st, bay: [], mibis: [], carried: [], tier: 1, shield: 3 }; game.save();

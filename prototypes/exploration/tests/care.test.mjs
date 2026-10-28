@@ -38,6 +38,7 @@ const ACCESSOR = () => PAGE.match(/^const SP_OTHER = [^]*?\n(?=\/\/)/m)[0] + ["s
 
 // The Station's side, when it has landed.
 const ST = await import("../../station/src/state.mjs");
+ST.useNameList("en-short-1");   // the tests below show the archived English names (T-20261027-322)
 const station = (...names) => names.every(n => typeof ST[n] === "function") ? false : "the Station's side (" + names.join(", ") + ") has not landed on main";
 { const { setFrames } = await import("../../station/src/genome.mjs"), dir = new URL("../../workbench/frames/", import.meta.url).pathname;
   setFrames(readdirSync(dir).filter(f => f.startsWith("species-")).map(f => JSON.parse(readFileSync(path.join(dir, f), "utf8")))); }
@@ -52,7 +53,7 @@ const CARE = ["mibiById", "listWords", "localDay", "stageAt", "mibiStage", "isAd
 // The care functions over a world: S, docked or not, on a given day. ctx.S, ctx.Date and the flags can change between calls.
 function world(S, o = {}) {
   const env = { docked: !!o.docked, log: [] };
-  const ctx = vm.createContext({ console, S, Date: clockAt(o.day || "2026-10-09"), JUVENILE_TURNS: 2, ELDER_TURNS: 6, CARRY_MAX: 3, BOND_TENDS: 3,
+  const ctx = vm.createContext({ console, S, Date: clockAt(o.day || "2026-10-09"), JUVENILE_TURNS: 2, ELDER_TURNS: 16, CARRY_MAX: 3, BOND_TENDS: 3,
     isDocked: () => env.docked, stPart: () => env.st || null, logEv: t => env.log.push(t) });
   const names = CARE.filter(n => !["JUVENILE_TURNS", "CARRY_MAX"].includes(n));
   const out = vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx);
@@ -149,7 +150,7 @@ test("the bond: a carried mibi with 3 Tends and 0 outings bonds on the 3rd Tend;
 });
 
 // ---- T6: growth through care (rulings 1 and 3) ----
-test("T6: bonded at turn 1, at home until 6, carried: juvenile after the expedition to 7; the first Walk at 7 grows it; elder at 13", () => {
+test("T6: bonded at turn 1, at home until 6, carried: juvenile after the expedition to 7; the first Walk at 7 grows it; elder at 23", () => {
   const S = save({ carried: [1], turn: 1 }), t = world(S, { day: "2026-10-01" }), dot = S.mibis[0];
   dot.tends = 2;
   const r = t.tend(dot); assert.equal(r.bonded, true); assert.equal(r.grown, false);
@@ -161,9 +162,9 @@ test("T6: bonded at turn 1, at home until 6, carried: juvenile after the expedit
   S.carried = [1]; assert.equal(t.mibiStage(dot), "juvenile", "carried at 6");
   S.turn = 7; assert.equal(t.mibiStage(dot), "juvenile", "after the expedition that ends at turn 7");
   const evs = t.walkAll(); assert.equal(evs[0].grown, true); assert.equal(dot.grownTurn, 7);
-  for (const [turn, stage] of [[7, "adult"], [12, "adult"], [13, "elder"]]) { S.turn = turn; assert.equal(t.mibiStage(dot), stage, "turn " + turn); }
-  S.turn = 13; assert.equal(t.agedNow(dot), true, "the elder line at grownTurn + 6");
-  if (!station("stageAt")) for (const turn of [6, 7, 12, 13]) assert.equal(ST.stageAt(dot, turn, 2, 6), t.stageAt(dot, turn, 2, 6));
+  for (const [turn, stage] of [[7, "adult"], [22, "adult"], [23, "elder"]]) { S.turn = turn; assert.equal(t.mibiStage(dot), stage, "turn " + turn); }
+  S.turn = 23; assert.equal(t.agedNow(dot), true, "the elder line at grownTurn + 16");
+  if (!station("stageAt")) for (const turn of [6, 7, 22, 23]) assert.equal(ST.stageAt(dot, turn, 2, 16), t.stageAt(dot, turn, 2, 16));
 });
 test("T6: the bonding Tend leaves it juvenile (care == bondCare); the next day's Tend grows it", () => {
   const S = save({ carried: [2], turn: 4 }), t = world(S, { day: "2026-10-09" }), moss = S.mibis[1];
@@ -182,15 +183,15 @@ test("T6: a bonded juvenile never grows on the clock: no grownTurn, no clock gro
   // the world-turn advance writes its lines from grownNow and agedNow, and nothing on the turn or at the expedition's end grows a mibi
   assert.match(source("worldTurn"), /const grown = liveMibis\(\)\.filter\(grownNow\), aged = liveMibis\(\)\.filter\(agedNow\)/);
   for (const fn of ["worldTurn", "endExpedition"]) assert.ok(!/growCheck\(|bondCheck\(|grownTurn =/.test(source(fn)), fn + " never grows or bonds");
-  // an unbonded mibi grows on the clock as built: the line at born + 2, elder at born + 8
-  const fig = S.mibis[2]; S.turn = 2; assert.equal(t.grownNow(fig), true); S.turn = 8; assert.equal(t.agedNow(fig), true);
+  // an unbonded mibi grows on the clock as built: the line at born + 2, elder at born + 18
+  const fig = S.mibis[2]; S.turn = 2; assert.equal(t.grownNow(fig), true); S.turn = 18; assert.equal(t.agedNow(fig), true);
 });
-test("T6: born 0, bonded at turn 5 gets grownTurn 2 (the constant), elder at 8; a juvenile bonded at turn 1 gets none", () => {
+test("T6: born 0, bonded at turn 5 gets grownTurn 2 (the constant), elder at 18; a juvenile bonded at turn 1 gets none", () => {
   const S = save({ carried: [1, 2], turn: 5 }), t = world(S), [dot, moss] = S.mibis;
   dot.tends = 3; assert.equal(t.bondCheck(dot), true);
-  assert.equal(dot.grownTurn, 2); S.turn = 7; assert.equal(t.mibiStage(dot), "adult"); S.turn = 8; assert.equal(t.mibiStage(dot), "elder");
+  assert.equal(dot.grownTurn, 2); S.turn = 17; assert.equal(t.mibiStage(dot), "adult"); S.turn = 18; assert.equal(t.mibiStage(dot), "elder");
   assert.match(source("bondCheck"), /m\.grownTurn = \(m\.born \|\| 0\) \+ JUVENILE_TURNS/, "the constant, never a developer setting");
-  if (!station("stageAt", "mibiStage")) for (const adultTurns of [2, 1, 0]) for (let turn = 5; turn <= 14; turn++) {
+  if (!station("stageAt", "mibiStage")) for (const adultTurns of [2, 1, 0]) for (let turn = 5; turn <= 24; turn++) {
     S.turn = turn; assert.equal(ST.mibiStage({ turn }, dot, { adultTurns }), t.mibiStage(dot), "adultTurns " + adultTurns + ", turn " + turn); }
   S.turn = 1; moss.tends = 3; assert.equal(t.bondCheck(moss), true); assert.equal(moss.grownTurn, null);
 });
@@ -227,7 +228,7 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 
 // ---- The expedition: outings, notches, the trip ----
 function ending(S, ex, reason = "home") {
-  const t = vm.createContext({ console, S, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 6,
+  const t = vm.createContext({ console, S, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 16,
     reachCounts: () => ({ surveyed: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
     worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]] }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
   const names = ["endExpedition", "exploredAny", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
@@ -293,12 +294,12 @@ test("migration from `with`: the fixture's Companion part, and a second run chan
   assert.deepEqual(plain(sv.carried), [1]); assert.equal(sv.lead, 1); assert.equal(sv.carrySeen, 0);
   assert.ok(!("with" in sv)); assert.equal(sv.withSeen, 1, "withSeen kept, frozen, for the Station's step"); assert.deepEqual(plain(sv.carryRefused), []);
   const [dot, moss, fig] = sv.mibis;
-  assert.deepEqual([dot.bondCare, dot.grownTurn], [0, 2], "Dot: adult, elder at 8");
+  assert.deepEqual([dot.bondCare, dot.grownTurn], [0, 2], "Dot: adult, elder at 18");
   assert.deepEqual([moss.bondCare, moss.grownTurn], [0, null], "Moss: a juvenile that waits");
   assert.equal(fig.grownTurn, null); assert.equal(fig.bondCare, undefined);
   for (const m of sv.mibis) { assert.equal(m.care, 0); assert.equal(m.tends, 0); assert.equal(m.tendDay, null); }
   assert.deepEqual([t.mibiStage(dot), t.mibiStage(moss), t.mibiStage(fig)], ["adult", "juvenile", "adult"]);
-  sv.turn = 8; assert.equal(t.mibiStage(dot), "elder"); sv.turn = 4;
+  sv.turn = 18; assert.equal(t.mibiStage(dot), "elder"); sv.turn = 4;
   const once = JSON.stringify(sv); t.migrateCarried(sv); t.normalizeCare(sv); assert.equal(JSON.stringify(sv), once, "idempotent");
   // `with` naming no mibi of the Companion's: nothing carried
   const lost = { mibis: [mibi(1, "Dot")], with: 9, withSeen: 2, turn: 0 }; t.migrateCarried(lost); assert.deepEqual(plain(lost.carried), []);
@@ -307,13 +308,13 @@ test("migration from `with`: the fixture's Companion part, and a second run chan
   assert.match(source("save"), /syncStation\(\); normalizeCare\(S\);/, "after every dock read, defaults only");
   assert.ok(!/releasedIds/.test(source("save")), "save never drops released ids: only the dock gate does");
 });
-test("ruling 2 on the fixture: Moss at home stays juvenile through 14; carried, one Walk at turn 5 grows it; Dot elder at 8", () => {
+test("ruling 2 on the fixture: Moss at home stays juvenile through 14; carried, one Walk at turn 5 grows it; Dot elder at 18", () => {
   const sv = FIXTURE(), t = world(sv); t.migrateCarried(sv); t.normalizeCare(sv);
   const [dot, moss] = sv.mibis;
   for (let turn = 4; turn <= 14; turn++) { sv.turn = turn; assert.equal(t.mibiStage(moss), "juvenile"); assert.equal(t.grownNow(moss), false); }
   sv.turn = 5; sv.carried = [2]; const evs = t.walkAll();
   assert.equal(moss.care, 1); assert.equal(moss.grownTurn, 5); assert.equal(evs[0].grown, true);
-  sv.turn = 8; assert.equal(t.mibiStage(dot), "elder");
+  sv.turn = 18; assert.equal(t.mibiStage(dot), "elder");
 });
 test("normalizeCare: defaults for the additive fields; ids not in S.mibis dropped; old bonds back-filled once", () => {
   const S = { turn: 6, mibis: [{ id: 1, name: "Dot", born: 0, bonded: true, care: 2 }, { id: 2, name: "Moss", born: 5, bonded: true }, { id: 3, name: "Fig", born: 0 }], carried: [1, 7, 1, 2] };
@@ -449,7 +450,7 @@ test("no Companion line carries a skill count; the status line is exactly one li
   assert.ok(!/of 3'|\(' \+ \w+\.notches|skill ' \+/.test(PAGE), "no 'N of 3' and no skill number in any line");
   assert.match(source("endExpedition"), /logEv\(CARE_TEXT\.notch\(w\.name\)\)/);
   const S = save({ carried: [1, 2, 3], lead: 2, turn: 3 }), t = world(S);
-  const ctx = vm.createContext({ console, S, JUVENILE_TURNS: 2, ELDER_TURNS: 6, isDocked: () => false });
+  const ctx = vm.createContext({ console, S, JUVENILE_TURNS: 2, ELDER_TURNS: 16, isDocked: () => false });
   const names = ["mibiById", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "partnerMibi", "activeStatus"];
   const a = vm.runInContext(names.map(source).join("\n") + "\n;({ activeStatus })", ctx);
   const LINES = ["with you · leads the Probe", "with you · can lead the Probe", "with you · too young for the Probe", "with you · grows with care", "at home", "at home · grows on the Companion"];
@@ -472,7 +473,7 @@ test("the approved strings: Tend's line from the species moment and the place; t
   assert.equal(T.tendMidExp("Dot"), "Tend Dot when the expedition is over"); assert.equal(T.notch("Dot"), "Dot gains a skill notch");
   assert.equal(T.noOneWith, "no one with you"); assert.equal(T.noOneGrown, "no one grown yet");
   // the expedition choice's partner card, bottom-line context (companion-screens.md, "Expedition choice: the partner card")
-  const S = save({ carried: [], turn: 1 }), ctx = vm.createContext({ console, S, CARE_TEXT: T, JUVENILE_TURNS: 2, ELDER_TURNS: 6, SPECIES: [{ abText: "calms wary creatures" }, { abText: "sniffs out pods" }, { abText: "digs narrow burrows" }] });
+  const S = save({ carried: [], turn: 1 }), ctx = vm.createContext({ console, S, CARE_TEXT: T, JUVENILE_TURNS: 2, ELDER_TURNS: 16, SPECIES: [{ abText: "calms wary creatures" }, { abText: "sniffs out pods" }, { abText: "digs narrow burrows" }] });
   const pr = vm.runInContext(ACCESSOR() + ["partnerRow", "partnerMibi", "carriedMibis", "liveMibis", "mibiById", "isAdult", "mibiStage", "stageAt"].map(source).join("\n") + "\n;partnerRow", ctx);
   assert.equal(pr(), "no one with you");
   S.carried = [1]; assert.equal(pr(), "no one grown yet", "a juvenile with you, no one grown");
@@ -537,7 +538,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   const S = save({ carried: [], turn: 3, expN: 2, tier: 1, bay: [], revealed: [0], ui: { sel: 1, lastPos: null }, shield: 3 });
   S.mibis[1].sp = 2;   // a grown digger at home
   const said = [], noop = () => {}, id = x => x;
-  const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 6, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
+  const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 16, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs narrow burrows" }],
     FX: {}, shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
     panel: noop, card: noop, disc: noop, blit: noop, R: noop, shieldBars: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
@@ -1006,7 +1007,7 @@ test("X26 §5.4: the partner card with only Dot: its sprite without RING, its na
   assert.ok(d.some(c => c[0] === "sprite" && c[1] === 1 && c[2] === "idle" && c[4] === 28 && c[5] === 264 && c[6] === 2), "Dot's sprite at 2× in the face place");
   assert.ok(!d.some(c => c[0] === "art" && (c[1] === "ptring2" || c[1] === "dcirc64")), "no RING() and no dashed circle");
   assert.ok(d.some(c => c[0] === "text" && c[1] === "Dot" && c[2] === 112 && c[3] === 260 && c[5] === 3), "its name at (112, 260), 3×");
-  assert.ok(d.some(c => c[0] === "text" && c[1] === "juvenile" && c[2] === 120 && c[3] === 295), "the juvenile chip at (112, 292)");
+  assert.ok(d.some(c => c[0] === "text" && c[1] === "young" && c[2] === 120 && c[3] === 295), "the young chip at (112, 292)");
   const lines = d.filter(c => c[0] === "text" && c[3] === 320 && c[2] === 112); assert.deepEqual(lines.map(c => c[1]), [T.riderTime], "one 2× line, unbonded");
   assert.equal(lines[0][4], p.run("C.stone"));
   for (const no of ["No partner", "young · grows in time", "young · grows with care"]) assert.ok(!d.some(c => c[0] === "text" && c[1] === no), "no " + no);
@@ -1523,4 +1524,83 @@ test("juvenile pictures at the sites: setup card and faces, header mini, roster,
   // the Walk's side tokens: the other mibis with you at the foot of the stage
   p = X26.world([pip(), dot(), X26.mib(3, "Moss", 2)], [1, 2, 3]); p.run("S.ui.aId = 1; FX.walk = { id: 1, at: 0, others: [2, 3] }");
   d = p.draw("active", 100); assert.deepEqual(d.filter(c => c[0] === "plate" && c[1] === "c-token-48").map(c => [c[2], c[5], c[7]]), [[36, 0, false], [366, 2, true]], "left Pip (adult), right Moss (juvenile)");
+});
+
+test("R2: the Tend that will make the bond says 'a bond is for good'; the others say 'once a day'", () => {
+  const p = X26.world([dot()], [1]);
+  const ctx = (tends, bonded = false) => p.run(`{ const m = mibiById(1); m.tends = ${tends}; m.bonded = ${bonded}; delete m.tendDay; S.phase = 'active'; S.walkTurn = S.turn; lineFor().ctx; }`);
+  assert.equal(ctx(0), "once a day"); assert.equal(ctx(1), "once a day");
+  assert.equal(ctx(2), "a bond is for good", "the third Tend sets bonded");
+  assert.equal(ctx(2, true), "once a day", "already bonded: nothing to warn of");
+  p.run("{ const m = mibiById(1); m.bonded = false; m.tends = 2; m.care = 2; delete m.tendDay; tend(m); }");
+  assert.equal(p.run("mibiById(1).bonded"), true, "the press the line warns of is the one that bonds");
+});
+
+// ---- Ageing in turns: the age words, the stage words, and the real time a mibi has been the player's ----
+const AGE_FNS = ["ageTurns", "stageNote", "turnsFor", "turnsUntil", "yoursLine"];
+const AGE_WORLD = (S, day) => { const ctx = vm.createContext({ console, S, Date: clockAt(day || "2026-10-27"), JUVENILE_TURNS: 2, ELDER_TURNS: 16 });
+  const names = ["stageAt", "turnsShort", "ageLine", "yoursText", ...AGE_FNS], at = (n, k = ctx) => vm.runInContext(source(n), k);
+  return vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx); };
+test("age words: the page's functions are the Station's text, character for character", async () => {
+  const W = await import("../../station/src/age-words.mjs");
+  for (const n of AGE_FNS) assert.equal(source(n), W[n].toString(), n);
+});
+test("stage words: young on the chips (the Mibis list, the Partner card, the mibi page, the Home card); adult and elder as they were", () => {
+  assert.match(PAGE, /const STAGE_WORD = \{ juvenile: 'young', adult: 'adult', elder: 'elder' \}/);
+  assert.ok(!/chip\([^)]*, st, stageFill/.test(PAGE), "no chip draws the raw stage");
+  assert.equal((PAGE.match(/chip\([^;]*STAGE_WORD\[st\], stageFill\(st\)/g) || []).length, 4);
+});
+test("stage boundaries on the Companion: young below 2, adult through 17, an elder at 18 (2 + 16); an elder from grownTurn + 16", () => {
+  const S = save({ turn: 0 }), t = world(S), m = { born: 0 };
+  for (const [turn, want] of [[0, "juvenile"], [1, "juvenile"], [2, "adult"], [17, "adult"], [18, "elder"], [19, "elder"], [200, "elder"]]) { S.turn = turn; assert.equal(t.mibiStage(m), want, "turn " + turn); }
+  assert.match(PAGE, /const JUVENILE_TURNS = 2, ELDER_TURNS = 16;/);
+  const g = { born: 0, grownTurn: 5, bonded: true }; for (const [turn, want] of [[20, "adult"], [21, "elder"]]) { S.turn = turn; assert.equal(t.mibiStage(g), want, "grown at 5, turn " + turn); }
+  S.turn = 21; assert.equal(t.agedNow(g), true); S.turn = 22; assert.equal(t.agedNow(g), false); S.turn = 18; assert.equal(t.agedNow(m), true);
+});
+test("the age line: {n} turns old, then what the stage means; never a countdown to elder", () => {
+  const S = save({ turn: 26 }), a = AGE_WORLD(S), at = (m, turn) => { S.turn = turn; return a.ageLine(m); };
+  assert.equal(at({ born: 1 }, 26), "25 turns old · an elder for 7 turns");
+  assert.equal(at({ born: 0 }, 18), "18 turns old · an elder from this turn"); assert.equal(at({ born: 0 }, 19), "19 turns old · an elder for 1 turn");
+  assert.equal(at({ born: 0 }, 17), "17 turns old", "an adult says nothing more here; no countdown to elder"); assert.equal(at({ born: 0 }, 2), "2 turns old");
+  assert.equal(at({ born: 25 }, 26), "1 turn old · grows up next turn"); assert.equal(at({ born: 24 }, 26), "2 turns old", "grown on the clock");
+  assert.equal(at({ born: 25 }, 25), "new this turn · grows up in 2 turns");
+  assert.equal(at({ born: 25, bonded: true }, 26), "1 turn old", "a bonded young mibi: its status already says it grows with care");
+  assert.equal(at({ born: 0, bonded: true, grownTurn: 2 }, 20), "20 turns old · an elder for 2 turns", "an elder from grownTurn + 16");
+  S.turn = 26; assert.deepEqual([{ born: 26 }, { born: 25 }, { born: 1 }].map(m => a.turnsShort(m)), ["new", "1 turn", "25 turns"]);
+});
+test("Yours: calendar days on the device's own clock, then months, then years; the date; an older save says at least", () => {
+  const S = save({ turn: 1 }), at = (since, now, extra = {}) => AGE_WORLD(S, now).yoursText(Object.assign({ since: new Date(...since, 12).getTime() }, extra));
+  assert.equal(at([2026, 9, 14], "2026-10-27"), "yours for 13 days · since 14 Oct");
+  assert.equal(at([2026, 9, 27], "2026-10-27"), "yours since today"); assert.equal(at([2026, 9, 26], "2026-10-27"), "yours for a day · since 26 Oct");
+  assert.equal(at([2026, 9, 25], "2026-10-27"), "yours for 2 days · since 25 Oct");
+  assert.equal(at([2026, 0, 1], "2026-04-10"), "yours for 99 days · since 1 Jan"); assert.equal(at([2026, 0, 1], "2026-04-11"), "yours for 3 months · since 1 Jan");
+  assert.equal(at([2025, 9, 14], "2026-10-27"), "yours for 12 months · since Oct 2025", "an earlier year: month and year");
+  assert.equal(at([2024, 10, 27], "2026-10-27"), "yours for 23 months · since Nov 2024"); assert.equal(at([2024, 9, 27], "2026-10-27"), "yours for 2 years · since Oct 2024");
+  assert.equal(at([2026, 9, 28], "2026-10-27"), "yours since today", "a clock behind `since` is never a negative count");
+  assert.equal(at([2026, 9, 14], "2026-10-27", { sinceFloor: true }), "yours for at least 13 days", "an older save: no made-up date");
+  assert.equal(at([2026, 9, 27], "2026-10-27", { sinceFloor: true }), "yours since today or before");
+  const none = AGE_WORLD(S).yoursText; assert.equal(none({ id: 1 }), "", "no `since` yet (hatched while the Companion was away): nothing, never a guess"); assert.equal(none({ since: null }), "");
+});
+test("the mibi page: the status on one line at 396, the age line at 424 and Yours at 446, the dots lowered to 478 and 480", () => {
+  const d = source("drawActive");
+  assert.match(d, /text\(clipText\(growing \? CARE_TEXT\.stGrowsWithCare : activeStatus\(m\), 390, 2\), 30, 396,/);
+  assert.match(d, /text\(clipText\(ageLine\(m\), 390, 2\), 30, 424, C\.fog\)/); assert.match(d, /text\(clipText\(yt, 390, 2\), 30, 446, C\.mist\)/);
+  assert.match(d, /R\(px - 2, 478, 10, 10, C\.amber\); R\(px, 480, 6, 6,/); assert.ok(!/wrapText\(growing/.test(d), "the status never wraps");
+});
+test("the Mibis list: {n} turns right-aligned to 410 on the chip row; the Partner card says the stage and turns, and an elder's trade", () => {
+  assert.match(source("rosterRow"), /text\(turnsShort\(m\), 410, y \+ 41, C\.stone, 2, 'right'\)/);
+  const d = source("drawMibis");
+  assert.match(d, /text\(STAGE_WORD\[mibiStage\(pm\)\] \+ ', ' \+ turnsShort\(pm\), 418, y \+ 6, C\.stone, 2, 'right'\)/);
+  assert.match(d, /abTextOf\(pm\.sp\) \+ \(mibiStage\(pm\) === 'elder' \? ' · slow, keen' : ''\), 314, 2\)/);
+});
+test("the dock copies since and sinceFloor: a mibi already known, a new one, and one with no clock", () => {
+  const S = save({ carried: [1], bay: [], known: [], retSeen: [], pods: [], dockSeen: 0 });
+  const st = { accepted: [], known: [], dock: { docked: true }, dockN: 1, returned: [], mibis: [
+    { id: 1, name: "Dot", sp: 0, born: 0, bonded: false, since: 1790000000000 }, { id: 2, name: "Moss", sp: 1, born: 0, bonded: false, since: 1790000000001, sinceFloor: true },
+    { id: 3, name: "Fig", sp: 2, born: 0, bonded: false }, { id: 5, name: "Kit", sp: 2, born: 3, bonded: false, since: 1790000000005 }] };
+  dock(S, st, true);
+  const by = id => S.mibis.find(m => m.id === id);
+  assert.deepEqual([by(1).since, by(1).sinceFloor], [1790000000000, false]); assert.deepEqual([by(2).since, by(2).sinceFloor], [1790000000001, true]);
+  assert.deepEqual([by(3).since, by(3).sinceFloor], [null, false], "no clock yet: null, shown as nothing"); assert.deepEqual([by(5).since, by(5).sinceFloor], [1790000000005, false], "a new mibi starts with it");
+  const once = JSON.stringify(S); dock(S, st, true); assert.equal(JSON.stringify(S), once, "a repeated dock changes nothing");
 });

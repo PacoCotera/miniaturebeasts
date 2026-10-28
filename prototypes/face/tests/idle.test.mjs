@@ -4,6 +4,7 @@
 // Skipped when the face has not been built (build.sh).
 //   node --test prototypes/face/tests/idle.test.mjs
 import { test } from "node:test";
+import "../../station/tests/fixtures/rooms.mjs";   // the rooms spec for the props builders, as the page registers it
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -21,7 +22,7 @@ const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.pars
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 20 }, T0 = 1_000_000;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 1 }, T0 = 1_000_000;   // Idle shows the room shown: eight at most
 
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: true, at: T0 }; return st; };
 function scene(o = {}) {
@@ -38,8 +39,8 @@ function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * 
 const sizeOf = (r) => r.size ?? [16, 16];
 async function start(b, { motion = true, t0 = 0, noPainting = false } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
-  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
-  for (const r of b.requests) if (!(noPainting && /^idle-vivarium/.test(r.id))) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-bed-/.test(i) ? { policy: "art" } : {}) })));
+  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec], ["rooms", J("rooms")]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
+  for (const r of b.requests) if (!(noPainting && /^room-roots-idle-/.test(r.id))) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^room-roots-bed-/.test(i) ? { policy: "art" } : {}) })));
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "home", ...b.props, motion }), 0, f.errors().join("; ")); frames(f); return f;
 }
@@ -61,7 +62,7 @@ for (const [name, o] of Object.entries(SCENES)) test(`Idle, ${name}: draws witho
 test("the departure check bites: a resident leaving the walk ground, the strip moved, a ring and a frame word are each found", { skip }, async () => {
   const f = await start(scene({ adults: 3, crates: 1 })), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, frameSpec); };
   assert.deepEqual(departures(lg, frameSpec), []);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "resident" && r.layer !== "chrome").rect[1] = 100; })[0], /feet are not in the walk ground/);
+  assert.match(bad((c) => { { const r = c.regions.find((q) => q.id === "resident" && q.layer !== "chrome"); r.rect[1] = 0; r.rect[3] = 100; } })[0], /feet are not in the walk ground/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "idle.strip").rect[1] = 560; })[0], /strip/);
   assert.match(bad((c) => { c.regions.push({ id: "focus", layer: "chrome", rect: [0, 0, 10, 10] }); })[0], /no focus/);
   assert.match(bad((c) => { c.regions.push({ id: "top", layer: "chrome", rect: [0, 0, 1024, 40] }); })[0], /no top/);
@@ -84,11 +85,12 @@ test("the flat plates stand until the master: forest back, clay ground with a sa
 });
 
 // ---- the walk ----
-test("a resident walks with its feet in 16..1008 × 376..551, never behind the bed (box right edge past 792 with feet below 448), 120 s at 40 ms", { skip }, async () => {
+const ROOT = J("rooms").rooms.roots, ROOT_TOP = Math.min(...ROOT.levels.map((l) => Math.min(...l.top)));   // Idle draws the painting at 0, 0: the room's rows are Idle's; the feet band is the union of the levels (R4), here from the highest level's top
+test("a resident walks with its feet in 16..1008 × the room's levels (292..551 in Roots), never behind the bed (box right edge past 792 with feet below 448), 120 s at 40 ms", { skip }, async () => {
   const f = await start(scene({ adults: 1 }), { t0: 5000 }), w = R.resident.walk.ground, adult = R.resident.adult; let moved = 0, last = null; const seen = new Set();
   for (let t = 40; t < 120000; t += 40) {
     f.frame(5000 + t); const lg = logOf(f); if (!lg) continue; const r = lg.regions.find((x) => x.id === "resident" && x.layer !== "chrome"); if (!r) continue;
-    const [x, y, rw, rh] = r.rect, feet = y + rh; assert.ok(x >= w[0] && x + rw <= w[0] + w[2] && feet >= w[1] && feet <= w[1] + w[3], `box ${r.rect} is inside the walk ground`);
+    const [x, y, rw, rh] = r.rect, feet = y + rh; assert.ok(x >= w[0] && x + rw <= w[0] + w[2] && feet >= ROOT_TOP && feet <= w[1] + w[3], `box ${r.rect} is inside the walk ground`);
     assert.ok(!(x + rw > R.bed.rect[0] && feet > R.bed.rect[1] - 48), `box ${r.rect} is not behind the bed`);
     if (last && (x !== last[0] || y !== last[1])) moved++; last = r.rect; seen.add(x + "," + y);
   }
@@ -99,7 +101,7 @@ test("the same props on the same clock give the same hash; with motion off the r
   assert.equal(await run(8000), await run(8000)); assert.notEqual(await run(8000), await run(1200)); assert.equal(await run(8000, false), await run(40, false), "motion off: nothing moves");
 });
 // the bays hold twelve in all, so with three asleep on the bed at most nine walk
-const WALKS = { "twelve adults": { adults: 12 }, "six adults and six juveniles": { adults: 6, young: 6 }, "twelve, three waiting": { adults: 12, waiting: 3 }, "nine adults, three asleep": { adults: 12, carry: [9, 10, 11] }, "three adults and six juveniles, three asleep": { adults: 6, young: 6, carry: [3, 4, 5] }, "nine, three waiting, three asleep": { adults: 12, waiting: 3, carry: [9, 10, 11] } };
+const WALKS = { "eight adults": { adults: 8 }, "four adults and four juveniles": { adults: 4, young: 4 }, "eight, three waiting": { adults: 8, waiting: 3 }, "five adults, three asleep": { adults: 8, carry: [5, 6, 7] }, "one adult and four juveniles, three asleep": { adults: 4, young: 4, carry: [1, 2, 3] }, "five, three waiting, three asleep": { adults: 8, waiting: 3, carry: [5, 6, 7] } };
 for (const [name, o] of Object.entries(WALKS)) for (const [step, off, late = 0] of [[40, 0], [16, 5], [16, 5, 120]]) test(`the walk on Idle, ${name}, frames every ${step} ms${late ? ` (every 63rd ${late} ms late)` : ""} for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
   const f = await start(scene(o), { t0: 5000 }), M = f.M; let area = 0, moved = 0, lateArea = 0, ordinary = 0;
   for (let t = step + off, k = 0; t < 120000; t += step, k++) {
@@ -117,7 +119,7 @@ test("a light change is a cut: Idle redraws the whole of its painting at most (5
   const LIGHTS = ["dawn", "day", "dusk", "night"];
   for (const from of LIGHTS) for (const to of LIGHTS) if (from !== to) {
     const f = await start(scene({ adults: 4, young: 2, carry: [0, 1], light: from }), { motion: false, t0: 1000 }), b = scene({ adults: 4, young: 2, carry: [0, 1], light: to });
-    for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-bed-/.test(i) ? { policy: "art" } : {}) })));
+    for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^room-roots-bed-/.test(i) ? { policy: "art" } : {}) })));
     assert.equal(f.props({ screen: "home", ...b.props, motion: false }), 0, f.errors().join("; ")); f.frame((f.t += 16));
     const a = dirty(f); assert.ok(a <= 581632, `${from} to ${to}: dirty ${a}`); assert.deepEqual(f.errors(), []);
   }
@@ -138,9 +140,10 @@ test("determinism and motion off on Idle (M1 §3): two faces walk alike; with mo
   assert.equal(await run(), await run());
   const f = await bootScene(movingScene("idle", { adults: 6, juveniles: 5, s05: 1, sleepers: 3 }), { motion: false }); assert.equal(runFrames(f, 10000).worst, 0);
 });
-test("rule 2 on Idle (M1 §3): six adult walkers at 5 px a tick on one group tick with the bed sleepers breathing: the tick stays inside 148,000 px and the budget defers, deterministically", { skip }, async () => {
-  const a = await rule2Run("idle"), b = await rule2Run("idle");
-  assert.ok(a.r.worstTick <= 148000, `a tick of ${a.r.worstTick} px`); assert.ok(a.r.deferred > 0, "the budget deferred changes"); assert.equal(a.hash, b.hash, "deterministic"); assert.equal(a.r.deferred, b.r.deferred);
+test("rule 2 on Idle (M1 §3), a room of eight: the adult walkers at 5 px a tick on a group tick with the bed's resters breathing stay inside the 148,000 px tick; under a 50,000 px budget (R4b: five of the eight walk, so the 74,000 one no longer binds) the budget defers and holds, deterministically", { skip }, async () => {
+  const a = await rule2Run("idle"); assert.ok(a.r.worstTick <= 148000, `a tick of ${a.r.worstTick} px`);
+  const lo = await rule2Run("idle", 50000), lo2 = await rule2Run("idle", 50000);
+  assert.ok(lo.r.worstTick <= 50000, `a tick of ${lo.r.worstTick} px over the lowered budget`); assert.ok(lo.r.deferred > 0, "the budget deferred changes"); assert.equal(lo.hash, lo2.hash, "deterministic"); assert.equal(lo.r.deferred, lo2.r.deferred);
   console.log(`# rule 2 (Idle): worst tick ${a.r.worstTick} px, ${a.r.deferred} changes deferred in 20 s, worst frame ${a.r.worst} px`);
 });
 // the bound of one hopping resident's frame (the architect's Q5): (cell w + the most it travels in a tick) × (cell h + the lift cap a tick, 12) + (cell w + that travel) × 16 for its shadow node; the travel is the hop's over its air ticks, rounded up
@@ -166,16 +169,17 @@ test("G7 night (M1 §3, game designer R3): Pip alone, asleep, 6 min 10 s: 7–18
   assert.ok(stirs.length >= 7 && stirs.length <= 18, `${stirs.length} stirs`); for (const g of gaps) assert.ok(g >= 20000 - 80 && g <= 40000 + 80, `stirs ${g} ms apart`);
   assert.ok(gaps.filter((g) => g > 40080).length <= wanders.length + 1, "a stir waits only while Pip wanders or after its curl");
   assert.ok(wanders.length >= 1, "a wanderer"); for (const w of wanders) { assert.ok(w.max <= 200 * 2, `it wandered ${w.max} px`); assert.ok(w.rested, "it rested"); }
-  assert.ok(worst <= HOP_BOX, `a frame of ${worst} px`); assert.ok(drawn / 370 <= 15, `${(drawn / 370).toFixed(1)} frames a second`);
+  const OCC = Math.max(...ROOT.pieces.filter((q) => q.kind === "occluder" && q.picture).map((q) => q.rect[2] * q.rect[3]));   // a walker that crosses an occluder's foot swaps two nodes and redraws only their overlap (the rooms design §3): at most the occluder
+  assert.ok(worst <= HOP_BOX + OCC, `a frame of ${worst} px`); assert.ok(drawn / 370 <= 15, `${(drawn / 370).toFixed(1)} frames a second`);
   console.log(`# G7 night: ${stirs.length} stirs ${Math.min(...gaps)}–${Math.max(...gaps)} ms apart, ${wanders.length} wanderer${wanders.length > 1 ? "s" : ""} (${wanders.map((w) => w.max + " px").join(", ")}), worst frame ${worst} px, ${(drawn / 370).toFixed(2)} frames drawn a second`);
 });
 test("asleep spots (UI/UX item 11): at night no sleeper's ground point lies in another's spot, and no waypoint (a wanderer's included) lands in another's spot", { skip }, async () => {
-  const f = await bootScene(movingScene("idle", { adults: 6, juveniles: 4, time: 23 * 3600 })), M = f.M, w = (i) => (i < 6 ? 144 : 104);
+  const f = await bootScene(movingScene("idle", { adults: 4, juveniles: 4, time: 23 * 3600 })), M = f.M, w = (i) => (i < 4 ? 144 : 104);   // a room of eight
   const spot = (i) => { const fx = M._face_test_mv(i, 0) + w(i) / 2, feet = M._face_test_mv(i, 1); return [fx - 56, feet - 12, 112, 24]; }, meets = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
   const inSpot = (i, j) => { const p = spot(j), gx = M._face_test_mv(i, 0) + w(i) / 2, gf = M._face_test_mv(i, 1); return gx >= p[0] && gx < p[0] + p[2] && gf >= p[1] && gf < p[1] + p[3]; };
-  for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) if (i !== j) assert.ok(!inSpot(i, j), `resident ${i}'s ground point lies in ${j}'s spot at screen show`); void meets;
-  runFrames(f, 400000, { cadence: [40, 0, 0], each: () => { for (let i = 0; i < 10; i++) { const s = STATE(M._face_test_state(i)); if (!s.travelling && !s.wanderer) continue; if (s.clip !== CLIP.hop && s.clip !== CLIP.walk) continue; const gx = M._face_test_mv(i, 8) + w(i) / 2, gf = M._face_test_mv(i, 9);
-    for (let j = 0; j < 10; j++) if (j !== i && [CLIP.asleep, CLIP.curl, CLIP.stir, CLIP.wake].includes(STATE(M._face_test_state(j)).clip)) { const p = spot(j); assert.ok(!(gx >= p[0] && gx < p[0] + p[2] && gf >= p[1] && gf < p[1] + p[3]), `resident ${i}'s waypoint lands in ${j}'s spot`); } } } });
+  for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) if (i !== j) assert.ok(!inSpot(i, j), `resident ${i}'s ground point lies in ${j}'s spot at screen show`); void meets;
+  runFrames(f, 400000, { cadence: [40, 0, 0], each: () => { for (let i = 0; i < 8; i++) { const s = STATE(M._face_test_state(i)); if (!s.travelling && !s.wanderer) continue; if (s.clip !== CLIP.hop && s.clip !== CLIP.walk) continue; const gx = M._face_test_mv(i, 8) + w(i) / 2, gf = M._face_test_mv(i, 9);
+    for (let j = 0; j < 8; j++) if (j !== i && [CLIP.asleep, CLIP.curl, CLIP.stir, CLIP.wake].includes(STATE(M._face_test_state(j)).clip)) { const p = spot(j); assert.ok(!(gx >= p[0] && gx < p[0] + p[2] && gf >= p[1] && gf < p[1] + p[3]), `resident ${i}'s waypoint lands in ${j}'s spot`); } } } });
 });
 test("no stir begins on a focused sleeper (game designer R4; the living window's code in the Vivarium's whole, where the ring is)", { skip }, async () => {
   const f = await bootScene(movingScene("vivarium", { adults: 3, time: 23 * 3600, focus: "resident:0" })); let s1 = 0; const p = [0, 0, 0];

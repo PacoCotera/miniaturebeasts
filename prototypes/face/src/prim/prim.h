@@ -25,12 +25,14 @@ void prim_tag(int layer, const char *region);
    The text is read from prim_text() for a text node. */
 void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b);
 #ifdef FACE_NODE_API
+int prim_node_opa(uint32_t id);   /* test build: the opacity (0..255) of a node by id (-1 when absent) */
 int prim_node_box(uint32_t id, int out[4]);   /* test build: the box and kind of a node by id (-1 when absent) */
 #endif
 void prim_end(void);
 char *prim_ops(void);           /* a 128 KiB buffer for the ops of a composed node (JSON), filled before the node */
 int prim_ops_size(void);
 char *prim_text(void);          /* a 1 KiB buffer the page fills (UTF-8, NUL ended) before a text node or a measure */
+void prim_sprite_opa(int opa);   /* the opacity (0..255) of the next sprite node only, 255 again once it is sent (as prim_text_role holds for the next text node only) */
 void prim_text_role(const char *role, const char *ground);   /* the role and ground the next text node is set by (the log carries them); the words set it before the node, "" or NULL for none */
 uint32_t prim_run_get(void);   /* the run now open (prim_run), 0 for none */
 void prim_hold(int on);       /* the nodes sent from now on are a hold mark (kit_focusRingHold), on until it is turned off: the log counts them as "hold", never as a ring (flag 4 on each node) */
