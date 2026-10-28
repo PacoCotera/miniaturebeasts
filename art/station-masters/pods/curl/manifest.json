@@ -1,0 +1,377 @@
+{
+ "note": "curled sleeper nap masters (ad-curl, 2026-10-28): each replaces the standing nap master of the same id when placed (place_as); keys are the 304x312 curl at the signed master scale (same amount of creature, tools/curlcut.py), naps by tools/curlnap.py (adult x0.276, juvenile x0.2857, centred x 48, last solid row 85)",
+ "files": {
+  "curl/S01/mibi-adult-S01-96x88.png": {
+   "sha256": "cb3db62f69dbe0ffdbf927db6d9aa303bbc42ae241d42b73956878db9475f177",
+   "from": "ui/assets/stands S01-adult-curl-304x312-base.png + -crest.png (station-gate b4d50397), tools/curlnap.py, 0 MXN",
+   "place_as": "mibi-adult-S01-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/S01/mibi-juvenile-S01-96x88.png": {
+   "sha256": "1fef004ef3045202c8e5eb09963c4ff35d1e635491200bf0a46f1e0907086b1f",
+   "from": "ui/assets/stands S01-juvenile-curl-304x312-base.png + -crest.png (station-gate b4d50397), tools/curlnap.py, 0 MXN",
+   "place_as": "mibi-juvenile-S01-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-adult-S02-curl-304x312.png": {
+   "sha256": "71419571504630b4238504e68f6d437593b66c1b36561365205b7e43907855c0",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-adult-S03-curl-304x312.png": {
+   "sha256": "adb80ff946681788e92dbc257a6813b0836873cd6a0bca12a1e693ceca58b5cd",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-adult-S09-curl-304x312.png": {
+   "sha256": "c3f4a92be9384a9cdc54aa63377a032922db017f939fcde4724b2e61dfd841af",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-adult-S13-curl-304x312.png": {
+   "sha256": "97d7d9d0de9b2a83f1cb2a2c64da22dd13555a1b68f7447b09f0b687cf06c2f3",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-adult-S16-curl-304x312.png": {
+   "sha256": "8e382990d58f74dc62d62e479aa70cafb6717ce1ab5759677590052b9e64698a",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S02-curl-304x312.png": {
+   "sha256": "b0323e7b47a22d35c1d1e5fd530194c3c8f0b2fc01b82312d331ed8df92f4aad",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S03-curl-304x312.png": {
+   "sha256": "f86434b766c607b889eedf6650d6692983ea83d2f54abb2b2102e623d4728960",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S04-curl-304x312.png": {
+   "sha256": "0123169dfda6db8fa04f14cba36cb1e0918e86d6c5b6ce6f0fcd569aed2c3a5b",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S05-curl-304x312.png": {
+   "sha256": "d0516acffcd0b5be309c8c951b5cb82eca71930b51f5d9f7e4cdc291a28a9a11",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S06-curl-304x312.png": {
+   "sha256": "02edddb1d4f70b0d405e8dcab788f994044831be3c4eda6d4d03f8c08fed4c2a",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S07-curl-304x312.png": {
+   "sha256": "62ddfe20ec4efd90c1d51a19958b119bf62816092dd1e5fdb1cd26d5a1ee6483",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S08-curl-304x312.png": {
+   "sha256": "3c1863f119f2434699e2149f3ad047ee251d991340c0479168a7d5def495dc62",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S09-curl-304x312.png": {
+   "sha256": "bb242a402496662e00d71eed44dde4fbf4b3ec63439e8e7b7e2ea4eb8a60a0ab",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S10-curl-304x312.png": {
+   "sha256": "e660fc5a6af03e13642e9854cee32810d07da05314450e8abd0fa1d6f6d033f1",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S11-curl-304x312.png": {
+   "sha256": "2509544857ab17768337fdd12be9d34e9ca5d2432abf5fe7a295a75ac2aaf80b",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S12-curl-304x312.png": {
+   "sha256": "1d01ec54776680ff5e83b4d30b493d8be58d7605924051b6c07cbe9a50e08388",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S13-curl-304x312.png": {
+   "sha256": "b18ad786816950a9a8c9b52bfe81ea512a6124de6ce1eb74a1f942dcdca8b4a7",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S14-curl-304x312.png": {
+   "sha256": "208e717eb87c0fb56012ea1b6ec0db2d1f7857fabe8330d996d0718d3a076d63",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S15-curl-304x312.png": {
+   "sha256": "352a879d3a552d2eab5d54097a15c5448cc80d119c44dfa65aec0e6a592b36c4",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/keys/mibi-juvenile-S16-curl-304x312.png": {
+   "sha256": "8ea01968cf9582dafd8ee6f19258a00eb170ee1d78b30a3808b0757031a2cf7f",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-adult-S02-96x88.png": {
+   "sha256": "1b563442ca024f0e7ca040dd23f3bb6005167195e4e48e86c896289880c8d15d",
+   "from": "source/raw/curl-S02-adult-a.jpg",
+   "key": "curl/keys/mibi-adult-S02-curl-304x312.png",
+   "scale_to_304": 0.4915,
+   "nap_ink": [
+    16,
+    45,
+    65,
+    42
+   ],
+   "place_as": "mibi-adult-S02-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-adult-S03-96x88.png": {
+   "sha256": "1d052f739c1ec040425cc5bf15a5edca8cde531f312a5c3a2de1432f945d3e67",
+   "from": "source/raw/curl-S03-adult-a.jpg",
+   "key": "curl/keys/mibi-adult-S03-curl-304x312.png",
+   "scale_to_304": 0.3534,
+   "nap_ink": [
+    30,
+    63,
+    36,
+    24
+   ],
+   "place_as": "mibi-adult-S03-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-adult-S09-96x88.png": {
+   "sha256": "3dc1f32a7c8977d840b03672b56c065acf276db36dfb016fdb9dbfe024432572",
+   "from": "source/raw/curl-S09-adult-a.jpg",
+   "key": "curl/keys/mibi-adult-S09-curl-304x312.png",
+   "scale_to_304": 0.3789,
+   "nap_ink": [
+    22,
+    49,
+    53,
+    38
+   ],
+   "place_as": "mibi-adult-S09-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-adult-S13-96x88.png": {
+   "sha256": "12174462a975cc3b8f43eb0ce286eaba5970325352780689296e18d88edded69",
+   "from": "source/raw/curl-S13-adult-a.jpg",
+   "key": "curl/keys/mibi-adult-S13-curl-304x312.png",
+   "scale_to_304": 0.3502,
+   "nap_ink": [
+    25,
+    60,
+    45,
+    27
+   ],
+   "place_as": "mibi-adult-S13-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-adult-S16-96x88.png": {
+   "sha256": "828251f234da50736698d0d8c851335135f3a7f86fcbc3a49ede045ba493eeb1",
+   "from": "source/raw/curl-S16-adult-a.jpg",
+   "key": "curl/keys/mibi-adult-S16-curl-304x312.png",
+   "scale_to_304": 0.2912,
+   "nap_ink": [
+    32,
+    61,
+    32,
+    26
+   ],
+   "place_as": "mibi-adult-S16-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S02-96x88.png": {
+   "sha256": "8f29db83382a00316c9d3af4985aef8813736619007468011558a6cb7ad369a2",
+   "from": "source/raw/curl-S02-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S02-curl-304x312.png",
+   "scale_to_304": 0.2492,
+   "nap_ink": [
+    27,
+    47,
+    43,
+    39
+   ],
+   "place_as": "mibi-juvenile-S02-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S03-96x88.png": {
+   "sha256": "21c37fb3510caee4c51b9e5ed06db959181c081efb4ee72cf22233b694873d1e",
+   "from": "source/raw/curl-S03-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S03-curl-304x312.png",
+   "scale_to_304": 0.3649,
+   "nap_ink": [
+    33,
+    67,
+    30,
+    19
+   ],
+   "place_as": "mibi-juvenile-S03-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S04-96x88.png": {
+   "sha256": "9e686834faa36b348238a78e0cd4ed85ba5c1bc7705c18b1a58821ee4b400640",
+   "from": "source/raw/curl-S04-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S04-curl-304x312.png",
+   "scale_to_304": 0.2729,
+   "nap_ink": [
+    30,
+    58,
+    37,
+    28
+   ],
+   "place_as": "mibi-juvenile-S04-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S05-96x88.png": {
+   "sha256": "e0a31e3f419d66cc759be66464372cc8661be84d62639cbf68a4f0768e9ad8d6",
+   "from": "source/raw/curl-S05-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S05-curl-304x312.png",
+   "scale_to_304": 0.31,
+   "nap_ink": [
+    32,
+    62,
+    32,
+    24
+   ],
+   "place_as": "mibi-juvenile-S05-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S06-96x88.png": {
+   "sha256": "d6d4d1a7e5a8bada96fa922636ef82136a8a8919b25bcda759d52ade97392e69",
+   "from": "source/raw/curl-S06-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S06-curl-304x312.png",
+   "scale_to_304": 0.4524,
+   "nap_ink": [
+    25,
+    58,
+    46,
+    28
+   ],
+   "place_as": "mibi-juvenile-S06-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S07-96x88.png": {
+   "sha256": "15ef3718afe15fb99796efb4de0f541050db1d9862fbae55cc5fadfed84e814a",
+   "from": "source/raw/curl-S07-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S07-curl-304x312.png",
+   "scale_to_304": 0.4681,
+   "nap_ink": [
+    21,
+    51,
+    53,
+    35
+   ],
+   "place_as": "mibi-juvenile-S07-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S08-96x88.png": {
+   "sha256": "83e9d85236b4fac3703adb2a1eda234379b86182ef4fb991e007c67cc539fb83",
+   "from": "source/raw/curl-S08-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S08-curl-304x312.png",
+   "scale_to_304": 0.3077,
+   "nap_ink": [
+    32,
+    58,
+    32,
+    28
+   ],
+   "place_as": "mibi-juvenile-S08-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S09-96x88.png": {
+   "sha256": "c821dc6083e1ecd13b936b1bee240761007e2dd87c83d1515f5b62e02d6e6c0e",
+   "from": "source/raw/curl-S09-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S09-curl-304x312.png",
+   "scale_to_304": 0.3597,
+   "nap_ink": [
+    29,
+    58,
+    39,
+    28
+   ],
+   "place_as": "mibi-juvenile-S09-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S10-96x88.png": {
+   "sha256": "3366d61ac38bb7948832073a8799570d46ff13e1db2e52adaab2d71314512735",
+   "from": "source/raw/curl-S10-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S10-curl-304x312.png",
+   "scale_to_304": 0.3754,
+   "nap_ink": [
+    29,
+    65,
+    40,
+    21
+   ],
+   "place_as": "mibi-juvenile-S10-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S11-96x88.png": {
+   "sha256": "96dd5a30869c6920298f6394fee2ba8fddcdf7650a58308ddc9e6d1d98b20b00",
+   "from": "source/raw/curl-S11-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S11-curl-304x312.png",
+   "scale_to_304": 0.2422,
+   "nap_ink": [
+    29,
+    59,
+    39,
+    27
+   ],
+   "place_as": "mibi-juvenile-S11-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S12-96x88.png": {
+   "sha256": "e20b34d3dc089df27148267bfa7ba770d911c0a0f371dbd76efd178f132f9e33",
+   "from": "source/raw/curl-S12-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S12-curl-304x312.png",
+   "scale_to_304": 0.2492,
+   "nap_ink": [
+    33,
+    66,
+    31,
+    20
+   ],
+   "place_as": "mibi-juvenile-S12-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S13-96x88.png": {
+   "sha256": "caa04e5f4af5b334b790a5f91e0b048402ff0c88c76b80e4fc97972629cb9aa5",
+   "from": "source/raw/curl-S13-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S13-curl-304x312.png",
+   "scale_to_304": 0.3789,
+   "nap_ink": [
+    38,
+    69,
+    25,
+    17
+   ],
+   "place_as": "mibi-juvenile-S13-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S14-96x88.png": {
+   "sha256": "e657e6e4dfd96b64bc94d200d9784d5b0c6e42ec27b409942167a9f2ac74aeec",
+   "from": "source/raw/curl-S14-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S14-curl-304x312.png",
+   "scale_to_304": 0.2151,
+   "nap_ink": [
+    36,
+    59,
+    24,
+    27
+   ],
+   "place_as": "mibi-juvenile-S14-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S15-96x88.png": {
+   "sha256": "67482634cc136c1ff22bdfcd84389d1e55061c6bf7af211e739671a6e346e81a",
+   "from": "source/raw/curl-S15-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S15-curl-304x312.png",
+   "scale_to_304": 0.3523,
+   "nap_ink": [
+    27,
+    59,
+    43,
+    27
+   ],
+   "place_as": "mibi-juvenile-S15-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  },
+  "curl/mibi-juvenile-S16-96x88.png": {
+   "sha256": "e1e7b074bbbca1a31d5aa09af6a7c90834772e6899951d2f9494142257eef593",
+   "from": "source/raw/curl-S16-juvenile-a.jpg",
+   "key": "curl/keys/mibi-juvenile-S16-curl-304x312.png",
+   "scale_to_304": 0.2045,
+   "nap_ink": [
+    34,
+    59,
+    28,
+    27
+   ],
+   "place_as": "mibi-juvenile-S16-96x88",
+   "signed_in": "AD 2026-10-28 at 1x (curl/proof-*-1x.png), ad-curl.md"
+  }
+ }
+}

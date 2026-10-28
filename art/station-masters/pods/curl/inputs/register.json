@@ -1,0 +1,162 @@
+{
+ "curl-S02-juvenile-a": {
+  "ox": 57,
+  "oy": 221,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 299,
+  "sha256": "2f7833b85487d08532568091179728ba5251cce13bee8c2b72980a260edc1e13"
+ },
+ "curl-S09-juvenile-a": {
+  "ox": 58,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 151.5,
+  "last": 302,
+  "sha256": "b14e28f62c7afcd883cbf9be871d10300d2b705db4b2ec4cf0161a2f9ce5e786"
+ },
+ "curl-S11-juvenile-a": {
+  "ox": 58,
+  "oy": 214,
+  "scale": 1.6,
+  "cx": 151.5,
+  "last": 303,
+  "sha256": "9002a5de41906457aa08d8d0fc86ed6ce03e6298da0975b4f113103d5380e168"
+ },
+ "curl-S03-juvenile-a": {
+  "ox": 57,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 302,
+  "sha256": "de7b6be229b254cc718a18b7f0840ca9927aa83c875a82bd9558e190e2fdb5ac"
+ },
+ "curl-S04-juvenile-a": {
+  "ox": 57,
+  "oy": 218,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 301,
+  "sha256": "8e04ede6c0e61ec7c8f61625ba2985379acf1d7ea8d8b54434ab74465fdb9d44"
+ },
+ "curl-S05-juvenile-a": {
+  "ox": 58,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 151.5,
+  "last": 302,
+  "sha256": "f389a4bba1ba951b8c3ec01882876e7a905b50aced95dc2fdcceb0be8618abeb"
+ },
+ "curl-S06-juvenile-a": {
+  "ox": 57,
+  "oy": 219,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 300,
+  "sha256": "026a2d03df9b505efe3417c7cbfc1e2c93ce310284a7dc44c7d26dabc17525fc"
+ },
+ "curl-S07-juvenile-a": {
+  "ox": 54,
+  "oy": 218,
+  "scale": 1.6,
+  "cx": 153.5,
+  "last": 301,
+  "sha256": "d00ec5bcab0fc840ff09378a06e9733112a656767ac1c93ddf78b434865840c1"
+ },
+ "curl-S08-juvenile-a": {
+  "ox": 57,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 302,
+  "sha256": "a1aca348ea138299134fbf64fe3db47108aaa5318e63303a2d506a374d64c80d"
+ },
+ "curl-S10-juvenile-a": {
+  "ox": 57,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 302,
+  "sha256": "7c9b3d70c858d8bc05fa38d5c5652b838df9a0e9d48a475088db811c66b70626"
+ },
+ "curl-S12-juvenile-a": {
+  "ox": 57,
+  "oy": 226,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 296,
+  "sha256": "5e08bf00e9f0b814c1af8d4c989a3326d9500ba28184d71a11d0f253f8835594"
+ },
+ "curl-S13-juvenile-a": {
+  "ox": 58,
+  "oy": 213,
+  "scale": 1.6,
+  "cx": 151.0,
+  "last": 304,
+  "sha256": "f2531d444ecdcece367072c724467dc0f42e0b4e0bbf724df64c7412868b0788"
+ },
+ "curl-S14-juvenile-a": {
+  "ox": 56,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 152.5,
+  "last": 302,
+  "sha256": "d2677eebb2dff126a55245be8faa9e73c9163957fc26f9f4c46304225d10284b"
+ },
+ "curl-S15-juvenile-a": {
+  "ox": 58,
+  "oy": 218,
+  "scale": 1.6,
+  "cx": 151.5,
+  "last": 301,
+  "sha256": "edb51393af12dda176692af261bab60be8e2eff206f81b136b0eb51908b2d882"
+ },
+ "curl-S16-juvenile-a": {
+  "ox": 58,
+  "oy": 253,
+  "scale": 1.6,
+  "cx": 151.5,
+  "last": 279,
+  "sha256": "e283dbdfeb47b01205384a733bbaa722c9ee16d9ff9a5331c4353ba9bc4b8978"
+ },
+ "curl-S02-adult-a": {
+  "ox": 58,
+  "oy": 219,
+  "scale": 1.6,
+  "cx": 151.5,
+  "last": 300,
+  "sha256": "05b37a579e060792fab8c777a68f9fa5bb1108d815e24a650021d76218fe67f3"
+ },
+ "curl-S03-adult-a": {
+  "ox": 57,
+  "oy": 214,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 303,
+  "sha256": "54faa10cdac5760df23a934dc487819c35c83c2375623442abadc767553d5afe"
+ },
+ "curl-S09-adult-a": {
+  "ox": 56,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 152.5,
+  "last": 302,
+  "sha256": "4d22739505c0a19f01428b4c41d71f465e1a86f32196af47397afbb056d12525"
+ },
+ "curl-S13-adult-a": {
+  "ox": 58,
+  "oy": 213,
+  "scale": 1.6,
+  "cx": 151.5,
+  "last": 304,
+  "sha256": "6475737f74d9bc219f3429a23f19409c8967a91845d15de310816acd37b700a9"
+ },
+ "curl-S16-adult-a": {
+  "ox": 58,
+  "oy": 254,
+  "scale": 1.6,
+  "cx": 151.5,
+  "last": 278,
+  "sha256": "7d4c13098ce521fc6c9c835c406492f3e7efee133bdfdb076ad977718066da50"
+ }
+}

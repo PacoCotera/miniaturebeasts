@@ -1,0 +1,44 @@
+[
+ {
+  "name": "curl-S02-juvenile-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S02-juvenile-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a young creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it settles flat into a round furred heap, its cap tipped forward over its closed eyes, its little tail wrapped round to the front. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S09-juvenile-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S09-juvenile-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a young creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it sits down low like a sleeping bird, its legs hidden under its fluffed body, its head turned back and tucked into its back feathers, its beak under the edge of its wing. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S11-juvenile-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S11-juvenile-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a young creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it lies flat with its legs and tail drawn in under its shell and its head pulled half into the shell, its chin resting at the shell's rim. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ }
+]

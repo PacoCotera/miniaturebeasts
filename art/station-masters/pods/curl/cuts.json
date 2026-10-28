@@ -1,0 +1,382 @@
+{
+ "S02-juvenile": {
+  "raw": "source/raw/curl-S02-juvenile-a.jpg",
+  "scale": 0.2492,
+  "key": "curl/keys/mibi-juvenile-S02-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S02-96x88.png",
+  "key_ink": [
+   76,
+   166,
+   153,
+   140
+  ],
+  "nap_ink": [
+   27,
+   47,
+   43,
+   39
+  ],
+  "fits": true
+ },
+ "S09-juvenile": {
+  "raw": "source/raw/curl-S09-juvenile-a.jpg",
+  "scale": 0.3597,
+  "key": "curl/keys/mibi-juvenile-S09-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S09-96x88.png",
+  "key_ink": [
+   83,
+   204,
+   139,
+   102
+  ],
+  "nap_ink": [
+   29,
+   58,
+   39,
+   28
+  ],
+  "fits": true
+ },
+ "S11-juvenile": {
+  "raw": "source/raw/curl-S11-juvenile-a.jpg",
+  "scale": 0.2422,
+  "key": "curl/keys/mibi-juvenile-S11-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S11-96x88.png",
+  "key_ink": [
+   83,
+   209,
+   138,
+   96
+  ],
+  "nap_ink": [
+   29,
+   59,
+   39,
+   27
+  ],
+  "fits": true
+ },
+ "S03-juvenile": {
+  "raw": "source/raw/curl-S03-juvenile-a.jpg",
+  "scale": 0.3649,
+  "key": "curl/keys/mibi-juvenile-S03-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S03-96x88.png",
+  "key_ink": [
+   98,
+   239,
+   107,
+   67
+  ],
+  "nap_ink": [
+   33,
+   67,
+   30,
+   19
+  ],
+  "fits": true
+ },
+ "S04-juvenile": {
+  "raw": "source/raw/curl-S04-juvenile-a.jpg",
+  "scale": 0.2729,
+  "key": "curl/keys/mibi-juvenile-S04-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S04-96x88.png",
+  "key_ink": [
+   86,
+   205,
+   131,
+   101
+  ],
+  "nap_ink": [
+   30,
+   58,
+   37,
+   28
+  ],
+  "fits": true
+ },
+ "S05-juvenile": {
+  "raw": "source/raw/curl-S05-juvenile-a.jpg",
+  "scale": 0.31,
+  "key": "curl/keys/mibi-juvenile-S05-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S05-96x88.png",
+  "key_ink": [
+   94,
+   219,
+   115,
+   86
+  ],
+  "nap_ink": [
+   32,
+   62,
+   32,
+   24
+  ],
+  "fits": true
+ },
+ "S06-juvenile": {
+  "raw": "source/raw/curl-S06-juvenile-a.jpg",
+  "scale": 0.4524,
+  "key": "curl/keys/mibi-juvenile-S06-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S06-96x88.png",
+  "key_ink": [
+   70,
+   208,
+   162,
+   97
+  ],
+  "nap_ink": [
+   25,
+   58,
+   46,
+   28
+  ],
+  "fits": true
+ },
+ "S07-juvenile": {
+  "raw": "source/raw/curl-S07-juvenile-a.jpg",
+  "scale": 0.4681,
+  "key": "curl/keys/mibi-juvenile-S07-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S07-96x88.png",
+  "key_ink": [
+   59,
+   182,
+   188,
+   124
+  ],
+  "nap_ink": [
+   21,
+   51,
+   53,
+   35
+  ],
+  "fits": true
+ },
+ "S08-juvenile": {
+  "raw": "source/raw/curl-S08-juvenile-a.jpg",
+  "scale": 0.3077,
+  "key": "curl/keys/mibi-juvenile-S08-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S08-96x88.png",
+  "key_ink": [
+   94,
+   201,
+   115,
+   104
+  ],
+  "nap_ink": [
+   32,
+   58,
+   32,
+   28
+  ],
+  "fits": true
+ },
+ "S10-juvenile": {
+  "raw": "source/raw/curl-S10-juvenile-a.jpg",
+  "scale": 0.3754,
+  "key": "curl/keys/mibi-juvenile-S10-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S10-96x88.png",
+  "key_ink": [
+   82,
+   229,
+   141,
+   77
+  ],
+  "nap_ink": [
+   29,
+   65,
+   40,
+   21
+  ],
+  "fits": true
+ },
+ "S12-juvenile": {
+  "raw": "source/raw/curl-S12-juvenile-a.jpg",
+  "scale": 0.2492,
+  "key": "curl/keys/mibi-juvenile-S12-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S12-96x88.png",
+  "key_ink": [
+   96,
+   232,
+   110,
+   73
+  ],
+  "nap_ink": [
+   33,
+   66,
+   31,
+   20
+  ],
+  "fits": true
+ },
+ "S13-juvenile": {
+  "raw": "source/raw/curl-S13-juvenile-a.jpg",
+  "scale": 0.3789,
+  "key": "curl/keys/mibi-juvenile-S13-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S13-96x88.png",
+  "key_ink": [
+   101,
+   245,
+   102,
+   60
+  ],
+  "nap_ink": [
+   38,
+   69,
+   25,
+   17
+  ],
+  "fits": true
+ },
+ "S14-juvenile": {
+  "raw": "source/raw/curl-S14-juvenile-a.jpg",
+  "scale": 0.2151,
+  "key": "curl/keys/mibi-juvenile-S14-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S14-96x88.png",
+  "key_ink": [
+   108,
+   209,
+   87,
+   97
+  ],
+  "nap_ink": [
+   36,
+   59,
+   24,
+   27
+  ],
+  "fits": true
+ },
+ "S15-juvenile": {
+  "raw": "source/raw/curl-S15-juvenile-a.jpg",
+  "scale": 0.3523,
+  "key": "curl/keys/mibi-juvenile-S15-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S15-96x88.png",
+  "key_ink": [
+   76,
+   208,
+   153,
+   98
+  ],
+  "nap_ink": [
+   27,
+   59,
+   43,
+   27
+  ],
+  "fits": true
+ },
+ "S16-juvenile": {
+  "raw": "source/raw/curl-S16-juvenile-a.jpg",
+  "scale": 0.2045,
+  "key": "curl/keys/mibi-juvenile-S16-curl-304x312.png",
+  "nap": "curl/mibi-juvenile-S16-96x88.png",
+  "key_ink": [
+   102,
+   210,
+   99,
+   95
+  ],
+  "nap_ink": [
+   34,
+   59,
+   28,
+   27
+  ],
+  "fits": true
+ },
+ "S02-adult": {
+  "raw": "source/raw/curl-S02-adult-a.jpg",
+  "scale": 0.4915,
+  "key": "curl/keys/mibi-adult-S02-curl-304x312.png",
+  "nap": "curl/mibi-adult-S02-96x88.png",
+  "key_ink": [
+   35,
+   154,
+   235,
+   152
+  ],
+  "nap_ink": [
+   16,
+   45,
+   65,
+   42
+  ],
+  "fits": true
+ },
+ "S03-adult": {
+  "raw": "source/raw/curl-S03-adult-a.jpg",
+  "scale": 0.3534,
+  "key": "curl/keys/mibi-adult-S03-curl-304x312.png",
+  "nap": "curl/mibi-adult-S03-96x88.png",
+  "key_ink": [
+   87,
+   222,
+   131,
+   83
+  ],
+  "nap_ink": [
+   30,
+   63,
+   36,
+   24
+  ],
+  "fits": true
+ },
+ "S09-adult": {
+  "raw": "source/raw/curl-S09-adult-a.jpg",
+  "scale": 0.3789,
+  "key": "curl/keys/mibi-adult-S09-curl-304x312.png",
+  "nap": "curl/mibi-adult-S09-96x88.png",
+  "key_ink": [
+   53,
+   170,
+   198,
+   136
+  ],
+  "nap_ink": [
+   22,
+   49,
+   53,
+   38
+  ],
+  "fits": true
+ },
+ "S13-adult": {
+  "raw": "source/raw/curl-S13-adult-a.jpg",
+  "scale": 0.3502,
+  "key": "curl/keys/mibi-adult-S13-curl-304x312.png",
+  "nap": "curl/mibi-adult-S13-96x88.png",
+  "key_ink": [
+   70,
+   208,
+   163,
+   98
+  ],
+  "nap_ink": [
+   25,
+   60,
+   45,
+   27
+  ],
+  "fits": true
+ },
+ "S16-adult": {
+  "raw": "source/raw/curl-S16-adult-a.jpg",
+  "scale": 0.2912,
+  "key": "curl/keys/mibi-adult-S16-curl-304x312.png",
+  "nap": "curl/mibi-adult-S16-96x88.png",
+  "key_ink": [
+   94,
+   215,
+   115,
+   91
+  ],
+  "nap_ink": [
+   32,
+   61,
+   32,
+   26
+  ],
+  "fits": true
+ }
+}
