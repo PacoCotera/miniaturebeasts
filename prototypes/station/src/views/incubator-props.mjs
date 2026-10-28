@@ -60,18 +60,19 @@ export function incubatorBuild(m, spec, pods) {
 
   // the bottom line (incubator.json bottomLine): Choose a pod, Hatch now, Open; the context, the notice, back Home
   const Sg = spec.strings; let line = { ok: null, back: Sg.back, subject: "", need: null };
-  if (state === "empty") { line = { ok: choosePod({ st, settings }) !== null ? Sg.choose : null, back: Sg.back, subject: Sg.empty, need: S.vivFull(st, settings) ? Sg.noBay : null }; }
+  if (state === "empty") { line = { ok: choosePod({ st, settings }) !== null ? Sg.choose : null, back: Sg.back, subject: Sg.empty, need: S.vivFull(st, settings) ? Sg.full : null }; }
   else if (state === "growing" || state === "ready") {
     const subject = kind === "cross" ? fill(Sg.crossBud, { A: S.cap(B.parents?.[0]?.name ?? ""), B: S.cap(B.parents?.[1]?.name ?? "") }) : fill(Sg.bud, { "a/an": S.aAn(S.spName(B)).split(" ")[0], Species: S.cap(S.spName(B)) });
     const bud = kind === "cross" && B.parents?.length !== 2 ? fill(Sg.bud, { "a/an": S.aAn(S.spName(B)).split(" ")[0], Species: S.cap(S.spName(B)) }) : subject;
     if (state === "growing") {
       const c = gs ? gs.cost : S.instantGrowCost(st, settings, now), key = S.canPay(st, c.e, c.d, c.s) || gs ? null : { short: S.shortIcons(st, c.e, c.d, c.s) };
       line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: bud, need: gs ? gs.need : null };   // the context is the bud; "ready in about {n} min" is the left wall's (regions.readyIn); while Hatch now plays the notice is the one the bud had (the snapshot)
-      if (key) { line.dim = true; line.short = key.short; line.need = fill(pods.strings.needMore, { icons: key.short }); }
+      if (S.vivFull(st, settings) && !gs) { line.dim = true; line.need = Sg.full; }   // the Vivarium is full: Hatch now is held (the house rule), the notice says why, ✓ plays the plate
+      else if (key) { line.dim = true; line.short = key.short; line.need = fill(pods.strings.needMore, { icons: key.short }); }
       else if (!gs && m.frame) line.need = warnWords(st, m.sv, settings, m.frame, c, { key: "growNow" }) ?? line.need;
     } else {
-      const noBay = S.vivFull(st, settings);
-      line = { ok: Sg.open, back: Sg.back, subject: bud, need: noBay ? Sg.noBay : null }; if (noBay) line.dim = true;   // a dimmed cap when no bay is free: a guard only
+      const full = S.vivFull(st, settings);
+      line = { ok: Sg.open, back: Sg.back, subject: bud, need: full ? Sg.full : null }; if (full) line.dim = true;   // a dimmed cap while the Vivarium is full: ✓ plays the plate
     }
   } else line = { ok: state === "hatch" && m.ui.skip ? Sg.skip : null, back: Sg.back, subject: waitingWhy === "offline" ? Sg.offline : waitingWhy === "waiting" ? Sg.painting : "", need: null };   // ✓ Skip only while the hatch's skippable hold runs (the host's ui.skip)
   const props = { state, regions, focus: { cur: "room", targets: [] } };

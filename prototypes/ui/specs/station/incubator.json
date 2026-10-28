@@ -463,21 +463,21 @@
  },
  "bottomLine": {
   "empty": {
-   "action": "✓ Choose a pod when the rack holds a pod and a bay is free; else no ✓ cap",
+   "action": "✓ Choose a pod when the rack holds a pod and a place is free; else no ✓ cap",
    "context": "strings.empty",
-   "notice": "none, but strings.noBay when no bay is free",
+   "notice": "none, but strings.full when no place is free (the Vivarium is full)",
    "back": "Home"
   },
   "growing": {
-   "action": "Hatch now, then the price, icon before figure (state.instantGrowCost)",
+   "action": "Hatch now, then the price, icon before figure (state.instantGrowCost); dimmed while the Vivarium is full (the house rule), ✓ plays strings.fullPlate",
    "context": "strings.bud (strings.crossBud for a cross)",
-   "notice": "the frame's notice",
+   "notice": "strings.full while the Vivarium is full; else the frame's notice",
    "back": "Home"
   },
   "ready": {
-   "action": "✓ Open, no price",
+   "action": "✓ Open, no price; dimmed while the Vivarium is full (the house rule), ✓ plays strings.fullPlate",
    "context": "strings.bud (strings.crossBud for a cross)",
-   "notice": "no bay free (strings.noBay, the amber lamp), a guard only; else the frame's notice",
+   "notice": "strings.full (the amber lamp), a guard only; else the frame's notice",
    "back": "Home"
   },
   "hatch": {
@@ -519,8 +519,9 @@
   "crossBud": "{A} and {B}'s bud",
   "crossBudFallback": "a {Species} bud, past 208 px",
   "empty": "ready for a new bud",
-  "noBay": "no bay free",
-  "noBayPlate": "No bay free. Return a mibi to the wild first.",
+  "full": "The Vivarium is full",
+  "fullPlate": ["The Vivarium is full", "Return a mibi to make room", "or add a room"],
+  "fullPlateNote": "the rooms words C9, C10, C17: the notice and the three plate lines; the third line shows only while fewer than four rooms can be bought (state.mjs fullWords)",
   "painting": "its painting is on its way",
   "offline": "waiting for a signal",
   "hatchRibbon": "{Name}, a young {Species}",

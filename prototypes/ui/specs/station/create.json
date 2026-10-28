@@ -34,7 +34,7 @@
  },
  "states": ["nothingRead", "shape", "grow", "confirm"],
  "initial": "nothingRead when the pod has no chapter read, else shape",
- "stateRule": "nothingRead: an identified pod with no chapter read; the founder grows as the pod is (game designer, 2026-10-09 13:27). shape: at least one chapter read, at rest and while rolling; its conditions (changed, clash, busy, noBay, short) change marks and the bottom line, never regions. grow: from ✓ Grow it until the screen changes to the Incubator (events.grow), input held, from either state. A region with `inStates` exists only in those states; the others exist in all three",
+ "stateRule": "nothingRead: an identified pod with no chapter read; the founder grows as the pod is (game designer, 2026-10-09 13:27). shape: at least one chapter read, at rest and while rolling; its conditions (changed, clash, busy, full, short) change marks and the bottom line, never regions. grow: from ✓ Grow it until the screen changes to the Incubator (events.grow), input held, from either state. A region with `inStates` exists only in those states; the others exist in all three",
  "composed": { "nothingRead": { "main": "founder", "rect": [360, 240, 304, 312] }, "shape": { "main": "founder", "rect": [360, 240, 304, 312] }, "grow": { "main": "founder", "rect": [360, 240, 304, 312], "end": "founder; then the jump: incubator.json composed.growing (bud)" }, "roll": { "end": "shape" }, "clearances": "nothingRead: the headroom [296, 88, 432, 144], lit; grow from 300: the pod's column [64, 88, 248, 448] (fix 5 C2, C11)" },
  "overlays": { "panel": { "spec": "panel.json", "id": "incubate", "form": "incubate", "from": "✓ Incubate (the bottom line), once growBlock passes: confirm is Create under the Incubate | Keep shaping panel (build-spec 6a)", "closes": "Keep shaping, ← or a room key: Create as it was, nothing spent; Incubate: the grow event, then the jump to the Incubator's incubate moment" } },
  "regions": {
@@ -114,7 +114,7 @@
    "right": "shape: step:right, the next read trait; the last stops. nothingRead: nothing",
    "up": "shape: step:up, the previous look of the focused trait, wrapping among the three; a single: nothing. nothingRead: nothing",
    "down": "shape: step:down, the next look, wrapping; a single: nothing. nothingRead: nothing",
-   "confirm": "Grow it, exactly as the bottom line says; no ✓ cap when blocked (busy, no bay, clash): nothing happens; a dimmed cap when short: a message plate names what is short (frame.json navigation.keys.confirm)",
+   "confirm": "Grow it, exactly as the bottom line says; the verb stays dimmed when blocked (busy, full, clash) and ✓ plays the message plate for 4000 ms (the house rule, the rooms screens 2b: busy and clash the notice's own sentence capitalised, full the three lines of the rooms words C10); a dimmed cap when short: a message plate names what is short (frame.json navigation.keys.confirm)",
    "back": "the pod's overview with the ring on the pod, nothing spent, the choices dropped (frame.json navigation.screens.create)",
    "room": "a coloured key drops the unpaid choices; coming back starts fresh (frame.json navigation.leaving.create); during the grow event it waits until the Incubator shows (derived.keys during the grow event)"
   },
@@ -132,13 +132,13 @@
  "bottomLine": {
   "action": "✓ Grow it, then the price (state.growCost), icon before figure as everywhere: ⚡ 2 ❀ 4, then ◆ 1 a change; the first founder no Essence (⚡ 2 alone with nothing changed); then, always last, the bud's wait ⧗ n (state.budMinutes: 20 plus one a change, 5 for the first founder), its figure `price`, never `need`, `dim` when blocked (fix 6 N1a)",
   "context": "the unread count leaves out a sealed chapter still shut (shutSealed); every other chapter read and a sealed one shut: strings.sealedShut, naming it; unread ones and a shut one: the unread count alone (owner, W4, option 1); fully known only when none is unread or shut; nothingRead: strings.traitLine.none (fix 5 Create, game designer 06:55)",
-  "notice": "the first that holds: a blocked reason (busy, no bay, clash, the rules' order, growBlockKey), the shortfall, the pre-spend warning; else empty (need \"\"): the frame's notice is never shown on Create (fix 5 Create C5). Grow: empty",
+  "notice": "the first that holds: a blocked reason (busy, full, clash, the rules' order, growBlockKey), the shortfall, the pre-spend warning; else empty (need \"\"): the frame's notice is never shown on Create (fix 5 Create C5). Grow: empty",
   "back": "{pod} (frame.json navigation.screens.create)",
   "conditions": {
    "growing": "the grow state: ok, price and back null (the frame drops their nodes), need \"\", subject strings.growing (fix 5 Create C6; architect Q6)",
    "ok": "the ✓ cap and the verb in orange, the price in focus (cream)",
    "short": "the frame's dimmed ✓: cap and verb mist, the short material's figure amber; ✓ shows a message plate naming what is short, nothing spent",
-   "blocked": "busy, no bay or clash: no ✓ cap; the verb and the price in mist, so the total still reads; the notice says why; ✓ does nothing"
+   "blocked": "busy, full or clash: the verb and the price in mist, so the total still reads; the notice says why; ✓ plays the message plate (the house rule)"
   }
  },
  "colours": {
@@ -175,7 +175,7 @@
   },
   "surprise": { "one": "{Chapter} unread", "more": "{n in words} chapters unread", "budget": "208 px at 16 px, the context zone" },
   "founder": "{a/an} {Species}, fully known",
-  "notices": { "busy": "a bud is already growing", "noBay": "no bay free", "clash": "these looks clash", "short": "needs more {icons} (Pods' needMore, pods.json strings)", "shortFrom": { "field": "needs more {icons}: go out", "bench": "needs more {icons}: watch your mibis", "fieldOrPod": "needs {icons}: go out or return pods", "fieldAndBench": "needs {icons}: go out and watch" } },
+  "notices": { "busy": "a bud is already growing", "full": "the Vivarium is full", "clash": "these looks clash", "short": "needs more {icons} (Pods' needMore, pods.json strings)", "shortFrom": { "field": "needs more {icons}: go out", "bench": "needs more {icons}: watch your mibis", "fieldOrPod": "needs {icons}: go out or return pods", "fieldAndBench": "needs {icons}: go out and watch" } },
   "by": "copywriter, 2026-10-09 13:27"
  },
  "placeholders": {

@@ -118,7 +118,7 @@
     "pending": [] },
   { "state": "habitat/habitat-rest", "from": "the UI/UX layout sweep: Habitat",
     "expect": [
-     { "rule": "L1", "node": "strip", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the strip 10 over the bottom line" },
+     { "rule": "L1", "node": "rooms", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the panes 10 over the bottom line, as the strip was (R6: the same two panes as the whole)" },
      { "rule": "L3", "part": "a", "node": "door.plate", "other": "portrait.plate", "measured": 8, "mark": "✓e", "why": "plate gutters 8" },
      { "rule": "L6", "container": "cross.plate", "mark": "✓e", "why": "empty bodies: the Cross module with no partner shows its eyebrow and an empty 56 px body" }
     ],

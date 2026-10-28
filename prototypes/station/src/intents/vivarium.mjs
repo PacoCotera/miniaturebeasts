@@ -19,7 +19,8 @@ export function intent(h, target, verb) {
 // The Add the room card's act (panel.json addRoom): the rule spends ⚡ and adds the room (state.addRoom), the whole shows the new room empty with the ring on its chip, and the plate says it is ready.
 export function addRoomNow(h) {
   const r = S.addRoom(h.st, h.settings); if (!r.ok) return r;
-  h.ui.viv.f = "room." + r.room; h.showRoom(r.room);
+  if (h.ui.screen === "habitat") h.ui.hab.f = "room." + r.room;   // one mibi up close: the ring stays on the place, now the new room's chip, and ✓ Move {name} here is offered (R6)
+  else { h.ui.viv.f = "room." + r.room; h.showRoom(r.room); }
   h.say(fill(h.specs.panel.strings.addRoom.done, { Room: S.ROOM_NAMES[r.room] }));
   h.save(); return r;
 }

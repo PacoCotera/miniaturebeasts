@@ -6,6 +6,8 @@ import { knownChapters } from "../views/incubator-props.mjs";
 import { openPanel } from "./panel.mjs";
 import { readyCrates } from "../sitting.mjs";
 
+// A refusal of the rules on the message plate: the Vivarium full plays its lines (the rooms words C10: separate lines), any other the rule's message.
+const refused = (h, r) => { if (r.plate) h.say(r.plate.join("\n")); else if (r.msg) h.say(r.msg); };
 // The pod Choose a pod lands on: the first identified pod in rack order, else the first pod (frame.json navigation.jumps); only when the rack holds a pod and a bay is free.
 export function choosePod(h) {
   if (!h.st.tray.length || S.vivFull(h.st, h.settings)) return null;
@@ -23,12 +25,12 @@ export function intent(h, target, verb) {
     const q = h.st.tray[i]; h.ui.pods.view = "collection"; h.ui.pods.cur = q.id; h.ui.pods.focusView = null; h.ui.pods.focus.set("place." + i); h.goto("pods"); return;
   }
   if (S.budReady(h.st, h.settings, h.now())) {
-    const B = h.st.bud, r = S.openBud(h.st, h.sv, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
+    const B = h.st.bud, r = S.openBud(h.st, h.sv, h.settings, h.now()); if (!r.ok) { refused(h, r); return r; }
     startHatch(h, B, r.mibi); return r;
   }
   const above = h.settings.growNowAbove ?? h.specs.panel?.growNowAbove ?? 4;   // a large Hatch now asks first (decision panel spec §1.6); at or below the threshold ✓ acts as before
   const cost = S.instantGrowCost(h.st, h.settings, h.now());
-  if (cost.s > above && S.canPay(h.st, cost.e, cost.d, cost.s) && !S.vivFull(h.st, h.settings)) { openPanel(h, "incubator", "growNow"); if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }   // a large Hatch now asks first: the Hatch now | Wait panel, by the 180 ms stage dither (a cut with reduced motion); short of Essence or with no bay free the refusal plate shows (as Open's words) and the panel does not open
+  if (cost.s > above && S.canPay(h.st, cost.e, cost.d, cost.s) && !S.vivFull(h.st, h.settings)) { openPanel(h, "incubator", "growNow"); if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }   // a large Hatch now asks first: the Hatch now | Wait panel, by the 180 ms stage dither (a cut with reduced motion); short of Essence or with the Vivarium full the refusal plate shows (as Open's words) and the panel does not open
   return growNow(h);
 }
 // The hatch both presses play: Open (a ready bud) at once, Hatch now after the leaves have turned. The rule has already made the mibi and emptied the chamber.
@@ -48,7 +50,7 @@ function startHatch(h, B, mibi) {
 export function growNow(h) {
   const spec = h.specs.incubator, motion = h.motion ? h.motion() : true;
   const B = h.st.bud, before = { known: knownChapters(h.st, B, h.settings, h.now()), cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui, readyCrates(h.st, h.settings, h.now()).length).text ?? "", progress: S.budProgress(h.st, h.settings, h.now()), left: S.budMinutesLeft(h.st, h.settings, h.now()), bud: B };
-  const r = S.instantGrow(h.st, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
+  const r = S.instantGrow(h.st, h.settings, h.now()); if (!r.ok) { refused(h, r); return r; }
   if (motion) {   // the screen shows the bud as it was (the snapshot, `bud` included: the chamber is already empty) until the event is done; the hatch starts when it ends
     const ev = spec.events.growNow; h.ui.inc.grow = { ...before, until: h.now() + ev.ms }; h.ui.meet = r.mibi.id; S.seeRoom(h.st, r.mibi); h.save();
     h.play({ kind: "growNow", target: "room", ms: ev.ms, hold: ev.hold }); h.at(ev.ms, () => { h.ui.inc.grow = null; startHatch(h, B, r.mibi); });

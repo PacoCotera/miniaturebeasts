@@ -97,8 +97,12 @@
    "hash": "97cd841e",
    "png": "incubator-panel-grownow-200.png"
   },
+  "incubator-full-pressed": {
+   "hash": "9f60d891",
+   "png": "incubator-full-pressed.png"
+  },
   "incubator-hatch-skip": {
-   "hash": "89ab18b4",
+   "hash": "60cfab57",
    "png": "incubator-hatch-skip.png"
   }
  }

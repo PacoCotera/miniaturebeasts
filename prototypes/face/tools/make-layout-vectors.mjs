@@ -22,7 +22,8 @@ for (const i of range(0, 5)) { add("placeRect", "pods", "regions.collection", [i
 for (const w of [...range(0, 40).map((i) => i * 7), 0, 56, 57, 200, 500, 80 - 25, 224 - 24, 224 - 23]) add("plateWidth", "pods", "regions.overview.name", [w]);
 for (const w of [0, 56, 57, 200, 500]) add("plateIndex", "pods", "regions.overview.name", [w]);   // the series id the width names: its place in the series and the series' length
 for (const lines of [0, 1, 2, 3]) for (const widest of [0, 90, 400, 700]) for (const focal of [null, [200, 400, 400, 150], [0, 0, 1024, 100], [900, 540, 100, 10]]) add("platePosition", "frame", "regions.plate", [lines, widest, focal ? 1 : 0, ...(focal ?? [0, 0, 0, 0])]);
-for (const n of [0, 1, 6, 7, 12, 13]) for (const i of new Set([0, n - 1])) add("listPitch", "habitat", "regions.tiles", [n, i]);   // the bay strip's forms: both ends of each form, and 13 (refused)
+for (const n of [0, 1, 7, 8, 9]) for (const i of new Set([0, n - 1])) add("listPitch", "habitat", "regions.tiles", [n, i]);   // one mibi up close: the same eight places as the whole's, the one compact form, both ends, and 9 (refused)
+for (const n of [0, 1, 2, 4, 5]) for (const i of new Set([0, n - 1])) add("listPitch", "habitat", "regions.chips", [n, i]);   // and the same room chips: one to four, both ends, and 5 (refused)
 for (const n of [0, 1, 7, 8, 9]) for (const i of new Set([0, n - 1])) add("listPitch", "vivarium", "regions.tiles", [n, i]);   // the whole's eight places: the one compact form, both ends, and 9 (refused)
 for (const n of [0, 1, 2, 4, 5]) for (const i of new Set([0, n - 1])) add("listPitch", "vivarium", "regions.chips", [n, i]);   // the whole's room chips: one to four, both ends, and 5 (refused)
 // K5: the name tags' plates (Home, the Vivarium, Habitat) and Cargo's dock ribbon, the widths round the step and at each end of the range

@@ -61,6 +61,10 @@
    "hash": "c69b5a9d",
    "png": "create-shape-first.png"
   },
+  "create-full": {
+   "hash": "9f2142fd",
+   "png": "create-full.png"
+  },
   "create-roll-100": {
    "hash": "e5963f4e",
    "png": "create-roll-100.png"

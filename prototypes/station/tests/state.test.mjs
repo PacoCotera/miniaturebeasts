@@ -767,6 +767,14 @@ test("rooms: need() and needKey() say full after the docked crates and ahead of 
   const p = { ...q, id: "q2", shed: undefined }; S.openCrates(st2, svOf({ bay: [crate(2, [p])] }), settings, 2); assert.equal(st2.tray.at(-1).shed, null);
 });
 
+test("R6 (C18, owed): a shed pod reads of {name}'s line where the tray names its find, the name from the record when the crate has none", () => {
+  const q = { id: "q1", sp: 0, species: "S01", g: "meadow", how: "shed", gs: 3, k: null, shed: 5 }, st2 = S.freshSt("w", 4, 1); S.normalize(st2); st2.dock = { docked: true, at: 0 };
+  st2.sheds.push({ id: 5, name: "Dot", sp: 0, species: "S01", g: "meadow", due: 3, kinship: 0.125, genome: null, state: "due" });
+  S.openCrates(st2, svOf({ bay: [crate(1, [q])] }), settings, 1); const p = st2.tray[0]; assert.deepEqual([p.how, p.shed, p.of], ["shed", 5, "Dot"]);
+  assert.deepEqual(S.podOriginLines(p), ["Found in the meadow,", "of Dot's line."], "the placeholder until the copywriter's C18");
+  assert.deepEqual(S.podOriginLines({ ...p, of: "Fig", idd: 1 }), ["Found in the meadow,", "of Fig's line."]);
+});
+
 test("R2: a crate pod with shed and genome opens into the tray with that genome and marks the record found", () => {
   const st = roomsWorld(2); st.turn = 1; const m = st.mibis[0]; m.born = 0;
   assert.equal(S.returnMibi(st, { with: null }, m, settings).ok, true);

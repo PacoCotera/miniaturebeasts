@@ -7,6 +7,8 @@ import { openNamer } from "./namer.mjs";
 import { openSpecies, openFamily } from "./library.mjs";
 import { openPanel } from "./panel.mjs";
 import { doorOpen } from "../nav.mjs";
+import { modulesOf } from "../views/habitat-props.mjs";
+import { roomIds } from "../views/room-props.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 // The mibi up close: the chosen one, else the first the Companion does not carry, else the first.
@@ -17,6 +19,19 @@ const play = (h, name, over = {}) => { const e = h.specs.habitat.events[name], h
 function heldPlate(h, m) {
   const lines = h.specs.habitat.strings.travellerPlate[S.docked(h.st) ? "docked" : "away"];
   h.say(lines.map((l) => fill(l, { name: m.name })).join("\n"));
+}
+// ✓ on a module that is held (the house rule, habitat.json notes.houseRule: Wild, Cross, Portrait, the Companion when full): its message plate, the lines the rule gave it (views/habitat-props.mjs modulesOf, the same rows the props draw); true when it played.
+function heldModule(h, m, target) {
+  const row = modulesOf({ st: h.st, sv: h.sv, settings: h.settings, docked: S.docked(h.st) }, m, h.specs.habitat.strings, h.specs.sitting).rows[target];
+  if (!row) return false;
+  h.say(row.plate.join("\n")); return true;
+}
+// ✓ Move {name} here (R6): free and instant (state.moveMibi); the near painting cross-dithers to the new room's in 200 ms (events.move; the old one stays on the face until it ends), the places pane cuts to the new room, the ring stays on the chip, now its home room, and the plate says where it went (the rooms words C6).
+function moveHere(h, m, i) {
+  const Sg = h.specs.habitat.strings, e = h.specs.habitat.events.move, a = h.ui.hab, was = roomIds(m.room, h.light()).near;
+  const r = S.moveMibi(h.st, m, i, h.settings, h.now()); if (!r.ok) return;
+  a.prevRoom = was; h.play({ kind: e.kind, target: e.target, from: was, ms: e.ms, hold: h.motion() ? e.hold : 0 }); h.at(e.ms, () => { if (a.prevRoom === was) a.prevRoom = null; });
+  h.say(fill(Sg.movePlate, { name: m.name, Room: S.ROOM_NAMES[i] })); h.save();
 }
 // A pick of the Cross screen: the first partner not out with the Companion while it is away.
 export function openCross(h, a) { h.ui.cross = { aId: a.id, bId: null, state: 0, fc: null, clash: [] }; const p = S.crossPartners(h.st, h.sv, a, h.settings).find((x) => !x.away); if (p) h.ui.cross.bId = p.id; h.goto("cross"); }
@@ -49,6 +64,14 @@ export function intent(h, target, verb) {
   else if (target === "name") { if (S.isCarried(h.st, h.sv, m)) { heldPlate(h, m); return; } openNamer(h, m, "rename"); }   // Rename is held while carried
   else if (target === "species") openSpecies(h, S.speciesOf(m));   // ✓ Open the guide (frame.json navigation.jumps): the Library's Level 2 of this species
   else if (target === "family") openFamily(h, m.id);   // ✓ See the family (frame.json navigation.jumps): Level 3 of its species, close on this mibi
+  else if (target.startsWith("room.")) {   // a chip: Move {name} here (R6; the rooms screens 1b, the rooms words C5 to C7); the new-room chip opens the Add a room? panel, as the whole's
+    if (target === "room.new") { if (S.roomPrice(h.st, h.settings) !== null) openPanel(h, "habitat", "addRoom"); return; }
+    const i = +target.slice(5); if (i === m.room) return;   // its home room: no action
+    if (S.isCarried(h.st, h.sv, m)) { heldPlate(h, m); return; }   // Move is held while carried (heldRule)
+    const b = S.moveBlock(h.st, m, i, h.settings);
+    if (b && b.key === "full") { h.say(h.specs.habitat.strings.roomFullPlate.map((l) => fill(l, { Room: S.ROOM_NAMES[i] })).join("\n")); return; }   // a full room's dimmed Move: its plate (C7)
+    if (!b) moveHere(h, m, i);
+  }
   else if (target.startsWith("plate.")) {
     const ch = chapterAt(m, target); if (!ch) return;
     const r = S.readMibi(h.st, m, ch.id, h.settings);
@@ -56,29 +79,30 @@ export function intent(h, target, verb) {
   }
   else if (target === "door") {   // ✓ takes the resident with you or brings it home, whichever the set as it will be offers; a request for it already waits: nothing
     if (S.pendingCarry(h.st, h.sv).some((r) => r.id === m.id)) return;
-    if (S.isCarried(h.st, h.sv, m) && !S.docked(h.st)) { heldPlate(h, m); return; }   // Bring {name} home is live only while docked (the owner, R4b): away it is held like the rest
+    if (heldModule(h, m, "door")) return;   // Bring {name} home is live only while docked (the owner, R4b): away it is held like the rest; a full set holds Take (the house rule)
     const bring = S.projectCarried(h.st, h.sv).includes(m.id), r = bring ? S.carryHome(h.st, h.sv, m) : S.carryAdd(h.st, h.sv, m);
     if (r.ok) h.save(); else if (r.why === "full") h.say(fill(h.specs.habitat.strings.carryRefused, { name: m.name }));
   }
-  else if (target === "portrait") { if (S.isCarried(h.st, h.sv, m)) { heldPlate(h, m); return; } if (doorOpen("sitting") && !S.isCarried(h.st, h.sv, m) && (m.portrait || h.st.sitting) && h.enterSitting) h.enterSitting(m, { state: m.portrait ? "portrait" : "pose", from: "habitat" }); }   // the sitting (its door shut until the screen is listed in nav.mjs BUILT): Portray opens the pose step; portrayed, the portrait, only while its picture is held (host.mjs enterSitting)
+  else if (target === "portrait") { if (heldModule(h, m, "portrait")) return; if (doorOpen("sitting") && !S.isCarried(h.st, h.sv, m) && (m.portrait || h.st.sitting) && h.enterSitting) h.enterSitting(m, { state: m.portrait ? "portrait" : "pose", from: "habitat" }); }   // the sitting (its door shut until the screen is listed in nav.mjs BUILT): Portray opens the pose step; portrayed, the portrait, only while its picture is held (host.mjs enterSitting)
   else if (target === "cross") {
-    if (S.isCarried(h.st, h.sv, m)) { heldPlate(h, m); return; }   // no breeding while carried (the owner)
+    if (heldModule(h, m, "cross")) return;   // no breeding while carried (the owner); young, alone, partners away: the house rule
     if (!doorOpen("cross") || !S.isAdult(h.st, m, h.settings)) return;
     if (S.crossPartners(h.st, h.sv, m, h.settings).some((p) => !p.away)) openCross(h, m);   // only partners at home can be picked
   }
   else if (target === "wild") {
-    if (S.isCarried(h.st, h.sv, m)) { heldPlate(h, m); return; }   // no freeing while carried (the owner)
-    if (S.returnMibiBlock(h.st, h.sv, m)) return;   // the block is the Wild module's context (bottomLine.wild.blocked): the intent says nothing
+    if (heldModule(h, m, "wild")) return;   // no freeing while carried (the owner); bonded, going at the next dock: the house rule, never silent
+    if (S.returnMibiBlock(h.st, h.sv, m)) return;
     openPanel(h, "habitat", "wildMibi");   // ✓ opens the Return panel (decision panel spec §1.6); its Return card runs returnNow
   }
 }
 // The Return card's act: the rule gives the mibi back to the wild (+2 Essence), the plate says where, and the resident dithers out to the next housed mibi in bay order, or the whole shows empty.
 export function returnNow(h) {
   const a = h.ui.hab, m = shown(h); if (!m) return;
+  const young = S.mibiStage(h.st, m, h.settings) === "juvenile";   // before it goes: a young mibi's plate says it grows up in its place (the rooms words C13e), a grown one's that its pod comes in two turns (C13d)
   const r = S.returnMibi(h.st, h.sv, m, h.settings);
   if (!r.ok) return;
   h.save(); const next = S.housed(h.st).sort((x, y) => x.bay - y.bay)[0] ?? null, ev = h.specs.habitat.events.release;
-  h.say(fill(h.specs.habitat.strings.releasePlate, { name: m.name, place: S.PLACE_WORD[m.from?.g] || "wild" }));
+  h.say(h.specs.habitat.strings.releasePlate[young ? "young" : "grown"].map((l) => fill(l, { name: m.name, place: S.PLACE_WORD[m.from?.g] || "wild" })).join("\n"));
   if (next) { a.id = next.id; a.f = S.isCarried(h.st, h.sv, next) ? "name" : "resident"; play(h, "release"); }
   else { a.id = null; h.goto("vivarium", h.motion() ? ev.hold : 0); }
 }

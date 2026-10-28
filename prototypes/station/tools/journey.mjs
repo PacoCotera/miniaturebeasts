@@ -513,7 +513,7 @@ const nint = async (target, verb = "confirm", ms = 150) => { await said(); await
   { const p = await props(); expect(!p.overlay && p.regions.nameTag.text === "Moss" && p.focus.cur === "name", "vivarium-namer: the name stands (Moss, as the rest of the journey knows it), the ring on the name: " + JSON.stringify([!!p.overlay, p.regions.nameTag.text, p.focus.cur])); }
   await toHome( 300); }
 await toHome( 400);
-// the empty Incubator offers ✓ Choose a pod (a pod in the rack and a bay free): a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod
+// the empty Incubator offers ✓ Choose a pod (a pod in the rack and a place free): a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod
 stepOf("incubator-empty");
 await page.evaluate(() => { window.__st.seedPod("S01", 4); window.__st.goto("incubator"); }); await page.waitForTimeout(600);
 { const p = await props(), st2 = await st(); cur.push({ state: p.state, ok: p.frame.line.ok ?? null, subject: p.frame.line.subject ?? null });
@@ -555,7 +555,7 @@ const carriedBefore = await page.evaluate((id) => { const S = window.__st, was =
 await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "cross"; window.__st.goto("habitat"); }, dot.id); await page.waitForTimeout(300);
 await intent({ screen: "habitat", target: "cross", verb: "confirm" }, 300);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "habitat", "✓ on the shut Cross module stays up close (doorOpen(cross) false until slot 7)");
-expect(((await page.evaluate(() => window.__st.props?.frame?.line)) ?? {}).ok == null, "the shut Cross module has no ✓ cap");
+{ const ln = (await page.evaluate(() => window.__st.props?.frame?.line)) ?? {}; expect(ln.ok != null && ln.dim === true, "the shut Cross module keeps its verb, dimmed (the house rule); ✓ plays its plate: " + JSON.stringify([ln.ok, ln.dim])); }
 await page.evaluate((id) => window.__st.openCross(id), dot.id); await page.waitForTimeout(300);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "the Cross screen, reached through the test hook (openCross), not a press (not built)");
 await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300);

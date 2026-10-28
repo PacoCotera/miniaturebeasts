@@ -139,6 +139,8 @@ static void build_resident(const char *cur) {
 }
 
 /* ---- the name tag, or the meet ribbon in its place ---- */
+static void dim_slot(const char *region, const char *id, const char *pic, const char *under, int x, int y, int w, int h, int hx, int hy);
+static int g_mod_held;   /* the module being built is held (props regions.<module>.held, the house rule; a carried mibi's card is held too): its objects draw in the dimmed role */
 static int held_state(void) { return strcmp(v_pstr("state"), "out") == 0; }   /* a carried mibi up close: every action on its card is held (habitat.json heldRule) */
 
 static void build_tag(void) {
@@ -208,7 +210,7 @@ static void free_node(const char *id, int x, int y, int w, int h) {   /* a free 
 static void door_objects(int dy) {
   int r[4]; v_srect(S, "regions.door.rect", r); int pw = v_sk(S, "regions.door.places.size", 0), ph = v_sk(S, "regions.door.places.size", 1), gx = v_sk(S, "regions.door.glyph.at", 0), gy = v_sk(S, "regions.door.glyph.at", 1), gw = v_sk(S, "regions.door.glyph.size", 0), gh = v_sk(S, "regions.door.glyph.size", 1);
   const char *glyph = v_pstr("regions.door.glyph"), *lampPic = v_pstr("regions.door.lamp");
-  v_name("door"); v_slot_at("door.glyph", glyph, v_pstr("regions.glass.picture"), r[0] + gx, r[1] + dy + gy, gw, gh, 1, r[0], r[1]);
+  v_name("door"); dim_slot("door", "door.glyph", glyph, v_pstr("regions.glass.picture"), r[0] + gx, r[1] + dy + gy, gw, gh, r[0], r[1]);   /* the Companion held (its set is full): the glyph in the dimmed role */
   for (int i = 0; i < 3; i++) {
     int x = r[0] + v_sk(S, v_fmt("regions.door.places.at.%d", i), 0), y = r[1] + dy + v_sk(S, v_fmt("regions.door.places.at.%d", i), 1);
     char P[48]; snprintf(P, sizeof P, "regions.door.places.%d", i); int some = spec_len("props", P) >= 0 && v_pstr(v_fmt("%s.picture", P))[0];
@@ -221,7 +223,7 @@ static void door_objects(int dy) {
 }
 /* a carried mibi up close (state out): Portrait, Cross and Wild draw in the dimmed role, the picture dithered at level 8 of 16 (v_dither_window, as the carried tile's thumbnail), the node standing hidden before it so the order holds (R4b-1b) */
 static void dim_slot(const char *region, const char *id, const char *pic, const char *under, int x, int y, int w, int h, int hx, int hy) {
-  int dim = held_state() && has(pic);
+  int dim = g_mod_held && has(pic);
   v_slot_at(id, pic, under, x, y, w, h, !dim, hx, hy);
   if (dim) { char d[48]; snprintf(d, sizeof d, "%s.dither", id); v_name(region); v_dither_window(d, pic, 0, 0, NULL, 0, 0, 8, x, y, w, h); }
 }
@@ -236,7 +238,7 @@ static void cross_face(int i, const int b[4], void *ctx) {
   int dy = *(int *)ctx, x = b[0], y = b[1] + dy, w = b[2], h = b[3];   /* the module's lift moves the faces with it */
   char id[32], P[48]; snprintf(P, sizeof P, "regions.cross.faces.%d", i); const char *pic = v_pstr(v_fmt("%s.picture", P)); int away = v_pbool(v_fmt("%s.away", P), 0);
   snprintf(id, sizeof id, "cross.face.%d", i); v_name("cross");
-  if (has(pic)) { if (held_state()) dim_slot("cross", id, pic, NULL, x, y, w, h, x, y); else v_sprite(id, pic, x, y, w, h); } else v_faceHolder(id, S, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
+  if (has(pic)) { if (g_mod_held && !away) dim_slot("cross", id, pic, NULL, x, y, w, h, x, y); else v_sprite(id, pic, x, y, w, h); }   /* a held Cross: the faces in the dimmed role (a partner out with the Companion is already dim) */ else v_faceHolder(id, S, x, y, w, h, away);   /* until the face is painted, the ring alone, as the top bar's */
 }
 static void cross_objects(int dy) {
   int n = v_plen("regions.cross.faces"); if (n > MAXF) n = MAXF; if (n < 0) n = 0;
@@ -250,15 +252,17 @@ static const char *MODS[4] = { "door", "portrait", "cross", "wild" };
 static void build_modules(const char *cur) {
   for (int m = 0; m < 4; m++) {
     int dy = strcmp(cur, MODS[m]) == 0 ? -v_si(S, v_fmt("focus.targets.%s.lift", MODS[m]), 2) : 0;
-    build_module_held(S, MODS[m], dy, "", m > 0 && held_state());   /* Portrait, Cross and Wild held while carried; the Companion's Bring is live docked (heldRule) */
+    g_mod_held = v_pbool(v_fmt("regions.%s.held", MODS[m]), 0);   /* the house rule: the props say which modules are held (a carried mibi's Portrait, Cross and Wild; Wild bonded or going; a young Cross; the Companion when full) */
+    build_module_held(S, MODS[m], dy, "", g_mod_held);
     if (m == 0) door_objects(dy); else if (m == 1) portrait_objects(dy); else if (m == 2) cross_objects(dy); else wild_objects(dy);
+    g_mod_held = 0;
   }
 }
 
 /* ---- the targets as the words drew them, in the props' order ---- */
 int habitat_focus(focus_target_t *out, int cap) {
-  int n = v_plen("focus.targets"); if (n > cap) n = cap; int np = v_plen("regions.plates.items"), nt = v_plen("regions.tiles.items"); if (nt > 12) return 0;
-  int have = nt > 0 && layout_list_form(S, "regions.tiles", nt, NULL, 0) >= 0, k = 0;
+  int n = v_plen("focus.targets"); if (n > cap) n = cap; int np = v_plen("regions.plates.items"), nt = v_plen("regions.tiles.items"), nc = v_plen("regions.rooms.items"); if (nt > 8 || nc > 4) return 0;   /* the panes refuse more than eight places or four rooms: no targets */
+  int have = nt > 0 && layout_list_form(S, "regions.tiles", nt, NULL, 0) >= 0, haveChips = nc > 0 && layout_list_form(S, "regions.chips", nc, NULL, 0) >= 0, k = 0;
   for (int i = 0; i < n; i++) {
     focus_target_t *t = &out[k]; focus_fill(t, "focus.targets", i, NULL); int r[4] = { 0, 0, 0, 0 }, ix = i;
     if (strcmp(t->id, "resident") == 0) v_srect(S, "regions.resident.rect", r);
@@ -271,6 +275,7 @@ int habitat_focus(focus_target_t *out, int cap) {
     }
     else if (strncmp(t->id, "plate.", 6) == 0) { int j = atoi(t->id + 6); if (j >= 0 && j < np) plate_rect(np, j, r); }
     else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int q = 0; q < nt; q++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", q)), t->id + 5) == 0) layout_list_pitch(S, "regions.tiles", nt, q, r); ix = 0; for (int q = 0; q < k; q++) if (strncmp(out[q].id, "tile.", 5) == 0) ix++; }
+    else if (strncmp(t->id, "room.", 5) == 0 && haveChips) { for (int q = 0; q < nc; q++) if (strcmp(v_fmt("room.%s", v_pstr(v_fmt("regions.rooms.items.%d.id", q))), t->id) == 0) layout_list_pitch(S, "regions.chips", nc, q, r); ix = 0; for (int q = 0; q < k; q++) if (strncmp(out[q].id, "room.", 5) == 0) ix++; }   /* a chip: its rectangle in its form, its index among the chips */
     else v_srect(S, v_fmt("regions.%s.rect", t->id), r);
     focus_fill(t, "focus.targets", i, r); t->index = ix; k++;
   }
@@ -290,7 +295,7 @@ static void build_ring(const char *cur) {
   focus_target_t t[40]; int n = habitat_focus(t, 40), at = -1; for (int i = 0; i < n; i++) if (strcmp(t[i].id, cur) == 0) at = i;
   int box[4] = { 0, 0, 0, 0 }; char target[96];
   v_region("focus", LAYER_CHROME);
-  if (strncmp(cur, "tile.", 5) == 0 || at < 0) return;   /* the strip's own ring (build_bayStrip's box) */
+  if (strncmp(cur, "tile.", 5) == 0 || strncmp(cur, "room.", 5) == 0 || at < 0) return;   /* the panes' own ring (build_rooms and build_places' boxes) */
   box[0] = t[at].x; box[1] = t[at].y; box[2] = t[at].w; box[3] = t[at].h;
   if (strcmp(cur, "name") == 0) snprintf(target, sizeof target, "focus.targets.name");
   else if (strcmp(cur, "species") == 0) {   /* the line's text and guide mark as drawn: the word adds the chip's 4 px each side */
@@ -306,7 +311,9 @@ static void build_ring(const char *cur) {
 void habitat_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   build_stage();
-  word_livingWindow(S, "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"), 0, 0, NULL, 0);
+  { anim_state_t t; char from[96] = ""; int level = 0;   /* a move (events.move): the near painting from the old room's, 16 levels over its 200 ms */
+    if (v_pbool("motion", 1) && anim_get(ANIM_DITHER, "glass", &t) && t.from_id[0] && t.ms > 0) { snprintf(from, sizeof from, "%s", t.from_id); level = 16 * t.elapsed / t.ms; if (level > 16) level = 16; }
+    word_livingWindow(S, "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"), 0, 0, from[0] ? from : NULL, level); }
   build_moving_shadow();
   build_ring_under(cur);
   build_resident(cur);
@@ -314,7 +321,9 @@ void habitat_words(void) {
   build_card(); build_speciesLine(); build_story(); build_code(); build_stamp();
   build_chapterPlates(cur);
   build_modules(cur);
-  { int box[4]; build_bayStrip(S, cur, box); if (strncmp(cur, "tile.", 5) == 0 && box[2] > 0 && !anim_holding() && spec_len("props", "overlay") < 0) { v_region("focus", LAYER_CHROME); word_focusRing("focus", S, "focus.targets.tile", box); } }
+  { int rb[4], pb[4]; build_rooms(S, cur, rb); build_places(S, cur, pb);   /* the whole's two panes: the room chips and the eight places of the mibi's room */
+    const int *fb = strncmp(cur, "room.", 5) == 0 ? rb : strncmp(cur, "tile.", 5) == 0 ? pb : NULL;   /* the ring on a chip or a place; none while a panel or the namer is open over it (its own ring) */
+    if (fb && fb[2] > 0 && !anim_holding() && spec_len("props", "overlay") < 0) { v_region("focus", LAYER_CHROME); word_focusRing("focus", S, strncmp(cur, "room.", 5) == 0 ? "focus.targets.room" : "focus.targets.tile", fb); } }
   build_ring(cur);
 }
 
