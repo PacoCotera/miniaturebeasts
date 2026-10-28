@@ -37,6 +37,7 @@ export function buildDevPanel(container, hooks) {
   // Timers
   group("Timers", h("div", { class: "dev-row" }, "Bud scale ", select("budScale", [1, 10, 60, "instant"], (v) => (v === 1 ? "real" : v === "instant" ? "instant" : "×" + v))), toggle("firstBud", "the first bud ever grows in five minutes"),
     h("div", { class: "dev-row" }, "Sitting wait ", select("sittingWait", ["hours", "minute", "now"])), h("div", { class: "dev-row" }, "Juvenile to adult ", select("adultTurns", [2, 1, 0], (v) => (v === 0 ? "now" : v + " world turns"))),
+    h("div", { class: "dev-row" }, "Adult to elder ", select("elderTurns", [16, 4, 0], (v) => (v === 0 ? "now" : v + " world turns"))),
     h("div", { class: "dev-row" }, "Mock painter delay ", select("mockDelay", [20, 5, 60], (v) => v + " s")), h("p", { class: "dev-note" }, "The timers apply from M2 (the bud) and M3 (the painting); stored now so a tester's toggles are ready."));
   // Motion (Station M1): the moving sets on their stand-in cells, the Station time that drives the light and the rest, and the motion proof's scene in a throwaway world
   const timeIn = h("input", { type: "time", value: G.settings.stationTime ?? "", onchange: () => { saveSettings({ stationTime: timeIn.value || null }); redraw(); note(timeIn.value ? "Station time " + timeIn.value : "Station time: the clock"); } });

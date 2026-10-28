@@ -326,7 +326,7 @@ const dataLadder = () => [1, 2, 3, 4].map(t => Math.round(t * dataStep)).join(' 
 const DEPOT_NAME = 'outpost';   // placeholder name, one place to rename it
 const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
 const STRAY = { strong: 1 / 20, peak: 1 / 10 };   // stray strike odds per action in the open
-const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; elder after 6 more as an adult
+const JUVENILE_TURNS = 2, ELDER_TURNS = 16;     // young for 2 world turns; elder after 16 more as an adult (an elder at turn 18)
 // Warm stones: at each world turn the sun warms a few of the stones lightning didn't strike (+1, never more):
 // 6 to 8 in the Probe's reach (was 3 to 5; tuned 2026-10-09, 6 to 8 after the first measure, so a calm walk earns about 3 Energy, research-economy.md §9), chosen when the expedition sets out. Each still holds +1, never more.
 const WARM_MIN = 6, WARM_MAX = 8, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
@@ -705,6 +705,33 @@ function stageAt(m, turn, j, e) {
   const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
 }
 function mibiStage(m) { return stageAt(m, S.turn, JUVENILE_TURNS, ELDER_TURNS); }
+// Age in words (the Station's copy, station/src/age-words.mjs, is the same text; a parity test proves it).
+// "{n} turns old", counted from `born`: "1 turn old" at 1, "new this turn" at 0.
+function ageTurns(m, turn) { const n = Math.max(0, turn - (m.born || 0)); return n === 0 ? 'new this turn' : n === 1 ? '1 turn old' : n + ' turns old'; }
+// What the stage means now, as { stage, n }: n is the whole turns spent in an adult's or an elder's stage (an elder's count never warns, it only rises),
+// or the turns still to grow for a young mibi on the clock; null for a young mibi that is bonded (it grows through care, never on the clock).
+function stageNote(m, turn, j, e) {
+  const stage = stageAt(m, turn, j, e);
+  if (stage === 'juvenile') return { stage, n: m.bonded ? null : (m.born || 0) + j - turn };
+  const grown = m.grownTurn != null ? m.grownTurn : (m.born || 0) + j;
+  return { stage, n: Math.max(0, turn - (stage === 'elder' ? grown + e : grown)) };
+}
+// "for 7 turns", "for 1 turn", "from this turn" (n is whole turns, 0 or more).
+function turnsFor(n) { return n <= 0 ? 'from this turn' : n === 1 ? 'for 1 turn' : 'for ' + n + ' turns'; }
+// "in 2 turns", "next turn" (n is turns still to come, 1 or more).
+function turnsUntil(n) { return n <= 1 ? 'next turn' : 'in ' + n + ' turns'; }
+// The real time a mibi has been the player's, from `m.since` (ms, UTC) to `now`, on the device's own local calendar:
+// { span, date, floor, today }. span is "a day", "13 days" (2 to 99), then whole months up to 23 ("23 months"), then "2 years"; null on the first day.
+// date is "14 Oct" in the current year and "Oct 2025" in an earlier one. floor: the save held no clock for this mibi, so `since` is when it was first
+// seen and the real time is at least this long. Null when the mibi has no `since`. A `now` behind `since` reads as the first day, never a negative count.
+function yoursLine(m, now) {
+  if (!(m && m.since > 0)) return null;
+  const a = new Date(m.since), b = new Date(now), MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const days = Math.max(0, Math.round((Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())) / 86400000));
+  const months = Math.max(0, (b.getFullYear() - a.getFullYear()) * 12 + b.getMonth() - a.getMonth() - (b.getDate() < a.getDate() ? 1 : 0));
+  const span = days === 0 ? null : days === 1 ? 'a day' : days < 100 ? days + ' days' : months < 24 ? months + ' months' : Math.floor(months / 12) + ' years';
+  return { span, date: a.getFullYear() === b.getFullYear() ? a.getDate() + ' ' + MON[a.getMonth()] : MON[a.getMonth()] + ' ' + a.getFullYear(), floor: !!m.sinceFloor, today: days === 0 };
+}
 function isAdult(m) { return !!m && mibiStage(m) !== 'juvenile'; }
 const isCarried = m => !!m && S.carried.includes(m.id);
 function carriedMibis() { return S.carried.map(mibiById).filter(Boolean); }
@@ -914,6 +941,7 @@ function syncStation() {
     const isNew = !q; if (!q) { q = { id: m.id, name: m.name, sp: m.sp, born: m.born || 0, from: m.from ? m.from.n : 0 }; S.mibis.push(q); }
     q.name = m.name; q.born = m.born || 0; q.species = m.species ?? q.species ?? null; q.spName = m.spName ?? q.spName ?? null;   // the Station's species id and name, for a species the Companion has no entry for
     if (isNew) logEv(m.name + ' (' + mibiSpName(q) + ') is home at the Station');
+    q.since = m.since ?? null; q.sinceFloor = !!m.sinceFloor;   // the real time the mibi has been the player's: the Station's clock at its hatch (or when first seen), shown on the mibi's page
     q.bonded = !!q.bonded || !!m.bonded; }   // a bond made on the Station (legacy) flows in; no care field is read from the Station
   if (st.probe && st.probe.seq > (S.probeSeen || 0) && !(S.exp && S.exp.ending)) { S.probeSeen = st.probe.seq; const was = S.tier; S.tier = st.probe.tier || S.tier; S.shield = st.probe.shield;
     if (S.exp) S.exp.shield = clamp(Math.max(S.exp.shield, st.probe.shield), 0, S.exp.smax);   // docked mid-expedition: the cradle mends it; frozen while docked; resumes at Lift as it was
@@ -4252,6 +4280,7 @@ const PIC = {
 PIC['m:pod'] = PIC.pod;
 function disc(x, y, r, fill, ring) { blit(art('disc' + r + fill + ring, () => { const pb = new PB(r * 2, r * 2); pb.ell(r, r, r - .2, r - .2, C[ring]); pb.ell(r, r, r - 2.2, r - 2.2, C[fill]); return pb; }), x, y); }
 // A chip: 22 high, the 2× label at top + 3 and 8 px in from each side (a descender ends on top + 20, one row of fill under it).
+const STAGE_WORD = { juvenile: 'young', adult: 'adult', elder: 'elder' };   // the stage's word, the same on both devices
 function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }
 function card(x, y, w, h, sel, enabled) {
   panel(x, y + 3, w, h, C.void); panel(x, y, w, h, enabled ? C.paper : C.slate, sel ? C.orange : C.ink);
@@ -4292,12 +4321,12 @@ function drawSetup(t) {
   if (pm) { const st = mibiStage(pm), nm = clipText(pm.name, 220, 3);
     blit(RING(), 46, 322); mibiSprite(pm.sp, 'idle', fr, 28, 264, 2);
     text(nm, 112, 260, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
-    chip(112, 292, st, stageFill(st), 'bone');
+    chip(112, 292, STAGE_WORD[st], stageFill(st), 'bone');
     text(clipText(abTextOf(pm.sp), 220, 2), 112, 320, C.stone); }
   else if (cm.length) { const rd = cm[0], st = mibiStage(rd), nm = clipText(rd.name, 220, 3);   // the rider, first in carried order: its picture with no ring, and how it grows
     mibiSprite(rd.sp, 'idle', fr, 28, 264, 2, false, st === 'juvenile');
     text(nm, 112, 260, C.ink, 3); if (rd.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
-    chip(112, 292, st, stageFill(st), 'bone');
+    chip(112, 292, STAGE_WORD[st], stageFill(st), 'bone');
     text(clipText(rd.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime, 306, 2), 112, 320, C.stone); }
   else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(CARE_TEXT.noOneWithT, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
   else { emptyPodSmall(52, 298); text('No partner yet', 112, 264, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 302 + i * 20, C.stone)); }
@@ -4499,6 +4528,16 @@ function drawNoMibi() {
 // A juvenile answering Call is still learning: it looks the wrong way first, on two calls in three.
 function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return null; const a = NOW - h.at; return a >= 0 && a < 1500 ? Object.assign({ a }, h) : null; }   // a < 0: a hop set to start later (Lift's)
 // ---- The care screens' composed pieces: dashed outlines, rings, chips, and the placeholders of missing assets ----
+// What the page says about age. A turns count for a list ("new", "1 turn", "{n} turns"); the mibi page's age line and Yours line.
+function turnsShort(m) { const n = Math.max(0, S.turn - (m.born || 0)); return n === 0 ? 'new' : n === 1 ? '1 turn' : n + ' turns'; }
+function ageLine(m) {
+  const nt = stageNote(m, S.turn, JUVENILE_TURNS, ELDER_TURNS);
+  return ageTurns(m, S.turn) + (nt.stage === 'juvenile' ? (nt.n != null && nt.n > 0 ? ' · grows up ' + turnsUntil(nt.n) : '') : nt.stage === 'elder' ? ' · an elder ' + turnsFor(nt.n) : '');
+}
+function yoursText(m) {
+  const y = yoursLine(m, new Date().getTime()); if (!y) return '';
+  return y.floor ? (y.span ? 'yours for at least ' + y.span : 'yours since today or before') : y.span ? 'yours for ' + y.span + ' · since ' + y.date : 'yours since today';
+}
 const stageFill = st => st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone';
 // A free place: a 1 px dashed outline, dash 2 and 2.
 function dashedRect(x, y, w, h, c) {
@@ -4559,7 +4598,8 @@ function rosterRow(m, y0, sel, isP, fr) {
   if (isP) blit(RING(), 38, y + 48);
   placeholderPlate('c-token-48', 28, y + 8 - hy, 1, m.sp, fr, st === 'juvenile');   // the 48 px field token is a missing asset: its plate carries the mibi's sprite
   const nm = clipText(m.name, 200, 3); text(nm, 88, y + 6, C.ink, 3); if (m.bonded) placeholderPlate('c-heart-16', 88 + textW(nm, 3) + 8, y + 11);
-  let cx = 88; cx += chip(cx, y + 38, st, stageFill(st), 'bone') + 4; if (isP) chip(cx, y + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
+  let cx = 88; cx += chip(cx, y + 38, STAGE_WORD[st], stageFill(st), 'bone') + 4; if (isP) chip(cx, y + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
+  text(turnsShort(m), 410, y + 41, C.stone, 2, 'right');   // how long it has lived: this is how two elders differ in a list
   if (sel) text('▶', 422, y + 22, C.mist, 2, 'right');   // the open mark: ▶ opens this mibi's page
 }
 function drawMibis(t) {
@@ -4573,9 +4613,9 @@ function drawMibis(t) {
   clipView();
   { const y = LEAD_Y - off - (sel === 0 ? 2 : 0); rosterCard(16, LEAD_Y - off, 418, 92, sel === 0);
     text(CARE_TEXT.partnerCap, 104, y + 6, C.mist);
-    if (pm) { blit(RING(), 46, y + 70); mibiSprite(pm.sp, 'idle', fr, 28, y + 12, 2);
+    if (pm) { text(STAGE_WORD[mibiStage(pm)] + ', ' + turnsShort(pm), 418, y + 6, C.stone, 2, 'right'); blit(RING(), 46, y + 70); mibiSprite(pm.sp, 'idle', fr, 28, y + 12, 2);
       const nm = clipText(pm.name, 314, 3); text(nm, 104, y + 28, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 104 + textW(nm, 3) + 8, y + 34);
-      text(clipText(abTextOf(pm.sp), 314, 2), 104, y + 64, C.stone); }
+      text(clipText(abTextOf(pm.sp) + (mibiStage(pm) === 'elder' ? ' · slow, keen' : ''), 314, 2), 104, y + 64, C.stone); }
     else { blit(dashedCircleArt(64), 28, y + 12); text(cm.length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 104, y + 28, C.ink, 3); text(clipText(leadWhy(), 314, 2), 104, y + 64, C.stone); } }
   text(CARE_TEXT.withYouCap, 20, 148 - off, C.mist);
   for (let k = 0; k < CARRY_MAX; k++) { const y0 = PLACE_Y + k * ROW_P - off, m = cm[k]; if (m) rosterRow(m, y0, sel === k + 1, m === pm, fr); else dashedRect(16, y0, 418, 64, C.stone); }
@@ -4714,13 +4754,15 @@ function drawActive(t) {
   if (bond != null && bond >= 900 && bond < BOND_MS) { const k = bond - 900; placeholderPlate('c-heart-24', 362, mo ? 140 - 20 * Math.min(4, Math.floor(k / 150)) : 60, 2); }
   if (list.length > 1) { text('◀', 10, 172, C.mist); text('▶', 440, 172, C.mist, 2, 'right'); }
   const nm = clipText(m.name, 260, 3); text(nm, 30, 332, C.bone, 3);
-  const cx = 30 + textW(nm, 3) + 14, cw = chip(cx, 331, st, stageFill(st), 'bone');
+  const cx = 30 + textW(nm, 3) + 14, cw = chip(cx, 331, STAGE_WORD[st], stageFill(st), 'bone');
   if (m.bonded && !(bond != null && bond < BOND_MS)) placeholderPlate('c-heart-24', cx + cw + 10, 330);   // the heart as a state, once the bond has played
   text(clipText(mibiSpName(m) + ' · ' + abTextOf(m.sp) + (!isAdult(m) && spOf(m.sp).abText ? CARE_TEXT.onceGrown : '') + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
-  wrapText(growing ? CARE_TEXT.stGrowsWithCare : activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 396 + i * 22, isW ? C.amber : C.mist));
+  text(clipText(growing ? CARE_TEXT.stGrowsWithCare : activeStatus(m), 390, 2), 30, 396, isW ? C.amber : C.mist);   // one line: the widest status is 314 in 390
+  text(clipText(ageLine(m), 390, 2), 30, 424, C.fog);
+  { const yt = yoursText(m); if (yt) text(clipText(yt, 390, 2), 30, 446, C.mist); }
   // page dots: the mibis with you ringed; docked, 16 px more between the last mibi with you and the first at home
   const n = list.length, nc = list.filter(isCarried).length, gap = nc > 0 && n > nc ? 16 : 0, x0 = Math.round(SCR_W / 2 - ((n - 1) * 16 + gap) / 2);
-  if (n > 1) list.forEach((q, i) => { const px = x0 + i * 16 + (i >= nc ? gap : 0); if (isCarried(q)) R(px - 2, 450, 10, 10, C.amber); R(px, 452, 6, 6, q === m ? C.bone : C.stone); });
+  if (n > 1) list.forEach((q, i) => { const px = x0 + i * 16 + (i >= nc ? gap : 0); if (isCarried(q)) R(px - 2, 478, 10, 10, C.amber); R(px, 480, 6, 6, q === m ? C.bone : C.stone); });
   drawDockSlot();
 }
 // Call between expeditions: the shown (or focused) mibi with you answers; otherwise the partner, or the first mibi with you, and

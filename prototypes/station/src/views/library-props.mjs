@@ -9,6 +9,7 @@ import { frameIds, frameOf, stampSizing, stampBlocks } from "../genome.mjs";
 import { drawnLooks, keyToken } from "../looks.mjs";
 import { specimenInput, newLooksOf, sheetInput } from "./specimen-props.mjs";
 import { fill, spell, capLine } from "./words.mjs";
+import { ageTurns, stageNote, turnsFor, turnsUntil, yoursLine } from "../age-words.mjs";
 import { req as collector, slot as slotOf, sheet as sheetReqs, disc as discReq, quiet as quietReq, canLight, lineageFar as lineageFarReq, lineageMini as lineageMiniReq, rackPod as rackPodReq, stamp as stampReq } from "./requests.mjs";
 import { faceId } from "../face-pictures.mjs";
 import { speciesFacts, sheetFacts, printed } from "../library-sheet.mjs";
@@ -187,7 +188,7 @@ function closeBuild(m, spec, lin, { targets, cur, mem, top, requests, req, slot,
   const input = lineageInput(st, lin), mini = fits || compare ? "" : lineageMiniReq(req)(spec, input), node = (id) => lin.nodes.find((q) => q.id === id), n = node(cur);
   const mibiOf = (q) => (q?.kind === "mibi" ? S.mibiById(st, q.mibi) : null), mb = mibiOf(n), hm = held ? mibiOf(node(held)) : null;
   // the one comparison: never with the ring on the held mibi, never on the bud
-  const cmp = compare && mb && cur !== held ? compareLooks(fr, hm, mb) : null, rows = rowsOf(m, spec, lin, n, { req, slot, pod, home, frame }), measureLine = measureOf(m.metrics) && measureRole(m.metrics, frame, frame.regions.subject.role);
+  const cmp = compare && mb && cur !== held ? compareLooks(fr, hm, mb) : null, rows = rowsOf(m, spec, lin, n, { req, slot, pod, home, frame, compare }), measureLine = measureOf(m.metrics) && measureRole(m.metrics, frame, frame.regions.subject.role);
   if (cmp) rows.stamp.lights = lightsOf(fr, mb, cmp.lit);
   const panel = { ov: { picture: mini, box: fits || compare ? [0, 0, 0, 0] : overviewBox(input, spec, cam) }, rows, held: null, fact: "" };
   if (compare) {
@@ -217,16 +218,21 @@ function stampOf(fr, mb, req, k, bud = null) {
 // The block light in one stamp: each lit chapter's block, { c (its index in the frame), rect (in the stamp's own pixels) }.
 const lightsOf = (fr, mb, lit) => { const B = stampBlocks(fr, mb.genome); return lit.filter((id) => B[id]).map((id) => ({ c: fr.chapters.findIndex((ch) => ch.id === id), rect: B[id] })); };
 // The rows of the focused node (l3.close.panel.rows): a mibi's or the bud's portrait, name, mark, age, place, parents and stamp; the words as the strings give them, each drawn line cased (capLine).
-function rowsOf(m, spec, lin, n, { req, slot, pod, home, frame }) {
+function rowsOf(m, spec, lin, n, { req, slot, pod, home, frame, compare }) {
   const { st, sv, settings } = m, R = spec.l3.close.panel.rows, P = spec.l3.strings.panel, sid = lin.species, fr = frameOf(sid), node = new Map(lin.nodes.map((q) => [q.id, q]));
-  const out = { portrait: "", portraitSlot: false, name: "", mark: slot(R.mark.slice.replace("{SNN}", sid), R.mark.rect.slice(2)), age: ["", ""], now: "", parents: [], stamp: { picture: "", size: 0, lights: [] } };
+  const out = { portrait: "", portraitSlot: false, name: "", mark: slot(R.mark.slice.replace("{SNN}", sid), R.mark.rect.slice(2)), age: ["", ""], stage: { label: "", value: "" }, yours: { label: "", value: "", since: "" }, now: "", parents: [], stamp: { picture: "", size: 0, lights: [] } };
   if (!n || n.kind === "pod") return out;
   const bud = n.kind === "bud" ? st.bud : null, mb = bud ? null : S.mibiById(st, n.mibi), self = bud ?? mb;
   if (bud) { out.portrait = pod(sid, R.portraitSlot.pod); out.portraitSlot = true; out.name = fill(P.budName, { Species: fr.species.name }); out.age = [P.growing, ""]; out.now = P.places.bud; }
   else {
-    const stage = S.mibiStage(st, mb, settings), trips = mb.outings ?? 0;
+    const stage = S.mibiStage(st, mb, settings);
     out.portrait = req(faceReq(st, settings, mb, sid, R.portrait.size)); out.name = S.cap(mb.name ?? "");
-    out.age = [capLine(home.strings.stages[stage] ?? stage), (stage === "juvenile" || stage === "adult") && trips > 0 ? fill(P.trips, { n: trips }) : ""];
+    out.age = [mb.released ? capLine(home.strings.stages[stage] ?? stage) : ageTurns(mb, st.turn), ""];   // a released mibi keeps its stage word; the turns count is for the living, at every stage
+    if (!mb.released && !compare) {   // the stage row and the Yours row: a living mibi's in close, never a bud's, a released mibi's or compare's (compare is about looks: age is one ring move away in close; the stamp keeps its place, so the panel never reflows as the ring moves)
+      const note = stageNote(mb, st.turn, settings.adultTurns ?? S.JUVENILE_TURNS, settings.elderTurns ?? S.ELDER_TURNS), y = yoursLine(mb, m.now ?? Date.now());
+      out.stage = { label: capLine(home.strings.stages[stage] ?? stage), value: stage === "juvenile" ? (note.n == null ? P.stageCare : fill(P.stageYoung, { until: turnsUntil(note.n) })) : turnsFor(note.n) };
+      if (y) out.yours = { label: P.yours, value: y.span ?? P.sinceToday, since: y.floor ? (y.span ? P.orLonger : P.orBefore) : fill(P.since, { date: y.date }) };
+    }
     out.now = P.places[mb.released ? "wild" : S.isAway(st, sv, mb) ? "trip" : "home"];
   }
   const ps = n.parents.map((id) => node.get(id)).filter(Boolean);

@@ -81,7 +81,7 @@ function lineageSave(which) {
   return { mibis: st.mibis, bud: st.bud, next: st.nextMibi, names: st.namesUsed, ids: Object.fromEntries(Object.entries(by).map(([n, m]) => [n, m.id])) };
 }
 const LINEAGE = (w, bare, seen, mid, save) => {
-  const S = window.__st, st = S.ST; bare(); st.mibis = JSON.parse(JSON.stringify(save.mibis)); for (const m of st.mibis) m.born += st.turn; st.nextMibi = save.next; st.namesUsed = [...save.names];
+  const S = window.__st, st = S.ST; bare(); st.mibis = JSON.parse(JSON.stringify(save.mibis)); for (const m of st.mibis) { m.born += st.turn; m.since = new Date(2026, 9, 4, 12).getTime(); } st.nextMibi = save.next; st.namesUsed = [...save.names];
   st.bud = save.bud ? { ...JSON.parse(JSON.stringify(save.bud)), start: Date.now() } : null; st.knownIds = ["S01"]; S.fillGuide("S01", 0.4); seen();
 };
 async function assertL3(page, name, sc, fail) {

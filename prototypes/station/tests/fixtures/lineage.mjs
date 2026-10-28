@@ -20,7 +20,7 @@ const SMALL = [["Reed", null, "elder", false], ["Rush", null, "elder", false], [
 export const LINEAGES = { full: { mibis: FULL, bud: ["Moss", "Thistle"], coatUnread: ["Hazel", "Sedge"] }, one: { mibis: ONE, bud: null }, small: { mibis: SMALL, bud: null } };
 
 const stream = (seed) => { let x = seed >>> 0; return () => { x = (Math.imul(x ^ (x >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return (x >>> 8) / 16777216; }; };
-const AGE = { juvenile: 0, adult: 3, elder: 9 };   // turns since birth: young below 2, elder from 8 (state.mjs stageAt with the default turns)
+const AGE = { juvenile: 0, adult: 3, elder: 25 };   // turns since birth: young below 2, elder from 18 (state.mjs stageAt with the default turns: 2 + ELDER_TURNS 16)
 export function buildLineage(st, which = "full", { turn = st.turn ?? 0, now = 0, species = "S01" } = {}) {
   const fr = frameOf(species), L = LINEAGES[which], by = {}, rng = stream(9001), coat = fr.chapters.find((c) => c.traits.some((t) => t.id === "colour"))?.id, open = fr.chapters.filter((c) => !c.sealed).map((c) => c.id);
   const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
