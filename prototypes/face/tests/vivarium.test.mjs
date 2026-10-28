@@ -396,6 +396,16 @@ test("R4: proof 2 in every room: in Reeds, Boulders and Ferns, over 300 s, every
     console.log(`# R4 ${room}: ${points} feet points, ${up} climbs and ${down} descents, at most ${maxRaised} raised (cap ${CAP8})`);
   }
 });
+test("R4c: a scene switched from Roots to Reeds (the same residents, ids and seeds) puts every walker on a Reeds level at the first frame after the switch, from its seed", { skip }, async () => {
+  const order = J("rooms").order, mk = (room) => { const b = withFigure(scene({ adults: 6, bays: 32, room, move: true, focus: "tile:0" })); b.props.regions.residents.forEach((r, i) => { r.seed = 710001 + i * 7919; }); return b; };
+  const rects = (f, b) => b.st.mibis.slice(0, 6).map((m) => { const bx = f.nodeBox("g." + m.id)?.box; return bx && [bx[0], bx[1] + R.window.rect[1], bx[2], bx[3]]; });
+  const onReeds = (rs) => rs.map((r) => { const { fx, feetY } = feetOf(r); return [0, 1].some((lv) => ROOMS.reeds.levels[lv] && roomOn("reeds", lv, fx, feetY, W0)); });
+  const roots = mk(0), reeds = mk(order.indexOf("reeds")), f = await start(roots, { t0: 5000, node: true });
+  for (let t = 40; t <= 20000; t += 40) f.frame(5000 + t);   // Roots, walking for 20 s: the walkers have left their starts
+  for (const r of reeds.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r))));
+  assert.equal(f.props({ screen: "vivarium", ...reeds.props, motion: true, frame: frameProps(reeds.line) }), 0, f.errors().join("; ")); f.frame(5000 + 20040);   // the first frame after the switch
+  const first = rects(f, reeds), ok = onReeds(first); assert.ok(first.every(Boolean), "six walkers drawn"); assert.deepEqual(ok, ok.map(() => true), `every walker on a Reeds level at the first frame: ${first.map((r) => feetOf(r).fx + "," + (feetOf(r).feetY - DY)).join(" ")}`);
+});
 test("R4: with the real ceiling and speeds eight stills never travel more than rules.travel.max at once, over 10 minutes, and a level is changed", { skip }, async () => {
   const tr = await levelRun(900, 600000, spec); let maxT = 0, changes = 0, last = null;
   for (const fr of tr) { const n = fr.reduce((a, r) => a + r[5], 0); maxT = Math.max(maxT, n); if (last) fr.forEach((r, i) => { if (r[3] !== last[i][3]) changes++; }); last = fr; }
