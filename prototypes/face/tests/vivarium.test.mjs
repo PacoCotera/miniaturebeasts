@@ -552,13 +552,20 @@ test("R3: each of the four rooms in all four lights draws without an error or a 
   }
 });
 
+test("R4b-1b the held plate: one plate with both lines (a \\n ends a line, each part wraps by itself), centred, 20 px pitch, the second line under the first; a text with no \\n wraps as before", { skip }, async () => {
+  const b = scene({ adults: 3 }), f = await start(b), lines = (text) => { assert.equal(f.props({ screen: "vivarium", ...b.props, motion: true, frame: { ...frameProps(b.line), plate: { text, timed: false } } }), 0, f.errors().join("; ")); frames(f); return logOf(f).type.filter((t) => /^plate\.l\d$/.test(t.id ?? "") || t.region === "plate").map((t) => t.text); };
+  assert.deepEqual(lines("Dot is out exploring\nBring Dot home when you dock"), ["Dot is out exploring", "Bring Dot home when you dock"], "two lines in one plate");
+  assert.deepEqual(lines("Dot is out exploring Bring Dot home when you dock"), ["Dot is out exploring Bring Dot home when you dock"], "joined, they would be one line: the break is what makes two");
+  assert.deepEqual(f.errors(), []);
+});
+
 test("R4b travellers in the rail: a carried place keeps its thumbnail at place + [4, 0, 48, 48] and shows the Companion's glyph at place + [52, 12, 16, 24], solid while docked and outline while away; no resident, bed sleeper or target carries a carried id", { skip }, async () => {
   for (const away of [false, true]) {
     const b = scene({ adults: 4, young: 3, carry: [0, 1], away }), f = await start(b, { node: true }), items = b.props.regions.tiles.items, lg = logOf(f);
     assert.deepEqual(items.slice(0, 2).map((t) => [t.state, t.where]), [["out", away ? "away" : "docked"], ["out", away ? "away" : "docked"]]);
     const placeOf = (i) => { return listPitch(R.tiles, 8, i); };
-    for (const i of [0, 1]) { const p = placeOf(i), th = f.nodeBox(`tile.${i}.thumb`)?.box, gl = f.nodeBox(`tile.${i}.glyph`)?.box;
-      assert.ok(th && gl, `place ${i}: thumb and glyph nodes`); assert.deepEqual([th[0] - p[0], th[1] - p[1], th[2], th[3]], [4, 0, 48, 48], `place ${i}: the thumbnail`); assert.deepEqual([gl[0] - p[0], gl[1] - p[1], gl[2], gl[3]], [52, 12, 16, 24], `place ${i}: the glyph`); }
+    for (const i of [0, 1]) { const p = placeOf(i), th = f.nodeBox(`tile.${i}.dither`)?.box, gl = f.nodeBox(`tile.${i}.glyph`)?.box;   // R4b-1b: the carried thumbnail is dimmed on the whole, the vocabulary's v_dither_window (level 8 of 16) over the thumbnail's own box; the thumb node stands hidden before it
+      assert.ok(th && gl, `place ${i}: dithered thumb and glyph nodes`); assert.deepEqual([th[0] - p[0], th[1] - p[1], th[2], th[3]], [4, 0, 48, 48], `place ${i}: the dimmed thumbnail`); assert.equal(f.nodeBox(`tile.${i}.thumb`)?.box[2] ?? 0, 0, `place ${i}: the plain thumbnail is not drawn`); assert.deepEqual([gl[0] - p[0], gl[1] - p[1], gl[2], gl[3]], [52, 12, 16, 24], `place ${i}: the glyph`); }
     for (const m of b.st.mibis.slice(0, 2)) { assert.ok(!b.props.regions.residents.some((r) => r.id === String(m.id))); assert.ok(!b.props.focus.targets.some((t) => t.id === "resident." + m.id)); assert.equal(f.nodeBox("g." + m.id), null, "a carried mibi is not drawn in the room"); }
     assert.deepEqual(f.errors(), []); assert.ok(lg);
   }

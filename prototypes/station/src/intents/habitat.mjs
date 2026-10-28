@@ -13,10 +13,10 @@ const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + 
 export const shown = (h) => habitatShown(h.st, h.sv, h.ui.hab.id);
 // The event of the spec, as the host plays it: reduced motion sends hold 0 (the key's own frame runs what follows).
 const play = (h, name, over = {}) => { const e = h.specs.habitat.events[name], hold = h.motion() ? e.hold : 0; h.play({ kind: e.kind, target: e.target, ms: e.ms, hold, ...(e.cut ? { cut: true } : {}), ...(e.levels ? { levels: e.levels } : {}), ...over }); };
-// ✓ on an action held while the mibi is carried, docked or away (habitat.json heldRule; the owner, R4b): the message plate says why, two lines one after the other (the dock plates' way), never silent.
+// ✓ on an action held while the mibi is carried, docked or away (habitat.json heldRule; the owner, R4b): the message plate says why: one plate with both lines (the reason, and under it the way out; frame.json regions.plate, showMs, once), never silent.
 function heldPlate(h, m) {
-  const lines = h.specs.habitat.strings.travellerPlate[S.docked(h.st) ? "docked" : "away"], P = h.specs.frame.navigation.dock.plates;
-  h.say(fill(lines[0], { name: m.name }), P.ms); h.at(P.ms, () => h.say(fill(lines[1], { name: m.name }), P.ms));
+  const lines = h.specs.habitat.strings.travellerPlate[S.docked(h.st) ? "docked" : "away"];
+  h.say(lines.map((l) => fill(l, { name: m.name })).join("\n"));
 }
 // A pick of the Cross screen: the first partner not out with the Companion while it is away.
 export function openCross(h, a) { h.ui.cross = { aId: a.id, bId: null, state: 0, fc: null, clash: [] }; const p = S.crossPartners(h.st, h.sv, a, h.settings).find((x) => !x.away); if (p) h.ui.cross.bId = p.id; h.goto("cross"); }

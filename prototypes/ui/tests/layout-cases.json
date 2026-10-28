@@ -155,11 +155,11 @@
     "pending": [] },
   { "state": "vivarium/vivarium-docked", "from": "the UI/UX layout sweep and the art direction audit: the Vivarium",
     "expect": [
+     { "rule": "L1", "node": "rooms", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the panes 10 over the bottom line, as the strip was (UI/UX, the R4b-1 read: both panes end at 552, the bottom line starts at 562); the check reports the pair once, on the rooms pane" }
     ],
     "clear": [],
     "pending": [
-     { "what": "the strip that vanishes, L9", "needs": "vivarium.json layout.slots (✓d)" },
-     { "what": "the ✓m L1 strip / bottom 10 (the strip 10 over the bottom line): R5 replaced the strip row with the rooms and places panes, so the refreshed picture has no strip node; the places pane's own L1 is tile / bottom 8", "needs": "UI/UX to re-mark it on the places pane" }
+     { "what": "the strip that vanishes, L9", "needs": "vivarium.json layout.slots (✓d)" }
     ] },
   { "state": "home/home-fresh", "from": "the UX audit: Home",
     "expect": [

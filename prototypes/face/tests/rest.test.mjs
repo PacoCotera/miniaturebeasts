@@ -8,7 +8,7 @@ import { movingScene, bootScene, resend, runFrames, SPEC, BUILT, STATE } from ".
 const skip = !BUILT && "face not built (prototypes/face/build.sh)";
 const RS = { shown: 0, finish: 1, going: 2, rest: 3 }, RK = { none: 0, bed: 1, curl: 2, out: 3 };
 const hook = (f, i, k) => f.M._face_test_rest(i, k);
-const rec = (f, n) => Array.from({ length: n }, (_, i) => ({ rs: hook(f, i, 0), rk: hook(f, i, 1), sh: hook(f, i, 2), hidden: hook(f, i, 3), x: hook(f, i, 4), feet: hook(f, i, 5), walking: hook(f, i, 6), lv: hook(f, i, 7) }));
+const rec = (f, n) => Array.from({ length: n }, (_, i) => ({ rs: hook(f, i, 0), rk: hook(f, i, 1), sh: hook(f, i, 2), hidden: hook(f, i, 3), x: hook(f, i, 4), feet: hook(f, i, 5), walking: hook(f, i, 6), lv: hook(f, i, 7), fx: hook(f, i, 8), cw: hook(f, i, 9) }));
 const resters = (sc) => sc.props.regions.residents.map((p, i) => [p, i]).filter(([p]) => p.shown === false).map(([, i]) => i);
 
 for (const [name, o, where] of [["moving sets", { adults: 4, juveniles: 3, s05: 1 }, "bed"], ["stills (no curl picture: out)", { adults: 4, juveniles: 3, s05: 1, motionSets: false }, "out"]]) {
@@ -24,7 +24,7 @@ for (const [name, o, where] of [["moving sets", { adults: 4, juveniles: 3, s05: 
   });
 }
 
-test("Reeds, no bed: a rester curls in a nice spot (at most two, 48 px apart, a valid stand) or walks out past the window's left edge and hides; the rest is the same on every run", { skip }, async () => {
+test("Reeds, no bed: a rester curls in a nice spot (at most two, a valid stand, 48 px apart ink to ink) or walks out past the window's left edge and hides; the rest is the same on every run", { skip }, async () => {
   const run = async () => { const sc = movingScene("vivarium", { adults: 4, juveniles: 3, s05: 1, room: 1, focus: "room" }), n = sc.props.regions.residents.length, f = await bootScene(sc); runFrames(f, 90000); return { sc, n, f, r: rec(f, n), h: f.hash() }; };
   const a = await run(), b = await run(); assert.equal(a.h, b.h, "determinism: the same clock, the same hash"); assert.deepEqual(a.r, b.r);
   const R = resters(a.sc); assert.equal(R.length, 3); assert.ok(!("bed" in a.sc.props.regions));
@@ -32,7 +32,7 @@ test("Reeds, no bed: a rester curls in a nice spot (at most two, 48 px apart, a 
   for (const i of R) assert.equal(a.r[i].rs, RS.rest, `${i} is at rest`);
   for (const i of outs) assert.deepEqual([a.r[i].hidden, a.r[i].walking], [1, 0], "out of sight");
   for (const i of curls) assert.equal(a.r[i].hidden, 0, "a curl is drawn");
-  for (const i of curls) for (const j of curls) if (i < j) assert.ok(Math.max(Math.abs(a.r[i].x - a.r[j].x), Math.abs(a.r[i].feet - a.r[j].feet)) >= 48, "curls at least 48 px apart");
+  for (const i of curls) for (const j of curls) if (i < j) assert.ok(Math.abs(a.r[i].fx - a.r[j].fx) >= Math.ceil(a.r[i].cw / 2) + Math.ceil(a.r[j].cw / 2) + SPEC("vivarium").rules.show.curl.gap, `curls ink to ink at least ${SPEC("vivarium").rules.show.curl.gap} px apart (R4b-1b: |xA - xB| >= ceil(inkA.w/2) + ceil(inkB.w/2) + gap)`);
   assert.deepEqual(a.f.errors(), []);
 });
 
@@ -42,6 +42,17 @@ test("a still that curls (it has a curl picture) walks to its nice spot and is d
   const f = await bootScene(sc); runFrames(f, 90000); const r = rec(f, n);
   for (const i of R) { assert.equal(r[i].rs, RS.rest, `${i} at rest`); if (r[i].rk === RK.curl) assert.equal(r[i].hidden, 0, "a curl is drawn"); else assert.equal(r[i].hidden, 1); }
   assert.ok(R.some((i) => r[i].rk === RK.curl), "at least one found a nice spot"); assert.deepEqual(f.errors(), []);
+  const curls = R.filter((i) => r[i].rk === RK.curl), gap = SPEC("vivarium").rules.show.curl.gap;   // R4b-1b: the measured ink (56 here), ink to ink
+  for (const i of curls) assert.equal(r[i].cw, 56, "the curl's measured ink width is the props' curlFigure width");
+  for (const i of curls) for (const j of curls) if (i < j) assert.ok(Math.abs(r[i].fx - r[j].fx) >= 28 + 28 + gap, `curls of 56 px ink: at least ${28 + 28 + gap} between foot points`);
+});
+test("the curl gap is ink to ink: a spot beside a curl of ink 96 needs 144 between foot points, and a narrower curl less; the bed's rect the same (R4b-1b)", { skip }, async () => {
+  const gap = SPEC("vivarium").rules.show.curl.gap; assert.equal(144, 48 + 48 + gap, "two 96 px curls: 144 between feet"); assert.equal(Math.ceil(95 / 2) + Math.ceil(95 / 2) + gap, 144, "ceil: 95 wide counts 48 a side");
+  const sc = movingScene("vivarium", { adults: 4, juveniles: 3, s05: 1, room: 1, focus: "room", motionSets: false }), n = sc.props.regions.residents.length, R = resters(sc);
+  for (const i of R) { const p = sc.props.regions.residents[i]; p.restAt = "curl"; p.curl = "mibi:curl-test:" + i; p.curlFigure = [0, 0, 96, 88]; sc.requests.push({ kind: "curl", id: p.curl, size: [96, 88] }); }
+  const f = await bootScene(sc); runFrames(f, 90000); const r = rec(f, n), curls = R.filter((i) => r[i].rk === RK.curl);
+  for (const i of curls) assert.equal(r[i].cw, 96); for (const i of curls) for (const j of curls) if (i < j) assert.ok(Math.abs(r[i].fx - r[j].fx) >= 144, `two 96 px curls: ${Math.abs(r[i].fx - r[j].fx)} between foot points, 144 at least`);
+  assert.deepEqual(f.errors(), []);
 });
 
 test("a shown one comes back: an out rester walks in from the left edge to the walk and rests no more; a new rester at a fresh show starts at rest", { skip }, async () => {
