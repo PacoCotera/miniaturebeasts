@@ -1,0 +1,222 @@
+[
+ {
+  "name": "mibi-adult-S04-r3a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S04-304x312.png",
+    "Image 1: the adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a slender grown cat-like animal with a long thin tail, a round head with two upright pointed ears, long legs. Its blockout colours and geometry are not the creature's."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S04-128x160-clear.png",
+    "Image 2: the species' signed silhouette (project-owned): the adult's outline."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S04-304x312.png",
+    "Image 3: the species' signed earlier stage (project-owned painting): its colours, its face and the painting finish to match."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a slender grown cat-like animal with a long thin tail, a round head with two upright pointed ears, long legs. Its colours and face are Image 3's: a soft warm fawn-brown coat with a cream muzzle, chest and paws, large round dark glossy eyes with a pale highlight, a small pink nose. Keep Image 1's body plan and proportions, but NOT the blockout's geometry: soft, rounded, living forms. It is fully grown: longer legs, a smaller head for its body, a calmer face than Image 3, and clearly the same species. This is the species' BARE BASE picture: no extra markings beyond those named. Matte painterly rendering like a children's book, the same finish as Image 3, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view facing right like Image 3, calm, standing at rest, all its feet on the ground. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ },
+ {
+  "name": "mibi-adult-S05-r3a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S05-304x312.png",
+    "Image 1: the adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a lean grown fox-like animal with big upright pointed ears, a narrow snout, long slim legs and a long bushy tail held out behind. Its blockout colours and geometry are not the creature's."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S05-128x160-clear.png",
+    "Image 2: the species' signed silhouette (project-owned): the adult's outline."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S05-304x312.png",
+    "Image 3: the species' signed earlier stage (project-owned painting): its colours, its face and the painting finish to match."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a lean grown fox-like animal with big upright pointed ears, a narrow snout, long slim legs and a long bushy tail held out behind. Its colours and face are Image 3's: a bright orange-red coat with a cream-white chest, muzzle and tail tip, dark lower legs, large round dark glossy eyes with a pale highlight. Keep Image 1's body plan and proportions, but NOT the blockout's geometry: soft, rounded, living forms. It is fully grown: longer legs, a smaller head for its body, a calmer face than Image 3, and clearly the same species. This is the species' BARE BASE picture: no extra markings beyond those named. Matte painterly rendering like a children's book, the same finish as Image 3, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view facing right like Image 3, calm, standing at rest, all its feet on the ground. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ },
+ {
+  "name": "mibi-adult-S06-r3a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S06-304x312.png",
+    "Image 1: the adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a stocky grown bear-like animal with a heavy body, a round head with small round ears, a short muzzle, thick legs and a short tail. Its blockout colours and geometry are not the creature's."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S06-128x160-clear.png",
+    "Image 2: the species' signed silhouette (project-owned): the adult's outline."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S06-304x312.png",
+    "Image 3: the species' signed earlier stage (project-owned painting): its colours, its face and the painting finish to match."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a stocky grown bear-like animal with a heavy body, a round head with small round ears, a short muzzle, thick legs and a short tail. Its colours and face are Image 3's: a dark slate grey-green coat with a slightly lighter muzzle, large round dark glossy eyes with a pale highlight, a dark nose. Keep Image 1's body plan and proportions, but NOT the blockout's geometry: soft, rounded, living forms. It is fully grown: longer legs, a smaller head for its body, a calmer face than Image 3, and clearly the same species. This is the species' BARE BASE picture: no extra markings beyond those named. Matte painterly rendering like a children's book, the same finish as Image 3, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view facing right like Image 3, calm, standing at rest, all its feet on the ground. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ },
+ {
+  "name": "mibi-adult-S07-r3a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S07-304x312.png",
+    "Image 1: the adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a big grown bear with a broad heavy body, a round head with round ears, a short muzzle and thick pillar legs. Its blockout colours and geometry are not the creature's."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S07-128x160-clear.png",
+    "Image 2: the species' signed silhouette (project-owned): the adult's outline."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S07-304x312.png",
+    "Image 3: the species' signed earlier stage (project-owned painting): its colours, its face and the painting finish to match."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a big grown bear with a broad heavy body, a round head with round ears, a short muzzle and thick pillar legs. Its colours and face are Image 3's: a warm mid-brown coat with a cream-beige muzzle and paws, round dark glossy eyes with a pale highlight, a dark nose. Keep Image 1's body plan and proportions, but NOT the blockout's geometry: soft, rounded, living forms. It is fully grown: longer legs, a smaller head for its body, a calmer face than Image 3, and clearly the same species. This is the species' BARE BASE picture: no extra markings beyond those named. Matte painterly rendering like a children's book, the same finish as Image 3, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view facing right like Image 3, calm, standing at rest, all its feet on the ground. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ },
+ {
+  "name": "mibi-adult-S08-r3a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S08-304x312.png",
+    "Image 1: the adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a graceful grown deer with long slim legs, a slender neck, large ears and two tall straight pale antlers. Its blockout colours and geometry are not the creature's."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S08-128x160-clear.png",
+    "Image 2: the species' signed silhouette (project-owned): the adult's outline."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S08-304x312.png",
+    "Image 3: the species' signed earlier stage (project-owned painting): its colours, its face and the painting finish to match."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a graceful grown deer with long slim legs, a slender neck, large ears and two tall straight pale antlers. Its colours and face are Image 3's: a warm tan-brown coat with a few soft cream spots on the back, a cream belly and throat, large round dark glossy eyes with a pale highlight. Keep Image 1's body plan and proportions, but NOT the blockout's geometry: soft, rounded, living forms. It is fully grown: longer legs, a smaller head for its body, a calmer face than Image 3, and clearly the same species. This is the species' BARE BASE picture: no extra markings beyond those named. Matte painterly rendering like a children's book, the same finish as Image 3, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view facing right like Image 3, calm, standing at rest, all its feet on the ground. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ },
+ {
+  "name": "mibi-adult-S10-r3a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S10-304x312.png",
+    "Image 1: the adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a grown long-bodied pig-like animal with a long thin tail, short legs, a rounded snout and small upright ears. Its blockout colours and geometry are not the creature's."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S10-128x160-clear.png",
+    "Image 2: the species' signed silhouette (project-owned): the adult's outline."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S10-304x312.png",
+    "Image 3: the species' signed earlier stage (project-owned painting): its colours, its face and the painting finish to match."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a grown long-bodied pig-like animal with a long thin tail, short legs, a rounded snout and small upright ears. Its colours and face are Image 3's: a warm brown bristly coat with pink legs, a pink snout and pink ears, round dark glossy eyes with a pale highlight. Keep Image 1's body plan and proportions, but NOT the blockout's geometry: soft, rounded, living forms. It is fully grown: longer legs, a smaller head for its body, a calmer face than Image 3, and clearly the same species. This is the species' BARE BASE picture: no extra markings beyond those named. Matte painterly rendering like a children's book, the same finish as Image 3, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view facing right like Image 3, calm, standing at rest, all its feet on the ground. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ },
+ {
+  "name": "mibi-adult-S11-r3a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S11-304x312.png",
+    "Image 1: the adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a grown tortoise with a large high domed shell, four thick legs, a short tail and a round head on a short neck. Its blockout colours and geometry are not the creature's."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S11-128x160-clear.png",
+    "Image 2: the species' signed silhouette (project-owned): the adult's outline."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S11-304x312.png",
+    "Image 3: the species' signed earlier stage (project-owned painting): its colours, its face and the painting finish to match."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a grown tortoise with a large high domed shell, four thick legs, a short tail and a round head on a short neck. Its colours and face are Image 3's: a pale cream-beige shell with soft swirled plate patterns, green skin on the head and legs, cream underside, round dark glossy eyes with a pale highlight. Keep Image 1's body plan and proportions, but NOT the blockout's geometry: soft, rounded, living forms. It is fully grown: longer legs, a smaller head for its body, a calmer face than Image 3, and clearly the same species. This is the species' BARE BASE picture: no extra markings beyond those named. Matte painterly rendering like a children's book, the same finish as Image 3, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view facing right like Image 3, calm, standing at rest, all its feet on the ground. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ },
+ {
+  "name": "mibi-adult-S12-r3a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S12-304x312.png",
+    "Image 1: the adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a grown ant-like insect with a three-part body, six slim jointed legs, two long antennae with round tips and two small clear wings folded flat along its back. Its blockout colours and geometry are not the creature's."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S12-128x160-clear.png",
+    "Image 2: the species' signed silhouette (project-owned): the adult's outline."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S12-304x312.png",
+    "Image 3: the species' signed earlier stage (project-owned painting): its colours, its face and the painting finish to match."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a grown ant-like insect with a three-part body, six slim jointed legs, two long antennae with round tips and two small clear wings folded flat along its back. Its colours and face are Image 3's: a bright orange body with cream-white bands and legs, large round dark glossy eyes with a pale highlight. Keep Image 1's body plan and proportions, but NOT the blockout's geometry: soft, rounded, living forms. It is fully grown: longer legs, a smaller head for its body, a calmer face than Image 3, and clearly the same species. This is the species' BARE BASE picture: no extra markings beyond those named. Matte painterly rendering like a children's book, the same finish as Image 3, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view facing right like Image 3, calm, standing at rest, all its feet on the ground. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ },
+ {
+  "name": "mibi-adult-S14-r3a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S14-304x312.png",
+    "Image 1: the adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a grown long soft slug-like creature with a segmented ringed body lying low along the ground and two long thin antennae with round tips. Its blockout colours and geometry are not the creature's."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S14-128x160-clear.png",
+    "Image 2: the species' signed silhouette (project-owned): the adult's outline."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S14-304x312.png",
+    "Image 3: the species' signed earlier stage (project-owned painting): its colours, its face and the painting finish to match."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a grown long soft slug-like creature with a segmented ringed body lying low along the ground and two long thin antennae with round tips. Its colours and face are Image 3's: a soft lavender-lilac body with paler rings, large round dark glossy eyes with a pale highlight, a small calm mouth. Keep Image 1's body plan and proportions, but NOT the blockout's geometry: soft, rounded, living forms. It is fully grown: longer legs, a smaller head for its body, a calmer face than Image 3, and clearly the same species. This is the species' BARE BASE picture: no extra markings beyond those named. Matte painterly rendering like a children's book, the same finish as Image 3, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view facing right like Image 3, calm, standing at rest, all its feet on the ground. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ },
+ {
+  "name": "mibi-adult-S15-r3a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S15-304x312.png",
+    "Image 1: the adult of this species (project-owned rig render): its body plan and proportions only, a crude 3D blockout to be painted over: a grown round plant-like creature: a tall egg-shaped body on two thin legs, two leaf ears, a few short spikes on top and a round leafy tail puff. Its blockout colours and geometry are not the creature's."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S15-128x160-clear.png",
+    "Image 2: the species' signed silhouette (project-owned): the adult's outline."
+   ],
+   [
+    "art/station-masters/pods/juvenile/mibi-juvenile-S15-304x312.png",
+    "Image 3: the species' signed earlier stage (project-owned painting): its colours, its face and the painting finish to match."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references: a grown round plant-like creature: a tall egg-shaped body on two thin legs, two leaf ears, a few short spikes on top and a round leafy tail puff. Its colours and face are Image 3's: a soft leaf green body with darker green speckles, large round dark glossy eyes with a pale highlight, a small calm mouth. Keep Image 1's body plan and proportions, but NOT the blockout's geometry: soft, rounded, living forms. It is fully grown: longer legs, a smaller head for its body, a calmer face than Image 3, and clearly the same species. This is the species' BARE BASE picture: no extra markings beyond those named. Matte painterly rendering like a children's book, the same finish as Image 3, smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view facing right like Image 3, calm, standing at rest, all its feet on the ground. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people."
+ }
+]

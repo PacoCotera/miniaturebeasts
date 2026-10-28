@@ -1,0 +1,142 @@
+[
+ {
+  "name": "curl-S04-adult-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S04-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a grown creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it curls up like a sleeping kitten into a round doughnut, its tail wrapped round its nose and paws, its head tucked on its paws. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S05-adult-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S05-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a grown creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it curls up like a sleeping fox cub into a tight round ball, its big tail wrapped over its paws and the tip of its nose. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S06-adult-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S06-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a grown creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it curls up like a sleeping bear cub into a round heap, its head resting on its forepaws, its round ears showing. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S07-adult-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S07-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a grown creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it curls up like a sleeping bear cub into a round heap, its head resting on its forepaws, its round ears showing. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S08-adult-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S08-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a grown creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it lies down like a sleeping fawn, its legs folded under its body, its neck curved back so its head rests on its flank, its little antlers showing. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S10-adult-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S10-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a grown creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it lies curled on its belly like a sleeping piglet, its legs tucked under, its snout resting on its front trotters, its curly tail round its side. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S11-adult-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S11-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a grown creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it lies flat with its legs and tail drawn in under its shell and its head pulled half into the shell, its chin resting at the shell's rim. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S12-adult-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S12-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a grown creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it settles low with all its legs folded under its body, its antennae folded back along its back, its head bowed onto its forelegs. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S14-adult-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S14-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a grown creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it coils its soft body into a round spiral like a sleeping snail without a shell, its head resting on top of the coil, its eye-stalks drooping. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "curl-S15-adult-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S15-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a grown creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature fast asleep, curled up: it settles into a squat round mound with its legs tucked under, its leaves drooping softly over its body. Its eyes are closed: each eye a soft closed lid line, no iris, no white showing. It looks peaceful and cosy. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, and the SAME SIZE: the curled body holds the same amount of creature as the standing one, so it is lower and wider, never smaller. It lies on the same ground line as cell 1's feet and faces the same way as cell 1. No shadow, no ground, no bed, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ }
+]

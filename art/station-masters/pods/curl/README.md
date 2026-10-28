@@ -38,3 +38,40 @@ At 1x through the host: adult 24x17, juvenile 18x14 (`S01/proof-S01-curl-1x.png`
 - `proof-juveniles-1x.png`, `proof-rest-1x.png`: every species, today's standing nap beside the new curl, through the host's reduction, in Reeds by day and by night.
 - `inputs/`: the composed sheets, `register.json` and the job files.
 - `cuts.json`: each cut's scale and ink.
+
+## Owner ruling 10-28: full size
+
+> "full size, we can scale them down later and that is cheap, upscaling is not."
+
+**The masters.** The masters are now the full-size keys, `curl/keys/mibi-<stage>-SXX-curl-304x312.png`.
+- Each one is in the stand's own frame, at the signed master's scale.
+- They are registered in `slices/` with the same ids (`place_as`).
+- The 96x88 naps are reductions derived from the keys, kept for reference only. Do not place them.
+- S01's full-size key is its layered curl in Pip's look. The host composes S01 from `ui/assets/stands` per look.
+
+**Round 3, the same day.**
+- Adult stand-ins for S04-S08, S10-S12, S14 and S15 (`tools/adultjobs.py`, `adult/cut-adults.py`, full size first), and their curls.
+- Held habit keys for S02 (sniff, puff) and S03 (dig, glow) in `habits/keys/`.
+
+**Proof.** `proof-stand-scale-1x.png` shows each species' standing picture beside its curl at the host's stand scale, in Reeds by day:
+- adult row: 144/304 x 54/152;
+- juvenile row: 104/304 x 40/112;
+- S01 at its layered factors, 54/288 and 40/189.
+
+### Host lines: a sleeper at stand scale
+
+1. **`curlOfMibi`** (`views/home-props.mjs`). The world-size curl is the stand-size curl reduced by exactly the factor the standing picture gets:
+   - **A species with a layered stand** (S01): `const lay = layeredStand(sp, stage, slot, view, "curl")`. Compose it with `composeStand(lay, drawnLooks(frameOf(sp), mb))`, which is the stand's own scale (54/288, 40/189). Lay the stand's curl shadow under it as `curlBuild` does today, with its `feetRow` on the curl's last ink row.
+   - **Every other species:** the master is `mibi-<stage>-SXX-curl-304x312`. Reduce it by `f = look.size[0] / 304 * viewH / slot[1]`, which is the standing picture's own reduction: 0.168 for an adult, 0.122 for a juvenile. The shadow is baked in, so add none.
+   - The `id` keys on the master and `f` (and, for S01, on `standVariant`). The `pictures.mjs` case `"curl"` builds `src` the same way.
+2. **Sizes at 1x.** The widest curl ink is 47x35 (S01 adult; S07 adult is 47x35 with its shadow 49x37). The juveniles are 10-38 wide.
+3. **Rest rects.** The rest rects grow from `[x-13, foot-27, 26, 28]` to `[x-24, foot-34, 48, 35]`. Rest spot changes:
+   - Reeds' bank spots (776, 872) still pass: centres 96 apart are at least 48 + 47, and the ramp end and the raincup drop are still clear.
+   - Ferns' shelf spots (790, 950) still pass: inks 766-813 and 926-973, clear of the copper lines at 836-840 and 884-890.
+   - **Boulders moves to (44, 348) and (140, 348).** At 152 the 48-wide rect reaches x 175, under the shishi [166, 262, 64, 56], whose foot is 317 against the curl top of 314. The new spots are 96 apart and the left one is 28 inside the span.
+4. **Keep-out.** Re-derive it in `make-keepout.mjs`/`curl-measure.mjs` from the full-size curl masters at stand scale. The tallest curl is 35 (it was 28), so the sleepers' tag top is 456 - 35 - 32 = 389.
+5. **Reeds behind reeds-stone-1** at (822, 525). I re-checked every curl at stand scale: its whole picture (alpha > 0) must lie on the stone's alpha >= 250 with its foot at or above 525.
+   - 30 of 32 pass.
+   - S01 adult and S07 adult do not (47 wide against a 76 px stone), and nor do their elders.
+   - The behind spot must take only a curl that passes. Write it as `rest.behind.maxInk: [43, 30]`, the largest curl that passes (S06 adult), or as a per-species list.
+6. **The bed.** It holds 3 curls at a pitch of 48. The widest ink is 47, so they still do not overlap.

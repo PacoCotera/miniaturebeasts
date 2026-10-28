@@ -6,7 +6,7 @@
     (AREA 0.85: S01's own layered curl is 0.80 of its stand as an adult, 1.10 as a juvenile);
   * placed in the stage's 304x312 canvas centred on x 152, its last solid row on 304, the house shadow (#1e1a22 at alpha 110, an ellipse 0.9 of the curl's width,
     0.11 of it tall, 10-22 px) under it as the nap masters carry theirs; then the 96x88 nap by curlnap.py.
-usage: python3 -I curlcut.py RAW SPECIES STAGE"""
+usage: python3 -I curlcut.py RAW SPECIES STAGE [POSE AREA]   (a held habit key: POSE its name, written to habits/keys/, no nap)"""
 import sys, os, json, numpy as np
 from PIL import Image, ImageDraw
 from scipy import ndimage as nd
@@ -18,7 +18,8 @@ def key(rgb):
     a = np.clip((160 - m) / 90, 0, 1)
     M = np.array([255.0, 0, 255.0]); c = (rgb.astype(float) - (1 - a[..., None]) * M) / np.maximum(a[..., None], 1e-3)
     return np.clip(c, 0, 255), a
-def cut(raw, sp, stage):
+def cut(raw, sp, stage, pose="curl", area=None):
+    area = AREA if area is None else area
     im = np.asarray(Image.open(raw).convert("RGB")); H, W = im.shape[:2]
     c, a = key(im)
     solid = a >= 0.5; lab, n = nd.label(solid); ids = range(1, n + 1); sz = nd.sum(solid, lab, ids); cm = nd.center_of_mass(solid, lab, ids)
@@ -33,7 +34,7 @@ def cut(raw, sp, stage):
     ys, xs = np.where(a > 0); y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
     curl = Image.fromarray(np.dstack([c, a * 255])[y0:y1, x0:x1].astype(np.uint8), "RGBA")
     mst = np.asarray(Image.open(f"{ROOT}/{'adult' if stage == 'adult' else 'juvenile'}/mibi-{stage}-{sp}-304x312.png").convert("RGBA"))[..., 3]
-    target = AREA * (mst >= 200).sum(); have = (a >= 0.5).sum(); s = (target / have) ** 0.5
+    target = area * (mst >= 200).sum(); have = (a >= 0.5).sum(); s = (target / have) ** 0.5
     curl = premul_resize(curl, max(1, round(curl.width * s)), max(1, round(curl.height * s)))
     ca = np.asarray(curl)[..., 3]; sy, sx = np.where(ca >= 200); last = sy.max(); cx = (sx.min() + sx.max() + 1) / 2; w = sx.max() - sx.min() + 1
     canvas = Image.new("RGBA", (304, 312), (0, 0, 0, 0))
@@ -41,7 +42,8 @@ def cut(raw, sp, stage):
     d.ellipse([152 - sw / 2, 304 - sh * 0.6, 152 + sw / 2, 304 + sh * 0.4], fill=(30, 26, 34, 110))
     ox, oy = round(152 - cx), 304 - last
     canvas.alpha_composite(curl, (ox, oy)) if ox >= 0 and oy >= 0 else canvas.paste(curl, (ox, oy), curl)
-    keyf = f"{ROOT}/curl/keys/mibi-{stage}-{sp}-curl-304x312.png"; canvas.save(keyf)
+    keyf = f"{ROOT}/curl/keys/mibi-{stage}-{sp}-curl-304x312.png" if pose == "curl" else f"{ROOT}/habits/keys/mibi-{stage}-{sp}-{pose}-304x312.png"; canvas.save(keyf)
+    if pose != "curl": return {"raw": os.path.relpath(raw, ROOT), "scale": round(s, 4), "key": os.path.relpath(keyf, ROOT)}
     n96 = nap(canvas, stage); napf = f"{ROOT}/curl/mibi-{stage}-{sp}-96x88.png"; n96.save(napf)
     na = np.asarray(n96)[..., 3]; ny, nx = np.where(na >= 128)
     k = np.asarray(canvas)[..., 3]; ky, kx = np.where(k >= 128)
@@ -51,5 +53,6 @@ def cut(raw, sp, stage):
            "fits": bool(kx.min() > 0 and kx.max() < 303 and ky.min() > 0 and nx.min() >= 2 and nx.max() <= 93 and na[0].max() == 0)}
     return rec
 if __name__ == "__main__":
-    raw, sp, stage = sys.argv[1:4]; r = cut(raw, sp, stage); print(json.dumps(r))
-    f = f"{ROOT}/curl/cuts.json"; allr = json.load(open(f)) if os.path.exists(f) else {}; allr[f"{sp}-{stage}"] = r; json.dump(allr, open(f, "w"), indent=1)
+    raw, sp, stage = sys.argv[1:4]; pose = sys.argv[4] if len(sys.argv) > 4 else "curl"; area = float(sys.argv[5]) if len(sys.argv) > 5 else None
+    r = cut(raw, sp, stage, pose, area); print(json.dumps(r))
+    f = f"{ROOT}/curl/cuts.json" if pose == "curl" else f"{ROOT}/habits/cuts.json"; allr = json.load(open(f)) if os.path.exists(f) else {}; allr[f"{sp}-{stage}" + ("" if pose == "curl" else "-" + pose)] = r; json.dump(allr, open(f, "w"), indent=1)

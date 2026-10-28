@@ -1,0 +1,44 @@
+[
+ {
+  "name": "habit-S03-juvenile-dig-b",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S03-juvenile-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it digs: its front claws scraping at the ground, its head low and its haunches up; no earth, no clods, no dust are shown. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "habit-S03-juvenile-glow-b",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S03-juvenile-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it stands calm with its tail lifted and the small round bulb at the tail's tip lit from inside, glowing warm golden yellow like a firefly; only the bulb itself is bright: no halo disc, no ring, no rays, nothing pink or red. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "habit-S03-adult-glow-b",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S03-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it stands calm with its tail lifted and the small round bulb at the tail's tip lit from inside, glowing warm golden yellow like a firefly; only the bulb itself is bright: no halo disc, no ring, no rays, nothing pink or red. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ }
+]

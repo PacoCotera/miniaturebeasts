@@ -1,0 +1,114 @@
+[
+ {
+  "name": "habit-S02-juvenile-sniff-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S02-juvenile-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it leans forward with its face low and its nose almost touching the ground, sniffing, its cap tipped forward, its tail puff up behind; eyes open and curious. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "habit-S02-juvenile-puff-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S02-juvenile-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it puffs out its soft fuzz so its round body swells rounder and fluffier, standing tall and proud, its cap lifted, eyes half closed with pleasure. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "habit-S03-juvenile-dig-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S03-juvenile-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it digs: its front claws scraping at the ground, its head low and its haunches up, a few small clods of earth flying back from its front paws. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "habit-S03-juvenile-glow-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S03-juvenile-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it stands calm with its tail lifted and the round bulb at the tail's tip glowing a warm soft gold light, a gentle halo of light around the bulb only. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "habit-S02-adult-sniff-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S02-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it leans forward with its face low and its nose almost touching the ground, sniffing, its cap tipped forward, its tail puff up behind; eyes open and curious. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "habit-S02-adult-puff-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S02-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it puffs out its soft fuzz so its round body swells rounder and fluffier, standing tall and proud, its cap lifted, eyes half closed with pleasure. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "habit-S03-adult-dig-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S03-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it digs: its front claws scraping at the ground, its head low and its haunches up, a few small clods of earth flying back from its front paws. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ },
+ {
+  "name": "habit-S03-adult-glow-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/curl/inputs/curl-S03-adult-in.png",
+    "Image 1: the sheet. Cell 1 holds the signed creature; cell 2 is empty."
+   ]
+  ],
+  "prompt": "The image is a sheet of two cells on a flat #FF00FF magenta ground. Cell 1 (the left half) shows a creature, a finished painting. Keep cell 1 exactly as it is. In cell 2 (the right half, now empty) paint the SAME creature doing this: it stands calm with its tail lifted and the round bulb at the tail's tip glowing a warm soft gold light, a gentle halo of light around the bulb only. Exactly the same creature as cell 1: the same colours, the same markings, the same proportions, the same painting style, finish and light from the upper left, the same size, standing on the same ground line as cell 1's feet and facing the same way. No shadow, no ground, no props, no text, no outline: the creature alone on the flat #FF00FF magenta, with clear magenta all round it and nothing crossing the middle line between the cells."
+ }
+]

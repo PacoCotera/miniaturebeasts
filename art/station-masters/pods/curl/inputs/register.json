@@ -158,5 +158,85 @@
   "cx": 151.5,
   "last": 278,
   "sha256": "7d4c13098ce521fc6c9c835c406492f3e7efee133bdfdb076ad977718066da50"
+ },
+ "curl-S04-adult-a": {
+  "ox": 57,
+  "oy": 214,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 303,
+  "sha256": "bcdca219dbb314b764e6d8e57f8ccad754cd6723448186b0ca992c22c1952444"
+ },
+ "curl-S05-adult-a": {
+  "ox": 57,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 302,
+  "sha256": "6a00dbdffc18064e3c9fde31b364679a2e23824721442a06bc65ec174119294c"
+ },
+ "curl-S06-adult-a": {
+  "ox": 57,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 302,
+  "sha256": "dd79654bbb16d8d117bb7254161a2607b70444d4a6d74c9f85bc659a2ebec0ad"
+ },
+ "curl-S07-adult-a": {
+  "ox": 57,
+  "oy": 214,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 303,
+  "sha256": "6218ebaee7816c2453facc6fe7235b411e2bb7e0127fee40a4cbcc2fa9c81ecb"
+ },
+ "curl-S08-adult-a": {
+  "ox": 56,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 152.5,
+  "last": 302,
+  "sha256": "6171e4c475fa4053b8940bcdf0800b657abbdcc0e6f9919402ef2922e78f17d9"
+ },
+ "curl-S10-adult-a": {
+  "ox": 56,
+  "oy": 219,
+  "scale": 1.6,
+  "cx": 152.5,
+  "last": 300,
+  "sha256": "0866ac26f9228016ba72996e8b15c0ef6d474eb9b463435fc024a82881a61532"
+ },
+ "curl-S11-adult-a": {
+  "ox": 57,
+  "oy": 213,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 304,
+  "sha256": "37f5c0a451fd28ccc581d9311b8ba2be03916514953a48c79fe21cc84a14a59d"
+ },
+ "curl-S12-adult-a": {
+  "ox": 57,
+  "oy": 213,
+  "scale": 1.6,
+  "cx": 152.0,
+  "last": 304,
+  "sha256": "4d7e6708c9c937fee49646deb74cb197ac2786e784afb0369c06681d5b57987d"
+ },
+ "curl-S14-adult-a": {
+  "ox": 58,
+  "oy": 219,
+  "scale": 1.6,
+  "cx": 151.5,
+  "last": 300,
+  "sha256": "4ccfb846f77a4643bad456ba42519a891e98c602567b87693ed4cd6e568ae604"
+ },
+ "curl-S15-adult-a": {
+  "ox": 56,
+  "oy": 216,
+  "scale": 1.6,
+  "cx": 152.5,
+  "last": 302,
+  "sha256": "9c60b818adf70517171ed8cc3275939d72ea5e2a720ba6b382767332aa8d6b1a"
  }
 }

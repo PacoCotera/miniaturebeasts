@@ -1,0 +1,42 @@
+{
+ "S02-juvenile-sniff": {
+  "raw": "source/raw/habit-S02-juvenile-sniff-a.jpg",
+  "scale": 0.4974,
+  "key": "habits/keys/mibi-juvenile-S02-sniff-304x312.png"
+ },
+ "S02-juvenile-puff": {
+  "raw": "source/raw/habit-S02-juvenile-puff-a.jpg",
+  "scale": 0.3097,
+  "key": "habits/keys/mibi-juvenile-S02-puff-304x312.png"
+ },
+ "S03-juvenile-dig": {
+  "raw": "source/raw/habit-S03-juvenile-dig-b.jpg",
+  "scale": 0.448,
+  "key": "habits/keys/mibi-juvenile-S03-dig-304x312.png"
+ },
+ "S03-juvenile-glow": {
+  "raw": "source/raw/habit-S03-juvenile-glow-b.jpg",
+  "scale": 0.5252,
+  "key": "habits/keys/mibi-juvenile-S03-glow-304x312.png"
+ },
+ "S02-adult-sniff": {
+  "raw": "source/raw/habit-S02-adult-sniff-a.jpg",
+  "scale": 0.5512,
+  "key": "habits/keys/mibi-adult-S02-sniff-304x312.png"
+ },
+ "S02-adult-puff": {
+  "raw": "source/raw/habit-S02-adult-puff-a.jpg",
+  "scale": 0.4023,
+  "key": "habits/keys/mibi-adult-S02-puff-304x312.png"
+ },
+ "S03-adult-dig": {
+  "raw": "source/raw/habit-S03-adult-dig-a.jpg",
+  "scale": 0.5211,
+  "key": "habits/keys/mibi-adult-S03-dig-304x312.png"
+ },
+ "S03-adult-glow": {
+  "raw": "source/raw/habit-S03-adult-glow-b.jpg",
+  "scale": 0.5416,
+  "key": "habits/keys/mibi-adult-S03-glow-304x312.png"
+ }
+}

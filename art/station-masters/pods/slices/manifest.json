@@ -22172,5 +22172,1577 @@
   "status": "new",
   "signed_in": null,
   "status_note": "new: SJ-CR1 (0 MXN), the Create re-layout cut by hand from masters-pods 1cb5b1a2's relit stage (create-relayout/build.py); not signed, the art director signs at 1x in the builder's whole captures"
+ },
+ "mibi-adult-S04-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S04-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S04's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 304x312 reduced from the 304",
+  "sha256": "785773b6bb540b5e9babb014bd4cd6ecaa2f29bd6d6b4e825ac4e272169f2e3c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S04-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S04-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S04's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 144x152 reduced from the 304",
+  "sha256": "148da9eaee75ac8acefad16c1b5f6fb90c99cd0fcc94d5488819270212f771d9",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S04-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S04-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S04's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 96x88 reduced from the 304",
+  "sha256": "0c0e627536c4747e2c9d354884f451636d761a9313edbba8085160243d95e111",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S04-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S04-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S04's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 48x48 reduced from the 304",
+  "sha256": "c3e4a98cb5387d010abc307b2057fc0b78b97f3d9ab95cbbf2adef5898c4f2e8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S05-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S05-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S05's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 304x312 reduced from the 304",
+  "sha256": "ff0d6a4a52d0650740283e40adcfa927eead8f2d6e5dd26e392682142393b491",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S05-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S05-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S05's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 144x152 reduced from the 304",
+  "sha256": "8e3d251d62cb872a404dc875fa62ccd134feb14c71db2a4fa56a40491357ddd7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S05-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S05-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S05's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 96x88 reduced from the 304",
+  "sha256": "61a67b92318ff5a766b3bc4033d0c982d188e8208be08daf5e6f5be07160ab69",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S05-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S05-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S05's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 48x48 reduced from the 304",
+  "sha256": "6da33b571aca01151a22c5ae31cda98806a5ae107e5da010e52427530a8daf39",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S06-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S06-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S06's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 304x312 reduced from the 304",
+  "sha256": "4effe1d682169b37fabe5cc0336c031ff2b14fb55ae8a58ac898a2559a68d421",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S06-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S06-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S06's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 144x152 reduced from the 304",
+  "sha256": "e66dc6b10a2e78c5865a683dd3267c783dc1b228671294ed0c44cc127965d808",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S06-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S06-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S06's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 96x88 reduced from the 304",
+  "sha256": "9228468c22b62670e616ff2b57ef46ff1a4a10545528fb94591f4bbc171c0fce",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S06-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S06-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S06's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 48x48 reduced from the 304",
+  "sha256": "664caf464634cdb9205679c0fc2ea434f4de1372e895e6917374b722b6da951f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S07-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S07-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S07's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 304x312 reduced from the 304",
+  "sha256": "f1f364e4e06638f106b2a26d6f7532c634a32367667e3c44ca128c157140c7c8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S07-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S07-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S07's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 144x152 reduced from the 304",
+  "sha256": "a44d24762c3544922a1d7534a3289c8804e4d9241ba77ec20a71d1b72cf0bf73",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S07-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S07-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S07's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 96x88 reduced from the 304",
+  "sha256": "34b90ff34beb2b175e23cbe4465e5503b6e20fc58c3be522f6cc783899611d64",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S07-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S07-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S07's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 48x48 reduced from the 304",
+  "sha256": "2865ce7e366df5aebfab6612d3cda15e435e6a184e7f3cd515fe615ea7dc6007",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S08-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S08-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S08's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 304x312 reduced from the 304",
+  "sha256": "da524ef4bb2229afa1058c3683e81b4f2e791a5c98fefa077ff85d0a06be7e8f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S08-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S08-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S08's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 144x152 reduced from the 304",
+  "sha256": "f4a37094bc6b34f1384f55cadb09020289beb551085eb8ad01b5ba4691d4d35a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S08-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S08-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S08's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 96x88 reduced from the 304",
+  "sha256": "102ce72c8059900e0830bb3da9904521beb49f5c010174006ccbe362677e7b90",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S08-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S08-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S08's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 48x48 reduced from the 304",
+  "sha256": "010fa2e29b206ba3a0094070535f87dd6b38318663266fd09073be57cc999e7d",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S10-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S10-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S10's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 304x312 reduced from the 304",
+  "sha256": "99b1394fc8faa391ed55ff2b2541a099b3418dded5b3b0d1da7aa4f7e2fb4b8d",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S10-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S10-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S10's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 144x152 reduced from the 304",
+  "sha256": "9b140160d3297bf9917e5d437a484bb56f3b4f8d4b7bdebecc85a1c8ed62a496",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S10-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S10-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S10's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 96x88 reduced from the 304",
+  "sha256": "c25f1037f0edf6e3639914fd8346f1611eaadb52e5495eacffd3fc82a2e9d6fc",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S10-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S10-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S10's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 48x48 reduced from the 304",
+  "sha256": "c69f33355fc4ee978041f3c5be884e5ad5284a89dfb4da09cfc15400fd011887",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S11-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S11-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S11's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 304x312 reduced from the 304",
+  "sha256": "ec2efe20e234478de26bf900d0f09bbddf0ef1ba96957983ee435a00a680efa8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S11-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S11-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S11's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 144x152 reduced from the 304",
+  "sha256": "0063ddba2a2c9bfe6fb779cea9f03a39556173bdb663e34ccd68025ac5b6e9f8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S11-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S11-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S11's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 96x88 reduced from the 304",
+  "sha256": "cf26fc8208e642f0a355e8df5beb074ea8552ad03fa6821ee4c4004116fadec7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S11-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S11-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S11's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 48x48 reduced from the 304",
+  "sha256": "cf7a238a9256a584070a9e673e99c6f3c71ade71d3efeade9427623e9f05b717",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S12-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S12-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S12's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 304x312 reduced from the 304",
+  "sha256": "7e44a0f925cdfe068f1082903d59090fb0d2d7c8d119d6309251f89427f2d741",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S12-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S12-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S12's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 144x152 reduced from the 304",
+  "sha256": "d0ce7993456a303316b113e0fa4d3e5059bb9c45ca2f4bc24796d55c89d522de",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S12-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S12-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S12's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 96x88 reduced from the 304",
+  "sha256": "7528d31f49ebaf313676cfdd02eeca38451218a42f12819384c8e49a6a0b5089",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S12-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S12-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S12's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 48x48 reduced from the 304",
+  "sha256": "a7d6f77736c10b46bf8fff45681fcae66919d9e827df2a3bafea59f1a92c6cfc",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S14-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S14-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S14's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 304x312 reduced from the 304",
+  "sha256": "a7e1ecaf260264e36a152ba01c89ba0a9146b5af5a758e87604287b3f87e8f87",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S14-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S14-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S14's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 144x152 reduced from the 304",
+  "sha256": "7d430ed7f8db4795d1565d705f381bcbd34df4d9f5208d7db9a940663889b796",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S14-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S14-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S14's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 96x88 reduced from the 304",
+  "sha256": "9f93308e0495742a47f1ac4d516200ccaeff2932b2711f5d680c7060dd28f478",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S14-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S14-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S14's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 48x48 reduced from the 304",
+  "sha256": "f4f44a7162bb211f1e51466e62a009ce23c6e93d6210573a2705c1f233408f0c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S15-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S15-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S15's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 304x312 reduced from the 304",
+  "sha256": "9695a0f92522d10ef103720e8550553db1f35919c3fb6806462fca313b757349",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S15-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S15-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S15's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 144x152 reduced from the 304",
+  "sha256": "8e167dbcebc1ca36b5c37cfae653102c09d5084c9b264068706d99a9381d643c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S15-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S15-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S15's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 96x88 reduced from the 304",
+  "sha256": "029e36cb0bcdb692b6e0b4a3c2a2efe40c3d968ab411f2a9ef05bc57a6a435c8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S15-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/mibi-adult-S15-r3a.jpg (gemini-3-pro-image; rig, silhouette and the signed juvenile; tools/adultjobs.py)",
+  "made": "S15's adult stand-in, round 3, the bare base, cut by adult/cut-adults.py (height = juvenile / 0.67, feet 305), 48x48 reduced from the 304",
+  "sha256": "2503ce6b326ef5cf7d21c974289d89a754022dd0af3ad3f8868889aac3319f8f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S09-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S09's signed adult stand-in, 304x312",
+  "sha256": "7eddcb0f09c0d06d96d03bb9737a56c4d7be2caa487c375d390a2c8b4f93e5e1",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S09-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S09's signed adult stand-in, 144x152",
+  "sha256": "46b90ec4f4b7dac887864ab6af2a264be6478a5f5fbbeeed7766397d2ed427a5",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S09-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S09's signed adult stand-in, 96x88",
+  "sha256": "77f035f7d8778dd91e74b11e1e37b2669db9276bac72ae7f481b0f28875c6760",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S09-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S09's signed adult stand-in, 48x48",
+  "sha256": "cec968ba3bcf9c00d88eef6c86a6c8d00a790918933007197b6246be0518ac75",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S13-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S13's signed adult stand-in, 304x312",
+  "sha256": "3546da6588a44af856356fc07fab14209ca2676c4d89a2d2489084343d5cb04e",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S13-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S13's signed adult stand-in, 144x152",
+  "sha256": "3de9de180d4841845c1d0cb74c9c298c13621ccddcce5253642cee06713cfdec",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S13-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S13's signed adult stand-in, 96x88",
+  "sha256": "43c663f02ffd71428f94a2d4c8e82fc384a95bd31cf7d933bac208fe8474b1b1",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S13-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S13's signed adult stand-in, 48x48",
+  "sha256": "66620da825a0c0a987b20e19277da5c922a6780494909a3e29e46a7b889191ef",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S16-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S16's signed adult stand-in, 304x312",
+  "sha256": "a94e8e7b39ef9030f7cdbad389e1c0d2c48d6c9886453127d73f634126a05260",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S16-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S16's signed adult stand-in, 144x152",
+  "sha256": "fd5a6ce195e7d23466d5e75819189494f7170c780075a4e0d16d9a5649ee3719",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S16-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S16's signed adult stand-in, 96x88",
+  "sha256": "13018adcec2ef6362ef90cd0d2f7eed384ff3022bfea1eec0b526b27c1459ee7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S16-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "adult/ (round 1-2, signed 10-11), now registered for placement",
+  "made": "S16's signed adult stand-in, 48x48",
+  "sha256": "87a05aa0ee937a5ddcbbed5d311579496fd1fb7b4173b95a307ff5e33dbf2818",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S01-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "8eadbe511ef861474090aeba761782e626cf26a32ae4f184afff89b3f667d779",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S02-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "71419571504630b4238504e68f6d437593b66c1b36561365205b7e43907855c0",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S03-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "adb80ff946681788e92dbc257a6813b0836873cd6a0bca12a1e693ceca58b5cd",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S04-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "de9d5ca33be7e1a7bfcf4a3e4cc476cdf2146c68431fb3acadc2fa2a0cfd0ef3",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S05-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "731d1d8b1e33ed2eb7adf25fab51e78fd3f0e704a339222b9f738cd66121bb44",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S06-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "53f3737dbe336456f9b49eccee701cc4567abce57733974fc741733de6da04be",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S07-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "fa7b89f732ed6537d6df0e0a3daaf858ae9750ca62504c851a7635c0df7f7d9d",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S08-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "fb6b2fb9fd0f96971e5edbc69d18e19097f9d82807c7f4f64c70a2568cf7a173",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S09-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "c3f4a92be9384a9cdc54aa63377a032922db017f939fcde4724b2e61dfd841af",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S10-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "476c7021992ffc589ba163755a48a5d3fef4f35ef85ea13de9ed030efe9eeb48",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S11-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "176b3a3dc0be061f7eb12c6f952adde6a5b6aa27bfcfcfc6c655c0069378f368",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S12-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "31036fd6dbe8230e717ab1c7f2b50a1cf3bea40435b06471fbfb510cb98dee82",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S13-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "97d7d9d0de9b2a83f1cb2a2c64da22dd13555a1b68f7447b09f0b687cf06c2f3",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S14-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "e2416d57be43703ab9bc23980b9bc7bd124cfed183195542d85a0ebdf73cc041",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S15-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "44bff913b6da40c49a6179e5d16c2162d843be477ef6e1f3842c27a502ab72fe",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S16-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "8e382990d58f74dc62d62e479aa70cafb6717ce1ab5759677590052b9e64698a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S01-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "33515b3eec50fd01583e9553e7c3c85045d6d22193ce137415f673f8f564ceb3",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S02-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "b0323e7b47a22d35c1d1e5fd530194c3c8f0b2fc01b82312d331ed8df92f4aad",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S03-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "f86434b766c607b889eedf6650d6692983ea83d2f54abb2b2102e623d4728960",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S04-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "0123169dfda6db8fa04f14cba36cb1e0918e86d6c5b6ce6f0fcd569aed2c3a5b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S05-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "d0516acffcd0b5be309c8c951b5cb82eca71930b51f5d9f7e4cdc291a28a9a11",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S06-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "02edddb1d4f70b0d405e8dcab788f994044831be3c4eda6d4d03f8c08fed4c2a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S07-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "62ddfe20ec4efd90c1d51a19958b119bf62816092dd1e5fdb1cd26d5a1ee6483",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S08-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "3c1863f119f2434699e2149f3ad047ee251d991340c0479168a7d5def495dc62",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S09-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "bb242a402496662e00d71eed44dde4fbf4b3ec63439e8e7b7e2ea4eb8a60a0ab",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S10-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "e660fc5a6af03e13642e9854cee32810d07da05314450e8abd0fa1d6f6d033f1",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S11-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "2509544857ab17768337fdd12be9d34e9ca5d2432abf5fe7a295a75ac2aaf80b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S12-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "1d01ec54776680ff5e83b4d30b493d8be58d7605924051b6c07cbe9a50e08388",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S13-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "b18ad786816950a9a8c9b52bfe81ea512a6124de6ce1eb74a1f942dcdca8b4a7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S14-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "208e717eb87c0fb56012ea1b6ec0db2d1f7857fabe8330d996d0718d3a076d63",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S15-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "352a879d3a552d2eab5d54097a15c5448cc80d119c44dfa65aec0e6a592b36c4",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S16-curl-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "curl/manifest.json (Pro paintings 10-28, or S01's layered curl pose)",
+  "made": "the curled sleeper at full size: the stand's own 304x312 frame and scale, house shadow baked (S01: none, the layered curl shadow)",
+  "sha256": "8ea01968cf9582dafd8ee6f19258a00eb170ee1d78b30a3808b0757031a2cf7f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S02-puff-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "habits/cuts.json (Pro, tools/habitjobs.py; S03 glow halo rebuilt by tools/glowfix.py)",
+  "made": "a held habit key at full size, the signed master's scale (tools/curlcut.py POSE 1.0, tools/habitfix.py)",
+  "sha256": "198ac2dfb91ac313792e9e2fac2a0af6e6857e1cc2ec22a380cd9044919b78aa",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S02-sniff-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "habits/cuts.json (Pro, tools/habitjobs.py; S03 glow halo rebuilt by tools/glowfix.py)",
+  "made": "a held habit key at full size, the signed master's scale (tools/curlcut.py POSE 1.0, tools/habitfix.py)",
+  "sha256": "c5315cf2eceec699172a79e72bf93b8178a9b9b30bbe7dd9f126f43092656206",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S03-dig-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "habits/cuts.json (Pro, tools/habitjobs.py; S03 glow halo rebuilt by tools/glowfix.py)",
+  "made": "a held habit key at full size, the signed master's scale (tools/curlcut.py POSE 1.0, tools/habitfix.py)",
+  "sha256": "bb3b06481714a77cb2e34ad23c11c19d7a5efa54d33bf2a5f96ea68d106afaf1",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-adult-S03-glow-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "habits/cuts.json (Pro, tools/habitjobs.py; S03 glow halo rebuilt by tools/glowfix.py)",
+  "made": "a held habit key at full size, the signed master's scale (tools/curlcut.py POSE 1.0, tools/habitfix.py)",
+  "sha256": "2f489b09c85f777231eca6e4792f8c87feb8e88aab6bbe3fbd8106a4ec95c9cf",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S02-puff-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "habits/cuts.json (Pro, tools/habitjobs.py; S03 glow halo rebuilt by tools/glowfix.py)",
+  "made": "a held habit key at full size, the signed master's scale (tools/curlcut.py POSE 1.0, tools/habitfix.py)",
+  "sha256": "656d4c7fdc309f7d9b272da9dd72108e99d60131a73cfada574c1d1a5c98e4c2",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S02-sniff-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "habits/cuts.json (Pro, tools/habitjobs.py; S03 glow halo rebuilt by tools/glowfix.py)",
+  "made": "a held habit key at full size, the signed master's scale (tools/curlcut.py POSE 1.0, tools/habitfix.py)",
+  "sha256": "e411d3d5bfbc08a88a3f8fb06d1217feb7b26cc947309c821ad852b280814802",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S03-dig-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "habits/cuts.json (Pro, tools/habitjobs.py; S03 glow halo rebuilt by tools/glowfix.py)",
+  "made": "a held habit key at full size, the signed master's scale (tools/curlcut.py POSE 1.0, tools/habitfix.py)",
+  "sha256": "f542a13cce734e99e51d57323dab6357a7a1c2f682a9147ad52a1434a7c6cea7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "mibi-juvenile-S03-glow-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "rect": null,
+  "src": "habits/cuts.json (Pro, tools/habitjobs.py; S03 glow halo rebuilt by tools/glowfix.py)",
+  "made": "a held habit key at full size, the signed master's scale (tools/curlcut.py POSE 1.0, tools/habitfix.py)",
+  "sha256": "45845207f3c4dcae0a725e1006e63662db1ee889c8f913e0b7e6534c2d08dbdb",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S02-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S02-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "c41095107ec904aae69e8c19f5b099c4b9c57ccd632508670f480663804afa84",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S04-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S04-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "4922340a5c7dde86b77c56f06f005c504d53263a1d0fa41978a66ad53e0b66a9",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S05-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S05-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "d9fa3fc70306e446c5603c5c90a0cbbc0091f81a55b79e84ced401203eff0425",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S06-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S06-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "1ac62f8a07387225ecc0dc720227802103438226be7dbc171eac461c99782ee7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S07-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S07-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "14e1e339344e363606712e85b3a1ffd7fb376422860cc46e4453747ed7a5164b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S08-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S08-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "842bb3ca62dad5369de59055589e3a5a280244ad434a7e351586145ff3d6403d",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S09-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S09-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "d5bf23a25e4caf7f8fdd1395cb35f95dec978ccc57504d12b5158e468c9419a8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S10-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S10-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "c7dd9ab7c8549bc4cc16c1946357200c9bee3204df763d80693324abf1f8c6e1",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S11-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S11-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "ba402dfb0c111b41108619c3db9b57c01d6d09ebec74470010e9ba653bfed7b7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S12-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S12-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "d8423149f13fb9dd9d38e6b9359ed602fe970fb876f4d0e316a90a5ba9970653",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S13-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S13-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "4fec53e1bfc8632643972d73003e4d34ebdfe17856f23988b9a63e24bb73295a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S14-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S14-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "dd211b32ced5d36f26340940b002a72036a4da0572b73ea4836f625025ce80e2",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S15-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S15-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "bc3c7c7134e809b42909de8aef9c928ac24aa91cad527eda6f29bf628c0af7ce",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "bud-shape-S16-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S16-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "aa6be6760b61b176016f97982721ce219a29180c8549e72fa2fc2c97e5a271e5",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S04-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "7ad29403f4000702d200fbe1f2a268f143f7dc9fac55ac7773d1ef7835416454",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S05-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "be6f254c63d515844107ebe2012a933b816a854c05a4f2857ae0e73a83ee3253",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S06-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "294f5fe91b5cad16ded75b1a88ce3d044dbe94665d08a848e9c6e353534ae886",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S07-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "90b019e5692ffbb3afcc9e3c49674db20cd80cbef73958cd4944be66eeab623b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S08-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "82558ee540a9e9f316684395de3440194b436aea8b5ba5c6616297ac3ffce659",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S09-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "70226fc1c500fb3d9ca5928c8d20bed70c0aa5e1a28374f76479a1418fef0aa7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S10-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "ecaf65d05623ea6f4dbc3ae8c108e4a375f5d36c2aeb2d4742893ea978625f09",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S11-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "cbdb26c38a324b4b338c2340f02b34e7b38075fdd158893ec0c3266337ff79db",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S12-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "52a4fc0733805a2a3a116dfd80e9b7f1174a9bad1c455cf121a4e82461ab492b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S13-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "fc27a58b383c7bf0db07d0329f1d8365a6d2e1d6ce8bed8d1be85c1bdd9cdae3",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S14-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "6237546cf08f7924dc289c55222a08ad991e1cf8c888b00c6c7f1465d6124909",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S15-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "b576c3ac44a44ac9954cb3d585e9e6d521eafb94fa058dd65ea719f9c8f378e7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "face-S16-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "tools/facesmore.py",
+  "made": "the face: head and crown cut from the signed adult painting, reduced to 24 (dock/make-dock.py's rule)",
+  "sha256": "02c974921f3a9cea31381409d114d3710066fb6d1089e74fae5922aceb77d938",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S04-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "d525299cea930c602c226e6025eabf103643c908efb9b426bb9a52a91ab6da37",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S05-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "0496d3ecef54733ac83068369baeda5ccce5b2ed021254f91d85fafb4f4c49b4",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S06-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "11447e9493617ed241a31f015c4a5f1ec4ffdbc660028e8700b4a0accb7c5a3c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S07-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "1289641bcf7cfeeeb6335d392b45a704baf9fe99cc64aed54ef44abaa5a402ae",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S08-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "3a7c07942b7733f410659e3f0e7b2de683eeb6dd4b1c67654d7d3d92b18b98e5",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S10-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "51b9415e7644b1dd0d19e70e8b6e3c1e790780cf62cd797f2f73f282c1e58172",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S11-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "bfe9f722768e923bb7025ed4dc0af3b53070981de96482646ac230c37b0ab830",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S12-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "d4ec08b91f45759f5900afbfca86edc02945f05153c6316a04c43047a98aee73",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S13-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "c7eb5ca3d80e362b3a604e9add9330187448332c4e03b7418114c7af9ae6d7cf",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S14-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "0cf6e4381671f8ca2e62a02a185b52a70ccae1dd584684c34190da45801eeaba",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S15-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "0e8ecd7e619387095ca32f3621b5ae718af280e5cfc8271d927aef66fda74431",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
+ },
+ "spread-plate-S16-80x96": {
+  "size": [
+   80,
+   96
+  ],
+  "rect": null,
+  "src": "tools/platesmore.py (make-spread.py plate() on the signed adult painting)",
+  "made": "the found plate: the painted type tipped in on a printed plate ground with a soft contact shadow",
+  "sha256": "c6206646bdd24c3e0c0d4504781a094b390d9250de9a670701951fed8ba9a045",
+  "status": "signed",
+  "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)"
  }
 }
