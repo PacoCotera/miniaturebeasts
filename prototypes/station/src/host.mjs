@@ -17,6 +17,7 @@ setLibrarySpecies((st, settings) => specimenSpecies(st, settings) ?? STARTER);  
 import { dropLight } from "./light-grade.mjs";
 import { vivariumBuild } from "./views/vivarium-props.mjs";
 import { shownRoom, roomPictureIds, roomIds } from "./views/room-props.mjs";
+import { ensureRoom, roomLoaded } from "./masters.mjs";
 import { habitatBuild } from "./views/habitat-props.mjs";
 import { namerBuild } from "./views/namer-props.mjs";
 import { panelBuild } from "./views/panel-props.mjs";
@@ -139,6 +140,7 @@ export function vivariumBody(light = lightNow()) {
 // habitat's swap event, the same dither), the old pictures kept on the face until the event ends; a cut with reduced motion. The chips, the crumb and the line are cuts on the frame of the key.
 export function showRoom(h, i) {
   const st = G.st, was = st.face?.room ?? 0; if (!(i >= 0 && i < S.ROOMS_MAX) || i === was) return;
+  if (!roomLoaded(i)) { ensureRoom(i).then(() => showRoom(h, i)); return; }   // the room's pictures are fetched first (moved to the front of the queue): the screen shows what it showed until they are in, then the swap runs (a refused picture rejects loudly)
   const e = SPECS.vivarium.events.swap, base = roomIds(was, shownLight ?? lightNow()).base;
   const thumbs = Array.from({ length: S.ROOM }, (_, k) => { const mb = S.inRoom(st, was)[k]; return mb ? mibiPictureOf(st, mb, [48, 48], G.settings).id : ""; });   // a carried mibi's tile shows its (dimmed) thumbnail too
   st.face.room = i; const prev = { base, tiles: thumbs }; UI.viv.prev = prev;
@@ -300,6 +302,9 @@ const litOf = (reqs) => reqs.filter((r) => r.kind === "mibi" && r.light).map((r)
 const owedOf = (reqs) => reqs.filter((r) => r.owed).map((r) => r.id);   // the scene's pictures that show an owed habit key (the request's `owed`): a golden refuses them
 // The pictures a light puts on the face, by their ids (their sizes from the specs that place them): the host drops them once props with the next light are taken.
 export const shownRoomNow = () => shownRoom(G.st, UI.screen === "habitat" || UI.screen === "sitting" ? UI.hab.id : UI.meet ?? null);   // the room on the face: st.face.room, or the room of the mibi met (Home) or up close (Habitat, the sitting)
+// The rooms the next draw needs pictures of: the room shown, and the room Add a room? previews while its panel is open. The page draws nothing new until they are placed (masters.mjs ensureRoom).
+export const roomsWanted = () => { const r = [shownRoomNow()]; if (UI.screen === "vivarium" && UI.panel?.screen === "vivarium") { const n = S.roomCount(G.st, G.settings); if (n < S.ROOMS_MAX) r.push(n); } return r; };
+export const roomsPending = () => roomsWanted().filter((r) => !roomLoaded(r));
 export const lightIds = (light, room = shownRoomNow()) => roomPictureIds(room, light);   // the shown room's painting, near view, pieces and (Roots) bed in a light: the host drops them once props with the next light (or room) are taken
 // The pictures of the frame and the Companion's face, the same on every screen.
 export function frameIds() {
