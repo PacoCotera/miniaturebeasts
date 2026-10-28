@@ -58,6 +58,13 @@
     "shown": {
      "type": "boolean"
     },
+    "where": {
+     "enum": [
+      "docked",
+      "away"
+     ],
+     "description": "R4b: on a carried place (state out), where the Companion is: docked draws the solid glyph, away the outline; the thumbnail is given too and drawn dimmed"
+    },
     "picture": {
      "type": "string"
     },
@@ -557,6 +564,10 @@
      "properties": {
       "glyph": {
        "type": "string"
+      },
+      "glyphDocked": {
+       "type": "string",
+       "description": "R4b: the solid Companion glyph (frame.json marks.companion.docked), a carried tile's while docked"
       },
       "items": {
        "type": "array",

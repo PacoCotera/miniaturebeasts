@@ -32,6 +32,7 @@ static int has(const char *asset) { return asset && *asset && wire_has_asset(ass
    resident stands on its pixel and its idle and walk freeze; with motion off it stands at its start. The walk state lives while the screen shows and starts again from the seeds when Home is shown again; a new id starts from its own seed, a props change with the same seed keeps the state. */
 static int g_kx, g_ky, g_xlo, g_xhi, g_flo, g_fn;   /* home.json regions.resident.walk, read at each draw: the keep-out zone's corner, the box.x range 8 px inside the glass, the feet's rows of the spec's own ground band */
 static int g_rlo, g_rhi;   /* the rows the feet may take: Home's own band, or the spec's ground band when no room is chosen; none on the whole and Idle (the room's levels are the feet band there) */
+static int g_lx;   /* the window's left edge (the clip): a rester walks off past it (R4b) */
 static int g_trmax, g_rdiv, g_lvin, g_spd[3][2], g_nres;   /* vivarium.json rules.travel.max, rules.walk.raisedDiv and .levelOneIn and .speed[stage] = [px, ticks]; the residents shown (the raised cap's N) */
 static void walk_load(void) {
   int bed = *v_pstr("regions.bed.state") != 0;   /* the room has a bed (Roots only, the rooms design): the sleepers' keep-out applies only then */
@@ -47,7 +48,7 @@ static void walk_load(void) {
     g_kx = away ? v_sk(sp(), hp("regions.resident.walk.keepOut"), 0) : 1 << 20; g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1) - 1;
     g_xlo = v_sk(sp(), hp("regions.resident.walk.ground"), 0); g_xhi = g_xlo + v_sk(sp(), hp("regions.resident.walk.ground"), 2);
   }
-  g_flo = v_sk(sp(), hp("regions.resident.walk.ground"), 1); g_fn = v_sk(sp(), hp("regions.resident.walk.ground"), 3);
+  g_flo = v_sk(sp(), hp("regions.resident.walk.ground"), 1); g_fn = v_sk(sp(), hp("regions.resident.walk.ground"), 3); g_lx = v_sk(sp(), hp("regions.glass.rect"), 0);
   /* the room of this window: the window's offset from the painting, derived from the specs' own values (the whole: window.rect.y less painting.rows[0]; Home: window.rect.x less painting.cx and window.rect.y less painting.rows[0]; Idle: none) */
   { int dx = 0, dy = 0;
     if (g_viv) { dx = v_sk(sp(), hp("regions.glass.rect"), 0); dy = v_sk(sp(), hp("regions.glass.rect"), 1) - spec_int("vivarium", "regions.window.painting.rows.0", 0); }
@@ -58,7 +59,11 @@ static void walk_load(void) {
   g_trmax = v_si("vivarium", "rules.travel.max", 3); g_rdiv = v_si("vivarium", "rules.walk.raisedDiv", 3); g_lvin = v_si("vivarium", "rules.walk.levelOneIn", 4); if (g_rdiv < 1) g_rdiv = 1; if (g_lvin < 1) g_lvin = 1;
   for (int s = 0; s < 3; s++) { static const char *nm[3] = { "juvenile", "adult", "elder" }; g_spd[s][0] = v_si("vivarium", v_fmt("rules.walk.speed.%s.0", nm[s]), 1); g_spd[s][1] = v_si("vivarium", v_fmt("rules.walk.speed.%s.1", nm[s]), 1); if (g_spd[s][0] < 1) g_spd[s][0] = 1; if (g_spd[s][1] < 1) g_spd[s][1] = 1; }
 }
-typedef struct { char id[24]; unsigned seed, s; int w, h, x, feet, facing, walking, idle, wx, wy, x0, y0, step, stage, pi, lv, leg, jn, tlv, ax, af, bx, bf, tx, tf, hold; long done; int live; } wk_t;   /* lv: the level it stands on (0 main; on leg 2 the level it leaves); leg: 0 none, 1 to the join, 2 across it, 3 to the target; jn: the join; tlv: the level it is going to; (ax, af), (bx, bf): the join's ends on the two levels and (tx, tf) the target, box x and feet; pi: its index among the props' residents; hold: frozen this frame */
+/* R4b: a resident the room does not show (props shown false) is a rester. It finishes its trip (a leg 2 included), then rests where the props say (restAt): RK_BED (its sleeper on the bed draws, the walker hides where it stands), RK_CURL (it walks to a nice spot and curls
+   there, counted by neither N nor the five) or RK_OUT (it walks off main's left end past the window's clip and hides). RS_FINISH: flagged, still on its trip or waiting out its idle; RS_GOING: on its rest trip; RS_REST: at rest. A shown one comes back from where it rests. */
+enum { RK_NONE, RK_BED, RK_CURL, RK_OUT };
+enum { RS_SHOWN, RS_FINISH, RS_GOING, RS_REST };
+typedef struct { char id[24]; unsigned seed, s; int w, h, x, feet, facing, walking, idle, wx, wy, x0, y0, step, stage, pi, lv, leg, jn, tlv, ax, af, bx, bf, tx, tf, hold, rk, rs, sh, ex; long done; int live; } wk_t;   /* lv: the level it stands on (0 main; on leg 2 the level it leaves); leg: 0 none, 1 to the join, 2 across it, 3 to the target; jn: the join; tlv: the level it is going to; (ax, af), (bx, bf): the join's ends on the two levels and (tx, tf) the target, box x and feet; pi: its index among the props' residents; hold: frozen this frame; rk, rs, sh, ex: where it rests (RK_*), its rest phase (RS_*), shown, and on its way off the window's edge (R4b) */
 static wk_t g_w[MAXR]; static int g_nw; static uint32_t g_t0; static int g_have_t0;
 static long g_wticks;   /* the walk's group ticks applied since its origin g_t0: tick j is at 40 j ms and steps group j mod 2 */
 static int g_ctx = -1;   /* the walk's last context (0 none, 1 Idle, 2 the Vivarium's whole): it starts again from the seeds when the other shows */
@@ -109,15 +114,74 @@ static void wk_next(wk_t *k) {   /* the segment ended: the next of the three leg
   for (;;) {
     if (k->leg == 1) { k->leg = 2; wk_seg(k, k->bx, k->bf); }   /* across the join, from end to end: lv stays the level it leaves */
     else if (k->leg == 2) { k->lv = k->tlv; k->leg = 3; wk_seg(k, k->tx, k->tf); }   /* its last step: lv becomes the target's */
-    else { k->leg = 0; k->lv = k->tlv; k->walking = 0; k->idle = 25 + (int)(wr(k) % 38u); return; }
+    else { k->leg = 0; k->lv = k->tlv;
+      if (k->rs == RS_GOING) {   /* a rest trip's end: the way out goes on off the window's edge; the others rest where they stand */
+        if (k->rk == RK_OUT && !k->ex) { k->ex = 1; wk_seg(k, g_lx - k->w - 2, k->feet); return; }
+        k->rs = RS_REST; k->hold = 1; }
+      k->walking = 0; k->idle = 25 + (int)(wr(k) % 38u); return; }
     if (wk_len(k)) return;
   }
+}
+static int curl_clear(const char *self, int fx, int feet, int gap);   /* below the moving residents' type */
+/* a nice spot for a curl (vivarium.json rules.show.curl; the game designer's cats): a foot point (fx, feet) on level lv that is a valid stand (the walk's own test), at least `gap` from every other curl and from the bed, beside an occluder of lv (fx = its rect.x - beside or
+   rect.x + rect.w + beside, feet = its foot - occDy) or on the level's back edge (feet = top(fx) + backDy at a profile breakpoint); chosen by a draw on the mibi's seed among those within rules.night.reach of where its trip ended, else the nearest, else where it stands if
+   that is valid. 1 with the foot point in *ox, *of; 0 when there is none (it walks out). */
+static int curl_spot(const char *self, unsigned seed, int lv, int w, int x, int feet, int *ox, int *of) {
+  int beside = v_si("vivarium", "rules.show.curl.beside", 56), backDy = v_si("vivarium", "rules.show.curl.backDy", 8), occDy = v_si("vivarium", "rules.show.curl.occDy", 4), gap = v_si("vivarium", "rules.show.curl.gap", 48), reach = v_si("vivarium", "rules.night.reach", 200);
+  int cx[24], cf[24], n = 0, here = x + w / 2; const rp_t *oc; int noc = room_pieces(RP_OCCLUDER, &oc);
+  for (int k = 0; k < noc && n + 2 <= 20; k++) if (oc[k].level == lv) { cx[n] = oc[k].x - beside; cf[n++] = oc[k].foot - occDy; cx[n] = oc[k].x + oc[k].w + beside; cf[n++] = oc[k].foot - occDy; }
+  { int xs[8], nx = room_xs(lv, xs, 8), q = (w + 3) / 4; for (int i = 0; i < nx && n < 24; i++) { int fx = xs[i]; if (fx < xs[0] + q) fx = xs[0] + q; if (fx > xs[nx - 1] - q) fx = xs[nx - 1] - q; cx[n] = fx; cf[n++] = room_top(lv, fx) + backDy; } }
+  int ok[24], nok = 0, best = -1, bd = 1 << 30, near[24], nn = 0;
+  for (int i = 0; i < n; i++) { ok[i] = gok(lv, cx[i] - w / 2, cf[i], w, 0) && curl_clear(self, cx[i], cf[i], gap); if (!ok[i]) continue; nok++;
+    int d = iabs(cx[i] - here) > iabs(cf[i] - feet) ? iabs(cx[i] - here) : iabs(cf[i] - feet); if (d < bd) { bd = d; best = i; } if (d <= reach) near[nn++] = i; }
+  if (nn) { unsigned r = (seed ^ 0x9e3779b9u) * 2654435761u >> 16; int i = near[r % (unsigned)nn]; *ox = cx[i]; *of = cf[i]; return 1; }
+  if (nok) { *ox = cx[best]; *of = cf[best]; return 1; }
+  if (gok(lv, x, feet, w, 0) && curl_clear(self, here, feet, gap)) { *ox = here; *of = feet; return 1; }
+  return 0;
+}
+/* a trip to a given point, as wk_step's own, with no draws: on lv, or by the join to tlv; 0 when no join links the two */
+static int wk_go(wk_t *k, int tlv, int wx, int wf) {
+  int jn = -1, rt[2][2][2] = { { { 0 } } };
+  if (tlv != k->lv && (jn = room_route(k->lv, tlv, rt)) < 0) return 0;
+  k->walking = 1; k->tlv = tlv; k->jn = jn; k->tx = wx; k->tf = wf; k->ex = 0;
+  if (tlv == k->lv) { k->leg = 0; wk_seg(k, wx, wf); if (!wk_len(k)) { wk_next(k); } }
+  else { k->leg = 1; k->ax = rt[0][0][0] - k->w / 2; k->af = rt[0][0][1]; k->bx = rt[1][0][0] - k->w / 2; k->bf = rt[1][0][1]; wk_seg(k, k->ax, k->af); if (!wk_len(k)) wk_next(k); }
+  return 1;
+}
+/* main's leftmost point at its top: where a rester leaves by and a traveller comes in (rooms.json rest.edge: left, level main) */
+static void edge_point(int w, int *x, int *feet) { lvl_draw(0, 0, 0, w, g_xlo, g_xlo, g_rlo, g_rhi, x, feet); }
+/* a rester's rest trip from where its own trip ended: its curl spot (else out), or off main's left end */
+static int wk_rest_plan(wk_t *k) {
+  if (k->rk == RK_CURL) { int ox, of; if (curl_spot(k->id, k->seed, k->lv, k->w, k->x, k->feet, &ox, &of)) {
+      int bx = ox - k->w / 2; if (bx == k->x && of == k->feet) { k->rs = RS_REST; k->hold = 1; return 1; }
+      k->rs = RS_GOING; if (wk_go(k, k->lv, bx, of)) return 1; k->rs = RS_FINISH; }
+    k->rk = RK_OUT; }
+  int tx, tf; edge_point(k->w, &tx, &tf);
+  if (k->lv == 0 && k->x == tx && k->feet == tf) { k->ex = 1; k->walking = 1; k->tlv = 0; k->leg = 0; wk_seg(k, g_lx - k->w - 2, k->feet); k->rs = RS_GOING; return 1; }
+  k->rs = RS_GOING; if (wk_go(k, 0, tx, tf)) return 1;
+  k->x = g_lx - k->w - 2; k->rs = RS_REST; k->hold = 1; return 1;   /* no way to main: it is simply out of sight */
+}
+/* a rester placed where it rests, the walk shown from its seed (a new walker that is not shown): out past the edge, or at its curl spot, or where it stands */
+static void wk_rest_at(wk_t *k) {
+  if (k->rk == RK_CURL) { int ox, of; if (curl_spot(k->id, k->seed, k->lv, k->w, k->x, k->feet, &ox, &of)) { k->x = ox - k->w / 2; k->feet = of; k->rs = RS_REST; k->hold = 1; return; } k->rk = RK_OUT; }
+  if (k->rk == RK_OUT) { int tx, tf; edge_point(k->w, &tx, &tf); k->lv = k->tlv = 0; k->x = g_lx - k->w - 2; k->feet = tf; }
+  k->rs = RS_REST; k->hold = 1;
+}
+/* a rester shown again, or a traveller home: it comes in from the edge, or stands where it rested */
+static void wk_enter(wk_t *k) {
+  int tx, tf; edge_point(k->w, &tx, &tf); k->lv = k->tlv = 0; k->x = g_lx - k->w - 2; k->feet = tf; k->leg = 0; k->jn = -1; k->walking = 1; k->tx = tx; k->tf = tf; wk_seg(k, tx, tf); k->rs = RS_SHOWN; k->ex = 0; k->hold = 0;
+}
+static void wk_return(wk_t *k) {
+  int was = k->rs, out = k->rk == RK_OUT || k->ex; k->rs = RS_SHOWN;
+  if ((was == RS_REST && out) || (was == RS_GOING && k->ex)) { wk_enter(k); return; }
+  k->ex = 0; k->hold = 0;
 }
 static void wk_step(wk_t *k) {   /* one step of this resident's own time */
   if (!k->walking) {
     if (k->idle > 0) { k->idle--; }
     if (k->idle > 0) return;
     if (census_travelling() >= g_trmax) return;   /* the ceiling: no trip starts while the most that may travel are travelling; it asks again on its next tick */
+    if (!k->sh && k->rs == RS_FINISH) { if (k->rk == RK_BED) { k->rs = RS_REST; k->hold = 1; return; } wk_rest_plan(k); return; }   /* a rester: its trip is over, it goes to rest (a rest trip is a trip under the ceiling) */
     unsigned r = wr(k); int nl = room_levels(), tlv = k->lv, jn = -1, rt[2][2][2] = { { { 0 } } };   /* one draw: the target level (1 trip in lvin changes level, when a join links the two and the raised cap allows) */
     if (nl > 1 && r % (unsigned)g_lvin == 0) { int to = k->lv ? 0 : 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)); if ((to == 0 || raised_ok(k->id)) && (jn = room_route(k->lv, to, rt)) >= 0) tlv = to; }
     int ax = rt[0][0][0] - k->w / 2, af = rt[0][0][1], bx = rt[1][0][0] - k->w / 2, bf = rt[1][0][1];
@@ -153,14 +217,22 @@ typedef struct {
   int rest, rested, wx, wf, x0, f0, M, nh, hop, tripd, td0, arrived, settle_tried;
   int lv, leg, jn, tlv, ax, af, bx, bf, tx, tf;                       /* the level it stands on (on leg 2 the one it leaves), the leg (0 none, 1 to the join, 2 across it, 3 to the target), the join, the level it is going to, the join's ends (box x, feet) and the target */
   int want, focus, focus_t, acked, deferred, stir_hold, pending_stir, wander, wander_left, wander_until, wander_wps;
+  int rk, rs, sh, ex;                                                 /* R4b: where it rests (RK_*), its rest phase (RS_*), shown, on its way off the window's edge */
   long flip_due, curl_end, trip_start;
 } mv_t;
 static mv_t g_m[MAXR]; static int g_nm;
+/* a foot point (fx, feet) is at least `gap` (the larger of the two distances) from every other curl at rest and from the bed's rect (R4b) */
+static int curl_clear(const char *self, int fx, int feet, int gap) {
+  for (int i = 0; i < g_nw; i++) { const wk_t *o = &g_w[i]; if (!strcmp(o->id, self) || o->rs != RS_REST || o->rk != RK_CURL) continue; int ox = o->x + o->w / 2; if ((iabs(ox - fx) > iabs(o->feet - feet) ? iabs(ox - fx) : iabs(o->feet - feet)) < gap) return 0; }
+  for (int i = 0; i < g_nm; i++) { const mv_t *o = &g_m[i]; if (!strcmp(o->id, self) || o->rs != RS_REST || o->rk != RK_CURL) continue; int ox = o->x + o->fw / 2; if ((iabs(ox - fx) > iabs(o->feet - feet) ? iabs(ox - fx) : iabs(o->feet - feet)) < gap) return 0; }
+  if (*v_pstr("regions.bed.state")) { int b[4]; v_srect(sp(), hp("regions.bed.rect"), b); int dx = fx < b[0] ? b[0] - fx : fx > b[0] + b[2] ? fx - b[0] - b[2] : 0, dy = feet < b[1] ? b[1] - feet : feet > b[1] + b[3] ? feet - b[1] - b[3] : 0; if ((dx > dy ? dx : dy) < gap) return 0; }
+  return 1;
+}
 /* the household the raised cap and the travelling ceiling read: pointers to every walker's state as it stands for the planner (the proposals of a household tick, the ones not yet kept of a screen's first frame, the kept ones) */
 static const wk_t *cen_w[2 * MAXR]; static int cen_nw; static const mv_t *cen_m[2 * MAXR]; static int cen_nm;
 static int census_raised(const char *skip) { int n = 0;
-  for (int i = 0; i < cen_nw; i++) if (strcmp(cen_w[i]->id, skip) && (cen_w[i]->lv > 0 || cen_w[i]->tlv > 0)) n++;
-  for (int i = 0; i < cen_nm; i++) if (strcmp(cen_m[i]->id, skip) && (cen_m[i]->lv > 0 || cen_m[i]->tlv > 0)) n++;
+  for (int i = 0; i < cen_nw; i++) if (strcmp(cen_w[i]->id, skip) && cen_w[i]->rs != RS_REST && (cen_w[i]->lv > 0 || cen_w[i]->tlv > 0)) n++;
+  for (int i = 0; i < cen_nm; i++) if (strcmp(cen_m[i]->id, skip) && cen_m[i]->rs != RS_REST && (cen_m[i]->lv > 0 || cen_m[i]->tlv > 0)) n++;
   return n; }   /* raised from the moment a walker commits to a climb until it ends leg 2 downward (a walker bound for a raised level counts at once, so that two never climb past the cap on one tick) */
 static int mv_travelling(const mv_t *m);
 static int census_travelling(void) { int n = 0; for (int i = 0; i < cen_nw; i++) n += cen_w[i]->walking; for (int i = 0; i < cen_nm; i++) n += mv_travelling(cen_m[i]); return n; }
@@ -217,12 +289,16 @@ static int mv_legs(mv_t *m) {
   for (;;) {
     if (m->leg == 1) { m->leg = 2; mv_seg(m, m->bx, m->bf); }
     else if (m->leg == 2) { m->lv = m->tlv; m->leg = 3; mv_seg(m, m->tx, m->tf); }
-    else { m->leg = 0; m->lv = m->tlv; return 0; }
+    else { m->leg = 0; m->lv = m->tlv;
+      if (m->rs == RS_GOING) {   /* a rest trip's end: the way out goes on off the window's edge; a curler settles where it stands */
+        if (m->rk == RK_OUT && !m->ex) { m->ex = 1; mv_seg(m, g_lx - m->fw - 2, m->feet); if (m->M) return 1; }
+        m->rs = RS_REST; if (m->rk == RK_CURL) { m->want = 1; m->flip_due = g_wticks; m->settle_tried = 0; } }
+      return 0; }
     if (m->M) return 1;
   }
 }
 /* the trip stops where it stands (focus): a change of level is given up, except on its leg 2, which it resumes on the ramp */
-static void mv_stop(mv_t *m) { if (m->leg != 2) { m->leg = 0; m->tlv = m->lv; } }
+static void mv_stop(mv_t *m) { if (m->leg != 2) { m->leg = 0; m->tlv = m->lv; if (m->rs == RS_GOING && !m->ex) m->rs = RS_FINISH; } }
 /* a walker reached the end of a segment: it is placed on its waypoint, and the next leg begins at once (1) or the trip is over (0) */
 static int mv_legs_after(mv_t *m) { mv_along(m, m->M); return mv_legs(m); }
 /* a trip: one draw for the level and then a waypoint (8 tries: ≥ 32 px, off the keep-out, a clear path, not in another sleeper's spot), within ±3·travel for a hopper or ±reach for a wanderer, on its own level; with `lvl`, 1 trip in lvin
@@ -250,6 +326,41 @@ static int mv_trip(mv_t *m, int reach, int lvl) {
   else { m->leg = 1; m->ax = ax; m->af = af; m->bx = bx; m->bf = bf; mv_seg(m, ax, af); if (!m->M) mv_legs(m); }
   mv_clip_start(m);
   return 1;
+}
+/* R4b: a mover's rest, the stills' (wk_rest_plan and the rest): a trip to a given point, its curl spot or off main's left end, a placement where it rests, and the way back */
+static int mv_go(mv_t *m, int tlv, int wx, int wf) {
+  int jn = -1, rt[2][2][2] = { { { 0 } } };
+  if (tlv != m->lv && (jn = room_route(m->lv, tlv, rt)) < 0) return 0;
+  m->tlv = tlv; m->jn = jn; m->tx = wx; m->tf = wf; m->leg = 0; m->ex = 0;
+  if (tlv == m->lv) mv_seg(m, wx, wf);
+  else { m->leg = 1; m->ax = rt[0][0][0] - m->fw / 2; m->af = rt[0][0][1]; m->bx = rt[1][0][0] - m->fw / 2; m->bf = rt[1][0][1]; mv_seg(m, m->ax, m->af); if (!m->M && !mv_legs(m)) return 1; }
+  mv_clip_start(m); return 1;
+}
+static int mv_rest_trip(mv_t *m) {
+  if (m->rk == RK_CURL) { int ox, of; if (curl_spot(m->id, m->seed, m->lv, m->fw, m->x, m->feet, &ox, &of)) {
+      int bx = ox - m->fw / 2; if (bx == m->x && of == m->feet) { m->rs = RS_REST; m->want = 1; m->flip_due = g_wticks; m->settle_tried = 0; return 1; }
+      m->rs = RS_GOING; if (mv_go(m, m->lv, bx, of)) return 1; m->rs = RS_FINISH; }
+    m->rk = RK_OUT; }
+  int tx, tf; edge_point(m->fw, &tx, &tf);
+  if (m->lv == 0 && m->x == tx && m->feet == tf) { m->ex = 1; m->tlv = 0; m->leg = 0; mv_seg(m, g_lx - m->fw - 2, m->feet); m->rs = RS_GOING; mv_clip_start(m); return 1; }
+  m->rs = RS_GOING; if (mv_go(m, 0, tx, tf)) return 1;
+  m->x = g_lx - m->fw - 2; m->rs = RS_REST; return 1;
+}
+static void mv_to_rest(mv_t *m, int fresh);
+static void mv_to_asleep(mv_t *m, int ct);
+static int loop_period(const mv_loop_t *l);
+static void mv_rest_at(mv_t *m) {   /* a new mover that is not shown: at rest already */
+  if (m->rk == RK_CURL) { int ox, of; if (curl_spot(m->id, m->seed, m->lv, m->fw, m->x, m->feet, &ox, &of)) { m->x = ox - m->fw / 2; m->feet = of; m->rs = RS_REST; m->want = 1; mv_to_asleep(m, (int)(m->seed % (unsigned)loop_period(&m->S->asleep))); return; } m->rk = RK_OUT; }
+  if (m->rk == RK_OUT) { int tx, tf; edge_point(m->fw, &tx, &tf); m->lv = m->tlv = 0; m->x = g_lx - m->fw - 2; m->feet = tf; }
+  m->rs = RS_REST;
+}
+static void mv_enter(mv_t *m) {
+  int tx, tf; edge_point(m->fw, &tx, &tf); m->lv = m->tlv = 0; m->x = g_lx - m->fw - 2; m->feet = tf; m->facing = 1; m->rs = RS_SHOWN; m->ex = 0; m->want = 0; m->wander = 0; mv_to_rest(m, 1); mv_go(m, 0, tx, tf);
+}
+static void mv_return(mv_t *m) {
+  int was = m->rs, out = m->rk == RK_OUT || m->ex; m->rs = RS_SHOWN;
+  if ((was == RS_REST && out) || (was == RS_GOING && m->ex)) { mv_enter(m); return; }
+  m->ex = 0;
 }
 static void mv_to_rest(mv_t *m, int fresh) { m->clip = C_REST; m->ct = 0; m->phase = 0; m->pt = 0; m->lift = 0; m->dy = 0; m->sh75 = 0; m->dl = 0; m->cell = loop_cell(&m->S->breathe, 0); if (fresh) { m->rest = mv_rest_len(m); m->rested = 0; } }
 static void mv_to_asleep(mv_t *m, int ct) { m->clip = C_ASLEEP; m->ct = ct; m->lift = 0; m->dy = 0; m->sh75 = 0; m->dl = 0; m->cell = loop_cell(&m->S->asleep, ct); }
@@ -351,8 +462,9 @@ static int mv_household(long j) {
   census_state();
   for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (m->wander && !m->want && (m->clip == C_REST || m->clip == C_HOP || m->clip == C_WALK)) m->wander = 0;   /* a wanderer whose own rest flips to awake joins N where it stands */
     if (m->pending_stir && m->focus) { m->pending_stir = 0; g_hh.next_stir = j; }   /* a due stir never lands on a focused sleeper: it goes to another */ }
-  for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (mv_awake(m) && !m->focus && !m->wander) N++; if (mv_travelling(m)) trav++; if (mv_airborne(m)) air++; if (m->clip == C_ASLEEP) asleepN++; if (m->wander) wanderUp = 1; if (!m->want) allAsleep = 0; if (m->clip != C_ASLEEP && m->want) settling = 1; }
-  for (int i = 0, n = v_plen("regions.residents"); i < n; i++) if (strcmp(v_pstr(v_fmt("regions.residents.%d.rest", i)), "asleep") != 0) allAsleep = 0;   /* every resident at home asleep (a still has no rest: it is awake) */
+  for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (m->sh && mv_awake(m) && !m->focus && !m->wander) N++; if (mv_travelling(m)) trav++; if (mv_airborne(m)) air++; if (m->sh && m->clip == C_ASLEEP) asleepN++; if (m->wander) wanderUp = 1; if (m->sh && !m->want) allAsleep = 0; if (m->clip != C_ASLEEP && m->want && m->sh) settling = 1; }
+  for (int i = 0, n = v_plen("regions.residents"); i < n; i++) if (v_pbool(v_fmt("regions.residents.%d.shown", i), 1) && strcmp(v_pstr(v_fmt("regions.residents.%d.rest", i)), "asleep") != 0) allAsleep = 0;   /* only the shown count: a rester is out of the night's stirs and wanders (R4b) */
+  for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (!m->sh && m->rs == RS_FINISH && m->rk == RK_BED && m->clip == C_REST && !m->focus) m->rs = RS_REST; }   /* a rester bound for the bed rests where it stands once its trip is over (its sleeper on the bed draws) */   /* every resident at home asleep (a still has no rest: it is awake) */
   /* G7: the stir, one every 250–500 ticks across the household while one is asleep (none while one wanders, never a focused sleeper, never in the 20 s after its own curl, never the last one twice) */
   int s_lo = v_si("vivarium", "rules.night.stir.0", 250), s_hi = v_si("vivarium", "rules.night.stir.1", 500), w_lo = v_si("vivarium", "rules.night.wander.0", 3000), w_hi = v_si("vivarium", "rules.night.wander.1", 4500), after = v_si("vivarium", "rules.night.afterCurl", 250);
   if (!asleepN || wanderUp) { if (!asleepN) g_hh.next_stir = -1; }
@@ -360,7 +472,7 @@ static int mv_household(long j) {
     if (g_hh.next_stir < 0) g_hh.next_stir = j + 2L * (s_lo + (long)(hr() % (unsigned)(s_hi - s_lo + 1)));
     if (j >= g_hh.next_stir) {
       int el[MAXR], ne = 0;
-      for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (m->clip == C_ASLEEP && !m->focus && !m->pending_stir && j - m->curl_end >= 2L * after && !(asleepN >= 2 && !strcmp(m->id, g_hh.last_stir))) el[ne++] = i; }
+      for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (m->sh && m->clip == C_ASLEEP && !m->focus && !m->pending_stir && j - m->curl_end >= 2L * after && !(asleepN >= 2 && !strcmp(m->id, g_hh.last_stir))) el[ne++] = i; }
       if (ne) { mv_t *m = &g_m[el[hr() % (unsigned)ne]]; m->pending_stir = 1; snprintf(g_hh.last_stir, sizeof g_hh.last_stir, "%s", m->id); g_hh.next_stir = j + 2L * (s_lo + (long)(hr() % (unsigned)(s_hi - s_lo + 1))); }
     }
   }
@@ -369,8 +481,8 @@ static int mv_household(long j) {
     if (!g_hh.all_asleep) { g_hh.all_asleep = 1; g_hh.wander_at = (g_hh.last_curl_end > 0 ? g_hh.last_curl_end : j) + 2L * (w_lo + (long)(hr() % (unsigned)(w_hi - w_lo + 1))); }
     if (j >= g_hh.wander_at) {
       int el[MAXR], ne = 0, n2 = 0;
-      for (int pass = 0; pass < 2 && !ne; pass++) { n2 = 0; for (int i = 0; i < g_nm; i++) if (g_m[i].stage == pass && g_m[i].clip == C_ASLEEP) n2++;
-        for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (m->stage == pass && m->clip == C_ASLEEP && !m->focus && !(n2 >= 2 && !strcmp(m->id, g_hh.last_wander))) el[ne++] = i; } }
+      for (int pass = 0; pass < 2 && !ne; pass++) { n2 = 0; for (int i = 0; i < g_nm; i++) if (g_m[i].sh && g_m[i].stage == pass && g_m[i].clip == C_ASLEEP) n2++;
+        for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (m->sh && m->stage == pass && m->clip == C_ASLEEP && !m->focus && !(n2 >= 2 && !strcmp(m->id, g_hh.last_wander))) el[ne++] = i; } }
       if (ne) { mv_t *m = &g_m[el[hr() % (unsigned)ne]]; m->wander = 1; m->pending_stir = 0; snprintf(g_hh.last_wander, sizeof g_hh.last_wander, "%s", m->id);
         m->wander_until = j + 2L * (v_si("vivarium", "rules.night.awake.0", 250) + (long)(mr(m) % (unsigned)(v_si("vivarium", "rules.night.awake.1", 750) - v_si("vivarium", "rules.night.awake.0", 250) + 1)));
         mv_wake_begin(m); g_hh.all_asleep = 0; }
@@ -383,6 +495,7 @@ static int mv_household(long j) {
   /* every resident of this group steps first (a trip that ends on this tick ends before the scheduler counts), then the scheduler starts trips from those still at rest */
   for (int i = 0; i < g_nm; i++) {
     mv_t *m = &g_m[i]; if (m->group != grp) continue;
+    if (m->rs == RS_REST && m->rk != RK_CURL) continue;   /* a rester out of sight (off the edge, or on the bed) does not step */
     mv_t c = *m; int leaving = mv_airborne(m) && m->pt >= m->S->hop_nlift; if (leaving) air--;
     int ok = air < amax; int wasAir = mv_airborne(&c); mv_step(&c, j, ok); if (!wasAir && mv_airborne(&c)) air++;
     if (c.clip == C_REST && m->wander && c.wander && m->clip != C_REST) { /* arrived on a wanderer's waypoint: the next, or rest */ if (c.wander_wps > 0 && mv_trip(&c, v_si("vivarium", "rules.night.reach", 200), 0)) c.wander_wps--; }
@@ -398,11 +511,11 @@ static int mv_household(long j) {
       if (pass == 0 ? trav >= cap : trav - ending >= fl || trav >= cap) break;
       int best = -1;
       for (int i = 0; i < g_nm; i++) { mv_t *m = &g_m[i]; if (m->group != grp || tried[i] || m->clip != C_REST || at[i] < 0 || pr[at[i]].n.clip != C_REST || m->focus || m->want || m->wander || !g_mv_motion) continue;
-        const mv_t *q = &pr[at[i]].n; if (pass == 0 ? q->rest > 0 : q->rested < minrest) continue;   /* its rest as of this tick */
+        const mv_t *q = &pr[at[i]].n; if (q->rs == RS_REST) continue; if (!q->sh && q->rs == RS_FINISH) { if (q->rk == RK_BED) continue; } else if (pass == 0 ? q->rest > 0 : q->rested < minrest) continue;   /* its rest as of this tick; a rester's trip to rest does not wait for it (R4b) */
         if (best < 0 || q->rested > pr[at[best]].n.rested) best = i; }
       if (best < 0) break;
       tried[best] = 1; mv_t c = pr[at[best]].n;
-      if (mv_trip(&c, 0, 1)) { pr[at[best]].n = c; trav++; }
+      if (!c.sh && c.rs == RS_FINISH ? mv_rest_trip(&c) : mv_trip(&c, 0, 1)) { pr[at[best]].n = c; trav++; }
       else { mv_t *q = &pr[at[best]].n; q->s = c.s; q->rest = mv_rest_len(q); q->rested = 0; }   /* eight draws failed: it rests again, and the next is tried */
     }
   }
@@ -426,7 +539,7 @@ static int mv_household(long j) {
 }
 
 /* ---- what the last draw put where (the focus reads these boxes) ---- */
-typedef struct { char id[24]; char name[40]; char pic[96], stand[96]; int juvenile, waiting, sleeper, box[4], draw[4], mv, nap, asleep, ink[4], rank, hasfig, curled, sbox[4]; unsigned seed; } ent_t;   /* hasfig: box is the figure's, draw the picture's; sbox: the slot a stand picture takes (the send-off) */   /* box: the focus target's; draw: where the picture goes; mv / nap: the moving resident or nap sleeper (-1: a still); asleep: the asleep form, ink its ink box */
+typedef struct { char id[24]; char name[40]; char pic[96], stand[96]; int juvenile, waiting, sleeper, box[4], draw[4], mv, nap, asleep, ink[4], rank, hasfig, curled, sbox[4], hidden; unsigned seed; } ent_t;   /* hasfig: box is the figure's, draw the picture's; sbox: the slot a stand picture takes; hidden: a rester out of sight (off the window's edge, or resting on the bed: its sleeper draws) is neither drawn nor a target (R4b) */   /* box: the focus target's; draw: where the picture goes; mv / nap: the moving resident or nap sleeper (-1: a still); asleep: the asleep form, ink its ink box */
 static ent_t g_e[MAXR + MAXS]; static int g_ne;
 int g_home_steps;   /* test hook: the residents that stepped since face_frame began (face_test_steps) */
 
@@ -467,14 +580,23 @@ static void stills_step(uint32_t rel) {
   for (int i = 0; i < g_nw; i++) if (g_w[i].x != px[i] || g_w[i].feet != pf[i]) g_home_steps++;
 }
 static int ent_focused(const ent_t *e, const char *cur);
+static int rk_of(const char *s) { return !strcmp(s, "bed") ? RK_BED : !strcmp(s, "curl") ? RK_CURL : !strcmp(s, "out") ? RK_OUT : RK_NONE; }
+/* the sleeper of a rester on the bed is drawn once its walker rests there (R4b): until then (its trip, its idle) the walker is the one drawn */
+static int bed_pending(const char *id) {
+  for (int i = 0; i < g_nw; i++) if (!strcmp(g_w[i].id, id)) return !(g_w[i].rs == RS_REST && g_w[i].rk == RK_BED);
+  for (int i = 0; i < g_nm; i++) if (!strcmp(g_m[i].id, id)) return !(g_m[i].rs == RS_REST && g_m[i].rk == RK_BED);
+  return 0;
+}
 static int ent_load(const char *cur) {
   g_ne = 0; walk_load();
   int motion = v_pbool("motion", 1); uint32_t now = anim_now(); g_mv_motion = motion;
   { int ctx = g_viv ? 2 : g_idle ? 1 : g_home ? 3 : 0; const char *rid = v_pstr("regions.room.id");   /* a new screen context or a new shown room: the walks start from their seeds on the room's own levels (R4c) */
     if (g_ctx != ctx || strcmp(g_room, rid)) { g_have_t0 = 0; g_ctx = ctx; snprintf(g_room, sizeof g_room, "%s", rid); } }
+  int firstLoad = !g_have_t0;   /* the walk starts from the seeds on this frame: a traveller's walk-in (props enter) is for a walk that is already running (R4b) */
   if (!g_have_t0) { g_nw = 0; g_nm = 0; g_nnap = 0; g_t0 = now; g_wticks = 0; g_have_t0 = 1; memset(&g_hh, 0, sizeof g_hh); g_hh.next_stir = -1; }   /* Home shown again (home_hidden ran in between): the walks start from their seeds */
   if (motion) walk_clock(now);
-  int nres = v_plen("regions.residents"); if (nres > MAXR) nres = MAXR; g_nres = nres;
+  int nres = v_plen("regions.residents"); if (nres > MAXR) nres = MAXR; g_nres = 0;
+  for (int i = 0; i < nres; i++) g_nres += v_pbool(v_fmt("regions.residents.%d.shown", i), 1);   /* N for the raised cap and for G10 counts the shown only (R4b) */
   uint32_t rel = now - g_t0; wk_t kept[MAXR]; int nk = 0; mv_t mk[MAXR]; int nmk = 0; sg_t sg[MAXR];   /* the walk state is kept per resident id: found by id, a new id or a new seed starts from its seed, one that is gone is dropped */
   uint32_t ids = 2166136261u;
   for (int i = 0; i < nres; i++) {
@@ -487,15 +609,22 @@ static int ent_load(const char *cur) {
     const char *stg = v_pstr(v_fmt("%s.stage", P)); int stage = !strcmp(stg, "juvenile") ? MV_JUV : !strcmp(stg, "elder") ? MV_ELDER : MV_ADULT;
     const mv_stage_t *MS = mset[0] ? moving_stage(mset, stage) : NULL;
     if (MS && has(mwalk) && MS->ww == w && MS->wh == h && nmk < MAXR) {
-      int want = strcmp(v_pstr(v_fmt("%s.rest", P)), "asleep") == 0;
+      int want = strcmp(v_pstr(v_fmt("%s.rest", P)), "asleep") == 0, ssh = v_pbool(v_fmt("%s.shown", P), 1), srk = rk_of(v_pstr(v_fmt("%s.restAt", P)));
       mv_t *old = NULL; for (int j = 0; j < g_nm; j++) if (!strcmp(g_m[j].id, e->id) && g_m[j].seed == e->seed && !strcmp(g_m[j].set, mset) && g_m[j].stage == stage) old = &g_m[j];
       mv_t *m = &mk[nmk]; int fig[4], hf = 0;   /* the atlas's figure, when the props give one inside the cell */
       if (v_plen(v_fmt("%s.figure", P)) == 4) { for (int q = 0; q < 4; q++) fig[q] = v_pint(v_fmt("%s.figure.%d", P, q), -1); hf = fig[0] >= 0 && fig[1] >= 0 && fig[2] > 0 && fig[3] > 0 && fig[0] + fig[2] <= w && fig[1] + fig[3] <= h; }
-      if (old) { *m = *old; if (m->want != want) { m->want = want; m->flip_due = (long)g_wticks; m->settle_tried = 0; } }
+      if (old) { *m = *old; if (!ssh) want = (old->rs == RS_REST && old->rk == RK_CURL) ? 1 : (old->rs == RS_REST ? want : 0);   /* a rester is awake until it rests, and curled at its spot */
+        if (m->want != want) { m->want = want; m->flip_due = (long)g_wticks; m->settle_tried = 0; } }
       else { census_load(kept, nk, mk, nmk, nres); mv_init(m, e->id, e->seed, mset, stage, MS, w, h, hf ? fig : NULL, want, mk, nmk); }
       if (old) { m->hasfig = hf; m->fw = hf ? fig[2] : w; m->fh = hf ? fig[3] : h; m->fdx = hf ? fig[0] : 0; m->fdy = hf ? fig[1] : 0; m->bo = hf ? fig[1] + fig[3] - 1 : h; }
       m->S = MS; m->idx = i; snprintf(m->walk, sizeof m->walk, "%s", mwalk); snprintf(m->shadow, sizeof m->shadow, "%s", mshadow);
       { int f = ent_focused(e, cur); if (f && !m->focus) { m->focus_t = 0; m->acked = 0; } m->focus = f; }
+      m->sh = ssh; if (!ssh) m->rk = srk ? srk : RK_OUT;   /* R4b: a rester finishes its trip, then rests where restAt says; a shown one comes back; a new rester starts at rest */
+      if (!old) { if (!ssh) mv_rest_at(m); else if (motion && !firstLoad && !strcmp(v_pstr(v_fmt("%s.enter", P)), "edge")) mv_enter(m); }   /* a traveller home walks in from the edge (reduced motion: a cut to its walk start) */
+      else if (!ssh && m->rs == RS_SHOWN) m->rs = RS_FINISH;
+      else if (ssh && m->rs != RS_SHOWN) { mv_return(m); if (!motion && m->x < g_xlo) { int tx, tf; edge_point(m->fw, &tx, &tf); m->x = tx; m->feet = tf; } }
+      if (!motion && !ssh && (m->rs == RS_FINISH || m->rs == RS_GOING)) mv_rest_at(m);   /* with motion off a flip is a cut */
+      e->hidden = m->rs == RS_REST && m->rk != RK_CURL;
       if (!motion) {   /* motion off: stand, or curl when asleep, in the facing it has; no travel, no step, no dither; flips are cuts */
         int x = m->x, f = m->feet, fc = m->facing; if (m->want) mv_to_asleep(m, 0); else mv_to_rest(m, 0);
         m->x = x; m->feet = f; m->facing = fc; m->cell = moving_walk_cell(MS, m->want ? "curl" : "stand"); m->wander = 0; m->pending_stir = 0;
@@ -510,15 +639,23 @@ static int ent_load(const char *cur) {
     }
     /* a still: the walk is the figure's: its box x is the figure's left, its feet the last ink row; the picture is placed so that its drawn bbox [dx, dy, W, H] lands there. No figure: the picture is the figure */
     int fig[4] = { 0, 0, w, h }; e->hasfig = 0; e->curled = 0;
-    int cf[4] = { 0 }, cp[2] = { 0 }, asleepStill = 0;   /* asleep and with a curl (its picture sent): the curl is drawn in place, its foot on the stand's feet line */
-    if (!strcmp(v_pstr(v_fmt("%s.rest", P)), "asleep") && v_plen(v_fmt("%s.curlFigure", P)) == 4) { const char *cpic = v_pstr(v_fmt("%s.curl", P)); int sl = wire_asset_slot(cpic);
+    int cf[4] = { 0 }, cp[2] = { 0 }, asleepStill = 0, curlOk = 0; char cpic[96] = "";   /* asleep (or curled at its rest spot) and with a curl (its picture sent): the curl is drawn in place, its foot on the stand's feet line */
+    if (v_plen(v_fmt("%s.curlFigure", P)) == 4) { snprintf(cpic, sizeof cpic, "%s", v_pstr(v_fmt("%s.curl", P))); int sl = wire_asset_slot(cpic);
       if (sl >= 0 && prim_asset_size(sl, cp) == 0) { for (int q = 0; q < 4; q++) cf[q] = v_pint(v_fmt("%s.curlFigure.%d", P, q), -1);
-        if (cf[0] >= 0 && cf[1] >= 0 && cf[2] > 0 && cf[3] > 0 && cf[0] + cf[2] <= cp[0] && cf[1] + cf[3] <= cp[1]) { asleepStill = 1; snprintf(e->pic, sizeof e->pic, "%s", cpic); } } }
+        if (cf[0] >= 0 && cf[1] >= 0 && cf[2] > 0 && cf[3] > 0 && cf[0] + cf[2] <= cp[0] && cf[1] + cf[3] <= cp[1]) curlOk = 1; } }
+    int propAsleep = !strcmp(v_pstr(v_fmt("%s.rest", P)), "asleep"), ssh = v_pbool(v_fmt("%s.shown", P), 1), srk = rk_of(v_pstr(v_fmt("%s.restAt", P)));
     if (v_plen(v_fmt("%s.figure", P)) == 4) { int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("%s.figure.%d", P, q), -1);
       if (f[0] >= 0 && f[1] >= 0 && f[2] > 0 && f[3] > 0 && f[0] + f[2] <= w && f[1] + f[3] <= h) { memcpy(fig, f, sizeof fig); e->hasfig = 1; } }
     wk_t *old = NULL; for (int j = 0; j < g_nw; j++) if (strcmp(g_w[j].id, e->id) == 0 && g_w[j].seed == e->seed && g_w[j].w == fig[2]) old = &g_w[j];
     if (old) kept[nk] = *old; else { census_load(kept, nk, mk, nmk, nres); wk_init(&kept[nk], e->id, e->seed, fig[2], fig[3], !strcmp(stg, "juvenile") ? MV_JUV : !strcmp(stg, "elder") ? MV_ELDER : MV_ADULT, i); }
-    wk_t *k = &kept[nk]; k->pi = i; k->hold = ent_focused(e, cur) || asleepStill;   /* a sleeping resident stays where it is */
+    wk_t *k = &kept[nk]; k->pi = i;
+    k->sh = ssh; if (!ssh) k->rk = srk ? srk : RK_OUT;   /* R4b: a rester finishes its trip, then rests where restAt says; a shown one comes back; a new rester starts at rest */
+    if (!old) { if (!ssh) wk_rest_at(k); else if (motion && !firstLoad && !strcmp(v_pstr(v_fmt("%s.enter", P)), "edge")) wk_enter(k); }   /* a traveller home walks in from the edge (reduced motion: a cut to its walk start) */
+    else if (!ssh && k->rs == RS_SHOWN) k->rs = RS_FINISH;
+    else if (ssh && k->rs != RS_SHOWN) { wk_return(k); if (!motion && k->x < g_xlo) { int tx, tf; edge_point(k->w, &tx, &tf); k->x = tx; k->feet = tf; k->walking = 0; } }
+    if (!motion && !ssh && (k->rs == RS_FINISH || k->rs == RS_GOING)) { k->walking = 0; wk_rest_at(k); }   /* with motion off a flip is a cut */
+    asleepStill = curlOk && ((propAsleep && (ssh || k->rs == RS_REST)) || (!ssh && k->rs == RS_REST && k->rk == RK_CURL)); if (asleepStill) snprintf(e->pic, sizeof e->pic, "%s", cpic);
+    k->hold = ent_focused(e, cur) || asleepStill || (k->rs == RS_REST);   /* a sleeping resident stays where it is; so does one at rest */
     memcpy(sg[nk].fig, fig, sizeof fig); memcpy(sg[nk].cf, cf, sizeof cf); memcpy(sg[nk].cp, cp, sizeof cp); sg[nk].asleep = asleepStill; sg[nk].ent = g_ne; sg[nk].w = w; sg[nk].h = h; nk++;
     g_ne++;
   }
@@ -529,6 +666,7 @@ static int ent_load(const char *cur) {
     const wk_t *k = &g_w[q]; const sg_t *z = &sg[q]; ent_t *e = &g_e[z->ent];
     e->box[0] = k->x; e->box[1] = k->feet + (e->hasfig ? 1 : 0) - z->fig[3];   /* no figure: the picture's bottom edge is the feet, as it was */ e->box[2] = z->fig[2]; e->box[3] = z->fig[3];   /* the figure box: the focus target */
     e->draw[0] = k->x - z->fig[0]; e->draw[1] = e->box[1] - z->fig[1]; e->draw[2] = z->w; e->draw[3] = z->h; memcpy(e->sbox, e->draw, sizeof e->sbox);
+    e->hidden = k->rs == RS_REST && k->rk != RK_CURL;
     if (z->asleep) { int fx = k->x + z->fig[2] / 2, x0 = fx - z->cf[2] / 2;   /* the curl on the same feet point: its own figure's box, ring and tag; no lift */
       e->hasfig = 1; e->curled = 1; e->box[0] = x0; e->box[1] = k->feet + 1 - z->cf[3]; e->box[2] = z->cf[2]; e->box[3] = z->cf[3]; e->draw[0] = x0 - z->cf[0]; e->draw[1] = e->box[1] - z->cf[1]; e->draw[2] = z->cp[0]; e->draw[3] = z->cp[1]; }
   }
@@ -538,13 +676,13 @@ static int ent_load(const char *cur) {
     else { int n0 = 0, n1 = 0, alt = 0; for (int i = 0; i < g_nm; i++) if (g_m[i].w * g_m[i].h > 21888) { g_m[i].group = alt; alt ^= 1; if (g_m[i].group) n1++; else n0++; }
       for (int i = 0; i < g_nm; i++) if (g_m[i].w * g_m[i].h <= 21888) { g_m[i].group = n1 < n0 ? 1 : 0; if (g_m[i].group) n1++; else n0++; } } }
   if (g_hh.ids != ids) { g_hh.ids = ids; g_hh.s = 0x5bd1e995u; for (int i = 0; i < g_nm; i++) g_hh.s ^= g_m[i].seed; }   /* the household LCG, seeded when the set of ids changes or the screen is shown */
-  int ns = strcmp(v_pstr("regions.bed.state"), "docked") == 0 ? v_plen("regions.bed.sleepers") : 0; if (ns > MAXS) ns = MAXS;
+  int ns = strcmp(v_pstr("regions.bed.state"), "resting") == 0 ? v_plen("regions.bed.sleepers") : 0; if (ns > MAXS) ns = MAXS;   /* the bed is the resters' alone (R4b): the carried set is never drawn */
   nap_t nk2[MAXS]; int nn = 0;
   for (int i = 0; i < ns; i++) {
     ent_t *e = &g_e[g_ne]; char P[64]; snprintf(P, sizeof P, "regions.bed.sleepers.%d", i);
     snprintf(e->id, sizeof e->id, "%s", v_pstr(v_fmt("%s.id", P))); snprintf(e->name, sizeof e->name, "%s", v_pstr(v_fmt("%s.name", P))); snprintf(e->pic, sizeof e->pic, "%s", v_pstr(v_fmt("%s.picture", P)));
     e->juvenile = strcmp(v_pstr(v_fmt("%s.stage", P)), "juvenile") == 0; e->waiting = v_pbool(v_fmt("%s.waiting", P), 0); e->sleeper = 1; e->seed = (unsigned)v_pint(v_fmt("%s.seed", P), 0); e->mv = -1; e->nap = -1; e->asleep = 0;
-    snprintf(e->stand, sizeof e->stand, "%s", v_pstr(v_fmt("%s.stand", P))); e->rank = ns - 1 - i;   /* the send-off: the resident's own standing painting, and the order out (rightmost first) */
+    e->hidden = bed_pending(e->id);
     int foot = v_sk(sp(), hp(v_fmt("regions.bed.sleepers.places.%d", ns)), i), bw = v_sk(sp(), hp("regions.bed.sleepers.ink.max"), 0), bh = v_sk(sp(), hp("regions.bed.sleepers.ink.max"), 1), footY = v_si(sp(), hp("regions.bed.sleepers.footY"), 512);
     if (e->juvenile) { e->box[0] = foot - v_si(sp(), hp("regions.bed.sleepers.juvenile.size.0"), 104) / 2; e->box[1] = footY - v_sk(sp(), hp("regions.bed.sleepers.juvenile.size"), 1); e->box[2] = v_sk(sp(), hp("regions.bed.sleepers.juvenile.size"), 0); e->box[3] = v_sk(sp(), hp("regions.bed.sleepers.juvenile.size"), 1); }
     else { e->box[0] = foot - v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 0) / 2; e->box[1] = footY - v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 1); e->box[2] = v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 0); e->box[3] = v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 1); }
@@ -568,7 +706,7 @@ static int ent_load(const char *cur) {
   memcpy(g_nap, nk2, sizeof(nap_t) * (size_t)nn); g_nnap = nn;
   return g_ne;
 }
-static int ent_focused(const ent_t *e, const char *cur) { return strncmp(cur, "resident.", 9) == 0 && strcmp(cur + 9, e->id) == 0; }
+static int ent_focused(const ent_t *e, const char *cur) { return !e->hidden && strncmp(cur, "resident.", 9) == 0 && strcmp(cur + 9, e->id) == 0; }
 
 /* ---- a moving resident drawn in its slot (§2.3 item 8, UI/UX "Asleep in place" item 8): its shadow at the ground point (never lifted), the ring when focused, the picture (hidden while it dithers), the dither node, the lamp.
    In the asleep form the ring is the feet form on the ink box [fx − 48, feet − 88, 96, 88] and the lamp sits on the ink box's top right; the lift is 0. In the walker form, focused and stopped, the picture rises 4 px. ---- */
@@ -599,28 +737,12 @@ static void nap_draw(const ent_t *e) {
   v_name("bed.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, e->box[1], e->waiting);
 }
 
-/* ---- the lift's send-off on the bed (home.json events.sendoff; specs/station-dock-arrival-spec.md §4): the sleepers wake (the nap pose cuts to the standing painting), hop once and dither out, rightmost first, 200 ms apart ---- */
-static int sendoff_t(void) {
-  anim_state_t t; if (!v_pbool("motion", 1) || !v_pbool("regions.bed.sendoff", 0)) return -1;
-  if (anim_get(ANIM_SENDOFF, "bed", &t)) return t.elapsed; return 1 << 20;   /* a send-off that has ended is its last frame until the host clears the flag */
-}
-/* the sleeper's phase at t: 0 asleep, 1 standing and hopping (lift), 2 dithering out (level), 3 gone */
-static int so_phase(const ent_t *e, int t, int *lift, int *level) {
-  *lift = 0; *level = 0; if (t < 0 || !e->stand[0] || !has(e->stand)) return 0;
-  int el = t - (spec_int(H, "events.sendoff.start", 200) + spec_int(H, "events.sendoff.stagger", 200) * e->rank); if (el < 0) return 0;
-  int hop = spec_int(H, "events.sendoff.hop.ms", 175), out = spec_int(H, "events.sendoff.out.ms", 400), levels = spec_int(H, "events.sendoff.out.levels", 16);
-  if (el < hop) { for (int q = 0, n = spec_len(H, "events.sendoff.hop.lift"); q < n; q++) if (el >= spec_int(H, v_fmt("events.sendoff.hop.lift.%d.0", q), 1 << 30)) *lift = spec_int(H, v_fmt("events.sendoff.hop.lift.%d.1", q), 0); return 1; }
-  if (el - hop < out) { *level = (el - hop) * levels / out; return 2; }
-  return 3;
-}
-static int sleeper_nodes(const ent_t *e, int t) { int lift, level, ph = so_phase(e, t, &lift, &level); return ph == 0 ? (e->nap >= 0 ? 1 : has(e->pic)) : ph == 2 ? 2 : 1; }
-static void sleeper_draw(const ent_t *e, int t) {
-  int lift, level, ph = so_phase(e, t, &lift, &level);
-  if (ph == 0) { if (e->nap >= 0) { nap_draw(e); return; } v_name("bed.sleepers"); v_sprite(v_fmt("g.%s", e->id), e->pic, e->draw[0], e->draw[1], e->draw[2], e->draw[3]); v_name("bed.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, e->box[1], e->waiting); return; }
-  v_name("bed.sleepers");
-  if (ph == 1) v_sprite(v_fmt("g.%s", e->id), e->stand, e->sbox[0], e->sbox[1] - lift, e->sbox[2], e->sbox[3]);
-  else { v_sprite_hidden(v_fmt("g.%s", e->id), e->stand, e->sbox[0], e->sbox[1]); if (ph == 2) v_dither_window(v_fmt("g.%s.d", e->id), e->stand, 0, 0, "", 0, 0, level, e->sbox[0], e->sbox[1], e->sbox[2], e->sbox[3]); }
-  v_name("bed.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->sbox[0] + e->sbox[2] - 12, e->sbox[1] - lift, e->waiting);
+/* ---- a rester on the bed (R4b): drawn as a sleeper once its walker rests there ---- */
+static int sleeper_nodes(const ent_t *e) { return e->hidden ? 0 : e->nap >= 0 ? 1 : has(e->pic); }
+static void sleeper_draw(const ent_t *e) {
+  if (e->hidden) return;
+  if (e->nap >= 0) { nap_draw(e); return; }
+  v_name("bed.sleepers"); v_sprite(v_fmt("g.%s", e->id), e->pic, e->draw[0], e->draw[1], e->draw[2], e->draw[3]); v_name("bed.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, e->box[1], e->waiting);
 }
 
 /* the focused one's name tag: below the ring at feetY + 16 and, past the window's foot, over the figure at feetY − H − 32 less the lift; a sleeper's, or one asleep in place, is always over its ink, 32 above its top, with no lift */
@@ -642,7 +764,7 @@ static void glass_group(const char *cur) {
   const rp_t *bk, *oc; int nbk = room_pieces(RP_BACK, &bk), noc = room_pieces(RP_OCCLUDER, &oc);
   item_t it[MAXR + 2 + 8]; int ni = 0, focused = -1;
   for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) focused = i;
-  for (int i = 0; i < g_ne; i++) if (!g_e[i].sleeper && i != focused) it[ni++] = (item_t){ 0, i };
+  for (int i = 0; i < g_ne; i++) if (!g_e[i].sleeper && !g_e[i].hidden && i != focused) it[ni++] = (item_t){ 0, i };
   int hasBed = !g_home && *v_pstr("regions.bed.state") != 0;   /* Home has no bed: the bed and its sleepers are the Vivarium's, and only in a room that has one */
   if (hasBed) it[ni++] = (item_t){ 1, -1 };
   for (int k = 0; k < noc && ni < MAXR + 2 + 8 - 1; k++) if (piece_drawn(&oc[k], glass)) it[ni++] = (item_t){ 3, k };
@@ -658,14 +780,13 @@ static void glass_group(const char *cur) {
   int count = 0, lift = v_si(sp(), hp("regions.resident.lift"), 4);
   for (int k = 0; k < nbk; k++) count += piece_drawn(&bk[k], glass);
   int bedPic = hasBed ? has(v_pstr("regions.bed.picture")) : 0, lampN = wire_has_asset(home_lamp_pic("waiting")) ? 1 : 0;   /* a waiting lamp is one node (its picture, or the same node with no size) when the host has sent the picture */
-  const char *mk = v_pstr("regions.bed.mark"); int markN = (mk && *mk) ? wire_has_asset(mk) : bedPic;   /* the bed's mark: its picture away, else a node of no size on the bed's own picture */
   for (int k = 0; k < ni; k++) {
     if (it[k].kind == 3) count++;
     else if (it[k].kind != 1) { const ent_t *e = &g_e[it[k].ent];
       if (e->mv >= 0) { const mv_t *m = &g_m[e->mv]; count += 1 + (has(m->shadow) ? 1 : 0) + (m->dl ? 1 : 0) + lampN + (it[k].kind == 2 ? 1 : 0); }   /* a moving resident: its shadow, the picture (hidden while it dithers), the dither node, the lamp */
       else if (e->nap >= 0) count += 1 + lampN + (it[k].kind == 2 ? 1 : 0);
       else count += has(e->pic) + lampN + (it[k].kind == 2 ? 1 : 0); }
-    else { int sot = sendoff_t(); count += bedPic + markN; for (int i = 0; i < g_ne; i++) if (g_e[i].sleeper && i != focused) count += sleeper_nodes(&g_e[i], sot) + lampN; }
+    else { count += bedPic; for (int i = 0; i < g_ne; i++) if (g_e[i].sleeper && !g_e[i].hidden && i != focused) count += sleeper_nodes(&g_e[i]) + lampN; }
   }
   if (count == 0) return;
   v_clip_box("glass.clip", glass[0], glass[1], glass[2], glass[3], count);
@@ -687,10 +808,8 @@ static void glass_group(const char *cur) {
       v_name(e->sleeper ? "bed.lamp" : "resident.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, ly, e->waiting);
     } else {
       v_name("bed"); v_sprite("g.bed", v_pstr("regions.bed.picture"), bed[0], bed[1], bed[2], bed[3]);
-      { int mk[4]; v_srect(sp(), hp("regions.bed.markRect"), mk); const char *mp = v_pstr("regions.bed.mark"); v_name("bed");   /* away only: the Companion's mark, 1:1 over the bed, a stable node (no size when it is not shown) */
-        v_slot("g.bed.mark", mp, v_pstr("regions.bed.picture"), mk[0], mk[1], mk[2], mk[3], mp && *mp); }
-      for (int i = g_ne - 1; i >= 0; i--) if (g_e[i].sleeper && i != focused) {   /* right to left: the first carried is drawn last, in front */
-        sleeper_draw(&g_e[i], sendoff_t());
+      for (int i = g_ne - 1; i >= 0; i--) if (g_e[i].sleeper && i != focused) {   /* right to left: the first rester is drawn last, in front */
+        sleeper_draw(&g_e[i]);
       }
     }
   }
@@ -718,6 +837,12 @@ int home_test_mv(int i, int field) {   /* 0 x, 1 feet, 2 facing, 3 lift, 4 dy, 5
   if (field == 12) return (int)g_wticks;
   const mv_t *m = mv_at(i); if (!m) return -100000;
   switch (field) { case 0: return m->x; case 1: return m->feet; case 2: return m->facing; case 3: return m->lift; case 4: return m->dy; case 5: return m->dl; case 6: return m->rested; case 7: return (int)m->trip_start; case 8: return m->wx; case 9: return m->wf; case 10: return m->group; case 11: return m->sh75; default: return -100000; }
+}
+int home_test_rest(int i, int field) {   /* R4b: a resident by its index among the props': 0 rest phase (RS_*), 1 where it rests (RK_*), 2 shown, 3 hidden (out of sight), 4 x, 5 feet, 6 walking, 7 level, -1 unknown */
+  const wk_t *k = NULL; const mv_t *m = mv_at(i); for (int q = 0; q < g_nw; q++) if (g_w[q].pi == i) k = &g_w[q];
+  if (!k && !m) return -100000;
+  int rs = m ? m->rs : k->rs, rk = m ? m->rk : k->rk, sh = m ? m->sh : k->sh, x = m ? m->x : k->x, f = m ? m->feet : k->feet, wl = m ? mv_travelling(m) : k->walking, lv = m ? m->lv : k->lv;
+  switch (field) { case 0: return rs; case 1: return rk; case 2: return sh; case 3: return rs == RS_REST && rk != RK_CURL; case 4: return x; case 5: return f; case 6: return wl; case 7: return lv; default: return -100000; }
 }
 int home_test_nap(int i) { return i >= 0 && i < g_nnap ? g_nap[i].cell : -1; }
 
@@ -791,7 +916,7 @@ int vivarium_focus(focus_target_t *out, int cap) {
   for (int i = 0; i < n; i++) {
     focus_target_t *t = &out[i]; focus_fill(t, "focus.targets", i, NULL);
     int r[4] = { 0, 0, 0, 0 }, ix = i;
-    if (strncmp(t->id, "resident.", 9) == 0) { for (int e = 0; e < g_ne; e++) if (strcmp(g_e[e].id, t->id + 9) == 0) memcpy(r, g_e[e].box, sizeof r); }
+    if (strncmp(t->id, "resident.", 9) == 0) { for (int e = 0; e < g_ne; e++) if (strcmp(g_e[e].id, t->id + 9) == 0 && !g_e[e].hidden) memcpy(r, g_e[e].box, sizeof r); }
     else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int k = 0; k < nt; k++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", k)), t->id + 5) == 0) layout_list_pitch("vivarium", "regions.tiles", nt, k, r); ix = 0; for (int k = 0; k < i; k++) if (strncmp(out[k].id, "tile.", 5) == 0) ix++; }
     else if (strncmp(t->id, "room.", 5) == 0 && haveChips) { for (int k = 0; k < nc; k++) if (strcmp(v_fmt("room.%s", v_pstr(v_fmt("regions.rooms.items.%d.id", k))), t->id) == 0) layout_list_pitch("vivarium", "regions.chips", nc, k, r); ix = 0; for (int k = 0; k < i; k++) if (strncmp(out[k].id, "room.", 5) == 0) ix++; }   /* a chip: its rectangle in its form, its index among the chips */
     focus_fill(t, "focus.targets", i, r); t->index = ix;

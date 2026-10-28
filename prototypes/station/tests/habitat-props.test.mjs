@@ -104,10 +104,10 @@ test("the Companion module: the set as it will be in its order (an add request w
 
 test("Cross: a face a partner (an adult or an elder of the species), a partner out with the Companion while it is away dimmed and not counted, a juvenile none; the module's context says why it cannot", () => {
   const w = world(); dock(w.st); const m = mibis(w, 4), sv = sv0({ carried: [m[1].id] });
-  let b = build(w, sv, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "adult"); assert.equal(b.props.regions.cross.faces.length, 3); assert.ok(b.props.regions.cross.faces.every((f) => !f.away)); assert.equal(b.line.ok, null, "the door is shut: no ✓ cap"); assert.equal(b.line.subject, "crossing is not open yet"); assert.equal(b.props.focus.targets.find((t) => t.id === "cross").enabled, false);
+  let b = build(w, sv, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "adult"); assert.equal(b.props.regions.cross.faces.length, 3); assert.equal(b.props.regions.cross.faces.filter((f) => f.away).length, 1, "R4b: a carried partner is dimmed docked too (no breeding while carried)"); assert.equal(b.line.ok, null, "the door is shut: no ✓ cap"); assert.equal(b.line.subject, "crossing is not open yet"); assert.equal(b.props.focus.targets.find((t) => t.id === "cross").enabled, false);
   dock(w.st, false); b = build(w, sv, { focus: "cross" }); assert.deepEqual(b.props.regions.cross.faces.map((f) => f.away), [true, false, false]); assert.equal(b.line.subject, "crossing is not open yet", "the shut line stands whatever the partners");
-  const none = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, none, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "away"); assert.equal(b.line.subject, "pairs when you dock"); assert.equal(b.line.ok, null);
-  b = build(w, sv0({ carried: [m[0].id] }), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "out"); assert.equal(b.line.subject, "crosses when you dock");
+  const none = sv0({ carried: [m[1].id, m[2].id, m[3].id] }); b = build(w, none, { focus: "cross" }); assert.equal(b.props.regions.cross.state, "away"); assert.equal(b.line.subject, "its partners are travelling"); assert.equal(b.line.ok, null);
+  b = build(w, sv0({ carried: [m[0].id] }), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "out"); assert.deepEqual([b.line.ok, b.line.dim, b.line.subject], [`Cross ${m[0].name}`, true, "out exploring"], "held while carried: the verb dimmed, the reason in the context");
   m[0].born = w.st.turn; dock(w.st); b = build(w, sv0(), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "young"); assert.equal(b.line.subject, "crosses once adult"); assert.deepEqual(b.props.regions.cross.faces, []);
 });
 
@@ -175,12 +175,12 @@ test("the bottom line: the resident greets (in the meet it names), the name rena
   assert.equal(L({ focus: "resident", ...S0.meet.over }, "meet").ok, `Name ${m[0].name}`, "in the meet the first ✓ names");
   assert.equal(L({ focus: "name" }).ok, `Rename ${m[0].name}`); assert.deepEqual([L({ focus: "species" }).ok, L({ focus: "species" }).subject], ["Open the guide", "every Loika"], "the species word opens the Library on its species");
   assert.equal(L({ focus: "tile." + m[2].id, habId: m[2].id }).ok, `Greet ${m[2].name}`); assert.match(L({ focus: "name" }, "bonded").subject, /^a bonded (young|adult|elder) Loika$/);
-  assert.equal(L({ focus: "name" }, "out").subject, "out with the Companion");
+  assert.equal(L({ focus: "name" }, "out").subject, "out exploring", "R4b: the held verb's reason, the tile's words"); assert.equal(L({ focus: "name" }, "out").dim, true);
 });
 
 test("a mibi that grows up changes every picture id from :juvenile: to :adult: with its size unchanged (the resident 304×312, the tiles and the door's places 48×48)", () => {
   const w = world(); dock(w.st); const m = mibis(w, 3); for (const x of m) x.born = w.st.turn;
-  const ids = (b) => b.requests.filter((r) => r.kind === "mibi").map((r) => r.id), sv = sv0({ carried: [m[0].id, m[1].id] });
+  const ids = (b) => b.requests.filter((r) => r.kind === "mibi").map((r) => r.id), sv = sv0({ carried: [m[1].id, m[2].id] });
   const young = ids(build(w, sv)); assert.ok(young.length >= 5 && young.every((id) => /^mibi:S\d+-[0-9a-f]{8}:juvenile:\d+x\d+$/.test(id)), young.join(" "));
   assert.ok(young.some((id) => id.endsWith(":juvenile:304x312")) && young.some((id) => id.endsWith(":juvenile:48x48")));
   w.st.turn += w.settings.adultTurns ?? S.JUVENILE_TURNS; for (const x of m) assert.equal(S.mibiStage(w.st, x, w.settings), "adult");

@@ -113,13 +113,11 @@ test("an empty trip has no choice: the show closes by itself at 2500, back to th
     h.timers.filter((t) => t.ms >= 2500).forEach((t) => t.fn()); assert.deepEqual([h.ui.screen, h.ui.cargo.state, h.ui.panel ?? null], ["pods", "bay", null], "closed by itself"); }
   { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "library"; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "cargo"); INTENTS.frame.dock(h, false, true); assert.equal(st.dock.docked, false, "lifted"); assert.deepEqual([h.ui.screen, h.ui.cargo.state], ["library", "bay"], "back to where it came over"); }
 });
-test("the lift's send-off: on Idle the sleepers on the bed wake, hop and dither out (home.json events.sendoff), the screen never changes; on Home (no bed) and on any other screen only the frame changes; the plate names what went unfinished", () => {
+test("the lift's send-off (R4b): nothing in the living window moves (the carried set is never drawn in a room: no sendoff play, no home.json events.sendoff), the screen never changes; the plate names what went unfinished", () => {
   const mk = (screen) => { const { st, sv } = dockWorld(); st.dock = { docked: true, at: T0 }; S.seedAdults(st, "S01", 5, 3, settings); sv.carried = st.mibis.map((m) => m.id); const h = host(st, sv); h.ui.screen = screen; return h; };
-  { const h = mk("home"), ev = h.specs.home.events.sendoff; h.ui.idle = true; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "home", "the screen never changes"); assert.deepEqual(h.played.filter((e) => e.kind === "sendoff"), [{ kind: "sendoff", target: "bed", ms: ev.ms, hold: ev.hold }]); assert.equal(h.ui.sendoff, true);
-    h.timers.filter((t) => t.ms >= ev.ms).forEach((t) => t.fn()); assert.equal(h.ui.sendoff, false, "the bed empties to its away mark when it ends"); }
-  { const h = mk("pods"); INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "pods"); assert.equal(h.played.filter((e) => e.kind === "sendoff").length, 0, "only the top bar changes on another screen"); }
-  { const h = mk("home"); INTENTS.frame.dock(h, false, true); assert.equal(h.played.filter((e) => e.kind === "sendoff").length, 0, "Home has no bed: only the bar and the stations change"); }
-  { const h = mk("home"); h.ui.idle = true; h.moving = false; INTENTS.frame.dock(h, false, true); assert.equal(h.played.filter((e) => e.kind === "sendoff").length, 0, "reduced motion: the bed empties at the lift"); }
+  { const h = mk("home"); h.ui.idle = true; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "home", "the screen never changes"); assert.equal(h.specs.home.events.sendoff, undefined, "the event retires"); assert.equal(h.played.filter((e) => e.kind === "sendoff").length, 0, "no sendoff play targets the bed"); assert.ok(!h.ui.sendoff); }
+  { const h = mk("pods"); INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "pods"); assert.equal(h.played.filter((e) => e.kind === "sendoff").length, 0); }
+  { const h = mk("home"); h.ui.idle = true; h.moving = false; INTENTS.frame.dock(h, false, true); assert.equal(h.played.filter((e) => e.kind === "sendoff").length, 0); }
   { const h = mk("pods"), P = h.specs.frame.navigation.dock.plates; h.sv.bay = [{ id: "c1", n: 1, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] }]; INTENTS.frame.dock(h, false, true); assert.equal(h.said[0], P.crates, "crates not opened"); }
   { const h = mk("pods"), P = h.specs.frame.navigation.dock.plates, m = h.st.mibis[0]; h.sv.carried = []; h.sv.bay = []; h.st.carryReqs = [{ seq: 1, op: "add", id: m.id }]; h.st.carrySeq = 1; INTENTS.frame.dock(h, false, true); assert.equal(h.said[0], P.goes.replace("{Name}", m.name), "a Take asked and not yet done"); }
 });
@@ -286,7 +284,17 @@ test("one mibi up close, the Companion module: take and bring change the request
   st.dock = { docked: false, at: T0 }; door(b); assert.deepEqual(st.carryReqs, [{ seq: 1, op: "add", id: b.id }]); const n = st.carryReqs.length; door(b); assert.equal(st.carryReqs.length, n, "a request for it waits: ✓ does nothing (it does not cancel it)");
   st.dock = { docked: true, at: T0 }; door(c); assert.equal(st.carryReqs.length, 2); h.said.length = 0; door(d); assert.equal(st.carryReqs.length, 2, "a full set: nothing queued"); assert.equal(h.said.at(-1), d.name + " stayed home, no room");
   door(a); assert.deepEqual(st.carryReqs.at(-1), { seq: 3, op: "home", id: a.id }, "a carried mibi is brought home");
-  st.dock = { docked: false, at: T0 }; sv.carried = [b.id]; sv.carrySeen = 3; st.carryReqs = []; h.said.length = 0; h.ui.hab.id = b.id; INTENTS.habitat.intent(h, "wild", "confirm"); INTENTS.habitat.intent(h, "wild", "confirm"); assert.deepEqual(h.said, [], "a carried mibi's return is blocked: the Wild module says why, the intent says nothing"); assert.equal(b.released, false);
+  st.dock = { docked: false, at: T0 }; sv.carried = [b.id]; sv.carrySeen = 3; st.carryReqs = []; h.said.length = 0; h.ui.hab.id = b.id; INTENTS.habitat.intent(h, "wild", "confirm"); assert.deepEqual(h.said, [`${b.name} is out exploring`], "a carried mibi's return is held: the plate says why (never silent), its second line follows"); h.timers.forEach((t) => t.fn()); assert.deepEqual(h.said, [`${b.name} is out exploring`, `Bring ${b.name} home when you dock`]); assert.equal(b.released, false);
+});
+test("R4b one mibi up close, a carried mibi's card (habitat.json heldRule): Rename, Portrait, Cross and Wild are held docked and away, each ✓ plays the two plate lines; Bring home is live only while docked, and held away", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis, sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [a.id], tier: 1, shield: 3 }, h = host(st, sv); h.specs.habitat = habitatSpec; h.specs.namer = namerSpec; h.ui.hab.id = a.id;
+  for (const docked of [true, false]) {
+    st.dock = { docked, at: T0 }; const word = docked ? ["ready to go exploring", "Bring"] : ["out exploring", "Bring"];
+    for (const t of ["name", "portrait", "cross", "wild"]) { h.said.length = 0; h.timers.length = 0; INTENTS.habitat.intent(h, t, "confirm"); assert.equal(h.said[0], `${a.name} is ${word[0]}`, `${t} ${docked ? "docked" : "away"}: the plate`); h.timers.forEach((x) => x.fn()); assert.match(h.said[1], docked ? /^Bring .* home first$/ : /home when you dock$/); }
+    assert.equal(h.ui.hab.namer, null, "Rename opens no namer while carried"); assert.equal(a.name, a.name);
+  }
+  st.dock = { docked: true, at: T0 }; sv.carrySeen = 0; st.carryReqs = []; h.said.length = 0; INTENTS.habitat.intent(h, "door", "confirm"); assert.deepEqual(st.carryReqs.map((r) => r.op), ["home"], "docked: Bring home is live");
+  st.dock = { docked: false, at: T0 }; st.carryReqs = []; h.said.length = 0; INTENTS.habitat.intent(h, "door", "confirm"); assert.deepEqual(st.carryReqs, [], "away: Bring is held like the rest"); assert.equal(h.said[0], `${a.name} is out exploring`);
 });
 
 test("one mibi up close, the meet: the first ✓ opens the namer and ends the meet; any other key ends it and acts", () => {

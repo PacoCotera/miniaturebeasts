@@ -12,7 +12,7 @@ export function intent(h, target, verb) {
   if (target === "room.new") { if (S.roomPrice(h.st, h.settings) !== null) openPanel(h, "vivarium", "addRoom"); return; }   // the panel opens short of Energy too, its Add card dimmed (✓ says what is short); at four rooms there is no chip
   const id = typeof target === "string" ? +target.slice(target.indexOf(".") + 1) : NaN;
   if (!/^(resident|tile)\./.test(target ?? "") || !S.mibiById(h.st, id)) return;
-  ui.hab.id = id; ui.hab.f = S.isAway(h.st, h.sv, S.mibiById(h.st, id)) ? "name" : "resident";   // out with the Companion: the ring on the name (habitat.json focus.entry.fromWhole)
+  ui.hab.id = id; ui.hab.f = S.isCarried(h.st, h.sv, S.mibiById(h.st, id)) ? "name" : "resident";   // carried, docked or away: the ring on the name (habitat.json focus.entry.fromWhole)
   const ev = h.specs.vivarium.events.look, motion = h.motion ? h.motion() : true;
   h.goto("habitat", motion ? ev.hold : 0);   // the frame's screen transition to one mibi up close, input held for the event's hold; a cut with reduced motion
 }

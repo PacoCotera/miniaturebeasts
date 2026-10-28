@@ -87,6 +87,7 @@ int home_focus(focus_target_t *out, int cap);
 void home_key(int code);
 int home_tick(uint32_t now);
 int home_test_cell(int i); int home_test_state(int i); int home_test_mv(int i, int field); int home_test_nap(int i);   /* test hooks on the moving residents (M1 §2.3 item 11) */
+int home_test_rest(int i, int field);   /* R4b: the rest state of a resident by its props index */
 /* Home's compositions (screens/home_builds.c): a module, the name tag, the rounded panel and a resident's waiting lamp */
 void build_module(const char *spec, const char *key, int dy, const char *lamp);   /* the module of `spec`'s region `key` (a spec with "lamp": null has no lamp node) */
 const char *home_lamp_pic(const char *state);   /* frame.json regions.marks.lamp12.<state>, the signed 12 × 12 lamp picture of a state */

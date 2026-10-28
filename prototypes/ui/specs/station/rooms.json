@@ -17,6 +17,11 @@
     "foot": 551,
     "picture": "room-roots-bed-{light}-192x56"
    },
+   "rest": {
+    "edge": "left",
+    "level": "main",
+    "note": "no art spot: resters take the bed (rules.show.bed), then their own way (rules.show.curl: nice spots beside roots-sorrel-1 or roots-stone-2 or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
+   },
    "levels": [
     {
      "id": "main",
@@ -80,6 +85,11 @@
    "near": "room-reeds-near-{light}-544x408",
    "chip": null,
    "preview": { "from": "room-reeds-idle-{light}-1024x568", "rect": [338, 376, 348, 160] },
+   "rest": {
+    "edge": "left",
+    "level": "main",
+    "note": "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
+   },
    "levels": [
     {
      "id": "main",
@@ -153,6 +163,11 @@
    "near": "room-boulders-near-{light}-544x408",
    "chip": null,
    "preview": { "from": "room-boulders-idle-{light}-1024x568", "rect": [338, 376, 348, 160] },
+   "rest": {
+    "edge": "left",
+    "level": "main",
+    "note": "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
+   },
    "levels": [
     {
      "id": "main",
@@ -265,6 +280,11 @@
    "near": "room-ferns-near-{light}-544x408",
    "chip": null,
    "preview": { "from": "room-ferns-idle-{light}-1024x568", "rect": [338, 376, 348, 160] },
+   "rest": {
+    "edge": "left",
+    "level": "main",
+    "note": "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
+   },
    "levels": [
     {
      "id": "main",

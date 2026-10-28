@@ -109,6 +109,28 @@
      "minItems": 4,
      "maxItems": 4,
      "description": "T-20261018-235: [dx, dy, W, H], the drawn bbox of the figure (ink alpha >= 128, its contact shadow left out) in its picture; the geometry of the ring, the tag, the walk and the keep-out is measured from it. Absent: the picture is the figure"
+    },
+    "shown": {
+     "type": "boolean",
+     "description": "R4b (vivarium.json rules.show): false for a rester, one of the housed that the room does not show; absent: shown. A rester finishes its trip, then rests where restAt says; N for the raised cap and the travelling ceiling counts the shown only"
+    },
+    "restAt": {
+     "enum": [
+      "bed",
+      "curl",
+      "out"
+     ],
+     "description": "R4b: where a rester rests, in the order rules.show.where gives: the bed (it is also in bed.sleepers), a curl in a nice spot (its curl and curlFigure given), or out of sight off the room's rest edge"
+    },
+    "enter": {
+     "enum": [
+      "edge"
+     ],
+     "description": "R4b: a traveller home since the walk began: it walks in from the room's rest edge (rooms.json rest.edge); honoured only while a walk is running"
+    },
+    "rester": {
+     "type": "boolean",
+     "description": "R4b: a bed sleeper that is a rester (the bed is the nappers' alone)"
     }
    }
   },
@@ -141,6 +163,13 @@
     "from": {
      "type": "string",
      "description": "R5: while the room shown changes (events.swap): the id of the old room's place's thumbnail, dithered out as this place's own dithers in; \"\" when there is none or no swap runs"
+    },
+    "where": {
+     "enum": [
+      "docked",
+      "away"
+     ],
+     "description": "R4b: on a carried place (state out), where the Companion is: docked draws the solid glyph, away the outline; the thumbnail is given too and drawn dimmed"
     }
    }
   },
@@ -272,22 +301,17 @@
      "required": [
       "state",
       "picture",
-      "mark",
       "sleepers"
      ],
      "additionalProperties": false,
      "properties": {
       "state": {
        "enum": [
-        "docked",
-        "away",
-        "none"
+        "empty",
+        "resting"
        ]
       },
       "picture": {
-       "type": "string"
-      },
-      "mark": {
        "type": "string"
       },
       "sleepers": {
@@ -317,6 +341,10 @@
        "items": {
         "$ref": "tile"
        }
+      },
+      "glyphDocked": {
+       "type": "string",
+       "description": "R4b: the solid Companion glyph (frame.json marks.companion.docked), a carried tile's while docked"
       }
      }
     },

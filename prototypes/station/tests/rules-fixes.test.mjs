@@ -249,18 +249,18 @@ test("a juvenile may sit, and its portrait keeps the stage it sat at after it gr
   const r = T.beginSitting(st, m, S.habitsOf(m)[0], "wood", settings, T0); assert.ok(r.ok, r.msg); assert.equal(m.portrait.stage, "juvenile");
   st.turn += 5; assert.equal(S.mibiStage(st, m, settings), "adult"); assert.equal(m.portrait.stage, "juvenile", "the portrait shows that stage forever");
 });
-test("a mibi out with the Companion sits only while the Companion is docked; at home, undocked, it sits; a sitting begun docked goes on after undocking", () => {
+test("a carried mibi sits for nobody, docked or away (R4b: every action on it is held); at home, undocked, it sits; a sitting begun at home goes on after undocking", () => {
   const st = fresh(); S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis;
   for (const m of [a, b]) { S.recordHabit(st, m, S.frameFor(m).habits[0]); S.recordWalk(st, m, "wood"); }
   const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: a.id, tier: 1, shield: 3 };
   T.devGrantSitting(st, T0);
   st.dock = { docked: false, at: T0 };
-  assert.equal(T.portraitBlock(st, a, sv), "sits when you dock", "carried and undocked is refused");
-  assert.match(T.beginSitting(st, a, S.habitsOf(a)[0], "wood", settings, T0, sv).msg, /sits when you dock/); assert.match(T.offer(st, a, sv).block, /sits when you dock/);
+  assert.equal(T.portraitBlock(st, a, sv), T.CARRIED_BLOCK, "carried and undocked is refused");
+  assert.match(T.beginSitting(st, a, S.habitsOf(a)[0], "wood", settings, T0, sv).msg, /with the Companion/); assert.match(T.offer(st, a, sv).block, /with the Companion/);
   assert.equal(T.portraitBlock(st, b, sv), "", "at home and undocked passes");
-  st.dock = { docked: true, at: T0 }; assert.equal(T.portraitBlock(st, a, sv), "", "carried and docked passes");
-  const r = T.beginSitting(st, a, S.habitsOf(a)[0], "wood", settings, T0, sv); assert.ok(r.ok, r.msg);
-  st.dock = { docked: false, at: T0 + 1 }; assert.equal(a.portrait.state, "painting", "a sitting begun while docked continues after undocking");
+  st.dock = { docked: true, at: T0 }; assert.equal(T.portraitBlock(st, a, sv), T.CARRIED_BLOCK, "carried and docked is refused too");
+  const r = T.beginSitting(st, b, S.habitsOf(b)[0], "wood", settings, T0, sv); assert.ok(r.ok, r.msg);
+  st.dock = { docked: false, at: T0 + 1 }; assert.equal(b.portrait.state, "painting", "a sitting begun at home continues after the Companion lifts");
 });
 
 // ---- review fixes ----

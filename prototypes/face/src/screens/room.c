@@ -98,7 +98,7 @@ int room_select(const char *id, int dx, int dy, int main_only) {
   for (int i = 0; i < r->np; i++) { const rm_piece_t *p = &r->pc[i]; if (!p->has_pic) continue;
     const char *pic = v_pstr(v_fmt("regions.room.pieces.%s", p->id)); if (!pic || !*pic) continue;   /* the props name no picture for it: it is a keep-out alone */
     rp_t *o = p->kind == RP_OCCLUDER ? &g_occ[g_no++] : &g_back[g_nb++];
-    snprintf(o->id, sizeof o->id, "%s", p->id); snprintf(o->pic, sizeof o->pic, "%s", pic); o->kind = p->kind; o->x = p->rect[0] + dx; o->y = p->rect[1] + dy; o->w = p->rect[2]; o->h = p->rect[3]; o->foot = p->foot + dy; o->opa = p->opa; }
+    snprintf(o->id, sizeof o->id, "%s", p->id); snprintf(o->pic, sizeof o->pic, "%s", pic); o->kind = p->kind; o->x = p->rect[0] + dx; o->y = p->rect[1] + dy; o->w = p->rect[2]; o->h = p->rect[3]; o->foot = p->foot + dy; o->opa = p->opa; o->level = p->level; }
   return found ? 0 : -1;
 }
 int room_levels(void) { return g_sel < 0 ? 1 : g_main ? 1 : g_r[g_sel].nl; }
@@ -122,6 +122,8 @@ void room_point_in(int lv, unsigned r1, unsigned r2, int w, int xa, int xb, int 
   if (fa > t) t = fa; if (fb < b) b = fb; if (b < t) b = t;
   *fx = x; *feet = t + (int)(r2 % (unsigned)(b - t + 1));
 }
+int room_top(int lv, int fx) { if (g_sel < 0 || lv < 0 || lv >= room_levels()) return 0; return top_at(&g_r[g_sel].lv[lv], fx - g_dx) + g_dy; }
+int room_xs(int lv, int *xs, int cap) { if (g_sel < 0 || lv < 0 || lv >= room_levels()) return 0; const rm_level_t *l = &g_r[g_sel].lv[lv]; int n = 0; for (int i = 0; i <= l->nx && n < cap; i++) xs[n++] = l->x[i] + g_dx; return n; }
 void room_point(int lv, unsigned r1, unsigned r2, int w, int *fx, int *feet) { room_point_in(lv, r1, r2, w, -(1 << 20), 1 << 20, -(1 << 20), 1 << 20, fx, feet); }
 int room_route(int from, int to, int leg[2][2][2]) {
   if (g_sel < 0 || from == to || from < 0 || to < 0 || from >= room_levels() || to >= room_levels()) return -1;

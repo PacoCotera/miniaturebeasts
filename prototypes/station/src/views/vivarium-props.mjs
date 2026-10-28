@@ -11,23 +11,26 @@ import { fill, spell } from "./words.mjs";
 import { req as reqOf, slot as slotOf, ph as phOf } from "./requests.mjs";
 
 
+// The mibi the always-shown pin lands on (rules.show.pin, focus): the ring's resident or tile, else the mibi last seen up close (the way in)
+const pinOf = (m) => { const f = /^(?:resident|tile)\.(.+)$/.exec(m.focus ?? ""); return f ? f[1] : m.seen != null ? String(m.seen) : null; };
+
 export function vivariumBuild(m, spec, frame, home, pods) {
   const { st, sv, settings } = m, requests = [], req = reqOf(requests), R = spec.regions, docked = !!m.docked;
   const ph = phOf(req, "its master (station-layouts.md, The Vivarium: the whole)");
-  const nRooms = S.roomCount(st, settings), shown = Math.min(st.face?.room ?? 0, nRooms - 1), carried = S.carriedIds(st, sv), housed = S.inRoom(st, shown), out = (mb) => carried.includes(mb.id) && !docked;   // out: with the Companion, away
+  const nRooms = S.roomCount(st, settings), shown = Math.min(st.face?.room ?? 0, nRooms - 1), carried = S.carriedIds(st, sv), housed = S.inRoom(st, shown), out = (mb) => carried.includes(mb.id);   // out: in the carried set, docked or away (R4b: never drawn in the room, its tile keeps its place)
   const state = housed.length ? "rest" : "empty";
-  const L = frame.light, room = shown, lw = livingOf({ view: "vivarium", st, sv, settings, docked, light: m.light, room, time: m.time, restRules: m.restRules, motionSets: m.motionSets }, R, req, ph, L);
+  const L = frame.light, room = shown, lw = livingOf({ view: "vivarium", st, sv, settings, docked, light: m.light, room, time: m.time, now: m.now, restRules: m.restRules, rules: m.rules, ui: { focus: pinOf(m) }, arrived: m.arrived, motionSets: m.motionSets }, R, req, ph, L);
   const bayOf = new Map(housed.map((mb, i) => [String(mb.id), i]));
   const residents = lw.residents.slice().sort((a, b) => bayOf.get(a.id) - bayOf.get(b.id));   // the walkers in bay order: the face steps them in this order
   const region = roomRegion(req, room, m.light);
   const regions = {
     window: { picture: region.base },   // rows 120 to 560 of Idle's painting of the light, 1:1 (the face shows the window; the plates stand while it is not on the face)
     room: region, residents, ...(lw.bed ? { bed: lw.bed } : {}),   // the bed in every state of a room that has one (Roots): the nest alone while docked, with its mark while away (an empty whole has no residents and no sleepers)
-    tiles: { glyph: frame.regions.marks.companion.away, items: [] },   // an out mibi's tile shows the Companion's outline glyph (the top bar's away mark)
+    tiles: { glyph: frame.regions.marks.companion.away, glyphDocked: frame.regions.marks.companion.docked, items: [] },   // a carried mibi's tile shows the Companion's glyph by where it is: solid while docked (ready to go), outline while away (the top bar's own marks)
   };
   // a tile a place: the room shown's mibis in slot order, then the free places; a housed one shows its thumbnail, one out with the Companion its glyph
   const n = S.ROOM, tw = listForm(R.tiles, n).first[2], slot = slotOf(req, "the device plate (fix 2: placed 1:1)");
-  const tiles = housed.slice(0, n).map((mb) => ({ id: String(mb.id), state: out(mb) ? "out" : "housed", picture: out(mb) ? "" : mibiReq(req, st, mb, [48, 48], settings), well: slot(`plate-well-${tw}x48`, [tw, 48]), from: "" }));   // a housed place is its well by form (fix 2 F4); a free place is the recess the face draws
+  const tiles = housed.slice(0, n).map((mb) => ({ id: String(mb.id), state: out(mb) ? "out" : "housed", ...(out(mb) ? { where: docked ? "docked" : "away" } : {}), picture: mibiReq(req, st, mb, [48, 48], settings), well: slot(`plate-well-${tw}x48`, [tw, 48]), from: "" }));   // a carried one keeps its thumbnail (the face draws it dimmed beside the glyph)   // a housed place is its well by form (fix 2 F4); a free place is the recess the face draws
   while (tiles.length < n) tiles.push({ id: "", state: "free", picture: "", well: "", from: "" });
   tiles.forEach((t, i) => { t.from = m.prev?.tiles?.[i] ?? ""; });   // the swap: the old room's place i's thumbnail, dithered out while this one dithers in (clear when either has none)
   regions.tiles.items = tiles;
@@ -37,7 +40,7 @@ export function vivariumBuild(m, spec, frame, home, pods) {
   if (nRooms < S.ROOMS_MAX) chips.push({ id: "new", state: "new", picture: "", lamp: slot(spec.regions.chips.lamps[S.addRoomBlock(st, settings) ? "short" : "payable"], [8, 8]) });
   regions.rooms = { items: chips };
   // the focus: the residents in bay order (a sleeper in its bay's place), then the tiles in bay order; the ring on the target the way in names
-  const asleep = new Set(lw.sleepers.map((p) => p.id)), atHome = new Set(residents.map((p) => p.id)), targets = [];
+  const asleep = new Set(lw.sleepers.map((p) => p.id)), atHome = new Set(residents.filter((p) => p.shown !== false).map((p) => p.id)), targets = [];   // the targets: the shown residents and the resters on the bed (a rester curled or out of sight is reached by its tile: it comes out, rules.show.pin)
   for (const mb of housed) if (atHome.has(String(mb.id)) || asleep.has(String(mb.id))) targets.push({ id: "resident." + mb.id, group: "resident" });
   for (const t of tiles) if (t.state !== "free") targets.push({ id: "tile." + t.id, group: "tile" });
   for (const c of chips) targets.push({ id: "room." + c.id, group: "room" });   // the chips last: the rooms, then the new-room chip
@@ -65,7 +68,7 @@ export function vivariumBuild(m, spec, frame, home, pods) {
     const id = +cur.slice(cur.indexOf(".") + 1), mb = S.mibiById(st, id), isOut = !!mb && out(mb), sl = asleep.has(String(id));
     const wait = !!mb && !isOut && lw.residents.concat(lw.sleepers).find((p) => p.id === String(id))?.waiting;
     const words = { a: mb ? S.aAn(stageWord(mb)).split(" ")[0] : "", stage: mb ? stageWord(mb) : "", species: mb ? S.spName(mb) : "" };
-    const subject = isOut ? Sg.out : wait ? Sg.painting : fill(sl ? Sg.sleeper : Sg.resident, words);
+    const subject = isOut ? Sg.subjectTraveller[docked ? "docked" : "away"] : wait ? Sg.painting : fill(sl ? Sg.sleeper : Sg.resident, words);
     line = { ok: mb ? fill(Sg.look, { name: mb.name }) : null, subject, back: Sg.back, need: null };
   }
   const top = nRooms >= 2 ? { readout: { text: S.ROOM_NAMES[shown], mark: null } } : {};   // the crumb: the room shown's name after the title (frame.json regions.top.readout, as the Library's), only once there is more than one room

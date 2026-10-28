@@ -113,12 +113,12 @@ export function podsBody() {
 
 // The living window's inputs the views take from the host (Station M1 §2.6): the Station time (seconds of the day; the developer's "Station time" or the clock), the rest rules (vivarium.json rules.rest) and whether
 // the moving sets play on stand-ins (the developer switch "Motion sets (stand-ins)", off by default; a set whose cells are all placed masters plays without it). A view never reads a clock.
-const living = () => ({ time: timeNow(), restRules: SPECS.vivarium?.rules?.rest, motionSets: !!G.settings.motionSets, sendoff: !!UI.sendoff });   // sendoff: the lift's send-off plays on the bed (intents/frame.mjs; home.json events.sendoff)
+const living = () => ({ time: timeNow(), now: Date.now(), restRules: SPECS.vivarium?.rules?.rest, rules: SPECS.vivarium?.rules, arrived: UI.arrived, motionSets: !!G.settings.motionSets });   // rules: vivarium.json rules (rules.show: who is shown and who rests); arrived: the travellers home since the walk began (they walk in from the room's rest edge)
 
 // ---- Home ----
 // Keep Home's focus valid (the ring on a target present, else on the room) and return its props body. The pad is the face's; the host keeps what the face says in UI.home.f.
 export function homeBody(light = lightNow()) {
-  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, time: timeNow(), date: stationDate(), now: Date.now(), place: "", light, restRules: SPECS.vivarium?.rules?.rest, motionSets: !!G.settings.motionSets });   // place: the save has no place name yet
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, time: timeNow(), date: stationDate(), now: Date.now(), place: "", light, restRules: SPECS.vivarium?.rules?.rest, rules: SPECS.vivarium?.rules, arrived: UI.arrived, motionSets: !!G.settings.motionSets });   // place: the save has no place name yet
   const body = homeBuild(model(), SPECS.home, SPECS.frame);
   if (body.props.focus.cur === "room") UI.home.f = "room";
   return body;
@@ -140,7 +140,7 @@ export function vivariumBody(light = lightNow()) {
 export function showRoom(h, i) {
   const st = G.st, was = st.face?.room ?? 0; if (!(i >= 0 && i < S.ROOMS_MAX) || i === was) return;
   const e = SPECS.vivarium.events.swap, base = roomIds(was, shownLight ?? lightNow()).base;
-  const thumbs = Array.from({ length: S.ROOM }, (_, k) => { const mb = S.inRoom(st, was)[k]; return mb && !S.isAway(st, G.sv, mb) ? mibiPictureOf(st, mb, [48, 48], G.settings).id : ""; });
+  const thumbs = Array.from({ length: S.ROOM }, (_, k) => { const mb = S.inRoom(st, was)[k]; return mb ? mibiPictureOf(st, mb, [48, 48], G.settings).id : ""; });   // a carried mibi's tile shows its (dimmed) thumbnail too
   st.face.room = i; const prev = { base, tiles: thumbs }; UI.viv.prev = prev;
   h.play({ kind: e.kind, target: e.target, from: base, ms: e.ms, hold: h.motion() ? e.hold : 0 });
   h.at(e.ms, () => { if (UI.viv.prev === prev) UI.viv.prev = null; });
@@ -315,7 +315,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "incubate", "moment", "read", "mend", "switch", "install", "sendoff", "pan"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "incubate", "moment", "read", "mend", "switch", "install", "pan"]), ARRIVALS = new Set(["cargo", "crates", "crate", "show"]);
 // The light of the moment, read once for both screens that show it (the Vivarium by the clock: Home's glass and bed, Idle's painting): the host's, so a view never reads a clock.
 let lightNow = () => { throw new Error("the host has no light: createHost({ light }) names it"); };
 let timeNow = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };   // the Station time in seconds of the day: createHost({ time }) names it (main.mjs: the developer's Station time, else the clock)
@@ -365,7 +365,7 @@ function habitatFocus(h, target) {
   const a = UI.hab; a.f = target; endMeet(h);
   if (!target.startsWith("tile.")) return;
   const id = +target.slice(5), was = S.mibiById(G.st, a.id), now = S.mibiById(G.st, id); if (!now || id === a.id) return;
-  const px = (mb) => (mb && !S.isAway(G.st, G.sv, mb) ? mibiPictureOf(G.st, mb, SPECS.habitat.regions.resident.rect.slice(2), G.settings, shownLight ?? "day", "habitat").id : "");
+  const px = (mb) => (mb && !S.isCarried(G.st, G.sv, mb) ? mibiPictureOf(G.st, mb, SPECS.habitat.regions.resident.rect.slice(2), G.settings, shownLight ?? "day", "habitat").id : "");
   const from = px(was); a.id = id;
   if (from && px(now)) { const e = SPECS.habitat.events.swap; a.prev = from; h.play({ kind: e.kind, target: e.target, from, ms: e.ms, hold: h.motion() ? e.hold : 0 }); h.at(e.ms, () => { if (a.prev === from) a.prev = null; }); }
 }

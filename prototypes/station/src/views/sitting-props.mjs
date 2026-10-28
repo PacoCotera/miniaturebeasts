@@ -10,7 +10,7 @@ import { frameFor } from "../state.mjs";
 import { stampSizing, genomeDigest } from "../genome.mjs";
 import { kPct } from "../stamplook.mjs";
 import { poseFor } from "../layered-stand.mjs";
-import { offer, beginBlock } from "../sitting.mjs";
+import { offer, beginBlock, CARRIED_BLOCK } from "../sitting.mjs";
 import { portraitOpening } from "../portrait-source.mjs";
 import { mibiReq, figureOf } from "./home-props.mjs";
 import { fill } from "./words.mjs";
@@ -47,8 +47,8 @@ export function sittingBuild(m, spec, habitat) {
   const targets = items.map((_, i) => ({ id: "card." + i, group: "card", enabled: true }));
   const cur = items.length ? (targets.some((t) => t.id === ui.focus) ? ui.focus : "card." + Math.max(0, before)) : "room";
   const focused = items.length ? items[+cur.slice(5)] : null;
-  // a Lift mid-ceremony (the mibi carried while the Companion is away): the choices are kept, the confirm step reads habitat.json strings.portraitOut and never lights, ✓ does nothing, until the Dock
-  const out = state === "confirm" && !!chosenPose && !!chosenPlace && beginBlock(st, mb, chosenPose, chosenPlace, m.sv) === habitat.strings.portraitOut;
+  // a Lift mid-ceremony (the mibi carried while the Companion is away): the choices are kept, the confirm step reads habitat.json strings.travellerContext and never lights, ✓ does nothing, until the mibi is home
+  const out = state === "confirm" && !!chosenPose && !!chosenPlace && beginBlock(st, mb, chosenPose, chosenPlace, m.sv) === CARRIED_BLOCK;
   const armed = state === "confirm" && !out && ui.armed === "room" ? "room" : null;
 
   const regions = {};
@@ -89,7 +89,7 @@ export function sittingBuild(m, spec, habitat) {
   const placeWord = (g) => "the " + (S.PLACE_WORD[g] || g);
   const line = state === "pose" ? { ok: Sg.thisPose, subject: focused ? habitat.strings.watchHabits[focused] ?? focused : "", back: mb.name, need: null }
     : state === "place" ? { ok: Sg.thisPlace, subject: focused ? placeWord(focused) : "", back: Sg.steps.pose, need: null }
-    : state === "confirm" && out ? { ok: null, subject: habitat.strings.portraitOut, back: Sg.steps.place, need: null }
+    : state === "confirm" && out ? { ok: null, subject: habitat.strings.travellerContext[S.docked(st) ? "docked" : "away"], back: Sg.steps.place, need: null }
     : state === "confirm" ? { ok: fill(armed ? Sg.portrayAgain : Sg.portray, named), subject: Sg.once, back: Sg.steps.place, need: null }
     : state === "begin" ? { ok: null, subject: "", back: null, need: null }
     : { ok: null, subject: Sg.portraitContext ?? "", back: mb.name, need: null };

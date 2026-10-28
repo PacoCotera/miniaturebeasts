@@ -7,7 +7,7 @@
 enum { RP_BACK = 1, RP_OCCLUDER = 2 };
 /* A piece in a window's coordinates (the painting's plus the offset room_select was given). `pic` is the picture the props name for it (regions.room.pieces.<id>), "" when the props name none. `foot` is an occluder's sorting row
    (the window's); `opa` is a back piece's opacity (255 when the spec sets none). */
-typedef struct { char id[32]; int kind; char pic[96]; int x, y, w, h, foot, opa; } rp_t;
+typedef struct { char id[32]; int kind; char pic[96]; int x, y, w, h, foot, opa, level; } rp_t;   /* level: the occluder's level (0 main) */
 /* The `rooms` spec arrived: check it whole and build the tables. 0, or -1 with the reason in err (the spec is then refused). */
 int room_load(char *err, int cap);
 /* Choose the room `id` for the window drawn now, with the offset (dx, dy) of the window from the painting (window = painting + offset), and read the props' piece pictures. main_only: the window uses the main level alone (Home).
@@ -28,6 +28,9 @@ int room_on(int lv, int fx, int feet, int w);
 void room_point(int lv, unsigned r1, unsigned r2, int w, int *fx, int *feet);
 /* The same draw held to the window [xa, xb] x [fa, fb] (fx and feet): the walk's own ground (a box inside the glass, a moving set's reach); an empty window gives its low corner. */
 void room_point_in(int lv, unsigned r1, unsigned r2, int w, int xa, int xb, int fa, int fb, int *fx, int *feet);
+/* R4b (a rester's nice spot): the top row of lv at fx (the window's coordinates), and the x breakpoints of lv's profile (the window's), up to cap of them; their number. */
+int room_top(int lv, int fx);
+int room_xs(int lv, int *xs, int cap);
 /* The join for a change of level from `from` to `to`: leg[0] the join's end on `from` and then its end on `to`, leg[1] the end on `to` and then the end on `from` (each [x, feet]); returns the join's index, or -1 (no join links the two). */
 int room_route(int from, int to, int leg[2][2][2]);
 /* The join is a hop (its leg 2 is one hop clip for a set that has one); 0 for a ramp. */

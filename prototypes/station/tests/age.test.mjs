@@ -50,7 +50,7 @@ test("age words: turns old, what the stage means, and the span of real time", ()
   assert.equal(yoursLine({}, T0), null); assert.equal(yoursLine({ since: 0 }, T0), null);
 });
 test("since: written at the hatch (Open and Hatch now), in ms UTC, never rewritten; no floor on a mibi hatched here", () => {
-  const a = fresh(); const o = hatch(a, T0); assert.equal(o.ok, true); assert.deepEqual([o.mibi.since, o.mibi.sinceFloor], [T0 + 60 * MIN, undefined]);
+  const a = fresh(); const o = hatch(a, T0); assert.equal(o.ok, true); assert.deepEqual([o.mibi.since, o.mibi.sinceFloor], [T0 + 60 * MIN, undefined]); assert.equal(o.mibi.roomSince, T0 + 60 * MIN, "R4b: the hatch writes roomSince, equal to since");
   const b = fresh(); const g = hatch(b, T0, "now"); assert.equal(g.ok, true); assert.equal(g.mibi.since, T0 + MIN); assert.ok(Number.isInteger(g.mibi.since));
   S.normalize(a, T0 + 99 * MIN); assert.equal(a.mibis[0].since, T0 + 60 * MIN, "normalize never rewrites it"); assert.equal(a.mibis[0].sinceFloor, undefined);
   const c = fresh(); const e = hatch(c, 5000); assert.equal(e.ok, true); assert.equal("since" in e.mibi, false, "an unset clock (before 2026) writes nothing");

@@ -307,8 +307,18 @@ test("Cross while away: a mibi out with the Companion cannot be crossed, as the 
   assert.deepEqual(S.crossPartners(st, sv, a, settings).map((m) => [m.id, !!m.away]), [[b.id, true], [c.id, false]], "the away partner is marked and kept, in bay order");
   assert.equal(S.crossPartners(st, sv, a, settings)[1], c, "a partner at home is the mibi itself");
   st.dock = { docked: true, at: 2 };
-  assert.equal(S.crossBlock(st, sv, a, b, settings), "", "docked, the carried mibi crosses as any adult");
-  assert.ok(S.crossPartners(st, sv, a, settings).every((m) => !m.away), "docked, nobody is away");
+  assert.equal(S.crossBlock(st, sv, a, b, settings), "away", "R4b, the owner: no breeding while carried, docked too");
+  assert.deepEqual(S.crossPartners(st, sv, a, settings).map((m) => [m.id, !!m.away]), [[b.id, true], [c.id, false]], "docked, the carried partner is still marked");
+  assert.equal(S.crossBlock(st, { carried: [] }, a, b, settings), "", "brought home, it crosses as any adult");
+});
+test("R4b roomSince: written at the hatch and at a move (a good clock only); noteCarried stamps a traveller that left the carried set, and writes carriedSeen", () => {
+  const { st } = readPod([crate(1, [loikaPod(1, 21)])]);
+  const [a, b] = S.seedAdults(st, "S01", 31, 2, { ...settings, rooms: 2 }).mibis, sv = { carried: [a.id, b.id] };
+  assert.deepEqual(S.noteCarried(st, sv, 5e12), [], "the first read: nobody came home"); assert.deepEqual(st.face.carriedSeen, [a.id, b.id]);
+  sv.carried = [b.id]; assert.deepEqual(S.noteCarried(st, sv, 5e12 + 1), [a.id]); assert.equal(a.roomSince, 5e12 + 1, "roomSince = now"); assert.equal(b.roomSince, undefined); assert.deepEqual(st.face.carriedSeen, [b.id]);
+  const c = { ...a, roomSince: undefined }; S.noteCarried(st, { carried: [] }, 5);   // a clock before 2026 writes nothing
+  assert.equal(b.roomSince, undefined, "an unset clock writes nothing");
+  const m = S.moveMibi(st, a, 1, { ...settings, rooms: 2 }, 7e12); assert.ok(m.ok); assert.equal(a.roomSince, 7e12, "a move writes roomSince"); assert.ok(c);
 });
 
 test("the cross: refusals before cost; a child of two founders with real parents, known only where switch parents match; the forecast's quarters and range", () => {

@@ -165,7 +165,9 @@
    "clip": "window",
    "adult": [144,152],
    "juvenile": [104,112],
-   "max": 6,
+   "max": 5,
+   "maxWhy": "what fits at 1x: 5 adults with an ink width between, in the 444 px centre span (6 need 550 of 494 px); glassOf caps at shownOf, so vivarium.json rules.show.max and Home agree at 5",
+   "order": "by the feet's y, lower in front (drawn later), left first on a tie; the met one's (ui.meet) name tag is drawn after every resident, so a walker may pass in front of the met one by depth and is drawn under its tag; walkers do not avoid it",
    "lift": 0,
    "asleep": {"ink": [96,88]},
    "walk": {
@@ -281,18 +283,6 @@
     {"at":0,"ms":200,"do":"the ring is already gone; nothing moves"},
     {"at":200,"ms":180,"do":"the screen transition (16-level Bayer dither) to Idle"}
    ]
-  },
-  "sendoff": {
-   "kind": "sendoff",
-   "target": "bed",
-   "ms": 1400,
-   "hold": 0,
-   "start": 200,
-   "stagger": 200,
-   "hop": {"ms":175,"lift":[[0,1],[25,2],[50,3],[75,4],[100,3],[125,2],[150,1],[175,0]]},
-   "out": {"ms":400,"levels":16},
-   "spec": "specs/station-dock-arrival-spec.md §4, amended T-20261016-67",
-   "rule": "The lift's send-off, in the frame and the living window only; the screen the player is on never changes. On Home and Idle the sleepers on the bed, rightmost first, start 200 ms apart from 200 ms: wake (the nap pose cuts to the resident's own standing painting in its box on the bed, feet on footY), one hop by the hatch's table, then dither out over 400 ms (16 levels) in place; the bed's away mark appears at 1400, when the last is gone. No walk exists in the art. The Cargo module's door shuts at 200 (a cut) and the top bar's Companion goes to its outline with its lamp to stone at 0 (a cut), as today's lift. Reduced motion: every event is a cut to its end (the bed empties at the lift). Dirty: one resident's box (≤ 144 × 152 + 4) per frame"
   }
  },
  "strings": {

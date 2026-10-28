@@ -50,8 +50,9 @@ void build_bayStrip(const char *sp, const char *cur, int box[4]) {
   v_region("strip", LAYER_PAINTED); { const char *pl = v_pstr("regions.strip.plate"); v_slot("strip", pl, v_pstr("regions.tiles.glyph"), r[0], r[1], r[2], r[3], any && *pl); }   /* fix 2 F1/F5: the strip's plate, 1:1; no housed or out tile: no plate (Every state composed, rule 2: no bare panel) */
   char fk[48]; if (n > 12 || layout_list_form(sp, "regions.tiles", n, fk, sizeof fk) < 0) { v_error("word: the bay strip holds twelve bays at most, and its forms must hold this many"); return; }
   int tx = v_sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 0), ty = v_sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 1), tw = v_sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 2), th = v_sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 3);
-  int gw = v_sk(sp, "regions.tiles.tile.outGlyph", 0), gh = v_sk(sp, "regions.tiles.tile.outGlyph", 1), lift = v_si(sp, "focus.targets.tile.lift", 2);
-  char glyph[96]; snprintf(glyph, sizeof glyph, "%s", v_pstr("regions.tiles.glyph"));   /* a copy: v_pstr's ring of 32 is spent by eight tiles */
+  int lift = v_si(sp, "focus.targets.tile.lift", 2);
+  char glyph[96], glyphDocked[96]; snprintf(glyph, sizeof glyph, "%s", v_pstr("regions.tiles.glyph")); snprintf(glyphDocked, sizeof glyphDocked, "%s", v_pstr("regions.tiles.glyphDocked"));   /* a copy: v_pstr's ring of 32 is spent by eight tiles */
+  int vx = v_sk(sp, "regions.tiles.tile.traveller.thumb", 0), vy = v_sk(sp, "regions.tiles.tile.traveller.thumb", 1), lx = v_sk(sp, "regions.tiles.tile.traveller.glyph", 0), ly = v_sk(sp, "regions.tiles.tile.traveller.glyph", 1), lw = v_sk(sp, "regions.tiles.tile.traveller.glyph", 2), lh = v_sk(sp, "regions.tiles.tile.traveller.glyph", 3);   /* R4b: a carried mibi's tile keeps its thumbnail and the Companion's glyph beside it */
   for (int i = 0; i < n; i++) {
     char P[64]; snprintf(P, sizeof P, "regions.tiles.items.%d", i);
     const char *id = v_pstr(v_fmt("%s.id", P)), *state = v_pstr(v_fmt("%s.state", P)), *pic = v_pstr(v_fmt("%s.picture", P));
@@ -63,9 +64,9 @@ void build_bayStrip(const char *sp, const char *cur, int box[4]) {
     snprintf(nm, sizeof nm, "tile.%d", i); { const char *wl = v_pstr(v_fmt("%s.well", P)); v_slot(nm, wl, glyph, x, y, w, h, !free_ && *wl); }
     v_region(reg, LAYER_CHROME);   /* fix 2 F4: the tile is its well, by form (the mibi up close: the -shown well); a free bay draws nothing */
     v_name(reg); snprintf(nm, sizeof nm, "tile.%d.thumb", i);
-    v_slot(nm, pic, glyph, x + tx, y + ty, tw, th, housed && *pic);
+    v_slot(nm, pic, glyph, out ? x + vx : x + tx, out ? y + vy : y + ty, tw, th, (housed || out) && *pic);
     snprintf(nm, sizeof nm, "tile.%d.glyph", i);
-    v_slot_at(nm, glyph, NULL, x + tx + (tw - gw) / 2, y + ty + (th - gh) / 2, gw, gh, out, x + tx, y + ty);
+    v_slot_at(nm, strcmp(v_pstr(v_fmt("%s.where", P)), "docked") == 0 ? glyphDocked : glyph, NULL, x + lx, y + ly, lw, lh, out, x + lx, y + ly);
     snprintf(nm, sizeof nm, "tile.%d.free", i);   /* a free bay draws nothing: the node keeps its box with no ops (fix 6, N7) */
     v_composed(nm, x, y, w, h, "[]");
   }
@@ -109,9 +110,10 @@ static void place_draw(int i, const int b[4], void *vc) {
   pane_ctx_t *c = vc; char P[48], nm[48], reg[24], id[24], state[16], pic[96], wl[96], from[96], glyph[96];
   snprintf(P, sizeof P, "regions.tiles.items.%d", i); snprintf(id, sizeof id, "%s", v_pstr(v_fmt("%s.id", P))); snprintf(state, sizeof state, "%s", v_pstr(v_fmt("%s.state", P)));
   snprintf(pic, sizeof pic, "%s", v_pstr(v_fmt("%s.picture", P))); snprintf(wl, sizeof wl, "%s", v_pstr(v_fmt("%s.well", P))); snprintf(from, sizeof from, "%s", v_pstr(v_fmt("%s.from", P))); snprintf(glyph, sizeof glyph, "%s", v_pstr("regions.tiles.glyph"));
+  char glyphDocked[96], where[12]; snprintf(glyphDocked, sizeof glyphDocked, "%s", v_pstr("regions.tiles.glyphDocked")); snprintf(where, sizeof where, "%s", v_pstr(v_fmt("%s.where", P)));
+  int vx = v_sk(c->sp, "regions.tiles.tile.traveller.thumb", 0), vy = v_sk(c->sp, "regions.tiles.tile.traveller.thumb", 1), lx = v_sk(c->sp, "regions.tiles.tile.traveller.glyph", 0), ly = v_sk(c->sp, "regions.tiles.tile.traveller.glyph", 1), lw = v_sk(c->sp, "regions.tiles.tile.traveller.glyph", 2), lh = v_sk(c->sp, "regions.tiles.tile.traveller.glyph", 3);   /* R4b: a carried mibi's tile keeps its thumbnail and the Companion's glyph beside it */
   int housed = strcmp(state, "housed") == 0, out = strcmp(state, "out") == 0, free_ = !housed && !out;
   int tx = v_sk(c->sp, "regions.tiles.tile.thumb.compact", 0), ty = v_sk(c->sp, "regions.tiles.tile.thumb.compact", 1), tw = v_sk(c->sp, "regions.tiles.tile.thumb.compact", 2), th = v_sk(c->sp, "regions.tiles.tile.thumb.compact", 3);
-  int gw = v_sk(c->sp, "regions.tiles.tile.outGlyph", 0), gh = v_sk(c->sp, "regions.tiles.tile.outGlyph", 1);
   int focused = strncmp(c->cur, "tile.", 5) == 0 && *id && strcmp(c->cur + 5, id) == 0, x = b[0], y = b[1] - (focused ? c->lift : 0), w = b[2], h = b[3];
   if (focused) { c->box[0] = x; c->box[1] = y; c->box[2] = w; c->box[3] = h; }
   snprintf(reg, sizeof reg, "tile.%d", i); v_region(reg, LAYER_PAINTED);
@@ -120,10 +122,10 @@ static void place_draw(int i, const int b[4], void *vc) {
   snprintf(nm, sizeof nm, "tile.%d.recess", i); recess_draw(c, nm, x, y, w, h, !free_);   /* a free place is its recess, nothing in it */
   v_name(reg); snprintf(nm, sizeof nm, "tile.%d.thumb", i);
   int hasFrom = c->level < 16 && *from && wire_asset_slot(from) >= 0, hasTo = housed && *pic && wire_asset_slot(pic) >= 0, dith = c->level < 16 && (hasFrom || hasTo);
-  v_slot(nm, pic, glyph, x + tx, y + ty, tw, th, housed && *pic && !dith);
+  v_slot(nm, pic, glyph, out ? x + vx : x + tx, out ? y + vy : y + ty, tw, th, (housed || out) && *pic && !dith);
   if (dith) { v_name(reg); snprintf(nm, sizeof nm, "tile.%d.dither", i); v_dither_window(nm, hasFrom ? from : NULL, 0, 0, hasTo ? pic : NULL, 0, 0, c->level, x + tx, y + ty, tw, th); }
   snprintf(nm, sizeof nm, "tile.%d.glyph", i);
-  v_slot_at(nm, glyph, NULL, x + tx + (tw - gw) / 2, y + ty + (th - gh) / 2, gw, gh, out, x + tx, y + ty);
+  v_slot_at(nm, strcmp(where, "docked") == 0 ? glyphDocked : glyph, NULL, x + lx, y + ly, lw, lh, out, x + lx, y + ly);
   snprintf(nm, sizeof nm, "tile.%d.free", i); v_composed(nm, x, y, w, h, "[]");   /* the place's box in the log, drawn or not */
 }
 void build_rooms(const char *sp, const char *cur, int box[4]) {

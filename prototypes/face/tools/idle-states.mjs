@@ -1,4 +1,4 @@
-// Idle in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `idle-docked` (the carried set asleep on the bed), `idle-away` (the bed's mark), `idle-none` (the nest alone), each with the line frame.json idle.strings.order gives, and `idle-walk-8000ms` (eight residents walking, 8000 ms of the face's clock into Idle, the reference of the three builds).
+// Idle in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `idle-docked` (the carried two are not drawn; the nest alone), `idle-away`, `idle-none` (the nest alone), `idle-meet-reeds` (a mibi housed in Reeds met while the room on the face is Roots: Reeds' painting), each with the line frame.json idle.strings.order gives, and `idle-walk-8000ms` (eight residents walking, 8000 ms of the face's clock into Idle, the reference of the three builds).
 // The still points are taken with reduced motion; the walk on a virtual clock with motion. Each is reached by the page's own state (Idle on the screen under it) and asserted before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
@@ -13,6 +13,8 @@ const SCENES = {
   empty:  { line: "", set: (w) => { w.adults(2); } },
   eight: { line: "", timed: true, set: (w) => { w.rooms(1); w.adults(8); } },
   // R3 (the rooms design): Boulders by night, six residents, one behind the stone (its id is chosen so that its start seed puts its feet just above the stone's foot); the room has no bed
+  // R5 carried (T-20261027-318, UI/UX's R5 read): Idle shows the room of the mibi being met: two rooms, the room on the face is Roots (0), three mibis housed in Reeds (1) and one of them met, so the painting is Reeds' (its sedge-seam occluder against the walk band)
+  "meet-reeds": { line: "", room: "reeds", n: 3, set: (w) => { const st = window.__st.ST; w.rooms(2); w.adults(2); st.face.room = 1; w.adults(3); st.face.room = 0; w.meet(st.mibis.length - 1); } },
   "room-boulders-night": { line: "", light: "night", room: "boulders", set: (w) => { w.rooms(4); window.__st.ST.face.room = 2; w.adults(6); window.__st.ST.mibis[3].id = 139; } },
 };
 async function enter(page, sc) {
@@ -30,8 +32,7 @@ async function still(visit) {
       if (sc.timed) continue;
       await enter(page, sc); await page.waitForTimeout(900);
       const u = await page.evaluate(() => ({ idle: window.__st.UI.idle, props: window.__st.props && { idle: window.__st.props.idle, line: window.__st.props.frame?.idle?.line, bed: window.__st.props.regions?.bed?.state, room: window.__st.props.regions?.room?.id, residents: window.__st.props.regions?.residents?.length } }));
-      const bed = { docked: "docked", away: "away", none: "none", empty: "none" }[name.replace(/-(dawn|dusk|night)$/, "")];
-      if (!u.idle || !u.props?.idle || (sc.line instanceof RegExp ? !sc.line.test(u.props.line) : u.props.line !== sc.line) || (name !== "empty" && name !== "none" ? u.props.bed !== bed : false) || (sc.room && (u.props.room !== sc.room || u.props.residents !== 6))) fail(`idle-${name}: ${JSON.stringify(u)}`);
+      if (!u.idle || !u.props?.idle || (sc.line instanceof RegExp ? !sc.line.test(u.props.line) : u.props.line !== sc.line) || (name !== "empty" && name !== "none" && !sc.room ? u.props.bed !== "empty" : false) || (sc.room && (u.props.room !== sc.room || u.props.residents !== (sc.n ?? 6)))) fail(`idle-${name}: ${JSON.stringify(u)}`);   // R4b: the bed is the resters' alone: empty with nobody resting (the carried set is never drawn)
       await visit("idle-" + name, page, fail);
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
