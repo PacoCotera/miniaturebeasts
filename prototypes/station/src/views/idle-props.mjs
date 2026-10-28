@@ -20,7 +20,7 @@ export function idleLine(m, I) {
 export function idleBuild(m, frame) {
   const I = frame.idle, R = I.regions, requests = [], req = reqOf(requests);
   const ph = phOf(req, "its master (station-layouts.md, Placeholders on Idle)");
-  const room = shownRoom(m.st), lw = livingOf({ ...m, view: "idle", room }, R, req, ph, frame.light);
+  const room = shownRoom(m.st, m.meet ?? null), lw = livingOf({ ...m, view: "idle", room }, R, req, ph, frame.light);
   const region = roomRegion(req, room, m.light), vivarium = { picture: region.base };   // the room's painting of the light: the picture Idle shows whole and the Vivarium's whole shows rows 120 to 560 of; one request for both, so a light's painting is on the face once
   return { props: { idle: true, regions: { vivarium, room: region, residents: lw.residents, ...(lw.bed ? { bed: lw.bed } : {}) }, frame: { idle: { line: idleLine(m, I) } } }, requests };
 }

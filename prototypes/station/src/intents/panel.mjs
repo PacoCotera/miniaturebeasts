@@ -7,6 +7,7 @@ import { incubateNow, keepShaping } from "./create.mjs";
 import { returnNow } from "./habitat.mjs";
 import { returnPodNow } from "./pods.mjs";
 import { fitNow } from "./bench.mjs";
+import { addRoomNow } from "./vivarium.mjs";
 import { growNow } from "./incubator.mjs";
 import { later, openFromArrival } from "./arrival.mjs";
 
@@ -38,6 +39,7 @@ export function intent(h, target, verb) {
   S.logEv(h.st, "Decision panel · " + h.specs.panel.strings[ui.id].title + " · " + card.name);   // the card pressed, for the owner's own play to be read back
   closePanel(h);
   if (card.act === "fit") fitNow(h);
+  else if (card.act === "addRoom") addRoomNow(h);
   else if (card.act === "growNow") growNow(h);
   else if (card.act === "open") openFromArrival(h);
   else if (card.act === "later") later(h);

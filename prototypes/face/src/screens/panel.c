@@ -95,7 +95,7 @@ static void build_card(int i, int n, int focused) {
     int feet[3] = { ph - 1, 0, pwid - 1 }; if (hd >= 0 && prim_asset_feet(hd, v_si(F, RP ".art.feet.alpha", 128), v_si(F, RP ".art.feet.rows", 4), feet) < 0) { feet[0] = ph - 1; feet[1] = 0; feet[2] = pwid - 1; }
     int px0 = slotX + v_half(pw - pwid) + shift, py0 = r[1] + v_si(F, RP ".art.feet.line", 168) - feet[0];
     { const char *sh = v_pstr("overlay.regions.art.shadow"); int span = feet[2] - feet[1] + 1 + v_si(F, RP ".art.shadow.stretch", 16), ends = v_si(F, RP ".art.shadow.ends", 32), sh_h = v_si(F, RP ".art.shadow.h", 16); if (span < 2 * ends) span = 2 * ends;
-      const int caps[4] = { ends, 0, ends, 0 }; v_region("cardStage", LAYER_PAINTED); if (hd >= 0) v_nine(v_fmt("card.%d.shadow", i), sh, px0 + (feet[1] + feet[2] + 1) / 2 - span / 2, r[1] + v_si(F, RP ".art.feet.line", 168) - sh_h / 2, span, sh_h, caps); }
+      const int caps[4] = { ends, 0, ends, 0 }; v_region("cardStage", LAYER_PAINTED); if (hd >= 0 && *v_pstr(v_fmt("%s.stage", base))) v_nine(v_fmt("card.%d.shadow", i), sh, px0 + (feet[1] + feet[2] + 1) / 2 - span / 2, r[1] + v_si(F, RP ".art.feet.line", 168) - sh_h / 2, span, sh_h, caps); }
     v_name("cardPictures"); v_slot_at(v_fmt("card.%d.picture", i), pic, NULL, px0, py0, pwid, ph, pwid > 0 && ph > 0, r[0], r[1]); }
   /* the light: over the picture, the pool lighting the subject from below */
   v_region("cardStage", LAYER_PAINTED); v_sprite(v_fmt("card.%d.light", i), v_pstr(v_fmt("%s.light", base)), slotX, r[1] + v_sk(F, RP ".art.light.at", 1), pw, 160);

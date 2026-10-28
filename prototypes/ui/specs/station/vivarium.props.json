@@ -137,6 +137,10 @@
     },
     "well": {
      "type": "string"
+    },
+    "from": {
+     "type": "string",
+     "description": "R5: while the room shown changes (events.swap): the id of the old room's place's thumbnail, dithered out as this place's own dithers in; \"\" when there is none or no swap runs"
     }
    }
   },
@@ -154,11 +158,44 @@
     "group": {
      "enum": [
       "resident",
-      "tile"
+      "tile",
+      "room"
      ]
     },
     "enabled": {
      "type": "boolean"
+    }
+   }
+  },
+  "chip": {
+   "type": "object",
+   "required": [
+    "id",
+    "state",
+    "picture",
+    "lamp"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "the room's number (0 to 3), or \"new\" for the new-room chip"
+    },
+    "state": {
+     "enum": [
+      "shown",
+      "room",
+      "new"
+     ],
+     "description": "shown: the room shown (one step up); room: another room; new: the new-room chip"
+    },
+    "picture": {
+     "type": "string",
+     "description": "the room's chip picture (rooms.json rooms.<id>.chip) in the light; \"\" until the art director cuts it (the recess alone)"
+    },
+    "lamp": {
+     "type": "string",
+     "description": "the new-room chip's lamp picture (mint when the next room can be paid, stone otherwise); \"\" on a room's chip"
     }
    }
   }
@@ -183,8 +220,8 @@
     "window",
     "room",
     "residents",
-    "strip",
-    "tiles"
+    "tiles",
+    "rooms"
    ],
    "additionalProperties": false,
    "properties": {
@@ -276,22 +313,26 @@
       },
       "items": {
        "type": "array",
-       "maxItems": 12,
+       "maxItems": 8,
        "items": {
         "$ref": "tile"
        }
       }
      }
     },
-    "strip": {
+    "rooms": {
      "type": "object",
      "required": [
-      "plate"
+      "items"
      ],
      "additionalProperties": false,
      "properties": {
-      "plate": {
-       "type": "string"
+      "items": {
+       "type": "array",
+       "maxItems": 4,
+       "items": {
+        "$ref": "chip"
+       }
       }
      }
     }

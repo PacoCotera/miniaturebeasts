@@ -325,6 +325,7 @@
     "canIncubate": "a pod can incubate",
     "growing": "a bud growing",
     "ready": "the bud is ready",
+    "waitsForRoom": "waits for room",
     "species": "{a} {Species}"
    },
    "companion": {
@@ -346,7 +347,7 @@
   },
   "needs": {
    "rule": "the notice and the room's ✓, the first that holds: the module it lights, the notice, the action. Counts are spelled (a, two to six); above what the picture holds the count is dropped",
-   "order": ["crates","budReady","meet","newPods","glints","waitingPods","couldGrow","toRead","budGrowing"],
+   "order": ["crates","full","budReady","meet","newPods","glints","waitingPods","couldGrow","toRead","budGrowing"],
    "crates": {
     "module": "cargo",
     "notice": "{count} crates wait in the bay",
@@ -354,6 +355,7 @@
     "action": "Open the bay",
     "rule": "the walk crates in the bay, while docked; the count is theirs, so the Cargo lamp, the notice and the room's ✓ agree (state.need()). A ready portrait is counted apart, docked or away (strings.line.needs.portrait); with walk crates too, the notice names both (strings.line.needs.crates.withPortrait). Cargo's own notice names neither: its bay shows them."
    },
+   "full": {"module":"incubator","notice":"The Vivarium is full","actions":{"add":"Add a room","make":"Make room"},"rule":"every place is taken and something waits for one (a ready bud, or a pod that could be incubated): ahead of the bud and of couldGrow (state.need, the rooms words C9, C11). ✓ jumps to the Vivarium: with a room that can be bought and paid, ✓ Add a room, the ring on the new-room chip (room.new); otherwise ✓ Make room, the ring on the first resident of the room shown"},
    "budReady": {"module":"incubator","notice":"the bud is ready","action":"Open the bud"},
    "meet": {"module":null,"notice":"meet {name}","action":"Meet {name}"},
    "newPods": {
@@ -387,9 +389,10 @@
   },
   "line": {
    "rule": "the line at rest: at most two needs joined by a dot, amber, with the amber lamp before them; the first carries the confirm cap and says its action, the second its notice. With none, the goal (frame.json strings.goal), mist. With a target focused: the target's verb with the cap, then its subject, if it has one, in mist.",
-   "order": ["crates","budReady","portrait","meet","newPods","glints","waitingPods","couldGrow"],
+   "order": ["crates","full","budReady","portrait","meet","newPods","glints","waitingPods","couldGrow"],
    "needs": {
     "crates": {"action":"Open the Bay","notice":"{count} crates wait in the Bay","noticeOne":"a crate waits in the Bay","withPortrait":{"notice":"Bay: {count} crates and a portrait","noticeOne":"Bay: a crate and a portrait"}},
+    "full": {"actions":{"add":"Add a room","make":"Make room"},"notice":"The Vivarium is full"},
     "budReady": {"action":"Open the bud","notice":"the bud is ready"},
     "portrait": {"action":"Open the Bay","notice":"a portrait waits in the Bay"},
     "meet": {"action":"Meet {name}","notice":"meet {name}"},

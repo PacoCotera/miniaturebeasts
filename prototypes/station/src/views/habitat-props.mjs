@@ -158,5 +158,6 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
       : { ok: fill(Sg.wild, named), price, subject: Sg.wildContext };
     line = { ...line, back: Sg.back, need: null };
   }
-  return { props: { state, regions, focus }, line, requests, shown };
+  const top = S.roomCount(st, settings) >= 2 ? { readout: { text: S.ROOM_NAMES[roomOf], mark: null } } : {};   // the crumb, as the Vivarium's whole: the room of the mibi up close
+  return { props: { state, regions, focus }, line, requests, shown, top };
 }

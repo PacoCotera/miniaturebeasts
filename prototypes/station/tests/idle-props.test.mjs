@@ -64,6 +64,13 @@ test("R3: the shown room's ids per light (its painting and the pieces that have 
     assert.ok(!b.requests.some((x) => /^(idle-vivarium|home-bed|vivarium-near)/.test(x.id)), "the legacy ids are no longer referenced");
   }
 });
+test("F2: Idle shows the room of the mibi being met (st.face.room 0, a mibi housed in room 1): Reeds' painting and room 1's residents", () => {
+  const st = world(); st.rooms = 2; adults(st, 4); st.mibis.forEach((m, i) => { m.room = i < 2 ? 0 : 1; }); st.face.room = 0;
+  const sv = sv0({ carried: [st.mibis[0].id] }), meet = st.mibis[2].id, at = idleBuild({ st, sv, settings, docked: true, light: "day", meet }, frame), none = build(st, sv);
+  assert.equal(none.props.regions.room.id, ROOMS.order[0], "no meet: the room on the face");
+  const r = at.props.regions, want = ROOMS.order[1]; assert.equal(r.room.id, want); assert.equal(r.room.base, `room-${want}-idle-day-1024x568`); assert.equal(r.vivarium.picture, r.room.base);
+  assert.deepEqual(validate(at.props, schema), []); assert.equal(r.residents.length, st.mibis.filter((m) => m.room === 1).length, "room 1's residents");
+});
 test("the line: the first that holds of crates (docked), the bud ready, the bud growing, out with the Companion (away, mibis carried); none, empty; six words or fewer and no digits", () => {
   const L = (st, sv) => idleLine({ st, sv, settings, docked: S.docked(st) }, frame.idle);
   { const st = world(); assert.equal(L(st, sv0()), "", "nothing: empty"); assert.equal(L(st, sv0({ bay: [crate(1)] })), "A crate waits in the Bay"); assert.equal(L(st, sv0({ bay: [crate(1), crate(2)] })), "Two crates wait in the Bay"); assert.equal(L(st, sv0({ bay: [1, 2, 3, 4].map(crate) })), "Crates wait in the Bay", "more than three: the count is dropped"); }

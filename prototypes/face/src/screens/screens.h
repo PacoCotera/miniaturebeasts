@@ -92,6 +92,8 @@ void build_module(const char *spec, const char *key, int dy, const char *lamp); 
 const char *home_lamp_pic(const char *state);   /* frame.json regions.marks.lamp12.<state>, the signed 12 × 12 lamp picture of a state */
 void build_bayStrip(const char *spec, const char *cur, int box[4]);   /* the Vivarium's strip of bays (vivarium.json regions.strip, tiles); box: the focused tile's box, or zeros */
 void build_waitingLamp(const char *id, int x, int y, int shown);
+void build_rooms(const char *spec, const char *cur, int box[4]);    /* the Vivarium whole's rooms pane: the slate pane and a chip a room, then the new-room chip (vivarium.json regions.rooms, chips); box: the focused chip's box (lifted), or zeros */
+void build_places(const char *spec, const char *cur, int box[4]);   /* the whole's places pane: the slate pane and the eight places (vivarium.json regions.places, tiles); box: the focused place's box (lifted), or zeros */
 /* Cargo (screens/cargo.c): its words by the state the props name, and its keys */
 void cargo_words(void);
 void cargo_key(int code);

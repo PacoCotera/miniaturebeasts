@@ -38,6 +38,8 @@ export const SCENES = {
   "library-0-new":       { f: "room", set: (w) => { w.adults(3); w.libNew(0); } },   // the Library opened full screen: the specimen of the species with the fewest looks unfound, no new caption, no glint (build spec 4.2)
   "library-3-new":       { f: "room", set: (w) => { w.adults(3); w.libNew(3); } },   // three looks found since: "3 new" and a glint on each bead (reduced motion: the glints simply show)
   "library-focused":     { f: "library", set: (w) => { w.adults(3); w.libNew(3); } },
+  // R5 (T-20261027-318): every place taken and a bud ready (the last scene, so the rooms and the Energy it sets are in no earlier one): the line leads to the Vivarium (✓ Make room: no Energy for a room), the Incubator module says it waits for room
+  "full-bud":            { f: "room", set: (w) => { const st = window.__st.ST; w.rooms(1); st.rooms = 1; st.e = 0; w.adults(8); w.bud(true); } },
 };
 // the helpers the scenes call, in the page
 export const WORLD = () => ({
@@ -52,7 +54,6 @@ export const WORLD = () => ({
   away() { window.__st.ST.dock = { docked: false, at: 1 }; },
   crates(n) { window.__st.SV.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 0, at: 1, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] })); this.persist(); },
   rooms(k) { window.__st.settings.rooms = k; },
-  bays(n) { this.rooms(Math.ceil(n / 8)); },
   waiting(n) { const st = window.__st.ST; for (let i = 0; i < n; i++) st.waiting.push({ ...st.tray[i], id: "wait" + i }); },
   sitting() { window.__st.ST.sitting = { mibi: window.__st.ST.mibis[0]?.id ?? 1 }; },
   unread(i) { const m = window.__st.ST.mibis[i]; if (m) m.read = []; this.persist(); },
