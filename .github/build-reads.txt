@@ -1,5 +1,6 @@
 # Every document or folder outside the build's own folders (website/, prototypes/, .github/, ops/, v1/native/vendor/) that the build's scripts or data name.
 # One path a line; a line ending in / is a folder and covers everything under it. A change to a .md listed here, or under a listed folder, runs the full build.
+# The Sandbox workflow's sparse checkout (.github/workflows/site.yml) fetches only the build's folders and these: add a new folder there too.
 # The test in .github/roadmap.test.mjs scans the build's scripts and data for string literals that name such a document or folder and fails when one is not covered here.
 art/companion-48/species/
 art/companion-48/terrain/

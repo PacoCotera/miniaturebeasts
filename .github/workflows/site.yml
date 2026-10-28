@@ -21,12 +21,28 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 50   # the tests step ran past 15 minutes on 2026-10-28 (the walk proofs of the rooms, R4, add about 7 minutes); about 25 before them
+    timeout-minutes: 25   # measured 29 minutes with the browser checks (2026-10-28); a pull request now runs the build, smoke and node tests (about 11), a manual run all of them
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
           persist-credentials: false
+          # Only what the build reads (13.5 minutes for the whole tree on 2026-10-28, most of it art/ and v1/): the build's own folders, and the
+          # folders the build and the tests read outside them (.github/build-reads.txt, and the palettes the tests read); root files come with cone mode.
+          # Left out: the concept art (about 600 MB) and v1/ beyond the vendored LVGL and the generator workbench. A new folder the build or a test reads is added here.
+          sparse-checkout: |
+            .github
+            website
+            prototypes
+            ops
+            design
+            hardware
+            v1/native/vendor
+            v1/prototype/generator-workbench
+            art/companion-48
+            art/device-buttons
+            art/station-masters
+            art/retro-diffusion-trial
       - name: Scope (a pull request that changes only documents skips the build)
         # .github/docs-only.sh takes the pull request's changed files and applies the three conditions (a .md, outside the build's own folders, not read by the build). A push to main and a manual run never skip.
         # The job still ends green under the same name, so the required check passes. Every step below carries the condition.
@@ -51,7 +67,10 @@ jobs:
                 filter=$(printf '%s\n' "$names" | sh .github/ci-filter.sh) || filter='tests=true
           station=true
           testpage=true'
-              fi ;;
+              fi
+              # The browser checks (the Station and test page journeys, the face, layer and golden checks, the layout check) run locally before every
+              # merge into station-gate; a pull request into main runs the build, the smoke check and the node tests (the owner, 2026-10-28). A manual run runs all.
+              filter=$(printf '%s\n' "$filter" | sed -e 's/^station=.*/station=false/' -e 's/^testpage=.*/testpage=false/') ;;
           esac
           echo "$result" >> "$GITHUB_OUTPUT"
           echo "$filter" >> "$GITHUB_OUTPUT"
@@ -134,12 +153,12 @@ jobs:
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test .github/roadmap.test.mjs
       - name: Station rules (node tests)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        timeout-minutes: 30   # timed out at 15 on 2026-10-28 with the rooms' walk proofs (R4) running, about 8 before them
+        timeout-minutes: 15   # about 10 without the long walk proofs (MB_CI_FAST: they run in full locally before every merge)
         # The Station's rules and the Caddy service in Node, and the other prototypes' tests.
         # The tests have the browser too: the specimen generator's oracle (prototypes/station/tests/specimen.test.mjs) runs the original in Chromium and compares the port to it.
         run: |
           set -euo pipefail
-          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
+          MB_CI_FAST=1 PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
       - name: Station journey
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
         timeout-minutes: 10   # measured about 4 minutes
