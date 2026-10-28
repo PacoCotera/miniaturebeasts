@@ -35,3 +35,12 @@ export function roomRegion(req, i, light) {
 export function nearOf(req, i, light) { const id = roomIds(i, light).near; return slotOf(req, "the room's near master (rooms.json)")(id, sizeOf(id)); }
 // The bed's picture of a light in the room, requested through `req`; null when the room has none (every room but Roots).
 export function bedOf(req, i, light) { const id = roomIds(i, light).bed; return id ? slotOf(req, "the room's bed master (rooms.json)")(id, sizeOf(id)) : null; }
+
+// The rooms pane's chips (the whole's and one mibi up close's: the same pane): a chip a room, the room `shown` one step up, then the new-room chip while a room can still be added; its lamp is mint when the next room can be paid, stone otherwise (never amber).
+// `slot` is requests.mjs slot(req, note); `R` the spec's regions (regions.chips.lamps). A room's chip picture is rooms.json rooms.<id>.chip (56 x 40), "" until the art director cuts it.
+export function chipsOf(st, settings, light, shown, R, slot) {
+  const n = S.roomCount(st, settings), pic = (i) => { const c = roomData(i).chip; return c ? slot(withLight(c, light), [56, 40]) : ""; };
+  const chips = Array.from({ length: n }, (_, i) => ({ id: String(i), state: i === shown ? "shown" : "room", picture: pic(i), lamp: "" }));
+  if (n < S.ROOMS_MAX) chips.push({ id: "new", state: "new", picture: "", lamp: slot(R.chips.lamps[S.addRoomBlock(st, settings) ? "short" : "payable"], [8, 8]) });
+  return chips;
+}

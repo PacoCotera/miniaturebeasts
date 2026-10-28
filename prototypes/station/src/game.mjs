@@ -12,7 +12,7 @@ import { createFocus } from "../../ui/focus.mjs";
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
-  create: null, panel: null, arrival: null, cross: null, inc: {}, lib: { l1: null, pending: null, l2: {}, species: null, state: "sheet", lit: null, cur: null, l3: {}, l3last: null }, sit: null, hab: { id: null, f: "resident", namer: null, prev: null }, viv: { f: null, prev: null }, bench: { f: null, install: false },
+  create: null, panel: null, arrival: null, cross: null, inc: {}, lib: { l1: null, pending: null, l2: {}, species: null, state: "sheet", lit: null, cur: null, l3: {}, l3last: null }, sit: null, hab: { id: null, f: "resident", namer: null, prev: null, prevRoom: null }, viv: { f: null, prev: null }, bench: { f: null, install: false },
   cargo: { state: "bay", crate: 0, at: 0, run: null, shown: null, arrival: null }, pendingArrival: null, arrived: [], meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
 export const TL = createTimeline();
@@ -106,7 +106,7 @@ export function goScreen(name) {
   if (fresh && name === "vivarium") UI.viv.f = null;   // the way in reads only st.face.room; the ring on the mibi last seen up close if it is in that room, else the room's first resident, else its chip (vivarium.json focus.entry)
   if (fresh) UI.viv.prev = null;   // a swap's old room leaves with the screen
   if (fresh) { UI.panel = null; UI.arrival = null; }   // a panel closes with its screen, nothing spent; the arrival's ← lasts only on the screen it landed on
-  if (fresh && name !== "habitat") { UI.hab.namer = null; UI.hab.prev = null; }   // the namer closes with the level (writing nothing)
+  if (fresh && name !== "habitat") { UI.hab.namer = null; UI.hab.prev = null; UI.hab.prevRoom = null; }   // the namer closes with the level (writing nothing)
   if (fresh && name !== "sitting") UI.sit = null;   // leaving the sitting drops every choice, nothing spent (sitting.json notes.visit)
 }
 export const need = () => S.need(G.st, G.sv, G.settings, UI, T.readyCrates(G.st, G.settings, Date.now()).length);

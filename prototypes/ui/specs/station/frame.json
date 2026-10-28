@@ -79,7 +79,7 @@
   "stageGround": "ground"
  },
  "strings": { "goal": { "rule": "The goal (station-x10-economy.md ruling 4, goalKey): the next thing the player works toward. Home's notice zone shows it in mist with no lamp when no first-group need holds, and the Cargo report's last row; never on Idle. {icons} are the materials a short step lacks, drawn as 16 px icons after the words (gap 4, pitch 20); {name} is the goal's first living mibi (lowest id). A key with {name} has a nameless sibling the face draws when the filled line and its icons pass the room.",
-  "step": { "goOut": "Go out with the Companion", "findPod": "Find {a} {species} pod", "identify": "Identify the {species} pod", "identifyAny": "Identify a pod", "grow": "Incubate the {species} pod", "openBay": "Open the Bay", "full": "Free a bay in the Vivarium", "bud": "Wait for the bud", "cross": "Cross {name}", "read": "Read {name}'s chapters",
+  "step": { "goOut": "Go out with the Companion", "findPod": "Find {a} {species} pod", "identify": "Identify the {species} pod", "identifyAny": "Identify a pod", "grow": "Incubate the {species} pod", "openBay": "Open the Bay", "full": "Make room in the Vivarium", "bud": "Wait for the bud", "cross": "Cross {name}", "read": "Read {name}'s chapters",
   "readPod": "Read {chapter} on the {species} pod", "blocked": "The pair cannot cross yet", "fit": "Fit the Probe upgrade",
    "short": { "field": "Go out for more {icons}", "bench": "Watch your mibis for more {icons}", "fieldOrPod": "Go out or return pods for {icons}", "fieldAndBench": "Go out and watch for more {icons}" },
    "growUp": { "one": "One more walk grows the pair", "more": "More walks grow the pair", "care": "{name} grows with care", "careNoName": "The young mibi grows with care" },

@@ -118,9 +118,10 @@ for (const [kind, gain] of [["mibi", S.PRICE.wildMibi], ["pod", S.PRICE.wild]]) 
     assert.deepEqual(validate(v.overlay, schema, schema), [], "the overlay validates against panel.props.json");
     assert.equal(v.overlay.regions.title, kind === "mibi" ? `Return ${names[0]}?` : "Return this pod?");
     assert.deepEqual([ret.id, keep.id], ["return", "keep"]);
-    assert.equal(ret.cost, S.gainText(gain)); assert.equal(ret.gain, true); assert.equal(ret.loss, false); assert.equal(ret.line, kind === "mibi" ? `${names[0]} will live in the wild` : `It goes back to the ${S.PLACE_WORD[h.st.tray[0].g] || "wild"}`); assert.equal(ret.name, kind === "mibi" ? `Return ${names[0]}` : "Return it"); assert.equal(ret.mark, "", "the subject stays in the room: no destination mark");
+    assert.equal(ret.cost, S.gainText(gain)); assert.equal(ret.gain, true); assert.equal(ret.loss, false); assert.equal(ret.line, kind === "mibi" ? `${names[0]}'s pod waits in the wild` : `It goes back to the ${S.PLACE_WORD[h.st.tray[0].g] || "wild"}`); assert.equal(ret.name, kind === "mibi" ? `Return ${names[0]}` : "Return it"); assert.equal(ret.mark, "", "the subject stays in the room: no destination mark");
     assert.equal(keep.cost, ""); assert.equal(keep.mark, ""); assert.equal(keep.line, kind === "mibi" ? `${names[0]} stays at home` : "It stays in its nest"); assert.equal(keep.name, kind === "mibi" ? `Keep ${names[0]}` : "Keep it");
     assert.deepEqual(v.overlay.regions.cards.map((c) => c.line), [ret.line, keep.line], "each card line in sentence case, as drawn");
+    if (kind === "mibi") { h.st.mibis[0].born = h.st.turn; const y = wview(h).cards[0]; assert.equal(y.line, `${names[0]}'s pod comes once grown`, "C13c: a young mibi's Return says when its pod comes"); assert.equal(y.name, `Return ${names[0]}`, "the same card otherwise"); assert.equal(y.cost, S.gainText(gain)); h.st.mibis[0].born = 0; }
     assert.deepEqual([v.overlay.regions.art.housing, rc0(v).art.well, rc0(v).art.focused], ["", "", ""], "the housing and the card wells are the drawn slate pane: no master asked for");
     assert.equal(v.overlay.focus.cur, "card.return", "the ring opens on Return, on the left");
     assert.equal(v.line.ok, ret.name);

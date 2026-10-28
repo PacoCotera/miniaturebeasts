@@ -1,5 +1,5 @@
 // The Incubator in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `incubator-empty` (a pod in the rack: ✓ Choose a pod), `incubator-growing` (the wait's first half),
-// `incubator-growing-late` (the second half, a leaf filling), `incubator-ready`, `incubator-panel-grownow` (✓ Hatch now above ❀ 4: the Hatch now | Wait panel), and with motion on at exact instants of the face's clock: the hatch (`incubator-hatch-100` and `-300` the still beat,
+// `incubator-growing-late` (the second half, a leaf filling), `incubator-ready`, `incubator-full-pressed` (the Vivarium full: ✓ on the held Open, its plate), `incubator-panel-grownow` (✓ Hatch now above ❀ 4: the Hatch now | Wait panel), and with motion on at exact instants of the face's clock: the hatch (`incubator-hatch-100` and `-300` the still beat,
 // `-650` the crack, `-850` the opening, `-1100` the juvenile standing, `-1500` its first step, `-2000`) and growNow (`incubator-growNow-200` the leaves turning whole, `incubator-growNow-420` the hatch, which Hatch now starts as the leaves end).
 // Each point is reached by the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
@@ -21,6 +21,7 @@ const SCENES = {
   "growing-half": { want: "growing", set: (w) => { w.adults(2); w.budAt(10); } },
   "growing-start": { want: "growing", set: (w) => { w.adults(2); w.budAt(0.05); } },
   "cross-growing": { want: "growing", set: (w) => { w.adults(2); w.budAt(6); const st = window.__st.ST; st.bud.kind = "cross"; st.bud.parents = [{ name: "Fig" }, { name: "Pip" }]; } },
+  "ready-full": { want: "ready", timedOnly: true, set: (w) => { w.rooms(1); w.adults(8); w.bud(true); } },   // R6: the Vivarium is full (one room, eight places taken) and the bud is ready: Open is held, the notice says why
   "via-create": { want: "empty", timedOnly: true, set: (w) => { const S = window.__st; w.adults(2); S.seedPod("S01", 3); const p = S.ST.tray.at(-1); S.readSome(p.id, 2); S.openCreate(p.id); } },
 };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${INC.toString()})`]);
@@ -45,6 +46,7 @@ const TIMED = {
   "growNow-500": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 500, want: "growing" },
   "panel-dither-90": { scene: "growing", go: () => window.__st.press("confirm"), at: 90, want: "growing" },   // ✓ Hatch now above ❀ 4: the dither in to the Hatch now | Wait panel, halfway (level 8 of 16)
   "panel-grownow-200": { scene: "growing", go: () => window.__st.press("confirm"), then: [() => window.__st.press("confirm")], arrive: 0, at: 200, want: "growing" },   // the panel's ✓ Hatch now: a cut to the room, 200 ms into the bar's cuts
+  "full-pressed": { scene: "ready-full", go: () => window.__st.press("confirm"), at: 400, want: "ready", plate: true },   // R6: ✓ on the held Open: the plate The Vivarium is full / Return a mibi to make room / or add a room
   "hatch-skip": { scene: "ready", go: () => window.__st.press("confirm"), at: 1100, skip: true, want: "habitat" },
 };
 // The hatch's name and code, read from the props at each hatch frame: one name and one code (never the fixture's "BUD") across every frame; the Habitat's meet takes the same name (habitat-states.mjs)
@@ -79,6 +81,7 @@ async function timedStates(visit) {
       if (tp.skip) { await page.evaluate(() => window.__st.press("confirm")); await step(16); }   // the skip, and the frame after it
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state }));
       if (tp.skip ? u.screen !== tp.want : u.screen !== "incubator" || u.props !== tp.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
+      if (tp.plate) { const m = await page.evaluate(() => window.__st.msg); if (m !== "The Vivarium is full\nReturn a mibi to make room\nor add a room") fail(`incubator-${name}: the plate is ${JSON.stringify(m)}`); }
       await visit("incubator-" + name, page, fail);
       if (/^hatch-\d+$/.test(name)) {
         const h = await page.evaluate(() => { const S = window.__st, m = S.ST.mibis[S.ST.mibis.length - 1], r = S.props?.regions; return { name: m.name, code: m.code, ribbon: r?.ribbon ?? "", shown: r?.code ?? "" }; });

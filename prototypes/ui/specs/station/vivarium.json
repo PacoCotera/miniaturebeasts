@@ -17,7 +17,7 @@
  "notes": {
   "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. look and back are cuts to the other level. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts.",
   "painting": "the window shows rows 120 to 560 of Idle's painting (frame.json idle.regions.vivarium.theWhole) at 1:1: one painting a light, never cropped and enlarged; a resident at y on Idle stands at y − 80 here",
-  "strip": "the strip row [16, 488, 992, 64] is two slate panes (rooms and places; ux-rooms.md §1a): the rooms pane with the room chips and the new-room chip, the places pane with the eight places of the room shown. One mibi up close keeps its own strip until its ticket (R6)",
+  "strip": "the strip row [16, 488, 992, 64] is two slate panes (rooms and places; the rooms screens §1a): the rooms pane with the room chips and the new-room chip, the places pane with the eight places of the room shown. One mibi up close keeps its own strip until its ticket (R6)",
   "nothing else": "no card, no modules, no stamp, no words in the window but the focused resident's name tag; nothing is amber",
   "residents": "at most rules.show.max of the mibis at home are shown, walking; the others rest (rules.show), on the bed, curled in a nice spot or out of sight; a mibi in the carried set is never drawn in a room, docked or away: its place stays reserved and its tile stays in the rail with the Companion's mark (regions.tiles.tile.traveller)",
   "paintingLands": "a painting that lands while its mibi is on screen waits for the next fresh draw (the whole opened again, a wake): never a swap in view"
@@ -329,7 +329,7 @@
  },
  "bottomLine": {
   "resident": {"action": "strings.look", "context": "strings.resident; a sleeper strings.sleeper; while the placeholder is drawn, strings.painting"},
-  "tile": {"home": "as its resident", "out": {"action": "strings.look", "context": "strings.subjectTraveller.docked while the Companion is docked, strings.subjectTraveller.away while it is away"}},
+  "tile": {"home": "as its resident", "out": {"action": "strings.look", "context": "strings.subjectTraveller.docked while the Companion is docked, strings.subjectTraveller.away while it is away; docked and the mibi's room is not the first, strings.asleepIn with the first room's name (the carried set sleeps on room 1's bed whatever its room, the rooms words C16)"}},
   "room": {"action": null, "context": "strings.empty"},
   "chip": {"action": null, "context": "a room's chip: strings.placesFree, strings.oneFree, strings.full or strings.empty by the places free in that room (C4)"},
   "newRoom": {"action": "strings.newRoom.action with its price (⚡ and the figure, state.roomPrice); dimmed with the short icons while short", "context": "strings.newRoom.context; short of Energy the notice is pods.json strings.needMoreFrom (state.shortFrom)"},
@@ -373,6 +373,7 @@
   "sleeper": "{a} {stage} {species}, asleep",
   "painting": "its painting is on its way",
   "subjectTraveller": {"docked": "ready to go exploring", "away": "out exploring"},
+  "asleepIn": "asleep in the {Room} room",
   "empty": "nobody lives here yet",
   "placesFree": "{n} places free",
   "oneFree": "one place free",

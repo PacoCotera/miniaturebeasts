@@ -64,7 +64,7 @@ export function drawName(st, pool = {}) {
 export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock field", wood: "wood", cave: "cave" };
 // The origin line is one sentence: "Found <where>, <what happened>." Each half is at most 24 characters with its comma or full stop, so the sentence breaks after the comma (design/style-guide/station-layouts.md, Pods, Origin).
 export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
-export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried" };
+export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried", shed: "of {name}'s line" };   // shed: a returned mibi's pod; the words are a placeholder until the copywriter's C18 lands (owed)
 // Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
 export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, rooms: null, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, elderTurns: ELDER_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, trickleCap: 2 };
 
@@ -321,7 +321,7 @@ export const podName = (p) => (p.idd ? spName(p) + " pod" : "unknown pod");
 // The sentence in its two halves, which are the two lines under the pod; a pod with no find has one.
 export function podOriginLines(p) {
   const where = "Found " + (FOUND_WORD[p.g] || "out in the wild"), find = FIND_WORD[p.how];
-  return find ? [where + ",", find.replace("{who}", p.idd ? aAn(spName(p)) : "a creature") + "."] : [where + "."];
+  return find ? [where + ",", find.replace("{who}", p.idd ? aAn(spName(p)) : "a creature").replace("{name}", p.of || "a returned mibi") + "."] : [where + "."];
 }
 export const podOrigin = (p) => podOriginLines(p).join(" ");
 
@@ -400,7 +400,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
     for (const q of c.pods || []) {
       const species = q.species ?? speciesId(q.sp), fr = frameOf(species);
       if (!fr) { skipped.push(q.id); continue; }   // a malformed record never breaks the bay; it is named, never dropped silently
-      const pod = { id: c.id + ":" + q.id, sp: q.sp ?? speciesIndex(species), species, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k ?? null, n: c.n, idd: 0, newSp: 0, read: [], fresh: 1, genome: q.genome && !checkGenome(fr, q.genome).length ? q.genome : podGenome(fr, q.gs >>> 0), shed: q.shed ?? null };
+      const pod = { id: c.id + ":" + q.id, sp: q.sp ?? speciesIndex(species), species, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k ?? null, n: c.n, idd: 0, newSp: 0, read: [], fresh: 1, genome: q.genome && !checkGenome(fr, q.genome).length ? q.genome : podGenome(fr, q.gs >>> 0), shed: q.shed ?? null, ...(q.shed != null ? { of: q.of ?? (st.sheds || []).find((r) => r.id === q.shed)?.name ?? null } : {}) };
       if (q.shed != null) { const rec = (st.sheds || []).find((r) => r.id === q.shed); if (rec) rec.state = "found"; }   // a shed pod opened: its record is kept for the Library
       if (st.tray.length < rack) st.tray.push(pod); else st.waiting.push(pod);
       ids.push(pod.id);
@@ -901,7 +901,7 @@ export function seededRng(seed) { let x = seed >>> 0; return () => { x = (Math.i
 // The record fields of a place: room, slot and the rollback index.
 const placeOf = (p) => ({ room: p.room, slot: p.slot, bay: p.room * ROOM + p.slot });
 // The words state.mjs returns when no place is free (cw C10): the message, and the plate's lines (the third only while a room can still be added).
-const fullWords = (st) => ({ msg: "The Vivarium is full", plate: ["The Vivarium is full", "Return a mibi to make room"].concat(st.rooms < ROOMS_MAX ? ["or add a room"] : []) });
+export const fullWords = (st) => ({ msg: "The Vivarium is full", plate: ["The Vivarium is full", "Return a mibi to make room"].concat(st.rooms < ROOMS_MAX ? ["or add a room"] : []) });
 // Minutes a bud takes: the first ever five (the dev rule), else twenty plus one per shaped trait.
 export const budMinutes = (st, nChanged, settings = DEFAULT_SETTINGS) => (st.firstMibi && settings.firstBud ? 5 : 20 + nChanged);
 // What stops Grow, as a key, in the rules' order (unidentified, busy, full, clash, short): null when nothing does, else { key, short } where short is the icons of the materials the price is short of (key "short" only).
