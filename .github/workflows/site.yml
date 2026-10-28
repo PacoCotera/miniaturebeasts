@@ -21,7 +21,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 35   # about 25 with the long walk proofs left to the local runs (MB_CI_FAST)
+    timeout-minutes: 25   # measured 29 minutes with the browser checks (2026-10-28); a pull request now runs the build, smoke and node tests (about 11), a manual run all of them
     steps:
       - uses: actions/checkout@v4
         with:
@@ -67,7 +67,10 @@ jobs:
                 filter=$(printf '%s\n' "$names" | sh .github/ci-filter.sh) || filter='tests=true
           station=true
           testpage=true'
-              fi ;;
+              fi
+              # The browser checks (the Station and test page journeys, the face, layer and golden checks, the layout check) run locally before every
+              # merge into station-gate; a pull request into main runs the build, the smoke check and the node tests (the owner, 2026-10-28). A manual run runs all.
+              filter=$(printf '%s\n' "$filter" | sed -e 's/^station=.*/station=false/' -e 's/^testpage=.*/testpage=false/') ;;
           esac
           echo "$result" >> "$GITHUB_OUTPUT"
           echo "$filter" >> "$GITHUB_OUTPUT"
