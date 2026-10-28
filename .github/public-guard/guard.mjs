@@ -306,7 +306,7 @@ export const FIXTURES = [
   { rule: "host", file: "ops/x.sh", hit: "ssh -i k paco@example.org", pass: "the sandbox server" },
   { rule: "host", file: "design/x.md", hit: "on the VM", pass: "the critter-lab repository" },
   { rule: "session", file: "art/x/budget.json", hit: `"plan": "${unb64("L3RtcC9jbGF1ZGUtMC94L3BsYW4uanNvbg==")}"`, pass: '"plan": "plan-pods-r1-flat.json"' },
-  { rule: "session", file: "README.md", hit: "made with " + unb64("QW50aHJvcGljJ3MgdG9vbHM="), pass: "made with care" },
+  { rule: "session", file: "README.md", hit: "Generated with " + unb64("W0NsYXVkZSBDb2RlXSh4KQ=="), pass: "Bash(" + unb64("fi8uY2xhdWRlL3NldHRpbmdzLmpzb24=") + " settings)" },
   { rule: "abs-path", file: "prototypes/x.mjs", hit: 'const R = "/home/user/miniaturebeasts";', pass: "const R = process.env.MB_ROOT;" },
   { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// as ruled (decisions 10-11 14:17)", pass: "// the 10-11 grid" },
   { rule: "internal-ref", file: "design/x.md", hit: "the record is in decisions.md", pass: "## Owner decisions (2026-10-08)" },
