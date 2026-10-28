@@ -22,7 +22,7 @@
    "png": "vivarium-tile.png"
   },
   "vivarium-eight": {
-   "hash": "c8c65435",
+   "hash": "a37a8391",
    "png": "vivarium-eight.png"
   },
   "vivarium-empty-away": {
@@ -62,11 +62,11 @@
    "png": "vivarium-room-ferns.png"
   },
   "vivarium-level-roots": {
-   "hash": "de90e2ab",
+   "hash": "f88a7ec5",
    "png": "vivarium-level-roots.png"
   },
   "vivarium-room-new": {
-   "hash": "a0ed9c59",
+   "hash": "46a6bbd3",
    "png": "vivarium-room-new.png"
   },
   "vivarium-room-empty": {
@@ -78,7 +78,7 @@
    "png": "vivarium-rooms-four.png"
   },
   "vivarium-room-short": {
-   "hash": "c2b0abc4",
+   "hash": "78b6ad1e",
    "png": "vivarium-room-short.png"
   },
   "panel-add-room": {
@@ -86,11 +86,11 @@
    "png": "panel-add-room.png"
   },
   "vivarium-walk-8000ms": {
-   "hash": "69e2932a",
+   "hash": "5dc0b6ea",
    "png": "vivarium-walk-8000ms.png"
   },
   "vivarium-moving-8000ms": {
-   "hash": "3a27400b",
+   "hash": "cb32083d",
    "png": "vivarium-moving-8000ms.png"
   },
   "vivarium-ramp-ferns-4000ms": {

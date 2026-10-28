@@ -142,16 +142,16 @@ test("residents carry their figure, sleepers the world-size curl and its figure,
   const masters = path.resolve(here, "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters, placed = [];
   loadStandLooksFs(); loadStandLayersFs();
   try {
-    for (const id of ["mibi-adult-S01-96x88", "mibi-juvenile-S01-96x88"]) { const e = index[id], p = decodePNG(readFileSync(path.join(masters, e.file))); placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); placed.push(id); }
+    for (const id of ["mibi-adult-S01-curl-304x312", "mibi-juvenile-S01-curl-304x312", "mibi-adult-S01-144x152", "mibi-juvenile-S01-104x112"]) { const e = index[id], p = decodePNG(readFileSync(path.join(masters, e.file))); placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); placed.push(id); }
     const w = world(); dock(w.st); const m = mibis(w, 3); S.seedAdults(w.st, "S01", 9, 5, w.settings); for (const x of w.st.mibis) x.paint = { state: "landed" };
     const b = build(w, sv0()), R = b.props.regions;   // eight housed: three rest, on the bed (R4b)
     for (const r of R.residents) { assert.ok(Array.isArray(r.figure) && r.figure.length === 4 && r.figure.every(Number.isInteger), "a walker carries its figure [dx, dy, W, H]"); assert.ok(r.figure[2] > 0 && r.figure[3] > 0 && r.figure[1] + r.figure[3] <= (r.stage === "juvenile" ? 112 : 152)); }
     assert.equal(R.bed.sleepers.length, 3, "the three resters take the bed's three places in rest order"); assert.equal(R.bed.state, "resting"); assert.deepEqual(R.bed.sleepers.map((q) => q.id), R.residents.filter((p) => !p.shown).map((p) => p.id), "rest order"); assert.ok(R.bed.sleepers.every((q) => q.rester && q.shown === false));
     for (const sl of R.bed.sleepers) { assert.ok(sl.figure, "a sleeper carries the curl's figure"); assert.match(sl.picture, /^mibi:S01~[0-9a-f]{8}:(adult|juvenile):\d+x\d+$/); }
     const curlH = Math.max(...R.bed.sleepers.map((sl) => sl.figure[3])), tagTop = 456 - curlH - 32, K = spec.regions.resident.walk.keepOut;
-    assert.ok(curlH >= 28 && curlH <= 34, "the adult's curl is about 34 × 31: " + curlH);
+    assert.ok(curlH >= 28 && curlH <= 35, "the adult curl is about 46 × 34 at the stand's own scale: " + curlH);
     assert.ok(K[1] <= tagTop - 40, `keepOut's top ${K[1]} holds a walker's tag (feetY + 16 to + 40) above the sleepers' tag top ${tagTop} (measured curlH ${curlH})`);
-    assert.deepEqual(K, keepOutOf(spec, measureCurls()), "keepOut is derived from the measured curls (station/tools/make-keepout.mjs), never typed"); assert.equal(K[1], 356); assert.equal(K[1] + K[3], 472);
+    assert.deepEqual(K, keepOutOf(spec, measureCurls()), "keepOut is derived from the measured curls (station/tools/make-keepout.mjs), never typed"); assert.equal(K[1], 349, "the tallest curl is 35 (S07 adult), the sleepers' tag top 389"); assert.equal(K[1] + K[3], 472);
     assert.ok(b.requests.some((r) => r.kind === "curl"));
   } finally { for (const id of placed) dropAsset(id); unloadStands(); }
 });
@@ -181,7 +181,7 @@ test("a sleeping S01 resident carries its curl and the curl's figure; awake it c
   const masters = path.resolve(here, "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters, placed = [];
   loadStandLooksFs(); loadStandLayersFs();
   try {
-    for (const id of ["mibi-adult-S01-96x88", "mibi-juvenile-S01-96x88"]) { const e = index[id], p = decodePNG(readFileSync(path.join(masters, e.file))); placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); placed.push(id); }
+    for (const id of ["mibi-adult-S01-curl-304x312", "mibi-juvenile-S01-curl-304x312", "mibi-adult-S01-144x152", "mibi-juvenile-S01-104x112"]) { const e = index[id], p = decodePNG(readFileSync(path.join(masters, e.file))); placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); placed.push(id); }
     const w = world(); dock(w.st); mibis(w, 3);
     const night = build(w, sv0(), { time: 2 * 3600, restRules: spec.rules.rest }).props.regions.residents, noon = build(w, sv0(), { time: 12 * 3600, restRules: spec.rules.rest }).props.regions.residents;
     assert.ok(night.every((r) => r.rest === "asleep") && noon.every((r) => r.rest === "awake"));
@@ -306,7 +306,7 @@ test("R4b rest places: Roots' resters take the bed in rest order, drawn as sleep
   const masters = path.resolve(here, "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters, placed = [];
   loadStandLooksFs(); loadStandLayersFs();
   try {
-    for (const id of ["mibi-adult-S01-96x88", "mibi-juvenile-S01-96x88"]) { const e = index[id], p = decodePNG(readFileSync(path.join(masters, e.file))); placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); placed.push(id); }
+    for (const id of ["mibi-adult-S01-curl-304x312", "mibi-juvenile-S01-curl-304x312", "mibi-adult-S01-144x152", "mibi-juvenile-S01-104x112"]) { const e = index[id], p = decodePNG(readFileSync(path.join(masters, e.file))); placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); placed.push(id); }
     const mk = (room) => { const w = world(2); dock(w.st); mibis(w, 8); w.st.mibis.forEach((m, i) => { m.room = room; m.slot = i; m.bay = room * 8 + i; m.born = w.st.turn - 100; }); w.st.face.room = room; return w; };
     // Roots: all three on the bed
     { const w = mk(0), b = build(w, sv0()).props.regions, rest = b.residents.filter((p) => !p.shown); assert.equal(rest.length, 3); assert.ok(rest.every((p) => p.restAt === "bed")); assert.equal(b.bed.sleepers.length, 3); }

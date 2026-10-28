@@ -258,11 +258,13 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
       assert.deepEqual(standLook("S04", "juvenile", [104, 112]), { stage: "juvenile", size: [104, 112], step: 1 });
     });
 
+    // Every species now has a signed adult stand; the stand-in rule (stands.mjs step 2) is still proved on S04 with its adult masters taken out of the registry for the one test
+    const withoutAdult = (sp, fn) => () => { const ids = Object.keys(index).filter((id) => id.startsWith(`mibi-adult-${sp}-`)); for (const id of ids) dropAsset(id); try { fn(); } finally { for (const id of ids) { const e = index[id]; placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, status: e.status ?? "master" }, { w: e.w, h: e.h, rgba: () => new Uint8ClampedArray(0) }); } } };
     const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: true, at: T0 }; return st; };
     const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [], ...over });
     const pics = (b) => b.requests.filter((r) => r.kind === "mibi");
 
-    test("Home and the Vivarium whole: an S04 adult is its juvenile 104×112 (a resident) and, with no nap picture, never a sleeper (R4b: a rester with no curl picture goes out), an S03 adult its own stand; the drawn stage follows", () => {
+    test("Home and the Vivarium whole: an S04 adult is its juvenile 104×112 (a resident) and, with no nap picture, never a sleeper (R4b: a rester with no curl picture goes out), an S03 adult its own stand; the drawn stage follows", withoutAdult("S04", () => {
       const st = world(); S.seedAdults(st, "S04", 5, 1, settings); S.seedAdults(st, "S03", 9, 1, settings); const [s4, s3] = st.mibis;
       const b = idleBuild({ st, sv: sv0(), settings, docked: true, light: "day" }, frameSpec), R = b.props.regions;
       const res = (m) => R.residents.find((r) => r.id === String(m.id));
@@ -274,16 +276,16 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
       assert.deepEqual([p.stage, p.picture], ["juvenile", `mibi:${genomeDigest(m.genome)}:juvenile:104x112`]);
       assert.deepEqual(pics(b2).find((r) => r.id === p.picture).size, [104, 112]);
       assert.equal(S.mibiStage(w, m, settings), "adult", "the mibi itself is still an adult");
-    });
+    }));
 
-    test("growing up is not staged: a juvenile S04 and the same mibi grown up are the same picture at the same size", () => {
+    test("growing up is not staged: a juvenile S04 and the same mibi grown up are the same picture at the same size", withoutAdult("S04", () => {
       const w = world(); S.seedAdults(w, "S04", 5, 1, settings); const m = w.mibis[0], adultBorn = m.born; m.born = w.turn;
       const at = () => { const b = idleBuild({ st: w, sv: sv0(), settings, docked: true, light: "day" }, frameSpec); return b.props.regions.residents[0]; };
       assert.equal(S.mibiStage(w, m, settings), "juvenile"); const young = at(); m.born = adultBorn; assert.equal(S.mibiStage(w, m, settings), "adult"); const grown = at();
       assert.deepEqual([grown.stage, grown.picture], [young.stage, young.picture]);
-    });
+    }));
 
-    test("up close and in the rosters: the 304×312 and 48×48 juvenile in the same rects; the species with its own stand keeps it", () => {
+    test("up close and in the rosters: the 304×312 and 48×48 juvenile in the same rects; the species with its own stand keeps it", withoutAdult("S04", () => {
       const w = { st: world(), settings }; S.seedAdults(w.st, "S04", 5, 2, settings); S.seedAdults(w.st, "S01", 5, 1, settings); const [a, b0, pip] = w.st.mibis; for (const m of w.st.mibis) m.paint = { state: "landed" };
       const h = habitatBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, habId: a.id, meetId: null, armed: false }, hab, frameSpec, home);
       const near = h.requests.find((r) => r.id === h.props.regions.resident.picture); assert.deepEqual([near.stage, near.size], ["juvenile", [304, 312]]);
@@ -291,7 +293,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
       const v = vivariumBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, seen: null }, viv, frameSpec, home);
       const tile = (m) => v.requests.find((r) => r.id === v.props.regions.tiles.items.find((t) => t.id === String(m.id)).picture);
       assert.deepEqual([tile(a).stage, tile(a).size], ["juvenile", [48, 48]]); assert.deepEqual([tile(pip).stage, tile(pip).size], ["adult", [48, 48]]);
-    });
+    }));
   });
 }
 
