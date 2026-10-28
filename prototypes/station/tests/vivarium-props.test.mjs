@@ -17,6 +17,8 @@ import { placeMaster, dropAsset } from "../../ui/assets.mjs";
 import { layeredStand, composeStand, inkBox } from "../src/layered-stand.mjs";
 import { keepOutOf, measureCurls } from "../tools/curl-measure.mjs";
 import { decodePNG } from "../../ui/png.mjs";
+import { G, UI, SPECS } from "../src/game.mjs";
+import { createHost, onFaceMessage, screenProps, showRoom } from "../src/host.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -42,7 +44,8 @@ function validate(v, sc, at = "$", out = []) {
 const world = (rooms = 1) => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; return { st, settings: cfg(rooms) }; };
 const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, ...over });
 const dock = (st, d = true) => { st.dock = { docked: d, at: T0 }; };
-const build = ({ st, settings }, sv, over = {}) => vivariumBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, seen: null, ...over }, spec, frameSpec, home);
+const pods = J("pods.json");
+const build = ({ st, settings }, sv, over = {}) => vivariumBuild({ st, sv, settings, docked: S.docked(st), light: "day", focus: null, seen: null, ...over }, spec, frameSpec, home, pods);
 const mibis = (w, n) => { S.seedAdults(w.st, "S01", 5, n, w.settings); for (const m of w.st.mibis) m.paint = { state: "landed" }; return w.st.mibis; };   // every painting has landed unless a test says otherwise
 
 function scenes() {
@@ -76,21 +79,21 @@ test("every mibi at home walks (a seed each, in bay order), the docked carried s
     assert.deepEqual(R.tiles.items.map((t) => t.state), ["housed", "housed", "housed", "housed", "housed", "out", "out", "free"]); assert.equal(R.tiles.items[5].picture, "", "an out tile shows the glyph, not a thumbnail"); assert.equal(R.tiles.glyph, "frame-companion-outline-16x24"); }
   { const { w, sv } = S0.noneCarried, b = build(w, sv).props; assert.equal(b.regions.bed.state, "none"); assert.equal(b.regions.residents.length, 3); }
   { const { w, sv } = S0.twelve, b = build(w, sv).props; assert.equal(b.regions.residents.length, 8, "a room shows its eight"); assert.equal(b.regions.tiles.items.length, 8); assert.ok(b.regions.tiles.items.every((t) => t.state === "housed")); w.st.face.room = 1; const o = build(w, sv).props; assert.equal(o.regions.residents.length, 4, "the second room: the other four"); assert.deepEqual(o.regions.tiles.items.map((t) => t.state), ["housed", "housed", "housed", "housed", "free", "free", "free", "free"]); w.st.face.room = 0; }
-  { const { w, sv } = S0.empty, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.residents.length, 0); assert.equal(b.regions.tiles.items.length, 8); assert.deepEqual([b.regions.bed.state, b.regions.bed.mark, b.regions.bed.sleepers.length], ["none", "", 0], "the nest alone while docked"); assert.ok(b.regions.tiles.items.every((t) => t.state === "free")); assert.deepEqual(b.focus.targets, []); assert.equal(b.focus.cur, "room"); }
+  { const { w, sv } = S0.empty, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.residents.length, 0); assert.equal(b.regions.tiles.items.length, 8); assert.deepEqual([b.regions.bed.state, b.regions.bed.mark, b.regions.bed.sleepers.length], ["none", "", 0], "the nest alone while docked"); assert.ok(b.regions.tiles.items.every((t) => t.state === "free")); assert.deepEqual(b.focus.targets, [{ id: "room.0", group: "room" }, { id: "room.new", group: "room" }], "no resident or place: the chips are the targets"); assert.equal(b.focus.cur, "room"); }
   { const { w, sv } = S0.emptyAway, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.bed.state, "away"); assert.equal(b.regions.bed.mark, "", "the nest while away, its mark not drawn"); assert.equal(b.regions.tiles.glyph, "frame-companion-outline-16x24"); }
 });
 
 test("the targets are the residents in bay order (sleepers in their bays' places) then the tiles; the ring starts on the mibi last seen up close (its resident, else its tile), else the first resident, else the first tile, else the room", () => {
   const S0 = scenes();
   { const { w, sv } = S0.docked, b = build(w, sv), ids = b.props.focus.targets.map((t) => t.id), m = w.st.mibis;
-    assert.deepEqual(ids, [...m.map((x) => "resident." + x.id), ...m.map((x) => "tile." + x.id)], "every housed mibi is a resident (the sleepers too) and a tile");
+    assert.deepEqual(ids, [...m.map((x) => "resident." + x.id), ...m.map((x) => "tile." + x.id), "room.0", "room.new"], "every housed mibi is a resident (the sleepers too) and a tile, then the chips");
     assert.equal(b.props.focus.cur, "resident." + m[0].id, "none seen yet: the first resident in bay order");
     assert.equal(build(w, sv, { seen: m[3].id }).props.focus.cur, "resident." + m[3].id);
     assert.equal(build(w, sv, { seen: m[6].id }).props.focus.cur, "resident." + m[6].id, "a sleeper's resident");
     assert.equal(build(w, sv, { focus: "tile." + m[2].id }).props.focus.cur, "tile." + m[2].id, "the ring where the face left it");
     assert.equal(build(w, sv, { focus: "tile.nobody", seen: m[1].id }).props.focus.cur, "resident." + m[1].id, "a ring on nothing present takes the way in"); }
   { const { w, sv } = S0.away, b = build(w, sv), m = w.st.mibis, ids = b.props.focus.targets.map((t) => t.id);
-    assert.deepEqual(ids, [...m.slice(0, 5).map((x) => "resident." + x.id), ...m.map((x) => "tile." + x.id)], "an out mibi is a tile and no resident");
+    assert.deepEqual(ids, [...m.slice(0, 5).map((x) => "resident." + x.id), ...m.map((x) => "tile." + x.id), "room.0", "room.new"], "an out mibi is a tile and no resident");
     assert.equal(build(w, sv, { seen: m[5].id }).props.focus.cur, "tile." + m[5].id, "last seen out: its tile");
     const t = build(w, sv, { focus: "tile." + m[5].id }), r = t.props.focus.resolve; assert.equal(r["resident.of"], "", "an out tile's resident is null: the graph takes the first resident");
     assert.equal(t.line.ok, "Look at " + m[5].name); assert.equal(t.line.subject, "out with the Companion"); assert.equal(t.line.back, "Home");
@@ -184,4 +187,115 @@ test("a sleeping S01 resident carries its curl and the curl's figure; awake it c
     for (const r of night) { assert.ok(r.curl && r.curlFigure?.length === 4, "asleep: its curl"); assert.match(r.curl, /^mibi:S01~[0-9a-f]{8}:adult:\d+x\d+$/); assert.ok(r.figure, "and still its stand's figure for the walk"); }
     for (const r of noon) assert.ok(!r.curl && !r.curlFigure, "awake: its stand");
   } finally { for (const id of placed) dropAsset(id); unloadStands(); }
+});
+
+// ---- R5 (T-20261027-318): the rooms pane, the contexts, the way in and the room shown ----
+const inRoom = (w, room, n) => { const k = w.st.mibis.length; S.seedAdults(w.st, "S01", 5 + room + k, n, w.settings); for (const [i, m] of w.st.mibis.slice(k).entries()) { m.room = room; m.slot = i; m.bay = room * S.ROOM + i; m.paint = { state: "landed" }; } return w.st.mibis.slice(k); };   // n adults housed in a room, their slots 0 to n − 1
+const roomsWorld = (rooms) => { const w = world(rooms); w.st.rooms = rooms; dock(w.st); return w; };
+
+test("the rooms pane: a chip a room and the new-room chip while there are fewer than four; the room shown is the one step up; the chips are the last targets and the new-room chip is gone at four rooms", () => {
+  for (const rooms of [1, 2, 3, 4]) {
+    const w = roomsWorld(rooms), b = build(w, sv0()), items = b.props.regions.rooms.items, want = [...Array.from({ length: rooms }, (_, i) => String(i)), ...(rooms < 4 ? ["new"] : [])];
+    assert.deepEqual(items.map((c) => c.id), want, `${rooms} rooms: a chip a room, then the new-room chip`); assert.deepEqual(items.map((c) => c.state), want.map((id) => (id === "0" ? "shown" : id === "new" ? "new" : "room")));
+    assert.deepEqual(b.props.focus.targets.filter((t) => t.group === "room").map((t) => t.id), want.map((id) => "room." + id), "the chips are targets, after the residents and the places");
+    assert.equal(b.props.focus.targets.some((t) => t.id === "room.new"), rooms < 4, rooms === 4 ? "four rooms: no room.new" : "fewer than four: room.new");
+    assert.ok(items.every((c) => c.picture === ""), "no chip picture until the art director cuts rooms.json chip: the recess alone");
+    assert.deepEqual(validate(b.props, schema), [], "the props fit vivarium.props.json");
+  }
+  const w = roomsWorld(3); w.st.face.room = 2; assert.deepEqual(build(w, sv0()).props.regions.rooms.items.map((c) => c.state), ["room", "room", "shown", "new"], "the room shown moves the step up");
+  assert.equal(build(w, sv0({}), { focus: "room.new" }).props.focus.cur, "room.new"); { const f = roomsWorld(4); assert.notEqual(build(f, sv0(), { focus: "room.new" }).props.focus.cur, "room.new", "no such chip at four rooms: the way in"); }
+});
+
+test("F5 the crumb: with two or more rooms the top readout is the room shown's name and no mark; with one room there is none", () => {
+  assert.deepEqual(build(roomsWorld(1), sv0()).top, {}, "one room: no readout");
+  for (const rooms of [2, 3, 4]) for (let r = 0; r < rooms; r++) { const w = roomsWorld(rooms); w.st.face.room = r; assert.deepEqual(build(w, sv0()).top, { readout: { text: spec.strings.rooms[r], mark: null } }, `${rooms} rooms, room ${r}`); }
+});
+import { panelBuild as panelBuildUnchecked } from "../src/views/panel-props.mjs";
+test("F8 the Add the room card's picture is the next room's Idle painting cut 1:1 at [338, 376, 348, 160], with no stage, glow, light or contact shadow of its own; the other card keeps its art", () => {
+  for (const [rooms, name] of [[1, "reeds"], [2, "boulders"], [3, "ferns"]]) for (const light of ["day", "night"]) {
+    const w = roomsWorld(rooms), v = panelBuildUnchecked({ st: w.st, sv: sv0(), settings: w.settings, ui: { panel: { screen: "vivarium", id: "addRoom", focus: "" }, pods: {}, hab: {} }, light, jump: false }, J("panel.json"), frameSpec, pods), add = v.overlay.regions.cards[0], keep = v.overlay.regions.cards[1];
+    const crop = v.requests.find((r) => r.kind === "crop"); assert.ok(crop, `${name} ${light}: a crop request`);
+    assert.deepEqual([crop.master, crop.of, crop.at, crop.size], [`room-${name}-idle-${light}-1024x568`, [1024, 568], [338, 376], [348, 160]]); assert.equal(add.picture, crop.id); assert.deepEqual(add.pictureSize, [348, 160]);
+    assert.deepEqual([add.art.stage, add.art.glow, add.art.light], ["", "", ""], "no stage, no pedestal"); assert.ok(keep.art.stage, "the other card keeps its stage"); assert.ok(!("bare" in add));
+  }
+});
+test("the new-room chip's lamp is mint when the next room can be paid and stone when it cannot (never amber)", () => {
+  const pay = roomsWorld(1), short = roomsWorld(1); short.st.e = 3;
+  assert.equal(build(pay, sv0()).props.regions.rooms.items.at(-1).lamp, "frame-lamp-8-mint"); assert.equal(build(short, sv0()).props.regions.rooms.items.at(-1).lamp, "frame-lamp-8-stone");
+  const second = roomsWorld(2); second.st.e = 7; assert.equal(build(second, sv0()).props.regions.rooms.items.at(-1).lamp, "frame-lamp-8-stone", "the second room costs 8"); second.st.e = 8; assert.equal(build(second, sv0()).props.regions.rooms.items.at(-1).lamp, "frame-lamp-8-mint");
+  assert.ok(build(pay, sv0()).requests.some((r) => r.id === "frame-lamp-8-mint" && r.kind === "slot" && r.size[0] === 8), "the lamp is a signed master, requested");
+});
+
+test("C4: the ring on a room's chip says where there is room: n places free, one place free, this room is full, nobody lives here yet; the chip has no ✓ cap", () => {
+  const w = roomsWorld(2), WORDS = ["nobody lives here yet", "seven places free", "six places free", "five places free", "four places free", "three places free", "two places free", "one place free", "this room is full"];
+  for (let n = 0; n <= 8; n++) { const k = w.st.mibis.length; w.st.mibis.splice(0, k); inRoom(w, 0, n); const l = build(w, sv0(), { focus: "room.0" }).line; assert.equal(l.subject, WORDS[n], `${n} housed`); assert.equal(l.ok, null, "no ✓ cap on a room's chip"); assert.equal(l.back, "Home"); }
+  inRoom(w, 1, 3); assert.equal(build(w, sv0(), { focus: "room.1" }).line.subject, "five places free", "a chip speaks of its own room, whichever is shown");
+});
+
+test("C2, C3: the new-room chip says ✓ Add a room with ⚡ and the price (4, 8, 12 by the rooms there are), eight more places; short of Energy the dimmed cap, the short icon and pods.json's words", () => {
+  for (const [rooms, price] of [[1, "⚡ 4"], [2, "⚡ 8"], [3, "⚡ 12"]]) { const w = roomsWorld(rooms), l = build(w, sv0(), { focus: "room.new" }).line; assert.deepEqual([l.ok, l.price, l.subject, l.dim ?? false], ["Add a room", price, "eight more places", false], `${rooms} rooms`); }
+  const w = roomsWorld(1); w.st.e = 3; const l = build(w, sv0(), { focus: "room.new" }).line;
+  assert.deepEqual([l.ok, l.price, l.dim, l.short, l.need, l.subject], ["Add a room", "⚡ 4", true, "⚡", "needs more ⚡: go out", "eight more places"]);
+});
+
+test("the way in: an empty room puts the ring on its chip, the ring is on nothing only when the whole Vivarium is empty, the mibi last seen up close wins in the room shown; room.shown names the chip ◀ from the first place goes to", () => {
+  { const w = roomsWorld(2); assert.equal(build(w, sv0()).props.focus.cur, "room", "nobody housed anywhere: the ring on nothing"); assert.equal(build(w, sv0()).props.state, "empty"); }
+  { const w = roomsWorld(2); inRoom(w, 0, 3); w.st.face.room = 1; const b = build(w, sv0()); assert.deepEqual([b.props.state, b.props.focus.cur, b.props.focus.resolve["room.shown"]], ["empty", "room.1", "room.1"], "room 2 is empty, room 1 is not: the ring on room 2's chip");
+    assert.equal(b.line.subject, "nobody lives here yet"); assert.equal(b.props.regions.residents.length, 0); assert.ok(b.props.regions.tiles.items.every((t) => t.state === "free"), "eight free places, each its recess"); }
+  { const w = roomsWorld(2); const m = inRoom(w, 0, 3); const b = build(w, sv0(), { seen: m[2].id }); assert.deepEqual([b.props.focus.cur, b.props.focus.resolve["room.shown"]], ["resident." + m[2].id, "room.0"]); }
+  { const w = roomsWorld(3); inRoom(w, 0, 2); inRoom(w, 2, 2); w.st.face.room = 2; assert.equal(build(w, sv0()).props.regions.room.id, "boulders", "the window shows the room last shown"); assert.equal(build(w, sv0()).props.focus.resolve["room.shown"], "room.2"); }
+});
+
+test("the places pane is the room shown's eight places in slot order; while the swap runs each place carries the old room's thumbnail to dither from", () => {
+  const w = roomsWorld(2), a = inRoom(w, 0, 3), b2 = inRoom(w, 1, 2), old = ["x:0", "x:1", "x:2", "", "", "", "", ""]; w.st.face.room = 1;
+  const t = build(w, sv0(), { prev: { base: "room-roots-idle-day-1024x568", tiles: old } }).props.regions.tiles.items;
+  assert.deepEqual(t.map((x) => x.state), ["housed", "housed", "free", "free", "free", "free", "free", "free"]); assert.deepEqual(t.map((x) => x.from), old, "from: the old room's place i");
+  assert.ok(build(w, sv0()).props.regions.tiles.items.every((x) => x.from === ""), "no swap: no from"); assert.equal(a.length + b2.length, 5);
+});
+
+// ---- the host: the ring on a chip shows that room (st.face.room is the rules' one home for it), the swap's dither, the way in ----
+for (const k of ["frame", "pods", "home", "vivarium", "habitat", "panel"]) SPECS[k] = J(k + ".json");
+const hostRig = ({ motion = true } = {}) => {
+  const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: null }; G.settings = settings; G.st = S.freshSt("w1", 1, 1000); S.normalize(G.st); G.st.firstMibi = false; G.st.rooms = 2; G.st.e = 99; G.st.dock = { docked: true, at: 1000 };
+  G.sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3, st: G.st }; const a = inRoomG(0, 3), b = inRoomG(1, 2);
+  UI.screen = "vivarium"; UI.idle = false; UI.panel = null; UI.viv = { f: "resident." + a[0].id, prev: null }; UI.hab.id = null;
+  const sent = []; let t = 0; const h = createHost({ send: (m) => sent.push(m), nowMs: () => t, light: () => "day", motion: () => motion }); h.save = () => { h.saved = (h.saved ?? 0) + 1; };
+  return { h, sent, a, b, at: (ms) => { t = ms; h.frame(); } };
+};
+const inRoomG = (room, n) => { const k = G.st.mibis.length; S.seedAdults(G.st, "S01", 5 + room + k, n, G.settings); const out = G.st.mibis.slice(k); out.forEach((m, i) => { m.room = room; m.slot = i; m.bay = room * S.ROOM + i; m.paint = { state: "landed" }; }); return out; };
+const focusMsg = (h, target) => onFaceMessage(h, { t: "focus", screen: "vivarium", target });
+test("the ring on a room's chip sets st.face.room and shows that room: the window and the places pane cross-dither from the old room in 200 ms (the swap event, a dither on `window`), then the old pictures go", () => {
+  const { h, sent, a, at } = hostRig(); at(0);
+  focusMsg(h, "room.1"); assert.deepEqual([G.st.face.room, UI.viv.f], [1, "room.1"], "the host sets st.face.room");
+  assert.deepEqual(sent.at(-1), { t: "event", kind: "dither", target: "window", from: "room-roots-idle-day-1024x568", ms: 200, hold: 0 }, "the swap: habitat's dither, from the room that was shown");
+  assert.deepEqual(UI.viv.prev.tiles.slice(0, 4).map((x) => x.startsWith("mibi:")), [true, true, true, false], "the old room's three places' thumbnails, kept for the event");
+  { const p = screenProps(""); assert.equal(p.msg.regions.window.picture, "room-reeds-idle-day-1024x568"); assert.ok(p.ids.includes("room-roots-idle-day-1024x568") && UI.viv.prev.tiles.filter(Boolean).every((id) => p.ids.includes(id)), "the old painting and thumbnails stay on the face until the event ends"); assert.equal(p.msg.regions.tiles.items[0].from, UI.viv.prev.tiles[0]); }
+  at(199); assert.ok(UI.viv.prev); at(200); assert.equal(UI.viv.prev, null, "the swap ends: the old pictures are no longer named"); assert.equal(G.st.face.room, 1);
+  focusMsg(h, "room.new"); assert.deepEqual([G.st.face.room, UI.viv.f, sent.filter((m) => m.kind === "dither").length], [1, "room.new", 1], "the new-room chip shows the room as it was: no swap");
+  focusMsg(h, "tile." + G.st.mibis.find((m) => m.room === 1).id); assert.equal(G.st.face.room, 1, "a place does not change the room");
+  focusMsg(h, "room.0"); assert.equal(G.st.face.room, 0); assert.ok(h.saved >= 2, "the room last shown is saved");
+});
+test("reduced motion: the ring on a chip still sets the room, the swap is a cut (the face reads motion: false)", () => {
+  const { h, a, at } = hostRig({ motion: false }); at(0); focusMsg(h, "room.1"); assert.equal(G.st.face.room, 1); assert.equal(screenProps("").msg.regions.window.picture, "room-reeds-idle-day-1024x568");
+});
+test("F9 the way in reads only st.face.room: a mibi seen up close, met or moved sets it; the ring is on the mibi last seen if it is in that room, else the room's first resident, else its chip; Home and Idle show st.face.room", () => {
+  const { h, a, b, at } = hostRig(); at(0); G.st.face.room = 0; UI.screen = "home"; UI.hab.id = b[1].id; h.goto("habitat");
+  assert.equal(G.st.face.room, 1, "up close sets the room shown to the mibi's room"); h.goto("vivarium"); assert.deepEqual([G.st.face.room, UI.viv.f], [1, null]); assert.equal(screenProps("").msg.focus.cur, "resident." + b[1].id, "the mibi last seen, in the room");
+  showRoom(h, 0); UI.screen = "home"; assert.equal(screenProps("").msg.regions.room.id, "roots", "the ring moved to Roots' chip: Home shows Roots"); h.goto("vivarium"); assert.equal(G.st.face.room, 0, "the way in does not jump to the mibi seen in the other room");
+  assert.equal(screenProps("").msg.focus.cur, "resident." + S.inRoom(G.st, 0)[0].id, "not in that room: its first resident");
+  UI.screen = "home"; UI.hab.id = null; G.st.face.room = 0; h.goto("vivarium"); assert.equal(G.st.face.room, 0, "none seen: the room last shown");
+  UI.screen = "home"; assert.equal(screenProps("").msg.regions.room.id, "roots", "Home shows the room last shown"); G.st.face.room = 1; assert.equal(screenProps("").msg.regions.room.id, "reeds");
+  UI.idle = true; assert.equal(screenProps("").msg.regions.room.id, "reeds", "Idle too"); UI.idle = false;
+  G.st.face.room = 0; S.seeRoom(G.st, b[1]); assert.equal(G.st.face.room, 1, "a meet's start (seeRoom)");
+});
+test("a move sets the room shown to the mibi's new room", () => {
+  const w = roomsWorld(2); const m = inRoom(w, 0, 2)[0]; w.st.face.room = 0; const r = S.moveMibi(w.st, m, 1, w.settings); assert.ok(r.ok); assert.equal(w.st.face.room, 1);
+});
+test("the Add a room? panel rides on the whole: its cards, the bottom line of the focused card; ✓ on Add the room through the host adds the room and shows it", () => {
+  const { h, at } = hostRig(); at(0); G.st.rooms = 1; G.st.mibis = G.st.mibis.filter((m) => m.room === 0); G.st.face.room = 0; UI.viv.f = "room.new";
+  onFaceMessage(h, { t: "intent", seq: 1, screen: "vivarium", target: "room.new", verb: "confirm" }); assert.equal(UI.panel.id, "addRoom");
+  const p = screenProps(""); assert.deepEqual([p.msg.overlay.id, p.msg.overlay.focus.cur, p.msg.overlay.regions.title, p.msg.frame.line.ok, p.msg.frame.line.price], ["panel", "card.add", "Add a room?", "Add the room", "⚡ 4"]);
+  assert.deepEqual(p.msg.overlay.regions.cards.map((c) => [c.name, c.line, c.cost]), [["Add the room", "Eight more places to live", "⚡ 4"], ["Not now", "The Vivarium stays as it is", ""]]);
+  onFaceMessage(h, { t: "intent", seq: 2, screen: "panel", target: "card.add", verb: "confirm" });
+  assert.deepEqual([G.st.rooms, G.st.e, G.st.face.room, UI.viv.f, UI.panel], [2, 95, 1, "room.1", null]); const q = screenProps(""); assert.equal(q.msg.focus.cur, "room.1"); assert.equal(q.msg.state, "empty", "the new room is shown empty");
 });

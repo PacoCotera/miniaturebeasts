@@ -14,34 +14,34 @@ const PICTURED = await digestOf(boneCanvas());   // the bone canvas's digest, co
 
 // keys: the namer's presses after it opens ("target" on the namer screen); open: how the namer is opened ("meet" ✓ on the new mibi, "rename" ✓ on the name)
 const SCENES = {
-  rest: { shown: 0, f: "resident", state: "rest", set: (w) => { w.bays(8); w.adults(4); } },
-  meet: { shown: 2, f: "resident", state: "meet", meet: true, set: (w) => { w.bays(8); w.adults(2); w.bud(true); window.__st.openBud(); } },
-  out: { shown: 0, f: "name", state: "out", set: (w) => { w.bays(8); w.adults(4); w.carry([0]); w.away(); } },
-  card: { shown: 1, f: "plate.0", state: "rest", set: (w) => { w.bays(8); w.adults(4); const m = window.__st.ST.mibis[1], fr = window.__st.frameOf("S01"); m.bonded = true; m.notches = 3; m.mem = "pond"; m.from = { ...m.from, of: [window.__st.ST.mibis[0].name, window.__st.ST.mibis[2].name] }; m.read = fr.chapters.filter((c, i) => i !== 0 && !c.sealed).map((c) => c.id); } },
-  plate: { shown: 0, f: "plate.1", state: "rest", set: (w) => { w.bays(8); w.adults(4); const m = window.__st.ST.mibis[0], fr = window.__st.frameOf("S01"); m.read = fr.chapters.filter((c, i) => i !== 1 && !c.sealed).map((c) => c.id); window.__st.ST.d = 9; } },
-  door: { shown: 0, f: "door", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.carry([1]); window.__st.intent({ screen: "habitat", target: "door", verb: "confirm" }); } },
-  "door-away": { shown: 0, f: "door", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.carry([1, 2]); w.away(); } },
-  cross: { shown: 0, f: "cross", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.carry([1]); w.away(); } },
-  portrait: { shown: 0, f: "portrait", state: "rest", set: (w) => { w.bays(8); w.adults(4); const st = window.__st.ST; st.sitting = { source: "dev", key: null, at: 0 }; Object.assign(st.mibis[0], { habits: ["calm"], walked: ["wood"], places: ["wood"] }); } },   // a pose seen and a place been to: the sitting is held and nothing blocks it, so the golden proves the door open (✓ Portray {name})
-  "portrait-painting": { shown: 0, f: "portrait", state: "rest", set: (w) => { w.bays(8); w.adults(4); const S = window.__st; S.ST.sitting = { source: "dev", key: null, at: 0 }; S.ST.mibis[0].portrait = { state: "painting" }; } },
-  "portrait-portrayed": { shown: 0, f: "portrait", state: "rest", set: (w) => { w.bays(8); w.adults(4); const S = window.__st; S.ST.sitting = { source: "dev", key: null, at: 0 }; S.ST.mibis[0].portrait = { state: "delivered" }; } },
-  "portrait-pictured": { shown: 0, f: "portrait", state: "rest", pictured: true, set: (w) => { w.bays(8); w.adults(4); window.__st.ST.sitting = { source: "dev", key: null, at: 0 }; } },   // its portrait came and its picture landed: the bone canvas over the frame's window (not a portrait, not art)
-  "young-night": { shown: 1, f: "resident", state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(1); w.young(1); } },   // a juvenile up close at 304x312, the largest graded picture (fix 7)
-  "panel-wild": { shown: 3, f: "wild", state: "rest", panel: true, set: (w) => { w.bays(8); w.adults(3); w.young(1); const st = window.__st.ST; st.mibis[3].born = st.turn - 4; } },   // ✓ on Wild opens the Return panel (the ring on Keep); retires habitat-wild-armed (the arm no longer exists, T-20261016-51)
-  tile: { shown: 2, f: "tile:2", state: "rest", set: (w) => { w.bays(8); w.adults(4); } },
-  twelve: { shown: 5, f: "resident", state: "rest", set: (w) => { w.bays(12); w.adults(12); } },
-  "docked-dawn": { shown: 0, f: "resident", state: "rest", light: "dawn", set: (w) => { w.bays(8); w.adults(4); } },
-  "docked-day": { shown: 0, f: "resident", state: "rest", light: "day", set: (w) => { w.bays(8); w.adults(4); } },
-  "docked-dusk": { shown: 0, f: "resident", state: "rest", light: "dusk", set: (w) => { w.bays(8); w.adults(4); } },
-  "docked-night": { shown: 0, f: "resident", state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(4); } },
+  rest: { shown: 0, f: "resident", state: "rest", set: (w) => { w.rooms(1); w.adults(4); } },
+  meet: { shown: 2, f: "resident", state: "meet", meet: true, set: (w) => { w.rooms(1); w.adults(2); w.bud(true); window.__st.openBud(); } },
+  out: { shown: 0, f: "name", state: "out", set: (w) => { w.rooms(1); w.adults(4); w.carry([0]); w.away(); } },
+  card: { shown: 1, f: "plate.0", state: "rest", set: (w) => { w.rooms(1); w.adults(4); const m = window.__st.ST.mibis[1], fr = window.__st.frameOf("S01"); m.bonded = true; m.notches = 3; m.mem = "pond"; m.from = { ...m.from, of: [window.__st.ST.mibis[0].name, window.__st.ST.mibis[2].name] }; m.read = fr.chapters.filter((c, i) => i !== 0 && !c.sealed).map((c) => c.id); } },
+  plate: { shown: 0, f: "plate.1", state: "rest", set: (w) => { w.rooms(1); w.adults(4); const m = window.__st.ST.mibis[0], fr = window.__st.frameOf("S01"); m.read = fr.chapters.filter((c, i) => i !== 1 && !c.sealed).map((c) => c.id); window.__st.ST.d = 9; } },
+  door: { shown: 0, f: "door", state: "rest", set: (w) => { w.rooms(1); w.adults(4); w.carry([1]); window.__st.intent({ screen: "habitat", target: "door", verb: "confirm" }); } },
+  "door-away": { shown: 0, f: "door", state: "rest", set: (w) => { w.rooms(1); w.adults(4); w.carry([1, 2]); w.away(); } },
+  cross: { shown: 0, f: "cross", state: "rest", set: (w) => { w.rooms(1); w.adults(4); w.carry([1]); w.away(); } },
+  portrait: { shown: 0, f: "portrait", state: "rest", set: (w) => { w.rooms(1); w.adults(4); const st = window.__st.ST; st.sitting = { source: "dev", key: null, at: 0 }; Object.assign(st.mibis[0], { habits: ["calm"], walked: ["wood"], places: ["wood"] }); } },   // a pose seen and a place been to: the sitting is held and nothing blocks it, so the golden proves the door open (✓ Portray {name})
+  "portrait-painting": { shown: 0, f: "portrait", state: "rest", set: (w) => { w.rooms(1); w.adults(4); const S = window.__st; S.ST.sitting = { source: "dev", key: null, at: 0 }; S.ST.mibis[0].portrait = { state: "painting" }; } },
+  "portrait-portrayed": { shown: 0, f: "portrait", state: "rest", set: (w) => { w.rooms(1); w.adults(4); const S = window.__st; S.ST.sitting = { source: "dev", key: null, at: 0 }; S.ST.mibis[0].portrait = { state: "delivered" }; } },
+  "portrait-pictured": { shown: 0, f: "portrait", state: "rest", pictured: true, set: (w) => { w.rooms(1); w.adults(4); window.__st.ST.sitting = { source: "dev", key: null, at: 0 }; } },   // its portrait came and its picture landed: the bone canvas over the frame's window (not a portrait, not art)
+  "young-night": { shown: 1, f: "resident", state: "rest", light: "night", set: (w) => { w.rooms(1); w.adults(1); w.young(1); } },   // a juvenile up close at 304x312, the largest graded picture (fix 7)
+  "panel-wild": { shown: 3, f: "wild", state: "rest", panel: true, set: (w) => { w.rooms(1); w.adults(3); w.young(1); const st = window.__st.ST; st.mibis[3].born = st.turn - 4; } },   // ✓ on Wild opens the Return panel (the ring on Keep); retires habitat-wild-armed (the arm no longer exists, T-20261016-51)
+  tile: { shown: 2, f: "tile:2", state: "rest", set: (w) => { w.rooms(1); w.adults(4); } },
+  twelve: { shown: 5, f: "resident", state: "rest", set: (w) => { w.rooms(2); w.adults(12); } },
+  "docked-dawn": { shown: 0, f: "resident", state: "rest", light: "dawn", set: (w) => { w.rooms(1); w.adults(4); } },
+  "docked-day": { shown: 0, f: "resident", state: "rest", light: "day", set: (w) => { w.rooms(1); w.adults(4); } },
+  "docked-dusk": { shown: 0, f: "resident", state: "rest", light: "dusk", set: (w) => { w.rooms(1); w.adults(4); } },
+  "docked-night": { shown: 0, f: "resident", state: "rest", light: "night", set: (w) => { w.rooms(1); w.adults(4); } },
   // fix 14 (§14.4): capture states, not goldens: a juvenile up close with the ring on its footprint, one a light (the 2 px floor, layer-check rule F2; the CD's frames)
-  ...Object.fromEntries(["dawn", "day", "dusk", "night"].map((l) => ["resident-focused-" + l, { shown: 4, f: "resident", state: "rest", light: l, captureOnly: true, set: (w) => { w.bays(8); w.adults(4); w.young(3); } }])),
-  namer: { shown: 0, f: "resident", state: "rest", meet: true, open: true, set: (w) => { w.bays(8); w.adults(4); } },
-  "namer-typed": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["act.suggest", "x:back", "key.12", "key.14", "key.13", "key.4"], set: (w) => { w.bays(8); w.adults(4); } },
-  "namer-accents": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.3", "mod.page"], set: (w) => { w.bays(8); w.adults(4); } },
-  "namer-refused": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.0", "act.done"], set: (w) => { w.bays(8); w.adults(4); } },
-  "namer-empty": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back"], set: (w) => { w.bays(8); w.adults(4); } },
-  "namer-full": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.22", ...Array(9).fill(["mod.shift", "key.22"]).flat()], set: (w) => { w.bays(8); w.adults(4); } },
+  ...Object.fromEntries(["dawn", "day", "dusk", "night"].map((l) => ["resident-focused-" + l, { shown: 4, f: "resident", state: "rest", light: l, captureOnly: true, set: (w) => { w.rooms(1); w.adults(4); w.young(3); } }])),
+  namer: { shown: 0, f: "resident", state: "rest", meet: true, open: true, set: (w) => { w.rooms(1); w.adults(4); } },
+  "namer-typed": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["act.suggest", "x:back", "key.12", "key.14", "key.13", "key.4"], set: (w) => { w.rooms(1); w.adults(4); } },
+  "namer-accents": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.3", "mod.page"], set: (w) => { w.rooms(1); w.adults(4); } },
+  "namer-refused": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.0", "act.done"], set: (w) => { w.rooms(1); w.adults(4); } },
+  "namer-empty": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back"], set: (w) => { w.rooms(1); w.adults(4); } },
+  "namer-full": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.22", ...Array(9).fill(["mod.shift", "key.22"]).flat()], set: (w) => { w.rooms(1); w.adults(4); } },
 };
 async function enter(page, sc) {
   await page.evaluate(([setSrc, spec]) => {

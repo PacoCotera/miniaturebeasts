@@ -593,7 +593,7 @@ const needLine = (t, values = {}) => capLine(fill(t, values).replace(/ {2,}/g, "
 // the notice of a count: its one-form at one, else its many-form with the spelled count ({N}, dropped above max)
 const counted = (T, n, max) => (n === 1 ? needLine(T.noticeOne) : needLine(T.notice, { N: countWord(n, max) }));
 // The Vivarium is full and something waits for a place: a ready bud, or a pod that could be incubated now (read, the price in hand).
-function waitsForPlace(st, settings) {
+export function waitsForPlace(st, settings) {
   if (!vivFull(st, settings)) return false;
   if (budReady(st, settings)) return true;
   const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud); if (!grown.length) return false;
@@ -878,11 +878,13 @@ export function moveBlock(st, m, i, settings = DEFAULT_SETTINGS) {
   const there = inRoom(st, i).length; if (there >= ROOM) return { key: "full" };
   return null;
 }
+// The room the whole last showed follows what is seen: a mibi seen up close or met, or moved, sets st.face.room to its room (a released mibi has none). The way in reads only st.face.room.
+export function seeRoom(st, m) { if (m && !m.released && m.room != null) st.face.room = m.room; }
 // A move is free and instant: the room and its lowest free slot; a mibi with the Companion moves too and keeps its place in the carried set.
 export function moveMibi(st, m, i, settings = DEFAULT_SETTINGS) {
   const b = moveBlock(st, m, i, settings); if (b) return { ok: false, ...b };
   const taken = new Set(inRoom(st, i).map((x) => x.slot)); let slot = 0; while (taken.has(slot)) slot++;
-  m.room = i; m.slot = slot; m.bay = i * ROOM + slot;
+  m.room = i; m.slot = slot; m.bay = i * ROOM + slot; seeRoom(st, m);   // the room the whole shows is the one the mibi moved to
   logEv(st, m.name + " moves to the " + ROOM_NAMES[i] + " room");
   return { ok: true, room: i, slot };
 }

@@ -79,7 +79,7 @@
    "base": "room-reeds-idle-{light}-1024x568",
    "near": "room-reeds-near-{light}-544x408",
    "chip": null,
-   "preview": null,
+   "preview": { "from": "room-reeds-idle-{light}-1024x568", "rect": [338, 376, 348, 160] },
    "levels": [
     {
      "id": "main",
@@ -152,7 +152,7 @@
    "base": "room-boulders-idle-{light}-1024x568",
    "near": "room-boulders-near-{light}-544x408",
    "chip": null,
-   "preview": null,
+   "preview": { "from": "room-boulders-idle-{light}-1024x568", "rect": [338, 376, 348, 160] },
    "levels": [
     {
      "id": "main",
@@ -264,7 +264,7 @@
    "base": "room-ferns-idle-{light}-1024x568",
    "near": "room-ferns-near-{light}-544x408",
    "chip": null,
-   "preview": null,
+   "preview": { "from": "room-ferns-idle-{light}-1024x568", "rect": [338, 376, 348, 160] },
    "levels": [
     {
      "id": "main",

@@ -2,6 +2,7 @@
 // and the plate. Pods carries the ✓ rule (an identified pod opens Create) and the way back from Compare onto the kin that opened it.
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
+import "./fixtures/rooms.mjs";   // the rooms spec, as the page registers it (the addRoom panel names the room it adds)
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -499,4 +500,32 @@ test("Pods' figure: ✓ Open the guide on an identified pod opens the Library's 
   const st = world(), p = pod(st, "S01", [], 3, true), h = host(st); h.specs.library = J("library"); h.ui.pods.view = "overview"; h.ui.pods.cur = p.id;
   INTENTS.pods.intent(h, "figure", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.lib.species, h.ui.lib.state, h.ui.lib.l1], ["library.species", "S01", "sheet", "S01"]);
   const q = pod(st, "S02", [], 3, false), h2 = host(st); h2.ui.pods.view = "overview"; h2.ui.pods.cur = q.id; INTENTS.pods.intent(h2, "figure", "confirm"); assert.deepEqual(h2.went, [], "not identified: no figure");
+});
+
+// ---- R5 (T-20261027-318): the new-room chip, the Add a room? panel and the full need's jump ----
+function roomHost({ e = 99, rooms = 1, adults = 0 } = {}) {
+  const st = world(); st.e = e; st.rooms = rooms; if (adults) S.seedAdults(st, "S01", 5, adults, { ...settings, rooms: null });
+  const h = host(st); h.settings = { ...settings, rooms: null }; h.ui.screen = "vivarium"; h.ui.viv = { f: "room.new", prev: null }; h.shown = []; h.showRoom = (i) => { st.face.room = i; h.shown.push(i); };   // the host's showRoom sets st.face.room (host.mjs); here it only records
+  return h;
+}
+test("✓ on the new-room chip opens the Add a room? panel with nothing spent, the ring on Add the room (on Not now while the price is short); ✓ on a room's chip does nothing", () => {
+  let h = roomHost(); INTENTS.vivarium.intent(h, "room.new", "confirm");
+  assert.deepEqual([h.ui.panel.screen, h.ui.panel.id, h.ui.panel.focus, h.st.e, h.st.rooms, h.said, h.went], ["vivarium", "addRoom", "card.add", 99, 1, [], []], "opens, spends nothing, says nothing");
+  h = roomHost({ e: 3 }); INTENTS.vivarium.intent(h, "room.new", "confirm"); assert.deepEqual([h.ui.panel.id, h.ui.panel.focus, h.st.e], ["addRoom", "card.keep", 3], "short of Energy: the panel opens, the ring on Not now");
+  h = roomHost(); INTENTS.vivarium.intent(h, "room.0", "confirm"); assert.deepEqual([h.ui.panel ?? null, h.went, h.said, h.st.e], [null, [], [], 99], "no ✓ cap on a room's chip: nothing happens");
+});
+test("the Add the room card spends ⚡ and adds the room (4, then 8, then 12), shows it empty with the ring on its chip and says it is ready; Not now, ← and a dimmed card spend nothing", () => {
+  const h = roomHost(); INTENTS.vivarium.intent(h, "room.new", "confirm"); INTENTS.panel.intent(h, "card.add", "confirm");
+  assert.deepEqual([h.st.e, h.st.rooms, h.ui.panel, h.ui.viv.f, h.shown, h.said, h.saved, h.st.face.room], [95, 2, null, "room.1", [1], ["The Reeds room is ready"], 1, 1], "Reeds, 4 Energy, the ring on its chip, the plate");
+  INTENTS.vivarium.intent(h, "room.new", "confirm"); INTENTS.panel.intent(h, "card.add", "confirm"); assert.deepEqual([h.st.e, h.st.rooms, h.said.at(-1)], [87, 3, "The Boulders room is ready"], "the third room costs 8");
+  INTENTS.vivarium.intent(h, "room.new", "confirm"); INTENTS.panel.intent(h, "card.add", "confirm"); assert.deepEqual([h.st.e, h.st.rooms, h.said.at(-1)], [75, 4, "The Ferns room is ready"], "the fourth room costs 12");
+  assert.equal(S.addRoomBlock(h.st, h.settings).key, "all", "at four rooms there is nothing to add");
+  for (const how of [["card.keep", "confirm"], ["card.add", "back"]]) { const g = roomHost(); INTENTS.vivarium.intent(g, "room.new", "confirm"); INTENTS.panel.intent(g, ...how); assert.deepEqual([g.st.e, g.st.rooms, g.ui.panel, g.shown, g.said, g.saved], [99, 1, null, [], [], 0], how.join(" ") + ": nothing spent"); }
+  const s = roomHost({ e: 3 }); INTENTS.vivarium.intent(s, "room.new", "confirm"); INTENTS.panel.intent(s, "card.add", "confirm"); assert.deepEqual([s.st.e, s.st.rooms, s.said, !!s.ui.panel], [3, 1, [s.specs.pods.strings.needMore.replace("{icons}", "⚡")], true], "short: the warn words, nothing spent, the panel stays");
+});
+test("Home's full need: ✓ Add a room goes to the whole with the ring on the new-room chip, ✓ Make room with the ring on the first resident of the room shown", () => {
+  const full = (o) => { const h = roomHost({ ...o, adults: 8 }); h.ui.screen = "home"; h.st.dock = { docked: true, at: T0 }; h.st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; h.ui.viv.f = null; return h; };
+  let h = full({}); assert.equal(S.needKey(h.st, h.sv, h.settings, h.ui).key, "full"); INTENTS.home.intent(h, "room", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.viv.f], ["vivarium", "room.new"], "a room can be bought and paid");
+  h = full({ e: 0 }); INTENTS.home.intent(h, "room", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.viv.f], ["vivarium", "resident." + h.st.mibis[0].id], "short of Energy: Make room, the first resident");
+  h = full({ rooms: 4 }); h.settings.rooms = 1; INTENTS.home.intent(h, "room", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.viv.f], ["vivarium", "resident." + h.st.mibis[0].id], "no room to add: Make room");
 });

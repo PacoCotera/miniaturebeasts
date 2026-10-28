@@ -128,6 +128,10 @@
   "home-library-focused": {
    "hash": "d5128352",
    "png": "home-library-focused.png"
+  },
+  "home-full-bud": {
+   "hash": "f4f89aea",
+   "png": "home-full-bud.png"
   }
  }
 }

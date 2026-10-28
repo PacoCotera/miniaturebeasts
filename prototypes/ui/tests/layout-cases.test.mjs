@@ -47,11 +47,11 @@ test("the owner's review: 98 cards, one case each: a fault expects (its own kind
 });
 test("the owner's exceptions: each fine card whose kind the rule still finds is cleared by its frame.json exception, and by nothing else", () => {
   const bare = JSON.parse(JSON.stringify(frame)); bare.layout.exceptions = [];
-  for (const e of frame.layout.exceptions) {
-    const c = by("fine").find((q) => q.clear.some((x) => x.node === e.node && x.rule === e.rule && (e.other == null || x.other === e.other)) && q.state.startsWith(e.screen + "/"));
+  for (const e of frame.layout.exceptions.filter((x) => x.by === "owner")) {   // UI/UX's exceptions (R5 Q6) have no owner card: layout-check proves each is used
+    const c = by("fine").find((q) => q.clear.some((x) => x.node === e.node && x.rule === e.rule && (e.other == null || [e.other].flat().includes(x.other))) && q.state.startsWith(e.screen + "/"));
     assert.ok(c, `${e.screen} ${e.rule} ${e.node}: a fine card of the owner's`);
     const [screen, ...rest] = c.state.split("/"), rec = J(fixtureOf(c.state)), { spec } = specFor(rec), run = (f) => findings(rec.log, spec, f, rec.screen, rec.state, { facts: rec.facts ?? {} });
-    const ex = (f) => f.rule === e.rule && f.node === e.node && (e.other == null || f.other === e.other);
+    const ex = (f) => f.rule === e.rule && f.node === e.node && (e.other == null || [e.other].flat().includes(f.other));
     assert.ok(run(bare).some(ex), `${c.card}: without its exception the finding is made`); assert.ok(!run(frame).some(ex), `${c.card}: with it, it is not`);
   }
 });

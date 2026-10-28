@@ -63,14 +63,14 @@ const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 // The notice and the action of a need, from strings.needs. A count is spelled to the picture's most; above it the count is dropped.
 export function wordsOf(need, spec) {
   if (!need) return { notice: "", action: null };
-  const N = spec.strings.needs[need.key]; if (!N) return { notice: "", action: null };   // a key home.json has no words for yet (full: the words are R5's)
+  const N = spec.strings.needs[need.key]; if (!N) return { notice: "", action: null };   // a key home.json has no words for
   const word = need.n != null && need.n >= 1 && need.n <= need.max ? count(need.n) : "";
   let notice = need.n === 1 && N.noticeOne ? N.noticeOne : N.notice;
   const vals = { count: word, name: need.name, a: need.a, species: need.species };
   if (need.short && N.short) notice = N.short;
   notice = fill(notice, vals).replace(/\s{2,}/g, " ").trim();
   if (need.short) notice += " " + need.short;
-  return { notice, action: fill(N.action, vals) };
+  return { notice, action: fill(N.actions ? N.actions[need.ring === "room.new" ? "add" : "make"] : N.action, vals) };   // full: Add a room or Make room by where its ✓ goes (state.needKey's ring)
 }
 
 // The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state and its picture by the light (the Companion's mark is not drawn: the bed's `mark` is always ""). R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
@@ -145,13 +145,15 @@ export const clockWords = (secs) => { const h = Math.floor(secs / 3600) % 24, mm
 export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
   const out = [], cs = S.bayCrates(st, sv), art = (w) => S.aAn(w).split(" ")[0];
   if (S.docked(st) && cs.length) out.push({ key: "crates", n: cs.length, max: 3, act: "cargo" });
-  if (S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });
+  const full = S.waitsForPlace(st, settings);
+  if (full) out.push({ key: "full", act: "vivarium", ring: S.addRoomBlock(st, settings) ? "resident" : "room.new" });   // no place is free and something waits for one: ahead of the bud and of a pod that could be incubated
+  if (!full && S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });
   if (readyCrates(st, settings, now).length) out.push({ key: "portrait", act: "cargo" });
   const meet = ui.meet != null ? S.mibiById(st, ui.meet) : null; if (meet) out.push({ key: "meet", name: meet.name, act: "meet" });
   const unseen = st.tray.filter((p) => !p.idd && !p.seen); if (unseen.length) out.push({ key: "newPods", n: unseen.length, max: 6, act: "pods" });
   const glint = st.tray.filter((p) => S.podGlints(st, p)); if (glint.length) out.push({ key: "glints", n: glint.length, max: 6, act: "pods" });
   if (st.waiting.length) out.push({ key: "waitingPods", n: st.waiting.length, max: 6, act: "pods" });
-  const grow = couldIncubate(st, settings); if (grow) out.push({ key: "couldGrow", species: S.spName(grow), a: art(S.spName(grow)), act: "pods" });
+  const grow = !full && couldIncubate(st, settings); if (grow) out.push({ key: "couldGrow", species: S.spName(grow), a: art(S.spName(grow)), act: "pods" });
   return out;
 }
 // The pod that could be incubated now (read, a place free, the price in hand), or null: needKey's couldGrow with no short.
@@ -194,7 +196,7 @@ export function homeBuild(m, spec, frame) {
   })();
   const incubator = (() => {
     const bud = st.bud, ready = S.budReady(st, settings), state = !bud ? "empty" : ready ? "ready" : "growing", name = bud ? S.spName(bud) : "", I = T.incubator, grow = !bud && couldIncubate(st, settings);
-    return { state, line1: state === "empty" ? I.empty : state === "growing" ? I.growing : I.ready, line2: state === "empty" ? (grow ? I.canIncubate : "") : fill(I.species, { a: S.aAn(name).split(" ")[0], Species: name }), lamp: ready ? "needsYou" : "off", capsule: capsuleOf(req, spec.regions.incubator.capsule, state, bud, ready ? 1 : S.budProgress(st, settings, now)) };
+    return { state, line1: state === "empty" ? I.empty : state === "growing" ? I.growing : S.vivFull(st, settings) ? I.waitsForRoom : I.ready, line2: state === "empty" ? (grow ? I.canIncubate : "") : fill(I.species, { a: S.aAn(name).split(" ")[0], Species: name }), lamp: ready ? "needsYou" : "off", capsule: capsuleOf(req, spec.regions.incubator.capsule, state, bud, ready ? 1 : S.budProgress(st, settings, now)) };
   })();
   const companion = (() => {
     const c = S.carriedIds(st, sv), id = c.includes(sv?.lead) ? sv.lead : c[0] ?? null, mb = id == null ? null : S.mibiById(st, id), C = T.companion, P = spec.regions.companion.plates, pr = docked ? S.probeNow(st, sv) : null;

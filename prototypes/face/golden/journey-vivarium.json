@@ -1009,38 +1009,110 @@
    },
    {
     "key": "left",
-    "said": [],
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.0"
+     }
+    ],
     "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
     "back": "Home"
    },
    {
     "key": "left",
     "said": [],
     "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
-    "back": "Home"
-   },
-   {
-    "key": "left",
-    "said": [],
-    "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
     "back": "Home"
    },
    {
     "key": "down",
     "said": [],
     "screen": "vivarium",
-    "focus": "tile.1",
-    "ok": "Look at Dot",
-    "subject": "An adult Loika, asleep",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.1",
+    "ok": null,
+    "subject": "Six places free",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.new"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.new",
+    "ok": "Add a room",
+    "subject": "Eight more places",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.13"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.13",
+    "ok": "Look at Lori",
+    "subject": "An adult Loika",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.1",
+    "ok": null,
+    "subject": "Six places free",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.0"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
     "back": "Home"
    },
    {
@@ -1049,7 +1121,7 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "tile.1",
+      "target": "room.0",
       "verb": "room:habitat"
      }
     ],

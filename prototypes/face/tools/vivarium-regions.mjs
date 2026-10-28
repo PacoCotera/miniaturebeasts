@@ -1,6 +1,7 @@
 // Check 1 for the Vivarium's whole (lvgl-switch.md §4): every region the face's log says it drew, against the rectangles vivarium.json gives it. `departures` returns the list of departures, empty when none.
 // hasBed: the room has a bed (Roots only, the rooms design); the others draw none.
-// log: the face's `log` message { regions: [{ id, layer, rect }], type: [{ text, px, region, rect? }] }; spec: vivarium.json; state: "rest" | "empty"; cur: the ring ("room" when none); n: the bays (the tiles drawn).
+// log: the face's `log` message { regions: [{ id, layer, rect }], type: [{ text, px, region, rect? }] }; spec: vivarium.json; state: "rest" | "empty" (no mibi housed in the room shown); cur: the ring ("room" when none, room.<i> on a chip); n: the places (the tiles drawn).
+// The strip row is two slate panes (R5, the rooms design): the rooms pane with a chip a room (and the new-room chip), the places pane with the eight places; the chips drawn are counted from the log.
 import { listPitch } from "../../ui/specs/derive.mjs";
 import { readFileSync } from "node:fs";
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
@@ -25,12 +26,17 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0, figs 
     must(hasBed ? pics.some((r) => eq(r.rect, b)) : pics.length === 0, hasBed ? `the bed is not drawn exactly at ${b}` : "a room with no bed draws no bed");
     for (const r of pics) must(eq(r.rect, b) || eq(r.rect, k), `a bed picture (${r.layer}) ${r.rect} is neither the bed ${b} nor the Companion mark ${k}`);
     for (const r of [...got("bed.sleepers", "art"), ...got("bed.sleepers", "painted")]) must(r.rect[3] > up[3] || within(r.rect, up), `a sleeper (${r.layer}) ${r.rect} leaves the bed ${b} and the nap's height above it`); }
-  if (state === "empty") for (const id of ["resident", "bed.sleepers", "nameTag", "focus"]) must(got(id).length === 0, `the empty whole draws no ${id}`);   // the bed stands, the nest alone (or with its mark while away)
+  if (state === "empty") for (const id of ["resident", "bed.sleepers", "nameTag"]) must(got(id).length === 0, `the empty whole draws no ${id}`);   // the bed stands, the nest alone (or with its mark while away); the ring stands only on a chip (or on nothing: no ring)
   { const tag = got("nameTag", "chrome")[0], txt = got("nameTag", "type")[0]; must(!!tag === /^resident\./.test(cur), `the name tag shows ${tag ? "" : "no "}when the ring is on ${cur}`);
     if (tag) { must(within(tag.rect, [win[0] + 8, win[1], win[2] - 16, win[3]]), `the name tag ${tag.rect} is not 8 px inside the window ${win}`); must(tag.rect[3] === R.nameTag.h, `the name tag is ${tag.rect[3]} tall, not ${R.nameTag.h}`); const TP = R.nameTag.plate; must(tag.rect[2] % TP.round === 0 && tag.rect[2] >= TP.min && tag.rect[2] <= TP.max, `the name tag's width ${tag.rect[2]} is not a multiple of ${TP.round} in ${TP.min} to ${TP.max}`); }
     if (tag && txt) must(within(txt.rect, tag.rect), `the name ${txt.rect} leaves its tag ${tag.rect}`); }
-  for (const r of got("strip", "painted")) must(r.rect[2] === 0 || eq(r.rect, R.strip.rect), `the strip's plate ${r.rect} is not ${R.strip.rect}`);
-  must(!got("strip", "chrome").length, "the strip draws no fill or edge (fix 2 F1)");
+  for (const id of ["rooms", "places"]) { const panes = got(id, "chrome"); must(panes.length === 1 && eq(panes[0].rect, R[id].rect), `the ${id} pane ${panes.map((r) => r.rect)} is not ${R[id].rect}`); }   // two slate panes, exactly their rects
+  must(!got("strip").length, "the strip row is retired: the whole draws no strip");
+  { const nc = regions.filter((r) => /^chip\.\d+$/.test(r.id) && r.layer === "chrome").length;   // a chip a room, then the new-room chip: on the chips' form, lifted by the spec's lift while the ring is on it (one at most)
+    const lift = spec.focus.targets.room.lift; let up = 0;
+    for (let i = 0; i < nc; i++) { const base = listPitch(R.chips, nc, i), r = got(`chip.${i}`, "chrome")[0], lifted = r.rect[1] === base[1] - lift; if (lifted) up++; must(eq(r.rect, lifted ? [base[0], base[1] - lift, base[2], base[3]] : base), `chip ${i} ${r.rect} is not its place on the pitch ${base}`); }
+    must(up <= 1, "more than one chip is lifted"); must(nc >= 1 && nc <= 4, `${nc} chips drawn`);
+    must(/^room\./.test(cur) ? up === 1 : up === 0, `the ring is on ${cur}: ${up} chips lifted`); }
   if (n > 0) {   // a region a tile (tile.<i>): its box is the list's pitch at its place, lifted by the spec's lift while the ring is on it (one tile at most)
     const items = Array.from({ length: n }, (_, i) => listPitch(R.tiles, n, i)), lift = spec.focus.targets.tile.lift; let lifted = 0;
     for (let i = 0; i < n; i++) {
@@ -40,12 +46,12 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0, figs 
         if (plateOrChrome(r)) { if (up && r.layer === "chrome") lifted++; must(eq(r.rect, box), `tile ${i} ${r.rect} is not its place on the pitch ${base}`); } else must(within(r.rect, box), `tile ${i}'s ${r.layer} ${r.rect} leaves the tile ${box}`);
       }
     }
-    must(lifted <= parts1(regions, n), "more than one tile is lifted");
+    must(lifted <= parts1(regions, n), "more than one tile is lifted"); must(/^tile\./.test(cur) ? lifted === 1 : lifted === 0, `the ring is on ${cur}: ${lifted} tiles lifted`);
     must(!regions.some((r) => r.id.startsWith("tile.") && Number(r.id.slice(5)) >= n), "a tile past the bays is drawn");
   }
   for (const r of got("focus")) must(within(r.rect, [0, 0, 1024, 600]), `the ring ${r.rect} leaves the screen`);
   // fix 14, rule 5: a tile's ring is the tile as drawn (lifted) grown by 5
-  if (/^tile\./.test(cur) && got("focus").length) { const ring = got("focus")[0].rect, tiles = regions.filter((x) => /^tile\./.test(x.id) && x.layer === "chrome").map((x) => [x.rect[0] - 5, x.rect[1] - 5, x.rect[2] + 10, x.rect[3] + 10]); must(tiles.some((b) => eq(ring, b)), `the ${cur} ring ${ring} is not a tile as drawn grown by 5`); }
+  if (/^(tile|room)\./.test(cur) && got("focus").length) { const ring = got("focus")[0].rect, tiles = regions.filter((x) => /^(tile|chip)\./.test(x.id) && x.layer === "chrome").map((x) => [x.rect[0] - 5, x.rect[1] - 5, x.rect[2] + 10, x.rect[3] + 10]); must(tiles.some((b) => eq(ring, b)), `the ${cur} ring ${ring} is not a tile as drawn grown by 5`); }
   for (const t of type) must([16, 1016, 20, 28].includes(t.px), `"${t.text}" is set at ${t.px} px`);
   for (const r of regions.filter((x) => x.layer === "type" && x.id !== "nameTag" && within(x.rect, [0, 40, 1024, 520]))) out.push(`the whole sets a word (${r.id}) in the window or the strip: no word there but the name tag`);
   return out;

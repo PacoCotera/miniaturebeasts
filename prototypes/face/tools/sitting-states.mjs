@@ -29,7 +29,7 @@ const SCENES = {
 // The world: Dot alone in eight bays, docked, its habits seen and its places been; a sitting held (or, portrayed, calm at the pond with the bone canvas held as its picture); Habitat up close with the ring on Portrait, then ✓
 async function enter(page, sc) {
   await page.evaluate(([spec, digest, fx]) => {
-    const w = window.__world; w.reset(); w.bays(8); if (spec.juvenile) w.young(1); else w.adults(1);
+    const w = window.__world; w.reset(); w.rooms(1); if (spec.juvenile) w.young(1); else w.adults(1);
     const S = window.__st, st = S.ST, m = st.mibis[0]; m.name = spec.name ?? "Dot"; Object.assign(m, { habits: spec.habits.slice(), walked: spec.walked.slice() });
     if (spec.portrait) { const r = S.portraitSource(digest, eval(`(${fx})`)()); if (!r.ok) throw new Error("portrait fixture: " + r.error); m.portrait = { state: "delivered", pose: "calm", place: "pond", crate: "sit1", start: 0, at: 0, digest }; }
     else st.sitting = { source: "dev", key: null, at: 0 };

@@ -27,7 +27,7 @@ const T0 = 1_000_000, R = spec.regions, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS
 
 // ---- scenes: the state through the rules, the props through the view ----
 function scene(o = {}) {
-  const settings = cfg(o.bays ?? 8), st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: !o.away, at: T0 };
+  const settings = cfg(Math.max(o.bays ?? 8, ((o.room ?? 0) + 1) * S.ROOM)), st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: !o.away, at: T0 };
   if (o.adults) S.seedAdults(st, "S01", 5, o.adults, settings);
   if (o.young) S.seedAdults(st, "S01", 77, o.young, settings);
   for (const m of st.mibis) m.paint = { state: "landed" };
@@ -35,7 +35,7 @@ function scene(o = {}) {
   for (const m of (o.young ? st.mibis.slice(-o.young) : [])) m.born = st.turn;
   if (o.room != null) { st.face.room = o.room; if (o.move) st.mibis.forEach((m, i) => { m.room = o.room; m.slot = i; }); }   // the room the whole shows (after the seeding: a seed fills the shown room first); move: the seeded mibis live in it
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
-  const b = vivariumBuild({ st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ? (/^(resident|tile)\./.test(o.focus) ? o.focus : o.focus.replace(/^(\w+):(\d+)$/, (_, k, i) => k + "." + st.mibis[+i].id)) : null, seen: null }, spec, frameSpec, homeSpec);
+  const b = vivariumBuild({ st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ? (/^(resident|tile)\./.test(o.focus) ? o.focus : o.focus.replace(/^(\w+):(\d+)$/, (_, k, i) => k + "." + st.mibis[+i].id)) : null, seen: null, prev: o.prev ?? null }, spec, frameSpec, homeSpec, J("pods"));
   return { ...b, st };
 }
 const frameProps = (line = {}) => ({ top: { screen: "vivarium", title: "Vivarium", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: "Home", need: "", ...line }, plate: { text: "" } });
@@ -88,11 +88,14 @@ test("the tiles stand on listPitch's compact form: a room's eight places 72 wide
     assert.equal(lg.regions.filter((r) => r.id.startsWith("tile.") && r.layer === "art").length, art, "a thumbnail a housed mibi of the room shown");
   }
 });
-test("the departure check bites: the strip moved, a tile off its pitch, the name tag off the window, a resident out of the walk ground and a word in the window are each found", { skip }, async () => {
+test("the departure check bites: a pane moved, a chip and a tile off their pitch, the retired strip drawn, the name tag off the window, a resident out of the walk ground and a word in the window are each found", { skip }, async () => {
   const b = scene({ adults: 4, young: 3, carry: [0, 1], focus: "resident:3" }), f = await start(b), lg = logOf(f), n = b.props.regions.tiles.items.length;
   const bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, b.props.state, b.props.focus.cur, n); };
   assert.deepEqual(departures(lg, spec, "rest", b.props.focus.cur, n), []);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "strip" && r.layer === "painted").rect[0] += 8; })[0], /strip/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "rooms" && r.layer === "chrome").rect[0] += 8; })[0], /rooms pane/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "places" && r.layer === "chrome").rect[2] -= 8; })[0], /places pane/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "chip.1" && r.layer === "chrome").rect[0] += 4; })[0], /chip 1/);
+  assert.match(bad((c) => { c.regions.push({ id: "strip", layer: "painted", rect: [16, 488, 992, 64] }); })[0], /strip row is retired/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "tile.2" && r.layer === "chrome").rect[0] += 4; })[0], /tile 2/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "nameTag" && r.layer === "chrome").rect[0] = 2; })[0], /name tag/);
   assert.match(bad((c) => { const r = c.regions.find((x) => x.id === "resident" && x.layer !== "chrome"); r.rect[0] = 0; })[0], /walk ground/);
@@ -119,6 +122,40 @@ test("the keys: ✓ and ← and the room keys are intents on the focused target,
   go("down"); m = go("right"); const next = m[0].target; assert.ok(next.startsWith("tile.") && next !== "tile." + id0, next); m = go("left"); assert.equal(m[0].target, "tile." + id0);
   withFocus(f, "tile." + ids[6]); assert.deepEqual(key(f, "right"), [], "the strip stops at its last tile"); assert.deepEqual(key(f, "down"), []);
   withFocus(f, "tile." + ids[0]); m = go("up"); assert.ok(m[0].target.startsWith("resident."), "a tile's resident; its mibi sleeping on the bed is a resident too");
+});
+test("R5: the focus edges of the rooms design: ◀ from the first place goes to the room shown's chip, ▶ goes chip to chip and from the last chip to the room shown's first place, or nowhere in an empty room; ▲ from a chip goes to the nearest resident, else nowhere; ▼ goes nowhere", { skip }, async () => {
+  const b = scene({ adults: 4, young: 3, bays: 16, focus: "tile:0" }), f = await start(b), ids = b.st.mibis.map((m) => m.id), tgt = (m) => m.map((x) => [x.t, x.target]);
+  const go = (k) => { const m = key(f, k); if (m[0]?.t === "focus") withFocus(f, m[0].target); return m; };
+  assert.deepEqual(b.props.focus.targets.filter((t) => t.group === "room").map((t) => t.id), ["room.0", "room.1", "room.new"]);
+  assert.deepEqual(tgt(go("left")), [["focus", "room.0"]], "◀ from the first place: the chip of the room shown");
+  assert.deepEqual(tgt(go("right")), [["focus", "room.1"]]); assert.deepEqual(tgt(go("right")), [["focus", "room.new"]]); assert.deepEqual(tgt(go("right")), [["focus", "tile." + ids[0]]], "▶ from the right end: the room shown's first place");
+  withFocus(f, "room.0"); assert.deepEqual(key(f, "left"), [], "◀ stops at the first chip"); assert.deepEqual(key(f, "down"), [], "▼ goes nowhere");
+  for (const c of ["room.0", "room.1", "room.new"]) { withFocus(f, c); const m = key(f, "up"); assert.ok(m[0]?.t === "focus" && m[0].target.startsWith("resident."), `${c}: ▲ goes to a resident, ${JSON.stringify(m)}`); }
+  withFocus(f, "tile." + ids[1]); assert.deepEqual(tgt(go("left")), [["focus", "tile." + ids[0]]], "◀ along the places");
+  const e = scene({ adults: 3, bays: 16, room: 1 }), g = await start(e); assert.equal(e.props.state, "empty"); assert.equal(e.props.focus.cur, "room.1", "an empty room puts the ring on its chip");
+  withFocus(g, "room.new"); assert.deepEqual(key(g, "right"), [], "▶ from the right end of an empty room: none"); withFocus(g, "room.1"); assert.deepEqual(tgt(key(g, "right")), [["focus", "room.new"]]); assert.deepEqual(key(g, "up"), [], "▲ with no resident: none");
+});
+test("R5: the ring on a chip lifts it by 2 and draws the round ring on it; the ring on a place lifts that place", { skip }, async () => {
+  const b = scene({ adults: 4, bays: 16, focus: "room.1" }), f = await start(b), lg = logOf(f);
+  assert.deepEqual(lg.regions.find((r) => r.id === "chip.1" && r.layer === "chrome").rect, [104, 494, 64, 48], "lifted 2"); assert.deepEqual(lg.regions.find((r) => r.id === "chip.0" && r.layer === "chrome").rect, [32, 496, 64, 48]);
+  const ring = lg.regions.find((r) => r.id === "focus"); assert.deepEqual(ring.rect, [104 - 5, 494 - 5, 64 + 10, 48 + 10], "the ring is the chip as drawn grown by 5 (fix 14, rule 5)");
+  assert.deepEqual(departures(lg, spec, b.props.state, b.props.focus.cur, 8), []);
+  const t = scene({ adults: 4, bays: 16, focus: "tile:1" }), g = await start(t), lg2 = logOf(g); assert.deepEqual(lg2.regions.find((r) => r.id === "tile.1" && r.layer === "chrome").rect, [440, 494, 72, 48]); assert.equal(lg2.regions.filter((r) => /^chip\./.test(r.id) && r.layer === "chrome" && r.rect[1] !== 496).length, 0);
+});
+test("R5: the swap (vivarium.json events.swap): the window and each place's thumbnail cross-dither from the old room's in 16 levels over 200 ms, then the room alone; a place with no picture in either does not dither; with reduced motion it is a cut", { skip }, async () => {
+  const old = scene({ adults: 3, bays: 16 }), oldBase = old.props.regions.window.picture, oldThumbs = old.props.regions.tiles.items.map((t) => t.picture);
+  const next = scene({ adults: 2, bays: 16, room: 1, move: true, prev: { base: oldBase, tiles: oldThumbs } }), plain = scene({ adults: 2, bays: 16, room: 1, move: true });
+  assert.notEqual(next.props.regions.window.picture, oldBase); assert.deepEqual(next.props.regions.tiles.items.map((t) => t.from), oldThumbs);
+  const run = async (motion) => {
+    const f = await start(next, { motion }); for (const r of old.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r))));   // the old room's pictures stay on the face while the event runs
+    f.send({ t: "event", kind: "dither", target: "window", from: oldBase, ms: 200, hold: 0 }); f.frame(f.t); const n0 = nodesOf(f), mid = (f.frame(f.t += 100), nodesOf(f)), end = (f.frame(f.t += 110), nodesOf(f));
+    return { f, n0, mid, end };
+  };
+  { const { f, n0, mid, end } = await run(true);
+    for (const [name, n] of [["at its start", n0], ["half way", mid]]) { assert.ok(at(n, "window.dither") >= 0, `${name}: the window dithers`); assert.ok(at(n, "tile.0.dither") >= 0 && at(n, "tile.1.dither") >= 0, `${name}: the places the old room had dither`); assert.ok(at(n, "tile.2.dither") >= 0 === (oldThumbs[2] !== "" && oldThumbs[2] != null), `${name}: the third place dithers out to clear (the old room had a mibi there, this one none)`); assert.equal(at(n, "tile.5.dither"), -1, `${name}: a place empty in both does not dither`); }
+    assert.equal(at(end, "window.dither"), -1, "after 200 ms: the dither is gone"); assert.equal(at(end, "tile.0.dither"), -1);
+    const ref = await start(plain); assert.equal(f.hash(), ref.hash(), "after the swap the whole is the room's own, as if it had always been shown"); }
+  { const { n0, mid } = await run(false); assert.equal(at(n0, "window.dither"), -1, "reduced motion: a cut"); assert.equal(at(mid, "tile.0.dither"), -1); }
 });
 test("an empty whole has no ring, no ✓ cap and no pad; ← and the room keys still say their intents on the room", { skip }, async () => {
   const b = scene({ bays: 6 }), f = await start(b); assert.equal(b.props.focus.cur, "room");
@@ -296,14 +333,16 @@ test("facing (M1 §1.2): a native-left set shows the mirrored walk cells when fa
   }
 });
 
-test("fix 2 F1, F5: the strip is its plate at the spec's rectangle (painted, no fill or edge); with no tile housed or out it has no plate; the tiles name their wells by form, a free bay none", { skip }, async () => {
-  const b = scene({ adults: 4, young: 3, carry: [0, 1], focus: "resident:3" }), f = await start(b), lg = logOf(f);
-  assert.deepEqual(lg.regions.filter((r) => r.id === "strip" && r.layer === "painted" && r.rect[2] > 0).map((r) => r.rect), [R.strip.rect]);
-  assert.equal(lg.regions.filter((r) => r.id === "strip" && r.layer === "chrome" && r.rect[2] > 2).length, 0);
-  const T = b.props.regions.tiles.items, form = T.length > 6 ? 72 : 152;
-  T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : `plate-well-${form}x48`)); assert.equal(b.props.regions.strip.plate, "plate-device-992x64");
-  const e = scene({ focus: null }), g = await start(e), lg2 = logOf(g);
-  assert.equal(lg2.regions.filter((r) => r.id === "strip" && r.rect[2] > 2).length, 0, "no tile housed or out: the strip has no plate");
+test("R5: the strip row is two slate panes at the spec's rects: the rooms pane [16, 488, 312, 64] with a chip a room and the new-room chip on [32 + 72i, 496, 64, 48], the places pane [344, 488, 664, 64] with eight places on [360 + 80i, 496, 72, 48]; a housed place names its well by form, a free one is its recess", { skip }, async () => {
+  const b = scene({ adults: 4, young: 3, carry: [0, 1], focus: "resident:3", bays: 16 }), f = await start(b), lg = logOf(f), rg = (id, layer) => lg.regions.filter((r) => r.id === id && (!layer || r.layer === layer));
+  assert.deepEqual(rg("rooms", "chrome").map((r) => r.rect), [[16, 488, 312, 64]]); assert.deepEqual(rg("places", "chrome").map((r) => r.rect), [[344, 488, 664, 64]]); assert.equal(rg("strip").length, 0, "the strip is retired");
+  assert.deepEqual([0, 1, 2].map((i) => rg(`chip.${i}`, "chrome")[0].rect), [[32, 496, 64, 48], [104, 496, 64, 48], [176, 496, 64, 48]], "two rooms and the new-room chip"); assert.equal(rg("chip.3").length, 0);
+  assert.deepEqual(rg("chip.2").filter((r) => r.layer !== "chrome").map((r) => r.rect), [[176 + 52, 496 + 4, 8, 8]], "the new-room chip's lamp at chip + [52, 4, 8, 8]; no chip has a picture yet");
+  assert.equal(rg("chip.0").filter((r) => r.layer !== "chrome").length, 0, "a room's chip: the recess alone until the art director cuts its picture");
+  assert.deepEqual([0, 1, 2, 7].map((i) => rg(`tile.${i}`, "chrome")[0].rect), [0, 1, 2, 7].map((i) => [360 + 80 * i, 496, 72, 48]));
+  const T = b.props.regions.tiles.items; T.forEach((t) => assert.equal(t.well, t.state === "free" ? "" : "plate-well-72x48")); assert.equal(b.props.regions.strip, undefined);
+  const e = scene({ focus: null, bays: 8 }), g = await start(e), lg2 = logOf(g); assert.equal(lg2.regions.filter((r) => r.id === "tile.0" && r.layer === "painted" && r.rect[2] > 2).length, 0, "a free place draws no well: its recess");
+  assert.deepEqual(lg2.regions.filter((r) => r.id === "chip.0" && r.layer === "chrome").map((r) => r.rect), [[32, 496, 64, 48]]);
 });
 
 // ---- T-20261018-235: the figure's geometry ----
