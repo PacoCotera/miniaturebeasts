@@ -29,9 +29,12 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
   const pump = () => {
     while (active < concurrency && queue.length) {
       const it = queue.shift(); active++;
-      run(it).then(it.resolve, it.reject).finally(() => { active--; pump(); });
+      run(it).then(it.resolve, (err) => { const no = it.reject; if (isNet(err)) fresh(it); no(err); }).finally(() => { active--; pump(); });
     }
   };
+  // a fetch that never answered (the page went away, the network dropped: fetch's TypeError) is not a refused picture: the item goes back to waiting, and the room's promise is dropped, so the next ensureRoom fetches it again
+  const isNet = (err) => err instanceof TypeError;
+  const fresh = (it) => { it.queued = false; it.done = new Promise((ok, no) => { it.resolve = ok; it.reject = no; }); it.done.catch(() => {}); if (it.room) rooms.delete(it.room); };
   const enqueue = (list) => { for (const it of list) if (!it.queued) { it.queued = true; queue.push(it); } pump(); };
   const settled = (list) => Promise.all(list.map((it) => it.done));
   const roomPromise = (name) => { if (!rooms.has(name)) rooms.set(name, settled(roomItems(name)).then(() => {})); return rooms.get(name); };
@@ -66,7 +69,7 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
     // the other rooms, in the background, the room after the shown one first (the page calls it once the first screen is up, so the boot set is the only thing fetched before it)
     background() {
       enqueue(later.flatMap(roomItems));
-      for (const n of later) roomPromise(n).catch((e) => { console.error(e); if (typeof reportError === "function") reportError(e); });   // a background room that fails is loud: the console and the page's error event
+      for (const n of later) roomPromise(n).catch((e) => { if (isNet(e)) { console.warn(`room ${n}: a picture did not arrive (${e.message}); it is fetched again when the room is shown`); return; } console.error(e); if (typeof reportError === "function") reportError(e); });   // a refused picture is loud (the console and the page's error event); a fetch that never answered is not
     },
     // true when the room's pictures are all placed (or the loader holds none for it): the host draws the room at once
     roomLoaded(r) { const name = roomName(r); return !items.some((it) => it.room === name && !it.placed); },
