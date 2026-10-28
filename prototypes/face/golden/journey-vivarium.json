@@ -576,7 +576,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "cross",
-    "ok": null,
+    "ok": "Cross Burr",
     "price": null,
     "subject": "Crosses once adult",
     "back": "Vivarium"
@@ -595,7 +595,7 @@
     "ring": "wild",
     "ok": "Return Burr",
     "price": "❀ +2",
-    "subject": "Goes back to the wild",
+    "subject": "Leaves a pod of its line",
     "back": "Vivarium"
    },
    {
@@ -832,7 +832,7 @@
     "screen": "habitat",
     "state": "rest",
     "ring": "cross",
-    "ok": null,
+    "ok": "Cross Tuft",
     "price": null,
     "subject": "Crossing is not open yet",
     "back": "Vivarium"
@@ -851,7 +851,7 @@
     "ring": "wild",
     "ok": "Return Tuft",
     "price": "❀ +2",
-    "subject": "Goes back to the wild",
+    "subject": "Leaves a pod of its line",
     "back": "Vivarium"
    },
    {

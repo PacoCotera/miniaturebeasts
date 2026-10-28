@@ -22,7 +22,8 @@
       "plate",
       "top",
       "low",
-      "tile"
+      "tile",
+      "room"
      ]
     },
     "enabled": {
@@ -136,6 +137,38 @@
      "type": "boolean"
     }
    }
+  },
+  "chip": {
+   "type": "object",
+   "required": [
+    "id",
+    "state",
+    "picture",
+    "lamp"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "the room's number (0 to 3), or \"new\" for the new-room chip"
+    },
+    "state": {
+     "enum": [
+      "shown",
+      "room",
+      "new"
+     ],
+     "description": "shown: the room shown (one step up); room: another room; new: the new-room chip"
+    },
+    "picture": {
+     "type": "string",
+     "description": "the room's chip picture (rooms.json rooms.<id>.chip) in the light; \"\" until the art director cuts it (the recess alone)"
+    },
+    "lamp": {
+     "type": "string",
+     "description": "the new-room chip's lamp picture (mint when the next room can be paid, stone otherwise); \"\" on a room's chip"
+    }
+   }
   }
  },
  "type": "object",
@@ -168,8 +201,8 @@
     "portrait",
     "cross",
     "wild",
-    "strip",
-    "tiles"
+    "tiles",
+    "rooms"
    ],
    "additionalProperties": false,
    "properties": {
@@ -444,7 +477,8 @@
       "state",
       "glyph",
       "places",
-      "lamp"
+      "lamp",
+      "held"
      ],
      "additionalProperties": false,
      "properties": {
@@ -470,6 +504,10 @@
       },
       "lamp": {
        "type": "string"
+      },
+      "held": {
+       "type": "boolean",
+       "description": "R6, the house rule: the module is held (drawn in the frame's dimmed role, its word in mist); a carried mibi's card is held too"
       }
      }
     },
@@ -479,7 +517,8 @@
       "plate",
       "state",
       "frame",
-      "picture"
+      "picture",
+      "held"
      ],
      "additionalProperties": false,
      "properties": {
@@ -499,6 +538,10 @@
       },
       "picture": {
        "type": "string"
+      },
+      "held": {
+       "type": "boolean",
+       "description": "R6, the house rule: the module is held (drawn in the frame's dimmed role, its word in mist); a carried mibi's card is held too"
       }
      }
     },
@@ -507,7 +550,8 @@
      "required": [
       "plate",
       "state",
-      "faces"
+      "faces",
+      "held"
      ],
      "additionalProperties": false,
      "properties": {
@@ -529,6 +573,10 @@
         "$ref": "face"
        },
        "maxItems": 11
+      },
+      "held": {
+       "type": "boolean",
+       "description": "R6, the house rule: the module is held (drawn in the frame's dimmed role, its word in mist); a carried mibi's card is held too"
       }
      }
     },
@@ -537,7 +585,8 @@
      "required": [
       "plate",
       "state",
-      "gate"
+      "gate",
+      "held"
      ],
      "additionalProperties": false,
      "properties": {
@@ -546,11 +595,16 @@
       },
       "state": {
        "enum": [
-        "shut"
+        "shut",
+        "held"
        ]
       },
       "gate": {
        "type": "string"
+      },
+      "held": {
+       "type": "boolean",
+       "description": "R6, the house rule: the module is held (drawn in the frame's dimmed role, its word in mist); a carried mibi's card is held too"
       }
      }
     },
@@ -574,19 +628,23 @@
        "items": {
         "$ref": "tile"
        },
-       "maxItems": 12
+       "maxItems": 8
       }
      }
     },
-    "strip": {
+    "rooms": {
      "type": "object",
      "required": [
-      "plate"
+      "items"
      ],
      "additionalProperties": false,
      "properties": {
-      "plate": {
-       "type": "string"
+      "items": {
+       "type": "array",
+       "maxItems": 4,
+       "items": {
+        "$ref": "chip"
+       }
       }
      }
     }

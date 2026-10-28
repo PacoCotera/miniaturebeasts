@@ -15,15 +15,46 @@ import { habitsOf, placesOf } from "../state.mjs";
 import { listForm } from "../../../ui/specs/derive.mjs";
 import { kPct } from "../stamplook.mjs";
 import { doorOpen } from "../nav.mjs";
-import { fill, spell } from "./words.mjs";
+import { fill, spell, capLine } from "./words.mjs";
 import { req as reqOf, slot as slotOf, plateDevice, slotAt } from "./requests.mjs";
 import { portraitOffered } from "./sitting-props.mjs";
-import { roomIds, nearOf } from "./room-props.mjs";
+import { roomIds, nearOf, chipsOf } from "./room-props.mjs";
 
 // The species' face (the top bar's mark, frame.json regions.marks.face), docked or dimmed.
 const faceId = (frame, mb, away) => (away ? frame.regions.marks.face.away : frame.regions.marks.face.docked).replace("{mibi}", S.spName(mb).toLowerCase());
 
-export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
+// The four modules of one mibi up close and which of them are held (the house rule, the rooms screens 2b; habitat.json notes.houseRule): from the rules alone, so the props and the intent that plays a held verb's plate say the same thing.
+// `rows.<module>` is null while the module is live, else { ok (the verb, dimmed), subject (the reason, six words or fewer), plate (the lines ✓ plays), drawn (the module is drawn held before it is focused) }.
+// The reason's plate is signed for Wild (the rooms words C12b to d) and for a carried mibi (habitat.json travellerPlate); Cross, Portrait and the Companion have no signed plate words yet and say the reason itself, capitalised (owed to the copywriter).
+export function modulesOf(m, shown, Sg, sittingSpec = null) {
+  const { st, sv, settings } = m, docked = !!m.docked, where = docked ? "docked" : "away", travel = Sg.travellerContext[where], named = { name: shown.name };
+  const out = S.isCarried(st, sv, shown), stage = S.mibiStage(st, shown, settings), plateT = Sg.travellerPlate[where].map((l) => fill(l, named));
+  const proj = S.projectCarried(st, sv), pend = S.pendingCarry(st, sv), rows = { door: null, portrait: null, cross: null, wild: null };
+  const held = (ok, subject, plate, extra = {}) => ({ ok, subject, plate, drawn: true, ...extra });
+  // the Companion: Bring is live only while docked (the owner, R4b); a full set holds Take
+  const dKind = pend.find((r) => r.id === shown.id)?.op ?? (proj.includes(shown.id) ? "bring" : proj.length >= 3 ? "full" : "take");
+  if (dKind === "bring" && !docked && out) rows.door = held(fill(Sg.bring, named), travel, plateT, { drawn: false });   // held like the rest, the module drawn as it was
+  else if (dKind === "full") rows.door = held(fill(Sg.take, named), Sg.full, [capLine(Sg.full)]);
+  // Portrait
+  const pst = shown.portrait ? (shown.portrait.state === "delivered" ? "portrayed" : "painting") : st.sitting ? "held" : "none";
+  const sitting = pst === "held" && !out && habitsOf(shown).length && placesOf(shown).length;
+  const look = pst === "portrayed" && portraitOffered(shown) && doorOpen("sitting") && !out && !!sittingSpec?.strings?.lookPortrait;   // portrayed and its picture held: ✓ opens the sitting's state portrait
+  const why = pst === "none" ? Sg.noSitting : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : out ? null : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : !doorOpen("sitting") ? Sg.shut.portrait : null;
+  if (!look) { if (out) rows.portrait = held(fill(Sg.portray, named), travel, plateT); else if (why) rows.portrait = held(fill(Sg.portray, named), why, [capLine(why)]); }   // a carried mibi's card is held by heldRule whatever else holds it
+  // Cross: one face a partner, an adult or an elder of its species; a partner out with the Companion while it is away is dimmed
+  const partners = S.isAdult(st, shown, settings) ? S.crossPartners(st, sv, shown, settings) : [], pickable = partners.filter((p) => !p.away);   // a carried partner is kept in the list marked away (dimmed, never picked)
+  const crossState = stage === "juvenile" ? "young" : out ? "out" : !partners.length ? "alone" : !pickable.length ? "away" : "adult";
+  const crossWhy = out ? travel : crossState === "young" ? Sg.crossLater : crossState === "alone" ? fill(Sg.noPartner, { Species: S.spName(shown) }) : crossState === "away" ? Sg.crossAway : !doorOpen("cross") ? Sg.shut.cross : null;
+  if (crossWhy) rows.cross = held(fill(Sg.cross, named), crossWhy, out ? plateT : [capLine(crossWhy)]);
+  // Wild: in the order of the rule (state.returnMibiBlock): bonded, with you, going at the next dock; a young mibi is not held (the rooms words C12a)
+  const wildBlock = S.returnMibiBlock(st, sv, shown), price = S.gainText(S.PRICE.wildMibi);
+  if (wildBlock === "a bonded mibi stays") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.bonded, Sg.wildPlates.bonded.map((l) => fill(l, named)).concat(stage === "juvenile" ? [fill(Sg.wildPlates.bondedYoung, named)] : []), { price });
+  else if (wildBlock === "already with you") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.withYou[where], plateT, { price });
+  else if (wildBlock) rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.waiting, Sg.wildPlates.waiting.map((l) => fill(l, named)), { price });
+  return { out, stage, dKind, pst, sitting, look, partners, pickable, crossState, wildBlock, rows };
+}
+
+export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = null) {
   const { st, sv, settings } = m, requests = [], req = reqOf(requests);
   const R = spec.regions, Sg = spec.strings, docked = !!m.docked;
   const shown = habitatShown(st, sv, m.habId); if (!shown) return null;
@@ -32,6 +63,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
   const out = S.isCarried(st, sv, shown), meet = !out && m.meetId != null && String(m.meetId) === String(shown.id);   // out: carried, docked or away (R4b: never drawn in the room; every action on the card is held, habitat.json heldRule)
   const where = docked ? "docked" : "away", travelContext = Sg.travellerContext[where];
   const state = out ? "out" : meet ? "meet" : "rest";
+  const mods = modulesOf(m, shown, Sg, sittingSpec), rows = mods.rows;
   const stage = S.mibiStage(st, shown, settings), stageWord = home.strings.stages[stage] ?? stage, species = S.spName(shown), fr = frameFor(shown), sid = String(shown.id);
   const waiting = false;
   const plate = (w, h) => req(plateDevice(w, h));
@@ -79,34 +111,32 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
   const places = proj.slice(0, 3).map((id) => { const mb = S.mibiById(st, id); return mb ? { picture: mibiReq(req, st, mb, [48, 48], settings), waiting: !carried.includes(id), well: well("plate-well-48x48") } : null; });
   while (places.length < 3) places.push(null);
   for (let i = 0; i < 3; i++) if (!places[i]) places[i] = { picture: "", waiting: false, well: well("plate-well-48x48") };   // fix 2 F4: a free place is the well alone
-  regions.door = { plate: plate(272, 96), state: !proj.length ? "none" : docked ? "docked" : "away", glyph: docked ? frame.regions.marks.companion.docked : frame.regions.marks.companion.away, places, lamp: frame.regions.marks.lamp8.away };
+  regions.door = { plate: plate(272, 96), held: !!rows.door?.drawn, state: !proj.length ? "none" : docked ? "docked" : "away", glyph: docked ? frame.regions.marks.companion.docked : frame.regions.marks.companion.away, places, lamp: frame.regions.marks.lamp8.away };
 
   // the Portrait module
-  const pst = shown.portrait ? (shown.portrait.state === "delivered" ? "portrayed" : "painting") : st.sitting ? "held" : "none";
-  regions.portrait = { plate: plate(136, 96), state: pst, frame: slotAt(req, `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40`, [0, 0, 48, 40], "the sitting frame master (AD, candidates)"), picture: pst === "portrayed" && shown.portrait.digest ? req({ kind: "portrait", id: `portrait:${String(shown.portrait.digest).slice(0, 16)}:40x30`, digest: shown.portrait.digest, size: [40, 30] }) : "" };
+  const pst = mods.pst;
+  regions.portrait = { plate: plate(136, 96), held: !!rows.portrait?.drawn, state: pst, frame: slotAt(req, `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-48x40`, [0, 0, 48, 40], "the sitting frame master (AD, candidates)"), picture: pst === "portrayed" && shown.portrait.digest ? req({ kind: "portrait", id: `portrait:${String(shown.portrait.digest).slice(0, 16)}:40x30`, digest: shown.portrait.digest, size: [40, 30] }) : "" };
 
   // the Cross module: one face a partner, an adult or an elder of its species; a partner out with the Companion while it is away is dimmed
-  const partners = S.isAdult(st, shown, settings) ? S.crossPartners(st, sv, shown, settings) : [], pickable = partners.filter((p) => !p.away);   // a carried partner is kept in the list marked away (dimmed, never picked)
-  const crossState = stage === "juvenile" ? "young" : out ? "out" : !partners.length ? "alone" : !pickable.length ? "away" : "adult";
-  regions.cross = { plate: plate(272, 96), state: crossState, faces: partners.slice(0, R.cross.faces.max).map((p) => ({ picture: faceId(frame, p, !!p.away), away: !!p.away })) };
+  const { partners, pickable, crossState } = mods;
+  regions.cross = { plate: plate(272, 96), held: !!rows.cross?.drawn, state: crossState, faces: partners.slice(0, R.cross.faces.max).map((p) => ({ picture: faceId(frame, p, !!p.away), away: !!p.away })) };
 
   // the Wild module: the gate stays shut; ✓ opens the Return panel (decision panel spec §1.6), which replaced the "✓ again" arm
-  const wildBlock = S.returnMibiBlock(st, sv, shown);
-  regions.wild = { plate: plate(136, 96), state: "shut", gate: slotAt(req, "gate-wild-shut-48x48", [0, 0, 48, 48], "the gate master (AD W1)") };
+  const wildBlock = mods.wildBlock;
+  regions.wild = { plate: plate(136, 96), held: !!rows.wild?.drawn, state: rows.wild ? "held" : "shut", gate: slotAt(req, "gate-wild-shut-48x48", [0, 0, 48, 48], "the gate master (AD W1)") };
 
   // the strip: one tile a place, the room shown's mibis in slot order then the free places; the mibi up close is the shown tile
   const housed = S.inRoom(st, shown.room ?? st.face?.room ?? 0), n = S.ROOM;   // the room of the mibi up close: a mibi met shows its own room
   const tw = listForm(R.tiles, n).first[2];   // the tile width of the form n places take (vivarium.json tiles.forms)
   const tiles = housed.slice(0, n).map((mb) => { const away = S.isCarried(st, sv, mb), isShown = mb.id === shown.id; return { id: String(mb.id), state: away ? "out" : "housed", ...(away ? { where } : {}), shown: isShown, picture: mibiReq(req, st, mb, [48, 48], settings), well: well(`plate-well-${tw}x48${isShown ? "-shown" : ""}`) }; });   // a carried one keeps its thumbnail (dimmed beside the Companion glyph)
   while (tiles.length < n) tiles.push({ id: "", state: "free", shown: false, picture: "", well: "" });
-  regions.strip = { plate: n ? plate(992, 64) : "" };
+  const chips = chipsOf(st, settings, m.light, roomOf, R, slot);   // the rooms pane: a chip a room, the mibi's own one step up (R6)
+  regions.rooms = { items: chips };
   regions.tiles = { glyph: frame.regions.marks.companion.away, glyphDocked: frame.regions.marks.companion.docked, items: tiles };
 
   // the focus: every target of the state in the graph's groups; the plate a chapter still to read is enabled, the door and the modules as their rules say
   const unread = (p) => p.state === "unread", cost = (p) => S.mibiReadCost(st, shown, p.id, settings);
-  const dKind = pend.find((r) => r.id === shown.id)?.op ?? (proj.includes(shown.id) ? "bring" : proj.length >= 3 ? "full" : "take");
-  const sitting = pst === "held" && !out && habitsOf(shown).length && placesOf(shown).length;
-  const look = pst === "portrayed" && portraitOffered(shown) && doorOpen("sitting") && !out && !!sittingSpec?.strings?.lookPortrait;   // portrayed and its picture held: ✓ opens the sitting's state portrait
+  const { dKind, sitting, look } = mods;
   const targets = [];
   if (state !== "out") targets.push({ id: "resident", group: "resident", enabled: true });
   if (state !== "meet") targets.push({ id: "name", group: "name", enabled: !out });   // held while carried (heldRule)
@@ -118,8 +148,9 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
   targets.push({ id: "cross", group: "low", enabled: crossState === "adult" && doorOpen("cross") });
   targets.push({ id: "wild", group: "low", enabled: !wildBlock });   // "already with you" while carried
   for (const t of tiles) if (t.state !== "free") targets.push({ id: "tile." + t.id, group: "tile", enabled: true });
+  for (const c of chips) targets.push({ id: "room." + c.id, group: "room", enabled: c.id === "new" ? S.roomPrice(st, settings) !== null : +c.id !== roomOf && !S.moveBlock(st, shown, +c.id, settings) });   // the chips last: the rooms, then the new-room chip; a chip is enabled when ✓ does something live
   const has = (id) => targets.some((t) => t.id === id), cur = m.focus && has(m.focus) ? m.focus : out ? "name" : "resident";
-  const focus = { cur, targets, resolve: { "tile.shown": "tile." + sid } };
+  const focus = { cur, targets, resolve: { "tile.shown": "tile." + sid, "room.shown": "room." + roomOf } };
 
   // the bottom line (habitat.json bottomLine): the action and the context of the focused target; ← Vivarium
   const a = S.aAn(stageWord).split(" ")[0], words = { a, stage: stageWord, species }, contextOf = shown.bonded ? fill(Sg.residentContextBonded, words) : fill(Sg.residentContext, words);
@@ -136,31 +167,32 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null) {
     if (p.state === "read") line = { ok: null, subject: fill(Sg.plateRead, { Chapter }), back: Sg.back, need: null };
     else if (p.state === "sealed") line = { ok: null, subject: fill(Sg.plateSealed, { Chapter }), back: Sg.back, need: null };
     else { const c = cost(p), short = c > st.d ? S.shortIcons(st, 0, c, 0) : ""; line = { ok: fill(Sg.read, { Chapter }), price: c ? "◆ " + c : "", ...(short ? { dim: true, short } : {}), subject: fill(Sg.plateUnread, { Chapter }), back: Sg.back, need: !short && c && frame ? warnWords(st, m.sv, settings, frame, { d: c }, { key: "read", mibi: shown }) : null }; }
-  } else if (id === "door") {
-    const now = docked;
-    line = dKind === "take" ? { ok: fill(Sg.take, named), subject: now ? Sg.takeNow : Sg.takeNext }
-      : dKind === "bring" ? { ok: fill(Sg.bring, named), ...(!now && out ? { dim: true } : {}), subject: now ? Sg.bringNow : out ? travelContext : Sg.bringNext }   // live while docked; while away it is held like the rest (the owner, R4b)
+  } else if (id === "door" || id === "portrait" || id === "cross" || id === "wild") {
+    // a held row (the house rule): the verb stays, dimmed, and the context gives the reason; otherwise the live rows
+    const hr = rows[id], price = S.gainText(S.PRICE.wildMibi), now = docked;
+    if (hr) line = { ok: hr.ok, ...(hr.price ? { price: hr.price } : {}), dim: true, subject: hr.subject };
+    else if (id === "door") line = dKind === "take" ? { ok: fill(Sg.take, named), subject: now ? Sg.takeNow : Sg.takeNext }
+      : dKind === "bring" ? { ok: fill(Sg.bring, named), subject: now ? Sg.bringNow : Sg.bringNext }   // live while docked; away with the mibi out it is a held row
       : dKind === "add" ? { ok: null, subject: now ? Sg.takeNow : Sg.takeNext }
-      : dKind === "home" ? { ok: null, subject: Sg.bringNext }
-      : { ok: null, subject: Sg.full };
+      : { ok: null, subject: Sg.bringNext };
+    else if (id === "portrait") line = look ? { ok: sittingSpec.strings.lookPortrait, subject: Sg.portrayed } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext };   // bottomLine.portrait.portrayed: ✓ strings.lookPortrait only while the picture is held
+    else if (id === "cross") line = { ok: fill(Sg.cross, named), subject: fill(Sg.partners, { "n in words": spell(Math.min(pickable.length, 11)), Species: species }) };
+    else line = { ok: fill(Sg.wild, named), price, subject: Sg.wildContext };
     line = { ...line, back: Sg.back, need: null };
-  } else if (id === "portrait") {
-    const why = pst === "none" ? Sg.noSitting : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : out ? null : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : !doorOpen("sitting") ? Sg.shut.portrait : null;
-    line = look ? { ok: sittingSpec.strings.lookPortrait, subject: Sg.portrayed, back: Sg.back, need: null }   // bottomLine.portrait.portrayed: ✓ strings.lookPortrait only while the picture is held
-      : why ? { ok: null, subject: why, back: Sg.back, need: null } : out ? { ok: fill(Sg.portray, named), dim: true, subject: travelContext, back: Sg.back, need: null } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext, back: Sg.back, need: null };   // held while carried
-  } else if (id === "cross") {
-    line = crossState === "adult" && !doorOpen("cross") ? { ok: null, subject: Sg.shut.cross }
-      : crossState === "adult" ? { ok: fill(Sg.cross, named), subject: fill(Sg.partners, { "n in words": spell(Math.min(pickable.length, 11)), Species: species }) }
-      : crossState === "out" ? { ok: fill(Sg.cross, named), dim: true, subject: travelContext }   // held while carried
-      : { ok: null, subject: crossState === "away" ? Sg.crossAway : crossState === "alone" ? fill(Sg.noPartner, { Species: species }) : Sg.crossLater };
-    line = { ...line, back: Sg.back, need: null };
-  } else if (id === "wild") {
-    const price = S.gainText(S.PRICE.wildMibi), key = { "a bonded mibi stays": "bonded", "not until it is adult": "young", "already with you": "withYou", "goes at the next dock": "waiting" }[wildBlock];
-    line = key === "withYou" ? { ok: fill(Sg.wild, named), price, dim: true, subject: Sg.wildBlocks.withYou[where] }   // held while carried: the same words as every held verb
-      : wildBlock ? { ok: null, subject: Sg.wildBlocks[key] ?? wildBlock }
-      : { ok: fill(Sg.wild, named), price, subject: Sg.wildContext };
-    line = { ...line, back: Sg.back, need: null };
+  } else if (id.startsWith("room.")) {   // a chip (R6, the rooms screens 1b, the rooms words C5): moves the mibi up close; the new-room chip as the whole's
+    if (id === "room.new") {
+      const p = S.roomPrice(st, settings), block = S.addRoomBlock(st, settings);
+      line = { ok: Sg.newRoom.action, price: S.priceText(p, 0, 0), subject: Sg.newRoom.context, back: Sg.back, need: null };
+      if (block) { const icons = S.shortIcons(st, p, 0, 0); line.dim = true; line.short = icons; line.need = fill(pods.strings.needMoreFrom[S.shortFrom(st, p, 0, 0)], { icons }); }
+    } else {
+      const i = +id.slice(5), Room = S.ROOM_NAMES[i], free = S.ROOM - S.inRoom(st, i).length;
+      line = i === roomOf ? { ok: null, subject: Sg.chips.own }
+        : out ? { ok: fill(Sg.chips.move, named), dim: true, subject: travelContext }   // held while carried (heldRule)
+        : free === 0 ? { ok: fill(Sg.chips.move, named), dim: true, subject: fill(Sg.chips.noPlace, { Room }) }
+        : { ok: fill(Sg.chips.move, named), subject: free === 1 ? fill(Sg.chips.oneFree, { Room }) : fill(Sg.chips.placesFree, { Room, n: spell(free) }) };
+      line = { ...line, back: Sg.back, need: null };
+    }
   }
   const top = S.roomCount(st, settings) >= 2 ? { readout: { text: S.ROOM_NAMES[roomOf], mark: null } } : {};   // the crumb, as the Vivarium's whole: the room of the mibi up close
-  return { props: { state, regions, focus }, line, requests, shown, top };
+  return { props: { state, regions, focus }, line, requests, shown, top, held: rows };
 }

@@ -58,7 +58,7 @@
    "by": "✓ on the slot"
   },
   "addRoom": {
-   "opens": "vivarium",
+   "opens": "vivarium, and habitat (R6: the same chip up close; after buying, the ring stays on the place, now the new room's chip)",
    "by": "✓ on the new-room chip (T-20261027-318, the rooms design): the two-card form of fitUpgrade on the slate pane; the left card's picture is rooms.json rooms.<id>.preview of the room it adds (348 × 160: a 1:1 cut of that room's Idle painting, rooms.json rooms.<id>.preview { from, rect }; no stage, no pedestal on the card); the done plate says the new room is ready"
   },
   "dock": {
@@ -104,7 +104,8 @@
    "cards": {
     "return": {
      "name": "Return {name}",
-     "line": "{name} will live in the wild"
+     "line": "{name}'s pod waits in the wild",
+     "lineYoung": "{name}'s pod comes once grown"
     },
     "keep": {
      "name": "Keep {name}",

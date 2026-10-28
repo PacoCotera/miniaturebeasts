@@ -253,12 +253,110 @@
    "sha256": "f4dcc5bef3677ed501e285c15d1542d59e8735049b98d3f9870b2bdf4ffd92b3",
    "signed": "art director at 1x, 10-11 15:55 (masters-pods 8c3b6a7b)"
   },
+  "bud-shape-S02-112x112": {
+   "file": "pods/bud-shape-S02-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "c41095107ec904aae69e8c19f5b099c4b9c57ccd632508670f480663804afa84",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "bud-shape-S03-112x112": {
    "file": "pods/bud-shape-S03-112x112.png",
    "w": 112,
    "h": 112,
    "sha256": "8750760d90d245b729c6a15c49a946cf28c406543e0ad65b95a76cf5d338a764",
    "signed": "art director at 1x, 10-11 15:55 (masters-pods 8c3b6a7b)"
+  },
+  "bud-shape-S04-112x112": {
+   "file": "pods/bud-shape-S04-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "4922340a5c7dde86b77c56f06f005c504d53263a1d0fa41978a66ad53e0b66a9",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S05-112x112": {
+   "file": "pods/bud-shape-S05-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "d9fa3fc70306e446c5603c5c90a0cbbc0091f81a55b79e84ced401203eff0425",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S06-112x112": {
+   "file": "pods/bud-shape-S06-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "1ac62f8a07387225ecc0dc720227802103438226be7dbc171eac461c99782ee7",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S07-112x112": {
+   "file": "pods/bud-shape-S07-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "14e1e339344e363606712e85b3a1ffd7fb376422860cc46e4453747ed7a5164b",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S08-112x112": {
+   "file": "pods/bud-shape-S08-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "842bb3ca62dad5369de59055589e3a5a280244ad434a7e351586145ff3d6403d",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S09-112x112": {
+   "file": "pods/bud-shape-S09-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "d5bf23a25e4caf7f8fdd1395cb35f95dec978ccc57504d12b5158e468c9419a8",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S10-112x112": {
+   "file": "pods/bud-shape-S10-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "c7dd9ab7c8549bc4cc16c1946357200c9bee3204df763d80693324abf1f8c6e1",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S11-112x112": {
+   "file": "pods/bud-shape-S11-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "ba402dfb0c111b41108619c3db9b57c01d6d09ebec74470010e9ba653bfed7b7",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S12-112x112": {
+   "file": "pods/bud-shape-S12-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "d8423149f13fb9dd9d38e6b9359ed602fe970fb876f4d0e316a90a5ba9970653",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S13-112x112": {
+   "file": "pods/bud-shape-S13-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "4fec53e1bfc8632643972d73003e4d34ebdfe17856f23988b9a63e24bb73295a",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S14-112x112": {
+   "file": "pods/bud-shape-S14-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "dd211b32ced5d36f26340940b002a72036a4da0572b73ea4836f625025ce80e2",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S15-112x112": {
+   "file": "pods/bud-shape-S15-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "bc3c7c7134e809b42909de8aef9c928ac24aa91cad527eda6f29bf628c0af7ce",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "bud-shape-S16-112x112": {
+   "file": "pods/bud-shape-S16-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "aa6be6760b61b176016f97982721ce219a29180c8549e72fa2fc2c97e5a271e5",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "bud-small-64x80": {
    "file": "pods/bud-small-64x80.png",
@@ -1239,6 +1337,97 @@
    "h": 24,
    "sha256": "f627c9af7e2ba50ca8992694d3b38940956c4a7c5f29addd470dba44b70075b7",
    "signed": "art director at 1x, 2026-10-16: T-20261016-57, dock/proof (the home band's marks and faces; the link light on the floor tone); to re-check in the builder's captures"
+  },
+  "face-S04-24": {
+   "file": "pods/face-S04-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "7ad29403f4000702d200fbe1f2a268f143f7dc9fac55ac7773d1ef7835416454",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S05-24": {
+   "file": "pods/face-S05-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "be6f254c63d515844107ebe2012a933b816a854c05a4f2857ae0e73a83ee3253",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S06-24": {
+   "file": "pods/face-S06-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "294f5fe91b5cad16ded75b1a88ce3d044dbe94665d08a848e9c6e353534ae886",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S07-24": {
+   "file": "pods/face-S07-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "90b019e5692ffbb3afcc9e3c49674db20cd80cbef73958cd4944be66eeab623b",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S08-24": {
+   "file": "pods/face-S08-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "82558ee540a9e9f316684395de3440194b436aea8b5ba5c6616297ac3ffce659",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S09-24": {
+   "file": "pods/face-S09-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "70226fc1c500fb3d9ca5928c8d20bed70c0aa5e1a28374f76479a1418fef0aa7",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S10-24": {
+   "file": "pods/face-S10-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "ecaf65d05623ea6f4dbc3ae8c108e4a375f5d36c2aeb2d4742893ea978625f09",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S11-24": {
+   "file": "pods/face-S11-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "cbdb26c38a324b4b338c2340f02b34e7b38075fdd158893ec0c3266337ff79db",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S12-24": {
+   "file": "pods/face-S12-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "52a4fc0733805a2a3a116dfd80e9b7f1174a9bad1c455cf121a4e82461ab492b",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S13-24": {
+   "file": "pods/face-S13-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "fc27a58b383c7bf0db07d0329f1d8365a6d2e1d6ce8bed8d1be85c1bdd9cdae3",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S14-24": {
+   "file": "pods/face-S14-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "6237546cf08f7924dc289c55222a08ad991e1cf8c888b00c6c7f1465d6124909",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S15-24": {
+   "file": "pods/face-S15-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "b576c3ac44a44ac9954cb3d585e9e6d521eafb94fa058dd65ea719f9c8f378e7",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "face-S16-24": {
+   "file": "pods/face-S16-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "02c974921f3a9cea31381409d114d3710066fb6d1089e74fae5922aceb77d938",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "find-crystal-112x112": {
    "file": "pods/find-crystal-112x112.png",
@@ -2234,6 +2423,13 @@
    "sha256": "86dc9356cb60d4c71cbb17e4ffb20076ef159b3ee59905de9da31f8198806542",
    "signed": "candidate: the art director signs it in builder 2's whole-screen captures (fix 1a, station-fix1-creatures)"
   },
+  "mibi-adult-S01-curl-304x312": {
+   "file": "pods/mibi-adult-S01-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "8eadbe511ef861474090aeba761782e626cf26a32ae4f184afff89b3f667d779",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "mibi-adult-S02-144x152": {
    "file": "pods/mibi-adult-S02-144x152.png",
    "w": 144,
@@ -2262,6 +2458,27 @@
    "sha256": "facedb7f27a6b41169100bb65cfb833da2cb23b78e56ebb1dcbccc8eb5b305b8",
    "signed": "art director, beside the juvenile at 1x (2026-10-12 00:3x); the whole-screen sign follows in builder 2's captures"
   },
+  "mibi-adult-S02-curl-304x312": {
+   "file": "pods/mibi-adult-S02-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "71419571504630b4238504e68f6d437593b66c1b36561365205b7e43907855c0",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S02-puff-304x312": {
+   "file": "pods/mibi-adult-S02-puff-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "198ac2dfb91ac313792e9e2fac2a0af6e6857e1cc2ec22a380cd9044919b78aa",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S02-sniff-304x312": {
+   "file": "pods/mibi-adult-S02-sniff-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "c5315cf2eceec699172a79e72bf93b8178a9b9b30bbe7dd9f126f43092656206",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "mibi-adult-S03-144x152": {
    "file": "pods/mibi-adult-S03-144x152.png",
    "w": 144,
@@ -2289,6 +2506,482 @@
    "h": 88,
    "sha256": "85f11b8ade52bc9d15764c14f7d13b0dfbb7ece44622aea6c1eb7807fbf0ca23",
    "signed": "art director, S03's value pass beside S02 at 1x on the day glass (2026-10-12 00:53); the whole-screen sign follows in builder 2's captures"
+  },
+  "mibi-adult-S03-curl-304x312": {
+   "file": "pods/mibi-adult-S03-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "adb80ff946681788e92dbc257a6813b0836873cd6a0bca12a1e693ceca58b5cd",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S03-dig-304x312": {
+   "file": "pods/mibi-adult-S03-dig-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "bb3b06481714a77cb2e34ad23c11c19d7a5efa54d33bf2a5f96ea68d106afaf1",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S03-glow-304x312": {
+   "file": "pods/mibi-adult-S03-glow-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "2f489b09c85f777231eca6e4792f8c87feb8e88aab6bbe3fbd8106a4ec95c9cf",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S04-144x152": {
+   "file": "pods/mibi-adult-S04-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "148da9eaee75ac8acefad16c1b5f6fb90c99cd0fcc94d5488819270212f771d9",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S04-304x312": {
+   "file": "pods/mibi-adult-S04-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "785773b6bb540b5e9babb014bd4cd6ecaa2f29bd6d6b4e825ac4e272169f2e3c",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S04-48x48": {
+   "file": "pods/mibi-adult-S04-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "c3e4a98cb5387d010abc307b2057fc0b78b97f3d9ab95cbbf2adef5898c4f2e8",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S04-96x88": {
+   "file": "pods/mibi-adult-S04-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "0c0e627536c4747e2c9d354884f451636d761a9313edbba8085160243d95e111",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S04-curl-304x312": {
+   "file": "pods/mibi-adult-S04-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "de9d5ca33be7e1a7bfcf4a3e4cc476cdf2146c68431fb3acadc2fa2a0cfd0ef3",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S05-144x152": {
+   "file": "pods/mibi-adult-S05-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "8e3d251d62cb872a404dc875fa62ccd134feb14c71db2a4fa56a40491357ddd7",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S05-304x312": {
+   "file": "pods/mibi-adult-S05-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "ff0d6a4a52d0650740283e40adcfa927eead8f2d6e5dd26e392682142393b491",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S05-48x48": {
+   "file": "pods/mibi-adult-S05-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "6da33b571aca01151a22c5ae31cda98806a5ae107e5da010e52427530a8daf39",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S05-96x88": {
+   "file": "pods/mibi-adult-S05-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "61a67b92318ff5a766b3bc4033d0c982d188e8208be08daf5e6f5be07160ab69",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S05-curl-304x312": {
+   "file": "pods/mibi-adult-S05-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "731d1d8b1e33ed2eb7adf25fab51e78fd3f0e704a339222b9f738cd66121bb44",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S06-144x152": {
+   "file": "pods/mibi-adult-S06-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "e66dc6b10a2e78c5865a683dd3267c783dc1b228671294ed0c44cc127965d808",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S06-304x312": {
+   "file": "pods/mibi-adult-S06-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "4effe1d682169b37fabe5cc0336c031ff2b14fb55ae8a58ac898a2559a68d421",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S06-48x48": {
+   "file": "pods/mibi-adult-S06-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "664caf464634cdb9205679c0fc2ea434f4de1372e895e6917374b722b6da951f",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S06-96x88": {
+   "file": "pods/mibi-adult-S06-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "9228468c22b62670e616ff2b57ef46ff1a4a10545528fb94591f4bbc171c0fce",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S06-curl-304x312": {
+   "file": "pods/mibi-adult-S06-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "53f3737dbe336456f9b49eccee701cc4567abce57733974fc741733de6da04be",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S07-144x152": {
+   "file": "pods/mibi-adult-S07-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "a44d24762c3544922a1d7534a3289c8804e4d9241ba77ec20a71d1b72cf0bf73",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S07-304x312": {
+   "file": "pods/mibi-adult-S07-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "f1f364e4e06638f106b2a26d6f7532c634a32367667e3c44ca128c157140c7c8",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S07-48x48": {
+   "file": "pods/mibi-adult-S07-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "2865ce7e366df5aebfab6612d3cda15e435e6a184e7f3cd515fe615ea7dc6007",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S07-96x88": {
+   "file": "pods/mibi-adult-S07-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "34b90ff34beb2b175e23cbe4465e5503b6e20fc58c3be522f6cc783899611d64",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S07-curl-304x312": {
+   "file": "pods/mibi-adult-S07-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "fa7b89f732ed6537d6df0e0a3daaf858ae9750ca62504c851a7635c0df7f7d9d",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S08-144x152": {
+   "file": "pods/mibi-adult-S08-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "f4a37094bc6b34f1384f55cadb09020289beb551085eb8ad01b5ba4691d4d35a",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S08-304x312": {
+   "file": "pods/mibi-adult-S08-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "da524ef4bb2229afa1058c3683e81b4f2e791a5c98fefa077ff85d0a06be7e8f",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S08-48x48": {
+   "file": "pods/mibi-adult-S08-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "010fa2e29b206ba3a0094070535f87dd6b38318663266fd09073be57cc999e7d",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S08-96x88": {
+   "file": "pods/mibi-adult-S08-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "102ce72c8059900e0830bb3da9904521beb49f5c010174006ccbe362677e7b90",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S08-curl-304x312": {
+   "file": "pods/mibi-adult-S08-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "fb6b2fb9fd0f96971e5edbc69d18e19097f9d82807c7f4f64c70a2568cf7a173",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S09-144x152": {
+   "file": "pods/mibi-adult-S09-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "46b90ec4f4b7dac887864ab6af2a264be6478a5f5fbbeeed7766397d2ed427a5",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S09-304x312": {
+   "file": "pods/mibi-adult-S09-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "7eddcb0f09c0d06d96d03bb9737a56c4d7be2caa487c375d390a2c8b4f93e5e1",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S09-48x48": {
+   "file": "pods/mibi-adult-S09-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "cec968ba3bcf9c00d88eef6c86a6c8d00a790918933007197b6246be0518ac75",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S09-96x88": {
+   "file": "pods/mibi-adult-S09-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "77f035f7d8778dd91e74b11e1e37b2669db9276bac72ae7f481b0f28875c6760",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S09-curl-304x312": {
+   "file": "pods/mibi-adult-S09-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "c3f4a92be9384a9cdc54aa63377a032922db017f939fcde4724b2e61dfd841af",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S10-144x152": {
+   "file": "pods/mibi-adult-S10-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "9b140160d3297bf9917e5d437a484bb56f3b4f8d4b7bdebecc85a1c8ed62a496",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S10-304x312": {
+   "file": "pods/mibi-adult-S10-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "99b1394fc8faa391ed55ff2b2541a099b3418dded5b3b0d1da7aa4f7e2fb4b8d",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S10-48x48": {
+   "file": "pods/mibi-adult-S10-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "c69f33355fc4ee978041f3c5be884e5ad5284a89dfb4da09cfc15400fd011887",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S10-96x88": {
+   "file": "pods/mibi-adult-S10-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "c25f1037f0edf6e3639914fd8346f1611eaadb52e5495eacffd3fc82a2e9d6fc",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S10-curl-304x312": {
+   "file": "pods/mibi-adult-S10-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "476c7021992ffc589ba163755a48a5d3fef4f35ef85ea13de9ed030efe9eeb48",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S11-144x152": {
+   "file": "pods/mibi-adult-S11-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "0063ddba2a2c9bfe6fb779cea9f03a39556173bdb663e34ccd68025ac5b6e9f8",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S11-304x312": {
+   "file": "pods/mibi-adult-S11-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "ec2efe20e234478de26bf900d0f09bbddf0ef1ba96957983ee435a00a680efa8",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S11-48x48": {
+   "file": "pods/mibi-adult-S11-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "cf7a238a9256a584070a9e673e99c6f3c71ade71d3efeade9427623e9f05b717",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S11-96x88": {
+   "file": "pods/mibi-adult-S11-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "cf26fc8208e642f0a355e8df5beb074ea8552ad03fa6821ee4c4004116fadec7",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S11-curl-304x312": {
+   "file": "pods/mibi-adult-S11-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "176b3a3dc0be061f7eb12c6f952adde6a5b6aa27bfcfcfc6c655c0069378f368",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S12-144x152": {
+   "file": "pods/mibi-adult-S12-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "d0ce7993456a303316b113e0fa4d3e5059bb9c45ca2f4bc24796d55c89d522de",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S12-304x312": {
+   "file": "pods/mibi-adult-S12-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "7e44a0f925cdfe068f1082903d59090fb0d2d7c8d119d6309251f89427f2d741",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S12-48x48": {
+   "file": "pods/mibi-adult-S12-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "a7d6f77736c10b46bf8fff45681fcae66919d9e827df2a3bafea59f1a92c6cfc",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S12-96x88": {
+   "file": "pods/mibi-adult-S12-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "7528d31f49ebaf313676cfdd02eeca38451218a42f12819384c8e49a6a0b5089",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S12-curl-304x312": {
+   "file": "pods/mibi-adult-S12-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "31036fd6dbe8230e717ab1c7f2b50a1cf3bea40435b06471fbfb510cb98dee82",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S13-144x152": {
+   "file": "pods/mibi-adult-S13-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "3de9de180d4841845c1d0cb74c9c298c13621ccddcce5253642cee06713cfdec",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S13-304x312": {
+   "file": "pods/mibi-adult-S13-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "3546da6588a44af856356fc07fab14209ca2676c4d89a2d2489084343d5cb04e",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S13-48x48": {
+   "file": "pods/mibi-adult-S13-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "66620da825a0c0a987b20e19277da5c922a6780494909a3e29e46a7b889191ef",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S13-96x88": {
+   "file": "pods/mibi-adult-S13-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "43c663f02ffd71428f94a2d4c8e82fc384a95bd31cf7d933bac208fe8474b1b1",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S13-curl-304x312": {
+   "file": "pods/mibi-adult-S13-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "97d7d9d0de9b2a83f1cb2a2c64da22dd13555a1b68f7447b09f0b687cf06c2f3",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S14-144x152": {
+   "file": "pods/mibi-adult-S14-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "7d430ed7f8db4795d1565d705f381bcbd34df4d9f5208d7db9a940663889b796",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S14-304x312": {
+   "file": "pods/mibi-adult-S14-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "a7e1ecaf260264e36a152ba01c89ba0a9146b5af5a758e87604287b3f87e8f87",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S14-48x48": {
+   "file": "pods/mibi-adult-S14-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "f4f44a7162bb211f1e51466e62a009ce23c6e93d6210573a2705c1f233408f0c",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S14-96x88": {
+   "file": "pods/mibi-adult-S14-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "9f93308e0495742a47f1ac4d516200ccaeff2932b2711f5d680c7060dd28f478",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S14-curl-304x312": {
+   "file": "pods/mibi-adult-S14-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e2416d57be43703ab9bc23980b9bc7bd124cfed183195542d85a0ebdf73cc041",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S15-144x152": {
+   "file": "pods/mibi-adult-S15-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "8e167dbcebc1ca36b5c37cfae653102c09d5084c9b264068706d99a9381d643c",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S15-304x312": {
+   "file": "pods/mibi-adult-S15-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "9695a0f92522d10ef103720e8550553db1f35919c3fb6806462fca313b757349",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S15-48x48": {
+   "file": "pods/mibi-adult-S15-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "2503ce6b326ef5cf7d21c974289d89a754022dd0af3ad3f8868889aac3319f8f",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S15-96x88": {
+   "file": "pods/mibi-adult-S15-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "029e36cb0bcdb692b6e0b4a3c2a2efe40c3d968ab411f2a9ef05bc57a6a435c8",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S15-curl-304x312": {
+   "file": "pods/mibi-adult-S15-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "44bff913b6da40c49a6179e5d16c2162d843be477ef6e1f3842c27a502ab72fe",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S16-144x152": {
+   "file": "pods/mibi-adult-S16-144x152.png",
+   "w": 144,
+   "h": 152,
+   "sha256": "fd5a6ce195e7d23466d5e75819189494f7170c780075a4e0d16d9a5649ee3719",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S16-304x312": {
+   "file": "pods/mibi-adult-S16-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "a94e8e7b39ef9030f7cdbad389e1c0d2c48d6c9886453127d73f634126a05260",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S16-48x48": {
+   "file": "pods/mibi-adult-S16-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "87a05aa0ee937a5ddcbbed5d311579496fd1fb7b4173b95a307ff5e33dbf2818",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S16-96x88": {
+   "file": "pods/mibi-adult-S16-96x88.png",
+   "w": 96,
+   "h": 88,
+   "sha256": "13018adcec2ef6362ef90cd0d2f7eed384ff3022bfea1eec0b526b27c1459ee7",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-adult-S16-curl-304x312": {
+   "file": "pods/mibi-adult-S16-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "8e382990d58f74dc62d62e479aa70cafb6717ce1ab5759677590052b9e64698a",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "mibi-halo-empty-128x160": {
    "file": "pods/mibi-halo-empty-128x160.png",
@@ -2579,6 +3272,13 @@
    "sha256": "ba772eafc1577bf48ba427744e2e63221baa90c6de1e35f9f5a8b57b7f3667c9",
    "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
+  "mibi-juvenile-S01-curl-304x312": {
+   "file": "pods/mibi-juvenile-S01-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "33515b3eec50fd01583e9553e7c3c85045d6d22193ce137415f673f8f564ceb3",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "mibi-juvenile-S02-104x112": {
    "file": "pods/mibi-juvenile-S02-104x112.png",
    "w": 104,
@@ -2606,6 +3306,27 @@
    "h": 88,
    "sha256": "1e3f7adbf12b151d721156347aa5ead136e5d9d4b5f1a0381b725fd25e85f5fe",
    "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
+  },
+  "mibi-juvenile-S02-curl-304x312": {
+   "file": "pods/mibi-juvenile-S02-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b0323e7b47a22d35c1d1e5fd530194c3c8f0b2fc01b82312d331ed8df92f4aad",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-juvenile-S02-puff-304x312": {
+   "file": "pods/mibi-juvenile-S02-puff-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "656d4c7fdc309f7d9b272da9dd72108e99d60131a73cfada574c1d1a5c98e4c2",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-juvenile-S02-sniff-304x312": {
+   "file": "pods/mibi-juvenile-S02-sniff-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e411d3d5bfbc08a88a3f8fb06d1217feb7b26cc947309c821ad852b280814802",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "mibi-juvenile-S03-104x112": {
    "file": "pods/mibi-juvenile-S03-104x112.png",
@@ -2635,6 +3356,27 @@
    "sha256": "fd2f97e9ef86f4b0759e76e22a41cb8212078594d255c5942134e13972880f88",
    "signed": "art director, S01 juvenile regraded onto Pip with amber iris (masters-pods 02f6f1b8); S02 and S03 juveniles re-exported without shadow slab (masters-pods 51aa3137)"
   },
+  "mibi-juvenile-S03-curl-304x312": {
+   "file": "pods/mibi-juvenile-S03-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "f86434b766c607b889eedf6650d6692983ea83d2f54abb2b2102e623d4728960",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-juvenile-S03-dig-304x312": {
+   "file": "pods/mibi-juvenile-S03-dig-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "f542a13cce734e99e51d57323dab6357a7a1c2f682a9147ad52a1434a7c6cea7",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "mibi-juvenile-S03-glow-304x312": {
+   "file": "pods/mibi-juvenile-S03-glow-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "45845207f3c4dcae0a725e1006e63662db1ee889c8f913e0b7e6534c2d08dbdb",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "mibi-juvenile-S04-104x112": {
    "file": "pods/mibi-juvenile-S04-104x112.png",
    "w": 104,
@@ -2662,6 +3404,13 @@
    "h": 88,
    "sha256": "5592449ea2bbe43cb9ef9ec88c39b9a94eea40a9dced4dfcc894aa01672f7719",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+  },
+  "mibi-juvenile-S04-curl-304x312": {
+   "file": "pods/mibi-juvenile-S04-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "0123169dfda6db8fa04f14cba36cb1e0918e86d6c5b6ce6f0fcd569aed2c3a5b",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "mibi-juvenile-S05-104x112": {
    "file": "pods/mibi-juvenile-S05-104x112.png",
@@ -2691,6 +3440,13 @@
    "sha256": "74344c13469ed970ced3af33e6ab7033b43fb813f6f68e8263b167a52968b292",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
   },
+  "mibi-juvenile-S05-curl-304x312": {
+   "file": "pods/mibi-juvenile-S05-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "d0516acffcd0b5be309c8c951b5cb82eca71930b51f5d9f7e4cdc291a28a9a11",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "mibi-juvenile-S06-104x112": {
    "file": "pods/mibi-juvenile-S06-104x112.png",
    "w": 104,
@@ -2718,6 +3474,13 @@
    "h": 88,
    "sha256": "7cbc9bd7fb8f3799cdcd9d2529579cdd3c360366148f24a680d41c9a32dbe56b",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+  },
+  "mibi-juvenile-S06-curl-304x312": {
+   "file": "pods/mibi-juvenile-S06-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "02edddb1d4f70b0d405e8dcab788f994044831be3c4eda6d4d03f8c08fed4c2a",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "mibi-juvenile-S07-104x112": {
    "file": "pods/mibi-juvenile-S07-104x112.png",
@@ -2747,6 +3510,13 @@
    "sha256": "9df03c650e03c9d87fdfa00defe9ea1e45003c94e902b461de0e5f1537972011",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
   },
+  "mibi-juvenile-S07-curl-304x312": {
+   "file": "pods/mibi-juvenile-S07-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "62ddfe20ec4efd90c1d51a19958b119bf62816092dd1e5fdb1cd26d5a1ee6483",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "mibi-juvenile-S08-104x112": {
    "file": "pods/mibi-juvenile-S08-104x112.png",
    "w": 104,
@@ -2774,6 +3544,13 @@
    "h": 88,
    "sha256": "25bd52690b0e81bb4a7fe914262ee13f5335f5bafb7e8f463cea04c4dfb3d968",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+  },
+  "mibi-juvenile-S08-curl-304x312": {
+   "file": "pods/mibi-juvenile-S08-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "3c1863f119f2434699e2149f3ad047ee251d991340c0479168a7d5def495dc62",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "mibi-juvenile-S09-104x112": {
    "file": "pods/mibi-juvenile-S09-104x112.png",
@@ -2803,6 +3580,13 @@
    "sha256": "655ed7bb9493ec13ad82222beeb094f44e2f526629067c4c9dd68ce5252209de",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
   },
+  "mibi-juvenile-S09-curl-304x312": {
+   "file": "pods/mibi-juvenile-S09-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "bb242a402496662e00d71eed44dde4fbf4b3ec63439e8e7b7e2ea4eb8a60a0ab",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "mibi-juvenile-S10-104x112": {
    "file": "pods/mibi-juvenile-S10-104x112.png",
    "w": 104,
@@ -2830,6 +3614,13 @@
    "h": 88,
    "sha256": "020400f57648d306e2bbf256355d711b60bfe9b4b647a888293181defc93d873",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+  },
+  "mibi-juvenile-S10-curl-304x312": {
+   "file": "pods/mibi-juvenile-S10-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "e660fc5a6af03e13642e9854cee32810d07da05314450e8abd0fa1d6f6d033f1",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "mibi-juvenile-S11-104x112": {
    "file": "pods/mibi-juvenile-S11-104x112.png",
@@ -2859,6 +3650,13 @@
    "sha256": "cb5f0653dd981dd4fd696af1a9c72b6568d7981c7fb10532d5800a94171b7cba",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
   },
+  "mibi-juvenile-S11-curl-304x312": {
+   "file": "pods/mibi-juvenile-S11-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "2509544857ab17768337fdd12be9d34e9ca5d2432abf5fe7a295a75ac2aaf80b",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "mibi-juvenile-S12-104x112": {
    "file": "pods/mibi-juvenile-S12-104x112.png",
    "w": 104,
@@ -2886,6 +3684,13 @@
    "h": 88,
    "sha256": "4e22a942549848068a55449f7e38e63e33c1b4fe035177d4d51274cd810572ac",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+  },
+  "mibi-juvenile-S12-curl-304x312": {
+   "file": "pods/mibi-juvenile-S12-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "1d01ec54776680ff5e83b4d30b493d8be58d7605924051b6c07cbe9a50e08388",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "mibi-juvenile-S13-104x112": {
    "file": "pods/mibi-juvenile-S13-104x112.png",
@@ -2915,6 +3720,13 @@
    "sha256": "451234cb9be04647811a322ddcf6b604ab9d6d2bc476cee33d870a36a40f51fc",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
   },
+  "mibi-juvenile-S13-curl-304x312": {
+   "file": "pods/mibi-juvenile-S13-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b18ad786816950a9a8c9b52bfe81ea512a6124de6ce1eb74a1f942dcdca8b4a7",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "mibi-juvenile-S14-104x112": {
    "file": "pods/mibi-juvenile-S14-104x112.png",
    "w": 104,
@@ -2942,6 +3754,13 @@
    "h": 88,
    "sha256": "88bfc790c3ab101707040955472d6e7e3d3e44d364f2601e475006a89cbc2ff6",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+  },
+  "mibi-juvenile-S14-curl-304x312": {
+   "file": "pods/mibi-juvenile-S14-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "208e717eb87c0fb56012ea1b6ec0db2d1f7857fabe8330d996d0718d3a076d63",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "mibi-juvenile-S15-104x112": {
    "file": "pods/mibi-juvenile-S15-104x112.png",
@@ -2971,6 +3790,13 @@
    "sha256": "2a57af262e6418f4eb9d774c262a3abb345765d7fbe3f9269ffe08cd1b52eae2",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
   },
+  "mibi-juvenile-S15-curl-304x312": {
+   "file": "pods/mibi-juvenile-S15-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "352a879d3a552d2eab5d54097a15c5448cc80d119c44dfa65aec0e6a592b36c4",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "mibi-juvenile-S16-104x112": {
    "file": "pods/mibi-juvenile-S16-104x112.png",
    "w": 104,
@@ -2998,6 +3824,13 @@
    "h": 88,
    "sha256": "578898ae3add654f932676fea1fc45ea1f1c50fa4d16af3f1e5fa52d5f742f27",
    "signed": "art director, juvenile stand-ins (masters-pods be36e701)"
+  },
+  "mibi-juvenile-S16-curl-304x312": {
+   "file": "pods/mibi-juvenile-S16-curl-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "8ea01968cf9582dafd8ee6f19258a00eb170ee1d78b30a3808b0757031a2cf7f",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "nest-208x48": {
    "file": "pods/nest-208x48.png",
@@ -6835,12 +7668,96 @@
    "sha256": "1a44e0230f92e2a6bb7449423d903b10c65b4d04ea7d39ea3bfc0a693ddb0134",
    "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
   },
+  "spread-plate-S04-80x96": {
+   "file": "pods/spread-plate-S04-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "d525299cea930c602c226e6025eabf103643c908efb9b426bb9a52a91ab6da37",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "spread-plate-S05-80x96": {
+   "file": "pods/spread-plate-S05-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "0496d3ecef54733ac83068369baeda5ccce5b2ed021254f91d85fafb4f4c49b4",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "spread-plate-S06-80x96": {
+   "file": "pods/spread-plate-S06-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "11447e9493617ed241a31f015c4a5f1ec4ffdbc660028e8700b4a0accb7c5a3c",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "spread-plate-S07-80x96": {
+   "file": "pods/spread-plate-S07-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "1289641bcf7cfeeeb6335d392b45a704baf9fe99cc64aed54ef44abaa5a402ae",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "spread-plate-S08-80x96": {
+   "file": "pods/spread-plate-S08-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "3a7c07942b7733f410659e3f0e7b2de683eeb6dd4b1c67654d7d3d92b18b98e5",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
   "spread-plate-S09-80x96": {
    "file": "pods/spread-plate-S09-80x96.png",
    "w": 80,
    "h": 96,
    "sha256": "09dbcff4bb47f1d962491ee4b02b20152f28bd46b5317d86becb2b0a35bbeabb",
    "signed": "art director at 1x, 2026-10-15 22:05 CST: T-20261015-05, both spreads mocked into today's captures (library-spread/proof); re-checked in the builder's whole captures"
+  },
+  "spread-plate-S10-80x96": {
+   "file": "pods/spread-plate-S10-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "51b9415e7644b1dd0d19e70e8b6e3c1e790780cf62cd797f2f73f282c1e58172",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "spread-plate-S11-80x96": {
+   "file": "pods/spread-plate-S11-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "bfe9f722768e923bb7025ed4dc0af3b53070981de96482646ac230c37b0ab830",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "spread-plate-S12-80x96": {
+   "file": "pods/spread-plate-S12-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "d4ec08b91f45759f5900afbfca86edc02945f05153c6316a04c43047a98aee73",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "spread-plate-S13-80x96": {
+   "file": "pods/spread-plate-S13-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "c7eb5ca3d80e362b3a604e9add9330187448332c4e03b7418114c7af9ae6d7cf",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "spread-plate-S14-80x96": {
+   "file": "pods/spread-plate-S14-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "0cf6e4381671f8ca2e62a02a185b52a70ccae1dd584684c34190da45801eeaba",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "spread-plate-S15-80x96": {
+   "file": "pods/spread-plate-S15-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "0e8ecd7e619387095ca32f3621b5ae718af280e5cfc8271d927aef66fda74431",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
+  },
+  "spread-plate-S16-80x96": {
+   "file": "pods/spread-plate-S16-80x96.png",
+   "w": 80,
+   "h": 96,
+   "sha256": "c6206646bdd24c3e0c0d4504781a094b390d9250de9a670701951fed8ba9a045",
+   "signed": "AD 2026-10-28 at 1x (ad-curl.md)"
   },
   "spread-progress-empty-12x12": {
    "file": "pods/spread-progress-empty-12x12.png",

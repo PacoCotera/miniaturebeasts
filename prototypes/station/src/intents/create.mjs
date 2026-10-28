@@ -3,6 +3,7 @@
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { reviewTraits, createPod, founderPicture } from "../views/create-props.mjs";
+import { capLine } from "../views/words.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // The screen's own state names the pod (h.ui.create.podId); its frame is the species'. Nothing else is on the wire: { screen, target, verb }.
@@ -19,7 +20,8 @@ export function intent(h, target, verb) {
     const now = founderPicture(p, cr.choices, size).id; if (now !== was) { cr.prev = was; h.play({ kind: "dither", target: spec.events.roll.target, from: was, ms: spec.events.roll.ms, hold: spec.events.roll.hold }); h.at(spec.events.roll.ms, () => { cr.prev = null; }); }   // the founder cross-dithers to the new picture
   }
   else if (verb === "confirm") {
-    const block = S.growBlockKey(h.st, p, cr.choices, h.settings, cr.clash); if (block && (block.key === "busy" || block.key === "full" || block.key === "clash")) return;   // blocked: ✓ does nothing, no plate (the bottom line says why); only short keeps its plate
+    const block = S.growBlockKey(h.st, p, cr.choices, h.settings, cr.clash);
+    if (block && (block.key === "busy" || block.key === "full" || block.key === "clash")) { h.say(block.key === "full" ? S.fullWords(h.st).plate.join("\n") : capLine(spec.strings.notices[block.key])); return; }   // blocked: the verb is dimmed and ✓ plays its plate, never silent (the house rule): the Vivarium full its three lines (C10), busy and clash the notice's own sentence
     if (block && block.key === "short") { h.say(spec.strings.notices.shortFrom[block.from].replace("{icons}", block.short)); return; }   // refused as before: the plate, and the panel does not open (build spec 6a.1)
     openIncubatePanel(h);   // the 180 ms dither (16 levels) from Create to the Incubate | Keep shaping panel; nothing is spent until its ✓ Incubate
   }
