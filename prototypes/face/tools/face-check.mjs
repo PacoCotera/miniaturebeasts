@@ -26,7 +26,7 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const port = server.address().port, fails = [], expect = (ok, what) => { if (!ok) { fails.push(what); console.error("FAIL " + what); } };
 const browser = await chromium.launch(), page = await browser.newPage({ viewport: { width: 1360, height: 980 }, deviceScaleFactor: 1 });
 const errors = []; page.on("pageerror", (e) => errors.push("pageerror: " + e.message)); page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push("console: " + m.text()); });
-await page.goto(`http://127.0.0.1:${port}/sandbox/station/`, { waitUntil: "load" });
+await page.goto(`http://127.0.0.1:${port}/sandbox/station/?names=en-short-1`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready); await page.waitForTimeout(500);
 const f = await page.evaluate(() => window.__st.face);
 expect(f, "the face is loaded");

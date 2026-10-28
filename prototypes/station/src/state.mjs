@@ -7,6 +7,7 @@
 // Those keep their shape (station-build.md §2.3).
 import { currentLooks } from "../../workbench/framework/describe.mjs";
 import { shedPod, SELF_KINSHIP } from "../../workbench/framework/cross.mjs";
+import { MIBI_NAMES as NAME_LIST_NOW, NAME_LISTS } from "../../play/src/names.mjs";
 import { fill, capLine } from "./views/words.mjs";
 import FRAME from "../../ui/specs/station/frame.json" with { type: "json" };
 import VIVARIUM from "../../ui/specs/station/vivarium.json" with { type: "json" };
@@ -31,7 +32,13 @@ export const TIER2_GAINS = [{ id: "reach", text: "reaches 4 cells" }, { id: "pod
 export const JUVENILE_TURNS = 2, ELDER_TURNS = 16, CARRY_MAX = 3;   // young for 2 world turns, an adult for 16 more: an elder at turn 18 (game designer, option A)
 // A device clock before 2026 is unset: no `since` is written from it (normalize back-fills at the first good clock).
 export const GOOD_CLOCK = Date.UTC(2026, 0, 1);
-export const MIBI_NAMES = ["Dot", "Moss", "Bean", "Fig", "Nib", "Tuft", "Pebble", "Wren", "Pip", "Sorrel", "Burr", "Quill"];
+// The name lists live in ../../play/src/names.mjs (both devices read them): the current list es-pets-1 here, the archived en-short-1 (2026-10-27) for what pins today's English names.
+export { NAME_LISTS, MIBI_NAMES_ARCHIVED } from "../../play/src/names.mjs";
+export const MIBI_NAMES = NAME_LIST_NOW;
+// The list births draw from when no pool is passed: the current one. Tests, fixtures, goldens and layout cards that show the archived English names pin it with useNameList("en-short-1")
+// (or the page's ?names=en-short-1); a game never calls it.
+let listInUse = MIBI_NAMES;
+export function useNameList(key) { const l = key == null ? MIBI_NAMES : NAME_LISTS[key]; if (!l) throw new Error("no name list " + key); listInUse = l; return l; }
 // --- names (the game designer's brief): a name never carries a digit and is never reused among living mibis, released ones included -----------------------------------------------------------
 export const NAME_MAX = 10;
 // PLACEHOLDER heads and tails for the compound names (tiers 2 and 3): the naming board's lists replace them; the tests inject their own.
@@ -41,7 +48,7 @@ const SEPARATORS = " -’";
 export const nameKey = (s) => String(s).replace(/'/g, "’").toLowerCase().replace(/œ/g, "oe").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/œ/g, "oe").split("").filter((c) => !SEPARATORS.includes(c)).join("");
 // The pool in its fixed order: the twelve names, then heads[k mod H] + tails[⌊k / H⌋] for k = 0 … H·T − 1, then head + tail + tail in the same order (tails[(⌊k/H⌋) mod T], tails[⌊k / (H·T)⌋]); then, only if all of
 // those are used (never reached in play: a safety net), capitalised letter names of two letters and up so a draw never fails. A candidate that is used (by nameKey), holds a digit or is longer than NAME_MAX is skipped.
-export function* namePool({ names = MIBI_NAMES, heads = NAME_HEADS, tails = NAME_TAILS } = {}) {
+export function* namePool({ names = listInUse, heads = NAME_HEADS, tails = NAME_TAILS } = {}) {
   for (const n of names) yield n;
   const H = heads.length, T = tails.length;
   for (let k = 0; k < H * T; k++) yield heads[k % H] + tails[Math.floor(k / H)];
