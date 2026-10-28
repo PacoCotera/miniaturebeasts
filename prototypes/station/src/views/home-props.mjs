@@ -7,7 +7,7 @@ import { movingIds, playable, movingFigure } from "../moving.mjs";
 import { standLook } from "../stands.mjs";
 import { asset as assetOf } from "../../../ui/assets.mjs";
 import { drawnLooks } from "../looks.mjs";
-import { layeredStand, standPictureId, standFigure, curlFactor, curlPicture } from "../layered-stand.mjs";
+import { layeredStand, standPictureId, standFigure, standVariant, curlFactor, curlPicture, curlOfStand, viewFigureHeight } from "../layered-stand.mjs";
 import { keyToken } from "../looks.mjs";
 import { goalWords } from "./goal-words.mjs";
 import { readyCrates, bayState } from "../sitting.mjs";
@@ -46,14 +46,17 @@ export const figureOf = (st, mb, size, settings, view = "default", pose = "ancho
   const sp = S.speciesOf(mb), stand = layeredStand(sp, mb.stage ?? S.mibiStage(st, mb, settings), size, view, poseName(pose)); if (!stand) return null;
   return standFigure(stand, drawnLooks(frameOf(sp), mb));
 };
-// A sleeper's curl at the world size: the nap master reduced by the standing figure's factor for its stage, with its own shadow. { id, figure, request } when the nap master is placed; else null (the 96 × 88 nap picture as it was)
+// A sleeper's curl at the stand's scale (the owner's full-size ruling), with its own shadow: { id, figure, request }, or null when no curl master is placed. A species with a layered stand composes its `curl` pose in the mibi's own looks at the
+// stand's scale; every other species reduces its 304 curl master by the factor its standing picture gets, look.size[0] / 304 × viewH / slot[1] (0.168 adult, 0.122 juvenile). `nap` is the nap pose's ink box, no longer read here.
 export function curlOfMibi(st, mb, nap, slot, settings, light, view) {
-  const look = lookOf(st, mb, nap, settings); if (look.step === 3) return null;
-  const sp = S.speciesOf(mb), master = `mibi-${look.stage === "juvenile" ? "juvenile" : "adult"}-${sp}-${nap[0]}x${nap[1]}`, f = curlFactor(look.stage, view, slot[1]); if (!f) return null;
-  const src = assetOf(master); if (!src) return null;
-  const pic = curlPicture(src, sp, look.stage, f, view, master); if (!pic.figure) return null;
-  const ms = look.stage === "juvenile" ? "juvenile" : "adult", day = `mibi:${sp}~${keyToken(`curl|${master}|${view}|${f}`)}:${ms}:${pic.w}x${pic.h}`;
-  return { id: day + (light === "day" ? "" : ":" + light), figure: pic.figure, request: { kind: "curl", id: day + (light === "day" ? "" : ":" + light), day, master, species: sp, stage: look.stage, view, factor: f, ...(light === "day" ? {} : { light }) } };
+  const look = lookOf(st, mb, slot, settings); if (look.step === 3) return null;
+  const sp = S.speciesOf(mb), ms = look.stage === "juvenile" ? "juvenile" : "adult", master = `mibi-${ms}-${sp}-curl-304x312`, vh = viewFigureHeight(look.stage, view); if (!vh) return null;
+  const lay = layeredStand(sp, look.stage, [304, 312], view, "curl"), looks = lay && drawnLooks(frameOf(sp), mb);
+  const src = lay ? curlOfStand(lay, looks) : assetOf(master); if (!src) return null;
+  const f = lay ? 1 : look.size[0] / 304 * vh / slot[1], tag = lay ? standVariant(lay, looks).key : master;
+  const pic = curlPicture(src, sp, look.stage, f, view, `${tag}|${look.stage}`); if (!pic.figure) return null;
+  const day = `mibi:${sp}~${keyToken(`curl|${tag}|${view}|${f}`)}:${ms}:${pic.w}x${pic.h}`;
+  return { id: day + (light === "day" ? "" : ":" + light), figure: pic.figure, request: { kind: "curl", id: day + (light === "day" ? "" : ":" + light), day, master, species: sp, stage: look.stage, view, factor: f, ...(lay ? { looks } : {}), ...(light === "day" ? {} : { light }) } };
 }
 // The request carries the pose only when it is not the anchor, and `owed` (poseFor's "habit key <habit>") when the pose given has one: a scene showing it is refused as a golden (main.mjs snapshot)
 export const mibiReq = (req, st, mb, size, settings, light = "day", view = "default", pose = "anchor") => { const p = mibiPictureOf(st, mb, size, settings, light, view, pose), name = poseName(pose), owed = typeof pose === "string" ? null : pose?.owed; return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size, ...(p.looks ? { looks: p.looks, view } : {}), ...(light === "day" ? {} : { light }), ...(name !== "anchor" ? { pose: name } : {}), ...(owed ? { owed } : {}) }); };
