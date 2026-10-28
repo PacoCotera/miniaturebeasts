@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome, forecast as crossForecast } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
+S.useNameList("en-short-1");   // these tests show the archived English names (T-20261027-322): they pin that list; names.test.mjs proves the current one
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));

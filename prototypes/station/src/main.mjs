@@ -214,6 +214,8 @@ requestAnimationFrame(frame);
 const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the face is up the screen is blank; the words go to the page
 bootText("loading the species frames…");
 const TEST = new URLSearchParams(location.search).has("test");
+// The name list births draw from is the current one; ?names=<list key> pins another (the tools that show the archived English names ask for en-short-1).
+{ const n = new URLSearchParams(location.search).get("names"); if (n && S.NAME_LISTS[n]) S.useNameList(n); }
 const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]; if (!hex) throw new Error("no palette colour " + name); return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)); };
 // The spec files the face takes (frame, pods, home, cargo, create, incubator, vivarium, habitat, namer, library, bench, cross (the rack pod reads its pigment chips) and sitting), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 const bootAssets = async () => {

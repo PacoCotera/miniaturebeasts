@@ -357,7 +357,8 @@ const spOf = sp => (Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? SPE
 // The species name of a mibi: the Companion's own, else the one the Station wrote on it, else the slot.
 const mibiSpName = m => spOf(m.sp).name ?? m.spName ?? CARE_TEXT.spOther;
 const abTextOf = sp => spOf(sp).abText ?? CARE_TEXT.abOther;
-const MIBI_NAMES = ['Dot', 'Moss', 'Bean', 'Fig', 'Nib', 'Tuft', 'Pebble', 'Wren'];   // short and species-neutral; never the reference individual's name from the art and website
+// The mibi names: the current list (es-pets-1), one home with the Station, ../play/src/names.mjs, loaded over HTTP as the footer is (the page names no mibi itself: the Station does, and the name rides in the save).
+let MIBI_NAMES = []; import('../play/src/names.mjs').then(m => { MIBI_NAMES = m.MIBI_NAMES; }).catch(() => { });
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
 const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
