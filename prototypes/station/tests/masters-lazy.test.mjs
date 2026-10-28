@@ -103,3 +103,29 @@ test("a room that the index does not hold is an error, not a silent pass", async
   const w = world(); await w.loader.load(w.base, { room: 0, order: ORDER });
   await assert.rejects(w.loader.ensureRoom("lava"), /no room/);
 });
+
+test("a background fetch that never answers (fetch's TypeError) is quiet, not the page's error, and the room is fetched again when it is shown", async () => {
+  const masters = {}, bodies = {}, errs = [], warns = [], ce = console.error, cw = console.warn, re = globalThis.reportError;
+  for (const r of ORDER) { const f = `rooms/room-${r}-idle-day-4x4.png`; masters[`room-${r}-idle-day-4x4`] = { file: f, w: 4, h: 4, sha256: sha(f), signed: "s" }; bodies[f] = body(f); }
+  let dropped = false;   // the first fetch of a Reeds picture never answers, as when the page closes mid-load
+  const fx = async (url) => {
+    const f = url.pathname.replace(/^\/m\//, "");
+    if (f === "index.json") return { ok: true, json: async () => ({ masters }) };
+    await tick();
+    if (f.includes("reeds") && !dropped) { dropped = true; throw new TypeError("Failed to fetch"); }
+    const b = bodies[f]; return { ok: true, arrayBuffer: async () => b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) };
+  };
+  const l = createMasterLoader({ fetch: fx, decode: async () => ({ w: 4, h: 4, rgba: () => null }), place: () => {}, concurrency: 1 });
+  console.error = (e) => errs.push(e); console.warn = (m) => warns.push(m); globalThis.reportError = (e) => errs.push(e);
+  try {
+    await l.load(new URL("http://x/m/"), { room: 0, order: ORDER });
+    l.background();
+    for (let i = 0; i < 12; i++) await tick();
+    assert.equal(dropped, true);
+    assert.deepEqual(errs, [], "no console error and no page error for a fetch that never answered");
+    assert.equal(warns.length, 1);
+    assert.equal(l.roomLoaded("reeds"), false);
+    await l.ensureRoom("reeds");
+    assert.equal(l.roomLoaded("reeds"), true, "shown, the room is fetched again and placed");
+  } finally { console.error = ce; console.warn = cw; globalThis.reportError = re; }
+});
