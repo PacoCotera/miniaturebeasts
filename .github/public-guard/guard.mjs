@@ -17,7 +17,10 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const RULES = JSON.parse(readFileSync(path.join(here, "rules.json"), "utf8"));
 
-const rx = ([src, flags]) => new RegExp(src, "g" + (flags || ""));
+// A "b" flag marks a pattern kept base64-encoded, so the names it blocks are not written here in plain.
+const unb64 = (s) => Buffer.from(s, "base64").toString("utf8");
+const rx = ([src, flags = ""]) => flags.includes("b") ? new RegExp(unb64(src), "g" + flags.replace("b", "")) : new RegExp(src, "g" + flags);
+const TRAILERS = RULES.commitTrailers.map((t) => t.startsWith("b:") ? unb64(t.slice(2)) : t);
 const byId = Object.fromEntries(RULES.rules.map((r) => [r.id, r]));
 const costKeyRe = new RegExp(
   `(?:"|\\b)(?:${RULES.costKeys.join("|")}|(?:${RULES.costKeyPrefixes.join("|")})[A-Za-z0-9]*)(?:"\\s*:|\\b(?=\\s*[,;\\n]|$))`, "g");
@@ -223,7 +226,7 @@ export function checkImage(file, buf) {
 }
 
 export function checkMessage(msg) {
-  return RULES.commitTrailers.filter((t) => msg.toLowerCase().includes(t.toLowerCase()));
+  return TRAILERS.filter((t) => msg.toLowerCase().includes(t.toLowerCase()));
 }
 
 const mask = (s) => (s.length <= 4 ? s : s.slice(0, 4) + "*".repeat(Math.min(s.length - 4, 12)));
@@ -302,7 +305,8 @@ export const FIXTURES = [
   { rule: "cost-prose", file: "ROADMAP.md", hit: "a US$900 kit", pass: "under a US$750 retail" },
   { rule: "host", file: "ops/x.sh", hit: "ssh -i k paco@example.org", pass: "the sandbox server" },
   { rule: "host", file: "design/x.md", hit: "on the VM", pass: "the critter-lab repository" },
-  { rule: "session", file: "art/x/budget.json", hit: '"plan": "/tmp/claude-0/x/plan.json"', pass: '"plan": "plan-pods-r1-flat.json"' },
+  { rule: "session", file: "art/x/budget.json", hit: `"plan": "${unb64("L3RtcC9jbGF1ZGUtMC94L3BsYW4uanNvbg==")}"`, pass: '"plan": "plan-pods-r1-flat.json"' },
+  { rule: "session", file: "README.md", hit: "made with " + unb64("QW50aHJvcGljJ3MgdG9vbHM="), pass: "made with care" },
   { rule: "abs-path", file: "prototypes/x.mjs", hit: 'const R = "/home/user/miniaturebeasts";', pass: "const R = process.env.MB_ROOT;" },
   { rule: "internal-ref", file: "prototypes/x.mjs", hit: "// as ruled (decisions 10-11 14:17)", pass: "// the 10-11 grid" },
   { rule: "internal-ref", file: "design/x.md", hit: "the record is in decisions.md", pass: "## Owner decisions (2026-10-08)" },
@@ -333,8 +337,8 @@ function selfTest() {
     ok(!checkLine(f.file, f.pass).some((h) => h.rule === f.rule), `${f.rule} should pass: ${f.pass}`);
   }
   ok(checkLine(".github/public-guard/rules.json", '"costUSD": 1').length === 0, "excluded path");
-  const tainted = png([["tEXt", Buffer.from("Comment\0made in /tmp/claude-0/x", "latin1")]]);
-  const signed = png([["caBX", Buffer.from("jumb c2pa Claude /home/user/ code", "latin1")], ["tEXt", Buffer.from("Software\0gpt-image", "latin1")]]);
+  const tainted = png([["tEXt", Buffer.from("Comment\0made in " + unb64("L3RtcC9jbGF1ZGUtMC94"), "latin1")]]);
+  const signed = png([["caBX", Buffer.from("jumb c2pa " + unb64("Q2xhdWRl") + " /home/user/ code", "latin1")], ["tEXt", Buffer.from("Software\0gpt-image", "latin1")]]);
   ok(checkImage("art/x.png", tainted).length > 0, "image-text should hit a tEXt path");
   ok(checkImage("art/x.png", signed).length === 0, "image-text should skip C2PA and pass plain provenance");
   covered.add("image-text");

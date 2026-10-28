@@ -166,8 +166,8 @@
    "applies": "text",
    "patterns": [
     [
-     "/tmp/claude-\\d+",
-     ""
+     "L3RtcC9jbGF1ZGUtXGQr",
+     "b"
     ],
     [
      "scratchpad/",
@@ -182,8 +182,8 @@
      ""
     ],
     [
-     "claude\\.ai/code/session",
-     ""
+     "Y2xhdWRlXC5haS9jb2RlL3Nlc3Npb24=",
+     "b"
     ],
     [
      "\\bcodex\\b",
@@ -196,6 +196,10 @@
     [
      "\\bSol High\\b",
      ""
+    ],
+    [
+     "XGIoY2xhdWRlfGFudGhyb3BpYyk=",
+     "ib"
     ]
    ]
   },
@@ -312,8 +316,8 @@
    ],
    "patterns": [
     [
-     "Claude",
-     ""
+     "Q2xhdWRl",
+     "b"
     ]
    ]
   },
@@ -441,7 +445,7 @@
  ],
  "commitTrailers": [
   "Co-Authored-By:",
-  "Claude-Session:",
+  "b:Q2xhdWRlLVNlc3Npb246",
   "Generated with"
  ]
 }
