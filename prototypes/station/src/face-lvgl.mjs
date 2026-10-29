@@ -12,25 +12,18 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
   const M = await create({ locateFile: (p) => new URL(p, base).href });
   M._face_init();
   const W = M._face_width(), H = M._face_height(), version = M.UTF8ToString(M._face_version()), loadMs = performance.now() - t0;
-  const enc = new TextEncoder();
-  // ---- the wire ----
-  const inCap = M._face_in_cap();
-  const inbox = [];   // messages the face sent, parsed, in order
-  function send(msg) {
-    const b = enc.encode(typeof msg === "string" ? msg : JSON.stringify(msg));
-    if (b.length > inCap) throw new Error(`the bridge's in-buffer holds ${inCap} bytes; a ${msg.t ?? "message"} of ${b.length} is refused`);
-    M.HEAPU8.set(b, M._face_in_buf()); const rc = M._face_send(b.length); drain(); return rc;
-  }
-  function drain() { for (let p; (p = M._face_poll());) inbox.push(JSON.parse(M.UTF8ToString(p))); }
-  // The next message out (or the first of a type), parsed, or null.
-  function poll(t) { drain(); const i = t ? inbox.findIndex((m) => m.t === t) : 0; return i >= 0 && inbox.length ? inbox.splice(i, 1)[0] : null; }
-  // The errors the face has sent since the last call (consumed), as their words.
-  const errors = () => { drain(); const out = []; for (let i = inbox.length - 1; i >= 0; i--) if (inbox[i].t === "error") out.unshift(inbox.splice(i, 1)[0].what); return out; };
-  send({ t: "hello", contract: CONTRACT, test });
-  const ready = poll("ready"), refused = poll("error");
-  if (!ready) throw new Error("the LVGL face refused the handshake: " + (refused ? refused.what : "no answer"));
-
-  let frames = 0, copied = 0, first = true;
+  // ---- the wire, on the module's own memory ----
+  const wire = {
+    inCap: M._face_in_cap(), width: W, height: H, version,
+    send: (b) => { M.HEAPU8.set(b, M._face_in_buf()); return M._face_send(b.length); },
+    poll: () => { const p = M._face_poll(); return p ? M.UTF8ToString(p) : null; },
+    // a picture's RGBA bytes (straight alpha) into the slot the face gave the last asset, stored as B, G, R, A
+    pixels: (d, w, h) => { const hd = M._face_last_asset(), p = M._face_asset_pixels(hd), out = M.HEAPU8.subarray(p, p + w * h * 4); for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; } return hd; },
+    frame: (ms) => M._face_frame(ms), key: (code) => { M._face_key(code, 1); M._face_key(code, 0); }, hash: () => M._face_hash() >>> 0,
+    objects: () => M._face_object_count(), refused: () => M._face_node_refused(),
+  };
+  const f = faceTransport(wire, { test });
+  let copied = 0, first = true;
   // The page's screen: a 2D context with no smoothing, the one place the page touches a canvas (present() below copies into it).
   // guard:canvas begin
   const display = (canvas) => { canvas.width = W; canvas.height = H; const ctx = canvas.getContext("2d"); ctx.imageSmoothingEnabled = false; return ctx; };
@@ -47,7 +40,46 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       ctx.putImageData(img, x, y); copied += w * h;
     }
   }  // guard:canvas end
+  const enc = new TextEncoder();
+  return Object.assign(f, {
+    M, loadMs, display, present, forceFull: () => { first = true; },
+    stats: () => ({ frames: f.frames(), copiedPixels: copied, keys: M._face_key_count(), lastKey: M._face_last_key(), dirty: M._face_dirty_count(), pictures: f.pictures(), props: M._face_props_count(), events: M._face_event_count(), heap: M.HEAPU8.buffer.byteLength }),
+    pixel: (x, y) => { const p = M._face_fb() + (y * W + x) * 4; return [M.HEAPU8[p + 2], M.HEAPU8[p + 1], M.HEAPU8[p]]; },
+    // the framebuffer as RGBA bytes (opaque), for a headless capture
+    rgba: () => { const src = M.HEAPU8.subarray(M._face_fb(), M._face_fb() + W * H * 4), out = new Uint8Array(W * H * 4); for (let i = 0; i < out.length; i += 4) { out[i] = src[i + 2]; out[i + 1] = src[i + 1]; out[i + 2] = src[i]; out[i + 3] = 255; } return out; },
+    // test mode: the layers a pass shows (1 chrome; 2 chrome and art; 3 all), the pixels outside the palette on the last frame
+    // LVGL keeps a fixed number of invalid areas a refresh and redraws the whole screen on one more: the overflows so far (monotonic), and the cap
+    invOverflows: () => M._face_inv_overflows() >>> 0, invCap: () => M._face_inv_cap(),
+    pass: (n) => M._face_test_pass(n), hide: (name) => { const b = new TextEncoder().encode(name + "\0"), q = M._malloc(b.length); M.HEAPU8.set(b, q); M._face_test_hide(q); M._free(q); }, offPalette: () => M._face_test_offpalette(),
+    // the test build only (face_wasm_node): a node of the last scene by its id string, { kind, box: [x, y, w, h] }, or null when no node has the id
+    nodeOpa: M._face_test_node_opa ? (id) => { const b = enc.encode(id + "\0"), s = M._malloc(b.length); M.HEAPU8.set(b, s); const v = M._face_test_node_opa(s); M._free(s); return v; } : null,
+    nodeBox: M._face_test_node_box ? (id) => { const b = enc.encode(id + "\0"), s = M._malloc(b.length), o = M._malloc(16); M.HEAPU8.set(b, s); const kind = M._face_test_node_box(s, o), v = new Int32Array(M.HEAPU8.buffer, o, 4), box = Array.from(v); M._free(s); M._free(o); return kind < 0 ? null : { kind, box }; } : null,
+  });
+}
 
+// The transport over a wire, whatever carries it (the WebAssembly module's memory above; the native face's pipe in prototypes/playtest): the handshake, the messages in and out, the picture table and the props.
+// wire: { inCap, width, height, version, send(bytes) -> rc, poll() -> JSON string or null, pixels(rgba, w, h) -> the last asset's handle (its pixels filled), frame(ms), key(code), hash() -> uint32, objects(), refused() }
+export function faceTransport(wire, { test = false } = {}) {
+  const W = wire.width, H = wire.height, version = wire.version;
+  const enc = new TextEncoder();
+  // ---- the wire ----
+  const inCap = wire.inCap;
+  const inbox = [];   // messages the face sent, parsed, in order
+  function send(msg) {
+    const b = enc.encode(typeof msg === "string" ? msg : JSON.stringify(msg));
+    if (b.length > inCap) throw new Error(`the bridge's in-buffer holds ${inCap} bytes; a ${msg.t ?? "message"} of ${b.length} is refused`);
+    const rc = wire.send(b); drain(); return rc;
+  }
+  function drain() { for (let p; (p = wire.poll());) inbox.push(JSON.parse(p)); }
+  // The next message out (or the first of a type), parsed, or null.
+  function poll(t) { drain(); const i = t ? inbox.findIndex((m) => m.t === t) : 0; return i >= 0 && inbox.length ? inbox.splice(i, 1)[0] : null; }
+  // The errors the face has sent since the last call (consumed), as their words.
+  const errors = () => { drain(); const out = []; for (let i = inbox.length - 1; i >= 0; i--) if (inbox[i].t === "error") out.unshift(inbox.splice(i, 1)[0].what); return out; };
+  send({ t: "hello", contract: CONTRACT, test });
+  const ready = poll("ready"), refused = poll("error");
+  if (!ready) throw new Error("the LVGL face refused the handshake: " + (refused ? refused.what : "no answer"));
+
+  let frames = 0;
   // A picture's pixels into the face (RGBA bytes, straight alpha: a picture's rgba(), stored as B, G, R, A), once per asset id, by the `asset` message: the face allocates the buffer for the id and the page fills it.
   // The table holds 256 pictures: a picture's slot is kept while its scene draws it and recycled, least recently used first, when a scene needs a slot and none is free;
   // a single scene that needs more than the table holds is refused loudly.
@@ -63,8 +95,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     if (pic.policy !== "art" && pic.policy !== "painted") throw new Error(`the picture ${id} has no layer policy: the host sends "art" or "painted" with every picture (host.mjs picture())`);   // the layer a picture shows on is the host's (ui/asset-policy.mjs); the transport never guesses it
     const status = pic.status === "master" ? "master" : "placeholder", policy = pic.policy;
     if (send({ t: "asset", id, w: pic.w, h: pic.h, policy, status, src: "heap", ...(pic.slice ? { slice: pic.slice } : {}), ...(Number.isInteger(pic.tile) && pic.tile ? { tile: pic.tile } : {}), ...(pic.foot ? { foot: pic.foot } : {}) }) < 0) throw new Error(`the face refused the picture ${id} (${pic.w}×${pic.h}): ${errors().pop()}`);
-    const h = M._face_last_asset(), p = M._face_asset_pixels(h), d = pic.data, out = M.HEAPU8.subarray(p, p + pic.w * pic.h * 4);
-    for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; }
+    const h = wire.pixels(pic.data, pic.w, pic.h);
     handles.set(id, { h, used: sceneNo }); return h;
   }
   // The pictures the host sends at boot, after the specs and before the first props, and never drops: the name plates and the rail tab grounds (lvgl-switch.md §2.4). `pictures`: [{ id, w, h }]; `picture(id)` gives its pixels.
@@ -78,20 +109,11 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     const rc = send({ t: "props", seq: seq + 1, ...body }); if (rc === 0) { seq++; lastProps = key; } return rc;
   }
   return {
-    M, version, ready, objects: () => M._face_object_count(), refused: () => M._face_node_refused(), beginScene: () => ++sceneNo,
-    size: [W, H], loadMs, send, props, poll, drain, errors, handleOf, pin, drop,
-    frame: (ms) => { frames++; M._face_frame(Math.floor(ms)); drain(); },
-    display, present, forceFull: () => { first = true; },
-    key: (name) => { const code = LV_KEYS[name]; if (code == null) return; M._face_key(code, 1); M._face_key(code, 0); },
-    hash: () => (M._face_hash() >>> 0).toString(16).padStart(8, "0"),
-    stats: () => ({ frames, copiedPixels: copied, keys: M._face_key_count(), lastKey: M._face_last_key(), dirty: M._face_dirty_count(), pictures: handles.size, props: M._face_props_count(), events: M._face_event_count(), heap: M.HEAPU8.buffer.byteLength }),
-    pixel: (x, y) => { const p = M._face_fb() + (y * W + x) * 4; return [M.HEAPU8[p + 2], M.HEAPU8[p + 1], M.HEAPU8[p]]; },
-    // test mode: the layers a pass shows (1 chrome; 2 chrome and art; 3 all), the pixels outside the palette on the last frame
-    // LVGL keeps a fixed number of invalid areas a refresh and redraws the whole screen on one more: the overflows so far (monotonic), and the cap
-    invOverflows: () => M._face_inv_overflows() >>> 0, invCap: () => M._face_inv_cap(),
-    pass: (n) => M._face_test_pass(n), hide: (name) => { const b = new TextEncoder().encode(name + "\0"), q = M._malloc(b.length); M.HEAPU8.set(b, q); M._face_test_hide(q); M._free(q); }, offPalette: () => M._face_test_offpalette(),
-    // the test build only (face_wasm_node): a node of the last scene by its id string, { kind, box: [x, y, w, h] }, or null when no node has the id
-    nodeOpa: M._face_test_node_opa ? (id) => { const b = enc.encode(id + "\0"), s = M._malloc(b.length); M.HEAPU8.set(b, s); const v = M._face_test_node_opa(s); M._free(s); return v; } : null,
-    nodeBox: M._face_test_node_box ? (id) => { const b = enc.encode(id + "\0"), s = M._malloc(b.length), o = M._malloc(16); M.HEAPU8.set(b, s); const kind = M._face_test_node_box(s, o), v = new Int32Array(M.HEAPU8.buffer, o, 4), box = Array.from(v); M._free(s); M._free(o); return kind < 0 ? null : { kind, box }; } : null,
+    version, ready, objects: () => wire.objects(), refused: () => wire.refused(), beginScene: () => ++sceneNo,
+    size: [W, H], send, props, poll, drain, errors, handleOf, pin, drop,
+    frame: (ms) => { frames++; wire.frame(Math.floor(ms)); drain(); },
+    key: (name) => { const code = LV_KEYS[name]; if (code == null) return; wire.key(code); },
+    hash: () => (wire.hash() >>> 0).toString(16).padStart(8, "0"),
+    frames: () => frames, pictures: () => handles.size,
   };
 }

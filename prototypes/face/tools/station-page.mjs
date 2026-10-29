@@ -16,7 +16,8 @@ const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/ja
 const VIRTUAL_CLOCK = () => { let t = 1000, q = []; window.__vt = () => t; performance.now = () => t; window.requestAnimationFrame = (cb) => { q.push(cb); return q.length; };
   window.__step = (ms) => { const end = t + ms; while (t < end) { t = Math.min(end, t + 40); const run = q; q = []; for (const cb of run) cb(t); } return t; }; };
 
-export async function openStation({ motion = true, clock = false, longNames = process.env.LONG_NAMES === "1" } = {}) {
+// `init`: scripts to run in the page before its own (the playtest parity test installs its session clock there).
+export async function openStation({ motion = true, clock = false, longNames = process.env.LONG_NAMES === "1", init = [] } = {}) {
   if (!existsSync(path.join(here, "../dist/face.wasm"))) { console.error("the face is not built (prototypes/face/build.sh)"); process.exit(2); }
   const server = createServer((req, res) => {
     let p = path.join(root, decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/"));
@@ -29,6 +30,7 @@ export async function openStation({ motion = true, clock = false, longNames = pr
   const browser = await chromium.launch(), page = await browser.newPage({ viewport: { width: 1360, height: 980 }, deviceScaleFactor: 1, reducedMotion: motion ? "no-preference" : "reduce" });
   page.on("pageerror", (e) => fail("pageerror: " + e.message)); page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) fail("console: " + m.text().split("\n")[0]); });
   if (clock) await page.addInitScript(VIRTUAL_CLOCK);
+  for (const script of init) await page.addInitScript(script);
   const fixture = readFileSync(path.join(root, "station/tests/fixtures/save-v8-schema1.json"), "utf8");
   await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
   await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test&names=en-short-1`, { waitUntil: "load" });
