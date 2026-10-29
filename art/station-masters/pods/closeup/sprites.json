@@ -1,0 +1,513 @@
+{
+ "sprites": {
+  "stamp/closeup-stamp-Y5H47VG18-96x96": {
+   "size": [
+    96,
+    96
+   ],
+   "sha256": "a01032bc9cb286633b1ff44e5cedd766ae8f3940753499ae449e667eb81aa2e6"
+  },
+  "stamp/closeup-stamp-0SVEV67ZF-96x96": {
+   "size": [
+    96,
+    96
+   ],
+   "sha256": "050412ee98df654538232b82a4218f63bf1fc7db6b0f83109be8e128d6ee903e"
+  },
+  "stamp/closeup-stamp-K3M9QPAT2-96x96": {
+   "size": [
+    96,
+    96
+   ],
+   "sha256": "66d0ee08bedd6d8134c9745190db36ddfbaa6586eb123a4c71d48dd44d07f702"
+  },
+  "curl/closeup-curl-adult-S01-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "6b9764f920c5cd4325441ddd675210b186b9f87b8acc9e11145de4c400679543"
+  },
+  "curl/closeup-curl-adult-S01-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "63aa75aa48704795e50c6652f7ce247591000c60b0715182ece165fa27e41100"
+  },
+  "curl/closeup-curl-adult-S02-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "f7bbf48bff6d8b4647a1f7a80b5e28fde7a246d97dd6618f462f5d68f6190afa"
+  },
+  "curl/closeup-curl-adult-S02-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "8462b8347745f4d1220c2500250a837e3523fa610422528973587002c5e8cd23"
+  },
+  "curl/closeup-curl-adult-S03-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "8c7724ace0ee5b68c7efad251aa1558c0dc1cf5d7fb2190d1e58a3fd70c26e12"
+  },
+  "curl/closeup-curl-adult-S03-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "f8b2ad08596c9cd34e978cf708977896e29e7cdaf76ed4ba01492dfcc9e8c173"
+  },
+  "curl/closeup-curl-adult-S04-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "fe2df3f0d4bc2eb9693efd33752167fbf961906c9969ea8b5e5cefbb97dd126f"
+  },
+  "curl/closeup-curl-adult-S04-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "7bc78bba7b6cc33a100095310be474dc025546085c2674c77a6b2a401e18e4f9"
+  },
+  "curl/closeup-curl-adult-S05-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "c50dd0238626e79739e8a7c0c36caa4a04c19c236e0faeffee09674303bc8969"
+  },
+  "curl/closeup-curl-adult-S05-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "04b6b29b06859ba5a183a7a638865e5a51ec18a044ba928b8f58c75fcfd2ffef"
+  },
+  "curl/closeup-curl-adult-S06-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "2935bdd3cd21e7822e0d161e0feb034f50fcb9ae3ec217d76f8ed89fceee1808"
+  },
+  "curl/closeup-curl-adult-S06-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "11eb4ed4fc12c31a08eea64f55fb331ab24dcfe8e00448fa0a42d870e48a8023"
+  },
+  "curl/closeup-curl-adult-S07-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "ace7d507db63cb0adea67e95a7bc56731776b018ffa3171bc8f578bbbdf87707"
+  },
+  "curl/closeup-curl-adult-S07-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "daab1238f6d4ebdd09927b268b2e1f1e13e1929dee69ad2108055fdd392ce6bd"
+  },
+  "curl/closeup-curl-adult-S08-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "e4cda1a0eeeb5d200c00fcfe6320d11d07109e668360ff1121bfe163e9b05423"
+  },
+  "curl/closeup-curl-adult-S08-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "176b6590d53952698d3255b31adcd7c05bddc282dda82e5e425942ac9aa0a8ab"
+  },
+  "curl/closeup-curl-adult-S09-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "467c43a56fcce83005c4b6d5028247fb3dede5e98aa7ec7ee19aafe0134f121c"
+  },
+  "curl/closeup-curl-adult-S09-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "eb7925c1334365ddc5b480d2376964d692d2222109c01d0b1443e31cc2f861b8"
+  },
+  "curl/closeup-curl-adult-S10-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "cd9c43b6ea55de500bd8b0884d03a0340ba56411bc4bb7564368b916f457153e"
+  },
+  "curl/closeup-curl-adult-S10-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "18d7a558cb4bb389a07ae9bb879b80a26ce43e13cc026d6c1d0c7f6b603a6055"
+  },
+  "curl/closeup-curl-adult-S11-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "2a4e71311f1b30ad59458381297798582fb8225ad070728c6e350e97e49ac29b"
+  },
+  "curl/closeup-curl-adult-S11-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "651543cd6bd7db16088e914d46d4c7b1b9eaad928d4384195471a9f80b27d7f4"
+  },
+  "curl/closeup-curl-adult-S12-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "59b91b52361a6f20711713935f4176481568c604d7f02b6f28ff0326e8bc1cb4"
+  },
+  "curl/closeup-curl-adult-S12-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "6b1f7ab5aa9b4eceb4da4356ebb5a54c4226fe655ec65e40572bd08d31ccf373"
+  },
+  "curl/closeup-curl-adult-S13-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "2817c8bdfccb884993c718c0a603fca29ee9d5cc095d26fbd9ff73bb58fc05bb"
+  },
+  "curl/closeup-curl-adult-S13-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "e9e5d4276870f0ea941ca7677386c441ba8489e68f3ab146bec18ecad03eec53"
+  },
+  "curl/closeup-curl-adult-S14-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "f1eb140420748e886c8ab5780203d23db7290a8fbadc7df9a7b34559a1e11ef0"
+  },
+  "curl/closeup-curl-adult-S14-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "fad6c8e023742d2a402e7b957f4c8a0de75904e633813b40595f3eab3dd9df76"
+  },
+  "curl/closeup-curl-adult-S15-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "b74855c18e1c7c2cc15d9ad33f87a990f974a68f5357259d9464dcb6eb8ce9fb"
+  },
+  "curl/closeup-curl-adult-S15-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "b55a869e75b0fa6e9edabed7d76a3532d6a274c1f7185d4d2626c96e9ca90d7b"
+  },
+  "curl/closeup-curl-adult-S16-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "730c6855a6c6bdfee3c928d75375e275674eb0337b6c7e0eb7dc550bba7f7168"
+  },
+  "curl/closeup-curl-adult-S16-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "b73cf2b6b2c93da95903329942566babacb7acc23d53efb1e0b7b2050321f90e"
+  },
+  "curl/closeup-curl-juvenile-S01-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "10feb896b2cf1d349821483e91081291759ecaca103623844a60b2617a67b2fa"
+  },
+  "curl/closeup-curl-juvenile-S01-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "3655b68a96a1ab102d214868326c3a12f02ac26c163001917677f854193acf0e"
+  },
+  "curl/closeup-curl-juvenile-S02-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "67842e7a788746652bb7aedf7df30dee4fbd980624d6fd2d3fa16c7ce0f683f8"
+  },
+  "curl/closeup-curl-juvenile-S02-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "e29e62d914f6c218d8440d47624730c83f654afc8b934c59100c3d212f4637c2"
+  },
+  "curl/closeup-curl-juvenile-S03-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "d67e8089ec06ee94aa176c3a9c06f24e2d89fdbeea5acf2124181e060f0b23a7"
+  },
+  "curl/closeup-curl-juvenile-S03-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "137798bc5d4f109f76ce389b4ee7343ced0bc9eb513677fc0ca2848d5d54ea2b"
+  },
+  "curl/closeup-curl-juvenile-S04-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "b180d360bd4bf2e69dbadd4f3171ff9c2d0255258ee1e15f2eb030c404e23c63"
+  },
+  "curl/closeup-curl-juvenile-S04-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "898a87f081c15f832a2db879cb2225da2dbbc65a84e0d6e0ccd0b6d6002c21aa"
+  },
+  "curl/closeup-curl-juvenile-S05-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "f7a1747bb2f2769b7f5e0de5c33bc6418d8db7b6bd3f3abc438c7964e9d069e2"
+  },
+  "curl/closeup-curl-juvenile-S05-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "917bc1d107a4e05112a7b6ed8556e4a16d8294abf8ade77b5bc5a6592d15db4e"
+  },
+  "curl/closeup-curl-juvenile-S06-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "c16d4795cfa6a17bb346a03f5f9ebfc09ede62ca4359d8b06353d17a1f0a5d9e"
+  },
+  "curl/closeup-curl-juvenile-S06-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "5bf1e9e144d035780fb961d7690d597a1047eac13d986934d087d53be8007b95"
+  },
+  "curl/closeup-curl-juvenile-S07-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "683e7e68e0adacf4e7368a252c346cb5a2d63b93de60bdeb57269f7b3addbd29"
+  },
+  "curl/closeup-curl-juvenile-S07-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "28206e660bfd82e7ff056c0c0d388c47b0589dc48bd8dcd5284f6f24b3acccd0"
+  },
+  "curl/closeup-curl-juvenile-S08-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "dee104a456d23617b959d6cb87e249d4cb919e10e6f13b172310a1ed2c341cd5"
+  },
+  "curl/closeup-curl-juvenile-S08-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "78db430612d8ae3b05563e2b902b222b47bf885a397b70cc49867a2ba65691ee"
+  },
+  "curl/closeup-curl-juvenile-S09-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "0ab795880c613ebd6873bc1a8888e053358356ddae567e3ddb480afe5879ab99"
+  },
+  "curl/closeup-curl-juvenile-S09-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "0ff323903dc76a39c284a66f6be713be6f8e076df1b2e745f2e8559170cf390b"
+  },
+  "curl/closeup-curl-juvenile-S10-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "4adcc4143c1ce618c9ee82fb0e2ff7232c426ae3edfa1bdfcc68091e3ec018a5"
+  },
+  "curl/closeup-curl-juvenile-S10-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "d8c416ffd68385e9d6508b30cad4c1fbadeb11d726a3e91963e6a9bc969c4fa2"
+  },
+  "curl/closeup-curl-juvenile-S11-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "c500299245e950aaeae93b743a47e762f09e52c19effa5d737191a137a115634"
+  },
+  "curl/closeup-curl-juvenile-S11-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "c5aea2deb43daa7da28d774538a97952c6db2754443a5f9cf8e4e6ab94973cbb"
+  },
+  "curl/closeup-curl-juvenile-S12-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "a4bfb2412c91c780f4aef078de9c817ca02c18f3d1c0e7cdced6d299bdf77b23"
+  },
+  "curl/closeup-curl-juvenile-S12-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "0889ad8c0a1a256b00088c0688746cda93e8d3b99f054597ff1b8499ba59b65a"
+  },
+  "curl/closeup-curl-juvenile-S13-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "a95d2cb299ebd3f4f2f5c592ee55249a9c99d930ffe23a99ee1e3ca946b9dd6a"
+  },
+  "curl/closeup-curl-juvenile-S13-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "1bc0e3bed8ef8bf1809f079aa1dae4d73816b7b2e61893da2646b95b7369a72c"
+  },
+  "curl/closeup-curl-juvenile-S14-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "2e237ff0df2b9bb508f4f71b050bd2479cc3c6383b160d6a2bd4408ea4cabae8"
+  },
+  "curl/closeup-curl-juvenile-S14-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "adc6152ed2ae16078a8f87a572641b4d409050e560d40455ec251e69613d1615"
+  },
+  "curl/closeup-curl-juvenile-S15-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "035a2e10887d41382d90a53725f90169f68e4b93946758a2eaf5fe11c923c953"
+  },
+  "curl/closeup-curl-juvenile-S15-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "a67443a0fa929fbfb7c01b9134dc605b9003578236fdc094d1ea3a02e2ea542a"
+  },
+  "curl/closeup-curl-juvenile-S16-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "da9f2553c6ace17aa690d4709311bb6efa62c01219ae6a3d69394013e135a9bf"
+  },
+  "curl/closeup-curl-juvenile-S16-noshadow-144x152": {
+   "size": [
+    144,
+    152
+   ],
+   "sha256": "5dd0d0e1dadf97ff3f747488cf302f5c466ac04f26b3ca49c752d3c746ac14a4"
+  },
+  "sprites/closeup-pane-9slice-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "e1654e1db526c1595939b216874d1a06dd41d5cfe9f2942fd985c0c2567216ac"
+  },
+  "sprites/closeup-plate-9slice-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "7327b782e132eaa49146e00ed70c5430703c63a4e7f3c93e7cce1ef14662299b"
+  },
+  "sprites/closeup-hairline-9slice-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "2d0391e5e2ac01525962715cbf11a097c283b02e82e86ef12304f2a270b9e9aa"
+  },
+  "sprites/closeup-contact-shadow-128x24": {
+   "size": [
+    128,
+    24
+   ],
+   "sha256": "43d18ddaabb2e4613146ddb047edcbdb3687a6153fecd906bd5b79aab7fa9868"
+  },
+  "sprites/closeup-contact-shadow-64x16": {
+   "size": [
+    64,
+    16
+   ],
+   "sha256": "73af963392673919f09517e4e1de58acb29210e38202bc2c20714ebb2959d757"
+  }
+ },
+ "nine_slice": {
+  "closeup-pane-9slice-24x24": 2,
+  "closeup-plate-9slice-32x32": 8,
+  "closeup-hairline-9slice-16x16": 2
+ }
+}

@@ -1,0 +1,86 @@
+{
+ "closeup-room-roots-576x424": {
+  "size": [
+   576,
+   424
+  ],
+  "rect": [
+   16,
+   48,
+   576,
+   424
+  ],
+  "src": "source/raw/idle-vivarium-roots-day-ub.jpg [402, 182, 576, 424] 1:1, graded to rooms/signed-idle-roots-day.png",
+  "pick": "the burrow under the great root in the left third, the moss path in front, the bluebells behind",
+  "painting_rect": [
+   299,
+   133,
+   429,
+   316
+  ],
+  "sha256": "e24e785b95c35cfc313e5ea8ec49414e89c8a53d3dff320f43ddaefde7e14d20"
+ },
+ "closeup-room-boulders-576x424": {
+  "size": [
+   576,
+   424
+  ],
+  "rect": [
+   16,
+   48,
+   576,
+   424
+  ],
+  "src": "source/raw/idle-vivarium-boulders-day-ta.jpg [700, 300, 576, 424] 1:1, graded to rooms/signed-idle-boulders-day.png",
+  "pick": "the mossy island, the maple and the upright hero stone in the right half, the lawn in front",
+  "painting_rect": [
+   521,
+   221,
+   429,
+   316
+  ],
+  "sha256": "53936275a52525954a862c3c2917f587a7bf8f64d654743ee4aee33617539c8c"
+ },
+ "closeup-room-reeds-576x424": {
+  "size": [
+   576,
+   424
+  ],
+  "rect": [
+   16,
+   48,
+   576,
+   424
+  ],
+  "src": "source/raw/idle-vivarium-reeds-day-ta.jpg [220, 230, 576, 424] 1:1, graded to rooms/signed-idle-reeds-day.png",
+  "pick": "the rock left of centre among the sedges, the damp path in front",
+  "painting_rect": [
+   164,
+   169,
+   429,
+   316
+  ],
+  "sha256": "78f0c0dd95ad096e753edf5a41012c2debd42e3239fb97304d4d71fcbd7037db"
+ },
+ "closeup-room-ferns-576x424": {
+  "size": [
+   576,
+   424
+  ],
+  "rect": [
+   16,
+   48,
+   576,
+   424
+  ],
+  "src": "source/raw/idle-vivarium-ferns-day-ta.jpg [330, 205, 576, 424] 1:1, graded to rooms/signed-idle-ferns-day.png",
+  "pick": "the croziers and the mossy log in the upper half, the peat path in front",
+  "painting_rect": [
+   246,
+   151,
+   429,
+   316
+  ],
+  "sha256": "74157fb54b244d8ad26e21c5de4ba9927457ff6a127ba7513ba6058ec299ae15"
+ }
+}

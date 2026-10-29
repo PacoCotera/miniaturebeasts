@@ -1,0 +1,386 @@
+{
+ "icons": {
+  "icon-coat-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "5b43b967b8fe5004090aaf7177c6837da954bd8425877e8cf783f1f5b873b8c7"
+  },
+  "icon-coat-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "6c3fcd9e8f1cb7614c33e08eec01c479e5452dc3c0021013b8d6f187fe60edd6"
+  },
+  "icon-coat-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "dc4d6f6dfd5b5eba5c68127696214dc67c4af54a0c913d44fb222136193f55a4"
+  },
+  "icon-coat-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "fc3438a8c2971db1a13878a2da002a5c675089e51d6466f73d99813f72d23fb3"
+  },
+  "icon-face-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "f3edae87224178b08c8ca74921968a13dfab9e6b54fba3590ebe7d4f65fdf319"
+  },
+  "icon-face-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "cac3268aea3c9a333a354d126f0159a7ca918b61b2da302665bf9f01e7696905"
+  },
+  "icon-face-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "383b22d09b7cfb61f4a89bdde3e59dbc8d4443a48a8bcd91837b84aea46b7fbe"
+  },
+  "icon-face-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "5f9c54398ef43ea6e3df99cddf6199d7cc10538b8668d737c6dfaefe638a6a68"
+  },
+  "icon-movement-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "6be8babe4e34cd6bdcec8afe8d50c0e5331e5eea8709e5d9b0b18b7c4f3e844f"
+  },
+  "icon-movement-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "33ed696cf0956ce7fcd33a8c47db9cfa976f513b29ad822275dc5e6b9ba0f1ab"
+  },
+  "icon-movement-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "ffec06d00640661879eb55a0505b854049cc20732e67fb97dd18fd11bc53458d"
+  },
+  "icon-movement-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "f48fc6e9b2b60bd8839ce9d433d71427fa8229f61736980bba32de502a1dffc2"
+  },
+  "icon-shape-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "e2d71bf321ec0fd48cb99478796f133cc459eb6b37c602adad4ee6c31bdb1a9d"
+  },
+  "icon-shape-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "e468fa65990567b923f436b7365e1cb62f316e033a0d41a2600b3bbb8606d968"
+  },
+  "icon-shape-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "545ca09f7bee6e2963ab84843223d0cde8bb55240e8d621c2fb0df591c56afe3"
+  },
+  "icon-shape-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "c9583b585725f2683dcea27f524afa4a39e8718a13bce96a48e4058b70642c70"
+  },
+  "icon-stamp-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "7ffab361268b500bfdfb75b319ef760d940e61a1a48b61306580d9b6b55eafae"
+  },
+  "icon-stamp-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "a9474a2254a4a9eccab4cf86d7c20d9d8e276c0dfcb2734d86c92024ecc96476"
+  },
+  "icon-stamp-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "04c42d61523458148655e7b692e92973206524ab0ef001a90ed95b42bb6bf5df"
+  },
+  "icon-stamp-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "af28a47ded10d6ce243a11b05e0b78aa50e31b3d19539751f58407b02f050e43"
+  },
+  "icon-cross-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "1055dab3e17a636299e8bae92ebff6dea9e1479758150bb14c930a64688e9c68"
+  },
+  "icon-cross-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "ddd5b859fa7ec37d1878b960bb3e5ac871ff77ee55138cdcd8fecfa06153fa47"
+  },
+  "icon-cross-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "cefe3ad5bad8482b81eddad4560bb45d1a325dd907c34d1853c661435f15af86"
+  },
+  "icon-cross-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "eed8c3ad6e3205a074a0eef3da365003e705e2ec4f9dd813845ba87b1d26a338"
+  },
+  "icon-portrait-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "5689ff857d20ab0a4eb1f5b7d200d8b58748952d92d4f25048bce3848f16eaed"
+  },
+  "icon-portrait-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "8a40e7a41ec1123f5038846baddf4b81c6970f03b3486cf9c402ae6ae7a8e4df"
+  },
+  "icon-portrait-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "490dfae618e14de9fd0b53d9c5b9ca771b99cd083198c23ede4f7fed2493ae8f"
+  },
+  "icon-portrait-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "e67d6b32d33a9e6c561cd18a007fa690cda9a2c32dffc643239f1ca80bb121dc"
+  },
+  "icon-manage-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "9d819a42be9ecf3c89251d3581c2179cebfc200f238ea4e6774ac243b89c8795"
+  },
+  "icon-manage-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "1c9400356e31555cb929a9f29a1b4043b8ef58ee6da51ce11039b648a7f60667"
+  },
+  "icon-manage-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "705fee473646728a588936c8368f520092d46497cabb8e809ab3ad8b64cbcc3f"
+  },
+  "icon-manage-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "cf8267ab9f2ddf9ff385107b42a0eaeb9d92ffb7245646f3789c6452e73ff378"
+  },
+  "icon-rename-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "124311f65726df84995430a0ef71aabed5a91309a6379b9b6f8e1a04582dcd2d"
+  },
+  "icon-rename-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "0aa5ec31f7170d6e0ab51466236dd8d39fae6650cfb668a9bd3b5dd0a28f9b33"
+  },
+  "icon-rename-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "4f04eb89a2f3383cb59d2dfd321bfa3bb637e51eb1020bb6084051107262bb08"
+  },
+  "icon-rename-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "e9f4a50c89a26d49dbe831c600ed3395666d95d92d813f716c453e715d5520d7"
+  },
+  "icon-companion-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "938c769a5f7b5acc4d669d13871e93d9abe41f70374b246175a436a329b874c6"
+  },
+  "icon-companion-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "57cbacc59b266ef4e92c6ac05e6a738975fd60587499d81ff910d13293b42b7e"
+  },
+  "icon-companion-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "4b44d989b7b952d6df3338c9bcb53adfe25c952fcfa766827310a95fdf91d061"
+  },
+  "icon-companion-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "d00e6acbc5122a4083fe71fb1e8a5548991e71115ecd1f45bdaec34773d869b7"
+  },
+  "icon-bonded-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "595c598face4af054edb24ef87fc2e261639b3e21ad6201462d7b31691e07614"
+  },
+  "icon-bonded-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "a1af8a25a92c16bfab2acc252c4a4797184fc09af7da1204f731e5ef86c2792b"
+  },
+  "icon-bonded-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "526e0bd82144b44970dd13d351c77799e5965c3e4fbbe2a672eaaeed6468cdb0"
+  },
+  "icon-bonded-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "e6ba7e2d14c8777edccfdb12a88c52e57d417b846ff816e901ee4fc3e15af391"
+  },
+  "icon-held-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "a324e13ca9462abd5b32e7fe397676f7b5c7910e2ce9571785661163e107aadd"
+  },
+  "icon-held-32x32": {
+   "size": [
+    32,
+    32
+   ],
+   "sha256": "d90011f44a5adaf2690aff5d347cf76311bdb1d3ba17e3b7e9628c389461ab75"
+  },
+  "icon-held-24x24": {
+   "size": [
+    24,
+    24
+   ],
+   "sha256": "edd871e04e299d79a644039a6cbcd6310c716a2e6e9d34defbfe401d6eb11607"
+  },
+  "icon-held-16x16": {
+   "size": [
+    16,
+    16
+   ],
+   "sha256": "d18d0b22e7cb68f348cfd46dba6de2f69d891bf14f73c49a85115f723d5cc95a"
+  },
+  "glyph-bay-crate-64x64": {
+   "size": [
+    64,
+    64
+   ],
+   "sha256": "bd44dfb4508ba5f34bad530e223f10e6b3d7f7cf8b9475a6a648d3cdeecc9860"
+  },
+  "glyph-bay-crate-20x20": {
+   "size": [
+    20,
+    20
+   ],
+   "sha256": "b83e8e0c0a5f7e254a7322810077bb7cb1aeaeeb72341263e438cbeb3d52eced"
+  }
+ },
+ "check": {
+  "pairs_16_iou_top5": [
+   [
+    0.617,
+    "portrait",
+    "bonded"
+   ],
+   [
+    0.597,
+    "face",
+    "shape"
+   ],
+   [
+    0.583,
+    "face",
+    "bonded"
+   ],
+   [
+    0.563,
+    "shape",
+    "bonded"
+   ],
+   [
+    0.524,
+    "manage",
+    "held"
+   ]
+  ],
+  "coat_vs_sprout_16": 0.174,
+  "coat_vs_sprout_24": 0.158
+ },
+ "colour": "bone #f1ebdf, straight alpha"
+}
