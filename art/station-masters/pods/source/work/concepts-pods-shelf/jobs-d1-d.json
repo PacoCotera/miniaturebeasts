@@ -1,0 +1,24 @@
+[
+ {
+  "name": "concepts-pods-shelf/d1-d",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-pods-shelf/ref-layout-12-1024x600.png",
+    "THE LAYOUT (a flat wireframe, project-owned): where things go on the 1024x600 screen. A dark top bar and a dark bottom line; inside, a shelf holding 12 round pod places, each with two short blank strips under it (the name, and a worth line). Take only the placement and the states (mint arcs: how far each pod is read; cream circle: focus; warm golden circle: a goal pod, lit; bare dark circles: free places at the end of the shelf, room to grow). Never copy its flat look."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-pods-shelf/ref-pods-from-shelf.png",
+    "THE PODS (project-owned game art): what our pods look like. An upright seed pod with a round cap and banded ribs running from cap to base: left a coral pod with a gold cap, middle a blue pod with salmon spots and a salmon cap, right a sealed sand-coloured pod with a pale cap (unidentified). Keep their ribbed shape and caps. Take the pods only, not the grey metal cups around them."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-boulders-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed Vivarium room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left, warm bounce, cosy depth and palette. Take the treatment and the warmth, not its place or plants."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a handheld creature-keeping game, 16:9, front-on: the Pods shelf in the player's home station, where the player keeps every pod they have found (wild seed pods that can grow into creatures). It is a collector's shelf in a warm, calm home, a place to browse leisurely and enjoy the collection, NOT a storage rack, not a locker, not a machine. Here it holds 12 pods. No door, no waiting area, no queue.\n\nSTATES, in the layout's places, all readable at a glance:\n- The goal pods (top left, golden circle in the layout) are softly LIT from within their places by a warm golden glow, with a small bright star on their progress groove; they lead the screen.\n- Each pod's progress is a fine groove engraved into its holder, the same thickness everywhere: lit soft mint (#adf6e0) for the chapters read, separated by tiny gaps, an unlit engraved channel for the rest. A fully read pod's groove is one closed, unbroken mint ring. Unread pods have a dark groove.\n- One pod has the FOCUS: one thin, even, crisp cream ring (#ffe6ad) just outside its place.\n- Sealed (unidentified) pods are the sand-coloured pod with the pale cap.\n- Free places are bare, softly shadowed hollows.\n- Under each pod, two short blank strips of quiet surface where its name and its worth line will be typed later: leave them empty.\nThe last places on the shelf are free and waiting, showing there is always room for more.\nThe top bar and the bottom line are plain dark slate bands (#1d232b) across the full width, empty.\n\nLIGHT AND FINISH: one warm key light from the upper left, warm bounce light, soft ambient occlusion in every hollow, a soft contact shadow under every pod. Matte, hand-painted miniature finish exactly like the painted reference, with real depth and warmth. The pods are the most colourful things on screen; the holders stay quiet, matte and low in saturation so the many pods do not become busy. Calm, generous spacing. No gloss, no chrome, no plastic, no neon, no sci-fi interface, no holograms, nothing childish or toy-like.\nNO text, letters, digits, numbers, logos or icons anywhere. No creatures. No frame around the picture, no vignette; the screen fills the canvas edge to edge.\n\nDIRECTION: recess cups in a warm-lit slate wall. The shelf area is a matte slate wall (#2b3038, warmed by the light, never cold blue) with gentle painted wear; each place is a round recess cut cleanly into it, seen front-on, the pod standing on the recess floor; the progress groove runs just inside the recess lip. A broad warm pool of lamplight falls across the wall from the upper left, like a quiet study at dusk.\nVariation: 12 pods, two rows of six."
+ }
+]
