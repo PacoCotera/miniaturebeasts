@@ -23876,5 +23876,589 @@
   "sha256": "071bdc16f9336dc37498c1996e8ce719337e3032ca1de0ce15a996d30242190c",
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)"
+ },
+ "pods-lantern-96x160": {
+  "size": [
+   96,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-cups/lantern-a.jpg (painted at 4K; tools/cupsmasters.py); full-size master shelf/pods-lantern-2973x4955.png",
+  "made": "1x, reduced from the master, the placed overlay",
+  "sha256": "eef8dd79d96985e0b06b4da32ceef58f55cd08feb35225618309630eeb00f87b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pods-lantern-288x480": {
+  "size": [
+   288,
+   480
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-cups/lantern-a.jpg (painted at 4K; tools/cupsmasters.py); full-size master shelf/pods-lantern-2973x4955.png",
+  "made": "3x, reduced from the master",
+  "sha256": "fc87a110f8836a8d08402f39ea5734e26bc233747337d27f05e571cb19c2b56e",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pods-fern-120x200": {
+  "size": [
+   120,
+   200
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-cups/fern-a.jpg (painted at 4K; tools/cupsmasters.py); full-size master shelf/pods-fern-2698x4497.png",
+  "made": "1x, reduced from the master, the placed overlay",
+  "sha256": "3e02d165ce7c24e1d2afcfcdc01596b24d8ba27e272316b0b0bf8e0268fe8717",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pods-fern-360x600": {
+  "size": [
+   360,
+   600
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-cups/fern-a.jpg (painted at 4K; tools/cupsmasters.py); full-size master shelf/pods-fern-2698x4497.png",
+  "made": "3x, reduced from the master",
+  "sha256": "967a1cb34554a597ce3464fd0d2ddb1b1315f4c0d1e79237fc281cd6fc5f315b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "jar-putaway-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-cups/jar-a.jpg (painted at 4K; tools/cupsmasters.py); full-size master shelf/jar-putaway-3241x3241.png",
+  "made": "the 96 px master size (ad-signoff 1.5), reduced from the full-size master",
+  "sha256": "30b7414c94018f39f4d6cc03429ab4ecaee19df7136ce110cb39492c7c33a0d2",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "jar-putaway-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-cups/jar-a.jpg (painted at 4K; tools/cupsmasters.py); full-size master shelf/jar-putaway-3241x3241.png",
+  "made": "24 px, the Tucked away column's header glyph, reduced from the full-size master, a mild unsharp on the colour",
+  "sha256": "a06b1cbf49e139e8b05ab8f0e1ceab9f4eb352e141f83b3007b508ecef41cdb2",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "seal-bredtrue-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-cups/seal-c.jpg (painted at 4K; tools/cupsmasters.py); full-size master shelf/seal-bredtrue-3232x3232.png",
+  "made": "96 px, reduced from the full-size master",
+  "sha256": "359d33b10cad83c0103542f7e506919be5b168f6d55ad2ead979f1f654a1b0d2",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "seal-bredtrue-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-cups/seal-c.jpg (painted at 4K; tools/cupsmasters.py); full-size master shelf/seal-bredtrue-3232x3232.png",
+  "made": "48 px, reduced from the full-size master, a mild unsharp on the colour",
+  "sha256": "0a87b8b7c11cd28dd8ee4fa2853cd803a001e9e911a130b3fcc33b15b30edf95",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "seal-bredtrue-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-cups/seal-c.jpg (painted at 4K; tools/cupsmasters.py); full-size master shelf/seal-bredtrue-3232x3232.png",
+  "made": "24 px, reduced from the full-size master, a mild unsharp on the colour",
+  "sha256": "1ebfd32f6fda7717c95dbf4e5fe9922951ddd075a7f0681a506a550046201967",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "seal-bredtrue-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-cups/seal-c.jpg (painted at 4K; tools/cupsmasters.py); full-size master shelf/seal-bredtrue-3232x3232.png",
+  "made": "12 px, reduced from the full-size master, a mild unsharp on the colour",
+  "sha256": "36f13205484a1a4ab5ac9985d5b1ad0ab34afb720287d29adb819c237f15af59",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-identified-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-identified-1328x1577.png",
+  "made": "the Loika reference sprite",
+  "sha256": "a37297dd6bb38b82f2b7697bc1b764e3a7c49bdecd613827a1f8668032101de8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-sealed-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-sealed-1328x1577.png",
+  "made": "the sealed pod",
+  "sha256": "31bf9ac1f02ceb0d2cafe22da9c1001512a3cdf00e1bd57f33ec4c28ca650cef",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-band-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-band-1328x1577.png",
+  "made": "the sealing band as a layer",
+  "sha256": "c9872431eb12d14597df64d49bd4f3de5ba2ef0413842a9f37b1668e9b43f450",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-crack-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-crack-1328x1577.png",
+  "made": "systematic pod layer: crack, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "92173a64436b160d8c3cb25353f308fbbe30ab097e27cf08bf12eeb4b85229f0",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-shade-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-shade-1328x1577.png",
+  "made": "systematic pod layer: shade, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "f045428b7367d270b97d1ffbb89da2a9fac21ea00f5731bad1ec2ea6c2ce4672",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-mask-body-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-mask-body-1328x1577.png",
+  "made": "systematic pod layer: mask-body, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "5bef9739a22cd306e766096a01142c8cef586431b3cffc96b9f7b3000c76c0d8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-mask-accent-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-mask-accent-1328x1577.png",
+  "made": "systematic pod layer: mask-accent, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "daeb47e8217705cf8f945ba6b04b335d71a4fda8ff1d86f61f6001dbc8675218",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-dots-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-dots-1328x1577.png",
+  "made": "systematic pod layer: pattern-dots, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "1384ebcd93911f76403fcdc1b5a6b022a57c32308fd22ea2cda511ea3720beac",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-stripes-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-stripes-1328x1577.png",
+  "made": "systematic pod layer: pattern-stripes, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "9a14d466738bd04ecf0f2fb3e872a88c48317e713fd7667b476d969afeca1d17",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-bands-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-bands-1328x1577.png",
+  "made": "systematic pod layer: pattern-bands, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "dadd1cb588496a2df3917aa70651607fd7c5ffcebc6e629ff737f04665656c64",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-ribs-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-ribs-1328x1577.png",
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row",
+  "sha256": "817537e47e4ef27b2bb64e486df316ce721aa5fd82bc86007ab8c6f77bff6a94",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-segments-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-segments-1328x1577.png",
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row",
+  "sha256": "5254a61e30b92ac16e9d120da32487c70164e1e1a6a9b80aba9c030e49c2aca8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-segments-relief-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-segments-relief-1328x1577.png",
+  "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "sha256": "9d52720479fe2a29f03e957c823756287e64a4078a3d02eb1358d0d441c801da",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-plates-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-plates-1328x1577.png",
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row",
+  "sha256": "9c799d2dd435f1f2b17a5bbc4df51e7aca6059a22aed93f09d08b0fa531aca21",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-plates-relief-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-plates-relief-1328x1577.png",
+  "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "sha256": "0af838884bcac8c11ccdfdcdf8d484ec25ecd4719ac845734125bebfd4fa4a7e",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-identified": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-identified-1328x1577.png",
+  "made": "the Loika reference sprite",
+  "sha256": "cd0b2c79dcc77c557ceffe2b42c0c2cba5c36cab4e5d0955cd4cb98a4ce91781",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-sealed": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-sealed-1328x1577.png",
+  "made": "the sealed pod",
+  "sha256": "6814b3d8cf9ea276a818003832a457cb7727474d2f75d127d47f6c26a2e60a33",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-band": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-band-1328x1577.png",
+  "made": "the sealing band as a layer",
+  "sha256": "1b7062cf4a54cba5c229a902e69a9665c5059a6c0201eb597612bc6c84c346fb",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-crack": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-crack-1328x1577.png",
+  "made": "systematic pod layer: crack, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "7cc58a2b74b78e2ac553b168523c02634104f31f67b9befce477fbd3f6d914ef",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-shade": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-shade-1328x1577.png",
+  "made": "systematic pod layer: shade, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "f1f5e20272bf4079d961dbb787244d23c3351eaa982d555a7ca85b75535394e3",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-mask-body": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-mask-body-1328x1577.png",
+  "made": "systematic pod layer: mask-body, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "e3fd2c6847beb548b59335d8f98557304fcdca5826b9229a9eec8dda759f3a75",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-mask-accent": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-mask-accent-1328x1577.png",
+  "made": "systematic pod layer: mask-accent, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "bfb3a83f1d419d25822b069181918f5fb16ef6dda296e2d95c799aaeefb924fe",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-dots": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-dots-1328x1577.png",
+  "made": "systematic pod layer: pattern-dots, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "cf3c963e25a88fa816c428cb000cb3f293d17f4bf78e19964575ed856fcb3841",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-stripes": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-stripes-1328x1577.png",
+  "made": "systematic pod layer: pattern-stripes, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "f6396056f6552c4910f23bcf2dc85a57513cb290a8c5d4084e3ccdd7cc660c2f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-bands": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-bands-1328x1577.png",
+  "made": "systematic pod layer: pattern-bands, uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row, centred",
+  "sha256": "e084106aa7caab0329cafe39dc58ddb714e4ea1131b13556f666109c6ecc8430",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-ribs": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-ribs-1328x1577.png",
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row",
+  "sha256": "85a60a6fb1473449838d8442dd0a5c27babdad2a13fab2c7e278b9b30fa2101b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-segments": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-segments-1328x1577.png",
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row",
+  "sha256": "5e2aa98280ed369c99174c7dd50bc555ba2031665f9a97c17bbe12e99ec34f10",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-segments-relief": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-segments-relief-1328x1577.png",
+  "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "sha256": "71bacf3734431f315c368c0b0f6b500815e1d45a4da4cfbfcf0644565b6356fd",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-plates": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-plates-1328x1577.png",
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale (the pod's ink 64x71), cut to the niche box 64x76, foot on the last row",
+  "sha256": "7d1f285b3ee3217c8483822ad640869cd441b270990cb4c1267d2512b1008a4a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-pattern-plates-relief": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-pattern-plates-relief-1328x1577.png",
+  "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "sha256": "a5138de81c6e17e2039dd58082edbacae9a7e4ec9e8bb1d1c517171f58bf47a1",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-unknown": {
+  "size": [
+   64,
+   76
+  ],
+  "rect": [
+   76,
+   14,
+   64,
+   76
+  ],
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-unknown-1328x1577.png",
+  "made": "the shelf pod before its species is known: the found field egg (sand shell, bark speckles, cream cap and ribs, earth dust on the foot), the sealing band on, no pattern; painted as cargo-rework/paint-unknown-pod.py paints every class",
+  "sha256": "95a2e3eee4355fb794de4e1ac5383f40b1197fd8f3b9b8b255b812cbc6ef2236",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "pod-shelf-unknown-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "rect": null,
+  "src": "source/raw/pod-loika|identified|band.jpg (the painted pod raws; tools/nichepods.py, the build's own pods() at the niche box); full-size master shelf/pods/pod-shelf-unknown-1328x1577.png",
+  "made": "the shelf pod before its species is known: the found field egg (sand shell, bark speckles, cream cap and ribs, earth dust on the foot), the sealing band on, no pattern; painted as cargo-rework/paint-unknown-pod.py paints every class",
+  "sha256": "2a302c3c51eca443bd4073bd5ab7c2d1f08a8e890f280eb41ba1e23c670f28dd",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
  }
 }

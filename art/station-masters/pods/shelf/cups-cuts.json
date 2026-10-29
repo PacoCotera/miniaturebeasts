@@ -1,0 +1,128 @@
+{
+ "pods-lantern-2973x4955": {
+  "size": [
+   2973,
+   4955
+  ],
+  "made": "the lantern overlay, master at the painting's own size: a small homely brass oil lantern, lit, hanging from a stub of its rod on the top row, centred, rows 0-123 of 160 at 1x (the rest clear, so it never covers a label)",
+  "raw": "source/raw/masters-pods-cups/lantern-a.jpg",
+  "sha256": "f97b92c106e63c96127c7e89223cb5fb86d83e4cb65204916c56d811c5b54c71"
+ },
+ "pods-lantern-288x480": {
+  "size": [
+   288,
+   480
+  ],
+  "made": "3x, reduced from the master",
+  "raw": null,
+  "sha256": "fc87a110f8836a8d08402f39ea5734e26bc233747337d27f05e571cb19c2b56e"
+ },
+ "pods-lantern-96x160": {
+  "size": [
+   96,
+   160
+  ],
+  "made": "1x, reduced from the master, the placed overlay",
+  "raw": null,
+  "sha256": "eef8dd79d96985e0b06b4da32ceef58f55cd08feb35225618309630eeb00f87b"
+ },
+ "pods-fern-2698x4497": {
+  "size": [
+   2698,
+   4497
+  ],
+  "made": "the fern overlay, master at the painting's own size: a sprig of soft sage-olive fronds growing in from the lower-right corner, the upper left left clear",
+  "raw": "source/raw/masters-pods-cups/fern-a.jpg",
+  "sha256": "dd47f38aa23d7be56f0314644f860aaac9ad2d800812940ff14f816d95c3d08d"
+ },
+ "pods-fern-360x600": {
+  "size": [
+   360,
+   600
+  ],
+  "made": "3x, reduced from the master",
+  "raw": null,
+  "sha256": "967a1cb34554a597ce3464fd0d2ddb1b1315f4c0d1e79237fc281cd6fc5f315b"
+ },
+ "pods-fern-120x200": {
+  "size": [
+   120,
+   200
+  ],
+  "made": "1x, reduced from the master, the placed overlay",
+  "raw": null,
+  "sha256": "3e02d165ce7c24e1d2afcfcdc01596b24d8ba27e272316b0b0bf8e0268fe8717"
+ },
+ "jar-putaway-3241x3241": {
+  "size": [
+   3241,
+   3241
+  ],
+  "made": "the put-away jar, master at the painting's own size: a squat sage-grey stoneware pantry jar, a cream band, an umber wooden lid with a knob, a linen cover tied under it",
+  "raw": "source/raw/masters-pods-cups/jar-a.jpg",
+  "sha256": "7241968a84edf82363391587ccc8282af15007e4d83ccc04cd392d1b93518990"
+ },
+ "jar-putaway-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "made": "the 96 px master size (ad-signoff 1.5), reduced from the full-size master",
+  "raw": null,
+  "sha256": "30b7414c94018f39f4d6cc03429ab4ecaee19df7136ce110cb39492c7c33a0d2"
+ },
+ "jar-putaway-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "made": "24 px, the Tucked away column's header glyph, reduced from the full-size master, a mild unsharp on the colour",
+  "raw": null,
+  "sha256": "a06b1cbf49e139e8b05ab8f0e1ceab9f4eb352e141f83b3007b508ecef41cdb2"
+ },
+ "seal-bredtrue-3232x3232": {
+  "size": [
+   3232,
+   3232
+  ],
+  "made": "the bred-true seal, master at the painting's own size: a poured wine-red wax seal, its edge irregular, no ring and no rim (never a coin), our pod pressed into it",
+  "raw": "source/raw/masters-pods-cups/seal-c.jpg",
+  "sha256": "a09c2587bc88563c10c22ec2c1bd1d0412a05a6497ae5c4ad1fa8b0f64e05a2c"
+ },
+ "seal-bredtrue-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "made": "96 px, reduced from the full-size master",
+  "raw": null,
+  "sha256": "359d33b10cad83c0103542f7e506919be5b168f6d55ad2ead979f1f654a1b0d2"
+ },
+ "seal-bredtrue-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "made": "48 px, reduced from the full-size master, a mild unsharp on the colour",
+  "raw": null,
+  "sha256": "0a87b8b7c11cd28dd8ee4fa2853cd803a001e9e911a130b3fcc33b15b30edf95"
+ },
+ "seal-bredtrue-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "made": "24 px, reduced from the full-size master, a mild unsharp on the colour",
+  "raw": null,
+  "sha256": "1ebfd32f6fda7717c95dbf4e5fe9922951ddd075a7f0681a506a550046201967"
+ },
+ "seal-bredtrue-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "made": "12 px, reduced from the full-size master, a mild unsharp on the colour",
+  "raw": null,
+  "sha256": "36f13205484a1a4ab5ac9985d5b1ad0ab34afb720287d29adb819c237f15af59"
+ }
+}

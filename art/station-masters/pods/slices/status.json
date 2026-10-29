@@ -7945,5 +7945,215 @@
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
   "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "pods-lantern-96x160": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the cabinet's lantern overlay (ux-pods-inventory.md; ad-signoff 3.2): placed at [0, 92, 96, 160], over the strip and niches, under the labels and marks"
+ },
+ "pods-lantern-288x480": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the cabinet's lantern overlay (ux-pods-inventory.md; ad-signoff 3.2): placed at [0, 92, 96, 160], over the strip and niches, under the labels and marks"
+ },
+ "pods-fern-120x200": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the cabinet's fern overlay (ux-pods-inventory.md; ad-signoff 3.2): placed at [568, 358, 120, 200], over the strip and niches, under the labels and marks"
+ },
+ "pods-fern-360x600": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the cabinet's fern overlay (ux-pods-inventory.md; ad-signoff 3.2): placed at [568, 358, 120, 200], over the strip and niches, under the labels and marks"
+ },
+ "jar-putaway-96x96": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the put-away jar (ad-signoff 1.5): the 24 px glyph in the manager's Tucked away header; the 96 px master"
+ },
+ "jar-putaway-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the put-away jar (ad-signoff 1.5): the 24 px glyph in the manager's Tucked away header; the 96 px master"
+ },
+ "seal-bredtrue-96x96": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the bred-true seal (ad-signoff 2.8, ux-breeding.md): 96 in the hatch beat, 48 on the look's picture, 24 and 12 on the track, rows and cards"
+ },
+ "seal-bredtrue-48x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the bred-true seal (ad-signoff 2.8, ux-breeding.md): 96 in the hatch beat, 48 on the look's picture, 24 and 12 on the track, rows and cards"
+ },
+ "seal-bredtrue-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the bred-true seal (ad-signoff 2.8, ux-breeding.md): 96 in the hatch beat, 48 on the look's picture, 24 and 12 on the track, rows and cards"
+ },
+ "seal-bredtrue-12x12": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the bred-true seal (ad-signoff 2.8, ux-breeding.md): 96 in the hatch beat, 48 on the look's picture, 24 and 12 on the track, rows and cards"
+ },
+ "pod-shelf-identified-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-sealed-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-band-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-crack-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-shade-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-mask-body-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-mask-accent-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-dots-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-stripes-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-bands-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-ribs-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-segments-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-segments-relief-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-plates-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-plates-relief-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-identified": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-sealed": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-band": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-crack": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-shade": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-mask-body": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-mask-accent": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-dots": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-stripes": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-bands": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-ribs": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-segments": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-segments-relief": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-plates": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-pattern-plates-relief": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-unknown": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
+ },
+ "pod-shelf-unknown-192x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)",
+  "note": "the shelf pod class (ux-pods-inventory.md: the pod at the card's [+76, +14, 64, 76], the niche's [+12, +6]; feet on the niche's row 82, on pod-niche-shadow); every kind of the collection class"
  }
 }
