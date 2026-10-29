@@ -1,0 +1,16 @@
+[
+ {
+  "name": "reading-instrument/layer-ground-open",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/reading-instrument/pick.png",
+    "THE PICKED DIRECTION (project-owned): the screen whose instrument, light and colours this layer must match."
+   ]
+  ],
+  "prompt": "Paint the SAME instrument as the first reference image, same framing, same housing and amber rim line, but the display is EMPTY and DEEPER: a dark blue-green glass (deep teal, much darker than a sky, so that cream writing will read on it anywhere), lit from inside by a soft warm amber glow pooled low in the left third (where a creature will stand) and a faint cool teal bloom high in the centre, falling off to near-black teal in the corners; very fine faint horizontal scanlines over all the glass, a soft fine grid barely visible, a faint diagonal reflection on the glass, a little amber light spilling onto the inner edge of the housing. NO ring, no chamber, no circle, no floor grid, no creature, no helix, no rows, no widgets, no text, digits or icons: only the glowing empty glass in its housing."
+ }
+]

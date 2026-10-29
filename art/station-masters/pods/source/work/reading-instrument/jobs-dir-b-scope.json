@@ -1,0 +1,28 @@
+[
+ {
+  "name": "reading-instrument/dir-b-scope",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/reading-instrument/ref-loika-pod.png",
+    "THE CREATURE (project-owned game art): the Loika read in this pod: a small round creature, charcoal head and shoulders, russet-brown body with cream patches, cream belly and muzzle, big amber eyes, four stubby legs with pale toes, three green leaves on its head. Keep its design, proportions and colours exactly; never invent another creature."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/reading-instrument/ref-layout.png",
+    "THE PLAN (our current flat mockup of this screen, project-owned): take ONLY the layout: a top bar, a large dark display filling the screen, the creature large in the left half, a column of stacked rounded chapter rows on the right half with small round sockets on each row, a thin line from a point on the creature's head to one row. Do NOT copy its flat look, its text or its icons."
+   ],
+   [
+    "/home/user/iwq/results/T-20261026-vivarium/readroom-explore-4/owner-references/ref-10.png",
+    "THE LIGHT (a reference the owner chose): take how the display GLOWS: the specimen lit by the display's own light, fine ring ticks, soft bloom, depth in the dark glass. Do not take the insect, the colours or the density."
+   ],
+   [
+    "/home/user/iwq/results/T-20261026-vivarium/readroom-explore-4/owner-references/ref-06.png",
+    "THE HELIX (a reference the owner chose): take the double helix drawn in light inside the screen, glowing softly. Not the colours, not the layout."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a cosy creature-breeding game on a handheld home research station, 16:9, a finished key art of one game screen: the READING SCREEN, where the player reads the genome of a mibi (a small cute creature) out of a seed pod. It is the nerdy part of the game, an analyser, but warm and loved, a lab that is a home. The whole picture is ONE glowing display set in a soft matte housing with a thin rim; the display glass has depth: a soft glow from inside, gentle bloom, very fine faint scanlines, light falling off into darker corners, a faint reflection on the glass, light spilling onto the housing rim. LAYOUT: in the left half, large, the Loika creature from the reference, three-quarter view, standing inside a round SPECIMEN CHAMBER of light drawn on the glass (a soft halo with thin concentric rings and fine ticks, a faint grid on the floor of the light); its BODY is painted in its true colours and lit by the display's glow with a soft rim light, while its HEAD is still unread: the head is drawn as a translucent SCAN of light (fine contour lines and scanlines, the shape only, no colour of its own). Between the creature and the right column, a tall vertical DOUBLE HELIX, the hero object: two ribbons of glowing glass twisting round each other with soft rungs, lit from within, with bloom, and along its length it changes colour in four soft bands from top to bottom: coral, sky blue, leaf green, lilac; a thin leader line of light runs from a point on the creature's head to the blue band of the helix, and on to the right. In the right half, a column of four stacked rounded translucent chapter rows on the glass, one per helix band, each edged in its band's colour, the second row (sky blue) highlighted with a warm amber outline, each row holding two or one small round sockets as glowing rings; the rows are quiet, glass, and EMPTY of writing. DIRECTION: THE SCOPE. Colour harmony: a deep blue-green glass lit in teal with amber accents, like a fine analyser; a large scope ring of fine amber ticks behind the creature, a soft teal grid across the whole glass, warm amber light pooled under the creature; the housing is dark matte graphite with a warm amber light line along its rim. Calm, precise, warm.\nNO text, letters, digits, numbers, logos or icons anywhere (the game types its words later); keep the rows and the top bar empty of writing. Nothing scary: no horror, no flesh, no red alarm, no tentacles; the creature is cute and calm. The glow is soft and warm, never harsh neon. Fill the canvas edge to edge."
+ }
+]

@@ -1,0 +1,16 @@
+[
+ {
+  "name": "reading-instrument/layer-ground",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/reading-instrument/pick.png",
+    "THE PICKED DIRECTION (project-owned): the screen whose instrument, light and colours this layer must match."
+   ]
+  ],
+  "prompt": "Paint the SAME screen as the first reference image, at the same framing and in the same light, but EMPTY: remove the creature, the helix, the leader line, the chapter rows and the sockets and anything in the top bar. Keep ONLY the instrument: the housing and its rim, the glowing display glass with its depth, soft inner glow, bloom, fine faint scanlines and light falloff to the corners, and the specimen chamber of light on the left (its soft halo, the thin concentric rings and fine ticks, the faint grid on its floor) now empty, ready for a creature to stand in it. The right half of the glass is a calm, slightly darker empty area where the game will draw its rows. No text, digits, icons or widgets. Same colours, same light, same finish."
+ }
+]

@@ -1,0 +1,16 @@
+[
+ {
+  "name": "reading-instrument/layer-rings",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/reading-instrument/pick.png",
+    "THE PICKED DIRECTION (project-owned): the screen whose instrument, light and colours this layer must match."
+   ]
+  ],
+  "prompt": "Paint a set of instrument light textures on a PURE BLACK background, neutral white light only (the game tints them), square: in the centre a large SCOPE RING made of three thin concentric rings of light, the outer one made of very fine regular tick marks, a few short arc segments between them, soft bloom, faint; the whole ring is clean, round, centred and fills most of the canvas, delicate and fine like the rings of an analyser display. No text, digits, icons, particles, or anything else."
+ }
+]

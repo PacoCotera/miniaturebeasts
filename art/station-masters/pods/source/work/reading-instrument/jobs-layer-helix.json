@@ -1,0 +1,16 @@
+[
+ {
+  "name": "reading-instrument/layer-helix",
+  "model": "gemini-3-pro-image",
+  "aspect": "9:16",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/reading-instrument/pick.png",
+    "THE PICKED DIRECTION (project-owned): the screen whose instrument, light and colours this layer must match."
+   ]
+  ],
+  "prompt": "Paint ONE straight vertical DOUBLE HELIX, centred, running the full height of the canvas, on a PURE BLACK background, as a lit object for a game screen. Two smooth ribbons of frosted glowing glass twist round each other at an even pitch (about six full turns over the height), with thin soft rungs between them; the ribbon in front is brighter and wider, the one behind dimmer and thinner; each ribbon has a bright specular core and a soft bloom around it; the light is NEUTRAL WHITE with no colour of its own (the game tints it); the helix is perfectly regular from top to bottom so it can be repeated. Nothing else: no particles, no text, no background, no frame."
+ }
+]
