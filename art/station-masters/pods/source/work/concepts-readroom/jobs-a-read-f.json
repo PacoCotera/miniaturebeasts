@@ -1,0 +1,40 @@
+[
+ {
+  "name": "concepts-readroom/a-read-f",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/concepts-readroom/a-unread-c.jpg",
+    "THE SAME SCREEN ONE MOMENT EARLIER (our concept, project-owned): keep its room, wall, window, lamp, table, dish, pinned papers, camera, scale and placement of the pod and the creature EXACTLY; change only what this state asks."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/concepts-readroom/b-read-d.jpg",
+    "THE READ BEAT (our other concept, project-owned): take from it ONLY the creature, exactly as it is here (its Loika face and eyes, its size, the russet back painted in, the grey fog head, legs and leaves with the thin pale outline), the arc of light and the two small tiles on the table, the second one flipping. Do NOT take its glass bell, its wall or its room."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-layout-read-16x9.png",
+    "THE LAYOUT (a flat wireframe, project-owned): where things go on the 1024x600 game screen (the screen is centred in this 16:9 canvas). A dark top bar and a dark bottom line; the wall behind; the table top from a little above the middle down; a brass lamp over the pod; the pod on its dish in the lamp's pool; the creature to its right; small pinned papers top left (a photo and a slip) and top right (a card). The bottom of the table is left empty. Take only the placement and the sizes. Never copy its flat look, and paint no lines, arcs or boxes from it."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-bench.jpg",
+    "THE ROOM'S MATERIALS (our signed reading-room bench painting, project-owned): its umber wood, cream plaster wall, the small low brass lamp and its warm pool of light. The new picture is clearly made by the same hand, but at night: the wall goes to soft shadow away from the lamp."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-pod-loika.png",
+    "THE POD (project-owned game art): our Loika pod, an upright seed pod with a round coral cap, slate-blue body, pale vertical ribs and coral dots. Keep its shape, cap, ribs and dots; it is the hero of the picture."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-loika.png",
+    "THE CREATURE (project-owned game art): the Loika the pod will become: a small round charcoal creature with a cream belly and muzzle, amber eyes, four stubby legs with pale toes and three green leaves on its head. Keep its design exactly; never invent another creature."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed Vivarium room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden light, cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a cosy handheld creature-keeping game, 16:9, a calm front-on view slightly from above: the READING ROOM, where the player studies a pod (a wild seed pod with a creature's genome sleeping inside it) one page at a time. A naturalist at home after dark, one find on the table.\nPLACEMENT (follow the layout): a plain dark slate band (#1d232b) across the very top and one across the very bottom, empty. Between them the wall behind, and a wooden study table whose top runs across the screen from a little above the middle down to the bottom band. A low small brass lamp hangs DIRECTLY above the pod, its shade just above the pod's cap; its warm pool of light falls on the pod. The POD stands on a low turned wooden dish with a thin brass lip, its centre a little left of the screen's centre (at about 39 percent of the width), in the pool; the pod is SMALL and modest, a little SHORTER than the creature beside it (the pod with its cap about 30 percent of the screen's height, the dish's foot at about 63 percent of the height), with a wide margin of wall above its cap; it is the brightest thing on screen, not the biggest. It is OUR pod, not a jar or vase: keep its round coral cap, its pale vertical ribs, its coral dots and its slate-blue colour; only its shell between the ribs is a translucent smoky slate-blue glass lit from within. The CREATURE stands on the table to the pod's right, at the pool's edge, about as tall as the pod. Top left, pinned to the wall: a small photo print of the place it was found (a meadow by a pond) on kraft paper with a blank strip under it, and below it a small kraft slip with a tiny painted pod on it (its kin). Top right, pinned: a small cream card with a tiny painting of a Loika with pale patches on its back (the player's goal). The lower part of the table (below the dish and the creature) is plain, quiet, empty wood, darker toward the bottom: nothing stands there (the game places its buttons and words there later). \nDIRECTION: THE LAMP AND THE GLASS. A dark wooden study table at night under the one low brass lamp; the wall behind is plaster going to shadow, with a window's last deep blue dusk at the far right edge. The pod is lit from above and glows from within like a seed held to a candle. Between its pale ribs its shell is thin warm glass with real depth: a soft rim light on its edges and a faint reflection of the lamp, so what is inside feels truly INSIDE, deep in the glass, not stuck on the surface. The pinned papers are warm kraft with hand-inked edges, small brass pins and a string; one has a pressed leaf. The creature stands at the pool's edge, half in light. The feel: a quiet evening, one find, and something alive in it.\nSTATE: THE MOMENT OF A READ. The lamp's pool brightens; light passes through the pod. One mote has left the pod: a small glowing square tile of russet fur rises out of the top of the pod along a short soft arc of warm light and is just landing on the creature's back, where the coat paints in from the fog: the creature's back and flank now in real russet-and-charcoal colour, the rest of it still a soft grey fog silhouette with a thin pale outline. Three motes remain drifting in the pod (it is emptier than before). On the table under the creature, a small painted tile of russet fur lies face up, and under its corner a second, smaller tile is caught MID-TURN, flipping over like a playing card to show an ash-grey fur underside: the hidden copy the pod was keeping. A tiny burst of sparks over the russet tile (a look never seen before). Discovery, then a small second discovery.\nThe room, camera, pod and dish are EXACTLY those of the same-screen frame; the creature stands where the grey silhouette stands there, at that size. KEEP THE CREATURE ON MODEL: it is exactly the Loika of the creature reference (round charcoal body, cream belly and muzzle, amber eyes, stubby legs, three green leaves on its head), never another animal. Only its BACK and upper flank are now painted in, in russet fur; its head, legs, belly and leaves are STILL the soft cool grey fog silhouette with a thin pale outline. The pod keeps its coral cap, ribs and dots, and its glass glows with three of the glyph motes left inside (the same kind of motes as the earlier frame).\nLIGHT AND FINISH: one warm key light from the lamp, warm bounce, soft ambient occlusion, a soft contact shadow under every object. Matte, hand-painted miniature finish like the painted reference, cosy and warm, real depth; low saturation everywhere except the pod's inner light. No gloss, no chrome, no plastic, no neon, no sci-fi interface, no holograms, nothing childish.\nNO text, letters, digits, numbers or logos anywhere, and no symbols other than the faint part silhouettes inside the pod (the game types its words later): the papers carry only their small paintings, with no writing. No buttons, no plates, no dishes other than the pod's one dish. No frame, no border, no vignette; the screen fills the canvas edge to edge."
+ }
+]

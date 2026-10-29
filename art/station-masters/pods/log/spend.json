@@ -8584,5 +8584,311 @@
    "thoughtsTokenCount": 264,
    "totalTokenCount": 4237
   }
+ },
+ {
+  "tag": "concepts-readroom/a-unread try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.355976,
+  "mxn": 7.1195,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:13:00Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2548,
+   "candidatesTokenCount": 2545,
+   "thoughtsTokenCount": 379,
+   "totalTokenCount": 5472
+  }
+ },
+ {
+  "tag": "concepts-readroom/a-unread-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.350424,
+  "mxn": 7.0085,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:14:16Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2652,
+   "candidatesTokenCount": 2508,
+   "thoughtsTokenCount": 368,
+   "totalTokenCount": 5528
+  }
+ },
+ {
+  "tag": "concepts-readroom/a-read-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.345,
+  "mxn": 6.9,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:15:15Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2700,
+   "candidatesTokenCount": 2555,
+   "thoughtsTokenCount": 275,
+   "totalTokenCount": 5530
+  }
+ },
+ {
+  "tag": "concepts-readroom/a-full-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.349572,
+  "mxn": 6.9914,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:16:06Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2646,
+   "candidatesTokenCount": 2554,
+   "thoughtsTokenCount": 315,
+   "totalTokenCount": 5515
+  }
+ },
+ {
+  "tag": "concepts-readroom/a-unread-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.364926,
+  "mxn": 7.2985,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:16:42Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2703,
+   "candidatesTokenCount": 2638,
+   "thoughtsTokenCount": 358,
+   "totalTokenCount": 5699
+  }
+ },
+ {
+  "tag": "concepts-readroom/a-compare-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.343762,
+  "mxn": 6.8752,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:17:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2621,
+   "candidatesTokenCount": 2448,
+   "thoughtsTokenCount": 373,
+   "totalTokenCount": 5442
+  }
+ },
+ {
+  "tag": "concepts-readroom/b-unread-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.362846,
+  "mxn": 7.2569,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:18:12Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2683,
+   "candidatesTokenCount": 2537,
+   "thoughtsTokenCount": 442,
+   "totalTokenCount": 5662
+  }
+ },
+ {
+  "tag": "concepts-readroom/b-read-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.35192,
+  "mxn": 7.0384,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:18:47Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2680,
+   "candidatesTokenCount": 2461,
+   "thoughtsTokenCount": 427,
+   "totalTokenCount": 5568
+  }
+ },
+ {
+  "tag": "concepts-readroom/b-full-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.343892,
+  "mxn": 6.8778,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:19:23Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2626,
+   "candidatesTokenCount": 2499,
+   "thoughtsTokenCount": 323,
+   "totalTokenCount": 5448
+  }
+ },
+ {
+  "tag": "concepts-readroom/c-unread-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.351072,
+  "mxn": 7.0214,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:20:11Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2676,
+   "candidatesTokenCount": 2482,
+   "thoughtsTokenCount": 399,
+   "totalTokenCount": 5557
+  }
+ },
+ {
+  "tag": "concepts-readroom/c-read-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.365706,
+  "mxn": 7.3141,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:20:48Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2673,
+   "candidatesTokenCount": 2665,
+   "thoughtsTokenCount": 338,
+   "totalTokenCount": 5676
+  }
+ },
+ {
+  "tag": "concepts-readroom/c-full-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.360798,
+  "mxn": 7.216,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:21:28Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2619,
+   "candidatesTokenCount": 2613,
+   "thoughtsTokenCount": 350,
+   "totalTokenCount": 5582
+  }
+ },
+ {
+  "tag": "concepts-readroom/a-read-d try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.322586,
+  "mxn": 6.4517,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:22:31Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 3133,
+   "candidatesTokenCount": 2401,
+   "thoughtsTokenCount": 235,
+   "totalTokenCount": 5769
+  }
+ },
+ {
+  "tag": "concepts-readroom/a-full-d try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.321042,
+  "mxn": 6.4208,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:23:06Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 3021,
+   "candidatesTokenCount": 2301,
+   "thoughtsTokenCount": 324,
+   "totalTokenCount": 5646
+  }
+ },
+ {
+  "tag": "concepts-readroom/a-read-e try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.330768,
+  "mxn": 6.6154,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:24:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 3504,
+   "candidatesTokenCount": 2495,
+   "thoughtsTokenCount": 203,
+   "totalTokenCount": 6202
+  }
+ },
+ {
+  "tag": "concepts-readroom/a-compare-d try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.336734,
+  "mxn": 6.7347,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:24:34Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 3007,
+   "candidatesTokenCount": 2454,
+   "thoughtsTokenCount": 302,
+   "totalTokenCount": 5763
+  }
+ },
+ {
+  "tag": "concepts-readroom/b-read-d try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.351106,
+  "mxn": 7.0221,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:25:13Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 3113,
+   "candidatesTokenCount": 2508,
+   "thoughtsTokenCount": 366,
+   "totalTokenCount": 5987
+  }
+ },
+ {
+  "tag": "concepts-readroom/a-read-f try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.315904,
+  "mxn": 6.3181,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:26:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 3512,
+   "candidatesTokenCount": 2279,
+   "thoughtsTokenCount": 295,
+   "totalTokenCount": 6086
+  }
  }
 ]
