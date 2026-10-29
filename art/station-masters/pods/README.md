@@ -1085,6 +1085,21 @@ The Station art director's dawn fix (returned to `new` after a 1x check: the key
 
 Honest notes: the dawns' saturation (33, 36, 42) stays under the day's (48, 57, 50) and the dusk's (56, 62, 62); the key R-B reaches the asked 35 but not the day's 74. The night glass and the other lights are unchanged.
 
+## Pass 144 - the reading-room dish (1 request, 5.92 MXN)
+
+The art director's review of the built Pods screens (pods-build/ad-review.md B1) found the reading room's dish a flat code pill; it is painted here in the warm home language of passes 142 and 143 (the bench's umber wood and aged brass, the lamp's light from the upper left). One request to the image tool at 4K, one try, succeeded (`python3 -I tools/gen.py source/work/masters-pods-dish/jobs-dish-a.json`, the day total checked before it; Pacific day 2026-10-29 from 0.00 to 5.92 MXN of 250; the Pods screen art from 150.31 to 156.23 of the approved 300). Reference by [`tools/dishrefs.py`](tools/dishrefs.py), a crop of the signed pass 142 bench (its brass lamp, the pool of light and the umber bench top), with a signed room painting for the treatment. The raw is kept full size in `source/raw/masters-pods-dish/`. Cut by [`tools/dishmasters.py`](tools/dishmasters.py), full size first: keyed off its magenta ground and unmixed as in pass 143, cut to its ink, laid in the box's aspect at the painting's own width (the master in `shelf/`), then reduced in premultiplied alpha, never enlarged. Registered by [`tools/register-dish.py`](tools/register-dish.py) in `slices/` (manifest and status rows, signed by the art director at 1x; the generated Slices table above was not regenerated). Proof at 1x: `shelf/proof-reading-dish-1x.png` (the dish on the signed bench at its place).
+
+- **`reading-dish-136x28`** (3x `-408x84`, master `shelf/reading-dish-5132x1057`): `dish-a`, a low turned saucer of the bench's umber wood with a soft grain and a thin aged-brass lip, empty, the lip's gleam on the left and the right end in warm shadow. Its ink fills the box, rim on row 0 and foot on the last row, so placed at **[72, 248, 136, 28]** its foot stands on the bench's feet line (y 276). The pod stands on it.
+
+1x numbers (`tools/numbers.py`):
+
+| slice | mean L* | key RGB | key R-B | sat |
+| --- | --- | --- | --- | --- |
+| `reading-dish-136x28` | 34.4 | (186, 143, 99) | 87 | 57 |
+| `reading-dish-408x84` | 34.3 | (187, 144, 100) | 88 | 57 |
+
+Honest notes: the painting's dish is 3.1:1, not the asked 5:1, so its height is brought to the box's 136:28 (x 0.645, the width as painted); it reads as the same dish seen from a slightly lower eye, and the brass lip is thinner for it. No contact shadow is painted under the foot: on the bench it wants the placer's own soft contact shadow, as the niche's pods have theirs.
+
 ## Pass 143 - the Pods screen's remaining art: lantern, fern, put-away jar, bred-true seal, and the pods cut to the niche (6 requests, 35.71 MXN)
 
 The art director's last pieces for the signed pod inventory, the manager and breeding (ad-signoff.md 1.5, 2.8, 3.1, 3.2; the Library out of scope), in the warm home language of pass 142 (its brass, wood, plaster and light from the upper left). Six requests to the image tool at 4K, one try each, all succeeded (`python3 -I tools/gen.py source/work/masters-pods-cups/jobs-*.json`, the day total checked before each; Pacific day 2026-10-28 from 307.41 to 343.12 MXN of 500). References by [`tools/cupsrefs.py`](tools/cupsrefs.py), crops of the signed pass 142 masters (the bench's brass lamp, two periods of the cabinet, the sealed pod's silhouette). Every raw is kept full size in `source/raw/masters-pods-cups/`. Cut by [`tools/cupsmasters.py`](tools/cupsmasters.py), full size first: each piece keyed off its flat ground, unmixed, laid in its box at the painting's own resolution (the masters in `shelf/`), then reduced in premultiplied alpha, never enlarged. Registered by [`tools/register-cups.py`](tools/register-cups.py) in `slices/` (manifest and status rows, signed by the art director at 1x; the generated Slices table above was not regenerated). Proofs at 1x: `shelf/proof-cabinet-overlays-1x.png` (the cabinet with the lantern, the fern and the shelf pods) and `shelf/proof-cups-sheet-1x.png` (every piece on slate and on cream paper).

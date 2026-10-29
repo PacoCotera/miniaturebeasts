@@ -24460,5 +24460,34 @@
   "sha256": "2a302c3c51eca443bd4073bd5ab7c2d1f08a8e890f280eb41ba1e23c670f28dd",
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+ },
+ "reading-dish-136x28": {
+  "size": [
+   136,
+   28
+  ],
+  "rect": [
+   72,
+   248,
+   136,
+   28
+  ],
+  "src": "source/raw/masters-pods-dish/dish-a.jpg (painted at 4K; tools/dishmasters.py); full-size master shelf/reading-dish-5132x1057.png",
+  "made": "1x, reduced from the master, the placed dish at [72, 248]",
+  "sha256": "f9f31549cdd7b9cf3aace7444aa42e9508a32880a116939549408e49a2dded62",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 144)"
+ },
+ "reading-dish-408x84": {
+  "size": [
+   408,
+   84
+  ],
+  "rect": null,
+  "src": "source/raw/masters-pods-dish/dish-a.jpg (painted at 4K; tools/dishmasters.py); full-size master shelf/reading-dish-5132x1057.png",
+  "made": "3x, reduced from the master",
+  "sha256": "df33fc4ddd0323db863c7947e3d033faa6ba02182c93d6fdcade847b9c120cff",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 144)"
  }
 }

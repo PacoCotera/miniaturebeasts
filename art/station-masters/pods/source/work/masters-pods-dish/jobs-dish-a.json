@@ -1,0 +1,20 @@
+[
+ {
+  "name": "masters-pods-dish/dish-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "21:9",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-pods-dish/ref-bench-lamp.jpg",
+    "THE READING BENCH IT STANDS ON (our signed painting, project-owned): the umber wood of the bench top and the soft, aged, matte brass of the low lamp, and the lamp's warm pool of light on the wood. Make the dish from this same wood and this same brass, lit by this same lamp from the upper left, so it is clearly made by the same hand. Do NOT paint the bench, the wall or the lamp: they are not in the new picture."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint ONE small, low, shallow round dish for a naturalist's reading bench in a warm home, the dish an egg is set on to be studied. It is a turned wooden saucer of warm umber wood with a soft grain, with a thin rim of aged matte brass around its lip, empty. Seen from the front and only slightly from above, so its top is a very flat, wide ellipse: the whole dish is about five times as wide as it is tall. Its brass lip is the top edge; its rounded wooden front side curves down to a low, narrow foot. The warm lamp light falls from the upper left: the left of the brass lip catches a soft warm gleam, the inner floor of the dish is lit on its far side, the right end and the underside fall into soft warm shadow. Centred, it fills about 92 percent of the picture's width; the rest is the background. Simple, sturdy and homely, not ornate, no handles, no feet, no pattern, no engraving. The object stands alone on a perfectly FLAT, uniform, pure magenta background (#FF00FF) that fills the whole rest of the picture edge to edge: no gradient, no texture, no table, no floor, no wall, no cast shadow on the background, no glow or haze spilling onto the magenta, no reflections of magenta in the object. Nothing else in the picture: nothing in the dish, no text, letters, numbers or symbols, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]

@@ -8419,5 +8419,22 @@
    "thoughtsTokenCount": 276,
    "totalTokenCount": 3588
   }
+ },
+ {
+  "tag": "masters-pods-dish/dish-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.29594,
+  "mxn": 5.9188,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T16:17:42Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1030,
+   "candidatesTokenCount": 2233,
+   "thoughtsTokenCount": 216,
+   "totalTokenCount": 3479
+  }
  }
 ]

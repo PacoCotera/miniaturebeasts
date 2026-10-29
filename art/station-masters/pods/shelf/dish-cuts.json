@@ -1,0 +1,29 @@
+{
+ "reading-dish-5132x1057": {
+  "size": [
+   5132,
+   1057
+  ],
+  "made": "the reading-room dish, master at the painting's own width: a low turned saucer of the bench's umber wood with a thin aged-brass lip, lit from the upper left by the bench's lamp, empty; its ink 5132x1640 brought to the box's 136:28 (height x 0.645, width as painted)",
+  "raw": "source/raw/masters-pods-dish/dish-a.jpg",
+  "sha256": "44b9cc1527d349a96a90c8a895d3aedd2f190932ea5f816dd03619ce641f121d"
+ },
+ "reading-dish-408x84": {
+  "size": [
+   408,
+   84
+  ],
+  "made": "3x, reduced from the master",
+  "raw": null,
+  "sha256": "df33fc4ddd0323db863c7947e3d033faa6ba02182c93d6fdcade847b9c120cff"
+ },
+ "reading-dish-136x28": {
+  "size": [
+   136,
+   28
+  ],
+  "made": "1x, reduced from the master, the placed dish at [72, 248]",
+  "raw": null,
+  "sha256": "f9f31549cdd7b9cf3aace7444aa42e9508a32880a116939549408e49a2dded62"
+ }
+}
