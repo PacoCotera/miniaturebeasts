@@ -8215,5 +8215,107 @@
    "thoughtsTokenCount": 300,
    "totalTokenCount": 4846
   }
+ },
+ {
+  "tag": "masters-pods-shelf/strip-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.299812,
+  "mxn": 5.9962,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T04:30:33Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1346,
+   "candidatesTokenCount": 2253,
+   "thoughtsTokenCount": 223,
+   "totalTokenCount": 3822
+  }
+ },
+ {
+  "tag": "masters-pods-shelf/niche-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.297592,
+  "mxn": 5.9518,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T04:32:32Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1196,
+   "candidatesTokenCount": 2208,
+   "thoughtsTokenCount": 252,
+   "totalTokenCount": 3656
+  }
+ },
+ {
+  "tag": "masters-pods-shelf/niche-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.294882,
+  "mxn": 5.8976,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T04:33:24Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1281,
+   "candidatesTokenCount": 2233,
+   "thoughtsTokenCount": 203,
+   "totalTokenCount": 3717
+  }
+ },
+ {
+  "tag": "masters-pods-shelf/husk-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.301876,
+  "mxn": 6.0375,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T04:34:23Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 878,
+   "candidatesTokenCount": 2217,
+   "thoughtsTokenCount": 284,
+   "totalTokenCount": 3379
+  }
+ },
+ {
+  "tag": "masters-pods-shelf/bench-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.312762,
+  "mxn": 6.2552,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T04:35:18Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1401,
+   "candidatesTokenCount": 2350,
+   "thoughtsTokenCount": 233,
+   "totalTokenCount": 3984
+  }
+ },
+ {
+  "tag": "masters-pods-shelf/bench-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.318334,
+  "mxn": 6.3667,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T04:36:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1427,
+   "candidatesTokenCount": 2382,
+   "thoughtsTokenCount": 247,
+   "totalTokenCount": 4056
+  }
  }
 ]

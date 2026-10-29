@@ -1,0 +1,20 @@
+[
+ {
+  "name": "masters-pods-shelf/husk-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/masters-pods-shelf/niche-b.jpg",
+    "THE PICTURE TO EDIT (our painted niche, project-owned): an empty round wooden niche in the cabinet board. Keep the niche, the board, the plaster, the ledge, the light and the finish exactly; only add what is asked."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-pods-shelf/ref-pods-from-shelf.png",
+    "THE PODS (project-owned game art): our seed pods: upright, a round cap, banded ribs from cap to base. Right: the sand-coloured sealed pod. The husk is what such a pod becomes when it dries out. Take the pod's shape only, not the grey metal cups."
+   ]
+  ],
+  "prompt": "Edit the niche picture: in the niche, standing on its rounded bottom, centred left to right, put the DRIED HUSK of one of our seed pods: the same upright pod shape with its round cap and ribs, but dried out and empty: shrunken a little, papery and brittle, its ribs sunken and wrinkled, a pale greyish straw-tan with no colour left, the cap faded and slightly tilted, one thin crack running down its side, a few dry flakes at its foot. Its size: about three quarters of the niche's width and a little under the niche's height, its foot resting on the niche floor, its top well below the lip. It sits in the same lantern light from the upper left, with a soft contact shadow on the niche floor and the niche's soft occlusion around it. It must look sad and quiet but not ugly: a keepsake, not rubbish. Do not change anything else: the niche, the board, the plaster and the ledge stay exactly as they are. No rings, no groove, no glow, no text, letters, numbers or symbols. Matte hand-painted miniature finish, low saturation."
+ }
+]

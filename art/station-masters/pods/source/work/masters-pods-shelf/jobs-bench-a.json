@@ -1,0 +1,24 @@
+[
+ {
+  "name": "masters-pods-shelf/bench-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-pods-shelf/ref-layout-bench-1024x600.png",
+    "THE LAYOUT (a flat wireframe, project-owned) of the 1024x600 screen: dark top bar and bottom line (leave those bands plain dark slate #1d232b), the bench top as a band across the full width with its front below, the low brass lamp hood upper left hanging from above, its warm pool of light on the bench (the yellow ellipse), the small box where a dish will be placed later, and the outlined areas on the right where paper panels will be placed later. Take only the placement. Never copy its flat look, its outlines or its boxes."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/masters-pods-shelf/strip-a.jpg",
+    "THE CABINET (our painted pod cabinet, project-owned): this exact aged umber wood and cream plaster, the same finish and warmth. The reading bench is made of the same wood, and the wall behind is the same plaster."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden light and cosy depth. Take the treatment and the warmth only."
+   ]
+  ],
+  "prompt": "Paint the backdrop of a quiet reading room in a cosy naturalist's home, for a handheld game screen, 16:9, seen front-on at the height of the bench: a long, plain reading bench of aged umber wood runs across the whole width; its top surface is a narrow band seen slightly from above, at the layout's height; below it the bench's front is a calm, plain, dark umber plank face that fills the lower part of the screen. Behind the bench, a warm cream plaster wall, softly OUT OF FOCUS (a gentle depth-of-field blur), with only faint hints of a shelf edge or a framed paper far behind, all blurred and quiet. Upper left, a LOW BRASS LAMP hangs from above on a short stem: a small warm brass hood, its glow pooled on the bench top beneath it, a soft warm circle of light on the wood at the left, so the left of the bench is the brightest, warmest place on the screen; the light falls off gently to the right, where the wall and bench stay calm and dim for paper panels to sit on later.\n\nThe bench top and the wall are EMPTY: no pod, no dish, no books, no papers, no tools, no jars, no plants, no creatures, no props of any kind. Keep the area under the lamp perfectly clear, and keep the bench front plain and even, with no drawers, no handles, no carving, no knots. The top band and the bottom band of the screen are plain dark slate (#1d232b), empty, edge to edge.\n\nNO text, letters, numbers, symbols, icons or interface. No frame, no vignette. Matte hand-painted miniature finish, one warm key light (the lamp) from the upper left, soft occlusion, low-saturation umber, cream and brass, never bright orange, no gloss, no chrome, no plastic."
+ }
+]
