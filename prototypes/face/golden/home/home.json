@@ -2,67 +2,67 @@
  "_note": "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "home-fresh": {
-   "hash": "5a51430e",
+   "hash": "a5db070d",
    "png": "home-fresh.png"
   },
   "home-rest-goal": {
-   "hash": "54b397e4",
+   "hash": "27b83fb7",
    "png": "home-rest-goal.png"
   },
   "home-rest-needs": {
-   "hash": "0d0259c0",
+   "hash": "de17135f",
    "png": "home-rest-needs.png"
   },
   "home-focus-vivarium": {
-   "hash": "ae2e3701",
+   "hash": "b0095d2e",
    "png": "home-focus-vivarium.png"
   },
   "home-focus-library": {
-   "hash": "e2a267e1",
+   "hash": "76bda536",
    "png": "home-focus-library.png"
   },
   "home-focus-pods": {
-   "hash": "0b285e70",
+   "hash": "b5a70e43",
    "png": "home-focus-pods.png"
   },
   "home-focus-incubator": {
-   "hash": "444d3278",
+   "hash": "924fa74f",
    "png": "home-focus-incubator.png"
   },
   "home-focus-companion": {
-   "hash": "3a6e6ba1",
+   "hash": "a6814c06",
    "png": "home-focus-companion.png"
   },
   "home-focus-companion-away": {
-   "hash": "b4a4f6a3",
+   "hash": "29cc2843",
    "png": "home-focus-companion-away.png"
   },
   "home-focus-bay": {
-   "hash": "cc552d28",
+   "hash": "8279bfc7",
    "png": "home-focus-bay.png"
   },
   "home-vivarium-all-home": {
-   "hash": "aa206abd",
+   "hash": "f334c956",
    "png": "home-vivarium-all-home.png"
   },
   "home-vivarium-some-away": {
-   "hash": "4e008c1f",
+   "hash": "d3242ecf",
    "png": "home-vivarium-some-away.png"
   },
   "home-window-dawn": {
-   "hash": "d130c1f5",
+   "hash": "35ad6d43",
    "png": "home-window-dawn.png"
   },
   "home-window-dusk": {
-   "hash": "2437bc5f",
+   "hash": "9517001c",
    "png": "home-window-dusk.png"
   },
   "home-window-night": {
-   "hash": "ceb310d7",
+   "hash": "4cc03e9a",
    "png": "home-window-night.png"
   },
   "home-window-five-of-eight": {
-   "hash": "2af2ca75",
+   "hash": "11a45dca",
    "png": "home-window-five-of-eight.png"
   },
   "home-room-reeds": {
@@ -70,71 +70,71 @@
    "png": "home-room-reeds.png"
   },
   "home-event-tag": {
-   "hash": "6102746f",
+   "hash": "ef8cf980",
    "png": "home-event-tag.png"
   },
   "home-vivarium-none-home": {
-   "hash": "abe823bc",
+   "hash": "97913e14",
    "png": "home-vivarium-none-home.png"
   },
   "home-incubator-empty": {
-   "hash": "f3be61e4",
+   "hash": "722b9f67",
    "png": "home-incubator-empty.png"
   },
   "home-incubator-can": {
-   "hash": "701d866d",
+   "hash": "7fb3433e",
    "png": "home-incubator-can.png"
   },
   "home-incubator-growing": {
-   "hash": "4eab4c97",
+   "hash": "eeb9f5a4",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-half": {
-   "hash": "582828e8",
+   "hash": "01e25a37",
    "png": "home-incubator-half.png"
   },
   "home-incubator-ready": {
-   "hash": "633e5978",
+   "hash": "687f794f",
    "png": "home-incubator-ready.png"
   },
   "home-bay-waiting": {
-   "hash": "162209d4",
+   "hash": "7ba524bf",
    "png": "home-bay-waiting.png"
   },
   "home-bay-portrait": {
-   "hash": "9accdd1f",
+   "hash": "a9247c74",
    "png": "home-bay-portrait.png"
   },
   "home-companion-docked": {
-   "hash": "501865e5",
+   "hash": "541f968a",
    "png": "home-companion-docked.png"
   },
   "home-companion-away": {
-   "hash": "27744b1d",
+   "hash": "e0736e71",
    "png": "home-companion-away.png"
   },
   "home-pods-empty": {
-   "hash": "f3be61e4",
+   "hash": "722b9f67",
    "png": "home-pods-empty.png"
   },
   "home-pods-full": {
-   "hash": "b6735a57",
+   "hash": "442acff4",
    "png": "home-pods-full.png"
   },
   "home-library-0-new": {
-   "hash": "a4552e8f",
+   "hash": "f33cbad4",
    "png": "home-library-0-new.png"
   },
   "home-library-3-new": {
-   "hash": "fe7abf3b",
+   "hash": "27ec45a0",
    "png": "home-library-3-new.png"
   },
   "home-library-focused": {
-   "hash": "d5128352",
+   "hash": "c9d17255",
    "png": "home-library-focused.png"
   },
   "home-full-bud": {
-   "hash": "d11a3312",
+   "hash": "2b0e64e9",
    "png": "home-full-bud.png"
   }
  }

@@ -2031,6 +2031,14 @@
    "sha256": "56fce90626e48e1b94d84e0a06abc11f4728a7cd0a8ec01122b4ff9fac406d66",
    "signed": "AD 2026-10-23 23:53, b00a8b17"
   },
+  "mark-asleep-16": {
+   "file": "collection/mark-asleep-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "0a816edc77e136b74fd08056fc16b3601e237401520c365a83c1e66e43148dad",
+   "signed": "new (code-drawn by the builder, collection v2 art job 5, for the art director's 1x proof), not final",
+   "status": "new"
+  },
   "mark-asleep-24x16": {
    "file": "pods/mark-asleep-24x16.png",
    "w": 24,
@@ -2164,12 +2172,44 @@
    "sha256": "e63c0262e1bba6b08f2f5ecefb5bab00f16d23a3e873385af95fa97e09afdf5f",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "mark-cold-16": {
+   "file": "collection/mark-cold-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "b2e9f425a9a96648b14617f5b4696eed4e281ee6e97f451ef2d1ddf541031750",
+   "signed": "new (code-drawn by the builder, collection v2 art job 5, for the art director's 1x proof), not final",
+   "status": "new"
+  },
+  "mark-companion-outline-16": {
+   "file": "collection/mark-companion-outline-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "d16e490d9d278df8b91d12224ce29b572bc4c8049c351855c042eb87fa822176",
+   "signed": "new (code-drawn by the builder, collection v2 art job 5, for the art director's 1x proof), not final",
+   "status": "new"
+  },
+  "mark-companion-solid-16": {
+   "file": "collection/mark-companion-solid-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "a3c2ef6cd36e01f649d301813d7b3980e50f57b99d3cf8becb59d81c8df36992",
+   "signed": "new (code-drawn by the builder, collection v2 art job 5, for the art director's 1x proof), not final",
+   "status": "new"
+  },
   "mark-dock-24x24": {
    "file": "pods/mark-dock-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "70c9f0f94bc6c104587d7788d57d1646778118ecd20d75c1a06e17295090eb06",
    "signed": "art director, Probe bench set (masters-pods 34fca1f4)"
+  },
+  "mark-elder-16": {
+   "file": "collection/mark-elder-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "057da2b83673b2af20f10aaeec6d2a4c0b65bb4ca2bf539ef9fda5ec406cec4e",
+   "signed": "new (code-drawn by the builder, collection v2 art job 5, for the art director's 1x proof), not final",
+   "status": "new"
   },
   "mark-first-16x16": {
    "file": "pods/mark-first-16x16.png",
@@ -2184,6 +2224,14 @@
    "h": 16,
    "sha256": "f3eb7abe13e074ad15ec700ba04a8e5069b6950f20da3783b78ae1efab4f31a7",
    "signed": "named with --ids"
+  },
+  "mark-heart-16": {
+   "file": "collection/mark-heart-16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "8fb280b1c65b48a1a94ccc03f746176017d6691a4181f5fd920eb30cfa6fd546",
+   "signed": "new (code-drawn by the builder, collection v2 art job 5, for the art director's 1x proof), not final",
+   "status": "new"
   },
   "mark-home-16": {
    "file": "pods/mark-home-16.png",
@@ -6426,6 +6474,42 @@
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
    "from": "rooms/pieces/boulders/boulders-arm-fill-night.png@b7bc7c9e"
   },
+  "room-boulders-chip-dawn-128x32": {
+   "file": "rooms/room-boulders-chip-dawn-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "ba8f6e50adf460058fcedab62f1fef8d1d0a34b25aea2e509c82913c92dbcb68",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-boulders-chip-dawn-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-boulders-chip-day-128x32": {
+   "file": "rooms/room-boulders-chip-day-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "740faf57ee53755be5f2d53ef5dbb16460b5a1e90c3c5297f6e5d77969ad1dcc",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-boulders-chip-day-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-boulders-chip-dusk-128x32": {
+   "file": "rooms/room-boulders-chip-dusk-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "af33a66c664775dac5035667f1d28b6e1333703aa8305a73491a2df6da0a4edd",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-boulders-chip-dusk-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-boulders-chip-night-128x32": {
+   "file": "rooms/room-boulders-chip-night-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "289d5dcda8be75268fc97b10c5ad8d3ad14431f455dba30a7c1fff771306fca1",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-boulders-chip-night-128x32.png@b7bc7c9e + collection v2 art job"
+  },
   "room-boulders-cushion-1-dawn-82x46": {
    "file": "rooms/room-boulders-cushion-1-dawn-82x46.png",
    "w": 82,
@@ -6462,33 +6546,37 @@
    "file": "rooms/room-boulders-idle-dawn-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "57cc6bb4da6dace8e935ddd15c35be04e7d92c4ec3f34d5e6dff01de19e15e91",
-   "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/seated-idle-boulders-dawn.png@b7bc7c9e"
+   "sha256": "1ba51bcb471564587d61a41145861cb9e3c7427c38e5007b975d6d56324076b4",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/seated-idle-boulders-dawn.png@b7bc7c9e + collection v2 art job"
   },
   "room-boulders-idle-day-1024x568": {
    "file": "rooms/room-boulders-idle-day-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "d28fe65e5d7f604d431b8e99bfb9db8df987b84175828159c8e54535690fd29e",
-   "signed": "art director, Mon 26 Oct 2026 18:44 (Mexico City), day composition: G1 no fittings (composite method); G2 per-room levels below; G3 day floor L* 40.0, whole 39.8; G4 painted finish; G6 Home cut holds the maple, pond and terrace (the hero stone sits just outside it at x 690-830); G7 the pond set back behind the ground, no fish painted, no shore onto the ground; G10 all six minis read on the moss and on the terrace",
-   "from": "rooms/seated-idle-boulders-day.png@b7bc7c9e"
+   "sha256": "913658e4dc6325b8c96f2c699a2e31c4e10c36b23aae1ab7e39170a11978a090",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/seated-idle-boulders-day.png@b7bc7c9e + collection v2 art job"
   },
   "room-boulders-idle-dusk-1024x568": {
    "file": "rooms/room-boulders-idle-dusk-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "ba1afec8d055e533a03e92b913e52f3bfefc92b652938ce48e67b2f419e6bb34",
-   "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level",
-   "from": "rooms/seated-idle-boulders-dusk.png@b7bc7c9e"
+   "sha256": "dbbff5c17a8089e270febe468cf46561becaf4d9e335d2e561c9002b4eb52df1",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/seated-idle-boulders-dusk.png@b7bc7c9e + collection v2 art job"
   },
   "room-boulders-idle-night-1024x568": {
    "file": "rooms/room-boulders-idle-night-1024x568.png",
    "w": 1024,
    "h": 568,
-   "sha256": "613c2affe08f21c7f68ee2ff4ab009c6b12f05814dace163269837ee867cb129",
-   "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
-   "from": "rooms/seated-idle-boulders-night.png@b7bc7c9e"
+   "sha256": "a65033888845d43008239a4df94697e37801b80d4ad6fcffa61ae857af8788fa",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/seated-idle-boulders-night.png@b7bc7c9e + collection v2 art job"
   },
   "room-boulders-lantern-dawn-34x44": {
    "file": "rooms/room-boulders-lantern-dawn-34x44.png",
@@ -6631,6 +6719,42 @@
    "h": 96,
    "sha256": "7c933d3da94332df0d0ace023bbf4064ad2e55fbcb186cb37560cfb00764cc80",
    "signed": "art director, Create relit stage, chamber back and the dish front (CA1, CA3; masters-pods 30a58bc5, from 1cb5b1a2)"
+  },
+  "room-ferns-chip-dawn-128x32": {
+   "file": "rooms/room-ferns-chip-dawn-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "6c8975e9295f58bb05da3904284e052e1e06a645496aabd14ab2a845d506a65f",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-ferns-chip-dawn-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-ferns-chip-day-128x32": {
+   "file": "rooms/room-ferns-chip-day-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "3c568c99f875b0e10f107b8e7034f2519ee8b15c57aad5715a97e7bb60938deb",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-ferns-chip-day-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-ferns-chip-dusk-128x32": {
+   "file": "rooms/room-ferns-chip-dusk-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "c7a33f4145b7413067c85c93fc8a9f2e5f88cfd7ac7bb26a83c1e8f66b621e2a",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-ferns-chip-dusk-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-ferns-chip-night-128x32": {
+   "file": "rooms/room-ferns-chip-night-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "0fef5d136ec4a039b0290f38a8eb591672eb46ef54fb895562b40e5a49a6e054",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-ferns-chip-night-128x32.png@b7bc7c9e + collection v2 art job"
   },
   "room-ferns-copper-1-dawn-4x78": {
    "file": "rooms/room-ferns-copper-1-dawn-4x78.png",
@@ -6920,6 +7044,42 @@
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
    "from": "rooms/signed-near-ferns-night.png@b7bc7c9e"
   },
+  "room-reeds-chip-dawn-128x32": {
+   "file": "rooms/room-reeds-chip-dawn-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "ddc7eca5de18dabcbffe73755e070429d1da2a1ff6760cc61adffa6f0ad31ed1",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-reeds-chip-dawn-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-reeds-chip-day-128x32": {
+   "file": "rooms/room-reeds-chip-day-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "3f5dd039d3d499ea9af3506a2a270ce5f96983954ff1e32f42482469cdddf0df",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-reeds-chip-day-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-reeds-chip-dusk-128x32": {
+   "file": "rooms/room-reeds-chip-dusk-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "23955ea783de6dd3f2959f3c1527fbb04b8e5902271f8d1792450839ff8d9157",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-reeds-chip-dusk-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-reeds-chip-night-128x32": {
+   "file": "rooms/room-reeds-chip-night-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "fa04b01586878eb14b1ce02e5536971d04be9794cb6522b296433d38695bfbf1",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-reeds-chip-night-128x32.png@b7bc7c9e + collection v2 art job"
+  },
   "room-reeds-idle-dawn-1024x568": {
    "file": "rooms/room-reeds-idle-dawn-1024x568.png",
    "w": 1024,
@@ -7084,33 +7244,73 @@
    "file": "rooms/room-roots-bed-dawn-192x56.png",
    "w": 192,
    "h": 56,
-   "sha256": "fd0ceaca59744a8bc2fff727d2b27d1ec52015993900821093eded2358080dde",
-   "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-bed-dawn.png@b7bc7c9e"
+   "sha256": "a46ca8373c5b8e4e2c91606fde7e445b347b30c10a173b8ed3dfd18f100977e5",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/pieces/roots/roots-bed-dawn.png@b7bc7c9e + collection v2 art job"
   },
   "room-roots-bed-day-192x56": {
    "file": "rooms/room-roots-bed-day-192x56.png",
    "w": 192,
    "h": 56,
-   "sha256": "81af394f684ee28703a927a1607be6070c19cc1bd1e5aab46ad482d431798ade",
-   "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City), day composition: no fittings, no front pieces painted; day floor L* 39.9, whole 51.0; one burrow only (the focal, ~37 %, inside Home's cut), no second hollow; the bed's seat [792,496,192,56] on a plain moss patch; the terrace's lip rounded and its ramp mossy; no flowers on the walk floor (bluebells only behind the back edge); the beech a size smaller than the gold Roots, minis at the other rooms' scale; all six minis read on the terrace, the ramp, the path and the moss",
-   "from": "rooms/pieces/roots/roots-bed-day.png@b7bc7c9e"
+   "sha256": "b567e2bb341412be387f3c0ed40afe8a06e62ca1e5472d0a6c8d93ab09b67a4b",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/pieces/roots/roots-bed-day.png@b7bc7c9e + collection v2 art job"
   },
   "room-roots-bed-dusk-192x56": {
    "file": "rooms/room-roots-bed-dusk-192x56.png",
    "w": 192,
    "h": 56,
-   "sha256": "31d26d22a2ff40de5d715de98e7327b48c5a64887553d2590b94816ac0bd1655",
-   "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean; no grade needed; the minis read on every level",
-   "from": "rooms/pieces/roots/roots-bed-dusk.png@b7bc7c9e"
+   "sha256": "9ec6f9a1de7c38040309f23e030ed1116ebf9ca8cca9a81b3990291aeed51035",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/pieces/roots/roots-bed-dusk.png@b7bc7c9e + collection v2 art job"
   },
   "room-roots-bed-night-192x56": {
    "file": "rooms/room-roots-bed-night-192x56.png",
    "w": 192,
    "h": 56,
-   "sha256": "9e43e9b1c477ccfcd2676c737ee2b25117d2740202c6ba6e2612f0bc5ec25164",
-   "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
-   "from": "rooms/pieces/roots/roots-bed-night.png@b7bc7c9e"
+   "sha256": "895617832580b9c16247281468d27f72938108953f9dab6a2347add48b86c7d7",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/pieces/roots/roots-bed-night.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-roots-chip-dawn-128x32": {
+   "file": "rooms/room-roots-chip-dawn-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "790f7f4639010e723a24b0e55edb0aa1e9a9670e843cbcd7b64dd4faf32ec537",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-roots-chip-dawn-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-roots-chip-day-128x32": {
+   "file": "rooms/room-roots-chip-day-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "2dc3f255bd6dc3e31fbd3d2f065ac5b9a0632d293b48545e9507620ccb8ba7e5",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-roots-chip-day-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-roots-chip-dusk-128x32": {
+   "file": "rooms/room-roots-chip-dusk-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "93b572be160fa868188619ba48ad0e45935dea652c157d4ab93179f545acd3ec",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-roots-chip-dusk-128x32.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-roots-chip-night-128x32": {
+   "file": "rooms/room-roots-chip-night-128x32.png",
+   "w": 128,
+   "h": 32,
+   "sha256": "721edbe8d708e0375042b90c9cfb3a8053a253c3de095bb31475d89658203598",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/chips/room-roots-chip-night-128x32.png@b7bc7c9e + collection v2 art job"
   },
   "room-roots-idle-dawn-1024x568": {
    "file": "rooms/room-roots-idle-dawn-1024x568.png",

@@ -171,7 +171,7 @@ test("open the crate: the portrait is delivered, the crate leaves the bay, the m
 });
 
 test("a portrayed mibi may be returned to the wild; its portrait stays in the book and it keeps its place as the face", () => {
-  const st = world(2), m = walked(st, st.mibis[0]);   // two: the last mibi at home stays (gd-putaway §5)
+  const st = world(2), m = walked(st, st.mibis[0]);   // two: the last mibi at home stays (the put-away rules)
   T.devGrantSitting(st, T0); const c = T.beginSitting(st, m, "calm", "wood", settings, T0).crate; T.openSittingCrate(st, c.id, settings, T0 + 4 * H);
   assert.ok(L.makeFace(st, m).ok); const s0 = st.s, r = S.returnMibi(st, { with: null }, m, settings);
   assert.ok(r.ok); assert.equal(st.s, s0 + 2); assert.ok(m.released); assert.equal(m.portrait.state, "delivered", "released, the portrait stays"); assert.equal(L.faceOf(st, "S01"), m.id);

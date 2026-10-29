@@ -2,7 +2,7 @@
  "schema": "mb-rooms/1",
  "source": {
   "repo": "masters-pods",
-  "commit": "b7bc7c9e",
+  "commit": "b7bc7c9e + collection v2 art job",
   "manifest": "art/station-masters/pods/rooms/rooms-manifest.json"
  },
  "order": ["roots", "reeds", "boulders", "ferns"],
@@ -10,25 +10,38 @@
   "roots": {
    "base": "room-roots-idle-{light}-1024x568",
    "near": "room-roots-near-{light}-544x408",
-   "chip": null,
+   "chip": "room-roots-chip-{light}-128x32",
    "preview": null,
    "bed": {
-    "rect": [792, 496, 192, 56],
+    "rect": [248, 496, 192, 56],
     "foot": 551,
     "picture": "room-roots-bed-{light}-192x56"
    },
    "rest": {
     "edge": "left",
     "level": "main",
-    "note": "no art spot: resters take the bed (rules.show.bed), then their own way (rules.show.curl: nice spots beside roots-sorrel-1 or roots-stone-2 or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
+    "note": "no art spot: resters take the bed (rules.show.bed), then their own way (rules.show.curl: nice spots beside roots-sorrel-1 or roots-stone-2 or at main's back edge), else walk off main's left end inside the crop until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
    },
+   "crop": [0, 96],
+   "keep": [
+    {
+     "id": "roots-tree",
+     "box": [22, 0, 606, 374],
+     "leaves": "top"
+    },
+    {
+     "id": "roots-burrow",
+     "box": [334, 286, 92, 84]
+    }
+   ],
+   "drops": [[344, 444], [256, 444], [432, 420], [472, 536], [168, 460], [520, 420], [560, 536], [88, 536]],
    "levels": [
     {
      "id": "main",
      "x": [16, 150, 330, 540, 1009],
      "top": [432, 416, 392, 352],
      "bottom": 551,
-     "keepOuts": [[124, 526, 84, 18], [690, 524, 56, 18]]
+     "keepOuts": [[124, 526, 84, 18], [610, 524, 56, 18]]
     },
     {
      "id": "terrace",
@@ -61,20 +74,20 @@
      "id": "roots-stone-2",
      "kind": "occluder",
      "level": "main",
-     "rect": [684, 499, 68, 41],
+     "rect": [604, 499, 68, 41],
      "foot": 539,
      "picture": "room-roots-stone-2-{light}-68x41"
     },
     {
      "id": "roots-mister",
      "kind": "back",
-     "rect": [920, 323, 50, 34],
+     "rect": [620, 323, 50, 34],
      "picture": "room-roots-mister-{light}-50x34"
     },
     {
      "id": "roots-mist-2",
      "kind": "back",
-     "rect": [850, 324, 80, 18],
+     "rect": [550, 324, 80, 18],
      "picture": "room-roots-mist-2-{light}-80x18"
     }
    ],
@@ -83,13 +96,24 @@
   "reeds": {
    "base": "room-reeds-idle-{light}-1024x568",
    "near": "room-reeds-near-{light}-544x408",
-   "chip": null,
-   "preview": { "from": "room-reeds-idle-{light}-1024x568", "rect": [338, 376, 348, 160] },
+   "chip": "room-reeds-chip-{light}-128x32",
+   "preview": {
+    "from": "room-reeds-idle-{light}-1024x568",
+    "rect": [338, 376, 348, 160]
+   },
    "rest": {
     "edge": "left",
     "level": "main",
-    "note": "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
+    "note": "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's left end inside the crop until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
    },
+   "crop": [176, 96],
+   "keep": [
+    {
+     "id": "reeds-boulder",
+     "box": [208, 267, 242, 138]
+    }
+   ],
+   "drops": [[520, 536], [520, 433], [432, 536], [608, 536], [432, 460], [344, 536], [696, 536], [344, 460]],
    "levels": [
     {
      "id": "main",
@@ -124,7 +148,8 @@
      "rect": [0, 380, 200, 140],
      "foot": 520,
      "picture": null,
-     "seam": true
+     "seam": true,
+     "view": false
     },
     {
      "id": "reeds-sedge-2",
@@ -145,7 +170,7 @@
     {
      "id": "reeds-raincup",
      "kind": "back",
-     "rect": [918, 303, 30, 36],
+     "rect": [818, 303, 30, 36],
      "picture": "room-reeds-raincup-{light}-30x36"
     }
    ],
@@ -154,27 +179,51 @@
      "id": "reeds-drop",
      "kind": "drop",
      "size": [4, 6],
-     "what": "the drop cell: falls from the cup's lip (x 944, y 309) to the bank's moss at y 340, every ~4 s"
+     "what": "the drop cell: falls from the cup's lip (x 844, y 309) to the bank's moss at y 340, every ~4 s"
     }
    ]
   },
   "boulders": {
    "base": "room-boulders-idle-{light}-1024x568",
    "near": "room-boulders-near-{light}-544x408",
-   "chip": null,
-   "preview": { "from": "room-boulders-idle-{light}-1024x568", "rect": [338, 376, 348, 160] },
+   "chip": "room-boulders-chip-{light}-128x32",
+   "preview": {
+    "from": "room-boulders-idle-{light}-1024x568",
+    "rect": [338, 376, 348, 160]
+   },
    "rest": {
     "edge": "left",
     "level": "main",
-    "note": "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
+    "note": "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's left end inside the crop until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
    },
+   "crop": [178, 96],
+   "keep": [
+    {
+     "id": "boulders-tree",
+     "box": [396, 0, 444, 318],
+     "leaves": "top"
+    },
+    {
+     "id": "boulders-pond",
+     "box": [310, 322, 276, 82]
+    },
+    {
+     "id": "boulders-tall-stone",
+     "box": [707, 136, 148, 196]
+    },
+    {
+     "id": "boulders-stones",
+     "box": [777, 290, 68, 93]
+    }
+   ],
+   "drops": [[522, 536], [522, 484], [438, 430], [434, 536], [610, 536], [610, 484], [350, 464], [346, 536]],
    "levels": [
     {
      "id": "main",
      "x": [16, 190, 330, 470, 690, 800, 1009],
      "top": [446, 436, 402, 456, 470, 466],
      "bottom": 551,
-     "keepOuts": [[715, 468, 85, 16], [156, 526, 68, 18], [852, 526, 70, 18]]
+     "keepOuts": [[715, 468, 85, 16], [202, 526, 68, 18], [776, 526, 70, 18]]
     },
     {
      "id": "terrace",
@@ -208,7 +257,7 @@
      "id": "boulders-stone-2",
      "kind": "occluder",
      "level": "main",
-     "rect": [150, 502, 80, 40],
+     "rect": [196, 502, 80, 40],
      "foot": 541,
      "picture": "room-boulders-stone-2-{light}-80x40"
     },
@@ -216,26 +265,26 @@
      "id": "boulders-cushion-1",
      "kind": "occluder",
      "level": "main",
-     "rect": [846, 496, 82, 46],
+     "rect": [770, 496, 82, 46],
      "foot": 541,
      "picture": "room-boulders-cushion-1-{light}-82x46"
     },
     {
      "id": "boulders-lantern",
      "kind": "back",
-     "rect": [940, 329, 34, 44],
+     "rect": [677, 282, 34, 44],
      "picture": "room-boulders-lantern-{light}-34x44"
     },
     {
      "id": "boulders-shishi",
      "kind": "back",
-     "rect": [166, 262, 64, 56],
+     "rect": [198, 262, 64, 56],
      "picture": "room-boulders-shishi-{light}-64x56"
     },
     {
      "id": "boulders-arm-fill",
      "kind": "back",
-     "rect": [192, 264, 48, 48],
+     "rect": [224, 264, 48, 48],
      "picture": "room-boulders-arm-fill-{light}-48x48"
     }
    ],
@@ -244,14 +293,14 @@
      "id": "boulders-trickle",
      "kind": "drop",
      "size": [2, 5],
-     "what": "the flume's trickle cell"
+     "what": "the flume's trickle cell (at +32 px with the shishi and the arm, collection v2)"
     },
     {
      "id": "boulders-arm",
      "kind": "anim",
      "cell": [48, 48],
-     "pivot_painting": [216, 288],
-     "rect_painting": [192, 264, 48, 48],
+     "pivot_painting": [248, 288],
+     "rect_painting": [224, 264, 48, 48],
      "poses_deg": {
       "fill": -16,
       "tip": 4,
@@ -260,7 +309,8 @@
      },
      "cycle": "fill (hold ~45 s while the trickle falls into the open end) -> tip (300 ms) -> empty (hold 1.2 s, the basin glints) -> knock (200 ms, the knock) -> fill",
      "file": "rooms/pieces/boulders/boulders-arm-{pose}-{light}.png",
-     "what": "the bamboo arm on its pivot posts; open end under the flume's spout"
+     "what": "the bamboo arm on its pivot posts; open end under the flume's spout",
+     "moved": "collection v2: from [192, 264] (the room's window, the collection v2 design §4)"
     },
     {
      "id": "boulders-koi",
@@ -278,20 +328,35 @@
   "ferns": {
    "base": "room-ferns-idle-{light}-1024x568",
    "near": "room-ferns-near-{light}-544x408",
-   "chip": null,
-   "preview": { "from": "room-ferns-idle-{light}-1024x568", "rect": [338, 376, 348, 160] },
+   "chip": "room-ferns-chip-{light}-128x32",
+   "preview": {
+    "from": "room-ferns-idle-{light}-1024x568",
+    "rect": [338, 376, 348, 160]
+   },
    "rest": {
     "edge": "left",
     "level": "main",
-    "note": "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
+    "note": "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's left end inside the crop until the figure leaves the window clip and come back the same way. An art rest row's spots come before own"
    },
+   "crop": [152, 96],
+   "keep": [
+    {
+     "id": "ferns-log",
+     "box": [172, 252, 298, 132]
+    },
+    {
+     "id": "ferns-croziers",
+     "box": [393, 103, 126, 226]
+    }
+   ],
+   "drops": [[496, 536], [496, 388], [408, 536], [584, 536], [408, 408], [320, 536], [672, 536], [320, 408]],
    "levels": [
     {
      "id": "main",
      "x": [16, 180, 460, 700, 1009],
      "top": [420, 380, 360, 455],
      "bottom": 551,
-     "keepOuts": [[36, 528, 59, 18], [824, 526, 52, 18]]
+     "keepOuts": [[36, 528, 59, 18], [746, 526, 52, 18]]
     },
     {
      "id": "shelf",
@@ -318,13 +383,14 @@
      "level": "main",
      "rect": [30, 496, 71, 48],
      "foot": 543,
-     "picture": "room-ferns-fern-1-{light}-71x48"
+     "picture": "room-ferns-fern-1-{light}-71x48",
+     "view": false
     },
     {
      "id": "ferns-crozier-1",
      "kind": "occluder",
      "level": "main",
-     "rect": [818, 496, 64, 46],
+     "rect": [740, 496, 64, 46],
      "foot": 541,
      "picture": "room-ferns-crozier-1-{light}-64x46"
     },
@@ -337,13 +403,13 @@
     {
      "id": "ferns-copper-1",
      "kind": "back",
-     "rect": [836, 213, 4, 78],
+     "rect": [772, 213, 4, 78],
      "picture": "room-ferns-copper-1-{light}-4x78"
     },
     {
      "id": "ferns-copper-2",
      "kind": "back",
-     "rect": [884, 216, 6, 47],
+     "rect": [820, 216, 6, 47],
      "picture": "room-ferns-copper-2-{light}-6x47"
     },
     {

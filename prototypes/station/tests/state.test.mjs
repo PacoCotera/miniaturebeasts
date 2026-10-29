@@ -720,12 +720,12 @@ test("rooms: a young mibi returns for +2 Essence and its place is free at once; 
     assert.equal(st.sheds.length, 1); const sh = st.sheds[0]; assert.deepEqual([sh.id, sh.name, sh.sp, sh.species, sh.g, sh.due], [m.id, m.name, m.sp, m.species, m.from.g, want], "aT " + aT + " turn " + turn);
     assert.equal(sh.state, sh.genome ? "due" : "none"); assert.ok(sh.genome, "a pod is shed");
   }
-  const a = roomsWorld(2), b = roomsWorld(2); S.returnMibi(a, null, a.mibis[0], settings);   // two: the last mibi at home stays (gd-putaway §5) S.returnMibi(b, null, b.mibis[0], settings); assert.deepEqual(a.sheds[0].genome, b.sheds[0].genome, "the same release always sheds the same pod");
+  const a = roomsWorld(2), b = roomsWorld(2); S.returnMibi(a, null, a.mibis[0], settings);   // two: the last mibi at home stays (the put-away rules) S.returnMibi(b, null, b.mibis[0], settings); assert.deepEqual(a.sheds[0].genome, b.sheds[0].genome, "the same release always sheds the same pod");
   const sv = S.seededRng(7), sw = S.seededRng(7); assert.deepEqual([sv(), sv()], [sw(), sw()]);
 });
 test("rooms: the shed genome's origin.kinship is max(1/8, the mibi's own): a founder 0.125, a child of full siblings 0.25", () => {
   const st = roomsWorld(0); const big = { ...settings, rooms: 4 };
-  const f = S.seedAdults(st, "S01", 5, 2, big).mibis[0]; S.returnMibi(st, null, f, big);   // a second stays at home: the last mibi at home stays (gd-putaway §5)
+  const f = S.seedAdults(st, "S01", 5, 2, big).mibis[0]; S.returnMibi(st, null, f, big);   // a second stays at home: the last mibi at home stays (the put-away rules)
   assert.deepEqual([st.sheds[0].kinship, st.sheds[0].genome.origin.kinship, st.sheds[0].genome.origin.kind], [0.125, 0.125, "shed"]);
   const sib = S.seedSiblings(st, "S01", 99, big); assert.equal(sib.ok, true, sib.msg); const [x, y] = sib.mibis; assert.equal(S.kinshipOf(st, x, y), 0.25);
   let r = null; for (let i = 0; i < 20 && !r?.ok; i++) { st.e = 99; st.s = 99; st.bud = null; r = S.doCross(st, svOf(), x, y, big, 1, S.seededRng(1 + i)); } assert.equal(r.ok, true);

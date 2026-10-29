@@ -4,7 +4,7 @@
 // A slice is placed when it sits under a README heading that ends "(signed)", or when it is named with --ids; with --only just the named ones (the art director's list). Nothing else is placed; the
 // rest are listed as not signed. Re-running is idempotent. `--check` verifies the installed files against the index (size, hash) and exits 1 on a difference.
 //   node prototypes/ui/tools/place-masters.mjs --from art/station-masters/pods [--ids pod-large-identified,room-shelf] [--group pods] [--dry]
-//   node prototypes/ui/tools/place-masters.mjs --rooms <masters-pods>/art/station-masters/pods/rooms/rooms-manifest.json [--dry]   (the four rooms: the rooms design)
+//   node prototypes/ui/tools/place-masters.mjs --rooms <masters-pods>/art/station-masters/pods/rooms/rooms-manifest.json [--dry] [--source-commit <what it was made from>]   (the four rooms: the rooms design)
 //   node prototypes/ui/tools/place-masters.mjs --check
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -41,6 +41,7 @@ export function check(root = dest) {
 }
 // ---- The rooms (the rooms design): the signed room art of masters-pods `rooms/`, placed under `rooms/` in the masters, and rooms.json (generated, never edited by hand).
 export const ROOMS = ["roots", "reeds", "boulders", "ferns"], LIGHTS = ["dawn", "day", "dusk", "night"];
+export const ROOM_VIEW = [688, 472];   // the room view's window on its painting (the collection v2 design §1, §4: vivarium.json regions.window [0, 88, 688, 472] at 1:1)
 const pictureId = (tpl, light) => tpl.replaceAll("{light}", light);
 const topAt = (lv, fx) => { for (let i = lv.top.length - 1; i >= 0; i--) if (fx >= lv.x[i]) return lv.top[i]; return lv.top[0]; };   // the top of the band holding fx (fx in [x0, xn])
 // JSON for rooms.json: objects indented, arrays of plain values on one line
@@ -56,11 +57,14 @@ function joinEnds(j, upper, lower) {
 export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = path.join(specs, "rooms.json"), commit = null, only = ROOMS }) {
   const mfile = path.resolve(manifest), mf = JSON.parse(readFileSync(mfile, "utf8")), rooms = path.dirname(mfile), pods = path.dirname(rooms);
   const top = commit ? null : execFileSync("git", ["-C", rooms, "rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
-  const source = { repo: "masters-pods", commit: commit ?? execFileSync("git", ["-C", rooms, "rev-parse", "--short", "HEAD"], { encoding: "utf8" }).trim(), manifest: top ? path.relative(top, mfile).split(path.sep).join("/") : path.basename(mfile) };
+  const inRepo = (f) => { const parts = f.split(path.sep), i = parts.lastIndexOf("art"); return i >= 0 ? parts.slice(i).join("/") : path.basename(f); };   // a copy outside its repository (commit named): the manifest's path from art/
+  const source = { repo: "masters-pods", commit: commit ?? execFileSync("git", ["-C", rooms, "rev-parse", "--short", "HEAD"], { encoding: "utf8" }).trim(), manifest: top ? path.relative(top, mfile).split(path.sep).join("/") : inRepo(mfile) };
+  const prior = existsSync(roomsFile) ? JSON.parse(readFileSync(roomsFile, "utf8")) : null;   // what the manifest does not carry and rooms.json does (a room's Add a room preview) stays
   const ops = [], leftOut = [], data = { schema: "mb-rooms/1", source, order: [...only], rooms: {} };
   const read = (f) => { if (!existsSync(f)) return null; const buf = readFileSync(f), [w, h] = dims(buf); return { buf, w, h, rel: path.relative(pods, f).split(path.sep).join("/") }; };   // rel: the file's path in masters-pods
   const hashes = mf.hashes ?? {};   // optional: { "<pods-relative path>": "<sha256>" }: a copied file listed here with another hash is refused
-  const add = (room, id, src, signed) => { const want = hashes[src.rel]; if (want && sha(src.buf) !== want) throw new Error(`${room}: ${src.rel} does not match the manifest's hashes entry`); ops.push({ id, room, src, signed }); };
+  const unsigned = mf.unsigned ?? {};   // { "<pods-relative path>": "<who made it, for whose check>" }: a file changed after the room was signed is placed as new, not final, until it is signed
+  const add = (room, id, src, signed) => { const want = hashes[src.rel]; if (want && sha(src.buf) !== want) throw new Error(`${room}: ${src.rel} does not match the manifest's hashes entry`); ops.push({ id, room, src, signed: unsigned[src.rel] ? `new (${unsigned[src.rel]}), not final` : signed, ...(unsigned[src.rel] ? { status: "new" } : {}) }); };
   for (const room of only) {
     const r = mf[room]; if (!r) throw new Error(`${room}: the manifest has no such room`);
     const signed = {};   // each light's own signed text; the day's is the room's (its scene's), the day near's its own (near_day)
@@ -77,7 +81,12 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
       files.forEach((f, i) => { if (f.w !== w || f.h !== h) throw new Error(`${room}: ${name(LIGHTS[i])} is ${f.w}×${f.h}, the ${LIGHTS[0]} one is ${w}×${h}`); });
       pic[key] = `room-${room}-${kind === "idle" ? "idle" : "near"}-{light}-${w}x${h}`; LIGHTS.forEach((l, i) => add(room, pictureId(pic[key], l), files[i], signed[l][kind]));
     }
-    const out = { base: pic.base, near: pic.near, chip: null, preview: null };
+    let chip = null;   // the room's chip (collection v2: 128 x 32, a cut of the room's window in each light), when the manifest has one
+    if (r.chip?.file) { const files = LIGHTS.map((l) => ({ l, f: read(path.join(pods, pictureId(r.chip.file, l))) })), [cw, ch] = r.chip.size;
+      if (files.some((q) => !q.f)) throw new Error(`${room}: the chip ${pictureId(r.chip.file, "day")} is missing`);
+      if (files.some((q) => q.f.w !== cw || q.f.h !== ch)) throw new Error(`${room}: a chip file is not ${cw}×${ch}`);
+      chip = `room-${room}-chip-{light}-${cw}x${ch}`; for (const { l, f } of files) add(room, pictureId(chip, l), f, signed[l].idle); }
+    const out = { base: pic.base, near: pic.near, chip, preview: prior?.rooms?.[room]?.preview ?? null };
     const lv = r.levels.map((L) => ({ id: L.id, x: L.profile.x, top: L.profile.top_painting, bottom: L.bottom_painting, keepOuts: [] }));
     if (lv[0]?.id !== "main") throw new Error(`${room}: the first level must be main`);
     const byId = (id) => lv.find((L) => L.id === id) ?? (() => { throw new Error(`${room}: no level ${id}`); })();
@@ -91,14 +100,14 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
     const take = (p, tpl) => { const q = ids(p, tpl); if (q.why) return q; for (const { l, f } of q.files) add(room, pictureId(q.picture, l), f, signed[l].idle); return q; };
     const occ = (p, level, extra) => { const t = p.file ? p.file : null, q = t ? take(p, t) : { why: "no file in the manifest" };
       if (q.why) leftOut.push({ room, id: p.id, why: q.why, kept: "occluder: keep-out only, picture null" });
-      pieces.push({ id: p.id, kind: "occluder", level, rect: p.rect_painting, foot: p.foot_painting, picture: q.why ? null : q.picture, ...extra }); byId(level).keepOuts.push(p.keepOut_painting); };
+      pieces.push({ id: p.id, kind: "occluder", level, rect: p.rect_painting, foot: p.foot_painting, picture: q.why ? null : q.picture, ...extra, ...(p.view === false ? { view: false } : {}) }); byId(level).keepOuts.push(p.keepOut_painting); };
     for (const p of r.occluders ?? []) occ(p, p.level, { seam: true });
     for (const p of r.pieces) {
       const tpl = p.file ?? `rooms/pieces/${room}/${p.id}-{light}.png`;
       switch (p.kind) {
         case "occluder": occ(p, p.level); break;
         case "bed": { const q = take(p, tpl); if (q.why) throw new Error(`${room}: the bed: ${q.why}`); bed = { rect: p.rect_painting, foot: p.foot_painting, picture: q.picture }; break; }
-        case "fitting": case "mist": { const q = take(p, tpl); if (q.why) { leftOut.push({ room, id: p.id, why: q.why, kept: "left out" }); break; } pieces.push(piece(p, "back", { rect: p.rect_painting, ...(p.kind === "mist" && !p.alpha_in_file ? { opa: Math.round(p.alpha * 255) } : {}), picture: q.picture })); break; }
+        case "fitting": case "mist": { const q = take(p, tpl); if (q.why) { leftOut.push({ room, id: p.id, why: q.why, kept: "left out" }); break; } pieces.push(piece(p, "back", { rect: p.rect_painting, ...(p.kind === "mist" && !p.alpha_in_file ? { opa: Math.round(p.alpha * 255) } : {}), picture: q.picture, ...(p.view === false ? { view: false } : {}) })); break; }
         case "drop": case "anim": {
           ambient.push(p);   // carried verbatim for the movement workstream; never drawn here
           if (p.poses_deg?.fill !== undefined && p.file?.includes("{pose}")) { const id = `${p.id}-fill`, fp = { ...p, id, rect_painting: p.rect_painting }, q = take(fp, p.file.replace("{pose}", "fill")); if (q.why) leftOut.push({ room, id, why: q.why, kept: "left out" }); else pieces.push({ id, kind: "back", rect: p.rect_painting, picture: q.picture }); }   // the arm's fill pose: the spout is never armless
@@ -107,15 +116,18 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
       }
     }
     // R4b-1 (the game designer's rest rule, the R4b rest rules): no art row yet, so every room carries the fallback rest place, off main's left end; the art director's `rest` row (R4b-2) replaces `edge` with spots or an occluder to hide behind
-    const rest = { edge: "left", level: "main", note: bed ? "no art spot: resters take the bed (rules.show.bed), then their own way (rules.show.curl: nice spots beside roots-sorrel-1 or roots-stone-2 or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own" : "no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off main's leftmost point (x 16) until the figure leaves the window clip and come back the same way. An art rest row's spots come before own" };
-    data.rooms[room] = { ...out, ...(bed ? { bed } : {}), rest, levels: lv, joins, pieces, ambient };
+    const left = r.view?.rest ?? "main's leftmost point (x 16)";   // collection v2: main's left end inside the room view's crop
+    const rest = { edge: "left", level: "main", note: bed ? `no art spot: resters take the bed (rules.show.bed), then their own way (rules.show.curl: nice spots beside roots-sorrel-1 or roots-stone-2 or at main's back edge), else walk off ${left} until the figure leaves the window clip and come back the same way. An art rest row's spots come before own` : `no art spot and no bed: resters take their own way (rules.show.curl: nice spots beside an occluder or at main's back edge), else walk off ${left} until the figure leaves the window clip and come back the same way. An art rest row's spots come before own` };
+    // collection v2 (the collection v2 design §4): the room view's window on the painting (crop [cx, cy]), the key props it holds whole (keep), its eight drop spots (drops)
+    const view = r.view ? { crop: r.view.crop, keep: r.view.keep.map((k) => ({ id: k.id, box: k.box, ...(k.leaves ? { leaves: k.leaves } : {}) })), drops: r.view.drops } : {};
+    data.rooms[room] = { ...out, ...(bed ? { bed } : {}), rest, ...view, levels: lv, joins, pieces, ambient };
   }
   // all read and checked: now write
   const idxFile = path.join(root, "index.json"), index = existsSync(idxFile) ? JSON.parse(readFileSync(idxFile, "utf8")) : { schema: "mb-masters/1", masters: {} }, placed = [];
   for (const id of Object.keys(index.masters)) if (index.masters[id].file.startsWith("rooms/") && !dryRun && !ops.some((o) => o.id === id)) { rmSync(path.join(root, index.masters[id].file), { force: true }); delete index.masters[id]; }   // what this run no longer places leaves with its file
   for (const o of ops) {
     const file = `rooms/${o.id}.png`; placed.push(o.id);
-    index.masters[o.id] = { file, w: o.src.w, h: o.src.h, sha256: sha(o.src.buf), signed: o.signed, from: `${o.src.rel}@${source.commit}` };
+    index.masters[o.id] = { file, w: o.src.w, h: o.src.h, sha256: sha(o.src.buf), signed: o.signed, ...(o.status ? { status: o.status } : {}), from: `${o.src.rel}@${o.status ? source.commit : source.commit.split(" + ")[0]}` };   // a file the copy did not change is the masters-pods commit's own
     if (!dryRun) { mkdirSync(path.join(root, "rooms"), { recursive: true }); writeFileSync(path.join(root, file), o.src.buf); }
   }
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
@@ -145,6 +157,7 @@ export function checkRooms(data, index, windowRect, root = dest) {
     const pics = [];   // [id, rect size or null]
     for (const l of LIGHTS) { pics.push([pictureId(r.base, l), null], [pictureId(r.near, l), null]); }
     if (r.bed?.picture) for (const l of LIGHTS) pics.push([pictureId(r.bed.picture, l), r.bed.rect.slice(2)]);
+    if (r.chip) for (const l of LIGHTS) pics.push([pictureId(r.chip, l), null]);
     for (const p of r.pieces) if (p.picture) for (const l of LIGHTS) pics.push([pictureId(p.picture, l), p.rect.slice(2)]);
     for (const [id, wh] of pics) {   // 4
       const e = M[id]; if (!e) { P(4, `${id} is not in the masters index`); continue; }
@@ -160,6 +173,37 @@ export function checkRooms(data, index, windowRect, root = dest) {
     const share = occ.reduce((a, p) => a + p.rect[2] * p.rect[3], 0); if (share > 0.15 * area) P(6, `the occluders cover ${share} px, over 15 % of the window (${area} px)`);
     const [pw, ph] = size(pictureId(r.base, "day")) ?? [0, 0], inside = (q, what) => { if (q[0] < 0 || q[1] < 0 || q[0] + q[2] > pw || q[1] + q[3] > ph) P(7, `${what} ${JSON.stringify(q)} is not inside the ${pw}×${ph} painting`); };   // 7
     for (const p of r.pieces) inside(p.rect, p.id); if (r.bed) inside(r.bed.rect, "bed"); for (const j of r.joins) inside(j.rect, j.id); for (const l of r.levels) l.keepOuts.forEach((k, i) => inside(k, `${l.id} keep-out ${i}`));
+    // 8 (collection v2, the collection v2 design §4): the room view's window [cx, cy, 688, 472] on the painting holds whole every piece left in the view, every join, the bed and every key prop (`keep`; one that
+    // leaves the painting on its `leaves` side reaches the painting's edge there); its eight drop spots stand on a level, off the keep-outs, the bed and the joins, inside [cx + 56, cx + 632], 88 apart at one depth
+    if (r.crop !== undefined || r.keep !== undefined || r.drops !== undefined) {
+      const [vw, vh] = ROOM_VIEW, c = r.crop, ok = Array.isArray(c) && c.length === 2 && c.every(Number.isInteger);
+      if (!ok) P(8, "crop is not [cx, cy]");
+      else {
+        const [cx, cy] = c, win = [cx, cy, vw, vh];
+        if (cy !== ph - vh) P(8, `crop y ${cy}: the window's bottom must be the painting's own (${ph}), so crop y is ${ph - vh}`);
+        if (cx < 0 || cx + vw > pw) P(8, `crop x ${cx}: the window [${cx}, ${cx + vw}] is not inside the painting`);
+        const within = (q, what, leaves = null) => {
+          const [x, y, w, h] = q, out = { left: x < win[0], top: y < win[1], right: x + w > win[0] + vw, bottom: y + h > win[1] + vh };
+          for (const [side, o] of Object.entries(out)) if (o && !(leaves === side && (side === "top" ? y === 0 : side === "left" ? x === 0 : side === "right" ? x + w === pw : y + h === ph))) P(8, `${what} ${JSON.stringify(q)} crosses the window's ${side} edge`);
+        };
+        for (const k of r.keep ?? []) { if (!Array.isArray(k.box) || k.box.length !== 4) { P(8, `keep ${k.id}: the box is not [x, y, w, h]`); continue; } within(k.box, `keep ${k.id}`, k.leaves ?? null); }
+        for (const p of r.pieces) if (p.view !== false) within(p.rect, p.id);
+        for (const j of r.joins) within(j.rect, j.id);
+        if (r.bed) within(r.bed.rect, "the bed");
+        const ds = r.drops ?? [];
+        if (ds.length !== 8) P(8, `${ds.length} drop spots (8 a room)`);
+        const inR = (q, x, y) => x >= q[0] && x < q[0] + q[2] && y >= q[1] && y < q[1] + q[3];
+        ds.forEach(([x, y], i) => {
+          const lvOn = r.levels.find((l) => x >= l.x[0] && x <= l.x[l.x.length - 1] && y >= topAt(l, x) && y <= l.bottom);
+          if (!lvOn) P(8, `drop ${i + 1} (${x}, ${y}) is on no level`);
+          else if (lvOn.keepOuts.some((k) => inR(k, x, y))) P(8, `drop ${i + 1} (${x}, ${y}) is in a keep-out of ${lvOn.id}`);
+          if (r.bed && inR(r.bed.rect, x, y)) P(8, `drop ${i + 1} (${x}, ${y}) is on the bed`);
+          for (const j of r.joins) if (inR(j.rect, x, y)) P(8, `drop ${i + 1} (${x}, ${y}) is on the join ${j.id}`);
+          if (x < cx + 56 || x > cx + 632) P(8, `drop ${i + 1} (${x}, ${y}) is outside [${cx + 56}, ${cx + 632}] (the widest figure would not stand whole)`);
+          ds.forEach(([x2, y2], k) => { if (k > i && y2 === y && Math.abs(x2 - x) < 88) P(8, `drops ${i + 1} and ${k + 1} are ${Math.abs(x2 - x)} apart at depth ${y} (at least 88)`); });
+        });
+      }
+    }
     // the art director's rules: reported
     for (const l of r.levels) {
       const w = l.x[l.x.length - 1] - l.x[0], depth = Math.min(...l.top.map((t) => l.bottom - t));
@@ -203,7 +247,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.log(`masters: ${Object.keys(readIndex().masters).length} placed, ${p.length} problems`); process.exit(p.length ? 1 : 0);
   }
   if (arg("rooms")) {
-    const r = placeRooms({ manifest: path.resolve(arg("rooms")), dryRun: flag("dry") });
+    const r = placeRooms({ manifest: path.resolve(arg("rooms")), dryRun: flag("dry"), commit: arg("source-commit") });   // --source-commit: a copy of the rooms outside its repository (the commit it was made from and what changed it)
     console.log(`${flag("dry") ? "would place" : "placed"} ${r.placed.length} room pictures, rooms.json for ${r.rooms.order.join(", ")} (masters-pods ${r.rooms.source.commit})`);
     for (const q of r.leftOut) console.log(`${q.kept === "left out" ? "left out" : "no picture"}: ${q.room}/${q.id}: ${q.why}${q.kept === "left out" ? "" : " (" + q.kept + ")"}`);
     process.exit(0);

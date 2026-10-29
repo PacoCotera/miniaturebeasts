@@ -533,12 +533,14 @@ test("the budgets of section 7 with the Library's module: at most 400 objects an
 });
 
 // ---- R3 (the rooms design): Home draws the pieces of the room that fall in its window (the painting less (40, 116)), clipped by the glass ----
-test("R3: Home draws the room's pieces that fall in its window, at the painting's coordinates less (40, 116): Roots' sorrel tuft, not the stone or the mister that lie right of it", { skip }, async () => {
+test("R3: Home draws the room's pieces that fall in its window, at the painting's coordinates less (40, 116): Roots' sorrel tuft, and since the collection v2 crops the stone, the mister and its mist moved into it", { skip }, async () => {
   const fnv = (q) => { let h = 2166136261; for (const c of q) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };
   const b = scene({ adults: 3 }), f = await start(b), sizeOfId = (id) => id.match(/(\d+)x(\d+)$/).slice(1).map(Number);
   assert.equal(b.props.regions.room.id, "roots"); assert.equal(b.props.regions.glass.picture, b.props.regions.room.base);
   for (const id of Object.values(b.props.regions.room.pieces)) f.handleOf(id, withPolicy((i) => standIn(i, sizeOfId(id)))); resend(f, b);
   const lg = logOf(f), pieces = lg.nodes.filter((n) => n[3] === "room");
-  assert.deepEqual(pieces.map((n) => n[0]), [fnv("p.roots-sorrel-1")], "only the sorrel tuft falls in the window"); assert.deepEqual(pieces[0].slice(4, 8), [78, 380, 96, 46], "(118, 496) less (40, 116)");
+  const at = Object.fromEntries(pieces.map((n) => [n[0], n.slice(4, 8)]));
+  assert.deepEqual(pieces.map((n) => n[0]).sort(), ["p.roots-mister", "p.roots-mist-2", "p.roots-sorrel-1", "p.roots-stone-2"].map(fnv).sort(), "the sorrel tuft, the stone, the mister and its mist fall in the window (the collection v2 design §4: the moved pieces move on Home too)");
+  assert.deepEqual(at[fnv("p.roots-sorrel-1")], [78, 380, 96, 46], "(118, 496) less (40, 116)"); assert.deepEqual(at[fnv("p.roots-stone-2")], [564, 383, 64, 41], "(604, 499) less (40, 116), its last 4 columns past Home's window (x 628)"); assert.deepEqual(at[fnv("p.roots-mister")], [580, 207, 48, 34], "(620, 323) less (40, 116), its last 2 columns past the window");
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });

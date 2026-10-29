@@ -285,7 +285,7 @@ export function noteCarried(st, sv, now = Date.now()) {
   for (const id of back) { const m = mibiById(st, id); if (m && !m.released && now >= GOOD_CLOCK) m.roomSince = now; }
   f.carriedSeen = held.slice(); return back;
 }
-export const homeMibis = (st, sv) => { const c = carriedIds(st, sv); return st.mibis.filter((m) => !m.released && !c.includes(m.id) && !inStore(m) && !comingOut(st, m)); };   // tucked away or on its way back: not at home (gd-putaway §1)
+export const homeMibis = (st, sv) => { const c = carriedIds(st, sv); return st.mibis.filter((m) => !m.released && !c.includes(m.id) && !inStore(m) && !comingOut(st, m)); };   // tucked away or on its way back: not at home (the put-away rules)
 // A Station request to take a mibi with the Companion or bring it home: queued, applied by the Companion at the dock. why: "full" | "carried" | "not-carried" | "released" | "unknown".
 function carryOp(st, sv, m, op) {
   if (!m || !mibiById(st, m.id)) return { ok: false, why: "unknown" };
@@ -991,7 +991,7 @@ export function returnMibiBlock(st, sv, m) {
   if (pendingCarry(st, sv).some((r) => r.op === "add" && r.id === m.id)) return "goes at the next dock";
   if (inStore(m)) return "tucked away · bring it out first";
   if (comingOut(st, m)) return "back in " + plural(backIn(st, m), "turn");
-  if (lastAtHome(st, sv, m)) return "your last mibi at home stays";   // the same guard as Tuck away (gd-putaway §5, audit m10)
+  if (lastAtHome(st, sv, m)) return "your last mibi at home stays";   // the same guard as Tuck away (the put-away rules, audit m10)
   return "";
 }
 export function returnMibi(st, sv, m, settings = DEFAULT_SETTINGS) {
@@ -1047,14 +1047,14 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (speciesOf(a) !== speciesOf(b)) return "another species";
   if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (a.released || b.released) return "gone to the wild";
-  if (inStore(a) || inStore(b) || comingOut(st, a) || comingOut(st, b)) return "tucked away";   // it cannot cross until it is back (gd-putaway §5)
+  if (inStore(a) || inStore(b) || comingOut(st, a) || comingOut(st, b)) return "tucked away";   // it cannot cross until it is back (the put-away rules)
   if (isCarried(st, sv, a) || isCarried(st, sv, b)) return "away";
   if (st.bud) return "the incubator is busy";
   if (vivFull(st, settings)) return "the Vivarium is full";
   return "";
 }
 // The partners of an adult or an elder, in place order. A carried partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
-export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isCarried(st, sv, m) || inStore(m) || comingOut(st, m) ? { ...m, away: true } : m));   // tucked away or on its way back: listed dimmed, never picked (gd-putaway §1)
+export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isCarried(st, sv, m) || inStore(m) || comingOut(st, m) ? { ...m, away: true } : m));   // tucked away or on its way back: listed dimmed, never picked (the put-away rules)
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
 export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
 // The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you
@@ -1137,15 +1137,15 @@ export function seedSiblings(st, species, seed, settings = DEFAULT_SETTINGS) {
   return { ok: made.length === 2, parents: [a, b], mibis: made, msg: made.length === 2 ? made.map((m) => m.name).join(" and ") + ", siblings of " + a.name + " and " + b.name : "no place free for both siblings" };
 }
 
-// --- Tucked away (gd-putaway.md; ux-manager.md §3): a mibi kept outside time, its place freed --------------------------------------
+// --- Tucked away (the put-away rules; the manager's design): a mibi kept outside time, its place freed --------------------------------------
 // A tucked-away mibi is still the player's and alive, but not at home: m.tucked = { turn, seq, at } while it is in the store (no room, no place: m.room and m.slot are null), and m.tucked.out, the world
 // turn it is back at, once Bring out is pressed (its place is reserved then: m.room and m.slot are set and the room counts it). Its clocks stop: its stage and its turns are read at m.tucked.turn while it is
 // in the store; at the press of Bring out its born (and grownTurn) move on by the turns it was away, so they restart where they stopped when it is back (stageTurn). The store has no limit (lead ruling
-// 10-28 23:11, M1). Nothing is migrated: an older save has no m.tucked, and nothing reads one it does not hold. The prices are Energy, the rooms' own currency (gd-putaway §2, all tune).
+// 10-28 23:11, M1). Nothing is migrated: an older save has no m.tucked, and nothing reads one it does not hold. The prices are Energy, the rooms' own currency (the put-away rules, all tune).
 export const TUCK = { floor: 2 /* Energy at least, to tuck away */, out: 2 /* Energy to bring out */, turns: 2 /* world turns until it is back */ };
-// The next room's price in Energy: 4, 8, 12, then 4 more each (gd-putaway §2; the rooms past four are not built, the price still stands for the put-away price below)
+// The next room's price in Energy: 4, 8, 12, then 4 more each (the put-away rules; the rooms past four are not built, the price still stands for the put-away price below)
 export const nextRoomPrice = (st) => PRICE.room[(st.rooms || 1) - 1] ?? 4 * (st.rooms || 1);
-// Tuck away: the next room's price per place rounded up, never under TUCK.floor; so it never costs less than keeping a room (gd-putaway §2, the 19:35 ruling)
+// Tuck away: the next room's price per place rounded up, never under TUCK.floor; so it never costs less than keeping a room (the put-away rules, the 19:35 ruling)
 export const tuckPrice = (st, settings = DEFAULT_SETTINGS) => price(Math.max(TUCK.floor, Math.ceil(nextRoomPrice(st) / ROOM)), settings);
 export const bringOutPrice = (st, settings = DEFAULT_SETTINGS) => price(TUCK.out, settings);
 export const inStore = (m) => !!m && !m.released && !!m.tucked && m.tucked.out == null;
@@ -1156,10 +1156,10 @@ export const backIn = (st, m) => (comingOut(st, m) ? m.tucked.out - (st.turn | 0
 export const stageTurn = (st, m) => (inStore(m) ? m.tucked.turn : comingOut(st, m) ? m.tucked.out : st.turn);
 // The store, in the order the mibis went in.
 export const tuckedAway = (st) => st.mibis.filter(inStore).sort((a, b) => (a.tucked.seq ?? 0) - (b.tucked.seq ?? 0) || a.id - b.id);
-// At home and present: in a room, not in the carried set as it will be (projectCarried: a request to go counts), not coming back. The last such mibi stays (gd-putaway §5; Return takes the same guard, audit m10).
+// At home and present: in a room, not in the carried set as it will be (projectCarried: a request to go counts), not coming back. The last such mibi stays (the put-away rules; Return takes the same guard, audit m10).
 export const presentAtHome = (st, sv, m) => !!m && !m.released && !inStore(m) && !comingOut(st, m) && m.room != null && !projectCarried(st, sv).includes(m.id);
 export const lastAtHome = (st, sv, m) => presentAtHome(st, sv, m) && st.mibis.filter((x) => presentAtHome(st, sv, x)).length === 1;
-// What stops Tuck away, as a key, in gd-putaway §5's order: null when nothing does. { key: "released" | "tucked" | "coming" (n) | "carried" | "last" | "short" (price, have) }
+// What stops Tuck away, as a key, in the put-away rules's order: null when nothing does. { key: "released" | "tucked" | "coming" (n) | "carried" | "last" | "short" (price, have) }
 export function tuckBlock(st, sv, m, settings = DEFAULT_SETTINGS) {
   if (!m || m.released || !mibiById(st, m.id)) return { key: "released" };
   if (inStore(m)) return { key: "tucked" };

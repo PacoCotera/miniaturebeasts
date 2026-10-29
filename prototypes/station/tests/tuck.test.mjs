@@ -1,4 +1,4 @@
-// Tucked away (gd-putaway.md §7, the builder's tests) and moving from the mibi manager (ux-manager.md §3): the rules in state.mjs.   node --test prototypes/station/tests/
+// Tucked away (the put-away rules §7, the builder's tests) and moving from the mibi manager (the manager's design): the rules in state.mjs.   node --test prototypes/station/tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
@@ -70,14 +70,14 @@ test("the price is never under the next room's price per place, rounded up, or 2
   for (const [rooms, room, tuck] of [[1, 4, 2], [2, 8, 2], [3, 12, 2], [4, 16, 2], [5, 20, 3], [6, 24, 3], [8, 32, 4]]) { st.rooms = rooms; assert.equal(S.nextRoomPrice(st), room); assert.equal(S.tuckPrice(st, settings), tuck, rooms + " rooms"); }
   assert.equal(S.tuckPrice(st, { ...settings, economy: "free" }), 0, "the developer's free economy");
 });
-test("bonded, young, elder: each may be tucked away and keeps what it is; a bond is never lost (gd-putaway §5)", () => {
+test("bonded, young, elder: each may be tucked away and keeps what it is; a bond is never lost (the put-away rules)", () => {
   const st = world(4), [a, b, c] = st.mibis;
   a.bonded = true; a.bondCare = 3; b.born = st.turn; c.grownTurn = st.turn - 30;
   assert.equal(S.mibiStage(st, b, settings), "juvenile"); assert.equal(S.mibiStage(st, c, settings), "elder");
   for (const m of [a, b, c]) assert.equal(S.tuckAway(st, docked, m, settings).ok, true);
   st.turn += 10; assert.equal(a.bonded, true); assert.equal(S.mibiStage(st, b, settings), "juvenile", "a young one stays young"); assert.equal(S.mibiStage(st, c, settings), "elder");
 });
-test("a tucked-away mibi cannot act: no cross, no Companion, no return; nor one coming back (gd-putaway §1, §5)", () => {
+test("a tucked-away mibi cannot act: no cross, no Companion, no return; nor one coming back (the put-away rules, §5)", () => {
   const st = world(4), [a, b] = st.mibis; S.tuckAway(st, docked, a, settings);
   assert.equal(S.crossBlock(st, docked, a, b, settings), "tucked away"); assert.equal(S.carryAdd(st, docked, a).why, "tucked"); assert.match(S.returnMibiBlock(st, docked, a), /tucked away/);
   assert.equal(S.crossPartners(st, docked, b, settings).find((p) => p.id === a.id)?.away, true, "listed dimmed, never picked");
