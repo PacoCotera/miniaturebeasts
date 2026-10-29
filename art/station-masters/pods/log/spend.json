@@ -9026,5 +9026,124 @@
    "thoughtsTokenCount": 301,
    "totalTokenCount": 3261
   }
+ },
+ {
+  "tag": "concepts-readroom-explore-2/strand try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.23423,
+  "mxn": 4.6846,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:50:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1975,
+   "candidatesTokenCount": 1587,
+   "thoughtsTokenCount": 332,
+   "totalTokenCount": 3894
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore-2/spectrum try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.224636,
+  "mxn": 4.4927,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:50:41Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1978,
+   "candidatesTokenCount": 1528,
+   "thoughtsTokenCount": 311,
+   "totalTokenCount": 3817
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore-2/sweep try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.24311,
+  "mxn": 4.8622,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:51:00Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1975,
+   "candidatesTokenCount": 1558,
+   "thoughtsTokenCount": 435,
+   "totalTokenCount": 3968
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore-2/column try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.241094,
+  "mxn": 4.8219,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:51:20Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1987,
+   "candidatesTokenCount": 1580,
+   "thoughtsTokenCount": 396,
+   "totalTokenCount": 3963
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore-2/candle try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.2243,
+  "mxn": 4.486,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:51:38Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1990,
+   "candidatesTokenCount": 1497,
+   "thoughtsTokenCount": 339,
+   "totalTokenCount": 3826
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore-2/tank try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.224528,
+  "mxn": 4.4906,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:51:59Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1984,
+   "candidatesTokenCount": 1534,
+   "thoughtsTokenCount": 304,
+   "totalTokenCount": 3822
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore-2/plates try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.225354,
+  "mxn": 4.5071,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:52:18Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1977,
+   "candidatesTokenCount": 1552,
+   "thoughtsTokenCount": 293,
+   "totalTokenCount": 3822
+  }
  }
 ]

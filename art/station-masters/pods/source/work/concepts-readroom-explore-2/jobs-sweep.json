@@ -1,0 +1,28 @@
+[
+ {
+  "name": "concepts-readroom-explore-2/sweep",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-pod-loika.png",
+    "THE POD (project-owned game art): a wild seed pod, slate-blue with a round coral cap, pale vertical ribs and coral dots. Keep its design exactly wherever a pod appears; never make it a jar, a vase, a lantern or an egg of another design."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-loika.png",
+    "THE CREATURE (project-owned game art): the Loika the pod will become: a small round charcoal creature with a cream belly and muzzle, amber eyes, four stubby legs with pale toes and three green leaves on its head. Keep its design exactly; never invent another creature."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom-explore-2/ref-station-finish.png",
+    "THE STATION'S FINISH (one of our own screens, project-owned): its incubator, a matte dark slate capsule with a glass dome, a warm lamp inside and a moss nest, standing on a quiet sage wall with soft painted light. Take the rendering: matte, soft, warm, painted, real depth, a handled instrument. Today's incubator is this capsule; the new one in the picture may be of the same family but of the concept's own form."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom-explore-2/ref-station-frame.png",
+    "THE STATION'S HOUSING (one of our own screens, project-owned): the sage powder-coated housing with recessed screws, a braided black hose with brass fittings, and the dark soft tray inside where the pod stands. This is the material language of every instrument in the picture: sage and sand housing, dark rubber, screws, braided hose, dark matte slate displays. Take the materials, not the layout."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a creature-keeping game played on a handheld home research station, 16:9, a mood-and-layout thumbnail for a concept: the READING ROOM, where the player reads a wild pod (a seed pod with a creature's genome sleeping inside) one chapter at a time, as an EXPERIMENT on a research bench. The feeling: a pod is RICH IN SURPRISES, there is more inside than can be seen, and each read brings one out into the light. The place is a LAB THAT IS A HOME: a naturalist's field kit on a warm evening, cosy because it is handled and loved, never a cold laboratory, never a cottage. ALSO IN THE PICTURE, smaller, the station's INCUBATORS as the same family of instrument as the reading instrument (same housing, same materials, same maker), two or three units on the same bench and a free mount or bay where another unit could be added: one incubator holds a glowing bud growing in warm light, one is empty and dark, the free mount has only its hose fitting. CONCEPT: THE SWEEP (a scanner). The pod lies on its side in a shallow sage scanner bay at the left third of the screen, under a clear hood, and a thin bar of warm light is passing slowly over it, lighting a stripe of the shell. On a large dark matte slate screen filling the right two thirds, the pod's cross-section is drawn as if by the sweep, stripe by stripe: the outer shell as a soft outline and INSIDE it, nested at different depths, many soft coloured shapes still blurred and grainy like an unfinished scan (a tuft of fur, a round eye, a paw, a leaf, a curl of tail), with ONE shape, the fur, drawn clear and bright where the sweep has passed, and a fainter ghost of it just beneath. The screen's lower corner shows the small Loika, half painted in colour and half soft grey fog. Below the scanner bay, stacked, the family's incubators: two more bays of the same sage housing with clear hoods, one lit warm with a bud lying inside, one empty and dark, and a bare slot with a braided hose fitting.\nLIGHT AND FINISH: one warm key light from the top left, soft cast shadows, soft contact shadows, a few small lit marks on the instruments that mean something (a lamp on a working unit, nothing lit for show). Matte, painted, miniature finish like the reference screens; the instruments are quiet matte sage, sand, dark rubber and dark slate; the colour lives in the pod's inner light, the surprises and the life. No gloss, no chrome, no neon, no holograms, no glowing outlines, no sci-fi interface, nothing childish, no wooden furniture, no books, no candles, no cottage.\nNO text, letters, digits, numbers, logos, buttons, panels or icons anywhere (the game types its words later). No frame, no border, no vignette; the picture fills the canvas edge to edge."
+ }
+]
