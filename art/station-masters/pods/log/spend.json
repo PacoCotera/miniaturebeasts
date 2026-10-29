@@ -9264,5 +9264,39 @@
    "thoughtsTokenCount": 248,
    "totalTokenCount": 2005
   }
+ },
+ {
+  "tag": "reading-instrument/p2-housing-graphite try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.208756,
+  "mxn": 4.1751,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T22:29:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1418,
+   "candidatesTokenCount": 1408,
+   "thoughtsTokenCount": 308,
+   "totalTokenCount": 3134
+  }
+ },
+ {
+  "tag": "reading-instrument/p2-housing-sage try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.20819,
+  "mxn": 4.1638,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T22:29:46Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1435,
+   "candidatesTokenCount": 1444,
+   "thoughtsTokenCount": 267,
+   "totalTokenCount": 3146
+  }
  }
 ]

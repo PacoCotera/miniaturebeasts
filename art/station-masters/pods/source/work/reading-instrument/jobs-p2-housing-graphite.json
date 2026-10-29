@@ -1,0 +1,24 @@
+[
+ {
+  "name": "reading-instrument/p2-housing-graphite",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/iwq/results/T-20261026-vivarium/readroom-explore-4/owner-references/ref-01.png",
+    "MATERIALS (a reference the owner chose): take ONLY the moulded plastic: separate housing panels with real bevelled edges, seams between them, small screws, recessed modules, rubbery buttons and small lamp lenses. Do not take its pixel style, its colours, its screens or its density."
+   ],
+   [
+    "/home/user/iwq/results/T-20261026-vivarium/readroom-explore-4/owner-references/ref-08.png",
+    "MATERIALS (a reference the owner chose): take ONLY the chunky moulded plastic monitor housing: its thick rounded edges, the soft highlight along the bevel, the dark recessed bezel round the screen. Do not take the creature, the colours or the pixel style."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/reading-instrument/pick.png",
+    "THE CURRENT DIRECTION (project-owned): keep its colour of glass (deep blue-green teal) and its calm warmth. Do NOT keep its glowing amber rim line: that rim becomes real plastic and rubber."
+   ]
+  ],
+  "prompt": "Paint, flat-on and centred, the FRONT of a small home research instrument for a cosy creature-breeding game, a finished painted game asset, filling the canvas edge to edge: a moulded plastic HOUSING with a large rectangular DISPLAY OPENING. The housing border is narrow on the top and both sides (about 3 percent of the width) and a little deeper at the bottom, where it forms a FOOT LIP about 7 percent of the height. Inside the opening, a matte black RUBBER BEZEL (soft, slightly rounded, about 1 percent wide, no shine) holds the GLASS. The glass is dark, EMPTY and deep: a deep blue-green teal going near-black at its corners, a very faint even light from inside at its centre, a soft broad diagonal reflection of a room window across its upper left, a thin bright specular line along the glass's top inner edge where it meets the bezel; nothing drawn on the glass (no grid, no rings, no widgets, no text). On the housing: real bevelled edges catching a soft top light, a fine parting seam running round the housing just outside the bezel, four small cross-head screws in the corners, slight wear and a fine moulded texture on the plastic, soft ambient occlusion where the bezel meets the plastic. On the foot lip, from left to right: a recessed printed LABEL STRIP (a blank off-white paper label, slightly matte, set in a shallow recess, about a quarter of the width, no writing), then a long narrow recessed dark CHANNEL in the middle (empty, for a row of small lamps the game adds), then at the right one small round clear amber LAMP LENS, unlit, in a black rubber grommet, and next to it a tiny round speaker grille of a few holes. Light: soft and real, a top light from a warm room; the only light that glows is the faint light inside the glass. No neon, no light lines, no bloom on the housing. The plastic is a warm dark GRAPHITE grey (like a well-loved piece of lab kit), matte with a slight satin sheen on the bevels; the rubber is black.\nNO text, letters, digits, logos or icons anywhere. Nothing scary. Fill the canvas edge to edge with the housing: no table, no wall, no background around it."
+ }
+]
