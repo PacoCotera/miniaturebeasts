@@ -9,7 +9,7 @@ until the lead gives the published ones."""
 import json, os, threading, datetime
 from zoneinfo import ZoneInfo
 CAP_MXN = 250.0; MXN_PER_USD = 20.0; WORST_CASE_USD = 0.24
-CAP_BY_DAY = {"2026-10-10": 500.0, "2026-10-26": 500.0, "2026-10-28": 500.0}     # owner, decisions.md 2026-10-10 20:05: "you can raise the cap for today another 250" (that day only); owner, decisions.md 2026-10-26 18:41: "cap today art api at 500" (Pacific day 2026-10-26 only); owner, decisions.md 2026-10-28: "500, work as much as possible in completing the species art" (Pacific day 2026-10-28 only)
+CAP_BY_DAY = {"2026-10-10": 500.0, "2026-10-26": 500.0, "2026-10-28": 500.0, "2026-10-29": 370.0}     # owner, decisions.md 2026-10-10 20:05: "you can raise the cap for today another 250" (that day only); owner, decisions.md 2026-10-26 18:41: "cap today art api at 500" (Pacific day 2026-10-26 only); owner, decisions.md 2026-10-28: "500, work as much as possible in completing the species art" (Pacific day 2026-10-28 only); owner, decisions.md 2026-10-29 18:10: about 120 MXN for painted reading-instrument layers, "approved for today" (Pacific day 2026-10-29 only: 246.05 spent + 120 + margin)
 RATES = {"pro-image": {"input": 2.0, "output": 120.0, "thinking": 120.0},                       # USD per million tokens
          "flash-image": {"input": 2.0, "output": 120.0, "thinking": 120.0, "placeholder": True}}  # PLACEHOLDER until the published Nano Banana 2 rates are given
 _LOCK = threading.Lock()
