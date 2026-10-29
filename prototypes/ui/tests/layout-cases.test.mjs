@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { findings } from "../specs/layout.mjs";
+import { findings, overruns } from "../specs/layout.mjs";
 import { specFor } from "../../face/tools/layout-check.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), J = (f) => JSON.parse(readFileSync(f, "utf8"));
@@ -71,4 +71,13 @@ test("the focus set is drawn after every other resident: ring, then the focused 
     }
   }
   assert.ok(n >= 3, n + " logs read");
+});
+
+test("the text fit: no fixture log (the frozen ones too) has a text whose ink lies outside the plate it is drawn on", () => {
+  let n = 0;
+  for (const screen of readdirSync(path.join(here, "layout-cases"))) for (const dir of [path.join(here, "layout-cases", screen), path.join(here, "layout-cases", screen, "frozen")]) {
+    if (!existsSync(dir)) continue;
+    for (const f of readdirSync(dir).filter((x) => x.endsWith(".json"))) { const o = overruns(J(path.join(dir, f)).log); n++; assert.deepEqual(o.map((x) => `${x.node} ${x.measured} px past the ${x.side} of ${x.container.id}`), [], `${screen}/${f}`); }
+  }
+  assert.ok(n >= 50, n + " logs read");
 });

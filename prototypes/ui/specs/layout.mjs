@@ -325,6 +325,27 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
   // the exceptions: frame.json layout.exceptions; a finding one covers is dropped, and used names the ones in use
   return excepted(frameSpec, screen, out.map((f) => ({ ...f, states: [state] })), true);
 }
+// The text fit (the check after L11, reported beside the rules): a text's ink box (its advance x cap top to baseline) against the box it is drawn in. The box is the plate under it: the last node drawn
+// before the text that holds the text's centre and hides what it covers (a rect, a nine-slice, a picture painted edge to edge), at least 24 x 14 and under 40 % of the screen (the stage's ground is
+// not a plate); a focus ring, a clip and composed content (a window that clips by design) are not. A text that is not drawn on a plate has no box and is not measured. One entry for each side the
+// text crosses: { node: "<region> \"<text>\"", container: { id, rect }, side, measured, required: 0 } (measured: the px the text's ink lies outside the plate on that side, always above 0).
+export function overruns(log) {
+  const textOf = new Map(); for (const t of log?.type ?? []) if (t.text && t.role !== "shadow") textOf.set(`${t.region}|${t.x}|${t.w}`, t);
+  const nodes = (log?.nodes ?? []).map((n, i) => parse(n, i, n[1] === KIND.text ? textOf.get(`${n[3]}|${n[4]}|${n[6]}`) : null)), out = [];
+  for (const t of nodes) {
+    if (t.kind !== KIND.text || !t.text) continue;
+    const [x, y, w, h] = t.solid, cx = x + w / 2, cy = y + h / 2; let plate = null;
+    for (const b of nodes) {
+      if (b.order >= t.order || b.ring || !(b.kind === KIND.rect || b.kind === KIND.nine || (b.kind === KIND.sprite && same(b.solid, b.rect)))) continue;
+      const [bx, by, bw, bh] = b.rect; if (bw < 24 || bh < 14 || bw * bh >= 0.4 * 1024 * 600) continue;
+      if (cx >= bx && cx < bx + bw && cy >= by && cy < by + bh) plate = b;
+    }
+    if (!plate) continue;
+    const [bx, by, bw, bh] = plate.rect, over = { left: bx - x, top: by - y, right: x + w - (bx + bw), bottom: y + h - (by + bh) };
+    for (const side of SIDES) if (over[side] > 0) out.push({ rule: "text fit", node: `${t.region} "${t.text}"`, other: side, container: { id: plate.region, rect: plate.rect }, side, measured: over[side], required: 0, unit: "px" });
+  }
+  return out;
+}
 // The exceptions frame.json layout.exceptions lists, applied to findings of one screen (each with its states): a finding an exception covers (rule, screen, node, other when named, a state when named)
 // is dropped, and the list's `used` names the exceptions in use. findings() and the slots of slotFindings() go through it.
 export function excepted(frameSpec, screen, list, oneState = false) {

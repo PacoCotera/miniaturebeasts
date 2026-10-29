@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { findings, components, containers, slotFindings, group, unusedExceptions, enforcedFinding, malformed, excepted, RULES } from "../specs/layout.mjs";
+import { findings, components, containers, slotFindings, overruns, group, unusedExceptions, enforcedFinding, malformed, excepted, RULES } from "../specs/layout.mjs";
 
 const frame = JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8"));
 const fnv = (s) => { let h = 2166136261; for (const ch of new TextEncoder().encode(String(s))) { h ^= ch; h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };
@@ -333,4 +333,16 @@ test("the wording of a card: plates named by their title, the overlap and the lo
   assert.ok(/overlaps the b \(100 x 100\) by 50 x 50. Is one on the other by design\?/.test(run([box("a", [100, 100, 100, 100]), box("b", [150, 150, 100, 100])]).find((x) => x.rule === "L4").says), "an overlap asks whether it is by design");
   assert.equal(run([...FULL(), box("glint", [300, 300, 14, 16])]).find((x) => x.rule === "L11").says, "A small picture (14 x 16) with no word beside it: what is it?", "a lone mark asks what it is");
   assert.ok(/^The 14 px badge touches the pane's top edge \(0 px; 16 asked\)\.$/.test(run([box("pane", [100, 100, 600, 400]), box("badge", [110, 100, 14, 14]), box("body", [110, 140, 200, 100])]).find((x) => x.rule === "L2" && x.node === "badge")?.says ?? ""), "a small box touching an edge says its size");
+});
+
+test("the text fit: a text whose ink lies outside the plate it is drawn on is named by side and px; one inside, one on no plate, and one on a ring or a window are not", () => {
+  const plate = node("chip", 4, [100, 100, 80, 24]), say = (rect, ...under) => overruns({ nodes: [...under, text("label", rect)], type: [{ text: "Words", region: "label", x: rect[0], w: rect[2], cap: rect[1] + 4, base: rect[1] + 16 }] });
+  assert.deepEqual(say([110, 100, 60, 20], plate), [], "inside its plate: not an overrun");
+  assert.deepEqual(say([110, 100, 60, 20]), [], "on no plate: not measured");
+  const o = say([120, 100, 80, 20], plate);
+  assert.equal(o.length, 1, "past the right edge only"); assert.deepEqual([o[0].side, o[0].measured, o[0].container.id], ["right", 20, "chip"]);
+  assert.deepEqual(say([90, 100, 60, 20], plate).map((f) => [f.side, f.measured]), [["left", 10]], "past the left edge");
+  assert.deepEqual(say([110, 100, 60, 20], node("chip", 4, [100, 100, 80, 24]), node("ring", 4, [100, 100, 40, 24], { flags: 1 })), [], "a focus ring is not a plate");
+  assert.deepEqual(say([120, 100, 80, 20], node("win", 6, [100, 100, 80, 24])), [], "composed content is not a plate");
+  assert.deepEqual(say([120, 100, 80, 20], node("ground", 4, [0, 40, 1024, 522]), node("chip", 4, [100, 100, 80, 24]))[0]?.container.id, "chip", "the last plate drawn under the text is its box, not the ground");
 });
