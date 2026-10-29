@@ -7,7 +7,7 @@
 //   `snapshot`, the snapshot's source nodes ({ region, from, at, nodes }) while a node shows it.
 // spec: the screen's spec; its top-level `layout` block: { stage: "bezel" | "field" | "painting" | "exempt", opening: [x, y, w, h], margin?, gutter?, containers?: [{ id, region, padding, gutter }],
 //   columns?: [{ id, regions, axis, align: "fill" | "centre" }], topLine?, floorLine?, groups?: [{ id, regions, within, align }], split?: [{ between: [a, b], gutter, reason }], bleed?: [regions],
-//   slots?: [regions], painted?: [{ id, rect | region, fills, states?, picture }], facts?: [{ region, path }], align?, clips?: [regions], movers?: [regions], props?: [regions],
+//   slots?: [regions], painted?: [{ id, rect | region, fills, states?, picture }], facts?: [{ region, path }], given?: [props paths read as the frame's facts, not a picture's boxes], align?, clips?: [regions], movers?: [regions], props?: [regions],
 //   anchors?: [{ region, x?: "left" | "right", y?: "top" | "bottom", inset?: [dx, dy] }] }, and its regions (`labels`, `under`, `partOf` merge one region into another).
 //   A container has an alignment per axis (`align` on the stage, `containers[].align`: "left" | "right" | "centre" | "fill", or { x: left | right | centre | fill, y: top | bottom | middle | fill }; a string sets x);
 //   undeclared, an axis is a centred block when the content sits off the margin on both sides, else fill. `containers[].padding` is a number or { left, top, right, bottom }. A region in `clips` is a window that
@@ -27,7 +27,7 @@ import { FRAME_REGIONS } from "./clearance.mjs";
 
 const KIND = { rect: 1, text: 2, sprite: 3, nine: 4, clip: 5, composed: 6 }, FLAG = { ring: 1, clip: 2, hold: 4, window: 8, cut: 16, composed: 32 };
 const BARS = new Set([...FRAME_REGIONS, "top", "line", "bar"]);
-export const RULES = ["L0", "L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "L11"];   // a finding of L3, L5, L7, L8 or L10 names its part (a or b)
+export const RULES = ["L0", "L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "L11"];   // a finding of L3, L5, L7, L8 or L10 names its part (a or b; L10 also c)
 const STAGES = ["bezel", "field", "painting", "exempt"];
 const SIDES = ["left", "top", "right", "bottom"], OPP = { left: "right", right: "left", top: "bottom", bottom: "top" };
 const fnv = (s) => { let h = 2166136261; for (const ch of new TextEncoder().encode(String(s))) { h ^= ch; h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };   // the face's v_id
@@ -63,14 +63,18 @@ export function malformed(spec, frameSpec, name = "spec") {
     if (!num(t.L3?.value?.bezelItems)) out.push("frame.json layout.thresholds.L3.value.bezelItems is not a number");
     if (!num(t.L4?.value?.depth) || !num(t.L4?.value?.perch?.share) || !num(t.L4?.value?.perch?.min)) out.push("frame.json layout.thresholds.L4.value needs depth and perch { share, min }");
     if (!Array.isArray(F.exceptions)) out.push("frame.json layout.exceptions is not a list");
-    else F.exceptions.forEach((e, i) => { if (!e || !RULES.includes(e.rule) || typeof e.screen !== "string" || typeof e.node !== "string" || !e.reason || !["UI/UX", "AD", "owner"].includes(e.by) || !/^\d{4}-\d\d-\d\d/.test(String(e.date ?? ""))) out.push(`frame.json layout.exceptions[${i}] needs screen, rule (L0 to L11), node, reason, by (UI/UX, AD or owner) and date`); });
+    else F.exceptions.forEach((e, i) => { if (!e || !RULES.includes(e.rule) || typeof e.screen !== "string" || typeof e.node !== "string" || !e.reason || !["UI/UX", "AD", "owner"].includes(e.by) || !/^\d{4}-\d\d-\d\d/.test(String(e.date ?? ""))) out.push(`frame.json layout.exceptions[${i}] needs screen, rule (L0 to L11), node, reason, by (UI/UX, AD or owner) and date`);
+      if (e && e.when != null && (typeof e.when !== "object" || Array.isArray(e.when))) out.push(`frame.json layout.exceptions[${i}].when is { "<props fact>": value }`);
+      if (e && e.unless != null && (typeof e.unless !== "object" || !RULES.includes(e.unless.rule))) out.push(`frame.json layout.exceptions[${i}].unless is { rule, part? }`);
+      if (e && e.rule === "L10" && e.part === "c") out.push(`frame.json layout.exceptions[${i}]: L10c has no exception, the owner's or anyone's`); });
     if (!F.enforced || typeof F.enforced !== "object" || Array.isArray(F.enforced)) out.push("frame.json layout.enforced is not an object");
     else for (const [s, v] of Object.entries(F.enforced)) if (v !== "all" && !(Array.isArray(v) && v.every((r) => RULES.includes(r)))) out.push(`frame.json layout.enforced.${s} is "all" or a list of rules`);
   }
   if (!L || typeof L !== "object") { out.push(`${name} has no layout block`); return out; }
   if (!STAGES.includes(L.stage)) out.push(`${name} layout.stage is not one of ${STAGES.join(", ")}`);
   if (L.stage !== "exempt" && !rect(L.opening)) out.push(`${name} layout.opening is not [x, y, w, h]`);
-  for (const k of ["containers", "columns", "groups", "split", "bleed", "slots", "painted", "facts", "clips", "movers", "props", "anchors"]) if (k in L && !Array.isArray(L[k])) out.push(`${name} layout.${k} is not a list`);
+  for (const k of ["containers", "columns", "groups", "split", "bleed", "slots", "painted", "facts", "given", "clips", "movers", "props", "anchors"]) if (k in L && !Array.isArray(L[k])) out.push(`${name} layout.${k} is not a list`);
+  if (Array.isArray(L.given) && !L.given.every((q) => typeof q === "string" && q)) out.push(`${name} layout.given lists props paths`);
   for (const k of ["clips", "movers", "props"]) if (Array.isArray(L[k]) && !L[k].every((r) => typeof r === "string" && r)) out.push(`${name} layout.${k} lists region names`);
   for (const p of L.painted ?? []) if (!p?.id || !(rect(p.rect) || (typeof p.region === "string" && p.region)) || typeof p.fills !== "boolean") out.push(`${name} layout.painted: ${p?.id ?? "?"} needs id, rect or region, and fills`);
   for (const f of L.facts ?? []) if (!f?.region || !f?.path) out.push(`${name} layout.facts: an entry needs region and path`);
@@ -310,7 +314,7 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
     for (const grp of L.groups ?? []) { const ks = comps.filter((q) => grp.regions?.includes(q.region)); for (let i = 1; i < ks.length; i++) { const d = rnd(Math.min(...ks.slice(0, i).map((q) => dist(q.box, ks[i].box))), 0), w = grp.within ?? t8.label; if (d > w) say("L8", c, { part: "a", node: ks[i].name, other: "group " + grp.id, measured: d, required: w, unit: "px", what: "apart from its group", boxes: ks.map((q) => bx(q === ks[i] ? "component" : "other", q.box)) }); } }
     const at = (k, s) => Math.abs(side(k.box, R0, s) - c.margins[s]) <= t1.side, placed = (k) => ((at(k, "left") || at(k, "right")) && (at(k, "top") || at(k, "bottom"))) || (Math.abs(cx(k.box) - cx(R0)) <= t5.nearCentres[1] && Math.abs(cy(k.box) - cy(R0)) <= t5.nearCentres[1]);   // placed, not floating: in a corner at the margins, or centred on both axes
     if (comps.length > 1) for (const k of comps) { if (placed(k) || declared.has(k.region) || groupsOfKey(k.key).some((g) => regionOf(A.spec, g.region)?.labels)) continue; const d = Math.min(...comps.filter((q) => q !== k).map((q) => dist(k.box, q.box))); if (d > t8.float * G) say("L8", c, { part: "b", node: k.name, other: "every neighbour", measured: rnd(d, 0), required: t8.float * G, unit: "px", what: "it floats", boxes: [bx("component", k.box)] }); }
-    // L10: a cut picture: (a) a window that cuts its picture's solid ink; (b) a subject picture whose solid ink touches its own box's edge
+    // L10: a cut picture: (a) a window that cuts its picture's solid ink; (b) a subject picture whose solid ink touches its own box's edge; (c) a room window's edge that cuts a kept form: edgeCuts, below
     for (const g of c.groups) for (const n of g.members) {
       if (n.cut && !bleed.has(n.region) && !clips.has(n.region) && !clipsIn) say("L10", c, { part: "a", node: n.region, other: "its picture", measured: 0, required: t10.headroom + 1, unit: "px", what: "the window cuts the picture's solid ink", boxes: [bx("component", n.rect)] });
       const comp = regionOf(A.spec, n.region)?.component;
@@ -322,8 +326,39 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
       const near = c.groups.some((q) => q.kind === KIND.text && overlapShare(q.box, g.box, "y") > 0 && gapX(q.box, g.box) <= t11.label);
       if (!near && !labelled(g)) say("L11", c, { node: g.region, other: "", measured: Math.max(g.box[2], g.box[3]), required: t11.size, unit: "px", what: "a lone mark: no text within " + t11.label + " px on its rows", says: `A small picture (${g.box[2]} x ${g.box[3]}) with no word beside it: what is it?`, boxes: [bx("component", g.box)] }); }
   }
-  // the exceptions: frame.json layout.exceptions; a finding one covers is dropped, and used names the ones in use
-  return excepted(frameSpec, screen, out.map((f) => ({ ...f, states: [state] })), true);
+  // L10c: a room window's edge cuts a kept form (the owner's rule of 2026-10-29 14:38 and 15:24, the collection v2 design §4): on a frame whose props say it is a room view (the fact `view` is "room", the spec's
+  // layout.given), every form the window must hold whole is measured against the window's four edges. L10c has no exception, the owner's or anyone's: it is added after the exceptions are applied.
+  const cuts = edgeCuts(log, spec, extra);
+  // the exceptions: frame.json layout.exceptions; a finding one covers is dropped, and used names the ones in use. An exception with `when` holds only on a frame whose props fact equals it, and one with
+  // `unless` only when this frame has no finding of that rule and part (the owner's L10a on a room window: cleared only through L10c's silence)
+  const kept = excepted(frameSpec, screen, out.map((f) => ({ ...f, states: [state] })), true, { facts: extra?.facts ?? {}, frame: cuts }), all = [...kept, ...cuts];
+  return withUsed(all, kept.used);
+}
+// L10c's forms on a room-view frame, in screen pixels: each resident node's solid ink box (regions `resident` and `bed.sleepers`), the bed's rect (region `bed`), each piece drawn in the view (region `room`),
+// and from the props fact `regions.window.edge` ({ crop: [cx, cy], keep: [{ id, box, leaves? }], joins: [{ id, rect }], painting: [w, h] }, painting coordinates) every join and key prop, moved to the
+// screen (painting − crop + the window's corner). A form whose box crosses an edge of the window (spec regions.window.rect) is a finding, measured in px beyond that edge; a key prop may cross on its
+// `leaves` side only when its box reaches the painting's own edge there (the 15:24 ruling: a tree that already runs off the top of the room painting).
+export function edgeCuts(log, spec, extra = {}) {
+  const F = extra?.facts ?? {}, given = new Set(spec?.layout?.given ?? []); if (!given.has("view") || F.view !== "room") return [];
+  const win = spec?.regions?.window?.rect; if (!Array.isArray(win) || win.length !== 4) return [];
+  const E = F["regions.window.edge"] ?? {}, [cx, cy] = Array.isArray(E.crop) ? E.crop : [0, win[1]], [pw, ph] = Array.isArray(E.painting) ? E.painting : [1024, 568];
+  const toScreen = (b) => [b[0] - cx + win[0], b[1] - cy + win[1], b[2], b[3]];
+  const forms = [];
+  for (const n of (log?.nodes ?? []).map((q, i) => parse(q, i, null))) {
+    if (n.kind === KIND.sprite && (n.region === "resident" || n.region === "bed.sleepers") && !empty(n.solid)) forms.push({ id: n.region, box: n.solid });
+    else if (n.kind === KIND.sprite && n.region === "bed") forms.push({ id: "bed", box: n.rect });
+    else if (n.kind === KIND.sprite && n.region === "room") forms.push({ id: "room piece", box: n.rect });
+  }
+  for (const j of E.joins ?? []) if (Array.isArray(j?.rect)) forms.push({ id: j.id, box: toScreen(j.rect) });
+  for (const k of E.keep ?? []) if (Array.isArray(k?.box)) forms.push({ id: k.id, box: toScreen(k.box), painting: k.box, leaves: k.leaves ?? null });
+  const reaches = (b, s) => (s === "left" ? b[0] <= 0 : s === "top" ? b[1] <= 0 : s === "right" ? b[0] + b[2] >= pw : b[1] + b[3] >= ph);
+  const out = [];
+  for (const f of forms) {
+    const over = { left: win[0] - f.box[0], top: win[1] - f.box[1], right: R(f.box) - R(win), bottom: B(f.box) - B(win) };
+    for (const s of SIDES) { if (over[s] <= 0 || !inter(f.box, win)) continue; if (f.leaves === s && f.painting && reaches(f.painting, s)) continue;
+      out.push({ rule: "L10", part: "c", node: f.id, other: s, measured: over[s], required: 0, unit: "px", what: `the window edge cuts ${f.id}`, says: `The window's ${s} edge cuts ${f.id} by ${over[s]} px (the owner's rule: the window edge never cuts through a mibi, the nest or a key prop).`, container: { id: "window", rect: [...win] }, boxes: [{ role: "component", rect: [...f.box] }, { role: "other", rect: [...win] }] }); }
+  }
+  return out;
 }
 // The text fit (the check after L11, reported beside the rules): a text's ink box (its advance x cap top to baseline) against the box it is drawn in. The box is the plate under it: the last node drawn
 // before the text that holds the text's centre and hides what it covers (a rect, a nine-slice, a picture painted edge to edge), at least 24 x 14 and under 40 % of the screen (the stage's ground is
@@ -351,9 +386,10 @@ export function overruns(log) {
 }
 // The exceptions frame.json layout.exceptions lists, applied to findings of one screen (each with its states): a finding an exception covers (rule, screen, node, other when named, a state when named)
 // is dropped, and the list's `used` names the exceptions in use. findings() and the slots of slotFindings() go through it.
-export function excepted(frameSpec, screen, list, oneState = false) {
+export function excepted(frameSpec, screen, list, oneState = false, ctx = {}) {
   const ex = frameSpec?.layout?.exceptions ?? [], used = new Set();
-  const kept = list.filter((f) => { const e = ex.findIndex((x) => x.rule === f.rule && x.screen === screen && (!x.state || (f.states ?? []).includes(x.state)) && x.node === f.node && (x.other == null || [x.other].flat().includes(f.other))); if (e < 0) return true; used.add(e); return false; });
+  const holds = (x) => (!x.when || Object.entries(x.when).every(([k, v]) => ctx.facts?.[k] === v)) && (!x.unless || !(ctx.frame ?? []).some((f) => f.rule === x.unless.rule && (x.unless.part == null || f.part === x.unless.part)));   // `when` a props fact of this frame; `unless` a finding of this frame
+  const kept = list.filter((f) => { const e = ex.findIndex((x) => x.rule === f.rule && x.screen === screen && (!x.state || (f.states ?? []).includes(x.state)) && x.node === f.node && (x.other == null || [x.other].flat().includes(f.other)) && (x.part == null || x.part === f.part) && holds(x)); if (e < 0) return true; used.add(e); return false; });
   return withUsed(oneState ? kept.map(({ states, ...f }) => f) : kept, [...used].map((i) => ex[i]));
 }
 const withUsed = (list, used) => { Object.defineProperty(list, "used", { value: used }); return list; };   // the exceptions in use (not enumerable: the result compares as the list of findings)

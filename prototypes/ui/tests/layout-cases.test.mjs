@@ -27,6 +27,21 @@ for (const c of cases) test(`${c.state} (${c.from})`, () => {
   for (const e of c.expect) assert.ok(fs.some((f) => matches(f, e)), `${c.state}: expected ${e.rule}${e.part ?? ""} ${e.node ?? ""} ${e.other ?? ""} ${JSON.stringify(e.measured ?? "")} (${e.why}); found:\n  ${fs.filter((f) => f.rule === e.rule).map(say).join("\n  ")}`);
   for (const e of c.clear) assert.ok(!fs.some((f) => matches(f, e)), `${c.state}: cleared by the owner, but found: ${fs.filter((f) => matches(f, e)).map(say).join("; ")}`);
 });
+// the collection v2 design §4: the proof that L10c bites. Three broken room-view frames (layout-cases/vivarium/broken/) each give exactly one L10c finding; the frozen logs carry no `view` fact and give none.
+const BROKEN = path.join(here, "layout-cases", "vivarium", "broken");
+const roomSpec = (s) => (s.layout?.given ? s : { ...s, layout: { ...s.layout, given: ["view", "regions.window.edge"] }, regions: { ...s.regions, window: { ...s.regions.window, rect: [0, 88, 688, 472] } } });   // the room view's window and facts (vivarium.json carries them from the room view's spec edit on)
+test("L10c bites: each broken room-view fixture gives exactly one L10c finding; the frozen logs give none", () => {
+  const want = { "reeds-crop-230.json": ["reeds-boulder", "left"], "boulders-rear-stone.json": ["boulders-rear-stone", "right"], "loika-foot-16.json": ["resident", "left"] };
+  assert.deepEqual(readdirSync(BROKEN).filter((f) => f.endsWith(".json")).sort(), Object.keys(want).sort(), "the three broken fixtures");
+  for (const [f, [node, other]] of Object.entries(want)) {
+    const rec = J(path.join(BROKEN, f)), { spec } = specFor(rec), cuts = findings(rec.log, roomSpec(spec), frame, rec.screen, rec.state, { facts: rec.facts }).filter((x) => x.rule === "L10" && x.part === "c");
+    assert.deepEqual(cuts.map((x) => [x.node, x.other]), [[node, other]], `${f}: ${rec.why}`);
+  }
+  for (const f of readdirSync(path.join(here, "layout-cases", "vivarium", "frozen"))) {
+    const rec = J(path.join(here, "layout-cases", "vivarium", "frozen", f)), { spec } = specFor(rec);
+    assert.deepEqual(findings(rec.log, roomSpec(spec), frame, rec.screen, rec.state, { facts: rec.facts ?? {} }).filter((x) => x.rule === "L10" && x.part === "c"), [], `frozen ${f}: no view fact, no L10c`);
+  }
+});
 test("the corpus: every ✓m of the spec's validation has a case", () => {
   const marks = cases.flatMap((c) => c.expect.filter((e) => e.mark === "✓m")); assert.ok(marks.length >= 25, marks.length + " ✓m expects");
   for (const c of cases) assert.ok(Array.isArray(c.clear) && Array.isArray(c.pending), c.state);
