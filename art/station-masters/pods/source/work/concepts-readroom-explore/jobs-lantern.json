@@ -1,0 +1,24 @@
+[
+ {
+  "name": "concepts-readroom-explore/lantern",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-pod-loika.png",
+    "THE POD (project-owned game art): a wild seed pod, slate-blue with a round coral cap, pale vertical ribs and coral dots, standing on a small turned wooden dish. Keep its design exactly wherever the pod appears; never make it a jar, a vase, a lantern of metal, or an egg of another design."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-loika.png",
+    "THE CREATURE (project-owned game art): the Loika the pod will become: a small round charcoal creature with a cream belly and muzzle, amber eyes, four stubby legs with pale toes and three green leaves on its head. Keep its design exactly; never invent another creature."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed Vivarium room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden light, cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a cosy handheld creature-keeping game, 16:9, a mood-and-layout thumbnail for a concept: the READING ROOM, where the player opens up a wild pod (a seed pod with a creature's genome sleeping inside) one surprise at a time. The feeling: a pod is RICH IN SURPRISES, there is more inside than you can see, and each read brings one out into the light. CONCEPT: THE LANTERN. The pod is hung from a hook like a lantern in a dark round room, and its inner light throws big soft SHADOW-SHAPES of what it holds onto the walls all around. COMPOSITION: the pod hangs from a cord at the top centre of the screen, small (about a quarter of the screen's height), the only light source, glowing warm amber from within between its ribs, its coral cap and dots kept. The whole screen around it is the curved plaster wall of a cosy round room going to shadow, and on it, huge and soft, five or six shadow silhouettes cast outward from the pod like a magic lantern: a tuft of fur, a round eye, a paw with toes, a leaf, a curling tail, a pair of ears; each shadow is a different dark warm tone with a soft edge. On the wooden floor at the bottom centre, small, stands the Loika, looking up, half painted in colour and half grey fog, with one shadow (the fur) just landing on its back and turning russet. A low wooden stool and a rug, nothing else.\nLIGHT AND FINISH: warm key light, warm bounce, soft ambient occlusion, soft contact shadows. Matte, hand-painted miniature finish like the painted reference, cosy and warm, real depth; low saturation everywhere except the pod's inner light and the surprises. No gloss, no chrome, no plastic, no neon, no sci-fi interface, no holograms, nothing childish.\nNO text, letters, digits, numbers, logos, buttons, panels, boxes or icons anywhere (the game types its words later). No frame, no border, no vignette; the picture fills the canvas edge to edge."
+ }
+]

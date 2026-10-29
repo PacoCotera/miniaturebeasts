@@ -8890,5 +8890,141 @@
    "thoughtsTokenCount": 295,
    "totalTokenCount": 6086
   }
+ },
+ {
+  "tag": "concepts-readroom-explore/lens try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.216686,
+  "mxn": 4.3337,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:38:35Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1423,
+   "candidatesTokenCount": 1533,
+   "thoughtsTokenCount": 249,
+   "totalTokenCount": 3205
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore/lantern try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.199622,
+  "mxn": 3.9924,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:38:59Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1411,
+   "candidatesTokenCount": 1415,
+   "thoughtsTokenCount": 225,
+   "totalTokenCount": 3051
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore/constellation try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.205122,
+  "mxn": 4.1024,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:39:16Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1401,
+   "candidatesTokenCount": 1466,
+   "thoughtsTokenCount": 220,
+   "totalTokenCount": 3087
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore/sprout try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.206816,
+  "mxn": 4.1363,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:39:35Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1408,
+   "candidatesTokenCount": 1475,
+   "thoughtsTokenCount": 225,
+   "totalTokenCount": 3108
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore/shells try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.209552,
+  "mxn": 4.191,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:39:52Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1396,
+   "candidatesTokenCount": 1402,
+   "thoughtsTokenCount": 321,
+   "totalTokenCount": 3119
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore/pool try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.20806,
+  "mxn": 4.1612,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:40:09Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1430,
+   "candidatesTokenCount": 1432,
+   "thoughtsTokenCount": 278,
+   "totalTokenCount": 3140
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore/dream try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.214182,
+  "mxn": 4.2836,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:40:27Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1431,
+   "candidatesTokenCount": 1491,
+   "thoughtsTokenCount": 270,
+   "totalTokenCount": 3192
+  }
+ },
+ {
+  "tag": "concepts-readroom-explore/cabinet try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.22317,
+  "mxn": 4.4634,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T19:40:57Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1425,
+   "candidatesTokenCount": 1535,
+   "thoughtsTokenCount": 301,
+   "totalTokenCount": 3261
+  }
  }
 ]

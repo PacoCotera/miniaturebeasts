@@ -1,0 +1,24 @@
+[
+ {
+  "name": "concepts-readroom-explore/pool",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-pod-loika.png",
+    "THE POD (project-owned game art): a wild seed pod, slate-blue with a round coral cap, pale vertical ribs and coral dots, standing on a small turned wooden dish. Keep its design exactly wherever the pod appears; never make it a jar, a vase, a lantern of metal, or an egg of another design."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-loika.png",
+    "THE CREATURE (project-owned game art): the Loika the pod will become: a small round charcoal creature with a cream belly and muzzle, amber eyes, four stubby legs with pale toes and three green leaves on its head. Keep its design exactly; never invent another creature."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed Vivarium room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden light, cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a cosy handheld creature-keeping game, 16:9, a mood-and-layout thumbnail for a concept: the READING ROOM, where the player opens up a wild pod (a seed pod with a creature's genome sleeping inside) one surprise at a time. The feeling: a pod is RICH IN SURPRISES, there is more inside than you can see, and each read brings one out into the light. CONCEPT: THE POOL. Seen from above, the pod is a dark still pond at night, and the surprises swim under its surface like fish; the player swings a lantern over the water to draw one up. COMPOSITION: a top-down view: a round dark pool fills most of the screen, its rim the pod's own coral cap seen from above (a wide coral ring with pale ribs running out from it), its water deep slate-blue and very still, with the reflection of a warm lantern held just above the right edge (only the lantern's reflection and a hand's shadow show). UNDER the surface, half-hidden, soft lit shapes glide like koi: a russet lock of fur, an amber eye, a pale paw, a leaf, a curling tail, each a gentle coloured glow in the dark water with ripples over it. One shape, the fur, is BREAKING the surface in a ring of ripples and lifting into the lantern light. On the pool's near bank at the bottom left, on warm mossy stone, sits the small Loika looking into the water, half painted in colour and half grey fog, its reflection faint. Mossy warm stones and a few reeds round the rim.\nLIGHT AND FINISH: warm key light, warm bounce, soft ambient occlusion, soft contact shadows. Matte, hand-painted miniature finish like the painted reference, cosy and warm, real depth; low saturation everywhere except the pod's inner light and the surprises. No gloss, no chrome, no plastic, no neon, no sci-fi interface, no holograms, nothing childish.\nNO text, letters, digits, numbers, logos, buttons, panels, boxes or icons anywhere (the game types its words later). No frame, no border, no vignette; the picture fills the canvas edge to edge."
+ }
+]

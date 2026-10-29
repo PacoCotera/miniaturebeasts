@@ -1,0 +1,24 @@
+[
+ {
+  "name": "concepts-readroom-explore/sprout",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-pod-loika.png",
+    "THE POD (project-owned game art): a wild seed pod, slate-blue with a round coral cap, pale vertical ribs and coral dots, standing on a small turned wooden dish. Keep its design exactly wherever the pod appears; never make it a jar, a vase, a lantern of metal, or an egg of another design."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-loika.png",
+    "THE CREATURE (project-owned game art): the Loika the pod will become: a small round charcoal creature with a cream belly and muzzle, amber eyes, four stubby legs with pale toes and three green leaves on its head. Keep its design exactly; never invent another creature."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed Vivarium room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden light, cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a cosy handheld creature-keeping game, 16:9, a mood-and-layout thumbnail for a concept: the READING ROOM, where the player opens up a wild pod (a seed pod with a creature's genome sleeping inside) one surprise at a time. The feeling: a pod is RICH IN SURPRISES, there is more inside than you can see, and each read brings one out into the light. CONCEPT: THE SPROUT. The pod is planted, and each read sprouts a new stem whose bud opens into a part of the creature: the creature grows like a plant. COMPOSITION: at the bottom centre a terracotta pot of dark earth sits on a warm wooden sill, and the pod is half-buried in it like a bulb, slate-blue, coral cap showing, glowing softly from within. From its cap a soft green stem rises up the middle of the screen with several branching stems, and on them six CLOSED buds, plump and glowing faintly through their green sepals in different hints of colour (russet, amber, cream, ash, green), slightly translucent so a shape inside each is just guessed. One bud has OPENED into a soft bloom and inside its petals, like a picture in a flower, is a lock of russet fur; a floating petal of light drifts from it. At the pot's foot, small, the Loika sits curled around the pot, half painted in colour and half grey fog. Behind, a warm plaster wall at evening with soft window light, a watering can, nothing else.\nLIGHT AND FINISH: warm key light, warm bounce, soft ambient occlusion, soft contact shadows. Matte, hand-painted miniature finish like the painted reference, cosy and warm, real depth; low saturation everywhere except the pod's inner light and the surprises. No gloss, no chrome, no plastic, no neon, no sci-fi interface, no holograms, nothing childish.\nNO text, letters, digits, numbers, logos, buttons, panels, boxes or icons anywhere (the game types its words later). No frame, no border, no vignette; the picture fills the canvas edge to edge."
+ }
+]

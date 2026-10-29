@@ -1,0 +1,24 @@
+[
+ {
+  "name": "concepts-readroom-explore/lens",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-pod-loika.png",
+    "THE POD (project-owned game art): a wild seed pod, slate-blue with a round coral cap, pale vertical ribs and coral dots, standing on a small turned wooden dish. Keep its design exactly wherever the pod appears; never make it a jar, a vase, a lantern of metal, or an egg of another design."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-loika.png",
+    "THE CREATURE (project-owned game art): the Loika the pod will become: a small round charcoal creature with a cream belly and muzzle, amber eyes, four stubby legs with pale toes and three green leaves on its head. Keep its design exactly; never invent another creature."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed Vivarium room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden light, cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a cosy handheld creature-keeping game, 16:9, a mood-and-layout thumbnail for a concept: the READING ROOM, where the player opens up a wild pod (a seed pod with a creature's genome sleeping inside) one surprise at a time. The feeling: a pod is RICH IN SURPRISES, there is more inside than you can see, and each read brings one out into the light. CONCEPT: THE LENS. The player looks INTO the pod through a big round brass-rimmed magnifying glass, and inside it a tiny world comes into focus. COMPOSITION: the pod, huge, fills the lower two thirds of the screen, slate-blue shell, coral cap at the top, lit from behind by a warm lamp so its shell glows amber between the ribs. Across the middle of the pod a large round lens (about half the screen's height) is held by a hand at the right edge, its brass rim catching the light. THROUGH the lens, sharp and bright: a tiny lit world deep inside the pod, a small mossy meadow with a brook, dusk sky, and in its middle the small Loika, half of it painted in colour and half still a soft grey fog. OUTSIDE the lens, blurred on the pod's shell, many soft out-of-focus coloured shapes drift like things seen through frosted glass: a lock of russet fur, an amber eye, a leaf, a paw, a curl of tail; they are blurry and many, which says 'plenty still unseen'. The room around the pod is a dark warm study, soft bokeh.\nLIGHT AND FINISH: warm key light, warm bounce, soft ambient occlusion, soft contact shadows. Matte, hand-painted miniature finish like the painted reference, cosy and warm, real depth; low saturation everywhere except the pod's inner light and the surprises. No gloss, no chrome, no plastic, no neon, no sci-fi interface, no holograms, nothing childish.\nNO text, letters, digits, numbers, logos, buttons, panels, boxes or icons anywhere (the game types its words later). No frame, no border, no vignette; the picture fills the canvas edge to edge."
+ }
+]

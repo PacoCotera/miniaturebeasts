@@ -1,0 +1,24 @@
+[
+ {
+  "name": "concepts-readroom-explore/constellation",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-pod-loika.png",
+    "THE POD (project-owned game art): a wild seed pod, slate-blue with a round coral cap, pale vertical ribs and coral dots, standing on a small turned wooden dish. Keep its design exactly wherever the pod appears; never make it a jar, a vase, a lantern of metal, or an egg of another design."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-loika.png",
+    "THE CREATURE (project-owned game art): the Loika the pod will become: a small round charcoal creature with a cream belly and muzzle, amber eyes, four stubby legs with pale toes and three green leaves on its head. Keep its design exactly; never invent another creature."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed Vivarium room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden light, cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a cosy handheld creature-keeping game, 16:9, a mood-and-layout thumbnail for a concept: the READING ROOM, where the player opens up a wild pod (a seed pod with a creature's genome sleeping inside) one surprise at a time. The feeling: a pod is RICH IN SURPRISES, there is more inside than you can see, and each read brings one out into the light. CONCEPT: THE NIGHT SKY. The pod sits on a window sill at night, and the sky through the window holds its secrets as faint star-clusters; each read joins the stars into a picture that becomes a part of the creature. COMPOSITION: the whole screen is a big open window at night seen from inside a warm room: a deep blue-violet sky with soft clouds fills the top three quarters. In the sky, five faint unjoined star-clusters glitter, each a loose scatter of warm little stars, one cluster already JOINED by thin golden lines into a constellation shaped like a lock of fur with a soft painted picture of russet fur glowing inside it. Along the bottom quarter a wooden window sill: at the left the pod on its dish, small, glowing softly from within, slate-blue, coral cap; at the right the small Loika sits looking up at the sky, half painted in colour and half grey fog, a single golden thread of light drifting down from the joined constellation to its back. A warm curtain at one edge, a candle's glow from inside the room.\nLIGHT AND FINISH: warm key light, warm bounce, soft ambient occlusion, soft contact shadows. Matte, hand-painted miniature finish like the painted reference, cosy and warm, real depth; low saturation everywhere except the pod's inner light and the surprises. No gloss, no chrome, no plastic, no neon, no sci-fi interface, no holograms, nothing childish.\nNO text, letters, digits, numbers, logos, buttons, panels, boxes or icons anywhere (the game types its words later). No frame, no border, no vignette; the picture fills the canvas edge to edge."
+ }
+]

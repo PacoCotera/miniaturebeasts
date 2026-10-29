@@ -1,0 +1,24 @@
+[
+ {
+  "name": "concepts-readroom-explore/cabinet",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-pod-loika.png",
+    "THE POD (project-owned game art): a wild seed pod, slate-blue with a round coral cap, pale vertical ribs and coral dots, standing on a small turned wooden dish. Keep its design exactly wherever the pod appears; never make it a jar, a vase, a lantern of metal, or an egg of another design."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-readroom/ref-loika.png",
+    "THE CREATURE (project-owned game art): the Loika the pod will become: a small round charcoal creature with a cream belly and muzzle, amber eyes, four stubby legs with pale toes and three green leaves on its head. Keep its design exactly; never invent another creature."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed Vivarium room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden light, cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a cosy handheld creature-keeping game, 16:9, a mood-and-layout thumbnail for a concept: the READING ROOM, where the player opens up a wild pod (a seed pod with a creature's genome sleeping inside) one surprise at a time. The feeling: a pod is RICH IN SURPRISES, there is more inside than you can see, and each read brings one out into the light. CONCEPT: THE CABINET. The pod is the top of a tiny naturalist's cabinet of curiosities: a wooden chest of many small drawers under it, and every drawer pulled out holds one surprise on a bed of moss. COMPOSITION: centred on a dark warm study wall at evening, a small antique wooden cabinet (about two thirds of the screen's height) with twelve small drawers of different sizes with little brass ring pulls, warm honey wood, slightly crooked and hand-made. On top of the cabinet stands the pod on its dish, slate-blue, coral cap, glowing softly from within, lit by a small brass lamp beside it. THREE drawers are pulled out at different depths and each holds, on a bed of moss, one lit treasure: a lock of russet fur, an amber glass eye, a green leaf; the other drawers are CLOSED and from the gaps around them leaks a faint warm glow in different colours, so the closed drawers plainly hold more. On the floor at the bottom right stands the small Loika on its hind legs, forepaws on a low drawer, peeking in, half painted in colour and half grey fog. A rug, dust in the lamp light, nothing else.\nLIGHT AND FINISH: warm key light, warm bounce, soft ambient occlusion, soft contact shadows. Matte, hand-painted miniature finish like the painted reference, cosy and warm, real depth; low saturation everywhere except the pod's inner light and the surprises. No gloss, no chrome, no plastic, no neon, no sci-fi interface, no holograms, nothing childish.\nNO text, letters, digits, numbers, logos, buttons, panels, boxes or icons anywhere (the game types its words later). No frame, no border, no vignette; the picture fills the canvas edge to edge."
+ }
+]
