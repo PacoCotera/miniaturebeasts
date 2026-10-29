@@ -1,0 +1,482 @@
+{
+ "pod-shelf-identified-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "the Loika reference sprite",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-identified-1328x1577.png",
+  "sha256": "e03facf6b3ccb19b7f93fc1a570f4232d4f554f09de777fc90d190f356ac8525"
+ },
+ "pod-shelf-sealed-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "the sealed pod",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-sealed-1328x1577.png",
+  "sha256": "41975a6b3122a7acb894ec8cf6bc6801b17d18cc6235be5d931e3c1941a14247"
+ },
+ "pod-shelf-band-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "the sealing band as a layer",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-band-1328x1577.png",
+  "sha256": "c8c2b01573951cf2b479a5f8a09cbf6be2af5757cb4e54f4073807265d178705"
+ },
+ "pod-shelf-crack-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-crack-1328x1577.png",
+  "sha256": "13d25dbff6da8ad9c82e7fff9ccfa9bb1bd0113d54c8a8f8954ee038f0dd0304"
+ },
+ "pod-shelf-shade-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-shade-1328x1577.png",
+  "sha256": "865cf53f95b7d05f2cc16aac9731034c4452ac349452b44063466ce3faab2758"
+ },
+ "pod-shelf-mask-body-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-mask-body-1328x1577.png",
+  "sha256": "cd77ad9c9f19d4398b38a96cc712cf52e22df3d5bfda365b47e93a4c258bbe2e"
+ },
+ "pod-shelf-mask-accent-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-mask-accent-1328x1577.png",
+  "sha256": "6939e95a3fb7469a9b00ec4eb8210ef3a095bbd05e7cb56ca285f39941fe036c"
+ },
+ "pod-shelf-pattern-dots-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-pattern-dots-1328x1577.png",
+  "sha256": "659c6e471d88f597e36a76b19f652ad93f5f340ad7e1bb21c6f95b8fbd9d70e0"
+ },
+ "pod-shelf-pattern-stripes-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-pattern-stripes-1328x1577.png",
+  "sha256": "f0efde32389a9360cb5188ab9826f1a42da474b200283db2c5a7b43b855321c3"
+ },
+ "pod-shelf-pattern-bands-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-pattern-bands-1328x1577.png",
+  "sha256": "2b824dff60179a6c458b6d65d82849d986ae4d1a416d936efb0952d7b0da20d5"
+ },
+ "pod-shelf-pattern-ribs-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods/pod-shelf-pattern-ribs-1328x1577.png",
+  "sha256": "b0bf169160f7871b3245eeaa16e3b09f2c84a48df8bff29be5d9264078b3a533"
+ },
+ "pod-shelf-pattern-segments-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods/pod-shelf-pattern-segments-1328x1577.png",
+  "sha256": "46e7130ea5c4080e65334ca675be71e6c48dc77466fdfc8edadf268ef7d891bd"
+ },
+ "pod-shelf-pattern-segments-relief-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods/pod-shelf-pattern-segments-relief-1328x1577.png",
+  "sha256": "a4e5c437f3507adcd961d665df1176ccadd6815d4479848de2d049a46cb0d9fa"
+ },
+ "pod-shelf-pattern-plates-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods/pod-shelf-pattern-plates-1328x1577.png",
+  "sha256": "cdd0ed04ed7543355724111a5fec3f22109f4509cb39ffc8b797b978a0ea3a3f"
+ },
+ "pod-shelf-pattern-plates-relief-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods/pod-shelf-pattern-plates-relief-1328x1577.png",
+  "sha256": "e69cf8a21925205d0b54b01a96632411cc9fe05c2624109c496c1a9ce6e8e877"
+ },
+ "pod-shelf-identified-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "the Loika reference sprite",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-identified-192x228.png",
+  "sha256": "a37297dd6bb38b82f2b7697bc1b764e3a7c49bdecd613827a1f8668032101de8"
+ },
+ "pod-shelf-sealed-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "the sealed pod",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-sealed-192x228.png",
+  "sha256": "31bf9ac1f02ceb0d2cafe22da9c1001512a3cdf00e1bd57f33ec4c28ca650cef"
+ },
+ "pod-shelf-band-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "the sealing band as a layer",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-band-192x228.png",
+  "sha256": "c9872431eb12d14597df64d49bd4f3de5ba2ef0413842a9f37b1668e9b43f450"
+ },
+ "pod-shelf-crack-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-crack-192x228.png",
+  "sha256": "92173a64436b160d8c3cb25353f308fbbe30ab097e27cf08bf12eeb4b85229f0"
+ },
+ "pod-shelf-shade-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-shade-192x228.png",
+  "sha256": "f045428b7367d270b97d1ffbb89da2a9fac21ea00f5731bad1ec2ea6c2ce4672"
+ },
+ "pod-shelf-mask-body-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-mask-body-192x228.png",
+  "sha256": "5bef9739a22cd306e766096a01142c8cef586431b3cffc96b9f7b3000c76c0d8"
+ },
+ "pod-shelf-mask-accent-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-mask-accent-192x228.png",
+  "sha256": "daeb47e8217705cf8f945ba6b04b335d71a4fda8ff1d86f61f6001dbc8675218"
+ },
+ "pod-shelf-pattern-dots-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-pattern-dots-192x228.png",
+  "sha256": "1384ebcd93911f76403fcdc1b5a6b022a57c32308fd22ea2cda511ea3720beac"
+ },
+ "pod-shelf-pattern-stripes-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-pattern-stripes-192x228.png",
+  "sha256": "9a14d466738bd04ecf0f2fb3e872a88c48317e713fd7667b476d969afeca1d17"
+ },
+ "pod-shelf-pattern-bands-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods/pod-shelf-pattern-bands-192x228.png",
+  "sha256": "dadd1cb588496a2df3917aa70651607fd7c5ffcebc6e629ff737f04665656c64"
+ },
+ "pod-shelf-pattern-ribs-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods/pod-shelf-pattern-ribs-192x228.png",
+  "sha256": "817537e47e4ef27b2bb64e486df316ce721aa5fd82bc86007ab8c6f77bff6a94"
+ },
+ "pod-shelf-pattern-segments-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods/pod-shelf-pattern-segments-192x228.png",
+  "sha256": "5254a61e30b92ac16e9d120da32487c70164e1e1a6a9b80aba9c030e49c2aca8"
+ },
+ "pod-shelf-pattern-segments-relief-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods/pod-shelf-pattern-segments-relief-192x228.png",
+  "sha256": "9d52720479fe2a29f03e957c823756287e64a4078a3d02eb1358d0d441c801da"
+ },
+ "pod-shelf-pattern-plates-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods/pod-shelf-pattern-plates-192x228.png",
+  "sha256": "9c799d2dd435f1f2b17a5bbc4df51e7aca6059a22aed93f09d08b0fa531aca21"
+ },
+ "pod-shelf-pattern-plates-relief-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods/pod-shelf-pattern-plates-relief-192x228.png",
+  "sha256": "0af838884bcac8c11ccdfdcdf8d484ec25ecd4719ac845734125bebfd4fa4a7e"
+ },
+ "pod-shelf-identified": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "the Loika reference sprite",
+  "src": "pod-identified",
+  "file": "shelf/pods-1x/pod-shelf-identified.png",
+  "sha256": "cd0b2c79dcc77c557ceffe2b42c0c2cba5c36cab4e5d0955cd4cb98a4ce91781"
+ },
+ "pod-shelf-sealed": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "the sealed pod",
+  "src": "pod-identified",
+  "file": "shelf/pods-1x/pod-shelf-sealed.png",
+  "sha256": "6814b3d8cf9ea276a818003832a457cb7727474d2f75d127d47f6c26a2e60a33"
+ },
+ "pod-shelf-band": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "the sealing band as a layer",
+  "src": "pod-identified",
+  "file": "shelf/pods-1x/pod-shelf-band.png",
+  "sha256": "1b7062cf4a54cba5c229a902e69a9665c5059a6c0201eb597612bc6c84c346fb"
+ },
+ "pod-shelf-crack": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods-1x/pod-shelf-crack.png",
+  "sha256": "7cc58a2b74b78e2ac553b168523c02634104f31f67b9befce477fbd3f6d914ef"
+ },
+ "pod-shelf-shade": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods-1x/pod-shelf-shade.png",
+  "sha256": "f1f5e20272bf4079d961dbb787244d23c3351eaa982d555a7ca85b75535394e3"
+ },
+ "pod-shelf-mask-body": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods-1x/pod-shelf-mask-body.png",
+  "sha256": "e3fd2c6847beb548b59335d8f98557304fcdca5826b9229a9eec8dda759f3a75"
+ },
+ "pod-shelf-mask-accent": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods-1x/pod-shelf-mask-accent.png",
+  "sha256": "bfb3a83f1d419d25822b069181918f5fb16ef6dda296e2d95c799aaeefb924fe"
+ },
+ "pod-shelf-pattern-dots": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods-1x/pod-shelf-pattern-dots.png",
+  "sha256": "cf3c963e25a88fa816c428cb000cb3f293d17f4bf78e19964575ed856fcb3841"
+ },
+ "pod-shelf-pattern-stripes": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods-1x/pod-shelf-pattern-stripes.png",
+  "sha256": "f6396056f6552c4910f23bcf2dc85a57513cb290a8c5d4084e3ccdd7cc660c2f"
+ },
+ "pod-shelf-pattern-bands": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
+  "src": "pod-identified",
+  "file": "shelf/pods-1x/pod-shelf-pattern-bands.png",
+  "sha256": "e084106aa7caab0329cafe39dc58ddb714e4ea1131b13556f666109c6ecc8430"
+ },
+ "pod-shelf-pattern-ribs": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: pattern-ribs (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods-1x/pod-shelf-pattern-ribs.png",
+  "sha256": "85a60a6fb1473449838d8442dd0a5c27babdad2a13fab2c7e278b9b30fa2101b"
+ },
+ "pod-shelf-pattern-segments": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods-1x/pod-shelf-pattern-segments.png",
+  "sha256": "5e2aa98280ed369c99174c7dd50bc555ba2031665f9a97c17bbe12e99ec34f10"
+ },
+ "pod-shelf-pattern-segments-relief": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods-1x/pod-shelf-pattern-segments-relief.png",
+  "sha256": "71bacf3734431f315c368c0b0f6b500815e1d45a4da4cfbfcf0644565b6356fd"
+ },
+ "pod-shelf-pattern-plates": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods-1x/pod-shelf-pattern-plates.png",
+  "sha256": "7d1f285b3ee3217c8483822ad640869cd441b270990cb4c1267d2512b1008a4a"
+ },
+ "pod-shelf-pattern-plates-relief": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
+  "src": "procedural, on the sphere of the pod",
+  "file": "shelf/pods-1x/pod-shelf-pattern-plates-relief.png",
+  "sha256": "a5138de81c6e17e2039dd58082edbacae9a7e4ec9e8bb1d1c517171f58bf47a1"
+ },
+ "pod-shelf-unknown": {
+  "size": [
+   64,
+   76
+  ],
+  "made": "the shelf pod before its species is known: the found field egg (sand shell, bark speckles, cream cap and ribs, earth dust on the foot), the sealing band on, no pattern; painted as cargo-rework/paint-unknown-pod.py paints every class",
+  "src": "pod layers, painted",
+  "file": "shelf/pods-1x/pod-shelf-unknown.png",
+  "sha256": "95a2e3eee4355fb794de4e1ac5383f40b1197fd8f3b9b8b255b812cbc6ef2236"
+ },
+ "pod-shelf-unknown-192x228": {
+  "size": [
+   192,
+   228
+  ],
+  "made": "the shelf pod before its species is known: the found field egg (sand shell, bark speckles, cream cap and ribs, earth dust on the foot), the sealing band on, no pattern; painted as cargo-rework/paint-unknown-pod.py paints every class",
+  "src": "pod layers, painted",
+  "file": "shelf/pods/pod-shelf-unknown-192x228.png",
+  "sha256": "2a302c3c51eca443bd4073bd5ab7c2d1f08a8e890f280eb41ba1e23c670f28dd"
+ },
+ "pod-shelf-unknown-1328x1577": {
+  "size": [
+   1328,
+   1577
+  ],
+  "made": "the shelf pod before its species is known: the found field egg (sand shell, bark speckles, cream cap and ribs, earth dust on the foot), the sealing band on, no pattern; painted as cargo-rework/paint-unknown-pod.py paints every class",
+  "src": "pod layers, painted",
+  "file": "shelf/pods/pod-shelf-unknown-1328x1577.png",
+  "sha256": "b17fc57e5d32d463da18133cc064a16b8f8466c1921491bce617a9596e473d54"
+ }
+}
