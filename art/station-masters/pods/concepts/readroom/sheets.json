@@ -1,0 +1,29 @@
+{
+ "made": [
+  "readroom-a-contact-1x.png",
+  "readroom-b-contact-1x.png",
+  "readroom-c-contact-1x.png",
+  "readroom-a-compare-contact-1x.png",
+  "readroom-every-raw-half.png"
+ ],
+ "raws": [
+  "a-compare-c",
+  "a-compare-d",
+  "a-full-c",
+  "a-full-d",
+  "a-read-c",
+  "a-read-d",
+  "a-read-e",
+  "a-read-f",
+  "a-unread",
+  "a-unread-b",
+  "a-unread-c",
+  "b-full-c",
+  "b-read-c",
+  "b-read-d",
+  "b-unread-c",
+  "c-full-c",
+  "c-read-c",
+  "c-unread-c"
+ ]
+}
