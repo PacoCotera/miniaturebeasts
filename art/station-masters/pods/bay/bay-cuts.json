@@ -1,0 +1,741 @@
+{
+ "cuts": {
+  "bay-landing-5000x2549": {
+   "size": [
+    5000,
+    2549
+   ],
+   "made": "the landing, the Bay's backdrop, master at the painting's own size: landing-b with a 442-row band of the plain bench front cut out and feathered over 40 rows, cropped 5000x2549 from (100, 80); the right third (the painting's own shade, L* 37 behind the ledger) given an umber cast in linear light (green x 0.96, blue x 0.90 at full) from x 712, fading over 600-712, above the floor",
+   "raw": "source/raw/masters-bay/landing-b.jpg",
+   "sha256": "ec01803f437a2d3a64ef14a49f6efcfe12073680f95acb76637dc90452b1cb30"
+  },
+  "bay-landing-3072x1566": {
+   "size": [
+    3072,
+    1566
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "79546a1c6c5a393ea4f05df4705f80c7362fde440b2301ab48a97dc98100a7f5"
+  },
+  "bay-landing-1024x522": {
+   "size": [
+    1024,
+    522
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "be39bcf59c062382287de01206f3d3a470b7e812ce440829fe15372886b79969"
+  },
+  "bay-crate-shut-4031x3135": {
+   "size": [
+    4031,
+    3135
+   ],
+   "made": "the field crate, shut, master at the painting's own size: slatted umber wood, brass corner plates, a hemp rope lashed below the lid with its knot at the front right and a rope handle each side, lit from the upper left; ink 4031x2592 laid at the box's foot (rows 19-111 at 1x), the black gaps lifted to deep umber",
+   "raw": "source/raw/masters-bay/crate-shut-a.jpg",
+   "sha256": "d71dc3890c0c10c1dc239073a3cffdd8121255e2a6bd6b68984bcba3ae2fc256"
+  },
+  "bay-crate-shut-432x336": {
+   "size": [
+    432,
+    336
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "c2e6b92d1d3067da97b5538dbf5ee80f3a96da0c23192d53c55c228d700c14f7"
+  },
+  "bay-crate-shut-144x112": {
+   "size": [
+    144,
+    112
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "8b0577813fcbde63b418ab40bd4b683379f87552c68e14081c86bce29b78bd08"
+  },
+  "bay-crate-shut-lid-4031x3135": {
+   "size": [
+    4031,
+    3135
+   ],
+   "made": "the lid layer alone: the board above the painted gap line, in the same box, so the lift rotates it and it registers on the body (cut at 0 cost from the shut crate)",
+   "raw": "source/raw/masters-bay/crate-shut-a.jpg",
+   "sha256": "62b319aa6ba0605b17d25255da4c99c03ae10ba35d3908f01de735fd130f2b71"
+  },
+  "bay-crate-shut-lid-432x336": {
+   "size": [
+    432,
+    336
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "4a7fb7121cbcc98c868313e0ce01b23e7336019bf419252af07e22dd4113260a"
+  },
+  "bay-crate-shut-lid-144x112": {
+   "size": [
+    144,
+    112
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "50da27fe182e53d79d987b2a209a2774e135daf39c3ac877cdcabd25ce1c24bb"
+  },
+  "bay-crate-shut-body-4031x3135": {
+   "size": [
+    4031,
+    3135
+   ],
+   "made": "the body layer alone: everything from the gap line down, in the same box; under the lid it shows the dark gap as the crate's open top (cut at 0 cost from the shut crate)",
+   "raw": "source/raw/masters-bay/crate-shut-a.jpg",
+   "sha256": "40800977473c849fb1fdd409ad72ac7f02cdade33147e779167a9f15b84518db"
+  },
+  "bay-crate-shut-body-432x336": {
+   "size": [
+    432,
+    336
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "9fd9f5d616f72e9f16143c4d64dd029af042d341bf54fa686aa364d33dc5f239"
+  },
+  "bay-crate-shut-body-144x112": {
+   "size": [
+    144,
+    112
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "ce98c0052da2fa82dbc86b3d0a733c14ac6e4dae4dc18be31579f0ad8a716a44"
+  },
+  "bay-crate-open-4367x3583": {
+   "size": [
+    4367,
+    3583
+   ],
+   "made": "the field crate, open, master at the shut crate's scale: the same body with straw heaped to the rim and the lid leaning back behind it; the body registered on the shut crate's (left edge and feet), so placed at the slot's [+4, +24] its feet stand on the same line; 156 wide (the leaning lid reaches 9 px past the body's right edge, into the gap between slots)",
+   "raw": "source/raw/masters-bay/crate-open-a.jpg",
+   "sha256": "792d250b31faeb3e78ef8d5dcf81a138ad27d42bf08811853a06485c02b2ce86"
+  },
+  "bay-crate-open-468x384": {
+   "size": [
+    468,
+    384
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "6af318a3b6a7532237bc0d3ed5655422d60e7b03ef5adc80695d8304aee320b4"
+  },
+  "bay-crate-open-156x128": {
+   "size": [
+    156,
+    128
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "fe28dd5668809ffa07d30b6ced4e9b0fd12269a50782fb6e348334dc2c0661fe"
+  },
+  "bay-tag-moss-3088x4412": {
+   "size": [
+    3088,
+    4412
+   ],
+   "made": "the luggage tag, moss string (the wood walk), master at the painting's own size: a blank buff paper tag with clipped corners and a ringed hole, its string's two strands meeting on row 0 at the box's centre (the knot it hangs from); the paper's salmon cast brought to buff (linear gain to mean (228, 210, 178)), the painted blue string recoloured to (104, 116, 70) by its own shading (at 0 cost)",
+   "raw": "source/raw/masters-bay/tag-a.jpg",
+   "sha256": "e7d8e8e44f220933622c3aeeb140cd8d1d393cc14e894cd7b91dc91b2511b950"
+  },
+  "bay-tag-moss-84x120": {
+   "size": [
+    84,
+    120
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "f2c22725db93bf19b589c4bee558e2cf4963b899d8c238a8bc335a73c290b730"
+  },
+  "bay-tag-moss-28x40": {
+   "size": [
+    28,
+    40
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "38d8f7bb125a22b59a5a39c2ed0fa0769ad7f8fbeb80e179cb38befca04de712"
+  },
+  "bay-tag-reed-3088x4412": {
+   "size": [
+    3088,
+    4412
+   ],
+   "made": "the luggage tag, reed string (the meadow walk), master at the painting's own size: a blank buff paper tag with clipped corners and a ringed hole, its string's two strands meeting on row 0 at the box's centre (the knot it hangs from); the paper's salmon cast brought to buff (linear gain to mean (228, 210, 178)), the painted blue string recoloured to (166, 150, 100) by its own shading (at 0 cost)",
+   "raw": "source/raw/masters-bay/tag-a.jpg",
+   "sha256": "bb13fd2c3eb4cf093209d2528dd325c06db761bc989735f5ffecb386375a2761"
+  },
+  "bay-tag-reed-84x120": {
+   "size": [
+    84,
+    120
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "2bfdcbf2f15f90cbdb8d266af240ce341b8fcadcc7a973c47e5c44ac09ba3758"
+  },
+  "bay-tag-reed-28x40": {
+   "size": [
+    28,
+    40
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "9e099ad7b0cb3fb23e56cef1111353aa1d7f77409802888afc26eecd3e9e560f"
+  },
+  "bay-tag-slate-blue-3088x4412": {
+   "size": [
+    3088,
+    4412
+   ],
+   "made": "the luggage tag, slate-blue string (the pond walk), master at the painting's own size: a blank buff paper tag with clipped corners and a ringed hole, its string's two strands meeting on row 0 at the box's centre (the knot it hangs from); the paper's salmon cast brought to buff (linear gain to mean (228, 210, 178)), the painted blue string recoloured to (88, 108, 132) by its own shading (at 0 cost)",
+   "raw": "source/raw/masters-bay/tag-a.jpg",
+   "sha256": "98a6bee5a3aed867e019f99a3245cd9c6a178076fc0176352bc15a062119a5f2"
+  },
+  "bay-tag-slate-blue-84x120": {
+   "size": [
+    84,
+    120
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "15164408a9b8ab4d716dafd6c7794af47b3451aa479c62414099c9b0c799feef"
+  },
+  "bay-tag-slate-blue-28x40": {
+   "size": [
+    28,
+    40
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "a73fb9767b21cef6500a3dce593323b1bd679417070218b0d3fe0393abd8540a"
+  },
+  "bay-tag-rust-brown-3088x4412": {
+   "size": [
+    3088,
+    4412
+   ],
+   "made": "the luggage tag, rust-brown string (the cave walk), master at the painting's own size: a blank buff paper tag with clipped corners and a ringed hole, its string's two strands meeting on row 0 at the box's centre (the knot it hangs from); the paper's salmon cast brought to buff (linear gain to mean (228, 210, 178)), the painted blue string recoloured to (142, 82, 54) by its own shading (at 0 cost)",
+   "raw": "source/raw/masters-bay/tag-a.jpg",
+   "sha256": "fc27eeae180e96f16b35e4fafaf2239ac2c181338f262746a404218b8543e6b6"
+  },
+  "bay-tag-rust-brown-84x120": {
+   "size": [
+    84,
+    120
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "f0fa9022568b22a514d486228888695c8f5224b898e16a344cc62a6d1c1ae49a"
+  },
+  "bay-tag-rust-brown-28x40": {
+   "size": [
+    28,
+    40
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "b83d94c5617894ed0ce70b4655d373cf10740a10d8f1f3aa18a31e4a1b8d2f67"
+  },
+  "bay-tag-charcoal-3088x4412": {
+   "size": [
+    3088,
+    4412
+   ],
+   "made": "the luggage tag, charcoal string (the rock walk), master at the painting's own size: a blank buff paper tag with clipped corners and a ringed hole, its string's two strands meeting on row 0 at the box's centre (the knot it hangs from); the paper's salmon cast brought to buff (linear gain to mean (228, 210, 178)), the painted blue string recoloured to (64, 62, 60) by its own shading (at 0 cost)",
+   "raw": "source/raw/masters-bay/tag-a.jpg",
+   "sha256": "360dd57a0d62a8489cc36a2589b7a100b32c9670113adac5a8bcf2d00cb66ed5"
+  },
+  "bay-tag-charcoal-84x120": {
+   "size": [
+    84,
+    120
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "4a32f351ff7aa3a922275365f208fd6cabdfd0eab9cd1db67b898e8a83531872"
+  },
+  "bay-tag-charcoal-28x40": {
+   "size": [
+    28,
+    40
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "46b46c5548703765617d9553fa078cfe03a2d5fee52962405634c6b86fba6186"
+  },
+  "bay-parcel-3548x2883": {
+   "size": [
+    3548,
+    2883
+   ],
+   "made": "the portrait parcel, master at the painting's own size: a flat parcel in brown kraft paper tied with hemp twine in a small bow, standing on its edge leaning back a touch, lit from the upper left; centred, its foot on the last row",
+   "raw": "source/raw/masters-bay/parcel-a.jpg",
+   "sha256": "8294266680557f3d4dc465b15c4ad3bc3f6a0b33ccf01d7f12409b943a361834"
+  },
+  "bay-parcel-384x312": {
+   "size": [
+    384,
+    312
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "fbb800111f3b97e4b183fdf1fd912bc2ff7aeb0db4680f8d5fe3a1de8c77cbd7"
+  },
+  "bay-parcel-128x104": {
+   "size": [
+    128,
+    104
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "6d9f6c19de0636189fc6550e975fb824ca0403585f0b7940e1adcfc0e6966032"
+  },
+  "bay-frame-3578x2907": {
+   "size": [
+    3578,
+    2907
+   ],
+   "made": "the bare portrait frame (the parcel unwrapped), master at the painting's own size: a plain umber frame with a thin aged-brass inner lip, standing, leaning a touch; its opening is clear (the portrait is placed under it by code, clipped by bay-frame-opening)",
+   "raw": "source/raw/masters-bay/frame-a.jpg",
+   "sha256": "12e90d048b0b29c4491a3ebe04230b2477e652f97cbe848605f91ca28bdb3ec1"
+  },
+  "bay-frame-384x312": {
+   "size": [
+    384,
+    312
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "265bdf772ddb2b9498c635179f7597dd3aac253a3b4883e20fe066a4f44153e8"
+  },
+  "bay-frame-128x104": {
+   "size": [
+    128,
+    104
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "4c4e8d8cded02a97b5788a65f31fddf188b0ee2464460f6b9bd043d35915e39a"
+  },
+  "bay-frame-opening-3578x2907": {
+   "size": [
+    3578,
+    2907
+   ],
+   "made": "the frame's opening as a mask (white, alpha = the opening grown 12 master px under the lip): the placer clips the portrait to it and draws it under bay-frame (at 0 cost)",
+   "raw": "source/raw/masters-bay/frame-a.jpg",
+   "sha256": "78499edf5897eee374e06af5945acc1593aa0addb449c5b5b3aa254e9f4cd2bf"
+  },
+  "bay-frame-opening-384x312": {
+   "size": [
+    384,
+    312
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "bf96a74154f55fc2ae08ebf278020db4b25aa6134ab3998afd71e04e0fc70545"
+  },
+  "bay-frame-opening-128x104": {
+   "size": [
+    128,
+    104
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "474d80829e8a5255ad16afb9f92c616e57711ad658a3a06757ab5cef15af9192"
+  },
+  "bay-cradle-4295x3221": {
+   "size": [
+    4295,
+    3221
+   ],
+   "made": "the Companion's cradle, master at the painting's own size: a small umber wooden tray lined with worn leather, two brass rivets, hung by a leather strap loop whose top is row 0 (the peg); empty (the Companion is placed in it by code)",
+   "raw": "source/raw/masters-bay/cradle-a.jpg",
+   "sha256": "8ed21c7fda655438bba79b669a78db6a8ec58bfe9cd6eeab4a821bec6e92229b"
+  },
+  "bay-cradle-288x216": {
+   "size": [
+    288,
+    216
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "6f8e852b58dc017a11d1b24f8d37e7a0291c585c799010f3e0580dc21146d253"
+  },
+  "bay-cradle-96x72": {
+   "size": [
+    96,
+    72
+   ],
+   "made": "1x, reduced from the master",
+   "raw": null,
+   "sha256": "16bffd78899b30735726ee5c9e457e5cc797e20d0b2fafe7323f3f1d71f45797"
+  },
+  "bay-home-tile-938x703": {
+   "size": [
+    938,
+    703
+   ],
+   "made": "Home's Bay tile, master: the shut crate standing on the landing's bench in its window light, with a code contact shadow, from the full-size masters (at 0 cost)",
+   "raw": "source/raw/masters-bay/landing-b.jpg + crate-shut-a.jpg",
+   "sha256": "7f2325b6435fd5edd02944f4d3ce3884f1ce56bd8630fab6e7e39c310e73c146"
+  },
+  "bay-home-tile-288x216": {
+   "size": [
+    288,
+    216
+   ],
+   "made": "3x, reduced from the master",
+   "raw": null,
+   "sha256": "6811f3152e65005b73a3536a840fce6aa7958e630c108559ea8cb2625d062040"
+  },
+  "bay-home-tile-96x72": {
+   "size": [
+    96,
+    72
+   ],
+   "made": "1x, reduced from the master: Home's Bay tile",
+   "raw": null,
+   "sha256": "2c8f3ee49028d15eb64c1de168167d1a3c34cc27822605f52d697241665e6f37"
+  },
+  "straw/pod-straw-band-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (band), 1x: reduced from pod-shelf-band-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "a28defa7e7b7857956ee7e0b25bc29c8a788140d42d8d56c21037e3f766f7c08"
+  },
+  "straw/pod-straw-band-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "80e6f81423f8b7036c6f077101f3118750c93c2791802bdf6311e4542ce261a0"
+  },
+  "straw/pod-straw-crack-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (crack), 1x: reduced from pod-shelf-crack-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "5a2bc3179d610c1b7701b2f3328a9ab64aa54a8c653174ca566a52d05cf69e55"
+  },
+  "straw/pod-straw-crack-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "9f6f9a74fbea8ced6fb7a7ec2449e72e5e0f68edab4e6b8bae96891c0a1d9184"
+  },
+  "straw/pod-straw-identified-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (identified), 1x: reduced from pod-shelf-identified-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "2318fadd04ed2d18e76ad2d14dabb16dcde1a2064ab0852635ed7e1d67ab2db2"
+  },
+  "straw/pod-straw-identified-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "bf95a1ee2c58c1815fa04889bc8d56bc58fa5f4387831f8acbc8c0f3b2327306"
+  },
+  "straw/pod-straw-mask-accent-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (mask-accent), 1x: reduced from pod-shelf-mask-accent-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "9832533dd2242a2fe37861a8734d9afa3cd88b0d1b06f5f0d037fcfa30a35b20"
+  },
+  "straw/pod-straw-mask-accent-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "34fd60dd589d744b5e0b5f2cbdb82a02c265ddc45ef6e60d0633881994befdf0"
+  },
+  "straw/pod-straw-mask-body-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (mask-body), 1x: reduced from pod-shelf-mask-body-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "51cc46146b43037e14833472eacf106b7abf71ee7370973de0d1f94f71ecd5bb"
+  },
+  "straw/pod-straw-mask-body-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "169930fe95f28f035aa450d4ca083dd02ed4a964a33ee25191eb67ff2486ec41"
+  },
+  "straw/pod-straw-pattern-bands-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (pattern-bands), 1x: reduced from pod-shelf-pattern-bands-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "3d5a999b3516e9bb6805750fda30a2b60c429550930670bd6a79899d6c50d50b"
+  },
+  "straw/pod-straw-pattern-bands-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "134a7a2648188f1409d629e47236039a04e79eec0846e0b6a71dbcc21904cee1"
+  },
+  "straw/pod-straw-pattern-dots-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (pattern-dots), 1x: reduced from pod-shelf-pattern-dots-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "38286000667cb2a0b44aa28ef6b1d636914ff900f81107f8076c997c1c09196a"
+  },
+  "straw/pod-straw-pattern-dots-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "fdf35c5d54e7367211490feb77ad5bb8ae06194a26f64709c3d0487216dcaed9"
+  },
+  "straw/pod-straw-pattern-plates-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (pattern-plates), 1x: reduced from pod-shelf-pattern-plates-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "143228d6664fc4539f86c3165a8e2ba1db3b1938a50356f876f6e2f75c2ee554"
+  },
+  "straw/pod-straw-pattern-plates-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "6996ed87e556c6c1e5475b0846b0ff96d5c80ec45007166104a83cd7e7ea8606"
+  },
+  "straw/pod-straw-pattern-plates-relief-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (pattern-plates-relief), 1x: reduced from pod-shelf-pattern-plates-relief-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "b063e94a8757a5c8daef9a20e27045bb74f4f48c2693897b590b4fca0035b85d"
+  },
+  "straw/pod-straw-pattern-plates-relief-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "90da7cef6cff684edc0c0deae96ab617dcd5b9b011e33e44a626013902489d8c"
+  },
+  "straw/pod-straw-pattern-ribs-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (pattern-ribs), 1x: reduced from pod-shelf-pattern-ribs-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "5e31b837ffdd5aa787c9776a8fff0f5c2618daae46763c85fbfcebc576e2127c"
+  },
+  "straw/pod-straw-pattern-ribs-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "db831c3185163908bd6cc12039e20a1789bc5127bd26424f30fb1d2c10e6d5e7"
+  },
+  "straw/pod-straw-pattern-segments-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (pattern-segments), 1x: reduced from pod-shelf-pattern-segments-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "a10822ffc424e65ae1897b5b4a0a4e08976fbe350711a6131ce7d75e4a67fb75"
+  },
+  "straw/pod-straw-pattern-segments-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "aa166b6481e4fd92e74e97bbd278343db528e51dc8acd8f1be37906a862a13b0"
+  },
+  "straw/pod-straw-pattern-segments-relief-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (pattern-segments-relief), 1x: reduced from pod-shelf-pattern-segments-relief-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "5afc2e673491d5729ce03a56ed65f5143369eb10bcf09f721d8a73dfc465d840"
+  },
+  "straw/pod-straw-pattern-segments-relief-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "d4f5240b4886ac65abb3252b8d2380d8d7e0d7d0de5417c5ba1c89b0f4b3717c"
+  },
+  "straw/pod-straw-pattern-stripes-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (pattern-stripes), 1x: reduced from pod-shelf-pattern-stripes-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "4419d3cb89b4330f60dd82ddc0c2dbe2776ca807233a9a3f37d279e868471294"
+  },
+  "straw/pod-straw-pattern-stripes-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "36d7583c183b8b44897acd942cd4cd7011e91f48975c1d2a347dff250ea4c772"
+  },
+  "straw/pod-straw-sealed-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (sealed), 1x: reduced from pod-shelf-sealed-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "c881968871ee048c462363e78bcde88d6da75200a077c2fcd4b42512d5c42521"
+  },
+  "straw/pod-straw-sealed-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "db22f237e13b9191c4eddd3d63531fa024a56d108ff6bf06fe036c3339a6b7fd"
+  },
+  "straw/pod-straw-shade-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (shade), 1x: reduced from pod-shelf-shade-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "967a6787a2966d449b1912d82df4f76caf5d1fb9edff605fa6e482fdf49a5961"
+  },
+  "straw/pod-straw-shade-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "e739f912a0fc04c48ade1153e2b51c5dbdb87b922499d6d623d1078b79815f9c"
+  },
+  "straw/pod-straw-unknown-40x48": {
+   "size": [
+    40,
+    48
+   ],
+   "made": "the pod in the crate's straw (unknown), 1x: reduced from pod-shelf-unknown-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+   "raw": null,
+   "sha256": "2c320f8e561894b671c541089a511ef64f35c56258d85d14e06486e93f3e01e4"
+  },
+  "straw/pod-straw-unknown-120x144": {
+   "size": [
+    120,
+    144
+   ],
+   "made": "3x, reduced from the full-size shelf master",
+   "raw": null,
+   "sha256": "94085d4c4ddbae137309feed4be4471a5e2decfbd7aed173e7d9dba1c221b20f"
+  }
+ },
+ "knot_1x": [
+  100.7,
+  47.3
+ ],
+ "frame_opening_1x": [
+  19,
+  13,
+  111,
+  88
+ ],
+ "strings": {
+  "moss": [
+   104,
+   116,
+   70
+  ],
+  "reed": [
+   166,
+   150,
+   100
+  ],
+  "slate-blue": [
+   88,
+   108,
+   132
+  ],
+  "rust-brown": [
+   142,
+   82,
+   54
+  ],
+  "charcoal": [
+   64,
+   62,
+   60
+  ]
+ },
+ "string_place": {
+  "moss": "wood",
+  "reed": "meadow",
+  "slate-blue": "pond",
+  "rust-brown": "cave",
+  "charcoal": "rock"
+ }
+}
