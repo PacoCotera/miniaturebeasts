@@ -7890,5 +7890,60 @@
   "status": "signed",
   "signed_in": "AD 2026-10-28 at 1x (ad-curl.md)",
   "note": "0 MXN"
+ },
+ "cabinet-strip-672x228": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "cabinet-strip-2016x684": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "pod-niche-88x88": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "pod-niche-264x264": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "pod-niche-husk-88x88": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "pod-niche-husk-264x264": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "pod-niche-shadow-88x88": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "pod-niche-shadow-264x264": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "reading-bench-1024x600": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "reading-bench-1024x520": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
+ },
+ "reading-bench-2048x1200": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)",
+  "note": "Pods shelf masters, pass 142 (direction 2, ux-pods-inventory.md)"
  }
 }

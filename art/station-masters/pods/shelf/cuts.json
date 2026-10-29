@@ -1,0 +1,130 @@
+{
+ "cabinet-strip-4704x1596": {
+  "size": [
+   4704,
+   1596
+  ],
+  "made": "the master: one period of the painted cabinet (plaster, umber back-board, ledge, plaster), seamless vertically, 7x",
+  "sha256": "9c98623cc6b2fe0ddb1cdd218f4032103a414e9a449f15e79ddb4aec144b16a0"
+ },
+ "cabinet-strip-2016x684": {
+  "size": [
+   2016,
+   684
+  ],
+  "made": "3x, reduced from the master",
+  "sha256": "74319f748ee790bbc5630da300084072b3aa5f11b3e48bba5a4455c60b0ac2df"
+ },
+ "cabinet-strip-672x228": {
+  "size": [
+   672,
+   228
+  ],
+  "made": "1x, the placed tile",
+  "sha256": "4e0701c14691a9bf58b7aadd8f828ff47c6cd7c9f85a785400403c65e0cc572f"
+ },
+ "pod-niche-2624x2624": {
+  "size": [
+   2624,
+   2624
+  ],
+  "made": "the one painted niche, empty: front-on, plain mouth, no groove, no ring; transparent outside the 2 px rim, the master at full size",
+  "sha256": "91914a08e792412f00c7c1d2d717738c58772bf6b93d7ca17ef9de587d0c1052"
+ },
+ "pod-niche-264x264": {
+  "size": [
+   264,
+   264
+  ],
+  "made": "the one painted niche, empty: front-on, plain mouth, no groove, no ring; transparent outside the 2 px rim, 3x",
+  "sha256": "55dd78d29b8cbe816610efb372d3e966abe4dc2e0259db5ccb2adb770e3d5d63"
+ },
+ "pod-niche-88x88": {
+  "size": [
+   88,
+   88
+  ],
+  "made": "the one painted niche, empty: front-on, plain mouth, no groove, no ring; transparent outside the 2 px rim, 1x, the placed slice",
+  "sha256": "76911fa8c1e399cc4798508f954eef7334d7e5c83843d86450e04419a000ad09"
+ },
+ "pod-niche-husk-2536x2536": {
+  "size": [
+   2536,
+   2536
+  ],
+  "made": "the niche holding the dried husk (the dried-pod visit), same cut as the empty niche, the master at full size",
+  "sha256": "3f304a61ac6654c1c07fa097e3f0fb8de9bcd7958175d61bd9650a8621ecb505"
+ },
+ "pod-niche-husk-264x264": {
+  "size": [
+   264,
+   264
+  ],
+  "made": "the niche holding the dried husk (the dried-pod visit), same cut as the empty niche, 3x",
+  "sha256": "20cf6413ad95155fd03f9f5147775d7b113731954570a6ecead04fdfe9434ee0"
+ },
+ "pod-niche-husk-88x88": {
+  "size": [
+   88,
+   88
+  ],
+  "made": "the niche holding the dried husk (the dried-pod visit), same cut as the empty niche, 1x, the placed slice",
+  "sha256": "97ab9f32e73d37661205615ef458fff35f49dc21e621064cf3ac1cf0cfa798a3"
+ },
+ "pod-niche-shadow-2624x2624": {
+  "size": [
+   2624,
+   2624
+  ],
+  "made": "the pod's soft contact shadow and back occlusion, laid on the niche under the pod (code-drawn by this tool, no painting)",
+  "sha256": "6275c2f6389f88c9234c9f797b7053418b43327142e31acab206cd1b679fb85b"
+ },
+ "pod-niche-shadow-264x264": {
+  "size": [
+   264,
+   264
+  ],
+  "made": "the pod's soft contact shadow and back occlusion, laid on the niche under the pod (code-drawn by this tool, no painting)",
+  "sha256": "a981e4aa99245497c824d4b43f6e339d1954337a454c2552364d8e789e09d5d8"
+ },
+ "pod-niche-shadow-88x88": {
+  "size": [
+   88,
+   88
+  ],
+  "made": "the pod's soft contact shadow and back occlusion, laid on the niche under the pod (code-drawn by this tool, no painting)",
+  "sha256": "76818d314230c7182a4385adb6e2a06b9cd2afd763bb614864b9a6950a3597af"
+ },
+ "reading-bench-5243x3072": {
+  "size": [
+   5243,
+   3072
+  ],
+  "made": "the reading room's backdrop, master at full size (1024:600), the bench's front graded from maroon to umber (blue x0.84, green x1.03)",
+  "sha256": "6e42ba43f5c9eccabd9aa7b9aba9d6b67acdbd5c031e218e9655993a3586e84c"
+ },
+ "reading-bench-1024x600": {
+  "size": [
+   1024,
+   600
+  ],
+  "made": "1x, the whole screen (the bars are drawn over rows 0-39 and 562-599)",
+  "sha256": "a1ad67507b4909f34ed73088397bb01b1bd88409d5964b5e85c814d30ee0f7e4"
+ },
+ "reading-bench-2048x1200": {
+  "size": [
+   2048,
+   1200
+  ],
+  "made": "2x",
+  "sha256": "071bdc16f9336dc37498c1996e8ce719337e3032ca1de0ce15a996d30242190c"
+ },
+ "reading-bench-1024x520": {
+  "size": [
+   1024,
+   520
+  ],
+  "made": "1x, the band between the bars (rows 40-559 of the 1024x600)",
+  "sha256": "4a05bf51244ad980d62746fbf49232671b0bd9bf9246e2bb3ac9e3398b8b8197"
+ }
+}

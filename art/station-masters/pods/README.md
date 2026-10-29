@@ -1085,6 +1085,28 @@ The Station art director's dawn fix (returned to `new` after a 1x check: the key
 
 Honest notes: the dawns' saturation (33, 36, 42) stays under the day's (48, 57, 50) and the dusk's (56, 62, 62); the key R-B reaches the asked 35 but not the day's 74. The night glass and the other lights are unchanged.
 
+## Pass 142 - the Pods shelf and reading-room masters (6 requests, 36.51 MXN)
+
+The art director's final masters for the signed pod inventory and reading room (direction 2, 2c's wood; ux-pods-inventory.md, ad-signoff.md section 3; the Library out of scope). Six requests to the image tool at 4K, one try each, all succeeded (`python3 -I tools/gen.py source/work/masters-pods-shelf/jobs-*.json`; Pacific day 2026-10-28 from 270.91 to 307.41 MXN of 500). References made by [`tools/shelfrefs.py`](tools/shelfrefs.py) (flat wireframes, a crop of concept 2c); every raw is kept full size in `source/raw/masters-pods-shelf/`. Cut by [`tools/shelfmasters.py`](tools/shelfmasters.py), full size first, reduced and never enlarged; the full-size masters are in `shelf/`, the placed sizes are registered in `slices/` by [`tools/register-shelf.py`](tools/register-shelf.py) (manifest and status rows, signed by the art director at 1x; the generated Slices table above was not regenerated). Proofs at 1x: `shelf/proof-inventory-1x.png` (the cabinet with empty niches, pods and a husk), `shelf/proof-strip-tiled-1x.png` (three periods stacked), `shelf/proof-reading-bench-1x.png` (the bars and a pod on the bench).
+
+- **`cabinet-strip-672x228`** (3x `-2016x684`, master `shelf/cabinet-strip-4704x1596`): one period of `strip-a`: plaster y 0-2, umber back-board 2-98 (the niches sit on it at +8), ledge 98-122 (the read bar and freshness strip sit on it), plaster 122-228 (under the label). The top 2 layout rows are the plaster just above the next board, so the tile runs on into itself with no seam; the board and ledge bands are reduced vertically (x0.81, x0.77), the plaster is 1:1. Warm from the left, the same at every height. No niches are painted in it.
+- **`pod-niche-88x88`** (3x `-264x264`, master `shelf/pod-niche-2624x2624`): `niche-b`, an edit of a board crop of the strip: one round, deep, bowl-like hollow, front-on, the mouth plain (no groove, no ring), lit on the lower-right inner wall from the upper left. RGBA: the 84 px mouth and a 2 px rim feathered to transparent, graded to the strip's board at the rim, so it is placed at the card's [+64, +8] straight on the strip. `niche-a` (a flat-backed bore, too light) is not used.
+- **`pod-niche-husk-88x88`** (3x, master 2536): `husk-a`, an edit of `niche-b` holding the dried husk (papery, grey straw, one crack, a few flakes), the same cut; it replaces the niche for the one dried visit.
+- **`pod-niche-shadow-88x88`** (3x, 2624): code-drawn, the pod's contact shadow (feet row 82) and its back occlusion, laid on the niche under a pod placed at [+76, +14, 64, 76]: the niche holding a pod is niche + shadow + the pod masters.
+- **`reading-bench-1024x600`** (2x `-2048x1200`, master `shelf/reading-bench-5243x3072`) and **`reading-bench-1024x520`** (rows 40-559, between the bars): `bench-b`, cropped to 1024:600 at full height; the umber bench top at y 262-305 (the feet line 276 stands on it), the plain dark front below, the out-of-focus cream plaster wall, a low brass lamp hanging at x 100-180 (hood foot y 104) with its pool on the bench at the left; the wood graded from maroon to umber (blue x0.84 below the bench top). `bench-a` is not used (letterbox bars painted in, the bench too low).
+
+1x numbers (`tools/numbers.py`):
+
+| slice | mean L* | key RGB | key R-B | sat |
+| --- | --- | --- | --- | --- |
+| `cabinet-strip-672x228` | 54.3 | (175, 119, 88) | 88 | 36 |
+| `pod-niche-88x88` | 21.8 | (100, 62, 52) | 48 | 53 |
+| `pod-niche-husk-88x88` | 28.4 | (136, 109, 83) | 53 | 44 |
+| `reading-bench-1024x600` | 46.8 | (241, 216, 176) | 65 | 37 |
+| `reading-bench-1024x520` | 46.8 | (242, 218, 177) | 65 | 38 |
+
+Honest notes: the niche's rim is a touch warmer than the board at 4x; the left inner wall of the niche keeps a soft streak from the painting; the pod masters are reduced from `pod-collection-*` (88x98 of ink) to 64x71 in the proof, not to a 64x76 box; the bench's dish is not painted (it is placed). Not made in this pass: the lantern (96x160) and fern (120x200) overlays, the put-away jar and the bred-true seal.
+
 ## Pass 141 - the S03 trait plates' residue cleaned (by hand, no paid call)
 
 The art director's brief (relayed 10-15 05:02): 18 plates, each cleaned at its own size by `trait-clean/clean-s03-residue.py` (rules in its docstring); the originals are kept in `trait-clean/before/`; sheets `trait-clean/before-after-4x.png` (the defect areas of the six 128x160 plates) and `trait-clean/before-after-1x.png` (all 18). Manifest and status rows written directly (status new, note "the residue cleaned (10-15)"); `tools/status.py` not run. Changed pixels per file:
