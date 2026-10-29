@@ -1,0 +1,20 @@
+[
+ {
+  "name": "masters-pods-cups/jar-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-pods-cups/ref-cabinet.jpg",
+    "THE CABINET IT HANGS ON (our signed painting, project-owned): the umber wood back-board, the shelf ledge and the cream plaster this piece will sit over. Match its warmth, value and matte finish so the piece belongs to it. Do NOT paint the cabinet itself: it is not in the new picture."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint ONE small storage jar for keeping things safely put away in a warm home: a squat, rounded stoneware jar seen front-on at eye level, with a pale cool glaze of misty sage-grey, slightly mottled, a thin cream band around its shoulder; a snug round wooden lid of aged umber wood with a small round knob on top; a piece of linen cloth tied under the lid with a short string, its edge frilled. Its silhouette must read clearly as a lidded jar even when tiny: a wide round belly, a short neck, the lid and knob on top. Key light from the upper left, soft occlusion under the lid and at the foot. It fills about 70 percent of the picture's height, centred, standing upright, its foot near the bottom. Cosy and homely, a pantry jar, not a laboratory beaker, not a vase, not glass. The object stands alone on a perfectly FLAT, uniform, pure magenta background (#FF00FF) that fills the whole rest of the picture edge to edge: no gradient, no texture, no floor, no wall, no cast shadow on the background, no glow or haze spilling onto the magenta, no reflections of magenta in the object. Nothing else in the picture: no text, letters, numbers or symbols, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]

@@ -1,0 +1,24 @@
+[
+ {
+  "name": "masters-pods-cups/lantern-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "9:16",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-pods-cups/ref-brass-lamp.jpg",
+    "THE BRASS (our signed reading-room lamp, project-owned): copy this soft, aged, matte brass and its warm light exactly, so the lantern and the reading-room lamp are clearly made by the same hand. Take the material and the light only, not the lamp's shape."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-pods-cups/ref-cabinet.jpg",
+    "THE CABINET IT HANGS ON (our signed painting, project-owned): the umber wood back-board, the shelf ledge and the cream plaster this piece will sit over. Match its warmth, value and matte finish so the piece belongs to it. Do NOT paint the cabinet itself: it is not in the new picture."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint ONE small hanging lantern for a naturalist's cabinet in a warm home, seen front-on at eye level (no perspective tilt). An old, homely oil lantern: a small round brass top with a ring, from which it hangs on a short straight brass hook at the very top of the picture; a body of four small panes of warm, softly glowing amber-cream glass held in a slim brass frame; a candle-like warm flame glow inside, soft, not blinding; a small round brass foot. It is lit: the glass glows a gentle warm cream-gold, the brass catches that light on its inner edges, and the key light falls from the upper left. Tall and slim: it fills about 60 percent of the picture's width and about 90 percent of its height, centred, the hook touching the top edge, the foot just above the bottom edge. Simple, sturdy and friendly, not ornate, not gothic, not a street lamp, not electric. The object stands alone on a perfectly FLAT, uniform, pure magenta background (#FF00FF) that fills the whole rest of the picture edge to edge: no gradient, no texture, no floor, no wall, no cast shadow on the background, no glow or haze spilling onto the magenta, no reflections of magenta in the object. Nothing else in the picture: no text, letters, numbers or symbols, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]

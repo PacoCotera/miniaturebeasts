@@ -1,0 +1,20 @@
+[
+ {
+  "name": "masters-pods-cups/seal-b",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/masters-pods-cups/seal-a.jpg",
+    "THE PICTURE TO EDIT (our painted wax seal, project-owned): keep its irregular poured wax edge, its size, its place, its wine red and the flat green background exactly; only change what is asked."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-pods-cups/ref-pod-sealed.jpg",
+    "OUR SEED POD (project-owned game art): an upright rounded pod, widest a little below the middle, a round cap on top. The impressed mark takes this silhouette only (no ribs, no dots, no band)."
+   ]
+  ],
+  "prompt": "Edit the wax seal: (1) REMOVE the raised inner ring completely: between the irregular outer edge and the mark the wax is one smooth, gently domed, slightly uneven surface, with no circle, no rim, no groove, no border line of any kind, so it can never read as a coin. (2) Replace the acorn mark with the plain silhouette of OUR seed pod from the reference: an upright rounded pod, a little wider at the bottom half, with a low round cap on its top (the cap is a dome, not a stalk or a stem); pressed into the wax as a clean sunken impression, the same size as the acorn was, centred. (3) The highlights are soft warm light on red wax, a lighter rose-red, NOT gold, NOT yellow, NOT metallic; the wax stays a deep wine red (#7a1f2b), matte with a faint waxy sheen. Key light from the upper left. Keep the flat pure green background (#00B140) exactly, edge to edge, no shadow on it. No text, letters, numbers or symbols. Matte hand-painted miniature finish."
+ }
+]

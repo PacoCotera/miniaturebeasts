@@ -8317,5 +8317,107 @@
    "thoughtsTokenCount": 247,
    "totalTokenCount": 4056
   }
+ },
+ {
+  "tag": "masters-pods-cups/lantern-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.304392,
+  "mxn": 6.0878,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T05:09:34Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1296,
+   "candidatesTokenCount": 2277,
+   "thoughtsTokenCount": 238,
+   "totalTokenCount": 3811
+  }
+ },
+ {
+  "tag": "masters-pods-cups/fern-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.30241,
+  "mxn": 6.0482,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T05:10:18Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1265,
+   "candidatesTokenCount": 2237,
+   "thoughtsTokenCount": 262,
+   "totalTokenCount": 3764
+  }
+ },
+ {
+  "tag": "masters-pods-cups/jar-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.287154,
+  "mxn": 5.7431,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T05:10:58Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 957,
+   "candidatesTokenCount": 2202,
+   "thoughtsTokenCount": 175,
+   "totalTokenCount": 3334
+  }
+ },
+ {
+  "tag": "masters-pods-cups/seal-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.293416,
+  "mxn": 5.8683,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T05:12:03Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 668,
+   "candidatesTokenCount": 2210,
+   "thoughtsTokenCount": 224,
+   "totalTokenCount": 3102
+  }
+ },
+ {
+  "tag": "masters-pods-cups/seal-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.291268,
+  "mxn": 5.8254,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T05:12:59Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 854,
+   "candidatesTokenCount": 2201,
+   "thoughtsTokenCount": 212,
+   "totalTokenCount": 3267
+  }
+ },
+ {
+  "tag": "masters-pods-cups/seal-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.30666,
+  "mxn": 6.1332,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T05:13:48Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1050,
+   "candidatesTokenCount": 2262,
+   "thoughtsTokenCount": 276,
+   "totalTokenCount": 3588
+  }
  }
 ]

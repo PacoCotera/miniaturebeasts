@@ -1,0 +1,24 @@
+[
+ {
+  "name": "masters-pods-cups/fern-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "9:16",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-ferns-idle-day-1024x568.png",
+    "THE FERNS (our signed Ferns room painting, project-owned): paint the fern fronds in this same soft green, leaf shape and painterly touch. Take the fern only."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-pods-cups/ref-cabinet.jpg",
+    "THE CABINET IT HANGS ON (our signed painting, project-owned): the umber wood back-board, the shelf ledge and the cream plaster this piece will sit over. Match its warmth, value and matte finish so the piece belongs to it. Do NOT paint the cabinet itself: it is not in the new picture."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint ONE sprig of fern for a naturalist's cabinet in a warm home, front-on: five to seven soft, feathery fronds of a small woodland fern growing from the LOWER RIGHT corner of the picture, the stems gathered at the bottom-right corner and running off it, the fronds arching up and leaning gently toward the upper left, as if a fern in a pot just out of view leans into the cabinet. The fronds are the densest along the right edge and the bottom, and thin out toward the upper left; the upper-left third of the picture stays mostly empty. Warm muted greens, sage to olive, a few fronds lighter where the warm lantern light from the upper left touches them, the inner ones a little darker with soft occlusion; one or two fronds curling at the tip. Natural, gentle, quiet, never jungle, never neon green. No pot, no soil, no flowers, no insects. The object stands alone on a perfectly FLAT, uniform, pure magenta background (#FF00FF) that fills the whole rest of the picture edge to edge: no gradient, no texture, no floor, no wall, no cast shadow on the background, no glow or haze spilling onto the magenta, no reflections of magenta in the object. Nothing else in the picture: no text, letters, numbers or symbols, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]

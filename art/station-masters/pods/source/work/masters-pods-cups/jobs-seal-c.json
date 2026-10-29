@@ -1,0 +1,20 @@
+[
+ {
+  "name": "masters-pods-cups/seal-c",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-pods-cups/ref-pod-sealed.jpg",
+    "OUR SEED POD (project-owned game art): an upright rounded pod, widest a little below the middle, a low round cap on top. The impressed mark takes this silhouette only (no ribs, no dots, no band)."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint ONE blob of deep wine-red sealing wax seen straight from above, pressed flat by a seal: an irregular, softly squashed round puddle of wax with small rounded bulges at its edge, like real poured wax, clearly NOT a perfect circle. The whole top surface is ONE smooth, gently domed, slightly uneven sheet of wax from the edge right up to the mark: there is NO ring, NO inner circle, NO raised rim, NO groove, NO border line, NO stamp outline anywhere, so it can never read as a coin or a button. In the middle a single bold sunken impression, the plain silhouette of OUR seed pod from the reference: an upright rounded body, a little wider in its lower half, with a low dome-shaped cap sitting on its top (no stalk, no stem, no leaf, no opening: it is a closed pod, not a pot, not a jar, not an acorn). The impression is about half the seal's width, reads by the shadow on its upper-left inner wall and the light on its lower-right inner wall. Key light from the upper left: soft rose-red highlights on the wax's swells (never gold, never yellow, never metallic), soft deep shadow at the lower right of the edge. Deep wine red (#7a1f2b), matte with a faint waxy sheen, never orange, never pink, never scarlet. The seal fills about 80 percent of the picture, centred. The seal lies alone on a perfectly FLAT, uniform, pure green background (#00B140) that fills the whole rest of the picture edge to edge: no gradient, no texture, no paper, no ribbon, no cast shadow on the background, no green reflected in the wax. Nothing else in the picture: no text, letters, numbers or symbols, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]
