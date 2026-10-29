@@ -285,12 +285,12 @@ export function noteCarried(st, sv, now = Date.now()) {
   for (const id of back) { const m = mibiById(st, id); if (m && !m.released && now >= GOOD_CLOCK) m.roomSince = now; }
   f.carriedSeen = held.slice(); return back;
 }
-export const homeMibis = (st, sv) => { const c = carriedIds(st, sv); return st.mibis.filter((m) => !m.released && !c.includes(m.id)); };
+export const homeMibis = (st, sv) => { const c = carriedIds(st, sv); return st.mibis.filter((m) => !m.released && !c.includes(m.id) && !inStore(m) && !comingOut(st, m)); };   // tucked away or on its way back: not at home (gd-putaway §1)
 // A Station request to take a mibi with the Companion or bring it home: queued, applied by the Companion at the dock. why: "full" | "carried" | "not-carried" | "released" | "unknown".
 function carryOp(st, sv, m, op) {
   if (!m || !mibiById(st, m.id)) return { ok: false, why: "unknown" };
   const proj = projectCarried(st, sv);
-  if (op === "add") { if (m.released) return { ok: false, why: "released" }; if (proj.includes(m.id)) return { ok: false, why: "carried" }; if (proj.length >= CARRY_MAX) return { ok: false, why: "full" }; }
+  if (op === "add") { if (m.released) return { ok: false, why: "released" }; if (inStore(m) || comingOut(st, m)) return { ok: false, why: "tucked" }; if (proj.includes(m.id)) return { ok: false, why: "carried" }; if (proj.length >= CARRY_MAX) return { ok: false, why: "full" }; }
   else if (!proj.includes(m.id)) return { ok: false, why: "not-carried" };
   st.carryReqs.push({ seq: ++st.carrySeq, op, id: m.id });
   logEv(st, op === "add" ? m.name + " chosen to go with you" : m.name + " chosen to come home");
@@ -313,7 +313,7 @@ export function stageAt(m, turn, j, e) {
   if (m.bonded) return 'juvenile';                       // a bonded juvenile waits (14)
   const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
 }
-export const mibiStage = (st, m, settings = DEFAULT_SETTINGS) => stageAt(m, st.turn, settings.adultTurns ?? JUVENILE_TURNS, settings.elderTurns ?? ELDER_TURNS);
+export const mibiStage = (st, m, settings = DEFAULT_SETTINGS) => stageAt(m, stageTurn(st, m), settings.adultTurns ?? JUVENILE_TURNS, settings.elderTurns ?? ELDER_TURNS);   // a tucked-away mibi's clocks are stopped (stageTurn)
 // Who walked with a trip record: its carried set, else (an older record) its partner.
 export const tripCarried = (rec) => (Array.isArray(rec.carried) ? rec.carried : rec.partner != null ? [rec.partner] : []);
 export const tierNow = (st, sv) => (st.probe && st.probe.tier) || (sv && sv.tier) || 1;
@@ -854,7 +854,7 @@ export function growCost(st, choices = {}, settings = DEFAULT_SETTINGS) {
   return { e: price(PRICE.growE, settings), s: st.firstMibi ? 0 : price(PRICE.growS, settings), d: price(PRICE.change, settings) * changedTraits(choices).length };
 }
 // --- the rooms: up to four rooms of eight places; a housed mibi holds m.room (0-3) and m.slot (0-7); m.bay = room * 8 + slot is written for a rolled-back Station only ---
-export const housed = (st) => st.mibis.filter((m) => !m.released);
+export const housed = (st) => st.mibis.filter((m) => !m.released && !inStore(m));   // a tucked-away mibi holds no place (one on its way back holds its reserved one)
 export const roomCount = (st, settings = DEFAULT_SETTINGS) => clamp(settings.rooms || st.rooms || 1, 1, ROOMS_MAX);
 export const inRoom = (st, i) => housed(st).filter((m) => m.room === i).sort((a, b) => a.slot - b.slot);
 // The first free place: `prefer` first if it has a free slot, else the first room with one; the lowest free slot; null when every place is taken.
@@ -989,6 +989,9 @@ export function returnMibiBlock(st, sv, m) {
   if (m.bonded) return "a bonded mibi stays";
   if (carriedIds(st, sv).includes(m.id)) return "already with you";
   if (pendingCarry(st, sv).some((r) => r.op === "add" && r.id === m.id)) return "goes at the next dock";
+  if (inStore(m)) return "tucked away · bring it out first";
+  if (comingOut(st, m)) return "back in " + plural(backIn(st, m), "turn");
+  if (lastAtHome(st, sv, m)) return "your last mibi at home stays";   // the same guard as Tuck away (gd-putaway §5, audit m10)
   return "";
 }
 export function returnMibi(st, sv, m, settings = DEFAULT_SETTINGS) {
@@ -1044,13 +1047,14 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (speciesOf(a) !== speciesOf(b)) return "another species";
   if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (a.released || b.released) return "gone to the wild";
+  if (inStore(a) || inStore(b) || comingOut(st, a) || comingOut(st, b)) return "tucked away";   // it cannot cross until it is back (gd-putaway §5)
   if (isCarried(st, sv, a) || isCarried(st, sv, b)) return "away";
   if (st.bud) return "the incubator is busy";
   if (vivFull(st, settings)) return "the Vivarium is full";
   return "";
 }
 // The partners of an adult or an elder, in place order. A carried partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
-export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isCarried(st, sv, m) ? { ...m, away: true } : m));
+export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isCarried(st, sv, m) || inStore(m) || comingOut(st, m) ? { ...m, away: true } : m));   // tucked away or on its way back: listed dimmed, never picked (gd-putaway §1)
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
 export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
 // The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you
@@ -1131,4 +1135,90 @@ export function seedSiblings(st, species, seed, settings = DEFAULT_SETTINGS) {
   }
   logEv(st, "Developer: siblings " + made.map((m) => m.name).join(" and ") + " of " + a.name + " and " + b.name);
   return { ok: made.length === 2, parents: [a, b], mibis: made, msg: made.length === 2 ? made.map((m) => m.name).join(" and ") + ", siblings of " + a.name + " and " + b.name : "no place free for both siblings" };
+}
+
+// --- Tucked away (gd-putaway.md; ux-manager.md §3): a mibi kept outside time, its place freed --------------------------------------
+// A tucked-away mibi is still the player's and alive, but not at home: m.tucked = { turn, seq, at } while it is in the store (no room, no place: m.room and m.slot are null), and m.tucked.out, the world
+// turn it is back at, once Bring out is pressed (its place is reserved then: m.room and m.slot are set and the room counts it). Its clocks stop: its stage and its turns are read at m.tucked.turn while it is
+// in the store; at the press of Bring out its born (and grownTurn) move on by the turns it was away, so they restart where they stopped when it is back (stageTurn). The store has no limit (lead ruling
+// 10-28 23:11, M1). Nothing is migrated: an older save has no m.tucked, and nothing reads one it does not hold. The prices are Energy, the rooms' own currency (gd-putaway §2, all tune).
+export const TUCK = { floor: 2 /* Energy at least, to tuck away */, out: 2 /* Energy to bring out */, turns: 2 /* world turns until it is back */ };
+// The next room's price in Energy: 4, 8, 12, then 4 more each (gd-putaway §2; the rooms past four are not built, the price still stands for the put-away price below)
+export const nextRoomPrice = (st) => PRICE.room[(st.rooms || 1) - 1] ?? 4 * (st.rooms || 1);
+// Tuck away: the next room's price per place rounded up, never under TUCK.floor; so it never costs less than keeping a room (gd-putaway §2, the 19:35 ruling)
+export const tuckPrice = (st, settings = DEFAULT_SETTINGS) => price(Math.max(TUCK.floor, Math.ceil(nextRoomPrice(st) / ROOM)), settings);
+export const bringOutPrice = (st, settings = DEFAULT_SETTINGS) => price(TUCK.out, settings);
+export const inStore = (m) => !!m && !m.released && !!m.tucked && m.tucked.out == null;
+// on its way back: Bring out pressed, its place reserved, the world turn it is back at not reached yet
+export const comingOut = (st, m) => !!m && !m.released && !!m.tucked && m.tucked.out != null && (st.turn | 0) < m.tucked.out;
+export const backIn = (st, m) => (comingOut(st, m) ? m.tucked.out - (st.turn | 0) : 0);
+// the turn a mibi's clocks read: the turn it was tucked away at while it is in the store, the turn it is back at while it comes out (its born moved on at the press), else the world's
+export const stageTurn = (st, m) => (inStore(m) ? m.tucked.turn : comingOut(st, m) ? m.tucked.out : st.turn);
+// The store, in the order the mibis went in.
+export const tuckedAway = (st) => st.mibis.filter(inStore).sort((a, b) => (a.tucked.seq ?? 0) - (b.tucked.seq ?? 0) || a.id - b.id);
+// At home and present: in a room, not in the carried set as it will be (projectCarried: a request to go counts), not coming back. The last such mibi stays (gd-putaway §5; Return takes the same guard, audit m10).
+export const presentAtHome = (st, sv, m) => !!m && !m.released && !inStore(m) && !comingOut(st, m) && m.room != null && !projectCarried(st, sv).includes(m.id);
+export const lastAtHome = (st, sv, m) => presentAtHome(st, sv, m) && st.mibis.filter((x) => presentAtHome(st, sv, x)).length === 1;
+// What stops Tuck away, as a key, in gd-putaway §5's order: null when nothing does. { key: "released" | "tucked" | "coming" (n) | "carried" | "last" | "short" (price, have) }
+export function tuckBlock(st, sv, m, settings = DEFAULT_SETTINGS) {
+  if (!m || m.released || !mibiById(st, m.id)) return { key: "released" };
+  if (inStore(m)) return { key: "tucked" };
+  if (comingOut(st, m)) return { key: "coming", n: backIn(st, m) };
+  if (projectCarried(st, sv).includes(m.id)) return { key: "carried" };
+  if (lastAtHome(st, sv, m)) return { key: "last" };
+  const p = tuckPrice(st, settings); if (st.e < p) return { key: "short", price: p, have: st.e };
+  return null;
+}
+// Tuck away: paid at the press, instant; the place frees at once, the clocks stop. A bond, the stage, a breather owed and everything the mibi is stay.
+export function tuckAway(st, sv, m, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const b = tuckBlock(st, sv, m, settings); if (b) return { ok: false, ...b };
+  const p = tuckPrice(st, settings), room = m.room; st.e -= p;
+  st.tuckSeq = (st.tuckSeq | 0) + 1;
+  m.tucked = { turn: st.turn | 0, seq: st.tuckSeq, ...(now >= GOOD_CLOCK ? { at: now } : {}), from: room };
+  m.room = m.slot = null; m.bay = null;
+  logEv(st, "Tucked " + m.name + " away · " + spendText(p, 0, 0) + " · its place in the " + ROOM_NAMES[room] + " room is free");
+  return { ok: true, room, cost: p };
+}
+// What stops Bring out into room i (i null: any room), as a key: null when nothing does. { key: "notTucked" | "noPlace" | "short" (price, have) }
+export function bringOutBlock(st, sv, m, i = null, settings = DEFAULT_SETTINGS) {
+  if (!inStore(m)) return { key: "notTucked" };
+  const free = i == null ? freePlace(st, settings) : inRoomCount(st, i) < ROOM && i >= 0 && i < roomCount(st, settings) ? i : null;
+  if (free == null) return { key: "noPlace" };
+  const p = bringOutPrice(st, settings); if (st.e < p) return { key: "short", price: p, have: st.e };
+  return null;
+}
+const inRoomCount = (st, i) => inRoom(st, i).length;
+// Bring out into room i: paid at the press, the place reserved then (the lowest free slot of the room); back in TUCK.turns world turns, never sooner, whatever the time at the Station. No cancel, no refund.
+export function bringOut(st, sv, m, i, settings = DEFAULT_SETTINGS) {
+  const b = bringOutBlock(st, sv, m, i, settings); if (b) return { ok: false, ...b };
+  const p = bringOutPrice(st, settings); st.e -= p;
+  const taken = new Set(inRoom(st, i).map((x) => x.slot)); let slot = 0; while (taken.has(slot)) slot++;
+  const out = (st.turn | 0) + TUCK.turns, shift = out - m.tucked.turn;
+  m.born = (m.born | 0) + shift; if (m.grownTurn != null) m.grownTurn += shift;   // the clocks restart where they stopped, at the turn it is back
+  m.tucked = { ...m.tucked, out, shift };
+  m.room = i; m.slot = slot; m.bay = i * ROOM + slot;
+  logEv(st, "Bringing " + m.name + " out · " + spendText(p, 0, 0) + " · a place kept in the " + ROOM_NAMES[i] + " room · back in " + plural(TUCK.turns, "turn"));
+  return { ok: true, room: i, slot, out, cost: p };
+}
+// The mibis whose way back is over (the world turn reached m.tucked.out): their record closes (m.tucked goes), they are fresh in their room. Read at the dock and when the manager opens; returns them.
+export function tuckArrivals(st, now = Date.now()) {
+  const back = st.mibis.filter((m) => !m.released && m.tucked && m.tucked.out != null && (st.turn | 0) >= m.tucked.out);
+  for (const m of back) { delete m.tucked; if (now >= GOOD_CLOCK) m.roomSince = now; logEv(st, m.name + " is back in the " + ROOM_NAMES[m.room] + " room"); }
+  return back;
+}
+// Two mibis in two rooms change places (the manager's lift on a mibi): free and instant, a full room is never a dead end; never a traveller, never one coming back. Both rooms keep their counts.
+export function swapBlock(st, sv, a, b) {
+  if (!a || !b || a.released || b.released || a === b) return { key: "none" };
+  if (inStore(a) || inStore(b)) return { key: "tucked" };
+  if (comingOut(st, a) || comingOut(st, b)) return { key: "coming" };
+  if (isCarried(st, sv, a) || isCarried(st, sv, b)) return { key: "carried" };
+  if (a.room === b.room) return { key: "own" };
+  return null;
+}
+export function swapMibis(st, sv, a, b, now = Date.now()) {
+  const k = swapBlock(st, sv, a, b); if (k) return { ok: false, ...k };
+  for (const f of ["room", "slot", "bay"]) [a[f], b[f]] = [b[f], a[f]];
+  if (now >= GOOD_CLOCK) a.roomSince = b.roomSince = now;
+  logEv(st, a.name + " and " + b.name + " swap places · the " + ROOM_NAMES[a.room] + " and " + ROOM_NAMES[b.room] + " rooms");
+  return { ok: true };
 }

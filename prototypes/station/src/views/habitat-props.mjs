@@ -50,7 +50,8 @@ export function modulesOf(m, shown, Sg, sittingSpec = null) {
   const wildBlock = S.returnMibiBlock(st, sv, shown), price = S.gainText(S.PRICE.wildMibi);
   if (wildBlock === "a bonded mibi stays") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.bonded, Sg.wildPlates.bonded.map((l) => fill(l, named)).concat(stage === "juvenile" ? [fill(Sg.wildPlates.bondedYoung, named)] : []), { price });
   else if (wildBlock === "already with you") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.withYou[where], plateT, { price });
-  else if (wildBlock) rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.waiting, Sg.wildPlates.waiting.map((l) => fill(l, named)), { price });
+  else if (wildBlock) { const k = wildBlock === "your last mibi at home stays" ? "last" : wildBlock.startsWith("tucked away") ? "tucked" : wildBlock.startsWith("back in") ? "coming" : "waiting";   // gd-putaway §5: the last at home stays; tucked away or on its way back, it cannot be returned
+    rows.wild = held(fill(Sg.wild, named), k === "coming" ? wildBlock : Sg.wildBlocks[k], Sg.wildPlates[k].map((l) => fill(l, { ...named, n: S.backIn(st, shown) })), { price }); }
   return { out, stage, dKind, pst, sitting, look, partners, pickable, crossState, wildBlock, rows };
 }
 
