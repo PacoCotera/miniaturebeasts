@@ -1,0 +1,24 @@
+[
+ {
+  "name": "concepts-pods-shelf/d2-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-pods-shelf/ref-layout-1024x600.png",
+    "THE LAYOUT (a flat wireframe, project-owned): where things go on the 1024x600 screen. A dark top bar and a dark bottom line; inside, a shelf of six round pod places in 3 columns by 2 rows, each with a short blank name strip under it; at the right, a door bay with two smaller waiting places. Take only the placement and the states (the mint arcs are the read progress, the cream circle is focus, the warm circle is the lit goal pod, the bare dark circle is the empty place). Never copy its flat look."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/concepts-pods-shelf/ref-pods-from-shelf.png",
+    "THE PODS (project-owned game art): what our pods look like. A pod is an upright seed pod, about the size of a fist to the creature, with a round cap and banded ribs: left a coral pod with a gold cap, middle a blue pod with salmon spots and a salmon cap, right a sealed sand-coloured pod with a pale cap (unidentified). Take the pods only, not the grey metal cups around them."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-boulders-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed Vivarium room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left, warm bounce, cosy depth and palette. Take the treatment and the warmth, not its place or plants."
+   ]
+  ],
+  "prompt": "Paint the WHOLE screen of a handheld creature-keeping game, 16:9, a front-on view: the Pods shelf, where the player keeps pods (wild seed pods that can grow into creatures).\n\nSTATES that must read at a glance, in the layout's places, left to right, top row then bottom row:\n1. top left: a coral pod that carries the player's goal: it is softly LIT from within its place by a warm golden glow, and its progress groove is half lit with a small bright star on the groove; the clear lead of the screen.\n2. top middle: a coral pod fully read: its progress groove is one closed, unbroken ring of soft mint light (#adf6e0).\n3. top right: a blue spotted pod partly read: a quarter of its groove is lit mint, the rest an unlit engraved channel; the lit segments are separated by small gaps, one per chapter.\n4. bottom left: a coral pod, unread (groove dark), with the FOCUS on it: one thin even cream ring (#ffe6ad) just outside its place, crisp and clean.\n5. bottom middle: the sealed sand-coloured pod, unread, groove dark.\n6. bottom right: an EMPTY place: a bare, softly shadowed hollow, clearly waiting.\nEvery progress groove is engraved into the holder, the same thickness everywhere, so a player compares how far each pod is read in one glance. On the right, the door bay: a small arched doorway or hatch in the wall with two smaller waiting places, each holding a pod, a little apart from the six, clearly \"waiting at the door\".\nUnder each of the six places, a short blank strip of quiet wall where a name will be typed later: leave it empty.\nThe top bar and the bottom line are plain dark slate bands (#1d232b) across the full width, empty.\n\nLIGHT AND FINISH: one warm key light from the upper left, warm bounce light, soft ambient occlusion in every hollow, a soft contact shadow under every pod; each place's upper left lip shades the inside, its lower right rim catches the light. Matte, hand-painted miniature finish like the painted reference, with real depth. The pods are the warmest, brightest, most colourful things on screen; the holders and wall stay quiet, matte and low in saturation. No gloss, no chrome, no plastic, no neon, no sci-fi interface look, no holograms, nothing childish or toy-like.\nNO text, letters, digits, numbers, logos or icons anywhere. No creatures. No frame around the picture, no vignette; the screen fills the canvas edge to edge.\n\nDIRECTION: a shelf of niches in a warm workshop wall. The shelf area is a cosy carved wall of warm plaster, smoothed stone and dark aged wood (low-saturation umber and grey-green, never bright orange), with six rounded niches set into it like a naturalist's cabinet; each pod stands on the niche floor, and its progress is an inlaid groove of pale metal around the niche's mouth that glows mint where read. The door bay is a small wooden arched door at the right, slightly ajar, with a ledge and the two waiting pods.\nVariation: carved wooden shelf boards and uprights frame the niches, a small warm lantern glow at the upper left."
+ }
+]
