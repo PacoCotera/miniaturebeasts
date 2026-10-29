@@ -327,7 +327,7 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
 }
 // The text fit (the check after L11, reported beside the rules): a text's ink box (its advance x cap top to baseline) against the box it is drawn in. The box is the plate under it: the last node drawn
 // before the text that holds the text's centre and hides what it covers (a rect, a nine-slice, a picture painted edge to edge), at least 24 x 14 and under 40 % of the screen (the stage's ground is
-// not a plate); a focus ring, a clip and composed content (a window that clips by design) are not. A text that is not drawn on a plate has no box and is not measured. One entry for each side the
+// not a plate; a pane drawn over the plate under the text, a decision panel over its veiled screen, is the text's plate); a focus ring, a clip and composed content (a window that clips by design) are not. A text that is not drawn on a plate has no box and is not measured. One entry for each side the
 // text crosses: { node: "<region> \"<text>\"", container: { id, rect }, side, measured, required: 0 } (measured: the px the text's ink lies outside the plate on that side, always above 0).
 export function overruns(log) {
   const textOf = new Map(); for (const t of log?.type ?? []) if (t.text && t.role !== "shadow") textOf.set(`${t.region}|${t.x}|${t.w}`, t);
@@ -337,8 +337,11 @@ export function overruns(log) {
     const [x, y, w, h] = t.solid, cx = x + w / 2, cy = y + h / 2; let plate = null;
     for (const b of nodes) {
       if (b.order >= t.order || b.ring || !(b.kind === KIND.rect || b.kind === KIND.nine || (b.kind === KIND.sprite && same(b.solid, b.rect)))) continue;
-      const [bx, by, bw, bh] = b.rect; if (bw < 24 || bh < 14 || bw * bh >= 0.4 * 1024 * 600) continue;
-      if (cx >= bx && cx < bx + bw && cy >= by && cy < by + bh) plate = b;
+      const [bx, by, bw, bh] = b.rect; if (bw < 24 || bh < 14) continue;
+      const inside = cx >= bx && cx < bx + bw && cy >= by && cy < by + bh;
+      // a pane over 40 % of the screen is a plate only when it is drawn over what was under the text (a panel over the screen it veils: the title is on the panel, not on the glass beneath); one as wide as the screen (the stage's ground, a veil) is none, and hides the plates it covers
+      if (bw * bh >= 0.4 * 1024 * 600) { if (inside) plate = bw >= 1024 ? null : b; continue; }
+      if (inside) plate = b;
     }
     if (!plate) continue;
     const [bx, by, bw, bh] = plate.rect, over = { left: bx - x, top: by - y, right: x + w - (bx + bw), bottom: y + h - (by + bh) };

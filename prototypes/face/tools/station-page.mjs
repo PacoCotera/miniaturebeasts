@@ -16,7 +16,7 @@ const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/ja
 const VIRTUAL_CLOCK = () => { let t = 1000, q = []; window.__vt = () => t; performance.now = () => t; window.requestAnimationFrame = (cb) => { q.push(cb); return q.length; };
   window.__step = (ms) => { const end = t + ms; while (t < end) { t = Math.min(end, t + 40); const run = q; q = []; for (const cb of run) cb(t); } return t; }; };
 
-export async function openStation({ motion = true, clock = false } = {}) {
+export async function openStation({ motion = true, clock = false, longNames = process.env.LONG_NAMES === "1" } = {}) {
   if (!existsSync(path.join(here, "../dist/face.wasm"))) { console.error("the face is not built (prototypes/face/build.sh)"); process.exit(2); }
   const server = createServer((req, res) => {
     let p = path.join(root, decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/"));
@@ -33,6 +33,7 @@ export async function openStation({ motion = true, clock = false } = {}) {
   await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.setItem("mb-station-dev", '{"light":"day","stationTime":"12:00","stationDate":"2026-10-17"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
   await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test&names=en-short-1`, { waitUntil: "load" });
   await page.evaluate(() => window.__st.ready); await page.waitForTimeout(500);
+  if (longNames) console.log("long names: " + (await page.evaluate((adv) => window.__st.useLongNames(adv), JSON.parse(readFileSync(path.join(here, "../dist/metrics.json"), "utf8")).fonts["16"].advance)).join(", "));   // the layout check's --long-names pass: the longest names of the live list, not the archived short ones
   const step = (ms) => page.evaluate((m) => window.__step(m), ms);
   if (clock) await step(200);
   return { page, fails, fail, step, close: async () => { await browser.close(); server.close(); } };

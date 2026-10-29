@@ -10,6 +10,7 @@
 // The review set: <out>/review.md and review.json, one card per screen and rule (with its part): its worst instance (the largest |measured − required|; instances are findings grouped
 // ignoring the measure), how many of that kind and the other ids; the nine Station screens first, the Library last under "parked". <out>/index.json and <out>/index.md stay complete.
 //   node prototypes/face/tools/layout-check.mjs <logs dir> --out <dir> [--overlays all | review | none]   (all: an overlay a finding, the default; review: the cards' only; --no-overlays: none)
+//   node prototypes/face/tools/layout-check.mjs <logs dir> --long-names --out <dir>   (the text fit alone over the logs of goldens.mjs --long-names: every state with the longest names of the live list; <out>/long-names.json and .md; exits 1 on any overrun; the goldens are not touched)
 //   node prototypes/face/tools/layout-check.mjs <logs dir> --refresh-cases   (copies the case corpus's states, ui/tests/layout-cases.json, from the logs into ui/tests/layout-cases/: after a retake)
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, rmSync } from "node:fs";
 import path from "node:path";
@@ -90,6 +91,15 @@ if (isMain) {
   const ovAt = args.indexOf("--overlays"), overlays = args.includes("--no-overlays") ? "none" : ovAt >= 0 ? args[ovAt + 1] : "all";
   if (!["all", "review", "none"].includes(overlays)) { console.error("--overlays is all, review or none"); process.exit(2); }
   const records = readLogs(path.resolve(dir)); if (!records.length) { console.error("no logs in " + dir + " (goldens.mjs --check --logs <dir>)"); process.exit(2); }
+  if (args.includes("--long-names")) {   // the long-names pass: the logs of goldens.mjs --long-names --logs <dir> (every state drawn with the longest names of the live list); the text fit only, no hash against the goldens
+    const fit = new Map(); for (const r of records) for (const o of overruns(r.log)) { const k = [r.screen, o.node, o.side, o.container.id, o.container.rect.join(",")].join("|"); if (!fit.has(k)) fit.set(k, { screen: r.screen, region: o.node.split(' "')[0], text: o.node.replace(/^[^"]*"|"$/g, ""), ...o, states: [] }); fit.get(k).states.push(r.state); }
+    const list = [...fit.values()].sort((a, b) => b.measured - a.measured); mkdirSync(out, { recursive: true });
+    writeFileSync(path.join(out, "long-names.json"), JSON.stringify({ overruns: list }, null, 1) + "\n");
+    writeFileSync(path.join(out, "long-names.md"), [`# Long names: text fit`, ``, `${list.length} overrun(s) in ${records.length} states`, ``, `| Screen | Region | Text | Side | Px over | Plate | States |`, `| --- | --- | --- | --- | ---: | --- | --- |`, ...list.map((o) => `| ${o.screen} | ${o.region} | ${o.text} | ${o.side} | ${o.measured} | ${o.container.id} [${o.container.rect.join(", ")}] | ${o.states.length > 3 ? `${o.states.slice(0, 3).join(", ")} and ${o.states.length - 3} more` : o.states.join(", ")} |`)].join("\n") + "\n");
+    console.log(`long names: ${list.length} overrun(s) in ${records.length} states · ${path.join(out, "long-names.md")}`);
+    for (const o of list) console.error(`FAIL long names ${o.screen}: ${o.node} is ${o.measured} px past the ${o.side} of ${o.container.id} [${o.container.rect.join(", ")}] (${o.states.length > 3 ? `${o.states.slice(0, 3).join(", ")} and ${o.states.length - 3} more` : o.states.join(", ")})`);
+    process.exit(list.length ? 1 : 0);
+  }
   // the logs must be the goldens': each state's hash is its golden's
   const stale = []; for (const r of records) { const g = existsSync(path.join(goldenDir, r.screen, r.screen + ".json")) ? J(path.join(goldenDir, r.screen, r.screen + ".json")).states?.[r.state] : null; if (!g || g.hash !== r.hash) stale.push(`${r.screen}/${r.state}`); }
   if (stale.length) { console.error(`the logs are not the goldens' (${stale.length} states differ or have no golden: ${stale.slice(0, 4).join(", ")}${stale.length > 4 ? ", …" : ""}): take them with goldens.mjs --check --logs`); process.exit(2); }

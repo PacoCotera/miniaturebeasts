@@ -345,4 +345,6 @@ test("the text fit: a text whose ink lies outside the plate it is drawn on is na
   assert.deepEqual(say([110, 100, 60, 20], node("chip", 4, [100, 100, 80, 24]), node("ring", 4, [100, 100, 40, 24], { flags: 1 })), [], "a focus ring is not a plate");
   assert.deepEqual(say([120, 100, 80, 20], node("win", 6, [100, 100, 80, 24])), [], "composed content is not a plate");
   assert.deepEqual(say([120, 100, 80, 20], node("ground", 4, [0, 40, 1024, 522]), node("chip", 4, [100, 100, 80, 24]))[0]?.container.id, "chip", "the last plate drawn under the text is its box, not the ground");
+  assert.deepEqual(say([500, 100, 80, 20], node("glass", 4, [24, 56, 544, 408]), node("veil", 3, [0, 40, 1024, 522]), node("panel", 4, [92, 80, 840, 440])), [], "a decision panel over the glass is the text's plate: a title past the glass's edge but inside the panel fits");
+  assert.equal(say([880, 100, 60, 20], node("glass", 4, [24, 56, 544, 408]), node("veil", 3, [0, 40, 1024, 522]), node("panel", 4, [92, 80, 840, 440]))[0]?.container.id, "panel", "and one past the panel is measured against the panel");
 });
