@@ -1667,7 +1667,9 @@ function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), 
     const o = occupant(key, sx, sy, 'player'); return !o || o.type === 'pt' || o.type === 'cr' || (P && P.key === key && P.x === sx && P.y === sy); }); }
 function takeDew(f) { const ex = S.exp; setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); advance('patch', { noise: 'act' }); }
 function takeCharge(f) {
-  const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f), got = addMat('e', ch, f.x, f.y);
+  const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f);
+  if (ex.cargo.e >= CAP) { fxMsg('Energy full · the stone keeps its charge', 2); return; }   // a full hold takes nothing: the stone is not drawn and no turn passes
+  const got = addMat('e', ch, f.x, f.y);
   if (storm > 0) setFS(key, f.id, { ch: ch - got, wt: S.turn }); else { setFS(key, f.id, { wt: S.turn }); ex.stats.warm = (ex.stats.warm || 0) + got; fxSign('warm'); }
   advance('patch', { noise: 'act' });
 }
