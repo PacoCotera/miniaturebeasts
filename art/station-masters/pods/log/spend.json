@@ -8079,5 +8079,90 @@
    "thoughtsTokenCount": 346,
    "totalTokenCount": 4520
   }
+ },
+ {
+  "tag": "concepts-pods-shelf/d1-d try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.374794,
+  "mxn": 7.4959,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T02:29:11Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1697,
+   "candidatesTokenCount": 2755,
+   "thoughtsTokenCount": 340,
+   "totalTokenCount": 4792
+  }
+ },
+ {
+  "tag": "concepts-pods-shelf/d1-e try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.353234,
+  "mxn": 7.0647,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T02:29:48Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1717,
+   "candidatesTokenCount": 2524,
+   "thoughtsTokenCount": 391,
+   "totalTokenCount": 4632
+  }
+ },
+ {
+  "tag": "concepts-pods-shelf/d2-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.364726,
+  "mxn": 7.2945,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T02:30:22Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1703,
+   "candidatesTokenCount": 2636,
+   "thoughtsTokenCount": 375,
+   "totalTokenCount": 4714
+  }
+ },
+ {
+  "tag": "concepts-pods-shelf/d2-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.340626,
+  "mxn": 6.8125,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T02:30:56Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1713,
+   "candidatesTokenCount": 2436,
+   "thoughtsTokenCount": 374,
+   "totalTokenCount": 4523
+  }
+ },
+ {
+  "tag": "concepts-pods-shelf/d2-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.380334,
+  "mxn": 7.6067,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-28",
+  "time": "2026-10-29T02:31:39Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1707,
+   "candidatesTokenCount": 2750,
+   "thoughtsTokenCount": 391,
+   "totalTokenCount": 4848
+  }
  }
 ]
