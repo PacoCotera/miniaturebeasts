@@ -1,0 +1,28 @@
+[
+ {
+  "name": "masters-bay/landing-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-bay/ref-layout-landing-16x9.png",
+    "THE LAYOUT (a flat wireframe, project-owned), the WHOLE canvas edge to edge: a small deep window high at the upper left; a wooden peg rail on the wall right of it; a long low bench across the left two-thirds, its top a narrow band at 66 to 68 percent of the height, its plain front below to 79 percent; a plank floor across the full width below that; the right third of the wall in shade (grey-umber), the bench ending just before it. Take only the placement and the heights, exactly. Never copy its flat look, its outlines or the thin yellow lines (they only show where the window light falls)."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-bay/ref-bench-wood.jpg",
+    "THE WOOD AND THE LIGHT (our signed reading-room bench, project-owned): this exact aged umber wood, the cream plaster wall and the warm pool of light on the wood. The landing's bench, rail and floor are this same wood and the wall is this same plaster, so the two rooms are clearly made by the same hand. Do NOT paint its brass lamp: there is no lamp here."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-bay/ref-cabinet-wood.jpg",
+    "THE CABINET (our signed pod cabinet, project-owned): the same umber wood and cream plaster, its finish and warmth."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy depth. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint the backdrop of the entry room of a cosy naturalist's home, the landing where parcels and field crates from walks are set down, for a handheld game screen, 16:9, seen straight front-on at the height of the bench (no perspective tilt, the back wall parallel to the picture). A warm cream plaster wall fills the upper part. High at the upper left is ONE small, deep, square window set into the thick wall, with four small panes and a little brass latch; soft daylight comes through it and it is the ONLY light: it falls from the upper left, warms the left of the wall and lays a soft, slanting patch of light across the bench top, falling off gently to the right. To the right of the window, on the wall at about a fifth of the height, a short plain wooden peg rail with four round wooden pegs, all EMPTY (nothing hangs on them). Across the left two-thirds of the picture runs a long, low, plain bench of aged umber wood, its top a narrow band seen slightly from above at exactly the layout's height, its front a calm, plain, even plank face with no drawers, no handles, no carving; the bench ends with a plain end just before the right third. Below, a worn plank floor of the same warm wood runs the full width to the bottom edge, its boards running left to right. The right third of the room is in shade, away from the window: there the same plaster wall is a calm, even, mid umber-grey, quiet and plain, falling off softly from the light (a soft transition, the same wall, not a separate wall or a doorway), so cream paper panels can sit on it later and stand out.\n\nThere is NO door, no doorway, no opening other than the small window. The bench top, the pegs, the wall and the floor are EMPTY: no crates, no boxes, no parcels, no baskets, no rugs, no plants, no lamps, no pictures, no shelves, no coats, no creatures, no props of any kind. The painting fills the whole canvas edge to edge: NO dark bands, no bars, no letterbox at the top or the bottom, no vignette.\n\nNO text, letters, numbers, symbols, icons or interface. No frame. Matte hand-painted miniature finish like our room paintings, low saturation, warm and calm, soft occlusion; no gloss, no photo-realism, no outlines."
+ }
+]

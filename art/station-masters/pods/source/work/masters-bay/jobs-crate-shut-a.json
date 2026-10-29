@@ -1,0 +1,24 @@
+[
+ {
+  "name": "masters-bay/crate-shut-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-bay/ref-landing-bench.jpg",
+    "THE BENCH IT STANDS ON (our signed landing painting, project-owned): this umber wood, the cream plaster and the soft daylight from the upper left. Make the piece from this same wood, lit by this same light, so it is clearly made by the same hand. Do NOT paint the bench, the wall or the floor: they are not in the new picture."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-pods-cups/ref-brass-lamp.jpg",
+    "THE BRASS (our signed reading-room lamp, project-owned): this soft, aged, matte brass. Use it for the small metal parts only; take the material, not the lamp's shape."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint ONE small wooden field crate, the kind a naturalist brings home from a walk, seen straight from the front at eye level (no perspective tilt, only the front face and a hint of the top), SHUT. It is a sturdy, homely box of slatted umber wood, wider than tall (about 1.3 times as wide as tall): three horizontal slats across the front with thin dark gaps between them, held by an upright corner post at each side. Each of the four front corners has a small, plain, aged matte brass corner plate. Its LID is one separate, thicker board resting on top, overhanging the body a little at the front and the sides, with a clear, straight, dark gap line between the lid and the body all the way across, so it reads as a lid you can lift off: the lid is about one fifth of the crate's height. One natural hemp rope is lashed once around the body just BELOW the lid (never over the lid), tied in a small plain knot on the front at about 80 percent of the width, the short ends hanging; a loop of the same rope makes a handle on each side. Light falls softly from the upper left: the lid's top edge and the left of the front catch warm light, the right side falls into soft warm shadow. Simple, worn, friendly, not ornate, no stencilled letters, no logo, no latches, no plastic, no padlock. Centred, it fills about 90 percent of the picture's width; its feet rest flat on an invisible floor near the bottom edge. The object stands alone on a perfectly FLAT, uniform, pure magenta background (#FF00FF) that fills the whole rest of the picture edge to edge: no gradient, no texture, no table, no floor, no wall, no cast shadow on the background, no glow or haze spilling onto the magenta, no reflections of magenta in the object. Nothing else in the picture: no text, letters, numbers or symbols, no labels, no stickers, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]

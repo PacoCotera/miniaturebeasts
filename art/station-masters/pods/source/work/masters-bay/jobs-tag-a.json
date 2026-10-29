@@ -1,0 +1,20 @@
+[
+ {
+  "name": "masters-bay/tag-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:4",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/masters-bay/crate-shut-a.jpg",
+    "THE CRATE (our signed field crate, project-owned): its hemp rope, its umber wood, its brass, its light from the upper left and its finish. The new piece belongs with it and is clearly made by the same hand. Do NOT paint the crate: it is not in the new picture."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint ONE small paper luggage tag, the kind tied to a parcel or crate, seen straight front-on, hanging straight down. A plain rectangular card tag of warm cream-buff paper, slightly worn and soft at the edges, its top two corners clipped off at an angle, a small round reinforced hole near the top with a thin paper ring around it. Through the hole runs a plain thin cotton STRING dyed one even clear mid BLUE (a flat blue, the only blue in the picture), looped once through the hole, its two strands rising straight up together to the very top edge of the picture, where they meet. The tag is BLANK: no writing, no letters, no numbers, no symbols, no stamp, no pattern. Light falls softly from the upper left; the tag has a slight soft curl and a gentle shadow on its right edge. Centred: the tag fills about 70 percent of the picture's width and the lower 70 percent of its height; the string fills the space above it to the top edge. The object stands alone on a perfectly FLAT, uniform, pure magenta background (#FF00FF) that fills the whole rest of the picture edge to edge: no gradient, no texture, no table, no floor, no wall, no cast shadow on the background, no glow or haze spilling onto the magenta, no reflections of magenta in the object. Nothing else in the picture: no text, letters, numbers or symbols, no labels, no stickers, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]

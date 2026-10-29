@@ -1,0 +1,24 @@
+[
+ {
+  "name": "masters-bay/frame-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "5:4",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/masters-bay/parcel-a.jpg",
+    "THE PICTURE TO EDIT (our painted portrait parcel, project-owned): keep its size and place in the picture exactly, the way it stands on its bottom edge leaning back very slightly, the light from the upper left, the finish and the flat magenta background. Only what is asked changes."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-bay/ref-landing-bench.jpg",
+    "THE BENCH IT STANDS ON (our signed landing painting, project-owned): this umber wood, the cream plaster and the soft daylight from the upper left. Make the piece from this same wood, lit by this same light, so it is clearly made by the same hand. Do NOT paint the bench, the wall or the floor: they are not in the new picture."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Edit the parcel picture: the brown paper and the twine are gone, unwrapped; in their place stands the BARE PICTURE FRAME that was inside, exactly the parcel's outer size, shape and place, standing on its bottom edge and leaning back very slightly, seen front-on. It is a plain, homely, sturdy frame of the same warm umber wood as our bench, with a simple rounded moulding and a thin inner lip of soft aged matte brass, about one tenth of the frame's width wide on each side. The frame's whole OPENING is EMPTY and shows the pure flat magenta background (#FF00FF) straight through it, edge to edge inside the lip: no canvas, no glass, no picture, no backing board, nothing inside. Light falls softly from the upper left: the top and left of the moulding catch warm light, the right and bottom fall into soft warm shadow. No ornament, no carving, no gold leaf, no label, no writing. The object stands alone on a perfectly FLAT, uniform, pure magenta background (#FF00FF) that fills the whole rest of the picture edge to edge: no gradient, no texture, no table, no floor, no wall, no cast shadow on the background, no glow or haze spilling onto the magenta, no reflections of magenta in the object. Nothing else in the picture: no text, letters, numbers or symbols, no labels, no stickers, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]

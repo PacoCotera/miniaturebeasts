@@ -1,0 +1,20 @@
+[
+ {
+  "name": "masters-bay/crate-open-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/masters-bay/crate-shut-a.jpg",
+    "THE PICTURE TO EDIT (our painted field crate, project-owned): keep the crate's body EXACTLY: the same size and place in the picture, the same slats, corner posts, brass corner plates, the rope lashed around it with its knot and side handles, the same wood, light and finish, and the same flat magenta background. Only what is asked changes."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Edit the crate picture: the crate is now OPEN. Its lid has been lifted off and stands BEHIND the crate, leaning back at a slant as if against a wall, so we see its underside board rising above the crate's back rim: the lid's top edge is about 40 percent of the body's height above the rim, it is the same width as the crate, and it is partly hidden by the crate's body in front of it. The body keeps exactly the same footprint, place and size as before; its open top rim is now the top edge of the front slat, where the lid's gap line was. The crate is filled with soft, dry, golden-tan STRAW, heaped just up to the rim and a little over it, a few loose strands hanging over the front rim; nothing in the straw (it is empty of objects). The straw is lit from the upper left, matte and soft, not shiny; the inside back of the crate is in soft warm shadow behind the straw. Nothing else changes. The object stands alone on a perfectly FLAT, uniform, pure magenta background (#FF00FF) that fills the whole rest of the picture edge to edge: no gradient, no texture, no table, no floor, no wall, no cast shadow on the background, no glow or haze spilling onto the magenta, no reflections of magenta in the object. Nothing else in the picture: no text, letters, numbers or symbols, no labels, no stickers, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]

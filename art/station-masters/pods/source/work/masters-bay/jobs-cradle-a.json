@@ -1,0 +1,28 @@
+[
+ {
+  "name": "masters-bay/cradle-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:3",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/masters-bay/crate-shut-a.jpg",
+    "THE CRATE (our signed field crate, project-owned): its hemp rope, its umber wood, its brass, its light from the upper left and its finish. The new piece belongs with it and is clearly made by the same hand. Do NOT paint the crate: it is not in the new picture."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-bay/ref-landing-bench.jpg",
+    "THE BENCH IT STANDS ON (our signed landing painting, project-owned): this umber wood, the cream plaster and the soft daylight from the upper left. Make the piece from this same wood, lit by this same light, so it is clearly made by the same hand. Do NOT paint the bench, the wall or the floor: they are not in the new picture."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-pods-cups/ref-brass-lamp.jpg",
+    "THE BRASS (our signed reading-room lamp, project-owned): this soft, aged, matte brass. Use it for the small metal parts only; take the material, not the lamp's shape."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint ONE small wall cradle for a handheld field device, as it hangs from a wooden peg in a cosy entry room, EMPTY. It is a small shallow wooden tray of the same umber wood, wider than tall, with a low curved front lip and a straight back board, lined with a little soft worn leather, and two small aged matte brass rivets on the front. It hangs from a single short loop of worn brown leather strap rising from the middle of its back board up to the very top edge of the picture (where a peg will be). Seen straight front-on at eye level, so we see the front of the tray and its lip, and a little of the back board above the lip, ready to hold a small upright device later. Light falls softly from the upper left: the left of the lip catches warm light, the right falls into soft warm shadow. Simple, sturdy, homely, not ornate. The cradle fills about 85 percent of the picture's width and the lower 65 percent of its height; the strap loop fills the space above it to the top edge. The object stands alone on a perfectly FLAT, uniform, pure magenta background (#FF00FF) that fills the whole rest of the picture edge to edge: no gradient, no texture, no table, no floor, no wall, no cast shadow on the background, no glow or haze spilling onto the magenta, no reflections of magenta in the object. Nothing else in the picture: no text, letters, numbers or symbols, no labels, no stickers, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]

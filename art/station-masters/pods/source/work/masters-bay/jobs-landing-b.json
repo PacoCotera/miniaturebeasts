@@ -1,0 +1,24 @@
+[
+ {
+  "name": "masters-bay/landing-b",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/masters-bay/landing-a.jpg",
+    "THE PAINTING TO REDO (our first painting of this room, project-owned): keep its look EXACTLY: the same plaster, the same umber wood, the same small deep window with its brass latch, the same peg rail, the same soft slanting daylight from the upper left, the same matte miniature finish. Only the PLACEMENT and the SIZES change, to match the layout."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-bay/ref-layout-landing-16x9.png",
+    "THE LAYOUT (a flat wireframe, project-owned), the WHOLE canvas edge to edge: a small deep window high at the upper left; a wooden peg rail on the wall right of it; a long low bench across the left two-thirds, its top a narrow band at 66 to 68 percent of the height, its plain front below to 79 percent; a plank floor across the full width below that; the right third of the wall in shade (grey-umber), the bench ending just before it. Take only the placement and the heights, exactly. Never copy its flat look, its outlines or the thin yellow lines (they only show where the window light falls)."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-bay/ref-bench-wood.jpg",
+    "THE WOOD AND THE LIGHT (our signed reading-room bench, project-owned): this exact aged umber wood, the cream plaster wall and the warm pool of light on the wood. The landing's bench, rail and floor are this same wood and the wall is this same plaster, so the two rooms are clearly made by the same hand. Do NOT paint its brass lamp: there is no lamp here."
+   ]
+  ],
+  "prompt": "Repaint the same entry room (the landing) with its parts moved and resized to match the layout exactly, measured on the whole canvas:\n- The small deep square window sits close to the LEFT edge: its outer reveal from 3 to 15 percent of the width, from 8 to 37 percent of the height. It is the one light, from the upper left.\n- The wooden peg rail, with four round pegs, all empty, is LOWER LEFT of centre: from 20 to 51 percent of the width, from 19 to 23 percent of the height.\n- The bench is LONG and LOW: it starts beyond the LEFT edge of the picture (no left end visible) and runs to 70 percent of the width, where its plain right end is. Its top is a THIN board, a narrow band from 66 to 68 percent of the height, seen only very slightly from above. Its front is a plain low plank face from 68 to 79 percent of the height. The bench is much lower and thinner than in the first painting.\n- The plank floor fills the full width from 79 percent of the height to the bottom edge, its boards running left to right, seen nearly edge-on.\n- The RIGHT THIRD of the room, from 68 percent of the width to the right edge, is clearly IN SHADE, away from the window: the plaster wall there is a calm, even, MID umber-grey, clearly darker than the lit wall on the left (about half its brightness), with a soft transition between them around 62 to 70 percent of the width; it is the same wall in shadow, not a separate wall, not a doorway. The floor under it is in shade too.\nThe window's soft slanting light lands on the bench top in the left half.\n\nNO door, no doorway. The bench top, the pegs, the wall and the floor are EMPTY: no crates, no boxes, no parcels, no rugs, no plants, no lamps, no pictures, no shelves, no coats, no creatures, no props of any kind. The painting fills the whole canvas edge to edge: no dark bands, no letterbox, no vignette. NO text, letters, numbers, symbols, icons or interface. No frame. Matte hand-painted miniature finish, low saturation, warm and calm, soft occlusion; no gloss, no photo-realism, no outlines."
+ }
+]

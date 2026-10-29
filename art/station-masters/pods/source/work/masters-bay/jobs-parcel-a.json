@@ -1,0 +1,24 @@
+[
+ {
+  "name": "masters-bay/parcel-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "5:4",
+  "size": "4K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/masters-bay/crate-shut-a.jpg",
+    "THE CRATE (our signed field crate, project-owned): its hemp rope, its umber wood, its brass, its light from the upper left and its finish. The new piece belongs with it and is clearly made by the same hand. Do NOT paint the crate: it is not in the new picture."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/work/masters-bay/ref-landing-bench.jpg",
+    "THE BENCH IT STANDS ON (our signed landing painting, project-owned): this umber wood, the cream plaster and the soft daylight from the upper left. Make the piece from this same wood, lit by this same light, so it is clearly made by the same hand. Do NOT paint the bench, the wall or the floor: they are not in the new picture."
+   ],
+   [
+    "/home/user/miniaturebeasts/prototypes/ui/assets/masters/rooms/room-roots-idle-dusk-1024x568.png",
+    "THE PAINTED LANGUAGE (one of our signed room paintings, project-owned): its matte painterly miniature rendering, soft occlusion, warm golden key light from the upper left and cosy palette. Take the treatment and the warmth only, none of its objects."
+   ]
+  ],
+  "prompt": "Paint ONE flat wrapped parcel holding a small framed painting, as it would arrive home from the painter's: a flat rectangular parcel, wider than tall (about 1.25 times as wide as tall), wrapped in plain warm brown kraft paper with soft creases and folded corners, tied with natural hemp twine crossed once each way over the front and knotted in a small plain bow a little above the middle. It stands upright on its bottom edge, leaning back very slightly, seen straight front-on at eye level, so we see its front face and a thin sliver of its top edge. The paper is matte; the twine is the same hemp as our crate's rope. Light falls softly from the upper left: the left and top edges catch warm light, the right edge falls into soft warm shadow. No label, no tag, no writing, no stamp, no seal, no tape. Centred, it fills about 90 percent of the picture's width; its bottom edge rests flat on an invisible floor near the bottom edge. The object stands alone on a perfectly FLAT, uniform, pure magenta background (#FF00FF) that fills the whole rest of the picture edge to edge: no gradient, no texture, no table, no floor, no wall, no cast shadow on the background, no glow or haze spilling onto the magenta, no reflections of magenta in the object. Nothing else in the picture: no text, letters, numbers or symbols, no labels, no stickers, no frame, no border. Matte, hand-painted miniature finish like our room paintings, low saturation, warm and calm; soft occlusion; no gloss, no chrome, no plastic, no photo-realism, no outlines."
+ }
+]
