@@ -34,13 +34,13 @@ def movement():  # a paw print: one pad and three separate toe dots (the only ic
 def shape():     # a side-on body: a long, low bean on two short legs
     im, d = canvas(); d.ellipse([36, 150, 476, 360], fill=255); d.ellipse([340, 110, 470, 240], fill=255)   # body, the head end raised a little
     rr(d, [120, 300, 186, 444], 26); rr(d, [318, 300, 384, 444], 26); return im
-def stamp():     # a square with a perforated (scalloped) edge, solid, four large cells inside
+def stamp():     # a postage stamp: a square with a perforated (scalloped) edge, solid, a small emblem (a mibi's round body and ear) and one bar as holes
     im, d = canvas(); rr(d, [60, 60, 452, 452], 6)
     for k in range(0, 9):
         c = 60 + 49 * k
         for p in ((c, 60), (c, 452), (60, c), (452, c)): disc(d, p, 17, 0)
-    for (x, y) in ((128, 128), (270, 128), (128, 270), (270, 270)): rr(d, [x, y, x + 114, y + 114], 10, 0)
-    return im
+    d.ellipse([150, 130, 362, 300], fill=0); disc(d, (318, 136), 44, 0)      # the emblem
+    rr(d, [150, 340, 362, 384], 12, 0); return im                           # the denomination bar
 def cross():     # two interlocking rings, side by side (the only wide double outline)
     im, d = canvas(); A, B, ro, ri = (178, 256), (334, 256), 150, 104
     ring = lambda c: (d.ellipse([c[0] - ro, c[1] - ro, c[0] + ro, c[1] + ro], fill=255), d.ellipse([c[0] - ri, c[1] - ri, c[0] + ri, c[1] + ri], fill=0))

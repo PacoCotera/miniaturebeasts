@@ -1,7 +1,6 @@
 """The close-up's code-drawn sprites and derived art (ux-closeup.md section 7; the art director's sign-off ad-bay-closeup.md 2.3, 2.8, 2.9), at no cost:
-  * the mibi's own stamp at 96 (2.3): a scalloped (perforated) cream stamp on slate, its genome as 8x8 cells of 7 px on an 8 px pitch (at least 6 px),
-    mirrored left to right so it reads as a stamp's device and never as a QR code; drawn at 8x and reduced. `stamp(code)` is the reference drawing the
-    build ports; three sample codes are rendered. The stamp row shows the sheet's Stamp icon instead (one drawing per size).
+  * the mibi's own stamp at 96 (2.3): a postage stamp, never a grid: perforated cream paper on slate, the species' silhouette as its emblem and
+    four chapter bars from the genome code; drawn at 8x and reduced. `stamp(code, species)` is the reference drawing the build ports; three samples. The stamp row shows the sheet's Stamp icon instead (one drawing per size).
   * the curled sleepers for Tucked away (2.9): the signed 304 curl keys (cut from the kept full-size curl raws, curl/keys/) reduced to the close-up's
     adult scale (the 144 family's x 0.4737; juveniles x 0.4904, the nap family's ratio), feet on the 152 box's row 147, on a code contact shadow.
   * the 9-slice sprites (so no corner is stepped by code): the slate pane (92 %), the plate, the hairline frame; and the soft contact-shadow ellipse.
@@ -27,22 +26,26 @@ def bits(code):
     v = [B32.index(c) for c in code.upper() if c in B32]; out = []
     for x in v: out += [(x >> k) & 1 for k in range(4, -1, -1)]
     return out
-def stamp(code, k=8):
-    """96x96 at 1x: cream paper with a scalloped edge (bites of r 3 on a 9.6 px pitch), on slate; 8x8 cells of 7 px (pitch 8) from x, y 16;
-    the genome's first 32 bits fill the left four columns, row by row, mirrored to the right four; a set bit is a slate cell (a hole in the paper)."""
+def stamp(code, species, k=8):
+    """96x96 at 1x, a postage stamp of the mibi, never a grid: cream paper with a perforated edge (bites of r 3 on a 9.6 px pitch) on slate; inside,
+    a 1 px slate frame line; the mibi's own species silhouette (from its signed adult master's alpha) as the stamp's emblem, in slate, centred in the
+    upper two-thirds; under it four bars, one per chapter (Coat, Face, Movement, Shape), each 4 px tall, its length 14-52 px from the genome code's
+    characters for that chapter, like a stamp's denomination. The full code is the labelled 'genome code' beside it in the detail."""
     S = 96 * k; im = Image.new("RGBA", (S, S), PANEL + (255,)); d = ImageDraw.Draw(im)
     d.rectangle([6 * k, 6 * k, 90 * k - 1, 90 * k - 1], fill=PAPER + (255,))
     for i in range(10):
         c = (6 + 84 * i / 9) * k
         for (x, y) in ((c, 6 * k), (c, 90 * k), (6 * k, c), (90 * k, c)): d.ellipse([x - 3 * k, y - 3 * k, x + 3 * k, y + 3 * k], fill=PANEL + (255,))
-    b = (bits(code) + [0] * 32)[:32]
-    for r in range(8):
-        for cc in range(4):
-            if b[r * 4 + cc]:
-                for col in (cc, 7 - cc):
-                    x, y = (16 + 8 * col) * k, (16 + 8 * r) * k; d.rectangle([x, y, x + 7 * k - 1, y + 7 * k - 1], fill=PANEL + (255,))
+    d.rectangle([13 * k, 13 * k, 83 * k - 1, 83 * k - 1], outline=PANEL + (255,), width=k)
+    m = Image.open(f"{R}/slices/mibi-adult-{species}-144x152.png").convert("RGBA").split()[3].point(lambda v: 255 if v > 128 else 0)
+    bb = m.getbbox(); m = m.crop(bb); f = min(56 / m.width, 40 / m.height); w, h = round(m.width * f * k), round(m.height * f * k)
+    m = m.resize((w, h), Image.LANCZOS); im.paste(Image.new("RGBA", (w, h), PANEL + (255,)), ((S - w) // 2, 58 * k - h), m)
+    v = [B32.index(c) for c in code.upper() if c in B32] + [0] * 12
+    for i in range(4):
+        L = 14 + round(38 * ((v[2 * i] * 32 + v[2 * i + 1]) % 1024) / 1023); y = (62 + 5 * i) * k
+        d.rectangle([20 * k, y, (20 + L) * k - 1, y + 4 * k - 1 - k], fill=PANEL + (255,))
     return im.resize((96, 96), Image.LANCZOS)
-for code in ("Y5H47VG18", "0SVEV67ZF", "K3M9QPAT2"): save(stamp(code), f"stamp/closeup-stamp-{code}-96x96")
+for code, sp in (("Y5H47VG18", "S01"), ("0SVEV67ZF", "S03"), ("K3M9QPAT2", "S07")): save(stamp(code, sp), f"stamp/closeup-stamp-{code}-{sp}-96x96")
 
 # ---------- the curls at close-up scale ----------
 SH = Image.new("L", (144, 152), 0); ImageDraw.Draw(SH).ellipse([30, 141, 114, 153], fill=110); SH = SH.filter(ImageFilter.GaussianBlur(3))
@@ -86,7 +89,7 @@ pf = Image.new("RGBA", (1024, 600), (26, 23, 37, 255))
 room = Image.open(f"{OUT}/closeup-room-roots-576x424.png").convert("RGBA"); pf.alpha_composite(room, (16, 48)); pf.alpha_composite(nine(frame(), 576, 424, 2), (16, 48))
 blur = room.resize((1024, 754)).filter(ImageFilter.GaussianBlur(14)).crop((0, 0, 400, 504)); pf.alpha_composite(blur, (608, 48)); pf.alpha_composite(nine(pane(), 400, 504, 2), (608, 48))
 for i in range(3): pf.alpha_composite(nine(plate(), 120, 72, 8), (624 + 124 * i, 472))
-pf.alpha_composite(Image.open(f"{OUT}/stamp/closeup-stamp-Y5H47VG18-96x96.png").convert("RGBA"), (624, 344))
+pf.alpha_composite(Image.open(f"{OUT}/stamp/closeup-stamp-Y5H47VG18-S01-96x96.png").convert("RGBA"), (624, 344))
 pf.alpha_composite(Image.open(f"{OUT}/curl/closeup-curl-adult-S01-144x152.png").convert("RGBA"), (232, 252))
 ic = f"{OUT}/icons"
 if os.path.isdir(ic):

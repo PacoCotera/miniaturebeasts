@@ -1,25 +1,25 @@
 {
  "sprites": {
-  "stamp/closeup-stamp-Y5H47VG18-96x96": {
+  "stamp/closeup-stamp-Y5H47VG18-S01-96x96": {
    "size": [
     96,
     96
    ],
-   "sha256": "a01032bc9cb286633b1ff44e5cedd766ae8f3940753499ae449e667eb81aa2e6"
+   "sha256": "ba1693123c430c042d3d695c93ddd5c311816ecc3013aca141aa1928e1817e74"
   },
-  "stamp/closeup-stamp-0SVEV67ZF-96x96": {
+  "stamp/closeup-stamp-0SVEV67ZF-S03-96x96": {
    "size": [
     96,
     96
    ],
-   "sha256": "050412ee98df654538232b82a4218f63bf1fc7db6b0f83109be8e128d6ee903e"
+   "sha256": "3e797fca7dbf66d4c95b70e3a8a7cc14b0c9e07cebda9b63b25b90e0c167c4ce"
   },
-  "stamp/closeup-stamp-K3M9QPAT2-96x96": {
+  "stamp/closeup-stamp-K3M9QPAT2-S07-96x96": {
    "size": [
     96,
     96
    ],
-   "sha256": "66d0ee08bedd6d8134c9745190db36ddfbaa6586eb123a4c71d48dd44d07f702"
+   "sha256": "aa7d2f05a4774adbb3cc671714ada5864b967a089247dd9e9f5190861e77c58d"
   },
   "curl/closeup-curl-adult-S01-144x152": {
    "size": [

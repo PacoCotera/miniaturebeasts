@@ -15,7 +15,7 @@ n = 0
 for i, v in crops.items():
     reg(f"{O}/{i}.png", i, v["rect"], v["src"] + " (tools/closeupcrops.py)", f"the close-up's picture, the AD's crop: {v['pick']}; the ground plane on picture y 352-412 (screen 400-460), the mibi at the 144 family (about 1.3x the burrow); placed 1:1, its 1 px hairline frame from closeup-hairline-9slice-16x16"); n += 1
 WORDS = {"coat": "chapter row, beside 'Coat'", "face": "chapter row, beside 'Face'", "movement": "chapter row, beside 'Movement'", "shape": "chapter row, beside 'Shape'",
-         "stamp": "the stamp row, beside 'Stamp' (the same for every mibi)", "cross": "the Cross plate", "portrait": "the Portrait plate (after a sitting, the sitting's painted thumb replaces it)",
+         "stamp": "the stamp row, beside 'Stamp' (the same for every mibi): a perforated stamp with an emblem and one bar, no cells", "cross": "the Cross plate", "portrait": "the Portrait plate (after a sitting, the sitting's painted thumb replaces it)",
          "manage": "the Manage plate", "rename": "the name's detail verb line", "companion": "head, residents, top bar, beside its word", "bonded": "head and mibi form, beside 'bonded'", "held": "a held plate's note, beside the reason"}
 for i in icons["icons"]:
     if i.startswith("icon-"):
@@ -26,9 +26,15 @@ for i in icons["icons"]:
     n += 1
 for i in spr["sprites"]:
     base = i.split("/", 1)[1]
-    if i.startswith("stamp/"): note = "a sample of the mibi's own stamp at 96 (the stamp detail only): cream paper, scalloped edge, 8x8 cells of 7 px mirrored, on slate; drawn by stamp(code) in tools/closeupsprites.py, which the build ports"
+    if i.startswith("stamp/"): note = "a sample of the mibi's own stamp at 96 (the stamp detail only), redrawn as a postage stamp (the lead: the grid read as a QR code): perforated cream paper on slate, the species' silhouette as its emblem, four chapter bars from the genome code; drawn by stamp(code, species) in tools/closeupsprites.py, which the build ports"
     elif i.startswith("curl/"): note = "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147" + (", with no shadow (the placer's own)" if "noshadow" in i else ", on a code contact shadow")
     else: note = {"closeup-pane-9slice-24x24": "the one slate pane as a 9-slice (slice 2): panel at 92 %, 1 px hairline, 1 px bevel top and left; square corners", "closeup-plate-9slice-32x32": "the slate plate as a 9-slice (slice 8): bar, radius 4 drawn at 8x and reduced (never code-stepped), hairline round, bevel top and left",
                   "closeup-hairline-9slice-16x16": "the 1 px hairline frame as a 9-slice (slice 2), clear inside: the picture's frame and a free place's outline", "closeup-contact-shadow-128x24": "the soft contact shadow under the close-up's mibi (house shadow at 110)", "closeup-contact-shadow-64x16": "the soft contact shadow under a resident's thumb or a small piece"}[base]
     reg(f"{O}/{i}.png", base, None, "code-drawn or reduced at no cost (tools/closeupsprites.py)", note); n += 1
 json.dump(man, open(f"{S}/manifest.json", "w"), indent=1); json.dump(st, open(f"{S}/status.json", "w"), indent=1); print("registered", n)
+# the grid stamp samples of the first pass are withdrawn (the lead's review: they read as a QR code)
+man = json.load(open(f"{S}/manifest.json")); st = json.load(open(f"{S}/status.json"))
+for c in ("Y5H47VG18", "0SVEV67ZF", "K3M9QPAT2"):
+    i = f"closeup-stamp-{c}-96x96"; man.pop(i, None); st.pop(i, None)
+    if os.path.exists(f"{S}/{i}.png"): os.remove(f"{S}/{i}.png")
+json.dump(man, open(f"{S}/manifest.json", "w"), indent=1); json.dump(st, open(f"{S}/status.json", "w"), indent=1)

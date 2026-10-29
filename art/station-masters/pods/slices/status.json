@@ -8579,22 +8579,22 @@
  "icon-stamp-64x64": {
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
-  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi): a perforated stamp with an emblem and one bar, no cells; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
  },
  "icon-stamp-32x32": {
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
-  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi): a perforated stamp with an emblem and one bar, no cells; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
  },
  "icon-stamp-24x24": {
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
-  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi): a perforated stamp with an emblem and one bar, no cells; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
  },
  "icon-stamp-16x16": {
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
-  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi): a perforated stamp with an emblem and one bar, no cells; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
  },
  "icon-cross-64x64": {
   "status": "signed",
@@ -8745,21 +8745,6 @@
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
   "note": "the Bay's header glyph (ux-bay.md section 6): a field crate front-on with its lid apart, bone, replacing the house; 20 px in the top bar"
- },
- "closeup-stamp-Y5H47VG18-96x96": {
-  "status": "signed",
-  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
-  "note": "a sample of the mibi's own stamp at 96 (the stamp detail only): cream paper, scalloped edge, 8x8 cells of 7 px mirrored, on slate; drawn by stamp(code) in tools/closeupsprites.py, which the build ports"
- },
- "closeup-stamp-0SVEV67ZF-96x96": {
-  "status": "signed",
-  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
-  "note": "a sample of the mibi's own stamp at 96 (the stamp detail only): cream paper, scalloped edge, 8x8 cells of 7 px mirrored, on slate; drawn by stamp(code) in tools/closeupsprites.py, which the build ports"
- },
- "closeup-stamp-K3M9QPAT2-96x96": {
-  "status": "signed",
-  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
-  "note": "a sample of the mibi's own stamp at 96 (the stamp detail only): cream paper, scalloped edge, 8x8 cells of 7 px mirrored, on slate; drawn by stamp(code) in tools/closeupsprites.py, which the build ports"
  },
  "closeup-curl-adult-S01-144x152": {
   "status": "signed",
@@ -9105,5 +9090,20 @@
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
   "note": "the soft contact shadow under a resident's thumb or a small piece"
+ },
+ "closeup-stamp-Y5H47VG18-S01-96x96": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a sample of the mibi's own stamp at 96 (the stamp detail only), redrawn as a postage stamp (the lead: the grid read as a QR code): perforated cream paper on slate, the species' silhouette as its emblem, four chapter bars from the genome code; drawn by stamp(code, species) in tools/closeupsprites.py, which the build ports"
+ },
+ "closeup-stamp-0SVEV67ZF-S03-96x96": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a sample of the mibi's own stamp at 96 (the stamp detail only), redrawn as a postage stamp (the lead: the grid read as a QR code): perforated cream paper on slate, the species' silhouette as its emblem, four chapter bars from the genome code; drawn by stamp(code, species) in tools/closeupsprites.py, which the build ports"
+ },
+ "closeup-stamp-K3M9QPAT2-S07-96x96": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a sample of the mibi's own stamp at 96 (the stamp detail only), redrawn as a postage stamp (the lead: the grid read as a QR code): perforated cream paper on slate, the species' silhouette as its emblem, four chapter bars from the genome code; drawn by stamp(code, species) in tools/closeupsprites.py, which the build ports"
  }
 }

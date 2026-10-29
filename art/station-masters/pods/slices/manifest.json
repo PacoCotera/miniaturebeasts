@@ -25512,7 +25512,7 @@
   "rect": null,
   "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
   "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
-  "sha256": "7ffab361268b500bfdfb75b319ef760d940e61a1a48b61306580d9b6b55eafae",
+  "sha256": "3d7d290c5a7cba44d5ced6e23ecdd6fe1853425a0439b8a18239292042f24bbc",
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
  },
@@ -25524,7 +25524,7 @@
   "rect": null,
   "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
   "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
-  "sha256": "a9474a2254a4a9eccab4cf86d7c20d9d8e276c0dfcb2734d86c92024ecc96476",
+  "sha256": "ba8d16c26685dd328200138aac4f32baf62963479504b0bb6b346dd679ddfaea",
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
  },
@@ -25536,7 +25536,7 @@
   "rect": null,
   "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
   "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
-  "sha256": "04c42d61523458148655e7b692e92973206524ab0ef001a90ed95b42bb6bf5df",
+  "sha256": "77638937cfa3f1c918cefa9004dde697e947829f829395f28a74fefac374e3ef",
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
  },
@@ -25548,7 +25548,7 @@
   "rect": null,
   "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
   "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
-  "sha256": "af28a47ded10d6ce243a11b05e0b78aa50e31b3d19539751f58407b02f050e43",
+  "sha256": "9d79865dce45bc91bca1ca184cdc33c74c1029bff7136eaf9fafbde1012fc4a5",
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
  },
@@ -25909,42 +25909,6 @@
   "src": "drawn by the AD in code at 320, reduced (tools/closeupicons.py)",
   "made": "drawn by the AD in code at 320, reduced (tools/closeupicons.py)",
   "sha256": "b83e8e0c0a5f7e254a7322810077bb7cb1aeaeeb72341263e438cbeb3d52eced",
-  "status": "signed",
-  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
- },
- "closeup-stamp-Y5H47VG18-96x96": {
-  "size": [
-   96,
-   96
-  ],
-  "rect": null,
-  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
-  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
-  "sha256": "a01032bc9cb286633b1ff44e5cedd766ae8f3940753499ae449e667eb81aa2e6",
-  "status": "signed",
-  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
- },
- "closeup-stamp-0SVEV67ZF-96x96": {
-  "size": [
-   96,
-   96
-  ],
-  "rect": null,
-  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
-  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
-  "sha256": "050412ee98df654538232b82a4218f63bf1fc7db6b0f83109be8e128d6ee903e",
-  "status": "signed",
-  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
- },
- "closeup-stamp-K3M9QPAT2-96x96": {
-  "size": [
-   96,
-   96
-  ],
-  "rect": null,
-  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
-  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
-  "sha256": "66d0ee08bedd6d8134c9745190db36ddfbaa6586eb123a4c71d48dd44d07f702",
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
  },
@@ -26773,6 +26737,42 @@
   "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
   "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
   "sha256": "73af963392673919f09517e4e1de58acb29210e38202bc2c20714ebb2959d757",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-stamp-Y5H47VG18-S01-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "ba1693123c430c042d3d695c93ddd5c311816ecc3013aca141aa1928e1817e74",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-stamp-0SVEV67ZF-S03-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "3e797fca7dbf66d4c95b70e3a8a7cc14b0c9e07cebda9b63b25b90e0c167c4ce",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-stamp-K3M9QPAT2-S07-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "aa7d2f05a4774adbb3cc671714ada5864b967a089247dd9e9f5190861e77c58d",
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
  }
