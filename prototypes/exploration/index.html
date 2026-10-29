@@ -208,7 +208,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
         <li>Go down into a place and Call in each quarter. Watch the overview: its quarters lose their dots as you survey them.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
-        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data, and sometimes a pod. An expedition that fills a dot brings home 2 / 4 / 6 / 8 Data by the highest tier it entered (meadow and pond edge 2, wood and rock field 6, the cave 8), none if the Probe breaks: moments bring it in early, the rest arrives when you end the expedition.</li>
+        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it: each creature pays 1 Data for feeding it and 1 for a settle, once a trip, shown on its line before you act, up to 8 a trip (sometimes a pod too). An expedition that fills a dot also brings home 2 / 4 / 6 / 8 Data by the highest tier it entered (meadow and pond edge 2, wood and rock field 6, the cave 8), none if the Probe breaks, when you end the expedition.</li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not.</li>
         <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, Walk or Tend, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then <b>Open the crates</b> in its developer panel (the Station's Cargo is not built yet), and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
@@ -1726,20 +1726,24 @@ function takePod(p, leave) {
 function calmRadius(X) { return X.ptElder ? 8 : 4; }
 function calmedBy(c, X) { return !!X.pt && cheb(c, X.pt) <= calmRadius(X) && (X.ptAb === 'calm' || X.ptSp === c.sp); }
 function ptCtx() { const ex = S.exp, live = curLive(); return { pt: live.pt, ptAb: ex.pt ? spOf(ex.pt.sp).ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptElder: !!(ex.pt && ex.pt.elder) }; }
-// Data is a record of creatures doing things: a moment you cause brings +1, +2 the first time ever for that species and
-// moment; once per creature per expedition. Moments bring the expedition's Data in early, up to its yield (2 / 4 / 6 / 8
-// by the tier of the place) and never past it; whatever the moments did not bring arrives when the expedition ends.
+// Data is a record of creatures doing things: every act on a
+// creature pays 1 Data, for certain, once per creature per act per expedition, and the player sees it before doing it (the
+// facing line). Acts built today: feeding (eat) and settling (settle). Watch, follow and play are not built. No act pays by
+// chance and there is no first-time bonus. Creature Data is capped per expedition (CREATURE_CEIL, shown as it fills); it is
+// counted apart from the field yield, which still arrives when the expedition ends.
+const ACT_DATA = 1;
+const CREATURE_CEIL = 8;
+const actDone = (ex, c, kind) => !!(ex.momented && ex.momented[c.id + ':' + kind]);
+const creatureRoom = ex => Math.max(0, CREATURE_CEIL - (ex.dAct || 0));
+const actOpen = (ex, c, kind) => !actDone(ex, c, kind) && creatureRoom(ex) > 0;
 function awardMoment(c, kind, X) {
-  const ex = S.exp; if (ex.momented[c.id]) return; ex.momented[c.id] = 1;
-  // +2 the first time ever for this species and moment, and for the first moment with each species on an expedition
-  const fk = c.sp + ':' + kind, first = !S.firsts[fk]; S.firsts[fk] = 1;
-  ex.spMom = ex.spMom || {}; const firstHere = !ex.spMom[c.sp]; ex.spMom[c.sp] = 1;
-  const left = Math.max(0, walkYield(ex) - (ex.dField || 0)), got = left ? addMat('d', Math.min(first || firstHere ? 2 : 1, left), c.x, c.y) : 0;
-  ex.dField = (ex.dField || 0) + got;
-  ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data' + (left ? '' : ' (the expedition’s yield is in)'));
-  const who = S.known.includes(c.sp) ? aAn(spName(c.sp)) : 'this creature', verb = { eat: 'eat', settle: 'settle' }[kind];
-  if (!got) { fxMsg((kind === 'eat' ? 'The ' + spName(c.sp) + ' ate your fruit' : 'The ' + spName(c.sp) + ' settled') + ' · the Data is all in', 2); return; }
-  fxMsg(first ? '+' + got + ' Data · first time you saw ' + who + ' ' + verb : '+' + got + ' Data · ' + (kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled'), 2);
+  const ex = S.exp; if (actDone(ex, c, kind)) return; ex.momented[c.id + ':' + kind] = 1;
+  const room = creatureRoom(ex), got = room ? addMat('d', Math.min(ACT_DATA, room), c.x, c.y) : 0;
+  ex.dAct = (ex.dAct || 0) + got;
+  ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data' + (creatureRoom(ex) ? '' : ' (Data for this trip: full)'));
+  const what = kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled';
+  if (!got) { fxMsg(cap(what) + ' · Data for this trip: full', 2); return; }
+  fxMsg('+' + got + ' Data · ' + what + (creatureRoom(ex) ? '' : ' · Data for this trip: full'), 2);
 }
 function offer(c) {
   const ex = S.exp, live = curLive(), X = ptCtx(), lay = curLay();
@@ -2227,8 +2231,8 @@ function endExpedition(reason) {
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.surveyed, of: rc.total };
   if (explored && !broke) {   // the field yield: the expedition earns its tier's Data; moments brought part of it in early, the rest arrives now
     const tier = walkTier(ex), want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top) : 0; ex.dField = (ex.dField || 0) + got;
-    rep.yield = { tier, data: want, moments: ex.moments.length, early: ex.dField - got, late: got };
-    logEv('Field yield · ' + want + ' Data · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · ' + (ex.dField - got) + ' from moments, ' + got + ' at the expedition\'s end'); }
+    rep.yield = { tier, data: want + (ex.dAct || 0), moments: ex.moments.length, early: ex.dAct || 0, late: got };
+    logEv('Field yield · ' + want + ' Data field yield · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · plus ' + (ex.dAct || 0) + ' from creature acts'); }
   for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
   if (ex.carry === 'fruit') ex.carry = null;
   if (broke) { S.shield = 0; dropPods(ex, rep); S.hold = null; logEv('Probe broke · carried supplies lost'); }   // a break seals nothing; the Station mends it free at the dock
@@ -4830,7 +4834,7 @@ function drawSealed(t) {
   text(clipText(dk ? (S.bay.length ? DOCK_TEXT.sealed : DOCK_TEXT.sealedEmpty) : S.bay.length ? 'The Station opens them when you dock' : 'Nothing to transfer', 410, 2), 22, y, C.mist); y += 34;
   if (!r.waited) drawTurnLines(r, y);
 }
-function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' moment' + (q.moments === 1 ? '' : 's'); }
+function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' creature act' + (q.moments === 1 ? '' : 's'); }
 // The world lines under Expedition ended: worldTurn's order, three at most, each wrapped at 390 px (20 px a wrapped line, 6 between
 // lines). A line draws only while its foot, y + 20 × (wrapped lines − 1) + 17, stays on or above row 476 (8 px over 484, the
 // message box's highest top); the first that fails ends the list, silently. `wrap` splits one line into its wrapped parts.
@@ -4914,6 +4918,13 @@ function noteSigns() {
   if (fogActive()) { const p = cxy(S.exp.pos); let near = false; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && inFog(y * MW + x)) near = true; }
     if (near) fxSign('fog'); }
 }
+// The Data an act on this creature will pay, said before it is done: "+1 Data" while its act is open, "Data for this trip: full"
+// once the ceiling is reached, nothing once the act is paid. An unidentified creature says nothing (no act leaks).
+function actTag(c) {
+  const ex = S.exp, sp = c.sp, kind = !S.known.includes(sp) || !ex ? null : spOf(sp).eats ? 'eat' : sp === 1 ? 'settle' : null;
+  if (!kind || actDone(ex, c, kind)) return '';
+  return actOpen(ex, c, kind) ? ' · +' + ACT_DATA + ' Data' : ' · Data for this trip: full';
+}
 function dietLine(sp, long) {
   if (!S.known.includes(sp)) return 'Unknown creature · watch what it does';
   const nm = spOf(sp).name;
@@ -4947,7 +4958,7 @@ function lineBase() {
       // the survey state in words, drawn one step brighter (after the \x01 mark); the kinds drop first, then the place name, then the count
       const sv = '\x01' + placeState(lay.cell), svN = '\x01' + placeState(lay.cell, false, true), land = LAND_NAME[lay.land] + ' · ';
       let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay.cell, true)];
-      if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
+      if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
       if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave ' + podName(sw.held[sw.sel], true) : 'Swap', sw ? 'take ' + podName(sw.p, true) : '', 'keep', fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
@@ -5266,8 +5277,8 @@ showDevStep();
 // What this expedition yields: its tier, the Data it earns, how much the moments have brought in so far.
 function yieldText() {
   const ex = S.exp, r = S.report;
-  if (ex) { const t = walkTier(ex); return (t ? TIER_NAME[t] + ' place (tier ' + t + ') · ' + walkYield(ex) + ' Data this expedition · ' + (ex.dField || 0) + ' in from ' + ex.moments.length + ' moment' + (ex.moments.length === 1 ? '' : 's') + ', ' + Math.max(0, walkYield(ex) - (ex.dField || 0)) + ' at the expedition\'s end' : 'no place entered yet') + ' | ladder ' + dataLadder(); }
-  if (S.phase === 'sealed' && r && r.yield) return 'last expedition: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' moment' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' at the expedition\'s end | ladder ' + dataLadder();
+  if (ex) { const t = walkTier(ex); return (t ? TIER_NAME[t] + ' place (tier ' + t + ') · ' + walkYield(ex) + ' Data at the expedition\'s end · ' + (ex.dAct || 0) + ' of ' + CREATURE_CEIL + ' in from ' + ex.moments.length + ' creature act' + (ex.moments.length === 1 ? '' : 's') : 'no place entered yet') + ' | ladder ' + dataLadder(); }
+  if (S.phase === 'sealed' && r && r.yield) return 'last expedition: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' creature act' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' at the expedition\'s end | ladder ' + dataLadder();
   return 'ladder ' + dataLadder() + ' by tier (starter / early / mid / late)';
 }
 (function buildPalette() {
