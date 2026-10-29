@@ -8165,5 +8165,945 @@
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 144)",
   "note": "the reading-room dish (pods-build/ad-review.md B1): placed at [72, 248, 136, 28] on the reading bench, its foot on the bench's feet line (y 276); the pod stands on it"
+ },
+ "bay-landing-1024x522": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the Bay's backdrop, the landing: placed at [0, 40] between the bars; bench top's standing surface on the feet line y 400, bench front y 404-468 (labels at 412-456), floor below; window [176, 60, 214, 192]; peg rail [428, 135, 270, 42] with pegs at x 460, 527, 596, 663; the right third (x 712 on) in shade behind the ledger"
+ },
+ "bay-landing-3072x1566": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the Bay's backdrop, the landing: placed at [0, 40] between the bars; bench top's standing surface on the feet line y 400, bench front y 404-468 (labels at 412-456), floor below; window [176, 60, 214, 192]; peg rail [428, 135, 270, 42] with pegs at x 460, 527, 596, 663; the right third (x 712 on) in shade behind the ledger"
+ },
+ "bay-crate-shut-144x112": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the field crate, shut: lid and body together; feet on y 400; the crate's ink is 144x93 (rows 19-111), the rope's knot at the box's (101, 47)"
+ },
+ "bay-crate-shut-432x336": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the field crate, shut: lid and body together; feet on y 400; the crate's ink is 144x93 (rows 19-111), the rope's knot at the box's (101, 47)"
+ },
+ "bay-crate-shut-lid-144x112": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the shut crate's lid layer alone, in the same box: the lift rotates it (300 ms) about its back edge, then the open crate replaces both layers"
+ },
+ "bay-crate-shut-lid-432x336": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the shut crate's lid layer alone, in the same box: the lift rotates it (300 ms) about its back edge, then the open crate replaces both layers"
+ },
+ "bay-crate-shut-body-144x112": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the shut crate's body layer alone, in the same box, drawn under the lid layer"
+ },
+ "bay-crate-shut-body-432x336": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the shut crate's body layer alone, in the same box, drawn under the lid layer"
+ },
+ "bay-crate-open-156x128": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the field crate, open: the same body with straw, the lid leaning back; registered on the shut crate (left edge, feet on y 400); 156 wide, the lid reaching 9 px past the body into the gap between slots; the straw's surface at slot +68, so the pods stand in the straw rect [+20, +32, 112, 48]"
+ },
+ "bay-crate-open-468x384": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the field crate, open: the same body with straw, the lid leaning back; registered on the shut crate (left edge, feet on y 400); 156 wide, the lid reaching 9 px past the body into the gap between slots; the straw's surface at slot +68, so the pods stand in the straw rect [+20, +32, 112, 48]"
+ },
+ "bay-parcel-128x104": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the portrait parcel in brown paper and twine; its foot on the feet line y 400 (the spec's +32 would float it 16 px)"
+ },
+ "bay-parcel-384x312": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the portrait parcel in brown paper and twine; its foot on the feet line y 400 (the spec's +32 would float it 16 px)"
+ },
+ "bay-frame-128x104": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the bare portrait frame (the parcel unwrapped), the same rect; the portrait is drawn under it, clipped by bay-frame-opening"
+ },
+ "bay-frame-384x312": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the bare portrait frame (the parcel unwrapped), the same rect; the portrait is drawn under it, clipped by bay-frame-opening"
+ },
+ "bay-frame-opening-128x104": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the frame's opening as a mask (white, alpha): clip the portrait to it and draw it under bay-frame; its bounds at 1x [19, 13, 111, 88] of the box (a slanted quad: the frame leans)"
+ },
+ "bay-frame-opening-384x312": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the frame's opening as a mask (white, alpha): clip the portrait to it and draw it under bay-frame; its bounds at 1x [19, 13, 111, 88] of the box (a slanted quad: the frame leans)"
+ },
+ "bay-cradle-96x72": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the Companion's cradle, empty, hung on the landing's second peg (x 527); the Companion glyph is placed in it by code; absent when the Companion is away (the empty peg)"
+ },
+ "bay-cradle-288x216": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the Companion's cradle, empty, hung on the landing's second peg (x 527); the Companion glyph is placed in it by code; absent when the Companion is away (the empty peg)"
+ },
+ "bay-home-tile-96x72": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "Home's Bay tile: the shut crate on a sliver of the landing's bench in its window light, from the full-size masters"
+ },
+ "bay-home-tile-288x216": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "Home's Bay tile: the shut crate on a sliver of the landing's bench in its window light, from the full-size masters"
+ },
+ "bay-tag-moss-28x40": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the luggage tag, moss string (the wood walk): its strands meet on row 0 at x 14, hung from the shut crate's rope knot (box (101, 47)); one tag per crate"
+ },
+ "bay-tag-moss-84x120": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the luggage tag, moss string (the wood walk): its strands meet on row 0 at x 14, hung from the shut crate's rope knot (box (101, 47)); one tag per crate"
+ },
+ "bay-tag-reed-28x40": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the luggage tag, reed string (the meadow walk): its strands meet on row 0 at x 14, hung from the shut crate's rope knot (box (101, 47)); one tag per crate"
+ },
+ "bay-tag-reed-84x120": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the luggage tag, reed string (the meadow walk): its strands meet on row 0 at x 14, hung from the shut crate's rope knot (box (101, 47)); one tag per crate"
+ },
+ "bay-tag-slate-blue-28x40": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the luggage tag, slate-blue string (the pond walk): its strands meet on row 0 at x 14, hung from the shut crate's rope knot (box (101, 47)); one tag per crate"
+ },
+ "bay-tag-slate-blue-84x120": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the luggage tag, slate-blue string (the pond walk): its strands meet on row 0 at x 14, hung from the shut crate's rope knot (box (101, 47)); one tag per crate"
+ },
+ "bay-tag-rust-brown-28x40": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the luggage tag, rust-brown string (the cave walk): its strands meet on row 0 at x 14, hung from the shut crate's rope knot (box (101, 47)); one tag per crate"
+ },
+ "bay-tag-rust-brown-84x120": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the luggage tag, rust-brown string (the cave walk): its strands meet on row 0 at x 14, hung from the shut crate's rope knot (box (101, 47)); one tag per crate"
+ },
+ "bay-tag-charcoal-28x40": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the luggage tag, charcoal string (the rock walk): its strands meet on row 0 at x 14, hung from the shut crate's rope knot (box (101, 47)); one tag per crate"
+ },
+ "bay-tag-charcoal-84x120": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the luggage tag, charcoal string (the rock walk): its strands meet on row 0 at x 14, hung from the shut crate's rope knot (box (101, 47)); one tag per crate"
+ },
+ "pod-straw-band-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-band-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-crack-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-crack-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-identified-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-identified-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-mask-accent-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-mask-accent-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-mask-body-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-mask-body-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-bands-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-bands-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-dots-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-dots-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-plates-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-plates-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-plates-relief-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-plates-relief-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-ribs-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-ribs-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-segments-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-segments-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-segments-relief-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-segments-relief-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-stripes-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-pattern-stripes-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-sealed-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-sealed-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-shade-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-shade-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-unknown-40x48": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "pod-straw-unknown-120x144": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a pod standing in the open crate's straw (the straw rect [+20, +32, 112, 48]: up to 3 at a 44 px pitch, then the '+n' slip in the third place); every layer of a kind registers on the identified pod's ink, as the shelf class's layers do; its contact shadow is the placer's"
+ },
+ "closeup-room-roots-576x424": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's picture, the AD's crop: the burrow under the great root in the left third, the moss path in front, the bluebells behind; the ground plane on picture y 352-412 (screen 400-460), the mibi at the 144 family (about 1.3x the burrow); placed 1:1, its 1 px hairline frame from closeup-hairline-9slice-16x16"
+ },
+ "closeup-room-boulders-576x424": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's picture, the AD's crop: the mossy island, the maple and the upright hero stone in the right half, the lawn in front; the ground plane on picture y 352-412 (screen 400-460), the mibi at the 144 family (about 1.3x the burrow); placed 1:1, its 1 px hairline frame from closeup-hairline-9slice-16x16"
+ },
+ "closeup-room-reeds-576x424": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's picture, the AD's crop: the rock left of centre among the sedges, the damp path in front; the ground plane on picture y 352-412 (screen 400-460), the mibi at the 144 family (about 1.3x the burrow); placed 1:1, its 1 px hairline frame from closeup-hairline-9slice-16x16"
+ },
+ "closeup-room-ferns-576x424": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's picture, the AD's crop: the croziers and the mossy log in the upper half, the peat path in front; the ground plane on picture y 352-412 (screen 400-460), the mibi at the 144 family (about 1.3x the burrow); placed 1:1, its 1 px hairline frame from closeup-hairline-9slice-16x16"
+ },
+ "icon-coat-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, coat: bone, one silhouette, always set beside its word; chapter row, beside 'Coat'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-coat-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, coat: bone, one silhouette, always set beside its word; chapter row, beside 'Coat'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-coat-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, coat: bone, one silhouette, always set beside its word; chapter row, beside 'Coat'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-coat-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, coat: bone, one silhouette, always set beside its word; chapter row, beside 'Coat'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-face-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, face: bone, one silhouette, always set beside its word; chapter row, beside 'Face'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-face-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, face: bone, one silhouette, always set beside its word; chapter row, beside 'Face'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-face-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, face: bone, one silhouette, always set beside its word; chapter row, beside 'Face'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-face-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, face: bone, one silhouette, always set beside its word; chapter row, beside 'Face'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-movement-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, movement: bone, one silhouette, always set beside its word; chapter row, beside 'Movement'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-movement-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, movement: bone, one silhouette, always set beside its word; chapter row, beside 'Movement'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-movement-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, movement: bone, one silhouette, always set beside its word; chapter row, beside 'Movement'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-movement-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, movement: bone, one silhouette, always set beside its word; chapter row, beside 'Movement'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-shape-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, shape: bone, one silhouette, always set beside its word; chapter row, beside 'Shape'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-shape-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, shape: bone, one silhouette, always set beside its word; chapter row, beside 'Shape'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-shape-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, shape: bone, one silhouette, always set beside its word; chapter row, beside 'Shape'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-shape-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, shape: bone, one silhouette, always set beside its word; chapter row, beside 'Shape'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-stamp-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-stamp-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-stamp-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-stamp-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, stamp: bone, one silhouette, always set beside its word; the stamp row, beside 'Stamp' (the same for every mibi); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-cross-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, cross: bone, one silhouette, always set beside its word; the Cross plate; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-cross-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, cross: bone, one silhouette, always set beside its word; the Cross plate; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-cross-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, cross: bone, one silhouette, always set beside its word; the Cross plate; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-cross-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, cross: bone, one silhouette, always set beside its word; the Cross plate; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-portrait-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, portrait: bone, one silhouette, always set beside its word; the Portrait plate (after a sitting, the sitting's painted thumb replaces it); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-portrait-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, portrait: bone, one silhouette, always set beside its word; the Portrait plate (after a sitting, the sitting's painted thumb replaces it); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-portrait-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, portrait: bone, one silhouette, always set beside its word; the Portrait plate (after a sitting, the sitting's painted thumb replaces it); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-portrait-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, portrait: bone, one silhouette, always set beside its word; the Portrait plate (after a sitting, the sitting's painted thumb replaces it); checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-manage-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, manage: bone, one silhouette, always set beside its word; the Manage plate; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-manage-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, manage: bone, one silhouette, always set beside its word; the Manage plate; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-manage-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, manage: bone, one silhouette, always set beside its word; the Manage plate; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-manage-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, manage: bone, one silhouette, always set beside its word; the Manage plate; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-rename-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, rename: bone, one silhouette, always set beside its word; the name's detail verb line; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-rename-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, rename: bone, one silhouette, always set beside its word; the name's detail verb line; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-rename-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, rename: bone, one silhouette, always set beside its word; the name's detail verb line; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-rename-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, rename: bone, one silhouette, always set beside its word; the name's detail verb line; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-companion-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, companion: bone, one silhouette, always set beside its word; head, residents, top bar, beside its word; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-companion-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, companion: bone, one silhouette, always set beside its word; head, residents, top bar, beside its word; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-companion-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, companion: bone, one silhouette, always set beside its word; head, residents, top bar, beside its word; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-companion-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, companion: bone, one silhouette, always set beside its word; head, residents, top bar, beside its word; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-bonded-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, bonded: bone, one silhouette, always set beside its word; head and mibi form, beside 'bonded'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-bonded-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, bonded: bone, one silhouette, always set beside its word; head and mibi form, beside 'bonded'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-bonded-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, bonded: bone, one silhouette, always set beside its word; head and mibi form, beside 'bonded'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-bonded-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, bonded: bone, one silhouette, always set beside its word; head and mibi form, beside 'bonded'; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-held-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, held: bone, one silhouette, always set beside its word; a held plate's note, beside the reason; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-held-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, held: bone, one silhouette, always set beside its word; a held plate's note, beside the reason; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-held-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, held: bone, one silhouette, always set beside its word; a held plate's note, beside the reason; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "icon-held-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the close-up's icon sheet, held: bone, one silhouette, always set beside its word; a held plate's note, beside the reason; checked filled black on white at 1x (closeup/icons/proof-icon-silhouettes-1x.png)"
+ },
+ "glyph-bay-crate-64x64": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the Bay's header glyph (ux-bay.md section 6): a field crate front-on with its lid apart, bone, replacing the house; 20 px in the top bar"
+ },
+ "glyph-bay-crate-20x20": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the Bay's header glyph (ux-bay.md section 6): a field crate front-on with its lid apart, bone, replacing the house; 20 px in the top bar"
+ },
+ "closeup-stamp-Y5H47VG18-96x96": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a sample of the mibi's own stamp at 96 (the stamp detail only): cream paper, scalloped edge, 8x8 cells of 7 px mirrored, on slate; drawn by stamp(code) in tools/closeupsprites.py, which the build ports"
+ },
+ "closeup-stamp-0SVEV67ZF-96x96": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a sample of the mibi's own stamp at 96 (the stamp detail only): cream paper, scalloped edge, 8x8 cells of 7 px mirrored, on slate; drawn by stamp(code) in tools/closeupsprites.py, which the build ports"
+ },
+ "closeup-stamp-K3M9QPAT2-96x96": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "a sample of the mibi's own stamp at 96 (the stamp detail only): cream paper, scalloped edge, 8x8 cells of 7 px mirrored, on slate; drawn by stamp(code) in tools/closeupsprites.py, which the build ports"
+ },
+ "closeup-curl-adult-S01-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S01-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S02-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S02-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S03-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S03-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S04-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S04-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S05-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S05-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S06-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S06-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S07-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S07-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S08-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S08-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S09-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S09-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S10-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S10-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S11-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S11-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S12-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S12-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S13-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S13-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S14-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S14-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S15-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S15-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-adult-S16-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-adult-S16-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S01-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S01-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S02-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S02-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S03-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S03-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S04-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S04-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S05-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S05-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S06-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S06-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S07-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S07-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S08-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S08-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S09-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S09-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S10-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S10-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S11-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S11-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S12-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S12-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S13-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S13-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S14-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S14-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S15-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S15-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-curl-juvenile-S16-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, on a code contact shadow"
+ },
+ "closeup-curl-juvenile-S16-noshadow-144x152": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the curled sleeper at close-up scale (Tucked away and Coming back): the signed 304 curl key reduced to the 144 family, feet on row 147, with no shadow (the placer's own)"
+ },
+ "closeup-pane-9slice-24x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the one slate pane as a 9-slice (slice 2): panel at 92 %, 1 px hairline, 1 px bevel top and left; square corners"
+ },
+ "closeup-plate-9slice-32x32": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the slate plate as a 9-slice (slice 8): bar, radius 4 drawn at 8x and reduced (never code-stepped), hairline round, bevel top and left"
+ },
+ "closeup-hairline-9slice-16x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the 1 px hairline frame as a 9-slice (slice 2), clear inside: the picture's frame and a free place's outline"
+ },
+ "closeup-contact-shadow-128x24": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the soft contact shadow under the close-up's mibi (house shadow at 110)"
+ },
+ "closeup-contact-shadow-64x16": {
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)",
+  "note": "the soft contact shadow under a resident's thumb or a small piece"
  }
 }

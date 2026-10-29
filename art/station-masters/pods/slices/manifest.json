@@ -24489,5 +24489,2291 @@
   "sha256": "df33fc4ddd0323db863c7947e3d033faa6ba02182c93d6fdcade847b9c120cff",
   "status": "signed",
   "signed_in": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 144)"
+ },
+ "bay-landing-1024x522": {
+  "size": [
+   1024,
+   522
+  ],
+  "rect": [
+   0,
+   40,
+   1024,
+   522
+  ],
+  "src": "source/raw/masters-bay/landing-b.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-landing-5000x2549.png",
+  "made": "1x, reduced from the master",
+  "sha256": "be39bcf59c062382287de01206f3d3a470b7e812ce440829fe15372886b79969",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-landing-3072x1566": {
+  "size": [
+   3072,
+   1566
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/landing-b.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-landing-5000x2549.png",
+  "made": "3x, reduced from the master",
+  "sha256": "79546a1c6c5a393ea4f05df4705f80c7362fde440b2301ab48a97dc98100a7f5",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-crate-shut-144x112": {
+  "size": [
+   144,
+   112
+  ],
+  "rect": "slot [+4, +40, 144, 112]",
+  "src": "source/raw/masters-bay/crate-shut-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-crate-shut-4031x3135.png",
+  "made": "1x, reduced from the master",
+  "sha256": "8b0577813fcbde63b418ab40bd4b683379f87552c68e14081c86bce29b78bd08",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-crate-shut-432x336": {
+  "size": [
+   432,
+   336
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/crate-shut-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-crate-shut-4031x3135.png",
+  "made": "3x, reduced from the master",
+  "sha256": "c2e6b92d1d3067da97b5538dbf5ee80f3a96da0c23192d53c55c228d700c14f7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-crate-shut-lid-144x112": {
+  "size": [
+   144,
+   112
+  ],
+  "rect": "slot [+4, +40, 144, 112]",
+  "src": "source/raw/masters-bay/crate-shut-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-crate-shut-lid-4031x3135.png",
+  "made": "1x, reduced from the master",
+  "sha256": "50da27fe182e53d79d987b2a209a2774e135daf39c3ac877cdcabd25ce1c24bb",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-crate-shut-lid-432x336": {
+  "size": [
+   432,
+   336
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/crate-shut-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-crate-shut-lid-4031x3135.png",
+  "made": "3x, reduced from the master",
+  "sha256": "4a7fb7121cbcc98c868313e0ce01b23e7336019bf419252af07e22dd4113260a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-crate-shut-body-144x112": {
+  "size": [
+   144,
+   112
+  ],
+  "rect": "slot [+4, +40, 144, 112]",
+  "src": "source/raw/masters-bay/crate-shut-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-crate-shut-body-4031x3135.png",
+  "made": "1x, reduced from the master",
+  "sha256": "ce98c0052da2fa82dbc86b3d0a733c14ac6e4dae4dc18be31579f0ad8a716a44",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-crate-shut-body-432x336": {
+  "size": [
+   432,
+   336
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/crate-shut-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-crate-shut-body-4031x3135.png",
+  "made": "3x, reduced from the master",
+  "sha256": "9fd9f5d616f72e9f16143c4d64dd029af042d341bf54fa686aa364d33dc5f239",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-crate-open-156x128": {
+  "size": [
+   156,
+   128
+  ],
+  "rect": "slot [+4, +24, 156, 128]",
+  "src": "source/raw/masters-bay/crate-open-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-crate-open-4367x3583.png",
+  "made": "1x, reduced from the master",
+  "sha256": "fe28dd5668809ffa07d30b6ced4e9b0fd12269a50782fb6e348334dc2c0661fe",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-crate-open-468x384": {
+  "size": [
+   468,
+   384
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/crate-open-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-crate-open-4367x3583.png",
+  "made": "3x, reduced from the master",
+  "sha256": "6af318a3b6a7532237bc0d3ed5655422d60e7b03ef5adc80695d8304aee320b4",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-parcel-128x104": {
+  "size": [
+   128,
+   104
+  ],
+  "rect": "slot [+12, +48, 128, 104]",
+  "src": "source/raw/masters-bay/parcel-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-parcel-3548x2883.png",
+  "made": "1x, reduced from the master",
+  "sha256": "6d9f6c19de0636189fc6550e975fb824ca0403585f0b7940e1adcfc0e6966032",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-parcel-384x312": {
+  "size": [
+   384,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/parcel-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-parcel-3548x2883.png",
+  "made": "3x, reduced from the master",
+  "sha256": "fbb800111f3b97e4b183fdf1fd912bc2ff7aeb0db4680f8d5fe3a1de8c77cbd7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-frame-128x104": {
+  "size": [
+   128,
+   104
+  ],
+  "rect": "slot [+12, +48, 128, 104]",
+  "src": "source/raw/masters-bay/frame-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-frame-3578x2907.png",
+  "made": "1x, reduced from the master",
+  "sha256": "4c4e8d8cded02a97b5788a65f31fddf188b0ee2464460f6b9bd043d35915e39a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-frame-384x312": {
+  "size": [
+   384,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/frame-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-frame-3578x2907.png",
+  "made": "3x, reduced from the master",
+  "sha256": "265bdf772ddb2b9498c635179f7597dd3aac253a3b4883e20fe066a4f44153e8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-frame-opening-128x104": {
+  "size": [
+   128,
+   104
+  ],
+  "rect": "slot [+12, +48, 128, 104]",
+  "src": "source/raw/masters-bay/frame-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-frame-opening-3578x2907.png",
+  "made": "1x, reduced from the master",
+  "sha256": "474d80829e8a5255ad16afb9f92c616e57711ad658a3a06757ab5cef15af9192",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-frame-opening-384x312": {
+  "size": [
+   384,
+   312
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/frame-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-frame-opening-3578x2907.png",
+  "made": "3x, reduced from the master",
+  "sha256": "bf96a74154f55fc2ae08ebf278020db4b25aa6134ab3998afd71e04e0fc70545",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-cradle-96x72": {
+  "size": [
+   96,
+   72
+  ],
+  "rect": [
+   479,
+   150,
+   96,
+   72
+  ],
+  "src": "source/raw/masters-bay/cradle-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-cradle-4295x3221.png",
+  "made": "1x, reduced from the master",
+  "sha256": "16bffd78899b30735726ee5c9e457e5cc797e20d0b2fafe7323f3f1d71f45797",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-cradle-288x216": {
+  "size": [
+   288,
+   216
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/cradle-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-cradle-4295x3221.png",
+  "made": "3x, reduced from the master",
+  "sha256": "6f8e852b58dc017a11d1b24f8d37e7a0291c585c799010f3e0580dc21146d253",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-home-tile-96x72": {
+  "size": [
+   96,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/landing-b.jpg + crate-shut-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-home-tile-938x703.png",
+  "made": "1x, reduced from the master: Home's Bay tile",
+  "sha256": "2c8f3ee49028d15eb64c1de168167d1a3c34cc27822605f52d697241665e6f37",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-home-tile-288x216": {
+  "size": [
+   288,
+   216
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/landing-b.jpg + crate-shut-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-home-tile-938x703.png",
+  "made": "3x, reduced from the master",
+  "sha256": "6811f3152e65005b73a3536a840fce6aa7958e630c108559ea8cb2625d062040",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-tag-moss-28x40": {
+  "size": [
+   28,
+   40
+  ],
+  "rect": "slot [+91, +87, 28, 40]",
+  "src": "source/raw/masters-bay/tag-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-tag-moss-3088x4412.png",
+  "made": "1x, reduced from the master",
+  "sha256": "38d8f7bb125a22b59a5a39c2ed0fa0769ad7f8fbeb80e179cb38befca04de712",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-tag-moss-84x120": {
+  "size": [
+   84,
+   120
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/tag-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-tag-moss-3088x4412.png",
+  "made": "3x, reduced from the master",
+  "sha256": "f2c22725db93bf19b589c4bee558e2cf4963b899d8c238a8bc335a73c290b730",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-tag-reed-28x40": {
+  "size": [
+   28,
+   40
+  ],
+  "rect": "slot [+91, +87, 28, 40]",
+  "src": "source/raw/masters-bay/tag-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-tag-reed-3088x4412.png",
+  "made": "1x, reduced from the master",
+  "sha256": "9e099ad7b0cb3fb23e56cef1111353aa1d7f77409802888afc26eecd3e9e560f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-tag-reed-84x120": {
+  "size": [
+   84,
+   120
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/tag-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-tag-reed-3088x4412.png",
+  "made": "3x, reduced from the master",
+  "sha256": "2bfdcbf2f15f90cbdb8d266af240ce341b8fcadcc7a973c47e5c44ac09ba3758",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-tag-slate-blue-28x40": {
+  "size": [
+   28,
+   40
+  ],
+  "rect": "slot [+91, +87, 28, 40]",
+  "src": "source/raw/masters-bay/tag-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-tag-slate-blue-3088x4412.png",
+  "made": "1x, reduced from the master",
+  "sha256": "a73fb9767b21cef6500a3dce593323b1bd679417070218b0d3fe0393abd8540a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-tag-slate-blue-84x120": {
+  "size": [
+   84,
+   120
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/tag-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-tag-slate-blue-3088x4412.png",
+  "made": "3x, reduced from the master",
+  "sha256": "15164408a9b8ab4d716dafd6c7794af47b3451aa479c62414099c9b0c799feef",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-tag-rust-brown-28x40": {
+  "size": [
+   28,
+   40
+  ],
+  "rect": "slot [+91, +87, 28, 40]",
+  "src": "source/raw/masters-bay/tag-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-tag-rust-brown-3088x4412.png",
+  "made": "1x, reduced from the master",
+  "sha256": "b83d94c5617894ed0ce70b4655d373cf10740a10d8f1f3aa18a31e4a1b8d2f67",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-tag-rust-brown-84x120": {
+  "size": [
+   84,
+   120
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/tag-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-tag-rust-brown-3088x4412.png",
+  "made": "3x, reduced from the master",
+  "sha256": "f0fa9022568b22a514d486228888695c8f5224b898e16a344cc62a6d1c1ae49a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-tag-charcoal-28x40": {
+  "size": [
+   28,
+   40
+  ],
+  "rect": "slot [+91, +87, 28, 40]",
+  "src": "source/raw/masters-bay/tag-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-tag-charcoal-3088x4412.png",
+  "made": "1x, reduced from the master",
+  "sha256": "46b46c5548703765617d9553fa078cfe03a2d5fee52962405634c6b86fba6186",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "bay-tag-charcoal-84x120": {
+  "size": [
+   84,
+   120
+  ],
+  "rect": null,
+  "src": "source/raw/masters-bay/tag-a.jpg (painted at 4K; tools/baymasters.py); full-size master bay/bay-tag-charcoal-3088x4412.png",
+  "made": "3x, reduced from the master",
+  "sha256": "4a32f351ff7aa3a922275365f208fd6cabdfd0eab9cd1db67b898e8a83531872",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-band-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-band-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (band), 1x: reduced from pod-shelf-band-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "a28defa7e7b7857956ee7e0b25bc29c8a788140d42d8d56c21037e3f766f7c08",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-band-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-band-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "80e6f81423f8b7036c6f077101f3118750c93c2791802bdf6311e4542ce261a0",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-crack-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-crack-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (crack), 1x: reduced from pod-shelf-crack-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "5a2bc3179d610c1b7701b2f3328a9ab64aa54a8c653174ca566a52d05cf69e55",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-crack-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-crack-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "9f6f9a74fbea8ced6fb7a7ec2449e72e5e0f68edab4e6b8bae96891c0a1d9184",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-identified-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-identified-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (identified), 1x: reduced from pod-shelf-identified-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "2318fadd04ed2d18e76ad2d14dabb16dcde1a2064ab0852635ed7e1d67ab2db2",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-identified-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-identified-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "bf95a1ee2c58c1815fa04889bc8d56bc58fa5f4387831f8acbc8c0f3b2327306",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-mask-accent-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-mask-accent-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (mask-accent), 1x: reduced from pod-shelf-mask-accent-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "9832533dd2242a2fe37861a8734d9afa3cd88b0d1b06f5f0d037fcfa30a35b20",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-mask-accent-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-mask-accent-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "34fd60dd589d744b5e0b5f2cbdb82a02c265ddc45ef6e60d0633881994befdf0",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-mask-body-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-mask-body-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (mask-body), 1x: reduced from pod-shelf-mask-body-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "51cc46146b43037e14833472eacf106b7abf71ee7370973de0d1f94f71ecd5bb",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-mask-body-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-mask-body-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "169930fe95f28f035aa450d4ca083dd02ed4a964a33ee25191eb67ff2486ec41",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-bands-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-pattern-bands-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (pattern-bands), 1x: reduced from pod-shelf-pattern-bands-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "3d5a999b3516e9bb6805750fda30a2b60c429550930670bd6a79899d6c50d50b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-bands-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-pattern-bands-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "134a7a2648188f1409d629e47236039a04e79eec0846e0b6a71dbcc21904cee1",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-dots-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-pattern-dots-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (pattern-dots), 1x: reduced from pod-shelf-pattern-dots-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "38286000667cb2a0b44aa28ef6b1d636914ff900f81107f8076c997c1c09196a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-dots-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-pattern-dots-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "fdf35c5d54e7367211490feb77ad5bb8ae06194a26f64709c3d0487216dcaed9",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-plates-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-pattern-plates-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (pattern-plates), 1x: reduced from pod-shelf-pattern-plates-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "143228d6664fc4539f86c3165a8e2ba1db3b1938a50356f876f6e2f75c2ee554",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-plates-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-pattern-plates-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "6996ed87e556c6c1e5475b0846b0ff96d5c80ec45007166104a83cd7e7ea8606",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-plates-relief-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-pattern-plates-relief-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (pattern-plates-relief), 1x: reduced from pod-shelf-pattern-plates-relief-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "b063e94a8757a5c8daef9a20e27045bb74f4f48c2693897b590b4fca0035b85d",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-plates-relief-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-pattern-plates-relief-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "90da7cef6cff684edc0c0deae96ab617dcd5b9b011e33e44a626013902489d8c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-ribs-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-pattern-ribs-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (pattern-ribs), 1x: reduced from pod-shelf-pattern-ribs-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "5e31b837ffdd5aa787c9776a8fff0f5c2618daae46763c85fbfcebc576e2127c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-ribs-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-pattern-ribs-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "db831c3185163908bd6cc12039e20a1789bc5127bd26424f30fb1d2c10e6d5e7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-segments-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-pattern-segments-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (pattern-segments), 1x: reduced from pod-shelf-pattern-segments-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "a10822ffc424e65ae1897b5b4a0a4e08976fbe350711a6131ce7d75e4a67fb75",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-segments-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-pattern-segments-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "aa166b6481e4fd92e74e97bbd278343db528e51dc8acd8f1be37906a862a13b0",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-segments-relief-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-pattern-segments-relief-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (pattern-segments-relief), 1x: reduced from pod-shelf-pattern-segments-relief-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "5afc2e673491d5729ce03a56ed65f5143369eb10bcf09f721d8a73dfc465d840",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-segments-relief-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-pattern-segments-relief-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "d4f5240b4886ac65abb3252b8d2380d8d7e0d7d0de5417c5ba1c89b0f4b3717c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-stripes-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-pattern-stripes-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (pattern-stripes), 1x: reduced from pod-shelf-pattern-stripes-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "4419d3cb89b4330f60dd82ddc0c2dbe2776ca807233a9a3f37d279e868471294",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-pattern-stripes-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-pattern-stripes-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "36d7583c183b8b44897acd942cd4cd7011e91f48975c1d2a347dff250ea4c772",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-sealed-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-sealed-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (sealed), 1x: reduced from pod-shelf-sealed-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "c881968871ee048c462363e78bcde88d6da75200a077c2fcd4b42512d5c42521",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-sealed-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-sealed-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "db22f237e13b9191c4eddd3d63531fa024a56d108ff6bf06fe036c3339a6b7fd",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-shade-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-shade-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (shade), 1x: reduced from pod-shelf-shade-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "967a6787a2966d449b1912d82df4f76caf5d1fb9edff605fa6e482fdf49a5961",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-shade-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-shade-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "e739f912a0fc04c48ade1153e2b51c5dbdb87b922499d6d623d1078b79815f9c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-unknown-40x48": {
+  "size": [
+   40,
+   48
+  ],
+  "rect": "slot [+20 + 44j, +32, 40, 48], j 0..2",
+  "src": "shelf/pods/pod-shelf-unknown-192x228.png (tools/baymasters.py)",
+  "made": "the pod in the crate's straw (unknown), 1x: reduced from pod-shelf-unknown-192x228 (never from the 64x76 slice), the ink centred in 40x48, feet on the last row (at 0 cost)",
+  "sha256": "2c320f8e561894b671c541089a511ef64f35c56258d85d14e06486e93f3e01e4",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "pod-straw-unknown-120x144": {
+  "size": [
+   120,
+   144
+  ],
+  "rect": null,
+  "src": "shelf/pods/pod-shelf-unknown-1328x1577.png (tools/baymasters.py)",
+  "made": "3x, reduced from the full-size shelf master",
+  "sha256": "94085d4c4ddbae137309feed4be4471a5e2decfbd7aed173e7d9dba1c221b20f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-room-roots-576x424": {
+  "size": [
+   576,
+   424
+  ],
+  "rect": [
+   16,
+   48,
+   576,
+   424
+  ],
+  "src": "source/raw/idle-vivarium-roots-day-ub.jpg [402, 182, 576, 424] 1:1, graded to rooms/signed-idle-roots-day.png (tools/closeupcrops.py)",
+  "made": "source/raw/idle-vivarium-roots-day-ub.jpg [402, 182, 576, 424] 1:1, graded to rooms/signed-idle-roots-day.png (tools/closeupcrops.py)",
+  "sha256": "e24e785b95c35cfc313e5ea8ec49414e89c8a53d3dff320f43ddaefde7e14d20",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-room-boulders-576x424": {
+  "size": [
+   576,
+   424
+  ],
+  "rect": [
+   16,
+   48,
+   576,
+   424
+  ],
+  "src": "source/raw/idle-vivarium-boulders-day-ta.jpg [700, 300, 576, 424] 1:1, graded to rooms/signed-idle-boulders-day.png (tools/closeupcrops.py)",
+  "made": "source/raw/idle-vivarium-boulders-day-ta.jpg [700, 300, 576, 424] 1:1, graded to rooms/signed-idle-boulders-day.png (tools/closeupcrops.py)",
+  "sha256": "53936275a52525954a862c3c2917f587a7bf8f64d654743ee4aee33617539c8c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-room-reeds-576x424": {
+  "size": [
+   576,
+   424
+  ],
+  "rect": [
+   16,
+   48,
+   576,
+   424
+  ],
+  "src": "source/raw/idle-vivarium-reeds-day-ta.jpg [220, 230, 576, 424] 1:1, graded to rooms/signed-idle-reeds-day.png (tools/closeupcrops.py)",
+  "made": "source/raw/idle-vivarium-reeds-day-ta.jpg [220, 230, 576, 424] 1:1, graded to rooms/signed-idle-reeds-day.png (tools/closeupcrops.py)",
+  "sha256": "78f0c0dd95ad096e753edf5a41012c2debd42e3239fb97304d4d71fcbd7037db",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-room-ferns-576x424": {
+  "size": [
+   576,
+   424
+  ],
+  "rect": [
+   16,
+   48,
+   576,
+   424
+  ],
+  "src": "source/raw/idle-vivarium-ferns-day-ta.jpg [330, 205, 576, 424] 1:1, graded to rooms/signed-idle-ferns-day.png (tools/closeupcrops.py)",
+  "made": "source/raw/idle-vivarium-ferns-day-ta.jpg [330, 205, 576, 424] 1:1, graded to rooms/signed-idle-ferns-day.png (tools/closeupcrops.py)",
+  "sha256": "74157fb54b244d8ad26e21c5de4ba9927457ff6a127ba7513ba6058ec299ae15",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-coat-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "5b43b967b8fe5004090aaf7177c6837da954bd8425877e8cf783f1f5b873b8c7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-coat-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "6c3fcd9e8f1cb7614c33e08eec01c479e5452dc3c0021013b8d6f187fe60edd6",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-coat-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "dc4d6f6dfd5b5eba5c68127696214dc67c4af54a0c913d44fb222136193f55a4",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-coat-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "fc3438a8c2971db1a13878a2da002a5c675089e51d6466f73d99813f72d23fb3",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-face-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "f3edae87224178b08c8ca74921968a13dfab9e6b54fba3590ebe7d4f65fdf319",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-face-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "cac3268aea3c9a333a354d126f0159a7ca918b61b2da302665bf9f01e7696905",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-face-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "383b22d09b7cfb61f4a89bdde3e59dbc8d4443a48a8bcd91837b84aea46b7fbe",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-face-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "5f9c54398ef43ea6e3df99cddf6199d7cc10538b8668d737c6dfaefe638a6a68",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-movement-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "6be8babe4e34cd6bdcec8afe8d50c0e5331e5eea8709e5d9b0b18b7c4f3e844f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-movement-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "33ed696cf0956ce7fcd33a8c47db9cfa976f513b29ad822275dc5e6b9ba0f1ab",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-movement-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "ffec06d00640661879eb55a0505b854049cc20732e67fb97dd18fd11bc53458d",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-movement-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "f48fc6e9b2b60bd8839ce9d433d71427fa8229f61736980bba32de502a1dffc2",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-shape-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "e2d71bf321ec0fd48cb99478796f133cc459eb6b37c602adad4ee6c31bdb1a9d",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-shape-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "e468fa65990567b923f436b7365e1cb62f316e033a0d41a2600b3bbb8606d968",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-shape-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "545ca09f7bee6e2963ab84843223d0cde8bb55240e8d621c2fb0df591c56afe3",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-shape-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "c9583b585725f2683dcea27f524afa4a39e8718a13bce96a48e4058b70642c70",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-stamp-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "7ffab361268b500bfdfb75b319ef760d940e61a1a48b61306580d9b6b55eafae",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-stamp-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "a9474a2254a4a9eccab4cf86d7c20d9d8e276c0dfcb2734d86c92024ecc96476",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-stamp-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "04c42d61523458148655e7b692e92973206524ab0ef001a90ed95b42bb6bf5df",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-stamp-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "af28a47ded10d6ce243a11b05e0b78aa50e31b3d19539751f58407b02f050e43",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-cross-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "1055dab3e17a636299e8bae92ebff6dea9e1479758150bb14c930a64688e9c68",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-cross-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "ddd5b859fa7ec37d1878b960bb3e5ac871ff77ee55138cdcd8fecfa06153fa47",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-cross-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "cefe3ad5bad8482b81eddad4560bb45d1a325dd907c34d1853c661435f15af86",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-cross-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "eed8c3ad6e3205a074a0eef3da365003e705e2ec4f9dd813845ba87b1d26a338",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-portrait-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "5689ff857d20ab0a4eb1f5b7d200d8b58748952d92d4f25048bce3848f16eaed",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-portrait-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "8a40e7a41ec1123f5038846baddf4b81c6970f03b3486cf9c402ae6ae7a8e4df",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-portrait-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "490dfae618e14de9fd0b53d9c5b9ca771b99cd083198c23ede4f7fed2493ae8f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-portrait-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "e67d6b32d33a9e6c561cd18a007fa690cda9a2c32dffc643239f1ca80bb121dc",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-manage-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "9d819a42be9ecf3c89251d3581c2179cebfc200f238ea4e6774ac243b89c8795",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-manage-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "1c9400356e31555cb929a9f29a1b4043b8ef58ee6da51ce11039b648a7f60667",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-manage-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "705fee473646728a588936c8368f520092d46497cabb8e809ab3ad8b64cbcc3f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-manage-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "cf8267ab9f2ddf9ff385107b42a0eaeb9d92ffb7245646f3789c6452e73ff378",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-rename-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "124311f65726df84995430a0ef71aabed5a91309a6379b9b6f8e1a04582dcd2d",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-rename-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "0aa5ec31f7170d6e0ab51466236dd8d39fae6650cfb668a9bd3b5dd0a28f9b33",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-rename-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "4f04eb89a2f3383cb59d2dfd321bfa3bb637e51eb1020bb6084051107262bb08",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-rename-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "e9f4a50c89a26d49dbe831c600ed3395666d95d92d813f716c453e715d5520d7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-companion-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "938c769a5f7b5acc4d669d13871e93d9abe41f70374b246175a436a329b874c6",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-companion-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "57cbacc59b266ef4e92c6ac05e6a738975fd60587499d81ff910d13293b42b7e",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-companion-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "4b44d989b7b952d6df3338c9bcb53adfe25c952fcfa766827310a95fdf91d061",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-companion-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "d00e6acbc5122a4083fe71fb1e8a5548991e71115ecd1f45bdaec34773d869b7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-bonded-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "595c598face4af054edb24ef87fc2e261639b3e21ad6201462d7b31691e07614",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-bonded-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "a1af8a25a92c16bfab2acc252c4a4797184fc09af7da1204f731e5ef86c2792b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-bonded-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "526e0bd82144b44970dd13d351c77799e5965c3e4fbbe2a672eaaeed6468cdb0",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-bonded-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "e6ba7e2d14c8777edccfdb12a88c52e57d417b846ff816e901ee4fc3e15af391",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-held-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "a324e13ca9462abd5b32e7fe397676f7b5c7910e2ce9571785661163e107aadd",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-held-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "d90011f44a5adaf2690aff5d347cf76311bdb1d3ba17e3b7e9628c389461ab75",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-held-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "edd871e04e299d79a644039a6cbcd6310c716a2e6e9d34defbfe401d6eb11607",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "icon-held-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 512, reduced (tools/closeupicons.py)",
+  "sha256": "d18d0b22e7cb68f348cfd46dba6de2f69d891bf14f73c49a85115f723d5cc95a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "glyph-bay-crate-64x64": {
+  "size": [
+   64,
+   64
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 320, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 320, reduced (tools/closeupicons.py)",
+  "sha256": "bd44dfb4508ba5f34bad530e223f10e6b3d7f7cf8b9475a6a648d3cdeecc9860",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "glyph-bay-crate-20x20": {
+  "size": [
+   20,
+   20
+  ],
+  "rect": null,
+  "src": "drawn by the AD in code at 320, reduced (tools/closeupicons.py)",
+  "made": "drawn by the AD in code at 320, reduced (tools/closeupicons.py)",
+  "sha256": "b83e8e0c0a5f7e254a7322810077bb7cb1aeaeeb72341263e438cbeb3d52eced",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-stamp-Y5H47VG18-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "a01032bc9cb286633b1ff44e5cedd766ae8f3940753499ae449e667eb81aa2e6",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-stamp-0SVEV67ZF-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "050412ee98df654538232b82a4218f63bf1fc7db6b0f83109be8e128d6ee903e",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-stamp-K3M9QPAT2-96x96": {
+  "size": [
+   96,
+   96
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "66d0ee08bedd6d8134c9745190db36ddfbaa6586eb123a4c71d48dd44d07f702",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S01-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "6b9764f920c5cd4325441ddd675210b186b9f87b8acc9e11145de4c400679543",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S01-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "63aa75aa48704795e50c6652f7ce247591000c60b0715182ece165fa27e41100",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S02-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "f7bbf48bff6d8b4647a1f7a80b5e28fde7a246d97dd6618f462f5d68f6190afa",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S02-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "8462b8347745f4d1220c2500250a837e3523fa610422528973587002c5e8cd23",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S03-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "8c7724ace0ee5b68c7efad251aa1558c0dc1cf5d7fb2190d1e58a3fd70c26e12",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S03-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "f8b2ad08596c9cd34e978cf708977896e29e7cdaf76ed4ba01492dfcc9e8c173",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S04-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "fe2df3f0d4bc2eb9693efd33752167fbf961906c9969ea8b5e5cefbb97dd126f",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S04-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "7bc78bba7b6cc33a100095310be474dc025546085c2674c77a6b2a401e18e4f9",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S05-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "c50dd0238626e79739e8a7c0c36caa4a04c19c236e0faeffee09674303bc8969",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S05-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "04b6b29b06859ba5a183a7a638865e5a51ec18a044ba928b8f58c75fcfd2ffef",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S06-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "2935bdd3cd21e7822e0d161e0feb034f50fcb9ae3ec217d76f8ed89fceee1808",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S06-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "11eb4ed4fc12c31a08eea64f55fb331ab24dcfe8e00448fa0a42d870e48a8023",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S07-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "ace7d507db63cb0adea67e95a7bc56731776b018ffa3171bc8f578bbbdf87707",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S07-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "daab1238f6d4ebdd09927b268b2e1f1e13e1929dee69ad2108055fdd392ce6bd",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S08-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "e4cda1a0eeeb5d200c00fcfe6320d11d07109e668360ff1121bfe163e9b05423",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S08-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "176b6590d53952698d3255b31adcd7c05bddc282dda82e5e425942ac9aa0a8ab",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S09-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "467c43a56fcce83005c4b6d5028247fb3dede5e98aa7ec7ee19aafe0134f121c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S09-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "eb7925c1334365ddc5b480d2376964d692d2222109c01d0b1443e31cc2f861b8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S10-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "cd9c43b6ea55de500bd8b0884d03a0340ba56411bc4bb7564368b916f457153e",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S10-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "18d7a558cb4bb389a07ae9bb879b80a26ce43e13cc026d6c1d0c7f6b603a6055",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S11-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "2a4e71311f1b30ad59458381297798582fb8225ad070728c6e350e97e49ac29b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S11-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "651543cd6bd7db16088e914d46d4c7b1b9eaad928d4384195471a9f80b27d7f4",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S12-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "59b91b52361a6f20711713935f4176481568c604d7f02b6f28ff0326e8bc1cb4",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S12-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "6b1f7ab5aa9b4eceb4da4356ebb5a54c4226fe655ec65e40572bd08d31ccf373",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S13-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "2817c8bdfccb884993c718c0a603fca29ee9d5cc095d26fbd9ff73bb58fc05bb",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S13-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "e9e5d4276870f0ea941ca7677386c441ba8489e68f3ab146bec18ecad03eec53",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S14-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "f1eb140420748e886c8ab5780203d23db7290a8fbadc7df9a7b34559a1e11ef0",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S14-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "fad6c8e023742d2a402e7b957f4c8a0de75904e633813b40595f3eab3dd9df76",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S15-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "b74855c18e1c7c2cc15d9ad33f87a990f974a68f5357259d9464dcb6eb8ce9fb",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S15-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "b55a869e75b0fa6e9edabed7d76a3532d6a274c1f7185d4d2626c96e9ca90d7b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S16-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "730c6855a6c6bdfee3c928d75375e275674eb0337b6c7e0eb7dc550bba7f7168",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-adult-S16-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "b73cf2b6b2c93da95903329942566babacb7acc23d53efb1e0b7b2050321f90e",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S01-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "10feb896b2cf1d349821483e91081291759ecaca103623844a60b2617a67b2fa",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S01-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "3655b68a96a1ab102d214868326c3a12f02ac26c163001917677f854193acf0e",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S02-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "67842e7a788746652bb7aedf7df30dee4fbd980624d6fd2d3fa16c7ce0f683f8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S02-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "e29e62d914f6c218d8440d47624730c83f654afc8b934c59100c3d212f4637c2",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S03-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "d67e8089ec06ee94aa176c3a9c06f24e2d89fdbeea5acf2124181e060f0b23a7",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S03-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "137798bc5d4f109f76ce389b4ee7343ced0bc9eb513677fc0ca2848d5d54ea2b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S04-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "b180d360bd4bf2e69dbadd4f3171ff9c2d0255258ee1e15f2eb030c404e23c63",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S04-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "898a87f081c15f832a2db879cb2225da2dbbc65a84e0d6e0ccd0b6d6002c21aa",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S05-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "f7a1747bb2f2769b7f5e0de5c33bc6418d8db7b6bd3f3abc438c7964e9d069e2",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S05-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "917bc1d107a4e05112a7b6ed8556e4a16d8294abf8ade77b5bc5a6592d15db4e",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S06-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "c16d4795cfa6a17bb346a03f5f9ebfc09ede62ca4359d8b06353d17a1f0a5d9e",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S06-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "5bf1e9e144d035780fb961d7690d597a1047eac13d986934d087d53be8007b95",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S07-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "683e7e68e0adacf4e7368a252c346cb5a2d63b93de60bdeb57269f7b3addbd29",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S07-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "28206e660bfd82e7ff056c0c0d388c47b0589dc48bd8dcd5284f6f24b3acccd0",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S08-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "dee104a456d23617b959d6cb87e249d4cb919e10e6f13b172310a1ed2c341cd5",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S08-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "78db430612d8ae3b05563e2b902b222b47bf885a397b70cc49867a2ba65691ee",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S09-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "0ab795880c613ebd6873bc1a8888e053358356ddae567e3ddb480afe5879ab99",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S09-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "0ff323903dc76a39c284a66f6be713be6f8e076df1b2e745f2e8559170cf390b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S10-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "4adcc4143c1ce618c9ee82fb0e2ff7232c426ae3edfa1bdfcc68091e3ec018a5",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S10-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "d8c416ffd68385e9d6508b30cad4c1fbadeb11d726a3e91963e6a9bc969c4fa2",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S11-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "c500299245e950aaeae93b743a47e762f09e52c19effa5d737191a137a115634",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S11-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "c5aea2deb43daa7da28d774538a97952c6db2754443a5f9cf8e4e6ab94973cbb",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S12-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "a4bfb2412c91c780f4aef078de9c817ca02c18f3d1c0e7cdced6d299bdf77b23",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S12-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "0889ad8c0a1a256b00088c0688746cda93e8d3b99f054597ff1b8499ba59b65a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S13-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "a95d2cb299ebd3f4f2f5c592ee55249a9c99d930ffe23a99ee1e3ca946b9dd6a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S13-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "1bc0e3bed8ef8bf1809f079aa1dae4d73816b7b2e61893da2646b95b7369a72c",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S14-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "2e237ff0df2b9bb508f4f71b050bd2479cc3c6383b160d6a2bd4408ea4cabae8",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S14-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "adc6152ed2ae16078a8f87a572641b4d409050e560d40455ec251e69613d1615",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S15-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "035a2e10887d41382d90a53725f90169f68e4b93946758a2eaf5fe11c923c953",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S15-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "a67443a0fa929fbfb7c01b9134dc605b9003578236fdc094d1ea3a02e2ea542a",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S16-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "da9f2553c6ace17aa690d4709311bb6efa62c01219ae6a3d69394013e135a9bf",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-curl-juvenile-S16-noshadow-144x152": {
+  "size": [
+   144,
+   152
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "5dd0d0e1dadf97ff3f747488cf302f5c466ac04f26b3ca49c752d3c746ac14a4",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-pane-9slice-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "e1654e1db526c1595939b216874d1a06dd41d5cfe9f2942fd985c0c2567216ac",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-plate-9slice-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "7327b782e132eaa49146e00ed70c5430703c63a4e7f3c93e7cce1ef14662299b",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-hairline-9slice-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "2d0391e5e2ac01525962715cbf11a097c283b02e82e86ef12304f2a270b9e9aa",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-contact-shadow-128x24": {
+  "size": [
+   128,
+   24
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "43d18ddaabb2e4613146ddb047edcbdb3687a6153fecd906bd5b79aab7fa9868",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
+ },
+ "closeup-contact-shadow-64x16": {
+  "size": [
+   64,
+   16
+  ],
+  "rect": null,
+  "src": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "made": "code-drawn or reduced at no cost (tools/closeupsprites.py)",
+  "sha256": "73af963392673919f09517e4e1de58acb29210e38202bc2c20714ebb2959d757",
+  "status": "signed",
+  "signed_in": "AD 2026-10-29 at 1x (ad-bay-art-notes.md, pass 145)"
  }
 }
