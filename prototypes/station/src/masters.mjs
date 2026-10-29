@@ -3,17 +3,16 @@
 // and placed in the manifest before any screen registers its stand-ins. A master that does not match its index is refused loudly.
 import { placeMaster } from "../../ui/assets.mjs";
 import { setStandLayers } from "./layered-stand.mjs";
+import { decodePNGAsync, canvasRound } from "../../ui/png.mjs";
 
-// The browser's decoder (no colour conversion, straight alpha) reads a master's pixels: the one named decoder here, until ui/png.mjs decodes the masters (the import guard allows it).
-const decodeRGBA = (bmp) => { const cv = document.createElement("canvas"); cv.width = bmp.width; cv.height = bmp.height; const g = cv.getContext("2d", { willReadFrequently: true }); g.drawImage(bmp, 0, 0); return g.getImageData(0, 0, bmp.width, bmp.height).data; };
+// The one decoder of the masters and the stand layers, on the page and headless alike (ui/png.mjs): inflated at load, the pixels made when a picture first asks, through the 8-bit premultiplied
+// round trip the browser's canvas gave them (canvasRound), so every picture is the one the goldens were drawn with.
+const decodeRGBA = async (bytes) => { const png = await decodePNGAsync(bytes); let px = null; return { w: png.width, h: png.height, rgba: () => px || (px = canvasRound(png.rgba())) }; };
 const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 // The rooms' pictures (index file rooms/room-<room>-...) load lazily: at boot every other master and the shown room's pictures, then the other rooms in the background (the room after the shown one first); ensureRoom(room) puts a room's pictures
 // at the front of the queue and resolves when they are placed. Test mode (opts.all) loads everything at boot. Which room a master belongs to is read from its file path in the index.
 const ROOM_FILE = /^rooms\/room-([a-z0-9]+)-/;
-const realDecode = async (bytes) => {
-  const bmp = await createImageBitmap(new Blob([bytes], { type: "image/png" }), { premultiplyAlpha: "none", colorSpaceConversion: "none" });
-  let px = null; return { w: bmp.width, h: bmp.height, rgba: () => px || (px = decodeRGBA(bmp)) };   // the decoded master as RGBA (the browser's decoder, with no colour conversion), read when a picture asks
-};
+const realDecode = decodeRGBA;
 export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode = realDecode, place = placeMaster, concurrency = 16 } = {}) {
   // at most `concurrency` masters in flight: hundreds of concurrent fetches and decodes can fail with net::ERR_INSUFFICIENT_RESOURCES (measured on Chromium 141)
   let later = [], items = [], rooms = new Map(), queue = [], active = 0, order = [], base = null;
@@ -93,9 +92,9 @@ export async function loadStandLayers(base) {
     if (!r.ok) throw new Error(`stand layer ${name}: ${e.file} is missing`);
     const bytes = await r.arrayBuffer(), sha = hex(await crypto.subtle.digest("SHA-256", bytes));
     if (sha !== e.sha256) throw new Error(`stand layer ${name}: ${e.file} does not match the index (sha256 ${sha.slice(0, 12)}…)`);
-    const bmp = await createImageBitmap(new Blob([bytes], { type: "image/png" }), { premultiplyAlpha: "none", colorSpaceConversion: "none" });
-    if (bmp.width !== e.w || bmp.height !== e.h) throw new Error(`stand layer ${name}: the file is ${bmp.width}×${bmp.height}, the index says ${e.w}×${e.h}`);
-    const px = decodeRGBA(bmp); pics.set(name, { w: bmp.width, h: bmp.height, rgba: () => px });
+    const pic = await decodeRGBA(bytes);
+    if (pic.w !== e.w || pic.h !== e.h) throw new Error(`stand layer ${name}: the file is ${pic.w}×${pic.h}, the index says ${e.w}×${e.h}`);
+    pics.set(name, pic);
   }));
   setStandLayers(index, (f) => pics.get(f));
   return { layers: names.length };
