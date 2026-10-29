@@ -9298,5 +9298,22 @@
    "thoughtsTokenCount": 267,
    "totalTokenCount": 3146
   }
+ },
+ {
+  "tag": "reading-instrument/p3-module-graphite try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.187286,
+  "mxn": 3.7457,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-29T22:54:02Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1003,
+   "candidatesTokenCount": 1374,
+   "thoughtsTokenCount": 170,
+   "totalTokenCount": 2547
+  }
  }
 ]
