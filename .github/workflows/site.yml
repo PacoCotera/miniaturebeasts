@@ -207,6 +207,14 @@ jobs:
         # instance of each kind), with the cards' overlays only. Report mode: it fails only on a
         # finding of a rule frame.json layout.enforced lists for its screen, an unused exception, a malformed layout block, or L0 on an enforced screen.
         run: node prototypes/face/tools/layout-check.mjs "$RUNNER_TEMP/layout-logs" --out "$RUNNER_TEMP/layout-check" --overlays review
+      - name: Goldens' states with the longest names (LVGL)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
+        # Every golden state drawn again with each mibi named by the widest names of the live list (play/src/names.mjs longestNames, ranked by the 16 px font's advances), for the long-names text fit below: nothing is written into the tree and no hash is compared (the goldens pin the archived short names).
+        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/goldens.mjs --long-names --logs "$RUNNER_TEMP/layout-logs-long"
+      - name: Layout check (long names)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
+        # The text fit (overruns, ui/specs/layout.mjs) over those logs: a name that outruns the plate it is drawn on fails the run; the list is <out>/long-names.md and .json.
+        run: node prototypes/face/tools/layout-check.mjs "$RUNNER_TEMP/layout-logs-long" --long-names --out "$RUNNER_TEMP/layout-check/long-names"
       - name: Layout check output
         if: always() && steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

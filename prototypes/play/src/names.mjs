@@ -28,3 +28,9 @@ export const NAME_LIST_CURRENT = "es-pets-1";
 export const NAME_LIST_ARCHIVED = { "en-short-1": "2026-10-27" };
 export const MIBI_NAMES = NAME_LISTS[NAME_LIST_CURRENT];
 export const MIBI_NAMES_ARCHIVED = NAME_LISTS["en-short-1"];
+// The widest names of a list, n of them: what the layout check's long-names pass gives the mibis (tools/layout-check.mjs --long-names). `advance` is the face's per-codepoint advance table of the 16 px font
+// (face/dist/metrics.json fonts["16"].advance), which ranks by drawn width; without it, by letters.
+export function longestNames(list = MIBI_NAMES, n = 12, advance = null) {
+  const w = (s) => (advance ? [...s].reduce((a, c) => a + (advance[c.codePointAt(0)] ?? 10), 0) : [...s].length);
+  return list.map((x, i) => [x, i]).sort((a, b) => w(b[0]) - w(a[0]) || a[1] - b[1]).slice(0, n).map((x) => x[0]);
+}

@@ -5,7 +5,7 @@
 // must give the same hashes (B4b). `--logs <dir>` also writes, per state, <dir>/<screen>/<png name>.json: the face's log (its nodes, type entries and snapshot) and the props facts the specs' layout.facts
 // name, from the frame the hash is taken of, for the layout check (tools/layout-check.mjs); nothing is written into the tree. A state that draws a placed picture the masters index flags placeholder or stand-in is
 // refused; so is one that draws a built picture registered stand-in (the code drawing a creature, an item, a light or an effect itself), except the developer switch's mechanism goldens (DEV_SWITCH), which are listed.
-//   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/goldens.mjs [--check] [--logs <dir>] [pods|home|cargo|idle]
+//   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/goldens.mjs [--check | --long-names] [--logs <dir>] [pods|home|cargo|idle]
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,7 +22,8 @@ import { libraryStates } from "./library-states.mjs";
 import { benchStates } from "./bench-states.mjs";
 import { sittingStates } from "./sitting-states.mjs";
 
-const golden = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golden"), check = process.argv.includes("--check");
+const golden = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golden"), longNames = process.argv.includes("--long-names"), check = process.argv.includes("--check") || longNames;   // --long-names: the states drawn again with the longest names of the live list (station-page.mjs), for the layout check's long-names pass only: nothing written, no hash compared (the hashes are not the goldens')
+if (longNames) { process.env.LONG_NAMES = "1"; if (!process.argv.includes("--logs")) { console.error("--long-names needs --logs <dir>"); process.exit(2); } }
 const logsAt = process.argv.indexOf("--logs"), logs = logsAt > 0 ? path.resolve(process.argv[logsAt + 1] ?? "") : null;
 if (logsAt > 0 && !process.argv[logsAt + 1]) { console.error("--logs needs a directory"); process.exit(2); }
 // the props paths of the generated pictures' layout facts (each spec's layout.facts), read from the props of the frame the log is taken of
@@ -67,6 +68,7 @@ for (const screen of run) {
     if (diff) fails.push(`create-roll-100 must equal create-shape-changed below the top bar on the rig: every roll is a cut (fix 5 Create C8); ${diff} bytes differ`);
   }
   if (!check) { if (!fails.length) { writeFileSync(file, JSON.stringify({ _note: note + ": the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.", states: got }, null, 1) + "\n"); console.log("wrote " + Object.keys(got).length + " goldens to " + dir); } }
+  else if (longNames) { /* the long-names pass compares nothing */ }
   else if (!existsSync(file)) fails.push("no goldens at " + file);
   else { const have = JSON.parse(readFileSync(file, "utf8")).states; for (const [n, g] of Object.entries(have)) if (!got[n]) { fails.push(n + " was not drawn"); console.error("FAIL " + n + " was not drawn"); } else if (got[n].hash !== g.hash) { fails.push(n); console.error(`FAIL ${n}: ${got[n].hash}, golden ${g.hash}`); } for (const n of Object.keys(got)) if (!have[n]) { fails.push(n); console.error("FAIL " + n + " has no golden"); } }
   console.log(`${screen}: ` + (fails.length ? fails.length + " failure(s)" : check ? "goldens match" : "goldens taken")); failed += fails.length;

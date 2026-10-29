@@ -33,12 +33,12 @@ export const JUVENILE_TURNS = 2, ELDER_TURNS = 16, CARRY_MAX = 3;   // young for
 // A device clock before 2026 is unset: no `since` is written from it (normalize back-fills at the first good clock).
 export const GOOD_CLOCK = Date.UTC(2026, 0, 1);
 // The name lists live in ../../play/src/names.mjs (both devices read them): the current list es-pets-1 here, the archived en-short-1 (2026-10-27) for what pins today's English names.
-export { NAME_LISTS, MIBI_NAMES_ARCHIVED } from "../../play/src/names.mjs";
+export { NAME_LISTS, MIBI_NAMES_ARCHIVED, longestNames } from "../../play/src/names.mjs";
 export const MIBI_NAMES = NAME_LIST_NOW;
 // The list births draw from when no pool is passed: the current one. Tests, fixtures, goldens and layout cards that show the archived English names pin it with useNameList("en-short-1")
 // (or the page's ?names=en-short-1); a game never calls it.
 let listInUse = MIBI_NAMES;
-export function useNameList(key) { const l = key == null ? MIBI_NAMES : NAME_LISTS[key]; if (!l) throw new Error("no name list " + key); listInUse = l; return l; }
+export function useNameList(key) { const l = key == null ? MIBI_NAMES : Array.isArray(key) ? key : NAME_LISTS[key]; if (!l) throw new Error("no name list " + key); listInUse = l; return l; }
 // --- names (the game designer's brief): a name never carries a digit and is never reused among living mibis, released ones included -----------------------------------------------------------
 export const NAME_MAX = 10;
 // PLACEHOLDER heads and tails for the compound names (tiers 2 and 3): the naming board's lists replace them; the tests inject their own.
