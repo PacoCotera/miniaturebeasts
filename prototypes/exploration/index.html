@@ -1640,11 +1640,15 @@ function pickUp(fr) {
 }
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; fxSign('putdown'); advance('patch', { noise: 'act' }); }
 function pressFruit() {
-  const ex = S.exp, P = ex.patch; ex.carry = null;
+  const ex = S.exp, P = ex.patch;
+  if (CAP - ex.cargo.s < 2) { fxMsg('Not enough room for Essence · the fruit stays in your hands', 2); return; }   // pressing would waste the fruit
+  ex.carry = null;
   const got = addMat('s', 2, P.x, P.y); fxSign('press');
   advance('patch', { noise: 'act' });
 }
-function takeTuft(tf) { const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); fxSign('tuft'); advance('patch', { noise: 'act' }); }
+function takeTuft(tf) {
+  if (S.exp.cargo.s >= CAP) { fxMsg('Essence full · the tuft stays where it is', 2); return; }   // a full hold takes nothing and no turn passes
+  const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); fxSign('tuft'); advance('patch', { noise: 'act' }); }
 function pushSlab(f) {
   const ex = S.exp, key = ex.patch.key, pos = featPos(key, f), [dx, dy] = DIRS[ex.patch.dir], tx = pos.x + dx, ty = pos.y + dy;
   if (tx < 1 || ty < 1 || tx >= PW - 1 || ty >= PH - 1 || occupant(key, tx, ty) || podAt(key, tx, ty, true) || NOSTAND(layout(key).tiles[ty * PW + tx])) { fxMsg('The slab won’t budge that way'); FX.bumpAt = NOW; return; }
@@ -1665,7 +1669,10 @@ function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), 
     if (tx < 1 || ty < 1 || tx >= PW - 1 || ty >= PH - 1 || sx < 0 || sy < 0 || sx >= PW || sy >= PH) return false;
     if (occupant(key, tx, ty) || podAt(key, tx, ty, true) || NOSTAND(lay.tiles[ty * PW + tx])) return false;
     const o = occupant(key, sx, sy, 'player'); return !o || o.type === 'pt' || o.type === 'cr' || (P && P.key === key && P.x === sx && P.y === sy); }); }
-function takeDew(f) { const ex = S.exp; setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); advance('patch', { noise: 'act' }); }
+function takeDew(f) {
+  const ex = S.exp;
+  if (ex.cargo.s >= CAP) { fxMsg('Essence full · the cup keeps its dew', 2); return; }   // a full hold takes nothing: the cup stays full and no turn passes
+  setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); advance('patch', { noise: 'act' }); }
 function takeCharge(f) {
   const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f);
   if (ex.cargo.e >= CAP) { fxMsg('Energy full · the stone keeps its charge', 2); return; }   // a full hold takes nothing: the stone is not drawn and no turn passes
