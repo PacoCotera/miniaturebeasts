@@ -1,7 +1,8 @@
 // The Caddy service (station-build.md §2.4): brokers paintings for the Station page on the sandbox. A
 // genome in, validated whole against its frame and built; its set stored by the genome's SHA-256; a
 // queue journaled so a job survives a restart; a mock painter or the real one behind the service's own
-// mode; a hard daily limit that no page can raise; a per-world daily grow cap; status.
+// mode; a hard daily limit that no page can raise; a per-world daily grow cap; status. Beside the portraits, the dock (dock.mjs): both cradles of each
+// world as states, the seat asked by the play page's Dock control, and a stream of the dock's events for the Caddy's face.
 // Plain Node, no dependencies; createApp() returns the request handler and the worker so the tests and
 // the journey run it in-process, server.mjs runs it as a service.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, renameSync } from "node:fs";
@@ -9,10 +10,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, genomeSha, genomeProblems } from "../station/src/genome.mjs";
 import { mockPaint, realPaint, SET_FILES, PROMPT_VERSION } from "./painter.mjs";
+import { createDock, WORLD_RE } from "./dock.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const RETRY_S = [60, 300, 1800];   // a failed call retries at one, five and thirty minutes
-export const DEFAULTS = { painter: "mock", mockDelay: 20, ceilingUSD: null, growCap: 10, tickMs: 1000, prefix: "/caddy-api/v1" };
+export const DEFAULTS = { painter: "mock", mockDelay: 20, ceilingUSD: null, growCap: 10, tickMs: 1000, prefix: "/caddy-api/v1", heartbeatMs: 5000, sweepMs: 3600000 };
 export const today = (now = Date.now()) => new Date(now).toISOString().slice(0, 10);
 const tomorrow = (now = Date.now()) => { const d = new Date(now); d.setUTCHours(24, 0, 0, 0); return d.getTime(); };
 const json = (res, code, body) => { res.writeHead(code, { "content-type": "application/json", "cache-control": "no-store", "access-control-allow-origin": "*" }); res.end(JSON.stringify(body)); };
@@ -31,6 +33,7 @@ export function createApp(opts = {}) {
   const journal = () => writeJSON(queueFile, { schema: "mb-caddy-queue/1", jobs: state.jobs });
   const ledgerWrite = () => writeJSON(ledgerFile, state.ledger);
   journal();
+  const dock = createDock({ dataDir, now: state.now }); dock.sweep();
   const setDir = (species, sha) => path.join(dataDir, "sets", species, sha.slice(0, 16));
   const stored = (species, sha) => existsSync(path.join(setDir(species, sha), "manifest.json"));
   const day = () => (state.ledger[today(state.now())] ||= { calls: 0, spendUSD: 0, worlds: {} });
@@ -50,6 +53,26 @@ export function createApp(opts = {}) {
       if (req.method === "POST" && p === "/grow") {
         let body; try { body = JSON.parse(await readBody(req) || "{}"); } catch { return json(res, 400, { ok: false, error: "the body is not JSON" }); }
         return json(res, ...grow(body));
+      }
+      // the dock: a seat is a state (a repeat changes nothing); 400 on a wrong world, cradle or seated; 503 when it cannot be stored (nothing changed)
+      if (req.method === "POST" && p === "/dock/seat") {
+        let body; try { body = JSON.parse(await readBody(req) || "{}"); } catch { return json(res, 400, { ok: false, error: "the body is not JSON" }); }
+        const r = dock.seat(body.world, body.cradle, body.seated, body.companion);
+        return r.ok ? json(res, 200, r) : json(res, r.status, { ok: false, error: r.error, fault: !!r.fault });
+      }
+      if (req.method === "GET" && p === "/dock") {
+        const w = url.searchParams.get("world"); if (w == null) return json(res, 200, { ok: true, worlds: dock.list() });
+        return WORLD_RE.test(w) ? json(res, 200, dock.snapshot(w)) : json(res, 400, { ok: false, error: "no such world id" });
+      }
+      // the stream: the snapshot first, then dock and face events as they happen, and a heartbeat every 5 s
+      if (req.method === "GET" && p === "/dock/events") {
+        const w = url.searchParams.get("world"); if (!w || !WORLD_RE.test(w)) return json(res, 400, { ok: false, error: "the stream needs a world" });
+        res.writeHead(200, { "content-type": "text/event-stream", "cache-control": "no-store", connection: "keep-alive", "access-control-allow-origin": "*", "x-accel-buffering": "no" });
+        const send = (ev, data) => { res.write(`event: ${ev}\ndata: ${JSON.stringify(data)}\n\n`); };
+        send("snapshot", dock.snapshot(w));
+        const off = dock.subscribe(w, send), hb = setInterval(() => send("heartbeat", { at: state.now() }), cfg.heartbeatMs);
+        req.on("close", () => { off(); clearInterval(hb); }); res.on("close", () => { off(); clearInterval(hb); });
+        return;
       }
       const m = p.match(/^\/sets\/(S\d{2})\/([0-9a-f]{16,64})\/([a-z0-9.-]+)$/);
       if (req.method === "GET" && m) {
@@ -74,7 +97,7 @@ export function createApp(opts = {}) {
   }
   function status() {
     const counts = {}; for (const j of state.jobs) counts[j.state] = (counts[j.state] || 0) + 1;
-    return { ok: true, service: "mb-caddy", painter: painterMode(), configured: cfg.painter, queue: counts, today: { date: today(state.now()), calls: day().calls }, limitReached: limitReached(), growCap: cfg.growCap, promptVersion: PROMPT_VERSION, mockDelay: cfg.mockDelay, uptimeS: Math.round((Date.now() - state.started) / 1000) };
+    return { ok: true, service: "mb-caddy", painter: painterMode(), configured: cfg.painter, queue: counts, today: { date: today(state.now()), calls: day().calls }, limitReached: limitReached(), growCap: cfg.growCap, promptVersion: PROMPT_VERSION, mockDelay: cfg.mockDelay, dock: dock.counts(), uptimeS: Math.round((Date.now() - state.started) / 1000) };
   }
   // --- the worker: one job at a time, the daily limit and the caps honoured, failures retried ---
   async function tick() {
@@ -104,8 +127,8 @@ export function createApp(opts = {}) {
     state.painting = null; journal();
     return job;
   }
-  let timer = null;
-  const start = () => { if (!timer) timer = setInterval(() => { tick().catch(() => {}); }, cfg.tickMs); return timer; };
-  const stop = () => { if (timer) clearInterval(timer); timer = null; };
-  return { handle, tick, start, stop, status, state, cfg, dataDir, grow, setDir };
+  let timer = null, sweeper = null;
+  const start = () => { if (!timer) timer = setInterval(() => { tick().catch(() => {}); }, cfg.tickMs); if (!sweeper) sweeper = setInterval(() => dock.sweep(), cfg.sweepMs); return timer; };
+  const stop = () => { if (timer) clearInterval(timer); if (sweeper) clearInterval(sweeper); timer = sweeper = null; };
+  return { handle, tick, start, stop, status, state, cfg, dataDir, grow, setDir, dock };
 }
