@@ -1,6 +1,6 @@
 # Genome extension for the fluffy species: Wickle, Drapet, Curlop
 
-Genome engineer, Fri 30 Oct 2026 (America/Mexico_City). Owner's decision of 2026-10-30 12:38 (decisions.md): three new species, S17–S19 in clans C17–C19 (Reeds, Boulders, Ferns), and S05, S06 and S07 parked. Names are working names; the copywriter names them.
+Genome engineer, Fri 30 Oct 2026 (America/Mexico_City). Three new species approved, S17–S19 in clans C17–C19 (Reeds, Boulders, Ferns), and S05, S06 and S07 parked. Names are working names; the copywriter names them.
 
 ## The reading of the framework, checked
 

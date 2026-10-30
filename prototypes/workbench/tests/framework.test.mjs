@@ -62,10 +62,11 @@ test("the 16 roster plans map to the seven body rigs and their limb sets", () =>
 });
 
 test("every frame carries only trunk loci its plan owns plus its clan's branch; the rest are absent", () => {
-  assert.equal(frames.length, 16);
+  assert.equal(frames.length, 19, "sixteen species and the three fluffy ones (frame version 6)");
   for (const f of frames) {
-    assert.equal(f.counts.carried + f.counts.absent, VALIDATED.length - PLAN_SWITCHES.size, `${f.species.id}: carried + absent = validated − plan switches`);
-    assert.ok(f.loci.every((l) => l.scope === "trunk" || l.clan === f.taxonomy.clan));
+    const newer = VALIDATED.filter((l) => (l.sinceFrame ?? 0) > frameVersionOf(f)).length; // records a frame is older than are not its absent lines
+    assert.equal(f.counts.carried + f.counts.absent, VALIDATED.length - PLAN_SWITCHES.size - newer, `${f.species.id}: carried + absent = validated − plan switches − records newer than the frame`);
+    assert.ok(f.loci.every((l) => l.scope === "trunk" || l.clan === f.taxonomy.clan || (LOCI.get(l.id).alsoIn ?? []).includes(f.taxonomy.clan)));
     assert.equal(f.viability.constructed, f.viability.sampled);
     for (const ch of f.chapters) for (const t of ch.traits) assert.ok(t.loci.every((id) => f.loci.some((l) => l.id === id && l.kind !== "locked")));
   }
@@ -250,7 +251,7 @@ test("a body whose part does not touch its owner is reported against the contrac
 test("proportions by kind: the species' measures sit in its genome, and the kind check scores it against hand-drawn targets", async () => {
   const { KINDS, proportionPairs, nearestPair } = await import("../framework/proportions.mjs");
   const { loadTargets, targetScores, rasterizeTarget } = await import("../framework/targets.mjs");
-  assert.equal(Object.keys(KINDS).length, 16);
+  assert.equal(Object.keys(KINDS).length, 19);
   assert.deepEqual(nearestPair("growth.support-drop-ratio", 0.8), ["long", "short"], "a value between alleles is a mixed pair");
   assert.deepEqual(nearestPair("growth.support-drop-ratio", 1.05), ["medium", "medium"]);
   const cat = frameOf("S04"), catPairs = proportionPairs("S04");
@@ -262,7 +263,7 @@ test("proportions by kind: the species' measures sit in its genome, and the kind
   assert.ok(cat.loci.some((l) => l.kind === "locked" && l.copies[0] !== l.copies[1]), "a locked proportion between two alleles is a mixed pair");
   assert.equal(checkGenome(cat, specimen).length, 0);
   const targets = loadTargets(path.resolve(here, "../frames/targets"));
-  assert.equal(Object.keys(targets).length, 16);
+  assert.equal(Object.keys(targets).length, 19);
   for (const t of Object.values(targets)) { assert.equal(t.mask.length, 48 * 48); assert.ok([...t.mask].some((x) => x), `${t.species}: a drawn target`); }
   assert.deepEqual([...rasterizeTarget(targets.S07).all], [...targets.S07.mask], "targets rasterize the same twice");
   assert.ok(targets.S04.parts.ear && targets.S04.parts.muzzle && targets.S04.parts.tail, "a target's primitives are tagged by part");

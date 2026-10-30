@@ -288,9 +288,9 @@
       "growth.tail-curl-turn"
      ],
      "looks": [
-      "a loose curl",
+      "loose",
       "between",
-      "a tight curl"
+      "tight"
      ],
      "nature": "look",
      "shapeable": true,
@@ -2362,14 +2362,14 @@
   "brief": "Curlop: 1 body region (B1), a head, a snout, 2 eyes, 2 legs, a tail; fur; upright, fused head.",
   "bounds": {
    "min": [
-    -0.9118230134072964,
+    -0.9013409314563935,
     -0.4617793059853108,
     0
    ],
    "max": [
     1.1860829487714335,
     0.46177930598531075,
-    1.5543185415566247
+    1.5454087718983571
    ]
   },
   "counts": {

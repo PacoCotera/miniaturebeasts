@@ -663,8 +663,8 @@
    "guard": "rig: core.ryOverRx",
    "changedBy": "player",
    "typical": [
-    "wide",
-    "wide"
+    "high",
+    "high"
    ]
   },
   {
@@ -694,8 +694,8 @@
    "guard": "rig: core.rzOverRx",
    "changedBy": "player",
    "typical": [
-    "low",
-    "low"
+    "high",
+    "high"
    ]
   },
   {
@@ -723,11 +723,7 @@
     "large"
    ],
    "guard": "rig: head.rxOverCoreRx",
-   "changedBy": "player",
-   "typical": [
-    "small",
-    "small"
-   ]
+   "changedBy": "player"
   },
   {
    "id": "growth.head-width-ratio",
@@ -1809,16 +1805,16 @@
      "large"
     ],
     "growth.core-width-ratio": [
-     "wide",
-     "wide"
+     "high",
+     "high"
     ],
     "growth.core-depth-ratio": [
-     "low",
-     "low"
+     "high",
+     "high"
     ],
     "growth.head-length-ratio": [
      "small",
-     "small"
+     "large"
     ],
     "growth.head-width-ratio": [
      "high",
@@ -1909,14 +1905,14 @@
   "brief": "Drapet: 1 body region (B1), a head, 2 eyes; fur; belly, fused head.",
   "bounds": {
    "min": [
-    -1.1366476365853744,
-    -0.8669700000000001,
-    -0.04266108000000002
+    -1.248937773788767,
+    -0.7335900000000002,
+    -0.06517665000000006
    ],
    "max": [
     0.9880000000000001,
-    0.8669700000000001,
-    1.1055036358556363
+    0.7335900000000002,
+    1.374730737307249
    ]
   },
   "counts": {

@@ -22,7 +22,7 @@ test("the overview's rows fit the 440 on all sixteen frames with every locus at 
   const all = (fr) => fr.chapters.map((c) => ({ id: c.id, state: "open", loci: Array.from({ length: chapterLocusCount(fr, c.id) }, (_, i) => ({ id: c.id + i, play: true })) }));
   const plans = Object.fromEntries(frameIds().map((id) => [id, overviewPlan(all(frameOf(id)), spec)]));
   for (const [id, p] of Object.entries(plans)) { assert.ok(p.fits && p.height <= 440, id + " fits: " + p.height); assert.ok(p.pitch >= 10 && p.pitch <= 16, id); }
-  assert.equal(frameIds().length, 16); assert.deepEqual([plans.S03.pitch, plans.S03.gap, plans.S03.height], [10, 4, 436], "S03 Tuikis, the worst case"); assert.deepEqual([plans.S09.pitch, plans.S09.gap, plans.S09.height], [10, 8, 412]);
+  assert.equal(frameIds().length, 19, "sixteen and the three fluffy frames, which fit too"); assert.deepEqual([plans.S03.pitch, plans.S03.gap, plans.S03.height], [10, 4, 436], "S03 Tuikis, the worst case"); assert.deepEqual([plans.S09.pitch, plans.S09.gap, plans.S09.height], [10, 8, 412]);
   assert.equal(frameOf("S03").chapters.reduce((n, c) => n + chapterLocusCount(frameOf("S03"), c.id), 0), 40, "forty loci in eight chapters"); assert.equal(plans.S01.pitch, 16, "a small frame keeps the full 16");
 });
 

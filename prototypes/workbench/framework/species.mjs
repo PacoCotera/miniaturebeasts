@@ -95,7 +95,7 @@ export const VOCAB = [
   ["legs-tail", "feelers", "Feelers", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.free-radius-ratio"], ["short, fine", "between", "long, thick"]],
   ["legs-tail", "rays", "Rays", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.support-radius-ratio"], ["short, fine", "between", "long, stout"]],
   ["legs-tail", "tail", "Tail", ["growth.axial-tail-length-ratio", "growth.axial-tail-width-ratio"], ["short, thin", "between", "long, thick"]],
-  ["legs-tail", "tail-curl-turn", "Curl", ["growth.tail-curl-turn"], ["a loose curl", "between", "a tight curl"]],
+  ["legs-tail", "tail-curl-turn", "Curl", ["growth.tail-curl-turn"], ["loose", "between", "tight"]],
   ["legs-tail", "hands", "Hands", ["growth.hand-size-ratio"], ["small", "between", "plump"]],
   ["legs-tail", "tail-curl", "Carriage", ["growth.axial-tail-bend"], ["hangs", "straight", "curls up"]],
   ["movement", "pace", "Pace", ["movement.cycle-rate"], ["steady", "between", "quick"]],

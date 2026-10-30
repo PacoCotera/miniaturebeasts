@@ -140,7 +140,7 @@ export function buildBody(resolved) {
   const rise = Math.max(0, Math.min(1, ((v["head.centerLiftOverCoreRx"] ?? 0.5) - 0.5) / 0.22));
   const headDir = upright ? unit([-1, 0, 0.3 + 2.5 * ((v["head.centerLiftOverCoreRx"] ?? 0.5) - 0.5)]) : standing && !radial ? unit([-0.25, 0, 1]) : join === "narrow" ? unit([-1, 0, 0.15 + 1.6 * rise * rise]) : unit([-(L + 0.8 * headR[0]), 0, lift * (1 + 1.5 * rise)]); // a standing ribbon carries its head on top; a fused head with a high lift sits up on the body
   const pe = extentAlong(root, headDir, envOf), he = extentAlong(head, mul(headDir, -1), envOf);
-  const neckLength = join === "narrow" ? (0.3 + 1.6 * ((v["structure.join-neck-ratio"] ?? 0.8) - 0.65) / 0.3) * Math.min(pe, he) : (upright ? -0.5 : -0.25) * Math.min(pe, he); // an upright body wears its face on the front, sunk in
+  const neckLength = join === "narrow" ? (0.3 + 1.6 * ((v["structure.join-neck-ratio"] ?? 0.8) - 0.65) / 0.3) * Math.min(pe, he) : (upright || v["furSkirt.enabled"] ? -0.55 : -0.25) * Math.min(pe, he); // an upright body or a skirted one wears its face sunk into the front
   moveNode(head, mul(headDir, pe + he + neckLength));
   envelopes.delete(head.id);
   const headCenter = head.center;
