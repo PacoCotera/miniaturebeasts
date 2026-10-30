@@ -5,7 +5,8 @@
   "name": "Pesko",
   "plural": "Pesko",
   "order": 6,
-  "summary": ""
+  "summary": "",
+  "parked": true
  },
  "taxonomy": {
   "code": "S06",

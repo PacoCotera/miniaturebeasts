@@ -133,14 +133,19 @@ export function sheet(node, corners, normal, thickness) {
 }
 
 // A closed tapered sweep along a planar arc (v1 continuous-axial-tail-sweep/1), stations × 8.
-export function sweep(node, root, frame, length, baseRadius, bend, stations = 6, tipOverBase = 0.16) {
+// `curl` (genome-fluffy.md): extra turn in radians whose curvature grows toward the tip, so the path spirals (a fiddlehead, a plume);
+// with curl 0 the arc is the constant-curvature one every older body uses, unchanged.
+export function sweep(node, root, frame, length, baseRadius, bend, stations = 6, tipOverBase = 0.16, curl = 0) {
   node.frame = frame; node.root = root; node.shape = { kind: "sweep" }; node.stations = [];
   const rings = [];
   const centers = [];
+  const heading = (u) => bend * u + curl * u * u;
+  const along = (u) => { let ax = 0, lf = 0; const n = Math.max(1, Math.ceil(u * 80)); for (let k = 0; k < n; k++) { const m = ((k + 0.5) / n) * u; ax += Math.cos(heading(m)); lf += Math.sin(heading(m)); } return [(length * u * ax) / n, (length * u * lf) / n]; };
   for (let i = 0; i < stations; i++) {
-    const u = i / (stations - 1), angle = bend * u;
-    const axial = Math.abs(bend) < 1e-10 ? length * u : (length * Math.sin(angle)) / bend;
-    const lift = Math.abs(bend) < 1e-10 ? 0 : (length * (1 - Math.cos(angle))) / bend;
+    const u = i / (stations - 1), angle = curl ? heading(u) : bend * u;
+    const [spiralAxial, spiralLift] = curl ? along(u) : [0, 0];
+    const axial = curl ? spiralAxial : Math.abs(bend) < 1e-10 ? length * u : (length * Math.sin(angle)) / bend;
+    const lift = curl ? spiralLift : Math.abs(bend) < 1e-10 ? 0 : (length * (1 - Math.cos(angle))) / bend;
     const c = add(root, localVector(frame, [axial, 0, lift]));
     const normal = localVector(frame, [-Math.sin(angle), 0, Math.cos(angle)]);
     const r = baseRadius * (1 - (1 - tipOverBase) * u);
@@ -160,6 +165,26 @@ export function sweep(node, root, frame, length, baseRadius, bend, stations = 6,
   node.end = centers.at(-1);
   node.radii = [length / 2, baseRadius, baseRadius];
   node.length = length; node.baseRadius = baseRadius;
+  return node;
+}
+
+// A bell of fur (genome-fluffy.md): rings from the waist down to the floor, each 12 sectors with its own half-widths, a closed flat floor ring
+// with a scalloped hem (every other sector `tooth` shorter) and a top ring that sits inside the body. `rings`: [{ z, rx, ry }] top to bottom.
+export function bell(node, cx, cy, rings, tooth = 0) {
+  if (rings.length < 2 || rings.some((r) => !(r.rx > 0 && r.ry > 0))) throw new Error(`invalid bell on ${node.id}`);
+  const ring = (r, k) => Array.from({ length: 12 }, (_, s) => { const a = (s * 2 * Math.PI) / 12; return [cx + r.rx * Math.cos(a), cy + r.ry * Math.sin(a), r.z + (k === rings.length - 1 && s % 2 ? tooth : 0)]; });
+  const rs = rings.map(ring);
+  const top = rings[0].z, bottom = rings.at(-1).z;
+  node.frame = IDENTITY; node.center = [cx, cy, (top + bottom) / 2];
+  node.radii = [Math.max(...rings.map((r) => r.rx)), Math.max(...rings.map((r) => r.ry)), (top - bottom) / 2];
+  node.shape = { kind: "ring", form: "bell", crossExponent: 2, bulge: 0 };
+  const mid = (pts) => mul(pts.reduce(add, [0, 0, 0]), 1 / pts.length);
+  for (let i = 0; i < rs.length - 1; i++) for (let s = 0; s < 12; s++) {
+    const n = (s + 1) % 12, pts = [rs[i][s], rs[i][n], rs[i + 1][n], rs[i + 1][s]];
+    addFace(node, pts, [i / (rs.length - 1), i / (rs.length - 1), (i + 1) / (rs.length - 1), (i + 1) / (rs.length - 1)], sub(mid(pts), [cx, cy, mid(pts)[2]]));
+  }
+  addFace(node, [...rs[0]].reverse(), Array(12).fill(0), [0, 0, 1]);
+  addFace(node, rs.at(-1), Array(12).fill(1), [0, 0, -1]);
   return node;
 }
 

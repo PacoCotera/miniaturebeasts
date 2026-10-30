@@ -23,6 +23,10 @@
 //   wings  big or small (span and chord)                       antennae long or short
 //   fur    how far the fur reaches: body, tail (a brush), ears   crest  crest height over head height
 //   back   the back line: dipping, level, arched                 horns  straight or curled
+//   (frame version 6, genome-fluffy.md) curl the tail's extra turn in radians   skirtDrop how far the fur hangs from the waist to the floor (1 is floor length)
+//   skirtFlare the skirt's overhang   brow brow-tuft length over head height   coat fur length: short or long
+//   armProx, armDist, armR the front pair's links and thickness (short or long; fine or thick)   hand hand size over the arm's thickness
+//   On an upright body (plan extra upright) depth is the front-to-back thickness and width the side-to-side, both over the body's height.
 // A measure a species has no part for is left out (no ears on a bird, no legs on a slug), and a locus
 // the plan does not carry is simply not in its genome.
 import { LOCI } from "./catalogue.mjs";
@@ -45,6 +49,9 @@ export const KINDS = {
   S13: { resembles: "a beetle", back: "level", antennae: "long", mass: "central", stance: "wide", waist: "thick", form: "barrel", depth: 0.55, width: 0.6, head: 0.32, shape: "mid", lift: "low", neck: 0.1, legs: 0.2, legR: 0.1, eyes: "small", eyeSet: "wide" },
   S14: { resembles: "a slug", antennae: "long", form: "barrel", mass: "anterior", waist: "thick", depth: 0.4, width: 0.44, head: 0.32, shape: "round", lift: "low", eyes: "small", eyeSet: "wide" },
   S15: { resembles: "a walking plant", stance: "wide", head: 0.32, shape: "round", lift: "low", legs: 0.7, legR: 0.12, eyes: "big", eyeSet: "wide" },
+  S17: { resembles: "a tall teardrop of fur with a glowing plume", form: "tapered", fur: "tail", coat: "long", depth: 0.66, width: 0.62, head: 0.4, shape: "round", lift: "mid", eyes: "big", eyeSet: "wide", tail: 0.9, tailR: 0.15, carry: "level", curl: 2.2, skirtDrop: 1, skirtFlare: 0.2 },
+  S18: { resembles: "a wide low dome under a floor-length skirt of fur", fur: "body", coat: "long", depth: 0.5, width: 0.88, head: 0.36, shape: "round", lift: "low", eyes: "big", eyeSet: "wide", skirtDrop: 1, skirtFlare: 0.3, brow: 0.8 },
+  S19: { resembles: "an upright crescent with a curled tail and small hands", form: "tapered", fur: "tail", coat: "long", stance: "narrow", depth: 0.7, width: 0.6, head: 0.42, shape: "round", lift: "high", legs: 0.2, legR: 0.3, tail: 0.85, tailR: 0.9, carry: "level", curl: 3, muzzle: 0.25, muzzleW: "broad", eyes: "big", eyeSet: "wide", armProx: "short", armDist: "short", armR: "thick", hand: 1 },
   S16: { resembles: "a wisp of lightning", mass: "even", waist: "thin", depth: 0.34, width: 0.3, head: 0.32, shape: "long", lift: "mid", neck: 0.3, eyes: "big", eyeSet: "close" },
 };
 
@@ -81,6 +88,15 @@ export function rigTargets(k) {
   if (k.muzzleW) t["growth.muzzle-width-ratio"] = k.muzzleW === "broad" ? 0.69 : 0.62;
   if (k.eyes) t["growth.exterior-eye-size-ratio"] = k.eyes === "big" ? 0.32 : 0.24;
   if (k.eyeSet) t["growth.exterior-eye-spacing-ratio"] = k.eyeSet === "wide" ? 0.55 : 0.4;
+  if (k.curl !== undefined) t["growth.tail-curl-turn"] = k.curl;
+  if (k.skirtDrop !== undefined) t["growth.fur-skirt-drop"] = k.skirtDrop;
+  if (k.skirtFlare !== undefined) t["growth.fur-skirt-flare"] = k.skirtFlare;
+  if (k.brow !== undefined) t["growth.brow-tuft-length"] = k.brow;
+  if (k.coat) t["appearance.fur-length"] = k.coat;
+  if (k.armProx) t["growth.free-proximal-ratio"] = k.armProx;
+  if (k.armDist) t["growth.free-distal-ratio"] = k.armDist;
+  if (k.armR) t["growth.free-radius-ratio"] = k.armR;
+  if (k.hand !== undefined) t["growth.hand-size-ratio"] = k.hand;
   return t;
 }
 

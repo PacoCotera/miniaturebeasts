@@ -31,6 +31,7 @@ const V1_APPLICABILITY = {
 // by any bilateral plan with chains, flaps, ears or a tail.
 function v1Guard(id, v) {
   const radial = v["organization.symmetry"] === "radial", head = v["modules.typedHead"], role = v["appendage.role"], groups = v["appendage.groups"];
+  const arms = !!v["appendage.arms"]; // a mixed plan: a free front pair over contact hind legs (genome-fluffy.md); false in every older plan
   const contact = role === "contact-chain", free = role === "free-chain", depth = v["organization.depth"], fan = v["organization.layout"] === "fan";
   const activeChains = (contact && !radial) || ((contact || free) && groups > 0);
   const guards = {
@@ -45,9 +46,9 @@ function v1Guard(id, v) {
     "growth.region-bend": [depth > 1 && !fan && !radial, "bilateral serial child regions"],
     "growth.branch-angle": [depth > 1 && fan && !radial, "bilateral fan child regions"],
     "growth.join-throat-ratio": [(depth > 1 || head) && v["organization.join"] === "narrow", "narrow connection owner"],
-    "growth.free-proximal-ratio": [(free || (contact && radial)) && groups > 0, "free/radial chain owner"],
-    "growth.free-distal-ratio": [((contact && radial) || (free && v["appendage.freeLinks"] === 2)) && groups > 0, "two-link free/radial chain owner"],
-    "growth.free-radius-ratio": [free && groups > 0, "free-chain owner"],
+    "growth.free-proximal-ratio": [(free || arms || (contact && radial)) && groups > 0, "free/radial chain owner"],
+    "growth.free-distal-ratio": [((contact && radial) || ((free || arms) && v["appendage.freeLinks"] === 2)) && groups > 0, "two-link free/radial chain owner"],
+    "growth.free-radius-ratio": [(free || arms) && groups > 0, "free-chain owner"],
     "growth.support-drop-ratio": [contact && !radial, "bilateral contact drop"],
     "growth.support-splay-ratio": [contact && !radial, "bilateral contact splay"],
     "growth.support-radius-ratio": [contact && activeChains, "contact chains"],
@@ -85,6 +86,7 @@ function newGuard(locus, v) {
   if (owner === "contact") return [v["appendage.role"] === "contact-chain", "contact terminal owner"];
   if (owner === "tail") return [!!v["tail.enabled"], "axial tail"];
   if (owner === "ears") return [!!v["ears.enabled"], "head-owned ears"];
+  if (owner === "arms") return [!!v["appendage.arms"], "free front pair (hands)"];
   if (owner === "fur") return [!!v["covering.furEnabled"], "fur field"];
   const sw = SWITCH_TARGETS[owner];
   if (!sw) throw new Error(`${locus.id}: unknown owner ${owner}`);
@@ -102,6 +104,7 @@ export const SWITCH_TARGETS = {
   "anatomy.beak-presence": "beak.enabled", "appearance.feather-presence": "feathers.enabled", "anatomy.shell-presence": "shell.enabled",
   "physiology.charged-body": "charged.enabled",
   "anatomy.tail-tip-bulb": "tailBulb.enabled", "anatomy.top-cap-sheet": "cap.enabled", "appearance.belly-field": "belly.enabled",
+  "anatomy.tail-curl-presence": "tailCurl.enabled", "anatomy.fur-skirt-presence": "furSkirt.enabled", "anatomy.brow-tuft-presence": "browTufts.enabled",
 };
 
 // Is this locus's owner on, given plan facts `v` (with the part-switch targets already set)?

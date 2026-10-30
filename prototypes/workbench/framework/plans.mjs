@@ -19,8 +19,10 @@ export function parsePlanKey(key) {
   if (parts.length !== 9) throw new Error(`plan key needs 9 fields: ${key}`);
   const p = Object.fromEntries(PLAN_FIELDS.map((f, i) => [f, parts[i]]));
   for (const [f, allowed] of [["segments", DEPTH], ["groups", GROUPS], ["links", LINKS], ["pairs", PAIRS]]) if (!(p[f] in allowed)) throw new Error(`${f}: ${p[f]}`);
-  if (!["serial", "fan"].includes(p.layout) || !["bilateral", "radial"].includes(p.symmetry) || !["none", "free", "contact"].includes(p.limbs) ||
+  if (!["serial", "fan"].includes(p.layout) || !["bilateral", "radial"].includes(p.symmetry) || !["none", "free", "contact", "mixed"].includes(p.limbs) ||
       !["off", "on"].includes(p.flaps) || !["skin", "scales", "fur"].includes(p.covering)) throw new Error(`bad plan key ${key}`);
+  // genome-fluffy.md (a): mixed is one free front pair (arms) over one contact hind pair.
+  if (p.limbs === "mixed" && (p.groups !== "one" || p.pairs !== "one" || p.symmetry !== "bilateral" || p.layout !== "serial")) throw new Error(`a mixed plan is bilateral, serial, one arm group and one leg pair: ${key}`);
   return p;
 }
 export const planKeyOf = (p) => PLAN_FIELDS.map((f) => p[f]).join("|");
@@ -39,7 +41,7 @@ export function rigOf(p) {
 export function planCode(p, extras = {}) {
   const d = DEPTH[p.segments];
   const body = p.layout === "fan" ? `${p.symmetry === "radial" ? "R" : "B"}fan${d}` : `${p.symmetry === "radial" ? "R" : "B"}${d}`;
-  const limbs = p.limbs === "contact" ? (p.symmetry === "radial" ? "rays" : `L${2 * PAIRS[p.pairs]}`) : p.limbs === "free" ? "feelers" : null;
+  const limbs = p.limbs === "mixed" ? "L2·hands" : p.limbs === "contact" ? (p.symmetry === "radial" ? "rays" : `L${2 * PAIRS[p.pairs]}`) : p.limbs === "free" ? "feelers" : null;
   const flaps = p.flaps === "on" ? (extras.fins ? "fins" : "flaps") : null;
   return [body, limbs, flaps].filter(Boolean).join("·");
 }
@@ -55,14 +57,14 @@ export function planFacts(key, extras = {}) {
   const p = parsePlanKey(key);
   const depth = DEPTH[p.segments], radial = p.symmetry === "radial", fan = p.layout === "fan";
   const join = extras.join ?? (depth > 1 ? "narrow" : "broad");
-  const limbs = p.limbs, pairs = PAIRS[p.pairs], groups = GROUPS[p.groups], links = LINKS[p.links];
+  const arms = p.limbs === "mixed", limbs = arms ? "contact" : p.limbs, pairs = PAIRS[p.pairs], groups = GROUPS[p.groups], links = LINKS[p.links];
   const fins = !!extras.fins && p.flaps === "on";
   const values = {
     "organization.depth": depth, "organization.layout": p.layout, "organization.symmetry": p.symmetry,
     "organization.join": join, "modules.typedHead": true, "modules.exteriorEyePairPlan": true,
     "appendage.role": limbs === "none" ? "none" : limbs === "free" ? "free-chain" : "contact-chain",
-    "appendage.groups": limbs === "free" ? Math.max(1, groups) : limbs === "contact" && radial ? 1 : 0,
-    "appendage.freeLinks": links, "support.pairCount": pairs, "modules.wingPair": p.flaps === "on",
+    "appendage.groups": limbs === "free" ? Math.max(1, groups) : limbs === "contact" && radial ? 1 : arms ? 1 : 0,
+    "appendage.freeLinks": links, ...(arms ? { "appendage.arms": true } : {}), "support.pairCount": pairs, "modules.wingPair": p.flaps === "on",
     "covering.furEnabled": p.covering === "fur", "covering.kind": p.covering === "scales" ? "scales" : "smooth-skin",
     "development.axialRepeat": depth > 1 ? "chain" : "single", "development.attachments": limbs !== "none",
     "development.articulated": limbs !== "none", "development.membrane": p.flaps === "on",
@@ -70,6 +72,7 @@ export function planFacts(key, extras = {}) {
   };
   const rig = rigOf(p);
   const stations = limbStations(p, depth);
+  const armStations = arms ? [{ region: 0, u: -0.15 }] : null;
   const limbSet = limbs === "contact" ? (radial ? "rays" : "legs") : limbs === "free" ? "feelers" : null;
   const posture = limbSet === "legs" ? (pairs === 3 ? "splayed" : pairs === 1 ? "upright" : "plantigrade") : limbSet === "rays" ? "rooted" : limbSet === "feelers" ? (radial ? "trailing" : "stilts") : null;
   const ground = limbSet === "legs" || limbSet === "rays" ? "feet" : limbSet === "feelers" && !radial ? "feeler tips" : fins ? "afloat" : "belly";
@@ -77,7 +80,8 @@ export function planFacts(key, extras = {}) {
   const flapRegion = p.flaps === "on" ? (depth === 3 ? 1 : 0) : null;
   const states = stateMachine(limbSet, flapSet, posture, extras, p);
   return {
-    key, plan: p, code: planCode(p, extras), rig, depth, radial, fan, join, values, extras: { join, wave: !!extras.wave, fins, float: !!extras.float, stand: !!extras.stand, flapPairs: extras.flapPairs === 2 ? 2 : 1, flapRest: extras.flapRest === "flat" ? "flat" : "raised" },
+    key, plan: p, code: planCode(p, extras), rig, depth, radial, fan, join, values, extras: { join, wave: !!extras.wave, fins, float: !!extras.float, stand: !!extras.stand, flapPairs: extras.flapPairs === 2 ? 2 : 1, flapRest: extras.flapRest === "flat" ? "flat" : "raised", ...(extras.upright ? { upright: true } : {}) },
+    ...(arms ? { armSet: "arms", armStations, armLinks: links } : {}),
     limbSet, posture, ground, stations, links: limbSet === "legs" || limbSet === "rays" ? 2 : links, flapSet, flapRegion,
     tailRegion: fan ? 0 : depth - 1, head: join === "narrow" ? "neck" : "fused", states,
   };
@@ -90,6 +94,7 @@ export function planFacts(key, extras = {}) {
 export function limbStations(p, depth) {
   const limbs = p.limbs;
   if (limbs === "none") return [];
+  if (limbs === "mixed") return [{ region: depth - 1, u: 0.3 }]; // the hind pair, behind the middle; the arms are armStations
   if (limbs === "contact") {
     const pairs = PAIRS[p.pairs];
     if (p.symmetry === "radial") return [{ region: 0, u: 0, rays: 3 * pairs }];

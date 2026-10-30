@@ -274,7 +274,8 @@ export function partClass(node) {
   if (part === "ear") return "ear";
   if (part === "tail") return "tail";
   if (part.startsWith("leg-") || part === "ray") return "leg";
-  if (part === "crown" || part === "horn") return "crest";
+  if (part === "crown" || part === "horn" || part === "brow") return "crest";
+  if (part.startsWith("arm-")) return "arm";
   if (part === "antenna") return "antenna";
   if (part === "flap" || part === "cap") return "flap";
   if (part === "shell" || part === "wing-case") return "shell";

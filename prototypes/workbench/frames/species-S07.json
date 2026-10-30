@@ -5,7 +5,8 @@
   "name": "Azkon",
   "plural": "Azkon",
   "order": 7,
-  "summary": ""
+  "summary": "",
+  "parked": true
  },
  "taxonomy": {
   "code": "S07",

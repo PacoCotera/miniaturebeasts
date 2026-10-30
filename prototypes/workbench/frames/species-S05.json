@@ -5,7 +5,8 @@
   "name": "Tepor",
   "plural": "Tepor",
   "order": 5,
-  "summary": ""
+  "summary": "",
+  "parked": true
  },
  "taxonomy": {
   "code": "S05",

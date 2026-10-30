@@ -10,7 +10,7 @@
 
 // The approved names (design/proposals/species-names.md): one per species, one per clan. The clan
 // name doubles as the genus on the tome's clan plate, so S01 is Lophessa loika.
-export const SPECIES_NAMES = { S01: "Loika", S02: "Untuva", S03: "Tuikis", S04: "Hiljan", S05: "Tepor", S06: "Pesko", S07: "Azkon", S08: "Rupar", S09: "Belatz", S10: "Igara", S11: "Kilpo", S12: "Peplos", S13: "Oskol", S14: "Usvel", S15: "Lehten", S16: "Blikur" };
+export const SPECIES_NAMES = { S01: "Loika", S02: "Untuva", S03: "Tuikis", S04: "Hiljan", S05: "Tepor", S06: "Pesko", S07: "Azkon", S08: "Rupar", S09: "Belatz", S10: "Igara", S11: "Kilpo", S12: "Peplos", S13: "Oskol", S14: "Usvel", S15: "Lehten", S16: "Blikur", S17: "Wickle", S18: "Drapet", S19: "Curlop" }; // S17–S19 are working names (the owner, 2026-10-30); the copywriter names them, and the clans C17–C19
 export const CLAN_NAMES = { C01: "Lophessa", C02: "Kausida", C03: "Stilbera", C04: "Lathreta", C05: "Dasyla", C06: "Prosopa", C07: "Aulaka", C08: "Kremnion", C09: "Aithria", C10: "Kolymba", C11: "Thyreka", C12: "Graptoma", C13: "Lepidos", C14: "Kapnis", C15: "Phyllaxa", C16: "Brontelas" };
 
 import { proportionPairs } from "./proportions.mjs";
@@ -34,6 +34,9 @@ export const CLANS = {
   C13: { number: 13, resembles: "a beetle", parts: ["antenna","leg","shell"], plan: "three|serial|bilateral|contact|zero|one|three|off|scales", extras: { join: "narrow" }, anchor: "charcoal", second: "slate", feature: "plates and wing cases; armoured crawlers", features: { ...EYES, ...sw("anatomy.antenna-presence", "anatomy.wing-case-presence") }, finish: { "anatomy.antenna-form": "thread", "anatomy.contact-terminal-form": "wedge", "appearance.anatomical-scale-size": "coarse" } },
   C14: { number: 14, resembles: "a slug", parts: ["antenna","skirt","body"], plan: "three|serial|bilateral|none|zero|one|two|off|skin", extras: { join: "broad", wave: true }, anchor: "plum", second: "butter", feature: "eye stalks and a sheen; the fog-lovers", features: { ...EYES, ...sw("anatomy.antenna-presence", "anatomy.foot-skirt-presence") }, finish: { "anatomy.antenna-form": "club", "appearance.sheen": "glossy", "development.regional-growth": "anterior" } },
   C15: { number: 15, resembles: "a walking plant", parts: ["leaf","leg","body"], plan: "two|fan|radial|contact|zero|one|one|off|skin", extras: { join: "broad", stand: true }, anchor: "jade", second: null, feature: "leaves and roots; the walking green", features: { ...EYES, ...sw("anatomy.leaf-presence") }, finish: { "appearance.leaf-covering": "leafy", "anatomy.contact-terminal-form": "root" } },
+  C17: { number: 17, resembles: "a tall teardrop of fur with a glowing plume", parts: ["tail","body"], plan: "one|serial|bilateral|none|zero|one|two|off|fur", extras: { join: "broad", upright: true }, anchor: "marigold", second: "cream", feature: "a plume curling forward from the top to a glowing tip; a candle-flame of fur, in the reeds", features: { ...EYES, ...sw("anatomy.axial-tail-presence", "anatomy.tail-curl-presence", "anatomy.tail-tip-bulb", "anatomy.fur-skirt-presence") }, finish: { "growth.tail-rise": "crown", "anatomy.region-longitudinal-form": "tapered" } },
+  C18: { number: 18, resembles: "a wide low dome under a floor-length skirt of fur", parts: ["skirt","head","body"], plan: "one|serial|bilateral|none|zero|one|two|off|fur", extras: { join: "broad", wave: true }, anchor: "periwinkle", second: "slate", feature: "a skirt of fur to the floor, a small face and brow tassels; the boulder that blinks", features: { ...EYES, ...sw("anatomy.fur-skirt-presence", "anatomy.brow-tuft-presence") }, finish: {} },
+  C19: { number: 19, resembles: "an upright crescent with a curled tail and small hands", parts: ["tail","arm","leg","head"], plan: "one|serial|bilateral|mixed|one|two|one|off|fur", extras: { join: "broad", upright: true }, anchor: "lagoon", second: "cream", feature: "a curled tail and two small three-fingered hands held at the chest; the fiddlehead of the ferns", features: { ...EYES, ...sw("anatomy.muzzle-presence", "anatomy.axial-tail-presence", "anatomy.tail-curl-presence", "appearance.belly-field") }, finish: { "growth.tail-rise": "rear", "anatomy.contact-terminal-form": "rounded", "growth.terminal-length-ratio": "broad", "growth.terminal-depth-ratio": "high" } },
   C16: { number: 16, resembles: "a wisp of lightning", parts: ["body","head"], plan: "three|fan|bilateral|none|zero|one|two|off|skin", extras: { join: "narrow", wave: true, float: true, stand: true }, anchor: "periwinkle", second: "ice", feature: "a body of charge; storm-born", features: { ...EYES, ...sw("physiology.charged-body") }, finish: { "appearance.sheen": "glossy", "growth.branch-angle": "close", "growth.region-taper": "strong", "appearance.emission-brightness": "bright" } },
 };
 
@@ -94,6 +97,9 @@ export const GLYPHS = {
   S14: [".....", ".##..", "#..##", "....#", "....."], // Usvel: the slow line of a trail
   S15: ["..#..", ".##..", "..#..", "..##.", "..#.."], // Lehten: a stem with alternate leaves
   S16: ["...##", "..#..", ".#.#.", "#...#", "....."], // Blikur: a branching charge
+  S17: ["..##.", ".#..#", ".#...", "#.#..", ".#..."], // Wickle: the plume rising from a stem and curling over (working glyph; the art director draws the mark)
+  S18: [".....", "..#..", ".###.", "#####", "#.#.#"], // Drapet: a low dome over a fringe
+  S19: [".###.", "#...#", "..#.#", "..###", "....."], // Curlop: a spiral, the curled tail (working glyph)
 };
 
 // The routine acts a species is watched doing (the-portrait.md §8): the ids a mibi's habits are drawn from, at the bench (a resident in focus for a minute of its routine) and at the dock
@@ -153,9 +159,9 @@ export const SPECIES = [
     ],
     sealed: {}, pod: { second: "marigold" } },
   { ...row("S04", "C04", "medium", "starter", "a cat", "prowls, pounces", "wood, meadow", null, "fruit", "creeps up without startling anything", "aloof at first, then devoted"), sealed: {}, alwaysOpen: ["ears", "tail"] },
-  { ...row("S05", "C05", "medium", "early", "a fox", "trots", "meadow, wood edge", null, "fruit, seeds", "senses warm stones (Energy)", "quick and clever"), sealed: {}, alwaysOpen: ["fur-reach", "snout"] },
-  { ...row("S06", "C06", "medium", "early", "a raccoon", "ambles, climbs", "pond edge, wood", null, "fruit, washed first", "lifts slabs to find what is under them", "nosy, a cheerful mischief-maker"), sealed: {}, alwaysOpen: ["mask", "rings"] },
-  { ...row("S07", "C07", "large", "mid", "a badger or small bear", "lumbers, digs", "rock field, cave", "Deep ground", "fruit, roots", "digs through to Deep ground", "slow, stubborn, protective"), sealed: {}, alwaysOpen: ["feet", "mask"] },
+  { ...row("S05", "C05", "medium", "early", "a fox", "trots", "meadow, wood edge", null, "fruit, seeds", "senses warm stones (Energy)", "quick and clever"), sealed: {}, alwaysOpen: ["fur-reach", "snout"], parked: true },
+  { ...row("S06", "C06", "medium", "early", "a raccoon", "ambles, climbs", "pond edge, wood", null, "fruit, washed first", "lifts slabs to find what is under them", "nosy, a cheerful mischief-maker"), sealed: {}, alwaysOpen: ["mask", "rings"], parked: true },
+  { ...row("S07", "C07", "large", "mid", "a badger or small bear", "lumbers, digs", "rock field, cave", "Deep ground", "fruit, roots", "digs through to Deep ground", "slow, stubborn, protective"), sealed: {}, alwaysOpen: ["feet", "mask"], parked: true },
   { ...row("S08", "C08", "large", "mid", "a goat or deer", "bounds, climbs", "rock field, meadow", null, "leaves, fruit", "climbs cliff steps that block other partners", "sure-footed and proud"), sealed: {}, alwaysOpen: ["horns", "legs"] },
   { ...row("S09", "C09", "large", "late", "a big bird", "strides, soars", "meadow, rock field", "Weather expeditions", "fruit, seeds", "scouts from above: reveals the cells around", "watchful, lordly"), sealed: { movement: "a tide pearl" }, alwaysOpen: ["flaps", "beak", "feathers", "feather-crest"] },
   { ...row("S10", "C10", "medium", "mid", "an otter", "swims, slides", "pond, fast water", "opens fast water", "fruit", "swims fast water", "playful, never still"), sealed: {}, alwaysOpen: ["tail", "build"] },
@@ -165,11 +171,27 @@ export const SPECIES = [
   { ...row("S14", "C14", "small", "early", "a slug", "slides", "pond edge, wood; out in fog banks", null, "moss", "leaves a sheen trail back to the start", "unhurried and sweet"), sealed: {}, alwaysOpen: ["skirt", "sheen"] },
   { ...row("S15", "C15", "medium", "late", "a walking plant", "walks on its roots", "wood", "sealed chapter", "light and dew", "roots for a turn; a bush grows where it stood", "patient, faintly wise"), sealed: { stamina: "a storm-glass shard" }, alwaysOpen: ["leaves", "light-feeding", "rays"] },
   { ...row("S16", "C16", "medium", "late", "a wisp of lightning (spectral, energy)", "floats, ripples", "meadow, rock field, only in a storm", "Charge sealed (storm-glass shard)", "Energy from struck stones", "draws a stray strike to itself", "wild and electric, rarely still"), sealed: { charge: "a storm-glass shard" }, alwaysOpen: ["charge", "phase", "pull", "glow"] },
+  // The fluffy species (owner, 2026-10-30; design/proposals/genome-fluffy.md): draft rows, working names. Moves, gate, diet, ability and character are the genome engineer's
+  // placeholders for the game designer to set; nothing of them is read by the rig.
+  { ...row("S17", "C17", "medium", "early", "a tall teardrop of fur with a glowing plume", "sways, rocks along", "Reeds", null, "dew", "draft: to be set by the game designer", "draft: calm, a little dreamy"),
+    summary: "A tall teardrop of fur standing upright, no legs, a cream face, one plume rising from the top and curling forward to a glowing tip (the plume is its tail, rooted on the crown).",
+    frameVersion: 6, sealed: {}, alwaysOpen: ["tail-curl-turn", "fur-hang", "fur-reach"] },
+  { ...row("S18", "C18", "large", "mid", "a wide low dome under a floor-length skirt of fur", "glides low along the ground", "Boulders", null, "moss", "draft: to be set by the game designer", "draft: patient, shy"),
+    summary: "A wide low dome hidden under a floor-length skirt of long fur, a small flat face peeking out at the front, brow tassels; no ears, no snout, no legs.",
+    frameVersion: 6, sealed: {}, alwaysOpen: ["fur-hang", "brow-tufts"] },
+  { ...row("S19", "C19", "medium", "mid", "an upright crescent with a curled tail and small hands", "hops, walks", "Ferns", null, "fruit, leaves", "draft: to be set by the game designer", "draft: gentle, curious"),
+    summary: "An upright crescent of dense fur: a round head end, a cream belly, two stout hind feet, a long curled tail, and two small three-fingered hands held together at the chest (a free front pair over a contact hind pair).",
+    frameVersion: 6, sealed: {}, alwaysOpen: ["tail-curl-turn", "hands", "fur-hang"], neverOpen: ["feelers", "rays"] }, // the arms are not feelers: those traits name the free-chain plans
 ];
 
 // Generated species open Glow only where the plan draws an emission (a bulb or a charged body);
 // elsewhere emission is a carried trunk locus the species fixes.
 const GLOW_CLANS = new Set(["C03", "C16"]);
+
+// Parked (owner, 2026-10-30 12:38): S05, S06 and S07 are too close to real animals. A parked species keeps its row, frame, target and glyph, and a save
+// holding one still loads; the Station's pools draw from the active ones only (`frame.species.parked` carries the flag).
+export const PARKED = SPECIES.filter((s) => s.parked).map((s) => s.id);
+export const ACTIVE_SPECIES = SPECIES.filter((s) => !s.parked);
 
 export function specOf(species) {
   const clan = CLANS[species.clan];
@@ -183,7 +205,7 @@ export function specOf(species) {
     features: { ...clan.features },
     fixed: { "growth.core-half-length": species.size, ...clan.finish, ...proportions, ...(species.fixed ?? {}) }, finish: clan.finish,
     typical: { ...proportions, ...(species.typical ?? {}) },
-    neverOpen: GLOW_CLANS.has(species.clan) ? [] : ["glow", "glow-length"],
+    neverOpen: [...(GLOW_CLANS.has(species.clan) ? [] : ["glow", "glow-length"]), ...(species.neverOpen ?? [])],
     taxonomy: { ...species.taxonomy, resembles: clan.resembles, clanName: CLAN_NAMES[species.clan] ?? null, clanNumber: clan.number, member, speciesNumber: clan.number * 32 + member, size: species.size },
     glyph: [...GLYPHS[species.id]],
     habits: [...(HABITS[species.id] ?? [])],

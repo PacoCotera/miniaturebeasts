@@ -22,8 +22,8 @@ export const TARGET_MARGIN = 0.04; // coarse gate: own IoU must beat the best wr
 export const PART_MARGIN = 0.05;   // parts score: own must beat every wrong kind's by this much (one pixel of one part on a 48 px head; README)
 export const TAU = 0.4;            // a part measure a full TAU off scores zero; measures are ratios of head or body size
 export const SCHEMA = "mb-target-mask/1";
-export const PARTS = ["body", "head", "muzzle", "ear", "tail", "leg", "crest", "antenna", "flap", "shell", "skirt", "leaf", "feeler"];
-const PRIORITY = ["ear", "muzzle", "crest", "antenna", "tail", "leg", "leaf", "flap", "skirt", "feeler", "shell", "head", "body"];
+export const PARTS = ["body", "head", "muzzle", "ear", "tail", "leg", "crest", "antenna", "flap", "shell", "skirt", "leaf", "feeler", "arm"];
+const PRIORITY = ["ear", "muzzle", "crest", "antenna", "tail", "leg", "arm", "leaf", "flap", "skirt", "feeler", "shell", "head", "body"];
 
 function insideShape(s, x, y) {
   if (s.ellipse) {
@@ -132,7 +132,7 @@ export function partMeasures(masks, n = 48) {
   const ant = part("antenna"); if (ant) m.antenna = { height: (htop - ant.y0) / hh }; // thin things have no bulk at 48 px
   const tail = part("tail"); if (tail) m.tail = { length: Math.max(tail.w, tail.h) / all.h, bulk: tail.area / all.area, carry: (all.cy - tail.cy) / all.h };
   const leg = part("leg"); if (leg) m.leg = { length: leg.h / all.h, bulk: leg.area / all.area };
-  for (const name of ["flap", "shell", "skirt", "leaf", "feeler"]) { const p = part(name); if (p) m[name] = { height: p.h / all.h, bulk: p.area / all.area }; }
+  for (const name of ["flap", "shell", "skirt", "leaf", "feeler", "arm"]) { const p = part(name); if (p) m[name] = { height: p.h / all.h, bulk: p.area / all.area }; }
   return m;
 }
 

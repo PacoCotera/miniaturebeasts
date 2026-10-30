@@ -40,6 +40,8 @@ export function validateBody(scene) {
     }
     if (node.role === "contact-terminal" && node.attachment && !env(node).contains(node.attachment.position, 1e-6)) problems.push(`${node.id}: contact endpoint outside the terminal`);
   }
+  // genome-fluffy.md (c): a skirt of floor-length fur hides the legs; one whose footprint leaves a leg end out is a body that does not build.
+  if (scene.furSkirt?.floorLength && !scene.furSkirt.hidesLegs) problems.push("fur skirt at floor length does not cover the legs");
   const regions = scene.nodes.filter((n) => n.role === "primary-region");
   if (!regions.length) problems.push("no primary region");
   return { status: problems.length ? "rejected" : "valid", problems, counts: { nodes: scene.nodes.length, edges: scene.edges.length, vertices } };

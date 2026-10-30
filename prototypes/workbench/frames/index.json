@@ -67,6 +67,7 @@
    "rig": "B2",
    "tier": "early",
    "file": "species-S05.json",
+   "parked": true,
    "open": 13,
    "traits": 9,
    "carried": 57
@@ -79,6 +80,7 @@
    "rig": "B2",
    "tier": "early",
    "file": "species-S06.json",
+   "parked": true,
    "open": 15,
    "traits": 10,
    "carried": 59
@@ -91,6 +93,7 @@
    "rig": "B1",
    "tier": "mid",
    "file": "species-S07.json",
+   "parked": true,
    "open": 26,
    "traits": 17,
    "carried": 48
@@ -202,6 +205,42 @@
    "open": 24,
    "traits": 18,
    "carried": 35
+  },
+  {
+   "id": "S17",
+   "name": "Wickle",
+   "clan": "C17",
+   "plan": "B1",
+   "rig": "B1",
+   "tier": "early",
+   "file": "species-S17.json",
+   "open": 15,
+   "traits": 10,
+   "carried": 39
+  },
+  {
+   "id": "S18",
+   "name": "Drapet",
+   "clan": "C18",
+   "plan": "B1",
+   "rig": "B1",
+   "tier": "mid",
+   "file": "species-S18.json",
+   "open": 23,
+   "traits": 15,
+   "carried": 34
+  },
+  {
+   "id": "S19",
+   "name": "Curlop",
+   "clan": "C19",
+   "plan": "B1·L2·hands",
+   "rig": "B1",
+   "tier": "mid",
+   "file": "species-S19.json",
+   "open": 23,
+   "traits": 15,
+   "carried": 53
   }
  ]
 }
