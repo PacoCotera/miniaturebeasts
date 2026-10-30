@@ -7,7 +7,7 @@
 // Every word is a placeholder for the copywriter; every string must fit its slot, and the layout throws on an overflow with the string.
 //
 // The frame (x, y, w, h); every partial window starts and ends on an 8 px boundary, and the three rules lie outside every window:
-//   HERO (24, 24, 176, 184)   a two-ink picture of the cradle: caddy-hero-seated or caddy-hero-empty, labelled placeholders until the art lands
+//   HERO (24, 24, 176, 184)   a two-ink picture of the cradle: caddy-hero-seated or caddy-hero-empty, placeholder drawings (no caption) until the art lands
 //   MSG (224, 24, 424, 184)   L1 icon (224, 52, 32, 32), text x 264 (slot 264, 46, 384, 44), 4×; L2 slot (224, 102, 424, 33), 3×, crate icons 32 × 32 at y 102,
 //                             12 after the text and 8 apart, at most 3; L3 slot (224, 146, 424, 33), 3×
 //   LEDGER (672, 24, 96, 184) rows at y 40, 96, 152: the icon (672, y, 32, 32), the number at x 708, 3×, "999+" past 999
@@ -148,8 +148,6 @@ function drawHero(px, id) {
   fill(px, x + 16, y + 152, w - 32, 12);   // the cradle's base
   fill(px, x + 56, y + 146, w - 112, 6);   // its slot
   if (id === IDS.seated) { edge(px, x + 58, y + 46, w - 116, 100); fill(px, x + 66, y + 56, w - 132, 36); }   // the Companion standing in it
-  const label = id === IDS.seated ? "hero seated" : "hero empty";
-  drawText(px, label, x + Math.floor((w - measure(label, 2)) / 2), y + 8, 2);
 }
 // Draws the face whole. `regions` limits the draw to those regions (a partial); the rules are drawn with every full picture.
 export function rasterFace(f, out = new Uint8Array(W * H).fill(PAPER)) {

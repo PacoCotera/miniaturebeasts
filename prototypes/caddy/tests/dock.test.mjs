@@ -65,7 +65,7 @@ test("the stream sends the snapshot first, then dock and face events, and a hear
   const app = createApp({ dataDir: fresh(), heartbeatMs: 60 }), s = await serve(app);
   try {
     await post(s, "/dock/seat", { world: "w1", cradle: "station", seated: true });
-    const w1 = await stream(s, "w1", (e) => e.some((x) => x.ev === "heartbeat") && e.some((x) => x.ev === "dock")), w2 = await stream(s, "w2", () => false, 600);
+    const w1 = await stream(s, "w1", (e) => ["heartbeat", "dock", "face"].every((k) => e.some((x) => x.ev === k))), w2 = await stream(s, "w2", () => false, 600);
     await new Promise((r) => setTimeout(r, 50));
     await post(s, "/dock/seat", { world: "w1", cradle: "companion", seated: true, companion: A });
     const e1 = await w1.done, e2 = await w2.done;

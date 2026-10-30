@@ -80,6 +80,8 @@ test("only G0 and G3 in v1; the windows on 8 px boundaries, the rules outside ev
     { now: T0 + 30 * S, cradles: seated(T0), station: station({ at: T0 }) }, { now: T0 + S, cradles: seated(T0), fault: true }];
   for (const input of inputs) { const px = rasterFace(face(input)); assert.equal(px.length, W * H); assert.deepEqual([...new Set(px)].sort((a, b) => a - b), [0, 255], "ink and paper only"); }
   assert.equal(ICON.max, 3);
+  // the hero carries no caption: above the drawn cradle (y 24 to 70) the hero is paper in every state
+  for (const input of inputs) { const px = rasterFace(face(input)); for (let y = 24; y < 70; y++) for (let x = 24; x < 200; x++) assert.equal(px[y * W + x], 255, "no caption in the hero"); }
 });
 
 // a loop at the scheduler: boot, seat (C2), the last crate opened (C3), lift (C0); the face is pushed on every change of its input, as the page does
