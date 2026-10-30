@@ -5282,6 +5282,24 @@ window.addEventListener('blur', () => { stopRepeat(); document.querySelectorAll(
 // ===================== 17. Page: fit, build footer, observer =====================
 const fitEl = document.getElementById('deviceFit');
 const EMBED = document.documentElement.classList.contains('embed');
+// ?embed on the play page: this Companion tells the page who it is and what it carries (its id and name, its world, the crates in its bay), and answers
+// the Caddy's seat with that word for the seat's number (the page's stand-in for the hold). The developer's "Companion silent" holds the answer back.
+const SHELL = EMBED && window.parent && window.parent !== window ? window.parent : null;
+let shellSeat = 0, shellSilent = false, shellSaid = '';
+function tellShell(force) {
+  if (!SHELL || shellSilent) return;
+  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, wid: S && !RT.readOnly ? S.wid : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, seat: shellSeat };
+  const k = JSON.stringify(m); if (!force && k === shellSaid) return; shellSaid = k;
+  try { SHELL.postMessage(m, location.origin); } catch (e) { }
+}
+if (SHELL) {
+  window.addEventListener('message', e => {
+    if (e.origin !== location.origin || e.source !== SHELL) return; const m = e.data || {};
+    if (m.t === 'mb-seat' && !shellSilent) { shellSeat = m.seat | 0; tellShell(true); }
+    else if (m.t === 'mb-silent') { shellSilent = !!m.on; if (!shellSilent) tellShell(true); }
+  });
+  const beat = () => { tellShell(false); setTimeout(beat, 250); }; beat();
+}
 // Scale the depicted device to the window. When the screen would land close to a whole number of
 // physical pixels per device pixel, snap to it so the pixel grid stays even.
 function fit() {

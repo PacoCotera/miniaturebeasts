@@ -1,14 +1,16 @@
 // The play page's shell (technical-architecture.md W1; the architect's spec): the Station and the Companion as same-origin frames side by side, the page's own keys, the Dock control, the cradle and the
 // seat. The shell draws only page chrome. It never reads or writes the save (the devices cross it by the storage event, as between two tabs) and it imports nothing from station/, exploration/ or
-// workbench/: it asks the Station to dock by postMessage and shows the Caddy state the Station posts back (`mb-caddy`).
+// workbench/: the Dock control asks the Caddy service to seat or lift the cradle, the Station is handed the dock by postMessage (`mb-dock`), and the Caddy's face is drawn from the
+// service's state and the two frames' words (`mb-caddy` from the Station, `mb-companion` from the Companion) by caddy/face.mjs.
 //
 // Lengths are in lp: one lp is `f` CSS px, so every edge lands on a whole physical pixel. Colours are the Station's 14.
 
-import { canvasPainter, createPaper, caddyLines } from "./caddy.mjs";   // the Caddy's e-paper: play-page chrome like the rest, fed by the Station's mb-caddy
+import { faceOf, rasterFace, createScheduler, lampAt, LAMPS, STATION_LAMPS, REGIONS } from "../../caddy/face.mjs";   // the Caddy's face, shared with the service's tests and renders
 import { baseK, baseTier, fitChoice, chosen, clampZ, Z_MAX } from "./fit.mjs";   // the size: z device px per lp and its tier
 import { stampText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
 
 const params = new URLSearchParams(location.search), TEST = params.has("test"), DEV = params.has("dev"), SEED = params.get("seed");
+let cslot = params.get("companion") === "B" ? "B" : "A";   // the Companion in the frame: A, or the second Companion B
 const $ = (id) => document.getElementById(id);
 const SEAT_MS = 160, EASE = [0, 0, 0.2, 1];
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -49,10 +51,10 @@ const placeC = (el, x, y, w, h, tf) => { const s = el.style;
 
 // ---- state ----
 let owner = "station", seatOff = 0, devOpen = false, keysOpen = false;
-let caddy = { canDock: false, docked: false, crates: 0, pending: false }, gotCaddy = false;
-let awaiting = null, pressed = false, askTimer = 0, seatBusy = false;
+let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
+let pressed = false, seatBusy = false;
 const frames = { station: $("fStation"), companion: $("fCompanion") };
-const JUMP = params.get("jump"), stationUrl = "../station/?embed" + (DEV ? "&dev" : "") + (TEST ? "&test" : "") + (JUMP === "arrival" || JUMP === "fork" ? "&jump=" + JUMP : ""), companionUrl = "../exploration/?embed" + (SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (DEV ? "&dev=1" : "");
+const JUMP = params.get("jump"), stationUrl = "../station/?embed" + (DEV ? "&dev" : "") + (TEST ? "&test" : "") + (JUMP === "arrival" || JUMP === "fork" ? "&jump=" + JUMP : ""), companionUrl = "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (cslot === "B" ? "&companion=B" : "") + (DEV ? "&dev=1" : "");
 
 // ---- the keys (drawn keys press exactly as the keyboard does) ----
 const SVG = {
@@ -149,7 +151,7 @@ function layout() {
   placeC(devBtn, narrow ? CW - 112 : CW - 160, 0, narrow ? 100 : 148, 40);
   if (!TEST) layoutSize((narrow ? CW - 112 : CW - 160) - zw);
   devBtn.textContent = narrow ? "Tools" : "Developer tools"; devBtn.setAttribute("aria-label", "Developer tools"); devBtn.classList.toggle("on", devOpen); devBtn.setAttribute("aria-pressed", String(devOpen));
-  layoutDock(narrow);
+  layoutDock(narrow); layoutCompanionCtl(narrow);
   // the bar's note: the narrow tier's line, or for 4000 ms after a seat, a lift or the opening's end, the Caddy's two lines as one (T-20261016-109)
   note.textContent = noteCaddy || NOTE_TEXT;
   note.classList.toggle("hidden", !narrow);
@@ -181,11 +183,14 @@ function layout() {
   cradle.classList.toggle("hidden", !showCradle);
   if (showCradle) { placeC(cradle, xC, cradleY, cw, cradleH, true); place(slot, 16, -1, 434, 6); place(lamp, 12, 15, 8, 8); lamp.width = 8; lamp.height = 8; lamp.style.width = px(8); lamp.style.height = px(8); }
   cradle.classList.toggle("off", !caddy.canDock);
-  lamp.src = "../ui/assets/masters/pods/frame-lamp-8-" + (caddy.docked ? "mint" : "stone") + ".png";
   cradle.title = dockTitle();
   // the Caddy's screen: always shown (e-paper keeps its last lines), not in the narrow tier
   caddyBlock.classList.toggle("hidden", narrow);
   if (!narrow) { placeC(caddyBlock, caddyX, caddyY, caddyW, caddyH, true); place(view, 8, 8, 792, 272); }
+  // the two cradle lamps beside the block, bottom-aligned at its left: a 12 lp dot and its label each; with no room for the labels, the dots alone
+  lampsEl.classList.toggle("hidden", narrow);
+  if (!narrow) { for (const d of [dotC, dotS]) { d.style.width = px(12); d.style.height = px(12); } lampsEl.classList.remove("bare"); let lw = lampsEl.offsetWidth, x = caddyX - 8 - lw;
+    if (x < 4) { lampsEl.classList.add("bare"); lw = lampsEl.offsetWidth; x = caddyX - 8 - lw; } placeC(lampsEl, Math.max(4, x), caddyY + caddyH - lampsEl.offsetHeight, null, null, true); }
   // the ring round the device that has the keys: its shell and its tray
   const g = owner === "station" ? geom.station : geom.companion, top = owner === "station" ? g.y : g.y + seatPx;
   ring.classList.remove("hidden"); placeC(ring, g.x - 3 * f, top - 3 * f, g.w + 6 * f, g.y + g.h - top + 6 * f, true);
@@ -228,7 +233,7 @@ function layoutDock(iconOnly) {
   if (!c.canDock) dockCtl.setAttribute("aria-description", title); else dockCtl.removeAttribute("aria-description");
   dockCtl.classList.toggle("pressed", pressed || c.pending);
 }
-const rects = () => { const o = {}; for (const [n, el] of Object.entries({ station: frames.station, companion: frames.companion, shStation: shS, shCompanion: shC, trayStation: trayEl.station, trayCompanion: trayEl.companion, dock: dockCtl, cradle, lamp, caddy: caddyBlock, dev, ring })) { const r = el.getBoundingClientRect(); o[n] = [r.left, r.top, r.width, r.height]; } return o; };
+const rects = () => { const o = {}; for (const [n, el] of Object.entries({ station: frames.station, companion: frames.companion, shStation: shS, shCompanion: shC, trayStation: trayEl.station, trayCompanion: trayEl.companion, dock: dockCtl, cradle, lamp, caddy: caddyBlock, lamps: lampsEl, dev, ring })) { const r = el.getBoundingClientRect(); o[n] = [r.left, r.top, r.width, r.height]; } return o; };
 
 // ---- animation (the seat and the scroll: one curve, whole physical pixels) ----
 const bez = (t) => { const [x1, y1, x2, y2] = EASE; let u = t; for (let i = 0; i < 8; i++) { const x = 3 * (1 - u) ** 2 * u * x1 + 3 * (1 - u) * u * u * x2 + u ** 3 - t, d = 3 * (1 - u) ** 2 * x1 + 6 * (1 - u) * u * (x2 - x1) + 3 * u * u * (1 - x2); if (Math.abs(d) < 1e-6) break; u -= x / d; } return 3 * (1 - u) ** 2 * u * y1 + 3 * (1 - u) * u * u * y2 + u ** 3; };
@@ -289,57 +294,187 @@ keysBtn.addEventListener("click", () => toggleKeys());
 const barGiveBack = (b) => { if (document.activeElement === b) b.blur(); giveKeys(owner); };
 zDown.addEventListener("click", () => { zStep(-1); barGiveBack(zDown); }); zUp.addEventListener("click", () => { zStep(1); barGiveBack(zUp); }); zFit.addEventListener("click", () => { setZ(null); barGiveBack(zFit); });
 
-// ---- the Dock control, the cradle and the seat (X3) ----
+// ---- the Dock control, the cradle and the seat ----
+// The Dock control and Shift+D stand in for the Companion cradle's hall sensor: a press asks the Caddy service to seat or lift the cradle (POST /dock/seat) and the keys
+// hand over on its answer. The Companion frame answers a seat with its word for that seat's number (who it is, its world, the crates aboard): the stand-in for its hold.
+// Once that word is in, the page hands the dock to the Station (`mb-dock` with `want` and the Companion), which runs it on the shared save as before. The Caddy's face is
+// drawn from the service's state (its stream) and the two frames' words. With no service to answer, the page senses the cradle itself and the dock works as before.
+const API = "/caddy-api/v1", TZ = -new Date().getTimezoneOffset();
 const live = $("live"); const say = (t) => { live.textContent = ""; setTimeout(() => { live.textContent = t; }, 30); };
-function setSeat(target, animate, done) { if (!animate) { seatOff = target; layout(); done && done(); return; } seatBusy = true; tween(seatOff, target, SEAT_MS, (v) => { seatOff = Math.round(v * 1) / 1; layout(); }, () => { seatOff = target; seatBusy = false; layout(); done && done(); }); }
-function askStation() {
-  awaiting = caddy.docked ? "lift" : "dock";
-  try { frames.station.contentWindow.postMessage({ t: "mb-dock", keysElsewhere: owner !== "station" }, location.origin); } catch { /* not loaded */ }
-  clearTimeout(askTimer); askTimer = setTimeout(noReply, 1000);
+const sw = { silent: false, quiet: false, fault: false };   // the developer drawer's three problems
+const now = () => Date.now();
+const sensed = { companion: { state: "lifted", seats: 0, seq: 0, at: now() }, station: { state: "lifted", seats: 0, seq: 0, at: now() } };   // the cradles as this page senses them
+const svc = { up: null, snap: null, es: null, esWorld: null, retry: 0, timer: 0, heardAt: 0, stationWorld: null };   // up: null until the service answers or fails once
+let comp = null, hold = null, heard = null, heardAt = 0, fault = false, inflight = 0, pressOwner = null, lastSeen = null, beat = false;
+const cradles = () => (svc.up && svc.snap && !fault ? svc.snap.cradles : sensed);
+const seatedNow = () => cradles().companion.state === "seated";
+const activeHere = () => !!heard && !!comp && !!heard.companion && heard.companion.id === comp.id;   // the Companion in the frame is the one the Station shows
+function derive() {
+  const crates = comp && !activeHere() ? comp.crates | 0 : heard ? heard.crates | 0 : 0;
+  return { canDock: !!(comp && comp.wid) || !!(heard && heard.canDock), docked: seatedNow(), crates, pending: !!(heard && heard.pending), opened: heard?.opened ?? null, partner: heard?.partner ?? null };
 }
-function noReply() { if (awaiting === null) return; awaiting = null; pressed = false; setSeat(caddy.docked ? 8 : 0, false); layout(); }   // a page never sits pressed with no answer
+function setSeat(target, animate, done) { if (!animate) { seatOff = target; layout(); done && done(); return; } seatBusy = true; tween(seatOff, target, SEAT_MS, (v) => { seatOff = Math.round(v * 1) / 1; layout(); }, () => { seatOff = target; seatBusy = false; layout(); done && done(); }); }
 function dockPress() {
-  if (!caddy.canDock || seatBusy) return;
-  if (caddy.docked) { pressed = true; layout(); askStation(); return; }   // Lift: ask at once
-  pressed = true; layout();
-  setSeat(8, true, () => askStation());   // Dock: seat first, then ask at the seat's end
+  if (!caddy.canDock || seatBusy || pressed) return;
+  pressOwner = owner; pressed = true; layout();
+  if (caddy.docked) { seatCradle(false); return; }   // Lift: ask at once
+  setSeat(8, true, () => seatCradle(true));   // Dock: seat first, then ask at the seat's end
+}
+function sense(want, at) { const c = sensed.companion; if ((c.state === "seated") !== want) { c.state = want ? "seated" : "lifted"; c.at = at; c.seq++; if (want) c.seats++; } }
+async function seatCradle(want) {
+  const at = now(), world = (comp && comp.wid) || (heard && heard.world);
+  if (sw.fault) { fault = true; sense(want, at); pressed = false; cradleChanged(want); return; }   // the Caddy fault: the write is refused, nothing is taken, the marks as sensed
+  let ok = false;
+  try {
+    const ac = new AbortController(), t = setTimeout(() => ac.abort(), 1000);   // a page never sits pressed for more than a second with no answer
+    const r = await fetch(API + "/dock/seat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ world, cradle: "companion", seated: want, companion: comp ? { id: comp.id, name: comp.name } : undefined }), signal: ac.signal });
+    clearTimeout(t); const body = await r.json().catch(() => null);
+    if (r.status === 503 && body && body.fault) { svc.up = true; fault = true; sense(want, at); ok = true; }
+    else if (r.ok && body && body.snapshot) { svc.up = true; fault = false; takeSnap(body.snapshot); connect(world); ok = true; }
+  } catch { /* no service */ }
+  if (!ok) { svc.up = false; fault = false; sense(want, at); }   // nobody answered: the page senses the cradle itself
+  pressed = false; cradleChanged(want);
+}
+function takeSnap(s) { svc.snap = s; for (const k of ["companion", "station"]) sensed[k] = { ...s.cradles[k] }; }
+// The cradle changed (an answer, a stream event, the first state): the seat, the keys, the Companion asked for its word, the Station brought in line, the face.
+// `mine` is the state this page's press asked for (true seated, false lifted), given with the service's answer; the contact beat comes with it.
+function cradleChanged(mine) {
+  const c = cradles().companion, first = lastSeen === null, edge = first || c.state !== lastSeen.state || c.seats !== lastSeen.seats, seated = c.state === "seated";
+  if (edge) {
+    hold = hold && hold.seat === c.seats ? hold : null;
+    if (seated) askCompanion(c.seats);
+    if (!first) beat = true;
+    if (mine === undefined && !pressed && !seatBusy) seatOff = seated ? 8 : 0;   // an external change: cut, nothing animates and the keys do not move
+  }
+  if (mine !== undefined) {
+    if (seated === mine && mine) { setOwner("station"); say("Companion docked"); seatOff = 8; }   // contact: the lamp, the control and the keys cut together
+    else if (seated === mine) { setOwner("companion"); say("Companion lifted"); setSeat(0, true); }
+    else if (!seatBusy) setSeat(seated ? 8 : 0, true);   // the seat did not take: back as it is
+  }
+  lastSeen = { state: c.state, seats: c.seats };
+  caddy = derive(); reconcile(); layout(); faceTick();
+}
+function askCompanion(seat) { try { frames.companion.contentWindow.postMessage({ t: "mb-seat", seat }, location.origin); } catch { /* reloading: it answers when it tells the page who it is */ } }
+// The Station follows the cradle: docked while the Companion is seated, no fault, and its word for this seat is in; never while the Station is quiet.
+function reconcile() {
+  if (sw.quiet || !heard || svc.up === null || inflight > now() || heard.pending) return;
+  const c = cradles().companion, want = c.state === "seated" && !fault && !!hold && hold.seat === c.seats;
+  if (want === !!heard.docked && (!want || activeHere())) return;
+  inflight = now() + 1500;
+  try { frames.station.contentWindow.postMessage({ t: "mb-dock", want, keysElsewhere: (pressOwner ?? owner) !== "station", companion: comp ? { id: comp.id, name: comp.name } : null }, location.origin); } catch { inflight = 0; }
 }
 dockCtl.addEventListener("click", () => { dockPress(); giveKeysBack(); });
 cradle.addEventListener("click", () => dockPress());
 const giveKeysBack = () => { if (document.activeElement === dockCtl) dockCtl.blur(); };
 window.addEventListener("message", (e) => {
-  if (e.origin !== location.origin || e.source !== frames.station.contentWindow) return; const m = e.data || {}; if (m.t !== "mb-caddy") return;
-  const was = caddy; caddy = { canDock: !!m.canDock, docked: !!m.docked, crates: m.crates | 0, pending: !!m.pending, opened: m.opened ?? null, partner: m.partner ?? null };   // opened, partner: the Caddy's lines (src/caddy.mjs)
-  if (fontsOk) paper.show(caddy);   // the e-paper keeps its lines whether or not its sheet is up: one partial refresh per change
-  if (gotCaddy && (was.docked !== caddy.docked || (caddy.opened && JSON.stringify(caddy.opened) !== JSON.stringify(was.opened)))) caddyEvent();   // a seat, a lift, the opening's end
-  if (!gotCaddy) { gotCaddy = true; seatOff = caddy.docked ? 8 : 0; layout(); return; }
-  if (awaiting === "dock") {
-    clearTimeout(askTimer);
-    if (caddy.docked) { awaiting = null; pressed = false; layout(); setOwner("station"); say("Companion docked"); }   // contact: the lamp, the control and the keys cut together
-    else if (caddy.pending) { layout(); }   // kept in a hold: stay seated and pressed until the hold ends
-    else { awaiting = null; pressed = false; setSeat(0, true); layout(); }   // cancelled: the rise
-    return;
+  if (e.origin !== location.origin) return; const m = e.data || {};
+  if (e.source === frames.companion.contentWindow && m.t === "mb-companion") {   // the Companion's word: who it is, its world, its crates, the seat it answers
+    comp = m; const c = cradles().companion;
+    if (c.state === "seated" && m.seat === c.seats) { if (!hold || hold.seat !== m.seat) hold = { seat: m.seat, crates: activeHere() ? heard.crates | 0 : m.crates | 0, left: m.crates | 0 }; else hold.left = m.crates | 0; }
+    if (lastSeen && lastSeen.state === "seated" && m.seat !== c.seats) askCompanion(c.seats);   // a frame that reloaded while seated is asked again
+    caddy = derive(); reconcile(); layout(); faceTick(); return;
   }
-  if (awaiting === "lift") {
-    clearTimeout(askTimer);
-    if (!caddy.docked) { awaiting = null; pressed = false; layout(); setOwner("companion"); say("Companion lifted"); setSeat(0, true); }
-    else if (caddy.pending) { layout(); } else { awaiting = null; pressed = false; layout(); }
-    return;
-  }
-  if (was.docked !== caddy.docked) { seatOff = caddy.docked ? 8 : 0; }   // an external change: cut, nothing animates and the keys do not move
-  layout();
+  if (e.source !== frames.station.contentWindow || m.t !== "mb-caddy") return;
+  if (sw.quiet) return;   // the Station quiet: its link is down, the page hears nothing from it
+  heard = m; heardAt = now(); inflight = 0;
+  if (m.world && m.world !== svc.stationWorld) { svc.stationWorld = m.world; seatStation(m.world); if (!seatedNow()) connect(m.world); }
+  if (svc.up === false && lastSeen === null) { sensed.companion.state = m.docked ? "seated" : "lifted"; if (m.docked) sensed.companion.seats = 1; cradleChanged(); return; }   // no service: the cradle as the Station last saw it
+  caddy = derive(); reconcile(); layout(); faceTick();
 });
+// The Station sits in its own cradle: seated once per world (a state, so a repeat changes nothing).
+function seatStation(world) {
+  sensed.station = { ...sensed.station, state: "seated" };
+  fetch(API + "/dock/seat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ world, cradle: "station", seated: true }) }).then((r) => r.json()).then((b) => { if (b && b.snapshot && svc.snap && b.snapshot.world === svc.snap.world) takeSnap(b.snapshot); }).catch(() => {});
+}
+// The stream of the dock's events for one world: the snapshot first, then dock and face events and a heartbeat; on a drop it reconnects at 1, 2, 4, 8, 16 s, then every 30 s.
+function connect(world) {
+  if (!world || (svc.es && svc.esWorld === world) || typeof EventSource === "undefined") return;
+  if (svc.es) svc.es.close(); clearTimeout(svc.timer);
+  svc.esWorld = world; if (svc.snap && svc.snap.world !== world) svc.snap = null;
+  const es = new EventSource(API + "/dock/events?world=" + encodeURIComponent(world)); svc.es = es;
+  es.addEventListener("snapshot", (e) => { svc.up = true; svc.retry = 0; svc.heardAt = now(); takeSnap(JSON.parse(e.data)); cradleChanged(); });
+  es.addEventListener("dock", (e) => { const d = JSON.parse(e.data); if (!svc.snap) return; svc.snap.cradles[d.cradle] = { state: d.state, seats: d.seats, seq: d.cradleSeq, at: d.at }; svc.snap.seq = d.seq; takeSnap(svc.snap); cradleChanged(); });
+  es.addEventListener("face", (e) => { if (svc.snap) svc.snap.face = JSON.parse(e.data); faceTick(); });
+  es.addEventListener("heartbeat", () => { svc.heardAt = now(); });
+  es.onerror = () => {
+    es.close(); if (svc.es !== es) return; svc.es = null;
+    if (svc.up === null) { svc.up = false; if (heard && lastSeen === null) { sensed.companion.state = heard.docked ? "seated" : "lifted"; if (heard.docked) sensed.companion.seats = 1; } cradleChanged(); }
+    const d = [1, 2, 4, 8, 16][svc.retry] ?? 30; svc.retry++;
+    svc.timer = setTimeout(() => { const w = svc.esWorld; svc.esWorld = null; connect(w); }, d * 1000);
+  };
+}
+// The second Companion (the owner's: the Companion is the player's identity): the frame holds Companion A or B; the Station and the Caddy keep the last docked player's
+// world until another Companion docks. Lift first: a Companion in its cradle is not swapped.
+const companionCtl = $("companionCtl");
+const companionSrc = () => "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (cslot === "B" ? "&companion=B" : "") + (DEV ? "&dev=1" : "");
+function switchCompanion() {
+  if (seatedNow() || pressed) return;
+  cslot = cslot === "A" ? "B" : "A"; comp = null; hold = null; frames.companion.src = companionSrc(); caddy = derive(); layout();
+}
+companionCtl.addEventListener("click", () => { switchCompanion(); if (document.activeElement === companionCtl) companionCtl.blur(); giveKeys(owner); });
+function layoutCompanionCtl(narrow) {
+  placeC(companionCtl, narrow ? 236 : 284, 0, narrow ? 72 : 148, 40);
+  const other = cslot === "A" ? "B" : "A", off = seatedNow();
+  companionCtl.innerHTML = (narrow ? "" : "Companion ") + '<b>' + cslot + '</b> / ' + other;
+  companionCtl.setAttribute("aria-label", "Companion " + cslot + "; switch to Companion " + other); companionCtl.setAttribute("aria-disabled", String(off));
+  companionCtl.title = off ? "Lift the Companion first" : "Switch to Companion " + other;
+}
+// The drawer's three problems: "Companion silent" (the Companion frame holds back its word), "Station quiet" (the page stops hearing the Station and the Station hears
+// nothing of the dock), "Caddy fault" (the service refuses writes).
+function setSwitch(name, on) {
+  sw[name] = !!on; const box = $("sw-" + name); if (box) box.checked = !!on;
+  if (name === "silent") { try { frames.companion.contentWindow.postMessage({ t: "mb-silent", on: !!on }, location.origin); } catch { /* reloading */ } }
+  if (name === "quiet" && !on) { inflight = 0; reconcile(); }
+  faceTick();
+}
+for (const n of ["silent", "quiet", "fault"]) { const box = $("sw-" + n); if (box) box.addEventListener("change", () => setSwitch(n, box.checked)); }
 
-// ---- the Caddy's screen (T-20261016-109): always shown, in its own 808 × 288 lp block (the 792 × 272 view and an 8 lp bezel) ----
-// Under the cradle in Stack, under the Station in Row. It is e-paper and keeps its last lines: it redraws once per change of its lines and never animates. The narrow tier has no room for it: the bar's note shows
-// the two lines as one for 4000 ms at each seat, lift and the opening's end instead.
-const NOTE_MS = 4000, NOTE_TEXT = note.textContent;
-const caddyBlock = $("caddySheet"), view = $("caddyView"), spacer = $("spacer"), painter = canvasPainter(view), paper = createPaper(painter.draw, painter.measure);
-let noteCaddy = "", noteTimer = 0, fontsOk = false;
-document.fonts.load('500 28px "Inter"').then(() => document.fonts.load('500 20px "Inter"')).then(() => { fontsOk = true; if (gotCaddy) paper.show(caddy); });   // the paper draws in Inter, never a fallback
-function caddyEvent() {
+// ---- the Caddy's screen: always shown, in its own 808 × 288 lp block (the 792 × 272 view and an 8 lp bezel) ----
+// Under the cradle in Stack, under the Station in Row. It draws the face (caddy/face.mjs) of the service's state with the panel's timing: a partial appears 0.8 s after its
+// change over the regions that changed; a full refresh blacks the panel, whitens it, then draws, over 4 s. The narrow tier has no room for it: the bar's note shows lines 1
+// and 2 as one for 4000 ms at each seat, lift and the opening's end instead. The two cradle lamps sit beside it as 12 lp dots; the cradle under the key tray carries the
+// Companion's lamp too.
+const NOTE_MS = 4000, NOTE_TEXT = note.textContent, PARTIAL_MS = 800, FULL_MS = 4000;
+const caddyBlock = $("caddySheet"), view = $("caddyView"), spacer = $("spacer"), lampsEl = $("caddyLamps"), dotC = $("lampCompanion"), dotS = $("lampStation");
+const vctx = view.getContext("2d", { willReadFrequently: true }); view.width = 792; view.height = 272;
+const bootAt = now(), sched = createScheduler({ tz: TZ }), drawnLog = [];
+let noteCaddy = "", noteTimer = 0, faceNow = null, drawn = null, lastFaceId = null, faceStarted = false, lampOf = { c: "off", since: 0 };
+const imageOf = (face) => { const px = rasterFace(face), img = vctx.createImageData(792, 272); for (let i = 0; i < px.length; i++) { const o = i * 4; img.data[o] = img.data[o + 1] = img.data[o + 2] = px[i]; img.data[o + 3] = 255; } return img; };
+const blank = (v) => { vctx.fillStyle = `rgb(${v},${v},${v})`; vctx.fillRect(0, 0, 792, 272); };
+function panelOp(o) {
+  if (o.kind === "partial") setTimeout(() => { const img = imageOf(o.face); for (const r of o.regions) { const [x, y, w, h] = REGIONS[r]; vctx.putImageData(img, 0, 0, x, y, w, h); } drawn = o.face; drawnLog.push({ kind: "partial", id: o.face.id, regions: o.regions, at: now() }); }, PARTIAL_MS);
+  else { blank(0); setTimeout(() => blank(255), FULL_MS / 3); setTimeout(() => { vctx.putImageData(imageOf(o.face), 0, 0); drawn = o.face; drawnLog.push({ kind: "full", id: o.face.id, why: o.why, at: now() }); }, (2 * FULL_MS) / 3); }
+}
+function faceInput(t) {
+  const who = (svc.up && svc.snap && svc.snap.face && svc.snap.face.who) || (seatedNow() && comp ? { name: comp.name } : null) || (heard && heard.companion ? { name: heard.companion.name } : null);
+  return { now: t, tz: TZ, bootAt, cradles: cradles(), who, hold, fault,
+    station: heard ? { at: heardAt, partner: heard.partner ?? null, along: heard.along ?? null, opened: heard.opened ?? null, crates: heard.crates | 0, ledger: heard.ledger ?? null } : null };
+}
+function faceTick() {
+  const t = now(), f = faceOf(faceInput(t)); faceNow = f;
+  lamps(f, t);
+  if (!faceStarted) { const ready = !!heard && (svc.up === false || (!!svc.snap && svc.snap.cradles.station.state === "seated")); if (!ready && t - bootAt < 15000) return; faceStarted = true; }   // the first picture once the Station has spoken and sits in its cradle (or, with no word, at 15 s)
+  for (const o of [sched.push(f, t, { beat }), sched.tick(t)]) if (o) panelOp(o);
+  beat = false;
+  if (!f.keep && f.id !== lastFaceId) { if (lastFaceId !== null && ["C0", "C2", "C3"].includes(f.id)) caddyEvent(f); lastFaceId = f.id; }
+}
+setInterval(faceTick, 200);
+const LAMP_RGB = { mint: "#adf6e0", amber: "#ffa83f", warm: "#f1ebdf" }, LAMP_SRC = { stone: "../ui/assets/masters/pods/frame-lamp-8-stone.png", mint: "../ui/assets/masters/pods/frame-lamp-8-mint.png", amber: null };
+{ const im = new Image(); im.onload = () => { const c = document.createElement("canvas"); c.width = c.height = 8; const x = c.getContext("2d"); x.drawImage(im, 0, 0); const d = x.getImageData(0, 0, 8, 8);   // the 8 px amber lamp: the mint master's light in amber
+    for (let i = 0; i < 256; i += 4) { const k = Math.max(d.data[i], d.data[i + 1], d.data[i + 2]) / 255; d.data[i] = Math.round(0xff * k); d.data[i + 1] = Math.round(0xa8 * k); d.data[i + 2] = Math.round(0x3f * k); } x.putImageData(d, 0, 0); LAMP_SRC.amber = c.toDataURL(); }; im.src = LAMP_SRC.mint; }
+function lamps(f, t) {
+  if (f.lamp.companion !== lampOf.c) lampOf = { c: f.lamp.companion, since: t };
+  const L = lampAt(lampOf.c, t - lampOf.since), src = L.colour === "amber" ? LAMP_SRC.amber || LAMP_SRC.mint : L.colour ? LAMP_SRC.mint : LAMP_SRC.stone;
+  if (lamp.getAttribute("src") !== src) lamp.src = src;
+  const rel = L.colour ? L.level / LAMPS.seated.level : 1;   // seated is the master as drawn; the breath dims it, the swell brightens it
+  lamp.style.opacity = rel < 1 ? String(rel.toFixed(3)) : ""; lamp.style.filter = rel > 1 ? `brightness(${rel.toFixed(3)})` : "";
+  const dot = (el, l) => { el.style.background = l.colour ? LAMP_RGB[l.colour] : "transparent"; el.style.opacity = l.colour ? String((0.4 + 0.6 * Math.min(1, l.level)).toFixed(3)) : "1"; el.dataset.lamp = l.colour || "off"; };
+  dot(dotC, L); dot(dotS, lampAt(f.lamp.station, 0, STATION_LAMPS));
+  dotC.parentElement.title = "Companion cradle: " + lampOf.c; dotS.parentElement.title = "Station cradle: " + f.lamp.station;
+}
+function caddyEvent(f) {
   if (tier !== "narrow") return;
-  const l = caddyLines(caddy); noteCaddy = "Caddy: " + l.line1 + (l.line2 ? " · " + l.line2 : ""); clearTimeout(noteTimer); noteTimer = setTimeout(() => { noteCaddy = ""; layout(); }, NOTE_MS); layout();
+  noteCaddy = "Caddy: " + f.lines.l1 + (f.lines.l2 ? " · " + f.lines.l2 : ""); clearTimeout(noteTimer); noteTimer = setTimeout(() => { noteCaddy = ""; layout(); }, NOTE_MS); layout();
 }
 
 // ---- boot ----
@@ -357,4 +492,7 @@ armDpr(); window.addEventListener("resize", layout);
 fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => { stamp.textContent = stampText(j); }).catch(() => { stamp.textContent = "build local"; });
 layout(); reveal(owner, true);   // the page opens revealed for the device with the keys (the Station on a fresh load); no scroll position is restored
 // for the play-page journey: read-only views of the shell's state
-window.__play = { get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get tier() { return tier; }, get z() { return k; }, get fit() { return zSet == null; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get awaiting() { return awaiting; }, get pressed() { return pressed; }, get caddySheet() { return { up: tier !== "narrow", lines: paper.lines, refreshes: paper.refreshes, note: noteCaddy }; }, rects, frames };
+window.__play = { get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get tier() { return tier; }, get z() { return k; }, get fit() { return zSet == null; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get pressed() { return pressed; },
+  get caddySheet() { return { up: tier !== "narrow", id: drawn ? drawn.id : null, lines: drawn ? { ...drawn.lines } : null, crates: drawn ? drawn.crates : 0, ledger: drawn ? drawn.ledger : null, marks: drawn ? { ...drawn.marks } : null, next: faceNow ? faceNow.id : null, counts: sched.counts, log: drawnLog.slice(), note: noteCaddy,
+    lamp: { companion: lampOf.c, station: faceNow ? faceNow.lamp.station : "off", dot: dotC.dataset.lamp, stationDot: dotS.dataset.lamp }, pixels: () => Array.from(vctx.getImageData(0, 0, 792, 272).data.filter((_, i) => i % 4 === 0)) }; },
+  get dock() { return { up: svc.up, world: svc.esWorld, snap: svc.snap, sensed: JSON.parse(JSON.stringify(sensed)), hold, comp, fault, heardAt, slot: cslot }; }, setSwitch, switchCompanion, rects, frames };

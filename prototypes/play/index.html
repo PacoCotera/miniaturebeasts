@@ -80,6 +80,16 @@ iframe{border:0; display:block; background:var(--void)}
 /* the Caddy's screen: the 792 × 272 lp view in an 8 lp bezel, 808 × 288 lp, always shown */
 #caddySheet{position:absolute; background:var(--bar); box-shadow:inset 0 calc(var(--f) * 1px) 0 var(--bevel); border-radius:calc(var(--f) * 8px); overflow:hidden; z-index:2}
 #caddyView{position:absolute; image-rendering:pixelated; display:block}
+/* the two cradle lamps beside the Caddy's block: a 12 lp dot and its label each (the lamp colours are placeholders) */
+#caddyLamps{position:absolute; display:flex; flex-direction:column; gap:6px; align-items:flex-end; color:var(--mist); font-size:12px; line-height:12px; white-space:nowrap; z-index:2}
+#caddyLamps .cl{display:flex; align-items:center; gap:6px}
+#caddyLamps .cl i{display:block; border-radius:50%; box-shadow:inset 0 0 0 1px var(--bevel)}
+#caddyLamps.bare .cl span{display:none}
+#companionCtl b{color:var(--bone); font-weight:500}
+#companionCtl[aria-disabled="true"]{color:var(--stone); cursor:default}
+#companionCtl[aria-disabled="true"] b{color:var(--stone)}
+#devCaddy{padding:0 0 8px}
+#devCaddy label{display:flex; gap:8px; align-items:center; margin:4px 0; font-size:14px}
 /* the developer drawer or column: the Station's own panel, restyled in the Station palette */
 #dev{position:fixed; background:var(--bar); border:1px solid var(--hairline); z-index:15; padding:16px; overflow:auto; color:var(--fog); --panel:#23292f; --line:#3d434b; --ink:#c6c4d8; --muted:#8d8aa6; --chip:#1d232b; --bg-2:#1d232b}
 #dev.column{border-radius:8px}
@@ -112,17 +122,19 @@ iframe{border:0; display:block; background:var(--void)}
   <div class="shell" id="shCompanion"><iframe id="fCompanion" title="Companion screen" allow="" loading="eager"></iframe></div>
   <div class="row" id="rowCompanion"></div>
   <div id="caddySheet" aria-label="The Caddy's screen" role="img"><canvas id="caddyView" width="792" height="272"></canvas></div>
+  <div id="caddyLamps" aria-label="The Caddy's cradle lamps"><div class="cl"><span>Companion cradle</span><i id="lampCompanion"></i></div><div class="cl"><span>Station cradle</span><i id="lampStation"></i></div></div>
   <div id="spacer"></div>
   <div id="cradle" title="Dock the Companion in the Caddy"><div id="slot"></div><img id="lamp" alt="" src="../ui/assets/masters/pods/frame-lamp-8-stone.png" width="8" height="8"></div>
   <div id="ring"></div>
   <div id="stamp" class="hidden">build local</div>
 </div>
   <iframe id="fBench" title="Bench" class="hidden" allow=""></iframe>   <!-- the workbench is hidden on the play page (an outdated tool): never loaded -->
-  <div id="dev" class="hidden"><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
+  <div id="dev" class="hidden"><div id="devCaddy"><p class="dev-lede">The Caddy's problems</p><label><input type="checkbox" id="sw-silent"> Companion silent (the Companion holds back its word)</label><label><input type="checkbox" id="sw-quiet"> Station quiet (the Station's link drops)</label><label><input type="checkbox" id="sw-fault"> Caddy fault (the Caddy refuses writes)</label></div><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
 <div id="bar">
   <button type="button" class="ctl" id="tabStation">Station</button>
   <button type="button" class="ctl" id="tabCompanion">Companion</button>
   <button type="button" class="ctl hidden" id="tabBench">Bench</button>
+  <button type="button" class="ctl" id="companionCtl" aria-label="Companion A; switch to Companion B">Companion <b>A</b> / B</button>
   <button type="button" class="ctl" id="dockCtl" aria-label="Dock the Companion in the Caddy" title="Dock the Companion in the Caddy"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint" id="dockHint">⇧D</span></button>
   <button type="button" class="ctl" id="keysBtn">Keys ?</button>
   <button type="button" class="ctl hidden" id="zDown" aria-label="Smaller" title="Smaller (−)">−</button>

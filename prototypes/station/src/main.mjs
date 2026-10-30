@@ -86,14 +86,18 @@ const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(
 // The Caddy's state as the control and the play page's shell take it (frame.json navigation.dock; the shell never reads the save): canDock is the exact condition state.mjs refuses a dock on
 // opened: what the last opening brought, until the next dock or lift; partner: the Companion's partner (its lead if carried and grown, else the first grown mibi with it), for the Caddy's lines (play/src/caddy.mjs)
 const partnerName = () => { const p = S.partnerOf(G.st, G.sv, G.settings); return p ? p.name : null; };
-const caddyState = () => ({ canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(CORE.host && CORE.host.pendingDock), opened: UI.caddyOpened ?? null, partner: partnerName() });
+// world, companion: the world shown and whose Companion it is (the last one docked); ledger: the supplies for the face's ledger; along: the mibi asked to go along on the next trip, for its line 3
+const alongName = () => { const r = S.pendingCarry(G.st, G.sv).find((q) => q.op === "add"); return r ? mibiById(r.id)?.name ?? null : null; };
+const caddyState = () => { const c = activeCompanion();
+  return { canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(CORE.host && CORE.host.pendingDock), opened: UI.caddyOpened ?? null, partner: partnerName(),
+    world: G.st.wid || null, companion: c ? { id: c.id, name: c.name } : null, ledger: { e: G.st.e | 0, d: G.st.d | 0, s: G.st.s | 0 }, along: alongName() }; };
 let lastPosted = "";
 function postCaddy(force = false) {
   const m = caddyState(), k = JSON.stringify(m); if (!force && k === lastPosted) return; lastPosted = k;
   if (parent !== window) parent.postMessage({ t: "mb-caddy", ...m }, location.origin);
 }
 function updateCaddy() {
-  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner; if (key === caddyKey) return; caddyKey = key;
+  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner + ":" + c.world + ":" + JSON.stringify([c.companion, c.ledger, c.along]); if (key === caddyKey) return; caddyKey = key;
   if (EMBED) { postCaddy(); return; }
   caddyEl.classList.toggle("lifted", !d);
   dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";
@@ -142,7 +146,7 @@ const ready = Promise.all([loadFrames(), bootAssets({ test: TEST })]).then(async
   loadRoomsInBackground();   // the other rooms, now that the first screen can draw (the room after the shown one first; 16 in flight)
   buildDevPanel((inShell && parent.document.getElementById("devStation")) || $("devPanel"), { changed: refreshDev, openCrates: () => { CORE.host.goto("cargo"); cargo.openBay(CORE.host); }, motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()) });
   caddy.startClient();
-  if (EMBED) { caddyKey = ""; updateCaddy(); postCaddy(true); }   // the shell hears the Caddy's state at ready
+  if (EMBED) { caddyKey = ""; updateCaddy(); postCaddy(true); setInterval(() => postCaddy(true), 5000); }   // the shell hears the Caddy's state at ready, and again every 5 s: the Station's heartbeat for the Caddy's link
   if (new URLSearchParams(location.search).has("dev")) showDev(true);
   if (bootEl) bootEl.textContent = info.n + " species frames · catalogue " + info.catalogue.id + "@" + info.catalogue.version;
   return info;
@@ -176,7 +180,7 @@ window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(und
   openCreate: (podId) => create.openCreate(CORE.host, podById(podId)), readSome: (podId, n) => { const p = podById(podId); S.skipIdentify(G.st, p); const fr = frameOf(S.speciesOf(p)); fr.chapters.slice(0, n).forEach((c) => S.read(G.st, p, c.id, G.settings)); save(); },
   seedPod: (species, gs) => { const r = S.seedPodFromGenome(G.st, podGenome(frameOf(species), gs), G.settings, Date.now()); save(); return r; },
   seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); },
-  get saveKey() { return saveKey(); }, get companion() { return activeCompanion(); } };
+  carryAdd: (id) => { const r = S.carryAdd(G.st, G.sv, mibiById(id)); save(); return r; }, get saveKey() { return saveKey(); }, get companion() { return activeCompanion(); } };
 
 // What the CI checks read at a screenshot point: the screen, the face's log (every string it set, each drawn region) and its counts.
 function checkSnapshot() {
