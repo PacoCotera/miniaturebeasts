@@ -87,6 +87,13 @@ static void lvl_draw(int lv, unsigned r1, unsigned r2, int w, int xa, int xb, in
   *x = xa + (int)(r1 % (unsigned)(xb - xa + 1)); *feet = fa + (int)(r2 % (unsigned)(fb - fa + 1));
 }
 #define WIDE (-(1 << 20)), (1 << 20)
+/* the room view (the collection v2 design §3, the build's sign-off on Boulders): a raised level is the walk's only when a join links it to main with both ends inside the walk's range for this width; a level no one can climb to
+   (Boulders' terrace, its ramp's upper end outside the window's range) is no start, no waypoint and no rest for anyone. Home and Idle climb as built. */
+static int lv_open(int lv, int w) {
+  if (!g_viv || lv == 0 || !room_have()) return 1;
+  int rt[2][2][2] = { { { 0 } } }; if (room_route(0, lv, rt) < 0) return 0;
+  return gok(0, rt[0][0][0] - w / 2, rt[0][0][1], w, 1) && gok(lv, rt[0][1][0] - w / 2, rt[0][1][1], w, 1);
+}
 /* every box along the straight path from (x0, f0) to (x1, f1), at each px of its major axis (the speeds are 1 to 2 px a tick), stays out of the keep-outs and on level lv */
 static int path_ok(int lv, int x0, int f0, int x1, int f1, int w, int relaxed) {
   int dx = x1 - x0, dy = f1 - f0, M = iabs(dx) > iabs(dy) ? iabs(dx) : iabs(dy);
@@ -105,6 +112,7 @@ static int speed_d(int stage, int n) { return n * g_spd[stage][0] / g_spd[stage]
 static void wk_init(wk_t *k, const char *id, unsigned seed, int w, int h, int stage, int pi) {
   memset(k, 0, sizeof *k); snprintf(k->id, sizeof k->id, "%s", id); k->seed = seed; k->s = seed; k->w = w; k->h = h; k->live = 1; k->done = 0; k->stage = stage; k->pi = pi;
   unsigned r = wr(k); int nl = room_levels(), lv = nl > 1 && r % (unsigned)g_lvin == 0 && raised_ok(id) ? 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)) : 0;   /* one draw: the level (1 start in lvin, while the raised cap allows) */
+  if (!lv_open(lv, w)) lv = 0;   /* a level no one can climb to in the room view: main */
   int x = 32, feet = 300, ok = 0;
   for (int i = 0; i < 8 && !ok; i++) { unsigned a = wr(k), b = wr(k); lvl_draw(lv, a, b, w, WIDE, WIDE, &x, &feet); ok = gok(lv, x, feet, w, 0) && !start_heap(x, feet, w, h); }
   if (!ok) { lv = 0; lvl_draw(0, 0, 0, w, g_xlo, g_xlo, g_rlo, g_rhi, &x, &feet); }   /* all eight failed: main's leftmost point at its top */
@@ -126,6 +134,12 @@ static void wk_next(wk_t *k) {   /* the segment ended: the next of the three leg
   }
 }
 static int curl_clear(const char *self, int fx, int cw, int gap);   /* below the moving residents' type */
+/* the room view: a curl at foot (fx, feet), its ink cw wide and at most 32 high, would lie over a back piece of the room (the shishi, the arm, the lantern, the mister: every piece stays unoccluded by a resting figure) */
+static int curl_on_piece(int fx, int feet, int cw) {
+  if (!g_viv) return 0; const rp_t *bk; int nbk = room_pieces(RP_BACK, &bk), x0 = fx - (cw + 1) / 2, x1 = fx + (cw + 1) / 2, y0 = feet - 32;
+  for (int i = 0; i < nbk; i++) if (x0 < bk[i].x + bk[i].w && x1 > bk[i].x && y0 < bk[i].y + bk[i].h && feet > bk[i].y) return 1;
+  return 0;
+}
 /* while the props load: the walkers and movers placed so far this load (a fresh show places its resters one by one, each clear of those before it) */
 static const void *g_lw, *g_lm; static const int *g_nlw, *g_nlm;
 /* a nice spot for a curl (vivarium.json rules.show.curl; the game designer's cats): a foot point (fx, feet) on level lv that is a valid stand (the walk's own test), at least `gap` from every other curl and from the bed, beside an occluder of lv (fx = its rect.x - beside or
@@ -137,11 +151,11 @@ static int curl_spot(const char *self, unsigned seed, int lv, int w, int cw, int
   for (int k = 0; k < noc && n + 2 <= 20; k++) if (oc[k].level == lv) { cx[n] = oc[k].x - beside; cf[n++] = oc[k].foot - occDy; cx[n] = oc[k].x + oc[k].w + beside; cf[n++] = oc[k].foot - occDy; }
   { int xs[8], nx = room_xs(lv, xs, 8), q = (w + 3) / 4; for (int i = 0; i < nx && n < 24; i++) { int fx = xs[i]; if (fx < xs[0] + q) fx = xs[0] + q; if (fx > xs[nx - 1] - q) fx = xs[nx - 1] - q; cx[n] = fx; cf[n++] = room_top(lv, fx) + backDy; } }
   int ok[24], nok = 0, best = -1, bd = 1 << 30, near[24], nn = 0;
-  for (int i = 0; i < n; i++) { ok[i] = gok(lv, cx[i] - w / 2, cf[i], w, 0) && curl_clear(self, cx[i], cw, gap); if (!ok[i]) continue; nok++;
+  for (int i = 0; i < n; i++) { ok[i] = gok(lv, cx[i] - w / 2, cf[i], w, 0) && curl_clear(self, cx[i], cw, gap) && lv_open(lv, w) && !curl_on_piece(cx[i], cf[i], cw); if (!ok[i]) continue; nok++;
     int d = iabs(cx[i] - here) > iabs(cf[i] - feet) ? iabs(cx[i] - here) : iabs(cf[i] - feet); if (d < bd) { bd = d; best = i; } if (d <= reach) near[nn++] = i; }
   if (nn) { unsigned r = (seed ^ 0x9e3779b9u) * 2654435761u >> 16; int i = near[r % (unsigned)nn]; *ox = cx[i]; *of = cf[i]; return 1; }
   if (nok) { *ox = cx[best]; *of = cf[best]; return 1; }
-  if (gok(lv, x, feet, w, 0) && curl_clear(self, here, cw, gap)) { *ox = here; *of = feet; return 1; }
+  if (gok(lv, x, feet, w, 0) && curl_clear(self, here, cw, gap) && lv_open(lv, w) && !curl_on_piece(here, feet, cw)) { *ox = here; *of = feet; return 1; }
   return 0;
 }
 /* a trip to a given point, as wk_step's own, with no draws: on lv, or by the join to tlv; 0 when no join links the two */
@@ -188,7 +202,7 @@ static void wk_step(wk_t *k) {   /* one step of this resident's own time */
     if (census_travelling() >= g_trmax) return;   /* the ceiling: no trip starts while the most that may travel are travelling; it asks again on its next tick */
     if (!k->sh && k->rs == RS_FINISH) { if (k->rk == RK_BED) { k->rs = RS_REST; k->hold = 1; return; } wk_rest_plan(k); return; }   /* a rester: its trip is over, it goes to rest (a rest trip is a trip under the ceiling) */
     unsigned r = wr(k); int nl = room_levels(), tlv = k->lv, jn = -1, rt[2][2][2] = { { { 0 } } };   /* one draw: the target level (1 trip in lvin changes level, when a join links the two and the raised cap allows) */
-    if (nl > 1 && r % (unsigned)g_lvin == 0) { int to = k->lv ? 0 : 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)); if ((to == 0 || raised_ok(k->id)) && (jn = room_route(k->lv, to, rt)) >= 0) tlv = to; }
+    if (nl > 1 && r % (unsigned)g_lvin == 0) { int to = k->lv ? 0 : 1 + (int)((r / (unsigned)g_lvin) % (unsigned)(nl - 1)); if ((to == 0 || raised_ok(k->id)) && lv_open(to, k->w) && (jn = room_route(k->lv, to, rt)) >= 0) tlv = to; }
     int ax = rt[0][0][0] - k->w / 2, af = rt[0][0][1], bx = rt[1][0][0] - k->w / 2, bf = rt[1][0][1];
     int wx = k->x, wf = k->feet, ok = 0;   /* idle is over: a waypoint, up to eight tries */
     for (int i = 0; i < 8 && !ok; i++) {

@@ -390,7 +390,7 @@ test("levels in every room (§2): Reeds and Ferns climb and come back at their j
   for (const room of ["reeds", "boulders", "ferns"]) {
     const t = { trips: 0, up: 0, down: 0, maxRaised: 0, points: 0 };
     for (let block = 0; block < 3; block++) levelProof(room, await levelRun(block, 300000, FAST, 8, ORDER.indexOf(room)), block, t);
-    if (room === "boulders") assert.deepEqual([t.up, t.down], [0, 0], "Boulders: no climb in the room view"); else assert.ok(t.up >= 1 && t.down >= 1, `${room}: climbs ${t.up}, descents ${t.down}`);
+    if (room === "boulders") assert.deepEqual([t.up, t.down, t.maxRaised], [0, 0, 0], "Boulders: no climb in the room view, and nobody on the terrace (no start, no waypoint and no rest there)"); else assert.ok(t.up >= 1 && t.down >= 1, `${room}: climbs ${t.up}, descents ${t.down}`);
     console.log(`# levels, ${room}: ${t.points} feet points, ${t.up} climbs and ${t.down} descents, at most ${t.maxRaised} raised`);
   }
 });
@@ -439,6 +439,12 @@ test("R3: a back piece always draws before every walker; the nodes' names (p.<pi
   const walkers = n1.map((n, i) => [n, i]).filter(([n]) => n[3] === "resident" || n[3] === "bed.sleepers" || n[3] === "bed"); assert.ok(walkers.length >= 5); assert.ok(walkers.every(([, i]) => back < i && at(n1, "p.roots-mist-2") < i));
   const ids = (nodes) => nodes.filter((n) => n[3] === "room").map((n) => n[0]).sort((a, c) => a - c);
   frames(f, 3, 40); assert.deepEqual(ids(nodesOf(f)), ids(n1)); frames(f, 200, 80); assert.deepEqual(ids(nodesOf(f)), ids(n1), "and after the walkers have walked on");
+});
+test("Boulders in the room view (the build's sign-off): forty in the room, the terrace holds no one and no figure lies over the shishi, its arm or the lantern, at rest and as they walk and curl", { skip }, async () => {
+  const b = scene({ rooms: 4, per: [8, 8, 8, 8], room: 2 }), f = await start(b, { t0: 5000, node: true }), piece = (id) => { const n = nodesOf(f).find((x) => x[0] === fnv("p." + id)); return n ? n.slice(4, 8) : null; };
+  const hit = (a, q) => a[0] < q[0] + q[2] && a[0] + a[2] > q[0] && a[1] < q[1] + q[3] && a[1] + a[3] > q[1];
+  frames(f, 2, 40); void piece; const cx = ROOMS.boulders.crop[0], backs = ["boulders-shishi", "boulders-arm-fill", "boulders-lantern"].map((id) => { const r = ROOMS.boulders.pieces.find((q) => q.id === id).rect; return [r[0] - cx, r[1] - 8, r[2], r[3]]; });   // screen = painting − (cx, 8)
+  for (let t = 0; t < 600; t++) { frames(f, 1, 80); for (const w of residents(nodesOf(f))) { const box = w.slice(4, 8); for (const q of backs) assert.ok(!hit(box, q), `a figure ${box} lies over a piece ${q} at step ${t}`); } }
 });
 test("R3: a room's keep-outs hold for the walkers (the ground point inside the rect), a piece with a null picture draws no node; a room with no bed draws none", { skip }, async () => {
   const r = ROOMS.reeds, keeps = r.levels.flatMap((l) => l.keepOuts).map((k) => [k[0] - CX("reeds"), k[1] + DY, k[2], k[3]]);

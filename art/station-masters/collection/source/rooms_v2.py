@@ -6,7 +6,8 @@
 #      with them, never typed), the Boulders lantern on the mound's crest, the arm and its pivot with the shishi, the drops' words, and each changed file's hash;
 #   2. Boulders: the rear stone (x 842 to 915) painted out of the four idle bases, the moss mound closed behind it and the tall stone carried down;
 #   3. Roots: the bed re-lit for its new ground [248, 496, 192, 56] in the four lights (a partial match of the ground's light, and a contact shadow on the path);
-#   4. the room chips: a 128 x 32 cut, 1:1, from inside each room's window in the four lights (Reeds on its blades).
+#   4. the room chips: a 128 x 32 cut, 1:1, from inside each room's window in the four lights (Reeds on its blades);
+#   5. the house view's tiles: each room's window as the room view draws it with no mibi, at exactly 1/2 (344 x 236), in the four lights.
 #   python3 art/station-masters/collection/source/rooms_v2.py <masters-pods>/art/station-masters/pods/rooms <out>/art/station-masters/pods/rooms
 import sys, os, json, shutil, hashlib
 import numpy as np
@@ -32,7 +33,7 @@ DROPS = {
 LEAVE_OUT = {"reeds": ["reeds-sedge-1"], "ferns": ["ferns-fern-1"]}   # not pieces of the room view (a seam painted in the base; a tuft outside the window)
 # the pieces moved for the windows: id -> the new [x, y] of rect_painting (the size and the art unchanged)
 MOVES = {
-    "roots": {"roots-bed": [248, 496], "roots-stone-2": [604, 499], "roots-mister": [620, 323], "roots-mist-2": [550, 324]},
+    "roots": {"roots-bed": [248, 496], "roots-stone-2": [592, 499], "roots-mister": [610, 323], "roots-mist-2": [540, 324]},   # the build sign-off: Home's window (right edge at painting x 668) holds stone-2 and the mister whole, 8 px clear
     "reeds": {"reeds-raincup": [818, 303]},
     "boulders": {"boulders-stone-2": [196, 502], "boulders-shishi": [198, 262], "boulders-arm": [224, 264], "boulders-cushion-1": [770, 496], "boulders-lantern": [677, 282]},
     "ferns": {"ferns-copper-1": [772, 213], "ferns-copper-2": [820, 216], "ferns-crozier-1": [740, 496]},
@@ -93,6 +94,28 @@ def relight_bed(bed, base):
     C = np.where(A[..., None] > 0, (rgb * a[..., None] + soil * (s * (1 - a))[..., None]) / np.maximum(A, 1e-6)[..., None], 0)
     return Image.fromarray(np.dstack([np.clip(np.round(C), 0, 255), np.round(A * 255)]).astype(np.uint8), "RGBA"), gain
 
+# ---- 5. the house view's tiles: each room's window [cx, 96, 688, 472] as the room view draws it with no mibi (the base, its back pieces, the bed, its occluders by their foot), at exactly 1/2 ----
+TILE = [344, 236]
+def piece_file(room, p):
+    if p["kind"] == "anim": return p["file"].replace("{pose}", "fill") if p.get("poses_deg", {}).get("fill") is not None and "{pose}" in (p.get("file") or "") else None
+    return p.get("file") or f"rooms/pieces/{room}/{p['id']}-{{light}}.png"
+def tile_of(rooms, r, room, light):
+    pods = os.path.dirname(rooms); im = Image.open(os.path.join(rooms, f"seated-idle-{room}-{light}.png")).convert("RGBA")
+    def lay(p, opa=255):
+        f = piece_file(room, p)
+        if not f: return
+        f = os.path.join(pods, f.replace("{light}", light))
+        if not os.path.exists(f): return
+        pc = Image.open(f).convert("RGBA"); x, y = p["rect_painting"][:2]
+        if opa < 255: a = pc.getchannel("A").point(lambda v: v * opa // 255); pc.putalpha(a)
+        im.alpha_composite(pc, (x, y))
+    pieces = [p for p in r["pieces"] if p.get("view") is not False and p.get("rect_painting")]
+    for p in pieces:   # the back pieces: fittings, mists (their alpha in the file, or the manifest's), the arm's fill pose
+        if p["kind"] in ("fitting", "mist", "anim"): lay(p, 255 if p["kind"] != "mist" or p.get("alpha_in_file") else round(p.get("alpha", 1) * 255))
+    front = [p for p in pieces if p["kind"] in ("bed", "occluder")] + [q for q in r.get("occluders", []) if q.get("view") is not False and q.get("file") and q.get("rect_painting")]
+    for p in sorted(front, key=lambda q: q.get("foot_painting", 0)): lay(p)   # the bed and the occluders by their foot, as the room view sorts them
+    cx, cy = CROPS[room]; return im.crop((cx, cy, cx + 688, cy + 472)).convert("RGB").reduce(2)
+
 def main(src, out):
     if os.path.abspath(src) == os.path.abspath(out): sys.exit("the output must be a copy, not the source")
     if os.path.exists(out): shutil.rmtree(out)
@@ -137,6 +160,13 @@ def main(src, out):
                      "note": "the room view's window [cx, 96, 688, 472] of the painting (the collection v2 design §4, the collection v2 art direction): the owner's edge rule, 14:38 and 15:24"}
         r["chip"] = {"file": f"rooms/chips/room-{room}-chip-{{light}}-128x32.png", "size": [128, 32], "crop_painting": CHIPS[room] + [128, 32], "what": CHIP_WHAT[room],
                      "source": f"the room's placed idle base of the light (Boulders' with the rear stone painted out), the 128 x 32 window at {CHIPS[room]}, 1:1, opaque; collection v2 art job 4, no new painting"}
+    # 5. the tiles, from the copy (the moved pieces, Boulders' painted-out bases, the re-lit bed)
+    os.makedirs(os.path.join(out, "tiles"), exist_ok=True)
+    for room in CROPS:
+        for l in LIGHTS:
+            f = os.path.join(out, f"tiles/room-{room}-tile-{l}-{TILE[0]}x{TILE[1]}.png"); t = tile_of(out, mf[room], room, l); assert list(t.size) == TILE; t.save(f); changed.append(f)
+        mf[room]["tile"] = {"file": f"rooms/tiles/room-{room}-tile-{{light}}-{TILE[0]}x{TILE[1]}.png", "size": TILE, "crop_painting": CROPS[room] + [688, 472], "factor": [1, 2],
+                            "source": "the room view's window of the light as it is drawn with no mibi (the placed base, its back pieces, the bed, its occluders by their foot), reduced to exactly 1/2 by 2 x 2 box averages; collection v2 house view, no new painting"}
     for f in changed: mf["hashes"][rel(f)] = sha(f)
     mf["unsigned"] = {rel(f): "the collection v2 art job, code and hand work, for the art director's check at 1x" for f in changed}
     mf["collection_v2"] = {"note": "collection v2 art job (the collection v2 design Builder checklist 1 to 4): Boulders' rear stone painted out of the four seated idle bases; Roots' bed re-lit at [248, 496, 192, 56] (gain per light below, a contact shadow on the path); the room chips cut 128 x 32; the windows' crops, keep boxes and drop spots; the pieces moved for the windows. Made by art/station-masters/collection/source/rooms_v2.py in the Station repo, no paid call",

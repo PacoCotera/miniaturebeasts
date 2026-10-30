@@ -41,7 +41,7 @@
      "x": [16, 150, 330, 540, 1009],
      "top": [432, 416, 392, 352],
      "bottom": 551,
-     "keepOuts": [[124, 526, 84, 18], [610, 524, 56, 18]]
+     "keepOuts": [[124, 526, 84, 18], [598, 524, 56, 18]]
     },
     {
      "id": "terrace",
@@ -74,20 +74,20 @@
      "id": "roots-stone-2",
      "kind": "occluder",
      "level": "main",
-     "rect": [604, 499, 68, 41],
+     "rect": [592, 499, 68, 41],
      "foot": 539,
      "picture": "room-roots-stone-2-{light}-68x41"
     },
     {
      "id": "roots-mister",
      "kind": "back",
-     "rect": [620, 323, 50, 34],
+     "rect": [610, 323, 50, 34],
      "picture": "room-roots-mister-{light}-50x34"
     },
     {
      "id": "roots-mist-2",
      "kind": "back",
-     "rect": [550, 324, 80, 18],
+     "rect": [540, 324, 80, 18],
      "picture": "room-roots-mist-2-{light}-80x18"
     }
    ],

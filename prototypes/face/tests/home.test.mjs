@@ -541,6 +541,6 @@ test("R3: Home draws the room's pieces that fall in its window, at the painting'
   const lg = logOf(f), pieces = lg.nodes.filter((n) => n[3] === "room");
   const at = Object.fromEntries(pieces.map((n) => [n[0], n.slice(4, 8)]));
   assert.deepEqual(pieces.map((n) => n[0]).sort(), ["p.roots-mister", "p.roots-mist-2", "p.roots-sorrel-1", "p.roots-stone-2"].map(fnv).sort(), "the sorrel tuft, the stone, the mister and its mist fall in the window (the collection v2 design §4: the moved pieces move on Home too)");
-  assert.deepEqual(at[fnv("p.roots-sorrel-1")], [78, 380, 96, 46], "(118, 496) less (40, 116)"); assert.deepEqual(at[fnv("p.roots-stone-2")], [564, 383, 64, 41], "(604, 499) less (40, 116), its last 4 columns past Home's window (x 628)"); assert.deepEqual(at[fnv("p.roots-mister")], [580, 207, 48, 34], "(620, 323) less (40, 116), its last 2 columns past the window");
+  assert.deepEqual(at[fnv("p.roots-sorrel-1")], [78, 380, 96, 46], "(118, 496) less (40, 116)"); assert.deepEqual(at[fnv("p.roots-stone-2")], [552, 383, 68, 41], "(592, 499) less (40, 116), whole in Home's window (x 628), 8 px clear"); assert.deepEqual(at[fnv("p.roots-mister")], [570, 207, 50, 34], "(610, 323) less (40, 116), whole, 8 px clear");
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
 });
