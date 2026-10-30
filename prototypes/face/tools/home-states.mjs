@@ -45,7 +45,7 @@ export const SCENES = {
 // the helpers the scenes call, in the page
 export const WORLD = () => ({
   // the Companion's part of the save is re-read from storage on every save: an edit to it is written there at once
-  persist() { const S = window.__st; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); },
+  persist() { const S = window.__st; localStorage.setItem(S.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); },   // the active Companion's save
   reset() { const S = window.__st, st = S.ST, sv = S.SV; S.UI.meet = null; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; st.sittingCrates = []; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.nameN = 0; st.namesUsed = []; st.knownIds = []; st.libSeen = {}; S.UI.meet = null; S.UI.home.f = "room"; st.face.room = 0; this.persist(); },
   libNew(n) { const st = window.__st.ST; st.libSeen = JSON.parse(JSON.stringify(st.guide)); let k = n; for (const t of Object.keys(st.libSeen.S01 ?? {})) while (k > 0 && st.libSeen.S01[t].length > 1) { st.libSeen.S01[t].pop(); k--; } },   // the Library opened full screen, then n looks found since
   adults(n) { const st = window.__st.ST, k = st.mibis.length; window.__st.seedAdults("S01", 5, n); for (const m of st.mibis.slice(k)) m.paint = { state: "landed" }; },

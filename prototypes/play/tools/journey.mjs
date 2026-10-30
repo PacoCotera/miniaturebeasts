@@ -4,21 +4,37 @@
 // Companion crate. It proves: A, the Row layout at 1x (every frame's box exact, both screens 1:1 on the page, also at dpr 1.25); B, the dock round trip with the keys, the landing rule and
 // the lift; C, the narrow tier; ST, the Stack and the dock round trip in it with the page scrolled (the Station wholly in view after the contact beat); M, the layouts and key minimums measured at 1280 x 720, 1440 x 900,
 // 1920 x 1080, 2560 x 1440 and 1440 x 900 at dpr 1.25 and 1.75 (each key's CSS box, the trays, the Companion never cut, both faces on whole device pixels); K, the Caddy's screen always shown; D, the figures it prints
-// (heaps, the face, main-thread time a frame); E, a change of device pixel ratio with no resize; Z, the size (fit, a chosen z of 2 in whole blocks, kept per browser) and the build stamp, outside ?test. Fails on any page error, any console error in any frame (a 404 for the optional build stamp or the Caddy service is not one) and any assertion.
+// (heaps, the face, main-thread time a frame); E, a change of device pixel ratio with no resize; Z, the size (fit, a chosen z of 2 in whole blocks, kept per browser) and the build stamp, outside ?test;
+// P, the Caddy dock's play-through on the shared save (the face C0, C2, C3, C4a, the lamps, the Station's arrival and opening, a mibi taken along, reloads and a restart of the Caddy service);
+// CB, Companion B docking switches the Station's world and A docking switches it back. The Caddy service runs in mock mode beside the static server, proxied under /caddy-api/ as on the sandbox. Fails on any page error, any console error in any frame (a 404 for the optional build stamp or the Caddy service is not one) and any assertion.
 //   node prototypes/play/tools/journey.mjs          (PW_DIR=/path/with/node_modules/playwright when playwright is not local)
 //   PLAY_CAPTURES=1 node prototypes/play/tools/journey.mjs     also writes the captures of img/ (clipped to the page)
 import { createServer } from "node:http";
-import { readFileSync, existsSync, statSync, mkdirSync } from "node:fs";
+import { readFileSync, existsSync, statSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { decodePNG } from "../../ui/png.mjs";
+import { createApp, loadFrames as loadCaddyFrames } from "../../caddy/app.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
 const here = path.dirname(fileURLToPath(import.meta.url)), root = path.resolve(here, "../.."), img = path.resolve(here, "../img");
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown", ".wasm": "application/wasm", ".ttf": "font/ttf", ".svg": "image/svg+xml" };
+// the Caddy service in mock mode (its dock and its portraits), restartable on the same data directory
+loadCaddyFrames();
+const caddyData = mkdtempSync(path.join(tmpdir(), "mb-caddy-play-"));
+let caddy = null, caddyServer = null, caddyPort = 0;
+async function caddyStart() { caddy = createApp({ dataDir: caddyData, painter: "mock", mockDelay: 1, tickMs: 200 }); caddyServer = createServer((req, res) => caddy.handle(req, res)); await new Promise((r) => caddyServer.listen(0, "127.0.0.1", r)); caddy.start(); caddyPort = caddyServer.address().port; }
+async function caddyStop() { caddy.stop(); caddyServer.closeAllConnections(); await new Promise((r) => caddyServer.close(r)); }
+await caddyStart();
 const server = createServer((req, res) => {
+  if (req.url.startsWith("/caddy-api/")) {
+    const up = http.request({ host: "127.0.0.1", port: caddyPort, path: req.url, method: req.method, headers: req.headers }, (r2) => { res.writeHead(r2.statusCode, r2.headers); r2.pipe(res); });
+    up.on("error", () => { if (!res.headersSent) res.writeHead(502); res.end(); }); req.pipe(up); return;
+  }
   let p = path.join(root, decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/"));
   if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
   if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
@@ -359,21 +375,30 @@ async function zBad(page, sel, W, z, capture) {
   await ctx.close();
 }
 
-// ---- K. the Caddy's screen: always shown in its own 808 × 288 block, redrawn only when its lines change; Shift+C is retired (1920 × 1080, the Row) ----
+// ---- K. the Caddy's screen: always shown in its own 808 × 288 block, drawn from the face of the Caddy's state with the panel's timing; Shift+C is retired (1920 × 1080, the Row) ----
 {
   const { ctx, page, st } = await open(1920, 1080, { query: "?test&seed=3" });
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
-  const sheet = () => page.evaluate(() => __play.caddySheet);
+  const sheet = () => page.evaluate(() => { const s = __play.caddySheet; delete s.pixels; return s; });
   eq((await sheet()).up, true, "K: shown before any dock"); expect(await page.locator("#caddySheet").isVisible(), "K: the block is visible with the Companion away");
   eq(await box(page, "#caddySheet"), [419, 768, 808, 288], "K: the block, under the Station and right-aligned to its shell"); eq(await box(page, "#caddyView"), [427, 776, 792, 272], "K: the view, 1 lp per view pixel, 8 lp inside");
   eq(await page.evaluate(() => [document.getElementById("caddyView").width, document.getElementById("caddyView").height]), [792, 272], "K: the canvas is the view's 792 × 272");
-  const away = (await sheet()).lines; expect(away && away.line1 !== "Companion home", "K: its lines read the away state before a dock (" + JSON.stringify(away) + ")");
-  await page.click("#dockCtl"); await page.waitForTimeout(700); eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "K: docked");
-  const k = await sheet(); eq([k.lines.line1, k.lines.line2], ["Companion home", "one crate"], "K: its lines read the docked state");
+  const lampsBox = await box(page, "#caddyLamps"); expect(lampsBox[0] >= 0 && lampsBox[0] + lampsBox[2] <= 419 && Math.abs(lampsBox[1] + lampsBox[3] - (768 + 288)) <= 1, "K: the two cradle lamps sit beside the block, at its foot " + JSON.stringify(lampsBox));
+  await page.waitForFunction(() => __play.caddySheet.id !== null, null, { timeout: 9000 });   // the first picture: a full refresh, black, white, then the face, over 4 s
+  const away = await sheet();
+  eq([away.id, away.lines.l1, away.lines.l2, away.log.map((l) => l.kind)], ["C0", "Companion out", "exploring", ["full"]], "K: at boot one full refresh draws C0");
+  eq([away.marks.companion, away.marks.station, away.lamp.companion, away.lamp.stationDot], ["lifted", "seated", "off", "warm"], "K: the Station sits in its cradle (its lamp a dim warm white), the Companion's is empty and dark");
+  eq([...new Set(await page.evaluate(() => __play.caddySheet.pixels()))].sort((a, b) => a - b), [0, 255], "K: the panel holds ink and paper only");
+  const t0 = Date.now(); await page.click("#dockCtl");
+  await page.waitForFunction(() => __play.caddySheet.id === "C2", null, { timeout: 3000 }); const dt = Date.now() - t0;
+  const k = await sheet(); eq([k.lines.l1, k.lines.l2, k.crates], ["Companion home", "one crate", 1], "K: its lines read the docked state, with one crate icon");
+  expect(dt >= 750 && dt <= 1200, "K: the partial appears about 0.8 s after the seat (" + dt + " ms)");
+  eq(k.log.slice(1).map((l) => [l.kind, l.id, l.regions.join(",")]), [["partial", "C2", "hero,msg,status"]], "K: one partial over the regions that changed");
+  eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "K: docked");
   await clip(page, "play-row-caddy.png");
   await page.waitForTimeout(6200); eq((await sheet()).up, true, "K: it stays, nothing lowers it");
   await page.keyboard.press("Shift+C"); await page.waitForTimeout(300); eq((await sheet()).up, true, "K: Shift+C does nothing");
-  eq((await sheet()).refreshes, 2, "K: two partial refreshes: away at load, then docked (nothing else redraws it)");
+  eq((await sheet()).log.length, 2, "K: nothing else redraws it (the Station's heartbeat and the stream change nothing on the panel)");
   await ctx.close();
 }
 {
@@ -399,7 +424,7 @@ async function zBad(page, sel, W, z, capture) {
 // ---- B8. a Companion crate crosses: the Companion's own bay, the Station's save, the control's dot, the dock and the opening (fresh context, 1920 × 1080) ----
 {
   const { ctx, page, st, mb } = await open(1920, 1080);
-  const stored = () => page.evaluate(() => JSON.parse(localStorage.getItem("mb-save-v8")));
+  const stored = () => mb().evaluate(() => JSON.parse(localStorage.getItem(window.__mb.SAVE_KEY)));   // the Companion's own save, under its id
   const id = await mb().evaluate(() => { const S = window.__mb.S, id = "x" + S.wid + "-1"; S.bay.push({ id, n: 1, turn: S.turn, at: Date.now(), e: 3, d: 2, s: 3, pods: [{ id: "q1", sp: 0, g: "meadow", how: "shake", gs: 987654321, k: null }], met: [0], explored: 5, of: 20, lines: [] }); return id; });
   await st().evaluate(() => window.__st.addMaterials(0, 0, 0)); await page.waitForTimeout(600);   // the Station writes its save; the storage event makes the Companion save its bay, and the Station reads it
   expect((await stored()).bay.some((c) => c.id === id), "B8: the stored save's bay holds the crate"); eq((await state(page)).caddy.crates, 1, "B8: the control hears one crate"); eq((await state(page)).dot, true, "B8: the dot shows");
@@ -408,6 +433,116 @@ async function zBad(page, sel, W, z, capture) {
   eq(await mb().evaluate(() => window.__mb.S.bay.length), 0, "B8: the Companion's bay is empty"); eq((await stored()).bay.length, 0, "B8: and the stored bay too");
   eq(await st().evaluate((i) => [window.__st.ST.accepted.includes(i), window.__st.ST.tray.some((p) => p.id === i + ":q1")], id), [true, true], "B8: the Station accepted the crate and its pod is in a well");
   eq(await st().evaluate(() => [window.__st.renderErrors, window.__st.faceErrors]), [[], []], "B8: no render or face errors");
+  await ctx.close();
+}
+
+// ---- P. the Caddy dock's play-through, adapted to the shared save (steps 1-4, 6, 8, and 7 for reloads and a restart of the Caddy service), 1920 × 1080 ----
+{
+  const { ctx, page, st, mb } = await open(1920, 1080);
+  const face = () => page.evaluate(() => { const s = __play.caddySheet; delete s.pixels; return s; });
+  const ST = () => st().evaluate(() => { const s = window.__st.ST; return { e: s.e, d: s.d, s: s.s, accepted: s.accepted.slice(), tray: s.tray.map((p) => p.id), wid: s.wid, docked: s.dock.docked }; });
+  const waitFace = (id, ms = 3000) => page.waitForFunction((i) => __play.caddySheet.id === i, id, { timeout: ms }).then(() => true, () => false);
+  await page.waitForFunction(() => __play.caddySheet.id !== null, null, { timeout: 9000 });
+  // 1. a new world: set out, end the expedition at the start: one crate sealed
+  await page.mouse.click(1300, 300); await page.waitForTimeout(200);
+  await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "place"); await page.waitForTimeout(700);
+  await page.keyboard.press("Enter"); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.phase === "map"); await page.waitForTimeout(400);
+  // the exploring itself is stood in for: a Call made in a place and its finds in the hold (two supplies and a pod), as a walk would leave them
+  await mb().evaluate(() => { const ex = window.__mb.S.exp; ex.stats.calls = 1; ex.cargo.e += 3; ex.cargo.d += 2; ex.cargo.s += 1; ex.cargo.pods.push({ id: "q9", sp: 0, g: "meadow", how: "shake", gs: 987654321, k: null }); });
+  await page.keyboard.press("Escape"); await page.waitForTimeout(400); await page.keyboard.press("Enter"); await page.waitForTimeout(600);   // the menu: End expedition on top
+  if ((await mb().evaluate(() => window.__mb.S.phase)) === "cargo") { await page.keyboard.press("Enter"); await page.waitForTimeout(600); }   // Cargo: ✓ End expedition seals the crate
+  const sealed = await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb.S.bay.length === 1, null, { timeout: 5000 }).then(() => true, () => false);
+  expect(sealed, "P1: ending the expedition at the start seals one crate");
+  const crate = await mb().evaluate(() => JSON.parse(JSON.stringify(window.__mb.S.bay[0] ?? null)));
+  await page.waitForTimeout(700);
+  let f = await face(); eq([f.id, f.lines.l1, f.lines.l2], ["C0", "Companion out", "exploring"], "P1: the Caddy reads C0, Companion out · exploring"); eq(f.lamp.companion, "off", "P1: its lamp is off"); await lampIs(page, "stone", "P1");
+  const before = await ST();
+  // 2. Dock: the lamp mint at once, the Station's arrival within 0.5 s, the face C2 within 1 s with one crate icon
+  const t0 = Date.now(); await page.keyboard.press("Shift+D");
+  await page.waitForFunction(() => __play.caddySheet.lamp.companion !== "off", null, { timeout: 1000 }); const tLamp = Date.now() - t0;
+  await st().waitForFunction(() => window.__st.UI.screen === "cargo" && window.__st.props?.state === "arrival", null, { timeout: 2000, polling: 20 }).catch(() => {}); const tArr = Date.now() - t0;
+  const c2 = await waitFace("C2", 2000), tFace = Date.now() - t0;
+  await lampIs(page, "mint", "P2");
+  expect(tLamp <= 300, "P2: the lamp is mint at once (" + tLamp + " ms)"); expect(tArr <= 500, "P2: the Station's arrival begins within 0.5 s (" + tArr + " ms)"); expect(c2 && tFace <= 1000, "P2: the face reads C2 within 1 s (" + tFace + " ms)");
+  f = await face(); eq([f.lines.l1, f.lines.l2, f.crates, f.marks.companion], ["Companion home", "one crate", 1, "seated"], "P2: Companion home · one crate, with one crate icon");
+  // 3. the crate sealed in the Bay, nothing accepted, the supplies unmoved
+  let now = await ST(); eq([now.accepted.includes(crate?.id), now.e, now.d, now.s], [false, before.e, before.d, before.s], "P3: the crate waits sealed; nothing accepted, the supplies unmoved");
+  // 4. open it: the supplies tick, the pods land, the Companion's crate mark clears, the face changes once to C3 with the ledger's new numbers
+  await page.waitForTimeout(3600); await st().waitForFunction(() => window.__st.props?.overlay?.form === "strip", null, { timeout: 15000 }).catch(() => {});
+  await page.keyboard.press("Enter");   // Open now
+  const opened = await st().waitForFunction((id) => window.__st.ST.accepted.includes(id), crate?.id, { timeout: 20000 }).then(() => true, () => false); expect(opened, "P4: the crate is accepted at its opening");
+  const c3 = await waitFace("C3", 12000); expect(c3, "P4: the face reads C3");
+  now = await ST(); f = await face();
+  expect(now.e - before.e >= crate.e && now.d - before.d >= crate.d && now.s - before.s >= crate.s, "P4: Energy, Data and Essence tick (" + [now.e - before.e, now.d - before.d, now.s - before.s] + " for a crate of " + [crate.e, crate.d, crate.s] + ")");
+  expect(crate.pods.every((p) => now.tray.some((t) => t.endsWith(":" + p.id))), "P4: its pods land on the Pods shelf");
+  eq(await mb().evaluate(() => window.__mb.S.bay.length), 0, "P4: the Companion's crate mark clears");
+  const pods = crate.pods.length, words = ["no", "one", "two", "three", "four", "five"];
+  eq([f.lines.l1, f.lines.l2], ["one crate home", pods ? words[pods] + (pods === 1 ? " new pod" : " new pods") : null], "P4: one crate home, and its new pods");
+  eq(f.ledger.map((r) => r.text), [now.e, now.d, now.s].map(String), "P4: with the ledger's new numbers");
+  const since = f.log.findIndex((l) => l.id === "C2"); eq(f.log.slice(since).map((l) => l.id), ["C2", "C3"], "P4: the face changed once, never once per crate");
+  // 6. a mibi taken along, then Lift: the Companion has it, the Probe mended; the face Companion out · with it; the lamp off
+  for (let i = 0; i < 2 && (await st().evaluate(() => window.__st.UI.screen)) === "cargo"; i++) { await page.keyboard.press("Escape"); await page.waitForTimeout(400); }
+  const mibi = await st().evaluate(() => { window.__st.seedAdults("S01", 5, 1); const m = window.__st.ST.mibis.at(-1); return { id: m.id, name: m.name, r: window.__st.carryAdd(m.id) }; });
+  expect(mibi.r.ok, "P6: Take along is asked " + JSON.stringify(mibi.r));
+  await page.waitForTimeout(800);
+  await page.keyboard.press("Shift+D"); await page.waitForTimeout(1500);
+  const comp = await mb().evaluate(() => ({ carried: window.__mb.S.carried.slice(), shield: window.__mb.S.shield, docked: window.__mb.isDocked() }));
+  eq([comp.carried.includes(mibi.id), comp.docked], [true, false], "P6: lifted, the mibi is with the Companion"); expect(comp.shield >= 3, "P6: the Probe mended (" + comp.shield + ")");
+  await waitFace("C0", 3000); await page.waitForFunction(() => /^with /.test(__play.caddySheet.lines?.l2 ?? ""), null, { timeout: 6000 }).catch(() => {}); f = await face(); eq([f.lines.l1, f.lines.l2, f.lamp.companion], ["Companion out", "with " + mibi.name, "off"], "P6: Companion out · with its partner, the lamp off"); await lampIs(page, "stone", "P6");
+  // 7. reloads and a restart: nothing lost, nothing accepted twice
+  const kept = await ST(), dockBefore = await (await fetch(base.replace("/sandbox/play/", "/caddy-api/v1/dock?world=") + kept.wid)).json();
+  await st().evaluate(() => location.reload()); await page.waitForTimeout(1500); await page.waitForFunction(() => window.__play.frames.station.contentWindow.__st, null, { timeout: 30000 }); await st().evaluate(() => window.__st.ready); await page.waitForTimeout(800);
+  await mb().evaluate(() => location.reload()); await page.waitForTimeout(1500); await page.waitForFunction(() => window.__play.frames.companion.contentWindow.__mb && window.__play.frames.companion.contentWindow.__mb.S, null, { timeout: 30000 }); await page.waitForTimeout(800);
+  await caddyStop(); await caddyStart(); await page.waitForTimeout(2500);
+  const after = await ST(), dockAfter = await (await fetch(base.replace("/sandbox/play/", "/caddy-api/v1/dock?world=") + kept.wid)).json();
+  eq([after.e, after.d, after.s, after.accepted, after.tray, after.docked], [kept.e, kept.d, kept.s, kept.accepted, kept.tray, false], "P7: the Station after its reload: nothing lost");
+  eq(new Set(after.accepted).size, after.accepted.length, "P7: nothing accepted twice");
+  eq(await mb().evaluate(() => [window.__mb.S.bay.length, window.__mb.S.carried.slice()]), [0, comp.carried], "P7: the Companion after its reload: its bay clear, its mibi with it");
+  eq(dockAfter.cradles, dockBefore.cradles, "P7: the Caddy service after a restart keeps its cradles");
+  // 8. Companion silent: amber and C4a after 10 s; lifted, the switch off, seated again: the arrival plays
+  await page.evaluate(() => __play.setSwitch("silent", true)); await page.waitForTimeout(300);
+  await page.keyboard.press("Shift+D"); await page.waitForTimeout(600);
+  eq(await st().evaluate(() => window.__st.ST.dock.docked), false, "P8: silent: the Station hears no dock");
+  const c4a = await waitFace("C4a", 12500); f = await face();
+  expect(c4a, "P8: the face reads C4a"); eq([f.lines.l1, f.lines.l2, f.lamp.companion, f.lamp.dot], ["Companion seated", "no word from it", "hand", "amber"], "P8: no word from it, the lamp amber");
+  await page.keyboard.press("Shift+D"); await page.waitForTimeout(700); await page.evaluate(() => __play.setSwitch("silent", false)); await page.waitForTimeout(400);
+  await page.keyboard.press("Shift+D"); await page.waitForTimeout(700);
+  eq(await st().evaluate(() => [window.__st.ST.dock.docked, window.__st.UI.screen]), [true, "cargo"], "P8: seated again with the switch off, the arrival plays");
+  expect(await waitFace("C2", 3000), "P8: and the face reads C2");
+  // C4b and C4c, briefly: the Station quiet crosses the link after 15 s; the Caddy fault refuses the seat
+  await page.keyboard.press("Enter"); await page.waitForTimeout(800); await page.keyboard.press("Shift+D"); await page.waitForTimeout(800);
+  await page.evaluate(() => __play.setSwitch("fault", true)); await page.keyboard.press("Shift+D"); await page.waitForTimeout(400);
+  expect(await waitFace("C4c", 2500), "P: the Caddy fault reads C4c"); f = await face(); eq([f.lines.l1, f.lamp.companion, f.marks.companion], ["Caddy fault", "hand", "seated"], "P: the fault: amber, the marks as sensed");
+  eq(await st().waitForFunction(() => window.__st.ST.dock.docked === false, null, { timeout: 8000 }).then(() => false, () => true), false, "P: nothing was taken (the Station is not docked)");
+  eq(await page.evaluate(() => __play.dock.snap.cradles.companion.state), "lifted", "P: the Caddy stored no seat");
+  await page.keyboard.press("Shift+D"); await page.waitForTimeout(700); await page.evaluate(() => __play.setSwitch("fault", false));
+  await page.keyboard.press("Shift+D"); await page.waitForTimeout(700); await page.evaluate(() => __play.setSwitch("quiet", true));
+  expect(await waitFace("C4b", 17000), "P: the Station quiet reads C4b after 15 s"); f = await face();
+  eq([f.marks.link, f.lines.l3, /as of \d\d:\d\d$/.test(f.lines.stamp)], ["lost", "the crates wait here", true], "P: the link crossed, the stamp gains the time");
+  await page.evaluate(() => __play.setSwitch("quiet", false)); await page.keyboard.press("Shift+D"); await page.waitForTimeout(800);
+  eq(await st().evaluate(() => window.__st.renderErrors), [], "P: no render errors");
+  await ctx.close();
+}
+
+// ---- CB. a second Companion: B docking switches the Station's and the Caddy's world to B's, A docking switches them back (1920 × 1080) ----
+{
+  const { ctx, page, st, mb } = await open(1920, 1080);
+  const who = () => mb().evaluate(() => ({ slot: window.__mb.COMPANION.slot, id: window.__mb.COMPANION.id, wid: window.__mb.S.wid }));
+  const a = await who(); await st().evaluate(() => window.__st.addMaterials(7, 0, 0)); const wA = await st().evaluate(() => window.__st.ST.wid), eA = await st().evaluate(() => window.__st.ST.e);
+  eq([a.slot, wA], ["A", a.wid], "CB: the Station shows Companion A's world");
+  await page.click("#companionCtl"); await page.waitForFunction(() => { const m = window.__play.frames.companion.contentWindow.__mb; return m && m.S && m.COMPANION.slot === "B"; }, null, { timeout: 30000 }); await page.waitForTimeout(800);
+  const b = await who(); expect(b.id !== a.id && b.wid !== a.wid, "CB: Companion B has its own id and world");
+  eq(await st().evaluate(() => window.__st.ST.wid), wA, "CB: until B docks, the Station keeps A's world");
+  await page.click("#dockCtl"); await page.waitForTimeout(1200);
+  eq(await st().evaluate(() => [window.__st.ST.wid, window.__st.ST.dock.docked, window.__st.companion?.name]), [b.wid, true, "Companion B"], "CB: B docked: the Station shows B's world");
+  await page.waitForFunction(() => __play.caddySheet.lines?.stamp === "Companion B", null, { timeout: 3000 }).catch(() => {});
+  eq((await page.evaluate(() => [__play.caddySheet.lines?.stamp, __play.dock.world])), ["Companion B", b.wid], "CB: the Caddy face names Companion B, in B's world");
+  eq(await page.evaluate(() => document.getElementById("companionCtl").getAttribute("aria-disabled")), "true", "CB: no switch while seated");
+  await page.keyboard.press("Enter"); await page.waitForTimeout(800); await page.click("#dockCtl"); await page.waitForTimeout(900);
+  await page.click("#companionCtl"); await page.waitForFunction(() => { const m = window.__play.frames.companion.contentWindow.__mb; return m && m.S && m.COMPANION.slot === "A"; }, null, { timeout: 30000 }); await page.waitForTimeout(800);
+  eq((await who()).id, a.id, "CB: Companion A is the same Companion");
+  await page.click("#dockCtl"); await page.waitForTimeout(1200);
+  eq(await st().evaluate(() => [window.__st.ST.wid, window.__st.ST.e, window.__st.companion?.name]), [wA, eA, "Companion A"], "CB: A docked: the Station is back on A's world, as it was");
   await ctx.close();
 }
 
@@ -467,7 +602,7 @@ const screenAt = (frame, W) => frame().evaluate(() => { const el = document.quer
   }
 }
 
-await browser.close(); server.close();
+await browser.close(); server.close(); await caddyStop(); rmSync(caddyData, { recursive: true, force: true });
 if (errors.length) fails.push(...errors);
 console.log(fails.length ? `\nplay journey FAILED: ${fails.length}` : "\nplay journey ok");
 process.exit(fails.length ? 1 : 0);

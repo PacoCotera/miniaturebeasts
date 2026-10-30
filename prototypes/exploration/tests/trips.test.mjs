@@ -149,7 +149,7 @@ test("old saves: no trips list, an expedition without the new fields", () => {
   // the page's load gives a save without `trips` an empty list
   const saved = { v: 8, seed: 7, cr: [], mibis: [], wid: "w7", retSeen: [], bay: [] }, store = { "mb-save-v8": JSON.stringify(saved) };
   const ctx = { localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; }, removeItem: k => { delete store[k]; } },
-    SAVE_KEY: "mb-save-v8", SAVE_V: 8, V7_KEY: "v7", OLD_SAVE_KEYS: [], migrate7: o => o,
+    SAVE_KEY: "mb-save-v8", LEGACY_KEY: "mb-save-v8-shared", COMPANION: { slot: "A" }, SAVE_V: 8, V7_KEY: "v7", OLD_SAVE_KEYS: [], migrate7: o => o,
     layoutCache: { clear() {} }, genWorld() {}, genLife: () => ({ pods: [], cr: [] }), GENS: [1], indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2, MW: 16, MH: 20 };
   const l = load(["load", "migrateCarried", "normalizeCare", "worldFields", "idsIn"], ctx);
   assert.equal(l.load(), true);

@@ -8,6 +8,7 @@ import { clock } from "./pixels.mjs";
 import { createTimeline } from "../../ui/timeline.mjs";
 import { createFramePresenter } from "./present.mjs";
 import { createFocus } from "../../ui/focus.mjs";
+import * as C from "./companions.mjs";
 
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
@@ -28,10 +29,23 @@ export const now = () => clock.now;
 export const st = () => G.st;
 export const sv = () => G.sv;
 
-// --- the shared save ---
+// --- the shared save, keyed by the Companion (companions.mjs): the Station shows the save of the last Companion docked ---
+let KEY = null, KEY_STORE = null;
+const store = () => globalThis.localStorage;
+// The active Companion's save key; the first call makes the Station's map (and moves the shared save of earlier builds under Companion A's id).
+export function saveKey() { if (KEY == null || KEY_STORE !== store()) { KEY_STORE = store(); try { KEY = C.activeSaveKey(store(), { rand: cryptoRand }); } catch { KEY = C.LEGACY_KEY; } } return KEY; }
+const cryptoRand = () => { try { const b = new Uint32Array(1); globalThis.crypto.getRandomValues(b); return b[0] / 4294967296; } catch { return 0.5; } };   // never Math.random: a seeded session keeps its own dice
+export const activeCompanion = () => { try { const m = C.stationMap(store(), { rand: cryptoRand }); return m.known.find((k) => k.id === m.active) ?? null; } catch { return null; } };
+// A Companion docked: if it is not the one the Station shows, its save becomes the Station's (made fresh for a new Companion's world); returns whether it switched.
+export function switchCompanion(who) {
+  if (!who || !who.id) return false;
+  let r; try { r = C.companionDocked(store(), who); } catch { return false; }
+  if (!r.switched) return false;
+  KEY = null; load(); UI.lib.pending = null; goScreen("home"); save(); return true;
+}
 export function readStored() {
   try {
-    const raw = localStorage.getItem(S.SAVE_KEY);
+    const raw = localStorage.getItem(saveKey());
     if (raw) { const o = JSON.parse(raw); if (o && o.v === S.SAVE_V) return o; }
   } catch { /* unreadable: a fresh Station */ }
   return null;
@@ -60,7 +74,7 @@ export function save() {
     if (cur && cur.wid === G.st.wid) G.sv = cur;
     else if (cur && cur.wid !== G.st.wid) { G.sv = cur; G.st = S.freshSt(cur.wid, cur.turn || 0); }
     G.sv.st = G.st; S.normalize(G.st); S.trimCarryReqs(G.st, G.sv); G.st.at = Date.now();
-    localStorage.setItem(S.SAVE_KEY, JSON.stringify(G.sv));
+    localStorage.setItem(saveKey(), JSON.stringify(G.sv));
   } catch { /* storage unavailable: keep playing in memory */ }
   changed();
 }
@@ -76,7 +90,7 @@ export function storageChanged() {
 }
 export function resetSave() {
   G.resetting = true;
-  try { for (const k of [S.SAVE_KEY].concat(S.OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch { /* nothing to erase */ }
+  try { for (const k of [saveKey(), S.SAVE_KEY].concat(S.OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch { /* nothing to erase */ }
 }
 // --- developer settings, under their own key ---
 export function loadSettings() {

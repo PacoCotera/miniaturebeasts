@@ -20,7 +20,7 @@ export function crate(rng, wid, turn) {
 export function trip(session, rng, turn) {
   const cur = JSON.parse(session.save());
   cur.turn = turn; cur.bay.push(crate(rng, cur.wid, turn));
-  globalThis.localStorage.setItem("mb-save-v8", JSON.stringify(cur));
+  globalThis.localStorage.setItem(session.game.saveKey(), JSON.stringify(cur));
   session.game.storageChanged();
   return cur.bay[cur.bay.length - 1];
 }

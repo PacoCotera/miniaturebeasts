@@ -301,9 +301,31 @@ const SCR_W = 450, SCR_H = 600, HUD_H = 32, LINE_H = 36, VIEW_Y = HUD_H, VIEW_H 
 const HUD_T = 3;   // the HUD's padding above (and below) its 26 px of contents
 const CELL = 26, MAP_X = 17, MAP_Y = VIEW_Y + 6;   // map 416×520 px, its 4 px frame on rows 34–561
 const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'shallows', 'cliff'];
-// Save format v8: one key shared with the Station page (prototypes/station). The Companion owns every top-level field
+// Save format v8, shared with the Station page (prototypes/station). The Companion owns every top-level field
 // except `st`, which the Station owns; each page re-reads the stored save before writing and keeps the other's part.
-const SAVE_KEY = 'mb-save-v8', SAVE_V = 8, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
+// The Companion is the player's identity: the save lives under this Companion's own key, mb-save-v8@<its id>
+// (station/src/companions.mjs holds the Station's side and the same rules). The id is made once per Companion, a stable
+// random id kept under mb-companion-<slot> (the play page's second Companion is slot B, ?companion=B), and stored with
+// the first write. The single shared save of earlier builds (LEGACY_KEY) moves under Companion A's key with its first
+// write once it has loaded; bytes this page cannot load stay where they are and open read-only, as before.
+const LEGACY_KEY = 'mb-save-v8', SAVE_V = 8, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
+let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
+let SAVE_KEY = keyOfCompanion(COMPANION.id);
+function keyOfCompanion(id) { return 'mb-save-v8@' + id; }
+function companionIdentity() {
+  let slot = 'A'; try { if (new URLSearchParams(location.search).get('companion') === 'B') slot = 'B'; } catch (e) { }
+  try { const had = JSON.parse(localStorage.getItem('mb-companion-' + slot) || 'null'); if (had && /^c[0-9a-z]{12}$/.test(had.id)) { companionKept = true; return had; } } catch (e) { }
+  const b = new Uint8Array(12); try { crypto.getRandomValues(b); } catch (e) { for (let i = 0; i < 12; i++) b[i] = Math.floor(Math.random() * 256); }
+  let id = 'c'; for (const x of b) id += '0123456789abcdefghijklmnopqrstuvwxyz'[x % 36];
+  return { id, name: 'Companion ' + slot, slot, at: Date.now() };
+}
+// The id is kept with the Companion's first write (never by a read-only boot). Made meanwhile by the Station page (one origin in the sandbox): that one is taken.
+function keepCompanion() {
+  if (companionKept) return; companionKept = true;
+  try { const key = 'mb-companion-' + COMPANION.slot, had = JSON.parse(localStorage.getItem(key) || 'null');
+    if (had && /^c[0-9a-z]{12}$/.test(had.id)) { if (had.id !== COMPANION.id && SAVE_KEY === keyOfCompanion(COMPANION.id)) SAVE_KEY = keyOfCompanion(had.id); COMPANION = had; }
+    else localStorage.setItem(key, JSON.stringify(COMPANION)); } catch (e) { }
+}
 const BAY = 3;   // the sealed bay holds three consignments, one per expedition
 // Probe tiers: range in cells from the expedition's start, pods carried, shield bars. Sweep is one ring at both.
 const TIER = { 1: { range: 2, hold: 2, shield: 3 }, 2: { range: 4, hold: 3, shield: 4 } };
@@ -869,7 +891,9 @@ function save() {
   if (!fieldFrozen() && FX.shieldAtDock != null) {   // Lift (or the expedition ended): the bars the cradle mended flash once
     if (S.exp && S.exp.shield > FX.shieldAtDock) FX.shieldFlash = { from: FX.shieldAtDock, at: NOW };
     FX.shieldAtDock = null; FX.dockSaid = 0; }
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep playing in memory */ }
+  if (typeof keepCompanion === 'function') keepCompanion();
+  const moving = typeof legacyTo === 'string' ? legacyTo : null;   // the shared save of earlier builds, moving under this Companion's key with this write
+  try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(S)); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } } catch (e) { /* storage unavailable: keep playing in memory */ }
   if (typeof onStateChanged === 'function') onStateChanged();
 }
 // v7 → v8, the same structural move on both pages: the old Station store becomes the Station's part, mibis move to
@@ -896,8 +920,11 @@ function idsIn(o, out = new Set()) {
 // What the stored save is: nothing (a new world), a save to load (true), a save from a newer page ('newer'), or bytes this page cannot use ('broken').
 // Bytes the page did not load are never written over: both read-only states keep them, and nothing older is removed (the v7 save moves only into an empty slot).
 function load() {
-  const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
   let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { return false; }   // storage unavailable: a new world in memory
+  const own = SAVE_KEY;
+  if (raw == null && COMPANION.slot === 'A') { let old = null; try { old = localStorage.getItem(LEGACY_KEY); } catch (e) { } if (old != null) { SAVE_KEY = LEGACY_KEY; raw = old; } }   // the shared save of earlier builds: read where it is
+  const r = (() => {
+  const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
   try {
     let s = null;
     if (!raw) {   // an empty slot: a v7 save moves in
@@ -923,6 +950,10 @@ function load() {
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
   } catch (e) { S = null; return 'broken'; }   // it would not load: kept as it is
+  })();
+  if (SAVE_KEY === LEGACY_KEY && r === true) legacyTo = own;   // loaded: its first write goes under this Companion's key and the old key goes (a read-only save is never moved)
+  else if (SAVE_KEY === LEGACY_KEY && r === false) SAVE_KEY = own;   // nothing it could play: the new world is this Companion's own
+  return r;
 }
 // ---- The Station, as the Companion sees it: only through the shared save, and only what the dock carries ----
 const stPart = () => S && S.st && S.st.wid === S.wid ? S.st : null;
@@ -5251,6 +5282,24 @@ window.addEventListener('blur', () => { stopRepeat(); document.querySelectorAll(
 // ===================== 17. Page: fit, build footer, observer =====================
 const fitEl = document.getElementById('deviceFit');
 const EMBED = document.documentElement.classList.contains('embed');
+// ?embed on the play page: this Companion tells the page who it is and what it carries (its id and name, its world, the crates in its bay), and answers
+// the Caddy's seat with that word for the seat's number (the page's stand-in for the hold). The developer's "Companion silent" holds the answer back.
+const SHELL = EMBED && window.parent && window.parent !== window ? window.parent : null;
+let shellSeat = 0, shellSilent = false, shellSaid = '';
+function tellShell(force) {
+  if (!SHELL || shellSilent) return;
+  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, wid: S && !RT.readOnly ? S.wid : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, seat: shellSeat };
+  const k = JSON.stringify(m); if (!force && k === shellSaid) return; shellSaid = k;
+  try { SHELL.postMessage(m, location.origin); } catch (e) { }
+}
+if (SHELL) {
+  window.addEventListener('message', e => {
+    if (e.origin !== location.origin || e.source !== SHELL) return; const m = e.data || {};
+    if (m.t === 'mb-seat' && !shellSilent) { shellSeat = m.seat | 0; tellShell(true); }
+    else if (m.t === 'mb-silent') { shellSilent = !!m.on; if (!shellSilent) tellShell(true); }
+  });
+  const beat = () => { tellShell(false); setTimeout(beat, 250); }; beat();
+}
 // Scale the depicted device to the window. When the screen would land close to a whole number of
 // physical pixels per device pixel, snap to it so the pixel grid stays even.
 function fit() {
@@ -5445,7 +5494,7 @@ try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(t
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { get S() { return S; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, canStep, edgeKind, TEST,
   capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,

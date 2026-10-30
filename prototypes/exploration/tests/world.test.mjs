@@ -157,13 +157,13 @@ test("the Station's save reader adopts the save and keeps gen as it is (absent, 
   const noSt = o => { const c = { ...o }; delete c.st; return c; };
   for (const gen of [undefined, 1, 2]) {
     const fx = FIXTURE(); if (gen !== undefined) fx.gen = gen;
-    store["mb-save-v8"] = JSON.stringify(fx);
+    store[game.saveKey()] = JSON.stringify(fx);   // the active Companion's save
     game.load();
     assert.equal(game.G.sv.wid, fx.wid, `gen ${gen}: adopted`);
     assert.ok(state.hasWorld(game.G.sv), `gen ${gen}: a world`);
     assert.equal(game.G.st.wid, fx.wid, `gen ${gen}: no fresh Station`);
     game.save();
-    assert.deepEqual(noSt(JSON.parse(store["mb-save-v8"])), noSt(fx), `gen ${gen}: the Companion's part as written`);
+    assert.deepEqual(noSt(JSON.parse(store[game.saveKey()])), noSt(fx), `gen ${gen}: the Companion's part as written`);
   }
 });
 
@@ -720,7 +720,7 @@ const fnv = a => { let h = 2166136261; for (const v of a) { h ^= v & 0xffff; h =
 // main's generator 1 map, captured from main's page with this harness (seed 7 saved without gen, no pods, creatures or signs, every cell seen, the gate and the mouth visited)
 const MAIN_G1 = { mapCv: 2730365212, frame: 3568652280 };   // main 5e287081
 // a save written without gen, as every save before generators: a world started, then saved with its gen dropped
-const g1Save = () => { const m = page(); m.run("newWorld(7); delete S.gen; save();"); assert.ok(!("gen" in JSON.parse(m.store[m.KEY]))); return { [m.KEY]: m.store[m.KEY] }; };
+const g1Save = () => { const m = page(); m.run("newWorld(7); delete S.gen; save();"); assert.ok(!("gen" in JSON.parse(m.store[m.KEY]))); return { [m.KEY]: m.store[m.KEY], "mb-companion-A": m.store["mb-companion-A"] }; };
 // one page per generator, shared by the tests below (each sets the state it reads), so the map and fog are built once
 let G1P = null, G2P = null;
 const g1Page = () => G1P || (G1P = page(g1Save(), undefined, { canvas: true }));
