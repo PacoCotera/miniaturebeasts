@@ -42,6 +42,9 @@ export function validateBody(scene) {
   }
   // genome-fluffy.md (c): a skirt of floor-length fur hides the legs; one whose footprint leaves a leg end out is a body that does not build.
   if (scene.furSkirt?.floorLength && !scene.furSkirt.hidesLegs) problems.push("fur skirt at floor length does not cover the legs");
+  // genome-fluffy.md (d): a brow tuft's tip stops above the eye's upper rim, so the eyes and the blinks stay readable.
+  const eyeTop = Math.max(-Infinity, ...scene.nodes.filter((n) => n.role === "ocular-rim").flatMap((n) => n.mesh.vertices.map((p) => p[2])));
+  for (const n of scene.nodes) if (n.role === "brow-tuft" && n.id.endsWith("-2") && n.end && n.end[2] < eyeTop - 1e-9) problems.push(`${n.id}: the tuft's tip falls below the eye's upper rim`);
   const regions = scene.nodes.filter((n) => n.role === "primary-region");
   if (!regions.length) problems.push("no primary region");
   return { status: problems.length ? "rejected" : "valid", problems, counts: { nodes: scene.nodes.length, edges: scene.edges.length, vertices } };

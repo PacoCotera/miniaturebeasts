@@ -210,36 +210,36 @@
    "id": "S17",
    "name": "Wickle",
    "clan": "C17",
-   "plan": "B1",
+   "plan": "B1·L2",
    "rig": "B1",
    "tier": "early",
    "file": "species-S17.json",
-   "open": 15,
+   "open": 16,
    "traits": 10,
-   "carried": 39
+   "carried": 48
   },
   {
    "id": "S18",
    "name": "Drapet",
    "clan": "C18",
-   "plan": "B1",
+   "plan": "B1·L4",
    "rig": "B1",
    "tier": "mid",
    "file": "species-S18.json",
-   "open": 23,
+   "open": 20,
    "traits": 15,
-   "carried": 34
+   "carried": 44
   },
   {
    "id": "S19",
    "name": "Curlop",
    "clan": "C19",
-   "plan": "B1·L2·hands",
+   "plan": "B1·L2·arms",
    "rig": "B1",
    "tier": "mid",
    "file": "species-S19.json",
-   "open": 23,
-   "traits": 15,
+   "open": 20,
+   "traits": 14,
    "carried": 53
   }
  ]

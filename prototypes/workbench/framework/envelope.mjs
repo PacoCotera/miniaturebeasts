@@ -12,7 +12,7 @@ export const RULES = [
   { id: "E2", rule: "Head floor: each head radius is at least 0.36 of the body's matching cross radius (the head is scaled up uniformly until it is).", where: "rig: headR", reason: "a head under a third of the body reads as a lizard or an insect, not a pet; Pip's is two thirds, the otter's and the raccoon's a third" },
   { id: "E3", rule: "Eye floors: the eye radius is at least 0.30 of the head's smaller cross radius; the eyes sit at least 0.45 of the head's half width apart and between the head's middle and a quarter above it.", where: "rig: eye placement", reason: "small or high-set eyes read as a reptile; Pip's rings are 0.43 of the head's height, set wide at its middle" },
   { id: "E4", rule: "Muzzle cap by kind: the muzzle's projection is at most 0.65 of the head's half length, or 1.0 for a long-muzzled kind (proportions.mjs KINDS muzzle ≥ 0.45: the lizard, the fox, the deer); its depth is at least 0.3 of the head's half depth. A beak is at most 1.2 head lengths.", where: "rig: muzzle, beak", reason: "a snout longer than the head is a crocodile; a thin snout is a stick" },
-  { id: "E5", rule: "Limb caps: a leg's radius is between 0.12 and 0.45 of the body's smaller cross radius; its drop is between 0.2 and 1.2 of the body's depth.", where: "rig: legs", reason: "stick legs and tree-trunk legs both leave the pet; legs longer than the body are a stork" },
+  { id: "E5", rule: "Limb caps: a leg's radius is between 0.12 and 0.45 of the body's smaller cross radius; its drop is between 0.2 and 1.2 of the body's depth.", where: "rig: legs", reason: "stick legs and tree-trunk legs both leave the pet; legs longer than the body are a stork; an upright body (genome-fluffy.md) may stand on stubs, a drop of at least 0.06" },
   { id: "E6", rule: "Foot floor: a foot is at least 1.15 leg radii long and 0.4 of its length deep, and at most 0.35 of the body's half length.", where: "rig: terminal()", reason: "a foot a leg can stand on; a paw smaller than the leg reads as a hoof on a stick" },
   { id: "E7", rule: "Crest and ear parts are soft sheets: a pointed or leaf crown is a leaf sheet, never a pyramid; a rounded crown is an ellipsoid; ears are sheets.", where: "rig: crown, ears", reason: "spikes read as armour; Pip's crest is three leaves" },
   { id: "E9", rule: "A wing pair at rest is part of the body outline: each blade lies tucked along its flank from the shoulder ridge down to the body's widest line and back to the body's end (a little past it at most), the hind pair under the fore pair; never a plane standing out from the thorax, never a plank reaching past the abdomen.", where: "rig: flaps at rest (plans with flapRest flat); the controls and the painting prompt's plan line", reason: "a plane reads as a board with legs in the portrait and the token, and a wing that stands out from the body is a wing the painter re-lays or spreads; a wing inside the body outline leaves nothing to spread" },
@@ -46,9 +46,11 @@ export const longMuzzled = (species) => (KINDS[species]?.muzzle ?? 0) >= 0.45;
 export function clampMuzzle(proj, species) { return Math.min(proj, longMuzzled(species) ? MUZZLE_CAP_LONG : MUZZLE_CAP); }
 // E5
 export const LEG_RADIUS = [0.12, 0.45], LEG_DROP = [0.2, 1.2];
-export function clampLeg(radius, drop, rootRadii) {
+// An upright body (genome-fluffy.md) stands on stub feet: its drop may be as short as UPRIGHT_DROP_FLOOR of the body's depth (the tiny feet of a candle of fur).
+export const UPRIGHT_DROP_FLOOR = 0.06;
+export function clampLeg(radius, drop, rootRadii, floor = LEG_DROP[0]) {
   const m = Math.min(rootRadii[1], rootRadii[2]);
-  return { radius: clamp(radius, LEG_RADIUS[0] * m, LEG_RADIUS[1] * m), drop: clamp(drop, LEG_DROP[0] * 2 * rootRadii[2], LEG_DROP[1] * 2 * rootRadii[2]) };
+  return { radius: clamp(radius, LEG_RADIUS[0] * m, LEG_RADIUS[1] * m), drop: clamp(drop, floor * 2 * rootRadii[2], LEG_DROP[1] * 2 * rootRadii[2]) };
 }
 // E6
 export const FOOT_OVER_LEG = 1.15, FOOT_DEPTH = 0.4, FOOT_CAP = 0.35;

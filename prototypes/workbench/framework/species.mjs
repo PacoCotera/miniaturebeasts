@@ -62,7 +62,7 @@ export const VOCAB = [
   ["coat", "cap-spots", "Flecks", ["appearance.cap-spots"], ["bare", "spots"]],
   ["coat", "leaf-covering", "Leaf covering", ["appearance.leaf-covering"], ["bare", "leafy"]],
   ["coat", "fur-reach", "Tufts", ["appearance.fur-reach"], ["body only", "tail", "tail and ears"]],
-  ["coat", "fur-hang", "Hang", ["growth.fur-skirt-drop", "growth.fur-skirt-flare"], ["knee-length, close", "between", "floor-length, wide"]],   // frame version 6 (genome-fluffy.md): working words, for the copywriter
+  ["coat", "fur-hang", "Hang", ["growth.fur-skirt-flare"], ["close", "between", "wide"]],   // frame version 6 (genome-fluffy.md): working words, for the copywriter; the drop is fixed per species, no trait opens it
   ["coat", "mask", "Mask", ["appearance.face-mask-shape"], ["a band", "stripes"]],
   ["coat", "rings", "Tail rings", ["growth.tail-ring-count"], ["a pale tip", "two rings", "four rings"]],
   ["coat", "feathers", "Feathers", ["appearance.feather-length"], ["short", "between", "long"]],
@@ -96,7 +96,6 @@ export const VOCAB = [
   ["legs-tail", "rays", "Rays", ["growth.free-proximal-ratio", "growth.free-distal-ratio", "growth.support-radius-ratio"], ["short, fine", "between", "long, stout"]],
   ["legs-tail", "tail", "Tail", ["growth.axial-tail-length-ratio", "growth.axial-tail-width-ratio"], ["short, thin", "between", "long, thick"]],
   ["legs-tail", "tail-curl-turn", "Curl", ["growth.tail-curl-turn"], ["loose", "between", "tight"]],
-  ["legs-tail", "hands", "Hands", ["growth.hand-size-ratio"], ["small", "between", "plump"]],
   ["legs-tail", "tail-curl", "Carriage", ["growth.axial-tail-bend"], ["hangs", "straight", "curls up"]],
   ["movement", "pace", "Pace", ["movement.cycle-rate"], ["steady", "between", "quick"]],
   ["movement", "turning", "Turning", ["movement.turn-control"], ["wide turns", "between", "tight turns"]],
@@ -150,7 +149,10 @@ export function buildFrame(spec, options = {}) {
   for (const id of [...authoredOpenLoci, ...(spec.openSwitches ?? [])]) if (isPartSwitch(id)) vAll[SWITCH_TARGETS[id]] = true;
   // Loci the all-on probe carries, from trunk and the clan's branch.
   const version = spec.frameVersion ?? FRAME_VERSION; // a frame lists no absent line for a record newer than itself (genome-fluffy.md)
-  const inScope = VALIDATED.filter((l) => (l.sinceFrame ?? 0) <= version && inClan(l, spec.clan));
+  // A species may borrow branch records of another clan (spec `borrows`, genome-fluffy.md): the record keeps its own clan, the species lists it.
+  const borrowed = new Set(spec.borrows ?? []);
+  for (const id of borrowed) { const l = LOCI.get(id); if (!l || l.scope !== "branch" || l.clan === spec.clan) throw new Error(`${spec.id}: borrows ${id}, which is not a branch record of another clan`); }
+  const inScope = VALIDATED.filter((l) => (l.sinceFrame ?? 0) <= version && (inClan(l, spec.clan) || borrowed.has(l.id)));
   const carriedIds = [], absent = [];
   const probeOn = (id) => carried(id, vAll);
   for (const l of inScope) {
@@ -159,7 +161,7 @@ export function buildFrame(spec, options = {}) {
     const [on, why] = probeOn(l.id);
     if (on) carriedIds.push(l.id); else absent.push({ id: l.id, why });
   }
-  for (const l of VALIDATED) if (l.scope === "branch" && !inClan(l, spec.clan) && (l.sinceFrame ?? 0) <= version) absent.push({ id: l.id, why: `absent: a ${l.clan} branch locus` });
+  for (const l of VALIDATED) if (l.scope === "branch" && !inClan(l, spec.clan) && !borrowed.has(l.id) && (l.sinceFrame ?? 0) <= version) absent.push({ id: l.id, why: `absent: a ${l.clan} branch locus` });
   const r = rng(`${spec.clan}:${spec.id}:${spec.seed ?? 1}`);
   // Fixed values: clan finish and species facts; the rest by seed.
   const fixed = { ...spec.fixed };
@@ -200,7 +202,7 @@ export function buildFrame(spec, options = {}) {
   const pools = {};
   for (const t of traits) for (const id of t.loci) {
     const all = alleleIds(id);
-    pools[id] = t.pool?.[id] ?? (id === "appearance.body-palette" ? colourPool : id === "appearance.underside-palette" ? [fixed["appearance.underside-palette"], ...shuffle(r, SECONDS.filter((p) => p !== fixed["appearance.underside-palette"])).slice(0, 2)] : poolBound(id, all, { clan: spec.clan, limbSet: plan.limbSet })); // E8
+    pools[id] = t.pool?.[id] ?? spec.pools?.[id] ?? (id === "appearance.body-palette" ? colourPool : id === "appearance.underside-palette" ? [fixed["appearance.underside-palette"], ...shuffle(r, SECONDS.filter((p) => p !== fixed["appearance.underside-palette"])).slice(0, 2)] : poolBound(id, all, { clan: spec.clan, limbSet: plan.limbSet })); // E8
     if (!pools[id].every((a) => all.includes(a))) throw new Error(`${spec.id}: pool of ${id} is not in the catalogue`);
   }
   const openIds = Object.keys(pools);
@@ -229,7 +231,7 @@ export function buildFrame(spec, options = {}) {
   const frame = {
     ...(spec.frameVersion ? { frameVersion: spec.frameVersion } : {}),
     schema: SCHEMA,
-    species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "", ...(spec.parked ? { parked: true } : {}) },
+    species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "", ...(spec.parked ? { parked: true } : {}), ...(spec.borrows?.length ? { borrows: [...spec.borrows] } : {}) },
     taxonomy: { ...spec.taxonomy, clan: spec.clan, planKey: spec.plan.key, planCode: plan.code, rig: plan.rig, tier: spec.tier ?? "authored", seed: spec.seed ?? null, states: plan.states },
     catalogue: { id: CATALOGUE.id, version: CATALOGUE.version, parent: CATALOGUE.parent },
     plan: { key: spec.plan.key, extras: { join: plan.join, wave: plan.extras.wave, fins: plan.extras.fins, float: !!spec.plan.extras?.float, stand: !!spec.plan.extras?.stand, flapPairs: plan.extras.flapPairs, flapRest: plan.extras.flapRest, ...(plan.extras.upright ? { upright: true } : {}) }, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, stations: plan.stations, ...(plan.armSet ? { armSet: plan.armSet, armStations: plan.armStations } : {}) },
@@ -466,6 +468,7 @@ export function specFromFrame(frame) {
     anchor: frame.signature.anchor, second: frame.signature.second, feature: frame.signature.feature,
     features: { ...frame.signature.features }, finish: { ...frame.signature.finish }, fixed: locked, openSwitches,
     open: frame.chapters.flatMap((ch) => ch.traits.map((t) => ({ chapter: ch.id, id: t.id, name: t.name, loci: [...t.loci], looks: [...t.looks], pool: Object.fromEntries(t.loci.map((id) => [id, [...frame.pools[id]]])), shapeable: t.shapeable, override: t.override ?? null, verdict: t.verdict ?? null }))),
+    ...(frame.species.borrows ? { borrows: [...frame.species.borrows] } : {}),
     sealed: { ...frame.sealed }, glyph: frame.glyph, pod: frame.pod ? { second: frame.pod.colourPair[1].pigment } : null, pending: frame.notYet?.pending ?? [],
   };
 }

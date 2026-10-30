@@ -32,8 +32,9 @@ export const PART_SWITCHES = new Set([
   "anatomy.tail-tip-bulb", "anatomy.top-cap-sheet", "appearance.belly-field",
   "anatomy.tail-curl-presence", "anatomy.fur-skirt-presence", "anatomy.brow-tuft-presence", // frame version 6: the fluffy species (genome-fluffy.md)
 ]);
-// A branch locus belongs to its clan and to the clans named in `alsoIn`; a trunk locus to every clan.
-export const inClan = (locus, clan) => locus.scope === "trunk" || locus.clan === clan || (locus.alsoIn ?? []).includes(clan);
+// A branch locus belongs to its clan, a trunk locus to every clan. A species may also borrow a branch record of another clan by naming it in its
+// spec's `borrows` (species.mjs); the record itself is never changed (the species, not the record, says who borrows it).
+export const inClan = (locus, clan) => locus.scope === "trunk" || locus.clan === clan;
 export const DOING_FAMILIES = new Set(["mechanics-movement", "energy-nutrition", "cognition-tendencies", "fantastic-physiology"]);
 const FAMILY_ALIAS = { Structure: "structure", Appearance: "appearance", "Sensing and signaling": "sensing-signaling" };
 export const canonicalFamily = (id) => FAMILY_ALIAS[id] ?? id;
@@ -101,28 +102,29 @@ const NEW_LOCI = [
   { id: "appearance.emission-brightness", family: "mechanics-movement", label: "Glow brightness", scope: "trunk", owner: null, consumer: "behaviour: dusk glow strength; sketch: the emission slot's intensity", ...mean({ dim: 0.4 }, { bright: 1 }) },
   { id: "appearance.emission-length", family: "mechanics-movement", label: "Glow length", scope: "trunk", owner: null, consumer: "behaviour: how long the glow lasts", ...mean({ short: 0.3 }, { long: 1 }) },
   // The three gaps the frames list first. C03: a bulb at the tail tip that carries the glow.
-  { id: "anatomy.tail-tip-bulb", family: "structure", label: "Tail-tip bulb", scope: "branch", clan: "C03", alsoIn: ["C17"], owner: "tail", consumer: "rig: a bulb at the tail tip that carries the emission slot", ...enable() },
+  { id: "anatomy.tail-tip-bulb", family: "structure", label: "Tail-tip bulb", scope: "branch", clan: "C03", owner: "tail", consumer: "rig: a bulb at the tail tip that carries the emission slot", ...enable() },
   // C02: a single cap sheet on top, with its own colour and spots.
   { id: "anatomy.top-cap-sheet", family: "structure", label: "Top cap sheet", scope: "branch", clan: "C02", owner: "flaps", consumer: "rig: one dorsal sheet replaces the radial flap triple", ...enable() },
   { id: "appearance.cap-palette", family: "appearance", label: "Cap colour", scope: "branch", clan: "C02", owner: "anatomy.top-cap-sheet", consumer: "sketch: the cap's own pigment slot", operator: "partition-map", alleles: [{ id: "coral", label: "coral", value: "#e98268" }, { id: "raspberry", label: "raspberry", value: "#d95688" }, { id: "marigold", label: "marigold", value: "#e8b83f" }, { id: "plum", label: "plum", value: "#a967b8" }], pairMap: null },
   { id: "appearance.cap-spots", family: "appearance", label: "Cap spots", scope: "branch", clan: "C02", owner: "anatomy.top-cap-sheet", consumer: "sketch: a spot field on the cap", ...pairMap({ none: "none", spots: "spots" }, { "none|none": "none", "none|spots": "spots", "spots|spots": "spots" }) },
   // C01: Pip's cream belly and third crest leaf.
-  { id: "appearance.belly-field", family: "appearance", label: "Belly field", scope: "branch", clan: "C01", alsoIn: ["C19"], owner: null, consumer: "sketch: an underside field in the second pigment", ...enable() },
+  { id: "appearance.belly-field", family: "appearance", label: "Belly field", scope: "branch", clan: "C01", owner: null, consumer: "sketch: an underside field in the second pigment", ...enable() },
   { id: "growth.crest-leaf-count", family: "structure", label: "Crest leaves", scope: "branch", clan: "C01", owner: "anatomy.crown-presence", consumer: "rig: two or three crest leaves", ...pairMap({ two: 2, three: 3 }, { "two|two": 2, "three|two": 3, "three|three": 3 }) },
   // Catalogue 9, the Loika calibrated to Pip: how far up the body the belly field reaches, and how high the eyes sit on the head.
-  { id: "growth.belly-field-extent", family: "appearance", label: "Belly reach", scope: "branch", clan: "C01", alsoIn: ["C19"], owner: "appearance.belly-field", consumer: "sketch: the share of the body's depth the underside field covers, from below", ...mean({ low: 0.33 }, { high: 0.5 }) },
+  { id: "growth.belly-field-extent", family: "appearance", label: "Belly reach", scope: "branch", clan: "C01", owner: "appearance.belly-field", consumer: "sketch: the share of the body's depth the underside field covers, from below", ...mean({ low: 0.33 }, { high: 0.5 }) },
   { id: "growth.exterior-eye-height-ratio", family: "structure", label: "Eye height", scope: "branch", clan: "C01", owner: "anatomy.exterior-eye-presence", consumer: "rig: the eye centre's height over the head's half depth (0.2 above the middle elsewhere)", ...mean({ middle: 0.0 }, { high: 0.2 }) },
-  // Frame version 6, the fluffy species (design/proposals/genome-fluffy.md): a tail curl and a plume from the crown, a fur skirt to the
-  // floor, brow tufts, hands on a free front pair. Trunk part switches no old frame lists, and the loci they own; nothing existing changes.
-  { id: "anatomy.tail-curl-presence", ...F6, family: "structure", label: "Tail curl", scope: "trunk", owner: "tail", consumer: "rig: the tail ends in a curl; rooted on the crown it is a plume curling forward", ...enable() },
-  { id: "growth.tail-curl-turn", ...F6, family: "structure", label: "Curl turn", scope: "trunk", owner: "anatomy.tail-curl-presence", consumer: "rig: the extra turn along the tail, in radians, the curvature growing toward the tip", ...mean({ loose: 1.2 }, { tight: 3.6 }) },
-  { id: "growth.tail-rise", ...F6, family: "structure", label: "Tail root", scope: "trunk", owner: "anatomy.tail-curl-presence", consumer: "rig: where the tail roots, 0 the rear, 1 the crown (a plume rising from the top)", ...mean({ rear: 0 }, { crown: 1 }) },
-  { id: "anatomy.fur-skirt-presence", ...F6, family: "structure", label: "Fur skirt", scope: "trunk", owner: "fur", consumer: "rig: a flared sheet of fur from the waist down, to the floor at full drop, hiding the legs", ...enable() },
-  { id: "growth.fur-skirt-drop", ...F6, family: "structure", label: "Skirt drop", scope: "trunk", owner: "anatomy.fur-skirt-presence", consumer: "rig: how far the fur hangs from the waist to the floor (1 is floor length)", ...mean({ knee: 0.6 }, { floor: 1 }) },
-  { id: "growth.fur-skirt-flare", ...F6, family: "structure", label: "Skirt flare", scope: "trunk", owner: "anatomy.fur-skirt-presence", consumer: "rig: the skirt's overhang over the body's width", ...mean({ close: 0.1 }, { wide: 0.5 }) },
-  { id: "anatomy.brow-tuft-presence", ...F6, family: "structure", label: "Brow tufts", scope: "trunk", owner: "head", consumer: "rig: a tuft of fur over each eye", ...enable() },
-  { id: "growth.brow-tuft-length", ...F6, family: "structure", label: "Brow tuft length", scope: "trunk", owner: "anatomy.brow-tuft-presence", consumer: "rig: tuft length over head height", ...mean({ short: 0.4 }, { long: 1 }) },
-  { id: "growth.hand-size-ratio", ...F6, family: "structure", label: "Hand size", scope: "trunk", owner: "arms", consumer: "rig: the hand's size over the arm's thickness (a palm and three fingers)", ...mean({ small: 0.7 }, { plump: 1.3 }) },
+  // Frame version 6, the fluffy species (design/proposals/genome-fluffy.md): a tail curl and a plume from the crown (branch C19, the fiddlehead of the ferns),
+  // a fur skirt to the floor and brow tufts (branch C18, the mop of the boulders), and hands on a free front pair (owned by the arms). Records appended at
+  // the end, known by frame version 6; nothing existing changes. A species of another clan borrows a branch record by naming it (spec `borrows`).
+  { id: "anatomy.tail-curl-presence", ...F6, family: "structure", label: "Tail curl", scope: "branch", clan: "C19", owner: "tail", consumer: "rig: the tail ends in a curl; rooted on the crown it is a plume curling forward", ...enable() },
+  { id: "growth.tail-curl-turn", ...F6, family: "structure", label: "Curl turn", scope: "branch", clan: "C19", owner: "anatomy.tail-curl-presence", consumer: "rig: the extra turn along the tail, in radians, the curvature growing toward the tip", ...mean({ loose: 1.2, curled: 2.4 }, { tight: 3.6 }) },
+  { id: "growth.tail-rise", ...F6, family: "structure", label: "Tail root", scope: "branch", clan: "C19", owner: "anatomy.tail-curl-presence", consumer: "rig: where the tail roots, the rear or the crown (a plume rising from the top); a choice, fixed per species", ...pairMap({ rear: 0, crown: 1 }, { "rear|rear": 0, "crown|rear": 0, "crown|crown": 1 }) },
+  { id: "anatomy.fur-skirt-presence", ...F6, family: "structure", label: "Fur skirt", scope: "branch", clan: "C18", owner: "fur", consumer: "rig: a flared sheet of fur from the waist down, to the floor at full drop, hiding the legs", ...enable() },
+  { id: "growth.fur-skirt-drop", ...F6, family: "structure", label: "Skirt drop", scope: "branch", clan: "C18", owner: "anatomy.fur-skirt-presence", consumer: "rig: how far the fur hangs from the waist to the floor (1 is floor length); fixed per species", ...mean({ knee: 0.6 }, { floor: 1 }) },
+  { id: "growth.fur-skirt-flare", ...F6, family: "structure", label: "Skirt flare", scope: "branch", clan: "C18", owner: "anatomy.fur-skirt-presence", consumer: "rig: the skirt's overhang over the body's width", ...mean({ close: 0.1 }, { wide: 0.5 }) },
+  { id: "anatomy.brow-tuft-presence", ...F6, family: "structure", label: "Brow tufts", scope: "branch", clan: "C18", owner: "head", consumer: "rig: a tuft of fur over each eye", ...enable() },
+  { id: "growth.brow-tuft-length", ...F6, family: "structure", label: "Brow tuft length", scope: "branch", clan: "C18", owner: "anatomy.brow-tuft-presence", consumer: "rig: tuft length over head height; at long the tip stops above the eye's upper rim", ...mean({ short: 0.4 }, { long: 1 }) },
+  { id: "growth.hand-size-ratio", ...F6, family: "structure", label: "Hand size", scope: "trunk", owner: "arms", consumer: "rig: the hand's size over the arm's thickness (a palm and three fingers); fixed per species", ...mean({ small: 0.7 }, { plump: 1.3 }) },
 ];
 
 // Alleles added to v1 records (taxonomy §3: "+ 6 alleles"). A changed record is a new record

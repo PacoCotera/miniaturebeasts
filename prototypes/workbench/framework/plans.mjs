@@ -37,11 +37,11 @@ export function rigOf(p) {
   return `Rfan${d}`;
 }
 
-// Plan code as the taxonomy writes it: B1·L4, R1·flaps, B3·L6·flaps, Bfan2·flaps, Rfan2·rays.
+// Plan code as the taxonomy writes it: B1·L4, R1·flaps, B3·L6·flaps, Bfan2·flaps, Rfan2·rays; a mixed plan (a free front pair over one pair of legs) B1·L2·arms.
 export function planCode(p, extras = {}) {
   const d = DEPTH[p.segments];
   const body = p.layout === "fan" ? `${p.symmetry === "radial" ? "R" : "B"}fan${d}` : `${p.symmetry === "radial" ? "R" : "B"}${d}`;
-  const limbs = p.limbs === "mixed" ? "L2·hands" : p.limbs === "contact" ? (p.symmetry === "radial" ? "rays" : `L${2 * PAIRS[p.pairs]}`) : p.limbs === "free" ? "feelers" : null;
+  const limbs = p.limbs === "mixed" ? "L2·arms" : p.limbs === "contact" ? (p.symmetry === "radial" ? "rays" : `L${2 * PAIRS[p.pairs]}`) : p.limbs === "free" ? "feelers" : null;
   const flaps = p.flaps === "on" ? (extras.fins ? "fins" : "flaps") : null;
   return [body, limbs, flaps].filter(Boolean).join("·");
 }

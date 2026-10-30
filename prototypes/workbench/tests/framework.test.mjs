@@ -66,7 +66,7 @@ test("every frame carries only trunk loci its plan owns plus its clan's branch; 
   for (const f of frames) {
     const newer = VALIDATED.filter((l) => (l.sinceFrame ?? 0) > frameVersionOf(f)).length; // records a frame is older than are not its absent lines
     assert.equal(f.counts.carried + f.counts.absent, VALIDATED.length - PLAN_SWITCHES.size - newer, `${f.species.id}: carried + absent = validated − plan switches − records newer than the frame`);
-    assert.ok(f.loci.every((l) => l.scope === "trunk" || l.clan === f.taxonomy.clan || (LOCI.get(l.id).alsoIn ?? []).includes(f.taxonomy.clan)));
+    assert.ok(f.loci.every((l) => l.scope === "trunk" || l.clan === f.taxonomy.clan || (f.species.borrows ?? []).includes(l.id)), "a branch locus by clan, or a borrowed one the species lists");
     assert.equal(f.viability.constructed, f.viability.sampled);
     for (const ch of f.chapters) for (const t of ch.traits) assert.ok(t.loci.every((id) => f.loci.some((l) => l.id === id && l.kind !== "locked")));
   }
