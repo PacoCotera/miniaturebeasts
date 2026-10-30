@@ -3,7 +3,7 @@
 //   node --test prototypes/caddy/tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { faceOf, layoutFace, rasterFace, measure, createScheduler, REGIONS, RULES, W, H, IDS, ICON } from "../face.mjs";
+import { faceOf, layoutFace, rasterFace, measure, createScheduler, lampAt, LAMPS, STATION_LAMPS, REGIONS, RULES, W, H, IDS, ICON } from "../face.mjs";
 
 const T0 = Date.parse("2026-10-30T14:05:00Z"), S = 1000;
 const seated = (at, seats = 1) => ({ companion: { state: "seated", seats, at }, station: { state: "seated" } });
@@ -131,4 +131,21 @@ test("no full refresh within 10 s of a beat; a full after the fifth partial at t
   const l = createScheduler({ tz: 0 }); l.push(face({ now: T0, cradles: lifted(T0, 0), station: station() }), T0);
   assert.equal(l.push(face({ now: T0 + 60 * S, cradles: lifted(T0, 0), station: station({ at: T0 + 60 * S, ledger: { e: 9, d: 6, s: 7 } }) }), T0 + 60 * S), null, "held");
   assert.equal(l.tick(T0 + 599 * S), null); const lp = l.tick(T0 + 600 * S); assert.deepEqual([lp.kind, lp.regions], ["partial", ["ledger"]]);
+});
+
+test("the cradle lamps: off, seated (steady), taking (a 1.6 s breath), done (one 400 ms swell, then seated), needs a hand (amber, steady); the Station cradle off or a dim warm white", () => {
+  assert.deepEqual(lampAt("off", 0), { colour: null, level: 0 });
+  assert.deepEqual([lampAt("seated", 0), lampAt("seated", 9999)], [{ colour: "mint", level: 0.5 }, { colour: "mint", level: 0.5 }], "steady");
+  const breath = [0, 400, 800, 1200, 1600].map((t) => lampAt("taking", t).level);
+  assert.equal(breath[0], breath[4], "a 1.6 s period"); assert.ok(breath[2] > breath[1] && breath[1] > breath[0] && breath[2] <= 0.5, "it breathes, soft: " + breath);
+  assert.equal(lampAt("done", 200).level, 1, "the swell peaks brighter"); assert.equal(lampAt("done", 200).colour, "mint");
+  assert.deepEqual(lampAt("done", 400), lampAt("seated", 0), "then seated"); assert.deepEqual(lampAt("done", 5000), lampAt("seated", 0));
+  assert.deepEqual(lampAt("hand", 0), { colour: "amber", level: 0.8 }); assert.deepEqual(lampAt("hand", 3000), lampAt("hand", 0));
+  assert.deepEqual([lampAt("seated", 0, STATION_LAMPS), lampAt("off", 0, STATION_LAMPS)], [{ colour: "warm", level: 0.25 }, { colour: null, level: 0 }]);
+  assert.ok(Object.values(LAMPS).every((l) => l.colour !== "amber" || l === LAMPS.hand), "amber only for a real need");
+  // which lamp each state lights (faceOf): the lamp is mint at the seat, before the face changes
+  const by = (input) => face(input).lamp.companion;
+  assert.deepEqual([by({ now: T0, cradles: lifted(T0) }), by({ now: T0 + 100, cradles: seated(T0) }), by({ now: T0 + S, cradles: seated(T0), station: station({ at: T0 }) }),
+    by({ now: T0 + S, cradles: seated(T0), hold: { seat: 1, crates: 0, left: 0 }, station: station({ at: T0 }) }), by({ now: T0 + 11 * S, cradles: seated(T0), station: station({ at: T0 + 10 * S }) }), by({ now: T0, cradles: seated(T0), fault: true })],
+    ["off", "seated", "taking", "seated", "hand", "hand"]);
 });

@@ -161,6 +161,23 @@ export function rasterFace(f, out = new Uint8Array(W * H).fill(PAPER)) {
   return out;
 }
 
+// ---- the lamps: one RGB lamp per cradle, driven at the sensed edge; the colours and levels are the art director's, placeholders here ----
+export const LAMPS = {
+  off: { colour: null, level: 0 },
+  seated: { colour: "mint", level: 0.5 },                         // seated, all well (C2, C3, C4b): steady, soft
+  taking: { colour: "mint", level: 0.5, breathMs: 1600 },         // C1: a slow breath
+  done: { colour: "mint", level: 1, swellMs: 400, then: "seated" }, // the moment of C3: one brighter swell, then seated
+  hand: { colour: "amber", level: 0.8 },                          // C4a, C4c: amber only for a real need
+};
+export const STATION_LAMPS = { off: { colour: null, level: 0 }, seated: { colour: "warm", level: 0.25 } };   // the Station cradle: a dim warm white; no game behaviour yet
+// The lamp at t ms after its state began: { colour, level }.
+export function lampAt(state, t, table = LAMPS) {
+  const L = table[state] || table.off;
+  if (L.breathMs) return { colour: L.colour, level: +(L.level * (0.4 + 0.6 * (1 - Math.cos((2 * Math.PI * t) / L.breathMs)) / 2)).toFixed(3) };
+  if (L.swellMs) { if (t >= L.swellMs) return lampAt(L.then, t - L.swellMs, table); const base = table[L.then].level; return { colour: L.colour, level: +(base + (L.level - base) * Math.sin((Math.PI * t) / L.swellMs)).toFixed(3) }; }
+  return { colour: L.colour, level: L.level };
+}
+
 // ---- the refresh scheduler ----
 export const TIMING = { partialMs: 800, fullMs: 4000, fullAfter: 5, beatMs: 10000, untouchedMs: 120000, dailyAt: 5, ledgerMs: 600000 };
 const dayOf = (now, tz) => new Date(now + tz * 60000).toISOString().slice(0, 10);
