@@ -339,16 +339,24 @@ const SIGHT_FOG = 4, SIGHT_GLOW = 6;
 // Three wild species. notice = [creep, walk] distance in tiles at which they notice you.
 // how = the shed trigger; ab = what a partner of this species can do.
 const SPECIES = [
-  { name: 'Loika', plural: 'Loikas', hab: [L.MEADOW, L.POND], notice: [2, 5], flee: 2, eats: true, shedP: .65, how: 'shake',
-    ab: 'calm', abText: 'calms wary creatures', born: 'a long-eared Loika', learn: 'Loikas shed when they shake dry.',
+  { name: 'Loika', plural: 'Loikas', hab: [L.MEADOW, L.POND], notice: [2, 5], flee: 2, eats: true, shedP: .1, how: 'shake',
+    ab: 'calm', abText: 'calms wary creatures', born: 'a long-eared Loika', learn: 'Loikas sometimes shed when they shake dry, more often for someone they trust.',
     col: { body: 'lilac', light: 'lavender', shade: 'plum', dark: 'plumD' } },
-  { name: 'Tuikis', plural: 'Tuikis', hab: [L.WOOD, L.ROCK], notice: [2, 4], flee: 2, eats: false, shedP: .6, how: 'calm',
-    ab: 'dig', abText: 'digs narrow burrows', born: 'a small burrower', learn: 'Tuikis shed when they feel safe by their burrow.', learnCurl: 'Tuikis shed when they curl up out of the rain.',
+  { name: 'Tuikis', plural: 'Tuikis', hab: [L.WOOD, L.ROCK], notice: [2, 4], flee: 2, eats: false, shedP: .1, how: 'calm',
+    ab: 'dig', abText: 'digs narrow burrows', born: 'a small burrower', learn: 'Tuikis sometimes shed when they feel safe by their burrow, more often for someone they trust.', learnCurl: 'Tuikis sometimes shed when they curl up out of the rain, more often for someone they trust.',
     col: { body: 'aqua', light: 'mint', shade: 'teal', dark: 'tealD' } },
-  { name: 'Untuva', plural: 'Untuvas', hab: [L.WOOD, L.MEADOW, L.POND], notice: [1, 3], flee: 1, eats: true, shedP: .75, how: 'meal',
-    ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas shed after a full meal.',
+  { name: 'Untuva', plural: 'Untuvas', hab: [L.WOOD, L.MEADOW, L.POND], notice: [1, 3], flee: 1, eats: true, shedP: .1, how: 'meal',
+    ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas sometimes shed after a full meal, more often for someone they trust.',
     col: { body: 'coral', light: 'peach', shade: 'red', dark: 'wine' } },
 ];
+// Shedding is rare unless the creature is special: shedP is a plain creature's chance at its moment; a creature
+// fed or settled this expedition sheds at SHED_BOND; one of a species not yet known always does; at most SHED_MAX pods from creature
+// moments an expedition (a returned line's pod is apart). Tune.
+const SHED_BOND = .5, SHED_MAX = 1;
+// Why a shed pod is special, as the Companion's line says it (the pod carries the key as `why`; a plain pod carries none).
+// A bond pod names its act: fed, or settled with you (a Tuikis does not eat).
+const WHY_WORD = { new: 'a new species', bond: 'you fed it' }, WHY_SETTLE = 'it settled with you';
+const whyOf = p => p.why ? { why: p.why } : {};   // a pod keeps its why wherever it is copied
 // A species the Companion has no entry for (a Station species beyond the three): no habitat, no diet, no ability, no art.
 const SP_OTHER = Object.freeze({ other: true, name: null, plural: null, hab: [], notice: [2, 4], flee: 2, eats: false, shedP: 0, how: null,
   ab: null, abText: null, born: null, learn: null, col: null });
@@ -1416,8 +1424,8 @@ function ensureLive(key) {
     const s = freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
     if (!s) continue;
     live.cr.push({ id: w.id, sp: w.sp, x: s.x, y: s.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1,
-      // the guaranteed early burrowers are always ready in the first two expeditions
-      ready: (w.sp === 1 && ex.n <= 2 && G.glow.includes(w.c)) || rnd(S.seed, 'ready', w.id, ex.n) < spOf(w.sp).shedP });
+      // the guaranteed early burrowers are always ready in the first two expeditions; a species not yet known always is
+      ready: (w.sp === 1 && ex.n <= 2 && G.glow.includes(w.c)) || !S.known.includes(w.sp) || rnd(S.seed, 'ready', w.id, ex.n) < spOf(w.sp).shedP });
   }
   return live;
 }
@@ -1721,8 +1729,8 @@ function takePod(p, leave) {
   const out = full ? ex.cargo.pods.splice(leave, 1)[0] : null;
   S.pods = S.pods.filter(q => q !== p);
   // the genome seed is fixed the first time a pod is taken: the Station reads its genome from it
-  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key, ...shedOf(p) });
-  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...shedOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
+  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key, ...shedOf(p), ...whyOf(p) });
+  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...shedOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
@@ -1996,10 +2004,13 @@ function hideOrFlee(X, c) {
   if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = { x: h.x, y: h.y }; return; } }
   c.st = 'flee'; c.t = 2;
 }
-// Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once.
+// Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once,
+// at most SHED_MAX moment pods an expedition. A creature not ready but fed or settled this expedition may still shed, on its own seeded roll.
+const bonded = c => actDone(S.exp, c, 'eat') || actDone(S.exp, c, 'settle');
+const shedReady = c => c.ready || (bonded(c) && rnd(S.seed, 'bond', c.id, S.exp.n) < SHED_BOND);
 function shedAllowed(c, X) {
   const w = crById.get(c.id);
-  if (!c.ready || !w || w.s === S.exp.n) return false;
+  if (!w || w.s === S.exp.n || S.exp.stats.sheds >= SHED_MAX || !shedReady(c)) return false;
   if (c.st === 'shake' || c.st === 'curl') return !X.live.stormShed[c.sp];
   if (c.st === 'glow') return !X.live.calmShed;
   return true;
@@ -2020,13 +2031,14 @@ function shedPod(c, X) {
   if (how === 'calm') X.live.calmShed = 1;
   const p = freeAround(X.key, c.x, c.y, null) || { x: c.x, y: c.y };
   const id = 'p' + (S.nextId++);
-  S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how });
+  const why = !S.known.includes(c.sp) ? 'new' : bonded(c) ? 'bond' : null;
+  S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how, ...(why ? { why } : {}) });
   const w = crById.get(c.id); if (w) w.s = S.exp.n;
   S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');
   fxGlint(p.x, p.y, 200);
   const verb = { shake: 'shook dry', calm: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal' }[how];
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
-  else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose', 1);
+  else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
 }
 // A Loika shaking dry leaves a tuft of fur on the ground (Essence), once per Loika per expedition.
 function dropTuft(c, X) {
@@ -2220,7 +2232,7 @@ function dropPods(ex, rep) {
   const free = []; for (let i = 0; i < PW * PH; i++) if (lay.reach[i] && !taken.has(i)) free.push(i);
   rep.dropped = ex.cargo.pods.length; rep.at = cxy(cell);
   for (const pod of ex.cargo.pods) { const i = free.length ? free.splice(R.int(free.length), 1)[0] : lay.spawnPt.y * PW + lay.spawnPt.x;   // no free tile: the entry tile, stacked
-    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % PW, y: (i / PW) | 0, sp: pod.sp, ...(pod.species ? { species: pod.species } : {}), h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1, gs: pod.gs, ...shedOf(pod) }); }
+    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % PW, y: (i / PW) | 0, sp: pod.sp, ...(pod.species ? { species: pod.species } : {}), h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1, gs: pod.gs, ...shedOf(pod), ...whyOf(pod) }); }
   if (rep.dropped) (S.skulls = S.skulls || {})[cell] = key;   // which place holds the pods (the cave sits under the gate cell)
   logEv('Probe broke at ' + rep.at.x + ',' + rep.at.y + ' · ' + rep.dropped + ' pod' + (rep.dropped === 1 ? '' : 's') + ' left there (skull on the map)');
   ex.cargo.pods = [];
@@ -2259,7 +2271,7 @@ function endExpedition(reason) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n, n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null, ...shedOf(q) })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null, ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;

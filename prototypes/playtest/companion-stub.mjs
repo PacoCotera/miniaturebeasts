@@ -1,8 +1,8 @@
 // The Companion's stand-in (the plan: "a run that needs the Companion uses a stub for the trip outcome until it has its own engine"). The Companion writes the shared save (the world, the turn,
 // the crates in the bay); the Station reads it (game.storageChanged). This does the same for a seeded trip: one world turn, one sealed crate. The yields are ASSUMPTIONS, not measurements,
-// taken from the economy tables of the design specs: Energy about 3 a trip, Data from creatures and the field yield, Essence 1 to 3, one to three pods of
-// the three starter species. A report built on them says so (metrics.mjs prints STUB).
-export const STUB = { energy: [2, 4], data: [4, 12], essence: [1, 3], pods: [1, 3], species: [0, 0, 1, 2], note: "stub trips: Energy 2-4, Data 4-12, Essence 1-3, 1-3 pods of Loika/Tuikis/Untuva a trip (assumed, not measured)" };
+// taken from the economy tables of the design specs: Energy about 3 a trip, Data from creatures and the field yield, Essence 1 to 3, none to two pods of
+// the three starter species (about one a trip: shedding is rare unless the creature is special). A report built on them says so (metrics.mjs prints STUB).
+export const STUB = { energy: [2, 4], data: [4, 12], essence: [1, 3], pods: [0, 2], species: [0, 0, 1, 2], note: "stub trips: Energy 2-4, Data 4-12, Essence 1-3, 0-2 pods of Loika/Tuikis/Untuva a trip, about 1 (assumed, not measured)" };
 
 export function mulberry32(seed) { let a = seed >>> 0; return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 const between = (rng, [a, b]) => a + Math.floor(rng() * (b - a + 1));

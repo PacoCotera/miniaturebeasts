@@ -775,6 +775,14 @@ test("R6 (C18, owed): a shed pod reads of {name}'s line where the tray names its
   assert.deepEqual(S.podOriginLines({ ...p, of: "Fig", idd: 1 }), ["Found in the meadow,", "of Fig's line."]);
 });
 
+test("fewer pods: a crate pod's why ('new' or 'bond') rides into the Station's pod; a plain pod, or an unknown why, carries none", () => {
+  const st = S.freshSt("w", 4, 1); S.normalize(st); st.dock = { docked: true, at: 0 };
+  const q = (id, why) => ({ id, sp: 0, species: "S01", g: "meadow", how: "meal", gs: 3, k: null, ...(why ? { why } : {}) });
+  S.openCrates(st, svOf({ bay: [crate(1, [q("a", "new"), q("b", "bond"), q("c"), q("d", "odd")])] }), settings, 1);
+  assert.deepEqual(st.tray.map((p) => p.why ?? null), ["new", "bond", null, null]);
+  assert.deepEqual(JSON.parse(JSON.stringify(st)).tray.map((p) => p.why ?? null), ["new", "bond", null, null], "kept in the save");
+});
+
 test("R2: a crate pod with shed and genome opens into the tray with that genome and marks the record found", () => {
   const st = roomsWorld(2); st.turn = 1; const m = st.mibis[0]; m.born = 0;
   assert.equal(S.returnMibi(st, { with: null }, m, settings).ok, true);

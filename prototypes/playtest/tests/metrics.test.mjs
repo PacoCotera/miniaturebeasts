@@ -4,6 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { report, summarise, markdown, median, NOT_MEASURABLE } from "../metrics.mjs";
 import { BUILT } from "../../station/src/nav.mjs";
+import { STUB, crate, mulberry32 } from "../companion-stub.mjs";
 
 const series = (n, f) => Array.from({ length: n }, (_, i) => ({ turn: i + 1, e: f.e(i), d: f.d(i), s: f.s(i), pods: i + 1, podsUnread: i + 1, mibis: 0, elders: 0, bay: 0, rooms: 1 }));
 const game = (policy, seed, o = {}) => ({ policy, seed, turns: 4, economy: "strict", presses: 100, minutes: 80, firstHatch: null, firstElder: null, series: series(4, { e: (i) => 3 * (i + 1), d: (i) => 10 * (i + 1), s: (i) => 2 * (i + 1) }), screens: { home: 4, pods: 3, cargo: 2 },
@@ -47,4 +48,15 @@ test("the report keeps one row a game, lists what is not measurable yet, and say
   const md = markdown(r);
   assert.match(md, /^\| greedy \|/m); assert.match(md, /^\| hoarder \|/m); assert.match(md, /Not measurable yet:/); assert.match(md, /STUB/);
   JSON.parse(JSON.stringify(r));
+});
+
+test("fewer pods: 1,000 stand-in crates hold 0 to 2 pods, about one; the report prints the note and the pods-a-trip line", () => {
+  const rng = mulberry32(7), n = Array.from({ length: 1000 }, (_, i) => crate(rng, "w", i + 1).pods.length);
+  assert.ok(n.every((k) => k >= 0 && k <= 2), "0 to 2 pods a crate"); assert.ok(n.includes(0) && n.includes(2));
+  const m = n.reduce((a, b) => a + b, 0) / n.length; assert.ok(m >= 0.9 && m <= 1.1, `mean ${m}`);
+  assert.deepEqual(STUB.pods, [0, 2]); assert.match(STUB.note, /0-2 pods/);
+  const s = summarise("x", [game("x", 1), game("x", 2, { pods: { received: 2, neverRead: 0, heldEnd: 0, grown: 0, letGo: 0 } })]);
+  assert.equal(s.pods.trips, 8); assert.equal(s.pods.perTrip, 1.5);   // 12 pods over 2 games of 4 trips
+  const md = markdown(report([game("greedy", 1), game("hoarder", 1)], { games: 1, turns: 4, presses: 60 }));
+  assert.ok(md.includes(STUB.note), "the new note"); assert.match(md, /^Pods received a trip \(mean\): greedy 2\.5, hoarder 2\.5\.$/m);
 });

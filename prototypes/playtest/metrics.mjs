@@ -36,7 +36,7 @@ function held(games, key) {
 export function summarise(policy, games) {
   const rows = games.map((g) => ({ ...g, series: g.series ?? [] }));
   const events = rows.flatMap((g) => (g.stuck ?? []).map((e) => ({ ...e, seed: g.seed }))), pods = rows.map((g) => g.pods ?? {});
-  const received = sum(pods.map((p) => p.received ?? 0)), neverRead = sum(pods.map((p) => p.neverRead ?? 0));
+  const received = sum(pods.map((p) => p.received ?? 0)), neverRead = sum(pods.map((p) => p.neverRead ?? 0)), trips = sum(rows.map((g) => g.series.length || g.turns || 0));   // one trip a world turn
   const reached = [...new Set(rows.flatMap((g) => Object.keys(g.screens ?? {})))].sort();
   return {
     policy, games: rows.length, finished: rows.filter((g) => g.end === "done").length, crashed: rows.filter((g) => g.end === "error").map((g) => ({ seed: g.seed, error: g.error })),
@@ -44,7 +44,7 @@ export function summarise(policy, games) {
     firstHatch: milestone(rows, "firstHatch"), firstElder: milestone(rows, "firstElder"),
     energy: held(rows, "e"), data: held(rows, "d"), essence: held(rows, "s"),
     pods: {
-      received, neverRead, neverReadShare: received ? +(neverRead / received).toFixed(3) : null, grown: sum(pods.map((p) => p.grown ?? 0)), letGo: sum(pods.map((p) => p.letGo ?? 0)),
+      received, trips, perTrip: trips ? +(received / trips).toFixed(2) : null, neverRead, neverReadShare: received ? +(neverRead / received).toFixed(3) : null, grown: sum(pods.map((p) => p.grown ?? 0)), letGo: sum(pods.map((p) => p.letGo ?? 0)),
       heldAtEnd: spread(pods.map((p) => p.heldEnd ?? 0)), heldPeak: Math.max(0, ...rows.flatMap((g) => g.series.map((x) => x.pods))),
     },
     stuck: {
@@ -79,6 +79,7 @@ export function markdown(r) {
     "|---|---|---|---|---|---|---|---|---|---|---|---|");
   for (const p of P) L.push(`| ${p.policy} | ${at(p.firstHatch)} | ${at(p.firstElder)} | ${p.hatched?.median ?? "-"} | ${last(p.energy)} | ${last(p.data)} | ${last(p.essence)} | ${p.pods.heldAtEnd?.median ?? "-"} · ${p.pods.heldPeak} | ${p.pods.neverReadShare == null ? "-" : Math.round(p.pods.neverReadShare * 100) + "%"} | ${p.stuck.games}/${p.games} (${p.stuck.total}) | ${p.stuck.softLocks.length} | ${p.crashed.length} |`);
   L.push("");
+  L.push("Pods received a trip (mean): " + P.map((p) => `${p.policy} ${p.pods.perTrip ?? "-"}`).join(", ") + ".", "");
   const places = {}; for (const p of P) for (const [k, v] of Object.entries(p.stuck.byPlace)) places[k] = (places[k] ?? 0) + v;
   L.push("Dead ends (the stuck detector) by place: " + (Object.keys(places).length ? Object.entries(places).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(", ") : "none") + ".", "");
   L.push("Share of game-turns holding more than 20 (the old hold): " + P.map((p) => `${p.policy} Energy ${Math.round(p.energy.shareOver20 * 100)}%, Data ${Math.round(p.data.shareOver20 * 100)}%, Essence ${Math.round(p.essence.shareOver20 * 100)}%`).join("; ") + ".", "");
