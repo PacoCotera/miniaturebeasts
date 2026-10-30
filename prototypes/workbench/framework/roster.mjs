@@ -178,19 +178,23 @@ export const SPECIES = [
   // placeholders for the game designer to set; nothing of them is read by the rig.
   { ...row("S17", "C17", "medium", "early", "a tall teardrop of fur with a glowing plume", "sways, rocks along", "Reeds", null, "dew", "draft: to be set by the game designer", "draft: calm, a little dreamy"),
     summary: "A tall teardrop of fur standing upright on two tiny feet, a cream face, one plume rising from the top and curling forward to a glowing tip (the plume is its tail, rooted on the crown); no arms.",
-    frameVersion: 6, sealed: {}, alwaysOpen: ["tail-curl-turn", "fur-reach"], neverOpen: ["fur-hang", "legs", "feet", "tail"] }, // the apron, the legs, the feet and the plume's size are fixed: the feet show under a short apron
+    frameVersion: 6, draft: true, sealed: {}, alwaysOpen: ["tail-curl-turn", "fur-reach"], neverOpen: ["fur-hang", "legs", "feet", "tail"] }, // the apron, the legs, the feet and the plume's size are fixed: the feet show under a short apron
   { ...row("S18", "C18", "large", "mid", "a wide low dome under a floor-length skirt of fur", "glides low along the ground", "Boulders", null, "moss", "draft: to be set by the game designer", "draft: patient, shy"),
     summary: "A wide low dome hidden under a floor-length skirt of long fur, a small flat face peeking out at the front, brow tassels; no ears, no snout, short legs under the skirt that never show.",
-    frameVersion: 6, sealed: {}, alwaysOpen: ["fur-hang", "brow-tufts"], neverOpen: ["legs", "feet"] }, // the skirt is floor length (the drop is fixed): Hang is the flare alone
+    frameVersion: 6, draft: true, sealed: {}, alwaysOpen: ["fur-hang", "brow-tufts"], neverOpen: ["legs", "feet"] }, // the skirt is floor length (the drop is fixed): Hang is the flare alone
   { ...row("S19", "C19", "medium", "mid", "an upright crescent with a curled tail and small hands", "hops, walks", "Ferns", null, "fruit, leaves", "draft: to be set by the game designer", "draft: gentle, curious"),
     summary: "An upright crescent of dense fur: a round head end, a cream belly, two stout hind feet, a long curled tail, and two small three-fingered hands held together at the chest (a free front pair over a contact hind pair).",
-    frameVersion: 6, sealed: {}, alwaysOpen: ["tail-curl-turn"], neverOpen: ["feelers", "rays", "tail"], // the arms are not feelers: those traits name the free-chain plans; the tail's size is fixed, only its curl is open
+    frameVersion: 6, draft: true, sealed: {}, alwaysOpen: ["tail-curl-turn"], neverOpen: ["feelers", "rays", "tail"], // the arms are not feelers: those traits name the free-chain plans; the tail's size is fixed, only its curl is open
     pools: { "growth.tail-curl-turn": ["curled", "tight"] } }, // the tight half of the curl: a straight tail on an upright biped with hands at the chest reads as a kangaroo or a small theropod
 ];
 
 // Generated species open Glow only where the plan draws an emission (a bulb or a charged body);
 // elsewhere emission is a carried trunk locus the species fixes.
 const GLOW_CLANS = new Set(["C03", "C16"]);
+
+// Draft: S17-S19 have no art yet. A draft keeps its row, frame, target and glyph, but no Station-facing list reads it (the Library, the pools): the Station skips
+// a frame whose `species.draft` is set when it loads its frames. The flag comes off with the art.
+export const DRAFT = SPECIES.filter((s) => s.draft).map((s) => s.id);
 
 // Parked (owner, 2026-10-30 12:38): S05, S06 and S07 are too close to real animals. A parked species keeps its row, frame, target and glyph, and a save
 // holding one still loads; the Station's pools draw from the active ones only (`frame.species.parked` carries the flag).

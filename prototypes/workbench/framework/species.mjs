@@ -231,7 +231,7 @@ export function buildFrame(spec, options = {}) {
   const frame = {
     ...(spec.frameVersion ? { frameVersion: spec.frameVersion } : {}),
     schema: SCHEMA,
-    species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "", ...(spec.parked ? { parked: true } : {}), ...(spec.borrows?.length ? { borrows: [...spec.borrows] } : {}) },
+    species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "", ...(spec.parked ? { parked: true } : {}), ...(spec.draft ? { draft: true } : {}), ...(spec.borrows?.length ? { borrows: [...spec.borrows] } : {}) },
     taxonomy: { ...spec.taxonomy, clan: spec.clan, planKey: spec.plan.key, planCode: plan.code, rig: plan.rig, tier: spec.tier ?? "authored", seed: spec.seed ?? null, states: plan.states },
     catalogue: { id: CATALOGUE.id, version: CATALOGUE.version, parent: CATALOGUE.parent },
     plan: { key: spec.plan.key, extras: { join: plan.join, wave: plan.extras.wave, fins: plan.extras.fins, float: !!spec.plan.extras?.float, stand: !!spec.plan.extras?.stand, flapPairs: plan.extras.flapPairs, flapRest: plan.extras.flapRest, ...(plan.extras.upright ? { upright: true } : {}) }, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, stations: plan.stations, ...(plan.armSet ? { armSet: plan.armSet, armStations: plan.armStations } : {}) },

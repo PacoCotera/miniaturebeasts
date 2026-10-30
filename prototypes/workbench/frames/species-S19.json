@@ -7,6 +7,7 @@
   "plural": "Curlop",
   "order": 19,
   "summary": "An upright crescent of dense fur: a round head end, a cream belly, two stout hind feet, a long curled tail, and two small three-fingered hands held together at the chest (a free front pair over a contact hind pair).",
+  "draft": true,
   "borrows": [
    "appearance.belly-field",
    "growth.belly-field-extent"

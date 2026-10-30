@@ -7,6 +7,7 @@
   "plural": "Wickle",
   "order": 17,
   "summary": "A tall teardrop of fur standing upright on two tiny feet, a cream face, one plume rising from the top and curling forward to a glowing tip (the plume is its tail, rooted on the crown); no arms.",
+  "draft": true,
   "borrows": [
    "anatomy.tail-curl-presence",
    "growth.tail-curl-turn",

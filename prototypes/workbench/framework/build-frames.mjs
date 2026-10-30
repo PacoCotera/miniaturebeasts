@@ -47,7 +47,7 @@ export function buildRegistry({ log = () => {} } = {}) {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const frames = buildRegistry({ log: console.log });
-  const index = { schema: "mb-frame-registry/1", catalogue: frames[0].catalogue, species: frames.map((f) => ({ id: f.species.id, name: f.species.name, clan: f.taxonomy.clan, plan: f.plan.code, rig: f.plan.rig, tier: f.taxonomy.tier, file: `species-${f.species.id}.json`, ...(f.species.parked ? { parked: true } : {}), open: f.counts.open, traits: f.counts.traits, carried: f.counts.carried })) };
+  const index = { schema: "mb-frame-registry/1", catalogue: frames[0].catalogue, species: frames.map((f) => ({ id: f.species.id, name: f.species.name, clan: f.taxonomy.clan, plan: f.plan.code, rig: f.plan.rig, tier: f.taxonomy.tier, file: `species-${f.species.id}.json`, ...(f.species.parked ? { parked: true } : {}), ...(f.species.draft ? { draft: true } : {}), open: f.counts.open, traits: f.counts.traits, carried: f.counts.carried })) };
   const files = [["index.json", JSON.stringify(index, null, 1) + "\n"], ...frames.map((f) => [`species-${f.species.id}.json`, JSON.stringify(f, null, 1) + "\n"])];
   let stale = 0;
   for (const [name, text] of files) {

@@ -214,6 +214,7 @@
    "rig": "B1",
    "tier": "early",
    "file": "species-S17.json",
+   "draft": true,
    "open": 16,
    "traits": 10,
    "carried": 48
@@ -226,6 +227,7 @@
    "rig": "B1",
    "tier": "mid",
    "file": "species-S18.json",
+   "draft": true,
    "open": 20,
    "traits": 15,
    "carried": 44
@@ -238,6 +240,7 @@
    "rig": "B1",
    "tier": "mid",
    "file": "species-S19.json",
+   "draft": true,
    "open": 20,
    "traits": 14,
    "carried": 53

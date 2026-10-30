@@ -19,7 +19,8 @@ export const speciesIndex = (id) => SP_INDEX.indexOf(id);           // -1 for a 
 export const speciesId = (index) => SP_INDEX[index] ?? null;
 
 const FRAMES = new Map();
-export function setFrames(list) { FRAMES.clear(); for (const f of list) FRAMES.set(f.species.id, f); }
+// A draft species (frame.species.draft: no art yet) is not loaded: no Library cell, no pool, no pod reads it until the flag comes off.
+export function setFrames(list) { FRAMES.clear(); for (const f of list) if (!f.species.draft) FRAMES.set(f.species.id, f); }
 export const frameOf = (id) => FRAMES.get(id) ?? null;
 export const frameIds = () => [...FRAMES.keys()].sort();
 export const framesLoaded = () => FRAMES.size > 0;

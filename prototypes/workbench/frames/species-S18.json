@@ -6,7 +6,8 @@
   "name": "Drapet",
   "plural": "Drapet",
   "order": 18,
-  "summary": "A wide low dome hidden under a floor-length skirt of long fur, a small flat face peeking out at the front, brow tassels; no ears, no snout, short legs under the skirt that never show."
+  "summary": "A wide low dome hidden under a floor-length skirt of long fur, a small flat face peeking out at the front, brow tassels; no ears, no snout, short legs under the skirt that never show.",
+  "draft": true
  },
  "taxonomy": {
   "code": "S18",
