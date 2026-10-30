@@ -1,0 +1,1242 @@
+{
+ "_note": "The Vivarium's whole, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "vivarium-meet": [
+   {
+    "screen": "habitat",
+    "state": "meet",
+    "ring": "resident",
+    "ribbon": "Meet Moss",
+    "tag": false,
+    "ok": "Name Moss",
+    "subject": "A young Loika",
+    "back": "Vivarium",
+    "waiting": false
+   }
+  ],
+  "vivarium-namer": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "resident",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "act.done",
+    "field": "Moss|selected",
+    "page": "letters",
+    "ok": "Keep Moss",
+    "back": "Clear"
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "namer",
+      "target": "mod.page"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "mod.page",
+    "field": "Moss|selected",
+    "page": "letters",
+    "ok": "Accents",
+    "back": "Clear"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "namer",
+      "target": "mod.page",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "mod.page",
+    "field": "Moss|selected",
+    "page": "accents",
+    "ok": "Letters",
+    "back": "Clear"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "namer",
+      "target": "mod.page",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "mod.page",
+    "field": "Moss|selected",
+    "page": "letters",
+    "ok": "Accents",
+    "back": "Clear"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "namer",
+      "target": "act.done"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "act.done",
+    "field": "Moss|selected",
+    "page": "letters",
+    "ok": "Keep Moss",
+    "back": "Clear"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "namer",
+      "target": "act.suggest"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "act.suggest",
+    "field": "Moss|selected",
+    "page": "letters",
+    "ok": "Suggest a name",
+    "back": "Clear"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "namer",
+      "target": "act.suggest",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "act.suggest",
+    "field": "Bean|selected",
+    "page": "letters",
+    "ok": "Another name",
+    "back": "Clear"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "namer",
+      "target": "act.done"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "act.done",
+    "field": "Bean|selected",
+    "page": "letters",
+    "ok": "Name it Bean",
+    "back": "Clear"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "namer",
+      "target": "act.done",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "resident",
+    "field": null,
+    "page": null,
+    "ok": "Greet Bean",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "name"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "name",
+    "field": null,
+    "page": null,
+    "ok": "Rename Bean",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "name",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "act.done",
+    "field": "Bean|selected",
+    "page": "letters",
+    "ok": "Keep Bean",
+    "back": "Clear"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "namer",
+      "target": "act.done",
+      "verb": "back"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "act.done",
+    "field": "|empty",
+    "page": "letters",
+    "ok": null,
+    "back": "Bean"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "namer",
+      "target": "act.done",
+      "verb": "back"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "name",
+    "field": null,
+    "page": null,
+    "ok": "Rename Bean",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "name",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "act.done",
+    "field": "Bean|selected",
+    "page": "letters",
+    "ok": "Keep Bean",
+    "back": "Clear"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "namer",
+      "target": "act.done",
+      "verb": "back"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "act.done",
+    "field": "|empty",
+    "page": "letters",
+    "ok": null,
+    "back": "Bean"
+   },
+   {
+    "intent": "key.12:confirm",
+    "said": [],
+    "state": "rest",
+    "field": "M|typed",
+    "say": "A name needs two letters|reason"
+   },
+   {
+    "intent": "key.14:confirm",
+    "said": [],
+    "state": "rest",
+    "field": "Mo|typed",
+    "say": "|reason"
+   },
+   {
+    "intent": "key.18:confirm",
+    "said": [],
+    "state": "rest",
+    "field": "Mos|typed",
+    "say": "|reason"
+   },
+   {
+    "intent": "key.18:confirm",
+    "said": [],
+    "state": "rest",
+    "field": "Moss|typed",
+    "say": "|reason"
+   },
+   {
+    "intent": "act.done:confirm",
+    "said": [],
+    "state": "rest",
+    "field": null,
+    "say": null
+   }
+  ],
+  "vivarium-card": [
+   {
+    "key": "habitat",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "room",
+      "verb": "room:habitat"
+     }
+    ],
+    "screen": "vivarium",
+    "state": "rest",
+    "ring": "resident.10",
+    "ok": "Look at Burr",
+    "price": null,
+    "subject": "A young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "resident.10",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "resident",
+    "ok": "Greet Burr",
+    "price": null,
+    "subject": "A young Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "name"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "name",
+    "ok": "Rename Burr",
+    "price": null,
+    "subject": "A young Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "species"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "species",
+    "ok": "Open the guide",
+    "price": null,
+    "subject": "Every Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "family"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "family",
+    "ok": "See the family",
+    "price": null,
+    "subject": "",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "plate.0"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "plate.0",
+    "ok": "Read Coat",
+    "price": "◆ 1",
+    "subject": "Coat, still a surprise",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "plate.0",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "plate.0",
+    "ok": null,
+    "price": null,
+    "subject": "Coat, read",
+    "back": "Vivarium"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "resident"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "resident",
+    "ok": "Greet Burr",
+    "price": null,
+    "subject": "A young Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "name"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "name",
+    "ok": "Rename Burr",
+    "price": null,
+    "subject": "A young Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "species"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "species",
+    "ok": "Open the guide",
+    "price": null,
+    "subject": "Every Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "family"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "family",
+    "ok": "See the family",
+    "price": null,
+    "subject": "",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "plate.0"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "plate.0",
+    "ok": null,
+    "price": null,
+    "subject": "Coat, read",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "door"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "door",
+    "ok": "Take Burr with you",
+    "price": null,
+    "subject": "Goes with you now",
+    "back": "Vivarium"
+   },
+   {
+    "walk": "door",
+    "ring": "door",
+    "ok": "Take Burr with you"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "door",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "door",
+    "ok": null,
+    "price": null,
+    "subject": "Goes with you now",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "cross"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "cross",
+    "ok": "Cross Burr",
+    "price": null,
+    "subject": "Crosses once adult",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "wild"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Return Burr",
+    "price": "❀ +2",
+    "subject": "Leaves a pod of its line",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "wild",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Return Burr",
+    "price": "❀ +2",
+    "subject": "",
+    "back": "Back"
+   },
+   {
+    "key": "left",
+    "said": [],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Return Burr",
+    "price": "❀ +2",
+    "subject": "",
+    "back": "Back"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.return",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "out",
+    "ring": "name",
+    "ok": "Rename Dot",
+    "price": null,
+    "subject": "Ready to go exploring",
+    "back": "Vivarium"
+   },
+   {
+    "gate": "juvenile",
+    "released": true,
+    "essence": 2
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "tile.1"
+     }
+    ],
+    "screen": "habitat",
+    "state": "out",
+    "ring": "tile.1",
+    "ok": "Greet Dot",
+    "price": null,
+    "subject": "An adult Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "tile.2"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "tile.2",
+    "ok": "Greet Moss",
+    "price": null,
+    "subject": "A young Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "tile.9"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "tile.9",
+    "ok": "Greet Sorrel",
+    "price": null,
+    "subject": "A young Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "tile.5"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "tile.5",
+    "ok": "Greet Tuft",
+    "price": null,
+    "subject": "An adult Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "resident"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "resident",
+    "ok": "Greet Tuft",
+    "price": null,
+    "subject": "An adult Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "name"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "name",
+    "ok": "Rename Tuft",
+    "price": null,
+    "subject": "An adult Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "species"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "species",
+    "ok": "Open the guide",
+    "price": null,
+    "subject": "Every Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "family"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "family",
+    "ok": "See the family",
+    "price": null,
+    "subject": "",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "plate.0"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "plate.0",
+    "ok": null,
+    "price": null,
+    "subject": "Coat, read",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "door"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "door",
+    "ok": "Take Tuft with you",
+    "price": null,
+    "subject": "Goes with you now",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "cross"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "cross",
+    "ok": "Cross Tuft",
+    "price": null,
+    "subject": "Crossing is not open yet",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "wild"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Return Tuft",
+    "price": "❀ +2",
+    "subject": "Leaves a pod of its line",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "wild",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Return Tuft",
+    "price": "❀ +2",
+    "subject": "",
+    "back": "Back"
+   },
+   {
+    "key": "left",
+    "said": [],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Return Tuft",
+    "price": "❀ +2",
+    "subject": "",
+    "back": "Back"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.return",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "out",
+    "ring": "name",
+    "ok": "Rename Dot",
+    "price": null,
+    "subject": "Ready to go exploring",
+    "back": "Vivarium"
+   },
+   {
+    "gate": "adult",
+    "released": true,
+    "essence": 2
+   }
+  ],
+  "vivarium-trickle": [
+   {
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "resident",
+    "habId": 2
+   }
+  ],
+  "vivarium-pad": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "vivarium",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.2"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "resident.2"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.2"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.9"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.9",
+    "ok": "Look at Sorrel",
+    "subject": "A young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.2"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.1",
+    "ok": "Look at Dot",
+    "subject": "Ready to go exploring",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.0"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [],
+    "screen": "vivarium",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [],
+    "screen": "vivarium",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.1",
+    "ok": null,
+    "subject": "Six places free",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.new"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.new",
+    "ok": "Add a room",
+    "subject": "Eight more places",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.13"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.13",
+    "ok": "Look at Lori",
+    "subject": "An adult Loika",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.1",
+    "ok": null,
+    "subject": "Six places free",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "room.0"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room.0",
+    "ok": null,
+    "subject": "This room is full",
+    "back": "Home"
+   },
+   {
+    "key": "habitat",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "room.0",
+      "verb": "room:habitat"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
+    "back": "Home"
+   }
+  ],
+  "vivarium-whole": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "resident.2",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "focus": "vivarium",
+    "ok": "Greet Moss",
+    "subject": "A young Loika",
+    "back": "Vivarium"
+   },
+   {
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "resident",
+    "title": "Vivarium",
+    "back": "Vivarium"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "resident",
+      "verb": "back"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "resident.2",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "vivarium",
+    "ok": null,
+    "subject": null,
+    "back": null
+   },
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "vivarium",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "cargo",
+    "focus": "vivarium",
+    "ok": null,
+    "subject": "The bay is empty",
+    "back": null
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "resident.2",
+    "ok": "Look at Moss",
+    "subject": "A young Loika",
+    "back": "Home"
+   }
+  ]
+ }
+}

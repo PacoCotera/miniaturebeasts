@@ -1,0 +1,683 @@
+{
+ "$comment": "The props of one mibi up close (lvgl-switch.md §2.1): what views/habitat-props.mjs gives the face, beside the frame's. Props name what, never where: ids, strings, states, counts, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from habitat.json and the palette). Pictures are ids; a master not yet signed is an empty slot or a labelled placeholder the host registers. `overlay` is the namer's props (namer.props.json) while it is open, absent otherwise.",
+ "$defs": {
+  "target": {
+   "type": "object",
+   "required": [
+    "id",
+    "group",
+    "enabled"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "group": {
+     "enum": [
+      "resident",
+      "name",
+      "species",
+      "family",
+      "plate",
+      "top",
+      "low",
+      "tile",
+      "room"
+     ]
+    },
+    "enabled": {
+     "type": "boolean"
+    },
+    "lines": {
+     "enum": [1, 2],
+     "$comment": "the family target only: its origin lines (a founder's one, a bred mibi's two), for the face to measure its box"
+    }
+   }
+  },
+  "tile": {
+   "type": "object",
+   "required": [
+    "id",
+    "state",
+    "shown",
+    "picture",
+    "well"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "state": {
+     "enum": [
+      "housed",
+      "out",
+      "free"
+     ]
+    },
+    "shown": {
+     "type": "boolean"
+    },
+    "where": {
+     "enum": [
+      "docked",
+      "away"
+     ],
+     "description": "R4b: on a carried place (state out), where the Companion is: docked draws the solid glyph, away the outline; the thumbnail is given too and drawn dimmed"
+    },
+    "picture": {
+     "type": "string"
+    },
+    "well": {
+     "type": "string"
+    }
+   }
+  },
+  "plate": {
+   "type": "object",
+   "required": [
+    "id",
+    "state",
+    "ground",
+    "emblem"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "state": {
+     "enum": [
+      "read",
+      "unread",
+      "sealed"
+     ]
+    },
+    "ground": {
+     "type": "string"
+    },
+    "emblem": {
+     "type": "string"
+    }
+   }
+  },
+  "place": {
+   "type": "object",
+   "required": [
+    "picture",
+    "waiting",
+    "well"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "picture": {
+     "type": "string"
+    },
+    "waiting": {
+     "type": "boolean"
+    },
+    "well": {
+     "type": "string"
+    }
+   }
+  },
+  "face": {
+   "type": "object",
+   "required": [
+    "picture",
+    "away"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "picture": {
+     "type": "string"
+    },
+    "away": {
+     "type": "boolean"
+    }
+   }
+  },
+  "chip": {
+   "type": "object",
+   "required": [
+    "id",
+    "state",
+    "picture",
+    "lamp"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "the room's number (0 to 3), or \"new\" for the new-room chip"
+    },
+    "state": {
+     "enum": [
+      "shown",
+      "room",
+      "new"
+     ],
+     "description": "shown: the room shown (one step up); room: another room; new: the new-room chip"
+    },
+    "picture": {
+     "type": "string",
+     "description": "the room's chip picture (rooms.json rooms.<id>.chip) in the light; \"\" until the art director cuts it (the recess alone)"
+    },
+    "lamp": {
+     "type": "string",
+     "description": "the new-room chip's lamp picture (mint when the next room can be paid, stone otherwise); \"\" on a room's chip"
+    }
+   }
+  }
+ },
+ "type": "object",
+ "required": [
+  "state",
+  "regions",
+  "focus"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "state": {
+   "enum": [
+    "rest",
+    "meet",
+    "out"
+   ]
+  },
+  "regions": {
+   "type": "object",
+   "required": [
+    "stage",
+    "glass",
+    "room",
+    "resident",
+    "nameTag",
+    "meetRibbon",
+    "card",
+    "plates",
+    "door",
+    "portrait",
+    "cross",
+    "wild",
+    "tiles",
+    "rooms"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "stage": {
+     "type": "object",
+     "required": [
+      "room"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "room": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       },
+       "maxItems": 2
+      }
+     }
+    },
+    "glass": {
+     "type": "object",
+     "required": [
+      "picture"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "picture": {
+       "type": "string"
+      }
+     }
+    },
+    "room": {
+     "type": "object",
+     "required": [
+      "id",
+      "base",
+      "pieces"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string",
+       "description": "the room shown: its name in rooms.json (roots, reeds, boulders, ferns)"
+      },
+      "base": {
+       "type": "string",
+       "description": "the room's painting (the near view in Habitat) in the light"
+      },
+      "pieces": {
+       "type": "object",
+       "description": "the room's pieces that have a picture, by piece id (rooms.json), the picture id in the light; Habitat has none"
+      }
+     }
+    },
+    "resident": {
+     "type": "object",
+     "required": [
+      "id",
+      "name",
+      "stage",
+      "picture",
+      "waiting",
+      "out"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "stage": {
+       "enum": [
+        "juvenile",
+        "adult",
+        "elder"
+       ]
+      },
+      "picture": {
+       "type": "string"
+      },
+      "waiting": {
+       "type": "boolean"
+      },
+      "out": {
+       "type": "string"
+      },
+      "seed": {
+       "type": "integer",
+       "description": "Station M1 §2.4: the up-close tick's seeded phase"
+      },
+      "moving": {
+       "oneOf": [
+        {
+         "enum": [
+          ""
+         ]
+        },
+        {
+         "type": "object",
+         "required": [
+          "set",
+          "close",
+          "shadow"
+         ],
+         "additionalProperties": false,
+         "properties": {
+          "set": {
+           "type": "string"
+          },
+          "close": {
+           "type": "string"
+          },
+          "shadow": {
+           "type": "string"
+          }
+         }
+        }
+       ],
+       "description": "Station M1 §2.2: \"\" or the close atlas of its moving set and its shadow"
+      },
+      "rest": {
+       "enum": [
+        "awake",
+        "asleep"
+       ],
+       "description": "Station M1 §2.6: by restOf (the rest stagger) from the Station time"
+      }
+     }
+    },
+    "nameTag": {
+     "type": "object",
+     "required": [
+      "text"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "text": {
+       "type": "string"
+      }
+     }
+    },
+    "meetRibbon": {
+     "type": "object",
+     "required": [
+      "text"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "text": {
+       "type": "string"
+      }
+     }
+    },
+    "card": {
+     "type": "object",
+     "required": [
+      "plate",
+      "heart",
+      "notches",
+      "species",
+      "story",
+      "code",
+      "stamp"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "heart": {
+       "type": "string"
+      },
+      "notches": {
+       "type": "object",
+       "required": [
+        "count",
+        "picture"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "count": {
+         "type": "integer"
+        },
+        "picture": {
+         "type": "string"
+        }
+       }
+      },
+      "species": {
+       "type": "object",
+       "required": [
+        "text",
+        "mark"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "text": {
+         "type": "string"
+        },
+        "mark": {
+         "type": "string"
+        }
+       }
+      },
+      "story": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       },
+       "maxItems": 3
+      },
+      "code": {
+       "type": "string"
+      },
+      "stamp": {
+       "type": "object",
+       "required": [
+        "size",
+        "N",
+        "cell",
+        "plate",
+        "asset",
+        "corner"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "size": {
+         "type": "integer"
+        },
+        "N": {
+         "type": "integer"
+        },
+        "cell": {
+         "type": "integer"
+        },
+        "plate": {
+         "type": "string"
+        },
+        "asset": {
+         "type": "string"
+        },
+        "corner": {
+         "type": "string",
+         "description": "spread-gilt-corner-16x16 when the mibi is portrayed (habitat.json regions.stamp.portrayed), else \"\""
+        }
+       }
+      }
+     }
+    },
+    "plates": {
+     "type": "object",
+     "required": [
+      "items"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "items": {
+       "type": "array",
+       "items": {
+        "$ref": "plate"
+       },
+       "maxItems": 8
+      }
+     }
+    },
+    "door": {
+     "type": "object",
+     "required": [
+      "plate",
+      "state",
+      "glyph",
+      "places",
+      "lamp",
+      "held"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "state": {
+       "enum": [
+        "docked",
+        "away",
+        "none"
+       ]
+      },
+      "glyph": {
+       "type": "string"
+      },
+      "places": {
+       "type": "array",
+       "items": {
+        "$ref": "place"
+       },
+       "maxItems": 3
+      },
+      "lamp": {
+       "type": "string"
+      },
+      "held": {
+       "type": "boolean",
+       "description": "R6, the house rule: the module is held (drawn in the frame's dimmed role, its word in mist); a carried mibi's card is held too"
+      }
+     }
+    },
+    "portrait": {
+     "type": "object",
+     "required": [
+      "plate",
+      "state",
+      "frame",
+      "picture",
+      "held"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "state": {
+       "enum": [
+        "none",
+        "held",
+        "painting",
+        "portrayed"
+       ]
+      },
+      "frame": {
+       "type": "string"
+      },
+      "picture": {
+       "type": "string"
+      },
+      "held": {
+       "type": "boolean",
+       "description": "R6, the house rule: the module is held (drawn in the frame's dimmed role, its word in mist); a carried mibi's card is held too"
+      }
+     }
+    },
+    "cross": {
+     "type": "object",
+     "required": [
+      "plate",
+      "state",
+      "faces",
+      "held"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "state": {
+       "enum": [
+        "adult",
+        "away",
+        "out",
+        "alone",
+        "young"
+       ]
+      },
+      "faces": {
+       "type": "array",
+       "items": {
+        "$ref": "face"
+       },
+       "maxItems": 11
+      },
+      "held": {
+       "type": "boolean",
+       "description": "R6, the house rule: the module is held (drawn in the frame's dimmed role, its word in mist); a carried mibi's card is held too"
+      }
+     }
+    },
+    "wild": {
+     "type": "object",
+     "required": [
+      "plate",
+      "state",
+      "gate",
+      "held"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      },
+      "state": {
+       "enum": [
+        "shut",
+        "held"
+       ]
+      },
+      "gate": {
+       "type": "string"
+      },
+      "held": {
+       "type": "boolean",
+       "description": "R6, the house rule: the module is held (drawn in the frame's dimmed role, its word in mist); a carried mibi's card is held too"
+      }
+     }
+    },
+    "tiles": {
+     "type": "object",
+     "required": [
+      "glyph",
+      "items"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "glyph": {
+       "type": "string"
+      },
+      "glyphDocked": {
+       "type": "string",
+       "description": "R4b: the solid Companion glyph (frame.json marks.companion.docked), a carried tile's while docked"
+      },
+      "items": {
+       "type": "array",
+       "items": {
+        "$ref": "tile"
+       },
+       "maxItems": 8
+      }
+     }
+    },
+    "rooms": {
+     "type": "object",
+     "required": [
+      "items"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "items": {
+       "type": "array",
+       "maxItems": 4,
+       "items": {
+        "$ref": "chip"
+       }
+      }
+     }
+    }
+   }
+  },
+  "focus": {
+   "type": "object",
+   "required": [
+    "cur",
+    "targets",
+    "resolve"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "cur": {
+     "type": "string"
+    },
+    "targets": {
+     "type": "array",
+     "items": {
+      "$ref": "target"
+     }
+    },
+    "resolve": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "overlay": {
+   "$ref": "namer.props.json"
+  }
+ }
+}

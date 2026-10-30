@@ -1,0 +1,29 @@
+{
+ "$comment": "The props of Create (lvgl-switch.md §2.1): what views/create-props.mjs gives the face, beside the frame's. Props name what, never where: the state, the chosen look, strings, flags, counts and asset ids, and the one focus target; no rectangle, no measure, no layout rule, no colour (the words read those from create.json and the palette). The breed mark and the busy bud are named in every state, whether or not they show: the face keeps their nodes (§2.2). The notches and the pips are the words' chrome rects; the fronts of the work tray and the small chamber are named in every state and drawn, the tray's over the founder and the chamber's over the bud and the travelling pod; the changed tag's plate is named in every state, as the breed mark.",
+ "$defs": {
+  "tab": { "type": "object", "required": ["id", "word", "state", "glint", "emblem", "mark"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "word": { "type": "string" }, "state": { "enum": ["unread", "read", "sealed"] }, "glint": { "type": "boolean" }, "emblem": { "type": "string" }, "mark": { "enum": ["clash", "changed", ""] } } }
+ },
+ "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
+ "properties": {
+  "state": { "enum": ["nothingRead", "shape", "grow"] },
+  "regions": { "type": "object", "required": ["bench", "rail", "traitLine", "chamber", "chamberFront", "founder", "pod", "cradle", "origin", "dome", "domeFront", "podShadow", "founderShadow", "stamp", "code"], "additionalProperties": false, "properties": {
+   "bench": { "type": "object", "required": ["room"], "additionalProperties": false, "properties": { "room": { "type": "array", "items": { "type": "string" } } } },
+   "rail": { "type": "object", "required": ["focused", "open", "star", "tabs"], "additionalProperties": false, "properties": { "focused": { "type": "null" }, "open": { "type": "integer" }, "star": { "type": "string" }, "tabs": { "type": "array", "items": { "$ref": "tab" } } } },
+   "roll": { "type": "object", "required": ["form", "chosen", "clash", "pictures", "notches", "shown"], "additionalProperties": false, "properties": { "form": { "enum": ["roll", "single"] }, "chosen": { "enum": [0, 1, 2] }, "clash": { "type": "boolean" }, "pictures": { "type": "array", "items": { "type": "string" } }, "notches": { "type": "boolean" }, "shown": { "type": "boolean" } } },
+   "traitLine": { "type": "object", "required": ["text", "changed", "breed", "doing", "clash"], "additionalProperties": false, "properties": { "text": { "type": "string" }, "changed": { "type": "boolean" }, "breed": { "type": "string" }, "doing": { "type": "boolean" }, "clash": { "type": "boolean" } } },
+   "chamber": { "type": "object", "required": ["back"], "additionalProperties": false, "properties": { "back": { "type": "string" } } },
+   "chamberFront": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "founder": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "pod": { "type": "object", "required": ["sizeClass", "picture", "dome", "domeSize", "domeAnchor"], "additionalProperties": false, "properties": { "sizeClass": { "enum": ["large", "medium", "small"] }, "picture": { "type": "string" }, "dome": { "type": "string" }, "domeSize": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 }, "domeAnchor": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 } } },
+   "cradle": { "type": "object", "required": ["front"], "additionalProperties": false, "properties": { "front": { "type": "string" } } },
+   "origin": { "type": "array", "items": { "type": "string" } },
+   "podShadow": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "founderShadow": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "dome": { "type": "object", "required": ["back", "glass", "door", "bar", "state"], "additionalProperties": false, "properties": { "back": { "type": "string" }, "glass": { "type": "string" }, "door": { "type": "string" }, "bar": { "type": "string" }, "state": { "enum": ["empty", "growing", "ready", "grow"] }, "pod": { "type": "string" }, "podSize": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 }, "podAnchor": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 } } },
+   "domeFront": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "stamp": { "type": "object", "required": ["size", "N", "cell", "plate", "asset", "case"], "additionalProperties": false, "properties": { "size": { "type": "integer" }, "N": { "type": "integer" }, "cell": { "type": "integer" }, "plate": { "type": "string" }, "asset": { "type": "string" }, "case": { "type": "object", "required": ["back", "front"], "additionalProperties": false, "properties": { "back": { "type": "string" }, "front": { "type": "string" } } } } },
+   "code": { "type": "string" }
+  } },
+  "focus": { "type": "object", "required": ["cur", "targets"], "additionalProperties": false, "properties": { "cur": { "enum": ["roll", "room"] }, "targets": { "type": "array", "items": { "type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": { "id": { "enum": ["roll"] }, "group": { "enum": ["roll"] } } } } } }
+ }
+}

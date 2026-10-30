@@ -1,0 +1,21 @@
+{
+ "recipe": 2,
+ "states": {
+  "early": {
+   "rgba": "45dda0edaf14a4dc05a56ea0fc14c1fd716a5eb62ebddca1eece028f947c5edf",
+   "beads": "1dcd10e4745179bfb8ae3ae64a5e1838e3326a419cb56eff60aa82923a8867d5"
+  },
+  "mid": {
+   "rgba": "ee82d26e0ad85f538e7a5219ad9b3af7e01c97d53517e5b5bcd02cfd5862e8c0",
+   "beads": "7e48fa6234839c03414be8462b512a1a1f857ac29bfb2d2f0c7daa1a78cc7c2a"
+  },
+  "late": {
+   "rgba": "0acad8a0e4d8d3c17749e484a63f7e71021e4a4116fa03a2c147b3fa2129bf75",
+   "beads": "d83f26f7c73ceef9e25bba06bde2f1e1ce108410e4919c9a9cf9bc45417e53a3"
+  },
+  "new": {
+   "rgba": "76814568dbc73737606941a2356dda1114a66fc93f6b4ee2875818c6fceaca8f",
+   "beads": "95a053fca1e21a43ca6f214d809cef42a17442a8e55b4fa7440c84d50a50504f"
+  }
+ }
+}

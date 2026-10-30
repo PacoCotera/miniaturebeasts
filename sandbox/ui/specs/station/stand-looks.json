@@ -1,0 +1,1377 @@
+{
+ "rule": "The look an unread chapter draws on a stand: the look most pods show (share), over 300 podGenome pods a species (seeds 0..299) from traitState(...).shows. Made by prototypes/station/tools/make-stand-looks.mjs.",
+ "pods": 300,
+ "species": {
+  "S01": {
+   "name": "Loika",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "russet and ash",
+     "share": {
+      "russet and ash": 0.23,
+      "charcoal and russet": 0.227,
+      "charcoal and ash": 0.197,
+      "ash": 0.123,
+      "charcoal": 0.123,
+      "russet": 0.1
+     }
+    },
+    "markings": {
+     "chapter": "coat",
+     "modal": "stripes and patches",
+     "share": {
+      "stripes and patches": 0.473,
+      "patches": 0.293,
+      "stripes": 0.233
+     }
+    },
+    "crown": {
+     "chapter": "face",
+     "modal": "leaf crest",
+     "share": {
+      "leaf crest": 0.753,
+      "bare head": 0.247
+     }
+    },
+    "eye-rings": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.517,
+      "wide pale rings": 0.243,
+      "thin rings": 0.24
+     }
+    }
+   }
+  },
+  "S02": {
+   "name": "Untuva",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "two side by side",
+     "share": {
+      "two side by side": 0.743,
+      "plum": 0.073,
+      "raspberry": 0.073,
+      "coral": 0.067,
+      "marigold": 0.043
+     }
+    },
+    "markings": {
+     "chapter": "coat",
+     "modal": "bare",
+     "share": {
+      "bare": 0.773,
+      "bands and spots": 0.113,
+      "bands": 0.077,
+      "spots": 0.037
+     }
+    },
+    "fluff": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.487,
+      "long, swept": 0.263,
+      "short, straight": 0.25
+     }
+    },
+    "cap-colour": {
+     "chapter": "coat",
+     "modal": "coral and plum",
+     "share": {
+      "coral and plum": 0.143,
+      "marigold and plum": 0.133,
+      "raspberry and marigold": 0.127,
+      "coral and marigold": 0.123,
+      "raspberry and plum": 0.11,
+      "coral and raspberry": 0.107,
+      "raspberry": 0.073,
+      "plum": 0.07,
+      "marigold": 0.063,
+      "coral": 0.05
+     }
+    },
+    "cap-spots": {
+     "chapter": "coat",
+     "modal": "spots",
+     "share": {
+      "spots": 0.733,
+      "bare": 0.267
+     }
+    },
+    "roundness": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.48,
+      "flat": 0.273,
+      "plump": 0.247
+     }
+    },
+    "body": {
+     "chapter": "shape",
+     "modal": "pear",
+     "share": {
+      "pear": 0.6,
+      "barrel": 0.313,
+      "egg": 0.087
+     }
+    },
+    "cap-size": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.513,
+      "wide cap": 0.277,
+      "small cap": 0.21
+     }
+    }
+   }
+  },
+  "S03": {
+   "name": "Tuikis",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "two side by side",
+     "share": {
+      "two side by side": 0.717,
+      "marigold": 0.087,
+      "jade": 0.067,
+      "lagoon": 0.067,
+      "periwinkle": 0.063
+     }
+    },
+    "second-colour": {
+     "chapter": "coat",
+     "modal": "two side by side",
+     "share": {
+      "two side by side": 0.71,
+      "slate": 0.09,
+      "milk-mint": 0.077,
+      "cream": 0.067,
+      "ice": 0.057
+     }
+    },
+    "markings": {
+     "chapter": "coat",
+     "modal": "plain",
+     "share": {
+      "plain": 0.747,
+      "stripes and spots": 0.137,
+      "stripes": 0.067,
+      "spots": 0.05
+     }
+    },
+    "scales": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.53,
+      "few, fine": 0.257,
+      "many, coarse": 0.213
+     }
+    },
+    "crest": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.547,
+      "low crest": 0.247,
+      "tall crest": 0.207
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.737,
+      "small, close": 0.14,
+      "big, wide": 0.123
+     }
+    },
+    "snout": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.547,
+      "long, broad": 0.337,
+      "short, narrow": 0.117
+     }
+    },
+    "build": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.527,
+      "slim": 0.39,
+      "stout": 0.083
+     }
+    },
+    "hind-body": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.503,
+      "small": 0.253,
+      "full": 0.243
+     }
+    },
+    "back-line": {
+     "chapter": "shape",
+     "modal": "level",
+     "share": {
+      "level": 0.493,
+      "arched": 0.273,
+      "dipping": 0.233
+     }
+    },
+    "legs": {
+     "chapter": "legs-tail",
+     "modal": "between",
+     "share": {
+      "between": 0.58,
+      "short, fine": 0.283,
+      "long, stout": 0.137
+     }
+    },
+    "feet": {
+     "chapter": "legs-tail",
+     "modal": "digging wedges",
+     "share": {
+      "digging wedges": 0.513,
+      "padded feet": 0.373,
+      "round feet": 0.113
+     }
+    },
+    "tail": {
+     "chapter": "legs-tail",
+     "modal": "between",
+     "share": {
+      "between": 0.457,
+      "short, thin": 0.277,
+      "long, thick": 0.267
+     }
+    },
+    "tail-curl": {
+     "chapter": "legs-tail",
+     "modal": "straight",
+     "share": {
+      "straight": 0.507,
+      "curls up": 0.257,
+      "hangs": 0.237
+     }
+    }
+   }
+  },
+  "S04": {
+   "name": "Hiljan",
+   "traits": {
+    "fluff": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.5,
+      "short, straight": 0.257,
+      "long, swept": 0.243
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.79,
+      "small, close": 0.13,
+      "big, wide": 0.08
+     }
+    },
+    "back-line": {
+     "chapter": "shape",
+     "modal": "level",
+     "share": {
+      "level": 0.52,
+      "arched": 0.24,
+      "dipping": 0.24
+     }
+    }
+   }
+  },
+  "S05": {
+   "name": "Tepor",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "marigold and coral",
+     "share": {
+      "marigold and coral": 0.533,
+      "marigold": 0.247,
+      "coral": 0.22
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.803,
+      "big, wide": 0.1,
+      "small, close": 0.097
+     }
+    },
+    "hind-body": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.51,
+      "full": 0.257,
+      "small": 0.233
+     }
+    },
+    "body": {
+     "chapter": "shape",
+     "modal": "pear",
+     "share": {
+      "pear": 0.557,
+      "barrel": 0.337,
+      "egg": 0.107
+     }
+    },
+    "tail-curl": {
+     "chapter": "legs-tail",
+     "modal": "straight",
+     "share": {
+      "straight": 0.463,
+      "curls up": 0.277,
+      "hangs": 0.26
+     }
+    },
+    "legs": {
+     "chapter": "legs-tail",
+     "modal": "between",
+     "share": {
+      "between": 0.56,
+      "short, fine": 0.333,
+      "long, stout": 0.107
+     }
+    }
+   }
+  },
+  "S06": {
+   "name": "Pesko",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "charcoal and marigold",
+     "share": {
+      "charcoal and marigold": 0.243,
+      "marigold and russet": 0.217,
+      "charcoal and russet": 0.187,
+      "russet": 0.147,
+      "charcoal": 0.12,
+      "marigold": 0.087
+     }
+    },
+    "sheen": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.467,
+      "matte": 0.287,
+      "glossy": 0.247
+     }
+    },
+    "head": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.78,
+      "big, raised": 0.11,
+      "small, low": 0.11
+     }
+    },
+    "back-line": {
+     "chapter": "shape",
+     "modal": "level",
+     "share": {
+      "level": 0.49,
+      "dipping": 0.267,
+      "arched": 0.243
+     }
+    },
+    "hind-body": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.507,
+      "small": 0.257,
+      "full": 0.237
+     }
+    },
+    "body": {
+     "chapter": "shape",
+     "modal": "pear",
+     "share": {
+      "pear": 0.577,
+      "barrel": 0.313,
+      "egg": 0.11
+     }
+    },
+    "tail": {
+     "chapter": "legs-tail",
+     "modal": "between",
+     "share": {
+      "between": 0.49,
+      "short, thin": 0.28,
+      "long, thick": 0.23
+     }
+    }
+   }
+  },
+  "S07": {
+   "name": "Azkon",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "russet and charcoal",
+     "share": {
+      "russet and charcoal": 0.483,
+      "russet": 0.283,
+      "charcoal": 0.233
+     }
+    },
+    "fluff": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.563,
+      "short, straight": 0.227,
+      "long, swept": 0.21
+     }
+    },
+    "fur-reach": {
+     "chapter": "coat",
+     "modal": "tail and ears",
+     "share": {
+      "tail and ears": 0.5,
+      "tail": 0.373,
+      "body only": 0.127
+     }
+    },
+    "sheen": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.473,
+      "glossy": 0.287,
+      "matte": 0.24
+     }
+    },
+    "second-colour": {
+     "chapter": "coat",
+     "modal": "cream and ice",
+     "share": {
+      "cream and ice": 0.23,
+      "cream and peach": 0.22,
+      "peach and ice": 0.207,
+      "ice": 0.127,
+      "cream": 0.12,
+      "peach": 0.097
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.757,
+      "small, close": 0.133,
+      "big, wide": 0.11
+     }
+    },
+    "snout": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.513,
+      "long, broad": 0.353,
+      "short, narrow": 0.133
+     }
+    },
+    "head": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.797,
+      "small, low": 0.107,
+      "big, raised": 0.097
+     }
+    },
+    "ear-tilt": {
+     "chapter": "face",
+     "modal": "upright",
+     "share": {
+      "upright": 0.743,
+      "drooping": 0.257
+     }
+    },
+    "body": {
+     "chapter": "shape",
+     "modal": "pear",
+     "share": {
+      "pear": 0.567,
+      "barrel": 0.32,
+      "egg": 0.113
+     }
+    },
+    "legs": {
+     "chapter": "legs-tail",
+     "modal": "between",
+     "share": {
+      "between": 0.54,
+      "short, fine": 0.377,
+      "long, stout": 0.083
+     }
+    }
+   }
+  },
+  "S08": {
+   "name": "Rupar",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "russet and charcoal",
+     "share": {
+      "russet and charcoal": 0.233,
+      "russet and jade": 0.22,
+      "charcoal and jade": 0.213,
+      "charcoal": 0.113,
+      "jade": 0.113,
+      "russet": 0.107
+     }
+    },
+    "fur-reach": {
+     "chapter": "coat",
+     "modal": "tail and ears",
+     "share": {
+      "tail and ears": 0.583,
+      "tail": 0.307,
+      "body only": 0.11
+     }
+    },
+    "second-colour": {
+     "chapter": "coat",
+     "modal": "milk-mint and cream",
+     "share": {
+      "milk-mint and cream": 0.24,
+      "butter and cream": 0.203,
+      "butter and milk-mint": 0.187,
+      "cream": 0.16,
+      "milk-mint": 0.13,
+      "butter": 0.08
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.783,
+      "big, wide": 0.123,
+      "small, close": 0.093
+     }
+    },
+    "head": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.777,
+      "small, low": 0.113,
+      "big, raised": 0.11
+     }
+    },
+    "ear-tilt": {
+     "chapter": "face",
+     "modal": "upright",
+     "share": {
+      "upright": 0.78,
+      "drooping": 0.22
+     }
+    },
+    "horns": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.513,
+      "curled antlers": 0.25,
+      "straight": 0.237
+     }
+    },
+    "hind-body": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.493,
+      "small": 0.27,
+      "full": 0.237
+     }
+    },
+    "build": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.6,
+      "slim": 0.287,
+      "stout": 0.113
+     }
+    },
+    "waist": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.53,
+      "thin": 0.263,
+      "thick": 0.207
+     }
+    }
+   }
+  },
+  "S09": {
+   "name": "Belatz",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "lagoon and jade",
+     "share": {
+      "lagoon and jade": 0.137,
+      "lagoon and periwinkle": 0.127,
+      "cobalt and jade": 0.12,
+      "periwinkle and jade": 0.12,
+      "cobalt and periwinkle": 0.113,
+      "cobalt and lagoon": 0.097,
+      "cobalt": 0.083,
+      "periwinkle": 0.073,
+      "jade": 0.067,
+      "lagoon": 0.063
+     }
+    },
+    "fluff": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.55,
+      "short, straight": 0.25,
+      "long, swept": 0.2
+     }
+    },
+    "sheen": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.453,
+      "matte": 0.283,
+      "glossy": 0.263
+     }
+    },
+    "feathers": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.497,
+      "short": 0.27,
+      "long": 0.233
+     }
+    },
+    "fur-reach": {
+     "chapter": "coat",
+     "modal": "tail and ears",
+     "share": {
+      "tail and ears": 0.517,
+      "tail": 0.37,
+      "body only": 0.113
+     }
+    },
+    "second-colour": {
+     "chapter": "coat",
+     "modal": "butter and cream",
+     "share": {
+      "butter and cream": 0.263,
+      "ice and cream": 0.22,
+      "butter and ice": 0.18,
+      "cream": 0.12,
+      "butter": 0.11,
+      "ice": 0.107
+     }
+    },
+    "head": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.79,
+      "small, low": 0.117,
+      "big, raised": 0.093
+     }
+    },
+    "beak": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.53,
+      "long": 0.24,
+      "short": 0.23
+     }
+    },
+    "feather-crest": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.473,
+      "tall": 0.28,
+      "low": 0.247
+     }
+    },
+    "crown": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.547,
+      "tall": 0.233,
+      "low": 0.22
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.777,
+      "small, close": 0.12,
+      "big, wide": 0.103
+     }
+    },
+    "waist": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.51,
+      "thin": 0.25,
+      "thick": 0.24
+     }
+    },
+    "back-line": {
+     "chapter": "shape",
+     "modal": "level",
+     "share": {
+      "level": 0.557,
+      "dipping": 0.23,
+      "arched": 0.213
+     }
+    },
+    "hind-body": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.5,
+      "small": 0.253,
+      "full": 0.247
+     }
+    },
+    "body": {
+     "chapter": "shape",
+     "modal": "pear",
+     "share": {
+      "pear": 0.557,
+      "barrel": 0.357,
+      "egg": 0.087
+     }
+    },
+    "build": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.497,
+      "slim": 0.36,
+      "stout": 0.143
+     }
+    },
+    "tail-curl": {
+     "chapter": "legs-tail",
+     "modal": "straight",
+     "share": {
+      "straight": 0.493,
+      "hangs": 0.263,
+      "curls up": 0.243
+     }
+    },
+    "tail": {
+     "chapter": "legs-tail",
+     "modal": "between",
+     "share": {
+      "between": 0.493,
+      "short, thin": 0.297,
+      "long, thick": 0.21
+     }
+    }
+   }
+  },
+  "S10": {
+   "name": "Igara",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "russet and jade",
+     "share": {
+      "russet and jade": 0.257,
+      "charcoal and jade": 0.243,
+      "russet and charcoal": 0.2,
+      "jade": 0.113,
+      "russet": 0.097,
+      "charcoal": 0.09
+     }
+    },
+    "sheen": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.493,
+      "glossy": 0.273,
+      "matte": 0.233
+     }
+    },
+    "fur-reach": {
+     "chapter": "coat",
+     "modal": "tail and ears",
+     "share": {
+      "tail and ears": 0.557,
+      "tail": 0.34,
+      "body only": 0.103
+     }
+    },
+    "second-colour": {
+     "chapter": "coat",
+     "modal": "cream and slate",
+     "share": {
+      "cream and slate": 0.237,
+      "peach and cream": 0.223,
+      "peach and slate": 0.213,
+      "peach": 0.117,
+      "cream": 0.107,
+      "slate": 0.103
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.78,
+      "small, close": 0.117,
+      "big, wide": 0.103
+     }
+    },
+    "ear-tilt": {
+     "chapter": "face",
+     "modal": "upright",
+     "share": {
+      "upright": 0.74,
+      "drooping": 0.26
+     }
+    },
+    "head": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.763,
+      "small, low": 0.137,
+      "big, raised": 0.1
+     }
+    },
+    "build": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.597,
+      "slim": 0.31,
+      "stout": 0.093
+     }
+    },
+    "back-line": {
+     "chapter": "shape",
+     "modal": "level",
+     "share": {
+      "level": 0.47,
+      "dipping": 0.293,
+      "arched": 0.237
+     }
+    }
+   }
+  },
+  "S11": {
+   "name": "Kilpo",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "jade and russet",
+     "share": {
+      "jade and russet": 0.257,
+      "jade and lagoon": 0.25,
+      "russet and lagoon": 0.183,
+      "russet": 0.117,
+      "lagoon": 0.107,
+      "jade": 0.087
+     }
+    },
+    "shell-plates": {
+     "chapter": "coat",
+     "modal": "plated",
+     "share": {
+      "plated": 0.747,
+      "smooth": 0.253
+     }
+    },
+    "sheen": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.537,
+      "matte": 0.233,
+      "glossy": 0.23
+     }
+    },
+    "second-colour": {
+     "chapter": "coat",
+     "modal": "butter and peach",
+     "share": {
+      "butter and peach": 0.23,
+      "butter and milk-mint": 0.22,
+      "peach and milk-mint": 0.217,
+      "milk-mint": 0.123,
+      "peach": 0.11,
+      "butter": 0.1
+     }
+    },
+    "snout": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.573,
+      "long, broad": 0.28,
+      "short, narrow": 0.147
+     }
+    },
+    "head": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.45,
+      "small, low": 0.383,
+      "big, raised": 0.167
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.807,
+      "big, wide": 0.117,
+      "small, close": 0.077
+     }
+    },
+    "build": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.57,
+      "slim": 0.333,
+      "stout": 0.097
+     }
+    },
+    "shell": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.483,
+      "low": 0.27,
+      "high dome": 0.247
+     }
+    },
+    "body": {
+     "chapter": "shape",
+     "modal": "pear",
+     "share": {
+      "pear": 0.597,
+      "barrel": 0.29,
+      "egg": 0.113
+     }
+    },
+    "waist": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.48,
+      "thick": 0.273,
+      "thin": 0.247
+     }
+    }
+   }
+  },
+  "S12": {
+   "name": "Peplos",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "charcoal and raspberry",
+     "share": {
+      "charcoal and raspberry": 0.15,
+      "coral and raspberry": 0.137,
+      "marigold and charcoal": 0.133,
+      "marigold and raspberry": 0.117,
+      "coral and charcoal": 0.113,
+      "marigold and coral": 0.093,
+      "marigold": 0.077,
+      "charcoal": 0.067,
+      "coral": 0.057,
+      "raspberry": 0.057
+     }
+    },
+    "translucency": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.487,
+      "opaque": 0.28,
+      "see-through": 0.233
+     }
+    },
+    "flap-markings": {
+     "chapter": "coat",
+     "modal": "bars",
+     "share": {
+      "bars": 0.37,
+      "spots": 0.317,
+      "bars and spots": 0.223,
+      "plain": 0.09
+     }
+    },
+    "second-colour": {
+     "chapter": "coat",
+     "modal": "peach and cream",
+     "share": {
+      "peach and cream": 0.253,
+      "butter and cream": 0.25,
+      "butter and peach": 0.207,
+      "cream": 0.1,
+      "peach": 0.1,
+      "butter": 0.09
+     }
+    },
+    "hind-body": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.443,
+      "full": 0.31,
+      "small": 0.247
+     }
+    }
+   }
+  },
+  "S13": {
+   "name": "Oskol",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "charcoal and marigold",
+     "share": {
+      "charcoal and marigold": 0.243,
+      "marigold and russet": 0.237,
+      "charcoal and russet": 0.18,
+      "marigold": 0.12,
+      "charcoal": 0.113,
+      "russet": 0.107
+     }
+    },
+    "second-colour": {
+     "chapter": "coat",
+     "modal": "milk-mint and peach",
+     "share": {
+      "milk-mint and peach": 0.25,
+      "slate and peach": 0.217,
+      "slate and milk-mint": 0.207,
+      "peach": 0.127,
+      "slate": 0.113,
+      "milk-mint": 0.087
+     }
+    },
+    "head": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.777,
+      "big, raised": 0.113,
+      "small, low": 0.11
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.763,
+      "small, close": 0.123,
+      "big, wide": 0.113
+     }
+    },
+    "body": {
+     "chapter": "shape",
+     "modal": "pear",
+     "share": {
+      "pear": 0.583,
+      "barrel": 0.287,
+      "egg": 0.13
+     }
+    },
+    "waist": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.497,
+      "thin": 0.253,
+      "thick": 0.25
+     }
+    },
+    "hind-body": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.51,
+      "small": 0.273,
+      "full": 0.217
+     }
+    },
+    "wing-cases": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.51,
+      "long, parted": 0.263,
+      "short, closed": 0.227
+     }
+    }
+   }
+  },
+  "S14": {
+   "name": "Usvel",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "periwinkle and raspberry",
+     "share": {
+      "periwinkle and raspberry": 0.26,
+      "plum and periwinkle": 0.2,
+      "plum and raspberry": 0.19,
+      "periwinkle": 0.13,
+      "plum": 0.113,
+      "raspberry": 0.107
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.773,
+      "big, wide": 0.15,
+      "small, close": 0.077
+     }
+    },
+    "hind-body": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.56,
+      "full": 0.263,
+      "small": 0.177
+     }
+    },
+    "build": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.517,
+      "slim": 0.34,
+      "stout": 0.143
+     }
+    },
+    "back-line": {
+     "chapter": "shape",
+     "modal": "level",
+     "share": {
+      "level": 0.503,
+      "arched": 0.29,
+      "dipping": 0.207
+     }
+    },
+    "skirt": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.497,
+      "narrow": 0.253,
+      "wide": 0.25
+     }
+    }
+   }
+  },
+  "S15": {
+   "name": "Lehten",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "jade and charcoal",
+     "share": {
+      "jade and charcoal": 0.157,
+      "jade and lagoon": 0.15,
+      "russet and charcoal": 0.15,
+      "russet and lagoon": 0.127,
+      "jade and russet": 0.107,
+      "lagoon and charcoal": 0.09,
+      "jade": 0.067,
+      "russet": 0.057,
+      "lagoon": 0.05,
+      "charcoal": 0.047
+     }
+    },
+    "sheen": {
+     "chapter": "coat",
+     "modal": "between",
+     "share": {
+      "between": 0.453,
+      "matte": 0.28,
+      "glossy": 0.267
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.76,
+      "big, wide": 0.123,
+      "small, close": 0.117
+     }
+    },
+    "head": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.807,
+      "small, low": 0.117,
+      "big, raised": 0.077
+     }
+    },
+    "hind-body": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.523,
+      "small": 0.243,
+      "full": 0.233
+     }
+    },
+    "roundness": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.547,
+      "flat": 0.227,
+      "plump": 0.227
+     }
+    },
+    "leaves": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.55,
+      "few short": 0.253,
+      "many long": 0.197
+     }
+    },
+    "body": {
+     "chapter": "shape",
+     "modal": "pear",
+     "share": {
+      "pear": 0.537,
+      "barrel": 0.36,
+      "egg": 0.103
+     }
+    },
+    "rays": {
+     "chapter": "legs-tail",
+     "modal": "between",
+     "share": {
+      "between": 0.483,
+      "short, fine": 0.27,
+      "long, stout": 0.247
+     }
+    }
+   }
+  },
+  "S16": {
+   "name": "Blikur",
+   "traits": {
+    "colour": {
+     "chapter": "coat",
+     "modal": "periwinkle and plum",
+     "share": {
+      "periwinkle and plum": 0.253,
+      "cobalt and plum": 0.223,
+      "periwinkle and cobalt": 0.223,
+      "periwinkle": 0.117,
+      "cobalt": 0.1,
+      "plum": 0.083
+     }
+    },
+    "eyes": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.767,
+      "big, wide": 0.123,
+      "small, close": 0.11
+     }
+    },
+    "head": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.733,
+      "big, raised": 0.147,
+      "small, low": 0.12
+     }
+    },
+    "body": {
+     "chapter": "shape",
+     "modal": "pear",
+     "share": {
+      "pear": 0.603,
+      "barrel": 0.273,
+      "egg": 0.123
+     }
+    },
+    "build": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.523,
+      "slim": 0.377,
+      "stout": 0.1
+     }
+    },
+    "waist": {
+     "chapter": "shape",
+     "modal": "between",
+     "share": {
+      "between": 0.547,
+      "thick": 0.257,
+      "thin": 0.197
+     }
+    }
+   }
+  }
+ }
+}

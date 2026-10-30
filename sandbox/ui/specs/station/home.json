@@ -1,0 +1,399 @@
+{
+ "screen": "home",
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 560], "gutter": 12, "movers": ["resident"], "props": ["room"], "painted": [{ "id": "genome", "region": "library.window", "fills": true }, { "id": "painting", "region": "vivarium", "fills": true }], "anchors": [{ "region": "away", "x": "right", "y": "bottom", "inset": [8, 6] }], "containers": [{ "region": "away", "padding": { "left": 4, "top": 4, "right": 4, "bottom": 0 }, "align": { "x": "centre", "y": "bottom" } }], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md",
+ "frame": "frame.json",
+ "status": "Home: a top bar that carries the line, two windows (the Vivarium on the left, the Library on the right) and a console of four stations (Pods, Incubator, Companion and Bay) whose order tells the sequence. The windows and the stations' pictures are placeholders until their own pictures land.",
+ "note": "The one home of Home's numbers. Rectangles are [x, y, w, h] at 1x on 1024 x 600 and every picture is drawn 1:1. The panels, edges, bevels and ticks are the face's own rect primitives, palette-exact. A text at (x, y) is a line box: its cap top is y + (pitch - cap) / 2, the pitch 20 at 16 px and 28 at 20 px.",
+ "states": ["home"],
+ "initial": "home",
+ "stateRule": "Home has one state. Docked or away changes the Companion and Bay stations' words, never the layout",
+ "regions": {
+  "stage": {
+   "rect": [0,40,1024,560],
+   "component": "frame",
+   "part": "stage",
+   "fill": "frame.json colours.stageGround",
+   "note": "the ground under the bezels and the console; Home has no bottom line, so the stage runs to the foot of the screen (frame.json's stage stops at the line)"
+  },
+  "bar": {
+   "rect": [0,0,1024,40],
+   "component": "topBar",
+   "slice": "frame-top-bar-1024x40",
+   "title": {"x":16,"px":20,"colour":"bone"},
+   "place": {"gap":12,"px":16,"colour":"mist"},
+   "date": {"px":16,"colour":"mist"},
+   "clock": {"right":1008,"px":20,"colour":"bone"},
+   "dateGap": 12,
+   "note": "the shared top bar's picture with Home's own words: the title, the station's place name when the save has one, the date and the clock; no counters and no Companion mark here (they stay on every other screen)"
+  },
+  "line": {
+   "rect": [320,8,520,24],
+   "component": "text",
+   "build": "homeLine",
+   "px": 16,
+   "centre": 580,
+   "lamp": [12,12],
+   "lampGap": 4,
+   "cap": [16,16],
+   "capGap": 4,
+   "sep": " · ",
+   "needs": 2,
+   "note": "the line takes over the bottom line's job, centred in its zone and never wrapping; only a subject may end in an ellipsis, and only at the zone's edge"
+  },
+  "bezel": {
+   "radius": 10,
+   "header": 30,
+   "title": [12,7],
+   "titlePx": 16,
+   "readoutGap": 8,
+   "readoutPx": 16,
+   "expand": {"size":14,"tick":4,"at":[30,8]},
+   "fill": "panel",
+   "edge": "hairline",
+   "bevel": "bevel",
+   "titleColour": "bone",
+   "readoutColour": "fog",
+   "expandColour": "mist",
+   "ring": 14
+  },
+  "vivarium": {
+   "rect": [16,48,620,400],
+   "offGrid": "the build spec's numbers: 620 wide, 12 before the Library",
+   "component": "panel",
+   "build": "bezel",
+   "window": [24,78,604,362],
+   "placeholder": {"fill":"stone","edge":"mist"}
+  },
+  "library": {
+   "rect": [648,48,360,400],
+   "component": "panel",
+   "build": "bezel",
+   "window": [656,78,344,362],
+   "placeholder": {"fill":"stone","edge":"mist"},
+   "specimen": {
+    "size": [344,362],
+    "shade": {"px": 2, "colour": "void", "edges": ["top","left"], "note": "build spec 11.5: the window's inner shade replaces the generator's edge gradient, 2 px along the inside top and left edges, drawn as rects; omitted on the placeholder"},
+    "breath": {"ms": 2000, "cycle": [0,1,2,3,2,1], "note": "build spec 4.2: four pre-rendered brightness levels of the picture and one whole-picture swap every 2 s, cycling levels 1 2 3 4 3 2 (the main one is level 1); a swap frame is 124,528 px, and the residents do not step on it. Reduced motion: no breathing, level 1 only"},
+    "glint": {"size": [12,12], "max": 8, "ms": 2000, "levels": 16, "note": "build spec 4.2: glint-star-12x12 centred on each bead of a look found since the Library was last opened full screen, at most 8 drawn; it fades in and out on the 16-level stage dither over 2 s (in for the first half, out for the second, then again); reduced motion: no fade, the glints simply show"},
+    "captions": {
+     "new": {"at": [668,412], "px": 16, "colour": "gold", "note": "{n} new, at the lower left, hidden at 0"},
+     "genome": {"right": 988, "y": 412, "px": 16, "colour": "mist", "note": "{Species} genome, right-aligned"}
+    }
+   }
+  },
+  "console": {
+   "rect": [16,460,992,132],
+   "offGrid": "the build spec's numbers: 12 under the bezels, 8 over the foot of the screen",
+   "component": "panel",
+   "build": "console",
+   "radius": 10,
+   "fill": "bar",
+   "edge": "hairline"
+  },
+  "station": {
+   "size": [226,98],
+   "radius": 8,
+   "fill": "panel",
+   "edge": "hairline",
+   "bevel": "bevel",
+   "lamp": [12,10,12,12],
+   "name": [30,8],
+   "namePx": 16,
+   "nameColour": "fog",
+   "line1": [12,34],
+   "line1Px": 20,
+   "line1Px2": 16,
+   "line1Colour": "bone",
+   "line2": [12,64],
+   "line2Px": 16,
+   "line2Colour": "mist",
+   "pictureInset": 8,
+   "columnGap": 8,
+   "bayLine2Right": 214,
+   "placeholder": {"fill":"stone","edge":"mist"},
+   "slot": {"size":[24,32],"radius":6,"edge":"hairline"},
+   "ring": 12
+  },
+  "pods": {
+   "offGrid": "the build spec's numbers: 226 by 98 at y 477",
+   "rect": [32,477,226,98],
+   "build": "station",
+   "picture": [76,66],
+   "slots": {"cols":3,"rows":2,"forms":{"grid":{"upTo":6,"first":[174,493,24,32],"pitch":[26,34],"grid":[3,2]}}},
+   "glint": {"size":[12,12],"at":[12,0],"note": "ruled in build spec section 14: the glint star on a pod with one, over the pod's top right corner, 12 x 12 at the slot's (12, 0)"}
+  },
+  "incubator": {
+   "offGrid": "the build spec's numbers: 226 by 98 at y 477",
+   "rect": [270,477,226,98],
+   "build": "station",
+   "picture": [56,86],
+   "capsule": {
+    "size": [56,86],
+    "foot": [27,63],
+    "podHeight": 27,
+    "bar": {"rect": [10,71,34,10], "max": 34, "note": "ruled in build spec section 14: the bar is lit to progress. It is the lit bar's window of the 56 x 86 layer (the alpha's extent, x 10 to 43, y 71 to 80), 34 px at most, from its first pixel, whole when ready"},
+    "note": "the painted capsule (masters/capsule/*-56x86): the interior, the bud's pod, the glass (growing), the shell, the door (not growing) and the bar. foot and podHeight are the old Home module's: the pod 27 tall, its foot 27 px in and 63 down"
+   }
+  },
+  "companion": {
+   "offGrid": "the build spec's numbers: 226 by 98 at y 477",
+   "rect": [528,477,226,98],
+   "build": "station",
+   "picture": [28,46],
+   "plates": {"size":[12,24],"gap":4,"at":[12,64],"max":4,"forms":{"row":{"upTo":4,"first":[540,541,12,24],"pitch":[16,0],"grid":[4,1]}},"pictures":{"whole":"home-shield-whole-12x24","lost":"home-shield-lost-12x24"},"note": "ruled in build spec section 14: the Probe's plates as line 2, docked, up to 4, 12 x 24, 4 apart (the old module's pitch 16) from (12, 64); a plate is whole or lost"}
+  },
+  "bay": {
+   "offGrid": "the build spec's numbers: 226 by 98 at y 477",
+   "rect": [766,477,226,98],
+   "build": "station",
+   "picture": {"berth":[26,24],"portrait":[18,24],"gap":2,"berths":3,"withPortrait":4,"top":32,"note": "the crates come first (up to three), then shut berths, the portrait berth last; 82 wide, 102 with the portrait"}
+  },
+  "window": {
+   "rect": [24,78,604,362],
+   "offGrid": "the build spec's numbers: the Vivarium bezel's window",
+   "component": "livingWindow",
+   "painting": {"source": "Idle's painting of the light (frame.json idle.regions.vivarium), cut 1:1", "at": [64,194], "cx": 64, "rows": [194,555], "note": "columns cx to cx + 603, rows 194 to 555 (the art director: cx = 64); the face cuts it from the same picture the Vivarium uses, so there is no new master"},
+   "shade": {"px": 2, "colour": "void", "edges": ["top","left"], "note": "section 11.5: the window's inner shade, 2 px along the inside top and left edges, drawn as rects"},
+   "foot": [24,435,604,5],
+   "placeholder": {"fill": "stone", "edge": "mist"}
+  },
+  "resident": {
+   "component": "livingWindow",
+   "part": "residents",
+   "clip": "window",
+   "adult": [144,152],
+   "juvenile": [104,112],
+   "max": 5,
+   "maxWhy": "what fits at 1x: 5 adults with an ink width between, in the 444 px centre span (6 need 550 of 494 px); glassOf caps at shownOf, so vivarium.json rules.show.max and Home agree at 5",
+   "order": "by the feet's y, lower in front (drawn later), left first on a tie; the met one's (ui.meet) name tag is drawn after every resident, so a walker may pass in front of the met one by depth and is drawn under its tag; walkers do not avoid it",
+   "lift": 0,
+   "asleep": {"ink": [96,88]},
+   "walk": {
+    "ground": [32,280,588,156],
+    "keepOut": [548,344,80,96],
+    "keepOutRule": "a figure meets the keep-out when its box reaches x 548 and its feet reach y 344; the keep-out stands only while the away frame shows",
+    "start": "…the room's draw, and rejected (up to 8 draws) while its ink box would overlap a shown resident's ink box widened by 25 px each side; fallback as today (UI/UX read: home-window-five-of-eight; walking overlaps stay fine, L4-22). The rule only stops Home from opening on a heap",
+    "startWiden": 25
+   }
+  },
+  "nameTag": {
+   "build": "nameTag", "component": "panel", "h": 24, "px": 16, "plate": {"min": 48, "max": 176, "pad": 8, "round": 8}, "below": 16, "over": 32,
+   "note": "the Vivarium's tag (vivarium.json regions.nameTag), on the mibi that has an event, until the player visits it; no lift"
+  },
+  "away": {
+   "rect": [556,352,64,64],
+   "offGrid": "the build spec's numbers: 64 x 64 at (556, 352)",
+   "component": "panel",
+   "fill": "panel", "edge": "hairline",
+   "size": {"adult": 54, "juvenile": 40},
+   "caption": {"px": 16, "colour": "frost", "y": 418, "centre": 588},
+   "note": "the first mibi out on a trip, at its world size, composed from its stand and bottom-centred; the walkers keep out of [548, 344, 80, 96] while it shows"
+  },
+  "rackPod": {
+   "class": "rack",
+   "size": [24,32],
+   "at": [4,0],
+   "note": "the pod at the rack class, rendered at 24×32 by the pod renderer, never the 32×40 well pod scaled",
+   "picture": "rackpod:{species}",
+   "layers": {
+    "id": "home-rack-pod-{layer}-24x32",
+    "order": ["body","light","shade","accent","pattern","outline"],
+    "fill": {"body":"A","light":"lighter(A)","shade":"darker(A)","accent":"B","pattern":"B","outline":"darkest(A)"},
+    "pattern": "home-rack-pod-pattern-{name}-24x32, name from shellPattern through pods.json podLayers.patterns; a word with no layer draws none",
+    "colours": "A, B: colourPair[0], [1] .pigment through cross.json colours.pigmentChips; not listed: mist; a pod of no known species: A stone, B fog, no pattern",
+    "ramp": "light lighter[A]; shade darker[A]; outline the last colour of A's darker chain before ink or void, ink where that would be night",
+    "rule": "each layer a 1-bit mask; its on pixels take its fill, in order, later over earlier; transparent outside body; palette-exact, 24×32, never scaled",
+    "by": "art director 2026-10-10 09:45; architect 2026-10-10 09:43"
+   }
+  }
+ },
+ "focus": {
+  "initial": "room",
+  "roomAt": [496,288,32,24],
+  "room": "no ring is drawn at rest: the confirm key does the first need in the line, and nothing when there is none",
+  "graph": {
+   "roomKey": "room",
+   "fallback": "none",
+   "room": {"up":"vivarium","down":"pods","left":"none","right":"none"},
+   "vivarium": {"up":"none","down":"pods","left":"none","right":"library"},
+   "library": {"up":"none","down":"bay","left":"vivarium","right":"none"},
+   "pods": {"up":"vivarium","down":"none","left":"none","right":"incubator"},
+   "incubator": {"up":"vivarium","down":"none","left":"pods","right":"companion"},
+   "companion": {"up":"vivarium","down":"none","left":"incubator","right":"bay"},
+   "bay": {"up":"library","down":"none","left":"companion","right":"none"}
+  },
+  "targets": {
+   "vivarium": {"group":"vivarium","shape":{"rect":10},"box":"regions.vivarium.rect","lift":0},
+   "library": {"group":"library","shape":{"rect":10},"box":"regions.library.rect","lift":0},
+   "pods": {"group":"pods","shape":{"rect":8},"box":"regions.pods.rect","lift":0},
+   "incubator": {"group":"incubator","shape":{"rect":8},"box":"regions.incubator.rect","lift":0},
+   "companion": {"group":"companion","shape":{"rect":8},"box":"regions.companion.rect","lift":0},
+   "bay": {"group":"bay","shape":{"rect":8},"box":"regions.bay.rect","lift":0}
+  },
+  "vectors": [
+   {"from":"room","key":"up","to":"vivarium"},
+   {"from":"room","key":"down","to":"pods"},
+   {"from":"room","key":"left","to":"room"},
+   {"from":"room","key":"right","to":"room"},
+   {"from":"vivarium","key":"up","to":"vivarium"},
+   {"from":"vivarium","key":"down","to":"pods"},
+   {"from":"vivarium","key":"left","to":"vivarium"},
+   {"from":"vivarium","key":"right","to":"library"},
+   {"from":"library","key":"up","to":"library"},
+   {"from":"library","key":"down","to":"bay"},
+   {"from":"library","key":"left","to":"vivarium"},
+   {"from":"library","key":"right","to":"library"},
+   {"from":"pods","key":"up","to":"vivarium"},
+   {"from":"pods","key":"down","to":"pods"},
+   {"from":"pods","key":"left","to":"pods"},
+   {"from":"pods","key":"right","to":"incubator"},
+   {"from":"incubator","key":"up","to":"vivarium"},
+   {"from":"incubator","key":"down","to":"incubator"},
+   {"from":"incubator","key":"left","to":"pods"},
+   {"from":"incubator","key":"right","to":"companion"},
+   {"from":"companion","key":"up","to":"vivarium"},
+   {"from":"companion","key":"down","to":"companion"},
+   {"from":"companion","key":"left","to":"incubator"},
+   {"from":"companion","key":"right","to":"bay"},
+   {"from":"bay","key":"up","to":"library"},
+   {"from":"bay","key":"down","to":"bay"},
+   {"from":"bay","key":"left","to":"companion"},
+   {"from":"bay","key":"right","to":"bay"}
+  ],
+  "held": "while events.rest holds, the face moves no focus and sends no intent but room:<x>, which the host drops (events.rest.keys)"
+ },
+ "keys": {
+  "pad": "focus.graph",
+  "confirm": "on a bezel opens it full screen; on a station opens its room; at rest does the first need in the line",
+  "back": "nothing: Home is the top of the tree",
+  "home": "the ring back to rest; at rest, the Station rests: Idle",
+  "vivarium": "the Vivarium full screen",
+  "library": "the Library full screen: its spread, the ring on the frame it was last on",
+  "research": "Pods, the collection",
+  "dock": "as frame.json navigation.dock: the arrival plays, then Later returns here"
+ },
+ "events": {
+  "rest": {
+   "kind": "rest",
+   "target": "home",
+   "ms": 200,
+   "hold": 380,
+   "keys": "a room key during the hold is dropped, never kept: the rest ends on Idle, where the first press only wakes (frame.json idle.keys.rest)",
+   "steps": [
+    {"at":0,"ms":200,"do":"the ring is already gone; nothing moves"},
+    {"at":200,"ms":180,"do":"the screen transition (16-level Bayer dither) to Idle"}
+   ]
+  }
+ },
+ "strings": {
+  "stages": {"juvenile":"young","adult":"adult","elder":"elder"},
+  "titles": {
+   "bar": "Station",
+   "vivarium": "Vivarium",
+   "library": "Library",
+   "pods": "Pods",
+   "incubator": "Incubator",
+   "companion": "Companion",
+   "bay": "Bay"
+  },
+  "actions": {
+   "vivarium": "Go to the Vivarium",
+   "library": "Go to the Library",
+   "pods": "Go to Pods",
+   "incubator": "Go to the Incubator",
+   "companion": "Go to the Probe bench",
+   "bay": "Open the Bay"
+  },
+  "away": "away",
+  "library": {"new": "{n} new", "genome": "{Species} genome"},
+  "notes": {"companionAway":"the Companion is on a trip"},
+  "readout": {"home":"{n} at home","trip":"{m} on a trip","allTrip":"all on a trip","sep":" · "},
+  "stations": {
+   "pods": {"empty":"empty","count":"{n} in the case","kinds":"{k} kinds"},
+   "incubator": {
+    "empty": "empty",
+    "canIncubate": "a pod can incubate",
+    "growing": "a bud growing",
+    "ready": "the bud is ready",
+    "waitsForRoom": "waits for room",
+    "species": "{a} {Species}"
+   },
+   "companion": {
+    "away": "{name} on a trip",
+    "docked": "{name} at home",
+    "awayNoName": "on a trip",
+    "dockedNoName": "at home"
+   },
+   "bay": {
+    "waiting": "{n} crates in",
+    "waitingOne": "a crate in",
+    "portrait": "a portrait in",
+    "portraitName": "{name}'s portrait",
+    "portraitNoName": "from a sitting",
+    "lastTrip": "from the last trip",
+    "trips": "from {n} trips",
+    "clear": "berths clear"
+   }
+  },
+  "needs": {
+   "rule": "the notice and the room's ✓, the first that holds: the module it lights, the notice, the action. Counts are spelled (a, two to six); above what the picture holds the count is dropped",
+   "order": ["crates","full","budReady","meet","newPods","glints","waitingPods","couldGrow","toRead","budGrowing"],
+   "crates": {
+    "module": "cargo",
+    "notice": "{count} crates wait in the bay",
+    "noticeOne": "a crate waits in the bay",
+    "action": "Open the bay",
+    "rule": "the walk crates in the bay, while docked; the count is theirs, so the Cargo lamp, the notice and the room's ✓ agree (state.need()). A ready portrait is counted apart, docked or away (strings.line.needs.portrait); with walk crates too, the notice names both (strings.line.needs.crates.withPortrait). Cargo's own notice names neither: its bay shows them."
+   },
+   "full": {"module":"incubator","notice":"The Vivarium is full","actions":{"add":"Add a room","make":"Make room"},"rule":"every place is taken and something waits for one (a ready bud, or a pod that could be incubated): ahead of the bud and of couldGrow (state.need, the rooms words C9, C11). ✓ jumps to the Vivarium: with a room that can be bought and paid, ✓ Add a room, the ring on the new-room chip (room.new); otherwise ✓ Make room, the ring on the first resident of the room shown"},
+   "budReady": {"module":"incubator","notice":"the bud is ready","action":"Open the bud"},
+   "meet": {"module":null,"notice":"meet {name}","action":"Meet {name}"},
+   "newPods": {
+    "module": "pods",
+    "notice": "{count} new pods in the case",
+    "noticeOne": "a new pod in the case",
+    "action": "Look at the pods"
+   },
+   "glints": {"module":"pods","notice":"{count} pods glint","noticeOne":"a pod glints","action":"Look at the pods"},
+   "waitingPods": {
+    "module": "pods",
+    "notice": "The Pods rack is full",
+    "noticeOne": "The Pods rack is full",
+    "action": "Look at the pods"
+   },
+   "couldGrow": {
+    "module": "pods",
+    "notice": "{a} {species} pod, ready to incubate",
+    "short": "{a} {species} pod needs more",
+    "action": "Look at the pods",
+    "rule": "short of what growing it costs, it stays a need: the short notice, then each material that is short as its 16 px icon after the words, Energy ⚡ before Essence ❀ (the top bar's order), one space apart, no figure; both short shows both. If the run passes 256 px (the slot less its lamp and gap), the species goes: \"a pod needs more ⚡ ❀\""
+   },
+   "toRead": {
+    "module": "pods",
+    "notice": "{a} {species} pod waits unread",
+    "short": "{a} {species} pod needs more",
+    "action": "Look at the pods",
+    "rule": "short of what reading its next chapter costs, it stays a need: the short notice, ◆ as its 16 px icon after the words, no figure"
+   },
+   "budGrowing": {"module":null,"notice":"a bud is growing","action":"Look at the Incubator"}
+  },
+  "line": {
+   "rule": "the line at rest: at most two needs joined by a dot, amber, with the amber lamp before them; the first carries the confirm cap and says its action, the second its notice. With none, the goal (frame.json strings.goal), mist. With a target focused: the target's verb with the cap, then its subject, if it has one, in mist.",
+   "order": ["crates","full","budReady","portrait","meet","newPods","glints","waitingPods","couldGrow"],
+   "needs": {
+    "crates": {"action":"Open the Bay","notice":"{count} crates wait in the Bay","noticeOne":"a crate waits in the Bay","withPortrait":{"notice":"Bay: {count} crates and a portrait","noticeOne":"Bay: a crate and a portrait"}},
+    "full": {"actions":{"add":"Add a room","make":"Make room"},"notice":"The Vivarium is full"},
+    "budReady": {"action":"Open the bud","notice":"the bud is ready"},
+    "portrait": {"action":"Open the Bay","notice":"a portrait waits in the Bay"},
+    "meet": {"action":"Meet {name}","notice":"meet {name}"},
+    "newPods": {"action":"Look at the pods","notice":"{count} new pods in the case","noticeOne":"a new pod in the case"},
+    "glints": {"action":"Look at the pods","notice":"{count} pods glint","noticeOne":"a pod glints"},
+    "waitingPods": {"action":"Look at the pods","notice":"The Pods rack is full","noticeOne":"The Pods rack is full"},
+    "couldGrow": {"action":"Look at the pods","notice":"{a} {species} pod, ready to incubate"}
+   }
+  }
+ },
+ "colours": {"ground":"ground","nameTag":{"fill":"panel","edge":"hairline","text":"bone"},"waitingLamp":{"fill":"sky","rim":"void"}}
+}

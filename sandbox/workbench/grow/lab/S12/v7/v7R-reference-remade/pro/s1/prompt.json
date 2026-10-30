@@ -1,0 +1,306 @@
+{
+ "species": "S12",
+ "variant": {
+  "id": "v7R-reference-remade",
+  "name": "condition 2: v7 with the reference re-made under v7, on the second individual",
+  "subject": "member-1",
+  "referenceFrom": "v7",
+  "change": "Condition 2: v7 as written, plus the species reference as Image 3 in both steps, the reference being the type specimen's own v7 painting (condition 1, the sample whose step 2 passed, else the first); the subject is the species' second individual, so this tests the mechanism the owner values: a reference in the house rendering painting an individual.",
+  "imageOrder1": [
+   "index",
+   "key",
+   "reference"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key",
+   "reference"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "Condition 2: v7 as written, plus the species reference as Image 3 in both steps, the reference being the type specimen's own v7 painting (condition 1, the sample whose step 2 passed, else the first); the subject is the species' second individual, so this tests the mechanism the owner values: a reference in the house rendering painting an individual.",
+ "subject": {
+  "member": "S12-0b5843e8",
+  "genomeDigest": "S12-0b5843e8",
+  "controls": "out/S12/9587cfdd7ad59444"
+ },
+ "reference": {
+  "what": "the type specimen painted by v7 on pro, sample 1 (checks failed)",
+  "name": "S12-v7-pro-s1-step2.png",
+  "path": "lab/S12/v7/v7/pro/s1/step2.png"
+ },
+ "step1": {
+  "callId": "79fb65a0-2250-4f6b-bc83-0cafa3ac2267",
+  "status": "ok",
+  "seconds": 17.5,
+  "imageOrder": [
+   "index",
+   "key",
+   "reference"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.356,
+   "silhouetteIoUInPlace": 0.243,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.816
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 0.858,
+     "coverage": 0.408
+    },
+    "eye": {
+     "span": 0.365,
+     "coverage": 0.509
+    },
+    "antenna": {
+     "span": 0.0,
+     "coverage": 0.0
+    },
+    "leg-0": {
+     "span": 0.427,
+     "coverage": 0.529
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.477
+    },
+    "leg-2": {
+     "span": 0.723,
+     "coverage": 0.07
+    },
+    "flap": {
+     "span": 0.467,
+     "coverage": 0.321
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.654,
+     "ok": false
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.502,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.469,
+     "ok": false
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.502,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.494,
+     "ok": false
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.42,
+     "ok": false
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.556,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.666,
+     "median": "#de9c61",
+     "nearest": "#e98268",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.703,
+     "median": "#eea483",
+     "nearest": "#e98268",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.68,
+     "median": "#f7845d",
+     "nearest": "#e98268",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.713,
+     "median": "#d6c3ba",
+     "nearest": "#ffd7c5",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.804,
+     "median": "#f4c5a2",
+     "nearest": "#ffd7c5",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (21% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a part is missing or moved from where the part map puts it: eye (painted along 36% of its length), antenna (painted along 0% of its length), leg-0 (painted along 43% of its length), flap (painted along 47% of its length)",
+    "the proportions are off: the region-0 is larger than drawn (0.65 of the body against 0.24), the region-1 is larger than drawn (0.50 of the body against 0.17), the head is larger than drawn (0.47 of the body against 0.22), the leg-1 is larger than drawn (0.49 of the body against 0.18), the leg-2 is larger than drawn (0.42 of the body against 0.21)"
+   ],
+   "outside": 0.206,
+   "missing": 0.037,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.713,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "fa47d23c-a0b2-400d-8f2a-79f9d11b8fbf",
+  "status": "ok",
+  "seconds": 19.1,
+  "imageOrder": [
+   "drawing",
+   "key",
+   "reference"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.39,
+   "silhouetteIoUInPlace": 0.102,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.518
+    },
+    "eye": {
+     "span": 0.254,
+     "coverage": 0.534
+    },
+    "antenna": {
+     "span": 0.075,
+     "coverage": 0.231
+    },
+    "leg-0": {
+     "span": 0.427,
+     "coverage": 0.663
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "leg-2": {
+     "span": 0.663,
+     "coverage": 0.336
+    },
+    "flap": {
+     "span": 0.447,
+     "coverage": 0.39
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.704,
+     "ok": false
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.54,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.646,
+     "ok": false
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.54,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.504,
+     "ok": false
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.46,
+     "ok": false
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.575,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.296,
+     "median": "#cab49b",
+     "nearest": "#dfd2ae",
+     "ok": false
+    },
+    "body@region-1": {
+     "agreement": 0.698,
+     "median": "#c89c46",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.0,
+     "median": "#e3d4bb",
+     "nearest": "#dfd2ae",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 1.0,
+     "median": "#d4c5ad",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.693,
+     "median": "#cbbba8",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (33% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a part is missing or moved from where the part map puts it: eye (painted along 25% of its length), antenna (painted along 8% of its length), leg-0 (painted along 43% of its length), flap (painted along 45% of its length)",
+    "the proportions are off: the region-0 is larger than drawn (0.70 of the body against 0.24), the region-1 is larger than drawn (0.54 of the body against 0.17), the head is larger than drawn (0.65 of the body against 0.22), the leg-1 is larger than drawn (0.50 of the body against 0.18), the leg-2 is larger than drawn (0.46 of the body against 0.21)",
+    "a pigment slot is painted in another slot's colour: the body slot on the region-0 (painted #cab49b, the colour of second), the body slot on the head (painted #e3d4bb, the colour of second)"
+   ],
+   "outside": 0.331,
+   "missing": 0.026,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.439,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

@@ -1,0 +1,48 @@
+/* The list word (Pods' collection, station-layouts.md Pods §5 A), ported from components/list.mjs: every rack place on the 3 x 2 grid, each the progress ring
+   (the studio's masters in layers), the pod in the ring, the name on its plate, the can-grow mark and the glint star; an empty place is the empty ring. Then the waiting mark.
+   Spec: `pods` regions.collection. Props: regions.list { places: [ { empty, ringLayers: [ids] } | { ringLayers, pod, name, plate (the series), grow, glint } ], waiting }.
+   A picture the host has not sent is a slot not yet filled: nothing is drawn and the layout does not move. */
+#include "../vocab.h"
+#include "../words.h"
+#include "../../prim/prim.h"
+#include "../../spec/spec.h"
+#include "../../layout/layout.h"
+#include <stdio.h>
+#include <string.h>
+
+#define S "pods"
+#define C "regions.collection"
+
+void word_list(void) {
+  char name[24]; spec_str(S, "colours.name", name, sizeof name);
+  int n = v_plen("regions.list.places");
+  int slice[4]; for (int k = 0; k < 4; k++) slice[k] = v_si(S, v_fmt("%s.%d", C ".ring.slice", k), 0);
+  int podW = v_si(S, v_fmt("%s.%d", C ".pod.size", 0), 0), podH = v_si(S, v_fmt("%s.%d", C ".pod.size", 1), 0), npx = v_si(S, C ".name.px", 20), nh = v_si(S, C ".name.h", 24);
+  for (int i = 0; i < n; i++) {
+    int r[4]; layout_place_rect(S, C, i, r);
+    const char *pre = v_fmt("regions.list.places.%d", i); char P[96]; snprintf(P, sizeof P, "%s", pre);
+    const char *id = v_fmt("list.p%d", i); char pid[40]; snprintf(pid, sizeof pid, "%s", id);
+    for (int k = 0, nl = v_plen(v_fmt("%s.ringLayers", P)), j = 0; k < nl; k++) {
+      char a[96]; snprintf(a, sizeof a, "%s", v_pstr(v_fmt("%s.ringLayers.%d", P, k)));
+      char rid[64]; snprintf(rid, sizeof rid, "%s.ring.%d", pid, j);
+      if (v_sprite(rid, a, r[0] + slice[0], r[1] + slice[1], slice[2], slice[3])) j++;
+    }
+    if (v_pbool(v_fmt("%s.empty", P), 0)) continue;
+    const char *pod = v_pstr(v_fmt("%s.pod", P));
+    if (*pod) { v_region("place.pod", LAYER_PAINTED); v_sprite(v_fmt("%s.pod", pid), pod, r[0] + v_si(S, v_fmt("%s.%d", C ".pod.centre", 0), 0) - podW / 2, r[1] + v_si(S, v_fmt("%s.%d", C ".pod.centre", 1), 0) - podH / 2, podW, podH); }
+    char text[V_STR]; snprintf(text, sizeof text, "%s", v_pstr(v_fmt("%s.name", P)));
+    int nx = r[0] + v_si(S, v_fmt("%s.%d", C ".name.at", 0), 0), ny = r[1] + v_si(S, v_fmt("%s.%d", C ".name.at", 1), 0), tw = v_measure(text, npx);
+    int pw = layout_plate_width(S, C ".name", tw);
+    { char al[16] = "", cl[16] = ""; spec_str(S, C ".name.align", al, sizeof al); spec_str(S, C ".name.clamp", cl, sizeof cl);   /* align centre: `at` is the plate's centre; clamp place: the plate stays inside the place's rectangle */
+      if (strcmp(al, "centre") == 0) nx -= v_half(pw);
+      if (strcmp(cl, "place") == 0) { if (nx + pw > r[0] + r[2]) nx = r[0] + r[2] - pw; if (nx < r[0]) nx = r[0]; } }
+    v_region("place.name", LAYER_PAINTED); v_plate(v_fmt("%s.plate", pid), C ".name", pw, nx, ny);
+    v_region("place.name", LAYER_TYPE); v_line_in(v_fmt("%s.name", pid), text, nx, pw, v_cap_in(ny, nh, npx), V_ANCHOR_CAP, npx, name);
+    const char *grow = v_pstr(v_fmt("%s.grow", P));
+    if (*grow) { v_region("place", LAYER_ART); v_sprite(v_fmt("%s.grow", pid), grow, r[0] + v_si(S, v_fmt("%s.%d", C ".grow.at", 0), 0), r[1] + v_si(S, v_fmt("%s.%d", C ".grow.at", 1), 0), v_si(S, v_fmt("%s.%d", C ".grow.at", 2), 0), v_si(S, v_fmt("%s.%d", C ".grow.at", 3), 0)); }
+    const char *glint = v_pstr(v_fmt("%s.glint", P));
+    if (*glint) { v_region("place", LAYER_ART); v_sprite(v_fmt("%s.glint", pid), glint, r[0] + v_si(S, v_fmt("%s.%d", C ".glint.at", 0), 0), r[1] + v_si(S, v_fmt("%s.%d", C ".glint.at", 1), 0), v_si(S, v_fmt("%s.%d", C ".glint.at", 2), 0), v_si(S, v_fmt("%s.%d", C ".glint.at", 3), 0)); }
+  }
+  const char *wait = v_pstr("regions.list.waiting");
+  if (*wait) { v_region("waiting", LAYER_ART); v_sprite("list.waiting", wait, v_si(S, v_fmt("%s.%d", C ".waiting.rect", 0), 0), v_si(S, v_fmt("%s.%d", C ".waiting.rect", 1), 0), v_si(S, v_fmt("%s.%d", C ".waiting.rect", 2), 0), v_si(S, v_fmt("%s.%d", C ".waiting.rect", 3), 0)); }
+}

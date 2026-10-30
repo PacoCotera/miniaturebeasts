@@ -1,0 +1,310 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3-pro-image",
+ "promptVersion": 5,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "4eec29e4-35bc-4e54-af45-71ae0c40ceba",
+     "step": 1,
+     "attempt": 1,
+     "status": "ok",
+     "seconds": 20.2,
+     "checks": {
+      "silhouetteIoU": 0.832,
+      "silhouetteIoUInPlace": 0.824,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.979
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.996
+       },
+       "muzzle": {
+        "span": 1.0,
+        "coverage": 0.993
+       },
+       "eye": {
+        "span": 0.944,
+        "coverage": 0.961
+       },
+       "crown": {
+        "span": 0.947,
+        "coverage": 0.93
+       },
+       "leg-0": {
+        "span": 0.843,
+        "coverage": 0.983
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.859
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.565,
+        "painted": 0.656,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.443,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.234,
+        "painted": 0.282,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.377,
+        "painted": 0.371,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.526,
+        "painted": 0.614,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.238,
+        "painted": 0.326,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.93,
+        "median": "#4a555a",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.883,
+        "median": "#545d5d",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.796,
+        "median": "#ddcfaa",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.623,
+        "median": "#dacca8",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "leaf@crown": {
+        "agreement": 0.916,
+        "median": "#5ba05d",
+        "nearest": "#5aa65c",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.906,
+        "median": "#dfd0a4",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@muzzle": {
+        "agreement": 0.891,
+        "median": "#dfd0aa",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.037,
+      "missing": 0.0,
+      "bandTolerancePx": 20,
+      "tolerances": {
+       "bandMax": 0.18,
+       "partMin": 0.5,
+       "proportion": 0.25
+      },
+      "slotAgreement": 0.882,
+      "passed": true,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "3KnHapuHNfzh_uMP2emrsQE"
+    },
+    {
+     "callId": "2d5fbab5-df8e-484a-a287-650daa4fc2b7",
+     "step": 2,
+     "status": "ok",
+     "seconds": 20.1,
+     "checks": {
+      "silhouetteIoU": 0.737,
+      "silhouetteIoUInPlace": 0.563,
+      "parts": {
+       "region-0": {
+        "span": 0.989,
+        "coverage": 0.998
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.833
+       },
+       "muzzle": {
+        "span": 1.0,
+        "coverage": 0.934
+       },
+       "eye": {
+        "span": 0.907,
+        "coverage": 0.728
+       },
+       "crown": {
+        "span": 0.85,
+        "coverage": 0.455
+       },
+       "leg-0": {
+        "span": 0.824,
+        "coverage": 0.601
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 0.712
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.565,
+        "painted": 0.808,
+        "ok": false
+       },
+       "head": {
+        "drawn": 0.353,
+        "painted": 0.549,
+        "ok": false
+       },
+       "muzzle": {
+        "drawn": 0.234,
+        "painted": 0.352,
+        "ok": false
+       },
+       "crown": {
+        "drawn": 0.377,
+        "painted": 0.464,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.526,
+        "painted": 0.702,
+        "ok": false
+       },
+       "leg-1": {
+        "drawn": 0.238,
+        "painted": 0.37,
+        "ok": false
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.587,
+        "median": "#5d6768",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.507,
+        "median": "#7c7e66",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.466,
+        "median": "#9d8467",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.396,
+        "median": "#6e6d64",
+        "nearest": "#465459",
+        "ok": false
+       },
+       "leaf@crown": {
+        "agreement": 0.94,
+        "median": "#679858",
+        "nearest": "#5aa65c",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.617,
+        "median": "#a48a6b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@muzzle": {
+        "agreement": 0.583,
+        "median": "#ddc29d",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "the proportions are off: the region-0 is larger than drawn (0.81 of the body against 0.56), the head is larger than drawn (0.55 of the body against 0.35), the muzzle is larger than drawn (0.35 of the body against 0.23), the leg-0 is larger than drawn (0.70 of the body against 0.53), the leg-1 is larger than drawn (0.37 of the body against 0.24)",
+       "a pigment slot is painted in another slot's colour: the second colour on the hind legs (painted #6e6d64, the body colour)"
+      ],
+      "outside": 0.029,
+      "missing": 0.024,
+      "bandTolerancePx": 20,
+      "tolerances": {
+       "bandMax": 0.1,
+       "partMin": 0.6,
+       "proportion": 0.15
+      },
+      "slotAgreement": 0.579,
+      "passed": false,
+      "gated": false
+     },
+     "responseId": "DqrHavb6PIDf-sAPztaaiAs"
+    }
+   ],
+   "steps": []
+  }
+ },
+ "species": "S01",
+ "name": "Loika",
+ "level": "individual",
+ "genomeDigest": "S01-654f3487",
+ "genomeSha256": "c5317771247621e011ea9bf7d6cc9ed36a39e44a05c71690894f54b0916fe324",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 9,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown leaf crest; eye rings thin rings. Proportions: a big head, the head carried high, big eyes, a tall crest, short legs, stout legs, narrow feet. Posture: standing square on all its legs, weight settled on its feet, body resting between them, still, looking at the viewer.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T14:34:03Z",
+ "outputs": {
+  "station-portrait-600x620.png": "1b8a888687425bf36f019e68c51db4bc0dd3a6e22c41d4da9e57aa0807024c16",
+  "station-portrait-300x310.png": "f5ac4ccb5ebc55a55a9e5f73c67a7be620e03525c222b6ce1865cd22a7e19af5",
+  "companion-280x300.png": "6314e52ecb78fbc6b913b827038168bca03162fbc1f4bbc4391338293fa5e76d",
+  "token-48.png": "dbe60398199e44cfc85e6ea7b2b31d7613c411d5f004f7072147f9662e19fbba"
+ },
+ "calls": 2,
+ "seconds": 40.3,
+ "finishedAt": "2026-10-08T14:35:49Z"
+}

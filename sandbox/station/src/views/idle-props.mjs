@@ -1,0 +1,26 @@
+// The Idle props (lvgl-switch.md §2.1, §4 L2.2; frame.json `idle`): pure selectors from the state to the props of Idle's composition, the whole 1024×600 with no frame. Props name *what*, never *where*: the people of the living window (the
+// residents at home, each a seed; the bed and the resters on it), the painting's slot and the one line; no rectangle, no measure, no layout rule, no colour (the face reads those from frame.json `idle`). Plain JSON:
+// { props (idle: true, regions, frame.idle.line), requests }. Runs in Node, tested there (tests/idle-props.test.mjs); the shape is idle.props.json.
+//   m: { st, sv, settings, docked }; spec: frame.json
+import * as S from "../state.mjs";
+import { livingOf } from "./home-props.mjs";
+import { fill } from "./words.mjs";
+import { req as reqOf, ph as phOf } from "./requests.mjs";
+import { roomRegion, shownRoom } from "./room-props.mjs";
+
+
+// The line (frame.json idle.strings): the words of the one fact the rule gives (S.idleKey); none, empty. More than three crates read without a count; one mibi out is named, two or three are counted.
+export function idleLine(m, I) {
+  const T = I.strings, k = S.idleKey(m.st, m.sv, m.settings); if (!k) return T.none;
+  if (k.key === "crates") return k.n > 3 ? T.crates.many : T.crates[k.n];
+  if (k.key === "out") return k.n === 1 ? fill(T.out["1"], { name: k.name }) : T.out[String(Math.min(k.n, 3))];
+  return T[k.key];
+}
+
+export function idleBuild(m, frame) {
+  const I = frame.idle, R = I.regions, requests = [], req = reqOf(requests);
+  const ph = phOf(req, "its master (station-layouts.md, Placeholders on Idle)");
+  const room = shownRoom(m.st, m.meet ?? null), lw = livingOf({ ...m, view: "idle", room, ui: { meet: m.meet ?? null } }, R, req, ph, frame.light);
+  const region = roomRegion(req, room, m.light), vivarium = { picture: region.base };   // the room's painting of the light: the picture Idle shows whole and the Vivarium's whole shows rows 120 to 560 of; one request for both, so a light's painting is on the face once
+  return { props: { idle: true, regions: { vivarium, room: region, residents: lw.residents, ...(lw.bed ? { bed: lw.bed } : {}) }, frame: { idle: { line: idleLine(m, I) } } }, requests };
+}

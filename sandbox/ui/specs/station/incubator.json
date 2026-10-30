@@ -1,0 +1,534 @@
+{
+ "screen": "incubator",
+ "layout": { "stage": "painting", "opening": [0, 40, 1024, 522], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
+ "device": "station",
+ "frame": "frame.json",
+ "status": "T-20261016-222 (batch B-20261018-1): the Incubator as the painted capsule, built exactly from results/T-20261017-incubator-object/build-spec.md (the UI/UX build spec, the authority) and capsule-masters.md (the art director's masters). The states empty, growing, ready and hatch, the Incubate moment (events.incubate), Hatch now in place (events.growNow, which now includes the hatch's start) and the hatch. The old chamber, nest, base, plaque, rail and leaf regions are retired (the leaf arc's layout rule and its vectors stay, with their data under regions.leaves, which is no longer drawn).",
+ "note": "The one home of the Incubator numbers. Rectangles are [x, y, w, h] in screen pixels at 1x on 1024 x 600; the stage is the frame's (0, 40, 1024, 522). Every image is placed 1:1, nothing is scaled at runtime and nothing is anti-aliased: every reduction is a build-time cut (the masters) or the logic process's render (the relit pictures).",
+ "states": [
+  "empty",
+  "growing",
+  "ready",
+  "hatch"
+ ],
+ "initial": "by the save: no bud, empty; a bud short of its minutes, growing; else ready. Arriving by Grow it (Create) or Cross them (Cross): growing",
+ "entry": {
+  "from": [
+   {
+    "screen": "home",
+    "how": "the Incubator module (✓ Open the Incubator); the room's ✓ Open the Incubator when the bud is ready, ✓ Look at the Incubator while a bud grows (home.json strings.needs)",
+    "state": "by the save"
+   },
+   {
+    "screen": "create",
+    "how": "✓ Grow it, a jump (create.json events.grow)",
+    "state": "growing"
+   },
+   {
+    "screen": "cross",
+    "how": "✓ Cross them, a jump",
+    "state": "growing, a cross bud"
+   }
+  ],
+  "out": [
+   {
+    "how": "✓ Choose a pod (empty), a jump",
+    "authority": "frame.json navigation.jumps",
+    "to": "Pods' collection, the ring on the first identified pod in rack order, else the first pod; ← there reads Home"
+   },
+   {
+    "how": "✓ Open (ready): the hatch, then a jump",
+    "to": "one mibi up close, in the meet (handoff); ← there reads Vivarium"
+   },
+   {
+    "how": "←",
+    "to": "Home, the ring on Home's Incubator module"
+   }
+  ],
+  "title": "Incubator, after the Research key's icon (frame.json regions.title.marks.incubator), in every state; no coloured key leads here"
+ },
+ "stateRule": "growing and ready are the bud's two states. empty: no bud, the open, empty capsule as the invitation. hatch: from the hatch's start until the screen changes to one mibi up close, in the meet (events.hatch), input held. The look of each state is build-spec section 1: empty = open, empty; growing = closed (glass, bar revealed to the progress, the sealed pod); ready = open (door, bar full, the sealed pod); incubate moment = dusk, glass closed, seal ring, bar off; hatch = open, bar full, then the opened pod and the juvenile from its step at 1000",
+ "regions": {
+  "bench": {
+   "rect": [
+    0,
+    40,
+    1024,
+    522
+   ],
+   "component": "frame",
+   "part": "stage",
+   "note": "the stage ground; the room crop is drawn over it (regions.room)"
+  },
+  "room": {
+   "rect": [
+    0,
+    40,
+    1024,
+    522
+   ],
+   "note": "a 1:1 crop of capsule-room-{day,dusk}, rows 65 to 587 of the 1024 x 600 authority (r0 = 65: the table line at authority 489 lands at screen 464, closed's foot at 589 lands at 549); not reduced",
+   "pictures": {
+    "day": "capsule-room-day-1024x522",
+    "dusk": "capsule-room-dusk-1024x522"
+   }
+  },
+  "capsule": {
+   "rect": [
+    344,
+    26,
+    530,
+    532
+   ],
+   "scale": 0.85,
+   "note": "every capsule layer is 530 x 532 at (344, 26): the shell lands with its axis on x 512 and its crown under the top bar (screen x = 512 + 0.85 (x - 514), y = 48 + 0.85 y). The moss line is y 415, the bar's centre (512, 490)",
+   "layers": {
+    "interior": {
+     "day": "capsule-interior-day-530x532",
+     "dusk": "capsule-interior-dusk-530x532"
+    },
+    "shell": {
+     "day": "capsule-shell-530x532",
+     "dusk": "capsule-shell-dusk-530x532"
+    },
+    "door": "capsule-door-open-530x532",
+    "bar": "capsule-bar-lit-530x532",
+    "seal": "capsule-seal-ring-530x532"
+   },
+   "mossY": 415,
+   "podHeight": 160,
+   "bar": {
+    "max": 158,
+    "litFrom": [
+     89,
+     450
+    ],
+    "h": 34,
+    "full": [
+     75,
+     450,
+     181,
+     34
+    ],
+    "note": "the bar's lit width is floor(158 x elapsed / total) px from the left, shown as a window of the layer from layer x 89 (screen 433); full is the whole bar with its glow (layer x 75 to 255); redrawn when it gains a pixel, at most once a second"
+   },
+   "glass": {
+    "rect": [
+     344,
+     26,
+     530,
+     532
+    ],
+    "note": "the art director's cut master capsule-glass-closed (room/, 530 x 532 at (344, 26)): a white highlight layer over the pod and under the shell and seal ring; closed states only (growing and the incubate moment); Hatch now takes it out by the 400 dither (build-spec section 1, capsule-masters.md)"
+   }
+  },
+  "inside": {
+   "rect": [
+    320,
+    235,
+    384,
+    216
+   ],
+   "foot": [
+    512,
+    415
+   ],
+   "anchor": [
+    192,
+    180
+   ],
+   "note": "the canvas the sealed pod and the opened pod (bowl and tipped cap) are rendered in, relit, with their shadow and moss blades: foot (the pod's bottom centre) on (512, 415). The pod is pod-large at its own 160 px height, no up-scale (uiux-rulings.md 3)"
+  },
+  "juvenile": {
+   "foot": [
+    532,
+    415
+   ],
+   "height": 146,
+   "lift": 4,
+   "note": "the new mibi, about 146 tall, feet on (532, 415); the host renders and relights it (relit:...). It is a sprite of its own so the two steps can lift it"
+  },
+  "stampCase": {
+   "rect": [
+    76,
+    184,
+    152,
+    152
+   ],
+   "component": "stampLabel",
+   "part": "case",
+   "slice": "room-stamp-case-152x152",
+   "note": "the founder's stamp moves to the left wall, which is clear in every look; the case as on Create"
+  },
+  "stampCaseFront": {
+   "rect": [
+    76,
+    184,
+    152,
+    152
+   ],
+   "component": "stampLabel",
+   "part": "caseFront",
+   "slice": "capsule-stamp-case-front-152x152"
+  },
+  "stamp": {
+   "rect": [
+    92,
+    200,
+    120,
+    120
+   ],
+   "component": "stampLabel",
+   "look": "stampCase",
+   "inStates": [
+    "growing",
+    "ready",
+    "hatch"
+   ],
+   "live": "the bud's stamp, its chapters filling as they clear (the host's props); the chapter rail and leaves are gone, so the clearing shows on the stamp alone"
+  },
+  "code": {
+   "rect": [
+    64,
+    344,
+    176,
+    25
+   ],
+   "component": "text",
+   "inStates": [
+    "growing",
+    "ready",
+    "hatch"
+   ],
+   "px": 16,
+   "weight": 400,
+   "align": "centre",
+   "centre": 152,
+   "lineTop": 344,
+   "text": "the bud's code (genome.codeText)",
+   "note": "UI/UX round 2 (A1): the left column's text is ink (#1a1725), Inter 16, at least 4.5:1 on the wall master"
+  },
+  "readyIn": {
+   "rect": [
+    16,
+    384,
+    272,
+    24
+   ],
+   "component": "text",
+   "inStates": [
+    "growing"
+   ],
+   "px": 16,
+   "weight": 400,
+   "align": "centre",
+   "centre": 152,
+   "lineTop": 384,
+   "note": "UI/UX ruling (uiux-rulings.md 1): Inter 16, ink (#1a1725), at least 4.5:1 on the wall master, centred on x 152, in a box widened to stay inside the plain wall"
+  },
+  "ribbon": {
+   "rect": [
+    312,
+    56,
+    400,
+    40
+   ],
+   "component": "ribbon",
+   "inStates": [
+    "hatch"
+   ],
+   "px": 20,
+   "pad": 16,
+   "capTop": 13,
+   "baseline": 27,
+   "align": "centre",
+   "look": "the one ribbon look (cargo.json regions.ribbon)",
+   "lines": 1,
+   "words": "strings.hatchRibbon"
+  }
+ },
+ "overlays": {
+  "panel": {
+   "spec": "panel.json",
+   "id": "growNow",
+   "from": "✓ Hatch now while a bud grows and its price is above panel.json growNowAbove (❀ 4); at or below it ✓ acts as before",
+   "closes": "Wait, ← or a room key: the Incubator as before, nothing spent; Hatch now: events.growNow, then the hatch",
+   "note": "Hatch now | Wait stays as B-20261016-4 built it (the game designer's correction of 2026-10-18 keeps it); build-spec section 6 says no such panel and is superseded there"
+  }
+ },
+ "notes": {
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. growNow fills every leaf at once and the tabs turn read; the hatch lands on one mibi up close in the meet on the frame of ✓ Open; the wipe is a cut. The leaf fill (props) still steps a row every 3 s. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts. growNow's cut lands every leaf, the tabs and the ready state on the key's frame (up to 162,432 px, a key's frame, not an animation frame)."
+ },
+ "events": {
+  "incubate": {
+   "kind": "incubate",
+   "target": "room",
+   "ms": 1380,
+   "hold": 1380,
+   "steps": [
+    {
+     "at": 0,
+     "do": "the Incubator draws the `incubate` look: the dusk room, interior and shell, the glass closed, the seal ring on, the bar off, the new bud's sealed pod inside. This is the screen the jump's dither lands on (create.json events.grow at 900)"
+    },
+    {
+     "at": 1200,
+     "ms": 180,
+     "do": "the 180 ms dither (16 levels) to `growing`: the day room, interior and shell, the seal ring gone, the bar from its first pixel, and the column"
+    }
+   ],
+   "reducedMotion": "a cut straight to growing on arrival",
+   "holdNote": "input is held to 1380; a room key waits, then acts"
+  },
+  "wipe": {
+   "kind": "wipe",
+   "target": "the chapter's id (regions.rail.tabs[i].id)",
+   "ms": 1000,
+   "hold": 0,
+   "do": "the chapter turns read: its stamp redraws (the props carry the new stamp); the rail and its pips are gone, so the event draws nothing of its own. The timing is kept"
+  },
+  "growNow": {
+   "kind": "growNow",
+   "target": "room",
+   "ms": 580,
+   "hold": 580,
+   "steps": [
+    {
+     "at": 0,
+     "ms": 350,
+     "do": "the bar fills from its width to full in 8 cuts, 50 ms apart, whole pixels: cut k (1 to 8) at 50 (k - 1) ms is floor(w0 + (158 - w0) k / 8) px"
+    },
+    {
+     "at": 400,
+     "do": "on a founder's bud, every chapter still unread turns read (a cut, except a sealed chapter still shut); the stamp redraws (the host's props)"
+    },
+    {
+     "at": 400,
+     "ms": 180,
+     "do": "the 180 ms dither from `closed` to `open`: the glass goes and the door comes in, the pod stays whole"
+    },
+    {
+     "at": 580,
+     "do": "the hatch (events.hatch) starts at its 0"
+    }
+   ],
+   "reducedMotion": "the cut to the meet on the frame of the press, as Open's",
+   "note": "one press, as built (T-219): pay, end the wait, hatch. A refused press plays nothing and spends nothing"
+  },
+  "hatch": {
+   "kind": "hatch",
+   "target": "room",
+   "ms": 2600,
+   "hold": 2780,
+   "skip": true,
+   "steps": [
+    {
+     "at": 0,
+     "ms": 600,
+     "do": "the `open` look stands still with the pod whole: a still beat"
+    },
+    {
+     "at": 600,
+     "do": "the pod cracks: the renderer's one crack layer on the pod, held to 1000 (uiux-rulings.md 4)"
+    },
+    {
+     "at": 1000,
+     "ms": 180,
+     "do": "the 180 ms dither (16 levels) to the `hatched` look: the species' opened pod (bowl and tipped cap) on the moss, and the new mibi standing about 146 tall, feet on (532, 415), dithering in from clear"
+    },
+    {
+     "at": 1200,
+     "do": "the ribbon shows the new mibi's words, strings.hatchRibbon, rect 312, 56, 400, 40"
+    },
+    {
+     "at": 1400,
+     "ms": 200,
+     "lift": [
+      [
+       0,
+       1
+      ],
+      [
+       25,
+       2
+      ],
+      [
+       50,
+       3
+      ],
+      [
+       75,
+       4
+      ],
+      [
+       100,
+       3
+      ],
+      [
+       125,
+       2
+      ],
+      [
+       150,
+       1
+      ],
+      [
+       175,
+       0
+      ]
+     ],
+     "do": "the juvenile steps out: `lift` ([ms into the step, px above its feet line 415]), each a cut, whole pixels, no ease"
+    },
+    {
+     "at": 1800,
+     "ms": 200,
+     "lift": "the same table as the step at 1400",
+     "do": "a second step, the same table"
+    },
+    {
+     "at": 2600,
+     "ms": 180,
+     "do": "the screen transition (16-level Bayer dither) to one mibi up close, in the meet (handoff)"
+    }
+   ],
+   "do": "the hatch, from Open (ready) or from Hatch now (events.growNow at 580). The moving-set hatch (Station M1 section 2.5) is not built on the capsule: its close atlas is 304 x 312 and the capsule's mibi is 146 tall, and nothing scales on the face (open question in the T-20261016-222 report); a juvenile with a moving set hatches by these steps"
+  }
+ },
+ "handoff": {
+  "to": "habitat",
+  "level": "one mibi up close, the Vivarium's closest level (the screen id stays habitat until that screen is next touched)",
+  "state": "meet",
+  "mibi": "the new mibi (the juvenile)",
+  "box": [
+   144,
+   80,
+   304,
+   312
+  ],
+  "focus": "the resident: the new mibi, its feet ring",
+  "back": "Vivarium",
+  "backTo": "the Vivarium's whole, the ring on the new mibi",
+  "transition": {
+   "kind": "dither",
+   "ms": 180,
+   "levels": 16
+  },
+  "note": "The meet is habitat.json state meet (events.meet); this spec fixes only the hand-off: the new mibi at 304×312 in one mibi up close's box (144, 80), the ring on it, and Open a jump, so ← there reads Vivarium (station-layouts.md, The screen map; frame.json navigation.jumps); the Incubator is then empty. Reported, outside this file: frame.json navigation.screens.habitat still reads parent home, back Home"
+ },
+ "focus": {
+  "initial": "room",
+  "roomKey": "room",
+  "roomAt": [
+   496,
+   328,
+   32,
+   32
+  ],
+  "room": "the ring on nothing, in every state: no ring is drawn; the pad does nothing; the check does the bottom line's action (Choose a pod when empty, Hatch now while growing, Open when ready)",
+  "fallback": "none",
+  "graph": {
+   "room": {
+    "up": "none",
+    "down": "none",
+    "left": "none",
+    "right": "none"
+   }
+  },
+  "targets": {},
+  "held": "while events.incubate, events.growNow or events.hatch holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends)",
+  "vectors": [
+   {
+    "from": "room",
+    "key": "up",
+    "to": "room"
+   },
+   {
+    "from": "room",
+    "key": "right",
+    "to": "room"
+   },
+   {
+    "from": "room",
+    "key": "confirm",
+    "intent": "confirm",
+    "target": "room"
+   }
+  ]
+ },
+ "keys": {
+  "pad": "nothing: the screen has one subject",
+  "confirm": "empty: Choose a pod (a jump to Pods' collection, only when the rack holds a pod and a bay is free, else no cap); growing: Hatch now (state.instantGrow), then its price, a dimmed cap when short (above panel.json growNowAbove the Hatch now | Wait panel asks first, as built in B-20261016-4); ready: Open, a dimmed cap when no bay is free (a guard only)",
+  "back": "Home, the ring on Home's Incubator module (home.json, ← on a child of Home)",
+  "room": "a coloured key opens its section, as everywhere (frame.json navigation.roomKeys); during growNow or the hatch it waits until the hold ends (derived.keys during a hold)",
+  "held": "the incubate moment, Hatch now and the hatch: the pad, the check and the back key do nothing; a coloured key waits, then acts"
+ },
+ "bottomLine": {
+  "empty": {
+   "action": "✓ Choose a pod when the rack holds a pod and a place is free; else no ✓ cap",
+   "context": "strings.empty",
+   "notice": "none, but strings.full when no place is free (the Vivarium is full)",
+   "back": "Home"
+  },
+  "growing": {
+   "action": "Hatch now, then the price, icon before figure (state.instantGrowCost); dimmed while the Vivarium is full (the house rule), ✓ plays strings.fullPlate",
+   "context": "strings.bud (strings.crossBud for a cross)",
+   "notice": "strings.full while the Vivarium is full; else the frame's notice",
+   "back": "Home"
+  },
+  "ready": {
+   "action": "✓ Open, no price; dimmed while the Vivarium is full (the house rule), ✓ plays strings.fullPlate",
+   "context": "strings.bud (strings.crossBud for a cross)",
+   "notice": "strings.full (the amber lamp), a guard only; else the frame's notice",
+   "back": "Home"
+  },
+  "hatch": {
+   "action": "strings.skip while the hold runs (✓ Skip: a skippable hold, lvgl-switch.md §2.1, goes on to the hatch's end, the meet); none after it",
+   "context": "strings.painting while the painting is on its way, strings.offline while offline, else none",
+   "back": "Home"
+  }
+ },
+ "colours": {
+  "stampLabel": {
+   "fill": "bone",
+   "edge": "hairline",
+   "k": 0.2,
+   "warm": [
+    1.0,
+    0.93,
+    0.8
+   ],
+   "note": "the stampCase look (art director, masters-pods 001bcd51): the label's plate (fill) and the stamp are multiplied in linear light by k × warm when the label is rasterised, a picture placed 1:1; a 1 px edge on the plate; no fill, light, glow, frame or pane of its own"
+  },
+  "codeRule": "hairline",
+  "code": "ink",
+  "ribbon": {
+   "fill": "bark",
+   "edge": "gold",
+   "text": "bone"
+  },
+  "readyIn": "ink"
+ },
+ "strings": {
+  "title": "Incubator",
+  "skip": "Skip",
+  "grow": "Hatch now",
+  "open": "Open",
+  "choose": "Choose a pod",
+  "back": "Home",
+  "bud": "{a/an} {Species} bud",
+  "readyIn": "ready in about {n} min",
+  "crossBud": "{A} and {B}'s bud",
+  "crossBudFallback": "a {Species} bud, past 208 px",
+  "empty": "ready for a new bud",
+  "full": "The Vivarium is full",
+  "fullPlate": ["The Vivarium is full", "Return a mibi to make room", "or add a room"],
+  "fullPlateNote": "the rooms words C9, C10, C17: the notice and the three plate lines; the third line shows only while fewer than four rooms can be bought (state.mjs fullWords)",
+  "painting": "its painting is on its way",
+  "offline": "waiting for a signal",
+  "hatchRibbon": "{Name}, a young {Species}",
+  "hatchRibbonExamples": [
+   "Fig, a young Loika"
+  ],
+  "by": "copywriter, 2026-10-09 13:27"
+ },
+ "spec": "results/T-20261017-incubator-object/build-spec.md"
+}

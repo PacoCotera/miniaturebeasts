@@ -1,0 +1,9 @@
+Image 1 is the part map: structure, proportion and placement only, never a rendering reference. Image 2 is the species reference: material, finish and face only, never its shape, feet or wings. Image 3 is the colour key, the authority on colour.
+
+Colour: every area keeps the one colour Image 3 gives it, unbroken from edge to edge, shaded only by the light; the pale areas are exactly those of Image 3, no more and no larger. Markings Image 3 does not show stay undrawn.
+
+Style: HiBit pixel art of a soft toy creature on a 280×300 grid: crisp stepped edges, broad clusters, three or four value steps a colour, light from the top left, cool shadow beneath. Each leg has a rounded thigh, a soft joint and a foot as the species notes say; wings are feathers or dusted membranes with curved edges and rounded tips. No stumps, cylinders, posts, blocks, wedges, panels, facets or bevels: every edge curves. Eyes keep their drawn place and size, an iris filling the ring, one bright catch light. Care for the surface the species notes name.
+
+Keep every part where Image 1 puts it, at its size, facing viewer-left. Invent nothing.
+
+Not: dither, noise, black outlines, scene, shadow, text. Flat #f6f3ec ground; subject the same size and place as Image 1.

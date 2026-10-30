@@ -1,0 +1,159 @@
+{
+ "_note": "Create's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "create-walk": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "pod",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 0,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "Two chapters unread"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:down"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 0,
+     "choices": [
+      "colour"
+     ],
+     "grown": false
+    },
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
+    "subject": "Two chapters unread"
+   },
+   {
+    "key": "research",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "room:research"
+     }
+    ],
+    "screen": "pods",
+    "create": null,
+    "ok": "Look at this pod",
+    "price": null,
+    "subject": "Sealed until identified"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "pod",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 0,
+     "choices": [],
+     "grown": false
+    },
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ⧗ 20",
+    "subject": "Two chapters unread"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "step:down"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 0,
+     "choices": [
+      "colour"
+     ],
+     "grown": false
+    },
+    "ok": "Incubate",
+    "price": "⚡ 2 ❀ 4 ◆ 1 ⧗ 21",
+    "subject": "Two chapters unread"
+   }
+  ],
+  "create-grow": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "create",
+      "target": "roll",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "create",
+    "panel": "incubate",
+    "ring": "card.incubate",
+    "ok": "Incubate",
+    "e": 32,
+    "d": 22,
+    "s": 57
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.incubate",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "create",
+    "create": {
+     "f": 0,
+     "choices": [
+      "colour"
+     ],
+     "grown": true
+    },
+    "ok": null,
+    "price": null,
+    "subject": "It goes to the Incubator"
+   },
+   {
+    "held": [
+     "up",
+     "left",
+     "confirm",
+     "back"
+    ],
+    "said": [],
+    "screen": "create"
+   }
+  ]
+ }
+}

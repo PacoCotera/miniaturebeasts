@@ -1,0 +1,358 @@
+{
+ "screen": "library",
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 522], "facts": [{ "region": "sheet", "path": "regions.sheet.plates" }, { "region": "page", "path": "regions.page.discs" }], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD; facts: the props paths of the generated pictures' layout facts (library-sheet.mjs), read as their inner boxes" },
+ "device": "station",
+ "frame": "frame.json",
+ "note": "The Library. Level 1 (`l1`: the screen `library`, state `all`) answers \"how far have I come, and where?\": every species of the catalogue in its state (unmet, met or found) on one grid, the wish's species and the species with looks new this visit marked, and the door to one species. Level 2 (`l2`: the screen `library.species`, states `sheet` and `lit`) answers \"what do I know of this one, and what has it given me?\": the generated sheet, the shelf (the wish, the face, the sittings, the families) and one chapter lit with its page. Level 3 (`l3`: the screen `library.family`, states close, compare and far) answers \"who came from whom?\": the species' lineage as one fixed graph, walked mibi by mibi; far (the whole lineage as one picture) is built, close and compare are drawn by the frame's notBuilt composition until their screens are. Rectangles are [x, y, w, h] in screen pixels; a cell's parts are offsets from the cell's origin. The face reads every rect, colour and picture id here; the props name what, never where.",
+ "screens": { "library": "l1 (Level 1, all species)", "library.species": "l2 (Level 2, one species: sheet and lit)", "library.family": "l3 (Level 3, one species' lineage: far; close and compare drawn as notBuilt until built)" },
+ "l1": {
+  "states": ["all"],
+  "initial": "all",
+  "readout": "frame.top.readout: strings.readout and no mark",
+  "stage": { "rect": [0, 40, 1024, 522], "ground": "libGround", "master": "library-ground-1024x522", "draw": "kit_stage: the flat ground, then the master over it once the host has sent it" },
+  "grid": {
+   "forms": { "16": { "cols": 6, "rows": 3, "cell": 152, "gap": 16, "origin": [16, 57], "upTo": 16, "first": [16, 57, 152, 152], "pitch": [168, 168], "grid": [6, 3] } },
+   "rule": "cell i at x = 16 + 168 * (i mod 6), y = 57 + 168 * floor(i / 6), for S01 to S16 in species-number order; the form's first, pitch and grid are its cols, rows, cell, gap and origin as kit_tiles reads them (listPitch). Level 1 always shows the whole catalogue; another catalogue size is refused and comes back to UI/UX"
+  },
+  "cell": {
+   "order": ["cell", "picture", "rule", "mark", "name", "face", "wish", "glint", "seed", "lip"],
+   "orderNote": "the node order is fixed per cell, in this order, for all 16 cells; a part a state does not show is a node of no size (the dashed rule, hidden, keeps its box with no ops: kit_hairline's hidden form)",
+   "bezel": { "rect": [0, 0, 152, 152], "radius": 6, "edge": null,
+    "found": { "fill": "libPanel", "bevel": "libLine", "band": { "side": 1, "h": 26, "fill": "libHead", "rule": "libWell" } },
+    "met": { "fill": "libQuiet", "bevel": "libLine" },
+    "unmet": { "fill": "libWell", "bevel": "void" } },
+   "picture": { "rect": [6, 6, 140, 114], "slice": "library-cell-{SNN}-{digest}", "when": "found: the specimen grown as found; met: its pencil study; unmet: none", "ground": { "found": "libPanel", "met": "libQuiet" } },
+   "rule": { "at": [10, 126], "len": 132, "dash": [2, 3], "colour": "stone", "when": "met" },
+   "mark": { "rect": [10, 134, 10, 10], "slice": "species-mark-{SNN}-10", "when": "found or met" },
+   "name": { "x": 26, "lineTop": 129, "px": 16, "clip": 74, "align": "left", "colour": { "found": "bone", "met": "mist" }, "when": "found or met; \"\" when unmet" },
+   "face": { "rect": [124, 130, 18, 18], "size": 18, "slice": "face:{mibi}:18", "released": "face:{mibi}:18:faded", "when": "found, when faceOf is not null" },
+   "wish": { "rect": [106, 133, 12, 12], "alone": [130, 133, 12, 12], "slice": "wish-mark-12", "when": "found or met, on the wished species; at `rect` with the face chip, at `alone` without" },
+   "glint": { "centre": [140, 12], "size": [12, 12], "slice": "glint-star-12x12", "ms": 2000, "levels": 16, "when": "found, with at least one look new this visit; kit_glint at kit_glint_level (16 levels over 2 s; solid under reduced motion)" },
+   "seed": { "rect": [64, 64, 24, 24], "slice": "library-seed-24x24", "when": "unmet" },
+   "lip": { "at": [6, 152], "len": 140, "colour": "libPanel", "when": "unmet" },
+   "complete": "a complete species shows a full specimen and no badge",
+   "never": ["progress seeds", "a gilt corner", "a seal", "a clan rule", "a roundel"]
+  },
+  "focus": {
+   "targets": { "cell": { "group": "cell", "shape": { "rect": 6 }, "lift": 0, "box": "the cell rect", "enabled": "met and found cells only: an unmet cell is not a target, so the pad skips it" } },
+   "initial": "Home's species (from Home's Library bezel), the guide's species (from \"Open the guide\") or ui.lib.l1 (the Library room key); a species that is not a target gives the first target in species order; with none met there is no ring and ✓ does nothing",
+   "memory": "ui.lib.l1 = the species of the ring (host UI state)",
+   "graph": { "fallback": "none",
+    "cell": { "left": [{ "nearestIn": "cell", "ahead": true }, "none"],
+     "right": [{ "nearestIn": "cell", "ahead": true }, "none"],
+     "up": [{ "nearestIn": "cell", "ahead": true }, "none"],
+     "down": [{ "nearestIn": "cell", "ahead": true }, "none"] } }
+  },
+  "keys": {
+   "pad": "focus.graph",
+   "confirm": "on a met or found cell: \"Open {species}\", to library.species (Level 2 of that species); ← there returns to Level 1 with the ring on that species",
+   "back": "Home, the ring on Home's Library bezel",
+   "library": "Level 1, the ring on ui.lib.l1"
+  },
+  "line": { "action": "strings.open", "subject": "strings.subjects", "back": "strings.back", "slots": "the frame's bottom line: action 16 to 392, the subject centred on 512 (at most 208 px and 6 words), the back room 68 px; every ✓ is named in the action slot; no digits" },
+  "strings": {
+   "_note": "the copywriter's words",
+   "readout": "All species",
+   "open": "Open {species}",
+   "subjects": { "one": "a new look", "few": "{n} new looks", "many": "new looks", "none": "no species seen yet" },
+   "subjectsNote": "n is the looks new this visit across every species: one is \"a new look\"; two to six spell n (words.mjs); seven or more drop the count; none is empty; with no species met the subject is strings.subjects.none",
+   "back": "Home"
+  }
+ },
+ "l2": {
+  "sheet": {
+   "rect": [16, 40, 664, 522],
+   "formRoom": [176, 44, 344, 414],
+   "plates": {
+    "size": [156, 70], "head": 26, "x": { "L": 16, "R": 524 },
+    "tops": { "2": [50, 380], "3": [50, 215, 380], "4": [50, 160, 270, 380], "5": [50, 132, 214, 296, 378] },
+    "slots": { "4": ["L1","R1","R2","L2"], "5": ["L2","L1","R1","R2","L3"], "6": ["L2","L1","R1","R2","R3","L3"],
+               "7": ["L2","L1","R1","R2","R3","R4","L3"], "8": ["L2","L1","R1","R2","R3","R4","L4","L3"] },
+    "num": { "x": 12, "baseline": 18 }, "name": { "x": 36, "baseline": 18, "room": 94 },
+    "index": { "x": 12, "baselines": [44, 59], "room": 132, "join": " · ", "lines": 2 },
+    "shut": { "x": 12, "baseline": 44, "room": 132 },
+    "anchor": { "L": [156, 35], "R": [-1, 35] },
+    "focus": { "shape": { "rect": 6 } }
+   },
+   "colours": { "rect": [16, 462, 212, 88],
+    "named": { "upTo": 3, "x0": 28, "pitch": 64, "y": 494, "size": [57, 23], "nameBaselines": [528, 543] },
+    "chips": { "from": 4, "x0": 28, "pitch": 37, "perRow": 5, "rows": [492, 520], "size": [32, 22] } },
+   "every": { "rect": [240, 462, 440, 88], "title": [252, 477], "x0": 252, "xMax": 668, "traitGap": 3,
+    "tiers": [ { "id": "L", "cell": 17, "pitch": 20, "rows": [502, 522] },
+               { "id": "S", "cell": 12, "pitch": 15, "rows": [489, 504, 519, 534] } ],
+    "pick": "the first tier whose rows hold every trait group, a group never split across rows" }
+  },
+  "page": {
+   "rect": [700, 50, 308, 500], "head": 26,
+   "num": { "x": 12, "baseline": 18 }, "name": { "x": 36, "baseline": 18, "room": 246 },
+   "trait": { "x": 12, "first": 44, "pitch": 62, "nameLine": 15,
+              "disc": { "size": 17, "pitch": 24, "dy": 9 }, "names": { "dy": 42, "room": 284 } },
+   "bottomPad": 12,
+   "focus": { "shape": { "circle": "box" } },
+   "picture": { "slice": "library-page-{SNN}-{chapterId}-{digest}", "when": "lit only, once made; drawn after the shelf nodes; a node of no size otherwise (sheet, met-only, and until the page lands)" }
+  },
+  "states": ["sheet", "lit"],
+  "initial": "sheet",
+  "readout": "frame.top.readout: the species mark species-mark-{SNN}-10 and the species' name",
+  "stage": "l1.stage: kit_stage, as on Level 1",
+  "order": ["sheet.picture", "sheet.glint.0..7", "shelf.unlocked", "shelf.unlocked.title", "shelf.wish.label", "shelf.wish.{k}.disc, .star, .word (k 0-3)", "shelf.face.label, .picture, .name", "shelf.sit.label", "shelf.sit.{k} (k 0-8)", "shelf.families, .title", "family.{j}.picture, .name (j 0-7)", "page.picture", "the ring"],
+  "orderNote": "every node is drawn in this fixed order in every state; a part the state does not show is a node of no size (in lit every shelf node; on met-only every shelf node, every glint and the page); no node is ever missing",
+  "picture": { "rect": [16, 40, 664, 522], "slice": "library-sheet-{SNN}-{digest}", "lit": "library-sheet-{SNN}-{digest}-lit-{chapterId}", "node": "sheet.picture: the sheet, or its lit variant in lit; until a picture is made the species' last made sheet, else the quiet stand-in library-quiet-{SNN}-{digest} (ground, surfaces, type and mosaic, no form); the unlit sheet stands in for a lit variant not yet made" },
+  "glint": { "slice": "glint-star-12x12", "size": [12, 12], "max": 8, "at": "the generator's glint centres (sheet coordinates) + [16, 40]", "clock": "l1.cell.glint", "when": "the looks new this visit, at most 8, in frame order" },
+  "shelf": {
+   "rect": [700, 50, 308], "radius": 6, "fill": "libPanel", "edge": null, "bevel": null,
+   "band": { "side": 0, "h": 30, "fill": "libHead", "rule": "libWell" },
+   "height": { "rule": "drawn only when U = (w > 0 or face or s > 0); then h = head + gap + (w > 0 ? wish.pitch * w : 0) + (face ? face.size : 0) + (s > 0 ? sittings.row : 0) + between * (n - 1) + pad, n = (w > 0) + face + (s > 0) the rows drawn (w the wish pieces 0-4, face faceOf is not null, a released face counts, s the sittings 0-9), stacked wish, face, sittings; not U: every Unlocked node (the panel, the title, every wish, face and sittings node) is a node of no size in its fixed order and there is no h", "head": 30, "gap": 12, "between": 16, "pad": 12 },
+   "title": { "x": 712, "lineTop": 55, "px": 16, "colour": "fog" },
+   "wish": { "label": { "x": 712, "lineTop": 92 }, "pitch": 24, "max": 4,
+    "disc": { "at": [800, 94], "size": [16, 16], "slice": "look-disc-{SNN}-{trait}-{look}-16", "open": "look-disc-open-16", "when": "the found look's disc when a read carrier has the look, else the open disc" },
+    "star": { "at": [810, 88], "size": [12, 12], "slice": "wish-mark-12" },
+    "word": { "x": 826, "lineTop": 92, "clip": 170, "px": 16, "colour": { "carried": "bone", "not": "fog" } },
+    "when": "piece k at y + 24 k; when this species holds the wish, a node of no size otherwise",
+    "focus": { "rect": [796, 88, 204, 4], "rule": "[796, 88, 204, 24 w + 4]: the rect's h plus wish.pitch for each piece" } },
+   "face": { "label": { "x": 712, "dy": 22 }, "picture": { "x": 800, "size": 64, "slice": "face:{mibi}:64", "released": "face:{mibi}:64:faded" },
+    "name": { "x": 876, "dy": 22, "clip": 120, "px": 16, "colour": "bone" },
+    "y": "y_f = 50 + head + gap + (w > 0 ? wish.pitch * w + between : 0)", "when": "faceOf is not null" },
+   "sittings": { "label": { "x": 712, "dy": 2 }, "x0": 800, "pitch": 20, "dy": 6, "size": [16, 12], "max": 9, "row": 20, "slice": "library-sitting-16x12",
+    "y": "y_s = y_f + (face ? face.size + between : 0)", "when": "s > 0; a record only (the UI/UX ruling: the 16 x 12 at y_s + 6, top and baseline shared with the label)" }
+  },
+  "families": {
+   "x": 700, "w": 308, "gap": 12, "head": 30, "rowGap": 12, "pad": 12, "rowPitch": 88, "rowH": 80, "max": 8,
+   "height": "30 + 12 + 88 (r - 1) + 80 + 12, r = 1 or 2 rows (134 or 222: rowPitch between the rows, rowH the last row's own height, the UI/UX line AD4-3); its top Y_F = U ? 50 + h + gap : 50 (the Unlocked shelf's top when it is not drawn); the faces and names keep their offsets from Y_F",
+   "title": { "x": 712, "dy": 5, "px": 16, "colour": "fog" },
+   "first": [712, 42, 56, 56], "pitch": [76, 88], "grid": [4, 2],
+   "tiles": "kit_tiles over first, pitch and grid; a face's y is the shelf's top y_r plus the tile's",
+   "picture": { "size": 56, "slice": "face:{mibi}:56", "released": "face:{mibi}:56:faded" },
+   "name": { "dy": 60, "dx": 28, "clip": 72, "px": 16, "colour": "bone", "align": "centre" },
+   "when": "once the player has had a mibi of this species: at most 8, home first, then with the Companion, then released; the 8 most recent when there are more"
+  },
+  "focus": {
+   "targets": {
+    "chapter": { "group": "chapter", "shape": { "rect": 6 }, "lift": 0, "box": "the plate's rect", "enabled": "every open plate; a shut plate is not listed" },
+    "wish": { "group": "shelf", "shape": { "rect": 4 }, "lift": 0, "box": "[796, 88, 204, 24 w + 4]", "enabled": "sheet, when this species holds the wish (w > 0: the row is drawn); no target for a row not drawn" },
+    "face": { "group": "shelf", "shape": { "rect": 0 }, "lift": 0, "box": "the 64 portrait [800, y_f, 64, 64]", "enabled": "sheet, when faceOf is not null (the row is drawn); no target for a row not drawn" },
+    "family": { "group": "shelf", "shape": { "rect": 0 }, "lift": 0, "box": "the 56 face", "enabled": "sheet, the family faces shown" },
+    "look": { "group": "look", "shape": { "circle": "box" }, "lift": 0, "box": "the page's disc box + [700, 50]", "enabled": "lit, the lit chapter's found looks only, in page order" }
+   },
+   "sheet": { "fallback": "none",
+    "chapter": { "left": [{ "nearestIn": "chapter", "ahead": true }, "none"],
+     "right": [{ "nearestIn": "chapter", "ahead": true }, { "nearestIn": "shelf", "ahead": true }, "none"],
+     "up": [{ "nearestIn": "chapter", "ahead": true }, "none"],
+     "down": [{ "nearestIn": "chapter", "ahead": true }, "none"] },
+    "shelf": { "left": [{ "nearestIn": "shelf", "ahead": true }, { "nearestIn": "chapter", "ahead": true }, "none"],
+     "right": [{ "nearestIn": "shelf", "ahead": true }, "none"],
+     "up": [{ "nearestIn": "shelf", "ahead": true }, "none"],
+     "down": [{ "nearestIn": "shelf", "ahead": true }, "none"] } },
+   "lit": { "fallback": "none",
+    "chapter": { "left": [{ "nearestIn": "chapter", "ahead": true }, "none"],
+     "right": [{ "nearestIn": "chapter", "ahead": true }, "look.first", "none"],
+     "up": [{ "nearestIn": "chapter", "ahead": true }, "none"],
+     "down": [{ "nearestIn": "chapter", "ahead": true }, "none"] },
+    "look": { "left": [{ "nearestIn": "look", "ahead": true }, { "nearestIn": "chapter", "ahead": true }, "none"],
+     "right": [{ "nearestIn": "look", "ahead": true }, "none"],
+     "up": [{ "nearestIn": "look", "ahead": true }, "none"],
+     "down": [{ "nearestIn": "look", "ahead": true }, "none"] } },
+   "selectors": "look.first: no resolver; the face takes the first listed look target",
+   "initial": "Level 2 always opens in sheet; the ring starts on ui.lib.l2[species] when it is among the targets, else on the first open chapter in frame order; on met-only there is none",
+   "memory": "ui.lib.l2[species]: in sheet written on each move; in lit it holds chapter.{lit} whatever the ring is on",
+   "metOnly": "no targets: focus.targets [], focus.cur \"\"; no ring"
+  },
+  "keys": {
+   "pad": "l2.focus.<state> (screens_key_graph with species_focus)",
+   "confirm": "on a plate in sheet: Show {Chapter}, to lit, the ring stays on the plate; on the lit plate: Clear {Chapter}, back to sheet; on another plate in lit: Show {Chapter}, the page swaps; on a look disc: nothing; on the wish: no ✓ until pinning has a screen (shut in place, nav.mjs); on the face: Look at {name} (the jump to that mibi up close) unless released; on a family face: See the family (library.family, close on that mibi); met-only: nothing",
+   "back": "in lit: Clear, back to sheet with the ring on the lit chapter's plate; in sheet: Library, to Level 1 with the ring on this species",
+   "lit": "✓ on a plate asks the logic process for the lit variant and the page; a ✓ before they land names the verb at once and shows each picture as it lands; a newer request supersedes"
+  },
+  "line": { "action": "strings.l2.show / clear / wish / face / family", "subject": "strings.l2.subjects", "back": "strings.l2.back (Library; Clear in lit)", "slots": "the frame's bottom line: every ✓ is named in the action slot; the subject at most 208 px and 6 words, never ending in an ellipsis; no digits (counts use words.mjs)" },
+  "strings": {
+   "_note": "the copywriter's words",
+   "back": "Library", "clear": "Clear",
+   "show": "Show {Chapter}", "clearChapter": "Clear {Chapter}", "wish": "Change the wish", "face": "Look at {name}", "family": "See the family",
+   "chapter": { "more": "{Chapter}, more to find", "all": "{Chapter}, all found" },
+   "faceReleased": { "named": "{Name}, in the wild", "nameless": "in the wild" },
+   "familyAt": { "home": "{Name} at home", "trip": "{Name} on a trip", "wild": "{Name}, in the wild" },
+   "familyNameless": { "home": "at home", "trip": "on a trip", "wild": "in the wild" },
+   "namedRule": "a named line (faceReleased.named, familyAt) that does not fit the subject (208 px, 6 words) gives its nameless line",
+   "metOnly": "seen, no pod identified yet",
+   "carried": {
+    "two": ["carried by {A} and {B}", "{A} and {B} carry it", "{A} and more carry it", "{A} and more", "carried by more than one"],
+    "many": ["carried by {A} and more", "{A} and more carry it", "{A} and more", "carried by more than one"],
+    "one": ["carried by {A}", "carried by one of yours"],
+    "none": "none of yours carries it yet",
+    "rule": "the first step that is at most 208 px and 6 words (ui/specs/measure.mjs over face/dist/metrics.json)"
+   },
+   "shelf": { "unlocked": "Unlocked", "wish": "Your wish", "face": "Face", "sittings": "Sittings", "families": "Families" }
+  }
+ },
+ "l3": {
+  "states": ["close", "compare", "far"],
+  "initial": "close",
+  "built": "far, close and compare: every state is drawn with words",
+  "readout": "frame.top.readout: the species mark species-mark-{SNN}-10 and strings.readout",
+  "stage": "l1.stage: kit_stage, as on Levels 1 and 2",
+  "parent": "library.species of the shown species, whichever way Level 3 was entered (stack navigation: the Vivarium's way in too)",
+  "model": {
+   "home": "station/src/lineage.mjs (the logic process; the layout never reflows): generation, the longest path to a founder (a shed step one), sets the rows; crossDepth, the crosses on it (a shed step none), is sitting.mjs's lineDepth",
+   "parents": "the parents the save records (m.parents), in that order and never labelled; a shed-pod child's single parent is its genome's origin (origin.kind \"shed\", parentIds [id, id]); no parent is ever guessed and no kinship number appears",
+   "rows": "row 0 holds the founders' pods: one pod node per founder ({ kind: \"pod\", id: \"pod.{founderId}\", row 0, the founder's u }), never shared, never a target, one straight link down to its founder; a mibi's row is its generation + 1 (a founder in row 1), a child one row below its deeper parent with both links; a shed-pod child one link to its single parent, no pod node; the bud a pod in the generation it will take (one row below its deeper parent, a link to each; a growing founder in row 1 under its own pod, pod.bud, which it keeps once hatched)",
+   "blocks": "families joined by a cross form one block, placed by its earliest founder; blocks go in founding order, block.gap u from a block's rightmost node (over all its rows) to the next block's first",
+   "u": "half-sibling units: siblings 2 apart, never closer in a row; within a block the nodes are placed in birth order, each to the right of every node already in its row (a founder of every node already in its block), so a birth never moves a node already placed in its block; a block that widens moves the blocks after it by one rigid translation, the blocks before it never",
+   "node": "{ id (node.{mibiId} | node.bud | pod.{founderId} | pod.bud), kind (mibi | pod | bud), row, u, released }, sent in regions.lineage.nodes, by row then u",
+   "links": "{ a: [u, row], b: [u, row], faded } in grid units, orthogonal, sent in regions.lineage.links: a pod to its founder, or one parent to one child on its column, one vertical; otherwise each parent drops to a bus half a row above the children, the bus spans the family and each child drops from it; a released parent's links are faded (a released founder's pod link too), the bus and the children's drops when every parent is"
+  },
+  "block": { "gap": 4 },
+  "far": {
+   "rect": [16, 44, 992, 510],
+   "slice": "lineage-far-{SNN}-{digest}",
+   "dot": 12,
+   "spacing": { "share": 0.85, "min": 16, "max": 48, "rule": "sx = clamp(floor(share · 992 / span), min, max) px per sibling step (span: the lineage's width in sibling steps, its u range / 2); below min the generator refuses with an error naming the species and the span: FAR would need a camera, which comes back to UI/UX" },
+   "fit": { "margin": 6, "syMin": 30, "rule": "sy = min(max(round(1.5 sx), syMin), floor((510 - dot - 2 margin) / (R - 1))) for R rows (R = 1: max(round(1.5 sx), syMin)); when the rows' own fit floor((510 - dot - 2 margin) / (R - 1)) is below syMin (past 17 rows) the generator refuses, naming the species and the rows; the tree centred: a dot box's left = floor((992 - (round(u range · sx / 2) + dot)) / 2) + round((u - u0) · sx / 2), its top = floor((510 - ((R - 1) sy + dot)) / 2) + row · sy" },
+   "mibi": "a 12 px disc in the mibi's read, shown body colour (traitState(...).shows of its Colour trait, the catalogue's pigments; two halves for a two-tone, the first on the left); never from hidden copies",
+   "neutral": "frostS",
+   "neutralRule": "when Coat is unread or the colour is locked: an open 12 x 12 ring, 1 px, aliased, opaque, no fill (the art director)",
+   "pod": { "size": [8, 10], "at": [2, 1], "colour": "mist", "bud": "mint", "rule": "a 1 px outline oval at `at` in the 12 x 12 dot box, no fill (the ground inside)" },
+   "pixels": "in a W x H box, (i, j) is inside when ((2i + 1 - W) / W)^2 + ((2j + 1 - H) / H)^2 <= 1, and ink of an outline when inside with at least one 4-neighbour outside (the art director)",
+   "link": { "colour": "mist", "faded": "stone", "px": 1 },
+   "faded": "a released mibi's dot (and neutral ring) as its face: faces.faded",
+   "ground": "composited over the ground master's own pixels for this rect (l1.stage.master at l1.stage.rect), flat libGround until it is placed",
+   "facts": "the picture returns, in its own coordinates, each node's dot box (12 x 12); the props carry the targets' boxes (regions.far.boxes) and the face adds this rect's origin",
+   "regions": "the whole lineage [16,44,992,510]: v_slot of the picture (far.picture); the ring: the focused dot's 12 x 12 box from the props + [16,44], the house ring with l3.focus.targets.node's shape (focus.*); no panel"
+  },
+  "mini": {
+   "rect": [788, 448, 208, 96],
+   "slice": "lineage-mini-{SNN}-{digest}",
+   "dot": 4,
+   "dotMin": 2,
+   "dotRule": "d = min(dot, max(dotMin, p - 1)), p = floor(min(sx, sy) · s) (FAR's spacing: sx 16-21 gives 2 px, 22-26 gives 3, 27 and more 4)",
+   "rule": "the FAR picture reduced by one uniform s = min(208 / 992, 96 / 510), centred (ox = round((208 - 992 s) / 2), oy = round((96 - 510 s) / 2)), on a clear ground: a mibi a d x d square (dotRule) in its FAR dot's colour by the pixel rule at that size (the neutral an open ring at d 3, a filled 2 x 2 frostS at d 2) at round(its FAR dot's centre · s + [ox, oy]) - floor(d / 2); a pod one pixel in mist, the bud's in mint; links 1 px, as FAR's",
+   "facts": "the picture returns its dot boxes and, for the host to place CLOSE's view box, scale [kx, ky] (mini px per CLOSE px: s · (sx / 2) / close.grid.du and s · sy / close.grid.drow) and origin [mx, my] (the mini position of the grid point u 0, row 0): a CLOSE point (X, Y) is at (mx + (X - grid.x0) kx, my + (Y - grid.y0) ky)",
+   "when": "made for CLOSE's overview inset (l3.close.inset), only when the tree exceeds the view; FAR has none"
+  },
+  "close": {
+   "view": [16, 44, 744, 510],
+   "comfort": [165, 146, 446, 306],
+   "grid": { "x0": 16, "y0": 44, "du": 48, "drow": 120 },
+   "boxes": { "mibi": [56, 56], "pod": [24, 32], "bud": [24, 32] },
+   "rule": "a node's centre at x = x0 + u · du - cam.x, y = y0 + row · drow - cam.y (siblings 96 apart; founders at y 164 with no camera); the tree exceeds the view when its extent (boxes, names at max(box, names.clip) wide, mibi lines to y+53, bud lines to y+42) is wider or taller than the view",
+   "camera": "a tree whose extent (boxes, names at max(box, names.clip) wide, mibi lines to y+53, bud lines to y+42) fits 744 x 510: cam.x = floor((L + R - 776) / 2), cam.y = floor((T + B - 598) / 2) (L R T B in grid px at cam 0) on a way in and on Zoom in, no pan on a ring move; otherwise the comfort-zone rule: on a way in the entry node centred in the comfort zone; on ✓ Zoom in the node where its FAR dot was on screen, clamped so its box lies inside the comfort zone; when a ring move would put the node's box outside the comfort zone, the camera moves the least whole-pixel offset that brings it back (the host decides it on the face's focus and plays the pan); remembered in ui.lib.l3[species].cam as an offset from its node (the camera less the node's grid point)",
+   "pan": { "kind": "pan", "target": "tree", "steps": [0, 67, 133], "frac": [50, 85, 100], "rule": "the host's event { kind: pan, target: tree, from: [x, y], to: [x, y], steps, frac }: the face draws the slots and the link tiles at from + trunc((to - from) frac / 100), step 0 from the pan's first frame and step i no sooner than steps[i] - steps[i - 1] ms after the frame that showed step i - 1, and at the props' camera (to) once it ends; reduced motion: one step at the full offset (no event, the props' camera)", "budget": "a step is a camera cut: at most 392,080 px redrawn (the union of the step's dirty rects inside the tree view grown by 5 px on each side, [11, 39, 754, 520]: the names' labels invalidate 5 px out), and on the same frame rects inside the overview inset [788, 448, 208, 96] (its view box moves); the frame that carries the ring's move (step 0, or reduced motion's one cut) also redraws the move's own props, rects inside the panel [776, 44, 232, 512] (its rows cut to the new mibi) and the line [0, 562, 1024, 38] (✓ names it), printed, not budgeted here (a props frame: lvgl-switch.md, key to props applied); steps 1 and 2 redraw nothing outside the view and the inset; each step no sooner than its own gap (steps[i] - steps[i - 1]: 67, then 66 ms) after the frame that showed the one before; every other frame at most 153,600 px; LVGL's rectangle sum is printed, not budgeted" },
+   "slots": 32,
+   "slot": { "rule": "32 fixed slots, assigned by the host (regions.tree.slots: the nodes under the camera first, then those only under a pan's earlier steps, each by row then u) to the nodes wholly inside the view, a mibi and the bud with their name lines (to lineTop + the role's pitch), under the camera (or under any of a pan's step cameras); a node that would cross the view's edge is not drawn (its slot has no size) and its links end in stubs; unused slots have no size", "mibi": "v_slot of the mibi's face, faces id at 56 (:faded when released), its box centred on (x, y)", "pod": "v_slot of the species' rack pod (the one pod renderer at rack size, request kind rackpod, home.json regions.rackPod), box (x - 12, y - 16, 24, 32); the bud the same picture", "ids": "tree.slot.{k}.face, tree.slot.{k}.name" },
+   "names": { "role": "label", "released": "label.state", "mibi": 33, "bud": 22, "gap": 2, "clip": 88, "rule": "centred at x; lineTop y + names.mibi (a mibi: its name) or y + names.bud (the bud: strings.growing); the link starts names.gap below the name line's pitch (y + names.mibi + type.pitch.16 + names.gap); pods have none; cut to names.clip px; released in names.released (the name only, never \"in the wild\")" },
+   "links": { "tiles": [2, 2], "tile": [372, 255], "width": 2, "colour": "mist", "faded": "stone", "junction": { "size": 4, "colour": "bone" }, "bridge": 3, "stub": { "len": 16, "on": 2, "off": 2 }, "ids": "tree.links.0..3, the 2 x 2 tiles over the view in reading order (an empty tile keeps its box with ops [])", "rule": "screen-specific (library_family.c): orthogonal, palette-exact, composed with h, v and dash ops; the props' segments (regions.tree.links: a, b in grid units, the row in half rows h = 2 row) at x = x0 + u du - cam.x, y = y0 + h drow / 2 - cam.y, each `width` px (columns x - 1 and x, rows y - 1 and y); a link stops at a node's box (a drawn mibi's: y + names.mibi + type.pitch.16 + names.gap (y+55); the bud's: y + names.bud + type.pitch.16 + names.gap (y+44)); a faded parent's links in `faded`; a junction dot (size x size, centred) where a stem meets its bus; a `bridge` px gap in a stem on each side of a bus that crosses it (the ground shows); a link leaving the view, or ending at a node that is not drawn, ends in a stub: its last `stub.len` px dotted (on, off) in its link's colour, a dot at the end, no arrow and no count" },
+   "path": { "rule": "tree.path: the compare path (l3.compare.path) as one composed node over the link tiles, its box the path's bounds inside the view; no size in close, in far it is not drawn" },
+   "panel": { "rect": [776, 44, 232, 512], "rectFits": [776, 44, 232, 402], "fitsRule": "close with the overview inset at no size (the tree fits the view): the panel is the height of its rows, floor 446 (the stamp slot's floor 434 + 12); compare and close with the inset keep rect (art director AD7-5, preferred option; UI/UX owns the choice)", "radius": 6, "fill": "libPanel", "bevel": "libLine", "rule": "kit_bezel, edge none; it holds the focused mibi's rows (panel.rows), in compare the held mibi above them (l3.compare), and in close the overview inset under row 4",
+    "rows": {
+    "x": 788,
+    "labels": { "role": "eyebrow" },
+    "portrait": { "rect": [788, 56, 64, 64], "size": 64 },
+    "portraitSlot": { "edge": "libLine", "pod": [24, 32], "id": "panel.portrait.slot", "rule": "the bud's portrait: the stamp slot's look (kit_panel(fill none, edge), the node panel.portrait.slot) round the portrait rect with the bud's rack pod (the tree's picture, 24 x 32, 1:1) centred in it as panel.portrait; no size for a mibi, whose face carries its own frame" },
+    "name": { "x": 864, "lineTop": 58, "clip": 101, "role": "label" },
+    "mark": { "rect": [981, 60, 15, 15], "slice": "species-mark-{SNN}-15" },
+    "age": { "x": 864, "lineTop": [80, 100], "role": "quiet" },
+    "now": { "lineTop": 132, "x": 864, "role": "body" },
+    "parents": { "lineTop": 160, "face": [864, 158, 24, 24], "pod": [864, 154, 24, 32], "pitch": 28, "size": 24, "name": { "x": 896, "lineTop": 160, "clip": 100, "role": "label" }, "lineRoom": 57 },
+    "stage": { "lineTop": 222, "value": { "x": 864, "role": "body" } },
+    "yours": { "lineTop": 250, "value": { "x": 864, "role": "body" }, "since": { "x": 864, "lineTop": 270, "role": "quiet" } },
+    "stamp": { "lineTop": 302, "slot": [840, 330, 104, 104], "edge": "libLine" },
+    "rule": "x 788 unless stated (the age under the name, at name.x); labels (strings.panel) in labels.role, fog on the panel. Row 1: the portrait v_slot(face:{id}:64, :faded when released; the bud none), the name at name.x cut to name.clip, the species mark v_slot(mark.slice), the age's first line (a living mibi's age in turns, ageTurns: \"{n} turns old\", \"1 turn old\", \"new this turn\", at every stage; the bud strings.panel.growing; a released mibi its stage word, strings.stages), the second line no size for every mibi. Row 2: strings.panel.now, the place at now.x (strings.panel.places). Row 3: strings.panel.parents; parent k (0-1) its face v_slot(face:{id}:24) at parents.face + [0, pitch k], its name at name.x, lineTop name.lineTop + pitch k, cut to name.clip; a founder its pod (the rack pod, the slot's picture) at parents.pod and strings.panel.pod (strings.panel.podUnknown when its place is unknown); a shed-pod child one face and strings.panel.shedLine, only the name cut to lineRoom. Row 4 (a living mibi only; a bud or a released mibi draws no size here, so the panel never reflows as the ring moves): the stage, its label (strings.stages, cased: Young, Adult, Elder) at x in labels.role and its value at stage.value.x (an elder or an adult turnsFor(n): \"for 7 turns\", \"for 1 turn\", \"from this turn\"; a young mibi strings.panel.stageYoung with turnsUntil(n), or strings.panel.stageCare when bonded). Row 5 (the same): strings.panel.yours at x in labels.role and its value at yours.value.x (yoursLine: \"13 days\", \"a day\", \"since today\", \"23 months\", \"2 years\"), then at yours.since strings.panel.since with the date (an older save: strings.panel.orLonger, or strings.panel.orBefore under \"since today\", and no date). Row 6: strings.panel.stamp; the slot's outline kit_panel(fill none, stamp.edge); the stamp v_slot of its picture (stamplook's stamp at its stampSizing size, the read chapters) centred in the slot (kit_stamp's look does not apply: its node ids are one stamp's). The panel cuts to the new mibi as the ring moves, no fade",
+    "ids": "panel.portrait, panel.name, panel.mark, panel.age.0, panel.age.1, panel.now.label, panel.now.value, panel.par.label, panel.par.{k}.face, panel.par.{k}.name, panel.stage.label, panel.stage.value, panel.yours.label, panel.yours.value, panel.yours.since, panel.stamp.label, panel.stamp.slot, panel.stamp.picture, panel.light.{c} and panel.light.{c}.in (c 0-8)"
+    } },
+   "inset": { "rect": [788, 448, 208, 96], "edge": "libLine", "box": "focus", "rule": "only in close and only when the tree exceeds the view (no size otherwise): v_slot of the mini (panel.ov.picture), its outline kit_panel(fill none, edge) (panel.ov.edge), the view box kit_panel(fill none, box) at the host's rect (regions.panel.ov.box, in the inset's coordinates) plus the inset's origin (panel.ov.box)" }
+  },
+  "compare": {
+   "rule": "CLOSE's tree and camera with one mibi held: the held mibi above the divider, the fact band, the focused mibi's rows moved down by shift (its stage and Yours rows no size, its stamp at stamp); the overview inset has no size; the hold mark on the held mibi's slot; with the ring on the held mibi (or the bud, never compared) the fact band, the block light and the path have no size",
+   "held": {
+    "label": { "lineTop": 54 },
+    "name": { "lineTop": 76, "clip": 74, "role": "label" },
+    "mark": { "size": 10, "gap": 4, "inline": "held.run", "slice": "species-mark-{SNN}-10", "rule": "at the drawn name's end + gap, centred on the name's cap (the name and the mark are one v_inline group: T8 holds the gap to 4)" },
+    "portrait": { "rect": [788, 100, 56, 56], "size": 56, "rule": "the tree slot's face size (face:{id}:56, :faded when released): the held mibi's face is smaller than the focused 64 (AD7-4)" },
+    "stampLabel": { "size": "none", "rule": "the held block carries no \"Stamp\" word (\"Holding {Name}\" names whose stamp it is): the node stays at no size (AD7-4)" },
+    "stamp": { "slot": [892, 56, 104, 104] },
+    "ids": "held.label, held.name, held.mark, held.portrait, held.stampLabel, held.stamp.slot, held.stamp.picture, held.light.{c}, held.light.{c}.in"
+   },
+   "divider": { "y": [176, 177], "x": 776, "len": 232, "colours": ["libWell", "libLine"], "rule": "kit_hairline x 2 (UI/UX: libWell over libLine on libPanel, a groove)", "ids": "panel.div.0, panel.div.1" },
+   "fact": { "x": 788, "lineTop": 192, "width": 208, "lines": 2, "align": "centre", "wrap": "and starts the second line", "role": "quiet", "rule": "the band [788, 192, 208, 40], quiet 16 px, cap 196: v_wrap at width, at most lines, each line centred in the band; no line ends on \"and\" (the break goes before it); two lines at lineTop and lineTop + the role's pitch, one line at lineTop + half the pitch (centred in the band, 18 px under the rule and 18 above the portrait below)", "ids": "panel.fact.0, panel.fact.1" },
+   "stamp": { "lineTop": 412, "slot": [840, 440, 104, 104], "rule": "in compare the focused mibi's stage and Yours rows have no size and its stamp stays where it was before them (the label at lineTop, the slot at slot, both inside the panel's 556 less 12): the close position plus the shift would end past the panel" },
+   "shift": 190,
+   "light": { "colour": "mint", "width": 2, "rule": "on each chapter block read on both with one compared trait or more and every compared trait the same: a 2 px outline on the block's rect in both stamps (the props' rects, in stamp coordinates), kit_panel(fill none, edge) twice, the second inset 1 px (<id> and <id>.in); no size when unlit" },
+   "path": { "colour": "mint", "width": 2, "rule": "the props' segments (regions.tree.path, as regions.tree.links) drawn as the links are (stopping at node boxes, cut at the view, the bridges kept), solid, no stubs, no glow, one composed node tree.path at its bounds" },
+   "hold": { "rule": "kit_focusRingHold(tree.hold) on the held mibi's slot box, drawn before the ring; no size when the held mibi has no drawn slot or nothing is held" },
+   "compute": "lineage.mjs compareLooks and pathBetween, in the logic process, once a props build: genome.mjs heritableTraits, then traitState(...).shows trait by trait on the traits read on both (heritable only: never a locked locus or one the mibi changes itself, so never Glow, Basking or Phase), the whole look; the block light from the same; the path the shortest recorded line; never the stamps' patterns; a bud is never compared"
+  },
+  "zoom": "FAR ↔ CLOSE is a state change on one screen: the host plays the 180 ms stage dither (a cut under reduced motion), as Create's panel does; every picture is 1:1 and nothing scales",
+  "focus": {
+   "targets": {
+    "node": { "group": "node", "shape": { "circle": "box" }, "lift": 0, "box": "far: the node's dot box + l3.far.rect's origin; close: its slot's box (targets.mibi, targets.bud)", "enabled": "every mibi (node.{mibiId}) and the bud (node.bud); a pod is never a target; the same ids in both zooms, so the ring carries across a zoom" },
+    "mibi": { "group": "node", "shape": { "rect": 2 }, "lift": 0, "box": "close: the mibi's 56 x 56 slot box" },
+    "bud": { "group": "node", "shape": "oval", "lift": 0, "box": "close: the bud's 24 x 32 slot box" }
+   },
+   "graph": { "fallback": "none",
+    "node": { "up": ["node.parent", "none"], "down": ["node.child", "none"], "left": ["node.left", "none"], "right": ["node.right", "none"] } },
+   "selectors": {
+    "node.parent": "the first recorded parent (a founder's pod is not a target: none)",
+    "node.left": "straight after a ▲, the other parent of the child just left (the parents may sit on different rows); otherwise the previous target on the row (within the family block in CLOSE, across blocks in FAR)",
+    "node.right": "as node.left, the next target on the row",
+    "node.child": "the child just come up from, when the last move was ▲; otherwise the first child",
+    "host": "the host answers them in focus.resolve for the current target (lineage.mjs resolveOf); a move is a ▲ when it lands on the node.parent the host answered"
+   },
+   "initial": "the ring on ui.lib.l3[species].node when it is a target, else the first target",
+   "memory": "ui.lib.l3[species] = { node, zoom, cam, held }: the ring's node in both zooms, the zoom (far, close, compare), CLOSE's camera (compare's too), the held mibi in compare; a way in sets close on its mibi"
+  },
+  "keys": {
+   "pad": "l3.focus.graph (screens_key_graph with family_focus and the host's selectors)",
+   "confirm": "far: \"Zoom in\", to close on the ring's node (the camera above); close: strings.compareFrom, holds the ring's mibi (compare); compare, the ring elsewhere: strings.compareFrom, moves the hold; compare, the ring on the held mibi: strings.lookAt, the jump to that mibi up close (habitat), none when it is released (the press does nothing, the hold stays); the bud never has one; a released mibi may be held",
+   "back": "far: to Level 2 of the species, back word {Species}; close: to far when the tree exceeds the view (back word strings.backFar), else to Level 2 ({Species}); compare: stop comparing, to close (strings.done)",
+   "waysIn": "Level 2's family face, ✓ See the family: close on that mibi; the Vivarium's up-close card (habitat.json focus.targets.family), ✓ See the family: close on the shown mibi"
+  },
+  "line": { "action": "strings.zoomIn (far); strings.compareFrom (close; compare, the ring elsewhere); strings.lookAt (compare, the ring on the held mibi, not released)", "subject": "far: strings.farSubject, or strings.nameless.{stage} when the name is wider than strings.nameRoom px; close: empty; compare, the ring elsewhere: strings.comparedWith, or strings.comparedNameless when the held name is wider than strings.comparedRoom px; compare, on the held mibi: strings.holding, or strings.holdingNameless past strings.holdingRoom px; the bud: empty in far and close (the notice zone carries it), in compare strings.holding with the held mibi's name (strings.holdingNameless past strings.holdingRoom px); at most 208 px and 6 words, never ending in an ellipsis", "back": "{Species}, or strings.backFar from close when the tree exceeds the view; strings.done in compare" },
+  "strings": {
+   "_note": "the copywriter's words",
+   "readout": "{Species} family",
+   "zoomIn": "Zoom in",
+   "farSubject": "{Name}, {stage}",
+   "stages": "home.json strings.stages (young, adult, elder)",
+   "nameRoom": 153,
+   "nameless": { "juvenile": "A young mibi", "adult": "An adult mibi", "elder": "An elder mibi" },
+   "backFar": "Family",
+   "growing": "Growing",
+   "compareFrom": "Compare from {name}",
+   "lookAt": "Look at {name}",
+   "done": "Done",
+   "comparedWith": "Compared with {Held}",
+   "comparedNameless": "Compared with a mibi",
+   "comparedRoom": 89,
+   "holding": "Holding {Name}",
+   "holdingNameless": "Holding a mibi",
+   "holdingRoom": 145,
+   "panel": { "now": "Now", "parents": "Parents", "stamp": "Stamp", "holding": "Holding", "growing": "Growing", "yours": "Yours", "stageYoung": "adult {until}", "stageCare": "grows with care", "since": "since {date}", "sinceToday": "since today", "orLonger": "or longer", "orBefore": "or before", "places": { "home": "At home", "trip": "On a trip", "wild": "In the wild", "bud": "In the Incubator" }, "pod": "{place} pod", "podPlaces": { "meadow": "meadow", "pond": "pond", "rock": "rock", "wood": "wood", "cave": "cave" }, "podUnknown": "A pod", "shedLine": "{Parent}'s line", "budName": "{Species} bud" },
+   "fact": { "same": "Same {traits}", "and": "{a} and {b}", "more": "{a} and more", "none": "No read look in common", "unread": "Nothing read on both yet", "rule": "the compared traits' names from the catalogue as the frames spell them (capitalised), in frame order, joined with commas and \"and\"; four or more: the first three, then \"and more\"; the first step that fits fact.lines lines of fact.width, else fewer traits before \"and more\"" },
+   "fragments": [{ "path": "panel.podPlaces.*", "reason": "a place kind inside strings.panel.pod, cased by capLine where the line is set" }],
+   "composed": [{ "path": "panel.pod", "reason": "a place first, cased by capLine where the line is set" }]
+  }
+ },
+ "colours": {
+  "stampLabel": { "k": 0.16, "warm": [1.0, 0.93, 0.80], "note": "the stampCase look (masters-pods 001bcd51) on libPanel, no plate, no edge: the slot's libLine outline stays the label's frame; the panel stamps (rows, held, the bud's) are requested with this k (ids gain :k16); the block light is drawn after the stamp at full mint, never multiplied; art director 2026-10-25 (AD7-1)" }
+ },
+ "regions": {
+  "panel": {
+   "head": { "labels": "panel.portrait", "ellipsis": true, "note": "the focused mibi's name and age: 8 from the portrait they caption (T5), a long name may end in an ellipsis (T11)" },
+   "par": {
+    "0": { "labels": "panel.par.0.face", "ellipsis": true, "note": "the Parents label and the first parent's name: the name captions its face or pod (T5)" },
+    "1": { "labels": "panel.par.1.face", "ellipsis": true, "note": "the second parent's name" }
+   },
+   "held": { "labels": "held.portrait", "ellipsis": true, "note": "the held mibi's name, with its mark one v_inline run; a long name may end in an ellipsis (T11)" }
+  }
+ },
+ "seen": "newLooksOf (specimen-props.mjs) is the one definition of a new look for Home, Level 1 and the Level 2 glints. Entering Level 2 of species X (from Level 1, from Level 3 by ←, or by \"Open the guide\") sets the unsaved note ui.lib.pending[X] to X's guide looks in chapters not shut, as of that entry (a later entry to X replaces it; a met-only entry sets an empty note); leaving the Library (the first screen that is neither library nor library.*) adds only the species in the note to st.libSeen and saves. Entering the Library notes nothing; nothing is recorded on entry or inside the Library",
+ "faces": {
+  "id": "face:{mibi}:{size}, with :faded when that mibi is released",
+  "sizes": [18, 24, 40, 56, 64],
+  "ground": "libGround",
+  "frame": "libLine",
+  "ticks": { "sizes": [40, 56, 64], "arm": 3, "colour": "fog" },
+  "faded": { "keep": 0.38, "ground": "libGround" },
+  "rule": "each size is rendered straight from the mibi's own picture (the layered stand's variant for its drawn looks) through the species' face window onto libGround; a 1 px libLine frame, the fog corner ticks at 40, 56 and 64 only; :faded is round(0.38 p + 0.62 libGround) per sRGB channel, frame included; opaque. Never one size faded and scaled to another. A species with no layered stand gets a labelled stand-in",
+  "windows": { "_note": "the art director's face windows, [x, y, side] in the 304 x 312 art's pixels, a square, transparent where it passes the art's edge (the layered stands only)", "S01": { "adult": [16, 6, 184], "juvenile": [124, 101, 118] } }
+ }
+}

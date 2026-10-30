@@ -1,0 +1,278 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 4,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "plain",
+   "attempts": [
+    {
+     "callId": "6fd47e02-34bf-4edf-ab15-71e947464534",
+     "step": 1,
+     "status": "ok",
+     "seconds": 9.2,
+     "checks": {
+      "silhouetteIoU": 0.961,
+      "silhouetteIoUInPlace": 0.96,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "muzzle": {
+        "span": 0.992,
+        "coverage": 1.0
+       },
+       "eye": {
+        "span": 1.0,
+        "coverage": 0.914
+       },
+       "crown": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "leg-0": {
+        "span": 0.827,
+        "coverage": 1.0
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.581,
+        "painted": 0.652,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.364,
+        "painted": 0.44,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.24,
+        "painted": 0.276,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.392,
+        "painted": 0.391,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.524,
+        "painted": 0.556,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.599,
+        "median": "#485256",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.846,
+        "median": "#475256",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@crown": {
+        "agreement": 0.903,
+        "median": "#475254",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.471,
+        "median": "#5f6a6d",
+        "nearest": "#465459",
+        "ok": false
+       },
+       "belly@region-0": {
+        "agreement": 0.736,
+        "median": "#c0a882",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@muzzle": {
+        "agreement": 0.951,
+        "median": "#decfa6",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the second slot on the leg-0 (painted #5f6a6d, the colour of body)"
+      ],
+      "outside": 0.0,
+      "missing": 0.002,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.711,
+      "passed": false,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "BCLHarbsFeTV-8YP4siOmQk"
+    },
+    {
+     "callId": "3af88242-df28-4141-8d55-aefecf75b63d",
+     "step": 1,
+     "status": "ok",
+     "seconds": 8.5,
+     "checks": {
+      "silhouetteIoU": 0.949,
+      "silhouetteIoUInPlace": 0.935,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.997
+       },
+       "muzzle": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "eye": {
+        "span": 1.0,
+        "coverage": 0.812
+       },
+       "crown": {
+        "span": 0.995,
+        "coverage": 0.992
+       },
+       "leg-0": {
+        "span": 0.823,
+        "coverage": 1.0
+       },
+       "leg-1": {
+        "span": 0.991,
+        "coverage": 0.999
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.581,
+        "painted": 0.664,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.364,
+        "painted": 0.447,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.24,
+        "painted": 0.282,
+        "ok": true
+       },
+       "crown": {
+        "drawn": 0.392,
+        "painted": 0.398,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.524,
+        "painted": 0.557,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.634,
+        "median": "#465457",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.843,
+        "median": "#465457",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@crown": {
+        "agreement": 0.024,
+        "median": "#e0d1aa",
+        "nearest": "#dfd2ae",
+        "ok": false
+       },
+       "second@leg-0": {
+        "agreement": 0.169,
+        "median": "#475457",
+        "nearest": "#465459",
+        "ok": false
+       },
+       "belly@region-0": {
+        "agreement": 0.574,
+        "median": "#dfcfa8",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@muzzle": {
+        "agreement": 0.902,
+        "median": "#e2d0a9",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the body slot on the crown (painted #e0d1aa, the colour of belly/second), the second slot on the leg-0 (painted #475457, the colour of body)"
+      ],
+      "outside": 0.0,
+      "missing": 0.006,
+      "bandTolerancePx": 20,
+      "slotAgreement": 0.551,
+      "passed": false,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "OiLHapbBBKO-39IPoqb1gAo"
+    }
+   ],
+   "steps": []
+  }
+ },
+ "species": "S01",
+ "name": "Loika",
+ "level": "species",
+ "genomeDigest": "S01-45ff1025",
+ "genomeSha256": "f7a2d788e5827862dad88cc4cf68708f900a69bf626cddd3ed46a8944df26686",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 9,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, patches; plantigrade, fused head. It is the type of its kind, a round frog-hare, Pip: a leaf crest and a snout; charcoal. Coat: markings pale patches. Face: crown leaf crest; eye rings wide pale rings. Proportions: a big head, the head carried high, a tall crest, short legs, stout legs, narrow feet.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T04:54:26Z",
+ "outputs": {
+  "station-portrait-600x620.png": "f3b2c624a5de596b2834e3270cd220050c2b8ccf136e45cc22780aa7da2bb627",
+  "station-portrait-300x310.png": "cd36519c37ca3d53d7c345cef503c453438cc0500cccfd981c51dfb51988d1ea",
+  "companion-280x300.png": "a056ebcf5c2cdce4e74c26184d6f6a6cd5f314f50042dd03f87a141f4d55afc1",
+  "token-48.png": "d546b533645e90ba39c82b2c95121f1912679dfca4cfe4d96aead1c2816da691"
+ },
+ "calls": 2,
+ "seconds": 17.7,
+ "finishedAt": "2026-10-08T04:56:11Z"
+}

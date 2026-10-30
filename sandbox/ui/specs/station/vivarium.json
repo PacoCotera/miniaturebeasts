@@ -1,0 +1,390 @@
+{
+ "screen": "vivarium",
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 522], "props": ["room"], "painted": [{ "id": "painting", "region": "window", "fills": true }], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
+ "device": "station",
+ "section": "vivarium",
+ "level": "whole",
+ "spec": "design/style-guide/station-layouts.md#the-vivarium-the-whole-and-one-mibi-up-close",
+ "frame": "frame.json",
+ "status": "The layout spec for the Vivarium's whole, slot V (the Vivarium, whole and up close) of lvgl-switch.md §3: every drawn region names its word or composition, the states rest and empty, the conditions docked and away, the focus as data, the events, the bottom line, the strings and the masters",
+ "wireframes": [
+  "design/style-guide/station-layouts/18-vivarium-whole.png",
+  "design/style-guide/station-layouts/18a-vivarium-whole-away.png",
+  "design/style-guide/station-layouts/18b-vivarium-whole-empty.png"
+ ],
+ "note": "The one home of the numbers of the Vivarium's whole, transcribed from station-layouts.md (The Vivarium: the whole and one mibi up close) and its wireframes 18-vivarium-whole.svg to 18b-vivarium-whole-empty.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. The whole is the living window edge to edge, the residents walking in it, the with-you bed at its right, and the strip of bays along the foot; nothing else is on the stage. Its closer level is one mibi up close (habitat.json).",
+ "purpose": "Every mibi at home in the room shown, at its size, alive in one full-width window, and the rooms and the places along the foot: the player sees the household of one room (who is home, who is out with the Companion, how many places are free), which rooms there are and where there is room, chooses a room, buys another, and chooses one mibi to come closer to, with one press. Home's panel is the same place in a glance among the device's sections; Idle is the same painting with no frame and nothing to choose; the whole is the place with the keys in hand. Reads first: the residents; then the bays",
+ "notes": {
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. look and back are cuts to the other level. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts.",
+  "painting": "the window shows rows 120 to 560 of Idle's painting (frame.json idle.regions.vivarium.theWhole) at 1:1: one painting a light, never cropped and enlarged; a resident at y on Idle stands at y − 80 here",
+  "strip": "the strip row [16, 488, 992, 64] is two slate panes (rooms and places; the rooms screens §1a): the rooms pane with the room chips and the new-room chip, the places pane with the eight places of the room shown. One mibi up close keeps its own strip until its ticket (R6)",
+  "nothing else": "no card, no modules, no stamp, no words in the window but the focused resident's name tag; nothing is amber",
+  "residents": "at most rules.show.max of the mibis at home are shown, walking; the others rest (rules.show), on the bed, curled in a nice spot or out of sight; a mibi in the carried set is never drawn in a room, docked or away: its place stays reserved and its tile stays in the rail with the Companion's mark (regions.tiles.tile.traveller)",
+  "paintingLands": "a painting that lands while its mibi is on screen waits for the next fresh draw (the whole opened again, a wake): never a swap in view"
+ },
+ "rules": {
+  "used": ["listPitch"],
+  "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
+  "needed": [],
+  "listPitch": "the rooms pane's chips (regions.chips.forms: n chips, 1 to 4) and the places pane's tiles (regions.tiles.forms: eight places), each by the form with the smallest upTo at least n",
+  "travel": { "floorDiv": 3, "capMin": 4, "capDiv": 2, "max": 2, "airborne": 2, "minRest": 25, "note": "G10 (game-design.md, Reconciled): N = the awake, unfocused moving residents; on each group tick a resident whose rest has run out starts, longest rest first, while travelling < min(max, max(capMin, ⌈N/capDiv⌉)), max the ceiling (the game designer: 2 moving at once; the stills count too); then, while travelling < ⌈N/floorDiv⌉, one that has rested ≥ minRest ticks starts, and never above the ceiling; ≤ airborne in the air at once; the face reads these for Home, Idle and the whole (one place, one rule)" },
+  "walk": { "raisedDiv": 3, "levelOneIn": 4, "speed": { "juvenile": [2, 1], "adult": [1, 1], "elder": [1, 2] }, "note": "the walk on the rooms' levels (arch-rooms.md §2; the game designer, gd-age-rooms.md Part 2): at most max(1, ⌊N/raisedDiv⌋) residents on the raised levels, N the residents shown, 1 trip in levelOneIn changes level when the cap allows; speed[stage] = [px, own ticks of 80 ms] along the major axis: a juvenile 2 px a tick, an adult 1, an elder 1 every 2"},
+  "night": { "stir": [250, 500], "afterCurl": 250, "wander": [3000, 4500], "awake": [250, 750], "reach": 200, "note": "G7 in own ticks (80 ms): one stir every stir[0]–stir[1] across the household while one is asleep, never a focused sleeper, never in the afterCurl ticks after its own curl, never the last one twice, none while one wanders; when every resident is asleep, one wakes every wander[0]–wander[1] from the end of the last curl (juveniles first, then adults, never an elder, never the last one twice), travels to 1–2 waypoints each ≤ reach px away, rests breathing until awake[0]–awake[1] after its wake (at least two breaths) and curls where it stands; its rest is never written" },
+  "tickBudget": 148000,
+  "rest": { "windowS": 1800, "nocturnal": ["S03", "S04", "S06", "S16"], "early": { "stages": ["elder"], "species": ["S09", "S11", "S12"] }, "settle": { "diurnal": "20:00", "early": "18:00", "nocturnal": "06:00" }, "wake": { "diurnal": "06:00", "early": "06:00", "nocturnal": "18:00" }, "order": { "settle": ["elder", "juvenile", "adult"], "wake": ["juvenile", "adult", "elder"] }, "note": "the game designer's R1 (Station M1): each sleep group settles and wakes across a windowS window from the light change, one resident at a time, member k of n at window start + ⌊k·W/n⌋ + (seed mod max(1, ⌊W/(2n)⌋)) s; restOf (views/home-props.mjs) is the only reader, the face sees `rest`" },
+  "show": {"max": 5, "rest": ["elder", "adult", "juvenile"], "night": "group", "pin": ["focus", "meet", "fresh"], "freshMinS": 3600, "where": ["bed", "spot", "own"], "curl": {"pct": {"elder": 80, "adult": 50, "juvenile": 30}, "max": 2, "gap": 48, "gapRule": "ink to ink: |xA - xB| >= ceil(inkA.w/2) + ceil(inkB.w/2) + gap, the measured curl ink (<= 96 wide, so <= 144 between feet); the same against the bed's rect", "beside": 56, "backDy": 8, "occDy": 4}, "bed": "nappers: the bed's places are for resters only; the carried set is never drawn in a room (rules.show.travellers)", "travellers": {"drawn": false, "countsHoused": true, "countsShown": false, "return": "on leaving the carried set (the Companion's home at a dock): roomSince = now, it walks in from rooms.json rest.edge (reduced motion: a cut to its walk start) and is fresh (pin)", "rail": "its place stays in the rail with the away mark (regions.tiles.tile.travellerGlyph) and its card opens with every action held (habitat.json stateRule)"}, "note": "the game designer's R4b with the owner's cats (the R4b rest rules): at most max residents shown per room on the whole and Idle (Home: min(max, what fits at 1x)), the always-shown counted inside max. Pinned first, in pin order: the focused mibi, ui.meet, then the fresh (roomSince descending, then id), up to max. Every other resident ranks by: its sleep group in its night (settle[group] to wake[group] of rules.rest, wrapping midnight; the group as restOf's) before its day, then stage in rest order, then born ascending, then id; the first (n - max) of that order rest. Fresh: roomSince is set and now is before the first settle[group] time at least freshMinS after roomSince. A rester finishes its trip (leg 2 included), then rests at the first of where: the bed (a free place, in rest order; the carried set is never drawn, rules.show.travellers), the room's art spot (rooms.json rest.spots), else its own way: curl when hash(id) mod 100 < curl.pct[stage], else out. curl: a nice spot (a valid walk target on the level it is on, curl ink >= gap from every curl and the bed's rect; beside an occluder at x = rect.x - beside or rect.x + rect.w + beside, y = foot - occDy; or at a level x breakpoint, y = top(x) + backDy), seeded by id within rules.night.reach, else the nearest valid one, else where it stands if valid; while fewer than curl.max resters are curled off the bed in the room, else out. out: rooms.json rest.edge. A mibi with no curl picture (nap master or moving nap) always goes out. The walk to rest is a trip under rules.travel.max. Resters are shown false wherever they lie and never count toward max. A shown one comes back from its rest place; an asleep one waits for its own wake flip unless focused (then it walks out and curls at its first waypoint, as G7's wanderer). On a fresh show resters start at rest. G7's wander and stirs take only shown residents (a curled rester may stir in place). N for rules.walk's raised cap and for G10 counts only shown residents"}
+ },
+ "overlays": { "panel": { "spec": "panel.json", "id": "addRoom", "from": "✓ on the new-room chip (nothing is spent until a card is pressed; short of Energy the Add the room card is dimmed and says what is short)", "closes": "Not now, ← or a room key: the whole as before, nothing spent; Add the room: the room is added, shown empty with the ring on its chip, and the plate says it is ready" } },
+ "states": ["rest", "empty"],
+ "conditions": {
+  "docked": "the Companion in the Caddy: the carried mibis are not drawn in the room; their tiles keep their place, dimmed, with the solid Companion glyph (ready to go)",
+  "away": "the Companion out: the carried mibis are not drawn in the room; their tiles keep their place, dimmed, with the outline Companion glyph (exploring)",
+  "dock": "Dock while the whole shows: the carried tiles' glyph cuts between solid and outline on the frame of the world event, with no animation; nothing in the window moves (the bed is the nappers' alone)"
+ },
+ "initial": "by the save: no housed mibi, empty; else rest",
+ "stateRule": "rest: at least one mibi housed in the room shown (at home or out with the Companion). empty: no mibi housed in the room shown (the whole Vivarium may still have one in another); the window with the bed (the nest, empty or with resters on it, as Home and Idle), the places pane's free places and the frame. A region with `inStates` exists only in those states; docked and away are conditions of both",
+ "regions": {
+  "stage": {
+   "rect": [0, 40, 1024, 522],
+   "component": "frame",
+   "part": "stage",
+   "offGrid": true,
+   "slice": null,
+   "until": "the stage ground rect, colours.stageGround",
+   "note": "the window covers the stage's top; the ground shows round the strip (y 480 to 562)"
+  },
+  "window": {
+   "rect": [0, 40, 1024, 440],
+   "component": "livingWindow",
+   "part": "inside",
+   "frame": false,
+   "painting": {
+    "source": "Idle's painting (frame.json idle.regions.vivarium), one a light: the art director's ruling, its rows 120 to 560 are the whole's window",
+    "rows": [120, 560],
+    "at": [0, 40, 1024, 440],
+    "rule": "rows 120 to 560 of Idle's painting at 1:1"
+   },
+   "ground": [0, 296, 1024, 176],
+   "foot": [0, 472, 1024, 8],
+   "until": "the placeholder: back `forest`, ground band `clay` with a `sand` top row, foot `soil`",
+   "note": "edge to edge, no bezel; no words inside but the focused resident's name tag",
+   "slice": "Idle's painting, rows 120 to 560 (frame.json idle.regions.vivarium.theWhole)"
+  },
+  "resident": {
+   "component": "livingWindow",
+   "part": "residents",
+   "clip": "window",
+   "inStates": ["rest"],
+   "adult": [144, 152],
+   "juvenile": [104, 112],
+   "walk": {"ground": [16, 296, 992, 176], "keepOut": [752, 349, 256, 123], "box": "figure box x 16..1008−W, feetY the room's levels (the union of their rows in the window's coordinates: top(F.x) of each level to its bottom, the main floor's down to 471); the ground's top row 296 is the walk's only when no room is chosen", "keepOutRule": "a figure meets K exactly when F.x + ⌈W/2⌉ > 752 and feetY > 353, in every bed state; K is the sleepers' tags: left 840 − 88 (the widest tag on the leftmost place), top = the sleepers' tag top less 40, so that a walker's tag, feetY + 16 to + 40, stays above them; the sleepers' tag top is 456 − curlH − 32 (389 with the measured curl height 35); the rect is derived from the measured curls by station/tools/make-keepout.mjs (and checked), never typed", "start": "one draw r: the level (1 start in rules.walk.levelOneIn on a raised level while the raised cap allows), then room_point on it (⌈w/4⌉ inside each end), up to 8 draws, off keepOut; fallback main's leftmost point at its top", "waypoint": "one draw for the level (1 trip in levelOneIn changes level through a join, cap allowing), then room_point on the target level; rejected if max(|dx|,|dy|) < 32 or the path leaves the level or meets a keep-out; a change of level is the three legs of arch-rooms §2.2; after 8 rejections, idle again", "rule": "each walks with its feet in the band, as on Idle 80 px higher; its keep-out reaches the sleepers' tags (Idle shows none)"},
+   "order": "by the feet's y, lower in front (drawn later), left first on a tie; the bed and its sleepers sort as one, at the bed's foot (y 472); the focused resident (Home: the met one, ui.meet) is drawn after every other resident and the bed, in the slot order ring, picture, name tag. A walker may pass in front of it by depth and is drawn under it; walkers do not avoid it.",
+   "lamp": {"size": [12, 12], "slice": "home-lamp-sky-12x12", "at": "the box's top right", "when": "while the placeholder is drawn"},
+   "lift": 2,
+   "asleep": { "when": "clip curl, asleep or stir; walker form in wake, breathe, hop, walk; a one-shot under way when focus lands shows its end state's form", "ink": [96, 88], "inkBox": "[x + w/2 − 48, feet − 88, 96, 88], last ink row feet − 3", "ring": "feet form on the ink box: [x + w/2 − 56, feet − 12, 112, 24]", "tag": "over the ink: top feet − 120, centred on x + w/2, slid 8 px inside the window, no lift", "lamp": "[x + w/2 + 36, feet − 88, 12, 12]", "target": "the resident's box [x, feet − h, w, h], unchanged", "lift": 0, "order": "by feet as a walker; in the slot: shadow, ring, picture, dither, lamp", "spot": "[x + w/2 − 56, feet − 12, 112, 24]: no other resident's waypoint or start point has its ground point in it", "focus": "no curl, wake, stir or wander begins while focused; a due change starts when focus leaves" },
+   "props": "per resident: mibi id, stage, painting or placeholder, waiting, seed; the face steps the walk, as on Home and Idle; each walks, rests and plays its species' idle on that seed, as on Home and Idle; the focused one stops while it is focused, lifted 4 px"
+  },
+  "bed": {
+   "rect": [792, 416, 192, 56],
+   "component": "livingWindow",
+   "build": "withYouBed",
+   "clip": "window",
+   "sleepers": {
+    "max": 3,
+    "pose": "nap",
+    "pitch": 48,
+    "footY": 456,
+    "centre": 888,
+    "places": {"1": [888], "2": [864, 912], "3": [840, 888, 936]},
+    "adult": {"size": [144, 152], "box": "[footX − 72, 304, 144, 152]"},
+    "juvenile": {"size": [104, 112], "box": "[footX − 52, 344, 104, 112]"},
+    "ink": {
+     "max": [96, 88],
+     "rule": "the nap pose's ink is at most 96 wide and 88 tall, centred on footX and bottom-aligned on footY: at most [footX − 48, 368, 96, 88]; three sit on the 192 px bed (792 to 984)",
+     "rects": {"3": [[792, 368, 96, 88], [840, 368, 96, 88], [888, 368, 96, 88]]}
+    },
+    "mark": null,
+    "lift": 0,
+    "focus": "each sleeper is a resident target, with the feet ring and no lift"
+   },
+   "states": {
+    "empty": "the nest drawn empty at the bed's rect (rim bark, hollow soil, lit rim sand), no sleeper and no mark; not a target",
+    "resting": "one to three resters on it in rest order at places[n], drawn as sleepers (nap curl, ring if focused, no lift); each is a resident target"
+   },
+   "note": "Idle's bed (frame.json idle.regions.bed) 80 px higher: the same place in the same painting"
+  },
+  "nameTag": {
+   "build": "nameTag",
+   "component": "panel",
+   "text": "text",
+   "clip": "window",
+   "inStates": ["rest"],
+   "when": "a resident or a sleeper is focused; never otherwise",
+   "h": 24,
+   "px": 16,
+   "weight": 400,
+   "plate": {"min": 48, "max": 176, "pad": 8, "round": 8},
+   "w": "the name's width + 16, rounded up to 8, at least 48; the widest name (160 px at 16) gives 176",
+   "below": 16, "over": 32, "y": "top at feetY + 16, under the ring; if its bottom would pass y 472 (8 px inside the window), it sits over the figure: top = feetY − H − 32 − lift (feetY − H − 36 focused); a sleeper's tag is always over its curl: top = ink top − 32, no lift (456 − curlH − 32)",
+   "x": "centred on the resident's box, slid to stay 8 px inside the window (8 to 1016)",
+   "words": "the name only",
+   "lift": 0,
+   "note": "Home's tag (home.json regions.nameTag), the same size: the residents are Home's size"
+  },
+  "rooms": {
+   "rect": [16, 488, 312, 64],
+   "component": "panel",
+   "note": "the rooms pane (the rooms design): a slate pane (panel, hairline, bevel top-left) holding the room chips and the new-room chip. It keeps its size as rooms are bought, so the strip never reflows: the empty part to the right of the chips is where rooms come, and the new-room chip names it (UI/UX, R5 Q6)"
+  },
+  "chips": {
+   "component": "list",
+   "layout": ["listPitch"],
+   "forms": {"row": {"upTo": 4, "first": [32, 496, 64, 48], "pitch": [72, 0], "grid": [4, 1]}},
+   "picture": [4, 4, 56, 40],
+   "lamp": [52, 4, 8, 8],
+   "count": "one chip a room, then the new-room chip while there are fewer than four rooms (state.roomCount): chip i at [32 + 72i, 496, 64, 48]",
+   "chip": "a recess (colours.recess: the ground; a 1 px void on the top row and the left column, a 1 px hairline on the bottom row and the right column, nothing else; the void wins at the two corners they share); the room shown is one step up (colours.chipShown: hairline fill, bevel edge); the picture is the room's own painting cut to 56 x 40 (rooms.json rooms.<id>.chip), none until the art director cuts it: the recess alone",
+   "new": "the first chip place after the last room: the empty recess with no picture, and its lamp (frame-lamp-8-mint when the next room can be paid, frame-lamp-8-stone otherwise: never amber); gone at four rooms",
+   "lamps": {"payable": "frame-lamp-8-mint", "short": "frame-lamp-8-stone"},
+   "lift": "focus.targets.room.lift"
+  },
+  "places": {
+   "rect": [344, 488, 664, 64],
+   "component": "panel",
+   "note": "the places pane (the rooms design): a slate pane holding the eight places of the room shown"
+  },
+  "tiles": {
+   "rect": [360, 496, 632, 48],
+   "component": "list",
+   "build": "places",
+   "layout": ["listPitch"],
+   "forms": {
+    "compact": {"upTo": 8, "first": [360, 496, 72, 48], "pitch": [80, 0], "grid": [8, 1]}
+   },
+   "tile": {
+    "thumb": {"compact": [12, 0, 48, 48]},
+    "outGlyph": [16, 24],
+    "free": "the place's recess, nothing in it (colours.recess): drawn, so that six of eight reads as six; not a target",
+    "out": "a carried mibi, docked or away (R4b, the R4b layout read Travellers in the rail): its thumbnail in the dimmed role at traveller.thumb and the Companion glyph at traveller.glyph",
+    "traveller": {"thumb": [4, 0, 48, 48], "glyph": [52, 12, 16, 24], "dim": "the 50 % ordered dither toward the tile fill (the Cross's away faces, the frame's dimmed role); no new art", "glyphs": {"docked": "frame-companion-solid-16x24", "away": "frame-companion-outline-16x24"}, "note": "rects relative to the place; the thumbnail moves from +12 to +4 for a traveller only; the glyph is the top bar's own master, solid while docked (ready to go), outline while away (exploring); at the lift it cuts from solid to outline, no motion; when it comes home the tile cuts to the plain thumbnail at +12"},
+    "note": "the compact tile of habitat.json regions.tiles, eight of them at pitch 80: 8 × 80 − 8 = 632, the last ends at 992 = the pane's right − 16; a housed place is its well (plate-well-72x48) and its thumbnail"
+   },
+   "count": "one tile a place (state.ROOM, 8): the mibis of the room shown (st.face.room) in slot order (state.inRoom), then the free places",
+   "states": {"housed": "the well, the thumbnail", "out": "the well, the dimmed thumbnail and the Companion glyph (carried, docked or away)", "free": "the recess"},
+   "swap": "the room shown changes (the ring on a room's chip): each place's thumbnail cross-dithers from the old room's place to the new one's in events.swap's 200 ms (props regions.tiles.items[i].from)",
+   "noShown": "the whole shows no mibi up close, so no tile is `shown`: the ring is the only highlight"
+  } },
+ "drawOrder": ["stage", "window", "residents and the bed (by the feet's y)", "resident lamps", "nameTag", "rooms (the pane, then the chips)", "places (the pane, then the tiles)", "ring", "frame (top bar, bottom line)", "message plate"],
+ "events": {
+  "look": {
+   "kind": "dither",
+   "target": "stage",
+   "ms": 180,
+   "hold": 180,
+   "levels": 16,
+   "do": "✓ on a resident or a tile: the frame's screen transition to one mibi up close (habitat.json), that mibi shown, the ring on it (its name tag when it is out with the Companion)"
+  },
+  "back": {"kind": "dither", "target": "stage", "ms": 180, "hold": 180, "levels": 16, "do": "← from one mibi up close lands here, the ring on that mibi's resident, else its tile"},
+  "swap": {
+   "kind": "dither",
+   "target": "window",
+   "ms": 200,
+   "hold": 0,
+   "levels": 16,
+   "do": "the ring moved to a room's chip (or a room was added): the room shown is now that room (st.face.room, set by the host) and the window and the places pane cross-dither to it (habitat.json events.swap is the precedent, the same dither event): the window's painting from the old room's (the event's from), each place's thumbnail from the old room's place (regions.tiles.items[i].from); the chips, the crumb and the line are cuts on the frame of the key"
+  }
+ },
+ "focus": {
+  "initial": "by the way in (focus.entry)",
+  "roomKey": "room",
+  "roomAt": [496, 248, 32, 24],
+  "room": "the ring on nothing, no ring drawn, only when the whole Vivarium is empty (no mibi housed in any room); ✓ does nothing (no ✓ cap). An empty room, with a mibi in another, puts the ring on its chip (focus.entry.emptyRoom)",
+  "fallback": "none",
+  "entry": {
+   "homePanel": "Home's ✓ Open the Vivarium: the room of the mibi last seen up close (st.face.room is set to it by the host), else the room last shown (st.face.room). In that room: the mibi last seen up close, its resident, else its tile; none seen there yet, the first resident in slot order; none at home, the first tile; an empty room, its chip (room.<i>); nobody housed in any room, room",
+   "vivariumKey": "the same as homePanel (frame.json navigation.roomKeys, station-layouts.md The column and the keys)",
+   "backFromMibi": "← from one mibi up close: that mibi's resident, else its tile",
+   "wake": "the screen under Idle, its focus as it was",
+   "emptyRoom": "the room shown has no mibi housed, another has: the ring on that room's chip, room.<i>",
+   "empty": "room (the whole Vivarium is empty)",
+   "full": "Home's ✓ Add a room: the ring on room.new; ✓ Make room: the ring on the first resident of the room shown (home.json strings.needs.full; state.mjs need())"
+  },
+  "graph": {
+   "roomKey": "room",
+   "fallback": "none",
+   "resident": {
+    "left": [{"nearestIn": "resident", "ahead": true}, "none"],
+    "right": [{"nearestIn": "resident", "ahead": true}, "none"],
+    "up": [{"nearestIn": "resident", "ahead": true}, "none"],
+    "down": "tile.of"
+   },
+   "tile": {"axis": "horizontal", "left": [{"nearestIn": "tile", "ahead": true}, "room.shown"], "up": ["resident.of", "none"], "down": "none"},
+   "room": {"axis": "horizontal", "right": [{"nearestIn": "room", "ahead": true}, "tile", "none"], "up": [{"nearestIn": "resident", "ahead": true}, "none"], "down": "none"}
+  },
+  "selectors": {
+   "tile.of": "the focused resident's own tile; every housed mibi has one, so it is never null",
+   "room.shown": "the chip of the room shown (st.face.room): the place ◀ from the first place goes to",
+   "resident.of": "the focused tile's mibi's resident; for a mibi out with the Companion, null, and the selector rule of lvgl-switch.md §2.6.1 takes the first resident in the list (the first at home in bay order)"
+  },
+  "rings": "the resident `feet` (sleepers too); every tile and every chip `round`",
+  "primitives": "lvgl-switch.md §2.6.1 governs: the edge forms, the order of a move and the integer scores on doubled centres; `axis` walks the group's present targets by index and stops at the ends",
+  "targets": {
+   "resident": {
+    "group": "resident",
+    "id": "resident.<mibi id>",
+    "shape": "footprint",
+    "box": "the resident's box where the face has stepped it; each sleeper is one, with no lift",
+    "lift": 2,
+    "present": "rest, every shown resident and every rester on the bed (a rester out of sight or curled is reached by its tile: it comes out, rules.show.pin)"
+   },
+   "tile": {
+    "group": "tile",
+    "id": "tile.<mibi id>",
+    "shape": { "rect": 6 },
+    "box": "the tile's rectangle (regions.tiles, its form)",
+    "lift": 2,
+    "present": "rest, every housed mibi, at home or out; free places are not targets"
+   },
+   "room": {
+    "group": "room",
+    "id": "room.<room i> | room.new",
+    "shape": { "rect": 6 },
+    "box": "the chip's rectangle (regions.chips, its form), lifted by `lift` while the ring is on it",
+    "lift": 2,
+    "present": "every room has a chip; the new-room chip while there are fewer than four rooms. The ring on a room's chip shows that room (events.swap); the ring on the new-room chip shows the room as it was",
+    "edges": "◀ from the first place goes to room.shown; ▶ from the group's right end goes to the first place of the room shown, or none; ▲ goes to the nearest resident ahead, else none; ▼ goes to none (the rooms design)"
+   }
+  },
+  "list": "the order the view lists the targets: the residents in slot order (sleepers in their places), then the tiles in slot order, then the chips (the rooms, then the new-room chip)",
+  "held": "while events.look or events.back holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends)",
+  "layout": {
+   "note": "the targets the vectors are played on: the wireframe 18, eight places, seven mibis, Pip and Sorrel resting on the bed, two rooms and the new-room chip; the empty state lists the chips only",
+   "resident.bean": [48, 264, 144, 152],
+   "resident.dot": [224, 312, 104, 112],
+   "resident.fig": [360, 296, 144, 152],
+   "resident.burr": [544, 272, 144, 152],
+   "resident.moss": [664, 336, 104, 112],
+   "resident.pip": [792, 304, 144, 152],
+   "resident.sorrel": [840, 304, 144, 152],
+   "tile.bean": [360, 496, 72, 48],
+   "tile.dot": [440, 496, 72, 48],
+   "tile.fig": [520, 496, 72, 48],
+   "tile.burr": [600, 496, 72, 48],
+   "tile.moss": [680, 496, 72, 48],
+   "tile.pip": [760, 496, 72, 48],
+   "tile.sorrel": [840, 496, 72, 48],
+   "room.0": [32, 496, 64, 48],
+   "room.1": [104, 496, 64, 48],
+   "room.new": [176, 496, 64, 48]
+  },
+  "vectors": [
+   {"from": "resident.bean", "key": "right", "to": "resident.dot"},
+   {"from": "resident.bean", "key": "left", "to": "resident.bean"},
+   {"from": "resident.bean", "key": "up", "to": "resident.bean"},
+   {"from": "resident.bean", "key": "down", "to": "tile.bean"},
+   {"from": "resident.dot", "key": "left", "to": "resident.bean"},
+   {"from": "resident.dot", "key": "up", "to": "resident.bean"},
+   {"from": "resident.fig", "key": "right", "to": "resident.burr"},
+   {"from": "resident.fig", "key": "down", "to": "tile.fig"},
+   {"from": "resident.moss", "key": "right", "to": "resident.pip"},
+   {"from": "resident.pip", "key": "right", "to": "resident.sorrel"},
+   {"from": "resident.sorrel", "key": "right", "to": "resident.sorrel"},
+   {"from": "resident.pip", "key": "left", "to": "resident.moss"},
+   {"from": "resident.sorrel", "key": "down", "to": "tile.sorrel"},
+   {"from": "tile.bean", "key": "left", "to": "room.0"},
+   {"from": "tile.dot", "key": "left", "to": "tile.bean"},
+   {"from": "tile.bean", "key": "right", "to": "tile.dot"},
+   {"from": "tile.fig", "key": "up", "to": "resident.fig"},
+   {"from": "tile.sorrel", "key": "right", "to": "tile.sorrel"},
+   {"from": "tile.moss", "key": "down", "to": "tile.moss"},
+   {"from": "tile.pip", "key": "up", "to": "resident.pip"},
+   {
+    "from": "tile.pip",
+    "key": "up",
+    "to": "resident.bean",
+    "away": ["pip", "sorrel"],
+    "note": "Pip is out: resident.of is null, and the selector takes the first resident in the list"
+   },
+   {"from": "tile.moss", "key": "right", "to": "tile.pip", "away": ["pip", "sorrel"], "note": "an out mibi's tile is a target"},
+   {"from": "room.0", "key": "right", "to": "room.1"},
+   {"from": "room.1", "key": "right", "to": "room.new"},
+   {"from": "room.new", "key": "right", "to": "tile.bean"},
+   {"from": "room.0", "key": "left", "to": "room.0"},
+   {"from": "room.new", "key": "down", "to": "room.new"},
+   {"from": "room.new", "key": "up", "to": "resident.dot"},
+   {"from": "room.0", "key": "up", "to": "resident.bean"},
+   {"state": "empty", "from": "room.new", "key": "right", "to": "room.new"},
+   {"state": "empty", "from": "room.0", "key": "right", "to": "room.1"},
+   {"state": "empty", "from": "room.1", "key": "up", "to": "room.1"},
+   {"state": "empty", "from": "room", "key": "left", "to": "room"}
+  ]
+ },
+ "keys": {
+  "pad": "moves the ring by focus.graph",
+  "confirm": "the bottom line's action: on a resident or a tile, one mibi up close (events.look); on the new-room chip, the decision panel addRoom (panel.json; nothing is spent until its card is pressed); on a room's chip nothing (no ✓ cap)",
+  "back": "Home, the ring on the vivarium panel (home.json, ← from a section)",
+  "vivarium": "on the whole, the ring back by focus.entry.vivariumKey",
+  "room": "as everywhere (frame.json navigation.roomKeys)",
+  "dock": "the Caddy's Dock, a world event: events.dock; no message plate; from the play page without the keys: lands on Home (frame.json navigation.dock)"
+ },
+ "bottomLine": {
+  "resident": {"action": "strings.look", "context": "strings.resident; a sleeper strings.sleeper; while the placeholder is drawn, strings.painting"},
+  "tile": {"home": "as its resident", "out": {"action": "strings.look", "context": "strings.subjectTraveller.docked while the Companion is docked, strings.subjectTraveller.away while it is away; docked and the mibi's room is not the first, strings.asleepIn with the first room's name (the carried set sleeps on room 1's bed whatever its room, the rooms words C16)"}},
+  "room": {"action": null, "context": "strings.empty"},
+  "chip": {"action": null, "context": "a room's chip: strings.placesFree, strings.oneFree, strings.full or strings.empty by the places free in that room (C4)"},
+  "newRoom": {"action": "strings.newRoom.action with its price (⚡ and the figure, state.roomPrice); dimmed with the short icons while short", "context": "strings.newRoom.context; short of Energy the notice is pods.json strings.needMoreFrom (state.shortFrom)"},
+  "notice": "the frame's notice only (what needs the player anywhere); nothing on the whole sets one",
+  "back": "strings.back"
+ },
+ "frameZones": {
+  "title": "strings.title, after the Vivarium key's icon (frame-room-vivarium-24)",
+  "companion": "the top bar's Companion zone (station-layouts.md The frame): the glyph and its lamp, then three face places in carried order at (800, 8), (828, 8) and (856, 8), 24×24",
+  "back": "← Home, its cap at x 943"
+ },
+ "colours": {
+  "window": {"back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil"},
+  "waitingLamp": {"fill": "sky", "rim": "void"},
+  "bed": {"rim": "bark", "hollow": "soil", "light": "sand", "mark": "mist"},
+  "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
+  "stageGround": "ground",
+  "pane": {"fill": "panel", "edge": "hairline", "bevel": "bevel"},
+  "recess": {"fill": "ground", "edge": "hairline", "shade": "void", "note": "edge: the bottom row and the right column; shade: the top row and the left column"},
+  "chipShown": {"fill": "hairline", "edge": "bevel"}
+ },
+ "masters": {
+  "note": "every picture the whole names, at the size it is shown; none is drawn by the build, and the whole needs no new master",
+  "list": [
+   "Idle's painting 1024×568, dawn, day, dusk and night (frame.json idle; rows 120 to 560 shown here)",
+   "the residents at 144×152 and 104×112, and the nap poses (as on Home and Idle)",
+   "home-bed-<light>-192x56 (the bed, as on Home and Idle)",
+   "frame-companion-solid-16x24 and frame-companion-outline-16x24 (a carried tile's glyph, docked and away: frame.json marks.companion)",
+   "the thumbnails 48×48 (the painting or placeholder rendered at that size)",
+   "home-lamp-sky-12x12",
+   "frame-lamp-8-mint and frame-lamp-8-stone (the new-room chip's lamp, 8 × 8)",
+   "plate-well-72x48 (a housed place's well); the chips' pictures (rooms.json rooms.<id>.chip, 56 × 40) are not cut yet: the recess alone"
+  ]
+ },
+ "strings": {
+  "title": "Vivarium",
+  "rooms": ["Roots", "Reeds", "Boulders", "Ferns"],
+  "back": "Home",
+  "look": "Look at {name}",
+  "resident": "{a} {stage} {species}",
+  "sleeper": "{a} {stage} {species}, asleep",
+  "painting": "its painting is on its way",
+  "subjectTraveller": {"docked": "ready to go exploring", "away": "out exploring"},
+  "asleepIn": "asleep in the {Room} room",
+  "empty": "nobody lives here yet",
+  "placesFree": "{n} places free",
+  "oneFree": "one place free",
+  "full": "this room is full",
+  "newRoom": {"action": "Add a room", "context": "eight more places"},
+  "measured": "16 px Inter, the face's metrics (prototypes/face/tests/vectors/metrics.json), a name as ten of the widest letter (160): look 220 in the action's 356; in the context's 208: painting 176, sleeper 174 (\"an elder Untuva, asleep\"), empty 160, subjectTraveller docked 161 and away 99; back 45 in its 68; title 85 at 20 px",
+  "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer, a context of six or fewer; Home's words where Home says the same thing (home.json strings.actions.resident, strings.subjects, strings.stages)"
+ },
+ "buildChanges": [
+  "frame.json navigation: a new place `vivarium` (parent home, back Home) for the whole; `habitat` (one mibi up close) moves under it (parent vivarium, back Vivarium); the Vivarium key (roomKeys.habitat) opens `vivarium`, not `habitat`; Home's ✓ Open the Vivarium opens `vivarium`. nav.mjs, nav.test.mjs and the journey follow",
+  "the whole is a new screen: its binding table, its view's props (residents, bed, tiles) and its intents; it reuses Home's resident walk, the withYouBed build and habitat.json's bayStrip",
+  "R5 (T-20261027-318): the strip row is two slate panes, the rooms pane (the room chips and the new-room chip) and the places pane (eight compact places); the full form and more than eight places retire; the ring on a room's chip shows that room (events.swap); ✓ on the new-room chip opens panel.json addRoom"
+ ]
+}
