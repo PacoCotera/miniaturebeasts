@@ -1,0 +1,1952 @@
+{
+ "note": "Vivarium rooms 2-4 (showpieces): per-room data for the rooms-ticket gate (architect package.md 2.9; lead's rulings after sb: in-band occluders with keepOut, per-room measured tops). Painting coordinates (1024x568); the whole's window y = painting y - 80. Measured by the art director at 1x on the signed day, +-5 px.",
+ "mist": {
+  "sheet": "source/raw/mist-sheet-a.jpg (mist-sheet-a, gemini-3-pro-image)",
+  "wisps": "rooms/mist/mist-wisp-1..6.png: white, alpha from the sheet's luminance (black key at 12), cut at 0 MXN; graded per room and light by hand before use",
+  "alpha_in_file": "alpha_in_file: true on a mist piece means the manifest's alpha is already multiplied into the file's alpha channel (tools/roomcut.py wisp); the placer writes no opa for it (opa 255), so the mist is drawn once at the signed strength (ad-r3-sign.md ruling 1)"
+ },
+ "boulders_zen_superseded": {
+  "day": "rooms/signed-idle-boulders-day.png",
+  "source": "rooms/work-idle-vivarium-boulders-day-sa.png (idle-vivarium-boulders-day-sa, gemini-3-pro-image), ground-band grade gain 0.9079 (rooms.py grade, target L* 47)",
+  "signed": "art director, Mon 26 Oct 2026 18:33 (Mexico City), day only; G1 fittings: flume ~[60,70,190,200] the moving exception (trickle ambient), lantern ~[860,95,115,170] 3.4 % of the window, back right, behind stones (over the 72x120 box, passed on area and placement); G2 per-room tops; G3 day floor L* 47.0; G6 Home cut holds the flume, basin and stones; G7 basin water only inside the stone's lip; G10 all six minis read on the gravel",
+  "sha256": "935dbfd878a4dcd00e86261cc4e5d4b428bb70ae5b1b29507c51b93cccbc73ce",
+  "profile": {
+   "x": [
+    16,
+    100,
+    330,
+    560,
+    900,
+    1009
+   ],
+   "top_painting": [
+    446,
+    422,
+    402,
+    446,
+    452
+   ],
+   "top_whole": [
+    366,
+    342,
+    322,
+    366,
+    372
+   ]
+  },
+  "occluders": [
+   {
+    "id": "boulders-stone-1",
+    "rect_painting": [
+     150,
+     427,
+     152,
+     61
+    ],
+    "foot_painting": 486,
+    "keepOut_painting": [
+     160,
+     470,
+     132,
+     18
+    ],
+    "edge": "hard",
+    "what": "low moss-capped stone, rounded"
+   },
+   {
+    "id": "boulders-cushion-1",
+    "rect_painting": [
+     672,
+     395,
+     176,
+     87
+    ],
+    "foot_painting": 480,
+    "keepOut_painting": [
+     684,
+     462,
+     152,
+     20
+    ],
+    "edge": "hard",
+    "what": "clipped moss cushion, leafy top"
+   }
+  ],
+  "status": "SUPERSEDED (owner 2026-10-26 18:33: a shrine garden, not a zen garden): the Japanese-garden day, its near day (rooms/signed-near-boulders-day.png, near sb) and its two night edits are kept as a record only, never placed",
+  "near": "rooms/superseded-near-boulders-zen-day.png (moved from rooms/signed-near-boulders-day.png, which is now the shrine garden's near day)"
+ },
+ "boulders": {
+  "concept": "shrine garden, autumn (option sheet b, tile B, picked by the art director; owner to confirm)",
+  "form": "convex: the mossy island right of centre, the maple and the upright hero stone at ~62 %",
+  "day": "rooms/signed-idle-boulders-day.png",
+  "source": "idle-vivarium-boulders-day-ta (gemini-3-pro-image), ground-band grade gain 1.3442 (rooms.py grade, target L* 40)",
+  "sha256": "184ca18334b15b7a9cf0fb7206f6feb8c81b72b327af67c4e2bf9e1268bd4c57",
+  "signed": "art director, Mon 26 Oct 2026 18:44 (Mexico City), day composition: G1 no fittings (composite method); G2 per-room levels below; G3 day floor L* 40.0, whole 39.8; G4 painted finish; G6 Home cut holds the maple, pond and terrace (the hero stone sits just outside it at x 690-830); G7 the pond set back behind the ground, no fish painted, no shore onto the ground; G10 all six minis read on the moss and on the terrace",
+  "levels": [
+   {
+    "id": "main",
+    "profile": {
+     "x": [
+      16,
+      190,
+      330,
+      470,
+      690,
+      800,
+      1009
+     ],
+     "top_painting": [
+      446,
+      436,
+      402,
+      456,
+      470,
+      466
+     ]
+    },
+    "bottom_painting": 551,
+    "note": "the island's foot leaves ~80 px of depth at the right"
+   },
+   {
+    "id": "terrace",
+    "profile": {
+     "x": [
+      16,
+      260
+     ],
+     "top_painting": [
+      318
+     ]
+    },
+    "bottom_painting": 376,
+    "note": "the raised moss terrace at the left; its front lip ~378-440 is a rounded kerb, not walkable",
+    "joins": [
+     {
+      "to": "main",
+      "kind": "ramp",
+      "rect_painting": [
+       190,
+       330,
+       140,
+       110
+      ]
+     }
+    ]
+   }
+  ],
+  "occluders": [
+   {
+    "id": "boulders-stone-1",
+    "level": "main",
+    "rect_painting": [
+     705,
+     388,
+     105,
+     95
+    ],
+    "foot_painting": 482,
+    "keepOut_painting": [
+     715,
+     468,
+     85,
+     16
+    ],
+    "edge": "hard",
+    "what": "leaning mossy stone at the island's foot, pointed top, not a perch"
+   }
+  ],
+  "ambient": "koi under the pond surface; maple leaves stirring and a leaf falling onto the island; warm light shift across the moss",
+  "pieces": [
+   {
+    "id": "boulders-stone-2",
+    "kind": "occluder",
+    "level": "main",
+    "rect_painting": [
+     196,
+     502,
+     80,
+     40
+    ],
+    "foot_painting": 541,
+    "file": "rooms/pieces/boulders/boulders-stone-2-{light}.png",
+    "what": "low moss-capped granite stone",
+    "keepOut_painting": [
+     202,
+     526,
+     68,
+     18
+    ],
+    "edge": "hard",
+    "moved": "collection v2: from [150, 502] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "boulders-cushion-1",
+    "kind": "occluder",
+    "level": "main",
+    "rect_painting": [
+     770,
+     496,
+     82,
+     46
+    ],
+    "foot_painting": 541,
+    "file": "rooms/pieces/boulders/boulders-cushion-1-{light}.png",
+    "what": "low clipped moss-and-fern cushion, two gold leaves",
+    "keepOut_painting": [
+     776,
+     526,
+     70,
+     18
+    ],
+    "edge": "hard",
+    "moved": "collection v2: from [846, 496] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "boulders-lantern",
+    "kind": "fitting",
+    "level": null,
+    "rect_painting": [
+     677,
+     282,
+     34,
+     44
+    ],
+    "foot_painting": 325,
+    "file": "rooms/pieces/boulders/boulders-lantern-{light}.png",
+    "what": "small stone lantern (toro), unlit, on the mound's crest between the maple and the tall stone, its foot on the moss (collection v2: placed at 1x)",
+    "edge": "hard",
+    "share_of_window_pct": 0.33,
+    "moved": "collection v2: from [940, 329] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "boulders-shishi",
+    "kind": "fitting",
+    "level": null,
+    "rect_painting": [
+     198,
+     262,
+     64,
+     56
+    ],
+    "foot_painting": 317,
+    "file": "rooms/pieces/boulders/boulders-shishi-{light}.png",
+    "what": "shishi-odoshi base: flume, post, stone basin, the pivot posts; at the back of the terrace among the shrubs; the one moving fitting",
+    "edge": "hard",
+    "share_of_window_pct": 0.8,
+    "moved": "collection v2: from [166, 262] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "boulders-trickle",
+    "kind": "drop",
+    "size": [
+     2,
+     5
+    ],
+    "what": "the flume's trickle cell (at +32 px with the shishi and the arm, collection v2)"
+   },
+   {
+    "id": "boulders-arm",
+    "kind": "anim",
+    "cell": [
+     48,
+     48
+    ],
+    "pivot_painting": [
+     248,
+     288
+    ],
+    "rect_painting": [
+     224,
+     264,
+     48,
+     48
+    ],
+    "poses_deg": {
+     "fill": -16,
+     "tip": 4,
+     "empty": 26,
+     "knock": -20
+    },
+    "cycle": "fill (hold ~45 s while the trickle falls into the open end) -> tip (300 ms) -> empty (hold 1.2 s, the basin glints) -> knock (200 ms, the knock) -> fill",
+    "file": "rooms/pieces/boulders/boulders-arm-{pose}-{light}.png",
+    "what": "the bamboo arm on its pivot posts; open end under the flume's spout",
+    "moved": "collection v2: from [192, 264] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "boulders-koi",
+    "kind": "anim",
+    "cells": [
+     30,
+     14
+    ],
+    "fish": [
+     "kohaku",
+     "ogon",
+     "tancho",
+     "chagoi"
+    ],
+    "frames": 4,
+    "file": "rooms/pieces/boulders/koi-{name}-{1..4}-{light}.png",
+    "mask_painting": [
+     345,
+     332,
+     205,
+     34
+    ],
+    "swim": "3 of the 4 visible at once; each swims the pond's long axis at ~6 px/s on a 4-cell cycle (one cell each 500 ms), flipped for leftward, turns at the rim with a 2 s hold; never outside the pond mask; drawn under the pond's surface (behind everything on the ground)",
+    "what": "koi just under the pond's dark surface, mixed 38 % into the water's colour"
+   }
+  ],
+  "seated": "rooms/seated-idle-boulders-{light}.png (the signed scene plus the seats' contact shadows; the engine's base under the pieces)",
+  "composite_proof": "rooms/composite-idle-boulders-{light}.png (proof only; never placed)",
+  "piece_sheets": [
+   "source/raw/pieces-boulders-a.jpg (pieces-boulders-a, gemini-3-pro-image)",
+   "source/raw/pieces-koi-a.jpg (pieces-koi-a, gemini-3-pro-image)"
+  ],
+  "near_day": {
+   "file": "rooms/signed-near-boulders-day.png",
+   "source": "vivarium-near-boulders-day-tb (a Pro edit of ta flattening the specimen's floor: ta painted two moss mounds ~28 px tall in it) (gemini-3-pro-image), cut by rooms.py, no grade",
+   "specimen_floor_near": [
+    136,
+    296,
+    272,
+    56
+   ],
+   "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads"
+  },
+  "seasonal": {
+   "note": "owner 19:06: 'the maple is fine too, and we make it seasonal' (a later job). The maple is a region a seasonal edit changes on its own; the lights and pieces never paint into it (no piece overlaps it). Masks cut at 0 MXN, Mon 26 Oct 2026 19:09.",
+   "idle_region_painting": [
+    394,
+    0,
+    450,
+    221
+   ],
+   "idle_mask": "rooms/regions/boulders-maple-idle-mask.png",
+   "idle_mask_px": 47369,
+   "near_region": [
+    201,
+    1,
+    317,
+    161
+   ],
+   "near_mask": "rooms/regions/boulders-maple-near-mask.png",
+   "near_mask_px": 23259,
+   "method": "per season: one Pro edit of the signed day changing only the maple (and the fallen leaves on the island), then pasted back through the mask so nothing else moves; the same for the near day; each light by the same edit of that light's picture, or graded by hand from the season's day through the mask",
+   "mask_rule": "the canopy's saturated warm leaves (R-B > 95), the largest connected canopy, dilated 2 px; the trunk and the back bokeh stay; near: also local texture (5x5 luminance s.d. > 6), so the warm bokeh stays"
+  },
+  "lights": {
+   "day": {
+    "idle": "rooms/signed-idle-boulders-day.png",
+    "near": "rooms/signed-near-boulders-day.png",
+    "measures_idle": {
+     "whole": 39.84,
+     "floor": 40.05,
+     "back": 41.29,
+     "R-B whole": 60.9,
+     "warmth": 0.741
+    },
+    "measures_near": {
+     "whole": 50.7,
+     "floor": 36.44,
+     "back": 60.81,
+     "R-B whole": 83.5,
+     "warmth": 0.772
+    }
+   },
+   "night": {
+    "idle": "rooms/signed-idle-boulders-night.png",
+    "near": "rooms/signed-near-boulders-night.png",
+    "source_idle": "idle-vivarium-boulders-night-t (gemini-3-pro-image), an edit of the signed day; graded at 0 MXN by tools/roomgrade.py",
+    "source_near": "vivarium-near-boulders-night-t (gemini-3-pro-image); the pond, rim stones and bank the edit painted in at the back [140,205,232,63] replaced by the day's pixels relit by a fitted day-to-night map at 0 MXN; graded by tools/roomgrade.py",
+    "measures_idle": {
+     "whole": 24.82,
+     "floor": 26.68,
+     "back": 23.81,
+     "R-B whole": -16.2,
+     "warmth": -0.283
+    },
+    "measures_near": {
+     "whole": 24.33,
+     "floor": 26.8,
+     "back": 22.69,
+     "R-B whole": -6.9,
+     "warmth": -0.12
+    },
+    "pieces": "rooms/pieces/boulders/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
+    "seated": "rooms/seated-idle-boulders-night.png",
+    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept"
+   },
+   "dusk": {
+    "idle": "rooms/signed-idle-boulders-dusk.png",
+    "near": "rooms/signed-near-boulders-dusk.png",
+    "source_idle": "idle-vivarium-boulders-dusk-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-boulders-dusk-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 1.0,
+     "warm_balance": 1.072
+    },
+    "grade_near": {
+     "gain": 1.043,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 29.6,
+     "floor": 24.46,
+     "back": 35.07,
+     "R-B whole": 50.7,
+     "warmth": 0.772
+    },
+    "measures_near": {
+     "whole": 27.17,
+     "floor": 21.87,
+     "back": 29.78,
+     "R-B whole": 59.0,
+     "warmth": 0.947
+    },
+    "pieces": "rooms/pieces/boulders/*-dusk.png",
+    "seated": "rooms/seated-idle-boulders-dusk.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
+   },
+   "dawn": {
+    "idle": "rooms/signed-idle-boulders-dawn.png",
+    "near": "rooms/signed-near-boulders-dawn.png",
+    "source_idle": "idle-vivarium-boulders-dawn-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-boulders-dawn-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 0.765,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 0.936,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 37.65,
+     "floor": 28.2,
+     "back": 47.03,
+     "R-B whole": -0.1,
+     "warmth": -0.001
+    },
+    "measures_near": {
+     "whole": 48.87,
+     "floor": 34.85,
+     "back": 57.87,
+     "R-B whole": 29.9,
+     "warmth": 0.271
+    },
+    "pieces": "rooms/pieces/boulders/*-dawn.png",
+    "seated": "rooms/seated-idle-boulders-dawn.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
+   }
+  },
+  "view": {
+   "crop": [
+    178,
+    96
+   ],
+   "keep": [
+    {
+     "id": "boulders-tree",
+     "box": [
+      396,
+      0,
+      444,
+      318
+     ],
+     "leaves": "top"
+    },
+    {
+     "id": "boulders-pond",
+     "box": [
+      310,
+      322,
+      276,
+      82
+     ],
+     "what": "the rim stones"
+    },
+    {
+     "id": "boulders-tall-stone",
+     "box": [
+      707,
+      136,
+      148,
+      196
+     ]
+    },
+    {
+     "id": "boulders-stones",
+     "box": [
+      777,
+      290,
+      68,
+      93
+     ],
+     "what": "the leaning pair"
+    }
+   ],
+   "drops": [
+    [
+     522,
+     536
+    ],
+    [
+     522,
+     484
+    ],
+    [
+     438,
+     430
+    ],
+    [
+     434,
+     536
+    ],
+    [
+     610,
+     536
+    ],
+    [
+     610,
+     484
+    ],
+    [
+     350,
+     464
+    ],
+    [
+     346,
+     536
+    ]
+   ],
+   "rest": "main's left end inside the crop",
+   "note": "the room view's window [cx, 96, 688, 472] of the painting (the collection v2 design §4, the collection v2 art direction): the owner's edge rule, 14:38 and 15:24"
+  },
+  "chip": {
+   "file": "rooms/chips/room-boulders-chip-{light}-128x32.png",
+   "size": [
+    128,
+    32
+   ],
+   "crop_painting": [
+    330,
+    330,
+    128,
+    32
+   ],
+   "what": "the pond's dark water inside its rim stones",
+   "source": "the room's placed idle base of the light (Boulders' with the rear stone painted out), the 128 x 32 window at [330, 330], 1:1, opaque; collection v2 art job 4, no new painting"
+  },
+  "tile": {
+   "file": "rooms/tiles/room-boulders-tile-{light}-344x236.png",
+   "size": [
+    344,
+    236
+   ],
+   "crop_painting": [
+    178,
+    96,
+    688,
+    472
+   ],
+   "factor": [
+    1,
+    2
+   ],
+   "source": "the room view's window of the light as it is drawn with no mibi (the placed base, its back pieces, the bed, its occluders by their foot), reduced to exactly 1/2 by 2 x 2 box averages; collection v2 house view, no new painting"
+  }
+ },
+ "reeds": {
+  "concept": "sedge meadow after rain (option sheet a, tile B, owner's pick 18:15, plus the rock)",
+  "form": "concave: sedges tall at both sides, the open centre with haze; the rock at ~32 % (focal), a damp-soil path winding back to it",
+  "day": "rooms/signed-idle-reeds-day.png",
+  "source": "idle-vivarium-reeds-day-ta (gemini-3-pro-image), ground-band grade gain 1.2604 (target L* 40)",
+  "sha256": "b6730d17154bc9791639eb9a3d0edfd098c5045b5f407bc0b5fe26e41f7f7f9b",
+  "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings (composite method), no front pieces; day floor L* 40.1, whole 57.4 (the haze); painted finish; Home cut holds the rock, the path and the haze; no water patches; all six minis read on the moss, the path and the bank",
+  "levels": [
+   {
+    "id": "main",
+    "profile": {
+     "x": [
+      16,
+      200,
+      430,
+      560,
+      700,
+      1009
+     ],
+     "top_painting": [
+      470,
+      432,
+      405,
+      395,
+      478
+     ]
+    },
+    "bottom_painting": 551
+   },
+   {
+    "id": "bank",
+    "profile": {
+     "x": [
+      720,
+      990
+     ],
+     "top_painting": [
+      338
+     ]
+    },
+    "bottom_painting": 372,
+    "note": "the low mossy bank at the right; its front lip is a soft moss face",
+    "joins": [
+     {
+      "to": "main",
+      "kind": "ramp",
+      "rect_painting": [
+       600,
+       360,
+       120,
+       80
+      ]
+     }
+    ]
+   }
+  ],
+  "occluders": [
+   {
+    "id": "reeds-sedge-1",
+    "level": "main",
+    "rect_painting": [
+     0,
+     380,
+     200,
+     140
+    ],
+    "foot_painting": 520,
+    "keepOut_painting": [
+     16,
+     500,
+     170,
+     20
+    ],
+    "edge": "hard",
+    "what": "the left sedge spill, leafy",
+    "view": false
+   }
+  ],
+  "superseded": "sa, sb, sc",
+  "pieces": [
+   {
+    "id": "reeds-sedge-2",
+    "kind": "occluder",
+    "level": "main",
+    "rect_painting": [
+     214,
+     496,
+     66,
+     48
+    ],
+    "foot_painting": 543,
+    "file": "rooms/pieces/reeds/reeds-sedge-2-{light}.png",
+    "what": "low sedge tuft beaded with rain, leafy",
+    "keepOut_painting": [
+     220,
+     528,
+     54,
+     18
+    ],
+    "edge": "hard"
+   },
+   {
+    "id": "reeds-stone-1",
+    "kind": "occluder",
+    "level": "main",
+    "rect_painting": [
+     770,
+     494,
+     76,
+     48
+    ],
+    "foot_painting": 541,
+    "file": "rooms/pieces/reeds/reeds-stone-1-{light}.png",
+    "what": "small wet rounded stone, moss at its base",
+    "keepOut_painting": [
+     776,
+     526,
+     64,
+     18
+    ],
+    "edge": "hard"
+   },
+   {
+    "id": "reeds-raincup",
+    "kind": "fitting",
+    "level": null,
+    "rect_painting": [
+     818,
+     303,
+     30,
+     36
+    ],
+    "foot_painting": 338,
+    "file": "rooms/pieces/reeds/reeds-raincup-{light}.png",
+    "what": "a small dark ceramic rain cup on a bamboo stake, in the right sedges at the bank's back edge; drips (ambient)",
+    "edge": "hard",
+    "share_of_window_pct": 0.24,
+    "moved": "collection v2: from [918, 303] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "reeds-drop",
+    "kind": "drop",
+    "size": [
+     4,
+     6
+    ],
+    "what": "the drop cell: falls from the cup's lip (x 844, y 309) to the bank's moss at y 340, every ~4 s"
+   }
+  ],
+  "seated": "rooms/seated-idle-reeds-{light}.png (the signed scene plus the seats' contact shadows; the engine's base under the pieces)",
+  "composite_proof": "rooms/composite-idle-reeds-{light}.png (proof only; never placed)",
+  "piece_sheets": [
+   "source/raw/pieces-reeds-a.jpg (pieces-reeds-a, gemini-3-pro-image)"
+  ],
+  "near_day": {
+   "file": "rooms/signed-near-reeds-day.png",
+   "source": "vivarium-near-reeds-day-ta (gemini-3-pro-image), cut by rooms.py, no grade",
+   "specimen_floor_near": [
+    136,
+    296,
+    272,
+    56
+   ],
+   "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads"
+  },
+  "lights": {
+   "day": {
+    "idle": "rooms/signed-idle-reeds-day.png",
+    "near": "rooms/signed-near-reeds-day.png",
+    "measures_idle": {
+     "whole": 57.44,
+     "floor": 40.07,
+     "back": 77.3,
+     "R-B whole": 20.1,
+     "warmth": 0.151
+    },
+    "measures_near": {
+     "whole": 60.86,
+     "floor": 42.11,
+     "back": 76.96,
+     "R-B whole": 15.2,
+     "warmth": 0.107
+    }
+   },
+   "night": {
+    "idle": "rooms/signed-idle-reeds-night.png",
+    "near": "rooms/signed-near-reeds-night.png",
+    "source_idle": "idle-vivarium-reeds-night-t (gemini-3-pro-image), an edit of the signed day; graded at 0 MXN by tools/roomgrade.py",
+    "source_near": "vivarium-near-reeds-night-t (gemini-3-pro-image); graded by tools/roomgrade.py",
+    "measures_idle": {
+     "whole": 28.61,
+     "floor": 34.08,
+     "back": 25.41,
+     "R-B whole": -9.9,
+     "warmth": -0.15
+    },
+    "measures_near": {
+     "whole": 24.38,
+     "floor": 26.23,
+     "back": 23.5,
+     "R-B whole": -12.9,
+     "warmth": -0.226
+    },
+    "pieces": "rooms/pieces/reeds/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
+    "seated": "rooms/seated-idle-reeds-night.png",
+    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept"
+   },
+   "dusk": {
+    "idle": "rooms/signed-idle-reeds-dusk.png",
+    "near": "rooms/signed-near-reeds-dusk.png",
+    "source_idle": "idle-vivarium-reeds-dusk-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-reeds-dusk-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 38.98,
+     "floor": 25.53,
+     "back": 52.44,
+     "R-B whole": 25.3,
+     "warmth": 0.273
+    },
+    "measures_near": {
+     "whole": 43.14,
+     "floor": 30.24,
+     "back": 54.68,
+     "R-B whole": 16.7,
+     "warmth": 0.162
+    },
+    "pieces": "rooms/pieces/reeds/*-dusk.png",
+    "seated": "rooms/seated-idle-reeds-dusk.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
+   },
+   "dawn": {
+    "idle": "rooms/signed-idle-reeds-dawn.png",
+    "near": "rooms/signed-near-reeds-dawn.png",
+    "source_idle": "idle-vivarium-reeds-dawn-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-reeds-dawn-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 54.69,
+     "floor": 37.45,
+     "back": 74.23,
+     "R-B whole": -10.9,
+     "warmth": -0.084
+    },
+    "measures_near": {
+     "whole": 56.95,
+     "floor": 38.73,
+     "back": 72.48,
+     "R-B whole": -3.3,
+     "warmth": -0.024
+    },
+    "pieces": "rooms/pieces/reeds/*-dawn.png",
+    "seated": "rooms/seated-idle-reeds-dawn.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
+   }
+  },
+  "view": {
+   "crop": [
+    176,
+    96
+   ],
+   "keep": [
+    {
+     "id": "reeds-boulder",
+     "box": [
+      208,
+      267,
+      242,
+      138
+     ]
+    }
+   ],
+   "drops": [
+    [
+     520,
+     536
+    ],
+    [
+     520,
+     433
+    ],
+    [
+     432,
+     536
+    ],
+    [
+     608,
+     536
+    ],
+    [
+     432,
+     460
+    ],
+    [
+     344,
+     536
+    ],
+    [
+     696,
+     536
+    ],
+    [
+     344,
+     460
+    ]
+   ],
+   "rest": "main's left end inside the crop",
+   "note": "the room view's window [cx, 96, 688, 472] of the painting (the collection v2 design §4, the collection v2 art direction): the owner's edge rule, 14:38 and 15:24"
+  },
+  "chip": {
+   "file": "rooms/chips/room-reeds-chip-{light}-128x32.png",
+   "size": [
+    128,
+    32
+   ],
+   "crop_painting": [
+    176,
+    360,
+    128,
+    32
+   ],
+   "what": "the sedge blades over the rock's dark foot",
+   "source": "the room's placed idle base of the light (Boulders' with the rear stone painted out), the 128 x 32 window at [176, 360], 1:1, opaque; collection v2 art job 4, no new painting"
+  },
+  "tile": {
+   "file": "rooms/tiles/room-reeds-tile-{light}-344x236.png",
+   "size": [
+    344,
+    236
+   ],
+   "crop_painting": [
+    176,
+    96,
+    688,
+    472
+   ],
+   "factor": [
+    1,
+    2
+   ],
+   "source": "the room view's window of the light as it is drawn with no mibi (the placed base, its back pieces, the bed, its occluders by their foot), reduced to exactly 1/2 by 2 x 2 box averages; collection v2 house view, no new painting"
+  }
+ },
+ "ferns": {
+  "concept": "fern dell (option sheet a, tile A, owner's pick 18:15)",
+  "form": "triangular rising to the right; the log leads up to the crozier cluster at ~45 % (focal); a peat path winds back",
+  "day": "rooms/signed-idle-ferns-day.png",
+  "source": "idle-vivarium-ferns-day-ta (gemini-3-pro-image), ground-band grade gain 1.31 (target L* 40)",
+  "sha256": "1f05406ac192eca39aa6a96c3f58935c7648d639621ed643580e697e6d5ce199",
+  "signed": "art director, Mon 26 Oct 2026 18:47 (Mexico City), day composition: no fittings, no front pieces, no hanging lines; day floor L* 40.0, whole 39.0; painted finish; Home cut holds the log, the croziers and the path; all six minis read on the moss, the path and the shelf",
+  "levels": [
+   {
+    "id": "main",
+    "profile": {
+     "x": [
+      16,
+      180,
+      460,
+      700,
+      1009
+     ],
+     "top_painting": [
+      420,
+      380,
+      360,
+      455
+     ]
+    },
+    "bottom_painting": 551
+   },
+   {
+    "id": "shelf",
+    "profile": {
+     "x": [
+      720,
+      1009
+     ],
+     "top_painting": [
+      292
+     ]
+    },
+    "bottom_painting": 330,
+    "note": "the raised mossy shelf at the right; its front face is moss",
+    "joins": [
+     {
+      "to": "main",
+      "kind": "ramp",
+      "rect_painting": [
+       600,
+       330,
+       120,
+       90
+      ]
+     }
+    ]
+   }
+  ],
+  "occluders": [],
+  "superseded": "sa, sb, sc",
+  "pieces": [
+   {
+    "id": "ferns-fern-1",
+    "kind": "occluder",
+    "level": "main",
+    "rect_painting": [
+     30,
+     496,
+     71,
+     48
+    ],
+    "foot_painting": 543,
+    "file": "rooms/pieces/ferns/ferns-fern-1-{light}.png",
+    "what": "low fern tuft, leafy",
+    "keepOut_painting": [
+     36,
+     528,
+     59,
+     18
+    ],
+    "edge": "hard",
+    "view": false
+   },
+   {
+    "id": "ferns-crozier-1",
+    "kind": "occluder",
+    "level": "main",
+    "rect_painting": [
+     740,
+     496,
+     64,
+     46
+    ],
+    "foot_painting": 541,
+    "file": "rooms/pieces/ferns/ferns-crozier-1-{light}.png",
+    "what": "small crozier clump, curled heads low",
+    "keepOut_painting": [
+     746,
+     526,
+     52,
+     18
+    ],
+    "edge": "hard",
+    "moved": "collection v2: from [818, 496] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "ferns-fogger",
+    "kind": "fitting",
+    "level": null,
+    "rect_painting": [
+     556,
+     332,
+     46,
+     29
+    ],
+    "foot_painting": 360,
+    "file": "rooms/pieces/ferns/ferns-fogger-{light}.png",
+    "what": "the fogger bowl in the hollow right of the croziers at the back edge; its fog is the mist wisps (ambient)",
+    "edge": "hard",
+    "share_of_window_pct": 0.3
+   },
+   {
+    "id": "ferns-copper-1",
+    "kind": "fitting",
+    "level": null,
+    "rect_painting": [
+     772,
+     213,
+     4,
+     78
+    ],
+    "foot_painting": 290,
+    "file": "rooms/pieces/ferns/ferns-copper-1-{light}.png",
+    "what": "thin copper drip line among the right fronds, its top behind the fronds",
+    "edge": "hard",
+    "share_of_window_pct": 0.07,
+    "moved": "collection v2: from [836, 213] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "ferns-copper-2",
+    "kind": "fitting",
+    "level": null,
+    "rect_painting": [
+     820,
+     216,
+     6,
+     47
+    ],
+    "foot_painting": 262,
+    "file": "rooms/pieces/ferns/ferns-copper-2-{light}.png",
+    "what": "second thin copper drip line, shorter",
+    "edge": "hard",
+    "share_of_window_pct": 0.06,
+    "moved": "collection v2: from [884, 216] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "ferns-drop",
+    "kind": "drop",
+    "size": [
+     4,
+     6
+    ],
+    "what": "the drop cell: from each line's tip to the shelf's moss, every ~8 s"
+   },
+   {
+    "id": "ferns-mist-1",
+    "kind": "mist",
+    "wisp": "rooms/mist/mist-wisp-1.png",
+    "rect_painting": [
+     530,
+     312,
+     104,
+     26
+    ],
+    "alpha": 0.7,
+    "alpha_in_file": true,
+    "what": "fog brimming from the bowl"
+   },
+   {
+    "id": "ferns-mist-4",
+    "kind": "mist",
+    "wisp": "rooms/mist/mist-wisp-4.png",
+    "rect_painting": [
+     600,
+     338,
+     150,
+     24
+    ],
+    "alpha": 0.45,
+    "alpha_in_file": true,
+    "what": "fog drifting right along the back edge, never below row 362"
+   }
+  ],
+  "seated": "rooms/seated-idle-ferns-{light}.png (the signed scene plus the seats' contact shadows; the engine's base under the pieces)",
+  "composite_proof": "rooms/composite-idle-ferns-{light}.png (proof only; never placed)",
+  "piece_sheets": [
+   "source/raw/pieces-ferns-a.jpg (pieces-ferns-a, gemini-3-pro-image)"
+  ],
+  "near_day": {
+   "file": "rooms/signed-near-ferns-day.png",
+   "source": "vivarium-near-ferns-day-ta (gemini-3-pro-image), cut by rooms.py, no grade",
+   "specimen_floor_near": [
+    136,
+    296,
+    272,
+    56
+   ],
+   "signed": "art director, Mon 26 Oct 2026 19:09 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; no fittings, pond or water in view; one specimen at 144x152 or 104x112 reads"
+  },
+  "lights": {
+   "day": {
+    "idle": "rooms/signed-idle-ferns-day.png",
+    "near": "rooms/signed-near-ferns-day.png",
+    "measures_idle": {
+     "whole": 38.97,
+     "floor": 40.05,
+     "back": 42.26,
+     "R-B whole": 42.5,
+     "warmth": 0.531
+    },
+    "measures_near": {
+     "whole": 36.91,
+     "floor": 33.31,
+     "back": 40.4,
+     "R-B whole": 31.9,
+     "warmth": 0.414
+    }
+   },
+   "night": {
+    "idle": "rooms/signed-idle-ferns-night.png",
+    "near": "rooms/signed-near-ferns-night.png",
+    "source_idle": "idle-vivarium-ferns-night-t (gemini-3-pro-image), an edit of the signed day; graded at 0 MXN by tools/roomgrade.py",
+    "source_near": "vivarium-near-ferns-night-t (gemini-3-pro-image); graded by tools/roomgrade.py",
+    "measures_idle": {
+     "whole": 24.89,
+     "floor": 27.58,
+     "back": 24.79,
+     "R-B whole": -11.3,
+     "warmth": -0.212
+    },
+    "measures_near": {
+     "whole": 24.33,
+     "floor": 26.23,
+     "back": 22.84,
+     "R-B whole": -9.1,
+     "warmth": -0.173
+    },
+    "pieces": "rooms/pieces/ferns/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
+    "seated": "rooms/seated-idle-ferns-night.png",
+    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept"
+   },
+   "dusk": {
+    "idle": "rooms/signed-idle-ferns-dusk.png",
+    "near": "rooms/signed-near-ferns-dusk.png",
+    "source_idle": "idle-vivarium-ferns-dusk-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-ferns-dusk-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 1.258,
+     "warm_balance": 1.094
+    },
+    "grade_near": {
+     "gain": 1.132,
+     "warm_balance": 1.051
+    },
+    "measures_idle": {
+     "whole": 28.1,
+     "floor": 28.53,
+     "back": 29.79,
+     "R-B whole": 34.1,
+     "warmth": 0.567
+    },
+    "measures_near": {
+     "whole": 27.22,
+     "floor": 22.07,
+     "back": 31.15,
+     "R-B whole": 27.2,
+     "warmth": 0.457
+    },
+    "pieces": "rooms/pieces/ferns/*-dusk.png",
+    "seated": "rooms/seated-idle-ferns-dusk.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean (ruling: raw R-B falls with value); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
+   },
+   "dawn": {
+    "idle": "rooms/signed-idle-ferns-dawn.png",
+    "near": "rooms/signed-near-ferns-dawn.png",
+    "source_idle": "idle-vivarium-ferns-dawn-t (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-ferns-dawn-t (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 0.714,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 0.916,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 36.74,
+     "floor": 30.04,
+     "back": 47.34,
+     "R-B whole": 15.9,
+     "warmth": 0.199
+    },
+    "measures_near": {
+     "whole": 35.19,
+     "floor": 30.4,
+     "back": 39.82,
+     "R-B whole": 11.2,
+     "warmth": 0.146
+    },
+    "pieces": "rooms/pieces/ferns/*-dawn.png",
+    "seated": "rooms/seated-idle-ferns-dawn.png",
+    "signed": "art director, Mon 26 Oct 2026 19:21 (Mexico City): G3 order day > dawn > night (whole L*), dawn's back cooler than day's (R-B); graded at 0 MXN (tools/roomgrade.py tone); the minis read on every level"
+   }
+  },
+  "pieces_ruling": "art director, Tue 27 Oct 2026 18:54 (Mexico City), ad-r3-sign.md rulings 2-3: ferns-mist-1 at the cut's own rect [530,312,104,26] and alpha 0.7 (tools/roomcut.py MIST and pieces-<light>.json; the 96x24 rect was a stale record); ferns-mist-3 dropped (never cut, not in the signed composite)",
+  "view": {
+   "crop": [
+    152,
+    96
+   ],
+   "keep": [
+    {
+     "id": "ferns-log",
+     "box": [
+      172,
+      252,
+      298,
+      132
+     ]
+    },
+    {
+     "id": "ferns-croziers",
+     "box": [
+      393,
+      103,
+      126,
+      226
+     ]
+    }
+   ],
+   "drops": [
+    [
+     496,
+     536
+    ],
+    [
+     496,
+     388
+    ],
+    [
+     408,
+     536
+    ],
+    [
+     584,
+     536
+    ],
+    [
+     408,
+     408
+    ],
+    [
+     320,
+     536
+    ],
+    [
+     672,
+     536
+    ],
+    [
+     320,
+     408
+    ]
+   ],
+   "rest": "main's left end inside the crop",
+   "note": "the room view's window [cx, 96, 688, 472] of the painting (the collection v2 design §4, the collection v2 art direction): the owner's edge rule, 14:38 and 15:24"
+  },
+  "chip": {
+   "file": "rooms/chips/room-ferns-chip-{light}-128x32.png",
+   "size": [
+    128,
+    32
+   ],
+   "crop_painting": [
+    176,
+    330,
+    128,
+    32
+   ],
+   "what": "the log under its moss",
+   "source": "the room's placed idle base of the light (Boulders' with the rear stone painted out), the 128 x 32 window at [176, 330], 1:1, opaque; collection v2 art job 4, no new painting"
+  },
+  "tile": {
+   "file": "rooms/tiles/room-ferns-tile-{light}-344x236.png",
+   "size": [
+    344,
+    236
+   ],
+   "crop_painting": [
+    152,
+    96,
+    688,
+    472
+   ],
+   "factor": [
+    1,
+    2
+   ],
+   "source": "the room view's window of the light as it is drawn with no mibi (the placed base, its back pieces, the bed, its occluders by their foot), reduced to exactly 1/2 by 2 x 2 box averages; collection v2 house view, no new painting"
+  }
+ },
+ "roots": {
+  "concept": "bluebell bank under a silver-grey beech (option sheet roots b, tile A, the owner's pick: \"bluebells is lovely\"); rooms/pick-roots-bA.png, the tile's second hollow cloned over with moss at 0 MXN (tools/roomscene.py)",
+  "form": "triangular, high at the left: the beech's root base and the burrow at ~37 % (focal, inside Home's cut), a soil path winding from the front right back to the burrow; bluebells only behind the back edge",
+  "day": "rooms/signed-idle-roots-day.png",
+  "source": "idle-vivarium-roots-day-ub (gemini-3-pro-image): a Pro edit of idle-vivarium-roots-day-ua (the scene from tile A) giving the terrace a rounded lip and a ramp; ground-band grade gain 0.938 (target L* 40)",
+  "sha256": "ab64d5f701018c23b83d57ee80389e23ca10508d39418c890177f7f78f15c55e",
+  "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City), day composition: no fittings, no front pieces painted; day floor L* 39.9, whole 51.0; one burrow only (the focal, ~37 %, inside Home's cut), no second hollow; the bed's seat [792,496,192,56] on a plain moss patch; the terrace's lip rounded and its ramp mossy; no flowers on the walk floor (bluebells only behind the back edge); the beech a size smaller than the gold Roots, minis at the other rooms' scale; all six minis read on the terrace, the ramp, the path and the moss",
+  "keeps": {
+   "bed_painting": [
+    248,
+    496,
+    192,
+    56
+   ],
+   "keepOut_painting": [
+    752,
+    436,
+    256,
+    116
+   ],
+   "home_cut": [
+    64,
+    194,
+    604,
+    362
+   ],
+   "near_specimen_floor_glass": [
+    136,
+    296,
+    272,
+    56
+   ],
+   "bed_master": "rooms/pieces/roots/roots-bed-{light}.png (192x56, the shipped home-bed alpha shape; replaces slices/home-bed-* for Roots once signed in every light)"
+  },
+  "levels": [
+   {
+    "id": "main",
+    "profile": {
+     "x": [
+      16,
+      150,
+      330,
+      540,
+      1009
+     ],
+     "top_painting": [
+      432,
+      416,
+      392,
+      352
+     ]
+    },
+    "bottom_painting": 551
+   },
+   {
+    "id": "terrace",
+    "profile": {
+     "x": [
+      16,
+      200
+     ],
+     "top_painting": [
+      292
+     ]
+    },
+    "bottom_painting": 340,
+    "note": "the mound's lower flank at the left, its front lip low, rounded and mossy",
+    "joins": [
+     {
+      "to": "main",
+      "kind": "ramp",
+      "rect_painting": [
+       150,
+       296,
+       190,
+       130
+      ]
+     }
+    ]
+   }
+  ],
+  "occluders": [],
+  "superseded": {
+   "note": "the gold Roots (option sheet roots a tile A, day ta, pieces-roots-a's fern tuft, stone and mister, the near candidate ta), superseded by the owner's pick from sheet b; only pieces-roots-a's bed cut is reused, regraded",
+   "day": "rooms/superseded-idle-roots-gold-day.png",
+   "near": "rooms/superseded-near-roots-gold-day.png"
+  },
+  "pieces": [
+   {
+    "id": "roots-sorrel-1",
+    "kind": "occluder",
+    "level": "main",
+    "rect_painting": [
+     118,
+     496,
+     96,
+     46
+    ],
+    "foot_painting": 541,
+    "file": "rooms/pieces/roots/roots-sorrel-1-{light}.png",
+    "what": "low moss-and-wood-sorrel tuft, leafy, no flowers",
+    "keepOut_painting": [
+     124,
+     526,
+     84,
+     18
+    ],
+    "edge": "hard"
+   },
+   {
+    "id": "roots-stone-2",
+    "kind": "occluder",
+    "level": "main",
+    "rect_painting": [
+     592,
+     499,
+     68,
+     41
+    ],
+    "foot_painting": 539,
+    "file": "rooms/pieces/roots/roots-stone-2-{light}.png",
+    "what": "small rounded silver-grey stone, moss cap; clear of the bed's keepOut (x 752) and the away corner (x 668)",
+    "keepOut_painting": [
+     598,
+     524,
+     56,
+     18
+    ],
+    "edge": "hard",
+    "moved": "collection v2: from [684, 499] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "roots-bed",
+    "kind": "bed",
+    "level": "main",
+    "rect_painting": [
+     248,
+     496,
+     192,
+     56
+    ],
+    "foot_painting": 551,
+    "file": "rooms/pieces/roots/roots-bed-{light}.png",
+    "what": "the sleeping nest (pieces-roots-a's cut) regraded to the bluebell room; the shipped home-bed shape and seat [792,496,192,56]",
+    "edge": "soft (the shipped home-bed alpha shape)",
+    "keepOut_painting": [
+     208,
+     436,
+     256,
+     116
+    ],
+    "moved": "collection v2: from [792, 496] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "roots-mister",
+    "kind": "fitting",
+    "level": null,
+    "rect_painting": [
+     610,
+     323,
+     50,
+     34
+    ],
+    "foot_painting": 356,
+    "file": "rooms/pieces/roots/roots-mister-{light}.png",
+    "what": "a small pewter-grey line ending in a dull brass nozzle, wrapped by a root and a moss sprig, lying in the back moss mound at the right under the bluebells, resting on the moss, pointing left; its spray is a mist wisp (ambient)",
+    "edge": "hard",
+    "share_of_window_pct": 0.38,
+    "moved": "collection v2: from [920, 323] (the room's window, the collection v2 design §4)"
+   },
+   {
+    "id": "roots-mist-2",
+    "kind": "mist",
+    "wisp": "rooms/mist/mist-wisp-2.png",
+    "rect_painting": [
+     540,
+     324,
+     80,
+     18
+    ],
+    "alpha": 0.6,
+    "alpha_in_file": true,
+    "what": "the mister's spray, drifting left from the nozzle and fading",
+    "moved": "collection v2: from [850, 324] (the room's window, the collection v2 design §4)"
+   }
+  ],
+  "seated": "rooms/seated-idle-roots-{light}.png (the signed scene plus the seats' contact shadows; the engine's base under the pieces)",
+  "composite_proof": "rooms/composite-idle-roots-{light}.png (proof only; never placed)",
+  "piece_sheets": [
+   "source/raw/pieces-roots-b.jpg (pieces-roots-b, gemini-3-pro-image): the sorrel tuft, the stone, the mister",
+   "source/raw/pieces-roots-a.jpg (pieces-roots-a): the bed cut only, regraded to the bluebell room (white balance 0.85 to its seat)"
+  ],
+  "near_day": {
+   "file": "rooms/signed-near-roots-day.png",
+   "source": "vivarium-near-roots-day-ua (gemini-3-pro-image), cut by rooms.py, no grade",
+   "specimen_floor_near": [
+    136,
+    296,
+    272,
+    56
+   ],
+   "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): the specimen's open floor plain ground at 1x (G8); painted finish; the beech roots frame the left, the burrow far back, bluebells only in the far back; no fittings, pond or water"
+  },
+  "lights": {
+   "day": {
+    "idle": "rooms/signed-idle-roots-day.png",
+    "near": "rooms/signed-near-roots-day.png",
+    "measures_idle": {
+     "whole": 51.0,
+     "floor": 39.93,
+     "back": 65.71,
+     "R-B whole": 19.7,
+     "warmth": 0.172
+    },
+    "measures_near": {
+     "whole": 51.67,
+     "floor": 39.44,
+     "back": 62.73,
+     "R-B whole": 20.3,
+     "warmth": 0.174
+    }
+   },
+   "night": {
+    "idle": "rooms/signed-idle-roots-night.png",
+    "near": "rooms/signed-near-roots-night.png",
+    "source_idle": "idle-vivarium-roots-night-u (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-roots-night-u (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain_back": 0.82,
+     "gain_floor": 1.101,
+     "gamma": 1.0
+    },
+    "grade_near": {
+     "gain_back": 0.82,
+     "gain_floor": 1.069,
+     "gamma": 1.0
+    },
+    "measures_idle": {
+     "whole": 27.42,
+     "floor": 30.55,
+     "back": 26.31,
+     "R-B whole": -24.1
+    },
+    "measures_near": {
+     "whole": 31.97,
+     "floor": 33.59,
+     "back": 29.65,
+     "R-B whole": -13.0
+    },
+    "pieces": "rooms/pieces/roots/*-night.png (graded by hand from the same cuts, tools/roomcut.py night)",
+    "seated": "rooms/seated-idle-roots-night.png",
+    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
+    "pieces_regrade": "art director, Tue 27 Oct 2026 18:54 (Mexico City), ad-r3-sign.md: roots-stone-2-night regraded at 0 MXN (tools/roomcut.py gain_night 0.98): mean L 103 -> 90 against the floor's 87, so it no longer outranks the sleepers; composite-idle-roots-night retaken; the other night pieces unchanged"
+   },
+   "dusk": {
+    "idle": "rooms/signed-idle-roots-dusk.png",
+    "near": "rooms/signed-near-roots-dusk.png",
+    "source_idle": "idle-vivarium-roots-dusk-u (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-roots-dusk-u (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 1.0,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 32.87,
+     "floor": 26.12,
+     "back": 42.06,
+     "R-B whole": 22.2
+    },
+    "measures_near": {
+     "whole": 34.55,
+     "floor": 25.76,
+     "back": 42.7,
+     "R-B whole": 20.9
+    },
+    "pieces": "rooms/pieces/roots/*-dusk.png (graded by hand from the same cuts, tools/roomcut.py dusk)",
+    "seated": "rooms/seated-idle-roots-dusk.png",
+    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dusk > night (whole L*), dusk warmer than day as (R-B)/mean; no grade needed; the minis read on every level"
+   },
+   "dawn": {
+    "idle": "rooms/signed-idle-roots-dawn.png",
+    "near": "rooms/signed-near-roots-dawn.png",
+    "source_idle": "idle-vivarium-roots-dawn-u (gemini-3-pro-image), an edit of the signed day",
+    "source_near": "vivarium-near-roots-dawn-u (gemini-3-pro-image)",
+    "grade_idle": {
+     "gain": 0.941,
+     "warm_balance": 1.0
+    },
+    "grade_near": {
+     "gain": 0.945,
+     "warm_balance": 1.0
+    },
+    "measures_idle": {
+     "whole": 48.15,
+     "floor": 37.38,
+     "back": 61.64,
+     "R-B whole": 8.0
+    },
+    "measures_near": {
+     "whole": 48.81,
+     "floor": 37.03,
+     "back": 59.52,
+     "R-B whole": 14.6
+    },
+    "pieces": "rooms/pieces/roots/*-dawn.png (graded by hand from the same cuts, tools/roomcut.py dawn)",
+    "seated": "rooms/seated-idle-roots-dawn.png",
+    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 order day > dawn > night (whole L*, one value gain, tools/roomgrade.py tone), dawn's back cooler than day's (R-B); the minis read on every level"
+   }
+  },
+  "options_b": "source/raw/options-roots-b.jpg (options-roots-b): A bluebell carpet (the owner's pick), B spring wildflower bank, C sunny dewy morning, D silver birch bank",
+  "view": {
+   "crop": [
+    0,
+    96
+   ],
+   "keep": [
+    {
+     "id": "roots-tree",
+     "box": [
+      22,
+      0,
+      606,
+      374
+     ],
+     "leaves": "top",
+     "what": "the trunk, the root flare and the roots"
+    },
+    {
+     "id": "roots-burrow",
+     "box": [
+      334,
+      286,
+      92,
+      84
+     ]
+    }
+   ],
+   "drops": [
+    [
+     344,
+     444
+    ],
+    [
+     256,
+     444
+    ],
+    [
+     432,
+     420
+    ],
+    [
+     472,
+     536
+    ],
+    [
+     168,
+     460
+    ],
+    [
+     520,
+     420
+    ],
+    [
+     560,
+     536
+    ],
+    [
+     88,
+     536
+    ]
+   ],
+   "rest": "main's left end inside the crop",
+   "note": "the room view's window [cx, 96, 688, 472] of the painting (the collection v2 design §4, the collection v2 art direction): the owner's edge rule, 14:38 and 15:24"
+  },
+  "chip": {
+   "file": "rooms/chips/room-roots-chip-{light}-128x32.png",
+   "size": [
+    128,
+    32
+   ],
+   "crop_painting": [
+    330,
+    320,
+    128,
+    32
+   ],
+   "what": "the burrow's dark mouth under the root flare",
+   "source": "the room's placed idle base of the light (Boulders' with the rear stone painted out), the 128 x 32 window at [330, 320], 1:1, opaque; collection v2 art job 4, no new painting"
+  },
+  "tile": {
+   "file": "rooms/tiles/room-roots-tile-{light}-344x236.png",
+   "size": [
+    344,
+    236
+   ],
+   "crop_painting": [
+    0,
+    96,
+    688,
+    472
+   ],
+   "factor": [
+    1,
+    2
+   ],
+   "source": "the room view's window of the light as it is drawn with no mibi (the placed base, its back pieces, the bed, its occluders by their foot), reduced to exactly 1/2 by 2 x 2 box averages; collection v2 house view, no new painting"
+  }
+ },
+ "enclosure": "art director's ruling: the enclosure reads, light-touch, by (1) the foot strip, rows 552-567, painted in every room as a substrate cross-section seen through the front glass (soil over a darker drainage layer), (2) each room's placed life-support piece as the device cue, (3) the face's own window chrome (home.json shade, 2 px). No painted glass edges, posts or box (they turned every picture into a cabinet in rounds c and sa). Optional for the owner: a faint glass corner sheen at the far side edges, a 0 MXN hand layer.",
+ "pieces_note": "Pieces by the composite method, cut and placed by hand at 0 MXN (tools/roomcut.py). Painting coordinates (1024x568); the whole's window y = painting y - 80. rect [x, y, w, h]; foot = the lowest row of the piece's ink; occluders are hard-edged straight alpha (ARGB8888); draw order by foot row with the walkers. Cut and placed by the art director, Mon 26 Oct 2026 19:04 (Mexico City), tools/roomcut.py.",
+ "hashes_note": "hashes: the sha256 of every rooms file the placer copies (prototypes/ui/tools/place-masters.mjs placeRooms), keyed by its masters-pods path; a copied file with another hash is refused. 16 seated, 16 near, 80 pieces. signed-idle-<room>-<light>.png stays pinned by each room's sha256. Filled by the art director, Tue 27 Oct 2026 18:54 (Mexico City).",
+ "hashes": {
+  "rooms/pieces/boulders/boulders-arm-fill-dawn.png": "eee517d24f63618463951e2789403e6f1fe9d6ac55fbe309003e6e5c87c09a77",
+  "rooms/pieces/boulders/boulders-arm-fill-day.png": "3a7cceea6f5a3129fa3848383b8255348cbbeb2af5a8279aaf85bc9bf0c209ed",
+  "rooms/pieces/boulders/boulders-arm-fill-dusk.png": "30514d5266f1bd8b51929b4c5b260d27196c10bf8c124e346a6d82d099a383fe",
+  "rooms/pieces/boulders/boulders-arm-fill-night.png": "5823af9f0daba7d1eccb4829c746ce6f68af3efa892d1ad1076ae948120ece4e",
+  "rooms/pieces/boulders/boulders-cushion-1-dawn.png": "c2d51715dbf43d9babc0d0cfe2f8847283b1dc2ea4f4b9cc75c5a771988ed530",
+  "rooms/pieces/boulders/boulders-cushion-1-day.png": "844416b39e5e83deedc814f899b4ecf032c6d97699d28ab6444fc74bd0b8c713",
+  "rooms/pieces/boulders/boulders-cushion-1-dusk.png": "892495f2d6433b0bb9e4b31eb09675ab1097af129eb8fc00d39fd232fea389b0",
+  "rooms/pieces/boulders/boulders-cushion-1-night.png": "c7a50b1b91bd40e4cd53b9e607d58c14fa8149653c07b7c5a1fba830079b6a30",
+  "rooms/pieces/boulders/boulders-lantern-dawn.png": "c62c2d5d8c2101b986b8546c93ef46676c88a6622ef8d7614738f273cc6c6a3d",
+  "rooms/pieces/boulders/boulders-lantern-day.png": "503271749a33fceb249b7cb7d9e6bac11da7ee7a0c7e8a35e9c7485afb856998",
+  "rooms/pieces/boulders/boulders-lantern-dusk.png": "1a4dbc07b8c53eff542b096b5f0fa6803737accf60f9f5137a79120e59c07ea3",
+  "rooms/pieces/boulders/boulders-lantern-night.png": "73d07004d753e11a0ca6eea734085c78ab8dc2555e3daf15692e79ce4fac5bf4",
+  "rooms/pieces/boulders/boulders-shishi-dawn.png": "46703181651c2e918a32338386dc2d5c641cdbe7c379f65aa295f07a6dedae21",
+  "rooms/pieces/boulders/boulders-shishi-day.png": "1a3ede848788dd1a859cfef96c9e717dcad33cca23ed474d76e3d8eab78915e3",
+  "rooms/pieces/boulders/boulders-shishi-dusk.png": "56e60363e883806e8230d964339377668ce5a40fbb2e79c827dd28a98828a2a4",
+  "rooms/pieces/boulders/boulders-shishi-night.png": "74c9ccac4fa1d7f67f5da8e36b13fc670b28672811366ec4318cf50889bd2dee",
+  "rooms/pieces/boulders/boulders-stone-2-dawn.png": "b05cbd0911e52fb61025e9312084b3bd661a00890ae370e35c97862fb258fca6",
+  "rooms/pieces/boulders/boulders-stone-2-day.png": "353b95b496dc3d67db241de176474e02244805cc1e8627380b7f691654323f90",
+  "rooms/pieces/boulders/boulders-stone-2-dusk.png": "c6568b55b4a953b7763ce65d1d07f9dc10de1a01a8736bbd0f2c59945b0286c2",
+  "rooms/pieces/boulders/boulders-stone-2-night.png": "582a04517707892a3c728aa8724a9e34376942c9aa7d595bdfea1b4b61c7a32e",
+  "rooms/pieces/ferns/ferns-copper-1-dawn.png": "ceee3ff0c7d54475011fb87c180e6884d9c0f943dcbc955e5c598b1cb7618738",
+  "rooms/pieces/ferns/ferns-copper-1-day.png": "bb10619b45062221bc528282ffd2cbf8ca2587ef70a55feaa45e1b7582caf9b8",
+  "rooms/pieces/ferns/ferns-copper-1-dusk.png": "ad0dbbe796b53ac74a7255378c3a0ae70cc66e07dcf2c3a096880d1e07ac25cc",
+  "rooms/pieces/ferns/ferns-copper-1-night.png": "0a3b2dda375491681ffb75b1e3d62f8d4739a144b19fe3951066c69e0ec0d45e",
+  "rooms/pieces/ferns/ferns-copper-2-dawn.png": "bf8ced61af7bee984b235ab33ec890b4b113eabad4914959dbb8563bde288cef",
+  "rooms/pieces/ferns/ferns-copper-2-day.png": "507ab36aa3c2ab081ee9cb2d9e66c11e74200fe2f5939014d71a1e101bae3545",
+  "rooms/pieces/ferns/ferns-copper-2-dusk.png": "718c58c1e41f26fcea76e4b4e705944cea28e1d76d0bacd8b97ea6b20432d502",
+  "rooms/pieces/ferns/ferns-copper-2-night.png": "51c061025fb1bec7bee99737410b57a62d7a762eb4c62728d82edb5ae8091a98",
+  "rooms/pieces/ferns/ferns-crozier-1-dawn.png": "91727dcae4d9913913b89a8ca3f57a61d89b9c0aa38a71bd842e5ccb6e01f93b",
+  "rooms/pieces/ferns/ferns-crozier-1-day.png": "30e85207bbbdfe4042da79ab9ffe61a04b5f3d181104dfbb4be55f9e525f2ade",
+  "rooms/pieces/ferns/ferns-crozier-1-dusk.png": "cec848025472d40a88202f6a9d6505b8654f0335b6e67690bec6f1efb6cc823f",
+  "rooms/pieces/ferns/ferns-crozier-1-night.png": "5ab4b6e651d6d3b8205b15e110d0b002124bc3d65c19933d77820d40fdb40447",
+  "rooms/pieces/ferns/ferns-fern-1-dawn.png": "72a1cac17207ccb264697440794a682ce6fdcee97b88ccc755dc4bfc6af937b6",
+  "rooms/pieces/ferns/ferns-fern-1-day.png": "b79f03dd5bdc45fa1e98d4e66bb1f9e0e3c503feb9713127c12dbd94d5d1dff7",
+  "rooms/pieces/ferns/ferns-fern-1-dusk.png": "c78f4a6858618f00a09f2140f85fff33b02f51cef1d75f427d99d70a56feca74",
+  "rooms/pieces/ferns/ferns-fern-1-night.png": "215fca8d852335078d6b4493bde76ab7bc6b58bedd30beeb0ee55f7527e2c477",
+  "rooms/pieces/ferns/ferns-fogger-dawn.png": "8d6d6e5c42d354e593d2f5dcd250ca4f721fe2facf129eeeae07afec98bfa12e",
+  "rooms/pieces/ferns/ferns-fogger-day.png": "e83f349bd2975ae96d6facc3dce67033bbd21199e0bb55295f6980013824a7df",
+  "rooms/pieces/ferns/ferns-fogger-dusk.png": "3e1f2bcf6816748c5d3006a0526f08576accf508ca3fda6c388af4e6d2bcb1b7",
+  "rooms/pieces/ferns/ferns-fogger-night.png": "6640eb0d9fdb7bfa6e98771bdcb388c6e1254c1b610a8327056537e37489381f",
+  "rooms/pieces/ferns/ferns-mist-1-dawn.png": "f3cccbfd7276f812012cd5f62fefc570bc0e3aa6f45077f4af5e7466ea0a1b86",
+  "rooms/pieces/ferns/ferns-mist-1-day.png": "21d3d7164da221acff848ab8f3ac7ace302af554bd464cef200dea65fa9056d9",
+  "rooms/pieces/ferns/ferns-mist-1-dusk.png": "748833641e419ae2f30f820cbe1b6a9aeeef5453b1051f1113c4e0cf6df8a53e",
+  "rooms/pieces/ferns/ferns-mist-1-night.png": "33d9379e01c92dae3b84a0046c22b4e2302dc3c52071068f825bdab59cb46ab3",
+  "rooms/pieces/ferns/ferns-mist-4-dawn.png": "188413c55de7f88f97c2195ee819391262032eac4219a0bcc3eff974fd4cc0dd",
+  "rooms/pieces/ferns/ferns-mist-4-day.png": "aaaa86134e27813dabfdd576537a772a2ebe508d936fa9ecdae272ece5f15609",
+  "rooms/pieces/ferns/ferns-mist-4-dusk.png": "f7a82f09a4cb9484133b46b87445e25e656a3f2d2925bcebd8035a77b32047a9",
+  "rooms/pieces/ferns/ferns-mist-4-night.png": "06a6fa65410860f377a4fd4556295775db9aa6928620335c02fb037ef2c4beae",
+  "rooms/pieces/reeds/reeds-raincup-dawn.png": "9087183f57a18034f6af2ab99c969d48a21a68b043e0ed97f0eeb0f4a28c0746",
+  "rooms/pieces/reeds/reeds-raincup-day.png": "08751efb9877642ac3ab19668673c8eef06944c1648e9c3da372f1bc9baa2a39",
+  "rooms/pieces/reeds/reeds-raincup-dusk.png": "94bbae6a27c3c353521facca0fcfee9c5162886cdad27da6b4774783213462e9",
+  "rooms/pieces/reeds/reeds-raincup-night.png": "2a0d945419bbe4b4c9ae50fe30e356338cd0ac45f2e27d9d079461c70113d938",
+  "rooms/pieces/reeds/reeds-sedge-2-dawn.png": "5f8a5c68085e08ad00732d492e03a5b843defd932880f303b81f4b57d1476675",
+  "rooms/pieces/reeds/reeds-sedge-2-day.png": "9b30bd2e5b3e815a9c415a0ec4686149373df111f79bbbf9e228591d3e306fee",
+  "rooms/pieces/reeds/reeds-sedge-2-dusk.png": "bb5aeeeb07d60516972b95043bc6c4cacb844cf8f06869f06150cda846f7cb5c",
+  "rooms/pieces/reeds/reeds-sedge-2-night.png": "f0cd8b80b88314dcc713d84749798799f59a0e1000cfd0dcc018a273c5b87e90",
+  "rooms/pieces/reeds/reeds-stone-1-dawn.png": "c2c3e400af73b5d6bb4e74e4b164687243a828b8c5d5533b2281b1c412cd2d17",
+  "rooms/pieces/reeds/reeds-stone-1-day.png": "dff8542924bb245c29aaaa482c87de8ae252a2cea09f69bce5dcdaa650d7e7cb",
+  "rooms/pieces/reeds/reeds-stone-1-dusk.png": "e9e2a8d20d898dec37d6f0e7727c260047d3f8cb4377da8be1fb36f3d47d68d2",
+  "rooms/pieces/reeds/reeds-stone-1-night.png": "c964d467dbec36e781d3b9c7f8eb1195d7a51dc281b490d1481edb8fc7939efa",
+  "rooms/pieces/roots/roots-bed-dawn.png": "a46ca8373c5b8e4e2c91606fde7e445b347b30c10a173b8ed3dfd18f100977e5",
+  "rooms/pieces/roots/roots-bed-day.png": "b567e2bb341412be387f3c0ed40afe8a06e62ca1e5472d0a6c8d93ab09b67a4b",
+  "rooms/pieces/roots/roots-bed-dusk.png": "9ec6f9a1de7c38040309f23e030ed1116ebf9ca8cca9a81b3990291aeed51035",
+  "rooms/pieces/roots/roots-bed-night.png": "895617832580b9c16247281468d27f72938108953f9dab6a2347add48b86c7d7",
+  "rooms/pieces/roots/roots-mist-2-dawn.png": "d9427a17f39ee1a228f641f5114827dfbe67f86205adf5d24178b442bf925504",
+  "rooms/pieces/roots/roots-mist-2-day.png": "c9efaaf5dae725f48a37c90a771f0044390e0c219e69658b1d3e8755d4dbd7d9",
+  "rooms/pieces/roots/roots-mist-2-dusk.png": "297d42ce4b0212ea4eab62f265baaa99826ac292e8306f27c44d3f4cc6860d20",
+  "rooms/pieces/roots/roots-mist-2-night.png": "81191314719ac246f44bebf48ef2f6644f4bcdc2148e1128f535827d08811c65",
+  "rooms/pieces/roots/roots-mister-dawn.png": "1523c3e35c49896567f733533d3ccc868bea6023c3901ed6b76820a4f29f1ed2",
+  "rooms/pieces/roots/roots-mister-day.png": "ef23be41d0f8da9940a80132c59215b4dbd33d0888eff0007b012fc848bd1931",
+  "rooms/pieces/roots/roots-mister-dusk.png": "79176b7a70178bcb73a5f7d0b4143d03c366a82e77ad885b9bb8f2f611366773",
+  "rooms/pieces/roots/roots-mister-night.png": "ead6fe428af16c3fc0d8f3d68a586ba0582a752670ff7b160ebcc92aa60c87ec",
+  "rooms/pieces/roots/roots-sorrel-1-dawn.png": "3e2f0de19dc9ab20e52a14a662469b95c046be00719e72fb1fad22d6afc3d2cc",
+  "rooms/pieces/roots/roots-sorrel-1-day.png": "4f5d951219d0656e31b03aa075cf2c94ebf1fd44f48e46f74512b44a5fd93e07",
+  "rooms/pieces/roots/roots-sorrel-1-dusk.png": "0fb3578d3d04b5a7f87432fd480985e2f82c2eeb86d062ac53ac6f2b62a26d83",
+  "rooms/pieces/roots/roots-sorrel-1-night.png": "1dfc7a801e98dce32b852ad90b1d795d94298117b1659e09dc634f3da4340b7e",
+  "rooms/pieces/roots/roots-stone-2-dawn.png": "fbdecc1370368967041de199e9abfb65f205d1ba6aea3ea8c2d6205d310e4b75",
+  "rooms/pieces/roots/roots-stone-2-day.png": "4864e38ad8ba24d1b67bbb05ba54d07fb3d951627714438ca4108e6625ffc474",
+  "rooms/pieces/roots/roots-stone-2-dusk.png": "c320ffe30aac80920ab89c282bfdd5d7492604f89d6a5e34e17bcb7680dc3fee",
+  "rooms/pieces/roots/roots-stone-2-night.png": "5b1eff398b9794b59091ba5d9993b1f319d5fb832bcf8868b0ebf2a93328fe8d",
+  "rooms/seated-idle-boulders-dawn.png": "1ba51bcb471564587d61a41145861cb9e3c7427c38e5007b975d6d56324076b4",
+  "rooms/seated-idle-boulders-day.png": "913658e4dc6325b8c96f2c699a2e31c4e10c36b23aae1ab7e39170a11978a090",
+  "rooms/seated-idle-boulders-dusk.png": "dbbff5c17a8089e270febe468cf46561becaf4d9e335d2e561c9002b4eb52df1",
+  "rooms/seated-idle-boulders-night.png": "a65033888845d43008239a4df94697e37801b80d4ad6fcffa61ae857af8788fa",
+  "rooms/seated-idle-ferns-dawn.png": "c090eca3b400e67e0db854aa1c7867ab45971b9429b8001911b2709b93c96100",
+  "rooms/seated-idle-ferns-day.png": "db5a9e40c05622af7292cbf83fdac9b34def404528f3897a94905df754cd29d8",
+  "rooms/seated-idle-ferns-dusk.png": "df34388963419519cf0e71f29963aca5689294b7737f2c19b6a791fcd15fae03",
+  "rooms/seated-idle-ferns-night.png": "32f44c6279db5f4da0099d08c60ce3a39b556dce4b0dfa9a240fa14141625a90",
+  "rooms/seated-idle-reeds-dawn.png": "2a797923f764ca3cd0d935d8aebf8174d11f72a07ed34e236aab461efbaa1ccf",
+  "rooms/seated-idle-reeds-day.png": "0e26f3b5a858f772e7429fd1486f1a34d9fb17883cfac48482279aac996012ec",
+  "rooms/seated-idle-reeds-dusk.png": "d008930a8f8ebeaa4e8ec458a60d72742b187b966f479f246ceabe74123173d0",
+  "rooms/seated-idle-reeds-night.png": "32e456785beb7007ad45a1353d364a7884c547cd3278eee7344f49ec6277e3c3",
+  "rooms/seated-idle-roots-dawn.png": "130853a8c49a2677d3ba3d0f3c41cdd7afda306dbb40a5f60d167b94135187c2",
+  "rooms/seated-idle-roots-day.png": "ca190df530d12a1e30b147ac91d9db059c399cd3941b3604390c53fd1ee843af",
+  "rooms/seated-idle-roots-dusk.png": "5c1c7418c309555637ad7bf714d96390f9c68acbe8bb4747fa373b121666538e",
+  "rooms/seated-idle-roots-night.png": "b4fb4edc952be29b1e3fece56d0093e042e31155c2fde0e68cd85a88c0760a14",
+  "rooms/signed-near-boulders-dawn.png": "c34449ac4174ca12c1e4062ff3f962df2b83a2c1f56a80b417dad6d2273359d3",
+  "rooms/signed-near-boulders-day.png": "26fa7c65804be6790303a1aec32ec949ad8a1ed11645d81c71b726392c74b067",
+  "rooms/signed-near-boulders-dusk.png": "a92e4781cda1c50cbd79cb3cf867a2d23e83d4abdd52a4ba72f78d90c9281ad2",
+  "rooms/signed-near-boulders-night.png": "03bc04d68228efe3ae5aa6760e528827e78aa0bfe4f151a784e2eae3b17bc44b",
+  "rooms/signed-near-ferns-dawn.png": "01c816a96551e7e19a424deb4ebdf66e2a0a11745dc93939ffd2b2e29bcfe9b2",
+  "rooms/signed-near-ferns-day.png": "c65967777b584a4c6f4ecd78a792935060f0c6330166e9284538576a5a68998a",
+  "rooms/signed-near-ferns-dusk.png": "3288cf06a3252723b0da0d08495c5df8980ec9a6bd820efda6f1ca03c2fc328f",
+  "rooms/signed-near-ferns-night.png": "b8e61c718136df47f32d655370b13d21de0c42f55df792deea4710f7b49eb589",
+  "rooms/signed-near-reeds-dawn.png": "81f459865ef7e2b6a29c0bc41f8e49a6077d9159d5d28ddccf243cd5223ceafd",
+  "rooms/signed-near-reeds-day.png": "2f7cc4796a0c570767546b48d1bb7565736be85e77e687152ec36c194be50170",
+  "rooms/signed-near-reeds-dusk.png": "ed3026a4f1bdc5cfdd787dff6ced7e5ca3f88efe40610c7a4614b089c5a23511",
+  "rooms/signed-near-reeds-night.png": "ae6aa1e2e28abc4ccc53b5c9b2526b5b5b143ef982ef5ce427b77685272d118b",
+  "rooms/signed-near-roots-dawn.png": "46bf20571955b7e2a69997f7c548c11ece6e2930da0a75cdbdc88a1481741159",
+  "rooms/signed-near-roots-day.png": "70c28ac88799aacdd9a5a42023409f6f34b1c10899f3f3fb0df64d1ac51f651c",
+  "rooms/signed-near-roots-dusk.png": "a1a597963fdadbefd77779567a2ee1482e61f93748f477ca6dac323bc2b4dde6",
+  "rooms/signed-near-roots-night.png": "a23989aedd104b57da62f55eefd4c3bfd05f2ced92d1e523c05e350b2dbe43c4",
+  "rooms/chips/room-roots-chip-dawn-128x32.png": "790f7f4639010e723a24b0e55edb0aa1e9a9670e843cbcd7b64dd4faf32ec537",
+  "rooms/chips/room-roots-chip-day-128x32.png": "2dc3f255bd6dc3e31fbd3d2f065ac5b9a0632d293b48545e9507620ccb8ba7e5",
+  "rooms/chips/room-roots-chip-dusk-128x32.png": "93b572be160fa868188619ba48ad0e45935dea652c157d4ab93179f545acd3ec",
+  "rooms/chips/room-roots-chip-night-128x32.png": "721edbe8d708e0375042b90c9cfb3a8053a253c3de095bb31475d89658203598",
+  "rooms/chips/room-reeds-chip-dawn-128x32.png": "ddc7eca5de18dabcbffe73755e070429d1da2a1ff6760cc61adffa6f0ad31ed1",
+  "rooms/chips/room-reeds-chip-day-128x32.png": "3f5dd039d3d499ea9af3506a2a270ce5f96983954ff1e32f42482469cdddf0df",
+  "rooms/chips/room-reeds-chip-dusk-128x32.png": "23955ea783de6dd3f2959f3c1527fbb04b8e5902271f8d1792450839ff8d9157",
+  "rooms/chips/room-reeds-chip-night-128x32.png": "fa04b01586878eb14b1ce02e5536971d04be9794cb6522b296433d38695bfbf1",
+  "rooms/chips/room-boulders-chip-dawn-128x32.png": "ba8f6e50adf460058fcedab62f1fef8d1d0a34b25aea2e509c82913c92dbcb68",
+  "rooms/chips/room-boulders-chip-day-128x32.png": "740faf57ee53755be5f2d53ef5dbb16460b5a1e90c3c5297f6e5d77969ad1dcc",
+  "rooms/chips/room-boulders-chip-dusk-128x32.png": "af33a66c664775dac5035667f1d28b6e1333703aa8305a73491a2df6da0a4edd",
+  "rooms/chips/room-boulders-chip-night-128x32.png": "289d5dcda8be75268fc97b10c5ad8d3ad14431f455dba30a7c1fff771306fca1",
+  "rooms/chips/room-ferns-chip-dawn-128x32.png": "6c8975e9295f58bb05da3904284e052e1e06a645496aabd14ab2a845d506a65f",
+  "rooms/chips/room-ferns-chip-day-128x32.png": "3c568c99f875b0e10f107b8e7034f2519ee8b15c57aad5715a97e7bb60938deb",
+  "rooms/chips/room-ferns-chip-dusk-128x32.png": "c7a33f4145b7413067c85c93fc8a9f2e5f88cfd7ac7bb26a83c1e8f66b621e2a",
+  "rooms/chips/room-ferns-chip-night-128x32.png": "0fef5d136ec4a039b0290f38a8eb591672eb46ef54fb895562b40e5a49a6e054",
+  "rooms/tiles/room-roots-tile-dawn-344x236.png": "fe75e25e4b9d0410a7aa75488a45a38862464b99492b819951f83c62c2a8d67f",
+  "rooms/tiles/room-roots-tile-day-344x236.png": "db1d5b5239c61a336ab1b1e47b138afbc67861fc06436dbb667b9fd90a641dc9",
+  "rooms/tiles/room-roots-tile-dusk-344x236.png": "67c647551290bde6c291a44c73a6c44b8a023f3090b40187bf82fcbc7b105522",
+  "rooms/tiles/room-roots-tile-night-344x236.png": "3d3a9158108f4690aeca9026e7b6371ec560db13fe1fc21176d3ab2b3fc1c0fd",
+  "rooms/tiles/room-reeds-tile-dawn-344x236.png": "1e87b47be23632099f32fdedd575fe2db0337e9df0d95cd9ced5d29493a72972",
+  "rooms/tiles/room-reeds-tile-day-344x236.png": "4d380ece2e5508c8968b8832c8e72c77282064046e5c58e1367f09edb41a8712",
+  "rooms/tiles/room-reeds-tile-dusk-344x236.png": "a30e2d0ce8bbf5e50c52b841ea3dd27a5ee840a0ab813cb2cea8bc6b5609fcfc",
+  "rooms/tiles/room-reeds-tile-night-344x236.png": "41f0050d6cb9a0532c6b97c0fc1210b418b10e5dfb3ef0c3d7afcb3dff41e73f",
+  "rooms/tiles/room-boulders-tile-dawn-344x236.png": "e0ea37a1652f54f64acf0da388c3c2fb0c7767491d62afc57f38169c576ea6c1",
+  "rooms/tiles/room-boulders-tile-day-344x236.png": "641fdb867257719bbb2430468f0f933a487bad70ce95c0f20e3d39beceeec101",
+  "rooms/tiles/room-boulders-tile-dusk-344x236.png": "45ff88d77fbc2d1466dcddbe10763b192900d28d97cb6b950cabbec0e544c550",
+  "rooms/tiles/room-boulders-tile-night-344x236.png": "f837f8b158f1645a12e35037259210450ceafb936fcf6c6e5adf5fd58f013330",
+  "rooms/tiles/room-ferns-tile-dawn-344x236.png": "4bf4e0422c6b0d081f51a96b93fdb8e553e0aceecacd75d14efc57773fcb5d02",
+  "rooms/tiles/room-ferns-tile-day-344x236.png": "bc2d564fd58362f17aeaa81f54c5f618eb41e5289c10444d9fe174faff1b4cb7",
+  "rooms/tiles/room-ferns-tile-dusk-344x236.png": "da76426d6e13d9968655ba3e49841ce79e9573ebd275004425837eb88f92e74e",
+  "rooms/tiles/room-ferns-tile-night-344x236.png": "fac308d9fbd70a276e78fe1dfddb865e213374effb1b81ac768bf0b850190791"
+ },
+ "unsigned": {
+  "rooms/seated-idle-boulders-dawn.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/seated-idle-boulders-day.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/seated-idle-boulders-dusk.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/seated-idle-boulders-night.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/pieces/roots/roots-bed-dawn.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/pieces/roots/roots-bed-day.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/pieces/roots/roots-bed-dusk.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/pieces/roots/roots-bed-night.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-roots-chip-dawn-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-roots-chip-day-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-roots-chip-dusk-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-roots-chip-night-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-reeds-chip-dawn-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-reeds-chip-day-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-reeds-chip-dusk-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-reeds-chip-night-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-boulders-chip-dawn-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-boulders-chip-day-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-boulders-chip-dusk-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-boulders-chip-night-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-ferns-chip-dawn-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-ferns-chip-day-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-ferns-chip-dusk-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/chips/room-ferns-chip-night-128x32.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-roots-tile-dawn-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-roots-tile-day-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-roots-tile-dusk-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-roots-tile-night-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-reeds-tile-dawn-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-reeds-tile-day-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-reeds-tile-dusk-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-reeds-tile-night-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-boulders-tile-dawn-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-boulders-tile-day-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-boulders-tile-dusk-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-boulders-tile-night-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-ferns-tile-dawn-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-ferns-tile-day-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-ferns-tile-dusk-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x",
+  "rooms/tiles/room-ferns-tile-night-344x236.png": "the collection v2 art job, code and hand work, for the art director's check at 1x"
+ },
+ "collection_v2": {
+  "note": "collection v2 art job (the collection v2 design Builder checklist 1 to 4): Boulders' rear stone painted out of the four seated idle bases; Roots' bed re-lit at [248, 496, 192, 56] (gain per light below, a contact shadow on the path); the room chips cut 128 x 32; the windows' crops, keep boxes and drop spots; the pieces moved for the windows. Made by art/station-masters/collection/source/rooms_v2.py in the Station repo, no paid call",
+  "bed_gain": {
+   "dawn": [
+    0.9126,
+    0.858,
+    1.0164
+   ],
+   "day": [
+    0.9115,
+    0.8612,
+    1.0044
+   ],
+   "dusk": [
+    0.9197,
+    0.8906,
+    0.9996
+   ],
+   "night": [
+    0.9228,
+    0.8774,
+    1.0058
+   ]
+  }
+ }
+}
