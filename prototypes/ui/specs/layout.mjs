@@ -349,8 +349,9 @@ export function edgeCuts(log, spec, extra = {}) {
     else if (n.kind === KIND.sprite && n.region === "bed") forms.push({ id: "bed", box: n.rect });
     else if (n.kind === KIND.sprite && n.region === "room") forms.push({ id: "room piece", box: n.rect });
   }
-  for (const j of E.joins ?? []) if (Array.isArray(j?.rect)) forms.push({ id: j.id, box: toScreen(j.rect) });
-  for (const k of E.keep ?? []) if (Array.isArray(k?.box)) forms.push({ id: k.id, box: toScreen(k.box), painting: k.box, leaves: k.leaves ?? null });
+  const formOf = (q) => (Array.isArray(q?.form) ? q.form : Array.isArray(q?.rect) ? q.rect : Array.isArray(q?.box) ? q.box : null);   // the props name a form's painting box `form` (a fact, never drawn from)
+  for (const j of E.joins ?? []) { const f = formOf(j); if (f) forms.push({ id: j.id, box: toScreen(f) }); }
+  for (const k of E.keep ?? []) { const f = formOf(k); if (f) forms.push({ id: k.id, box: toScreen(f), painting: f, leaves: k.leaves ?? null }); }
   const reaches = (b, s) => (s === "left" ? b[0] <= 0 : s === "top" ? b[1] <= 0 : s === "right" ? b[0] + b[2] >= pw : b[1] + b[3] >= ph);
   const out = [];
   for (const f of forms) {

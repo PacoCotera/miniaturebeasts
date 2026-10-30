@@ -7,7 +7,7 @@ import { movingIds, playable, movingFigure } from "../moving.mjs";
 import { standLook } from "../stands.mjs";
 import { asset as assetOf } from "../../../ui/assets.mjs";
 import { drawnLooks } from "../looks.mjs";
-import { layeredStand, standPictureId, standFigure, standVariant, curlFactor, curlPicture, curlOfStand, viewFigureHeight } from "../layered-stand.mjs";
+import { layeredStand, standPictureId, standFigure, standVariant, curlFactor, curlPicture, curlOfStand, viewFigureHeight, viewFactor, factorPlace, factorPicture } from "../layered-stand.mjs";
 import { keyToken } from "../looks.mjs";
 import { goalWords } from "./goal-words.mjs";
 import { readyCrates, bayState } from "../sitting.mjs";
@@ -38,28 +38,46 @@ const poseName = (pose) => (typeof pose === "string" ? pose : pose?.pose ?? "anc
 export const mibiPictureOf = (st, mb, size, settings, light = "day", view = "default", pose = "anchor") => {
   const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
   if (stand) { const looks = drawnLooks(frameOf(sp), mb); return { id: standPictureId(stand, looks, light), stage: grown, size: [...stand.size], looks }; }
+  const fac = factorOf(sp, grown, size, view); if (fac) return { id: fac.id + (light === "day" ? "" : ":" + light), stage: fac.stage, size: [...size], factor: fac.f, master: fac.master };
   const { stage, size: drawn } = lookOf(st, mb, size, settings);
   return { id: mibiPictureId(genomeDigest(mb.genome), stage, drawn, light), stage, size: drawn };
 };
+// A species with no layered stand in a factor view (the mibi collection's: vivarium, vivariumHouse, vivariumCard; stand-sizes.json `factor`): its stage's signed 304 x 312 stand reduced once by the view's factor, bottom-centred
+// in the factor's place (96 x 99, 48 x 50, 144 x 148), never upscaled, never fitted per mibi: { id, stage, f, master }, or null (not a factor view at its place, or no 304 master placed). An elder takes the adult's.
+function factorOf(sp, stage, size, view) {
+  const f = viewFactor(view), fp = factorPlace(view); if (!f || !fp || fp[0] !== size[0] || fp[1] !== size[1]) return null;
+  const ls = standLook(sp, stage === "elder" ? "adult" : stage, [304, 312]); if (ls.step === 3 || ls.size.join("x") !== "304x312") return null;   // an adult with no stand of its own is its species' juvenile stand (stands.mjs, rule 5)
+  const ms = ls.stage === "juvenile" ? "juvenile" : "adult", master = `mibi-${ms}-${sp}-304x312`;
+  return { id: `mibi:${sp}~${keyToken(`factor|${master}|${f}`)}:${ms}:${size[0]}x${size[1]}`, stage: ms, f, master };
+}
+// A picture of a mibi in a state the collection's views mark on the figure itself (the collection v2 design §5, §6): `dark` (a traveller: its colours darkened x 0.55), `cold` (tucked away: its palette with `sage` mixed in at 12 %,
+// precomputed), `outline` (coming out: its 1 px `fog` silhouette, the figure's outline only). The id is the base picture's with its token taken again with the variant, so it stays in its family; { id, request } (the request makes it from the base).
+export function mibiVariantReq(req, base, variant) {
+  const m = /^(mibi:S\d{2}~)([0-9a-f]{8})(:.*)$/.exec(base.id), id = m ? m[1] + keyToken(`${m[2]}|${variant}`) + m[3] : base.id.replace(/^mibi:/, `mibi:${variant}-`);   // a picture of no stand (the rig's): its id marked with the variant
+  return req({ kind: "mibiv", id, variant, base });
+}
 // A standing mibi's figure, [dx, dy, W, H]: the drawn bbox of its composed figure in its picture, or null when the picture is not a layered stand
 export const figureOf = (st, mb, size, settings, view = "default", pose = "anchor") => {
-  const sp = S.speciesOf(mb), stand = layeredStand(sp, mb.stage ?? S.mibiStage(st, mb, settings), size, view, poseName(pose)); if (!stand) return null;
+  const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
+  if (!stand) { const fac = factorOf(sp, grown, size, view); return fac ? factorPicture(assetOf(fac.master), fac.f, size, fac.id).figure : null; }   // a factor view's reduced master: the ink of the same reduction
   return standFigure(stand, drawnLooks(frameOf(sp), mb));
 };
 // A sleeper's curl at the stand's scale (the owner's full-size ruling), with its own shadow: { id, figure, request }, or null when no curl master is placed. A species with a layered stand composes its `curl` pose in the mibi's own looks at the
 // stand's scale; every other species reduces its 304 curl master by the factor its standing picture gets, look.size[0] / 304 × viewH / slot[1] (0.168 adult, 0.122 juvenile). `nap` is the nap pose's ink box, no longer read here.
 export function curlOfMibi(st, mb, nap, slot, settings, light, view) {
-  const look = lookOf(st, mb, slot, settings); if (look.step === 3) return null;
-  const sp = S.speciesOf(mb), ms = look.stage === "juvenile" ? "juvenile" : "adult", master = `mibi-${ms}-${sp}-curl-304x312`, vh = viewFigureHeight(look.stage, view); if (!vh) return null;
+  const look = lookOf(st, mb, viewFactor(view) ? [304, 312] : slot, settings); if (look.step === 3) return null;   // a factor view reduces the 304 cut: its stand is the 304's
+  const sp = S.speciesOf(mb), ms = look.stage === "juvenile" ? "juvenile" : "adult", master = `mibi-${ms}-${sp}-curl-304x312`, vh = viewFigureHeight(look.stage, view); if (!vh && !viewFactor(view)) return null;
   const lay = layeredStand(sp, look.stage, [304, 312], view, "curl"), looks = lay && drawnLooks(frameOf(sp), mb);
   const src = lay ? curlOfStand(lay, looks) : assetOf(master); if (!src) return null;
-  const f = lay ? 1 : look.size[0] / 304 * vh / slot[1], tag = lay ? standVariant(lay, looks).key : master;
+  const f = lay ? 1 : viewFactor(view) ?? look.size[0] / 304 * vh / slot[1], tag = lay ? standVariant(lay, looks).key : master;   // a factor view: the curl master at the view's factor, as its stand
   const pic = curlPicture(src, sp, look.stage, f, view, `${tag}|${look.stage}`); if (!pic.figure) return null;
   const day = `mibi:${sp}~${keyToken(`curl|${tag}|${view}|${f}`)}:${ms}:${pic.w}x${pic.h}`;
   return { id: day + (light === "day" ? "" : ":" + light), figure: pic.figure, request: { kind: "curl", id: day + (light === "day" ? "" : ":" + light), day, master, species: sp, stage: look.stage, view, factor: f, ...(lay ? { looks } : {}), ...(light === "day" ? {} : { light }) } };
 }
 // The request carries the pose only when it is not the anchor, and `owed` (poseFor's "habit key <habit>") when the pose given has one: a scene showing it is refused as a golden (main.mjs snapshot)
-export const mibiReq = (req, st, mb, size, settings, light = "day", view = "default", pose = "anchor") => { const p = mibiPictureOf(st, mb, size, settings, light, view, pose), name = poseName(pose), owed = typeof pose === "string" ? null : pose?.owed; return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size, ...(p.looks ? { looks: p.looks, view } : {}), ...(light === "day" ? {} : { light }), ...(name !== "anchor" ? { pose: name } : {}), ...(owed ? { owed } : {}) }); };
+export const mibiReq = (req, st, mb, size, settings, light = "day", view = "default", pose = "anchor") => { const p = mibiPictureOf(st, mb, size, settings, light, view, pose), name = poseName(pose), owed = typeof pose === "string" ? null : pose?.owed; return req({ kind: "mibi", id: p.id, mibi: mb.id, stage: p.stage, species: S.speciesOf(mb), size: p.size, ...(p.looks ? { looks: p.looks, view } : {}), ...(p.factor ? { factor: p.factor, master: p.master } : {}), ...(light === "day" ? {} : { light }), ...(name !== "anchor" ? { pose: name } : {}), ...(owed ? { owed } : {}) }); };
+// The request object itself (not only its id), for a variant made from it (mibiVariantReq)
+export const mibiRequest = (st, mb, size, settings, light = "day", view = "default") => { let r = null; mibiReq((q) => { r = q; return q.id; }, st, mb, size, settings, light, view); return r; };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
@@ -154,6 +172,7 @@ export function livingOf(m, R, req, ph, L) {
   const pic = (mb, size) => mibiReq(req, st, mb, size, settings, m.light, m.view ?? "home");
   // A species with a layered stand draws a moving resident as that stand translated along its path, with no walk cycle, until its atlases carry the layers at world size: it keeps its own coat and marks, at the stand's size
   const standOf = (mb) => layeredStand(S.speciesOf(mb), stageOf(mb), sizeOf(mb), m.view ?? "home");
+  const atlasOK = !viewFactor(m.view ?? "home");   // a factor view (the mibi collection's room view, 96/304): the moving sets' atlases are cut at the world size, so every mibi there walks as its stand translated (vivarium.json notes.scale)
   const person = (mb, extra = {}) => {
     const nap = !!extra.nap, kept = nap && !!extra.noCurl; delete extra.nap; delete extra.noCurl;   // kept: a moving nap set draws its own atlas at the old nap size
     const curl = nap && !kept ? curlOfMibi(st, mb, R.bed.sleepers.ink.max, sizeOf(mb), settings, m.light ?? "day", m.view ?? "home") : null;   // a sleeper takes the world-size curl when its nap master is placed
@@ -167,7 +186,7 @@ export function livingOf(m, R, req, ph, L) {
   const rec = rules && m.time != null ? here.map((mb) => { const r = { id: String(mb.id), species: S.speciesOf(mb), stage: stageOf(mb) }; return { id: r.id, stage: r.stage, born: mb.born ?? 0, night: nightOf(r, m.time, rules), fresh: freshOf(r, mb.roomSince, m.now, m.time, rules), roomSince: mb.roomSince ?? null }; }) : [];
   const resters = rules && m.time != null ? restersOf(rec, ui, rules, max) : [], rested = new Set(resters);
   const arrived = new Set((m.arrived ?? []).map(String));
-  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m); if (mv) { p.moving = mv; const mf = movingFigure(mv.walk); if (mf) p.figure = mf; else delete p.figure; } /* a moving resident's figure is its atlas's (measured once), not its stand's */ if (rest) p.rest = rest[String(mb.id)];
+  const residents = here.map((mb) => { const p = person(mb, { seed: hash(mb.id) }), mv = standOf(mb) || !atlasOK ? "" : movingProp(mb, stageOf(mb), req, m); if (mv) { p.moving = mv; const mf = movingFigure(mv.walk); if (mf) p.figure = mf; else delete p.figure; } /* a moving resident's figure is its atlas's (measured once), not its stand's */ if (rest) p.rest = rest[String(mb.id)];
     if (p.rest === "asleep" && !mv && standOf(mb)) { const c = curlOfMibi(st, mb, R.bed.sleepers.ink.max, sizeOf(mb), settings, m.light ?? "day", m.view ?? "home"); if (c) { p.curl = req(c.request); p.curlFigure = c.figure; } }   // a sleeping resident with a curl draws it in place, its foot on its feet line; on waking it cuts back to its stand
     if (rules) p.shown = !rested.has(p.id);
     if (arrived.has(p.id)) p.enter = "edge";   // a traveller home since the walk began: it walks in from the room's rest edge (rooms.json rest.edge)
@@ -175,7 +194,7 @@ export function livingOf(m, R, req, ph, L) {
   // where each rester rests, in rest order: the bed first (Roots; a place for each, up to sleepers.max), else its own way: a curl (hash(id) mod 100 < show.curl.pct[stage], at most show.curl.max a room) or out. A mibi with no curl picture (a still's nap master, a moving set's nap) always goes out.
   const sleepers = [], curlMax = rules ? rules.show.curl.max : 0; let curled = 0;
   for (const id of resters) {
-    const mb = here.find((q) => String(q.id) === id), p = residents.find((q) => q.id === id), mv = standOf(mb) ? "" : movingProp(mb, stageOf(mb), req, m, ["nap"]);
+    const mb = here.find((q) => String(q.id) === id), p = residents.find((q) => q.id === id), mv = standOf(mb) || !atlasOK ? "" : movingProp(mb, stageOf(mb), req, m, ["nap"]);
     const curl = mv ? null : curlOfMibi(st, mb, R.bed.sleepers.ink.max, sizeOf(mb), settings, m.light ?? "day", m.view ?? "home"), has = !!mv || (!!curl && !!standOf(mb));
     if (!has) { p.restAt = "out"; continue; }
     if (hasBed && sleepers.length < R.bed.sleepers.max) { const q = person(mb, { seed: hash(mb.id), nap: true, noCurl: !!mv, rester: true, shown: false }); if (mv) q.moving = mv; sleepers.push(q); p.restAt = "bed"; continue; }

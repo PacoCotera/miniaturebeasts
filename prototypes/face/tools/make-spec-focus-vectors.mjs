@@ -16,7 +16,8 @@ const TARGETS = {
   home: (state, spec) => spec.focus.targets ? Object.entries(spec.focus.targets).map(([id, t]) => ({ id, rect: spec.regions[id].rect, group: t.group })) : [],
   incubator: (state, spec) => [{ id: "room", rect: spec.focus.roomAt, group: "room" }],   // one subject: the room, no ring drawn
   // the wireframe 18's targets (focus.layout), in the order the view lists them: the residents, then the tiles; a mibi `away` (out with the Companion) is a tile and no resident
-  vivarium: (state, spec, v) => Object.entries(spec.focus.layout).filter(([id]) => id !== "note" && (state !== "empty" || id.startsWith("room."))).filter(([id]) => !(id.startsWith("resident.") && (v.away ?? []).includes(id.slice(9)))).map(([id, rect]) => ({ id, rect, group: id.slice(0, id.indexOf(".")), ...(/^(tile|room)\./.test(id) ? { index: Object.keys(spec.focus.layout).filter((k) => k.startsWith(id.slice(0, id.indexOf(".") + 1))).indexOf(id) } : {}) })),   // the wireframe 18's targets: the residents, the tiles, then the chips (two rooms and the new-room chip); the empty state lists the chips only
+  // the collection v2 room view's targets (focus.layout), in the order the view lists them: the residents, the chips (with their index), the card's plates (with theirs)
+  vivarium: (state, spec) => Object.entries(spec.focus.layout).filter(([id]) => id !== "note").map(([id, rect], k, all) => { const group = id.slice(0, id.indexOf(".")), index = all.filter(([q]) => q.startsWith(group + ".")).findIndex(([q]) => q === id); return { id, rect, group, ...(group === "resident" ? {} : { index }) }; }),
   // one mibi up close: the view's targets in its order (the resident but out, the name but in the meet, the species word, one plate a chapter, the four modules, six tiles t0 to t5 of the eight places, then the room chips), the boxes the spec gives
   habitat: (state, spec, v) => { const R = spec.regions, np = v.chapters ?? 4, out = [];
     if (state !== "out") out.push({ id: "resident", rect: R.resident.rect, group: "resident" }); if (state !== "meet") out.push({ id: "name", rect: R.nameTag.rect, group: "name" }); out.push({ id: "species", rect: R.speciesLine.rect, group: "species" }); out.push({ id: "family", rect: [R.story.rect[0], R.story.rect[1], R.story.rect[2], 2 * R.story.pitch], group: "family" });
@@ -47,11 +48,7 @@ for (const screen of screens) {
   for (const v of F.vectors ?? []) {
     if (v.intent && !/^step:/.test(v.intent)) continue;   // ✓ and ← are intents on the target, not moves
     const st = screen === "pods-overview" ? { graph: F[v.state] } : v.state && F[v.state]?.graph ? F[v.state] : F, c = { name: `${screen}: ${v.state ? v.state + ", " : ""}${v.from} ${v.key}${v.away ? " (away: " + v.away.join(", ") + ")" : ""}${v.intent ? " says " + v.intent : ""}`, graph: st.graph, targets: TARGETS[screen](v.state, spec, v), from: v.from, key: v.key, to: v.to };
-    if (screen === "vivarium") {   // the view's selectors for the ring where it stands (views/vivarium-props.mjs): the focused resident's own tile; the focused tile's resident, null when it is out; room.shown is the first room's chip; the empty state's ring is on the room
-      const resolve = {}, here = (id) => c.targets.some((t) => t.id === id);
-      if (v.from.startsWith("resident.")) resolve["tile.of"] = "tile." + v.from.slice(9); if (v.from.startsWith("tile.")) resolve["resident.of"] = here("resident." + v.from.slice(5)) ? "resident." + v.from.slice(5) : "";
-      resolve["room.shown"] = "room.0"; c.resolve = resolve; if (v.from === "room") c.roomAt = F.roomAt;
-    }
+    if (screen === "vivarium") { c.resolve = { ...(F.resolveFor ?? {}) }; if (v.from === "room") c.roomAt = F.roomAt; }   // the view's selectors for the ring the vectors start from (views/vivarium-props.mjs): the card's first live plate, the lit chip, the card's mibi
     if (screen === "home") { c.roomAt = F.roomAt; c.name = `home: ${v.from} ${v.key} is ${v.to}`; }   // the ring at rest is on the room: its point is roomAt
     if (screen === "habitat") {   // the symbolic tiles: the first tile, a tile, the shown one (t2); the selector the view gives
       const sym = (id) => (id === "tile.first" ? "tile.t0" : id === "a tile" || id === "tile.shown" ? "tile.t2" : id === "room.shown" ? "room.0" : id); c.from = sym(v.from); c.to = sym(v.to); c.resolve = { "tile.shown": "tile.t2", "room.shown": "room.0" };

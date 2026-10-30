@@ -83,9 +83,9 @@ const FACTORS = new Map();
 const worldPart = (a) => a.part === "walk" || a.part === "nap" || (a.part === "shadow" && (movingOf(a.species, a.stage)?.shadow?.walk ?? []).join("x") === `${a.w}x${a.h}`);   // the close-up's atlases are not the world's
 function reduction(a, src) {
   const walkId = `moving:${a.stage}:${a.species}:walk:${movingOf(a.species, a.stage).walk.size.join("x")}:${a.look ?? "species"}`;
-  if (a.part === "nap") { const f = curlFactor(a.stage, "vivarium", movingOf(a.species, a.stage).walk.size[1]); return f && f < 1 ? f : 1; }
+  if (a.part === "nap") { const f = curlFactor(a.stage, "home", movingOf(a.species, a.stage).walk.size[1]); return f && f < 1 ? f : 1; }
   if (FACTORS.has(walkId + "|" + (src === SOURCE))) return FACTORS.get(walkId + "|" + (src === SOURCE));
-  const target = viewFigureHeight(a.stage, "vivarium"), fig = target ? atlasFigure(walkId, compose(walkId, src, [], false)) : null, f = fig && target / fig[3] < 1 ? target / fig[3] : 1;
+  const target = viewFigureHeight(a.stage, "home"), fig = target ? atlasFigure(walkId, compose(walkId, src, [], false)) : null, f = fig && target / fig[3] < 1 ? target / fig[3] : 1;
   FACTORS.set(walkId + "|" + (src === SOURCE), f); return f;
 }
 export function compose(id, src, layers = [], reduce = true) {

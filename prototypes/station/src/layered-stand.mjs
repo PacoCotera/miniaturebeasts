@@ -25,7 +25,11 @@ const stageKey = (stage) => (stage === "elder" ? "adult" : stage);   // an elder
 const ART_SIZE = "304x312";
 // The figure box a view draws a stage's stand in: the config's `views[view][stage]` is the figure's height in px (crest to feet), the box is the canvas scaled to that; a view or stage the table does not give draws
 // the whole canvas fitted in the place (a tile, the Companion: unchanged). `places` lists the sizes that are standing poses.
+// A view with a `factor` [n, d] (the mibi collection's views) draws every stand of every species and stage at n / d: the box is the canvas times the factor, rounded up, the same for all (never a fit per mibi).
+export const viewFactor = (view) => { const f = SIZES?.views?.[view]?.factor; return Array.isArray(f) && f.length === 2 && f[0] > 0 && f[1] > 0 ? f[0] / f[1] : null; };
+export const factorPlace = (view) => { const f = viewFactor(view); if (!f) return null; const [cw, ch] = ART_SIZE.split("x").map(Number); return [Math.ceil(cw * f - 1e-9), Math.ceil(ch * f - 1e-9)]; };
 export function figureBox(stand, place, view) {
+  const fp = factorPlace(view); if (fp) return fp;
   const h = SIZES?.views?.[view]?.[stageKey(stand.stage ?? "adult")]; if (!h) return [...place];
   const fig = INDEX.stands[stand.species][stand.stage].figure, fh = fig[3] - fig[1] + 1, [cw, ch] = ART_SIZE.split("x").map(Number), s = h / fh;
   return [Math.max(1, Math.round(cw * s)), Math.max(1, Math.round(ch * s))];
@@ -88,6 +92,23 @@ export function fitDownBy(src, sw, sh, s, w, h) {   // the sw×sh picture reduce
   return out;
 }
 
+// A placed 304 x 312 stand reduced by one factor (a factor view's picture for a species with no layered stand), bottom-centred in a w x h picture: { w, h, rgba(), figure }, kept by `key`
+const FACTORED = new Map();
+export function factorPicture(src, f, [w, h], key = "") {
+  if (key && FACTORED.has(key)) return FACTORED.get(key);
+  const px = fitDownBy(src.rgba(), src.w, src.h, f, w, h), r = { w, h, rgba: () => px, figure: inkBox(px, w, h) }; if (key) FACTORED.set(key, r); return r;
+}
+// The variants the collection's views draw a figure in (the collection v2 design §5, §6), made from its picture's pixels, palette names to RGB by `rgb`: dark (x 0.55), cold (sage mixed in at 12 %), outline (a 1 px silhouette of the
+// figure's solid ink, alpha >= 128, in `fog`, nothing inside it). Straight alpha in, straight alpha out.
+export function variantPixels(src, w, h, variant, rgb) {
+  const out = new Uint8ClampedArray(w * h * 4);
+  if (variant === "dark") { for (let i = 0; i < src.length; i += 4) { out[i] = Math.round(src[i] * 0.55); out[i + 1] = Math.round(src[i + 1] * 0.55); out[i + 2] = Math.round(src[i + 2] * 0.55); out[i + 3] = src[i + 3]; } return out; }
+  if (variant === "cold") { const [r, g, b] = rgb("sage"); for (let i = 0; i < src.length; i += 4) { out[i] = Math.round(src[i] * 0.88 + r * 0.12); out[i + 1] = Math.round(src[i + 1] * 0.88 + g * 0.12); out[i + 2] = Math.round(src[i + 2] * 0.88 + b * 0.12); out[i + 3] = src[i + 3]; } return out; }
+  if (variant === "outline") { const [r, g, b] = rgb("fog"), on = (x, y) => x >= 0 && y >= 0 && x < w && y < h && src[(y * w + x) * 4 + 3] >= 128;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (on(x, y) && (!on(x - 1, y) || !on(x + 1, y) || !on(x, y - 1) || !on(x, y + 1))) { const o = (y * w + x) * 4; out[o] = r; out[o + 1] = g; out[o + 2] = b; out[o + 3] = 255; }
+    return out; }
+  throw new Error(`no variant ${variant}`);
+}
 // The art of a stand's looks on the close canvas (304×312): the base with the layers laid on it
 function artOf(stand, looks) {
   const [cw, ch] = ART_SIZE.split("x").map(Number), b = PIXELS.get(baseFor(stand, looks)).rgba(), out = new Uint8ClampedArray(b);
@@ -161,8 +182,8 @@ export function traitTile(species, stage, trait, look, size) {
 // The nap picture (the 96×88 master) reduced by the standing figure's factor for its stage: the view's figure height over the standing slot's (54 / 152 for an adult, 40 / 112 for a juvenile), about 34 × 31, with the curl's own
 // shadow under it, reduced by the stand's factor (the same rule as the standing shadow) and its row `feetRow` on the curl's last ink row. The picture is as wide as the curl and its shadow and as tall as both. { w, h, rgba(), figure }.
 // the figure height a view draws a stage at (54 adult, 40 juvenile in the world views), or null
-export const viewFigureHeight = (stage, view = "vivarium") => SIZES?.views?.[view]?.[stageKey(stage)] ?? null;
-export function curlFactor(stage, view, slotH) { const h = SIZES?.views?.[view]?.[stageKey(stage)]; return h ? h / slotH : null; }
+export const viewFigureHeight = (stage, view = "home") => SIZES?.views?.[view]?.[stageKey(stage)] ?? null;
+export function curlFactor(stage, view, slotH) { const h = SIZES?.views?.[view]?.[stageKey(stage)]; return h ? h / slotH : null; }   // a factor view's curl is the curl master at the factor (viewFactor)
 // A layered species' curl at the stand's own scale (the owner's full-size ruling): the composed `curl` pose of the stand, cut to the canvas reduced by the stand's factor (54/288, 40/189), bottom-centred as composeStand draws it; { w, h, rgba() }.
 // curlPicture takes it with the factor 1 and lays the curl's shadow under it.
 const STAND_CURLS = new Map();

@@ -10,7 +10,7 @@
 #include "../vendor/jsmn.h"
 #include "../spec/jnum.h"
 
-extern const lv_font_t face_inter_16, face_inter_16m, face_inter_20, face_inter_28;
+extern const lv_font_t face_inter_14, face_inter_15, face_inter_16, face_inter_16m, face_inter_20, face_inter_28;
 #define MAX_OBJ 1024            /* the table is larger than the 400-object budget so a breach is measured, not refused (lvgl-switch.md §2.2) */
 #define MAX_ASSET 256
 #define MAX_SRC 16         /* face-owned sources for nine-slices (the focus rings, the bezels: the Library's three cell bezels with the rest), after the host's pictures in the same table; kept for the session, so every screen's together */
@@ -82,8 +82,8 @@ int prim_painted_at(int x, int y) {
   return 0;
 }
 int prim_pictures(void) { int n = 0; for (int i = 0; i < MAX_ASSET + MAX_SRC + 1; i++) if (g_a[i].px) n++; for (int i = 0; i < g_n; i++) if (g_o[i].composed) n++; return n; }
-/* the font of a code (prim.h PRIM_FONT_*): the four the face holds, NULL for any other */
-static const lv_font_t *font_of(int code) { return code == PRIM_FONT_R16 ? &face_inter_16 : code == PRIM_FONT_M16 ? &face_inter_16m : code == PRIM_FONT_M20 ? &face_inter_20 : code == PRIM_FONT_SB28 ? &face_inter_28 : NULL; }
+/* the font of a code (prim.h PRIM_FONT_*): the six the face holds, NULL for any other */
+static const lv_font_t *font_of(int code) { return code == PRIM_FONT_R14 ? &face_inter_14 : code == PRIM_FONT_R15 ? &face_inter_15 : code == PRIM_FONT_R16 ? &face_inter_16 : code == PRIM_FONT_M16 ? &face_inter_16m : code == PRIM_FONT_M20 ? &face_inter_20 : code == PRIM_FONT_SB28 ? &face_inter_28 : NULL; }
 int prim_font_px(int code) { return font_of(code) ? code % 1000 : 0; }
 int prim_measure(int code) {
   const lv_font_t *f = font_of(code); if (!f) return -1;
@@ -172,6 +172,14 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
       uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
       if (hasf) { if (ring_mask(mask, bw, bh, 4000, radius, 0) < 0) { free(mask); return -1; } for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, fillc); }
       if (hase) { if (ring_mask(mask, bw, bh, 1, radius, 0) < 0) { free(mask); return -1; } for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, edgec); }
+      free(mask);
+    } else if (nl == 4 && strncmp(name, "oval", 4) == 0 && tok[i].size == 6) {   /* ["oval", x, y, w, h, colour]: a 1 px ellipse outline inside the box (the collection's drop spots); not a focus ring, so it sets no ring flag */
+      if (!COL(4)) return -1;
+      int x = A(0), y = A(1), bw = A(2), bh = A(3);
+      if (g_bad || bw < 1 || bh < 1 || x < 0 || y < 0 || x + bw > w || y + bh > h || (long)bw * bh > 1024L * 600) return -1;
+      uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
+      if (ring_mask(mask, bw, bh, 1, 0, 1) < 0) { free(mask); return -1; }
+      for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
       free(mask);
     } else if (nl == 8 && strncmp(name, "rcorners", 8) == 0 && tok[i].size == 7) {   /* ["rcorners", x, y, w, h, radius, colour]: the corners of a w x h box that lie outside its rounded shape, in colour (a square picture seated in a rounded window) */
       if (!COL(5)) return -1;

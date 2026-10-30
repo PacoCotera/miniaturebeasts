@@ -35,4 +35,11 @@ int room_xs(int lv, int *xs, int cap);
 int room_route(int from, int to, int leg[2][2][2]);
 /* The join is a hop (its leg 2 is one hop clip for a set that has one); 0 for a ramp. */
 int room_join_hop(int jn);
+/* The collection v2 room view (the collection v2 design §3, §4): with the mode on, room_select leaves out the pieces the room view does not hold (rooms.json view: false); room_crop gives a room's crop [cx, cy] (painting); room_drops and
+   room_drop the selected room's drop spots (rooms.json drops, foot points) in the window's coordinates; room_level_at the level a ground point stands on (0 when none). */
+void room_view_mode(int on);
+int room_crop(const char *id, int out[2]);
+int room_drops(void);
+int room_drop(int k, int *fx, int *feet);
+int room_level_at(int fx, int feet);
 #endif

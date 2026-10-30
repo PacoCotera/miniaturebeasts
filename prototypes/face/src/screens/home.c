@@ -30,18 +30,18 @@ static int has(const char *asset) { return asset && *asset && wire_has_asset(ass
    ticks; the minor axis by Bresenham), and at most one group tick is applied a frame (a later frame drops the time past it by moving the walk's origin later in whole ticks), so at most half of the boxes change in any frame. The residents step in
    the order of their times (one tick of the household at a time), so what a walker reads of the others (the travelling ceiling, the raised cap) is the household's state at that tick, never a frame's. Its own 32-bit LCG runs from its seed. A focused
    resident stands on its pixel and its idle and walk freeze; with motion off it stands at its start. The walk state lives while the screen shows and starts again from the seeds when Home is shown again; a new id starts from its own seed, a props change with the same seed keeps the state. */
-static int g_kx, g_ky, g_xlo, g_xhi, g_flo, g_fn;   /* home.json regions.resident.walk, read at each draw: the keep-out zone's corner, the box.x range 8 px inside the glass, the feet's rows of the spec's own ground band */
+static int g_kx, g_ky, g_kw, g_xlo, g_xhi, g_flo, g_fn;   /* g_kw: the room view's keep-out width (a foot-point rect; Home and Idle keep the box rule, their keep-outs reach the walk's right end) */   /* home.json regions.resident.walk, read at each draw: the keep-out zone's corner, the box.x range 8 px inside the glass, the feet's rows of the spec's own ground band */
 static int g_rlo, g_rhi;   /* the rows the feet may take: Home's own band, or the spec's ground band when no room is chosen; none on the whole and Idle (the room's levels are the feet band there) */
 static int g_lx;   /* the window's left edge (the clip): a rester walks off past it (R4b) */
 static int g_stw;   /* home.json regions.resident.walk.startWiden (Home only, 0 elsewhere): a start whose ink box meets a shown resident's ink box widened this many px each side is drawn again (up to eight draws); R4b-1b */
 static int g_trmax, g_rdiv, g_lvin, g_spd[3][2], g_nres;   /* vivarium.json rules.travel.max, rules.walk.raisedDiv and .levelOneIn and .speed[stage] = [px, ticks]; the residents shown (the raised cap's N) */
 static void walk_load(void) {
   int bed = *v_pstr("regions.bed.state") != 0;   /* the room has a bed (Roots only, the rooms design): the sleepers' keep-out applies only then */
-  if (g_viv) {   /* the whole (vivarium.json regions.resident.walk): the box.x range is the walk ground's, 16..1008, and the keep-out is the spec's */
-    g_kx = bed ? v_sk(sp(), hp("regions.resident.walk.keepOut"), 0) : 1 << 20; g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1);
+  if (g_viv) {   /* the room view (vivarium.json regions.resident.walk): the box.x range is the walk ground's, 8..680 (the clamp: the ink 8 px inside the window), and the keep-out is the spec's, a foot-point rect over the bed */
+    g_kx = bed ? v_sk(sp(), hp("regions.resident.walk.keepOut"), 0) : 1 << 20; g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1); g_kw = v_sk(sp(), hp("regions.resident.walk.keepOut"), 2);
     g_xlo = v_sk(sp(), hp("regions.resident.walk.ground"), 0); g_xhi = g_xlo + v_sk(sp(), hp("regions.resident.walk.ground"), 2);
-  } else if (g_idle) {   /* Idle (frame.json idle.regions.resident.walk): the box.x range is the walk ground's own, 16..1008, and the keep-out is the spec's, never derived from the window's rectangle */
-    g_kx = bed ? v_sk(sp(), hp("regions.resident.walk.keepOut"), 0) : 1 << 20; g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1);
+  } else if (g_idle) {   /* Idle (frame.json idle.regions.resident.walk): the box.x range is the walk ground's own, 16..1008, and the keep-out is the spec's, a foot-point rect over the bed (the bed at the room's centre), never derived from the window's rectangle */
+    g_kx = bed ? v_sk(sp(), hp("regions.resident.walk.keepOut"), 0) : 1 << 20; g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1); g_kw = v_sk(sp(), hp("regions.resident.walk.keepOut"), 2);
     g_xlo = v_sk(sp(), hp("regions.resident.walk.ground"), 0); g_xhi = g_xlo + v_sk(sp(), hp("regions.resident.walk.ground"), 2);
   }
   else if (g_home) {   /* Home's window (home.json regions.resident.walk): the box.x range 32 .. 620, the keep-out only while the away frame shows (the corner's feet row is the rect's top less one: the feet reach it) */
@@ -53,9 +53,9 @@ static void walk_load(void) {
   g_flo = v_sk(sp(), hp("regions.resident.walk.ground"), 1); g_fn = v_sk(sp(), hp("regions.resident.walk.ground"), 3); g_lx = v_sk(sp(), hp("regions.glass.rect"), 0);
   /* the room of this window: the window's offset from the painting, derived from the specs' own values (the whole: window.rect.y less painting.rows[0]; Home: window.rect.x less painting.cx and window.rect.y less painting.rows[0]; Idle: none) */
   { int dx = 0, dy = 0;
-    if (g_viv) { dx = v_sk(sp(), hp("regions.glass.rect"), 0); dy = v_sk(sp(), hp("regions.glass.rect"), 1) - spec_int("vivarium", "regions.window.painting.rows.0", 0); }
+    if (g_viv) { int c[2]; room_crop(v_pstr("regions.room.id"), c); dx = v_sk(sp(), hp("regions.glass.rect"), 0) - c[0]; dy = v_sk(sp(), hp("regions.glass.rect"), 1) - c[1]; }   /* the room view: screen = painting − (cx, cy) + the window's origin (rooms.json crop) */
     else if (g_home) { dx = v_sk(sp(), hp("regions.glass.rect"), 0) - spec_int(H, "regions.window.painting.cx", 0); dy = v_sk(sp(), hp("regions.glass.rect"), 1) - spec_int(H, "regions.window.painting.rows.0", 0); }
-    room_select(v_pstr("regions.room.id"), dx, dy, g_home); }
+    room_view_mode(g_viv); room_select(v_pstr("regions.room.id"), dx, dy, g_home); }
   /* the feet band: the union of the room's levels in the window's coordinates (the levels set it); Home keeps its own band, and so does a window with no room */
   if (g_home || !room_have()) { g_rlo = g_flo; g_rhi = g_flo + g_fn - 1; } else { g_rlo = -(1 << 20); g_rhi = 1 << 20; }
   g_trmax = v_si("vivarium", "rules.travel.max", 3); g_rdiv = v_si("vivarium", "rules.walk.raisedDiv", 3); g_lvin = v_si("vivarium", "rules.walk.levelOneIn", 4); if (g_rdiv < 1) g_rdiv = 1; if (g_lvin < 1) g_lvin = 1;
@@ -73,7 +73,7 @@ static char g_room[24];   /* the shown room (regions.room.id) the walk was last 
 void home_hidden(void) { g_have_t0 = 0; g_ctx = -1; library_reset(); }   /* the moving household starts again from the seeds too (No replay) */
 static unsigned wr(wk_t *k) { k->s = k->s * 1664525u + 1013904223u; return k->s >> 16; }
 static int iabs(int v) { return v < 0 ? -v : v; }
-static int bed_k(int x, int feet, int w) { return x + w > g_kx && feet > g_ky; }   /* the bed's keep-out keeps its box rule (and Home's away corner); a piece's keep-out is room.c's: the ground point (F.x, feet) inside its rect, by level */
+static int bed_k(int x, int feet, int w) { if (g_viv || g_idle) { int fx = x + w / 2; return fx >= g_kx && fx < g_kx + g_kw && feet > g_ky; } return x + w > g_kx && feet > g_ky; }   /* the bed's keep-out keeps its box rule (and Home's away corner); a piece's keep-out is room.c's: the ground point (F.x, feet) inside its rect, by level */
 /* a figure box at x (its left) with width w and its feet row stands on level lv: inside the walk ground, off the bed's keep-out, on the level (room_on; with `relaxed` the level itself, w = 0, for the legs that run to and from a join's end, which lies on the level's edge) */
 static int gok(int lv, int x, int feet, int w, int relaxed) {
   if (x < g_xlo || x + w > g_xhi || feet < g_rlo || feet > g_rhi || bed_k(x, feet, w)) return 0;
@@ -126,6 +126,8 @@ static void wk_next(wk_t *k) {   /* the segment ended: the next of the three leg
   }
 }
 static int curl_clear(const char *self, int fx, int cw, int gap);   /* below the moving residents' type */
+/* while the props load: the walkers and movers placed so far this load (a fresh show places its resters one by one, each clear of those before it) */
+static const void *g_lw, *g_lm; static const int *g_nlw, *g_nlm;
 /* a nice spot for a curl (vivarium.json rules.show.curl; the game designer's cats): a foot point (fx, feet) on level lv that is a valid stand (the walk's own test), at least `gap` from every other curl and from the bed, beside an occluder of lv (fx = its rect.x - beside or
    rect.x + rect.w + beside, feet = its foot - occDy) or on the level's back edge (feet = top(fx) + backDy at a profile breakpoint); chosen by a draw on the mibi's seed among those within rules.night.reach of where its trip ended, else the nearest, else where it stands if
    that is valid. 1 with the foot point in *ox, *of; 0 when there is none (it walks out). */
@@ -226,8 +228,11 @@ typedef struct {
 static mv_t g_m[MAXR]; static int g_nm;
 /* a curl's foot x `fx` with ink width `cw` is clear of every other curl at rest, ink to ink (the game designer: |xA - xB| >= ceil(inkA.w / 2) + ceil(inkB.w / 2) + gap, the measured curl ink, at most 96 wide), and of the bed's rect by the same test (R4b-1b) */
 static int curl_clear(const char *self, int fx, int cw, int gap) {
-  for (int i = 0; i < g_nw; i++) { const wk_t *o = &g_w[i]; if (!strcmp(o->id, self) || o->rs != RS_REST || o->rk != RK_CURL) continue; if (iabs(o->x + o->w / 2 - fx) < (cw + 1) / 2 + (o->cw + 1) / 2 + gap) return 0; }
-  for (int i = 0; i < g_nm; i++) { const mv_t *o = &g_m[i]; if (!strcmp(o->id, self) || o->rs != RS_REST || o->rk != RK_CURL) continue; if (iabs(o->x + o->fw / 2 - fx) < (cw + 1) / 2 + (o->cw + 1) / 2 + gap) return 0; }
+  /* a curl at rest where it lies; one on its way to a spot at that spot (two cannot pick spots in the gap of each other) */
+  for (int i = 0; i < g_nw; i++) { const wk_t *o = &g_w[i]; int go = o->rs == RS_GOING && !o->ex; if (!strcmp(o->id, self) || (o->rs != RS_REST && !go) || o->rk != RK_CURL) continue; if (iabs((go ? o->tx : o->x) + o->w / 2 - fx) < (cw + 1) / 2 + (o->cw + 1) / 2 + gap) return 0; }
+  for (int i = 0; i < g_nm; i++) { const mv_t *o = &g_m[i]; int go = o->rs == RS_GOING && !o->ex; if (!strcmp(o->id, self) || (o->rs != RS_REST && !go) || o->rk != RK_CURL) continue; if (iabs((go ? o->tx : o->x) + o->fw / 2 - fx) < (cw + 1) / 2 + (o->cw + 1) / 2 + gap) return 0; }
+  if (g_lw) for (int i = 0; i < *g_nlw; i++) { const wk_t *o = (const wk_t *)g_lw + i; if (!strcmp(o->id, self) || o->rs != RS_REST || o->rk != RK_CURL) continue; if (iabs(o->x + o->w / 2 - fx) < (cw + 1) / 2 + (o->cw + 1) / 2 + gap) return 0; }
+  if (g_lm) for (int i = 0; i < *g_nlm; i++) { const mv_t *o = (const mv_t *)g_lm + i; if (!strcmp(o->id, self) || o->rs != RS_REST || o->rk != RK_CURL) continue; if (iabs(o->x + o->fw / 2 - fx) < (cw + 1) / 2 + (o->cw + 1) / 2 + gap) return 0; }
   if (*v_pstr("regions.bed.state")) { int b[4]; v_srect(sp(), hp("regions.bed.rect"), b); if (iabs(b[0] + b[2] / 2 - fx) < (cw + 1) / 2 + (b[2] + 1) / 2 + gap) return 0; }
   return 1;
 }
@@ -549,7 +554,7 @@ static int mv_household(long j) {
 }
 
 /* ---- what the last draw put where (the focus reads these boxes) ---- */
-typedef struct { char id[24]; char name[40]; char pic[96], stand[96]; int juvenile, waiting, sleeper, box[4], draw[4], mv, nap, asleep, ink[4], rank, hasfig, curled, sbox[4], hidden; unsigned seed; } ent_t;   /* hasfig: box is the figure's, draw the picture's; sbox: the slot a stand picture takes; hidden: a rester out of sight (off the window's edge, or resting on the bed: its sleeper draws) is neither drawn nor a target (R4b) */   /* box: the focus target's; draw: where the picture goes; mv / nap: the moving resident or nap sleeper (-1: a still); asleep: the asleep form, ink its ink box */
+typedef struct { char id[24]; char name[40]; char pic[96], stand[96]; int juvenile, waiting, sleeper, box[4], draw[4], mv, nap, asleep, ink[4], rank, hasfig, curled, sbox[4], hidden, carried; char mark[64]; unsigned seed; } ent_t;   /* hasfig: box is the figure's, draw the picture's; sbox: the slot a stand picture takes; hidden: a rester out of sight (off the window's edge, or resting on the bed: its sleeper draws) is neither drawn nor a target (R4b) */   /* box: the focus target's; draw: where the picture goes; mv / nap: the moving resident or nap sleeper (-1: a still); asleep: the asleep form, ink its ink box */
 static ent_t g_e[MAXR + MAXS]; static int g_ne;
 int g_home_steps;   /* test hook: the residents that stepped since face_frame began (face_test_steps) */
 
@@ -602,6 +607,9 @@ static int curl_ink(const char *P) {
   if (v_plen(v_fmt("%s.curlFigure", P)) == 4) { int w = v_pint(v_fmt("%s.curlFigure.2", P), 0); if (w > 0) return w; }
   int d = v_sk(sp(), hp("regions.bed.sleepers.ink.max"), 0); return d > 0 ? d : 96;
 }
+/* the set-downs the face makes on ✓ while a mibi is in hand (the collection v2 design §3): its id and the ground point the hand was on, the swapped one's at the point the carried one left; applied once the props have no carry */
+typedef struct { char id[24]; int fx, feet; } place_t;
+static place_t g_place[2]; static int g_nplace;
 static int ent_load(const char *cur) {
   g_ne = 0; walk_load();
   int motion = v_pbool("motion", 1); uint32_t now = anim_now(); g_mv_motion = motion;
@@ -612,12 +620,13 @@ static int ent_load(const char *cur) {
   if (motion) walk_clock(now);
   int nres = v_plen("regions.residents"); if (nres > MAXR) nres = MAXR; g_nres = 0;
   for (int i = 0; i < nres; i++) g_nres += v_pbool(v_fmt("regions.residents.%d.shown", i), 1);   /* N for the raised cap and for G10 counts the shown only (R4b) */
-  uint32_t rel = now - g_t0; wk_t kept[MAXR]; int nk = 0; mv_t mk[MAXR]; int nmk = 0; sg_t sg[MAXR];   /* the walk state is kept per resident id: found by id, a new id or a new seed starts from its seed, one that is gone is dropped */
+  uint32_t rel = now - g_t0; wk_t kept[MAXR]; int nk = 0; mv_t mk[MAXR]; int nmk = 0; sg_t sg[MAXR]; g_lw = kept; g_nlw = &nk; g_lm = mk; g_nlm = &nmk;   /* the walk state is kept per resident id: found by id, a new id or a new seed starts from its seed, one that is gone is dropped */
   uint32_t ids = 2166136261u;
   for (int i = 0; i < nres; i++) {
     ent_t *e = &g_e[g_ne]; char P[64]; snprintf(P, sizeof P, "regions.residents.%d", i);
     snprintf(e->id, sizeof e->id, "%s", v_pstr(v_fmt("%s.id", P))); snprintf(e->name, sizeof e->name, "%s", v_pstr(v_fmt("%s.name", P))); snprintf(e->pic, sizeof e->pic, "%s", v_pstr(v_fmt("%s.picture", P)));
     e->juvenile = strcmp(v_pstr(v_fmt("%s.stage", P)), "juvenile") == 0; e->waiting = v_pbool(v_fmt("%s.waiting", P), 0); e->sleeper = 0; e->seed = (unsigned)v_pint(v_fmt("%s.seed", P), 0); e->mv = -1; e->nap = -1; e->asleep = 0;
+    snprintf(e->mark, sizeof e->mark, "%s", v_pstr(v_fmt("%s.mark", P))); e->carried = v_pbool(v_fmt("%s.carried", P), 0);   /* the collection's mark (its master id) and the one in hand (it pauses where it stands) */
     const char *sz = e->juvenile ? "regions.resident.juvenile" : "regions.resident.adult"; int w = v_sk(sp(), hp(sz), 0), h = v_sk(sp(), hp(sz), 1);
     /* a moving set (M1 §2.2): { set, walk, shadow } with the set loaded, its stage present at this size and its walk atlas sent; else a still */
     char mset[8], mwalk[96], mshadow[96]; snprintf(mset, sizeof mset, "%s", v_pstr(v_fmt("%s.moving.set", P))); snprintf(mwalk, sizeof mwalk, "%s", v_pstr(v_fmt("%s.moving.walk", P))); snprintf(mshadow, sizeof mshadow, "%s", v_pstr(v_fmt("%s.moving.shadow", P)));
@@ -670,13 +679,17 @@ static int ent_load(const char *cur) {
     else if (ssh && k->rs != RS_SHOWN) { wk_return(k); if (!motion && k->x < g_xlo) { int tx, tf; edge_point(k->w, &tx, &tf); k->x = tx; k->feet = tf; k->walking = 0; } }
     if (!motion && !ssh && (k->rs == RS_FINISH || k->rs == RS_GOING)) { k->walking = 0; wk_rest_at(k); }   /* with motion off a flip is a cut */
     asleepStill = curlOk && ((propAsleep && (ssh || k->rs == RS_REST)) || (!ssh && k->rs == RS_REST && k->rk == RK_CURL)); if (asleepStill) snprintf(e->pic, sizeof e->pic, "%s", cpic);
-    k->hold = ent_focused(e, cur) || asleepStill || (k->rs == RS_REST);   /* a sleeping resident stays where it is; so does one at rest */
+    k->hold = (!g_viv && ent_focused(e, cur)) || asleepStill || (k->rs == RS_REST) || e->carried;   /* a sleeping resident stays where it is; so does one at rest; the room view's focused mibi keeps walking (the collection v2 design §3) and only the carried one pauses */
     memcpy(sg[nk].fig, fig, sizeof fig); memcpy(sg[nk].cf, cf, sizeof cf); memcpy(sg[nk].cp, cp, sizeof cp); sg[nk].asleep = asleepStill; sg[nk].ent = g_ne; sg[nk].w = w; sg[nk].h = h; nk++;
     g_ne++;
   }
+  g_lw = g_lm = NULL; g_nlw = g_nlm = NULL;
   memcpy(g_w, kept, sizeof(wk_t) * (size_t)nk); g_nw = nk;
   memcpy(g_m, mk, sizeof(mv_t) * (size_t)nmk); g_nm = nmk;
   if (motion && !library_swap_pending(now)) stills_step(rel);   /* not on the frame the Library's breathing swap lands on (build spec 4.2): they take their steps on the next */
+  if (g_viv && g_nplace && !*v_pstr("regions.carry.id")) {   /* a set-down (the collection v2 design §3): the mibi stands where the hand set it, the swapped one at the point the other left, and resumes from there */
+    for (int p = 0; p < g_nplace; p++) for (int q = 0; q < g_nw; q++) if (!strcmp(g_w[q].id, g_place[p].id)) { wk_t *k = &g_w[q]; k->x = g_place[p].fx - k->w / 2; k->feet = g_place[p].feet; k->lv = k->tlv = room_level_at(g_place[p].fx, g_place[p].feet); k->walking = 0; k->leg = 0; k->jn = -1; k->hold = 0; k->idle = 25 + (int)(wr(k) % 38u); }
+    g_nplace = 0; }
   for (int q = 0; q < g_nw; q++) {   /* the stills' boxes where the walk left them */
     const wk_t *k = &g_w[q]; const sg_t *z = &sg[q]; ent_t *e = &g_e[z->ent];
     e->box[0] = k->x; e->box[1] = k->feet + (e->hasfig ? 1 : 0) - z->fig[3];   /* no figure: the picture's bottom edge is the feet, as it was */ e->box[2] = z->fig[2]; e->box[3] = z->fig[3];   /* the figure box: the focus target */
@@ -697,7 +710,7 @@ static int ent_load(const char *cur) {
     ent_t *e = &g_e[g_ne]; char P[64]; snprintf(P, sizeof P, "regions.bed.sleepers.%d", i);
     snprintf(e->id, sizeof e->id, "%s", v_pstr(v_fmt("%s.id", P))); snprintf(e->name, sizeof e->name, "%s", v_pstr(v_fmt("%s.name", P))); snprintf(e->pic, sizeof e->pic, "%s", v_pstr(v_fmt("%s.picture", P)));
     e->juvenile = strcmp(v_pstr(v_fmt("%s.stage", P)), "juvenile") == 0; e->waiting = v_pbool(v_fmt("%s.waiting", P), 0); e->sleeper = 1; e->seed = (unsigned)v_pint(v_fmt("%s.seed", P), 0); e->mv = -1; e->nap = -1; e->asleep = 0;
-    e->hidden = bed_pending(e->id);
+    e->hidden = bed_pending(e->id); snprintf(e->mark, sizeof e->mark, "%s", v_pstr(v_fmt("%s.mark", P))); e->carried = 0;
     int foot = v_sk(sp(), hp(v_fmt("regions.bed.sleepers.places.%d", ns)), i), bw = v_sk(sp(), hp("regions.bed.sleepers.ink.max"), 0), bh = v_sk(sp(), hp("regions.bed.sleepers.ink.max"), 1), footY = v_si(sp(), hp("regions.bed.sleepers.footY"), 512);
     if (e->juvenile) { e->box[0] = foot - v_si(sp(), hp("regions.bed.sleepers.juvenile.size.0"), 104) / 2; e->box[1] = footY - v_sk(sp(), hp("regions.bed.sleepers.juvenile.size"), 1); e->box[2] = v_sk(sp(), hp("regions.bed.sleepers.juvenile.size"), 0); e->box[3] = v_sk(sp(), hp("regions.bed.sleepers.juvenile.size"), 1); }
     else { e->box[0] = foot - v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 0) / 2; e->box[1] = footY - v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 1); e->box[2] = v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 0); e->box[3] = v_sk(sp(), hp("regions.bed.sleepers.adult.size"), 1); }
@@ -769,62 +782,151 @@ static void ent_tag(const ent_t *e, const char *glass) {
   else { int feetY = e->box[1] + e->box[3] - 1; kit_nameTag(sp(), glass, e->name, e->box, feetY + below, feetY - e->box[3] - over - lift, KIT_TAG_AUTO, 0, fill, edge, NULL, tag); }
 }
 
+/* ---- the collection v2 room view's extras (the collection v2 design §3, §6): the hand, the drop spots, the reserved silhouettes, the mark discs and the pick frame ---- */
+typedef struct { int ok, fx, feet, self, other; } hand_t;   /* the ground point the hand is over (a drop spot or a mibi's feet), whether it is the carried one's own point, and the mibi under it (an index into g_e, or -1) */
+static int g_vnudge[2];   /* the ring's nudge (a press with nothing beyond, vivarium.c): dx, dy */
+void home_viv_nudge(int dx, int dy) { g_vnudge[0] = dx; g_vnudge[1] = dy; }
+static int carry_lift(void) { return v_si("vivarium", "regions.resident.carry.lift", 8); }
+static int ent_index(const char *id) { for (int i = 0; i < g_ne; i++) if (!strcmp(g_e[i].id, id)) return i; return -1; }
+static hand_t hand_of(const char *cur) {
+  hand_t h = { 0, 0, 0, 0, -1 }; const char *cid = v_pstr("regions.carry.id"); if (!g_viv || !*cid) return h;
+  if (strncmp(cur, "drop.", 5) == 0) { h.ok = room_drop(atoi(cur + 5), &h.fx, &h.feet) == 0; return h; }
+  if (strncmp(cur, "resident.", 9) == 0) { int i = ent_index(cur + 9); if (i < 0 || g_e[i].hidden) return h; const ent_t *e = &g_e[i];
+    h.ok = 1; h.fx = e->box[0] + e->box[2] / 2; h.feet = e->box[1] + e->box[3] - 1; h.self = !strcmp(cur + 9, cid); h.other = h.self ? -1 : i; }
+  return h;
+}
+/* ✓ while a mibi is in hand (vivarium.c, before the intent): where it is set down, the hand's ground point, and in a swap of this room the other one at the point the carried one left; applied once the props have no carry */
+void home_viv_setdown(const char *cur) {
+  g_nplace = 0; int was = g_viv; g_viv = 1; hand_t hd = hand_of(cur); const char *cid = v_pstr("regions.carry.id"); int ce = *cid ? ent_index(cid) : -1; g_viv = was;
+  if (!hd.ok || hd.self) return;
+  snprintf(g_place[0].id, sizeof g_place[0].id, "%s", cid); g_place[0].fx = hd.fx; g_place[0].feet = hd.feet; g_nplace = 1;
+  if (hd.other >= 0 && ce >= 0) { const ent_t *c = &g_e[ce]; snprintf(g_place[1].id, sizeof g_place[1].id, "%s", g_e[hd.other].id); g_place[1].fx = c->box[0] + c->box[2] / 2; g_place[1].feet = c->box[1] + c->box[3] - 1; g_nplace = 2; }
+}
+void home_viv_noplace(void) { g_nplace = 0; }
+/* the mark disc on a figure's ink (§6): [ink right − 14, ink top − 8, 20, 20], clamped inside the window; the 16 x 16 master (the lamp at 12) centred on it */
+static int disc_nodes(const char *mark) { return mark && *mark && has(mark) ? 2 : 0; }
+static void disc_draw(const char *id, const char *mark, const int ink[4], const int g[4]) {
+  if (!disc_nodes(mark)) return;
+  int x = ink[0] + ink[2] - 14, y = ink[1] - 8, ms[2] = { 16, 16 };
+  if (x < g[0]) x = g[0]; if (y < g[1]) y = g[1]; if (x + 20 > g[0] + g[2]) x = g[0] + g[2] - 20; if (y + 20 > g[1] + g[3]) y = g[1] + g[3] - 20;
+  char ops[160]; snprintf(ops, sizeof ops, "[[\"rrect\",0,0,20,20,10,\"%s\",\"%s\"]]", v_scol("vivarium", "colours.markDisc.fill"), v_scol("vivarium", "colours.markDisc.rim"));
+  v_region("marks", LAYER_CHROME); v_composed(v_fmt("%s.disc", id), x, y, 20, 20, ops); v_asset_size(mark, ms); v_slot(v_fmt("%s.mark", id), mark, NULL, x + (20 - ms[0]) / 2, y + (20 - ms[1]) / 2, ms[0], ms[1], 1);
+}
+/* the pick of two's frame (§3): a 1 px bone outline round the first parent's figure, 3 px out, which follows it */
+static int pick_nodes(const ent_t *e) { return g_viv && *v_pstr("regions.pick.id") && !strcmp(v_pstr("regions.pick.id"), e->id) ? 1 : 0; }
+static void pick_draw(const ent_t *e, int up) {
+  if (!pick_nodes(e)) return; const int *b = e->hasfig ? e->box : e->draw; int x = b[0] - 3, y = b[1] - 3 - up, w = b[2] + 6, h = b[3] + 6; char ops[200]; const char *c = v_scol("vivarium", "colours.pick");
+  snprintf(ops, sizeof ops, "[[\"h\",0,0,%d,\"%s\"],[\"h\",0,%d,%d,\"%s\"],[\"v\",0,0,%d,\"%s\"],[\"v\",%d,0,%d,\"%s\"]]", w, c, h - 1, w, c, h, c, w - 1, h, c);
+  v_region("pick", LAYER_CHROME); v_composed(v_fmt("g.%s.pick", e->id), x, y, w, h, ops);
+}
+/* the reserved silhouettes (a mibi coming out on its drop spot): their figures' boxes, for the sort and the focus */
+#define MAXRES 8
+typedef struct { char id[24], name[40], pic[96], mark[64]; int box[4], draw[4]; } res_t;
+static res_t g_res[MAXRES]; static int g_nres2;
+static void res_load(void) {
+  g_nres2 = 0; if (!g_viv) return;
+  int n = v_plen("regions.reserved.items"); if (n > MAXRES) n = MAXRES;
+  for (int i = 0; i < n; i++) { res_t *r = &g_res[g_nres2]; const char *P = v_fmt("regions.reserved.items.%d", i); char base[48]; snprintf(base, sizeof base, "%s", P);
+    int fx, feet; if (room_drop(v_pint(v_fmt("%s.spot", base), 0), &fx, &feet) != 0) continue;
+    snprintf(r->id, sizeof r->id, "%s", v_pstr(v_fmt("%s.id", base))); snprintf(r->name, sizeof r->name, "%s", v_pstr(v_fmt("%s.name", base))); snprintf(r->pic, sizeof r->pic, "%s", v_pstr(v_fmt("%s.picture", base))); snprintf(r->mark, sizeof r->mark, "%s", v_pstr(v_fmt("%s.mark", base)));
+    int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("%s.figure.%d", base, q), 0);
+    int ps[2] = { f[0] + f[2], f[1] + f[3] }; v_asset_size(r->pic, ps);
+    r->box[0] = fx - f[2] / 2; r->box[1] = feet + 1 - f[3]; r->box[2] = f[2]; r->box[3] = f[3]; r->draw[0] = r->box[0] - f[0]; r->draw[1] = r->box[1] - f[1]; r->draw[2] = ps[0]; r->draw[3] = ps[1]; g_nres2++; }
+}
+int home_viv_box(const char *id, int r[4]) {   /* a room-view target's box as the last draw put it: a resident (or a reserved silhouette) by its figure, a drop spot by its ellipse, a flip at the field's edge; 0 when there is none */
+  int g[4]; v_srect("vivarium", "regions.window.rect", g);
+  if (strncmp(id, "resident.", 9) == 0) { for (int e = 0; e < g_ne; e++) if (!strcmp(g_e[e].id, id + 9) && !g_e[e].hidden) { memcpy(r, g_e[e].box, sizeof(int) * 4); return 1; } for (int k = 0; k < g_nres2; k++) if (!strcmp(g_res[k].id, id + 9)) { memcpy(r, g_res[k].box, sizeof(int) * 4); return 1; } return 0; }
+  if (strncmp(id, "drop.", 5) == 0) { int fx, feet; if (room_drop(atoi(id + 5), &fx, &feet) != 0) return 0; r[0] = fx - 32; r[1] = feet - 5; r[2] = 64; r[3] = 10; return 1; }
+  if (!strcmp(id, "flip.prev")) { r[0] = g[0]; r[1] = g[1]; r[2] = 1; r[3] = g[3]; return 1; }
+  if (!strcmp(id, "flip.next")) { r[0] = g[0] + g[2] - 1; r[1] = g[1]; r[2] = 1; r[3] = g[3]; return 1; }
+  return 0;
+}
+
 /* ---- the glass: the room's back pieces over the base, then residents, the bed and the room's occluders in the order of their feet, clipped to the glass; the focused one last: its feet ring, then it ---- */
-typedef struct { int kind; int ent; } item_t;   /* kind 0: a resident; 1: the bed group (the bed, then its sleepers right to left); 2: the focused resident or sleeper, drawn last under its ring; 3: an occluder (ent: its index in room_pieces) */
+typedef struct { int kind; int ent; } item_t;   /* kind 0: a resident; 1: the bed group (the bed, then its sleepers right to left); 2: the focused resident or sleeper, drawn last under its ring; 3: an occluder (ent: its index in room_pieces); 4: a reserved silhouette (ent: its index in g_res); 5: the hand (the carried mibi over the hand's target) */
 static int piece_in(const rp_t *p, const int g[4]) { return p->x < g[0] + g[2] && p->x + p->w > g[0] && p->y < g[1] + g[3] && p->y + p->h > g[1]; }   /* a piece that falls in the glass: Home draws the pieces in its window, clipped */
 /* a piece drawn: its picture is on the face and it falls in the glass (a back piece with an opacity is drawn with it: prim_sprite_opa) */
 static int piece_drawn(const rp_t *p, const int g[4]) { return has(p->pic) && piece_in(p, g); }
 static void glass_group(const char *cur) {
   int glass[4], bed[4]; v_srect(sp(), hp("regions.glass.rect"), glass); v_srect(sp(), hp("regions.bed.rect"), bed);
   const rp_t *bk, *oc; int nbk = room_pieces(RP_BACK, &bk), noc = room_pieces(RP_OCCLUDER, &oc);
-  item_t it[MAXR + 2 + 8]; int ni = 0, focused = -1;
+  item_t it[MAXR + 2 + 8 + MAXRES + 1]; int ni = 0, focused = -1;
+  res_load();
+  hand_t hd = hand_of(cur); int ce = g_viv && *v_pstr("regions.carry.id") ? ent_index(v_pstr("regions.carry.id")) : -1;   /* the carried one, when it is in this room's residents (its own room) */
+  const char *outline = v_pstr("regions.carry.outline"); char outl[96]; snprintf(outl, sizeof outl, "%s", outline);
+  if (ce >= 0 && g_e[ce].hidden) ce = -1;
   for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) focused = i;
+  if (g_viv && *v_pstr("regions.carry.id")) focused = hd.ok && hd.self ? ce : -1;   /* while carrying the hand is the focus: the carried one raised at its own point, or over another target (the hand item) */
   for (int i = 0; i < g_ne; i++) if (!g_e[i].sleeper && !g_e[i].hidden && i != focused) it[ni++] = (item_t){ 0, i };
   int hasBed = !g_home && *v_pstr("regions.bed.state") != 0;   /* Home has no bed: the bed and its sleepers are the Vivarium's, and only in a room that has one */
   if (hasBed) it[ni++] = (item_t){ 1, -1 };
   for (int k = 0; k < noc && ni < MAXR + 2 + 8 - 1; k++) if (piece_drawn(&oc[k], glass)) it[ni++] = (item_t){ 3, k };
+  for (int k = 0; k < g_nres2; k++) it[ni++] = (item_t){ 4, k };
   /* by the feet's y, lower in front (later); on a tie an occluder in front of what is not one, else left first; the bed group sorts at the bed's foot */
   int bedFoot = v_sk(sp(), hp("regions.glass.foot"), 1);
+#define FOOT(q) ((q).kind == 3 ? oc[(q).ent].foot + 1 : (q).kind == 4 ? g_res[(q).ent].box[1] + g_res[(q).ent].box[3] : (q).kind ? bedFoot : g_e[(q).ent].box[1] + g_e[(q).ent].box[3])
+#define LEFT(q) ((q).kind == 3 ? oc[(q).ent].x : (q).kind == 4 ? g_res[(q).ent].box[0] : (q).kind ? bed[0] : g_e[(q).ent].box[0])
   for (int a = 1; a < ni; a++) { item_t t = it[a]; int b = a - 1;
-    int fa = t.kind == 3 ? oc[t.ent].foot + 1 : t.kind ? bedFoot : g_e[t.ent].box[1] + g_e[t.ent].box[3], xa = t.kind == 3 ? oc[t.ent].x : t.kind ? bed[0] : g_e[t.ent].box[0];
-    while (b >= 0) { int fb = it[b].kind == 3 ? oc[it[b].ent].foot + 1 : it[b].kind ? bedFoot : g_e[it[b].ent].box[1] + g_e[it[b].ent].box[3], xb = it[b].kind == 3 ? oc[it[b].ent].x : it[b].kind ? bed[0] : g_e[it[b].ent].box[0];
+    int fa = FOOT(t), xa = LEFT(t);
+    while (b >= 0) { int fb = FOOT(it[b]), xb = LEFT(it[b]);
       if (fb < fa || (fb == fa && ((it[b].kind == 3) != (t.kind == 3) ? t.kind == 3 : xb <= xa))) break; it[b + 1] = it[b]; b--; }
     it[b + 1] = t; }
+#undef FOOT
+#undef LEFT
   if (focused >= 0) it[ni++] = (item_t){ 2, focused };
+  int handItem = g_viv && *v_pstr("regions.carry.id") && hd.ok && !hd.self; if (handItem) it[ni++] = (item_t){ 5, -1 };
+  /* the drop spots while a mibi is in hand: on the ground, under every figure */
+  int nd = g_viv && *v_pstr("regions.carry.id") ? v_plen("regions.drops.items") : 0; if (nd < 0) nd = 0;
   /* the nodes inside the clip, counted before they are sent */
-  int count = 0, lift = v_si(sp(), hp("regions.resident.lift"), 4);
+  int count = 0, lift = v_si(sp(), hp("regions.resident.lift"), 4), cl = g_viv ? carry_lift() : 0;
   for (int k = 0; k < nbk; k++) count += piece_drawn(&bk[k], glass);
+  count += nd;
   int bedPic = hasBed ? has(v_pstr("regions.bed.picture")) : 0, lampN = wire_has_asset(home_lamp_pic("waiting")) ? 1 : 0;   /* a waiting lamp is one node (its picture, or the same node with no size) when the host has sent the picture */
+  const char *cpic = v_pstr("regions.carry.picture"); char cpicb[96]; snprintf(cpicb, sizeof cpicb, "%s", cpic); char cmark[64]; snprintf(cmark, sizeof cmark, "%s", v_pstr("regions.carry.mark"));
   for (int k = 0; k < ni; k++) {
     if (it[k].kind == 3) count++;
-    else if (it[k].kind != 1) { const ent_t *e = &g_e[it[k].ent];
+    else if (it[k].kind == 4) count += has(g_res[it[k].ent].pic) + disc_nodes(g_res[it[k].ent].mark);
+    else if (it[k].kind == 5) count += 1 + has(cpicb) + disc_nodes(cmark);
+    else if (it[k].kind != 1) { const ent_t *e = &g_e[it[k].ent]; int sil = it[k].ent == ce && it[k].kind == 0;
       if (e->mv >= 0) { const mv_t *m = &g_m[e->mv]; count += 1 + (has(m->shadow) ? 1 : 0) + (m->dl ? 1 : 0) + lampN + (it[k].kind == 2 ? 1 : 0); }   /* a moving resident: its shadow, the picture (hidden while it dithers), the dither node, the lamp */
       else if (e->nap >= 0) count += 1 + lampN + (it[k].kind == 2 ? 1 : 0);
-      else count += has(e->pic) + lampN + (it[k].kind == 2 ? 1 : 0); }
-    else { count += bedPic; for (int i = 0; i < g_ne; i++) if (g_e[i].sleeper && !g_e[i].hidden && i != focused) count += sleeper_nodes(&g_e[i]) + lampN; }
+      else count += (sil ? has(outl) : has(e->pic)) + lampN + (it[k].kind == 2 ? 1 : 0);
+      if (!sil && g_viv) count += disc_nodes(e->mark) + pick_nodes(e); }
+    else { count += bedPic; for (int i = 0; i < g_ne; i++) if (g_e[i].sleeper && !g_e[i].hidden && i != focused) count += sleeper_nodes(&g_e[i]) + lampN + (g_viv ? disc_nodes(g_e[i].mark) + pick_nodes(&g_e[i]) : 0); }
   }
   if (count == 0) return;
   v_clip_box("glass.clip", glass[0], glass[1], glass[2], glass[3], count);
   /* the room's back pieces, in data order, over the base and under every walker, never sorted: a stable node p.<pieceId> each */
   for (int k = 0; k < nbk; k++) if (piece_drawn(&bk[k], glass)) { v_name("room"); prim_sprite_opa(bk[k].opa); v_slot(v_fmt("p.%s", bk[k].id), bk[k].pic, NULL, bk[k].x, bk[k].y, bk[k].w, bk[k].h, 1); }
+  for (int q = 0; q < nd; q++) { int k = v_pint(v_fmt("regions.drops.items.%d", q), 0), fx = 0, feet = 0; room_drop(k, &fx, &feet); char ops[96]; snprintf(ops, sizeof ops, "[[\"oval\",0,0,64,10,\"%s\"]]", v_scol("vivarium", "colours.drop")); v_region("drops", LAYER_CHROME); v_composed(v_fmt("drop.%d", k), fx - 32, feet - 5, 64, 10, ops); }
   /* the nodes are named by the mibi (g.<id>, g.<id>.lamp, g.bed, g.bed.mark) and by the piece (p.<pieceId>): when two items change places in depth the objects change places in the order and only where they overlap is redrawn
      (prim.c move_to), an item that did not step is not redrawn */
   for (int k = 0; k < ni; k++) {
     if (it[k].kind == 3) { const rp_t *o = &oc[it[k].ent]; v_name("room"); v_slot(v_fmt("p.%s", o->id), o->pic, NULL, o->x, o->y, o->w, o->h, 1); continue; }
+    if (it[k].kind == 4) { const res_t *r = &g_res[it[k].ent]; v_name("reserved"); if (has(r->pic)) v_slot(v_fmt("r.%s", r->id), r->pic, NULL, r->draw[0], r->draw[1], r->draw[2], r->draw[3], 1); disc_draw(v_fmt("r.%s", r->id), r->mark, r->box, glass); continue; }
+    if (it[k].kind == 5) {   /* the hand: the carried one over the target, raised by the carry's lift, its ring with it */
+      int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("regions.carry.figure.%d", q), 0);
+      int ps[2] = { f[0] + f[2], f[1] + f[3] }; v_asset_size(cpicb, ps);
+      int bx = hd.fx - f[2] / 2, by = hd.feet + 1 - f[3] - cl, box[4] = { bx, by, f[2], f[3] };
+      v_region("focus", LAYER_CHROME); word_focusRingFigure("focus", sp(), "focus.targets.resident", cpicb, hd.fx + g_vnudge[0], hd.feet - cl + g_vnudge[1], f[2]);
+      v_name("resident"); if (has(cpicb)) v_slot(v_fmt("g.%s.hand", v_pstr("regions.carry.id")), cpicb, NULL, bx - f[0], by - f[1], ps[0], ps[1], 1);
+      disc_draw(v_fmt("g.%s.hand", v_pstr("regions.carry.id")), cmark, box, glass); continue; }
     if (it[k].kind != 1) {
       const ent_t *e = &g_e[it[k].ent];
-      if (e->mv >= 0) { mv_draw(e, it[k].kind == 2, lift); continue; }
-      if (e->nap >= 0) { if (it[k].kind == 2) { const nap_t *z = &g_nap[e->nap]; int rb[4] = { e->draw[0], e->draw[1], z->w, z->h }; v_region("focus", LAYER_CHROME); word_focusRingFootprint("focus", sp(), "focus.targets.resident", z->nap, "curl", rb); } nap_draw(e); continue; }
-      int up = it[k].kind == 2 && !e->sleeper && !e->curled ? lift : 0, y = e->draw[1] - up, ly = e->box[1] - up;
+      if (e->mv >= 0) { mv_draw(e, it[k].kind == 2, lift); if (g_viv) { disc_draw(v_fmt("g.%s", e->id), e->mark, e->box, glass); pick_draw(e, 0); } continue; }
+      if (e->nap >= 0) { if (it[k].kind == 2) { const nap_t *z = &g_nap[e->nap]; int rb[4] = { e->draw[0], e->draw[1], z->w, z->h }; v_region("focus", LAYER_CHROME); word_focusRingFootprint("focus", sp(), "focus.targets.resident", z->nap, "curl", rb); } nap_draw(e); if (g_viv) { disc_draw(v_fmt("g.%s", e->id), e->mark, e->hasfig ? e->box : e->draw, glass); pick_draw(e, 0); } continue; }
+      int sil = it[k].ent == ce && it[k].kind == 0;   /* the carried one, the hand elsewhere: its 1 px fog silhouette at the point it left */
+      int up = it[k].kind == 2 && !e->sleeper && !e->curled ? (it[k].ent == ce ? cl : lift) : 0, y = e->draw[1] - up, ly = e->box[1] - up;
       if (it[k].kind == 2) { v_region("focus", LAYER_CHROME);
-        if (e->hasfig) word_focusRingFigure("focus", sp(), "focus.targets.resident", e->pic, e->box[0] + e->box[2] / 2, e->box[1] + e->box[3] - 1, e->box[2]);   /* the ring on the figure's feet, never lifted */
-        else { int rb[4]; memcpy(rb, e->draw, sizeof rb); word_focusRingFootprint("focus", sp(), "focus.targets.resident", e->pic, "", rb); } }
-      v_name(e->sleeper ? "bed.sleepers" : "resident"); v_sprite(v_fmt("g.%s", e->id), e->pic, e->draw[0], y, e->draw[2], e->draw[3]);   /* a slot is a picture and its waiting lamp, the same two nodes every draw */
+        if (e->hasfig) word_focusRingFigure("focus", sp(), "focus.targets.resident", e->pic, e->box[0] + e->box[2] / 2 + g_vnudge[0], e->box[1] + e->box[3] - 1 - (it[k].ent == ce ? cl : 0) + g_vnudge[1], e->box[2]);   /* the ring on the figure's feet, never lifted (raised with a carried one) */
+        else { int rb[4]; memcpy(rb, e->draw, sizeof rb); rb[0] += g_vnudge[0]; rb[1] += g_vnudge[1]; word_focusRingFootprint("focus", sp(), "focus.targets.resident", e->pic, "", rb); } }
+      v_name(e->sleeper ? "bed.sleepers" : sil ? "carry.from" : "resident"); v_sprite(v_fmt("g.%s", e->id), sil ? outl : e->pic, e->draw[0], y, e->draw[2], e->draw[3]);   /* a slot is a picture and its waiting lamp, the same two nodes every draw */
       v_name(e->sleeper ? "bed.lamp" : "resident.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, ly, e->waiting);
+      if (g_viv && !sil) { int ink[4] = { e->box[0], e->box[1] - up, e->box[2], e->box[3] }; disc_draw(v_fmt("g.%s", e->id), e->mark, e->hasfig ? ink : e->draw, glass); pick_draw(e, up); }
     } else {
       v_name("bed"); v_sprite("g.bed", v_pstr("regions.bed.picture"), bed[0], bed[1], bed[2], bed[3]);
       for (int i = g_ne - 1; i >= 0; i--) if (g_e[i].sleeper && i != focused) {   /* right to left: the first rester is drawn last, in front */
-        sleeper_draw(&g_e[i]);
+        sleeper_draw(&g_e[i]); if (g_viv && !g_e[i].hidden) { disc_draw(v_fmt("g.%s", g_e[i].id), g_e[i].mark, g_e[i].hasfig ? g_e[i].box : g_e[i].draw, glass); pick_draw(&g_e[i], 0); }
       }
     }
   }
@@ -907,37 +1009,21 @@ void home_window(void) {
    sleepers, the focused one's name tag, and the two slate panes along the foot (build_rooms, build_places: the room chips and the eight places of the room shown); no card, no module, no word in the window but the name tag. The same code as Home's
    glass and Idle's painting on the spec's own rectangles. The empty state (no mibi housed in the room shown) is the window, the rooms pane, the places pane's free places and the frame. While the room shown changes (events.swap, the dither of target
    `window`) the window and each place's thumbnail cross-dither from the old room's. ---- */
-void vivarium_words(void) {
+void home_viv_room(const char *cur) {   /* the room view's field (screens/vivarium.c draws the rest): the window of the room's painting at its crop, its mibis at one scale, the bed, the drop spots, the reserved silhouettes, the hand and the marks */
   g_viv = 1;
-  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   ent_load(cur);
-  kit_stage("vivarium", "regions.stage.rect", v_scol("vivarium", "colours.stageGround"), "stage", "stage.ground", NULL, NULL);
-  { anim_state_t t; char from[96] = ""; int level = 16;   /* the swap: the window's painting from the old room's (the event's from), 16 levels over its 200 ms */
+  { anim_state_t t; char from[96] = ""; int level = 16, c[2]; room_crop(v_pstr("regions.room.id"), c);   /* the swap: the window's painting from the old room's (the event's from), 16 levels over its 200 ms */
     if (v_pbool("motion", 1) && anim_get(ANIM_DITHER, "window", &t) && t.from_id[0] && t.ms > 0) { snprintf(from, sizeof from, "%s", t.from_id); level = 16 * t.elapsed / t.ms; if (level > 16) level = 16; }
-    word_livingWindow("vivarium", "window", NULL, "regions.window", "colours.window", v_pstr("regions.window.picture"), 0, spec_int("vivarium", "regions.window.painting.rows.0", 0), from[0] ? from : NULL, level); }   /* rows 120 to 560 of Idle's painting of the light, 1:1, at the window */
-  glass_group(cur);   /* the bed in the empty state too (no resident, no sleeper): the nest, and its mark while away */
-  for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) ent_tag(&g_e[i], "regions.window");
-  { int rb[4], pb[4]; build_rooms("vivarium", cur, rb); build_places("vivarium", cur, pb);
-    const int *fb = strncmp(cur, "room.", 5) == 0 ? rb : strncmp(cur, "tile.", 5) == 0 ? pb : NULL;   /* the ring on a chip or a place; none while a panel is open over the whole (its own ring) */
-    if (fb && fb[2] > 0 && !anim_holding() && spec_len("props", "overlay") < 0) { v_region("focus", LAYER_CHROME); word_focusRing("focus", "vivarium", strncmp(cur, "room.", 5) == 0 ? "focus.targets.room" : "focus.targets.tile", fb); } }
+    word_livingWindow("vivarium", "window", NULL, "regions.window", "colours.window", v_pstr("regions.window.picture"), c[0], c[1], from[0] ? from : NULL, level); }   /* a 688 x 472 window of the room's painting at its crop, 1:1 */
+  glass_group(cur);   /* the bed in the empty state too (no resident, no sleeper): the nest */
+  if (*v_pstr("regions.carry.id")) {   /* the carried one's tag under it: at its own point, or over the hand's target */
+    hand_t hd = hand_of(cur); int ce = ent_index(v_pstr("regions.carry.id"));
+    if (hd.ok && hd.self && ce >= 0) ent_tag(&g_e[ce], "regions.window");
+    else if (hd.ok) { ent_t t; memset(&t, 0, sizeof t); snprintf(t.name, sizeof t.name, "%s", v_pstr("regions.carry.name")); int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("regions.carry.figure.%d", q), 0);
+      t.box[0] = hd.fx - f[2] / 2; t.box[1] = hd.feet + 1 - f[3] - carry_lift(); t.box[2] = f[2]; t.box[3] = f[3]; t.hasfig = 1; ent_tag(&t, "regions.window"); } }
+  else for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) ent_tag(&g_e[i], "regions.window");
+  { int k = -1; for (int q = 0; q < g_nres2; q++) if (strncmp(cur, "resident.", 9) == 0 && !strcmp(g_res[q].id, cur + 9)) k = q;   /* the ring on a reserved silhouette: its box's ring and its tag */
+    if (k >= 0) { v_region("focus", LAYER_CHROME); int rb[4]; memcpy(rb, g_res[k].box, sizeof rb); rb[0] += g_vnudge[0]; rb[1] += g_vnudge[1]; word_focusRingFigure("focus", "vivarium", "focus.targets.resident", g_res[k].pic, rb[0] + rb[2] / 2, rb[1] + rb[3] - 1, rb[2]);
+      ent_t t; memset(&t, 0, sizeof t); snprintf(t.name, sizeof t.name, "%s", g_res[k].name); memcpy(t.box, g_res[k].box, sizeof t.box); t.hasfig = 1; ent_tag(&t, "regions.window"); } }
   g_viv = 0;
 }
-
-/* the targets as the words drew them, in the props' order: a resident's box where the face stepped it, a tile's rectangle in its form (not lifted) */
-int vivarium_focus(focus_target_t *out, int cap) {
-  g_viv = 1;
-  int n = v_plen("focus.targets"); if (n > cap) n = cap; int nt = v_plen("regions.tiles.items"), nc = v_plen("regions.rooms.items"); if (nt > 8 || nc > 4) { g_viv = 0; return 0; }   /* the panes refuse more than eight places or four rooms: no targets */
-  int have = nt > 0 && layout_list_form("vivarium", "regions.tiles", nt, NULL, 0) >= 0, haveChips = nc > 0 && layout_list_form("vivarium", "regions.chips", nc, NULL, 0) >= 0;
-  for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[i]; focus_fill(t, "focus.targets", i, NULL);
-    int r[4] = { 0, 0, 0, 0 }, ix = i;
-    if (strncmp(t->id, "resident.", 9) == 0) { for (int e = 0; e < g_ne; e++) if (strcmp(g_e[e].id, t->id + 9) == 0 && !g_e[e].hidden) memcpy(r, g_e[e].box, sizeof r); }
-    else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int k = 0; k < nt; k++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", k)), t->id + 5) == 0) layout_list_pitch("vivarium", "regions.tiles", nt, k, r); ix = 0; for (int k = 0; k < i; k++) if (strncmp(out[k].id, "tile.", 5) == 0) ix++; }
-    else if (strncmp(t->id, "room.", 5) == 0 && haveChips) { for (int k = 0; k < nc; k++) if (strcmp(v_fmt("room.%s", v_pstr(v_fmt("regions.rooms.items.%d.id", k))), t->id) == 0) layout_list_pitch("vivarium", "regions.chips", nc, k, r); ix = 0; for (int k = 0; k < i; k++) if (strncmp(out[k].id, "room.", 5) == 0) ix++; }   /* a chip: its rectangle in its form, its index among the chips */
-    focus_fill(t, "focus.targets", i, r); t->index = ix;
-  }
-  g_viv = 0; return n;
-}
-
-/* a key on the whole: ✓ says look on the focused resident or tile (nothing on the room), ← goes Home, the room keys; the pad moves the ring by vivarium.json focus.graph (the host's selectors in focus.resolve) */
-void vivarium_key(int code) { screens_key_graph(code, "vivarium", "focus.graph", vivarium_focus, "room", &(screens_keys_t){ .resolve = 1, .room_at = "focus.roomAt" }); }

@@ -128,14 +128,16 @@ export function homeBody(light = lightNow()) {
 // ---- The Vivarium's whole ----
 // Every mibi at home in one window and the places along the foot. The ring is the face's (focus.graph); the host keeps what the face says in UI.viv.f, and a way in (null) takes the ring to the mibi last seen up close (vivarium.json focus.entry).
 export function vivariumBody(light = lightNow()) {
-  const body = vivariumBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.viv.f, seen: UI.hab.id, prev: UI.viv.prev, ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home, SPECS.pods), pn = UI.panel;
-  UI.viv.f = body.props.focus.cur;
+  const body = vivariumModel(light), pn = UI.panel;
+  UI.viv.f = body.props.focus.cur; if (body.nav.card != null) UI.viv.last = body.nav.card; delete body.nav;
   if (pn && pn.screen === "vivarium") {   // the Add a room? panel is open: its props ride on the whole's (an overlay) and its bottom line is built from the focused card
     const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump, light }, SPECS.panel, SPECS.frame, SPECS.pods);
     pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
   }
   return body;
 }
+// The Vivarium's props from the host's state (the collection v2 design): the view, the cold page, the carry and the pick of two are UI.viv's; the intents build the same (h.vivBuild)
+export const vivariumModel = (light = lightNow()) => vivariumBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.viv.f, seen: UI.hab.id, last: UI.viv.last, view: UI.viv.view, page: UI.viv.page, carry: UI.viv.carry, pick: UI.viv.pick, prev: UI.viv.prev, ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home, SPECS.pods);
 // The room the whole shows changes (the ring on a room's chip, a room added): st.face.room is the rules' one home for it, set here, by seeing a mibi (state.seeRoom, from game.mjs goScreen and the hatch), by a move and by ?dev Room shown; the window and the places pane cross-dither from the room that was shown (vivarium.json events.swap:
 // habitat's swap event, the same dither), the old pictures kept on the face until the event ends; a cut with reduced motion. The chips, the crumb and the line are cuts on the frame of the key.
 export function showRoom(h, i) {
@@ -310,7 +312,7 @@ export const lightIds = (light, room = shownRoomNow()) => roomPictureIds(room, l
 // The pictures of the frame and the Companion's face, the same on every screen.
 export function frameIds() {
   const ids = new Set(); walk(SPECS.frame.regions, ids); for (const id of companionIds()) if (assetEntry(id)) ids.add(id);
-  for (const id of ["energy", "data", "essence", "cross"]) if (assetEntry(`icon:${id}:16`)) ids.add(`icon:${id}:16`);
+  for (const id of ["energy", "data", "essence", "cross"]) for (const px of [14, 15, 16]) if (assetEntry(`icon:${id}:${px}`)) ids.add(`icon:${id}:${px}`);
   return [...ids];
 }
 // Idle takes none of the frame's marks but the one its waiting lamps are (frame.json regions.marks.lamp12.waiting).
@@ -349,7 +351,7 @@ export function createHost({ send, nowMs, light, time = null, afterSave = () => 
   };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), motion, say: msg, play, at, skip, showRoom: (i) => showRoom(h, i), save: () => { save(); afterSave(); }, holding, arriving, light: () => shownLight ?? lightNow(), enterSitting: (m, o) => enterSitting(h, m, o),
+    now: () => Date.now(), motion, say: msg, play, at, skip, showRoom: (i) => showRoom(h, i), save: () => { save(); afterSave(); }, holding, arriving, light: () => shownLight ?? lightNow(), vivBuild: () => vivariumModel(shownLight ?? lightNow()), enterSitting: (m, o) => enterSitting(h, m, o),
     // The frame loop's call: what was scheduled and is due runs, in order; then the room key kept through a hold is dispatched once the hold is over.
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
@@ -386,7 +388,7 @@ export function onFaceMessage(h, m) {
   if (m.t === "focus") {
     if (m.screen === "panel") { if (UI.panel) UI.panel.focus = m.target; return; }   // a panel message after it closed is dropped
     if (m.screen === "namer") { if (UI.screen === "habitat" && UI.hab.namer) UI.hab.namer.f = m.target; return; }   // a namer message after it closed is dropped
-    if (m.screen === "vivarium") { if (UI.screen === "vivarium") { UI.viv.f = m.target; const r = /^room\.(\d)$/.exec(m.target); if (r) showRoom(h, +r[1]); } return; }   // the ring on a room's chip shows that room
+    if (m.screen === "vivarium") { if (UI.screen === "vivarium") INTENTS.vivarium.focus(h, m.target); return; }   // the ring on a chip shows its view; a flip turns the page while carrying
     if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
     if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
     if (m.screen === "library") { if (UI.screen === "library") INTENTS.library.focus(h, m.target); return; }

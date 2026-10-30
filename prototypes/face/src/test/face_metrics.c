@@ -1,17 +1,17 @@
-/* face_metrics: writes the metrics table of the compiled Inter fonts (lvgl-switch.md §2.5): for each font (16, 20 and 28 px at their own weights, and "16m", Medium 16), every codepoint the font holds with its advance, and the kerning of every pair whose advance
+/* face_metrics: writes the metrics table of the compiled Inter fonts (lvgl-switch.md §2.5): for each font (14, 15, 16, 20 and 28 px at their own weights, and "16m", Medium 16), every codepoint the font holds with its advance, and the kerning of every pair whose advance
    differs from the unkerned one, exactly what lv_text_get_width sums (lv_font_get_glyph_width(font, letter, letter_next)). ui/specs/measure.mjs sums the same table in JavaScript, so the views can choose words
    by width with no call across the bridge; metrics.test.mjs asserts it equals the WebAssembly face on every Station string.   face_metrics [out.json] */
 #include "lvgl.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-extern const lv_font_t face_inter_16, face_inter_16m, face_inter_20, face_inter_28;
+extern const lv_font_t face_inter_14, face_inter_15, face_inter_16, face_inter_16m, face_inter_20, face_inter_28;
 int main(int argc, char **argv) {
   lv_init();
   FILE *out = argc > 1 ? fopen(argv[1], "w") : stdout; if (!out) return 1;
-  const struct { const char *key; const lv_font_t *f; } F[] = { { "16", &face_inter_16 }, { "20", &face_inter_20 }, { "28", &face_inter_28 }, { "16m", &face_inter_16m } };   /* keyed as ui/specs/measure.mjs reads them: a px alone is its default weight */
+  const struct { const char *key; const lv_font_t *f; } F[] = { { "14", &face_inter_14 }, { "15", &face_inter_15 }, { "16", &face_inter_16 }, { "20", &face_inter_20 }, { "28", &face_inter_28 }, { "16m", &face_inter_16m } };   /* keyed as ui/specs/measure.mjs reads them: a px alone is its default weight */
   fprintf(out, "{\"note\":\"Made by face_metrics from the compiled fonts: per font (a px alone is the px's own weight, 16m is Medium 16), the advance of each codepoint the font holds, and the kerning (the advance with a next letter minus the advance alone) of each pair where it is not zero. A text's width is the sum over its letters of advance + kerning with the next letter.\",\"fonts\":{");
-  for (int fi = 0; fi < 4; fi++) {
+  for (int fi = 0; fi < (int)(sizeof F / sizeof F[0]); fi++) {
     const lv_font_t *f = F[fi].f; static uint32_t have[70000]; int nh = 0;
     for (uint32_t c = 32; c < 0x10000; c++) { lv_font_glyph_dsc_t g; if (lv_font_get_glyph_dsc(f, &g, c, 0) && g.adv_w > 0) have[nh++] = c; }
     fprintf(out, "%s\"%s\":{\"advance\":{", fi ? "," : "", F[fi].key);

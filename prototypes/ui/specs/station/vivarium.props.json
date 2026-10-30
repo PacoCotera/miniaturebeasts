@@ -1,5 +1,5 @@
 {
- "$comment": "The props of the Vivarium's whole (lvgl-switch.md §2.1): what views/vivarium-props.mjs gives the face, beside the frame's. Props name what, never where: ids, strings, states, seeds, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from vivarium.json and the palette). Pictures are ids; the window's is a slot (empty until the whole's painting is placed, then the plates stand).",
+ "$comment": "The props of the Vivarium (the collection v2 design; lvgl-switch.md §2.1): what views/vivarium-props.mjs gives the face, beside the frame's. Props name what, never where: ids, strings, states, seeds, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from vivarium.json, rooms.json and the palette). Pictures are ids. regions.window.edge is the layout check's fact (layout.given: the room's crop, its painting's size, its keep forms and joins in painting coordinates), never drawn from.",
  "$defs": {
   "person": {
    "type": "object",
@@ -131,45 +131,14 @@
     "rester": {
      "type": "boolean",
      "description": "R4b: a bed sleeper that is a rester (the bed is the nappers' alone)"
-    }
-   }
-  },
-  "tile": {
-   "type": "object",
-   "required": [
-    "id",
-    "state",
-    "picture",
-    "well"
-   ],
-   "additionalProperties": false,
-   "properties": {
-    "id": {
-     "type": "string"
     },
-    "state": {
-     "enum": [
-      "housed",
-      "out",
-      "free"
-     ]
-    },
-    "picture": {
-     "type": "string"
-    },
-    "well": {
-     "type": "string"
-    },
-    "from": {
+    "mark": {
      "type": "string",
-     "description": "R5: while the room shown changes (events.swap): the id of the old room's place's thumbnail, dithered out as this place's own dithers in; \"\" when there is none or no swap runs"
+     "description": "the collection v2 design §6: the master of its one mark on the figure (the asleep mark, the heart, the stick; the lamp for a coming-out silhouette), absent when none applies"
     },
-    "where": {
-     "enum": [
-      "docked",
-      "away"
-     ],
-     "description": "R4b: on a carried place (state out), where the Companion is: docked draws the solid glyph, away the outline; the thumbnail is given too and drawn dimmed"
+    "carried": {
+     "type": "boolean",
+     "description": "§3: the one in hand, in its own room: it pauses where it stands (its point's silhouette while the hand is elsewhere)"
     }
    }
   },
@@ -187,9 +156,16 @@
     "group": {
      "enum": [
       "resident",
-      "tile",
-      "room"
+      "hand",
+      "room",
+      "plate",
+      "house",
+      "flipprev",
+      "flipnext"
      ]
+    },
+    "index": {
+     "type": "integer"
     },
     "enabled": {
      "type": "boolean"
@@ -200,31 +176,302 @@
    "type": "object",
    "required": [
     "id",
-    "state",
-    "picture",
-    "lamp"
+    "kind",
+    "name",
+    "count",
+    "full",
+    "lit",
+    "picture"
    ],
    "additionalProperties": false,
    "properties": {
     "id": {
      "type": "string",
-     "description": "the room's number (0 to 3), or \"new\" for the new-room chip"
+     "description": "a room's number (0 to 3), new (Add a room), all (All rooms) or tucked (Tucked away)"
     },
-    "state": {
+    "kind": {
      "enum": [
-      "shown",
       "room",
-      "new"
-     ],
-     "description": "shown: the room shown (one step up); room: another room; new: the new-room chip"
+      "new",
+      "all",
+      "tucked"
+     ]
+    },
+    "name": {
+     "type": "string"
+    },
+    "count": {
+     "type": "string",
+     "description": "a room's \"{a} of 8\" or \"full\"; Add a room its price; Tucked away its count; \"\" for All rooms"
+    },
+    "full": {
+     "type": "boolean"
+    },
+    "lit": {
+     "type": "boolean",
+     "description": "the chip naming the view shown (its 2 px bone underline)"
     },
     "picture": {
      "type": "string",
-     "description": "the room's chip picture (rooms.json rooms.<id>.chip) in the light; \"\" until the art director cuts it (the recess alone)"
+     "description": "a room's 128 x 32 chip cut in the light (rooms.json chip); the cold mark on Tucked away; \"\" otherwise"
+    }
+   }
+  },
+  "plate": {
+   "type": "object",
+   "required": [
+    "id",
+    "verb",
+    "price",
+    "held"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
     },
-    "lamp": {
-     "type": "string",
-     "description": "the new-room chip's lamp picture (mint when the next room can be paid, stone otherwise); \"\" on a room's chip"
+    "verb": {
+     "type": "string"
+    },
+    "price": {
+     "type": "string"
+    },
+    "held": {
+     "type": "boolean"
+    }
+   }
+  },
+  "card": {
+   "type": "object",
+   "required": [
+    "state",
+    "name",
+    "looks",
+    "mark",
+    "words",
+    "picture",
+    "plates",
+    "why"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "state": {
+     "enum": [
+      "mibi",
+      "empty",
+      "none"
+     ]
+    },
+    "id": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "looks": {
+     "type": "array",
+     "maxItems": 3,
+     "items": {
+      "type": "string"
+     }
+    },
+    "mark": {
+     "type": "string"
+    },
+    "words": {
+     "type": "string"
+    },
+    "picture": {
+     "type": "string"
+    },
+    "figure": {
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 4,
+     "maxItems": 4
+    },
+    "plates": {
+     "type": "array",
+     "maxItems": 6,
+     "items": {
+      "$ref": "plate"
+     }
+    },
+    "why": {
+     "type": "string"
+    }
+   }
+  },
+  "place": {
+   "type": "object",
+   "required": [
+    "id",
+    "state",
+    "picture",
+    "mark"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "state": {
+     "enum": [
+      "mibi",
+      "carried",
+      "coming",
+      "store",
+      "free",
+      "more"
+     ]
+    },
+    "picture": {
+     "type": "string"
+    },
+    "mark": {
+     "type": "string"
+    },
+    "more": {
+     "type": "string"
+    }
+   }
+  },
+  "band": {
+   "type": "object",
+   "required": [
+    "kind",
+    "name",
+    "full",
+    "places"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "kind": {
+     "enum": [
+      "room",
+      "add",
+      "later",
+      "cold"
+     ]
+    },
+    "name": {
+     "type": "string"
+    },
+    "price": {
+     "type": "string"
+    },
+    "count": {
+     "type": "string"
+    },
+    "mark": {
+     "type": "string"
+    },
+    "full": {
+     "type": "boolean"
+    },
+    "places": {
+     "type": "array",
+     "maxItems": 8,
+     "items": {
+      "$ref": "place"
+     }
+    }
+   }
+  },
+  "cold": {
+   "type": "object",
+   "required": [
+    "id",
+    "name",
+    "picture",
+    "figure"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "picture": {
+     "type": "string"
+    },
+    "figure": {
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 4,
+     "maxItems": 4
+    }
+   }
+  },
+  "reserved": {
+   "type": "object",
+   "required": [
+    "id",
+    "name",
+    "spot",
+    "picture",
+    "figure",
+    "mark"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "spot": {
+     "type": "integer"
+    },
+    "picture": {
+     "type": "string"
+    },
+    "figure": {
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 4,
+     "maxItems": 4
+    },
+    "mark": {
+     "type": "string"
+    }
+   }
+  },
+  "form": {
+   "type": "object",
+   "required": [
+    "id",
+    "form"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "form": {
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 4,
+     "maxItems": 4
+    },
+    "leaves": {
+     "enum": [
+      "left",
+      "top",
+      "right",
+      "bottom"
+     ]
     }
    }
   }
@@ -232,6 +479,7 @@
  "type": "object",
  "required": [
   "state",
+  "view",
   "regions",
   "focus"
  ],
@@ -243,14 +491,19 @@
     "empty"
    ]
   },
+  "view": {
+   "enum": [
+    "room",
+    "house",
+    "tucked"
+   ]
+  },
   "regions": {
    "type": "object",
    "required": [
     "window",
-    "room",
-    "residents",
-    "tiles",
-    "rooms"
+    "rooms",
+    "card"
    ],
    "additionalProperties": false,
    "properties": {
@@ -263,6 +516,46 @@
      "properties": {
       "picture": {
        "type": "string"
+      },
+      "edge": {
+       "type": "object",
+       "required": [
+        "crop",
+        "painting",
+        "keep",
+        "joins"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "crop": {
+         "type": "array",
+         "items": {
+          "type": "integer"
+         },
+         "minItems": 2,
+         "maxItems": 2
+        },
+        "painting": {
+         "type": "array",
+         "items": {
+          "type": "integer"
+         },
+         "minItems": 2,
+         "maxItems": 2
+        },
+        "keep": {
+         "type": "array",
+         "items": {
+          "$ref": "form"
+         }
+        },
+        "joins": {
+         "type": "array",
+         "items": {
+          "$ref": "form"
+         }
+        }
+       }
       }
      }
     },
@@ -324,27 +617,36 @@
      },
      "description": "given only when the room has a bed (Roots)"
     },
-    "tiles": {
+    "drops": {
      "type": "object",
      "required": [
-      "glyph",
       "items"
      ],
      "additionalProperties": false,
      "properties": {
-      "glyph": {
-       "type": "string"
-      },
       "items": {
        "type": "array",
        "maxItems": 8,
        "items": {
-        "$ref": "tile"
+        "type": "integer"
+       },
+       "description": "the drop spots shown while a mibi is in hand: indexes into rooms.json drops"
+      }
+     }
+    },
+    "reserved": {
+     "type": "object",
+     "required": [
+      "items"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "items": {
+       "type": "array",
+       "maxItems": 8,
+       "items": {
+        "$ref": "reserved"
        }
-      },
-      "glyphDocked": {
-       "type": "string",
-       "description": "R4b: the solid Companion glyph (frame.json marks.companion.docked), a carried tile's while docked"
       }
      }
     },
@@ -357,10 +659,110 @@
      "properties": {
       "items": {
        "type": "array",
-       "maxItems": 4,
+       "maxItems": 7,
        "items": {
         "$ref": "chip"
        }
+      }
+     }
+    },
+    "card": {
+     "$ref": "card"
+    },
+    "house": {
+     "type": "object",
+     "required": [
+      "bands"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "bands": {
+       "type": "array",
+       "maxItems": 5,
+       "items": {
+        "$ref": "band"
+       }
+      }
+     }
+    },
+    "tucked": {
+     "type": "object",
+     "required": [
+      "page",
+      "pages",
+      "items",
+      "here"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "page": {
+       "type": "integer"
+      },
+      "pages": {
+       "type": "integer"
+      },
+      "items": {
+       "type": "array",
+       "maxItems": 8,
+       "items": {
+        "$ref": "cold"
+       }
+      },
+      "here": {
+       "type": "boolean"
+      }
+     }
+    },
+    "carry": {
+     "type": "object",
+     "required": [
+      "id",
+      "name",
+      "own",
+      "picture",
+      "figure",
+      "outline",
+      "mark"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "own": {
+       "type": "boolean"
+      },
+      "picture": {
+       "type": "string"
+      },
+      "figure": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 4,
+       "maxItems": 4
+      },
+      "outline": {
+       "type": "string"
+      },
+      "mark": {
+       "type": "string"
+      }
+     }
+    },
+    "pick": {
+     "type": "object",
+     "required": [
+      "id"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string"
       }
      }
     }

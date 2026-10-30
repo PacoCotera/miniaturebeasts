@@ -51,7 +51,7 @@ export async function bootAssets({ test = false } = {}) {
   setEnv({ rgb: rgbOfName });
 }
 // The icons the text runs inline (⚡ ◆ ❀ ✕ at the 16 px body size) are registered in the manifest as type assets.
-for (const name of ["energy", "data", "essence", "cross"]) registerAsset({ id: `icon:${name}:16`, w: 16, h: 16, status: "placeholder", until: "the icon set", build: () => ICON[name](16) });
+for (const name of ["energy", "data", "essence", "cross"]) for (const px of [14, 15, 16]) registerAsset({ id: `icon:${name}:${px}`, w: px, h: px, status: "placeholder", until: "the icon set", build: () => ICON[name](px) });   // 14 and 15: the mibi collection's card lines (vivarium.json)
 
 // --- the face ---
 const sendEvent = (m) => { if (CORE.face.send(m) < 0) CORE.faceErrors.push(...CORE.face.errors()); };

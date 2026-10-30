@@ -227,6 +227,7 @@ void screens_key_graph(int code, const char *spec, const char *graph_path, scree
   int roomAt[4]; if (opts->room_at) v_srect(spec, opts->room_at, roomAt);
   char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, opts->room_at ? roomAt : NULL, to, sizeof to); focus_graph_free(g);
   if (step) { if (opts->steps) screens_say("intent", cur, dir == FOCUS_UP ? "step:up" : dir == FOCUS_DOWN ? "step:down" : dir == FOCUS_LEFT ? "step:left" : "step:right"); return; }
+  if (opts->stuck) *opts->stuck = strcmp(to, cur) == 0 ? dir + 1 : 0;
   if (strcmp(to, cur) == 0) return;
   v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);   /* the ring moves on the frame of the key: the words are drawn again at once */
 }

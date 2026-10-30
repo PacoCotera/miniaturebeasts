@@ -9,7 +9,7 @@
 #include <stdint.h>
 /* The fonts the face holds, by code: a font is named by its px and weight. The px's default weight keeps the px as its code (so a text node at 16 Regular, 20 Medium or 28 SemiBold
    is what it always was); another weight at a px is 1000 + px. Any other code is refused (a text node, a measure). */
-enum { PRIM_FONT_R16 = 16, PRIM_FONT_M16 = 1016, PRIM_FONT_M20 = 20, PRIM_FONT_SB28 = 28 };
+enum { PRIM_FONT_R14 = 14, PRIM_FONT_R15 = 15, PRIM_FONT_R16 = 16, PRIM_FONT_M16 = 1016, PRIM_FONT_M20 = 20, PRIM_FONT_SB28 = 28 };   /* 14 and 15: the mibi collection's card, chips and plates */
 int prim_font_px(int code);     /* the px of a font code (16 for 1016), or 0 when the face has no such font */
 enum { FN_RECT = 1, FN_TEXT = 2, FN_SPRITE = 3, FN_NINE = 4, FN_CLIP = 5, FN_COMPOSED = 6 };
 enum { LAYER_CHROME = 0, LAYER_ART = 1, LAYER_PAINTED = 2, LAYER_TYPE = 3 };

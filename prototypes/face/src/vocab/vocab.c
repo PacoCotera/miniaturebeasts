@@ -20,7 +20,7 @@ uint32_t v_col(const char *name) {
 }
 /* the px of a size or font code: a code the face holds gives its px (1016: 16), any other number is a px as it was */
 static int px_of(int code) { int p = prim_font_px(code); return p ? p : code; }
-int v_cap(int px) { px = px_of(px); return px == 16 ? 12 : px == 20 ? 14 : px == 28 ? 21 : px * 3 / 4; }
+int v_cap(int px) { px = px_of(px); return px == 14 ? 10 : px == 15 ? 11 : px == 16 ? 12 : px == 20 ? 14 : px == 28 ? 21 : px * 3 / 4; }   /* Inter's cap height (0.727 em), rounded */
 static void settext(const char *s) { snprintf(prim_text(), (size_t)prim_text_size(), "%s", s); }
 int v_measure(const char *s, int px) { settext(s); return prim_measure(px); }
 void v_rect(const char *id, int x, int y, int w, int h, const char *colour) { prim_node(v_id(id), FN_RECT, x, y, w, h, v_col(colour), 0, 0); }
@@ -266,7 +266,7 @@ void v_plate_in(const char *spec, const char *id, const char *namePath, int w, i
    A role is resolved from the frame spec once per load of it and cached by its name and ground: its font (type.roles.<role>.font, a name of type.fonts that is one of the face's fonts), its
    colour on the ground (type.roles.<role>.colour.<kind>, or the variant's of "<role>.<variant>"), the shadow it casts there (type.roles.<role>.shadow.<kind>, "" for none) and its pitch
    (type.roles.<role>.pitch, else the frame's type.pitch of its px). A ground is a kind (field, pane, band, painted) or a palette name type.grounds maps to one. */
-static const struct { const char *name; int code; } FONTS[] = { { "R16", PRIM_FONT_R16 }, { "M16", PRIM_FONT_M16 }, { "M20", PRIM_FONT_M20 }, { "SB28", PRIM_FONT_SB28 } };   /* prim.h's codes by the names type.fonts gives them */
+static const struct { const char *name; int code; } FONTS[] = { { "R14", PRIM_FONT_R14 }, { "R15", PRIM_FONT_R15 }, { "R16", PRIM_FONT_R16 }, { "M16", PRIM_FONT_M16 }, { "M20", PRIM_FONT_M20 }, { "SB28", PRIM_FONT_SB28 } };   /* prim.h's codes by the names type.fonts gives them */
 typedef struct { char key[64]; int ok, code, pitch; char colour[24], shadow[24]; } role_t;
 #define ROLE_CACHE 64
 static role_t g_roles[ROLE_CACHE]; static int g_nroles; static unsigned g_roles_serial;

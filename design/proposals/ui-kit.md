@@ -81,7 +81,7 @@ brown-grey), **LIGHT** (lamp pools), **veil** (unsurveyed ground in a place: DAR
 dot, 16 px dithered edge), **cloud bank** (unexplored map: lavender masses, no ground drawn
 under them, darkening away from the explored island), **fade** (seen cells: DARK, checker).
 
-**Station palette: 68 colours** (the working rule). The numbers live in
+**Station palette: 69 colours** (the working rule; the 69th, `coldVeil`, is the mibi collection's cold recess). The numbers live in
 [`prototypes/ui/palettes/station.json`](../../prototypes/ui/palettes/station.json), which the Station build took when it renamed its colour uses per the migration table below; this section
 shows them and their roles. It is the one palette of the Station's **art layer**: the chrome,
 the pixel art the build draws (material icons, lamps, pips, the glint, the leaf timer, Shield
@@ -151,6 +151,7 @@ bands.
 | `libQuiet` | `#2a2320` | Library met cells | `libGround` · `libPanel` | The approved Library renders: the met cells |
 | `libWell` | `#1a1514` | Library unmet cells; the 1 px rule under every Library band | `void` · `libGround` | The approved Library renders: the unmet wells |
 | `libLine` | `#4a413c` | The Library bevel on every bezel, the stamp slot outline, the overview edge, portrait frames | `libHead` · `bevel` | The approved Library renders: the warm bevel and the slot outlines |
+| `coldVeil` | `#363f40` | The cold veil: the mibi collection's Tucked away (its page, its band and its chip), `panel` with `sage` mixed in at 12 %, precomputed: never frost, never a dither | `panel` · `hairline` | Not on the board: the cold recess where a mibi is kept outside time |
 
 Text on the Library's grounds: `mist` is text only on `libGround`, `libQuiet` and `libWell`; `fog` is quiet text on `libPanel` and `libHead`; `stone` is never text.
 

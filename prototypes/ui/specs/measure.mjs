@@ -15,7 +15,7 @@ export function createMeasure(metrics) {
   };
 }
 // The table's key for each font name of frame.json type.fonts (the face's codes, prim.h PRIM_FONT_*: R16 16, M16 1016, M20 20, SB28 28).
-export const FONT_KEYS = { R16: "16", M16: "16m", M20: "20", SB28: "28" };
+export const FONT_KEYS = { R14: "14", R15: "15", R16: "16", M16: "16m", M20: "20", SB28: "28" };
 // measureRole(metrics, frame, role): the measure of a text role (frame.json type.roles.<role>, or "<role>.<variant>", which measures in the variant's font when it names one, else its role's): its font's key, then (text) => width.
 // A role the frame does not hold, or a font the face does not, throws. A props builder that measures text measures it by role, never by px.
 const measures = new WeakMap();

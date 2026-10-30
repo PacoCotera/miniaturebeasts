@@ -435,12 +435,13 @@ test("the intents are DOM-free, transitively: nothing they import reaches a docu
   }
 });
 
-test("the Vivarium's whole: ✓ on a resident or a tile looks at that mibi up close (the transition held for events.look), nothing on the room or an unknown mibi; ← goes Home with the ring on the panel", () => {
+test("the Vivarium (the collection v2 design): ✓ on a mibi picks it up and ← puts it back; ✓ Look opens it up close (held for events.look); ✓ on the room's chip does nothing; ← goes Home with the ring on the panel", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 3, settings); st.dock = { docked: true, at: T0 };
   const h = host(st), m = st.mibis[1], ev = h.specs.vivarium.events.look;
-  INTENTS.vivarium.intent(h, "resident." + m.id, "confirm"); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "resident", "habitat"]); assert.equal(h.holds.at(-1), ev.hold, "the look holds input for events.look.hold");
-  h.ui.meet = st.mibis[2].id; INTENTS.vivarium.intent(h, "tile." + st.mibis[2].id, "confirm"); assert.equal(h.ui.meet, st.mibis[2].id, "looking at the mibi that was to be met opens its meet: the first press up close ends it");
-  const n = h.went.length; INTENTS.vivarium.intent(h, "room", "confirm"); INTENTS.vivarium.intent(h, "tile.nobody", "confirm"); assert.equal(h.went.length, n, "nothing to look at, nothing happens");
+  INTENTS.vivarium.intent(h, "resident." + m.id, "confirm"); assert.equal(h.ui.viv.carry.id, m.id, "✓ on a mibi: Pick up"); assert.equal(h.ui.viv.f, "resident." + m.id, "the hand on itself");
+  INTENTS.vivarium.intent(h, "resident." + m.id, "back"); assert.equal(h.ui.viv.carry, null, "← puts it back"); assert.equal(h.went.length, 0, "and stays in the Vivarium");
+  h.ui.viv.f = "plate.0"; h.ui.viv.last = m.id; INTENTS.vivarium.intent(h, "plate.0", "confirm"); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "resident", "habitat"]); assert.equal(h.holds.at(-1), ev.hold, "the look holds input for events.look.hold");
+  const n = h.went.length; INTENTS.vivarium.intent(h, "room.0", "confirm"); INTENTS.vivarium.intent(h, "resident.nobody", "confirm"); assert.equal(h.went.length, n, "nothing to do, nothing happens"); assert.equal(h.ui.viv.carry, null);
   INTENTS.vivarium.intent(h, "resident." + m.id, "back"); assert.deepEqual([h.went.at(-1), h.ui.home.f], ["home", "vivarium"]);
 });
 

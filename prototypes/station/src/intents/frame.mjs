@@ -6,17 +6,21 @@ import { roomTop, ROOM_KEYS } from "../nav.mjs";
 import { leaveCargo } from "./cargo.mjs";
 import { arrive, later, endArrival } from "./arrival.mjs";
 import * as home from "./home.mjs";
+import { vivariumKey, dropAll } from "./vivarium.mjs";
 
 const SCREEN_OF = { home: "home", research: "pods", library: "library", habitat: "vivarium" };
 // A room key: the unpaid choices of Create, Cross and the sitting are dropped, and the room's own top opens (Pods: the collection with the ring on the pod that most needs the player; Library: Level 1 with the ring on the species it was last on (ui.lib.l1); Vivarium: the whole, the ring per vivarium.json focus.entry.vivariumKey).
 export function roomKey(h, key) {
   if (!roomTop(key)) return false;
-  const ui = h.ui; ui.create = null; ui.cross = null; ui.sit = null; ui.hab.namer = null; ui.panel = null;   // a room key closes the namer and a panel, writing nothing
+  const ui = h.ui;
+  if (key === "habitat" && ui.screen === "vivarium" && !ui.idle && !ui.panel && vivariumKey(h)) return true;   // in the Vivarium the key toggles the room view and the house view (the collection v2 design §1)
+  if (ui.screen === "vivarium") dropAll(h);   // a room key or Home drops a carry and the pick of two, nothing paid
+  ui.create = null; ui.cross = null; ui.sit = null; ui.hab.namer = null; ui.panel = null;   // a room key closes the namer and a panel, writing nothing
   leaveCargo(h);    // a room key on Cargo finishes an opening as a cut, or closes the end, and opens its section
   endArrival(h);    // a room key on the arrival is Later, and then it acts
   if (key === "home") { if (ui.screen === "home" && !ui.idle) { if (ui.home.f !== "room") ui.home.f = "room"; else { home.rest(h); return true; } return true; } ui.home.f = "room"; }   // Home with the ring on Home: the ring back to rest; at rest, the Station rests; from any other screen Home opens at rest, so a second press rests
   else if (key === "research") { const p = ui.pods; p.cmp = null; const q = S.neediestPod(h.st); if (q) p.cur = q.id; p.view = "collection"; p.focusView = "collection"; p.focus.set(q ? "place." + Math.max(0, h.st.tray.findIndex((x) => x.id === q.id)) : null); }
-  else if (key === "habitat") { ui.viv.f = null; }   // the Vivarium key: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.vivariumKey)
+  else if (key === "habitat") { ui.viv.f = null; ui.viv.view = "room"; ui.viv.page = 0; }   // the Vivarium key: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.vivariumKey)
   h.goto(SCREEN_OF[key]);
   return true;
 }

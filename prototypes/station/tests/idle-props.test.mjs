@@ -47,9 +47,10 @@ test("Idle's props validate against idle.props.json, name no rectangle, carry th
     assert.deepEqual(Object.keys(b.props.frame), ["idle"]); assert.equal(b.props.idle, true);
   }
 });
-test("the living window is the Vivarium's whole's: the same residents with the same seeds, the same bed and sleepers", () => {
+test("the living window is the Vivarium's room view's: the same residents with the same seeds, the same bed and sleepers", () => {
   const st = world(); adults(st, 5); const sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] }), v = vivariumBuild({ st, sv, settings, docked: true, light: "day", focus: null, seen: null, time: 12 * 3600, now: T0 + 12 * 3600 * 1000, restRules: RULES.rest, rules: RULES }, vivSpec, frame, home).props.regions, i = build(st, sv).props.regions;
-  assert.deepEqual(i.residents, v.residents); assert.deepEqual(i.bed, v.bed); assert.equal(i.bed.state, "empty"); assert.equal(i.bed.sleepers.length, 0, "R4b: the carried set is never drawn: the bed is the nappers' alone"); assert.equal(i.residents.length, 3, "five housed, two carried");
+  const who = (l) => l.map(({ id, name, seed, stage, shown, restAt, rest }) => ({ id, name, seed, stage, shown, restAt, rest }));   // the room view draws them at its own scale (the collection v2 design §3): the same mibis, seeds and rest
+  assert.deepEqual(who(i.residents), who(v.residents)); assert.deepEqual([i.bed.state, who(i.bed.sleepers), i.bed.picture], [v.bed.state, who(v.bed.sleepers), v.bed.picture]); assert.equal(i.bed.state, "empty"); assert.equal(i.bed.sleepers.length, 0, "R4b: the carried set is never drawn: the bed is the nappers' alone"); assert.equal(i.residents.length, 3, "five housed, two carried");
   assert.equal(i.vivarium.picture, "room-roots-idle-day-1024x568"); assert.equal(i.room.base, i.vivarium.picture);
 });
 const ROOMS = J("rooms.json"), LIGHTS = ["dawn", "day", "dusk", "night"];

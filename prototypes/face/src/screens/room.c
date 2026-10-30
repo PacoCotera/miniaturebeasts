@@ -17,7 +17,7 @@
 #define RM_PIECES 12
 typedef struct { char id[16]; int nx, x[RM_X + 1], top[RM_X], bottom, nk, ko[RM_KEEP][4]; } rm_level_t;
 typedef struct { int upper, lower, hop, ends[2][2], rect[4]; } rm_join_t;
-typedef struct { char id[32]; int kind, has_pic, rect[4], foot, opa, level; } rm_piece_t;
+typedef struct { char id[32]; int kind, has_pic, rect[4], foot, opa, level, inview; } rm_piece_t;   /* inview: 0 for a piece the room view leaves out (rooms.json view: false) */
 typedef struct { char id[16]; int nl, nj, np; rm_level_t lv[RM_LEVELS]; rm_join_t jn[RM_JOINS]; rm_piece_t pc[RM_PIECES]; } rm_room_t;
 
 static rm_room_t g_r[RM_ROOMS]; static int g_nr;
@@ -68,6 +68,7 @@ static void room(const char *name, rm_room_t *r, int window_area) {
     spec_str(M, P("%s.id", pb), p->id, sizeof p->id); spec_str(M, P("%s.kind", pb), kind, sizeof kind); if (!p->id[0]) { bad("%s.id is a name", pb); return; }
     if (!strcmp(kind, "occluder")) p->kind = RP_OCCLUDER; else if (!strcmp(kind, "back")) p->kind = RP_BACK; else { bad("%s.kind is occluder or back, not %s", pb, kind); return; }
     rect(P("%s.rect", pb), p->rect); if (g_bad) return; p->opa = 255; p->foot = 0; p->level = 0;
+    { const char *vw = spec_raw(M, P("%s.view", pb), NULL); p->inview = !(vw && strncmp(vw, "false", 5) == 0); }
     { char pic[8]; p->has_pic = spec_str(M, P("%s.picture", pb), pic, sizeof pic) > 0; }
     if (p->kind == RP_OCCLUDER) { p->foot = num(P("%s.foot", pb)); spec_str(M, P("%s.level", pb), lv, sizeof lv); p->level = level_index(r, lv); if (g_bad) return; if (p->level < 0) { bad("%s.level %s is not in the room", pb, lv); return; } occ++; area += p->rect[2] * p->rect[3]; }
     else if (spec_raw(M, P("%s.opa", pb), NULL)) { p->opa = num(P("%s.opa", pb)); if (g_bad) return; if (p->opa < 0 || p->opa > 255) { bad("%s.opa is 0 to 255", pb); return; } } }
@@ -85,7 +86,7 @@ int room_load(char *err, int cap) {
 }
 
 /* ---- the room chosen for the window drawn now ---- */
-static int g_sel = -1, g_dx, g_dy, g_main;
+static int g_sel = -1, g_dx, g_dy, g_main, g_viewmode;
 static rp_t g_back[RM_PIECES], g_occ[RM_PIECES]; static int g_nb, g_no;
 static int g_lk[RM_LEVELS][RM_KEEP][4], g_nlk[RM_LEVELS];   /* each usable level's keep-outs in the window's coordinates */
 int room_select(const char *id, int dx, int dy, int main_only) {
@@ -95,12 +96,17 @@ int room_select(const char *id, int dx, int dy, int main_only) {
   if (!found) g_sel = 0;
   const rm_room_t *r = &g_r[g_sel];
   for (int i = 0; i < r->nl && (!main_only || i == 0); i++) { g_nlk[i] = r->lv[i].nk; for (int k = 0; k < r->lv[i].nk; k++) { const int *o = r->lv[i].ko[k]; g_lk[i][k][0] = o[0] + dx; g_lk[i][k][1] = o[1] + dy; g_lk[i][k][2] = o[2]; g_lk[i][k][3] = o[3]; } }
-  for (int i = 0; i < r->np; i++) { const rm_piece_t *p = &r->pc[i]; if (!p->has_pic) continue;
+  for (int i = 0; i < r->np; i++) { const rm_piece_t *p = &r->pc[i]; if (!p->has_pic || (g_viewmode && !p->inview)) continue;
     const char *pic = v_pstr(v_fmt("regions.room.pieces.%s", p->id)); if (!pic || !*pic) continue;   /* the props name no picture for it: it is a keep-out alone */
     rp_t *o = p->kind == RP_OCCLUDER ? &g_occ[g_no++] : &g_back[g_nb++];
     snprintf(o->id, sizeof o->id, "%s", p->id); snprintf(o->pic, sizeof o->pic, "%s", pic); o->kind = p->kind; o->x = p->rect[0] + dx; o->y = p->rect[1] + dy; o->w = p->rect[2]; o->h = p->rect[3]; o->foot = p->foot + dy; o->opa = p->opa; o->level = p->level; }
   return found ? 0 : -1;
 }
+void room_view_mode(int on) { g_viewmode = on; }
+int room_crop(const char *id, int out[2]) { out[0] = out[1] = 0; if (!id || !*id || spec_len(M, P("rooms.%s.crop", id)) != 2) return -1; out[0] = spec_int(M, P("rooms.%s.crop.0", id), 0); out[1] = spec_int(M, P("rooms.%s.crop.1", id), 0); return 0; }
+int room_drops(void) { return g_sel < 0 ? 0 : spec_len(M, P("rooms.%s.drops", g_r[g_sel].id)); }
+int room_drop(int k, int *fx, int *feet) { if (g_sel < 0 || k < 0 || k >= room_drops()) return -1; *fx = spec_int(M, P("rooms.%s.drops.%d.0", g_r[g_sel].id, k), 0) + g_dx; *feet = spec_int(M, P("rooms.%s.drops.%d.1", g_r[g_sel].id, k), 0) + g_dy; return 0; }
+int room_level_at(int fx, int feet) { for (int lv = room_levels() - 1; lv >= 0; lv--) if (room_on(lv, fx, feet, 0)) return lv; return 0; }
 int room_levels(void) { return g_sel < 0 ? 1 : g_main ? 1 : g_r[g_sel].nl; }
 int room_pieces(int kind, const rp_t **out) { if (kind == RP_BACK) { *out = g_back; return g_nb; } if (kind == RP_OCCLUDER) { *out = g_occ; return g_no; } *out = NULL; return 0; }
 int room_have(void) { return g_sel >= 0; }

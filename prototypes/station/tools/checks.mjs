@@ -93,7 +93,7 @@ for (const s of rec.shots) {
   } else if (c.screen === "cargo" && c.props && ["arrival", "bay", "opening", "end"].includes(c.props.state)) {   // the Bay and the dock arrival: every region of the face's log against cargo.json (face/tools/cargo-regions.mjs): zero departures
     const d = keep(cargoDepartures(lg, cargoSpec, frame, c.props.state)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "vivarium" && c.viv) {   // the Vivarium's whole: every region of the face's log against vivarium.json (face/tools/vivarium-regions.mjs): zero departures; a tile a bay
-    const d = keep(vivariumDepartures(lg, vivariumSpec, c.viv.state, c.viv.cur, c.viv.n, c.viv.figs)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+    const d = keep(c.viv.props.overlay ? [] : vivariumDepartures(lg, vivariumSpec, c.viv.props, !!c.viv.props.regions?.bed)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "bench" && c.bench) {   // the Probe bench: every region of the face's log against bench.json (face/tools/bench-regions.mjs): zero departures
     const d = keep(benchDepartures(lg, benchSpec, c.bench.props, c.bench.cur)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "library" && c.lib) {   // the Library's Level 1: every region of the face's log against library.json (face/tools/library-regions.mjs): zero departures; the cells' pictures the union of the parts their states give

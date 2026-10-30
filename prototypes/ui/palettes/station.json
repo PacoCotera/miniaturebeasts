@@ -69,7 +69,8 @@
   ["libHead", "#3a312c"],
   ["libQuiet", "#2a2320"],
   ["libWell", "#1a1514"],
-  ["libLine", "#4a413c"]
+  ["libLine", "#4a413c"],
+  ["coldVeil", "#363f40"]
  ],
  "darker": {
   "void": "void",
@@ -139,7 +140,7 @@
   "libHead": "libPanel",
   "libQuiet": "libGround",
   "libWell": "void",
-  "libLine": "libHead"
+  "libLine": "libHead", "coldVeil": "panel"
  },
  "lighter": {
   "void": "ink",
@@ -209,6 +210,6 @@
   "libHead": "libLine",
   "libQuiet": "libPanel",
   "libWell": "libGround",
-  "libLine": "bevel"
+  "libLine": "bevel", "coldVeil": "hairline"
  }
 }

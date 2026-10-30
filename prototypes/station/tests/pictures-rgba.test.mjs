@@ -18,6 +18,7 @@ import { mibiPictureOf } from "../src/views/home-props.mjs";
 import { idleBuild } from "../src/views/idle-props.mjs";
 import { habitatBuild } from "../src/views/habitat-props.mjs";
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
+import { setStandSizes } from "../src/layered-stand.mjs";
 
 test("a palette buffer is RGBA: its colours from the palette, opaque, a clear cell 0,0,0,0", () => {
   const pb = new PB(3, 1); pb.set(1, 0, C.amber); const d = pb.rgba();
@@ -290,9 +291,10 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
       const h = habitatBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, habId: a.id, meetId: null, armed: false }, hab, frameSpec, home);
       const near = h.requests.find((r) => r.id === h.props.regions.resident.picture); assert.deepEqual([near.stage, near.size], ["juvenile", [304, 312]]);
       assert.equal(mibiPictureOf(w.st, a, [304, 312], settings).id, h.props.regions.resident.picture, "the host's swap dither names the same fallback picture (host.mjs habitatFocus)");
-      const v = vivariumBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, seen: null }, viv, frameSpec, home);
-      const tile = (m) => v.requests.find((r) => r.id === v.props.regions.tiles.items.find((t) => t.id === String(m.id)).picture);
-      assert.deepEqual([tile(a).stage, tile(a).size], ["juvenile", [48, 48]]); assert.deepEqual([tile(pip).stage, tile(pip).size], ["adult", [48, 48]]);
+      setStandSizes(JSON.parse(readFileSync(new URL("../../ui/specs/station/stand-sizes.json", import.meta.url), "utf8")));   // the factor views' table (stand-sizes.json), as the page loads it
+      let v; try { v = vivariumBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, seen: null, view: "house" }, viv, frameSpec, home); } finally { setStandSizes(null); }   // the house view's places at 48/304 (the collection v2 design §5)
+      const tile = (m) => v.requests.find((r) => r.id === v.props.regions.house.bands.flatMap((b) => b.places).find((t) => t.id === "house." + m.id).picture);
+      assert.deepEqual([tile(a).stage, tile(a).size], ["juvenile", [48, 50]]); assert.deepEqual([tile(pip).stage, tile(pip).size], ["adult", [48, 50]]);
     }));
   });
 }

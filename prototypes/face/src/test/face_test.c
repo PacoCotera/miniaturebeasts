@@ -760,11 +760,11 @@ static void type_kit(void) {
   check(kbox("ty.c1016", (int[4]){0}) == FN_TEXT && kabsent("ty.c1020") && u1 - u0 == 1, "prim_node: a text node at code 1016 is drawn, one at 1020 refused", "");
   /* every role of frame.json type.roles on every ground it has a colour on: its font is type.fonts' code, it draws one node (two with the shadow on a painting), no error */
   int nroles = spec_len("frame", "type.roles"), resolved = 0, pairs = 0, same = 0, shadows = 0;
-  check(nroles == 16, "type.roles: the sixteen roles of the role table", "");
+  check(nroles == 18, "type.roles: the eighteen roles of the role table (the mibi collection's small and plate among them)", "");
   for (int i = 0; i < nroles; i++) {
     char role[40], dummy[4]; if (!spec_member("frame", "type.roles", i, role, sizeof role, dummy, sizeof dummy)) continue;
     char font[16]; spec_str("frame", v_fmt("type.roles.%s.font", role), font, sizeof font);
-    int want = strcmp(font, "R16") == 0 ? PRIM_FONT_R16 : strcmp(font, "M16") == 0 ? PRIM_FONT_M16 : strcmp(font, "M20") == 0 ? PRIM_FONT_M20 : strcmp(font, "SB28") == 0 ? PRIM_FONT_SB28 : -1;
+    int want = strcmp(font, "R14") == 0 ? PRIM_FONT_R14 : strcmp(font, "R15") == 0 ? PRIM_FONT_R15 : strcmp(font, "R16") == 0 ? PRIM_FONT_R16 : strcmp(font, "M16") == 0 ? PRIM_FONT_M16 : strcmp(font, "M20") == 0 ? PRIM_FONT_M20 : strcmp(font, "SB28") == 0 ? PRIM_FONT_SB28 : -1;
     check(v_role_font(role) == want && want > 0, "role resolve: the role's font code is its type.fonts name's", role);
     int np = spec_len("frame", v_fmt("type.roles.%s.colour", role));
     for (int k = 0; k < np; k++) {
@@ -787,7 +787,7 @@ static void type_kit(void) {
     }
     resolved++;
   }
-  { char d[96]; snprintf(d, sizeof d, "%d roles, %d role-ground pairs, %d with a shadow, %d compared with v_line_at", resolved, pairs, shadows, same); check(resolved == 16 && same > 0 && shadows > 0, "role resolve: every role", d); printf("type kit: %s\n", d); }
+  { char d[96]; snprintf(d, sizeof d, "%d roles, %d role-ground pairs, %d with a shadow, %d compared with v_line_at", resolved, pairs, shadows, same); check(resolved == 18 && same > 0 && shadows > 0, "role resolve: every role", d); printf("type kit: %s\n", d); }
   /* a ground by palette name, a variant */
   prim_begin(); v_region("ty.v", LAYER_TYPE);
   int wp = v_say("ty.pal", "Hello", 10, 10, V_ANCHOR_CAP, "quiet", "panel", V_ALIGN_LEFT), wv = v_say("ty.var", "12", 10, 40, V_ANCHOR_CAP, "figure.price", "bar", V_ALIGN_LEFT);
