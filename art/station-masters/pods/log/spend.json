@@ -9315,5 +9315,107 @@
    "thoughtsTokenCount": 170,
    "totalTokenCount": 2547
   }
+ },
+ {
+  "tag": "key-art/loop-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.28297,
+  "mxn": 5.6594,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-30T01:58:51Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1745,
+   "candidatesTokenCount": 1654,
+   "thoughtsTokenCount": 675,
+   "totalTokenCount": 4074
+  }
+ },
+ {
+  "tag": "key-art/loop-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.21027,
+  "mxn": 4.2054,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-30T01:59:31Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1755,
+   "candidatesTokenCount": 1408,
+   "thoughtsTokenCount": 315,
+   "totalTokenCount": 3478
+  }
+ },
+ {
+  "tag": "key-art/loop-c try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.218806,
+  "mxn": 4.3761,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-30T02:00:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1343,
+   "candidatesTokenCount": 1427,
+   "thoughtsTokenCount": 374,
+   "totalTokenCount": 3144
+  }
+ },
+ {
+  "tag": "key-art/loop-d try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.191936,
+  "mxn": 3.8387,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-30T02:01:06Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 568,
+   "candidatesTokenCount": 1332,
+   "thoughtsTokenCount": 258,
+   "totalTokenCount": 2158
+  }
+ },
+ {
+  "tag": "key-art/loop-e try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.213732,
+  "mxn": 4.2746,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-30T02:01:57Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1686,
+   "candidatesTokenCount": 1430,
+   "thoughtsTokenCount": 323,
+   "totalTokenCount": 3439
+  }
+ },
+ {
+  "tag": "key-art/loop-f try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.20401,
+  "mxn": 4.0802,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-29",
+  "time": "2026-10-30T02:02:47Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1385,
+   "candidatesTokenCount": 1445,
+   "thoughtsTokenCount": 232,
+   "totalTokenCount": 3062
+  }
  }
 ]

@@ -1,0 +1,28 @@
+[
+ {
+  "name": "key-art/loop-e",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/website/website/assets/hero-kit-v2.webp",
+    "THE KIT (project concept art, the house style): match all three devices exactly as drawn here: the sage-green landscape STATION with orange corner bumpers, its cross, four coloured keys and orange Confirm; the warm stone portrait COMPANION with charcoal bumpers, its cross, teal Call, grey Back, orange Confirm and the braided wrist strap; the warm stone CADDY dock with two cradles, its wide grey e-paper panel and its printer slot. Take the materials, the soft window light and the warm wooden table. Do not copy its screens or its lettering."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/key-art/loop-a.jpg",
+    "THE DEVICES AND SCREENS (pass one): paint the three devices EXACTLY like these, with these screens: the warm stone Companion with its fogged pixel map in two hands; the stone Caddy with its mint-lit cradle and grey e-paper bars, the Companion with Pip on screen being seated into it; the sage Station with orange bumpers, its keys, and the two Loika (adult and juvenile) in a mossy root room on its screen. Do NOT copy its layout: it is three photographs side by side, which is wrong."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/key-art/loop-c.jpg",
+    "THE COMPOSITION ONLY (pass three): take ONLY this single continuous space and camera: the foggy meadow at left seen through and beside an open garden door, one wooden table running from the doorway to a lamp at right, a glowing trail. Its devices and its screen are WRONG: ignore them entirely."
+   ],
+   [
+    "/home/user/website/website/assets/tree-pip.webp",
+    "PIP, A LOIKA (the game's creature): a squat charcoal quadruped with a cream belly, large orange eyes with cream rings, a crown of three green leaves, short ears. Any creature in the picture is a Loika like this one."
+   ]
+  ],
+  "prompt": "A Miniature Beasts product concept photograph in the house style of the references: realistic matte 3D-printed plastic devices, soft real light, shallow depth of field, saturated and playful colour (clear greens, teal, warm orange, cream), cosy and warm, never grimy, never sepia. Concept photograph, not CAD, not an illustration. ONE single photograph of ONE continuous space, taken by one camera in one moment: not a triptych, not a collage, no panels, no vertical split lines. Left: outdoors in the foggy morning meadow just beyond an open garden door, two hands hold the Companion (its fogged pixel map on screen); a small sage-green seed-pod with a faint three-leaf mark glints in the grass below. Middle: through the doorway, on a warm wooden table that starts at the door, the Caddy, with the Companion seated into its mint-lit cradle. Right: the same table continues into the lamp-lit room, the sage Station standing on it, two Loika on its screen. A soft trail of warm light runs from the Station, past the Caddy, out through the doorway to the pod, closing the loop. Light: cool fog daylight at left warming to amber lamp light at right. \nNO text, letters, digits, logos, wordmarks, QR codes or barcodes anywhere: the devices' wordmark plates are blank. No people beyond hands and wrists. No paper coming out of the printer."
+ }
+]

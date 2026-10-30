@@ -1,0 +1,16 @@
+[
+ {
+  "name": "key-art/loop-d",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/key-art/loop-a.jpg",
+    "THE PICTURE TO REWORK (pass one): keep its three devices exactly as they are drawn here, their screens, the hands, the foggy meadow, the open garden door, the wooden table, the lamp and the light."
+   ]
+  ],
+  "prompt": "Use case: precise edit of the supplied pass-one picture. PRESERVE EVERY PIXEL of its three devices, their screens, the hands, the camera, the framing, the colours and the light; change only what follows. 1. Remove the TWO hard vertical seams that make it look like three photographs side by side: across the first seam, the morning fog of the meadow drifts on into the doorway, so the grass and the garden door become one view; across the second seam, the same wooden table and the same wall continue from the doorway into the lamp-lit room, the light warming gradually from cool at left to amber at right. No line, edge or frame may remain between the zones. 2. The pod in the grass becomes warm sage GREEN with a faint embossed three-leaf mark (shape and size unchanged, still glinting). 3. The soft trail of light on the table continues past the Caddy, out through the doorway and across the grass to the pod, so the loop closes. \nNO text, letters, digits, logos, wordmarks, QR codes or barcodes anywhere: the devices' wordmark plates are blank. No people beyond hands and wrists. No paper coming out of the printer."
+ }
+]

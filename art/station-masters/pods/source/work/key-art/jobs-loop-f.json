@@ -1,0 +1,24 @@
+[
+ {
+  "name": "key-art/loop-f",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/website/website/assets/hero-kit-v2.webp",
+    "THE KIT (project concept art, the house style): match all three devices exactly as drawn here: the sage-green landscape STATION with orange corner bumpers, its cross, four coloured keys and orange Confirm; the warm stone portrait COMPANION with charcoal bumpers, its cross, teal Call, grey Back, orange Confirm and the braided wrist strap; the warm stone CADDY dock with two cradles, its wide grey e-paper panel and its printer slot. Take the materials, the soft window light and the warm wooden table. Do not copy its screens or its lettering."
+   ],
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/key-art/loop-a.jpg",
+    "THE DEVICES AND SCREENS (pass one): paint the three devices EXACTLY like these, with these screens: the warm stone Companion with its fogged pixel map in two hands; the stone Caddy with its mint-lit cradle and grey e-paper bars, the Companion with Pip on screen being seated into it; the sage Station with orange bumpers, its keys, and the two Loika (adult and juvenile) in a mossy root room on its screen. Do NOT copy its layout: it is three photographs side by side, which is wrong."
+   ],
+   [
+    "/home/user/website/website/assets/tree-pip.webp",
+    "PIP, A LOIKA (the game's creature): a squat charcoal quadruped with a cream belly, large orange eyes with cream rings, a crown of three green leaves, short ears. Any creature in the picture is a Loika like this one."
+   ]
+  ],
+  "prompt": "A Miniature Beasts product concept photograph in the house style of the references: realistic matte 3D-printed plastic devices, soft real light, shallow depth of field, saturated and playful colour (clear greens, teal, warm orange, cream), cosy and warm, never grimy, never sepia. Concept photograph, not CAD, not an illustration. One single wide photograph of one real place, one camera, one moment (never a triptych, a collage or panels side by side). We stand on a cottage's garden doorstep at dawn, the wide-open double door at the left of the frame, the wet meadow and soft morning fog outside, the cosy room inside at the right. Outside on the grass at the left, close to the camera, two hands hold the Companion with its fogged pixel map on screen, and a small sage-green seed-pod glints in the grass by the doorstep. Inside, one long warm wooden table starts at the doorway and runs to the right: near the door, the Caddy dock, the Companion with Pip on screen seated in its mint-lit cradle; further right under a warm table lamp, the sage Station, two Loika in a mossy root room on its screen. The fog drifts in over the doorstep; the light warms from cool dawn at left to amber lamplight at right. \nNO text, letters, digits, logos, wordmarks, QR codes or barcodes anywhere: the devices' wordmark plates are blank. No people beyond hands and wrists. No paper coming out of the printer."
+ }
+]

@@ -1,0 +1,24 @@
+[
+ {
+  "name": "key-art/loop-c",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/mp/art/station-masters/pods/source/raw/key-art/loop-a.jpg",
+    "THE PICTURE TO REWORK (pass one): keep its three devices exactly as they are drawn here, their screens, the hands, the foggy meadow, the open garden door, the wooden table, the lamp and the light."
+   ],
+   [
+    "/home/user/website/website/assets/hero-kit-v2.webp",
+    "THE KIT (project concept art, the house style): match all three devices exactly as drawn here: the sage-green landscape STATION with orange corner bumpers, its cross, four coloured keys and orange Confirm; the warm stone portrait COMPANION with charcoal bumpers, its cross, teal Call, grey Back, orange Confirm and the braided wrist strap; the warm stone CADDY dock with two cradles, its wide grey e-paper panel and its printer slot. Take the materials, the soft window light and the warm wooden table. Do not copy its screens or its lettering."
+   ],
+   [
+    "/home/user/website/website/assets/tree-pip.webp",
+    "PIP, A LOIKA (the game's creature): a squat charcoal quadruped with a cream belly, large orange eyes with cream rings, a crown of three green leaves, short ears. Any creature in the picture is a Loika like this one."
+   ]
+  ],
+  "prompt": "A Miniature Beasts product concept photograph in the house style of the references: realistic matte 3D-printed plastic devices, soft real light, shallow depth of field, saturated and playful colour (clear greens, teal, warm orange, cream), cosy and warm, never grimy, never sepia. Concept photograph, not CAD, not an illustration. Rework the supplied pass-one picture into ONE CONTINUOUS PAINTING with no seams: it now looks like three photographs side by side, with two hard vertical split lines; remove both. Make it one space seen by one camera: the room's wooden table runs from the middle to the right edge; the open garden door sits behind the Caddy, and through it and to its left the same foggy meadow continues out to the left edge, where the hand holds the Companion in the wet grass outside. The fog of the left side drifts in through the door and thins as the lamp light warms the right side. Keep the Caddy with the Companion being seated into its glowing mint cradle (its e-paper panel showing only grey bars), and the sage Station on the table at right with the two Loika on its screen. The pod in the grass is warm GREEN with a faint three-leaf mark, not gold. The soft trail of light starts at the Station, passes the Caddy and runs out through the door into the meadow to the pod, closing the loop. Camera at table height, a wide 35 mm view.\nNO text, letters, digits, logos, wordmarks, QR codes or barcodes anywhere: the devices' wordmark plates are blank. No people beyond hands and wrists. No paper coming out of the printer."
+ }
+]

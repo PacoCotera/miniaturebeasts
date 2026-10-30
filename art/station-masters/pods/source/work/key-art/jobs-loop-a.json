@@ -1,0 +1,28 @@
+[
+ {
+  "name": "key-art/loop-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "16:9",
+  "size": "2K",
+  "tries": 1,
+  "refs": [
+   [
+    "/home/user/website/website/assets/hero-kit-v2.webp",
+    "THE KIT (project concept art, the house style): match all three devices exactly as drawn here: the sage-green landscape STATION with orange corner bumpers, its cross, four coloured keys and orange Confirm; the warm stone portrait COMPANION with charcoal bumpers, its cross, teal Call, grey Back, orange Confirm and the braided wrist strap; the warm stone CADDY dock with two cradles, its wide grey e-paper panel and its printer slot. Take the materials, the soft window light and the warm wooden table. Do not copy its screens or its lettering."
+   ],
+   [
+    "/home/user/website/website/assets/companion-map-hands.webp",
+    "THE COMPANION IN THE FIELD (project concept art): the same handheld held in two relaxed hands outdoors, shallow depth of field. Take the hands, the device and the photographic feel; not its screen text."
+   ],
+   [
+    "/home/user/website/website/assets/station-research-hands-2026-10.webp",
+    "THE STATION AT HOME (project concept art): the same sage Station in warm lamp light on a wooden table at dusk. Take the device, the lamp light and the mood; not its screen text."
+   ],
+   [
+    "/home/user/website/website/assets/tree-pip.webp",
+    "PIP, A LOIKA (the game's creature): a squat charcoal quadruped with a cream belly, large orange eyes with cream rings, a crown of three green leaves, short ears. Any creature in the picture is a Loika like this one."
+   ]
+  ],
+  "prompt": "A Miniature Beasts product concept photograph in the house style of the references: realistic matte 3D-printed plastic devices, soft real light, shallow depth of field, saturated and playful colour (clear greens, teal, warm orange, cream), cosy and warm, never grimy, never sepia. Concept photograph, not CAD, not an illustration. ONE continuous wide picture that reads LEFT TO RIGHT as the game's loop, FIELD -> DOCK -> HOME, three zones flowing into each other with no borders, no panels and no split lines. LEFT THIRD, THE FIELD: outdoors in a soft morning fog over a green meadow, a hand holds the warm stone Companion; its small screen shows a bright pixel-art map half hidden under purple-grey fog. In the grass at the hand's feet a small rounded seed-pod, plum sized, warm green with a faint three-leaf mark, glints in a ray of light. MIDDLE THIRD, THE DOCK: the meadow runs up to an open garden door; just inside, on a warm wooden table in the doorway light, the stone Caddy dock; a hand is seating the Companion into its cradle, the cradle glowing softly mint; the Caddy's grey e-paper panel is lit but shows only two simple grey bars and two small grey squares (no readable text). RIGHT THIRD, HOME: a cosy room in warm lamp light at dusk, the sage Station standing on the same table; its screen shows a little painted room of moss and roots with two Loika, an adult and a small juvenile, side by side. A faint path of light or a worn footpath curls from the room back out through the door to the meadow, so the loop closes. The devices are the same size relation as in the kit reference, all three clearly visible. Light goes from cool fog daylight at left to warm amber lamp light at right. Camera at table height, a wide 35 mm view, gentle depth of field so the three zones stay readable.\nNO text, letters, digits, logos, wordmarks, QR codes or barcodes anywhere: the devices' wordmark plates are blank. No people beyond hands and wrists. No paper coming out of the printer."
+ }
+]
