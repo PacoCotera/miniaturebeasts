@@ -1,6 +1,6 @@
 // Check 1 for the Vivarium (lvgl-switch.md §4; the collection v2 design §8): every region the face's log says it drew, against the rectangles vivarium.json gives it. `departures` returns the list of departures, empty when none.
 // log: the face's `log` message { regions: [{ id, layer, rect }], type: [{ text, px, region, rect? }] }; spec: vivarium.json; props: the props the face drew (state, view, regions, focus); hasBed: the room has a bed (Roots only).
-// The field is the window [0, 88, 688, 472]: the room view's residents, bed, drop spots, reserved silhouettes and marks inside it; the house view's bands and places, the cold page's rails and boxes; the chip row and the card at their rects.
+// The field is the window [0, 88, 688, 472]: the room view's residents, bed, drop spots, reserved silhouettes and marks inside it; the house view's four tiles and their places, the cold page's rails and boxes; the chip row and the card at their rects.
 import { listPitch } from "../../ui/specs/derive.mjs";
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
@@ -27,9 +27,12 @@ export function departures(log, spec, props, hasBed = true) {
     if (props.state === "empty") for (const id of ["resident", "bed.sleepers", "nameTag"]) must(got(id).length === 0, `the empty room draws no ${id}`);
   } else must(got("resident", "art").length + got("resident", "painted").length <= 1, `the ${view} view walks nobody`);
   if (view === "house") {
-    const F = R.house.bands.first, P = R.house.bands.pitch;
-    for (let j = 0; j < R.house.bands.n; j++) { const b = got(`band.${j}`, "chrome"); if (b.length) must(b.every((r) => within(r.rect, [F[0], F[1] + P * j, F[2], F[3]])), `band ${j} ${b.map((r) => r.rect)} is not [${F[0]}, ${F[1] + P * j}, ${F[2]}, ${F[3]}]`); }
-    for (const r of regions.filter((x) => /^place\.\d\.\d$/.test(x.id))) { const [, j, k] = r.id.split(".").map(Number), box = [R.house.place.box[0] + R.house.place.pitch * k, F[1] + P * j + R.house.place.box[1], 48, 48]; must(within(r.rect, [box[0], box[1] - 2, 48, 50]), `place ${j}.${k} ${r.rect} leaves its box ${box}`); }
+    const TR = R.house.tile.rects, tileAt = (r) => TR.findIndex((t) => within(r, t));   // the four windows at the quarters of the field; every figure, plate and disc inside one of them
+    for (const [j, t] of TR.entries()) { const rs = nodeRects(`tile.${j}`); must(rs.length === 0 || rs.some((r) => eq(r, t)), `tile ${j} is not drawn at ${t}`); }
+    for (const r of got("window", "chrome")) must(within(r.rect, R.window.rect), `the house tiles ${r.rect} leave the field`);
+    for (const r of got("seams", "chrome")) must(within(r.rect, R.window.rect), `the seams ${r.rect} leave the field`);
+    for (const r of regions.filter((x) => /^place\.\d\.\d$/.test(x.id))) must(tileAt(r.rect) >= 0, `place ${r.id} ${r.rect} leaves its tile`);
+    for (const r of regions.filter((x) => /^tile\.\d\.plate$/.test(x.id))) { const t = TR[+r.id.split(".")[1]], at = R.house.plate.at; must(r.rect[0] === t[0] + at[0] && r.rect[1] === t[1] + at[1] && r.rect[3] === R.house.plate.h, `the plate ${r.id} ${r.rect} is not at the tile's (+${at}), ${R.house.plate.h} tall`); }
   }
   if (view === "tucked") {
     for (const [i, rr] of R.tucked.rails.entries()) must(got(`rail.${i}`, "chrome").some((r) => eq(r.rect, rr) || within(r.rect, rr)), `rail ${i} is not drawn at ${rr}`);
@@ -47,6 +50,6 @@ export function departures(log, spec, props, hasBed = true) {
     for (const r of regions.filter((x) => /^plate\.\d$/.test(x.id) && x.layer === "chrome")) { const k = +r.id.slice(6), want = [R.card.plates.first[0], R.card.plates.first[1] + R.card.plates.pitch * k, R.card.plates.first[2], R.card.plates.first[3]]; must(r.rect[2] === 0 || eq(r.rect, want), `plate ${k} ${r.rect} is not ${want}`); } }
   for (const r of got("focus")) must(within(r.rect, [0, 0, 1024, 600]), `the ring ${r.rect} leaves the screen`);
   for (const t of type) must([14, 15, 16, 1016, 20, 28].includes(t.px), `"${t.text}" is set at ${t.px} px`);
-  for (const r of regions.filter((x) => x.layer === "type" && within(x.rect, win) && !/^(nameTag|band\.\d\.(name|full|count|price)|place\.\d\.\d\.more|panel(Title|Header|Caption|Price)|cardText)$/.test(x.id))) out.push(`the Vivarium sets a word (${r.id}) in the field: no word there but the name tag and the band names`);
+  for (const r of regions.filter((x) => x.layer === "type" && within(x.rect, win) && !/^(nameTag|tile\.\d\.plate\.(name|count)|place\.\d\.\d\.more|panel(Title|Header|Caption|Price)|cardText)$/.test(x.id))) out.push(`the Vivarium sets a word (${r.id}) in the field: no word there but the name tag and the tile plates`);
   return out;
 }

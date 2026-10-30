@@ -104,6 +104,7 @@ int room_select(const char *id, int dx, int dy, int main_only) {
 }
 void room_view_mode(int on) { g_viewmode = on; }
 int room_crop(const char *id, int out[2]) { out[0] = out[1] = 0; if (!id || !*id || spec_len(M, P("rooms.%s.crop", id)) != 2) return -1; out[0] = spec_int(M, P("rooms.%s.crop.0", id), 0); out[1] = spec_int(M, P("rooms.%s.crop.1", id), 0); return 0; }
+int room_drop_of(const char *id, int k, int *x, int *y) { if (!id || !*id || k < 0 || k >= spec_len(M, P("rooms.%s.drops", id))) return -1; *x = spec_int(M, P("rooms.%s.drops.%d.0", id, k), 0); *y = spec_int(M, P("rooms.%s.drops.%d.1", id, k), 0); return 0; }
 int room_drops(void) { return g_sel < 0 ? 0 : spec_len(M, P("rooms.%s.drops", g_r[g_sel].id)); }
 int room_drop(int k, int *fx, int *feet) { if (g_sel < 0 || k < 0 || k >= room_drops()) return -1; *fx = spec_int(M, P("rooms.%s.drops.%d.0", g_r[g_sel].id, k), 0) + g_dx; *feet = spec_int(M, P("rooms.%s.drops.%d.1", g_r[g_sel].id, k), 0) + g_dy; return 0; }
 int room_level_at(int fx, int feet) { for (int lv = room_levels() - 1; lv >= 0; lv--) if (room_on(lv, fx, feet, 0)) return lv; return 0; }

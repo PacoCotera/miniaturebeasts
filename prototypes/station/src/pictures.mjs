@@ -166,6 +166,10 @@ export function registerPictures(reqs, env) {
         registerPictures([r.base], env); if (hasAsset(r.id)) break; const b = assetOf(r.base.id); if (!b) break; const st = assetEntry(r.base.id)?.status === "placeholder" ? "placeholder" : "derived";
         registerAsset({ id: r.id, w: b.w, h: b.h, status: st, until: st === "placeholder" ? LAYER_UNTIL : null, build: () => { let px = null; return { w: b.w, h: b.h, rgba: () => px ?? (px = variantPixels(assetOf(r.base.id).rgba(), b.w, b.h, r.variant, (n) => RGB[C[n]])) }; } });
         break; }
+      case "dim": {   // a room's house tile not bought: its placed tile darkened x 0.55 (the collection v2 design, G1), made from the tile's pixels once; an empty slot until the tile is placed
+        if (hasAsset(r.id)) break; const b = hasAsset(r.master) ? assetOf(r.master) : null; if (!b) { registerSlot({ id: r.id, w: r.size[0], h: r.size[1], until: "the house tile (placed with the rooms)" }); break; }
+        registerAsset({ id: r.id, w: b.w, h: b.h, status: "derived", until: null, build: () => { let px = null; return { w: b.w, h: b.h, rgba: () => px ?? (px = variantPixels(assetOf(r.master).rgba(), b.w, b.h, "dark", (n) => RGB[C[n]])) }; } });
+        break; }
       case "curl": {   // a sleeper's curl at the stand's scale: a layered species' composed curl pose, else the 304 curl master reduced by the standing figure's factor, with its own shadow (layered-stand.mjs curlPicture), composed once here; a light grades it as it grades a stand
         const lay = r.looks && layeredStand(r.species, r.stage, [304, 312], r.view, "curl"), src = lay ? curlOfStand(lay, r.looks) : assetOf(r.master), pic = curlPicture(src, r.species, r.stage, r.factor, r.view, lay ? `${standVariant(lay, r.looks).key}|${r.stage}` : r.master);
         if (!hasAsset(r.day)) registerAsset({ id: r.day, w: pic.w, h: pic.h, status: "derived", until: null, build: () => pic });

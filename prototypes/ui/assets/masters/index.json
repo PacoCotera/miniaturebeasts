@@ -6706,6 +6706,42 @@
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
    "from": "rooms/pieces/boulders/boulders-stone-2-night.png@b7bc7c9e"
   },
+  "room-boulders-tile-dawn-344x236": {
+   "file": "rooms/room-boulders-tile-dawn-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "e0ea37a1652f54f64acf0da388c3c2fb0c7767491d62afc57f38169c576ea6c1",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-boulders-tile-dawn-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-boulders-tile-day-344x236": {
+   "file": "rooms/room-boulders-tile-day-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "641fdb867257719bbb2430468f0f933a487bad70ce95c0f20e3d39beceeec101",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-boulders-tile-day-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-boulders-tile-dusk-344x236": {
+   "file": "rooms/room-boulders-tile-dusk-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "45ff88d77fbc2d1466dcddbe10763b192900d28d97cb6b950cabbec0e544c550",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-boulders-tile-dusk-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-boulders-tile-night-344x236": {
+   "file": "rooms/room-boulders-tile-night-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "f837f8b158f1645a12e35037259210450ceafb936fcf6c6e5adf5fd58f013330",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-boulders-tile-night-344x236.png@b7bc7c9e + collection v2 art job"
+  },
   "room-cradle-front": {
    "file": "pods/room-cradle-front.png",
    "w": 224,
@@ -7044,6 +7080,42 @@
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
    "from": "rooms/signed-near-ferns-night.png@b7bc7c9e"
   },
+  "room-ferns-tile-dawn-344x236": {
+   "file": "rooms/room-ferns-tile-dawn-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "4bf4e0422c6b0d081f51a96b93fdb8e553e0aceecacd75d14efc57773fcb5d02",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-ferns-tile-dawn-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-ferns-tile-day-344x236": {
+   "file": "rooms/room-ferns-tile-day-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "bc2d564fd58362f17aeaa81f54c5f618eb41e5289c10444d9fe174faff1b4cb7",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-ferns-tile-day-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-ferns-tile-dusk-344x236": {
+   "file": "rooms/room-ferns-tile-dusk-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "da76426d6e13d9968655ba3e49841ce79e9573ebd275004425837eb88f92e74e",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-ferns-tile-dusk-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-ferns-tile-night-344x236": {
+   "file": "rooms/room-ferns-tile-night-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "fac308d9fbd70a276e78fe1dfddb865e213374effb1b81ac768bf0b850190791",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-ferns-tile-night-344x236.png@b7bc7c9e + collection v2 art job"
+  },
   "room-reeds-chip-dawn-128x32": {
    "file": "rooms/room-reeds-chip-dawn-128x32.png",
    "w": 128,
@@ -7239,6 +7311,42 @@
    "sha256": "c964d467dbec36e781d3b9c7f8eb1195d7a51dc281b490d1481edb8fc7939efa",
    "signed": "art director, Mon 26 Oct 2026 19:16 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near; composition held (edge shift <= 2 px); the minis read on every level; mist and drips kept",
    "from": "rooms/pieces/reeds/reeds-stone-1-night.png@b7bc7c9e"
+  },
+  "room-reeds-tile-dawn-344x236": {
+   "file": "rooms/room-reeds-tile-dawn-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "1e87b47be23632099f32fdedd575fe2db0337e9df0d95cd9ced5d29493a72972",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-reeds-tile-dawn-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-reeds-tile-day-344x236": {
+   "file": "rooms/room-reeds-tile-day-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "4d380ece2e5508c8968b8832c8e72c77282064046e5c58e1367f09edb41a8712",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-reeds-tile-day-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-reeds-tile-dusk-344x236": {
+   "file": "rooms/room-reeds-tile-dusk-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "a30e2d0ce8bbf5e50c52b841ea3dd27a5ee840a0ab813cb2cea8bc6b5609fcfc",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-reeds-tile-dusk-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-reeds-tile-night-344x236": {
+   "file": "rooms/room-reeds-tile-night-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "41f0050d6cb9a0532c6b97c0fc1210b418b10e5dfb3ef0c3d7afcb3dff41e73f",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-reeds-tile-night-344x236.png@b7bc7c9e + collection v2 art job"
   },
   "room-roots-bed-dawn-192x56": {
    "file": "rooms/room-roots-bed-dawn-192x56.png",
@@ -7503,6 +7611,42 @@
    "sha256": "5b1eff398b9794b59091ba5d9993b1f319d5fb832bcf8868b0ebf2a93328fe8d",
    "signed": "art director, Mon 26 Oct 2026 19:46 (Mexico City): G3 night whole L* >= 24 and the floor brighter than the back, idle and near (tools/roomgrade.py); welcoming, never spooky: soft blue-silver moonlight, the burrow a plain dark opening; composition held (edge shift <= 1 px); the minis read on every level",
    "from": "rooms/pieces/roots/roots-stone-2-night.png@b7bc7c9e"
+  },
+  "room-roots-tile-dawn-344x236": {
+   "file": "rooms/room-roots-tile-dawn-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "fe75e25e4b9d0410a7aa75488a45a38862464b99492b819951f83c62c2a8d67f",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-roots-tile-dawn-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-roots-tile-day-344x236": {
+   "file": "rooms/room-roots-tile-day-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "db1d5b5239c61a336ab1b1e47b138afbc67861fc06436dbb667b9fd90a641dc9",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-roots-tile-day-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-roots-tile-dusk-344x236": {
+   "file": "rooms/room-roots-tile-dusk-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "67c647551290bde6c291a44c73a6c44b8a023f3090b40187bf82fcbc7b105522",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-roots-tile-dusk-344x236.png@b7bc7c9e + collection v2 art job"
+  },
+  "room-roots-tile-night-344x236": {
+   "file": "rooms/room-roots-tile-night-344x236.png",
+   "w": 344,
+   "h": 236,
+   "sha256": "3d3a9158108f4690aeca9026e7b6371ec560db13fe1fc21176d3ab2b3fc1c0fd",
+   "signed": "new (the collection v2 art job, code and hand work, for the art director's check at 1x), not final",
+   "status": "new",
+   "from": "rooms/tiles/room-roots-tile-night-344x236.png@b7bc7c9e + collection v2 art job"
   },
   "room-stamp-case-152x152": {
    "file": "pods/room-stamp-case-152x152.png",

@@ -14,7 +14,8 @@
   ],
   "given": [
    "view",
-   "regions.window.edge"
+   "regions.window.edge",
+   "regions.house.edges"
   ],
   "painted": [
    {
@@ -561,51 +562,74 @@
    "rule": "a mibi coming out: its 1 px `fog` silhouette standing on the drop spot it was brought out to, with the waiting lamp on its mark disc; the room counts it"
   },
   "house": {
-   "bands": {
-    "first": [
-     16,
-     88,
-     672,
-     88
+   "component": "livingWindow",
+   "part": "house",
+   "tile": {
+    "rects": [
+     [
+      0,
+      88,
+      344,
+      236
+     ],
+     [
+      344,
+      88,
+      344,
+      236
+     ],
+     [
+      0,
+      324,
+      344,
+      236
+     ],
+     [
+      344,
+      324,
+      344,
+      236
+     ]
     ],
-    "pitch": 96,
-    "n": 5
+    "size": [
+     344,
+     236
+    ],
+    "of": [
+     688,
+     472
+    ],
+    "picture": "rooms.json `tile` of the room in the light (room-<room>-tile-{light}-344x236): its room window [cx, 96, 688, 472] cut at exactly 1/2 in the art process (16 cuts); the face never scales",
+    "order": "chip order: Roots, Reeds, Boulders, Ferns"
    },
-   "fill": "panel",
-   "later": "hairline",
-   "cold": "coldVeil",
-   "name": {
+   "dim": 0.55,
+   "seams": {
+    "v": [
+     343,
+     88,
+     2,
+     472
+    ],
+    "h": [
+     0,
+     323,
+     688,
+     2
+    ],
+    "rule": "1 px `ground` over 1 px `bevel` (the recess rails' language): x 343 and 344, y 323 and 324; no slate bands"
+   },
+   "plate": {
     "at": [
-     8,
+     6,
      6
     ],
-    "role": "small"
-   },
-   "full": {
-    "right": 664,
-    "role": "small.full"
+    "h": 20,
+    "pad": 8,
+    "gap": 6,
+    "fill": "panel",
+    "rule": "one name plate a tile: `panel` [+6, +6, text + 16, 20], the name 14 px `bone`, then \"4 of 8\" in `fog` or \"full\" in amber; the next room \"Add a room ⚡8\"; a later room its name in `fog`, no price"
    },
    "place": {
-    "box": [
-     34,
-     32,
-     48,
-     48
-    ],
-    "pitch": 84,
-    "ring": [
-     30,
-     28,
-     56,
-     56
-    ],
-    "disc": [
-     76,
-     18,
-     20,
-     20
-    ],
-    "n": 8,
     "factor": [
      48,
      304
@@ -613,14 +637,16 @@
     "picture": [
      48,
      50
-    ]
+    ],
+    "size": [
+     48,
+     48
+    ],
+    "rule": "place k is the room's drop spot k halved: tile pixel = (painting − (cx, 96)) / 2; the picture's bottom row on that foot point; free places show the ground (no boxes, no slots, no rings)"
    },
-   "tucked": {
-    "shown": 7,
-    "more": "+{n} on a disc in the eighth place, a target that opens cold page 2"
-   },
-   "order": "from the top: the rooms bought; the next room (Add a room ⚡p, a target that opens the panel); the later rooms as a 1 px hairline outline with no words; Tucked away, always last, filled with the cold veil, with the cold mark and its count",
-   "note": "the house is a map: nobody walks here; mibis in house order (slot order), free places empty; travellers darkened x 0.55 with their Companion mark at their kept place; coming out: the 1 px fog silhouette; tucked away: the cold veil palette"
+   "marks": "travellers darkened x 0.55 with the Companion disc; coming out the `fog` silhouette and the lamp; the disc rides the figure as in the room view, [ink right − 14, ink top − 8, 20, 20], clamped inside the tile",
+   "focus": "the feet ring at 1/2 (the room view's ring on the figure's own width) and the name tag under it",
+   "note": "the whole house at a glance: the four rooms as four windows, each at half the room view (the build's sign-off, replacing §5's bands). Rooms not bought: the next room's tile at x 0.55 with the plate Add a room ⚡p (a target: ✓ opens the panel); later rooms at x 0.55, their name in `fog`, not a target. Tucked away is its own page behind its chip"
   },
   "tucked": {
    "fill": "coldVeil",
@@ -905,13 +931,21 @@
    },
    "house": {
     "group": "house",
-    "id": "house.<mibi id> | house.free.<room>.<k> | house.add | house.more | house.cold | tucked.<mibi id> | tucked.here",
+    "id": "house.<mibi id> | house.free.<room>.<k> | house.add",
+    "shape": "footprint",
+    "box": "a mibi's ink where it stands in its tile (its place: the room's drop spot halved); a free place its 48 x 48 place; the next room's tile its tile",
+    "lift": 0,
+    "present": "the house view: every mibi in the rooms bought and the next room's tile (Add a room); while carrying, the rooms' free places too (group hand) and flip.next (Tucked away page 1)"
+   },
+   "tucked": {
+    "group": "house",
+    "id": "tucked.<mibi id> | tucked.here",
     "shape": {
      "rect": 6
     },
-    "box": "the house place's ring box [30 + 84k, y + 28, 56, 56]; a cold box [x − 4, top − 4, 104, 104]; the next-room band and the cold band their band",
+    "box": "a cold box [x − 4, top − 4, 104, 104]",
     "lift": 0,
-    "present": "the house view: every mibi's place, the next room's band and the +n disc; while carrying, the free places of the rooms bought and the cold band too. The Tucked away page: every box of the page; while carrying, the next free box (tucked.here)"
+    "present": "the Tucked away page: every box of the page; while carrying, the next free box (tucked.here, group hand)"
    }
   },
   "list": "the order the view lists the targets: the field's (residents, drops, house places, cold boxes), then the chips (the rooms, Add a room, All rooms, Tucked away), then the card's plates",
@@ -1247,10 +1281,7 @@
    "plate": "hairline",
    "well": "ground"
   },
-  "house": {
-   "band": "panel",
-   "later": "hairline"
-  },
+  "house": {"plate": "panel"},
   "rail": {
    "top": "ground",
    "under": "bevel"

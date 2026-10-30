@@ -338,12 +338,16 @@
     }
    }
   },
-  "band": {
+  "tile": {
    "type": "object",
    "required": [
     "kind",
+    "room",
     "name",
+    "count",
     "full",
+    "price",
+    "picture",
     "places"
    ],
    "additionalProperties": false,
@@ -352,30 +356,164 @@
      "enum": [
       "room",
       "add",
-      "later",
-      "cold"
+      "later"
      ]
     },
-    "name": {
+    "room": {
      "type": "string"
     },
-    "price": {
+    "name": {
      "type": "string"
     },
     "count": {
      "type": "string"
     },
-    "mark": {
-     "type": "string"
-    },
     "full": {
      "type": "boolean"
+    },
+    "price": {
+     "type": "string"
+    },
+    "picture": {
+     "type": "string"
     },
     "places": {
      "type": "array",
      "maxItems": 8,
      "items": {
-      "$ref": "place"
+      "$ref": "hplace"
+     }
+    }
+   }
+  },
+  "hplace": {
+   "type": "object",
+   "required": [
+    "id",
+    "spot",
+    "state",
+    "name",
+    "picture",
+    "mark"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "spot": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 7
+    },
+    "state": {
+     "enum": [
+      "mibi",
+      "carried",
+      "coming",
+      "store",
+      "free"
+     ]
+    },
+    "name": {
+     "type": "string"
+    },
+    "picture": {
+     "type": "string"
+    },
+    "figure": {
+     "type": "array",
+     "minItems": 4,
+     "maxItems": 4,
+     "items": {
+      "type": "integer"
+     }
+    },
+    "mark": {
+     "type": "string"
+    }
+   }
+  },
+  "hedge": {
+   "type": "object",
+   "required": [
+    "tile",
+    "room",
+    "crop",
+    "painting",
+    "keep",
+    "joins"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "tile": {
+     "type": "integer"
+    },
+    "room": {
+     "type": "string"
+    },
+    "crop": {
+     "type": "array",
+     "minItems": 2,
+     "maxItems": 2,
+     "items": {
+      "type": "integer"
+     }
+    },
+    "painting": {
+     "type": "array",
+     "minItems": 2,
+     "maxItems": 2,
+     "items": {
+      "type": "integer"
+     }
+    },
+    "keep": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "id",
+       "form"
+      ],
+      "additionalProperties": true,
+      "properties": {
+       "id": {
+        "type": "string"
+       },
+       "form": {
+        "type": "array",
+        "minItems": 4,
+        "maxItems": 4,
+        "items": {
+         "type": "integer"
+        }
+       }
+      }
+     }
+    },
+    "joins": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "id",
+       "form"
+      ],
+      "additionalProperties": true,
+      "properties": {
+       "id": {
+        "type": "string"
+       },
+       "form": {
+        "type": "array",
+        "minItems": 4,
+        "maxItems": 4,
+        "items": {
+         "type": "integer"
+        }
+       }
+      }
      }
     }
    }
@@ -672,15 +810,23 @@
     "house": {
      "type": "object",
      "required": [
-      "bands"
+      "tiles",
+      "edges"
      ],
      "additionalProperties": false,
      "properties": {
-      "bands": {
+      "tiles": {
        "type": "array",
-       "maxItems": 5,
+       "maxItems": 4,
        "items": {
-        "$ref": "band"
+        "$ref": "tile"
+       }
+      },
+      "edges": {
+       "type": "array",
+       "maxItems": 4,
+       "items": {
+        "$ref": "hedge"
        }
       }
      }

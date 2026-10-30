@@ -32,6 +32,8 @@ export function focus(h, target) {
 function flip(h, d) {
   const v = viv(h), st = h.st, n = S.roomCount(st, h.settings);
   if (!v.carry) { const k = Math.max(1, Math.ceil(S.tuckedAway(st).length / PER_PAGE)); v.page = Math.max(0, Math.min(k - 1, (v.page | 0) + d)); v.f = null; landCold(h, d); return; }
+  if (v.view === "house") { if (d < 0 || v.carry.kind === "out" || S.inStore(S.mibiById(st, v.carry.id))) { v.f = null; return; } v.carry.back = "house"; v.view = "tucked"; v.page = 0; v.f = null; landCold(h, d); return; }   // a house carry: ▶ with nothing ahead is Tucked away page 1, still carrying
+  if (v.view === "tucked" && d < 0 && v.carry.back === "house" && (v.page | 0) === 0) { delete v.carry.back; v.view = "house"; v.f = null; const b = build(h), res = b.props.focus.targets.filter((t) => t.group === "hand"); v.f = res.length ? res[res.length - 1].id : null; return; }   // ◀ with nothing beyond: back to the house view
   const pages = pagesOf(st, h.settings, v.carry), at = v.view === "room" ? pages.findIndex((p) => p.view === "room" && p.room === (st.face?.room ?? 0)) : pages.findIndex((p) => p.view === "tucked" && p.page === (v.page | 0)), to = pages[at + d];
   if (!to) { v.f = null; return; }
   if (to.view === "room") {

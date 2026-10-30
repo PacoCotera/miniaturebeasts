@@ -11,6 +11,7 @@
    "base": "room-roots-idle-{light}-1024x568",
    "near": "room-roots-near-{light}-544x408",
    "chip": "room-roots-chip-{light}-128x32",
+   "tile": "room-roots-tile-{light}-344x236",
    "preview": null,
    "bed": {
     "rect": [248, 496, 192, 56],
@@ -97,6 +98,7 @@
    "base": "room-reeds-idle-{light}-1024x568",
    "near": "room-reeds-near-{light}-544x408",
    "chip": "room-reeds-chip-{light}-128x32",
+   "tile": "room-reeds-tile-{light}-344x236",
    "preview": {
     "from": "room-reeds-idle-{light}-1024x568",
     "rect": [338, 376, 348, 160]
@@ -187,6 +189,7 @@
    "base": "room-boulders-idle-{light}-1024x568",
    "near": "room-boulders-near-{light}-544x408",
    "chip": "room-boulders-chip-{light}-128x32",
+   "tile": "room-boulders-tile-{light}-344x236",
    "preview": {
     "from": "room-boulders-idle-{light}-1024x568",
     "rect": [338, 376, 348, 160]
@@ -329,6 +332,7 @@
    "base": "room-ferns-idle-{light}-1024x568",
    "near": "room-ferns-near-{light}-544x408",
    "chip": "room-ferns-chip-{light}-128x32",
+   "tile": "room-ferns-tile-{light}-344x236",
    "preview": {
     "from": "room-ferns-idle-{light}-1024x568",
     "rect": [338, 376, 348, 160]

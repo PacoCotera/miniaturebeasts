@@ -293,7 +293,7 @@ for (const [screen, [file, label, main]] of Object.entries(LABELS)) test(`the st
       assert.equal(mibiPictureOf(w.st, a, [304, 312], settings).id, h.props.regions.resident.picture, "the host's swap dither names the same fallback picture (host.mjs habitatFocus)");
       setStandSizes(JSON.parse(readFileSync(new URL("../../ui/specs/station/stand-sizes.json", import.meta.url), "utf8")));   // the factor views' table (stand-sizes.json), as the page loads it
       let v; try { v = vivariumBuild({ st: w.st, sv: sv0(), settings, docked: true, light: "day", focus: null, seen: null, view: "house" }, viv, frameSpec, home); } finally { setStandSizes(null); }   // the house view's places at 48/304 (the collection v2 design §5)
-      const tile = (m) => v.requests.find((r) => r.id === v.props.regions.house.bands.flatMap((b) => b.places).find((t) => t.id === "house." + m.id).picture);
+      const tile = (m) => v.requests.find((r) => r.id === v.props.regions.house.tiles.flatMap((b) => b.places).find((t) => t.id === "house." + m.id).picture);
       assert.deepEqual([tile(a).stage, tile(a).size], ["juvenile", [48, 50]]); assert.deepEqual([tile(pip).stage, tile(pip).size], ["adult", [48, 50]]);
     }));
   });

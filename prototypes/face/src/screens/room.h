@@ -40,6 +40,7 @@ int room_join_hop(int jn);
 void room_view_mode(int on);
 int room_crop(const char *id, int out[2]);
 int room_drops(void);
+int room_drop_of(const char *id, int k, int *x, int *y);   /* room `id`'s drop spot k (painting coordinates, any room, none selected): 0, or -1 when it has none */
 int room_drop(int k, int *fx, int *feet);
 int room_level_at(int fx, int feet);
 #endif

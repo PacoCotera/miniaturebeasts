@@ -339,7 +339,8 @@ export function findings(log, spec, frameSpec, screen, state, extra = {}) {
 // screen (painting − crop + the window's corner). A form whose box crosses an edge of the window (spec regions.window.rect) is a finding, measured in px beyond that edge; a key prop may cross on its
 // `leaves` side only when its box reaches the painting's own edge there (the 15:24 ruling: a tree that already runs off the top of the room painting).
 export function edgeCuts(log, spec, extra = {}) {
-  const F = extra?.facts ?? {}, given = new Set(spec?.layout?.given ?? []); if (!given.has("view") || F.view !== "room") return [];
+  const F = extra?.facts ?? {}, given = new Set(spec?.layout?.given ?? []); if (given.has("view") && F.view === "house") return houseCuts(log, spec, F);
+  if (!given.has("view") || F.view !== "room") return [];
   const win = spec?.regions?.window?.rect; if (!Array.isArray(win) || win.length !== 4) return [];
   const E = F["regions.window.edge"] ?? {}, [cx, cy] = Array.isArray(E.crop) ? E.crop : [0, win[1]], [pw, ph] = Array.isArray(E.painting) ? E.painting : [1024, 568];
   const toScreen = (b) => [b[0] - cx + win[0], b[1] - cy + win[1], b[2], b[3]];
@@ -359,6 +360,22 @@ export function edgeCuts(log, spec, extra = {}) {
     for (const s of SIDES) { if (over[s] <= 0 || !inter(f.box, win)) continue; if (f.leaves === s && f.painting && reaches(f.painting, s)) continue;
       out.push({ rule: "L10", part: "c", node: f.id, other: s, measured: over[s], required: 0, unit: "px", what: `the window edge cuts ${f.id}`, says: `The window's ${s} edge cuts ${f.id} by ${over[s]} px (the owner's rule: the window edge never cuts through a mibi, the nest or a key prop).`, container: { id: "window", rect: [...win] }, boxes: [{ role: "component", rect: [...f.box] }, { role: "other", rect: [...win] }] }); }
   }
+  return out;
+}
+// L10c on a house frame (the build's sign-off): each tile is its room's window at exactly 1/2, so each kept box, join and mibi ink is measured against its own tile with the box halved: screen = (painting − crop) / 2 + the tile's
+// corner. The forms are the props fact `regions.house.edges` ([{ tile, crop, painting, keep, joins }]) and each house figure's solid ink (region `house.mibi`, held by the tile its centre lies in). A box is out by what it
+// crosses of its tile's edge, rounded outward; a key prop may cross on its `leaves` side only when its painting box reaches the painting's own edge there.
+function houseCuts(log, spec, F) {
+  const tiles = spec?.regions?.house?.tile?.rects, E = F["regions.house.edges"]; if (!Array.isArray(tiles) || !Array.isArray(E)) return [];
+  const half = (b, c, t) => { const x0 = Math.floor((b[0] - c[0]) / 2) + t[0], y0 = Math.floor((b[1] - c[1]) / 2) + t[1]; return [x0, y0, Math.ceil((b[0] + b[2] - c[0]) / 2) + t[0] - x0, Math.ceil((b[1] + b[3] - c[1]) / 2) + t[1] - y0]; };
+  const formOf = (q) => (Array.isArray(q?.form) ? q.form : Array.isArray(q?.rect) ? q.rect : Array.isArray(q?.box) ? q.box : null), out = [];
+  const test = (f, t, ti) => { const over = { left: t[0] - f.box[0], top: t[1] - f.box[1], right: R(f.box) - R(t), bottom: B(f.box) - B(t) };
+    for (const s of SIDES) { if (over[s] <= 0 || !inter(f.box, t)) continue; if (f.leaves === s && f.painting && (s === "left" ? f.painting[0] <= 0 : s === "top" ? f.painting[1] <= 0 : s === "right" ? f.painting[0] + f.painting[2] >= f.pw : f.painting[1] + f.painting[3] >= f.ph)) continue;
+      out.push({ rule: "L10", part: "c", node: f.id, other: s, measured: over[s], required: 0, unit: "px", what: `the tile edge cuts ${f.id}`, says: `Tile ${ti}'s ${s} edge cuts ${f.id} by ${over[s]} px (the owner's rule: the window edge never cuts through a mibi, the nest or a key prop; the house tile is the window at 1/2).`, container: { id: "tile." + ti, rect: [...t] }, boxes: [{ role: "component", rect: [...f.box] }, { role: "other", rect: [...t] }] }); } };
+  for (const e of E) { const t = tiles[e.tile]; if (!t || !Array.isArray(e.crop)) continue; const [pw, ph] = Array.isArray(e.painting) ? e.painting : [1024, 568];
+    for (const j of e.joins ?? []) { const f = formOf(j); if (f) test({ id: j.id, box: half(f, e.crop, t) }, t, e.tile); }
+    for (const k of e.keep ?? []) { const f = formOf(k); if (f) test({ id: k.id, box: half(f, e.crop, t), painting: f, leaves: k.leaves ?? null, pw, ph }, t, e.tile); } }
+  for (const n of (log?.nodes ?? []).map((q, i) => parse(q, i, null))) if (n.kind === KIND.sprite && n.region === "house.mibi" && !empty(n.solid)) { const cx = n.solid[0] + n.solid[2] / 2, cy = n.solid[1] + n.solid[3] / 2, ti = tiles.findIndex((t) => cx >= t[0] && cx < t[0] + t[2] && cy >= t[1] && cy < t[1] + t[3]); if (ti >= 0) test({ id: "house.mibi", box: n.solid }, tiles[ti], ti); }
   return out;
 }
 // The text fit (the check after L11, reported beside the rules): a text's ink box (its advance x cap top to baseline) against the box it is drawn in. The box is the plate under it: the last node drawn

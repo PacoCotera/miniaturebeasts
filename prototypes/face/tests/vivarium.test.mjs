@@ -107,7 +107,7 @@ for (const [name, o] of Object.entries(SCENES)) {
     const st = f.stats(); assert.ok(st.pictures <= 200, `${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${f.objects()} objects`);
     assert.ok(JSON.stringify(b.props).length + JSON.stringify(b.line).length < 32 * 1024, "props under 32 KiB");
     if (b.props.view === "room" && b.props.state === "empty") assert.ok(!lg.regions.some((r) => ["resident", "nameTag"].includes(r.id)), "the empty room draws no people and no tag");
-    assert.equal(rg(lg, "nameTag").length > 0, b.props.view === "room" && /^(resident|drop)\./.test(b.props.focus.cur), "the name tag stands only on a mibi or the hand in the room view");
+    assert.equal(rg(lg, "nameTag").length > 0, (b.props.view === "room" && /^(resident|drop)\./.test(b.props.focus.cur)) || (b.props.view === "house" && /^house\.\d+$/.test(b.props.focus.cur) && !b.props.regions.carry), "the name tag stands only on a mibi (or the hand in the room view)");
     assert.equal(rg(lg, "drops").length > 0, b.props.view === "room" && (b.props.regions.drops?.items ?? []).length > 0, "the drop spots only while carrying, one a free place"); if ((b.props.regions.drops?.items ?? []).length) assert.ok(b.props.regions.carry, "drop spots with a carry only");
   });
 }
@@ -127,7 +127,7 @@ test("the departure check bites: a chip off its pitch, the card and a plate move
   assert.match(bad((c) => { c.regions.find((x) => x.id === "resident" && x.layer === "art").rect[0] = -20; }), /clamp|leaves/);
   assert.match(bad((c) => { c.regions.push({ id: "word", layer: "type", rect: [300, 200, 80, 20] }); }), /no word/);
   const h = scene({ adults: 4, view: "house" }), g = await start(h, { motion: false }), lh = logOf(g), badH = (fn) => { const c = JSON.parse(JSON.stringify(lh)); fn(c); return departures(c, spec, h.props, true).join("; "); };
-  assert.deepEqual(departures(lh, spec, h.props, true), []); assert.match(badH((c) => { c.regions.find((r) => r.id === "band.2").rect[1] += 4; }), /band 2/);
+  assert.deepEqual(departures(lh, spec, h.props, true), []); assert.match(badH((c) => { c.regions.find((r) => r.id === "tile.0.plate").rect[1] += 4; }), /plate/);
   const t = scene({ adults: 4, set: tuck(2), view: "tucked" }), k = await start(t, { motion: false }), lt = logOf(k), badT = (fn) => { const c = JSON.parse(JSON.stringify(lt)); fn(c); return departures(c, spec, t.props, true).join("; "); };
   assert.deepEqual(departures(lt, spec, t.props, true), []); assert.match(badT((c) => { c.regions = c.regions.filter((r) => r.id !== "rail.1"); }), /rail 1/); assert.match(badT((c) => { c.regions.find((r) => r.id === "tucked").rect[1] -= 6; }), /cold figures/);
 });
@@ -270,14 +270,15 @@ test("the swap (vivarium.json events.swap): the window cross-dithers from the ol
   { const { n0, mid } = await run(false); assert.equal(at(n0, "window.dither"), -1, "reduced motion: a cut"); assert.equal(at(mid, "window.dither"), -1); }
 });
 
-test("the house view (§5): five bands [16, 88 + 96j, 672, 88], a room's places on [34 + 84k, y + 32, 48, 48] at 48/304 in house order, the ring on the place's ring box [30 + 84k, y + 28, 56, 56], a traveller darkened with its Companion mark, nobody walking", { skip }, async () => {
-  const b = scene({ rooms: 2, per: [6, 3], carry: [2], view: "house", focus: "house.#1" }), f = await start(b, { motion: false }), lg = logOf(f), H = R.house;
-  for (let j = 0; j < 5; j++) assert.deepEqual(rg(lg, `band.${j}`, "chrome")[0]?.rect, [16, 88 + 96 * j, 672, 88], `band ${j}`);
-  const pl = b.props.regions.house.bands[0].places; assert.deepEqual(pl.map((p) => p.state), ["mibi", "mibi", "carried", "mibi", "mibi", "mibi", "free", "free"]); assert.match(pl[2].picture, /^mibi:dark-/); assert.match(pl[2].mark, /^mark-companion-solid/);
-  const ring = rg(lg, "focus")[0].rect, rb = [H.place.ring[0] + H.place.pitch * 1, 88 + H.place.ring[1], 56, 56]; assert.deepEqual(ring, [rb[0] - 5, rb[1] - 5, 66, 66], "the ring outside its ring box, by the ring's reach");
-  const art = rg(lg, "house.mibi", "art")[0].rect; assert.deepEqual([art[0], art[1]], [34, 88 + 32 + 48 - H.place.picture[1]], "the first place's figure on its box's foot");
-  assert.equal(rg(lg, "resident").length, 0, "nobody walks in the house"); assert.ok(rg(lg, "marks").length > 0, "the traveller's mark");
-  assert.deepEqual(departures(lg, spec, b.props, true), []);
+test("the house view (the build's sign-off): four tiles [0|344, 88|324, 344, 236], each room's mibis at 48/304 standing on the room's drop spot halved, the plates [+6, +6, text + 16, 20], seams, the ring at 1/2 on the figure, a traveller darkened with its Companion mark, nobody walking", { skip }, async () => {
+  const b = scene({ rooms: 2, per: [6, 3], carry: [2], view: "house", focus: "house.#1" }), f = await start(b, { motion: false }), lg = logOf(f), H = R.house, rooms = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/rooms.json"), "utf8")).rooms;
+  const T = b.props.regions.house.tiles, P0 = T[0].places; assert.deepEqual(T.map((t) => t.kind), ["room", "room", "add", "later"]); assert.deepEqual(P0.slice().sort((x, y) => x.spot - y.spot).map((p) => p.state), ["mibi", "mibi", "carried", "mibi", "mibi", "mibi"]);
+  assert.match(P0.find((p) => p.state === "carried").picture, /^mibi:dark-/); assert.match(P0.find((p) => p.state === "carried").mark, /^mark-companion-solid/);
+  const fnv = (q) => { let h = 2166136261; for (const c of q) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };
+  T.forEach((t, j) => t.places.forEach((p, q) => { if (p.state === "free") return; const r = rooms[t.room], nd = (lg.nodes ?? []).filter((x) => x[0] === fnv(`place.${j}.${q}`) && x[6] === 48).map((x) => x.slice(4, 8));
+    assert.ok(nd.length > 0, `place ${j}.${q} drawn`); assert.deepEqual([nd[0][0] + 24, nd[0][1] + nd[0][3]], [H.tile.rects[j][0] + Math.trunc((r.drops[p.spot][0] - r.crop[0]) / 2), H.tile.rects[j][1] + Math.trunc((r.drops[p.spot][1] - r.crop[1]) / 2)], `place ${j}.${q}: the figure's bottom row on its place's foot point (the drop spot halved)`); }));
+  assert.deepEqual(rg(lg, "tile.0.plate", "chrome")[0].rect.slice(0, 2), [6, 94], "the first plate at the tile's (+6, +6)"); assert.equal(rg(lg, "resident").length, 0, "nobody walks in the house"); assert.ok(rg(lg, "marks").length > 0, "the traveller's mark");
+  assert.ok(rg(lg, "focus").length > 0, "the ring on the focused mibi"); assert.deepEqual(departures(lg, spec, b.props, true), []);
 });
 
 test("the Tucked away page (§6): the cold veil, two rails, four boxes a rail with each figure standing in its box, eight a page with pips; nobody walks", { skip }, async () => {
@@ -476,7 +477,7 @@ test("travellers (rules.show.travellers): a mibi with the Companion is not drawn
   for (const away of [false, true]) {
     const b = scene({ adults: 4, young: 3, carry: [0, 1], away }), f = await start(b, { motion: false, node: true });
     for (const m of b.st.mibis.slice(0, 2)) { assert.ok(!b.props.regions.residents.some((r) => r.id === String(m.id))); assert.ok(!b.props.focus.targets.some((t) => t.id === "resident." + m.id)); assert.equal(f.nodeBox("g." + m.id), null); }
-    const h = scene({ adults: 4, young: 3, carry: [0, 1], away, view: "house" }), pl = h.props.regions.house.bands[0].places;
+    const h = scene({ adults: 4, young: 3, carry: [0, 1], away, view: "house" }), pl = h.props.regions.house.tiles[0].places.slice().sort((x, y) => x.spot - y.spot);
     assert.deepEqual(pl.slice(0, 2).map((p) => [p.state, /^mibi:dark-/.test(p.picture), p.mark]), [0, 1].map(() => ["carried", true, away ? "mark-companion-outline-16" : "mark-companion-solid-16"]));
   }
 });

@@ -6,7 +6,7 @@
 //        carry ({ id, kind: "move" | "out", room, view, page } or null), pick ({ a } or null: the pick of two's first parent), time, now, restRules, rules, arrived, motionSets }
 import * as S from "../state.mjs";
 import { livingOf, mibiReq, mibiRequest, mibiVariantReq, figureOf } from "./home-props.mjs";
-import { roomRegion, roomData, withLight } from "./room-props.mjs";
+import { roomRegion, roomData, roomName, withLight } from "./room-props.mjs";
 import { frameOf } from "../genome.mjs";
 import { drawnLooks } from "../looks.mjs";
 import { fill } from "./words.mjs";
@@ -165,28 +165,35 @@ export function vivariumBuild(m, spec, frame, home, pods) {
     if (here) add("tucked.here", "hand");
     regions["window"] = { picture: "" };
   } else {
-    const bands = [];
+    // the house view (the build's sign-off): the four rooms as four windows, each its room window at exactly 1/2 (a cut, darkened x 0.55 when the room is not bought); the mibis stand at their places, place k the room's
+    // drop spot k halved; one name plate a tile. The row (the card reach rule): tile by tile in chip order, by foot x within a tile, ties front first. Tucked away is its own page behind its chip.
+    const tiles = [], edges = [], g = carry ? "hand" : "house", T = R.house.tile.size;
     for (let j = 0; j < 4; j++) {
-      if (j < nRooms) {
-        const inside = S.inRoom(st, j), places = Array.from({ length: S.ROOM }, (_, k) => {
-          const mb = inside.find((x) => x.slot === k); if (!mb) return { id: carry ? `house.free.${j}.${k}` : "", state: "free", picture: "", mark: "" };
+      const rd = roomData(j), rid = roomName(j), tid = rd.tile ? withLight(rd.tile, light) : null, bought = j < nRooms;
+      const picture = !tid ? "" : bought ? slot(tid, T) : req({ kind: "dim", id: `${tid}~dim`, master: tid, size: T, k: R.house.dim });
+      const foot = (k) => rd.drops?.[k] ?? [0, 0], byFoot = (a, b) => foot(a.spot)[0] - foot(b.spot)[0] || foot(b.spot)[1] - foot(a.spot)[1];
+      edges.push({ tile: j, room: rid, crop: rd.crop, painting: [1024, 568], keep: (rd.keep ?? []).map((k) => ({ id: k.id, form: k.box, ...(k.leaves ? { leaves: k.leaves } : {}) })), joins: (rd.joins ?? []).map((q, i) => ({ id: `${rid}-join-${i}`, form: q.rect })) });   // the layout check's facts (L10c, each kept box halved), never drawn from
+      if (bought) {
+        const inside = S.inRoom(st, j), places = [];
+        for (const mb of inside) {
           const w = whereOf(st, sv, mb), v = w === "carried" ? "dark" : w === "coming" || (carry && carry.id === mb.id && m.focus !== "house." + mb.id) ? "outline" : null;   // the carried one's own place, the hand elsewhere: its silhouette (§3)
-          return { id: "house." + mb.id, state: w === "room" ? "mibi" : w, picture: v ? variant(mb, H48, "vivariumHouse", v) : pic(mb, H48, "vivariumHouse"), mark: markPic(markOf(st, sv, mb, settings, true)) }; });
-        bands.push({ kind: "room", name: S.ROOM_NAMES[j], full: inside.length >= S.ROOM, places });
-      } else if (j === nRooms) { const p = S.roomPrice(st, settings); bands.push({ kind: "add", name: p == null ? "" : Sg.chip.add, price: p == null ? "" : S.priceText(p, 0, 0), full: false, places: [] }); }
-      else bands.push({ kind: "later", name: "", full: false, places: [] });
+          places.push({ id: "house." + mb.id, spot: mb.slot ?? 0, state: w === "room" ? "mibi" : w, name: mb.name, picture: v ? variant(mb, H48, "vivariumHouse", v) : pic(mb, H48, "vivariumHouse"), figure: figureOf(st, mb, H48, settings, "vivariumHouse") ?? [0, 0, H48[0], H48[1]], mark: markPic(markOf(st, sv, mb, settings, true)) });
+        }
+        if (carry) for (let k = 0; k < S.ROOM; k++) if (!inside.some((x) => x.slot === k)) places.push({ id: `house.free.${j}.${k}`, spot: k, state: "free", name: "", picture: "", mark: "" });
+        places.sort(byFoot);
+        tiles.push({ kind: "room", room: rid, name: S.ROOM_NAMES[j], count: inside.length >= S.ROOM ? Sg.chip.full : fill(Sg.chip.count, { a: inside.length }), full: inside.length >= S.ROOM, price: "", picture, places });
+      } else if (j === nRooms) { const p = S.roomPrice(st, settings); tiles.push({ kind: "add", room: rid, name: Sg.chip.add, count: "", full: false, price: p == null ? "" : S.priceText(p, 0, 0), picture, places: [] }); }
+      else tiles.push({ kind: "later", room: rid, name: S.ROOM_NAMES[j], count: "", full: false, price: "", picture, places: [] });
     }
-    { const shownN = tuckedList.length > PER_PAGE ? HOUSE_SHOWN : tuckedList.length, places = tuckedList.slice(0, shownN).map((mb) => ({ id: "house." + mb.id, state: "store", picture: variant(mb, H48, "vivariumHouse", "cold"), mark: "" }));
-      if (tuckedList.length > PER_PAGE) places.push({ id: "house.more", state: "more", picture: "", mark: "", more: fill(Sg.band.more, { n: tuckedList.length - HOUSE_SHOWN }) });
-      bands.push({ kind: "cold", name: Sg.band.tucked, count: String(tuckedList.length), full: false, places, mark: markPic("tucked") }); }
-    regions.house = { bands };
-    const g = carry ? "hand" : "house";
-    bands.forEach((b, j) => { for (const p of b.places) if (p.id) add(p.id, g, { band: j }); if (b.kind === "add" && b.name && !carry) add("house.add", g, { band: j }); if (b.kind === "cold" && carry && carry.kind !== "out" && !S.inStore(cm)) add("house.cold", g, { band: j }); });
+    regions.house = { tiles, edges };
+    tiles.forEach((t) => { for (const p of t.places) add(p.id, g); if (t.kind === "add" && !carry && t.price) add("house.add", g); });
+    if (carry && carry.kind !== "out" && !S.inStore(cm)) add("flip.next", "flipnext");   // a house carry: ▶ with nothing ahead flips to Tucked away page 1, still carrying
     regions["window"] = { picture: "" };
   }
+  const has0 = (id) => targets.some((t) => t.id === id);
   // the flips while carrying: the previous and next pages (§3), pseudo targets the host turns into the flip
   const pages = pagesOf(st, settings, carry), at = view === "room" ? pages.findIndex((p) => p.view === "room" && p.room === shown) : view === "tucked" ? pages.findIndex((p) => p.view === "tucked" && p.page === page) : -1;
-  if (carry && at > 0) add("flip.prev", "flipprev"); if (carry && at >= 0 && at < pages.length - 1) add("flip.next", "flipnext");
+  if (carry && at > 0) add("flip.prev", "flipprev"); if (carry && at >= 0 && at < pages.length - 1 && !has0("flip.next")) add("flip.next", "flipnext");
   if (!carry && view === "tucked") { if (page > 0) add("flip.prev", "flipprev"); if (page < nPages - 1) add("flip.next", "flipnext"); }
 
   // ---- the chip row ----

@@ -86,7 +86,13 @@ export function placeRooms({ manifest, dryRun = false, root = dest, roomsFile = 
       if (files.some((q) => !q.f)) throw new Error(`${room}: the chip ${pictureId(r.chip.file, "day")} is missing`);
       if (files.some((q) => q.f.w !== cw || q.f.h !== ch)) throw new Error(`${room}: a chip file is not ${cw}×${ch}`);
       chip = `room-${room}-chip-{light}-${cw}x${ch}`; for (const { l, f } of files) add(room, pictureId(chip, l), f, signed[l].idle); }
-    const out = { base: pic.base, near: pic.near, chip, preview: prior?.rooms?.[room]?.preview ?? null };
+    let tile = null;   // the room's house tile (collection v2: its room window at exactly 1/2, 344 x 236, in each light), when the manifest has one
+    if (r.tile?.file) { const files = LIGHTS.map((l) => ({ l, f: read(path.join(pods, pictureId(r.tile.file, l))) })), [tw, th] = r.tile.size;
+      if (files.some((q) => !q.f)) throw new Error(`${room}: the tile ${pictureId(r.tile.file, "day")} is missing`);
+      if (files.some((q) => q.f.w !== tw || q.f.h !== th)) throw new Error(`${room}: a tile file is not ${tw}×${th}`);
+      if (r.view?.crop && (tw * 2 !== ROOM_VIEW[0] || th * 2 !== ROOM_VIEW[1])) throw new Error(`${room}: the tile ${tw}×${th} is not the room window at 1/2`);
+      tile = `room-${room}-tile-{light}-${tw}x${th}`; for (const { l, f } of files) add(room, pictureId(tile, l), f, signed[l].idle); }
+    const out = { base: pic.base, near: pic.near, chip, ...(tile ? { tile } : {}), preview: prior?.rooms?.[room]?.preview ?? null };
     const lv = r.levels.map((L) => ({ id: L.id, x: L.profile.x, top: L.profile.top_painting, bottom: L.bottom_painting, keepOuts: [] }));
     if (lv[0]?.id !== "main") throw new Error(`${room}: the first level must be main`);
     const byId = (id) => lv.find((L) => L.id === id) ?? (() => { throw new Error(`${room}: no level ${id}`); })();
@@ -158,6 +164,7 @@ export function checkRooms(data, index, windowRect, root = dest) {
     for (const l of LIGHTS) { pics.push([pictureId(r.base, l), null], [pictureId(r.near, l), null]); }
     if (r.bed?.picture) for (const l of LIGHTS) pics.push([pictureId(r.bed.picture, l), r.bed.rect.slice(2)]);
     if (r.chip) for (const l of LIGHTS) pics.push([pictureId(r.chip, l), null]);
+    if (r.tile) for (const l of LIGHTS) pics.push([pictureId(r.tile, l), [ROOM_VIEW[0] / 2, ROOM_VIEW[1] / 2]]);   // the house tile: the room window at exactly 1/2
     for (const p of r.pieces) if (p.picture) for (const l of LIGHTS) pics.push([pictureId(p.picture, l), p.rect.slice(2)]);
     for (const [id, wh] of pics) {   // 4
       const e = M[id]; if (!e) { P(4, `${id} is not in the masters index`); continue; }

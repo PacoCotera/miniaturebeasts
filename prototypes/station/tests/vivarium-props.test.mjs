@@ -87,7 +87,7 @@ test("one scale (§3): every figure of a view at that view's one factor, never f
     const w = roomsWorld(1); inRoom(w, 0, 2); const j = inRoom(w, 0, 1)[0]; j.born = w.st.turn;
     const room = build(w, sv0()), house = build(w, sv0(), { view: "house" }), sizes = (b, re) => b.requests.filter((r) => r.kind === "mibi" && re.test(r.id)).map((r) => r.size.join("x"));
     assert.ok(room.props.regions.residents.every((p) => /:96x99(:|$)/.test(p.picture)), room.props.regions.residents.map((p) => p.picture).join(" "));
-    assert.deepEqual([...new Set(house.props.regions.house.bands[0].places.filter((p) => p.state === "mibi").map((p) => p.picture.match(/:(\d+x\d+)/)[1]))], ["48x50"]);
+    assert.deepEqual([...new Set(house.props.regions.house.tiles[0].places.filter((p) => p.state === "mibi").map((p) => p.picture.match(/:(\d+x\d+)/)[1]))], ["48x50"]);
     assert.match(room.props.regions.card.picture, /:144x148(:|$)/);
     const fig = (id) => room.props.regions.residents.find((p) => p.id === String(id)).figure;
     assert.ok(fig(j.id)[3] < fig(w.st.mibis[0].id)[3], "the juvenile's ink is shorter than its adult's at the one factor");
@@ -192,16 +192,21 @@ test("the Tucked away page (§3): eight a page in the order they went in, in the
   assert.equal(build(w, sv0(), { view: "tucked", focus: "tucked." + t[7].id }).props.focus.resolve["row.next"], "", "the page's last: ▶ goes on to the card");
 });
 
-test("the house view (§5): five bands (the rooms bought, the next room, the later rooms, Tucked away), places in house order with free places empty, travellers darkened, coming out its silhouette, the tucked in the cold veil, +n past seven; the walk by band", () => {
-  const { w, sv } = scenes().forty, b = build(w, sv, { view: "house" }), B = b.props.regions.house.bands;
-  assert.deepEqual(B.map((x) => [x.kind, x.full]), [["room", true], ["room", true], ["room", true], ["room", true], ["cold", false]]); assert.equal(B[4].places.length, 8, "eight tucked: all shown"); assert.equal(B[4].count, "8");
-  assert.ok(B.slice(0, 4).every((x) => x.places.every((p) => p.state === "mibi")));
-  { const t = roomsWorld(4); tuckN(t, 9); for (let r = 0; r < 4; r++) inRoom(t, r, 8); const C = build(t, sv0(), { view: "house" }).props.regions.house.bands[4].places; assert.equal(C.length, 8); assert.deepEqual([C[7].id, C[7].state, C[7].more], ["house.more", "more", "+2"]); }
-  { const w2 = roomsWorld(2), a = inRoom(w2, 0, 4), sv2 = sv0({ carried: [a[0].id] }); dock(w2.st, false); const H = build(w2, sv2, { view: "house" }).props.regions.house.bands;
-    assert.deepEqual(H.map((x) => x.kind), ["room", "room", "add", "later", "cold"]); assert.deepEqual(H[0].places.map((p) => p.state), ["carried", "mibi", "mibi", "mibi", "free", "free", "free", "free"]); assert.equal(H[0].places[0].mark, "mark-companion-outline-16"); assert.equal(H[2].price, "⚡ 8");
-    const req = build(w2, sv2, { view: "house" }).requests.find((r) => r.id === H[0].places[0].picture); assert.equal(req.variant, "dark", "a traveller darkened x 0.55"); }
-  const r0 = S.inRoom(w.st, 0), r1 = S.inRoom(w.st, 1), r = build(w, sv, { view: "house", focus: "house." + r0[0].id }).props.focus.resolve; assert.deepEqual([r["row.next"], r["row.prev"], r["row.first"]], ["house." + r0[1].id, "", "house." + r0[0].id]);
-  assert.equal(build(w, sv, { view: "house", focus: "house." + r0[7].id }).props.focus.resolve["row.next"], "house." + r1[0].id, "one row: Roots' last, then Reeds' first");
+test("the house view (the build's sign-off): the four rooms as four half-size windows (the rooms bought with their mibis at their places, the next room's Add a room, the later rooms by name), free places the bare ground, travellers darkened, coming out its silhouette; Tucked away is no tile; the walk tile by tile", () => {
+  const { w, sv } = scenes().forty, b = build(w, sv, { view: "house" }), T = b.props.regions.house.tiles;
+  assert.deepEqual(T.map((x) => [x.kind, x.full, x.count]), [["room", true, "full"], ["room", true, "full"], ["room", true, "full"], ["room", true, "full"]], "forty reads as four full rooms; Tucked away is its chip");
+  assert.ok(T.every((x) => x.places.length === 8 && x.places.every((p) => p.state === "mibi") && /^room-\w+-tile-day-344x236$/.test(x.picture)), "a tile is the room's cut; eight mibis, no free place shown at rest");
+  assert.deepEqual(b.props.regions.house.edges.map((e) => [e.room, e.crop]), [["roots", [0, 96]], ["reeds", [176, 96]], ["boulders", [178, 96]], ["ferns", [152, 96]]]);
+  { const w2 = roomsWorld(2), a = inRoom(w2, 0, 4), sv2 = sv0({ carried: [a[0].id] }); dock(w2.st, false); const B = build(w2, sv2, { view: "house" }), H = B.props.regions.house.tiles;
+    assert.deepEqual(H.map((x) => x.kind), ["room", "room", "add", "later"]); assert.deepEqual(H[0].places.slice().sort((x, y) => x.spot - y.spot).map((p) => p.state), ["carried", "mibi", "mibi", "mibi"], "at rest the free places show the ground: no places"); const car = H[0].places.find((p) => p.state === "carried"); assert.equal(car.mark, "mark-companion-outline-16"); assert.equal(H[2].price, "⚡ 8");
+    assert.deepEqual([H[0].count, H[2].name, H[3].name, H[3].price], ["4 of 8", "Add a room", "Ferns", ""]); assert.ok(/~dim$/.test(H[2].picture) && /~dim$/.test(H[3].picture), "rooms not bought: the tile at x 0.55");
+    const req = B.requests.find((r) => r.id === car.picture); assert.equal(req.variant, "dark", "a traveller darkened x 0.55"); }
+  { const w3 = roomsWorld(2), a = inRoom(w3, 0, 3), h = build(w3, sv0(), { view: "house", carry: { id: a[0].id, kind: "move", room: 0, view: "house", page: 0, from: 0 }, focus: "house." + a[1].id }).props.regions.house.tiles;
+    assert.equal(h[0].places.filter((p) => p.state === "free").length, 5, "carrying: the free places are the hand's targets"); assert.equal(h[1].places.filter((p) => p.state === "free").length, 8); }
+  const P = (id) => build(w, sv, { view: "house", focus: id }).props.focus.resolve, first = P("house." + S.inRoom(w.st, 0)[0].id)["row.first"], chain = [];
+  for (let id = first; id && chain.length < 40; id = P(id)["row.next"]) chain.push(id);
+  assert.equal(P(first)["row.prev"], ""); assert.equal(chain.length, 32, "one row of every mibi in the house");
+  const tileOf = (id) => T.findIndex((t) => t.places.some((p) => p.id === id)); assert.deepEqual(chain.map(tileOf), [...Array(32).keys()].map((i) => i >> 3), "tile by tile in chip order");
 });
 
 test("the pick of two (§3): the first parent framed, the ring on its best partner; the footer breeds the two, the why line names their kin; ← drops the pick", () => {
@@ -283,6 +288,11 @@ test("pick up, flip to another room, set down there: the mibi moves (free) and s
   focusMsg(h, "flip.next"); assert.deepEqual([G.st.face.room, UI.viv.view], [1, "room"], "▶ with nothing beyond flips to Reeds"); assert.match(UI.viv.f, /^drop\.\d$/, "the hand on the drop spot nearest the side it came in");
   const p = screenProps("").msg; assert.equal(p.regions.carry.id, String(bean.id)); assert.ok(p.regions.drops.items.length === 6);
   intent(h, UI.viv.f); assert.deepEqual([bean.room, UI.viv.carry, UI.viv.f, G.st.face.room], [1, null, "resident." + bean.id, 1], "set down: moved, the ring on it, the field on Reeds");
+});
+test("a house carry (the build's sign-off): ▶ with nothing ahead flips to Tucked away page 1 still carrying; ◀ with nothing beyond returns to the house view; ◀ in the house view nudges", () => {
+  const { h, a, at } = hostRig(); at(0); const bean = a[1]; UI.viv.view = "house"; UI.viv.f = "house." + bean.id; intent(h, "house." + bean.id); assert.equal(UI.viv.carry.id, bean.id);
+  focusMsg(h, "flip.next"); assert.deepEqual([UI.viv.view, UI.viv.page, UI.viv.carry.id], ["tucked", 0, bean.id], "page 1 of Tucked away, still carrying");
+  focusMsg(h, "flip.prev"); assert.deepEqual([UI.viv.view, UI.viv.carry.id], ["house", bean.id], "back to the house view"); assert.equal(UI.viv.carry.back, undefined);
 });
 test("← while carrying puts it back where it left (the field returns to its page); a room key drops a carry, nothing paid; the Vivarium key toggles the room view and the house view, keeping the ring and the carry", () => {
   const { h, a, at } = hostRig(); at(0); const bean = a[1], e = G.st.e;

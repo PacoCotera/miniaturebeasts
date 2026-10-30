@@ -1,6 +1,7 @@
 /* The Vivarium (the collection v2 design; vivarium.json): one screen, three fields. The chip row and the card never move; only the field changes: the room view (screens/home.c home_viv_room: the room's painting at its crop, its mibis at one
-   scale, the drop spots, the reserved silhouettes, the hand and the marks), the Tucked away page (the cold recess and its rails) or the house view (five slate bands). Every rectangle is vivarium.json's; the props name what is drawn. */
+   scale, the drop spots, the reserved silhouettes, the hand and the marks), the Tucked away page (the cold recess and its rails) or the house view (four half-size room tiles). Every rectangle is vivarium.json's; the props name what is drawn. */
 #include "screens.h"
+#include "room.h"
 #include "../vocab/vocab.h"
 #include "../vocab/words.h"
 #include "../prim/prim.h"
@@ -111,50 +112,87 @@ static void card_words(const char *cur) {
     for (int i = 0; i < n; i++) { v_region("card.why", LAYER_TYPE); v_say_run(v_fmt("card.why.%d", i), q, wr[0], v_role_cap_top(wr[1] + i * v_si(V, "regions.card.why.pitch", 20), V_ANCHOR_LINE, "small.why"), "small.why", "pane", V_ALIGN_LEFT); q += strlen(q) + 1; } }   /* a run: a price's icon inline */
 }
 
-/* ---- the house view (regions.house) ---- */
-static void band_rect(int j, int r[4]) { v_srect(V, "regions.house.bands.first", r); r[1] += j * v_si(V, "regions.house.bands.pitch", 96); }
-static void place_rect(int j, int k, const char *what, int r[4]) { int b[4]; band_rect(j, b); v_srect(V, v_fmt("regions.house.place.%s", what), r); r[0] += b[0] + k * v_si(V, "regions.house.place.pitch", 84) - 16; r[1] += b[1]; }   /* the place's offsets are from the screen's x 16 (the band's left) */
-static int house_find(const char *id, int *j, int *k) {
-  int nb = v_plen("regions.house.bands");
-  for (int b = 0; b < nb; b++) { const char *kind = v_pstr(v_fmt("regions.house.bands.%d.kind", b));
-    if ((!strcmp(id, "house.add") && !strcmp(kind, "add")) || (!strcmp(id, "house.cold") && !strcmp(kind, "cold"))) { *j = b; *k = -1; return 1; }
-    for (int q = 0, n = v_plen(v_fmt("regions.house.bands.%d.places", b)); q < n; q++) if (!strcmp(v_pstr(v_fmt("regions.house.bands.%d.places.%d.id", b, q)), id)) { *j = b; *k = q; return 1; } }
+/* ---- the house view (regions.house): the four rooms as four windows, each its room window at exactly 1/2 (the build's sign-off) ----
+   Each tile is the room's cut (a placed 344 x 236 picture, darkened x 0.55 when the room is not bought); its mibis stand on the painted ground at their places: place k is the room's drop spot k halved,
+   tile pixel = (painting − (cx, 96)) / 2, the 48 x 50 picture's bottom row on that foot point. A name plate per tile; 1 px seams in the recess rails' language. */
+static int tile_n(void) { return v_plen("regions.house.tiles"); }
+static void tile_rect(int t, int r[4]) { v_srect(V, v_fmt("regions.house.tile.rects.%d", t), r); }
+/* place q of tile t: its foot point on the screen and its 48 x 48 place; 0 when the props name no room or spot */
+static int hplace(int t, int q, int foot[2], int box[4]) {
+  char room[24]; snprintf(room, sizeof room, "%s", v_pstr(v_fmt("regions.house.tiles.%d.room", t))); int spot = v_pint(v_fmt("regions.house.tiles.%d.places.%d.spot", t, q), -1), x, y, c[2], r[4];
+  if (spot < 0 || room_drop_of(room, spot, &x, &y) != 0 || room_crop(room, c) != 0) return 0;
+  tile_rect(t, r); int sz[2] = { v_sk(V, "regions.house.place.size", 0), v_sk(V, "regions.house.place.size", 1) };
+  foot[0] = r[0] + (x - c[0]) / 2; foot[1] = r[1] + (y - c[1]) / 2; box[0] = foot[0] - sz[0] / 2; box[1] = foot[1] - sz[1]; box[2] = sz[0]; box[3] = sz[1]; return 1;
+}
+/* a figure's picture box and ink at place q of tile t (the picture bottom-centred on the place's foot; its ink by the props' figure) */
+static int hfigure(int t, int q, int pic[4], int ink[4]) {
+  int foot[2], box[4]; if (!hplace(t, q, foot, box)) return 0; const char *P = v_fmt("regions.house.tiles.%d.places.%d", t, q); char base[48]; snprintf(base, sizeof base, "%s", P);
+  int ps[2] = { v_sk(V, "regions.house.place.picture", 0), v_sk(V, "regions.house.place.picture", 1) }; char pc[96]; snprintf(pc, sizeof pc, "%s", v_pstr(v_fmt("%s.picture", base))); v_asset_size(pc, ps);
+  pic[0] = foot[0] - ps[0] / 2; pic[1] = foot[1] - ps[1]; pic[2] = ps[0]; pic[3] = ps[1];
+  if (v_plen(v_fmt("%s.figure", base)) == 4) { ink[0] = pic[0] + v_pint(v_fmt("%s.figure.0", base), 0); ink[1] = pic[1] + v_pint(v_fmt("%s.figure.1", base), 0); ink[2] = v_pint(v_fmt("%s.figure.2", base), ps[0]); ink[3] = v_pint(v_fmt("%s.figure.3", base), ps[1]); }
+  else memcpy(ink, pic, sizeof(int) * 4);
+  return 1;
+}
+static int house_find(const char *id, int *t, int *q) {
+  for (int a = 0, n = tile_n(); a < n; a++) { if (!strcmp(id, "house.add") && !strcmp(v_pstr(v_fmt("regions.house.tiles.%d.kind", a)), "add")) { *t = a; *q = -1; return 1; }
+    for (int b = 0, m = v_plen(v_fmt("regions.house.tiles.%d.places", a)); b < m; b++) if (!strcmp(v_pstr(v_fmt("regions.house.tiles.%d.places.%d.id", a, b)), id)) { *t = a; *q = b; return 1; } }
   return 0;
 }
-static int house_box(const char *id, int r[4]) { int j, k; if (!house_find(id, &j, &k)) return 0; if (k < 0) band_rect(j, r); else place_rect(j, k, "ring", r); return 1; }
+/* a house target's box: a mibi by its ink, a free place by its place, the next room's tile by its tile */
+static int house_box(const char *id, int r[4]) {
+  int t, q; if (!house_find(id, &t, &q)) return 0; if (q < 0) { tile_rect(t, r); return 1; }
+  int pic[4], ink[4], foot[2]; if (!strcmp(v_pstr(v_fmt("regions.house.tiles.%d.places.%d.state", t, q)), "free")) return hplace(t, q, foot, r);
+  if (!hfigure(t, q, pic, ink)) return 0; memcpy(r, ink, sizeof(int) * 4); return 1;
+}
+static void hdisc(const char *id, const char *mark, const int ink[4], const int tile[4]) {   /* the disc rides the figure as in the room view, [ink right − 14, ink top − 8, 20, 20], clamped inside the tile */
+  int x = ink[0] + ink[2] - 14, y = ink[1] - 8; if (x < tile[0]) x = tile[0]; if (y < tile[1]) y = tile[1]; if (x + 20 > tile[0] + tile[2]) x = tile[0] + tile[2] - 20; if (y + 20 > tile[1] + tile[3]) y = tile[1] + tile[3] - 20;
+  disc(id, mark, x, y);
+}
+static void hplate(int t, const int r[4]) {   /* the name plate: panel [+6, +6, text + 16, 20]: the name 14 px bone, then "4 of 8" in fog or "full" in amber (Add a room ⚡8; a later room's name in fog) */
+  char base[40]; snprintf(base, sizeof base, "regions.house.tiles.%d", t); char kind[8], name[40], count[24], price[24]; snprintf(kind, sizeof kind, "%s", v_pstr(v_fmt("%s.kind", base))); snprintf(name, sizeof name, "%s", v_pstr(v_fmt("%s.name", base)));
+  snprintf(count, sizeof count, "%s", v_pstr(v_fmt("%s.count", base))); snprintf(price, sizeof price, "%s", v_pstr(v_fmt("%s.price", base))); if (!*name) return;
+  int full = v_pbool(v_fmt("%s.full", base), 0), at[2] = { v_sk(V, "regions.house.plate.at", 0), v_sk(V, "regions.house.plate.at", 1) }, h = v_si(V, "regions.house.plate.h", 20), pad = v_si(V, "regions.house.plate.pad", 8), gap = v_si(V, "regions.house.plate.gap", 6);
+  const char *nrole = !strcmp(kind, "later") ? "small.quiet" : "small", *crole = full ? "small.full" : "small.quiet";
+  int nw = v_role_width(name, nrole), cw = *price ? v_role_width(price, "label") : *count ? v_role_width(count, crole) : 0, w = nw + (cw ? gap + cw : 0) + 2 * pad;
+  int pr[4] = { r[0] + at[0], r[1] + at[1], w, h }; char id[24]; snprintf(id, sizeof id, "tile.%d.plate", t);
+  v_region(id, LAYER_CHROME); fill(id, pr, v_scol(V, "colours.house.plate"));
+  int ty = pr[1] + (h - v_role_pitch("small")) / 2;
+  v_region(v_fmt("%s.name", id), LAYER_TYPE); v_say(v_fmt("%s.name", id), name, pr[0] + pad, ty, V_ANCHOR_LINE, nrole, "pane", V_ALIGN_LEFT);
+  if (*price) { const char *cols[V_PRICE_N] = { "label", "label", "label", "label" }; v_region(v_fmt("%s.count", id), LAYER_TYPE); v_say_price(v_fmt("%s.count", id), price, pr[0] + pad + nw + gap, price_top(ty, "small", "label"), "label", "pane", cols, "label"); }
+  else if (*count) { v_region(v_fmt("%s.count", id), LAYER_TYPE); v_say(v_fmt("%s.count", id), count, pr[0] + pad + nw + gap, ty, V_ANCHOR_LINE, crole, "pane", V_ALIGN_LEFT); }
+}
 static void house_words(const char *cur) {
-  int nb = v_plen("regions.house.bands"); int focusRing[4] = { 0 }, fj = -1, fk = -1; char fmark[64] = "";
-  for (int j = 0; j < nb; j++) {
-    char base[40]; snprintf(base, sizeof base, "regions.house.bands.%d", j); char kind[12]; snprintf(kind, sizeof kind, "%s", v_pstr(v_fmt("%s.kind", base)));
-    int r[4]; band_rect(j, r); char id[24]; snprintf(id, sizeof id, "band.%d", j);
-    v_region(id, LAYER_CHROME);
-    if (!strcmp(kind, "later")) kit_panel(id, r[0], r[1], r[2], r[3], NULL, v_scol(V, "colours.house.later"), NULL, 0);
-    else fill(id, r, !strcmp(kind, "cold") ? v_scol(V, "colours.coldVeil") : v_scol(V, "colours.house.band"));
-    int nx = r[0] + v_sk(V, "regions.house.name.at", 0), ny = r[1] + v_sk(V, "regions.house.name.at", 1);
-    char name[48]; snprintf(name, sizeof name, "%s", v_pstr(v_fmt("%s.name", base)));
-    if (!strcmp(kind, "cold")) { const char *mk = v_pstr(v_fmt("%s.mark", base)); char mkb[64]; snprintf(mkb, sizeof mkb, "%s", mk); if (has(mkb)) { v_name(id); pic(v_fmt("%s.mark", id), mkb, nx, ny + 1, 16, 16); } nx += 20; }
-    if (*name) { v_region(v_fmt("%s.name", id), LAYER_TYPE); v_say(v_fmt("%s.name", id), name, nx, ny, V_ANCHOR_LINE, "small", "pane", V_ALIGN_LEFT); }
-    if (!strcmp(kind, "add")) { const char *pr = v_pstr(v_fmt("%s.price", base)); char price[24]; snprintf(price, sizeof price, "%s", pr); if (*price) { const char *cols[V_PRICE_N] = { "label", "label", "label", "label" }; v_region(v_fmt("%s.price", id), LAYER_TYPE); v_say_price(v_fmt("%s.price", id), price, nx + v_role_width(name, "small") + 8, price_top(ny, "small", "label"), "label", "pane", cols, "label"); } }
-    if (!strcmp(kind, "cold")) { const char *cn = v_pstr(v_fmt("%s.count", base)); char cnt[12]; snprintf(cnt, sizeof cnt, "%s", cn); v_region(v_fmt("%s.count", id), LAYER_TYPE); v_say(v_fmt("%s.count", id), cnt, nx + v_role_width(name, "small") + 8, ny, V_ANCHOR_LINE, "small", "pane", V_ALIGN_LEFT); }
-    if (v_pbool(v_fmt("%s.full", base), 0)) { v_region(v_fmt("%s.full", id), LAYER_TYPE); v_say(v_fmt("%s.full", id), v_sstr(V, "strings.band.full"), r[0] + v_si(V, "regions.house.full.right", 664), ny, V_ANCHOR_LINE, "small.full", "pane", V_ALIGN_RIGHT); }
-    for (int k = 0, n = v_plen(v_fmt("%s.places", base)); k < n; k++) {
-      char pb[80]; snprintf(pb, sizeof pb, "%s.places.%d", base, k); char pst[12]; snprintf(pst, sizeof pst, "%s", v_pstr(v_fmt("%s.state", pb)));
-      int bx[4]; place_rect(j, k, "box", bx); char pid[40]; snprintf(pid, sizeof pid, "%s", v_pstr(v_fmt("%s.id", pb)));
-      if (!strcmp(pst, "more")) { char more[12]; snprintf(more, sizeof more, "%s", v_pstr(v_fmt("%s.more", pb))); char ops[160]; snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"%s\",\"%s\"]]", bx[2], bx[3], bx[2] / 2, v_scol(V, "colours.markDisc.fill"), v_scol(V, "colours.markDisc.rim"));
-        v_region(v_fmt("place.%d.%d", j, k), LAYER_CHROME); v_composed(v_fmt("place.%d.%d", j, k), bx[0], bx[1], bx[2], bx[3], ops); v_region(v_fmt("place.%d.%d.more", j, k), LAYER_TYPE); v_say_in(v_fmt("place.%d.%d.more", j, k), more, bx[0], bx[2], bx[1] + (bx[3] - v_role_pitch("small")) / 2, V_ANCHOR_LINE, "small", "pane"); }
-      else if (strcmp(pst, "free")) { char pc[96]; snprintf(pc, sizeof pc, "%s", v_pstr(v_fmt("%s.picture", pb))); int ps[2] = { 48, 50 }; v_asset_size(pc, ps); v_name("house.mibi"); pic(v_fmt("place.%d.%d", j, k), pc, bx[0] + (bx[2] - ps[0]) / 2, bx[1] + bx[3] - ps[1], ps[0], ps[1]); }
-      char mk[64]; snprintf(mk, sizeof mk, "%s", v_pstr(v_fmt("%s.mark", pb)));
-      if (*pid && !strcmp(pid, cur)) { place_rect(j, k, "ring", focusRing); fj = j; fk = k; snprintf(fmark, sizeof fmark, "%s", mk); }
-      else if (*mk) { int d[4]; place_rect(j, k, "disc", d); disc(v_fmt("place.%d.%d", j, k), mk, d[0], d[1]); }
-    }
-    if ((!strcmp(cur, "house.add") && !strcmp(kind, "add")) || (!strcmp(cur, "house.cold") && !strcmp(kind, "cold"))) { memcpy(focusRing, r, sizeof r); fj = j; fk = -1; }
-  }
-  if (fj >= 0 && !anim_holding() && spec_len("props", "overlay") < 0) { ring("focus.targets.house", focusRing, cur); if (fk >= 0 && *fmark) { int d[4]; place_rect(fj, fk, "disc", d); disc(v_fmt("place.%d.%d", fj, fk), fmark, d[0], d[1]); } }   /* the ring, then its disc: the disc's rim breaks the ring there */
-  if (fj >= 0 && *v_pstr("regions.carry.id")) { const char *cp = v_pstr("regions.carry.picture"); char cpb[96]; snprintf(cpb, sizeof cpb, "%s", cp); int ps[2] = { 48, 50 }; v_asset_size(cpb, ps); int bx[4];
-    if (fk >= 0) { place_rect(fj, fk, "box", bx); } else { band_rect(fj, bx); bx[0] += bx[2] - 64; bx[1] += 32; bx[2] = 48; bx[3] = 48; }
-    v_name("resident"); pic("house.hand", cpb, bx[0] + (bx[2] - ps[0]) / 2, bx[1] + bx[3] - ps[1] - v_si(V, "regions.resident.carry.lift", 8), ps[0], ps[1]); }   /* the carried one over the hand's place, raised */
-  { const char *pk = v_pstr("regions.pick.id"); int j, k; if (*pk && house_find(v_fmt("house.%s", pk), &j, &k) && k >= 0) { int r[4]; place_rect(j, k, "box", r); char ops[200]; const char *c = v_scol(V, "colours.pick"); int x = r[0] - 3, y = r[1] - 3, w = r[2] + 6, h = r[3] + 6;
+  int n = tile_n(), ft = -1, fq = -1, carrying = *v_pstr("regions.carry.id") != 0;
+  for (int t = 0; t < n; t++) { int r[4]; tile_rect(t, r); char pc[96]; snprintf(pc, sizeof pc, "%s", v_pstr(v_fmt("regions.house.tiles.%d.picture", t))); char id[16]; snprintf(id, sizeof id, "tile.%d", t);
+    v_region("window", LAYER_CHROME); if (has(pc)) { v_name("window"); pic(id, pc, r[0], r[1], r[2], r[3]); } else fill(id, r, v_scol(V, "colours.stageGround")); }
+  { int a[4], b[4]; v_srect(V, "regions.house.seams.v", a); v_srect(V, "regions.house.seams.h", b);   /* 1 px ground over 1 px bevel: the recess rails' language */
+    int v1[4] = { a[0], a[1], 1, a[3] }, v2[4] = { a[0] + 1, a[1], 1, a[3] }, h1[4] = { b[0], b[1], b[2], 1 }, h2[4] = { b[0], b[1] + 1, b[2], 1 };
+    v_region("seams", LAYER_CHROME); fill("seam.v.top", v1, v_scol(V, "colours.rail.top")); fill("seam.v.under", v2, v_scol(V, "colours.rail.under")); fill("seam.h.top", h1, v_scol(V, "colours.rail.top")); fill("seam.h.under", h2, v_scol(V, "colours.rail.under")); }
+  /* the figures, back to front by their feet, the focused one last with its ring and tag; then the discs */
+  int order[64][2], no = 0;
+  for (int t = 0; t < n; t++) for (int q = 0, m = v_plen(v_fmt("regions.house.tiles.%d.places", t)); q < m && no < 64; q++) { if (!strcmp(v_pstr(v_fmt("regions.house.tiles.%d.places.%d.state", t, q)), "free")) continue;
+    if (!strcmp(v_pstr(v_fmt("regions.house.tiles.%d.places.%d.id", t, q)), cur)) { ft = t; fq = q; continue; }
+    int pk[4], ik[4]; if (!hfigure(t, q, pk, ik)) continue; int j = no++; while (j > 0) { int pp[4], ip[4]; hfigure(order[j - 1][0], order[j - 1][1], pp, ip); if (pp[1] + pp[3] <= pk[1] + pk[3]) break; order[j][0] = order[j - 1][0]; order[j][1] = order[j - 1][1]; j--; } order[j][0] = t; order[j][1] = q; }
+  for (int k = 0; k < no; k++) { int t = order[k][0], q = order[k][1], pk[4], ik[4]; hfigure(t, q, pk, ik); char pc[96]; snprintf(pc, sizeof pc, "%s", v_pstr(v_fmt("regions.house.tiles.%d.places.%d.picture", t, q))); v_name("house.mibi"); pic(v_fmt("place.%d.%d", t, q), pc, pk[0], pk[1], pk[2], pk[3]); }
+  for (int k = 0; k < no; k++) { int t = order[k][0], q = order[k][1], pk[4], ik[4], r[4]; hfigure(t, q, pk, ik); tile_rect(t, r); char mk[64]; snprintf(mk, sizeof mk, "%s", v_pstr(v_fmt("regions.house.tiles.%d.places.%d.mark", t, q))); if (*mk) hdisc(v_fmt("place.%d.%d", t, q), mk, ik, r); }
+  /* the pick of two's frame round the first parent */
+  { const char *pk = v_pstr("regions.pick.id"); int t, q, pp[4], ik[4]; if (*pk && house_find(v_fmt("house.%s", pk), &t, &q) && q >= 0 && hfigure(t, q, pp, ik)) { char ops[200]; const char *c = v_scol(V, "colours.pick"); int x = ik[0] - 3, y = ik[1] - 3, w = ik[2] + 6, h = ik[3] + 6;
       snprintf(ops, sizeof ops, "[[\"h\",0,0,%d,\"%s\"],[\"h\",0,%d,%d,\"%s\"],[\"v\",0,0,%d,\"%s\"],[\"v\",%d,0,%d,\"%s\"]]", w, c, h - 1, w, c, h, c, w - 1, h, c); v_region("pick", LAYER_CHROME); v_composed("house.pick", x, y, w, h, ops); } }
+  for (int t = 0; t < n; t++) { int r[4]; tile_rect(t, r); hplate(t, r); }
+  /* the focus set: the feet ring at 1/2, the figure, its disc, its name tag under it; a free place or the next room's tile its ring; the carried one raised 8 px over the hand's target */
+  int ring_ok = !anim_holding() && spec_len("props", "overlay") < 0;
+  if (!strcmp(cur, "house.add")) { int t, q; if (house_find(cur, &t, &q) && ring_ok) { int r[4]; tile_rect(t, r); ring("focus.targets.room", r, cur); } }
+  else if (ft >= 0 || !strncmp(cur, "house.", 6)) {
+    int t = ft, q = fq; if (t < 0 && !house_find(cur, &t, &q)) return; int pk[4], ik[4], foot[2], box[4], r[4]; tile_rect(t, r); char base[48]; snprintf(base, sizeof base, "regions.house.tiles.%d.places.%d", t, q);
+    int freep = !strcmp(v_pstr(v_fmt("%s.state", base)), "free"), dx, dy; nudge_of(cur, &dx, &dy);
+    if (freep) { if (!hplace(t, q, foot, box)) return; ik[0] = box[0] + 4; ik[2] = box[2] - 8; ik[1] = box[1]; ik[3] = box[3]; } else if (!hfigure(t, q, pk, ik)) return;
+    int fx = ik[0] + ik[2] / 2 + dx, fy = ik[1] + ik[3] + dy; char pc[96]; snprintf(pc, sizeof pc, "%s", v_pstr(v_fmt("%s.picture", base)));
+    if (ring_ok) { v_region("focus", LAYER_CHROME); word_focusRingFigure("focus", V, "focus.targets.resident", freep || !has(pc) ? v_pstr("regions.carry.picture") : pc, fx, fy, ik[2]); }
+    if (!freep) { v_name("house.mibi"); pic(v_fmt("place.%d.%d", t, q), pc, pk[0], pk[1], pk[2], pk[3]); char mk[64]; snprintf(mk, sizeof mk, "%s", v_pstr(v_fmt("%s.mark", base))); if (*mk) hdisc(v_fmt("place.%d.%d", t, q), mk, ik, r);
+      if (!carrying) { int tag[4], below = v_si(V, "regions.nameTag.below", 16); char nm[40]; snprintf(nm, sizeof nm, "%s", v_pstr(v_fmt("%s.name", base))); if (*nm) kit_nameTag(V, "regions.window", nm, ik, fy - 1 + below, ik[1] - v_si(V, "regions.nameTag.over", 32), fy - 1 + below + v_si(V, "regions.nameTag.h", 24) > r[1] + r[3] - 4 ? KIT_TAG_OVER : KIT_TAG_BELOW, 0, v_scol(V, "colours.nameTag.fill"), v_scol(V, "colours.nameTag.edge"), NULL, tag); } }
+    if (carrying) { char cp[96]; snprintf(cp, sizeof cp, "%s", v_pstr("regions.carry.picture")); int ps[2] = { 48, 50 }; v_asset_size(cp, ps);
+      v_name("resident"); pic("house.hand", cp, fx - ps[0] / 2, fy - ps[1] - v_si(V, "regions.resident.carry.lift", 8), ps[0], ps[1]); }   /* the carried one over the hand's place, raised */
+  }
 }
 
 /* ---- the Tucked away page (regions.tucked): the cold recess ---- */
@@ -175,7 +213,7 @@ static void tucked_words(const char *cur) {
   if (pages > 1) { int pr[4]; v_srect(V, "regions.tucked.pips", pr); int w = pages * 16 - 8, x0 = pr[0] + (pr[2] - w) / 2;
     for (int p = 0; p < pages && p < 16; p++) { int q[4] = { x0 + p * 16, pr[1], 8, pr[3] }; v_region("pips", LAYER_CHROME); fill(v_fmt("pip.%d", p), q, p == page ? v_scol(V, "colours.pips.on") : v_scol(V, "colours.pips.off")); } }
   int r[4]; if (tucked_box(cur, r)) {
-    if (!anim_holding() && spec_len("props", "overlay") < 0) ring("focus.targets.house", r, cur);
+    if (!anim_holding() && spec_len("props", "overlay") < 0) ring("focus.targets.tucked", r, cur);
     if (!strcmp(cur, "tucked.here") && *v_pstr("regions.carry.id")) { char cp[96]; snprintf(cp, sizeof cp, "%s", v_pstr("regions.carry.picture")); int ps[2] = { 96, 99 }; v_asset_size(cp, ps); int b[4]; cold_box(n, b);
       v_name("resident"); pic("cold.hand", cp, b[0] + (b[2] - ps[0]) / 2, b[1] + b[3] - ps[1] - v_si(V, "regions.resident.carry.lift", 8), ps[0], ps[1]); } }
 }
@@ -193,7 +231,7 @@ void vivarium_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); char vw[8]; snprintf(vw, sizeof vw, "%s", view());
   kit_stage(V, "regions.stage.rect", v_scol(V, "colours.stageGround"), "stage", "stage.ground", NULL, NULL);
   { int dx, dy; nudge_of(cur, &dx, &dy); home_viv_nudge(dx, dy); }
-  if (!strcmp(vw, "house")) { int g[4]; v_srect(V, "regions.window.rect", g); v_region("window", LAYER_CHROME); fill("window", g, v_scol(V, "colours.stageGround")); house_words(cur); }
+  if (!strcmp(vw, "house")) house_words(cur);
   else if (!strcmp(vw, "tucked")) tucked_words(cur);
   else home_viv_room(cur);
   home_viv_nudge(0, 0);

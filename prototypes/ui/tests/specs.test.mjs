@@ -403,8 +403,11 @@ test("the Vivarium (vivarium.json, the collection v2 design §8): the field, the
   assert.deepEqual(R.card.rect, [704, 88, 304, 472]); assert.deepEqual([R.card.well, R.card.place, R.card.picture], [[716, 100, 152, 152], [720, 100, 144, 152], [144, 148]]);
   assert.deepEqual([R.card.name.rect, R.card.looks.rect, R.card.plates.first, R.card.plates.pitch, R.card.why.rect], [[880, 104, 120, 20], [880, 126, 120, 18], [720, 264, 272, 32], 36, [720, 484, 272, 60]]);
   for (let k = 0; k < 5; k++) assert.ok(inside([720, 264 + 36 * k, 272, 32], R.card.rect), "plate " + k + " inside the card"); assert.equal(R.card.plates.n, 5, "five plates: no Move (the build's sign-off)"); assert.ok(inside(R.card.why.rect, R.card.rect)); assert.ok(264 + 36 * 4 + 32 <= R.card.why.rect[1], "the why line under the plates");
-  assert.deepEqual([R.house.bands.first, R.house.bands.pitch, R.house.place.box, R.house.place.ring, R.house.place.disc], [[16, 88, 672, 88], 96, [34, 32, 48, 48], [30, 28, 56, 56], [76, 18, 20, 20]]);
-  for (let j = 0; j < 5; j++) assert.ok(inside([16, 88 + 96 * j, 672, 88], R.window.rect), "band " + j); for (let k = 0; k < 8; k++) assert.ok(34 + 84 * k + 48 <= 16 + 672, "place " + k + " inside its band");
+  // the house view (the build's sign-off): the four rooms as four windows, each its room window at exactly 1/2
+  assert.deepEqual(R.house.tile.rects, [[0, 88, 344, 236], [344, 88, 344, 236], [0, 324, 344, 236], [344, 324, 344, 236]]); assert.deepEqual([R.house.tile.size, R.house.tile.of], [[344, 236], [688, 472]]);
+  for (const t of R.house.tile.rects) assert.ok(inside(t, R.window.rect), "a tile inside the field"); assert.deepEqual([R.house.seams.v, R.house.seams.h], [[343, 88, 2, 472], [0, 323, 688, 2]]);
+  assert.deepEqual([R.house.place.factor, R.house.place.picture, R.house.place.size, R.house.dim, R.house.plate.at, R.house.plate.h], [[48, 304], [48, 50], [48, 48], 0.55, [6, 6], 20]);
+  for (const [id, r] of Object.entries(rooms.rooms)) { assert.match(r.tile, /^room-\w+-tile-\{light\}-344x236$/, id); r.drops.forEach(([x, y], k) => { const tx = (x - r.crop[0]) / 2, ty = (y - r.crop[1]) / 2; assert.ok(tx >= 28 && tx <= 316 && ty <= 220, `${id} drop ${k} halved (${tx}, ${ty}): the widest figure 5 px inside the tile`); }); }
   assert.deepEqual([R.tucked.rails, R.tucked.boxes, R.tucked.pips], [[[32, 288, 624, 2], [32, 488, 624, 2]], { x: [64, 224, 384, 544], tops: [192, 392], size: [96, 96] }, [16, 548, 672, 8]]);
   for (const [i, top] of R.tucked.boxes.tops.entries()) assert.equal(top + 96, R.tucked.rails[i][1], "a figure stands on its rail");
   // the room view: the bed is Roots' own moved by (0, 8); the walk's clamp 8 px inside the window; one scale
@@ -415,7 +418,7 @@ test("the Vivarium (vivarium.json, the collection v2 design §8): the field, the
   for (const [id, r] of Object.entries(R)) assert.ok(r.component || r.build || ["chips", "card", "house", "tucked", "marks"].includes(id), id + " names its word or composition");
   // the frozen fixtures' regions keep their component and part (§12)
   assert.deepEqual([R.stage.component, R.stage.part, R.window.component, R.window.part, R.resident.component, R.resident.part, R.bed.component, R.nameTag.component], ["frame", "stage", "livingWindow", "inside", "livingWindow", "residents", "livingWindow", "panel"]);
-  assert.deepEqual(vv.layout.props, ["room", "reserved"]); assert.deepEqual(vv.layout.given, ["view", "regions.window.edge"]); assert.deepEqual([vv.layout.stage, vv.layout.opening], ["field", [0, 40, 1024, 522]]);
+  assert.deepEqual(vv.layout.props, ["room", "reserved"]); assert.deepEqual(vv.layout.given, ["view", "regions.window.edge", "regions.house.edges"]); assert.deepEqual([vv.layout.stage, vv.layout.opening], ["field", [0, 40, 1024, 522]]);
   // the focus graph and its vectors on the room view of the layout
   const G = vv.focus.graph; assert.equal(graphProblem(G), null); assert.deepEqual([G.roomKey, G.fallback], ["room", "none"]);
   for (const [k, t] of Object.entries(vv.focus.targets)) assert.ok(isShape(t.shape) && !("ring" in t), k);
@@ -738,7 +741,7 @@ const walk = (o, fn, trail = []) => { if (o && typeof o === "object") for (const
 // every target the screens ring, with the shape its object makes of it (§8): the radius of a plate (6) or of a square panel (0), the pod's oval, the circles, the footprint and the tab
 const SHAPES = {
   "home.json": { vivarium: { rect: 10 }, library: { rect: 10 }, pods: { rect: 8 }, incubator: { rect: 8 }, companion: { rect: 8 }, bay: { rect: 8 } },   // the bezels' radius 10 and the stations' 8: the ring (4 out) is 14 and 12
-  "vivarium.json": { resident: "footprint", hand: "footprint", room: { rect: 6 }, plate: { rect: 6 }, house: { rect: 6 } },
+  "vivarium.json": { resident: "footprint", hand: "footprint", room: { rect: 6 }, plate: { rect: 6 }, house: "footprint", tucked: { rect: 6 } },
   "habitat.json": { room: { rect: 6 }, resident: "footprint", name: { rect: 0 }, species: { rect: 0, chip: 4 }, family: { rect: 0, chip: 4 }, plate: { rect: 0 }, door: { rect: 6 }, portrait: { rect: 6 }, cross: { rect: 6 }, wild: { rect: 6 }, tile: { rect: 6 } },
   "namer.json": { key: { rect: 0 }, "mod.shift": { rect: 0 }, "mod.space": { rect: 0 }, "mod.page": { rect: 0 }, "act.done": { rect: 0 }, "act.suggest": { rect: 0 } },
   "pods.json": { place: { circle: { centre: [96, 88], r: 88 } }, pod: "oval", tab: "tab", kin: { circle: "box" }, hatch: { rect: 6 }, figure: "footprint" },
