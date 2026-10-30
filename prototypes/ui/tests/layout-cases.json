@@ -153,10 +153,8 @@
     ],
     "clear": [],
     "pending": [] },
-  { "state": "vivarium/vivarium-docked", "from": "the UI/UX layout sweep and the art direction audit: the Vivarium",
-    "expect": [
-     { "rule": "L1", "node": "rooms", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the panes 10 over the bottom line, as the strip was (UI/UX, the R4b-1 read: both panes end at 552, the bottom line starts at 562); the check reports the pair once, on the rooms pane" }
-    ],
+  { "state": "vivarium/vivarium-docked", "from": "the UI/UX layout sweep and the art direction audit: the Vivarium (its rooms and places panes over the bottom line retired with the strip by the collection v2 design: the chip row is above the window)",
+    "expect": [],
     "clear": [],
     "pending": [
      { "what": "the strip that vanishes, L9", "needs": "vivarium.json layout.slots (✓d)" }
@@ -700,17 +698,18 @@
     ],
     "clear": [],
     "pending": [] },
-  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L1-10", "verdict": "fault", "from": "owner card vivarium-L1-10, marked fault: loose, 806 → 16",
-    "expect": [
-     { "rule": "L7", "part": "b", "container": "window", "node": "window", "other": "left / right", "mark": "owner", "why": "carried by vivarium-L7-11: the same fault is reported once" }
+  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L1-10", "verdict": "fault", "fixed": "collection v2 9179403a", "from": "owner card vivarium-L1-10, marked fault: loose, 806 → 16",
+    "expect": [],
+    "clear": [
+     { "rule": "L7", "part": "b", "node": "window", "other": "left / right", "mark": "owner", "why": "fixed by the collection v2 build: Roots' bed at the window's centre, the empty room reads centred" }
     ],
-    "clear": [],
     "pending": [] },
-  { "state": "vivarium/vivarium-docked", "card": "vivarium-L10-1", "verdict": "fault", "from": "owner card vivarium-L10-1, marked fault: the window cuts the picture's solid ink, 0 → 1",
-    "expect": [
-     { "rule": "L10", "part": "a", "container": "opening", "node": "window", "other": "its picture", "mark": "owner", "why": "marked a fault by the owner: the window cuts the picture's solid ink, 0 → 1 in the reviewed run" }
+  { "state": "vivarium/vivarium-docked", "card": "vivarium-L10-1", "verdict": "fault", "ruled": "2026-10-29 14:38", "from": "owner card vivarium-L10-1, marked fault: the window cuts the picture's solid ink, 0 → 1",
+    "expect": [],
+    "clear": [
+     { "rule": "L10", "part": "a", "node": "window", "other": "its picture", "mark": "owner", "why": "ruled by the owner 2026-10-29 14:38: the room view's window may cut plain background; cleared by the owner's exception in frame.json only while L10c finds nothing on the frame" },
+     { "rule": "L10", "part": "c", "mark": "owner", "why": "the 14:38 rule itself: the window edge cuts no mibi, no bed, no piece or join and no key prop on this frame" }
     ],
-    "clear": [],
     "pending": [] },
   { "state": "vivarium/vivarium-away", "card": "vivarium-L11-1", "verdict": "fault", "fixed": "Q1 ad4962df", "from": "owner card vivarium-L11-1, marked fault: a lone mark: no text within 8 px on its rows, 20 → 24",
     "expect": [],
@@ -761,11 +760,11 @@
      { "rule": "L6", "container": "window", "node": "window", "mark": "owner", "why": "cleared: the window's painting is a painted fill (vivarium.json layout.painted, region window)" }
     ],
     "pending": [] },
-  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L7-11", "verdict": "fault", "from": "owner card vivarium-L7-11, marked fault: slack 806 left, 54 right, 752 → 4",
-    "expect": [
-     { "rule": "L7", "part": "b", "container": "window", "node": "window", "other": "left / right", "mark": "owner", "why": "marked a fault by the owner: slack 806 left, 54 right, 752 → 4 in the reviewed run" }
+  { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L7-11", "verdict": "fault", "fixed": "collection v2 9179403a", "from": "owner card vivarium-L7-11, marked fault: slack 806 left, 54 right, 752 → 4",
+    "expect": [],
+    "clear": [
+     { "rule": "L7", "part": "b", "node": "window", "other": "left / right", "mark": "owner", "why": "fixed by the collection v2 build: Roots' bed at the window's centre, the slack even on both sides" }
     ],
-    "clear": [],
     "pending": [] },
   { "state": "vivarium/vivarium-empty-away", "card": "vivarium-L7-9", "verdict": "fine", "from": "owner card vivarium-L7-9, marked fine: the filled area's centroid off the centre: x +0.73, y +0.84, 0.84 → 0.1",
     "expect": [],

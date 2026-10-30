@@ -22,7 +22,7 @@ const FULL = () => [box("left", [16, 48, 496, 506]), box("right", [528, 48, 480,
 test("thresholds: every rule's numbers are frame.json's, each { value, from }; the data are well formed", () => {
   assert.deepEqual(malformed(FIELD, frame), []);
   for (const k of ["L0", "L1", "L2", "L3", "L4", "L5", "L6", "L7a", "L7b", "L8", "L9", "L10", "L11"]) assert.ok(frame.layout.thresholds[k]?.from, k);
-  { const ex = frame.layout.exceptions, own = ex.filter((e) => e.by === "owner"); assert.ok(own.length >= 6 && own.every((e) => /^Owner, layout review 2026-10-26 \(/.test(e.reason) && e.date === "2026-10-26"), "the owner's exceptions, with the owner's words (none dropped)"); assert.ok(ex.every((e) => e.by === "owner" || (e.by === "UI/UX" && /^UI\/UX, /.test(e.reason) && /^2026-\d\d-\d\d$/.test(e.date) && e.date >= "2026-10-27")), "every other exception is UI/UX's (its layout spec), with its result named and dated"); } assert.deepEqual(frame.layout.enforced, {});
+  { const ex = frame.layout.exceptions, own = ex.filter((e) => e.by === "owner"); assert.ok(own.length >= 6 && own.every((e) => (/^Owner, layout review 2026-10-26 \(/.test(e.reason) && e.date === "2026-10-26") || (/^Owner, 2026-10-29 14:38, on card vivarium-L10-1: "the window edge never cuts/.test(e.reason) && e.date === "2026-10-29")), "the owner's exceptions, with the owner's words (none dropped)"); assert.ok(ex.every((e) => e.by === "owner" || (e.by === "UI/UX" && /^UI\/UX, /.test(e.reason) && /^2026-\d\d-\d\d$/.test(e.date) && e.date >= "2026-10-27")), "every other exception is UI/UX's (its layout spec), with its result named and dated"); } assert.deepEqual(frame.layout.enforced, {});
   assert.ok(malformed({ layout: { stage: "stage", opening: [0, 0, 1, 1] } }, frame).some((m) => /stage/.test(m)), "an unknown stage is malformed");
   assert.ok(malformed({ layout: { stage: "field" } }, frame).some((m) => /opening/.test(m)), "a stage with no opening is malformed");
   assert.ok(malformed({ layout: { stage: "field", opening: [0, 40, 1024, 522], painted: [{ id: "gauge" }] } }, frame).some((m) => /painted/.test(m)), "a painted prop needs its rect and fills");
@@ -199,7 +199,7 @@ test("L10c and the owner's L10a: the window's cut picture is cleared on a room-v
   assert.ok(a(roomRun([WINDOW(), box("resident", [-20, 300, 96, 99], { solid: [-10, 320, 70, 76] })], EDGE(), "room", F)), "a frame where L10c finds a cut: L10a stands");
   assert.ok(a(roomRun([WINDOW()], EDGE(), "house", F)), "another view: the exception does not hold");
   assert.ok(a(findings({ nodes: [WINDOW()], type: [] }, ROOM, F, "vivarium", "s", {})), "a log with no view fact (a frozen one): L10a stands");
-  assert.ok(a(roomRun([WINDOW()], EDGE(), "room")), "without the exception: L10a");
+  { const B = JSON.parse(JSON.stringify(frame)); B.layout.exceptions = B.layout.exceptions.filter((e) => !e.unless); assert.ok(a(roomRun([WINDOW()], EDGE(), "room", B)), "without the exception: L10a"); }
 });
 
 test("L11: a lone mark has no text within 8 px on its rows and no label", () => {

@@ -15,7 +15,7 @@ const say = (h, lines, vals = {}) => h.say((Array.isArray(lines) ? lines : [line
 export const build = (h) => { const v = viv(h); if (h.vivBuild) return h.vivBuild(); return vivariumBuild({ st: h.st, sv: h.sv, settings: h.settings, docked: S.docked(h.st), light: h.light ? h.light() : "day", focus: v.f, seen: h.ui.hab.id, last: v.last, view: v.view, page: v.page, carry: v.carry, pick: v.pick }, h.specs.vivarium, h.specs.frame, h.specs.home, h.specs.pods); };
 const motion = (h) => (h.motion ? h.motion() : true);
 // show room i in the room view (the swap's dither from the room shown, host.mjs showRoom)
-function toRoom(h, i) { const v = viv(h); v.view = "room"; if ((h.st.face?.room ?? 0) !== i) { if (h.showRoom) h.showRoom(i); else h.st.face.room = i; } }
+function toRoom(h, i) { const v = viv(h); v.view = "room"; if ((h.st.face?.room ?? 0) !== i) { v.pin = null; if (h.showRoom) h.showRoom(i); else h.st.face.room = i; } }
 
 // ---- the ring lands (the face's `focus`) ----
 export function focus(h, target) {
@@ -159,11 +159,11 @@ export function vivariumKey(h) {
   const ui = h.ui; if (ui.screen !== "vivarium" || ui.idle) return false;
   const v = viv(h); ui.panel = null;
   const id = v.carry ? v.carry.id : idOf(v.f) ?? v.last, m = id != null ? S.mibiById(h.st, id) : null;
-  if (v.view !== "house") { v.view = "house"; v.f = m ? "house." + m.id : null; if (v.carry) v.f = null; return true; }
+  if (v.view !== "house") { v.view = "house"; v.pin = null; v.f = m ? "house." + m.id : null; if (v.carry) v.f = null; return true; }
   if (v.carry) { const cm = S.mibiById(h.st, v.carry.id); v.view = "room"; if (cm && cm.room != null && !S.inStore(cm)) toRoom(h, cm.room); v.f = null; return true; }
   if (m && S.inStore(m)) { v.view = "tucked"; v.page = Math.floor(S.tuckedAway(h.st).indexOf(m) / PER_PAGE); v.f = "tucked." + m.id; return true; }
   v.view = "room";
-  if (m && m.room != null) { toRoom(h, m.room); v.f = S.isCarried(h.st, h.sv, m) ? "room." + m.room : "resident." + m.id; }   // a traveller: its room with the ring on the room's chip; a rester comes in pinned
+  if (m && m.room != null) { toRoom(h, m.room); v.f = S.isCarried(h.st, h.sv, m) ? "room." + m.room : "resident." + m.id; if (!S.isCarried(h.st, h.sv, m)) v.pin = m.id; }   // a traveller: its room with the ring on the room's chip; a rester comes in pinned (rules.show.pin), and stays shown while the room is
   else v.f = null;
   return true;
 }

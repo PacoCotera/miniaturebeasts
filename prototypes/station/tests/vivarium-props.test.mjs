@@ -314,7 +314,7 @@ test("✓ Look opens one mibi up close and ← comes back to the ring on it; ✓
 });
 
 // ---- R4b: where the resters rest (vivarium.json rules.show.where, the owner's cats) ----
-test("R4b rest places: Roots' resters take the bed in rest order, drawn as sleepers; in a room with no bed they curl or go out (at most two curls); a mibi focused is pinned shown", () => {
+test("R4b rest places: Roots' resters take the bed in rest order, drawn as sleepers; in a room with no bed they curl or go out (at most two curls); a mibi brought in from the house view is pinned shown, the ring alone wakes no rester", () => {
   const masters = path.resolve(here, "../../ui/assets/masters"), index = JSON.parse(readFileSync(path.join(masters, "index.json"), "utf8")).masters, placed = [];
   loadStandLooksFs(); loadStandLayersFs();
   try {
@@ -322,7 +322,8 @@ test("R4b rest places: Roots' resters take the bed in rest order, drawn as sleep
     const mk = (room) => { const w = world(2); dock(w.st); mibis(w, 8); w.st.mibis.forEach((m, i) => { m.room = room; m.slot = i; m.bay = room * 8 + i; m.born = w.st.turn - 100; }); w.st.face.room = room; return w; };
     { const w = mk(0), b = build(w, sv0()).props.regions, rest = b.residents.filter((p) => !p.shown); assert.equal(rest.length, 3); assert.ok(rest.every((p) => p.restAt === "bed")); assert.equal(b.bed.sleepers.length, 3); }
     { const w = mk(1), b = build(w, sv0()).props.regions, rest = b.residents.filter((p) => !p.shown); assert.equal(rest.length, 3); assert.ok(!("bed" in b)); assert.ok(rest.every((p) => ["curl", "out"].includes(p.restAt))); assert.ok(rest.filter((p) => p.restAt === "curl").length <= 2);
-      const r0 = rest[0].id; assert.equal(build(w, sv0(), { focus: "resident." + r0 }).props.regions.residents.find((p) => p.id === r0).shown, true, "the ring on it (from the house view) pins it shown: it walks in"); }
+      const r0 = rest[0].id; assert.equal(build(w, sv0(), { focus: "resident." + r0, pin: r0 }).props.regions.residents.find((p) => p.id === r0).shown, true, "brought in from the house view (pin): it walks in");
+      assert.equal(build(w, sv0(), { focus: "resident." + r0 }).props.regions.residents.find((p) => p.id === r0).shown, false, "the ring alone on a rester does not wake it (the room is not reshuffled under the ring)"); }
   } finally { for (const id of placed) dropAsset(id); unloadStands(); }
 });
 

@@ -387,10 +387,12 @@ export function overruns(log) {
 }
 // The exceptions frame.json layout.exceptions lists, applied to findings of one screen (each with its states): a finding an exception covers (rule, screen, node, other when named, a state when named)
 // is dropped, and the list's `used` names the exceptions in use. findings() and the slots of slotFindings() go through it.
+// L3a is a pair (two boxes too close): the finding names the upper or left one first, so an exception on the pair holds either way round, a region's second box (#n) as the region
+const pairOf = (x, f) => f.rule === "L3" && f.part === "a" && x.other != null && [x.other].flat().includes(String(f.node).replace(/#\d+$/, "")) && x.node === String(f.other).replace(/#\d+$/, "");
 export function excepted(frameSpec, screen, list, oneState = false, ctx = {}) {
   const ex = frameSpec?.layout?.exceptions ?? [], used = new Set();
   const holds = (x) => (!x.when || Object.entries(x.when).every(([k, v]) => ctx.facts?.[k] === v)) && (!x.unless || !(ctx.frame ?? []).some((f) => f.rule === x.unless.rule && (x.unless.part == null || f.part === x.unless.part)));   // `when` a props fact of this frame; `unless` a finding of this frame
-  const kept = list.filter((f) => { const e = ex.findIndex((x) => x.rule === f.rule && x.screen === screen && (!x.state || (f.states ?? []).includes(x.state)) && x.node === f.node && (x.other == null || [x.other].flat().includes(f.other)) && (x.part == null || x.part === f.part) && holds(x)); if (e < 0) return true; used.add(e); return false; });
+  const kept = list.filter((f) => { const e = ex.findIndex((x) => x.rule === f.rule && x.screen === screen && (!x.state || (f.states ?? []).includes(x.state)) && (x.node === f.node && (x.other == null || [x.other].flat().includes(f.other)) || pairOf(x, f)) && (x.part == null || x.part === f.part) && holds(x)); if (e < 0) return true; used.add(e); return false; });
   return withUsed(oneState ? kept.map(({ states, ...f }) => f) : kept, [...used].map((i) => ex[i]));
 }
 const withUsed = (list, used) => { Object.defineProperty(list, "used", { value: used }); return list; };   // the exceptions in use (not enumerable: the result compares as the list of findings)

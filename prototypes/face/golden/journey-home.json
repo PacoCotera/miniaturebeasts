@@ -596,8 +596,8 @@
     ],
     "screen": "vivarium",
     "focus": "vivarium",
-    "ok": "Look at Dot",
-    "subject": "Ready to go exploring",
+    "ok": null,
+    "subject": "",
     "idle": false
    },
    {
@@ -606,7 +606,7 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "tile.1",
+      "target": "room.0",
       "verb": "back"
      }
     ],

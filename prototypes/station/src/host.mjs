@@ -137,7 +137,7 @@ export function vivariumBody(light = lightNow()) {
   return body;
 }
 // The Vivarium's props from the host's state (the collection v2 design): the view, the cold page, the carry and the pick of two are UI.viv's; the intents build the same (h.vivBuild)
-export const vivariumModel = (light = lightNow()) => vivariumBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.viv.f, seen: UI.hab.id, last: UI.viv.last, view: UI.viv.view, page: UI.viv.page, carry: UI.viv.carry, pick: UI.viv.pick, prev: UI.viv.prev, ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home, SPECS.pods);
+export const vivariumModel = (light = lightNow()) => vivariumBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.viv.f, seen: UI.hab.id, pin: UI.viv.pin, last: UI.viv.last, view: UI.viv.view, page: UI.viv.page, carry: UI.viv.carry, pick: UI.viv.pick, prev: UI.viv.prev, ...living() }, SPECS.vivarium, SPECS.frame, SPECS.home, SPECS.pods);
 // The room the whole shows changes (the ring on a room's chip, a room added): st.face.room is the rules' one home for it, set here, by seeing a mibi (state.seeRoom, from game.mjs goScreen and the hatch), by a move and by ?dev Room shown; the window and the places pane cross-dither from the room that was shown (vivarium.json events.swap:
 // habitat's swap event, the same dither), the old pictures kept on the face until the event ends; a cut with reduced motion. The chips, the crumb and the line are cuts on the frame of the key.
 export function showRoom(h, i) {

@@ -48,12 +48,12 @@ static void chips_words(const char *cur, int lit[4]) {
     const char *kind = v_pstr(v_fmt("%s.kind", base)); char k[12]; snprintf(k, sizeof k, "%s", kind);
     char id[24]; snprintf(id, sizeof id, "chip.%d", i);
     const char *p = v_pstr(v_fmt("%s.picture", base)); char pc[96]; snprintf(pc, sizeof pc, "%s", p);
-    v_region(id, LAYER_CHROME);
+    v_region("rooms", LAYER_CHROME);   /* the chips are the region `rooms` (the chip row, vivarium.json), each node its own id chip.<i> */
     if (!strcmp(k, "tucked")) fill(id, r, v_scol(V, "colours.coldVeil"));
-    else if (!strcmp(k, "room") && has(pc)) { v_name(id); pic(id, pc, r[0], r[1], r[2], r[3]); }
+    else if (!strcmp(k, "room") && has(pc)) { v_name("rooms"); pic(id, pc, r[0], r[1], r[2], r[3]); }
     else fill(id, r, v_scol(V, "colours.chip.fill"));
     int nx = r[0] + v_sk(V, "regions.chips.name.at", 0), ty = r[1] + (r[3] - v_role_pitch("small")) / 2;
-    if (!strcmp(k, "tucked")) { int mk[4]; v_srect(V, "regions.chips.tuckedChip.mark", mk); if (has(pc)) { v_name(id); pic(v_fmt("%s.mark", id), pc, r[0] + mk[0], r[1] + mk[1], mk[2], mk[3]); } nx = r[0] + v_si(V, "regions.chips.tuckedChip.name", 32); }
+    if (!strcmp(k, "tucked")) { int mk[4]; v_srect(V, "regions.chips.tuckedChip.mark", mk); if (has(pc)) { v_name("rooms"); pic(v_fmt("%s.mark", id), pc, r[0] + mk[0], r[1] + mk[1], mk[2], mk[3]); } nx = r[0] + v_si(V, "regions.chips.tuckedChip.name", 32); }
     v_region(v_fmt("%s.name", id), LAYER_TYPE); v_say(v_fmt("%s.name", id), v_pstr(v_fmt("%s.name", base)), nx, ty, V_ANCHOR_LINE, "small", "pane", V_ALIGN_LEFT);
     const char *count = v_pstr(v_fmt("%s.count", base)); char cnt[24]; snprintf(cnt, sizeof cnt, "%s", count);
     if (*cnt) { int right = r[0] + (!strcmp(k, "tucked") ? v_si(V, "regions.chips.count.rightTucked", 296) : v_si(V, "regions.chips.count.right", 120));

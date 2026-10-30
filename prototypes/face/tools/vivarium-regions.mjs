@@ -8,6 +8,7 @@ const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 export function departures(log, spec, props, hasBed = true) {
   const out = [], R = spec.regions, regions = log.regions ?? [], type = log.type ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer)), win = R.window.rect, view = props.view ?? "room", cur = props.focus?.cur ?? "";
   const must = (ok, m) => { if (!ok) out.push(m); };
+  const fnv = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }, nodeRects = (id) => (log.nodes ?? []).filter((x) => x[0] === fnv(id)).map((x) => x.slice(4, 8));
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
   for (const id of ["notBuilt.stage", "notBuilt.line", "strip", "places", "tiles"]) must(got(id).length === 0, `the Vivarium draws no ${id}`);
   for (const r of got("stage")) must(eq(r.rect, R.stage.rect), `stage ${r.rect} is not ${R.stage.rect}`);
@@ -37,8 +38,8 @@ export function departures(log, spec, props, hasBed = true) {
   }
   // the chip row: a chip a room on the row's pitch, All rooms and Tucked away at theirs; the lit chip's underline at y 80
   { const n = (props.regions?.rooms?.items ?? []).length;
-    for (let i = 0; i < n; i++) { const it = props.regions.rooms.items[i], want = it.kind === "all" ? R.chips.all : it.kind === "tucked" ? R.chips.tucked : listPitch(R.chips, 4, i), rs = got(`chip.${i}`).filter((r) => r.layer === "chrome" || r.layer === "painted" || r.layer === "art");
-      must(rs.some((r) => eq(r.rect, want)), `chip ${i} (${it.kind}) is not drawn at ${want}`);
+    for (let i = 0; i < n; i++) { const it = props.regions.rooms.items[i], want = it.kind === "all" ? R.chips.all : it.kind === "tucked" ? R.chips.tucked : listPitch(R.chips, 4, i), rs = nodeRects(`chip.${i}`);   // the chips are the region rooms, each node its own id
+      must(rs.some((r) => eq(r, want)), `chip ${i} (${it.kind}) is not drawn at ${want}`); for (const r of got("rooms")) must(within(r.rect, [16, 48, 992, 32]), `the chip row ${r.rect} leaves its row`);
       const lit = got(`chip.${i}.lit`, "chrome")[0]; must(!!lit === !!it.lit, `chip ${i}'s underline ${lit ? "drawn" : "missing"}`); if (lit) must(lit.rect[1] === R.chips.underline.y && lit.rect[3] === R.chips.underline.h && lit.rect[0] === want[0], `chip ${i}'s underline ${lit.rect}`); } }
   // the card and its plates
   { const c = got("card", "chrome")[0]; must(!!c && eq(c.rect, R.card.rect), `the card ${c?.rect} is not ${R.card.rect}`);

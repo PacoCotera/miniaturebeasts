@@ -2,7 +2,7 @@
 // ids, strings, states, seeds, flags and the focus targets by id; no rectangle, no measure, no layout rule (the words place everything from vivarium.json and rooms.json). The output is plain JSON:
 // { props (state, view, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props), top, nav }. `nav` is not sent: the house view's and the cold page's walk as the host
 // resolves it (the go.* selectors are in focus.resolve) and the pages a carry flips through, for intents/vivarium.mjs. Runs in Node, tested there (tests/vivarium-props.test.mjs); the shape is vivarium.props.json.
-//   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), seen (the mibi last seen up close), last (the mibi the card showed last), view ("room" | "house" | "tucked"), page (the cold page),
+//   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), seen (the mibi last seen up close), pin (a mibi brought into its room, shown while the room is), last (the mibi the card showed last), view ("room" | "house" | "tucked"), page (the cold page),
 //        carry ({ id, kind: "move" | "out", room, view, page } or null), pick ({ a } or null: the pick of two's first parent), time, now, restRules, rules, arrived, motionSets }
 import * as S from "../state.mjs";
 import { livingOf, mibiReq, mibiRequest, mibiVariantReq, figureOf } from "./home-props.mjs";
@@ -127,7 +127,7 @@ export function vivariumBuild(m, spec, frame, home, pods) {
   // ---- the field ----
   let state = S.inRoom(st, shown).length ? "rest" : "empty", lw = null, present = [];
   if (view === "room") {
-    const pin = carry && cm.room === shown && !S.inStore(cm) ? String(cm.id) : idOf(m.focus) != null ? String(idOf(m.focus)) : m.seen != null ? String(m.seen) : null;
+    const pin = carry && cm.room === shown && !S.inStore(cm) ? String(cm.id) : m.pin != null ? String(m.pin) : m.seen != null ? String(m.seen) : null;   // rules.show.pin: the mibi in hand, the one brought in from the house view, the one last seen up close; the ring on a sleeper does not wake it (a ring that pinned would reshuffle the room under it)
     lw = livingOf({ view: "vivarium", st, sv, settings, docked, light, room: shown, time: m.time, now: m.now, restRules: m.restRules, rules: m.rules, ui: { focus: pin }, arrived: m.arrived, motionSets: m.motionSets }, R, req, ph, frame.light);
     const order = new Map(S.inRoom(st, shown).map((mb, i) => [String(mb.id), i]));
     const residents = lw.residents.slice().sort((a, b) => order.get(a.id) - order.get(b.id));

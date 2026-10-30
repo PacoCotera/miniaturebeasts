@@ -116,7 +116,7 @@ test("the departure check bites: a chip off its pitch, the card and a plate move
   const b = scene({ rooms: 2, per: [5, 2], focus: "resident.#2" }), f = await start(b, { motion: false }), lg = logOf(f);
   const bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, spec, b.props, true).join("; "); };
   assert.deepEqual(departures(lg, spec, b.props, true), []);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "chip.1" && r.layer !== "type").rect[0] += 4; }), /chip 1/);
+  assert.match(bad((c) => { c.nodes.find((x) => x[0] === fnv("chip.1"))[4] += 4; }), /chip 1/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "card" && r.layer === "chrome").rect[0] += 8; }), /the card/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "plate.2" && r.layer === "chrome").rect[1] += 4; }), /plate 2/);
   assert.match(bad((c) => { c.regions = c.regions.filter((r) => r.id !== "chip.0.lit"); }), /underline missing/);
@@ -168,8 +168,8 @@ test("the chip row: the rooms on the row's pitch, All rooms and Tucked away at t
   for (const [rooms, per, room] of [[1, [4], 0], [2, [4, 2], 1], [4, [8, 8, 8, 8], 3]]) {
     const b = scene({ rooms, per, room }), f = await start(b, { motion: false }), lg = logOf(f), items = b.props.regions.rooms.items;
     assert.deepEqual(items.map((i) => i.kind), [...Array(rooms).fill("room"), ...(rooms < 4 ? ["new"] : []), "all", "tucked"]);
-    for (let i = 0; i < rooms; i++) assert.deepEqual(rg(lg, `chip.${i}`).find((r) => r.layer !== "type").rect, listPitch(R.chips, 4, i), `${rooms} rooms: chip ${i}`);
-    assert.deepEqual(rg(lg, `chip.${items.length - 2}`).find((r) => r.layer === "chrome").rect, R.chips.all); assert.deepEqual(rg(lg, `chip.${items.length - 1}`).find((r) => r.layer === "chrome").rect, R.chips.tucked);
+    const nodeAt = (id) => lg.nodes.find((x) => x[0] === fnv(id)).slice(4, 8); for (let i = 0; i < rooms; i++) assert.deepEqual(nodeAt(`chip.${i}`), listPitch(R.chips, 4, i), `${rooms} rooms: chip ${i}`);
+    assert.deepEqual(nodeAt(`chip.${items.length - 2}`), R.chips.all); assert.deepEqual(nodeAt(`chip.${items.length - 1}`), R.chips.tucked);
     assert.deepEqual(rg(lg, `chip.${room}.lit`, "chrome").map((r) => r.rect), [[listPitch(R.chips, 4, room)[0], 80, 128, 2]], "the room shown's chip is lit");
     assert.deepEqual(departures(lg, spec, b.props, hasBed(b)), []);
   }
