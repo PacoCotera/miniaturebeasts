@@ -7,7 +7,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, renameSync, rmSync } from "node:fs";
 import path from "node:path";
 
-export const CRADLES = ["companion", "station"], SWEEP_MS = 30 * 24 * 3600 * 1000;
+export const CRADLES = ["companion", "station"], SWEEP_MS = 30 * 24 * 3600 * 1000, NAME_MAX = 12;   // NAME_MAX: what the face's stamp slot holds
 export const WORLD_RE = /^[A-Za-z0-9_-]{1,64}$/;
 const SCHEMA = "mb-caddy-dock/1";
 export function writeAndRename(file, obj) { const tmp = file + ".tmp"; writeFileSync(tmp, JSON.stringify(obj, null, 1) + "\n"); renameSync(tmp, file); }
@@ -16,7 +16,7 @@ const blank = (world, t) => ({ schema: SCHEMA, world, seq: 0, created: t, seated
   cradles: Object.fromEntries(CRADLES.map((c) => [c, { state: "lifted", seats: 0, seq: 0, at: t }])), face: { who: null, since: t, fault: false } });
 
 // The Companion that seats itself: { id, name }, both short strings; anything else is ignored.
-const whoOf = (c) => (c && typeof c === "object" && typeof c.id === "string" && c.id.length <= 64 && /^[\w-]+$/.test(c.id) ? { id: c.id, name: typeof c.name === "string" ? c.name.slice(0, 24) : null } : null);
+const whoOf = (c) => (c && typeof c === "object" && typeof c.id === "string" && c.id.length <= 64 && /^[\w-]+$/.test(c.id) ? { id: c.id, name: typeof c.name === "string" ? c.name.slice(0, NAME_MAX) : null } : null);
 
 export function createDock({ dataDir, now = Date.now, write = writeAndRename } = {}) {
   const dir = path.join(dataDir, "dock"); mkdirSync(dir, { recursive: true });
@@ -38,7 +38,7 @@ export function createDock({ dataDir, now = Date.now, write = writeAndRename } =
     if (rec.cradles[cradle].state === want && !rec.face.fault) return { ok: true, changed: false, snapshot: snap(rec) };   // a state, not a toggle
     const next = copy(rec), c = next.cradles[cradle], moved = c.state !== want;
     if (moved) { c.state = want; c.seq++; c.at = t; if (seated) c.seats++; next.seq++; }
-    if (seated) next.seatedAt = t;
+    if (seated && cradle === "companion") next.seatedAt = t;   // the sweep counts the Companion's seats only
     if (moved && cradle === "companion") { next.face.since = t; if (who) next.face.who = who; }
     next.face.fault = false;
     try { write(fileOf(world), next); }
@@ -55,10 +55,10 @@ export function createDock({ dataDir, now = Date.now, write = writeAndRename } =
     const set = listeners.get(world) ?? new Set(); set.add(fn); listeners.set(world, set);
     return () => { set.delete(fn); if (!set.size) listeners.delete(world); };
   }
-  // The sweep: a world with no cradle seated and no seat for 30 days goes, its file with it.
+  // The sweep: a world whose Companion is not seated and has not been for 30 days goes, its file with it (the Station cradle stays seated for good, so it does not count).
   function sweep(t = now()) {
     const gone = [];
-    for (const [world, rec] of worlds) if (!CRADLES.some((c) => rec.cradles[c].state === "seated") && t - rec.seatedAt >= SWEEP_MS) { worlds.delete(world); rmSync(fileOf(world), { force: true }); gone.push(world); }
+    for (const [world, rec] of worlds) if (rec.cradles.companion.state !== "seated" && t - rec.seatedAt >= SWEEP_MS) { worlds.delete(world); rmSync(fileOf(world), { force: true }); gone.push(world); }
     return gone;
   }
   const list = () => [...worlds.values()].map((r) => ({ world: r.world, seq: r.seq, companion: r.cradles.companion.state, seats: r.cradles.companion.seats, fault: r.face.fault }));

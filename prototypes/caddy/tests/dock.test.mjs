@@ -9,7 +9,8 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { createServer } from "node:http";
 import { createApp } from "../app.mjs";
-import { createDock, SWEEP_MS } from "../dock.mjs";
+import { createDock, SWEEP_MS, NAME_MAX } from "../dock.mjs";
+import { faceOf, rasterFace } from "../face.mjs";
 
 const fresh = () => mkdtempSync(path.join(tmpdir(), "mb-caddy-dock-"));
 async function serve(app) { const server = createServer((req, res) => app.handle(req, res)); await new Promise((r) => server.listen(0, "127.0.0.1", r)); return { url: `http://127.0.0.1:${server.address().port}/caddy-api/v1`, close: () => new Promise((r) => { server.closeAllConnections(); server.close(r); }) }; }
@@ -93,7 +94,7 @@ test("a write the Caddy cannot store changes nothing and marks the face's fault;
 
 test("the 30-day sweep: a world with nothing seated and no seat for 30 days goes, with its file; a seated one stays", () => {
   let t = Date.parse("2026-10-01T12:00:00Z"); const dir = fresh(), dock = createDock({ dataDir: dir, now: () => t });
-  dock.seat("old", "companion", true); dock.seat("old", "companion", false);
+  dock.seat("old", "station", true); dock.seat("old", "companion", true); dock.seat("old", "companion", false);   // the Station cradle stays seated, as the play page leaves it
   dock.seat("kept", "companion", true);   // left seated
   t += SWEEP_MS - 1000; dock.seat("recent", "companion", true); dock.seat("recent", "companion", false);
   assert.deepEqual(dock.sweep(t), [], "not before 30 days");
@@ -101,4 +102,12 @@ test("the 30-day sweep: a world with nothing seated and no seat for 30 days goes
   assert.ok(!existsSync(path.join(dir, "dock", "old.json")) && existsSync(path.join(dir, "dock", "kept.json")));
   assert.deepEqual(dock.list().map((w) => w.world).sort(), ["kept", "recent"]);
   t += SWEEP_MS; assert.deepEqual(dock.sweep(t), ["recent"], "the seated world is never swept");
+});
+
+test("a Companion's name is kept to what the face's stamp slot holds, so the face always draws", () => {
+  const dock = createDock({ dataDir: fresh() }), T0 = Date.parse("2026-10-30T14:05:00Z");
+  const who = dock.seat("w1", "companion", true, { id: "c9", name: "W".repeat(40) }).snapshot.face.who;
+  assert.equal(who.name, "W".repeat(NAME_MAX));
+  const f = faceOf({ tz: 0, bootAt: T0, who, now: T0 + 40000, cradles: { companion: { state: "lifted", seats: 2, at: T0 }, station: { state: "seated" } }, station: { at: T0 + 30000, partner: "Moss", along: null, opened: null, crates: 0, ledger: { e: 41, d: 18, s: 7 } } });
+  assert.doesNotThrow(() => rasterFace(f));
 });
