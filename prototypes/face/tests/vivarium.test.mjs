@@ -513,8 +513,8 @@ test("rest change (M1 §3, game designer R1): awake → asleep by props: crouch 
   const w = trace(f, 0, 2500), wd = w.filter((x) => x.clip === CLIP.wake && x.phase === 0), cr = w.find((x) => x.clip === CLIP.wake && x.phase === 1), st = w.find((x) => x.clip === CLIP.rest);
   assert.deepEqual(wd.map((x) => x.level), [4, 8, 12, 16]); assert.equal(cr.cell.replace("*", ""), "crouch"); assert.equal(cr.dy, 2); assert.equal(st.t - cr.t, 400); assert.equal(st.cell.replace("*", ""), "stand"); assert.equal(st.dy, 0);
 });
-test("G10 (M1 §3), on Home: eight awake for 120 s: from 2.0 s on, at every frame, the travelling count within its floor and cap, at most 2 in the air, no trip ends off its waypoint", { skip }, async () => {
-  const sc = movingScene("home", { adults: 4, juveniles: 3, s05: 1 }), f = await bootScene(sc), M = f.M, N = sc.props.regions.residents.filter((r) => r.shown !== false).length, all = sc.props.regions.residents.length, ceiling = spec.rules.travel.max, cap = Math.min(ceiling, Math.max(4, Math.ceil(N / 2))), floor = Math.min(Math.ceil(N / 3), cap);
+test("G10 (M1 §3), on Idle: eight awake for 120 s: from 2.0 s on, at every frame, the travelling count within its floor and cap, at most 2 in the air, no trip ends off its waypoint", { skip }, async () => {
+  const sc = movingScene("idle", { adults: 4, juveniles: 3, s05: 1 }), f = await bootScene(sc), M = f.M, N = sc.props.regions.residents.filter((r) => r.shown !== false).length, all = sc.props.regions.residents.length, ceiling = spec.rules.travel.max, cap = Math.min(ceiling, Math.max(4, Math.ceil(N / 2))), floor = Math.min(Math.ceil(N / 3), cap);
   const was = Array(all).fill(false); let maxT = 0, maxAir = 0, ends = 0, starts = 0, lowSince = null, worstDip = 0;
   runFrames(f, 120000, { each: (t) => {
     let trav = 0, air = 0;

@@ -955,7 +955,8 @@ int home_tick(uint32_t now) {
   if (!g_have_t0) return lib;
   if (!((long)((now - g_t0) / STEP_MS) + 1 > g_wticks)) return lib;   /* no group tick is due that the walk has not applied */
   if (g_nw > 0 || !(g_nm || g_nnap)) return 1;   /* a still walks: every tick draws, as before */
-  return walk_clock(now) > 0 || lib;   /* only moving residents: the tick is applied here and a frame asked only when something changed (§2.3 item 10: a night Idle of sleepers draws a few times a second, not 25) */
+  { int si = g_idle, sv = g_viv, sh = g_home; g_idle = idle; g_viv = strcmp(v_pstr("screen"), "vivarium") == 0; g_home = home;   /* the tick steps the household in its own screen's mode (the keep-out rule, the spec paths): outside the draw the flags are 0 and Idle's bed took Home's rule, which shuts the whole right side */
+    int n = walk_clock(now); g_idle = si; g_viv = sv; g_home = sh; return n > 0 || lib; }   /* only moving residents: the tick is applied here and a frame asked only when something changed (§2.3 item 10: a night Idle of sleepers draws a few times a second, not 25) */
 }
 /* test hooks (face.c): a moving resident by its index among the props' residents */
 static const mv_t *mv_at(int i) { for (int k = 0; k < g_nm; k++) if (g_m[k].idx == i) return &g_m[k]; return NULL; }
