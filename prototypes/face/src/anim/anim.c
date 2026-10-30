@@ -16,7 +16,7 @@ int anim_add(int kind, const char *target, int ms, int hold, int cut, int skip, 
   ev_t e; memset(&e, 0, sizeof e); e.kind = kind; snprintf(e.target, sizeof e.target, "%s", target ? target : ""); e.ms = ms < 0 ? 0 : ms; e.cut = cut; e.skip = skip; e.from = from; e.to = to; e.start = g_now; snprintf(e.from_id, sizeof e.from_id, "%s", from_id ? from_id : "");
   if (hold > 0 && skip) { if (!g_skip || (int)((g_now + (uint32_t)hold) - g_skip_until) > 0) g_skip_until = g_now + (uint32_t)hold; g_skip = 1; snprintf(g_skip_target, sizeof g_skip_target, "%s", e.target); }
   else if (hold > 0 && (!g_hold || (int)((g_now + (uint32_t)hold) - g_hold_until) > 0)) { g_hold_until = g_now + (uint32_t)hold; g_hold = 1; }
-  if (!motion || e.ms == 0) { done(&e); return 0; }   /* reduced motion: every event jumps to its end */
+  if ((!motion && kind != ANIM_PLATE) || e.ms == 0) { done(&e); return 0; }   /* reduced motion: every event jumps to its end, but the message plate, which is words and not motion: it shows for its time, put up and taken down as cuts */
   for (int i = 0; i < g_n; i++) if (g_e[i].kind == kind && strcmp(g_e[i].target, e.target) == 0) { g_e[i] = e; return 0; }   /* the same event again starts over */
   if (g_n >= MAXA) return -1;
   g_e[g_n++] = e; return 0;

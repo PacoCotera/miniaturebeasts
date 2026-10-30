@@ -48,7 +48,7 @@ for (const screen of screens) {
   for (const v of F.vectors ?? []) {
     if (v.intent && !/^step:/.test(v.intent)) continue;   // ✓ and ← are intents on the target, not moves
     const st = screen === "pods-overview" ? { graph: F[v.state] } : v.state && F[v.state]?.graph ? F[v.state] : F, c = { name: `${screen}: ${v.state ? v.state + ", " : ""}${v.from} ${v.key}${v.away ? " (away: " + v.away.join(", ") + ")" : ""}${v.intent ? " says " + v.intent : ""}`, graph: st.graph, targets: TARGETS[screen](v.state, spec, v), from: v.from, key: v.key, to: v.to };
-    if (screen === "vivarium") { c.resolve = { ...(F.resolveFor ?? {}) }; if (v.from === "room") c.roomAt = F.roomAt; }   // the view's selectors for the ring the vectors start from (views/vivarium-props.mjs): the card's first live plate, the lit chip, the card's mibi
+    if (screen === "vivarium") { c.resolve = { ...(F.resolveFor ?? {}), ...(v.resolve ?? {}) }; if (v.from === "room") c.roomAt = F.roomAt; }   // the view's selectors for the ring the vectors start from (views/vivarium-props.mjs and the face's row): the card's first live plate, the lit chip, the card's mibi, the row (a vector may give its own)
     if (screen === "home") { c.roomAt = F.roomAt; c.name = `home: ${v.from} ${v.key} is ${v.to}`; }   // the ring at rest is on the room: its point is roomAt
     if (screen === "habitat") {   // the symbolic tiles: the first tile, a tile, the shown one (t2); the selector the view gives
       const sym = (id) => (id === "tile.first" ? "tile.t0" : id === "a tile" || id === "tile.shown" ? "tile.t2" : id === "room.shown" ? "room.0" : id); c.from = sym(v.from); c.to = sym(v.to); c.resolve = { "tile.shown": "tile.t2", "room.shown": "room.0" };

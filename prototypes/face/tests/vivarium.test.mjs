@@ -140,20 +140,25 @@ test("the keys: ✓ and ← and the room keys are intents on the focused target;
   withFocus(f, "room.all"); assert.deepEqual(key(f, "confirm").map((x) => [x.target, x.verb]), [["room.all", "confirm"]]);
 });
 
-test("the focus path at rest (§3): ◀▶▲▼ walk the present mibis nearest ahead; ▶ with nothing ahead goes to the card's first live plate, ▲ with nothing above to the lit chip; ▲▼ walk the plates (held ones too) and ◀ comes back to the card's mibi; the chips go ◀▶ and ▼ into the field", { skip }, async () => {
+test("the card reach rule (the build's sign-off): the room view is one row by foot x, ties front first; ◀▶ walk it, ▶ from its last goes to the card's first live plate and ◀ from its first nudges; ▲ from any mibi to the lit chip, ▼ to its card; ▲▼ walk the plates (held ones too), ◀ or ▲ from the top plate come back to the card's mibi; the chips go ◀▶ and ▼ onto the row's first", { skip }, async () => {
   const b = scene({ rooms: 2, per: [5, 2] }), f = await start(b, { motion: false, node: true }), res = b.props.regions.residents.filter((r) => r.shown !== false).map((r) => r.id);
-  const at = (id) => boxOf(f, "g." + id), right = res.slice().sort((a, c) => at(c)[0] - at(a)[0])[0], top = res.slice().sort((a, c) => at(a)[1] + at(a)[3] - at(c)[1] - at(c)[3])[0];
-  const rs = b.props.focus.resolve; assert.match(rs["plate.first"], /^plate\.\d$/); assert.equal(rs["room.lit"], "room.0");
-  withFocus(f, "resident." + right); assert.deepEqual(tgt(go(f, "right")), [["focus", rs["plate.first"]]], "▶ from the rightmost: the first live plate");
-  withFocus(f, "resident." + top); assert.deepEqual(tgt(go(f, "up")), [["focus", "room.0"]], "▲ from the topmost: the lit chip");
-  withFocus(f, "resident." + top); const m = key(f, "down"); assert.ok(m[0]?.t === "focus" && /^resident\./.test(m[0].target) && m[0].target !== "resident." + top, "▼: the nearest mibi below");
-  withFocus(f, "plate.0"); assert.deepEqual(key(f, "up"), [], "the plates stop at the first"); for (let k = 1; k < 6; k++) assert.deepEqual(tgt(go(f, "down")), [["focus", "plate." + k]], "▼ walks the plates, held ones included");
-  assert.deepEqual(key(f, "down"), [], "and stop at the last"); assert.deepEqual(tgt(go(f, "left")), [["focus", rs["card.of"]]], "◀ from a plate: the card's mibi"); assert.deepEqual(key(f, "right").length <= 1, true);
-  withFocus(f, "plate.3"); assert.deepEqual(key(f, "right"), [], "▶ from a plate: nothing");
+  const at = (id) => boxOf(f, "g." + id), fx = (id) => 2 * at(id)[0] + at(id)[2], fy = (id) => at(id)[1] + at(id)[3];
+  const row = res.slice().sort((a, c) => fx(a) - fx(c) || fy(c) - fy(a));
+  const rs = b.props.focus.resolve; assert.equal(rs["plate.first"], "plate.0", "Look is the first live plate"); assert.equal(rs["room.lit"], "room.0");
+  withFocus(f, "resident." + row[0]); assert.deepEqual(key(f, "left"), [], "◀ from the row's first: nothing (the nudge)");
+  for (let k = 0; k < row.length - 1; k++) { withFocus(f, "resident." + row[k]); assert.deepEqual(tgt(go(f, "right")), [["focus", "resident." + row[k + 1]]], `▶ from the ${k}th of the row: the next by foot x`); }
+  for (let k = row.length - 1; k > 0; k--) { withFocus(f, "resident." + row[k]); assert.deepEqual(tgt(go(f, "left")), [["focus", "resident." + row[k - 1]]], `◀ from the ${k}th of the row: the one before`); }
+  withFocus(f, "resident." + row[row.length - 1]); assert.deepEqual(tgt(go(f, "right")), [["focus", "plate.0"]], "▶ from the row's last: the card's first live plate");
+  for (const id of row) { withFocus(f, "resident." + id); assert.deepEqual(tgt(go(f, "up")), [["focus", "room.0"]], "▲ from any mibi: the lit chip"); withFocus(f, "resident." + id); assert.deepEqual(tgt(go(f, "down")), [["focus", "plate.0"]], "▼ from any mibi: its card's first live plate, in one press"); }
+  withFocus(f, "plate.0"); assert.deepEqual(tgt(go(f, "up")), [["focus", rs["card.of"]]], "▲ from the top plate: the card's mibi");
+  withFocus(f, "plate.0"); for (let k = 1; k < 5; k++) assert.deepEqual(tgt(go(f, "down")), [["focus", "plate." + k]], "▼ walks the plates, held ones included");
+  assert.deepEqual(key(f, "down"), [], "and stops at the last"); assert.deepEqual(tgt(go(f, "left")), [["focus", rs["card.of"]]], "◀ from a plate: the card's mibi");
+  withFocus(f, "plate.2"); assert.deepEqual(tgt(go(f, "up")), [["focus", "plate.1"]], "▲ walks the plates up");
+  withFocus(f, "plate.3"); assert.deepEqual(key(f, "right"), [], "▶ from a plate: nothing (the nudge)");
   withFocus(f, "room.0"); assert.deepEqual(key(f, "left"), [], "◀ stops at the first chip");
   for (const want of ["room.1", "room.new", "room.all", "room.tucked"]) assert.deepEqual(tgt(go(f, "right")), [["focus", want]]);
   assert.deepEqual(key(f, "right"), [], "▶ stops at Tucked away"); assert.deepEqual(key(f, "up"), [], "▲ from a chip: nothing");
-  withFocus(f, "room.0"); const d = key(f, "down"); assert.ok(d[0]?.t === "focus" && /^resident\./.test(d[0].target), "▼ from a chip: the nearest mibi in the field");
+  withFocus(f, "room.0"); assert.deepEqual(tgt(key(f, "down")), [["focus", "resident." + row[0]]], "▼ from a chip: the row's first mibi");
 });
 
 test("the nudge (§3): a press with nothing beyond moves the ring 4 px toward it until the next key; ✓ on a room's chip, which has no ✓ cap, nudges it down", { skip }, async () => {
@@ -175,9 +180,10 @@ test("the chip row: the rooms on the row's pitch, All rooms and Tucked away at t
   }
 });
 
-test("the card: its six plates on their 36 px pitch, the portrait standing on the place's foot, the name, and the looks in 120 px lines, three at most (the last looks left off when they take more)", { skip }, async () => {
+test("the card: its five plates on their 36 px pitch, the portrait standing on the place's foot, the name, and the looks in 120 px lines, three at most (the last looks left off when they take more)", { skip }, async () => {
   const b = scene({ adults: 8 }), f = await start(b, { motion: false }), lg = logOf(f), P = R.card.plates;
-  for (let k = 0; k < 6; k++) { const held = b.props.regions.card.plates[k].held, r = rg(lg, `plate.${k}`, "chrome")[0]; if (held) assert.ok(!r, `plate ${k} is held: no hairline`); else assert.deepEqual(r.rect, [P.first[0], P.first[1] + P.pitch * k, P.first[2], P.first[3]]); assert.equal(rg(lg, `plate.${k}.verb`, "type")[0].rect[0], P.first[0] + P.verb, `plate ${k} verb`); }
+  assert.equal(b.props.regions.card.plates.length, 5, "five plates: no Move");
+  for (let k = 0; k < 5; k++) { const held = b.props.regions.card.plates[k].held, r = rg(lg, `plate.${k}`, "chrome")[0]; if (held) assert.ok(!r, `plate ${k} is held: no hairline`); else assert.deepEqual(r.rect, [P.first[0], P.first[1] + P.pitch * k, P.first[2], P.first[3]]); assert.equal(rg(lg, `plate.${k}.verb`, "type")[0].rect[0], P.first[0] + P.verb, `plate ${k} verb`); }
   const por = rg(lg, "card.portrait", "art")[0].rect; assert.equal(por[1] + por[3], R.card.place[1] + R.card.place[3], "the portrait's foot on the place's"); assert.equal(por[2], R.card.picture[0]);
   for (const looks of [["stripes and patches", "charcoal and ash", "between"], ["a very long look of speckles", "another long look of bands", "a third long look of dots", "a fourth"], ["one"]]) {
     b.props.regions.card.looks = looks; f.build = b; send(f); frames(f); const L = rg(logOf(f), "card.looks", "type");

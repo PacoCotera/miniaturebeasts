@@ -21,6 +21,7 @@ typedef struct {
   int steps;              /* 1: a stepper key says step:<key> on the focused target; 0: it says nothing */
   const char *cur_path;   /* the props path of the focused target; NULL: "focus.cur" (an overlay's is "overlay.focus.cur") */
   int *stuck;             /* or NULL: set to the direction + 1 (FOCUS_UP .. FOCUS_RIGHT) when a direction lands where the ring is, else 0 (the Vivarium's nudge) */
+  int (*own)(const focus_target_t *t, int n, const char *cur, focus_resolve_t *out, int cap);   /* or NULL: the screen's own answers to selectors, from the targets as the words drew them on the frame of the key; read before the host's */
 } screens_keys_t;
 typedef int (*screens_focus_fn)(focus_target_t *out, int cap);
 /* `opts` is never NULL (pass a zero screens_keys_t for no options). At most FOCUS_TARGETS (64) targets from focus_fn and 16 focus.resolve entries are read. */

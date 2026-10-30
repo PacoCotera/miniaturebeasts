@@ -218,12 +218,28 @@ int vivarium_focus(focus_target_t *out, int cap) {
   return n;
 }
 
+/* the card reach rule (the build's sign-off): the room view's field is one ordered row, the present mibis by foot x (the figure box's doubled centre), ties front first (the larger foot y), then the props' order,
+   taken from the boxes the words drew on the frame of the key; the face answers row.first, row.prev and row.next ("" at the ends). The house view and the Tucked away page are the host's (their places do not walk). */
+static int row_own(const focus_target_t *t, int n, const char *cur, focus_resolve_t *out, int cap) {
+  if (strcmp(view(), "room") || *v_pstr("regions.carry.id") || cap < 3) return 0;
+  int row[FOCUS_TARGETS], nr = 0;
+  for (int i = 0; i < n && nr < FOCUS_TARGETS; i++) { if (strcmp(t[i].group, "resident")) continue;
+    long fx = 2L * t[i].x + t[i].w, fy = t[i].y + t[i].h; int j = nr++;
+    while (j > 0) { const focus_target_t *p = &t[row[j - 1]]; long px = 2L * p->x + p->w, py = p->y + p->h; if (px < fx || (px == fx && py >= fy)) break; row[j] = row[j - 1]; j--; }
+    row[j] = i; }
+  int at = -1; for (int k = 0; k < nr; k++) if (!strcmp(t[row[k]].id, cur)) at = k;
+  snprintf(out[0].sel, sizeof out[0].sel, "row.first"); snprintf(out[0].id, sizeof out[0].id, "%s", nr ? t[row[0]].id : "");
+  snprintf(out[1].sel, sizeof out[1].sel, "row.prev"); snprintf(out[1].id, sizeof out[1].id, "%s", at > 0 ? t[row[at - 1]].id : "");
+  snprintf(out[2].sel, sizeof out[2].sel, "row.next"); snprintf(out[2].id, sizeof out[2].id, "%s", at >= 0 && at < nr - 1 ? t[row[at + 1]].id : "");
+  return 3;
+}
+
 /* a key: ✓, ← and the room keys say an intent on the focused target; the pad moves the ring by vivarium.json focus.graph (the host's selectors in focus.resolve); a press with nothing beyond, and ✓ on a room's chip, nudge the ring */
 void vivarium_key(int code) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); int stuck = 0, was = g_nudge; g_nudge = 0;
   if (code == 10 && strncmp(cur, "room.", 5) == 0 && cur[5] >= '0' && cur[5] <= '9') { g_nudge = FOCUS_DOWN + 1; snprintf(g_nudge_at, sizeof g_nudge_at, "%s", cur); screens_redraw(); }   /* a room's chip has no ✓ cap */
   if (*v_pstr("regions.carry.id")) { if (code == 10) home_viv_setdown(cur); else home_viv_noplace(); }   /* ✓ sets the carried one down where the hand is (§3); any other key leaves nothing pending */
-  screens_key_graph(code, V, "focus.graph", vivarium_focus, "room", &(screens_keys_t){ .resolve = 1, .room_at = "focus.roomAt", .stuck = &stuck });
+  screens_key_graph(code, V, "focus.graph", vivarium_focus, "room", &(screens_keys_t){ .resolve = 1, .room_at = "focus.roomAt", .stuck = &stuck, .own = row_own });
   if (stuck) { g_nudge = stuck; snprintf(g_nudge_at, sizeof g_nudge_at, "%s", cur); screens_redraw(); }
   else if (was && !g_nudge) screens_redraw();
 }

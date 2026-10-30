@@ -402,7 +402,7 @@ test("the Vivarium (vivarium.json, the collection v2 design §8): the field, the
   assert.deepEqual(R.chips.forms.row, { upTo: 4, first: [16, 48, 128, 32], pitch: [136, 0], grid: [4, 1] }); assert.deepEqual([R.chips.all, R.chips.tucked, R.rooms.rect], [[560, 48, 128, 32], [704, 48, 304, 32], [16, 48, 672, 32]]); assert.equal(R.chips.underline.y, 80);
   assert.deepEqual(R.card.rect, [704, 88, 304, 472]); assert.deepEqual([R.card.well, R.card.place, R.card.picture], [[716, 100, 152, 152], [720, 100, 144, 152], [144, 148]]);
   assert.deepEqual([R.card.name.rect, R.card.looks.rect, R.card.plates.first, R.card.plates.pitch, R.card.why.rect], [[880, 104, 120, 20], [880, 126, 120, 18], [720, 264, 272, 32], 36, [720, 484, 272, 60]]);
-  for (let k = 0; k < 6; k++) assert.ok(inside([720, 264 + 36 * k, 272, 32], R.card.rect), "plate " + k + " inside the card"); assert.ok(inside(R.card.why.rect, R.card.rect)); assert.ok(264 + 36 * 5 + 32 <= R.card.why.rect[1], "the why line under the plates");
+  for (let k = 0; k < 5; k++) assert.ok(inside([720, 264 + 36 * k, 272, 32], R.card.rect), "plate " + k + " inside the card"); assert.equal(R.card.plates.n, 5, "five plates: no Move (the build's sign-off)"); assert.ok(inside(R.card.why.rect, R.card.rect)); assert.ok(264 + 36 * 4 + 32 <= R.card.why.rect[1], "the why line under the plates");
   assert.deepEqual([R.house.bands.first, R.house.bands.pitch, R.house.place.box, R.house.place.ring, R.house.place.disc], [[16, 88, 672, 88], 96, [34, 32, 48, 48], [30, 28, 56, 56], [76, 18, 20, 20]]);
   for (let j = 0; j < 5; j++) assert.ok(inside([16, 88 + 96 * j, 672, 88], R.window.rect), "band " + j); for (let k = 0; k < 8; k++) assert.ok(34 + 84 * k + 48 <= 16 + 672, "place " + k + " inside its band");
   assert.deepEqual([R.tucked.rails, R.tucked.boxes, R.tucked.pips], [[[32, 288, 624, 2], [32, 488, 624, 2]], { x: [64, 224, 384, 544], tops: [192, 392], size: [96, 96] }, [16, 548, 672, 8]]);
@@ -422,11 +422,11 @@ test("the Vivarium (vivarium.json, the collection v2 design §8): the field, the
   const L = Object.entries(vv.focus.layout).filter(([k]) => k !== "note"), all = L.map(([id, rect]) => ({ id, rect, group: id.split(".")[0], index: L.filter(([q]) => q.split(".")[0] === id.split(".")[0]).findIndex(([q]) => q === id) }));
   for (const [id, box] of L) if (id.startsWith("plate.")) assert.deepEqual(box, [720, 264 + 36 * +id.slice(6), 272, 32]); else if (id.startsWith("resident.")) assert.ok(inside(box, R.window.rect), id);
   let played = 0; const res = (sel) => vv.focus.resolveFor[sel] ?? null;
-  for (const v of vv.focus.vectors) { assert.equal(moveFocus(G, all, v.from, v.key, res).to, v.to, `${v.from} ${v.key} → ${v.to}`); played++; }
+  for (const v of vv.focus.vectors) { const r = (sel) => (v.resolve && sel in v.resolve ? v.resolve[sel] : res(sel)); assert.equal(moveFocus(G, all, v.from, v.key, r).to, v.to, `${v.from} ${v.key} → ${v.to}`); played++; }   // a vector may give the row its own answers (the face answers them from the feet it stepped)
   assert.ok(played >= 15, "the vectors are played: " + played);
   // the words: verbs of four words or fewer; the plates' verbs and the strings §10 names; nothing amber but full
   for (const k of ["pickUp", "setDown", "swap", "tuck", "bringOut", "breed"]) assert.ok(wordsIn(vv.strings.foot[k]) <= 4, k);
-  assert.deepEqual(Object.values(vv.strings.plate).slice(0, 8), ["Look", "Move", "Take along", "Bring home", "Tuck away", "Bring out", "Breed", "Return"]);
+  assert.deepEqual(Object.values(vv.strings.plate).slice(0, 7), ["Look", "Take along", "Bring home", "Tuck away", "Bring out", "Breed", "Return"]);
   assert.equal(vv.strings.chip.all, "All rooms"); assert.equal(vv.strings.card.only, "your only {Species}"); assert.equal(vv.strings.need.bud, "Full · a bud waits");
   assert.ok(!JSON.stringify(vv.colours).includes("amber")); assert.deepEqual(paletteBad(vv.colours), []); assert.equal(vv.colours.coldVeil, "coldVeil");
 });

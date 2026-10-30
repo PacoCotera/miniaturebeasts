@@ -509,7 +509,7 @@
      32
     ],
     "pitch": 36,
-    "n": 6,
+    "n": 5,
     "verb": 12,
     "role": "plate",
     "held": "plate.held",
@@ -521,7 +521,6 @@
     "edge": "hairline",
     "order": [
      "look",
-     "move",
      "companion",
      "tuck",
      "breed",
@@ -765,33 +764,20 @@
    "fallback": "none",
    "resident": {
     "left": [
-     {
-      "nearestIn": "resident",
-      "ahead": true
-     },
+     "row.prev",
      "none"
     ],
     "right": [
-     {
-      "nearestIn": "resident",
-      "ahead": true
-     },
+     "row.next",
      "plate.first",
      "none"
     ],
     "up": [
-     {
-      "nearestIn": "resident",
-      "ahead": true
-     },
      "room.lit",
      "none"
     ],
     "down": [
-     {
-      "nearestIn": "resident",
-      "ahead": true
-     },
+     "plate.first",
      "none"
     ]
    },
@@ -829,24 +815,33 @@
    },
    "house": {
     "left": [
-     "go.left",
+     "row.prev",
      "none"
     ],
     "right": [
-     "go.right",
+     "row.next",
+     "plate.first",
      "none"
     ],
     "up": [
-     "go.up",
+     "room.lit",
      "none"
     ],
     "down": [
-     "go.down",
+     "plate.first",
      "none"
     ]
    },
    "plate": {
     "axis": "vertical",
+    "up": [
+     {
+      "nearestIn": "plate",
+      "ahead": true
+     },
+     "card.of",
+     "none"
+    ],
     "left": "card.of",
     "right": "none"
    },
@@ -854,24 +849,20 @@
     "axis": "horizontal",
     "up": "none",
     "down": [
-     {
-      "nearestIn": "resident"
-     },
-     "go.down",
+     "row.first",
      "none"
     ]
    }
   },
   "selectors": {
-   "plate.first": "the card's first live plate (Move first), else Look",
+   "plate.first": "the card's first live plate (Look, unless held), else the first plate",
    "room.lit": "the lit chip (the view shown)",
-   "card.of": "the focused mibi's own target in the field (its resident, its house place, its cold box), else the lit chip",
+   "card.of": "the card's mibi's own target in the field wherever it now stands (its resident, its house place, its cold box), else the lit chip",
    "flip.prev": "while carrying: the previous page (Roots, Reeds, Boulders, Ferns of those bought, then the Tucked away pages); a pseudo target the host turns into the flip",
    "flip.next": "the next page, the same",
-   "go.left": "the house view and the Tucked away page (group house): the host's walk: ◀ along the band or the rail, else the previous page while carrying",
-   "go.right": "▶ along the band or the rail; from a band's last mibi the card's first live plate; while carrying the next page",
-   "go.up": "▲ to the band or rail above, onto the nearest mibi (or place while carrying); from the top band the lit chip",
-   "go.down": "▼ to the band or rail below; from a chip the field's first mibi"
+   "row.first": "the card reach rule: the field's ordered row, its first mibi (▼ from the chips). The room view: the present mibis by foot x, ties front first (the larger foot y), on the frame of the key (the face answers it from the feet it has just stepped); the house view: tile by tile in chip order, by foot x within a tile, ties front first; the Tucked away page: box order, top rail then bottom rail (the host answers those)",
+   "row.prev": "the mibi before the ring in the row; none at the first (◀ nudges)",
+   "row.next": "the mibi after the ring in the row; none at the last (▶ goes on to the card's first live plate)"
   },
   "rings": "a resident `feet` (sleepers too; raised 8 px with a carried mibi); a chip, a plate, a house place and a cold box `round`",
   "primitives": "lvgl-switch.md §2.6.1 governs: the edge forms, the order of a move and the integer scores on doubled centres; `axis` walks the group's present targets by index and stops at the ends",
@@ -904,13 +895,13 @@
    },
    "plate": {
     "group": "plate",
-    "id": "plate.<k> (k 0 to 5; plate.incubator on the empty card)",
+    "id": "plate.<k> (k 0 to 4; plate.incubator on the empty card)",
     "shape": {
      "rect": 6
     },
     "box": "the plate's rectangle (regions.card.plates)",
     "lift": 0,
-    "present": "the card of a mibi: its six plates, held ones included (✓ on a held one plays its message plate)"
+    "present": "the card of a mibi: its five plates, held ones included (✓ on a held one plays its message plate)"
    },
    "house": {
     "group": "house",
@@ -926,7 +917,7 @@
   "list": "the order the view lists the targets: the field's (residents, drops, house places, cold boxes), then the chips (the rooms, Add a room, All rooms, Tucked away), then the card's plates",
   "held": "while events.look or events.back holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends)",
   "layout": {
-   "note": "the targets the vectors are played on: the room view of twelve (Roots), four residents and two sleepers, the chip row of two rooms, and the card's six plates",
+   "note": "the targets the vectors are played on: the room view of twelve (Roots), four residents and two sleepers, the chip row of two rooms, and the card's five plates",
    "resident.bean": [
     40,
     300,
@@ -1022,52 +1013,80 @@
     408,
     272,
     32
-   ],
-   "plate.5": [
-    720,
-    444,
-    272,
-    32
    ]
   },
   "vectors": [
    {
     "from": "resident.bean",
     "key": "right",
-    "to": "resident.dot"
+    "to": "resident.dot",
+    "resolve": {
+     "row.next": "resident.dot"
+    },
+    "note": "the row: the next mibi by foot x"
    },
    {
     "from": "resident.bean",
     "key": "left",
-    "to": "resident.bean"
+    "to": "resident.bean",
+    "note": "the first of the row: the ring stays (the face nudges it)"
    },
    {
     "from": "resident.bean",
     "key": "up",
     "to": "room.0",
-    "note": "nothing above: the lit chip"
+    "note": "▲ from any mibi: the lit chip"
+   },
+   {
+    "from": "resident.bean",
+    "key": "down",
+    "to": "plate.0",
+    "note": "▼ from any mibi: its card's first live plate"
    },
    {
     "from": "resident.dot",
     "key": "left",
-    "to": "resident.bean"
+    "to": "resident.bean",
+    "resolve": {
+     "row.prev": "resident.bean"
+    }
+   },
+   {
+    "from": "resident.dot",
+    "key": "down",
+    "to": "plate.0",
+    "note": "a middle mibi reaches its own card in one press"
    },
    {
     "from": "resident.fig",
     "key": "right",
-    "to": "resident.burr"
+    "to": "resident.burr",
+    "resolve": {
+     "row.next": "resident.burr"
+    }
    },
    {
     "from": "resident.burr",
     "key": "right",
-    "to": "plate.1",
-    "note": "nothing ahead: the card's first live plate (Move)"
+    "to": "plate.0",
+    "note": "the last of the row: the card's first live plate (Look)"
    },
    {
-    "from": "plate.1",
+    "from": "plate.2",
     "key": "left",
     "to": "resident.bean",
-    "note": "the card's mibi: card.of"
+    "note": "◀ from any plate: the card's mibi (card.of)"
+   },
+   {
+    "from": "plate.0",
+    "key": "up",
+    "to": "resident.bean",
+    "note": "▲ from the top plate: the card's mibi"
+   },
+   {
+    "from": "plate.2",
+    "key": "up",
+    "to": "plate.1"
    },
    {
     "from": "plate.1",
@@ -1075,14 +1094,15 @@
     "to": "plate.2"
    },
    {
-    "from": "plate.0",
-    "key": "up",
-    "to": "plate.0"
+    "from": "plate.4",
+    "key": "down",
+    "to": "plate.4",
+    "note": "the last plate: the ring stays (the face nudges it)"
    },
    {
-    "from": "plate.5",
-    "key": "down",
-    "to": "plate.5"
+    "from": "plate.3",
+    "key": "right",
+    "to": "plate.3"
    },
    {
     "from": "room.0",
@@ -1123,18 +1143,24 @@
     "from": "room.0",
     "key": "down",
     "to": "resident.bean",
-    "note": "▼ into the field, onto the nearest mibi"
+    "note": "▼ into the field, onto the row's first mibi"
    },
    {
     "from": "resident.pip",
     "key": "right",
-    "to": "resident.sorrel"
+    "to": "resident.sorrel",
+    "resolve": {
+     "row.next": "resident.sorrel"
+    }
    }
   ],
   "resolveFor": {
-   "plate.first": "plate.1",
+   "plate.first": "plate.0",
    "room.lit": "room.0",
-   "card.of": "resident.bean"
+   "card.of": "resident.bean",
+   "row.first": "resident.bean",
+   "row.prev": "",
+   "row.next": ""
   }
  },
  "keys": {
@@ -1282,7 +1308,6 @@
    "breed": "Breed {a} and {b}",
    "plate": {
     "look": "Look at {name}",
-    "move": "Pick up {name}",
     "takealong": "Take {name} along",
     "bringhome": "Bring {name} home",
     "tuck": "Tuck {name} away ⚡{p}",
@@ -1294,7 +1319,6 @@
   },
   "plate": {
    "look": "Look",
-   "move": "Move",
    "takealong": "Take along",
    "bringhome": "Bring home",
    "tuck": "Tuck away",

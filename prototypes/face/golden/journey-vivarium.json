@@ -336,6 +336,23 @@
     "back": "Home"
    },
    {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "plate.0"
+     }
+    ],
+    "screen": "vivarium",
+    "state": "rest",
+    "ring": "plate.0",
+    "ok": "Look at Burr",
+    "price": null,
+    "subject": "",
+    "back": "Home"
+   },
+   {
     "key": "confirm",
     "said": [
      {
@@ -941,42 +958,6 @@
      {
       "t": "focus",
       "screen": "vivarium",
-      "target": "resident.7"
-     }
-    ],
-    "screen": "vivarium",
-    "view": "room",
-    "room": "roots",
-    "focus": "resident.7",
-    "carry": null,
-    "ok": "Pick up Wren",
-    "subject": "",
-    "back": "Home"
-   },
-   {
-    "key": "up",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "resident.9"
-     }
-    ],
-    "screen": "vivarium",
-    "view": "room",
-    "room": "roots",
-    "focus": "resident.9",
-    "carry": null,
-    "ok": "Pick up Sorrel",
-    "subject": "",
-    "back": "Home"
-   },
-   {
-    "key": "up",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
       "target": "room.0"
      }
     ],
@@ -1121,6 +1102,24 @@
      {
       "t": "focus",
       "screen": "vivarium",
+      "target": "resident.2"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "room",
+    "room": "roots",
+    "focus": "resident.2",
+    "carry": null,
+    "ok": "Pick up Moss",
+    "subject": "",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
       "target": "resident.7"
      }
     ],
@@ -1139,15 +1138,15 @@
      {
       "t": "focus",
       "screen": "vivarium",
-      "target": "plate.1"
+      "target": "plate.0"
      }
     ],
     "screen": "vivarium",
     "view": "room",
     "room": "roots",
-    "focus": "plate.1",
+    "focus": "plate.0",
     "carry": null,
-    "ok": "Pick up Wren",
+    "ok": "Look at Wren",
     "subject": "",
     "back": "Home"
    },
@@ -1170,21 +1169,93 @@
     "back": "Home"
    },
    {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "resident.2"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "room",
+    "room": "roots",
+    "focus": "resident.2",
+    "carry": null,
+    "ok": "Pick up Moss",
+    "subject": "",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "plate.0"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "room",
+    "room": "roots",
+    "focus": "plate.0",
+    "carry": null,
+    "ok": "Look at Moss",
+    "subject": "",
+    "back": "Home"
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "resident.2"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "room",
+    "room": "roots",
+    "focus": "resident.2",
+    "carry": null,
+    "ok": "Pick up Moss",
+    "subject": "",
+    "back": "Home"
+   },
+   {
     "key": "confirm",
     "said": [
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "resident.7",
+      "target": "resident.2",
       "verb": "confirm"
      }
     ],
     "screen": "vivarium",
     "view": "room",
     "room": "roots",
+    "focus": "resident.2",
+    "carry": "2",
+    "ok": "Set Moss down",
+    "subject": "",
+    "back": "Put back"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "resident.7"
+     }
+    ],
+    "screen": "vivarium",
+    "view": "room",
+    "room": "roots",
     "focus": "resident.7",
-    "carry": "7",
-    "ok": "Set Wren down",
+    "carry": "2",
+    "ok": "Swap Moss and Wren",
     "subject": "",
     "back": "Put back"
    },
@@ -1201,8 +1272,8 @@
     "view": "room",
     "room": "reeds",
     "focus": "drop.5",
-    "carry": "7",
-    "ok": "Set Wren down",
+    "carry": "2",
+    "ok": "Set Moss down",
     "subject": "",
     "back": "Put back"
    },
@@ -1219,9 +1290,9 @@
     "screen": "vivarium",
     "view": "room",
     "room": "reeds",
-    "focus": "resident.7",
+    "focus": "resident.2",
     "carry": null,
-    "ok": "Pick up Wren",
+    "ok": "Pick up Moss",
     "subject": "",
     "back": "Home"
    },
@@ -1231,16 +1302,16 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "resident.7",
+      "target": "resident.2",
       "verb": "room:habitat"
      }
     ],
     "screen": "vivarium",
     "view": "house",
     "room": null,
-    "focus": "house.7",
+    "focus": "house.2",
     "carry": null,
-    "ok": "Pick up Wren",
+    "ok": "Pick up Moss",
     "subject": "",
     "back": "Home"
    },
@@ -1250,57 +1321,39 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "house.7",
+      "target": "house.2",
       "verb": "room:habitat"
      }
     ],
     "screen": "vivarium",
     "view": "room",
     "room": "reeds",
-    "focus": "resident.7",
+    "focus": "resident.2",
     "carry": null,
-    "ok": "Pick up Wren",
+    "ok": "Pick up Moss",
     "subject": "",
     "back": "Home"
    },
    {
-    "key": "right",
+    "key": "down",
     "said": [
      {
       "t": "focus",
       "screen": "vivarium",
-      "target": "resident.13"
+      "target": "plate.0"
      }
     ],
     "screen": "vivarium",
     "view": "room",
     "room": "reeds",
-    "focus": "resident.13",
+    "focus": "plate.0",
     "carry": null,
-    "ok": "Pick up Lori",
+    "ok": "Look at Moss",
     "subject": "",
     "back": "Home"
    },
    {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "resident.14"
-     }
-    ],
-    "screen": "vivarium",
-    "view": "room",
-    "room": "reeds",
-    "focus": "resident.14",
-    "carry": null,
-    "ok": "Pick up Miri",
-    "subject": "",
-    "back": "Home"
-   },
-   {
-    "key": "right",
+    "key": "down",
     "said": [
      {
       "t": "focus",
@@ -1313,7 +1366,7 @@
     "room": "reeds",
     "focus": "plate.1",
     "carry": null,
-    "ok": "Pick up Miri",
+    "ok": "Take Moss along",
     "subject": "",
     "back": "Home"
    },
@@ -1331,25 +1384,7 @@
     "room": "reeds",
     "focus": "plate.2",
     "carry": null,
-    "ok": "Take Miri along",
-    "subject": "",
-    "back": "Home"
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "plate.3"
-     }
-    ],
-    "screen": "vivarium",
-    "view": "room",
-    "room": "reeds",
-    "focus": "plate.3",
-    "carry": null,
-    "ok": "Tuck Miri away ⚡2",
+    "ok": "Tuck Moss away ⚡2",
     "subject": "",
     "back": "Home"
    },
@@ -1359,7 +1394,7 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "plate.3",
+      "target": "plate.2",
       "verb": "confirm"
      }
     ],
@@ -1485,43 +1520,7 @@
   ],
   "vivarium-whole": [
    {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "resident.7"
-     }
-    ],
-    "screen": "vivarium",
-    "view": "room",
-    "room": "roots",
-    "focus": "resident.7",
-    "carry": null,
-    "ok": "Pick up Wren",
-    "subject": "",
-    "back": "Home"
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "vivarium",
-      "target": "plate.1"
-     }
-    ],
-    "screen": "vivarium",
-    "view": "room",
-    "room": "roots",
-    "focus": "plate.1",
-    "carry": null,
-    "ok": "Pick up Wren",
-    "subject": "",
-    "back": "Home"
-   },
-   {
-    "key": "up",
+    "key": "down",
     "said": [
      {
       "t": "focus",
@@ -1534,7 +1533,7 @@
     "room": "roots",
     "focus": "plate.0",
     "carry": null,
-    "ok": "Look at Wren",
+    "ok": "Look at Moss",
     "subject": "",
     "back": "Home"
    },
@@ -1553,8 +1552,8 @@
     "room": null,
     "focus": "vivarium",
     "carry": null,
-    "ok": "Greet Wren",
-    "subject": "An adult Loika",
+    "ok": "Greet Moss",
+    "subject": "A young Loika",
     "back": "Vivarium"
    },
    {
@@ -1577,9 +1576,9 @@
     "screen": "vivarium",
     "view": "room",
     "room": "roots",
-    "focus": "resident.7",
+    "focus": "resident.2",
     "carry": null,
-    "ok": "Pick up Wren",
+    "ok": "Pick up Moss",
     "subject": "",
     "back": "Home"
    },
@@ -1589,7 +1588,7 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "resident.7",
+      "target": "resident.2",
       "verb": "back"
      }
     ],
@@ -1608,9 +1607,9 @@
     "screen": "vivarium",
     "view": "room",
     "room": "roots",
-    "focus": "resident.7",
+    "focus": "resident.2",
     "carry": null,
-    "ok": "Pick up Wren",
+    "ok": "Pick up Moss",
     "subject": "",
     "back": "Home"
    },
@@ -1639,9 +1638,9 @@
     "screen": "vivarium",
     "view": "room",
     "room": "roots",
-    "focus": "resident.7",
+    "focus": "resident.2",
     "carry": null,
-    "ok": "Pick up Wren",
+    "ok": "Pick up Moss",
     "subject": "",
     "back": "Home"
    }

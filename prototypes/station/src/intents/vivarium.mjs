@@ -4,7 +4,7 @@
 import * as S from "../state.mjs";
 import { openPanel } from "./panel.mjs";
 import { fill } from "../views/words.mjs";
-import { vivariumBuild, idOf, pagesOf, partnersOf, platesOf, PER_PAGE } from "../views/vivarium-props.mjs";
+import { vivariumBuild, idOf, pagesOf, partnersOf, platesOf, pickHeld, PER_PAGE } from "../views/vivarium-props.mjs";
 import { roomData } from "../views/room-props.mjs";
 
 export const newViv = () => ({ f: null, prev: null, view: "room", page: 0, carry: null, pick: null, last: null });
@@ -43,7 +43,7 @@ function flip(h, d) {
   void n;
 }
 function landCold(h, d) {
-  const v = viv(h), b = build(h), t = b.props.focus.targets.filter((x) => x.group === "house");
+  const v = viv(h), b = build(h), t = b.props.focus.targets.filter((x) => x.group === "house" || (x.group === "hand" && /^tucked\./.test(x.id)));
   v.f = t.find((x) => x.id === "tucked.here")?.id ?? (t.length ? (d > 0 ? t[0] : t[t.length - 1]).id : null);
   if (!v.f) v.f = b.props.focus.cur;
 }
@@ -52,8 +52,8 @@ function landCold(h, d) {
 function pickUp(h, m) {
   const v = viv(h), st = h.st, room = st.face?.room ?? 0;
   if (!m || m.released) return;
-  const p = platesOf(st, h.sv, m, h.settings, Sg(h), S.docked(st)), held = S.inStore(m) ? p.find((x) => x.act === "bringOut") : p.find((x) => x.act === "move");
-  if (held && held.held) { heldSay(h, held, m); return; }
+  const held = pickHeld(st, h.sv, m, h.settings, Sg(h), S.docked(st));
+  if (held) { heldSay(h, held, m); return; }
   v.carry = { id: m.id, kind: S.inStore(m) ? "out" : "move", room: m.room ?? null, view: v.view, page: v.page | 0, from: room };
   v.pick = null; v.f = null;
   const b = build(h); v.f = b.props.focus.cur;
@@ -115,7 +115,6 @@ function plateDo(h, target) {
   if (p.held) { heldSay(h, p, m); return; }   // the house rule: ✓ on a held plate plays its message plate
   switch (p.act) {
     case "look": { h.ui.hab.id = m.id; h.ui.hab.f = S.isCarried(st, h.sv, m) ? "name" : "resident"; v.last = m.id; v.f = null; const ev = h.specs.vivarium.events.look; h.goto("habitat", motion(h) ? ev.hold : 0); return; }
-    case "move": pickUp(h, m); return;
     case "bringOut": pickUp(h, m); return;
     case "takeAlong": { const r = S.carryAdd(st, h.sv, m); if (r.ok) h.save(); return; }
     case "bringHome": { const r = S.carryHome(st, h.sv, m); if (r.ok) h.save(); return; }

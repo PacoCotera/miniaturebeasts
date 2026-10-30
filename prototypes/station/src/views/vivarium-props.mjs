@@ -64,14 +64,21 @@ export function partnersOf(st, sv, a, settings) {
 // turns until a young one grows up (null when it does not)
 const youngTurns = (st, m, settings) => { const aT = settings.adultTurns ?? S.JUVENILE_TURNS; return m.bonded && m.grownTurn == null ? null : Math.max(1, (m.born | 0) + aT - S.stageTurn(st, m)); };
 
-// The card's six plates (§2; manager-props plates as built): { id, act, verb, price, held, why, plate (the message plate's key when held) }
+// What holds a pick up (✓ on a mibi, §3): the message plate's { held, why, plate } for a traveller, one coming out or one tucked away (whose pick up is its Bring out), else null. The card has no Move plate (the sign-off of the build: five plates)
+export function pickHeld(st, sv, m, settings, Sg, docked) {
+  if (S.inStore(m)) { const p = platesOf(st, sv, m, settings, Sg, docked).find((x) => x.act === "bringOut"); return p && p.held ? p : null; }
+  const W = Sg.why, w = whereOf(st, sv, m), nB = S.backIn(st, m);
+  if (w === "carried") return { held: true, why: W.onboard, plate: "onboard" };
+  if (w === "coming") return { held: true, why: nB === 1 ? W.comingOne : fill(W.coming, { n: nB }), plate: "coming" };
+  return null;
+}
+// The card's five plates (§2 with the build's sign-off: Look · Take along / Bring home · Tuck away / Bring out · Breed · Return; manager-props plates as built): { id, act, verb, price, held, why, plate (the message plate's key when held) }
 export function platesOf(st, sv, m, settings, Sg, docked) {
   const W = Sg.why, P = Sg.plate, w = whereOf(st, sv, m), stage = S.mibiStage(st, m, settings), Room = m.room != null ? S.ROOM_NAMES[m.room] : "", nB = S.backIn(st, m);
   const held = (why, plate) => ({ held: true, why, plate });
   const coming = held(nB === 1 ? W.comingOne : fill(W.coming, { n: nB }), "coming"), onboard = held(W.onboard, "onboard"), tucked = held(W.tucked, "tucked");
   const out = [];
   out.push({ act: "look", verb: P.look, price: "", held: false, why: "" });
-  { let h = null; if (w === "carried") h = onboard; else if (w === "coming") h = coming; else if (w === "store") h = tucked; else if (S.roomCount(st, settings) < 2 && S.inRoom(st, m.room).length < S.ROOM) h = null; out.push({ act: "move", verb: P.move, price: "", ...(h ?? { held: false, why: "" }) }); }
   { const proj = S.projectCarried(st, sv);
     if (w === "carried") out.push({ act: "bringHome", verb: P.bringhome, price: "", ...(docked ? { held: false, why: fill(W.home, { Room }) } : held(W.homeAway, "away")) });
     else { let h = null; if (w === "store") h = tucked; else if (w === "coming") h = coming; else if (!docked) h = held(W.takeOut, "out"); else if (proj.length >= S.CARRY_MAX) h = held(W.takeFull, "take");
@@ -98,12 +105,12 @@ export function platesOf(st, sv, m, settings, Sg, docked) {
     out.push({ act: "return", verb: P.return, price: "", ...(h ?? { held: false, why: "" }) }); }
   return out.map((p, k) => ({ id: "plate." + k, ...p }));
 }
-const firstLive = (plates) => (plates.find((p) => p.act === "move" && !p.held) ?? plates.find((p) => !p.held) ?? plates[0])?.id ?? null;
+const firstLive = (plates) => (plates.find((p) => !p.held) ?? plates[0])?.id ?? null;   // the card reach rule: ▼ from a mibi lands on its first live plate (Look)
 
 // The state line of the card (§2, §6): its one state's words, or "" (young has no word; an adult with nothing to report has no line)
 function stateWords(st, sv, m, settings, Sg) {
   const key = markOf(st, sv, m, settings, true), T = Sg.state;
-  if (S.inStore(m)) return fill(T.tucked, { n: m.tucked.turn | 0 });
+  if (S.inStore(m)) return fill(T.tucked, { n: (m.tucked.turn | 0) + 1 });   // the turn as the top bar counts it (the rules count from 0)
   if (key === "companionAway") return T.away; if (key === "companionDocked") return T.docked;
   if (key === "comingOut") { const n = S.backIn(st, m); return n === 1 ? T.comingOne : fill(T.coming, { n }); }
   if (key === "bonded") return T.bonded; if (key === "elder") return T.elder;
@@ -154,8 +161,8 @@ export function vivariumBuild(m, spec, frame, home, pods) {
     const items = tuckedList.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE).map((mb) => ({ id: String(mb.id), name: mb.name, picture: variant(mb, W96, "vivarium", "cold"), figure: figureOf(st, mb, W96, settings, "vivarium") ?? [0, 0, W96[0], W96[1]] }));
     const here = !!carry && carry.kind !== "out" && items.length < PER_PAGE && page === Math.floor(tuckedList.length / PER_PAGE);
     regions.tucked = { page, pages: Math.max(nPages, here ? page + 1 : 1), items, here };
-    for (const it of items) add("tucked." + it.id, "house");
-    if (here) add("tucked.here", "house");
+    for (const it of items) add("tucked." + it.id, carry ? "hand" : "house");   // while carrying the hand walks the page in 2D (§3 as built); at rest the page is one row (the card reach rule)
+    if (here) add("tucked.here", "hand");
     regions["window"] = { picture: "" };
   } else {
     const bands = [];
@@ -173,7 +180,8 @@ export function vivariumBuild(m, spec, frame, home, pods) {
       if (tuckedList.length > PER_PAGE) places.push({ id: "house.more", state: "more", picture: "", mark: "", more: fill(Sg.band.more, { n: tuckedList.length - HOUSE_SHOWN }) });
       bands.push({ kind: "cold", name: Sg.band.tucked, count: String(tuckedList.length), full: false, places, mark: markPic("tucked") }); }
     regions.house = { bands };
-    bands.forEach((b, j) => { for (const p of b.places) if (p.id) add(p.id, "house", { band: j }); if (b.kind === "add" && b.name && !carry) add("house.add", "house", { band: j }); if (b.kind === "cold" && carry && carry.kind !== "out" && !S.inStore(cm)) add("house.cold", "house", { band: j }); });
+    const g = carry ? "hand" : "house";
+    bands.forEach((b, j) => { for (const p of b.places) if (p.id) add(p.id, g, { band: j }); if (b.kind === "add" && b.name && !carry) add("house.add", g, { band: j }); if (b.kind === "cold" && carry && carry.kind !== "out" && !S.inStore(cm)) add("house.cold", g, { band: j }); });
     regions["window"] = { picture: "" };
   }
   // the flips while carrying: the previous and next pages (§3), pseudo targets the host turns into the flip
@@ -201,17 +209,20 @@ export function vivariumBuild(m, spec, frame, home, pods) {
   if (m.focus && (has(m.focus) || /^plate\./.test(m.focus))) cur = m.focus;
   else if (focusId != null) cur = targetOf(focusId);
   if (!cur && m.focus == null && m.seen != null) cur = targetOf(m.seen);
-  if (!cur && carry) cur = targetOf(carry.id) ?? targets.find((t) => t.group === "hand" || t.id === "tucked.here" || t.id === "house.cold")?.id ?? null;
+  if (!cur && carry) cur = targetOf(carry.id) ?? targets.find((t) => t.group === "hand")?.id ?? null;
   if (!cur && !all.length) cur = "plate.incubator";
   if (!cur) cur = view === "room" && state === "empty" ? lit : firstMibi ?? lit;
 
   // ---- the card ----
-  const cid = cardFrom(cur), entryMibi = idOf((m.seen != null ? targetOf(m.seen) : null) ?? firstMibi), cmb = cid != null ? S.mibiById(st, cid) : m.last != null ? S.mibiById(st, m.last) : entryMibi != null ? S.mibiById(st, entryMibi) : null;   // the card keeps the last mibi seen
+  // the card keeps the last mibi seen (§7): the one under the ring, else the last the card showed, else the one last seen up close, else the first of the house (an empty room on the way in: the card is never blank while there is a mibi)
+  const cid = cardFrom(cur), entryMibi = idOf((m.seen != null ? targetOf(m.seen) : null) ?? firstMibi), byId = (id) => { const x = id != null ? S.mibiById(st, id) : null; return x && !x.released ? x : null; };
+  const houseFirst = () => { for (let i = 0; i < nRooms; i++) { const r = S.inRoom(st, i).slice().sort((a, b) => (a.slot ?? 0) - (b.slot ?? 0)); if (r.length) return r[0]; } return tuckedList[0] ?? all[0] ?? null; };
+  const cmb = cid != null ? byId(cid) : byId(m.last) ?? byId(entryMibi) ?? byId(m.seen) ?? houseFirst();
   let card, plates = [];
   if (!all.length) {
     card = { state: "empty", name: Sg.card.empty, looks: [], mark: "", words: "", picture: "", plates: [{ id: "plate.incubator", verb: Sg.plate.incubator, price: "", held: false }], why: Sg.why.incubator };
     plates = [{ id: "plate.incubator", act: "incubator", verb: Sg.plate.incubator, price: "", held: false, why: Sg.why.incubator }];
-  } else if (cmb && !cmb.released) {
+  } else if (cmb) {
     plates = platesOf(st, sv, cmb, settings, Sg, docked);
     const mk = S.inStore(cmb) ? "tucked" : markOf(st, sv, cmb, settings, true);
     card = { state: "mibi", id: String(cmb.id), name: cmb.name, looks: looksLine(st, cmb, Sg), mark: markPic(mk), words: stateWords(st, sv, cmb, settings, Sg), picture: pic(cmb, C144, "vivariumCard"), figure: figureOf(st, cmb, C144, settings, "vivariumCard") ?? [0, 0, C144[0], C144[1]],
@@ -227,7 +238,7 @@ export function vivariumBuild(m, spec, frame, home, pods) {
   resolve["card.of"] = (card.id && targetOf(+card.id)) || lit;
   if (has("flip.prev")) resolve["flip.prev"] = "flip.prev"; if (has("flip.next")) resolve["flip.next"] = "flip.next";
   const nav = { pages, at, targets, plates, lit };
-  if (view !== "room") Object.assign(resolve, goOf({ view, cur, targets, regions, carry, chips, lit, plateFirst: resolve["plate.first"], shown: page }));
+  if (view !== "room" && !carry) Object.assign(resolve, rowOf(cur, targets));   // the room view's row is the face's (by the feet it has just stepped)
 
   // ---- the pick of two and the carry, for the face ----
   if (pick && pa) regions.pick = { id: String(pa.id) };
@@ -246,29 +257,11 @@ export function vivariumBuild(m, spec, frame, home, pods) {
   return { props, line, requests, top: {}, nav: { ...nav, cur, card: card.id != null ? +card.id : null } };
 }
 
-// The house view's and the cold page's walk (§5, §3): the go.* selectors for the target under the ring, by band (or rail) and place
-function goOf({ view, cur, targets, regions, carry, chips, lit, plateFirst }) {
-  const out = {}, field = targets.filter((t) => t.group === "house");
-  const posOf = (id) => {
-    if (view === "tucked") { const T = regions.tucked, i = id === "tucked.here" ? T.items.length : T.items.findIndex((x) => "tucked." + x.id === id); return i < 0 ? null : { row: i >> 2, col: i & 3 }; }
-    const B = regions.house.bands; for (let j = 0; j < B.length; j++) { if ((id === "house.add" && B[j].kind === "add") || (id === "house.cold" && B[j].kind === "cold")) return { row: j, col: id === "house.cold" ? Math.min(B[j].places.length, 7) : 0 }; const k = B[j].places.findIndex((p) => p.id === id); if (k >= 0) return { row: j, col: k }; }
-    return null; };
-  const items = field.map((t) => ({ id: t.id, ...posOf(t.id) })).filter((t) => t.row != null);
-  const here = items.find((t) => t.id === cur);
-  const near = (row, col) => { const inRow = items.filter((t) => t.row === row); return inRow.length ? inRow.reduce((b, t) => (Math.abs(t.col - col) < Math.abs(b.col - col) ? t : b)).id : null; };
-  if (here) {
-    const left = items.filter((t) => t.row === here.row && t.col < here.col).sort((a, b) => b.col - a.col)[0]?.id, right = items.filter((t) => t.row === here.row && t.col > here.col).sort((a, b) => a.col - b.col)[0]?.id;
-    const rows = [...new Set(items.map((t) => t.row))].sort((a, b) => a - b), up = rows.filter((r) => r < here.row).pop(), down = rows.find((r) => r > here.row);
-    out["go.left"] = left ?? (targets.some((t) => t.id === "flip.prev") ? "flip.prev" : "");
-    out["go.right"] = right ?? (targets.some((t) => t.id === "flip.next") ? "flip.next" : carry ? "" : plateFirst);
-    out["go.up"] = up != null ? near(up, here.col) : carry ? "" : lit;
-    out["go.down"] = down != null ? near(down, here.col) : "";
-  } else if (/^room\./.test(cur ?? "")) {   // ▼ from a chip: the field's nearest mibi under it (the chip's centre against the places')
-    const i = chips.findIndex((c) => "room." + c.id === cur), cx = i < 4 ? 16 + 136 * i + 64 : i === chips.length - 1 ? 856 : 624, top = items.filter((t) => t.row === Math.min(...items.map((q) => q.row)));
-    const colX = (t) => (view === "tucked" ? [64, 224, 384, 544][t.col] + 48 : 58 + 84 * t.col);
-    out["go.down"] = top.length ? top.reduce((b, t) => (Math.abs(colX(t) - cx) < Math.abs(colX(b) - cx) ? t : b)).id : "";
-  }
-  return out;
+// The card reach rule (the build's sign-off, for the house view and the Tucked away page at rest): the field is one ordered row (the view's listing: tile by tile in chip order and by foot x within a tile; the cold page in box order,
+// top rail then bottom rail); row.prev and row.next are the mibis before and after the ring ("" at the ends: ◀ nudges, ▶ goes to the card), row.first the row's first (▼ from the chips)
+function rowOf(cur, targets) {
+  const row = targets.filter((t) => t.group === "house").map((t) => t.id), i = row.indexOf(cur);
+  return { "row.first": row[0] ?? "", "row.prev": i > 0 ? row[i - 1] : "", "row.next": i >= 0 && i < row.length - 1 ? row[i + 1] : "" };
 }
 
 // The why line (§2, §3's table, §5): only when it adds something
@@ -309,14 +302,15 @@ function lineOf({ st, sv, settings, Sg, cur, carry, cm, pick, pa, plates, card, 
     else if (o) line.ok = out || S.swapBlock(st, sv, cm, o)?.key === "carried" || S.swapBlock(st, sv, cm, o)?.key === "coming" ? null : fill(F.swap, { a: cm.name, b: o.name });
     return line;
   }
+  if (pick && pa) line.backWide = true;   // Drop the pick: wider than the frame's one-word slot (frame.json regions.back.wide)
   if (pick && pa) { const o = S.mibiById(st, idOf(cur)), p = o && partnersOf(st, sv, pa, settings).ranked.find((q) => q.m.id === o.id); line.ok = p ? fill(F.breed, { a: pa.name, b: o.name }) : null; return line; }
   if (cur === "room.new") { const p = S.roomPrice(st, settings), block = S.addRoomBlock(st, settings); line.ok = Sg.newRoom.action; line.price = S.priceText(p, 0, 0); if (block) { const icons = S.shortIcons(st, p, 0, 0); line.dim = true; line.short = icons; line.need = fill(pods.strings.needMoreFrom[S.shortFrom(st, p, 0, 0)], { icons }); } return line; }
   if (cur === "house.add") { const p = S.roomPrice(st, settings); if (p != null) { line.ok = Sg.newRoom.action; line.price = S.priceText(p, 0, 0); } return line; }
   if (cur === "house.more" || /^room\./.test(cur ?? "") || /^flip\./.test(cur ?? "")) return line;
   if (cur === "plate.incubator") { line.ok = F.plate.incubator; return line; }
   const p = plates.find((x) => x.id === cur);
-  if (p) { if (p.held) return line; const key = { look: "look", move: "move", takeAlong: "takealong", bringHome: "bringhome", tuckAway: "tuck", bringOut: "out", breed: "breed", return: "return" }[p.act]; line.ok = fill(F.plate[key], { name: card.name, p: priceFig(p.price) }); return line; }
-  const o = S.mibiById(st, idOf(cur)); if (o) { const mv = platesOf(st, sv, o, settings, Sg, S.docked(st)).find((x) => x.act === (S.inStore(o) ? "bringOut" : "move")); if (!mv || !mv.held) line.ok = fill(F.pickUp, { name: o.name }); }   // held (a traveller, one coming out): no ✓, the message plate
+  if (p) { if (p.held) return line; const key = { look: "look", takeAlong: "takealong", bringHome: "bringhome", tuckAway: "tuck", bringOut: "out", breed: "breed", return: "return" }[p.act]; line.ok = fill(F.plate[key], { name: card.name, p: priceFig(p.price) }); return line; }
+  const o = S.mibiById(st, idOf(cur)); if (o && !pickHeld(st, sv, o, settings, Sg, S.docked(st))) line.ok = fill(F.pickUp, { name: o.name });   // held (a traveller, one coming out): no ✓, the message plate
   return line;
 }
 const priceFig = (s) => String(s ?? "").replace(/[^0-9]/g, "");

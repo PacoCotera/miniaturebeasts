@@ -223,6 +223,7 @@ void screens_key_graph(int code, const char *spec, const char *graph_path, scree
   int glen; const char *graph = spec_raw(spec, graph_path, &glen); char err[200];
   focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
   focus_resolve_t r[16]; int nr = 0;
+  if (opts->own) nr = opts->own(t, n, cur, r, 8);
   if (opts->resolve) for (int i = 0, m = spec_len("props", "focus.resolve"); i < m && nr < 16; i++) { if (spec_member("props", "focus.resolve", i, r[nr].sel, sizeof r[nr].sel, r[nr].id, sizeof r[nr].id)) nr++; }
   int roomAt[4]; if (opts->room_at) v_srect(spec, opts->room_at, roomAt);
   char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, opts->room_at ? roomAt : NULL, to, sizeof to); focus_graph_free(g);
