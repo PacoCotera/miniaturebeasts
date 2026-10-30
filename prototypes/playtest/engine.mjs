@@ -54,7 +54,7 @@ export async function boot({ seed = 1, save = null, settings = {}, names = null,
     rgba: () => f.rgba(),
     render(file) { const png = encodePNG(1024, 600, f.rgba(), 6); if (file) writeFileSync(file, png); return png; },
     // the save as stored (to resume a standing player) and the developer settings
-    save: () => globalThis.localStorage.getItem("mb-save-v8"),
+    save: () => globalThis.localStorage.getItem(game.saveKey()),
     props: () => (CORE.lastProps ? JSON.parse(CORE.lastProps) : null),
     log: () => CORE.lastLog,
     // the rules' state, for the parity test only (never shown to a player)

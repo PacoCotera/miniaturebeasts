@@ -551,7 +551,7 @@ s = await st(); const adults = await adultIds(), adult2 = s.mibis.find((m) => !m
 await page.evaluate((id) => window.__st.returnMibi(id), adult2.id);   // the rule, to free a place
 s = await st(); expect(s.mibis.find((m) => m.id === adult2.id).released, "a second adult returned to free a place");
 const dot = s.mibis.find((m) => m.name === "Dot"), adult3 = s.mibis.find((m) => !m.released && m.id !== dot.id && adults.includes(m.id));
-const carriedBefore = await page.evaluate((id) => { const S = window.__st, was = JSON.stringify([S.SV.carried ?? null, S.SV.with ?? null]); S.SV.carried = (S.SV.carried ?? []).filter((x) => x !== id); if (S.SV.with === id) S.SV.with = null; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); return was; }, dot.id);   // R4b: no breeding while a mibi is carried, so Dot is brought home first (the Companion's part is put back before the save is read back)
+const carriedBefore = await page.evaluate((id) => { const S = window.__st, was = JSON.stringify([S.SV.carried ?? null, S.SV.with ?? null]); S.SV.carried = (S.SV.carried ?? []).filter((x) => x !== id); if (S.SV.with === id) S.SV.with = null; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); return was; }, dot.id);   // R4b: no breeding while a mibi is carried, so Dot is brought home first (the Companion's part is put back before the save is read back)
 await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "cross"; window.__st.goto("habitat"); }, dot.id); await page.waitForTimeout(300);
 await intent({ screen: "habitat", target: "cross", verb: "confirm" }, 300);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "habitat", "✓ on the shut Cross module stays up close (doorOpen(cross) false until slot 7)");
@@ -572,7 +572,7 @@ expect(fc.traits.filter((t) => t.kind === "switch").every((t) => t.seeds.length 
   await page.waitForTimeout(400); s = await st();
   expect(s.bud && s.bud.kind === "cross" && s.bud.parents.length === 2 && s.bud.parents[0].id === dot.id, "the child grows in the bud with its real parents");
   expect(s.e === e3 - 2 && s.s === s3 - 4, "paid 2 ⚡ 4 ❀"); }
-await page.evaluate((was) => { const S = window.__st, [c, w] = JSON.parse(was); if (c === null) delete S.SV.carried; else S.SV.carried = c; if (w === null) delete S.SV.with; else S.SV.with = w; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); }, carriedBefore);   // the Companion's part as it was (see M4): Dot goes with the Companion again
+await page.evaluate((was) => { const S = window.__st, [c, w] = JSON.parse(was); if (c === null) delete S.SV.carried; else S.SV.carried = c; if (w === null) delete S.SV.with; else S.SV.with = w; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); }, carriedBefore);   // the Companion's part as it was (see M4): Dot goes with the Companion again
 await page.evaluate(() => window.__st.skipBud("ready"));
 { const k = await page.evaluate(() => { const b = window.__st.ST.bud, fr = window.__st.frameOf(b.species || b.sp); return { known: fr.chapters.map((c) => c.id).filter((c) => window.__st.budKnown(c)), read: b.read || [] }; });
   expect(JSON.stringify([...k.known].sort()) === JSON.stringify([...k.read].sort()), "the cross bud's known chapters are exactly its B.read (the unread ones stay '?') before Open: " + JSON.stringify(k)); }
@@ -714,7 +714,7 @@ const benchIdle = () => page.waitForFunction(() => !window.__st.holding(), null,
   await frameShot("page-bench-away", true);
   r = await bpress("research", 500); expect(r.u.screen === "pods", "probe-bench: the Research key opens Pods: " + r.u.screen);
   await page.evaluate((snapJson) => { const S = window.__st, o = JSON.parse(snapJson); Object.assign(S.ST, { e: o.e, d: o.d, s: o.s, probe: o.probe, mendFull: o.mendFull, dock: o.dock }); S.UI.home.f = "room"; S.UI.bench = { f: null, arm: 0, install: false }; S.goto("home"); }, snap); await page.emulateMedia({ reducedMotion: "reduce" }); await page.waitForTimeout(400); }
-  await page.evaluate(() => { const S = window.__st; delete S.SV.carried; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); });   // the Companion's part as the fixture has it: Dot goes with it again (see the start of the sitting)
+  await page.evaluate(() => { const S = window.__st; delete S.SV.carried; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); });   // the Companion's part as the fixture has it: Dot goes with it again (see the start of the sitting)
 { const file = path.resolve(here, "../../face/golden/journey-bench.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("probe-"))), json = JSON.stringify({ _note: "The Probe bench, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and the focus and intents the face said, the screen, the state, the ring, the line and the counters after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) { const a = want[id] ?? [], b = steps[id] ?? [], i = [...Array(Math.max(a.length, b.length)).keys()].find((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k])); fail(`journey-bench.json: step ${id} differs from the golden at action ${i} (golden ${a.length} actions, now ${b.length}): golden ${JSON.stringify(a[i])?.slice(0, 400)} · now ${JSON.stringify(b[i])?.slice(0, 400)}`); }; }
@@ -734,7 +734,7 @@ const benchIdle = () => page.waitForFunction(() => !window.__st.holding(), null,
   await page.emulateMedia({ reducedMotion: "reduce" });
   const snap = await page.evaluate(() => { const S = window.__st, st = S.ST, c = S.SV.carried ?? [], m = st.mibis.find((x) => !x.released && !c.includes(x.id) && !x.portrait); return JSON.stringify({ id: m.id, habits: m.habits, walked: m.walked, from: m.from, portrait: m.portrait, sitting: st.sitting, crates: st.sittingCrates, dock: st.dock, habId: S.UI.hab.id, habF: S.UI.hab.f }); });
   const M = JSON.parse(snap).id, enter = (o = {}) => page.evaluate(([id, o]) => { const S = window.__st, st = S.ST, m = st.mibis.find((x) => x.id === id); Object.assign(m, { habits: ["shake-dry", "calm", "sleep-curled"], walked: ["pond"], from: { ...(m.from || {}), g: "meadow", how: "pod" } }); if (o.held) st.sitting = { source: "dev", key: null, at: 0 }; st.dock = { docked: true, at: 1 }; S.UI.idle = false; S.UI.hab.id = id; S.goto("habitat"); S.UI.hab.f = "portrait"; }, [M, o]);
-  await page.evaluate(() => { const S = window.__st; S.SV.carried = []; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); });   // R4b: a carried mibi sits for nobody, so the Companion carries no one for the sitting (put back after it)
+  await page.evaluate(() => { const S = window.__st; S.SV.carried = []; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); });   // R4b: a carried mibi sits for nobody, so the Companion carries no one for the sitting (put back after it)
   await enter({ held: true }); await page.waitForTimeout(500);
   const name = await page.evaluate((id) => window.__st.ST.mibis.find((x) => x.id === id).name, M);
   { const p = await props(); expect(p.screen === "habitat" && p.focus.cur === "portrait" && p.frame.line.ok === `Portray ${name}`, "sitting-walk: Habitat's Portrait module, a sitting held: ✓ Portray " + name + ": " + JSON.stringify([p.screen, p.focus.cur, p.frame.line])); }
@@ -799,11 +799,11 @@ const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlac
   await press("research", 300); const f0 = await focusNow(); await page.evaluate(() => { window.__st.UI.idle = true; }); await page.waitForTimeout(400); await press("right", 400);
   expect(!(await ui()).idle && (await focusNow()) === f0 && (await ui()).screen === "pods", "on Pods the first press on Idle wakes and the ring stays: " + JSON.stringify([await ui(), f0, await focusNow()]));
 }
-await page.evaluate(() => { const S = window.__st; if (Array.isArray(S.SV.carried) && !S.SV.carried.length) delete S.SV.carried; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); });   // R4b: the sections above that un-carried Dot left an empty carried list: the Companion's part is as the fixture has it
-const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("mb-save-v8")));
+await page.evaluate(() => { const S = window.__st; if (Array.isArray(S.SV.carried) && !S.SV.carried.length) delete S.SV.carried; localStorage.setItem(window.__st.saveKey, JSON.stringify({ ...S.SV, st: S.ST })); });   // R4b: the sections above that un-carried Dot left an empty carried list: the Companion's part is as the fixture has it
+const stored = await page.evaluate(() => JSON.parse(localStorage.getItem(window.__st.saveKey)));
 expect(stored.st.schema === 4 && stored.st.tray.length === (await st()).tray.length && stored.st.mibis.length === (await st()).mibis.length && JSON.stringify({ ...stored, st: undefined }) === companionBefore, "the save round-trips and the Companion's part is untouched");
 // 8. the CI smoke's presses, from a fresh world with no save
-await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });
+await page.evaluate(() => { localStorage.removeItem(window.__st.saveKey); });
 
 await assertFace("the journey");
 checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);

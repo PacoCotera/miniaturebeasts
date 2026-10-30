@@ -3,7 +3,7 @@
 // there is no drawing here. Also: the Caddy's one key, the shared save's storage event, the developer panel and the test hooks. Rules are in state.mjs, the key's rule call in intents/*, the
 // props in host.mjs.
 import { clock, motion } from "./pixels.mjs";
-import { G, FX, UI, SPECS, msg, save, load, loadSettings, saveSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById } from "./game.mjs";
+import { G, FX, UI, SPECS, msg, save, load, loadSettings, saveSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, saveKey, switchCompanion, activeCompanion } from "./game.mjs";
 import * as S from "./state.mjs";
 import * as Lib from "./library.mjs";
 import { startScene, endScene, sceneTime, sceneBeat, SCENE_MS } from "./motion-scene.mjs";
@@ -106,10 +106,15 @@ function updateCaddy() {
 }
 if (EMBED) window.addEventListener("message", (e) => {   // the play page's shell: the dock by postMessage, the developer panel's visibility; both ends check the origin and the parent
   if (e.origin !== location.origin || e.source !== parent) return; const m = e.data || {};
-  if (m.t === "mb-dock") { dockElsewhere = !!m.keysElsewhere; act("dock"); postCaddy(true); }
+  if (m.t === "mb-dock") {   // the Caddy's seat or lift, handed over by the play page: `want` is the cradle's state (absent: a press); `companion` is who docked, the active player from now on
+    dockElsewhere = !!m.keysElsewhere;
+    if (m.want === true && m.companion) switchCompanion(m.companion);
+    if (typeof m.want !== "boolean" || docked() !== m.want) act("dock"); else dockElsewhere = false;
+    postCaddy(true);
+  }
   else if (m.t === "mb-dev") showDev(!!m.on);
 });
-window.addEventListener("storage", (e) => { if (e.key !== S.SAVE_KEY && e.key !== null) return; if (!G.ready) return; storageChanged(); updateCaddy(); });   // updateCaddy here too: a hidden frame's animation frames may pause, and the shell still hears a Companion change
+window.addEventListener("storage", (e) => { if (e.key !== saveKey() && e.key !== null) return; if (!G.ready) return; storageChanged(); updateCaddy(); });   // updateCaddy here too: a hidden frame's animation frames may pause, and the shell still hears a Companion change
 const inShell = (() => { try { return EMBED && parent !== window && !!parent.document; } catch { return false; } })();   // the developer panel is built into the play page's drawer (nodes made here are adopted on append; their listeners run in this realm)
 const devEl = $("dev"), devBtn = $("devBtn"), devOut = (inShell && parent.document.getElementById("devStationOut")) || $("devOut");
 let devOn = false;
@@ -170,7 +175,8 @@ window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(und
   openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, fillGuide: (id, share) => { G.st.guide[id] = {}; delete G.st.readOnce[id]; if (share >= 1) G.st.readOnce[id] = frameOf(id).chapters.map((c) => c.id); const g = Lib.fieldGuide(G.st, id, G.settings), want = Math.ceil(share * (g.found + g.unseen)); let n = g.found; for (const ch of g.chapters) { if (ch.sealed) continue; for (const t of ch.traits) for (const l of t.possible) { if (n >= want) break; if (!S.guideLooks(G.st, id, t.id).includes(l)) { S.guideAdd(G.st, id, t.id, [l]); n++; } } } save(); return Lib.fieldGuide(G.st, id, G.settings).found; }, returnMibi: (id) => { const m = S.mibiById(G.st, id), r = m ? S.returnMibi(G.st, G.sv, m, G.settings) : { ok: false }; if (r.ok) save(); return r; }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; },
   openCreate: (podId) => create.openCreate(CORE.host, podById(podId)), readSome: (podId, n) => { const p = podById(podId); S.skipIdentify(G.st, p); const fr = frameOf(S.speciesOf(p)); fr.chapters.slice(0, n).forEach((c) => S.read(G.st, p, c.id, G.settings)); save(); },
   seedPod: (species, gs) => { const r = S.seedPodFromGenome(G.st, podGenome(frameOf(species), gs), G.settings, Date.now()); save(); return r; },
-  seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); } };
+  seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); },
+  get saveKey() { return saveKey(); }, get companion() { return activeCompanion(); } };
 
 // What the CI checks read at a screenshot point: the screen, the face's log (every string it set, each drawn region) and its counts.
 function checkSnapshot() {

@@ -42,7 +42,7 @@ const plain = x => JSON.parse(JSON.stringify(x));
 
 test("the Station's schema fixture loads through load() and drawSetup draws once with no throw", () => {
   const p = page({ "mb-save-v8": SCHEMA });
-  assert.equal(p.KEY, "mb-save-v8");
+  assert.match(p.KEY, /^mb-save-v8@c[0-9a-z]{12}$/, "the save moved under the Companion's own key"); assert.equal(p.store["mb-save-v8"], undefined, "and the shared key is gone");
   assert.equal(p.run("RT.readOnly"), undefined, "the fixture is not read-only");
   assert.equal(p.run("S.seed"), 123456, "the fixture's world was adopted");
   assert.equal(p.run("S.phase"), "setup");

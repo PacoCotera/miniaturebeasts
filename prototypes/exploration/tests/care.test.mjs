@@ -327,7 +327,7 @@ test("normalizeCare: defaults for the additive fields; ids not in S.mibis droppe
 test("a new world: the carried set, no `with`; SAVE_V stays 8", () => {
   assert.match(source("worldFields"), /mibis: \[\], carried: \[\], lead: null, carrySeen: 0, carryRefused: \[\]/);
   assert.ok(!/\bwith: null\b|withSeen: 0, probeSeen/.test(source("worldFields")));
-  assert.match(PAGE, /SAVE_KEY = 'mb-save-v8', SAVE_V = 8/);
+  assert.match(PAGE, /LEGACY_KEY = 'mb-save-v8', SAVE_V = 8/);
 });
 
 // ---- §1: the Station's requests, applied at the dock (T3 and T7, the Companion's half) ----
@@ -856,7 +856,7 @@ test("X1 3: the dock changes only the Companion's mibis, dockSeen and log; the S
 
 test("X1 4: the round trip: a fresh page saves the same string; the Station still resolves S05 and S10", () => {
   const { p } = X1.docked(); p.run("save()");
-  const once = p.store[p.KEY], q = X1.page({ [p.KEY]: once }); q.run("save()");
+  const once = p.store[p.KEY], q = X1.page({ [p.KEY]: once, "mb-companion-A": p.store["mb-companion-A"] }); q.run("save()");   // the same Companion: its id and its save
   assert.equal(q.store[q.KEY], once, "byte-identical");
   const st2 = ST.normalize(ST.migrate(q.sv().st));
   assert.deepEqual(st2.mibis.map(m => ST.speciesOf(m)), ["S05", "S05", "S10", "S10"]);

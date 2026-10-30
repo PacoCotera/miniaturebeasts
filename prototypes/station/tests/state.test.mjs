@@ -572,10 +572,10 @@ test("growBlockKey names what stops Grow in the rules' order (unidentified, busy
 
 test("the Station keeps an unknown top-level Companion field (gen) through load, save and storageChanged", async () => {
   const mem = new Map(); globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => { mem.set(k, String(v)); }, removeItem: (k) => { mem.delete(k); } };
-  const game = await import("../src/game.mjs"), stored = () => JSON.parse(mem.get(S.SAVE_KEY));
-  mem.set(S.SAVE_KEY, JSON.stringify({ ...fixture(), gen: 2 }));
-  game.load(); game.save(); assert.equal(stored().gen, 2, "load then save keeps gen");
-  mem.set(S.SAVE_KEY, JSON.stringify({ ...stored(), gen: 3 }));
+  const game = await import("../src/game.mjs"), stored = () => JSON.parse(mem.get(game.saveKey()));
+  mem.set(S.SAVE_KEY, JSON.stringify({ ...fixture(), gen: 2 }));   // the shared save of earlier builds: it moves under the Companion's key at the first load
+  game.load(); game.save(); assert.equal(stored().gen, 2, "load then save keeps gen"); assert.equal(mem.has(S.SAVE_KEY), false);
+  mem.set(game.saveKey(), JSON.stringify({ ...stored(), gen: 3 }));
   game.storageChanged(); game.save(); assert.equal(stored().gen, 3, "storageChanged then save keeps the Companion's newer gen");
   const before = JSON.stringify({ ...stored(), st: undefined }); game.save(); assert.equal(JSON.stringify({ ...stored(), st: undefined }), before, "a save changes nothing of the Companion's part");
 });

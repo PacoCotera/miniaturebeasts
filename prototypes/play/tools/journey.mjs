@@ -399,7 +399,7 @@ async function zBad(page, sel, W, z, capture) {
 // ---- B8. a Companion crate crosses: the Companion's own bay, the Station's save, the control's dot, the dock and the opening (fresh context, 1920 × 1080) ----
 {
   const { ctx, page, st, mb } = await open(1920, 1080);
-  const stored = () => page.evaluate(() => JSON.parse(localStorage.getItem("mb-save-v8")));
+  const stored = () => mb().evaluate(() => JSON.parse(localStorage.getItem(window.__mb.SAVE_KEY)));   // the Companion's own save, under its id
   const id = await mb().evaluate(() => { const S = window.__mb.S, id = "x" + S.wid + "-1"; S.bay.push({ id, n: 1, turn: S.turn, at: Date.now(), e: 3, d: 2, s: 3, pods: [{ id: "q1", sp: 0, g: "meadow", how: "shake", gs: 987654321, k: null }], met: [0], explored: 5, of: 20, lines: [] }); return id; });
   await st().evaluate(() => window.__st.addMaterials(0, 0, 0)); await page.waitForTimeout(600);   // the Station writes its save; the storage event makes the Companion save its bay, and the Station reads it
   expect((await stored()).bay.some((c) => c.id === id), "B8: the stored save's bay holds the crate"); eq((await state(page)).caddy.crates, 1, "B8: the control hears one crate"); eq((await state(page)).dot, true, "B8: the dot shows");
