@@ -460,22 +460,38 @@ export function round2Checks(ctx) {
   const shown = eye304.filter((e) => e.pupil >= 28 && e.catchPx >= 3 && ((1 - (form.look.eyes.iris_r ?? 0.78)) < 0.15 || e.rimWidth >= 2));
   out.push(C("face.ink.304", "the face at 304: pupil >= 28 px, rim ring >= 2 px, catch light >= 3 px, nose >= 6 px", shown.length >= need && noseN >= (fm?.noses.length ? 6 : 0), { eyes: eye304.map((e) => ({ pupil: e.pupil, rimW: +e.rimWidth.toFixed(1), catchPx: e.catchPx })), nosePx: noseN }, `>= ${need} eye(s) with pupil >= 28, rim >= 2, catch >= 3; nose >= 6`));
   if (fm?.mouth) out.push(C("face.mouth", "the mouth ink at 304 is >= 10 px long with a stroke >= 2 px", mouth304.len >= 10 && mouth304.thick >= 2 - 0.5, { lengthPx: +mouth304.len.toFixed(1), strokePx: +mouth304.thick.toFixed(1), px: mouth304.n }, ">= 10 px; >= 2 px"));
-  // ---- face.ink at 96 and 48: the table of design 3, from the feature pass ----
+  // ---- face.glyph at 96 and 48 (design 6; replaces face.ink.96 and .48): antialiased discs, the core in the species' own hue, the ring only where the surround is too dark, the catch light by size ----
   for (const sk of [96, 48]) {
-    const f = r[sk].features, eyes = f.eyes.filter((e) => e.visible), [mw, mh] = sk === 96 ? [3, 3] : key === "rupar" ? [1, 2] : [2, 2], rows = [], bad = [];
+    const f = r[sk].features, eyes = f.eyes.filter((e) => e.visible), rows = [], bad = [], hueOf = (c) => { const [R, G, B] = c, mx = Math.max(R, G, B), mn = Math.min(R, G, B), d = mx - mn; if (d === 0) return [0, 0]; const h = mx === R ? ((G - B) / d + 6) % 6 : mx === G ? (B - R) / d + 2 : (R - G) / d + 4; return [h * 60, d]; };
     for (const e of eyes) {
-      const [x0, y0, x1, y1] = e.box, core = rgb(r[sk], x1, y1), ring = []; for (let x = x0 - 1; x <= x1 + 1; x++) ring.push([x, y0 - 1, "t"], [x, y1 + 1, "b"]); for (let y = y0; y <= y1; y++) ring.push([x0 - 1, y, "l"], [x1 + 1, y, "r"]);
-      const light = ring.filter(([x, y]) => Lstar(rgb(r[sk], x, y)) >= Lstar(core) + 35), sides = new Set(light.map((q) => q[2])).size;
-      const ok = e.core[0] >= mw && e.core[1] >= mh && Lstar(core) <= 30 && (sk === 96 ? light.length / ring.length >= 0.6 : sides >= 2) && (sk !== 96 || e.core[0] < 4 || e.core[1] < 4 || r[sk].ink[y0 * r[sk].width + x0] === INK.catch);
-      rows.push({ core: e.core, coreL: +Lstar(core).toFixed(0), surround: sk === 96 ? +(light.length / ring.length).toFixed(2) : sides }); if (!ok) bad.push("eye");
+      const [x0, y0, x1, y1] = e.box, rr = r[sk], cornerPx = [[x0, y0], [x1, y0], [x0, y1], [x1, y1]];
+      // the surround: the mean L* of the pixels 1 px outside the box
+      let sl = 0, sn = 0; for (let x = x0 - 2; x <= x1 + 2; x++) for (const y of [y0 - 2, y1 + 2]) { sl += Lstar(rgb(rr, x, y)); sn++; } for (let y = y0; y <= y1; y++) for (const x of [x0 - 2, x1 + 2]) { sl += Lstar(rgb(rr, x, y)); sn++; }
+      const surround = sl / sn, coreL = Lstar(rgb(rr, Math.floor(e.center[0]), Math.floor(e.center[1])));
+      // 1. the four corner pixels of the box are blends: L* between the core's and the surround's, >= 5 from each (a corner of a disc whose box is larger than the disc)
+      // each corner is compared with the surround next to it (the pixel 2 px diagonally outside it): a face patch is not uniform round the eye
+      const cornersOk = cornerPx.every(([x, y], i) => { const sx = i % 2 === 0 ? -1 : 1, sy = i < 2 ? -1 : 1, so = Lstar(rgb(rr, x + 2 * sx, y + 2 * sy)), L = Lstar(rgb(rr, x, y)); return Math.abs(coreL - so) < 12 || (L >= Math.min(coreL, so) + 5 - 1e-9 && L <= Math.max(coreL, so) - 5 + 1e-9); });
+      // 2. the core hue within 35 degrees of the iris hue where the iris chroma >= 15; core L* <= 30 at 96 and <= 25 at 48
+      const [hc] = hueOf(e.coreCol), [hi2, ci] = hueOf(e.irisCol), dh = Math.min(Math.abs(hc - hi2), 360 - Math.abs(hc - hi2)), hueOk = ci < 15 || dh <= 35, darkOk = Lstar(e.coreCol) <= (sk === 96 ? 30 : 25) + 1e-9;
+      // 3. no ring pixels where the plate already gives dL* >= 35
+      const ringOk = (e.ringOnLight ?? 0) < 0.5;
+      // 4. the catch light by size
+      const catchOk = sk === 96 ? (e.D >= 4 ? e.catchA === 1 : e.D >= 3 ? e.catchA === 0.5 : e.catchA === 0) : (e.D >= 3 ? e.catchA === 0.6 : e.catchA === 0);
+      // 5. core against surround: dL* >= 35 on >= 60 % of the edge at 96, on >= 2 sides at 48
+      const sidesL = { t: [], b: [], l: [], r: [] }; for (let x = x0; x <= x1; x++) { sidesL.t.push(Lstar(rgb(rr, x, y0 - 2))); sidesL.b.push(Lstar(rgb(rr, x, y1 + 2))); } for (let y = y0; y <= y1; y++) { sidesL.l.push(Lstar(rgb(rr, x0 - 2, y))); sidesL.r.push(Lstar(rgb(rr, x1 + 2, y))); }
+      const all = Object.values(sidesL).flat(), frac = all.filter((L) => Math.abs(L - coreL) >= 35).length / all.length, nSides = Object.values(sidesL).filter((a) => a.filter((L) => Math.abs(L - coreL) >= 35).length >= a.length / 2).length;
+      const edgeOk = sk === 96 ? frac >= 0.6 : nSides >= 2;
+      rows.push({ cornerL: cornerPx.map(([x, y]) => +Lstar(rgb(rr, x, y)).toFixed(0)), D: +e.D.toFixed(2), core: e.core, coreL: +coreL.toFixed(0), surroundL: +surround.toFixed(0), corners: cornersOk, hue: hueOk, dark: darkOk, ring: ringOk, catch: catchOk, edge: sk === 96 ? +frac.toFixed(2) : nSides });
+      if (!cornersOk) bad.push("corners"); if (!hueOk) bad.push("hue"); if (!darkOk) bad.push("dark"); if (!ringOk) bad.push("ring on light"); if (!catchOk) bad.push("catch"); if (!edgeOk) bad.push("edge");
     }
-    if (eyes.length >= 2) { const [a, b] = eyes.map((e) => e.box).sort((p, q) => p[0] - q[0]), gap = b[0] - a[2] - 1; rows.push({ gap }); if (gap < (sk === 96 ? 2 : 1)) bad.push("gap"); }
+    // 6. the gap between the discs, noses and mouths as round 2, the plate
+    if (eyes.length >= 2) { const [a, b] = eyes.map((e) => e).sort((p, q) => p.center[0] - q.center[0]), gap = b.center[0] - b.D / 2 - (a.center[0] + a.D / 2); rows.push({ gap: +gap.toFixed(2) }); if (gap < (sk === 96 ? 2 : 1) - 1e-9) bad.push("gap"); }
     let nosePx = 0, mouthPx = 0; for (let i = 0; i < r[sk].ink.length; i++) { if (r[sk].ink[i] === INK.nose) nosePx++; if (r[sk].ink[i] === INK.mouth) mouthPx++; }
     if (sk === 96 && fm?.noses.length && f.nose.length && nosePx < 2) bad.push("nose"); if (sk === 48 && mouthPx > 0) bad.push("mouth at 48");
     if (sk === 96 && f.mouth && mouthPx < 3) bad.push("mouth");
     const platePx = (() => { let n = 0; for (let i = 0; i < r[sk].plate.length; i++) if (r[sk].plate[i] > 0 && r[sk].coverage[i] >= 0.5) n++; return n; })(), plateNeed = sk === 96 ? 30 : 8;
     if (platePx < plateNeed) bad.push(`plate ${platePx} px`);
-    out.push(C(`face.ink.${sk}`, `the face at ${sk}: eye cores, light surround, catch light, gap, nose, mouth, plate (design 3)`, eyes.length >= need && bad.length === 0, { eyes: rows, nosePx, mouthPx, platePx, dropped: f.dropped, bad }, `>= ${need} eye(s) ${mw}x${mh}; surround ${sk === 96 ? ">= 60 %" : ">= 2 sides"}; plate >= ${plateNeed} px`));
+    out.push(C(`face.glyph.${sk}`, `the eye glyph at ${sk}: blended corners, the species' own hue, no ring on a light plate, the catch light by size, core against surround, the gap; nose, mouth, plate`, eyes.length >= need && bad.length === 0, { eyes: rows, nosePx, mouthPx, platePx, dropped: f.dropped, bad }, `>= ${need} eye(s); design 6 items 1-6; plate >= ${plateNeed} px`));
   }
   // ---- face.order: eye line above nose above mouth, each >= 1 px apart, at each size ----
   { const bad = [], order = {}; for (const sk of [304, 96, 48]) {
