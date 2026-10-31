@@ -1,4 +1,4 @@
-// The stand renderer (shape-model.md 4): an orthographic camera, a z-buffer with per-pixel interpolated normals,
+// The stand renderer (the shape design 4): an orthographic camera, a z-buffer with per-pixel interpolated normals,
 // supersampling, a key light with wrap diffuse and a hemisphere ambient, field ambient occlusion, a rim, eyes with
 // fixed inks, the glow halo, the house shadow and the adult cut framing. Plain JavaScript, no node: imports.
 import { cameraBasis } from "./species-trial.mjs";

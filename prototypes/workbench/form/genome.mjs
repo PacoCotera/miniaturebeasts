@@ -1,4 +1,4 @@
-// Levers and ranges (shape-model.md 2.1, 2.2). A form locus is a copy t in [0, 1]; the shown value of a pair is the mean of its copies.
+// Levers and ranges (the shape design 2.1, 2.2). A form locus is a copy t in [0, 1]; the shown value of a pair is the mean of its copies.
 // A range turns t into a multiplier m(t) = lo * (hi / lo)^t (sizes and lengths, geometric) or an offset o(t) = lo + (hi - lo) t
 // (angles, turns, positions); the type specimen sits at m = 1, o = 0. Each lever moves only the knots it names.
 // Plain JavaScript, no node: imports.

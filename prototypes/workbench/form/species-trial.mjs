@@ -1,4 +1,4 @@
-// The five trial species: the base forms of shape-model.md section 3, numbers verbatim, with their open ranges
+// The five trial species: the base forms of the shape design section 3, numbers verbatim, with their open ranges
 // (genome.mjs), the reference pose and the stand camera. Plain JavaScript, no node: imports.
 // Knots read "ds k psi | w u d" in U and degrees per U, listed from the pelvis.
 import { K } from "./spine.mjs";

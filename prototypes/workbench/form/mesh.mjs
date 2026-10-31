@@ -1,4 +1,4 @@
-// Narrow-band surface nets on the field (shape-model.md 4). Plain JavaScript, no node: imports.
+// Narrow-band surface nets on the field (the shape design 4). Plain JavaScript, no node: imports.
 // The grid is sparse in effect: a flood fill from seeds on the surface touches only the cells that cross it
 // (its corner values are cached in one typed array). Each vertex is the mean of its edge crossings, then two
 // Newton steps put it on F = 0; the normal is the normalized gradient by central differences (h = 0.5 voxel).

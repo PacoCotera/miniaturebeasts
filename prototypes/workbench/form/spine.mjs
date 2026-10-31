@@ -1,4 +1,4 @@
-// The spine: knot chains to samples (shape-model.md 1.1, 1.2, 1.5, 1.6). Plain JavaScript, no node: imports.
+// The spine: knot chains to samples (the shape design 1.1, 1.2, 1.5, 1.6). Plain JavaScript, no node: imports.
 // Units are U. Axes: x forward, y left, z up. A chain is a list of knots "ds k psi | w u d":
 //   ds  the length from the previous knot, k the pitch curvature in degrees per U (+ toward N, dorsal),
 //   psi the yaw curvature (+ toward B, left; on the tail chain, whose T points back, + is the right).

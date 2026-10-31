@@ -1,4 +1,4 @@
-// The implicit field (shape-model.md 1.4, 1.7, 1.8). F(p) > 0 inside, F = 0 on the surface, F < 0 outside.
+// The implicit field (the shape design 1.4, 1.7, 1.8). F(p) > 0 inside, F = 0 on the surface, F < 0 outside.
 // Internally every distance is "outside positive" (d = -F). Plain JavaScript, no node: imports.
 import { V, interpChain, sectionPoint, lowestZ } from "./spine.mjs";
 import { makeFace, anchorSigma } from "./face.mjs";

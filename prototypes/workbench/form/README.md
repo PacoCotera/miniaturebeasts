@@ -2,7 +2,7 @@
 
 A separate module beside the current geometry: one spine and an aperture along it, growth by rotation (coils), limbs that
 solve to the floor, fur by per-sample inflation, a hair that hangs, a face model, a per-pixel material and a mark layer.
-The designs are `shape-model.md` (round 1) and `round2/design.md` (round 2); this folder is the trial build of both, rendered
+The designs are the round 1 shape design and the round 2 design (`round2/design.md`); this folder is the trial build of both, rendered
 next to the stands and the current rig. Nothing outside this folder is touched.
 
 | file | what |
