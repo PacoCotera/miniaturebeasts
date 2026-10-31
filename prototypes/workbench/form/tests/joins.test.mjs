@@ -63,8 +63,8 @@ test("the bending axis turns at most 10 degrees per 0.05 U into the coils (Wickl
     assert.ok(worst <= 10, `${k}: ${worst.toFixed(1)} deg per 0.05 U`);
   }
 });
-test("the join slope is at most 0.6 on the dorsal and lateral sides at every region boundary and into each coil (Curlop, Wickle, Drapet)", () => {
-  for (const k of ["curlop", "wickle", "drapet"]) {
+test("the join slope is at most 0.6 on the dorsal and lateral sides at every region boundary and into each coil (all five, no exemption)", () => {
+  for (const k of ORDER) {
     const { b, form } = make(k);
     for (const [id, chain] of [["front", form.front], ["tail", form.tail]].filter((x) => x[1])) for (const w of joinWindows(form, chain, b[id])) for (const c of ["u", "w"]) {
       const m = Math.max(0, ...slopes(b[id].samples, c, w.lo, w.hi).map((x) => Math.abs(x.v)));
@@ -94,4 +94,24 @@ test("the whorl guard passes at N 1.3 on Curlop", () => {
   const f = structuredClone(SPECIES.curlop); f.tail.coil.N = 1.3;
   assert.doesNotThrow(() => buildChains(f));
   const f2 = structuredClone(SPECIES.curlop); f2.tail.coil.N = 0.8; assert.doesNotThrow(() => buildChains(f2));
+});
+
+// ---- round 3: the smooth fur cap (design 7) ----
+import { furOf } from "../spine.mjs";
+test("the fur cap is C1: no slope jump where the limiting half-size component switches (10,000 samples)", () => {
+  // a chain whose smallest component hands over from d to u to w, sampled finely; the cap's slope never jumps by more than the sampling allows
+  const f0 = 0.1, h = 1e-4; let worst = 0, prev = null;
+  for (let i = 0; i < 10000; i++) {
+    const t = i / 10000, w = 0.5 - 0.3 * t, u = 0.2 + 0.25 * Math.sin(6.3 * t), d = 0.3 - 0.4 * Math.abs(t - 0.5) + 0.05; // the minimum switches component several times
+    const a = furOf(f0, w, u, d), b = furOf(f0, w - 0.3 * h, u + 0.25 * Math.sin(6.3 * (t + h)) - 0.25 * Math.sin(6.3 * t), d - 0.4 * (Math.abs(t + h - 0.5) - Math.abs(t - 0.5)));
+    const slope = (b - a) / h; if (prev !== null) worst = Math.max(worst, Math.abs(slope - prev)); prev = slope;
+  }
+  assert.ok(worst < 0.5, `slope step ${worst}`); // a hard min has steps of about 0.3 / h x dt here: the smooth one stays small
+  // and the cap itself: never above 0.35 x the smallest half-size, never above f0
+  for (let i = 0; i < 10000; i++) { const w = 0.05 + rnd(), u = 0.05 + rnd(), d = 0.05 + rnd(), fu = furOf(0.1, w, u, d); assert.ok(fu <= 0.1 + 1e-12 && fu <= 0.35 * Math.min(w, u, d) + 1e-12); }
+});
+test("the fur cap is smoother than a hard minimum: along a switching chain the largest step of the slope is smaller", () => {
+  const hard = (f0, w, u, d) => Math.min(f0, 0.35 * Math.min(w, u, d));
+  const run = (fn) => { let worst = 0, prev = null; const h = 1e-3; for (let i = 0; i < 2000; i++) { const t = i / 2000, g = (x) => fn(0.1, 0.9, 0.1 + 0.6 * x, 0.4 - 0.1 * x), s = (g(t + h) - g(t)) / h; if (prev !== null) worst = Math.max(worst, Math.abs(s - prev)); prev = s; } return worst; };
+  assert.ok(run(furOf) < run(hard) * 0.6, `${run(furOf)} vs ${run(hard)}`);
 });

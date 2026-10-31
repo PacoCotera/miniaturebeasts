@@ -1,9 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { SPECIES, ROUND2, ORDER } from "../species-trial.mjs";
+import { SPECIES, ROUND3, ORDER } from "../species-trial.mjs";
 import { TUNING, getPath, withinAllowance } from "../tuning.mjs";
-import { LEVERS, formOf, typeCopies, corner, cornerForm, cornerCopies, cornerCount, valueOf, typeT, single } from "../genome.mjs";
-import { guardsOf } from "../checks.mjs";
+import { LEVERS, KINDS, atRegionJoin, touchedKnots, formOf, typeCopies, corner, cornerForm, cornerCopies, cornerCount, valueOf, typeT, single } from "../genome.mjs";
+import { buildChains } from "../spine.mjs";
+import { guardsOf, transMetrics } from "../checks.mjs";
 
 // every number that differs between two forms, as a path
 const diff = (a, b, path = "", out = []) => {
@@ -15,10 +16,10 @@ const diff = (a, b, path = "", out = []) => {
 test("the type specimen equals the base form", () => {
   for (const k of ORDER) assert.deepEqual(formOf(k, typeCopies(k)), SPECIES[k], k);
 });
-test("every tuning change is within +-15 % (the camera 10 degrees) of the ROUND2 number, and nothing else differs from ROUND2", () => {
-  for (const t of TUNING) { const before = getPath(ROUND2[t.species], t.path); assert.ok(withinAllowance(t.path, before, t.after) || t.owner, `${t.species} ${t.path}: ${before} -> ${t.after}`); }
+test("every tuning change is within +-15 % (the camera 10 degrees) of the ROUND3 number, and nothing else differs from ROUND3", () => {
+  for (const t of TUNING) { const before = getPath(ROUND3[t.species], t.path); assert.ok(withinAllowance(t.path, before, t.after) || t.owner, `${t.species} ${t.path}: ${before} -> ${t.after}`); }
   for (const k of ORDER) {
-    const changed = diff(ROUND2[k], SPECIES[k]), listed = TUNING.filter((t) => t.species === k && t.after !== getPath(ROUND2[k], t.path)).map((t) => t.path);
+    const changed = diff(ROUND3[k], SPECIES[k]), listed = TUNING.filter((t) => t.species === k && t.after !== getPath(ROUND3[k], t.path)).map((t) => t.path);
     assert.deepEqual(changed.sort(), [...new Set(listed)].sort(), k);
   }
 });
@@ -49,15 +50,30 @@ test("the open sets are as design 7 (11, 10, 10, 1, 11 levers) less the locked o
   const n = 512, strata = LEVERS.curlop.map((l) => new Set(Array.from({ length: n }, (_, i) => Math.floor(cornerCopies("curlop", i)[l.id][0] * n))));
   for (const s of strata) assert.equal(s.size, n); // one point per stratum and lever
 });
-// The build guards (design 2.7, 4.1, 2.3) must hold on every corner; the join guards (trans.*) and face.surface are checked at every corner too and their
-// misses are listed by the CLI sweep as gates not met (Wickle's drop-to-plume slope grows with the girth corners: see the report).
-const BUILD_ONLY = (problems) => problems.filter((p) => !/^trans\.|^face\.surface/.test(p));
-test("every corner builds and passes every build guard (a deterministic sample of 64 per species here; the CLI sweeps them all)", () => {
+// Round 3: every guard, the join guards (trans.slope <= .6 with no exemption, trans.c1 <= .05) and face.surface included, holds on every corner.
+const BUILD_ONLY = (problems) => problems;
+test("every corner builds and passes every guard (a deterministic sample of 64 per species here; the CLI sweeps them all)", () => {
   for (const k of ORDER) {
     const n = cornerCount(k), step = Math.max(1, Math.floor(n / 64));
     for (const i of [...Array.from({ length: Math.ceil(n / step) }, (_, j) => j * step), n - 1]) { const g = guardsOf(cornerForm(k, i)); assert.deepEqual(BUILD_ONLY(g.problems), [], `${k} corner ${i}`); }
   }
 });
-test("the type of every species passes the join guards except Loika's chest-to-chin slope with the design's numbers (reported)", () => {
-  for (const k of ORDER) { const p = guardsOf(SPECIES[k]).problems.filter((x) => /^trans\./.test(x) && !(k === "loika" && /trans\.slope/.test(x))); assert.deepEqual(p, [], k); }
+test("the type of every species passes the join guards (Loika included: no exemption)", () => {
+  for (const k of ORDER) { const p = guardsOf(SPECIES[k]).problems.filter((x) => /^trans\./.test(x)); assert.deepEqual(p, [], k); }
+});
+test("the type's outer slope is at most .50 at every join an open lever touches, and its c1 jump at most .04", () => {
+  for (const k of ORDER) { const t = transMetrics(SPECIES[k], buildChains(SPECIES[k]), touchedKnots(k)); assert.ok(t.slopeTouched <= 0.5 + 1e-9, `${k} ${t.slopeTouched}`); assert.ok(t.jump <= 0.04 + 1e-9, `${k} c1 ${t.jump}`); }
+});
+test("lever.join: a size lever scales a knot by sqrt(m) where its neighbour outside the set has another part, and not where the part is the same (synthetic chain)", () => {
+  const knot = (name, part) => ({ name, part, ds: 0.3, k: 0, psi: 0, w: 1, u: 1, d: 1 });
+  const form = { front: { knots: [knot("a", "body"), knot("b", "body"), knot("c", "body"), knot("d", "neck"), knot("e", "neck"), knot("f", "neck"), knot("g", "head")] }, tail: null, branches: [], look: {}, nape: 0 };
+  assert.equal(atRegionJoin(form, ["a", "b", "c"], "c"), true); // d is outside the set and has another part
+  assert.equal(atRegionJoin(form, ["a", "b", "c"], "b"), false); // both neighbours are in the set
+  assert.equal(atRegionJoin(form, ["a", "b"], "b"), false); // c is outside the set but of the same part
+  assert.equal(atRegionJoin(form, ["d", "e"], "d"), true); assert.equal(atRegionJoin(form, ["d", "e"], "e"), false); // e's neighbour f is the same part
+  assert.equal(atRegionJoin(form, ["e", "f"], "f"), true); // g is a head
+  const m = 1.2, f = structuredClone(form); KINDS.girth(f, { knots: ["a", "b", "c"] }, m);
+  assert.ok(Math.abs(f.front.knots[1].w - m) < 1e-12); assert.ok(Math.abs(f.front.knots[2].w - Math.sqrt(m)) < 1e-12); assert.equal(f.front.knots[3].w, 1); // only its own knots move
+  const f2 = structuredClone(form); KINDS.mass(f2, { pelvis: ["a", "b"], chest: ["c"] }, m);
+  assert.ok(Math.abs(f2.front.knots[2].w - Math.sqrt(1 / m)) < 1e-12 && Math.abs(f2.front.knots[0].w - m) < 1e-12);
 });

@@ -63,7 +63,7 @@ export function buildLimbs(form, S) {
   }
   function solveReach(br, side, tag) {
     const R = br.reach, parent = parents[br.parent ?? "front"], tgtS = interpChain(parent, R.target.sigma);
-    const fur = Math.min(f0, 0.35 * Math.min(tgtS.w, tgtS.u, tgtS.d));
+    const fur = S.furOf(f0, tgtS.w, tgtS.u, tgtS.d);
     const target = add(add(tgtS.p, sc(tgtS.N, -(tgtS.d + fur + R.target.out))), sc(tgtS.B, side * R.target.lateral));
     const pole = nrm([R.pole[0], R.pole[1] * side, R.pole[2]]);
     const root = interpChain(parent, br.root.s ?? br.root.sigma), rp = sectionPoint(root, side === 1 ? br.root.angle : -br.root.angle, br.root.out);

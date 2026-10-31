@@ -325,8 +325,122 @@ export const ROUND2 = Object.fromEntries(Object.entries(SECTION3).map(([key, f])
 // every unnamed branch knot gets a name, branch id and position (the levers and the tests name knots)
 for (const f of Object.values(ROUND2)) for (const b of f.branches) b.knots.forEach((k, i) => { if (!k.name) k.name = `${b.id}${i}`; });
 
-// SPECIES is ROUND2 with the round 2 tuning applied (tuning.mjs, listed with before and after in the report).
-export const SPECIES = Object.fromEntries(Object.entries(ROUND2).map(([k, f]) => [k, applyTuning(f, TUNING.filter((t) => t.species === k))]));
+const TRIAL2 = [
+  { species: "wickle", path: "front.knots.4.ds", after: 0.5175, why: "trans.slope: the drop-to-plume join's outer slope peaked at .689 against .6; a longer top segment (+15 %) brings it to .587" },
+  { species: "curlop", path: "branches.1.root.angle", after: 160, why: "limbs.reach: the palms' target was .68 U from the arm's root and the arm is .64 U long; +14 % (140 to 160 degrees) puts the root nearer the midline" },
+  { species: "loika", path: "face.sigma", after: 1.075, why: "face.eyes: the anchor nearer the head's centre (sigma 1.26 to 1.075, -14.7 %) so the cast wraps less: eye separation 0.90 of 2 e_x (gate 0.90); e_x stays .36 so the corners hold the gap guard" },
+  { species: "rupar", path: "face.eyes.ex", after: 0.12, why: "face.eyes: the cast eyes were 27 % nearer than 2 e_x on the narrow head (gate 10 %): -7.7 % (the corners need e_x >= .117 for the gap guard at eye-size 1.25)" },
+  { species: "rupar", path: "face.sigma", after: 1.7, why: "same: the anchor at the head's centre (1.98 to 1.70, -14 %)" },
+  { species: "wickle", path: "face.mouth.w", after: 0.069, why: "face.mouth: the smile's ink was 8 px long at 304 (gate 10 px): +15 %" },
+  { species: "wickle", path: "face.mouth.t", after: 0.0287, why: "same: the stroke +15 % (round ends add to the length)" },
+  { species: "wickle", path: "camera.yaw", after: 22, why: "face.mouth: the face seen nearer front-on (the stand's), -10 degrees: the smile reads 10 px" },
+  { species: "rupar", path: "front.knots.4.w", after: 0.115, why: "guards: the neck pinch fell to .409 at the corner (neck x .8, head x 1.2) against .45; the throat +15 % (type pinch .617 to .709)" },
+  { species: "rupar", path: "front.knots.4.u", after: 0.138, why: "guards: the neck pinch fell to .409 at the corner (neck x .8, head x 1.2) against .45; the throat +15 % (type pinch .617 to .709)" },
+  { species: "rupar", path: "front.knots.4.d", after: 0.1495, why: "guards: the neck pinch fell to .409 at the corner (neck x .8, head x 1.2) against .45; the throat +15 % (type pinch .617 to .709)" },
+  { species: "rupar", path: "front.knots.6.w", after: 0.165, why: "face.eyes: the stop +10 % wider so the cast wraps less (eye separation .91 of 2 e_x, gate .90)" },
+  { species: "drapet", path: "face.R", after: 0.345, why: "guards: at the corner eye-size 1.2 and eye-spacing 1.15 the eyes left the plate by 0.1 r_e; plate +15 %" },
+  { species: "wickle", path: "branches.1.root.out", after: 0.92, why: "limbs.show: the arms hung inside the drop (0 px at 304): root +8.2 % toward the surface (the root-depth guard holds, with slack for the girth corner)" },
+  { species: "wickle", path: "branches.1.dir.1", after: 0.517, why: "same: the arms swing out +15 % so they bump the outline" },
+  { species: "wickle", path: "face.eyes.r", after: 0.146, why: "face.place: the eye was 21 % under the stand's diameter (.057 H against .072 H): +15 %" },
+  { species: "curlop", path: "face.eyes.r", after: 0.23, why: "face.place: the eye was 21 % under the stand's diameter: +15 %" },
+  { species: "curlop", path: "face.eyes.ex", after: 0.46, why: "face.place: the eyes were 37 % closer than the stand's: +15 %" },
+  { species: "drapet", path: "face.eyes.r", after: 0.115, why: "face.place: the eye was 36 % under the stand's diameter: +15 %" },
+  { species: "drapet", path: "face.eyes.ex", after: 0.23, why: "face.place: the eyes were 26 % closer than the stand's: +15 %" },
+  { species: "drapet", path: "front.knots.0.w", after: 1.0736, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.0.u", after: 1.056, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.0.d", after: 0.9926, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.1.ds", after: 0.352, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.1.w", after: 1.2634, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.1.u", after: 1.2423, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.1.d", after: 1.3216, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.2.w", after: 0.9689, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.2.u", after: 0.9492, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.2.d", after: 0.9492, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.3.w", after: 0.6185, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.3.u", after: 0.6008, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "front.knots.3.d", after: 0.6008, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "hair.depth", after: 0.1767, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "hair.partLine", after: 0.9278, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "hair.Ld", after: 0.336, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "camera.yaw", after: 46, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "drapet", path: "camera.pitch", after: 16, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.0.w", after: 0.8985, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.0.u", after: 0.8082, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.0.d", after: 0.8527, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.1.ds", after: 0.4695, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.1.w", after: 0.9759, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.1.u", after: 0.964, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.1.d", after: 1.0193, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.2.ds", after: 0.484, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.2.w", after: 0.9408, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.2.u", after: 1.0891, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.2.d", after: 0.9735, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.3.ds", after: 0.352, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.3.w", after: 0.9766, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.3.u", after: 1.0685, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.3.d", after: 0.8548, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.4.w", after: 1.1231, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.4.u", after: 1.0459, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "front.knots.4.d", after: 0.8844, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "tail.knots.1.w", after: 0.5475, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "tail.knots.1.u", after: 0.56, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "tail.knots.1.d", after: 0.5152, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "tail.knots.2.w", after: 0.3816, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "tail.knots.2.u", after: 0.371, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "tail.knots.2.d", after: 0.3288, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "coat.depth", after: 0.0836, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "curlop", path: "camera.yaw", after: 59, why: "overlap at 48 px: coordinate search within the allowance" },
+  { species: "wickle", path: "front.knots.4.w", after: 0.52, why: "trans.slope: the drop-to-plume join's outer slope .587 left no slack at the corners: plume root +8 % (type .50; the girth corners still reach .64: reported)" },
+  { species: "wickle", path: "front.knots.4.u", after: 0.5, why: "same" },
+  { species: "wickle", path: "front.knots.4.d", after: 0.51, why: "same" },
+  { species: "wickle", path: "front.knots.6.u", after: 0.24, why: "trans.c1: u = d at the last knot, so the fur does not switch component into the coil (jump .048 to .040)" },
+  { species: "wickle", path: "front.knots.6.d", after: 0.24, why: "same" },
+  { species: "drapet", path: "face.aspect", after: 1.38, why: "guards: the eyes at eye-size 1.2 and eye-spacing 1.15 left the plate by 0.1 r_e: plate width +15 %" },
+  { species: "curlop", path: "face.nose.r", after: 0.0287, why: "face.ink: the nose was 3 px at 304 (gate 6 px): +15 %" },
+  { species: "curlop", path: "face.nose.y", after: -0.115, why: "face.place: the nose sat .019 H under the eye line against .034 H: +15 % lower" },
+  { species: "curlop", path: "face.mouth.y", after: -0.184, why: "face.place: the mouth sat .031 H under the eye line against .048 H: +15 % lower" },
+];
+
+// ---- ROUND3: ROUND2 with round 2's tuning folded in (minus what design 8 rejects or supersedes), plus the round 3 numbers ---------------------------------
+// Rejected or superseded in design 8, so not folded in: Rupar's face sigma 1.70 and e_x .12 (the eyes are placed by angle now) and its throat sizes (design numbers
+// now), Wickle's arm root .92 and dir .517, Wickle's top delta-sigma .5175 (now .60), Loika's face sigma 1.075, Drapet's face R and aspect.
+const REJECTED = new Set(["rupar face.sigma", "rupar face.eyes.ex", "rupar front.knots.4.w", "rupar front.knots.4.u", "rupar front.knots.4.d", "wickle front.knots.4.ds",
+  "wickle branches.1.root.out", "wickle branches.1.dir.1", "loika face.sigma"]); // Drapet's face R and aspect are folded in until the face pod (C3) replaces the plate
+export const ROUND3 = Object.fromEntries(Object.entries(ROUND2).map(([key, f]) => [key, applyTuning(f, TRIAL2.filter((t) => t.species === key && !REJECTED.has(`${t.species} ${t.path}`)))]));
+// the round 3 numbers: each with a one-line reason (the report lists them)
+export const ROUND3_LOG = [];
+{
+  const R = ROUND3, log = (species, what, before, after, why) => ROUND3_LOG.push({ species, what, before, after, why });
+  const fmt = (k) => `${k.ds} ${k.k} ${k.psi}|${+k.w.toFixed(4)} ${+k.u.toFixed(4)} ${+k.d.toFixed(4)}`;
+  const setK = (species, name, str, why) => { const k = kn(R[species], name), before = fmt(k); setKnot(k, str); log(species, `front.${name}`, before, fmt(k), why); };
+  const setP = (species, path, v, why) => { const ps = path.split("."); let o = R[species]; for (let i = 0; i < ps.length - 1; i++) o = o[ps[i]]; const before = o[ps.at(-1)]; o[ps.at(-1)] = v; log(species, path, before, v, why); };
+  // Loika 1: a round head over a lower back
+  setK("loika", "pelvis", "0|.74 .44 .64", "design 1: the back is low (dorsal .44), so the crown stands clear");
+  setK("loika", "belly", ".30 0|.84 .48 .72", "design 1: a lower, fuller body");
+  setK("loika", "chest", ".30 20|.76 .52 .62", "design 1");
+  setK("loika", "chin", ".24 190 8|.66 .56 .46", "design 1: the spine climbs in the chin segment (rise)");
+  setK("loika", "head", ".24 -60 12|.60 .58 .50", "design 1: a round head smaller than the body");
+  setK("loika", "stop", ".20 -120|.52 .46 .42", "design 1");
+  setK("loika", "snout", ".14 -60|.34 .26 .28", "design 1");
+  { const h = R.loika.branches.find((b) => b.id === "hind"), before = h.knots[1].ds; h.knots[1].ds = 0.22; log("loika", "branches.hind.knots.1.ds", before, 0.22, "design 1: the body sits lower"); }
+  // Rupar 2: the form (the camera is C2)
+  setK("rupar", "withers", ".34 60|.26 .27 .30", "design 2: the art's shoulder");
+  setK("rupar", "neckbase", ".40 150|.17 .21 .22", "design 2: a steeper neck");
+  setK("rupar", "throat", ".54 0 20|.115 .138 .15", "design 2: the +15 % throat is now a design number");
+  setK("rupar", "poll", ".26 -260 30|.18 .20 .19", "design 2: the poll turns the head down inside its own segment");
+  for (const n of ["pelvis", "barrel"]) { const k = kn(R.rupar, n), before = fmt(k); k.u *= 0.8; k.d *= 0.8; log("rupar", `front.${n}`, before, fmt(k), "design 2: a slimmer barrel (u and d x .8)"); }
+  { const h = R.rupar.branches.find((b) => b.id === "horn"); setP("rupar", `branches.${R.rupar.branches.indexOf(h)}.root.sigma`, 1.96, "design 2: the horn root follows the poll (1.94)"); const tip = h.knots[1], before = tip.ds; tip.ds = +(before * 1.3).toFixed(3); log("rupar", "branches.horn.tip.ds", before, tip.ds, "design 2: horn tip delta-sigma x 1.3"); }
+  { const e = R.rupar.branches.find((b) => b.id === "ear"); setP("rupar", `branches.${R.rupar.branches.indexOf(e)}.root.sigma`, 1.98, "design 2: the ear root follows the poll"); }
+  setP("rupar", `branches.${R.rupar.branches.findIndex((b) => b.id === "fore")}.root.sigma`, 0.8, "design 2: the art's stance (fore root)");
+  { const i = R.rupar.branches.findIndex((b) => b.id === "hind"); setP("rupar", `branches.${i}.dir`, [-0.12, 0.12, -1], "design 2: the art's stance (hind dir)"); }
+  // Wickle 7: the drop narrows into the plume
+  setP("wickle", "front.knots.4.ds", 0.6, "design 7: top delta-sigma .60 replaces the +15 % tuning (.5175): the join slope .485 to .425");
+}
+// every unnamed branch knot gets a name too
+for (const f of Object.values(ROUND3)) for (const b of f.branches) b.knots.forEach((k, i) => { if (!k.name) k.name = `${b.id}${i}`; });
+
+// SPECIES is ROUND3 with the round 3 tuning applied (tuning.mjs, listed with before and after in the report).
+export const SPECIES = Object.fromEntries(Object.entries(ROUND3).map(([k, f]) => [k, applyTuning(f, TUNING.filter((t) => t.species === k))]));
 
 export const ORDER = ["curlop", "wickle", "drapet", "loika", "rupar"];
 export const cloneForm = (f) => structuredClone(f);

@@ -30,11 +30,11 @@ test("Drapet's plate is set back 0 ... 0.03 U and the fringe stands fringe-gap x
   const e = f.faceM.eyes[0], top = e.y + e.r; assert.ok(Math.abs(o.base - top - o.gap * e.r) < 0.005);
   for (const x of [-0.2, 0, 0.2]) assert.ok(Math.abs(o.jag(x)) <= 0.025 + 1e-9);
 });
-test("Loika's neck pinch is at least 0.45 and the design's .75; Rupar's neck leans 45-65 degrees at mid-neck and the heading falls by 50 degrees or more to the nose", () => {
-  const p = neckPinch(SPECIES.loika); assert.ok(p >= 0.45 && Math.abs(p - 0.75) < 0.06, `${p}`);
+test("Loika's neck pinch is at least 0.45 (round 3: 1.0, the lateral side may only narrow within the .6 slope); Rupar's neck leans 60-75 degrees at mid-neck and the heading falls by 50 degrees or more to the nose", () => {
+  const p = neckPinch(SPECIES.loika); assert.ok(p >= 0.45 && Math.abs(p - 1.0) < 0.06, `${p}`);
   const f = SPECIES.rupar, b = buildChains(f), ks = f.front.knots, ib = ks.findIndex((k) => k.name === "withers"), it = ks.findIndex((k) => k.name === "throat");
   const S = b.front.samples, hd = (s) => Math.atan2(s.T[2], s.T[0]) / RAD, mid = (b.front.cum[ib] + b.front.cum[it]) / 2, sm = S.reduce((a, s) => (Math.abs(s.s - mid) < Math.abs(a.s - mid) ? s : a));
-  assert.ok(hd(sm) >= 45 && hd(sm) <= 65, `mid-neck ${hd(sm)}`);
+  assert.ok(hd(sm) >= 60 && hd(sm) <= 75, `mid-neck ${hd(sm)}`);
   const thr = S.reduce((a, s) => (Math.abs(s.s - b.front.cum[it]) < Math.abs(a.s - b.front.cum[it]) ? s : a)), tip = S.at(-1);
   assert.ok(hd(thr) - hd(tip) >= 50, `fall ${hd(thr) - hd(tip)}`);
   let prev = Infinity; for (const s of S.filter((x) => x.s >= b.front.cum[it])) { const h = hd(s); assert.ok(h <= prev + 1e-6, `heading rises at ${s.s}`); prev = h; }

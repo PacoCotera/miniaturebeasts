@@ -11,7 +11,7 @@ import { plainRender } from "../framework/plain.mjs";
 import { encodeRGBA } from "./pngrgba.mjs";
 import { buildScene } from "./mesh.mjs";
 import { renderForm, silhouette, SIZES } from "./render.mjs";
-import { SPECIES, ROUND2, ORDER } from "./species-trial.mjs";
+import { SPECIES, ROUND3, ORDER } from "./species-trial.mjs";
 import { TUNING, getPath, withinAllowance } from "./tuning.mjs";
 import { LEVERS, LOCKED, LEVER_CLASS, formOf, corner, cornerForm, cornerCount, single, typeCopies } from "./genome.mjs";
 import { maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, OVERLAP_TARGET } from "./checks.mjs";
@@ -181,9 +181,9 @@ export function visibility(key, ref) {
 
 export const sha = (buf) => createHash("sha256").update(buf).digest("hex").slice(0, 16);
 export function tuningReport() {
-  return TUNING.map((t) => { const before = getPath(ROUND2[t.species], t.path); return { species: t.species, path: t.path, before, after: t.after, change: before ? +(100 * (t.after / before - 1)).toFixed(1) + " %" : "", ok: withinAllowance(t.path, before, t.after), why: t.why }; });
+  return TUNING.map((t) => { const before = getPath(ROUND3[t.species], t.path); return { species: t.species, path: t.path, before, after: t.after, change: before ? +(100 * (t.after / before - 1)).toFixed(1) + " %" : "", ok: withinAllowance(t.path, before, t.after), why: t.why }; });
 }
-export { buildScene, renderForm, silhouette, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, OVERLAP_TARGET, SPECIES, ROUND2, ORDER, encodeRGBA, mkdirSync, writeFileSync, existsSync, readFileSync };
+export { buildScene, renderForm, silhouette, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, OVERLAP_TARGET, SPECIES, ROUND3, ORDER, encodeRGBA, mkdirSync, writeFileSync, existsSync, readFileSync };
 
 // ---- more helpers for the sheets and the report ----------------------------------------------------------------------
 export const standMaskAt = (stands, s) => maskOfAlpha(stands[s]);
@@ -227,7 +227,7 @@ export function makeReport(rec, keys) {
   for (const k of keys) { const t = rec[k].joins; L(`| ${rec[k].name} | ${t.slope.toFixed(3)} | ${t.jump.toFixed(3)} | ${t.bend.toFixed(1)} | ${t.tipFur.toFixed(3)} |`); }
   L(); L("## Texture energy (mean |dL*| of neighbouring body pixels; reported, not gated)"); L(); L("| species | 304 | 96 |"); L("| --- | --- | --- |");
   for (const k of keys) L(`| ${rec[k].name} | ${rec[k].texture[304]} | ${rec[k].texture[96]} |`);
-  L(); L("## Round 2 tuning (each change of a ROUND2 number, before and after)"); L();
+  L(); L("## Round 3 tuning (each change of a ROUND3 number, before and after)"); L();
   L("| species | number | before | after | change | reason |"); L("| --- | --- | --- | --- | --- | --- |");
   for (const t of tuningReport().filter((x) => keys.includes(x.species))) L(`| ${t.species} | ${t.path} | ${t.before} | ${t.after} | ${t.change}${t.ok ? "" : " OUTSIDE THE ALLOWANCE"} | ${t.why} |`);
   L(); L("## Visibility of the open ranges (design 6): face levers by face ink at 304, mark levers by mark pixels at 96, shape levers by the silhouette at 96"); L();

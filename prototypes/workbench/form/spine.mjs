@@ -216,9 +216,13 @@ export function lowestZ(sample) {
 }
 
 // Fur by per-sample inflation (design 5.4): f_i = min(f0, 0.35 x the sample's smallest half-size), added to each sample's radii.
-export const FUR_CAP = 0.35;
+// Round 3 (design 7): the cap is a smooth minimum, f = smin(f0, 0.35 x smin(w, u, d), k 0.02): a hard min kinks the outer slope where the limiting
+// component switches. smin never exceeds the plain min, so the cap 0.35 x the smallest half-size still holds.
+export const FUR_CAP = 0.35, FUR_K = 0.02;
+const sminK = (a, b, k) => { const h = Math.max(k - Math.abs(a - b), 0) / k; return (a < b ? a : b) - h * h * k * 0.25; };
+export const furOf = (f0, w, u, d) => (f0 > 0 ? sminK(f0, FUR_CAP * sminK(w, sminK(u, d, FUR_K), FUR_K), FUR_K) : 0);
 export function applyFur(chain, f0) {
-  for (const sm of chain.samples) sm.fur = f0 > 0 ? Math.min(f0, FUR_CAP * Math.min(sm.w, sm.u, sm.d)) : 0;
+  for (const sm of chain.samples) sm.fur = furOf(f0, sm.w, sm.u, sm.d);
   return chain;
 }
 export function buildChains(form) {
@@ -237,7 +241,7 @@ export function buildChains(form) {
   const f0 = form.coat?.depth ?? 0;
   applyFur(front, f0); if (tail) applyFur(tail, f0);
   // the limbs (limbs.mjs): branches on the front or the tail chain, hand reaches, the floor and the shin solve (design 4)
-  const limbs = buildLimbs(form, { front, tail, f0, integrateChain, interpChain, sectionPoint, lowestZ, applyFur });
+  const limbs = buildLimbs(form, { front, tail, f0, integrateChain, interpChain, sectionPoint, lowestZ, applyFur, furOf });
   return { front, tail, branches: limbs.branches, contacts: limbs.contacts, floor: limbs.floor, parents: { front, tail }, phi0: form.phi0, solves: limbs.solves, reaches: limbs.reaches, hover: limbs.hover };
 }
 

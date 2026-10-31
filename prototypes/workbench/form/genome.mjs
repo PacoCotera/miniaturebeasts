@@ -11,15 +11,22 @@ const find = (form, chain, name) => {
   return k;
 };
 const sizes = (k, f) => { k.w *= f[0]; k.u *= f[1]; k.d *= f[2]; };
+// The region-join rule (design 8): a size lever scales a knot by sqrt(m) (half in log) when that knot's neighbour on the chain, outside the lever's set,
+// belongs to another part. A neighbour of the same part is not a region join. The lever still moves only its own knots.
+export const atRegionJoin = (form, set, name) => {
+  const ks = form.front.knots, i = ks.findIndex((k) => k.name === name);
+  return [i - 1, i + 1].some((j) => ks[j] && !set.includes(ks[j].name) && ks[j].part !== ks[i].part);
+};
+const scaled = (f, set, n, vec) => { const half = atRegionJoin(f, set, n); sizes(find(f, "front", n), half ? vec.map((x) => Math.sqrt(x)) : vec); };
 
 // ---- the lever kinds: (form, cfg, value) -> mutates a clone -------------------------------------------------------
 export const KINDS = {
   // [w u d, tail root ... head]
-  girth: (f, c, m) => { for (const n of c.knots) sizes(find(f, "front", n), [m, m, m]); },
+  girth: (f, c, m) => { for (const n of c.knots) scaled(f, c.knots, n, [m, m, m]); },
   // [w x m, u d x m^-1/2]
-  build: (f, c, m) => { for (const n of c.knots) sizes(find(f, "front", n), [m, 1 / Math.sqrt(m), 1 / Math.sqrt(m)]); },
+  build: (f, c, m) => { for (const n of c.knots) scaled(f, c.knots, n, [m, 1 / Math.sqrt(m), 1 / Math.sqrt(m)]); },
   // [pelvis-side x m, chest-side x 1/m]
-  mass: (f, c, m) => { for (const n of c.pelvis) sizes(find(f, "front", n), [m, m, m]); for (const n of c.chest) sizes(find(f, "front", n), [1 / m, 1 / m, 1 / m]); },
+  mass: (f, c, m) => { const set = [...c.pelvis, ...c.chest]; for (const n of c.pelvis) scaled(f, set, n, [m, m, m]); for (const n of c.chest) scaled(f, set, n, [1 / m, 1 / m, 1 / m]); },
   // [lifts the knots between the peak and the ends toward the peak]
   fullness: (f, c, o) => { const p = find(f, "front", c.peak); const peak = [p.w, p.u, p.d]; for (const n of c.knots) { const k = find(f, "front", n); k.w += o * (peak[0] - k.w); k.u += o * (peak[1] - k.u); k.d += o * (peak[2] - k.d); } },
   // [trunk kappa x m]
@@ -27,9 +34,9 @@ export const KINDS = {
   // [stop ... nose, delta sigma x m]
   length: (f, c, m) => { for (const n of c.knots) find(f, c.chain ?? "front", n).ds *= m; },
   // [head w u d]
-  head: (f, c, m) => { for (const n of c.knots) sizes(find(f, "front", n), [m, m, m]); },
+  head: (f, c, m) => { for (const n of c.knots) scaled(f, c.knots, n, [m, m, m]); },
   // [neck pinch p, split dorsal 1 - (1 - p) nape, ventral p]
-  neck: (f, c, m) => { const nape = f.nape ?? 0; for (const n of c.knots) sizes(find(f, "front", n), [m, 1 - (1 - m) * nape, m]); },
+  neck: (f, c, m) => { const nape = f.nape ?? 0; for (const n of c.knots) scaled(f, c.knots, n, [m, 1 - (1 - m) * nape, m]); },
   // [neck kappa offset]
   carriage: (f, c, o) => { for (const n of c.knots) find(f, "front", n).k += o; },
   // [eye size]
@@ -94,7 +101,7 @@ export const LEVERS = {
     R("build", "mult", "build", [0.92, 1.08], { knots: ["pelvis", "belly", "shoulder", "face", "top", "mid", "end"] }, ["front.pelvis", "front.belly", "front.shoulder", "front.face", "front.top", "front.mid", "front.end"], "Build: build (the plume follows)"),
     R("mass", "mult", "mass", [0.9, 1.1], { pelvis: ["pelvis", "belly"], chest: ["shoulder", "face", "top", "mid", "end"] }, ["front.pelvis", "front.belly", "front.shoulder", "front.face", "front.top", "front.mid", "front.end"], "Drop: low and full, or high-shouldered (the plume follows the shoulders)"),
     R("eye-size", "mult", "eyeSize", [0.85, 1.2], {}, ["face.eyes"], "Eyes"),
-    R("coil", "off", "coil", [-0.4, 0.3], { chain: "front" }, ["front.coil"], "Curl: coil N .9 ... 1.6"),
+    R("coil", "off", "coil", [-0.2, 0.3], { chain: "front" }, ["front.coil"], "Curl: coil N 1.1 ... 1.6 (design 7: N .9 with a high girth and a low mass pushed the slope jump past .05)"),
     R("eye-spacing", "mult", "eyeSpacing", [0.85, 1.15], {}, ["face.eyes"], "Eyes: spacing along b_f"),
     R("face-size", "mult", "faceSize", [0.85, 1.2], {}, ["face.size"], "Face: size"),
     R("face-height", "off", "faceHeight", [-0.1, 0.1], {}, ["face.dy"], "Face: high or low on the body"),
@@ -137,6 +144,9 @@ export const LOCKED = {
   drapet: { "fringe-gap": "the face-ink bins at 304 do not differ (0 px, against >= 12 px or 25 %): the lever moves the hair's fringe line, not the pupil, iris, rim, nose or mouth pixels, so it is locked (design 6) and reported" },
 };
 for (const [k, o] of Object.entries(LOCKED)) LEVERS[k] = LEVERS[k].filter((l) => !o[l.id]);
+
+// the knot names any open lever of a species touches (and "coil" where a lever turns a coil): the joins "an open lever touches" (design 9)
+export const touchedKnots = (key) => new Set(LEVERS[key].flatMap((l) => [...(l.cfg.knots ?? []), ...(l.cfg.pelvis ?? []), ...(l.cfg.chest ?? []), ...(l.fn === "coil" ? ["coil"] : [])]));
 
 // ---- values ---------------------------------------------------------------------------------------------------
 export const valueOf = (lever, t) => {

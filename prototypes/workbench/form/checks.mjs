@@ -268,6 +268,12 @@ export function featureChecks(ctx) {
     const within = (v, [lo, hi]) => v >= lo && v <= hi;
     const ok = within(headH, art.headH) && within(headW, art.headW) && within(sep, art.eyeSep) && within(rimD, art.eyeD);
     out.push(C("loika.head", "the head against the signed art (owner note 19:21): head height and width, eye separation, eye diameter, as fractions of the creature's box", ok, { headH: +headH.toFixed(3), headW: +headW.toFixed(3), eyeSep: +sep.toFixed(3), eyeD: +rimD.toFixed(3) }, `headH ${art.headH}, headW ${art.headW}, eyeSep ${art.eyeSep}, eyeD ${art.eyeD}`, "the art's own values were measured on mibi-adult-S01-304x312.png (see report)"));
+    { // loika.rise (design 1): the crown above the top of the body at sigma <= .35, as a fraction of the creature's height
+      const Vm = scene.mesh.vertices, At = scene.mesh.attrs, hid2 = At.partNames.indexOf("head"); let crown = -Infinity, top = -Infinity, zlo = Infinity, zhi = -Infinity;
+      for (let i = 0; i < At.part.length; i++) { const z = Vm[i * 3 + 2]; zlo = Math.min(zlo, z); zhi = Math.max(zhi, z); if (At.part[i] === hid2 && At.group[i] === 0) crown = Math.max(crown, z); if (At.group[i] === 0 && At.sigma[i] <= 0.35 && At.part[i] !== hid2) top = Math.max(top, z); }
+      const rise = (crown - top) / (zhi - zlo);
+      out.push(C("loika.rise", "the crown stands clear of the back: the crown above the top of the body at sigma <= .35, as a fraction of the height", rise >= 0.12, +rise.toFixed(3), ">= 0.12 H (the art about .25)"));
+    }
   }
 
   if (key === "rupar") {
@@ -276,7 +282,7 @@ export function featureChecks(ctx) {
     const heading = Math.atan2(sm.T[2], sm.T[0]) / RAD;
     const hd = (q) => Math.atan2(q.T[2], q.T[0]) / RAD, thr = B.front.samples.reduce((a, q) => (Math.abs(q.s - B.front.cum[it]) < Math.abs(a.s - B.front.cum[it]) ? q : a)), fall = hd(thr) - hd(B.front.samples.at(-1));
     let monoFall = true; { let prev = Infinity; for (const q of B.front.samples.filter((x) => x.s >= B.front.cum[it])) { const h = hd(q); if (h > prev + 1e-6) monoFall = false; prev = h; } }
-    out.push(C("rupar.a", "the neck leans forward: the heading at mid-neck 45-65 deg, falling monotonically from the throat to the nose by >= 50 deg", heading >= 45 && heading <= 65 && fall >= 50 && monoFall, { midNeckDeg: +heading.toFixed(1), fallDeg: +fall.toFixed(1), monotone: monoFall }, "45 .. 65; fall >= 50", `mid-neck at sigma ${mid.toFixed(2)}`));
+    out.push(C("rupar.a", "the neck leans forward: the heading at mid-neck 60-75 deg, falling monotonically from the throat to the nose by >= 50 deg", heading >= 60 && heading <= 75 && fall >= 50 && monoFall, { midNeckDeg: +heading.toFixed(1), fallDeg: +fall.toFixed(1), monotone: monoFall }, "60 .. 75; fall >= 50", `mid-neck at sigma ${mid.toFixed(2)}`));
     const pts = contour(r4.coverage, r4.width, r4.height);
     const sPoll = B.front.cum[ks.findIndex((k) => k.name === "poll")], sWith = B.front.cum[ib];
     const dors = (m) => m.group === "front" && Math.abs(m.angle) < 90 && m.sigma >= sWith - 0.02 && m.sigma <= sPoll + 0.1;
@@ -327,7 +333,7 @@ export function chainFeature(key, form, B, field) {
     const heading = Math.atan2(sm.T[2], sm.T[0]) / RAD;
     const hd = (q) => Math.atan2(q.T[2], q.T[0]) / RAD, thr = B.front.samples.reduce((a, q) => (Math.abs(q.s - B.front.cum[it]) < Math.abs(a.s - B.front.cum[it]) ? q : a)), fall = hd(thr) - hd(B.front.samples.at(-1));
     let monoFall = true; { let prev = Infinity; for (const q of B.front.samples.filter((x) => x.s >= B.front.cum[it])) { const h = hd(q); if (h > prev + 1e-6) monoFall = false; prev = h; } }
-    out.push(C("rupar.a", "the neck leans forward: the heading at mid-neck 45-65 deg, falling monotonically from the throat to the nose by >= 50 deg", heading >= 45 && heading <= 65 && fall >= 50 && monoFall, { midNeckDeg: +heading.toFixed(1), fallDeg: +fall.toFixed(1), monotone: monoFall }, "45 .. 65; fall >= 50", `mid-neck at sigma ${mid.toFixed(2)}`));
+    out.push(C("rupar.a", "the neck leans forward: the heading at mid-neck 60-75 deg, falling monotonically from the throat to the nose by >= 50 deg", heading >= 60 && heading <= 75 && fall >= 50 && monoFall, { midNeckDeg: +heading.toFixed(1), fallDeg: +fall.toFixed(1), monotone: monoFall }, "60 .. 75; fall >= 50", `mid-neck at sigma ${mid.toFixed(2)}`));
     const iStop = ks.findIndex((k) => k.name === "stop"); let mono = true; for (let i = iStop + 1; i < ks.length; i++) if (mean3(ks[i]) > mean3(ks[i - 1]) + 1e-12) mono = false;
     out.push(C("rupar.muzzle", "the muzzle's half-size never increases from the stop to the nose", mono, mono, "monotone"));
   }
@@ -379,18 +385,19 @@ export function hullDepth(h, p) {
 // Round 2 (design 8): face.ink, face.place, face.order, face.mouth, face.surface, limbs, trans, marks, drapet.e, loika.leaves, texture energy
 // ====================================================================================================================
 import { Lstar, MIN_EYE } from "./render.mjs";
-import { SPECIES as _SPECIES } from "./species-trial.mjs";
+import { touchedKnots } from "./genome.mjs";
 const rgb = (r, x, y) => { const i = (y * r.width + x) * 4; return [r.data[i], r.data[i + 1], r.data[i + 2]]; };
 const countInkIn = (r, code, box) => { let n = 0; for (let y = Math.max(0, box[1]); y <= Math.min(r.height - 1, box[3]); y++) for (let x = Math.max(0, box[0]); x <= Math.min(r.width - 1, box[2]); x++) if (r.ink[y * r.width + x] === code) n++; return n; };
 
 // the trans metrics of a form (design 5): slope at the region joins and into a coil, slope jump over a coil start, bend turn, fur at the tips
-export function transMetrics(form, B) {
-  const out = { slope: 0, jump: 0, bend: 0, tipFur: 0 }, outer = (s, c) => s[c] + (s.fur ?? 0);
+// touched: the knot names an open lever touches (genome.touchedKnots); slopeTouched is the slope over the windows that contain one of them (design 9: type <= .50)
+export function transMetrics(form, B, touched = null) {
+  const out = { slope: 0, slopeTouched: 0, jump: 0, bend: 0, tipFur: 0 }, outer = (s, c) => s[c] + (s.fur ?? 0);
   for (const [id, chain] of [["front", form.front], ["tail", form.tail]].filter((x) => x[1])) {
     const ch = B[id], S = ch.samples, cum = ch.cum, n = cum.length, part = (j) => S.find((q) => q.knot === j)?.part;
-    const wins = []; for (let j = 1; j < n - 1; j++) if (part(j) !== part(j + 1)) wins.push([cum[j - 1], cum[j + 1]]);
-    if (chain.coil && chain.coil.N > 0) wins.push([cum[n - 2], cum[n - 1] + 0.15 * chain.coil.L]);
-    for (const [lo, hi] of wins) for (const c of ["u", "w"]) for (let i = 1; i < S.length; i++) { if (S[i - 1].s < lo - 1e-9 || S[i].s > hi + 1e-9) continue; const ds = S[i].s - S[i - 1].s; if (ds > 1e-9) out.slope = Math.max(out.slope, Math.abs((outer(S[i], c) - outer(S[i - 1], c)) / ds)); }
+    const wins = []; for (let j = 1; j < n - 1; j++) if (part(j) !== part(j + 1)) wins.push([cum[j - 1], cum[j + 1], chain.knots.slice(j - 1, j + 2).some((k) => touched?.has(k.name))]);
+    if (chain.coil && chain.coil.N > 0) wins.push([cum[n - 2], cum[n - 1] + 0.15 * chain.coil.L, !!touched?.has("coil") || chain.knots.slice(n - 2).some((k) => touched?.has(k.name))]);
+    for (const [lo, hi, tch] of wins) for (const c of ["u", "w"]) for (let i = 1; i < S.length; i++) { if (S[i - 1].s < lo - 1e-9 || S[i].s > hi + 1e-9) continue; const ds = S[i].s - S[i - 1].s; if (ds > 1e-9) { const v = Math.abs((outer(S[i], c) - outer(S[i - 1], c)) / ds); out.slope = Math.max(out.slope, v); if (tch) out.slopeTouched = Math.max(out.slopeTouched, v); } }
     if (chain.coil && chain.coil.N > 0) {
       const s1 = cum[n - 1]; for (const c of ["w", "u", "d"]) { let prev = null; for (let i = 1; i < S.length; i++) { if (S[i].s < s1 - 0.25 || S[i - 1].s > s1 + 0.25) continue; const ds = S[i].s - S[i - 1].s; if (ds < 1e-9) continue; const v = (outer(S[i], c) - outer(S[i - 1], c)) / ds; if (prev !== null) out.jump = Math.max(out.jump, Math.abs(v - prev)); prev = v; } }
       const s0 = cum[n - 2] + 0.02; for (let i = 1; i < S.length; i++) { if (S[i - 1].s < s0 || Math.abs(S[i].kappa) < 2) continue; const ds = S[i].s - S[i - 1].s; if (ds > 1e-9) out.bend = Math.max(out.bend, (Math.abs(S[i].phi - S[i - 1].phi) / ds) * 0.05); }
@@ -400,13 +407,10 @@ export function transMetrics(form, B) {
   return out;
 }
 
-// the slope of the species' type, so a corner is held to 0.6 or to the type's own value (Loika's type is above 0.6 with the design numbers: reported as a gate not met)
-const typeSlopes = new Map();
-const typeSlopeOf = (form) => { const key = form.key ?? form.name; if (!typeSlopes.has(key)) { const t = _SPECIES[form.key]; typeSlopes.set(key, t ? transMetrics(t, buildChains(t)).slope : 0); } return typeSlopes.get(key); };
 // The checks that read only the spine, the field and the face model: they hold on every corner too (design 8)
 export function cornerChecks(form, built, field) {
-  const problems = [], t = transMetrics(form, built), typeSlope = typeSlopeOf(form);
-  if (t.slope > Math.max(0.6, typeSlope) + 1e-9) problems.push(`trans.slope ${t.slope.toFixed(3)} > 0.6`);
+  const problems = [], t = transMetrics(form, built);
+  if (t.slope > 0.6 + 1e-9) problems.push(`trans.slope ${t.slope.toFixed(3)} > 0.6`); // round 3: no type exemption
   if (t.jump > 0.05 + 1e-9) problems.push(`trans.c1 ${t.jump.toFixed(3)} > 0.05`);
   if (t.bend > 10 + 1e-9) problems.push(`trans.bend ${t.bend.toFixed(1)} > 10 deg per 0.05 U`);
   if (t.tipFur > 0.35 + 1e-9) problems.push(`trans.tip ${t.tipFur.toFixed(3)} > 0.35`);
@@ -468,8 +472,8 @@ export function round2Checks(ctx) {
   // ---- limbs and joins (on the type; the corners are swept by cornerChecks and guardsOf) ----
   const solves = B.solves ?? [];
   out.push(C("limbs.floor", "every declared foot or seat lands on the floor", B.contacts.filter((c) => c.id !== "base").every((c) => Math.abs(c.z - B.floor) <= 0.005 + 1e-9), B.contacts.map((c) => ({ id: c.id, off: +(c.z - B.floor).toFixed(4) })), "<= 0.005 U (type), <= 0.03 U (corners)", solves.length ? `shin solve ${solves.map((s) => s.ratio.toFixed(2)).join("/")} x base (0.5-1.6)` : ""));
-  const tm = transMetrics(form, B);
-  out.push(C("trans", "the joins: outer slope <= 0.6, slope jump <= 0.05 over a coil start, bend <= 10 deg per 0.05 U, fur over the last 10 % <= 0.35 x the half-size", tm.slope <= 0.6 + 1e-9 && tm.jump <= 0.05 + 1e-9 && tm.bend <= 10 + 1e-9 && tm.tipFur <= 0.35 + 1e-9, { slope: +tm.slope.toFixed(3), c1Jump: +tm.jump.toFixed(3), bendDegPer005U: +tm.bend.toFixed(1), tipFur: +tm.tipFur.toFixed(3) }, "0.6 / 0.05 / 10 / 0.35"));
+  const tm = transMetrics(form, B, touchedKnots(key));
+  out.push(C("trans", "the joins on the type: outer slope <= 0.6 (<= 0.50 at every join an open lever touches), slope jump <= 0.04 over a coil start, bend <= 10 deg per 0.05 U, fur over the last 10 % <= 0.35 x the half-size", tm.slope <= 0.6 + 1e-9 && tm.slopeTouched <= 0.5 + 1e-9 && tm.jump <= 0.04 + 1e-9 && tm.bend <= 10 + 1e-9 && tm.tipFur <= 0.35 + 1e-9, { slope: +tm.slope.toFixed(3), slopeTouched: +tm.slopeTouched.toFixed(3), c1Jump: +tm.jump.toFixed(3), bendDegPer005U: +tm.bend.toFixed(1), tipFur: +tm.tipFur.toFixed(3) }, "0.6 / 0.50 / 0.04 / 10 / 0.35"));
   const part = (name, rr) => countPart(rr, name);
   if (key === "wickle") {
     // each foot >= 80 px outside the drop at 304 and >= 5 at 96; each arm >= 100 px, one outline bump >= 3 px
