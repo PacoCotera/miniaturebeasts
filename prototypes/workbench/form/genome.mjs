@@ -133,7 +133,10 @@ export const LEVERS = {
 // the face levers are judged by face ink at 304, the mark levers by mark pixels at 96, the rest by the silhouette at 96 (design 6)
 export const LEVER_CLASS = { "eye-size": "face", "eye-spacing": "face", "face-size": "face", "face-height": "face", "nose-size": "face", "mouth-width": "face", "mouth-curve": "face", "fringe-gap": "face", "spot-density": "mark", "belly-extent": "mark" };
 // Levers locked after the visibility report (the numbers are in the report): { species: { lever: reason } }. A lever that misses is locked, never narrowed.
-export const LOCKED = {};
+export const LOCKED = {
+  drapet: { "fringe-gap": "the face-ink bins at 304 do not differ (0 px, against >= 12 px or 25 %): the lever moves the hair's fringe line, not the pupil, iris, rim, nose or mouth pixels, so it is locked (design 6) and reported" },
+};
+for (const [k, o] of Object.entries(LOCKED)) LEVERS[k] = LEVERS[k].filter((l) => !o[l.id]);
 
 // ---- values ---------------------------------------------------------------------------------------------------
 export const valueOf = (lever, t) => {

@@ -43,9 +43,9 @@ test("each lever moves only its own knots", () => {
     assert.ok(changed.length > 0 || Math.abs(valueOf(l, t) - (l.kind === "mult" ? 1 : 0)) < 1e-12, `${k}.${l.id}@${t} changed nothing`);
   }
 });
-test("the open sets are as design 7 (11, 10, 10, 1, 11 levers) and the corners are 2^k for k <= 10, else 512 Latin-hypercube points", () => {
-  assert.deepEqual(ORDER.map((k) => LEVERS[k].length), [11, 10, 10, 1, 11]);
-  assert.deepEqual(ORDER.map((k) => cornerCount(k)), [512, 1024, 1024, 2, 512]);
+test("the open sets are as design 7 (11, 10, 10, 1, 11 levers) less the locked ones (Drapet's fringe-gap), and the corners are 2^k for k <= 10, else 512 Latin-hypercube points", () => {
+  assert.deepEqual(ORDER.map((k) => LEVERS[k].length), [11, 10, 9, 1, 11]);
+  assert.deepEqual(ORDER.map((k) => cornerCount(k)), [512, 1024, 512, 2, 512]);
   const n = 512, strata = LEVERS.curlop.map((l) => new Set(Array.from({ length: n }, (_, i) => Math.floor(cornerCopies("curlop", i)[l.id][0] * n))));
   for (const s of strata) assert.equal(s.size, n); // one point per stratum and lever
 });

@@ -3,7 +3,7 @@
 // Writes, in prototypes/workbench/out/form/ (ignored) and copied to the results folder's trial/:
 // the 15 renders, the 15 four-panel sheets, the contact sheet, report.json and report.md.
 import * as T from "./trial.mjs";
-import { copyFileSync, readdirSync } from "node:fs";
+import { copyFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
 const args = process.argv.slice(2), flags = new Set(args.filter((a) => a.startsWith("--"))), keys = args.filter((a) => !a.startsWith("--"));
@@ -61,6 +61,7 @@ T.writeFileSync(path.join(T.OUT, "report.json"), JSON.stringify(report.json, nul
 T.writeFileSync(path.join(T.OUT, "report.md"), report.md);
 if (!keys.length) { // a full run is copied to the results folder
   T.mkdirSync(T.RESULTS, { recursive: true });
-  for (const f of readdirSync(T.OUT)) copyFileSync(path.join(T.OUT, f), path.join(T.RESULTS, f));
-  console.log(`copied ${readdirSync(T.OUT).length} files to ${T.RESULTS}`);
+  const files = readdirSync(T.OUT).filter((f) => statSync(path.join(T.OUT, f)).isFile()); // the renders, sheets, contact sheet and report only (not the scratch folder)
+  for (const f of files) copyFileSync(path.join(T.OUT, f), path.join(T.RESULTS, f));
+  console.log(`copied ${files.length} files to ${T.RESULTS}`);
 }
