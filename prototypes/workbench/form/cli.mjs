@@ -31,6 +31,7 @@ for (const key of species) {
   const rigMask = { width: 304, height: 312, bits: Uint8Array.from(rig.images[304].coverage, (c) => (c >= 0.5 ? 1 : 0)) }, ovRig = T.overlaps(standMask, rigMask);
   // checks, guards
   const checks = T.featureChecks({ key, form, scene: sc304, r, stand: standMask, art: T.LOIKA_ART });
+  checks.push(...T.round2Checks({ key, form, scene: sc304, r, ref, targets: T.FACE_TARGETS, stand: standMask }));
   const guardType = T.guardsOf(form);
   checks.unshift({ id: "guards.type", label: "every guard holds on the type", pass: guardType.ok, value: guardType.ok ? "ok" : guardType.problems, threshold: "no problem" });
   let sweep = null;
@@ -47,7 +48,11 @@ for (const key of species) {
     T.writeFileSync(path.join(T.OUT, `sheet-${key}-${T.SIZE_NAMES[s]}.png`), T.encodeRGBA(T.sheet(`${form.name} ${form.id} ${s} px  overlap at 48 px: new ${ovNew.o48.toFixed(2)}, current rig ${ovRig.o48.toFixed(2)}`, panels, zoomOf[s])));
   }
   images[key] = { stands, r, rig };
-  record[key] = { name: form.name, id: form.id, overlap: { new: ovNew, rig: { ...ovRig, view: rig.view, mirror: rig.mirror }, target: T.OVERLAP_TARGET[key] }, checks, corners: sweep ? { n: sweep.corners, failed: sweep.failed.length } : null, visibility: vis, timing, voxel: { v304: sc304.mesh.voxel, v120: sc120.mesh.voxel }, vertices: sc304.mesh.vertices.length / 3, repairs: sc304.mesh.repairs };
+  const B = sc304.built, fmod = sc304.field.faceM;
+  const faceTable = [304, 96, 48].map((sk) => { const rr = r[sk], f = rr.features; let nosePx = 0, mouthPx = 0, platePx = 0; for (let i = 0; i < rr.ink.length; i++) { if (rr.ink[i] === 6) nosePx++; if (rr.ink[i] === 8) mouthPx++; if (rr.plate[i] > 0 && rr.coverage[i] >= 0.5) platePx++; }
+    const cores = f ? f.eyes.filter((e) => e.visible).map((e) => e.core) : rr.meta.eyes.map((e) => Math.round(2 * e.r * 0.835 * 0.5)); const bx = f ? f.eyes.filter((e) => e.visible).map((e) => e.box).sort((p, q) => p[0] - q[0]) : [];
+    return { size: sk, cores, gap: bx.length === 2 ? bx[1][0] - bx[0][2] - 1 : "-", nosePx, mouthPx, platePx, dropped: f?.dropped ?? [] }; });
+  record[key] = { name: form.name, id: form.id, overlap: { new: ovNew, rig: { ...ovRig, view: rig.view, mirror: rig.mirror }, target: T.OVERLAP_TARGET[key] }, checks, corners: sweep ? { n: sweep.corners, failed: sweep.failed.length } : null, visibility: vis, timing, faceTable, limbs: { contacts: B.contacts.map((c) => ({ id: c.id, off: +(c.z - B.floor).toFixed(4) })), solves: B.solves ?? [], reaches: B.reaches ?? [], toes: B.branches.filter((x) => x.toe).length }, joins: T.transMetrics(form, B), texture: { 304: T.textureEnergy(r[304]), 96: T.textureEnergy(r[96]) }, voxel: { v304: sc304.mesh.voxel, v120: sc120.mesh.voxel }, vertices: sc304.mesh.vertices.length / 3, repairs: sc304.mesh.repairs };
   console.log(`${form.name}: overlap new ${ovNew.o48.toFixed(3)} (target ${T.OVERLAP_TARGET[key]}) current rig ${ovRig.o48.toFixed(3)}; ${checks.filter((c) => !c.pass).length} checks fail; ${timing.total} ms for the three sizes`);
 }
 T.writeContact(images, species);

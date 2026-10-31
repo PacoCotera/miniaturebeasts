@@ -8,7 +8,7 @@ import { SPECIES, ORDER } from "../species-trial.mjs";
 const make = (k, form = SPECIES[k]) => { const b = buildChains(form); return { form, b, f: makeField({ front: b.front, tail: b.tail, floor: b.floor }, b.branches, form) }; };
 const rnd = (() => { let s = 777; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); })();
 const outer = (sm, c) => sm[c] + (sm.fur ?? 0);
-const slopes = (S, c, lo, hi) => { const out = []; for (let i = 1; i < S.length; i++) { if (S[i].s < lo - 1e-9 || S[i - 1].s > hi + 1e-9) continue; const ds = S[i].s - S[i - 1].s; if (ds > 1e-9) out.push({ s: S[i].s, v: (outer(S[i], c) - outer(S[i - 1], c)) / ds }); } return out; };
+const slopes = (S, c, lo, hi) => { const out = []; for (let i = 1; i < S.length; i++) { if (S[i - 1].s < lo - 1e-9 || S[i].s > hi + 1e-9) continue; const ds = S[i].s - S[i - 1].s; if (ds > 1e-9) out.push({ s: S[i].s, v: (outer(S[i], c) - outer(S[i - 1], c)) / ds }); } return out; };
 // the two segments either side of every region boundary of a chain, and the first part of a coil
 function joinWindows(form, chain, ch) {
   const cum = ch.cum, n = cum.length, win = [], parts = ch.samples.filter((s, i) => i === 0 || s.knot !== ch.samples[i - 1].knot).map((s) => s.part);

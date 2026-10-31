@@ -99,6 +99,8 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
   // the mouth's ink: the darker of the nose ink and the plate pigment x 0.45 (design 2.5)
   const lum = (c) => 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2], plateC = (pig.patch ?? pig.belly ?? [128, 128, 128]).map((v) => v * 0.45), noseC = look.nose ?? [60, 50, 50];
   const mouthCol = lum(noseC) < lum(plateC) ? noseC : plateC;
+  // the catch light sits between the key light and the eye's own axis, so both eyes carry one inside their cap
+  const eyeH = eyes.map((e) => { const v = [Hh[0] * 0.45 + e.n[0] * 0.55, Hh[1] * 0.45 + e.n[1] * 0.55, Hh[2] * 0.45 + e.n[2] * 0.55], l = Math.hypot(...v); return v.map((x) => x / l); });
   const Mat = makeMaterial(form, sizeKey, scale, opts), groupNames = scene.field.groups.all.map((g) => g.id);
   const rimStrength = 0.15;
   const eyeCapCos = 0.55;
@@ -155,7 +157,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     let r = col[0] * k, g = col[1] * k, bl = col[2] * k;
     if (surf.sheen > 0) { const lt = mix(col, [255, 255, 255], 0.4); r += lt[0] * surf.sheen; g += lt[1] * surf.sheen; bl += lt[2] * surf.sheen; } // the anisotropic sheen, the pigment lightened 40 %
     if (surf.gloss > 0 && !partIsEye[part]) { const nh2 = Math.max(0, nx * Hh[0] + ny * Hh[1] + nz * Hh[2]), gl = surf.gloss * Math.pow(nh2, 24); r += (255 - r) * gl; g += (255 - g) * gl; bl += (255 - bl) * gl; } // a soft Blinn gloss
-    if (spec) { const nh = nx * Hh[0] + ny * Hh[1] + nz * Hh[2]; const s = sstep(0.975, 0.992, nh); r += (255 - r) * s; g += (255 - g) * s; bl += (255 - bl) * s; if (s > 0.5) inkCode = INK.catch; }
+    if (spec) { const eH = partIsEye[part] && A.eye[a] >= 0 ? eyeH[A.eye[a]] : Hh, nh = nx * eH[0] + ny * eH[1] + nz * eH[2]; const s = sstep(0.975, 0.992, nh); r += (255 - r) * s; g += (255 - g) * s; bl += (255 - bl) * s; if (s > 0.5) inkCode = INK.catch; }
     const px2 = Math.floor(sx2 / ss), py2 = Math.floor(sy2 / ss), po = py2 * W + px2;
     if (sizeKey !== 48 && Mat.kind !== "skin") { const f2 = Mat.flow(Tv, ctxM.sigma, ctxM.group, [nx, ny, nz]); flowS[po * 2] = f2[0] * rr[0] + f2[1] * rr[1] + f2[2] * rr[2]; flowS[po * 2 + 1] = -(f2[0] * uu[0] + f2[1] * uu[1] + f2[2] * uu[2]); }
     plateCov[po] += I(A.patch) > 0.5 ? 1 : 0;

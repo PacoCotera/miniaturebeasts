@@ -47,6 +47,27 @@ export const KINDS = {
   furDepth: (f, c, m) => { if (f.hair) f.hair.depth *= m; if (f.coat) f.coat.depth *= m; },
   // [hair flare]
   flare: (f, c, o) => { f.hair.flare += o; },
+  // ---- the new loci of design 6: face and marks (a lever at its type value changes nothing) ----
+  // [face-size: R_f x m; feature positions scale with it, eye size does not]
+  faceSize: (f, c, m) => { if (m !== 1) f.face.size = (f.face.size ?? 1) * m; },
+  // [face-height: sigma_f + o, a high or low face on a headless body]
+  faceHeight: (f, c, o) => { if (o) f.face.dy = (f.face.dy ?? 0) + o; },
+  // [nose-size: r_n x m]
+  noseSize: (f, c, m) => { if (m !== 1) f.face.nose.size = (f.face.nose.size ?? 1) * m; },
+  // [mouth-width: w_m x m]
+  mouthWidth: (f, c, m) => { if (m !== 1) f.face.mouth.wscale = (f.face.mouth.wscale ?? 1) * m; },
+  // [mouth-curve: s + o, kept in 0 ... 0.5 by the face model (no frown: a mood, not an inherited shape)]
+  mouthCurve: (f, c, o) => { if (o) f.face.mouth.sOff = (f.face.mouth.sOff ?? 0) + o; },
+  // [eye-spacing: e_x x m, along b_f]
+  eyeSpacing: (f, c, m) => { if (m !== 1) f.face.eyes.spacing = (f.face.eyes.spacing ?? 1) * m; },
+  // [belly-extent: beta x m]
+  bellyExtent: (f, c, m) => { if (m !== 1) f.face.belly.beta *= m; },
+  // [spot-density: the share of the species' spots shown, type 0.7]
+  spotDensity: (f, c, o) => { if (o) { const mk = f.look.marks.find((x) => x.kind === "spots"); mk.density = (mk.density ?? 0.7) + o; } },
+  // [spot-size: r x m] [stripe-width: share + o] [mark-extent: socks and tip share + o]: in the catalogue, carried by none of the five
+  spotSize: (f, c, m) => { if (m !== 1) for (const mk of f.look.marks.filter((x) => x.kind === "spots")) mk.r *= m; },
+  stripeWidth: (f, c, o) => { if (o) for (const mk of f.look.marks.filter((x) => x.kind === "stripes")) mk.width += o; },
+  markExtent: (f, c, o) => { if (o) for (const mk of f.look.marks.filter((x) => x.kind === "socks" || x.kind === "tips")) mk.share += o; },
   // [fringe-gap: the gap above the eyes in eye radii, x m (design 2.6)]
   fringeGap: (f, c, m) => { f.face.opening.gap *= m; },
 };
@@ -61,14 +82,24 @@ export const LEVERS = {
     R("bend", "mult", "bend", [0.6, 1.4], { knots: ["belly", "chest", "chin", "head", "cap"] }, ["front.belly", "front.chest", "front.chin", "front.head", "front.cap"], "Body: the S"),
     R("muzzle", "mult", "length", [0.7, 1.6], { knots: ["cap"] }, ["front.cap"], "Snout: flat face to button snout"),
     R("eye-size", "mult", "eyeSize", [0.85, 1.2], {}, ["face.eyes"], "Eyes"),
+    R("eye-spacing", "mult", "eyeSpacing", [0.85, 1.15], {}, ["face.eyes"], "Eyes: spacing along b_f"),
     R("coil", "off", "coil", [-0.15, 0.35], { chain: "tail" }, ["tail.coil"], "Curl: coil N .8 ... 1.3 (restored: W 4.5 and L 2.2 hold the whorl guard at 1.3)"),
+    R("mouth-width", "mult", "mouthWidth", [0.8, 1.25], {}, ["face.mouth"], "Mouth: the w wider or narrower"),
+    R("mouth-curve", "off", "mouthCurve", [-0.2, 0.2], {}, ["face.mouth"], "Mouth: straight to round"),
+    R("belly-extent", "mult", "bellyExtent", [0.8, 1.2], {}, ["face.belly"], "Belly: narrow or wide cream belly"),
+    R("face-size", "mult", "faceSize", [0.85, 1.2], {}, ["face.size"], "Face: size"),
   ],
   wickle: [
-    R("girth", "mult", "girth", [0.92, 1.1], { knots: ["pelvis", "belly", "shoulder", "face"] }, ["front.pelvis", "front.belly", "front.shoulder", "front.face"], "Build: girth"),
-    R("build", "mult", "build", [0.92, 1.08], { knots: ["pelvis", "belly", "shoulder", "face"] }, ["front.pelvis", "front.belly", "front.shoulder", "front.face"], "Build: build"),
-    R("mass", "mult", "mass", [0.9, 1.1], { pelvis: ["pelvis", "belly"], chest: ["shoulder", "face"] }, ["front.pelvis", "front.belly", "front.shoulder", "front.face"], "Drop: low and full, or high-shouldered"),
+    R("girth", "mult", "girth", [0.92, 1.1], { knots: ["pelvis", "belly", "shoulder", "face", "top", "mid", "end"] }, ["front.pelvis", "front.belly", "front.shoulder", "front.face", "front.top", "front.mid", "front.end"], "Build: girth (the plume follows, so the join slope and the coil start hold at the corners)"),
+    R("build", "mult", "build", [0.92, 1.08], { knots: ["pelvis", "belly", "shoulder", "face", "top", "mid", "end"] }, ["front.pelvis", "front.belly", "front.shoulder", "front.face", "front.top", "front.mid", "front.end"], "Build: build (the plume follows)"),
+    R("mass", "mult", "mass", [0.9, 1.1], { pelvis: ["pelvis", "belly"], chest: ["shoulder", "face", "top", "mid", "end"] }, ["front.pelvis", "front.belly", "front.shoulder", "front.face", "front.top", "front.mid", "front.end"], "Drop: low and full, or high-shouldered (the plume follows the shoulders)"),
     R("eye-size", "mult", "eyeSize", [0.85, 1.2], {}, ["face.eyes"], "Eyes"),
     R("coil", "off", "coil", [-0.4, 0.3], { chain: "front" }, ["front.coil"], "Curl: coil N .9 ... 1.6"),
+    R("eye-spacing", "mult", "eyeSpacing", [0.85, 1.15], {}, ["face.eyes"], "Eyes: spacing along b_f"),
+    R("face-size", "mult", "faceSize", [0.85, 1.2], {}, ["face.size"], "Face: size"),
+    R("face-height", "off", "faceHeight", [-0.1, 0.1], {}, ["face.dy"], "Face: high or low on the body"),
+    R("nose-size", "mult", "noseSize", [0.8, 1.3], {}, ["face.nose"], "Nose: tiny button to clear one"),
+    R("mouth-curve", "off", "mouthCurve", [-0.2, 0.2], {}, ["face.mouth"], "Mouth: straight to round smile"),
   ],
   drapet: [
     R("girth", "mult", "girth", [0.92, 1.1], { knots: ["pelvis", "lower", "upper", "top"] }, ["front.pelvis", "front.lower", "front.upper", "front.top"], "Build: girth"),
@@ -78,6 +109,9 @@ export const LEVERS = {
     R("fur-depth", "mult", "furDepth", [0.8, 1.25], {}, ["hair.depth"], "Fluff"),
     R("flare", "off", "flare", [-0.03, 0.1], {}, ["hair.flare"], "Hang: the hem zone only"),
     R("fringe-gap", "mult", "fringeGap", [0.5, 2.5], {}, ["face.opening"], "Fringe: the gap above the eyes, 0.3 ... 1.5 eye radii"),
+    R("eye-spacing", "mult", "eyeSpacing", [0.85, 1.15], {}, ["face.eyes"], "Eyes: spacing along b_f"),
+    R("face-height", "off", "faceHeight", [-0.1, 0.1], {}, ["face.dy"], "Face: high or low on the dome"),
+    R("nose-size", "mult", "noseSize", [0.8, 1.3], {}, ["face.nose"], "Nose"),
   ],
   loika: [
     R("eye-size", "mult", "eyeSize", [1, 1.3], {}, ["face.eyes"], "Eyes: large ... huge"),
@@ -92,8 +126,14 @@ export const LEVERS = {
     R("neck", "mult", "neck", [0.8, 1.2], { knots: ["neckbase", "throat"] }, ["front.neckbase", "front.throat"], "Waist: neck"),
     R("ear-droop", "off", "droop", [0, 0.4], { chain: "ear", knots: ["ear1", "tip"] }, ["ear.ear1", "ear.tip"], "Ear tilt"),
     R("horn-coil", "off", "hornCoil", [0, 1.2], { chain: "horn" }, ["horn.coil"], "Horns: 0 ... 1.2 turns"),
+    R("spot-density", "off", "spotDensity", [-0.3, 0.3], {}, ["look.marks"], "Spots: 0.4 ... 1.0 of the list shown (type 0.7)"),
+    R("belly-extent", "mult", "bellyExtent", [0.8, 1.2], {}, ["face.belly"], "Belly: narrow or wide white belly"),
   ],
 };
+// the face levers are judged by face ink at 304, the mark levers by mark pixels at 96, the rest by the silhouette at 96 (design 6)
+export const LEVER_CLASS = { "eye-size": "face", "eye-spacing": "face", "face-size": "face", "face-height": "face", "nose-size": "face", "mouth-width": "face", "mouth-curve": "face", "fringe-gap": "face", "spot-density": "mark", "belly-extent": "mark" };
+// Levers locked after the visibility report (the numbers are in the report): { species: { lever: reason } }. A lever that misses is locked, never narrowed.
+export const LOCKED = {};
 
 // ---- values ---------------------------------------------------------------------------------------------------
 export const valueOf = (lever, t) => {
@@ -130,7 +170,20 @@ export function corner(key, mask) {
   LEVERS[key].forEach((l, i) => { const t = (mask >> i) & 1; copies[l.id] = [t, t]; });
   return formOf(key, copies);
 }
-export const cornerCount = (key) => 2 ** LEVERS[key].length;
+export const cornerCount = (key) => (LEVERS[key].length <= 10 ? 2 ** LEVERS[key].length : 512);
+// The corners of the open ranges (design 6): 2^k masks for k <= 10, otherwise 512 Latin-hypercube points (one stratum per point and lever,
+// a deterministic shuffle per lever). Each is a { lever: [t, t] } copies object.
+const lcg = (seed) => { let s = seed >>> 0; return () => ((s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296); };
+export function cornerCopies(key, i) {
+  const ls = LEVERS[key], k = ls.length, copies = {};
+  if (k <= 10) { ls.forEach((l, j) => { const t = (i >> j) & 1; copies[l.id] = [t, t]; }); return copies; }
+  const N = 512; ls.forEach((l, j) => { // the stratum of point i for lever j: a fixed permutation of 0..N-1 (an affine map mod N with an odd multiplier)
+    const mult = 2 * Math.floor(lcg(j + 11)() * 100000) + 1, off = Math.floor(lcg(j + 77)() * N), stratum = (((i * mult + off) % N) + N) % N, u = lcg(i * 31 + j)();
+    const t = (stratum + u) / N; copies[l.id] = [t, t];
+  });
+  return copies;
+}
+export const cornerForm = (key, i) => formOf(key, { ...typeCopies(key), ...cornerCopies(key, i) });
 // every lever at its type except one, at t
 export function single(key, id, t) {
   const copies = typeCopies(key); copies[id] = [t, t];

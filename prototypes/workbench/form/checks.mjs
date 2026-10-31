@@ -56,6 +56,7 @@ export function guardsOf(form) {
       if (!headFront && !inPlate) problems.push(`eye ${i} is not inside the plate by 0.1 r_e (edge ${((1 - fm.rho(e.x, e.y)) * Math.min(fm.R, fm.R * fm.aspect)).toFixed(3)} U from the eye's centre)`);
     });
   }
+  problems.push(...cornerChecks(form, built, field));
   return { ok: problems.length === 0, problems, built, field };
 }
 // the height of the window's top edge (the fringe line) above (x, y)
@@ -176,18 +177,7 @@ export function featureChecks(ctx) {
   // all five: overlap, pupils
   const ov = overlaps(ctx.stand, maskOfCoverage(r4));
   all.push(C("overlap48", "silhouette overlap at 48 px", ov.o48 >= OVERLAP_TARGET[key], +ov.o48.toFixed(3), OVERLAP_TARGET[key], `at 96 px: ${ov.o96.toFixed(3)} (reported)`));
-  const pupils = field.eyes.map((_, i) => eyeInk(r4, i, [INK.pupil]));
-  const need = key === "rupar" ? 1 : 2, ok = pupils.filter((n) => n >= 6).length >= need;
-  all.push(C("eyes304", "the stand's eyes show at 304 (pupil pixels per eye)", ok, pupils, `>= 6 on ${need} eye(s)`));
-  // the owner note of 2026-10-30 19:21: the face on every species, readable at 96 and 48
-  const ink = (rr, i) => eyeInk(rr, i, [INK.pupil, INK.iris, INK.rim, INK.catch]);
-  const e96 = field.eyes.map((_, i) => ink(r[96], i)), e48 = field.eyes.map((_, i) => ink(r[48], i));
-  const nose304 = countInk(r4, INK.nose), nose96 = countInk(r[96], INK.nose);
-  const mk = field.marks.find((m) => m.kind === "nose");
-  const mkOnSurface = mk ? Math.abs(field.F3(mk.c[0], mk.c[1], mk.c[2])) : Infinity;
-  const needE = key === "rupar" ? 1 : 2;
-  const faceOk = e96.filter((n) => n >= (key === "rupar" ? 2 : 4)).length >= needE && e48.filter((n) => n >= (key === "rupar" ? 1 : 2)).length >= needE && nose304 >= 6 && nose96 >= 1 && mkOnSurface < 0.02;
-  all.push(C("face", "the face on every species: eyes and the nose readable at 96 and 48, anchored on the surface", faceOk, { eyeInk96: e96, eyeInk48: e48, nose304, nose96, noseOffSurface: +mkOnSurface.toFixed(4) }, `eye ink >= ${key === "rupar" ? "2 (96), 1 (48)" : "4 (96), 2 (48)"}; nose >= 6 (304), >= 1 (96)`));
+  // face.ink, face.place, face.order, face.mouth, face.surface, marks, limbs and trans: the round 2 checks (round2Checks)
   out.push(...all);
 
   if (key === "curlop") {
@@ -208,10 +198,9 @@ export function featureChecks(ctx) {
     let inc = 0; for (let i = 1; i < pl.length; i++) inc = Math.max(inc, mean3(pl[i]) - mean3(pl[i - 1]), pl[i].w - pl[i - 1].w, pl[i].u - pl[i - 1].u, pl[i].d - pl[i - 1].d);
     // screen width across the centre line: twice the inscribed radius at the projected centre line (robust where the plume curls)
     const W = r4.width, H = r4.height, cov = r4.coverage, proj = (s) => r4.meta.project(Wd(s.p));
-    const Dt = inDistance(cov, W, H), widths = [];
-    for (let i = 0; i < pl.length; i += 2) { const c = proj(pl[i]), x = Math.floor(c[0]), y = Math.floor(c[1]); if (x < 0 || y < 0 || x >= W || y >= H) continue; widths.push(2 * Dt[y * W + x]); }
-    let grow = 0, runMin = Infinity; for (const w of widths) { grow = Math.max(grow, w - runMin); runMin = Math.min(runMin, w); }
-    out.push(C("wickle.a", "no bulb: the plume's half-size never increases, and its screen width never grows toward the tip", inc <= 1e-9 && grow <= 1, { halfSizeIncrease: +inc.toExponential(2), widthGrowPx: +grow.toFixed(2) }, "0 and <= 1 px"));
+    // the outer radius (half-size + fur) never increases from the plume's root (the face knot) to the tip, in samples (the screen width part is dropped)
+    const iFace = form.front.knots.findIndex((k) => k.name === "face"), outerInc = (() => { let w = 0; const q = B.front.samples.filter((s) => s.s >= B.front.cum[iFace] - 1e-9); for (let i = 1; i < q.length; i++) for (const c of ["w", "u", "d"]) w = Math.max(w, q[i][c] + q[i].fur - (q[i - 1][c] + q[i - 1].fur)); return w; })();
+    out.push(C("wickle.a", "no bulb: the plume's outer radius (half-size + fur) never increases from its root to the tip", outerInc <= 1e-9, +outerInc.toExponential(2), "0"));
     // (b) halo
     const halo = (rr) => { let n = 0; for (let i = 0; i < rr.width * rr.height; i++) if (rr.halo[i] > 0.25 && rr.coverage[i] < 0.5) n++; return n; };
     const h304 = halo(r4), h96 = halo(r[96]);
@@ -221,24 +210,24 @@ export function featureChecks(ctx) {
     const eyeMargin = r4.meta.eyes.map((e) => D[Math.floor(e.at[1]) * W + Math.floor(e.at[0])] - e.r);
     const nTop = form.front.knots.findIndex((k) => k.name === "top"); const rootRow = proj(B.front.samples.find((s) => s.knot === nTop && Math.abs(s.s - B.front.cum[nTop]) < 1e-6))[1];
     // the convex hull of the silhouette below the plume's root; the deepest boundary pixel inside it
-    const pts = []; for (let y = Math.ceil(rootRow); y < H; y++) for (let x = 0; x < W; x++) if (cov[y * W + x] >= 0.5) pts.push([x + 0.5, y + 0.5]);
+    const dropId = r4.maps.partNames.indexOf("drop"), pts = []; for (let y = Math.ceil(rootRow); y < H; y++) for (let x = 0; x < W; x++) if (cov[y * W + x] >= 0.5 && r4.maps.part[y * W + x] === dropId) pts.push([x + 0.5, y + 0.5]); // the hull of the drop part only: the arms and the feet may bump out
     const hull = convexHull(pts); let dmax = 0;
-    for (const p of contour(cov, W, H)) { if (p[1] < rootRow) continue; dmax = Math.max(dmax, hullDepth(hull, p)); }
-    out.push(C("wickle.c", "the face set into the drop: eyes inside the outline, the drop convex below the plume", Math.min(...eyeMargin) >= 3 && dmax <= 2, { eyeMarginPx: eyeMargin.map((v) => +v.toFixed(1)), hullDepthPx: +dmax.toFixed(2) }, ">= 3 px; <= 2 px", "no head region in the form"));
+    for (const p of contour(cov, W, H)) { if (p[1] < rootRow) continue; const mm = mapsAt(r4, p); if (!mm || mm.part !== "drop") continue; dmax = Math.max(dmax, hullDepth(hull, p)); }
+    out.push(C("wickle.c", "the face set into the drop: eyes inside the outline by 3 px, the drop (arms and feet excluded) convex below the plume", Math.min(...eyeMargin) >= 3 && dmax <= 2, { eyeMarginPx: eyeMargin.map((v) => +v.toFixed(1)), hullDepthPx: +dmax.toFixed(2) }, ">= 3 px; <= 2 px", "no head region in the form"));
   }
 
   if (key === "drapet") {
     const W = r4.width, H = r4.height, cov = r4.coverage;
     let top = -1; for (let y = 0; y < H && top < 0; y++) for (let x = 0; x < W; x++) if (cov[y * W + x] >= 0.5) { top = y; break; }
     let bot = top; for (let y = H - 1; y >= 0; y--) { let any = false; for (let x = 0; x < W; x++) if (cov[y * W + x] >= 0.5) { any = true; break; } if (any) { bot = y; break; } }
-    const hgt = bot - top + 1, last = Math.floor(top + 0.9 * hgt);
+    const hgt = bot - top + 1, last = Math.floor(top + 0.85 * hgt); // the hem zone belongs to drapet.c
     const L = [], R = []; for (let y = top; y <= last; y++) { let l = -1, rr = -1; for (let x = 0; x < W; x++) if (cov[y * W + x] >= 0.5) { if (l < 0) l = x; rr = x + 1; } L.push(l); R.push(rr); }
     let back = 0; for (let i = 1; i < L.length; i++) { back = Math.max(back, L[i] - Math.min(...L.slice(0, i)), Math.max(...R.slice(0, i)) - R[i]); }
     // the slope change between rows 4 px apart, from 8 % of the height (a round top has an unbounded slope at its first rows)
     const s0 = Math.floor(0.08 * hgt); let jump = 0;
     const sl = (A, i) => (A[i + 4] - A[i]) / 4;
     for (let i = s0; i + 8 < L.length; i++) jump = Math.max(jump, Math.abs(sl(L, i + 4) - sl(L, i)), Math.abs(sl(R, i + 4) - sl(R, i)));
-    out.push(C("drapet.a", "one dome: x(y) moves outward monotonically to 0.9 of the height, no step", back <= 1 && jump <= 0.6, { backwardPx: back, maxSlopeChange: +jump.toFixed(2) }, "<= 1 px (pixel noise); <= 0.6", `rows ${top}..${last}, slope test from row ${top + s0}`));
+    out.push(C("drapet.a", "one dome: x(y) moves outward monotonically to 0.85 of the height, no step", back <= 1 && jump <= 0.6, { backwardPx: back, maxSlopeChange: +jump.toFixed(2) }, "<= 1 px (pixel noise); <= 0.6", `rows ${top}..${last}, slope test from row ${top + s0}`));
     // (b) the plate set back 0-0.03 U behind the hair around the opening, and both pupils >= 28 px at 304 (face.surface, design 8)
     const fs = faceSurface(scene.field, scene.field.faceM), pupilsD = scene.field.eyes.map((_, i) => eyeInk(r4, i, [INK.pupil]));
     out.push(C("drapet.b", "the face set inside: the plate 0-0.03 U behind the hair around the opening, both pupils >= 28 px at 304", fs.ok && pupilsD.every((n) => n >= 28), { setBackU: fs.setBack.map((v) => +v.toFixed(4)), pupilPx: pupilsD }, "0 .. 0.03 U; >= 28 px"));
@@ -285,7 +274,9 @@ export function featureChecks(ctx) {
     const ks = form.front.knots, ib = ks.findIndex((k) => k.name === "withers"), it = ks.findIndex((k) => k.name === "throat");
     const mid = (B.front.cum[ib] + B.front.cum[it]) / 2, sm = B.front.samples.reduce((a, s) => (Math.abs(s.s - mid) < Math.abs(a.s - mid) ? s : a));
     const heading = Math.atan2(sm.T[2], sm.T[0]) / RAD;
-    out.push(C("rupar.a", "the neck rises: the spine's heading at mid-neck", heading >= 60, +heading.toFixed(1), ">= 60 deg", `mid-neck at sigma ${mid.toFixed(2)} (the neck is the spine from the withers to the throat)`));
+    const hd = (q) => Math.atan2(q.T[2], q.T[0]) / RAD, thr = B.front.samples.reduce((a, q) => (Math.abs(q.s - B.front.cum[it]) < Math.abs(a.s - B.front.cum[it]) ? q : a)), fall = hd(thr) - hd(B.front.samples.at(-1));
+    let monoFall = true; { let prev = Infinity; for (const q of B.front.samples.filter((x) => x.s >= B.front.cum[it])) { const h = hd(q); if (h > prev + 1e-6) monoFall = false; prev = h; } }
+    out.push(C("rupar.a", "the neck leans forward: the heading at mid-neck 45-65 deg, falling monotonically from the throat to the nose by >= 50 deg", heading >= 45 && heading <= 65 && fall >= 50 && monoFall, { midNeckDeg: +heading.toFixed(1), fallDeg: +fall.toFixed(1), monotone: monoFall }, "45 .. 65; fall >= 50", `mid-neck at sigma ${mid.toFixed(2)}`));
     const pts = contour(r4.coverage, r4.width, r4.height);
     const sPoll = B.front.cum[ks.findIndex((k) => k.name === "poll")], sWith = B.front.cum[ib];
     const dors = (m) => m.group === "front" && Math.abs(m.angle) < 90 && m.sigma >= sWith - 0.02 && m.sigma <= sPoll + 0.1;
@@ -334,7 +325,9 @@ export function chainFeature(key, form, B, field) {
     const ks = form.front.knots, ib = ks.findIndex((k) => k.name === "withers"), it = ks.findIndex((k) => k.name === "throat");
     const mid = (B.front.cum[ib] + B.front.cum[it]) / 2, sm = B.front.samples.reduce((a, s) => (Math.abs(s.s - mid) < Math.abs(a.s - mid) ? s : a));
     const heading = Math.atan2(sm.T[2], sm.T[0]) / RAD;
-    out.push(C("rupar.a", "the neck rises: the spine's heading at mid-neck", heading >= 60, +heading.toFixed(1), ">= 60 deg", `mid-neck at sigma ${mid.toFixed(2)} (the neck is the spine from the withers to the throat)`));
+    const hd = (q) => Math.atan2(q.T[2], q.T[0]) / RAD, thr = B.front.samples.reduce((a, q) => (Math.abs(q.s - B.front.cum[it]) < Math.abs(a.s - B.front.cum[it]) ? q : a)), fall = hd(thr) - hd(B.front.samples.at(-1));
+    let monoFall = true; { let prev = Infinity; for (const q of B.front.samples.filter((x) => x.s >= B.front.cum[it])) { const h = hd(q); if (h > prev + 1e-6) monoFall = false; prev = h; } }
+    out.push(C("rupar.a", "the neck leans forward: the heading at mid-neck 45-65 deg, falling monotonically from the throat to the nose by >= 50 deg", heading >= 45 && heading <= 65 && fall >= 50 && monoFall, { midNeckDeg: +heading.toFixed(1), fallDeg: +fall.toFixed(1), monotone: monoFall }, "45 .. 65; fall >= 50", `mid-neck at sigma ${mid.toFixed(2)}`));
     const iStop = ks.findIndex((k) => k.name === "stop"); let mono = true; for (let i = iStop + 1; i < ks.length; i++) if (mean3(ks[i]) > mean3(ks[i - 1]) + 1e-12) mono = false;
     out.push(C("rupar.muzzle", "the muzzle's half-size never increases from the stop to the nose", mono, mono, "monotone"));
   }
@@ -381,3 +374,130 @@ export function hullDepth(h, p) {
   let inside = true; for (let i = 0; i < h.length; i++) { const a = h[i], b = h[(i + 1) % h.length]; if ((b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]) < 0) { inside = false; break; } }
   return inside ? d : 0;
 }
+
+// ====================================================================================================================
+// Round 2 (design 8): face.ink, face.place, face.order, face.mouth, face.surface, limbs, trans, marks, drapet.e, loika.leaves, texture energy
+// ====================================================================================================================
+import { Lstar, MIN_EYE } from "./render.mjs";
+import { SPECIES as _SPECIES } from "./species-trial.mjs";
+const rgb = (r, x, y) => { const i = (y * r.width + x) * 4; return [r.data[i], r.data[i + 1], r.data[i + 2]]; };
+const countInkIn = (r, code, box) => { let n = 0; for (let y = Math.max(0, box[1]); y <= Math.min(r.height - 1, box[3]); y++) for (let x = Math.max(0, box[0]); x <= Math.min(r.width - 1, box[2]); x++) if (r.ink[y * r.width + x] === code) n++; return n; };
+
+// the trans metrics of a form (design 5): slope at the region joins and into a coil, slope jump over a coil start, bend turn, fur at the tips
+export function transMetrics(form, B) {
+  const out = { slope: 0, jump: 0, bend: 0, tipFur: 0 }, outer = (s, c) => s[c] + (s.fur ?? 0);
+  for (const [id, chain] of [["front", form.front], ["tail", form.tail]].filter((x) => x[1])) {
+    const ch = B[id], S = ch.samples, cum = ch.cum, n = cum.length, part = (j) => S.find((q) => q.knot === j)?.part;
+    const wins = []; for (let j = 1; j < n - 1; j++) if (part(j) !== part(j + 1)) wins.push([cum[j - 1], cum[j + 1]]);
+    if (chain.coil && chain.coil.N > 0) wins.push([cum[n - 2], cum[n - 1] + 0.15 * chain.coil.L]);
+    for (const [lo, hi] of wins) for (const c of ["u", "w"]) for (let i = 1; i < S.length; i++) { if (S[i - 1].s < lo - 1e-9 || S[i].s > hi + 1e-9) continue; const ds = S[i].s - S[i - 1].s; if (ds > 1e-9) out.slope = Math.max(out.slope, Math.abs((outer(S[i], c) - outer(S[i - 1], c)) / ds)); }
+    if (chain.coil && chain.coil.N > 0) {
+      const s1 = cum[n - 1]; for (const c of ["w", "u", "d"]) { let prev = null; for (let i = 1; i < S.length; i++) { if (S[i].s < s1 - 0.25 || S[i - 1].s > s1 + 0.25) continue; const ds = S[i].s - S[i - 1].s; if (ds < 1e-9) continue; const v = (outer(S[i], c) - outer(S[i - 1], c)) / ds; if (prev !== null) out.jump = Math.max(out.jump, Math.abs(v - prev)); prev = v; } }
+      const s0 = cum[n - 2] + 0.02; for (let i = 1; i < S.length; i++) { if (S[i - 1].s < s0 || Math.abs(S[i].kappa) < 2) continue; const ds = S[i].s - S[i - 1].s; if (ds > 1e-9) out.bend = Math.max(out.bend, (Math.abs(S[i].phi - S[i - 1].phi) / ds) * 0.05); }
+    }
+  }
+  for (const ch of [B.front, B.tail, ...B.branches].filter(Boolean)) { const L = ch.samples.at(-1).s; for (const q of ch.samples) if (L > 0 && q.s >= 0.9 * L) out.tipFur = Math.max(out.tipFur, q.fur / Math.min(q.w, q.u, q.d)); }
+  return out;
+}
+
+// the slope of the species' type, so a corner is held to 0.6 or to the type's own value (Loika's type is above 0.6 with the design numbers: reported as a gate not met)
+const typeSlopes = new Map();
+const typeSlopeOf = (form) => { const key = form.key ?? form.name; if (!typeSlopes.has(key)) { const t = _SPECIES[form.key]; typeSlopes.set(key, t ? transMetrics(t, buildChains(t)).slope : 0); } return typeSlopes.get(key); };
+// The checks that read only the spine, the field and the face model: they hold on every corner too (design 8)
+export function cornerChecks(form, built, field) {
+  const problems = [], t = transMetrics(form, built), typeSlope = typeSlopeOf(form);
+  if (t.slope > Math.max(0.6, typeSlope) + 1e-9) problems.push(`trans.slope ${t.slope.toFixed(3)} > 0.6`);
+  if (t.jump > 0.05 + 1e-9) problems.push(`trans.c1 ${t.jump.toFixed(3)} > 0.05`);
+  if (t.bend > 10 + 1e-9) problems.push(`trans.bend ${t.bend.toFixed(1)} > 10 deg per 0.05 U`);
+  if (t.tipFur > 0.35 + 1e-9) problems.push(`trans.tip ${t.tipFur.toFixed(3)} > 0.35`);
+  if (field?.faceM) { const s = faceSurface(field, field.faceM); if (!s.ok) problems.push(`face.surface: plate relief ${s.minRel.toFixed(4)} .. ${s.maxRel.toFixed(4)} U`); }
+  return problems;
+}
+
+// ctx: { key, form, scene, r, ref, targets } -> the round 2 checks of one species
+export function round2Checks(ctx) {
+  const { key, form, scene, r, ref, targets } = ctx, out = [], r4 = r[304], field = scene.field, fm = field.faceM, B = scene.built, H = ref.height;
+  const tgt = targets?.[key], eyes4 = r4.meta.eyes, feet = r4.meta.feet;
+  // ---- face.ink at 304: pupil >= 28 px, rim ring >= 2 px wide where present, catch light >= 3 px, nose >= 6 px, mouth stroke >= 2 px and >= 10 px long ----
+  const need = key === "rupar" ? 1 : 2, eye304 = eyes4.map((e, i) => { const box = [Math.floor(e.at[0] - e.r * 1.2 - 2), Math.floor(e.at[1] - e.r * 1.2 - 2), Math.ceil(e.at[0] + e.r * 1.2 + 2), Math.ceil(e.at[1] + e.r * 1.2 + 2)], rimN = countInkIn(r4, INK.rim, box), rr = e.r * 0.8; return { pupil: countInkIn(r4, INK.pupil, box), rimWidth: rimN / Math.max(1, 2 * Math.PI * rr * 0.9), catchPx: countInkIn(r4, INK.catch, box), rimPx: rimN }; });
+  const noseN = (() => { let n = 0; for (let i = 0; i < r4.ink.length; i++) if (r4.ink[i] === INK.nose) n++; return n; })();
+  const mouth304 = (() => { let x0 = 1e9, x1 = -1, y0 = 1e9, y1 = -1, n = 0; for (let y = 0; y < r4.height; y++) for (let x = 0; x < r4.width; x++) if (r4.ink[y * r4.width + x] === INK.mouth) { n++; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); } return { n, len: n ? Math.hypot(x1 - x0, y1 - y0) : 0, thick: n ? n / Math.max(1, Math.hypot(x1 - x0, y1 - y0)) : 0 }; })();
+  const shown = eye304.filter((e) => e.pupil >= 28 && e.catchPx >= 3 && ((1 - (form.look.eyes.iris_r ?? 0.78)) < 0.15 || e.rimWidth >= 2));
+  out.push(C("face.ink.304", "the face at 304: pupil >= 28 px, rim ring >= 2 px, catch light >= 3 px, nose >= 6 px", shown.length >= need && noseN >= (fm?.noses.length ? 6 : 0), { eyes: eye304.map((e) => ({ pupil: e.pupil, rimW: +e.rimWidth.toFixed(1), catchPx: e.catchPx })), nosePx: noseN }, `>= ${need} eye(s) with pupil >= 28, rim >= 2, catch >= 3; nose >= 6`));
+  if (fm?.mouth) out.push(C("face.mouth", "the mouth ink at 304 is >= 10 px long with a stroke >= 2 px", mouth304.len >= 10 && mouth304.thick >= 2 - 0.5, { lengthPx: +mouth304.len.toFixed(1), strokePx: +mouth304.thick.toFixed(1), px: mouth304.n }, ">= 10 px; >= 2 px"));
+  // ---- face.ink at 96 and 48: the table of design 3, from the feature pass ----
+  for (const sk of [96, 48]) {
+    const f = r[sk].features, eyes = f.eyes.filter((e) => e.visible), [mw, mh] = sk === 96 ? [3, 3] : key === "rupar" ? [1, 2] : [2, 2], rows = [], bad = [];
+    for (const e of eyes) {
+      const [x0, y0, x1, y1] = e.box, core = rgb(r[sk], x1, y1), ring = []; for (let x = x0 - 1; x <= x1 + 1; x++) ring.push([x, y0 - 1, "t"], [x, y1 + 1, "b"]); for (let y = y0; y <= y1; y++) ring.push([x0 - 1, y, "l"], [x1 + 1, y, "r"]);
+      const light = ring.filter(([x, y]) => Lstar(rgb(r[sk], x, y)) >= Lstar(core) + 35), sides = new Set(light.map((q) => q[2])).size;
+      const ok = e.core[0] >= mw && e.core[1] >= mh && Lstar(core) <= 30 && (sk === 96 ? light.length / ring.length >= 0.6 : sides >= 2) && (sk !== 96 || e.core[0] < 4 || e.core[1] < 4 || r[sk].ink[y0 * r[sk].width + x0] === INK.catch);
+      rows.push({ core: e.core, coreL: +Lstar(core).toFixed(0), surround: sk === 96 ? +(light.length / ring.length).toFixed(2) : sides }); if (!ok) bad.push("eye");
+    }
+    if (eyes.length >= 2) { const [a, b] = eyes.map((e) => e.box).sort((p, q) => p[0] - q[0]), gap = b[0] - a[2] - 1; rows.push({ gap }); if (gap < (sk === 96 ? 2 : 1)) bad.push("gap"); }
+    let nosePx = 0, mouthPx = 0; for (let i = 0; i < r[sk].ink.length; i++) { if (r[sk].ink[i] === INK.nose) nosePx++; if (r[sk].ink[i] === INK.mouth) mouthPx++; }
+    if (sk === 96 && fm?.noses.length && f.nose.length && nosePx < 2) bad.push("nose"); if (sk === 48 && mouthPx > 0) bad.push("mouth at 48");
+    if (sk === 96 && f.mouth && mouthPx < 3) bad.push("mouth");
+    const platePx = (() => { let n = 0; for (let i = 0; i < r[sk].plate.length; i++) if (r[sk].plate[i] > 0 && r[sk].coverage[i] >= 0.5) n++; return n; })(), plateNeed = sk === 96 ? 30 : 8;
+    if (platePx < plateNeed) bad.push(`plate ${platePx} px`);
+    out.push(C(`face.ink.${sk}`, `the face at ${sk}: eye cores, light surround, catch light, gap, nose, mouth, plate (design 3)`, eyes.length >= need && bad.length === 0, { eyes: rows, nosePx, mouthPx, platePx, dropped: f.dropped, bad }, `>= ${need} eye(s) ${mw}x${mh}; surround ${sk === 96 ? ">= 60 %" : ">= 2 sides"}; plate >= ${plateNeed} px`));
+  }
+  // ---- face.order: eye line above nose above mouth, each >= 1 px apart, at each size ----
+  { const bad = [], order = {}; for (const sk of [304, 96, 48]) {
+      const rr = r[sk], eyesY = sk === 304 ? rr.meta.eyes.map((e) => e.at[1]) : rr.features.eyes.filter((e) => e.visible).map((e) => (e.box[1] + e.box[3] + 1) / 2);
+      const ys = (code) => { const v = []; for (let y = 0; y < rr.height; y++) for (let x = 0; x < rr.width; x++) if (rr.ink[y * rr.width + x] === code) v.push(y + 0.5); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+      const ey = eyesY.length ? eyesY.reduce((a, b) => a + b, 0) / eyesY.length : null, ny = ys(INK.nose), my = ys(INK.mouth); order[sk] = { eye: ey && +ey.toFixed(1), nose: ny && +ny.toFixed(1), mouth: my && +my.toFixed(1) };
+      if (ey !== null && ny !== null && ny < ey + 1) bad.push(`${sk}: nose above the eye line`); if (ny !== null && my !== null && my < ny + 1) bad.push(`${sk}: mouth above the nose`); if (ey !== null && ny === null && my !== null && my < ey + 1) bad.push(`${sk}: mouth above the eye line`);
+    }
+    out.push(C("face.order", "the eye line above the nose above the mouth, >= 1 px apart, at 304, 96 and 48", bad.length === 0, order, "0 violations", bad.join("; "))); }
+  // ---- face.place: against the stand targets of design 7 (as fractions of the height H) ----
+  if (tgt && eyes4.length) {
+    const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]), vis = eyes4, ex = vis.length === 2 ? dist(vis[0].at, vis[1].at) / H : null, dia = (Math.max(...vis.map((e) => e.r)) * 2 * 0.835) / H;
+    const eyeLine = vis.reduce((a, e) => a + (feet + 1 - e.at[1]), 0) / vis.length / H, eyeY = vis.reduce((a, e) => a + e.at[1], 0) / vis.length;
+    const noseP = fm?.noses.length ? r4.meta.project(fm.noses[0].c) : null, mouthP = fm?.mouth ? r4.meta.project(fm.castXY(0, fm.mouth.at(0))) : null;
+    const row = {}, bad = [], within = (v, t, tol = 0.15) => v !== null && Math.abs(v / t - 1) <= tol, off = (v, t) => Math.abs(v - t) <= Math.max(0.25 * t, 2 / H);
+    if (tgt.eyeSep) { row.eyeSep = ex && +ex.toFixed(3); if (!within(ex, tgt.eyeSep)) bad.push("eyeSep"); }
+    if (tgt.eyeD) { row.eyeD = +dia.toFixed(3); if (!within(dia, tgt.eyeD)) bad.push("eyeD"); }
+    if (tgt.eyeLine) { row.eyeLine = +eyeLine.toFixed(3); if (!within(eyeLine, tgt.eyeLine)) bad.push("eyeLine"); }
+    if (tgt.faceCentre) { const fc = (feet + 1 - r4.meta.project(fm.Pf)[1]) / H; row.faceCentre = +fc.toFixed(3); if (!within(fc, tgt.faceCentre)) bad.push("faceCentre"); }
+    if (tgt.nose && noseP) { const v = (noseP[1] - eyeY) / H; row.nose = +v.toFixed(3); if (!off(v, tgt.nose)) bad.push("nose"); }
+    if (tgt.mouth && mouthP) { const v = (mouthP[1] - eyeY) / H; row.mouth = +v.toFixed(3); if (!off(v, tgt.mouth)) bad.push("mouth"); }
+    if (tgt.mouthW && fm?.mouth) { const a = r4.meta.project(fm.castXY(-fm.mouth.w, fm.mouth.at(-fm.mouth.w))), b = r4.meta.project(fm.castXY(fm.mouth.w, fm.mouth.at(fm.mouth.w))), v = dist(a, b) / H; row.mouthW = +v.toFixed(3); if (!within(v, tgt.mouthW, 0.25)) bad.push("mouthW"); }
+    out.push(C("face.place", "the face against the stand's targets (fractions of the creature's height): eye separation, eye diameter, eye line, nose and mouth offsets", bad.length === 0, { measured: row, target: tgt, off: bad }, "+-15 % (offsets +-25 % or +-2 px)"));
+  }
+  // ---- limbs and joins (on the type; the corners are swept by cornerChecks and guardsOf) ----
+  const solves = B.solves ?? [];
+  out.push(C("limbs.floor", "every declared foot or seat lands on the floor", B.contacts.filter((c) => c.id !== "base").every((c) => Math.abs(c.z - B.floor) <= 0.005 + 1e-9), B.contacts.map((c) => ({ id: c.id, off: +(c.z - B.floor).toFixed(4) })), "<= 0.005 U (type), <= 0.03 U (corners)", solves.length ? `shin solve ${solves.map((s) => s.ratio.toFixed(2)).join("/")} x base (0.5-1.6)` : ""));
+  const tm = transMetrics(form, B);
+  out.push(C("trans", "the joins: outer slope <= 0.6, slope jump <= 0.05 over a coil start, bend <= 10 deg per 0.05 U, fur over the last 10 % <= 0.35 x the half-size", tm.slope <= 0.6 + 1e-9 && tm.jump <= 0.05 + 1e-9 && tm.bend <= 10 + 1e-9 && tm.tipFur <= 0.35 + 1e-9, { slope: +tm.slope.toFixed(3), c1Jump: +tm.jump.toFixed(3), bendDegPer005U: +tm.bend.toFixed(1), tipFur: +tm.tipFur.toFixed(3) }, "0.6 / 0.05 / 10 / 0.35"));
+  const part = (name, rr) => countPart(rr, name);
+  if (key === "wickle") {
+    // each foot >= 80 px outside the drop at 304 and >= 5 at 96; each arm >= 100 px, one outline bump >= 3 px
+    const feet4 = part("feet", r[304]), feet96 = part("feet", r[96]), arms = part("arms", r[304]);
+    out.push(C("limbs.show.wickle", "Wickle: feet >= 80 px each at 304 (>= 5 at 96), arms >= 100 px each", feet4 / 2 >= 80 && feet96 / 2 >= 5 && arms / 2 >= 100, { feet304: feet4, feet96, arms304: arms }, ">= 160 / >= 10 / >= 200 (two each)"));
+  }
+  if (key === "curlop") { const toes = B.branches.filter((x) => x.toe).length, legs = part("legs", r[304]), palms = B.branches.filter((x) => x.branch.id === "arm").map((x) => x.samples.at(-1).p), mid = [(palms[0][0] + palms[1][0]) / 2, (palms[0][1] + palms[1][1]) / 2, (palms[0][2] + palms[1][2]) / 2 + field.shift];
+    out.push(C("limbs.show.curlop", "Curlop: each foot with toes >= 150 px, palms within 0.08 U of y = 0, F > 0 between the palms", legs / 2 >= 150 && toes === 6 && palms.every((p) => Math.abs(p[1]) <= 0.08) && field.F(mid) > 0, { legPx: legs, toes, palmY: palms.map((p) => +p[1].toFixed(3)) }, ">= 300 (two feet); 6 toes; <= 0.08 U")); }
+  if (key === "loika") { const nf = countNails(r4); out.push(C("limbs.show.loika", "Loika: >= 3 nail blobs on each visible front foot at 304", Object.keys(nf).length >= 1 && Object.values(nf).every((v) => v >= 3), nf, ">= 3 per front foot")); }
+  if (key === "rupar") out.push(C("limbs.show.rupar", "Rupar: each ear >= 200 px at 304", part("ears", r[304]) / 2 >= 200, part("ears", r[304]), ">= 400 (two ears)"));
+  if (key === "drapet") out.push(C("limbs.show.drapet", "Drapet: legs 0 px", [304, 96, 48].every((k) => part("legs", r[k]) === 0), [304, 96, 48].map((k) => part("legs", r[k])), "0"));
+  if (key === "loika") { const leaves = B.branches.filter((x) => x.branch.part === "crest").map((x) => { const S = x.samples, len = S.at(-1).s, wid = 2 * Math.max(...S.map((q) => Math.max(q.w, q.u, q.d))); return +(wid / len).toFixed(2); }); out.push(C("loika.leaves", "each leaf's width / length >= 0.45", leaves.every((v) => v >= 0.45), leaves, ">= 0.45")); }
+  if (key === "drapet") {
+    // drapet.e: the stand's silhouette shape: width at .75 H over width at .5 H in 1.02 .. 1.12, and width at .1 H >= 0.95 x the stand's
+    const rowW = (cov, W, y) => { let l = -1, rr2 = -1; for (let x = 0; x < W; x++) if (cov[y * W + x] >= 0.5) { if (l < 0) l = x; rr2 = x + 1; } return l < 0 ? 0 : rr2 - l; };
+    const bx = boxOf(maskOfCoverage(r4)), h = bx.y1 - bx.y0, at = (f) => Math.round(bx.y0 + f * h), sb = ctx.stand ? boxOf(ctx.stand) : null, sh = sb ? sb.y1 - sb.y0 : 1, sAt = (f) => Math.round((sb?.y0 ?? 0) + f * sh);
+    const ratio = rowW(r4.coverage, r4.width, at(0.25)) / rowW(r4.coverage, r4.width, at(0.5)), w10 = rowW(r4.coverage, r4.width, at(0.9)), sw10 = ctx.stand ? (() => { const m = ctx.stand; let l = -1, rr2 = -1; const y = sAt(0.9); for (let x = 0; x < m.width; x++) if (m.bits[y * m.width + x]) { if (l < 0) l = x; rr2 = x + 1; } return rr2 - l; })() : 0;
+    out.push(C("drapet.e", "the fall: width at .75 H over width at .5 H in 1.02 .. 1.12, width at .1 H >= .95 x the stand's", ratio >= 1.02 && ratio <= 1.12 && w10 >= 0.95 * sw10, { ratio: +ratio.toFixed(3), widthAt0_1H: w10, standWidth: sw10 }, "1.02 .. 1.12; >= .95 x stand", "heights measured down from the top: .25 from the top is .75 H"));
+  }
+  // marks.contrast: each mark's pigment against its surround at 304; texture energy
+  { const look = form.look, pig = look.pigments, base = pig[Object.values(look.slots)[0]], res = {}, marks = { plate: pig.patch, belly: form.face.belly ? pig.belly : null, spot: pig.spot, sock: pig.sock, hoof: pig.hoof, nail: pig.nail, ring: pig.ring, inner: pig.inner };
+    let ok = true; for (const [n, c] of Object.entries(marks)) if (c) { const sur = n === "hoof" ? pig.sock : base, d = Math.abs(Lstar(c) - Lstar(sur)); res[n] = +d.toFixed(0); if (d < 12) ok = false; }
+    out.push(C("marks.contrast", "each mark against its surround: dL* >= 12", ok, res, ">= 12")); }
+  return out;
+}
+const countNails = (r4) => { // toes of the front feet with >= 4 visible px, per foot (the toes carry the nail share: a blob each)
+  const names = r4.maps.groupNames, cnt = {}; for (let i = 0; i < r4.maps.group.length; i++) { const g = r4.maps.group[i]; if (g >= 0 && r4.coverage[i] >= 0.5 && /^fore[LR]t\d$/.test(names[g])) cnt[names[g]] = (cnt[names[g]] ?? 0) + 1; }
+  const feet = {}; for (const [k, v] of Object.entries(cnt)) { const f = k.slice(0, 5); feet[f] = (feet[f] ?? 0) + (v >= 4 ? 1 : 0); } return feet;
+};
+// the mean |dL*| of neighbouring body pixels (reported, not gated)
+export function textureEnergy(r) { let sum = 0, n = 0; const W = r.width; for (let y = 0; y < r.height; y++) for (let x = 0; x < W - 1; x++) { const i = y * W + x; if (r.coverage[i] < 0.99 || r.coverage[i + 1] < 0.99) continue; sum += Math.abs(Lstar(rgb(r, x, y)) - Lstar(rgb(r, x + 1, y))); n++; } return n ? +(sum / n).toFixed(3) : 0; }

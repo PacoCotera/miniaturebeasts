@@ -21,7 +21,7 @@ for (const size of [96, 48]) test(`the face table at ${size}: eye cores, light s
     for (const e of eyes) {
       assert.ok(e.core[0] >= mw && e.core[1] >= mh, `${k}: core ${e.core}`);
       const [x0, y0, x1, y1] = e.box, ring = []; for (let x = x0 - 1; x <= x1 + 1; x++) { ring.push([x, y0 - 1, "t"], [x, y1 + 1, "b"]); } for (let y = y0; y <= y1; y++) ring.push([x0 - 1, y, "l"], [x1 + 1, y, "r"]);
-      const core = px(r, x0, y0); assert.ok(Lstar(core) <= 30, `${k}: core L* ${Lstar(core)}`);
+      const core = px(r, x1, y1); assert.ok(Lstar(core) <= 30, `${k}: core L* ${Lstar(core)}`);
       const light = ring.filter(([x, y]) => Lstar(px(r, x, y)) >= Lstar(core) + 35);
       if (size === 96) assert.ok(light.length / ring.length >= 0.6, `${k}: surround ${light.length}/${ring.length}`);
       else assert.ok(new Set(light.map((q) => q[2])).size >= 2, `${k}: surround sides`);

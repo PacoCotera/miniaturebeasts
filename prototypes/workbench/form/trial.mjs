@@ -13,8 +13,8 @@ import { buildScene } from "./mesh.mjs";
 import { renderForm, silhouette, SIZES } from "./render.mjs";
 import { SPECIES, ROUND2, ORDER } from "./species-trial.mjs";
 import { TUNING, getPath, withinAllowance } from "./tuning.mjs";
-import { LEVERS, formOf, corner, cornerCount, single, typeCopies } from "./genome.mjs";
-import { maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, featureChecks, guardsOf, OVERLAP_TARGET } from "./checks.mjs";
+import { LEVERS, LOCKED, LEVER_CLASS, formOf, corner, cornerForm, cornerCount, single, typeCopies } from "./genome.mjs";
+import { maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, OVERLAP_TARGET } from "./checks.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = path.resolve(here, "..");
@@ -28,6 +28,15 @@ export const STANDS = { curlop: `${FLUFFY}/stand-E-curlop`, wickle: `${FLUFFY}/s
 export const SIZE_NAMES = { 304: "304x312", 96: "96x88", 48: "48x48" };
 const BG = [246, 243, 236];
 // the signed art's own values (measured on mibi-adult-S01-304x312.png, see the report): fractions of the creature's box
+// the stand targets of design 7, as fractions of the creature's height H (the stand at 304): eye separation, eye diameter (with the ring for Rupar),
+// the eye line above the floor, the face centre, the nose and mouth below the eye line, the mouth's width
+export const FACE_TARGETS = {
+  curlop: { eyeSep: 0.198, eyeD: 0.102, eyeLine: 0.74, nose: 0.034, mouth: 0.048, mouthW: 0.075 },
+  wickle: { eyeSep: 0.147, eyeD: 0.072, faceCentre: 0.485, nose: 0.055, mouthW: 0.034 },
+  drapet: { eyeSep: 0.154, eyeD: 0.094, eyeLine: 0.5, nose: 0.036 },
+  loika: { eyeSep: 0.266, eyeD: 0.208, eyeLine: 0.58, nose: 0.052, mouthW: 0.21 },
+  rupar: { eyeD: 0.062, eyeLine: 0.7 },
+};
 export const LOIKA_ART = { headH: [0.34, 0.46], headW: [0.55, 0.75], eyeSep: [0.25, 0.37], eyeD: [0.17, 0.26] };
 
 export const loadPNG = (f) => decodePNG(readFileSync(f));
@@ -126,8 +135,8 @@ export function sheet(title, panels, k) {
 export function cornerSweep(key) {
   const n = cornerCount(key), failed = []; let built = 0;
   for (let m = 0; m < n; m++) {
-    const f = corner(key, m); const g = guardsOf(f); built++;
-    if (!g.ok) failed.push({ corner: m, levers: Object.fromEntries(LEVERS[key].map((l, i) => [l.id, (m >> i) & 1])), problems: g.problems });
+    const f = cornerForm(key, m); const g = guardsOf(f); built++;
+    if (!g.ok) failed.push({ corner: m, levers: f.levers, problems: g.problems });
   }
   const t = guardsOf(formOf(key, typeCopies(key)));
   return { corners: n, built, failed, type: { ok: t.ok, problems: t.problems } };
@@ -140,16 +149,31 @@ function imgDiff(a, b) { // pixels whose silhouette differs, or whose colour mov
   }
   return { diff: n, area };
 }
+// The visibility rule (design 6): a shape lever is judged by its silhouette at 96, a face lever by its face ink at 304 (96 and 48 reported), a mark lever
+// by its mark pixels at 96. A lever that misses is locked and reported, never narrowed silently.
+const FACE_INK = new Set([2, 3, 4, 5, 6, 8]); // rim, iris, pupil, catch light, nose, mouth
+function silDiff(a, b) { let n = 0, area = 0; for (let i = 0; i < a.coverage.length; i++) { const ca = a.coverage[i] >= 0.5, cb = b.coverage[i] >= 0.5; if (ca) area++; if (ca !== cb) n++; } return { diff: n, area }; }
+function inkDiff(a, b) { let n = 0, base = 0; for (let i = 0; i < a.ink.length; i++) { const ia = FACE_INK.has(a.ink[i]) ? a.ink[i] : 0, ib = FACE_INK.has(b.ink[i]) ? b.ink[i] : 0; if (ia) base++; if (ia !== ib) n++; } return { diff: n, base }; }
 export function visibility(key, ref) {
-  const rows = [];
-  const render = (form, sk) => { const sc = buildScene(form, { extentDiv: 120 }); return renderForm(sc, form.camera, sk, { ref }); };
+  const rows = [], mk = (form, ex) => buildScene(form, { extentDiv: ex });
   for (const l of LEVERS[key]) {
-    const r = { id: l.id, doc: l.doc, range: l.range };
-    for (const sk of [96, 48]) {
-      const a = render(single(key, l.id, 0), sk), b = render(single(key, l.id, 1), sk), d = imgDiff(a, b);
-      r[`px${sk}`] = d.diff; r[`pct${sk}`] = +((100 * d.diff) / d.area).toFixed(2);
+    const cls = LEVER_CLASS[l.id] ?? "shape", r = { id: l.id, doc: l.doc, range: l.range, cls };
+    const f0 = single(key, l.id, 0), f1 = single(key, l.id, 1);
+    if (cls === "face") {
+      const s0 = mk(f0, 220), s1 = mk(f1, 220), a = renderForm(s0, f0.camera, 304, { ref }), b = renderForm(s1, f1.camera, 304, { ref }), d = inkDiff(a, b);
+      r.px304 = d.diff; r.pct304 = +((100 * d.diff) / Math.max(1, d.base)).toFixed(1); r.reads = d.diff >= 12 || d.diff >= 0.25 * d.base;
+      const h0 = mk(f0, 120), h1 = mk(f1, 120);
+      for (const sk of [96, 48]) { const q = inkDiff(renderForm(h0, f0.camera, sk, { ref }), renderForm(h1, f1.camera, sk, { ref })); r[`px${sk}`] = q.diff; r[`pct${sk}`] = +((100 * q.diff) / Math.max(1, q.base)).toFixed(1); }
+      r.rule = ">= 25 % of the feature ink or >= 12 px at 304";
+    } else {
+      const h0 = mk(f0, 120), h1 = mk(f1, 120);
+      for (const sk of [96, 48]) {
+        const a = renderForm(h0, f0.camera, sk, { ref }), b = renderForm(h1, f1.camera, sk, { ref }), d = cls === "mark" ? imgDiff(a, b) : silDiff(a, b);
+        r[`px${sk}`] = d.diff; r[`pct${sk}`] = +((100 * d.diff) / Math.max(1, d.area)).toFixed(2);
+      }
+      r.reads = r.pct96 >= 1.5 || r.px96 >= 40; r.rule = ">= 1.5 % of the body or >= 40 px at 96 (" + (cls === "mark" ? "mark pixels" : "silhouette") + ")";
     }
-    r.reads96 = r.pct96 >= 1.5 || r.px96 >= 40; r.reads48 = r.pct48 >= 1.5 || r.px48 >= 40;
+    r.reads96 = r.reads; r.reads48 = cls === "face" ? r.px48 >= 12 : r.pct48 >= 1.5 || r.px48 >= 40;
     rows.push(r);
   }
   return rows;
@@ -159,7 +183,7 @@ export const sha = (buf) => createHash("sha256").update(buf).digest("hex").slice
 export function tuningReport() {
   return TUNING.map((t) => { const before = getPath(ROUND2[t.species], t.path); return { species: t.species, path: t.path, before, after: t.after, change: before ? +(100 * (t.after / before - 1)).toFixed(1) + " %" : "", ok: withinAllowance(t.path, before, t.after), why: t.why }; });
 }
-export { buildScene, renderForm, silhouette, featureChecks, guardsOf, maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, OVERLAP_TARGET, SPECIES, ROUND2, ORDER, encodeRGBA, mkdirSync, writeFileSync, existsSync, readFileSync };
+export { buildScene, renderForm, silhouette, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, OVERLAP_TARGET, SPECIES, ROUND2, ORDER, encodeRGBA, mkdirSync, writeFileSync, existsSync, readFileSync };
 
 // ---- more helpers for the sheets and the report ----------------------------------------------------------------------
 export const standMaskAt = (stands, s) => maskOfAlpha(stands[s]);
@@ -181,23 +205,36 @@ export function writeContact(images, keys) {
 export function makeReport(rec, keys) {
   const lines = [], fails = [];
   const L = (s = "") => lines.push(s);
-  L("# Shape model trial: build report"); L();
-  L(`Built from \`shape-model.md\` and \`trial-build-brief.md\`; repository build/genome-fluffy at dc851b36 untouched, all new files in prototypes/workbench/form/. Generated ${new Date().toISOString().slice(0, 10)}; the numbers below are measured by \`node prototypes/workbench/form/cli.mjs\`.`); L();
+  L("# Shape model, round 2: build report"); L();
+  L(`Built from \`round2/design.md\` and \`round2/build-brief.md\`; repository build/genome-fluffy from 40635e30, all new files in prototypes/workbench/form/. Generated ${new Date().toISOString().slice(0, 10)}; the numbers below are measured by \`node prototypes/workbench/form/cli.mjs\`.`); L();
   L("## Overlap at 48 px (new model against the current rig)"); L();
   L("| species | new | current rig | target | 96 px new | rig view |"); L("| --- | --- | --- | --- | --- | --- |");
   for (const k of keys) { const o = rec[k].overlap; L(`| ${rec[k].name} | ${o.new.o48.toFixed(3)} | ${o.rig.o48.toFixed(3)} | ${o.target} | ${o.new.o96.toFixed(3)} | ${o.rig.view}${o.rig.mirror ? " (mirrored)" : ""} |`); }
-  L(); L("## Feature checks (each gates)"); L();
+  L(); L("## Checks (each gates)"); L();
   for (const k of keys) {
     L(`### ${rec[k].name} (${rec[k].id})`); L("| check | result | value | threshold |"); L("| --- | --- | --- | --- |");
     for (const c of rec[k].checks) { L(`| ${c.id}: ${c.label} | ${c.pass ? "pass" : "FAIL"} | ${JSON.stringify(c.value)} | ${c.threshold}${c.detail ? "; " + c.detail : ""} |`); if (!c.pass) fails.push(`${rec[k].name} ${c.id}: ${JSON.stringify(c.value)} (needs ${c.threshold})`); }
     L();
   }
-  L("## Tuning (each change of a section 3 number, before and after)"); L();
-  L("| species | number | before | after | change |"); L("| --- | --- | --- | --- | --- |");
-  for (const t of tuningReport().filter((x) => keys.includes(x.species))) L(`| ${t.species} | ${t.path} | ${t.before} | ${t.after} | ${t.change}${t.ok ? "" : " OUTSIDE THE ALLOWANCE"} |`);
-  L(); L("## Visibility of the open ranges (2.8): pixels that differ between t = 0 and t = 1, others at the type"); L();
-  L("| species | lever | range | 96 px diff | 96 px % | reads at 96 | 48 px diff | 48 px % | reads at 48 |"); L("| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
-  for (const k of keys) for (const v of rec[k].visibility ?? []) L(`| ${rec[k].name} | ${v.id} | ${v.range.join(" ... ")} | ${v.px96} | ${v.pct96} | ${v.reads96 ? "yes" : "NO"} | ${v.px48} | ${v.pct48} | ${v.reads48 ? "yes" : "no"} |`);
+  L("## The face table (per species and size)"); L();
+  L("| species | size | eye cores | eye gap | nose px | mouth px | plate px | dropped |"); L("| --- | --- | --- | --- | --- | --- | --- | --- |");
+  for (const k of keys) for (const f of rec[k].faceTable ?? []) L(`| ${rec[k].name} | ${f.size} | ${JSON.stringify(f.cores)} | ${f.gap} | ${f.nosePx} | ${f.mouthPx} | ${f.platePx} | ${f.dropped.join("; ") || "-"} |`);
+  L(); L("Stand-target ratios (measured / target, face.place):"); L();
+  for (const k of keys) { const p = rec[k].checks.find((c) => c.id === "face.place"); if (p) L(`- ${rec[k].name}: ${Object.entries(p.value.measured).map(([n, v]) => `${n} ${v} (target ${p.value.target[n]}, x${(v / p.value.target[n]).toFixed(2)})`).join(", ")}`); }
+  L(); L("## The limbs table"); L(); L("| species | contacts (off the floor, U) | shin solves (x base) | hand reach miss (U) | toes |"); L("| --- | --- | --- | --- | --- |");
+  for (const k of keys) { const l = rec[k].limbs; L(`| ${rec[k].name} | ${JSON.stringify(l.contacts)} | ${l.solves.map((s) => s.id + " " + s.ratio.toFixed(2)).join(", ") || "-"} | ${l.reaches.map((s) => s.id + " " + s.miss.toFixed(4)).join(", ") || "-"} | ${l.toes} |`); }
+  L(); L("## The joins table"); L(); L("| species | outer slope at joins (<= 0.6) | slope jump over a coil start (<= 0.05) | bend, deg per 0.05 U (<= 10) | fur / half-size at tips (<= 0.35) |"); L("| --- | --- | --- | --- | --- |");
+  for (const k of keys) { const t = rec[k].joins; L(`| ${rec[k].name} | ${t.slope.toFixed(3)} | ${t.jump.toFixed(3)} | ${t.bend.toFixed(1)} | ${t.tipFur.toFixed(3)} |`); }
+  L(); L("## Texture energy (mean |dL*| of neighbouring body pixels; reported, not gated)"); L(); L("| species | 304 | 96 |"); L("| --- | --- | --- |");
+  for (const k of keys) L(`| ${rec[k].name} | ${rec[k].texture[304]} | ${rec[k].texture[96]} |`);
+  L(); L("## Round 2 tuning (each change of a ROUND2 number, before and after)"); L();
+  L("| species | number | before | after | change | reason |"); L("| --- | --- | --- | --- | --- | --- |");
+  for (const t of tuningReport().filter((x) => keys.includes(x.species))) L(`| ${t.species} | ${t.path} | ${t.before} | ${t.after} | ${t.change}${t.ok ? "" : " OUTSIDE THE ALLOWANCE"} | ${t.why} |`);
+  L(); L("## Visibility of the open ranges (design 6): face levers by face ink at 304, mark levers by mark pixels at 96, shape levers by the silhouette at 96"); L();
+  L("| species | lever | class | range | 304 ink px (%) | 96 px (%) | 48 px (%) | reads | locked |"); L("| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
+  for (const k of keys) for (const v of rec[k].visibility ?? []) L(`| ${rec[k].name} | ${v.id} | ${v.cls} | ${v.range.join(" ... ")} | ${v.px304 ?? "-"} (${v.pct304 ?? "-"}) | ${v.px96} (${v.pct96}) | ${v.px48} (${v.pct48}) | ${v.reads ? "yes" : "NO"} | ${(LOCKED[k] ?? {})[v.id] ? "locked" : ""} |`);
+  L(); L("Locked levers (a lever that misses is locked and reported, never narrowed):"); L();
+  const lockedList = Object.entries(LOCKED).flatMap(([k, o]) => Object.entries(o).map(([id, why]) => `- ${k}.${id}: ${why}`)); if (lockedList.length) lockedList.forEach((x) => L(x)); else L("- none");
   L(); L("## Timings (ms)"); L(); L("| species | mesh 1/220 | mesh 1/120 | render 304 | render 96 | render 48 | three sizes | corners | visibility |"); L("| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
   for (const k of keys) { const t = rec[k].timing; L(`| ${rec[k].name} | ${t.mesh304} | ${t.mesh120} | ${t.render304} | ${t.render96} | ${t.render48} | ${t.total} | ${t.corners ?? ""} | ${t.visibility ?? ""} |`); }
   L(); L("## Gates not met"); L(); if (fails.length) fails.forEach((f) => L(`- ${f}`)); else L("- none");
