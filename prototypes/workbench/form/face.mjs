@@ -16,7 +16,10 @@ export function anchorSigma(spec, cumOf) { const s = spec.sigma; return (typeof 
 
 // env: { sample: the front chain's section at the anchor (shifted), dCast: (x, y, z) => distance of the coated body, outside positive }
 export function makeFace(spec, env) {
-  const { sample: C0, dCast } = env, size = spec.size ?? 1, phi = spec.phi * RAD, C = C0.p;
+  const { dCast } = env, size = spec.size ?? 1, phi = spec.phi * RAD, C = env.sample.p;
+  // spec.turn: the face's azimuth about the spine's tangent T, in degrees (a rotation-symmetric dome has no front: Drapet's face is turned toward the camera by it)
+  const rotT = (v, a) => { const n = env.sample.T, c = Math.cos(a), s = Math.sin(a), k = dot(n, v) * (1 - c), x = crs(n, v); return [v[0] * c + x[0] * s + n[0] * k, v[1] * c + x[1] * s + n[1] * k, v[2] * c + x[2] * s + n[2] * k]; };
+  const C0 = spec.turn ? { ...env.sample, N: rotT(env.sample.N, spec.turn * RAD) } : env.sample;
   const d = nrm(add(sc(C0.T, Math.cos(phi)), sc(C0.N, -Math.sin(phi))));
   const cast = (dir, O = C) => {
     let t0 = 0, t1 = 0.02; const f = (t) => dCast(O[0] + dir[0] * t, O[1] + dir[1] * t, O[2] + dir[2] * t);

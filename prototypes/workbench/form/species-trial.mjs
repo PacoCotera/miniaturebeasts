@@ -298,7 +298,7 @@ export const ROUND2 = Object.fromEntries(Object.entries(SECTION3).map(([key, f])
   R.curlop.look.material = { kind: "fur", strand: [0.03, 0.2], lock: [0.12, 0.4], crown: cap, gravity: 0.4, sheen: 0.2 }; // crown at the cap
   R.curlop.look.marks = [{ kind: "nails", share: 0.6, pigment: "nail" }]; R.curlop.look.pigments.nail = [236, 228, 196];
   R.wickle.look.material = { kind: "fur", strand: [0.03, 0.25], lock: [0.12, 0.4], crown: 1.25, gravity: 0.6, sheen: 0.25 }; // fur flows up into the plume and down the drop
-  R.drapet.look.material = { kind: "hair", strand: [0.02, 0.6], lock: [0.1, 0.5], sheen: 0.35 };
+  R.drapet.look.material = { kind: "hair", strand: [0.016, 0.4], lock: [0.1, 0.5], sheen: 0.18 }; // design 3: strands .016 U wide, one soft sheen band .18
   R.drapet.look.pigments.patch = [176, 168, 196]; R.drapet.look.pigments.face = [176, 168, 196]; // the plate against the hair: dL* >= 12
   R.loika.look.material = { kind: "skin", gloss: 0.25 };
   R.loika.look.marks = [{ kind: "nails", share: 0.7, pigment: "nail" }]; R.loika.look.pigments.nail = [236, 222, 190];
@@ -450,9 +450,12 @@ export const ROUND3_LOG = [];
   { const f = R.rupar.face, before = JSON.stringify({ sigma: f.sigma, eyes: f.eyes }); f.sigma = 2.12; f.eyes = { r: 0.075, spread: 62, elev: 18, aspect: 0.65 };
     log("rupar", "face", before, JSON.stringify({ sigma: f.sigma, eyes: f.eyes }), "design 2: anchor sigma 2.12 (between the poll 1.94 and the stop 2.18); eyes by section angle (spread 62, elevation 18), lateral"); }
   { const f = R.drapet.face, before = JSON.stringify({ R: f.R, aspect: f.aspect, opening: f.opening });
-    f.opening = { gap: 0.6 }; f.pod = { a: [0.26, 0.24, 0.16], setback: 0.02, bowl: 0.25, bowlR: 2.0, bowlW: 0.4 }; // the opening's rectangle goes: the face is a pod (design 3)
+    f.turn = -26; f.opening = { gap: 0.6 }; f.pod = { a: [0.26, 0.24, 0.16], setback: 0.02, bowl: 0.25, bowlR: 2.0, bowlW: 0.4 }; // the opening's rectangle goes: the face is a pod (design 3)
     log("drapet", "face.opening / face.pod", before.slice(0, 150), JSON.stringify({ opening: f.opening, pod: f.pod }), "design 3: the face pod .26 x .24 x .16 U set back .02 U (in .01 ... .03) at the parting's edge; the opening mask and its rectangle are removed; fringe-gap kept as the fringe line's gap"); }
-  R.drapet.look.eyes.iris_r = 0.86; // face.ink.304: a rim under .15 r_e needs no ring (as Wickle's .86)
+  Object.assign(R.drapet.look.eyes, { iris_r: 0.86, pupil_r: 0.6 }); // face.ink.304: a rim under .15 r_e needs no ring (as Wickle's .86); the pupil >= 28 px with the far eye foreshortened
+  { const hr = R.drapet.hair, before = JSON.stringify({ flare: hr.flare, notch: hr.notch, lift: hr.lift });
+    Object.assign(hr, { flare: 0.1, notch: 0.08, lift: 0.01, lockN: 22, lockA: 0.035, lockGroove: 0.045, drift: 0.15, tiers: [0.62, 0.34], inset: [0, 0.02, 0.04], tipLift: 0.025, tipSplay: 0.02, tipLen: 0.1, point: 0.08, tipJitter: 0.04 });
+    log("drapet", "hair", before, JSON.stringify({ flare: hr.flare, notch: hr.notch, lift: hr.lift, lockN: 22 }), "design 3: 22 locks in 3 tiers with lifted tips, hem lift <= .01, notch .08, flare .10 (the width at .9 H was 259 px against the stand's 278)"); }
   Object.assign(R.rupar.look.eyes, { pupil_r: 0.62, iris_r: 0.78 }); // the pupil must read >= 28 px at 304 (the eye is 12 px across); a look value, not a form number
   R.curlop.look.eyes.iris_r = 0.86; // face.ink.304: the far eye's rim ring was 1.5 px wide against >= 2; a rim under .15 r_e needs no ring (as Wickle's .86)
   setP("curlop", "face.eyes.ex", 0.52, "design 8: eyeSep was .142 against .198 (the stand): e_x .46 to .52 is a design number, beyond the allowance");

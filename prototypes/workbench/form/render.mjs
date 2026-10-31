@@ -102,7 +102,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
   // the catch light sits between the key light and the eye's own axis, so both eyes carry one inside their cap
   const eyeH = eyes.map((e) => { const v = [Hh[0] * 0.45 + e.n[0] * 0.55, Hh[1] * 0.45 + e.n[1] * 0.55, Hh[2] * 0.45 + e.n[2] * 0.55], l = Math.hypot(...v); return v.map((x) => x / l); });
   const Mat = makeMaterial(form, sizeKey, scale, opts), groupNames = scene.field.groups.all.map((g) => g.id);
-  const rimStrength = 0.15;
+  const rimStrength = 0.15, hairF = scene.field.hair, hairSpan = hairF ? [hairF.floorZ, hairF.hairParams.Htot] : null;
     for (let sy2 = 0; sy2 < SH; sy2++) for (let sx2 = 0; sx2 < SW; sx2++) {
     const o = sy2 * SW + sx2, t = tri[o]; if (t < 0) continue;
     const a = F[t * 3], b = F[t * 3 + 1], c = F[t * 3 + 2], w1 = B1[o], w2 = B2[o], w0 = 1 - w1 - w2;
@@ -114,7 +114,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     let col = partSlotCol[part], inkCode = INK.body, spec = 0, matte = 1;
     const pv = [px, py, pz];
     const Tv = [A.T[a * 3] * w0 + A.T[b * 3] * w1 + A.T[c * 3] * w2, A.T[a * 3 + 1] * w0 + A.T[b * 3 + 1] * w1 + A.T[c * 3 + 1] * w2, A.T[a * 3 + 2] * w0 + A.T[b * 3 + 2] * w1 + A.T[c * 3 + 2] * w2];
-    const ctxM = { p: pv, n: [nx, ny, nz], T: Tv, sigma: I(A.sigma), group: groupNames[A.group[a]], h: Hh, part: A.partNames[part] };
+    const ctxM = { p: pv, n: [nx, ny, nz], T: Tv, sigma: I(A.sigma), group: groupNames[A.group[a]], h: Hh, part: A.partNames[part], lock: { t: I(A.lt), jit: I(A.lid), tip: I(A.ltip), tier: I(A.ltier) }, zrel: hairSpan ? (pz - hairSpan[0]) / hairSpan[1] : 0.5 };
     // the marks, painted in a fixed order over the slot's pigment (design 1.4)
     const mout = {};
     col = paintMarks(look, Mat, { ...ctxM, out: mout, part: A.partNames[part], u0: I(A.u0), angle: I(A.angle), belly: I(A.belly), patch: I(A.patch), fx: I(A.fx), fy: I(A.fy), eyes: faceM?.eyes, col }, col);
@@ -156,7 +156,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     const rim = rimStrength * Math.pow(1 - Math.max(0, nx * tt[0] + ny * tt[1] + nz * tt[2]), 3) * Math.max(0, ndl * 0.5 + 0.5);
     let k = (diff * 0.85 * (0.4 + 0.6 * aov) + amb * aov + rim) * matte * surf.k + (emv > 0.02 ? 0.35 * emv : 0);
     let r = col[0] * k, g = col[1] * k, bl = col[2] * k;
-    if (surf.sheen > 0) { const lt = mix(col, [255, 255, 255], 0.4); r += lt[0] * surf.sheen; g += lt[1] * surf.sheen; bl += lt[2] * surf.sheen; } // the anisotropic sheen, the pigment lightened 40 %
+    if (surf.sheen > 0) { const lt = mix(col, [255, 255, 255], surf.sheenLight ?? 0.4); r += lt[0] * surf.sheen; g += lt[1] * surf.sheen; bl += lt[2] * surf.sheen; } // the anisotropic sheen, the pigment lightened 40 %
     if (surf.gloss > 0 && !partIsEye[part]) { const nh2 = Math.max(0, nx * Hh[0] + ny * Hh[1] + nz * Hh[2]), gl = surf.gloss * Math.pow(nh2, 24); r += (255 - r) * gl; g += (255 - g) * gl; bl += (255 - bl) * gl; } // a soft Blinn gloss
     if (spec) { const eH = partIsEye[part] && A.eye[a] >= 0 ? eyeH[A.eye[a]] : Hh, nh = nx * eH[0] + ny * eH[1] + nz * eH[2]; const s = sstep(0.975, 0.992, nh); r += (255 - r) * s; g += (255 - g) * s; bl += (255 - bl) * s; if (s > 0.5) inkCode = INK.catch; }
     const px2 = Math.floor(sx2 / ss), py2 = Math.floor(sy2 / ss), po = py2 * W + px2;
@@ -212,7 +212,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
       data[i * 4] = (cr * cc + rU * aU * (1 - cc)) / aOut; data[i * 4 + 1] = (cg * cc + gU * aU * (1 - cc)) / aOut; data[i * 4 + 2] = (cb * cc + bU * aU * (1 - cc)) / aOut; data[i * 4 + 3] = aOut * 255;
     }
   }
-  if (sizeKey !== 48 && opts.material !== false && Mat.kind !== "skin") fringePass({ data, cov, flowS, W, H, depthU: form.coat?.depth ?? (form.hair ? 0.1 : 0), scale, kind: Mat.kind });
+  if (sizeKey !== 48 && opts.material !== false && Mat.kind === "fur") fringePass({ data, cov, flowS, W, H, depthU: form.coat?.depth ?? (form.hair ? 0.1 : 0), scale, kind: Mat.kind });
   // the ink of each pixel: the most frequent non-body code with at least half the covered samples
   const inkMap = new Uint8Array(W * H);
   for (let i = 0; i < W * H; i++) { let best = 0, bc = 0; for (let k = 2; k < NINK; k++) if (inkCount[i * NINK + k] > bc) { bc = inkCount[i * NINK + k]; best = k; } inkMap[i] = bc * 2 >= n2 * 0 + Math.max(1, cov[i] * n2) ? best : INK.body; }

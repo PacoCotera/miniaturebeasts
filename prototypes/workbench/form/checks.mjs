@@ -222,12 +222,15 @@ export function featureChecks(ctx) {
     let bot = top; for (let y = H - 1; y >= 0; y--) { let any = false; for (let x = 0; x < W; x++) if (cov[y * W + x] >= 0.5) { any = true; break; } if (any) { bot = y; break; } }
     const hgt = bot - top + 1, last = Math.floor(top + 0.85 * hgt); // the hem zone belongs to drapet.c
     const L = [], R = []; for (let y = top; y <= last; y++) { let l = -1, rr = -1; for (let x = 0; x < W; x++) if (cov[y * W + x] >= 0.5) { if (l < 0) l = x; rr = x + 1; } L.push(l); R.push(rr); }
-    let back = 0; for (let i = 1; i < L.length; i++) { back = Math.max(back, L[i] - Math.min(...L.slice(0, i)), Math.max(...R.slice(0, i)) - R[i]); }
+    // round 3: the outline is smoothed over 9 px first (the tier tips break the silhouette on purpose, 2-4 px)
+    const smooth9 = (A) => A.map((_, i) => { let s = 0, n = 0; for (let k = Math.max(0, i - 4); k <= Math.min(A.length - 1, i + 4); k++) { s += A[k]; n++; } return s / n; });
+    const Ls = smooth9(L), Rs = smooth9(R);
+    let back = 0; for (let i = 1; i < Ls.length; i++) { back = Math.max(back, Ls[i] - Math.min(...Ls.slice(0, i)), Math.max(...Rs.slice(0, i)) - Rs[i]); }
     // the slope change between rows 4 px apart, from 8 % of the height (a round top has an unbounded slope at its first rows)
     const s0 = Math.floor(0.08 * hgt); let jump = 0;
     const sl = (A, i) => (A[i + 4] - A[i]) / 4;
-    for (let i = s0; i + 8 < L.length; i++) jump = Math.max(jump, Math.abs(sl(L, i + 4) - sl(L, i)), Math.abs(sl(R, i + 4) - sl(R, i)));
-    out.push(C("drapet.a", "one dome: x(y) moves outward monotonically to 0.85 of the height, no step", back <= 1 && jump <= 0.6, { backwardPx: back, maxSlopeChange: +jump.toFixed(2) }, "<= 1 px (pixel noise); <= 0.6", `rows ${top}..${last}, slope test from row ${top + s0}`));
+    for (let i = s0; i + 8 < Ls.length; i++) jump = Math.max(jump, Math.abs(sl(Ls, i + 4) - sl(Ls, i)), Math.abs(sl(Rs, i + 4) - sl(Rs, i)));
+    out.push(C("drapet.a", "one dome: the outline smoothed over 9 px moves outward monotonically to 0.85 of the height (backward <= 2 px), slope change <= .6", back <= 2 && jump <= 0.6, { backwardPx: back, maxSlopeChange: +jump.toFixed(2) }, "<= 2 px (smoothed over 9 px); <= 0.6", `rows ${top}..${last}, slope test from row ${top + s0}`));
     // (b) the plate set back 0-0.03 U behind the hair around the opening, and both pupils >= 28 px at 304 (face.surface, design 8)
     const pod = scene.field.pod, pupilsD = scene.field.eyes.map((_, i) => eyeInk(r4, i, [INK.pupil]));
     out.push(C("drapet.b", "the face pod set back .01-.03 U behind the hair's surface at the rim of the parting, both pupils >= 28 px at 304", !!pod && pod.setBack >= 0.01 - 1e-9 && pod.setBack <= 0.03 + 1e-9 && pupilsD.every((n) => n >= 28), { setBackU: pod ? +pod.setBack.toFixed(4) : null, rimRangeU: pod ? pod.setBackRange.map((v) => +v.toFixed(4)) : null, pupilPx: pupilsD }, ".01 .. .03 U; >= 28 px"));
@@ -239,6 +242,33 @@ export function featureChecks(ctx) {
     range = Math.max(...res) - Math.min(...res);
     const TOL = 8, meets = bottoms.filter((p) => p[1] >= feet - TOL).length / bottoms.length;
     out.push(C("drapet.c", "loose, uneven locks: the bottom outline varies and meets the floor row", range >= 3 && meets >= 0.6, { variationPx: +range.toFixed(1), meetsFloorRow: +meets.toFixed(3) }, ">= 3 px; >= 60 %", `meets = within ${TOL} px of the floor row (the stand itself: 0.59 at 8 px)`));
+    // drapet.fringe (design 3): at 304, >= 5 separate fringe-tip runs of hair pixels cross the face's top edge; the tips stand >= .02 U in front of the pod (field)
+    { const pl = r4.plate, rc = r4.coverage, Wd2 = r4.width, hairId = r4.maps.partNames.indexOf("hair"), pts = []; for (let i = 0; i < pl.length; i++) if (pl[i] > 0.5 && rc[i] >= 0.5) pts.push(i);
+      let fx0 = 1e9, fx1 = -1, fy0 = 1e9; for (const i of pts) { const x = i % Wd2, y = Math.floor(i / Wd2); fx0 = Math.min(fx0, x); fx1 = Math.max(fx1, x); fy0 = Math.min(fy0, y); }
+      // the face's top edge: the first row where the plate fills 40 % of the face's width; the fringe tips are the runs of hair on the row 3 px above it, across the face's width
+      let edgeRow = fy0; for (let y = fy0; y < fy0 + 60; y++) { let c = 0; for (let x = fx0; x <= fx1; x++) if (pl[y * Wd2 + x] > 0.5 && rc[y * Wd2 + x] >= 0.5) c++; if (c >= 0.4 * (fx1 - fx0 + 1)) { edgeRow = y; break; } }
+      let runs = [];
+      for (let rowY = Math.max(0, edgeRow - 8); rowY <= edgeRow + 4; rowY++) { const rr2 = []; let cur = 0; // the best row near the top edge: the tips are the separate runs of hair
+        for (let x = fx0; x <= fx1; x++) { const i = rowY * Wd2 + x, isHair = r4.maps.part[i] === hairId && rc[i] >= 0.5; if (isHair) cur++; else { if (cur >= 2) rr2.push(cur); cur = 0; } } if (cur >= 2) rr2.push(cur); if (rr2.length > runs.length) runs = rr2; }
+      const stand = scene.field.pod?.fringeStand ?? null;
+      out.push(C("drapet.fringe", "the fringe: >= 5 separate runs of hair across the face's top edge at 304, the tips >= .02 U in front of the pod", runs.length >= 5 && stand !== null && stand >= 0.02 - 1e-9, { runs: runs.length, runPx: runs, tipStandU: stand === null ? null : +stand.toFixed(4) }, ">= 5 runs; >= .02 U", `face box x ${fx0}..${fx1}, top row ${fy0}`)); }
+    // drapet.face (design 3): the visible face (plate pixels, eyes and nose filled in) has no straight boundary run > 6 px, an area within +-25 % of the stand's visible face (the lead's ~58 x 48 px measure,
+    // read here as an ellipse-like 2300 px) and a width / height of .9 .. 1.4
+    { const Wd2 = r4.width, Hd2 = r4.height, pl = r4.plate, rc = r4.coverage, mask = new Uint8Array(Wd2 * Hd2); let fx0 = 1e9, fx1 = -1, fy0 = 1e9, fy1 = -1;
+      for (let i = 0; i < pl.length; i++) if (pl[i] > 0.5 && rc[i] >= 0.5) { mask[i] = 1; const x = i % Wd2, y = Math.floor(i / Wd2); fx0 = Math.min(fx0, x); fx1 = Math.max(fx1, x); fy0 = Math.min(fy0, y); fy1 = Math.max(fy1, y); }
+      // fill the eyes and the nose: the holes inside the box that cannot reach its border through non-mask pixels
+      const out2 = new Uint8Array(Wd2 * Hd2), stack = []; const inBox = (x, y) => x >= fx0 - 1 && x <= fx1 + 1 && y >= fy0 - 1 && y <= fy1 + 1;
+      stack.push([fx0 - 1, fy0 - 1]); out2[(fy0 - 1) * Wd2 + fx0 - 1] = 1; while (stack.length) { const [x, y] = stack.pop(); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (!inBox(X, Y) || out2[Y * Wd2 + X] || mask[Y * Wd2 + X]) continue; out2[Y * Wd2 + X] = 1; stack.push([X, Y]); } }
+      let area = 0; const filled = new Uint8Array(Wd2 * Hd2); for (let y = fy0; y <= fy1; y++) for (let x = fx0; x <= fx1; x++) if (!out2[y * Wd2 + x]) { filled[y * Wd2 + x] = 1; area++; }
+      const bnd = (x, y) => filled[y * Wd2 + x] && !(filled[y * Wd2 + x - 1] && filled[y * Wd2 + x + 1] && filled[(y - 1) * Wd2 + x] && filled[(y + 1) * Wd2 + x]);
+      let longest = 0; for (const [dx, dy] of [[1, 0], [0, 1], [1, 1], [1, -1]]) for (let y = fy0; y <= fy1; y++) for (let x = fx0; x <= fx1; x++) { if (!bnd(x, y) || (x - dx >= fx0 && y - dy >= fy0 && y - dy <= fy1 && bnd(x - dx, y - dy))) continue; let n = 0, X = x, Y = y; while (X >= fx0 && X <= fx1 && Y >= fy0 && Y <= fy1 && bnd(X, Y)) { n++; X += dx; Y += dy; } longest = Math.max(longest, n); }
+      const w = fx1 - fx0 + 1, h = fy1 - fy0 + 1, STAND = 2300;
+      out.push(C("drapet.face", "the visible face: no straight boundary run > 6 px, area within +-25 % of the stand's, width / height .9 .. 1.4", longest <= 6 && Math.abs(area / STAND - 1) <= 0.25 && w / h >= 0.9 && w / h <= 1.4, { longestRunPx: longest, areaPx: area, widthPx: w, heightPx: h, ratio: +(w / h).toFixed(2) }, "<= 6 px; 2300 +- 25 %; .9 .. 1.4", "the stand's visible face measured by eye at about 58 x 48 px")); }
+    // drapet.locks (design 3): a row at .5 H shows >= 14 groove minima (dL* >= 4 against both neighbours) at 304 and >= 8 at 96; reported at 48
+    { const grooves = (rr) => { const Wd2 = rr.width, bx2 = boxOf(maskOfCoverage(rr)), y = Math.round(bx2.y0 + 0.5 * (bx2.y1 - bx2.y0)), Ls = []; for (let x = 0; x < Wd2; x++) Ls.push(rr.coverage[y * Wd2 + x] >= 0.99 ? Lstar(rgb(rr, x, y)) : null);
+        const win = rr.size === 304 ? 3 : 2; let n = 0; for (let x = win; x < Wd2 - win; x++) { if (Ls[x] === null) continue; let lo = true, lmax = -1, rmax = -1; for (let k = 1; k <= win; k++) { if (Ls[x - k] === null || Ls[x + k] === null) { lo = false; break; } if (Ls[x - k] < Ls[x] - 1e-9 || Ls[x + k] < Ls[x] - 1e-9) lo = false; lmax = Math.max(lmax, Ls[x - k]); rmax = Math.max(rmax, Ls[x + k]); } if (lo && lmax - Ls[x] >= 4 && rmax - Ls[x] >= 4) { n++; x += win - 1; } } return n; };
+      const g304 = grooves(r[304]), g96 = grooves(r[96]), g48 = grooves(r[48]);
+      out.push(C("drapet.locks", "locks read: a row at .5 H has >= 14 groove minima (dL* >= 4 each side) at 304 and >= 8 at 96 (48 reported)", g304 >= 14 && g96 >= 8, { at304: g304, at96: g96, at48: g48 }, ">= 14 / >= 8")); }
     // (d) hidden legs
     const legPx = [304, 96, 48].map((k) => countPart(r[k], "legs"));
     out.push(C("drapet.d", "hidden legs: no leg pixel at any size", legPx.every((n) => n === 0), legPx, "0 at 304, 96, 48"));
@@ -501,8 +531,8 @@ export function round2Checks(ctx) {
     // drapet.e: the stand's silhouette shape: width at .75 H over width at .5 H in 1.02 .. 1.12, and width at .1 H >= 0.95 x the stand's
     const rowW = (cov, W, y) => { let l = -1, rr2 = -1; for (let x = 0; x < W; x++) if (cov[y * W + x] >= 0.5) { if (l < 0) l = x; rr2 = x + 1; } return l < 0 ? 0 : rr2 - l; };
     const bx = boxOf(maskOfCoverage(r4)), h = bx.y1 - bx.y0, at = (f) => Math.round(bx.y0 + f * h), sb = ctx.stand ? boxOf(ctx.stand) : null, sh = sb ? sb.y1 - sb.y0 : 1, sAt = (f) => Math.round((sb?.y0 ?? 0) + f * sh);
-    const ratio = rowW(r4.coverage, r4.width, at(0.25)) / rowW(r4.coverage, r4.width, at(0.5)), w10 = rowW(r4.coverage, r4.width, at(0.9)), sw10 = ctx.stand ? (() => { const m = ctx.stand; let l = -1, rr2 = -1; const y = sAt(0.9); for (let x = 0; x < m.width; x++) if (m.bits[y * m.width + x]) { if (l < 0) l = x; rr2 = x + 1; } return rr2 - l; })() : 0;
-    out.push(C("drapet.e", "the fall: width at .75 H over width at .5 H in 1.02 .. 1.12, width at .1 H >= .95 x the stand's", ratio >= 1.02 && ratio <= 1.12 && w10 >= 0.95 * sw10, { ratio: +ratio.toFixed(3), widthAt0_1H: w10, standWidth: sw10 }, "1.02 .. 1.12; >= .95 x stand", "heights measured down from the top: .25 from the top is .75 H"));
+    const ratio = rowW(r4.coverage, r4.width, at(0.75)) / rowW(r4.coverage, r4.width, at(0.5)), w10 = rowW(r4.coverage, r4.width, at(0.9)), sw10 = ctx.stand ? (() => { const m = ctx.stand; let l = -1, rr2 = -1; const y = sAt(0.9); for (let x = 0; x < m.width; x++) if (m.bits[y * m.width + x]) { if (l < 0) l = x; rr2 = x + 1; } return rr2 - l; })() : 0;
+    out.push(C("drapet.e", "the fall: the width .75 of the height down from the top over the width at .5 in 1.02 .. 1.12 (the stand 1.07), the width at .9 down >= .95 x the stand's", ratio >= 1.02 && ratio <= 1.12 && w10 >= 0.95 * sw10, { ratio: +ratio.toFixed(3), widthAt0_1H: w10, standWidth: sw10 }, "1.02 .. 1.12; >= .95 x stand", "round 3: the row is .75 of the height down from the top (round 2 measured .25 down)"));
   }
   // marks.contrast: each mark's pigment against its surround at 304; texture energy
   { const look = form.look, pig = look.pigments, base = pig[Object.values(look.slots)[0]], res = {}, marks = { plate: pig.patch, belly: form.face.belly ? pig.belly : null, spot: pig.spot, sock: pig.sock, hoof: pig.hoof, nail: pig.nail, ring: pig.ring, inner: pig.inner };

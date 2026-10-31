@@ -82,11 +82,11 @@ test("Drapet's curtain hangs: R(z) is within 2 % of vertical between z_p - 2 L_d
   for (let z = h.zp - 0.3; z <= h.zp + 0.3; z += dz) { const slope = (R(z + dz) - R(z)) / dz; if (prev !== null) jump = Math.max(jump, Math.abs(slope - prev)); prev = slope; }
   assert.ok(jump <= 0.05, `slope jump ${jump}`);
 });
-test("Drapet's hem is 17 locks: tips within 0.015 U of the floor over at least 60 % of the angles, notches 0.10 U deep, splay at most 0.04 U", () => {
+test("Drapet's hem is 17 locks: tips within 0.01 U of the floor over at least 60 % of the angles, notches 0.08 U (tuned .068) deep, splay at most 0.04 U (round 3)", () => {
   const { f } = make("drapet"), h = f.hair; let low = 0, deep = 0; const n = 720;
-  for (let i = 0; i < n; i++) { const th = (i / n) * 2 * Math.PI, e = h.hemH(th); if (e <= 0.015 + 1e-9) low++; deep = Math.max(deep, e); }
+  for (let i = 0; i < n; i++) { const th = (i / n) * 2 * Math.PI, e = h.hemH(th); if (e <= 0.01 + 1e-9) low++; deep = Math.max(deep, e); }
   assert.equal(h.lockCount, 17);
-  assert.ok(low / n >= 0.6, `${low / n}`); assert.ok(deep >= 0.085 && deep <= 0.1 + 1e-9, `notch ${deep}`);
+  assert.ok(low / n >= 0.6, `${low / n}`); assert.ok(deep >= 0.058 && deep <= 0.08 + 1e-9, `notch ${deep}`);
   let sp = 0; for (let i = 0; i < n; i++) { const th = (i / n) * 2 * Math.PI; sp = Math.max(sp, (h.scaleAt(th, h.floorZ + 0.001) - h.scaleAt(th, h.zp - 1.0)) * h.Rp); }
   assert.ok(sp <= 0.04 + 0.06 + 0.01, `${sp}`); // the flare (.06 at most) plus the splay
 });
@@ -114,4 +114,18 @@ test("the fur cap is smoother than a hard minimum: along a switching chain the l
   const hard = (f0, w, u, d) => Math.min(f0, 0.35 * Math.min(w, u, d));
   const run = (fn) => { let worst = 0, prev = null; const h = 1e-3; for (let i = 0; i < 2000; i++) { const t = i / 2000, g = (x) => fn(0.1, 0.9, 0.1 + 0.6 * x, 0.4 - 0.1 * x), s = (g(t + h) - g(t)) / h; if (prev !== null) worst = Math.max(worst, Math.abs(s - prev)); prev = s; } return worst; };
   assert.ok(run(furOf) < run(hard) * 0.6, `${run(furOf)} vs ${run(hard)}`);
+});
+
+// ---- round 3 (design 3): Drapet's locks, tiers and fringe ----
+test("Drapet's hair has 22 locks in three tiers ending at .62 and .34 of the hair height above the hem, tips jittered by at most .04 U, locks .035 U high with V-grooves .045 U deep", () => {
+  const { f } = make("drapet"), P = f.hair.hairParams; assert.equal(P.NL, 22); assert.deepEqual(P.TIERS, [0.62, 0.34]); assert.equal(P.tables.length, 3);
+  for (let k = 0; k < 2; k++) for (const z of P.tables[k].zend) assert.ok(Math.abs(z - (f.hair.floorZ + P.TIERS[k] * P.Htot)) <= 0.04 + 1e-9);
+  // the locks: the lock index and t across it are defined all round the head, t runs -1 .. 1 across each lock and the ridge is outward of the groove
+  const h = f.hair, z = h.floorZ + 0.8 * P.Htot; let tmin = 9, tmax = -9; const ids = new Set();
+  for (let i = 0; i < 4000; i++) { const a = i * 0.0015, o = h.info(1.0 * Math.cos(a), 1.0 * Math.sin(a), z); if (o.tier === 0) { tmin = Math.min(tmin, o.t); tmax = Math.max(tmax, o.t); ids.add(o.id); } }
+  assert.ok(tmin <= -0.7 && tmax >= 0.7, `${tmin} ${tmax}`); assert.ok(ids.size >= 15, `${ids.size} locks seen`);
+});
+test("Drapet's hair has no 1 px fringe hairs: the fringe pass runs for fur only", async () => {
+  const { makeMaterial } = await import("../material.mjs"); assert.equal(makeMaterial(SPECIES.drapet, 304, 100).kind, "hair");
+  const src = (await import("node:fs")).readFileSync(new URL("../render.mjs", import.meta.url), "utf8"); assert.ok(/Mat\.kind === "fur"\) fringePass/.test(src));
 });

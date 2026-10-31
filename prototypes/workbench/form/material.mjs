@@ -24,7 +24,7 @@ export function makeMaterial(form, sizeKey, scale, opts = {}) {
   const M = form.look?.material ?? { kind: "skin" }, on = opts.material !== false, show = SHOWS[sizeKey] ?? SHOWS[48];
   const kind = M.kind ?? "skin", strand = M.strand ?? [0.03, 0.25], lock = M.lock ?? [0.12, 0.4], g = kind === "hair" ? 1 : M.gravity ?? 0.4;
   // the amplitude of each noise at this size: 0 where the size does not show it, else the fade of its width in pixels
-  const ampStrand = on && kind !== "skin" && show.strand ? 0.14 * Phi(strand[0] * scale) : 0, ampLock = on && kind !== "skin" && show.lock ? 0.1 * Phi(lock[0] * scale) : 0;
+  const ampStrand = on && kind !== "skin" && show.strand ? (kind === "hair" ? 0.1 : 0.14) * Phi(strand[0] * scale) : 0, ampLock = on && kind === "fur" && show.lock ? 0.1 * Phi(lock[0] * scale) : 0; // hair: the locks are geometry, the strands run at contrast .10
   const pores = on && kind === "skin" && sizeKey === 304 ? 0.04 * Phi(0.02 * scale) : 0;
   const strandAmp = () => ampStrand, lockAmp = () => ampLock;
   // the flow at a point: the tangent away from the crown (down the body toward a tip), mixed with world-down by the gravity share, in the tangent plane
@@ -42,6 +42,10 @@ export function makeMaterial(form, sizeKey, scale, opts = {}) {
     }
     const f = flow(ctx.T, ctx.sigma, ctx.group, ctx.n);
     let k = 1, n = ctx.n;
+    const lk = kind === "hair" ? ctx.lock : null, sizeKey304or96 = show.lock;
+    if (lk && sizeKey304or96) { // round 3 (design 3): a value jitter of +-8 % per lock, the V-groove shaded -25 % over 1-2 px, the lock tips lighter
+      const gw = smooth((Math.abs(lk.t) - 0.78) / 0.22); k *= 1 + 0.08 * (2 * lk.jit - 1); k *= 1 - 0.25 * gw; k *= 1 + 0.1 * smooth(lk.tip) * (sizeKey304or96 ? 1 : 0);
+    }
     if (ampStrand > 0) {
       const ns = stretched(ctx.p, f, strand[0], strand[1], 5); k += ampStrand * ns;
       // the normal bent by 0.25 x the strand noise's gradient across f, faded the same way
@@ -51,8 +55,9 @@ export function makeMaterial(form, sizeKey, scale, opts = {}) {
     }
     if (ampLock > 0) k += ampLock * stretched(ctx.p, f, lock[0], lock[1], 7);
     // the anisotropic sheen along f: sheen (1 - (f . h)^2)^20, in two bands for hair
-    const fh = ctx.h ? dot(f, ctx.h) : 0, band = kind === "hair" ? 0.5 + 0.5 * Math.sin(ctx.p[2] * 6) : 1;
-    return { k, n, sheen: (M.sheen ?? 0.2) * Math.pow(Math.max(0, 1 - fh * fh), 20) * band, gloss: 0 };
+    // hair: one soft sheen band on the upper third (exponent 8), the pigment lightened 35 %; fur keeps its anisotropic sheen
+    const fh = ctx.h ? dot(f, ctx.h) : 0, zr = ctx.zrel ?? 0.5, band = kind === "hair" ? Math.exp(-(((zr - 0.72) / 0.14) ** 2)) : 1;
+    return { k, n, sheen: (M.sheen ?? 0.2) * Math.pow(Math.max(0, 1 - fh * fh), kind === "hair" ? 8 : 20) * band, gloss: 0, sheenLight: kind === "hair" ? 0.35 : 0.4 };
   }
   return { kind, M, surface, strandAmp, lockAmp, ampStrand, ampLock, pores, strand, lock, flow };
 }

@@ -207,7 +207,7 @@ export function makeField(chains, branches, form, opts = {}) {
   // --- the surface without eyes: the coated body, plus the face's relief (never a recess), the hair's opening set back ---
   const dCoated = (x, y, z, loc) => dBodyOnly(x, y, z, loc);
   const cutBase = (d, z) => (base === null ? d : Math.max(d, base - z));
-  let faceM = null, pod = null; // the face model (face.mjs), built below from the casting surface; Drapet's pod
+  let faceM = null, pod = null, fringeStand = null; // the face model (face.mjs), built below from the casting surface; Drapet's pod
   const reliefAt = (x, y, z) => (faceM ? faceM.relief([x, y, z]) : 0);
   function dSurface(x, y, z, loc) {
     if (hair) {
@@ -232,12 +232,37 @@ export function makeField(chains, branches, form, opts = {}) {
       let sRim = 0; for (let k = 0; k < 8; k++) { const q = f0.castXY(ax * Math.cos(k * Math.PI / 4), ay * Math.sin(k * Math.PI / 4)); sRim += dot(sub(q, f0.Pf), f0.nf) / 8; }
       const poleN = sRim - P.setback, cen = add(f0.Pf, sc(f0.nf, poleN - az));
       podD = (x, y, z) => { const q = [x - cen[0], y - cen[1], z - cen[2]]; return ellipsoidD(dot(q, f0.bf), dot(q, f0.uf), dot(q, f0.nf), ax, ay, az); };
-      const Pf0 = f0.Pf, bowl = P.bowl ?? 0.07;
-      hair.setBowl((x, y, z) => { const q = [x - Pf0[0], y - Pf0[1], z - Pf0[2]]; const behind = smooth((dot(q, f0.nf) + 0.3) / 0.15); if (behind <= 0) return 0; const r = Math.hypot(dot(q, f0.bf) / (ax * (P.bowlR ?? 1.3)), dot(q, f0.uf) / (ay * (P.bowlR ?? 1.3))); return bowl * behind * smooth((1 - r) / (P.bowlW ?? 0.4)); }); // a flat floor over the pod, rising to the hair's own surface at the parting's edge
+      const Pf0 = f0.Pf, bowl = P.bowl ?? 0.07, NJ = 11, jv = Array.from({ length: NJ }, (_, i) => hash1(i, 401) * 2 - 1), jagNoise = (a) => { const u = (((a / (2 * Math.PI)) % 1) + 1) % 1 * NJ, i = Math.floor(u), t = u - i, s = t * t * (3 - 2 * t); return jv[i % NJ] * (1 - s) + jv[(i + 1) % NJ] * s; }; // the parting's edge: lock-wide lobes, not an ellipse
+      hair.setBowl((x, y, z) => { const q = [x - Pf0[0], y - Pf0[1], z - Pf0[2]]; const behind = smooth((dot(q, f0.nf) + 0.3) / 0.15); if (behind <= 0) return 0; const qx = dot(q, f0.bf), qy = dot(q, f0.uf), ang = Math.atan2(qy, qx), jg = 1 + (P.bowlJag ?? 0.16) * jagNoise(ang), r = Math.hypot(qx / (ax * (P.bowlR ?? 1.3)), qy / (ay * (P.bowlR ?? 1.3))) / jg; return bowl * behind * smooth((1 - r) / (P.bowlW ?? 0.4)); }); // a flat floor over the pod, rising to the hair's own surface at the parting's edge
       // the measured set-back: the hair's own surface (no bowl) at the pod's rim, along n_f, against the pod's front pole
       const rimHair = []; for (let k = 0; k < 8; k++) { const x = ax * Math.cos(k * Math.PI / 4), y = ay * Math.sin(k * Math.PI / 4), o = add(f0.Pf, add(sc(f0.bf, x), sc(f0.uf, y))); let lo = -0.5, hi = 0.5; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (hair.dNoBowl(o[0] + f0.nf[0] * m, o[1] + f0.nf[1] * m, o[2] + f0.nf[2] * m) < 0) lo = m; else hi = m; } rimHair.push((lo + hi) / 2); }
       const poleMeasured = dot(sub(add(cen, sc(f0.nf, az)), f0.Pf), f0.nf);
-      pod = { c: cen, a: P.a, setBack: rimHair.reduce((a, b) => a + b, 0) / 8 - poleMeasured, setBackRange: [Math.min(...rimHair) - poleMeasured, Math.max(...rimHair) - poleMeasured], rimN: sRim, poleN, frame: { n: f0.nf, b: f0.bf, u: f0.uf } };
+      // the fringe (design 3): 9 locks from the crown's front within +-.55 rad of the face direction, ending at the fringe line (the eyes' top + fringe-gap x r_e) with lengths +-.03 and
+      // tips tapered to a point over .06 U, standing in front of the face (they lie on the hair's own surface, the face is set back behind it). Round cones along the surface.
+      { const Fr = face.fringe ?? {}, nF = Fr.n ?? 9, X = Fr.spread ?? 0.52, rB = Fr.r ?? 0.045, pt = Fr.point ?? 0.06, sink = Fr.sink ?? 0.025, lenJ = Fr.lenJit ?? 0.03, K = 7;
+        const E = face.eyes, sz = face.size ?? 1, rEye = E ? E.r * (E.size ?? 1) : 0.1, yEye = E ? E.ey * sz + rEye : 0.1, yEnd0 = yEye + (face.opening?.gap ?? 0.6) * rEye, yTop = 0.62, chains = [];
+        for (let j = 0; j < nF; j++) {
+          const cx = X * (2 * (j + 0.5) / nF - 1) + (hash1(j, 303) - 0.5) * 0.04, yEnd = yEnd0 + (hash1(j, 311) - 0.5) * 2 * lenJ, pts = [];
+          for (let k = 0; k <= K; k++) {
+            const y = yTop - (yTop - yEnd) * (k / K), o = add(f0.Pf, add(sc(f0.bf, cx), sc(f0.uf, y))); let lo = -0.5, hi = 0.5;
+            for (let i = 0; i < 36; i++) { const m = (lo + hi) / 2; if (hair.dNoBowl(o[0] + f0.nf[0] * m, o[1] + f0.nf[1] * m, o[2] + f0.nf[2] * m) < 0) lo = m; else hi = m; }
+            const t = (lo + hi) / 2 - sink, r = rB * Math.min(1, Math.max(0.1, (y - yEnd) / pt + 0.1));
+            pts.push({ p: [o[0] + f0.nf[0] * t, o[1] + f0.nf[1] * t, o[2] + f0.nf[2] * t], r, y });
+          }
+          chains.push({ pts, cx, yEnd });
+        }
+        // the standoff of the fringe tips in front of the pod: the lock's centreline plus its radius against the pod's front at the same (x, y), along n_f
+        fringeStand = Math.min(...chains.map((c) => { const q = c.pts.at(-1), n = dot(sub(q.p, f0.Pf), f0.nf) + q.r, rx = dot(sub(q.p, f0.Pf), f0.bf) / ax, ry = dot(sub(q.p, f0.Pf), f0.uf) / ay, rho2 = Math.min(0.999, rx * rx + ry * ry), podN = poleN - az * (1 - Math.sqrt(1 - rho2)); return n - podN; }));
+        const cc = f0.Pf, cR = X + 0.45;
+        hair.setFringe((x, y, z, out) => {
+          const dc = Math.hypot(x - cc[0], y - cc[1], z - cc[2]); if (dc > cR + 0.15) return dc - cR;
+          let best = Infinity, bj = -1, bh = 0, bk = 0;
+          for (let j = 0; j < chains.length; j++) { const P = chains[j].pts; for (let k = 0; k < K; k++) { const a = P[k], b = P[k + 1], ex = b.p[0] - a.p[0], ey = b.p[1] - a.p[1], ez = b.p[2] - a.p[2], l2 = ex * ex + ey * ey + ez * ez, qx = x - a.p[0], qy = y - a.p[1], qz = z - a.p[2], h = Math.max(0, Math.min(1, (qx * ex + qy * ey + qz * ez) / l2)), d = Math.hypot(qx - ex * h, qy - ey * h, qz - ez * h) - (a.r + (b.r - a.r) * h); if (d < best) { best = d; bj = j; bh = (k + h) / K; bk = k; } } }
+          if (out && bj >= 0) { const c = chains[bj]; out.id = 200 + bj; out.t = Math.max(-1, Math.min(1, dot(sub([x, y, z], f0.Pf), f0.bf) - c.cx) / rB); out.tip = 1 - Math.min(1, Math.max(0, (c.pts[bk].y - c.yEnd) / 0.08)); out.tier = 3; }
+          return best;
+        });
+      }
+      pod = { fringeStand, c: cen, a: P.a, setBack: rimHair.reduce((a, b) => a + b, 0) / 8 - poleMeasured, setBackRange: [Math.min(...rimHair) - poleMeasured, Math.max(...rimHair) - poleMeasured], rimN: sRim, poleN, frame: { n: f0.nf, b: f0.bf, u: f0.uf } };
     }
     faceM = makeFace(face, env);
   }
@@ -295,8 +320,8 @@ export function makeField(chains, branches, form, opts = {}) {
       if (de < 0.05 && de < dSurface(x, y, z, loc) + 1e-4) { part = "eye"; let bm = 0, bd = Infinity; eyes.forEach((e, i) => { const d = Math.hypot(x - e.c[0], y - e.c[1], z - e.c[2]); if (d < bd) { bd = d; bm = i; } }); eye = bm; }
     }
     let hairHere = false;
-    let podMix = 0;
-    if (hair && part !== "eye") { const dh = hair.d(x, y, z, loc), dp = podD ? podD(x, y, z) : Infinity; if (dp <= dh + 1e-3) part = "face"; else { hairHere = true; part = "hair"; } if (podD) podMix = smooth((dh - dp) / 0.012 + 0.5); }
+    let podMix = 0, hl = null;
+    if (hair && part !== "eye") { const dh = hair.d(x, y, z, loc), dp = podD ? podD(x, y, z) : Infinity; if (dp <= dh + 1e-3) part = "face"; else { hairHere = true; part = "hair"; hl = hair.info(x, y, z); } if (podD) podMix = smooth((dh - dp) / 0.012 + 0.5); }
     let patch = 0, belly = 0, mouth = 1;
     if (faceM && part !== "eye") {
       const xy = faceM.coords([x, y, z]);
@@ -313,7 +338,7 @@ export function makeField(chains, branches, form, opts = {}) {
     const marks = marksList.map((m) => Math.hypot(x - m.c[0], y - m.c[1], z - m.c[2]) / m.sx);
     const tv = [D[o + 3], D[o + 4], D[o + 5]], u0 = bg.length > 0 ? bg.s[bi] / bg.length : 0;
     let fx = 9, fy = 9; if (faceM) { const q = faceM.coords([x, y, z]); if (q) { fx = q[0]; fy = q[1]; } }
-    return { part, T: tv, u0, fx, fy, sigma: bg.sigma[bi], s: bg.s[bi], angle, emission: bg.emission[bi], patch, belly, mouth, eye, group: bg.id, gi: all.indexOf(bg), marks };
+    return { part, T: tv, u0, fx, fy, sigma: bg.sigma[bi], s: bg.s[bi], angle, emission: bg.emission[bi], patch, belly, mouth, eye, lt: hl ? hl.t : 0, lid: hl ? hash1(hl.id, 777) : 0, ltip: hl ? hl.tip : 0, ltier: hl ? hl.tier : -1, group: bg.id, gi: all.indexOf(bg), marks };
   }
   // a vertex: two Newton steps onto F = 0, the normal by central differences (h = 0.5 voxel), its attributes; all local
   function project(x, y, z, voxel) {
@@ -404,28 +429,68 @@ function makeHair(h, S, base, dTrunk0) {
     const zh = floorZ + hemFast(th), Dz = Math.max(0, zp - z), g = Dz / Math.max(1e-6, zp - zh), sg = smoothG(g);
     return 1 + m * Ld * (1 - Math.exp(-Dz / Ld)) + (flare + splayFast(th) / Rp) * sg;
   };
-  let bowl = null; // a smooth push-in of the hair surface over Drapet's face pod, set by the field once the pod is placed
-  const setBowl = (fn) => { bowl = fn; };
-  const groove = (x, y, th) => { const r = Math.hypot(x, y); return gA * smooth(r / 0.8) * 0.5 * (1 + Math.cos(strands * th + 1.3)); };
-  function dHairOnly(x, y, z, loc) {
+  // ---- round 3 (design 3): the locks, the tiers and the lock tips --------------------------------------------------------------------------------------
+  // Each tier is the curtain (the same shell, the same hang law) with its own 22 locks: a rounded ridge a = .035 U high across the lock (offset -a sqrt(1 - t^2)),
+  // V-grooves .045 U deep at the lock edges (a smooth step from |t| .6), widths +-25 % (hashed), the lock's angle drifting by up to +-.15 rad per U of drop. The three tiers
+  // end at .62 and .34 of the hair height above the hem and at the hem; an upper tier is the outer one, the lower tiers are inset .03 and .06 U, so each tier's end is a
+  // shadowed step. Tips are jittered +-.04 U, pointed (the centre of a lock reaches lowest), and lift .025 U and splay .02 U off the layer below over their last .10 U.
+  const NL = h.lockN ?? 22, LA = h.lockA ?? 0.035, LG = h.lockGroove ?? 0.045, DRIFT = h.drift ?? 0.15, TIERS = h.tiers ?? [0.62, 0.34], INSET = h.inset ?? [0, 0.03, 0.06];
+  const TLIFT = h.tipLift ?? 0.025, TSPLAY = h.tipSplay ?? 0.02, TLEN = h.tipLen ?? 0.1, POINT = h.point ?? 0.08, JIT = h.tipJitter ?? 0.04;
+  let zTop = zp + 0.5; { let lo = zp, hi = zp + 3; for (let i = 0; i < 40; i++) { const m2 = (lo + hi) / 2; if (dShell(0, 0, m2) < 0) lo = m2; else hi = m2; } zTop = (lo + hi) / 2; }
+  const Htot = zTop - floorZ, ntier = TIERS.length + 1;
+  const tables = []; for (let k = 0; k < ntier; k++) { const salt = 101 + 110 * k, jag = [], dr = [], zend = []; for (let i = 0; i < NL; i++) { jag.push((hash1(i, salt) - 0.5) * 0.25); dr.push((hash1(i, salt + 7) - 0.5) * 2 * DRIFT); zend.push(k < TIERS.length ? floorZ + TIERS[k] * Htot + (hash1(i, salt + 13) - 0.5) * 2 * JIT : 0); } tables.push({ jag, dr, zend, phase: hash1(k, salt + 19) * 2 * Math.PI / NL }); }
+  const Bd = (T, i) => (i + T.jag[((i % NL) + NL) % NL]);
+  function lockOf(T, th, drop) { // lock index and t across it (-1 .. 1) at azimuth th, after the drift: the angle moves by drift(th) x drop, drift a smooth periodic function of th
+    let thd = th;
+    if (drop) { let q = ((th / (2 * Math.PI)) % 1 + 1) % 1 * NL, i0 = Math.floor(q), f0 = q - i0, e = f0 * f0 * (3 - 2 * f0); thd = th - (T.dr[i0 % NL] * (1 - e) + T.dr[(i0 + 1) % NL] * e) * drop; }
+    let u = ((thd - T.phase) / (2 * Math.PI)) * NL; u -= NL * Math.floor(u / NL);
+    let i = Math.floor(u); for (let g = 0; g < 3; g++) { if (u < Bd(T, i)) i--; else if (u >= Bd(T, i + 1)) i++; else break; }
+    const f = (u - Bd(T, i)) / (Bd(T, i + 1) - Bd(T, i)), id = ((i % NL) + NL) % NL;
+    return { id, t: 2 * f - 1 };
+  }
+  // the distance of tier k at a point, given the curtain's distance d0 (without any lock): lock ridge and groove, inset, tip lift, tip cut; out = { id, t, tip } when asked
+  function tierD(k, x, y, z, th, d0, out) {
+    const T = tables[k], r = Math.hypot(x, y), amp = smooth(r / 0.8), { id, t } = lockOf(T, th, Math.max(0, zTop - z)), at = Math.abs(t);
+    let d = d0 + INSET[k] + amp * (-LA * (Math.sqrt(Math.max(0, 1 - t * t) + 0.08) - Math.sqrt(0.08)) / (1 - Math.sqrt(0.08)) + LG * smooth((at - 0.3) / 0.7)); // a ridge a high, rounded at the edges (the plain root has an infinite slope there), the groove from |t| .3
+    let tip = 0;
+    if (k < TIERS.length) {
+      const zE = T.zend[id], zc = zE + POINT * Math.min(1, at + TSPLAY / POINT * 0); tip = 1 - Math.min(1, Math.max(0, (z - zE) / TLEN));
+      d -= TLIFT * smooth(tip); // the lift is radial; the splay (.02 U) widens the lock's tip sideways: its cut point is .02 U wider
+      d = smax(d, zc - z, 0.02);
+    } else { const zh = floorZ + hemFast(th); tip = 1 - Math.min(1, Math.max(0, (z - zh) / TLEN)); }
+    if (out) { out.id = id + 100 * k; out.t = t; out.tip = tip; out.tier = k; }
+    return d;
+  }
+  // the hair's distance: the union of the tiers; with `out`, the attributes of the tier that is outermost here (lock id, t, tip, tier)
+  const hairOut = { id: 0, t: 0, tip: 0, tier: 0 };
+  function dHairOnly(x, y, z, loc, out) {
     const th = Math.atan2(y, x);
-    let d;
-    if (z >= zp) d = dShell(x, y, z, loc);
+    let d0;
+    if (z >= zp) d0 = dShell(x, y, z, loc);
     else {
       const zh = floorZ + hemFast(th), s = scaleAt(th, z);
-      d = s * dShell(x / s, y / s, zp, null); // the section at the part line: not near this point, so the full evaluator
-      // the hem cut, divided by the gradient of its own height (a V notch of slope ~1 would make the field 1.4-Lipschitz)
+      d0 = s * dShell(x / s, y / s, zp, null); // the section at the part line: not near this point, so the full evaluator
       const e = 0.01, dz = (hemFast(th + e) - hemFast(th - e)) / (2 * e) / Math.max(0.2, Math.hypot(x, y));
-      d = smax(d, (zh - z) / Math.sqrt(1 + dz * dz), 0.04); // a rounded crease (a corner sharper than the voxel defeats the projection)
+      d0 = smax(d0, (zh - z) / Math.sqrt(1 + dz * dz), 0.04); // a rounded crease (a corner sharper than the voxel defeats the projection)
     }
-    return d + groove(x, y, th) + (bowl && !noBowl ? bowl(x, y, z) : 0);
+    // far from the surface the locks cannot matter: skip them (the distance is then the curtain's, which is a lower bound of the union within the lock amplitude)
+    let best = Infinity, ba = null;
+    if (d0 > 0.12 && !out) return d0 + (bowl && !noBowl ? bowl(x, y, z) : 0);
+    for (let k = 0; k < ntier; k++) { const o = out ? hairOut : null, d = tierD(k, x, y, z, th, d0, o); if (d < best) { best = d; if (out) { ba = { ...hairOut }; } } }
+    if (out && ba) Object.assign(out, ba);
+    best += bowl && !noBowl ? bowl(x, y, z) : 0;
+    if (fringe && !noBowl) { const fo = out ? { id: 0, t: 0, tip: 0, tier: 3 } : null, fd = fringe(x, y, z, fo); if (fd < best) { best = fd; if (out) Object.assign(out, fo); } }
+    return best;
   }
-  let noBowl = false;
+  let fringe = null; const setFringe = (fn) => { fringe = fn; };
+  let bowl = null, noBowl = false; // a smooth push-in of the hair surface over Drapet's face pod, set by the field once the pod is placed
+  const setBowl = (fn) => { bowl = fn; };
   const dNoBowl = (x, y, z) => { noBowl = true; try { return dHairOnly(x, y, z, null); } finally { noBowl = false; } };
+  const info = (x, y, z) => { const o = { id: 0, t: 0, tip: 0, tier: 0 }; dHairOnly(x, y, z, null, o); return o; };
   const wc = h.window ? [h.window.c[0], h.window.c[1], h.window.c[2] + S] : null, wr = h.window?.r, kw = h.window?.k ?? 0.05;
   function dWin(x, y, z) { return ellipsoidD(x - wc[0], y - wc[1], z - wc[2], wr[0], wr[1], wr[2]); }
   const dFn = (x, y, z, loc) => (wc ? smax(dHairOnly(x, y, z, loc), -dWin(x, y, z), kw) : dHairOnly(x, y, z, loc));
   // the largest radius, for the bounds
   let Rmax = 0; for (let i = 0; i < 64; i++) { const th = (i / 64) * 2 * Math.PI; Rmax = Math.max(Rmax, Rp * scaleAt(th, floorZ + 0.001)); }
-  return { d: dFn, setBowl, dNoBowl, dHairOnly, dWin, dShell, zp, m, Rp, hemH, hemFast, scaleAt, lockCount: nl, depth, flare, Ld, Rmax, window: wc ? { c: wc, r: wr } : null, radius, floorZ, tau: m * Rp };
+  return { d: dFn, setBowl, setFringe, dNoBowl, info, hairParams: { NL, TIERS, zTop, Htot, tables }, dHairOnly, dWin, dShell, zp, m, Rp, hemH, hemFast, scaleAt, lockCount: nl, depth, flare, Ld, Rmax, window: wc ? { c: wc, r: wr } : null, radius, floorZ, tau: m * Rp };
 }

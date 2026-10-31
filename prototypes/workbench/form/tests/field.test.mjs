@@ -51,8 +51,9 @@ test("the field is nearly 1-Lipschitz near the surface: |F(p) - F(q)| <= 1.5 |p 
     }
     // the thin lens leaves of Loika's crest (flatness 5.7 : 1) and Rupar's ears reach 2.7 and more at their rim: the bound k0 (k0 - 1) / k1 is not 1-Lipschitz
     // there (round 2 passed Rupar by the luck of its sample: the same ears measure 5.6 on a larger one). The rest of the body keeps 1.5.
-    // Drapet's parting is a smooth bowl in the hair, .25 U deep over about .2 U: its slope adds up to 1.8 to the hair's own 1 (round 3, design 3: nothing is cut)
-    assert.ok(worst <= (k === "drapet" ? 3 : 1.5), `${k}: ${worst}`); assert.ok(worstFlat <= 8, `${k} thin lens: ${worstFlat}`);
+    // Drapet (round 3, design 3): the parting is a smooth bowl in the hair (.25 U deep over about .2 U, slope up to 1.8), the tiers end in pointed cuts and the locks are ridges and V-grooves:
+    // their slopes add to the hair's own 1 (4.6 on a sample of 3,000 points). The distance is not exact there; the mesher projects onto F = 0 and the vertex test below holds. The bound is 5.
+    assert.ok(worst <= (k === "drapet" ? 5 : 1.5), `${k}: ${worst}`); assert.ok(worstFlat <= 8, `${k} thin lens: ${worstFlat}`);
   }
 });
 test("100,000 evaluations on Curlop take under 1 s", () => {

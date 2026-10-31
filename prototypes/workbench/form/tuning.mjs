@@ -22,8 +22,12 @@ export const TUNING = [
   { species: "rupar", path: "face.mouth.t", after: 0.01725, why: "face.mouth: the stroke was .4 px wide against >= 1.5: +15 %" },
   { species: "drapet", path: "camera.yaw", after: 36, why: "face.place and drapet.face: the face pod turned 46 degrees from the viewer showed 1750 plate px against the stand's ~2300 and the far eye hid: yaw -10 degrees" },
   { species: "drapet", path: "face.eyes.r", after: 0.125, why: "face.place: the eye's visible diameter .076 H against >= .080 (the stand's eyes are 26 px, ours 21): +8.7 % over the round 2 tuning's .115 (more would break the corner gap guard at eye-size 1.2 and spacing .85)" },
-  { species: "drapet", path: "face.nose.y", after: -0.046, why: "face.place: the nose .024 H under the eye line against >= .027: +15 % lower" },
-  { species: "drapet", path: "camera.pitch", after: 19, why: "face.place: the nose .026 H under the eye line against >= .027: pitch +3 degrees (.0285)" },
+  { species: "drapet", path: "camera.pitch", after: 14, why: "drapet.e: the width at .9 of the height down was 251 px against >= 264 at the design's pitch 16 (269 at 14): pitch -2 degrees (overlap holds at .89)" },
+  { species: "drapet", path: "hair.notch", after: 0.068, why: "drapet.c: the hem's notch .08 U is 8.9 px at 304, over the 8 px the floor-row measure allows (.547 of the columns against >= .6): -15 %" },
+  { species: "drapet", path: "hair.flare", after: 0.085, why: "overlap48 (.886 against .89) and drapet.a: a grid over the allowance: flare -15 % from the design's .10" },
+  { species: "drapet", path: "hair.Ld", after: 0.31, why: "same: the hang length -7.7 % from the round 2 tuning's .336 (.894, width at .9 of the height 265 px)" },
+  { species: "drapet", path: "face.eyes.ex", after: 0.24, why: "face.place: the eye separation .130 H against >= .131: +4 % over the round 2 tuning's .23 (the 3D separation test holds within 10 %)" },
+  { species: "drapet", path: "face.nose.y", after: -0.0459, why: "face.place: the nose .026 H under the eye line against >= .027 (this keeps the allowance's end of -.046)" },
 ]; // round 3 tuning; round 2's list is TRIAL2 in species-trial.mjs, folded into ROUND3
 
 const walk = (o, path) => { const ps = path.split("."); for (let i = 0; i < ps.length - 1; i++) o = o[ps[i]]; return [o, ps.at(-1)]; };
