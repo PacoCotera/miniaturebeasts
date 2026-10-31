@@ -5,3 +5,4 @@ import "./mesh.test.mjs";
 import "./genome.test.mjs";
 import "./render.test.mjs";
 import "./checks.test.mjs";
+import "./joins.test.mjs";

@@ -15,7 +15,7 @@ function hash3(i, j, k, salt = 0) {
   return (h >>> 0) / 4294967296;
 }
 export const hash1 = (i, salt = 0) => hash3(i, 7, 13, salt);
-function noise3(x, y, z, salt) {
+export function noise3(x, y, z, salt) {
   const i = Math.floor(x), j = Math.floor(y), k = Math.floor(z), fx = x - i, fy = y - j, fz = z - k;
   const u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy), w = fz * fz * (3 - 2 * fz);
   const c = (a, b, d) => hash3(i + a, j + b, k + d, salt) * 2 - 1;
@@ -38,9 +38,10 @@ function pack(chain, shift, id, blend0 = 0) {
     data[o + 3] = m.T[0]; data[o + 4] = m.T[1]; data[o + 5] = m.T[2];
     data[o + 6] = m.N[0]; data[o + 7] = m.N[1]; data[o + 8] = m.N[2];
     data[o + 9] = m.B[0]; data[o + 10] = m.B[1]; data[o + 11] = m.B[2];
-    const rT = Math.min(m.w, m.u, m.d);
-    data[o + 12] = 1 / m.w; data[o + 13] = 1 / m.u; data[o + 14] = 1 / m.d; data[o + 15] = 1 / rT;
-    half[i] = Math.max(m.w, m.u, m.d); rTs[i] = rT;
+    // the fur is each sample's own inflation (design 5.4), added to its radii before the union: no offset, no seams at the joins
+    const fr = m.fur ?? 0, rT = Math.min(m.w, m.u, m.d) + fr;
+    data[o + 12] = 1 / (m.w + fr); data[o + 13] = 1 / (m.u + fr); data[o + 14] = 1 / (m.d + fr); data[o + 15] = 1 / rT;
+    half[i] = Math.max(m.w, m.u, m.d) + fr; rTs[i] = rT;
     const hstep = i > 0 ? S[i].s - S[i - 1].s : n > 1 ? S[1].s - S[0].s : 0.05;
     kk[i] = 0.5 * Math.max(hstep, 1e-4);
     sigma[i] = m.sigma; s[i] = m.s; emission[i] = m.emission; part[i] = 0;
@@ -196,27 +197,13 @@ export function makeField(chains, branches, form, opts = {}) {
   // --- hair (Drapet): the shell above the part line, the fall below it, a window and a hem of locks ---
   const hair = form.hair ? makeHair(form.hair, S, base, dTrunkOnly) : null;
 
-  // --- coat ---
+  // --- coat: the fur is per-sample inflation of the radii (pack); the field carries shape only, no noise term (design 1.1) ---
   const coat = form.coat && form.coat.depth > 0 ? form.coat : null;
   const face = form.face ?? null;
   const frontAt = (sg) => { const s = interpChain(chains.front, sg); return { ...s, p: [s.p[0], s.p[1], s.p[2] + S] }; };
   const anchor = face ? frontAt(face.sigma) : null;
   const faceDir = anchor ? nrm(add(sc(anchor.T, face.t ?? 0), sc(anchor.N, -(face.v ?? 0)))) : null;
-  function bareFactor(x, y, z) {
-    if (!coat || !coat.bare || !anchor) return 1;
-    const v = nrm([x - anchor.p[0], y - anchor.p[1], z - anchor.p[2]]), ang = Math.acos(Math.max(-1, Math.min(1, dot(v, faceDir)))) / RAD;
-    const t = smooth((coat.bare.angle - ang) / (coat.bare.edge ?? 16) + 0.5);
-    return 1 - t * (1 - (coat.bare.factor ?? 0.15));
-  }
-  function coatDepth(x, y, z) {
-    if (!coat) return 0;
-    const lk = Math.min(coat.locks ?? 0, 0.25 * coat.depth);
-    const n = noise3(x * 6, y * 6, z * 6, 3);
-    // coat.cap (off by default, a variant the report shows): the fur depth never exceeds cap x the local half-size, so a tip does not end in a bulb
-    const depth = coat.cap ? Math.min(coat.depth, coat.cap * nearHalf) : coat.depth;
-    return (depth + lk * n) * bareFactor(x, y, z);
-  }
-  const dCoated = (x, y, z, loc) => dBodyOnly(x, y, z, loc) - coatDepth(x, y, z);
+  const dCoated = (x, y, z, loc) => dBodyOnly(x, y, z, loc);
 
   // --- the surface without eyes ---
   const cutBase = (d, z) => (base === null ? d : Math.max(d, base - z));
@@ -368,10 +355,14 @@ export function makeField(chains, branches, form, opts = {}) {
     const trunk = dTrunkOnly(x, y, z, null);
     return { trunk, branches: bgroups.map((g) => { const dj = groupD(g, x, y, z, hitB, null); return { id: g.id, d: dj, s: g.s[hitB.i], length: g.length, k: g.blend0 * (1 - smooth(g.s[hitB.i] / (0.35 * g.length))) }; }), union: dBodyOnly(x, y, z, null) };
   };
-  return { seeds, F, F3, d: (x, y, z) => dAll(x, y, z, null), at: (p, noEye = false) => at(p, null, noEye), project, eyes, marks: marksList, bounds: { lo, hi }, shift: S, floor, base, parts, groups: { all, partNames, front: groups.front, tail: groups.tail, branches: bgroups }, hair, partNames, anchor, faceDir, coat, dCast, dBodyOnly, noise3, makeLoc, dAllLoc: dAll, S };
+  return { seeds, F, F3, d: (x, y, z) => dAll(x, y, z, null), at: (p, noEye = false) => at(p, null, noEye), project, eyes, marks: marksList, bounds: { lo, hi }, shift: S, floor, base, parts, groups: { all, partNames, front: groups.front, tail: groups.tail, branches: bgroups }, hair, partNames, anchor, faceDir, coat, dCast, dBodyOnly, noise3, noiseTerms: 0, makeLoc, dAllLoc: dAll, S };
 }
 
-// ---- the hair: shell above the part line, a fall below it along the tangent, locks at the hem ----------------
+// ---- the hair: shell above the part line, a curtain that hangs (design 5.5), and a hem of locks (5.6) --------------------------------
+// Below the part line the radius scale is s(z) = 1 + m L_d (1 - e^(-dz/L_d)) + flare smoothstep(.75, 1, g): the curtain leaves the shell
+// on its tangent (m the shell's own relative slope), is vertical within about 2 L_d, and splays only in the hem zone (g >= .75).
+// The hem is `locks` locks (17): a flat tip lifted by at most `lift`, a V notch `notch` deep between neighbours, tips splayed out by at most `splay`.
+export const HEM_TIP_SHARE = 0.65;
 function makeHair(h, S, base, dTrunk0) {
   const dTrunk = (x, y, z, loc) => dTrunk0(x, y, z, loc);
   const zp = h.partLine + S, floorZ = base ?? 0, depth = h.depth;
@@ -382,44 +373,52 @@ function makeHair(h, S, base, dTrunk0) {
   for (let i = 0; i < NA; i++) {
     const th = (i / NA) * 2 * Math.PI, R0 = radius(th, zp), e = 0.01, Rm = radius(th, zp + e), Rn = radius(th, zp - e);
     Rp += R0 / NA;
-    // the radius grows downward: the shell's own slope at the part line (the tangent rule)
-    m += ((Rn - Rm) / (2 * e) / R0) / NA;
+    m += ((Rn - Rm) / (2 * e) / R0) / NA; // the radius grows downward: the shell's own slope at the part line (the tangent rule)
   }
   m = Math.max(0, m);
-  // the hem: lobes of uneven width and length, a hashed phase
-  const lobes = h.lobes ?? 11, amp = h.hem ?? 0.16, lj = [], ll = [];
-  for (let i = 0; i < lobes; i++) { lj.push((hash1(i, 11) - 0.5) * 0.7); ll.push(0.45 + 0.55 * hash1(i, 29)); }
-  const phase = hash1(3, 77) * 2 * Math.PI / lobes;
-  const bnd = (i) => ((i + lj[((i % lobes) + lobes) % lobes]) / lobes) * 2 * Math.PI + phase;
-  const hemH = (th) => { // height of the hem above the floor at the angle th
+  const Ld = h.Ld ?? 0.3, flare = h.flare ?? 0.06, strands = h.strands ?? 46, gA = h.groove ?? 0.01;
+  // the hem: n locks of uneven width, a hashed phase; per lock a tip lift, a notch depth and a splay
+  const nl = h.locks ?? 17, notch = h.notch ?? 0.1, liftMax = h.lift ?? 0.015, splayMax = h.splay ?? 0.04, jag = [], lift = [], nt = [], spl = [];
+  for (let i = 0; i < nl; i++) { jag.push((hash1(i, 11) - 0.5) * 0.5); lift.push(liftMax * hash1(i, 29)); nt.push(notch * (0.85 + 0.15 * hash1(i, 41))); spl.push(splayMax * (0.4 + 0.6 * hash1(i, 53))); }
+  const phase = hash1(3, 77) * 2 * Math.PI / nl;
+  const B = (i) => ((i + jag[((i % nl) + nl) % nl]) / nl) * 2 * Math.PI;
+  const lockAt = (th) => { // [height of the hem above the floor, splay] at the angle th
     let t = th - phase; t = ((t % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-    // find the lobe whose [bnd(i), bnd(i+1)) holds t (+ phase removed)
-    const B = (i) => ((i + lj[((i % lobes) + lobes) % lobes]) / lobes) * 2 * Math.PI;
-    let i = Math.floor((t / (2 * Math.PI)) * lobes);
+    let i = Math.floor((t / (2 * Math.PI)) * nl);
     for (let guard = 0; guard < 3; guard++) { if (t < B(i)) i--; else if (t >= B(i + 1)) i++; else break; }
-    const f = (t - B(i)) / (B(i + 1) - B(i)), tri = 1 - Math.abs(2 * f - 1), L = ll[((i % lobes) + lobes) % lobes];
-    return amp * (1 - L * Math.pow(tri, h.lockShape ?? 0.8));
+    const f = (t - B(i)) / (B(i + 1) - B(i)), tri = Math.abs(2 * f - 1), k = ((i % nl) + nl) % nl;
+    const v = smooth((tri - HEM_TIP_SHARE) / (1 - HEM_TIP_SHARE)); // 0 on the tip, 1 in the notch (eased at both ends: no crease for the projection)
+    const kb = ((i + (f < 0.5 ? 0 : 1)) % nl + nl) % nl; // the notch depth belongs to the boundary, so two neighbours agree (no step in the hem)
+    return [lift[k] + (nt[kb] - lift[k]) * v, spl[k] * (1 - tri) * (1 - tri)];
   };
-  const NL = 2048, hemLut = new Float64Array(NL + 2); for (let i = 0; i <= NL + 1; i++) hemLut[i] = hemH((i / NL) * 2 * Math.PI);
-  const hemFast = (th) => { let t = th / (2 * Math.PI); t -= Math.floor(t); const q = t * NL, i = Math.min(NL, Math.floor(q)), f = q - i; return hemLut[i] + (hemLut[i + 1] - hemLut[i]) * f; };
-  const flare = h.flare ?? 0.2, gamma = h.gamma ?? 1.2, strands = h.strands ?? 46, gA = h.groove ?? 0.01;
-  const wc = [h.window.c[0], h.window.c[1], h.window.c[2] + S], wr = h.window.r, kw = h.window.k ?? 0.05;
+  const hemH = (th) => lockAt(th)[0];
+  const NLUT = 4096, hemLut = new Float64Array(NLUT + 2), splLut = new Float64Array(NLUT + 2);
+  for (let i = 0; i <= NLUT + 1; i++) { const q = lockAt((i / NLUT) * 2 * Math.PI); hemLut[i] = q[0]; splLut[i] = q[1]; }
+  const lut = (L, th) => { let t = th / (2 * Math.PI); t -= Math.floor(t); const q = t * NLUT, i = Math.min(NLUT, Math.floor(q)), f = q - i; return L[i] + (L[i + 1] - L[i]) * f; };
+  const hemFast = (th) => lut(hemLut, th), splayFast = (th) => lut(splLut, th);
+  const smoothG = (g) => smooth((g - 0.75) / 0.25);
+  const scaleAt = (th, z) => { // the radius scale of the curtain at height z and angle th
+    const zh = floorZ + hemFast(th), Dz = Math.max(0, zp - z), g = Dz / Math.max(1e-6, zp - zh), sg = smoothG(g);
+    return 1 + m * Ld * (1 - Math.exp(-Dz / Ld)) + (flare + splayFast(th) / Rp) * sg;
+  };
   const groove = (x, y, th) => { const r = Math.hypot(x, y); return gA * smooth(r / 0.8) * 0.5 * (1 + Math.cos(strands * th + 1.3)); };
   function dHairOnly(x, y, z, loc) {
     const th = Math.atan2(y, x);
     let d;
     if (z >= zp) d = dShell(x, y, z, loc);
     else {
-      const zh = floorZ + hemFast(th), Dz = zp - z, g = Math.min(1.5, Dz / Math.max(1e-6, zp - zh));
-      const s = 1 + m * Dz + flare * Math.pow(g, gamma);
+      const zh = floorZ + hemFast(th), s = scaleAt(th, z);
       d = s * dShell(x / s, y / s, zp, null); // the section at the part line: not near this point, so the full evaluator
-      d = Math.max(d, zh - z);
+      // the hem cut, divided by the gradient of its own height (a V notch of slope ~1 would make the field 1.4-Lipschitz)
+      const e = 0.01, dz = (hemFast(th + e) - hemFast(th - e)) / (2 * e) / Math.max(0.2, Math.hypot(x, y));
+      d = smax(d, (zh - z) / Math.sqrt(1 + dz * dz), 0.04); // a rounded crease (a corner sharper than the voxel defeats the projection)
     }
     return d + groove(x, y, th);
   }
+  const wc = h.window ? [h.window.c[0], h.window.c[1], h.window.c[2] + S] : null, wr = h.window?.r, kw = h.window?.k ?? 0.05;
   function dWin(x, y, z) { return ellipsoidD(x - wc[0], y - wc[1], z - wc[2], wr[0], wr[1], wr[2]); }
-  const dFn = (x, y, z, loc) => smax(dHairOnly(x, y, z, loc), -dWin(x, y, z), kw);
+  const dFn = (x, y, z, loc) => (wc ? smax(dHairOnly(x, y, z, loc), -dWin(x, y, z), kw) : dHairOnly(x, y, z, loc));
   // the largest radius, for the bounds
-  let Rmax = 0; for (let i = 0; i < 16; i++) { const th = (i / 16) * 2 * Math.PI, zh = floorZ + hemH(th); const g = 1, s = 1 + m * (zp - zh) + flare * g; Rmax = Math.max(Rmax, Rp * s); }
-  return { d: dFn, dHairOnly, dWin, dShell, zp, m, Rp, hemH, depth, flare, Rmax, window: { c: wc, r: wr }, radius, floorZ, tau: m * Rp };
+  let Rmax = 0; for (let i = 0; i < 64; i++) { const th = (i / 64) * 2 * Math.PI; Rmax = Math.max(Rmax, Rp * scaleAt(th, floorZ + 0.001)); }
+  return { d: dFn, dHairOnly, dWin, dShell, zp, m, Rp, hemH, hemFast, scaleAt, lockCount: nl, depth, flare, Ld, Rmax, window: wc ? { c: wc, r: wr } : null, radius, floorZ, tau: m * Rp };
 }

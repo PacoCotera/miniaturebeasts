@@ -59,7 +59,7 @@ export const LEVERS = {
     R("bend", "mult", "bend", [0.6, 1.4], { knots: ["belly", "chest", "chin", "head", "cap"] }, ["front.belly", "front.chest", "front.chin", "front.head", "front.cap"], "Body: the S"),
     R("muzzle", "mult", "length", [0.7, 1.6], { knots: ["cap"] }, ["front.cap"], "Snout: flat face to button snout"),
     R("eye-size", "mult", "eyeSize", [0.85, 1.2], {}, ["face.eyes"], "Eyes"),
-    R("coil", "off", "coil", [-0.15, 0.05], { chain: "tail" }, ["tail.coil"], "Curl: coil N .8 ... 1.0 (narrowed from 1.3: above one turn the tuned coil breaks the whorl guard)"),
+    R("coil", "off", "coil", [-0.15, 0.35], { chain: "tail" }, ["tail.coil"], "Curl: coil N .8 ... 1.3 (restored: W 4.5 and L 2.2 hold the whorl guard at 1.3)"),
     R("leg-length", "mult", "length", [0.85, 1.15], { chain: "leg", knots: ["leg1", "foot"] }, ["leg.leg1", "leg.foot"], "Legs"),
   ],
   wickle: [

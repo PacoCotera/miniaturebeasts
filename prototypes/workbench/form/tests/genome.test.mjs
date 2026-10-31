@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { SPECIES, SECTION3, ORDER } from "../species-trial.mjs";
+import { SPECIES, ROUND2, ORDER } from "../species-trial.mjs";
 import { TUNING, getPath, withinAllowance } from "../tuning.mjs";
 import { LEVERS, formOf, typeCopies, corner, cornerCount, valueOf, typeT, single } from "../genome.mjs";
 import { guardsOf } from "../checks.mjs";
@@ -15,10 +15,10 @@ const diff = (a, b, path = "", out = []) => {
 test("the type specimen equals the base form", () => {
   for (const k of ORDER) assert.deepEqual(formOf(k, typeCopies(k)), SPECIES[k], k);
 });
-test("every tuning change is within +-15 % (the camera 10 degrees) of the section 3 number, and nothing else differs from section 3", () => {
-  for (const t of TUNING) { const before = getPath(SECTION3[t.species], t.path); assert.ok(withinAllowance(t.path, before, t.after) || t.owner, `${t.species} ${t.path}: ${before} -> ${t.after}`); }
+test("every tuning change is within +-15 % (the camera 10 degrees) of the ROUND2 number, and nothing else differs from ROUND2", () => {
+  for (const t of TUNING) { const before = getPath(ROUND2[t.species], t.path); assert.ok(withinAllowance(t.path, before, t.after) || t.owner, `${t.species} ${t.path}: ${before} -> ${t.after}`); }
   for (const k of ORDER) {
-    const changed = diff(SECTION3[k], SPECIES[k]), listed = TUNING.filter((t) => t.species === k && t.after !== getPath(SECTION3[k], t.path)).map((t) => t.path);
+    const changed = diff(ROUND2[k], SPECIES[k]), listed = TUNING.filter((t) => t.species === k && t.after !== getPath(ROUND2[k], t.path)).map((t) => t.path);
     assert.deepEqual(changed.sort(), [...new Set(listed)].sort(), k);
   }
 });

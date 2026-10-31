@@ -39,11 +39,14 @@ function rot(v, axis, a) {
 
 // ---- monotone cubic apertures ---------------------------------------------------------------------------------
 // Fritsch-Carlson: no overshoot, so no lumps between knots.
-export function monotone(xs, ys) {
+// endSlope (optional): the slope the curve must leave the last knot with (a coil's -a0/l0, design 5.1), clipped to 3 x the secant and
+// to zero where it would turn the last segment back (so the curve stays monotone and C1 into the coil).
+export function monotone(xs, ys, endSlope = null) {
   const n = xs.length, m = new Array(n).fill(0), dx = [], dy = [], sl = [];
   for (let i = 0; i < n - 1; i++) { dx.push(xs[i + 1] - xs[i]); dy.push(ys[i + 1] - ys[i]); sl.push(dx[i] > 0 ? dy[i] / dx[i] : 0); }
   if (n === 1) return () => ys[0];
   m[0] = sl[0]; m[n - 1] = sl[n - 2];
+  if (endSlope !== null && n > 1) { const sec = sl[n - 2]; m[n - 1] = endSlope * sec <= 0 ? 0 : Math.sign(sec) * Math.min(Math.abs(endSlope), 3 * Math.abs(sec)); }
   for (let i = 1; i < n - 1; i++) m[i] = sl[i - 1] * sl[i] <= 0 ? 0 : (sl[i - 1] + sl[i]) / 2;
   for (let i = 0; i < n - 1; i++) {
     if (sl[i] === 0) { m[i] = 0; m[i + 1] = 0; continue; }
@@ -88,17 +91,21 @@ export function integrateChain({ knots, coil = null, frame0, id = "chain", sigma
   const nk = knots.length, cum = [0];
   for (let i = 1; i < nk; i++) cum.push(cum[i - 1] + knots[i].ds);
   const total = cum[nk - 1];
-  const fw = monotone(cum, knots.map((k) => k.w)), fu = monotone(cum, knots.map((k) => k.u)), fd = monotone(cum, knots.map((k) => k.d));
+  // C1 into a coil (design 5.1): each aperture leaves the last knot with the slope of the coil's own aperture, -half-size / l0
+  const cp0 = coil && coil.N > 0 ? coilParams(coil, knots[nk - 1]) : null, es = (c) => (cp0 ? -knots[nk - 1][c] / cp0.l0 : null);
+  const fw = monotone(cum, knots.map((k) => k.w), es("w")), fu = monotone(cum, knots.map((k) => k.u), es("u")), fd = monotone(cum, knots.map((k) => k.d), es("d"));
   const kap = (s) => { // piecewise linear curvature (rad/U) and yaw
     if (nk === 1) return [0, 0];
     let i = 0; while (i < nk - 2 && s > cum[i + 1]) i++;
     const h = cum[i + 1] - cum[i], t = h > 0 ? Math.min(1, Math.max(0, (s - cum[i]) / h)) : 0;
     return [(knots[i].k + (knots[i + 1].k - knots[i].k) * t) * RAD, (knots[i].psi + (knots[i + 1].psi - knots[i].psi) * t) * RAD * yawSign];
   };
+  const bendDir = (kp, ky) => (Math.hypot(kp, ky) < 1e-9 ? 0 : (Math.atan((kp < 0 ? -ky : ky) / Math.abs(kp || 1e-12)) / RAD)); // (-90, 90] of the vector, sign folded
   let p = frame0.p.slice(), T = nrm(frame0.T), N = nrm(sub(frame0.N, sc(T, dot(frame0.N, T)))), B = crs(N, T);
   const samples = [];
   let curK = 0;
-  const push = (s, w, u, d, part, knot, emission = 0) => samples.push({ p: p.slice(), T: T.slice(), N: N.slice(), B: B.slice(), w, u, d, s, sigma: sigmaSign * s, part, emission, knot, kappa: curK });
+  let curPhi = 0; // the direction of the bending vector in (N, B), degrees, as a signed magnitude in (-90, 90] (design 5.3)
+  const push = (s, w, u, d, part, knot, emission = 0) => samples.push({ p: p.slice(), T: T.slice(), N: N.slice(), B: B.slice(), w, u, d, s, sigma: sigmaSign * s, part, emission, knot, kappa: curK, phi: curPhi });
   const knotAt = (s) => { let i = 0; while (i < nk - 1 && s > cum[i + 1] + 1e-12) i++; return i; };
   // the region of a segment is the region of its end knot (the first knot's own sample is its own)
   const partAt = (s, i) => (s <= 1e-12 ? knots[0].part : knots[Math.min(nk - 1, i + 1)].part);
@@ -122,7 +129,7 @@ export function integrateChain({ knots, coil = null, frame0, id = "chain", sigma
     const n = Math.max(1, Math.ceil(ds / h - 1e-9)), hh = ds / n;
     for (let j = 0; j < n; j++) {
       const smid = s + hh * 0.5, [kp, ky] = kap(smid);
-      advance(hh, kp, ky); s += hh; curK = kp / RAD;
+      advance(hh, kp, ky); s += hh; curK = kp / RAD; curPhi = bendDir(kp, ky);
       const sn = j === n - 1 ? cum[i + 1] : s;
       push(sn, fw(sn), fu(sn), fd(sn), partAt(sn, i), i + 1);
     }
@@ -135,8 +142,17 @@ export function integrateChain({ knots, coil = null, frame0, id = "chain", sigma
     const c = checkCoil(coil, last, where);
     coilInfo = c;
     const { L, b, l0, N: turns } = c, plane = c.plane * RAD;
-    const Nc = add(sc(N, Math.cos(plane)), sc(B, -Math.sin(plane))); // N turned about T by the plane angle (right-hand rule)
-    const axis = nrm(crs(T, Nc)), kprev = (knots[nk - 1].k ?? 0) * RAD;
+    // The bending vector (pitch, yaw) of the last knot, as a signed magnitude along a direction in (-90, 90] degrees: the coil's bending axis
+    // turns from that direction to the coil plane over the coil's ease (design 5.3), at most 10 degrees per 0.05 U, and the curvature
+    // magnitude is continuous (it passes through zero where the last knot bends away from the coil).
+    const kLast = (knots[nk - 1].k ?? 0) * RAD, yLast = (knots[nk - 1].psi ?? 0) * RAD * yawSign;
+    let m0 = Math.hypot(kLast, yLast), phi0 = Math.atan2(yLast, kLast);
+    if (kLast < 0 || (kLast === 0 && yLast < 0)) { m0 = -m0; phi0 = Math.atan2(-yLast, -kLast); }
+    const phiC = -plane; if (m0 === 0) phi0 = phiC;
+    let dphi = phiC - phi0; dphi -= 2 * Math.PI * Math.round(dphi / (2 * Math.PI));
+    const axisAt = (x) => { const u = Math.min(1, x / (COIL_EASE * L)), ph = phi0 + dphi * u, Nc = add(sc(N, Math.cos(ph)), sc(B, Math.sin(ph))); return nrm(crs(T, Nc)); };
+    const phiAt = (x) => (phi0 + dphi * Math.min(1, x / (COIL_EASE * L))) / RAD;
+    const kprev = m0;
     // the curvature of the spiral, eased in over the first 12 %; the factor cf makes the total turn exactly 360 N
     const ease = (x) => easeOut(x / COIL_EASE);
     const kspiral = (x) => 1 / (b * (l0 - x));
@@ -152,13 +168,13 @@ export function integrateChain({ knots, coil = null, frame0, id = "chain", sigma
     const l_w = last.w, l_u = last.u, l_d = last.d;
     const stepAt = (x) => { const f = aper(x); return Math.min(STEP.max, Math.max(STEP.min, STEP.factor * f * Math.min(l_w, l_u, l_d))); };
     const heli = coil.pitch ?? 0; // Raup's translation along the axis, per turn (horns)
-    const step = (hh, kk) => {
+    const step = (hh, kk, axis) => {
       const a = kk * hh * 0.5, rotAll = (aa) => { T = rot(T, axis, aa); N = rot(N, axis, aa); B = rot(B, axis, aa); };
       rotAll(a); p = add(p, sc(T, hh)); if (heli) p = add(p, sc(axis, heli * (kk * hh) / (2 * Math.PI))); rotAll(a);
     };
     while (x < L - 1e-12) {
       const hh = Math.min(stepAt(x), L - x), kk = kc(x + hh * 0.5);
-      step(hh, kk); x += hh; tilt += kk * hh; curK = kk / RAD;
+      step(hh, kk, axisAt(x + hh * 0.5)); x += hh; tilt += kk * hh; curK = kk / RAD; curPhi = phiAt(x - hh * 0.5);
       const f = aper(x);
       push(s + x, l_w * f, l_u * f, l_d * f, cpart, nk, emitAt(x));
     }
@@ -191,12 +207,18 @@ export function sectionPoint(sample, angleDeg, out) {
 }
 // the lowest point of an egg-ellipsoid sample
 export function lowestZ(sample) {
-  const rT = Math.min(sample.w, sample.u, sample.d);
-  const ax = [[sample.T, rT], [sample.B, sample.w], [sample.N, sample.N[2] >= 0 ? sample.d : sample.u]]; // the side of N that points down
+  const f = sample.fur ?? 0, rT = Math.min(sample.w, sample.u, sample.d) + f;
+  const ax = [[sample.T, rT], [sample.B, sample.w + f], [sample.N, (sample.N[2] >= 0 ? sample.d : sample.u) + f]]; // the side of N that points down
   let e = 0; for (const [v, r] of ax) e += (v[2] * r) ** 2;
   return sample.p[2] - Math.sqrt(e);
 }
 
+// Fur by per-sample inflation (design 5.4): f_i = min(f0, 0.35 x the sample's smallest half-size), added to each sample's radii.
+export const FUR_CAP = 0.35;
+export function applyFur(chain, f0) {
+  for (const sm of chain.samples) sm.fur = f0 > 0 ? Math.min(f0, FUR_CAP * Math.min(sm.w, sm.u, sm.d)) : 0;
+  return chain;
+}
 export function buildChains(form) {
   const { T, N } = headingFrame(form.phi0 ?? 90);
   const origin = [0, 0, 0];
@@ -210,6 +232,8 @@ export function buildChains(form) {
     tail = integrateChain({ id: "tail", knots, coil: form.tail.coil, frame0: { p: origin, T: sc(T, -1), N }, sigmaSign: -1, yawSign: 1 });
     tail.id = "tail";
   }
+  const f0 = form.coat?.depth ?? 0;
+  applyFur(front, f0); if (tail) applyFur(tail, f0);
   const parents = { front, tail };
   const branches = [];
   for (const br of form.branches ?? []) {
@@ -229,6 +253,7 @@ export function buildChains(form) {
       const knots = br.knots.map((k, i) => ({ ...k, part: br.part, name: k.name || `${br.id}${i}` }));
       const ch = integrateChain({ id: br.id + tag, knots, coil: br.coil, frame0: { p: rp, T: dir, N: N0 }, sigmaSign: 1, yawSign: side, partOfCoil: br.part });
       ch.id = br.id + tag; ch.branch = br; ch.side = side; ch.rootSample = root; ch.rootPoint = rp;
+      applyFur(ch, f0);
       branches.push(ch);
       if (br.fingers) { // a hand is a palm knot with short finger spines (1.6)
         const lastS = ch.samples.at(-1), f = br.fingers;
@@ -238,6 +263,7 @@ export function buildChains(form) {
           const kn = [{ name: "", part: br.part, ds: 0, k: 0, psi: 0, w: f.r, u: f.r, d: f.r }, { name: "", part: br.part, ds: f.length, k: 0, psi: 0, w: f.r * 0.6, u: f.r * 0.6, d: f.r * 0.6 }];
           const fc = integrateChain({ id: `${br.id}${tag}f${j}`, knots: kn, frame0: { p: lastS.p, T: dir2, N: lastS.N }, sigmaSign: 1 });
           fc.id = `${br.id}${tag}f${j}`; fc.branch = { id: fc.id, part: br.part, blend: 0.03 }; fc.side = side; fc.finger = true;
+          applyFur(fc, f0);
           branches.push(fc);
         }
       }

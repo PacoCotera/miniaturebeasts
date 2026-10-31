@@ -11,7 +11,7 @@ import { plainRender } from "../framework/plain.mjs";
 import { encodeRGBA } from "./pngrgba.mjs";
 import { buildScene } from "./mesh.mjs";
 import { renderForm, silhouette, SIZES } from "./render.mjs";
-import { SPECIES, SECTION3, ORDER } from "./species-trial.mjs";
+import { SPECIES, ROUND2, ORDER } from "./species-trial.mjs";
 import { TUNING, getPath, withinAllowance } from "./tuning.mjs";
 import { LEVERS, formOf, corner, cornerCount, single, typeCopies } from "./genome.mjs";
 import { maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, featureChecks, guardsOf, OVERLAP_TARGET } from "./checks.mjs";
@@ -19,8 +19,11 @@ import { maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, featureChecks, g
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = path.resolve(here, "..");
 export const OUT = path.join(ROOT, "out", "form");
-export const RESULTS = "/home/user/iwq/results/T-20261030-shape/trial";
-const FLUFFY = "/home/user/iwq/results/T-20261030-fluffy", ART = "/home/user/mp/art/station-masters/pods/adult";
+// Every outside path, in one block. MB_HOME is the folder that holds this checkout (the parent of the repository's top folder, found from
+// this module's own location) unless the environment names another.
+export const MB_HOME = process.env.MB_HOME ?? path.resolve(here, "..", "..", "..", "..");
+const FLUFFY = path.join(MB_HOME, "iwq/results/T-20261030-fluffy"), ART = path.join(MB_HOME, "mp/art/station-masters/pods/adult");
+export const RESULTS = path.join(MB_HOME, "iwq/results/T-20261030-shape/round2/trial");
 export const STANDS = { curlop: `${FLUFFY}/stand-E-curlop`, wickle: `${FLUFFY}/stand-A-wickle`, drapet: `${FLUFFY}/stand-B-drapet`, loika: `${ART}/mibi-adult-S01`, rupar: `${ART}/mibi-adult-S08` };
 export const SIZE_NAMES = { 304: "304x312", 96: "96x88", 48: "48x48" };
 const BG = [246, 243, 236];
@@ -154,9 +157,9 @@ export function visibility(key, ref) {
 
 export const sha = (buf) => createHash("sha256").update(buf).digest("hex").slice(0, 16);
 export function tuningReport() {
-  return TUNING.map((t) => { const before = getPath(SECTION3[t.species], t.path); return { species: t.species, path: t.path, before, after: t.after, change: before ? +(100 * (t.after / before - 1)).toFixed(1) + " %" : "", ok: withinAllowance(t.path, before, t.after), why: t.why }; });
+  return TUNING.map((t) => { const before = getPath(ROUND2[t.species], t.path); return { species: t.species, path: t.path, before, after: t.after, change: before ? +(100 * (t.after / before - 1)).toFixed(1) + " %" : "", ok: withinAllowance(t.path, before, t.after), why: t.why }; });
 }
-export { buildScene, renderForm, silhouette, featureChecks, guardsOf, maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, OVERLAP_TARGET, SPECIES, SECTION3, ORDER, encodeRGBA, mkdirSync, writeFileSync, existsSync, readFileSync };
+export { buildScene, renderForm, silhouette, featureChecks, guardsOf, maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, OVERLAP_TARGET, SPECIES, ROUND2, ORDER, encodeRGBA, mkdirSync, writeFileSync, existsSync, readFileSync };
 
 // ---- more helpers for the sheets and the report ----------------------------------------------------------------------
 export const standMaskAt = (stands, s) => maskOfAlpha(stands[s]);

@@ -2,7 +2,7 @@
 // (genome.mjs), the reference pose and the stand camera. Plain JavaScript, no node: imports.
 // Knots read "ds k psi | w u d" in U and degrees per U, listed from the pelvis.
 import { K } from "./spine.mjs";
-import { TUNING, applyTuning } from "./tuning.mjs";
+import { TUNING, applyTuning, getPath } from "./tuning.mjs";
 
 // the three fingers of a hand: short spines on the palm (1.6)
 const fingers = { count: 3, length: 0.06, r: 0.022, fan: 28 };
@@ -136,12 +136,132 @@ SECTION3.rupar = {
   },
 };
 
-// every unnamed branch knot gets a name, branch id and position (the levers and the tests name knots)
+// every unnamed branch knot gets a name too, in SECTION3 (the levers and the tests name knots)
 for (const f of Object.values(SECTION3)) for (const b of f.branches) b.knots.forEach((k, i) => { if (!k.name) k.name = `${b.id}${i}`; });
 
-// The base forms are the section 3 numbers (SECTION3, verbatim) with the builder's tuning applied (tuning.mjs: each change listed with its
-// before and after, none above +-15 %, the camera none above 10 degrees). Nothing else differs.
-export const SPECIES = Object.fromEntries(Object.entries(SECTION3).map(([k, f]) => [k, applyTuning(f, TUNING.filter((t) => t.species === k))]));
+// Round 1's tuning (the trial module, tuning.mjs of 40635e30), folded into ROUND2 below: each entry changed one SECTION3 number.
+const TRIAL1 = [
+  { species: "wickle", path: "face.eyes.r", after: 0.1265, why: "eyes readable at 48 px (face check): +15 %" },
+  { species: "drapet", path: "face.sigma", after: 0.9, why: "guard: the fringe edge 0.03 U above the eyes: face lower on the front" },
+  { species: "drapet", path: "face.t", after: 0.13, why: "same: eyes lower" },
+  { species: "drapet", path: "hair.window.c.2", after: 1.1, why: "same: the window centred on the lowered eyes" },
+  { species: "curlop", path: "branches.1.root.out", after: 0.9, why: "guard: the arm root must lie inside its parent by 0.3 of the root radius (out 1.0 is on the surface)" },
+  { species: "wickle", path: "coat.locks", after: 0.017, why: "convexity of the drop outline (wickle.c): smaller lock noise" },
+  { species: "loika", path: "front.knots.4.w", after: 0.588, why: "owner note 2026-10-30 19:21: Loika's head region smaller, measured against the signed art (x 0.6, beyond the 15 % allowance)", owner: true },
+  { species: "loika", path: "front.knots.4.u", after: 0.54, why: "owner note 2026-10-30 19:21: Loika's head region smaller, measured against the signed art (x 0.6, beyond the 15 % allowance)", owner: true },
+  { species: "loika", path: "front.knots.4.d", after: 0.48, why: "owner note 2026-10-30 19:21: Loika's head region smaller, measured against the signed art (x 0.6, beyond the 15 % allowance)", owner: true },
+  { species: "loika", path: "front.knots.5.w", after: 0.504, why: "owner note 2026-10-30 19:21: Loika's head region smaller, measured against the signed art (x 0.6, beyond the 15 % allowance)", owner: true },
+  { species: "loika", path: "front.knots.5.u", after: 0.336, why: "owner note 2026-10-30 19:21: Loika's head region smaller, measured against the signed art (x 0.6, beyond the 15 % allowance)", owner: true },
+  { species: "loika", path: "front.knots.5.d", after: 0.432, why: "owner note 2026-10-30 19:21: Loika's head region smaller, measured against the signed art (x 0.6, beyond the 15 % allowance)", owner: true },
+  { species: "loika", path: "front.knots.6.w", after: 0.348, why: "owner note 2026-10-30 19:21: Loika's head region smaller, measured against the signed art (x 0.6, beyond the 15 % allowance)", owner: true },
+  { species: "loika", path: "front.knots.6.u", after: 0.18, why: "owner note 2026-10-30 19:21: Loika's head region smaller, measured against the signed art (x 0.6, beyond the 15 % allowance)", owner: true },
+  { species: "loika", path: "front.knots.6.d", after: 0.276, why: "owner note 2026-10-30 19:21: Loika's head region smaller, measured against the signed art (x 0.6, beyond the 15 % allowance)", owner: true },
+  { species: "loika", path: "front.knots.0.w", after: 0.736, why: "body larger to carry the smaller head (+15 %)" },
+  { species: "loika", path: "front.knots.0.u", after: 0.713, why: "body larger to carry the smaller head (+15 %)" },
+  { species: "loika", path: "front.knots.0.d", after: 0.667, why: "body larger to carry the smaller head (+15 %)" },
+  { species: "loika", path: "front.knots.1.w", after: 0.828, why: "body larger to carry the smaller head (+15 %)" },
+  { species: "loika", path: "front.knots.1.u", after: 0.759, why: "body larger to carry the smaller head (+15 %)" },
+  { species: "loika", path: "front.knots.1.d", after: 0.782, why: "body larger to carry the smaller head (+15 %)" },
+  { species: "loika", path: "front.knots.2.w", after: 0.782, why: "body larger to carry the smaller head (+15 %)" },
+  { species: "loika", path: "front.knots.2.u", after: 0.736, why: "body larger to carry the smaller head (+15 %)" },
+  { species: "loika", path: "front.knots.2.d", after: 0.713, why: "body larger to carry the smaller head (+15 %)" },
+  { species: "drapet", path: "hair.partLine", after: 0.987, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "hair.flare", after: 0.2068, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "hair.gamma", after: 1.272, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "front.knots.0.d", after: 1.128, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "front.knots.1.w", after: 1.128, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "front.knots.1.u", after: 1.1092, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "front.knots.2.w", after: 1.0388, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "front.knots.2.u", after: 1.0176, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "front.knots.2.d", after: 1.0176, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "front.knots.3.w", after: 0.5828, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "front.knots.3.u", after: 0.636, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "front.knots.3.d", after: 0.6, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "front.knots.2.ds", after: 0.583, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "camera.yaw", after: 38, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "drapet", path: "camera.pitch", after: 24, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.0.w", after: 0.8778, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.1.w", after: 0.895, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.1.u", after: 0.9785, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.1.d", after: 0.9212, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.1.ds", after: 0.3686, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.2.w", after: 0.7697, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.2.u", after: 0.7708, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.2.ds", after: 0.4687, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.3.w", after: 0.742, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.3.u", after: 0.6996, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.3.d", after: 0.7208, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.3.ds", after: 0.2575, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.4.u", after: 0.3604, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.6.w", after: 0.1751, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "front.knots.6.d", after: 0.1648, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "camera.yaw", after: 32, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "wickle", path: "camera.pitch", after: 18, why: "overlap at 48 px (coordinate search within the allowance)" },
+  { species: "curlop", path: "front.knots.0.w", after: 0.9116, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.0.d", after: 0.8652, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.1.w", after: 0.927, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.1.u", after: 0.9156, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.1.d", after: 0.9682, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.1.ds", after: 0.5335, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.1.k", after: 6.18, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.2.u", after: 0.9724, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.2.d", after: 0.8692, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.3.w", after: 0.872, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.3.u", after: 0.954, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.3.d", after: 0.7632, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.3.k", after: -54.5, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.4.w", after: 1.0028, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.4.u", after: 0.9338, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.4.d", after: 0.7896, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.4.ds", after: 0.406, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.5.w", after: 0.5936, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.5.u", after: 0.564, why: "overlap at 48 px" },
+  { species: "curlop", path: "front.knots.5.d", after: 0.6148, why: "overlap at 48 px" },
+  { species: "curlop", path: "tail.knots.0.d", after: 0.6204, why: "overlap at 48 px" },
+  { species: "curlop", path: "tail.knots.1.w", after: 0.4888, why: "overlap at 48 px" },
+  { species: "curlop", path: "tail.knots.1.ds", after: 0.517, why: "overlap at 48 px" },
+  { species: "curlop", path: "tail.knots.1.k", after: -18.8, why: "overlap at 48 px" },
+  { species: "curlop", path: "tail.knots.2.d", after: 0.3102, why: "overlap at 48 px" },
+  { species: "curlop", path: "tail.knots.2.ds", after: 0.799, why: "overlap at 48 px" },
+  { species: "curlop", path: "tail.knots.2.k", after: -21.2, why: "overlap at 48 px" },
+  { species: "curlop", path: "tail.coil.L", after: 1.974, why: "overlap at 48 px" },
+  { species: "curlop", path: "tail.coil.W", after: 3.29, why: "overlap at 48 px" },
+  { species: "curlop", path: "tail.coil.N", after: 0.893, why: "overlap at 48 px" },
+  { species: "curlop", path: "camera.yaw", after: 65, why: "overlap at 48 px" },
+  { species: "curlop", path: "camera.pitch", after: 18, why: "overlap at 48 px" },
+  { species: "curlop", path: "coat.depth", after: 0.0848, why: "overlap at 48 px" },
+];
+
+// ---- ROUND2: round 1's SECTION3 with TRIAL1 folded in, plus the changes of design section 7 -----------------------------------------
+// Each change is one line with its reason. `put` sets a number by path; structural changes assign directly. tuning.mjs (the round 2
+// tuning, within the allowance of +-15 % on a number and 10 degrees on a camera, measured against ROUND2) restarts empty.
+const put = (f, path, v) => { const ps = path.split("."); let o = f; for (let i = 0; i < ps.length - 1; i++) o = o[ps[i]]; o[ps.at(-1)] = v; };
+const kn = (f, name) => f.front.knots.find((k) => k.name === name);
+const setSizes = (k, w, u, d) => { k.w = w; k.u = u ?? w; k.d = d ?? u ?? w; };
+const setKnot = (k, str) => Object.assign(k, K(k.name, str, k.part));
+export const ROUND2 = Object.fromEntries(Object.entries(SECTION3).map(([key, f]) => [key, applyTuning(f, TRIAL1.filter((t) => t.species === key))]));
+{
+  const R = ROUND2;
+  // Curlop 7.1
+  setKnot(R.curlop.tail.knots[0], ".45 190 0|.74 .72 .68"); // seat/root 0.82 (the tuned .62 gave 0.786: curlop.d failed)
+  Object.assign(R.curlop.tail.coil, { N: 0.95, W: 4.5, L: 2.2 }); // a/rho .515 at the type, .570 at N 1.3 (limit .636): the owner's tight half
+  // Wickle 7.2
+  setKnot(kn(R.wickle, "top"), ".45 -10 -5|.48 .46 .47"); // the drop narrows into the plume: outer slope at the join .58
+  setKnot(kn(R.wickle, "mid"), ".40 -25 -20|.33 .31 .32"); // plume radius .48 > .33 > .24: never increases to the tip
+  setKnot(kn(R.wickle, "end"), ".38 -40 -45|.24 .23 .23"); // the last knots ramp psi toward the coil plane (design 5.3)
+  Object.assign(R.wickle.front.coil, { N: 1.3, W: 6, L: 1.8, plane: -85 }); // a/rho .42 against a limit of .714
+  // Drapet 7.3
+  setKnot(kn(R.drapet, "top"), ".40|.70 .68 .68"); // the stand's top rows (.05-.3 H) are 10-13 px wider than the trial's
+  Object.assign(R.drapet.hair, { Ld: 0.3, flare: 0.06, partLine: 0.987, depth: 0.2, locks: 17, notch: 0.1, lift: 0.015, splay: 0.04 }); // hang law (5.5) and hem of 17 locks (5.6)
+  delete R.drapet.hair.lobes; delete R.drapet.hair.hem; delete R.drapet.hair.gamma;
+  // the coat has no lock noise and no bare patch (design 0.2-0.3, 5.4)
+  for (const f of Object.values(R)) if (f.coat) { delete f.coat.locks; delete f.coat.bare; }
+}
+// every unnamed branch knot gets a name, branch id and position (the levers and the tests name knots)
+for (const f of Object.values(ROUND2)) for (const b of f.branches) b.knots.forEach((k, i) => { if (!k.name) k.name = `${b.id}${i}`; });
+
+// SPECIES is ROUND2 with the round 2 tuning applied (tuning.mjs, listed with before and after in the report).
+export const SPECIES = Object.fromEntries(Object.entries(ROUND2).map(([k, f]) => [k, applyTuning(f, TUNING.filter((t) => t.species === k))]));
 
 export const ORDER = ["curlop", "wickle", "drapet", "loika", "rupar"];
 export const cloneForm = (f) => structuredClone(f);
