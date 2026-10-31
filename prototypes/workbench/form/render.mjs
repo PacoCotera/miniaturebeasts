@@ -2,6 +2,7 @@
 // supersampling, a key light with wrap diffuse and a hemisphere ambient, field ambient occlusion, a rim, eyes with
 // fixed inks, the glow halo, the house shadow and the adult cut framing. Plain JavaScript, no node: imports.
 import { cameraBasis } from "./species-trial.mjs";
+import { makeMaterial, paintMarks, fringePass } from "./material.mjs";
 
 export const SIZES = { 304: [304, 312], 96: [96, 88], 48: [48, 48] };
 export const SS = { 304: 3, 96: 3, 48: 4 };
@@ -94,10 +95,11 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
   const eyes = scene.field.eyes, faceM = scene.field.faceM, ek = look.eyes, glowCol = pig.glow ?? null, marks = scene.field.marks ?? [];
   const acc = new Float32Array(W * H * 4), cov = new Float32Array(W * H), em = new Float32Array(W * H), ink = new Uint8Array(W * H * NINK), shadowCov = new Float32Array(W * H);
   const inkCount = new Int32Array(W * H * NINK);
-  const plateCov = new Float32Array(W * H), partMap = new Int16Array(W * H).fill(-1), groupMap = new Int16Array(W * H).fill(-1), angleMap = new Float32Array(W * H), sigmaMap = new Float32Array(W * H);
+  const flowS = new Float32Array(W * H * 2), plateCov = new Float32Array(W * H), partMap = new Int16Array(W * H).fill(-1), groupMap = new Int16Array(W * H).fill(-1), angleMap = new Float32Array(W * H), sigmaMap = new Float32Array(W * H);
   // the mouth's ink: the darker of the nose ink and the plate pigment x 0.45 (design 2.5)
   const lum = (c) => 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2], plateC = (pig.patch ?? pig.belly ?? [128, 128, 128]).map((v) => v * 0.45), noseC = look.nose ?? [60, 50, 50];
   const mouthCol = lum(noseC) < lum(plateC) ? noseC : plateC;
+  const Mat = makeMaterial(form, sizeKey, scale, opts), groupNames = scene.field.groups.all.map((g) => g.id);
   const rimStrength = 0.15;
   const eyeCapCos = 0.55;
   for (let sy2 = 0; sy2 < SH; sy2++) for (let sx2 = 0; sx2 < SW; sx2++) {
@@ -109,8 +111,12 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     const px = V[a * 3] * w0 + V[b * 3] * w1 + V[c * 3] * w2, py = V[a * 3 + 1] * w0 + V[b * 3 + 1] * w1 + V[c * 3 + 1] * w2, pz = V[a * 3 + 2] * w0 + V[b * 3 + 2] * w1 + V[c * 3 + 2] * w2;
     const part = A.part[a];
     let col = partSlotCol[part], inkCode = INK.body, spec = 0, matte = 1;
-    const fieldV = Math.max(I(A.patch), I(A.belly));
-    if (fieldV > 0) col = mix(col, pig.patch ?? pig.belly ?? col, sstep(0.2, 0.8, fieldV));
+    const pv = [px, py, pz];
+    const Tv = [A.T[a * 3] * w0 + A.T[b * 3] * w1 + A.T[c * 3] * w2, A.T[a * 3 + 1] * w0 + A.T[b * 3 + 1] * w1 + A.T[c * 3 + 1] * w2, A.T[a * 3 + 2] * w0 + A.T[b * 3 + 2] * w1 + A.T[c * 3 + 2] * w2];
+    const ctxM = { p: pv, n: [nx, ny, nz], T: Tv, sigma: I(A.sigma), group: groupNames[A.group[a]], h: Hh };
+    // the marks, painted in a fixed order over the slot's pigment (design 1.4)
+    col = paintMarks(look, Mat, { ...ctxM, part: A.partNames[part], u0: I(A.u0), angle: I(A.angle), belly: I(A.belly), patch: I(A.patch), fx: I(A.fx), fy: I(A.fy), eyes: faceM?.eyes, col }, col);
+    const surf = Mat.surface(ctxM); nx = surf.n[0]; ny = surf.n[1]; nz = surf.n[2];
     // emission: ramped toward the glow pigment
     const emv = I(A.emission);
     if (glowCol && emv > 0.02) col = mix(col, glowCol, Math.min(1, emv * 1.1));
@@ -145,10 +151,13 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     const amb = 0.15 + 0.2 * (nz * 0.5 + 0.5);
     const aov = I(ao);
     const rim = rimStrength * Math.pow(1 - Math.max(0, nx * tt[0] + ny * tt[1] + nz * tt[2]), 3) * Math.max(0, ndl * 0.5 + 0.5);
-    let k = (diff * 0.85 * (0.4 + 0.6 * aov) + amb * aov + rim) * matte + (emv > 0.02 ? 0.35 * emv : 0);
+    let k = (diff * 0.85 * (0.4 + 0.6 * aov) + amb * aov + rim) * matte * surf.k + (emv > 0.02 ? 0.35 * emv : 0);
     let r = col[0] * k, g = col[1] * k, bl = col[2] * k;
+    if (surf.sheen > 0) { const lt = mix(col, [255, 255, 255], 0.4); r += lt[0] * surf.sheen; g += lt[1] * surf.sheen; bl += lt[2] * surf.sheen; } // the anisotropic sheen, the pigment lightened 40 %
+    if (surf.gloss > 0 && !partIsEye[part]) { const nh2 = Math.max(0, nx * Hh[0] + ny * Hh[1] + nz * Hh[2]), gl = surf.gloss * Math.pow(nh2, 24); r += (255 - r) * gl; g += (255 - g) * gl; bl += (255 - bl) * gl; } // a soft Blinn gloss
     if (spec) { const nh = nx * Hh[0] + ny * Hh[1] + nz * Hh[2]; const s = sstep(0.975, 0.992, nh); r += (255 - r) * s; g += (255 - g) * s; bl += (255 - bl) * s; if (s > 0.5) inkCode = INK.catch; }
     const px2 = Math.floor(sx2 / ss), py2 = Math.floor(sy2 / ss), po = py2 * W + px2;
+    if (sizeKey !== 48 && Mat.kind !== "skin") { const f2 = Mat.flow(Tv, ctxM.sigma, ctxM.group, [nx, ny, nz]); flowS[po * 2] = f2[0] * rr[0] + f2[1] * rr[1] + f2[2] * rr[2]; flowS[po * 2 + 1] = -(f2[0] * uu[0] + f2[1] * uu[1] + f2[2] * uu[2]); }
     plateCov[po] += I(A.patch) > 0.5 ? 1 : 0;
     acc[po * 4] += Math.min(255, r); acc[po * 4 + 1] += Math.min(255, g); acc[po * 4 + 2] += Math.min(255, bl);
     acc[po * 4 + 3] += 1; cov[po] += 1; em[po] += emv;
@@ -200,6 +209,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
       data[i * 4] = (cr * cc + rU * aU * (1 - cc)) / aOut; data[i * 4 + 1] = (cg * cc + gU * aU * (1 - cc)) / aOut; data[i * 4 + 2] = (cb * cc + bU * aU * (1 - cc)) / aOut; data[i * 4 + 3] = aOut * 255;
     }
   }
+  if (sizeKey !== 48 && opts.material !== false && Mat.kind !== "skin") fringePass({ data, cov, flowS, W, H, depthU: form.coat?.depth ?? (form.hair ? 0.1 : 0), scale, kind: Mat.kind });
   // the ink of each pixel: the most frequent non-body code with at least half the covered samples
   const inkMap = new Uint8Array(W * H);
   for (let i = 0; i < W * H; i++) { let best = 0, bc = 0; for (let k = 2; k < NINK; k++) if (inkCount[i * NINK + k] > bc) { bc = inkCount[i * NINK + k]; best = k; } inkMap[i] = bc * 2 >= n2 * 0 + Math.max(1, cov[i] * n2) ? best : INK.body; }

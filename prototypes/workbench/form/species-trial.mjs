@@ -293,6 +293,21 @@ export const ROUND2 = Object.fromEntries(Object.entries(SECTION3).map(([key, f])
     R.rupar.branches.find((b) => b.id === "horn").root.sigma = 1.82;
     const ear = R.rupar.branches.find((b) => b.id === "ear"); Object.assign(ear, { root: { sigma: 1.84, angle: 60, out: 0.6 }, dir: [-0.3, 1, 0.6], knots: [K("ear0", "0|.04 .016 .016"), K("ear1", ".12|.10 .016 .016"), K("ear2", ".14|.12 .016 .016"), K("tip", ".10|.02 .016 .016")] });
     Object.assign(R.rupar.camera, { yaw: 40, pitch: 10 }); }
+  // ---- materials and marks (7.1-7.5): the surface a pixel shows (design 1) ----
+  const cap = +(cumTo(R.curlop, "cap")).toFixed(3);
+  R.curlop.look.material = { kind: "fur", strand: [0.03, 0.2], lock: [0.12, 0.4], crown: cap, gravity: 0.4, sheen: 0.2 }; // crown at the cap
+  R.curlop.look.marks = [{ kind: "nails", share: 0.6, pigment: "nail" }]; R.curlop.look.pigments.nail = [236, 228, 196];
+  R.wickle.look.material = { kind: "fur", strand: [0.03, 0.25], lock: [0.12, 0.4], crown: 1.25, gravity: 0.6, sheen: 0.25 }; // fur flows up into the plume and down the drop
+  R.drapet.look.material = { kind: "hair", strand: [0.02, 0.6], lock: [0.1, 0.5], sheen: 0.35 };
+  R.drapet.look.pigments.patch = [176, 168, 196]; R.drapet.look.pigments.face = [176, 168, 196]; // the plate against the hair: dL* >= 12
+  R.loika.look.material = { kind: "skin", gloss: 0.25 };
+  R.loika.look.marks = [{ kind: "nails", share: 0.7, pigment: "nail" }]; R.loika.look.pigments.nail = [236, 222, 190];
+  R.rupar.look.material = { kind: "fur", strand: [0.012, 0.1], lock: [0.1, 0.3], crown: 1.6, gravity: 0.5, sheen: 0.3 }; // short fur: strands under 1.5 px, sheen only
+  Object.assign(R.rupar.look.pigments, { spot: [240, 226, 196], sock: [236, 222, 190], hoof: [58, 44, 38], ring: [236, 224, 200], inner: [236, 200, 176], leg: R.rupar.look.pigments.coat });
+  R.rupar.look.slots.legs = "coat"; R.rupar.look.eyering = { outer: 1.6 };
+  R.rupar.look.marks = [{ kind: "spots", parts: ["body"], nMax: 20, sigma: [0.05, 0.65], angle: [40, 110], r: 0.035, rho: 0.3, density: 0.7, seed: 3, minDist: 0.1, pigment: "spot" },
+    { kind: "socks", parts: ["legs"], share: 0.55, pigment: "sock" }, { kind: "tips", parts: ["legs"], share: 0.08, pigment: "hoof" }, { kind: "inner", part: "ears", pigment: "inner" }];
+  R.rupar.face.belly = { beta: 60, s0: 0.05, s1: 1.6 }; // white belly and throat
   // ---- faces (7.1-7.5): the face model of design 2 ----
   const eye = (r, ex, ey, extra = {}) => ({ r, ex, ey, ...extra });
   R.curlop.face = { sigma: +(cumTo(R.curlop, "cap") - 0.1).toFixed(4), phi: 20, R: 0.42, aspect: 1.3, relief: 0.01, eyes: eye(0.2, 0.4, 0.08), nose: { kind: "button", r: 0.025, y: -0.1 }, mouth: { kind: "w", y: -0.16, w: 0.16, s: 0.2, t: 0.03 }, belly: R.curlop.face.belly };

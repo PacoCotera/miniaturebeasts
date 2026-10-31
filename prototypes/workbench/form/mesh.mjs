@@ -133,7 +133,7 @@ export function meshField(field, { voxel = null, extentDiv = 220, attrs = true, 
   const T2 = performance.now();
   // each vertex: two Newton steps onto F = 0 (the local evaluator), the normal by central differences (h = 0.5 voxel)
   const verts = new Float32Array(nc * 3), normals = new Float32Array(nc * 3);
-  const A = { part: new Uint8Array(nc), sigma: new Float32Array(nc), s: new Float32Array(nc), angle: new Float32Array(nc), emission: new Float32Array(nc), patch: new Float32Array(nc), belly: new Float32Array(nc), mouth: new Float32Array(nc).fill(1), eye: new Int8Array(nc), group: new Uint8Array(nc), marks: [] };
+  const A = { part: new Uint8Array(nc), sigma: new Float32Array(nc), s: new Float32Array(nc), angle: new Float32Array(nc), emission: new Float32Array(nc), patch: new Float32Array(nc), belly: new Float32Array(nc), mouth: new Float32Array(nc).fill(1), T: new Float32Array(nc * 3), u0: new Float32Array(nc), fx: new Float32Array(nc), fy: new Float32Array(nc), eye: new Int8Array(nc), group: new Uint8Array(nc), marks: [] };
   const nm = field.marks?.length ?? 0; for (let k = 0; k < nm; k++) A.marks.push(new Float32Array(nc));
   const pidx = new Map(field.partNames.map((nme, i) => [nme, i]));
   for (let c = 0; c < nc; c++) {
@@ -142,7 +142,7 @@ export function meshField(field, { voxel = null, extentDiv = 220, attrs = true, 
     normals[c * 3] = r.n[0]; normals[c * 3 + 1] = r.n[1]; normals[c * 3 + 2] = r.n[2];
     const a = r.a;
     if (!pidx.has(a.part)) pidx.set(a.part, pidx.size);
-    A.part[c] = pidx.get(a.part); A.sigma[c] = a.sigma; A.s[c] = a.s; A.angle[c] = a.angle; A.emission[c] = a.emission; A.patch[c] = a.patch; A.belly[c] = a.belly; A.mouth[c] = a.mouth; A.eye[c] = a.eye; A.group[c] = a.gi;
+    A.part[c] = pidx.get(a.part); A.sigma[c] = a.sigma; A.s[c] = a.s; A.angle[c] = a.angle; A.emission[c] = a.emission; A.patch[c] = a.patch; A.belly[c] = a.belly; A.mouth[c] = a.mouth; A.T[c * 3] = a.T[0]; A.T[c * 3 + 1] = a.T[1]; A.T[c * 3 + 2] = a.T[2]; A.u0[c] = a.u0; A.fx[c] = a.fx; A.fy[c] = a.fy; A.eye[c] = a.eye; A.group[c] = a.gi;
     for (let k = 0; k < nm; k++) A.marks[k][c] = a.marks[k];
   }
   A.partNames = [...pidx.keys()];

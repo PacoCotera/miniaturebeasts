@@ -294,7 +294,9 @@ export function makeField(chains, branches, form, opts = {}) {
       belly = smooth((bellyF.beta - ang) / 6 + 0.5) * smooth((sg - bellyF.s0) / 0.12 + 0.5) * smooth((bellyF.s1 - sg) / 0.12 + 0.5);
     }
     const marks = marksList.map((m) => Math.hypot(x - m.c[0], y - m.c[1], z - m.c[2]) / m.sx);
-    return { part, sigma: bg.sigma[bi], s: bg.s[bi], angle, emission: bg.emission[bi], patch, belly, mouth, eye, group: bg.id, gi: all.indexOf(bg), marks };
+    const tv = [D[o + 3], D[o + 4], D[o + 5]], u0 = bg.length > 0 ? bg.s[bi] / bg.length : 0;
+    let fx = 9, fy = 9; if (faceM) { const q = faceM.coords([x, y, z]); if (q) { fx = q[0]; fy = q[1]; } }
+    return { part, T: tv, u0, fx, fy, sigma: bg.sigma[bi], s: bg.s[bi], angle, emission: bg.emission[bi], patch, belly, mouth, eye, group: bg.id, gi: all.indexOf(bg), marks };
   }
   // a vertex: two Newton steps onto F = 0, the normal by central differences (h = 0.5 voxel), its attributes; all local
   function project(x, y, z, voxel) {
