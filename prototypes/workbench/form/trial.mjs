@@ -11,10 +11,10 @@ import { plainRender } from "../framework/plain.mjs";
 import { encodeRGBA } from "./pngrgba.mjs";
 import { buildScene } from "./mesh.mjs";
 import { renderForm, silhouette, SIZES } from "./render.mjs";
-import { SPECIES, ROUND3, ORDER } from "./species-trial.mjs";
+import { SPECIES, ROUND3, ROUND3_LOG, ORDER } from "./species-trial.mjs";
 import { TUNING, getPath, withinAllowance } from "./tuning.mjs";
 import { LEVERS, LOCKED, LEVER_CLASS, formOf, corner, cornerForm, cornerCount, single, typeCopies } from "./genome.mjs";
-import { maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, OVERLAP_TARGET } from "./checks.mjs";
+import { maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, OVERLAP_TARGET, surfaceValue, SURFACE_TARGET, tuftBand, outlineMeasure } from "./checks.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = path.resolve(here, "..");
@@ -23,7 +23,7 @@ export const OUT = path.join(ROOT, "out", "form");
 // this module's own location) unless the environment names another.
 export const MB_HOME = process.env.MB_HOME ?? path.resolve(here, "..", "..", "..", "..");
 const FLUFFY = path.join(MB_HOME, "iwq/results/T-20261030-fluffy"), ART = path.join(MB_HOME, "mp/art/station-masters/pods/adult");
-export const RESULTS = path.join(MB_HOME, "iwq/results/T-20261030-shape/round2/trial");
+export const RESULTS = path.join(MB_HOME, "iwq/results/T-20261030-shape/round3/trial");
 export const STANDS = { curlop: `${FLUFFY}/stand-E-curlop`, wickle: `${FLUFFY}/stand-A-wickle`, drapet: `${FLUFFY}/stand-B-drapet`, loika: `${ART}/mibi-adult-S01`, rupar: `${ART}/mibi-adult-S08` };
 export const SIZE_NAMES = { 304: "304x312", 96: "96x88", 48: "48x48" };
 const BG = [246, 243, 236];
@@ -183,7 +183,7 @@ export const sha = (buf) => createHash("sha256").update(buf).digest("hex").slice
 export function tuningReport() {
   return TUNING.map((t) => { const before = getPath(ROUND3[t.species], t.path); return { species: t.species, path: t.path, before, after: t.after, change: before ? +(100 * (t.after / before - 1)).toFixed(1) + " %" : "", ok: withinAllowance(t.path, before, t.after), why: t.why }; });
 }
-export { buildScene, renderForm, silhouette, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, OVERLAP_TARGET, SPECIES, ROUND3, ORDER, encodeRGBA, mkdirSync, writeFileSync, existsSync, readFileSync };
+export { surfaceValue, SURFACE_TARGET, tuftBand, outlineMeasure, buildScene, renderForm, silhouette, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, OVERLAP_TARGET, SPECIES, ROUND3, ORDER, encodeRGBA, mkdirSync, writeFileSync, existsSync, readFileSync };
 
 // ---- more helpers for the sheets and the report ----------------------------------------------------------------------
 export const standMaskAt = (stands, s) => maskOfAlpha(stands[s]);
@@ -205,8 +205,8 @@ export function writeContact(images, keys) {
 export function makeReport(rec, keys) {
   const lines = [], fails = [];
   const L = (s = "") => lines.push(s);
-  L("# Shape model, round 2: build report"); L();
-  L(`Built from \`round2/design.md\` and \`round2/build-brief.md\`; repository build/genome-fluffy from 40635e30, all new files in prototypes/workbench/form/. Generated ${new Date().toISOString().slice(0, 10)}; the numbers below are measured by \`node prototypes/workbench/form/cli.mjs\`.`); L();
+  L("# Shape model, round 3: build report"); L();
+  L(`Built from \`round3/design.md\` and \`round3/build-brief.md\`; repository build/genome-fluffy from 7468dc72, all changes in prototypes/workbench/form/. Generated ${new Date().toISOString().slice(0, 10)}; the numbers below are measured by \`node prototypes/workbench/form/cli.mjs\`.`); L();
   L("## Overlap at 48 px (new model against the current rig)"); L();
   L("| species | new | current rig | target | 96 px new | rig view |"); L("| --- | --- | --- | --- | --- | --- |");
   for (const k of keys) { const o = rec[k].overlap; L(`| ${rec[k].name} | ${o.new.o48.toFixed(3)} | ${o.rig.o48.toFixed(3)} | ${o.target} | ${o.new.o96.toFixed(3)} | ${o.rig.view}${o.rig.mirror ? " (mirrored)" : ""} |`); }
@@ -227,6 +227,18 @@ export function makeReport(rec, keys) {
   for (const k of keys) { const t = rec[k].joins; L(`| ${rec[k].name} | ${t.slope.toFixed(3)} | ${t.jump.toFixed(3)} | ${t.bend.toFixed(1)} | ${t.tipFur.toFixed(3)} |`); }
   L(); L("## Texture energy (mean |dL*| of neighbouring body pixels; reported, not gated)"); L(); L("| species | 304 | 96 |"); L("| --- | --- | --- |");
   for (const k of keys) L(`| ${rec[k].name} | ${rec[k].texture[304]} | ${rec[k].texture[96]} |`);
+  L(); L("## The surface table (design 5): body L* at 304, against the stand (gate: p5 and p50 within +-6)"); L();
+  L("| species | p5 | stand p5 | p50 | stand p50 | tuft band (stand) | outline measure (stand) |"); L("| --- | --- | --- | --- | --- | --- | --- |");
+  const STAND_TUFT = { curlop: 4.2, wickle: 4.7, drapet: 5.2, loika: 9.3, rupar: 6.7 }, STAND_OUT = { curlop: 2.37, wickle: 2.29, drapet: 2.01, loika: 1.72, rupar: 8.77 };
+  for (const k of keys) { const s = rec[k].surface; if (s) L(`| ${rec[k].name} | ${s.p5} | ${SURFACE_TARGET[k][0]} | ${s.p50} | ${SURFACE_TARGET[k][1]} | ${s.tuftBand} (${STAND_TUFT[k]}) | ${s.outline} (${STAND_OUT[k]}) |`); }
+  L(); L("## The glyph table (design 6): each visible eye at 96 and 48"); L();
+  L("| species | size | D (px) | pupil | catch light | ring | core L* | surround L* | corners | hue | edge |"); L("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |");
+  for (const k of keys) for (const sk of [96, 48]) { const c = rec[k].checks.find((x) => x.id === `face.glyph.${sk}`); for (const [ei, e] of (c?.value?.eyes ?? []).filter((q) => q.D !== undefined).entries()) { const fe = rec[k].glyphs?.[sk]?.[ei]; L(`| ${rec[k].name} | ${sk} | ${e.D} | ${fe?.hasPupil ? "yes" : "no"} | ${fe?.catchA ?? "-"} | ${fe?.ring ? "yes" : "no"} | ${e.coreL} | ${e.surroundL} | ${e.corners ? "ok" : "NO"} | ${e.hue ? "ok" : "NO"} | ${e.edge} |`); } }
+  L(); L("## Round 3 numbers (design, with the reason; before and after)"); L();
+  L("| species | number | before | after | reason |"); L("| --- | --- | --- | --- | --- |");
+  for (const x of ROUND3_LOG.filter((y) => keys.includes(y.species))) L(`| ${x.species} | ${x.what} | ${String(x.before).replace(/\|/g, "/")} | ${String(x.after).replace(/\|/g, "/")} | ${x.why} |`);
+  L(); L("## The design 8 verdicts as applied"); L();
+  for (const v of ["plume knots (top, mid, end) added to Wickle's girth, build and mass: confirmed, in", "Wickle top delta-sigma +15 % (.5175): superseded by .60 (design 7), applied", "Wickle plume root +8 %, last knot u = d .24: confirmed, folded in", "Wickle arm root out .92 and dir +15 %: rejected, replaced by design 7's arms (root sigma .70, 120 degrees, out .85; dir .7 .8 -.7; blend .05)", "Wickle camera yaw 32 to 22, mouth w and t +15 %: confirmed, folded in", "Loika face sigma 1.26 to 1.075: superseded, the anchor is the head knot, phi_f 25", "Rupar e_x .13 to .12: moot, Rupar's eyes are placed by angle", "Rupar face sigma 1.98 to 1.70: rejected, anchor 2.12", "Rupar throat +15 %, stop w +10 %: confirmed (the throat is now design numbers, the stop folded in)", "Drapet face R and aspect +15 %: superseded by the face pod", "Curlop arm root 140 to 160, eye, nose and mouth +15 %: confirmed; e_x .52 a design number (the 3D separation test then reads 11.8 % under, bound 12 %)", "the region-join lever rule (sqrt m at a boundary knot whose outside neighbour has another part): applied in genome.mjs, unit-tested on a synthetic chain"]) L(`- ${v}`);
   L(); L("## Round 3 tuning (each change of a ROUND3 number, before and after)"); L();
   L("| species | number | before | after | change | reason |"); L("| --- | --- | --- | --- | --- | --- |");
   for (const t of tuningReport().filter((x) => keys.includes(x.species))) L(`| ${t.species} | ${t.path} | ${t.before} | ${t.after} | ${t.change}${t.ok ? "" : " OUTSIDE THE ALLOWANCE"} | ${t.why} |`);

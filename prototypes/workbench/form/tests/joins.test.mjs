@@ -127,5 +127,5 @@ test("Drapet's hair has 22 locks in three tiers ending at .62 and .34 of the hai
 });
 test("Drapet's hair has no 1 px fringe hairs: the fringe pass runs for fur only", async () => {
   const { makeMaterial } = await import("../material.mjs"); assert.equal(makeMaterial(SPECIES.drapet, 304, 100).kind, "hair");
-  const src = (await import("node:fs")).readFileSync(new URL("../render.mjs", import.meta.url), "utf8"); assert.ok(/Mat\.kind === "fur"\) fringePass/.test(src));
+  const src = (await import("node:fs")).readFileSync(new URL("../render.mjs", import.meta.url), "utf8"); assert.ok(/Mat\.kind === "fur" && Mat\.clump\) fringePass/.test(src));
 });
