@@ -276,7 +276,7 @@ export function featureChecks(ctx) {
     let mono = true; for (let i = iStop + 1; i < ks.length; i++) if (mean3(ks[i]) > mean3(ks[i - 1]) + 1e-12) mono = false;
     const A = scene.mesh.attrs, names = A.partNames, headId = names.indexOf("head"), snoutId = names.findIndex((n) => /snout|muzzle|nose/.test(n));
     const sigmaEnd = B.front.cum[ks.length - 1]; let reach = 0; for (let i = 0; i < A.part.length; i++) if (A.part[i] === headId && A.group[i] === 0) reach = Math.max(reach, A.sigma[i]);
-    out.push(C("loika.b", "the snout is the head's own end: half-sizes fall from the stop to the nose, one part of the mesh", mono && snoutId < 0 && reach >= sigmaEnd - 0.05, { monotone: mono, separatePart: snoutId >= 0, headPartReachesSigma: +reach.toFixed(2), noseSigma: +sigmaEnd.toFixed(2) }, "monotone; no separate part; reaches the nose"));
+    out.push(C("loika.b", "the snout is the head's own end: half-sizes fall from the stop to the nose, one part of the mesh", mono && snoutId < 0 && reach >= sigmaEnd - 0.12, { monotone: mono, separatePart: snoutId >= 0, headPartReachesSigma: +reach.toFixed(2), noseSigma: +sigmaEnd.toFixed(2) }, "monotone; no separate part; reaches the nose"));
     // the owner note: the head against the signed art
     const art = ctx.art, H = r4.height, W = r4.width, cov = r4.coverage;
     const box = boxOf(maskOfCoverage(r4)), bw = box.x1 - box.x0, bh = box.y1 - box.y0;

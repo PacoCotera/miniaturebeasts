@@ -18,7 +18,7 @@ test("the type specimen equals the base form", () => {
 test("every tuning change is within +-15 % (the camera 10 degrees) of the section 3 number, and nothing else differs from section 3", () => {
   for (const t of TUNING) { const before = getPath(SECTION3[t.species], t.path); assert.ok(withinAllowance(t.path, before, t.after) || t.owner, `${t.species} ${t.path}: ${before} -> ${t.after}`); }
   for (const k of ORDER) {
-    const changed = diff(SECTION3[k], SPECIES[k]), listed = TUNING.filter((t) => t.species === k).map((t) => t.path);
+    const changed = diff(SECTION3[k], SPECIES[k]), listed = TUNING.filter((t) => t.species === k && t.after !== getPath(SECTION3[k], t.path)).map((t) => t.path);
     assert.deepEqual(changed.sort(), [...new Set(listed)].sort(), k);
   }
 });

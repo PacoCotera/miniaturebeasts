@@ -52,7 +52,7 @@ SECTION3.wickle = {
   ],
   contacts: [{ kind: "base" }], // it sits on its floor cut; the feet are two small nubs in front
   face: { sigma: 1.05, t: 0.15, v: 1, eyes: { spread: 26, elev: 8, r: 0.11 }, patch: { angle: 40 },
-    marks: [{ kind: "nose", id: "nose", t: 0.15, v: 1, spread: 0, elev: -9, size: 0.04 }] },
+    marks: [{ kind: "nose", id: "nose", t: 0.15, v: 1, spread: 0, elev: -9, size: 0.055 }] },
   coat: { depth: 0.11, locks: 0.02, bare: { angle: 30, factor: 0.15 } },
   camera: { yaw: 22, pitch: 8 },
   look: {
@@ -74,7 +74,7 @@ SECTION3.drapet = {
   ],
   contacts: [{ kind: "base" }],
   face: { sigma: 1.05, t: 0.15, v: 1, eyes: { spread: 14, elev: 4, r: 0.10 }, patch: { angle: 30 },
-    marks: [{ kind: "nose", id: "nose", t: 0.15, v: 1, spread: 0, elev: -6, size: 0.03 }] },
+    marks: [{ kind: "nose", id: "nose", t: 0.15, v: 1, spread: 0, elev: -6, size: 0.045 }] },
   camera: { yaw: 28, pitch: 14 },
   look: {
     slots: { hair: "hair", face: "face", legs: "face", dome: "hair" },
