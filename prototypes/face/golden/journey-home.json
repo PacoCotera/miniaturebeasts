@@ -269,8 +269,8 @@
     ],
     "screen": "pods",
     "focus": "bay",
-    "ok": "Look at this pod",
-    "subject": "Sealed until identified",
+    "ok": "Take to the reading room",
+    "subject": "",
     "idle": false
    },
    {
@@ -279,7 +279,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "place.3",
+      "target": "card.3",
       "verb": "back"
      }
     ],
@@ -628,8 +628,8 @@
     ],
     "screen": "pods",
     "focus": "pods",
-    "ok": "Look at this pod",
-    "subject": "Sealed until identified",
+    "ok": "Take to the reading room",
+    "subject": "",
     "idle": false
    },
    {
@@ -638,7 +638,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "place.0",
+      "target": "card.3",
       "verb": "back"
      }
     ],
@@ -744,8 +744,8 @@
     ],
     "screen": "pods",
     "focus": "room",
-    "ok": "Look at this pod",
-    "subject": "Sealed until identified",
+    "ok": "Take to the reading room",
+    "subject": "",
     "idle": false
    }
   ],
@@ -771,8 +771,8 @@
     "said": [],
     "screen": "pods",
     "focus": "pods",
-    "ok": "Look at this pod",
-    "subject": "Sealed until identified",
+    "ok": "Take to the reading room",
+    "subject": "",
     "idle": false
    },
    {

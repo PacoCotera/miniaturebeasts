@@ -35,7 +35,7 @@ test("the table's sums equal lv_text_get_width on the WebAssembly face for every
 });
 test("the table holds kerning pairs and the sums use them", { skip }, () => {
   const metrics = JSON.parse(readFileSync(path.join(dist, "metrics.json"), "utf8")), measure = createMeasure(metrics);
-  assert.deepEqual(Object.keys(metrics.fonts), ["16", "20", "28", "16m"]); const k = Object.keys(metrics.fonts["16"].kern);
+  assert.deepEqual(Object.keys(metrics.fonts), ["15", "16", "18", "20", "28", "16m"]); const k = Object.keys(metrics.fonts["16"].kern);
   assert.ok(k.length > 0, "kerning pairs"); const [a, b] = k[0].split(",").map(Number), s = String.fromCodePoint(a, b);
   assert.equal(measure(s, 16), metrics.fonts["16"].advance[a] + metrics.fonts["16"].advance[b] + metrics.fonts["16"].kern[k[0]]);
   assert.equal(measure("", 16), 0); assert.throws(() => measure("a", 17));
@@ -43,7 +43,7 @@ test("the table holds kerning pairs and the sums use them", { skip }, () => {
 test("the committed metrics vectors are what the table gives today", { skip }, () => { execFileSync(process.execPath, [path.resolve(here, "../tools/make-metrics-vectors.mjs"), "--check"], { stdio: "pipe" }); });
 test("measureRole: each role of frame.json type.roles measures in its font (a variant as its role); an unknown role or font throws", { skip }, () => {
   const metrics = JSON.parse(readFileSync(path.join(dist, "metrics.json"), "utf8")), measure = createMeasure(metrics), frame = JSON.parse(readFileSync(path.join(specs, "frame.json"), "utf8"));
-  const roles = Object.entries(frame.type.roles); assert.equal(roles.length, 16);
+  const roles = Object.entries(frame.type.roles); assert.equal(roles.length, 17);
   for (const [role, R] of roles) { const m = measureRole(metrics, frame, role); assert.equal(m("Legs & Tail"), measure("Legs & Tail", FONT_KEYS[R.font]), role); assert.ok(frame.type.fonts[R.font], role); }
   assert.equal(measureRole(metrics, frame, "figure.price")("Open the Bay"), measure("Open the Bay", "16m"));
   assert.equal(measureRole(metrics, frame, "nameTag.crowd")("Open the Bay"), measure("Open the Bay", "16m"), "a variant's font comes before the role's");
@@ -53,5 +53,5 @@ test("measureRole: each role of frame.json type.roles measures in its font (a va
   assert.throws(() => measureRole(metrics, { type: { fonts: { R16: [16, 400] }, roles: { x: { font: "R16", variants: { v: 5 } } } } }, "x.v"), /no variant/);
   assert.equal(measureRole(metrics, frame, "label")("Open the Bay"), measure("Open the Bay", 16), "a bare px is its default font: 16 is Regular");
   assert.throws(() => measureRole(metrics, frame, "nope"), /no text role/); assert.throws(() => measureRole(metrics, { type: { fonts: {}, roles: { x: { font: "M18" } } } }, "x"), /does not hold/);
-  assert.deepEqual(Object.fromEntries(Object.entries(frame.type.fonts).map(([k, [px]]) => [k, String(px)])), { R16: "16", M16: "16", M20: "20", SB28: "28" }, "each font's px is its key's px");
+  assert.deepEqual(Object.fromEntries(Object.entries(frame.type.fonts).map(([k, [px]]) => [k, String(px)])), { R16: "16", M16: "16", M20: "20", SB28: "28", R15: "15", M18: "18" }, "each font's px is its key's px");
 });

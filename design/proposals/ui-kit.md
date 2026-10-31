@@ -81,7 +81,7 @@ brown-grey), **LIGHT** (lamp pools), **veil** (unsurveyed ground in a place: DAR
 dot, 16 px dithered edge), **cloud bank** (unexplored map: lavender masses, no ground drawn
 under them, darkening away from the explored island), **fade** (seen cells: DARK, checker).
 
-**Station palette: 68 colours** (the working rule). The numbers live in
+**Station palette: 92 colours** (the working rule). The numbers live in
 [`prototypes/ui/palettes/station.json`](../../prototypes/ui/palettes/station.json), which the Station build took when it renamed its colour uses per the migration table below; this section
 shows them and their roles. It is the one palette of the Station's **art layer**: the chrome,
 the pixel art the build draws (material icons, lamps, pips, the glint, the leaf timer, Shield
@@ -151,6 +151,30 @@ bands.
 | `libQuiet` | `#2a2320` | Library met cells | `libGround` · `libPanel` | The approved Library renders: the met cells |
 | `libWell` | `#1a1514` | Library unmet cells; the 1 px rule under every Library band | `void` · `libGround` | The approved Library renders: the unmet wells |
 | `libLine` | `#4a413c` | The Library bevel on every bezel, the stamp slot outline, the overview edge, portrait frames | `libHead` · `bevel` | The approved Library renders: the warm bevel and the slot outlines |
+| `woodPlate` | `#4a3428` | The wood plate's umber fill: every button and chip of the paper-and-wood rooms (Pods' inventory) | `woodShade` · `woodLit` | Pods review round 2, P2: violet has no role on paper and wood |
+| `brass` | `#967448` | The wood plate's 1 px hairline | `woodPlate` · `sand` | Pods review round 2, P2 |
+| `woodLit` | `#765842` | The wood plate's 1 px bevel, top and left | `woodPlate` · `brass` | Pods review round 2, P2 |
+| `woodShade` | `#2e2019` | The wood plate's 1 px bevel, bottom and right | `ink` · `woodPlate` | Pods review round 2, P2 |
+| `readAmber` | `#f0b45a` | The reading screen's amber: the bracket and its notches, the price, the goal's odds, the stamp's ring | `amberDim` · `focus` | the reading screen v2, the reading screen spec §2.8 |
+| `chCoat` | `#f08a6a` | Coat's chapter colour on the reading screen: its bar, tick, disc rims, filled seeds, the part's tint and line (composed), its lane cap | `chCoatDim` · `bone` | the reading screen v2, the reading screen spec §2.8 |
+| `chFace` | `#7ec8f0` | Face's chapter colour on the reading screen | `chFaceDim` · `bone` | the reading screen v2, the reading screen spec §2.8 |
+| `chMove` | `#9ad27a` | Movement's chapter colour on the reading screen | `chMoveDim` · `bone` | the reading screen v2, the reading screen spec §2.8 |
+| `chStamina` | `#c9a4f2` | Stamina's chapter colour on the reading screen | `chStaminaDim` · `bone` | the reading screen v2, the reading screen spec §2.8 |
+| `chShape` | `#f2a0c0` | Shape's chapter colour on the reading screen | `chShapeDim` · `bone` | the reading screen v2, the reading screen spec §2.8 |
+| `chLegs` | `#6fe0d0` | Legs and tail's chapter colour on the reading screen | `chLegsDim` · `bone` | the reading screen v2, the reading screen spec §2.8 |
+| `chCharacter` | `#b8a0b0` | Character's chapter colour on the reading screen | `chCharacterDim` · `bone` | the reading screen v2, the reading screen spec §2.8 |
+| `chGlow` | `#f2e68a` | Glow's chapter colour on the reading screen | `chGlowDim` · `bone` | the reading screen v2, the reading screen spec §2.8 |
+| `chCoatDim` | `#80594c` | Coat's colour at 50 % over the glass: hollow seeds, the carried disc's rim | `ink` · `chCoat` | the reading screen v2, the reading screen spec §2.8 |
+| `chFaceDim` | `#47788e` | Face's dim | `ink` · `chFace` | the reading screen v2, the reading screen spec §2.8 |
+| `chMoveDim` | `#557d53` | Movement's dim | `ink` · `chMove` | the reading screen v2, the reading screen spec §2.8 |
+| `chStaminaDim` | `#6c668f` | Stamina's dim | `ink` · `chStamina` | the reading screen v2, the reading screen spec §2.8 |
+| `chShapeDim` | `#806476` | Shape's dim | `ink` · `chShape` | the reading screen v2, the reading screen spec §2.8 |
+| `chLegsDim` | `#3f847e` | Legs and tail's dim | `ink` · `chLegs` | the reading screen v2, the reading screen spec §2.8 |
+| `chCharacterDim` | `#64646e` | Character's dim | `ink` · `chCharacter` | the reading screen v2, the reading screen spec §2.8 |
+| `chGlowDim` | `#80875b` | Glow's dim | `ink` · `chGlow` | the reading screen v2, the reading screen spec §2.8 |
+| `amberDim` | `#806e43` | The amber's dim: the goal row's hollow seeds | `ink` · `readAmber` | the reading screen v2, the reading screen spec §2.8 |
+| `glassQuiet` | `#cdccc2` | The reading screen's quiet words on the glass: kind lines, the line beside the key, opens with a find | `glassFaint` · `bone` | the reading screen v2, the reading screen spec §2.8 |
+| `glassFaint` | `#989d98` | The reading screen's faint words on the glass: carried captions, the dim price | `stone` · `glassQuiet` | the reading screen v2, the reading screen spec §2.8 |
 
 Text on the Library's grounds: `mist` is text only on `libGround`, `libQuiet` and `libWell`; `fog` is quiet text on `libPanel` and `libHead`; `stone` is never text.
 

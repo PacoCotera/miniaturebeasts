@@ -339,7 +339,7 @@
   },
   "needs": {
    "rule": "the notice and the room's ✓, the first that holds: the module it lights, the notice, the action. Counts are spelled (a, two to six); above what the picture holds the count is dropped",
-   "order": ["crates","full","budReady","meet","newPods","glints","waitingPods","couldGrow","toRead","budGrowing"],
+   "order": ["crates","full","budReady","drying","meet","newPods","glints","waitingPods","couldGrow","toRead","budGrowing"],
    "crates": {
     "module": "cargo",
     "notice": "{count} crates wait in the bay",
@@ -356,6 +356,7 @@
     "noticeOne": "a new pod in the case",
     "action": "Look at the pods"
    },
+   "drying": {"module":"pods","notice":"{count} pods dry out next turn","noticeOne":"a pod dries out next turn","action":"Look at the pods"},
    "glints": {"module":"pods","notice":"{count} pods glint","noticeOne":"a pod glints","action":"Look at the pods"},
    "waitingPods": {
     "module": "pods",
@@ -381,7 +382,7 @@
   },
   "line": {
    "rule": "the line at rest: at most two needs joined by a dot, amber, with the amber lamp before them; the first carries the confirm cap and says its action, the second its notice. With none, the goal (frame.json strings.goal), mist. With a target focused: the target's verb with the cap, then its subject, if it has one, in mist.",
-   "order": ["crates","full","budReady","portrait","meet","newPods","glints","waitingPods","couldGrow"],
+   "order": ["crates","full","budReady","drying","portrait","meet","newPods","glints","waitingPods","couldGrow"],
    "needs": {
     "crates": {"action":"Open the Bay","notice":"{count} crates wait in the Bay","noticeOne":"a crate waits in the Bay","withPortrait":{"notice":"Bay: {count} crates and a portrait","noticeOne":"Bay: a crate and a portrait"}},
     "full": {"actions":{"add":"Add a room","make":"Make room"},"notice":"The Vivarium is full"},
@@ -389,6 +390,7 @@
     "portrait": {"action":"Open the Bay","notice":"a portrait waits in the Bay"},
     "meet": {"action":"Meet {name}","notice":"meet {name}"},
     "newPods": {"action":"Look at the pods","notice":"{count} new pods in the case","noticeOne":"a new pod in the case"},
+    "drying": {"action":"Look at the pods","notice":"{count} pods dry out next turn","noticeOne":"a pod dries out next turn"},
     "glints": {"action":"Look at the pods","notice":"{count} pods glint","noticeOne":"a pod glints"},
     "waitingPods": {"action":"Look at the pods","notice":"The Pods rack is full","noticeOne":"The Pods rack is full"},
     "couldGrow": {"action":"Look at the pods","notice":"{a} {species} pod, ready to incubate"}

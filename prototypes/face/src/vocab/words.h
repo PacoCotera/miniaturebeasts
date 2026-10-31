@@ -29,10 +29,12 @@ void kit_stamp(const char *spec, const char *rect, const char *plate, const char
 int kit_resident(const char *spec, const char *rect, const char *outRect, const char *id, const char *picture, const char *out, int lift, const char *from, int level, const int figure[4], const char *axis, const char *feet);   /* the up-close still resident: its picture lifted (or a slot), at rect or placed by its figure on axis and feet (figure NULL: at rect), the cross-dither from `from` at level (NULL or "": none), the out mark (contract header in station/resident.c) */
 typedef struct { const char *id, *region, *picture; int on; } kit_podShadow_t;   /* the pod's contact shadow: its node id, region and picture; on 0 keeps the node with no size */
 int kit_pod(const char *spec, const char *cls, int axis, int feet, const kit_podShadow_t *shadow, int box[4]);   /* the pod's box from its size class (bottom-centred on axis and feet), and its shadow when given; 1 when the class gives a box */
-void word_specimen(const char *base);   /* the pod under the beam on its cradle; base: the state's regions in the pods spec ("regions.overview" or "regions.chapter") */
-void word_kin(const char *base);        /* the overview's kin rings and the hatch */
+void word_inventory(void);       /* the pod inventory: the ground, the cabinet of cards, the tool row and the pod panel (vocab/station/cabinet.c) */
+void word_inventoryTray(void);   /* the filter tray over the cabinet */
+void word_inventoryFind(void);   /* the Find panel over the cabinet */
+void word_reading(void);         /* the reading screen v2: the frames, the chamber, the rail, the right frame's plates, the key, the read and the stamp (vocab/station/reading.c) */
+void word_compare(void);         /* Compare in the reading room's look: the bench, two cream papers, their trait rows and Take to the reading room (vocab/station/compare.c) */
 void word_page(const char *key);        /* the chapter page ("page") or one of Compare's two ("pageA", "pageB") */
-void word_list(void);    /* Pods' collection: the rack's places */
 int kit_glint_level(const char *spec, const char *path, uint32_t elapsed_ms, int motion);   /* a fading glint's dither level, 0 to <path>.levels: in over the first half of <path>.ms, out over the second; motion 0: the top level (contract header in station/glint.c) */
 void kit_glint(const char *id, const char *asset, int cx, int cy, int w, int h, int level);   /* one glint: the asset dithered in from clear at the level, centred on (cx, cy); its layer is the asset's */
 /* the ring of the target whose `group` this is in the screen spec of the props (the rail's, Pods'), at the region id the caller names */

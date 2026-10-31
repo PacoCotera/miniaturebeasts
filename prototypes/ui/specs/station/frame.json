@@ -26,29 +26,29 @@
   "plate": { "centre": 512, "maxWidth": 640, "pad": 16, "line": 20, "lead": 16, "bottom": 550, "topOverFocal": 112, "showMs": 4000, "role": "body", "ground": "bar" }
  },
  "type": { "body": 16, "title": 20, "name": 28, "pitch": { "16": 20, "20": 28, "28": 36 }, "weight": { "16": 400, "20": 500, "28": 600 },
-  "fonts": { "R16": [16, 400], "M16": [16, 500], "M20": [20, 500], "SB28": [28, 600] },
-  "grounds": { "ground": "field", "libGround": "field", "stageGround": "field", "panel": "pane", "libPanel": "pane", "bar": "band", "libHead": "band", "painted": "painted" },
+  "fonts": { "R16": [16, 400], "M16": [16, 500], "M20": [20, 500], "SB28": [28, 600], "R15": [15, 400], "M18": [18, 500] },
+  "grounds": { "ground": "field", "libGround": "field", "stageGround": "field", "panel": "pane", "libPanel": "pane", "bar": "band", "libHead": "band", "painted": "painted", "paper": "pane", "slate": "pane", "sand": "field", "glass": "painted" },
   "roles": {
    "name": { "font": "SB28", "pitch": 36, "colour": { "field": "bone", "pane": "bone", "band": "bone" } },
    "title": { "font": "M20", "colour": { "band": "bone" } },
-   "heading": { "font": "M20", "pitch": 28, "colour": { "field": "bone", "pane": "bone", "band": "bone" }, "variants": { "dim": "mist", "flash": "ink" } },
+   "heading": { "font": "M20", "pitch": 28, "colour": { "field": "bone", "pane": "bone", "band": "bone" }, "variants": { "dim": "mist", "flash": "ink", "umber": { "colour": "soil", "shadow": {} }, "card": { "font": "M18", "colour": "soil", "shadow": {} } } },
    "nameTag": { "font": "M20", "colour": { "pane": "bone", "band": "bone" }, "variants": { "crowd": { "font": "M16" }, "flash": "ink", "dim": "mist" } },
    "eyebrow": { "font": "M16", "pitch": 20, "after": 8, "colour": { "field": "fog", "pane": "fog", "band": "fog", "painted": "fog" }, "shadow": { "painted": "void" } },
-   "label": { "font": "R16", "colour": { "field": "bone", "pane": "bone", "band": "bone" }, "variants": { "state": "mist", "open": "ink" } },
-   "body": { "font": "R16", "pitch": 20, "colour": { "field": "bone", "pane": "bone", "band": "bone", "painted": "bone" }, "shadow": { "painted": "void" }, "variants": { "facts": { "pitch": 24 } } },
+   "label": { "font": "R16", "colour": { "field": "bone", "pane": "bone", "band": "bone" }, "variants": { "state": "mist", "open": "ink", "umber": { "colour": "soil", "shadow": {} }, "fog": "fog", "edge": "sand" } },
+   "body": { "font": "R16", "pitch": 20, "colour": { "field": "bone", "pane": "bone", "band": "bone", "painted": "bone" }, "shadow": { "painted": "void" }, "variants": { "facts": { "pitch": 24 }, "umber": { "colour": "soil", "shadow": {} } } },
    "code": { "font": "R16", "colour": { "field": "bone", "pane": "bone", "painted": "bone" }, "shadow": { "painted": "void" }, "variants": { "wall": { "colour": "ink", "shadow": {} } } },
-   "quiet": { "font": "R16", "pitch": 20, "colour": { "field": "mist", "pane": "fog", "band": "fog", "painted": "fog" }, "shadow": { "painted": "void" }, "variants": { "bay": "bone", "facts": { "pitch": 24 } } },
+   "quiet": { "font": "R16", "pitch": 20, "colour": { "field": "mist", "pane": "fog", "band": "fog", "painted": "fog" }, "shadow": { "painted": "void" }, "variants": { "bay": "bone", "facts": { "pitch": 24 }, "umber": { "colour": "soil", "shadow": {} }, "card": { "font": "R15", "colour": "soil", "shadow": {} } } },
    "figure": { "font": "M16", "colour": { "field": "bone", "pane": "bone", "band": "bone" }, "variants": { "price": "focus", "short": "amber", "flash": "ink", "changed": "mint", "large": { "font": "M20" } } },
    "verb": { "font": "M16", "colour": { "band": "orange" }, "variants": { "dim": "mist" } },
    "subject": { "font": "R16", "colour": { "band": "fog" } },
    "back": { "font": "R16", "colour": { "band": "fog" } },
-   "notice": { "font": "R16", "colour": { "field": "amber", "pane": "amber", "band": "amber" } },
+   "notice": { "font": "R16", "colour": { "field": "amber", "pane": "amber", "band": "amber" }, "variants": { "paper": "rust", "card": { "font": "R15", "colour": "rust" } } },
    "new": { "font": "R16", "colour": { "field": "gold", "pane": "gold", "painted": "gold" }, "shadow": { "painted": "void" } },
+   "glass": { "font": "R15", "colour": { "painted": "bone" }, "variants": { "name": { "font": "M18" }, "chapter": { "font": "SB28" }, "trait": { "font": "M20" }, "caption": "bone", "quiet": "glassQuiet", "faint": "glassFaint", "goal": "readAmber", "price": { "font": "SB28", "colour": "readAmber" }, "priceDim": { "font": "SB28", "colour": "glassFaint" }, "chip": { "font": "M18", "colour": "readAmber" } }, "note": "the reading screen v2 on its glass (ux-reading-v2.md §2.9): R15 captions and lines, M18 the pod and the mate, M20 the trait, SB28 the chapter and the price; nothing under 15" },
    "loss": { "font": "R16", "colour": { "field": "coral", "pane": "coral" } }
   },
   "clearance": { "enforced": [], "exceptions": [
-   { "screen": "create", "node": "rail.tab", "rule": "T4", "reason": "Create's tab word is centred above the 12 px mark that ends at the tab's foot (cap top 49), not in the full 40", "by": "UI/UX" },
-   { "screen": "pods", "node": "rail.tab", "rule": "T6", "reason": "Movement is 2 px from the next tab's focus ring; the only fix is the global labelCentre, which moves every rail golden", "by": "UI/UX" }
+   { "screen": "create", "node": "rail.tab", "rule": "T4", "reason": "Create's tab word is centred above the 12 px mark that ends at the tab's foot (cap top 49), not in the full 40", "by": "UI/UX" }
   ] }
  },
  "focus": { "ring": {
@@ -174,18 +174,38 @@
   },
   "roomKeys": {
    "home": {"screen": "home", "focus": "room"},
-   "research": {"screen": "pods", "state": "collection", "focus": "the pod that most needs the player"},
+   "research": {
+    "screen": "pods",
+    "state": "room",
+    "focus": "two faces: the reading room on the pod on the bench (the recommended row); a second press the inventory; a bare bench opens the inventory"
+   },
    "library": {"screen": "library", "state": "all", "focus": "ui.lib.l1: the species the ring was last on"},
    "habitat": {"screen": "vivarium", "focus": "vivarium.json focus.entry.vivariumKey"}
   },
   "screens": {
    "home": {"parent": null, "back": null},
    "cargo": {"parent": "home", "back": "Home", "states": ["bay", "opening", "end", "arrival"], "spec": "cargo.json"},
-   "pods.collection": {"parent": "home", "back": "Home"},
-   "pods.overview": {"parent": "pods.collection", "back": "Pods"},
-   "pods.chapter": {"parent": "pods.overview", "back": "{pod}"},
-   "pods.compare": {"parent": "pods.overview", "back": "{pod}"},
-   "create": {"parent": "pods.overview", "back": "{pod}"},
+   "pods.inventory": {
+    "parent": "home",
+    "back": "Home",
+    "states": ["inventory", "filter", "find"],
+    "spec": "pods.json: the filter tray and Find close with one ←; in choosing mode ← goes back to the reading room"
+   },
+   "pods.room": {
+    "parent": "pods.inventory",
+    "back": "Pods",
+    "states": ["room", "trait"],
+    "spec": "pods.json: ← goes back where the player came from, the inventory or Home; the trait overlay closes with one ←"
+   },
+   "pods.compare": {
+    "parent": "pods.inventory",
+    "back": "Pods",
+    "note": "← goes back to what opened it: the inventory's card or the reading room's kin"
+   },
+   "create": {
+    "parent": "pods.room",
+    "back": "{pod}"
+   },
    "incubator": {"parent": "home", "back": "Home"},
    "probe": {"parent": "home", "back": "Home", "states": ["docked", "away"], "spec": "bench.json"},
    "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
@@ -200,18 +220,54 @@
   "podBack": "{pod} is the pod's label (\"Loika\"); a name wider than the way back's 68 px for its word reads \"Back\"",
   "nameBack": "{name} is the shown mibi's name; a name wider than the way back's 68 px for its word reads \"Back\"",
   "jumps": [
-   {"from": "cargo", "state": "end", "action": "See the portrait", "to": "sitting", "view": "portrait", "focus": "room (view only); ← Habitat with the ring on Portrait", "when": "the run opened this mibi's sitting crate and its opening is kept; first, before Look at the pods; present only while sitting.json regions.portrait.offeredFrom lists cargo-end"},
-   {"from": "cargo", "state": "end", "action": "Look at the pods", "to": "pods", "view": "collection", "focus": "the newest pod", "when": "a new pod landed in a well"},
+   {
+    "from": "cargo",
+    "state": "end",
+    "action": "See the portrait",
+    "to": "sitting",
+    "view": "portrait",
+    "focus": "room (view only); ← Habitat with the ring on Portrait",
+    "when": "the run opened this mibi's sitting crate and its opening is kept; first, before Look at the pods; present only while sitting.json regions.portrait.offeredFrom lists cargo-end"
+   },
+   {
+    "from": "cargo",
+    "state": "end",
+    "action": "Look at the pods",
+    "to": "pods",
+    "view": "inventory",
+    "focus": "the newest pod",
+    "when": "a new pod landed in a well"
+   },
    {"from": "create", "action": "Incubate", "to": "incubator"},
    {"from": "cross", "action": "Cross them", "to": "incubator"},
    {"from": "incubator", "action": "Open", "to": "habitat", "state": "meet", "focus": "the resident: the new mibi"},
-   {"from": "incubator", "state": "empty", "action": "Choose a pod", "to": "pods", "view": "collection", "focus": "the first identified pod in rack order, else the first pod", "when": "the rack holds a pod and a bay is free"},
-   {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "library.species", "focus": "that pod's species, Level 2"},
+   {
+    "from": "incubator",
+    "state": "empty",
+    "action": "Choose a pod",
+    "to": "pods",
+    "view": "inventory",
+    "focus": "the inventory sorted by use, the ring on the first card",
+    "when": "the tray holds a pod and a bay is free"
+   },
    {"from": "habitat", "target": "the card's species word", "action": "Open the guide", "to": "library.species", "focus": "that species, Level 2"},
    {"from": "library", "target": "a met or found cell", "action": "Open {species}", "to": "library.species", "focus": "that species, Level 2"},
    {"from": "library.species", "target": "a family face", "action": "See the family", "to": "library.family", "focus": "close, on that mibi"},
-   {"from": "habitat", "target": "the card's origin lines (habitat.json focus.targets.family)", "action": "See the family", "to": "library.family", "focus": "close, on the shown mibi; ← there returns to Level 2 of its species"},
-   {"from": "library.species", "target": "the face", "action": "Look at {name}", "to": "habitat", "focus": "the resident: that mibi", "when": "the face is not released"}
+   {
+    "from": "habitat",
+    "target": "the card's origin lines (habitat.json focus.targets.family)",
+    "action": "See the family",
+    "to": "library.family",
+    "focus": "close, on the shown mibi; ← there returns to Level 2 of its species"
+   },
+   {
+    "from": "library.species",
+    "target": "the face",
+    "action": "Look at {name}",
+    "to": "habitat",
+    "focus": "the resident: that mibi",
+    "when": "the face is not released"
+   }
   ],
   "jumpRule": "stack navigation: after a jump, ← goes to the parent of the screen you are on in this tree, never back along the way you came",
   "homePad": {

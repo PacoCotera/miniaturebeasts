@@ -47,7 +47,7 @@ export function modulesOf(m, shown, Sg, sittingSpec = null) {
   const crossWhy = out ? travel : crossState === "young" ? Sg.crossLater : crossState === "alone" ? fill(Sg.noPartner, { Species: S.spName(shown) }) : crossState === "away" ? Sg.crossAway : !doorOpen("cross") ? Sg.shut.cross : null;
   if (crossWhy) rows.cross = held(fill(Sg.cross, named), crossWhy, out ? plateT : [capLine(crossWhy)]);
   // Wild: in the order of the rule (state.returnMibiBlock): bonded, with you, going at the next dock; a young mibi is not held (the rooms words C12a)
-  const wildBlock = S.returnMibiBlock(st, sv, shown), price = S.gainText(S.PRICE.wildMibi);
+  const wildBlock = S.returnMibiBlock(st, sv, shown), price = "";   // a release pays nothing (owner 2026-10-28 23:16)
   if (wildBlock === "a bonded mibi stays") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.bonded, Sg.wildPlates.bonded.map((l) => fill(l, named)).concat(stage === "juvenile" ? [fill(Sg.wildPlates.bondedYoung, named)] : []), { price });
   else if (wildBlock === "already with you") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.withYou[where], plateT, { price });
   else if (wildBlock) rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.waiting, Sg.wildPlates.waiting.map((l) => fill(l, named)), { price });
@@ -169,7 +169,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
     else { const c = cost(p), short = c > st.d ? S.shortIcons(st, 0, c, 0) : ""; line = { ok: fill(Sg.read, { Chapter }), price: c ? "◆ " + c : "", ...(short ? { dim: true, short } : {}), subject: fill(Sg.plateUnread, { Chapter }), back: Sg.back, need: !short && c && frame ? warnWords(st, m.sv, settings, frame, { d: c }, { key: "read", mibi: shown }) : null }; }
   } else if (id === "door" || id === "portrait" || id === "cross" || id === "wild") {
     // a held row (the house rule): the verb stays, dimmed, and the context gives the reason; otherwise the live rows
-    const hr = rows[id], price = S.gainText(S.PRICE.wildMibi), now = docked;
+    const hr = rows[id], now = docked;
     if (hr) line = { ok: hr.ok, ...(hr.price ? { price: hr.price } : {}), dim: true, subject: hr.subject };
     else if (id === "door") line = dKind === "take" ? { ok: fill(Sg.take, named), subject: now ? Sg.takeNow : Sg.takeNext }
       : dKind === "bring" ? { ok: fill(Sg.bring, named), subject: now ? Sg.bringNow : Sg.bringNext }   // live while docked; away with the mibi out it is a held row
@@ -177,7 +177,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
       : { ok: null, subject: Sg.bringNext };
     else if (id === "portrait") line = look ? { ok: sittingSpec.strings.lookPortrait, subject: Sg.portrayed } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext };   // bottomLine.portrait.portrayed: ✓ strings.lookPortrait only while the picture is held
     else if (id === "cross") line = { ok: fill(Sg.cross, named), subject: fill(Sg.partners, { "n in words": spell(Math.min(pickable.length, 11)), Species: species }) };
-    else line = { ok: fill(Sg.wild, named), price, subject: Sg.wildContext };
+    else line = { ok: fill(Sg.wild, named), subject: Sg.wildContext };
     line = { ...line, back: Sg.back, need: null };
   } else if (id.startsWith("room.")) {   // a chip (R6, the rooms screens 1b, the rooms words C5): moves the mibi up close; the new-room chip as the whole's
     if (id === "room.new") {

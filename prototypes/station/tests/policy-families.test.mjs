@@ -24,19 +24,23 @@ const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const SPECIES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => f.slice(8, 11));
 
 function stock(ids, gs = 3) { const st = S.freshSt("w1", 1, 1000); S.normalize(st); for (const id of ids) S.seedPodFromGenome(st, podGenome(frameOf(id), gs), settings, 1000); return st; }
-const model = (st, over = {}) => ({ st, settings, docked: true, crates: 0, present: {}, focus: "pod", ...over, ui: { view: "overview", cur: st.tray[0]?.id ?? null, ci: 0, cmp: null, wildArm: 0, ...(over.ui || {}) } });
+const model = (st, over = {}) => ({ st, settings, docked: true, crates: 0, present: {}, focus: "card.0", now: 1000, ...over, ui: { view: "inventory", cur: null, ci: 0, cmp: null, sort: "use", chips: [], word: null, first: 0, recent: [], ...(over.ui || {}) } });
 const rich = (ids) => { const st = stock(ids); for (const p of st.tray) S.skipIdentify(st, p); st.d = 999; st.e = 99; st.s = 99; return st; };
 const readSome = (st, i, n) => { const p = st.tray[i], fr = frameOf(S.speciesOf(p)); fr.chapters.slice(0, n ?? fr.chapters.length).forEach((c) => S.read(st, p, c.id, settings)); return st; };
 function scenes() {
-  const out = [["an empty rack", model(S.freshSt("w1", 1, 1000), { focus: null, ui: { view: "collection" } })]];
+  const out = [["an empty tray", model(S.freshSt("w1", 1, 1000), { focus: "sort" })], ["a bare bench", model(S.freshSt("w1", 1, 1000), { focus: "choose", ui: { view: "room" } })]];
   for (const id of SPECIES) {
-    out.push([`${id}: unidentified`, model(stock([id]))]);
+    { const st = stock([id]); out.push([`${id}: sealed, the inventory`, model(st)]); const b = stock([id]); S.putOnBench(b, b.tray[0]); out.push([`${id}: sealed, on the bench`, model(b, { focus: "identify", ui: { view: "room" } })]); }
     const st = readSome(rich([id, id]), 0, 2);
-    out.push([`${id}: the collection`, model(st, { focus: "place.0", ui: { view: "collection" } })]);
-    out.push([`${id}: the overview`, model(st, { focus: "rail.1" })]);
-    out.push([`${id}: a chapter page`, model(st, { focus: "rail.1", ui: { view: "chapter", ci: 1 } })]);
+    out.push([`${id}: the inventory`, model(st)]);
+    out.push([`${id}: the filter tray`, model(st, { focus: "tchip.0.0", ui: { view: "filter" } })]);
+    out.push([`${id}: Find`, model(st, { focus: "letter.0", ui: { view: "find" } })]);
+    const r = readSome(rich([id, id]), 0, 2); S.putOnBench(r, r.tray[0]);
+    out.push([`${id}: the reading room`, model(r, { focus: "index.1", ui: { view: "room", ci: 1 } })]);
+    out.push([`${id}: an unread page`, model(r, { focus: "index.3", ui: { view: "room", ci: 3 } })]);
+    out.push([`${id}: the trait overlay`, model(r, { focus: "close", ui: { view: "trait", ci: 0, trait: 0 } })]);
     const whole = readSome(rich([id, id]), 0); readSome(whole, 1);
-    out.push([`${id}: Compare`, model(whole, { focus: null, ui: { view: "overview", cmp: { a: whole.tray[0].id, b: whole.tray[1].id, ci: 0 } } })]);
+    out.push([`${id}: Compare`, model(whole, { focus: null, ui: { view: "room", cmp: { a: whole.tray[0].id, b: whole.tray[1].id, ci: 0, from: "room" } } })]);
   }
   return out;
 }

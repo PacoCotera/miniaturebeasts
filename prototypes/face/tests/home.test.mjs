@@ -255,7 +255,7 @@ test("the Vivarium's readout: each part only when non-zero, 'all on a trip' when
 test("the needs hold in the spec's order and clear when acted on: crates, the bud, a portrait, a new mibi to meet, new or glinting pods, pods waiting for a well, a pod that could be incubated", { skip }, async () => {
   const b = scene({ adults: 3, crates: 2, bud: 1e8 / 60000, portrait: true, unseen: true, waiting: true, ui: { meet: 1 } });
   const keys = (x) => homeNeeds(x.st, x.sv, settings, x.ui ?? { meet: 1 }, Date.now() + 1000).map((n) => n.key); assert.deepEqual(keys(b), ["crates", "budReady", "portrait", "meet", "newPods", "waitingPods"]);
-  assert.deepEqual(homeSpec.strings.line.order, ["crates", "full", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
+  assert.deepEqual(homeSpec.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
   assert.deepEqual(b.props.regions.line, { needs: ["Open the Bay", "The bud is ready"] }, "at most two");
   b.sv.bay = []; assert.deepEqual(keys(b).slice(0, 2), ["budReady", "portrait"], "the crates are gone once opened");
 });

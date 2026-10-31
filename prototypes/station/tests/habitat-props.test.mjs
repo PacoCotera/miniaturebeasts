@@ -116,11 +116,11 @@ test("Cross: a face a partner (an adult or an elder of the species), a partner o
   m[0].born = w.st.turn; dock(w.st); b = build(w, sv0(), { focus: "cross" }); assert.equal(b.props.regions.cross.state, "young"); assert.equal(b.line.subject, "crosses once adult"); assert.deepEqual(b.props.regions.cross.faces, []); assert.deepEqual([b.line.ok, b.line.dim, b.props.regions.cross.held], [`Cross ${m[0].name}`, true, true], "a young mibi's Cross is held before it is focused");
 });
 
-test("Wild: shut (no armed state), its context from the rules (a young, a bonded, a carried mibi stays) and the price ❀ +2 on the line", () => {
+test("Wild: shut (no armed state), its context from the rules (a young, a bonded, a carried mibi stays) and no price on the line: a release pays nothing", () => {
   const w = world(); dock(w.st); const m = mibis(w, 3), sv = sv0();
-  let b = build(w, sv, { focus: "wild" }); assert.equal(b.props.regions.wild.state, "shut"); assert.equal(b.line.ok, `Return ${m[0].name}`); assert.equal(b.line.price, "❀ +2"); assert.equal(b.line.subject, "leaves a pod of its line", "C13a"); assert.equal(b.props.regions.wild.held, false);
+  let b = build(w, sv, { focus: "wild" }); assert.equal(b.props.regions.wild.state, "shut"); assert.equal(b.line.ok, `Return ${m[0].name}`); assert.equal(b.line.price, undefined, "a release pays nothing"); assert.equal(b.line.subject, "leaves a pod of its line", "C13a"); assert.equal(b.props.regions.wild.held, false);
   m[0].born = w.st.turn; b = build(w, sv, { focus: "wild" }); assert.deepEqual([b.props.regions.wild.state, b.props.regions.wild.held, b.line.ok, b.line.dim], ["shut", false, `Return ${m[0].name}`, undefined], "C12a: a young mibi may be returned: not held");
-  m[0].born = w.st.turn - 99; m[0].bonded = true; b = build(w, sv, { focus: "wild" }); assert.deepEqual([b.props.regions.wild.state, b.props.regions.wild.held, b.line.ok, b.line.dim, b.line.price, b.line.subject], ["held", true, `Return ${m[0].name}`, true, "❀ +2", "a bonded mibi stays"], "the verb stays, dimmed"); assert.equal(b.props.focus.targets.find((t) => t.id === "wild").enabled, false);
+  m[0].born = w.st.turn - 99; m[0].bonded = true; b = build(w, sv, { focus: "wild" }); assert.deepEqual([b.props.regions.wild.state, b.props.regions.wild.held, b.line.ok, b.line.dim, b.line.price, b.line.subject], ["held", true, `Return ${m[0].name}`, true, undefined, "a bonded mibi stays"], "the verb stays, dimmed"); assert.equal(b.props.focus.targets.find((t) => t.id === "wild").enabled, false);
 });
 
 test("Portrait: none, held, its portrait on the way, portrayed; the context names why it cannot sit", () => {
@@ -311,7 +311,7 @@ test("R6 the Return with its pod: the Wild context (C13a), the Return card's lin
   const w = world(); dock(w.st); const m = mibis(w, 3), sv = sv0();
   assert.equal(build(w, sv, { focus: "wild" }).line.subject, "leaves a pod of its line");
   const card = (id) => { const ui = { panel: { screen: "habitat", id: "wildMibi", focus: "" }, hab: { id } }; return panelBuild({ st: w.st, sv, settings: w.settings, ui, jump: "arrival" }, panelSpec, frameSpec, podsSpec).cards.find((c) => c.id === "return"); };
-  assert.equal(card(m[0].id).line, `${m[0].name}'s pod waits in the wild`); m[1].born = w.st.turn; assert.equal(card(m[1].id).line, `${m[1].name}'s pod comes once grown`); assert.equal(card(m[1].id).name, `Return ${m[1].name}`); assert.equal(card(m[1].id).cost, "❀ +2", "the same card otherwise");
+  assert.equal(card(m[0].id).line, `${m[0].name}'s pod waits in the wild`); m[1].born = w.st.turn; assert.equal(card(m[1].id).line, `${m[1].name}'s pod comes once grown`); assert.equal(card(m[1].id).name, `Return ${m[1].name}`); assert.equal(card(m[1].id).cost, "", "the same card otherwise: no gain");
   let h = hostFor(w, sv, m[0].id); returnNow(h); assert.deepEqual(h.said, [`${m[0].name} goes back to the meadow\nLook for its pod in two turns`], "C13d");
   h = hostFor(w, sv, m[1].id); returnNow(h); assert.deepEqual(h.said, [`${m[1].name} goes back to the meadow\n${m[1].name} grows up in its place\nbefore it leaves a pod`], "C13e"); assert.ok(m[1].released);
   assert.equal(w.st.sheds.length, 2, "both leave a shed record"); assert.equal(spec.strings.wildBlocks.young, undefined, "C12a: the young row retires");

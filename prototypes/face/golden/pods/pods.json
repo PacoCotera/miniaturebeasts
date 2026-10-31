@@ -1,57 +1,121 @@
 {
  "_note": "Pods' goldens: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
-  "collection": {
-   "hash": "371940e6",
-   "png": "pods-collection.png"
+  "inventory, no pods": {
+   "hash": "913c7bec",
+   "png": "pods-inventory-no-pods.png"
   },
-  "overview, unidentified": {
-   "hash": "c683cb22",
-   "png": "pods-overview-unidentified.png"
+  "inventory, one sealed pod": {
+   "hash": "f8b908f9",
+   "png": "pods-inventory-one-sealed-pod.png"
   },
-  "overview, identify warns": {
-   "hash": "d144b720",
-   "png": "pods-overview-identify-warns.png"
+  "inventory, twelve pods": {
+   "hash": "01a376aa",
+   "png": "pods-inventory-twelve-pods.png"
   },
-  "chapter page, unread": {
-   "hash": "0ffdb882",
-   "png": "pods-chapter-page-unread.png"
+  "inventory, the panel's first button": {
+   "hash": "614c6288",
+   "png": "pods-inventory-the-panel-s-first-button.png"
   },
-  "overview, identified, pod focused": {
-   "hash": "e9766b43",
-   "png": "pods-overview-identified-pod-focused.png"
+  "inventory, sorted by species": {
+   "hash": "3dc374c9",
+   "png": "pods-inventory-sorted-by-species.png"
   },
-  "overview, kin focused": {
-   "hash": "777b64d5",
-   "png": "pods-overview-kin-focused.png"
+  "inventory, filtered": {
+   "hash": "9672e626",
+   "png": "pods-inventory-filtered.png"
   },
-  "overview, hatch focused": {
-   "hash": "39da74f1",
-   "png": "pods-overview-hatch-focused.png"
+  "inventory, the filter tray": {
+   "hash": "235bd706",
+   "png": "pods-inventory-the-filter-tray.png"
   },
-  "panel, release": {
-   "hash": "c90c25a0",
-   "png": "pods-panel-release.png"
+  "inventory, no matches": {
+   "hash": "9bb723e0",
+   "png": "pods-inventory-no-matches.png"
   },
-  "overview, a rail tab focused": {
-   "hash": "a2f36e37",
-   "png": "pods-overview-a-rail-tab-focused.png"
+  "inventory, find": {
+   "hash": "2e633588",
+   "png": "pods-inventory-find.png"
   },
-  "chapter page": {
-   "hash": "349dc469",
-   "png": "pods-chapter-page.png"
+  "inventory, drying": {
+   "hash": "4bfbca37",
+   "png": "pods-inventory-drying.png"
   },
-  "chapter page, a doing": {
-   "hash": "bd8b6c06",
-   "png": "pods-chapter-page-a-doing.png"
+  "inventory, a pod dried": {
+   "hash": "eb86c59a",
+   "png": "pods-inventory-a-pod-dried.png"
   },
-  "chapter page, sealed": {
-   "hash": "51cfa311",
-   "png": "pods-chapter-page-sealed.png"
+  "inventory, let it go asks": {
+   "hash": "984bdf76",
+   "png": "pods-inventory-let-it-go-asks.png"
+  },
+  "inventory, forty pods": {
+   "hash": "d9e606f4",
+   "png": "pods-inventory-forty-pods.png"
+  },
+  "read, Loika fresh, Coat in hand": {
+   "hash": "5075fda1",
+   "png": "pods-read-loika-fresh-coat-in-hand.png"
+  },
+  "read, Face open, unread": {
+   "hash": "3fe1527b",
+   "png": "pods-read-face-open-unread.png"
+  },
+  "read, Coat read, Face in hand": {
+   "hash": "fe24de36",
+   "png": "pods-read-coat-read-face-in-hand.png"
+  },
+  "read, Face after the read": {
+   "hash": "a6f8fe74",
+   "png": "pods-read-face-after-the-read.png"
+  },
+  "read, the Crown detail": {
+   "hash": "3370acf7",
+   "png": "pods-read-the-crown-detail.png"
+  },
+  "read, Movement in hand, the sprout": {
+   "hash": "69fa5aee",
+   "png": "pods-read-movement-in-hand-the-sprout.png"
+  },
+  "read, not enough Data": {
+   "hash": "f481049d",
+   "png": "pods-read-not-enough-data.png"
+  },
+  "read, Tuikis, Shape in hand": {
+   "hash": "349c9d04",
+   "png": "pods-read-tuikis-shape-in-hand.png"
+  },
+  "read, a sealed chapter, the pod's reason": {
+   "hash": "154bf81c",
+   "png": "pods-read-a-sealed-chapter-the-pod-s-reason.png"
+  },
+  "read, a sealed pod, Identify": {
+   "hash": "00aac3a7",
+   "png": "pods-read-a-sealed-pod-identify.png"
+  },
+  "read, the stamp moment": {
+   "hash": "9ca9f9d7",
+   "png": "pods-read-the-stamp-moment.png"
+  },
+  "read, the stamp view": {
+   "hash": "0df83b88",
+   "png": "pods-read-the-stamp-view.png"
   },
   "compare": {
-   "hash": "7ecc44f3",
+   "hash": "d91e942b",
    "png": "pods-compare.png"
+  },
+  "compare, the next chapter the same": {
+   "hash": "d14c6044",
+   "png": "pods-compare-the-next-chapter-the-same.png"
+  },
+  "compare, nothing read on both": {
+   "hash": "e6219093",
+   "png": "pods-compare-nothing-read-on-both.png"
+  },
+  "compare, a kin's unread lane glints": {
+   "hash": "a9b630c0",
+   "png": "pods-compare-a-kin-s-unread-lane-glints.png"
   }
  }
 }

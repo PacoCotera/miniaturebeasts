@@ -18,19 +18,19 @@ const run = (n, r = frame.regions.rail) => (n <= r.fullUpTo ? n * r.full : (n - 
 const inside = (a, b) => a[0] >= b[0] && a[1] >= b[1] && a[0] + a[2] <= b[0] + b[2] && a[1] + a[3] <= b[1] + b[3];
 const apart = (a, b) => a[0] + a[2] <= b[0] || b[0] + b[2] <= a[0] || a[1] + a[3] <= b[1] || b[1] + b[3] <= a[1];
 
-test("Pods in three states: the collection's six places, rings, labels and the waiting mark", () => {
-  const A = pods.regions.collection, P = A.places;
-  assert.deepEqual(pods.states, ["collection", "overview", "chapter"]); assert.equal(pods.initial, "collection");
-  const places = Array.from({ length: P.slots }, (_, i) => [P.first[0] + P.pitch[0] * (i % P.grid[0]), P.first[1] + P.pitch[1] * Math.floor(i / P.grid[0]), P.first[2], P.first[3]]);
-  assert.equal(places.at(-1)[0] + places.at(-1)[2], 952, "the places end where the re-laid collection on the plain stage ends (64 + 2 × 300 + 288)"); assert.ok(places.every((r) => r[1] >= 48 && r[1] + r[3] <= 552));
-  for (const [i, r] of places.entries()) for (const q of places.slice(i + 1)) assert.ok(apart(r, q), "places apart");
-  const pl = places[0], ring = [pl[0] + A.ring.centre[0] - A.ring.outer, pl[1] + A.ring.centre[1] - A.ring.outer, 2 * A.ring.outer, 2 * A.ring.outer];
-  assert.ok(inside(ring, pl), "the ring inside its place"); assert.ok(A.pod.size[1] <= 2 * (A.ring.outer - A.ring.band), "the pod inside the ring's opening");
-  for (const k of ["grow", "glint"]) assert.ok(inside([pl[0] + A[k].at[0], pl[1] + A[k].at[1], A[k].at[2], A[k].at[3]], pl), k + " inside its place");
-  assert.ok(apart(A.waiting.rect, places[3]) && A.waiting.rect[1] + A.waiting.rect[3] <= 552, "the waiting mark under the places");
-  assert.deepEqual(pods.classes.pod.collection, [88, 112]);
-  assert.ok(!("selected" in A.ring.masters)); assert.equal(A.ring.masters.closed, "ring-collection-closed-176x176"); assert.deepEqual(A.ring.focus, { form: "targets.place.shape" }, "the place ring is the target's shape: no copy of the tokens"); assert.deepEqual(pods.targets.place.shape, { circle: { centre: A.ring.centre, r: A.ring.slice[2] / 2 } }, "the ring round the gauge slice's radius 88"); assert.equal(A.glint.slice, "glint-star-12x12"); assert.deepEqual(A.ring.slice, [8, 0, 176, 176]); assert.equal(A.ring.slice[0] + 88, A.ring.centre[0]); assert.equal(A.ring.slice[1] + 88, A.ring.centre[1]); assert.ok(!("collectionRing" in pods.colours), "the build draws no arcs"); assert.ok(!("ringRead" in pods.colours), "one home for the ring's colours");
-  assert.equal(pods.strings.openChapter, "Turn to {chapter}"); assert.equal(pods.strings.wayBack.chapter, "{name}");
+test("Pods in five states: the inventory (its tray and Find over it), the reading screen and Compare; the cabinet's three cards a row, the panel beside it; the reading screen's two frames (ux-reading-v2.md §2.2)", () => {
+  assert.deepEqual(pods.states, ["inventory", "filter", "find", "read", "compare"]); assert.equal(pods.initial, "inventory");
+  const I = pods.regions.inventory, C = I.cabinet, card = C.card;
+  assert.equal(card.pitch[0] * (card.across - 1) + card.size[0], C.rect[2], "three cards a row fill the cabinet");
+  assert.ok(inside([C.rect[0] + card.niche[0], C.rect[1] + card.niche[1], card.niche[2], card.niche[3]], [C.rect[0], C.rect[1], card.size[0], card.size[1]]), "the niche inside its card");
+  assert.deepEqual(C.strip.size, [672, 228]); assert.equal(C.strip.size[1], card.pitch[1], "the strip tiles a row of cards"); assert.equal(C.rect[2], C.strip.size[0], "the strip is as wide as the cabinet");
+  assert.ok(apart(C.rect, I.panel.rect) && I.panel.rect[0] + I.panel.rect[2] <= 1024 - 16, "the panel beside the cabinet, inside the 16 px side");
+  const A = I.panel.actions; assert.ok(A.first[1] + A.pitch * (A.n - 1) + A.first[3] <= I.panel.rect[1] + I.panel.rect[3], "the panel's five buttons inside it");
+  for (const t of ["sort", "filter", "find"]) assert.ok(inside(I.tools[t], I.tools.rect), t + " inside the tool row");
+  const R = pods.regions.read; assert.deepEqual(R.ground.rect, [0, 40, 1024, 522]); assert.deepEqual(R.chamber.rect, [30, 70, 548, 356]); assert.deepEqual(R.glass.left, [30, 70, 548, 462]); assert.deepEqual(R.glass.right, [634, 70, 360, 462]);
+  assert.ok(inside(R.chamber.rect, R.glass.left) && inside(R.rail.rect, R.glass.left) && inside(R.key.rect, R.glass.right), "the chamber and the rail in the left glass, the key in the right");
+  for (const [k, L] of Object.entries(R.right.layouts)) for (const [y, h] of L.plates ?? []) assert.ok(y + h <= R.key.rect[1] || !/^(unread|sealed|identify)/.test(k), k + ": no plate touches the price key (a read chapter has no key)");
+  assert.deepEqual(pods.classes.pod.shelf, [64, 76], "the card's pod is the shelf class");
 });
 
 // P1 (fix 5): the painted floor of the case runs x 64 to 952 and y 88 to 535 (pixels, inclusive) on every Pods stage; the rail and the bottom line are the frame's
@@ -94,28 +94,31 @@ test("every colour a spec file names is in the palette; every region is on the 8
 });
 
 test("the focus graphs, one per state, name only groups and selectors the screen resolves", () => {
-  const groups = { collection: ["place"], overview: ["pod", "figure", "rail", "kin", "hatch", "none"], chapter: ["rail", "none"], compare: ["rail", "none"] }, selectors = new Set(["rail.last", "kin.first", "rail.open"]);
+  const groups = { inventory: ["card", "act", "sort", "filter", "find", "chip", "none"], filter: ["tchip", "none"], find: ["recent", "letter", "word", "none"], read: ["rail", "plate", "key", "trait", "stamp", "hold", "none"], compare: ["takeA", "takeB", "none"] };
+  const selectors = new Set(["card.up", "card.down", "card.left", "card.right", "card.back", "sort.down", "filter.down", "find.down", "chip.first", "tchip.up", "tchip.down", "tchip.left", "tchip.right", "letter.cur", "recent.first", "word.first", "word.up", "word.down", "word.left", "word.right",
+    "index.right", "index.open", "trow.up", "trow.down", "band.first", "band.left", "band.right", "band.up", "rail.open"]);
+  const isEdge = (x) => typeof x === "string" || (x && typeof x === "object" && "nearestIn" in x);
   for (const [st, graph] of Object.entries(pods.focus)) {
-    if (st === "vectors" || st === "vectorsNote") continue;   // the overview's vectors (UI/UX's, played in face/tests/vectors/focus.json), not a state
-    const g = new Set(groups[st]); assert.ok(g.size, "a state " + st);
-    for (const [k, e] of Object.entries(graph)) { if (["fallback", "initial", "back"].includes(k)) continue; assert.ok(g.has(k), `${st}: group ${k}`); for (const [d, v] of Object.entries(e)) if (["up", "down", "left", "right"].includes(d) && v) for (const x of Array.isArray(v) ? v : [v]) assert.ok(g.has(x) || selectors.has(x), `${st}.${k}.${d} → ${x}`); }   // an edge may be a list (lvgl-switch.md §2.6.1)
+    if (st === "vectors" || st === "vectorsNote") continue;   // UI/UX's vectors (played in face/tests/vectors/focus.json), not a state
+    const g = new Set(groups[st]); assert.ok(g.size, "a state " + st); assert.ok(pods.states.includes(st), st + " is a state");
+    for (const [k, e] of Object.entries(graph)) { if (["fallback", "initial", "back", "selectors"].includes(k)) continue; assert.ok(g.has(k), `${st}: group ${k}`); for (const [d, v] of Object.entries(e)) if (["up", "down", "left", "right"].includes(d) && v) for (const x of Array.isArray(v) ? v : [v]) { assert.ok(isEdge(x), `${st}.${k}.${d}`); if (typeof x === "string") assert.ok(g.has(x) || selectors.has(x), `${st}.${k}.${d} → ${x}`); } }   // an edge may be a list (lvgl-switch.md §2.6.1)
   }
 });
 
-test("Compare's graph: the rail's tabs are its targets, ◀ ▶ step the chapters (lvgl-switch.md §2.6.1), ▲ ▼ do nothing, the ring on the open tab", () => {
-  const g = pods.focus.compare, rail = g.rail, keys = ["up", "down", "left", "right"];
-  assert.deepEqual(Object.keys(g).filter((k) => typeof g[k] === "object"), ["rail"], "one group, the rail");
-  assert.deepEqual([...rail.stepper].sort(), ["left", "right"]);
-  assert.ok(new Set(rail.stepper).size === rail.stepper.length && rail.stepper.every((k) => keys.includes(k)), "the stepper's keys: distinct and known");
-  assert.ok(!rail.stepper.some((k) => k in rail), "no edge on a stepper key");
-  assert.ok(!("order" in rail) && !("axis" in rail), "no axis or order beside the stepper");
-  assert.equal(rail.up, "none"); assert.equal(rail.down, "none"); assert.equal(g.fallback, "none");
-  assert.equal(g.initial, "rail.open"); assert.equal(g.initial, pods.focus.chapter.initial, "opens on the open tab, as the chapter page does");
-  assert.equal(pods.targets.tab.group, "rail"); assert.equal(pods.targets.tab.shape, "tab"); assert.ok(pods.targets.tab.states.includes("compare"), "the tab ring on Compare");
+test("Compare's graph (direction 2): the two papers' Take buttons are its targets, ◀ ▶ move between them, ▲ ▼ step the chapters on both (lvgl-switch.md §2.6.1), ▶ on the kin's Take steps the kin, the ring opens on this pod's Take", () => {
+  const g = pods.focus.compare, keys = ["up", "down", "left", "right"];
+  assert.deepEqual(Object.keys(g).filter((k) => typeof g[k] === "object"), ["takeA", "takeB"], "two groups, a Take a paper");
+  assert.deepEqual(g.takeA.stepper, ["up", "down"]); assert.deepEqual(g.takeB.stepper, ["up", "down", "right"]);
+  for (const t of [g.takeA, g.takeB]) { assert.ok(new Set(t.stepper).size === t.stepper.length && t.stepper.every((k) => keys.includes(k)), "the stepper's keys: distinct and known"); assert.ok(!t.stepper.some((k) => k in t), "no edge on a stepper key"); assert.ok(!("order" in t) && !("axis" in t)); }
+  assert.equal(g.takeA.right, "takeB"); assert.equal(g.takeA.left, "none"); assert.equal(g.takeB.left, "takeA"); assert.equal(g.fallback, "none"); assert.equal(g.initial, "takeA", "opens on this pod's Take");
+  assert.equal(pods.targets.take.group, "takeA"); assert.deepEqual(pods.targets.take.shape, { rect: 4 }); assert.ok(pods.targets.take.states.includes("compare"));
   const K = pods.keys.compare; for (const k of [...keys, "confirm", "back", "targets", "opens"]) assert.equal(typeof K[k], "string", "keys.compare." + k);
-  for (const k of rail.stepper) assert.ok(K[k].startsWith("step:" + k), k + " is a step");
-  assert.equal(frame.navigation.screens["pods.compare"].parent, "pods.overview", "← closes Compare to the overview");
+  for (const k of ["up", "down"]) assert.ok(K[k].startsWith("step:" + k), k + " is a step");
+  const C = pods.regions.compare; assert.equal(C.panels.length, 2); for (const p of C.panels) assert.ok(p[0] >= 16 && p[0] + p[2] <= 1024 - 16 && p[1] >= 40 && p[1] + p[3] <= 562, "a paper inside the stage and the 16 px side");
+  assert.ok(C.panels[0][0] + C.panels[0][2] < C.panels[1][0], "the papers apart"); assert.ok(C.rows.rect[1] + C.rows.pitch * C.rows.max <= C.take[1], "six rows above the Take button");
+  assert.equal(frame.navigation.screens["pods.compare"].parent, "pods.inventory", "← closes Compare to what opened it, under the inventory");
 });
+
 
 test("the page grid in pods.json is the table of station-layouts.md, cell by cell and picture by picture", () => {
   const md = readFileSync(new URL("../../../design/style-guide/station-layouts.md", import.meta.url), "utf8");
@@ -243,7 +246,7 @@ test("the Incubator spec file (T-20261016-222, the painted capsule) agrees with 
   assert.deepEqual(inc.events.hatch.steps.map((x) => x.at), [0, 600, 1000, 1200, 1400, 1800, 2600], "one crack layer, 600 to the dither at 1000 (uiux-rulings 4)");
   assert.deepEqual(inc.focus.targets, {}, "no ring on the Incubator"); assert.equal(inc.focus.roomKey, "room"); assert.equal(inc.events.hatch.hold, inc.events.hatch.steps.at(-1).at + inc.events.hatch.steps.at(-1).ms);
   assert.equal(inc.handoff.to, "habitat"); assert.equal(frame.navigation.jumps.find((j) => j.from === "incubator" && j.action === "Open").to, "habitat");
-  const choose = frame.navigation.jumps.find((j) => j.from === "incubator" && j.state === "empty"); assert.deepEqual([choose.action, choose.to, choose.view], [inc.strings.choose, "pods", "collection"]);
+  const choose = frame.navigation.jumps.find((j) => j.from === "incubator" && j.state === "empty"); assert.deepEqual([choose.action, choose.to, choose.view], [inc.strings.choose, "pods", "inventory"]);
   assert.equal(inc.strings.plaque, undefined, "the plaque goes"); assert.equal(inc.strings.readyIn, "ready in about {n} min"); assert.equal(inc.glass, undefined, "no code-drawn glass: the cut master (uiux-rulings 2)");
   assert.deepEqual(paletteBad(inc.colours), []);
 });
@@ -579,7 +582,7 @@ test("the Home spec file is the build spec's frame: the top bar and its line, th
   for (const s of stringsOf(home.strings.stations)) assert.ok(wordsIn(s.replace(/\{(\w+)\}/g, "x")) <= 4, s);
   for (const s of stringsOf(home.strings.needs)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
   assert.ok(!/outing|pocket/.test(JSON.stringify(home.strings)));
-  is(home.strings.line.order, ["crates", "full", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"], "the needs in order"); for (const k of home.strings.line.order) assert.ok(home.strings.line.needs[k], k);
+  is(home.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"], "the needs in order"); for (const k of home.strings.line.order) assert.ok(home.strings.line.needs[k], k);
   assert.equal(home.strings.line.needs.crates.action, "Open the Bay"); assert.ok(!("lineAction" in home.strings.needs.crates)); assert.equal(home.strings.needs.crates.action, "Open the bay", "Cargo's own words are unchanged"); is(home.strings.actions, { vivarium: "Go to the Vivarium", library: "Go to the Library", pods: "Go to Pods", incubator: "Go to the Incubator", companion: "Go to the Probe bench", bay: "Open the Bay" }); assert.equal(home.strings.line.needs.budReady.action, "Open the bud"); is(home.strings.line.needs.portrait, { action: "Open the Bay", notice: "a portrait waits in the Bay" }); is(home.strings.line.needs.crates.withPortrait, { notice: "Bay: {count} crates and a portrait", noticeOne: "Bay: a crate and a portrait" }); assert.match(home.strings.needs.crates.rule, /A ready portrait is counted apart/); assert.deepEqual(home.strings.stages, { juvenile: "young", adult: "adult", elder: "elder" });
   assert.equal(home.strings.titles.bar, "Station"); is(home.strings.readout, { home: "{n} at home", trip: "{m} on a trip", allTrip: "all on a trip", sep: " \u00b7 " });
   is(home.events.rest, { ...home.events.rest, kind: "rest", target: "home", ms: 200, hold: 380 }); assert.ok(!("crateIn" in home.events), "the crates' slide went with the Cargo module");
@@ -743,7 +746,7 @@ const SHAPES = {
   "vivarium.json": { resident: "footprint", tile: { rect: 6 }, room: { rect: 6 } },
   "habitat.json": { room: { rect: 6 }, resident: "footprint", name: { rect: 0 }, species: { rect: 0, chip: 4 }, family: { rect: 0, chip: 4 }, plate: { rect: 0 }, door: { rect: 6 }, portrait: { rect: 6 }, cross: { rect: 6 }, wild: { rect: 6 }, tile: { rect: 6 } },
   "namer.json": { key: { rect: 0 }, "mod.shift": { rect: 0 }, "mod.space": { rect: 0 }, "mod.page": { rect: 0 }, "act.done": { rect: 0 }, "act.suggest": { rect: 0 } },
-  "pods.json": { place: { circle: { centre: [96, 88], r: 88 } }, pod: "oval", tab: "tab", kin: { circle: "box" }, hatch: { rect: 6 }, figure: "footprint" },
+  "pods.json": { take: { rect: 4 }, card: { rect: 6 }, tool: { rect: 4 }, act: { rect: 4 }, chip: { rect: 4 }, plate: { rect: 10 }, key: { rect: 10 } },
   "create.json": { roll: { rect: 0 } }, "library.json": { cell: { rect: 6 }, chapter: { rect: 6 }, wish: { rect: 4 }, face: { rect: 0 }, family: { rect: 0 }, look: { circle: "box" }, node: { circle: "box" }, mibi: { rect: 2 }, bud: "oval" }, "bench.json": { plates: { rect: 0 }, switch: { rect: 6 }, slot: { rect: 6 } }, "sitting.json": { card: { rect: 6 } }, "panel.json": { card: { rect: 10 } } };
 test("fix 14, the shape rule: every focus target has a shape of the five kinds and no `ring`; its rect radius is its object's; no spec but frame.json holds ring tokens or a ring colour; six (radius, ground) pairs at most", () => {
   const pairs = new Set(); let seen = 0;
@@ -881,7 +884,7 @@ test("the Library's Level 2 (library.json l2): the shelf, the families, the focu
   assert.deepEqual(S.carried.two, ["carried by {A} and {B}", "{A} and {B} carry it", "{A} and more carry it", "{A} and more", "carried by more than one"]); assert.deepEqual(S.carried.one, ["carried by {A}", "carried by one of yours"]);
   for (const s of [S.metOnly, S.carried.none, ...S.carried.two, ...S.carried.many, ...S.carried.one, ...Object.values(S.familyNameless), S.faceReleased.nameless]) assert.ok(!/\d|…$/.test(s) && s.split(" ").length <= 6, s);
   const nav = frame.navigation.screens; assert.deepEqual([nav["library.species"].parent, nav["library.species"].back, nav["library.family"].parent, nav["library.family"].back], ["library", "Library", "library.species", "{Species}"]);
-  assert.equal(frame.strings.titles["library.family"], "Library"); assert.ok(frame.navigation.jumps.some((j) => j.from === "pods.overview" && j.to === "library.species" && !j.shut));
+  assert.equal(frame.strings.titles["library.family"], "Library"); assert.ok(!frame.navigation.jumps.some((j) => String(j.from).startsWith("pods") && j.to === "library.species"), "the Pods screens carry no guide door: the Library is its own room");
 });
 
 // The string lint (the copywriter's case rule, sentence case), in report mode: every string leaf of every station spec's `strings` tables (at any depth) starts, after its leading spaces, with an

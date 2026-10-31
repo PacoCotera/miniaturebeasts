@@ -655,8 +655,8 @@
    "shut": {"action": "strings.cross, dimmed (houseRule)", "context": "strings.shut.cross", "when": "state adult and doorOpen(cross) false (until slot 7); the partner faces drawn as for adult"}
   },
   "wild": {
-   "may": {"action": "strings.wild", "price": "❀ +2 (state.PRICE.wildMibi), icon before figure", "context": "strings.wildContext"},
-   "blocked": {"action": "strings.wild with its price, dimmed (houseRule)", "context": "state.returnMibiBlock's words (strings.wildBlocks): a bonded mibi stays, goes at the next dock; carried: strings.travellerContext", "plate": "✓ plays strings.wildPlates (the rooms words C12b to d): bonded two lines and, for a bonded mibi still young, the third; going at the next dock one line. A young mibi that is not bonded is not held: C12a"}
+   "may": {"action": "strings.wild", "price": "none: a release pays nothing (owner 2026-10-28 23:16)", "context": "strings.wildContext"},
+   "blocked": {"action": "strings.wild, dimmed (houseRule)", "context": "state.returnMibiBlock's words (strings.wildBlocks): a bonded mibi stays, goes at the next dock; carried: strings.travellerContext", "plate": "✓ plays strings.wildPlates (the rooms words C12b to d): bonded two lines and, for a bonded mibi still young, the third; going at the next dock one line. A young mibi that is not bonded is not held: C12a"}
   },
   "price": "no price is shown when there is none",
   "notice": "the frame's notice only (what needs the player anywhere); nothing on this level sets one",

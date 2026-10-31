@@ -5,13 +5,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern const lv_font_t face_inter_16, face_inter_16m, face_inter_20, face_inter_28;
+extern const lv_font_t face_inter_15, face_inter_16, face_inter_16m, face_inter_18, face_inter_20, face_inter_28;
 int main(int argc, char **argv) {
   lv_init();
   FILE *out = argc > 1 ? fopen(argv[1], "w") : stdout; if (!out) return 1;
-  const struct { const char *key; const lv_font_t *f; } F[] = { { "16", &face_inter_16 }, { "20", &face_inter_20 }, { "28", &face_inter_28 }, { "16m", &face_inter_16m } };   /* keyed as ui/specs/measure.mjs reads them: a px alone is its default weight */
+  const struct { const char *key; const lv_font_t *f; } F[] = { { "16", &face_inter_16 }, { "20", &face_inter_20 }, { "28", &face_inter_28 }, { "16m", &face_inter_16m }, { "15", &face_inter_15 }, { "18", &face_inter_18 } };   /* keyed as ui/specs/measure.mjs reads them: a px alone is its default weight */
   fprintf(out, "{\"note\":\"Made by face_metrics from the compiled fonts: per font (a px alone is the px's own weight, 16m is Medium 16), the advance of each codepoint the font holds, and the kerning (the advance with a next letter minus the advance alone) of each pair where it is not zero. A text's width is the sum over its letters of advance + kerning with the next letter.\",\"fonts\":{");
-  for (int fi = 0; fi < 4; fi++) {
+  for (int fi = 0; fi < 6; fi++) {
     const lv_font_t *f = F[fi].f; static uint32_t have[70000]; int nh = 0;
     for (uint32_t c = 32; c < 0x10000; c++) { lv_font_glyph_dsc_t g; if (lv_font_get_glyph_dsc(f, &g, c, 0) && g.adv_w > 0) have[nh++] = c; }
     fprintf(out, "%s\"%s\":{\"advance\":{", fi ? "," : "", F[fi].key);

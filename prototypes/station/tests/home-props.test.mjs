@@ -82,13 +82,14 @@ test("the top bar's words: the date as Sat 17 Oct and the clock as 24 hours from
   assert.equal(build(st, sv, { place: "Burrow Station" }).props.regions.bar.place, "Burrow Station");
 });
 
-test("the needs hold in the spec's order: crates, a full Vivarium, the bud, a portrait, a new mibi to meet, new pods, glinting pods, pods waiting for a well, a pod that could be incubated; a soft need is not a need", () => {
+test("the needs hold in the spec's order: crates, a full Vivarium, the bud, a pod that dries out next turn, a portrait, a new mibi to meet, new pods, glinting pods, pods waiting for a well, a pod that could be incubated; a soft need is not a need", () => {
   const needs = (st, sv, ui = {}) => homeNeeds(st, sv, settings, ui, Date.now() + 1000).map((n) => n.key), sc = scenes();
-  assert.deepEqual(spec.strings.line.order, ["crates", "full", "budReady", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
+  assert.deepEqual(spec.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "newPods", "glints", "waitingPods", "couldGrow"]);
   assert.deepEqual(needs(sc.empty.st, sc.empty.sv), []); assert.deepEqual(needs(sc.crates.st, sc.crates.sv), ["crates"]); assert.deepEqual(needs(sc.crates.st, { ...sc.crates.sv, bay: [] }), []); assert.deepEqual(needs(sc.away.st, sc.away.sv), [], "away: the crates are not in the bay");
   assert.deepEqual(needs(sc.waiting.st, sc.waiting.sv), ["waitingPods"]); assert.deepEqual(needs(sc.portrait.st, sc.portrait.sv), ["crates", "portrait"]);
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); st.waiting.push({ id: "w" }); pod(st, "S01", 5, false);
     assert.deepEqual(needs(st, sv0({ bay: [crate(1)] }), { meet: st.mibis[0].id }), ["crates", "budReady", "portrait", "meet", "newPods", "waitingPods"], "every need, in order"); }
+  { const st = world(); dock(st); const p = pod(st, "S01", 5, false); p.seen = 1; p.dryAt = (st.turn | 0) + 1; assert.deepEqual(needs(st, sv0()), ["drying"], "a pod that dries out next turn: the only warning away from Pods"); }
   { const st = world(); dock(st); const p = pod(st, "S01", 5, false); assert.deepEqual(needs(st, sv0()), ["newPods"]); p.seen = 1; assert.deepEqual(needs(st, sv0()), [], "seen: soft, the goal takes the line"); }
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 1, settings); const p = pod(st, "S01"); p.read = [frameOf("S01").chapters[0].id]; p.seen = 1; assert.deepEqual(needs(st, sv0()), ["couldGrow"], "a pod that can be incubated, the price in hand"); st.e = 0; assert.deepEqual(needs(st, sv0()), [], "short of the price: no need"); }
 });

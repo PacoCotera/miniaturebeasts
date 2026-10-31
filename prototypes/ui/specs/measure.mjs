@@ -1,7 +1,7 @@
 // The width of a string in the face's Inter (lvgl-switch.md §2.5), summed from the metrics table of the compiled fonts (face/dist/metrics.json, made by face_metrics): the same integers
 // lv_text_get_width sums, so a view that chooses its words by width (the ← word that fits, a number in words against figures) agrees with the face without a call across the bridge.
 // A letter's width is its advance plus the kerning with the next letter; a codepoint the font lacks is 0, as in LVGL; the width of a text is the sum.
-// The font is named by its key in the table: "16", "16m", "20" or "28" (a px alone is that px's own weight: 16 Regular, 20 Medium, 28 SemiBold; "16m" is Medium 16). A bare number is its px's key.
+// The font is named by its key in the table: "15", "16", "16m", "18", "20" or "28" (a px alone is that px's own weight: 15 and 16 Regular, 18 and 20 Medium, 28 SemiBold; "16m" is Medium 16). A bare number is its px's key.
 export function createMeasure(metrics) {
   const fonts = metrics.fonts;
   return function measure(text, font) {
@@ -15,7 +15,7 @@ export function createMeasure(metrics) {
   };
 }
 // The table's key for each font name of frame.json type.fonts (the face's codes, prim.h PRIM_FONT_*: R16 16, M16 1016, M20 20, SB28 28).
-export const FONT_KEYS = { R16: "16", M16: "16m", M20: "20", SB28: "28" };
+export const FONT_KEYS = { R16: "16", M16: "16m", M20: "20", SB28: "28", R15: "15", M18: "18" };
 // measureRole(metrics, frame, role): the measure of a text role (frame.json type.roles.<role>, or "<role>.<variant>", which measures in the variant's font when it names one, else its role's): its font's key, then (text) => width.
 // A role the frame does not hold, or a font the face does not, throws. A props builder that measures text measures it by role, never by px.
 const measures = new WeakMap();

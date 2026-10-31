@@ -8,7 +8,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "pod",
+      "target": "act.1",
       "verb": "confirm"
      }
     ],
@@ -56,9 +56,9 @@
     ],
     "screen": "pods",
     "create": null,
-    "ok": "Look at this pod",
+    "ok": "Open Stamina",
     "price": null,
-    "subject": "Sealed until identified"
+    "subject": ""
    },
    {
     "key": "confirm",
@@ -66,7 +66,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "pod",
+      "target": "act.1",
       "verb": "confirm"
      }
     ],
@@ -118,9 +118,9 @@
     "panel": "incubate",
     "ring": "card.incubate",
     "ok": "Incubate",
-    "e": 32,
-    "d": 22,
-    "s": 57
+    "e": 29,
+    "d": 21,
+    "s": 41
    },
    {
     "key": "confirm",

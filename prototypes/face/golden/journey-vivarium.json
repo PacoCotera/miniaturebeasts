@@ -594,7 +594,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Burr",
-    "price": "❀ +2",
+    "price": null,
     "subject": "Leaves a pod of its line",
     "back": "Vivarium"
    },
@@ -612,7 +612,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Burr",
-    "price": "❀ +2",
+    "price": null,
     "subject": "",
     "back": "Back"
    },
@@ -623,7 +623,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Burr",
-    "price": "❀ +2",
+    "price": null,
     "subject": "",
     "back": "Back"
    },
@@ -648,7 +648,7 @@
    {
     "gate": "juvenile",
     "released": true,
-    "essence": 2
+    "essence": 0
    },
    {
     "key": "down",
@@ -850,7 +850,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Tuft",
-    "price": "❀ +2",
+    "price": null,
     "subject": "Leaves a pod of its line",
     "back": "Vivarium"
    },
@@ -868,7 +868,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Tuft",
-    "price": "❀ +2",
+    "price": null,
     "subject": "",
     "back": "Back"
    },
@@ -879,7 +879,7 @@
     "state": "rest",
     "ring": "wild",
     "ok": "Return Tuft",
-    "price": "❀ +2",
+    "price": null,
     "subject": "",
     "back": "Back"
    },
@@ -904,7 +904,7 @@
    {
     "gate": "adult",
     "released": true,
-    "essence": 2
+    "essence": 0
    }
   ],
   "vivarium-trickle": [

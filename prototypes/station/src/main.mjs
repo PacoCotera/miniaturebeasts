@@ -7,7 +7,7 @@ import { G, FX, UI, SPECS, msg, save, load, loadSettings, saveSettings, storageC
 import * as S from "./state.mjs";
 import * as Lib from "./library.mjs";
 import { startScene, endScene, sceneTime, sceneBeat, SCENE_MS } from "./motion-scene.mjs";
-import { frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode } from "./genome.mjs";
+import { frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode, chapterLooks } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
 import { mountFooter, caddyAnswers } from "../../play/src/footer.mjs";
@@ -19,6 +19,7 @@ import * as cargo from "./intents/cargo.mjs";
 import * as create from "./intents/create.mjs";
 import * as frameIntents from "./intents/frame.mjs";
 import { onFaceMessage } from "./host.mjs";
+import { listOf } from "./views/pods-props.mjs";
 import { warmLibraryNext, libraryWaiting } from "./pictures.mjs";
 import { manifest as manifestOf, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
 import { CORE, hooks, loadFrames, bootAssets, startFace, pump, tick, act, dockKey, LIB_ENV } from "./core.mjs";   // the loop, shared with the headless harness (prototypes/playtest)
@@ -155,7 +156,30 @@ const ready = Promise.all([loadFrames(), bootAssets({ test: TEST })]).then(async
 // The motion proof's scene drives the page as a player would (keys, intents, the host's goto) from the frame loop's clock.
 const sceneHost = () => ({ act, goto: (s) => CORE.host.goto(s), settings: G.settings, intent: (m) => onFaceMessage(CORE.host, { t: "intent", seq: 0, ...m }), now: () => clock.now });
 // Test hooks (not part of play). `openBay` is the rule alone, for the tests that need pods in the wells at once; Cargo plays the opening through its own ✓.
-const podsGo = (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if (ci != null) u.ci = ci; u.view = view ?? (f.startsWith("rail.") ? "chapter" : f.startsWith("place.") ? "collection" : "overview"); if (f.startsWith("rail.")) u.ci = +f.slice(5); u.cmp = null; u.focusView = null; u.focus.set(f); if (UI.screen !== "pods") CORE.host.goto("pods"); };
+// Pods for the tools (face/tools/pods-states.mjs): a scene of seeded pods ([species, seed, identified, chapters read]) with the turn, the materials, a goal on a pod and husks to show; then the Pods UI as `o` says.
+const PLACES = ["pond", "meadow", "rock", "wood", "cave"], HOWS = ["calm", "shake", "ground", "slab", "meal"];
+const podsScene = (pods, o = {}) => {
+  const st = G.st; st.tray = []; st.waiting = []; st.readingPod = null; st.dried = []; st.wish = {}; st.turn = 0; st.readEver = true; st.firstMibi = false;
+  if (o.fresh) { st.guide = {}; st.readOnce = {}; st.libSeen = {}; }   // the species guide as it stood before any read (a glint needs a look not yet seen: scenes carry the guide of the scenes before them)
+  const u = UI.pods; Object.assign(u, { cmp: null, sort: "use", chips: [], word: null, first: 0, ask: null, choosing: false, recent: [], find: null, flash: null, spent: null, panelPod: null, lastCard: null, ci: 0, trait: 0, lane: null, at: "rail", plate: 0, reading: null, moment: null, folding: null, fromChamber: null });
+  if (o.rich) st.d = 999;   // every read of the scene paid (the reading screen's scenes); the materials are set after
+  pods.forEach(([sp, seed, idd, n], i) => { const p = S.seedPodFromGenome(st, podGenome(frameOf(sp), seed), G.settings, Date.now()).pod; p.g = PLACES[i % 5]; p.how = HOWS[i % 5]; if (idd) S.skipIdentify(st, p); frameOf(sp).chapters.filter((c) => !c.sealed).slice(0, n).forEach((c) => { S.read(st, p, c.id, G.settings); }); p.seen = i % 4 === 3 ? 0 : 1; });
+  if (o.goal) { const p = st.tray[o.goal[1]], fr = frameOf(o.goal[0]), ch = fr.chapters.find((c) => p.read.includes(c.id)); if (ch) { const t = ch.traits[0]; st.wish[o.goal[0]] = { [t.id]: S.guideLooks(st, o.goal[0], t.id)[0] }; } }
+  if (o.wish) st.wish = JSON.parse(JSON.stringify(o.wish));   // the goal as the Companion holds it: { species: { trait: look } } (the reading screen's signed states set one on Crown)
+  for (let k = 0; k < (o.dried ?? 0); k++) st.dried.push({ id: "dried" + k, sp: 0, species: "S01", idd: 1, g: "pond", how: "calm", of: null, read: ["coat"], turn: 0, shown: false });
+  st.turn = o.turn ?? 0; st.e = o.e ?? 9; st.d = o.d ?? 9; st.s = o.s ?? 9; st.stampTaught = !!o.taught; if (o.firstRead) st.readEver = false; if (o.why) st.tray[0].why = o.why; st.mibis = st.mibis.filter((m) => !m.sceneMate); if (o.mate) { const r = S.seedAdults(st, o.mate, 7, 1, G.settings); for (const m of r.made ?? r.mibis ?? []) m.sceneMate = true; }
+  if (o.fresh) { st.guide = {}; for (const p of st.tray) { const fr = frameOf(S.speciesOf(p)); for (const c of fr.chapters) if (p.read.includes(c.id)) for (const [t, ls] of chapterLooks(fr, c, p.genome)) S.guideAdd(st, fr.species.id, t, ls); } }   // `fresh`: the guide is what the scene's pods read, not what its mate (a scene artifact, known in full) would add: a look a pod carries can still be new
+  save();   // a mate at home for the scene (the detail's odds), gone at the next scene   // the stamp taught or not; the first read ever still to come; the first pod's reason (the Companion's why)
+};
+const podsAt = (o = {}) => {
+  const u = UI.pods, st = G.st; u.cmp = null; u.view = o.view ?? "inventory";
+  for (const k of ["sort", "chips", "word", "first", "choosing", "find", "ci", "trait", "lane", "at", "plate"]) if (k in o) u[k] = o[k];
+  u.ask = o.ask == null ? null : typeof o.ask === "number" ? st.tray[o.ask]?.id ?? null : o.ask;
+  if ("bench" in o) { if (o.bench == null) st.readingPod = null; else S.putOnBench(st, typeof o.bench === "string" ? S.podById(st, o.bench) : st.tray[o.bench]); }   // a tray index, or a pod id
+  if (o.card) { const k = listOf(st, SPECS.pods, u, G.settings).findIndex((e) => e.p.id === o.card); o.focus = k >= 0 ? "card." + k : o.focus; }   // the ring on that pod's card
+  if (o.cmp) { const a = S.benchPod(st) ?? st.tray[0], b = st.tray.find((q) => q !== a && S.canCompare(st, a, q)); if (a && b) { u.cmp = { a: a.id, b: b.id, ci: o.ci ?? 0, from: "inventory", card: a.id }; o.focus = "takeA"; } }
+  u.from = o.from ?? "home"; u.roomFrom = o.roomFrom ?? "inventory"; u.focus.set(o.focus ?? null); if (UI.screen !== "pods") CORE.host.goto("pods"); save();
+};
 window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(undefined, 12, advance); S.useNameList(l); G.st.mibis.forEach((m, i) => { m.name = l[l.length - 1 - (i % l.length)]; }); G.st.namesUsed = [...new Set([...(G.st.namesUsed ?? []), ...G.st.mibis.map((m) => S.nameKey(m.name))])]; return l; }, renderErrors: CORE.renderErrors, portraitSource: (digest, rgba) => { const r = injectPortraitSource(digest, rgba); if (r.error) CORE.renderErrors.push("portrait " + digest + ": " + r.error); return r; }, faceErrors: CORE.faceErrors, said: () => CORE.said.splice(0), pendingRoom: () => CORE.host.pendingRoom ?? null, get props() { return CORE.lastProps ? JSON.parse(CORE.lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   say: (t) => msg(t), act: (k) => act(k), press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(CORE.host, fromIdle), openBay: () => { const r = S.openBay(G.st, G.sv, G.settings, Date.now()); save(); return r; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => CORE.host.goto(s),
   get face() { return CORE.face ? { refused: () => CORE.face.refused(), objects: () => CORE.face.objects(), version: CORE.face.version, size: CORE.face.size, loadMs: CORE.face.loadMs, hash: CORE.face.hash(), stats: CORE.face.stats(), pixel: CORE.face.pixel, invOverflows: () => CORE.face.invOverflows(), invCap: () => CORE.face.invCap(), pass: CORE.face.pass, hide: CORE.face.hide, offPalette: CORE.face.offPalette, forceFull: CORE.face.forceFull, errors: CORE.faceErrors.slice(), log: () => CORE.lastLog,
@@ -172,7 +196,7 @@ window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(und
   isAdult: (m) => S.isAdult(G.st, m, G.settings), budKnown: (c) => S.budChapterKnown(G.st, c, G.settings, Date.now()), benchToday: () => S.benchToday(G.st, Date.now(), G.settings), podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
   doCross: (aId, bId) => { const r = S.doCross(G.st, G.sv, mibiById(aId), mibiById(bId), G.settings, Date.now()); if (r.ok) { UI.cross = null; save(); CORE.host.goto("incubator"); if (G.st.outbox?.length) caddy.flush().catch(() => {}); } return r; },
   openCross: (aId) => openCrossAt(CORE.host, mibiById(aId)),   // the test hook: the Cross screen is not reachable by a press while its door is shut (doorOpen(cross))
-  podsGo, intent: (m) => { onFaceMessage(CORE.host, { t: "intent", seq: 0, ...m }); },
+  podsScene, podsAt, intent: (m) => { onFaceMessage(CORE.host, { t: "intent", seq: 0, ...m }); },
   motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()), scene: () => ({ t: sceneTime(clock.now), beat: sceneBeat(clock.now), ms: SCENE_MS }),
   redraw: () => { const M = CORE.face.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let px = 0; for (let i = 0; i < n; i++) px += a[i * 4 + 2] * a[i * 4 + 3]; let trav = 0, air = 0; for (let i = 0; i < 12; i++) { const s = M._face_test_state(i); if (s >= 0) { if (s & 16) trav++; if (s & 32) air++; } } return { px, areas: n, tick: M._face_test_tick_area(), deferred: M._face_test_deferred(), travelling: trav, airborne: air, steps: M._face_test_steps() }; },   // the motion proof's CSV: the last frame's redraw
   growCost: (choices) => S.growCost(G.st, choices || {}, G.settings),
@@ -186,7 +210,7 @@ window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(und
 function checkSnapshot() {
   const pod = podById(UI.pods.cur), fr = pod ? frameOf(S.speciesOf(pod)) : null, f = CORE.face;
   const pr = CORE.lastProps ? JSON.parse(CORE.lastProps) : null;
-  return { screen: UI.screen, idle: UI.idle, homeFocus: pr?.state === "home" ? pr.focus.cur : null, viv: pr?.screen === "vivarium" ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, figs: pr.regions.residents.map((r) => ({ stage: r.stage, figure: r.figure ?? null })) } : null, bench: pr?.screen === "bench" ? { props: pr, cur: pr.focus.cur } : null, lib: pr?.screen === "library" && pr.state === "all" ? { props: pr, cur: pr.focus.cur } : null, hab: pr?.screen === "habitat" && pr.regions ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, open: pr.overlay?.id === "namer" } : null, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null), overlay: pr.overlay?.id ?? null }, cells: pr?.regions?.page?.cells?.length ?? null, frame: pr?.regions?.page?.frame ?? null, cmpCells: pr?.regions?.pageA?.cells?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: CORE.lastLog, refused: f.refused(), objects: f.objects(), errors: CORE.faceErrors.slice(),
+  return { screen: UI.screen, idle: UI.idle, homeFocus: pr?.state === "home" ? pr.focus.cur : null, viv: pr?.screen === "vivarium" ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, figs: pr.regions.residents.map((r) => ({ stage: r.stage, figure: r.figure ?? null })) } : null, bench: pr?.screen === "bench" ? { props: pr, cur: pr.focus.cur } : null, lib: pr?.screen === "library" && pr.state === "all" ? { props: pr, cur: pr.focus.cur } : null, hab: pr?.screen === "habitat" && pr.regions ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, open: pr.overlay?.id === "namer" } : null, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null), overlay: pr.overlay?.id ?? null }, cells: pr?.regions?.page?.cells?.length ?? null, frame: pr?.regions?.page?.frame ?? null, cmpCells: pr?.regions?.compare?.sides?.[0]?.rows?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: CORE.lastLog, refused: f.refused(), objects: f.objects(), errors: CORE.faceErrors.slice(),
     pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null,
     placeholders: manifestOf().filter((e) => NOT_FINAL.includes(e.status)).length };
 }

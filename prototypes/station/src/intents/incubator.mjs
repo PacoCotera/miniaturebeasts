@@ -2,6 +2,7 @@
 // the meet); ← goes Home. The screen's own state is `h.ui.inc.hatch` while the hatch holds: { mibi, species, code, read } of the bud that was opened (the rule has already made the mibi and emptied the chamber).
 import * as S from "../state.mjs";
 import { toPods } from "./create.mjs";
+import { openInventory } from "./pods.mjs";
 import { knownChapters } from "../views/incubator-props.mjs";
 import { openPanel } from "./panel.mjs";
 import { readyCrates } from "../sitting.mjs";
@@ -22,7 +23,7 @@ export function intent(h, target, verb) {
   if (verb !== "confirm") return;
   if (!h.st.bud) {   // empty: Choose a pod
     const i = choosePod(h); if (i === null) return;
-    const q = h.st.tray[i]; h.ui.pods.view = "collection"; h.ui.pods.cur = q.id; h.ui.pods.focusView = null; h.ui.pods.focus.set("place." + i); h.goto("pods"); return;
+    openInventory(h, { from: "incubator", sort: "use", first: true }); return;   // Choose a pod: the inventory sorted by use, the ring on the first card
   }
   if (S.budReady(h.st, h.settings, h.now())) {
     const B = h.st.bud, r = S.openBud(h.st, h.sv, h.settings, h.now()); if (!r.ok) { refused(h, r); return r; }

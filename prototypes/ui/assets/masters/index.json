@@ -365,6 +365,13 @@
    "sha256": "2e68b3c526f406a9c1cbe6442d13c56f8316a47a4c0a255295482d4230aeb355",
    "signed": "art director, verdict (963f4eab)"
   },
+  "cabinet-strip-672x228": {
+   "file": "pods/cabinet-strip-672x228.png",
+   "w": 672,
+   "h": 228,
+   "sha256": "4e0701c14691a9bf58b7aadd8f828ff47c6cd7c9f85a785400403c65e0cc572f",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)"
+  },
   "capsule-bar-lit-145x224": {
    "file": "capsule/capsule-bar-lit-145x224.png",
    "w": 145,
@@ -1960,6 +1967,20 @@
    "h": 568,
    "sha256": "fd1cafcf07d3845eb9555fb42d6f5ec7ed445236c0b11266e8bc0c8171d35ee5",
    "signed": "art director, Idle seam fix (masters-pods b758a617)"
+  },
+  "jar-putaway-24x24": {
+   "file": "pods/jar-putaway-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "a06b1cbf49e139e8b05ab8f0e1ceab9f4eb352e141f83b3007b508ecef41cdb2",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "jar-putaway-96x96": {
+   "file": "pods/jar-putaway-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "30b7414c94018f39f4d6cc03429ab4ecaee19df7136ce110cb39492c7c33a0d2",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
   },
   "label-plate-cream-216x32": {
    "file": "pods/label-plate-cream-216x32.png",
@@ -4861,6 +4882,27 @@
    "sha256": "353115c5f9ad20d98148c235e2f927ba49be1871b0c56ac1a6a1acbb8cba5694",
    "signed": "Paco Cotera"
   },
+  "pod-niche-88x88": {
+   "file": "pods/pod-niche-88x88.png",
+   "w": 88,
+   "h": 88,
+   "sha256": "76911fa8c1e399cc4798508f954eef7334d7e5c83843d86450e04419a000ad09",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)"
+  },
+  "pod-niche-husk-88x88": {
+   "file": "pods/pod-niche-husk-88x88.png",
+   "w": 88,
+   "h": 88,
+   "sha256": "97ab9f32e73d37661205615ef458fff35f49dc21e621064cf3ac1cf0cfa798a3",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)"
+  },
+  "pod-niche-shadow-88x88": {
+   "file": "pods/pod-niche-shadow-88x88.png",
+   "w": 88,
+   "h": 88,
+   "sha256": "76818d314230c7182a4385adb6e2a06b9cd2afd763bb614864b9a6950a3597af",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)"
+  },
   "pod-opened-bowl-mask-accent": {
    "file": "capsule/pod-opened-bowl-mask-accent.png",
    "w": 144,
@@ -4958,6 +5000,118 @@
    "h": 88,
    "sha256": "0a8f387c1fe3c9a604d2220564ac5a63cd63cd68d2c9165bba3fd10bbca9c10d",
    "signed": "art director, the Incubator capsule masters (masters-pods a58d2827; the capsule masters list)"
+  },
+  "pod-shelf-band": {
+   "file": "pods/pod-shelf-band.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "1b7062cf4a54cba5c229a902e69a9665c5059a6c0201eb597612bc6c84c346fb",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-crack": {
+   "file": "pods/pod-shelf-crack.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "7cc58a2b74b78e2ac553b168523c02634104f31f67b9befce477fbd3f6d914ef",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-identified": {
+   "file": "pods/pod-shelf-identified.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "cd0b2c79dcc77c557ceffe2b42c0c2cba5c36cab4e5d0955cd4cb98a4ce91781",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-mask-accent": {
+   "file": "pods/pod-shelf-mask-accent.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "bfb3a83f1d419d25822b069181918f5fb16ef6dda296e2d95c799aaeefb924fe",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-mask-body": {
+   "file": "pods/pod-shelf-mask-body.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "e3fd2c6847beb548b59335d8f98557304fcdca5826b9229a9eec8dda759f3a75",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-pattern-bands": {
+   "file": "pods/pod-shelf-pattern-bands.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "e084106aa7caab0329cafe39dc58ddb714e4ea1131b13556f666109c6ecc8430",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-pattern-dots": {
+   "file": "pods/pod-shelf-pattern-dots.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "cf3c963e25a88fa816c428cb000cb3f293d17f4bf78e19964575ed856fcb3841",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-pattern-plates": {
+   "file": "pods/pod-shelf-pattern-plates.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "7d1f285b3ee3217c8483822ad640869cd441b270990cb4c1267d2512b1008a4a",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-pattern-plates-relief": {
+   "file": "pods/pod-shelf-pattern-plates-relief.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "a5138de81c6e17e2039dd58082edbacae9a7e4ec9e8bb1d1c517171f58bf47a1",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-pattern-ribs": {
+   "file": "pods/pod-shelf-pattern-ribs.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "85a60a6fb1473449838d8442dd0a5c27babdad2a13fab2c7e278b9b30fa2101b",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-pattern-segments": {
+   "file": "pods/pod-shelf-pattern-segments.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "5e2aa98280ed369c99174c7dd50bc555ba2031665f9a97c17bbe12e99ec34f10",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-pattern-segments-relief": {
+   "file": "pods/pod-shelf-pattern-segments-relief.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "71bacf3734431f315c368c0b0f6b500815e1d45a4da4cfbfcf0644565b6356fd",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-pattern-stripes": {
+   "file": "pods/pod-shelf-pattern-stripes.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "f6396056f6552c4910f23bcf2dc85a57513cb290a8c5d4084e3ccdd7cc660c2f",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-sealed": {
+   "file": "pods/pod-shelf-sealed.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "6814b3d8cf9ea276a818003832a457cb7727474d2f75d127d47f6c26a2e60a33",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-shade": {
+   "file": "pods/pod-shelf-shade.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "f1f5e20272bf4079d961dbb787244d23c3351eaa982d555a7ca85b75535394e3",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "pod-shelf-unknown": {
+   "file": "pods/pod-shelf-unknown.png",
+   "w": 64,
+   "h": 76,
+   "sha256": "95a2e3eee4355fb794de4e1ac5383f40b1197fd8f3b9b8b255b812cbc6ef2236",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
   },
   "pod-small-band": {
    "file": "pods/pod-small-band.png",
@@ -5197,12 +5351,26 @@
    "sha256": "e572bc320c52e03d783290321766495dbd8cad61a19cafd37bd52a074180e9c7",
    "signed": "Paco Cotera"
   },
+  "pods-fern-120x200": {
+   "file": "pods/pods-fern-120x200.png",
+   "w": 120,
+   "h": 200,
+   "sha256": "3e02d165ce7c24e1d2afcfcdc01596b24d8ba27e272316b0b0bf8e0268fe8717",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
   "pods-hatch-open-160x260": {
    "file": "pods/pods-hatch-open-160x260.png",
    "w": 160,
    "h": 260,
    "sha256": "cf54f2c97eae72655cb5f1ac3e365f40e8f7fcd02bbf33fefae0e3dac94fd263",
    "signed": "art director, cleaned cuts (work-queue 9dfad55c, results/T-20261016-197/finish/cuts): final"
+  },
+  "pods-lantern-96x160": {
+   "file": "pods/pods-lantern-96x160.png",
+   "w": 96,
+   "h": 160,
+   "sha256": "eef8dd79d96985e0b06b4da32ceef58f55cd08feb35225618309630eeb00f87b",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
   },
   "rail-emblem-character-read-24x24": {
    "file": "pods/rail-emblem-character-read-24x24.png",
@@ -5448,6 +5616,20 @@
    "h": 40,
    "sha256": "eec243268c4a3a4be43f0bbccf9b17e34483696962ce372fccdbf458d3a6ff2f",
    "signed": "art director (pass 83 re-sign, 6f751b7d)"
+  },
+  "reading-dish-136x28": {
+   "file": "pods/reading-dish-136x28.png",
+   "w": 136,
+   "h": 28,
+   "sha256": "f9f31549cdd7b9cf3aace7444aa42e9508a32880a116939549408e49a2dded62",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 144)"
+  },
+  "reading-bench-1024x520": {
+   "file": "pods/reading-bench-1024x520.png",
+   "w": 1024,
+   "h": 520,
+   "sha256": "4a05bf51244ad980d62746fbf49232671b0bd9bf9246e2bb3ac9e3398b8b8197",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md)"
   },
   "ring-arc-collection-n1-s1-176x176": {
    "file": "pods/ring-arc-collection-n1-s1-176x176.png",
@@ -7317,6 +7499,34 @@
    "h": 152,
    "sha256": "fa704f60934f6e18cb598fb391e0370da6feb09f7d7ea2597b5e4513071e3f16",
    "signed": "station lead's brief (fix 4/5 Pods): masters-pods 9b52dfaa, B1/A1-A4"
+  },
+  "seal-bredtrue-12x12": {
+   "file": "pods/seal-bredtrue-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "36f13205484a1a4ab5ac9985d5b1ad0ab34afb720287d29adb819c237f15af59",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "seal-bredtrue-24x24": {
+   "file": "pods/seal-bredtrue-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "1ebfd32f6fda7717c95dbf4e5fe9922951ddd075a7f0681a506a550046201967",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "seal-bredtrue-48x48": {
+   "file": "pods/seal-bredtrue-48x48.png",
+   "w": 48,
+   "h": 48,
+   "sha256": "0a87b8b7c11cd28dd8ee4fa2853cd803a001e9e911a130b3fcc33b15b30edf95",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
+  },
+  "seal-bredtrue-96x96": {
+   "file": "pods/seal-bredtrue-96x96.png",
+   "w": 96,
+   "h": 96,
+   "sha256": "359d33b10cad83c0103542f7e506919be5b168f6d55ad2ead979f1f654a1b0d2",
+   "signed": "AD 2026-10-29 at 1x (ad-cups/final-notes.md, pass 143)"
   },
   "shell-key-home-24": {
    "file": "shell/shell-key-home-24.png",
@@ -9272,6 +9482,529 @@
    "h": 12,
    "sha256": "fdc4d620ce03605ce2207306d8774163953fa9bd3e447e3bc7e2b2faae56f915",
    "signed": "AD 2026-10-23 23:53, b00a8b17"
+  },
+  "reading-ground-1024x522": {
+   "file": "pods/reading/reading-ground-1024x522.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "663b25d04ada7543cd7d66e1ea9aacdf8441cc71c994d68736917690789ec7ba",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-lamp-lit-36x26": {
+   "file": "pods/reading/reading-lamp-lit-36x26.png",
+   "w": 36,
+   "h": 26,
+   "sha256": "d1e52d653aacd5b245a15f9f814b68c1397e6d987368bbe2cc43834510fb43e3",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-chamber-overview-548x356": {
+   "file": "pods/reading/reading-chamber-overview-548x356.png",
+   "w": 548,
+   "h": 356,
+   "sha256": "c73f0432dd48517e57549cb40bacc4d4a35ae1e176270948d54875d7ff39b505",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-chamber-close-548x356": {
+   "file": "pods/reading/reading-chamber-close-548x356.png",
+   "w": 548,
+   "h": 356,
+   "sha256": "4c9b3b294010599e00075261f49d3be566a7aa5c08145b34b3f5071c6a60900c",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-plate-lit-40x40": {
+   "file": "pods/reading/reading-plate-lit-40x40.png",
+   "w": 40,
+   "h": 40,
+   "sha256": "b6b4a86f28991230586891f262bf070a529486b066d0ad1c57ac0270d6962061",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers",
+   "slice": [
+    12,
+    12,
+    12,
+    12
+   ]
+  },
+  "reading-plate-glow-coat-200x120": {
+   "file": "pods/reading/reading-plate-glow-coat-200x120.png",
+   "w": 200,
+   "h": 120,
+   "sha256": "553605512d1f01562d53dd2d0fcb680b9b3ae743dca43d8c3378d5ada512afe5",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-plate-glow-face-200x120": {
+   "file": "pods/reading/reading-plate-glow-face-200x120.png",
+   "w": 200,
+   "h": 120,
+   "sha256": "8f97bdbe7ef5633b7d5d08072e8258ef7d7673d0a433bb8147cca7c5996d1832",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-plate-glow-movement-200x120": {
+   "file": "pods/reading/reading-plate-glow-movement-200x120.png",
+   "w": 200,
+   "h": 120,
+   "sha256": "4290c56368863faf5241a83553d8472f0ad8c3f336b788cf4f87ecaea86969b8",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-plate-glow-stamina-200x120": {
+   "file": "pods/reading/reading-plate-glow-stamina-200x120.png",
+   "w": 200,
+   "h": 120,
+   "sha256": "edf2e03ae2dd3ea1b878018313e259d0e3574f2758f2638ffcb873617bd03acc",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-plate-glow-shape-200x120": {
+   "file": "pods/reading/reading-plate-glow-shape-200x120.png",
+   "w": 200,
+   "h": 120,
+   "sha256": "768ded8e0821a4f19b39a79fbb9af04373b13d870539dd74541aa471ecf598e0",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-plate-glow-legs-200x120": {
+   "file": "pods/reading/reading-plate-glow-legs-200x120.png",
+   "w": 200,
+   "h": 120,
+   "sha256": "04c4064887886d53799a405a439615bed586ac07a98469ecb835e45e1f990b1f",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-plate-glow-character-200x120": {
+   "file": "pods/reading/reading-plate-glow-character-200x120.png",
+   "w": 200,
+   "h": 120,
+   "sha256": "ffa8e744c5498d891f87610ac6383b6448b1fa8b6222caa94771be7d397ae53f",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-plate-glow-glow-200x120": {
+   "file": "pods/reading/reading-plate-glow-glow-200x120.png",
+   "w": 200,
+   "h": 120,
+   "sha256": "1e38b2c31ab0b1933d4464d337305ed0f92ffbe19ea9e06bd24cf916f22e0400",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-key-lit-104x49": {
+   "file": "pods/reading/reading-key-lit-104x49.png",
+   "w": 104,
+   "h": 49,
+   "sha256": "c0caefd09abaffa7eac800dc7757a0669d7caa6538072d3d0d833d7a4405aafb",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-key-dim-104x49": {
+   "file": "pods/reading/reading-key-dim-104x49.png",
+   "w": 104,
+   "h": 49,
+   "sha256": "bafe31154582844eb706ddcf1ab7fb04bf1e0dc50483c9fce072403ee8189adb",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-key-pressed-104x49": {
+   "file": "pods/reading/reading-key-pressed-104x49.png",
+   "w": 104,
+   "h": 49,
+   "sha256": "a22011f4761dbf01944f095cc4e93e3cf5c87efe5a2fc6a1f0d854ef927c3d96",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-glint-11x11": {
+   "file": "pods/reading/reading-glint-11x11.png",
+   "w": 11,
+   "h": 11,
+   "sha256": "63adec7b30b0cdf45f625ff32a1308d99e307396c800ab7e1bce7302b21142f4",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-star-11x11": {
+   "file": "pods/reading/reading-star-11x11.png",
+   "w": 11,
+   "h": 11,
+   "sha256": "eaf3112b5077611b61a0daf09671ff7ccc6b764a56c4d423a3f9b4070fd609bd",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-diamond-11x11": {
+   "file": "pods/reading/reading-diamond-11x11.png",
+   "w": 11,
+   "h": 11,
+   "sha256": "65f214fe77c05332bc56bfd0d1a1a99882fb31cc4dce1233bd0e843026e68b15",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-glint-13x13": {
+   "file": "pods/reading/reading-glint-13x13.png",
+   "w": 13,
+   "h": 13,
+   "sha256": "03d6e52f9ea2f8adc9781c7fb116118a3eca5b349281dce2738218a36c2ecbca",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-star-13x13": {
+   "file": "pods/reading/reading-star-13x13.png",
+   "w": 13,
+   "h": 13,
+   "sha256": "d6d3078c68546425b616d8d69cba926a2b2354e16ea9af56b3852950ef060b37",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-diamond-13x13": {
+   "file": "pods/reading/reading-diamond-13x13.png",
+   "w": 13,
+   "h": 13,
+   "sha256": "5634d45c8e037e29b3b02144991982e7e0cf4cea0a3dcc53b919edf901748e6e",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-glint-16x16": {
+   "file": "pods/reading/reading-glint-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "981f6a229c845fffd00e03bfec3b05104494b2f2c7c3afe6d964e749c9300dfa",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-star-16x16": {
+   "file": "pods/reading/reading-star-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "95a9000eed14005d3fd843fac1345b0c46a407855f0409bbe994690a22c9382b",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-diamond-16x16": {
+   "file": "pods/reading/reading-diamond-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "7a32f14805919bf5cab1897551716d53fe4df2e92812d881977553b5e206c357",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-chip-86x32": {
+   "file": "pods/reading/reading-chip-86x32.png",
+   "w": 86,
+   "h": 32,
+   "sha256": "3aeff55e90d104672d65eac010e44ac1cca721962acc4f51004b7c109f1039e2",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-sweep-28x356": {
+   "file": "pods/reading/reading-sweep-28x356.png",
+   "w": 28,
+   "h": 356,
+   "sha256": "00c56b6ae1ccef3559f3fbe77a2f744a992873d15fa1bff1381dc4149b300321",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-shine-40x63": {
+   "file": "pods/reading/reading-shine-40x63.png",
+   "w": 40,
+   "h": 63,
+   "sha256": "b35be2950d0b0c7906926741af25d356d6359a58e6ddeadcd3c8cb91e5d6f4f6",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-veil-548x462": {
+   "file": "pods/reading/reading-veil-548x462.png",
+   "w": 548,
+   "h": 462,
+   "sha256": "b8d4fd4b9560fbe399d40df438f9675cd730a083583ccb17522fbb7b109f29c6",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-sprout-20x18": {
+   "file": "pods/reading/reading-sprout-20x18.png",
+   "w": 20,
+   "h": 18,
+   "sha256": "496ba81d5ac579f482298b4b782a2d73978e7f252978bfb452d1926d639f50cc",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-lock-14x16": {
+   "file": "pods/reading/reading-lock-14x16.png",
+   "w": 14,
+   "h": 16,
+   "sha256": "d82b93faa11b9240751d04b1b91377f551c2603ea7117686b93021fbfbd673c4",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-moon-8x8": {
+   "file": "pods/reading/reading-moon-8x8.png",
+   "w": 8,
+   "h": 8,
+   "sha256": "044ec6faa1137959ef2a90acd40fcdfa1ad6b1b87e2e7b751a1905e6b6719b58",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-tick-coat-20x20": {
+   "file": "pods/reading/reading-tick-coat-20x20.png",
+   "w": 20,
+   "h": 20,
+   "sha256": "de2ed501c9b58dfe03db3924e185d79dd0603a8e012a14a2c045cd9256dff6d4",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-tick-face-20x20": {
+   "file": "pods/reading/reading-tick-face-20x20.png",
+   "w": 20,
+   "h": 20,
+   "sha256": "5bcc4523f02b3741652acbd9f150e032fb9b3d04a79228cf318de55f2ba55adb",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-tick-movement-20x20": {
+   "file": "pods/reading/reading-tick-movement-20x20.png",
+   "w": 20,
+   "h": 20,
+   "sha256": "d1497b4f45739a95a786c36587175c895677e769e1c20f1d6cd70a0450a090c5",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-tick-stamina-20x20": {
+   "file": "pods/reading/reading-tick-stamina-20x20.png",
+   "w": 20,
+   "h": 20,
+   "sha256": "435d8f3dbd91722f070d96c9463b86739f7a92ffbc7476bc035627237063771e",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-tick-shape-20x20": {
+   "file": "pods/reading/reading-tick-shape-20x20.png",
+   "w": 20,
+   "h": 20,
+   "sha256": "f2ff9a734ce85e384436c331d0ea99d21bfc3550ef645c3b1c730aea3a7baa86",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-tick-legs-20x20": {
+   "file": "pods/reading/reading-tick-legs-20x20.png",
+   "w": 20,
+   "h": 20,
+   "sha256": "4430925d5bd33715667d0e0feaa73bbc4d9cf570e4c4ec4785e73c7f9f20ea21",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-tick-character-20x20": {
+   "file": "pods/reading/reading-tick-character-20x20.png",
+   "w": 20,
+   "h": 20,
+   "sha256": "354ec3ac6bfcaadd7d2861f722c1b727194aa08fb4c625014795ee6d03272499",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-tick-glow-20x20": {
+   "file": "pods/reading/reading-tick-glow-20x20.png",
+   "w": 20,
+   "h": 20,
+   "sha256": "fb23fcaa113f76f4ffab7d085ec1a873ba3b0f91255d109cc7ed150864b13769",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-wave-14x10": {
+   "file": "pods/reading/reading-wave-14x10.png",
+   "w": 14,
+   "h": 10,
+   "sha256": "556b0e6050ff35716f6dc5b9838e15e84527acdf69d442726fd6fb43959c304e",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-podline-26x32": {
+   "file": "pods/reading/reading-podline-26x32.png",
+   "w": 26,
+   "h": 32,
+   "sha256": "67268e0cab7590f93fdd6c1b77e82205efff52a750f0b53347d697ee2a890b3a",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-podline-23x29": {
+   "file": "pods/reading/reading-podline-23x29.png",
+   "w": 23,
+   "h": 29,
+   "sha256": "d0010fef76723d0ef1440b7f81a1719fe386f5487b284a3183bbea8599e5e891",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-body-S01-304x312": {
+   "file": "pods/reading/reading-body-S01-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "19f6d28ba6195ae70b2478ccfe5166e096e47e7ecb0813380fb90f910bcc0dd9",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-scan-S01-304x312": {
+   "file": "pods/reading/reading-scan-S01-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "79a5e4a9a2cd4fc2b0e5585a4397b22424fd19188f6561cd6191f29da0351de5",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-rim-S01-304x312": {
+   "file": "pods/reading/reading-rim-S01-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "1f13dcd68494c76c54f4c1a8ec4b5031fbc036bf65cda95107656eacf5535c1f",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-mask-S01-coat-304x312": {
+   "file": "pods/reading/reading-mask-S01-coat-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "cfad2c14245f117c04d32f7557d671cf6e56e8913aa509e8e275a248c6613961",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-line-S01-coat-304x312": {
+   "file": "pods/reading/reading-line-S01-coat-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "eeee8e8f3849ca4b127e6d5d91d4ff67757e52e05345dec855b8c9f8ec81d164",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-mask-S01-face-304x312": {
+   "file": "pods/reading/reading-mask-S01-face-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "1be603350542966aebce1d25ef3e4cbaf2b26e2305cfced5d9c77005a1235191",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-line-S01-face-304x312": {
+   "file": "pods/reading/reading-line-S01-face-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "2ad5b8d0b8ff5ca9547cbe2840f7708c3ad6fa1f00b57555271d9557820a25ab",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-mask-S01-head-304x312": {
+   "file": "pods/reading/reading-mask-S01-head-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "59b65f8a29bd033cd488288ffc398d43c2ff2c0edf0e4c0eb32a234602cc9beb",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-line-S01-head-304x312": {
+   "file": "pods/reading/reading-line-S01-head-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "76d3e3be790f8960e56c19deb2c176ea3a95de0263746a9cbf959dab8f438780",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-mask-S01-legs-304x312": {
+   "file": "pods/reading/reading-mask-S01-legs-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "02899341b815943787eb3fc21759ccb9d7dc5b33e4c5e626fd28e8eb80d7054e",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-line-S01-legs-304x312": {
+   "file": "pods/reading/reading-line-S01-legs-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "2e9f25082653cc93b1b71db9e4bdce18f6dcc0a91b53a6aca6731f16c19e3734",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-body-S03-291x291": {
+   "file": "pods/reading/reading-body-S03-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "e78fe87c35625143c686ba1628bd7de44292d3626ae044bf716e8bfc1772853c",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-scan-S03-291x291": {
+   "file": "pods/reading/reading-scan-S03-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "fe627c7808f2e0721dee446a37d63fd25f91160475272b45364fc7844a9d54ee",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-rim-S03-291x291": {
+   "file": "pods/reading/reading-rim-S03-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "df93ef25081f870cb6c2dcce93d575c5cadad33ebae56721794d0fbae54db89f",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-mask-S03-coat-291x291": {
+   "file": "pods/reading/reading-mask-S03-coat-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "ec09679a0bfd4bc66e56a08c1c3d6b35beb870c490265bda0f49a2db53d99bfc",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-line-S03-coat-291x291": {
+   "file": "pods/reading/reading-line-S03-coat-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "cc31302a9391b678414b309858f2427971c7c3271a8afeeed645bb49eb3b239d",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-mask-S03-face-291x291": {
+   "file": "pods/reading/reading-mask-S03-face-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "5bd4fa6e5e37de7b162f2982667cf47a11257343c7bd3fce628fbfa7d0be93e3",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-line-S03-face-291x291": {
+   "file": "pods/reading/reading-line-S03-face-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "63eb5565fb367b08deab6944a91bc141e9a4c6c723871bcf55ea9cb46d624f0b",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-mask-S03-shape-291x291": {
+   "file": "pods/reading/reading-mask-S03-shape-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "6873434985b5b6e0ded79960ff7eb91d3368281debdd67dfc2fe7299339cd1ce",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-line-S03-shape-291x291": {
+   "file": "pods/reading/reading-line-S03-shape-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "3cc145c13e28f37b419e4b34694fe9373f2038b91b2bfcdac4385856025c6115",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-mask-S03-legs-291x291": {
+   "file": "pods/reading/reading-mask-S03-legs-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "aceddf292fffb841202bd482dba3ed68d8b011b295a5dd1e57f70b4119c9a5c3",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-line-S03-legs-291x291": {
+   "file": "pods/reading/reading-line-S03-legs-291x291.png",
+   "w": 291,
+   "h": 291,
+   "sha256": "eb615f3fb51ad2872143371950f8aa11d67b4529c57858943e4f64716a342478",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-face-window-S01-304x312": {
+   "file": "pods/reading/reading-face-window-S01-304x312.png",
+   "w": 304,
+   "h": 312,
+   "sha256": "b0196286f4b3a1191f64faf5eab51ddcae9a55b22b0c713d8905359c7f3ed78b",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-badge-glint-20x20": {
+   "file": "pods/reading/reading-badge-glint-20x20.png",
+   "w": 20,
+   "h": 20,
+   "sha256": "e56b4a0d7e409efb8b9f3b5b97e929412c5825d1527982835a60d6c4f050c250",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-badge-star-20x20": {
+   "file": "pods/reading/reading-badge-star-20x20.png",
+   "w": 20,
+   "h": 20,
+   "sha256": "ec8ab5f5482f6bd37e2e3412be040937ed73c3086feed3b7d80922a45380b2e9",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-glint-12x12": {
+   "file": "pods/reading/reading-glint-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "f5808abf34dc33a740efcf35847670ca3ce90a1ebec534a4af9e95e6f1d6e91c",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-star-12x12": {
+   "file": "pods/reading/reading-star-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "d719aaa1b9b8da2b171de32b68bdf6231d4b6c52f1c97989b954fc2d349e6256",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-diamond-12x12": {
+   "file": "pods/reading/reading-diamond-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "7bfb3880a1ef4533a5efbb2b81e10406eed9e3dabba9390dae87db52cb807952",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
+  },
+  "reading-inset-24x24": {
+   "file": "pods/reading/reading-inset-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "3edc3c3a98e858d4f305e69dd500444e873f02501034cb736d65d01560cf138a",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers",
+   "slice": [
+    6,
+    6,
+    6,
+    6
+   ]
+  },
+  "reading-differs-12x12": {
+   "file": "pods/reading/reading-differs-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "6a23ad55946cc022cecefb05a3282231a28afee147445aa169c3aeb05e87bb3f",
+   "signed": "UX and art, ux-reading-v2.md joint sign-off (2026-10-29): cut by prototypes/ui/tools/readinstrument5cuts.py from the reading-instrument layers"
   }
  }
 }

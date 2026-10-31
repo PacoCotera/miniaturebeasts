@@ -18,22 +18,22 @@ test("the tree: every screen's parent is in the tree, Home alone has none, and �
   const places = Object.keys(nav.screens);
   for (const p of places) { const up = N.upFrom(nav, p); if (p === "home") assert.equal(up, null); else assert.ok(places.includes(up), p + " has a parent"); }
   assert.equal(N.upFrom(nav, "incubator"), "home", "after Grow the Incubator reads ← Home"); assert.equal(N.upFrom(nav, "habitat"), "vivarium", "one mibi up close is under the whole"); assert.equal(N.upFrom(nav, "vivarium"), "home", "the whole is under Home");
-  assert.equal(N.upFrom(nav, "cross"), "habitat"); assert.equal(N.upFrom(nav, "sitting"), "habitat"); assert.equal(N.upFrom(nav, "library.species"), "library", "Level 2 is under Level 1"); assert.equal(N.upFrom(nav, "pods.chapter"), "pods.overview"); assert.equal(N.upFrom(nav, "pods.compare"), "pods.overview");
-  assert.equal(N.upFrom(nav, "create"), "pods.overview"); assert.equal(N.upFrom(nav, "pods.overview"), "pods.collection"); assert.equal(N.upFrom(nav, "pods.collection"), "home");
-  assert.equal(N.placeOf({ screen: "bench" }), "probe", "the live Probe bench screen is the tree's probe"); assert.equal(N.placeOf({ screen: "pods", podsView: "chapter" }), "pods.chapter"); assert.equal(N.placeOf({ screen: "pods", podsView: "overview", compare: true }), "pods.compare");
+  assert.equal(N.upFrom(nav, "cross"), "habitat"); assert.equal(N.upFrom(nav, "sitting"), "habitat"); assert.equal(N.upFrom(nav, "library.species"), "library", "Level 2 is under Level 1"); assert.equal(N.upFrom(nav, "pods.room"), "pods.inventory"); assert.equal(N.upFrom(nav, "pods.compare"), "pods.inventory");
+  assert.equal(N.upFrom(nav, "create"), "pods.room"); assert.equal(N.upFrom(nav, "pods.inventory"), "home");
+  assert.equal(N.placeOf({ screen: "bench" }), "probe", "the live Probe bench screen is the tree's probe"); assert.equal(N.placeOf({ screen: "pods", podsView: "trait" }), "pods.room"); assert.equal(N.placeOf({ screen: "pods", podsView: "filter" }), "pods.inventory"); assert.equal(N.placeOf({ screen: "pods", podsView: "room", compare: true }), "pods.compare");
 });
 
-test("the back words: Home none, the titles, the pod's label under the overview, and Back when the name will not fit", () => {
+test("the back words: Home none, the titles, the pod's label on Create, and Back when the name will not fit", () => {
   assert.equal(N.backWord(nav, "home"), null, "no ← cap on Home");
-  for (const [p, w] of [["pods.collection", "Home"], ["pods.overview", "Pods"], ["incubator", "Home"], ["probe", "Home"], ["library", "Home"], ["library.species", "Library"], ["vivarium", "Home"], ["habitat", "Vivarium"]]) assert.equal(N.backWord(nav, p), w, p);
+  for (const [p, w] of [["pods.inventory", "Home"], ["pods.room", "Pods"], ["pods.compare", "Pods"], ["incubator", "Home"], ["probe", "Home"], ["library", "Home"], ["library.species", "Library"], ["vivarium", "Home"], ["habitat", "Vivarium"]]) assert.equal(N.backWord(nav, p), w, p);
   assert.equal(N.backWord(nav, "cross", "Bean"), "Bean", "← from Cross names the mibi"); assert.equal(N.backWord(nav, "sitting", "Bean"), "Bean"); assert.equal(N.backWord(nav, "cross", "", () => true), "Back"); assert.equal(N.backWord(nav, "cross", "Bean Bean Bean", () => false), "Back", "a name that does not fit reads Back");
-  for (const p of ["pods.chapter", "pods.compare", "create"]) { assert.equal(N.backWord(nav, p, "Loika"), "Loika", p); assert.equal(N.backWord(nav, p, "Wideishname", () => false), "Back", "wider than the room reads Back"); }
+  for (const p of ["create"]) { assert.equal(N.backWord(nav, p, "Loika"), "Loika", p); assert.equal(N.backWord(nav, p, "Wideishname", () => false), "Back", "wider than the room reads Back"); }
 });
 
 test("the room keys open the top of their room, Create, Cross and the sitting are the places whose unpaid choices a room key drops", () => {
   assert.deepEqual(Object.keys(nav.roomKeys).sort(), Object.keys(N.ROOM_KEYS).sort());
   for (const k of Object.keys(nav.roomKeys)) assert.equal(N.roomTop(k), [nav.roomKeys[k].screen, nav.roomKeys[k].state].filter(Boolean).join("."), "the room key " + k + " opens what frame.json says");
-  assert.equal(N.roomTop("research"), "pods.collection"); assert.equal(N.roomTop("library"), "library.all"); assert.equal(N.roomTop("habitat"), "vivarium"); assert.equal(N.roomTop("home"), "home"); assert.equal(N.roomTop("confirm"), null);
+  assert.equal(N.roomTop("research"), "pods.room"); assert.equal(N.roomTop("library"), "library.all"); assert.equal(N.roomTop("habitat"), "vivarium"); assert.equal(N.roomTop("home"), "home"); assert.equal(N.roomTop("confirm"), null);
   assert.deepEqual(N.DROPS_ON_ROOM_KEY, ["create", "cross", "sitting"]);
 });
 

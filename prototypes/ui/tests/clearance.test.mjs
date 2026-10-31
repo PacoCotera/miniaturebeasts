@@ -89,7 +89,7 @@ test("clearance: exceptions are frame.json data, each one in use; a screen is re
   assert.deepEqual(d, []); assert.deepEqual(d.used.map((e) => e.node), ["a"]);
   assert.deepEqual(unusedExceptions(f, [d]).map((e) => e.node), ["z"]);
   assert.equal(enforced(f, "home"), true); assert.equal(enforced(f, "pods"), false);
-  assert.deepEqual(frame.type.clearance.exceptions.map((e) => [e.screen, e.node, e.rule, e.by]), [["create", "rail.tab", "T4", "UI/UX"], ["pods", "rail.tab", "T6", "UI/UX"]], "the two entries UI/UX wrote, each naming its screen");
+  assert.deepEqual(frame.type.clearance.exceptions.map((e) => [e.screen, e.node, e.rule, e.by]), [["create", "rail.tab", "T4", "UI/UX"]], "the entry UI/UX wrote, naming its screen (Pods' T6 went with Compare's rail)");
 });
 
 test("clearance: an exception may name one screen", () => {

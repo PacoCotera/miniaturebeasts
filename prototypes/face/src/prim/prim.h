@@ -9,7 +9,7 @@
 #include <stdint.h>
 /* The fonts the face holds, by code: a font is named by its px and weight. The px's default weight keeps the px as its code (so a text node at 16 Regular, 20 Medium or 28 SemiBold
    is what it always was); another weight at a px is 1000 + px. Any other code is refused (a text node, a measure). */
-enum { PRIM_FONT_R16 = 16, PRIM_FONT_M16 = 1016, PRIM_FONT_M20 = 20, PRIM_FONT_SB28 = 28 };
+enum { PRIM_FONT_R15 = 15, PRIM_FONT_R16 = 16, PRIM_FONT_M16 = 1016, PRIM_FONT_M18 = 18, PRIM_FONT_M20 = 20, PRIM_FONT_SB28 = 28 };
 int prim_font_px(int code);     /* the px of a font code (16 for 1016), or 0 when the face has no such font */
 enum { FN_RECT = 1, FN_TEXT = 2, FN_SPRITE = 3, FN_NINE = 4, FN_CLIP = 5, FN_COMPOSED = 6 };
 enum { LAYER_CHROME = 0, LAYER_ART = 1, LAYER_PAINTED = 2, LAYER_TYPE = 3 };
@@ -18,7 +18,7 @@ void prim_begin(void);
 /* The layer and region every node sent from now on carries, until changed. A region is the spec's region id (at most 47 bytes). */
 void prim_tag(int layer, const char *region);
 /* id: the page's hash of the node id. rect: x, y, w, h. rgb: 0xRRGGBB. a, b by kind:
-   text: a = the font code (PRIM_FONT_*: 16, 1016, 20, 28), b = the cap height in px (the rect's y is the cap top); sprite: a = the asset handle (rgb: 0, or source x << 16 | source y to show that window of a larger picture);
+   text: a = the font code (PRIM_FONT_*: 15, 16, 1016, 18, 20, 28), b = the cap height in px (the rect's y is the cap top); sprite: a = the asset handle (rgb: 0, or source x << 16 | source y to show that window of a larger picture);
    nine-slice: a = the asset handle, rgb = its insets left, top, right, bottom packed one a byte (the corners are placed 1:1), b = the tile of its edges and middle in px (0: the whole strip);
    clip: a = how many of the nodes that follow it are inside it (their rects are absolute; they are cut at the clip's rect);
    composed: the ops as JSON in the text buffer (see prim_compose), drawn into a w x h picture of the face's own once per change.
@@ -47,7 +47,9 @@ uint8_t *prim_asset_ptr(int handle);   /* the pixels of a picture already alloca
 void prim_asset_free(int handle);       /* release a picture (its pixels); a node still showing it is refused until it is sent again */
 int prim_asset_limit(void);
 int prim_source(const char *ops, int w, int h);   /* a face-owned source picture composed from ops, cached by their hash and counted once in prim_pictures(); a handle for a nine-slice or sprite, or -1 */
-int prim_count(void);           /* objects alive */
+int prim_count(void);
+void prim_dry(int on);          /* on: every node from now on is counted and not sent (a dry run of a word, to size the clip opened before it); off again before the real pass. Resets the count */
+int prim_dry_count(void);       /* the nodes the dry run counted since prim_dry(1) */           /* objects alive */
 int prim_pictures(void);        /* pictures resident (assets with pixels, composed pictures) */
 int prim_painted_at(int x, int y);   /* a painted picture of the scene covers the pixel (the off-palette check skips it) */
 void prim_refuse(void);         /* count a node a word could not draw (a picture the host has not sent) as refused */
@@ -68,6 +70,9 @@ int prim_palette_rgb(const char *name, uint32_t *rgb);   /* a palette colour by 
    ["rcorners", x, y, w, h, radius, "colour"]: the pixels of the w x h box that lie outside that rounded shape (its four corners), in colour; radius 0 draws nothing.
    Returns the ops drawn, or -1 when the JSON or a colour name is refused. */
 int prim_compose(uint8_t *px, int w, int h, const char *ops);
+/* A box of the screen redrawn as one area this frame, before the nodes change: a screen whose whole stage changes at once (a state change, a scroll) says so first, so the many small
+   areas its nodes would list fall inside this one and LVGL's list of invalid areas does not overflow into a whole-screen redraw. */
+void prim_invalidate(int x, int y, int w, int h);
 
 /* Test mode: which layers show (1: chrome; 2: chrome and art; 3: all), and the logs the checks read. */
 void prim_set_pass(int pass);

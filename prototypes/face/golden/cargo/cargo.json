@@ -38,7 +38,7 @@
    "png": "cargo-bay-portrait-away.png"
   },
   "cargo-end": {
-   "hash": "58d7c538",
+   "hash": "7320193e",
    "png": "cargo-end.png"
   },
   "cargo-end-no-pods": {
@@ -66,43 +66,43 @@
    "png": "cargo-opening-materials.png"
   },
   "cargo-opening-hatch": {
-   "hash": "4a40a93c",
+   "hash": "c2a0f549",
    "png": "cargo-opening-hatch.png"
   },
   "cargo-opening-pod": {
-   "hash": "3953860a",
+   "hash": "a16f9e15",
    "png": "cargo-opening-pod.png"
   },
   "cargo-opening-swap": {
-   "hash": "70f6fbe7",
+   "hash": "886c49c7",
    "png": "cargo-opening-swap.png"
   },
   "cargo-opening-mat": {
-   "hash": "8ffd6e6f",
+   "hash": "d286e96b",
    "png": "cargo-opening-mat.png"
   },
   "cargo-opening-find": {
-   "hash": "1b9e8507",
+   "hash": "641b0356",
    "png": "cargo-opening-find.png"
   },
   "cargo-opening-done": {
-   "hash": "9a0a3c1f",
+   "hash": "95e2e942",
    "png": "cargo-opening-done.png"
   },
   "cargo-opening-three": {
-   "hash": "873c6484",
+   "hash": "57b458e3",
    "png": "cargo-opening-three.png"
   },
   "cargo-opening-three-second": {
-   "hash": "3c6c1ccf",
+   "hash": "a7843db3",
    "png": "cargo-opening-three-second.png"
   },
   "cargo-opening-portrait": {
-   "hash": "199f8b3f",
+   "hash": "fa1b8f2e",
    "png": "cargo-opening-portrait.png"
   },
   "cargo-opening-portrait-travel": {
-   "hash": "df0940e2",
+   "hash": "d68911e3",
    "png": "cargo-opening-portrait-travel.png"
   },
   "cargo-arrival-2200": {

@@ -76,7 +76,7 @@ static void focus_vectors(const char *dir) {
 }
 /* the graphs the spec files carry must pass the face's own refusals: one per Pods state, and Home's */
 static void spec_graphs(const char *dir) {
-  static const struct { const char *file, *screen, *path; } G[] = { { "pods.json", "pods", "focus.collection" }, { "pods.json", "pods", "focus.overview" }, { "pods.json", "pods", "focus.chapter" }, { "home.json", "home", "focus.graph" } };
+  static const struct { const char *file, *screen, *path; } G[] = { { "pods.json", "pods", "focus.inventory" }, { "pods.json", "pods", "focus.filter" }, { "pods.json", "pods", "focus.find" }, { "pods.json", "pods", "focus.read" }, { "pods.json", "pods", "focus.compare" }, { "home.json", "home", "focus.graph" } };
   for (size_t i = 0; i < sizeof G / sizeof *G; i++) {
     char path[512], err[200], what[160]; snprintf(path, sizeof path, "%s/%s", dir, G[i].file); long len; char *js = slurp(path, &len);
     snprintf(what, sizeof what, "%s %s", G[i].file, G[i].path);
@@ -760,11 +760,11 @@ static void type_kit(void) {
   check(kbox("ty.c1016", (int[4]){0}) == FN_TEXT && kabsent("ty.c1020") && u1 - u0 == 1, "prim_node: a text node at code 1016 is drawn, one at 1020 refused", "");
   /* every role of frame.json type.roles on every ground it has a colour on: its font is type.fonts' code, it draws one node (two with the shadow on a painting), no error */
   int nroles = spec_len("frame", "type.roles"), resolved = 0, pairs = 0, same = 0, shadows = 0;
-  check(nroles == 16, "type.roles: the sixteen roles of the role table", "");
+  check(nroles == 17, "type.roles: the seventeen roles of the role table (the reading screen's glass)", "");
   for (int i = 0; i < nroles; i++) {
     char role[40], dummy[4]; if (!spec_member("frame", "type.roles", i, role, sizeof role, dummy, sizeof dummy)) continue;
     char font[16]; spec_str("frame", v_fmt("type.roles.%s.font", role), font, sizeof font);
-    int want = strcmp(font, "R16") == 0 ? PRIM_FONT_R16 : strcmp(font, "M16") == 0 ? PRIM_FONT_M16 : strcmp(font, "M20") == 0 ? PRIM_FONT_M20 : strcmp(font, "SB28") == 0 ? PRIM_FONT_SB28 : -1;
+    int want = strcmp(font, "R15") == 0 ? PRIM_FONT_R15 : strcmp(font, "M18") == 0 ? PRIM_FONT_M18 : strcmp(font, "R16") == 0 ? PRIM_FONT_R16 : strcmp(font, "M16") == 0 ? PRIM_FONT_M16 : strcmp(font, "M20") == 0 ? PRIM_FONT_M20 : strcmp(font, "SB28") == 0 ? PRIM_FONT_SB28 : -1;
     check(v_role_font(role) == want && want > 0, "role resolve: the role's font code is its type.fonts name's", role);
     int np = spec_len("frame", v_fmt("type.roles.%s.colour", role));
     for (int k = 0; k < np; k++) {
@@ -775,7 +775,7 @@ static void type_kit(void) {
       int b[4], e = ty_errors(NULL), kb = kbox(idc, b), s4[4], ks = kbox(sid, s4);
       check(e == 0 && kb == FN_TEXT && w == v_measure("Hello", want) && b[0] == 200 && b[2] == w && (sh[0] ? ks == FN_TEXT && s4[0] == 201 && s4[1] == b[1] + 1 && s4[2] == w : ks < 0), "role resolve: v_say draws the role on each ground it has a colour on (and its shadow where it has one)", idc);
       pairs++; if (sh[0]) shadows++;
-      if (want != PRIM_FONT_M16 && !sh[0]) {   /* v_say is v_line_at for the fonts a px names: every anchor and alignment, and v_say_in is v_line_in */
+      if (want != PRIM_FONT_M16 && want != PRIM_FONT_R15 && want != PRIM_FONT_M18 && !sh[0]) {   /* (15 and 18 have no frame pitch: their line anchor is not v_line_at's) */   /* v_say is v_line_at for the fonts a px names: every anchor and alignment, and v_say_in is v_line_in */
         int ok = 1; static const int AN[] = { V_ANCHOR_LINE, V_ANCHOR_CAP, V_ANCHOR_BASE, V_ANCHOR_MID }, AL[] = { V_ALIGN_LEFT, V_ALIGN_CENTRE, V_ALIGN_RIGHT };
         for (int a = 0; a < 4; a++) for (int l = 0; l < 3; l++) {
           prim_begin(); v_region("ty.eq", LAYER_TYPE); int w1 = v_say("ty.eq.say", "Legs & Tail", 300, 120, AN[a], role, kind, AL[l]); int w2 = v_line_at("ty.eq.line", "Legs & Tail", 300, 120, AN[a], want, col, AL[l]);
@@ -787,7 +787,7 @@ static void type_kit(void) {
     }
     resolved++;
   }
-  { char d[96]; snprintf(d, sizeof d, "%d roles, %d role-ground pairs, %d with a shadow, %d compared with v_line_at", resolved, pairs, shadows, same); check(resolved == 16 && same > 0 && shadows > 0, "role resolve: every role", d); printf("type kit: %s\n", d); }
+  { char d[96]; snprintf(d, sizeof d, "%d roles, %d role-ground pairs, %d with a shadow, %d compared with v_line_at", resolved, pairs, shadows, same); check(resolved == 17 && same > 0 && shadows > 0, "role resolve: every role", d); printf("type kit: %s\n", d); }
   /* a ground by palette name, a variant */
   prim_begin(); v_region("ty.v", LAYER_TYPE);
   int wp = v_say("ty.pal", "Hello", 10, 10, V_ANCHOR_CAP, "quiet", "panel", V_ALIGN_LEFT), wv = v_say("ty.var", "12", 10, 40, V_ANCHOR_CAP, "figure.price", "bar", V_ALIGN_LEFT);

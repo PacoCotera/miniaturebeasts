@@ -146,8 +146,8 @@ const lumOf = (img, [x, y, w, h]) => { const out = []; for (let j = y; j < y + h
 const mean = (a) => a.reduce((s, v) => s + v, 0) / a.length;
 const pct = (a, p) => { const s = [...a].sort((u, v) => u - v), r = (s.length - 1) * (p / 100), lo = Math.floor(r), hi = Math.ceil(r); return s[lo] + (s[hi] - s[lo]) * (r - lo); };   // linear interpolation, as numpy.percentile
 const srgbMean = (img, [x, y, w, h]) => { let t = 0; for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) { const k = (j * img.width + i) * 4; t += img.data[k] + img.data[k + 1] + img.data[k + 2]; } return t / (w * h * 3); };
+// (Pods' reading room shows no stamp label: its stamp is a small code-drawn case and the stamp block retires there)
 const LABELS = {   // screen: [golden, the label's rect, the main object's rect (the pod, the founder, the bud, the resident), the stamp's case on it]
-  pods: ["pods/pods-overview-identified-pod-focused.png", [804, 400, 120, 120], [184, 216, 144, 176]],
   create: ["create/create-shape.png", [804, 336, 120, 120], [360, 240, 304, 312]],   // the slot moved up 64 with the case (fix 5 Create)
   incubator: ["incubator/incubator-growing.png", [92, 200, 120, 120], [436, 255, 152, 160]],   // T-20261016-222: the label on the left wall, the sealed pod in the capsule
   habitat: ["habitat/habitat-card.png", [872, 64, 120, 120], [144, 80, 304, 312]],

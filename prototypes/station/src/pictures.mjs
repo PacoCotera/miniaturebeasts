@@ -22,6 +22,7 @@ import { renderCell } from "./specimen.mjs";
 import { sheetPicture, renderDisc, sheetKept, keptPictures, warmPaper } from "./library-sheet.mjs";
 import { facePicture } from "./face-pictures.mjs";
 import { farPicture, miniPicture } from "./lineage-pictures.mjs";
+import { registerReading } from "./reading-pictures.mjs";
 
 const SHEET_IDS = {};   // the Level 2 sheet's current entry of each kind (library-sheet.mjs keeps its pictures)
 const LINEAGE_IDS = {};   // Level 3's current entry of each kind (lineagefar, lineagemini); a newer one supersedes it
@@ -133,7 +134,7 @@ export function registerPictures(reqs, env) {
       case "stampplate": put(r.id, r.size, r.size, "the stamp label's plate (the stampCase look)", () => labelPlate(r.size, RGB[C.bone], RGB[C.hairline], r.k)); break;   // the plate of the 120 label, dimmed by K × WARM with its hairline edge (stamplook.mjs)
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const fr = env.frameOf(r.species), g = r.bud ? env.budGenome() : r.mibi != null ? env.mibiGenome(r.mibi) : (() => { const p = env.podById(r.pod); return r.choices ? env.founderGenome(p, r.choices) : p.genome; })(); const pic = stampPicture(fr, g, r.read).build(); return r.k ? dimPicture(pic, r.k) : pic; }); break;   // with a k the stamp is dimmed in linear light when it is rasterised (stamplook.mjs)
       case "founder": { const painted = placedPic(`mibi-adult-${r.species}-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1]);   // Create founder A (interim): the species' painted adult, one flat picture, in place of the rig render
-        put(r.id, r.size[0], r.size[1], "the founder's painting (the species' painted adult where it is placed, else the stylised rig pass; the calm unknown where a chapter is unread: unknown.mjs)", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), g = env.founderGenome(p, r.choices || {}); return founderArt(fr, g, r.read, r.size[0], r.size[1], painted); }, painted ? { status: "master" } : STAND_IN); break; }   // the rig pass (no painted adult) is a stand-in   // the placeholder rig; the signed treatment (ghost, veil) on the painted layer, clear on the art layer
+        put(r.id, r.size[0], r.size[1], "the founder's painting (the species' painted adult where it is placed, else the stylised rig pass; the calm unknown where a chapter is unread: unknown.mjs)", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), g = env.founderGenome(p, r.choices || {}); return founderArt(fr, g, r.read, r.size[0], r.size[1], painted, !!r.whole); }, painted ? { status: "master" } : STAND_IN); break; }   // the rig pass (no painted adult) is a stand-in   // the placeholder rig; the signed treatment (ghost, veil) on the painted layer, clear on the art layer
       case "crop": {   // a window of a placed master, 1:1 (never scaled): the master's pixels at `at`, `size` wide and high, transparent where the window passes the master's edge; a master not placed leaves the labelled stand-in
         const m = masterAt(r.master, r.of[0], r.of[1]), [w, h] = r.size, [x0, y0] = r.at; if (hasAsset(r.id)) break;
         if (!m) { put(r.id, w, h, r.until, () => { const pb = new PB(w, h); pb.rect(0, 0, w, h, C.stone); return pb; }); break; }
@@ -198,6 +199,7 @@ export function registerPictures(reqs, env) {
           const p = r.kind === "lineagefar" ? farPicture(r.input, SPECS.library, { rgb, ground: sheetGround() }) : miniPicture(r.input, SPECS.library, { rgb }); console.log(`# lineage ${r.id}: rendered in ${p.ms.toFixed(1)} ms`); return (data = p.rgba); } }; } });
         break;
       }
+      case "readchamber": case "readrail": case "readdisc": case "readgather": case "readstamp": case "readplate": registerReading(r, env); break;   // the reading screen v2's composed pictures (reading-pictures.mjs)
       default: throw new Error("unknown picture kind " + r.kind);
     }
   }

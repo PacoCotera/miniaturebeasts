@@ -87,28 +87,19 @@ export function parentScreen(screen) {
 }
 
 // ---- Pods ----
-// Keep Pods' state valid: a view, a pod under the beam, and the ring on a target of the state (the face moves it; the host keeps it). Returns the Pods props body.
-const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
-const placeOf = (id) => "place." + Math.max(0, G.st.tray.findIndex((q) => q.id === id));
-const initialFocus = (view) => (view === "collection" ? placeOf(UI.pods.cur) : view === "chapter" ? "rail." + (UI.pods.ci || 0) : "pod");
+// Keep Pods' state valid (the view, the ring on a target of the state; the face moves it, the host keeps it) and return the Pods props body. The panel follows the ring's card and the first row on screen
+// follows the ring (the view says them, the host keeps them); no panel opens over Pods (letting go asks on the button's own face); the reading room's face of the Research key reads in the top bar.
+const POD_VIEWS = ["inventory", "filter", "find", "room", "trait"];
 export function podsBody() {
   const p = UI.pods, F = p.focus;
-  p.view ??= SPECS.pods.initial;
-  if (!podById(p.cur)) { const q = S.neediestPod(G.st); p.cur = q ? q.id : null; }
-  if (!p.cur || !G.st.tray.length) p.view = "collection";
-  const key = p.cmp ? "overview" : p.view;
-  { let newly = false; const see = (q) => { if (q && !q.seen) { q.seen = 1; newly = true; } }; if (key === "collection") G.st.tray.forEach(see); else see(podById(p.cur)); if (newly) save(); }   // a pod Pods draws has been seen (the Home notice stops demanding it); never cleared
-  if (p.focusView !== key) { p.focusView = key; if (!F.cur || !F.cur.startsWith(key === "collection" ? "place." : key === "chapter" ? "rail." : "")) F.cur = null; }
-  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), crates: S.bayCrates(G.st, G.sv).length, ui: p, focus: F.cur, present: {} });
+  if (!POD_VIEWS.includes(p.view)) p.view = SPECS.pods.initial;
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), crates: S.bayCrates(G.st, G.sv).length, ui: p, focus: F.cur, now: Date.now() });
   let body = podsProps(model(), SPECS.pods, SPECS.frame);
-  if (p.cmp) F.cur = null; else if (!body.props.focus.targets.some((t) => t.id === F.cur)) { F.cur = null; F.ensure(body.props.focus.targets, initialFocus(key)); body = podsProps(model(), SPECS.pods, SPECS.frame); }
-  if (F.cur && F.cur.startsWith("rail.")) p.ci = +F.cur.slice(5);
-  if (F.cur && F.cur.startsWith("place.")) { const q = G.st.tray[+F.cur.slice(6)]; if (q) p.cur = q.id; }
-  const pn = UI.panel;
-  if (pn && pn.screen === "pods" && podById(p.cur) && p.view === "overview") {   // the Return panel is open: its props ride on Pods' (an overlay) and its bottom line is built from the focused card
-    const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
-    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
-  } else if (pn && pn.screen === "pods") UI.panel = null;
+  if (!p.cmp && !body.props.focus.targets.some((t) => t.id === F.cur)) { F.cur = null; F.ensure(body.props.focus.targets, body.props.focus.targets[0]?.id ?? null); body = podsProps(model(), SPECS.pods, SPECS.frame); }
+  if (body.mode !== "compare" && (body.first !== (p.first ?? 0) || body.panelPod !== (p.panelPod ?? null))) { p.first = body.first; p.panelPod = body.panelPod; body = podsProps(model(), SPECS.pods, SPECS.frame); }
+  { const q = body.mode === "inventory" && String(F.cur ?? "").startsWith("card.") ? S.podById(G.st, body.panelPod) : null; if (q && !q.seen) { q.seen = 1; save(); body = podsProps(model(), SPECS.pods, SPECS.frame); } }   // a card's new mark goes when the ring first lands on it
+  if (UI.panel && UI.panel.screen === "pods") UI.panel = null;
+  if (body.mode === "room" || body.mode === "trait") body.top = { readout: { text: SPECS.pods.strings.room.crumb, mark: null } };
   return body;
 }
 
@@ -393,7 +384,7 @@ export function onFaceMessage(h, m) {
     if (m.screen === "sitting") { if (UI.screen === "sitting") INTENTS.sitting.focus(h, m.target); return; }
     if (m.screen === "library.species") { if (UI.screen === "library.species") INTENTS.library.species.focus(h, m.target); return; }
     if (m.screen === "library.family") { if (UI.screen === "library.family") INTENTS.library.family.focus(h, m.target); return; }
-    if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return;
+    if (m.screen === "pods" && UI.screen === "pods") INTENTS.pods.focus(h, m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return;
   }
   if (m.t !== "intent") return;
   if (m.screen === "panel" && !UI.panel) return;   // a panel intent after it closed is dropped
@@ -401,7 +392,7 @@ export function onFaceMessage(h, m) {
   if (m.screen === "namer" && !(UI.screen === "habitat" && UI.hab.namer)) return;   // a namer intent after it closed is dropped
   if (m.screen === "habitat" && UI.hab.namer && !m.verb?.startsWith("room:")) return;   // the screen beneath takes no key while the namer is open
   if (m.screen === "habitat" && m.verb?.startsWith("room:") && !h.holding()) endMeet(h);   // the first press ends the meet, a room key too
-  if (m.verb === "back" && m.screen !== "namer" && m.screen !== "panel" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
+  if (m.verb === "back" && m.screen !== "namer" && m.screen !== "panel" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) UI.pods.view = up.state === "room" ? "room" : "inventory"; h.goto(up.screen); } return; }
   if (m.screen === "cargo" && UI.screen === "cargo" && UI.cargo.state === "opening" && (m.verb === "confirm" || m.verb === "back" || m.verb?.startsWith("room:"))) { INTENTS.cargo.held(h, m.verb, INTENTS.frame.roomKey); return; }   // while the opening holds the face also says ✓, ← and a room key (build spec 8.4): Skip, Home, or a room, each ending the current crate as a cut
   if (m.verb?.startsWith("room:") && UI.cargo.state === "arrival") h.skip();   // a room key on the arrival is Later, and then it acts: the show's hold ends now (the key itself closes the arrival: intents/frame.mjs roomKey)
   if (h.holding()) { if (m.verb?.startsWith("room:") && !UI.resting) h.pendingRoom = m.verb.slice(5); return; }

@@ -203,6 +203,7 @@ export function homeNeeds(st, sv, settings, ui = {}, now = Date.now()) {
   const full = S.waitsForPlace(st, settings);
   if (full) out.push({ key: "full", act: "vivarium", ring: S.addRoomBlock(st, settings) ? "resident" : "room.new" });   // no place is free and something waits for one: ahead of the bud and of a pod that could be incubated
   if (!full && S.budReady(st, settings)) out.push({ key: "budReady", act: "incubator" });
+  const drying = S.dryingNext(st); if (drying.length) out.push({ key: "drying", n: drying.length, max: 6, act: "pods" });
   if (readyCrates(st, settings, now).length) out.push({ key: "portrait", act: "cargo" });
   const meet = ui.meet != null ? S.mibiById(st, ui.meet) : null; if (meet) out.push({ key: "meet", name: meet.name, act: "meet" });
   const unseen = st.tray.filter((p) => !p.idd && !p.seen); if (unseen.length) out.push({ key: "newPods", n: unseen.length, max: 6, act: "pods" });

@@ -121,11 +121,13 @@ static const char *icon_of(const char *p, int *len) {
   for (unsigned i = 0; i < sizeof T / sizeof T[0]; i++) { size_t l = strlen(T[i].g); if (strncmp(p, T[i].g, l) == 0) { *len = (int)l; return T[i].name; } }
   return NULL;
 }
+/* the size of an inline icon in words of a font: the font's px, never under 16 (the icons' smallest size) */
+static int icon_px(int code) { int p = px_of(code); return p < 16 ? 16 : p; }
 int v_run_width(const char *s, int px) {
   int w = 0; char piece[V_STR]; int n = 0;
   for (const char *p = s; *p;) {
     int l; const char *ic = icon_of(p, &l);
-    if (ic) { if (n) { piece[n] = 0; w += v_measure(piece, px); n = 0; } w += px_of(px) + 4; p += l; }
+    if (ic) { if (n) { piece[n] = 0; w += v_measure(piece, px); n = 0; } w += icon_px(px) + 4; p += l; }
     else if (n < V_STR - 1) piece[n++] = *p++; else p++;
   }
   if (n) { piece[n] = 0; w += v_measure(piece, px); }
@@ -154,7 +156,7 @@ v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *c
         v_text(nid, core, cx + lead, y, *core ? v_measure(core, px) : 0, px, colour); }
       cx += w; n = 0; }
       if (!*p) break;
-      int ip = px_of(px); char nid[96], aid[64]; snprintf(nid, sizeof nid, "%s.%d", id, i++); snprintf(aid, sizeof aid, ic, ip);
+      int ip = icon_px(px); char nid[96], aid[64]; snprintf(nid, sizeof nid, "%s.%d", id, i++); snprintf(aid, sizeof aid, ic, ip);
       int iy = y + v_cap(px) - ip + (int)(ip * 0.12 + 0.5);
       if (!v_sprite(nid, aid, cx + 2, iy, ip, ip)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", aid); v_error(b); }
       cx += ip + 4; p += l;
@@ -266,7 +268,7 @@ void v_plate_in(const char *spec, const char *id, const char *namePath, int w, i
    A role is resolved from the frame spec once per load of it and cached by its name and ground: its font (type.roles.<role>.font, a name of type.fonts that is one of the face's fonts), its
    colour on the ground (type.roles.<role>.colour.<kind>, or the variant's of "<role>.<variant>"), the shadow it casts there (type.roles.<role>.shadow.<kind>, "" for none) and its pitch
    (type.roles.<role>.pitch, else the frame's type.pitch of its px). A ground is a kind (field, pane, band, painted) or a palette name type.grounds maps to one. */
-static const struct { const char *name; int code; } FONTS[] = { { "R16", PRIM_FONT_R16 }, { "M16", PRIM_FONT_M16 }, { "M20", PRIM_FONT_M20 }, { "SB28", PRIM_FONT_SB28 } };   /* prim.h's codes by the names type.fonts gives them */
+static const struct { const char *name; int code; } FONTS[] = { { "R16", PRIM_FONT_R16 }, { "M16", PRIM_FONT_M16 }, { "M20", PRIM_FONT_M20 }, { "SB28", PRIM_FONT_SB28 }, { "R15", PRIM_FONT_R15 }, { "M18", PRIM_FONT_M18 } };   /* prim.h's codes by the names type.fonts gives them */
 typedef struct { char key[64]; int ok, code, pitch; char colour[24], shadow[24]; } role_t;
 #define ROLE_CACHE 64
 static role_t g_roles[ROLE_CACHE]; static int g_nroles; static unsigned g_roles_serial;

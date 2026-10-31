@@ -74,6 +74,10 @@ function traitStateOf(frame, trait, genome) {
   return { id: trait.id, name: trait.name, shows, hides, halves: kind === "blend" ? [a, b] : null, hiddenChoice: hides == null ? null : shows === a ? 2 : 1, kind, doing, shapeable: !!trait.shapeable && !doing, asleep, carried, line,
     sub: doing ? "breed to change" : kind === "blend" ? line : null };
 }
+// A trait's kind, the same on every pod of the species (the use line and the overlay's rule teach it, so it never follows a pod's pair): a mean of the copies mixes ("blend"); a switch on two copies
+// needs both ("hides"); one copy that switches it on is enough ("only"); a map of pairs is a look that can hide another ("hides").
+const KIND_OF_OPERATOR = { "copy-mean": "blend", "recessive-enable": "hides", "dominant-enable": "only", "pair-map": "hides", "partition-map": "only" };
+export const traitKind = (frame, trait) => KIND_OF_OPERATOR[LOCI.get(trait.loci[0])?.operator] ?? "hides";
 // Every look a pod carries in a chapter (shows and hides of each trait), for the field guide and the glint.
 export const chapterLooks = (frame, chapter, genome) => memo(genome, "c:" + frame.species.id + ":" + chapter.id, () => chapterLooksOf(frame, chapter, genome));
 function chapterLooksOf(frame, chapter, genome) {

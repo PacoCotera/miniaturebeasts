@@ -36,7 +36,7 @@ export function incubateBuild(m, spec, frame, pods, createSpec) {
   const line = { ok: cur === "card.keep" ? Sg.keep : Sg.incubate, subject: "", need: "", back: Sg.back };   // the verb of the focused bezel; the price stands in the panel's header, not here
   return { overlay: { id: "panel", state: "open", form: "incubate", regions, focus: { cur, targets: [{ id: "card.incubate", enabled: true }, { id: "card.keep", enabled: true }] } }, line, requests, cards: incubateCards() };
 }
-// The cards of the Return panels (§1.6): Return it (the gain from the rules, its fact in the text colour, the subject on its place's scene) and Keep (the subject as it is, and what that means). The cost of the act is a gain, ❀ +2 for a mibi and ❀ +1 for a pod.
+// The cards of the Return panels (§1.6): Return it (the gain from the rules, its fact in the text colour, the subject on its place's scene) and Keep (the subject as it is, and what that means). Letting go pays nothing (owner 2026-10-28 20:42, 23:16): the card names what happens (the pod of its line), no gain.
 // Neither card carries a destination mark: the subject stays in the room either way.
 export const WILD = [144, 152], WILD_POD = [88, 112];
 export function wildCards(m, spec, frame, requests) {
@@ -52,7 +52,7 @@ export function wildCards(m, spec, frame, requests) {
     picture = req({ kind: "pod", id: `pod:${sp ?? "-"}:${subject.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state, size });
   }
   return [
-    { id: "return", act: "return", room: null, picture, pictureSize: size, mark: "", name: releaseName, cost: S.gainText(mibi ? S.PRICE.wildMibi : S.PRICE.wild), gain: true, short: "", line: fact, loss: false, dim: false, outcome: "wild" },
+    { id: "return", act: "return", room: null, picture, pictureSize: size, mark: "", name: releaseName, cost: "", gain: false, short: "", line: fact, loss: false, dim: false, outcome: "wild" },
     { id: "keep", act: "keep", room: null, picture, pictureSize: size, mark: "", name: keepName, cost: "", gain: false, short: "", line: keepLine, loss: false, dim: false },
   ];
 }

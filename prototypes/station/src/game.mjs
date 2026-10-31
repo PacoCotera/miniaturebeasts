@@ -12,7 +12,7 @@ import * as C from "./companions.mjs";
 
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
-export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
+export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, sort: "use", chips: [], word: null, first: 0, recent: [], focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
   create: null, panel: null, arrival: null, cross: null, inc: {}, lib: { l1: null, pending: null, l2: {}, species: null, state: "sheet", lit: null, cur: null, l3: {}, l3last: null }, sit: null, hab: { id: null, f: "resident", namer: null, prev: null, prevRoom: null }, viv: { f: null, prev: null }, bench: { f: null, install: false },
   cargo: { state: "bay", crate: 0, at: 0, run: null, shown: null, arrival: null }, pendingArrival: null, arrived: [], meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.

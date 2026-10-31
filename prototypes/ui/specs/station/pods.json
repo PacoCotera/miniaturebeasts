@@ -1,9 +1,14 @@
 {
  "screen": "pods",
- "layout": { "stage": "bezel", "opening": [64, 69, 890, 467], "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD" },
+ "layout": {
+  "stage": "bezel",
+  "opening": [64, 69, 890, 467],
+  "note": "the layout check (ui/specs/layout.mjs): the stage kind and the opening measured on today's goldens (C1); painted, columns, groups, slots and bleed are UI/UX's with the AD",
+  "states": {"inventory": {"stage": "painting"}, "room": {"stage": "painting"}}
+ },
  "overlays": { "panel": { "spec": "panel.json", "id": "wildPod", "from": "✓ on the leaf plate (the hatch)", "closes": "Keep it, ← or a room key: the screen as before, nothing spent; Return it: the pod goes back to the wild" } },
  "device": "station",
- "spec": "design/style-guide/station-layouts.md#pods-collection-pod-overview-chapter-page",
+ "spec": "the pod inventory and the reading room (signed 2026-10-28 21:15)",
  "frame": "frame.json",
  "note": "The one home of the Pods numbers, transcribed from station-layouts.md (Pods §5, §6). Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What is not in the layout document is listed under `derived`, each waiting for the UI designer. Laid out the concept's way round (UI designer, 2026-10-08): the wells at the far left, the page left of the pod on Compare's columns, the pod on its frosted dish under the cone of light, its name and origin under it, the stamp label at the right; was the page at the right (528, 112, 480, 440) and the stamp under the pod (176, 432), the pod on (344, 312), the cradle 224×40. After the art director's second verdict (UI designer, 2026-10-08): the dish (600, 328, 224, 96) with its near lip on the same rectangle (was 600, 352, 224, 72); the rail hanging from y 40, 40 tall, by frame.rail (was 176, 48, 832, 56); the origin in bone (was mist); the page opening on one large picture (Picture) with the grid as its second state; the focus graph gains the page (list.right was pod, pod.left was list.current). After the art director's fourth check (UI designer, 2026-10-08): the pod classes 144×176, 120×152, 104×128 (were 160×192, 136×168, 112×144) on the foot line y 392 (was 400) in the bowl's dip; the Picture state a portrait 200×280 in a 232×312 frame, 16 px inset (was 376×312); the name's plate hugging the word (name.plate). The owner's decision (2026-10-08): the name label at 20 px medium, its text rectangle (600, 440, 224, 24) and its plate 24 tall, at least 80 (were 28 px, 224×32, plate 32 tall, at least 96). After the art director's pass-6 verdict (UI designer, 2026-10-08): the shelf slab (592, 368, 240, 72) under the dish; the name (600, 456, 224, 24) and the origin and ribbon (600, 496, 224, 40), 16 px lower (were at y 440 and 480); the origin has no plate; the rail's ring in the `focus` role (was `cream`). After the owner's rulings on the composite (UI designer, 2026-10-08): the well column 112 (was 160) with 80×80 ring slices, the 32×48 list pod and a circular focus; no place stamps in the list; the page (152, 112, 256, 440) (was 176, 112, 408, 440) with the portrait 192×272 in a 224×304 frame and a two-column grid; the pod's room 408 to 856 with the axis x 632 (was 712); the slab 288 wide; the caption (origin) 8 px under the name; the stamp case (856, 232, 152, 152) and the label (872, 248) (were 848, 144, 176, 328 and 888, 248); the rail's state colours, one fill, word and pip colour per state. After the game designer's answer (2026-10-08; the owner asked): the page is one state, every trait at once by the grid for one to eight traits, each cell the picture, 4 px, the one-word name; no Picture state, no trait marks, no page focus (list.right is the pod again, pod.left the well). The strings other than strings.openBay are the decided strings of the layout document (§5 States, §6). Restructured (UI designer, 2026-10-09, the owner's decision on the wireframes): three states, collection (A), pod overview (B) and chapter page (C), with no well column; regions and focus graphs per state. Was one screen with the well column (list, well, hatch at 16, 488), the pod on the axis x 632, the page (152, 112, 256, 440) and the rail at x 152.",
  "derived": {
@@ -1111,6 +1116,129 @@
     416
    ],
    "same": "compareA"
+  },
+  "compare": {
+   "note": "Compare rebuilt in the reading room's look (direction 2; the art director's review of the built screens, Compare): the reading bench behind (regions.room.bench), two cream paper panels with umber words, slate buttons with bone words; no rail, no plate, no rivets. compareA and compareB above are the retired instrument's pages, no longer drawn. Builder's rects from the reading room's own measures, for UX to set",
+   "panels": [[48, 56, 452, 492], [524, 56, 452, 492]],
+   "pod": [16, 12, 40, 48],
+   "title": [68, 10, 368, 28],
+   "which": [68, 38, 368, 20],
+   "rail": {"inset": [82, 68, 288, 48], "note": "the pod's rail (272 x 40, the same picture and function as the panel's: regions.inventory.panel.rail) on its dark inset, centred on the paper's axis (UI/UX decision of 2026-10-30): the inset [130,124,288,48] on the left paper (paper [82,68]), the picture 8 in and 4 down, replacing the worth line, which Compare does not draw; was the spec's band [64,128,424,52]; the bracket is a 2 px readAmber ring on the lane in hand (lane x - 3, rail row 12, w + 6, 30 tall, radius 4), whatever that lane's state, on both rails; the differs mark in rows 0 to 11 over every lane holding a trait in compareDiff"},
+   "goal": [16, 124, 420, 20],
+   "chapter": [16, 148, 300, 28],
+   "count": [316, 152, 120, 20],
+   "rule": [16, 180, 420, 1],
+   "rows": {"rect": [16, 188, 420, 240], "pitch": 40, "max": 6, "tile": 36, "words": 44, "differs": [332, -1, 88, 20], "bandH": 38, "nameDy": -1, "lookDy": 18, "tileDy": 1, "band": "bone", "bandEdge": "sand", "underline": "soil", "tileFill": "sand", "tileEdge": "soil", "note": "UI/UX decision of 2026-10-30: pitch 40 (was 44), tile 36 (was 40), words at x + 44 (was 48), the band at (x - 6, T, 432, 38), the tile at T + 1, the name and differs at T - 1, the look at T + 18; the rows start at 244 on screen (was 216), six end at 482. A row a trait of the open chapter: its tile where the trait has a picture, its name and its look in words; a trait read on both whose looks differ is raised on a bone band with the word differs, underlined (never amber: R3)"},
+   "bench": {"id": "reading-bench-1024x520", "rect": [0, 40, 1024, 520], "ground": "soil", "note": "the reading bench, Compare's ground (the reading room it came from retires: ux-reading-v2.md §4)"}, "paper": {"fill": "paper", "edge": "soil"}, "plate": {"fill": "woodPlate", "edge": "brass", "bevel": "woodLit", "shade": "woodShade"},
+   "take": [16, 436, 420, 44]
+  },
+  "inventory": {
+   "ground": {
+    "rect": [0, 40, 1024, 522],
+    "colour": "sand", "plaster": [122, 106],
+    "note": "the plaster the cabinet is set into (direction 2): the cabinet strip, the tool row and the pod panel stand on it"
+   },
+   "tools": {
+    "rect": [16, 48, 992, 36],
+    "sort": [16, 48, 184, 36],
+    "filter": [208, 48, 184, 36],
+    "find": [400, 48, 120, 36],
+    "chips": [528, 48, 240, 36],
+    "count": [776, 48, 232, 36],
+    "plate": {"fill": "woodPlate", "edge": "brass", "bevel": "woodLit", "shade": "woodShade", "note": "the wood plate (review round 2, P2: violet has no role on paper and wood): an umber fill, a 1 px brass hairline, a 1 px bevel inside it, light on the top and left, dark on the bottom and right; the words bone, a held plate keeps its fill and its words go to fog. A plate, not a pane"},
+    "word": {"role": "label", "ground": "panel", "pad": 12},
+    "chip": {"h": 36, "gap": 8, "pad": 10, "close": "✕"},
+    "countRole": "quiet.umber",
+    "countGround": "ground"
+   },
+   "cabinet": {
+    "rect": [16, 92, 672, 466],
+    "strip": {"id": "cabinet-strip-672x228", "size": [672, 228]},
+    "card": {
+     "size": [216, 196],
+     "pitch": [228, 228],
+     "across": 3,
+     "niche": [64, 8, 88, 88],
+     "pod": [76, 14, 64, 76],
+     "star": [140, 4, 20, 20],
+     "newMark": [52, 4, 20, 20],
+     "bar": {"rect": [64, 102, 88, 8], "gap": 2, "min": 4, "unlit": "soil", "edge": "clay", "note": "the mini rail (the reading screen spec §4): a block a chapter, as wide as its traits are many, 4 px at least, the 88 px shared by the largest remainder; read in its chapter colour (regions.read.colours), unread the carved inlay with a 1 px line in it, sealed the inlay alone, the lock after the bar"},
+     "lock": [156, 98, 16, 16],
+     "fresh": {"rect": [76, 118, 76, 6], "leaf": [62, 116, 10, 10], "colour": "paper", "amber": "amber", "track": "soil"},
+     "label": {"rect": [8, 128, 200, 64], "fill": "paper", "edge": "soil"},
+     "name": {"rect": [16, 130, 184, 20], "role": "heading.card"},
+     "worth": {"rect": [16, 150, 184, 20], "role": "quiet.card"},
+     "line": {"rect": [16, 170, 184, 20], "role": "quiet.card", "amberRole": "notice.card", "underline": "soil"}
+    },
+    "speciesLabel": {"h": 24, "role": "label.carved", "pad": 8, "plankY": 30, "x": 8, "xClear": 80, "note": "review round 2: carved into the plank on every row of the species sort (the first on screen too): the band is the strip's own plank (its rows plankY to plankY + h), the words 16 px umber with a 1 px light edge below; a label under the lantern starts at xClear, clear of its hook"},
+    "peek": 10,
+    "rows": "the rows on screen: 92 + 228 r - scroll; the third row's niche rims peek 10 px",
+    "scrollMs": 200,
+    "lantern": {"id": "pods-lantern-96x160", "rect": [0, 92, 96, 160]},
+    "fern": {"id": "pods-fern-120x200", "rect": [568, 358, 120, 200]},
+    "empty": {"line": [16, 330, 672, 24], "role": "label.umber", "plate": [96, 318, 512, 48]}
+   },
+   "rail": {"rect": [692, 92, 4, 466], "track": "clay", "thumb": "soil"},
+   "panel": {
+    "rect": [704, 92, 304, 466],
+    "fill": "paper",
+    "edge": "soil",
+    "name": {"rect": [720, 104, 272, 24], "role": "heading.umber"},
+    "worth": {"rect": [720, 132, 272, 44], "role": "body.umber", "lines": 2},
+    "rail": {"rect": [720, 184, 272, 40], "inset": {"id": "reading-inset-24x24", "rect": [712, 180, 288, 48], "pic": [8, 4], "slice": [6, 6, 6, 6]}, "gap": {"short": 12, "long": 4}, "tagGap": 2, "pill": {"min": 4, "max": 16}, "markY": 0, "mark": 12, "markPitch": 14, "capY": 15, "tagY": 20, "h": 40, "bracket": {"dx": 3, "y": 12, "h": 30, "w": 2, "r": 4, "colour": "readAmber"}, "nudge": 2, "note": "the pod's rail at the small size (the reading screen spec §4), 272 x 40 on the dark inset (288 x 48, the picture 8 in and 4 down), in the place of the next-step line: marks 12 px in rows 0 to 11 over their unread lane, centred on it (a lane 26 px wide or more shows both, 14 apart; a narrower lane one, the star before the glint), caps of 2 px at rows 15 to 16, tags of two 9 px copies at rows 20 to 38; B = floor((272 - G (L - 1) - 2 (n - L)) / n) clamped 4 to 16 and x0 = floor((272 - total) / 2), so every species fits (UI/UX decision of 2026-10-30); the bracket is Compare's (the same function)"},
+    "origin": {"picture": [720, 236, 48, 48], "sentence": [776, 236, 216, 48], "role": "body.umber", "lines": 2},
+    "fresh": {"rect": [720, 292, 272, 24], "role": "body.umber", "amberRole": "notice.paper"}, "message": {"rect": [720, 284, 272, 24], "roles": ["body.umber", "quiet.umber"], "note": "a bare panel: no pods, or no pod matches (review round 2): the line centred at y 296, the quiet one under it"},
+    "actions": {
+     "first": [720, 324, 272, 40],
+     "pitch": 46,
+     "n": 5,
+     "plate": {"fill": "woodPlate", "edge": "brass", "bevel": "woodLit", "shade": "woodShade"},
+     "role": "label",
+     "dimRole": "label.state",
+     "ground": "panel",
+     "pad": 12
+    }
+   },
+   "tray": {
+    "rect": [16, 88, 672, 220],
+    "fill": "paper",
+    "edge": "soil",
+    "rows": [100, 148, 196, 252],
+    "rowX": 32,
+    "rowW": 640,
+    "heads": {"x": 32, "role": "quiet.umber", "w": 72},
+    "chip": {"h": 32, "gap": 8, "pad": 10, "fill": "woodPlate", "edge": "brass", "bevel": "woodLit", "shade": "woodShade", "lit": "mint", "role": "label", "dimRole": "label.state", "ground": "panel"}
+   },
+   "find": {
+    "rect": [96, 88, 832, 448],
+    "fill": "paper",
+    "edge": "soil",
+    "recent": [112, 100, 800, 32],
+    "letters": [112, 140, 800, 36],
+    "letterPitch": 32,
+    "letter": [28, 32],
+    "words": {"rect": [112, 188, 800, 332], "cols": 2, "row": 40, "colW": 392, "rows": 8}, "kindMark": [8, 10, 16, 16], "first": [112, 112, 800, 20], "foot": 8,
+    "head": {"role": "quiet.umber"},
+    "plate": {"fill": "woodPlate", "edge": "brass", "bevel": "woodLit", "shade": "woodShade", "lit": "mint", "role": "label", "ground": "panel"}
+   },
+   "flash": {"rect": [528, 48, 480, 36], "role": "quiet", "ms": 3000},
+   "focus": {"shape": {"rect": 6}}
+  },
+  "read": {
+   "note": "The reading screen v2 (ux-reading-v2.md, joint sign-off 2026-10-29; it replaces regions.room): two moulded frames on one ground, the chamber with the specimen and the gene-tag rail on its shelf (left), the chapter in hand as field-guide plates (right). Every soft, glowing or blended piece is a picture (ui/tools/readinstrument5cuts.py; the logic process composes the chamber with the specimen, the rail and the stamp: station/src/reading-pictures.mjs); the face draws rectangles, text, 1:1 pictures, nine-slices, clips, composed line work and the 16-level dither",
+   "ground": {"id": "reading-ground-1024x522", "rect": [0, 40, 1024, 522], "note": "chassis, both moulded frames (K 0.10), both glasses, the shelf with its rule (y 522) and dots (y 526), both lamps unlit, the wave; no label"},
+   "glass": {"left": [30, 70, 548, 462], "right": [634, 70, 360, 462], "radius": 10, "lip": 426, "frames": [[5, 45, 595, 508], [609, 45, 407, 508]]},
+   "chamber": {"rect": [30, 70, 548, 356], "lights": {"overview": "reading-chamber-overview-548x356", "close": "reading-chamber-close-548x356"}, "places": {"overview": {"at": [163, 112], "size": [286, 293], "scale": 0.94}, "close": {"at": [142, 112], "size": [353, 362], "scale": 1.16}, "detail": {"at": [114, 84], "size": [395, 406], "scale": 1.3}, "tuikis": {"at": [167, 118], "size": [285, 285], "scale": 0.98}}, "fade": 22, "ditherMs": 200, "note": "the logic process composes one opaque 548 x 356 picture a state: the chamber's light (overview: back light, pool, grid, ruler, corners; close: pool and grid at 0.8, no ruler) with the specimen at its place, so the 200 ms dither between places and the read's clip run between pictures of one size"},
+   "colours": {"coat": "chCoat", "face": "chFace", "movement": "chMove", "stamina": "chStamina", "shape": "chShape", "legs-tail": "chLegs", "character": "chCharacter", "glow": "chGlow", "charge": "chGlow", "": "readAmber", "note": "the chapter colours (§2.8) by chapter id; an id with none is Character's"},
+   "lamp": {"rect": [536, 530, 36, 26], "id": "reading-lamp-lit-36x26", "centre": [554, 543], "spare": [972, 543]},
+   "glyph": {"rect": [37, 75, 26, 32], "id": "reading-podline-26x32"},
+   "name": {"x": 72, "baseline": 98, "role": "glass.name"},
+   "why": {"gap": 12, "role": "glass.quiet", "note": "the pod's reason when the Companion sends one (`why`: a new species, you fed it), after the name on its baseline; nothing when absent"},
+   "rail": {"rect": [40, 443, 526, 71], "centre": 304, "centreRule": "x0 = floor(304 - total / 2) (UI/UX decision of 2026-10-30, S2: Belatz ran one pixel past its 526 px picture)", "room": 316, "pill": {"min": 15, "max": 34}, "gap": {"short": 36, "long": 10, "longFrom": 16}, "tagGap": 3, "tagY": 450, "copy": 31, "capY": 443, "markY": 433, "markX": 6, "markPitch": 14, "mark": 11, "bracket": {"dx": 5, "y": 439, "h": 78, "w": 2, "r": 6, "notch": [5, 10], "notchY": 474, "notchDx": 10, "colour": "readAmber"}, "traitBracket": {"dx": 3, "y": 446, "h": 71, "r": 7}, "stampNotch": [10, 5], "nudge": 2, "nudgeMs": 120, "small": {"rect": [720, 184, 272, 40], "copy": 9, "cap": 2, "mark": 12, "note": "the panel's and Compare's rail at small size (§4), the same renderer; 272 x 40 (was 36), UI/UX decision of 2026-10-30"}},
+   "right": {"x": 660, "rect": [660, 88, 310, 428], "bar": [660, 88, 34, 4], "head": {"baseline": 124, "role": "glass.chapter", "gap": 18, "cy": 115, "pitch": 22, "mark": 16, "tick": 20, "lock": [14, 16]}, "chip": {"rect": [884, 98, 86, 32], "id": "reading-chip-86x32", "plusX": 30, "diamondX": 52, "nX": 66, "baseline": 23, "role": "glass.chip"}, "plate": {"id": "reading-plate-lit-40x40", "x": 648, "w": 334, "corners": 12, "glow": "reading-plate-glow-{chapter}-200x120"}, "layouts": {"unread1": {"plates": [[192, 136]], "r": 52, "rc": 34, "cx": 714, "cyOff": 64, "tx": 821, "traitDy": -14, "chipR": 21, "chipX": 842, "chipPitch": 50, "chipDy": 19}, "unread2": {"plates": [[156, 124], [306, 124]], "r": 44, "rc": 29, "cx": 706, "cyOff": 56, "tx": 810, "traitDy": -14, "chipR": 21, "chipX": 831, "chipPitch": 50, "chipDy": 19}, "unread3": {"plates": [[138, 92], [250, 92], [362, 92]], "r": 32, "rc": 21, "cx": 694, "cyOff": 44, "tx": 810, "traitDy": -14, "chipR": 18, "chipX": 828, "chipPitch": 44, "chipDy": 16}, "unread4": {"plates": [[132, 76], [216, 76], [300, 76], [384, 76]], "r": 26, "rc": 17, "cx": 688, "cyOff": 36, "tx": 800, "traitDy": -10, "chipR": 14, "chipX": 816, "chipPitch": 34, "chipDy": 13, "note": "a chapter of four traits or more (the builder's, by the three-trait rule: four plates 8 px apart above the key; the fifth and on are not shown): UX to confirm"}, "read1": {"plates": [[192, 156]], "r": 46, "rc": 30, "cx": 708, "cyOff": 58, "tx": 820, "traitDy": -4, "kindDy": 20, "capDy": 70, "cap2Dy": 87, "note": "the read two-trait plate, alone (the builder's): UX to confirm"}, "read2": {"plates": [[146, 156], [342, 152]], "r": 46, "rc": 30, "cx": 708, "cyOff": 58, "tx": 820, "traitDy": -4, "kindDy": 20, "capDy": 70, "cap2Dy": 87, "note": "the second plate 152 tall (signed 140), so its carried caption at cy + 87 stays on its plate (the text fit)"}, "read3": {"plates": [[138, 104], [250, 104], [362, 104]], "r": 32, "rc": 21, "cx": 694, "cyOff": 42, "tx": 810, "traitDy": -4, "kindDy": 18, "capDy": 52, "cap2Dy": 62, "note": "three read traits (the builder's, on the unread three's rows): UX to confirm"}, "read4": {"plates": [[132, 80], [216, 80], [300, 80], [384, 80]], "r": 26, "rc": 17, "cx": 688, "cyOff": 34, "tx": 800, "traitDy": -4, "kindDy": 16, "capDy": 44, "cap2Dy": 52, "note": "four read traits or more (the builder's): UX to confirm"}, "detail": {"plates": [[142, 172]], "shown": [718, 210], "r": 56, "rc": 37, "caption": [718, 290], "carriedCaption": [779, 305], "kind": [826, 214], "mate": [324, 160], "glyph": [661, 332, 23, 29], "mateName": [692, 352], "rows": [396, 448], "rowDisc": 684, "seedX": 724, "seedPitch": 18, "seed": 13, "oddsX": 872}, "sealed": {"plates": [[192, 136]], "r": 52, "rc": 0, "cx": 714, "cyOff": 64, "words": [821, 262]}, "identify": {"plates": [[192, 136]], "r": 52, "rc": 0, "cx": 714, "cyOff": 64, "words": [821, 262]}}},
+   "key": {"rect": [660, 470, 104, 49], "h": 46, "diamond": [690, 493], "price": [726, 502], "sprout": [790, 493], "sproutText": [808, 498], "line": [784, 498], "shake": 3, "shakeMs": 120, "pressMs": 80},
+   "read": {"ms": 800, "sweepMs": 600, "sweep": [28, 356], "shine": [40, 63], "note": "§2.6, 4: the sweep and the tag fill 0 to 600 ms, the shine 600 to 800, the discs 0 to 300 (shown) and 300 to 600 (carried), the kind lines and the tick at 600, the chip 600 to 800; any key cuts to the end; with reduced motion a cut"},
+   "stamp": {"centre": [304, 246], "lift": 8, "veilPct": 60, "veilRect": [30, 70, 548, 462], "lineBaseline": 410, "box": 224, "ms": 1150, "foldMs": 300, "delay": 400, "note": "§2.7: the plate is the stamp + 32 (Loika 232 with 25 cells at 8 px; the Tuikis 254 with 37 at 6), centred on 304, 246; the cell is the largest whole pixel that fits the stamp in 224"}
   }
  },
  "composed": {
@@ -1176,7 +1304,8 @@
    "list": [
     40,
     48
-   ]
+   ],
+   "shelf": [64, 76]
   }
  },
  "page": {
@@ -1226,145 +1355,88 @@
   }
  },
  "focus": {
-  "collection": {
-   "place": {
-    "grid": [
-     3,
-     2
-    ]
-   },
-   "fallback": "spatial",
-   "initial": "the pod that most needs the player: new, then glinting, then the first",
-   "back": "home"
-  },
-  "overview": {
-   "pod": {
-    "up": "rail.last",
-    "right": [
-     "figure",
-     "kin.first",
-     "hatch"
-    ],
-    "down": "none",
-    "left": "none"
-   },
-   "figure": {
-    "left": "pod",
-    "right": [
-     "kin.first",
-     "hatch"
-    ],
-    "up": "rail.last",
-    "down": "none"
-   },
-   "rail": {
-    "axis": "horizontal",
-    "down": "pod",
-    "up": "none"
-   },
-   "kin": {
-    "axis": "horizontal",
-    "down": "hatch",
-    "up": "rail.last"
-   },
-   "hatch": {
-    "up": [
-     "kin.first",
-     "none"
-    ],
-    "left": [
-     "figure",
-     "pod"
-    ],
-    "down": "none"
-   },
-   "fallback": "spatial",
-   "initial": "pod",
-   "back": "collection, the ring on this pod"
-  },
-  "vectors": [
-   { "state": "overview", "from": "pod", "key": "right", "to": "figure" },
-   { "state": "overview", "from": "figure", "key": "right", "to": "kin.0" },
-   { "state": "overview", "from": "figure", "key": "right", "kin": 0, "to": "hatch" },
-   { "state": "overview", "from": "figure", "key": "left", "to": "pod" },
-   { "state": "overview", "from": "figure", "key": "up", "to": "rail.0" },
-   { "state": "overview", "from": "figure", "key": "down", "to": "figure" },
-   { "state": "overview", "from": "hatch", "key": "left", "to": "figure" },
-   { "state": "overview", "from": "hatch", "key": "left", "figure": false, "to": "pod" }
-  ],
-  "vectorsNote": "UI/UX's vectors for the Pods guide target (overview): kin.0 is the first kin (kin.first), rail.0 the open tab (rail.last); `kin`: the kin listed (2 when absent), `figure`: false for an unidentified pod (no figure target); played with ui/focus.mjs and the face's port (face/tests/vectors/focus.json)",
-  "chapter": {
-   "rail": {
-    "axis": "horizontal",
-    "down": "none",
-    "up": "none"
-   },
+  "read": {
+   "rail": {"stepper": ["left", "right", "up", "down"]},
+   "plate": {"axis": "vertical", "stepper": ["left"], "right": "none"},
+   "key": {"stepper": ["left"], "right": "none", "up": "none", "down": "none"},
+   "trait": {"stepper": ["up", "down"], "left": "none", "right": "none"},
+   "stamp": {"stepper": ["down"], "left": "none", "right": "none", "up": "none"},
+   "hold": {"stepper": ["left", "right", "up", "down"]},
    "fallback": "none",
-   "initial": "rail.open",
-   "back": "overview, the ring on this tab"
+   "initial": "the rail, the bracket on the recommended lane (glint or goal first, never the sprout lane while another lane is unread; a fresh pod its first lane); the key on an unidentified pod",
+   "selectors": "none: the rail's keys step the bracket (the host), ▲ shows the stamp once taught; ✓ opens the chapter (the key on an unread one, the first plate on a read one); ◀ from the right frame back to the rail; ▲▼ between the plates; ✓ on a plate the detail, where ▲▼ step the trait; one target (hold) while the read or the stamp moment runs, its keys cutting it",
+   "back": "← on the pod level: the inventory, the ring on this pod's card; in the detail: the pod level, the ring on the trait's plate; in the stamp view: the rail"
   },
   "compare": {
-   "rail": {
-    "stepper": [
-     "left",
-     "right"
-    ],
-    "up": "none",
-    "down": "none"
-   },
+   "takeA": {"left": "none", "right": "takeB", "stepper": ["up", "down"]},
+   "takeB": {"left": "takeA", "stepper": ["up", "down", "right"]},
    "fallback": "none",
-   "initial": "rail.open",
-   "back": "overview, the ring on the kin that opened Compare"
-  }
+   "initial": "takeA",
+   "back": "one press, to what opened it: the reading room with the ring on the kin, or the inventory with the ring on the card"
+  },
+  "inventory": {
+   "card": {"up": "card.up", "down": "card.down", "left": "card.left", "right": "card.right"},
+   "act": {"axis": "vertical", "left": "card.back", "right": "none"},
+   "sort": {"left": "none", "right": "filter", "up": "none", "down": "sort.down"},
+   "filter": {"left": "sort", "right": "find", "up": "none", "down": "filter.down"},
+   "find": {"left": "filter", "right": ["chip.first", "none"], "up": "none", "down": "find.down"},
+   "chip": {"left": [{"nearestIn": "chip", "ahead": true}, "find"], "right": [{"nearestIn": "chip", "ahead": true}, "none"], "up": "none", "down": "find.down"},
+   "fallback": "none",
+   "initial": "the card the ring was on when the player last left, else the first card; from Choose a pod the first card by use; from the goal's jump the first card of that filter; with no pods, Sort",
+   "selectors": "card.up / down / left / right / back, sort.down, filter.down, find.down and chip.first are the host's answers for the ring where it is (props focus.resolve): a card's neighbour in the grid, the tool above the top row (Sort over the first column, Filter the second, Find the third), the panel's first button right of the right-hand column, the card itself where the ring stays; card.back the card the panel shows",
+   "back": "where the inventory was opened from (Home, the reading room in choosing mode, Create): one press"
+  },
+  "filter": {
+   "tchip": {"up": "tchip.up", "down": "tchip.down", "left": "tchip.left", "right": "tchip.right"},
+   "fallback": "none",
+   "initial": "the first chip of the first row",
+   "selectors": "tchip.up / down / left / right: the chip beside the ring in its row, or the nearest in the row above or below, or the chip itself",
+   "back": "closes the tray, keeping the filter; the ring on Filter"
+  },
+  "find": {
+   "recent": {"axis": "horizontal", "up": "none", "down": "letter.cur"},
+   "letter": {"axis": "horizontal", "up": ["recent.first", "none"], "down": ["word.first", "none"]},
+   "word": {"up": "word.up", "down": "word.down", "left": "word.left", "right": "word.right"},
+   "fallback": "none",
+   "initial": "the letter of the first recent word, else the first letter",
+   "selectors": "letter.cur the lit letter; word.first the first word under it; word.up / down / left / right the word beside the ring in its two columns, the strip above the first row",
+   "back": "closes the panel with nothing changed"
+  },
+  "vectors": [
+   {"state": "inventory", "from": "card.0", "key": "right", "to": "card.1", "resolve": {"card.right": "card.1"}},
+   {"state": "inventory", "from": "card.2", "key": "right", "to": "act.0", "resolve": {"card.right": "act.0"}},
+   {"state": "inventory", "from": "card.0", "key": "up", "to": "sort", "resolve": {"card.up": "sort"}},
+   {"state": "inventory", "from": "act.2", "key": "left", "to": "card.2", "resolve": {"card.back": "card.2"}},
+   {"state": "inventory", "from": "act.0", "key": "down", "to": "act.1"},
+   {"state": "inventory", "from": "sort", "key": "right", "to": "filter"},
+   {"state": "inventory", "from": "find", "key": "down", "to": "card.2", "resolve": {"find.down": "card.2"}},
+   {"state": "room", "from": "index.0", "key": "down", "to": "index.1"},
+   {"state": "room", "from": "index.0", "key": "left", "to": "swap"},
+   {"state": "room", "from": "letGo", "key": "right", "to": "band.0", "resolve": {"band.first": "band.0"}},
+   {"state": "room", "from": "band.0", "key": "left", "to": "letGo", "resolve": {"band.left": "letGo"}}
+  ],
+  "vectorsNote": "UI/UX's vectors for the inventory and the reading room: `resolve` is the host's answer for the selectors at that ring; played with ui/focus.mjs and the face's port (face/tests/vectors/focus.json)"
  },
  "keys": {
   "compare": {
-   "targets": "the rail's tabs, rail.0 to rail.(n - 1) (group rail, index i), as on the chapter page; the ring on the open chapter's tab, in the tab target's ring form (targets.tab) with the chrome lift. In Compare, rail.open resolves to rail.<ui.cmp.ci>",
-   "opens": "✓ on a kin in the overview opens Compare on the species' first chapter: the focus rail.0",
-   "left": "step:left: the previous chapter in ring order, sealed ones included, on both pages; the focus is set to its tab; on the first chapter nothing changes, never a wrap",
-   "right": "step:right: the next chapter on both pages; the focus is set to its tab; on the last chapter nothing changes, never a wrap",
-   "up": "none: the ring stays and nothing is sent",
-   "down": "none: the ring stays and nothing is sent",
-   "confirm": "nothing: Compare has no ✓ cap",
-   "back": "closes Compare: the overview with the ring on the kin that opened it (kin.<i>, the kin whose pod is ui.cmp.b), else on the pod; the way back reads the pod's name (frame.json navigation pods.compare)"
+   "targets": "the two papers' Take to the reading room buttons: takeA (this pod, on the left) and takeB (its kin, on the right); the ring opens on takeA",
+   "opens": "✓ on the reading room's kin well, or ✓ Compare on a card's panel: this pod on the left, its nearest kin on the right, on the species' first chapter",
+   "up": "step:up: the previous chapter on both papers, sealed ones included; on the first nothing changes, never a wrap",
+   "down": "step:down: the next chapter on both papers; on the last nothing changes, never a wrap",
+   "left": "from takeB the ring goes to takeA; from takeA nothing",
+   "right": "from takeA the ring goes to takeB; on takeB, step:right swaps the right-hand pod for the next kin of the species (round the kin, the left-hand pod never among them)",
+   "confirm": "Take to the reading room: that pod onto the bench and the reading room open on it, as Bring onto the bench does",
+   "back": "closes Compare in one press: the reading room with the ring on the kin, or the inventory with the ring on the card it came from"
   }
  },
  "targets": {
-  "place": {
-   "group": "place",
-   "shape": { "circle": { "centre": [96, 88], "r": 88 } },
-   "state": "collection"
-  },
-  "pod": {
-   "group": "pod",
-   "shape": "oval",
-   "state": "overview"
-  },
-  "tab": {
-   "group": "rail",
-   "shape": "tab",
-   "states": [
-    "overview",
-    "chapter",
-    "compare"
-   ]
-  },
-  "kin": {
-   "group": "kin",
-   "shape": { "circle": "box" },
-   "state": "overview"
-  },
-  "hatch": {
-   "group": "hatch",
-   "shape": { "rect": 6 },
-   "state": "overview"
-  },
-  "figure": {
-   "group": "figure",
-   "shape": "footprint",
-   "state": "overview",
-   "enabled": "the pod is identified (the figure is a target only then)"
-  }
+  "plate": {"group": "plate", "shape": {"rect": 10}, "state": "read", "box": "a trait's plate in the right frame (its corners are 12: the ring takes radius 10, one of the face's six ring sources)"},
+  "key": {"group": "key", "shape": {"rect": 10}, "state": "read", "box": "the price key (104 x 46)"},
+  "take": {"group": "takeA", "also": "takeB", "shape": {"rect": 4}, "states": ["compare"], "box": "a paper's Take to the reading room button"},
+  "card": {"group": "card", "shape": {"rect": 6}, "state": "inventory", "box": "the whole card (216 x 196), never the niche"},
+  "tool": {"group": "tool", "shape": {"rect": 4}, "states": ["inventory"], "box": "Sort, Filter, Find and the active chips' plates"},
+  "act": {"group": "act", "shape": {"rect": 4}, "state": "inventory", "box": "the panel's buttons"},
+  "chip": {"group": "tchip", "shape": {"rect": 4}, "states": ["filter", "find"], "box": "a chip, a letter, a word, a recent word"}
  },
  "colours": {
   "ground": "deep",
@@ -1434,6 +1506,7 @@
   }
  },
  "strings": {
+  "read": {"open": "Open {chapter}", "read": "Read {chapter}", "closer": "Closer look at {trait}", "needs": "needs ◆ {n} · you have ◆ {have}", "dataGrows": "Data comes as your mibis grow", "sprout": "free when it grows", "sealed": "opens with a find", "stampLine": "Each read fills its stamp", "kinds": {"only": "one copy is enough", "hides": "needs both copies", "blend": "a blend of both", "asleep": "asleep: it can wake in a child"}, "odds": "{a} in {b}", "oddsAll": "every one", "identify": "Identify", "identifyHead": "A sealed pod", "identifyLine": "identify it to read it", "note": "ux-reading-v2.md §2.9: the copywriter settles the kind lines, the odds and the identify words (the builder's: no state of the signed six shows them)"},
   "toCreate": "Create from this pod",
   "unknownPod": "Unknown",
   "newSpecies": "New species",
@@ -1450,8 +1523,10 @@
    "cave": "cave"
   },
   "compareHere": "they differ here",
-  "compareElsewhere": "they differ in another chapter",
+  "compareIn": "they differ in {chapter}",
   "compareSame": "no read trait differs",
+  "compareNone": "nothing read on both yet",
+  "compare": {"thisPod": "this pod", "onBench": "on the bench", "kin": "its kin", "kinMore": "its kin · ▶ another", "chapter": "{n} of {of}", "differs": "differs", "notRead": "not read yet", "sealed": "sealed · opens with a find", "goal": "might give {look}", "goalNot": "cannot give {look}", "goalUnread": "{chapter} not read: {look}?", "take": "Take to the reading room", "takeOk": "Take this {Species} to the reading room"},
   "legsTail": {
    "rail": "Legs & Tail",
    "heading": "Legs & Tail"
@@ -1491,17 +1566,173 @@
    "compare": "{name}"
   },
   "price": "icon before figure, as on every Station screen (station-layouts.md, The frame): Identify ◆ 1, Read ◆ 3, Return to the wild ❀ +1; nothing for free, and a half price is the lower number",
-  "unknownPodNote": "only for a pod whose species is not in knownIds (GB1; decisions 2026-10-05)"
+  "unknownPodNote": "only for a pod whose species is not in knownIds (GB1; decisions 2026-10-05)",
+  "inv": {
+   "count": "{n} pods · {s} species",
+   "countOne": "1 pod · 1 species",
+   "countOneSpecies": "{n} pods · 1 species",
+   "filtered": "{k} of {n} · {what}",
+   "none": "No pods yet · expeditions bring them home",
+   "noMatch": "No pods match",
+   "panelNone": ["No pods yet", "Expeditions bring pods home"],
+   "panelNoMatch": ["No pods match", "✓ on a chip removes it"],
+   "filterBy": "Filter by {word}",
+   "dried": "{n} pod dried out",
+   "driedMany": "{n} pods dried out",
+   "driedLabel": "dried out · its reads stay",
+   "sort": "Sort: {how}",
+   "sorts": {"use": "by use", "species": "by species", "arrival": "by arrival", "drying": "drying soon"},
+   "filter": "Filter",
+   "filterDrying": "Filter · {n} drying",
+   "find": "Find",
+   "nothingToSort": "nothing to sort yet",
+   "nothingToFilter": "nothing to filter yet",
+   "nothingToFind": "nothing to find yet",
+   "sealedPod": "a sealed pod",
+   "speciesLabel": "{Species} · {n}",
+   "worth": {
+    "goal": "your goal · {look} may be here",
+    "goalShort": "your goal",
+    "newSpecies": "new species",
+    "newBlood": "new blood",
+    "glints": "glints · {n} pages",
+    "glintsOne": "glints · 1 page",
+    "line": "of {name}'s line",
+    "full": "known in full",
+    "sealed": "sealed · identify ◆ {n}",
+    "nothing": "nothing new"
+   },
+   "fresh": {"left": "fresh for {n} turns", "drying": "dries out in {n} turns", "next": "dries out next turn", "bench": "kept fresh on the bench"},
+   "buttons": {
+    "take": "Take to the reading room",
+    "open": "Open the reading room",
+    "bring": "Bring onto the bench",
+    "grow": "Grow it",
+    "growFull": "Grow it · no place free",
+    "growBusy": "Grow it · the incubator is busy",
+    "growShort": "Grow it · needs {icons}",
+    "freshen": "Freshen ❀ {n}",
+    "freshenFull": "Freshen · already fresh",
+    "freshenShort": "Freshen · needs ❀ {n} · you have ❀ {have}", "freshenShortFace": "Freshen ❀ {n} · you have ❀ {have}",
+    "freshenBench": "Freshen · the bench keeps it",
+    "compare": "Compare",
+    "compareOnly": "Compare · the only {Species}",
+    "compareSealed": "Compare · identify it first",
+    "letGo": "Let it go · its reads stay",
+    "letGoGoal": "Let it go? It carries your goal",
+    "letGoOnly": "Let it go? The only {Species}"
+   },
+   "letGone": "The {Species} pod went back to the wild · its reads stay in the field guide",
+   "letGoneSealed": "The pod went back to the wild",
+   "freshened": "Freshened · ❀ {n}",
+   "tray": {
+    "reading": "Reading",
+    "marks": "Marks",
+    "species": "Species",
+    "sealed": "sealed",
+    "unread": "unread",
+    "partly": "partly read",
+    "full": "known in full",
+    "goal": "your goal",
+    "glints": "glints",
+    "drying": "drying soon",
+    "line": "of a line",
+    "clear": "Clear",
+    "freshenThese": "Freshen these ❀ {n}",
+    "freshenSome": "Freshen {k} of these ❀ {n}",
+    "freshenNone": "Freshen these · all fresh",
+    "letThese": "Let these go · {n}",
+    "letTheseAsk": "Let {n} go? One carries your goal",
+    "letTheseAskPlain": "Let {n} go?",
+    "none": "none right now"
+   },
+   "findHead": "recent",
+   "findFirst": "Pick a letter, then a word",
+   "kinds": {"species": "a species", "look": "a look", "place": "a place", "mibi": "a mibi"},
+   "findRow": "{word} · {kind} · {n} pods",
+   "findRowOne": "{word} · {kind} · 1 pod",
+   "foot": {"take": "Take to the reading room", "back": "Home", "backRoom": "back to the reading room", "backCreate": "Create"},
+   "barFirst": "identified · a page read · half read · known in full",
+   "places": {"meadow": "pond meadow", "pond": "pond edge", "rock": "rock field", "wood": "wood", "cave": "cave"},
+   "origin": {"short": "{place} · {who}", "shortPlace": "{place}"}
+  },
+  "room": {
+   "crumb": "/ Bench",
+   "thisPod": "this pod",
+   "asFar": "as far as read",
+   "fixed": "every {Species} has this body and skin",
+   "empty": "No pod on the bench",
+   "noPods": "No pods yet",
+   "choose": "Choose a pod",
+   "chooseNone": "Choose a pod · no pods yet",
+   "swap": "Swap pod",
+   "swapNone": "Swap pod · no other pod",
+   "kin": "Compare with its kin",
+   "kinNone": "the only one",
+   "letGo": "Let go",
+   "letGoAsk": "Let go?",
+   "identify": "Identify ◆ {n}",
+   "identifyFirst": "Its genome is inside. Each page you read shows part of it.",
+   "firstMove": "▲▼ to choose a page",
+   "read": "Read {chapter} ◆ {n}",
+   "readWhy": "Read {chapter} ◆ {n} · {why}",
+   "whyGlint": "it glints",
+   "whyNext": "next",
+   "readFree": "Read {chapter}",
+   "readShort": "needs ◆ {n} · you have ◆ {have}",
+   "restCan": "the rest can wait",
+   "grow": "Grow it",
+   "growLearns": "Grow it · learns {chapter}",
+   "freshen": "Freshen ❀ {n}",
+   "marks": {"glint": "glints", "seed": "seen before", "goal": "your goal", "sprout": "grows free", "read": "read", "sealed": "sealed", "none": ""},
+   "markWords": {
+    "glint": "something new here",
+    "seed": "it hides a look you have read before",
+    "goal": "your goal: {look} may be here",
+    "sprout": "growing teaches this page free",
+    "read": "read",
+    "sealed": "opens with a find",
+    "none": "{n} ◆ to read"
+   },
+   "question": "{trait}: {looks}, or something not seen yet",
+   "questionNone": "{trait}: something not seen yet",
+   "more": "more?",
+   "hides": "and it hides: {look}",
+   "same": "both copies the same",
+   "new": "new",
+   "use": {
+    "only": "one copy is enough",
+    "hides": "needs both copies: one hides",
+    "blend": "mixes: it falls between its copies",
+    "asleep": "sleeping: it can wake in a child",
+    "doing": "only breeding changes it",
+    "goal": "your goal: it carries {look}"
+   },
+   "complete": "{chapter} · complete",
+   "readDone": "{chapter} is read",
+   "readDoneNext": "{chapter} is read · {next}",
+   "sealedPage": "opens with a find",
+   "lessonPage": "A page holds traits. A trait is one thing that can differ; its look is what this one has.",
+   "foot": {"rows": "▲▼ pages · ✓ go to Read", "trait": "✓ more about {trait}", "back": "Home", "backPods": "Pods", "backBench": "Bench", "keep": "Keep it", "done": "{chapter} is read"},
+   "overlay": {
+    "found": "found {where}",
+    "notFound": "not seen yet",
+    "lesson": "Every trait comes twice, one copy from each parent. One is worn; the other hides, and still passes to children.",
+    "rule": {
+     "only": "One copy is enough: whichever copy it carries shows.",
+     "hides": "Needs both copies: a copy that hides still passes to children.",
+     "blend": "Mixes: the look falls between its two copies.",
+     "asleep": "Sleeping: switched off in this mibi; it still passes on and can wake in a child."
+    }
+   },
+   "spent": "−{n} ◆"
+  }
  },
  "bottomLine": {
   "need": "Pods' own line, the first that holds: the shortfall (needMoreFrom/needMore), a blocked reason, the pre-spend warning (frame.json goalWarn), glintHere, glintPod, Compare's three, the empty rack's three. None: empty (\"\"), no text and no lamp. The frame's station-wide notice (state.mjs need()) is never shown on Pods (fix 5 P8; station-layouts.md Words on Pods)"
  },
- "states": [
-  "collection",
-  "overview",
-  "chapter"
- ],
- "initial": "collection",
+ "states": ["inventory", "filter", "find", "read", "compare"],
+ "initial": "inventory",
  "podLayers": {
   "order": [
    "shade",
@@ -1548,5 +1779,6 @@
   "widen": 16,
   "h": 14,
   "note": "the signed contact-shadow slices per class (art director, 2026-10-09): large 160×14, medium 136×14, small 120×14, centred on the foot line; none for the list pod in its ring"
- }
+ },
+ "note_pods_inventory": "The pod inventory and the reading room (the owner's rulings of 2026-10-28 and the signed design): the states inventory, filter, find, room, trait and compare. The collection, overview and chapter regions below stay as data the shared layout rules and their vectors read (the rack's place rect, the kin's pitch, the name plate series, the page grid Compare draws by); the screen no longer has those states."
 }

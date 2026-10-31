@@ -39,7 +39,7 @@ const rgbOf = (name) => { const h = palette[name]; return [1, 3, 5].map((i) => p
 const fails = [], fail = (m) => { fails.push(m); console.error("FAIL " + m); };
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
-const F = frame.regions, R = pods.regions, N = frame.notBuilt, SIZES = [16, 1016, 20, 28], MODULES = ["cargo", "pods", "incubator", "probe", "library"];
+const F = frame.regions, R = pods.regions, N = frame.notBuilt, SIZES = [15, 16, 1016, 18, 20, 28], MODULES = ["cargo", "pods", "incubator", "probe", "library"];
 
 // the plate's chrome region is the plate and its shadow, 3 px lower
 // ---- 1. palette, 2. type, 4. size, at every point
@@ -53,7 +53,7 @@ for (const s of rec.shots) {
   if (c.refused || sn.refused) fail(`${s.name}: the face refused ${c.refused || sn.refused} nodes`);
   for (const e of [...c.errors, ...sn.errors]) fail(`${s.name}: the face sent an error: ${e}`);
   const bad = lg.type.filter((r) => !SIZES.includes(r.px) || !r.text || !r.region);
-  for (const r of bad.slice(0, 3)) fail(`${s.name}: "${r.text}" set at ${r.px} px in region "${r.region}", not Inter at 16, Medium 16 (1016), 20 or 28 px in a region`);
+  for (const r of bad.slice(0, 3)) fail(`${s.name}: "${r.text}" set at ${r.px} px in region "${r.region}", not Inter at 15, 16, Medium 16 (1016), Medium 18, 20 or 28 px in a region`);
   stringsMax = Math.max(stringsMax, lg.type.length);
   console.log(`${s.name.padEnd(26)} off-palette chrome ${String(sn.pass1).padStart(2)} · chrome+art ${String(sn.pass2).padStart(2)} · strings ${String(lg.type.length).padStart(3)} (${bad.length} off-spec) · frame ${c.size.join("×")}`);
 }
@@ -63,7 +63,7 @@ if (rec.textApiCalls !== 0) fail(`the page called the canvas text API ${rec.text
 // ---- 3. regions against the spec files
 console.log("== regions against the spec files");
 // whether a region may hold digits is the spec's `noDigits` flag; the log names the region each string is set in
-const NO_DIGIT = { page: () => R.chapter.page.noDigits, "page.cell": () => R.chapter.page.noDigits, pageA: () => R.compareA.noDigits, pageB: () => R.compareB.noDigits, name: (c) => R[c.view]?.name?.noDigits, origin: () => R.overview.origin.noDigits, "place.name": () => R.collection.name.noDigits, "notBuilt.line": () => N.regions.line.noDigits };
+const NO_DIGIT = { page: () => R.chapter.page.noDigits, "page.cell": () => R.chapter.page.noDigits, name: (c) => R[c.view]?.name?.noDigits, origin: () => R.overview.origin.noDigits, "place.name": () => R.collection.name.noDigits, "notBuilt.line": () => N.regions.line.noDigits };
 let regionsChecked = 0;
 for (const s of rec.shots) {
   const c = s.check, lg = c.log ?? { type: [], regions: [] }, got = (layer, id) => lg.regions.filter((r) => r.layer === layer && r.id === id);
@@ -110,7 +110,7 @@ for (const s of rec.shots) {
     for (const r of got("painted", "figure")) must(eq(r.rect, R.overview.figure.rect) || eq(r.rect, R.overview.figure.beforeIdentify.rect), `figure ${r.rect} is neither the painted adult's rect nor the empty halo's (GB1 C1)`); one("painted", "find", R.overview.originPicture.rect); one("painted", "hatch", R.overview.hatch.rect);
     one("painted", "stamp", R.overview.stampCase.rect, "the stamp case (the label stands in it)");
     for (const r of got("painted", "stamp.image")) { const L = R.overview.stamp.rect; must(r.rect[2] === r.rect[3] && r.rect[2] <= 104 && r.rect[2] >= 34 && Math.abs(r.rect[0] + r.rect[2] / 2 - (L[0] + L[2] / 2)) <= 1 && Math.abs(r.rect[1] + r.rect[3] / 2 - (L[1] + L[3] / 2)) <= 1, `the stamp ${r.rect} is at most 104 px square and centred on its label ${L}`); }
-    { const h = c.cmpCells == null ? null : pageSize(R.compareA, c.cmpCells)[1]; for (const [id, K] of [["pageA", R.compareA], ["pageB", R.compareB]]) one("painted", id, [K.rect[0], K.rect[1], K.rect[2], h ?? K.rect[3]], `compare${id.slice(-1)} page (the height its chapter's count gives)`); }
+    for (const k of [0, 1]) one("chrome", "cmp." + k, R.compare.panels[k], `Compare's ${k ? "kin's" : "pod's"} paper`);   // Compare in the reading room's look: two cream papers at their rects
     for (const r of got("chrome", "page.rule")) { const Pg = R.chapter.page, n = c.cells ?? 0, cols = n <= 4 ? Math.max(n, 1) : n <= 6 ? 3 : 4, rows = n > 4 ? 2 : 1, [ox, oy] = pageOrigin(Pg, cols, rows), ry = rows === 2 ? Pg.ruleTwo[1] : Pg.rule.at[1], want = [ox + Pg.rule.at[0], oy + ry, pageSize(Pg, n)[0] - Pg.rule.at[0], Pg.rule.h]; must(eq(r.rect, want), `the page's rule ${r.rect} is not ${want} for ${n} traits (the page is ${pageSize(Pg, n)})`); }
     for (const r of got("painted", "pod")) { const sizes = Object.values(pods.classes.pod); must(sizes.some(([a, b]) => a === r.rect[2] && b === r.rect[3]) || true, `pod ${r.rect}`); }
     // the rail's tab count against the frame (the face's rail is the props' tabs)
@@ -121,7 +121,7 @@ for (const s of rec.shots) {
   console.log(`${s.name.padEnd(26)} ${lg.regions.length} drawn regions · ${c.screen}${c.mode ? "/" + c.mode : ""}${c.props?.state === "notBuilt" ? " (not built)" : ""} · placeholders registered ${c.placeholders}${s.snap.owed?.length ? ` · habit keys owed ${s.snap.owed.length}` : ""}`);
 }
 // every Pods state is recorded, with the regions it must draw
-{ const need = { collection: [["painted", "place.pod"], ["type", "place.name"]], overview: [["painted", "pod"], ["type", "name"], ["painted", "hatch"]], chapter: [["painted", "pod"], ["type", "name"], ["chrome", "page.rule"], ["painted", "rail.tab"]], compare: [["painted", "pageA"], ["painted", "pageB"], ["painted", "rail.tab"]] };
+{ const need = { inventory: [["painted", "cabinet.pod"], ["type", "card.words"]], room: [["painted", "read.ground"], ["painted", "read.rail"], ["type", "read.name"], ["chrome", "read.bracket"]], compare: [["chrome", "cmp.0"], ["chrome", "cmp.1"], ["chrome", "cmp.0.take"], ["chrome", "cmp.1.take"]] };
   for (const [mode, ids] of Object.entries(need)) { const shots = rec.shots.filter((x) => x.check.screen === "pods" && x.check.mode === mode); if (!shots.length) { fail(`no screenshot point records Pods in its ${mode} state`); continue; }
     for (const [layer, id] of ids) if (!shots.some((x) => (x.check.log?.regions ?? []).some((r) => r.id === id && r.layer === layer))) fail(`Pods in its ${mode} state: no drawn region "${id}" on the ${layer} layer in any of its ${shots.length} screenshot points`); }
   regionsChecked++; }

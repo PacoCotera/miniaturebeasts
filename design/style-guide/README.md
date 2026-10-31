@@ -46,7 +46,7 @@ None of them read as Miniature Lives.
 
 <img src="plates/02a-palette.png" width="1024" alt="Plate 02a: the palette by role">
 
-The exact values are in `prototypes/ui/palettes/station.json` (68 colours: the Companion's 48, then the instrument's 14). Each colour has one role, given below; a colour is never used outside its role.
+The exact values are in `prototypes/ui/palettes/station.json` (92 colours: the Companion's 48, then the instrument's; then the four of the wood plate of the paper-and-wood rooms and the reading screen's twenty). Each colour has one role, given below; a colour is never used outside its role.
 
 | Layer | Role | Colour | Value |
 | --- | --- | --- | --- |
