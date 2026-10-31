@@ -1,0 +1,157 @@
+// The five trial species: the base forms of shape-model.md section 3, numbers verbatim, with their open ranges
+// (genome.mjs), the reference pose and the stand camera. Plain JavaScript, no node: imports.
+// Knots read "ds k psi | w u d" in U and degrees per U, listed from the pelvis.
+import { K } from "./spine.mjs";
+import { TUNING, applyTuning } from "./tuning.mjs";
+
+// the three fingers of a hand: short spines on the palm (1.6)
+const fingers = { count: 3, length: 0.06, r: 0.022, fan: 28 };
+
+export const SECTION3 = {};
+
+// ---- Curlop (S19) --------------------------------------------------------------------------------------------
+SECTION3.curlop = {
+  id: "S19", key: "curlop", name: "Curlop", stand: "stand-E-curlop", phi0: 92, nape: 0,
+  front: { knots: [
+    K("pelvis", "0 0 0|.86 .82 .84", "body"), K("belly", ".55 6 0|.90 .84 .94", "body"), K("chest", ".55 6 0|.84 .88 .82", "body"),
+    K("chin", ".40 -50 -30|.80 .90 .72", "neck"), K("head", ".40 -70 -40|.92 .92 .84", "head"), K("cap", ".30 -50 0|.56 .60 .58", "head"),
+  ] },
+  regions: { neck: "chin", chest: "chest", head: "head" },
+  tail: { knots: [K("seat", ".45 190 0|.72 .70 .66", "tail"), K("tail1", ".55 -20 25|.52 .50 .46", "tail"), K("run", ".85 -20 10|.36 .35 .33", "tail")],
+    coil: { N: 0.95, W: 3.5, L: 2.1, plane: 0, part: "tail" } },
+  branches: [
+    { id: "leg", part: "legs", pair: true, root: { sigma: 0.25, angle: 135, out: 0.85 }, dir: [0.5, 0.3, -1], blend: 0.18,
+      knots: [K("", "0|.30"), K("", ".40 -120|.26"), K("foot", ".30 0|.22 .13 .12")] },
+    { id: "arm", part: "arms", pair: true, root: { sigma: 1.45, angle: 140, out: 1.0 }, dir: [0.35, 0.5, -1], normal: "forward", blend: 0.10, fingers,
+      knots: [K("", "0|.15"), K("", ".24|.14"), K("elbow", ".06 150|.13"), K("", ".24 120 -300|.12"), K("hand", ".10|.15 .10 .10")] },
+  ],
+  contacts: [{ kind: "branches", id: "leg", last: true }, { kind: "tail", upToKnot: 1 }],
+  face: { sigma: 2.02, t: 1, v: 0.35, eyes: { spread: 30, elev: 14, r: 0.15 },
+    patch: { angle: 50, top: -0.08 }, belly: { beta: 62, s0: -0.2, s1: 1.75 },
+    marks: [{ kind: "nose", id: "nose", t: 1, v: 0.55, spread: 0, elev: 0, size: 0.05 }, { kind: "mouth", id: "mouth", t: 1, v: 0.85, spread: 0, elev: 0, size: 0.1 }] },
+  coat: { depth: 0.08, locks: 0.012 },
+  camera: { yaw: 55, pitch: 8 },
+  look: {
+    slots: { body: "coat", neck: "coat", head: "coat", tail: "coat", legs: "coat", arms: "coat" },
+    pigments: { coat: [88, 189, 160], patch: [226, 228, 190], belly: [226, 228, 190] },
+    eyes: { rim: [226, 232, 208], iris: [34, 92, 88], pupil: [14, 24, 28], pupil_r: 0.46, iris_r: 0.8 }, nose: [60, 100, 90], mouth: [60, 100, 90],
+  },
+};
+
+// ---- Wickle (S17) --------------------------------------------------------------------------------------------
+SECTION3.wickle = {
+  id: "S17", key: "wickle", name: "Wickle", stand: "stand-A-wickle", phi0: 90, nape: 0, base: -0.45,
+  front: { knots: [
+    K("pelvis", "0|.84 .80 .82", "drop"), K("belly", ".38|1.00 .95 .98", "drop"), K("shoulder", ".43|.86 .82 .84", "drop"),
+    K("face", ".25|.70 .66 .68", "drop"), K("top", ".47 -6|.36 .34 .35", "plume"), K("mid", ".40 -8|.22 .21 .21", "plume"), K("end", ".40 0|.17 .16 .16", "plume"),
+  ], coil: { N: 1.3, W: 6, L: 1.8, plane: -85, part: "plume", emit: { from: 0.45 } } },
+  regions: null,
+  branches: [
+    { id: "foot", part: "feet", pair: true, root: { sigma: 0.05, angle: 150, out: 0.75 }, dir: [0.6, 0.35, -1], blend: 0.06,
+      knots: [K("", "0|.13"), K("foot", ".25|.14 .09 .09")] },
+  ],
+  contacts: [{ kind: "base" }], // it sits on its floor cut; the feet are two small nubs in front
+  face: { sigma: 1.05, t: 0.15, v: 1, eyes: { spread: 26, elev: 8, r: 0.11 }, patch: { angle: 40 },
+    marks: [{ kind: "nose", id: "nose", t: 0.15, v: 1, spread: 0, elev: -9, size: 0.04 }] },
+  coat: { depth: 0.11, locks: 0.02, bare: { angle: 30, factor: 0.15 } },
+  camera: { yaw: 22, pitch: 8 },
+  look: {
+    slots: { drop: "coat", plume: "coat", feet: "coat" },
+    pigments: { coat: [226, 176, 96], patch: [244, 226, 186], belly: [244, 226, 186], glow: [255, 120, 60] },
+    eyes: { rim: [214, 190, 150], iris: [58, 40, 30], pupil: [18, 12, 12], pupil_r: 0.5, iris_r: 0.86 }, nose: [150, 100, 70],
+  },
+};
+
+// ---- Drapet (S18) --------------------------------------------------------------------------------------------
+SECTION3.drapet = {
+  id: "S18", key: "drapet", name: "Drapet", stand: "stand-B-drapet", phi0: 90, nape: 0, base: -0.05,
+  front: { knots: [K("pelvis", "0|1.22 1.20 1.20", "dome"), K("lower", ".40|1.20 1.18 1.18", "dome"), K("upper", ".55|.98 .96 .96", "dome"), K("top", ".40|.62 .60 .60", "dome")] },
+  regions: null,
+  hair: { depth: 0.20, partLine: 1.05, flare: 0.22, gamma: 1.2, hem: 0.16, lobes: 11, strands: 46, window: { c: [1.16, 0, 0.98], r: [0.42, 0.36, 0.30], k: 0.05 } },
+  branches: [
+    { id: "legF", part: "legs", pair: true, root: { sigma: 0.2, angle: 150, out: 0.7 }, dir: [0.05, 0.2, -1], blend: 0.08, knots: [K("", "0|.2"), K("foot", ".15|.17")] },
+    { id: "legB", part: "legs", pair: true, root: { sigma: 0.2, angle: 40, out: 0.7 }, dir: [-0.05, 0.2, -1], blend: 0.08, knots: [K("", "0|.2"), K("foot", ".15|.17")] },
+  ],
+  contacts: [{ kind: "base" }],
+  face: { sigma: 1.05, t: 0.15, v: 1, eyes: { spread: 14, elev: 4, r: 0.10 }, patch: { angle: 30 },
+    marks: [{ kind: "nose", id: "nose", t: 0.15, v: 1, spread: 0, elev: -6, size: 0.03 }] },
+  camera: { yaw: 28, pitch: 14 },
+  look: {
+    slots: { hair: "hair", face: "face", legs: "face", dome: "hair" },
+    pigments: { hair: [138, 120, 190], face: [128, 124, 150], patch: [128, 124, 150], belly: [128, 124, 150] },
+    eyes: { rim: [200, 194, 226], iris: [60, 54, 96], pupil: [18, 16, 30], pupil_r: 0.5, iris_r: 0.84 }, nose: [92, 88, 112],
+  },
+};
+
+// ---- Loika (S01) ---------------------------------------------------------------------------------------------
+SECTION3.loika = {
+  id: "S01", key: "loika", name: "Loika", stand: "mibi-adult-S01", art: true, phi0: 6, nape: 0.2,
+  front: { knots: [
+    K("pelvis", "0|.64 .62 .58", "body"), K("belly", ".35 0|.72 .66 .68", "body"), K("chest", ".35 40|.68 .64 .62", "body"),
+    K("chin", ".25 45 8|.62 .64 .50", "neck"), K("head", ".35 -20 12|.98 .90 .80", "head"), K("stop", ".30 -60|.84 .56 .72", "head"), K("snout", ".15 -40|.58 .30 .46", "head"),
+  ] },
+  regions: { neck: "chin", chest: "chest", head: "head" },
+  tail: { knots: [K("stub", ".25 30|.50 .50 .44", "tail"), K("stub2", ".10|.32 .32 .28", "tail")] },
+  branches: [
+    { id: "hind", part: "legs", pair: true, root: { sigma: -0.02, angle: 120, out: 0.7 }, dir: [0.1, 0.35, -1], blend: 0.2, knots: [K("", "0|.27"), K("", ".34 -150|.23"), K("foot", ".20|.24 .13 .11")] },
+    { id: "fore", part: "legs", pair: true, root: { sigma: 0.62, angle: 125, out: 0.7 }, dir: [0.15, 0.4, -1], blend: 0.18, knots: [K("", "0|.25"), K("", ".34 -150|.22"), K("foot", ".20|.23 .12 .11")] },
+    { id: "leafM", part: "crest", root: { sigma: 1.22, angle: 0, out: 0.8 }, dir: [-0.15, 0, 1], normal: "forward", blend: 0.08, knots: [K("", "0|.07 .0175 .0175"), K("", ".30|.10 .0175 .0175"), K("tip", ".30|.01 .0175 .0175")] },
+    { id: "leafS", part: "crest", pair: true, root: { sigma: 1.18, angle: 25, out: 0.8 }, dir: [-0.15, 0.58, 0.82], normal: "forward", blend: 0.08, knots: [K("", "0|.06 .0175 .0175"), K("", ".22|.09 .0175 .0175"), K("tip", ".22|.01 .0175 .0175")] },
+  ],
+  contacts: [{ kind: "branches", id: "hind", last: true }, { kind: "branches", id: "fore", last: true }],
+  face: { sigma: 1.30, t: 1, v: 0.1, eyes: { spread: 50, elev: 12, r: 0.20 }, patch: { angle: 58, top: -0.22 }, belly: { beta: 55, s0: -0.1, s1: 1.1 },
+    marks: [{ kind: "nose", id: "nose", t: 1, v: 0.1, spread: 0, elev: -4, size: 0.07 }] },
+  camera: { yaw: -40, pitch: 12 },
+  look: {
+    slots: { body: "skin", neck: "skin", head: "skin", tail: "skin", legs: "skin", crest: "leaf" },
+    pigments: { skin: [58, 56, 64], patch: [232, 212, 176], belly: [232, 212, 176], leaf: [98, 128, 52] },
+    eyes: { rim: [240, 226, 196], iris: [210, 112, 36], pupil: [24, 14, 12], big: true }, nose: [96, 84, 80],
+  },
+};
+
+// ---- Rupar (S08) ---------------------------------------------------------------------------------------------
+SECTION3.rupar = {
+  id: "S08", key: "rupar", name: "Rupar", stand: "mibi-adult-S08", art: true, phi0: 4, nape: 1,
+  front: { knots: [
+    K("pelvis", "0|.26 .30 .30", "body"), K("barrel", ".40|.29 .31 .35", "body"), K("withers", ".34 70|.26 .30 .30", "body"),
+    K("neckbase", ".28 120|.15 .18 .20", "neck"), K("throat", ".62 -10 -45|.11 .13 .14", "neck"), K("poll", ".12 -260 -60|.15 .17 .16", "head"),
+    K("stop", ".22 -40|.12 .12 .12", "head"), K("nose", ".22 0|.065 .055 .075", "head"),
+  ] },
+  regions: { neck: "throat", chest: "withers", head: "poll" },
+  tail: { knots: [K("tail1", ".16 -60|.11 .11 .10", "tail"), K("tail2", ".12 -40|.045", "tail")] },
+  branches: [
+    { id: "hind", part: "legs", pair: true, root: { sigma: 0.10, angle: 115, out: 0.5 }, dir: [0, 0.1, -1], blend: 0.08, knots: [K("", "0|.14"), K("", ".46|.075"), K("hock", ".10 60|.05"), K("", ".50|.036"), K("hoof", ".06|.045")] },
+    { id: "fore", part: "legs", pair: true, root: { sigma: 0.72, angle: 120, out: 0.5 }, dir: [0.02, 0.08, -1], blend: 0.08, knots: [K("", "0|.11"), K("", ".50|.065"), K("knee", ".10 -40|.045"), K("", ".50|.036"), K("hoof", ".06|.045")] },
+    { id: "horn", part: "horns", pair: true, root: { sigma: 1.80, angle: 25, out: 0.6 }, dir: [-0.55, 0.15, 1], blend: 0.03, knots: [K("", "0|.045"), K("tip", ".60|.012")], coil: null },
+    { id: "ear", part: "ears", pair: true, root: { sigma: 1.78, angle: 70, out: 0.7 }, dir: [-0.3, 1, 0.6], normal: "forward", blend: 0.03, knots: [K("", "0|.03 .012 .012"), K("", ".12|.05 .012 .012"), K("tip", ".14|.01 .012 .012")] },
+  ],
+  contacts: [{ kind: "branches", id: "hind", last: true }, { kind: "branches", id: "fore", last: true }],
+  face: { sigma: 1.95, t: 1, v: 0.2, eyes: { spread: 62, elev: 18, r: 0.06 },
+    marks: [{ kind: "nose", id: "nose", t: 1, v: 0.2, spread: 0, elev: 0, size: 0.03 }] },
+  camera: { yaw: 55, pitch: 8 },
+  look: {
+    slots: { body: "coat", neck: "coat", head: "coat", tail: "coat", legs: "leg", horns: "horn", ears: "coat" },
+    pigments: { coat: [196, 132, 70], patch: [236, 220, 190], belly: [236, 220, 190], leg: [226, 206, 170], horn: [226, 214, 190] },
+    eyes: { rim: [92, 62, 44], iris: [60, 36, 22], pupil: [14, 10, 10], pupil_r: 0.55, iris_r: 0.9 }, nose: [60, 44, 40],
+  },
+};
+
+// every unnamed branch knot gets a name, branch id and position (the levers and the tests name knots)
+for (const f of Object.values(SECTION3)) for (const b of f.branches) b.knots.forEach((k, i) => { if (!k.name) k.name = `${b.id}${i}`; });
+
+// The base forms are the section 3 numbers (SECTION3, verbatim) with the builder's tuning applied (tuning.mjs: each change listed with its
+// before and after, none above +-15 %, the camera none above 10 degrees). Nothing else differs.
+export const SPECIES = Object.fromEntries(Object.entries(SECTION3).map(([k, f]) => [k, applyTuning(f, TUNING.filter((t) => t.species === k))]));
+
+export const ORDER = ["curlop", "wickle", "drapet", "loika", "rupar"];
+export const cloneForm = (f) => structuredClone(f);
+
+// The stand camera: yaw 0 faces the viewer, + turns the face to the viewer's right; pitch raises the camera.
+// Orthographic basis: right, up (screen), toward (the viewer).
+export function cameraBasis({ yaw, pitch }) {
+  const y = (yaw * Math.PI) / 180, p = (pitch * Math.PI) / 180;
+  const right = [Math.sin(y), Math.cos(y), 0], tv = [Math.cos(y), -Math.sin(y), 0];
+  const toward = [tv[0] * Math.cos(p), tv[1] * Math.cos(p), Math.sin(p)];
+  const up = [-tv[0] * Math.sin(p), -tv[1] * Math.sin(p), Math.cos(p)];
+  return { right, up, toward };
+}
