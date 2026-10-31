@@ -20,6 +20,8 @@ typedef struct {
   const char *room_at;    /* the spec path of the rect a move from the graph's roomKey starts at, or NULL */
   int steps;              /* 1: a stepper key says step:<key> on the focused target; 0: it says nothing */
   const char *cur_path;   /* the props path of the focused target; NULL: "focus.cur" (an overlay's is "overlay.focus.cur") */
+  int *stuck;             /* or NULL: set to the direction + 1 (FOCUS_UP .. FOCUS_RIGHT) when a direction lands where the ring is, else 0 (the Vivarium's nudge) */
+  int (*own)(const focus_target_t *t, int n, const char *cur, focus_resolve_t *out, int cap);   /* or NULL: the screen's own answers to selectors, from the targets as the words drew them on the frame of the key; read before the host's */
 } screens_keys_t;
 typedef int (*screens_focus_fn)(focus_target_t *out, int cap);
 /* `opts` is never NULL (pass a zero screens_keys_t for no options). At most FOCUS_TARGETS (64) targets from focus_fn and 16 focus.resolve entries are read. */
@@ -41,9 +43,14 @@ int home_window_painted(void);
 void library_reset(void);   /* Home's Library module: its clock starts again when Home shows again (home_frame.c) */
 int library_swap_pending(uint32_t now);   /* a breathing swap is due this frame: the residents do not step on it (home.c walk_clock) */
 int library_tick(uint32_t now);   /* a breathing swap or a glint step is due: Home is drawn again (home.c home_tick) */
-void vivarium_words(void);   /* the Vivarium's whole: the living window on vivarium.json, the bays along the foot (screens/home.c) */
+void vivarium_words(void);   /* the Vivarium (the collection v2 design): the field (the room view, the house view or the Tucked away page), the chip row and the card (screens/vivarium.c) */
 int vivarium_focus(focus_target_t *out, int cap);
 void vivarium_key(int code);
+void wall_words_all(const char *cur);   /* the Wall: the room rail, the toolbar, the wall of portraits and the card (screens/wall.c) */
+int wall_target_box(const char *id, int r[4]);   /* a Wall target's box as the words place it: 0 when there is none */
+void home_viv_room(const char *cur);   /* the room view's field: the window at the room's crop, its mibis at one scale, the drop spots, the reserved silhouettes, the hand and the marks (screens/home.c) */
+int home_viv_box(const char *id, int r[4]);   /* a room-view target's box as the last draw put it (a resident, a reserved silhouette, a drop spot, a flip): 1, or 0 when there is none */
+void home_viv_nudge(int dx, int dy);   /* the room view's ring nudged by (dx, dy) (a press with nothing beyond) */
 /* One mibi up close (screens/habitat.c): its words, the targets as they drew them, its keys */
 void habitat_words(void);
 int habitat_focus(focus_target_t *out, int cap);

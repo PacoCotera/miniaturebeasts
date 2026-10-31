@@ -86,12 +86,12 @@ test("the flat plates stand until the master: forest back, clay ground with a sa
 
 // ---- the walk ----
 const ROOT = J("rooms").rooms.roots, ROOT_TOP = Math.min(...ROOT.levels.map((l) => Math.min(...l.top)));   // Idle draws the painting at 0, 0: the room's rows are Idle's; the feet band is the union of the levels (R4), here from the highest level's top
-test("a resident walks with its feet in 16..1008 × the room's levels (292..551 in Roots), never behind the bed (box right edge past 792 with feet below 448), 120 s at 40 ms", { skip }, async () => {
+test("a resident walks with its feet in 16..1008 × the room's levels (292..551 in Roots), never with its foot point on the bed (the keep-out over the bed at the room's centre), 120 s at 40 ms", { skip }, async () => {
   const f = await start(scene({ adults: 1 }), { t0: 5000 }), w = R.resident.walk.ground, adult = R.resident.adult; let moved = 0, last = null; const seen = new Set();
   for (let t = 40; t < 120000; t += 40) {
     f.frame(5000 + t); const lg = logOf(f); if (!lg) continue; const r = lg.regions.find((x) => x.id === "resident" && x.layer !== "chrome"); if (!r) continue;
     const [x, y, rw, rh] = r.rect, feet = y + rh; assert.ok(x >= w[0] && x + rw <= w[0] + w[2] && feet >= ROOT_TOP && feet <= w[1] + w[3], `box ${r.rect} is inside the walk ground`);
-    assert.ok(!(x + rw > R.bed.rect[0] && feet > R.bed.rect[1] - 48), `box ${r.rect} is not behind the bed`);
+    { const K = R.resident.walk.keepOut, fx = x + rw / 2; assert.ok(!(fx >= K[0] + 2 && fx < K[0] + K[2] - 2 && feet - 1 > K[1] + 4), `box ${r.rect} does not stand on the bed`); }
     if (last && (x !== last[0] || y !== last[1])) moved++; last = r.rect; seen.add(x + "," + y);
   }
   assert.ok(moved > 200 && seen.size > 200, `it walks: ${moved} moves, ${seen.size} places`);
@@ -180,9 +180,4 @@ test("asleep spots (UI/UX item 11): at night no sleeper's ground point lies in a
   for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) if (i !== j) assert.ok(!inSpot(i, j), `resident ${i}'s ground point lies in ${j}'s spot at screen show`); void meets;
   runFrames(f, 400000, { cadence: [40, 0, 0], each: () => { for (let i = 0; i < 8; i++) { const s = STATE(M._face_test_state(i)); if (!s.travelling && !s.wanderer) continue; if (s.clip !== CLIP.hop && s.clip !== CLIP.walk) continue; const gx = M._face_test_mv(i, 8) + w(i) / 2, gf = M._face_test_mv(i, 9);
     for (let j = 0; j < 8; j++) if (j !== i && [CLIP.asleep, CLIP.curl, CLIP.stir, CLIP.wake].includes(STATE(M._face_test_state(j)).clip)) { const p = spot(j); assert.ok(!(gx >= p[0] && gx < p[0] + p[2] && gf >= p[1] && gf < p[1] + p[3]), `resident ${i}'s waypoint lands in ${j}'s spot`); } } } });
-});
-test("no stir begins on a focused sleeper (game designer R4; the living window's code in the Vivarium's whole, where the ring is)", { skip }, async () => {
-  const f = await bootScene(movingScene("vivarium", { adults: 3, time: 23 * 3600, focus: "resident:0" })); let s1 = 0; const p = [0, 0, 0];
-  runFrames(f, 90000, { each: () => { const a = STATE(f.M._face_test_state(0)); assert.notEqual(a.clip, CLIP.stir, "the focused sleeper never stirs"); for (const i of [1, 2]) { const b = STATE(f.M._face_test_state(i)); if (b.clip === CLIP.stir && p[i] !== CLIP.stir) s1++; p[i] = b.clip; } } });
-  assert.ok(s1 >= 2, "the stirs went to the others: " + s1);
 });

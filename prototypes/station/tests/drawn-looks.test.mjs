@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome, traitState, genomeDigest } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { drawnLooks, standLooksOf, keyToken } from "../src/looks.mjs";
-import { layeredStand, setStandSizes, fitDown, layersFor, composeStand, standPictureId, standVariant, standLayersLoaded } from "../src/layered-stand.mjs";
+import { standFigure, layeredStand, setStandSizes, fitDown, layersFor, composeStand, standPictureId, standVariant, standLayersLoaded } from "../src/layered-stand.mjs";
 import { loadStandLayersFs, loadStandLooksFs, unloadStands, STANDS_DIR } from "../tools/stand-layers-fs.mjs";
 import { standLooks, PODS } from "../tools/make-stand-looks.mjs";
 import { registerPictures } from "../src/pictures.mjs";
@@ -134,10 +134,12 @@ describe("the layered stand", () => {
     };
     const near = (got, want) => assert.ok(Math.abs(got - want) <= 2, `${got} is about ${want}`);
     near(tall("adult", [144, 152], "home"), 54); near(tall("juvenile", [104, 112], "home"), 40);
-    for (const v of ["vivarium", "idle"]) { near(tall("adult", [144, 152], v), 54); near(tall("juvenile", [104, 112], v), 40); }   // design/art-direction.md, Size and pose: the world is one scale
+    for (const v of ["idle"]) { near(tall("adult", [144, 152], v), 54); near(tall("juvenile", [104, 112], v), 40); }   // design/art-direction.md, Size and pose: the world is one scale
+    { const full = (stage) => { const st = layeredStand("S01", stage, [304, 312]), a = composeStand(st, { crown: "leaf crest" }).rgba(); let top = 999, bottom = -1; for (let y = 0; y < 312; y++) for (let x = 0; x < 304; x++) if (a[(y * 304 + x) * 4 + 3] > 128) { top = Math.min(top, y); bottom = Math.max(bottom, y); } return bottom - top + 1; };   // the collection's views (the collection v2 design §3): one factor for every stand, the picture the cut times the factor rounded up
+      for (const [v, f, place] of [["vivarium", 96 / 304, [96, 99]], ["vivariumHouse", 48 / 304, [48, 50]], ["vivariumCard", 144 / 304, [144, 148]]]) for (const stage of ["adult", "juvenile"]) { tall(stage, place, v); near(standFigure(layeredStand("S01", stage, place, v), { crown: "leaf crest" })[3], full(stage) * f); } }
     near(tall("adult", [304, 312], "habitat"), 150); near(tall("juvenile", [304, 312], "habitat"), 110);
     const a = layeredStand("S01", "adult", [144, 152], "home"), b = layeredStand("S01", "adult", [304, 312], "habitat");
-    assert.equal(standPictureId(a, {}), standPictureId(layeredStand("S01", "adult", [144, 152], "vivarium"), {}), "Home and the Vivarium are one scale: one picture");
+    assert.equal(standPictureId(a, {}), standPictureId(layeredStand("S01", "adult", [144, 152], "idle"), {}), "Home and Idle are one scale: one picture");
     assert.notEqual(standPictureId(a, {}), standPictureId({ ...a, figure: [100, 104] }, {}), "another figure size is another picture id: the figure box is in the variant"); assert.ok(b);
     try {
       setStandSizes({ views: { home: { adult: 100 } }, places: ["144x152", "48x48"] });
@@ -193,15 +195,15 @@ describe("four Loikas, four stands", () => {
     wipe();
   });
 
-  test("the same looks are the same stand, the same individual everywhere: Home, the Vivarium's tiles and one mibi up close name its looks the same way", () => {
+  test("the same looks are the same stand, the same individual everywhere: Home, the Vivarium's card and one mibi up close name its looks the same way", () => {
     const st = world(); for (const m of st.mibis) m.paint = { state: "landed" };
     const one = st.mibis[0], looks = drawnLooks(fr, one);
     assert.deepEqual(mibiPictureOf(st, one, [144, 152], settings, "day", "home").looks, looks);
     const h = habitatBuild({ st, sv: sv0(), settings, docked: true, light: "day", focus: null, habId: one.id, meetId: null, armed: false }, hab, frameSpec, home);
     const near = h.requests.find((r) => r.id === h.props.regions.resident.picture); assert.deepEqual([near.size, near.looks], [[304, 312], looks]);
     assert.equal(mibiPictureOf(st, one, [304, 312], settings, "day", "habitat").id, h.props.regions.resident.picture, "the host's swap dither names the same picture");
-    const v = vivariumBuild({ st, sv: sv0(), settings, docked: true, light: "day", focus: null, seen: null }, viv, frameSpec, home);
-    const tile = v.requests.find((r) => r.id === v.props.regions.tiles.items.find((t) => t.id === String(one.id)).picture); assert.deepEqual([tile.size, tile.looks], [[48, 48], looks]);
+    const v = vivariumBuild({ st, sv: sv0(), settings, docked: true, light: "day", focus: "resident." + one.id, seen: null }, viv, frameSpec, home);
+    const card = v.requests.find((r) => r.id === v.props.regions.card.picture); assert.deepEqual([card.size, card.looks], [[144, 148], looks]);   // the card's portrait at 144/304 (the collection v2 design §2)
     registerPictures([...h.requests, ...v.requests], { ...env, mibiGenome: (id) => S.mibiById(st, id)?.genome });
     assert.notEqual(assetOf(near.id).rgba(), null); wipe();
   });

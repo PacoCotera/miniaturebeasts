@@ -337,7 +337,7 @@ test("the rooms spec (R3): the generated file loads; each of the data guards the
     ["guard 3: a join end off its level", (r) => { r.joins[0].ends[0] = [720, 300]; }, /guard 3: .*end 0 \(720, 300\) is not on the level bank/],
     ["guard 3: a join end outside its level's span", (r) => { r.joins[0].ends[1] = [30, 440]; r.joins[0].lower = "bank"; }, /guard 3: .*end 1 \(30, 440\) is not on the level bank/],
     ["guard 6: more than six occluders", (r) => { for (let i = 0; i < 5; i++) r.pieces.push({ ...r.pieces[1], id: "x" + i }); }, /guard 6: .* 8 occluders \(at most 6\)/],
-    ["guard 6: the occluders over 15 % of the window", (r) => { r.pieces[0].rect = [0, 380, 1000, 100]; }, /guard 6: .*over 15 % of the window \(450560 px\)/],
+    ["guard 6: the occluders over 15 % of the window", (r) => { r.pieces[0].rect = [0, 380, 1000, 100]; }, /guard 6: .*over 15 % of the window \(324736 px\)/],
     ["the first level is not main", (r) => { r.levels[0].id = "floor"; r.pieces.forEach((p) => { if (p.level) p.level = "floor"; }); }, /levels.0 is floor, not main/],
     ["a piece kind that is not known", (r) => { r.pieces[3].kind = "fitting"; }, /kind is occluder or back, not fitting/],
   ];

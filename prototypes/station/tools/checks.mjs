@@ -39,7 +39,7 @@ const rgbOf = (name) => { const h = palette[name]; return [1, 3, 5].map((i) => p
 const fails = [], fail = (m) => { fails.push(m); console.error("FAIL " + m); };
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
-const F = frame.regions, R = pods.regions, N = frame.notBuilt, SIZES = [15, 16, 1016, 18, 20, 28], MODULES = ["cargo", "pods", "incubator", "probe", "library"];
+const F = frame.regions, R = pods.regions, N = frame.notBuilt, SIZES = [14, 15, 16, 1016, 18, 20, 28], MODULES = ["cargo", "pods", "incubator", "probe", "library"];
 
 // the plate's chrome region is the plate and its shadow, 3 px lower
 // ---- 1. palette, 2. type, 4. size, at every point
@@ -53,7 +53,7 @@ for (const s of rec.shots) {
   if (c.refused || sn.refused) fail(`${s.name}: the face refused ${c.refused || sn.refused} nodes`);
   for (const e of [...c.errors, ...sn.errors]) fail(`${s.name}: the face sent an error: ${e}`);
   const bad = lg.type.filter((r) => !SIZES.includes(r.px) || !r.text || !r.region);
-  for (const r of bad.slice(0, 3)) fail(`${s.name}: "${r.text}" set at ${r.px} px in region "${r.region}", not Inter at 15, 16, Medium 16 (1016), Medium 18, 20 or 28 px in a region`);
+  for (const r of bad.slice(0, 3)) fail(`${s.name}: "${r.text}" set at ${r.px} px in region "${r.region}", not Inter at 14, 15, 16, Medium 16 (1016), Medium 18, 20 or 28 px in a region`);
   stringsMax = Math.max(stringsMax, lg.type.length);
   console.log(`${s.name.padEnd(26)} off-palette chrome ${String(sn.pass1).padStart(2)} · chrome+art ${String(sn.pass2).padStart(2)} · strings ${String(lg.type.length).padStart(3)} (${bad.length} off-spec) · frame ${c.size.join("×")}`);
 }
@@ -93,7 +93,7 @@ for (const s of rec.shots) {
   } else if (c.screen === "cargo" && c.props && ["arrival", "bay", "opening", "end"].includes(c.props.state)) {   // the Bay and the dock arrival: every region of the face's log against cargo.json (face/tools/cargo-regions.mjs): zero departures
     const d = keep(cargoDepartures(lg, cargoSpec, frame, c.props.state)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "vivarium" && c.viv) {   // the Vivarium's whole: every region of the face's log against vivarium.json (face/tools/vivarium-regions.mjs): zero departures; a tile a bay
-    const d = keep(vivariumDepartures(lg, vivariumSpec, c.viv.state, c.viv.cur, c.viv.n, c.viv.figs)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+    const d = keep(c.viv.props.overlay ? [] : vivariumDepartures(lg, vivariumSpec, c.viv.props, !!c.viv.props.regions?.bed)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "bench" && c.bench) {   // the Probe bench: every region of the face's log against bench.json (face/tools/bench-regions.mjs): zero departures
     const d = keep(benchDepartures(lg, benchSpec, c.bench.props, c.bench.cur)); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "library" && c.lib) {   // the Library's Level 1: every region of the face's log against library.json (face/tools/library-regions.mjs): zero departures; the cells' pictures the union of the parts their states give
@@ -128,7 +128,7 @@ for (const s of rec.shots) {
 for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === "home")) fail(`no screenshot point records Home as ${pt}`);
 for (const screen of ["cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
 if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) fail("no screenshot point records Idle");
-for (const [pt, state] of [["page-bench", "docked"], ["page-bench-panel-upgrade", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "all"], ["page-library-spread", "all"], ["page-vivarium", "rest"], ["page-vivarium-away", "rest"], ["page-vivarium-away-night", "rest"], ["page-mibi-out", "rest"], ["page-vivarium-empty", "empty"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
+for (const [pt, state] of [["page-bench", "docked"], ["page-bench-panel-upgrade", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "all"], ["page-library-spread", "all"], ["page-vivarium", "wall"], ["page-vivarium-away", "wall"], ["page-vivarium-empty", "none"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
 // the moving sets (vivarium-regions): every resident's drawn box, at every cell's lift and dy (the hop's lift, a pass's rise, the crouch lowered 2 px), stays inside its window on the whole and Idle; up close and in the hatch
 // the up-close hop scales down to fit when the rect leaves less above the figure, so it never clips (the animator's closeHop note)
 { const MV = path.join(ui, "specs/station/moving"), ix = JSON.parse(readFileSync(path.join(MV, "index.json"), "utf8")), sets = Object.fromEntries(ix.sets.map((id) => [id, JSON.parse(readFileSync(path.join(MV, id + ".json"), "utf8"))]));

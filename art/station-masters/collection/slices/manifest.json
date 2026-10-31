@@ -1,0 +1,50 @@
+{
+ "mark-asleep-16": {
+  "size": [
+   16,
+   16
+  ],
+  "src": "source/marks.py",
+  "sha256": "0a816edc77e136b74fd08056fc16b3601e237401520c365a83c1e66e43148dad"
+ },
+ "mark-cold-16": {
+  "size": [
+   16,
+   16
+  ],
+  "src": "source/marks.py",
+  "sha256": "b2e9f425a9a96648b14617f5b4696eed4e281ee6e97f451ef2d1ddf541031750"
+ },
+ "mark-companion-outline-16": {
+  "size": [
+   16,
+   16
+  ],
+  "src": "source/marks.py",
+  "sha256": "d16e490d9d278df8b91d12224ce29b572bc4c8049c351855c042eb87fa822176"
+ },
+ "mark-companion-solid-16": {
+  "size": [
+   16,
+   16
+  ],
+  "src": "source/marks.py",
+  "sha256": "a3c2ef6cd36e01f649d301813d7b3980e50f57b99d3cf8becb59d81c8df36992"
+ },
+ "mark-elder-16": {
+  "size": [
+   16,
+   16
+  ],
+  "src": "source/marks.py",
+  "sha256": "057da2b83673b2af20f10aaeec6d2a4c0b65bb4ca2bf539ef9fda5ec406cec4e"
+ },
+ "mark-heart-16": {
+  "size": [
+   16,
+   16
+  ],
+  "src": "source/marks.py",
+  "sha256": "8fb280b1c65b48a1a94ccc03f746176017d6691a4181f5fd920eb30cfa6fd546"
+ }
+}

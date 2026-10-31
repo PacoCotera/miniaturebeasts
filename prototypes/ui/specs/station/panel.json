@@ -131,7 +131,7 @@
    "cards": {
     "add": {
      "name": "Add the room",
-     "line": "Eight more places to live"
+     "line": "{Room} settles in {n} {turn|turns}"
     },
     "keep": {
      "name": "Not now",
