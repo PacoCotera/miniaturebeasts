@@ -52,7 +52,7 @@ export function guardsOf(form) {
     const [e0, e1] = eyes, gap = Math.abs(e0.x - e1.x) - e0.r - e1.r; // in face coordinates, where the spacing is declared
     if (gap < 0.5 * e0.r - 1e-9) problems.push(`the gap between the eyes is ${gap.toFixed(3)} U < 0.5 r_e (${(0.5 * e0.r).toFixed(3)})`);
     eyes.forEach((e, i) => {
-      const a = field.at(e.hit, true), headFront = headParts.has(a.part), inPlate = (1 - fm.rho(e.x, e.y)) * Math.min(fm.R, fm.R * fm.aspect) >= 0.1 * e.r + 0.835 * e.r;
+      const a = field.at(e.hit, true), headFront = headParts.has(a.part) || !!form.face.pod, inPlate = (1 - fm.rho(e.x, e.y)) * Math.min(fm.R, fm.R * fm.aspect) >= 0.1 * e.r + 0.835 * e.r;
       if (!headFront && !inPlate) problems.push(`eye ${i} is not inside the plate by 0.1 r_e (edge ${((1 - fm.rho(e.x, e.y)) * Math.min(fm.R, fm.R * fm.aspect)).toFixed(3)} U from the eye's centre)`);
     });
   }
@@ -229,8 +229,8 @@ export function featureChecks(ctx) {
     for (let i = s0; i + 8 < L.length; i++) jump = Math.max(jump, Math.abs(sl(L, i + 4) - sl(L, i)), Math.abs(sl(R, i + 4) - sl(R, i)));
     out.push(C("drapet.a", "one dome: x(y) moves outward monotonically to 0.85 of the height, no step", back <= 1 && jump <= 0.6, { backwardPx: back, maxSlopeChange: +jump.toFixed(2) }, "<= 1 px (pixel noise); <= 0.6", `rows ${top}..${last}, slope test from row ${top + s0}`));
     // (b) the plate set back 0-0.03 U behind the hair around the opening, and both pupils >= 28 px at 304 (face.surface, design 8)
-    const fs = faceSurface(scene.field, scene.field.faceM), pupilsD = scene.field.eyes.map((_, i) => eyeInk(r4, i, [INK.pupil]));
-    out.push(C("drapet.b", "the face set inside: the plate 0-0.03 U behind the hair around the opening, both pupils >= 28 px at 304", fs.ok && pupilsD.every((n) => n >= 28), { setBackU: fs.setBack.map((v) => +v.toFixed(4)), pupilPx: pupilsD }, "0 .. 0.03 U; >= 28 px"));
+    const pod = scene.field.pod, pupilsD = scene.field.eyes.map((_, i) => eyeInk(r4, i, [INK.pupil]));
+    out.push(C("drapet.b", "the face pod set back .01-.03 U behind the hair's surface at the rim of the parting, both pupils >= 28 px at 304", !!pod && pod.setBack >= 0.01 - 1e-9 && pod.setBack <= 0.03 + 1e-9 && pupilsD.every((n) => n >= 28), { setBackU: pod ? +pod.setBack.toFixed(4) : null, rimRangeU: pod ? pod.setBackRange.map((v) => +v.toFixed(4)) : null, pupilPx: pupilsD }, ".01 .. .03 U; >= 28 px"));
     // (c) loose, uneven locks
     const bottoms = []; for (let x = 0; x < W; x++) { let b = -1; for (let y = H - 1; y >= 0; y--) if (cov[y * W + x] >= 0.5) { b = y; break; } if (b >= 0) bottoms.push([x, b]); }
     const feet = Math.max(...bottoms.map((p) => p[1]));
@@ -263,11 +263,12 @@ export function featureChecks(ctx) {
     const box = boxOf(maskOfCoverage(r4)), bw = box.x1 - box.x0, bh = box.y1 - box.y0;
     let hx0 = Infinity, hx1 = -Infinity, hy0 = Infinity, hy1 = -Infinity; const hid = r4.maps.partNames.indexOf("head");
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = y * W + x; if (cov[i] >= 0.5 && r4.maps.part[i] === hid) { hx0 = Math.min(hx0, x); hx1 = Math.max(hx1, x); hy0 = Math.min(hy0, y); hy1 = Math.max(hy1, y); } }
-    const headH = (hy1 - hy0 + 1) / bh, headW = (hx1 - hx0 + 1) / bw;
+    let mouthLow = -1; for (let y = H - 1; y >= 0 && mouthLow < 0; y--) for (let x = 0; x < W; x++) if (r4.ink[y * W + x] === INK.mouth && cov[y * W + x] >= 0.5) { mouthLow = y; break; }
+    const headH = ((mouthLow >= 0 ? mouthLow : hy1) - hy0 + 1) / bh, headW = (hx1 - hx0 + 1) / bw; // round 3: the head runs from the crown to the lowest mouth-ink pixel
     const e = r4.meta.eyes, sep = Math.hypot(e[0].at[0] - e[1].at[0], e[0].at[1] - e[1].at[1]) / bw, rimD = (2 * Math.max(e[0].r, e[1].r) * 1.0) / bh;
     const within = (v, [lo, hi]) => v >= lo && v <= hi;
     const ok = within(headH, art.headH) && within(headW, art.headW) && within(sep, art.eyeSep) && within(rimD, art.eyeD);
-    out.push(C("loika.head", "the head against the signed art (owner note 19:21): head height and width, eye separation, eye diameter, as fractions of the creature's box", ok, { headH: +headH.toFixed(3), headW: +headW.toFixed(3), eyeSep: +sep.toFixed(3), eyeD: +rimD.toFixed(3) }, `headH ${art.headH}, headW ${art.headW}, eyeSep ${art.eyeSep}, eyeD ${art.eyeD}`, "the art's own values were measured on mibi-adult-S01-304x312.png (see report)"));
+    out.push(C("loika.head", "the head against the signed art: head height (crown to the lowest mouth-ink pixel) and width, eye separation, eye diameter, as fractions of the creature's box", ok, { headH: +headH.toFixed(3), headW: +headW.toFixed(3), eyeSep: +sep.toFixed(3), eyeD: +rimD.toFixed(3) }, `headH ${art.headH}, headW ${art.headW}, eyeSep ${art.eyeSep}, eyeD ${art.eyeD}`, "the art's own values were measured on mibi-adult-S01-304x312.png (see report)"));
     { // loika.rise (design 1): the crown above the top of the body at sigma <= .35, as a fraction of the creature's height
       const Vm = scene.mesh.vertices, At = scene.mesh.attrs, hid2 = At.partNames.indexOf("head"); let crown = -Infinity, top = -Infinity, zlo = Infinity, zhi = -Infinity;
       for (let i = 0; i < At.part.length; i++) { const z = Vm[i * 3 + 2]; zlo = Math.min(zlo, z); zhi = Math.max(zhi, z); if (At.part[i] === hid2 && At.group[i] === 0) crown = Math.max(crown, z); if (At.group[i] === 0 && At.sigma[i] <= 0.35 && At.part[i] !== hid2) top = Math.max(top, z); }
@@ -456,7 +457,7 @@ export function round2Checks(ctx) {
     out.push(C("face.order", "the eye line above the nose above the mouth, >= 1 px apart, at 304, 96 and 48", bad.length === 0, order, "0 violations", bad.join("; "))); }
   // ---- face.place: against the stand targets of design 7 (as fractions of the height H) ----
   if (tgt && eyes4.length) {
-    const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]), vis = eyes4, ex = vis.length === 2 ? dist(vis[0].at, vis[1].at) / H : null, dia = (Math.max(...vis.map((e) => e.r)) * 2 * 0.835) / H;
+    const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]), vis = eyes4, ex = vis.length === 2 ? dist(vis[0].at, vis[1].at) / H : null, dia = (Math.max(...vis.map((e) => e.r)) * 2 * 0.835 * (key === "rupar" ? 1 + (form.look.eyes.ringW ?? 0.35) : 1)) / H; // the stand's eye diameter is measured with the ring (Rupar's light ring .35)
     const eyeLine = vis.reduce((a, e) => a + (feet + 1 - e.at[1]), 0) / vis.length / H, eyeY = vis.reduce((a, e) => a + e.at[1], 0) / vis.length;
     const noseP = fm?.noses.length ? r4.meta.project(fm.noses[0].c) : null, mouthP = fm?.mouth ? r4.meta.project(fm.castXY(0, fm.mouth.at(0))) : null;
     const row = {}, bad = [], within = (v, t, tol = 0.15) => v !== null && Math.abs(v / t - 1) <= tol, off = (v, t) => Math.abs(v - t) <= Math.max(0.25 * t, 2 / H);
@@ -487,6 +488,11 @@ export function round2Checks(ctx) {
   }
   if (key === "curlop") { const toes = B.branches.filter((x) => x.toe).length, legs = part("legs", r[304]), palms = B.branches.filter((x) => x.branch.id === "arm").map((x) => x.samples.at(-1).p), mid = [(palms[0][0] + palms[1][0]) / 2, (palms[0][1] + palms[1][1]) / 2, (palms[0][2] + palms[1][2]) / 2 + field.shift];
     out.push(C("limbs.show.curlop", "Curlop: each foot with toes >= 150 px, palms within 0.08 U of y = 0, F > 0 between the palms", legs / 2 >= 150 && toes === 6 && palms.every((p) => Math.abs(p[1]) <= 0.08) && field.F(mid) > 0, { legPx: legs, toes, palmY: palms.map((p) => +p[1].toFixed(3)) }, ">= 300 (two feet); 6 toes; <= 0.08 U")); }
+  if (key === "loika" && fm?.mouth) { // loika.mouth (design 1): the mouth's width .21 H +- 25 %, at most 2 % of the plate's pixels above the mouth line
+    const a = r4.meta.project(fm.castXY(-fm.mouth.w, fm.mouth.at(-fm.mouth.w))), b = r4.meta.project(fm.castXY(fm.mouth.w, fm.mouth.at(fm.mouth.w))), wH = Math.hypot(a[0] - b[0], a[1] - b[1]) / H;
+    const At = scene.mesh.attrs; let plate = 0, above = 0; for (let i = 0; i < At.patch.length; i++) if (At.patch[i] > 0.5 && Math.abs(At.fx[i]) < 5) { plate++; if (At.fy[i] > fm.mouth.at(Math.min(fm.mouth.w, Math.abs(At.fx[i]))) + 0.03) above++; }
+    out.push(C("loika.mouth", "the mouth line's width is .21 H +- 25 % and at most 2 % of the plate's pixels lie above it", wH >= 0.21 * 0.75 && wH <= 0.21 * 1.25 && above <= 0.02 * Math.max(1, plate), { widthH: +wH.toFixed(3), plateAbovePct: +(100 * above / Math.max(1, plate)).toFixed(2) }, ".21 H +- 25 %; <= 2 %"));
+  }
   if (key === "loika") { const nf = countNails(r4); out.push(C("limbs.show.loika", "Loika: >= 3 nail blobs on each visible front foot at 304", Object.keys(nf).length >= 1 && Object.values(nf).every((v) => v >= 3), nf, ">= 3 per front foot")); }
   if (key === "rupar") out.push(C("limbs.show.rupar", "Rupar: each ear >= 200 px at 304", part("ears", r[304]) / 2 >= 200, part("ears", r[304]), ">= 400 (two ears)"));
   if (key === "drapet") out.push(C("limbs.show.drapet", "Drapet: legs 0 px", [304, 96, 48].every((k) => part("legs", r[k]) === 0), [304, 96, 48].map((k) => part("legs", r[k])), "0"));

@@ -51,7 +51,8 @@ test("the field is nearly 1-Lipschitz near the surface: |F(p) - F(q)| <= 1.5 |p 
     }
     // the thin lens leaves of Loika's crest (flatness 5.7 : 1) and Rupar's ears reach 2.7 and more at their rim: the bound k0 (k0 - 1) / k1 is not 1-Lipschitz
     // there (round 2 passed Rupar by the luck of its sample: the same ears measure 5.6 on a larger one). The rest of the body keeps 1.5.
-    assert.ok(worst <= 1.5, `${k}: ${worst}`); assert.ok(worstFlat <= 8, `${k} thin lens: ${worstFlat}`);
+    // Drapet's parting is a smooth bowl in the hair, .25 U deep over about .2 U: its slope adds up to 1.8 to the hair's own 1 (round 3, design 3: nothing is cut)
+    assert.ok(worst <= (k === "drapet" ? 3 : 1.5), `${k}: ${worst}`); assert.ok(worstFlat <= 8, `${k} thin lens: ${worstFlat}`);
   }
 });
 test("100,000 evaluations on Curlop take under 1 s", () => {
@@ -59,6 +60,6 @@ test("100,000 evaluations on Curlop take under 1 s", () => {
   for (let i = 0; i < 100000; i++) s += f.F3(lo[0] + rnd() * (hi[0] - lo[0]), lo[1] + rnd() * (hi[1] - lo[1]), lo[2] + rnd() * (hi[2] - lo[2]));
   const ms = performance.now() - t; assert.ok(ms < 1000, `${ms} ms`);
 });
-test("the eyes are cast to the surface: each eye sphere protrudes 0.45 r and the field has no hole at its centre", () => {
+test("the eyes are cast to the surface: each eye sphere protrudes its own share of r (.45, Loika .20) and the field has no hole at its centre", () => {
   for (const k of ORDER) { const { f } = make(k); for (const e of f.eyes) { assert.ok(f.F(e.c) > 0); assert.ok(Math.abs(f.dCast(e.hit[0], e.hit[1], e.hit[2])) < 1e-4); } }
 });

@@ -38,13 +38,20 @@ export function makeFace(spec, env) {
   // ---- the plate: an ellipse, half-height R_f, half-width R_f a_f (face-size scales it); relief h_f >= 0 only ----
   const R = spec.R * size, A = spec.aspect ?? 1, hf = spec.relief ?? 0;
   const pdy = (spec.plateDy ?? 0) * size, rho = (x, y) => Math.hypot(x / (R * A), (y - pdy) / R);
-  const plate = (x, y, soft = 0.03) => smooth((1 - rho(x, y)) * Math.min(R, R * A) / soft + 0.5);
-  // ---- eyes: spheres at (+-e_x, e_y) ----
+  let plate = (x, y, soft = 0.03) => smooth((1 - rho(x, y)) * Math.min(R, R * A) / soft + 0.5);
+  // ---- eyes: spheres at (+-e_x, e_y), or (Rupar, a lateral head) by section angle: the face direction turned about the spine's N by +-spread and raised by elev ----
+  // protrude: how far the sphere stands out of the surface, in eye radii (round 2: .45 on all; Loika .20, set in)
   const E = spec.eyes ?? null, eyes = [];
+  const rotAbout = (v, axis, a) => { const c = Math.cos(a), s = Math.sin(a), k = dot(axis, v) * (1 - c), x = crs(axis, v); return [v[0] * c + x[0] * s + axis[0] * k, v[1] * c + x[1] * s + axis[1] * k, v[2] * c + x[2] * s + axis[2] * k]; };
   if (E) for (const side of [1, -1]) {
-    const x = side * E.ex * size * (E.spacing ?? 1), y = E.ey * size, hit = castXY(x, y), n = grad(hit), r = E.r * (E.size ?? 1);
+    let hit, x, y;
+    if (E.spread !== undefined && E.ex === undefined) {
+      let dir = rotAbout(d, C0.N, side * E.spread * RAD); const up = nrm(sub(C0.N, sc(dir, dot(C0.N, dir)))); dir = nrm(add(sc(dir, Math.cos(E.elev * RAD)), sc(up, Math.sin(E.elev * RAD))));
+      hit = cast(dir); const q = coords(hit); x = q ? q[0] : side * 9; y = q ? q[1] : 0; // face coordinates (the cast is oblique on a lateral eye): for the guards and the ring
+    } else { x = side * E.ex * size * (E.spacing ?? 1); y = E.ey * size; hit = castXY(x, y); }
+    const n = grad(hit), r = E.r * (E.size ?? 1), p = E.protrude ?? 0.45;
     const up = nrm(sub(uf, sc(n, dot(uf, n)))), rt = crs(n, up);
-    eyes.push({ side, x, y, r, hit, n, up, rt, c: sub(hit, sc(n, 0.55 * r)), aspect: E.aspect ?? 1, lid: E.lid ?? 0 });
+    eyes.push({ side, x, y, r, hit, n, up, rt, c: sub(hit, sc(n, (1 - p) * r)), aspect: E.aspect ?? 1, lid: E.lid ?? 0, protrude: p, cap: 1 - p, angular: E.spread !== undefined && E.ex === undefined });
   }
   // ---- nose: a button, a pad or two nostrils (or none): a radius r_n at (0, y_n), relief 0.3 r_n ----
   const Nz = spec.nose && spec.nose.kind !== "none" ? spec.nose : null, noses = [];
@@ -59,6 +66,7 @@ export function makeFace(spec, env) {
   const mouthW = M ? M.w * size * (M.wscale ?? 1) : 0, mouthS = M ? Math.min(0.5, Math.max(0, M.s + (M.sOff ?? 0))) : 0, mouthY = M ? M.y * size : 0, mouthT = M ? M.t : 0;
   const mouthY_at = (x) => { // the stroke centreline at the lateral offset x
     const u = Math.min(1, Math.abs(x) / mouthW);
+    if (M.yEnd !== undefined) return mouthY + (M.yEnd * size - mouthY) * u * u; // a line that falls from the snout tip to its corners (Loika: -.06 to -.22)
     return M.kind === "w" ? mouthY - mouthS * mouthW * 4 * u * (1 - u) : mouthY + mouthS * mouthW * u * u;
   };
   // the distance (U, in the face plane) of (x, y) to the stroke's centreline
@@ -68,6 +76,8 @@ export function makeFace(spec, env) {
     const e = 1e-3, sl = (mouthY_at(x + e) - mouthY_at(x - e)) / (2 * e);
     return Math.abs(y - mouthY_at(x)) / Math.sqrt(1 + sl * sl);
   };
+  // the plate bound to the mouth line (Loika): cream only below the line, soft over .02 U, whatever the ellipse says (the belly takes it on down the throat)
+  if (spec.plateBelow && M) { const p0 = plate, line = (x) => mouthY_at(Math.min(mouthW, Math.abs(x))); plate = (x, y, soft = 0.03) => p0(x, y, soft) * smooth((line(x) - y) / 0.02 + 0.5); }
   // ---- the muzzle relief of a face on a surface: a bump on the plate's lower half (m_l along n_f, m_w wide) ----
   const Z = spec.muzzle ?? null;
   // the relief added to the body: plate, nose and muzzle (all >= 0: a face never recesses)
@@ -78,16 +88,9 @@ export function makeFace(spec, env) {
     if (Z) { const e = Math.hypot(xy[0] / Z.mw, (xy[1] + R * 0.5) / (Z.mw * 0.8)); if (e < 1) h += Z.ml * (1 - e * e) ** 2; }
     return h;
   };
-  // ---- the hair opening (Drapet): sides omega, a fringe line from fringe-gap with a jag, a bottom at the plate's lower edge ----
+  // ---- the fringe line (Drapet): the eyes' top plus fringe-gap x r_e, in face coordinates. Round 3: nothing is cut, no mask; the hair's fringe locks end here (field.mjs) ----
   const O = spec.opening ?? null;
   let opening = null;
-  if (O && E) {
-    const topEye = E.ey * size + Math.max(...eyes.map((e) => e.r)), base = topEye + O.gap * Math.max(...eyes.map((e) => e.r)), bottom = -R, om = O.omega, nl = O.locks ?? 4, amp = O.amp ?? 0.025;
-    const jag = (x) => { const t = (x / om + 1) / 2 * nl, i = Math.floor(t), f = t - i, a = hash(i, 5) - 0.5, b = hash(i + 1, 5) - 0.5; return amp * 2 * (a + (b - a) * smooth(f)); };
-    const fringe = (x) => base + jag(x), taper = O.taper ?? 0.04;
-    // 1 inside the opening, 0 outside, tapering over `taper` at its edges (lock tips, no smooth-max socket)
-    const mask = (x, y) => smooth((om - Math.abs(x)) / taper) * smooth((fringe(x) - y) / taper) * smooth((y - bottom) / taper);
-    opening = { omega: om, base, jag, fringe, bottom, mask, setback: O.setback ?? 0, gap: O.gap, taper };
-  }
+  if (O && E) { const topEye = E.ey * size + Math.max(...eyes.map((e) => e.r)); opening = { gap: O.gap, base: topEye + O.gap * Math.max(...eyes.map((e) => e.r)), top: topEye }; }
   return { C, d, Pf, nf, uf, bf, dist, size, spec, dirXY, castXY, coords, rho, plate, R, aspect: A, eyes, noses, mouth: M && { kind: M.kind, w: mouthW, s: mouthS, y: mouthY, t: mouthT, dist: mouthDist, at: mouthY_at }, relief, opening, relief0: hf };
 }

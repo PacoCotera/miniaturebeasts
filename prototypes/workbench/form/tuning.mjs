@@ -4,6 +4,26 @@
 export const TUNING = [
   { species: "rupar", path: "camera.yaw", after: 50, why: "overlap48 (floor .62): the design's 45/4 measured .610 at 48 px on this build (the design's .622 was run on a scratch copy): yaw +5 degrees" },
   { species: "rupar", path: "camera.pitch", after: 8, why: "same: pitch +4 degrees (a search over the allowance: .643 at 50/8 on the 1/150 silhouette against .606 at 50/4)" },
+  { species: "loika", path: "camera.yaw", after: -30, why: "face.place and overlap: at the design's -40/12 the eye separation was .203 (needs >= .226): yaw +10 degrees (the pitch stays 12: more pitch lifts the nose offset but costs the overlap floor)" },
+  { species: "loika", path: "face.eyes.ex", after: 0.48, why: "face.place: eye separation .227 H at e_x .46 against >= .226: +4 % for margin (the 3D separation test holds within 10 % of 2 e_x)" },
+  { species: "loika", path: "face.nose.y", after: -0.085, why: "face.order: the nostrils sat below the mouth's centroid (nose at 148 px, mouth at 145 at 304): -15 % (higher)" },
+  { species: "loika", path: "face.mouth.y", after: -0.069, why: "face.order and loika.head: the mouth line +15 % lower at the tip" },
+  { species: "loika", path: "face.mouth.yEnd", after: -0.253, why: "same: the corners +15 % lower" },
+  { species: "rupar", path: "face.eyes.r", after: 0.086, why: "face.ink.304 and face.place: the eye's pupil was 12 px against >= 28 and its diameter with the ring .041 H against >= .053: +15 %" },
+  { species: "rupar", path: "face.mouth.y", after: -0.115, why: "face.mouth and face.order: the mouth ink lay level with the nose (99 px) at 304: +15 % lower" },
+  { species: "rupar", path: "face.mouth.w", after: 0.138, why: "face.mouth: the stroke was 5 px long against >= 10: +15 %" },
+  { species: "rupar", path: "face.R", after: 0.23, why: "face.ink.96: the plate was 17 px at 96 against >= 30: +15 %" },
+  { species: "curlop", path: "face.nose.y", after: -0.13, why: "face.place: the nose .021 H under the eye line against >= .0255 (+13 % lower than the round 2 tuning's -.115)" },
+  { species: "curlop", path: "face.mouth.y", after: -0.21, why: "face.place: the mouth .034 H under the eye line against >= .036 (+14 % lower than the round 2 tuning's -.184)" },
+  { species: "curlop", path: "face.nose.r", after: 0.033, why: "face.ink.304: the nose was 4 px against >= 6 (+15 % over the round 2 tuning's .0287)" },
+  { species: "curlop", path: "face.eyes.ey", after: 0.092, why: "face.place: the nose .023 H under the eye line against >= .0255 with the nose at the allowance's end: the eyes +15 % higher (a camera change cost the overlap floor)" },
+  { species: "curlop", path: "camera.yaw", after: 49, why: "face.place: the eye separation .157 H at the design's e_x .52 against >= .168 (the 3D separation test keeps e_x near the chord) and the nose: yaw -10 degrees turns the face to the viewer (.175 H)" },
+  { species: "curlop", path: "camera.pitch", after: 12, why: "same: pitch +2 degrees" },
+  { species: "rupar", path: "face.mouth.t", after: 0.01725, why: "face.mouth: the stroke was .4 px wide against >= 1.5: +15 %" },
+  { species: "drapet", path: "camera.yaw", after: 36, why: "face.place and drapet.face: the face pod turned 46 degrees from the viewer showed 1750 plate px against the stand's ~2300 and the far eye hid: yaw -10 degrees" },
+  { species: "drapet", path: "face.eyes.r", after: 0.125, why: "face.place: the eye's visible diameter .076 H against >= .080 (the stand's eyes are 26 px, ours 21): +8.7 % over the round 2 tuning's .115 (more would break the corner gap guard at eye-size 1.2 and spacing .85)" },
+  { species: "drapet", path: "face.nose.y", after: -0.046, why: "face.place: the nose .024 H under the eye line against >= .027: +15 % lower" },
+  { species: "drapet", path: "camera.pitch", after: 19, why: "face.place: the nose .026 H under the eye line against >= .027: pitch +3 degrees (.0285)" },
 ]; // round 3 tuning; round 2's list is TRIAL2 in species-trial.mjs, folded into ROUND3
 
 const walk = (o, path) => { const ps = path.split("."); for (let i = 0; i < ps.length - 1; i++) o = o[ps[i]]; return [o, ps.at(-1)]; };

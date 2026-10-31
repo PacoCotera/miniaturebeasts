@@ -36,7 +36,7 @@ export function makeMaterial(form, sizeKey, scale, opts = {}) {
   }
   // the shaded albedo and normal bend of a pixel. ctx: { p, n, T, sigma, group, pigment, h (half vector) }
   function surface(ctx) {
-    if (!on || kind === "skin") {
+    if (!on || kind === "skin" || ctx.part === "face") { // the face pod of a hair creature is skin: no strands, no sheen
       if (pores > 0) { const q = noise3(ctx.p[0] / 0.02, ctx.p[1] / 0.02, ctx.p[2] / 0.02, 9); return { k: 1 + pores * q, n: ctx.n, sheen: 0, gloss: M.gloss ?? 0.25 }; }
       return { k: 1, n: ctx.n, sheen: 0, gloss: kind === "skin" ? M.gloss ?? 0.25 : 0 };
     }
@@ -104,9 +104,10 @@ export function paintMarks(look, Mat, ctx, col) {
     if (mk.kind === "inner" && ctx.part === mk.part && Math.abs(ctx.angle) < 75) col = mix(col, pig[mk.pigment ?? "inner"], smooth((75 - Math.abs(ctx.angle)) / 25));
   }
   if (ctx.patch > 0) col = mix(col, pig.patch ?? pig.belly ?? col, edge(ctx.patch));
-  if (look.eyering && ctx.eyes && Math.abs(ctx.fx) < 5) { // the eye surround: a light ring round each eye on the skin, r_e .. 1.5 r_e
-    let m = 0; for (const e of ctx.eyes) { const d = Math.hypot(ctx.fx - e.x, ctx.fy - e.y) / e.r; m = Math.max(m, smooth((look.eyering.outer - d) / 0.25) * smooth((d - 0.8) / 0.2)); }
+  if (look.eyering && ctx.eyes) { // the eye surround: a light ring round each eye on the skin, from under the eye to outer x r_e, by distance from the eye's hit point (round 3: 3D, so a lateral eye's ring is round)
+    let m = 0; for (const e of ctx.eyes) { const d = Math.hypot(ctx.p[0] - e.hit[0], ctx.p[1] - e.hit[1], ctx.p[2] - e.hit[2]) / e.r; m = Math.max(m, smooth((look.eyering.outer - d) / 0.25) * smooth((d - 0.5) / 0.15)); }
     if (m > 0) col = mix(col, pig.ring ?? pig.patch, m);
+    if (ctx.out) ctx.out.ring = m;
   }
   return col;
 }

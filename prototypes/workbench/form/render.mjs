@@ -103,8 +103,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
   const eyeH = eyes.map((e) => { const v = [Hh[0] * 0.45 + e.n[0] * 0.55, Hh[1] * 0.45 + e.n[1] * 0.55, Hh[2] * 0.45 + e.n[2] * 0.55], l = Math.hypot(...v); return v.map((x) => x / l); });
   const Mat = makeMaterial(form, sizeKey, scale, opts), groupNames = scene.field.groups.all.map((g) => g.id);
   const rimStrength = 0.15;
-  const eyeCapCos = 0.55;
-  for (let sy2 = 0; sy2 < SH; sy2++) for (let sx2 = 0; sx2 < SW; sx2++) {
+    for (let sy2 = 0; sy2 < SH; sy2++) for (let sx2 = 0; sx2 < SW; sx2++) {
     const o = sy2 * SW + sx2, t = tri[o]; if (t < 0) continue;
     const a = F[t * 3], b = F[t * 3 + 1], c = F[t * 3 + 2], w1 = B1[o], w2 = B2[o], w0 = 1 - w1 - w2;
     let nx = Nn[a * 3] * w0 + Nn[b * 3] * w1 + Nn[c * 3] * w2, ny = Nn[a * 3 + 1] * w0 + Nn[b * 3 + 1] * w1 + Nn[c * 3 + 1] * w2, nz = Nn[a * 3 + 2] * w0 + Nn[b * 3 + 2] * w1 + Nn[c * 3 + 2] * w2;
@@ -115,9 +114,11 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     let col = partSlotCol[part], inkCode = INK.body, spec = 0, matte = 1;
     const pv = [px, py, pz];
     const Tv = [A.T[a * 3] * w0 + A.T[b * 3] * w1 + A.T[c * 3] * w2, A.T[a * 3 + 1] * w0 + A.T[b * 3 + 1] * w1 + A.T[c * 3 + 1] * w2, A.T[a * 3 + 2] * w0 + A.T[b * 3 + 2] * w1 + A.T[c * 3 + 2] * w2];
-    const ctxM = { p: pv, n: [nx, ny, nz], T: Tv, sigma: I(A.sigma), group: groupNames[A.group[a]], h: Hh };
+    const ctxM = { p: pv, n: [nx, ny, nz], T: Tv, sigma: I(A.sigma), group: groupNames[A.group[a]], h: Hh, part: A.partNames[part] };
     // the marks, painted in a fixed order over the slot's pigment (design 1.4)
-    col = paintMarks(look, Mat, { ...ctxM, part: A.partNames[part], u0: I(A.u0), angle: I(A.angle), belly: I(A.belly), patch: I(A.patch), fx: I(A.fx), fy: I(A.fy), eyes: faceM?.eyes, col }, col);
+    const mout = {};
+    col = paintMarks(look, Mat, { ...ctxM, out: mout, part: A.partNames[part], u0: I(A.u0), angle: I(A.angle), belly: I(A.belly), patch: I(A.patch), fx: I(A.fx), fy: I(A.fy), eyes: faceM?.eyes, col }, col);
+    if (mout.ring > 0.5 && !partIsEye[part]) inkCode = INK.rim; // the skin ring round an eye is the eye's rim ink
     const surf = Mat.surface(ctxM); nx = surf.n[0]; ny = surf.n[1]; nz = surf.n[2];
     // emission: ramped toward the glow pigment
     const emv = I(A.emission);
@@ -129,10 +130,10 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
       const cth = ux * e.n[0] + uy * e.n[1] + uz * e.n[2], th = Math.acos(Math.max(-1, Math.min(1, cth)));
       // the eye plane: stretched along the face's up by 1/aspect (an almond is wider than tall), and a lid share of the top covered by body colour
       const ax = ux * e.rt[0] + uy * e.rt[1] + uz * e.rt[2], ay = ux * e.up[0] + uy * e.up[1] + uz * e.up[2], ll = Math.hypot(ax, ay) || 1;
-      const stretch = Math.hypot(ax, ay / e.aspect) / ll, u = (th / Math.acos(eyeCapCos)) * stretch;
+      const stretch = Math.hypot(ax, ay / e.aspect) / ll, u = (th / Math.acos(e.cap)) * stretch;
       const big = ek.big;
       const pr = ek.pupil_r ?? (big ? 0.34 : 0.5), ir = ek.iris_r ?? (big ? 0.66 : 0.78);
-      if (u > 1 || (e.lid > 0 && ay / (Math.sin(Math.acos(eyeCapCos)) * e.aspect) > 1 - 2 * e.lid)) { /* body colour: the lid */ }
+      if (u > 1 || (e.lid > 0 && ay / (Math.sin(Math.acos(e.cap)) * e.aspect) > 1 - 2 * e.lid)) { /* body colour: the lid */ }
       else {
         if (u < pr) { col = ek.pupil; inkCode = INK.pupil; }
         else if (u < ir) { col = ek.iris; inkCode = INK.iris; }
@@ -146,7 +147,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
       }
     }
     const mf = faceM?.mouth; // the mouth: an ink stroke in face coordinates, antialiased over one pixel
-    if (mf && inkCode === INK.body) { const mv = I(A.mouth), pxU = 1 / scale, cov2 = sstep(mf.t / 2 + pxU / 2, mf.t / 2 - pxU / 2, mv); if (cov2 > 0) { col = mix(col, mouthCol, cov2); if (cov2 > 0.5) inkCode = INK.mouth; } }
+    if (mf && inkCode === INK.body && sizeKey !== 48) { const mv = I(A.mouth), pxU = 1 / scale, cov2 = sstep(mf.t / 2 + pxU / 2, mf.t / 2 - pxU / 2, mv); if (cov2 > 0) { col = mix(col, mouthCol, cov2); if (cov2 > 0.5) inkCode = INK.mouth; } }
     // light
     const ndl = nx * Lk[0] + ny * Lk[1] + nz * Lk[2];
     const diff = Math.min(1, Math.max(0, (ndl + 0.6) / 1.6));
@@ -277,7 +278,7 @@ function featurePass({ W, H, sizeKey, data, inkMap, cov, depth, SW, ss, project,
   const coreCol = Lstar(core) <= 30 ? core : [14, 12, 12];
   // eyes: a core of at least the minimum size, a light surround, a catch light on a core of 4 px
   for (const e of faceM.eyes) {
-    const tip = [e.hit[0] + e.n[0] * 0.45 * e.r, e.hit[1] + e.n[1] * 0.45 * e.r, e.hit[2] + e.n[2] * 0.45 * e.r], q = seen(tip, e.n);
+    const tip = [e.hit[0] + e.n[0] * e.protrude * e.r, e.hit[1] + e.n[1] * e.protrude * e.r, e.hit[2] + e.n[2] * e.protrude * e.r], q = seen(tip, e.n);
     if (!q) { out.eyes.push({ visible: false }); continue; }
     const prj = 2 * e.r * scale * 0.835 * (ek.pupil_r ?? 0.5), turned = faceM.spec.eyes.turned ?? false;
     let [mw, mh] = MIN_EYE[sizeKey]; if (faceM.spec.eyes.aspect && faceM.spec.eyes.aspect < 0.8 && sizeKey === 48) [mw, mh] = [1, 2];

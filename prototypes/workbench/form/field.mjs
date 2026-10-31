@@ -207,23 +207,39 @@ export function makeField(chains, branches, form, opts = {}) {
   // --- the surface without eyes: the coated body, plus the face's relief (never a recess), the hair's opening set back ---
   const dCoated = (x, y, z, loc) => dBodyOnly(x, y, z, loc);
   const cutBase = (d, z) => (base === null ? d : Math.max(d, base - z));
-  let faceM = null; // the face model (face.mjs), built below from the casting surface
+  let faceM = null, pod = null; // the face model (face.mjs), built below from the casting surface; Drapet's pod
   const reliefAt = (x, y, z) => (faceM ? faceM.relief([x, y, z]) : 0);
   function dSurface(x, y, z, loc) {
     if (hair) {
       let dh = hair.dHairOnly(x, y, z, loc);
-      if (faceM?.opening) { const xy = faceM.coords([x, y, z]); if (xy) dh += faceM.opening.setback * faceM.opening.mask(xy[0], xy[1]); } // the plate peeks out, set back 0-0.03 U, tapering over 0.04 U at its edges
-      return cutBase(Math.min(dh - reliefAt(x, y, z), dBodyOnly(x, y, z, loc)), z);
+      let d = Math.min(dh - reliefAt(x, y, z), dBodyOnly(x, y, z, loc)); if (podD) d = Math.min(d, podD(x, y, z));
+      return cutBase(d, z);
     }
     return dCoated(x, y, z, loc) - reliefAt(x, y, z);
   }
   // the casting surface of the face: the coated body, or the hair's outer surface for a hair face
-  const dCast = (x, y, z) => (hair ? cutBase(Math.min(hair.dHairOnly(x, y, z, null), dBodyOnly(x, y, z)), z) : dCoated(x, y, z));
+  let podD = null; // Drapet's face pod (below)
+  const dCast = (x, y, z) => (hair ? cutBase(Math.min(hair.dHairOnly(x, y, z, null), dBodyOnly(x, y, z), podD ? podD(x, y, z) : Infinity), z) : dCoated(x, y, z));
   const gradOf = (fn, p, h = 1e-3) => nrm([fn(p[0] + h, p[1], p[2]) - fn(p[0] - h, p[1], p[2]), fn(p[0], p[1] + h, p[2]) - fn(p[0], p[1] - h, p[2]), fn(p[0], p[1], p[2] + h) - fn(p[0], p[1], p[2] - h)]);
   const cumOf = (name) => { const i = form.front.knots.findIndex((k) => k.name === name); return chains.front.cum[i]; };
   if (face) {
     const sg = anchorSigma(face, cumOf), tipS = chains.front.samples.at(-1);
-    faceM = makeFace(face, { sample: frontAt(sg), dCast, tipDir: tipS.T, tipFrom: [tipS.p[0], tipS.p[1], tipS.p[2] + S] });
+    const env = { sample: frontAt(sg), dCast, tipDir: tipS.T, tipFrom: [tipS.p[0], tipS.p[1], tipS.p[2] + S] };
+    if (face.pod && hair) {
+      // Drapet's face pod (design 3): the body's own small ellipsoid on the dome's front. Its front pole lies `setback` U behind the hair's surface at the edge of the parting
+      // (the ellipse of the pod's own half-width and half-height); the hair is set into a smooth bowl over the pod (nothing is cut, no mask), so the pod bulges forward and peeks out.
+      const f0 = makeFace({ ...face, eyes: null, nose: null, mouth: null, opening: null }, env), P = face.pod, [ax, ay, az] = P.a;
+      let sRim = 0; for (let k = 0; k < 8; k++) { const q = f0.castXY(ax * Math.cos(k * Math.PI / 4), ay * Math.sin(k * Math.PI / 4)); sRim += dot(sub(q, f0.Pf), f0.nf) / 8; }
+      const poleN = sRim - P.setback, cen = add(f0.Pf, sc(f0.nf, poleN - az));
+      podD = (x, y, z) => { const q = [x - cen[0], y - cen[1], z - cen[2]]; return ellipsoidD(dot(q, f0.bf), dot(q, f0.uf), dot(q, f0.nf), ax, ay, az); };
+      const Pf0 = f0.Pf, bowl = P.bowl ?? 0.07;
+      hair.setBowl((x, y, z) => { const q = [x - Pf0[0], y - Pf0[1], z - Pf0[2]]; const behind = smooth((dot(q, f0.nf) + 0.3) / 0.15); if (behind <= 0) return 0; const r = Math.hypot(dot(q, f0.bf) / (ax * (P.bowlR ?? 1.3)), dot(q, f0.uf) / (ay * (P.bowlR ?? 1.3))); return bowl * behind * smooth((1 - r) / (P.bowlW ?? 0.4)); }); // a flat floor over the pod, rising to the hair's own surface at the parting's edge
+      // the measured set-back: the hair's own surface (no bowl) at the pod's rim, along n_f, against the pod's front pole
+      const rimHair = []; for (let k = 0; k < 8; k++) { const x = ax * Math.cos(k * Math.PI / 4), y = ay * Math.sin(k * Math.PI / 4), o = add(f0.Pf, add(sc(f0.bf, x), sc(f0.uf, y))); let lo = -0.5, hi = 0.5; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (hair.dNoBowl(o[0] + f0.nf[0] * m, o[1] + f0.nf[1] * m, o[2] + f0.nf[2] * m) < 0) lo = m; else hi = m; } rimHair.push((lo + hi) / 2); }
+      const poleMeasured = dot(sub(add(cen, sc(f0.nf, az)), f0.Pf), f0.nf);
+      pod = { c: cen, a: P.a, setBack: rimHair.reduce((a, b) => a + b, 0) / 8 - poleMeasured, setBackRange: [Math.min(...rimHair) - poleMeasured, Math.max(...rimHair) - poleMeasured], rimN: sRim, poleN, frame: { n: f0.nf, b: f0.bf, u: f0.uf } };
+    }
+    faceM = makeFace(face, env);
   }
   const anchor = faceM ? faceM.C && frontAt(anchorSigma(face, cumOf)) : null, faceDir = faceM ? faceM.d : null;
   const eyes = faceM ? faceM.eyes : [];
@@ -279,13 +295,13 @@ export function makeField(chains, branches, form, opts = {}) {
       if (de < 0.05 && de < dSurface(x, y, z, loc) + 1e-4) { part = "eye"; let bm = 0, bd = Infinity; eyes.forEach((e, i) => { const d = Math.hypot(x - e.c[0], y - e.c[1], z - e.c[2]); if (d < bd) { bd = d; bm = i; } }); eye = bm; }
     }
     let hairHere = false;
-    if (hair && part !== "eye") { const dh = hair.d(x, y, z, loc), db = dBodyOnly(x, y, z, loc); if (dh <= db + 1e-3) { hairHere = true; part = "hair"; } else part = "face"; }
+    let podMix = 0;
+    if (hair && part !== "eye") { const dh = hair.d(x, y, z, loc), dp = podD ? podD(x, y, z) : Infinity; if (dp <= dh + 1e-3) part = "face"; else { hairHere = true; part = "hair"; } if (podD) podMix = smooth((dh - dp) / 0.012 + 0.5); }
     let patch = 0, belly = 0, mouth = 1;
     if (faceM && part !== "eye") {
       const xy = faceM.coords([x, y, z]);
       if (xy) {
         patch = faceM.plate(xy[0], xy[1]);
-        if (faceM.opening) patch *= faceM.opening.mask(xy[0], xy[1]);
         if (faceM.mouth) mouth = faceM.mouth.dist(xy[0], xy[1]);
       }
     }
@@ -293,6 +309,7 @@ export function makeField(chains, branches, form, opts = {}) {
       const sg = bg.sigma[bi], ang = 180 - Math.abs(angle);
       belly = smooth((bellyF.beta - ang) / 6 + 0.5) * smooth((sg - bellyF.s0) / 0.12 + 0.5) * smooth((bellyF.s1 - sg) / 0.12 + 0.5);
     }
+    if (podD && part !== "eye") patch = podMix;
     const marks = marksList.map((m) => Math.hypot(x - m.c[0], y - m.c[1], z - m.c[2]) / m.sx);
     const tv = [D[o + 3], D[o + 4], D[o + 5]], u0 = bg.length > 0 ? bg.s[bi] / bg.length : 0;
     let fx = 9, fy = 9; if (faceM) { const q = faceM.coords([x, y, z]); if (q) { fx = q[0]; fy = q[1]; } }
@@ -341,7 +358,7 @@ export function makeField(chains, branches, form, opts = {}) {
     const trunk = dTrunkOnly(x, y, z, null);
     return { trunk, branches: bgroups.map((g) => { const dj = groupD(g, x, y, z, hitB, null); return { id: g.id, d: dj, s: g.s[hitB.i], length: g.length, k: g.blend0 * (1 - smooth(g.s[hitB.i] / (0.35 * g.length))) }; }), union: dBodyOnly(x, y, z, null) };
   };
-  return { seeds, F, F3, d: (x, y, z) => dAll(x, y, z, null), at: (p, noEye = false) => at(p, null, noEye), project, eyes, marks: marksList, bounds: { lo, hi }, shift: S, floor, base, parts, groups: { all, partNames, front: groups.front, tail: groups.tail, branches: bgroups }, hair, partNames, anchor, faceDir, faceM, dSurfaceFn: (x, y, z) => dSurface(x, y, z, null), coat, dCast, dBodyOnly, noise3, noiseTerms: 0, makeLoc, dAllLoc: dAll, S };
+  return { seeds, F, F3, d: (x, y, z) => dAll(x, y, z, null), at: (p, noEye = false) => at(p, null, noEye), project, eyes, marks: marksList, bounds: { lo, hi }, shift: S, floor, base, parts, groups: { all, partNames, front: groups.front, tail: groups.tail, branches: bgroups }, hair, pod, partNames, anchor, faceDir, faceM, dSurfaceFn: (x, y, z) => dSurface(x, y, z, null), coat, dCast, dBodyOnly, noise3, noiseTerms: 0, makeLoc, dAllLoc: dAll, S };
 }
 
 // ---- the hair: shell above the part line, a curtain that hangs (design 5.5), and a hem of locks (5.6) --------------------------------
@@ -387,6 +404,8 @@ function makeHair(h, S, base, dTrunk0) {
     const zh = floorZ + hemFast(th), Dz = Math.max(0, zp - z), g = Dz / Math.max(1e-6, zp - zh), sg = smoothG(g);
     return 1 + m * Ld * (1 - Math.exp(-Dz / Ld)) + (flare + splayFast(th) / Rp) * sg;
   };
+  let bowl = null; // a smooth push-in of the hair surface over Drapet's face pod, set by the field once the pod is placed
+  const setBowl = (fn) => { bowl = fn; };
   const groove = (x, y, th) => { const r = Math.hypot(x, y); return gA * smooth(r / 0.8) * 0.5 * (1 + Math.cos(strands * th + 1.3)); };
   function dHairOnly(x, y, z, loc) {
     const th = Math.atan2(y, x);
@@ -399,12 +418,14 @@ function makeHair(h, S, base, dTrunk0) {
       const e = 0.01, dz = (hemFast(th + e) - hemFast(th - e)) / (2 * e) / Math.max(0.2, Math.hypot(x, y));
       d = smax(d, (zh - z) / Math.sqrt(1 + dz * dz), 0.04); // a rounded crease (a corner sharper than the voxel defeats the projection)
     }
-    return d + groove(x, y, th);
+    return d + groove(x, y, th) + (bowl && !noBowl ? bowl(x, y, z) : 0);
   }
+  let noBowl = false;
+  const dNoBowl = (x, y, z) => { noBowl = true; try { return dHairOnly(x, y, z, null); } finally { noBowl = false; } };
   const wc = h.window ? [h.window.c[0], h.window.c[1], h.window.c[2] + S] : null, wr = h.window?.r, kw = h.window?.k ?? 0.05;
   function dWin(x, y, z) { return ellipsoidD(x - wc[0], y - wc[1], z - wc[2], wr[0], wr[1], wr[2]); }
   const dFn = (x, y, z, loc) => (wc ? smax(dHairOnly(x, y, z, loc), -dWin(x, y, z), kw) : dHairOnly(x, y, z, loc));
   // the largest radius, for the bounds
   let Rmax = 0; for (let i = 0; i < 64; i++) { const th = (i / 64) * 2 * Math.PI; Rmax = Math.max(Rmax, Rp * scaleAt(th, floorZ + 0.001)); }
-  return { d: dFn, dHairOnly, dWin, dShell, zp, m, Rp, hemH, hemFast, scaleAt, lockCount: nl, depth, flare, Ld, Rmax, window: wc ? { c: wc, r: wr } : null, radius, floorZ, tau: m * Rp };
+  return { d: dFn, setBowl, dNoBowl, dHairOnly, dWin, dShell, zp, m, Rp, hemH, hemFast, scaleAt, lockCount: nl, depth, flare, Ld, Rmax, window: wc ? { c: wc, r: wr } : null, radius, floorZ, tau: m * Rp };
 }

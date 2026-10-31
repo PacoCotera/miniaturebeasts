@@ -405,7 +405,7 @@ const TRIAL2 = [
 // Rejected or superseded in design 8, so not folded in: Rupar's face sigma 1.70 and e_x .12 (the eyes are placed by angle now) and its throat sizes (design numbers
 // now), Wickle's arm root .92 and dir .517, Wickle's top delta-sigma .5175 (now .60), Loika's face sigma 1.075, Drapet's face R and aspect.
 const REJECTED = new Set(["rupar face.sigma", "rupar face.eyes.ex", "rupar front.knots.4.w", "rupar front.knots.4.u", "rupar front.knots.4.d", "wickle front.knots.4.ds",
-  "wickle branches.1.root.out", "wickle branches.1.dir.1", "loika face.sigma"]); // Drapet's face R and aspect are folded in until the face pod (C3) replaces the plate
+  "wickle branches.1.root.out", "wickle branches.1.dir.1", "loika face.sigma", "drapet face.R", "drapet face.aspect"]);
 export const ROUND3 = Object.fromEntries(Object.entries(ROUND2).map(([key, f]) => [key, applyTuning(f, TRIAL2.filter((t) => t.species === key && !REJECTED.has(`${t.species} ${t.path}`)))]));
 // the round 3 numbers: each with a one-line reason (the report lists them)
 export const ROUND3_LOG = [];
@@ -442,6 +442,20 @@ export const ROUND3_LOG = [];
   { const i = R.wickle.branches.findIndex((b) => b.id === "arm"), before = JSON.stringify(R.wickle.branches[i]);
     Object.assign(R.wickle.branches[i], { root: { sigma: 0.7, angle: 120, out: 0.85 }, dir: [0.7, 0.8, -0.7], blend: 0.05, knots: [K("arm0", "0|.13"), K("arm1", ".24|.12 .11 .11"), K("hand", ".14|.10")] });
     log("wickle", `branches.${i} (arm)`, before.slice(0, 160), JSON.stringify(R.wickle.branches[i]).slice(0, 160), "design 7: root, dir, blend .05 (was .14: the arms melted into the drop) and the three knots"); }
+  // C3: faces (design 1, 2, 3)
+  { const f = R.loika.face, before = JSON.stringify({ sigma: f.sigma, phi: f.phi, eyes: f.eyes, nose: f.nose, mouth: f.mouth });
+    Object.assign(f, { sigma: { at: "head", d: 0 }, phi: 25, plateBelow: true, eyes: { r: 0.22, ex: 0.46, ey: 0, protrude: 0.2 }, nose: { kind: "nostrils", r: 0.02, gap: 0.035, y: -0.1 }, mouth: { kind: "line", y: -0.06, yEnd: -0.22, w: 0.26, s: 0.15, t: 0.02 } });
+    log("loika", "face", before.slice(0, 150), JSON.stringify({ sigma: f.sigma, phi: f.phi, eyes: f.eyes, nose: f.nose, mouth: f.mouth }).slice(0, 150), "design 1: anchor at the head knot, phi_f 25, e_x .46, eyes set in (protrusion .20 r_e), plate bound to the mouth line, mouth w .26 falling to -.22, nostrils at (+-.035, -.10)");
+    Object.assign(R.loika.look.eyes, { pupil_r: 0.45, iris_r: 0.7, rim: [240, 226, 196] }); R.loika.look.eyering = { outer: 1.45 }; R.loika.look.pigments.ring = [240, 226, 196]; }
+  { const f = R.rupar.face, before = JSON.stringify({ sigma: f.sigma, eyes: f.eyes }); f.sigma = 2.12; f.eyes = { r: 0.075, spread: 62, elev: 18, aspect: 0.65 };
+    log("rupar", "face", before, JSON.stringify({ sigma: f.sigma, eyes: f.eyes }), "design 2: anchor sigma 2.12 (between the poll 1.94 and the stop 2.18); eyes by section angle (spread 62, elevation 18), lateral"); }
+  { const f = R.drapet.face, before = JSON.stringify({ R: f.R, aspect: f.aspect, opening: f.opening });
+    f.opening = { gap: 0.6 }; f.pod = { a: [0.26, 0.24, 0.16], setback: 0.02, bowl: 0.25, bowlR: 2.0, bowlW: 0.4 }; // the opening's rectangle goes: the face is a pod (design 3)
+    log("drapet", "face.opening / face.pod", before.slice(0, 150), JSON.stringify({ opening: f.opening, pod: f.pod }), "design 3: the face pod .26 x .24 x .16 U set back .02 U (in .01 ... .03) at the parting's edge; the opening mask and its rectangle are removed; fringe-gap kept as the fringe line's gap"); }
+  R.drapet.look.eyes.iris_r = 0.86; // face.ink.304: a rim under .15 r_e needs no ring (as Wickle's .86)
+  Object.assign(R.rupar.look.eyes, { pupil_r: 0.62, iris_r: 0.78 }); // the pupil must read >= 28 px at 304 (the eye is 12 px across); a look value, not a form number
+  R.curlop.look.eyes.iris_r = 0.86; // face.ink.304: the far eye's rim ring was 1.5 px wide against >= 2; a rim under .15 r_e needs no ring (as Wickle's .86)
+  setP("curlop", "face.eyes.ex", 0.52, "design 8: eyeSep was .142 against .198 (the stand): e_x .46 to .52 is a design number, beyond the allowance");
   setP("wickle", "front.knots.4.ds", 0.6, "design 7: top delta-sigma .60 replaces the +15 % tuning (.5175): the join slope .485 to .425");
 }
 // every unnamed branch knot gets a name too
