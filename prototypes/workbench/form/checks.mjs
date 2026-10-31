@@ -47,19 +47,15 @@ export function guardsOf(form) {
   problems.push(...spineGuards(form, built));
   const field = makeField({ front: built.front, tail: built.tail, floor: built.floor }, built.branches, form);
   const headParts = new Set(form.regions ? [form.front.knots.find((k) => k.name === form.regions.head).part] : []);
-  field.eyes.forEach((e, i) => {
-    const a = field.at(e.hit, true);
-    const inside = headParts.has(a.part) || a.patch > 0.5 || a.part === "face" || (!form.regions && !form.hair);
-    if (!inside) problems.push(`eye ${i} is on ${a.part} outside the head and the face patch (patch ${a.patch.toFixed(2)})`);
-    if (field.hair) {
-      const w = field.hair.window, out = [e.c[0] + e.n[0] * e.r, e.c[1] + e.n[1] * e.r, e.c[2] + e.n[2] * e.r];
-      const edge = windowEdgeZ(w, e.c[0], e.c[1]);
-      const gap = edge - (e.c[2] + e.r);
-      if (gap < 0.03) problems.push(`the fringe's edge is ${gap.toFixed(3)} U above eye ${i} (needs 0.03)`);
-      const depth = -field.hair.dHairOnly(out[0], out[1], out[2], null);
-      if (depth < 0.08) problems.push(`eye ${i} is ${depth.toFixed(3)} U behind the hair (needs 0.08)`);
-    }
-  });
+  const fm = field.faceM, eyes = field.eyes;
+  if (fm && eyes.length === 2) {
+    const [e0, e1] = eyes, gap = Math.abs(e0.x - e1.x) - e0.r - e1.r; // in face coordinates, where the spacing is declared
+    if (gap < 0.5 * e0.r - 1e-9) problems.push(`the gap between the eyes is ${gap.toFixed(3)} U < 0.5 r_e (${(0.5 * e0.r).toFixed(3)})`);
+    eyes.forEach((e, i) => {
+      const a = field.at(e.hit, true), headFront = headParts.has(a.part), inPlate = (1 - fm.rho(e.x, e.y)) * Math.min(fm.R, fm.R * fm.aspect) >= 0.1 * e.r + 0.835 * e.r;
+      if (!headFront && !inPlate) problems.push(`eye ${i} is not inside the plate by 0.1 r_e (edge ${((1 - fm.rho(e.x, e.y)) * Math.min(fm.R, fm.R * fm.aspect)).toFixed(3)} U from the eye's centre)`);
+    });
+  }
   return { ok: problems.length === 0, problems, built, field };
 }
 // the height of the window's top edge (the fringe line) above (x, y)
@@ -243,13 +239,9 @@ export function featureChecks(ctx) {
     const sl = (A, i) => (A[i + 4] - A[i]) / 4;
     for (let i = s0; i + 8 < L.length; i++) jump = Math.max(jump, Math.abs(sl(L, i + 4) - sl(L, i)), Math.abs(sl(R, i + 4) - sl(R, i)));
     out.push(C("drapet.a", "one dome: x(y) moves outward monotonically to 0.9 of the height, no step", back <= 1 && jump <= 0.6, { backwardPx: back, maxSlopeChange: +jump.toFixed(2) }, "<= 1 px (pixel noise); <= 0.6", `rows ${top}..${last}, slope test from row ${top + s0}`));
-    // (b) the face set inside
-    const hr = field_hair(scene), win = hr.window;
-    const eyesB = scene.field.eyes.map((e, i) => {
-      const o = [e.c[0] + e.n[0] * e.r, e.c[1] + e.n[1] * e.r, e.c[2] + e.n[2] * e.r];
-      return { behind: -hr.dHairOnly(o[0], o[1], o[2], null), fringeGap: windowEdgeZ(win, e.c[0], e.c[1]) - (e.c[2] + e.r), pupil: eyeInk(r4, i, [INK.pupil]) };
-    });
-    out.push(C("drapet.b", "the face set inside: eyes behind the hair, the fringe above the eyes, both eyes show", eyesB.every((e) => e.behind >= 0.08 && e.fringeGap >= 0.03 && e.pupil >= 6), eyesB.map((e) => ({ behindU: +e.behind.toFixed(3), fringeGapU: +e.fringeGap.toFixed(3), pupilPx: e.pupil })), ">= 0.08 U; >= 0.03 U; >= 6 px"));
+    // (b) the plate set back 0-0.03 U behind the hair around the opening, and both pupils >= 28 px at 304 (face.surface, design 8)
+    const fs = faceSurface(scene.field, scene.field.faceM), pupilsD = scene.field.eyes.map((_, i) => eyeInk(r4, i, [INK.pupil]));
+    out.push(C("drapet.b", "the face set inside: the plate 0-0.03 U behind the hair around the opening, both pupils >= 28 px at 304", fs.ok && pupilsD.every((n) => n >= 28), { setBackU: fs.setBack.map((v) => +v.toFixed(4)), pupilPx: pupilsD }, "0 .. 0.03 U; >= 28 px"));
     // (c) loose, uneven locks
     const bottoms = []; for (let x = 0; x < W; x++) { let b = -1; for (let y = H - 1; y >= 0; y--) if (cov[y * W + x] >= 0.5) { b = y; break; } if (b >= 0) bottoms.push([x, b]); }
     const feet = Math.max(...bottoms.map((p) => p[1]));
@@ -354,7 +346,22 @@ export function chainFeature(key, form, B, field) {
   return out;
 }
 
-const field_hair = (scene) => scene.field.hair;
+// face.surface (design 8): the plate's surface along n_f against the ring just outside it, at 32 points. Where the surface is the coat or the
+// skin the plate must not recess (>= -0.005 U); on a hair face it is set back by 0-0.03 U.
+export function faceSurface(field, fm) {
+  const C = fm.C, castWith = (fn, x, y) => {
+    const dir = fm.dirXY(x, y); let t0 = 0, t1 = 0.02; while (fn(C[0] + dir[0] * t1, C[1] + dir[1] * t1, C[2] + dir[2] * t1) < 0 && t1 < 8) { t0 = t1; t1 += 0.02; }
+    for (let i = 0; i < 40; i++) { const m = (t0 + t1) / 2; if (fn(C[0] + dir[0] * m, C[1] + dir[1] * m, C[2] + dir[2] * m) < 0) t0 = m; else t1 = m; }
+    const t = (t0 + t1) / 2; return [C[0] + dir[0] * t, C[1] + dir[1] * t, C[2] + dir[2] * t];
+  };
+  // relief at (x, y): the final surface against the casting surface (the body without the face's relief and opening) along n_f; > 0 is proud
+  const rel = (x, y) => { const a = castWith(field.dSurfaceFn, x, y), b = castWith(field.dCast, x, y); return (a[0] - b[0]) * fm.nf[0] + (a[1] - b[1]) * fm.nf[1] + (a[2] - b[2]) * fm.nf[2]; };
+  const dy = (fm.spec.plateDy ?? 0) * fm.size, plate = [];
+  for (let i = 0; i < 32; i++) { const q = 0.9 * Math.sqrt((i + 0.5) / 32), a = i * 2.399963; plate.push(rel(q * fm.R * fm.aspect * Math.cos(a), dy + q * fm.R * Math.sin(a))); }
+  const minRel = Math.min(...plate), maxRel = Math.max(...plate), hairFace = !!field.hair;
+  const ok = hairFace ? maxRel <= 0.005 && minRel >= -0.03 - 0.005 : minRel >= -0.005;
+  return { ok, minRel, maxRel, rel: plate, setBack: hairFace ? [-maxRel, -minRel] : null };
+}
 
 // convex hull (monotone chain) and the depth of a point inside it (distance to the nearest hull edge, 0 outside)
 export function convexHull(pts) {

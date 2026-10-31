@@ -1,6 +1,7 @@
 // The implicit field (shape-model.md 1.4, 1.7, 1.8). F(p) > 0 inside, F = 0 on the surface, F < 0 outside.
 // Internally every distance is "outside positive" (d = -F). Plain JavaScript, no node: imports.
 import { V, interpChain, sectionPoint, lowestZ } from "./spine.mjs";
+import { makeFace, anchorSigma } from "./face.mjs";
 
 const RAD = Math.PI / 180;
 const { dot, crs, nrm, sc, add, sub } = V;
@@ -202,52 +203,33 @@ export function makeField(chains, branches, form, opts = {}) {
   const coat = form.coat && form.coat.depth > 0 ? form.coat : null;
   const face = form.face ?? null;
   const frontAt = (sg) => { const s = interpChain(chains.front, sg); return { ...s, p: [s.p[0], s.p[1], s.p[2] + S] }; };
-  const anchor = face ? frontAt(face.sigma) : null;
-  const faceDir = anchor ? nrm(add(sc(anchor.T, face.t ?? 0), sc(anchor.N, -(face.v ?? 0)))) : null;
+
+  // --- the surface without eyes: the coated body, plus the face's relief (never a recess), the hair's opening set back ---
   const dCoated = (x, y, z, loc) => dBodyOnly(x, y, z, loc);
-
-  // --- the surface without eyes ---
   const cutBase = (d, z) => (base === null ? d : Math.max(d, base - z));
+  let faceM = null; // the face model (face.mjs), built below from the casting surface
+  const reliefAt = (x, y, z) => (faceM ? faceM.relief([x, y, z]) : 0);
   function dSurface(x, y, z, loc) {
-    if (hair) return cutBase(Math.min(hair.d(x, y, z, loc), dBodyOnly(x, y, z, loc)), z);
-    return dCoated(x, y, z, loc);
-  }
-  // the casting surface of the eyes and marks: the body face (behind the window) for hair, the coated body otherwise
-  const dCast = (x, y, z) => (hair ? cutBase(dBodyOnly(x, y, z), z) : dCoated(x, y, z));
-  const gradOf = (fn, p, h = 1e-3) => nrm([fn(p[0] + h, p[1], p[2]) - fn(p[0] - h, p[1], p[2]), fn(p[0], p[1] + h, p[2]) - fn(p[0], p[1] - h, p[2]), fn(p[0], p[1], p[2] + h) - fn(p[0], p[1], p[2] - h)]);
-  const rotAbout = (v, axis, a) => { const c = Math.cos(a), s = Math.sin(a), k = dot(axis, v) * (1 - c), x = crs(axis, v); return [v[0] * c + x[0] * s + axis[0] * k, v[1] * c + x[1] * s + axis[1] * k, v[2] * c + x[2] * s + axis[2] * k]; };
-  // a direction from the anchor: (t along T, v toward the belly), turned about N by spread, raised toward N by elev
-  const faceRay = (t, v, spread, elev) => {
-    let dir = nrm(add(sc(anchor.T, t), sc(anchor.N, -v)));
-    dir = rotAbout(dir, anchor.N, spread * RAD);
-    const up = nrm(sub(anchor.N, sc(dir, dot(anchor.N, dir))));
-    return nrm(add(sc(dir, Math.cos(elev * RAD)), sc(up, Math.sin(elev * RAD))));
-  };
-  const castTo = (dir) => {
-    let t0 = 0, t1 = 0.02;
-    const f = (t) => dCast(anchor.p[0] + dir[0] * t, anchor.p[1] + dir[1] * t, anchor.p[2] + dir[2] * t);
-    while (f(t1) < 0 && t1 < 8) { t0 = t1; t1 += 0.02; }
-    for (let i = 0; i < 40; i++) { const m = (t0 + t1) / 2; if (f(m) < 0) t0 = m; else t1 = m; }
-    const t = (t0 + t1) / 2; return [anchor.p[0] + dir[0] * t, anchor.p[1] + dir[1] * t, anchor.p[2] + dir[2] * t];
-  };
-
-  // --- eyes (1.4): cast from the spine point to the surface at +-spread and +elevation ---
-  const eyes = [];
-  if (face?.eyes) {
-    const e = face.eyes;
-    for (const side of [1, -1]) {
-      const dir = faceRay(face.t ?? 0, face.v ?? 0, side * e.spread, e.elev);
-      const hit = castTo(dir), n = gradOf(dCast, hit), r = e.r * (e.size ?? 1);
-      eyes.push({ side, r, dir, hit, n, c: sub(hit, sc(n, 0.55 * r)) });
+    if (hair) {
+      let dh = hair.dHairOnly(x, y, z, loc);
+      if (faceM?.opening) { const xy = faceM.coords([x, y, z]); if (xy) dh += faceM.opening.setback * faceM.opening.mask(xy[0], xy[1]); } // the plate peeks out, set back 0-0.03 U, tapering over 0.04 U at its edges
+      return cutBase(Math.min(dh - reliefAt(x, y, z), dBodyOnly(x, y, z, loc)), z);
     }
+    return dCoated(x, y, z, loc) - reliefAt(x, y, z);
   }
+  // the casting surface of the face: the coated body, or the hair's outer surface for a hair face
+  const dCast = (x, y, z) => (hair ? cutBase(Math.min(hair.dHairOnly(x, y, z, null), dBodyOnly(x, y, z)), z) : dCoated(x, y, z));
+  const gradOf = (fn, p, h = 1e-3) => nrm([fn(p[0] + h, p[1], p[2]) - fn(p[0] - h, p[1], p[2]), fn(p[0], p[1] + h, p[2]) - fn(p[0], p[1] - h, p[2]), fn(p[0], p[1], p[2] + h) - fn(p[0], p[1], p[2] - h)]);
+  const cumOf = (name) => { const i = form.front.knots.findIndex((k) => k.name === name); return chains.front.cum[i]; };
+  if (face) {
+    const sg = anchorSigma(face, cumOf), tipS = chains.front.samples.at(-1);
+    faceM = makeFace(face, { sample: frontAt(sg), dCast, tipDir: tipS.T, tipFrom: [tipS.p[0], tipS.p[1], tipS.p[2] + S] });
+  }
+  const anchor = faceM ? faceM.C && frontAt(anchorSigma(face, cumOf)) : null, faceDir = faceM ? faceM.d : null;
+  const eyes = faceM ? faceM.eyes : [];
   const eyeD = (x, y, z) => { let d = Infinity; for (const e of eyes) { const v = Math.hypot(x - e.c[0], y - e.c[1], z - e.c[2]) - e.r; if (v < d) d = v; } return d; };
-  // marks anchored on the surface: a nose, cast like the eyes
-  const marksList = [];
-  if (face?.marks) for (const m of face.marks) {
-    const hit = castTo(faceRay(m.t ?? face.t ?? 0, m.v ?? face.v ?? 0, m.spread ?? 0, m.elev ?? 0));
-    marksList.push({ kind: m.kind, c: hit, sx: m.size, id: m.id ?? m.kind });
-  }
+  // marks anchored on the surface: the nose's ink (the relief is in the surface)
+  const marksList = faceM ? faceM.noses.map((nz, i) => ({ kind: "nose", c: nz.c, sx: nz.r, id: `nose${i}` })) : [];
 
   // --- the final distance ---
   function dAll(x, y, z, loc) {
@@ -298,20 +280,21 @@ export function makeField(chains, branches, form, opts = {}) {
     }
     let hairHere = false;
     if (hair && part !== "eye") { const dh = hair.d(x, y, z, loc), db = dBodyOnly(x, y, z, loc); if (dh <= db + 1e-3) { hairHere = true; part = "hair"; } else part = "face"; }
-    let patch = 0, belly = 0;
-    if (anchor && form.face.patch) {
-      const P = form.face.patch, v = nrm([x - anchor.p[0], y - anchor.p[1], z - anchor.p[2]]);
-      const ang = Math.acos(Math.max(-1, Math.min(1, dot(v, faceDir)))) / RAD;
-      patch = smooth((P.angle - ang) / 6 + 0.5);
-      if (P.top !== undefined && P.top !== null) patch *= smooth((P.top - dot(v, anchor.N)) / 0.06 + 0.5);
-      if (hairHere) patch = 0;
+    let patch = 0, belly = 0, mouth = 1;
+    if (faceM && part !== "eye") {
+      const xy = faceM.coords([x, y, z]);
+      if (xy) {
+        patch = faceM.plate(xy[0], xy[1]);
+        if (faceM.opening) patch *= faceM.opening.mask(xy[0], xy[1]);
+        if (faceM.mouth) mouth = faceM.mouth.dist(xy[0], xy[1]);
+      }
     }
     if (bellyF && bg === groups.front) {
       const sg = bg.sigma[bi], ang = 180 - Math.abs(angle);
       belly = smooth((bellyF.beta - ang) / 6 + 0.5) * smooth((sg - bellyF.s0) / 0.12 + 0.5) * smooth((bellyF.s1 - sg) / 0.12 + 0.5);
     }
     const marks = marksList.map((m) => Math.hypot(x - m.c[0], y - m.c[1], z - m.c[2]) / m.sx);
-    return { part, sigma: bg.sigma[bi], s: bg.s[bi], angle, emission: bg.emission[bi], patch, belly, eye, group: bg.id, gi: all.indexOf(bg), marks };
+    return { part, sigma: bg.sigma[bi], s: bg.s[bi], angle, emission: bg.emission[bi], patch, belly, mouth, eye, group: bg.id, gi: all.indexOf(bg), marks };
   }
   // a vertex: two Newton steps onto F = 0, the normal by central differences (h = 0.5 voxel), its attributes; all local
   function project(x, y, z, voxel) {
@@ -356,7 +339,7 @@ export function makeField(chains, branches, form, opts = {}) {
     const trunk = dTrunkOnly(x, y, z, null);
     return { trunk, branches: bgroups.map((g) => { const dj = groupD(g, x, y, z, hitB, null); return { id: g.id, d: dj, s: g.s[hitB.i], length: g.length, k: g.blend0 * (1 - smooth(g.s[hitB.i] / (0.35 * g.length))) }; }), union: dBodyOnly(x, y, z, null) };
   };
-  return { seeds, F, F3, d: (x, y, z) => dAll(x, y, z, null), at: (p, noEye = false) => at(p, null, noEye), project, eyes, marks: marksList, bounds: { lo, hi }, shift: S, floor, base, parts, groups: { all, partNames, front: groups.front, tail: groups.tail, branches: bgroups }, hair, partNames, anchor, faceDir, coat, dCast, dBodyOnly, noise3, noiseTerms: 0, makeLoc, dAllLoc: dAll, S };
+  return { seeds, F, F3, d: (x, y, z) => dAll(x, y, z, null), at: (p, noEye = false) => at(p, null, noEye), project, eyes, marks: marksList, bounds: { lo, hi }, shift: S, floor, base, parts, groups: { all, partNames, front: groups.front, tail: groups.tail, branches: bgroups }, hair, partNames, anchor, faceDir, faceM, dSurfaceFn: (x, y, z) => dSurface(x, y, z, null), coat, dCast, dBodyOnly, noise3, noiseTerms: 0, makeLoc, dAllLoc: dAll, S };
 }
 
 // ---- the hair: shell above the part line, a curtain that hangs (design 5.5), and a hem of locks (5.6) --------------------------------

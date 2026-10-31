@@ -7,3 +7,4 @@ import "./render.test.mjs";
 import "./checks.test.mjs";
 import "./joins.test.mjs";
 import "./limbs.test.mjs";
+import "./face.test.mjs";

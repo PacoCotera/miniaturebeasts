@@ -236,6 +236,7 @@ const TRIAL1 = [
 // Each change is one line with its reason. `put` sets a number by path; structural changes assign directly. tuning.mjs (the round 2
 // tuning, within the allowance of +-15 % on a number and 10 degrees on a camera, measured against ROUND2) restarts empty.
 const put = (f, path, v) => { const ps = path.split("."); let o = f; for (let i = 0; i < ps.length - 1; i++) o = o[ps[i]]; o[ps.at(-1)] = v; };
+const cumTo = (f, name) => { let s = 0; for (const k of f.front.knots) { s += k.ds; if (k.name === name) return s; } throw new Error(`no knot ${name}`); };
 const kn = (f, name) => f.front.knots.find((k) => k.name === name);
 const setSizes = (k, w, u, d) => { k.w = w; k.u = u ?? w; k.d = d ?? u ?? w; };
 const setKnot = (k, str) => Object.assign(k, K(k.name, str, k.part));
@@ -273,6 +274,36 @@ export const ROUND2 = Object.fromEntries(Object.entries(SECTION3).map(([key, f])
   R.loika.branches.find((x) => x.id === "fore").solve = true; R.loika.branches.find((x) => x.id === "fore").knots[1].name = "shin";
   // Rupar 7.5: the fore shins are solved (the lower leg segment); the hind feet set the floor
   { const fore = R.rupar.branches.find((x) => x.id === "fore"); fore.solve = true; fore.knots[3].name = "shin"; }
+  // ---- heads and necks (7.4, 7.5) ----
+  { const ks = R.loika.front.knots, set = (n, str) => setKnot(ks.find((k) => k.name === n), str);
+    // Loika's head at x .71 of round 1 (the trial's x .6 shrank it below the neck), raised above a lower back, the neck pinched to .75
+    set("pelvis", "0|.74 .60 .64"); set("belly", ".28 0|.83 .64 .74"); set("chest", ".30 30|.78 .64 .68"); set("chin", ".22 95 8|.50 .54 .40");
+    set("head", ".36 -50 12|.70 .65 .57"); set("stop", ".26 -80|.60 .43 .51"); set("snout", ".14 -40|.44 .25 .35");
+    R.loika.nape = 0.2;
+    // three broad lenses (.47 long, .26 wide); the sides x .9 at dir (-.1, +-.75, .65)
+    const leaf = [".04 .02 .02", ".10 -40|.10", ".16 -60|.13", ".14 -60|.09", ".07|.01"];
+    const lk = (m) => [K("", `0|${[.04, .02, .02].map((v) => v * m).join(" ")}`), K("", `.10 -40|${.10 * m}`), K("", `.16 -60|${.13 * m}`), K("tip", `.14 -60|${.09 * m}`), K("end", `.07|${.01 * m}`)];
+    const bm = R.loika.branches.find((b) => b.id === "leafM"), bs = R.loika.branches.find((b) => b.id === "leafS");
+    bm.knots = lk(1); bm.dir = [-0.1, 0, 1]; bs.knots = lk(0.9); bs.dir = [-0.1, 0.75, 0.65];
+    Object.assign(R.loika.camera, { yaw: -28, pitch: 14 }); } // the art looks at the face, not the flank
+  { const ks = R.rupar.front.knots, set = (n, str) => setKnot(ks.find((k) => k.name === n), str);
+    // a forward-leaning neck (56 degrees, not 77 at the throat) curving into a head 1.2 x larger, the head turned +20/+30 (profile, as the art)
+    set("withers", ".34 60|.26 .30 .30"); set("neckbase", ".26 100|.16 .19 .21"); set("throat", ".62 -20 20|.10 .12 .13");
+    set("poll", ".18 -160 30|.18 .20 .19"); set("stop", ".24 -170|.15 .15 .15"); set("nose", ".24 -40|.075 .07 .09");
+    R.rupar.branches.find((b) => b.id === "horn").root.sigma = 1.82;
+    const ear = R.rupar.branches.find((b) => b.id === "ear"); Object.assign(ear, { root: { sigma: 1.84, angle: 60, out: 0.6 }, dir: [-0.3, 1, 0.6], knots: [K("ear0", "0|.04 .016 .016"), K("ear1", ".12|.10 .016 .016"), K("ear2", ".14|.12 .016 .016"), K("tip", ".10|.02 .016 .016")] });
+    Object.assign(R.rupar.camera, { yaw: 40, pitch: 10 }); }
+  // ---- faces (7.1-7.5): the face model of design 2 ----
+  const eye = (r, ex, ey, extra = {}) => ({ r, ex, ey, ...extra });
+  R.curlop.face = { sigma: +(cumTo(R.curlop, "cap") - 0.1).toFixed(4), phi: 20, R: 0.42, aspect: 1.3, relief: 0.01, eyes: eye(0.2, 0.4, 0.08), nose: { kind: "button", r: 0.025, y: -0.1 }, mouth: { kind: "w", y: -0.16, w: 0.16, s: 0.2, t: 0.03 }, belly: R.curlop.face.belly };
+  R.wickle.face = { sigma: 1.25, phi: 80, R: 0.55, aspect: 1.15, relief: 0.015, eyes: eye(0.127, 0.31, 0.09), nose: { kind: "button", r: 0.04, y: -0.12 }, mouth: { kind: "smile", y: -0.19, w: 0.06, s: 0.3, t: 0.025 } }; // the trial's face sat at .36 H, the stand's at .485 H
+  R.drapet.face = { sigma: 1.05, phi: 85, R: 0.3, aspect: 1.2, relief: 0, eyes: eye(0.1, 0.2, 0.045), nose: { kind: "button", r: 0.03, y: -0.04 },
+    opening: { omega: 0.34, gap: 0.6, locks: 4, amp: 0.025, setback: 0.02, taper: 0.04 } }; // hair opens over the face: no window, no socket
+  delete R.drapet.hair.window;
+  R.loika.face = { sigma: +(cumTo(R.loika, "head") + 0.1).toFixed(4), phi: 10, R: 0.55, aspect: 1.3, plateDy: -0.35, relief: 0, eyes: eye(0.22, 0.36, 0.1), nose: { kind: "nostrils", r: 0.02, tip: true, gap: 0.035 }, mouth: { kind: "line", y: -0.3, w: 0.42, s: 0.15, t: 0.02 }, belly: R.loika.face.belly }; // plateDy, mouth y: assumed (the design gives the patch only as the art's lower face)
+  R.rupar.face = { sigma: 1.98, phi: 15, R: 0.2, aspect: 1, plateDy: -0.2, relief: 0, eyes: eye(0.075, 0.13, 0.03, { aspect: 0.65 }), nose: { kind: "pad", r: 0.045, tip: true }, mouth: { kind: "line", y: -0.1, w: 0.12, s: 0.1, t: 0.015 } };
+  Object.assign(R.loika.look.eyes, { pupil_r: 0.22, iris_r: 0.7 }); delete R.loika.look.eyes.big; // rim .30 cream, iris .45 amber, pupil .22
+  Object.assign(R.rupar.look.eyes, { pupil_r: 0.45, iris_r: 0.65 }); // light ring .35
   // the coat has no lock noise and no bare patch (design 0.2-0.3, 5.4)
   for (const f of Object.values(R)) if (f.coat) { delete f.coat.locks; delete f.coat.bare; }
 }

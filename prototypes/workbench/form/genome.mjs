@@ -47,8 +47,8 @@ export const KINDS = {
   furDepth: (f, c, m) => { if (f.hair) f.hair.depth *= m; if (f.coat) f.coat.depth *= m; },
   // [hair flare]
   flare: (f, c, o) => { f.hair.flare += o; },
-  // [window top edge lowered by o]
-  fringe: (f, c, o) => { f.hair.window.c[2] -= o / 2; f.hair.window.r[2] -= o / 2; },
+  // [fringe-gap: the gap above the eyes in eye radii, x m (design 2.6)]
+  fringeGap: (f, c, m) => { f.face.opening.gap *= m; },
 };
 
 // ---- per species: the open ranges ----------------------------------------------------------------------------------
@@ -76,8 +76,8 @@ export const LEVERS = {
     R("fullness", "off", "fullness", [0, 0.4], { peak: "pelvis", knots: ["upper", "top"] }, ["front.upper", "front.top"], "Body: dome to bell"),
     R("eye-size", "mult", "eyeSize", [0.85, 1.2], {}, ["face.eyes"], "Eyes"),
     R("fur-depth", "mult", "furDepth", [0.8, 1.25], {}, ["hair.depth"], "Fluff"),
-    R("flare", "off", "flare", [-0.1, 0.15], {}, ["hair.flare"], "Hang"),
-    R("fringe", "off", "fringe", [0, 0.1], {}, ["hair.window"], "Fringe"),
+    R("flare", "off", "flare", [-0.03, 0.1], {}, ["hair.flare"], "Hang: the hem zone only"),
+    R("fringe-gap", "mult", "fringeGap", [0.5, 2.5], {}, ["face.opening"], "Fringe: the gap above the eyes, 0.3 ... 1.5 eye radii"),
   ],
   loika: [
     R("eye-size", "mult", "eyeSize", [1, 1.3], {}, ["face.eyes"], "Eyes: large ... huge"),

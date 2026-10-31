@@ -10,7 +10,8 @@ const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[
 const SHADOW = [30, 26, 34], SHADOW_A = 110;
 
 // ink codes of the eyes (for the checks)
-export const INK = { none: 0, body: 1, rim: 2, iris: 3, pupil: 4, catch: 5, nose: 6, halo: 7 };
+export const INK = { none: 0, body: 1, rim: 2, iris: 3, pupil: 4, catch: 5, nose: 6, halo: 7, mouth: 8 };
+const NINK = 9;
 
 // the framing of the adult cut rule. ref = { height: the stand's height in px at 304 } from the stand image.
 export function framing(scene, camera, sizeKey, ref) {
@@ -90,10 +91,13 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
   const pig = look.pigments, slotOf = (partName) => look.slots?.[partName] ?? partName;
   const partSlotCol = A.partNames.map((p) => pig[slotOf(p)] ?? [180, 180, 180]);
   const partIsEye = A.partNames.map((p) => p === "eye");
-  const eyes = scene.field.eyes, ek = look.eyes, glowCol = pig.glow ?? null, marks = scene.field.marks ?? [];
-  const acc = new Float32Array(W * H * 4), cov = new Float32Array(W * H), em = new Float32Array(W * H), ink = new Uint8Array(W * H * 8), shadowCov = new Float32Array(W * H);
-  const inkCount = new Int32Array(W * H * 8);
+  const eyes = scene.field.eyes, faceM = scene.field.faceM, ek = look.eyes, glowCol = pig.glow ?? null, marks = scene.field.marks ?? [];
+  const acc = new Float32Array(W * H * 4), cov = new Float32Array(W * H), em = new Float32Array(W * H), ink = new Uint8Array(W * H * NINK), shadowCov = new Float32Array(W * H);
+  const inkCount = new Int32Array(W * H * NINK);
   const partMap = new Int16Array(W * H).fill(-1), groupMap = new Int16Array(W * H).fill(-1), angleMap = new Float32Array(W * H), sigmaMap = new Float32Array(W * H);
+  // the mouth's ink: the darker of the nose ink and the plate pigment x 0.45 (design 2.5)
+  const lum = (c) => 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2], plateC = (pig.patch ?? pig.belly ?? [128, 128, 128]).map((v) => v * 0.45), noseC = look.nose ?? [60, 50, 50];
+  const mouthCol = lum(noseC) < lum(plateC) ? noseC : plateC;
   const rimStrength = 0.15;
   const eyeCapCos = 0.55;
   for (let sy2 = 0; sy2 < SH; sy2++) for (let sx2 = 0; sx2 < SW; sx2++) {
@@ -114,19 +118,27 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     if (partIsEye[part] && A.eye[a] >= 0) {
       const e = eyes[A.eye[a]];
       const ux = (px - e.c[0]) / e.r, uy = (py - e.c[1]) / e.r, uz = (pz - e.c[2]) / e.r;
-      const cth = ux * e.n[0] + uy * e.n[1] + uz * e.n[2], th = Math.acos(Math.max(-1, Math.min(1, cth))), u = th / Math.acos(eyeCapCos);
+      const cth = ux * e.n[0] + uy * e.n[1] + uz * e.n[2], th = Math.acos(Math.max(-1, Math.min(1, cth)));
+      // the eye plane: stretched along the face's up by 1/aspect (an almond is wider than tall), and a lid share of the top covered by body colour
+      const ax = ux * e.rt[0] + uy * e.rt[1] + uz * e.rt[2], ay = ux * e.up[0] + uy * e.up[1] + uz * e.up[2], ll = Math.hypot(ax, ay) || 1;
+      const stretch = Math.hypot(ax, ay / e.aspect) / ll, u = (th / Math.acos(eyeCapCos)) * stretch;
       const big = ek.big;
       const pr = ek.pupil_r ?? (big ? 0.34 : 0.5), ir = ek.iris_r ?? (big ? 0.66 : 0.78);
-      if (u < pr) { col = ek.pupil; inkCode = INK.pupil; }
-      else if (u < ir) { col = ek.iris; inkCode = INK.iris; }
-      else { col = ek.rim; inkCode = INK.rim; }
-      spec = 1; matte = 0.6;
+      if (u > 1 || (e.lid > 0 && ay / (Math.sin(Math.acos(eyeCapCos)) * e.aspect) > 1 - 2 * e.lid)) { /* body colour: the lid */ }
+      else {
+        if (u < pr) { col = ek.pupil; inkCode = INK.pupil; }
+        else if (u < ir) { col = ek.iris; inkCode = INK.iris; }
+        else { col = ek.rim; inkCode = INK.rim; }
+        spec = 1; matte = 0.6;
+      }
     } else {
       for (let mi = 0; mi < marks.length; mi++) {
         const mv = I(A.marks[mi]);
         if (mv < 1.0 && marks[mi].kind === "nose") { col = mix(col, look.nose ?? [60, 50, 50], sstep(1.0, 0.6, mv)); if (mv < 0.8) inkCode = INK.nose; }
       }
     }
+    const mf = faceM?.mouth; // the mouth: an ink stroke in face coordinates, antialiased over one pixel
+    if (mf && inkCode === INK.body) { const mv = I(A.mouth), pxU = 1 / scale, cov2 = sstep(mf.t / 2 + pxU / 2, mf.t / 2 - pxU / 2, mv); if (cov2 > 0) { col = mix(col, mouthCol, cov2); if (cov2 > 0.5) inkCode = INK.mouth; } }
     // light
     const ndl = nx * Lk[0] + ny * Lk[1] + nz * Lk[2];
     const diff = Math.min(1, Math.max(0, (ndl + 0.6) / 1.6));
@@ -140,7 +152,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     acc[po * 4] += Math.min(255, r); acc[po * 4 + 1] += Math.min(255, g); acc[po * 4 + 2] += Math.min(255, bl);
     acc[po * 4 + 3] += 1; cov[po] += 1; em[po] += emv;
     if (partMap[po] < 0) { partMap[po] = part; groupMap[po] = A.group[a]; angleMap[po] = I(A.angle); sigmaMap[po] = I(A.sigma); }
-    inkCount[po * 8 + inkCode]++;
+    inkCount[po * NINK + inkCode]++;
   }
   const n2 = ss * ss;
   for (let i = 0; i < W * H; i++) { em[i] /= Math.max(1, cov[i]); cov[i] /= n2; }
@@ -189,7 +201,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
   }
   // the ink of each pixel: the most frequent non-body code with at least half the covered samples
   const inkMap = new Uint8Array(W * H);
-  for (let i = 0; i < W * H; i++) { let best = 0, bc = 0; for (let k = 2; k < 8; k++) if (inkCount[i * 8 + k] > bc) { bc = inkCount[i * 8 + k]; best = k; } inkMap[i] = bc * 2 >= n2 * 0 + Math.max(1, cov[i] * n2) ? best : INK.body; }
+  for (let i = 0; i < W * H; i++) { let best = 0, bc = 0; for (let k = 2; k < NINK; k++) if (inkCount[i * NINK + k] > bc) { bc = inkCount[i * NINK + k]; best = k; } inkMap[i] = bc * 2 >= n2 * 0 + Math.max(1, cov[i] * n2) ? best : INK.body; }
   const px = (p) => [W / 2 + (p[0] * rr[0] + p[1] * rr[1] + p[2] * rr[2] - fr.cx) * scale, (fr.feet + 1) - ((p[0] * uu[0] + p[1] * uu[1] + p[2] * uu[2]) - fr.bottom) * scale];
   return {
     width: W, height: H, data, coverage: cov, ink: inkMap, halo: haloMask, shadow: shadowCov, size: sizeKey,
