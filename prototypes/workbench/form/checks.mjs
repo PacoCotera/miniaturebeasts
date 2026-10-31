@@ -538,6 +538,9 @@ export function round2Checks(ctx) {
   { const look = form.look, pig = look.pigments, base = pig[Object.values(look.slots)[0]], res = {}, marks = { plate: pig.patch, belly: form.face.belly ? pig.belly : null, spot: pig.spot, sock: pig.sock, hoof: pig.hoof, nail: pig.nail, ring: pig.ring, inner: pig.inner };
     let ok = true; for (const [n, c] of Object.entries(marks)) if (c) { const sur = n === "hoof" ? pig.sock : base, d = Math.abs(Lstar(c) - Lstar(sur)); res[n] = +d.toFixed(0); if (d < 12) ok = false; }
     out.push(C("marks.contrast", "each mark against its surround: dL* >= 12", ok, res, ">= 12")); }
+  // surface.value (design 5): the body's L* p5 and p50 at 304 within +-6 of the stand's
+  { const sv = surfaceValue(r4), tg = SURFACE_TARGET[key]; out.push(C("surface.value", "the body's L* at the 5th percentile and the median at 304 within +-6 of the stand's", Math.abs(sv.p5 - tg[0]) <= 6 && Math.abs(sv.p50 - tg[1]) <= 6, { ...sv, stand: { p5: tg[0], p50: tg[1] } }, "+-6 L*")); }
+  if (key === "curlop") { const b = bellyChecks(r4); out.push(C("curlop.belly", "the belly's boundary has no straight run over 12 px and its mean L* is at least the stand's - 8", b.straightRunPx <= 12 && b.meanL !== null && b.meanL >= STAND_BELLY_L - 8, b, "<= 12 px; >= " + (STAND_BELLY_L - 8).toFixed(1))); }
   return out;
 }
 const countNails = (r4) => { // toes of the front feet with >= 4 visible px, per foot (the toes carry the nail share: a blob each)
@@ -546,3 +549,35 @@ const countNails = (r4) => { // toes of the front feet with >= 4 visible px, per
 };
 // the mean |dL*| of neighbouring body pixels (reported, not gated)
 export function textureEnergy(r) { let sum = 0, n = 0; const W = r.width; for (let y = 0; y < r.height; y++) for (let x = 0; x < W - 1; x++) { const i = y * W + x; if (r.coverage[i] < 0.99 || r.coverage[i + 1] < 0.99) continue; sum += Math.abs(Lstar(rgb(r, x, y)) - Lstar(rgb(r, x + 1, y))); n++; } return n ? +(sum / n).toFixed(3) : 0; }
+
+// ====================================================================================================================
+// Round 3 (design 4, 5): the surface table, the belly, the tuft band and the outline measure
+// ====================================================================================================================
+// the stand's body L* at the 5th percentile and the median (design 5, measured on the stands at 304)
+export const SURFACE_TARGET = { curlop: [45.9, 67.7], wickle: [48.4, 72.5], drapet: [26.6, 47.0], loika: [12.7, 30.3], rupar: [43.6, 63.3] };
+const pctOf = (a, p) => a.slice().sort((x, y) => x - y)[Math.floor(p * (a.length - 1))];
+export function bodyLstar(r) { const L = []; for (let i = 0; i < r.width * r.height; i++) if (r.coverage[i] >= 0.98) L.push(Lstar(rgb(r, i % r.width, Math.floor(i / r.width)))); return L; }
+export function surfaceValue(r) { const L = bodyLstar(r); return { p5: +pctOf(L, 0.05).toFixed(1), p50: +pctOf(L, 0.5).toFixed(1) }; }
+// a separable Gaussian blur of the L* of covered pixels (mask-normalised)
+function blurL(r, sigma) {
+  const W = r.width, H = r.height, ks = Math.ceil(3 * sigma), ker = []; for (let i = -ks; i <= ks; i++) ker.push(Math.exp(-(i * i) / (2 * sigma * sigma)));
+  const L = new Float32Array(W * H), M = new Float32Array(W * H); for (let i = 0; i < W * H; i++) if (r.coverage[i] >= 0.98) { L[i] = Lstar(rgb(r, i % W, Math.floor(i / W))); M[i] = 1; }
+  const pass = (A, B, dx, dy) => { const o = new Float32Array(W * H), om = new Float32Array(W * H); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let s = 0, ms = 0; for (let k = -ks; k <= ks; k++) { const X = x + k * dx, Y = y + k * dy; if (X < 0 || Y < 0 || X >= W || Y >= H) continue; s += A[Y * W + X] * ker[k + ks]; ms += B[Y * W + X] * ker[k + ks]; } o[y * W + x] = s; om[y * W + x] = ms; } return [o, om]; };
+  let [a, b] = pass(L, M, 1, 0); [a, b] = pass(a, b, 0, 1); return { v: a, m: b, M };
+}
+// the tuft band: the std of L* between Gaussian blurs of 1.5 and 6 px over the body (stands 4.2 / 4.7 / 5.2 / 9.3 / 6.7), reported, not gated
+export function tuftBand(r) { const A = blurL(r, 1.5), B = blurL(r, 6), d = []; for (let i = 0; i < r.width * r.height; i++) if (A.M[i] && B.m[i] > 0.5 && A.m[i] > 0.5) d.push(A.v[i] / A.m[i] - B.v[i] / B.m[i]); const mu = d.reduce((x, y) => x + y, 0) / Math.max(1, d.length); return +Math.sqrt(d.reduce((x, y) => x + (y - mu) ** 2, 0) / Math.max(1, d.length)).toFixed(2); }
+// the outline's departure from its 4 px blur, in px per sqrt(area) (stands 2.37 / 2.29 / 2.01 / 1.72 / 8.77), reported, not gated
+export function outlineMeasure(r) { const W = r.width, H = r.height, cov = r.coverage, ks = 4, S = new Float32Array(W * H); let area = 0; for (let i = 0; i < W * H; i++) { S[i] = cov[i] >= 0.5 ? 1 : 0; area += S[i]; }
+  const sg = 4 / 2, ker = []; for (let i = -ks; i <= ks; i++) ker.push(Math.exp(-(i * i) / (2 * sg * sg))); const ksum = ker.reduce((a, b) => a + b, 0);
+  const pass = (A, dx, dy) => { const o = new Float32Array(W * H); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let s = 0; for (let k = -ks; k <= ks; k++) { const X = Math.min(W - 1, Math.max(0, x + k * dx)), Y = Math.min(H - 1, Math.max(0, y + k * dy)); s += A[Y * W + X] * ker[k + ks]; } o[y * W + x] = s / ksum; } return o; };
+  const B = pass(pass(S, 1, 0), 0, 1); let d = 0; for (let i = 0; i < W * H; i++) d += Math.abs(S[i] - B[i]); return +(d / Math.sqrt(area)).toFixed(2); }
+// curlop.belly (design 4): the longest run of the belly's boundary (m = .5) within 1 px of a straight line is at most 12 px; the belly's mean L* is at least the stand's - 8
+export const STAND_BELLY_L = 84.7; // the cream of the stand's belly, L* > 70 (measured by the builder on stand-E-curlop at 304)
+export function bellyChecks(r) {
+  const W = r.width, H = r.height, f = new Float32Array(W * H); for (let i = 0; i < W * H; i++) f[i] = r.coverage[i] >= 0.5 ? r.bellyMap[i] : 0;
+  const D = inDistance(r.coverage, W, H), all = contour(f, W, H, 0.5), pts = all.filter((p) => D[Math.min(H - 1, Math.max(0, Math.floor(p[1]))) * W + Math.min(W - 1, Math.max(0, Math.floor(p[0])))] >= 3); let best = 0; // the part of the boundary that is the body's own outline is not the belly's edge
+  for (let i = 0; i < pts.length; i++) { let j = i + 1; for (; j < pts.length; j++) { const a = pts[i], b = pts[j], l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; let ok = true; for (let k = i + 1; k < j; k++) { const p = pts[k], dist = Math.abs((b[0] - a[0]) * (a[1] - p[1]) - (a[0] - p[0]) * (b[1] - a[1])) / l; if (dist > 1) { ok = false; break; } } if (!ok) break; } best = Math.max(best, j - i); }
+  let n = 0, s = 0; for (let i = 0; i < W * H; i++) if (f[i] >= 0.5 && r.coverage[i] >= 0.98) { const L = Lstar(rgb(r, i % W, Math.floor(i / W))); if (L > 70) { n++; s += L; } }
+  return { straightRunPx: best, meanL: n ? +(s / n).toFixed(1) : null, px: n };
+}

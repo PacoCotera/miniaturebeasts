@@ -46,3 +46,20 @@ test("two runs give identical bytes at 304", () => {
   const a = renderForm(buildScene(f, { extentDiv: 150 }), f.camera, 304, { ref }), b = renderForm(buildScene(f, { extentDiv: 150 }), f.camera, 304, { ref });
   assert.equal(hash(a.data), hash(b.data));
 });
+
+// ---- round 3 (design 4, 5): the tone ramp, the tufts, the belly in the surface chart ----
+test("the clump tufts show at 304 and 96 and are off at 48, on fur only", () => {
+  for (const k of ["curlop", "wickle"]) { assert.ok(makeMaterial(SPECIES[k], 304, 140).ampTuft > 0, k); assert.ok(makeMaterial(SPECIES[k], 96, 40).ampTuft > 0, k); assert.equal(makeMaterial(SPECIES[k], 48, 15).ampTuft, 0, k); }
+  for (const k of ["drapet", "loika", "rupar"]) assert.equal(makeMaterial(SPECIES[k], 304, 140).ampTuft, 0, k);
+  assert.equal(SPECIES.curlop.look.material.clump, 0.1); assert.equal(SPECIES.wickle.look.material.clump, 0.13); assert.equal(SPECIES.wickle.look.material.clumpPlume, 0.09);
+});
+test("the tone ramp of each pigment: k0 .66 fur and hair (Wickle .70 tuned to .62), .58 skin, k1 1.04; skin gloss at most .10", () => {
+  assert.equal(SPECIES.curlop.look.material.k0, 0.66); assert.equal(SPECIES.loika.look.material.k0, 0.58); assert.ok(SPECIES.loika.look.material.gloss <= 0.1); assert.equal(SPECIES.rupar.look.material.k0, 0.66);
+});
+test("the belly edge follows the body: beta(sigma) = beta_max sin(pi t^.8)^.6 peaks at the lower belly and closes at both ends", async () => {
+  const { buildChains } = await import("../spine.mjs"), { makeField } = await import("../field.mjs"), f = SPECIES.curlop, b = buildChains(f), fld = makeField({ front: b.front, tail: b.tail, floor: b.floor }, b.branches, f);
+  assert.equal(f.face.belly.chart, true); assert.equal(f.face.belly.betaMax, 68);
+  // on the ventral line the belly is 1 over the middle, 0 beyond both ends; at 90 degrees from the ventral line it is 0 everywhere (beta_max 68)
+  const at = (sig, angDeg) => { const s = fld.groups.front.samples ?? b.front.samples, sm = b.front.samples.reduce((a, q) => (Math.abs(q.sigma - sig) < Math.abs(a.sigma - sig) ? q : a)), a = angDeg * Math.PI / 180, nr = sm.d, p = [sm.p[0] + (sm.N[0] * Math.cos(a) * -1 * (nr + sm.fur) * 1) * 1 + sm.B[0] * Math.sin(a) * (sm.w + sm.fur), sm.p[1] + (sm.N[1] * Math.cos(a) * -1) * (nr + sm.fur) + sm.B[1] * Math.sin(a) * (sm.w + sm.fur), sm.p[2] + fld.shift + (sm.N[2] * Math.cos(a) * -1) * (nr + sm.fur) + sm.B[2] * Math.sin(a) * (sm.w + sm.fur)]; return fld.at(p).belly; };
+  assert.ok(at(0.8, 0) > 0.9); assert.ok(at(0.8, 40) > 0.9); assert.ok(at(1.7, 40) < 0.1); assert.ok(at(0.8, 85) < 0.1); // the edge narrows toward the head: 67 degrees at sigma .8, 14 at 1.7
+});

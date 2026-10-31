@@ -456,6 +456,14 @@ export const ROUND3_LOG = [];
   { const hr = R.drapet.hair, before = JSON.stringify({ flare: hr.flare, notch: hr.notch, lift: hr.lift });
     Object.assign(hr, { flare: 0.1, notch: 0.08, lift: 0.01, lockN: 22, lockA: 0.035, lockGroove: 0.045, drift: 0.15, tiers: [0.62, 0.34], inset: [0, 0.02, 0.04], tipLift: 0.025, tipSplay: 0.02, tipLen: 0.1, point: 0.08, tipJitter: 0.04 });
     log("drapet", "hair", before, JSON.stringify({ flare: hr.flare, notch: hr.notch, lift: hr.lift, lockN: 22 }), "design 3: 22 locks in 3 tiers with lifted tips, hem lift <= .01, notch .08, flare .10 (the width at .9 H was 259 px against the stand's 278)"); }
+  // C5: the surface and the marks (design 4, 5)
+  R.curlop.face.belly = { chart: true, betaMax: 68, s0: -0.15, s1: 1.75 }; log("curlop", "face.belly", "beta 62, s0 -.2, s1 1.75", "chart: beta_max 68, s0 -.15, s1 1.75", "design 4: the belly is a mark in the body's surface chart");
+  for (const k of ["curlop", "drapet", "rupar"]) R[k].look.material.k0 = 0.66; R.loika.look.material.k0 = 0.58; // design 5: the tone ramp k0 .66 fur and hair, .58 skin (Wickle .70), k1 1.04
+  Object.assign(R.curlop.look.material, { clump: 0.1, clumpR: 0.5 }); Object.assign(R.wickle.look.material, { clump: 0.13, clumpPlume: 0.09, clumpR: 0.6, k0: 0.7 });
+  R.drapet.look.pigments.hair = [121, 106, 167]; log("drapet", "look.pigments.hair", "138 120 190", "121 106 167", "design 5: the hair pigment x .9: the shadow floor (k0 .56 is the allowance's end) still left the 5th percentile L* 10 over the stand's");
+  R.loika.look.material.gloss = 0.1; // design 5: skin gloss at most .10
+  R.loika.look.pigments.skin = [70, 67, 77]; log("loika", "look.pigments.skin", "58 56 64", "70 67 77", "design 5: the skin pigment lifted x1.2 so the body's median L* meets the stand's (30.3): an art call, within the ramp rule");
+  Object.assign(R.rupar.look.material, { sheen: 0.15 }); // design 5: Rupar's soft sheen .15
   Object.assign(R.rupar.look.eyes, { pupil_r: 0.62, iris_r: 0.78 }); // the pupil must read >= 28 px at 304 (the eye is 12 px across); a look value, not a form number
   R.curlop.look.eyes.iris_r = 0.86; // face.ink.304: the far eye's rim ring was 1.5 px wide against >= 2; a rim under .15 r_e needs no ring (as Wickle's .86)
   setP("curlop", "face.eyes.ex", 0.52, "design 8: eyeSep was .142 against .198 (the stand): e_x .46 to .52 is a design number, beyond the allowance");

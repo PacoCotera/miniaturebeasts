@@ -95,14 +95,14 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
   const eyes = scene.field.eyes, faceM = scene.field.faceM, ek = look.eyes, glowCol = pig.glow ?? null, marks = scene.field.marks ?? [];
   const acc = new Float32Array(W * H * 4), cov = new Float32Array(W * H), em = new Float32Array(W * H), ink = new Uint8Array(W * H * NINK), shadowCov = new Float32Array(W * H);
   const inkCount = new Int32Array(W * H * NINK);
-  const flowS = new Float32Array(W * H * 2), plateCov = new Float32Array(W * H), partMap = new Int16Array(W * H).fill(-1), groupMap = new Int16Array(W * H).fill(-1), angleMap = new Float32Array(W * H), sigmaMap = new Float32Array(W * H);
+  const bellyAcc = new Float32Array(W * H), flowS = new Float32Array(W * H * 2), plateCov = new Float32Array(W * H), partMap = new Int16Array(W * H).fill(-1), groupMap = new Int16Array(W * H).fill(-1), angleMap = new Float32Array(W * H), sigmaMap = new Float32Array(W * H);
   // the mouth's ink: the darker of the nose ink and the plate pigment x 0.45 (design 2.5)
   const lum = (c) => 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2], plateC = (pig.patch ?? pig.belly ?? [128, 128, 128]).map((v) => v * 0.45), noseC = look.nose ?? [60, 50, 50];
   const mouthCol = lum(noseC) < lum(plateC) ? noseC : plateC;
   // the catch light sits between the key light and the eye's own axis, so both eyes carry one inside their cap
   const eyeH = eyes.map((e) => { const v = [Hh[0] * 0.45 + e.n[0] * 0.55, Hh[1] * 0.45 + e.n[1] * 0.55, Hh[2] * 0.45 + e.n[2] * 0.55], l = Math.hypot(...v); return v.map((x) => x / l); });
   const Mat = makeMaterial(form, sizeKey, scale, opts), groupNames = scene.field.groups.all.map((g) => g.id);
-  const rimStrength = 0.15, hairF = scene.field.hair, hairSpan = hairF ? [hairF.floorZ, hairF.hairParams.Htot] : null;
+  const K1 = 1.04, k0 = form.look.material?.k0 ?? (Mat.kind === "skin" ? 0.58 : 0.66), rimStrength = 0.15, hairF = scene.field.hair, hairSpan = hairF ? [hairF.floorZ, hairF.hairParams.Htot] : null;
     for (let sy2 = 0; sy2 < SH; sy2++) for (let sx2 = 0; sx2 < SW; sx2++) {
     const o = sy2 * SW + sx2, t = tri[o]; if (t < 0) continue;
     const a = F[t * 3], b = F[t * 3 + 1], c = F[t * 3 + 2], w1 = B1[o], w2 = B2[o], w0 = 1 - w1 - w2;
@@ -114,7 +114,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     let col = partSlotCol[part], inkCode = INK.body, spec = 0, matte = 1;
     const pv = [px, py, pz];
     const Tv = [A.T[a * 3] * w0 + A.T[b * 3] * w1 + A.T[c * 3] * w2, A.T[a * 3 + 1] * w0 + A.T[b * 3 + 1] * w1 + A.T[c * 3 + 1] * w2, A.T[a * 3 + 2] * w0 + A.T[b * 3 + 2] * w1 + A.T[c * 3 + 2] * w2];
-    const ctxM = { p: pv, n: [nx, ny, nz], T: Tv, sigma: I(A.sigma), group: groupNames[A.group[a]], h: Hh, part: A.partNames[part], lock: { t: I(A.lt), jit: I(A.lid), tip: I(A.ltip), tier: I(A.ltier) }, zrel: hairSpan ? (pz - hairSpan[0]) / hairSpan[1] : 0.5 };
+    const ctxM = { p: pv, n: [nx, ny, nz], T: Tv, sigma: I(A.sigma), group: groupNames[A.group[a]], h: Hh, part: A.partNames[part], angle: I(A.angle), lock: { t: I(A.lt), jit: I(A.lid), tip: I(A.ltip), tier: I(A.ltier) }, zrel: hairSpan ? (pz - hairSpan[0]) / hairSpan[1] : 0.5 };
     // the marks, painted in a fixed order over the slot's pigment (design 1.4)
     const mout = {};
     col = paintMarks(look, Mat, { ...ctxM, out: mout, part: A.partNames[part], u0: I(A.u0), angle: I(A.angle), belly: I(A.belly), patch: I(A.patch), fx: I(A.fx), fy: I(A.fy), eyes: faceM?.eyes, col }, col);
@@ -148,20 +148,24 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     }
     const mf = faceM?.mouth; // the mouth: an ink stroke in face coordinates, antialiased over one pixel
     if (mf && inkCode === INK.body && sizeKey !== 48) { const mv = I(A.mouth), pxU = 1 / scale, cov2 = sstep(mf.t / 2 + pxU / 2, mf.t / 2 - pxU / 2, mv); if (cov2 > 0) { col = mix(col, mouthCol, cov2); if (cov2 > 0.5) inkCode = INK.mouth; } }
-    // light
+    // light (round 3, design 5): each pigment has a tone ramp k0 .. k1 and shading moves only inside it: no hue leaves the pigment, nothing goes black or white outside the eyes
     const ndl = nx * Lk[0] + ny * Lk[1] + nz * Lk[2];
-    const diff = Math.min(1, Math.max(0, (ndl + 0.6) / 1.6));
-    const amb = 0.15 + 0.2 * (nz * 0.5 + 0.5);
-    const aov = I(ao);
-    const rim = rimStrength * Math.pow(1 - Math.max(0, nx * tt[0] + ny * tt[1] + nz * tt[2]), 3) * Math.max(0, ndl * 0.5 + 0.5);
-    let k = (diff * 0.85 * (0.4 + 0.6 * aov) + amb * aov + rim) * matte * surf.k + (emv > 0.02 ? 0.35 * emv : 0);
+    const aov = I(ao), isEyePx = partIsEye[part] && A.eye[a] >= 0;
+    let k;
+    if (isEyePx) { // the eye keeps the round 2 light (its inks are fixed)
+      const diff = Math.min(1, Math.max(0, (ndl + 0.6) / 1.6)), amb = 0.15 + 0.2 * (nz * 0.5 + 0.5), rim = rimStrength * Math.pow(1 - Math.max(0, nx * tt[0] + ny * tt[1] + nz * tt[2]), 3) * Math.max(0, ndl * 0.5 + 0.5);
+      k = (diff * 0.85 * (0.4 + 0.6 * aov) + amb * aov + rim) * matte * surf.k + (emv > 0.02 ? 0.35 * emv : 0);
+    } else {
+      const dd = Math.min(1, Math.max(0, (ndl + 0.7) / 1.7)), ramp = k0 + (K1 - k0) * dd, graze = Math.pow(1 - Math.max(0, nx * tt[0] + ny * tt[1] + nz * tt[2]), 3);
+      k = ramp * (1 - 0.3 * (1 - aov)) * surf.k + (Mat.kind === "skin" ? 0 : 0.06 * graze) + (emv > 0.02 ? 0.35 * emv : 0); // AO softened; a light rim on fur, never a dark one
+    }
     let r = col[0] * k, g = col[1] * k, bl = col[2] * k;
     if (surf.sheen > 0) { const lt = mix(col, [255, 255, 255], surf.sheenLight ?? 0.4); r += lt[0] * surf.sheen; g += lt[1] * surf.sheen; bl += lt[2] * surf.sheen; } // the anisotropic sheen, the pigment lightened 40 %
     if (surf.gloss > 0 && !partIsEye[part]) { const nh2 = Math.max(0, nx * Hh[0] + ny * Hh[1] + nz * Hh[2]), gl = surf.gloss * Math.pow(nh2, 24); r += (255 - r) * gl; g += (255 - g) * gl; bl += (255 - bl) * gl; } // a soft Blinn gloss
     if (spec) { const eH = partIsEye[part] && A.eye[a] >= 0 ? eyeH[A.eye[a]] : Hh, nh = nx * eH[0] + ny * eH[1] + nz * eH[2]; const s = sstep(0.975, 0.992, nh); r += (255 - r) * s; g += (255 - g) * s; bl += (255 - bl) * s; if (s > 0.5) inkCode = INK.catch; }
     const px2 = Math.floor(sx2 / ss), py2 = Math.floor(sy2 / ss), po = py2 * W + px2;
     if (sizeKey !== 48 && Mat.kind !== "skin") { const f2 = Mat.flow(Tv, ctxM.sigma, ctxM.group, [nx, ny, nz]); flowS[po * 2] = f2[0] * rr[0] + f2[1] * rr[1] + f2[2] * rr[2]; flowS[po * 2 + 1] = -(f2[0] * uu[0] + f2[1] * uu[1] + f2[2] * uu[2]); }
-    plateCov[po] += I(A.patch) > 0.5 ? 1 : 0;
+    plateCov[po] += I(A.patch) > 0.5 ? 1 : 0; bellyAcc[po] += I(A.belly);
     acc[po * 4] += Math.min(255, r); acc[po * 4 + 1] += Math.min(255, g); acc[po * 4 + 2] += Math.min(255, bl);
     acc[po * 4 + 3] += 1; cov[po] += 1; em[po] += emv;
     if (partMap[po] < 0) { partMap[po] = part; groupMap[po] = A.group[a]; angleMap[po] = I(A.angle); sigmaMap[po] = I(A.sigma); }
@@ -212,14 +216,14 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
       data[i * 4] = (cr * cc + rU * aU * (1 - cc)) / aOut; data[i * 4 + 1] = (cg * cc + gU * aU * (1 - cc)) / aOut; data[i * 4 + 2] = (cb * cc + bU * aU * (1 - cc)) / aOut; data[i * 4 + 3] = aOut * 255;
     }
   }
-  if (sizeKey !== 48 && opts.material !== false && Mat.kind === "fur") fringePass({ data, cov, flowS, W, H, depthU: form.coat?.depth ?? (form.hair ? 0.1 : 0), scale, kind: Mat.kind });
+  if (sizeKey !== 48 && opts.material !== false && Mat.kind === "fur" && Mat.clump) fringePass({ data, cov, flowS, W, H, depthU: form.coat?.depth ?? (form.hair ? 0.1 : 0), scale, kind: Mat.kind, sigmaMap, angleMap, clump: Mat.clump, plumeClump: Mat.clumpPlume ?? Mat.clump, partMap, plumeId: A.partNames.indexOf("plume"), R: Mat.clumpR });
   // the ink of each pixel: the most frequent non-body code with at least half the covered samples
   const inkMap = new Uint8Array(W * H);
   for (let i = 0; i < W * H; i++) { let best = 0, bc = 0; for (let k = 2; k < NINK; k++) if (inkCount[i * NINK + k] > bc) { bc = inkCount[i * NINK + k]; best = k; } inkMap[i] = bc * 2 >= n2 * 0 + Math.max(1, cov[i] * n2) ? best : INK.body; }
   const px = (p) => [W / 2 + (p[0] * rr[0] + p[1] * rr[1] + p[2] * rr[2] - fr.cx) * scale, (fr.feet + 1) - ((p[0] * uu[0] + p[1] * uu[1] + p[2] * uu[2]) - fr.bottom) * scale];
   const features = sizeKey === 304 ? null : featurePass({ W, H, sizeKey, data, inkMap, cov, depth, SW, ss, project: px, tt, faceM, field: scene.field, look, scale, mouthCol });
   return {
-    features, plate: plateCov, width: W, height: H, data, coverage: cov, ink: inkMap, halo: haloMask, shadow: shadowCov, size: sizeKey,
+    features, plate: plateCov, bellyMap: (() => { const b = new Float32Array(W * H); for (let i = 0; i < W * H; i++) b[i] = bellyAcc[i] / Math.max(1, cov[i] * n2); return b; })(), width: W, height: H, data, coverage: cov, ink: inkMap, halo: haloMask, shadow: shadowCov, size: sizeKey,
     maps: { part: partMap, group: groupMap, angle: angleMap, sigma: sigmaMap, partNames: A.partNames, groupNames: scene.field.groups.all.map((g) => g.id) },
     meta: { scale, feet: fr.feet, cx: fr.cx, bottom: fr.bottom, extent: fr.extent, eyes: eyes.map((e) => ({ at: px(e.c), r: e.r * scale })), basis, project: px },
   };

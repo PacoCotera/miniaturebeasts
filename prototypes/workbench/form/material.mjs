@@ -11,7 +11,7 @@ const nrm = (a) => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] /
 // the fade of any detail narrower than 1.5 px (design 1.2): 0 under 1.5 px, 1 from 3 px
 export const Phi = (wPx) => clamp01((wPx - 1.5) / 1.5);
 // what shows at each size (design 1.2): strands at 304, locks at 304 and 96, nothing at 48
-export const SHOWS = { 304: { strand: true, lock: true }, 96: { strand: false, lock: true }, 48: { strand: false, lock: false } };
+export const SHOWS = { 304: { strand: true, lock: true, tuft: true }, 96: { strand: false, lock: true, tuft: true }, 48: { strand: false, lock: false, tuft: false } };
 
 // A stretched value noise: q = p / w + f (f . p)(1 / L - 1 / w): w across the flow f, L along it
 const stretched = (p, f, w, L, salt) => {
@@ -26,6 +26,8 @@ export function makeMaterial(form, sizeKey, scale, opts = {}) {
   // the amplitude of each noise at this size: 0 where the size does not show it, else the fade of its width in pixels
   const ampStrand = on && kind !== "skin" && show.strand ? (kind === "hair" ? 0.1 : 0.14) * Phi(strand[0] * scale) : 0, ampLock = on && kind === "fur" && show.lock ? 0.1 * Phi(lock[0] * scale) : 0; // hair: the locks are geometry, the strands run at contrast .10
   const pores = on && kind === "skin" && sizeKey === 304 ? 0.04 * Phi(0.02 * scale) : 0;
+  // the clump tufts (fur): hashed cells of the (sigma, angle x R) atlas, size M.clump U (the plume of Wickle M.clumpPlume); shown by the fade of their width in px at 304 and 96, off at 48
+  const ampTuft = on && kind === "fur" && M.clump && show.tuft ? Phi(M.clump * scale) : 0, clumpR = M.clumpR ?? 0.5;
   const strandAmp = () => ampStrand, lockAmp = () => ampLock;
   // the flow at a point: the tangent away from the crown (down the body toward a tip), mixed with world-down by the gravity share, in the tangent plane
   function flow(T, sigma, group, n) {
@@ -54,12 +56,18 @@ export function makeMaterial(form, sizeKey, scale, opts = {}) {
       n = nrm([n[0] + b[0] * 0.25 * (ns2 - ns) * (ampStrand / 0.14), n[1] + b[1] * 0.25 * (ns2 - ns) * (ampStrand / 0.14), n[2] + b[2] * 0.25 * (ns2 - ns) * (ampStrand / 0.14)]);
     }
     if (ampLock > 0) k += ampLock * stretched(ctx.p, f, lock[0], lock[1], 7);
+    if (ampTuft > 0 && ctx.angle !== undefined) { // over each clump: the normal tilts +12 degrees toward the flow on its upper half, the last 20 % is -10 % value, the last 25 % +8 L*, the edges jagged
+      const cs = ctx.part === "plume" && M.clumpPlume ? M.clumpPlume : M.clump, a = ctx.sigma / cs, bq = ((ctx.angle * Math.PI) / 180 * clumpR) / cs, i = Math.floor(a), j = Math.floor(bq), fu = a - i, fv = bq - j;
+      const sgn = Math.sign(dot(f, ctx.T)) || 1, h0 = hash1(i * 7919 + j * 104729, 31), w0 = sgn > 0 ? fu : 1 - fu, w = Math.min(1, Math.max(0, w0 + 0.12 * Math.sin(fv * 6.2832 * (1 + h0) + h0 * 9)));
+      const tilt = smooth(1 - w / 0.5) * 0.21 * ampTuft; n = nrm([n[0] + f[0] * tilt, n[1] + f[1] * tilt, n[2] + f[2] * tilt]);
+      k *= 1 - 0.1 * ampTuft * smooth((w - 0.8) / 0.1); k *= 1 + 0.13 * ampTuft * smooth((w - 0.75) / 0.1);
+    }
     // the anisotropic sheen along f: sheen (1 - (f . h)^2)^20, in two bands for hair
     // hair: one soft sheen band on the upper third (exponent 8), the pigment lightened 35 %; fur keeps its anisotropic sheen
     const fh = ctx.h ? dot(f, ctx.h) : 0, zr = ctx.zrel ?? 0.5, band = kind === "hair" ? Math.exp(-(((zr - 0.72) / 0.14) ** 2)) : 1;
     return { k, n, sheen: (M.sheen ?? 0.2) * Math.pow(Math.max(0, 1 - fh * fh), kind === "hair" ? 8 : 20) * band, gloss: 0, sheenLight: kind === "hair" ? 0.35 : 0.4 };
   }
-  return { kind, M, surface, strandAmp, lockAmp, ampStrand, ampLock, pores, strand, lock, flow };
+  return { kind, M, surface, strandAmp, lockAmp, ampStrand, ampLock, ampTuft, pores, strand, lock, flow, clump: ampTuft > 0 ? M.clump : null, clumpPlume: M.clumpPlume, clumpR };
 }
 
 // ---- marks (design 1.4): a mask in [0, 1] with a pigment slot, painted in a fixed order -------------------------------------------
@@ -117,25 +125,30 @@ export function paintMarks(look, Mat, ctx, col) {
   return col;
 }
 
-// The outline fringe at 304 and 96 (design 1.2): strands 0.6 x the local fur depth long, every 2 px along the outline, pointing along the projected flow
-// blended 60/40 with the outline normal, alpha tapered to nothing. It writes only colour and alpha, never the mesh coverage the checks read.
-export function fringePass({ data, cov, flowS, W, H, depthU, scale, kind }) {
-  const len = 0.6 * depthU * scale; if (len < 1.2) return;
-  const base = new Uint8ClampedArray(data), cv = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? 0 : cov[y * W + x]);
+// The outline tufts at 304 and 96 (round 3, design 5): every clump that crosses the outline emits one tapered tuft: length .6 - 1.0 x the fur depth, base .5 x the clump, pointing along
+// the projected flow blended 50/50 with the outline normal, in the clump's light tip colour, alpha tapering. It writes only colour and alpha, never the mesh coverage the checks read.
+export function fringePass({ data, cov, flowS, W, H, depthU, scale, kind, sigmaMap, angleMap, clump, plumeClump, partMap, plumeId, R }) {
+  const len0 = depthU * scale; if (len0 < 1.2) return;
+  const base = new Uint8ClampedArray(data), cv = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? 0 : cov[y * W + x]), done = new Set();
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     if (cov[y * W + x] < 0.5 || cv(x - 1, y) >= 0.5 && cv(x + 1, y) >= 0.5 && cv(x, y - 1) >= 0.5 && cv(x, y + 1) >= 0.5) continue; // the outline's inner pixels
-    if (hash1(y * W + x, 17) < 0.5) continue; // every other one, by position
+    const i = y * W + x, cs = partMap[i] === plumeId && plumeId >= 0 ? plumeClump : clump, key = `${partMap[i]}:${Math.floor(sigmaMap[i] / cs)}:${Math.floor((angleMap[i] * Math.PI / 180 * (R ?? 0.5)) / cs)}`;
+    if (done.has(key)) continue; done.add(key);
     let gx = cv(x - 1, y) - cv(x + 1, y), gy = cv(x, y - 1) - cv(x, y + 1); const gl = Math.hypot(gx, gy); if (gl < 1e-6) continue; gx /= gl; gy /= gl;
-    const i = y * W + x, fx = flowS[i * 2], fy = flowS[i * 2 + 1], fl = Math.hypot(fx, fy) || 1;
-    let dx = 0.6 * gx + 0.4 * (fx / fl), dy = 0.6 * gy + 0.4 * (fy / fl); if (dx * gx + dy * gy < 0.2) { dx = gx; dy = gy; } // keep it outward
+    const fx = flowS[i * 2], fy = flowS[i * 2 + 1], fl = Math.hypot(fx, fy) || 1;
+    let dx = 0.5 * gx + 0.5 * (fx / fl), dy = 0.5 * gy + 0.5 * (fy / fl); if (dx * gx + dy * gy < 0.2) { dx = gx; dy = gy; } // keep it outward
     const dl = Math.hypot(dx, dy); dx /= dl; dy /= dl;
-    const L = len * (0.6 + 0.4 * hash1(i, 19));
+    const L = len0 * (0.6 + 0.4 * hash1(i, 19)), wB = Math.max(1, 0.5 * cs * scale); if (L < 1.2) continue;
+    const tip = [0, 1, 2].map((c) => Math.min(255, base[i * 4 + c] * 1.16 + 10)), px = -dy, py = dx; // the clump's light tip colour
     for (let t = 1; t <= L; t++) {
-      const X = Math.round(x + dx * t), Y = Math.round(y + dy * t); if (X < 0 || Y < 0 || X >= W || Y >= H) break;
-      const o = (Y * W + X) * 4, a = 0.8 * (1 - t / (L + 1)) * (kind === "hair" ? 1 : 0.9); if (cov[Y * W + X] >= 0.5) continue;
-      const a0 = data[o + 3] / 255, aN = a + a0 * (1 - a);
-      for (let c = 0; c < 3; c++) data[o + c] = (base[(y * W + x) * 4 + c] * a + data[o + c] * a0 * (1 - a)) / (aN || 1);
-      data[o + 3] = aN * 255;
+      const hw = 0.5 * wB * (1 - t / (L + 1)), a = 0.85 * (1 - t / (L + 1));
+      for (let s = -Math.floor(hw); s <= Math.floor(hw); s++) {
+        const X = Math.round(x + dx * t + px * s), Y = Math.round(y + dy * t + py * s); if (X < 0 || Y < 0 || X >= W || Y >= H) continue;
+        const o = (Y * W + X) * 4; if (cov[Y * W + X] >= 0.5) continue;
+        const a0 = data[o + 3] / 255, aN = a + a0 * (1 - a);
+        for (let c = 0; c < 3; c++) data[o + c] = (tip[c] * a + data[o + c] * a0 * (1 - a)) / (aN || 1);
+        data[o + 3] = aN * 255;
+      }
     }
   }
 }

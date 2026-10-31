@@ -332,7 +332,12 @@ export function makeField(chains, branches, form, opts = {}) {
     }
     if (bellyF && bg === groups.front) {
       const sg = bg.sigma[bi], ang = 180 - Math.abs(angle);
-      belly = smooth((bellyF.beta - ang) / 6 + 0.5) * smooth((sg - bellyF.s0) / 0.12 + 0.5) * smooth((bellyF.s1 - sg) / 0.12 + 0.5);
+      if (bellyF.chart) { // round 3 (design 4): a mark in the surface chart (sigma along the chain, v the arc length from the ventral line): its edge is |v| = beta(sigma) R(sigma),
+        // beta = beta_max sin(pi t^.8)^.6, soft over .05 U and jagged by +-.04 U at the clump scale: the outline follows the body, no constant-angle or constant-sigma edge is left
+        const t = Math.min(1, Math.max(0, (sg - bellyF.s0) / (bellyF.s1 - bellyF.s0))), bet = (bellyF.betaMax * Math.pow(Math.sin(Math.PI * Math.pow(t, 0.8)), 0.6) * Math.PI) / 180;
+        const Rr = 0.5 * (1 / D[o + 12] + 1 / D[o + 14]), aq = sg / 0.1, ai = Math.floor(aq), af = aq - ai, jagv = (hash1(ai, 22) * (1 - smooth(af)) + hash1(ai + 1, 22) * smooth(af)) * 2 - 1, v = (ang * Math.PI / 180) * Rr + 0.04 * jagv; // the tuft jag: +-.04 U, one lobe per clump (.1 U) along the flow
+        belly = smooth((bet * Rr - v) / 0.05 + 0.5) * smooth((sg - bellyF.s0) / 0.12 + 0.5) * smooth((bellyF.s1 - sg) / 0.12 + 0.5);
+      } else belly = smooth((bellyF.beta - ang) / 6 + 0.5) * smooth((sg - bellyF.s0) / 0.12 + 0.5) * smooth((bellyF.s1 - sg) / 0.12 + 0.5);
     }
     if (podD && part !== "eye") patch = podMix;
     const marks = marksList.map((m) => Math.hypot(x - m.c[0], y - m.c[1], z - m.c[2]) / m.sx);

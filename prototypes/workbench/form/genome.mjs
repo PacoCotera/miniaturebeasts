@@ -68,7 +68,7 @@ export const KINDS = {
   // [eye-spacing: e_x x m, along b_f]
   eyeSpacing: (f, c, m) => { if (m !== 1) f.face.eyes.spacing = (f.face.eyes.spacing ?? 1) * m; },
   // [belly-extent: beta x m]
-  bellyExtent: (f, c, m) => { if (m !== 1) f.face.belly.beta *= m; },
+  bellyExtent: (f, c, m) => { if (m !== 1) { if (f.face.belly.chart) f.face.belly.betaMax *= m; else f.face.belly.beta *= m; } },
   // [spot-density: the share of the species' spots shown, type 0.7]
   spotDensity: (f, c, o) => { if (o) { const mk = f.look.marks.find((x) => x.kind === "spots"); mk.density = (mk.density ?? 0.7) + o; } },
   // [spot-size: r x m] [stripe-width: share + o] [mark-extent: socks and tip share + o]: in the catalogue, carried by none of the five
