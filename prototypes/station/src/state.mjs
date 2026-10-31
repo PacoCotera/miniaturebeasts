@@ -377,7 +377,7 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!hasWorld(sv) && !st.devBay.length && !st.devWorld) return { ok: false, msg: "The Companion has no world yet: set out with it first" };
   if (docked(st)) { st.dock = { docked: false, at: now }; logEv(st, "Companion lifted"); return { ok: true, lifted: true, msg: "Lifted · the Companion can set out" }; }
   st.dock = { docked: true, at: now }; st.dockN = (st.dockN || 0) + 1;
-  st.turn = Math.max(st.turn, (sv && sv.turn) || 0); const dried = dryPods(st);
+  const t0 = st.turn; st.turn = Math.max(st.turn, (sv && sv.turn) || 0); restRecover(st, t0, st.turn); const dried = dryPods(st);
   const pr = probeNow(st, sv), broke = pr.shield <= 0, floor = Math.min(DOCK_MEND_FLOOR, pr.smax);
   let sh = pr.shield, free = 0; if (broke) { free = pr.smax; sh = pr.smax; } else if (sh < floor) { free = floor - sh; sh = floor; }
   st.probe = { shield: sh, smax: pr.smax, tier: pr.tier, seq: (st.probe ? st.probe.seq : 0) + 1 };
@@ -408,7 +408,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
       ids.push(pod.id);
     }
     for (const sp of c.met || []) { const id = typeof sp === "string" ? sp : speciesId(sp); if (id && !st.metIds.includes(id)) st.metIds.push(id); }
-    const before = st.turn; st.turn = Math.max(st.turn, c.turn | 0); const dried = dryPods(st);
+    const before = st.turn; st.turn = Math.max(st.turn, c.turn | 0); restRecover(st, before, st.turn); const dried = dryPods(st);
     const paid = st.mendFull && st.probe ? payMend(st, settings) : 0;
     const gained = { e: (c.e | 0) + top.e, d: (c.d | 0) + top.d, s: (c.s | 0) + top.s };   // what the crate brought, the top-up with it; the plates it paid for cost `spent` Energy
     plays.push({ c, ids, skipped, dried, paid, spent: paid * price(PRICE.mend, settings), gained, turnFrom: before, turnTo: st.turn, top });
@@ -1071,7 +1071,7 @@ function hatchBud(st, settings, now, line) {
   const name = drawName(st);
   // a founder opens known in every chapter but a shut sealed one; a bred child only where the Station could be sure (switch parents matched), the rest read later
   const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !shutSealed(c, settings)).map((c) => c.id);
-  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now, roomSince: now } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
+  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now, roomSince: now } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [], ...(B.kind === "cross" ? { crossLoad: 0, restUntil: 0, restExtra: restExtraFor(B.kinship || 0) } : {}) };   // a child of close kin rests longer for life, fixed here from its parents' kinship
   for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
   st.mibis.push(m); st.bud = null;
   logEv(st, line(m, fr.species.name, ROOM_NAMES[place.room]));
@@ -1118,6 +1118,25 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
 import { lociOf, copyWords, copyHides, rangeWords } from "./splice.mjs";
 import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, identity as genomeIdentity } from "./genome.mjs";
 export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.growE, settings), s: price(PRICE.growS, settings), d: 0 });
+// --- The breeding rest: a mibi crossed again and again needs longer; left alone it gets its strength back (all numbers tune) ---
+// Per mibi: crossLoad 0..8 (crosses lately), restUntil (a world turn), restExtra 0/1/2 (a child of close kin). Every field is optional in a save: absent is 0.
+export const REST = { loadMax: 8, easy: 4, cap: 5 };
+export const crossLoadOf = (m) => m.crossLoad | 0;
+export const restExtraOf = (m) => m.restExtra | 0;
+// The breather after a cross that leaves this count: 1 turn while the count is 1 to 4, then the count minus 3, plus the mibi's own extra, never over the cap.
+export const restTurnsFor = (load, extra = 0) => Math.min(REST.cap, (load <= REST.easy ? 1 : load - 3) + extra);
+// The breather this mibi would take if it crossed now (what the Cross key and the Breed plate show before the press).
+export const nextRest = (m) => restTurnsFor(Math.min(REST.loadMax, crossLoadOf(m) + 1), restExtraOf(m));
+export const breatherLeft = (st, m) => Math.max(0, (m.restUntil | 0) - (st.turn | 0));
+export const onBreather = (st, m) => breatherLeft(st, m) > 0;
+function restAtCross(st, m) { m.crossLoad = Math.min(REST.loadMax, crossLoadOf(m) + 1); m.restUntil = (st.turn | 0) + restTurnsFor(m.crossLoad, restExtraOf(m)); }
+// Recovery, wherever the world turn advances from t0 to t1 (a dock, a crate): one cross back for each turn a mibi was ready and did not cross. A tucked-away mibi (stored or coming out) and a released one recover nothing; a carried one does (a walk is rest). No turn change, nothing.
+export function restRecover(st, t0, t1) {
+  if (!(t1 > t0)) return;
+  for (const m of st.mibis) if (!m.released && !m.tucked && m.crossLoad > 0) m.crossLoad = Math.max(0, m.crossLoad - Math.max(0, t1 - Math.max(t0, m.restUntil | 0)));
+}
+// The freeze: what Bring out calls with the same `shift` it adds to `born`; a breather still running at the tuck (restUntil past the turn it was tucked at) moves with the other clocks.
+export function shiftRest(m, tuckedTurn, shift) { if ((m.restUntil | 0) > tuckedTurn) m.restUntil += shift; }
 // The pedigree by id, never by digest (two mibis with equal genomes are two mibis): an id names a mibi's record in the vivarium, else the
 // parent snapshot a child holds (a parent no longer in the vivarium counts as a founder beyond it).
 export function genomeLookup(st) {
@@ -1140,14 +1159,19 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (a.released || b.released) return "gone to the wild";
   if (isCarried(st, sv, a) || isCarried(st, sv, b)) return "away";
+  if (a.tucked || b.tucked) return "tucked away";   // stored or coming out: not at home
+  if (onBreather(st, a) || onBreather(st, b)) return "on a breather";
   if (st.bud) return "the incubator is busy";
   if (vivFull(st, settings)) return "the Vivarium is full";
   return "";
 }
-// The partners of an adult or an elder, in place order. A carried partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
-export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isCarried(st, sv, m) ? { ...m, away: true } : m));
+// The partners of an adult or an elder, in place order. A carried or tucked-away partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
+export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isCarried(st, sv, m) || m.tucked ? { ...m, away: true } : m));
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
-export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
+// The words of a kinship, by band, no numbers: wild blood (0), distant kin (under 1/16), cousins (under 1/8), half kin (under 1/4), close kin (under 1/2), the same line.
+export const kinshipWord = (k) => (k <= 0 ? "wild blood" : k < 1 / 16 ? "distant kin" : k < 1 / 8 ? "cousins" : k < 1 / 4 ? "half kin" : k < 1 / 2 ? "close kin" : "the same line");
+// What a child of this kinship adds to each of its breathers, for life: 1 for close kin, 2 for the same line, else 0 (fixed at the hatch, never passed down).
+export const restExtraFor = (k) => (k >= 1 / 2 ? 2 : k >= 1 / 4 ? 1 : 0);
 // The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you
 // have read, and an indication of everything missing"): a trait whose chapter either parent has not read is marked `missing`, with no seeds, range or firmness, and names which parent
 // and which chapter to read; a sealed chapter's traits stay `sealed`. `missing` counts the readable traits still unknown, `sealedTraits` the sealed ones, `unknown` both; the genome-wide
@@ -1180,25 +1204,62 @@ export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
 }
 // Chapters a child is known in before any read: every trait firm (switch parents match); a blend is never firm.
 export function childKnownChapters(fr, fc) { return fr.chapters.filter((c) => !c.sealed && c.traits.every((t) => fc.traits.find((x) => x.trait === t.id)?.firm)).map((c) => c.id); }
-// The cross: one draw, validated whole before anything is spent (not re-rolled: a child that cannot be built never exists and the clashing traits are named); then paid, the child in the bud with its real parents.
-export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.now(), rng = Math.random) {
-  const block = crossBlock(st, sv, a, b, settings); if (block) return { ok: false, msg: "Cross them · " + block };
-  const cost = crossCost(settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { ok: false, msg: "Cross them · " + shortText(st, cost.e, cost.d, cost.s) };
-  const fr = frameFor(a), k = kinshipOf(st, a, b);
-  const genome = crossGenomes(fr, a, b, { rng, kinship: k, lookup: genomeLookup(st) });   // the mibi records: refused by id, the child records its parents' ids
+// The draw is the pair's and the turn's, nothing else: a hash of the two ids sorted and the world turn seeds the stream, so the same pair on the same turn gives the same child, in either pick order, whatever else was crossed.
+const hash32 = (text) => { let h = 0x811c9dc5; for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 0x01000193); h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; return h >>> 0; };
+export const crossSeed = (st, a, b) => { const [x, y] = a.id <= b.id ? [a.id, b.id] : [b.id, a.id]; return hash32(x + ":" + y + ":" + (st.turn | 0)); };
+// The child of the pair on this turn, built and checked whole, nothing spent and nothing moved: { genome } or { problems, clash }. `rng` is only for a caller that must pick its own stream (the developer's tools, the tests); the game never passes one.
+export function drawCross(st, a, b, rng = null) {
+  const fr = frameFor(a), k = kinshipOf(st, a, b), [x, y] = a.id <= b.id ? [a, b] : [b, a];   // the lower id is always the first parent: the draw does not know the pick order
+  const genome = crossGenomes(fr, x, y, { rng: rng ?? seededRng(crossSeed(st, a, b)), kinship: k, lookup: genomeLookup(st) });   // the mibi records: refused by id, the child records its parents' ids
   const problems = genomeProblems(fr, genome);
-  if (problems.length) { const clash = fr.chapters.flatMap((c) => c.traits).filter((t) => problems.some((p) => t.loci.some((id) => p.includes(id)))).map((t) => t.id); return { ok: false, clash, msg: "This child would not build · " + (clash.length ? clash.join(", ") : problems[0]) + " · nothing spent" }; }
+  if (!problems.length) return { genome, kinship: k };
+  const clash = fr.chapters.flatMap((c) => c.traits).filter((t) => problems.some((p) => t.loci.some((id) => p.includes(id)))).map((t) => t.id);
+  return { problems, clash, kinship: k };
+}
+// Why a pair cannot cross now, in the order of the checks, with its words (the first failing check is the reason; every refusal spends nothing): null when they can. { key, who, n, words }
+// keys: pick, species, young, wild, away, tucked, breather, busy, place, short, build.
+export function crossWhy(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const blk = crossBlock(st, sv, a, b, settings), name = (m) => m.name;
+  if (blk === "pick two" || blk === "one mibi is not a pair") return { key: "pick", words: "pick a second mibi" };
+  if (blk === "another species") return { key: "species", words: "another species" };
+  if (blk === "not adult") { const m = !isAdult(st, a, settings) ? a : b, n = Math.max(1, (m.born || 0) + (settings.adultTurns ?? JUVENILE_TURNS) - st.turn); return { key: "young", who: m, n, words: "young · grows up in " + plural(n, "turn") }; }
+  if (blk === "gone to the wild") return { key: "wild", who: a.released ? a : b, words: "gone to the wild" };
+  if (blk === "away") return { key: "away", who: isCarried(st, sv, a) ? a : b, words: "out with the Companion" };
+  if (blk === "tucked away") return { key: "tucked", who: a.tucked ? a : b, words: "tucked away · bring it out first" };
+  if (blk === "on a breather") { const m = onBreather(st, a) ? a : b, n = breatherLeft(st, m); return { key: "breather", who: m, n, words: "on a breather · " + (n === 1 ? "can breed next turn" : "can breed in " + n + " turns") }; }
+  if (blk === "the incubator is busy") { const left = Math.max(0, Math.ceil(st.bud.minutes * (1 - budProgress(st, settings, now)) - 1e-9)); return { key: "busy", n: left, words: "the incubator is busy · the child hatches in " + left + " min" }; }
+  if (blk === "the Vivarium is full") return { key: "place", words: "No place free" };
+  const c = crossCost(settings);
+  if (st.e < c.e) return { key: "short", n: c.e, words: "needs ⚡" + c.e + " · you have ⚡" + st.e };
+  if (st.s < c.s) return { key: "short", n: c.s, words: "needs ❀" + c.s + " · you have ❀" + st.s };
+  const d = drawCross(st, a, b); if (d.problems) return { key: "build", clash: d.clash, words: "this pair cannot cross this turn" };
+  return null;
+}
+// The cross: one draw (the pair's and the turn's), validated whole before anything is spent (never redrawn: a child that cannot be built never exists, nothing is spent, no count and no breather move, and the same pair is refused again until the turn changes); then paid, both parents tired, the child in the bud with its real parents.
+export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.now(), rng = null) {
+  const block = crossBlock(st, sv, a, b, settings); if (block) return { ok: false, why: block, msg: "Cross them · " + block };
+  const cost = crossCost(settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { ok: false, why: "short", msg: "Cross them · " + shortText(st, cost.e, cost.d, cost.s) };
+  const fr = frameFor(a), d = drawCross(st, a, b, rng), k = d.kinship;
+  if (d.problems) return { ok: false, why: "build", clash: d.clash, msg: "This child would not build · " + (d.clash.length ? d.clash.join(", ") : d.problems[0]) + " · nothing spent" };
+  const genome = d.genome;
   st.e -= cost.e; st.s -= cost.s;
   const sha = genomeSha(genome), fc = crossForecast(fr, a, b, { kinship: k }), read = childKnownChapters(fr, fc);
-  const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
+  const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome), read: [...(m.read || [])] });   // what each parent had read at the cross: the child's read price asks it
   const minutes = budMinutes(st, 0, settings);
+  restAtCross(st, a); restAtCross(st, b);
   st.bud = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };
   st.firstMibi = false;
   logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.bud.code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · " + spendText(cost.e, cost.d, cost.s));
-  return { ok: true, bud: st.bud, cost };
+  return { ok: true, bud: st.bud, cost, rest: [a.restUntil - st.turn, b.restUntil - st.turn] };
 }
 // Reading a child (or any mibi with chapters still unread): the same prices as a pod's chapters.
-export function mibiReadCost(st, m, chapterId, settings = DEFAULT_SETTINGS) { return readCost(st, { ...m, idd: 1, read: m.read }, chapterId, settings); }
+// A chapter both parents had read costs a child 1 Data (the parent's live record, a released one too, else the snapshot it was crossed from); otherwise the pod's price. A founder, or a child with a parent unrecorded, always pays the pod's price.
+export function mibiReadCost(st, m, chapterId, settings = DEFAULT_SETTINGS) {
+  const pod = readCost(st, { ...m, idd: 1, read: m.read }, chapterId, settings);
+  if (!pod || m.from?.how !== "cross" || !Array.isArray(m.parents) || m.parents.length !== 2) return pod;   // free, shut or a founder: as a pod
+  const had = (snap) => { const live = st.mibis.find((x) => x.id === snap.id); const list = live ? live.read : snap.read; return Array.isArray(list) && list.includes(chapterId); };
+  return m.parents.every((p) => p && had(p)) ? Math.min(pod, price(PRICE.readTrait, settings)) : pod;
+}
 export function readMibi(st, m, chapterId, settings = DEFAULT_SETTINGS) {
   const fr = frameFor(m), ch = fr && chapterOf(fr, chapterId); if (!ch) return { ok: false };
   if (m.read.includes(chapterId)) return { ok: false, again: true };
@@ -1211,6 +1272,43 @@ export function readMibi(st, m, chapterId, settings = DEFAULT_SETTINGS) {
   return { ok: true, cost, first, chapter: ch, newLooks };
 }
 export const mibiFullyRead = (m, settings = DEFAULT_SETTINGS) => { const fr = frameFor(m); return !fr || fr.chapters.every((c) => m.read.includes(c.id) || (c.sealed && !settings.sealedOpen)); };
+// --- Odds in eighths -------------------------------------------------------------------------------------------
+// The exact chance as a fraction in lowest terms { n, d } (chances are dyadic: halves, quarters and their products; the forecast rounds to 6 places, so the denominator is the smallest power of two that holds it).
+export function exactChance(p) {
+  if (p >= 1) return { n: 1, d: 1 }; if (p <= 0) return { n: 0, d: 1 };
+  for (let d = 1; d <= 1024; d *= 2) { const n = Math.round(p * d); if (Math.abs(p * d - n) <= d * 6e-7 + 1e-9) { let g = d, r = n; while (r) [g, r] = [r, g % r]; return { n: n / g, d: d / g }; } }
+  const n = Math.round(p * 1024); let g = 1024, r = n; while (r) [g, r] = [r, g % r]; return { n: n / g, d: 1024 / g };
+}
+// How a chance is written: always (p = 1), not listed (p = 0, null), else rounded to the nearest eighth (a tie rounds down, never promise more): rarely (0), nearly always (8), else e/8 in lowest terms.
+// { e, words, seeds: { filled, half, hairline }, exact: "n in d", p } — the seeds: e filled; rarely one half-filled; nearly always seven and a half; always eight on a hairline.
+export function writtenChance(p) {
+  if (!(p > 0)) return null;
+  const exact = exactChance(p), ex = exact.n + " in " + exact.d;
+  if (p >= 1 - 1e-9) return { e: 8, words: "always", seeds: { filled: 8, half: 0, hairline: true }, exact: "always", p: 1 };
+  const e = Math.max(0, Math.min(8, Math.ceil(p * 8 - 0.5 - 1e-9)));
+  if (e === 0) return { e, words: "rarely", seeds: { filled: 0, half: 1, hairline: false }, exact: ex, p };
+  if (e === 8) return { e, words: "nearly always", seeds: { filled: 7, half: 1, hairline: false }, exact: ex, p };
+  let g = 8, r = e; while (r) [g, r] = [r, g % r];
+  return { e, words: e / g + " in " + 8 / g, seeds: { filled: e, half: 0, hairline: false }, exact: ex, p };
+}
+// A list of looks with their chances, written, in the order of their exact value (the likeliest first); a look with no chance is not listed. `looks` is a forecast trait's { look: p } map.
+export const writtenLooks = (looks) => Object.entries(looks || {}).map(([look, p]) => ({ look, ...writtenChance(p) })).filter((r) => r.words).sort((x, y) => y.p - x.p || (x.look < y.look ? -1 : x.look > y.look ? 1 : 0));
+
+// --- The pod's mate (the reading screen's "With {mate}" plate) -----------------------------------------------------
+// The adults and elders at home of the pod's species that can breed now and have the chapter read: the furthest kin from the pod first (a pod founder is unrelated to all; a shed pod is its parent's line), ties to the oldest (lowest born, then lowest id). null: no plate. Its odds are `forecastOf(st, pod, mate)`.
+export function podMate(st, sv, pod, chapterId, settings = DEFAULT_SETTINGS) {
+  const sp = speciesOf(pod);
+  const ok = st.mibis.filter((m) => !m.released && !m.tucked && speciesOf(m) === sp && isAdult(st, m, settings) && !isCarried(st, sv, m) && !onBreather(st, m) && (m.read || []).includes(chapterId));
+  if (!ok.length) return null;
+  const rank = ok.map((m) => ({ m, k: kinshipOf(st, pod, m) })).sort((x, y) => x.k - y.k || (x.m.born || 0) - (y.m.born || 0) || x.m.id - y.m.id);
+  return rank[0].m;
+}
+export const podMateOdds = (st, sv, pod, chapterId, settings = DEFAULT_SETTINGS) => { const m = podMate(st, sv, pod, chapterId, settings); return m ? { mate: m, forecast: forecastOf(st, pod, m, settings) } : null; };
+
+// --- The lessons shown once (absent in a save is false) ---
+export function teachForecast(st) { const first = !st.forecastTaught; st.forecastTaught = true; return first; }
+export function teachRestCount(st) { const first = !st.restCountTaught; st.restCountTaught = true; return first; }
+
 // Developer: two siblings of two unrelated adults, born adult.
 export function seedSiblings(st, species, seed, settings = DEFAULT_SETTINGS) {
   const r = seedAdults(st, species, seed, 2, settings); if (!r.ok || r.mibis.length < 2) return { ok: false, msg: r.msg };
@@ -1220,7 +1318,7 @@ export function seedSiblings(st, species, seed, settings = DEFAULT_SETTINGS) {
     let genome = null; for (let t = 0; t < 8 && !genome; t++) { const g = crossGenomes(fr, a.genome, b.genome, { rng, kinship: 0 }); if (!genomeProblems(fr, g).length) genome = g; }
     if (!genome) break;
     const sha = genomeSha(genome), id = st.nextMibi++, name = drawName(st), read = childKnownChapters(fr, crossForecast(fr, a.genome, b.genome, { kinship: 0 }));   // the rule doCross uses for B.read
-    const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
+    const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome), read: [...(m.read || [])] });
     const m = { id, name, sp: a.sp, species, gs: null, born: st.turn - JUVENILE_TURNS, ...(Date.now() >= GOOD_CLOCK ? { since: Date.now() } : {}), from: { n: 0, g: a.from.g, how: "cross", podId: null, of: [a.name, b.name] }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read, parents: [snap(a), snap(b)], ...placeOf(freePlace(st, settings, st.face?.room ?? 0)), paint: null, released: false, shaped: [] };
     st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls);
   }

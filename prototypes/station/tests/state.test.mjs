@@ -339,7 +339,8 @@ test("the cross: refusals before cost; a child of two founders with real parents
   const B = st.bud; assert.equal(B.kind, "cross"); assert.equal(B.parents.length, 2); assert.equal(B.parents[0].id, a.id); assert.ok(B.parents[1].genome); assert.equal(B.minutes, 20); assert.equal(B.kinship, 0);
   assert.deepEqual(B.read, S.childKnownChapters(fr, fc), "known only where every trait of the chapter is firm");
   for (const l of fr.loci) if (l.kind !== "locked") { const [x, y] = B.genome.loci[l.id]; const cont = typeof x === "number"; if (!cont) { assert.ok(a.genome.loci[l.id].includes(x) && b.genome.loci[l.id].includes(y), "one copy from each parent at " + l.id); } else assert.equal(x, y, "a blend's copies are equal"); }
-  assert.match(S.crossBlock(st, null, a, b, settings), /busy/);
+  assert.match(S.crossBlock(st, null, a, b, settings), /breather/, "both parents are on a breather: it comes before the incubator in the order of the checks");
+  { const ru = [a.restUntil, b.restUntil]; a.restUntil = b.restUntil = 0; assert.match(S.crossBlock(st, null, a, b, settings), /busy/); [a.restUntil, b.restUntil] = ru; }
   const o = S.openBud(st, null, settings, 1000 + 20 * 60000); assert.equal(o.ok, true); const child = o.mibi;
   assert.equal(child.parents.length, 2); assert.deepEqual(child.read, B.read); assert.equal(S.mibiStage(st, child), "juvenile");
   // reading the child: a blended chapter costs as a pod's would, half once read on the species before
@@ -354,7 +355,7 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.equal(S.kinshipOf(st, sib.mibis[0], sib.mibis[1]), 0.25, "full siblings");
   assert.equal(S.kinshipOf(st, sib.mibis[0], sib.parents[0]), 0.25);
   assert.equal(S.kinshipOf(st, sib.mibis[0], a), 0, "unrelated lines");
-  assert.match(S.kinshipWord(0.25), /close kin/); assert.match(S.kinshipWord(0), /wild founders/);
+  assert.equal(S.kinshipWord(0.25), "close kin"); assert.equal(S.kinshipWord(0), "wild blood");
 });
 
 test("kinship by id: two mibis with identical genomes are two mibis, unrelated as founders and full siblings by their recorded parents", () => {
