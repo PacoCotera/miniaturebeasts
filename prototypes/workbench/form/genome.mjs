@@ -37,6 +37,8 @@ export const KINDS = {
   // [coil N offset]
   coil: (f, c, o) => { const ch = c.chain === "tail" ? f.tail : c.chain === "front" ? f.front : f.branches.find((b) => b.id === c.chain); ch.coil.N += o; },
   // (a lever at its type value changes nothing: the type specimen is the base form, bit for bit)
+  // [leg length x m: scales the thigh and the foot; the solved shin follows (design 4.1). Locked on all five: the lever would not show]
+  legLength: (f, c, m) => { const b = f.branches.find((x) => x.id === c.chain); b.knots.forEach((k) => { if (k.name !== "shin" && k.ds > 0) k.ds *= m; }); },
   // [horn coil N, a helix of W 2.2 over a quarter U]
   hornCoil: (f, c, o) => { const b = f.branches.find((x) => x.id === c.chain); b.coil = o > 1e-9 ? { N: o, W: 2.2, L: 0.25, plane: 0, part: b.part } : null; },
   // [ear kappa offset]
@@ -60,7 +62,6 @@ export const LEVERS = {
     R("muzzle", "mult", "length", [0.7, 1.6], { knots: ["cap"] }, ["front.cap"], "Snout: flat face to button snout"),
     R("eye-size", "mult", "eyeSize", [0.85, 1.2], {}, ["face.eyes"], "Eyes"),
     R("coil", "off", "coil", [-0.15, 0.35], { chain: "tail" }, ["tail.coil"], "Curl: coil N .8 ... 1.3 (restored: W 4.5 and L 2.2 hold the whorl guard at 1.3)"),
-    R("leg-length", "mult", "length", [0.85, 1.15], { chain: "leg", knots: ["leg1", "foot"] }, ["leg.leg1", "leg.foot"], "Legs"),
   ],
   wickle: [
     R("girth", "mult", "girth", [0.92, 1.1], { knots: ["pelvis", "belly", "shoulder", "face"] }, ["front.pelvis", "front.belly", "front.shoulder", "front.face"], "Build: girth"),

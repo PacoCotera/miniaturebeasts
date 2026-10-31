@@ -6,3 +6,4 @@ import "./genome.test.mjs";
 import "./render.test.mjs";
 import "./checks.test.mjs";
 import "./joins.test.mjs";
+import "./limbs.test.mjs";

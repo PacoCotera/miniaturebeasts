@@ -173,6 +173,7 @@ export function makeField(chains, branches, form, opts = {}) {
     let d = groupD(groups.front, x, y, z, hitF, listOf(loc, groups.front));
     nearHalf = hitF.i >= 0 ? groups.front.half[hitF.i] : 1; let nearD = hitF.d;
     if (groups.tail) { const dt = groupD(groups.tail, x, y, z, hitT, listOf(loc, groups.tail)); d = smin(d, dt, tailK); if (hitT.d < nearD) { nearD = hitT.d; nearHalf = groups.tail.half[hitT.i]; } }
+    if (base !== null && !form.hair) d = Math.max(d, base - z); // the floor cut belongs to the trunk: feet and arms are not cut by it
     const dTrunk = d;
     for (let bj = 0; bj < bgroups.length; bj++) {
       const g = bgroups[bj];
@@ -209,10 +210,10 @@ export function makeField(chains, branches, form, opts = {}) {
   const cutBase = (d, z) => (base === null ? d : Math.max(d, base - z));
   function dSurface(x, y, z, loc) {
     if (hair) return cutBase(Math.min(hair.d(x, y, z, loc), dBodyOnly(x, y, z, loc)), z);
-    return cutBase(dCoated(x, y, z, loc), z);
+    return dCoated(x, y, z, loc);
   }
   // the casting surface of the eyes and marks: the body face (behind the window) for hair, the coated body otherwise
-  const dCast = (x, y, z) => cutBase(hair ? dBodyOnly(x, y, z) : dCoated(x, y, z), z);
+  const dCast = (x, y, z) => (hair ? cutBase(dBodyOnly(x, y, z), z) : dCoated(x, y, z));
   const gradOf = (fn, p, h = 1e-3) => nrm([fn(p[0] + h, p[1], p[2]) - fn(p[0] - h, p[1], p[2]), fn(p[0], p[1] + h, p[2]) - fn(p[0], p[1] - h, p[2]), fn(p[0], p[1], p[2] + h) - fn(p[0], p[1], p[2] - h)]);
   const rotAbout = (v, axis, a) => { const c = Math.cos(a), s = Math.sin(a), k = dot(axis, v) * (1 - c), x = crs(axis, v); return [v[0] * c + x[0] * s + axis[0] * k, v[1] * c + x[1] * s + axis[1] * k, v[2] * c + x[2] * s + axis[2] * k]; };
   // a direction from the anchor: (t along T, v toward the belly), turned about N by spread, raised toward N by elev
@@ -343,7 +344,7 @@ export function makeField(chains, branches, form, opts = {}) {
   const pad = (coat?.depth ?? 0) + 0.05 + (hair ? hair.depth + 0.1 : 0);
   for (let a = 0; a < 3; a++) { lo[a] -= pad; hi[a] += pad; }
   if (hair) { const R = hair.Rmax + 0.1; lo[0] = Math.min(lo[0], -R); hi[0] = Math.max(hi[0], R); lo[1] = Math.min(lo[1], -R); hi[1] = Math.max(hi[1], R); hi[2] = Math.max(hi[2], hair.zp + 1.5 * hair.Rp); }
-  if (base !== null) lo[2] = Math.max(lo[2], base - 0.01);
+  if (base !== null && hair) lo[2] = Math.max(lo[2], base - 0.01);
   for (const e of eyes) for (let a = 0; a < 3; a++) { lo[a] = Math.min(lo[a], e.c[a] - e.r); hi[a] = Math.max(hi[a], e.c[a] + e.r); }
 
   const seeds = [];

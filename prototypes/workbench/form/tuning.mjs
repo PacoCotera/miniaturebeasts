@@ -3,8 +3,8 @@
 // Paths read from the form: "front.knots.1.w", "camera.yaw", "hair.flare"; arrays are indexed by position. Round 1's list is TRIAL1 in species-trial.mjs.
 export const TUNING = [
   { species: "wickle", path: "front.knots.4.ds", after: 0.5175, why: "trans.slope: the drop-to-plume join's outer slope peaked at .689 against .6; a longer top segment (+15 %) brings it to .587" },
+  { species: "curlop", path: "branches.1.root.angle", after: 160, why: "limbs.reach: the palms' target was .68 U from the arm's root and the arm is .64 U long; +14 % (140 to 160 degrees) puts the root nearer the midline" },
 ];
-
 const walk = (o, path) => { const ps = path.split("."); for (let i = 0; i < ps.length - 1; i++) o = o[ps[i]]; return [o, ps.at(-1)]; };
 export const getPath = (form, path) => { const [o, k] = walk(form, path); return o[k]; };
 export function applyTuning(form, entries) {

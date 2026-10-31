@@ -254,6 +254,25 @@ export const ROUND2 = Object.fromEntries(Object.entries(SECTION3).map(([key, f])
   setKnot(kn(R.drapet, "top"), ".40|.70 .68 .68"); // the stand's top rows (.05-.3 H) are 10-13 px wider than the trial's
   Object.assign(R.drapet.hair, { Ld: 0.3, flare: 0.06, partLine: 0.987, depth: 0.2, locks: 17, notch: 0.1, lift: 0.015, splay: 0.04 }); // hang law (5.5) and hem of 17 locks (5.6)
   delete R.drapet.hair.lobes; delete R.drapet.hair.hem; delete R.drapet.hair.gamma;
+  // ---- limbs (design 4) ----
+  const toes = (count, length, r, fan, nail) => ({ count, length, r, fan, down: 25, nail });
+  // Curlop 7.1: legs on the tail chain, the shin solved to the seat; hands by target (a two-bone reach)
+  R.curlop.branches[0] = { id: "leg", part: "legs", pair: true, parent: "tail", solve: true, root: { s: 0.3, angle: 150, out: 0.75 }, dir: [0.45, 0.3, -1], blend: 0.18, // the trial's legs hung 0.54 U above the floor
+    toes: toes(3, 0.07, 0.04, 25, 0.6), knots: [K("leg0", "0|.30"), K("shin", ".29 -40|.27"), K("foot", ".30 0|.22 .13 .12")] };
+  Object.assign(R.curlop.branches[1], { reach: { target: { sigma: 1.15, lateral: 0.06, out: 0.05 }, pole: [-0.4, 1, 0.2] }, // palms at the chest's ventral surface, out and back elbows
+    knots: [K("arm0", "0|.15"), K("arm1", ".24|.14"), K("elbow", ".06 150|.13"), K("arm3", ".24 0 0|.12"), K("hand", ".10|.15 .10 .10")] });
+  delete R.curlop.branches[1].dir; R.curlop.branches[1].dir = [0.35, 0.5, -1]; delete R.curlop.branches[1].normal;
+  Object.assign(R.curlop.camera, { yaw: 55, pitch: 10 }); // the trial's 65/18 hid the face (7.1)
+  // Wickle 7.2: feet and arms, the base cut 0.03 U above the floor
+  R.wickle.branches[0] = { id: "foot", part: "feet", pair: true, solve: true, root: { sigma: 0, angle: 160, out: 0.85 }, dir: [0.6, 0.3, -1], blend: 0.06, knots: [K("foot0", "0|.12"), K("shin", ".47|.15 .09 .09")] };
+  R.wickle.branches.push({ id: "arm", part: "arms", pair: true, root: { sigma: 0.55, angle: 100, out: 0.85 }, dir: [0.2, 0.45, -1], blend: 0.14, knots: [K("arm0", "0|.15 .13 .13"), K("arm1", ".20|.13 .11 .11"), K("hand", ".08|.09")] });
+  R.wickle.look.slots.arms = "coat"; R.wickle.hover = 0.03;
+  R.wickle.contacts = [{ kind: "base" }, { kind: "branches", id: "foot", last: true }];
+  // Loika 7.4: root out .85, splay .55, toes 3 x .08 (r .05, fan 30); the hind feet set the floor, the fore legs solve
+  for (const b of R.loika.branches.filter((x) => x.id === "hind" || x.id === "fore")) { b.root.out = 0.85; b.dir[1] = 0.55; b.toes = toes(3, 0.08, 0.05, 30, 0.7); }
+  R.loika.branches.find((x) => x.id === "fore").solve = true; R.loika.branches.find((x) => x.id === "fore").knots[1].name = "shin";
+  // Rupar 7.5: the fore shins are solved (the lower leg segment); the hind feet set the floor
+  { const fore = R.rupar.branches.find((x) => x.id === "fore"); fore.solve = true; fore.knots[3].name = "shin"; }
   // the coat has no lock noise and no bare patch (design 0.2-0.3, 5.4)
   for (const f of Object.values(R)) if (f.coat) { delete f.coat.locks; delete f.coat.bare; }
 }

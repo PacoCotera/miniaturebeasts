@@ -4,6 +4,8 @@
 //   psi the yaw curvature (+ toward B, left; on the tail chain, whose T points back, + is the right).
 // Curvature is piecewise linear in sigma and integrated with a parallel-transport frame (T, N, B = N x T).
 
+import { buildLimbs } from "./limbs.mjs";
+
 const RAD = Math.PI / 180;
 export const STEP = { factor: 0.22, min: 0.004, max: 0.06 };
 
@@ -234,52 +236,9 @@ export function buildChains(form) {
   }
   const f0 = form.coat?.depth ?? 0;
   applyFur(front, f0); if (tail) applyFur(tail, f0);
-  const parents = { front, tail };
-  const branches = [];
-  for (const br of form.branches ?? []) {
-    const parent = parents[br.parent ?? "front"];
-    const sides = br.pair ? [["L", 1], ["R", -1]] : [["", 1]];
-    for (const [tag, side] of sides) {
-      const root = interpChain(parent, br.root.s ?? br.root.sigma);
-      const angle = side === 1 ? br.root.angle : -br.root.angle;
-      const rp = sectionPoint(root, angle, br.root.out);
-      const dir = nrm([br.dir[0], br.dir[1] * side, br.dir[2]]);
-      let N0;
-      if (br.normal === "forward") N0 = [1, 0, 0];
-      else if (br.normal && br.normal.length === 3) N0 = [br.normal[0], br.normal[1] * side, br.normal[2]];
-      else N0 = [0, 0, 1];
-      if (Math.abs(dot(N0, dir)) > 0.95) N0 = [1, 0, 0];
-      const first = br.knots[0];
-      const knots = br.knots.map((k, i) => ({ ...k, part: br.part, name: k.name || `${br.id}${i}` }));
-      const ch = integrateChain({ id: br.id + tag, knots, coil: br.coil, frame0: { p: rp, T: dir, N: N0 }, sigmaSign: 1, yawSign: side, partOfCoil: br.part });
-      ch.id = br.id + tag; ch.branch = br; ch.side = side; ch.rootSample = root; ch.rootPoint = rp;
-      applyFur(ch, f0);
-      branches.push(ch);
-      if (br.fingers) { // a hand is a palm knot with short finger spines (1.6)
-        const lastS = ch.samples.at(-1), f = br.fingers;
-        for (let j = 0; j < f.count; j++) {
-          const a = (j - (f.count - 1) / 2) * f.fan * RAD * side;
-          const dir2 = nrm(add(sc(lastS.T, Math.cos(a)), sc(lastS.B, Math.sin(a))));
-          const kn = [{ name: "", part: br.part, ds: 0, k: 0, psi: 0, w: f.r, u: f.r, d: f.r }, { name: "", part: br.part, ds: f.length, k: 0, psi: 0, w: f.r * 0.6, u: f.r * 0.6, d: f.r * 0.6 }];
-          const fc = integrateChain({ id: `${br.id}${tag}f${j}`, knots: kn, frame0: { p: lastS.p, T: dir2, N: lastS.N }, sigmaSign: 1 });
-          fc.id = `${br.id}${tag}f${j}`; fc.branch = { id: fc.id, part: br.part, blend: 0.03 }; fc.side = side; fc.finger = true;
-          applyFur(fc, f0);
-          branches.push(fc);
-        }
-      }
-    }
-  }
-  // the floor: the lowest declared contact goes to z = 0 (nothing is repaired; the guard reports the rest)
-  const contacts = [];
-  const lowest = (chain, pred) => { let z = Infinity, at = null; for (const sm of chain.samples) if (pred(sm)) { const l = lowestZ(sm); if (l < z) { z = l; at = sm; } } return { z, at }; };
-  for (const c of form.contacts ?? []) {
-    if (c.kind === "branches") for (const ch of branches) if (ch.branch.id === c.id) { const r = lowest(ch, (sm) => c.last ? sm.knot >= ch.samples.at(-1).knot : true); contacts.push({ id: ch.id, z: r.z }); }
-    if (c.kind === "tail" && tail) { const r = lowest(tail, (sm) => sm.s <= tail.cum[c.upToKnot ?? 1] + 1e-9 && sm.s >= tail.cum[(c.upToKnot ?? 1) - 1] - 1e-9); contacts.push({ id: "seat", z: r.z }); }
-    if (c.kind === "base") contacts.push({ id: "base", z: form.base });
-  }
-  if (form.base !== undefined && form.base !== null && !(form.contacts ?? []).some((c) => c.kind === "base")) contacts.push({ id: "base", z: form.base });
-  const floor = contacts.length ? Math.min(...contacts.map((c) => c.z)) : Math.min(front.samples.reduce((m, s) => Math.min(m, lowestZ(s)), Infinity));
-  return { front, tail, branches, contacts, floor, parents, phi0: form.phi0 };
+  // the limbs (limbs.mjs): branches on the front or the tail chain, hand reaches, the floor and the shin solve (design 4)
+  const limbs = buildLimbs(form, { front, tail, f0, integrateChain, interpChain, sectionPoint, lowestZ, applyFur });
+  return { front, tail, branches: limbs.branches, contacts: limbs.contacts, floor: limbs.floor, parents: { front, tail }, phi0: form.phi0, solves: limbs.solves, reaches: limbs.reaches, hover: limbs.hover };
 }
 
 // ---- guards ---------------------------------------------------------------------------------------------------
@@ -304,6 +263,7 @@ export function spineGuards(form, built) {
     const depth = (1 - k0) * Math.min(nr, root.w);
     if (depth < 0.3 * rr - 1e-9) problems.push(`${ch.id}: root depth ${depth.toFixed(3)} < 0.3 x ${rr.toFixed(3)}`);
   }
+  for (const sv of built.solves ?? []) if (sv.ratio < 0.5 - 1e-9 || sv.ratio > 1.6 + 1e-9 || Math.abs(sv.dz) > 0.005 + 1e-9) problems.push(`${sv.id}: the shin solve is ${sv.ratio.toFixed(2)} x its base value (guard 0.5-1.6), floor miss ${sv.dz.toFixed(4)} U`);
   for (const c of built.contacts) {
     const off = c.z - built.floor;
     if (off > 0.03 + 1e-9) problems.push(`contact ${c.id} is ${off.toFixed(3)} U above the floor`);
