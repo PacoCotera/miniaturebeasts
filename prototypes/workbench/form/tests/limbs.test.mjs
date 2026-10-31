@@ -50,3 +50,16 @@ test("toe chains are present on every foot of Curlop and Loika, pointed forward 
     }
   }
 });
+
+// ---- round 3 (design 7): Wickle's arms show ----
+import { existsSync } from "node:fs";
+import { buildScene } from "../mesh.mjs";
+import { renderForm } from "../render.mjs";
+import { round2Checks } from "../checks.mjs";
+import { STANDS, FACE_TARGETS, loadStands, standRef, maskOfAlpha } from "../trial.mjs";
+test("Wickle's arms are at least 100 px each at 304 and one bump of the outline is at least 3 px (limbs.show.wickle)", { skip: !existsSync(`${STANDS.wickle}-304x312.png`) }, () => {
+  const form = SPECIES.wickle, stands = loadStands("wickle"), ref = standRef(stands[304]), sc = buildScene(form, { extentDiv: 220 }), r = { 304: renderForm(sc, form.camera, 304, { ref }) };
+  const sc2 = buildScene(form, { extentDiv: 120 }); r[96] = renderForm(sc2, form.camera, 96, { ref }); r[48] = renderForm(sc2, form.camera, 48, { ref });
+  const c = round2Checks({ key: "wickle", form, scene: sc, r, ref, targets: FACE_TARGETS, stand: maskOfAlpha(stands[304]) }).find((x) => x.id === "limbs.show.wickle");
+  assert.ok(c.value.arms304 / 2 >= 100, JSON.stringify(c.value)); assert.ok(c.value.armBumpPx >= 3, JSON.stringify(c.value)); assert.ok(c.pass, JSON.stringify(c.value));
+});

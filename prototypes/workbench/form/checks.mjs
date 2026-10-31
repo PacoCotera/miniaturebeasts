@@ -478,7 +478,12 @@ export function round2Checks(ctx) {
   if (key === "wickle") {
     // each foot >= 80 px outside the drop at 304 and >= 5 at 96; each arm >= 100 px, one outline bump >= 3 px
     const feet4 = part("feet", r[304]), feet96 = part("feet", r[96]), arms = part("arms", r[304]);
-    out.push(C("limbs.show.wickle", "Wickle: feet >= 80 px each at 304 (>= 5 at 96), arms >= 100 px each", feet4 / 2 >= 80 && feet96 / 2 >= 5 && arms / 2 >= 100, { feet304: feet4, feet96, arms304: arms }, ">= 160 / >= 10 / >= 200 (two each)"));
+    // the bump: how far an arm pixel lies outside the convex hull of the drop part (the outline it would have without arms), in px
+    const dropId = r[304].maps.partNames.indexOf("drop"), armId = r[304].maps.partNames.indexOf("arms"), W4 = r[304].width, dp = [];
+    for (let i = 0; i < W4 * r[304].height; i++) if (r[304].coverage[i] >= 0.5 && r[304].maps.part[i] === dropId) dp.push([(i % W4) + 0.5, Math.floor(i / W4) + 0.5]);
+    const hull = convexHull(dp); let bump = 0;
+    for (let i = 0; i < W4 * r[304].height; i++) if (r[304].coverage[i] >= 0.5 && r[304].maps.part[i] === armId) { const p = [(i % W4) + 0.5, Math.floor(i / W4) + 0.5]; if (hullDepth(hull, p) > 0) continue; let d = Infinity; for (let j = 0; j < hull.length; j++) { const a = hull[j], b = hull[(j + 1) % hull.length], ex = b[0] - a[0], ey = b[1] - a[1], l2 = ex * ex + ey * ey || 1, t = Math.max(0, Math.min(1, ((p[0] - a[0]) * ex + (p[1] - a[1]) * ey) / l2)); d = Math.min(d, Math.hypot(p[0] - a[0] - ex * t, p[1] - a[1] - ey * t)); } bump = Math.max(bump, d); }
+    out.push(C("limbs.show.wickle", "Wickle: feet >= 80 px each at 304 (>= 5 at 96), arms >= 100 px each, one outline bump >= 3 px", feet4 / 2 >= 80 && feet96 / 2 >= 5 && arms / 2 >= 100 && bump >= 3, { feet304: feet4, feet96, arms304: arms, armBumpPx: +bump.toFixed(1) }, ">= 160 / >= 10 / >= 200 (two each); bump >= 3 px"));
   }
   if (key === "curlop") { const toes = B.branches.filter((x) => x.toe).length, legs = part("legs", r[304]), palms = B.branches.filter((x) => x.branch.id === "arm").map((x) => x.samples.at(-1).p), mid = [(palms[0][0] + palms[1][0]) / 2, (palms[0][1] + palms[1][1]) / 2, (palms[0][2] + palms[1][2]) / 2 + field.shift];
     out.push(C("limbs.show.curlop", "Curlop: each foot with toes >= 150 px, palms within 0.08 U of y = 0, F > 0 between the palms", legs / 2 >= 150 && toes === 6 && palms.every((p) => Math.abs(p[1]) <= 0.08) && field.F(mid) > 0, { legPx: legs, toes, palmY: palms.map((p) => +p[1].toFixed(3)) }, ">= 300 (two feet); 6 toes; <= 0.08 U")); }

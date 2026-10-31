@@ -434,6 +434,14 @@ export const ROUND3_LOG = [];
   setP("rupar", `branches.${R.rupar.branches.findIndex((b) => b.id === "fore")}.root.sigma`, 0.8, "design 2: the art's stance (fore root)");
   { const i = R.rupar.branches.findIndex((b) => b.id === "hind"); setP("rupar", `branches.${i}.dir`, [-0.12, 0.12, -1], "design 2: the art's stance (hind dir)"); }
   // Wickle 7: the drop narrows into the plume
+  // C2: cameras and Wickle's arms (design 1, 2, 7)
+  setP("loika", "camera.yaw", -40, "design 1: the art's three-quarter view (round 2: -28)");
+  setP("loika", "camera.pitch", 12, "design 1");
+  setP("rupar", "camera.yaw", 45, "design 2: the camera owns 2 points of the miss (round 2: 40)");
+  setP("rupar", "camera.pitch", 4, "design 2: the art is seen almost level (round 2: 10)");
+  { const i = R.wickle.branches.findIndex((b) => b.id === "arm"), before = JSON.stringify(R.wickle.branches[i]);
+    Object.assign(R.wickle.branches[i], { root: { sigma: 0.7, angle: 120, out: 0.85 }, dir: [0.7, 0.8, -0.7], blend: 0.05, knots: [K("arm0", "0|.13"), K("arm1", ".24|.12 .11 .11"), K("hand", ".14|.10")] });
+    log("wickle", `branches.${i} (arm)`, before.slice(0, 160), JSON.stringify(R.wickle.branches[i]).slice(0, 160), "design 7: root, dir, blend .05 (was .14: the arms melted into the drop) and the three knots"); }
   setP("wickle", "front.knots.4.ds", 0.6, "design 7: top delta-sigma .60 replaces the +15 % tuning (.5175): the join slope .485 to .425");
 }
 // every unnamed branch knot gets a name too
