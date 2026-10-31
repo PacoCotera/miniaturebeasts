@@ -303,7 +303,7 @@ export const ROUND2 = Object.fromEntries(Object.entries(SECTION3).map(([key, f])
   R.loika.face = { sigma: +(cumTo(R.loika, "head") + 0.1).toFixed(4), phi: 10, R: 0.55, aspect: 1.3, plateDy: -0.35, relief: 0, eyes: eye(0.22, 0.36, 0.1), nose: { kind: "nostrils", r: 0.02, tip: true, gap: 0.035 }, mouth: { kind: "line", y: -0.3, w: 0.42, s: 0.15, t: 0.02 }, belly: R.loika.face.belly }; // plateDy, mouth y: assumed (the design gives the patch only as the art's lower face)
   R.rupar.face = { sigma: 1.98, phi: 15, R: 0.2, aspect: 1, plateDy: -0.2, relief: 0, eyes: eye(0.075, 0.13, 0.03, { aspect: 0.65 }), nose: { kind: "pad", r: 0.045, tip: true }, mouth: { kind: "line", y: -0.1, w: 0.12, s: 0.1, t: 0.015 } };
   Object.assign(R.loika.look.eyes, { pupil_r: 0.22, iris_r: 0.7 }); delete R.loika.look.eyes.big; // rim .30 cream, iris .45 amber, pupil .22
-  Object.assign(R.rupar.look.eyes, { pupil_r: 0.45, iris_r: 0.65 }); // light ring .35
+  Object.assign(R.rupar.look.eyes, { pupil_r: 0.45, iris_r: 0.65, rim: [236, 224, 200] }); // a light ring .35 round the almond (the trial's was brown)
   // the coat has no lock noise and no bare patch (design 0.2-0.3, 5.4)
   for (const f of Object.values(R)) if (f.coat) { delete f.coat.locks; delete f.coat.bare; }
 }

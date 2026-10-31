@@ -8,3 +8,4 @@ import "./checks.test.mjs";
 import "./joins.test.mjs";
 import "./limbs.test.mjs";
 import "./face.test.mjs";
+import "./features.test.mjs";

@@ -94,7 +94,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
   const eyes = scene.field.eyes, faceM = scene.field.faceM, ek = look.eyes, glowCol = pig.glow ?? null, marks = scene.field.marks ?? [];
   const acc = new Float32Array(W * H * 4), cov = new Float32Array(W * H), em = new Float32Array(W * H), ink = new Uint8Array(W * H * NINK), shadowCov = new Float32Array(W * H);
   const inkCount = new Int32Array(W * H * NINK);
-  const partMap = new Int16Array(W * H).fill(-1), groupMap = new Int16Array(W * H).fill(-1), angleMap = new Float32Array(W * H), sigmaMap = new Float32Array(W * H);
+  const plateCov = new Float32Array(W * H), partMap = new Int16Array(W * H).fill(-1), groupMap = new Int16Array(W * H).fill(-1), angleMap = new Float32Array(W * H), sigmaMap = new Float32Array(W * H);
   // the mouth's ink: the darker of the nose ink and the plate pigment x 0.45 (design 2.5)
   const lum = (c) => 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2], plateC = (pig.patch ?? pig.belly ?? [128, 128, 128]).map((v) => v * 0.45), noseC = look.nose ?? [60, 50, 50];
   const mouthCol = lum(noseC) < lum(plateC) ? noseC : plateC;
@@ -149,6 +149,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
     let r = col[0] * k, g = col[1] * k, bl = col[2] * k;
     if (spec) { const nh = nx * Hh[0] + ny * Hh[1] + nz * Hh[2]; const s = sstep(0.975, 0.992, nh); r += (255 - r) * s; g += (255 - g) * s; bl += (255 - bl) * s; if (s > 0.5) inkCode = INK.catch; }
     const px2 = Math.floor(sx2 / ss), py2 = Math.floor(sy2 / ss), po = py2 * W + px2;
+    plateCov[po] += I(A.patch) > 0.5 ? 1 : 0;
     acc[po * 4] += Math.min(255, r); acc[po * 4 + 1] += Math.min(255, g); acc[po * 4 + 2] += Math.min(255, bl);
     acc[po * 4 + 3] += 1; cov[po] += 1; em[po] += emv;
     if (partMap[po] < 0) { partMap[po] = part; groupMap[po] = A.group[a]; angleMap[po] = I(A.angle); sigmaMap[po] = I(A.sigma); }
@@ -203,8 +204,9 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
   const inkMap = new Uint8Array(W * H);
   for (let i = 0; i < W * H; i++) { let best = 0, bc = 0; for (let k = 2; k < NINK; k++) if (inkCount[i * NINK + k] > bc) { bc = inkCount[i * NINK + k]; best = k; } inkMap[i] = bc * 2 >= n2 * 0 + Math.max(1, cov[i] * n2) ? best : INK.body; }
   const px = (p) => [W / 2 + (p[0] * rr[0] + p[1] * rr[1] + p[2] * rr[2] - fr.cx) * scale, (fr.feet + 1) - ((p[0] * uu[0] + p[1] * uu[1] + p[2] * uu[2]) - fr.bottom) * scale];
+  const features = sizeKey === 304 ? null : featurePass({ W, H, sizeKey, data, inkMap, cov, depth, SW, ss, project: px, tt, faceM, field: scene.field, look, scale, mouthCol });
   return {
-    width: W, height: H, data, coverage: cov, ink: inkMap, halo: haloMask, shadow: shadowCov, size: sizeKey,
+    features, plate: plateCov, width: W, height: H, data, coverage: cov, ink: inkMap, halo: haloMask, shadow: shadowCov, size: sizeKey,
     maps: { part: partMap, group: groupMap, angle: angleMap, sigma: sigmaMap, partNames: A.partNames, groupNames: scene.field.groups.all.map((g) => g.id) },
     meta: { scale, feet: fr.feet, cx: fr.cx, bottom: fr.bottom, extent: fr.extent, eyes: eyes.map((e) => ({ at: px(e.c), r: e.r * scale })), basis, project: px },
   };
@@ -237,4 +239,79 @@ export function silhouette(scene, camera, sizeKey, ref, { pad = 0, ss = 2 } = {}
   const cov = new Float32Array(W * H);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let s = 0; for (let j = 0; j < ss; j++) for (let i = 0; i < ss; i++) s += bits[(y * ss + j) * SW + x * ss + i]; cov[y * W + x] = s / (ss * ss); }
   return { width: W, height: H, coverage: cov, framing: fr };
+}
+
+// ---- the feature pass at 96 and 48 (design 3): hard-pixel glyphs at the projected anchors, after shading ------------------------
+// Each feature is drawn at the larger of its projected size and the minimum; only where its anchor is visible (depth within 0.02 U) and
+// n.view >= 0.15; the eye line stays above the nose above the mouth, each >= 1 px from the next and >= 1 px inside the outline. When
+// they would collide the mouth is dropped, then the nose, never an eye. Same bytes every run: no randomness.
+const Lstar = (c) => { const f = (v) => { v /= 255; v = v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); return v; }, y = 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); return y > 0.008856 ? 116 * Math.cbrt(y) - 16 : 903.3 * y; };
+export { Lstar };
+export const MIN_EYE = { 96: [3, 3], 48: [2, 2] };
+function featurePass({ W, H, sizeKey, data, inkMap, cov, depth, SW, ss, project, tt, faceM, field, look, scale, mouthCol }) {
+  const out = { eyes: [], nose: [], mouth: null, dropped: [] };
+  if (!faceM) return out;
+  const ek = look.eyes, pig = look.pigments, put = (x, y, c, code) => { if (x < 0 || y < 0 || x >= W || y >= H) return false; const i = y * W + x; data[i * 4] = c[0]; data[i * 4 + 1] = c[1]; data[i * 4 + 2] = c[2]; data[i * 4 + 3] = 255; inkMap[i] = code; return true; };
+  const inside = (x, y) => x >= 1 && y >= 1 && x < W - 1 && y < H - 1 && cov[y * W + x] >= 0.5 && cov[y * W + x - 1] >= 0.5 && cov[y * W + x + 1] >= 0.5 && cov[(y - 1) * W + x] >= 0.5 && cov[(y + 1) * W + x] >= 0.5; // >= 1 px inside the outline
+  const seen = (p, n) => { // the anchor passes the depth test and n.view >= 0.15
+    const q = project(p), z = p[0] * tt[0] + p[1] * tt[1] + p[2] * tt[2]; if (n[0] * tt[0] + n[1] * tt[1] + n[2] * tt[2] < 0.15) return null;
+    const sx = Math.floor(q[0] * ss), sy = Math.floor(q[1] * ss); let ok = false;
+    for (let dy = -1; dy <= 1 && !ok; dy++) for (let dx = -1; dx <= 1 && !ok; dx++) { const x = sx + dx, y = sy + dy; if (x >= 0 && y >= 0 && x < SW && y < depth.length / SW && depth[y * SW + x] <= z + 1e-9 + 0.02 && depth[y * SW + x] >= z - 0.02 - 0.3 * 0) ok = true; }
+    return ok ? q : null;
+  };
+  const lightFor = (c, core) => { let col = c; if (Lstar(col) < Lstar(core) + 35) col = [240, 236, 224]; return col; };
+  const boxes = [];
+  const core = [sizeKey === 96 ? 2 : 1, 0, 0].length ? (ek.pupil ?? [18, 14, 14]).map((v) => Math.min(v, 40)) : null; // the core ink: the pupil's, held dark (L* <= 30)
+  const coreCol = Lstar(core) <= 30 ? core : [14, 12, 12];
+  // eyes: a core of at least the minimum size, a light surround, a catch light on a core of 4 px
+  for (const e of faceM.eyes) {
+    const tip = [e.hit[0] + e.n[0] * 0.45 * e.r, e.hit[1] + e.n[1] * 0.45 * e.r, e.hit[2] + e.n[2] * 0.45 * e.r], q = seen(tip, e.n);
+    if (!q) { out.eyes.push({ visible: false }); continue; }
+    const prj = 2 * e.r * scale * 0.835 * (ek.pupil_r ?? 0.5), turned = faceM.spec.eyes.turned ?? false;
+    let [mw, mh] = MIN_EYE[sizeKey]; if (faceM.spec.eyes.aspect && faceM.spec.eyes.aspect < 0.8 && sizeKey === 48) [mw, mh] = [1, 2];
+    const cw = Math.max(mw, Math.round(prj)), ch = Math.max(mh, Math.round(prj * Math.max(0.5, faceM.spec.eyes.aspect ?? 1)));
+    const x0 = Math.floor(q[0] - cw / 2 + 0.5), y0 = Math.floor(q[1] - ch / 2 + 0.5);
+    boxes.push({ x0, y0, x1: x0 + cw - 1, y1: y0 + ch - 1, cw, ch, e });
+  }
+  // the 96 gap rule: >= 2 px between the two cores (48: >= 1 px); a smaller overlap moves the cores apart, never drops an eye
+  if (boxes.length === 2) { const [a, b] = boxes[0].x0 < boxes[1].x0 ? [boxes[0], boxes[1]] : [boxes[1], boxes[0]], need = sizeKey === 96 ? 2 : 1, gap = b.x0 - a.x1 - 1; if (gap < need) { const d = need - gap, l = Math.ceil(d / 2); a.x0 -= l; a.x1 -= l; b.x0 += d - l; b.x1 += d - l; } }
+  for (const bx of boxes) {
+    const rim = lightFor(ek.rim, coreCol), e = bx.e, sides = { l: true, r: true, t: true, b: true };
+    // light surround, 1 px, on every side that is free (the other eye's core is not overdrawn)
+    for (let y = bx.y0 - 1; y <= bx.y1 + 1; y++) for (let x = bx.x0 - 1; x <= bx.x1 + 1; x++) { const inCore = x >= bx.x0 && x <= bx.x1 && y >= bx.y0 && y <= bx.y1; if (!inCore && inkMap[y * W + x] !== INK.pupil) put(x, y, rim, INK.rim); }
+    for (let y = bx.y0; y <= bx.y1; y++) for (let x = bx.x0; x <= bx.x1; x++) put(x, y, coreCol, INK.pupil);
+    if (sizeKey === 96 && bx.cw >= 4 && bx.ch >= 4) put(bx.x0, bx.y0, [255, 255, 255], INK.catch); // a 1 px catch light on a core of 4 px
+    out.eyes.push({ visible: true, core: [bx.cw, bx.ch], box: [bx.x0, bx.y0, bx.x1, bx.y1], sides });
+  }
+  const eyeBoxes = boxes.map((b) => [b.x0 - 1, b.y0 - 1, b.x1 + 1, b.y1 + 1]), eyeBottom = boxes.length ? Math.max(...boxes.map((b) => b.y1 + 1)) : -1, eyeLine = boxes.length ? boxes.reduce((a, b) => a + (b.y0 + b.y1) / 2, 0) / boxes.length : null;
+  const hits = (r, list) => list.some((q) => !(r[2] < q[0] || r[0] > q[2] || r[3] < q[1] || r[1] > q[3]));
+  // the nose: 96 a 2 x 1 block; 48 one pixel, only if the plate is >= 6 px tall and clear of the eyes
+  let noseBox = null;
+  if (faceM.noses.length) {
+    const plateH = 2 * faceM.R * scale, nz = faceM.noses, qs = nz.map((n) => seen(n.c, n.n)).filter(Boolean);
+    if (!qs.length) out.dropped.push("nose: not visible");
+    else if (sizeKey === 48 && plateH < 6) out.dropped.push("nose: the plate is under 6 px");
+    else {
+      const cx = qs.reduce((a, q) => a + q[0], 0) / qs.length, cy = qs.reduce((a, q) => a + q[1], 0) / qs.length, w = sizeKey === 96 ? 2 : 1;
+      const x0 = Math.floor(cx - w / 2 + 0.5), y0 = Math.floor(cy), r = [x0, y0, x0 + w - 1, y0], gapBox = [r[0] - 1, r[1] - 1, r[2] + 1, r[3] + 1];
+      if (hits(gapBox, eyeBoxes.map((b) => [b[0] + 1, b[1] + 1, b[2] - 1, b[3] - 1])) || (eyeLine !== null && y0 <= eyeBottom)) out.dropped.push("nose: collides with the eyes or sits above the eye line");
+      else if (!inside(x0, y0) || !inside(x0 + w - 1, y0)) out.dropped.push("nose: outside the outline");
+      else { for (let x = x0; x < x0 + w; x++) put(x, y0, look.nose ?? [60, 50, 50], INK.nose); noseBox = r; out.nose.push({ box: r }); }
+    }
+  }
+  // the mouth (96 only; at 48 it is dropped): a 1 px stroke of at least 3 px
+  if (faceM.mouth) {
+    if (sizeKey === 48) out.dropped.push("mouth: dropped at 48");
+    else {
+      const m = faceM.mouth, pts = []; for (let i = 0; i <= 16; i++) { const x = (i / 16 * 2 - 1) * m.w, p = faceM.castXY(x, m.at(x)), n = faceM.nf, q = seen(p, n); if (q) pts.push(q); }
+      let len = 0; for (let i = 1; i < pts.length; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+      const px = []; for (let i = 1; i < pts.length; i++) { const a = pts[i - 1], b = pts[i], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) * 2)); for (let k = 0; k <= n; k++) { const x = Math.floor(a[0] + (b[0] - a[0]) * k / n), y = Math.floor(a[1] + (b[1] - a[1]) * k / n); if (!px.some((q) => q[0] === x && q[1] === y)) px.push([x, y]); } }
+      const rect = px.length ? [Math.min(...px.map((q) => q[0])), Math.min(...px.map((q) => q[1])), Math.max(...px.map((q) => q[0])), Math.max(...px.map((q) => q[1]))] : null;
+      if (len < 3 || px.length < 3) out.dropped.push("mouth: under 3 px");
+      else if (hits([rect[0] - 1, rect[1] - 1, rect[2] + 1, rect[3] + 1], eyeBoxes.map((b) => [b[0] + 1, b[1] + 1, b[2] - 1, b[3] - 1])) || (noseBox && hits([rect[0] - 1, rect[1] - 1, rect[2] + 1, rect[3] + 1], [noseBox])) || (noseBox && rect[1] <= noseBox[3]) || (eyeLine !== null && rect[1] <= eyeBottom)) out.dropped.push("mouth: collides with the eyes or the nose");
+      else if (!px.every(([x, y]) => inside(x, y))) out.dropped.push("mouth: outside the outline");
+      else { for (const [x, y] of px) put(x, y, mouthCol, INK.mouth); out.mouth = { box: rect, px: px.length }; }
+    }
+  }
+  return out;
 }
