@@ -6,9 +6,9 @@ import { renderCreature, coarse, SIZES } from "./render.mjs";
 import { faceInk, gazeOf, faceContrast } from "./checks.mjs";
 import { checkRules, failures, tAt, bandOf, loadHouse } from "../form/house/house.mjs";
 import { measureAll } from "../form/house/measures.mjs";
-import { loadImage, saveImage, onBg, zoom, blank, paste, drawText, textWidth, crop } from "./imgtools.mjs";
+import { loadImage, saveImage, onBg, zoom, blank, paste, crop } from "./imgtools.mjs";
 import { seedUnit } from "./pose.mjs";
-import { wrapLine, wrapLines, checkLabels, GLYPH_H } from "./labels.mjs";
+import { sheet } from "./page.mjs";
 import { MASTER } from "./paths.mjs";
 
 const alphaHeight = (img) => { let t = Infinity, b = -Infinity; for (let y = 0; y < img.height; y++) for (let x = 0; x < img.width; x++) if (img.data[(y * img.width + x) * 4 + 3] >= 128) { t = Math.min(t, y); b = Math.max(b, y); } return b - t; };
@@ -30,110 +30,84 @@ export function makeTile(house, specimen, { t = {}, label = "", seed = undefined
   return { specimen, ex, camera, r, rig, measured, rules, fails: failures(rules), label, ms: Object.fromEntries(Object.entries(r).map(([k, v]) => [k, Math.round(v.meta.ms)])) };
 }
 
-const INK_TXT = [20, 18, 24], DIM = [96, 90, 104], BAD = [170, 40, 40];
-// the three sizes of a tile, stacked: 304 at 1x, 96 at 2x and 48 at 2x side by side
-export function tileImage(r) {
-  const a = onBg(r[304]), b = zoom(onBg(r[96]), 2), c = zoom(onBg(r[48]), 2), W = Math.max(a.width, b.width + c.width + 8), out = blank(W, a.height + 8 + Math.max(b.height, c.height));
-  paste(out, a, 0, 0); paste(out, b, 0, a.height + 8); paste(out, c, b.width + 8, a.height + 8);
-  return out;
-}
-export function masterImage(id) {
-  const m = masterOf(id), a = onBg(m[304]), b = zoom(onBg(m[96]), 2), c = zoom(onBg(m[48]), 2), W = Math.max(a.width, b.width + c.width + 8), out = blank(W, a.height + 8 + Math.max(b.height, c.height));
-  paste(out, a, 0, 0); paste(out, b, 0, a.height + 8); paste(out, c, b.width + 8, a.height + 8);
-  return out;
-}
 const f2 = (v, d = 2) => Number(v).toFixed(d);
 // the rules in plain words, for a label
-const WORDS = { "R1-face": "EYE SHARE", "R1-head": "HEAD SIZE", "R1-head-breadth": "HEAD BREADTH", "R3-size": "EYE SIZE", "R3-height": "EYE HEIGHT", "R3-spacing": "EYE SPACING", "R4-stack": "FACE STACK", "R4-nose-drop": "NOSE DROP", "R4-nose-width": "NOSE WIDTH", "R4-mouth-gap": "MOUTH GAP", "R4-forehead": "FOREHEAD", "R-far-eye": "FAR EYE", "R-nose-far-eye": "NOSE AT EYE", "R-chin": "CHIN", "R-nape": "NAPE", "R-push": "PUSH", "R-mouth": "MOUTH", "R15-iris-48": "IRIS AT 48", "R15-iris-96": "IRIS AT 96", "R15-pupil-48": "PUPIL AT 48", "R15-nose-96": "NOSE AT 96", "R15-mouth-96": "MOUTH AT 96", "R13-face-contrast": "FACE VALUE", "R18-cues": "SICK CUES", "R6-face-yaw": "FACE YAW", "R6-body-yaw": "BODY YAW", "R6-head-yaw": "HEAD YAW", "R6-roll": "ROLL" };
+const WORDS = { "R1-face": "eye share", "R1-head": "head size", "R1-head-breadth": "head breadth", "R3-size": "eye size", "R3-height": "eye height", "R3-spacing": "eye spacing", "R4-stack": "face stack", "R4-nose-drop": "nose drop", "R4-nose-width": "nose width", "R4-mouth-gap": "mouth gap", "R4-forehead": "forehead", "R-far-eye": "far eye", "R-nose-far-eye": "nose at eye", "R-chin": "chin", "R-nape": "nape", "R-push": "pushed features", "R-mouth": "mouth", "R15-iris-48": "iris at 48", "R15-iris-96": "iris at 96", "R15-pupil-48": "pupil at 48", "R15-nose-96": "nose at 96", "R15-mouth-96": "mouth at 96", "R13-face-contrast": "face value", "R18-cues": "sick cues", "R6-face-yaw": "face yaw", "R6-body-yaw": "body yaw", "R6-head-yaw": "head yaw", "R6-roll": "roll" };
 const wordOf = (id) => WORDS[id] ?? id.replace(/^R/, "");
-// a tile's label: the name, the verdict in plain words, and the numbers only if they fit the column (px wide)
-export function tileLines(t, colW = 304, k = 2) {
-  const m = t.measured, outside = t.fails.some((x) => x.id === "R1-face" && x.value > x.range[1]), others = t.fails.filter((x) => !(outside && x.id === "R1-face"));
-  const lines = [[t.label, INK_TXT]];
-  if (outside) lines.push(["OUTSIDE THE HOUSE", BAD]);
-  if (others.length) { let v = `BREAKS ${others.map((x) => wordOf(x.id)).join(", ")}`; if (wrapLine(v, colW, k).length > 2) v = `BREAKS ${others.length} RULES`; lines.push([v, BAD]); }
-  if (!t.fails.length) lines.push(["PASSES THE HOUSE", DIM]);
-  const nums = `H/S ${f2(m["H/S"] ?? 0)} E/W ${f2(m["E/Wf"] ?? 0)} SHARE ${f2(m["eye-share"] ?? 0, 3)}`;
-  if (textWidth(nums, k) <= colW && m["H/S"] !== undefined) lines.push([nums, DIM]);
+// a tile's label: the name, the verdict in plain words, and the numbers on a last line (the page wraps whatever is long)
+export function tileLines(t) {
+  const m = t.measured, over = t.fails.some((x) => x.id === "R1-face" && x.value > x.range[1]), far = !!t.ex?.outside || t.fails.some((x) => x.id === "R-far-eye" || x.id === "R-nose-far-eye"), outside = over || far;
+  const others = t.fails.filter((x) => !(over && x.id === "R1-face") && !(far && (x.id === "R-far-eye" || x.id === "R-nose-far-eye")));
+  const lines = [];
+  if (t.label) lines.push([t.label, "name"]);
+  if (outside) lines.push(["Outside the house", "bad"]);
+  if (others.length) lines.push([others.length > 3 ? `Breaks ${others.length} rules` : `Breaks ${others.map((x) => wordOf(x.id)).join(", ")}`, "bad"]);
+  if (!t.fails.length) lines.push(["Passes the house", "dim"]);
+  if (m["H/S"] !== undefined) lines.push([`H/S ${f2(m["H/S"])}, E/W ${f2(m["E/Wf"] ?? 0)}, share ${f2(m["eye-share"] ?? 0, 3)}`, "dim"]);
   return lines;
 }
-// the sheet: a title, then cells of a picture under its label. Every label is wrapped to the column, drawn at scale 2 (the title at 3) on whole pixels after
-// the pictures are zoomed, and read back by checkLabels (a label that crosses its column, overlaps another or leaves the sheet is an error).
-export function sheet(title, cells, cols, { cellW = null, gap = 10, note = "", k = 2, maxLines = 4 } = {}) {
-  const imgs = cells.map((c) => c.img), cw = cellW ?? Math.max(...imgs.map((i) => i.width)), ch = Math.max(...imgs.map((i) => i.height)), lh = GLYPH_H * k + 4, rows = Math.ceil(cells.length / cols), W = cols * (cw + gap) + gap;
-  for (const i of imgs) if (i.width > cw) throw new Error(`a picture ${i.width} px wide does not fit its column ${cw}`);
-  const wrapped = cells.map((c) => wrapLines(c.lines, cw, k, maxLines)), nl = Math.max(1, ...wrapped.map((w) => w.length)), labelH = nl * lh + 6;
-  const tl = wrapLine(title, W - 2 * gap, 3), tH = tl.length * 20, noteL = note ? wrapLine(note, W - 2 * gap, k) : [], head = 8 + tH + 8, nH = noteL.length ? noteL.length * lh + 4 : 0;
-  const vg = gap + 10, H = head + rows * (ch + labelH + vg) + gap + nH, out = blank(W, H), boxes = [];
-  const text = (x, y, txt, col, kk, x0, x1) => { const w = textWidth(txt, kk) - kk; drawText(out, x, y, txt, col, kk); boxes.push({ x, y, w, h: GLYPH_H * kk, x0, x1, what: txt }); };
-  tl.forEach((l, i) => text(gap, 8 + i * 20, l, INK_TXT, 3, 0, W));
-  noteL.forEach((l, i) => text(gap, head + rows * (ch + labelH + vg) + 2 + i * lh, l, DIM, k, 0, W));
-  cells.forEach((c, i) => {
-    const x = gap + (i % cols) * (cw + gap), y = head + Math.floor(i / cols) * (ch + labelH + vg);
-    for (let q = 0; q < cw; q++) { const o = ((y - 6) * W + x + q) * 4; for (let c = 0; c < 3; c++) out.data[o + c] = 206; } // a rule over each label: the label belongs to the picture under it
-    wrapped[i].forEach(([txt, col], j) => text(x, y + j * lh, txt, col, k, x, x + cw));
-    paste(out, c.img, x, y + labelH);
-  });
-  checkLabels(boxes, W, H); out.labels = boxes; out.layout = { cols, cw, gap, labelH, head, ch, rows, vg };
-  return out;
-}
+// pictures: the three sizes of a tile (304 at 1x; 96 and 48 enlarged 2x with their pixels kept), a master the same
+const tilePics = (r, sizes = [304, 96, 48]) => [[{ img: r[304] ?? r[96] }], ...(r[304] && (sizes.includes(96) || sizes.includes(48)) ? [[...(r[96] ? [{ img: r[96], scale: 2 }] : []), ...(r[48] ? [{ img: r[48], scale: 2 }] : [])]] : [])];
+const masterPics = (id) => tilePics(masterOf(id));
+const masterCell = (id, name, l2 = "Signed art") => ({ pics: masterPics(id), lines: [[`Master ${name}`, "name"], [l2, "dim"]] });
 export const saveTile = (dir, name, t) => { mkdirSync(dir, { recursive: true }); for (const s of Object.keys(t.r)) saveImage(path.join(dir, `${name}-${SIZES[s].join("x")}.png`), t.r[s]); };
 
-// ---- the pictures -----------------------------------------------------------------------------------------------------------------------
-export const HEAD_SIZES = [0.45, 0.52, 0.60], EYE_T = [0.3, 0.9];
-const masterCell = (id, name, l2 = "SIGNED ART") => ({ img: masterImage(id), lines: [[`MASTER ${name}`, INK_TXT], [l2, DIM]] });
+// ---- the sheets: each returns { spec } (a sheet spec for page.mjs's renderSheet) and its tiles ---------------------------------------------
+export const HEAD_SIZES = [0.45, 0.52, 0.60], EYE_T = [0.35, 0.9]; // row 1 was t 0.3: with the master's own head (W/H 1.31) that sits 0.001 under the eye-share band at H/S 0.45
 export function headSizeSheet(house, spec, outDir) {
   const cells = [], tiles = [], hb = bandOf(house, "A", "form.head");
   for (const et of EYE_T) {
-    cells.push(masterCell("S01", "LOIKA", `ROW: EYE SIZE T ${et}`));
+    cells.push(masterCell("S01", "Loika", `Row: eye size t ${et}`));
     for (const hs of HEAD_SIZES) {
-      const t = makeTile(house, spec, { t: { "form.head": tAt(hb, hs), "form.eye-size": et }, label: `H/S ${hs.toFixed(2)}, EYE T ${et}` });
-      tiles.push({ hs, et, tile: t }); cells.push({ img: tileImage(t.r), lines: tileLines(t) });
+      const t = makeTile(house, spec, { t: { "form.head": tAt(hb, hs), "form.eye-size": et }, label: `H/S ${hs.toFixed(2)}, eye t ${et}` });
+      tiles.push({ hs, et, tile: t }); cells.push({ pics: tilePics(t.r), lines: tileLines(t) });
       saveTile(path.join(outDir, "tiles"), `loika-hs${Math.round(hs * 100)}-eye${Math.round(et * 10)}`, t);
     }
   }
-  return { img: sheet("HEAD SIZE CHOICE: LOIKA BESIDE THE MASTER AT 304, 96 AND 48", cells, 4), tiles };
+  return { spec: sheet("Head size choice: Loika beside the master at 304, 96 and 48", cells, 4), tiles };
 }
 export function snailSheet(house, spec, outDir) {
-  const t = makeTile(house, spec, { label: "USVEL THE SNAIL, HOUSE BUILD" });
+  const t = makeTile(house, spec, { label: "Usvel the snail, house build" });
   saveTile(path.join(outDir, "tiles"), "snail", t);
-  return { img: sheet("THE SNAIL BESIDE ITS MASTER AT 304, 96 AND 48", [masterCell("S14", "USVEL"), { img: tileImage(t.r), lines: tileLines(t) }], 2), tile: t };
+  return { spec: sheet("The snail beside its master at 304, 96 and 48", [masterCell("S14", "Usvel"), { pics: tilePics(t.r), lines: tileLines(t) }], 2), tile: t };
 }
 const TS = [0, 0.5, 1];
 export function gridSheet(house, spec, outDir, kind) {
-  const [gx, gy, nx, ny] = kind === "eye-spacing" ? ["form.eye-size", "form.eye-spacing", "EYE", "SPACING"] : ["form.muzzle", "form.lid", "MUZZLE", "LID"];
+  const [gx, gy, nx, ny] = kind === "eye-spacing" ? ["form.eye-size", "form.eye-spacing", "Eye", "spacing"] : ["form.muzzle", "form.lid", "Muzzle", "lid"];
   const cells = [], tiles = [];
   for (const ty of TS) for (const tx of TS) {
-    const t = makeTile(house, spec, { t: { [gx]: tx, [gy]: ty }, label: `${nx} T ${tx}, ${ny} T ${ty}`, sizes: [304, 96] });
-    tiles.push({ tx, ty, tile: t });
-    const a = onBg(t.r[304]), b = zoom(onBg(t.r[96]), 2), img = blank(a.width, a.height + b.height + 6); paste(img, a, 0, 0); paste(img, b, 0, a.height + 6);
-    cells.push({ img, lines: tileLines(t) });
+    const t = makeTile(house, spec, { t: { [gx]: tx, [gy]: ty }, label: `${nx} t ${tx}, ${ny} t ${ty}`, sizes: [304, 96] });
+    tiles.push({ tx, ty, tile: t }); cells.push({ pics: tilePics(t.r, [304, 96]), lines: tileLines(t) });
     saveTile(path.join(outDir, "tiles"), `grid-${kind}-${tx}-${ty}`.replace(/\./g, "p"), t);
   }
-  return { img: sheet(`FACE GENE EXTREMES: ${nx} ACROSS, ${ny} DOWN`, cells, 3), tiles };
+  return { spec: sheet(`Face gene extremes: ${nx.toLowerCase()} across, ${ny} down`, cells, 3), tiles };
 }
 
 // the nose against the signed master: the house build (the nose-fit clamp by kind: a skin mound is 0.7 to 1.1 E) and the same Loika with the clamp off
 export function noseSheet(house, spec, outDir) {
   const raw = JSON.parse(JSON.stringify({ ...house, resolved: undefined })); raw.clamps.find((c) => c.id === "nose-fit").on = false;
-  const open = loadHouse(raw), a = makeTile(house, spec, { label: "HOUSE BUILD, NOSE CLAMPED BY KIND" }), b = makeTile(open, spec, { label: "CLAMP OFF, NOSE T 1", t: { "form.nose": 1.0 } });
+  const open = loadHouse(raw), a = makeTile(house, spec, { label: "House build, nose clamped by kind" }), b = makeTile(open, spec, { label: "Clamp off, nose t 1", t: { "form.nose": 1.0 } });
   saveTile(path.join(outDir, "tiles"), "nose-rule-on", a); saveTile(path.join(outDir, "tiles"), "nose-rule-off", b);
-  const lines = (t) => [[t.label, INK_TXT], [`NOSE ${f2(t.measured["nose-w/E"])} E WIDE`, DIM], ...tileLines({ ...t, label: "" }).slice(1, 2)];
-  return { img: sheet("THE NOSE: THE MASTER, THE HOUSE BUILD AND THE CLAMP OFF", [masterCell("S01", "LOIKA", "NOSE 0.97 E, READ BY EYE"), { img: tileImage(a.r), lines: lines(a) }, { img: tileImage(b.r), lines: lines(b) }], 3), tiles: [a, b] };
+  const lines = (t) => [[t.label, "name"], [`Nose ${f2(t.measured["nose-w/E"])} E wide`, "dim"], ...tileLines({ ...t, label: "" }).slice(0, 1)];
+  return { spec: sheet("The nose: the master, the house build and the clamp off", [masterCell("S01", "Loika", "Nose 0.97 E, read by eye"), { pics: tilePics(a.r), lines: lines(a) }, { pics: tilePics(b.r), lines: lines(b) }], 3), tiles: [a, b] };
 }
 
-// the feet, master beside ours, at 304 (3x) and 96 (5x)
+// the feet, master beside ours: crops of the native renders, enlarged with their pixels kept (3x at 304, 5x at 96)
 export function feetSheet(house, spec, outDir) {
-  const t = makeTile(house, spec, { label: "LOIKA FEET", sizes: [304, 96] }), m = masterOf(spec.id), cells = [];
-  const cr = (img, x, y, w, h, k) => zoom(onBg(crop(img, x, y, w, h)), k);
-  cells.push({ img: cr(m[304], 40, 238, 250, 66, 3), lines: [["MASTER FEET AT 304, 3X", INK_TXT]] }, { img: cr(t.r[304], 40, 238, 250, 66, 3), lines: [["BUILD FEET AT 304, 3X", INK_TXT]] });
-  cells.push({ img: cr(m[96], 12, 66, 80, 20, 5), lines: [["MASTER FEET AT 96, 5X", INK_TXT]] }, { img: cr(t.r[96], 12, 66, 80, 20, 5), lines: [["BUILD FEET AT 96, 5X", INK_TXT]] });
-  return { img: sheet("THE FEET: THE MASTER BESIDE THE BUILD", cells, 2) };
+  const t = makeTile(house, spec, { label: "Loika feet", sizes: [304, 96] }), m = masterOf(spec.id), c = (img, x, y, w, h, k) => [[{ img: crop(img, x, y, w, h), scale: k }]];
+  const cells = [
+    { pics: c(m[304], 40, 238, 250, 66, 3), lines: [["Master feet at 304, 3x", "name"]] }, { pics: c(t.r[304], 40, 238, 250, 66, 3), lines: [["Build feet at 304, 3x", "name"]] },
+    { pics: c(m[96], 12, 66, 80, 20, 5), lines: [["Master feet at 96, 5x", "name"]] }, { pics: c(t.r[96], 12, 66, 80, 20, 5), lines: [["Build feet at 96, 5x", "name"]] }];
+  return { spec: sheet("The feet: the master beside the build", cells, 2) };
 }
-// twelve snails from random t over the open genes (the plan D litter check): three columns, each label wrapped to its column
+// twelve snails from t drawn round the specimen's own t over the open genes (the plan D litter check): three columns
+const LITTER_SPREAD = 0.6; // the width of each gene's pool in t, centred on the type specimen's t
 export function snailLitter(house, spec, outDir, n = 12) {
   const genes = ["form.head-width", "form.head-depth", "form.eye-size", "form.eye-height", "form.eye-spacing", "form.pupil", "form.lid", "form.eye-ring", "form.mouth-width", "form.mouth-upturn", "form.carriage", "form.body-length", "form.rise", "form.skirt", "form.antenna", "form.head"];
-  const tiles = [], cells = [], cw = 260;
-  for (let i = 0; i < n; i++) { const t = {}; for (const g of genes) t[g] = seedUnit(`litter${i}`, g); const tile = makeTile(house, spec, { t, label: `SNAIL ${i + 1}`, sizes: [96], seed: `S14-litter${i}` }); tiles.push(tile); cells.push({ img: zoom(onBg(tile.r[96]), 2), lines: tileLines(tile, cw) }); }
-  return { img: sheet("SNAIL LITTER OF 12 AT 96", cells, 3, { cellW: cw }), tiles };
+  const tiles = [], cells = [];
+  for (let i = 0; i < n; i++) { const t = {}; for (const g of genes) t[g] = Math.min(1, Math.max(0, (spec.t[g] ?? 0.5) + (seedUnit(`litter${i}`, g) - 0.5) * LITTER_SPREAD)); const tile = makeTile(house, spec, { t, label: `Snail ${i + 1}`, sizes: [96], seed: `S14-litter${i}` }); tiles.push(tile); cells.push({ pics: [[{ img: tile.r[96], scale: 2 }]], lines: tileLines(tile) }); }
+  // the rows above every creature are bare: cut them (the pictures keep their pixels), so each label sits close over its own picture
+  const top = Math.min(...cells.map((c) => { const im = c.pics[0][0].img; for (let y = 0; y < im.height; y++) for (let x = 0; x < im.width; x++) if (im.data[(y * im.width + x) * 4 + 3] > 8) return y; return im.height; })), cut = Math.max(0, top - 4);
+  for (const c of cells) c.pics[0][0].img = crop(c.pics[0][0].img, 0, cut, c.pics[0][0].img.width, c.pics[0][0].img.height - cut);
+  return { spec: sheet("Snail litter of 12 at 96, enlarged 2x", cells, 3, { cellW: 270 }), tiles };
 }

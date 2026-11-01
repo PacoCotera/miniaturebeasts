@@ -50,9 +50,11 @@ export function buildScene(house, spec) {
     const dTorso = (x, y, z) => uRound(dC(x, y, z), dP(x, y, z), 0.25);
     dBody = (x, y, z) => { let d = dTorso(x, y, z); for (const l of legs) d = uRound(d, l.d(x, y, z), uB); return d; };
     // the leaf fan: one root on K's crown, each leaf a thin ellipsoid whose face looks forward (plan 2.7)
-    const cr0 = rig.crest, leaves = cr0.leaves.map(([yoff, len, wid, rollDeg]) => {
-      const a = rad(rollDeg), dir = [0.08, Math.sin(a), Math.cos(a)], dl = norm3(dir), across = [0, Math.cos(a), -Math.sin(a)], base = [cr0.root[0], cr0.root[1] + yoff * 0.25, cr0.root[2]];
-      const c = [base[0] + dl[0] * len / 2, base[1] + dl[1] * len / 2, base[2] + dl[2] * len / 2], f = { c, ax: dl, aw: across, an: norm3([across[1] * dl[2] - across[2] * dl[1], across[2] * dl[0] - across[0] * dl[2], across[0] * dl[1] - across[1] * dl[0]]) };
+    // each leaf: [lateral offset of its base, length, width, roll (deg, in the fan plane), lean (forward), twist (deg, about its own axis)]; the bases are one root point
+    const cr0 = rig.crest, leaves = cr0.leaves.map(([yoff, len, wid, rollDeg, lean = 0.08, twistDeg = 0]) => {
+      const a = rad(rollDeg), ph = rad(twistDeg), dir = [lean, Math.sin(a), Math.cos(a)], dl = norm3(dir), across0 = [0, Math.cos(a), -Math.sin(a)], an0 = norm3([across0[1] * dl[2] - across0[2] * dl[1], across0[2] * dl[0] - across0[0] * dl[2], across0[0] * dl[1] - across0[1] * dl[0]]);
+      const across = [0, 1, 2].map((i) => across0[i] * Math.cos(ph) + an0[i] * Math.sin(ph)), an = [0, 1, 2].map((i) => an0[i] * Math.cos(ph) - across0[i] * Math.sin(ph)), base = [cr0.root[0], cr0.root[1] + yoff * 0.25, cr0.root[2]];
+      const c = [base[0] + dl[0] * len / 2, base[1] + dl[1] * len / 2, base[2] + dl[2] * len / 2], f = { c, ax: dl, aw: across, an };
       return { c, len, wid, thick: cr0.thick, f };
     });
     const dLeaf = (l) => (x, y, z) => { const X = x - l.c[0], Y = y - l.c[1], Z = z - l.c[2], f = l.f, u = X * f.ax[0] + Y * f.ax[1] + Z * f.ax[2], v = X * f.aw[0] + Y * f.aw[1] + Z * f.aw[2], w = X * f.an[0] + Y * f.an[1] + Z * f.an[2]; const t = clamp(u / (l.len / 2), -1, 1), taper = 0.18 + 0.82 * Math.sqrt(Math.max(0, 1 - t * t)) ** 0.8; return sdEllipsoid(u, v, w, l.len / 2, (l.wid / 2) * Math.max(taper, 0.2), l.thick / 2) * 0.9; };
@@ -73,6 +75,7 @@ export function buildScene(house, spec) {
       if (dCrestB(x, y, z) < 0.012 && dCrestB(x, y, z) < dHeadW(x, y, z)) return "crest";
       if (z < 0.4) for (const l of legs) { const dt = l.dToes(x, y, z); if (dt < 0.014 && dt <= l.dPaw(x, y, z) + 0.004) return l.toeCrease(x, y, z) < rig["toe-crease"] ? "toecrease" : "toe"; }
       const dh = dHeadW(x, y, z), db = dNoHead(x, y, z);
+      if (dh > db + 0.02 && z < 0.9) { let dl = 1e9; for (const l of legs) dl = Math.min(dl, l.d(x, y, z)); if (dl < dTorso(x, y, z) - 0.01) return "leg"; } // a leg is dark skin: the cream bib stops at the chest
       return dh <= db + 0.02 ? "head" : "body";
     };
     headWeight = (x, y, z) => sstep(0.05, -0.05, dHeadW(x, y, z) - dNoHead(x, y, z));

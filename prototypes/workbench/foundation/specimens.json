@@ -95,9 +95,9 @@
     255
    ],
    "leaf": [
-    118,
-    128,
-    56
+    98,
+    142,
+    50
    ],
    "toe": [
     236,
@@ -125,9 +125,16 @@
     "x3": 0.95,
     "z0": 1.2,
     "z1": 1.5,
-    "y0": 0.34,
-    "y1": 0.52
-   }
+    "y0": 0.45,
+    "y1": 0.8,
+    "n0": 0.35,
+    "n1": 0.8
+   },
+   "leafRib": [
+    178,
+    208,
+    96
+   ]
   },
   "pose": {
    "seed": "S01",
@@ -139,12 +146,21 @@
   },
   "rig": {
    "A": {
-    "chest-x": -0.04,
-    "back-drop": 0.38,
-    "pelvis-gap": 1.0,
-    "pelvis-lift": 0.24,
-    "union-neck": 0.22,
-    "pelvis-share": 1.0
+    "chest-x": 0.03,
+    "back-drop": 0.5,
+    "pelvis-gap": 0.95,
+    "pelvis-lift": 0.3,
+    "union-neck": 0.18,
+    "pelvis-share": 1.0,
+    "fore-x": 0.3,
+    "belly-share": 0.1,
+    "stance-width-of-chest": 0.65,
+    "leg-radius": 0.27,
+    "paw": [
+     0.38,
+     0.35,
+     0.24
+    ]
    },
    "face": {}
   }
@@ -180,7 +196,7 @@
     "form.mouth-gap": 1.0,
     "form.carriage": 0.33,
     "form.body-length": 0.3,
-    "form.rise": 0.9,
+    "form.rise": 0.6,
     "form.skirt": 0.5,
     "form.antenna": 0.65
    },
@@ -208,7 +224,7 @@
     150,
     196
    ],
-   "noseInk": 0.6,
+   "noseInk": 0,
    "mouth": [
     88,
     66,

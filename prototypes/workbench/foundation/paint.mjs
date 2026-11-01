@@ -32,7 +32,7 @@ export function makePaint(scene, look, view) {
   function creamBodyAt(wp, nrm) {
     const cb = look.creamBody; if (!cb) return 0;
     const s = -nrm[2] * cb.down + nrm[0] * cb.front, xf = sstep(cb.x0, cb.x1, wp[0]) * (1 - sstep(cb.x2, cb.x3, wp[0]));
-    return sstep(cb.t0, cb.t1, s) * xf * sstep(cb.z1, cb.z0, wp[2]) * (1 - sstep(cb.y0, cb.y1, Math.abs(wp[1])));
+    return sstep(cb.t0, cb.t1, s) * xf * sstep(cb.z1, cb.z0, wp[2]) * (1 - sstep(cb.y0, cb.y1, Math.abs(wp[1]))) * (cb.n1 ? 1 - sstep(cb.n0, cb.n1, Math.abs(nrm[1])) : 1); // the bib's sides follow the chest's own curve (the lateral part of the normal)
   }
   function eyePaint(i, q, nrm, wp) {
     const e = eyes[i], X = q[0] - e.c[0], Y = q[1] - e.c[1], Z = q[2] - e.c[2], u = X * e.lat[0] + Y * e.lat[1] + Z * e.lat[2], v = X * e.up[0] + Y * e.up[1] + Z * e.up[2], w = X * e.n[0] + Y * e.n[1] + Z * e.n[2];
@@ -42,9 +42,8 @@ export function makePaint(scene, look, view) {
     const outer = e.Reye / R;
     if (rho > outer + fw / R) return null;
     const cover = sstep(outer + fw / R, outer - fw / R, rho); // soft outer edge of the ring (1 px)
-    // the lid: skin covers the top of the iris down to its edge (a share of E); the edge is a soft curve
-    const vLid = R - e.lidOver + 0.06 * R * (1 - (u / R) * (u / R)) * 0;
-    const lidA = sstep(vLid - fw * 0.8, vLid + fw * 0.8, v);
+    // the lid: skin covers the top of the iris AND of the ring, as a crescent whose edge is the iris's own arc shifted down by the lid's reach (not a straight cut)
+    const lidA = e.lidOver > 1e-6 ? sstep(R - fw * 0.8, R + fw * 0.8, Math.hypot(u, (v + e.lidOver) / e.aspect)) * sstep(0.1 * R, 0.45 * R, v) : 0;
     // iris, in the plane: top darker, a lower crescent glow, a darker limbus
     const g = gaze[i], pu = u - g[0], pv = v - g[1], pr = Math.hypot(pu, pv / e.aspect), vn = v / R;
     let col = look.iris;
@@ -57,12 +56,12 @@ export function makePaint(scene, look, view) {
     col = mixc(col, look.pupil, pa); if (pa > 0.5) code = INK.pupil;
     // the ring: flat, close to the cream field in value
     const ia = sstep(1 + fw / R * 0.7, 1 - fw / R * 0.7, rho);
-    col = mixc(col, look.lid ?? look.body, lidA * 0.92 * ia); // the lid laps the iris only: the ring stays whole
-    col = mixc(look.ring, col, ia); if (ia < 0.5) code = INK.ring; else if (lidA > 0.5) code = INK.lid;
+    col = mixc(look.ring, col, ia); if (ia < 0.5) code = INK.ring;
+    col = mixc(col, look.lid ?? look.body, lidA * 0.92); if (lidA > 0.5) code = INK.lid; // skin over the top of the ring as well as the iris
     // the catch light: in screen space, one offset for both eyes (plan 3.2), on the iris and never on the lid
     const sa = wp[0] * rr[0] + wp[1] * rr[1] + wp[2] * rr[2] - view.org[0] - eyeW[i].a, sb = wp[0] * uu[0] + wp[1] * uu[1] + wp[2] * uu[2] - view.org[1] - eyeW[i].b;
-    const Rw = R, cr = Math.max(rf["catch-radius"] * Rw, minCatch), ca = Math.hypot(sa - co[0] * Rw, sb + co[1] * Rw);
-    const catchA = sstep(cr + pxw * 0.6, cr - pxw * 0.6, ca) * ia * (1 - lidA);
+    const Rw = R, cr = Math.max(rf["catch-radius"] * Rw, minCatch), cy = Math.min(-co[1] * Rw, 0.98 * R - e.lidOver - cr - 0.04 * R), ca = Math.hypot(sa - co[0] * Rw, sb - cy); // the catch light sits below the lid's edge, never cut by it
+    const catchA = sstep(cr + pxw * 0.6, cr - pxw * 0.6, ca) * ia;
     if (catchA > 0) { col = mixc(col, look.catchLight, catchA); if (catchA > 0.5) code = INK.catch; }
     col = scl(col, 1 - rf["brow-shadow"] * sstep(0.35, 1.0, v / e.Reye)); // the soft shadow under the brow, on the top of the eye
     return { col, cover, code, lid: lidA };
@@ -71,10 +70,16 @@ export function makePaint(scene, look, view) {
   function material(wp, nrm, region) {
     // region: "head" | "body" | "crest" | "leg" | "toe" | "seg" | "skirt" | "ant"
     let albedo = look.body, code = INK.body, eye = false, gloss = 1, spec = 0;
-    if (region === "crest") return { albedo: look.leaf, code: INK.leaf };
+    if (region === "crest") { // a leaf: its own colour, a lighter midrib down its centre, and a gloss (the master's leaves are glossy, each one separate)
+      const q = toLocal(hf, wp[0], wp[1], wp[2]); let best = null, br = 1e9;
+      for (const l of scene.extra.leaves) { const X = q[0] - l.c[0], Y = q[1] - l.c[1], Z = q[2] - l.c[2], f = l.f, u = (X * f.ax[0] + Y * f.ax[1] + Z * f.ax[2]) / (l.len / 2), v = X * f.aw[0] + Y * f.aw[1] + Z * f.aw[2], w = (X * f.an[0] + Y * f.an[1] + Z * f.an[2]) / (l.thick / 2), r = u * u + (v / (l.wid / 2)) ** 2 + w * w; if (r < br) { br = r; best = { u, v, l }; } }
+      const rib = best ? sstep(rf["leaf-rib-width"], rf["leaf-rib-width"] * 0.3, Math.abs(best.v)) * sstep(-0.95, -0.55, best.u) * (1 - sstep(0.5, 0.95, best.u)) : 0;
+      return { albedo: mixc(look.leaf, look.leafRib ?? look.cream, rib * rf["leaf-rib-strength"]), code: INK.leaf, spec: rf["leaf-gloss"], gloss: 1 };
+    }
     if (region === "ant") return { albedo: mixc(look.body, look.cream, 0.15), code };
     if (region === "toe") return { albedo: look.toe, code: INK.cream };
     if (region === "toecrease") return { albedo: mixc(look.toe, look.body, 0.75), code: INK.cream };
+    if (region === "leg") return { albedo: look.body, code };
     if (region === "skirt") return { albedo: look.skirt ?? look.body, code };
     if (region === "head") {
       const q = toLocal(hf, wp[0], wp[1], wp[2]), nl = [tl[0] * nrm[0] + tl[1] * nrm[1] + tl[2] * nrm[2], tl[3] * nrm[0] + tl[4] * nrm[1] + tl[5] * nrm[2], tl[6] * nrm[0] + tl[7] * nrm[1] + tl[8] * nrm[2]];

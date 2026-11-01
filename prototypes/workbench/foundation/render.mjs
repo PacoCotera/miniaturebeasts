@@ -40,14 +40,15 @@ const normTint = (t) => { const m = 0.2126 * t[0] + 0.7152 * t[1] + 0.0722 * t[2
 export function renderCreature(scene, camera, sizeKey, { ref, look, extents = null, ss = null, floor = true } = {}) {
   const L0 = performance.now(), house = scene.house, lt = house.light, B = cameraBasis(camera), rr = B.right, uu = B.up, tt = B.toward;
   const ex = extents ?? coarse(scene, camera, { n: 220 }), fr = framing(scene, camera, sizeKey, ref, ex), { W, H, scale } = fr, SSn = ss ?? SS[sizeKey];
-  const { c: cb, R } = sphereOf(scene.bounds), d = scene.d, eps = 0.0016 / Math.max(1, scale / 300 * 0 + 1);
+  const { c: cb, R } = sphereOf(scene.bounds), d = scene.d, dCast = scene.parts.core ?? d, // the cast shadow is the body's: a 1 px antenna's shadow would be an aliased hairline across the floor
+     eps = 0.0016 / Math.max(1, scale / 300 * 0 + 1);
   const paint = makePaint(scene, look, { scale, sizeKey, basis: B, org: [dot3(cb, rr), dot3(cb, uu)] });
   // the light: from the upper left, up by the elevation, a little toward the camera
   const az = (lt.key["azimuth-deg"] * Math.PI) / 180, el = (lt.key["elevation-deg"] * Math.PI) / 180;
   const Ls = [Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(el) * lt.key["toward-camera"] + Math.cos(el) * 0.4], Ll = Math.hypot(...Ls);
   const Lw = norm3([(rr[0] * Ls[0] + uu[0] * Ls[1] + tt[0] * Ls[2]) / Ll, (rr[1] * Ls[0] + uu[1] * Ls[1] + tt[1] * Ls[2]) / Ll, (rr[2] * Ls[0] + uu[2] * Ls[1] + tt[2] * Ls[2]) / Ll]);
   const Hv = norm3([Lw[0] + tt[0], Lw[1] + tt[1], Lw[2] + tt[2]]);
-  const keyN = normTint(lt.key.color), shadeN = normTint(lt.shade.tint), term = lt.terminator, occ = lt.occlusion, rim = lt.rim, vin = lt.vinyl;
+  const keyN = normTint(lt.key.color), shadeN = normTint(lt.shade.tint), warmN = normTint(lt.shade["light-tint"]), term = lt.terminator, occ = lt.occlusion, rim = lt.rim, vin = lt.vinyl;
   const dir = [-tt[0], -tt[1], -tt[2]];
   const ray = (a, b) => [cb[0] + rr[0] * a + uu[0] * b + tt[0] * R, cb[1] + rr[1] * a + uu[1] * b + tt[1] * R, cb[2] + rr[2] * a + uu[2] * b + tt[2] * R];
   const toAB = (fx, fy) => [fr.cx + (fx - W / 2) / scale, fr.bottom + (fr.feet + 1 - fy) / scale];
@@ -67,7 +68,9 @@ export function renderCreature(scene, camera, sizeKey, { ref, look, extents = nu
       if (region === "head" || region === "body" || region === "seg") { const wh = scene.headWeight(px, py, pz); if (wh > 0.001 && wh < 0.999) { const m2 = paint.material([px, py, pz], n, region === "head" ? (scene.plan === "D" ? "seg" : "body") : "head"), wa = region === "head" ? wh : 1 - wh; m = { ...m, albedo: [m.albedo[0] * wa + m2.albedo[0] * (1 - wa), m.albedo[1] * wa + m2.albedo[1] * (1 - wa), m.albedo[2] * wa + m2.albedo[2] * (1 - wa)] }; } }
       let al = m.albedo;
       const ndl = dot3(n, Lw), tl = sstep(-0.22, 0.5, ndl), ao = aoOf(px, py, pz, n);
-      const lit = [al[0] * keyN[0], al[1] * keyN[1], al[2] * keyN[2]], shade = [al[0] * lt.shade.ratio * shadeN[0], al[1] * lt.shade.ratio * shadeN[1], al[2] * lt.shade.ratio * shadeN[2]];
+      // a light field (the cream) keeps a warm shade, never grey (R14): the cool core shade fades to the warm light-field tint as the albedo's luma rises
+      const luma = 0.2126 * al[0] + 0.7152 * al[1] + 0.0722 * al[2], wl = sstep(lt.shade["warm-luma"][0], lt.shade["warm-luma"][1], luma), st = [shadeN[0] + (warmN[0] - shadeN[0]) * wl, shadeN[1] + (warmN[1] - shadeN[1]) * wl, shadeN[2] + (warmN[2] - shadeN[2]) * wl];
+      const lit = [al[0] * keyN[0], al[1] * keyN[1], al[2] * keyN[2]], shade = [al[0] * lt.shade.ratio * st[0], al[1] * lt.shade.ratio * st[1], al[2] * lt.shade.ratio * st[2]];
       let c = mixc(shade, lit, tl);
       const tb = Math.exp(-(((ndl - 0.06) / term.width) ** 2)) * term.strength;
       c = [c[0] + al[0] * term.tint[0] * tb * 0.8, c[1] + al[1] * term.tint[1] * tb * 0.8, c[2] + al[2] * term.tint[2] * tb * 0.8];
@@ -84,11 +87,11 @@ export function renderCreature(scene, camera, sizeKey, { ref, look, extents = nu
         if (Math.hypot(fxw - cb[0], fyw - cb[1]) < R * 1.1) {
           // the house cast shadow: soft, toward the lower right, strongest at the foot and fading with the length of the light ray (no slab running off the tile)
           let res = 1, tt2 = 0.03, hitT = lt.floor.reach;
-          for (let i = 0; i < 48; i++) { const h = d(fxw + Lw[0] * tt2, fyw + Lw[1] * tt2, Lw[2] * tt2); if (h < 0.002) { res = 0; hitT = tt2; break; } res = Math.min(res, (6 * h) / tt2); tt2 += clamp(h, 0.012, 0.18); if (tt2 > lt.floor.reach) break; }
-          const cast = (1 - clamp(res, 0, 1)) * (1 - sstep(0.35 * lt.floor.reach, lt.floor.reach, hitT));
+          for (let i = 0; i < 48; i++) { const h = dCast(fxw + Lw[0] * tt2, fyw + Lw[1] * tt2, Lw[2] * tt2); if (h < 0.002) { res = 0; hitT = tt2; break; } res = Math.min(res, (6 * h) / tt2); tt2 += clamp(h, 0.012, 0.18); if (tt2 > lt.floor.reach) break; }
+          const cast = (1 - clamp(res, 0, 1)) * (1 - sstep(0.2 * lt.floor.reach, 0.8 * lt.floor.reach, hitT));
           let co = 0; for (const r of [0.025, 0.07, 0.16]) co += clamp((r - d(fxw, fyw, r)) / r, 0, 1); co /= 3;
-          const al = Math.max(cast * lt.floor.alpha, co * lt.floor["contact-alpha"]) / 255;
-          if (al > 0.012) return [lt.floor.color[0], lt.floor.color[1], lt.floor.color[2], al, INK.body, -1];
+          const al0 = Math.max(cast * lt.floor.alpha, co * lt.floor["contact-alpha"]) / 255, al = al0 * sstep(0.03, 0.12, al0); // the penumbra's faint tail fades out: no hairline where the floor's disc ends
+          if (al > 0.004) return [lt.floor.color[0], lt.floor.color[1], lt.floor.color[2], al, INK.body, -1];
         }
       }
     }

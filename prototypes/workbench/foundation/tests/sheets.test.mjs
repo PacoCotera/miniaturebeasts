@@ -1,43 +1,46 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { sheet, tileLines } from "../sheets.mjs";
-import { wrapLine, wrapLines, checkLabels } from "../labels.mjs";
-import { blank, textWidth } from "../imgtools.mjs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import path from "node:path";
+import { sheet, sheetHtml, renderSheet, checkLayout, loadPlaywright, MIN_FONT_PX } from "../page.mjs";
+import { tileLines } from "../sheets.mjs";
+import { blank } from "../imgtools.mjs";
+import { WORKBENCH } from "../paths.mjs";
 
-const BG = [246, 243, 236], pic = (w, h) => blank(w, h, [90, 90, 90]);
-const lines = (...t) => t.map((x) => [x, [20, 18, 24]]);
+const pic = (w, h) => blank(w, h, [90, 90, 90]);
+const long = [["H/S 0.52, eye t 0.9", "name"], ["Outside the house", "bad"], ["Breaks eye share, face stack, far eye, head breadth, nose at eye", "bad"], ["H/S 0.52, E/W 0.32, share 0.245", "dim"]];
+const havePw = (() => { try { return existsSync(path.join(process.env.PW_HOME ?? path.join(process.env.HOME, "pw156"), "node_modules/playwright")); } catch { return false; } })();
 
-test("a label is wrapped to its column, word by word, and never wider than it", () => {
-  for (const w of [120, 192, 260, 304]) for (const l of wrapLine("BREAKS EYE SHARE, FACE STACK, FAR EYE, HEAD BREADTH, NOSE AT EYE", w, 2)) assert.ok(textWidth(l, 2) <= w, `${l} at ${w}`);
-  assert.deepEqual(wrapLine("A B", 200, 2), ["A B"]);
+test("a sheet is an HTML page: real text labels at 14 px or more in a system sans, pictures as <img> with their pixels kept", () => {
+  const spec = sheet("A title", [{ pics: [[{ img: pic(96, 88), scale: 2 }]], lines: long }], 1), files = [], { html } = sheetHtml(spec, "x-img", files);
+  assert.match(html, /DejaVu Sans/); assert.match(html, /image-rendering:pixelated/); assert.match(html, /<span class="l bad">Outside the house<\/span>/);
+  assert.match(html, /width="192" height="176"/); assert.equal(files.length, 1);
+  assert.ok(MIN_FONT_PX >= 14); assert.ok(!/font:\s*\d+px/.test(html.replace('font:14px/1.35', '')), "one body size, set at 14");
 });
-test("a word that cannot fit its column, or a label of too many lines, fails loudly", () => {
-  assert.throws(() => wrapLine("SUPERCALIFRAGILISTIC", 100, 2), /column is 100/);
-  assert.throws(() => wrapLines(lines("ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN ELEVEN TWELVE"), 60, 2, 3), /max 3/);
+test("checkLayout refuses a label wider than its column, two overlapping labels, a label over a picture, a label under 14 px and one off the page", () => {
+  const L = { x: 20, y: 20, w: 200, h: 40, text: "A", scrollW: 200, font: 14, col: { x: 16, y: 10, w: 240, h: 300 } }, ok = { labels: [L, { ...L, y: 80, text: "B" }], titles: [], imgs: [{ x: 16, y: 130, w: 100, h: 100 }], page: { w: 400, h: 400, scrollW: 400 } };
+  assert.ok(checkLayout(ok));
+  assert.throws(() => checkLayout({ ...ok, labels: [{ ...L, scrollW: 260 }] }), /wider than its column/);
+  assert.throws(() => checkLayout({ ...ok, labels: [L, { ...L, y: 50, text: "B" }] }), /overlaps/);
+  assert.throws(() => checkLayout({ ...ok, imgs: [{ x: 16, y: 50, w: 100, h: 100 }] }), /overlaps a picture/);
+  assert.throws(() => checkLayout({ ...ok, labels: [{ ...L, font: 12 }] }), /12px/);
+  assert.throws(() => checkLayout({ ...ok, labels: [{ ...L, x: 380, col: { x: 300, y: 0, w: 200, h: 300 } }] }), /leaves the page/);
+  assert.throws(() => checkLayout({ ...ok, labels: [{ ...L, x: 10 }] }), /crosses its column/);
 });
-test("checkLabels refuses overlapping boxes, a label across its column and one off the sheet", () => {
-  const ok = { x: 10, y: 10, w: 50, h: 10, x0: 0, x1: 100, what: "A" };
-  assert.ok(checkLabels([ok, { ...ok, y: 30, what: "B" }], 200, 100));
-  assert.throws(() => checkLabels([ok, { ...ok, x: 40, what: "B" }], 200, 100), /overlaps/);
-  assert.throws(() => checkLabels([{ ...ok, x: 70 }], 200, 100), /crosses its column/);
-  assert.throws(() => checkLabels([{ ...ok, x: 190, x0: 0, x1: 300 }], 200, 100), /leaves the sheet/);
-});
-test("a sheet's labels never overlap and never cross their column: boxes by construction, pixels by reading the gutters", () => {
-  const long = lines("H/S 0.52, EYE T 0.9", "OUTSIDE THE HOUSE", "BREAKS EYE SHARE, FACE STACK, FAR EYE", "H/S 0.52 E/W 0.32 SHARE 0.245");
-  for (const [cols, cw] of [[4, 304], [3, 260], [3, 192], [2, 304]]) {
-    const cells = Array.from({ length: 2 * cols }, () => ({ img: pic(cw, 100), lines: long })), img = sheet("A LONG TITLE FOR THE SHEET THAT HAS TO WRAP ONTO A SECOND LINE WHEN THE SHEET IS NARROW", cells, cols, { cellW: cw, maxLines: 7 });
-    assert.ok(img.labels.length > 0 && checkLabels(img.labels, img.width, img.height));
-    const { gap, labelH, head, ch, rows, vg } = img.layout;
-    for (let r = 0; r < rows; r++) for (let c = 0; c <= cols; c++) { // the gutter left of column c, over the label rows: bare background
-      const x0 = c === 0 ? 0 : gap + c * (cw + gap) - gap, x1 = c === 0 ? gap : gap + c * (cw + gap), y0 = head + r * (ch + labelH + vg);
-      for (let y = y0; y < y0 + labelH; y++) for (let x = x0; x < x1; x++) { const i = (y * img.width + x) * 4; assert.deepEqual([img.data[i], img.data[i + 1], img.data[i + 2]], BG, `ink in the gutter at ${x},${y}`); }
+test("the page's own layout fits long labels to the column in every column count we use, and the check passes on what the browser laid out", { skip: !havePw && "Playwright (~/pw156) is not installed" }, async () => {
+  const dir = mkdtempSync(path.join(WORKBENCH, "out", "sheet-test-")), pw = await loadPlaywright();
+  try {
+    for (const [cols, cw] of [[4, 304], [3, 260], [3, 192], [2, 304]]) {
+      const cells = Array.from({ length: 2 * cols }, () => ({ pics: [[{ img: pic(Math.min(cw, 120), 100) }], [{ img: pic(40, 40), scale: 2 }]], lines: long })), r = await renderSheet(sheet("A long title for the sheet that has to wrap onto a second line when the sheet is narrow", cells, cols, { cellW: cw }), dir, `t${cols}-${cw}`, pw);
+      assert.ok(r.layout.labels.length === cells.length && r.layout.labels.every((l) => l.font >= 14 && l.scrollW <= l.w + 0.5));
+      assert.ok(existsSync(r.png) && existsSync(r.html) && readFileSync(r.png).length > 1000, "the HTML is kept beside the PNG");
     }
-    for (let y = 0; y < img.height; y++) for (const x of [img.width - 1]) assert.deepEqual([img.data[(y * img.width + x) * 4]], [246], "the right edge is bare");
-  }
+    await assert.rejects(renderSheet(sheet("t", [{ pics: [[{ img: pic(40, 40) }]], lines: [["Supercalifragilisticexpialidociousnonbreakingword", "name"]] }], 1, { cellW: 100 }), dir, "toolong", pw), /crosses its column|wider than its column/, "a word that cannot fit is an error, never a smudge");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
-test("a tile's label: the name and the verdict, the numbers only if they fit", () => {
-  const t = { label: "H/S 0.52, EYE T 0.9", measured: { "H/S": 0.52, "E/Wf": 0.3, "eye-share": 0.245 }, fails: [{ id: "R1-face", value: 0.245, range: [0.16, 0.24] }, { id: "R4-stack" }, { id: "R-far-eye" }] };
-  const l = tileLines(t, 304); assert.equal(l[0][0], "H/S 0.52, EYE T 0.9"); assert.equal(l[1][0], "OUTSIDE THE HOUSE"); assert.match(l[2][0], /^BREAKS FACE STACK, FAR EYE/);
-  const narrow = tileLines({ ...t, fails: [] }, 150); assert.ok(!narrow.some((x) => x[0].startsWith("H/S 0.52 E/W")), "numbers are dropped when they do not fit");
-  assert.equal(tileLines({ ...t, fails: [] }, 304).at(-1)[0].startsWith("H/S"), true);
+test("a tile's label: the name, the verdict in plain words, then the numbers", () => {
+  const t = { label: "H/S 0.52, eye t 0.9", measured: { "H/S": 0.52, "E/Wf": 0.3, "eye-share": 0.245 }, fails: [{ id: "R1-face", value: 0.245, range: [0.16, 0.24] }, { id: "R4-stack" }, { id: "R-far-eye" }] };
+  const l = tileLines(t); assert.equal(l[0][0], "H/S 0.52, eye t 0.9"); assert.equal(l[1][0], "Outside the house"); assert.equal(l[2][0], "Breaks face stack"); assert.match(l[3][0], /^H\/S 0.52, E\/W 0.30, share 0.245$/);
+  assert.equal(tileLines({ ...t, fails: [] })[1][0], "Passes the house");
+  assert.match(tileLines({ ...t, fails: Array.from({ length: 5 }, (_, i) => ({ id: `Rx${i}` })) })[1][0], /^Breaks 5 rules$/);
 });

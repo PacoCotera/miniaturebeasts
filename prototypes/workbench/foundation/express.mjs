@@ -37,7 +37,7 @@ export function express(house0, specimen, { t = {}, seed = specimen.seed ?? spec
   // the rig's measures (H units) and the plan's rule inputs
   const hm = scene.head.measures;
   const rigm = { ...hm, S: scene.S, Wf: hm.W, yawBody: pose.yawBody, yawFace: pose.yawFace, yawHead: pose.yawHead, roll: Math.abs(pose.roll), pitch: pose.pitch, headBreadth: headBreadth(hw, cam), farEyeInside: farEyeInside(hw, cam), noseFarEye: noseFarEyeGap(hw, cam) };
-  if (plan === "D") rigm.T = body.thick; if (plan === "A") { rigm.backGap = scene.S - scene.extra.zBack; rigm.chinOverhang = chinOverhang(scene) ?? undefined; rigm.napeDip = napeDip(scene); }
+  if (plan === "D") rigm.T = body.thick; if (plan === "A") { rigm.backGap = scene.S - scene.extra.zBack; const aligned = buildScene(house, { plan, kinds: specimen.kinds, fp, body, pose: { ...pose, headYawSigned: 0, rollSigned: 0 } }); rigm.chinOverhang = chinOverhang(aligned) ?? undefined; rigm.napeDip = napeDip(aligned); } // the profile rules read the build, not the pose: the head square on the body
   rigm.eyeShare = eyeShare(scene, pose);
   const ts = {}; for (const g of Object.values(FP_GENES)) if (house.resolved[plan][g]) ts[g] = tOf(g);
   rigm.featuresPushed = featuresPushed(ts);

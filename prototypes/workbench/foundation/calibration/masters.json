@@ -2,6 +2,7 @@
   "note": "Day 1 of chunk 1: the masters read by eye at 304 (a grid over each picture, 3 to 5 times enlarged). Every number is in pixels of the 304 x 312 image, read to about +-2 px. Yaws are estimates from the foreshortening of the far eye and of the body. 'exclude' lists the boxes (x0, y0, x1, y1) that the core silhouette leaves out: headgear, tail, wings and antennae (plan 2.6). The annotations are the measurement; calibration.mjs turns them into the table.",
   "masters": [
     { "id": "S01", "name": "Loika", "plan": "A", "headKind": "soft-block",
+   "noseKind": "mound",
       "file": "mp/art/station-masters/pods/adult/mibi-adult-S01-304x312.png",
       "floor": 298, "crown": 93, "headBottom": 198, "headX": [20, 196],
       "eyeNear": { "cx": 125, "cy": 146, "w": 41, "h": 39 }, "eyeFar": { "cx": 42.5, "cy": 128, "w": 17, "h": 38 },

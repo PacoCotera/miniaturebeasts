@@ -15,13 +15,13 @@
         "exponent": 2.0
       },
       "bean": {
-        "exponent": 2.2
+        "exponent": 2.7
       },
       "soft-block": {
-        "exponent": 3.0
+        "exponent": 2.7
       },
       "pear": {
-        "exponent": 2.2
+        "exponent": 2.7
       },
       "onion": {
         "exponent": 2.0
@@ -1550,6 +1550,9 @@
       "mouth-tube": 0.02,
       "nose-gloss": 1.15,
       "nose-highlight": 0.7,
+      "leaf-rib-width": 0.02,
+      "leaf-rib-strength": 0.55,
+      "leaf-gloss": 0.3,
       "mouth-soften": 0.012,
       "cheek-widen": 0.25,
       "cheek-eye": 0.3,
@@ -1618,33 +1621,14 @@
           0.44
         ],
         "leaves": [
-          [
-            -0.2,
-            0.5,
-            0.28,
-            -52
-          ],
-          [
-            0.0,
-            0.72,
-            0.4,
-            -5
-          ],
-          [
-            0.25,
-            0.55,
-            0.3,
-            50
-          ]
+          [-0.2, 0.5, 0.2, -58, 0.14, -30],
+          [0.0, 0.7, 0.26, -4, -0.04, 0],
+          [0.25, 0.54, 0.22, 54, 0.16, 32]
         ],
         "thick": 0.05
       },
-      "toe-radii": [
-        0.08,
-        0.095,
-        0.105
-      ],
-      "toe-reach": 0.62,
+      "toe-radii": [0.09, 0.105, 0.12],
+      "toe-reach": 0.68,
       "paw-turn": 12
     },
     "D": {
@@ -1653,12 +1637,7 @@
       "seg-x0": -0.55,
       "seg-step": 0.37,
       "seg-rx": 0.34,
-      "seg-radius": [
-        0.38,
-        0.3,
-        0.23,
-        0.15
-      ],
+      "seg-radius": [0.45, 0.38, 0.3, 0.22],
       "skirt": [
         0.95,
         0.5,
@@ -1693,7 +1672,7 @@
         ]
       ],
       "seg-overlap": 0.78,
-      "neck-union": 0.2,
+      "neck-union": 0.3,
       "antenna-collar": 0.05
     },
     "ink": {
@@ -1728,6 +1707,8 @@
     },
     "shade": {
       "ratio": 0.58,
+      "light-tint": [1.06, 0.96, 0.82],
+      "warm-luma": [150, 205],
       "tint": [
         0.96,
         0.97,
@@ -1774,7 +1755,7 @@
       ],
       "alpha": 110,
       "contact-alpha": 170,
-      "reach": 1.6
+      "reach": 1.1
     }
   }
 }

@@ -44,7 +44,7 @@ export function calibrate(house = loadHouseFile()) {
   const rows = [];
   for (const m of loadMasters().masters) {
     const img = loadImage(path.join(MB_HOME, m.file)), r = measureMaster(m, img), measured = measureAll(r);
-    rows.push({ id: m.id, name: m.name, plan: m.plan, raw: r, measured, rules: checkRules(house, m.plan, measured), notes: m.notes });
+    rows.push({ id: m.id, name: m.name, plan: m.plan, raw: r, measured, rules: checkRules(house, m.plan, measured, { kinds: m.noseKind ? { nose: m.noseKind } : null }), notes: m.notes });
   }
   return rows;
 }
@@ -69,11 +69,11 @@ export function toMarkdown(rows, house) {
 
 // the type specimens as the house builds them, against the master each was read from
 export function specimenTable(house, rows) {
-  const sp = loadSpecimens(house), keys = ["H/S", "H/T", "W/H", "E/Wf", "eye-drop/H", "spacing/E", "forehead/H", "eye-to-mouth/H", "nose-w/E", "nose-drop/E", "mouth-w/E", "eye-share", "yaw-body", "yaw-face", "yaw-head", "roll"];
+  const sp = loadSpecimens(house), keys = ["H/S", "H/T", "W/H", "E/Wf", "eye-drop/H", "spacing/E", "forehead/H", "eye-to-mouth/H", "nose-w/E", "nose-drop/E", "mouth-w/E", "eye-share", "yaw-body", "yaw-face", "yaw-head", "roll", "head-breadth/H", "far-eye-inside/H", "nose-far-eye/H", "chin-overhang/H", "nape-dip/H"];
   const L = ["", "## The type specimens, as the house builds them, against their masters", "", `| value | ${Object.keys(sp).map((id) => `${id} master | ${id} house build`).join(" | ")} |`, `| --- | ${Object.keys(sp).map(() => "--- | ---").join(" | ")} |`];
   const built = Object.fromEntries(Object.keys(sp).map((id) => [id, express(house, sp[id]).measured]));
   for (const k of keys) { const cells = Object.keys(sp).map((id) => { const m = rows.find((r) => r.id === id).measured[k], b = built[id][k]; return `${f(m, 2)} | ${f(b, 2)}`; }); if (cells.every((c) => c === "- | -")) continue; L.push(`| ${k} | ${cells.join(" | ")} |`); }
-  const R = Object.keys(sp).flatMap((id) => { const e = express(house, sp[id]); return checkRules(house, sp[id].plan, e.measured).filter((x) => x.on && x.status === "FAIL").map((x) => `${id} ${x.id} (${x.measure} ${f(x.value, 3)}, band ${x.range[0] ?? ""} to ${x.range[1] ?? ""})`); });
+  const R = Object.keys(sp).flatMap((id) => { const e = express(house, sp[id]); return checkRules(house, sp[id].plan, e.measured, { kinds: sp[id].kinds }).filter((x) => x.on && x.status === "FAIL").map((x) => `${id} ${x.id} (${x.measure} ${f(x.value, 3)}, band ${x.range[0] ?? ""} to ${x.range[1] ?? ""})`); });
   L.push("", "House build rule failures at the type specimen (the render-level rules are in the sheets' labels): " + (R.length ? R.join("; ") : "none") + ".", "");
   return L.join("\n");
 }
