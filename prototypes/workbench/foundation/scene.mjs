@@ -29,16 +29,21 @@ export function buildScene(house, spec) {
     const cr = [rig["chest-rx"], 0.5 * rig["chest-width-of-W"] * W, rz], cc = [rig["chest-x"], 0, zc];
     const pr = cr.map((v) => v * rig["pelvis-share"]), pc = [cc[0] - rig["pelvis-gap"], 0, zc - 0.03];
     const dC = ell(cc, cr), dP = ell(pc, pr), uB = rig["union-body"];
-    const legR = rig["leg-radius"], pawR = rig.paw, toeR = rig.toe, nToe = rig["toe-count"], stance = rig["stance-width-of-chest"];
-    const legs = [];
+    const legR = rig["leg-radius"], pawR = rig.paw, nToe = rig["toe-count"], stance = rig["stance-width-of-chest"];
+    const legs = [], turn = rad(rig["paw-turn"]), tr = rig["toe-radii"];
     for (const [fore, cx, mass, rr] of [[true, cc[0] + rig["fore-x"], rig.shoulder, cr], [false, pc[0] + rig["hind-x"], rig.hip, pr]]) for (const sd of [1, -1]) {
       const y = sd * rr[1] * stance, lead = fore && sd === 1 ? rig["lead-paw"] : 0, px = cx + lead + (fore ? 0.02 : -0.04);
-      const sh = ell([cx, y * 1.02, zc - 0.1], mass), top = [cx, y, zc - 0.1], ank = [px, y, pawR[2] * 1.6];
-      const paw = ell([px + 0.06, y, pawR[2]], pawR), toes = [];
-      for (let i = 0; i < nToe; i++) { const a = ((i - (nToe - 1) / 2) * 0.62), tx = px + 0.06 + Math.cos(a) * pawR[0] * 0.9, ty = y + Math.sin(a) * pawR[1] * 0.95; toes.push([tx, ty, toeR * 0.85]); }
-      const dToes = (x, yy, z) => { let d = 1e9; for (const t of toes) d = Math.min(d, sdEllipsoid(x - t[0], yy - t[1], z - t[2], toeR * 1.05, toeR, toeR * 0.9)); return d; };
-      const dLeg = (x, yy, z) => { let d = sdRoundCone(x, yy, z, top[0], top[1], top[2], ank[0], ank[1], ank[2], legR * 1.08, legR * 0.92); d = uRound(d, sh(x, yy, z), 0.12); d = uRound(d, paw(x, yy, z), 0.07); return sMin(d, dToes(x, yy, z), 0.035); };
-      legs.push({ fore, side: sd, toes, dToes, d: bounded([cx, y, 0.55], 0.75, 0.2, dLeg) });
+      const sh = ell([cx, y * 1.02, zc - 0.1], mass), top = [cx, y, zc - 0.1], ank = [px, y, pawR[2] * 1.7];
+      // the bean paw: its own chubby mass, wider than the leg (1.3 to 1.5 x), flat on the floor, its front turned a little out; the toes are three soft beans
+      // that bulge out of the front edge and the top of the foot (never under it), a soft crease between each, unioned with a small blend
+      const fwd = [Math.cos(turn * sd), Math.sin(turn * sd)], lat = [-fwd[1], fwd[0]], pc0 = [px + 0.05 * fwd[0], y + 0.05 * fwd[1]];
+      const pawF = frameOf([pc0[0], pc0[1], pawR[2]], Rz(turn * sd)), paw = (x, yy, z) => { const q = toLocal(pawF, x, yy, z); return sdEllipsoid(q[0], q[1], q[2], pawR[0], pawR[1], pawR[2]); };
+      const toes = [];
+      for (let i = 0; i < nToe; i++) { const a = (i - (nToe - 1) / 2) * 0.58, reach = pawR[0] * rig["toe-reach"] * Math.cos(a * 0.6), side = pawR[1] * 0.78 * Math.sin(a * 1.1) * 1.25, big = i === (nToe - 1) / 2 ? 1.12 : 1; toes.push({ c: [pc0[0] + fwd[0] * reach + lat[0] * side, pc0[1] + fwd[1] * reach + lat[1] * side, tr[2] * 1.05 + 0.02], r: [tr[0] * big, tr[1] * big, tr[2] * big], R: Rz((turn + a * 0.5) * sd) }); }
+      const toeF = toes.map((t) => ({ f: frameOf(t.c, t.R), r: t.r }));
+      const dToes = (x, yy, z) => { let d = 1e9; for (const t of toeF) { const q = toLocal(t.f, x, yy, z); d = Math.min(d, sdEllipsoid(q[0], q[1], q[2], t.r[0], t.r[1], t.r[2])); } return d; };
+      const dLeg = (x, yy, z) => { let d = sdRoundCone(x, yy, z, top[0], top[1], top[2], ank[0], ank[1], ank[2], legR * 1.08, legR * 0.95); d = uRound(d, sh(x, yy, z), 0.12); d = uRound(d, paw(x, yy, z), 0.16); return sMin(d, dToes(x, yy, z), 0.022); };
+      legs.push({ fore, side: sd, toes, dToes, dPaw: paw, d: bounded([cx, y, 0.55], 0.8, 0.2, dLeg) });
     }
     const dTorso = (x, y, z) => uRound(dC(x, y, z), dP(x, y, z), 0.25);
     dBody = (x, y, z) => { let d = dTorso(x, y, z); for (const l of legs) d = uRound(d, l.d(x, y, z), uB); return d; };
@@ -64,7 +69,7 @@ export function buildScene(house, spec) {
     parts.all = dAll; parts.core = dHeadBody;
     regionOf = (x, y, z) => {
       if (dCrestB(x, y, z) < 0.012 && dCrestB(x, y, z) < dHeadW(x, y, z)) return "crest";
-      if (z < 0.3) for (const l of legs) if (l.dToes(x, y, z) < 0.012) return "toe";
+      if (z < 0.4) for (const l of legs) { const dt = l.dToes(x, y, z); if (dt < 0.014 && dt <= l.dPaw(x, y, z) + 0.004) return "toe"; }
       const dh = dHeadW(x, y, z), db = dNoHead(x, y, z);
       return dh <= db + 0.02 ? "head" : "body";
     };

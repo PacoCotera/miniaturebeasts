@@ -82,9 +82,10 @@ export function renderCreature(scene, camera, sizeKey, { ref, look, extents = nu
       const tf = -o[2] / dir[2]; if (tf > 0 && tf < 2 * R) {
         const fxw = o[0] + dir[0] * tf, fyw = o[1] + dir[1] * tf;
         if (Math.hypot(fxw - cb[0], fyw - cb[1]) < R * 1.1) {
-          let res = 1, tt2 = 0.03;
-          for (let i = 0; i < 44; i++) { const h = d(fxw + Lw[0] * tt2, fyw + Lw[1] * tt2, Lw[2] * tt2); if (h < 0.002) { res = 0; break; } res = Math.min(res, (7 * h) / tt2); tt2 += clamp(h, 0.012, 0.2); if (tt2 > 4) break; }
-          const cast = 1 - clamp(res, 0, 1);
+          // the house cast shadow: soft, toward the lower right, strongest at the foot and fading with the length of the light ray (no slab running off the tile)
+          let res = 1, tt2 = 0.03, hitT = lt.floor.reach;
+          for (let i = 0; i < 48; i++) { const h = d(fxw + Lw[0] * tt2, fyw + Lw[1] * tt2, Lw[2] * tt2); if (h < 0.002) { res = 0; hitT = tt2; break; } res = Math.min(res, (6 * h) / tt2); tt2 += clamp(h, 0.012, 0.18); if (tt2 > lt.floor.reach) break; }
+          const cast = (1 - clamp(res, 0, 1)) * (1 - sstep(0.35 * lt.floor.reach, lt.floor.reach, hitT));
           let co = 0; for (const r of [0.025, 0.07, 0.16]) co += clamp((r - d(fxw, fyw, r)) / r, 0, 1); co /= 3;
           const al = Math.max(cast * lt.floor.alpha, co * lt.floor["contact-alpha"]) / 255;
           if (al > 0.012) return [lt.floor.color[0], lt.floor.color[1], lt.floor.color[2], al, INK.body, -1];

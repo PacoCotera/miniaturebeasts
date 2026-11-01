@@ -1535,36 +1535,36 @@
     },
     "A": {
       "provisional": "chunk 1 builds the quadruped's body only to judge proportion; chunk 2 replaces the legs, the stance and these numbers",
-      "back-drop": 0.45,
-      "belly-share": 0.22,
-      "chest-x": -0.45,
-      "chest-rx": 0.52,
-      "chest-width-of-W": 0.82,
-      "pelvis-gap": 0.56,
-      "pelvis-share": 0.95,
-      "union-neck": 0.22,
-      "union-body": 0.18,
+      "back-drop": 0.5,
+      "belly-share": 0.13,
+      "chest-x": -0.28,
+      "chest-rx": 0.62,
+      "chest-width-of-W": 0.95,
+      "pelvis-gap": 0.78,
+      "pelvis-share": 0.9,
+      "union-neck": 0.12,
+      "union-body": 0.14,
       "shoulder": [
         0.3,
         0.2,
-        0.42
+        0.4
       ],
       "hip": [
         0.34,
         0.22,
-        0.42
+        0.4
       ],
-      "leg-radius": 0.24,
+      "leg-radius": 0.23,
       "paw": [
-        0.38,
-        0.31,
-        0.13
+        0.46,
+        0.37,
+        0.14
       ],
       "toe": 0.1,
       "toe-count": 3,
-      "lead-paw": 0.12,
+      "lead-paw": 0.1,
       "fore-x": 0.34,
-      "hind-x": -0.0,
+      "hind-x": 0.0,
       "stance-width-of-chest": 0.9,
       "crest": {
         "root": [
@@ -1593,7 +1593,14 @@
           ]
         ],
         "thick": 0.05
-      }
+      },
+      "toe-radii": [
+        0.125,
+        0.108,
+        0.09
+      ],
+      "toe-reach": 0.8,
+      "paw-turn": 12
     },
     "D": {
       "provisional": "the snail's body: four soft segments on a foot skirt, a round head raised on them",
@@ -1712,7 +1719,8 @@
         34
       ],
       "alpha": 110,
-      "contact-alpha": 150
+      "contact-alpha": 170,
+      "reach": 1.6
     }
   }
 }
