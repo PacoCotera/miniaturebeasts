@@ -60,8 +60,12 @@ export function headSizeSheet(house, spec, outDir) {
   for (const [et, open] of [[et1, false], [EYE_OUT, true]]) {
     cells.push(masterCell("S01", "Loika", open ? `Row 2: eye t ${et}, clamps off, outside the house` : "Row 1: the master's eye (E/Wf 0.30)"));
     for (const hs of HEAD_SIZES) {
-      const t = makeTile(house, spec, { t: { "form.head": tAt(hb, hs), "form.eye-size": et }, label: open ? `H/S ${hs.toFixed(2)}, eye t ${et}` : `H/S ${hs.toFixed(2)}, the master's eye (E/Wf 0.30)`, clamps: !open, shareClamp: !open, outside: open });
-      tiles.push({ hs, et, tile: t }); cells.push({ pics: tilePics(t.r), lines: tileLines(t) });
+      const mk = (e, label, sizes) => makeTile(house, spec, { t: { "form.head": tAt(hb, hs), "form.eye-size": e }, label, clamps: !open, shareClamp: !open, outside: open, sizes });
+      let e1 = et, label = open ? `H/S ${hs.toFixed(2)}, eye t ${et}` : `H/S ${hs.toFixed(2)}, the master's eye (E/Wf 0.30)`;
+      // AD fix round 5, ruling 2: a tile whose iris is under the house's 96 px floor with the master's eye raises its eye, inside R3's band and no further than it must, and says so
+      if (!open) { const floor = house.rules.find((r) => r.id === "R15-iris-96").plans.A[0], iris = (e) => mk(e, "", [96, 48]).rig.px[96]?.iris ?? 0; if (iris(e1) < floor) { while (e1 < 1 && iris(e1) < floor) e1 = Math.min(1, e1 + 0.05); const r = mk(e1, "", [96, 48]); label = `H/S ${hs.toFixed(2)}, eye raised to E/W ${f2(r.measured["E/Wf"])} to hold the iris at 96`; } }
+      const t = mk(e1, label);
+      tiles.push({ hs, et: e1, tile: t }); cells.push({ pics: tilePics(t.r), lines: tileLines(t) });
       saveTile(path.join(outDir, "tiles"), `loika-hs${Math.round(hs * 100)}-eye${Math.round(et * 100)}`, t);
     }
   }

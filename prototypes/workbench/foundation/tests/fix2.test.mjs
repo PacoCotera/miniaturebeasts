@@ -29,13 +29,13 @@ test("the nose is a skin mound on a round muzzle, not a bill: low relief, wider 
   assert.ok(h.nose.r[1] > h.nose.r[2], "wider than tall");
   assert.ok(h.nose.frame.n[2] > 0.3, "the nose's axis is tilted up, not the surface normal on the lower front");
   const E = h.measures.E; assert.ok(h.M.r[1] * 2 - h.nose.r[1] * 2 >= 0.6 * E - 1e-9, "the muzzle is at least 0.3 E wider than the nose on each side");
-  assert.ok(m["mouth-w/E"] >= m["nose-w/E"] + 0.3 - 1e-9, `mouth ${m["mouth-w/E"]} nose ${m["nose-w/E"]}`);
+  assert.ok(Math.abs(m["mouth-w/E"] - 0.83) <= 0.12, `the smile is the master's (0.83 E, measured in the head's frame): ${m["mouth-w/E"]}`);
 });
 test("the smile: the cream's top edge is the mouth line (0.01 H, soft 0.015) and its near edge falls away from the mouth corner, the gap has the floor of 0.25 E, the mouth corners curl up", () => {
   const ch = sp.S01.look.creamHead, h = loika.scene.head, pts = h.mouth.pts;
   assert.ok(ch.below <= 0.01 && ch.soft <= 0.015 && ch.fall > 0 && !("cheek-rise" in ch), "the cheek rise is withdrawn: the edge falls, it does not climb");
   assert.ok(m["nose-mouth/E"] >= 0.25 - 1e-9, `nose to smile ${m["nose-mouth/E"]} E`);
-  assert.ok(m["mouth-w/E"] >= m["nose-w/E"] + 0.3 - 1e-9, "the smile is the nose's width plus 0.3 E");
+  assert.ok(Math.abs(m["mouth-w/E"] - 0.83) <= 0.12, "the smile is the master's width, 0.83 E; the nose-plus-0.3 floor is withdrawn (AD fix round 5, ruling 1a)");
   const slope = (a, b) => (b[2] - a[2]) / Math.abs(b[1] - a[1]), end = slope(pts[pts.length - 2], pts[pts.length - 1]), mid = slope(pts[7], pts[8]);
   assert.ok(end > mid + 0.45, `the last segment climbs (${end.toFixed(2)}) beyond the parabola's own rise (${mid.toFixed(2)})`);
 });
@@ -50,7 +50,7 @@ test("the feet: round paws wider than the wrist, the leg tapers toward the paw, 
   const r = house.rig.A, L = r.fore;
   assert.ok(L.r[1] < L.r[0], "the leg tapers from the shoulder to the paw");
   const ratio = (r.paw[1] * 2) / (L.r[1] * 2); assert.ok(ratio >= 1.25 && ratio <= 1.7, `the paw is 1.25 to 1.7 x the wrist: ${ratio}`);
-  const tr = r["toe-radii"]; assert.ok(Math.abs(tr[2] - tr[1]) / tr[1] <= 0.25 && tr[1] <= 0.6 * 0.062 + 0.006 && r["paw"][2] >= 0.08 && r["toe-reach"] <= 0.65, "fix round 4, must-fix 5: toes about as wide as tall and about 0.6 of fix 3's size, tucked under the dome's front curve (about 0.6)");
+  const tr = r["toe-radii"]; assert.ok(Math.abs(tr[2] - tr[1]) / tr[1] <= 0.25 && tr[1] >= 1.3 * 0.038 - 0.004 && tr[1] <= 0.06 && r["paw"][2] >= 0.08 && r["toe-reach"] <= 0.65, "fix round 5, must-fix 7: three round beans as tall as wide, about 1.3 x fix 4's size (0.038), tucked under the dome's front curve (about 0.6)");
   assert.ok(r["toe-crease"] > 0);
   const l = loika.scene.extra.legs[0], t0 = l.toes[0], t1 = l.toes[1], mid = [(t0.c[0] + t1.c[0]) / 2, (t0.c[1] + t1.c[1]) / 2, (t0.c[2] + t1.c[2]) / 2];
   assert.ok(l.toeCrease(...mid) < r["toe-crease"] * loika.scene.S * 4, "between two toes the two fields are near equal: a crease");

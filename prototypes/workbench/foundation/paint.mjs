@@ -34,8 +34,8 @@ export function makePaint(scene, look, view) {
   const faceCreamAt = (q, nl) => {
     const ch = look.creamHead; if (!ch) return 0;
     const hw = mouth.w / 2, ay = Math.abs(q[1]), fall = q[1] * nearSign > 0 ? ch.fall : (ch["fall-far"] ?? ch.fall), zb = (ay <= hw ? mouth.zAt(ay) : mouth.zAt(hw) - fall * (ay - hw)) - ch.below; // the far side's edge falls less: the cream reaches the outline under the snout
-    const front = Math.max(sstep(-0.1, 0.3, q[0] / scene.head.K.a), sstep(0.1, 0.5, -nl[2])), reach = sstep(ch.reach[0], ch.reach[1], head.d0(q[0], q[1], q[2]));
-    return sstep(zb + ch.soft, zb - ch.soft, q[2]) * front * reach;
+    const front = Math.max(sstep(-0.1, 0.3, q[0] / scene.head.K.a), sstep(0.1, 0.5, -nl[2]));
+    return sstep(zb + ch.soft, zb - ch.soft, q[2]) * front; // gated by the mouth line and the fall only (AD fix round 5, must-fix 2): head and neck are one surface to it, so no seam is left under the smile
   };
   function creamBodyAt(wp, nrm) {
     const cb = look.creamBody; if (!cb) return 0;
@@ -97,7 +97,7 @@ export function makePaint(scene, look, view) {
       // the nose: its own ink (darker), set in the geometry of the nose ellipsoid
       if (head.nose.on) {
         const dn = scene.head.dNose(q[0], q[1], q[2]), na = sstep(0.012 + minNose * 0.5, -0.004, dn);
-        if (na > 0) { albedo = mixc(albedo, look.nose, na * look.noseInk); gloss = 1 + (rf["nose-gloss"] - 1) * na; spec = rf["nose-highlight"] * na; specPow = rf["nose-highlight-power"]; if (na > 0.5) code = INK.nose; }
+        if (na > 0) { albedo = mixc(albedo, look.nose, na * look.noseInk); gloss = 1 + (rf["nose-gloss"] - 1) * na; const nn = head.nose, ex = q[0] - nn.c[0], ey = q[1] - nn.c[1], ez = q[2] - nn.c[2], ul = ex * nn.frame.lat[0] + ey * nn.frame.lat[1] + ez * nn.frame.lat[2]; spec = rf["nose-highlight"] * na * Math.exp(-((ul / (nn.r[1] * rf["nose-highlight-width"])) ** 2)); specPow = rf["nose-highlight-power"]; /* one soft spot on the top front, not a line along the top: the highlight is windowed across the nose */ if (na > 0.5) code = INK.nose; }
       }
       // the mouth: a dark line in the crease, at least the house's pixel width at the small sizes
       if (Math.hypot(q[0] - mouthBound.c[0], q[1], q[2] - mouthBound.c[2]) < mouthBound.r + 0.1) {

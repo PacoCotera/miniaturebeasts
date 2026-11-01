@@ -40,7 +40,7 @@ test("muzzle t 1 is a bigger round snout, not a flat bill: the forward projectio
 });
 test("the nose and the smile: Loika has the gap of at least 0.25 E, the smile is the nose's width plus 0.3 E, no dark triangle", () => {
   const m = loika.measured;
-  assert.ok(m["nose-mouth/E"] >= 0.25 - 1e-9 && m["mouth-w/E"] >= m["nose-w/E"] + 0.3 - 1e-9);
+  assert.ok(m["nose-mouth/E"] >= 0.25 - 1e-9 && Math.abs(m["mouth-w/E"] - 0.83) <= 0.12, "the smile is the master's 0.83 E (AD fix round 5, ruling 1a)");
   assert.ok(m["nose-w/E"] <= 1.1 && m["nose-w/E"] >= 0.7, "a mound, 0.7 to 1.1 E");
   assert.ok(house.rules.some((r) => r.id === "R-nose-mouth" && r.kinds.mound[0] === 0.25));
 });

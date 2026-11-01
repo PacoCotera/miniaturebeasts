@@ -18,7 +18,7 @@
     "form.head-depth": 0.54,
     "form.cheek": 0.04,
     "form.eye-size": 0.63,
-    "form.eye-height": 0.09,
+    "form.eye-height": 0.5,
     "form.eye-spacing": 0.867,
     "form.pupil": 0.1,
     "form.lid": 0.0,
@@ -28,7 +28,7 @@
     "form.muzzle-height": 0.35,
     "form.nose": 0.84,
     "form.nose-drop": 0.68,
-    "form.mouth-width": 0.84,
+    "form.mouth-width": 0.37,
     "form.mouth-upturn": 0.8,
     "form.mouth-gap": 0.78,
     "form.carriage": 0.63
@@ -49,8 +49,8 @@
    ],
    "cream": [
     240,
-    224,
-    198
+    226,
+    220
    ],
    "nose": [
     58,
@@ -86,8 +86,8 @@
    ],
    "ring": [
     240,
-    226,
-    200
+    228,
+    214
    ],
    "catchLight": [
     255,
@@ -100,19 +100,15 @@
     46
    ],
    "toe": [
-    236,
-    222,
-    200
+    238,
+    226,
+    214
    ],
    "creamHead": {
     "below": 0.01,
     "soft": 0.015,
     "fall": 1.1,
-    "fall-far": 0.25,
-    "reach": [
-     0.2,
-     0.08
-    ]
+    "fall-far": 0.25
    },
    "creamBody": {
     "down": 0.8,
@@ -173,12 +169,12 @@
     "form.eye-ring": 0.65,
     "form.nose": 0.0,
     "form.nose-drop": 0.8,
-    "form.mouth-width": 0.482,
-    "form.mouth-upturn": 0.8,
+    "form.mouth-width": 0.3,
+    "form.mouth-upturn": 0.5,
     "form.mouth-gap": 0.5,
     "form.carriage": 0.33,
     "form.body-length": 0.25,
-    "form.rise": 0.85,
+    "form.rise": 0.45,
     "form.skirt": 0.5,
     "form.antenna": 0.65
    },
