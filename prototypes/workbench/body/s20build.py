@@ -10,6 +10,36 @@ S20 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "species", "S20.j
 STAGES = ("loft", "legs", "tubes", "base")
 
 
+def orient_shells(body):
+    """Cage.fix_winding makes each connected piece consistent but only flips the WHOLE cage when its total volume is negative, so a separate closed shell (an arm, the nose, the tip) can be inside out and vanish
+    in a back-face-culling viewer. Orient every closed shell by its own signed volume (components found on the full mirrored mesh; the mirror copies follow their originals). Returns the number flipped."""
+    c = body.cage
+    V, faces, _ = c.full()
+    nf = len(c.F)
+    parent = {}
+    def find(a):
+        while parent.setdefault(a, a) != a:
+            parent[a] = parent[parent[a]]; a = parent[a]
+        return a
+    for f in faces:
+        for k in range(1, 4):
+            ra, rb = find(f[0]), find(f[k])
+            if ra != rb:
+                parent[ra] = rb
+    vol = {}
+    for fi, f in enumerate(faces):
+        a, b_, c_, d = (V[i] for i in f)
+        vol.setdefault(find(f[0]), []).append((fi, float(np.dot(a, np.cross(b_, c_)) + np.dot(a, np.cross(c_, d)))))
+    flipped = 0
+    for comp, items in vol.items():
+        if sum(v for _, v in items) < 0:
+            for fi, _ in items:
+                if fi < nf:
+                    c.F[fi] = tuple(c.F[fi][::-1])
+            flipped += 1
+    return flipped
+
+
 def make_s20(spec=None, upto="base", fix=True, **kw):
     if spec is None:
         spec, _ = SC.load(S20)
@@ -30,6 +60,7 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
     body.ctx = ctx
     m, vol = body.finish()
     ctx["remap"] = m
+    ctx["shells_flipped"] = orient_shells(body)
     ctx["volume"] = vol
     ctx["body_parts"] = dict(body.parts)
     ctx["n_before_details"] = len(body.cage.V)

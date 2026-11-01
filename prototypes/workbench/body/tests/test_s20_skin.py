@@ -78,20 +78,36 @@ class T(unittest.TestCase):
         self.assertGreaterEqual(margin, 0.99)
 
     def test_lantern_brighter_than_coat_at_96(self):
-        P = self.P
+        """In the stand pose (tail yawed toward the camera so the lantern shows beside the head): the visible lantern pixels are >= 40 levels brighter than the coat's at 96 px."""
+        import s20rig
+        from mathutils import Vector
+        R = s20rig.Rig(self.b.ctx)
+        P = RN.prepare(self.b, self.g, level=3, pose=R.stand_pose(), rig=R)
         a, cam = RN.render(P, self.g, os.path.join(self.out, "_t96.png"), 96, az=AZ, el=EL, centre=CEN[96], samples=24)
         pn = self.b.ctx["body_parts"]
         V = P["V"]
+        ob = bpy.data.objects["body"]
+        fwd = cam["fwd"]
+        def visible(sel):
+            idx = np.where(sel)[0]
+            keep = []
+            for i in idx[::3]:
+                o = Vector((V[i] - fwd * 20.0).tolist())
+                hit = ob.ray_cast(o, Vector(fwd.tolist()), distance=40.0)
+                if (not hit[0]) or (Vector(hit[1]) - o).length >= 20.0 - 0.03:
+                    keep.append(i)
+            return np.array(keep, int)
         tip = P["part"] == pn["tail.tip"]
         coatsel = (P["part"] == pn["torso"]) & (V[:, 2] > 1.3) & (V[:, 2] < 1.9) & (P["N"][:, 1] > 0.2) & (sum(P["fields"].get(k, 0) for k in ("eye", "mouth", "blush", "mark", "brow")) < 0.01)
-        def meanlum(sel):
-            p2, depth = B.project(cam, V[sel])
+        def meanlum(idx):
+            p2, depth = B.project(cam, V[idx])
             ok = (p2[:, 0] >= 0) & (p2[:, 0] < 96) & (p2[:, 1] >= 0) & (p2[:, 1] < 88)
             xs, ys = np.round(p2[ok]).astype(int).T
             m = a[ys, xs, 3] > 0.5
-            return float(lum(a[ys, xs, :3][m] ** (1 / 2.2)).mean())
-        lt, lc = meanlum(tip), meanlum(coatsel)
-        print("lantern", round(lt, 1), "coat", round(lc, 1))
+            return float(lum(a[ys, xs, :3][m] ** (1 / 2.2)).mean()), int(m.sum())
+        (lt, nt), (lc, nc) = meanlum(visible(tip)), meanlum(visible(coatsel))
+        print("lantern", round(lt, 1), "(", nt, "px ) coat", round(lc, 1), "(", nc, "px )")
+        self.assertGreater(nt, 3)
         self.assertGreaterEqual(lt - lc, 40.0)
 
     def test_zones_and_layouts(self):
