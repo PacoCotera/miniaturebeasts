@@ -21,6 +21,9 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
     if stage >= 1:
         import s20legs
         s20legs.build_legs(body, ctx)
+    if stage >= 2:
+        import s20tubes
+        s20tubes.build_tubes(body, ctx)
     body.ctx = ctx
     m, vol = body.finish()
     ctx["remap"] = m
