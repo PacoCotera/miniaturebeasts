@@ -18,7 +18,7 @@
         "exponent": 2.2
       },
       "soft-block": {
-        "exponent": 2.5
+        "exponent": 3.0
       },
       "pear": {
         "exponent": 2.2
@@ -1327,6 +1327,30 @@
       "why": "AD review: the head's breadth on screen in the stand view, from the front of the muzzle or cheek to the nape, in H. The master Loika is 1.68, the build 1.2: the turnip. Needs the stand-view measure; move it into rules (check) before the owner sees the head-size choice"
     },
     {
+      "id": "R-nose-far-eye",
+      "measure": "nose-far-eye/H",
+      "plans": {"A": [0.0, null], "B": [0.0, null], "D": [0.0, null], "E": [0.0, null]},
+      "enforce": ["clamp:far-eye"],
+      "on": true,
+      "why": "AD, fix round 1: the nose never touches the far eye's ring in the stand view (in five of six Loika tiles it overlapped it, a seal's nose)"
+    },
+    {
+      "id": "R-chin",
+      "measure": "chin-overhang/H",
+      "plans": {"A": [0.04, 0.12], "B": [0.04, 0.12]},
+      "enforce": ["check"],
+      "on": true,
+      "why": "AD, fix round 1: the head sits on the chest. The jaw's front overhangs the chest's front by 0.04-0.12 H at the jaw's height (read in the side plane of the built form), so the chest is within 0.15 H of the muzzle's front and the cream runs over the chin onto the chest"
+    },
+    {
+      "id": "R-nape",
+      "measure": "nape-dip/H",
+      "plans": {"A": [0.03, 0.08], "B": [0.03, 0.08]},
+      "enforce": ["check"],
+      "on": true,
+      "why": "AD, fix round 1: the back runs from the crown in one outline with a dip at the nape of 0.03-0.08 H (the core's profile in the body's side plane: the fall under the lower of the crown and the back's peak), not a notch between two masses"
+    },
+    {
       "id": "R-far-eye",
       "measure": "far-eye-inside/H",
       "plans": {
@@ -1463,12 +1487,18 @@
     },
     {
       "id": "far-eye",
-      "order": 1.5,
+      "order": 7,
       "on": true,
       "params": {
-        "inside-H": 0.05
+        "inside-H": 0.05,
+        "nose-gap-H": 0.0,
+        "order": ["face-yaw", "spacing", "eye-size", "ring"],
+        "yaw-floor-deg": 18,
+        "spacing-floor-E": {"A": 2.0, "B": 2.0, "E": 2.0},
+        "ring-floor-E": {"dark": 0.15, "light": 0.10},
+        "dark-lit-L": 40
       },
-      "why": "R3 and never-list 2: in the stand view the far eye's outer edge stays at least 0.05 H inside the head outline, behind the muzzle when there is one. Spacing gives way first, then the face yaw within its band. The eye-fit clamp's 0.9 W does not see the outline at yaw"
+      "why": "R3 and never-list 2: in the stand view the far eye's outer edge stays at least 0.05 H inside the head outline, and the nose never touches the far eye's ring. The order (AD, fix round 1, ruling 1): 0 the type specimen never needs this clamp (if a master's own values cannot hold, the head is wrong: fix the head); 1 the face yaw first, toward the viewer, down to 18 degrees; 2 then the spacing, down to 2.0 E on plans A, B and E; 3 then E inside its own band; 4 the ring last, down to 0.15 E on a dark body (lit L* 40 or under) and 0.10 E on a light one; 5 if it still cannot hold, the tile is built as it is and labelled outside the house in red. It runs last, after the eye-share clamp, so nothing moves E under it"
     }
   ],
   "owner": [
@@ -1508,8 +1538,9 @@
   },
   "rig": {
     "face": {
-      "nose-aspect": 0.8,
-      "nose-relief": 1.0,
+      "nose-aspect": 0.6,
+      "nose-relief": 0.45,
+      "nose-tilt-deg": 25,
       "nose-soften": 0.035,
       "socket-depth": 0.024,
       "socket-margin": 0.16,
@@ -1517,9 +1548,12 @@
       "muzzle-union": 0.15,
       "muzzle-centre-drop": 0.02,
       "mouth-tube": 0.02,
-      "nose-gloss": 1.7,
+      "nose-gloss": 1.15,
+      "nose-highlight": 0.7,
       "mouth-soften": 0.012,
       "cheek-widen": 0.25,
+      "cheek-eye": 0.3,
+      "cheek-eye-sigma": 0.44,
       "gaze-offset-max": 0.15,
       "gaze-full-at-deg": 40,
       "catch-radius": 0.17,
@@ -1531,6 +1565,14 @@
       "brow-shadow": 0.26,
       "crescent": 0.6,
       "mouth-offset": 0.4,
+      "mouth-curl-from": 0.85,
+      "mouth-curl": 0.6,
+      "jaw-drop": 0.17,
+      "jaw-rx": 0.2,
+      "jaw-rz": 0.13,
+      "jaw-width-of-muzzle": 0.95,
+      "jaw-forward": -0.02,
+      "jaw-union": 0.1,
       "ad": "AD review: the iris was a flat light orange (L* 45-58 everywhere). The master: a dark amber iris (L* 13-33), its top darkest under the brow, a bright gold lower crescent (L* 62-70, C* 68). iris-top-dark 0.4 -> 0.7 and crescent 0.35 -> 0.6 here; the colours are the specimen's look. The eye stays painted: no lens"
     },
     "A": {
@@ -1542,6 +1584,7 @@
       "chest-width-of-W": 0.95,
       "pelvis-gap": 0.78,
       "pelvis-share": 0.9,
+      "pelvis-lift": -0.03,
       "union-neck": 0.12,
       "union-body": 0.14,
       "shoulder": [
@@ -1556,16 +1599,18 @@
       ],
       "leg-radius": 0.23,
       "paw": [
-        0.46,
-        0.37,
-        0.14
+        0.36,
+        0.33,
+        0.22
       ],
       "toe": 0.1,
       "toe-count": 3,
       "lead-paw": 0.1,
       "fore-x": 0.34,
       "hind-x": 0.0,
-      "stance-width-of-chest": 0.9,
+      "stance-width-of-chest": 0.7,
+      "leg-taper": [0.9, 1.15],
+      "toe-crease": 0.012,
       "crest": {
         "root": [
           0.0,
@@ -1595,11 +1640,11 @@
         "thick": 0.05
       },
       "toe-radii": [
-        0.125,
-        0.108,
-        0.09
+        0.08,
+        0.095,
+        0.105
       ],
-      "toe-reach": 0.8,
+      "toe-reach": 0.62,
       "paw-turn": 12
     },
     "D": {
@@ -1677,12 +1722,12 @@
       "toward-camera": 0.35,
       "color": [
         1.0,
-        0.95,
-        0.86
+        0.965,
+        0.9
       ]
     },
     "shade": {
-      "ratio": 0.7,
+      "ratio": 0.58,
       "tint": [
         0.96,
         0.97,
@@ -1706,7 +1751,7 @@
         0.25,
         0.4
       ],
-      "strength": 0.3
+      "strength": 0.4
     },
     "rim": {
       "strength": 0.16,

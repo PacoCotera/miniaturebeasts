@@ -28,7 +28,7 @@ export function makePaint(scene, look, view) {
   function distMouth(x, y, z) { let d = 1e9; for (let i = 0; i < mp.length - 1; i++) { const a = mp[i], b = mp[i + 1], bx = b[0] - a[0], by = b[1] - a[1], bz = b[2] - a[2], px = x - a[0], py = y - a[1], pz = z - a[2], h = clamp((px * bx + py * by + pz * bz) / (bx * bx + by * by + bz * bz), 0, 1); d = Math.min(d, Math.hypot(px - bx * h, py - by * h, pz - bz * h)); } return d; }
 
   // the eye at a local point: returns null when the point is off the eye, else { col, code } for the iris, the ring, the lid's edge or the catch light
-  const creamHeadAt = (q, hy, zb, ch) => sstep(zb + ch.soft, zb - ch.soft, q[2]) * sstep(-0.1, 0.3, q[0] / (scene.head.K.a)) * (1 - sstep(0.55, 0.85, Math.abs(hy) / (scene.W / 2)));
+  const creamHeadAt = (q, hy, zb, ch, nl) => sstep(zb + ch.soft, zb - ch.soft, q[2]) * Math.max(sstep(-0.1, 0.3, q[0] / (scene.head.K.a)), sstep(0.1, 0.5, -nl[2])) * (1 - sstep(ch.side[0], ch.side[1], Math.abs(hy) / (scene.W / 2)));
   function creamBodyAt(wp, nrm) {
     const cb = look.creamBody; if (!cb) return 0;
     const s = -nrm[2] * cb.down + nrm[0] * cb.front, xf = sstep(cb.x0, cb.x1, wp[0]) * (1 - sstep(cb.x2, cb.x3, wp[0]));
@@ -70,23 +70,26 @@ export function makePaint(scene, look, view) {
 
   function material(wp, nrm, region) {
     // region: "head" | "body" | "crest" | "leg" | "toe" | "seg" | "skirt" | "ant"
-    let albedo = look.body, code = INK.body, eye = false, gloss = 1;
+    let albedo = look.body, code = INK.body, eye = false, gloss = 1, spec = 0;
     if (region === "crest") return { albedo: look.leaf, code: INK.leaf };
     if (region === "ant") return { albedo: mixc(look.body, look.cream, 0.15), code };
     if (region === "toe") return { albedo: look.toe, code: INK.cream };
+    if (region === "toecrease") return { albedo: mixc(look.toe, look.body, 0.75), code: INK.cream };
     if (region === "skirt") return { albedo: look.skirt ?? look.body, code };
     if (region === "head") {
       const q = toLocal(hf, wp[0], wp[1], wp[2]), nl = [tl[0] * nrm[0] + tl[1] * nrm[1] + tl[2] * nrm[2], tl[3] * nrm[0] + tl[4] * nrm[1] + tl[5] * nrm[2], tl[6] * nrm[0] + tl[7] * nrm[1] + tl[8] * nrm[2]];
       const g = head.geometry, hy = q[1];
-      // the cream field: below the smile, its top edge 0.05 H under the mouth curve and soft (no fold, wedge or seam): one smooth field, shared with the body's
+      // the cream field: its top edge IS the smile (the dark muzzle meets the cream jaw at the mouth line, `below` of 0.01 H), and behind each mouth corner it rises
+      // up the cheek, `cheek-rise` per unit of lateral distance, to the eye's lower edge; soft (no fold, wedge or seam), one field shared with the body's
       if (look.creamHead) {
-        const ch = look.creamHead, hw = mouth.w / 2, yy = Math.min(Math.abs(hy), hw), zs = mouth.z + mouth.upturn * hw * (yy / hw) ** 2, zb = zs - ch.below;
-        albedo = mixc(albedo, look.cream, Math.max(creamHeadAt(q, hy, zb, ch), creamBodyAt(wp, nrm)));
+        const ch = look.creamHead, hw = mouth.w / 2, ay = Math.abs(hy), capZ = head.eyes[0].c[2] - head.eyes[0].Reye * ch["cheek-top"];
+        let zb = mouth.zAt(Math.min(ay, hw)) - ch.below; if (ay > hw) zb = Math.min(zb + (ay - hw) * ch["cheek-rise"], Math.max(capZ, zb));
+        albedo = mixc(albedo, look.cream, Math.max(creamHeadAt(q, hy, zb, ch, nl), creamBodyAt(wp, nrm)));
       }
       // the nose: its own ink (darker), set in the geometry of the nose ellipsoid
       if (head.nose.on) {
         const dn = scene.head.dNose(q[0], q[1], q[2]), na = sstep(0.012 + minNose * 0.5, -0.004, dn);
-        if (na > 0) { albedo = mixc(albedo, look.nose, na * look.noseInk); gloss = 1 + (rf["nose-gloss"] - 1) * na; if (na > 0.5) code = INK.nose; }
+        if (na > 0) { albedo = mixc(albedo, look.nose, na * look.noseInk); gloss = 1 + (rf["nose-gloss"] - 1) * na; spec = rf["nose-highlight"] * na; if (na > 0.5) code = INK.nose; }
       }
       // the mouth: a dark line in the crease, at least the house's pixel width at the small sizes
       if (Math.hypot(q[0] - mouthBound.c[0], q[1], q[2] - mouthBound.c[2]) < mouthBound.r + 0.1) {
@@ -99,7 +102,7 @@ export function makePaint(scene, look, view) {
         const ep = eyePaint(i, q, nl, wp);
         if (ep) { albedo = mixc(albedo, ep.col, ep.cover); if (ep.cover > 0.5) { code = ep.code; eye = true; } if (ep.lid > 0 && ep.lid < 1 && ep.cover < 0.5) code = INK.lid; }
       }
-      return { albedo, code, eye, gloss };
+      return { albedo, code, eye, gloss, spec };
     }
     // the body: the cream chest-and-belly field, a soft field in the mass's own coordinates
     albedo = mixc(albedo, look.cream, creamBodyAt(wp, nrm));

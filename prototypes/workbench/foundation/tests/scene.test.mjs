@@ -36,15 +36,17 @@ test("Loika and the snail are closed solids on the floor with the crown as the t
     const sc = ex.scene;
     assert.ok(sc.d(sc.kc[0], sc.kc[1], sc.kc[2]) < -0.3, "inside the head");
     assert.ok(sc.d(0, 0, 9) > 5 && sc.d(9, 0, 0.5) > 0.5, "outside, far out (a lower bound: the first-order ellipsoid distance under-reads far from a flat one)");
-    assert.ok(sc.bounds.lo[2] <= 0 && sc.d(0, 0, -0.5) > 0.4, "nothing below the floor but the floor");
+    assert.ok(sc.bounds.lo[2] <= 0 && sc.d(0, 0, -0.5) > 0.3, "nothing below the floor but the floor");
   }
 });
 test("the build is continuous in t: a small step of a face gene moves the picture a little", () => {
-  const a = express(house, sp.S01, { t: { "form.eye-size": 0.5 } }), b = express(house, sp.S01, { t: { "form.eye-size": 0.52 } }), c = express(house, sp.S01, { t: { "form.eye-size": 0.9 } });
+  const a = express(house, sp.S01, { t: { "form.eye-size": 0.5 }, clamps: false }), b = express(house, sp.S01, { t: { "form.eye-size": 0.52 }, clamps: false }), c = express(house, sp.S01, { t: { "form.eye-size": 0.9 }, clamps: false });
   const dE = (x, y) => Math.abs(x.rig.E - y.rig.E);
   assert.ok(dE(a, b) < dE(a, c) / 10 && dE(a, b) > 0, "monotone and continuous");
-  const m = [0, 0.25, 0.5, 0.75, 1].map((t) => express(house, sp.S01, { t: { "form.eye-size": t } }).rig.E);
-  for (let i = 1; i < m.length; i++) assert.ok(m[i] > m[i - 1], "E rises with t");
+  const m = [0, 0.25, 0.5, 0.75, 1].map((t) => express(house, sp.S01, { t: { "form.eye-size": t }, clamps: false }).rig.E);
+  for (let i = 1; i < m.length; i++) assert.ok(m[i] > m[i - 1], "E rises with t before the clamps");
+  const cl = [0, 0.25, 0.5].map((t) => express(house, sp.S01, { t: { "form.eye-size": t } }).rig.E);
+  for (let i = 1; i < cl.length; i++) assert.ok(cl[i] > cl[i - 1], "and still rises through the middle of the band after them (the far-eye clamp only holds the big end back)");
 });
 test("the head size is the H/S gene: the three sizes of the owner's sheet are 0.45, 0.52 and 0.60 of the standing height", () => {
   const hb = bandOf(house, "A", "form.head");

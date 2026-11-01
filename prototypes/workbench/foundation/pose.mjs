@@ -9,12 +9,12 @@ export function seedUnit(seed, key) { // a small string hash to [0, 1): determin
 }
 const rangeOf = (house, id, plan) => house.rules.find((r) => r.id === id).plans[plan] ?? house.rules.find((r) => r.id === id).plans["*"];
 
-export function solvePose(house, plan, { carriage = 0, seed = "pose", side = 1, pick = {} } = {}) {
+export function solvePose(house, plan, { carriage = 0, seed = "pose", side = 1, pick = {}, faceYaw = null } = {}) {
   const [bl, bh] = rangeOf(house, "R6-body-yaw", plan), [fl, fh] = rangeOf(house, "R6-face-yaw", plan), [hl, hh] = rangeOf(house, "R6-head-yaw", plan), [rl, rh] = rangeOf(house, "R6-roll", plan);
   const u = (k) => pick[k] ?? seedUnit(seed, k);
   // the middle two thirds of each band: a seed never lands on an edge, so a clamp never has to move it
   const mid = (lo, hi, v) => lo + (hi - lo) * (1 / 6 + (2 / 3) * v);
-  let body = mid(bl, bh, u("body-yaw")), face = mid(fl, fh, u("face-yaw")), head = body - face;
+  let body = mid(bl, bh, u("body-yaw")), face = faceYaw !== null ? Math.min(fh, Math.max(fl, faceYaw)) : mid(fl, fh, u("face-yaw")), head = body - face; // faceYaw: the far-eye clamp turns the face toward the viewer, inside the band
   const notes = [];
   if (head > hh) { body = Math.min(bh, face + hh); head = body - face; if (head > hh) { face = body - hh; head = hh; } notes.push("head yaw over its band: the body yaw moved"); }
   else if (head < hl) { body = Math.max(bl, face + hl); head = body - face; if (head < hl) { face = body - hl; head = hl; } notes.push("head yaw under its band: the body yaw moved"); }

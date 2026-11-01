@@ -14,23 +14,23 @@
    },
    "t": {
     "form.head": 0.6,
-    "form.head-width": 0.83,
-    "form.head-depth": 0.8,
-    "form.cheek": 0.8,
+    "form.head-width": 0.55,
+    "form.head-depth": 0.54,
+    "form.cheek": 0.04,
     "form.eye-size": 0.3,
     "form.eye-height": 0.09,
-    "form.eye-spacing": 0.3,
+    "form.eye-spacing": 0.867,
     "form.pupil": 0.1,
     "form.lid": 0.0,
-    "form.eye-ring": 0.5,
+    "form.eye-ring": 0.92,
     "form.muzzle": 0.4,
-    "form.muzzle-width": 0.55,
+    "form.muzzle-width": 0.84,
     "form.muzzle-height": 0.35,
-    "form.nose": 0.78,
-    "form.nose-drop": 0.8,
-    "form.mouth-width": 0.75,
+    "form.nose": 0.6,
+    "form.nose-drop": 0.84,
+    "form.mouth-width": 0.84,
     "form.mouth-upturn": 0.8,
-    "form.mouth-gap": 0.05,
+    "form.mouth-gap": 0.4,
     "form.carriage": 0.45
    },
    "pool": {
@@ -43,19 +43,19 @@
   },
   "look": {
    "body": [
-    68,
-    61,
-    63
+    58,
+    53,
+    58
    ],
    "cream": [
-    242,
-    214,
-    176
+    240,
+    224,
+    198
    ],
    "nose": [
-    64,
     58,
-    62
+    53,
+    58
    ],
    "noseInk": 0,
    "mouth": [
@@ -100,27 +100,33 @@
     56
    ],
    "toe": [
-    226,
-    200,
-    165
+    236,
+    222,
+    200
    ],
    "creamHead": {
-    "below": 0.05,
-    "soft": 0.045
+    "below": 0.01,
+    "soft": 0.015,
+    "cheek-rise": 1.0,
+    "cheek-top": 1.0,
+    "side": [
+     0.75,
+     0.95
+    ]
    },
    "creamBody": {
     "down": 0.8,
-    "front": 0.5,
+    "front": 0.7,
     "t0": 0.2,
     "t1": 0.5,
     "x0": -1.0,
     "x1": -0.7,
-    "x2": 0.35,
-    "x3": 0.7,
+    "x2": 0.6,
+    "x3": 0.95,
     "z0": 1.2,
     "z1": 1.5,
-    "y0": 0.42,
-    "y1": 0.62
+    "y0": 0.34,
+    "y1": 0.52
    }
   },
   "pose": {
@@ -128,69 +134,19 @@
    "side": 1,
    "pick": {
     "body-yaw": 0.75,
-    "face-yaw": 0.7
+    "face-yaw": 0.53
    }
   },
   "rig": {
    "A": {
-    "leg-radius": 0.27,
-    "paw": [
-     0.4,
-     0.33,
-     0.14
-    ],
-    "toe": 0.11,
-    "chest-rx": 0.6,
-    "chest-width-of-W": 0.92,
-    "back-drop": 0.42,
-    "belly-share": 0.2,
-    "pelvis-gap": 0.62,
-    "pelvis-share": 0.95,
-    "shoulder": [
-     0.45,
-     0.3,
-     0.6
-    ],
-    "hip": [
-     0.48,
-     0.32,
-     0.6
-    ],
-    "crest": {
-     "root": [
-      0.0,
-      0.0,
-      0.44
-     ],
-     "leaves": [
-      [
-       -0.2,
-       0.5,
-       0.28,
-       -52
-      ],
-      [
-       0.0,
-       0.72,
-       0.4,
-       -5
-      ],
-      [
-       0.25,
-       0.55,
-       0.3,
-       50
-      ]
-     ],
-     "thick": 0.05
-    },
-    "chest-x": -0.45,
-    "fore-x": 0.42,
-    "hind-x": -0.0
+    "chest-x": -0.04,
+    "back-drop": 0.38,
+    "pelvis-gap": 1.0,
+    "pelvis-lift": 0.24,
+    "union-neck": 0.22,
+    "pelvis-share": 1.0
    },
-   "face": {
-    "nose-relief": 1.1
-   }
+   "face": {}
   }
  },
  "S14": {

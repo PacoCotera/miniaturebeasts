@@ -102,11 +102,11 @@ test("the face parameters of a plan come from t through the bands", () => {
   assert.equal("projection" in faceParams(house, "C", () => 0.5), false, "a mochi has no muzzle");
   const t = tOfFace(house, "A", fp); assert.ok(Math.abs(t["form.eye-size"] - 0.5) < 1e-9);
 });
-test("eye-fit: the iris' outer edges stay within 0.9 W, monotone in spacing, nothing moves inside the band", () => {
+test("eye-fit: the iris' outer edges stay within 0.9 of the width at the eye line (W and the cheek there), monotone in spacing, nothing moves inside the band", () => {
   const c = house.clamps.find((x) => x.id === "eye-fit"), ctx = { house, plan: "A" }; let prev = -1;
-  for (let s = 1.5; s <= 2.2; s += 0.02) { const o = clampEyeFit({ eW: 0.3, spacing: s }, c, ctx); assert.ok(o.spacing > prev); prev = o.spacing; assert.ok((o.spacing + 1) * 0.3 <= 0.9 + 1e-9); }
+  for (let s = 1.5; s <= 2.2; s += 0.02) { const o = clampEyeFit({ eW: 0.3, spacing: s }, c, ctx); assert.ok(o.spacing > prev); prev = o.spacing; assert.ok((o.spacing + 1) * 0.3 <= 0.9 * (1 + house.rig.face["cheek-eye"]) + 1e-9); }
   assert.equal(clampEyeFit({ eW: 0.25, spacing: 2 }, c, ctx).spacing, 2, "inside the band nothing moves");
-  assert.ok(clampEyeFit({ eW: 0.36, spacing: 2.2 }, c, ctx).spacing < 1.6, "the biggest eyes pull the spacing toward the band's floor");
+  assert.ok(clampEyeFit({ eW: 0.36, spacing: 2.4 }, c, ctx).spacing < 2.3, "the biggest eyes at the widest spacing are pulled in");
 });
 test("nose-fit: the nose is at most 0.6 E wide, monotone, and inside nothing moves", () => {
   const c = house.clamps.find((x) => x.id === "nose-fit"); let prev = -1;
@@ -191,12 +191,21 @@ test("forehead: crown to eye top stays at least 0.20 H, monotone", () => {
   for (let d = 0.2; d <= 0.6; d += 0.01) { const o = clampForehead({ eW: 0.3, WoverH: 1.5, eyeDrop: d }, c); assert.ok(o.eyeDrop > prev); prev = o.eyeDrop; assert.ok(o.eyeDrop - 0.5 * 0.45 >= 0.2 - 1e-9); }
   assert.equal(clampForehead({ eW: 0.3, WoverH: 1.5, eyeDrop: 0.55 }, c).eyeDrop, 0.55);
 });
-test("far-eye: spacing gives way first, monotone and never under the band floor; the face yaw is asked for when spacing cannot do it", () => {
-  const c = house.clamps.find((x) => x.id === "far-eye"), ctx = { house, plan: "A", farInside: (f) => 0.2 - 0.07 * f.spacing };
-  let prev = -1; for (let s = 1.5; s <= 2.4; s += 0.05) { const o = clampFarEye({ spacing: s }, c, ctx); assert.ok(o.spacing > prev); prev = o.spacing; assert.ok(o.spacing >= 1.5); }
-  assert.ok(0.2 - 0.07 * clampFarEye({ spacing: 2.4 }, c, ctx).spacing >= 0.05 - 1e-3 || true);
-  assert.equal(clampFarEye({ spacing: 1.6 }, c, ctx).spacing, 1.6, "inside the margin nothing moves");
-  assert.equal(clampFarEye({ spacing: 2.0 }, c, { ...ctx, farInside: () => 0.0 }).turnFace, true);
+test("far-eye: the AD's order (face yaw, spacing, E, ring), each inside its floor; nothing moves when the margins hold; what cannot hold is flagged, never hidden", () => {
+  const c = house.clamps.find((x) => x.id === "far-eye"), P = c.params;
+  assert.deepEqual(P.order, ["face-yaw", "spacing", "eye-size", "ring"]);
+  const base = { spacing: 2.28, eW: 0.26, ring: 0.23 };
+  // a model of the two margins: the far eye's wants the face turned in (low yaw) and the eyes close; the nose's wants the eyes apart
+  const model = (inside0, gap0) => (f, yaw) => ({ inside: inside0 - 0.07 * (f.spacing - 2.0) - 0.002 * (yaw - 18) - 0.1 * (f.eW - 0.22) - 0.1 * f.ring, noseGap: gap0 + 0.05 * (f.spacing - 2) });
+  const run = (m, extra = {}) => clampFarEye({ ...base }, c, { house, plan: "A", measureAt: m, yaw: 28, dark: true, ...extra });
+  assert.deepEqual(run(model(0.3, 0.1)), base, "inside the margins nothing moves");
+  const o1 = run(model(0.105, 0.1)); assert.ok(o1.faceYaw < 28 && o1.faceYaw >= P["yaw-floor-deg"] && o1.spacing === 2.28, "the face yaw gives way first, and only as far as it must");
+  const o2 = run(model(0.085, 0.1)); assert.equal(o2.faceYaw, P["yaw-floor-deg"]); assert.ok(o2.spacing < 2.28 && o2.spacing >= P["spacing-floor-E"].A, "then the spacing, never under 2.0 E");
+  const o3 = run(model(0.075, 0.1)); assert.ok(o3.eW < 0.26 && o3.eW >= bandOf(house, "A", "form.eye-size").lo && o3.spacing >= 2.0, "then E, inside its band");
+  const o4 = run(model(0.068, 0.1)); assert.ok(o4.ring < 0.23 && o4.ring >= P["ring-floor-E"].dark - 1e-9, "the ring last, never under 0.15 E on a dark body");
+  const lt = run(model(0.062, 0.1), { dark: false }); assert.ok(lt.ring >= P["ring-floor-E"].light - 1e-9 && lt.ring < 0.15, "and 0.10 E on a light one");
+  const imp = run(model(-0.5, -0.5)); assert.equal(imp.farOutside, true, "the clamp gives up in the open: the tile is built as it is and flagged");
+  let prev = -1; for (let s = 2.0; s <= 2.4; s += 0.05) { const o = clampFarEye({ ...base, spacing: s }, c, { house, plan: "A", measureAt: model(0.085, 0.1), yaw: 28, dark: true }); assert.ok(o.spacing >= prev - 1e-3, `monotone (weakly, a floor holds) in the spacing at ${s}`); prev = o.spacing; }
 });
 test("eye-share is two-sided: over the band E shrinks within its band, partially, monotone", () => {
   const c = house.clamps.find((x) => x.id === "eye-share"), shareOf = (fp) => 0.8 * fp.eW, ctx = { house, plan: "A", shareOf, range: [0.16, 0.24] };

@@ -10,7 +10,7 @@ export function loadSpecimens(house, file = path.join(HERE, "specimens.json")) {
   for (const [id, s] of Object.entries(raw)) {
     const problems = checkFrame(s.frame, house);
     if (problems.length) throw new Error(`specimen ${id}: ${problems.join("; ")}`);
-    out[id] = { id, plan: s.frame.plan, name: s.frame.name, kinds: s.frame.kinds, t: s.frame.t, pool: s.frame.pool, frame: s.frame, look: s.look, seed: s.pose.seed, side: s.pose.side, pick: s.pose.pick };
+    out[id] = { id, plan: s.frame.plan, name: s.frame.name, kinds: s.frame.kinds, t: s.frame.t, pool: s.frame.pool, frame: s.frame, look: s.look, rig: s.rig ?? {}, seed: s.pose.seed, side: s.pose.side, pick: s.pose.pick };
   }
   return out;
 }

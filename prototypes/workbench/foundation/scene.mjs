@@ -27,7 +27,7 @@ export function buildScene(house, spec) {
   if (plan === "A") {
     const zb = S - rig["back-drop"], zBelly = rig["belly-share"] * zb, rz = (zb - zBelly) / 2, zc = zb - rz;
     const cr = [rig["chest-rx"], 0.5 * rig["chest-width-of-W"] * W, rz], cc = [rig["chest-x"], 0, zc];
-    const pr = cr.map((v) => v * rig["pelvis-share"]), pc = [cc[0] - rig["pelvis-gap"], 0, zc - 0.03];
+    const pr = cr.map((v) => v * rig["pelvis-share"]), pc = [cc[0] - rig["pelvis-gap"], 0, zc + rig["pelvis-lift"]];
     const dC = ell(cc, cr), dP = ell(pc, pr), uB = rig["union-body"];
     const legR = rig["leg-radius"], pawR = rig.paw, nToe = rig["toe-count"], stance = rig["stance-width-of-chest"];
     const legs = [], turn = rad(rig["paw-turn"]), tr = rig["toe-radii"];
@@ -42,8 +42,10 @@ export function buildScene(house, spec) {
       for (let i = 0; i < nToe; i++) { const a = (i - (nToe - 1) / 2) * 0.58, reach = pawR[0] * rig["toe-reach"] * Math.cos(a * 0.6), side = pawR[1] * 0.78 * Math.sin(a * 1.1) * 1.25, big = i === (nToe - 1) / 2 ? 1.12 : 1; toes.push({ c: [pc0[0] + fwd[0] * reach + lat[0] * side, pc0[1] + fwd[1] * reach + lat[1] * side, tr[2] * 1.05 + 0.02], r: [tr[0] * big, tr[1] * big, tr[2] * big], R: Rz((turn + a * 0.5) * sd) }); }
       const toeF = toes.map((t) => ({ f: frameOf(t.c, t.R), r: t.r }));
       const dToes = (x, yy, z) => { let d = 1e9; for (const t of toeF) { const q = toLocal(t.f, x, yy, z); d = Math.min(d, sdEllipsoid(q[0], q[1], q[2], t.r[0], t.r[1], t.r[2])); } return d; };
-      const dLeg = (x, yy, z) => { let d = sdRoundCone(x, yy, z, top[0], top[1], top[2], ank[0], ank[1], ank[2], legR * 1.08, legR * 0.95); d = uRound(d, sh(x, yy, z), 0.12); d = uRound(d, paw(x, yy, z), 0.16); return sMin(d, dToes(x, yy, z), 0.022); };
-      legs.push({ fore, side: sd, toes, dToes, dPaw: paw, d: bounded([cx, y, 0.55], 0.8, 0.2, dLeg) });
+      // the crease between two toes: where the two nearest toes' fields are almost equal (a dark line in the paint, 1 px at 96)
+      const toeCrease = (x, yy, z) => { let d1 = 1e9, d2 = 1e9; for (const t of toeF) { const q = toLocal(t.f, x, yy, z), d = sdEllipsoid(q[0], q[1], q[2], t.r[0], t.r[1], t.r[2]); if (d < d1) { d2 = d1; d1 = d; } else if (d < d2) d2 = d; } return d1 < 0.03 ? d2 - d1 : 1; };
+      const dLeg = (x, yy, z) => { let d = sdRoundCone(x, yy, z, top[0], top[1], top[2], ank[0], ank[1], ank[2], legR * rig["leg-taper"][0], legR * rig["leg-taper"][1]); d = uRound(d, sh(x, yy, z), 0.12); d = uRound(d, paw(x, yy, z), 0.16); return sMin(d, dToes(x, yy, z), 0.022); };
+      legs.push({ fore, side: sd, toes, dToes, toeCrease, dPaw: paw, d: bounded([cx, y, 0.55], 0.8, 0.2, dLeg) });
     }
     const dTorso = (x, y, z) => uRound(dC(x, y, z), dP(x, y, z), 0.25);
     dBody = (x, y, z) => { let d = dTorso(x, y, z); for (const l of legs) d = uRound(d, l.d(x, y, z), uB); return d; };
@@ -69,7 +71,7 @@ export function buildScene(house, spec) {
     parts.all = dAll; parts.core = dHeadBody;
     regionOf = (x, y, z) => {
       if (dCrestB(x, y, z) < 0.012 && dCrestB(x, y, z) < dHeadW(x, y, z)) return "crest";
-      if (z < 0.4) for (const l of legs) { const dt = l.dToes(x, y, z); if (dt < 0.014 && dt <= l.dPaw(x, y, z) + 0.004) return "toe"; }
+      if (z < 0.4) for (const l of legs) { const dt = l.dToes(x, y, z); if (dt < 0.014 && dt <= l.dPaw(x, y, z) + 0.004) return l.toeCrease(x, y, z) < rig["toe-crease"] ? "toecrease" : "toe"; }
       const dh = dHeadW(x, y, z), db = dNoHead(x, y, z);
       return dh <= db + 0.02 ? "head" : "body";
     };

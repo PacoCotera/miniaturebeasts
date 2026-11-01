@@ -74,7 +74,7 @@ export function renderCreature(scene, camera, sizeKey, { ref, look, extents = nu
       c = [c[0] * ao, c[1] * ao, c[2] * ao];
       const nv = Math.max(0, dot3(n, tt)), rm = Math.pow(1 - nv, rim.power) * rim.strength * (0.35 + 0.65 * sstep(-0.3, 0.4, -ndl + 0.3)) * ao;
       c = [c[0] + rim.tint[0] * 255 * rm * 0.35, c[1] + rim.tint[1] * 255 * rm * 0.35, c[2] + rim.tint[2] * 255 * rm * 0.35];
-      if (!m.eye) { const nh = Math.max(0, dot3(n, Hv)), gl = m.gloss ?? 1, sp = vin.strength * gl * Math.pow(nh, gl > 1.5 ? 40 : 14) * tl * (region === "head" || region === "crest" ? 1 : 0.8); c = [c[0] + 255 * sp, c[1] + 255 * sp * 0.97, c[2] + 255 * sp * 0.92]; }
+      if (!m.eye) { const nh = Math.max(0, dot3(n, Hv)), gl = m.gloss ?? 1, sp = vin.strength * gl * Math.pow(nh, gl > 1.5 ? 40 : 14) * tl * (region === "head" || region === "crest" ? 1 : 0.8); c = [c[0] + 255 * sp, c[1] + 255 * sp * 0.97, c[2] + 255 * sp * 0.92]; if (m.spec) { const sn = m.spec * Math.pow(nh, 20) * tl; c = [c[0] + 255 * sn, c[1] + 255 * sn * 0.97, c[2] + 255 * sn * 0.92]; } }
       return [clamp(c[0], 0, 255), clamp(c[1], 0, 255), clamp(c[2], 0, 255), 1, m.code, t];
     }
     // the floor: the soft cast shadow toward the lower right, and a tight contact shadow under what touches it

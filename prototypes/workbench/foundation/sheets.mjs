@@ -15,9 +15,9 @@ const alphaHeight = (img) => { let t = Infinity, b = -Infinity; for (let y = 0; 
 export const masterOf = (id) => ({ 304: loadImage(MASTER(id, 304)), 96: loadImage(MASTER(id, 96)), 48: loadImage(MASTER(id, 48)) });
 
 // one individual: express, render at the three sizes from one framing, measure the render, read the rules
-export function makeTile(house, specimen, { t = {}, label = "", seed = undefined, sizes = [304, 96, 48], shareClamp = true } = {}) {
+export function makeTile(house, specimen, { t = {}, label = "", seed = undefined, sizes = [304, 96, 48], shareClamp = true, clamps = true } = {}) {
   const ref = { height: alphaHeight(loadImage(MASTER(specimen.id, 304))) };
-  const ex = express(house, { ...specimen, seed: seed ?? specimen.seed }, { t, side: specimen.side, shareClamp });
+  const ex = express(house, { ...specimen, seed: seed ?? specimen.seed }, { t, side: specimen.side, shareClamp, clamps });
   const camera = { yaw: ex.pose.cameraYaw, pitch: house.solver.camera["pitch-deg"] }, extents = coarse(ex.scene, camera, { n: 240 });
   const r = {}; for (const s of sizes) r[s] = renderCreature(ex.scene, camera, s, { ref, look: specimen.look, extents });
   const rig = { ...ex.rig, px: {} };

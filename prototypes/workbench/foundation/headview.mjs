@@ -40,3 +40,24 @@ export function headBreadth(hw, camera) {
   const right = Math.max(...rows(rowHi).map((b) => { if (!hitAt(d, B, hi, b)) return -Infinity; let m = hi, h = hi + cell; for (let i = 0; i < 9; i++) { const c = (m + h) / 2; if (hitAt(d, B, c, b)) m = c; else h = c; } return m; }));
   return right - left;
 }
+
+// the nose's margin to the far eye's ring in the stand view, in H (negative: they overlap): the nose's exposed, camera-facing surface points against the ring's ellipse
+// in the screen, as the ring's own radii
+export function noseFarEyeGap(hw, camera) {
+  const B = cameraBasis(camera), { head, hf } = hw, eyes = head.eyes;
+  if (!head.nose.on) return Infinity;
+  const facing = eyes.map((e) => dot3(world(hf, e.n), B.toward)), e = eyes[facing[0] < facing[1] ? 0 : 1];
+  const cw = world(hf, e.c), ca = dot3(cw, B.right), cb = dot3(cw, B.up);
+  const u = world(hf, e.lat), v = world(hf, e.up), ua = dot3(u, B.right) * e.Reye, ub = dot3(u, B.up) * e.Reye, va = dot3(v, B.right) * e.Reye * e.aspect, vb = dot3(v, B.up) * e.Reye * e.aspect, det = ua * vb - va * ub;
+  const nf = head.nose.frame, nc = head.nose.c, r = head.nose.r; let best = Infinity;
+  for (let i = 0; i < 24; i++) for (let j = 0; j < 48; j++) {
+    const ph = ((i + 0.5) / 24) * Math.PI, th = (j / 48) * 2 * Math.PI, q = [Math.cos(ph), Math.sin(ph) * Math.cos(th), Math.sin(ph) * Math.sin(th)];
+    const p = [0, 1, 2].map((k) => nc[k] + nf.n[k] * r[0] * q[0] + nf.lat[k] * r[1] * q[1] + nf.up[k] * r[2] * q[2]);
+    if (head.d0(p[0], p[1], p[2]) < -0.01) continue; // buried in the head
+    const nl = [q[0] / r[0], q[1] / r[1], q[2] / r[2]], nw = world(hf, [0, 1, 2].map((k) => nf.n[k] * nl[0] + nf.lat[k] * nl[1] + nf.up[k] * nl[2]));
+    if (dot3(nw, B.toward) <= 0) continue; // faces away
+    const pw = world(hf, p), dx = dot3(pw, B.right) - ca, dy = dot3(pw, B.up) - cb, s = (dx * vb - dy * va) / det, t = (-dx * ub + dy * ua) / det;
+    best = Math.min(best, Math.hypot(s, t));
+  }
+  return (best - 1) * e.Reye;
+}

@@ -45,7 +45,7 @@ test("every plan A face at the corners of t builds, and the eye is always inside
   for (const t of [0, 1]) for (const u of [0, 1]) {
     const { head } = build((g) => (g.includes("eye") || g.includes("lid") ? t : u));
     for (const e of head.eyes) assert.ok(Math.abs(head.dK(...e.c)) < 1e-3);
-    assert.ok(Math.abs(head.eyes[0].c[1]) + head.eyes[0].Riris < head.measures.W / 2 * 0.95, "the iris does not reach the head's side");
+    assert.ok(Math.abs(head.eyes[0].c[1]) + head.eyes[0].Riris < head.measures.W / 2 * (1 + house.rig.face["cheek-eye"]) * 0.95, "the iris does not reach the head's side (the width at the eye line)");
   }
 });
 test("the round head of plan D has a bump nose and no muzzle", () => {

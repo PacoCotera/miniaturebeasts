@@ -12,7 +12,8 @@ export const faceStack = (fp) => fp.noseDrop * eyeInH(fp) + noseHalfH(fp) + fp.g
 
 export function clampEyeFit(fp, c, ctx) {
   // the iris' outer edges, (spacing + 1) E, stay within the share of the head's width (0.9 W): the eyes never reach the head's sides
-  const e = fp.eW, hi = c.params["spacing-share-of-width"] / e - 1, sb = ctx?.house ? bandOf(ctx.house, ctx.plan, "form.eye-spacing") : { lo: 1.5, hi: 2.2 };
+  // the width at the eye line is the skull's W widened by the cheek there (rig face cheek-eye): the iris' outer edges stay within the share of that
+  const k = 1 + (ctx?.house?.rig?.face?.["cheek-eye"] ?? 0), e = fp.eW, hi = (c.params["spacing-share-of-width"] * k) / e - 1, sb = ctx?.house ? bandOf(ctx.house, ctx.plan, "form.eye-spacing") : { lo: 1.5, hi: 2.2 };
   return { ...fp, spacing: softClamp(fp.spacing, null, hi, 0.15 * (sb.hi - sb.lo)) };
 }
 export function clampNoseFit(fp, c, ctx) {
@@ -25,17 +26,42 @@ export function clampForehead(fp, c) {
   const lo = c.params["min-forehead-H"] + 0.5 * eyeInH(fp);
   return { ...fp, eyeDrop: softClamp(fp.eyeDrop, lo, null, 0.15 * 0.22) };
 }
-// the far eye stays at least `inside-H` inside the head's outline in the stand view: spacing gives way first (a soft compression toward the spacing that
-// just fits), then the face yaw within its band (flagged for the pose). farInside(fp) -> the far eye's margin in H, supplied by the expression.
+// the far eye stays at least `inside-H` inside the head's outline in the stand view, and the nose never touches the far eye's ring. The order the art director
+// ruled (house clamps.far-eye.params.order): the face yaw first, toward the viewer, down to its floor (a pose change, not a genome change); then the spacing, down to
+// its floor; then E, inside its own band; the ring last, down to its floor (0.15 E on a dark body, 0.10 E on a light one). Each stage takes the largest value that
+// holds (a search on the stage's own gene) and stops there: min(v, that), continuous and weakly monotone (the floors hold values together; the ladder's later
+// stages and the pose tell them apart). If all four cannot hold it, the face is built
+// as it is and flagged (`farOutside`): the clamp never hides it. The type specimen never needs this clamp. ctx.measureAt(fp, yawFace) -> { inside, noseGap }.
 export function clampFarEye(fp, c, ctx) {
-  const { house, plan, farInside } = ctx; if (!farInside) return fp;
-  const tgt = c.params["inside-H"], sb = bandOf(house, plan, "form.eye-spacing");
-  if (farInside(fp) >= tgt) return fp;
-  const at = (s) => farInside({ ...fp, spacing: s });
-  if (at(sb.lo) < tgt) return { ...fp, spacing: softClamp(fp.spacing, sb.lo, null, 0.15 * (sb.hi - sb.lo)), turnFace: true };
-  let a = sb.lo, b = fp.spacing; for (let i = 0; i < 9; i++) { const m = (a + b) / 2; if (at(m) >= tgt) a = m; else b = m; }
-  const w = 0.15 * (sb.hi - sb.lo), over = fp.spacing - a;
-  return { ...fp, spacing: a + w * (1 - Math.exp(-over / w)) };
+  const { house, plan, measureAt } = ctx; if (!measureAt) return fp;
+  const P = c.params, tgt = P["inside-H"], gmin = P["nose-gap-H"] ?? 0, yawNow = ctx.yaw;
+  // the slack of a state: the worse of the two margins (>= 0 holds). A stage never takes a value that makes the worse margin worse: the far eye's margin wants the eyes
+  // closer, the nose's wants them further apart, so a stage looks for the best value in its range, not simply the lowest
+  const slack = (f, yaw) => { const m = measureAt(f, yaw); return Math.min(m.inside - tgt, m.noseGap - gmin); };
+  if (slack(fp, yawNow) >= -1e-9) return fp;
+  let f = { ...fp }, yaw = yawNow, cur = slack(f, yaw);
+  const stage = (key, floor, w) => {
+    const v = f[key]; if (!(v > floor)) return false;
+    const xs = Array.from({ length: 12 }, (_, i) => floor + ((v - floor) * i) / 11), ss = xs.map((x) => slack({ ...f, [key]: x }, yaw));
+    let hold = -1; for (let i = 11; i >= 0; i--) if (ss[i] >= -1e-9) { hold = i; break; }
+    if (hold >= 0) { // the largest value that holds, refined by bisection between it and the next one up, then a soft compression to it
+      let a = xs[hold], b = xs[Math.min(11, hold + 1)]; if (hold < 11) for (let i = 0; i < 8; i++) { const m = (a + b) / 2; if (slack({ ...f, [key]: m }, yaw) >= -1e-9) a = m; else b = m; }
+      f = { ...f, [key]: Math.max(floor, Math.min(v, a)) }; cur = slack(f, yaw); return cur >= -1e-9;
+    }
+    let bi = 0; for (let i = 1; i < 12; i++) if (ss[i] > ss[bi]) bi = i;
+    if (ss[bi] > cur + 1e-6) { f = { ...f, [key]: Math.max(floor, Math.min(v, xs[bi])) }; cur = slack(f, yaw); }
+    return false;
+  };
+  for (const step of P.order) {
+    if (step === "face-yaw") {
+      const fl = P["yaw-floor-deg"], ys = []; for (let y = yaw - 2.5; ys.length === 0 || ys[ys.length - 1] > fl; y -= 2.5) ys.push(Math.max(fl, y)); if (yaw <= fl) continue;
+      let best = null; for (const y of ys) { const sl = slack(f, y); if (sl >= -1e-9) { return { ...f, faceYaw: y }; } if (!best || sl > best.sl) best = { y, sl }; }
+      if (best.sl > cur + 1e-6) { yaw = best.y; cur = best.sl; }
+    } else if (step === "spacing") { const sb = bandOf(house, plan, "form.eye-spacing"); if (stage("spacing", P["spacing-floor-E"]?.[plan] ?? sb.lo, 0.15 * (sb.hi - sb.lo))) return { ...f, faceYaw: yaw }; }
+    else if (step === "eye-size") { const eb = bandOf(house, plan, "form.eye-size"); if (stage("eW", eb.lo, 0.15 * (eb.hi - eb.lo))) return { ...f, faceYaw: yaw }; }
+    else if (step === "ring") { const rb = bandOf(house, plan, "form.eye-ring"); if (stage("ring", ctx.dark ? P["ring-floor-E"].dark : P["ring-floor-E"].light, 0.15 * (rb.hi - rb.lo))) return { ...f, faceYaw: yaw }; }
+  }
+  return { ...f, faceYaw: yaw, farOutside: true };
 }
 export function clampFaceStack(fp, c) {
   const lim = c.params["max-eye-to-mouth-H"], w = c.params["soft-width"] * lim;
