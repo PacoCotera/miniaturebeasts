@@ -258,8 +258,8 @@ class House:
         pose = self.pose
         Rh = Rz(math.radians(pose["headYawSigned"])) @ Ry(-math.radians(pose["pitch"])) @ Rx(math.radians(pose["rollSigned"]))
         self.Rh_sdf = Rh                                   # the SDF's head rotation (roll as the SDF has it: the far eye comes out LOWER)
-        # the design's rule (mesh-design-loika.md section 9): the roll's sign is chosen so the far eye sits higher on screen than the near one (the master: far 128 px, near 146 px)
-        self.Rh = Rz(math.radians(pose["headYawSigned"])) @ Ry(-math.radians(pose["pitch"])) @ Rx(-math.radians(pose["rollSigned"]))
+        # round 2: the SDF's roll sign, as the house has it (the flip that tipped the head nose-up is gone; the eye line's tilt is reported, not tuned)
+        self.Rh = Rh
         k = S
         V = lambda a: np.array(a, float) * k
         tc, tp = rig["chest"], rig["pelvis"]
