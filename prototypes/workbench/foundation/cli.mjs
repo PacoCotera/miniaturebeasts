@@ -1,10 +1,11 @@
-// Chunk 1: the three pictures, the calibration table and the rule report. node prototypes/workbench/foundation/cli.mjs [ball|head|snail|grid|nose|feet|silhouette|litter|all]
+// Chunk 1: the three pictures, the calibration table and the rule report. node prototypes/workbench/foundation/cli.mjs [ball|head|snail|grid|nose|feet|silhouette|litter|lowerface|all]
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { loadHouseFile } from "../form/house/house-file.mjs";
 import { loadSpecimens } from "./specimens.mjs";
 import { headSizeSheet, snailSheet, gridSheet, noseSheet, feetSheet, snailLitter, silhouetteSheet } from "./sheets.mjs";
 import { headSheet } from "./headsheet.mjs";
+import { lowerFaceSheet } from "./lowerface.mjs";
 import { renderSheet, loadPlaywright } from "./page.mjs";
 import { RESULTS } from "./paths.mjs";
 
@@ -20,5 +21,6 @@ if (what === "nose" || what === "all") { const n = noseSheet(house, sp.S01, RESU
 if (what === "feet" || what === "all") { const f = feetSheet(house, sp.S01, RESULTS); await shot(f.spec, "5-feet"); }
 if (what === "silhouette" || what === "all") { const q = silhouetteSheet(house, sp.S01, RESULTS); await shot(q.spec, "7-back-line"); rec.silhouette = q.tiles.map((x) => ({ hs: x.hs, at: x.profile.at, measured: x.tile.measured })); rec.silhouetteMaster = q.master; }
 if (what === "litter" || what === "all") { const l = snailLitter(house, sp.S14, RESULTS); await shot(l.spec, "6-snail-litter-96"); rec.litter = l.tiles.map(rowOf); }
+if (what === "lowerface" || what === "all") { const q = lowerFaceSheet(house, sp.S01, RESULTS); await shot(q.spec, "8-lower-face"); const strip = (n) => ({ ...n, front: undefined }); rec.lowerface = { master: strip(q.num.m), fix7: strip(q.num.a), fix8: strip(q.num.b) }; }
 writeFileSync(path.join(RESULTS, `report-${what}.json`), JSON.stringify(rec, null, 1));
 console.log(`done in ${Math.round(performance.now() - T0)} ms ->`, RESULTS);
