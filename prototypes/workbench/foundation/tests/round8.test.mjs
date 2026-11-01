@@ -86,3 +86,24 @@ test("the bib is one rolled value: lit at its upper left, shaded at its lower ri
   const cx = px.reduce((a, p) => a + p[0], 0) / px.length, cy = px.reduce((a, p) => a + p[1], 0) / px.length, mean = (f) => { const s = px.filter(f); return s.reduce((a, p) => a + p[2], 0) / s.length; };
   const ul = mean((p) => p[0] + p[1] < cx + cy - 15), lr = mean((p) => p[0] + p[1] > cx + cy + 15); assert.ok(ul - lr >= 12, `upper left ${ul.toFixed(0)}, lower right ${lr.toFixed(0)}`);
 });
+
+// ---- step 4: the smile curls under the lobe, the lobe's top front catches a light (ad-review-fix7, section 4 items 1 and 5) -----------------------------------------------------
+const tile96 = makeTile(house, sp.S01, { sizes: [304, 96], label: "x" });
+const mouthProfile = (r) => { const W = r.width, H = r.height, cols = {}; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (r.ink[y * W + x] === 6) (cols[x] ??= []).push(y); const xs = Object.keys(cols).map(Number).sort((a, b) => a - b); return { xs, mean: xs.map((x) => cols[x].reduce((a, b) => a + b, 0) / cols[x].length), thick: xs.map((x) => cols[x].length) }; };
+test("the smile curls: at 304 the near corner rises at least 3 px from the lowest point of the line, at 96 the line is at least 5 px long, curves, and is 2 px thick where the band allows", () => {
+  const p = mouthProfile(tile96.r[304]), low = Math.max(...p.mean), near = p.mean[p.mean.length - 1], far = p.mean[0];
+  assert.ok(low - near >= 3 && low - far >= 3, `the corners rise ${(low - far).toFixed(1)} (far) and ${(low - near).toFixed(1)} (near) px`);
+  const q = mouthProfile(tile96.r[96]); assert.ok(q.xs.length >= 5, `${q.xs.length} px long at 96`);
+  assert.ok(Math.max(...q.mean) - Math.min(q.mean[0], q.mean[q.mean.length - 1]) >= 1, "it reads as a curve at 96: the middle sits at least a pixel under the ends");
+  assert.equal(house.rig.ink["mouth-min-px"][96], 2.0); assert.ok(Math.min(...q.thick) >= 2 && q.thick.reduce((a, b) => a + b, 0) / q.thick.length <= 3.2, `thickness ${q.thick.join(",")}`);
+  assert.ok(tile96.measured["mouth-px-96"] >= 5);
+});
+test("the lobe's top front catches a light at least 15 levels over the dark of the brow, from its normals", () => {
+  const lum = (img, x, y) => { const i = (y * img.width + x) * 4; return 0.2126 * img.data[i] + 0.7152 * img.data[i + 1] + 0.0722 * img.data[i + 2]; };
+  const dark = (img, x0, y0, x1, y1, sx, sy) => { const v = []; for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) { const X = x - sx, Y = y - sy; if (X < 0 || Y < 0 || X >= img.width) continue; const i = (Y * img.width + X) * 4; if (img.data[i + 3] > 200 && lum(img, X, Y) < 125) v.push(lum(img, X, Y)); } return v.sort((a, b) => a - b); };
+  const q = (a, p) => a[Math.floor(a.length * p)];
+  for (const [img, sx, sy, name] of [[B304, shift, shiftY, "build"], [M304, 0, 0, "master"]]) {
+    const lobe = dark(img, 25, 135, 60, 158, sx, sy), brow = dark(img, 130, 90, 160, 120, sx, sy); assert.ok(lobe.length > 100 && brow.length > 300, `${name}: ${lobe.length} and ${brow.length} px`);
+    assert.ok(q(lobe, 0.9) - q(brow, 0.5) >= 15, `${name}: the lobe's top front reaches ${q(lobe, 0.9).toFixed(0)}, the brow's dark is ${q(brow, 0.5).toFixed(0)}`);
+  }
+});

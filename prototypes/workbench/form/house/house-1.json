@@ -1784,7 +1784,7 @@
         "48": 0.9
       },
       "mouth-min-px": {
-        "96": 3.0,
+        "96": 2.0,
         "48": 0.0
       },
       "nose-min-px": {
@@ -1845,8 +1845,10 @@
       "power": 3.0
     },
     "vinyl": {
-      "strength": 0.05,
-      "roughness": 0.5
+      "strength": 0.14,
+      "roughness": 0.5,
+      "power": 6,
+      "ad": "fix round 8, must-fix 1: a broad sheen (it was 0.05 at power 14), so the lobe's top front and the head's upper left catch a soft light 15 levels or more over the dark of the brow, as the master's do; it follows from the normals"
     },
     "floor": {
       "color": [
