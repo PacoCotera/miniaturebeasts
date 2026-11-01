@@ -115,14 +115,30 @@ FP = dict(hs="form.head", WoverH="form.head-width", DoverH="form.head-depth", ch
           gap="form.mouth-gap", carriage="form.carriage")
 
 
-def face_params(house, plan, t_of):
-    """clamps.mjs faceParams, without the clamps (Loika's type specimen has none that bites: see report.json 'clamp_delta')."""
+def soft_clamp(x, lo, hi, w):
+    """house.mjs softClamp: identity below hi - w, then hi - w e^(-(x - hi + w) / w)."""
+    if hi is not None and x > hi - w:
+        return hi - w * math.exp(-(x - hi + w) / w)
+    if lo is not None and x < lo + w:
+        return lo + w * math.exp(-(lo + w - x) / w)
+    return x
+
+
+def face_params(house, plan, t_of, nose_kind=None, clamps=True):
+    """clamps.mjs faceParams. The one clamp that moves Loika's numbers in fc80e5312 is nose-fit (noseW 0.2570 -> 0.2540, a soft ceiling at 1.1 E for a mound), which is ported from the house file's
+    own parameters; the eye-fit, forehead and far-eye clamps leave this specimen alone (the fixture test pins that). clamps=False gives the band values."""
     fp = {}
     for k, g in FP.items():
         b = house["bands"][plan].get(g)
         if b:
             fp[k] = band_value(b, t_of(g))
     fp["noseAspect"] = house["rig"]["face"]["nose-aspect"]
+    if clamps:
+        c = next((c for c in house["clamps"] if c["id"] == "nose-fit" and c.get("on")), None)
+        if c and "noseW" in fp:
+            hiE = c["params"]["by-kind"].get(nose_kind, c["params"]["max-nose-over-E"])
+            hi = hiE * fp["eW"]
+            fp["noseW"] = soft_clamp(fp["noseW"], None, hi, 0.15 * hi)
     return fp
 
 
@@ -136,7 +152,8 @@ def seed_free_pose(house, plan, spec, carriage):
     head = body - face
     assert hl <= head <= hh, "head yaw out of band: the seed-free pose needs the hash (not ported)"
     side = spec["pose"]["side"]
-    return dict(yawBody=body, yawFace=face, yawHead=head, roll=roll, pitch=carriage, side=side, cameraYaw=-side * body, headYawSigned=side * head, rollSigned=side * roll)
+    rs = house["solver"].get("roll-sign", 1)      # the house settled the roll's sign once, for both routes (solver roll-sign)
+    return dict(yawBody=body, yawFace=face, yawHead=head, roll=roll, pitch=carriage, side=side, cameraYaw=-side * body, headYawSigned=side * head, rollSigned=side * roll * rs)
 
 
 class House:
@@ -151,7 +168,8 @@ class House:
         assert self.plan == "A"
         self.look = spec["look"]
         tof = lambda g: fr["t"].get(g, 0.5)
-        self.fp = fp = face_params(house, self.plan, tof)
+        self.fp_raw = face_params(house, self.plan, tof, clamps=False)
+        self.fp = fp = face_params(house, self.plan, tof, nose_kind=self.kinds.get("nose"))
         self.rf = rf = house["rig"]["face"]
         self.rig = rig = house["rig"]["A"]
         self.light = house["light"]
@@ -159,6 +177,11 @@ class House:
         self.pose = seed_free_pose(house, self.plan, spec, fp["carriage"])
         self._head()
         self._body()
+        # the stand camera's direction to the viewer (house axes) and the head's near side (paint.mjs nearSign): the side whose eye faces the camera most
+        yaw, pit = math.radians(self.pose["yawBody"]), math.radians(self.solver["camera"]["pitch-deg"])
+        self.toward = np.array([math.cos(yaw) * math.cos(pit), math.sin(yaw) * math.cos(pit), math.sin(pit)])
+        self.toward_local = self.Rh.T @ self.toward
+        self.near_sign = int(max(self.eyes, key=lambda e: float(self.toward_local @ e["n"]))["side"])
 
     # ---- head (head.mjs buildHead), in the head's own frame ---------------------------------------------------------------------
     def _head(self):
@@ -167,18 +190,20 @@ class House:
         cheek = fp.get("cheek", 0)
         kk = self.house["kinds"]["head"][self.kinds["head"]]
         K = dict(a=D / 2, b=W / 2, c=0.5, n=kk["exponent"])
+        rearN = kk.get("rear-exponent", kk["exponent"])      # the round dome's fuller back of the skull (fix round 7): the exponent runs from the front's to the rear's behind the middle
         setBack, topTaper, chinTaper = kk.get("crown-set-back", 0), kk.get("top-taper", 0), kk.get("chin-taper", 0)
         cw, zEye0, ce, cs = rf["cheek-widen"], 0.5 - fp["eyeDrop"], rig.get("cheek-eye", rf["cheek-eye"]), rf["cheek-eye-sigma"]
+        ceb = rig.get("cheek-eye-back", rf.get("cheek-eye-back", 1))
         cfw = rig.get("cheek-forward", rf.get("cheek-forward", 0))
-        latAt = lambda z: 1 + cw * cheek * (-z) + ce * np.exp(-(((z - zEye0) / cs) ** 2))
+        latAt = lambda z, xe=0: 1 + cw * cheek * (-z) + ce * np.exp(-(((z - zEye0) / cs) ** 2)) * (ceb + (1 - ceb) * sstep(-0.9 * K["a"], 0.4 * K["a"], xe))
 
         def dK(p):
             x, y, z = p[..., 0], p[..., 1], p[..., 2]
             tz = 1 - topTaper * (z / K["c"])
             tyz = tz * (1 - chinTaper * sstep(-0.05, -0.5, z))
             xe = (x + setBack * z) / tz
-            q = np.stack([xe, y / (tyz * latAt(z) * (1 + cfw * sstep(-0.3 * K["a"], 0.9 * K["a"], xe))), z], -1)
-            return 0.92 * sd_super(q, K["a"], K["b"], K["c"], K["n"])
+            q = np.stack([xe, y / (tyz * latAt(z, xe) * (1 + cfw * sstep(-0.3 * K["a"], 0.9 * K["a"], xe))), z], -1)
+            return 0.92 * sd_super(q, K["a"], K["b"], K["c"], K["n"] + (rearN - K["n"]) * sstep(0.1 * K["a"], -0.5 * K["a"], xe))
 
         E = fp["eW"] * W
         Riris = E / 2
@@ -200,9 +225,32 @@ class House:
         self.dK = dK
         self.dM = lambda p: sd_ellipsoid(p - M["c"], M["r"])
         rM = rf["muzzle-union"]
-        assert not rf["jaw-rz"], "the jaw mass is off in the house (jaw-rz 0): the chin is the muzzle's own round"
+        # the jaw: a chin mass under the mouth (head.mjs J), on in fc80e5312 (jaw-rz 0.12). Not frozen by the AD: fix round 8 re-sets its numbers in the house file, which this reads by name.
+        mouthZ0 = noseCz - noseHalfH - fp["gap"]
+        self.J = None
+        if rf["jaw-rz"]:
+            jr = (rf["jaw-rx"], M["r"][1] * rf["jaw-width-of-muzzle"], rf["jaw-rz"])
+            self.J = dict(c=np.array([M["c"][0] + M["r"][0] + rf["jaw-forward"] - jr[0], 0, mouthZ0 - rf["jaw-drop"]]), r=jr)
+            self.dJ = lambda p: sd_ellipsoid(p - self.J["c"], self.J["r"])
+            self.dMJ = lambda p: uround(self.dM(p), self.dJ(p), rf["jaw-union"])
+        else:
+            self.dMJ = self.dM
         self.rM = rM
-        self.d0 = lambda p: uround(dK(p), self.dM(p), rM)
+        self.d0 = lambda p: uround(dK(p), self.dMJ(p), rM)      # the SDF's dHead0: the field the nose and the mouth are framed on
+        # the crown's rise (head.mjs dRise): the leaves' root sits in a small swell of the skull; the SDF's head, less the nose, the eyes and the mouth, is this
+        cr = rig.get("crest", {}).get("rise")
+        if cr:
+            root = rig["crest"]["root"]
+            self.rise = dict(c=np.array([root[0], root[1], cr[4] - cr[2]]), r=cr[:3], k=cr[3])
+            dRise = lambda p: sd_ellipsoid(p - self.rise["c"], self.rise["r"])
+        else:
+            dRise = None
+        def dh(p):
+            d = dK(p)
+            if dRise is not None:
+                d = np.where(d > 0.4, d, smin(d, dRise(p), self.rise["k"]))
+            return np.where(d > 0.4, d, uround(d, self.dMJ(p), rM))
+        self.dh = dh
         self.K, self.M, self.W, self.D = K, M, W, D
         self.g = dict(E=E, zEye=zEye, noseCz=noseCz, mouthZ=mouthZ, noseHalfH=noseHalfH, ringW=ringW, Reye=Reye, Riris=Riris, yE=yE, lidOver=fp["lid"] * E)
         # the nose: the forward axis tilted up, frame (n, lat, up)

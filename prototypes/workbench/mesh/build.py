@@ -27,7 +27,7 @@ def make_cages(H, join="A", beans=True, log=None):
     rep = {}
     cages = []
     head = build_head(H); head.fix_winding()
-    rep["head"] = fit(head, H.d0)
+    rep["head"] = fit(head, H.dh)
     feat = head_features(H, head)
     head.fix_winding()
     # to world rest coordinates (the head's origin is kc)

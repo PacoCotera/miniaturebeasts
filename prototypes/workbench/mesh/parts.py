@@ -11,6 +11,8 @@ CAGE_A = dict(  # [mesh] numbers that belong to the cage, not to the shape (desi
     row_merge=0.035,             # rows closer than this merge (H)
     cap_rim_z=0.44,              # the crown cap's rim row (H, head frame): the design says "about 0.40"; the brow row sits at 0.378
     socket_lid_scale=0.78, socket_floor_scale=0.55,
+    chin_row=0.05,               # round 3: the chin's row sits this far under the smile (H); the jaw mass of fc80e5312 hangs the chin lower than the old chart's 0.09
+    collar_drop=0.05,            # round 3: the collar row (where the head closes inside the chest) is this far under the chin row: the round dome has its jaw and chin embedded in the chest from about z -0.45
     bean_out=0.075,              # how far a bean stands out of the dome's front (H), the two extrusions together
 )
 
@@ -25,7 +27,7 @@ def build_head(H):
     kk = H.house["kinds"]["head"][H.kinds["head"]]
     sb = kk.get("crown-set-back", 0)
     ax = lambda z: np.stack([-sb * np.asarray(z, float), np.zeros_like(np.asarray(z, float)), np.asarray(z, float)], -1)
-    d0 = H.d0
+    d0 = H.dh      # the house head: the skull, the crown's rise, the muzzle and the jaw (the nose, eyes and mouth are the cage's own features)
     C = Cage("head")
     R = g["Reye"]
     zE, yE = g["zEye"], g["yE"]
@@ -40,7 +42,7 @@ def build_head(H):
     phis = np.array(phis)
     # ---- rows (head frame z), from the crown down
     rows = dict(r0=CAGE_A["cap_rim_z"], r1=zE + R + 0.04, r2=zE + 0.6 * R, r3=zE, r4=g["noseCz"],
-                r5=g["noseCz"] - g["noseHalfH"], r6=g["mouthZ"], r7=g["mouthZ"] - 0.09, r8=-0.5 + H.rig["chin-height"])
+                r5=g["noseCz"] - g["noseHalfH"], r6=g["mouthZ"], r7=g["mouthZ"] - CAGE_A["chin_row"], r8=g["mouthZ"] - CAGE_A["chin_row"] - CAGE_A["collar_drop"])
     # r4: the mean of the eye's bottom and the nose centre; r5: the nose's lower edge (the cream's dark muzzle begins there); the design's r5 "below the nose"
     # sits 0.25 gap under it and would be 0.03 from r6, so r5 is the nose's own lower edge
     rows["r4"] = 0.5 * (zE - 0.6 * R + g["noseCz"])
@@ -72,7 +74,7 @@ def head_features(H, C):
     relative to the fitted surface. Returns the feature record (vertex sets for creases, paint attributes and the leaves' root)."""
     g, rf, fp = H.g, H.rf, H.fp
     A = C.arr()
-    d0 = H.d0
+    d0 = H.dh      # the house head: the skull, the crown's rise, the muzzle and the jaw (the nose, eyes and mouth are the cage's own features)
     rid, G = C.rings, C.crown
     feat = {}
     # the crown socket: faces (a = 0, b = 2 and 3) of the crown cap: vertices a 0-1, b 2-4
