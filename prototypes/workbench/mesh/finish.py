@@ -17,7 +17,8 @@ def write_png(path, rgba8):
     def chunk(t, d):
         c = struct.pack(">I", len(d)) + t + d
         return c + struct.pack(">I", zlib.crc32(t + d) & 0xFFFFFFFF)
-    open(path, "wb").write(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 6, 0, 0, 0)) + chunk(b"IDAT", zlib.compress(raw, 9)) + chunk(b"IEND", b""))
+    with open(path, "wb") as fh:
+        fh.write(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 6, 0, 0, 0)) + chunk(b"IDAT", zlib.compress(raw, 9)) + chunk(b"IEND", b""))
 
 
 def read_png(path):
@@ -228,7 +229,8 @@ def render_sprite(sc, path, floor_obj, samples):
     out = np.dstack([np.clip(rgb, 0, 1), a])
     write_png(path, np.round(out * 255).astype(np.uint8))
     os.remove(pa); os.remove(pb)
-    return hashlib.sha256(open(path, "rb").read()).hexdigest()[:16]
+    with open(path, "rb") as fh:
+        return hashlib.sha256(fh.read()).hexdigest()[:16]
 
 
 # ---------------------------------------------------------------- the five light measures (design §10), on the stand sprite
