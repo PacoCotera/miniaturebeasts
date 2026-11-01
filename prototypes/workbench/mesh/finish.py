@@ -313,6 +313,44 @@ def add_eyes(sc, H, level_obj, offset=0.005):
     return objs
 
 
+def add_lids(sc, H):
+    """Round 2 (AD item 6): each eye has a lid of its own, a dark disc lying in the socket just below the eye's disc (hidden by it at rest). Its `blink.L`/`blink.R` morph target raises
+    it to the skin (4 mm under it, with a small swell), so at the peak the socket is shut by a lid in front of the disc, whatever angle it is seen from. The skin itself does not move."""
+    objs = []
+    for eye, name in zip(H.eyes, ("L", "R")):
+        C = PT.disc_cage(H, eye, grid=14, span=1.45)
+        V = np.array(C.V)
+        d = V - eye["c"]
+        u, v = d @ eye["lat"], d @ eye["up"]
+        h = skin_height(sc, H, eye, u, v, g=15)
+        rr = np.hypot(u, v) / (eye["Reye"] * 1.45)
+        base = [H.kc + eye["c"] + uu * eye["lat"] + vv * eye["up"] + eye["n"] * (hh - EYE_SINK - 0.014) for uu, vv, hh in zip(u, v, h)]
+        shut = [H.kc + eye["c"] + uu * eye["lat"] + vv * eye["up"] + eye["n"] * (hh - 0.004 + 0.007 * (1 - r * r)) for uu, vv, hh, r in zip(u, v, h, rr)]
+        me = bpy.data.meshes.new("lid." + name)
+        me.from_pydata([tuple(x) for x in base], [], [tuple(f) for f in C.F])
+        me.update()
+        me.polygons.foreach_set("use_smooth", [True] * len(me.polygons))
+        ob = bpy.data.objects.new("lid." + name, me)
+        ob.parent = sc.root
+        sc.scene.collection.objects.link(ob)
+        ob.shape_key_add(name="Basis", from_mix=False)
+        kb = ob.shape_key_add(name="blink." + name, from_mix=False)
+        for i, p in enumerate(shut):
+            kb.data[i].co = tuple(p)
+        mat = bpy.data.materials.new("lid." + name)
+        mat.use_nodes = True
+        b = mat.node_tree.nodes["Principled BSDF"]
+        b.inputs["Base Color"].default_value = (*lin(H.look["body"]), 1)
+        b.inputs["Roughness"].default_value = H.light["vinyl"]["roughness"]
+        b.inputs["Specular IOR Level"].default_value = 0.25
+        me.materials.append(mat)
+        vg = ob.vertex_groups.new(name="head")
+        vg.add(list(range(len(base))), 1.0, "REPLACE")
+        am = ob.modifiers.new("Armature", "ARMATURE"); am.object = sc.rig
+        objs.append(ob)
+    return objs
+
+
 def shadow_plane(sc, H):
     me = bpy.data.meshes.new("floor")
     r = 6.0

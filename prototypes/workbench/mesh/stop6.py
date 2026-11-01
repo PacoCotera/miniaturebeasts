@@ -18,8 +18,7 @@ def _verts(ob):
 
 
 def shape_keys(sc, H):
-    """breath: the breathing band moves out along the rest normals by 3 % of the local section radius. blink.L/R: the skin above each eye slides down over the
-    disc to the lower lid line (and 0.012 H out, so it passes in front of the disc). Both are morph targets of the baked level-2 mesh."""
+    """breath: the breathing band moves out along the rest normals by 3 % of the local section radius, a morph target of the baked level-2 mesh. The blink is on the lids (finish.add_lids)."""
     ob = sc.final
     me = ob.data
     P = np.array([v.co[:] for v in me.vertices])
@@ -36,21 +35,6 @@ def shape_keys(sc, H):
     kb = ob.shape_key_add(name="breath", from_mix=False)
     for i, p in enumerate(P + N * (0.03 * rloc * w)[:, None]):
         kb.data[i].co = p
-    # blink
-    for side, e in (("L", H.eyes[0]), ("R", H.eyes[1])):
-        c = H.kc + e["c"]
-        d = P - c
-        u, v, n = d @ e["lat"], d @ e["up"], d @ e["n"]
-        R = e["Reye"]
-        r = np.hypot(u, v)
-        fade = sstep(1.55 * R, 1.2 * R, r) * (np.abs(n) < 0.25) * (head_w > 0.5)
-        lo = -0.9 * R
-        v2 = np.where(v > lo, lo + (v - lo) * 0.10, v)
-        shift = (v - v2) * fade
-        kb = ob.shape_key_add(name="blink." + side, from_mix=False)
-        new = P - np.outer(shift, e["up"]) + np.outer(0.012 * fade, e["n"])
-        for i, p in enumerate(new):
-            kb.data[i].co = p
     return ob.data.shape_keys
 
 
@@ -123,8 +107,9 @@ def make_clips(sc, H, fps=24):
     # shape-key clips on the mesh's Key, in NLA tracks of the same names
     key = sc.final.data.shape_keys
     key.animation_data_create()
-    def kclip(name, keys):
-        act = bpy.data.actions.new(name + "_key")
+    def kclip(name, keys, key=key):
+        key.animation_data_create()
+        act = bpy.data.actions.new(f"{name}_key.{len(bpy.data.actions)}")
         key.animation_data.action = act
         for f, vals in keys:
             for k, v in vals.items():
@@ -136,7 +121,8 @@ def make_clips(sc, H, fps=24):
         for kb in key.key_blocks:
             kb.value = 0
     kclip("breathe", [(1, {"breath": 0}), (37, {"breath": 1}), (73, {"breath": 0})])
-    kclip("blink", [(1, {"blink.L": 0, "blink.R": 0}), (3, {"blink.L": 1, "blink.R": 1}), (5, {"blink.L": 0, "blink.R": 0})])
+    for lid, nm in zip(sc.lids, ("blink.L", "blink.R")):
+        kclip("blink", [(1, {nm: 0}), (3, {nm: 1}), (5, {nm: 0})], lid.data.shape_keys)
     for t in rig.animation_data.nla_tracks:
         t.mute = True
     reset_pose(rig)

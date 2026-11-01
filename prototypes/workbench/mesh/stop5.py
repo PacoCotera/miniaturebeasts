@@ -11,6 +11,7 @@ def build_full(level=3, tex_dir=None):
     sc.leaves = FN.new_leaf_object(sc, H)
     sc.final = FN.bake(sc, H, level)
     sc.eyes = FN.add_eyes(sc, H, sc.final)
+    sc.lids = FN.add_lids(sc, H)
     sc.floor = FN.shadow_plane(sc, H)
     return H, sc, rep
 
