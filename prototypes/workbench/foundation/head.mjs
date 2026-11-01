@@ -35,11 +35,13 @@ export function buildHead(house, plan, kinds, fp) {
   let M = null;
   if (hasM) {
     // the forward projection saturates at `muzzle-projection-cap` (a snout, not a bill: AD fix round 2, must-fix 10) and what it gives up goes into width, so muzzle t 1 is a bigger round snout
-    const cap = rf["muzzle-projection-cap"], proj = cap * Math.tanh(fp.projection / cap), ry = ((fp.muzzleW * W) / 2) * (1 + rf["muzzle-widen"] * ((fp.projection - proj) / cap)), rz = fp.muzzleH / 2, rx = 0.12 + 0.5 * proj, zc = noseCz - rf["muzzle-centre-drop"] - 0.12 * fp.muzzleH;
+    const cap = rf["muzzle-projection-cap"], proj = cap * Math.tanh(fp.projection / cap), ry = ((fp.muzzleW * W) / 2) * (1 + rf["muzzle-widen"] * ((fp.projection - proj) / cap)), rz = fp.muzzleH / 2, rx = rf["muzzle-rx"][0] + rf["muzzle-rx"][1] * proj, zc = noseCz - rf["muzzle-centre-drop"] - 0.12 * fp.muzzleH;
     const xs = findFront(dK, 0, zc);
     M = { c: [xs + proj - rx, 0, zc], r: [rx, ry, rz] };
   }
-  const dM = M ? (x, y, z) => sdEllipsoid(x - M.c[0], y - M.c[1], z - M.c[2], M.r[0], M.r[1], M.r[2]) : null;
+  // the muzzle kind's section: 2 is an ellipsoid, higher is squarer (the kind's own number in the house file)
+  const nM = house.kinds.muzzle?.[kinds.muzzle]?.exponent ?? 2;
+  const dM = M ? (nM === 2 ? (x, y, z) => sdEllipsoid(x - M.c[0], y - M.c[1], z - M.c[2], M.r[0], M.r[1], M.r[2]) : (x, y, z) => sdSuper(x - M.c[0], y - M.c[1], z - M.c[2], M.r[0], M.r[1], M.r[2], nM)) : null;
   const rM = rf["muzzle-union"];
   // the jaw: a chin mass under the mouth, its front a little behind the muzzle's round front, so the chin overhangs the chest and the cream can run over it
   let J = null;
@@ -61,8 +63,8 @@ export function buildHead(house, plan, kinds, fp) {
     const y = side * yE, x = findFront(dK, y, zEye), n = gradient(dK, x, y, zEye, 1e-3), fr = surfaceFrame([x, y, zEye], n);
     return { side, ...fr, E, Riris, Reye, ringW, lidOver, pupilR: fp.pupil * Riris, aspect, Rsock: Reye * (1 + rf["socket-margin"]) };
   });
-  const depth = rf["socket-depth"], kS = rf["socket-soften"];
-  const carve = (e) => (x, y, z) => { const X = x - e.c[0], Y = y - e.c[1], Z = z - e.c[2], ql = X * e.lat[0] + Y * e.lat[1] + Z * e.lat[2], qu = X * e.up[0] + Y * e.up[1] + Z * e.up[2], qn = X * e.n[0] + Y * e.n[1] + Z * e.n[2]; return Math.max(Math.hypot(ql, qu / aspect) - e.Rsock, -(qn + depth)); };
+  const depth = rf["socket-depth"], kS = rf["socket-soften"], socketH = rf["socket-height"] ?? 9; // the socket is a recess in the skin, not a tunnel: it cuts what stands up to `socket-height` over the skull, so a muzzle lobe in front of the eye keeps its own surface
+  const carve = (e) => (x, y, z) => { const X = x - e.c[0], Y = y - e.c[1], Z = z - e.c[2], ql = X * e.lat[0] + Y * e.lat[1] + Z * e.lat[2], qu = X * e.up[0] + Y * e.up[1] + Z * e.up[2], qn = X * e.n[0] + Y * e.n[1] + Z * e.n[2]; return Math.max(Math.hypot(ql, qu / aspect) - e.Rsock, -(qn + depth), qn - socketH); };
   const carves = eyes.map(carve);
 
   // ---- the mouth: a thin tube along the curve under the nose, cut into the surface -----------------------------------------------------------
@@ -83,9 +85,11 @@ export function buildHead(house, plan, kinds, fp) {
   // the crown's rise: the leaves' root is sunk in a small swell of the skull, so the top is a dome with one high point and no leaf lies flush on a straight run (AD fix round 5, must-fix 3)
   const cr = rp.crest?.rise, dRise = cr ? (x, y, z) => sdEllipsoid(x - rp.crest.root[0], y - rp.crest.root[1], z - (cr[4] - cr[2]), cr[0], cr[1], cr[2]) : null;
   const faceBox = { c: [Math.max(xsN, 0.2), 0, (zEye + mouthZ) / 2], r: 0.5 * W + 0.1 };
+  // the far-field shortcut: beyond 0.4 of the skull the exact field is skipped, but only where the muzzle and the jaw are not near either (they stand well off the skull now); without this the field jumped where they begin and left a line across the cream
+  const mjSpheres = [M, J].filter(Boolean).map((q) => ({ c: q.c, r: Math.max(...q.r) * 1.08 })), dMJb = (x, y, z) => { let b = 1e9; for (const q of mjSpheres) b = Math.min(b, Math.hypot(x - q.c[0], y - q.c[1], z - q.c[2]) - q.r); return b; };
   const dHead = (x, y, z) => {
     let d = dK(x, y, z);
-    if (d > 0.4) return d;
+    if (d > 0.4) { const b = dMJb(x, y, z); if (b > 0.4) return Math.min(d, b); }
     if (dRise) d = sMin(d, dRise(x, y, z), cr[3]);
     if (dMJ) d = uRound(d, dMJ(x, y, z), rM);
     if (noseOn) d = sMin(d, dNose(x, y, z), kN);

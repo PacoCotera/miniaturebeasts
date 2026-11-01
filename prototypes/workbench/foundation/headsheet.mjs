@@ -9,6 +9,7 @@ import { crop, loadImage } from "./imgtools.mjs";
 import { MASTER } from "./paths.mjs";
 import { frameMeasures, screenMeasures, irisCentres, headSilhouette, contractFromOutline, projector, arcMeasures, rearStep } from "./headcontract.mjs";
 
+const leftAt = (img, y) => { for (let x = 0; x < img.width; x++) if (img.data[(y * img.width + x) * 4 + 3] > 128) return x; return null; };
 const f1 = (v, d = 1) => (v === null || v === undefined || Number.isNaN(v) ? "-" : Number(v).toFixed(d));
 const masterBox = (img) => { let t = Infinity, b = -Infinity; for (let y = 0; y < img.height; y++) for (let x = 0; x < img.width; x++) if (img.data[(y * img.width + x) * 4 + 3] >= 128) { t = Math.min(t, y); b = Math.max(b, y); } return { height: b - t }; };
 // the head's screen box in a render, with a margin, clipped to the picture
@@ -28,10 +29,10 @@ function squareView(house, spec, ex, camYaw) {
 export function headSheet(house, spec) {
   const t = makeTile(house, spec, { label: "x", sizes: [304, 96, 48] }), m = masterOf(spec.id), ref = masterBox(m[304]), sc = t.ex.scene;
   // the build's head silhouette (from its field) at 304 and 96, for the crops and the contract
-  const ext = coarse(sc, t.camera, { n: 240 }), sil304 = headSilhouette(sc, projector(sc, t.camera, 304, ref, ext)), sil96 = headSilhouette(sc, projector(sc, t.camera, 96, ref, ext), { W: 96, H: 88, step: 0.02 });
+  const ext = coarse(sc, t.camera, { n: 240 }), sil304 = headSilhouette(sc, projector(sc, t.camera, 304, ref, ext), { step: 0.012 }), sil96 = headSilhouette(sc, projector(sc, t.camera, 96, ref, ext), { W: 96, H: 88, step: 0.02 });
   const geo = contractFromOutline(sil304), fm = frameMeasures(sc.head), S = screenMeasures(t.r[304]), M = screenMeasures(m[304]), Ib = irisCentres(t.r[304]), Im = irisCentres(m[304]);
   // fix round 7: the two sets of eyes are the landmark the pictures are laid over (the front outline and the rear are read in the master's frame with the eye mid-points aligned; the raw columns differ by the body's length)
-  const eyeShift = Math.round(((Im.far.x + Im.near.x) - (Ib.far.x + Ib.near.x)) / 2), gapPx = (I) => Math.hypot(I.near.x - I.far.x, I.near.y - I.far.y);
+  const eyeShift = Math.round(((Im.far.x + Im.near.x) - (Ib.far.x + Ib.near.x)) / 2), shiftY = Math.round(((Im.far.y + Im.near.y) - (Ib.far.y + Ib.near.y)) / 2), gapPx = (I) => Math.hypot(I.near.x - I.far.x, I.near.y - I.far.y);
   const arc = arcMeasures(sil304.top), stepM = rearStep(M.top), stepB = rearStep(S.top.map((v, x, a) => a[x - eyeShift] ?? null).map((v) => v)), proj0 = projector(sc, t.camera, 304, ref, ext), axis = [proj0([0, 0, 0.5]), proj0([0, 0, -0.5])], headPx = Math.hypot(axis[0][0] - axis[1][0], axis[0][1] - axis[1][1]);
   const shift = M.forward.x - S.forward.x, edgeErr = [100, 110, 120, 130, 140, 150, 160, 170, 180, 190].map((y) => (S.leftEdge[y] ?? 0) + eyeShift - (M.leftEdge[y] ?? 0)), worst = Math.max(...edgeErr.map(Math.abs)), rms = Math.sqrt(edgeErr.reduce((a, d) => a + d * d, 0) / edgeErr.length);
   const front = squareView(house, spec, t.ex, 0), side = squareView(house, spec, t.ex, -90);
@@ -61,11 +62,11 @@ export function headSheet(house, spec) {
     [`Width at the eye line ${f1(fm.W, 2)} H (1.40 to 1.50), eye centres ${f1(yE2, 2)} H apart (0.98), height over width ${f1(fm.heightOverWidth, 2)} (0.68 or more), depth ${f1(fm.depth, 2)}`, fm.W < 1.4 || fm.W > 1.5 || fm.heightOverWidth < 0.68 ? "bad" : "dim"],
     [`Width 0.30 above the eye line ${f1(fm.wUp30, 2)} W (0.72 or more), 0.35 below ${f1(fm.wDown35, 2)} W`, fm.wUp30 < 0.72 ? "bad" : "dim"],
     [`Crown at ${f1(fm.crownShare, 2)} of the skull's length (0.45 to 0.55), brow ${f1(fm.brow, 2)} H outside the chord (0.06), rear-most point at z ${f1(fm.rearZ, 2)} (0 to -0.15)`, "dim"],
-    [`Snout stands ${f1(fm.snout, 2)} H proud (0.16 or less), length ${f1(fm.length, 2)} H (1.25 or less)`, fm.length > 1.25 ? "bad" : "dim"],
-    [`Muzzle front ${f1(fm.muzzleBelowCrown, 2)} H under the crown (0.73)`, "dim"],
+    [`The muzzle lobe stands ${f1(fm.snout, 2)} H proud of the skull (0.24 or less since round 8); length with it ${f1(fm.length, 2)} H (the 1.25 cap was withdrawn in round 7)`, fm.snout > 0.241 ? "bad" : "dim"],
+    [`Lobe and lower face on the screen, the master then the build: front outline at y 178, 194, 210 is ${[178, 194, 210].map((y) => leftAt(m[304], y)).join(", ")} and ${[178, 194, 210].map((y) => (leftAt(t.r[304], y - shiftY) ?? 0) + eyeShift).join(", ")} (AD: 29 +- 3, 48 +- 4, 59 +- 4); the lobe's tip at x ${Math.min(...[150, 154, 158, 162, 166].map((y) => leftAt(m[304], y)))} and ${Math.min(...[150, 154, 158, 162, 166].map((y) => (leftAt(t.r[304], y - shiftY) ?? 999) + eyeShift))}`, [178, 194, 210].some((y, k) => Math.abs((leftAt(t.r[304], y - shiftY) ?? 0) + eyeShift - [29, 48, 59][k]) > 4) ? "bad" : "dim"],
   ];
   const nums = { pics: [], lines: rows.slice(0, 10) }, frame = { pics: [], lines: rows.slice(10) };
-  return { spec: sheet("The head: the master beside the round head, and the build square to the camera", cells, 4, { cellW: 292, note: "There is no front or side master, only this three-quarter view, so front and side are the build's alone. The crown of the master is under its leaves; both are read the same way, with leaves left out by hue." }), numbersSpec: sheet("The head's numbers: screen contract at 304 and head frame", [nums, frame], 2, { cellW: 700 }), tile: t, numbers: { fm, geo, edgeErr, eyeShift, tilt: [Im.tiltDeg, Ib.tiltDeg], gap: [gM, gB], far: ratio, forward: [M.forward.y, S.forward.y], rear180: [M.top[180], S.top[180 - eyeShift] ?? null], arc, step: [stepM, stepB], headPx, yE2, rms } };
+  return { spec: sheet("The head: the master beside the round head, and the build square to the camera", cells, 4, { cellW: 292, note: "There is no front or side master, only this three-quarter view, so front and side are the build's alone. The crown of the master is under its leaves; both are read the same way, with leaves left out by hue." }), numbersSpec: sheet("The head's numbers: screen contract at 304 and head frame", [nums, frame], 2, { cellW: 700 }), tile: t, numbers: { fm, geo, edgeErr, eyeShift, tilt: [Im.tiltDeg, Ib.tiltDeg], gap: [gM, gB], far: ratio, forward: [M.forward.y, S.forward.y], rear180: [M.top[180], S.top[180 - eyeShift] ?? null], tipX: [Math.min(...[150, 154, 158, 162, 166].map((y) => leftAt(m[304], y))), Math.min(...[150, 154, 158, 162, 166].map((y) => (leftAt(t.r[304], y - shiftY) ?? 999) + eyeShift))], chin: [[178, 194, 210].map((y) => leftAt(m[304], y)), [178, 194, 210].map((y) => (leftAt(t.r[304], y - shiftY) ?? 0) + eyeShift)], arc, step: [stepM, stepB], headPx, yE2, rms } };
 }
 
 // the round head against the AD's contract as a markdown table (the calibration table's last section): what, the AD's target, the master, the build
@@ -87,11 +88,12 @@ export function contractMarkdown(numbers) {
   row("width 0.30 above the eye line, over W", "0.72 or more", "-", g(fm.wUp30));
   row("width 0.35 below the eye line, over W", "no target in round 7", "-", g(fm.wDown35));
   row("skull depth, H", "no target in round 7 (1.05 to 1.10 in round 6)", "-", g(fm.depth));
-  row("length with the snout, H", "1.25 or less", "-", g(fm.length));
+  row("length with the snout, H", "no cap (the 1.25 gate was withdrawn in round 7)", "-", g(fm.length));
   row("crown, share of the skull's length from the back", "0.45 to 0.55", "-", g(fm.crownShare));
   row("brow outside the chord, H", "0.06 or more", "-", g(fm.brow));
-  row("snout proud of the skull's front, H", "0.16 or less", "-", g(fm.snout));
-  row("muzzle front under the crown, H", "0.73 plus or minus 0.03", "-", g(fm.muzzleBelowCrown));
+  row("muzzle lobe proud of the skull's front, H", "0.24 or less (0.16 before round 8)", "-", g(fm.snout));
+  row("lobe's tip x and the row of the forward-most point, 304", "x 20, row 155 to 165", `${n.tipX[0]} and ${g(n.forward[0], 0)}`, `${n.tipX[1]} and ${g(n.forward[1], 0)}`);
+  row("front outline at y 178, 194, 210 (master's frame)", "29 +- 3, 48 +- 4, 59 +- 4", n.chin[0].join(", "), n.chin[1].join(", "));
   row("rear-most point of the skull, z", "0 to -0.15", "-", g(fm.rearZ));
   L.push("");
   return L.join("\n");

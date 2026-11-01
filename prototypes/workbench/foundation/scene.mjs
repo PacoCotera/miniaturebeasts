@@ -28,15 +28,16 @@ export function buildScene(house, spec) {
     // the stand-in body is in the stature's own units (every number in the rig's A block is a fraction of S), so the same body stands under every head size: only the head changes.
     // The back is a rail: the chest's top, then the pelvis's top, falling from the nape to a round rump; the torso is the smooth union of the two ellipsoids
     const k = S, V = (a) => a.map((v) => v * k), tc = rig.chest, tp = rig.pelvis;
-    // the body is placed under the head by the chin: its x is shifted until the jaw overhangs the chest's front by `chin-overhang` (H), whatever the head's size (the sheet's
+    // the body is placed under the head by the chin (the jaw's own height, or `chin-height` over the skull's bottom when there is no jaw): its x is shifted until the jaw overhangs the chest's front by `chin-overhang` (H), whatever the head's size (the sheet's
     // three head sizes then differ by the head alone, the chin always resting on the chest)
-    const zJaw = -0.5 + rig["chin-height"], zw = kc[2] + zJaw, fa = frameOf(kc, Ry(-rad(pose.pitch))), hfx = findFront((x, y, z) => { const q = toLocal(fa, x, y, z); return head.d0(q[0], q[1], q[2]); }, 0, zw, kc[0]) - kc[0], zcl = clamp(zw, tc.c[1] * k - tc.r[2] * k * 0.9, tc.c[1] * k + tc.r[2] * k * 0.9);
+    const chinM = head.J, zJaw = chinM ? chinM.c[2] : -0.5 + rig["chin-height"], zw = kc[2] + zJaw, fa = frameOf(kc, Ry(-rad(pose.pitch))), hfx = findFront((x, y, z) => { const q = toLocal(fa, x, y, z); return head.d0(q[0], q[1], q[2]); }, 0, zw, kc[0] + (chinM ? chinM.c[0] : 0)) - kc[0], zcl = clamp(zw, tc.c[1] * k - tc.r[2] * k * 0.9, tc.c[1] * k + tc.r[2] * k * 0.9);
     const chestFront0 = tc.c[0] * k + tc.r[0] * k * Math.sqrt(Math.max(0, 1 - ((zcl - tc.c[1] * k) / (tc.r[2] * k)) ** 2)), sx = hfx + kc[0] - rig["chin-overhang"] - chestFront0;
     const cc = [tc.c[0] * k + sx, 0, tc.c[1] * k], cr = V(tc.r), pc = [tp.c[0] * k + sx, 0, tp.c[1] * k], pr = V(tp.r), zb = Math.max(cc[2] + cr[2], pc[2] + pr[2]);
     const dC = ell(cc, cr), dP = ell(pc, pr), uB = rig["union-body"] * k;
     const pawR = V(rig.paw), nToe = rig["toe-count"], legs = [], turn = rad(rig["paw-turn"]), tr = V(rig["toe-radii"]);
     for (const [fore, L] of [[true, rig.fore], [false, rig.hind]]) for (const sd of [1, -1]) {
-      const cx = L.x * k + sx, y = sd * L.y * k, lead = fore && sd === 1 ? rig["lead-paw"] * k : 0, px = cx + lead + L["paw-dx"] * k, zTop = L.top * k;
+      // the far leg steps forward (`far-forward`, in S) and leans: its top stays `far-lean` behind its paw, so the leg's front runs from the throat down and out, as the master's does (fix round 8)
+      const far = sd === -1 ? (L["far-forward"] ?? 0) * k : 0, cx0 = L.x * k + sx + far, cx = cx0 - (sd === -1 ? (L["far-lean"] ?? 0) * k : 0), y = sd * L.y * k, lead = fore && sd === 1 ? rig["lead-paw"] * k : 0, px = cx0 + lead + L["paw-dx"] * k, zTop = L.top * k;
       const mass = V(L.mass), sh = ell([cx, y * 1.02, zTop], mass), top = [cx, y, zTop], ank = [px, y, pawR[2] * 1.7];
       // the elbow (or the hock): a round mass behind the leg's upper third, so the leg is not an even column: a shoulder, an elbow, a taper to the paw
       const el = L.elbow, dEl = ell([cx + el[0] * k, y, zTop + el[1] * k], V(el.slice(2, 5)));
@@ -63,7 +64,7 @@ export function buildScene(house, spec) {
       const c = [base[0] + dl[0] * len / 2, base[1] + dl[1] * len / 2, base[2] + dl[2] * len / 2], f = { c, ax: dl, aw: across, an };
       return { c, len, wid, thick: cr0.thick, f };
     });
-    const dLeaf = (l) => (x, y, z) => { const X = x - l.c[0], Y = y - l.c[1], Z = z - l.c[2], f = l.f, u = X * f.ax[0] + Y * f.ax[1] + Z * f.ax[2], v = X * f.aw[0] + Y * f.aw[1] + Z * f.aw[2], w = X * f.an[0] + Y * f.an[1] + Z * f.an[2]; const t = clamp(u / (l.len / 2), -1, 1), cr = rig.crest["tip-power"], taper = Math.pow(Math.max(0, 1 - Math.abs(t) ** cr), 1 / cr) * (1 - rig.crest["tip-narrow"] * t); return sdEllipsoid(u, v, w, l.len / 2, (l.wid / 2) * Math.max(taper, rig.crest["base-min"]), l.thick / 2) * 0.9; };
+    const dLeaf = (l) => (x, y, z) => { const X = x - l.c[0], Y = y - l.c[1], Z = z - l.c[2], f = l.f, u = X * f.ax[0] + Y * f.ax[1] + Z * f.ax[2], v = X * f.aw[0] + Y * f.aw[1] + Z * f.aw[2], w = X * f.an[0] + Y * f.an[1] + Z * f.an[2]; const t = clamp(u / (l.len / 2), -1, 1), cr = rig.crest["tip-power"], taper = Math.pow(Math.max(0, 1 - Math.abs(t) ** cr), 1 / cr) * (1 - rig.crest["tip-narrow"] * t), vn = v / (l.wid / 2), cup = (rig.crest.camber ?? 0) * l.thick * vn * vn + (rig.crest.curl ?? 0) * l.thick * t * t; return sdEllipsoid(u, v, w - cup, l.len / 2, (l.wid / 2) * Math.max(taper, rig.crest["base-min"]), l.thick / 2) * 0.9; }; // a leaf is cupped across (camber) and curled along (curl), in leaf thicknesses, so the light rolls over it and it is not a flat plate (fix round 8)
     const dLeaves = leaves.map(dLeaf);
     const dCrestLocal = (x, y, z) => { let d = 1e9; for (const f of dLeaves) d = Math.min(d, f(x, y, z)); return d; };
     const dCrest = (x, y, z) => { const q = toLocal(hf, x, y, z); return dCrestLocal(q[0], q[1], q[2]); };
@@ -72,9 +73,9 @@ export function buildScene(house, spec) {
     const dNoHead = (x, y, z) => { const b = dBody(x, y, z); return b; };
     // the head's bounding shell may only cut where the round union no longer reads the head's distance: past 1.3 x the widest union radius, or a crease is cut across the cream under the chin (fix round 7, must-fix 7)
     const hbCut = Math.max(0.35, 1.3 * Math.max(rig["union-neck-low"], rig["union-neck"]));
-    const dHeadBody = (x, y, z) => { const hb = Math.sqrt((x - headBound[0][0]) ** 2 + (y - headBound[0][1]) ** 2 + (z - headBound[0][2]) ** 2) - headBound[1], dh = hb > hbCut ? hb : dHeadW(x, y, z); return uRound(dh, dNoHead(x, y, z), mix(rig["union-neck-low"], rig["union-neck"], sstep(rig["union-neck-z"][0], rig["union-neck-z"][1], z - kc[2]))); }; // the join is a tight turn above the eye line (the nape notch) and a full roll under the chin (the throat), by the height over the skull's centre
+    const dHeadBody = (x, y, z) => { const hb = Math.sqrt((x - headBound[0][0]) ** 2 + (y - headBound[0][1]) ** 2 + (z - headBound[0][2]) ** 2) - headBound[1], dh = hb > hbCut ? hb : dHeadW(x, y, z); let d = uRound(dh, dTorso(x, y, z), mix(rig["union-neck-low"], rig["union-neck"], sstep(rig["union-neck-z"][0], rig["union-neck-z"][1], z - kc[2]))); for (const l of legs) d = uRound(d, l.d(x, y, z), uB); return d; }; // the round join of head and body is with the TORSO only (the legs join the whole with their own small radius): the far leg stands forward now, and a throat radius of 0.4 reached across to it and left a thin sheet between the chin and the leg. The join is a tight turn above the eye line (the nape notch) and a full roll under the chin (the throat), by the height over the skull's centre
     parts.head = dHeadW;
-    
+
     bounds = { lo: [-2.3, -1.1, -0.02], hi: [1.2, 1.1, S + 1.0] };
     // the round union with the crest: the crest is a separate small part rooted in the head (smooth, small k)
     dAll = (x, y, z) => { const d = dHeadBody(x, y, z), c = dCrestB(x, y, z); return sMin(d, c, rig.crest["root-blend"]); };
@@ -87,7 +88,7 @@ export function buildScene(house, spec) {
     };
     headWeight = (x, y, z) => sstep(0.05, -0.05, dHeadW(x, y, z) - dNoHead(x, y, z));
     // a leg is dark skin: how much a point belongs to a leg rather than the torso (smooth, so the cream bib's edge at the shoulder is one soft curve, not a cut)
-    legWeight = (x, y, z) => { if (z > 0.75 * S) return 0; let dl = 1e9; for (const l of legs) dl = Math.min(dl, l.d(x, y, z)); const le = rig["leg-cream-edge"]; return sstep(le[0] * S, le[1] * S, dTorso(x, y, z) - dl); };
+    legWeight = (x, y, z) => { if (z > 0.75 * S) return 0; let dl = 1e9; for (const l of legs) dl = Math.min(dl, l.d(x, y, z)); const le = rig["leg-cream-edge"], lr = rig["leg-cream-reach"]; return sstep(le[0] * S, le[1] * S, dTorso(x, y, z) - dl) * (lr ? 1 - sstep(lr[0] * S, lr[1] * S, dl) : 1); }; // only where the leg's own skin is: a point that is merely nearer the leg than the torso (the chin, now that the far leg steps forward) is not the leg's
   } else if (plan === "D") {
     const nS = rig.segments, Lk = body.length / 1.6, T = body.thick, scaleR = T / 2 / rig["seg-radius"][0], rr = rig["seg-radius"].map((v) => v * scaleR), segs = [];
     // the line of action rises from the tail into the head: segments differ by 15 to 35 %, each one's top is higher than the next one back, the first runs under the head

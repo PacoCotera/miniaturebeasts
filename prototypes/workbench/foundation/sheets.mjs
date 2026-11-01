@@ -54,7 +54,7 @@ const masterCell = (id, name, l2 = "Signed art") => ({ pics: masterPics(id), lin
 export const saveTile = (dir, name, t) => { mkdirSync(dir, { recursive: true }); for (const s of Object.keys(t.r)) saveImage(path.join(dir, `${name}-${SIZES[s].join("x")}.png`), t.r[s]); };
 
 // ---- the sheets: each returns { spec } (a sheet spec for page.mjs's renderSheet) and its tiles ---------------------------------------------
-export const HEAD_SIZES = [0.45, 0.52, 0.60], EYE_OUT = 0.9; // row 1: the type specimen's own eye size (the master's E/Wf 0.30); row 2: eye t 0.9, every clamp off, outside the house
+export const HEAD_SIZES = [0.45, 0.47, 0.52, 0.60], EYE_OUT = 0.9; // row 1: the type specimen's own eye size (the master's E/Wf 0.30); row 2: eye t 0.9, every clamp off, outside the house
 export function headSizeSheet(house, spec, outDir) {
   const cells = [], tiles = [], hb = bandOf(house, "A", "form.head"), et1 = spec.t["form.eye-size"];
   for (const [et, open] of [[et1, false], [EYE_OUT, true]]) {
@@ -70,7 +70,7 @@ export function headSizeSheet(house, spec, outDir) {
     }
   }
   const grown = tiles.some((x) => x.et !== et1 && x.et !== EYE_OUT); // the caption drops the 0.45 sentence when that tile holds the master's eye
-  return { spec: sheet("Head size choice: Loika beside the master at 304, 96 and 48", cells, 4, { note: `Loika's head at three sizes on the same body, each with her own eye. With the master's crown read at the leaf bases (fix round 7) its head is about 0.47 of its height, between the first two; Loika is built at 0.47. 0.60 is the top of the band.${grown ? " At 0.45 her eye has to grow a little to stay readable at 96." : ""} Row 2 shows a bigger eye, outside the house.` }), tiles };
+  return { spec: sheet("Head size choice: Loika beside the master at 304, 96 and 48", cells, 5, { note: `Loika's head at four sizes on the same body, each with her own eye. With the master's crown read at the leaf bases (fix round 7) its head is about 0.47 of its height; Loika is built at 0.47, the second tile. 0.60 is the top of the band.${grown ? " At 0.45 her eye has to grow a little to stay readable at 96." : ""} Row 2 shows a bigger eye, outside the house.` }), tiles };
 }
 export function snailSheet(house, spec, outDir) {
   const t = makeTile(house, spec, { label: "Usvel the snail, house build" });
@@ -137,7 +137,7 @@ export function silhouetteSheet(house, spec, outDir) {
     saveTile(path.join(outDir, "tiles"), `silhouette-hs${Math.round(hs * 100)}`, t);
     cells.push({ pics: [[{ img: overlay(t.r[304], p, curve) }], [{ img: silhouetteOf(side) }]], lines: [[`Loika at H/S ${hs.toFixed(2)}, stand view`, "name"], [`Top at 0.7, 0.85, 0.95: ${[0.7, 0.85, 0.95].map((f) => fm(p.at[f])).join(", ")} S`, "dim"], [`Side view below, square to the camera`, "dim"]] });
   }
-  return { spec: sheet("Loika's back line against the master's, at the three head sizes", cells, 4, { note: "Top row: the stand view with the master's back line (red) laid over each build at its own length and stature; the blue dots are the AD's marks. Bottom row: silhouettes, the master's in the stand view and the builds square to the camera." }), tiles, master: mAt };
+  return { spec: sheet("Loika's back line against the master's, at the four head sizes", cells, 5, { note: "Top row: the stand view with the master's back line (red) laid over each build at its own length and stature; the blue dots are the AD's marks. Bottom row: silhouettes, the master's in the stand view and the builds square to the camera." }), tiles, master: mAt };
 }
 
 // twelve snails from t drawn round the specimen's own t over the open genes (the plan D litter check): three columns

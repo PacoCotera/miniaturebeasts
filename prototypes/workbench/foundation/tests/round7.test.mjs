@@ -25,7 +25,7 @@ test("width 1.45 plus or minus 0.05 H at the eye line, front height over width a
   assert.ok(fm.heightOverWidth >= 0.68, `${fm.heightOverWidth}`);
   assert.ok(fm.wUp30 >= 0.72, `${fm.wUp30}`);
   const yE2 = 2 * loika.scene.head.geometry.yE; assert.ok(yE2 >= 0.95 && yE2 <= 1.02, `centres ${yE2} H apart`);
-  assert.ok(fm.snout <= 0.161, `snout ${fm.snout}`);
+  assert.ok(fm.snout <= 0.24 + 1e-3, `snout ${fm.snout}`); // fix round 8, ruling 3: the upper muzzle may stand up to 0.24 H proud
 });
 test("the screen at 304: iris centres 88 to 92 px apart (86 to 94 read), the far iris foreshortened, the eye line 8 to 11 degrees, the head 105 plus or minus 4 px high", () => {
   const gap = Math.hypot(iris.near.x - iris.far.x, iris.near.y - iris.far.y); assert.ok(gap >= 86 && gap <= 94, `gap ${gap}`);
@@ -35,7 +35,7 @@ test("the screen at 304: iris centres 88 to 92 px apart (86 to 94 read), the far
   assert.ok(hp >= 101 && hp <= 109, `head ${hp} px`);
 });
 test("the top outline is one arc (no run of 20 px straighter than half a pixel, no turn over 30 degrees in 6 px) and the rear stays high, then falls to a step into the back", () => {
-  const sc = loika.scene, ext = coarse(sc, tile.camera, { n: 240 }), ref = { height: 288 }, sil = headSilhouette(sc, projector(sc, tile.camera, 304, ref, ext));
+  const sc = loika.scene, ext = coarse(sc, tile.camera, { n: 240 }), ref = { height: 288 }, sil = headSilhouette(sc, projector(sc, tile.camera, 304, ref, ext), { step: 0.012 }); // a 1.2 px grid: on a 2.5 px grid the 6 px turn read up to 10 degrees different from one framing to the next
   const arc = arcMeasures(sil.top); assert.ok(arc.straightRun <= 20 && arc.maxTurnDeg < 30, JSON.stringify(arc));
   const st = rearStep(tile.r[304] && (() => { const t = []; const im = tile.r[304]; for (let x = 0; x < im.width; x++) { let y = null; for (let yy = 0; yy < im.height; yy++) { const i = (yy * im.width + x) * 4; if (im.data[i + 3] > 128 && !(im.data[i + 1] - im.data[i + 2] > 30 && im.data[i + 1] >= im.data[i] * 0.88)) { y = yy; break; } } t.push(y); } return t; })());
   assert.ok(st.fallDeg >= 60, `the rear falls at ${st.fallDeg} degrees`);
@@ -46,11 +46,14 @@ test("a content face: the pupil is 0.60 E, up and forward in the eye, the ring's
   assert.ok(rf["gaze-offset-max"] + Math.hypot(...rf["gaze-bias"]) <= 0.15 + 1e-9, "the pupil stays inside the iris");
   assert.ok(tile.measured["ring-shade/L"] > 3 && tile.measured["ring-shade/L"] <= 14, `${tile.measured["ring-shade/L"]}`);
 });
-test("the cream edge is one curve: no kink at the mouth corner (the edge carries the smile's slope and eases off it), and the cream is warm ivory, L* 80 and b* 20 plus or minus 3 in the light", () => {
+test("the cream edge is one curve: no kink at the mouth corner (the edge carries the smile's slope and eases off it), and the cream's colour and values are the master's: the mean colour within 8 per channel, the 10th, 50th and 90th percentile of its luma within 10", async () => {
   const rf = house.rig.face; assert.ok(rf["cream-reach-E"] > 0 && rf["cream-reach-E"] <= 0.5);
-  const im = tile.r[304], lab = (r, g, b) => { const f = (v) => { v /= 255; return v > 0.04045 ? ((v + 0.055) / 1.055) ** 2.4 : v / 12.92; }, R = f(r), G = f(g), B = f(b), X = (0.4124 * R + 0.3576 * G + 0.1805 * B) / 0.95047, Y = 0.2126 * R + 0.7152 * G + 0.0722 * B, Z = (0.0193 * R + 0.1192 * G + 0.9505 * B) / 1.08883, h = (t) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116); return [116 * h(Y) - 16, 500 * (h(X) - h(Y)), 200 * (h(Y) - h(Z))]; };
-  const Ls = [], bs = []; for (let y = 165; y < 235; y++) for (let x = 45; x < 140; x++) { const i = (y * im.width + x) * 4; if (im.data[i + 3] < 200) continue; const l = lab(im.data[i], im.data[i + 1], im.data[i + 2]); if (l[0] > 65 && l[2] > 8) { Ls.push(l[0]); bs.push(l[2]); } }
-  const med = (a) => a.sort((p, q) => p - q)[a.length >> 1]; assert.ok(Math.abs(med(Ls) - 80) <= 3 && Math.abs(med(bs) - 20) <= 3, `cream L ${med(Ls)} b ${med(bs)}`);
+  const { loadImage } = await import("../imgtools.mjs"), { MASTER } = await import("../paths.mjs");
+  // the cream mask of the AD's measure.py (opaque, red over 150, red over blue by 15, mean over 150), rows 120 to 262
+  const stat = (im) => { const rgb = [0, 0, 0], l = []; let n = 0; for (let y = 120; y < 262; y++) for (let x = 0; x < im.width; x++) { const i = (y * im.width + x) * 4, r = im.data[i], g = im.data[i + 1], b = im.data[i + 2]; if (im.data[i + 3] <= 200 || r <= 150 || r - b <= 15 || (r + g + b) / 3 <= 150) continue; rgb[0] += r; rgb[1] += g; rgb[2] += b; n++; l.push(0.2126 * r + 0.7152 * g + 0.0722 * b); } l.sort((a, b) => a - b); return { rgb: rgb.map((v) => v / n), p: [0.1, 0.5, 0.9].map((q) => l[Math.floor(l.length * q)]), n }; };
+  const m = stat(loadImage(MASTER("S01", 304))), b = stat(tile.r[304]);
+  for (let c = 0; c < 3; c++) assert.ok(Math.abs(m.rgb[c] - b.rgb[c]) <= 8, `channel ${c}: master ${m.rgb[c].toFixed(0)}, build ${b.rgb[c].toFixed(0)}`);
+  for (let k = 0; k < 3; k++) assert.ok(Math.abs(m.p[k] - b.p[k]) <= 10, `luma percentile ${k}: master ${m.p[k].toFixed(0)}, build ${b.p[k].toFixed(0)}`);
 });
 test("the mouth holds 5 px at 96 at every head size in the band, and the leaves are three broad olive ones", () => {
   const hb = bandOf(house, "A", "form.head");

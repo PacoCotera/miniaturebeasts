@@ -15,8 +15,9 @@ test("Loika's type specimen holds the master's own numbers without the far-eye c
   assert.ok(m["far-eye-inside/H"] >= 0 && m["far-eye-inside/H"] <= 0.03 + 1e-9 && m["nose-far-eye/H"] >= 0, JSON.stringify([m["far-eye-inside/H"], m["nose-far-eye/H"]]));
   assert.deepEqual(failures(checkRules(house, "A", m, { kinds: sp.S01.kinds })).map((r) => r.id), [], "every rule the build measures passes at the specimen");
 });
-test("the head sits on the chest: the chin overhangs it by 0.04 to 0.12 H whatever the head's size, the outline steps down at the nape, the head is 1.45 to 1.8 H broad", () => {
-  assert.ok(m["chin-overhang/H"] >= 0.04 && m["chin-overhang/H"] <= 0.12, `chin ${m["chin-overhang/H"]}`);
+test("the head sits on the chest: the chin overhangs it by the house's R-chin band (0.04 to 0.32 H since fix round 8, the jaw tucked under the lobe) whatever the head's size, the outline steps down at the nape, the head is 1.45 to 1.8 H broad", () => {
+  const band = house.rules.find((r) => r.id === "R-chin").plans.A; assert.deepEqual(band, [0.04, 0.32]);
+  assert.ok(m["chin-overhang/H"] >= band[0] && m["chin-overhang/H"] <= band[1], `chin ${m["chin-overhang/H"]}`);
   assert.ok(m["nape-step/H"] >= 0.44 && m["nape-step/H"] <= 0.64, `nape ${m["nape-step/H"]}`);
   assert.ok(m["back-rise/H"] <= 0.02, `back rise ${m["back-rise/H"]}`);
   assert.ok(m["head-breadth/H"] >= 1.45 && m["head-breadth/H"] <= 1.8);
@@ -32,7 +33,7 @@ test("the nose is a skin mound on a round muzzle, not a bill: low relief, wider 
   assert.ok(Math.abs(m["mouth-w/E"] - 0.83) <= 0.12, `the smile is the master's (0.83 E, measured in the head's frame): ${m["mouth-w/E"]}`);
 });
 test("the smile: the cream's top edge is the mouth line (0.01 H, soft 0.015) and its near edge falls away from the mouth corner, the gap has the floor of 0.25 E, the mouth corners curl up", () => {
-  const ch = sp.S01.look.creamHead, h = loika.scene.head, pts = h.mouth.pts;
+  const rf = house.rig.face, ch = { below: rf["cream-below"], soft: rf["cream-soft"], fall: rf["cream-fall"] }, h = loika.scene.head, pts = h.mouth.pts;
   assert.ok(ch.below <= 0.01 && ch.soft <= 0.015 && ch.fall > 0 && !("cheek-rise" in ch), "the cheek rise is withdrawn: the edge falls, it does not climb");
   assert.ok(m["nose-mouth/E"] >= 0.25 - 1e-9, `nose to smile ${m["nose-mouth/E"]} E`);
   assert.ok(Math.abs(m["mouth-w/E"] - 0.83) <= 0.12, "the smile is the master's width, 0.83 E; the nose-plus-0.3 floor is withdrawn (AD fix round 5, ruling 1a)");

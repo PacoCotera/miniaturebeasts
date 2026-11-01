@@ -23,14 +23,12 @@ test("front section: 1.40 to 1.50 H wide (fix round 7: 1.45 plus or minus 0.05) 
   assert.ok(fm.wUp30 >= 0.72 && fm.wDown35 >= 0.7, `up ${fm.wUp30} down ${fm.wDown35}`); // fix round 7: 0.72 W at 0.30 above the eye line (the AD withdrew 0.85); 0.35 below it holds the build's own number (the AD's 0.80 is not in the round-7 list)
   // // AD: 0.85 at 0.30 above the eye line and 0.80 at 0.35 below it; the eye line is at the master's height here, so the upper figure is the build's own
 });
-test("side section: depth 1.15 to 1.30 H (the master's head is 1.65 H broad on screen, which the AD's 1.05 to 1.10 cannot give), the crown near the middle of the skull's length, a convex brow, the muzzle's front 0.68 H under the crown, a round underside", () => {
+test("side section: depth 1.15 to 1.30 H (the master's head is 1.65 H broad on screen, which the AD's 1.05 to 1.10 cannot give), the crown near the middle of the skull's length, a convex brow, a round underside; the lobe is the muzzle's (up to 0.24 H proud, fix round 8), the jaw is under it", () => {
   assert.ok(fm.depth >= 1.15 && fm.depth <= 1.3, `depth ${fm.depth}`);
   assert.ok(fm.crownShare >= 0.45 && fm.crownShare <= 0.55, `crown at ${fm.crownShare}`);
   assert.ok(fm.brow >= 0.06, `the brow stands ${fm.brow} H outside the chord`);
-  assert.ok(Math.abs(fm.muzzleBelowCrown - 0.73) <= 0.03, // fix round 7: 0.68 was read from the false crown (y 92); the true one gives 0.73
-     `muzzle front ${fm.muzzleBelowCrown} under the crown`);
   assert.ok(fm.rearZ <= 0.0 && fm.rearZ >= -0.15, `the rear-most point at z ${fm.rearZ}`);
-  assert.ok(fm.length <= 1.34 && fm.snout <= 0.161, `length ${fm.length} snout ${fm.snout}`); // AD: 1.20 and 0.10 to 0.12. The master's front outline needs the snout this far out (see the report)
+  assert.ok(fm.snout <= 0.24 + 1e-3, `snout ${fm.snout}`); // fix round 8, ruling 3: the upper muzzle may stand up to 0.24 H proud (it was 0.16); the length cap of 1.25 H was withdrawn in round 7
 });
 test("the roll's sign is the house's, once: Loika's eye line is 8 to 11 degrees far side up, as the master's 9.5", () => {
   assert.equal(house.solver["roll-sign"], -1);
