@@ -366,7 +366,7 @@ class Scene:
             strip_png_text(path)
         return hashlib.sha256(open(path, "rb").read()).hexdigest()[:16]
 
-    def stand_sprites(self, outdir, tag, sizes=(304, 96, 48), samples=None):
+    def stand_sprites(self, outdir, tag, sizes=(304, 96, 48), samples=None, renderer=None):
         """The three stand sprites, framed as the house does: 304 x 312 at the master's alpha height, feet on row 305; 96 x 88 at 0.276 of that, feet on 85;
         48 x 48 fitted in 44 px, feet on row 44."""
         B = self.basis()
@@ -380,7 +380,7 @@ class Scene:
             self.scene.cycles.samples = samples or (64 if sz == 304 else 48)
             self.frame(B, w, h, scale, cx=(ex["a0"] + ex["a1"]) / 2, bottom=ex["b0"], feet_row=feet)
             p = os.path.join(outdir, f"{tag}-{sz}.png")
-            out[sz] = dict(file=os.path.basename(p), sha=self.render(p), scale=scale)
+            out[sz] = dict(file=os.path.basename(p), sha=(renderer(p, self.scene.cycles.samples) if renderer else self.render(p)), scale=scale)
         self.last_framing = dict(extents=ex, s304=s304, B=[b.tolist() for b in B])
         return out
 
