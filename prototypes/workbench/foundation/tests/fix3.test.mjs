@@ -24,7 +24,8 @@ test("the leaves are broad paddles about 2:1, and the fan is most of the head's 
   for (const [, len, wid] of c.leaves) { const r = len / wid; assert.ok(r >= 1.5 && r <= 2.4, `length to width ${r}`); } // fix round 7: three broad leaves, the master's are about 1.7
   const sc = loika.scene; let lo = 9, hi = -9; // the head's own coordinates: the fan is measured across the head
   for (let y = -1.2; y <= 1.2; y += 0.02) for (let z = 0.4; z <= 1.4; z += 0.04) for (let x = -0.3; x <= 0.3; x += 0.1) { const p = fromLocal(sc.hf, [x, y, z]); if (sc.parts.crest(p[0], p[1], p[2]) < 0) { lo = Math.min(lo, y); hi = Math.max(hi, y); } }
-  const fan = (hi - lo) / sc.W; assert.ok(fan >= 0.7 && fan <= 0.9, `fan ${fan} of the head's width`);
+  const fan = (hi - lo) / sc.W; assert.ok(fan >= 0.7 && fan <= 1.0, // fix round 7: the master's three spread leaves are as wide as its head on screen (x 55 to 215 over a head 155 px wide), so the top goes 0.9 -> 1.0
+     `fan ${fan} of the head's width`);
 });
 test("the snail's line: the segments taper by no more than about 22 % each (fix-4 ruling 8 asks for a thin tail, so the fix-3 20 % is read as about), the head sits down on the first segment (no neck, no S-rise)", () => {
   const r = house.rig.D["seg-radius"]; for (let i = 1; i < r.length; i++) assert.ok(r[i] / r[i - 1] >= 0.78 - 1e-9, `taper ${r[i] / r[i - 1]}`);
