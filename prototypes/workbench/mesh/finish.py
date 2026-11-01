@@ -214,7 +214,7 @@ def far_leg_shift(H, ob, me):
         return
     legs = {lg["name"]: lg for lg in H.legs}
     zt, za = legs["fore.L"]["top"][2], legs["fore.L"]["ank"][2]
-    gi = [ob.vertex_groups[n].index for n in ("fore_upper.L", "fore_lower.L", "fore_paw.L") if n in ob.vertex_groups]      # the Mirror leaves the .L names on its copy: the far side is y < 0
+    gi = [ob.vertex_groups[n].index for n in ("fore_upper.R", "fore_lower.R", "fore_paw.R") if n in ob.vertex_groups]      # round 5: the Mirror moves the copy to the .R groups (it left the .L names in rounds 1-4, the bug behind the right paws walking in the left legs' phase)
     for v in me.vertices:
         w = min(1.0, sum(g.weight for g in v.groups if g.group in gi)) * float(sstep(0.0, 0.12, -v.co.y))
         if w <= 0:
@@ -234,7 +234,7 @@ def bake(sc, H, level=3, name="loika_L"):
         if src.type in ("MIRROR", "SUBSURF"):
             m = tmp.modifiers.new(src.name, src.type)
             if src.type == "MIRROR":
-                m.use_axis = src.use_axis; m.use_bisect_axis = src.use_bisect_axis; m.use_clip = src.use_clip; m.use_mirror_merge = src.use_mirror_merge; m.merge_threshold = src.merge_threshold
+                m.use_axis = src.use_axis; m.use_bisect_axis = src.use_bisect_axis; m.use_clip = src.use_clip; m.use_mirror_merge = src.use_mirror_merge; m.merge_threshold = src.merge_threshold; m.use_mirror_vertex_groups = True
             else:
                 m.levels = m.render_levels = level; m.use_limit_surface = True
     dg = bpy.context.evaluated_depsgraph_get()

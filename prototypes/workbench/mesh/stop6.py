@@ -96,7 +96,7 @@ def make_clips(sc, H, fps=24):
             for name, o in (("fore_upper.L", 0), ("hind_upper.R", 0), ("fore_upper.R", 0.5), ("hind_upper.L", 0.5)):
                 a = -math.radians(20) * math.sin(2 * math.pi * (ph + o))     # forward swing is -Y rotation (a leg hangs down)
                 lg = next(l for l in H.legs if l["name"].replace(".", "_upper.") == name or l["name"].split(".")[0] + "_upper." + l["name"].split(".")[1] == name)
-                piv = lg["top"] * (np.array([1, 1, 1.0]) if name.endswith("L") else np.array([1, -1, 1.0]))
+                piv = lg["top"]      # round 5: the leg already sits on its own side (the old flip put the right legs' pivots on the left)
                 R = Ry_(a)
                 set_world(pb[name], about(piv, R))
             set_world(pb["chest"], Matrix.Translation(Vector((0, 0, 0.012 * math.cos(4 * math.pi * ph)))))

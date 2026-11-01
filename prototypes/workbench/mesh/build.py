@@ -157,6 +157,7 @@ class Scene:
         mir.use_clip = True
         mir.use_mirror_merge = True
         mir.merge_threshold = 1e-5
+        mir.use_mirror_vertex_groups = True
         sub = self.half.modifiers.new("Subsurf", "SUBSURF")
         sub.levels = 2
         sub.render_levels = 3
@@ -196,7 +197,7 @@ class Scene:
         bone("head", kc, kc + np.array([0, 0, 0.5]), "neck")
         for lg in H.legs:
             tag, side = lg["name"].split(".")
-            m = np.array([1, 1, 1.0]) if side == "L" else np.array([1, -1, 1.0])
+            m = np.ones(3)      # round 5: H.legs already holds both sides (the right legs at y < 0); the round 1-4 flip put every right bone on the left side
             par = "chest" if tag == "fore" else "pelvis"
             top_, el, ank = lg["top"] * m, lg["el_c"] * m, lg["ank"] * m
             toe = lg["paw_c"] * m + np.array([0.12, 0, -H.pawR[2] * 0.6])
@@ -215,6 +216,9 @@ class Scene:
             vg = self.half.vertex_groups.new(name=b)
             for i, v in lst:
                 vg.add([i], v, "REPLACE")
+        for b in list(groups):      # round 5: the Mirror moves a copied vertex's weight to the opposite-name group only if that group exists; without it the right legs stayed bound to the left bones
+            if b.endswith(".L"):
+                self.half.vertex_groups.new(name=b[:-2] + ".R")
         am = self.half.modifiers.new("Armature", "ARMATURE")
         am.object = rig
         self.rig.data.pose_position = "POSE"
