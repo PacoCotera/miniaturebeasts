@@ -11,6 +11,7 @@ CAGE_A = dict(  # [mesh] numbers that belong to the cage, not to the shape (desi
     row_merge=0.035,             # rows closer than this merge (H)
     cap_rim_z=0.44,              # the crown cap's rim row (H, head frame): the design says "about 0.40"; the brow row sits at 0.378
     socket_lid_scale=0.78, socket_floor_scale=0.55,
+    bean_out=0.075,              # how far a bean stands out of the dome's front (H), the two extrusions together
 )
 
 
@@ -124,8 +125,16 @@ def head_features(H, C):
             out.append(C.add(q + ln * push))
         return out
     depth = rf["socket-depth"]
-    loop1 = shrink(loop0, CAGE_A["socket_lid_scale"], 0.0)       # the lid line
-    loop2 = shrink(loop0, CAGE_A["socket_floor_scale"], -depth)  # the floor's rim, sunk
+    def circle(loop, r):         # round the loop: the same angles about the eye centre in the eye's plane, one radius
+        out = []
+        for v in loop:
+            d = A[v] - cc
+            ang = math.atan2(float(d @ up_), float(d @ lat))
+            out.append(C.add(cc + r * (math.cos(ang) * lat + math.sin(ang) * up_)))
+        return out
+    a_win = 0.6 * g["Reye"]
+    loop1 = circle(loop0, a_win * CAGE_A["socket_lid_scale"])    # the lid line
+    loop2 = circle(loop0, a_win * CAGE_A["socket_floor_scale"])  # the floor's rim, sunk
     # re-seat each inset ring on the surface (so the dip is a dip of the surface, not a hole in space), then sink the floor
     for loop, push in ((loop1, 0.0), (loop2, -depth)):
         P = np.array([C.V[v] for v in loop])
@@ -223,9 +232,9 @@ def build_paw(H, lg):
     rx, ry, rz = H.pawR
     c0, Rp = lg["paw_c"], lg["paw_R"]
     hh = 2 * rz
-    zf = [0.07, 0.19, 0.46, 0.80]                     # sole rim, band-1 top, equator-ish, shoulder (fractions of h) [mesh]
+    zf = [0.09, 0.50, 0.72, 0.90]                     # sole rim, band-1 top (a bean is as tall as wide), shoulder, top rim (fractions of h) [mesh]
     N = 16
-    th = (np.arange(N) - 0.5) * 2 * np.pi / N         # face 0 of a band is centred on the paw's front (local +x)
+    th = np.arange(N) * 2 * np.pi / N                 # vertex 0 is on the paw's front (local +x): the middle bean is faces -1 and 0
     rings = []
     for f in zf:
         zl = f * hh - rz
@@ -251,59 +260,51 @@ def build_paw(H, lg):
 
 
 def paw_beans(H, lg, C, fitted_field):
-    """After the fit: three beans, extruded twice from the front-facing faces -2, 0, +2 of band P0-P1 (faces -1, +1 are the grooves). The first extrusion is
-    0.55 of the bean's depth, scaled to 0.9; the second 0.45, scaled to 0.55. Vertices added to the cage; the old faces are replaced by the rim loop + cap."""
+    """After the fit: three beans, each a 2-face strip of band P0-P1, extruded twice (0.55 of the depth scaled to 0.9, then 0.45 scaled to 0.55). The
+    middle bean is faces -1 and 0 (centred on the paw's front); the side beans are faces 2, 3 and -4, -3 (+-67.5 deg, where the house's toes sit); the grooves
+    are faces 1 and -2. The middle bean is 1.12 x the others. Old faces replaced by walls and a 2-quad cap."""
     N = C.N
-    rx, ry, rz = H.pawR
     r0, r1 = C.rings["P0"], C.rings["P1"]
     A = C.arr()
     tr = H.rig["toe-radii"]
     k = H.S
-    bean_h = 2 * tr[2] * k                              # the bean's height: as tall as it is wide
-    depth = CAGE_A.get("bean_out", 0.36) * bean_h
-    out = {}
-    bean_faces, groove_faces = [], []
-    face_of = {}                                        # face (as a vertex tuple) -> index
-    for fi, f in enumerate(C.F):
-        face_of[frozenset(f)] = fi
+    bean_h = 2 * tr[2] * k
+    depth = CAGE_A["bean_out"]
+    face_of = {frozenset((r0[j % N], r0[(j + 1) % N], r1[(j + 1) % N], r1[j % N])): j % N for j in range(N)}
     drop = set()
     new_faces = []
-    for m in (-2, 0, 2):
-        j0 = m % N                                      # face between ring vertices j0 and j0+1 has its centre at angle (j0 + 0.5 - 0.5) * 2pi/N = j0 * 22.5 deg
-        quad = (r0[j0], r0[(j0 + 1) % N], r1[(j0 + 1) % N], r1[j0])
-        fi = face_of.get(frozenset(quad))
-        assert fi is not None, "bean face not found"
-        drop.add(fi)
-        P = A[list(quad)]
+    out = {}
+    for name, js, size in (("mid", (-1, 0), 1.12), ("right", (2, 3), 1.0), ("left", (-4, -3), 1.0)):
+        quads = [(r0[j % N], r0[(j + 1) % N], r1[(j + 1) % N], r1[j % N]) for j in js]
+        for q in quads:
+            drop.add(frozenset(q))
+        ja, jb = js[0], js[1] + 1                                   # the strip runs from vertex ja to vertex jb (3 vertices)
+        loop = [r0[ja % N], r0[(ja + 1) % N], r0[jb % N], r1[jb % N], r1[(ja + 1) % N], r1[ja % N]]
+        P = A[loop]
         cen = P.mean(0)
-        nrm = np.cross(P[1] - P[0], P[3] - P[0]) if True else None
+        nrm = np.cross(P[2] - P[0], P[5] - P[0])
         nrm /= np.linalg.norm(nrm)
         if np.dot(nrm, cen - lg["paw_c"]) < 0:
             nrm = -nrm
-        size = 1.12 if m == 0 else 1.0
-        cur = list(quad)
-        seq = [(0.55 * depth * size, 0.9), (0.45 * depth * size, 0.55)]
-        base_scale = 1.0
-        for d, s in seq:
+        cur = loop
+        for d, sc in ((0.55 * depth * size, 0.9), (0.45 * depth * size, 0.62)):
             Pc = np.array([C.V[v] for v in cur])
             cc = Pc.mean(0)
-            q = [C.add(cc + (p - cc) * s + nrm * d) for p in Pc]
-            for a in range(4):
-                new_faces.append((cur[a], cur[(a + 1) % 4], q[(a + 1) % 4], q[a]))
+            q = [C.add(cc + (p - cc) * sc + nrm * d) for p in Pc]
+            for a in range(6):
+                new_faces.append((cur[a], cur[(a + 1) % 6], q[(a + 1) % 6], q[a]))
             cur = q
-        new_faces.append(tuple(cur))
-        out[m] = dict(base=quad, tip=cur)
-        for a in range(4):
-            C.set_crease(quad[a], quad[(a + 1) % 4], 0.6)
-        for v in quad:
+        new_faces.append((cur[0], cur[1], cur[4], cur[5]))
+        new_faces.append((cur[1], cur[2], cur[3], cur[4]))
+        out[name] = dict(base=loop, tip=cur)
+        for a in range(6):
+            C.set_crease(loop[a], loop[(a + 1) % 6], 0.6)
+        for v in loop + cur:
             C.hold.add(v)
             C.tags.setdefault("toe", {})[v] = 1.0
-        for v in cur:
-            C.tags.setdefault("toe", {})[v] = 1.0
-            C.hold.add(v)
-    for m in (-1, 1):                                  # the grooves: faces pulled in a little, vertical edges creased
-        j0 = m % N
-        quad = (r0[j0], r0[(j0 + 1) % N], r1[(j0 + 1) % N], r1[j0])
+    for js in ((1,), (-2,)):                                       # the grooves: pulled in a little, vertical edges creased
+        j = js[0]
+        quad = (r0[j % N], r0[(j + 1) % N], r1[(j + 1) % N], r1[j % N])
         for v in quad:
             C.tags.setdefault("toe", {})[v] = 0.75
         C.set_crease(quad[1], quad[2], 0.8)
@@ -312,8 +313,8 @@ def paw_beans(H, lg, C, fitted_field):
             n = A[v] - lg["paw_c"]
             n[2] = 0
             n /= np.linalg.norm(n)
-            C.V[v] = list(np.array(C.V[v]) - n * 0.008 * 1.0)
-    C.F = [f for i, f in enumerate(C.F) if i not in drop] + new_faces
+            C.V[v] = list(np.array(C.V[v]) - n * 0.008)
+    C.F = [f for f in C.F if frozenset(f) not in drop] + new_faces
     C.beans = out
     C.bean_height = bean_h
     return out
