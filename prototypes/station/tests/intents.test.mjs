@@ -271,7 +271,7 @@ test("the Library's Level 3 compare: ✓ Compare from {name} in close holds the 
 });
 
 test("one mibi up close: ✓ on the resident greets (the spec's moment: 1800 ms, held 300, a cut), on the name opens the namer, ✓ on Wild opens the Return panel and its Return card acts, ← goes to the whole with the ring on this mibi", () => {
-  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis, h = host(st); h.ui.hab.id = b.id; h.specs.habitat = habitatSpec; h.specs.namer = namerSpec;
+  const st = world(); S.seedAdults(st, "S01", 5, 3, settings); const [a, b] = st.mibis, h = host(st); h.ui.hab.id = b.id; h.specs.habitat = habitatSpec; h.specs.namer = namerSpec;   // three: the last mibi at home stays (the put-away rules), so a third keeps a's return open
   INTENTS.habitat.intent(h, "resident", "confirm"); assert.deepEqual(h.played.at(-1), { kind: "moment", target: "resident", ms: 1800, hold: 300, cut: true }); assert.deepEqual(h.said, [], "nothing said, nothing rewarded");
   h.moving = false; INTENTS.habitat.intent(h, "resident", "confirm"); assert.equal(h.played.at(-1).hold, 0, "reduced motion: the host sends hold 0"); h.moving = true;
   INTENTS.habitat.intent(h, "name", "confirm"); assert.deepEqual([h.ui.hab.namer.mode, h.ui.hab.namer.text, h.ui.hab.namer.fs, h.ui.hab.namer.f], ["rename", b.name, "selected", "act.done"]); h.ui.hab.namer = null;
@@ -480,12 +480,11 @@ test("the intents are DOM-free, transitively: nothing they import reaches a docu
   }
 });
 
-test("the Vivarium's whole: ✓ on a resident or a tile looks at that mibi up close (the transition held for events.look), nothing on the room or an unknown mibi; ← goes Home with the ring on the panel", () => {
+test("the Vivarium (the collection v2 design): ✓ on a mibi goes to its card's first live plate; ✓ Look opens it up close (held for events.look); ✓ on the room's chip does nothing; ← goes Home with the ring on the panel", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 3, settings); st.dock = { docked: true, at: T0 };
   const h = host(st), m = st.mibis[1], ev = h.specs.vivarium.events.look;
-  INTENTS.vivarium.intent(h, "resident." + m.id, "confirm"); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "resident", "habitat"]); assert.equal(h.holds.at(-1), ev.hold, "the look holds input for events.look.hold");
-  h.ui.meet = st.mibis[2].id; INTENTS.vivarium.intent(h, "tile." + st.mibis[2].id, "confirm"); assert.equal(h.ui.meet, st.mibis[2].id, "looking at the mibi that was to be met opens its meet: the first press up close ends it");
-  const n = h.went.length; INTENTS.vivarium.intent(h, "room", "confirm"); INTENTS.vivarium.intent(h, "tile.nobody", "confirm"); assert.equal(h.went.length, n, "nothing to look at, nothing happens");
+  h.ui.viv.f = "plate.0"; h.ui.viv.last = m.id; INTENTS.vivarium.intent(h, "plate.0", "confirm"); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "resident", "habitat"]); assert.equal(h.holds.at(-1), ev.hold, "the look holds input for events.look.hold");
+  const n = h.went.length; INTENTS.vivarium.intent(h, "room.0", "confirm"); INTENTS.vivarium.intent(h, "resident.nobody", "confirm"); assert.equal(h.went.length, n, "nothing to do, nothing happens");
   INTENTS.vivarium.intent(h, "resident." + m.id, "back"); assert.deepEqual([h.went.at(-1), h.ui.home.f], ["home", "vivarium"]);
 });
 
@@ -559,7 +558,7 @@ test("T-50 cuts 1 and 2: Home's room ✓ opens the bay in one press (Cargo, then
 // ---- R5 (T-20261027-318): the new-room chip, the Add a room? panel and the full need's jump ----
 function roomHost({ e = 99, rooms = 1, adults = 0 } = {}) {
   const st = world(); st.e = e; st.rooms = rooms; if (adults) S.seedAdults(st, "S01", 5, adults, { ...settings, rooms: null });
-  const h = host(st); h.settings = { ...settings, rooms: null }; h.ui.screen = "vivarium"; h.ui.viv = { f: "room.new", prev: null }; h.shown = []; h.showRoom = (i) => { st.face.room = i; h.shown.push(i); };   // the host's showRoom sets st.face.room (host.mjs); here it only records
+  const h = host(st); h.settings = { ...settings, rooms: null }; h.ui.screen = "vivarium"; h.ui.viv = { f: "room.new", prev: null, view: "room" }; h.shown = []; h.showRoom = (i) => { st.face.room = i; h.shown.push(i); };   // the host's showRoom sets st.face.room (host.mjs); here it only records
   return h;
 }
 test("✓ on the new-room chip opens the Add a room? panel with nothing spent, the ring on Add the room (on Not now while the price is short); ✓ on a room's chip does nothing", () => {

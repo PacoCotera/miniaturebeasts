@@ -596,8 +596,8 @@
     ],
     "screen": "vivarium",
     "focus": "vivarium",
-    "ok": "Look at Dot",
-    "subject": "Ready to go exploring",
+    "ok": "Open Dot",
+    "subject": "Dot · Roots 1 of 8",
     "idle": false
    },
    {
@@ -606,7 +606,7 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "tile.1",
+      "target": "cell.1",
       "verb": "back"
      }
     ],

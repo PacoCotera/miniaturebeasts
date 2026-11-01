@@ -672,21 +672,21 @@ test("Grow and Cross leave the outbox empty (the Caddy is called only for the si
 const roomsWorld = (n, over = {}) => { const st = S.freshSt("w1", 4, 1000); S.normalize(st); st.firstMibi = false; S.seedAdults(st, "S01", 5, n, { ...settings, rooms: 4, ...over }); st.turn = 4; return st; };
 test("rooms: a new world has one room and eight places; the ninth mibi has none; vivFull with eight in one room is true", () => {
   const st = S.freshSt("w1", 4, 1000); S.normalize(st);
-  assert.deepEqual([S.ROOM, S.ROOMS_MAX, st.rooms, S.roomCount(st, settings), st.face.room], [8, 4, 1, 1, 0]);
+  assert.deepEqual([S.ROOM, S.ROOMS_MAX, st.rooms, S.roomCount(st, settings), st.face.room], [8, 10, 1, 1, 0]);
   assert.deepEqual(S.freePlace(st, settings), { room: 0, slot: 0 }); assert.equal(S.vivFull(st, settings), false);
   S.seedAdults(st, "S01", 5, 8, settings); assert.equal(S.housed(st).length, 8); assert.equal(S.vivFull(st, settings), true); assert.equal(S.freePlace(st, settings), null);
   assert.deepEqual(S.housed(st).map((m) => [m.room, m.slot, m.bay]), Array.from({ length: 8 }, (_, i) => [0, i, i]));
   assert.equal(S.seedAdults(st, "S01", 6, 1, settings).ok, false); assert.deepEqual(S.ROOM_NAMES, ["Roots", "Reeds", "Boulders", "Ferns"]);
-  assert.equal(S.roomCount(st, { ...settings, rooms: 9 }), 4); assert.equal(S.roomCount(st, { ...settings, rooms: 3 }), 3, "the developer's rooms win"); assert.equal(S.vivFull(st, { ...settings, rooms: 2 }), false);
+  assert.equal(S.roomCount(st, { ...settings, rooms: 19 }), 10); assert.equal(S.roomCount(st, { ...settings, rooms: 3 }), 3, "the developer's rooms win"); assert.equal(S.vivFull(st, { ...settings, rooms: 2 }), false);
 });
-test("rooms: addRoom spends 4, 8, 12 Energy under a tuned economy, refuses at four rooms (all) and when short (short)", () => {
+test("rooms: addRoom spends 4, 8, 12 Energy under a tuned economy, refuses when every themed room is built (all) and when short (short)", () => {
   const st = S.freshSt("w1", 4, 1000); S.normalize(st); const tuned = { ...settings, economy: "tuned" };
   st.e = 3; assert.deepEqual(S.addRoomBlock(st, tuned), { key: "short", short: ["e"] }); assert.deepEqual(S.addRoom(st, tuned), { ok: false, key: "short", short: ["e"] }); assert.deepEqual([st.e, st.rooms], [3, 1]);
   st.e = 100; const spent = [];
-  for (const want of [4, 8, 12]) { assert.equal(S.addRoomBlock(st, tuned), null); assert.equal(S.roomPrice(st, tuned), want); const e0 = st.e, r = S.addRoom(st, tuned); spent.push(e0 - st.e); assert.deepEqual(r, { ok: true, room: st.rooms - 1 }); }
+  for (const want of [4, 8, 12]) { assert.equal(S.addRoomBlock(st, tuned), null); assert.equal(S.roomPrice(st, tuned), want); const e0 = st.e, r = S.addRoom(st, tuned); spent.push(e0 - st.e); assert.deepEqual([r.ok, r.room], [true, st.rooms - 1]); }
   assert.deepEqual(spent, [4, 8, 12]); assert.equal(st.rooms, 4); assert.equal(S.roomPrice(st, tuned), null);
   assert.deepEqual(S.addRoomBlock(st, tuned), { key: "all" }); assert.deepEqual(S.addRoom(st, tuned), { ok: false, key: "all" }); assert.equal(st.e, 76);
-  assert.match(st.log.at(-1), /^T5 · Added the Ferns room · ⚡ −12$/); assert.equal(S.addRoomBlock({ ...st, rooms: 1, e: 0 }, { ...tuned, economy: "free" }), null, "a free economy asks nothing");
+  assert.match(st.log.at(-1), /^T5 · Added the Ferns room · ⚡ −12 · settles in 2 turns$/); assert.equal(S.addRoomBlock({ ...st, rooms: 1, e: 0 }, { ...tuned, economy: "free" }), null, "a free economy asks nothing");
 });
 test("rooms: moveBlock gives own, full, noRoom, released; moveMibi is free and instant, takes the lowest free slot, and keeps a carried mibi's place", () => {
   const st = roomsWorld(9, { rooms: 2 }); st.rooms = 2; const two = { ...settings, rooms: 2 }, [a] = st.mibis, last = st.mibis[8];
@@ -720,12 +720,12 @@ test("rooms: a young mibi returns (paying nothing) and its place is free at once
     assert.equal(st.sheds.length, 1); const sh = st.sheds[0]; assert.deepEqual([sh.id, sh.name, sh.sp, sh.species, sh.g, sh.due], [m.id, m.name, m.sp, m.species, m.from.g, want], "aT " + aT + " turn " + turn);
     assert.equal(sh.state, sh.genome ? "due" : "none"); assert.ok(sh.genome, "a pod is shed");
   }
-  const a = roomsWorld(1), b = roomsWorld(1); S.returnMibi(a, null, a.mibis[0], settings); S.returnMibi(b, null, b.mibis[0], settings); assert.deepEqual(a.sheds[0].genome, b.sheds[0].genome, "the same release always sheds the same pod");
+  const a = roomsWorld(2), b = roomsWorld(2); S.returnMibi(a, null, a.mibis[0], settings);   // two: the last mibi at home stays (the put-away rules) S.returnMibi(b, null, b.mibis[0], settings); assert.deepEqual(a.sheds[0].genome, b.sheds[0].genome, "the same release always sheds the same pod");
   const sv = S.seededRng(7), sw = S.seededRng(7); assert.deepEqual([sv(), sv()], [sw(), sw()]);
 });
 test("rooms: the shed genome's origin.kinship is max(1/8, the mibi's own): a founder 0.125, a child of full siblings 0.25", () => {
   const st = roomsWorld(0); const big = { ...settings, rooms: 4 };
-  const f = S.seedAdults(st, "S01", 5, 1, big).mibis[0]; S.returnMibi(st, null, f, big);
+  const f = S.seedAdults(st, "S01", 5, 2, big).mibis[0]; S.returnMibi(st, null, f, big);   // a second stays at home: the last mibi at home stays (the put-away rules)
   assert.deepEqual([st.sheds[0].kinship, st.sheds[0].genome.origin.kinship, st.sheds[0].genome.origin.kind], [0.125, 0.125, "shed"]);
   const sib = S.seedSiblings(st, "S01", 99, big); assert.equal(sib.ok, true, sib.msg); const [x, y] = sib.mibis; assert.equal(S.kinshipOf(st, x, y), 0.25);
   let r = null; for (let i = 0; i < 20 && !r?.ok; i++) { st.e = 99; st.s = 99; st.bud = null; r = S.doCross(st, svOf(), x, y, big, 1, S.seededRng(1 + i)); } assert.equal(r.ok, true);
@@ -748,7 +748,7 @@ test("rooms: the v3 migration: 0, 6 and 12 housed give 1, 1 and 2 rooms, the slo
     const order = S.housed(st).sort((a, b) => a.bay - b.bay).map((m) => m.id), out = S.normalize(S.migrate(st, 1));
     assert.equal(out.rooms, 2); assert.deepEqual([0, 1, 2, 3].map((r) => S.inRoom(out, r).length), [8, 1, 0, 0], "nine housed with gaps at bays 2, 5, 9: the first room full, one in the second");
     assert.deepEqual([...S.inRoom(out, 0), ...S.inRoom(out, 1)].map((m) => m.id), order, "in bay order"); assert.equal(out.mibis.length, 12, "nobody lost"); assert.equal(out.bays, 12); }
-  assert.equal(S.normalize({ ...S.freshSt("w", 1, 1), face: { room: 7 } }).face.room, 0, "an unknown room shown falls back to the first");
+  assert.equal(S.normalize({ ...S.freshSt("w", 1, 1), face: { room: 12 } }).face.room, 0, "an unknown room shown falls back to the first");
 });
 const housedOld = (st) => st.mibis.filter((m) => !m.released);
 test("rooms: need() and needKey() say full after the docked crates and ahead of the bud; the label and the ring follow addRoomBlock; a shed pod opened is marked found", () => {

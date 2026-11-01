@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodePNG } from "../../ui/png.mjs";
-import { curlPicture, layeredStand, scaleOf, viewFigureHeight } from "../src/layered-stand.mjs";
+import { curlPicture, layeredStand, scaleOf, viewFigureHeight, viewFactor } from "../src/layered-stand.mjs";
 import { loadStandLayersFs } from "./stand-layers-fs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
@@ -16,12 +16,13 @@ export function measureCurls() {
   const spec = JSON.parse(readFileSync(VIVARIUM_JSON, "utf8")), R = spec.regions, masters = JSON.parse(readFileSync(path.join(ui, "assets/masters/index.json"), "utf8")).masters, out = {};
   for (const [id, e] of Object.entries(masters)) { const m = /^mibi-(adult|juvenile)-(S\d{2})-curl-304x312$/.exec(id); if (!m) continue;
     const p = decodePNG(readFileSync(path.join(ui, "assets/masters", e.file))), slot = R.resident[m[1]], lay = layeredStand(m[2], m[1], [304, 312], "vivarium", "curl"), vh = viewFigureHeight(m[1], "vivarium");
-    const f = lay ? scaleOf(lay) : vh && masters[`mibi-${m[1]}-${m[2]}-${slot[0]}x${slot[1]}`] ? slot[0] / 304 * vh / slot[1] : null, c = f && curlPicture({ w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }, m[2], m[1], f, "vivarium");
+    const vf = viewFactor("vivarium"), f = lay ? scaleOf(lay) : vf && masters[`mibi-${m[1]}-${m[2]}-304x312`] ? vf : vh && masters[`mibi-${m[1]}-${m[2]}-${slot[0]}x${slot[1]}`] ? slot[0] / 304 * vh / slot[1] : null, c = f && curlPicture({ w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }, m[2], m[1], f, "vivarium");   // the room view's one factor (stand-sizes.json vivarium.factor)
     if (c?.figure) out[id] = c.figure[3]; }
   return out;
 }
-// the keep-out rect [x, y, w, h] from the tallest curl: its left and width are the spec's, its top is the sleepers' tag top less the walker's tag, its foot the window's
+// the keep-out rect [x, y, w, h] from the tallest curl (the collection v2 room view, vivarium.json regions.resident.walk.keepOutRule): the bed's span, from the top of the tallest curl on the bed (footY − curlH) to the window's foot,
+// so that no walker's foot point stands among the sleepers
 export function keepOutOf(spec, curls = measureCurls()) {
-  const R = spec.regions, H = Math.max(...Object.values(curls)), footY = R.bed.sleepers.footY, over = R.nameTag.over, walkerTag = R.nameTag.below + R.nameTag.h, foot = R.window.foot[1], [x, , w] = R.resident.walk.keepOut;
-  const y = footY - H - over - walkerTag; return [x, y, w, foot - y];
+  const R = spec.regions, H = Math.max(...Object.values(curls)), footY = R.bed.sleepers.footY, foot = R.window.foot[1], [x, , w] = R.bed.rect;
+  const y = footY - H; return [x, y, w, foot - y];
 }

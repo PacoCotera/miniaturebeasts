@@ -172,10 +172,10 @@ test("each stage at the cross: a juvenile is barred, an adult and an elder may c
 });
 
 // ---- 7. twelve mibis a vivarium ----
-test("the rooms clamp to 4 (1 at least), whatever the setting or the save holds", () => {
+test("the rooms clamp to the ceiling of ten (1 at least), whatever the setting or the save holds", () => {
   const st = fresh();
-  for (const [rooms, want] of [[1, 1], [2, 2], [4, 4], [20, 4], [99, 4]]) assert.equal(S.roomCount(st, { ...settings, rooms }), want, "rooms " + rooms);
-  assert.equal(S.roomCount(st, { ...settings, rooms: null }), 1, "no setting and no save: one room"); st.rooms = 30; assert.equal(S.roomCount(st, { ...settings, rooms: 0 }), 4, "a save that holds more than 4"); st.rooms = 3; assert.equal(S.roomCount(st, settings), 3, "the save\'s rooms");
+  for (const [rooms, want] of [[1, 1], [2, 2], [4, 4], [10, 10], [20, 10], [99, 10]]) assert.equal(S.roomCount(st, { ...settings, rooms }), want, "rooms " + rooms);
+  assert.equal(S.roomCount(st, { ...settings, rooms: null }), 1, "no setting and no save: one room"); st.rooms = 30; assert.equal(S.roomCount(st, { ...settings, rooms: 0 }), 10, "a save that holds more than ten"); st.rooms = 3; assert.equal(S.roomCount(st, settings), 3, "the save\'s rooms");
 });
 test("the forms: gains read '❀ +1', spends '⚡ −1 ❀ −2' with a true minus on the figure", () => {
   assert.equal(S.gainText(2), "❀ +2"); assert.equal(S.spendText(1, 0, 2), "⚡ −1 ❀ −2"); assert.equal(S.spendText(0, 3, 0), "◆ −3"); assert.equal(S.spendText(0, 0, 0), "free");

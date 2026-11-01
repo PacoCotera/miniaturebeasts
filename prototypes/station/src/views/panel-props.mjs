@@ -73,10 +73,10 @@ export const ROOM_PREVIEW = [348, 160];
 // The preview of the room to add: a 1:1 cut (the crop request) of the room's own Idle painting of the light, rooms.json rooms.<id>.preview { from, rect }; the card has no stage and no pedestal
 const previewOf = (req, pv, light, room) => { const master = withLight(pv.from, light), id = `room-${room}-preview-${light}-${pv.rect[2]}x${pv.rect[3]}`, of = master.match(/-(\d+)x(\d+)$/).slice(1).map(Number); return req({ kind: "crop", id, master, of, at: pv.rect.slice(0, 2), size: pv.rect.slice(2), until: "the room's Idle painting it is cut from (rooms.json rooms.<id>.preview)" }); };
 export function addRoomCards(m, spec, frame, requests) {
-  const { st, settings } = m, Sg = spec.strings.addRoom, req = reqOf(requests), next = S.roomCount(st, settings), p = S.roomPrice(st, settings) ?? 0, pv = next < S.ROOMS_MAX ? roomData(next).preview : null;   // { from: the room's Idle painting, rect: the cut }
+  const { st, settings } = m, Sg = spec.strings.addRoom, req = reqOf(requests), next = S.roomCount(st, settings), th = S.nextTheme(st, settings), ti = S.ROOM_THEMES.indexOf(th), p = S.roomPrice(st, settings) ?? 0, pv = ti >= 0 ? roomData(ti).preview : null;   // { from: the room's Idle painting, rect: the cut }
   const short = S.canPay(st, p, 0, 0) ? "" : S.shortIcons(st, p, 0, 0);
   return [
-    { id: "add", act: "addRoom", room: null, picture: pv ? previewOf(req, pv, m.light ?? "day", roomName(next)) : "", pictureSize: ROOM_PREVIEW, bare: true, mark: "", name: Sg.cards.add.name, cost: S.priceText(p, 0, 0), gain: false, short, line: Sg.cards.add.line, loss: false, dim: !!short },
+    { id: "add", act: "addRoom", room: null, picture: pv ? previewOf(req, pv, m.light ?? "day", roomName(ti)) : "", pictureSize: ROOM_PREVIEW, bare: true, mark: "", name: Sg.cards.add.name, cost: S.priceText(p, 0, 0), gain: false, short, line: fill(Sg.cards.add.line, { Room: th ? S.ROOM_NAMES[ti] : "", n: S.settleTurns((st.rooms || 1) + 1, th, S.roomRules(settings)) }), loss: false, dim: !!short },
     { id: "keep", act: "keep", room: null, picture: "", pictureSize: ROOM_PREVIEW, mark: "", name: Sg.cards.keep.name, cost: "", gain: false, short: "", line: Sg.cards.keep.line, loss: false, dim: false },
   ];
 }

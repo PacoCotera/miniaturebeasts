@@ -3,6 +3,7 @@
 // and placed in the manifest before any screen registers its stand-ins. A master that does not match its index is refused loudly.
 import { placeMaster } from "../../ui/assets.mjs";
 import { setStandLayers } from "./layered-stand.mjs";
+import { setJuvenileFacing, juvenileMirrored, mirrorPic } from "./facing.mjs";
 import { decodePNGAsync, canvasRound } from "../../ui/png.mjs";
 
 // The one decoder of the masters and the stand layers, on the page and headless alike (ui/png.mjs): inflated at load, the pixels made when a picture first asks, through the 8-bit premultiplied
@@ -22,7 +23,7 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
     if (!r.ok) throw new Error(`master ${it.id}: ${e.file} is missing`);
     const bytes = await r.arrayBuffer(), sha = hex(await crypto.subtle.digest("SHA-256", bytes));
     if (sha !== e.sha256) throw new Error(`master ${it.id}: ${e.file} does not match the index (sha256 ${sha.slice(0, 12)}…)`);
-    const bmp = await decode(bytes);
+    let bmp = await decode(bytes); if (juvenileMirrored(it.id)) bmp = mirrorPic(bmp);   // the young of a flagged species faces the opposite way from its adult: drawn mirrored, the file untouched
     place({ id: it.id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, slice: e.slice ?? null, tile: e.tile ?? null, status: e.status ?? "master" }, { w: bmp.w, h: bmp.h, rgba: bmp.rgba }); it.placed = true;
   };
   const pump = () => {
@@ -45,6 +46,7 @@ export function createMasterLoader({ fetch: fx = (...a) => fetch(...a), decode =
       const res = await fx(new URL("index.json", base), { cache: "no-store" });
       if (!res.ok) return { placed: 0 };
       const index = await res.json(), ids = Object.keys(index.masters ?? {});
+      setJuvenileFacing(index.juvenileFacing ?? null);
       items = ids.map((id) => {
         const e = index.masters[id], f = e.file.startsWith("rooms/") ? ROOM_FILE.exec(e.file) : null;
         if (e.file.startsWith("rooms/") && !f) throw new Error(`master ${id}: ${e.file} names no room (rooms/room-<room>-...)`);

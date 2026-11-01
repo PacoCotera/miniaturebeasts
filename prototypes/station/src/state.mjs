@@ -11,6 +11,7 @@ import { MIBI_NAMES as NAME_LIST_NOW, NAME_LISTS } from "../../play/src/names.mj
 import { fill, capLine } from "./views/words.mjs";
 import FRAME from "../../ui/specs/station/frame.json" with { type: "json" };
 import VIVARIUM from "../../ui/specs/station/vivarium.json" with { type: "json" };
+import ROOM_RULES from "../../ui/specs/station/rooms-rules.json" with { type: "json" };
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 4;
@@ -18,13 +19,13 @@ export const SAVE_KEY = "mb-save-v8", SAVE_V = 8, V7_KEY = "mb-exploration-v7";
 export const OLD_SAVE_KEYS = ["mb-exploration-v1", "mb-exploration-v2", "mb-exploration-v3", "mb-exploration-v4", "mb-exploration-v5", "mb-exploration-v6", V7_KEY];
 export const DEV_KEY = "mb-station-dev";
 // The decided prices (research-economy.md §2).
-export const PRICE = { identify: 1 /* Data: ◆1, always, no free first one (owner 2026-10-11 15:20) */, readTrait: 1, change: 1, growE: 2, growS: 4, mend: 1, room: [4, 8, 12] /* Energy for rooms 2, 3, 4 */, tier2E: 12, tier2D: 4, freshen: 1 /* Essence for FRESHEN_TURNS more turns of a pod's life, up to full */ };
+export const PRICE = { identify: 1 /* Data: ◆1, always, no free first one (owner 2026-10-11 15:20) */, readTrait: 1, change: 1, growE: 2, growS: 4, mend: 1, tier2E: 12, tier2D: 4, freshen: 1 /* Essence for FRESHEN_TURNS more turns of a pod's life, up to full */ };
 // Letting a pod go and releasing a mibi pay nothing (owner 2026-10-28 20:42 and 23:16): there is no price for them here.
 // Pods at home: no rack and no cap (owner 2026-10-28 20:26, 20:36). Every pod brought home is in st.tray, in the order it came; st.waiting stays in the save's shape, always empty.
 // A pod keeps POD_LIFE world turns after it comes home; world turns move only with expeditions; the pod on the reading-room bench does not dry; amber from DRYING_SOON turns left (the pod inventory's design; all tune).
 export const POD_LIFE = 12, FRESHEN_TURNS = 4, DRYING_SOON = 4, DRIED_KEEP = 30;
-export const ROOM = 8, ROOMS_MAX = 4;   // places in a room, rooms in the Vivarium
-export const ROOM_NAMES = VIVARIUM.strings.rooms;
+export const ROOM = 8, ROOMS_MAX = ROOM_RULES.max;   // places in a room, rooms in the Vivarium at most (rooms-rules.json)
+export const ROOM_NAMES = ROOM_RULES.themes.map((t) => t.name), ROOM_THEMES = ROOM_RULES.themes.map((t) => t.id);
 export const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
 // The plates the dock leaves whole when it does not mend every plate (the bench's switch off): two, free; the switch on mends all at the price.
 export const DOCK_MEND_FLOOR = 2;
@@ -161,13 +162,14 @@ export function normalize(st, now = Date.now()) {
   for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   if (!st.libSeen || typeof st.libSeen !== "object") st.libSeen = libSnapshot(st);   /* the looks the Library had shown when it was last opened full screen (build spec 4.2, "new"): a save from before it holds none, so what it knows now is not new; additive, no schema bump */
   st.dock = st.dock || { docked: false, at: now };
-  if (!(st.face.room >= 0 && st.face.room < 4)) st.face.room = 0;   /* the room the whole last showed (additive, no schema bump) */
+  if (!(st.face.room >= 0 && st.face.room < ROOMS_MAX)) st.face.room = 0;   /* the room the whole last showed (additive, no schema bump) */
   for (const r of st.returned) if (r && r.species === undefined) r.species = speciesId(r.sp);   /* a returned pod from before it carried its species: 0-2 resolve, -1 stays null; additive, no schema bump */
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); if (!Number.isInteger(p.dryAt)) p.dryAt = (st.turn | 0) + POD_LIFE;   /* a pod from before freshness keeps a full life from now (additive, no schema bump) */ if (p.id === st.readingPod && !Number.isInteger(p.keep)) p.keep = Math.max(1, p.dryAt - (st.turn | 0)); }
   for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); m.spName = fr ? fr.species.name : null; if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null;
     if (!Number.isInteger(m.since) || m.since <= 0) { delete m.since; delete m.sinceFloor; if (now >= GOOD_CLOCK) { m.since = now; m.sinceFloor = true; } }   /* an older save holds no clock for the mibi: it has been yours for at least this long, written once and never again (additive, no schema bump); an unset clock writes nothing and the first good one does */
     m.care = m.care > 0 ? m.care | 0 : 0; m.tends = m.tends > 0 ? m.tends | 0 : 0; if (m.grownTurn === undefined) m.grownTurn = null;
     if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && st.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; } }   /* a bond made on the Station before the care rules: the marker is bonded with no bondCare, only old bonds match, and after this it is false (idempotent) */
+  if (!Array.isArray(st.roomMeta)) st.roomMeta = []; if (!Array.isArray(st.finds)) st.finds = [];   /* each room's theme and settling, and the themed finds held at home (rooms-rules.json; additive, no schema bump): a room with no entry is the i-th theme, settled */
   if (!Array.isArray(st.carryReqs)) st.carryReqs = []; if (!(st.carrySeq >= 0)) st.carrySeq = 0; if (!(st.carryRefusedSeen >= 0)) st.carryRefusedSeen = 0;
   syncKnown(st);
   claimExisting(st); renameDigits(st);
@@ -288,12 +290,12 @@ export function noteCarried(st, sv, now = Date.now()) {
   for (const id of back) { const m = mibiById(st, id); if (m && !m.released && now >= GOOD_CLOCK) m.roomSince = now; }
   f.carriedSeen = held.slice(); return back;
 }
-export const homeMibis = (st, sv) => { const c = carriedIds(st, sv); return st.mibis.filter((m) => !m.released && !c.includes(m.id)); };
+export const homeMibis = (st, sv) => { const c = carriedIds(st, sv); return st.mibis.filter((m) => !m.released && !c.includes(m.id) && !inStore(m) && !comingOut(st, m)); };   // tucked away or on its way back: not at home (the put-away rules)
 // A Station request to take a mibi with the Companion or bring it home: queued, applied by the Companion at the dock. why: "full" | "carried" | "not-carried" | "released" | "unknown".
 function carryOp(st, sv, m, op) {
   if (!m || !mibiById(st, m.id)) return { ok: false, why: "unknown" };
   const proj = projectCarried(st, sv);
-  if (op === "add") { if (m.released) return { ok: false, why: "released" }; if (proj.includes(m.id)) return { ok: false, why: "carried" }; if (proj.length >= CARRY_MAX) return { ok: false, why: "full" }; }
+  if (op === "add") { if (m.released) return { ok: false, why: "released" }; if (inStore(m) || comingOut(st, m)) return { ok: false, why: "tucked" }; if (proj.includes(m.id)) return { ok: false, why: "carried" }; if (proj.length >= CARRY_MAX) return { ok: false, why: "full" }; }
   else if (!proj.includes(m.id)) return { ok: false, why: "not-carried" };
   st.carryReqs.push({ seq: ++st.carrySeq, op, id: m.id });
   logEv(st, op === "add" ? m.name + " chosen to go with you" : m.name + " chosen to come home");
@@ -316,7 +318,7 @@ export function stageAt(m, turn, j, e) {
   if (m.bonded) return 'juvenile';                       // a bonded juvenile waits (14)
   const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
 }
-export const mibiStage = (st, m, settings = DEFAULT_SETTINGS) => stageAt(m, st.turn, settings.adultTurns ?? JUVENILE_TURNS, settings.elderTurns ?? ELDER_TURNS);
+export const mibiStage = (st, m, settings = DEFAULT_SETTINGS) => stageAt(m, stageTurn(st, m), settings.adultTurns ?? JUVENILE_TURNS, settings.elderTurns ?? ELDER_TURNS);   // a tucked-away mibi's clocks are stopped (stageTurn)
 // Who walked with a trip record: its carried set, else (an older record) its partner.
 export const tripCarried = (rec) => (Array.isArray(rec.carried) ? rec.carried : rec.partner != null ? [rec.partner] : []);
 export const tierNow = (st, sv) => (st.probe && st.probe.tier) || (sv && sv.tier) || 1;
@@ -949,34 +951,60 @@ export function growCost(st, choices = {}, settings = DEFAULT_SETTINGS) {
   return { e: price(PRICE.growE, settings), s: st.firstMibi ? 0 : price(PRICE.growS, settings), d: price(PRICE.change, settings) * changedTraits(choices).length };
 }
 // --- the rooms: up to four rooms of eight places; a housed mibi holds m.room (0-3) and m.slot (0-7); m.bay = room * 8 + slot is written for a rolled-back Station only ---
-export const housed = (st) => st.mibis.filter((m) => !m.released);
+export const housed = (st) => st.mibis.filter((m) => !m.released && !inStore(m));   // a tucked-away mibi holds no place (one on its way back holds its reserved one)
 export const roomCount = (st, settings = DEFAULT_SETTINGS) => clamp(settings.rooms || st.rooms || 1, 1, ROOMS_MAX);
 export const inRoom = (st, i) => housed(st).filter((m) => m.room === i).sort((a, b) => a.slot - b.slot);
 // The first free place: `prefer` first if it has a free slot, else the first room with one; the lowest free slot; null when every place is taken.
 export function freePlace(st, settings = DEFAULT_SETTINGS, prefer = null) {
   const taken = new Set(housed(st).map((m) => m.room * ROOM + m.slot)), n = roomCount(st, settings);
-  const slotIn = (r) => { for (let s = 0; s < ROOM; s++) if (!taken.has(r * ROOM + s)) return s; return -1; };
+  const slotIn = (r) => { if (isSettling(st, r)) return -1; for (let s = 0; s < ROOM; s++) if (!taken.has(r * ROOM + s)) return s; return -1; };   // a settling room takes no mibi
   const order = (prefer != null && prefer >= 0 && prefer < n ? [prefer] : []).concat(Array.from({ length: n }, (_, r) => r));
   for (const r of order) { const s = slotIn(r); if (s >= 0) return { room: r, slot: s }; }
   return null;
 }
 export const vivFull = (st, settings = DEFAULT_SETTINGS) => freePlace(st, settings) === null;
-export const roomPrice = (st, settings = DEFAULT_SETTINGS) => (st.rooms >= ROOMS_MAX ? null : price(PRICE.room[st.rooms - 1], settings));
+// The room rules (rooms-rules.json): the ladder, the settling times, the ceiling, the themes and the finds. `settings.roomRules` overrides a key (a test, the developer's panel); `needFind` is off until the Companion's trips produce finds.
+export const roomRules = (settings = DEFAULT_SETTINGS) => ({ ...ROOM_RULES, ...(settings?.roomRules ?? {}) });
+// The Energy the next room costs on the ladder, for `built` rooms already there: 4, 8, 12, then 4 more each (the first three from the data, then one step more per room)
+export const ladderPrice = (built, rules = ROOM_RULES) => { const L = rules.ladder, k = Math.max(1, built | 0); return L.first[k - 1] ?? L.first[L.first.length - 1] + L.step * (k - L.first.length); };
+// What a room is: its theme (its place in the bought order is its index), its settling and the name it carries. A save of before this has none stored: the theme of room i is the i-th of the themes, settled.
+export const roomMeta = (st, i) => { const m = st.roomMeta?.[i]; return { theme: m?.theme ?? ROOM_THEMES[i] ?? null, settleUntil: m?.settleUntil | 0 }; };
+export const roomName = (st, i) => { const t = roomMeta(st, i).theme, k = ROOM_THEMES.indexOf(t); return k >= 0 ? ROOM_NAMES[k] : ROOM_RULES.standIn[i - ROOM_NAMES.length] ?? "Room " + (i + 1); };
+export const themeIndex = (st, i) => Math.max(0, ROOM_THEMES.indexOf(roomMeta(st, i).theme));   // the painting's index (rooms.json order) of room i
+// Settling: the world turns left before room i takes a mibi (0 when it is ready); a settling room takes no mibi, keeps its row and is no move target
+export const settlingLeft = (st, i) => Math.max(0, roomMeta(st, i).settleUntil - (st.turn | 0));
+export const isSettling = (st, i) => settlingLeft(st, i) > 0;
+// The settling time of the room that would be built as room number `n` (1-based, the starting room is 1) with this theme: room 2 one turn, rooms 3 on two, a water or air room three; nothing shortens it
+export function settleTurns(n, theme, rules = ROOM_RULES) { const T = rules.themes.find((t) => t.id === theme), S = rules.settle; return T?.lifeSupport ? S.lifeSupport : n <= 2 ? S.second : S.later; }
+// The finds at home: one per theme at most, held until its room is built (st.finds: the theme ids). A find of a theme whose room stands is no use and is not counted.
+export const unbuiltThemes = (st, settings = DEFAULT_SETTINGS) => { const have = new Set(Array.from({ length: st.rooms || 1 }, (_, i) => roomMeta(st, i).theme)); return roomRules(settings).themes.map((t) => t.id).filter((id) => !have.has(id)); };
+export const findsHome = (st, settings = DEFAULT_SETTINGS) => { const un = unbuiltThemes(st, settings); return (Array.isArray(st.finds) ? st.finds : []).filter((id, k, a) => un.includes(id) && a.indexOf(id) === k); };
+export function addFind(st, theme, settings = DEFAULT_SETTINGS) { if (!unbuiltThemes(st, settings).includes(theme) || (st.finds ??= []).includes(theme)) return false; st.finds.push(theme); return true; }
+// Whether a room can still be added: fewer than the ceiling and a theme left unbuilt (the Add a room row is gone otherwise)
+export const canAddRoom = (st, settings = DEFAULT_SETTINGS) => (st.rooms || 1) < roomRules(settings).max && unbuiltThemes(st, settings).length > 0;
+// The theme the next room takes: with finds required, the asked one (or the first find at home); else the first unbuilt theme in order
+export const nextTheme = (st, settings = DEFAULT_SETTINGS, want = null) => { const R = roomRules(settings), un = unbuiltThemes(st, settings), fs = findsHome(st, settings); if (R.needFind) return want && fs.includes(want) ? want : fs[0] ?? null; return want && un.includes(want) ? want : un[0] ?? null; };
+export const roomPrice = (st, settings = DEFAULT_SETTINGS) => (canAddRoom(st, settings) ? price(ladderPrice(st.rooms || 1, roomRules(settings)), settings) : null);
 export function addRoomBlock(st, settings = DEFAULT_SETTINGS) {
   const p = roomPrice(st, settings); if (p === null) return { key: "all" };
+  if (roomRules(settings).needFind && !findsHome(st, settings).length) return { key: "find" };
   return canPay(st, p, 0, 0) ? null : { key: "short", short: ["e"] };
 }
-export function addRoom(st, settings = DEFAULT_SETTINGS) {
+export function addRoom(st, settings = DEFAULT_SETTINGS, want = null) {
   const b = addRoomBlock(st, settings); if (b) return { ok: false, ...b };
-  const p = roomPrice(st, settings); st.e -= p; st.rooms++;
-  logEv(st, "Added the " + ROOM_NAMES[st.rooms - 1] + " room · " + spendText(p, 0, 0));
-  return { ok: true, room: st.rooms - 1 };
+  const theme = nextTheme(st, settings, want), R = roomRules(settings), p = roomPrice(st, settings), n = st.rooms + 1, turns = settleTurns(n, theme, R);
+  st.e -= p; st.rooms++;
+  st.roomMeta = Array.from({ length: st.rooms }, (_, i) => (i === st.rooms - 1 ? { theme, settleUntil: (st.turn | 0) + turns } : { ...roomMeta(st, i) }));
+  if (R.needFind) st.finds = (st.finds ?? []).filter((id) => id !== theme);   // the find is spent with the room
+  logEv(st, "Added the " + roomName(st, st.rooms - 1) + " room · " + spendText(p, 0, 0) + " · settles in " + plural(turns, "turn"));
+  return { ok: true, room: st.rooms - 1, theme, turns };
 }
 // What stops a move to room i, as a key: null when nothing does.
 export function moveBlock(st, m, i, settings = DEFAULT_SETTINGS) {
   if (!m || m.released) return { key: "released" };
   if (m.room === i) return { key: "own" };
   if (!(i >= 0 && i < roomCount(st, settings))) return { key: "noRoom" };
+  if (isSettling(st, i)) return { key: "settling", n: settlingLeft(st, i) };
   const there = inRoom(st, i).length; if (there >= ROOM) return { key: "full" };
   return null;
 }
@@ -988,7 +1016,7 @@ export function moveMibi(st, m, i, settings = DEFAULT_SETTINGS, now = Date.now()
   const taken = new Set(inRoom(st, i).map((x) => x.slot)); let slot = 0; while (taken.has(slot)) slot++;
   m.room = i; m.slot = slot; m.bay = i * ROOM + slot; seeRoom(st, m);   // the room the whole shows is the one the mibi moved to
   if (now >= GOOD_CLOCK) m.roomSince = now;   // R4b: when it moved in (ms UTC, additive, no schema bump): fresh in the room until the first settle an hour on (vivarium.json rules.show.freshMinS); an unset clock writes nothing
-  logEv(st, m.name + " moves to the " + ROOM_NAMES[i] + " room");
+  logEv(st, m.name + " moves to the " + roomName(st, i) + " room");
   return { ok: true, room: i, slot };
 }
 // The integer-seeded generator the developer siblings and the shed pod draw from: the same seed, the same stream.
@@ -996,7 +1024,7 @@ export function seededRng(seed) { let x = seed >>> 0; return () => { x = (Math.i
 // The record fields of a place: room, slot and the rollback index.
 const placeOf = (p) => ({ room: p.room, slot: p.slot, bay: p.room * ROOM + p.slot });
 // The words state.mjs returns when no place is free (cw C10): the message, and the plate's lines (the third only while a room can still be added).
-export const fullWords = (st) => ({ msg: "The Vivarium is full", plate: ["The Vivarium is full", "Return a mibi to make room"].concat(st.rooms < ROOMS_MAX ? ["or add a room"] : []) });
+export const fullWords = (st) => ({ msg: "The Vivarium is full", plate: ["The Vivarium is full", "Return a mibi to make room"].concat(canAddRoom(st) ? ["or add a room"] : []) });
 // Minutes a bud takes: the first ever five (the dev rule), else twenty plus one per shaped trait.
 export const budMinutes = (st, nChanged, settings = DEFAULT_SETTINGS) => (st.firstMibi && settings.firstBud ? 5 : 20 + nChanged);
 // What stops Grow, as a key, in the rules' order (unidentified, busy, full, clash, short): null when nothing does, else { key, short } where short is the icons of the materials the price is short of (key "short" only).
@@ -1074,7 +1102,7 @@ function hatchBud(st, settings, now, line) {
   const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now, roomSince: now } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
   for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
   st.mibis.push(m); st.bud = null;
-  logEv(st, line(m, fr.species.name, ROOM_NAMES[place.room]));
+  logEv(st, line(m, fr.species.name, roomName(st, place.room)));
   return { ok: true, mibi: m };
 }
 // Return a mibi to the wild (research-economy.md §6): no Essence (owner 2026-10-28 23:16), a field-guide note, the release handed to the
@@ -1084,6 +1112,9 @@ export function returnMibiBlock(st, sv, m) {
   if (m.bonded) return "a bonded mibi stays";
   if (carriedIds(st, sv).includes(m.id)) return "already with you";
   if (pendingCarry(st, sv).some((r) => r.op === "add" && r.id === m.id)) return "goes at the next dock";
+  if (inStore(m)) return "tucked away · bring it out first";
+  if (comingOut(st, m)) return "back in " + plural(backIn(st, m), "turn");
+  if (lastAtHome(st, sv, m)) return "your last mibi at home stays";   // the same guard as Tuck away (the put-away rules, audit m10)
   return "";
 }
 export function returnMibi(st, sv, m, settings = DEFAULT_SETTINGS) {
@@ -1139,13 +1170,16 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (speciesOf(a) !== speciesOf(b)) return "another species";
   if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (a.released || b.released) return "gone to the wild";
+  if (inStore(a) || inStore(b) || comingOut(st, a) || comingOut(st, b)) return "tucked away";   // it cannot cross until it is back (the put-away rules)
   if (isCarried(st, sv, a) || isCarried(st, sv, b)) return "away";
   if (st.bud) return "the incubator is busy";
   if (vivFull(st, settings)) return "the Vivarium is full";
   return "";
 }
 // The partners of an adult or an elder, in place order. A carried partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
-export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isCarried(st, sv, m) ? { ...m, away: true } : m));
+export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isCarried(st, sv, m) || inStore(m) || comingOut(st, m) ? { ...m, away: true } : m));   // tucked away or on its way back: listed dimmed, never picked (the put-away rules)
+// A child of close kin or the same line: its parents' kinship is a quarter or more (the card says "bred close"); a founder or a pod has no parents
+export const bredClose = (st, m) => Array.isArray(m?.parents) && m.parents.length === 2 && pedigreeKinship(m.parents[0], m.parents[1], genomeLookup(st)) >= 0.25;
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
 export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
 // The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you
@@ -1226,4 +1260,90 @@ export function seedSiblings(st, species, seed, settings = DEFAULT_SETTINGS) {
   }
   logEv(st, "Developer: siblings " + made.map((m) => m.name).join(" and ") + " of " + a.name + " and " + b.name);
   return { ok: made.length === 2, parents: [a, b], mibis: made, msg: made.length === 2 ? made.map((m) => m.name).join(" and ") + ", siblings of " + a.name + " and " + b.name : "no place free for both siblings" };
+}
+
+// --- Tucked away (the put-away rules; the manager's design): a mibi kept outside time, its place freed --------------------------------------
+// A tucked-away mibi is still the player's and alive, but not at home: m.tucked = { turn, seq, at } while it is in the store (no room, no place: m.room and m.slot are null), and m.tucked.out, the world
+// turn it is back at, once Bring out is pressed (its place is reserved then: m.room and m.slot are set and the room counts it). Its clocks stop: its stage and its turns are read at m.tucked.turn while it is
+// in the store; at the press of Bring out its born (and grownTurn) move on by the turns it was away, so they restart where they stopped when it is back (stageTurn). The store has no limit (lead ruling
+// 10-28 23:11, M1). Nothing is migrated: an older save has no m.tucked, and nothing reads one it does not hold. The prices are Energy, the rooms' own currency (the put-away rules, all tune).
+export const TUCK = { floor: 2 /* Energy at least, to tuck away */, out: 2 /* Energy to bring out */, turns: 2 /* world turns until it is back */ };
+// The next room's price in Energy on the ladder: 4, 8, 12, then 4 more each (the put-away rules; it still stands for the put-away price below when no room can be added)
+export const nextRoomPrice = (st) => ladderPrice(st.rooms || 1);
+// Tuck away: the next room's price per place rounded up, never under TUCK.floor; so it never costs less than keeping a room (the put-away rules, the 19:35 ruling)
+export const tuckPrice = (st, settings = DEFAULT_SETTINGS) => price(Math.max(TUCK.floor, Math.ceil(nextRoomPrice(st) / ROOM)), settings);
+export const bringOutPrice = (st, settings = DEFAULT_SETTINGS) => price(TUCK.out, settings);
+export const inStore = (m) => !!m && !m.released && !!m.tucked && m.tucked.out == null;
+// on its way back: Bring out pressed, its place reserved, the world turn it is back at not reached yet
+export const comingOut = (st, m) => !!m && !m.released && !!m.tucked && m.tucked.out != null && (st.turn | 0) < m.tucked.out;
+export const backIn = (st, m) => (comingOut(st, m) ? m.tucked.out - (st.turn | 0) : 0);
+// the turn a mibi's clocks read: the turn it was tucked away at while it is in the store, the turn it is back at while it comes out (its born moved on at the press), else the world's
+export const stageTurn = (st, m) => (inStore(m) ? m.tucked.turn : comingOut(st, m) ? m.tucked.out : st.turn);
+// The store, in the order the mibis went in.
+export const tuckedAway = (st) => st.mibis.filter(inStore).sort((a, b) => (a.tucked.seq ?? 0) - (b.tucked.seq ?? 0) || a.id - b.id);
+// At home and present: in a room, not in the carried set as it will be (projectCarried: a request to go counts), not coming back. The last such mibi stays (the put-away rules; Return takes the same guard, audit m10).
+export const presentAtHome = (st, sv, m) => !!m && !m.released && !inStore(m) && !comingOut(st, m) && m.room != null && !projectCarried(st, sv).includes(m.id);
+export const lastAtHome = (st, sv, m) => presentAtHome(st, sv, m) && st.mibis.filter((x) => presentAtHome(st, sv, x)).length === 1;
+// What stops Tuck away, as a key, in the put-away rules's order: null when nothing does. { key: "released" | "tucked" | "coming" (n) | "carried" | "last" | "short" (price, have) }
+export function tuckBlock(st, sv, m, settings = DEFAULT_SETTINGS) {
+  if (!m || m.released || !mibiById(st, m.id)) return { key: "released" };
+  if (inStore(m)) return { key: "tucked" };
+  if (comingOut(st, m)) return { key: "coming", n: backIn(st, m) };
+  if (projectCarried(st, sv).includes(m.id)) return { key: "carried" };
+  if (lastAtHome(st, sv, m)) return { key: "last" };
+  const p = tuckPrice(st, settings); if (st.e < p) return { key: "short", price: p, have: st.e };
+  return null;
+}
+// Tuck away: paid at the press, instant; the place frees at once, the clocks stop. A bond, the stage, a breather owed and everything the mibi is stay.
+export function tuckAway(st, sv, m, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const b = tuckBlock(st, sv, m, settings); if (b) return { ok: false, ...b };
+  const p = tuckPrice(st, settings), room = m.room; st.e -= p;
+  st.tuckSeq = (st.tuckSeq | 0) + 1;
+  m.tucked = { turn: st.turn | 0, seq: st.tuckSeq, ...(now >= GOOD_CLOCK ? { at: now } : {}), from: room };
+  m.room = m.slot = null; m.bay = null;
+  logEv(st, "Tucked " + m.name + " away · " + spendText(p, 0, 0) + " · its place in the " + roomName(st, room) + " room is free");
+  return { ok: true, room, cost: p };
+}
+// What stops Bring out into room i (i null: any room), as a key: null when nothing does. { key: "notTucked" | "noPlace" | "short" (price, have) }
+export function bringOutBlock(st, sv, m, i = null, settings = DEFAULT_SETTINGS) {
+  if (!inStore(m)) return { key: "notTucked" };
+  const free = i == null ? freePlace(st, settings) : inRoomCount(st, i) < ROOM && i >= 0 && i < roomCount(st, settings) && !isSettling(st, i) ? i : null;
+  if (free == null) return { key: "noPlace" };
+  const p = bringOutPrice(st, settings); if (st.e < p) return { key: "short", price: p, have: st.e };
+  return null;
+}
+const inRoomCount = (st, i) => inRoom(st, i).length;
+// Bring out into room i: paid at the press, the place reserved then (the lowest free slot of the room); back in TUCK.turns world turns, never sooner, whatever the time at the Station. No cancel, no refund.
+export function bringOut(st, sv, m, i, settings = DEFAULT_SETTINGS) {
+  const b = bringOutBlock(st, sv, m, i, settings); if (b) return { ok: false, ...b };
+  const p = bringOutPrice(st, settings); st.e -= p;
+  const taken = new Set(inRoom(st, i).map((x) => x.slot)); let slot = 0; while (taken.has(slot)) slot++;
+  const out = (st.turn | 0) + TUCK.turns, shift = out - m.tucked.turn;
+  m.born = (m.born | 0) + shift; if (m.grownTurn != null) m.grownTurn += shift;   // the clocks restart where they stopped, at the turn it is back
+  m.tucked = { ...m.tucked, out, shift };
+  m.room = i; m.slot = slot; m.bay = i * ROOM + slot;
+  logEv(st, "Bringing " + m.name + " out · " + spendText(p, 0, 0) + " · a place kept in the " + roomName(st, i) + " room · back in " + plural(TUCK.turns, "turn"));
+  return { ok: true, room: i, slot, out, cost: p };
+}
+// The mibis whose way back is over (the world turn reached m.tucked.out): their record closes (m.tucked goes), they are fresh in their room. Read at the dock and when the manager opens; returns them.
+export function tuckArrivals(st, now = Date.now()) {
+  const back = st.mibis.filter((m) => !m.released && m.tucked && m.tucked.out != null && (st.turn | 0) >= m.tucked.out);
+  for (const m of back) { delete m.tucked; if (now >= GOOD_CLOCK) m.roomSince = now; logEv(st, m.name + " is back in the " + roomName(st, m.room) + " room"); }
+  return back;
+}
+// Two mibis in two rooms change places (the manager's lift on a mibi): free and instant, a full room is never a dead end; never a traveller, never one coming back. Both rooms keep their counts.
+export function swapBlock(st, sv, a, b) {
+  if (!a || !b || a.released || b.released || a === b) return { key: "none" };
+  if (inStore(a) || inStore(b)) return { key: "tucked" };
+  if (comingOut(st, a) || comingOut(st, b)) return { key: "coming" };
+  if (isCarried(st, sv, a) || isCarried(st, sv, b)) return { key: "carried" };
+  if (a.room === b.room) return { key: "own" };
+  return null;
+}
+export function swapMibis(st, sv, a, b, now = Date.now()) {
+  const k = swapBlock(st, sv, a, b); if (k) return { ok: false, ...k };
+  for (const f of ["room", "slot", "bay"]) [a[f], b[f]] = [b[f], a[f]];
+  if (now >= GOOD_CLOCK) a.roomSince = b.roomSince = now;
+  logEv(st, a.name + " and " + b.name + " swap places · the " + roomName(st, a.room) + " and " + roomName(st, b.room) + " rooms");
+  return { ok: true };
 }

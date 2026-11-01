@@ -185,9 +185,16 @@ void word_bottomLine(void) {
     v_role_clip(s, sr[2], c, t, sizeof t);
     v_say_run("line.subject", t, v_si(F, "regions.subject.centre", 0), v_role_cap_in(sr[1], sr[3], c), c, lg, V_ALIGN_CENTRE);
   }
+  /* a way back wider than its slot when the line asks for it (backWide): the extra px it takes to the left, which the notice gives up */
+  int back_extra = 0;
+  if (spec_bool(P, "frame.line.backWide", 0) && spec_str(P, "frame.line.back", s, sizeof s) > 0) {
+    char br_[24]; snprintf(br_, sizeof br_, "%s", v_sstr(F, "regions.back.role")); int bw[4]; v_srect(F, "regions.back.rect", bw);
+    int room0 = bw[2] - spec_int(F, "regions.back.cap.0", 16) - v_si(F, "regions.back.capGap", 0), w = v_role_width(s, br_), wide = v_si(F, "regions.back.wide.room", room0);
+    if (w > room0) back_extra = (w < wide ? w : wide) - room0;
+  }
   /* the notice: the sentence right-aligned to 904 with its lamp 4 px to its left */
   if (spec_str(P, "frame.line.need", s, sizeof s) > 0) {
-    int nr[4]; v_srect(F, "regions.need.rect", nr); int right = v_si(F, "regions.need.right", 0); snprintf(c, 24, "%s", v_sstr(F, "regions.need.role"));
+    int nr[4]; v_srect(F, "regions.need.rect", nr); int right = v_si(F, "regions.need.right", 0) - back_extra; snprintf(c, 24, "%s", v_sstr(F, "regions.need.role"));
     v_inline("line.need"); v_region("need", LAYER_TYPE); v_run_t run = v_say_run("line.need", s, right, v_role_cap_in(nr[1], nr[3], c), c, lg, V_ALIGN_RIGHT);
     int lw = spec_int(F, "regions.need.lamp.0", 12), lh = spec_int(F, "regions.need.lamp.1", 12);
     int lamp[4] = { right - run.width - v_si(F, "regions.need.lampGap", 0) - lw, nr[1] + (nr[3] - lh + 1) / 2, lw, lh };
@@ -198,7 +205,7 @@ void word_bottomLine(void) {
     /* the goal (frame.json strings.goal): in the notice zone, in the subject's role, no lamp, when no need holds. The words, then the materials a short step lacks (20 px each); a name too wide for the zone with its icons falls back to `plain`
        (the key's nameless sibling), the face's own sum. */
     char icons[24] = "", plain[V_STR] = ""; spec_str(P, "frame.line.goal.icons", icons, sizeof icons); spec_str(P, "frame.line.goal.plain", plain, sizeof plain);
-    int nr[4]; v_srect(F, "regions.need.rect", nr); int right = v_si(F, "regions.need.right", 0), ni = 0; snprintf(c, 24, "%s", v_sstr(F, "regions.subject.role"));
+    int nr[4]; v_srect(F, "regions.need.rect", nr); int right = v_si(F, "regions.need.right", 0) - back_extra, ni = 0; snprintf(c, 24, "%s", v_sstr(F, "regions.subject.role"));
     for (const char *q = icons; *q; q++) if ((unsigned char)*q == 0xe2) ni++;   /* the three icons are each one three-byte sequence beginning 0xe2 */
     const char *words = (v_role_width(s, c) + 20 * ni > nr[2] && plain[0]) ? plain : s;
     char full[V_STR + 32]; snprintf(full, sizeof full, "%s%s%s", words, ni ? " " : "", ni ? icons : "");
@@ -207,7 +214,7 @@ void word_bottomLine(void) {
   /* the way back: its cap, then one word, right-aligned to 1008 */
   if (spec_str(P, "frame.line.back", s, sizeof s) > 0) {
     int br[4], bcap[2]; v_srect(F, "regions.back.rect", br); bcap[0] = spec_int(F, "regions.back.cap.0", 16); bcap[1] = spec_int(F, "regions.back.cap.1", 16);
-    int right = v_si(F, "regions.back.right", 0), room = br[2] - bcap[0] - v_si(F, "regions.back.capGap", 0); snprintf(c, 24, "%s", v_sstr(F, "regions.back.role"));
+    int right = v_si(F, "regions.back.right", 0), room = br[2] - bcap[0] - v_si(F, "regions.back.capGap", 0) + back_extra; snprintf(c, 24, "%s", v_sstr(F, "regions.back.role"));
     v_inline("line.back"); v_region("back", LAYER_TYPE);
     v_run_t run = v_say_run("line.back", v_role_width(s, c) > room ? "Back" : s, right, v_role_cap_in(br[1], br[3], c), c, lg, V_ALIGN_RIGHT);
     v_region("back", LAYER_ART); int cr[4] = { right - run.width - v_si(F, "regions.back.capGap", 0) - bcap[0], cap[1], bcap[0], bcap[1] };

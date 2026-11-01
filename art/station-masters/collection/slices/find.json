@@ -1,0 +1,20 @@
+{
+ "mark-find-lit-16": {
+  "size": [
+   16,
+   16
+  ],
+  "src": "source/find_mark.py",
+  "from": "glint-star-12x12",
+  "sha256": "c1dd00df1647dc6a6b7390c61e685b24a9e664c9015dd1aa5802308b95d4e523"
+ },
+ "mark-find-outline-16": {
+  "size": [
+   16,
+   16
+  ],
+  "src": "source/find_mark.py",
+  "from": "glint-star-12x12",
+  "sha256": "f1e70a0774980c94c24596515f6799d3aafe8e20755400ec6d26d43ff041022a"
+ }
+}

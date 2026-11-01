@@ -8,7 +8,6 @@ import { openSpecies, openFamily } from "./library.mjs";
 import { openPanel } from "./panel.mjs";
 import { doorOpen } from "../nav.mjs";
 import { modulesOf } from "../views/habitat-props.mjs";
-import { roomIds } from "../views/room-props.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 // The mibi up close: the chosen one, else the first the Companion does not carry, else the first.
@@ -25,13 +24,6 @@ function heldModule(h, m, target) {
   const row = modulesOf({ st: h.st, sv: h.sv, settings: h.settings, docked: S.docked(h.st) }, m, h.specs.habitat.strings, h.specs.sitting).rows[target];
   if (!row) return false;
   h.say(row.plate.join("\n")); return true;
-}
-// ✓ Move {name} here (R6): free and instant (state.moveMibi); the near painting cross-dithers to the new room's in 200 ms (events.move; the old one stays on the face until it ends), the places pane cuts to the new room, the ring stays on the chip, now its home room, and the plate says where it went (the rooms words C6).
-function moveHere(h, m, i) {
-  const Sg = h.specs.habitat.strings, e = h.specs.habitat.events.move, a = h.ui.hab, was = roomIds(m.room, h.light()).near;
-  const r = S.moveMibi(h.st, m, i, h.settings, h.now()); if (!r.ok) return;
-  a.prevRoom = was; h.play({ kind: e.kind, target: e.target, from: was, ms: e.ms, hold: h.motion() ? e.hold : 0 }); h.at(e.ms, () => { if (a.prevRoom === was) a.prevRoom = null; });
-  h.say(fill(Sg.movePlate, { name: m.name, Room: S.ROOM_NAMES[i] })); h.save();
 }
 // A pick of the Cross screen: the first partner not out with the Companion while it is away.
 export function openCross(h, a) { h.ui.cross = { aId: a.id, bId: null, state: 0, fc: null, clash: [] }; const p = S.crossPartners(h.st, h.sv, a, h.settings).find((x) => !x.away); if (p) h.ui.cross.bId = p.id; h.goto("cross"); }
@@ -66,11 +58,7 @@ export function intent(h, target, verb) {
   else if (target === "family") openFamily(h, m.id);   // ✓ See the family (frame.json navigation.jumps): Level 3 of its species, close on this mibi
   else if (target.startsWith("room.")) {   // a chip: Move {name} here (R6; the rooms screens 1b, the rooms words C5 to C7); the new-room chip opens the Add a room? panel, as the whole's
     if (target === "room.new") { if (S.roomPrice(h.st, h.settings) !== null) openPanel(h, "habitat", "addRoom"); return; }
-    const i = +target.slice(5); if (i === m.room) return;   // its home room: no action
-    if (S.isCarried(h.st, h.sv, m)) { heldPlate(h, m); return; }   // Move is held while carried (heldRule)
-    const b = S.moveBlock(h.st, m, i, h.settings);
-    if (b && b.key === "full") { h.say(h.specs.habitat.strings.roomFullPlate.map((l) => fill(l, { Room: S.ROOM_NAMES[i] })).join("\n")); return; }   // a full room's dimmed Move: its plate (C7)
-    if (!b) moveHere(h, m, i);
+    return;   // a room's chip: nothing (the collection v2 design §1: the move mode retires; a mibi moves in the Vivarium)
   }
   else if (target.startsWith("plate.")) {
     const ch = chapterAt(m, target); if (!ch) return;

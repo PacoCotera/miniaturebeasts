@@ -1,7 +1,7 @@
 // One mibi up close in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `habitat-rest` (an adult at home, the ring on it), `habitat-meet` (the new mibi, the meet ribbon in
 // the tag's place), `habitat-out` (the mibi out with the Companion while it is away: the out mark, the ring on the name), `habitat-card` (a
 // bonded bred mibi: the heart, three notches, where it came from, plates read and unread), `habitat-plate` (the ring on an unread plate), `habitat-door` (the Companion's set, a request waiting), `habitat-door-away`, `habitat-cross` (partners, one out
-// while the Companion is away), `habitat-portrait` (a sitting held), `habitat-portrait-painting` (its sitting begun, the crate on its way), `habitat-portrait-pictured` (its picture landed: the bone canvas, not a portrait; ✓ Look at the portrait), `habitat-portrait-portrayed` (its portrait came, no picture yet: the paper window; both with the stamp's portrayed corner), `habitat-panel-wild` (the Return panel; `habitat-wild-armed` is retired with the arm, T-20261016-51), `habitat-tile` (the ring on a tile), `habitat-eight` (a full room's eight places), `habitat-move` (the ring on a room's chip: ✓ Move here), `habitat-move-full` (✓ on a full room's dimmed Move: its plate), `habitat-wild-young-card` (a young mibi's Return panel), `habitat-wild-bonded-pressed` (✓ on the held Return of a bonded juvenile), `habitat-docked-dawn|day|dusk|night` (the four lights, for the art director)
+// while the Companion is away), `habitat-portrait` (a sitting held), `habitat-portrait-painting` (its sitting begun, the crate on its way), `habitat-portrait-pictured` (its picture landed: the bone canvas, not a portrait; ✓ Look at the portrait), `habitat-portrait-portrayed` (its portrait came, no picture yet: the paper window; both with the stamp's portrayed corner), `habitat-panel-wild` (the Return panel; `habitat-wild-armed` is retired with the arm, T-20261016-51), `habitat-tile` (the ring on a tile), `habitat-eight` (a full room's eight places), `habitat-wild-young-card` (a young mibi's Return panel), `habitat-wild-bonded-pressed` (✓ on the held Return of a bonded juvenile), `habitat-docked-dawn|day|dusk|night` (the four lights, for the art director)
 // and the namer over it: `habitat-namer` (the meet's first ✓: Fig selected, the ring on Done), `habitat-namer-typed`, `habitat-namer-accents`, `habitat-namer-refused`, `habitat-namer-empty`, `habitat-namer-full`.
 // Each is reached by the page's own state and asserted (screen, state, ring, namer) before `visit(name, page, fail)` is called. Taken with reduced motion. Returns { fails }.
 import { openStation } from "./station-page.mjs";
@@ -30,8 +30,7 @@ const SCENES = {
   "panel-wild": { shown: 3, f: "wild", state: "rest", panel: true, set: (w) => { w.rooms(1); w.adults(3); w.young(1); const st = window.__st.ST; st.mibis[3].born = st.turn - 4; } },   // ✓ on Wild opens the Return panel (the ring on Keep); retires habitat-wild-armed (the arm no longer exists, T-20261016-51)
   tile: { shown: 2, f: "tile:2", state: "rest", set: (w) => { w.rooms(1); w.adults(4); } },
   eight: { shown: 5, f: "resident", state: "rest", set: (w) => { w.rooms(1); w.adults(8); } },   // R6: a full room's eight places (was twelve, two rooms of the old twelve bays)
-  // R6 (T-20261027-319): moving up close (the ring on a room's chip), the house rule's plates and the Return card of a young mibi
-  move: { shown: 0, f: "room.1", state: "rest", set: (w) => { w.rooms(2); w.adults(4); const m = window.__st.ST.mibis[3]; m.room = 1; m.slot = 0; m.bay = 8; } },   // two rooms, the second with one mibi: ✓ Move Dot here, seven places free
+  // R6 (T-20261027-319): the house rule's plates and the Return card of a young mibi (habitat-move retired with the move mode, the collection v2 design §1)
   "wild-young-card": { shown: 3, f: "wild", state: "rest", panel: true, set: (w) => { w.rooms(1); w.adults(3); w.young(1); } },   // a young mibi's Return panel: its pod comes once grown
   "docked-dawn": { shown: 0, f: "resident", state: "rest", light: "dawn", set: (w) => { w.rooms(1); w.adults(4); } },
   "docked-day": { shown: 0, f: "resident", state: "rest", light: "day", set: (w) => { w.rooms(1); w.adults(4); } },
@@ -48,7 +47,6 @@ const SCENES = {
 };
 // R6: the scenes where ✓ was pressed on a held target and its message plate stands (4000 ms): taken with motion and the virtual clock, 400 ms after the press, as the plate is an event (reduced motion cuts it away)
 const PRESSED = {
-  "move-full": { shown: 8, f: "room.0", state: "rest", plate: "The Roots room is full\\nMove one of its mibis out", set: (w) => { w.rooms(2); w.adults(9); } },   // Roots is full and the mibi up close lives in Reeds: ✓ on the dimmed Move plays the full-room plate
   "wild-bonded-pressed": { shown: 3, f: "wild", state: "rest", plate: "A bond is for good\\n\\w+ stays with you\\nCarried and tended, \\w+ grows up", set: (w) => { w.rooms(1); w.adults(3); w.young(1); const m = window.__st.ST.mibis[3]; m.bonded = true; } },   // a bonded juvenile: ✓ on the held Return plays its three lines
 };
 async function enter(page, sc) {
