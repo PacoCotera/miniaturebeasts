@@ -3,7 +3,7 @@ limit stencil of cage.py (the mirrored mesh, so the stencils see both halves). S
 import numpy as np
 
 
-def limit_fix(body, steps=12, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0):
+def limit_fix(body, steps=16, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0):
     c = body.cage
     n = len(c.V)
     has = np.array([t is not None for t in body.target])
@@ -36,6 +36,7 @@ def limit_fix(body, steps=12, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0
             break
         A = c.arr() + omega * err - mu * np.where(mask[:, None], c.arr() - T, 0.0)
         A[cm, 1] = 0.0
+        A[~cm, 1] = np.maximum(A[~cm, 1], 0.004)    # the half model never crosses (or lands on) the mirror plane: a vertex clamped to exactly 0 would be merged with its mirror image
         dv = A - T
         nd = np.linalg.norm(dv, axis=1)
         k = np.where(mask & (nd > cmax), cmax / np.maximum(nd, 1e-12), 1.0)

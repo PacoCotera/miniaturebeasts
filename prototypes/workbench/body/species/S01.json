@@ -43,10 +43,10 @@
     "hind.L": {"kind": "limb", "parent": "torso", "label": "limb", "ring": 8, "edge": 0.20,
       "socket": {"kind": "patch", "mass": "haunch", "at": "lower-edge", "size": [2, 2], "push": 0.02},
       "joints": [
-        {"name": "hip", "at": [-1.15, 0.44, 0.86], "r": [0.46, 0.46], "role": "mass"},
-        {"name": "knee", "len": 0.29, "pitch": -74, "r": [0.32, 0.33], "apex": "fwd"},
-        {"name": "hock", "len": 0.30, "pitch": -113, "r": [0.29, 0.29], "apex": "back"},
-        {"name": "sole", "len": 0.30, "pitch": -82, "r": [0.31, 0.35], "role": "end"}],
+        {"name": "hip", "at": [-1.15, 0.48, 0.86], "r": [0.46, 0.46], "role": "mass"},
+        {"name": "knee", "len": 0.29, "pitch": -74, "r": [0.29, 0.31], "apex": "fwd"},
+        {"name": "hock", "len": 0.30, "pitch": -113, "r": [0.27, 0.27], "apex": "back"},
+        {"name": "sole", "len": 0.30, "pitch": -82, "r": [0.28, 0.33], "role": "end"}],
       "fillet": 1.25,
       "end": {"kind": "bead-foot", "height": 0.22, "flat": true, "toes": 3, "toe": 0.15, "toe-mid": 1.0, "turn": 14}},
     "tail": {"kind": "socket-only", "parent": "torso", "label": "tail", "socket": {"kind": "cap-centre", "cap": "rump"}}

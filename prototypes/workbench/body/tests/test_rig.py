@@ -17,7 +17,7 @@ def table(R, ctx):
 class T(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.b = build.make_body(upto="base")
+        cls.b = build.make_body(upto="base", crown=False)
         cls.R = rig.Rig(cls.b.ctx)
         V, F, attr, fp, cr, mir = cls.b.full()
         cls.V2, cls.F2, _, cls.attr2, _ = SD.subdivide(V, F, cr, attr, fp, levels=2)

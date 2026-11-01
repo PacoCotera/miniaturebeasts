@@ -53,7 +53,7 @@ def pole_kinds(b, V, F):
 class T(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.b = build.make_body(upto="base")
+        cls.b = build.make_body(upto="base", crown=False)
         cls.V, cls.F, cls.attr, cls.fp = Q.full_topology(cls.b)
         cls.ctx = cls.b.ctx
         V, F, attr, fp, cr, mir = cls.b.full()

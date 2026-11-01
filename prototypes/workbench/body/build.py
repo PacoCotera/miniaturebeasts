@@ -6,7 +6,7 @@ from torso import Torso, build_torso
 from limitfix import limit_fix
 
 
-def make_body(spec=None, H=None, upto="torso", fix=True, beads=True):
+def make_body(spec=None, H=None, upto="torso", fix=True, beads=True, crown=None):
     if spec is None:
         spec, H = SC.load()
     body = Body()
@@ -19,6 +19,9 @@ def make_body(spec=None, H=None, upto="torso", fix=True, beads=True):
     if upto in ("base", "all"):
         import head
         head.build_head(body, ctx)
+        if crown is not False:             # every Loika has a crown (owner ruling); crown=False is the bare test body
+            import crown as CR
+            CR.build_crown(body, ctx, crown or {})
     body.ctx = ctx
     m, vol = body.finish()
     ctx["remap"] = m

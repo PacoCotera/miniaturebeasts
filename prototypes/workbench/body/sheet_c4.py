@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build, views, rig, gates, subdiv as SD, sheetlib as SL, mquality as Q
 
 OUT = os.path.abspath(sys.argv[1]); os.makedirs(os.path.join(OUT, "c4"), exist_ok=True)
-b = build.make_body(upto="base")
+b = build.make_body(upto="base", crown=False)
 R = rig.Rig(b.ctx)
 M0 = views.level_mesh(b, 2)
 W = R.weights(M0["V"], M0["attr"])

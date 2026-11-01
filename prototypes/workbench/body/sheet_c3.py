@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build, views, sheetgen as SG, sheetlib as SL, gates, mquality as Q, subdiv as SD
 
 OUT = os.path.abspath(sys.argv[1]); os.makedirs(OUT, exist_ok=True)
-b = build.make_body(upto="base")
+b = build.make_body(upto="base", crown=False)
 ctx = b.ctx
 names = SG.turnaround(b, OUT, "c3", centre=(-0.5, 0, 1.05), pole_dots=True)
 views.render_views(b, os.path.join(OUT, "c3"), views=[("front", 0.0, 8.0)], centre=(-0.1, 0, 1.2), width=420, height=380, pph=130.0, wire=True, pole_dots=True)
