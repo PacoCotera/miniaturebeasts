@@ -33,7 +33,7 @@ def make_cages(H, join="A", beans=True, log=None):
     # to world rest coordinates (the head's origin is kc)
     head.set_arr(head.arr() + H.kc)
     head.feat = feat
-    torso = build_torso(H, even=(join == "A")); torso.fix_winding()
+    torso = build_torso(H, even=(join in ("A", "C"))); torso.fix_winding()
     rep["torso"] = fit(torso, H.dTorso)
     cages += [head, torso]
     if join == "B":
@@ -42,6 +42,8 @@ def make_cages(H, join="A", beans=True, log=None):
     for lg in H.legs:
         if lg["side"] != 1:
             continue           # the left legs only: the Mirror makes the right (the near fore paw's lead-paw is dropped by that: see report)
+        if join == "C":
+            b_legs.append(lg); continue
         leg = build_leg(H, lg, even=(join == "A")); leg.fix_winding()
         if join == "B":
             b_legs.append((build_leg(H, lg), lg))          # joined to the torso below, all four legs in one cage (round 2: B on every leg)
@@ -61,6 +63,13 @@ def make_cages(H, join="A", beans=True, log=None):
             leg.lg = lg
             cages.append(leg)
         cages.append(paw)
+    if join == "C":
+        import limbs
+        tcage = build_torso(H, n_st=11, even=True)
+        comb, fld = limbs.limbs_c(H, tcage, b_legs)
+        rep["torso+limbs (C)"] = fit(comb, fld)
+        cages[1] = comb
+        return cages, rep
     if join == "B":
         tcage = build_torso(H)                                  # unfitted: the ports are cut before the fit
         comb, fld = join_b.shoulders_b(H, tcage, b_legs)

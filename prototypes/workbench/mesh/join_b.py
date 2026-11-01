@@ -11,7 +11,7 @@ LEG_SAG = 0.012      # [mesh] H: measured on the evaluated surface of round 2's 
 
 def port_ring(T, H, lg, st_k_target=None):
     """The 2 x 2 face port nearest the fore leg's top on the flank: returns (centre station i, column k, the 8 boundary vertices in loop order, the 4 faces)."""
-    target = np.array([lg["top"][0], lg["top"][1], lg["top"][2] - 0.05])
+    target = np.array([lg["top"][0], lg["top"][1], lg["top"][2] - 0.05]) if st_k_target is None else np.asarray(st_k_target)
     best = None
     for i in range(1, len(T.rings) - 1):
         ring = T.rings[f"st{i}"]
