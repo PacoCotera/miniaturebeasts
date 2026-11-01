@@ -69,7 +69,8 @@ export function headSizeSheet(house, spec, outDir) {
       saveTile(path.join(outDir, "tiles"), `loika-hs${Math.round(hs * 100)}-eye${Math.round(et * 100)}`, t);
     }
   }
-  return { spec: sheet("Head size choice: Loika beside the master at 304, 96 and 48", cells, 4), tiles };
+  const grown = tiles.some((x) => x.et !== et1 && x.et !== EYE_OUT); // the caption drops the 0.45 sentence when that tile holds the master's eye
+  return { spec: sheet("Head size choice: Loika beside the master at 304, 96 and 48", cells, 4, { note: `Loika's head at three sizes on the same body, each with her own eye. 0.52 is nearest the master. 0.60 is the top of the band.${grown ? " At 0.45 her eye has to grow a little to stay readable at 96." : ""} Row 2 shows a bigger eye, outside the house.` }), tiles };
 }
 export function snailSheet(house, spec, outDir) {
   const t = makeTile(house, spec, { label: "Usvel the snail, house build" });
