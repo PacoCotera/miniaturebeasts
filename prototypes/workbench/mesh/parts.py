@@ -176,12 +176,21 @@ def bisect_surface(dK, P, n):
 
 
 # ================================================================================================ the torso
-def build_torso(H, n_st=21):    # round 4: 21 stations (9 in round 3): fix 8 pulls the pelvis 0.24 S forward, and the fore and hind legs' ports (2 x 2 faces each) need two stations between them
+def build_torso(H, n_st=21, even=False):    # round 4: 21 stations (9 in round 3): fix 8 pulls the pelvis 0.24 S forward, and the fore and hind legs' ports (2 x 2 faces each) need two stations between them
     C = Cage("torso")
     pc, pr, cc, cr = H.pelvis["c"], H.pelvis["r"], H.chest["c"], H.chest["r"]
     x0, x1 = pc[0] - pr[0], cc[0] + cr[0]
     fld = H.dTorso
     xs = x0 + (x1 - x0) * (1 - np.cos(np.pi * (np.arange(n_st) + 1) / (n_st + 1))) / 2
+    if even:        # round 5: stations at equal arc length along the torso's profile (the cosine spacing crowds the rings at both ends: edge ratio 11.7 at level 3)
+        xf = np.linspace(x0, x1, 400)
+        rr = []
+        for x in xf:
+            zin = pc[2] + (cc[2] - pc[2]) * float(np.clip((x - pc[0]) / (cc[0] - pc[0]), 0, 1))
+            r = bisect_ray(fld, np.array([[x, 0, zin], [x, 0, zin]]), np.array([[0, 1.0, 0], [0, 0, 1.0]]), 0, 1.5)
+            rr.append((r[0, 1] + (r[1, 2] - zin)) / 2 if fld(np.array([[x, 0, zin]]))[0] < 0 else 0.0)
+        rr = np.array(rr); s_ = np.concatenate([[0], np.cumsum(np.hypot(np.diff(xf), np.diff(rr)))])
+        xs = np.interp((np.arange(n_st) + 1) / (n_st + 1) * s_[-1], s_, xf)
     th = np.pi * np.arange(9) / 8
     rings = []
     for x in xs:
@@ -205,12 +214,14 @@ def build_torso(H, n_st=21):    # round 4: 21 stations (9 in round 3): fix 8 pul
 
 
 # ================================================================================================ a leg (left side) and its paw
-def build_leg(H, lg):
+def build_leg(H, lg, even=False):
     k = H.S
     C = Cage("leg." + lg["name"], mirrored=False)
     top, ank, mc, mr = lg["top"], lg["ank"], lg["mass_c"], lg["mass"]
     elz = lg["el_c"][2]
     zs = [top[2] + 0.5 * mr[2], top[2], top[2] - 0.25 * (top[2] - ank[2]), elz, ank[2] + 0.5 * (elz - ank[2]), ank[2]]
+    if even:      # round 5: equal spacing in z from the ankle to the top of the mass (the ring spacing of rounds 1-4 ran from 0.04 to 0.21 H on a hind leg: edge ratio 7 at level 3)
+        zs = list(np.linspace(zs[0], zs[-1], 5))
     th = 2 * np.pi * np.arange(8) / 8
     D = np.stack([np.cos(th), np.sin(th), np.zeros(8)], -1)
     fld = lg["d_column"]
@@ -225,6 +236,10 @@ def build_leg(H, lg):
     C.cap_top = ring_cap(C, rings[0], 2, cast(1.0))
     C.cap_bottom = ring_cap(C, rings[-1][::-1], 2, cast(-1.0))
     C.rings = {f"L{i}": r for i, r in enumerate(rings)}
+    if even:
+        sst = lambda a, b, x: float(np.clip((x - a) / (b - a), 0, 1) ** 2 * (3 - 2 * np.clip((x - a) / (b - a), 0, 1)))
+        C.ring_w = {f"L{i}": (1 - sst(elz - 0.08, elz + 0.08, z), sst(elz - 0.08, elz + 0.08, z)) for i, z in enumerate(zs)}      # the upper bone above the elbow, the lower below, blended across it
+        C.ring_w = {n: (u, l) for n, (l, u) in C.ring_w.items()}
     return C
 
 

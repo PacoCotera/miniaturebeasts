@@ -33,7 +33,7 @@ def make_cages(H, join="A", beans=True, log=None):
     # to world rest coordinates (the head's origin is kc)
     head.set_arr(head.arr() + H.kc)
     head.feat = feat
-    torso = build_torso(H); torso.fix_winding()
+    torso = build_torso(H, even=(join == "A")); torso.fix_winding()
     rep["torso"] = fit(torso, H.dTorso)
     cages += [head, torso]
     if join == "B":
@@ -42,7 +42,7 @@ def make_cages(H, join="A", beans=True, log=None):
     for lg in H.legs:
         if lg["side"] != 1:
             continue           # the left legs only: the Mirror makes the right (the near fore paw's lead-paw is dropped by that: see report)
-        leg = build_leg(H, lg); leg.fix_winding()
+        leg = build_leg(H, lg, even=(join == "A")); leg.fix_winding()
         if join == "B":
             b_legs.append((build_leg(H, lg), lg))          # joined to the torso below, all four legs in one cage (round 2: B on every leg)
             leg = None
@@ -107,7 +107,7 @@ def vertex_weights(H, cages, V, part, off):
                 W[o + i] = {"chest": wc, "pelvis": wp, "spine": max(0.0, 1 - wc - wp)}
         elif c.name.startswith("leg"):
             tag = c.lg["name"]
-            ring_w = {"L0": (1, 0), "L1": (1, 0), "L2": (0.85, 0.15), "L3": (0.5, 0.5), "L4": (0, 1), "L5": (0, 1)}
+            ring_w = getattr(c, "ring_w", None) or {"L0": (1, 0), "L1": (1, 0), "L2": (0.85, 0.15), "L3": (0.5, 0.5), "L4": (0, 1), "L5": (0, 1)}
             vw = {}
             for rn, ids in c.rings.items():
                 for i in ids:
@@ -115,7 +115,7 @@ def vertex_weights(H, cages, V, part, off):
             for i in range(len(c.V)):
                 u, l = vw.get(i, (None, None)) if i in vw else (None, None)
                 if u is None:      # cap interiors take their ring's weights
-                    ring = "L0" if c.V[i][2] > np.mean([c.V[j][2] for j in c.rings["L0"]]) - 1e-9 else "L5"
+                    ring = "L0" if c.V[i][2] > np.mean([c.V[j][2] for j in c.rings["L0"]]) - 1e-9 else sorted(c.rings, key=lambda r: int(r[1:]))[-1]
                     u, l = ring_w[ring]
                 W[o + i] = {f"{tag.split('.')[0]}_upper.{tag.split('.')[1]}": u, f"{tag.split('.')[0]}_lower.{tag.split('.')[1]}": l}
         elif c.name.startswith("paw"):
