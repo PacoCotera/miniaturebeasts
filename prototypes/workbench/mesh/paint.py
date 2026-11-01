@@ -9,7 +9,10 @@ mix = lambda a, b, t: a + (b - a) * (np.asarray(t)[..., None] if np.ndim(t) else
 srgb = lambda c: np.asarray(c, float) / 255.0
 
 
-def cream_edge_z(H, q):
+CREAM_TUNE = np.array([1.12, 1.12, 1.0])      # round 4: the mesh's cream renders cool (b* 16 against the master's 21.5 under the same albedo and light): its albedo is lifted 12 % in red and green, in the sprites and the glb alike
+
+
+def cream_edge_raw(H, q):
     """paint.mjs faceCreamAt's edge height zb at each head-local rest position q (N, 3), as fix round 7 has it: the edge is the smile's own curve out to the mouth corner, then carries on the
     smile's slope and eases off it on a parabola down to the side's fall (the near side `fall`, the far side `fall-far`), one curve with no kink and so no dark wedge into the cream."""
     ch = H.cream_head
@@ -28,13 +31,36 @@ def cream_edge_z(H, q):
     return ze - ch["below"]
 
 
-def face_cream(H, q, nl, nt=None):
+CREAM_EDGE_SMOOTH = 0.07     # [mesh] H: round 4 (the AD: one smooth curve, no scallops). The edge's height over the face's width is the house's (cream_edge_raw), rounded by this Gaussian along y,
+                             # so the smile's curl at the mouth corner and the fall's start do not stand as steps on the lobe's curved face. Fix round 9 re-sets the field; this stays the mesh's own
+
+
+def cream_edge_z(H, q):
+    """cream_edge_raw, smoothed along y (see CREAM_EDGE_SMOOTH): the edge height at each head-local rest position."""
+    if not CREAM_EDGE_SMOOTH:
+        return cream_edge_raw(H, q)
+    key = ("edge", id(H))
+    if key not in _EDGE_CACHE:
+        ys = np.linspace(-1.2, 1.2, 481)
+        z = cream_edge_raw(H, np.stack([np.zeros_like(ys), ys, np.zeros_like(ys)], -1))
+        k = np.exp(-0.5 * (np.arange(-40, 41) * 0.005 / CREAM_EDGE_SMOOTH) ** 2)
+        k /= k.sum()
+        zp = np.concatenate([np.full(40, z[0] + (z[0] - z[1]) * np.arange(40, 0, -1)), z, z[-1] + (z[-1] - z[-2]) * np.arange(1, 41)])
+        _EDGE_CACHE[key] = (ys, np.convolve(zp, k, mode="valid"))
+    ys, zs = _EDGE_CACHE[key]
+    return np.interp(q[:, 1], ys, zs)
+
+
+_EDGE_CACHE = {}
+
+
+def face_cream(H, q, nl, flank=None):
     """paint.mjs faceCreamAt, q = head-local rest position (N, 3), nl = head-local normal. Gated by the mouth line and the fall only: head and neck are one surface to it."""
     ch = H.cream_head
     zb = cream_edge_z(H, q)
     front = np.maximum(sstep(-0.1, 0.3, q[:, 0] / H.K["a"]), sstep(0.1, 0.5, -nl[:, 2]))
     out = sstep(zb + ch["soft"], zb - ch["soft"], q[:, 2]) * front
-    return out if nt is None else out * H.near_flank(nt)
+    return out if flank is None else out * flank
 
 
 def underside_cream(H, P, N):
@@ -92,10 +118,11 @@ def vertex_colours(H, P, N, head_w, toe, nose_attr=None, mouth=True, ink_half=No
     """The albedo of every vertex of a rest-pose mesh (linear RGB): body, cream (face + chest-and-belly fields, x (1 - legWeight) off the head), the mouth's ink,
     the toe beans. P: (n,3) world rest positions; N: normals; head_w: head weight (0..1); toe: the `toe` attribute (0, 0.75, 1)."""
     look = H.look
-    body, cream = srgb(look["body"]), srgb(look["cream"])
+    body, cream = srgb(look["body"]), srgb(look["cream"]) * CREAM_TUNE
     q = P - H.kc
     nt = H.chest_normal(P)          # fix round 8: the bib and the head's cream end on the chest's own normal
-    fc = face_cream(H, q, N, nt)
+    flank = np.where(head_w > 0.5, 1.0, H.near_flank(nt))      # round 4: only on the body. On the mesh's head shell the chest's normal is not a flank (it cut the cheek's cream in steps)
+    fc = face_cream(H, q, N, flank)
     bc = body_cream(H, P, nt)
     c = np.maximum(np.maximum(fc, bc), underside_cream(H, P, N)) * (1 - H.leg_weight(P))       # fix round 7: the head takes the same leg weight as the body, so no line is left where the head ends and the body begins
     col = mix(body[None], cream[None], c)
@@ -153,7 +180,7 @@ def paint_fields(H, P, N, head_w, half, px):
     cb = H.look["creamBody"]
     mA = np.minimum(np.maximum(margin(-0.1, 0.3, q[:, 0] / H.K["a"]), margin(0.1, 0.5, -N[:, 2])), lm)
     if cb.get("n1"):
-        mA = np.minimum(mA, margin(cb["n1"], cb["n0"], nt[:, 1] * H.near_sign))
+        mA = np.where(head_w > 0.5, mA, np.minimum(mA, margin(cb["n1"], cb["n0"], nt[:, 1] * H.near_sign)))
     mB = np.minimum(np.maximum(body_cream_margin(H, P, nt), underside_margin(H, P, N)), lm)
     ax = mouth_axis(H)
     d = np.full(len(q), 1e9)

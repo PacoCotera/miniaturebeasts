@@ -613,7 +613,7 @@ def posed_points(sc):
     return np.vstack(out)
 
 
-FLOOR_REACH = 0.75         # the house's light.floor.reach is 1.1 (scene units); shortened so the shadow stays one soft oval about the feet and does not run to the frame edge
+FLOOR_REACH = 0.55         # the house's light.floor.reach is 1.1 (scene units); shortened so the shadow stays one soft oval about the feet and does not run to the frame edge
 
 
 def floor_shadow(sc, w, h, SS=2):
@@ -639,10 +639,13 @@ def floor_shadow(sc, w, h, SS=2):
         wt = np.clip(1.55 - (tc - 0.08) * 5, 1.0, 1.55) if tc < 0.26 else max(0.0, 1 - 0.9 * (tc - 0.26) / (FLOOR_REACH - 0.26))
         H2, _, _ = np.histogram2d(Y[m], X[m], bins=[h * SS, w * SS], range=[[0, h * SS], [0, w * SS]])
         cov = 1 - np.exp(-blur(H2, 0.9 * SS) * 0.7)
-        cov = np.clip(blur(cov, (0.035 + 0.07 * tc) * ps), 0, 1)
+        cov = np.clip(blur(cov, (0.03 + 0.045 * tc) * ps), 0, 1)
         sh = np.maximum(sh, cov * wt * (110 / 255) * (1.0))
     sh = sh.reshape(h, SS, w, SS).mean(axis=(1, 3))
     return np.clip(sh, 0, 170 / 255)
+
+
+SHADOW_CUT = 0.14
 
 
 def render_sprite(sc, path, floor_obj, samples):
@@ -654,7 +657,7 @@ def render_sprite(sc, path, floor_obj, samples):
     A = read_png(pa)
     os.remove(pa)
     sa = floor_shadow(sc, A.shape[1], A.shape[0])
-    sa[sa < 0.004] = 0.0
+    sa = np.where(sa < SHADOW_CUT, 0.0, (sa - SHADOW_CUT) / (1 - SHADOW_CUT))      # round 4: a contact shadow, not a haze: the shadow's faint tail (under 25/255) is cut and the rest renormalised
     sc_col = np.array([30, 26, 34]) / 255
     a = A[..., 3] + sa * (1 - A[..., 3])
     rgb = np.where(a[..., None] > 1e-6, (A[..., :3] * A[..., 3:4] + sc_col * (sa * (1 - A[..., 3]))[..., None]) / np.maximum(a[..., None], 1e-6), 0)

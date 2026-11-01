@@ -3,7 +3,10 @@ Run: python viewer_gen.py LOIKA.glb OUT/viewer.html"""
 import sys, json, base64, re
 glb, out = sys.argv[1:3]
 look = json.load(open(__import__("os").path.join(__import__("os").path.dirname(__import__("os").path.abspath(__file__)), "../foundation/specimens.json")))["S01"]["look"]      # the house's own colours, not copies
-colour = lambda k: ", ".join(str(int(x)) for x in look[k])
+sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
+VIEWER_BODY = 1.14      # round 4: a stand-in in the viewer for what Blender's body has and three's standard material lacks (the subsurface lift and the vinyl's sheen): +14 % in sRGB so the body's median matches the sprite's
+from paint import CREAM_TUNE      # round 4: the cream the sprites paint is the house's cream times the mesh's tune: the viewer paints the same
+colour = lambda k: ", ".join(f"{min(255.0, x * (CREAM_TUNE[i] if k == 'cream' else VIEWER_BODY if k == 'body' else 1.0)):.2f}" for i, x in enumerate(look[k]))
 T = "/home/mb/mb/tools-3d/web/node_modules/three"
 rd = lambda p: open(f"{T}/{p}", encoding="utf8").read()
 src = dict(three=rd("build/three.module.min.js"), gltf=rd("examples/jsm/loaders/GLTFLoader.js"), orbit=rd("examples/jsm/controls/OrbitControls.js"), bgu=rd("examples/jsm/utils/BufferGeometryUtils.js"))
@@ -30,8 +33,8 @@ const GLB = "%GLB%";
   renderer.setPixelRatio(Math.min(2, devicePixelRatio)); renderer.setSize(W(), Hh()); document.body.appendChild(renderer.domElement);
   renderer.setClearColor(0xe9e7e2);
   const scene = new THREE.Scene();
-  scene.add(new THREE.HemisphereLight(0xdfe6f2, 0x6a6258, 1.5));
-  const sun = new THREE.DirectionalLight(0xfff6e6, 2.4); sun.position.set(-2.4, 4.0, 3.2); scene.add(sun);
+  scene.add(new THREE.HemisphereLight(%HSKY%, %HGND%, %HINT%));
+  const sun = new THREE.DirectionalLight(%SUNC%, %SUNI%); sun.position.set(-2.4, 4.0, 3.2); scene.add(sun);
   const cam = new THREE.PerspectiveCamera(28, W() / Hh(), 0.1, 100);
   cam.position.set(6.0, 2.6, 4.1);
   const ctl = new OrbitControls(cam, renderer.domElement); ctl.target.set(-0.05, 0.95, -0.35); ctl.enableDamping = true; ctl.update();
@@ -74,6 +77,10 @@ const GLB = "%GLB%";
   renderer.setAnimationLoop(() => { const dt = clock.getDelta(); mixer.update(dt); ctl.update(); renderer.render(scene, cam); });
 })().catch((e) => { document.getElementById("msg").textContent = "failed: " + e; console.error(e); });
 </script></body></html>"""
+import os
+LP = dict(HSKY=os.environ.get("HSKY", "0xf4ede2"), HGND=os.environ.get("HGND", "0xc8baa4"), HINT=os.environ.get("HINT", "2.4"), SUNC=os.environ.get("SUNC", "0xfffaf2"), SUNI=os.environ.get("SUNI", "1.25"))      # round 4: the viewer's light tuned to the Blender sprite's values (the report's three.js match)
+for k, v in LP.items():
+    html = html.replace("%" + k + "%", v)
 html = html.replace("%BODY%", colour("body")).replace("%CREAM%", colour("cream")).replace("%INK%", colour("mouth")).replace("%SRC%", js(src)).replace("%GLB%", b64)
 open(out, "w", encoding="utf8").write(html)
 print("viewer", len(html) // 1024, "KB")
