@@ -275,39 +275,24 @@ export function featureChecks(ctx) {
   }
 
   if (key === "loika") {
-    const pts = contour(r4.coverage, r4.width, r4.height);
-    const rootW = Wd(B.branches.find((b) => b.branch.id === "leafM").rootPoint), rs = r4.meta.project(rootW);
-    const front = (m) => m.group === "front" && Math.abs(m.angle) < 90;
-    const sStart = nearestIdx(pts, rs, (q) => { const m = mapsAt(r4, q); return m && front(m); });
-    let best = null;
-    for (const step of [1, -1]) { const res = dorsalTurn(r4, pts, sStart, step, (m) => front(m) && m.sigma >= 0.35); if (!best || res.length > best.length) best = res; }
-    out.push(C("loika.a", "head out of the body: the dorsal outline from the crest's root to the back", best.worst <= 35 && best.length > 20, +best.worst.toFixed(1), "<= 35 deg within 6 px", `${best.length} contour px (the chin crease is ventral)`));
     // (b) the snout is the head's own end
     const ks = form.front.knots, iStop = ks.findIndex((k) => k.name === "stop");
     let mono = true; for (let i = iStop + 1; i < ks.length; i++) if (mean3(ks[i]) > mean3(ks[i - 1]) + 1e-12) mono = false;
     const A = scene.mesh.attrs, names = A.partNames, headId = names.indexOf("head"), snoutId = names.findIndex((n) => /snout|muzzle|nose/.test(n));
     const sigmaEnd = B.front.cum[ks.length - 1]; let reach = 0; for (let i = 0; i < A.part.length; i++) if (A.part[i] === headId && A.group[i] === 0) reach = Math.max(reach, A.sigma[i]);
     out.push(C("loika.b", "the snout is the head's own end: half-sizes fall from the stop to the nose, one part of the mesh", mono && snoutId < 0 && reach >= sigmaEnd - 0.12, { monotone: mono, separatePart: snoutId >= 0, headPartReachesSigma: +reach.toFixed(2), noseSigma: +sigmaEnd.toFixed(2) }, "monotone; no separate part; reaches the nose"));
-    // the owner note: the head against the signed art
-    const art = ctx.art, H = r4.height, W = r4.width, cov = r4.coverage;
-    const box = boxOf(maskOfCoverage(r4)), bw = box.x1 - box.x0, bh = box.y1 - box.y0;
-    let hx0 = Infinity, hx1 = -Infinity, hy0 = Infinity, hy1 = -Infinity; const hid = r4.maps.partNames.indexOf("head");
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = y * W + x; if (cov[i] >= 0.5 && r4.maps.part[i] === hid) { hx0 = Math.min(hx0, x); hx1 = Math.max(hx1, x); hy0 = Math.min(hy0, y); hy1 = Math.max(hy1, y); } }
-    let mouthLow = -1; for (let y = H - 1; y >= 0 && mouthLow < 0; y--) for (let x = 0; x < W; x++) if (r4.ink[y * W + x] === INK.mouth && cov[y * W + x] >= 0.5) { mouthLow = y; break; }
-    const headH = ((mouthLow >= 0 ? mouthLow : hy1) - hy0 + 1) / bh, headW = (hx1 - hx0 + 1) / bw; // round 3: the head runs from the crown to the lowest mouth-ink pixel
-    const e = r4.meta.eyes, sep = Math.hypot(e[0].at[0] - e[1].at[0], e[0].at[1] - e[1].at[1]) / bw, rimD = (2 * Math.max(e[0].r, e[1].r) * 1.0) / bh;
-    const within = (v, [lo, hi]) => v >= lo && v <= hi;
-    const ok = within(headH, art.headH) && within(headW, art.headW) && within(sep, art.eyeSep) && within(rimD, art.eyeD);
-    out.push(C("loika.head", "the head against the signed art: head height (crown to the lowest mouth-ink pixel) and width, eye separation, eye diameter, as fractions of the creature's box", ok, { headH: +headH.toFixed(3), headW: +headW.toFixed(3), eyeSep: +sep.toFixed(3), eyeD: +rimD.toFixed(3) }, `headH ${art.headH}, headW ${art.headW}, eyeSep ${art.eyeSep}, eyeD ${art.eyeD}`, "the art's own values were measured on mibi-adult-S01-304x312.png (see report)"));
-    { // loika.96 and loika.48 (round 4, design 5): what the small sizes must show
-      const toes = [304, 96, 48].map((k) => loikaToes(r[k])), visible = Object.keys(toes[0]);
-      for (const sk of [96, 48]) {
-        const sm = loikaSmallRows(r[sk], sk, r[sk].ink), t = toes[sk === 96 ? 1 : 2];
-        const toeRow = sk === 96 ? { id: "toes", pass: visible.length > 0 && visible.every((ft) => Object.values(t[ft] ?? {}).filter((x) => x.n >= 3).length === 3), value: Object.fromEntries(visible.map((ft) => [ft, Object.values(t[ft] ?? {}).map((x) => x.n)])), threshold: "three toes per front foot, >= 3 px each" }
-          : { id: "toes", pass: visible.length > 0 && visible.every((ft) => Object.values(t[ft] ?? {}).reduce((q, x) => q + x.pale, 0) >= 2), value: Object.fromEntries(visible.map((ft) => [ft, Object.values(t[ft] ?? {}).reduce((q, x) => q + x.pale, 0)])), threshold: ">= 2 pale toe pixels per front foot" };
-        const rows = [...sm.rows, toeRow];
-        out.push(C(`loika.${sk}`, `Loika at ${sk}: skin, throat, near and far eye, snout and nape, toes${sk === 96 ? ", no cream between the eyes" : ""} (design 5)`, rows.every((x) => x.pass), Object.fromEntries(rows.map((x) => [x.id, { pass: x.pass, value: x.value }])), rows.map((x) => `${x.id}: ${x.threshold}`).join("; ")));
-      }
+    { // the round 4 gates (design 4): measured on the 304 render with the same function as the stand
+      const m = loikaMeasure(r4), rg = (v, lo, hi) => v !== null && v !== undefined && v >= lo && v <= hi, f3 = (v) => (typeof v === "number" ? +v.toFixed(3) : v);
+      const sk = m.skin, cr = m.cream, ir = m.iris, lf = m.leaf, th = m.throat, nr = m.near, fr = m.far;
+      out.push(C("loika.colour", "Loika's colours against the stand: skin core L* p5 <= 15, p50 19-25, p95 35-45, a* 1.5-4.5, b* -1.5..1.5; cream p50 L* >= 74, a* 3.5-7.5, b* 17-26; iris L* >= 42, a* >= 22, b* >= 38; leaf a* -17..-9, b* 26-38",
+        sk.p5 <= 15 && rg(sk.p50, 19, 25) && rg(sk.p95, 35, 45) && rg(sk.a, 1.5, 4.5) && rg(sk.b, -1.5, 1.5) && cr.L >= 74 && rg(cr.a, 3.5, 7.5) && rg(cr.b, 17, 26) && ir.L >= 42 && ir.a >= 22 && ir.b >= 38 && rg(lf.a, -17, -9) && rg(lf.b, 26, 38),
+        { skin: [sk.p5, sk.p50, sk.p95, sk.a, sk.b].map(f3), cream: [cr.L, cr.a, cr.b].map(f3), iris: [ir.L, ir.a, ir.b].map(f3), leaf: [lf.a, lf.b].map(f3) }, "see the label", "stand: skin 12.8/21.9/39.8, 2.9, 0.0; cream 80.2, 5.4, 21.5; iris 49.4, 28.3, 49.8; leaf -13.0, 33.2"));
+      out.push(C("loika.cream", "the cream is one region from the mouth to the belly, not a mask: throat top .44-.58 H, throat share .06-.12, near-eye ring 1.25-1.65", th && rg(th.top, 0.44, 0.58) && rg(th.share, 0.06, 0.12) && nr && rg(nr.ring, 1.25, 1.65), { throatTop: th && f3(th.top), throatShare: th && f3(th.share), ring: nr && f3(nr.ring) }, ".44-.58; .06-.12; 1.25-1.65", "stand .481; .095; 1.40"));
+      const eyeLever = (LEVERS.loika.find((l) => l.id === "eye-size")?.range ?? [1, 1])[1], fe = form.face.eyes, cap = (fe.protrude ?? 0.45) * fe.r * eyeLever;
+      out.push(C("loika.eyes", "the eyes: near D .115-.155 H, ring outer D .18-.24 H, far w/h .40-.65, separation .25-.34 H, cap height protrude x r x eye-size <= .05 U at every lever corner", nr && fr && rg(nr.D, 0.115, 0.155) && rg(nr.ringD, 0.18, 0.24) && rg(fr.wh, 0.4, 0.65) && rg(m.sep, 0.25, 0.34) && cap <= 0.05 + 1e-9,
+        { nearD: nr && f3(nr.D), ringOuterD: nr && f3(nr.ringD), farWH: fr && f3(fr.wh), sep: f3(m.sep), capU: +cap.toFixed(4) }, ".115-.155; .18-.24; .40-.65; .25-.34; <= .05", "stand .131; .208; .52; .296"));
+      out.push(C("loika.head", "a head of its own: snout tip .42-.54 H, recess >= .11 bw, nape at .58-.72 bw with a turn >= 30 deg and a drop >= .16 H", rg(m.snout.tip, 0.42, 0.54) && m.snout.recess >= 0.11 && rg(m.nape.x, 0.58, 0.72) && m.nape.turn >= 30 && m.nape.drop >= 0.16,
+        { tip: f3(m.snout.tip), recess: f3(m.snout.recess), nape: [f3(m.nape.x), +m.nape.turn.toFixed(0), f3(m.nape.drop)] }, ".42-.54; >= .11; .58-.72, >= 30, >= .16", "stand .484; .148; .663, 54, .218"));
     }
     { // loika.rise (design 1): the crown above the top of the body at sigma <= .35, as a fraction of the creature's height
       const Vm = scene.mesh.vertices, At = scene.mesh.attrs, hid2 = At.partNames.indexOf("head"); let crown = -Infinity, top = -Infinity, zlo = Infinity, zhi = -Infinity;
@@ -426,7 +411,7 @@ export function hullDepth(h, p) {
 // Round 2 (design 8): face.ink, face.place, face.order, face.mouth, face.surface, limbs, trans, marks, drapet.e, loika.leaves, texture energy
 // ====================================================================================================================
 import { Lstar, MIN_EYE } from "./render.mjs";
-import { touchedKnots } from "./genome.mjs";
+import { touchedKnots, LEVERS } from "./genome.mjs";
 const rgb = (r, x, y) => { const i = (y * r.width + x) * 4; return [r.data[i], r.data[i + 1], r.data[i + 2]]; };
 const countInkIn = (r, code, box) => { let n = 0; for (let y = Math.max(0, box[1]); y <= Math.min(r.height - 1, box[3]); y++) for (let x = Math.max(0, box[0]); x <= Math.min(r.width - 1, box[2]); x++) if (r.ink[y * r.width + x] === code) n++; return n; };
 
@@ -517,8 +502,8 @@ export function round2Checks(ctx) {
     const eyeLine = vis.reduce((a, e) => a + (feet + 1 - e.at[1]), 0) / vis.length / H, eyeY = vis.reduce((a, e) => a + e.at[1], 0) / vis.length;
     const noseP = fm?.noses.length ? r4.meta.project(fm.noses[0].c) : null, mouthP = fm?.mouth ? r4.meta.project(fm.castXY(0, fm.mouth.at(0))) : null;
     const row = {}, bad = [], within = (v, t, tol = 0.15) => v !== null && Math.abs(v / t - 1) <= tol, off = (v, t) => Math.abs(v - t) <= Math.max(0.25 * t, 2 / H);
-    if (tgt.eyeSep) { row.eyeSep = ex && +ex.toFixed(3); if (!within(ex, tgt.eyeSep)) bad.push("eyeSep"); }
-    if (tgt.eyeD) { row.eyeD = +dia.toFixed(3); if (!within(dia, tgt.eyeD)) bad.push("eyeD"); }
+    if (tgt.eyeSep && key !== "loika") { row.eyeSep = ex && +ex.toFixed(3); if (!within(ex, tgt.eyeSep)) bad.push("eyeSep"); }
+    if (tgt.eyeD && key !== "loika") { row.eyeD = +dia.toFixed(3); if (!within(dia, tgt.eyeD)) bad.push("eyeD"); }
     if (tgt.eyeLine) { row.eyeLine = +eyeLine.toFixed(3); if (!within(eyeLine, tgt.eyeLine)) bad.push("eyeLine"); }
     if (tgt.faceCentre) { const fc = (feet + 1 - r4.meta.project(fm.Pf)[1]) / H; row.faceCentre = +fc.toFixed(3); if (!within(fc, tgt.faceCentre)) bad.push("faceCentre"); }
     if (tgt.nose && noseP) { const v = (noseP[1] - eyeY) / H; row.nose = +v.toFixed(3); if (!off(v, tgt.nose)) bad.push("nose"); }
@@ -549,7 +534,9 @@ export function round2Checks(ctx) {
     const At = scene.mesh.attrs; let plate = 0, above = 0; for (let i = 0; i < At.patch.length; i++) if (At.patch[i] > 0.5 && Math.abs(At.fx[i]) < 5) { plate++; if (At.fy[i] > fm.mouth.at(Math.min(fm.mouth.w, Math.abs(At.fx[i]))) + 0.03) above++; }
     out.push(C("loika.mouth", "the mouth line's width is .21 H +- 25 % and at most 2 % of the plate's pixels lie above it", wH >= 0.21 * 0.75 && wH <= 0.21 * 1.25 && above <= 0.02 * Math.max(1, plate), { widthH: +wH.toFixed(3), plateAbovePct: +(100 * above / Math.max(1, plate)).toFixed(2) }, ".21 H +- 25 %; <= 2 %"));
   }
-  if (key === "loika") { const nf = countNails(r4); out.push(C("limbs.show.loika", "Loika: >= 3 nail blobs on each visible front foot at 304", Object.keys(nf).length >= 1 && Object.values(nf).every((v) => v >= 3), nf, ">= 3 per front foot")); }
+  if (key === "loika") { // round 4: each visible front foot shows 3 toes of >= 40 px at 304 and >= 3 px at 96, >= 60 % of each toe's pixels pale (L* >= 70)
+    const t4 = loikaToes(r[304]), t96 = loikaToes(r[96]), feet = Object.keys(t4), g = (t, ft) => Object.values(t[ft] ?? {}), pale = feet.every((ft) => g(t4, ft).every((x) => x.pale >= 0.6 * x.n));
+    out.push(C("limbs.show.loika", "Loika: each visible front foot shows 3 toes of >= 40 px at 304 and >= 3 px at 96, >= 60 % of each toe's pixels pale (L* >= 70)", feet.length >= 1 && feet.every((ft) => g(t4, ft).filter((x) => x.n >= 40).length === 3 && g(t96, ft).filter((x) => x.n >= 3).length === 3) && pale, { at304: Object.fromEntries(feet.map((ft) => [ft, g(t4, ft).map((x) => `${x.n}/${x.pale}`)])), at96: Object.fromEntries(feet.map((ft) => [ft, g(t96, ft).map((x) => x.n)])) }, "3 toes, >= 40 px / >= 3 px, >= 60 % pale", "stand toe blobs 105-279 px")); }
   if (key === "rupar") out.push(C("limbs.show.rupar", "Rupar: each ear >= 200 px at 304", part("ears", r[304]) / 2 >= 200, part("ears", r[304]), ">= 400 (two ears)"));
   if (key === "drapet") out.push(C("limbs.show.drapet", "Drapet: legs 0 px", [304, 96, 48].every((k) => part("legs", r[k]) === 0), [304, 96, 48].map((k) => part("legs", r[k])), "0"));
   if (key === "loika") { const leaves = B.branches.filter((x) => x.branch.part === "crest").map((x) => { const S = x.samples, len = S.at(-1).s, wid = 2 * Math.max(...S.map((q) => Math.max(q.w, q.u, q.d))); return +(wid / len).toFixed(2); }); out.push(C("loika.leaves", "each leaf's width / length >= 0.45", leaves.every((v) => v >= 0.45), leaves, ">= 0.45")); }
