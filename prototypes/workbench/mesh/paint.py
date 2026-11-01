@@ -40,7 +40,7 @@ def mouth_axis(H, ns=14):
     return np.stack([xs - mo * rt, ys, zs], -1)
 
 
-def mouth_ink(H, q, px=1 / 30.35):
+def mouth_ink(H, q, px=1 / 30.35, half=None):
     """Distance to the mouth's axis -> ink amount: at least the house's mouth-min-px at 96 (px = one pixel at 96 in H)."""
     ax = mouth_axis(H)
     d = np.full(len(q), 1e9)
@@ -48,7 +48,7 @@ def mouth_ink(H, q, px=1 / 30.35):
         ab = b - a
         h = np.clip(((q - a) @ ab) / (ab @ ab), 0, 1)
         d = np.minimum(d, np.linalg.norm(q - (a + h[:, None] * ab), axis=1))
-    wdt = max(H.rf["mouth-tube"] * H.look["mouthInk"], H.rig and H.house["rig"]["ink"]["mouth-min-px"]["96"] / 2 * px + H.rf["mouth-tube"] * 0.3)
+    wdt = half if half is not None else max(H.rf["mouth-tube"] * H.look["mouthInk"], H.rig and H.house["rig"]["ink"]["mouth-min-px"]["96"] / 2 * px + H.rf["mouth-tube"] * 0.3)
     near = np.hypot(q[:, 0] - ax[7, 0], np.hypot(q[:, 1], q[:, 2] - H.mouth["z"])) < H.mouth["w"] / 2 + 0.2
     return sstep(wdt + px * 0.6, wdt - px * 0.6, d) * near
 
@@ -62,7 +62,7 @@ def nose_weight(H, q):
     return sstep(0.012 + 0.0, -0.004, dn)
 
 
-def vertex_colours(H, P, N, head_w, toe, nose_attr=None, mouth=True):
+def vertex_colours(H, P, N, head_w, toe, nose_attr=None, mouth=True, ink_half=None):
     """The albedo of every vertex of a rest-pose mesh (linear RGB): body, cream (face + chest-and-belly fields, x (1 - legWeight) off the head), the mouth's ink,
     the toe beans. P: (n,3) world rest positions; N: normals; head_w: head weight (0..1); toe: the `toe` attribute (0, 0.75, 1)."""
     look = H.look
@@ -74,7 +74,8 @@ def vertex_colours(H, P, N, head_w, toe, nose_attr=None, mouth=True):
     c = np.where(head_w > 0.5, c, c * (1 - H.leg_weight(P)))
     col = mix(body[None], cream[None], c)
     if mouth:
-        ink = mouth_ink(H, q) * (head_w > 0.5)
+        px = 1 / 30.35 if ink_half is None else ink_half[1]
+        ink = mouth_ink(H, q, px=px, half=None if ink_half is None else ink_half[0]) * (head_w > 0.5)
         col = mix(col, srgb(look["mouth"])[None], ink)
     toec = srgb(look["toe"])
     col = np.where((toe >= 0.99)[:, None], toec, col)

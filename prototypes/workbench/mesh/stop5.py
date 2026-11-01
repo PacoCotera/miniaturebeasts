@@ -21,7 +21,9 @@ if __name__ == "__main__":
     H, sc, rep = build_full(4, os.path.join(OUT, "tex"))
     res = dict(bake=sc.bake_info, build_s=time.time() - t0)
     sc.pose_stand(True)
-    rend = lambda p, smp: FN.render_sprite(sc, p, sc.floor, smp)
+    def rend(p, smp):
+        FN.repaint_ink(sc, H, sc.cur_scale)
+        return FN.render_sprite(sc, p, sc.floor, smp)
     res["sprites"] = sc.stand_sprites(OUT, "loika", renderer=rend)
     s304 = sc.last_framing["s304"]
     B = sc.basis(); sc.aim_lights(B)
@@ -29,6 +31,7 @@ if __name__ == "__main__":
     face_pt = H.kc + H.Rh @ np.array([0.45, 0.12, -0.12])
     for name, pt, z, (w, h) in (("face3x", face_pt, 3.0, (480, 400)), ("cream4x", H.kc + H.Rh @ np.array([0.5, 0.0, -0.35]) + np.array([0, 0, -0.1]), 4.0, (420, 380))):
         sc.frame(B, w, h, s304 * z, centre_pt=pt)
+        FN.repaint_ink(sc, H, s304 * z)
         res[name] = FN.render_sprite(sc, os.path.join(OUT, name + ".png"), sc.floor, 64)
     res["light"], res["points"] = FN.light_measures(sc, H, os.path.join(OUT, "loika-304.png"), sc.final, sc.eyes)
     json.dump(res, open(os.path.join(OUT, "measures.json"), "w"), indent=1, default=float)

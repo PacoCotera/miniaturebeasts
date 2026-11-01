@@ -8,6 +8,7 @@ import paint as PT
 from build import lin, strip_png_text
 
 
+NOSE_ROUGH, NOSE_SPEC, NOSE_COAT = 0.24, 1.0, 0.9     # round 2: the nose is a glossier skin than the rest, so its mound takes one soft highlight from the key
 EYE_SINK = 0.09     # the disc sits this far (H) below the skin along the eye's normal, in a socket the size of the disc
 EYE_HOLE = 1.04      # the socket's hole, in R_eye
 EYE_SPAN = 1.9      # the disc's own radius, in R_eye: wider than the hole, so nothing but the disc is seen through it
@@ -232,6 +233,7 @@ def bake(sc, H, level=3, name="loika_L"):
     if "toe" in me.attributes:
         toe = np.array([d.value for d in me.attributes["toe"].data])
     col, cream = PT.vertex_colours(H, P, N, head_w, toe)
+    sc.paint_ctx = (P, N, head_w, toe, me)
     nose = PT.nose_weight(H, P - H.kc) * (head_w > 0.5)
     ca = me.color_attributes.new("Col", "FLOAT_COLOR", "POINT")
     ca.data.foreach_set("color", np.column_stack([PT.lin(col), np.ones(len(P))]).ravel())
@@ -246,10 +248,16 @@ def bake(sc, H, level=3, name="loika_L"):
     cn = nt.nodes.new("ShaderNodeVertexColor"); cn.layer_name = "Col"
     nt.links.new(cn.outputs["Color"], b.inputs["Base Color"])
     an = nt.nodes.new("ShaderNodeAttribute"); an.attribute_name = "nose"
-    mr = nt.nodes.new("ShaderNodeMapRange"); mr.inputs["To Min"].default_value = H.light["vinyl"]["roughness"]; mr.inputs["To Max"].default_value = 0.35
+    mr = nt.nodes.new("ShaderNodeMapRange"); mr.inputs["To Min"].default_value = H.light["vinyl"]["roughness"]; mr.inputs["To Max"].default_value = NOSE_ROUGH
     nt.links.new(an.outputs["Fac"], mr.inputs["Value"]); nt.links.new(mr.outputs["Result"], b.inputs["Roughness"])
     if "Specular IOR Level" in b.inputs:
         b.inputs["Specular IOR Level"].default_value = 0.25
+        ms = nt.nodes.new("ShaderNodeMapRange"); ms.inputs["To Min"].default_value = 0.25; ms.inputs["To Max"].default_value = NOSE_SPEC      # the nose: one soft highlight on the mound
+        nt.links.new(an.outputs["Fac"], ms.inputs["Value"]); nt.links.new(ms.outputs["Result"], b.inputs["Specular IOR Level"])
+    if "Coat Weight" in b.inputs:        # the nose's soft highlight: a broad clear coat that only the nose carries
+        mc = nt.nodes.new("ShaderNodeMapRange"); mc.inputs["To Min"].default_value = 0.0; mc.inputs["To Max"].default_value = NOSE_COAT
+        nt.links.new(an.outputs["Fac"], mc.inputs["Value"]); nt.links.new(mc.outputs["Result"], b.inputs["Coat Weight"])
+        b.inputs["Coat Roughness"].default_value = 0.42
     if "Subsurface Weight" in b.inputs:
         b.inputs["Subsurface Weight"].default_value = 0.06
         b.inputs["Subsurface Radius"].default_value = (1.0, 0.55, 0.35)
@@ -261,6 +269,21 @@ def bake(sc, H, level=3, name="loika_L"):
     sc.final = ob
     sc.bake_info = dict(level=level, verts=len(P), faces=len(me.polygons), cream_mean=float(cream.mean()))
     return ob
+
+
+INK_PX = {304: 2.6, 96: 1.7, 48: 1.0}      # the smile's width in pixels of the sprite it is drawn for: a line of 2-3 px at 304, the house's 1.7 px at 96, one pixel at 48
+
+
+def repaint_ink(sc, H, px_per_H):
+    """Round 2 (AD item 11): the smile is a line of a width set in screen pixels, not the round-1 band (0.07 H, 6-7 px at 304). Re-evaluates the baked vertex colours with the ink
+    half-width for the sprite about to be rendered (px_per_H pixels to one H)."""
+    P, N, head_w, toe, me = sc.paint_ctx
+    size = 304 if px_per_H > 60 else (96 if px_per_H > 20 else 48)
+    half = 0.5 * INK_PX[size] / px_per_H
+    col, _ = PT.vertex_colours(H, P, N, head_w, toe, ink_half=(half, 1.0 / px_per_H))
+    me.color_attributes["Col"].data.foreach_set("color", np.column_stack([PT.lin(col), np.ones(len(P))]).ravel())
+    me.update()
+    return half
 
 
 def add_eyes(sc, H, level_obj, offset=0.005):
@@ -335,6 +358,7 @@ def add_lids(sc, H):
         sc.scene.collection.objects.link(ob)
         ob.shape_key_add(name="Basis", from_mix=False)
         kb = ob.shape_key_add(name="blink." + name, from_mix=False)
+        kb.value = 0.0            # a new key comes in at 1.0
         for i, p in enumerate(shut):
             kb.data[i].co = tuple(p)
         mat = bpy.data.materials.new("lid." + name)

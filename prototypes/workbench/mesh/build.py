@@ -400,6 +400,7 @@ class Scene:
         for sz in sizes:
             w, h, scale, feet = {304: (304, 312, s304, 305), 96: (96, 88, s304 * 0.276, 85), 48: (48, 48, min(44 / hgt, 44 / wid), 44)}[sz]
             self.scene.cycles.samples = samples or (64 if sz == 304 else 48)
+            self.cur_scale = scale
             self.frame(B, w, h, scale, cx=(ex["a0"] + ex["a1"]) / 2, bottom=ex["b0"], feet_row=feet)
             p = os.path.join(outdir, f"{tag}-{sz}.png")
             out[sz] = dict(file=os.path.basename(p), sha=(renderer(p, self.scene.cycles.samples) if renderer else self.render(p)), scale=scale)
