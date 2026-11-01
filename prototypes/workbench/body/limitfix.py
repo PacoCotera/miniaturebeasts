@@ -3,15 +3,16 @@ limit stencil of cage.py (the mirrored mesh, so the stencils see both halves). S
 import numpy as np
 
 
-def limit_fix(body, steps=24, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0, lam=0.0):
+def limit_fix(body, steps=24, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0, lam=0.0, free_caps=True):
     c = body.cage
     n = len(c.V)
     has = np.array([t is not None for t in body.target])
     # cap interiors are re-placed from their ring each step, never targeted
     free = np.zeros(n, bool)
-    for cp in getattr(body, 'caps', []):
+    caps = getattr(body, 'caps', []) if free_caps else []      # S20 (free_caps=False): the cap interiors are fitted like any vertex, each to its target on the section profile
+    for cp in caps:
         free[cp.ids] = True
-    for cp in getattr(body, 'caps', []):
+    for cp in caps:
         cp.replace(body)
     for h in getattr(body, 'hooks', []):
         h(body)
@@ -59,7 +60,7 @@ def limit_fix(body, steps=24, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0
             A[cm, 1] = 0.0
             A[~cm, 1] = np.maximum(A[~cm, 1], 0.004)
         c.set_arr(A)
-        for cp in getattr(body, 'caps', []):
+        for cp in caps:
             cp.replace(body)
         for h in getattr(body, 'hooks', []):
             h(body)

@@ -1,0 +1,131 @@
+"""S20 chunk 1: the gourd loft. Quads only, manifold, mirror plane, valence (the cap corners only), ring ratio, limit error, head wider than body, waist width, the crown cap's curvature, column keys through the socket centres,
+the loft against the file's own section. Failing rows stay failing and are reported in the sheet (never relaxed)."""
+import os, sys, unittest, collections, json
+import numpy as np
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import s20build, mquality as Q, subdiv as SD, s20measure as M, schema as SC
+from gourd import Gourd
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+class T(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.b = s20build.make_s20(upto="loft")
+        cls.ctx = cls.b.ctx
+        cls.spec = cls.ctx["spec"]
+        cls.V, cls.F, cls.attr, cls.fp = Q.full_topology(cls.b)
+        Vf, Ff, at, fpp, cr, mir = cls.b.full()
+        cls.V2, cls.F2, _, _, _ = SD.subdivide(Vf, Ff, cr, at, fpp, levels=2)
+        cls.th = cls.spec["mesh_quality"]
+
+    def test_quads_manifold_mirror(self):
+        self.assertTrue(all(len(f) == 4 for f in self.F))
+        self.assertEqual(Q.manifold(self.V, self.F), dict(non_manifold_edges=0, loose_verts=0, inconsistent_winding=0))
+        mp = Q.mirror_plane(self.V)
+        self.assertEqual(mp["max_abs_y_on_plane"], 0.0)
+        self.assertEqual(mp["near_but_off"], 0)
+
+    def test_valence_caps_only(self):
+        val = Q.valence(self.F, len(self.V))
+        odd = [i for i in range(len(self.V)) if val[i] != 4]
+        self.assertTrue(all(val[i] == 3 for i in odd))
+        corners = set()
+        for cp in self.b.caps:
+            for k in ((cp.na, 0), (cp.na, cp.nb)):
+                corners.add(cp.G[k])
+        n0 = len(self.b.cage.V)
+        extra = [i for i in range(n0) if abs(self.V[i][1]) > 1e-12]
+        base = {v if v < n0 else extra[v - n0] for v in odd}
+        self.assertEqual(base, corners)                      # 2 per cap per half: seat and crown
+        self.assertEqual(len(odd), 8)
+
+    def test_ring_ratio(self):
+        rr = M.ring_ratio_xy(self.V, self._rings_full())
+        print("ring ratio", round(rr, 3))
+        self.assertLessEqual(rr, self.th["ring_ratio_max"], rr)
+
+    def _rings_full(self):
+        """Each ring as full-mesh ids (the half ring and its mirror copies)."""
+        m = self.ctx["remap"]
+        n0 = len(self.b.cage.V)
+        extra = [i for i in range(n0) if abs(self.V[i][1]) > 1e-12]
+        mirror = {e: n0 + k for k, e in enumerate(extra)}
+        rings = []
+        for r in self.ctx["info"]["torso"]["rings"]:
+            ids = [m[v] for v in r]
+            rings.append(ids + [mirror[i] for i in ids if i in mirror])
+        return rings
+
+    def test_limit_error(self):
+        self.assertLessEqual(self.ctx["log"]["limit"]["max_err"], self.th["limit_err_max"])
+
+    def test_edge_ratio(self):
+        er = Q.edge_ratio(self.V, self.F, self.fp, self.b.parts["torso"])
+        print("edge ratio", round(er, 2))
+        self.assertLessEqual(er, self.th["edge_ratio_max"], er)
+
+    def test_area_ratio(self):
+        ar = Q.area_ratio(self.V, self.F)
+        print("area ratio", round(ar, 2))
+        self.assertLessEqual(ar, self.th["area_ratio_max"], ar)
+
+    def test_nonplanarity(self):
+        npl = Q.nonplanarity(self.V, self.F)
+        print("non-planarity", round(npl, 3))
+        self.assertLessEqual(npl, self.th["nonplanar_max"], npl)
+
+    def test_no_folds_level2(self):
+        fl = Q.flips(self.V2, self.F2)
+        self.assertGreater(fl["min_adjacent_normal_dot"], -0.2)
+        self.assertGreater(fl["volume"], 0)
+
+    def test_head_wider_than_body_and_waist(self):
+        zs, w = M.widths(self.V2)
+        head, body = w[zs > 1.17].max(), w[zs < 1.17].max()
+        waist = w[(zs > 0.9) & (zs < 1.45)].min()
+        print("head", round(head, 3), "body", round(body, 3), "waist", round(waist, 3))
+        self.assertGreater(head, body)
+        self.assertAlmostEqual(head, 1.28, delta=0.04)
+        self.assertAlmostEqual(body, 1.18, delta=0.04)
+        self.assertGreaterEqual(waist, 0.85)
+
+    def test_crown_cap_curvature(self):
+        """No plateau: the mean meridian curvature over the cap (above the last ring + 0.04) is within 25 % of the band below it (the last ring's run)."""
+        zt = self.spec["parts"]["torso"]["rings_z"][-1]
+        zp = self.spec["parts"]["torso"]["rings_z"][-2]
+        m = np.abs(self.V2[:, 1]) < 1e-9
+        P = self.V2[m][:, [0, 2]]
+        P = P[P[:, 1] > 1.7]
+        c = np.array([0, 1.75])
+        P = P[np.argsort(np.arctan2(P[:, 1] - c[1], P[:, 0] - c[0]))]
+        k = M.curvatures(P)
+        Pm = P[1:-1]
+        cap = k[Pm[:, 1] >= zt + 0.04].mean()
+        ring = k[(Pm[:, 1] >= zp) & (Pm[:, 1] < zt + 0.04)].mean()
+        print("crown cap curvature", round(float(cap), 2), "ring below", round(float(ring), 2), "ratio", round(float(cap / ring), 2))
+        self.assertLessEqual(abs(cap / ring - 1), 0.25)
+
+    def test_column_keys_through_sockets(self):
+        t = self.spec["parts"]["torso"]
+        G = Gourd(self.spec)
+        for nm, k in t["column_keys"].items():
+            cols = G.column_angles(k["station"])
+            self.assertAlmostEqual(float(cols[k["col"]]), k["around"], delta=0.02, msg=nm)
+            self.assertIn(k["station"], t["rings_z"])
+
+    def test_cage_on_the_section(self):
+        """Every ring vertex's limit point lands on the loft's own surface (the section analytic): the limit error says it; here the profile at three heights against rho."""
+        G = Gourd(self.spec)
+        for z in (0.88, 1.17, 1.66):
+            sel = np.abs(self.V2[:, 2] - z) < 0.01
+            P = self.V2[sel]
+            r = np.hypot(P[:, 0], P[:, 1])
+            a = np.arctan2(np.abs(P[:, 1]), -P[:, 0]) / np.pi
+            err = np.abs(r - np.array([float(G.rho(z, aa)) for aa in a]))
+            self.assertLess(np.median(err), 0.01, z)
+
+
+if __name__ == "__main__":
+    unittest.main()
