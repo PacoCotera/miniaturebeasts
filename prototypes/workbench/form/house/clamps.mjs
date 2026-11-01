@@ -12,8 +12,10 @@ export const faceStack = (fp) => fp.noseDrop * eyeInH(fp) + noseHalfH(fp) + fp.g
 
 export function clampEyeFit(fp, c, ctx) {
   // the iris' outer edges, (spacing + 1) E, stay within the share of the head's width (0.9 W): the eyes never reach the head's sides
-  // the width at the eye line is the skull's W widened by the cheek there (rig face cheek-eye): the iris' outer edges stay within the share of that
-  const k = 1 + (ctx?.house?.rig?.[ctx?.plan]?.["cheek-eye"] ?? ctx?.house?.rig?.face?.["cheek-eye"] ?? 0), e = fp.eW, hi = (c.params["spacing-share-of-width"] * k) / e - 1, sb = ctx?.house ? bandOf(ctx.house, ctx.plan, "form.eye-spacing") : { lo: 1.5, hi: 2.2 };
+  // the width at the eye line is the skull's W (the round head's own width) widened by the small cheek pad there (rig cheek-eye) and by the face's fullness over the back of the skull
+  // (rig cheek-forward, 1 + cheek-forward at the face): the iris' outer edges stay within the share of that. Re-based with the round head (AD mesh gate ruling 0): the skull gives the width, not the pad
+  const rg = (key, d = 0) => ctx?.house?.rig?.[ctx?.plan]?.[key] ?? ctx?.house?.rig?.face?.[key] ?? d;
+  const k = (1 + rg("cheek-eye")) * (1 + rg("cheek-forward")), e = fp.eW, hi = (c.params["spacing-share-of-width"] * k) / e - 1, sb = ctx?.house ? bandOf(ctx.house, ctx.plan, "form.eye-spacing") : { lo: 1.5, hi: 2.2 };
   return { ...fp, spacing: softClamp(fp.spacing, null, hi, 0.15 * (sb.hi - sb.lo)) };
 }
 export function clampNoseFit(fp, c, ctx) {

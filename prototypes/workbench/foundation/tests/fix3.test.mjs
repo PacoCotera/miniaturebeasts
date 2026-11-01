@@ -9,13 +9,14 @@ import { fromLocal } from "../sdf.mjs";
 
 const house = loadHouseFile(), sp = loadSpecimens(house), loika = express(house, sp.S01), snail = express(house, sp.S14);
 
-test("head kinds: the soft block is 2.5, and the bean and the pear are 2.2: three kinds are not one exponent", () => {
+test("head kinds: the soft block is 2.5, the bean is the round head's 2.7 (AD mesh gate, ruling 0: 2.5 plus or minus 0.2) and the pear is 2.2: three kinds are not one exponent", () => {
   const e = (k) => house.kinds.head[k].exponent;
-  assert.equal(e("soft-block"), 2.5); assert.equal(e("bean"), 2.2); assert.equal(e("pear"), 2.2);
+  assert.equal(e("soft-block"), 2.5); assert.equal(e("bean"), 2.7); assert.equal(e("pear"), 2.2);
   assert.ok(e("soft-block") !== e("bean") && e("round") !== e("bean"));
 });
-test("the type specimen holds the master's eye size without a clamp: E/Wf 0.30, nothing moved by the far-eye clamp", () => {
-  assert.ok(Math.abs(loika.measured["E/Wf"] - 0.3) < 0.005, `${loika.measured["E/Wf"]}`);
+test("the type specimen holds the master's eye size without a clamp: E 0.354 H (E/Wf 0.30 of the old 1.18 head, 0.27 of the round head's 1.31), nothing moved by the far-eye clamp", () => {
+  assert.ok(Math.abs(loika.measured["E/H"] - 0.354) < 0.005, `${loika.measured["E/H"]}`);
+  assert.ok(loika.measured["E/Wf"] >= 0.22 && loika.measured["E/Wf"] <= 0.36, `${loika.measured["E/Wf"]}`);
   assert.deepEqual(loika.log.filter((l) => l.clamp === "far-eye"), []);
 });
 test("the leaves are broad paddles about 2:1, and the fan is most of the head's width", () => {

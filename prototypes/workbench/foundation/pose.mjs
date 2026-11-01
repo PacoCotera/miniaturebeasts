@@ -21,5 +21,5 @@ export function solvePose(house, plan, { carriage = 0, seed = "pose", side = 1, 
   const roll = mid(rl, rh, u("roll")) * (u("roll-sign") < 0.5 ? 1 : 1);
   return { yawBody: body, yawFace: face, yawHead: head, roll, pitch: carriage, side, notes,
     // the camera's yaw (deg) and the head's yaw on the body (deg), for a creature that faces `side` (+1: the screen's left)
-    cameraYaw: -side * body, headYawSigned: side * head, rollSigned: side * roll };
+    cameraYaw: -side * body, headYawSigned: side * head, rollSigned: side * roll * (house.solver["roll-sign"] ?? 1) };
 }

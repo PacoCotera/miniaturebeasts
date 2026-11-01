@@ -14,20 +14,20 @@
    },
    "t": {
     "form.head": 0.6,
-    "form.head-width": 0.3,
-    "form.head-depth": 0.54,
+    "form.head-width": 0.517,
+    "form.head-depth": 0.5,
     "form.cheek": 0.04,
-    "form.eye-size": 0.63,
-    "form.eye-height": 0.5,
+    "form.eye-size": 0.418,
+    "form.eye-height": 0.15,
     "form.eye-spacing": 0.867,
     "form.pupil": 0.1,
     "form.lid": 0.0,
     "form.eye-ring": 0.92,
     "form.muzzle": 0.5,
-    "form.muzzle-width": 0.84,
+    "form.muzzle-width": 0.641,
     "form.muzzle-height": 0.35,
-    "form.nose": 0.84,
-    "form.nose-drop": 0.68,
+    "form.nose": 0.66,
+    "form.nose-drop": 0.62,
     "form.mouth-width": 0.37,
     "form.mouth-upturn": 0.8,
     "form.mouth-gap": 0.78,
@@ -107,7 +107,7 @@
    "creamHead": {
     "below": 0.01,
     "soft": 0.015,
-    "fall": 1.1,
+    "fall": 0.8,
     "fall-far": 0.25
    },
    "creamBody": {
@@ -138,7 +138,7 @@
    "pick": {
     "body-yaw": 0.93,
     "face-yaw": 0.53,
-    "roll": 0.375
+    "roll": 0.1
    }
   },
   "rig": {}
