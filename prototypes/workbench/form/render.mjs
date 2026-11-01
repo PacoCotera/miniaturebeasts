@@ -138,7 +138,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
         if (u < pr) { col = ek.pupil; inkCode = INK.pupil; }
         else if (u < ir) { col = ek.iris; inkCode = INK.iris; }
         else { col = ek.rim; inkCode = INK.rim; }
-        spec = 1; matte = 0.6;
+        spec = 1; matte = ek.matte ?? 0.6;
       }
     } else {
       for (let mi = 0; mi < marks.length; mi++) {
@@ -156,7 +156,8 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
       const diff = Math.min(1, Math.max(0, (ndl + 0.6) / 1.6)), amb = 0.15 + 0.2 * (nz * 0.5 + 0.5), rim = rimStrength * Math.pow(1 - Math.max(0, nx * tt[0] + ny * tt[1] + nz * tt[2]), 3) * Math.max(0, ndl * 0.5 + 0.5);
       k = (diff * 0.85 * (0.4 + 0.6 * aov) + amb * aov + rim) * matte * surf.k + (emv > 0.02 ? 0.35 * emv : 0);
     } else {
-      const dd = Math.min(1, Math.max(0, (ndl + 0.7) / 1.7)), ramp = k0 + (K1 - k0) * dd, graze = Math.pow(1 - Math.max(0, nx * tt[0] + ny * tt[1] + nz * tt[2]), 3);
+      const k0p = look.ramp?.light !== undefined ? k0 + (look.ramp.light - k0) * (mout.light ?? 0) : k0; // round 4: the light marks have their own floor
+      const dd = Math.min(1, Math.max(0, (ndl + 0.7) / 1.7)), ramp = k0p + (K1 - k0p) * dd, graze = Math.pow(1 - Math.max(0, nx * tt[0] + ny * tt[1] + nz * tt[2]), 3);
       k = ramp * (1 - 0.3 * (1 - aov)) * surf.k + (Mat.kind === "skin" ? 0 : 0.06 * graze) + (emv > 0.02 ? 0.35 * emv : 0); // AO softened; a light rim on fur, never a dark one
     }
     let r = col[0] * k, g = col[1] * k, bl = col[2] * k;
@@ -225,7 +226,7 @@ export function renderForm(scene, camera, sizeKey, opts = {}) {
   return {
     features, plate: plateCov, bellyMap: (() => { const b = new Float32Array(W * H); for (let i = 0; i < W * H; i++) b[i] = bellyAcc[i] / Math.max(1, cov[i] * n2); return b; })(), width: W, height: H, data, coverage: cov, ink: inkMap, halo: haloMask, shadow: shadowCov, size: sizeKey,
     maps: { part: partMap, group: groupMap, angle: angleMap, sigma: sigmaMap, partNames: A.partNames, groupNames: scene.field.groups.all.map((g) => g.id) },
-    meta: { scale, feet: fr.feet, cx: fr.cx, bottom: fr.bottom, extent: fr.extent, eyes: eyes.map((e) => ({ at: px(e.c), r: e.r * scale })), basis, project: px },
+    meta: { scale, feet: fr.feet, cx: fr.cx, bottom: fr.bottom, extent: fr.extent, eyes: eyes.map((e) => ({ at: px(e.c), r: e.r * scale, apex: px([e.c[0] + e.n[0] * e.r, e.c[1] + e.n[1] * e.r, e.c[2] + e.n[2] * e.r]), capR: e.r * Math.sin(Math.acos(e.cap)) * scale })), basis, project: px },
   };
 }
 

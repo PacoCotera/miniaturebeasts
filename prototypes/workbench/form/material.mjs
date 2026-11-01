@@ -105,7 +105,8 @@ const spotCache = new WeakMap();
 export function paintMarks(look, Mat, ctx, col) {
   const pig = look.pigments, jag = Mat.kind !== "skin" && Mat.ampLock > 0 ? 0.2 * noise3(ctx.p[0] * 9, ctx.p[1] * 9, ctx.p[2] * 9, 13) : 0;
   const edge = (m) => smooth((m - 0.5 - jag) / 0.5 + 0.5); // a jagged soft threshold: fluffy, not cut
-  if (ctx.belly > 0) col = mix(col, pig.belly ?? pig.patch ?? col, edge(ctx.belly));
+  let light = 0; // round 4: the strength of the light marks (belly, plate, eye ring, nails), for the ramp's own floor
+  if (ctx.belly > 0) { const e = edge(ctx.belly); col = mix(col, pig.belly ?? pig.patch ?? col, e); light = Math.max(light, e); }
   for (const mk of look.marks ?? []) {
     if (mk.kind === "spots" && (mk.parts ?? ["body"]).includes(ctx.part)) {
       let list = spotCache.get(mk); if (!list) { list = spotList(mk); spotCache.set(mk, list); }
@@ -113,15 +114,17 @@ export function paintMarks(look, Mat, ctx, col) {
     }
     if (mk.kind === "socks" && mk.parts.includes(ctx.part) && ctx.u0 >= 1 - mk.share) col = mix(col, pig[mk.pigment ?? "sock"], smooth((ctx.u0 - (1 - mk.share)) / 0.05));
     if (mk.kind === "tips" && mk.parts.includes(ctx.part) && ctx.u0 >= 1 - mk.share) col = mix(col, pig[mk.pigment ?? "hoof"], smooth((ctx.u0 - (1 - mk.share)) / 0.02));
-    if (mk.kind === "nails" && /t\d+$/.test(ctx.group) && ctx.u0 >= 1 - mk.share) col = mix(col, pig[mk.pigment ?? "nail"], smooth((ctx.u0 - (1 - mk.share)) / 0.08));
+    if (mk.kind === "nails" && /t\d+$/.test(ctx.group) && ctx.u0 >= 1 - mk.share) { const nm = smooth((ctx.u0 - (1 - mk.share)) / 0.08); col = mix(col, pig[mk.pigment ?? "nail"], nm); light = Math.max(light, nm); }
     if (mk.kind === "inner" && ctx.part === mk.part && Math.abs(ctx.angle) < 75) col = mix(col, pig[mk.pigment ?? "inner"], smooth((75 - Math.abs(ctx.angle)) / 25));
   }
-  if (ctx.patch > 0) col = mix(col, pig.patch ?? pig.belly ?? col, edge(ctx.patch));
+  if (ctx.patch > 0) { const e = edge(ctx.patch); col = mix(col, pig.patch ?? pig.belly ?? col, e); light = Math.max(light, e); }
   if (look.eyering && ctx.eyes) { // the eye surround: a light ring round each eye on the skin, from under the eye to outer x r_e, by distance from the eye's hit point (round 3: 3D, so a lateral eye's ring is round)
-    let m = 0; for (const e of ctx.eyes) { const d = Math.hypot(ctx.p[0] - e.hit[0], ctx.p[1] - e.hit[1], ctx.p[2] - e.hit[2]) / e.r; m = Math.max(m, smooth((look.eyering.outer - d) / 0.25) * smooth((d - 0.5) / 0.15)); }
+    let m = 0; for (const e of ctx.eyes) { const d = Math.hypot(ctx.p[0] - e.hit[0], ctx.p[1] - e.hit[1], ctx.p[2] - e.hit[2]) / e.r; m = Math.max(m, smooth((look.eyering.outer - d) / (look.eyering.soft ?? 0.25)) * smooth((d - (look.eyering.inner ?? 0.5)) / 0.15)); } // round 4: inner and soft are the ring's own
     if (m > 0) col = mix(col, pig.ring ?? pig.patch, m);
     if (ctx.out) ctx.out.ring = m;
+    light = Math.max(light, m);
   }
+  if (ctx.out) ctx.out.light = light;
   return col;
 }
 

@@ -23,7 +23,7 @@ export const OUT = path.join(ROOT, "out", "form");
 // this module's own location) unless the environment names another.
 export const MB_HOME = process.env.MB_HOME ?? path.resolve(here, "..", "..", "..", "..");
 const FLUFFY = path.join(MB_HOME, "iwq/results/T-20261030-fluffy"), ART = path.join(MB_HOME, "mp/art/station-masters/pods/adult");
-export const RESULTS = path.join(MB_HOME, "iwq/results/T-20261030-shape/round3/trial");
+export const RESULTS = path.join(MB_HOME, "iwq/results/T-20261030-shape/round4/trial");
 export const STANDS = { curlop: `${FLUFFY}/stand-E-curlop`, wickle: `${FLUFFY}/stand-A-wickle`, drapet: `${FLUFFY}/stand-B-drapet`, loika: `${ART}/mibi-adult-S01`, rupar: `${ART}/mibi-adult-S08` };
 export const SIZE_NAMES = { 304: "304x312", 96: "96x88", 48: "48x48" };
 const BG = [246, 243, 236];
