@@ -12,8 +12,10 @@ export const faceStack = (fp) => fp.noseDrop * eyeInH(fp) + noseHalfH(fp) + fp.g
 
 export function clampEyeFit(fp, c, ctx) {
   // the iris' outer edges, (spacing + 1) E, stay within the share of the head's width (0.9 W): the eyes never reach the head's sides
-  // the width at the eye line is the skull's W widened by the cheek there (rig face cheek-eye): the iris' outer edges stay within the share of that
-  const k = 1 + (ctx?.house?.rig?.[ctx?.plan]?.["cheek-eye"] ?? ctx?.house?.rig?.face?.["cheek-eye"] ?? 0), e = fp.eW, hi = (c.params["spacing-share-of-width"] * k) / e - 1, sb = ctx?.house ? bandOf(ctx.house, ctx.plan, "form.eye-spacing") : { lo: 1.5, hi: 2.2 };
+  // the width at the eye line is the skull's W (the round head's own width) widened by the small cheek pad there (rig cheek-eye) and by the face's fullness over the back of the skull
+  // (rig cheek-forward, 1 + cheek-forward at the face): the iris' outer edges stay within the share of that. Re-based with the round head (AD mesh gate ruling 0): the skull gives the width, not the pad
+  const rg = (key, d = 0) => ctx?.house?.rig?.[ctx?.plan]?.[key] ?? ctx?.house?.rig?.face?.[key] ?? d;
+  const k = (1 + rg("cheek-eye")) * (1 + rg("cheek-forward")), e = fp.eW, hi = (c.params["spacing-share-of-width"] * k) / e - 1, sb = ctx?.house ? bandOf(ctx.house, ctx.plan, "form.eye-spacing") : { lo: 1.5, hi: 2.2 };
   return { ...fp, spacing: softClamp(fp.spacing, null, hi, 0.15 * (sb.hi - sb.lo)) };
 }
 export function clampNoseFit(fp, c, ctx) {
@@ -34,7 +36,7 @@ export function clampForehead(fp, c) {
 // as it is and flagged (`farOutside`): the clamp never hides it. The type specimen never needs this clamp. ctx.measureAt(fp, yawFace) -> { inside, noseGap }.
 export function clampFarEye(fp, c, ctx) {
   const { house, plan, measureAt } = ctx; if (!measureAt) return fp;
-  const P = c.params, tgt = P["inside-H"], gmin = P["nose-gap-H"] ?? 0, yawNow = ctx.yaw;
+  const P = c.params, tgt = P["inside-H-by-plan"]?.[plan] ?? P["inside-H"], gmin = P["nose-gap-H"] ?? 0, yawNow = ctx.yaw;
   // the slack of a state: the worse of the two margins (>= 0 holds). A stage never takes a value that makes the worse margin worse: the far eye's margin wants the eyes
   // closer, the nose's wants them further apart, so a stage looks for the best value in its range, not simply the lowest
   const slack = (f, yaw) => { const m = measureAt(f, yaw); return Math.min(m.inside - tgt, m.noseGap - gmin); };

@@ -1,7 +1,7 @@
 // The creature as a signed distance field (negative inside), in world units with H = 1 and the floor at z = 0; x forward, y left, z up.
 // Plan A (the quadruped's provisional body: chunk 2 replaces its legs and stance) and plan D (the limbless snail). Every number is the house file's
 // rig block or a gene's value through its band; the scene holds no number of its own.
-import { sdEllipsoid, sdRoundCone, sdCapsule, uRound, sMin, bounded, Rz, Ry, Rx, mul3, frameOf, toLocal, fromLocal, dirFromLocal, clamp, norm3, sstep } from "./sdf.mjs";
+import { sdEllipsoid, sdRoundCone, sdCapsule, uRound, sMin, bounded, Rz, Ry, Rx, mul3, frameOf, toLocal, fromLocal, dirFromLocal, clamp, norm3, sstep, mix } from "./sdf.mjs";
 import { buildHead, findFront } from "./head.mjs";
 
 const rad = (d) => (d * Math.PI) / 180;
@@ -70,12 +70,14 @@ export function buildScene(house, spec) {
     const crestB = bounded(kc, 1.3, 0.2, dCrest), dCrestB = (x, y, z) => crestB(x, y, z);
     parts.chest = dC; parts.legs = legs; parts.crest = dCrestB; extra = { chest: { c: cc, r: cr }, pelvis: { c: pc, r: pr }, zBack: zb, legs, leaves };
     const dNoHead = (x, y, z) => { const b = dBody(x, y, z); return b; };
-    const dHeadBody = (x, y, z) => { const hb = Math.sqrt((x - headBound[0][0]) ** 2 + (y - headBound[0][1]) ** 2 + (z - headBound[0][2]) ** 2) - headBound[1], dh = hb > 0.35 ? hb : dHeadW(x, y, z); return uRound(dh, dNoHead(x, y, z), rig["union-neck"]); };
+    // the head's bounding shell may only cut where the round union no longer reads the head's distance: past 1.3 x the widest union radius, or a crease is cut across the cream under the chin (fix round 7, must-fix 7)
+    const hbCut = Math.max(0.35, 1.3 * Math.max(rig["union-neck-low"], rig["union-neck"]));
+    const dHeadBody = (x, y, z) => { const hb = Math.sqrt((x - headBound[0][0]) ** 2 + (y - headBound[0][1]) ** 2 + (z - headBound[0][2]) ** 2) - headBound[1], dh = hb > hbCut ? hb : dHeadW(x, y, z); return uRound(dh, dNoHead(x, y, z), mix(rig["union-neck-low"], rig["union-neck"], sstep(rig["union-neck-z"][0], rig["union-neck-z"][1], z - kc[2]))); }; // the join is a tight turn above the eye line (the nape notch) and a full roll under the chin (the throat), by the height over the skull's centre
     parts.head = dHeadW;
     
     bounds = { lo: [-2.3, -1.1, -0.02], hi: [1.2, 1.1, S + 1.0] };
     // the round union with the crest: the crest is a separate small part rooted in the head (smooth, small k)
-    dAll = (x, y, z) => { const d = dHeadBody(x, y, z), c = dCrestB(x, y, z); return sMin(d, c, 0.06); };
+    dAll = (x, y, z) => { const d = dHeadBody(x, y, z), c = dCrestB(x, y, z); return sMin(d, c, rig.crest["root-blend"]); };
     parts.all = dAll; parts.core = dHeadBody;
     regionOf = (x, y, z) => {
       if (dCrestB(x, y, z) < 0.012 && dCrestB(x, y, z) < dHeadW(x, y, z)) return "crest";
@@ -90,7 +92,7 @@ export function buildScene(house, spec) {
     const nS = rig.segments, Lk = body.length / 1.6, T = body.thick, scaleR = T / 2 / rig["seg-radius"][0], rr = rig["seg-radius"].map((v) => v * scaleR), segs = [];
     // the line of action rises from the tail into the head: segments differ by 15 to 35 %, each one's top is higher than the next one back, the first runs under the head
     let xs = rig["seg-x0"];
-    for (let i = 0; i < nS; i++) { const r = rr[i], c = [xs, 0, rig.skirt[2] * 1.5 + r * 0.95], rx = rig["seg-rx"] * Lk * (r / rr[0]) ** 0.5; segs.push(ell(c, [rx, r, r])); segs[i].c = c; segs[i].r = r; if (i + 1 < nS) xs -= (rx + rig["seg-rx"] * Lk * (rr[i + 1] / rr[0]) ** 0.5) * rig["seg-overlap"]; }
+    for (let i = 0; i < nS; i++) { const r = rr[i], rz = r * rig["seg-height"], c = [xs, 0, rig.skirt[2] * 1.5 + rz * 0.95], rx = rig["seg-rx"] * Lk * (r / rr[0]) ** 0.5; segs.push(ell(c, [rx, r, rz])); segs[i].c = c; segs[i].r = rz; if (i + 1 < nS) xs -= (rx + rig["seg-rx"] * Lk * (rr[i + 1] / rr[0]) ** 0.5) * rig["seg-overlap"]; }
     const sk = rig.skirt, skC = [rig["skirt-x"], 0, sk[2]], skR = [sk[0] * Lk, (T / 2) * (1 + (body.skirt - 1) * 0.6), sk[2]];
     const dSkirt = ell(skC, skR);
     const dBodyD = (x, y, z) => { let d = segs[0](x, y, z); for (let i = 1; i < nS; i++) d = uRound(d, segs[i](x, y, z), 0.05); return uRound(d, dSkirt(x, y, z), rig.union); };

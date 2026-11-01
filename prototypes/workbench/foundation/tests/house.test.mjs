@@ -71,7 +71,7 @@ test("a band edit that strands a frame is reported, never silently repaired", ()
 });
 
 test("the rule checks read the band of the plan, report the margin, and never pass a quantity that was not measured", () => {
-  const m = { "eye-share": 0.19, "H/S": 0.52, "spacing/E": 2.5, "yaw-body": 58 };
+  const m = { "eye-share": 0.19, "H/S": 0.52, "spacing/E": 3.1, "yaw-body": 58 };
   const rows = checkRules(house, "A", m), by = Object.fromEntries(rows.map((r) => [r.id, r]));
   assert.equal(by["R1-face"].status, "pass"); assert.equal(by["R1-head"].status, "pass");
   assert.equal(by["R3-spacing"].status, "FAIL"); assert.ok(by["R3-spacing"].margin < 0);
@@ -84,7 +84,7 @@ test("the rule checks read the band of the plan, report the margin, and never pa
 });
 test("a rule switched off in the data is reported and does not fail", () => {
   const h = raw(); h.rules.find((r) => r.id === "R3-spacing").on = false;
-  const rows = checkRules(loadHouse(h), "A", { "spacing/E": 2.5 }), r = rows.find((x) => x.id === "R3-spacing");
+  const rows = checkRules(loadHouse(h), "A", { "spacing/E": 3.1 }), r = rows.find((x) => x.id === "R3-spacing");
   assert.equal(r.status, "off (would fail)"); assert.deepEqual(failures(rows), []);
 });
 test("a plan gets its own band for a rule by data only", () => {
@@ -102,9 +102,9 @@ test("the face parameters of a plan come from t through the bands", () => {
   assert.equal("projection" in faceParams(house, "C", () => 0.5), false, "a mochi has no muzzle");
   const t = tOfFace(house, "A", fp); assert.ok(Math.abs(t["form.eye-size"] - 0.5) < 1e-9);
 });
-test("eye-fit: the iris' outer edges stay within 0.9 of the width at the eye line (W and the cheek there), monotone in spacing, nothing moves inside the band", () => {
+test("eye-fit: the iris' outer edges stay within the clamp's share (1.0 since fix round 7) of the width at the eye line (W and the cheek there), monotone in spacing, nothing moves inside the band", () => {
   const c = house.clamps.find((x) => x.id === "eye-fit"), ctx = { house, plan: "A" }; let prev = -1;
-  for (let s = 1.5; s <= 2.2; s += 0.02) { const o = clampEyeFit({ eW: 0.3, spacing: s }, c, ctx); assert.ok(o.spacing > prev); prev = o.spacing; assert.ok((o.spacing + 1) * 0.3 <= 0.9 * (1 + house.rig.A["cheek-eye"]) + 1e-9); }
+  for (let s = 2.0; s <= 2.9; s += 0.02) { const o = clampEyeFit({ eW: 0.3, spacing: s }, c, ctx); assert.ok(o.spacing > prev); prev = o.spacing; assert.ok((o.spacing + 1) * 0.3 <= c.params["spacing-share-of-width"] * (1 + house.rig.A["cheek-eye"]) * (1 + house.rig.A["cheek-forward"]) + 1e-9); }
   assert.equal(clampEyeFit({ eW: 0.25, spacing: 2 }, c, ctx).spacing, 2, "inside the band nothing moves");
   assert.ok(clampEyeFit({ eW: 0.36, spacing: 3.4 }, c, ctx).spacing < 3.3, "eyes that reach the head's sides are pulled in");
 });
@@ -196,7 +196,7 @@ test("far-eye: the AD's order (face yaw, spacing, E, ring), each inside its floo
   assert.deepEqual(P.order, ["face-yaw", "spacing", "eye-size", "ring"]);
   const base = { spacing: 2.28, eW: 0.26, ring: 0.23 };
   // a model of the two margins: the far eye's wants the face turned in (low yaw) and the eyes close; the nose's wants the eyes apart
-  const model = (inside0, gap0) => (f, yaw) => ({ inside: inside0 - 0.07 * (f.spacing - 2.0) - 0.002 * (yaw - 18) - 0.1 * (f.eW - 0.22) - 0.1 * f.ring, noseGap: gap0 + 0.05 * (f.spacing - 2) });
+  const model = (inside0, gap0) => (f, yaw) => ({ inside: inside0 + (P["inside-H"] - 0.05) - 0.07 * (f.spacing - 2.0) - 0.002 * (yaw - 18) - 0.1 * (f.eW - 0.22) - 0.1 * f.ring, noseGap: gap0 + 0.05 * (f.spacing - 2) });
   const run = (m, extra = {}) => clampFarEye({ ...base }, c, { house, plan: "A", measureAt: m, yaw: 28, dark: true, ...extra });
   assert.deepEqual(run(model(0.3, 0.1)), base, "inside the margins nothing moves");
   const o1 = run(model(0.105, 0.1)); assert.ok(o1.faceYaw < 28 && o1.faceYaw >= P["yaw-floor-deg"] && o1.spacing === 2.28, "the face yaw gives way first, and only as far as it must");

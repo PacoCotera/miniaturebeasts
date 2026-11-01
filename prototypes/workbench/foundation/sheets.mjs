@@ -58,14 +58,19 @@ export const HEAD_SIZES = [0.45, 0.52, 0.60], EYE_OUT = 0.9; // row 1: the type 
 export function headSizeSheet(house, spec, outDir) {
   const cells = [], tiles = [], hb = bandOf(house, "A", "form.head"), et1 = spec.t["form.eye-size"];
   for (const [et, open] of [[et1, false], [EYE_OUT, true]]) {
-    cells.push(masterCell("S01", "Loika", open ? `Row: eye size t ${et}, clamps off` : `Row: eye size t ${et} (E/W 0.30, the master's)`));
+    cells.push(masterCell("S01", "Loika", open ? `Row 2: eye t ${et}, clamps off, outside the house` : "Row 1: the master's eye (E/Wf 0.30)"));
     for (const hs of HEAD_SIZES) {
-      const t = makeTile(house, spec, { t: { "form.head": tAt(hb, hs), "form.eye-size": et }, label: `H/S ${hs.toFixed(2)}, eye t ${et}`, clamps: !open, shareClamp: !open, outside: open });
-      tiles.push({ hs, et, tile: t }); cells.push({ pics: tilePics(t.r), lines: tileLines(t) });
+      const mk = (e, label, sizes) => makeTile(house, spec, { t: { "form.head": tAt(hb, hs), "form.eye-size": e }, label, clamps: !open, shareClamp: !open, outside: open, sizes });
+      let e1 = et, label = open ? `H/S ${hs.toFixed(2)}, eye t ${et}` : `H/S ${hs.toFixed(2)}, the master's eye (E/Wf 0.30)`;
+      // AD fix round 5, ruling 2: a tile whose iris is under the house's 96 px floor with the master's eye raises its eye, inside R3's band and no further than it must, and says so
+      if (!open) { const floor = house.rules.find((r) => r.id === "R15-iris-96").plans.A[0], iris = (e) => mk(e, "", [96, 48]).rig.px[96]?.iris ?? 0; if (iris(e1) < floor) { while (e1 < 1 && iris(e1) < floor) e1 = Math.min(1, e1 + 0.05); const r = mk(e1, "", [96, 48]); label = `H/S ${hs.toFixed(2)}, eye raised to E/W ${f2(r.measured["E/Wf"])} to hold the iris at 96`; } }
+      const t = mk(e1, label);
+      tiles.push({ hs, et: e1, tile: t }); cells.push({ pics: tilePics(t.r), lines: tileLines(t) });
       saveTile(path.join(outDir, "tiles"), `loika-hs${Math.round(hs * 100)}-eye${Math.round(et * 100)}`, t);
     }
   }
-  return { spec: sheet("Head size choice: Loika beside the master at 304, 96 and 48", cells, 4), tiles };
+  const grown = tiles.some((x) => x.et !== et1 && x.et !== EYE_OUT); // the caption drops the 0.45 sentence when that tile holds the master's eye
+  return { spec: sheet("Head size choice: Loika beside the master at 304, 96 and 48", cells, 4, { note: `Loika's head at three sizes on the same body, each with her own eye. With the master's crown read at the leaf bases (fix round 7) its head is about 0.47 of its height, between the first two; Loika is built at 0.47. 0.60 is the top of the band.${grown ? " At 0.45 her eye has to grow a little to stay readable at 96." : ""} Row 2 shows a bigger eye, outside the house.` }), tiles };
 }
 export function snailSheet(house, spec, outDir) {
   const t = makeTile(house, spec, { label: "Usvel the snail, house build" });
@@ -77,11 +82,11 @@ export function gridSheet(house, spec, outDir, kind) {
   const [gx, gy, nx, ny] = kind === "eye-spacing" ? ["form.eye-size", "form.eye-spacing", "Eye", "spacing"] : ["form.muzzle", "form.lid", "Muzzle", "lid"];
   const cells = [], tiles = [];
   for (const ty of TS) for (const tx of TS) {
-    const t = makeTile(house, spec, { t: { [gx]: tx, [gy]: ty }, label: `${nx} t ${tx}, ${ny} t ${ty}`, sizes: [304, 96] });
+    const t = makeTile(house, spec, { t: { [gx]: tx, [gy]: ty, "form.mouth-gap": 1 }, label: `${nx} t ${tx}, ${ny} t ${ty}`, sizes: [304, 96] }); // every tile at the top of the mouth-gap band (ruling 1e)
     tiles.push({ tx, ty, tile: t }); cells.push({ pics: tilePics(t.r, [304, 96]), lines: tileLines(t) });
     saveTile(path.join(outDir, "tiles"), `grid-${kind}-${tx}-${ty}`.replace(/\./g, "p"), t);
   }
-  return { spec: sheet(`Face gene extremes: ${nx.toLowerCase()} across, ${ny} down`, cells, 3), tiles };
+  return { spec: sheet(`Face gene extremes: ${nx.toLowerCase()} across, ${ny} down, the mouth gap at the top of its band`, cells, 3), tiles };
 }
 
 // the nose against the signed master: the house build (the nose-fit clamp by kind: a skin mound is 0.7 to 1.1 E) and the same Loika with the clamp off

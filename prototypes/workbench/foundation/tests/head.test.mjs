@@ -9,11 +9,12 @@ const house = loadHouseFile();
 const kinds = { head: "soft-block", eye: "round", muzzle: "button", nose: "mound", mouth: "smile" };
 const build = (t = 0.5, plan = "A", k = kinds) => { const { fp } = applyClamps(house, plan, faceParams(house, plan, (g) => (typeof t === "function" ? t(g) : t))); return { fp, head: buildHead(house, plan, k, fp) }; };
 
-test("the head is a closed solid: negative at the centre, positive far out, the crown at 0.5 H", () => {
+test("the head is a closed solid: negative at the centre, positive far out, the highest point of the head 0.5 H over its centre (the crown's place along the length is round6's test: AD mesh gate, ruling 0, replaces the old crown-at-x-0 point)", () => {
   const { head } = build();
   assert.ok(head.d(0, 0, 0) < -0.3);
   assert.ok(head.d(3, 0, 0) > 1);
-  const top = findFront((x, y, z) => head.d(0, y, z), 0, 0, 0, 1.0), ztop = (() => { let a = 0, b = 1; for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (head.d(0, 0, m) < 0) a = m; else b = m; } return a; })();
+  const topAt = (x) => { let a = 0, b = 1; for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (head.d(x, 0, m) < 0) a = m; else b = m; } return a; };
+  let ztop = 0; for (let x = -0.5; x <= 0.5; x += 0.02) ztop = Math.max(ztop, topAt(x));
   assert.ok(Math.abs(ztop - 0.5) < 0.01, `crown at ${ztop}`);
 });
 test("the eyes sit on K's analytic surface, in the face frame, mirrored", () => {
@@ -31,7 +32,7 @@ test("the eye socket is carved: the surface at the eye's centre lies inside the 
   let a = -0.2, b = 0.3; for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (head.d(e.c[0] + e.n[0] * m, e.c[1] + e.n[1] * m, e.c[2] + e.n[2] * m) < 0) a = m; else b = m; }
   assert.ok(Math.abs(a + depth) < 0.012, `the floor is at ${a.toFixed(4)}, depth ${depth}`);
   // away from the socket the skin is K's own
-  const far = [0.0, 0, 0.5 - 0.02]; assert.ok(Math.abs(head.d(...far) - head.dK(...far)) < 1e-6);
+  const far = [0.0, 0.45, 0.0]; assert.ok(Math.abs(head.d(...far) - head.dK(...far)) < 1e-6);
 });
 test("the mouth is a crease cut under the nose, never a ridge", () => {
   const { head } = build();
@@ -45,7 +46,7 @@ test("every plan A face at the corners of t builds, and the eye is always inside
   for (const t of [0, 1]) for (const u of [0, 1]) {
     const { head } = build((g) => (g.includes("eye") || g.includes("lid") ? t : u));
     for (const e of head.eyes) assert.ok(Math.abs(head.dK(...e.c)) < 1e-3);
-    assert.ok(Math.abs(head.eyes[0].c[1]) + head.eyes[0].Riris < head.measures.W / 2 * (1 + house.rig.face["cheek-eye"]) * 0.95, "the iris does not reach the head's side (the width at the eye line)");
+    assert.ok(Math.abs(head.eyes[0].c[1]) + head.eyes[0].Riris < head.measures.W / 2 * (1 + house.rig.face["cheek-eye"]) * (1 + house.rig.A["cheek-forward"]) * 1.0, "the iris does not reach the head's side (the width at the eye line)");
   }
 });
 test("the round head of plan D has a bump nose and no muzzle", () => {
