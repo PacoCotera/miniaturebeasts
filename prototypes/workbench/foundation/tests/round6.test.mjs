@@ -40,3 +40,9 @@ test("eye-fit reads the round head's width at the eye line (the skull, the pad a
   assert.ok(Math.abs(clampEyeFit({ eW: 0.3, spacing: 9 }, c, { house, plan: "A" }).spacing + 1 - (0.9 * k) / 0.3) < 0.2, "the limit follows the width");
   assert.deepEqual(loika.log.filter((l) => l.clamp === "eye-fit" || l.clamp === "far-eye"), []);
 });
+test("the contract's screen readers on the signed master: eye line 9.5 degrees far side up, the forward-most point at y 157, the rear at x 180 at y 107", async () => {
+  const { loadImage } = await import("../imgtools.mjs"), { MASTER } = await import("../paths.mjs"), { screenMeasures } = await import("../headcontract.mjs"), m = loadImage(MASTER("S01", 304)), s = screenMeasures(m), i = irisCentres(m);
+  assert.ok(Math.abs(i.tiltDeg - 9.5) < 0.5, `${i.tiltDeg}`);
+  assert.ok(Math.abs(s.forward.y - 157) <= 3 && s.forward.x === 20, JSON.stringify(s.forward));
+  assert.ok(Math.abs(s.rearAt180 - 107) <= 3, `${s.rearAt180}`);
+});

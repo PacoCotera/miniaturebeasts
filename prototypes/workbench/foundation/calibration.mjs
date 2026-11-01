@@ -10,6 +10,7 @@ import { measureAll } from "../form/house/measures.mjs";
 import { loadSpecimens } from "./specimens.mjs";
 import { express } from "./express.mjs";
 import { makeTile } from "./sheets.mjs";
+import { headSheet, contractMarkdown } from "./headsheet.mjs";
 import { masterProfile } from "./silhouette.mjs";
 import { MASTER } from "./paths.mjs";
 
@@ -100,7 +101,7 @@ export function specimenTable(house, rows) {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const house = loadHouseFile(), rows = calibrate(house), md = toMarkdown(rows, house) + specimenTable(house, rows);
+  const house = loadHouseFile(), rows = calibrate(house), md = toMarkdown(rows, house) + specimenTable(house, rows) + contractMarkdown(headSheet(house, loadSpecimens(house).S01).numbers);
   mkdirSync(RESULTS, { recursive: true });
   writeFileSync(path.join(RESULTS, "calibration.md"), md); writeFileSync(path.join(RESULTS, "calibration.json"), JSON.stringify(rows, null, 1));
   console.log(md);
