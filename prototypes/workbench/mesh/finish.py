@@ -251,6 +251,15 @@ def bake(sc, H, level=3, name="loika_L"):
             if n not in ob.vertex_groups:
                 ob.vertex_groups.new(name=n)
     far_leg_shift(H, ob, me)
+    pg = {g.index: g.name[6:] for g in ob.vertex_groups if g.name.startswith("_part:")}       # round 5: the part of each vertex, read off the interpolated temporary groups (the bigger weight, the lower index on a tie); walls and caps made by the bake belong to the head
+    pidx = {n: i for i, n in enumerate(sc.part_names)}
+    part = np.zeros(len(me.vertices), dtype=np.int32)
+    for v in me.vertices:
+        best = max(((g.weight, -pidx[pg[g.group]]) for g in v.groups if g.group in pg), default=None)
+        part[v.index] = 0 if best is None or best[0] <= 0 else -best[1]
+    for g in [g for g in ob.vertex_groups if g.name.startswith("_part:")]:
+        ob.vertex_groups.remove(g)
+    pa = me.attributes.new("_PART", "INT", "POINT"); pa.data.foreach_set("value", part)
     P = np.array([v.co[:] for v in me.vertices])
     N = np.array([v.normal[:] for v in me.vertices])
     hid = ob.vertex_groups["head"].index
@@ -264,7 +273,7 @@ def bake(sc, H, level=3, name="loika_L"):
     ca = me.color_attributes.new("Col", "FLOAT_COLOR", "POINT")
     ca.data.foreach_set("color", np.column_stack([PT.lin(col), np.ones(len(P))]).ravel())
     if level <= 3:      # the glb: smooth fields for the viewer's shader (the sprites bake the paint into the colours at level 4)
-        pf = me.attributes.new("_paint", "FLOAT_COLOR", "POINT")
+        pf = me.attributes.new("paint", "FLOAT_COLOR", "POINT")
         pf.data.foreach_set("color", PT.paint_fields(H, P, N, head_w, 0.5 * INK_PX[304] / 110.0, 1 / 110.0).ravel())
     rp = me.attributes.new("rest_p", "FLOAT_VECTOR", "POINT"); rp.data.foreach_set("vector", P.ravel())      # rest positions: the skin's grain rides the rig (lookdev 1b)
     fl = np.array([-1.0, 0.0, -0.25])[None] - N * ((N @ np.array([-1.0, 0.0, -0.25]))[:, None])           # the fur flow: head to tail with a little gravity, projected on the surface

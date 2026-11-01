@@ -16,7 +16,8 @@ html = """<!doctype html><html><head><meta charset="utf-8"><title>Loika, the mes
 <style>html,body{margin:0;height:100%;background:#e9e7e2;font-family:'DejaVu Sans',sans-serif;font-size:15px;color:#222}
 #ui{position:fixed;left:12px;top:10px;z-index:2}button{font:inherit;font-size:15px;padding:6px 14px;margin:2px;border:1px solid #888;background:#fff;border-radius:4px;cursor:pointer}
 button.on{background:#2b6fd6;color:#fff;border-color:#2b6fd6}#msg{margin:6px 4px;color:#555;max-width:560px}canvas{display:block}</style></head><body>
-<div id="ui"><b>Loika</b> (mesh, glb) &nbsp;<button id="b-breathe">breathe</button><button id="b-blink">blink</button><button id="b-walk">walk</button><button id="b-stand">stand</button>
+<div id="ui"><b>Loika</b> (mesh, glb) &nbsp;<button id="b-breathe">breathe</button><button id="b-blink">blink</button><button id="b-walk">walk</button><button id="b-stand">stand</button> &nbsp;<button id="m-normal" class="on">normal</button><button id="m-parts">parts in colours</button><button id="m-wire">wireframe over parts</button>
+<div id="legend" style="display:none;position:fixed;right:12px;top:10px;font-size:14px;line-height:1.45;background:#fff;padding:6px 10px;border-radius:4px;border:1px solid #bbb"></div>
 <div id="msg">Drag to orbit, wheel to zoom, right-drag to pan. The buttons toggle a looping clip; the stand pose is the head's pose in every clip.</div></div>
 <script>
 const SRC = %SRC%;
@@ -53,6 +54,39 @@ const GLB = "%GLB%";
     };
     o.material.needsUpdate = true;
   });
+  // the owner's part view: every named mesh in its own colour, the body's _PART attribute (the cage part each vertex came from, names in asset.extras.parts) in colours, and a wireframe over it, to find surfaces that cross
+  const partNames = (gltf.parser.json.asset.extras || {}).parts || [];
+  const hue = (i, n) => new THREE.Color().setHSL(((i * 0.381966) % 1), 0.62, 0.52 + 0.1 * (i % 2));
+  const meshColour = { eyeL: 0xffffff, eyeR: 0xdddddd, "lidL": 0xffd0d0, "lidR": 0xffb0b0, beans: 0xffe35a };
+  const partsMat = new Map(), wireOf = [];
+  let body = null;
+  gltf.scene.traverse((o) => { if (!o.isMesh) return; o.userData.orig = o.material; if (o.geometry.attributes._part) body = o; });
+  const legend = document.getElementById("legend");
+  legend.innerHTML = partNames.map((n, i) => `<span style="display:inline-block;width:12px;height:12px;background:#${hue(i).getHexString()};margin-right:6px"></span>${n}`).join("<br>") + "<br>" + Object.entries(meshColour).map(([n, c]) => `<span style="display:inline-block;width:12px;height:12px;background:#${c.toString(16).padStart(6, "0")};border:1px solid #888;margin-right:6px"></span>${n}`).join("<br>");
+  if (body) {
+    const pa = body.geometry.attributes._part, col = new Float32Array(pa.count * 3);
+    for (let i = 0; i < pa.count; i++) { const c = hue(pa.getX(i)); col[3 * i] = c.r; col[3 * i + 1] = c.g; col[3 * i + 2] = c.b; }
+    body.userData.partCol = new THREE.BufferAttribute(col, 3); body.userData.origCol = body.geometry.attributes.color;
+    partsMat.set(body, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }));
+    const w = new THREE.SkinnedMesh(body.geometry, new THREE.MeshBasicMaterial({ color: 0x101010, wireframe: true, transparent: true, opacity: 0.4 }));
+    w.bind(body.skeleton, body.bindMatrix); w.frustumCulled = false; w.visible = false; w.morphTargetInfluences = body.morphTargetInfluences; w.morphTargetDictionary = body.morphTargetDictionary;
+    body.parent.add(w); wireOf.push(w);
+  }
+  let mode = "normal";
+  const setMode = (m) => {
+    mode = m;
+    gltf.scene.traverse((o) => {
+      if (!o.isMesh || wireOf.includes(o)) return;
+      if (m === "normal") { o.material = o.userData.orig; if (o === body) o.geometry.setAttribute("color", body.userData.origCol); }
+      else if (o === body) { o.geometry.setAttribute("color", body.userData.partCol); o.material = partsMat.get(o); }
+      else { const k = o.name.replace(/\\./g, ""); const c = meshColour[k] ?? (o.name.startsWith("leaf") ? [0x7fd34a, 0x4aa33a, 0xb4e86a][+o.name.slice(-1)] : 0xcccccc); o.material = new THREE.MeshStandardMaterial({ color: c, roughness: 0.6, side: THREE.DoubleSide }); }
+    });
+    for (const w of wireOf) w.visible = m === "wire";
+    for (const n of ["normal", "parts", "wire"]) document.getElementById("m-" + n).classList.toggle("on", n === m);
+    legend.style.display = m === "normal" ? "none" : "block";
+  };
+  for (const n of ["normal", "parts", "wire"]) document.getElementById("m-" + n).onclick = () => setMode(n);
+  window.__mode = setMode;
   const mixer = new THREE.AnimationMixer(gltf.scene), clips = {}, actions = {};
   for (const c of gltf.animations) { clips[c.name] = c; actions[c.name] = mixer.clipAction(c); }
   if (actions.stand) { actions.stand.play(); }

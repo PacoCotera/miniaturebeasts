@@ -93,9 +93,15 @@ def shoulders_b(H, T, legs, bridges=3):
     C.rings = T.rings
     C.wover = {}
     C.bridges = []
+    names = ["torso"] * len(T.V)      # round 5: which cage part each vertex came from (the _PART attribute of the glb)
     for L, lg in legs:
+        a = len(C.V)
         C.bridges.append(_attach(C, T, H, L, lg, bridges))
+        names += ["leg." + lg["name"]] * len(L.V) + ["bridge." + lg["name"]] * (len(C.V) - a - len(L.V))
     C.compact_map = C.compact()
+    C.partnames = [None] * len(C.V)
+    for o, n in C.compact_map.items():
+        C.partnames[n] = names[o]
     C.fix_winding()
     flds = [lg["d_column"] for _, lg in legs]
     infl = LEG_SAG      # round 3 (AD item 13, legs): the 8-point rings' limit surface sags inside the field between its vertices; the legs are fitted this far outside it so the surface lies on it

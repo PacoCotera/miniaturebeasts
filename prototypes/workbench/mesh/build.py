@@ -77,7 +77,7 @@ def merge(cages):
         off[c.name] = n
         V += c.V
         F += [tuple(i + n for i in f) for f in c.F]
-        part += [c.name] * len(c.V)
+        part += list(getattr(c, "partnames", None) or [c.name] * len(c.V))      # round 5: the combined torso and legs cage names each vertex's part
         for (a, b), s in c.crease.items():
             creases[(a + n, b + n)] = s
         for name, d in c.tags.items():
@@ -216,6 +216,13 @@ class Scene:
             vg = self.half.vertex_groups.new(name=b)
             for i, v in lst:
                 vg.add([i], v, "REPLACE")
+        base = sorted(set(self.part))
+        both = sorted({n for p in base for n in ((p[:-2] + ".L", p[:-2] + ".R") if p.endswith(".L") else (p,))}, key=lambda n: (["head", "torso", "leg", "bridge", "paw"].index(n.split(".")[0]), n))
+        self.part_names = both      # round 5: the _PART attribute's names, in index order (the glb's asset.extras.parts)
+        for pn in base:      # round 5: one temporary group per cage part: the subdivision interpolates the weights, the bake reads the part off them (_PART) and drops the groups
+            vg = self.half.vertex_groups.new(name="_part:" + pn)
+            vg.add([int(i) for i in np.nonzero(self.part == pn)[0]], 1.0, "REPLACE")
+            groups["_part:" + pn] = []
         for b in list(groups):      # round 5: the Mirror moves a copied vertex's weight to the opposite-name group only if that group exists; without it the right legs stayed bound to the left bones
             if b.endswith(".L"):
                 self.half.vertex_groups.new(name=b[:-2] + ".R")

@@ -11,6 +11,19 @@ from housefield import sstep
 GLB_LEVEL = int(os.environ.get("GLB_LEVEL", 3))      # round 3: the glb is baked at level 3 (round 2: level 2); the smile and the cream edge read smoother, the file is about 3x larger
 
 
+def patch_glb_extras(path, extras):
+    """Writes `extras` into the glb's asset.extras (the exporter has no hook for it): the JSON chunk is rewritten, padded with spaces to 4 bytes, and the file length fixed. Deterministic."""
+    import struct
+    b = open(path, "rb").read()
+    jl = struct.unpack("<I", b[12:16])[0]
+    j = json.loads(b[20:20 + jl])
+    j.setdefault("asset", {})["extras"] = extras
+    js = json.dumps(j, separators=(",", ":")).encode()
+    js += b" " * (-len(js) % 4)
+    out = b[:8] + struct.pack("<I", 12 + 8 + len(js) + len(b) - (20 + jl)) + struct.pack("<I", len(js)) + b[16:20] + js + b[20 + jl:]
+    open(path, "wb").write(out)
+
+
 def _verts(ob):
     dg = bpy.context.evaluated_depsgraph_get()
     ev = ob.evaluated_get(dg)
@@ -187,7 +200,8 @@ if __name__ == "__main__":
     glb = os.path.join(OUT, "loika.glb")
     t1 = time.time()
     bpy.ops.export_scene.gltf(filepath=glb, export_format="GLB", export_apply=True, export_skins=True, export_morph=True, export_animations=True,
-                              export_animation_mode="NLA_TRACKS", export_yup=True, use_visible=True)
+                              export_animation_mode="NLA_TRACKS", export_yup=True, use_visible=True, export_attributes=True)
+    patch_glb_extras(glb, dict(parts=sc.part_names))      # round 5: the names of the _PART attribute's values
     res["glb"] = dict(bytes=os.path.getsize(glb), sha256=hashlib.sha256(open(glb, "rb").read()).hexdigest()[:16], export_s=time.time() - t1)
     res["bones"] = len(sc.rig.data.bones)
     res["total_s"] = time.time() - t0
