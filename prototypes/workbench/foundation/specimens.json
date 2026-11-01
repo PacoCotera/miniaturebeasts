@@ -1,0 +1,324 @@
+{
+ "S01": {
+  "frame": {
+   "id": "S01-chunk1",
+   "species": "S01",
+   "name": "Loika",
+   "plan": "A",
+   "kinds": {
+    "head": "soft-block",
+    "eye": "round",
+    "muzzle": "button",
+    "nose": "mound",
+    "mouth": "smile"
+   },
+   "t": {
+    "form.head": 0.6,
+    "form.head-width": 0.8,
+    "form.head-depth": 0.8,
+    "form.cheek": 0.7,
+    "form.eye-size": 0.63,
+    "form.eye-height": 0.3,
+    "form.eye-spacing": 1.0,
+    "form.pupil": 0.1,
+    "form.lid": 0.0,
+    "form.eye-ring": 0.8,
+    "form.muzzle": 0.4,
+    "form.muzzle-width": 0.55,
+    "form.muzzle-height": 0.35,
+    "form.nose": 0.8,
+    "form.nose-drop": 0.5,
+    "form.mouth-width": 0.47,
+    "form.mouth-upturn": 0.5,
+    "form.mouth-gap": 0.1,
+    "form.carriage": 0.45
+   },
+   "pool": {
+    "form.eye-size": [
+     0.2,
+     1.0
+    ]
+   },
+   "notes": "chunk 1 type specimen: t read from the master through the house bands, then set by eye beside it; values the master has outside a band are at the band's end"
+  },
+  "look": {
+   "body": [
+    68,
+    61,
+    63
+   ],
+   "cream": [
+    242,
+    214,
+    176
+   ],
+   "nose": [
+    70,
+    52,
+    54
+   ],
+   "noseInk": 0.9,
+   "mouth": [
+    30,
+    24,
+    28
+   ],
+   "mouthInk": 1.0,
+   "iris": [
+    200,
+    100,
+    22
+   ],
+   "irisTop": [
+    100,
+    46,
+    10
+   ],
+   "irisLow": [
+    240,
+    160,
+    60
+   ],
+   "pupil": [
+    22,
+    16,
+    16
+   ],
+   "ring": [
+    232,
+    214,
+    186
+   ],
+   "catchLight": [
+    255,
+    255,
+    255
+   ],
+   "leaf": [
+    118,
+    128,
+    56
+   ],
+   "toe": [
+    226,
+    200,
+    165
+   ],
+   "creamHead": {
+    "reach": 0.35,
+    "lift": 0.03,
+    "soft": 0.04
+   },
+   "creamBody": {
+    "down": 0.6,
+    "front": 0.8,
+    "t0": 0.3,
+    "t1": 0.55,
+    "x0": -0.9,
+    "x1": -0.6,
+    "x2": 0.1,
+    "x3": 0.5,
+    "z0": 1.15,
+    "z1": 1.5,
+    "y0": 0.4,
+    "y1": 0.6
+   }
+  },
+  "pose": {
+   "seed": "S01",
+   "side": 1,
+   "pick": {
+    "body-yaw": 0.75,
+    "face-yaw": 0.7
+   }
+  },
+  "rig": {
+   "A": {
+    "leg-radius": 0.27,
+    "paw": [
+     0.4,
+     0.33,
+     0.14
+    ],
+    "toe": 0.11,
+    "chest-rx": 0.6,
+    "chest-width-of-W": 0.92,
+    "back-drop": 0.42,
+    "belly-share": 0.2,
+    "pelvis-gap": 0.62,
+    "pelvis-share": 0.95,
+    "shoulder": [
+     0.45,
+     0.3,
+     0.6
+    ],
+    "hip": [
+     0.48,
+     0.32,
+     0.6
+    ],
+    "crest": {
+     "root": [
+      0.0,
+      0.0,
+      0.44
+     ],
+     "leaves": [
+      [
+       -0.2,
+       0.5,
+       0.28,
+       -52
+      ],
+      [
+       0.0,
+       0.72,
+       0.4,
+       -5
+      ],
+      [
+       0.25,
+       0.55,
+       0.3,
+       50
+      ]
+     ],
+     "thick": 0.05
+    },
+    "chest-x": -0.45,
+    "fore-x": 0.42,
+    "hind-x": -0.0
+   },
+   "face": {
+    "nose-relief": 1.1
+   }
+  }
+ },
+ "S14": {
+  "frame": {
+   "id": "S14-chunk1",
+   "species": "S14",
+   "name": "Usvel, the snail",
+   "plan": "D",
+   "kinds": {
+    "head": "round",
+    "eye": "round",
+    "muzzle": "none",
+    "nose": "bump",
+    "mouth": "smile"
+   },
+   "t": {
+    "form.head": 0.55,
+    "form.head-width": 0.0,
+    "form.head-depth": 0.6,
+    "form.cheek": 0.0,
+    "form.eye-size": 0.55,
+    "form.eye-height": 0.18,
+    "form.eye-spacing": 0.39,
+    "form.pupil": 0.5,
+    "form.lid": 0.3,
+    "form.eye-ring": 0.65,
+    "form.nose": 0.0,
+    "form.nose-drop": 0.4,
+    "form.mouth-width": 0.62,
+    "form.mouth-upturn": 0.8,
+    "form.mouth-gap": 0.2,
+    "form.carriage": 0.33,
+    "form.body-length": 0.5,
+    "form.rise": 0.9,
+    "form.skirt": 0.5,
+    "form.antenna": 0.5
+   },
+   "pool": {
+    "form.eye-size": [
+     0.2,
+     1.0
+    ]
+   },
+   "notes": "chunk 1 type specimen: t read from the master through the house bands, then set by eye beside it; values the master has outside a band are at the band's end"
+  },
+  "look": {
+   "body": [
+    188,
+    170,
+    226
+   ],
+   "cream": [
+    170,
+    160,
+    200
+   ],
+   "nose": [
+    176,
+    150,
+    196
+   ],
+   "noseInk": 0.6,
+   "mouth": [
+    88,
+    66,
+    120
+   ],
+   "mouthInk": 1.0,
+   "iris": [
+    34,
+    34,
+    56
+   ],
+   "irisTop": [
+    16,
+    16,
+    30
+   ],
+   "irisLow": [
+    86,
+    80,
+    120
+   ],
+   "pupil": [
+    14,
+    12,
+    24
+   ],
+   "ring": [
+    214,
+    206,
+    236
+   ],
+   "catchLight": [
+    255,
+    255,
+    255
+   ],
+   "leaf": [
+    118,
+    128,
+    56
+   ],
+   "toe": [
+    226,
+    200,
+    165
+   ],
+   "skirt": [
+    184,
+    168,
+    222
+   ],
+   "lid": [
+    170,
+    152,
+    206
+   ]
+  },
+  "pose": {
+   "seed": "S14",
+   "side": -1,
+   "pick": {
+    "body-yaw": 0.85,
+    "face-yaw": 0.55
+   }
+  },
+  "rig": {}
+ }
+}

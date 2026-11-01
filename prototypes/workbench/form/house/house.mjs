@@ -135,7 +135,7 @@ export function checkRules(house, plan, measured, { only = null } = {}) {
     if (typeof v === "number" && Number.isFinite(v)) {
       const mlo = lo === null ? Infinity : v - lo, mhi = hi === null ? Infinity : hi - v;
       margin = Math.min(mlo, mhi);
-      status = margin >= 0 ? "pass" : "FAIL";
+      status = margin >= -1e-9 ? "pass" : "FAIL"; // a hair of float, never a real miss
     }
     rows.push({ id: r.id, measure: r.measure, plan, value: v ?? null, range, on: r.on, status: r.on ? status : status === "FAIL" ? "off (would fail)" : status === "pass" ? "off (would pass)" : status, margin, enforce: r.enforce });
   }

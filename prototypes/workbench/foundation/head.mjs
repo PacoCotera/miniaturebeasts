@@ -55,7 +55,7 @@ export function buildHead(house, plan, kinds, fp) {
   const carves = eyes.map(carve);
 
   // ---- the mouth: a thin tube along the curve under the nose, cut into the surface -----------------------------------------------------------
-  const mw = fp.mouthW * E, rt = rf["mouth-tube"], mouthPts = [];
+  const mw = fp.mouthW * E, rt = rf["mouth-tube"], mo = rf["mouth-offset"], mouthPts = [];
   const NS = 14;
   for (let i = 0; i <= NS; i++) {
     const s = (i / NS) * 2 - 1, y = (s * mw) / 2, z = mouthZ + fp.upturn * (mw / 2) * s * s;
@@ -63,7 +63,7 @@ export function buildHead(house, plan, kinds, fp) {
     mouthPts.push([xs, y, z]);
   }
   const mouthC = [mouthPts[NS / 2][0], 0, mouthZ], mouthBR = mw / 2 + 2 * rt;
-  const dGroove = (x, y, z) => { let d = 1e9; for (let i = 0; i < NS; i++) { const a = mouthPts[i], b = mouthPts[i + 1]; d = Math.min(d, sdCapsule(x, y, z, a[0] - 0.55 * rt, a[1], a[2], b[0] - 0.55 * rt, b[1], b[2], rt)); } return d; };
+  const dGroove = (x, y, z) => { let d = 1e9; for (let i = 0; i < NS; i++) { const a = mouthPts[i], b = mouthPts[i + 1]; d = Math.min(d, sdCapsule(x, y, z, a[0] - mo * rt, a[1], a[2], b[0] - mo * rt, b[1], b[2], rt)); } return d; };
   const kG = rf["mouth-soften"], kN = rf["nose-soften"];
 
   const eyeBound = eyes.map((e) => ({ c: e.c, r: e.Rsock + 0.05 }));
@@ -78,7 +78,7 @@ export function buildHead(house, plan, kinds, fp) {
     return d;
   };
   // the head without its carvings: where the eye and mouth frames sit
-  return { H, W, D, K, dK, dM, M, dNose, nose: { c: nC, frame: nf, r: [nrx, nry, nrz], on: noseOn }, eyes, mouth: { pts: mouthPts, z: mouthZ, w: mw, upturn: fp.upturn, tube: rt }, d: dHead, d0: dHead0, geometry: { E, zEye, noseCz, mouthZ, noseHalfH, ringW, Reye, Riris, lidOver, yE },
+  return { H, W, D, K, dK, dM, M, dNose, nose: { c: nC, frame: nf, r: [nrx, nry, nrz], on: noseOn }, eyes, mouth: { pts: mouthPts, axis: mouthPts.map((p) => [p[0] - mo * rt, p[1], p[2]]), z: mouthZ, w: mw, upturn: fp.upturn, tube: rt }, d: dHead, d0: dHead0, geometry: { E, zEye, noseCz, mouthZ, noseHalfH, ringW, Reye, Riris, lidOver, yE },
     // the measures the rig gives (in H units): the vertical stack, the nose, the eyes
     measures: { H, W, D, E, eyeDrop: fp.eyeDrop, spacing: fp.spacing, pupil: fp.pupil, lid: fp.lid, ring: fp.ring, noseW: fp.noseW * W, noseDrop: fp.noseDrop * E, mouthW: fp.mouthW * E, mouthDrop: zEye - mouthZ, gap: fp.gap, upturn: fp.upturn, projection: fp.projection ?? 0 } };
 }
