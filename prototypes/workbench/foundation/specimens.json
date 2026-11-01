@@ -176,7 +176,7 @@
     "form.mouth-upturn": 0.8,
     "form.mouth-gap": 0.5,
     "form.carriage": 0.33,
-    "form.body-length": 0.05,
+    "form.body-length": 0.25,
     "form.rise": 0.2,
     "form.skirt": 0.5,
     "form.antenna": 0.65
