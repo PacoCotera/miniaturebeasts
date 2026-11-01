@@ -41,6 +41,7 @@ export const MEASURES = {
   "iris-px-96": (r) => num(r.px?.[96]?.iris),
   "nose-px-96": (r) => num(r.px?.[96]?.nose),
   "mouth-px-96": (r) => num(r.px?.[96]?.mouth),
+  "features-pushed": (r) => num(r.featuresPushed),
   "sick-cues": (r) => num(r.sickCues),
   "face-contrast-ratio": (r) => num(r.faceContrast),
   "shade-ratio": (r) => num(r.shadeRatio),
@@ -55,3 +56,6 @@ export function sickCues(r, { upright = false } = {}) {
   if (upright && num(r.earDroop) !== undefined && (r.earDroop > 0.5 || r.earTilt > 20)) n++;
   return n;
 }
+
+// owner O1: how many features sit in the top 15 % of their band. `ts` is the shown t of each continuous gene of the individual that the house names as a feature.
+export const featuresPushed = (ts, share = 0.15) => Object.values(ts).filter((t) => t >= 1 - share).length;

@@ -4,16 +4,16 @@
 //   eW (E / Wf), WoverH, spacing (in E), eyeDrop (H), lid (E), noseW (W), noseDrop (E), gap (H), carriage (deg), hs (H/S) ...
 import { softClamp, clampsInOrder, bandOf, valueAt, tAt } from "./house.mjs";
 
-export const NOSE_ASPECT = 0.62; // nose height over nose width: a soft mound is wider than tall (a rig shape, not a band)
 
 // E in H units, and the vertical stack of the face below the eye line (nose centre, then the nose base, then the gap to the mouth)
 export const eyeInH = (fp) => fp.eW * fp.WoverH;
-export const noseHalfH = (fp) => 0.5 * NOSE_ASPECT * fp.noseW * fp.WoverH; // in H
+export const noseHalfH = (fp) => 0.5 * fp.noseAspect * fp.noseW * fp.WoverH; // in H (the aspect is a rig number of the house file)
 export const faceStack = (fp) => fp.noseDrop * eyeInH(fp) + noseHalfH(fp) + fp.gap; // eye line to mouth line, in H
 
-export function clampEyeFit(fp, c) {
-  const e = fp.eW, hi = c.params["spacing-share-of-width"] / e, w = 0.15 * (hi - 1.5);
-  return { ...fp, spacing: softClamp(fp.spacing, null, hi, Math.max(1e-6, w)) };
+export function clampEyeFit(fp, c, ctx) {
+  // the iris' outer edges, (spacing + 1) E, stay within the share of the head's width (0.9 W): the eyes never reach the head's sides
+  const e = fp.eW, hi = c.params["spacing-share-of-width"] / e - 1, sb = ctx?.house ? bandOf(ctx.house, ctx.plan, "form.eye-spacing") : { lo: 1.5, hi: 2.2 };
+  return { ...fp, spacing: softClamp(fp.spacing, null, hi, 0.15 * (sb.hi - sb.lo)) };
 }
 export function clampNoseFit(fp, c) {
   const hi = c.params["max-nose-over-E"] * fp.eW; // nose width in W units at most 0.6 E
@@ -74,6 +74,7 @@ export const FP_GENES = FP;
 export function faceParams(house, plan, tOf) {
   const fp = {};
   for (const [k, g] of Object.entries(FP)) { const b = house.resolved[plan][g]; if (b) fp[k] = valueAt(b, tOf(g)); }
+  fp.noseAspect = house.rig.face["nose-aspect"];
   if (plan === "D") { const b = house.resolved.D["form.head"]; fp.ht = valueAt(b, tOf("form.head")); delete fp.hs; }
   return fp;
 }

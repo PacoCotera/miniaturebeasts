@@ -19,7 +19,7 @@
     },
     "muzzle": { "none": {}, "button": {}, "pad": {}, "short-taper": {}, "beak": {} },
     "nose": { "mound": {}, "soft-triangle": {}, "disc": {}, "bump": {}, "none": {} },
-    "mouth": { "smile": {}, "w": {}, "tiny-o": {}, "beak-line": {}, "closed-line": {} },
+    "mouth": { "smile": {}, "w": {}, "tiny-o": {}, "dot": {}, "beak-line": {}, "closed-line": {} },
     "eye": { "round": { "aspect": 1.0 }, "almond": { "aspect": 0.85 }, "sleepy": { "aspect": 1.0 }, "jewel": { "aspect": 1.0 } }
   },
   "bands": {
@@ -146,6 +146,10 @@
       "enforce": ["clamp:carriage-lid", "check"], "on": true, "why": "at most one soft sickness cue at a time" },
     { "id": "R13-face-contrast", "measure": "face-contrast-ratio", "plans": { "A": [1.0, null], "B": [1.0, null], "C": [1.0, null], "D": [1.0, null], "E": [1.0, null] },
       "enforce": ["check"], "on": true, "why": "the face region's value range at least the body's" },
+    { "id": "R-push", "measure": "features-pushed", "plans": { "A": [0, 2], "B": [0, 2], "C": [0, 2], "D": [0, 2], "E": [0, 2] },
+      "enforce": ["check"], "on": true, "why": "owner O1: at most two features in the top 15 % of their band at once; one pushed feature is charm, several are a costume" },
+    { "id": "R-mouth", "measure": "mouth-w/E", "plans": { "A": [0.1, null], "B": [0.1, null], "C": [0.1, null], "D": [0.1, null], "E": [0.1, null] },
+      "enforce": ["band"], "on": true, "why": "owner O6: every mibi has a mouth, at least a dot" },
     { "id": "R14-shade-ratio", "measure": "shade-ratio", "plans": { "A": [0.55, 0.70], "B": [0.55, 0.70], "C": [0.55, 0.70], "D": [0.55, 0.70], "E": [0.55, 0.70] },
       "enforce": ["renderer", "check"], "on": true, "why": "one light for the family" }
   ],
@@ -171,10 +175,38 @@
     { "id": "eye-share", "order": 6, "on": true, "params": { "soft-width": 0.15, "gain": 0.8 },
       "why": "if the eye share falls under its plan band, E grows within its own band first, then the head within its band" }
   ],
+  "owner": [
+    { "id": "O1", "ruling": "each mibi pushes at most one or two features", "applied": "rule R-push (the part budget, extended to every feature): at most two features in the top 15 % of their band at once. Measured and reported in chunk 1; the clamp that pulls the rest toward mid-band comes with the litter checks (chunk 4)." },
+    { "id": "O3", "ruling": "needs are shown as asking, never giving up; the face always stays friendly", "applied": "R18 and R19 stay on: at most one soft sickness cue, mouth upturn at least 0.05. Needs themselves are an animation-layer matter (later)." },
+    { "id": "O5", "ruling": "bigger eyes for juveniles are tried on a juvenile litter later; the band does not change now", "applied": "form.eye-size keeps 0.22 to 0.36 Wf. Nothing in chunk 1 reads a juvenile band." },
+    { "id": "O6", "ruling": "every mibi has a mouth, which can be a tiny dot; there is no mouthless face kind", "applied": "kinds.mouth has no 'none' and no mouthless kind; rule R-mouth requires a mouth of at least a dot (mouth-w/E at least 0.1); tested." }
+  ],
   "softclamp": { "width-share": 0.15 },
   "solver": {
     "camera": { "pitch-deg": 8 },
     "seed-keys": ["body-yaw", "face-yaw", "roll"]
+  },
+  "rig": {
+    "face": {
+      "nose-aspect": 0.62,
+      "nose-relief": 0.7,
+      "nose-soften": 0.035,
+      "socket-depth": 0.03,
+      "socket-margin": 0.16,
+      "socket-soften": 0.03,
+      "muzzle-union": 0.15,
+      "muzzle-centre-drop": 0.02,
+      "mouth-tube": 0.016,
+      "mouth-soften": 0.012,
+      "cheek-widen": 0.25,
+      "gaze-offset-max": 0.15,
+      "gaze-full-at-deg": 40,
+      "catch-radius": 0.17,
+      "catch-offset": [-0.2, -0.5],
+      "iris-top-dark": 0.45,
+      "crescent": 0.35
+    },
+    "ink": { "pupil-min-px": { "96": 2.0, "48": 1.6 }, "catch-min-px": { "96": 1.0, "48": 0.9 }, "mouth-min-px": { "96": 1.1, "48": 0.0 }, "nose-min-px": { "96": 2.0, "48": 0.0 } }
   },
   "light": {
     "key": { "azimuth-deg": -38, "elevation-deg": 48, "toward-camera": 0.35, "color": [1.0, 0.95, 0.86] },

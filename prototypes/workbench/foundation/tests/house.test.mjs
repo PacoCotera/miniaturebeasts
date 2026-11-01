@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { loadHouse, bandOf, valueAt, tAt, softClamp, checkFrame, checkRules, failures, validateHouse, resolveBands } from "../../form/house/house.mjs";
 import { loadHouseFile } from "../../form/house/house-file.mjs";
-import { MEASURES, measureAll } from "../../form/house/measures.mjs";
+import { MEASURES, measureAll, featuresPushed } from "../../form/house/measures.mjs";
 import { applyClamps, clampEyeFit, clampFaceStack, clampCarriageLid, clampEyeShare, clampNoseFit, faceParams, tOfFace, faceStack } from "../../form/house/clamps.mjs";
 import { readFileSync } from "node:fs";
 
@@ -102,10 +102,11 @@ test("the face parameters of a plan come from t through the bands", () => {
   assert.equal("projection" in faceParams(house, "C", () => 0.5), false, "a mochi has no muzzle");
   const t = tOfFace(house, "A", fp); assert.ok(Math.abs(t["form.eye-size"] - 0.5) < 1e-9);
 });
-test("eye-fit: spacing x E stays within 0.9 W, monotone in spacing", () => {
-  const c = house.clamps.find((x) => x.id === "eye-fit"); let prev = -1;
-  for (let s = 1.5; s <= 2.2; s += 0.02) { const o = clampEyeFit({ eW: 0.5, spacing: s }, c); assert.ok(o.spacing > prev); prev = o.spacing; assert.ok(o.spacing * 0.5 <= 0.9 + 1e-9); }
-  assert.equal(clampEyeFit({ eW: 0.3, spacing: 2 }, c).spacing, 2, "inside the band nothing moves");
+test("eye-fit: the iris' outer edges stay within 0.9 W, monotone in spacing, nothing moves inside the band", () => {
+  const c = house.clamps.find((x) => x.id === "eye-fit"), ctx = { house, plan: "A" }; let prev = -1;
+  for (let s = 1.5; s <= 2.2; s += 0.02) { const o = clampEyeFit({ eW: 0.3, spacing: s }, c, ctx); assert.ok(o.spacing > prev); prev = o.spacing; assert.ok((o.spacing + 1) * 0.3 <= 0.9 + 1e-9); }
+  assert.equal(clampEyeFit({ eW: 0.25, spacing: 2 }, c, ctx).spacing, 2, "inside the band nothing moves");
+  assert.ok(clampEyeFit({ eW: 0.36, spacing: 2.2 }, c, ctx).spacing < 1.6, "the biggest eyes pull the spacing toward the band's floor");
 });
 test("nose-fit: the nose is at most 0.6 E wide, monotone, and inside nothing moves", () => {
   const c = house.clamps.find((x) => x.id === "nose-fit"); let prev = -1;
@@ -114,7 +115,7 @@ test("nose-fit: the nose is at most 0.6 E wide, monotone, and inside nothing mov
 });
 test("face-stack: the eye line to mouth stays within 0.35 H and compresses the gap first", () => {
   const c = house.clamps.find((x) => x.id === "face-stack");
-  const base = { eW: 0.3, WoverH: 1.3, noseW: 0.25, noseDrop: 0.5, gap: 0.08 };
+  const base = { eW: 0.3, WoverH: 1.3, noseW: 0.25, noseDrop: 0.5, gap: 0.08, noseAspect: 0.62 };
   const out = clampFaceStack({ ...base, gap: 0.2 }, c);
   assert.ok(faceStack(out) <= 0.35 + 1e-9); assert.ok(out.gap < 0.2); assert.equal(out.noseDrop, 0.5, "the gap gives way first");
   let prev = -1; for (let g = 0; g <= 0.4; g += 0.01) { const o = clampFaceStack({ ...base, gap: g }, c); assert.ok(o.gap >= prev - 1e-12); prev = o.gap; assert.ok(faceStack(o) <= 0.35 + 1e-9); }
@@ -152,4 +153,21 @@ test("the measure registry gives undefined for what the rig lacks", () => {
   const m = measureAll({ S: 2, H: 1, W: 1.3, E: 0.4, eyeDrop: 0.5, spacing: 2, noseW: 0.2, noseDrop: 0.1 });
   assert.equal(m["H/S"], 0.5); assert.ok(Math.abs(m["E/Wf"] - 0.4 / 1.3) < 1e-12); assert.ok(Math.abs(m["forehead/H"] - 0.3) < 1e-12); assert.equal(m["nose-w/E"], 0.5);
   assert.ok(!("eye-share" in m));
+});
+
+test("owner O6: there is no mouthless face kind, and a mouth of at least a dot is required", () => {
+  assert.ok(!("none" in house.kinds.mouth) && "dot" in house.kinds.mouth);
+  assert.equal(checkRules(house, "A", { "mouth-w/E": 0.05 }).find((r) => r.id === "R-mouth").status, "FAIL");
+  assert.equal(checkRules(house, "A", { "mouth-w/E": 0.5 }).find((r) => r.id === "R-mouth").status, "pass");
+  for (const plan of Object.keys(house.plans)) assert.ok(bandOf(house, plan, "form.mouth-width").lo >= 0.1, `plan ${plan}: the mouth band never reaches zero`);
+});
+test("owner O1: the pushed-features rule counts features in the top 15 % of their band", () => {
+  assert.equal(featuresPushed({ a: 1, b: 0.9, c: 0.5, d: 0.86 }), 3);
+  assert.equal(checkRules(house, "A", { "features-pushed": 3 }).find((r) => r.id === "R-push").status, "FAIL");
+  assert.equal(checkRules(house, "A", { "features-pushed": 2 }).find((r) => r.id === "R-push").status, "pass");
+});
+test("owner O3 and O5: the sickness budget and the eye band are as ruled", () => {
+  assert.equal(bandOf(house, "A", "form.eye-size").hi, 0.36, "O5: the band does not change now");
+  assert.equal(bandOf(house, "A", "form.mouth-upturn").lo, 0.05, "O3: the face stays friendly");
+  assert.ok(house.owner.some((o) => o.id === "O1") && house.owner.some((o) => o.id === "O6"));
 });
