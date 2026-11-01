@@ -57,8 +57,8 @@ export function makePaint(scene, look, view) {
     const g = gaze[i], pu = u - g[0], pv = v - g[1], pr = Math.hypot(pu, pv / e.aspect), vn = v / R;
     let col = look.iris;
     col = mixc(col, look.irisTop, rf["iris-top-dark"] * sstep(-0.2, 0.9, vn));
-    col = mixc(col, look.irisLow, 0.35 * sstep(0.9, 0.0, Math.hypot(pu, pv / e.aspect) / R * 1.6)); // a warm glow round the pupil
-    col = mixc(col, look.irisLow, rf.crescent * sstep(0.3, 0.95, rho) * sstep(-0.1, 0.75, (u * 0.5 - v * 0.85) / R));
+    col = mixc(col, look.irisLow, rf["iris-glow"] * sstep(0.9, 0.0, Math.hypot(pu, pv / e.aspect) / R * 1.6)); // a warm glow round the pupil
+    col = mixc(col, look.irisLow, rf.crescent * sstep(rf["crescent-from"], 0.95, rho) * sstep(rf["crescent-dir"][0], rf["crescent-dir"][1], (u * 0.5 - v * 0.85) / R));
     col = mixc(col, scl(look.iris, 0.7), 0.8 * sstep(0.84, 0.99, rho));
     let code = INK.iris;
     const pupilR = Math.max(e.pupilR, minPupil), pa = sstep(pupilR + fw * 0.7, pupilR - fw * 0.7, pr);

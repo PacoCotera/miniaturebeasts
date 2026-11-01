@@ -75,7 +75,7 @@ export function buildScene(house, spec) {
     
     bounds = { lo: [-2.3, -1.1, -0.02], hi: [1.2, 1.1, S + 1.0] };
     // the round union with the crest: the crest is a separate small part rooted in the head (smooth, small k)
-    dAll = (x, y, z) => { const d = dHeadBody(x, y, z), c = dCrestB(x, y, z); return sMin(d, c, 0.06); };
+    dAll = (x, y, z) => { const d = dHeadBody(x, y, z), c = dCrestB(x, y, z); return sMin(d, c, rig.crest["root-blend"]); };
     parts.all = dAll; parts.core = dHeadBody;
     regionOf = (x, y, z) => {
       if (dCrestB(x, y, z) < 0.012 && dCrestB(x, y, z) < dHeadW(x, y, z)) return "crest";
