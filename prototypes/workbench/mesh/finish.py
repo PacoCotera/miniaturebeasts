@@ -240,6 +240,10 @@ def bake(sc, H, level=3, name="loika_L"):
     if level <= 2:      # the glb: smooth fields for the viewer's shader (the sprites bake the paint into the colours at level 4)
         pf = me.attributes.new("_paint", "FLOAT_COLOR", "POINT")
         pf.data.foreach_set("color", PT.paint_fields(H, P, N, head_w, 0.5 * INK_PX[304] / 110.0, 1 / 110.0).ravel())
+    rp = me.attributes.new("rest_p", "FLOAT_VECTOR", "POINT"); rp.data.foreach_set("vector", P.ravel())      # rest positions: the skin's grain rides the rig (lookdev 1b)
+    fl = np.array([-1.0, 0.0, -0.25])[None] - N * ((N @ np.array([-1.0, 0.0, -0.25]))[:, None])           # the fur flow: head to tail with a little gravity, projected on the surface
+    fl /= np.maximum(np.linalg.norm(fl, axis=1, keepdims=True), 1e-9)
+    fa = me.attributes.new("flow", "FLOAT_VECTOR", "POINT"); fa.data.foreach_set("vector", fl.ravel())
     na = me.attributes.new("nose", "FLOAT", "POINT")
     na.data.foreach_set("value", nose)
     am = ob.modifiers.new("Armature", "ARMATURE"); am.object = sc.rig
@@ -287,6 +291,72 @@ def repaint_ink(sc, H, px_per_H):
     me.color_attributes["Col"].data.foreach_set("color", np.column_stack([PT.lin(col), np.ones(len(P))]).ravel())
     me.update()
     return half
+
+
+def velvet(sc, H, seed=7.31, grain_scale=37.0, fur_length=0.35):
+    """The last stop (lookdev-skin-fur.md, look 1b, "velvet along the fur flow"), on the sprite build only: grain (4D noise, 3 px at 304, stretched along the flow by s = 2.5 + 5 L),
+    mottle at 1/8 the frequency, sparse light flecks (Voronoi), the grain as a micro bump, a warm sheen, and a cool fuzz rim off the cream. The cream is cut to 30 % grain with no flecks
+    and no rim. One flow direction for the whole creature (the lookdev's per-bone field is not built)."""
+    mat = sc.final.data.materials[0]
+    nt = mat.node_tree
+    N = nt.nodes; Lk = nt.links
+    b = N["Principled BSDF"]
+    vc = next(n for n in N if n.type == "VERTEX_COLOR")
+    new = lambda t, **kw: N.new(t, **kw)
+    rp = new("ShaderNodeAttribute"); rp.attribute_name = "rest_p"
+    fl = new("ShaderNodeAttribute"); fl.attribute_name = "flow"
+    s = 2.5 + 5 * fur_length
+    dot = new("ShaderNodeVectorMath"); dot.operation = "DOT_PRODUCT"; Lk.new(rp.outputs["Vector"], dot.inputs[0]); Lk.new(fl.outputs["Vector"], dot.inputs[1])
+    stretch = new("ShaderNodeVectorMath"); stretch.operation = "SCALE"; Lk.new(fl.outputs["Vector"], stretch.inputs[0]); Lk.new(dot.outputs["Value"], stretch.inputs["Scale"])
+    k = new("ShaderNodeVectorMath"); k.operation = "SCALE"; Lk.new(stretch.outputs["Vector"], k.inputs[0]); k.inputs["Scale"].default_value = 1 - 1 / s
+    p2 = new("ShaderNodeVectorMath"); p2.operation = "SUBTRACT"; Lk.new(rp.outputs["Vector"], p2.inputs[0]); Lk.new(k.outputs["Vector"], p2.inputs[1])
+    def noise(scale, w, detail=3, rough=0.6):
+        n = new("ShaderNodeTexNoise"); n.noise_dimensions = "4D"; n.inputs["Scale"].default_value = scale; n.inputs["W"].default_value = w
+        n.inputs["Detail"].default_value = detail; n.inputs["Roughness"].default_value = rough
+        Lk.new(p2.outputs["Vector"], n.inputs["Vector"]); return n
+    grain = noise(grain_scale, seed)
+    gm = new("ShaderNodeMapRange"); gm.inputs["From Min"].default_value = 0.3; gm.inputs["From Max"].default_value = 0.7; Lk.new(grain.outputs["Fac"], gm.inputs["Value"])
+    mot = noise(grain_scale / 8, seed + 1.7)
+    vor = new("ShaderNodeTexVoronoi"); vor.voronoi_dimensions = "4D"; vor.feature = "F1"; vor.inputs["Scale"].default_value = grain_scale * 0.8; vor.inputs["W"].default_value = seed + 3.1
+    Lk.new(p2.outputs["Vector"], vor.inputs["Vector"])
+    fm = new("ShaderNodeMapRange"); fm.inputs["From Min"].default_value = 0.28; fm.inputs["From Max"].default_value = 0.08; Lk.new(vor.outputs["Distance"], fm.inputs["Value"])
+    # the cream mask from the baked albedo's lightness
+    sep = new("ShaderNodeSeparateColor"); Lk.new(vc.outputs["Color"], sep.inputs["Color"])
+    cm = new("ShaderNodeMapRange"); cm.inputs["From Min"].default_value = 0.12; cm.inputs["From Max"].default_value = 0.45; Lk.new(sep.outputs["Red"], cm.inputs["Value"])   # linear red: body 0.04, cream 0.87
+    M = lambda op, a=None, b_=None: (lambda n: (setattr(n, "operation", op), n)[1])(new("ShaderNodeMath"))
+    def mathn(op, a, bb):
+        n = new("ShaderNodeMath"); n.operation = op
+        for i, v in enumerate((a, bb)):
+            if isinstance(v, (int, float)): n.inputs[i].default_value = v
+            else: Lk.new(v, n.inputs[i])
+        return n
+    nocream = mathn("SUBTRACT", 1.0, cm.outputs["Result"])
+    amp = mathn("MULTIPLY", mathn("SUBTRACT", 1.0, mathn("MULTIPLY", cm.outputs["Result"], 0.7).outputs["Value"]).outputs["Value"], 0.42)
+    gdev = mathn("MULTIPLY", mathn("SUBTRACT", gm.outputs["Result"], 0.5).outputs["Value"], 2.0)
+    gain = mathn("ADD", 1.0, mathn("MULTIPLY", gdev.outputs["Value"], amp.outputs["Value"]).outputs["Value"])
+    mt = mathn("ADD", 0.92, mathn("MULTIPLY", mot.outputs["Fac"], 0.16).outputs["Value"])
+    fleck = mathn("MULTIPLY", mathn("MULTIPLY", fm.outputs["Result"], 2.0).outputs["Value"], nocream.outputs["Value"])
+    tot = mathn("MULTIPLY", gain.outputs["Value"], mt.outputs["Value"])
+    # flecks lighten the body toward a warm grey; the grain and mottle scale the albedo
+    mul = new("ShaderNodeMix"); mul.data_type = "RGBA"; mul.blend_type = "MULTIPLY"; mul.inputs["Factor"].default_value = 1.0
+    Lk.new(vc.outputs["Color"], mul.inputs["A"])
+    comb = new("ShaderNodeCombineColor"); [Lk.new(tot.outputs["Value"], comb.inputs[i]) for i in range(3)]
+    Lk.new(comb.outputs["Color"], mul.inputs["B"])
+    fk = new("ShaderNodeMix"); fk.data_type = "RGBA"; fk.inputs["B"].default_value = (*lin(np.array([120, 108, 104])), 1)
+    Lk.new(mul.outputs["Result"], fk.inputs["A"]); Lk.new(mathn("MULTIPLY", fleck.outputs["Value"], 0.35).outputs["Value"], fk.inputs["Factor"])
+    # the fuzz rim: facing^2.5 x 0.55 toward the cool rim colour, off the cream
+    lw = new("ShaderNodeLayerWeight"); lw.inputs["Blend"].default_value = 0.35
+    rim = mathn("MULTIPLY", mathn("MULTIPLY", mathn("POWER", lw.outputs["Facing"], 2.5).outputs["Value"], 0.55).outputs["Value"], nocream.outputs["Value"])
+    rm = new("ShaderNodeMix"); rm.data_type = "RGBA"; rm.inputs["B"].default_value = (*lin(np.array(H.light["rim"]["tint"]) * 255 * 0.55), 1)
+    Lk.new(fk.outputs["Result"], rm.inputs["A"]); Lk.new(rim.outputs["Value"], rm.inputs["Factor"])
+    Lk.new(rm.outputs["Result"], b.inputs["Base Color"])
+    bump = new("ShaderNodeBump"); bump.inputs["Strength"].default_value = 0.25 + 0.2 * fur_length; bump.inputs["Distance"].default_value = 0.002
+    Lk.new(gm.outputs["Result"], bump.inputs["Height"]); Lk.new(bump.outputs["Normal"], b.inputs["Normal"])
+    if "Sheen Weight" in b.inputs:
+        b.inputs["Sheen Weight"].default_value = 0.3 + 0.2 * fur_length; b.inputs["Sheen Roughness"].default_value = 0.35
+        b.inputs["Sheen Tint"].default_value = (1.0, 0.88, 0.7, 1)
+    b.inputs["Roughness"].default_value = 0.62
+    sc.scene.cycles.filter_width = 1.0
 
 
 def add_eyes(sc, H, level_obj, offset=0.005):
@@ -583,8 +653,10 @@ def light_measures(sc, H, png, ob_final, eyes):
         n = max(3, int(len(idx) * frac))
         sel = idx[:n] if frac > 0 else idx
         return sel
-    lit = pick(torso & body & facing, -nl, 0.03, "lit")
-    shd = pick(torso & body & facing, nl, 0.03, "shade")
+    # the body's flank, not the legs' roots or the creases between them: leg weight under 0.05 (AD gate: sample the shade on the body's side away from the key, not on the legs)
+    flank = torso.copy(); idx_t = np.where(torso & ok)[0]; flank[idx_t] = (H.leg_weight(P[idx_t]) < 0.05) & (px[idx_t, 0] > 150)       # right of the head and neck: the back and flank
+    lit = pick(flank & body & facing, -nl, 0.03, "lit")
+    shd = pick(flank & body & facing, nl, 0.03, "shade")
     (Ll, Yl), xl = sample(lit); (Ls, Ys), xs = sample(shd)
     out["lit_Y"], out["shade_Y"] = float(np.median(Yl)), float(np.median(Ys))
     out["shade_over_lit"] = out["shade_Y"] / max(out["lit_Y"], 1e-9)

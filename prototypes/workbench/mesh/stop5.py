@@ -4,12 +4,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build import *
 import finish as FN
 
-def build_full(level=3, tex_dir=None):
+def build_full(level=3, tex_dir=None, velvet=False):
     H = House("S01"); cages, rep = make_cages(H, join="B", beans=False); sc = Scene(H, cages, rep, join="B")
     sc.tex_dir = tex_dir
     FN.add_crest_bones(sc, H)
     sc.leaves = FN.new_leaf_object(sc, H)
     sc.final = FN.bake(sc, H, level)
+    if velvet:
+        FN.velvet(sc, H)
     sc.eyes = FN.add_eyes(sc, H, sc.final)
     sc.lids = FN.add_lids(sc, H)
     sc.beans = FN.add_beans(sc, H)
@@ -19,7 +21,7 @@ def build_full(level=3, tex_dir=None):
 if __name__ == "__main__":
     OUT = os.path.abspath(sys.argv[1]); os.makedirs(OUT, exist_ok=True)
     t0 = time.time()
-    H, sc, rep = build_full(4, os.path.join(OUT, "tex"))
+    H, sc, rep = build_full(4, os.path.join(OUT, "tex"), velvet=(len(sys.argv) > 2 and sys.argv[2] == "velvet"))
     res = dict(bake=sc.bake_info, build_s=time.time() - t0)
     sc.pose_stand(True)
     def rend(p, smp):
