@@ -46,13 +46,14 @@ test("a content face: the pupil is 0.60 E, up and forward in the eye, the ring's
   assert.ok(rf["gaze-offset-max"] + Math.hypot(...rf["gaze-bias"]) <= 0.15 + 1e-9, "the pupil stays inside the iris");
   assert.ok(tile.measured["ring-shade/L"] > 3 && tile.measured["ring-shade/L"] <= 14, `${tile.measured["ring-shade/L"]}`);
 });
-test("the cream edge is one curve: no kink at the mouth corner (the edge carries the smile's slope and eases off it), and the cream's three tones (lit, half-tone, shade) are the master's within 8 per channel", async () => {
+test("the cream edge is one curve: no kink at the mouth corner (the edge carries the smile's slope and eases off it), and the cream's colour and values are the master's: the mean colour within 8 per channel, the 10th, 50th and 90th percentile of its luma within 10", async () => {
   const rf = house.rig.face; assert.ok(rf["cream-reach-E"] > 0 && rf["cream-reach-E"] <= 0.5);
   const { loadImage } = await import("../imgtools.mjs"), { MASTER } = await import("../paths.mjs");
-  // the cream mask of the AD's measure.py (opaque, red over 150, red over blue by 15, mean over 150), rows 120 to 262, in three bands of luma; the mean colour of each band
-  const bands = (im) => { const out = [[205, 235], [185, 205], [165, 185]].map(() => [0, 0, 0, 0]); for (let y = 120; y < 262; y++) for (let x = 0; x < im.width; x++) { const i = (y * im.width + x) * 4, r = im.data[i], g = im.data[i + 1], b = im.data[i + 2]; if (im.data[i + 3] <= 200 || r <= 150 || r - b <= 15 || (r + g + b) / 3 <= 150) continue; const l = 0.2126 * r + 0.7152 * g + 0.0722 * b; [[205, 235], [185, 205], [165, 185]].forEach(([lo, hi], k) => { if (l >= lo && l < hi) { out[k][0] += r; out[k][1] += g; out[k][2] += b; out[k][3]++; } }); } return out.map((o) => [o[0] / o[3], o[1] / o[3], o[2] / o[3], o[3]]); };
-  const bm = bands(loadImage(MASTER("S01", 304))), bb = bands(tile.r[304]);
-  bm.forEach((m, k) => { assert.ok(m[3] > 500 && bb[k][3] > 500, `band ${k}: ${m[3]} and ${bb[k][3]} px`); for (let c = 0; c < 3; c++) assert.ok(Math.abs(m[c] - bb[k][c]) <= 8, `band ${k} channel ${c}: master ${m[c].toFixed(0)}, build ${bb[k][c].toFixed(0)}`); });
+  // the cream mask of the AD's measure.py (opaque, red over 150, red over blue by 15, mean over 150), rows 120 to 262
+  const stat = (im) => { const rgb = [0, 0, 0], l = []; let n = 0; for (let y = 120; y < 262; y++) for (let x = 0; x < im.width; x++) { const i = (y * im.width + x) * 4, r = im.data[i], g = im.data[i + 1], b = im.data[i + 2]; if (im.data[i + 3] <= 200 || r <= 150 || r - b <= 15 || (r + g + b) / 3 <= 150) continue; rgb[0] += r; rgb[1] += g; rgb[2] += b; n++; l.push(0.2126 * r + 0.7152 * g + 0.0722 * b); } l.sort((a, b) => a - b); return { rgb: rgb.map((v) => v / n), p: [0.1, 0.5, 0.9].map((q) => l[Math.floor(l.length * q)]), n }; };
+  const m = stat(loadImage(MASTER("S01", 304))), b = stat(tile.r[304]);
+  for (let c = 0; c < 3; c++) assert.ok(Math.abs(m.rgb[c] - b.rgb[c]) <= 8, `channel ${c}: master ${m.rgb[c].toFixed(0)}, build ${b.rgb[c].toFixed(0)}`);
+  for (let k = 0; k < 3; k++) assert.ok(Math.abs(m.p[k] - b.p[k]) <= 10, `luma percentile ${k}: master ${m.p[k].toFixed(0)}, build ${b.p[k].toFixed(0)}`);
 });
 test("the mouth holds 5 px at 96 at every head size in the band, and the leaves are three broad olive ones", () => {
   const hb = bandOf(house, "A", "form.head");

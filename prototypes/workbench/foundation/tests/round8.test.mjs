@@ -107,3 +107,22 @@ test("the lobe's top front catches a light at least 15 levels over the dark of t
     assert.ok(q(lobe, 0.9) - q(brow, 0.5) >= 15, `${name}: the lobe's top front reaches ${q(lobe, 0.9).toFixed(0)}, the brow's dark is ${q(brow, 0.5).toFixed(0)}`);
   }
 });
+
+// ---- step 5: the leaves (ad-review-fix7, section 4 and the fix-8 list, item 5) ---------------------------------------------------------------------------------------------
+test("the centre leaf leans 20 to 30 degrees to the rear on the screen, is at least 0.55 of its length wide, has a round tip (70 degrees or more), its base sinks under the crown with the side leaves lying over it; the leaves are cupped so the light rolls over them", () => {
+  const c = house.rig.A.crest, [, len, wid] = c.leaves[1]; assert.ok(wid / len >= 0.55 - 1e-9, `the ellipsoid is ${wid / len} of its length wide`);
+  assert.ok(c.camber > 0, "the leaves are cupped");
+  // the centre leaf alone, in the stand view at 304: the green pixels above the crown, their principal axis against the vertical, the width over the length, the angle of the tip
+  const h2 = loadHouseFile(); h2.rig.A.crest.leaves = [h2.rig.A.crest.leaves[1]];
+  const t = makeTile(h2, sp.S01, { sizes: [304], label: "x" }), im = t.r[304], px = [];
+  for (let y = 0; y < 80; y++) for (let x = 60; x < 200; x++) { const i = (y * im.width + x) * 4, r = im.data[i], g = im.data[i + 1], b = im.data[i + 2]; if (im.data[i + 3] > 128 && g >= r - 14 && g > b + 14) px.push([x, y]); }
+  const n = px.length, mx = px.reduce((a, p) => a + p[0], 0) / n, my = px.reduce((a, p) => a + p[1], 0) / n; let sxx = 0, syy = 0, sxy = 0; for (const [x, y] of px) { sxx += (x - mx) ** 2; syy += (y - my) ** 2; sxy += (x - mx) * (y - my); }
+  const ang = 0.5 * Math.atan2(2 * sxy, sxx - syy), ax = [Math.cos(ang), Math.sin(ang)], nx = [-ax[1], ax[0]]; let tmin = 1e9, tmax = -1e9; for (const [x, y] of px) { const q = (x - mx) * ax[0] + (y - my) * ax[1]; tmin = Math.min(tmin, q); tmax = Math.max(tmax, q); }
+  const L = tmax - tmin, prof = []; for (let k = 0; k <= 20; k++) { const t0 = tmin + (L * k) / 20, t1 = t0 + L / 20; let lo = 1e9, hi = -1e9; for (const [x, y] of px) { const q = (x - mx) * ax[0] + (y - my) * ax[1]; if (q >= t0 && q < t1) { const s = (x - mx) * nx[0] + (y - my) * nx[1]; lo = Math.min(lo, s); hi = Math.max(hi, s); } } prof.push(hi - lo); }
+  const W = Math.max(...prof.slice(1, 20)), lean = Math.abs((Math.atan2(ax[0], -ax[1]) * 180) / Math.PI), leanDeg = lean > 90 ? 180 - lean : lean, tipEnd = prof.slice(0, 4).reduce((a, b) => a + b, 0) < prof.slice(17).reduce((a, b) => a + b, 0) ? prof : prof.slice().reverse(), tipAngle = (2 * Math.atan(tipEnd[3] / 2 / (L * 0.15)) * 180) / Math.PI;
+  assert.ok(leanDeg >= 20 && leanDeg <= 30 && ax[0] * ax[1] < 0, `lean ${leanDeg.toFixed(1)} degrees (axis ${ax.map((v) => v.toFixed(2))}): to the right on the screen is to the rear`);
+  assert.ok(W / L >= 0.55, `width ${W.toFixed(0)} over length ${L.toFixed(0)}`); assert.ok(tipAngle >= 70, `tip angle ${tipAngle.toFixed(0)}`);
+  // the base is under the crown: the leaf's root is lower than the skull's top by at least 4 px at 304 (0.04 H) and the side leaves are in front of the centre one's lower part
+  assert.ok(0.5 - c.root[2] >= 0.04 && 0.5 - c.root[2] <= 0.07, `root ${c.root[2]}`);
+  assert.ok(c.leaves[0][3] < -40 && c.leaves[2][3] > 40, "the side leaves lie out over the dome and overlap the centre leaf's foot");
+});

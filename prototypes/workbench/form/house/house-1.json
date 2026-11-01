@@ -1651,8 +1651,8 @@
       "nose-highlight-power": 10,
       "nose-highlight-width": 0.4,
       "leaf-rib-width": 0.02,
-      "leaf-rib-strength": 0.55,
-      "leaf-gloss": 0.3,
+      "leaf-rib-strength": 0.4,
+      "leaf-gloss": 0.15,
       "mouth-soften": 0.012,
       "cheek-widen": 0.25,
       "cheek-eye": 0.05,
@@ -1680,8 +1680,8 @@
       "jaw-drop": 0.19,
       "jaw-rx": 0.159,
       "jaw-rz": 0.125,
-      "jaw-width-of-muzzle": 0.97,
-      "jaw-forward": -0.16,
+      "jaw-width-of-muzzle": 0.94,
+      "jaw-forward": -0.17,
       "jaw-union": 0.16,
       "ad": "AD review: the iris was a flat light orange (L* 45-58 everywhere). The master: a dark amber iris (L* 13-33), its top darkest under the brow, a bright gold lower crescent (L* 62-70, C* 68). iris-top-dark 0.4 -> 0.7 and crescent 0.35 -> 0.6 here; the colours are the specimen's look. The eye stays painted: no lens. Fix round 2, ruling 4: the cheek rise of the cream (fix round 1, must-fix 2: up the cheek to the eye's lower edge) is withdrawn. On the master the skin under the near eye is dark; the cream starts at the smile and its near edge runs from the mouth corner down and back toward the shoulder, at least 0.5 E below the near eye (look.creamHead.fall)"
     },
@@ -1711,16 +1711,18 @@
       "crest": {
         "root": [-0.07, 0.0, 0.44],
         "rise": [0.26, 0.24, 0.14, 0.14, 0.43],
-        "root-blend": 0.1,
+        "root-blend": 0.03,
         "leaves": [
-          [-0.4, 0.62, 0.4, -66, 0.12, -20],
-          [0.0, 0.66, 0.42, -6, 0.0, 0],
-          [0.5, 0.66, 0.4, 70, 0.15, 20]
+          [-0.4, 0.66, 0.42, -62, 0.12, -20],
+          [0.0, 0.68, 0.44, 8, -0.22, 0],
+          [0.5, 0.7, 0.42, 66, 0.1, 20]
         ],
-        "tip-power": 3.6,
-        "tip-narrow": 0.12,
+        "tip-power": 4.0,
+        "tip-narrow": 0.06,
         "base-min": 0.24,
-        "thick": 0.05
+        "thick": 0.05,
+        "camber": 2.0,
+        "ad": "Fix round 8, must-fix 5: the centre leaf leans back (lean -0.22 and roll 8 give 26 degrees from the vertical on the screen), is broad (0.6 of its length) with a round tip (a 100 degree tip), its base 6 px under the crown, and the side leaves overlap it; the leaves are cupped (camber, in leaf thicknesses) so the light rolls over them and they are not flat plates; the root blend is 0.03 because a cupped leaf's base swelled the dome at 0.1"
       },
       "toe-radii": [0.05, 0.05, 0.05],
       "toe-reach": 0.56,
