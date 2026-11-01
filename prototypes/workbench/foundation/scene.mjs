@@ -75,22 +75,26 @@ export function buildScene(house, spec) {
     };
     headWeight = (x, y, z) => sstep(0.05, -0.05, dHeadW(x, y, z) - dNoHead(x, y, z));
   } else if (plan === "D") {
-    const nS = rig.segments, step = rig["seg-step"] * (body.length / 1.6), rx = rig["seg-rx"] * (body.length / 1.6), T = body.thick, scaleR = T / 2 / rig["seg-radius"][0], rr = rig["seg-radius"].map((v) => v * scaleR), segs = [];
-    for (let i = 0; i < nS; i++) { const r = rr[i], c = [rig["seg-x0"] - i * step, 0, rig.skirt[2] * 1.7 + r * 0.95]; segs.push(ell(c, [rx, r, r])); segs[i].c = c; segs[i].r = r; }
-    const sk = rig.skirt, skC = [rig["skirt-x"], 0, sk[2]], skR = [sk[0] * (body.length / 1.6), Math.max(T * body.skirt * 0.5, 0.3), sk[2]];
+    const nS = rig.segments, Lk = body.length / 1.6, T = body.thick, scaleR = T / 2 / rig["seg-radius"][0], rr = rig["seg-radius"].map((v) => v * scaleR), segs = [];
+    // the line of action rises from the tail into the head: segments differ by 15 to 35 %, each one's top is higher than the next one back, the first runs under the head
+    let xs = rig["seg-x0"];
+    for (let i = 0; i < nS; i++) { const r = rr[i], c = [xs, 0, rig.skirt[2] * 1.5 + r * 0.95], rx = rig["seg-rx"] * Lk * (r / rr[0]) ** 0.5; segs.push(ell(c, [rx, r, r])); segs[i].c = c; segs[i].r = r; if (i + 1 < nS) xs -= (rx + rig["seg-rx"] * Lk * (rr[i + 1] / rr[0]) ** 0.5) * rig["seg-overlap"]; }
+    const sk = rig.skirt, skC = [rig["skirt-x"], 0, sk[2]], skR = [sk[0] * Lk, (T / 2) * (1 + (body.skirt - 1) * 0.6), sk[2]];
     const dSkirt = ell(skC, skR);
-    const dBodyD = (x, y, z) => { let d = segs[0](x, y, z); for (let i = 1; i < nS; i++) d = uRound(d, segs[i](x, y, z), 0.035); return uRound(d, dSkirt(x, y, z), rig.union); };
+    const dBodyD = (x, y, z) => { let d = segs[0](x, y, z); for (let i = 1; i < nS; i++) d = uRound(d, segs[i](x, y, z), 0.05); return uRound(d, dSkirt(x, y, z), rig.union); };
     // antennae: thin stalks with ball tips, rooted on the top of K, each a capsule chain (analytic, so they stay thin at 304)
-    const at = rig["antenna-thick"], ants = rig.antennae.map(([ox, oy, oz, dx, dy, dz]) => {
-      const root = fromLocal(hf, [ox, oy, oz]), d = dirFromLocal(hf, norm3([dx, dy, dz])), L = body.antenna, mid = [root[0] + d[0] * L * 0.55, root[1] + d[1] * L * 0.55, root[2] + d[2] * L * 0.55 + 0.02], tip = [root[0] + d[0] * L, root[1] + d[1] * L, root[2] + d[2] * L - 0.02];
-      return { root, mid, tip };
+    const at = rig["antenna-thick"], ants = rig.antennae.map(([ox, oy, oz, dx, dy, dz, bx, by, bz]) => {
+      // a curved stalk: five points along root + dir L t + bend L t^2, tapering from the root collar to a ball tip
+      const root = fromLocal(hf, [ox, oy, oz]), d = dirFromLocal(hf, norm3([dx, dy, dz])), bend = dirFromLocal(hf, [bx, by, bz]), L = body.antenna;
+      const pts = [0, 0.25, 0.5, 0.75, 1].map((t) => [root[0] + d[0] * L * t + bend[0] * L * t * t, root[1] + d[1] * L * t + bend[1] * L * t * t, root[2] + d[2] * L * t + bend[2] * L * t * t]);
+      return { root, pts };
     });
-    const dAnt = (x, y, z) => { let d = 1e9; for (const a of ants) { d = Math.min(d, sdCapsule(x, y, z, a.root[0], a.root[1], a.root[2], a.mid[0], a.mid[1], a.mid[2], at / 2 * 1.1), sdCapsule(x, y, z, a.mid[0], a.mid[1], a.mid[2], a.tip[0], a.tip[1], a.tip[2], at / 2 * 0.8), Math.sqrt((x - a.tip[0]) ** 2 + (y - a.tip[1]) ** 2 + (z - a.tip[2]) ** 2) - (at / 2) * rig["antenna-ball"]); } return d; };
+    const dAnt = (x, y, z) => { let d = 1e9; for (const a of ants) { for (let i = 0; i < 4; i++) { const k = 1 - i * 0.18; d = Math.min(d, sdCapsule(x, y, z, a.pts[i][0], a.pts[i][1], a.pts[i][2], a.pts[i + 1][0], a.pts[i + 1][1], a.pts[i + 1][2], (at / 2) * k * 1.25)); } const t = a.pts[4]; d = Math.min(d, Math.sqrt((x - t[0]) ** 2 + (y - t[1]) ** 2 + (z - t[2]) ** 2) - (at / 2) * rig["antenna-ball"], Math.sqrt((x - a.root[0]) ** 2 + (y - a.root[1]) ** 2 + (z - a.root[2]) ** 2) - rig["antenna-collar"]); } return d; };
     const antC = ants[0].root, antB = bounded(kc, body.antenna + 0.8, 0.1, dAnt);
     headWeight = (x, y, z) => sstep(0.04, -0.04, dHeadW(x, y, z) - dBodyD(x, y, z));
     regionOf = (x, y, z) => { if (dAnt(x, y, z) < 0.01) return "ant"; const dh = dHeadW(x, y, z), db = dBodyD(x, y, z); return dh <= db + 0.015 ? "head" : "seg"; };
-    dAll = (x, y, z) => { const hb = Math.sqrt((x - kc[0]) ** 2 + (y - kc[1]) ** 2 + (z - kc[2]) ** 2) - (0.5 * Math.max(W, head.D) + 0.7), dh = hb > 0.3 ? hb : dHeadW(x, y, z); let d = uRound(dh, dBodyD(x, y, z), 0.12); return sMin(d, antB(x, y, z), 0.025); };
-    parts.core = (x, y, z) => { const hb = Math.sqrt((x - kc[0]) ** 2 + (y - kc[1]) ** 2 + (z - kc[2]) ** 2) - (0.5 * Math.max(W, head.D) + 0.7), dh = hb > 0.3 ? hb : dHeadW(x, y, z); return uRound(dh, dBodyD(x, y, z), 0.12); };
+    dAll = (x, y, z) => { const hb = Math.sqrt((x - kc[0]) ** 2 + (y - kc[1]) ** 2 + (z - kc[2]) ** 2) - (0.5 * Math.max(W, head.D) + 0.7), dh = hb > 0.3 ? hb : dHeadW(x, y, z); let d = uRound(dh, dBodyD(x, y, z), rig["neck-union"]); return sMin(d, antB(x, y, z), 0.03); };
+    parts.core = (x, y, z) => { const hb = Math.sqrt((x - kc[0]) ** 2 + (y - kc[1]) ** 2 + (z - kc[2]) ** 2) - (0.5 * Math.max(W, head.D) + 0.7), dh = hb > 0.3 ? hb : dHeadW(x, y, z); return uRound(dh, dBodyD(x, y, z), rig["neck-union"]); };
     parts.head = dHeadW; parts.segs = segs; parts.ants = ants; parts.all = dAll; extra = { segs, ants, skirt: { c: skC, r: skR } };
     bounds = { lo: [-3.0, -1.0, -0.02], hi: [1.2, 1.0, S + 1.2 + body.antenna] };
   } else throw new Error(`plan ${plan} is not built in chunk 1`);

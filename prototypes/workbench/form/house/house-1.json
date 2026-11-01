@@ -1605,42 +1605,51 @@
     "D": {
       "provisional": "the snail's body: four soft segments on a foot skirt, a round head raised on them",
       "segments": 4,
-      "seg-x0": -0.68,
+      "seg-x0": -0.55,
       "seg-step": 0.37,
-      "seg-rx": 0.3,
+      "seg-rx": 0.34,
       "seg-radius": [
         0.38,
-        0.38,
-        0.31,
-        0.2
+        0.3,
+        0.23,
+        0.15
       ],
       "skirt": [
-        1.25,
+        1.15,
         0.5,
-        0.09
+        0.06
       ],
-      "skirt-x": -0.95,
-      "union": 0.07,
-      "antenna-thick": 0.026,
+      "skirt-x": -0.8,
+      "union": 0.11,
+      "antenna-thick": 0.03,
       "antenna-ball": 3.2,
       "antennae": [
         [
           0.05,
           0.2,
           0.44,
-          -0.3,
+          -0.5,
+          0.45,
+          1.0,
+          -0.05,
           0.18,
-          1.0
+          -0.08
         ],
         [
           0.05,
           -0.2,
           0.44,
-          0.55,
-          -0.28,
-          0.8
+          0.8,
+          -0.4,
+          0.9,
+          0.12,
+          -0.1,
+          -0.12
         ]
-      ]
+      ],
+      "seg-overlap": 0.78,
+      "neck-union": 0.2,
+      "antenna-collar": 0.05
     },
     "ink": {
       "pupil-min-px": {

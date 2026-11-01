@@ -35,9 +35,8 @@ export function farEyeInside(hw, camera, detail = null) {
 export function headBreadth(hw, camera) {
   const B = cameraBasis(camera), d = hw.d, n = 70, L = 1.7; let lo = Infinity, hi = -Infinity, rowLo = 0, rowHi = 0;
   for (let j = 0; j < n; j++) { const b = -0.9 + (1.8 * (j + 0.5)) / n; for (let i = 0; i < n; i++) { const a = -L + (2 * L * (i + 0.5)) / n; if (hitAt(d, B, a, b)) { if (a < lo) { lo = a; rowLo = b; } if (a > hi) { hi = a; rowHi = b; } } } }
-  const edge = (a0, a1, b) => { let m = a0, h = a1; for (let i = 0; i < 9; i++) { const c = (m + h) / 2; if (hitAt(d, B, c, b)) m = c; else h = c; } return m; };
-  const cell = (2 * L) / n, xl = -edge(-lo - cell * 0.5, -lo + cell, rowLo) * 0 + 0;
-  const left = (() => { let h = lo, m = lo - cell; for (let i = 0; i < 9; i++) { const c = (m + h) / 2; if (hitAt(d, B, c, rowLo)) h = c; else m = c; } return h; })();
-  const right = (() => { let m = hi, h = hi + cell; for (let i = 0; i < 9; i++) { const c = (m + h) / 2; if (hitAt(d, B, c, rowHi)) m = c; else h = c; } return m; })();
+  const cell = (2 * L) / n, rows = (r0) => Array.from({ length: 21 }, (_, i) => r0 - 0.1 + i * 0.01);
+  const left = Math.min(...rows(rowLo).map((b) => { if (!hitAt(d, B, lo, b)) return Infinity; let h = lo, m = lo - cell; for (let i = 0; i < 9; i++) { const c = (m + h) / 2; if (hitAt(d, B, c, b)) h = c; else m = c; } return h; }));
+  const right = Math.max(...rows(rowHi).map((b) => { if (!hitAt(d, B, hi, b)) return -Infinity; let m = hi, h = hi + cell; for (let i = 0; i < 9; i++) { const c = (m + h) / 2; if (hitAt(d, B, c, b)) m = c; else h = c; } return m; }));
   return right - left;
 }

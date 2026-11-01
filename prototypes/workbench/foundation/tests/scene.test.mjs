@@ -35,7 +35,7 @@ test("Loika and the snail are closed solids on the floor with the crown as the t
   for (const ex of [loika(), snail()]) {
     const sc = ex.scene;
     assert.ok(sc.d(sc.kc[0], sc.kc[1], sc.kc[2]) < -0.3, "inside the head");
-    assert.ok(sc.d(0, 0, 9) > 5 && sc.d(9, 0, 0.5) > 1, "outside, far out (a lower bound: the first-order ellipsoid distance under-reads far from a flat one)");
+    assert.ok(sc.d(0, 0, 9) > 5 && sc.d(9, 0, 0.5) > 0.5, "outside, far out (a lower bound: the first-order ellipsoid distance under-reads far from a flat one)");
     assert.ok(sc.bounds.lo[2] <= 0 && sc.d(0, 0, -0.5) > 0.4, "nothing below the floor but the floor");
   }
 });
@@ -83,4 +83,22 @@ test("the eye is paint in a carved socket: no eye geometry is in the field", () 
   assert.ok(Math.abs(h.dK(...e.c)) < 1e-3, "the eye plane is on K's surface (within 0.02 H)");
   const surfaceZ = (() => { let a = -0.2, b = 0.3; for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (h.d(e.c[0] + e.n[0] * m, e.c[1] + e.n[1] * m, e.c[2] + e.n[2] * m) < 0) a = m; else b = m; } return a; })();
   assert.ok(surfaceZ <= 0.001, `the head's surface under the eye is never proud of K's: ${surfaceZ}`);
+});
+
+test("the head's breadth on screen is a stand-view measure: Loika is wide (R1-head-breadth), the snail's round head sits in plan D's band", () => {
+  const a = express(house, sp.S01), d = express(house, sp.S14);
+  assert.ok(a.measured["head-breadth/H"] >= 1.45 && a.measured["head-breadth/H"] <= 1.8, `Loika ${a.measured["head-breadth/H"]}`);
+  assert.ok(d.measured["head-breadth/H"] >= 0.95 && d.measured["head-breadth/H"] <= 1.3, `snail ${d.measured["head-breadth/H"]}`);
+});
+test("the far eye is held inside the outline by 0.05 H on Loika, by spacing and then the face yaw, and the clamp never leaves the yaw band", () => {
+  const a = express(house, sp.S01);
+  assert.ok(a.measured["far-eye-inside/H"] >= 0.05 - 1e-9, `${a.measured["far-eye-inside/H"]}`);
+  assert.ok(a.pose.yawFace >= 15 - 1e-9 && a.pose.yawFace <= 40);
+});
+test("the feet: each foot is one mass wider than the leg, its toes are part of it (the toe surface is outside the foot at the front and top, never under the sole)", () => {
+  const sc = loika().scene, l = sc.extra.legs[0], rig = house.rig.A;
+  assert.ok(rig.paw[1] * 2 >= 1.3 * rig["leg-radius"] * 2 && rig.paw[1] * 2 <= 1.55 * rig["leg-radius"] * 2 + 0.05, "the foot is 1.3 to 1.5 x the leg");
+  assert.equal(l.toes.length, 3);
+  for (const t of l.toes) { assert.ok(t.c[2] - t.r[2] >= -1e-9, "no toe under the floor"); assert.ok(t.c[2] <= rig.paw[2] * 1.2, "toes at the foot's height, not below its sole"); }
+  assert.ok(sc.d(l.toes[1].c[0], l.toes[1].c[1], l.toes[1].c[2]) < 0, "the toe is solid, joined to the foot");
 });

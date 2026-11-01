@@ -226,7 +226,7 @@
     "form.body-length": 0.5,
     "form.rise": 0.9,
     "form.skirt": 0.5,
-    "form.antenna": 0.5
+    "form.antenna": 0.65
    },
    "pool": {
     "form.eye-size": [
