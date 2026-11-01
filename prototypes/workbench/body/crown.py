@@ -71,12 +71,12 @@ def grow(crown, seed_digest="S01"):
         L0 = {"sprout": 0.55, "bud": 0.30, "vine": 0.40}[fam] * c["length"]
         turn = (c["curl"] * (80 if fam != "vine" else 70 * 1.0))
         t = Turtle((0, 0, 0), H=(-0.15, 0, 1.0))
-        pts, rad = [t.p.copy()], [0.075]
-        r0 = 0.075
+        pts, rad = [t.p.copy()], [0.10]
+        r0 = 0.10
         for k in range(nseg):
             t.move(L0 / nseg * jit(rng, 1, .05))
             t.tilt(-turn / nseg)                       # curl: the stem bends back (toward -x)
-            pts.append(t.p.copy()); rad.append(r0 * (1 - 0.4 * (k + 1) / nseg))
+            pts.append(t.p.copy()); rad.append(r0 * (1 - 0.3 * (k + 1) / nseg))
             if fam == "vine" and k >= 1:
                 t.push(); t.roll(90); t.tilt(-35)
                 items.append(dict(kind="leaf", base=t.p.copy() + np.array([0, 0.09, 0]), H=t.H.copy(), B=unit(np.cross(t.H, (0, 0, 1)) + 1e-6), N=unit(np.cross(unit(np.cross(t.H, (0, 0, 1)) + 1e-6), t.H)), length=0.30 * c["length"], width=0.20 * c["width"], curl=10))

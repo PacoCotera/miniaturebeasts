@@ -30,7 +30,7 @@ def pole_kinds(b, V, F):
     hd = ctx["info"]["head"]
     for v in (hd["loop"][3], hd["loop"][5]):
         listed[m[v]] = "neck-socket"
-    for part in ("nose", "muzzle", "crown"):
+    for part in ("nose", "muzzle", "chin", "crown"):
         if part not in b.parts:
             continue
         pid = b.parts[part]
@@ -111,12 +111,16 @@ class T(unittest.TestCase):
         print("belly clearance", round(belly, 3))
         self.assertAlmostEqual(belly, 0.47, delta=0.05)
         # the gap between the near fore and hind feet at the ground
-        low = (V2[:, 2] < 0.06) & (V2[:, 1] > 0.1)
-        xf = V2[low & (V2[:, 0] > -0.7)][:, 0]
-        xh = V2[low & (V2[:, 0] < -0.7)][:, 0]
-        gap = xf.min() - xh.max()
-        print("foot gap", round(float(gap), 3))
-        self.assertAlmostEqual(float(gap), 0.21, delta=0.10)
+        # the AD's gate: at y 275 of the 304 stand view the near fore leg and the hind leg are about 20 px apart (read on alpha, as measure.py does)
+        import gates, views, rig
+        R = rig.Rig(self.ctx)
+        M = views.level_mesh(self.b, 2)
+        Mp = dict(M, V=R.skin(M["V"], R.weights(M["V"], M["attr"]), R.stand_pose()))
+        a = gates.stand_view(self.b, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "out"), "_t", mesh=Mp)[304]["alpha"]
+        runs = gates.leg_runs_275(a)
+        gap = runs[-1][0] - runs[-2][1]
+        print("foot gap px at y 275", gap, runs)
+        self.assertTrue(14 <= gap <= 27, (gap, runs))
         # the hind leg shows a column under the haunch
         z0 = self.ctx["info"]["limbs"]["hind.L"]["ringinfo"][0]["centre"][2]
         self.assertGreaterEqual(z0, 0.15)

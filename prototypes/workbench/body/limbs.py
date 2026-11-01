@@ -14,7 +14,7 @@ ROLL_FOOT = 8.5       # degrees of end roll that put a face centre on the foot's
 
 
 def sm(a, b, x):
-    t = min(max((x - a) / (b - a), 0.0), 1.0)
+    t = min(max((x - a) / max(b - a, 1e-9), 0.0), 1.0)
     return t * t * (3 - 2 * t)
 
 

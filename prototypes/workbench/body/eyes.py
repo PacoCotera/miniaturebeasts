@@ -23,11 +23,11 @@ def add_eyes(body, ctx):
     n /= np.linalg.norm(n)
     inset = []
     for u in nbr:
-        p = A[v] + 0.5 * (A[u] - A[v]) - 0.02 * n
+        p = A[v] + 0.5 * (A[u] - A[v]) - 0.010 * n
         inset.append(cage.add(p))
     for _ in inset:
         body.part.append(body.pid("head")); body.s.append(s_e); body.around.append(0.75); body.target.append(None)
-    cage.V[v] = (A[v] - 0.03 * n).tolist()
+    cage.V[v] = (A[v] - 0.015 * n).tolist()
     body.target[v] = np.array(cage.V[v], float)
     fp = body.face_part[faces[0]]
     # one of the 4 faces is reused, the rest are appended
@@ -45,11 +45,11 @@ def add_eyes(body, ctx):
         cage.F.append(tuple(int(i) for i in q))
         body.face_part.append(fp)
     for k in range(8):
-        cage.set_crease(inset[k], inset[(k + 1) % 8], 1)
+        pass          # no crease: the brow is round all the way (AD gate 1)
     def hook(body, v=v, nbr=nbr, inset=inset, n=n):
         A = body.cage.arr()
         for u, i in zip(nbr, inset):
-            A[i] = A[v] + 0.5 * (A[u] - A[v]) - 0.02 * n
+            A[i] = A[v] + 0.5 * (A[u] - A[v]) - 0.010 * n
         body.cage.set_arr(A)
     body.hooks.append(hook)
     ctx["info"]["eye"] = dict(centre=v, loop=nbr, inset=inset, ring=k_e, col=c)

@@ -10,7 +10,8 @@ PALETTES = {
     "russet": dict(coat=(122, 62, 38), nose=(70, 36, 26), cream=(226, 200, 160), toe=(240, 228, 214), leaf=(96, 124, 52), leafRib=(170, 182, 96)),
     "ash": dict(coat=(104, 106, 112), nose=(60, 60, 66), cream=(222, 210, 192), toe=(238, 232, 222), leaf=(110, 128, 60), leafRib=(176, 184, 100)),
 }
-EYE = dict(ring=(240, 228, 214), irisTop=(60, 26, 6), iris=(206, 104, 20), irisLow=(246, 152, 30), pupil=(14, 10, 10), catch=(255, 255, 255), ink=(22, 17, 20))
+SMILE_Z = -0.345
+EYE = dict(ring=(236, 214, 188), irisTop=(60, 26, 6), iris=(206, 104, 20), irisLow=(246, 152, 30), pupil=(14, 10, 10), catch=(255, 255, 255), ink=(22, 17, 20))
 VELVET = dict(roughness=0.66, sheen=0.30, grain=0.42, fuzz=0.50)
 
 
@@ -54,14 +55,15 @@ def zone_masks(ctx, V, attr, zones=None):
     toe = np.where(tag > 0.01, np.clip(tag, 0, 1), 0.0)
     leaf = (pid == parts["crown"]).astype(float) if "crown" in parts else np.zeros(len(V))
     mz = pid == parts["muzzle"]
-    bib_m = smooth(0.0, 0.07, -(loc[:, 2] - (H.M["c"][2] - 0.06)))           # the lobe's lower half is the cream under the smile
+    bib_m = smooth(0.0, 0.05, -(loc[:, 2] - SMILE_Z))                          # the cream starts at the smile line under the nose and fills the lobe below it
     bib[mz] = np.clip(bib_m[mz], 0, 1)
+    bib[pid == parts["chin"]] = 1.0 if "chin" in parts else 0.0
     nose = (pid == parts["nose"]).astype(float)
     return dict(bib=bib, toe=toe, leaf=leaf, nose=nose, socks=socks)
 
 
 # pigment tune: the rendered colour is pigment x light; these gains make the lit cream read 223/196/157 and the lit coat read as the master's (measure_skin.py, same masks on both)
-CREAM_GAIN = np.array([2.40, 2.14, 1.79])
+CREAM_GAIN = np.array([2.395, 2.223, 2.0])
 COAT_GAIN = 0.5
 
 

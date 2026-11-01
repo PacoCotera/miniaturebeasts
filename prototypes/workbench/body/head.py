@@ -12,11 +12,19 @@ from caps import HalfCap
 LEVELS = [-0.47, -0.33, -0.18, -0.03, 0.12, 0.26, 0.39]       # head-local z of the rings (mouth, nose, eye rows on them)
 WAIST_UP, WAIST_SCALE = 0.06, 0.95
 JAW = False
+LOBE_R = (0.30, 0.50, 0.30)
+LOBE_DZ = 0.02
+LOBE_PROUD = 0.08
+NOSE_TIP = 0.03
+NOSE_DZ = -0.02
+CHIN_R = (0.20, 0.45, 0.175)
+THROAT_X = 0.10
+CHIN_OVER = 0.26
 MUZZLE_PULL = 0.12
 NOSE_STAND = 0.12
 HEAD_START_UP = 0.0
-PATH_LEAD = 0.3
-BEND_R = 1.0
+PATH_LEAD = 0.45
+BEND_R = 1.4
 HEAD_TOP_GAP = 0.40       # the last ring this far (arc) below the path's end
 NA = 9
 
@@ -27,10 +35,10 @@ def build_head(body, ctx):
     from housefield import to_local
     cage = body.cage
     tf, tr = ctx["info"]["torso"]["faces"], ctx["info"]["torso"]["rings"]
-    for i in (5, 6):
+    for i in (6, 7):
         for c in (0, 1, 2):
             body.kill(tf[(i, c)])
-    loop = [tr[5][0], tr[5][1], tr[5][2], tr[5][3], tr[6][3], tr[7][3], tr[7][2], tr[7][1], tr[7][0]]
+    loop = [tr[6][0], tr[6][1], tr[6][2], tr[6][3], tr[7][3], tr[8][3], tr[8][2], tr[8][1], tr[8][0]]
     V0 = cage.arr()
     pitch = H.pose["pitch"]
     Rfa = Ry(-math.radians(pitch))
@@ -86,8 +94,8 @@ def build_head(body, ctx):
         stl.append(s_e - 0.13 * k); k += 1
     k = 1
     while True:
-        s = s_e + 0.12 * k
-        if s > pa.length - 0.03 or frame(s)[0][2] > 2.05:
+        s = s_e + 0.10 * k
+        if s > pa.length - 0.03 or frame(s)[0][2] > 2.07:
             break
         stl.append(s); k += 1
     stl = sorted(stl)
@@ -152,7 +160,9 @@ def sitting_dome(body, part, c, axis, up, lat, rx, ry, rz, us=(-0.8, -0.27, 0.27
 
 
 def build_nose(body, ctx):
-    """The muzzle lobe (house M, 20 deg nose up, 1.0 H wide: ruling 2) and the nose bulb (house nose numbers, a little taller): closed domes sunk into the head and standing proud of it."""
+    """Three sitting domes (AD gate 1, fix 4): the muzzle lobe (a round dome 1.0 H wide and 0.6 H tall, 0.08 H proud of the skull, 20 deg nose up, no undercut: its rim melts into the skull), the nose bulb (house numbers) making the tip,
+    and the chin (0.9 x 0.35 H, 0.26 H ahead of the throat)."""
+    from housefield import find_front
     H = ctx["H"]
     kc = H.kc
     Rfa = ctx["info"]["head"]["Rfa"]
@@ -160,13 +170,20 @@ def build_nose(body, ctx):
     lat = np.array([0, 1.0, 0])
     tl = math.radians(20.0)
     ax = np.array([math.cos(tl), 0, math.sin(tl)]); up = np.array([-math.sin(tl), 0, math.cos(tl)])
-    rx, ry, rz = H.M["r"]
-    ry, rz = 0.48, 0.21
-    cM = np.array(H.M["c"]) - np.array([MUZZLE_PULL, 0, 0])     # ruling 3: the lobe stands 0.08 H proud of the skull (the house number is 0.25)
-    ctx["info"]["muzzle"] = dict(rings=sitting_dome(body, "muzzle", cM, ax, up, lat, rx, ry, rz, kx=2.2), r=(rx, ry, rz), c=cM)
+    rx, ry, rz = LOBE_R
+    zc = float(H.M["c"][2]) + LOBE_DZ
+    xs = float(find_front(H.dK, 0, zc))                       # the skull's front at the lobe's height
+    cM = np.array([xs + LOBE_PROUD - rx * 0.92, 0.0, zc])
+    ctx["info"]["muzzle"] = dict(rings=sitting_dome(body, "muzzle", cM, ax, up, lat, rx, ry, rz, us=(-0.9, -0.55, -0.15, 0.2, 0.6, 0.9), kx=2.2), r=(rx, ry, rz), c=cM)
     n = H.nose
     tilt = math.radians(H.rf["nose-tilt-deg"])
     axn = np.array([math.cos(tilt), 0, math.sin(tilt)]); upn = np.array([-math.sin(tilt), 0, math.cos(tilt)])
     nrx, nry, nrz = n["r"]
-    cN = np.array(n["c"]); cN[0] = cM[0] + rx - 0.0 + NOSE_STAND - nrx * 0.85
+    front = cM[0] + rx * 0.92 * math.cos(tl)
+    cN = np.array([front + NOSE_TIP - nrx, 0.0, float(n["c"][2]) + NOSE_DZ])
     ctx["info"]["nose"] = dict(rings=sitting_dome(body, "nose", cN, axn, upn, lat, nrx, nry, nrz * 1.45), c=cN)
+    crx, cry, crz = CHIN_R
+    cC = np.array([THROAT_X + CHIN_OVER - crx, 0.0, cM[2] - rz * 0.5 - crz * 0.55])
+    ctx["info"]["chin"] = dict(rings=sitting_dome(body, "chin", cC, np.array([1.0, 0, 0]), np.array([0, 0, 1.0]), lat, crx, cry, crz, kx=2.2), c=cC, r=CHIN_R)
+
+

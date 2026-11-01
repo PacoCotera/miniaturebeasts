@@ -77,17 +77,21 @@ def decals(b, rest_obj, eye_frames=("open", "open"), mouth="content", palette="c
     c0, n, up, lat = eye_frame_data(b)
     E = H.eyes[0]
     face = face or {}
-    Riris, Reye = E["Riris"] * face.get("eye_size", 1.0), E["Reye"] * face.get("eye_size", 1.0)
+    Riris = E["Riris"] * 1.3 * face.get("eye_size", 1.0)               # AD gate 1: the iris grows (orange >= 95 rows at 304), the ring stays thin and warm
+    Reye = Riris + 0.055 * face.get("eye_size", 1.0)
     c0 = c0 + up * face.get("eye_height", 0.0)
     out = []
     for side, fr in ((1, eye_frames[0]), (-1, eye_frames[1])):
         pts2, cols, faces = SK.eye_disc(fr, Riris, Reye)
-        V = []
+        V, good = [], []
         for (u, v) in pts2:
             p = c0 + u * lat + v * up + n * 0.3
             hit, nr = cast(rest_obj, p, -n, 1.0)
-            V.append((hit + nr * 0.004) if hit is not None else (c0 + u * lat + v * up))
-        V = np.array(V); F = [tuple(f) for f in faces]
+            V.append((hit + nr * 0.003) if hit is not None else (c0 + u * lat + v * up))
+            good.append(hit is not None)
+        V = np.array(V)
+        # a decal never leaves the surface: faces with a vertex that found no surface (past the head's outline) are dropped
+        F = [tuple(f) for f in faces if all(good[i] for i in f)]
         if side < 0:
             V = V * np.array([1, -1, 1]); F = [tuple(reversed(f)) for f in F]
         out.append(dict(V=V, F=F, col=cols, name=f"eye{'L' if side > 0 else 'R'}-{fr}"))
@@ -111,7 +115,7 @@ def decals(b, rest_obj, eye_frames=("open", "open"), mouth="content", palette="c
         pts, nrm = [], []
         for y in ys:
             s = abs(y) / (0.5 * mw * 1.7)
-            zloc = H.M["c"][2] - 0.07 + face.get("mouth_z", 0.0) + 0.07 * s ** 2 + 0.05 * max(0, s - 0.6) ** 2
+            zloc = SK.SMILE_Z + 0.015 + face.get("mouth_z", 0.0) + 0.07 * s ** 2 + 0.05 * max(0, s - 0.6) ** 2
             origin = from_local(H.kc, Rfa, np.array([1.3, y, zloc]))
             hit, nr = cast(rest_obj, origin, Rfa @ np.array([-1.0, 0, 0]), 3.0)
             if hit is None:

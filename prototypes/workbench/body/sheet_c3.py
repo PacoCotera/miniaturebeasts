@@ -23,7 +23,7 @@ V2, F2, _, _, _ = SD.subdivide(Vf, Ff, cr, attr, fp, levels=2)
 c = (np.abs(V2[:, 1]) < 0.03) & (V2[:, 0] > -0.95) & (V2[:, 0] < -0.5)
 belly = float(V2[c][:, 2].min())
 low = (V2[:, 2] < 0.06) & (V2[:, 1] > 0.1)
-gap = float(V2[low & (V2[:, 0] > -0.7)][:, 0].min() - V2[low & (V2[:, 0] < -0.7)][:, 0].max())
+gap = (ru_b[-1][0] - ru_b[-2][1]) / 95.0 if len(ru_b) >= 2 else 0.0
 hz = ctx["info"]["limbs"]["hind.L"]["ringinfo"][0]["centre"][2]
 fl = Q.flips(V2, F2)
 extra = [("belly clear on the centre line, waist (AD: 0.47 H)", f"{belly:.3f} H", abs(belly - 0.47) <= 0.05),

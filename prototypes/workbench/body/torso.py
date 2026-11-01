@@ -103,7 +103,7 @@ COLS_SH = np.array([0, .14, .28, .42, .57, .72, .84, .92, 1.0])
 def column_angles(sx, spec):
     """9 column angles for station x: blended (cosine) between the hip and shoulder layouts, constant outside."""
     p = spec["parts"]["torso"]
-    xh, xs = p["rings_x"][1], p["rings_x"][6]
+    xh, xs = p["rings_x"][1], p["rings_x"][7]
     t = float(sstep(xh, xs, sx))
     return COLS_HIP * (1 - t) + COLS_SH * t
 

@@ -3,7 +3,7 @@ The interior is a Coons patch of the ring in the ring's own plane (lat, N), cast
 fights the ring that the compensation moves (the fix targets only vertices that are not cap interiors)."""
 import math
 import numpy as np
-CAP_P = 2.2
+CAP_P = 2.0
 
 
 class HalfCap:
