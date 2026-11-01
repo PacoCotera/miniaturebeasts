@@ -544,7 +544,7 @@ def posed_points(sc):
     return np.vstack(out)
 
 
-FLOOR_REACH = 1.1          # house light.floor.reach (scene units)
+FLOOR_REACH = 0.75         # the house's light.floor.reach is 1.1 (scene units); shortened so the shadow stays one soft oval about the feet and does not run to the frame edge
 
 
 def floor_shadow(sc, w, h, SS=2):
@@ -560,7 +560,7 @@ def floor_shadow(sc, w, h, SS=2):
     ps = max(w, h) / sc.cam_d.ortho_scale * SS
     X = w * SS / 2 + ((F - org) @ right) * ps
     Y = h * SS / 2 - ((F - org) @ up) * ps
-    edges = np.array([0, 0.08, 0.16, 0.26, 0.4, 0.6, 0.85, FLOOR_REACH])
+    edges = np.array([0, 0.08, 0.16, 0.26, 0.4, 0.55, 0.65, FLOOR_REACH])
     sh = np.zeros((h * SS, w * SS))
     for i in range(len(edges) - 1):
         m = (t >= edges[i]) & (t < edges[i + 1] + (1e-9 if i == len(edges) - 2 else 0))

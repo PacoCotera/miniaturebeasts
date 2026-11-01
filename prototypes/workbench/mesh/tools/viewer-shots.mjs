@@ -7,7 +7,7 @@ const require = createRequire("/home/mb/pw156/package.json");
 const { chromium } = require("playwright");
 const [html, prefix] = process.argv.slice(2);
 const b = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
-const pg = await b.newPage({ viewport: { width: 480, height: 480 }, deviceScaleFactor: 1 });
+const pg = await b.newPage({ viewport: { width: 480, height: 480 }, deviceScaleFactor: Number(process.env.DSF || 1) });
 pg.on("console", (m) => { if (m.type() === "error") console.log("console error:", m.text()); });
 await pg.goto(pathToFileURL(path.resolve(html)).href + "#shot");
 await pg.waitForFunction(() => window.__ready === true, null, { timeout: 60000 });
