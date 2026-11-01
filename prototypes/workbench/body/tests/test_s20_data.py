@@ -70,6 +70,7 @@ class T(unittest.TestCase):
             SC.load(raw=bad)
 
     def test_ear_and_tail_joints_land_where_concept_puts_them(self):
+        """The fixture is concept.mjs's own fk function run on species/S20.json (regenerated when the file's ear and tail numbers were tuned in chunk 3): the Python FK with a plane yaw must equal it to 1e-6."""
         spec, _ = SC.load(S20)
         ref = json.load(open(os.path.join(HERE, "fixtures", "s20_ear_tail_fk.json")))
         for f in ("prick", "lop", "nub"):

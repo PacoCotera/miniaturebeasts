@@ -24,6 +24,9 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
     if stage >= 2:
         import s20tubes
         s20tubes.build_tubes(body, ctx)
+    if stage >= 3:
+        import s20sitting
+        s20sitting.build_sitting(body, ctx)
     body.ctx = ctx
     m, vol = body.finish()
     ctx["remap"] = m
@@ -42,5 +45,14 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
             for cp in body.caps:
                 for k in ((cp.na, 0), (cp.na, cp.nb)):
                     body.target[cp.G[k]] = None
+        if kw.get("loops_free", False):
+            import mquality as _Q
+            val = body.valence()
+            recs = list(ctx["info"].get("limbs", {}).values()) + list(ctx["info"].get("tubes", {}).values())
+            m = ctx["remap"]
+            for rec in recs:
+                for v in rec["loop"]:
+                    if val[m[v]] == 5:
+                        body.target[m[v]] = None
         ctx["log"]["limit"] = limit_fix(body, free_caps=kw.get("free_caps", True))
     return body
