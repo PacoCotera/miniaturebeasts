@@ -226,27 +226,77 @@ def shadow_plane(sc, H):
     return ob
 
 
+def blur(img, sigma):
+    """Separable Gaussian by FFT on a zero-padded copy (numpy only, deterministic; no wrap-around)."""
+    if sigma < 0.3:
+        return img
+    pad = int(4 * sigma) + 2
+    out = np.pad(img, pad)
+    for ax in (0, 1):
+        n = out.shape[ax]
+        k = np.fft.rfftfreq(n)
+        out = np.fft.irfft(np.fft.rfft(out, axis=ax) * np.exp(-2 * (np.pi * sigma) ** 2 * (k ** 2)).reshape([-1 if i == ax else 1 for i in range(2)]), n=n, axis=ax)
+    return out[pad:-pad, pad:-pad]
+
+
+def posed_points(sc):
+    dg = bpy.context.evaluated_depsgraph_get()
+    out = []
+    for ob in [sc.final] + list(sc.leaves):
+        me = ob.evaluated_get(dg).to_mesh()
+        a = np.empty(len(me.vertices) * 3, np.float64); me.vertices.foreach_get("co", a)
+        out.append(a.reshape(-1, 3))
+        ob.evaluated_get(dg).to_mesh_clear()
+    return np.vstack(out)
+
+
+FLOOR_REACH = 1.1          # house light.floor.reach (scene units)
+
+
+def floor_shadow(sc, w, h, SS=2):
+    """The house's floor shadow from a clean mask, not a shadow catcher (a render's own noise left a haze across the whole frame): the posed surface points are carried along the key
+    to the floor, binned by the length of their light ray t, each bin covered, blurred by a penumbra that grows with t, weighted by the house's fade (contact 170/110 under the soles,
+    falling to 1 by t 0.26, then fading toward 0 at `reach`) and combined by max. Returns alpha 0..1 at 110/255 scale (contact up to 170/255), shape (h, w)."""
+    P = posed_points(sc)
+    l = np.asarray(sc.light_dir)
+    t = np.clip(P[:, 2], 0, None) / l[2]
+    F = P - l[None] * t[:, None]
+    M = np.array(sc.cam.matrix_local)
+    right, up, org = M[:3, 0], M[:3, 1], M[:3, 3]
+    ps = max(w, h) / sc.cam_d.ortho_scale * SS
+    X = w * SS / 2 + ((F - org) @ right) * ps
+    Y = h * SS / 2 - ((F - org) @ up) * ps
+    edges = np.array([0, 0.08, 0.16, 0.26, 0.4, 0.6, 0.85, FLOOR_REACH])
+    sh = np.zeros((h * SS, w * SS))
+    for i in range(len(edges) - 1):
+        m = (t >= edges[i]) & (t < edges[i + 1] + (1e-9 if i == len(edges) - 2 else 0))
+        if m.sum() < 20:
+            continue
+        tc = 0.5 * (edges[i] + edges[i + 1])
+        wt = np.clip(1.55 - (tc - 0.08) * 5, 1.0, 1.55) if tc < 0.26 else max(0.0, 1 - 0.9 * (tc - 0.26) / (FLOOR_REACH - 0.26))
+        H2, _, _ = np.histogram2d(Y[m], X[m], bins=[h * SS, w * SS], range=[[0, h * SS], [0, w * SS]])
+        cov = 1 - np.exp(-blur(H2, 0.9 * SS) * 0.7)
+        cov = np.clip(blur(cov, (0.035 + 0.07 * tc) * ps), 0, 1)
+        sh = np.maximum(sh, cov * wt * (110 / 255) * (1.0))
+    sh = sh.reshape(h, SS, w, SS).mean(axis=(1, 3))
+    return np.clip(sh, 0, 170 / 255)
+
+
 def render_sprite(sc, path, floor_obj, samples):
-    """The sprite and its floor shadow: two renders (without and with a shadow-catcher floor); the shadow is tinted (30, 26, 34) at alpha 110 and goes under the creature."""
+    """The sprite (transparent film) with the house's floor shadow (tinted (30, 26, 34), alpha 110, contact 170) composited under it."""
     sc.scene.cycles.samples = samples
     floor_obj.hide_render = True
-    pa = path[:-4] + "._a.png"; pb = path[:-4] + "._b.png"
+    pa = path[:-4] + "._a.png"
     sc.render(pa, strip=False)
-    floor_obj.hide_render = False
-    sc.render(pb, strip=False)
-    floor_obj.hide_render = True
-    A, B = read_png(pa), read_png(pb)
-    diff = np.clip(B[..., 3] - A[..., 3], 0, 1)
-    bg = diff[(A[..., 3] < 0.01) & (diff > 0.003)]
-    base = np.percentile(bg, 5) if len(bg) else 0.0                            # the catcher's own unshadowed floor level
-    top = max(np.percentile(bg, 99.5) if len(bg) else 1.0, base + 1e-3)
-    sa = np.clip((diff - base) / (top - base), 0, 1) * (110 / 255)
+    A = read_png(pa)
+    os.remove(pa)
+    sa = floor_shadow(sc, A.shape[1], A.shape[0])
+    sa[sa < 0.004] = 0.0
     sc_col = np.array([30, 26, 34]) / 255
     a = A[..., 3] + sa * (1 - A[..., 3])
     rgb = np.where(a[..., None] > 1e-6, (A[..., :3] * A[..., 3:4] + sc_col * (sa * (1 - A[..., 3]))[..., None]) / np.maximum(a[..., None], 1e-6), 0)
     out = np.dstack([np.clip(rgb, 0, 1), a])
     write_png(path, np.round(out * 255).astype(np.uint8))
-    os.remove(pa); os.remove(pb)
     with open(path, "rb") as fh:
         return hashlib.sha256(fh.read()).hexdigest()[:16]
 
