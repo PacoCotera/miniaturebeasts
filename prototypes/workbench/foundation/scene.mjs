@@ -90,7 +90,7 @@ export function buildScene(house, spec) {
     const nS = rig.segments, Lk = body.length / 1.6, T = body.thick, scaleR = T / 2 / rig["seg-radius"][0], rr = rig["seg-radius"].map((v) => v * scaleR), segs = [];
     // the line of action rises from the tail into the head: segments differ by 15 to 35 %, each one's top is higher than the next one back, the first runs under the head
     let xs = rig["seg-x0"];
-    for (let i = 0; i < nS; i++) { const r = rr[i], c = [xs, 0, rig.skirt[2] * 1.5 + r * 0.95], rx = rig["seg-rx"] * Lk * (r / rr[0]) ** 0.5; segs.push(ell(c, [rx, r, r])); segs[i].c = c; segs[i].r = r; if (i + 1 < nS) xs -= (rx + rig["seg-rx"] * Lk * (rr[i + 1] / rr[0]) ** 0.5) * rig["seg-overlap"]; }
+    for (let i = 0; i < nS; i++) { const r = rr[i], rz = r * rig["seg-height"], c = [xs, 0, rig.skirt[2] * 1.5 + rz * 0.95], rx = rig["seg-rx"] * Lk * (r / rr[0]) ** 0.5; segs.push(ell(c, [rx, r, rz])); segs[i].c = c; segs[i].r = rz; if (i + 1 < nS) xs -= (rx + rig["seg-rx"] * Lk * (rr[i + 1] / rr[0]) ** 0.5) * rig["seg-overlap"]; }
     const sk = rig.skirt, skC = [rig["skirt-x"], 0, sk[2]], skR = [sk[0] * Lk, (T / 2) * (1 + (body.skirt - 1) * 0.6), sk[2]];
     const dSkirt = ell(skC, skR);
     const dBodyD = (x, y, z) => { let d = segs[0](x, y, z); for (let i = 1; i < nS; i++) d = uRound(d, segs[i](x, y, z), 0.05); return uRound(d, dSkirt(x, y, z), rig.union); };
