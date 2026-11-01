@@ -9,11 +9,12 @@ const house = loadHouseFile();
 const kinds = { head: "soft-block", eye: "round", muzzle: "button", nose: "mound", mouth: "smile" };
 const build = (t = 0.5, plan = "A", k = kinds) => { const { fp } = applyClamps(house, plan, faceParams(house, plan, (g) => (typeof t === "function" ? t(g) : t))); return { fp, head: buildHead(house, plan, k, fp) }; };
 
-test("the head is a closed solid: negative at the centre, positive far out, the crown at 0.5 H", () => {
+test("the head is a closed solid: negative at the centre, positive far out, the highest point of the head 0.5 H over its centre (the crown's place along the length is round6's test: AD mesh gate, ruling 0, replaces the old crown-at-x-0 point)", () => {
   const { head } = build();
   assert.ok(head.d(0, 0, 0) < -0.3);
   assert.ok(head.d(3, 0, 0) > 1);
-  const top = findFront((x, y, z) => head.d(0, y, z), 0, 0, 0, 1.0), ztop = (() => { let a = 0, b = 1; for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (head.d(0, 0, m) < 0) a = m; else b = m; } return a; })();
+  const topAt = (x) => { let a = 0, b = 1; for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (head.d(x, 0, m) < 0) a = m; else b = m; } return a; };
+  let ztop = 0; for (let x = -0.5; x <= 0.5; x += 0.02) ztop = Math.max(ztop, topAt(x));
   assert.ok(Math.abs(ztop - 0.5) < 0.01, `crown at ${ztop}`);
 });
 test("the eyes sit on K's analytic surface, in the face frame, mirrored", () => {
