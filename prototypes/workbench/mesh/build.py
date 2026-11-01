@@ -35,11 +35,23 @@ def make_cages(H, join="A", beans=True, log=None):
     torso = build_torso(H); torso.fix_winding()
     rep["torso"] = fit(torso, H.dTorso)
     cages += [head, torso]
+    if join == "B":
+        import join_b
     for lg in H.legs:
         if lg["side"] != 1:
             continue           # the left legs only: the Mirror makes the right (the near fore paw's lead-paw is dropped by that: see report)
         leg = build_leg(H, lg); leg.fix_winding()
-        rep["leg." + lg["name"]] = fit(leg, lg["d_column"])
+        if join == "B" and lg["fore"]:
+            # one cage: the torso and the near fore leg (the port ring is the leg's first ring); the torso cage in `cages` is replaced by the combined one
+            raw_leg = build_leg(H, lg)
+            tcage = cages[1]
+            tcage = build_torso(H)                                  # unfitted: the port is cut before the fit
+            comb, fld = join_b.shoulder_b(H, tcage, raw_leg, lg)
+            rep["torso+fore.L (B)"] = fit(comb, fld)
+            cages[1] = comb
+            leg = None
+        else:
+            rep["leg." + lg["name"]] = fit(leg, lg["d_column"])
         paw = build_paw(H, lg); paw.fix_winding()
         rep["paw." + lg["name"]] = fit(paw, lg["d_paw"])
         if beans:
@@ -48,8 +60,11 @@ def make_cages(H, join="A", beans=True, log=None):
             rim = paw.rings["P0"]
             for i in range(len(rim)):
                 paw.set_crease(rim[i], rim[(i + 1) % len(rim)], 0.5)     # the sole's rim: a flat sole with a tight edge
-        leg.lg = paw.lg = lg
-        cages += [leg, paw]
+        paw.lg = lg
+        if leg is not None:
+            leg.lg = lg
+            cages.append(leg)
+        cages.append(paw)
     return cages, rep
 
 
@@ -82,7 +97,10 @@ def vertex_weights(H, cages, V, part, off):
             for i in range(len(c.V)):
                 W[o + i] = {"head": 1.0}
         elif c.name == "torso":
+            wov = getattr(c, "wover", {})
             for i in range(len(c.V)):
+                if i in wov:
+                    W[o + i] = dict(wov[i]); continue
                 t = float(np.clip((V[o + i][0] - pc[0]) / (cc[0] - pc[0]), 0, 1))
                 wc, wp = sstep(0.35, 0.85, t), 1 - sstep(0.15, 0.65, t)
                 W[o + i] = {"chest": wc, "pelvis": wp, "spine": max(0.0, 1 - wc - wp)}

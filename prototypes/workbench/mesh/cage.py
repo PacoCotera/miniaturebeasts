@@ -73,6 +73,19 @@ class Cage:
             self.F = [tuple(f[::-1]) for f in self.F]
         return vol
 
+    def compact(self):
+        """Drop vertices no face uses, remap faces, creases, holds, tags and named vertex sets. Returns the old-to-new map."""
+        used = sorted({i for f in self.F for i in f})
+        m = {o: n for n, o in enumerate(used)}
+        self.V = [self.V[i] for i in used]
+        self.F = [tuple(m[i] for i in f) for f in self.F]
+        self.crease = {(min(m[a], m[b]), max(m[a], m[b])): s for (a, b), s in self.crease.items() if a in m and b in m}
+        self.hold = {m[i] for i in self.hold if i in m}
+        self.tags = {k: {m[i]: v for i, v in d.items() if i in m} for k, d in self.tags.items()}
+        if hasattr(self, "wover"):
+            self.wover = {m[i]: v for i, v in self.wover.items() if i in m}
+        return m
+
     def set_crease(self, i, j, s):
         self.crease[(min(i, j), max(i, j))] = s
 
