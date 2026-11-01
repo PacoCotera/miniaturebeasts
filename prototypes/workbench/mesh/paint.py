@@ -9,15 +9,31 @@ mix = lambda a, b, t: a + (b - a) * (np.asarray(t)[..., None] if np.ndim(t) else
 srgb = lambda c: np.asarray(c, float) / 255.0
 
 
-def face_cream(H, q, nl):
-    """paint.mjs faceCreamAt, q = head-local rest position (N, 3), nl = head-local normal."""
+def cream_edge_z(H, q):
+    """paint.mjs faceCreamAt's edge height zb at each head-local rest position q (N, 3), as fix round 7 has it: the edge is the smile's own curve out to the mouth corner, then carries on the
+    smile's slope and eases off it on a parabola down to the side's fall (the near side `fall`, the far side `fall-far`), one curve with no kink and so no dark wedge into the cream."""
     ch = H.look["creamHead"]
     hw = H.mouth["w"] / 2
     ay = np.abs(q[:, 1])
-    zb = np.where(ay <= hw, H.mouth["zAt"](ay), H.mouth["zAt"](hw) - ch["fall"] * (ay - hw)) - ch["below"]
+    fall = np.where(q[:, 1] * H.near_sign > 0, ch["fall"], ch.get("fall-far", ch["fall"]))
+    ze = H.mouth["zAt"](np.minimum(ay, hw))
+    d = np.maximum(0.0, ay - hw)
+    s0 = float((H.mouth["zAt"](np.array(hw)) - H.mouth["zAt"](np.array(hw - 0.01))) / 0.01)
+    Lm = H.rf.get("cream-reach-E", 0) * H.g["E"]
+    if Lm > 1e-6 and s0 > 1e-6:
+        dS = Lm * (1 + fall / s0)
+        ze = ze + np.where(d <= dS, s0 * (d - d * d / (2 * Lm)), s0 * (dS - dS * dS / (2 * Lm)) - fall * (d - dS)) * (d > 0)
+    else:
+        ze = ze - fall * d
+    return ze - ch["below"]
+
+
+def face_cream(H, q, nl):
+    """paint.mjs faceCreamAt, q = head-local rest position (N, 3), nl = head-local normal. Gated by the mouth line and the fall only: head and neck are one surface to it."""
+    ch = H.look["creamHead"]
+    zb = cream_edge_z(H, q)
     front = np.maximum(sstep(-0.1, 0.3, q[:, 0] / H.K["a"]), sstep(0.1, 0.5, -nl[:, 2]))
-    reach = sstep(ch["reach"][0], ch["reach"][1], H.d0(q))
-    return sstep(zb + ch["soft"], zb - ch["soft"], q[:, 2]) * front * reach
+    return sstep(zb + ch["soft"], zb - ch["soft"], q[:, 2]) * front
 
 
 def body_cream(H, wp, n):
@@ -70,8 +86,7 @@ def vertex_colours(H, P, N, head_w, toe, nose_attr=None, mouth=True, ink_half=No
     q = P - H.kc
     fc = face_cream(H, q, N)
     bc = body_cream(H, P, N)
-    c = np.maximum(fc, bc)
-    c = np.where(head_w > 0.5, c, c * (1 - H.leg_weight(P)))
+    c = np.maximum(fc, bc) * (1 - H.leg_weight(P))       # fix round 7: the head takes the same leg weight as the body, so no line is left where the head ends and the body begins
     col = mix(body[None], cream[None], c)
     if mouth:
         px = 1 / 30.35 if ink_half is None else ink_half[1]
@@ -89,14 +104,10 @@ def paint_fields(H, P, N, head_w, half, px):
     Returns (n, 4): A = face cream's gate (front x reach) x leg factor, B = body cream x leg factor, F = zb - z (the face cream's edge, signed), D = ink half-width minus the distance to
     the smile's axis (-1 outside the ink's reach); F and D are encoded to 0..1, see the return.  Shader: cream = max(smoothstep(-soft, soft, F) * A, B); ink = smoothstep(-0.6 px, 0.6 px, D)."""
     q = P - H.kc
-    ch = H.look["creamHead"]
-    hw = H.mouth["w"] / 2
-    ay = np.abs(q[:, 1])
-    zb = np.where(ay <= hw, H.mouth["zAt"](ay), H.mouth["zAt"](hw) - ch["fall"] * (ay - hw)) - ch["below"]
+    zb = cream_edge_z(H, q)
     front = np.maximum(sstep(-0.1, 0.3, q[:, 0] / H.K["a"]), sstep(0.1, 0.5, -N[:, 2]))
-    reach = sstep(ch["reach"][0], ch["reach"][1], H.d0(q))
-    legfac = np.where(head_w > 0.5, 1.0, 1 - H.leg_weight(P))
-    A = front * reach * legfac
+    legfac = 1 - H.leg_weight(P)
+    A = front * legfac
     B = body_cream(H, P, N) * legfac
     ax = mouth_axis(H)
     d = np.full(len(q), 1e9)
@@ -119,9 +130,10 @@ def lin(c):
 RING_SCALE = 0.88      # the ring's painted brightness: the lit disc plus its emission would clip the house's ivory to white; the RENDERED ring then reads about the cream's L*
 
 
-def eye_texture(H, eye, toward_local, n=256, span=1.0, crescent_gain=1.0, crescent_rho=(0.3, 0.95)):
+def eye_texture(H, eye, toward_local, n=256, span=1.0, crescent_gain=1.0, crescent_rho=None):
     """RGBA float image (n, n, 4), sRGB, u along the eye's `lat`, v along its `up`, spanning +-R_eye. Gaze toward the camera as the SDF does."""
     look, rf = H.look, H.rf
+    crescent_rho = crescent_rho or (rf["crescent-from"], 0.95)        # the house's own window (fix round 7)
     R, Reye = eye["Riris"], eye["Reye"]
     ys, xs = (np.mgrid[0:n, 0:n] + 0.5) / n * 2 - 1
     u, v = xs * Reye * span, -ys * Reye * span
@@ -129,7 +141,16 @@ def eye_texture(H, eye, toward_local, n=256, span=1.0, crescent_gain=1.0, cresce
     tl, tu = float(toward_local @ eye["lat"]), float(toward_local @ eye["up"])
     m = math.hypot(tl, tu)
     k = min(1.0, m / math.sin(math.radians(rf["gaze-full-at-deg"]))) * rf["gaze-offset-max"] * eye["E"]
-    g = (0.0, 0.0) if m < 1e-9 else (tl / m * k, tu / m * k)
+    # fix round 7 (content, not startled): the pupil also sits `gaze-bias` forward and up in the eye (E units), the head's x and z axes taken in the eye's plane
+    def dir_in(a):
+        l_, u_ = float(np.asarray(a) @ eye["lat"]), float(np.asarray(a) @ eye["up"])
+        nn = math.hypot(l_, u_) or 1.0
+        return l_ / nn, u_ / nn
+    bf = rf.get("gaze-bias", [0, 0])
+    fw_, up_ = dir_in([1, 0, 0]), dir_in([0, 0, 1])
+    ox = (fw_[0] * bf[0] + up_[0] * bf[1]) * eye["E"]
+    oy = (fw_[1] * bf[0] + up_[1] * bf[1]) * eye["E"]
+    g = (ox, oy) if m < 1e-9 else (tl / m * k + ox, tu / m * k + oy)
     pu, pv = u - g[0], v - g[1]
     rho = np.hypot(u, v) / R
     outer = Reye / R
@@ -137,8 +158,9 @@ def eye_texture(H, eye, toward_local, n=256, span=1.0, crescent_gain=1.0, cresce
     vn = v / R
     col = np.broadcast_to(srgb(look["iris"]), (n, n, 3)).copy()
     col = mix(col, srgb(look["irisTop"]), rf["iris-top-dark"] * sstep(-0.2, 0.9, vn))
-    col = mix(col, srgb(look["irisLow"]), 0.35 * sstep(0.9, 0.0, np.hypot(pu, pv) / R * 1.6))
-    col = mix(col, srgb(look["irisLow"]), min(1.0, rf["crescent"] * crescent_gain) * sstep(crescent_rho[0], crescent_rho[1], rho) * sstep(-0.1, 0.75, (u * 0.5 - v * 0.85) / R))
+    col = mix(col, srgb(look["irisLow"]), rf["iris-glow"] * sstep(0.9, 0.0, np.hypot(pu, pv) / R * 1.6))
+    col = mix(col, srgb(look["irisLow"]), rf.get("iris-lower-glow", 0) * sstep(0.05, -0.65, vn) * sstep(1.0, 0.25, rho))     # fix round 7: a warm glow in the iris's lower half
+    col = mix(col, srgb(look["irisLow"]), min(1.0, rf["crescent"] * crescent_gain) * sstep(crescent_rho[0], crescent_rho[1], rho) * sstep(rf["crescent-dir"][0], rf["crescent-dir"][1], (u * 0.5 - v * 0.85) / R))
     col = mix(col, srgb(look["iris"]) * 0.7, 0.8 * sstep(0.84, 0.99, rho))
     pr = np.hypot(pu, pv)
     pa = sstep(eye["pupilR"] + fw * 0.7, eye["pupilR"] - fw * 0.7, pr)

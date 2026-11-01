@@ -12,8 +12,8 @@ NOSE_ROUGH, NOSE_SPEC, NOSE_COAT = 0.24, 1.0, 0.9     # round 2: the nose is a g
 EYE_SINK = 0.09     # the disc sits this far (H) below the skin along the eye's normal, in a socket the size of the disc
 EYE_HOLE = 1.04      # the socket's hole, in R_eye
 EYE_SPAN = 1.9      # the disc's own radius, in R_eye: wider than the hole, so nothing but the disc is seen through it
-EYE_CRESCENT_RHO = (0.1, 0.7)
-EYE_CRESCENT_GAIN = 1.7   # the amber crescent's strength over the house's rf.crescent (0.6): the house formula alone renders the crescent at about L* 53 (the SDF's own sprite), the AD's band is 62-70
+EYE_CRESCENT_RHO = None      # round 3: the house's own window (crescent-from .. 0.95); round 2 narrowed it to (0.1, 0.7) under the old house
+EYE_CRESCENT_GAIN = 1.0   # round 3: the house's crescent (0.95 in fc80e5312) as it is; round 2 needed 1.7x of the old 0.6
 EYE_GAMMA = 1.0     # the emission is the texture raised to this power (below 1 it lifts the amber crescent more than the ivory ring)
 EYE_BASE = 1.0      # the texture's share of the eye's lit base colour (the ring would clip to white under the key at 1.0)
 
