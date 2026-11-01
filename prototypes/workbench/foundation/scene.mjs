@@ -85,7 +85,7 @@ export function buildScene(house, spec) {
     };
     headWeight = (x, y, z) => sstep(0.05, -0.05, dHeadW(x, y, z) - dNoHead(x, y, z));
     // a leg is dark skin: how much a point belongs to a leg rather than the torso (smooth, so the cream bib's edge at the shoulder is one soft curve, not a cut)
-    legWeight = (x, y, z) => { if (z > 0.75 * S) return 0; let dl = 1e9; for (const l of legs) dl = Math.min(dl, l.d(x, y, z)); return sstep(0.0, 0.07 * S, dTorso(x, y, z) - dl); };
+    legWeight = (x, y, z) => { if (z > 0.75 * S) return 0; let dl = 1e9; for (const l of legs) dl = Math.min(dl, l.d(x, y, z)); const le = rig["leg-cream-edge"]; return sstep(le[0] * S, le[1] * S, dTorso(x, y, z) - dl); };
   } else if (plan === "D") {
     const nS = rig.segments, Lk = body.length / 1.6, T = body.thick, scaleR = T / 2 / rig["seg-radius"][0], rr = rig["seg-radius"].map((v) => v * scaleR), segs = [];
     // the line of action rises from the tail into the head: segments differ by 15 to 35 %, each one's top is higher than the next one back, the first runs under the head

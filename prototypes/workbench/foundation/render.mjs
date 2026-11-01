@@ -67,9 +67,9 @@ export function renderCreature(scene, camera, sizeKey, { ref, look, extents = nu
       let m = paint.material([px, py, pz], n, region);
       if (region === "head" || region === "body" || region === "seg") { const wh = scene.headWeight(px, py, pz); if (wh > 0.001 && wh < 0.999) { const m2 = paint.material([px, py, pz], n, region === "head" ? (scene.plan === "D" ? "seg" : "body") : "head"), wa = region === "head" ? wh : 1 - wh; m = { ...m, albedo: [m.albedo[0] * wa + m2.albedo[0] * (1 - wa), m.albedo[1] * wa + m2.albedo[1] * (1 - wa), m.albedo[2] * wa + m2.albedo[2] * (1 - wa)] }; } }
       let al = m.albedo;
-      const ndl = dot3(n, Lw), tl = sstep(-0.22, 0.5, ndl), ao = aoOf(px, py, pz, n);
+      const ndl = dot3(n, Lw), tl = sstep(-0.22, 0.5, ndl), ao0 = aoOf(px, py, pz, n);
       // a light field (the cream) keeps a warm shade, never grey (R14): the cool core shade fades to the warm light-field tint as the albedo's luma rises
-      const luma = 0.2126 * al[0] + 0.7152 * al[1] + 0.0722 * al[2], wl = sstep(lt.shade["warm-luma"][0], lt.shade["warm-luma"][1], luma), st = [shadeN[0] + (warmN[0] - shadeN[0]) * wl, shadeN[1] + (warmN[1] - shadeN[1]) * wl, shadeN[2] + (warmN[2] - shadeN[2]) * wl];
+      const luma = 0.2126 * al[0] + 0.7152 * al[1] + 0.0722 * al[2], wl = sstep(lt.shade["warm-luma"][0], lt.shade["warm-luma"][1], luma), ao = 1 - (1 - ao0) * (1 - (occ["light-field-ease"] ?? 0) * wl), st = [shadeN[0] + (warmN[0] - shadeN[0]) * wl, shadeN[1] + (warmN[1] - shadeN[1]) * wl, shadeN[2] + (warmN[2] - shadeN[2]) * wl];
       const lit = [al[0] * keyN[0], al[1] * keyN[1], al[2] * keyN[2]], shade = [al[0] * lt.shade.ratio * st[0], al[1] * lt.shade.ratio * st[1], al[2] * lt.shade.ratio * st[2]];
       let c = mixc(shade, lit, tl);
       const tb = Math.exp(-(((ndl - 0.06) / term.width) ** 2)) * term.strength;
@@ -77,7 +77,7 @@ export function renderCreature(scene, camera, sizeKey, { ref, look, extents = nu
       c = [c[0] * ao, c[1] * ao, c[2] * ao];
       const nv = Math.max(0, dot3(n, tt)), rm = Math.pow(1 - nv, rim.power) * rim.strength * (0.35 + 0.65 * sstep(-0.3, 0.4, -ndl + 0.3)) * ao;
       c = [c[0] + rim.tint[0] * 255 * rm * 0.35, c[1] + rim.tint[1] * 255 * rm * 0.35, c[2] + rim.tint[2] * 255 * rm * 0.35];
-      if (!m.eye) { const nh = Math.max(0, dot3(n, Hv)), gl = m.gloss ?? 1, sp = vin.strength * gl * Math.pow(nh, gl > 1.5 ? 40 : 14) * tl * (region === "head" || region === "crest" ? 1 : 0.8); c = [c[0] + 255 * sp, c[1] + 255 * sp * 0.97, c[2] + 255 * sp * 0.92]; if (m.spec) { const sn = m.spec * Math.pow(nh, 20) * tl; c = [c[0] + 255 * sn, c[1] + 255 * sn * 0.97, c[2] + 255 * sn * 0.92]; } }
+      if (!m.eye) { const nh = Math.max(0, dot3(n, Hv)), gl = m.gloss ?? 1, sp = vin.strength * gl * Math.pow(nh, gl > 1.5 ? 40 : 14) * tl * (region === "head" || region === "crest" ? 1 : 0.8); c = [c[0] + 255 * sp, c[1] + 255 * sp * 0.97, c[2] + 255 * sp * 0.92]; if (m.spec) { const sn = m.spec * Math.pow(nh, m.specPow ?? 20) * tl; c = [c[0] + 255 * sn, c[1] + 255 * sn * 0.97, c[2] + 255 * sn * 0.92]; } }
       return [clamp(c[0], 0, 255), clamp(c[1], 0, 255), clamp(c[2], 0, 255), 1, m.code, t];
     }
     // the floor: the soft cast shadow toward the lower right, and a tight contact shadow under what touches it

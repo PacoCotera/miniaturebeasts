@@ -23,14 +23,14 @@
     "form.pupil": 0.1,
     "form.lid": 0.0,
     "form.eye-ring": 0.92,
-    "form.muzzle": 0.6,
+    "form.muzzle": 0.5,
     "form.muzzle-width": 0.84,
     "form.muzzle-height": 0.35,
-    "form.nose": 0.77,
-    "form.nose-drop": 0.75,
-    "form.mouth-width": 0.75,
+    "form.nose": 0.84,
+    "form.nose-drop": 0.68,
+    "form.mouth-width": 0.84,
     "form.mouth-upturn": 0.8,
-    "form.mouth-gap": 0.585,
+    "form.mouth-gap": 0.78,
     "form.carriage": 0.63
    },
    "pool": {
@@ -85,9 +85,9 @@
     10
    ],
    "ring": [
-    236,
-    212,
-    178
+    240,
+    226,
+    200
    ],
    "catchLight": [
     255,
@@ -116,18 +116,18 @@
    "creamBody": {
     "down": 0.8,
     "front": 0.7,
-    "t0": 0.2,
-    "t1": 0.5,
-    "x0": -0.55,
-    "x1": -0.35,
-    "x2": 0.28,
-    "x3": 0.4,
-    "z0": 0.5,
-    "z1": 0.72,
-    "y0": 0.3,
-    "y1": 0.4,
-    "n0": 0.6,
-    "n1": 0.97
+    "t0": 0.28,
+    "t1": 0.34,
+    "x0": -0.5,
+    "x1": -0.47,
+    "x2": 0.3,
+    "x3": 0.33,
+    "z0": 0.52,
+    "z1": 0.56,
+    "y0": 0.33,
+    "y1": 0.36,
+    "n0": 0.86,
+    "n1": 0.92
    },
    "leafRib": [
     178,

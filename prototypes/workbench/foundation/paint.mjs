@@ -78,7 +78,7 @@ export function makePaint(scene, look, view) {
 
   function material(wp, nrm, region) {
     // region: "head" | "body" | "crest" | "leg" | "toe" | "seg" | "skirt" | "ant"
-    let albedo = look.body, code = INK.body, eye = false, gloss = 1, spec = 0;
+    let albedo = look.body, code = INK.body, eye = false, gloss = 1, spec = 0, specPow = 20;
     if (region === "crest") { // a leaf: its own colour, a lighter midrib down its centre, and a gloss (the master's leaves are glossy, each one separate)
       const q = toLocal(hf, wp[0], wp[1], wp[2]); let best = null, br = 1e9;
       for (const l of scene.extra.leaves) { const X = q[0] - l.c[0], Y = q[1] - l.c[1], Z = q[2] - l.c[2], f = l.f, u = (X * f.ax[0] + Y * f.ax[1] + Z * f.ax[2]) / (l.len / 2), v = X * f.aw[0] + Y * f.aw[1] + Z * f.aw[2], w = (X * f.an[0] + Y * f.an[1] + Z * f.an[2]) / (l.thick / 2), r = u * u + (v / (l.wid / 2)) ** 2 + w * w; if (r < br) { br = r; best = { u, v, l }; } }
@@ -97,7 +97,7 @@ export function makePaint(scene, look, view) {
       // the nose: its own ink (darker), set in the geometry of the nose ellipsoid
       if (head.nose.on) {
         const dn = scene.head.dNose(q[0], q[1], q[2]), na = sstep(0.012 + minNose * 0.5, -0.004, dn);
-        if (na > 0) { albedo = mixc(albedo, look.nose, na * look.noseInk); gloss = 1 + (rf["nose-gloss"] - 1) * na; spec = rf["nose-highlight"] * na; if (na > 0.5) code = INK.nose; }
+        if (na > 0) { albedo = mixc(albedo, look.nose, na * look.noseInk); gloss = 1 + (rf["nose-gloss"] - 1) * na; spec = rf["nose-highlight"] * na; specPow = rf["nose-highlight-power"]; if (na > 0.5) code = INK.nose; }
       }
       // the mouth: a dark line in the crease, at least the house's pixel width at the small sizes
       if (Math.hypot(q[0] - mouthBound.c[0], q[1], q[2] - mouthBound.c[2]) < mouthBound.r + 0.1) {
@@ -110,7 +110,7 @@ export function makePaint(scene, look, view) {
         const ep = eyePaint(i, q, nl, wp);
         if (ep) { albedo = mixc(albedo, ep.col, ep.cover); if (ep.cover > 0.5) { code = ep.code; eye = true; } if (ep.lid > 0 && ep.lid < 1 && ep.cover < 0.5) code = INK.lid; }
       }
-      return { albedo, code, eye, gloss, spec };
+      return { albedo, code, eye, gloss, spec, specPow };
     }
     // the body: the cream chest-and-belly field, a soft field in the mass's own coordinates
     { const q = toLocal(hf, wp[0], wp[1], wp[2]), nl = [tl[0] * nrm[0] + tl[1] * nrm[1] + tl[2] * nrm[2], tl[3] * nrm[0] + tl[4] * nrm[1] + tl[5] * nrm[2], tl[6] * nrm[0] + tl[7] * nrm[1] + tl[8] * nrm[2]]; albedo = mixc(albedo, look.cream, Math.max(faceCreamAt(q, nl), creamBodyAt(wp, nrm)) * (1 - scene.legWeight(wp[0], wp[1], wp[2]))); }

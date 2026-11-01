@@ -16,7 +16,7 @@
       },
       "bean": {
         "exponent": 2.2,
-        "crown-set-back": 0.25,
+        "crown-set-back": 0.15,
         "top-taper": 0.2,
         "chin-taper": 0.22,
         "ad": "back to 2.2 (AD, fix round 2 ruling 3): three kinds sharing one exponent are not kinds. Fix round 4, must-fix 1: the bean is an egg tipped back: its top is shifted back by crown-set-back (H, over the full height) and narrowed by top-taper, so the crown is the highest point, behind the near eye, and one curve runs from the muzzle over the brow"
@@ -1603,20 +1603,21 @@
   },
   "rig": {
     "face": {
-      "nose-aspect": 0.45,
+      "nose-aspect": 0.36,
       "nose-relief": 0.45,
       "nose-tilt-deg": 25,
       "nose-soften": 0.035,
       "socket-depth": 0.024,
       "socket-margin": 0.16,
       "socket-soften": 0.03,
-      "muzzle-union": 0.15,
-      "muzzle-projection-cap": 0.22,
+      "muzzle-union": 0.08,
+      "muzzle-projection-cap": 0.4,
       "muzzle-widen": 0.5,
       "muzzle-centre-drop": 0.02,
       "mouth-tube": 0.024,
       "nose-gloss": 1.15,
-      "nose-highlight": 0.7,
+      "nose-highlight": 0.55,
+      "nose-highlight-power": 7,
       "leaf-rib-width": 0.02,
       "leaf-rib-strength": 0.55,
       "leaf-gloss": 0.3,
@@ -1678,6 +1679,7 @@
       },
       "toe-radii": [0.045, 0.052, 0.06],
       "toe-reach": 0.6,
+      "leg-cream-edge": [-0.03, 0.02],
       "toe-fan": 1.2,
       "paw-turn": 40
     },
@@ -1782,7 +1784,8 @@
         0.25,
         0.4
       ],
-      "strength": 0.4
+      "strength": 0.4,
+        "light-field-ease": 0.65
     },
     "rim": {
       "strength": 0.16,
