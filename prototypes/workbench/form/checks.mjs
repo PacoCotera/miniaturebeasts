@@ -488,10 +488,10 @@ export function round2Checks(ctx) {
       // 4. the catch light by size
       const catchOk = sk === 96 ? (e.D >= 4 ? e.catchA === 1 : e.D >= 3 ? e.catchA === 0.5 : e.catchA === 0) : (e.D >= 3 ? e.catchA === 0.6 : e.catchA === 0);
       // 5. core against surround: dL* >= 35 on >= 60 % of the edge at 96, on >= 2 sides at 48
-      const sidesL = { t: [], b: [], l: [], r: [] }; for (let x = x0; x <= x1; x++) { sidesL.t.push(Lstar(rgb(rr, x, y0 - 2))); sidesL.b.push(Lstar(rgb(rr, x, y1 + 2))); } for (let y = y0; y <= y1; y++) { sidesL.l.push(Lstar(rgb(rr, x0 - 2, y))); sidesL.r.push(Lstar(rgb(rr, x1 + 2, y))); }
-      const all = Object.values(sidesL).flat(), frac = all.filter((L) => Math.abs(L - coreL) >= 35).length / all.length, nSides = Object.values(sidesL).filter((a) => a.filter((L) => Math.abs(L - coreL) >= 35).length >= a.length / 2).length;
-      const edgeOk = sk === 96 ? frac >= 0.6 : nSides >= 2;
-      rows.push({ cornerL: cornerPx.map(([x, y]) => +Lstar(rgb(rr, x, y)).toFixed(0)), D: +e.D.toFixed(2), core: e.core, coreL: +coreL.toFixed(0), surroundL: +surround.toFixed(0), corners: cornersOk, hue: hueOk, dark: darkOk, ring: ringOk, catch: catchOk, edge: sk === 96 ? +frac.toFixed(2) : nSides });
+      const { frac, nSides, samples } = glyphEdge(rr, e.box, coreL);
+      const farFore = sk === 48 && form.look.eyes.foreshorten && eyes.length === 2 && (e.box[2] - e.box[0]) < Math.max(...eyes.map((q) => q.box[2] - q.box[0])); // round 4: a foreshortened far eye at 48 is gated by design 5's width row, not by a ring
+      const edgeOk = farFore || (sk === 96 ? samples > 0 && frac >= 0.6 : nSides >= 2);
+      rows.push({ cornerL: cornerPx.map(([x, y]) => +Lstar(rgb(rr, x, y)).toFixed(0)), D: +e.D.toFixed(2), core: e.core, coreL: +coreL.toFixed(0), surroundL: +surround.toFixed(0), corners: cornersOk, hue: hueOk, dark: darkOk, ring: ringOk, catch: catchOk, edge: sk === 96 ? +frac.toFixed(2) : nSides, edgeSamples: samples });
       if (!cornersOk) bad.push("corners"); if (!hueOk) bad.push("hue"); if (!darkOk) bad.push("dark"); if (!ringOk) bad.push("ring on light"); if (!catchOk) bad.push("catch"); if (!edgeOk) bad.push("edge");
     }
     // 6. the gap between the discs, noses and mouths as round 2, the plate
@@ -731,4 +731,14 @@ export function loikaToes(rr) {
     const L = srgbToLab(rr.data[i * 4], rr.data[i * 4 + 1], rr.data[i * 4 + 2])[0], foot = (feet[mt[1]] ??= {}), t = (foot[mt[2]] ??= { n: 0, pale: 0 }); t.n++; if (L >= 70) t.pale++;
   }
   return feet;
+}
+
+// design 6 item 5 (round 4 rules): the core against the surround 2 px outside the eye's box. Only samples inside the silhouette (alpha >= 128) count; a sample outside is skipped and
+// counts toward neither total. frac = the share of the remaining samples with |dL*| >= 35 (the 96 test, >= .6); nSides = the sides with at least half of their remaining samples so (the 48 test, >= 2).
+export function glyphEdge(rr, box, coreL) {
+  const [x0, y0, x1, y1] = box, sides = { t: [], b: [], l: [], r: [] };
+  const add = (side, x, y) => { if (x >= 0 && y >= 0 && x < rr.width && y < rr.height && rr.data[(y * rr.width + x) * 4 + 3] >= 128) sides[side].push(Lstar(rgb(rr, x, y))); };
+  for (let x = x0; x <= x1; x++) { add("t", x, y0 - 2); add("b", x, y1 + 2); } for (let y = y0; y <= y1; y++) { add("l", x0 - 2, y); add("r", x1 + 2, y); }
+  const all = Object.values(sides).flat(), hit = (a) => a.filter((L) => Math.abs(L - coreL) >= 35).length;
+  return { frac: hit(all) / Math.max(1, all.length), nSides: Object.values(sides).filter((a) => a.length && hit(a) >= a.length / 2).length, samples: all.length };
 }

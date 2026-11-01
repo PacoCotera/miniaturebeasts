@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { buildScene } from "../mesh.mjs";
 import { renderForm } from "../render.mjs";
-import { loikaMeasure, loikaSmallRows } from "../checks.mjs";
+import { loikaMeasure, loikaSmallRows, glyphEdge, srgbToLab } from "../checks.mjs";
 import { paintMarks } from "../material.mjs";
 import { SPECIES } from "../species-trial.mjs";
 import { STANDS, loadStands, standRef, SIZE_NAMES } from "../trial.mjs";
@@ -93,5 +93,16 @@ test("the far eye's glyph at 96 and 48 is foreshortened and lies inside the outl
     assert.ok(far.box[2] - far.box[0] < near.box[2] - near.box[0], `${sk}: the far box is narrower`);
     const m = loikaSmallRows(r, sk, r.ink); if (sk === 96) assert.ok(m.rows.find((x) => x.id === "far eye").pass, JSON.stringify(m.rows.find((x) => x.id === "far eye")));
     for (const g of [far]) for (let y = g.box[1]; y <= g.box[3]; y++) for (let x = g.box[0]; x <= g.box[2]; x++) if (r.ink[y * r.width + x] >= 2 && r.ink[y * r.width + x] <= 5) assert.ok(r.coverage[y * r.width + x] >= 0.5, `${sk} glyph pixel ${x},${y} outside`);
+  }
+});
+
+// design 6 item 5 under the round 4 rules (samples outside the silhouette are skipped), on the stand: both eyes at 96, the near eye at 48
+test("face.glyph item 5 passes on the stand's own 96 and 48 eyes", { skip: !existsSync(`${STANDS.loika}-304x312.png`) }, () => {
+  const st = loadStands("loika");
+  for (const [sk, which] of [[96, "near"], [96, "far"], [48, "near"]]) {
+    const m = loikaMeasure(st[sk])[which], [x0, y0, x1, y1] = m.bbox, i = (Math.floor((y0 + y1 + 1) / 2) * st[sk].width + Math.floor((x0 + x1 + 1) / 2)) * 4;
+    const coreL = srgbToLab(st[sk].data[i], st[sk].data[i + 1], st[sk].data[i + 2])[0], g = glyphEdge(st[sk], m.bbox, coreL);
+    assert.ok(g.samples > 0, `${sk} ${which}: samples`);
+    assert.ok(sk === 96 ? g.frac >= 0.6 : g.nSides >= 2, `${sk} ${which}: ${JSON.stringify(g)}`);
   }
 });
