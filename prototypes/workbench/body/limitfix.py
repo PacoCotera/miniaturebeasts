@@ -3,7 +3,7 @@ limit stencil of cage.py (the mirrored mesh, so the stencils see both halves). S
 import numpy as np
 
 
-def limit_fix(body, steps=8, tol=0.004, only=None, omega=1.5, cmax=0.30):
+def limit_fix(body, steps=8, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0):
     c = body.cage
     n = len(c.V)
     has = np.array([t is not None for t in body.target])
@@ -32,7 +32,7 @@ def limit_fix(body, steps=8, tol=0.004, only=None, omega=1.5, cmax=0.30):
         hist.append(float(e.max()))
         if e.max() < tol or it == steps:
             break
-        A = c.arr() + omega * err
+        A = c.arr() + omega * err - mu * np.where(mask[:, None], c.arr() - T, 0.0)
         A[cm, 1] = 0.0
         dv = A - T
         nd = np.linalg.norm(dv, axis=1)

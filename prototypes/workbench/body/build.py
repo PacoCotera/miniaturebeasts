@@ -6,7 +6,7 @@ from torso import Torso, build_torso
 from limitfix import limit_fix
 
 
-def make_body(spec=None, H=None, upto="torso", fix=True):
+def make_body(spec=None, H=None, upto="torso", fix=True, beads=True):
     if spec is None:
         spec, H = SC.load()
     body = Body()
@@ -25,4 +25,9 @@ def make_body(spec=None, H=None, upto="torso", fix=True):
     ctx["volume"] = vol
     if fix:
         ctx["log"]["limit"] = limit_fix(body)
+    if upto in ("legs", "base", "all") and beads:
+        import beads as BD
+        BD.add_beads(body, ctx)
+        body.fix_winding_again = True
+        body.cage.fix_winding()
     return body
