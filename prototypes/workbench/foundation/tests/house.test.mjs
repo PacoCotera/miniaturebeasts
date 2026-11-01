@@ -104,9 +104,9 @@ test("the face parameters of a plan come from t through the bands", () => {
 });
 test("eye-fit: the iris' outer edges stay within 0.9 of the width at the eye line (W and the cheek there), monotone in spacing, nothing moves inside the band", () => {
   const c = house.clamps.find((x) => x.id === "eye-fit"), ctx = { house, plan: "A" }; let prev = -1;
-  for (let s = 1.5; s <= 2.2; s += 0.02) { const o = clampEyeFit({ eW: 0.3, spacing: s }, c, ctx); assert.ok(o.spacing > prev); prev = o.spacing; assert.ok((o.spacing + 1) * 0.3 <= 0.9 * (1 + house.rig.face["cheek-eye"]) + 1e-9); }
+  for (let s = 1.5; s <= 2.2; s += 0.02) { const o = clampEyeFit({ eW: 0.3, spacing: s }, c, ctx); assert.ok(o.spacing > prev); prev = o.spacing; assert.ok((o.spacing + 1) * 0.3 <= 0.9 * (1 + house.rig.A["cheek-eye"]) + 1e-9); }
   assert.equal(clampEyeFit({ eW: 0.25, spacing: 2 }, c, ctx).spacing, 2, "inside the band nothing moves");
-  assert.ok(clampEyeFit({ eW: 0.36, spacing: 2.4 }, c, ctx).spacing < 2.3, "the biggest eyes at the widest spacing are pulled in");
+  assert.ok(clampEyeFit({ eW: 0.36, spacing: 3.0 }, c, ctx).spacing < 2.9, "eyes that reach the head's sides are pulled in");
 });
 test("nose-fit: the nose is at most 0.6 E wide, monotone, and inside nothing moves", () => {
   const c = house.clamps.find((x) => x.id === "nose-fit"); let prev = -1;

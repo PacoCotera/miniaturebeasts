@@ -14,10 +14,10 @@
    },
    "t": {
     "form.head": 0.6,
-    "form.head-width": 0.55,
+    "form.head-width": 0.3,
     "form.head-depth": 0.54,
     "form.cheek": 0.04,
-    "form.eye-size": 0.3,
+    "form.eye-size": 0.63,
     "form.eye-height": 0.09,
     "form.eye-spacing": 0.867,
     "form.pupil": 0.1,
@@ -26,12 +26,12 @@
     "form.muzzle": 0.4,
     "form.muzzle-width": 0.84,
     "form.muzzle-height": 0.35,
-    "form.nose": 0.6,
-    "form.nose-drop": 0.84,
-    "form.mouth-width": 0.84,
+    "form.nose": 0.77,
+    "form.nose-drop": 0.75,
+    "form.mouth-width": 0.75,
     "form.mouth-upturn": 0.8,
-    "form.mouth-gap": 0.4,
-    "form.carriage": 0.45
+    "form.mouth-gap": 0.585,
+    "form.carriage": 0.63
    },
    "pool": {
     "form.eye-size": [
@@ -107,11 +107,10 @@
    "creamHead": {
     "below": 0.01,
     "soft": 0.015,
-    "cheek-rise": 1.0,
-    "cheek-top": 1.0,
-    "side": [
-     0.75,
-     0.95
+    "fall": 1.1,
+    "reach": [
+     0.2,
+     0.08
     ]
    },
    "creamBody": {
@@ -119,16 +118,16 @@
     "front": 0.7,
     "t0": 0.2,
     "t1": 0.5,
-    "x0": -1.0,
-    "x1": -0.7,
-    "x2": 0.6,
-    "x3": 0.95,
-    "z0": 1.2,
-    "z1": 1.5,
-    "y0": 0.45,
-    "y1": 0.8,
-    "n0": 0.35,
-    "n1": 0.8
+    "x0": -0.55,
+    "x1": -0.35,
+    "x2": 0.28,
+    "x3": 0.4,
+    "z0": 0.5,
+    "z1": 0.72,
+    "y0": 0.3,
+    "y1": 0.4,
+    "n0": 0.6,
+    "n1": 0.97
    },
    "leafRib": [
     178,
@@ -140,30 +139,12 @@
    "seed": "S01",
    "side": 1,
    "pick": {
-    "body-yaw": 0.75,
-    "face-yaw": 0.53
+    "body-yaw": 0.93,
+    "face-yaw": 0.53,
+    "roll": 0.375
    }
   },
-  "rig": {
-   "A": {
-    "chest-x": 0.03,
-    "back-drop": 0.5,
-    "pelvis-gap": 0.95,
-    "pelvis-lift": 0.3,
-    "union-neck": 0.18,
-    "pelvis-share": 1.0,
-    "fore-x": 0.3,
-    "belly-share": 0.1,
-    "stance-width-of-chest": 0.65,
-    "leg-radius": 0.27,
-    "paw": [
-     0.38,
-     0.35,
-     0.24
-    ]
-   },
-   "face": {}
-  }
+  "rig": {}
  },
  "S14": {
   "frame": {
@@ -187,13 +168,13 @@
     "form.eye-height": 0.18,
     "form.eye-spacing": 0.39,
     "form.pupil": 0.5,
-    "form.lid": 0.3,
+    "form.lid": 0.475,
     "form.eye-ring": 0.65,
     "form.nose": 0.0,
     "form.nose-drop": 0.8,
-    "form.mouth-width": 0.62,
+    "form.mouth-width": 0.482,
     "form.mouth-upturn": 0.8,
-    "form.mouth-gap": 1.0,
+    "form.mouth-gap": 0.5,
     "form.carriage": 0.33,
     "form.body-length": 0.3,
     "form.rise": 0.6,

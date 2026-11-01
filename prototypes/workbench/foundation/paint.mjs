@@ -28,11 +28,20 @@ export function makePaint(scene, look, view) {
   function distMouth(x, y, z) { let d = 1e9; for (let i = 0; i < mp.length - 1; i++) { const a = mp[i], b = mp[i + 1], bx = b[0] - a[0], by = b[1] - a[1], bz = b[2] - a[2], px = x - a[0], py = y - a[1], pz = z - a[2], h = clamp((px * bx + py * by + pz * bz) / (bx * bx + by * by + bz * bz), 0, 1); d = Math.min(d, Math.hypot(px - bx * h, py - by * h, pz - bz * h)); } return d; }
 
   // the eye at a local point: returns null when the point is off the eye, else { col, code } for the iris, the ring, the lid's edge or the catch light
-  const creamHeadAt = (q, hy, zb, ch, nl) => sstep(zb + ch.soft, zb - ch.soft, q[2]) * Math.max(sstep(-0.1, 0.3, q[0] / (scene.head.K.a)), sstep(0.1, 0.5, -nl[2])) * (1 - sstep(ch.side[0], ch.side[1], Math.abs(hy) / (scene.W / 2)));
+  // the face's cream: one field in the head's frame. Its top edge IS the smile (the dark muzzle meets the cream jaw at the mouth line), and beyond each mouth corner the edge
+  // runs down and back, `fall` per unit of lateral distance, so the skin under the near eye stays dark (AD fix round 2: the cheek rise is withdrawn). One soft width, no steps.
+  // It is evaluated for every point of the creature, so head and body share the one field and no seam is cut at their join
+  const faceCreamAt = (q, nl) => {
+    const ch = look.creamHead; if (!ch) return 0;
+    const hw = mouth.w / 2, ay = Math.abs(q[1]), zb = (ay <= hw ? mouth.zAt(ay) : mouth.zAt(hw) - ch.fall * (ay - hw)) - ch.below;
+    const front = Math.max(sstep(-0.1, 0.3, q[0] / scene.head.K.a), sstep(0.1, 0.5, -nl[2])), reach = sstep(ch.reach[0], ch.reach[1], head.d0(q[0], q[1], q[2]));
+    return sstep(zb + ch.soft, zb - ch.soft, q[2]) * front * reach;
+  };
   function creamBodyAt(wp, nrm) {
     const cb = look.creamBody; if (!cb) return 0;
-    const s = -nrm[2] * cb.down + nrm[0] * cb.front, xf = sstep(cb.x0, cb.x1, wp[0]) * (1 - sstep(cb.x2, cb.x3, wp[0]));
-    return sstep(cb.t0, cb.t1, s) * xf * sstep(cb.z1, cb.z0, wp[2]) * (1 - sstep(cb.y0, cb.y1, Math.abs(wp[1]))) * (cb.n1 ? 1 - sstep(cb.n0, cb.n1, Math.abs(nrm[1])) : 1); // the bib's sides follow the chest's own curve (the lateral part of the normal)
+    const S = scene.S, X = wp[0] / S, Y = wp[1] / S, Z = wp[2] / S; // the field is in the stature's own units, like the stand-in body
+    const s = -nrm[2] * cb.down + nrm[0] * cb.front, xf = sstep(cb.x0, cb.x1, X) * (1 - sstep(cb.x2, cb.x3, X));
+    return sstep(cb.t0, cb.t1, s) * xf * sstep(cb.z1, cb.z0, Z) * (1 - sstep(cb.y0, cb.y1, Math.abs(Y))) * (cb.n1 ? 1 - sstep(cb.n0, cb.n1, Math.abs(nrm[1])) : 1); // the bib's sides follow the chest's own curve (the lateral part of the normal)
   }
   function eyePaint(i, q, nrm, wp) {
     const e = eyes[i], X = q[0] - e.c[0], Y = q[1] - e.c[1], Z = q[2] - e.c[2], u = X * e.lat[0] + Y * e.lat[1] + Z * e.lat[2], v = X * e.up[0] + Y * e.up[1] + Z * e.up[2], w = X * e.n[0] + Y * e.n[1] + Z * e.n[2];
@@ -84,13 +93,7 @@ export function makePaint(scene, look, view) {
     if (region === "head") {
       const q = toLocal(hf, wp[0], wp[1], wp[2]), nl = [tl[0] * nrm[0] + tl[1] * nrm[1] + tl[2] * nrm[2], tl[3] * nrm[0] + tl[4] * nrm[1] + tl[5] * nrm[2], tl[6] * nrm[0] + tl[7] * nrm[1] + tl[8] * nrm[2]];
       const g = head.geometry, hy = q[1];
-      // the cream field: its top edge IS the smile (the dark muzzle meets the cream jaw at the mouth line, `below` of 0.01 H), and behind each mouth corner it rises
-      // up the cheek, `cheek-rise` per unit of lateral distance, to the eye's lower edge; soft (no fold, wedge or seam), one field shared with the body's
-      if (look.creamHead) {
-        const ch = look.creamHead, hw = mouth.w / 2, ay = Math.abs(hy), capZ = head.eyes[0].c[2] - head.eyes[0].Reye * ch["cheek-top"];
-        let zb = mouth.zAt(Math.min(ay, hw)) - ch.below; if (ay > hw) zb = Math.min(zb + (ay - hw) * ch["cheek-rise"], Math.max(capZ, zb));
-        albedo = mixc(albedo, look.cream, Math.max(creamHeadAt(q, hy, zb, ch, nl), creamBodyAt(wp, nrm)));
-      }
+      albedo = mixc(albedo, look.cream, Math.max(faceCreamAt(q, nl), creamBodyAt(wp, nrm)));
       // the nose: its own ink (darker), set in the geometry of the nose ellipsoid
       if (head.nose.on) {
         const dn = scene.head.dNose(q[0], q[1], q[2]), na = sstep(0.012 + minNose * 0.5, -0.004, dn);
@@ -110,7 +113,7 @@ export function makePaint(scene, look, view) {
       return { albedo, code, eye, gloss, spec };
     }
     // the body: the cream chest-and-belly field, a soft field in the mass's own coordinates
-    albedo = mixc(albedo, look.cream, creamBodyAt(wp, nrm));
+    { const q = toLocal(hf, wp[0], wp[1], wp[2]), nl = [tl[0] * nrm[0] + tl[1] * nrm[1] + tl[2] * nrm[2], tl[3] * nrm[0] + tl[4] * nrm[1] + tl[5] * nrm[2], tl[6] * nrm[0] + tl[7] * nrm[1] + tl[8] * nrm[2]]; albedo = mixc(albedo, look.cream, Math.max(faceCreamAt(q, nl), creamBodyAt(wp, nrm)) * (1 - scene.legWeight(wp[0], wp[1], wp[2]))); }
     if (look.spots && region === "seg") { /* marks: chunk 3 */ }
     return { albedo, code };
   }

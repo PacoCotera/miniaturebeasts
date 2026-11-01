@@ -13,7 +13,7 @@ export const faceStack = (fp) => fp.noseDrop * eyeInH(fp) + noseHalfH(fp) + fp.g
 export function clampEyeFit(fp, c, ctx) {
   // the iris' outer edges, (spacing + 1) E, stay within the share of the head's width (0.9 W): the eyes never reach the head's sides
   // the width at the eye line is the skull's W widened by the cheek there (rig face cheek-eye): the iris' outer edges stay within the share of that
-  const k = 1 + (ctx?.house?.rig?.face?.["cheek-eye"] ?? 0), e = fp.eW, hi = (c.params["spacing-share-of-width"] * k) / e - 1, sb = ctx?.house ? bandOf(ctx.house, ctx.plan, "form.eye-spacing") : { lo: 1.5, hi: 2.2 };
+  const k = 1 + (ctx?.house?.rig?.[ctx?.plan]?.["cheek-eye"] ?? ctx?.house?.rig?.face?.["cheek-eye"] ?? 0), e = fp.eW, hi = (c.params["spacing-share-of-width"] * k) / e - 1, sb = ctx?.house ? bandOf(ctx.house, ctx.plan, "form.eye-spacing") : { lo: 1.5, hi: 2.2 };
   return { ...fp, spacing: softClamp(fp.spacing, null, hi, 0.15 * (sb.hi - sb.lo)) };
 }
 export function clampNoseFit(fp, c, ctx) {
@@ -63,15 +63,18 @@ export function clampFarEye(fp, c, ctx) {
   }
   return { ...f, faceYaw: yaw, farOutside: true };
 }
-export function clampFaceStack(fp, c) {
+export function clampFaceStack(fp, c, ctx) {
   const lim = c.params["max-eye-to-mouth-H"], w = c.params["soft-width"] * lim;
   const stack = faceStack(fp);
   if (stack <= lim - w) return fp;
-  // compress the mouth gap first (it can go to zero), then the nose drop: a soft compression of the whole stack's excess
-  const fixed = fp.noseDrop * eyeInH(fp) + noseHalfH(fp), room = lim - fixed;
-  const out = { ...fp };
-  if (room > w) out.gap = softClamp(fp.gap, null, room, Math.min(w, room * 0.5));
-  else { out.gap = Math.min(fp.gap, 0.002); const target = softClamp(stack, null, lim, w), k = target / stack; out.noseDrop = fp.noseDrop * k; }
+  // the gap's floor by nose kind, in E (R-nose-mouth): the gap compresses first, down to the floor, then the nose drop
+  const fl = (ctx?.kinds?.nose && c.params["gap-floor-E"]?.[ctx.kinds.nose]) ?? 0, floorGap = fl * eyeInH(fp);
+  const fixed = fp.noseDrop * eyeInH(fp) + noseHalfH(fp), room = lim - fixed, out = { ...fp };
+  if (room - floorGap > w) out.gap = softClamp(fp.gap, floorGap, room, Math.min(w, (room - floorGap) * 0.5));
+  else {
+    out.gap = Math.max(floorGap, Math.min(fp.gap, floorGap + 0.002)); const target = softClamp(stack - fp.gap + out.gap, null, lim, w), k = target / (stack - fp.gap + out.gap);
+    out.noseDrop = fp.noseDrop * k;
+  }
   return out;
 }
 // a heavy lid raises the floor of carriage, continuously in the lid (so the floor is 0 up to lid-over-E and 5 degrees from 0.1 above it)

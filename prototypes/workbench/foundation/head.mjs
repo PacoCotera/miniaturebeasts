@@ -16,12 +16,13 @@ export function surfaceFrame(c, n) {
 }
 
 export function buildHead(house, plan, kinds, fp) {
-  const rf = house.rig.face, H = 1, W = fp.WoverH, D = fp.DoverH, cheek = fp.cheek ?? 0;
+  const rf = house.rig.face, rp = house.rig[plan] ?? {}, H = 1, W = fp.WoverH, D = fp.DoverH, cheek = fp.cheek ?? 0;
   const kexp = house.kinds.head[kinds.head].exponent;
   const K = { a: D / 2, b: W / 2, c: 0.5, n: kexp };
   // the width at height z: the old widening toward the chin, plus a cheek at the eye line, a bump of `cheek-eye` in the width that holds the far eye inside the outline
-  const cw = rf["cheek-widen"], zEye0 = 0.5 - fp.eyeDrop, ce = rf["cheek-eye"], cs = rf["cheek-eye-sigma"], latAt = (z) => 1 + cw * cheek * (-z) + ce * Math.exp(-(((z - zEye0) / cs) ** 2));
-  const dK = (x, y, z) => 0.92 * sdSuper(x, y / latAt(z), z, K.a, K.b, K.c, K.n);
+  const cw = rf["cheek-widen"], zEye0 = 0.5 - fp.eyeDrop, ce = rp["cheek-eye"] ?? rf["cheek-eye"], cs = rf["cheek-eye-sigma"], latAt = (z) => 1 + cw * cheek * (-z) + ce * Math.exp(-(((z - zEye0) / cs) ** 2)), cfw = rp["cheek-forward"] ?? rf["cheek-forward"] ?? 0;
+  // and the width grows toward the face: a head that is fuller at the cheek than at the back of the skull, so the far cheek stands outside the far eye at the face yaw (the master's)
+  const dK = (x, y, z) => 0.92 * sdSuper(x, y / (latAt(z) * (1 + cfw * sstep(-0.3 * K.a, 0.9 * K.a, x))), z, K.a, K.b, K.c, K.n);
   const E = fp.eW * W, Riris = E / 2, ringW = fp.ring * E, Reye = Riris + ringW, lidOver = fp.lid * E;
   const zEye = 0.5 - fp.eyeDrop, yE = (fp.spacing * E) / 2;
   const aspect = house.kinds.eye[kinds.eye]?.aspect ?? 1;
