@@ -8,6 +8,9 @@ from stop5 import build_full
 from housefield import sstep
 
 
+GLB_LEVEL = int(os.environ.get("GLB_LEVEL", 3))      # round 3: the glb is baked at level 3 (round 2: level 2); the smile and the cream edge read smoother, the file is about 3x larger
+
+
 def _verts(ob):
     dg = bpy.context.evaluated_depsgraph_get()
     ev = ob.evaluated_get(dg)
@@ -170,7 +173,7 @@ if __name__ == "__main__":
     OUT = os.path.abspath(sys.argv[1])
     os.makedirs(OUT, exist_ok=True)
     t0 = time.time()
-    H, sc, rep = build_full(2, os.path.join(OUT, "tex"))
+    H, sc, rep = build_full(GLB_LEVEL, os.path.join(OUT, "tex"))
     sc.pose_stand(False)
     shape_keys(sc, H)
     clips = make_clips(sc, H)

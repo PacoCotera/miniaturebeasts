@@ -386,11 +386,16 @@ class House:
             d = uround(d, lg["d"](p), self.uB)
         return d
 
-    def leg_weight(self, p):
-        """scene.mjs legWeight: how much a point belongs to a leg rather than the torso."""
+    def leg_x(self, p):
+        """The quantity scene.mjs legWeight takes its smoothstep of (torso distance minus the nearest leg's), and the smoothstep's edges."""
         dl = np.min([lg["d"](p) for lg in self.legs], axis=0)
         le = self.rig["leg-cream-edge"]
-        w = sstep(le[0] * self.S, le[1] * self.S, self.dTorso(p) - dl)
+        return self.dTorso(p) - dl, le[0] * self.S, le[1] * self.S
+
+    def leg_weight(self, p):
+        """scene.mjs legWeight: how much a point belongs to a leg rather than the torso."""
+        x, a, b = self.leg_x(p)
+        w = sstep(a, b, x)
         return np.where(p[..., 2] > 0.75 * self.S, 0.0, w)
 
     def d_core_far(self, p):

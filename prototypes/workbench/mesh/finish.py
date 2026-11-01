@@ -8,12 +8,14 @@ import paint as PT
 from build import lin, strip_png_text
 
 
-NOSE_ROUGH, NOSE_SPEC, NOSE_COAT = 0.24, 1.0, 0.9     # round 2: the nose is a glossier skin than the rest, so its mound takes one soft highlight from the key
+NOSE_ROUGH, NOSE_SPEC, NOSE_COAT = 0.5, 0.25, 0.15
 EYE_SINK = 0.09     # the disc sits this far (H) below the skin along the eye's normal, in a socket the size of the disc
 EYE_HOLE = 1.04      # the socket's hole, in R_eye
 EYE_SPAN = 1.9      # the disc's own radius, in R_eye: wider than the hole, so nothing but the disc is seen through it
 EYE_CRESCENT_RHO = None      # round 3: the house's own window (crescent-from .. 0.95); round 2 narrowed it to (0.1, 0.7) under the old house
 EYE_CRESCENT_GAIN = 1.0   # round 3: the house's crescent (0.95 in fc80e5312) as it is; round 2 needed 1.7x of the old 0.6
+LEAF_ALBEDO, LEAF_ROUGH = 0.84, 0.3      # [mesh] light calibration of the leaf material
+EYE_BURY, EYE_BURY_FROM = 0.5, 1.25      # round 3: the disc's outer annulus sinks 0.5 R_eye per R_eye squared past 1.25 R_eye
 EYE_GAMMA = 1.0     # the emission is the texture raised to this power (below 1 it lifts the amber crescent more than the ivory ring)
 EYE_BASE = 1.0      # the texture's share of the eye's lit base colour (the ring would clip to white under the key at 1.0)
 
@@ -57,10 +59,12 @@ def new_leaf_object(sc, H):
         mat = bpy.data.materials.new(c.name)
         mat.use_nodes = True
         b = mat.node_tree.nodes["Principled BSDF"]
-        b.inputs["Base Color"].default_value = (*lin(np.array(H.look["leaf"])), 1)
-        b.inputs["Roughness"].default_value = 0.45
+        # round 3 (AD item 5): olive and of the master's value, not lime. The house's leaf colour (104, 122, 46) is the albedo; the mesh's key scale lifts it to L* 51 on a flat leaf, the master's median is 47
+        # with its darks and its glossy lights, so the albedo is taken down by LEAF_ALBEDO and the leaf made glossier (the house's leaf-gloss)
+        b.inputs["Base Color"].default_value = (*(lin(np.array(H.look["leaf"])) * LEAF_ALBEDO), 1)
+        b.inputs["Roughness"].default_value = LEAF_ROUGH
         if "Specular IOR Level" in b.inputs:
-            b.inputs["Specular IOR Level"].default_value = 0.3 + H.rf["leaf-gloss"] * 0.3
+            b.inputs["Specular IOR Level"].default_value = 0.3 + H.rf["leaf-gloss"] * 1.0
         me.materials.append(mat)
         objs.append(ob)
     return objs
@@ -237,7 +241,7 @@ def bake(sc, H, level=3, name="loika_L"):
     nose = PT.nose_weight(H, P - H.kc) * (head_w > 0.5)
     ca = me.color_attributes.new("Col", "FLOAT_COLOR", "POINT")
     ca.data.foreach_set("color", np.column_stack([PT.lin(col), np.ones(len(P))]).ravel())
-    if level <= 2:      # the glb: smooth fields for the viewer's shader (the sprites bake the paint into the colours at level 4)
+    if level <= 3:      # the glb: smooth fields for the viewer's shader (the sprites bake the paint into the colours at level 4)
         pf = me.attributes.new("_paint", "FLOAT_COLOR", "POINT")
         pf.data.foreach_set("color", PT.paint_fields(H, P, N, head_w, 0.5 * INK_PX[304] / 110.0, 1 / 110.0).ravel())
     rp = me.attributes.new("rest_p", "FLOAT_VECTOR", "POINT"); rp.data.foreach_set("vector", P.ravel())      # rest positions: the skin's grain rides the rig (lookdev 1b)
@@ -264,7 +268,7 @@ def bake(sc, H, level=3, name="loika_L"):
     if "Coat Weight" in b.inputs:        # the nose's soft highlight: a broad clear coat that only the nose carries
         mc = nt.nodes.new("ShaderNodeMapRange"); mc.inputs["To Min"].default_value = 0.0; mc.inputs["To Max"].default_value = NOSE_COAT
         nt.links.new(an.outputs["Fac"], mc.inputs["Value"]); nt.links.new(mc.outputs["Result"], b.inputs["Coat Weight"])
-        b.inputs["Coat Roughness"].default_value = 0.42
+        b.inputs["Coat Roughness"].default_value = 0.5
     if "Subsurface Weight" in b.inputs:
         b.inputs["Subsurface Weight"].default_value = 0.06
         b.inputs["Subsurface Radius"].default_value = (1.0, 0.55, 0.35)
@@ -371,7 +375,11 @@ def add_eyes(sc, H, level_obj, offset=0.005):
         d = V - eye["c"]
         u, v = d @ eye["lat"], d @ eye["up"]
         h = skin_height(sc, H, eye, u, v, g=21)
-        P = [H.kc + eye["c"] + uu * eye["lat"] + vv * eye["up"] + eye["n"] * (hh - EYE_SINK) for uu, vv, hh in zip(u, v, h)]
+        # round 3: the disc's outer annulus (beyond the hole's rim plus what an oblique view reaches through it) is buried deeper, along a smooth ramp: it is wider than the hole only so nothing but the disc shows
+        # through the hole, and on the round dome's lower cheek, beside the smile, it came through the skin as dark flecks
+        rr = np.hypot(u, v) / eye["Reye"]
+        bury = EYE_BURY * np.maximum(0.0, rr - EYE_BURY_FROM) ** 2
+        P = [H.kc + eye["c"] + uu * eye["lat"] + vv * eye["up"] + eye["n"] * (hh - EYE_SINK - bb) for uu, vv, hh, bb in zip(u, v, h, bury)]
         me = bpy.data.meshes.new(C.name)
         me.from_pydata([tuple(v) for v in P], [], [tuple(f) for f in C.F])
         me.update()

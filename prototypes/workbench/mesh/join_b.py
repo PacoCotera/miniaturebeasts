@@ -6,6 +6,8 @@ import numpy as np
 from cage import Cage, fit, bisect_ray
 from housefield import uround
 
+LEG_SAG = 0.012      # [mesh] H: measured on the evaluated surface of round 2's cage, mean -0.006 and as far as -0.03 H at the elbow and the ankle (report.json, leg_field)
+
 
 def port_ring(T, H, lg, st_k_target=None):
     """The 2 x 2 face port nearest the fore leg's top on the flank: returns (centre station i, column k, the 8 boundary vertices in loop order, the 4 faces)."""
@@ -96,10 +98,11 @@ def shoulders_b(H, T, legs, bridges=3):
     C.compact_map = C.compact()
     C.fix_winding()
     flds = [lg["d_column"] for _, lg in legs]
+    infl = LEG_SAG      # round 3 (AD item 13, legs): the 8-point rings' limit surface sags inside the field between its vertices; the legs are fitted this far outside it so the surface lies on it
     def fld(p):
         d = H.dTorso(p)
         for f in flds:
-            d = uround(d, f(p), H.uB)
+            d = uround(d, f(p) - infl, H.uB)
         return d
     return C, fld
 

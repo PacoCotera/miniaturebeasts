@@ -12,7 +12,7 @@ from housefield import House, Rz, Ry, Rx, sstep, find_front
 from parts import build_head, head_features, build_torso, build_leg, build_paw, paw_beans, CAGE_A
 from cage import fit
 
-LIT, SHADE_RATIO = 1.45, 0.60      # the key scale and the fill ratio parameter: calibrated on a sphere (calib.py), then on Loika
+LIT, SHADE_RATIO = float(os.environ.get("MB_LIT", 1.8)), float(os.environ.get("MB_RATIO", 0.50))      # the key scale and the fill ratio parameter: calibrated on a sphere (calib.py), then on Loika
 MASTER_ALPHA_H = 288      # px, the S01 master's alpha height at 304 (tools/master-height.mjs): framing reference
 
 

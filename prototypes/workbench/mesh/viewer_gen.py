@@ -2,6 +2,8 @@
 Run: python viewer_gen.py LOIKA.glb OUT/viewer.html"""
 import sys, json, base64, re
 glb, out = sys.argv[1:3]
+look = json.load(open(__import__("os").path.join(__import__("os").path.dirname(__import__("os").path.abspath(__file__)), "../foundation/specimens.json")))["S01"]["look"]      # the house's own colours, not copies
+colour = lambda k: ", ".join(str(int(x)) for x in look[k])
 T = "/home/mb/mb/tools-3d/web/node_modules/three"
 rd = lambda p: open(f"{T}/{p}", encoding="utf8").read()
 src = dict(three=rd("build/three.module.min.js"), gltf=rd("examples/jsm/loaders/GLTFLoader.js"), orbit=rd("examples/jsm/controls/OrbitControls.js"), bgu=rd("examples/jsm/utils/BufferGeometryUtils.js"))
@@ -41,10 +43,10 @@ const GLB = "%GLB%";
   gltf.scene.traverse((o) => {
     if (!(o.isMesh && o.geometry.attributes.color_1)) return;
     o.material.onBeforeCompile = (sh) => {
-      sh.uniforms.cBody = { value: srgb(58, 53, 58) }; sh.uniforms.cCream = { value: srgb(240, 224, 198) }; sh.uniforms.cInk = { value: srgb(22, 17, 20) };
+      sh.uniforms.cBody = { value: srgb(%BODY%) }; sh.uniforms.cCream = { value: srgb(%CREAM%) }; sh.uniforms.cInk = { value: srgb(%INK%) };
       sh.vertexShader = sh.vertexShader.replace("#include <common>", "#include <common>\\nattribute vec4 color_1;\\nvarying vec4 vPaint;").replace("#include <begin_vertex>", "#include <begin_vertex>\\nvPaint = vec4(color_1.x, color_1.y, color_1.z * 0.2 - 0.1, color_1.w * 0.1 - 0.05);");
       sh.fragmentShader = sh.fragmentShader.replace("#include <common>", "#include <common>\\nvarying vec4 vPaint;\\nuniform vec3 cBody, cCream, cInk;").replace("#include <color_fragment>",
-        "{ float e = smoothstep(-0.015, 0.015, vPaint.z) * vPaint.x; float c = max(e, vPaint.y); float px = 1.0 / 110.0; float ik = smoothstep(-0.6 * px, 0.6 * px, vPaint.w); diffuseColor.rgb = mix(mix(cBody, cCream, c), cInk, ik); }");
+        "{ float e = smoothstep(-0.015, 0.015, vPaint.z) * smoothstep(0.0, 1.0, vPaint.x); float c = max(e, smoothstep(0.0, 1.0, vPaint.y)); float px = 1.0 / 110.0; float ik = smoothstep(-0.6 * px, 0.6 * px, vPaint.w); diffuseColor.rgb = mix(mix(cBody, cCream, c), cInk, ik); }");
     };
     o.material.needsUpdate = true;
   });
@@ -72,6 +74,6 @@ const GLB = "%GLB%";
   renderer.setAnimationLoop(() => { const dt = clock.getDelta(); mixer.update(dt); ctl.update(); renderer.render(scene, cam); });
 })().catch((e) => { document.getElementById("msg").textContent = "failed: " + e; console.error(e); });
 </script></body></html>"""
-html = html.replace("%SRC%", js(src)).replace("%GLB%", b64)
+html = html.replace("%BODY%", colour("body")).replace("%CREAM%", colour("cream")).replace("%INK%", colour("mouth")).replace("%SRC%", js(src)).replace("%GLB%", b64)
 open(out, "w", encoding="utf8").write(html)
 print("viewer", len(html) // 1024, "KB")

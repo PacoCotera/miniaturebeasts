@@ -36,6 +36,15 @@ def face_cream(H, q, nl):
     return sstep(zb + ch["soft"], zb - ch["soft"], q[:, 2]) * front
 
 
+def underside_cream(H, P, N):
+    """The head's under-cheek where it meets the chest. In the SDF the head and the chest are one surface joined by a round union (rig union-neck-low), so the cream's falling near edge only ever
+    meets the fillet, never the bare underside of the cheek. The mesh's head is its own shell and its lower cheek stands clear of the chest for a hand's breadth: that underside, inside the
+    union's reach of the torso, facing down and under the smile, takes the cream, so no dark sliver of the cheek hangs below the edge."""
+    u = H.rig["union-neck-low"]
+    q = P - H.kc
+    return sstep(u, 0.5 * u, H.dTorso(P)) * sstep(0.15, 0.5, -N[:, 2]) * sstep(H.mouth["z"] + 0.12, H.mouth["z"] + 0.02, q[:, 2])
+
+
 def body_cream(H, wp, n):
     """paint.mjs creamBodyAt on world rest positions and normals."""
     cb = H.look["creamBody"]
@@ -86,7 +95,7 @@ def vertex_colours(H, P, N, head_w, toe, nose_attr=None, mouth=True, ink_half=No
     q = P - H.kc
     fc = face_cream(H, q, N)
     bc = body_cream(H, P, N)
-    c = np.maximum(fc, bc) * (1 - H.leg_weight(P))       # fix round 7: the head takes the same leg weight as the body, so no line is left where the head ends and the body begins
+    c = np.maximum(np.maximum(fc, bc), underside_cream(H, P, N)) * (1 - H.leg_weight(P))       # fix round 7: the head takes the same leg weight as the body, so no line is left where the head ends and the body begins
     col = mix(body[None], cream[None], c)
     if mouth:
         px = 1 / 30.35 if ink_half is None else ink_half[1]
@@ -98,17 +107,48 @@ def vertex_colours(H, P, N, head_w, toe, nose_attr=None, mouth=True, ink_half=No
     return col, c
 
 
+def margin(a, b, x):
+    """The linear margin m of x across a smoothstep's edges: sstep(a, b, x) = smoothstep(-1, 1, m) with m = 2 (x - a) / (b - a) - 1, for either order of a and b. Margins of factors combine by min (and) and
+    max (or), stay linear in the quantity they come from, and so interpolate across a triangle without the narrow smoothsteps' stairs."""
+    return 2 * (np.asarray(x, float) - a) / (b - a) - 1
+
+
+def body_cream_margin(H, wp, n):
+    """creamBodyAt as one margin: the min of its factors' margins (a product of smoothsteps, to within where two edges meet)."""
+    cb = H.look["creamBody"]
+    S = H.S
+    X, Y, Z = wp[:, 0] / S, wp[:, 1] / S, wp[:, 2] / S
+    s = -n[:, 2] * cb["down"] + n[:, 0] * cb["front"]
+    ms = [margin(cb["t0"], cb["t1"], s), margin(cb["x0"], cb["x1"], X), margin(cb["x3"], cb["x2"], X), margin(cb["z1"], cb["z0"], Z), margin(cb["y1"], cb["y0"], np.abs(Y))]
+    if cb.get("n1"):
+        ms.append(margin(cb["n1"], cb["n0"], np.abs(n[:, 1])))
+    return np.minimum.reduce(ms)
+
+
+def underside_margin(H, P, N):
+    u = H.rig["union-neck-low"]
+    q = P - H.kc
+    return np.minimum.reduce([margin(u, 0.5 * u, H.dTorso(P)), margin(0.15, 0.5, -N[:, 2]), margin(H.mouth["z"] + 0.12, H.mouth["z"] + 0.02, q[:, 2])])
+
+
+def leg_margin(H, P):
+    """1 - legWeight as a margin."""
+    x, a, b = H.leg_x(P)
+    return np.where(P[:, 2] > 0.75 * H.S, 1.0, margin(b, a, x))
+
+
 def paint_fields(H, P, N, head_w, half, px):
-    """The glb's paint as smooth per-vertex fields, thresholded in the shader (AD item 5, design 8.3's fallback): the level-2 vertices carry values that interpolate linearly across
-    a triangle, and the viewer applies the same smoothsteps as the sprite's paint to them, so the cream's edge and the ink are not stepped at the mesh's resolution.
-    Returns (n, 4): A = face cream's gate (front x reach) x leg factor, B = body cream x leg factor, F = zb - z (the face cream's edge, signed), D = ink half-width minus the distance to
-    the smile's axis (-1 outside the ink's reach); F and D are encoded to 0..1, see the return.  Shader: cream = max(smoothstep(-soft, soft, F) * A, B); ink = smoothstep(-0.6 px, 0.6 px, D)."""
+    """The glb's paint as smooth per-vertex fields, thresholded in the shader (AD item 5, design 8.3's fallback): the vertices carry values that interpolate linearly across a triangle, and the
+    viewer applies a smoothstep to them, so the cream's edge and the ink are not stepped at the mesh's resolution. Round 3: the gates are carried as linear margins (see `margin`), not as already
+    thresholded values: round 2's body cream was a product of narrow smoothsteps taken at the vertices, which left streaks and a stair on the glb's belly edge.
+    Returns (n, 4): A = face cream's gate (front x leg factor) as a margin, B = body and under-cheek cream x leg factor as a margin, F = zb - z (the face cream's edge, signed), D = ink half-width
+    minus the distance to the smile's axis (-1 outside the ink's reach). The exporter clamps colour attributes to 0..1, so A and B are carried as (m + 1) / 2, F as (F + 0.1) / 0.2 and D as
+    (D + 0.05) / 0.1.  Shader: cream = max(smoothstep(-soft, soft, F) * smoothstep(0, 1, A), smoothstep(0, 1, B)); ink = smoothstep(-0.6 px, 0.6 px, D)."""
     q = P - H.kc
     zb = cream_edge_z(H, q)
-    front = np.maximum(sstep(-0.1, 0.3, q[:, 0] / H.K["a"]), sstep(0.1, 0.5, -N[:, 2]))
-    legfac = 1 - H.leg_weight(P)
-    A = front * legfac
-    B = body_cream(H, P, N) * legfac
+    lm = leg_margin(H, P)
+    mA = np.minimum(np.maximum(margin(-0.1, 0.3, q[:, 0] / H.K["a"]), margin(0.1, 0.5, -N[:, 2])), lm)
+    mB = np.minimum(np.maximum(body_cream_margin(H, P, N), underside_margin(H, P, N)), lm)
     ax = mouth_axis(H)
     d = np.full(len(q), 1e9)
     for a, b in zip(ax[:-1], ax[1:]):
@@ -117,8 +157,8 @@ def paint_fields(H, P, N, head_w, half, px):
         d = np.minimum(d, np.linalg.norm(q - (a + h[:, None] * ab), axis=1))
     near = np.hypot(q[:, 0] - ax[7, 0], np.hypot(q[:, 1], q[:, 2] - H.mouth["z"])) < H.mouth["w"] / 2 + 0.2
     D = np.where(near & (head_w > 0.5), half - d, -1.0)
-    # the exporter clamps colour attributes to 0..1: F is carried as (F + 0.1) / 0.2 and D as (D + 0.05) / 0.1 (the viewer decodes them)
-    return np.column_stack([A, B, np.clip((zb - q[:, 2] + 0.1) / 0.2, 0, 1), np.clip((D + 0.05) / 0.1, 0, 1)])
+    enc = lambda m: (np.clip(m, -1, 1) + 1) / 2
+    return np.column_stack([enc(mA), enc(mB), np.clip((zb - q[:, 2] + 0.1) / 0.2, 0, 1), np.clip((D + 0.05) / 0.1, 0, 1)])
 
 
 def lin(c):
