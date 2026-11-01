@@ -1581,6 +1581,7 @@
       "on": true,
       "params": {
         "inside-H": 0.0,
+        "inside-H-by-plan": {"D": 0.05},
         "nose-gap-H": 0.0,
         "order": ["face-yaw", "spacing", "eye-size", "ring"],
         "yaw-floor-deg": 18,

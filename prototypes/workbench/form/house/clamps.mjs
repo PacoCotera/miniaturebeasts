@@ -36,7 +36,7 @@ export function clampForehead(fp, c) {
 // as it is and flagged (`farOutside`): the clamp never hides it. The type specimen never needs this clamp. ctx.measureAt(fp, yawFace) -> { inside, noseGap }.
 export function clampFarEye(fp, c, ctx) {
   const { house, plan, measureAt } = ctx; if (!measureAt) return fp;
-  const P = c.params, tgt = P["inside-H"], gmin = P["nose-gap-H"] ?? 0, yawNow = ctx.yaw;
+  const P = c.params, tgt = P["inside-H-by-plan"]?.[plan] ?? P["inside-H"], gmin = P["nose-gap-H"] ?? 0, yawNow = ctx.yaw;
   // the slack of a state: the worse of the two margins (>= 0 holds). A stage never takes a value that makes the worse margin worse: the far eye's margin wants the eyes
   // closer, the nose's wants them further apart, so a stage looks for the best value in its range, not simply the lowest
   const slack = (f, yaw) => { const m = measureAt(f, yaw); return Math.min(m.inside - tgt, m.noseGap - gmin); };
