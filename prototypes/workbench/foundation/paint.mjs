@@ -16,7 +16,10 @@ export function makePaint(scene, look, view) {
   const gaze = eyes.map((e) => {
     const tl_ = dot3(towardLocal, e.lat), tu = dot3(towardLocal, e.up), m = Math.hypot(tl_, tu);
     const k = Math.min(1, m / Math.sin((rf["gaze-full-at-deg"] * Math.PI) / 180)) * rf["gaze-offset-max"] * e.E;
-    return m < 1e-9 ? [0, 0] : [(tl_ / m) * k, (tu / m) * k];
+    // fix round 7, must-fix 5 (content, not startled): the pupil also sits `gaze-bias` up and forward in the eye (E: forward, up), as the master's does; the forward axis is the head's x and the up axis its z, both taken in the eye's plane
+    const bf = rf["gaze-bias"] ?? [0, 0], dirIn = (a) => { const l = dot3(a, e.lat), u = dot3(a, e.up), n = Math.hypot(l, u) || 1; return [l / n, u / n]; }, fw_ = dirIn([1, 0, 0]), up_ = dirIn([0, 0, 1]);
+    const ox = fw_[0] * bf[0] * e.E + up_[0] * bf[1] * e.E, oy = fw_[1] * bf[0] * e.E + up_[1] * bf[1] * e.E;
+    return m < 1e-9 ? [ox, oy] : [(tl_ / m) * k + ox, (tu / m) * k + oy];
   });
   const rr = basis.right, uu = basis.up;
   const eyeW = eyes.map((e) => { const cw = [hf.R[0] * e.c[0] + hf.R[1] * e.c[1] + hf.R[2] * e.c[2] + hf.c[0], hf.R[3] * e.c[0] + hf.R[4] * e.c[1] + hf.R[5] * e.c[2] + hf.c[1], hf.R[6] * e.c[0] + hf.R[7] * e.c[1] + hf.R[8] * e.c[2] + hf.c[2]]; return { a: dot3(cw, rr) - view.org[0], b: dot3(cw, uu) - view.org[1] }; });
@@ -33,7 +36,11 @@ export function makePaint(scene, look, view) {
   // It is evaluated for every point of the creature, so head and body share the one field and no seam is cut at their join
   const faceCreamAt = (q, nl) => {
     const ch = look.creamHead; if (!ch) return 0;
-    const hw = mouth.w / 2, ay = Math.abs(q[1]), fall = q[1] * nearSign > 0 ? ch.fall : (ch["fall-far"] ?? ch.fall), zb = (ay <= hw ? mouth.zAt(ay) : mouth.zAt(hw) - fall * (ay - hw)) - ch.below; // the far side's edge falls less: the cream reaches the outline under the snout
+    const hw = mouth.w / 2, ay = Math.abs(q[1]), fall = q[1] * nearSign > 0 ? ch.fall : (ch["fall-far"] ?? ch.fall);
+    // fix round 7, must-fix 6: beyond the mouth corner the edge carries on the smile's own slope and eases off it (a parabola whose slope runs from the corner's down to -fall), one curve with no kink, so no dark wedge points into the cream
+    let ze = mouth.zAt(Math.min(ay, hw)); const d = Math.max(0, ay - hw);
+    if (d > 0) { const s0 = (mouth.zAt(hw) - mouth.zAt(hw - 0.01)) / 0.01, Lm = (rf["cream-reach-E"] ?? 0) * head.geometry.E; if (Lm > 1e-6 && s0 > 1e-6) { const dS = Lm * (1 + fall / s0); ze += d <= dS ? s0 * (d - (d * d) / (2 * Lm)) : s0 * (dS - (dS * dS) / (2 * Lm)) - fall * (d - dS); } else ze -= fall * d; }
+    const zb = ze - ch.below; // the far side's edge falls less: the cream reaches the outline under the snout
     const front = Math.max(sstep(-0.1, 0.3, q[0] / scene.head.K.a), sstep(0.1, 0.5, -nl[2]));
     return sstep(zb + ch.soft, zb - ch.soft, q[2]) * front; // gated by the mouth line and the fall only (AD fix round 5, must-fix 2): head and neck are one surface to it, so no seam is left under the smile
   };
@@ -58,6 +65,7 @@ export function makePaint(scene, look, view) {
     let col = look.iris;
     col = mixc(col, look.irisTop, rf["iris-top-dark"] * sstep(-0.2, 0.9, vn));
     col = mixc(col, look.irisLow, rf["iris-glow"] * sstep(0.9, 0.0, Math.hypot(pu, pv / e.aspect) / R * 1.6)); // a warm glow round the pupil
+    col = mixc(col, look.irisLow, (rf["iris-lower-glow"] ?? 0) * sstep(0.05, -0.65, vn) * sstep(1.0, 0.25, rho)); // fix round 7: a warm glow in the iris's lower half, as the master's
     col = mixc(col, look.irisLow, rf.crescent * sstep(rf["crescent-from"], 0.95, rho) * sstep(rf["crescent-dir"][0], rf["crescent-dir"][1], (u * 0.5 - v * 0.85) / R));
     col = mixc(col, scl(look.iris, 0.7), 0.8 * sstep(0.84, 0.99, rho));
     let code = INK.iris;
@@ -93,7 +101,7 @@ export function makePaint(scene, look, view) {
     if (region === "head") {
       const q = toLocal(hf, wp[0], wp[1], wp[2]), nl = [tl[0] * nrm[0] + tl[1] * nrm[1] + tl[2] * nrm[2], tl[3] * nrm[0] + tl[4] * nrm[1] + tl[5] * nrm[2], tl[6] * nrm[0] + tl[7] * nrm[1] + tl[8] * nrm[2]];
       const g = head.geometry, hy = q[1];
-      albedo = mixc(albedo, look.cream, Math.max(faceCreamAt(q, nl), creamBodyAt(wp, nrm)));
+      albedo = mixc(albedo, look.cream, Math.max(faceCreamAt(q, nl), creamBodyAt(wp, nrm)) * (1 - scene.legWeight(wp[0], wp[1], wp[2]))); // fix round 7, must-fix 7: the same cream as the body side of the join (leg weight and all), so no line is left where the head ends and the body begins
       // the nose: its own ink (darker), set in the geometry of the nose ellipsoid
       if (head.nose.on) {
         const dn = scene.head.dNose(q[0], q[1], q[2]), na = sstep(0.012 + minNose * 0.5, -0.004, dn);

@@ -70,7 +70,9 @@ export function buildScene(house, spec) {
     const crestB = bounded(kc, 1.3, 0.2, dCrest), dCrestB = (x, y, z) => crestB(x, y, z);
     parts.chest = dC; parts.legs = legs; parts.crest = dCrestB; extra = { chest: { c: cc, r: cr }, pelvis: { c: pc, r: pr }, zBack: zb, legs, leaves };
     const dNoHead = (x, y, z) => { const b = dBody(x, y, z); return b; };
-    const dHeadBody = (x, y, z) => { const hb = Math.sqrt((x - headBound[0][0]) ** 2 + (y - headBound[0][1]) ** 2 + (z - headBound[0][2]) ** 2) - headBound[1], dh = hb > 0.35 ? hb : dHeadW(x, y, z); return uRound(dh, dNoHead(x, y, z), mix(rig["union-neck-low"], rig["union-neck"], sstep(rig["union-neck-z"][0], rig["union-neck-z"][1], z - kc[2]))); }; // the join is a tight turn above the eye line (the nape notch) and a full roll under the chin (the throat), by the height over the skull's centre
+    // the head's bounding shell may only cut where the round union no longer reads the head's distance: past 1.3 x the widest union radius, or a crease is cut across the cream under the chin (fix round 7, must-fix 7)
+    const hbCut = Math.max(0.35, 1.3 * Math.max(rig["union-neck-low"], rig["union-neck"]));
+    const dHeadBody = (x, y, z) => { const hb = Math.sqrt((x - headBound[0][0]) ** 2 + (y - headBound[0][1]) ** 2 + (z - headBound[0][2]) ** 2) - headBound[1], dh = hb > hbCut ? hb : dHeadW(x, y, z); return uRound(dh, dNoHead(x, y, z), mix(rig["union-neck-low"], rig["union-neck"], sstep(rig["union-neck-z"][0], rig["union-neck-z"][1], z - kc[2]))); }; // the join is a tight turn above the eye line (the nape notch) and a full roll under the chin (the throat), by the height over the skull's centre
     parts.head = dHeadW;
     
     bounds = { lo: [-2.3, -1.1, -0.02], hi: [1.2, 1.1, S + 1.0] };

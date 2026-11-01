@@ -20,7 +20,7 @@
     "form.eye-size": 0.312,
     "form.eye-height": 0.59,
     "form.eye-spacing": 0.87,
-    "form.pupil": 0.1,
+    "form.pupil": 0.5,
     "form.lid": 0.0,
     "form.eye-ring": 0.92,
     "form.muzzle": 0.5,
@@ -47,11 +47,7 @@
     53,
     58
    ],
-   "cream": [
-    240,
-    226,
-    220
-   ],
+   "cream": [224, 205, 190],
    "nose": [
     58,
     53,

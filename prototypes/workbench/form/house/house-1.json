@@ -1422,10 +1422,10 @@
     {
       "id": "R-ring-shade",
       "measure": "ring-shade/L",
-      "plans": {"A": [null, 8], "B": [null, 8], "D": [null, 8], "E": [null, 8]},
+      "plans": {"A": [null, 14], "B": [null, 14], "D": [null, 14], "E": [null, 14]},
       "enforce": ["check"],
       "on": true,
-      "why": "AD, fix round 2 (must-fix 5): at lid t 0 the eye's ring is bright all the way round, its top no more than about L* 8 darker than its bottom (the fix-2 ring's upper third was shaded grey: a heavy lid, the wary read)",
+      "why": "Fix round 7, must-fix 5 (content, not startled): the lid shades the top quarter of the ring, so the ceiling goes 8 -> 14 L*; was 8. AD, fix round 2 (must-fix 5): at lid t 0 the eye's ring is bright all the way round, its top no more than about L* 8 darker than its bottom (the fix-2 ring's upper third was shaded grey: a heavy lid, the wary read)",
       "ad": "read from the render at 304 (checks.mjs ringShade): the nearer eye's ring, lower third against upper third"
     },
     {
@@ -1653,12 +1653,15 @@
       "cheek-widen": 0.25,
       "cheek-eye": 0.05,
       "cheek-eye-sigma": 0.25,
-      "gaze-offset-max": 0.15,
+      "gaze-offset-max": 0.06,
+      "gaze-bias": [0.04, 0.08],
+      "cream-reach-E": 0.22,
+      "iris-lower-glow": 0.55,
       "gaze-full-at-deg": 40,
       "catch-radius": 0.2,
       "catch-offset": [-0.32, -0.46],
-      "iris-top-dark": 0.7,
-      "brow-shadow": 0.06,
+      "iris-top-dark": 0.95,
+      "brow-shadow": 0.24,
       "crescent": 0.95,
       "crescent-from": 0.1,
       "crescent-dir": [-0.45, 0.4],
@@ -1677,12 +1680,12 @@
     "A": {
       "provisional": "chunk 1 builds the quadruped's body only to judge proportion and the head's mass; chunk 2 replaces the legs, the stance and these numbers. Every length here is a fraction of the stature S (the body is the same under every head size)",
       "ad": "AD fix round 2, ruling 1 and must-fix 1: the minimal body pass. (a) The back is a rail that falls from the nape: the screen top is 0.8, 0.72 and 0.55 S at 0.7, 0.85 and 0.95 of the length (the master's profile; R-back). (b) The head is its own mass: a nape step, a jowl that overhangs the shoulder with a groove. (c) A round shoulder, an elbow, a taper to the paw; the chest's cream bulges forward under the chin. back-drop is gone: one number could not hold the curve",
-      "chest": { "c": [-0.34, 0.42], "r": [0.62, 0.26, 0.325] },
+      "chest": { "c": [-0.34, 0.43], "r": [0.62, 0.26, 0.325] },
       "pelvis": { "c": [-0.78, 0.26], "r": [0.27, 0.25, 0.24] },
       "cheek-eye": 0.05,
       "cheek-forward": 0.0,
       "cheek-eye-back": 1,
-      "chin-overhang": 0.12,
+      "chin-overhang": 0.05,
       "nape-behind-S": 0.155,
       "chin-height": 0.12,
       "union-torso": 0.12,
@@ -1772,7 +1775,7 @@
         "48": 0.9
       },
       "mouth-min-px": {
-        "96": 1.7,
+        "96": 3.0,
         "48": 0.0
       },
       "nose-min-px": {
