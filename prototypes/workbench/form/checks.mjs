@@ -597,3 +597,87 @@ export function bellyChecks(r) {
   let n = 0, s = 0; for (let i = 0; i < W * H; i++) if (f[i] >= 0.5 && r.coverage[i] >= 0.98) { const L = Lstar(rgb(r, i % W, Math.floor(i / W))); if (L > 70) { n++; s += L; } }
   return { straightRunPx: best, meanL: n ? +(s / n).toFixed(1) : null, px: n };
 }
+
+// ---- the Loika measure (round 4, design 4): one function on any RGBA image, the stand or a render -------------------------------------------------------------
+// Pixels with alpha >= 128. Classes in order: leaf (a* < -4, b* > 8), iris (a* > 12, b* > 25, L* > 25), cream (L* >= 58, b* > 6, chroma < 40), skin (the rest).
+export function srgbToLab(r, g, b) {
+  const f = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }, R = f(r), G = f(g), B = f(b);
+  const X = (0.4124564 * R + 0.3575761 * G + 0.1804375 * B) / 0.95047, Y = 0.2126729 * R + 0.7151522 * G + 0.072175 * B, Z = (0.0193339 * R + 0.119192 * G + 0.9503041 * B) / 1.08883;
+  const g3 = (t) => (t > 216 / 24389 ? Math.cbrt(t) : (24389 / 27 * t + 16) / 116), fx = g3(X), fy = g3(Y), fz = g3(Z);
+  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+}
+const median = (a) => { if (!a.length) return NaN; const s = [...a].sort((p, q) => p - q), n = s.length; return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2; };
+const pctile = (a, q) => { if (!a.length) return NaN; const s = [...a].sort((p, q2) => p - q2); return s[Math.min(s.length - 1, Math.max(0, Math.round(q * (s.length - 1))))]; };
+export const LOIKA_CLASS = { none: 0, leaf: 1, iris: 2, cream: 3, skin: 4 };
+export function loikaMeasure(img) {
+  const W = img.width, H = img.height, d = img.data, N = W * H, on = new Uint8Array(N), cls = new Uint8Array(N), L = new Float32Array(N), A = new Float32Array(N), Bb = new Float32Array(N);
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (let i = 0; i < N; i++) {
+    if (d[i * 4 + 3] < 128) continue; on[i] = 1; const x = i % W, y = (i - x) / W; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+    const [l, a, b] = srgbToLab(d[i * 4], d[i * 4 + 1], d[i * 4 + 2]); L[i] = l; A[i] = a; Bb[i] = b; const ch = Math.hypot(a, b);
+    cls[i] = a < -4 && b > 8 ? 1 : a > 12 && b > 25 && l > 25 ? 2 : l >= 58 && b > 6 && ch < 40 ? 3 : 4;
+  }
+  if (x1 < 0) return null;
+  const bw = x1 - x0 + 1, bh = y1 - y0 + 1, box = { x0, y0, x1, y1, bw, bh }, out = { box };
+  // the skin core: skin pixels with no other class within r = round(3 bw / 264) px (a square window)
+  const r = Math.round(3 * bw / 264), core = [];
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+    const i = y * W + x; if (!on[i] || cls[i] !== 4) continue; let ok = true;
+    for (let dy = -r; dy <= r && ok; dy++) for (let dx = -r; dx <= r; dx++) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= W || Y >= H) continue; const j = Y * W + X; if (on[j] && cls[j] !== 4) { ok = false; break; } }
+    if (ok) core.push(i);
+  }
+  out.skin = { n: core.length, p5: pctile(core.map((i) => L[i]), 0.05), p50: pctile(core.map((i) => L[i]), 0.5), p95: pctile(core.map((i) => L[i]), 0.95), a: median(core.map((i) => A[i])), b: median(core.map((i) => Bb[i])) };
+  const medOf = (c, ch) => { const v = []; for (let i = 0; i < N; i++) if (on[i] && cls[i] === c) v.push(ch[i]); return { n: v.length, p50: median(v) }; };
+  out.cream = { L: medOf(3, L).p50, a: medOf(3, A).p50, b: medOf(3, Bb).p50, n: medOf(3, L).n };
+  out.iris = { L: medOf(2, L).p50, a: medOf(2, A).p50, b: medOf(2, Bb).p50, n: medOf(2, L).n };
+  out.leaf = { a: medOf(1, A).p50, b: medOf(1, Bb).p50, n: medOf(1, A).n };
+  // 8-connected components of one class
+  const components = (pred) => {
+    const seen = new Uint8Array(N), comps = [];
+    for (let s = 0; s < N; s++) {
+      if (seen[s] || !pred(s)) continue; const st = [s], px = []; seen[s] = 1;
+      while (st.length) { const i = st.pop(); px.push(i); const x = i % W, y = (i - x) / W; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= W || Y >= H) continue; const j = Y * W + X; if (!seen[j] && pred(j)) { seen[j] = 1; st.push(j); } } }
+      comps.push(px);
+    }
+    return comps;
+  };
+  const bbox = (px) => { let a = Infinity, b = Infinity, c = -Infinity, e = -Infinity; for (const i of px) { const x = i % W, y = (i - x) / W; a = Math.min(a, x); c = Math.max(c, x); b = Math.min(b, y); e = Math.max(e, y); } return { x0: a, y0: b, x1: c, y1: e, w: c - a + 1, h: e - b + 1, n: px.length }; };
+  // the throat: the largest cream component
+  const cr = components((i) => on[i] && cls[i] === 3).sort((p, q) => q.length - p.length)[0];
+  if (cr) { const b = bbox(cr); out.throat = { top: (b.y0 - y0) / bh, share: cr.length / (bw * bh), n: cr.length }; } else out.throat = null;
+  // the eyes: iris components of >= 2 px, merged when their centroids are < .07 bw apart; the two largest groups
+  const ic = components((i) => on[i] && cls[i] === 2).filter((p) => p.length >= 2).map((px) => ({ px, cx: px.reduce((s, i) => s + (i % W), 0) / px.length, cy: px.reduce((s, i) => s + Math.floor(i / W), 0) / px.length }));
+  const groups = []; for (const c of ic) { const g = groups.find((q) => q.parts.some((p) => Math.hypot(p.cx - c.cx, p.cy - c.cy) < 0.07 * bw)); if (g) g.parts.push(c); else groups.push({ parts: [c] }); }
+  for (const g of groups) { g.px = g.parts.flatMap((p) => p.px); g.bb = bbox(g.px); }
+  groups.sort((p, q) => q.px.length - p.px.length);
+  const eyeOf = (g) => {
+    if (!g) return null; const b = g.bb, cx = (b.x0 + b.x1 + 1) / 2, cy = (b.y0 + b.y1 + 1) / 2, ri = [], ro = [];
+    for (let k = 0; k < 16; k++) {
+      const ang = (k / 16) * 2 * Math.PI, dx = Math.cos(ang), dy = Math.sin(ang); let first = -1, outer = -1, ended = false;
+      for (let t = 0; t < 400; t += 0.25) {
+        const X = Math.floor(cx + dx * t), Y = Math.floor(cy + dy * t); if (X < 0 || Y < 0 || X >= W || Y >= H || !on[Y * W + X]) { ended = true; break; }
+        const j = Y * W + X;
+        if (first < 0) { if (cls[j] === 3) first = t; } else if (cls[j] === 4 && L[j] < 40) { outer = t; break; }
+      }
+      if (first >= 0 && outer >= 0 && !ended) { ri.push(first); ro.push(outer); }
+    }
+    return { D: b.h / bh, wh: b.w / b.h, w: b.w, h: b.h, n: g.px.length, center: [cx, cy], rays: ri.length, ring: ri.length >= 6 ? median(ro) / median(ri) : null, ringD: ri.length >= 6 ? 2 * median(ro) / bh : null };
+  };
+  out.near = eyeOf(groups[0]); out.far = eyeOf(groups[1]);
+  out.sep = out.near && out.far ? Math.hypot(out.near.center[0] - out.far.center[0], out.near.center[1] - out.far.center[1]) / bh : null;
+  // the snout: l(y) = the first alpha column of the row minus the box's left edge
+  const l = new Array(H).fill(NaN); for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (on[y * W + x]) { l[y] = x - x0; break; }
+  let mn = Infinity; for (let y = Math.ceil(y0 + 0.25 * bh); y <= Math.floor(y0 + 0.70 * bh); y++) if (l[y] < mn) mn = l[y];
+  const near1 = []; for (let y = Math.ceil(y0 + 0.25 * bh); y <= Math.floor(y0 + 0.70 * bh); y++) if (l[y] <= mn + 1) near1.push(y);
+  const tipY = near1[Math.floor((near1.length - 1) / 2) + ((near1.length - 1) % 2 ? 1 : 0)] ?? near1[0]; // the middle row
+  let rec = 0; for (let y = tipY; y <= Math.floor(y0 + 0.85 * bh); y++) if (!Number.isNaN(l[y])) rec = Math.max(rec, l[y] - l[tipY]);
+  out.snout = { tip: (tipY - y0) / bh, recess: rec / bw };
+  // the nape: top(x) = the first non-leaf body pixel of column x
+  const top = new Array(W).fill(NaN); for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) if (on[y * W + x] && cls[y * W + x] !== 1) { top[x] = y; break; }
+  const win = Math.round(0.045 * bw), slope = (a, b) => (top[b] - top[a]) / (b - a); // the slope of top over a window, from its two ends
+  let best = -Infinity, nx = NaN;
+  for (let x = Math.ceil(x0 + 0.45 * bw + win); x <= Math.floor(x0 + 0.90 * bw - win); x++) { const s1 = slope(x - win, x), s2 = slope(x, x + win); if (Number.isNaN(s1) || Number.isNaN(s2)) continue; const t = Math.atan(s1) - Math.atan(s2); if (t > best) { best = t; nx = x; } }
+  let crown = Infinity; for (let x = x0; x < x0 + 0.55 * bw; x++) if (!Number.isNaN(top[x])) crown = Math.min(crown, top[x]);
+  out.nape = { x: (nx - x0) / bw, turn: best * 180 / Math.PI, drop: (top[nx] - crown) / bh };
+  return out;
+}

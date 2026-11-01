@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { buildScene } from "../mesh.mjs";
 import { renderForm } from "../render.mjs";
+import { loikaMeasure } from "../checks.mjs";
 import { paintMarks } from "../material.mjs";
 import { SPECIES } from "../species-trial.mjs";
 import { STANDS, loadStands, standRef, SIZE_NAMES } from "../trial.mjs";
@@ -63,4 +64,20 @@ test("look.ramp.light lifts the shadow floor on the light marks only", () => {
 test("meta.eyes carries the apex and the cap radius", () => {
   const form = SPECIES.loika, ref = standRef(loadStands("loika")[304]), r = renderForm(buildScene(form, { extentDiv: 120 }), form.camera, 96, { ref });
   for (const e of r.meta.eyes) { assert.equal(e.apex.length, 2); assert.ok(e.capR > 0 && e.capR < e.r); assert.ok(Math.hypot(e.apex[0] - e.at[0], e.apex[1] - e.at[1]) <= e.r + 1e-6); }
+});
+
+// the stand's own values (design 4 and 5): the port of the measure is pinned to them within +-.005 (the turn within half a degree)
+test("the Loika measure returns the stand's values within .005", { skip: !existsSync(`${STANDS.loika}-304x312.png`) }, () => {
+  const st = loadStands("loika"), m = loikaMeasure(st[304]), near = (v, t, tol, what) => assert.ok(Math.abs(v - t) <= tol, `${what}: ${v} against ${t}`);
+  near(m.skin.p5, 12.8, 0.05, "p5"); near(m.skin.p50, 21.9, 0.05, "p50"); near(m.skin.p95, 39.8, 0.05, "p95"); near(m.skin.a, 2.9, 0.05, "skin a"); near(m.skin.b, 0.0, 0.05, "skin b");
+  near(m.cream.L, 80.2, 0.05, "cream L"); near(m.cream.a, 5.4, 0.05, "cream a"); near(m.cream.b, 21.5, 0.05, "cream b");
+  near(m.iris.L, 49.4, 0.05, "iris L"); near(m.iris.a, 28.3, 0.05, "iris a"); near(m.iris.b, 49.8, 0.05, "iris b"); assert.equal(m.iris.n, 801);
+  near(m.leaf.a, -13.0, 0.05, "leaf a"); near(m.leaf.b, 33.2, 0.05, "leaf b");
+  near(m.throat.top, 0.481, 0.005, "throat top"); near(m.throat.share, 0.095, 0.005, "throat share"); near(m.near.ring, 1.40, 0.005, "near ring");
+  near(m.near.D, 0.131, 0.005, "near D"); near(m.near.ringD, 0.208, 0.005, "ring outer D"); near(m.far.wh, 0.52, 0.005, "far w/h"); near(m.sep, 0.296, 0.005, "separation");
+  near(m.snout.tip, 0.484, 0.005, "snout tip"); near(m.snout.recess, 0.148, 0.005, "recess"); near(m.nape.x, 0.663, 0.005, "nape x"); near(m.nape.turn, 54, 0.5, "nape turn"); near(m.nape.drop, 0.218, 0.005, "nape drop");
+  const m96 = loikaMeasure(st[96]), m48 = loikaMeasure(st[48]);
+  near(m96.skin.b, -0.2, 0.05, "96 b"); near(m96.skin.p50, 21.9, 0.05, "96 p50"); near(m96.throat.top, 0.481, 0.005, "96 throat"); assert.equal(m96.near.w, 11); near(m96.near.ring, 1.42, 0.005, "96 ring");
+  assert.deepEqual([m96.far.w, m96.far.h], [4, 8]); near(m96.snout.recess, 0.151, 0.005, "96 recess"); near(m96.nape.drop, 0.203, 0.005, "96 drop");
+  near(m48.throat.top, 0.395, 0.005, "48 throat"); near(m48.snout.recess, 0.150, 0.005, "48 recess"); near(m48.nape.drop, 0.186, 0.005, "48 drop"); assert.deepEqual([m48.near.w, m48.near.h], [6, 6]); assert.deepEqual([m48.far.w, m48.far.h], [2, 4]);
 });
