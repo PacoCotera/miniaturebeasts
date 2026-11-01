@@ -514,8 +514,8 @@ export const ROUND4_LOG = [];
     log("look.pigments", before, js({ skin: p.skin, patch: p.patch, belly: p.belly, ring: p.ring, nail: p.nail, leaf: p.leaf }), "design 1.1: the skin was blue over red (violet); cream warmer; leaf from the stand's median"); }
   { const before = js(L.look.material); L.look.material = { kind: "skin", gloss: 0.10, k0: 0.28 }; log("look.material", before, js(L.look.material), "design 1.1: shadow floor k0 .58 to .28 (the stand's skin spans 27 L*, round 3's 16)"); }
   L.look.ramp = { light: 0.85 }; log("look.ramp", "none", js(L.look.ramp), "design 1.1: the light marks (belly, plate, eye ring, nails) on their own floor .85");
-  { const e = L.look.eyes, before = js({ iris: e.iris, iris_r: e.iris_r, pupil_r: e.pupil_r }); Object.assign(e, { iris: [226, 118, 34], pupil: [24, 14, 12], iris_r: 1.0, pupil_r: 0.5, matte: 1.0 });
-    log("look.eyes", before, js({ iris: e.iris, iris_r: e.iris_r, pupil_r: e.pupil_r, matte: e.matte }), "design 1.1, 1.3: the iris fills the visible cap (no grey band) and is lit at matte 1.0 (it was halved to a brown)"); }
+  { const e = L.look.eyes, before = js({ iris: e.iris, iris_r: e.iris_r, pupil_r: e.pupil_r }); Object.assign(e, { iris: [226, 118, 34], pupil: [24, 14, 12], iris_r: 1.0, pupil_r: 0.5, matte: 1.0, foreshorten: true });
+    log("look.eyes", before, js({ iris: e.iris, iris_r: e.iris_r, pupil_r: e.pupil_r, matte: e.matte, foreshorten: e.foreshorten }), "design 1.1, 1.3, C4: the iris fills the visible cap (no grey band) and is lit at matte 1.0 (it was halved to a brown); at 96 and 48 the glyph is foreshortened and kept inside the outline"); }
   { const before = js(L.look.eyering); L.look.eyering = { inner: 0.45, outer: 0.77, soft: 0.04 }; log("look.eyering", before, js(L.look.eyering), "design 1.2: the ring is defined against the visible cap (1.46 x the iris radius), not the sphere"); }
 }
 

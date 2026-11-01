@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { buildScene } from "../mesh.mjs";
 import { renderForm } from "../render.mjs";
-import { loikaMeasure } from "../checks.mjs";
+import { loikaMeasure, loikaSmallRows } from "../checks.mjs";
 import { paintMarks } from "../material.mjs";
 import { SPECIES } from "../species-trial.mjs";
 import { STANDS, loadStands, standRef, SIZE_NAMES } from "../trial.mjs";
@@ -80,4 +80,18 @@ test("the Loika measure returns the stand's values within .005", { skip: !exists
   near(m96.skin.b, -0.2, 0.05, "96 b"); near(m96.skin.p50, 21.9, 0.05, "96 p50"); near(m96.throat.top, 0.481, 0.005, "96 throat"); assert.equal(m96.near.w, 11); near(m96.near.ring, 1.42, 0.005, "96 ring");
   assert.deepEqual([m96.far.w, m96.far.h], [4, 8]); near(m96.snout.recess, 0.151, 0.005, "96 recess"); near(m96.nape.drop, 0.203, 0.005, "96 drop");
   near(m48.throat.top, 0.395, 0.005, "48 throat"); near(m48.snout.recess, 0.150, 0.005, "48 recess"); near(m48.nape.drop, 0.186, 0.005, "48 drop"); assert.deepEqual([m48.near.w, m48.near.h], [6, 6]); assert.deepEqual([m48.far.w, m48.far.h], [2, 4]);
+});
+
+test("the stand itself passes the 96 and 48 image rows of design 5", { skip: !existsSync(`${STANDS.loika}-304x312.png`) }, () => {
+  const st = loadStands("loika");
+  for (const sk of [96, 48]) { const o = loikaSmallRows(st[sk], sk), miss = o.rows.filter((x) => !x.pass && !(sk === 48 && x.id === "throat" && x.value >= 0.39)); assert.equal(miss.length, 0, `${sk}: ${JSON.stringify(miss)}`); } // the stand's 48 throat top is .395 against the gate's .40: within .005
+});
+test("the far eye's glyph at 96 and 48 is foreshortened and lies inside the outline", () => {
+  const form = SPECIES.loika, ref = standRef(loadStands("loika")[304]), sc = buildScene(form, { extentDiv: 120 });
+  for (const sk of [96, 48]) {
+    const r = renderForm(sc, form.camera, sk, { ref }), eyes = r.features.eyes.filter((e) => e.visible).sort((a, b) => a.center[0] - b.center[0]), far = eyes[0], near = eyes[1];
+    assert.ok(far.box[2] - far.box[0] < near.box[2] - near.box[0], `${sk}: the far box is narrower`);
+    const m = loikaSmallRows(r, sk, r.ink); if (sk === 96) assert.ok(m.rows.find((x) => x.id === "far eye").pass, JSON.stringify(m.rows.find((x) => x.id === "far eye")));
+    for (const g of [far]) for (let y = g.box[1]; y <= g.box[3]; y++) for (let x = g.box[0]; x <= g.box[2]; x++) if (r.ink[y * r.width + x] >= 2 && r.ink[y * r.width + x] <= 5) assert.ok(r.coverage[y * r.width + x] >= 0.5, `${sk} glyph pixel ${x},${y} outside`);
+  }
 });

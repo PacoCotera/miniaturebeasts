@@ -294,7 +294,9 @@ function featurePass({ skey, W, H, sizeKey, data, inkMap, cov, depth, SW, ss, pr
     if (!q) { out.eyes.push({ visible: false }); continue; }
     const irisR = ek.iris_r ?? (ek.big ? 0.66 : 0.78), pupilR = ek.pupil_r ?? 0.5, capR = Math.sin(Math.acos(e.cap)), aspect = (faceM.spec.eyes.aspect ?? 1) < 0.8 ? 0.75 : 1;
     const Dmin = sizeKey === 96 ? 3.2 : 2.2, D = Math.max(Dmin, 2 * e.r * capR * irisR * scale);
-    recs.push({ e, cx: q[0], cy: q[1], D, DX: D, DY: D * aspect, irisR, pupilR });
+    // round 4 (C4), look.eyes.foreshorten: the glyph's width follows how squarely the eye faces the viewer, clamped to .45 .. 1 (a far eye on the side of the head is a narrow ellipse, not a disc)
+    const fs = ek.foreshorten ? Math.min(1, Math.max(0.45, e.n[0] * tt[0] + e.n[1] * tt[1] + e.n[2] * tt[2])) : 1;
+    recs.push({ e, cx: q[0], cy: q[1], D, DX: D * fs, DY: D * aspect, irisR, pupilR });
   }
   // the gap rule: >= 2 px clear between the discs at 96 and >= 1 px at 48 (the only reason an eye moves by more than 0.5 px)
   if (recs.length === 2) { const [a, b] = recs[0].cx < recs[1].cx ? [recs[0], recs[1]] : [recs[1], recs[0]], need = sizeKey === 96 ? 2 : 1, gap = b.cx - b.DX / 2 - (a.cx + a.DX / 2); if (gap < need) { const d = (need - gap) / 2; a.cx -= d; b.cx += d; } }
@@ -306,22 +308,32 @@ function featurePass({ skey, W, H, sizeKey, data, inkMap, cov, depth, SW, ss, pr
     const ringW = species === "angular" ? (sizeKey === 96 ? 1 : 0.6) : (skey === "loika" ? (sizeKey === 96 ? 1.6 : 0.9) : sizeKey === 96 ? 1 : 0), pad = Math.ceil(Math.max(rx, ry) + ringW + 2);
     // the eye's box for the checks: the integer square of the core (side floor(D)), so a disc spills a little over its corners and the corner pixels are blends
     // the disc is centred on its box (a move of at most .5 px), so the four corner pixels of the box are always partly covered: blends
-    const sw = Math.max(2, Math.round(1 + 0.707 * DX)), sh = Math.max(2, Math.round(1 + 0.707 * DY)), x0 = Math.round(cx - sw / 2), x1 = x0 + sw - 1, y0 = Math.round(cy - sh / 2), y1 = y0 + sh - 1;
+    const sw = Math.max(2, Math.round(1 + 0.707 * DX)), sh = Math.max(2, Math.round(1 + 0.707 * DY)); let x0 = Math.round(cx - sw / 2), x1 = x0 + sw - 1, y0 = Math.round(cy - sh / 2), y1 = y0 + sh - 1;
     g.cx = cx = x0 + sw / 2; g.cy = cy = y0 + sh / 2;
+    // round 4 (C4): every pixel the disc touches must lie in the mesh (coverage >= .5); if not, the centre moves up to 1 px inward along the outline's normal (the coverage gradient over the disc),
+    // and the pixels still outside are not drawn (the ring, the disc, the pupil and the catch light alike)
+    const fore = !!ek.foreshorten, covAt = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? 0 : cov[y * W + x]), okPx = (x, y) => !fore || covAt(x, y) >= 0.5;
+    if (fore) {
+      const outside = (ccx, ccy) => { let n = 0; for (let y = Math.floor(ccy - ry) - 1; y <= Math.ceil(ccy + ry) + 1; y++) for (let x = Math.floor(ccx - rx) - 1; x <= Math.ceil(ccx + rx) + 1; x++) if (ellCov(x, y, ccx, ccy, rx, ry) > 0 && covAt(x, y) < 0.5) n++; return n; };
+      if (outside(cx, cy) > 0) {
+        let gx = 0, gy = 0; for (let y = Math.floor(cy - ry) - 1; y <= Math.ceil(cy + ry) + 1; y++) for (let x = Math.floor(cx - rx) - 1; x <= Math.ceil(cx + rx) + 1; x++) if (ellCov(x, y, cx, cy, rx, ry) > 0) { gx += covAt(x + 1, y) - covAt(x - 1, y); gy += covAt(x, y + 1) - covAt(x, y - 1); }
+        const gl = Math.hypot(gx, gy); if (gl > 1e-9) { gx /= gl; gy /= gl; let bt = 0, bn = outside(cx, cy); for (let t = 0.25; t <= 1 + 1e-9; t += 0.25) { const n = outside(cx + gx * t, cy + gy * t); if (n < bn) { bn = n; bt = t; } if (n === 0) break; } cx += gx * bt; cy += gy * bt; g.cx = cx; g.cy = cy; g.moved = bt; x0 = Math.round(cx - sw / 2); x1 = x0 + sw - 1; y0 = Math.round(cy - sh / 2); y1 = y0 + sh - 1; }
+      }
+    }
     // the surround: the pixels within 1 px of the disc; the ring is drawn only where they are not already light (>= core + 35 L*), always for Rupar's own ring (design 6)
     let sumL = 0, nL = 0; for (let y = y0 - 2; y <= y1 + 2; y++) for (let x = x0 - 2; x <= x1 + 2; x++) { const c0 = ellCov(x, y, cx, cy, rx + 1, ry + 1), c1 = ellCov(x, y, cx, cy, rx, ry); if (c0 > 0.2 && c1 < 0.5 && x >= 0 && y >= 0 && x < W && y < H) { sumL += Lstar(rgbAt(x, y)); nL++; } }
     const surroundL = nL ? sumL / nL : 50, coreL = Lstar(hasPupil ? pupilC : coreC), light = surroundL >= coreL + 35;
     const drawRing = ringW > 0 && (species === "angular" || !light);
     let ringOnLight = 0;
     for (let y = y0 - pad; y <= y1 + pad; y++) for (let x = x0 - pad; x <= x1 + pad; x++) {
-      if (x < 0 || y < 0 || x >= W || y >= H) continue;
+      if (x < 0 || y < 0 || x >= W || y >= H || !okPx(x, y)) continue;
       const cOut = ellCov(x, y, cx, cy, rx + ringW, ry + ringW * aspectOf(ry, rx)), cIn = ellCov(x, y, cx, cy, rx, ry);
       if (drawRing) { const ra = Math.max(0, cOut - cIn); if (ra > 0) { const under = Lstar(rgbAt(x, y)); if (under >= coreL + 35 && species !== "angular") { /* the plate is already light here: no ring pixel */ } else blend(x, y, lightRim(ek.rim), ra, INK.rim); } }
-      if (cIn > 0) { blend(x, y, coreC, cIn, INK.pupil); if (hasPupil) { const pr = Math.max(1, pupilR / irisR * D) / 2, cp = ellCov(x, y, cx, cy, pr, pr * (ry / rx)); if (cp > 0) blend(x, y, pupilC, cp * cIn, INK.pupil); } }
+      if (cIn > 0) { blend(x, y, coreC, cIn, INK.pupil); if (hasPupil) { const pr = Math.max(1, pupilR / irisR * D) / 2, cp = fore ? ellCov(x, y, cx, cy, Math.max(0.5, pupilR / irisR * DX / 2), Math.max(0.5, pupilR / irisR * DY / 2)) : ellCov(x, y, cx, cy, pr, pr * (ry / rx)); if (cp > 0) blend(x, y, pupilC, cp * cIn, INK.pupil); } }
     }
     // the catch light: 1 px at the centre + (-.22 D, -.22 D), toward the key light, the same side on both eyes; full at D >= 4, 50 % at 3 <= D < 4 (96); 48: 1 px at 60 % when D >= 3
     let catchA = 0; if (sizeKey === 96) catchA = D >= 4 ? 1 : D >= 3 ? 0.5 : 0; else catchA = D >= 3 ? 0.6 : 0;
-    if (catchA > 0) { const px = Math.floor(cx - 0.22 * D), py = Math.floor(cy - 0.22 * D); blend(px, py, mixc([255, 255, 255], irisC, 0.2), catchA, catchA >= 0.5 ? INK.catch : 0); g.catchAt = [px, py]; }
+    if (catchA > 0) { const px = Math.floor(cx - 0.22 * D), py = Math.floor(cy - 0.22 * D); if (okPx(px, py)) blend(px, py, mixc([255, 255, 255], irisC, 0.2), catchA, catchA >= 0.5 ? INK.catch : 0); g.catchAt = [px, py]; }
     boxes.push({ x0, y0, x1, y1, cw: x1 - x0 + 1, ch: y1 - y0 + 1, e: g.e });
     out.eyes.push({ visible: true, core: [x1 - x0 + 1, y1 - y0 + 1], box: [x0, y0, x1, y1], center: [cx, cy], D, hasPupil, coreCol: (hasPupil ? pupilC : coreC).map((v) => Math.round(v)), irisCol: irisC, ring: drawRing, ringW, ringOnLight, catchA, catchAt: g.catchAt ?? null, surroundL, sides: {} });
   }

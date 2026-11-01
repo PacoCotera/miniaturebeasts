@@ -25,6 +25,7 @@ export const TUNING = [
   { species: "drapet", path: "face.nose.y", after: -0.0459, why: "face.place: the nose .026 H under the eye line against >= .027 (this keeps the allowance's end of -.046)" },
   { species: "wickle", path: "look.material.k0", after: 0.62, why: "surface.value: the body's 5th percentile L* was 57.5 against the stand's 48.4 +- 6 at k0 .70 (and the median fell under at .60): -11.4 %" },
   { species: "drapet", path: "look.material.k0", after: 0.561, why: "surface.value: the body's 5th percentile L* was 39.8 against the stand's 26.6 +- 6 at k0 .66: -15 %" },
+  { species: "loika", path: "face.phi", after: 21.25, why: "design 5, 96 far eye (w/h .40 .. .70, inside the outline): at the design's 25 the far eye's centre sat 2.5 px inside the outline and C4 clipped its glyph to 3 x 11 (.27); phi -15 % (the allowance's end) turns the face toward the viewer: 5 x 12 (.42) at 96, 304 far w/h .625, throat top .533" },
 ]; // round 3 tuning; round 2's list is TRIAL2 in species-trial.mjs, folded into ROUND3
 
 const walk = (o, path) => { const ps = path.split("."); for (let i = 0; i < ps.length - 1; i++) o = o[ps[i]]; return [o, ps.at(-1)]; };

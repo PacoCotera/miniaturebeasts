@@ -299,6 +299,16 @@ export function featureChecks(ctx) {
     const within = (v, [lo, hi]) => v >= lo && v <= hi;
     const ok = within(headH, art.headH) && within(headW, art.headW) && within(sep, art.eyeSep) && within(rimD, art.eyeD);
     out.push(C("loika.head", "the head against the signed art: head height (crown to the lowest mouth-ink pixel) and width, eye separation, eye diameter, as fractions of the creature's box", ok, { headH: +headH.toFixed(3), headW: +headW.toFixed(3), eyeSep: +sep.toFixed(3), eyeD: +rimD.toFixed(3) }, `headH ${art.headH}, headW ${art.headW}, eyeSep ${art.eyeSep}, eyeD ${art.eyeD}`, "the art's own values were measured on mibi-adult-S01-304x312.png (see report)"));
+    { // loika.96 and loika.48 (round 4, design 5): what the small sizes must show
+      const toes = [304, 96, 48].map((k) => loikaToes(r[k])), visible = Object.keys(toes[0]);
+      for (const sk of [96, 48]) {
+        const sm = loikaSmallRows(r[sk], sk, r[sk].ink), t = toes[sk === 96 ? 1 : 2];
+        const toeRow = sk === 96 ? { id: "toes", pass: visible.length > 0 && visible.every((ft) => Object.values(t[ft] ?? {}).filter((x) => x.n >= 3).length === 3), value: Object.fromEntries(visible.map((ft) => [ft, Object.values(t[ft] ?? {}).map((x) => x.n)])), threshold: "three toes per front foot, >= 3 px each" }
+          : { id: "toes", pass: visible.length > 0 && visible.every((ft) => Object.values(t[ft] ?? {}).reduce((q, x) => q + x.pale, 0) >= 2), value: Object.fromEntries(visible.map((ft) => [ft, Object.values(t[ft] ?? {}).reduce((q, x) => q + x.pale, 0)])), threshold: ">= 2 pale toe pixels per front foot" };
+        const rows = [...sm.rows, toeRow];
+        out.push(C(`loika.${sk}`, `Loika at ${sk}: skin, throat, near and far eye, snout and nape, toes${sk === 96 ? ", no cream between the eyes" : ""} (design 5)`, rows.every((x) => x.pass), Object.fromEntries(rows.map((x) => [x.id, { pass: x.pass, value: x.value }])), rows.map((x) => `${x.id}: ${x.threshold}`).join("; ")));
+      }
+    }
     { // loika.rise (design 1): the crown above the top of the body at sigma <= .35, as a fraction of the creature's height
       const Vm = scene.mesh.vertices, At = scene.mesh.attrs, hid2 = At.partNames.indexOf("head"); let crown = -Infinity, top = -Infinity, zlo = Infinity, zhi = -Infinity;
       for (let i = 0; i < At.part.length; i++) { const z = Vm[i * 3 + 2]; zlo = Math.min(zlo, z); zhi = Math.max(zhi, z); if (At.part[i] === hid2 && At.group[i] === 0) crown = Math.max(crown, z); if (At.group[i] === 0 && At.sigma[i] <= 0.35 && At.part[i] !== hid2) top = Math.max(top, z); }
@@ -468,9 +478,9 @@ export function round2Checks(ctx) {
       // the surround: the mean L* of the pixels 1 px outside the box
       let sl = 0, sn = 0; for (let x = x0 - 2; x <= x1 + 2; x++) for (const y of [y0 - 2, y1 + 2]) { sl += Lstar(rgb(rr, x, y)); sn++; } for (let y = y0; y <= y1; y++) for (const x of [x0 - 2, x1 + 2]) { sl += Lstar(rgb(rr, x, y)); sn++; }
       const surround = sl / sn, coreL = Lstar(rgb(rr, Math.floor(e.center[0]), Math.floor(e.center[1])));
-      // 1. the four corner pixels of the box are blends: L* between the core's and the surround's, >= 5 from each (a corner of a disc whose box is larger than the disc)
+      // 1. (round 4: skipped for a disc of D >= 6 px, where the box's corners lie on the ring, not the disc) the four corner pixels of the box are blends: L* between the core's and the surround's, >= 5 from each (a corner of a disc whose box is larger than the disc)
       // each corner is compared with the surround next to it (the pixel 2 px diagonally outside it): a face patch is not uniform round the eye
-      const cornersOk = cornerPx.every(([x, y], i) => { const sx = i % 2 === 0 ? -1 : 1, sy = i < 2 ? -1 : 1, so = Lstar(rgb(rr, x + 2 * sx, y + 2 * sy)), L = Lstar(rgb(rr, x, y)); return Math.abs(coreL - so) < 12 || (L >= Math.min(coreL, so) + 5 - 1e-9 && L <= Math.max(coreL, so) - 5 + 1e-9); });
+      const cornersOk = e.D >= 6 || cornerPx.every(([x, y], i) => { const sx = i % 2 === 0 ? -1 : 1, sy = i < 2 ? -1 : 1, so = Lstar(rgb(rr, x + 2 * sx, y + 2 * sy)), L = Lstar(rgb(rr, x, y)); return Math.abs(coreL - so) < 12 || (L >= Math.min(coreL, so) + 5 - 1e-9 && L <= Math.max(coreL, so) - 5 + 1e-9); });
       // 2. the core hue within 35 degrees of the iris hue where the iris chroma >= 15; core L* <= 30 at 96 and <= 25 at 48
       const [hc] = hueOf(e.coreCol), [hi2, ci] = hueOf(e.irisCol), dh = Math.min(Math.abs(hc - hi2), 360 - Math.abs(hc - hi2)), hueOk = ci < 15 || dh <= 35, darkOk = Lstar(e.coreCol) <= (sk === 96 ? 30 : 25) + 1e-9;
       // 3. no ring pixels where the plate already gives dL* >= 35
@@ -661,7 +671,7 @@ export function loikaMeasure(img) {
       }
       if (first >= 0 && outer >= 0 && !ended) { ri.push(first); ro.push(outer); }
     }
-    return { D: b.h / bh, wh: b.w / b.h, w: b.w, h: b.h, n: g.px.length, center: [cx, cy], rays: ri.length, ring: ri.length >= 6 ? median(ro) / median(ri) : null, ringD: ri.length >= 6 ? 2 * median(ro) / bh : null };
+    return { px: g.px, bbox: [b.x0, b.y0, b.x1, b.y1], D: b.h / bh, wh: b.w / b.h, w: b.w, h: b.h, n: g.px.length, center: [cx, cy], rays: ri.length, ring: ri.length >= 6 ? median(ro) / median(ri) : null, ringD: ri.length >= 6 ? 2 * median(ro) / bh : null };
   };
   out.near = eyeOf(groups[0]); out.far = eyeOf(groups[1]);
   out.sep = out.near && out.far ? Math.hypot(out.near.center[0] - out.far.center[0], out.near.center[1] - out.far.center[1]) / bh : null;
@@ -680,4 +690,45 @@ export function loikaMeasure(img) {
   let crown = Infinity; for (let x = x0; x < x0 + 0.55 * bw; x++) if (!Number.isNaN(top[x])) crown = Math.min(crown, top[x]);
   out.nape = { x: (nx - x0) / bw, turn: best * 180 / Math.PI, drop: (top[nx] - crown) / bh };
   return out;
+}
+
+// ---- round 4, design 5: what 96 and 48 must show, the same measures on the renders (or the stand) -------------------------------------------------------------
+// The image-only rows: img is { width, height, data } (RGBA); ink is the render's ink map (optional: the mouth line at 96). Returns { rows: [{ id, pass, value, threshold }], pass }.
+export function loikaSmallRows(img, size, ink = null) {
+  const m = loikaMeasure(img), W = img.width, H = img.height, lab = (x, y) => { const i = (y * W + x) * 4; return srgbToLab(img.data[i], img.data[i + 1], img.data[i + 2]); };
+  const on = (x, y) => x >= 0 && y >= 0 && x < W && y < H && img.data[(y * W + x) * 4 + 3] >= 128, rows = [], R = (id, pass, value, threshold) => rows.push({ id, pass: !!pass, value, threshold });
+  const inRange = (v, lo, hi) => v !== null && v !== undefined && !Number.isNaN(v) && v >= lo && v <= hi, r2 = (v) => (typeof v === "number" ? +v.toFixed(3) : v);
+  const n = m.near, f = m.far, dark = (b) => { let c = 0; for (let y = b[1]; y <= b[3]; y++) for (let x = b[0]; x <= b[2]; x++) if (lab(x, y)[0] < 30) c++; return c; }, bright = (b, lo) => { let c = 0; for (let y = b[1]; y <= b[3]; y++) for (let x = b[0]; x <= b[2]; x++) if (on(x, y) && lab(x, y)[0] >= lo) c++; return c; };
+  R("skin", inRange(m.skin.b, -1.5, 1.5) && (size === 48 || inRange(m.skin.p50, 19, 25)), { b: r2(m.skin.b), p50: r2(m.skin.p50) }, size === 96 ? "b* -1.5 .. 1.5, p50 19 .. 25" : "b* -1.5 .. 1.5");
+  R("throat", m.throat && inRange(m.throat.top, size === 96 ? 0.44 : 0.40, 0.58), m.throat && r2(m.throat.top), size === 96 ? ".44 .. .58" : ".40 .. .58");
+  if (size === 96) {
+    const lit = n ? bright(n.bbox, 80) : 0;
+    R("near eye", n && inRange(n.w, 10, 13) && inRange(n.h, 10, 13) && dark(n.bbox) >= 1 && lit >= 1 && inRange(n.ring, 1.25, 1.7), n && { w: n.w, h: n.h, pupilPx: dark(n.bbox), catchPx: lit, ring: r2(n.ring) }, "10 .. 13 px; a black pupil; a catch light; ring ratio 1.25 .. 1.70 with dark skin outside");
+    R("far eye", f && inRange(f.wh, 0.4, 0.7), f && { w: f.w, h: f.h, wh: r2(f.wh) }, "w/h .40 .. .70 (inside the outline: by C4, every glyph pixel has mesh coverage >= .5; the stand's own far eye touches the outline)");
+    R("snout and nape", m.snout.recess >= 0.11 && m.nape.drop >= 0.15, { recess: r2(m.snout.recess), drop: r2(m.nape.drop) }, "recess >= .11 bw, drop >= .15 H");
+    // no cream pixel between the eyes above the mouth line, the throat's top row (not within 3 px of an eye's box: the eye's own ring is cream)
+    let creamBetween = 0, region = null;
+    if (n && f) {
+      const [a, b] = f.bbox[0] < n.bbox[0] ? [f.bbox, n.bbox] : [n.bbox, f.bbox];
+      const mouthY = m.box.y0 + Math.round(m.throat.top * m.box.bh); // the mouth line is where the throat's cream begins (the stand has no ink map)
+      const y0 = Math.min(a[1], b[1]), y1 = mouthY - 1, x0 = a[2] + 4, x1 = b[0] - 4; region = [x0, y0, x1, y1];
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (on(x, y)) { const [l, aa, bb] = lab(x, y); if (l >= 58 && bb > 6 && Math.hypot(aa, bb) < 40) creamBetween++; }
+    }
+    R("no cream between the eyes", n && f && creamBetween === 0, { creamPx: creamBetween, region }, "0 px");
+  } else {
+    let sides = 0; if (n) { const [x0, y0, x1, y1] = n.bbox; const side = (pts) => pts.some(([x, y]) => on(x, y) && lab(x, y)[0] >= 45); sides = [side(Array.from({ length: x1 - x0 + 1 }, (_, i) => [x0 + i, y0 - 1]).concat(Array.from({ length: x1 - x0 + 1 }, (_, i) => [x0 + i, y0 - 2]))), side(Array.from({ length: x1 - x0 + 1 }, (_, i) => [x0 + i, y1 + 1]).concat(Array.from({ length: x1 - x0 + 1 }, (_, i) => [x0 + i, y1 + 2]))), side(Array.from({ length: y1 - y0 + 1 }, (_, i) => [x0 - 1, y0 + i]).concat(Array.from({ length: y1 - y0 + 1 }, (_, i) => [x0 - 2, y0 + i]))), side(Array.from({ length: y1 - y0 + 1 }, (_, i) => [x1 + 1, y0 + i]).concat(Array.from({ length: y1 - y0 + 1 }, (_, i) => [x1 + 2, y0 + i])))].filter(Boolean).length; }
+    R("near eye", n && inRange(n.w, 5, 7) && inRange(n.h, 5, 7) && dark(n.bbox) >= 1 && sides >= 3, n && { w: n.w, h: n.h, pupilPx: dark(n.bbox), ringSides: sides }, "5 .. 7 px, a pupil, a light ring on >= 3 sides (partial pixels count)");
+    R("far eye", f && f.w <= 3, f && { w: f.w, h: f.h }, "<= 3 px wide");
+    R("snout and nape", m.snout.recess >= 0.10 && m.nape.drop >= 0.14, { recess: r2(m.snout.recess), drop: r2(m.nape.drop) }, "recess >= .10 bw, drop >= .14 H");
+  }
+  return { rows, pass: rows.every((x) => x.pass), measure: m };
+}
+// the toes of a render: for each front foot (group foreL, foreR) its toe groups' pixel counts and pale (L* >= 70) pixels; a foot is visible when any of its toes shows at 304
+export function loikaToes(rr) {
+  const names = rr.maps.groupNames, feet = {};
+  for (let i = 0; i < rr.width * rr.height; i++) {
+    const g = names[rr.maps.group[i]]; if (!g || rr.coverage[i] < 0.5) continue; const mt = /^(fore[LR])t(\d+)$/.exec(g); if (!mt) continue;
+    const L = srgbToLab(rr.data[i * 4], rr.data[i * 4 + 1], rr.data[i * 4 + 2])[0], foot = (feet[mt[1]] ??= {}), t = (foot[mt[2]] ??= { n: 0, pale: 0 }); t.n++; if (L >= 70) t.pale++;
+  }
+  return feet;
 }
