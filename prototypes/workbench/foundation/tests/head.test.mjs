@@ -31,7 +31,7 @@ test("the eye socket is carved: the surface at the eye's centre lies inside the 
   let a = -0.2, b = 0.3; for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (head.d(e.c[0] + e.n[0] * m, e.c[1] + e.n[1] * m, e.c[2] + e.n[2] * m) < 0) a = m; else b = m; }
   assert.ok(Math.abs(a + depth) < 0.012, `the floor is at ${a.toFixed(4)}, depth ${depth}`);
   // away from the socket the skin is K's own
-  const far = [0.0, 0, 0.5 - 0.02]; assert.ok(Math.abs(head.d(...far) - head.dK(...far)) < 1e-6);
+  const far = [0.0, 0.45, 0.0]; assert.ok(Math.abs(head.d(...far) - head.dK(...far)) < 1e-6);
 });
 test("the mouth is a crease cut under the nose, never a ridge", () => {
   const { head } = build();

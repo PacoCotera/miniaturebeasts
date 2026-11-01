@@ -80,10 +80,13 @@ export function buildHead(house, plan, kinds, fp) {
   const kG = rf["mouth-soften"], kN = rf["nose-soften"];
 
   const eyeBound = eyes.map((e) => ({ c: e.c, r: e.Rsock + 0.05 }));
+  // the crown's rise: the leaves' root is sunk in a small swell of the skull, so the top is a dome with one high point and no leaf lies flush on a straight run (AD fix round 5, must-fix 3)
+  const cr = rp.crest?.rise, dRise = cr ? (x, y, z) => sdEllipsoid(x - rp.crest.root[0], y - rp.crest.root[1], z - (cr[4] - cr[2]), cr[0], cr[1], cr[2]) : null;
   const faceBox = { c: [Math.max(xsN, 0.2), 0, (zEye + mouthZ) / 2], r: 0.5 * W + 0.1 };
   const dHead = (x, y, z) => {
     let d = dK(x, y, z);
     if (d > 0.4) return d;
+    if (dRise) d = sMin(d, dRise(x, y, z), cr[3]);
     if (dMJ) d = uRound(d, dMJ(x, y, z), rM);
     if (noseOn) d = sMin(d, dNose(x, y, z), kN);
     for (let i = 0; i < 2; i++) { const b = eyeBound[i], bd = Math.sqrt((x - b.c[0]) ** 2 + (y - b.c[1]) ** 2 + (z - b.c[2]) ** 2) - b.r; if (bd < 0.05) d = sSub(d, carves[i](x, y, z), kS); }

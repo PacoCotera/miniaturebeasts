@@ -22,7 +22,7 @@ export function makePaint(scene, look, view) {
   const eyeW = eyes.map((e) => { const cw = [hf.R[0] * e.c[0] + hf.R[1] * e.c[1] + hf.R[2] * e.c[2] + hf.c[0], hf.R[3] * e.c[0] + hf.R[4] * e.c[1] + hf.R[5] * e.c[2] + hf.c[1], hf.R[6] * e.c[0] + hf.R[7] * e.c[1] + hf.R[8] * e.c[2] + hf.c[2]]; return { a: dot3(cw, rr) - view.org[0], b: dot3(cw, uu) - view.org[1] }; });
   const pxw = 1 / scale; // one pixel in world units
   const minPupil = (ink["pupil-min-px"][sizeKey] ?? 0) / 2 * pxw, minCatch = (ink["catch-min-px"][sizeKey] ?? 0) / 2 * pxw, minMouth = (ink["mouth-min-px"][sizeKey] ?? 0) * pxw, minNose = (ink["nose-min-px"][sizeKey] ?? 0) * pxw;
-  const co = rf["catch-offset"], mouth = head.mouth;
+  const co = rf["catch-offset"], mouth = head.mouth, nearSign = Math.sign(eyes.map((e) => ({ s: e.side, t: dot3(towardLocal, e.n) })).sort((a, b) => b.t - a.t)[0].s);
   const mp = mouth.axis, mouthBound = { c: [mp[7][0], 0, mouth.z], r: mouth.w / 2 + 0.1 };
 
   function distMouth(x, y, z) { let d = 1e9; for (let i = 0; i < mp.length - 1; i++) { const a = mp[i], b = mp[i + 1], bx = b[0] - a[0], by = b[1] - a[1], bz = b[2] - a[2], px = x - a[0], py = y - a[1], pz = z - a[2], h = clamp((px * bx + py * by + pz * bz) / (bx * bx + by * by + bz * bz), 0, 1); d = Math.min(d, Math.hypot(px - bx * h, py - by * h, pz - bz * h)); } return d; }
@@ -33,7 +33,7 @@ export function makePaint(scene, look, view) {
   // It is evaluated for every point of the creature, so head and body share the one field and no seam is cut at their join
   const faceCreamAt = (q, nl) => {
     const ch = look.creamHead; if (!ch) return 0;
-    const hw = mouth.w / 2, ay = Math.abs(q[1]), zb = (ay <= hw ? mouth.zAt(ay) : mouth.zAt(hw) - ch.fall * (ay - hw)) - ch.below;
+    const hw = mouth.w / 2, ay = Math.abs(q[1]), fall = q[1] * nearSign > 0 ? ch.fall : (ch["fall-far"] ?? ch.fall), zb = (ay <= hw ? mouth.zAt(ay) : mouth.zAt(hw) - fall * (ay - hw)) - ch.below; // the far side's edge falls less: the cream reaches the outline under the snout
     const front = Math.max(sstep(-0.1, 0.3, q[0] / scene.head.K.a), sstep(0.1, 0.5, -nl[2])), reach = sstep(ch.reach[0], ch.reach[1], head.d0(q[0], q[1], q[2]));
     return sstep(zb + ch.soft, zb - ch.soft, q[2]) * front * reach;
   };
