@@ -88,6 +88,9 @@ def lin(c):
 
 
 # ---------------------------------------------------------------- the eye, in disc space (paint.mjs eyePaint)
+RING_SCALE = 0.88      # the ring's painted brightness: the lit disc plus its emission would clip the house's ivory to white; the RENDERED ring then reads about the cream's L*
+
+
 def eye_texture(H, eye, toward_local, n=256):
     """RGBA float image (n, n, 4), sRGB, u along the eye's `lat`, v along its `up`, spanning +-R_eye. Gaze toward the camera as the SDF does."""
     look, rf = H.look, H.rf
@@ -113,7 +116,7 @@ def eye_texture(H, eye, toward_local, n=256):
     pa = sstep(eye["pupilR"] + fw * 0.7, eye["pupilR"] - fw * 0.7, pr)
     col = mix(col, srgb(look["pupil"]), pa)
     ia = sstep(1 + fw / R * 0.7, 1 - fw / R * 0.7, rho)
-    col = mix(np.broadcast_to(srgb(look["ring"]), col.shape), col, ia)
+    col = mix(np.broadcast_to(srgb(look["ring"]) * RING_SCALE, col.shape), col, ia)
     co = rf["catch-offset"]
     cr = rf["catch-radius"] * R
     cy = min(-co[1] * R, 0.98 * R - cr - 0.04 * R)

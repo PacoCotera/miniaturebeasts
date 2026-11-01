@@ -20,7 +20,7 @@ if __name__ == "__main__":
     H, sc, rep = build_full(4, os.path.join(OUT, "tex"))
     res = dict(bake=sc.bake_info, build_s=time.time() - t0)
     sc.pose_stand(True)
-    sc.set_light_strength(1.8, 0.4)    # tuned by eye and by the five measures: the house's 0.58 shade ratio is for a sphere, see the sheet
+    sc.set_light_strength(1.1, 0.58)    # the house's shade ratio; lit 1.1 keeps the cream from clipping: see the sheet for the five measures
     rend = lambda p, smp: FN.render_sprite(sc, p, sc.floor, smp)
     res["sprites"] = sc.stand_sprites(OUT, "loika", renderer=rend)
     s304 = sc.last_framing["s304"]

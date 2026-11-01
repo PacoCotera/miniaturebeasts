@@ -9,6 +9,8 @@ from build import lin, strip_png_text
 
 
 EYE_EMIT = 0.5
+EYE_GAMMA = 1.0     # the emission is the texture raised to this power (below 1 it lifts the amber crescent more than the ivory ring)
+EYE_BASE = 1.0      # the texture's share of the eye's lit base colour (the ring would clip to white under the key at 1.0)
 
 
 def write_png(path, rgba8):
@@ -147,15 +149,26 @@ def add_eyes(sc, H, level_obj, offset=0.005):
         C = PT.disc_cage(H, eye)
         V = np.array(C.V) + H.kc
         n = eye["n"]
-        P = []
-        for p in V:
+        g = C.grid + 1
+        T = np.full(len(V), np.nan)
+        NR = np.zeros((len(V), 3))
+        for idx, p in enumerate(V):
             hit = bvh.ray_cast(Vector(p + n * 0.35), Vector(-n), 0.7)
-            loc, nrm = (hit[0], hit[1]) if hit[0] is not None else (None, None)
-            if loc is None:
-                nl = bvh.find_nearest(Vector(p), 0.5)
-                P.append(np.array(nl[0]) + np.array(nl[1]) * offset if nl[0] is not None else p)
-            else:
-                P.append(np.array(loc) + np.array(nrm) * offset)
+            if hit[0] is not None:
+                T[idx] = float(np.dot(np.array(hit[0]) - (p + n * 0.35), -n)); NR[idx] = hit[1]
+        med = np.nanmedian(T)
+        bad = np.isnan(T) | (np.abs(T - med) > 0.06)        # a ray that found another part of the head (the muzzle's ridge, the far side): take its neighbours' depth
+        T[bad] = np.nan
+        for _ in range(6):
+            Tg, Ng = T.reshape(g, g), NR.reshape(g, g, 3)
+            for jj in range(g):
+                for ii in range(g):
+                    if np.isnan(Tg[jj, ii]):
+                        nb = [(jj + a, ii + b) for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1)) if 0 <= jj + a < g and 0 <= ii + b < g and not np.isnan(Tg[jj + a, ii + b])]
+                        if nb:
+                            Tg[jj, ii] = np.mean([Tg[q] for q in nb]); Ng[jj, ii] = np.mean([Ng[q] for q in nb], axis=0)
+            T, NR = Tg.reshape(-1), Ng.reshape(-1, 3)
+        P = [p + n * 0.35 - n * t + (nr / max(np.linalg.norm(nr), 1e-9)) * offset for p, t, nr in zip(V, T, NR)]
         me = bpy.data.meshes.new(C.name)
         me.from_pydata([tuple(v) for v in P], [], [tuple(f) for f in C.F])
         me.update()
@@ -178,7 +191,10 @@ def add_eyes(sc, H, level_obj, offset=0.005):
         nt = mat.node_tree
         b = nt.nodes["Principled BSDF"]
         tn = nt.nodes.new("ShaderNodeTexImage"); tn.image = img; tn.extension = "CLIP"
-        nt.links.new(tn.outputs["Color"], b.inputs["Base Color"])
+        mx = nt.nodes.new("ShaderNodeMix"); mx.data_type = "RGBA"; mx.blend_type = "MULTIPLY"; mx.inputs["Factor"].default_value = 1.0
+        mx.inputs["B"].default_value = (EYE_BASE, EYE_BASE, EYE_BASE, 1)
+        nt.links.new(tn.outputs["Color"], mx.inputs["A"])
+        nt.links.new(mx.outputs["Result"], b.inputs["Base Color"])
         nt.links.new(tn.outputs["Alpha"], b.inputs["Alpha"])
         b.inputs["Roughness"].default_value = 1.0
         if "Specular IOR Level" in b.inputs:
@@ -186,7 +202,9 @@ def add_eyes(sc, H, level_obj, offset=0.005):
         # the eye is painted, not a lit ball (design 8.2: emission off) but the house wants the crescent at L* 62-70 under the house light, which the lit disc
         # does not reach: a little emission from the same texture (strength EYE_EMIT), reported on the sheet
         if "Emission Color" in b.inputs:
-            nt.links.new(tn.outputs["Color"], b.inputs["Emission Color"])
+            gm = nt.nodes.new("ShaderNodeGamma"); gm.inputs["Gamma"].default_value = EYE_GAMMA
+            nt.links.new(tn.outputs["Color"], gm.inputs["Color"])
+            nt.links.new(gm.outputs["Color"], b.inputs["Emission Color"])
             b.inputs["Emission Strength"].default_value = EYE_EMIT
         me.materials.append(mat)
         vg = ob.vertex_groups.new(name="head")

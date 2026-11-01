@@ -291,6 +291,8 @@ def paw_beans(H, lg, C, fitted_field):
             Pc = np.array([C.V[v] for v in cur])
             cc = Pc.mean(0)
             q = [C.add(cc + (p - cc) * sc + nrm * d) for p in Pc]
+            for v in q:
+                C.tags.setdefault("toe", {})[v] = 1.0
             for a in range(6):
                 new_faces.append((cur[a], cur[(a + 1) % 6], q[(a + 1) % 6], q[a]))
             cur = q
