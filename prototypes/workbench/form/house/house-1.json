@@ -1770,6 +1770,7 @@
     },
     "shade": {
       "ratio": 0.58,
+        "light-ratio": 0.8,
       "light-tint": [1.06, 0.96, 0.82],
       "warm-luma": [150, 205],
       "tint": [

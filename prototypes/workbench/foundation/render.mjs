@@ -70,7 +70,7 @@ export function renderCreature(scene, camera, sizeKey, { ref, look, extents = nu
       const ndl = dot3(n, Lw), tl = sstep(-0.22, 0.5, ndl), ao0 = aoOf(px, py, pz, n);
       // a light field (the cream) keeps a warm shade, never grey (R14): the cool core shade fades to the warm light-field tint as the albedo's luma rises
       const luma = 0.2126 * al[0] + 0.7152 * al[1] + 0.0722 * al[2], wl = sstep(lt.shade["warm-luma"][0], lt.shade["warm-luma"][1], luma), ao = 1 - (1 - ao0) * (1 - (occ["light-field-ease"] ?? 0) * wl), st = [shadeN[0] + (warmN[0] - shadeN[0]) * wl, shadeN[1] + (warmN[1] - shadeN[1]) * wl, shadeN[2] + (warmN[2] - shadeN[2]) * wl];
-      const lit = [al[0] * keyN[0], al[1] * keyN[1], al[2] * keyN[2]], shade = [al[0] * lt.shade.ratio * st[0], al[1] * lt.shade.ratio * st[1], al[2] * lt.shade.ratio * st[2]];
+      const lit = [al[0] * keyN[0], al[1] * keyN[1], al[2] * keyN[2]], rs = lt.shade.ratio + ((lt.shade["light-ratio"] ?? lt.shade.ratio) - lt.shade.ratio) * wl, shade = [al[0] * rs * st[0], al[1] * rs * st[1], al[2] * rs * st[2]];
       let c = mixc(shade, lit, tl);
       const tb = Math.exp(-(((ndl - 0.06) / term.width) ** 2)) * term.strength;
       c = [c[0] + al[0] * term.tint[0] * tb * 0.8, c[1] + al[1] * term.tint[1] * tb * 0.8, c[2] + al[2] * term.tint[2] * tb * 0.8];

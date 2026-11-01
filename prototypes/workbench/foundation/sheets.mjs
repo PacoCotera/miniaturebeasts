@@ -58,9 +58,9 @@ export const HEAD_SIZES = [0.45, 0.52, 0.60], EYE_OUT = 0.9; // row 1: the type 
 export function headSizeSheet(house, spec, outDir) {
   const cells = [], tiles = [], hb = bandOf(house, "A", "form.head"), et1 = spec.t["form.eye-size"];
   for (const [et, open] of [[et1, false], [EYE_OUT, true]]) {
-    cells.push(masterCell("S01", "Loika", open ? `Row: eye size t ${et}, clamps off` : `Row: eye size t ${et} (E/W 0.30, the master's)`));
+    cells.push(masterCell("S01", "Loika", open ? `Row 2: eye t ${et}, clamps off, outside the house` : "Row 1: the master's eye (E/Wf 0.30)"));
     for (const hs of HEAD_SIZES) {
-      const t = makeTile(house, spec, { t: { "form.head": tAt(hb, hs), "form.eye-size": et }, label: `H/S ${hs.toFixed(2)}, eye t ${et}`, clamps: !open, shareClamp: !open, outside: open });
+      const t = makeTile(house, spec, { t: { "form.head": tAt(hb, hs), "form.eye-size": et }, label: open ? `H/S ${hs.toFixed(2)}, eye t ${et}` : `H/S ${hs.toFixed(2)}, the master's eye (E/Wf 0.30)`, clamps: !open, shareClamp: !open, outside: open });
       tiles.push({ hs, et, tile: t }); cells.push({ pics: tilePics(t.r), lines: tileLines(t) });
       saveTile(path.join(outDir, "tiles"), `loika-hs${Math.round(hs * 100)}-eye${Math.round(et * 100)}`, t);
     }
@@ -77,11 +77,11 @@ export function gridSheet(house, spec, outDir, kind) {
   const [gx, gy, nx, ny] = kind === "eye-spacing" ? ["form.eye-size", "form.eye-spacing", "Eye", "spacing"] : ["form.muzzle", "form.lid", "Muzzle", "lid"];
   const cells = [], tiles = [];
   for (const ty of TS) for (const tx of TS) {
-    const t = makeTile(house, spec, { t: { [gx]: tx, [gy]: ty }, label: `${nx} t ${tx}, ${ny} t ${ty}`, sizes: [304, 96] });
+    const t = makeTile(house, spec, { t: { [gx]: tx, [gy]: ty, "form.mouth-gap": 1 }, label: `${nx} t ${tx}, ${ny} t ${ty}`, sizes: [304, 96] }); // every tile at the top of the mouth-gap band (ruling 1e)
     tiles.push({ tx, ty, tile: t }); cells.push({ pics: tilePics(t.r, [304, 96]), lines: tileLines(t) });
     saveTile(path.join(outDir, "tiles"), `grid-${kind}-${tx}-${ty}`.replace(/\./g, "p"), t);
   }
-  return { spec: sheet(`Face gene extremes: ${nx.toLowerCase()} across, ${ny} down`, cells, 3), tiles };
+  return { spec: sheet(`Face gene extremes: ${nx.toLowerCase()} across, ${ny} down, the mouth gap at the top of its band`, cells, 3), tiles };
 }
 
 // the nose against the signed master: the house build (the nose-fit clamp by kind: a skin mound is 0.7 to 1.1 E) and the same Loika with the clamp off
