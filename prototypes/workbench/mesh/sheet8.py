@@ -54,7 +54,7 @@ for k, pts in json.load(open(os.path.join(W, "s5", "measures.json")))["points"].
 sp = save(big, "sample-points.png")
 legend = " ".join(f"<span style='color:rgb{v}'>&#9679;</span> {k}" for k, v in pc.items())
 # the faces, the paws, the joins, the blink
-face = lambda p, n: save(Image.open(p).convert("RGBA").convert("RGB"), n)
+face = lambda p, n: save(on(p, GROUND), n)
 f1 = face(f"{R1}/s5-face3x.png", "face-r1.png"); f2 = face(f"{W}/s5/face3x.png", "face-r2.png")
 box = (60, 215, 300, 312)
 p1 = save(on(src["r1"](304), GROUND, 3, box), "paws-r1.png"); p2 = save(on(src["r2"](304), GROUND, 3, box), "paws-r2.png"); pm = save(on(src["master"](304), GROUND, 3, box), "paws-master.png")
@@ -74,7 +74,7 @@ body = f"""<h1>Loika in the mesh pipeline, round 2: the mesh's own faults</h1>
 <h2>The five light measures and the two the gate added, in the house's light</h2>
 <div class='row'><div class='cell'>{cell(sp, legend)}</div><div class='cell'><table><tr><th>Measure</th><th>Round 2</th><th>Round 1</th><th>House</th><th></th></tr>{lt}</table><div class='cap'>The shade over lit is sampled on the flank of the body (leg weight under 0.05, right of the head), on points the camera sees. The sphere calibration (calib.py): a body-albedo sphere gives shade over lit 0.58 with a diffuse-only lobe, and 0.94 on the dark body when the grey fill is reflected by the glossy lobe: that reflection was the flat light.</div></div></div>
 <h2>The face at 3x: round 1 and round 2 (eyes in sockets, smile a line, nose with a highlight)</h2><div class='row'>{cell(f1, 'Round 1')}{cell(f2, 'Round 2')}</div>
-<h2>The blink: Blender frames at rest, half and shut, and three.js frames of the glb (2x)</h2><div class='row'>{''.join(cell(b, t) for b, t in zip(bl, ['Rest', 'Half (lid halfway up the socket)', 'Shut']))}</div><div class='row' style='margin-top:10px'>{cell(tj[0], 'three.js, glb, rest (2x)')}{cell(tj[1], 'three.js, glb, blink peak (2x)')}</div>
+<h2>The blink: Blender frames at rest, half and shut, and three.js frames of the glb (2x)</h2><div class='row'>{''.join(cell(b, t) for b, t in zip(bl, ['Rest', 'Half (lid halfway up the socket)', 'Shut']))}</div><div class='row' style='margin-top:10px'>{cell(tj[0], 'three.js, glb, rest (rendered at 2x, shown 1x)', 0.5)}{cell(tj[1], 'three.js, glb, blink peak (rendered at 2x, shown 1x)', 0.5)}</div>
 <h2>The paws at 3x (bottom right of the 304 sprite): master, round 1, round 2; then the paws close</h2><div class='row'>{cell(pm, 'Master')}{cell(p1, 'Round 1')}{cell(p2, 'Round 2')}</div><div class='row' style='margin-top:10px'>{cell(p4, 'Round 2, the near paws at 3x of the 304 scale')}</div>
 <h2>Join B on all four legs: rest and 30 degrees forward and back (the left legs; the right ones are their mirror)</h2><div class='row'>{shape('fore-L')}</div><div class='row' style='margin-top:10px'>{shape('hind-L')}</div>"""
 page("Loika round 2", body, os.path.join(R2, "8-round2.html")); shot(os.path.join(R2, "8-round2.html"), os.path.join(R2, "8-round2.png"), 1500)
