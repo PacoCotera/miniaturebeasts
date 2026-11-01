@@ -33,7 +33,7 @@ test("the nose is a skin mound on a round muzzle, not a bill: low relief, wider 
   assert.ok(Math.abs(m["mouth-w/E"] - 0.83) <= 0.12, `the smile is the master's (0.83 E, measured in the head's frame): ${m["mouth-w/E"]}`);
 });
 test("the smile: the cream's top edge is the mouth line (0.01 H, soft 0.015) and its near edge falls away from the mouth corner, the gap has the floor of 0.25 E, the mouth corners curl up", () => {
-  const ch = sp.S01.look.creamHead, h = loika.scene.head, pts = h.mouth.pts;
+  const rf = house.rig.face, ch = { below: rf["cream-below"], soft: rf["cream-soft"], fall: rf["cream-fall"] }, h = loika.scene.head, pts = h.mouth.pts;
   assert.ok(ch.below <= 0.01 && ch.soft <= 0.015 && ch.fall > 0 && !("cheek-rise" in ch), "the cheek rise is withdrawn: the edge falls, it does not climb");
   assert.ok(m["nose-mouth/E"] >= 0.25 - 1e-9, `nose to smile ${m["nose-mouth/E"]} E`);
   assert.ok(Math.abs(m["mouth-w/E"] - 0.83) <= 0.12, "the smile is the master's width, 0.83 E; the nose-plus-0.3 floor is withdrawn (AD fix round 5, ruling 1a)");

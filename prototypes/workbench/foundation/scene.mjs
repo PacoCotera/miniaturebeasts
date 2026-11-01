@@ -73,7 +73,7 @@ export function buildScene(house, spec) {
     const dNoHead = (x, y, z) => { const b = dBody(x, y, z); return b; };
     // the head's bounding shell may only cut where the round union no longer reads the head's distance: past 1.3 x the widest union radius, or a crease is cut across the cream under the chin (fix round 7, must-fix 7)
     const hbCut = Math.max(0.35, 1.3 * Math.max(rig["union-neck-low"], rig["union-neck"]));
-    const dHeadBody = (x, y, z) => { const hb = Math.sqrt((x - headBound[0][0]) ** 2 + (y - headBound[0][1]) ** 2 + (z - headBound[0][2]) ** 2) - headBound[1], dh = hb > hbCut ? hb : dHeadW(x, y, z); return uRound(dh, dNoHead(x, y, z), mix(rig["union-neck-low"], rig["union-neck"], sstep(rig["union-neck-z"][0], rig["union-neck-z"][1], z - kc[2]))); }; // the join is a tight turn above the eye line (the nape notch) and a full roll under the chin (the throat), by the height over the skull's centre
+    const dHeadBody = (x, y, z) => { const hb = Math.sqrt((x - headBound[0][0]) ** 2 + (y - headBound[0][1]) ** 2 + (z - headBound[0][2]) ** 2) - headBound[1], dh = hb > hbCut ? hb : dHeadW(x, y, z); let d = uRound(dh, dTorso(x, y, z), mix(rig["union-neck-low"], rig["union-neck"], sstep(rig["union-neck-z"][0], rig["union-neck-z"][1], z - kc[2]))); for (const l of legs) d = uRound(d, l.d(x, y, z), uB); return d; }; // the round join of head and body is with the TORSO only (the legs join the whole with their own small radius): the far leg stands forward now, and a throat radius of 0.4 reached across to it and left a thin sheet between the chin and the leg. The join is a tight turn above the eye line (the nape notch) and a full roll under the chin (the throat), by the height over the skull's centre
     parts.head = dHeadW;
 
     bounds = { lo: [-2.3, -1.1, -0.02], hi: [1.2, 1.1, S + 1.0] };
@@ -88,7 +88,7 @@ export function buildScene(house, spec) {
     };
     headWeight = (x, y, z) => sstep(0.05, -0.05, dHeadW(x, y, z) - dNoHead(x, y, z));
     // a leg is dark skin: how much a point belongs to a leg rather than the torso (smooth, so the cream bib's edge at the shoulder is one soft curve, not a cut)
-    legWeight = (x, y, z) => { if (z > 0.75 * S) return 0; let dl = 1e9; for (const l of legs) dl = Math.min(dl, l.d(x, y, z)); const le = rig["leg-cream-edge"]; return sstep(le[0] * S, le[1] * S, dTorso(x, y, z) - dl); };
+    legWeight = (x, y, z) => { if (z > 0.75 * S) return 0; let dl = 1e9; for (const l of legs) dl = Math.min(dl, l.d(x, y, z)); const le = rig["leg-cream-edge"], lr = rig["leg-cream-reach"]; return sstep(le[0] * S, le[1] * S, dTorso(x, y, z) - dl) * (lr ? 1 - sstep(lr[0] * S, lr[1] * S, dl) : 1); }; // only where the leg's own skin is: a point that is merely nearer the leg than the torso (the chin, now that the far leg steps forward) is not the leg's
   } else if (plan === "D") {
     const nS = rig.segments, Lk = body.length / 1.6, T = body.thick, scaleR = T / 2 / rig["seg-radius"][0], rr = rig["seg-radius"].map((v) => v * scaleR), segs = [];
     // the line of action rises from the tail into the head: segments differ by 15 to 35 %, each one's top is higher than the next one back, the first runs under the head

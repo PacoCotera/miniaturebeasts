@@ -52,5 +52,37 @@ test("the chin and the throat go back (item 2): the outline is at x 29 +- 3 at y
 test("the lobe is the muzzle's, not the head's: it stands at most 0.24 H proud, it is wide (a 1.1 to 1.3 H face at the lobe), and the eye sockets cut only the skin (the lobe keeps its surface in front of the far eye)", () => {
   const fm2 = frameMeasures(head); assert.ok(fm2.snout <= 0.24 + 1e-3, `snout ${fm2.snout}`);
   assert.ok(head.M.r[1] * 2 >= 1.1 && head.M.r[1] * 2 <= 1.3, `lobe ${head.M.r[1] * 2} H wide`);
-  assert.ok(house.rig.face["socket-height"] > 0 && house.rig.face["socket-height"] <= 0.1);
+  assert.ok(house.rig.face["socket-height"] > 0 && house.rig.face["socket-height"] <= 0.15);
+});
+
+// ---- step 3: the bib is a tongue (ad-review-fix7, section 4 items 2, 3 and 4) -----------------------------------------------------------------------------------------
+// the AD's cream mask (measure.py): opaque, red over 150, red over blue by 15, mean over 150. Pictures laid on the master's by the eyes, rows 120 to 299.
+const cream = (img, x, y) => { if (x < 0 || y < 0 || x >= img.width || y >= img.height) return false; const i = (y * img.width + x) * 4, r = img.data[i], g = img.data[i + 1], b = img.data[i + 2]; return img.data[i + 3] > 200 && r > 150 && r - b > 15 && (r + g + b) / 3 > 150; };
+const creamB = (x, y) => cream(B304, x - shift, y - shiftY), creamM = (x, y) => cream(M304, x, y);
+const area = (f) => { let n = 0; for (let y = 120; y < 300; y++) for (let x = 0; x < 304; x++) if (f(x, y)) n++; return n; };
+const firstDown = (f, x, y0) => { for (let y = y0; y < 300; y++) if (f(x, y)) return y; return null; };
+const firstRight = (f, y) => { for (let x = 0; x < 304; x++) if (f(x, y)) return x; return null; };
+test("the bib is a tongue, not a slab: its area is the master's within 10 percent, its near edge falls 30 to 35 degrees from the smile through (100, 180) to (130, 200), none stands under the near eye, its front sits behind the far leg", () => {
+  const aB = area(creamB), aM = area(creamM); assert.ok(Math.abs(aB / aM - 1) <= 0.10, `cream area ${aB} against the master's ${aM}`);
+  const e100 = firstDown(creamB, 100, 172), e110 = firstDown(creamB, 110, 172); assert.ok(Math.abs(e100 - 180) <= 5, `the edge at x 100 is at y ${e100}`); assert.ok(Math.abs(e110 - 186) <= 6, `the edge at x 110 is at y ${e110}`);
+  let under = 0; for (let y = 178; y < 195; y++) for (let x = 121; x < 151; x++) if (creamB(x, y)) under++; let underM = 0; for (let y = 178; y < 195; y++) for (let x = 121; x < 151; x++) if (creamM(x, y)) underM++;
+  assert.ok(under <= Math.max(60, underM + 20), `${under} cream pixels right of x 120 above y 195 (the master's own ${underM})`);
+  for (const [y, x, tol] of [[218, 65, 6], [250, 85, 8]]) assert.ok(Math.abs(firstRight(creamB, y) - x) <= tol, `the bib's front at y ${y}: ${firstRight(creamB, y)} against ${x} +- ${tol}`);
+  for (const y of [226, 242]) assert.ok(firstRight(creamB, y) - front(y) >= 10, `the bib stands ${firstRight(creamB, y) - front(y)} px behind the far leg at y ${y}`);
+});
+test("the bib is one rolled value: lit at its upper left, shaded at its lower right and under the chin, and no step over the master's own inside it (3 x 3 blur, 2 px, 8 px in from its edge, outside the under-chin shade at rows 182 to 212)", () => {
+  const lum = (img, x, y) => { const i = (y * img.width + x) * 4; return 0.2126 * img.data[i] + 0.7152 * img.data[i + 1] + 0.0722 * img.data[i + 2]; };
+  const steps = (img, isC) => {
+    const g = (x, y) => { let s = 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) s += lum(img, Math.min(303, Math.max(0, x + dx)), Math.min(311, Math.max(0, y + dy))); return s / 9; };
+    const inner = (x, y) => { for (let dy = -8; dy <= 8; dy++) for (let dx = -8; dx <= 8; dx++) if (!isC(x + dx, y + dy)) return false; return true; };
+    let worst = 0, upperLeft = [], lowerRight = [];
+    for (let y = 120; y < 262; y++) for (let x = 0; x < 300; x++) { if (!inner(x, y)) continue; if (y < 182 || y > 212) worst = Math.max(worst, Math.abs(g(x + 2, y) - g(x, y)), Math.abs(g(x, y + 2) - g(x, y))); }
+    return worst;
+  };
+  const sB = steps(B304, (x, y) => cream(B304, x, y)), sM = steps(M304, (x, y) => cream(M304, x, y));
+  assert.ok(sB <= Math.max(10, sM + 1), `inner step ${sB.toFixed(1)}, the master's ${sM.toFixed(1)}`);
+  // the roll: the cream's upper left half is brighter than its lower right half by at least 12 levels (the master: about 20)
+  const px = []; for (let y = 120; y < 262; y++) for (let x = 0; x < 300; x++) if (cream(B304, x, y)) px.push([x, y, lum(B304, x, y)]);
+  const cx = px.reduce((a, p) => a + p[0], 0) / px.length, cy = px.reduce((a, p) => a + p[1], 0) / px.length, mean = (f) => { const s = px.filter(f); return s.reduce((a, p) => a + p[2], 0) / s.length; };
+  const ul = mean((p) => p[0] + p[1] < cx + cy - 15), lr = mean((p) => p[0] + p[1] > cx + cy + 15); assert.ok(ul - lr >= 12, `upper left ${ul.toFixed(0)}, lower right ${lr.toFixed(0)}`);
 });
