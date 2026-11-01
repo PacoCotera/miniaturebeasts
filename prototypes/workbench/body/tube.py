@@ -147,7 +147,7 @@ def grow_tube(body, ctx, name, p, fam, i, c, centre):
         pos = [_outward(G, (1 - t) * Vn[a] + t * Vn[b]) for a, b in zip(loop, rings[0])]
         if centre:
             pos[0][1] = 0.0; pos[-1][1] = 0.0
-        mid = [body.add(pos[m], name, st[0], m / (nR - 1 if centre else nR), target=pos[m], centre=(centre and m in (0, nR - 1))) for m in range(nR)]
+        mid = [body.add(pos[m], name, st[0] - 0.04 * (kk), m / (nR - 1 if centre else nR), target=pos[m], centre=(centre and m in (0, nR - 1))) for m in range(nR)]
         mids.append(mid)
         _quads(body, prev, mid, name, centre)
         prev = mid

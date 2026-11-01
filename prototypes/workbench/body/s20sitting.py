@@ -57,7 +57,7 @@ def build_sitting(body, ctx):
     ax, up, lat = _frame(sh["axis"])
     rx, ry, rz = sh["r"]
     ctx_arm = dome_full(body, "arm.L", _place(P, ax, rx, sh["sink"]), ax, up, lat, rx, ry, rz)
-    ctx_arm.update(sink=sh["sink"], P=P)
+    ctx_arm.update(sink=sh["sink"], P=P, up=up, lat=lat, r=(rx, ry, rz))
     out["arm.L"] = ctx_arm
     # nose button (on the mirror line: half rings)
     n = S["nose"]
@@ -65,7 +65,7 @@ def build_sitting(body, ctx):
     P = G.point(np.array([n["station"]]), np.array([n["around"]]))[0]
     rx, ry, rz = sh["r"]
     rings = sitting_dome(body, "nose", _place(P, np.array([1.0, 0, 0]), rx, sh["sink"]), np.array([1.0, 0, 0]), np.array([0, 0, 1.0]), np.array([0, 1.0, 0]), rx, ry, rz)
-    out["nose"] = dict(rings=rings, P=P, sink=sh["sink"], axis=np.array([1.0, 0, 0]), rx=rx)
+    out["nose"] = dict(rings=rings, P=P, sink=sh["sink"], axis=np.array([1.0, 0, 0]), rx=rx, c=_place(P, np.array([1.0, 0, 0]), rx, sh["sink"]), up=np.array([0, 0, 1.0]), lat=np.array([0, 1.0, 0]), r=(rx, ry, rz))
     # the tail tip
     fam = ctx["opts"].get("tip", S["tail.tip"]["default"])
     ctx["tip_family"] = fam
@@ -85,7 +85,7 @@ def build_sitting(body, ctx):
         up = np.cross(ax, lat) * -1.0
         up /= np.linalg.norm(up)
         rings = sitting_dome(body, "tail.tip", c, ax, up, lat, rx, ry, rz)
-        rec_t = dict(rings=rings, c=c, axis=ax, rx=rx, sink=sh["sink"], family=fam, emissive=(sh.get("emission") == "glow"), lobes=[])
+        rec_t = dict(rings=rings, c=c, axis=ax, rx=rx, sink=sh["sink"], family=fam, emissive=(sh.get("emission") == "glow"), lobes=[], up=up, lat=lat, r=(rx, ry, rz))
         if fam == "tuft":
             lr = sh["lobe_r"] * size
             # three lobes round the tip: one up on the mirror line, one each side (the left one here, its mirror image the right)
