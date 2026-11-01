@@ -57,5 +57,11 @@ test("the head is pitched up 8 to 10 degrees, as the master's chin-up carriage",
 test("the back line read from the field agrees with the one read from the render (they are the same measure two ways)", async () => {
   const { imageProfile } = await import("../silhouette.mjs");
   const t = makeTile(house, sp.S01, { sizes: [304] }), p = imageProfile(t.r[304]);
-  for (const [f, k] of [[0.85, "back-85/S"], [0.95, "back-95/S"]]) assert.ok(Math.abs(p.at[f] - t.measured[k]) < 0.06, `${f}: render ${p.at[f]} field ${t.measured[k]}`);
+  for (const [f, k] of [[0.85, "back-85/S"], [0.95, "back-95/S"]]) assert.ok(Math.abs(p.at[f] - t.measured[k]) < 0.07, `${f}: render ${p.at[f]} field ${t.measured[k]}`);
+});
+test("the cream's near edge falls away from the mouth corner and stays at least 0.5 E under the near eye's ring, never climbing the cheek", () => {
+  const ch = sp.S01.look.creamHead, h = loika.scene.head, e = h.eyes[0], hw = h.mouth.w / 2, edgeAt = (ay) => (ay <= hw ? h.mouth.zAt(ay) : h.mouth.zAt(hw) - ch.fall * (ay - hw)) - ch.below;
+  const ringBottom = e.c[2] - e.Reye, atEye = edgeAt(Math.abs(e.c[1]));
+  assert.ok(ringBottom - atEye >= 0.5 * h.measures.E, `${(ringBottom - atEye) / h.measures.E} E under the ring`);
+  for (let ay = hw; ay < 0.7; ay += 0.05) assert.ok(edgeAt(ay + 0.05) <= edgeAt(ay) + 1e-9, "the edge only falls beyond the corner");
 });

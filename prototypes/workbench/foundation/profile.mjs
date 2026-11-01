@@ -33,7 +33,7 @@ export function napeStep(scene, behind = 0.3) {
 
 // The back line in the stand view (AD fix round 2, ruling 1a): the top of the core silhouette (head and body, no headgear) in the house camera, at fractions of its width
 // from the front, in stature units, where the stature is the screen height from the floor to the crown. The master Loika: 0.79, 0.72 and 0.54 S at 0.7, 0.85 and 0.95.
-export function backLine(scene, camera, fractions = [0.7, 0.85, 0.95], { n = 90 } = {}) {
+export function backLine(scene, camera, fractions = [0.7, 0.85, 0.95], { n = 150 } = {}) {
   const B = cameraBasis(camera), f = scene.parts.core ?? scene.d, bb = scene.bounds, c = [0, 1, 2].map((i) => (bb.lo[i] + bb.hi[i]) / 2), R = Math.hypot(bb.hi[0] - bb.lo[0], bb.hi[1] - bb.lo[1], bb.hi[2] - bb.lo[2]) / 2;
   const hit = (a, b) => march(f, c[0] + B.right[0] * a + B.up[0] * b + B.toward[0] * R, c[1] + B.right[1] * a + B.up[1] * b + B.toward[1] * R, c[2] + B.right[2] * a + B.up[2] * b + B.toward[2] * R, -B.toward[0], -B.toward[1], -B.toward[2], 0, 2 * R, 0.003, 80) >= 0;
   // the extents: columns over the screen, the top of each by a coarse scan down and a bisection

@@ -9,6 +9,23 @@ import { checkRules } from "../form/house/house.mjs";
 import { measureAll } from "../form/house/measures.mjs";
 import { loadSpecimens } from "./specimens.mjs";
 import { express } from "./express.mjs";
+import { makeTile } from "./sheets.mjs";
+import { masterProfile } from "./silhouette.mjs";
+import { MASTER } from "./paths.mjs";
+
+// render-level values of the build at 304 (the nose against its muzzle, the ring's top against its bottom) and the same read off the signed master by boxes read by eye
+const renderMeasures = (house, specimen) => { const t = makeTile(house, specimen, { sizes: [304] }); return { "nose-value/L": t.measured["nose-value/L"], "ring-shade/L": t.measured["ring-shade/L"] }; };
+const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+const Lstar = (d, i) => { const Y = 0.2126 * lin(d[i]) + 0.7152 * lin(d[i + 1]) + 0.0722 * lin(d[i + 2]); return Y > 0.008856 ? 116 * Math.cbrt(Y) - 16 : 903.3 * Y; };
+function masterNoseValue(img) { // the nose mound's box (x 55-85, y 140-160) against the dark skin round it (x 40-100, y 140-175, L* under 45)
+  let ns = 0, nn = 0, ms = 0, mn = 0;
+  for (let y = 140; y <= 175; y++) for (let x = 40; x <= 100; x++) { const i = (y * img.width + x) * 4; if (img.data[i + 3] < 250) continue; const L = Lstar(img.data, i), inNose = x >= 55 && x <= 85 && y <= 160; if (inNose) { ns += L; nn++; } else if (L < 45) { ms += L; mn++; } }
+  return ns / nn - ms / mn;
+}
+function masterRing(img) { // the near eye (centre 125, 147, iris radius 21): the cream ring's lower third's mean L* minus its upper third's
+  const px = []; for (let y = 110; y <= 185; y++) for (let x = 90; x <= 160; x++) { const d = Math.hypot(x - 125, y - 147), i = (y * img.width + x) * 4; if (d > 24.5 && d < 29 && img.data[i + 3] > 250) { const L = Lstar(img.data, i); if (L > 55) px.push([y, L]); } }
+  px.sort((a, b) => a[0] - b[0]); const k = Math.floor(px.length / 3), mean = (v) => v.reduce((s, q) => s + q[1], 0) / v.length; return mean(px.slice(-k)) - mean(px.slice(0, k));
+}
 
 const rad = (d) => (d * Math.PI) / 180;
 export const loadMasters = () => JSON.parse(readFileSync(path.join(HERE, "calibration", "masters.json"), "utf8"));
@@ -69,10 +86,12 @@ export function toMarkdown(rows, house) {
 
 // the type specimens as the house builds them, against the master each was read from
 export function specimenTable(house, rows) {
-  const sp = loadSpecimens(house), keys = ["H/S", "H/T", "W/H", "E/Wf", "eye-drop/H", "spacing/E", "forehead/H", "eye-to-mouth/H", "nose-w/E", "nose-drop/E", "mouth-w/E", "eye-share", "yaw-body", "yaw-face", "yaw-head", "roll", "head-breadth/H", "far-eye-inside/H", "nose-far-eye/H", "chin-overhang/H", "nape-dip/H"];
+  const sp = loadSpecimens(house), keys = ["H/S", "H/T", "W/H", "E/Wf", "eye-drop/H", "spacing/E", "forehead/H", "eye-to-mouth/H", "nose-w/E", "nose-drop/E", "mouth-w/E", "eye-share", "yaw-body", "yaw-face", "yaw-head", "roll", "head-breadth/H", "far-eye-inside/H", "nose-far-eye/H", "chin-overhang/H", "nape-step/H", "back-70/S", "back-85/S", "back-95/S", "nose-mouth/E", "nose-value/L", "ring-shade/L"];
   const L = ["", "## The type specimens, as the house builds them, against their masters", "", `| value | ${Object.keys(sp).map((id) => `${id} master | ${id} house build`).join(" | ")} |`, `| --- | ${Object.keys(sp).map(() => "--- | ---").join(" | ")} |`];
-  const built = Object.fromEntries(Object.keys(sp).map((id) => [id, express(house, sp[id]).measured]));
-  for (const k of keys) { const cells = Object.keys(sp).map((id) => { const m = rows.find((r) => r.id === id).measured[k], b = built[id][k]; return `${f(m, 2)} | ${f(b, 2)}`; }); if (cells.every((c) => c === "- | -")) continue; L.push(`| ${k} | ${cells.join(" | ")} |`); }
+  const built = Object.fromEntries(Object.keys(sp).map((id) => { const e = express(house, sp[id]); return [id, { ...e.measured, ...(sp[id].plan === "A" ? renderMeasures(house, sp[id]) : {}) }]; }));
+  // the masters' extra values: the back line from the signed picture (crown set by eye at row 85, the leaves hiding it); the gap from the nose to the smile (the AD's reading, 0.35 E); the nose's value against its muzzle and the ring's top against its bottom from boxes read by eye on the picture
+  const extra = { S01: (() => { const p = masterProfile(MASTER("S01", 304)), img = loadImage(MASTER("S01", 304)), ring = masterRing(img); return { "back-70/S": p.at[0.7], "back-85/S": p.at[0.85], "back-95/S": p.at[0.95], "nose-mouth/E": 0.35, "nose-value/L": masterNoseValue(img), "ring-shade/L": ring }; })() };
+  for (const k of keys) { const cells = Object.keys(sp).map((id) => { const m = rows.find((r) => r.id === id).measured[k] ?? extra[id]?.[k], b = built[id][k]; return `${f(m, 2)} | ${f(b, 2)}`; }); if (cells.every((c) => c === "- | -")) continue; L.push(`| ${k} | ${cells.join(" | ")} |`); }
   const R = Object.keys(sp).flatMap((id) => { const e = express(house, sp[id]); return checkRules(house, sp[id].plan, e.measured, { kinds: sp[id].kinds }).filter((x) => x.on && x.status === "FAIL").map((x) => `${id} ${x.id} (${x.measure} ${f(x.value, 3)}, band ${x.range[0] ?? ""} to ${x.range[1] ?? ""})`); });
   L.push("", "House build rule failures at the type specimen (the render-level rules are in the sheets' labels): " + (R.length ? R.join("; ") : "none") + ".", "");
   return L.join("\n");

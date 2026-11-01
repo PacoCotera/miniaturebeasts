@@ -1640,13 +1640,13 @@
       "jaw-width-of-muzzle": 0.95,
       "jaw-forward": -0.02,
       "jaw-union": 0.16,
-      "ad": "AD review: the iris was a flat light orange (L* 45-58 everywhere). The master: a dark amber iris (L* 13-33), its top darkest under the brow, a bright gold lower crescent (L* 62-70, C* 68). iris-top-dark 0.4 -> 0.7 and crescent 0.35 -> 0.6 here; the colours are the specimen's look. The eye stays painted: no lens"
+      "ad": "AD review: the iris was a flat light orange (L* 45-58 everywhere). The master: a dark amber iris (L* 13-33), its top darkest under the brow, a bright gold lower crescent (L* 62-70, C* 68). iris-top-dark 0.4 -> 0.7 and crescent 0.35 -> 0.6 here; the colours are the specimen's look. The eye stays painted: no lens. Fix round 2, ruling 4: the cheek rise of the cream (fix round 1, must-fix 2: up the cheek to the eye's lower edge) is withdrawn. On the master the skin under the near eye is dark; the cream starts at the smile and its near edge runs from the mouth corner down and back toward the shoulder, at least 0.5 E below the near eye (look.creamHead.fall)"
     },
     "A": {
       "provisional": "chunk 1 builds the quadruped's body only to judge proportion and the head's mass; chunk 2 replaces the legs, the stance and these numbers. Every length here is a fraction of the stature S (the body is the same under every head size)",
       "ad": "AD fix round 2, ruling 1 and must-fix 1: the minimal body pass. (a) The back is a rail that falls from the nape: the screen top is 0.8, 0.72 and 0.55 S at 0.7, 0.85 and 0.95 of the length (the master's profile; R-back). (b) The head is its own mass: a nape step, a jowl that overhangs the shoulder with a groove. (c) A round shoulder, an elbow, a taper to the paw; the chest's cream bulges forward under the chin. back-drop is gone: one number could not hold the curve",
-      "chest": { "c": [-0.04, 0.5], "r": [0.34, 0.29, 0.3] },
-      "pelvis": { "c": [-0.58, 0.38], "r": [0.32, 0.28, 0.28] },
+      "chest": { "c": [-0.08, 0.425], "r": [0.34, 0.29, 0.295] },
+      "pelvis": { "c": [-0.58, 0.37], "r": [0.26, 0.28, 0.325] },
       "cheek-eye": 0.35,
       "cheek-forward": 0.1,
       "chin-overhang": 0.07,
@@ -1654,13 +1654,13 @@
       "union-torso": 0.12,
       "union-neck": 0.14,
       "union-body": 0.06,
-      "fore": { "x": -0.16, "y": 0.255, "top": 0.37, "mass": [0.14, 0.11, 0.16], "r": [0.12, 0.085], "elbow": [-0.07, -0.1, 0.07, 0.06, 0.09], "paw-dx": 0.04 },
-      "hind": { "x": -0.58, "y": 0.22, "top": 0.3, "mass": [0.18, 0.13, 0.2], "r": [0.13, 0.09], "elbow": [-0.1, -0.05, 0.07, 0.06, 0.08], "paw-dx": 0.0 },
-      "paw": [0.15, 0.135, 0.09],
+      "fore": { "x": -0.16, "y": 0.255, "top": 0.34, "mass": [0.14, 0.11, 0.15], "r": [0.12, 0.085], "elbow": [-0.07, -0.1, 0.07, 0.06, 0.09], "paw-dx": 0.04 },
+      "hind": { "x": -0.58, "y": 0.22, "top": 0.28, "mass": [0.18, 0.13, 0.2], "r": [0.13, 0.09], "elbow": [-0.1, -0.05, 0.07, 0.06, 0.08], "paw-dx": 0.0 },
+      "paw": [0.13, 0.135, 0.09],
       "toe": 0.1,
       "toe-count": 3,
       "lead-paw": 0.04,
-      "toe-crease": 0.012,
+      "toe-crease": 0.006,
       "crest": {
         "root": [0.0, 0.0, 0.44],
         "leaves": [
