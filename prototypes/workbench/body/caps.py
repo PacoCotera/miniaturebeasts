@@ -1,6 +1,7 @@
 """Grid caps on a half ring (body-spec s2.2.5: the end ring then a 2 x 4 grid per half; the ring runs from the mirror line round to the mirror line, 2 na + nb + 1 = 9 vertices).
 The interior is a Coons patch of the ring in the ring's own plane (lat, N), cast onto a dome along T: it is RE-PLACED from the current ring each limit-fix step, so the cap never
 fights the ring that the compensation moves (the fix targets only vertices that are not cap interiors)."""
+import math
 import numpy as np
 CAP_P = 2.2
 
@@ -24,8 +25,11 @@ class HalfCap:
             self.G[(na, j)] = ring[na + j]
         self.G[(0, 0)], self.G[(0, nb)] = ring[0], ring[-1]
         self.ids = []
+        s0 = body.s[ring[0]]
         for k, p in zip(self.keys, pos):
-            self.G[k] = body.add(p, part, 0.0, 0.0, target=None, centre=(k[0] == 0))
+            uu, ww = self._uv(np.array([p]))
+            ang = math.atan2(abs(float(uu[0])), -(float(ww[0]) - self.wc)) / math.pi      # the cap vertex's `around`: its angle from the dorsal direction
+            self.G[k] = body.add(p, part, s0, ang, target=None, centre=(k[0] == 0))
             self.ids.append(self.G[k])
         G = self.G
         for i in range(na):

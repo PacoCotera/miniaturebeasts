@@ -61,6 +61,7 @@ def add_beads(body, ctx):
             ins = [cage.add(cc + INSET * (p - cc)) for p in P]
             top = [cage.add(cc + INSET * (p - cc) + PROUD * nrm) for p in P]
             for v in ins + top:
+                body.tag[v] = 1.0
                 body.part.append(body.pid(name)); body.s.append(body.s[f[0]]); body.around.append(body.around[f[0]]); body.target.append(None)
             fp = body.face_part[fi]
             cage.F[fi] = (f[0], f[1], ins[1], ins[0])

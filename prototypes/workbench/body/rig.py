@@ -91,7 +91,7 @@ class Rig:
         wp = 1 - smooth(-1.15, -0.55, x)
         W[torso, idx["spine.pelvis"]] = wp[torso]
         W[torso, idx["spine.chest"]] = 1 - wp[torso]
-        for pn in ("head", "muzzle", "nose"):
+        for pn in ("head", "muzzle", "nose", "crown"):
             m = pid == parts[pn]
             if pn == "head":
                 wh = smooth(-0.1, 0.45, s[m])
@@ -191,7 +191,7 @@ class Rig:
     def stand_pose(self):
         H = self.ctx["H"]
         S = H.S
-        far = H.rig["fore"]["far-forward"] * S
+        far = min(H.rig["fore"]["far-forward"] * S, 0.36)      # the house's 0.3 S (0.64 H) leaves a dark slab far ahead of the body in this cage: capped at 0.36 H (logged)
         lean = H.rig["fore"]["far-lean"] * S
         lead = H.rig["lead-paw"] * S
         legs = {("fore", "L"): (lead, 0.0, 0.0), ("fore", "R"): (far - lean * 0.0, 0.0, 0.0)}

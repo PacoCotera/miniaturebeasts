@@ -16,6 +16,7 @@ class Body:
         self.face_part = []
         self.hold = set()
         self.caps = []
+        self.tag = {}         # vertex id (after finish) -> zone tag (1 = toe bead)
         self.hooks = []       # callables(body): re-place detail vertices from the current cage, run each limit-fix step
 
     def pid(self, name):
@@ -49,7 +50,10 @@ class Body:
         V, F, mirror = c.full()
         n = len(c.V)
         extra = np.where(mirror[:n] != np.arange(n))[0]
-        attr = np.array([self.part, self.s, self.around], float).T
+        tg = np.zeros(len(self.part))
+        for k, v in self.tag.items():
+            tg[k] = v
+        attr = np.array([self.part, self.s, self.around, tg], float).T
         attr_full = np.vstack([attr, attr[extra]])
         fp = np.array(self.face_part + self.face_part, int)
         cr = {}

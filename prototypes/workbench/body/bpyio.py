@@ -50,11 +50,11 @@ def lights(sc, az):
     w.use_nodes = True
     bg = w.node_tree.nodes["Background"]
     bg.inputs["Color"].default_value = (0.80, 0.82, 0.86, 1)
-    bg.inputs["Strength"].default_value = 0.55
+    bg.inputs["Strength"].default_value = 0.40
     sc.world = w
     # key from the upper left and front of the camera, soft
     k = bpy.data.lights.new("key", "SUN")
-    k.energy = 3.2
+    k.energy = 2.4
     k.angle = math.radians(25)
     ko = bpy.data.objects.new("key", k)
     sc.collection.objects.link(ko)
