@@ -375,6 +375,66 @@ def add_lids(sc, H):
     return objs
 
 
+def cube_sphere(g):
+    """A quad ellipsoid base: a cube's faces gridded g x g and pushed to the unit sphere (no poles). Returns (verts (n,3), quads), deterministic."""
+    idx, V, F = {}, [], []
+    def vid(p):
+        k = tuple(np.round(p, 9))
+        if k not in idx:
+            idx[k] = len(V); V.append(np.array(p) / np.linalg.norm(p))
+        return idx[k]
+    for axis in range(3):
+        for sgn in (1, -1):
+            for j in range(g):
+                for i in range(g):
+                    q = []
+                    for (a, b) in ((i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1)):
+                        u, v = a / g * 2 - 1, b / g * 2 - 1
+                        p = [0, 0, 0]; p[axis] = sgn; p[(axis + 1) % 3] = u; p[(axis + 2) % 3] = v
+                        q.append(vid(p))
+                    F.append(q if sgn > 0 else q[::-1])
+    return np.array(V), F
+
+
+def add_beans(sc, H, g=10):
+    """Round 2 (AD item 8): the paws' toes are three round beans each, embedded ellipsoids of the house's own toe radii and places (housefield toes), one cream mesh bound to the
+    paw bones, in place of the cage's pointed wedges and the toe paint that spread a grey band over the dome. The right legs are the left legs' images (the Mirror's)."""
+    V0, F0 = cube_sphere(g)
+    P, F, W, tags = [], [], [], []
+    for lg in H.legs:
+        if lg["side"] != 1:
+            continue
+        for side in (1, -1):
+            m = np.array([1, side, 1.0])
+            tag = lg["name"].split(".")[0] + "_paw." + ("L" if side == 1 else "R")
+            for t in lg["toes"]:
+                R = np.asarray(t["R"]); c = np.asarray(t["c"])
+                loc = (V0 * np.asarray(t["r"])) @ R.T + c
+                n0 = len(P)
+                P += [tuple(p * m) for p in loc]
+                F += [tuple(i + n0 for i in (q if side == 1 else q[::-1])) for q in F0]
+                W += [tag] * len(loc)
+    me = bpy.data.meshes.new("beans")
+    me.from_pydata(P, [], F)
+    me.update()
+    me.polygons.foreach_set("use_smooth", [True] * len(me.polygons))
+    ob = bpy.data.objects.new("beans", me)
+    ob.parent = sc.root
+    sc.scene.collection.objects.link(ob)
+    for tag in sorted(set(W)):
+        vg = ob.vertex_groups.new(name=tag)
+        vg.add([i for i, w in enumerate(W) if w == tag], 1.0, "REPLACE")
+    am = ob.modifiers.new("Armature", "ARMATURE"); am.object = sc.rig
+    mat = bpy.data.materials.new("beans")
+    mat.use_nodes = True
+    b = mat.node_tree.nodes["Principled BSDF"]
+    b.inputs["Base Color"].default_value = (*lin(np.array(H.look["toe"])), 1)
+    b.inputs["Roughness"].default_value = H.light["vinyl"]["roughness"]
+    b.inputs["Specular IOR Level"].default_value = 0.25
+    me.materials.append(mat)
+    return ob
+
+
 def shadow_plane(sc, H):
     me = bpy.data.meshes.new("floor")
     r = 6.0

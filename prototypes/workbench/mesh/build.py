@@ -38,18 +38,13 @@ def make_cages(H, join="A", beans=True, log=None):
     cages += [head, torso]
     if join == "B":
         import join_b
+    b_legs = []
     for lg in H.legs:
         if lg["side"] != 1:
             continue           # the left legs only: the Mirror makes the right (the near fore paw's lead-paw is dropped by that: see report)
         leg = build_leg(H, lg); leg.fix_winding()
-        if join == "B" and lg["fore"]:
-            # one cage: the torso and the near fore leg (the port ring is the leg's first ring); the torso cage in `cages` is replaced by the combined one
-            raw_leg = build_leg(H, lg)
-            tcage = cages[1]
-            tcage = build_torso(H)                                  # unfitted: the port is cut before the fit
-            comb, fld = join_b.shoulder_b(H, tcage, raw_leg, lg)
-            rep["torso+fore.L (B)"] = fit(comb, fld)
-            cages[1] = comb
+        if join == "B":
+            b_legs.append((build_leg(H, lg), lg))          # joined to the torso below, all four legs in one cage (round 2: B on every leg)
             leg = None
         else:
             rep["leg." + lg["name"]] = fit(leg, lg["d_column"])
@@ -66,6 +61,11 @@ def make_cages(H, join="A", beans=True, log=None):
             leg.lg = lg
             cages.append(leg)
         cages.append(paw)
+    if join == "B":
+        tcage = build_torso(H)                                  # unfitted: the ports are cut before the fit
+        comb, fld = join_b.shoulders_b(H, tcage, b_legs)
+        rep["torso+legs (B)"] = fit(comb, fld)
+        cages[1] = comb
     return cages, rep
 
 

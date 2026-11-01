@@ -26,13 +26,11 @@ def port_ring(T, H, lg, st_k_target=None):
     return i0, k0, loop, faces, g(i0, k0)
 
 
-def shoulder_b(H, T, L, lg, bridges=2):
-    """Returns a combined Cage (torso + near fore leg, one shell), fitted. T is the (unfitted or fitted) torso, L the leg cage (rings L0..L5, caps)."""
+def _attach(C, T, H, L, lg, bridges):
+    """Cut the leg's port out of C (which holds T's vertices first), bring in the leg cage L and bridge the port ring to the leg's first ring. Returns the bridge loops."""
     i0, k0, loop, rm, centre = port_ring(T, H, lg)
-    C = Cage("torso")
-    C.V = [list(v) for v in T.V]
-    C.F = [f for fi, f in enumerate(T.F) if fi not in set(rm)]
-    C.rings = T.rings
+    rmset = {tuple(T.F[fi]) for fi in rm}
+    C.F = [f for f in C.F if tuple(f) not in rmset]
     off = len(C.V)
     C.V += [list(v) for v in L.V]
     l0, top_cap = set(L.rings["L0"]), set(L.cap_top.values()) - set(L.rings["L0"])
@@ -66,24 +64,47 @@ def shoulder_b(H, T, L, lg, bridges=2):
     for a, b in zip(rings, rings[1:]):
         for k in range(8):
             C.face(a[k], a[(k + 1) % 8], b[(k + 1) % 8], b[k])
-    C.bridge = rings
-    # weights: the leg rings as in join A; the bridges half chest, half upper leg; the torso by x
+    # weights: the leg rings as in join A; the bridge loops graded from the trunk bone (chest, or pelvis for a hind leg) out to the upper leg, evenly (round 2: the round-1 loops
+    # were 0.5 / 0.5 each, which left a crack at the port's front edge when the leg swings)
     tag, side = lg["name"].split(".")
     up, lo = f"{tag}_upper.{side}", f"{tag}_lower.{side}"
+    trunk = "chest" if lg["fore"] else "pelvis"
     ring_w = {"L1": (1, 0), "L2": (0.85, 0.15), "L3": (0.5, 0.5), "L4": (0, 1), "L5": (0, 1)}
-    C.wover = {}
     for rn, ids in L.rings.items():
         if rn in ring_w:
             for i in ids:
                 C.wover[i + off] = {up: ring_w[rn][0], lo: ring_w[rn][1]}
     for i in L.cap_bottom.values():
         C.wover.setdefault(i + off, {lo: 1.0})
-    for r in rings[1:-1]:
+    n = len(rings) - 1
+    for r, wt in zip(rings[:-1], [0.1 + 0.8 * (b / n) for b in range(n)]):     # 0.1 at the port, 0.9 just before the leg's first ring: evenly up the bridge
         for v in r:
-            C.wover[v] = {"chest": 0.5, up: 0.5}
-    for v in pl:
-        C.wover[v] = {"chest": 0.5, up: 0.5}
+            C.wover[v] = {trunk: 1 - wt, up: wt}
+    return rings
+
+
+def shoulders_b(H, T, legs, bridges=3):
+    """Returns a combined Cage (torso + the given legs, one shell), fitted by the caller to the returned field. T is the unfitted torso, `legs` a list of (leg cage, lg)."""
+    C = Cage("torso")
+    C.V = [list(v) for v in T.V]
+    C.F = list(T.F)
+    C.rings = T.rings
+    C.wover = {}
+    C.bridges = []
+    for L, lg in legs:
+        C.bridges.append(_attach(C, T, H, L, lg, bridges))
     C.compact_map = C.compact()
     C.fix_winding()
-    fld = lambda p: uround(H.dTorso(p), lg["d_column"](p), H.uB)
+    flds = [lg["d_column"] for _, lg in legs]
+    def fld(p):
+        d = H.dTorso(p)
+        for f in flds:
+            d = uround(d, f(p), H.uB)
+        return d
     return C, fld
+
+
+def shoulder_b(H, T, L, lg, bridges=3):
+    return shoulders_b(H, T, [(L, lg)], bridges)
+
+
