@@ -99,3 +99,22 @@ export function projector(scene, camera, sizeKey, ref, extents) {
   const B = cameraBasis(camera), fr = framing(scene, camera, sizeKey, ref, extents), bb = scene.bounds, cb = [0, 1, 2].map((i) => (bb.lo[i] + bb.hi[i]) / 2), dot = (u, v) => u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
   return (v) => { const p = fromLocal(scene.hf, v), q = [p[0] - cb[0], p[1] - cb[1], p[2] - cb[2]], a = dot(q, B.right), b = dot(q, B.up); return [fr.W / 2 + (a - fr.cx) * fr.scale, fr.feet + 1 - (b - fr.bottom) * fr.scale]; };
 }
+
+// ---- fix round 7: the top outline as one arc, and the rear's fall to its step (read by eye on the master; these are the same readings in numbers) ----------------------------------
+// `top` is the head's top outline per column (null where none). The arc runs from the far brow (the first column within `band` px of the crown) to the rear (the last column within `band`
+// px of it); in it the longest run that stays within 1 px of its own chord is the straight run, and the sharpest turn between two 6 px chords is the corner.
+export function arcMeasures(top, band = 25) {
+  const cols = top.map((t, x) => (t === null ? null : x)).filter((x) => x !== null), crown = Math.min(...cols.map((x) => top[x]));
+  const inb = cols.filter((x) => top[x] <= crown + band), x0 = inb[0], x1 = inb[inb.length - 1];
+  // a straight run: a stretch of 20 columns or more whose outline stays within `tol` px of its own chord (a sag under half a pixel is under what a 304 picture can show), the stretch grown while it holds
+  let run = 0, runAt = x0; const tol = 0.5, dev = (a, b) => { const k = (top[b] - top[a]) / (b - a); let m = 0; for (let x = a; x <= b; x++) m = Math.max(m, Math.abs(top[x] - (top[a] + k * (x - a)))); return m; };
+  for (let a = x0; a + 20 <= x1; a++) { let b = a + 20; if (dev(a, b) > tol) continue; while (b + 1 <= x1 && dev(a, b + 1) <= tol) b++; if (b - a > run) { run = b - a; runAt = a; } }
+  let turn = 0; for (let x = x0 + 6; x + 6 <= x1; x++) { const a1 = Math.atan2(top[x] - top[x - 6], 6), a2 = Math.atan2(top[x + 6] - top[x], 6); turn = Math.max(turn, Math.abs(a2 - a1) * 180 / Math.PI); }
+  return { x0, x1, crown, straightRun: run, runAt, maxTurnDeg: turn };
+}
+// the rear's fall: the steepest 5 px chord of the top outline from x 150 to 250 (degrees from the horizontal), and the step: the first column after it where the outline has eased to under 20 degrees
+export function rearStep(top, from = 150, to = 250) {
+  let best = -1, bx = from; for (let x = from; x < to; x++) { if (top[x] === null || top[x + 5] === null) continue; const a = Math.atan2(top[x + 5] - top[x], 5) * 180 / Math.PI; if (a > best) { best = a; bx = x; } }
+  let sx = bx + 5; while (sx < to && top[sx + 3] !== null && Math.atan2(top[sx + 3] - top[sx], 3) * 180 / Math.PI >= 20) sx++;
+  return { fallDeg: best, fallX: bx, step: { x: sx, y: top[sx] } };
+}
