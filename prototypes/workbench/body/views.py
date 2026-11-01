@@ -15,9 +15,9 @@ def level_mesh(body, level=2):
     return dict(V0=V, F0=F, V=V2, F=F2, attr=attr2, fp=fp2, cr=cr2)
 
 
-def render_views(body, outdir, views=VIEWS, width=380, height=340, level=2, wire=True, tag="", centre=(-0.55, 0, 0.95), samples=32, color=(0.55, 0.52, 0.50), pole_dots=False, pph=95.0):
+def render_views(body, outdir, views=VIEWS, width=380, height=340, level=2, wire=True, tag="", centre=(-0.55, 0, 0.95), samples=32, color=(0.55, 0.52, 0.50), pole_dots=False, pph=95.0, mesh=None):
     os.makedirs(outdir, exist_ok=True)
-    M = level_mesh(body, level)
+    M = mesh if mesh is not None else level_mesh(body, level)
     res = {}
     _, F0_, _, _, _, _ = body.full()
     valence = np.zeros(len(M['V0']), int)

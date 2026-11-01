@@ -35,9 +35,9 @@ def bbox(alpha, thr=0.5):
     return xs.min(), xs.max(), ys.min(), ys.max()
 
 
-def stand_view(b, outdir, tag, level=2, az=57.5, el=8.0, align_to_master=True):
+def stand_view(b, outdir, tag, level=2, az=57.5, el=8.0, align_to_master=True, mesh=None):
     """Renders the 3 sizes. The camera centre puts the creature's lowest pixel row and its left edge where the master's are (the master is perspective, we are orthographic: rows differ a little)."""
-    M = views.level_mesh(b, level)
+    M = mesh if mesh is not None else views.level_mesh(b, level)
     out = {}
     for size, (w, h, ppH) in SIZES.items():
         m = load_rgba(MASTER % {304: "304x312", 96: "96x88", 48: "48x48"}[size])

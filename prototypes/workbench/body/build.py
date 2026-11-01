@@ -23,6 +23,7 @@ def make_body(spec=None, H=None, upto="torso", fix=True, beads=True):
     m, vol = body.finish()
     ctx["remap"] = m
     ctx["volume"] = vol
+    ctx["body_parts"] = dict(body.parts)
     ctx["n_before_details"] = len(body.cage.V)
     if upto in ("legs", "base", "all") and beads:
         import beads as BD
