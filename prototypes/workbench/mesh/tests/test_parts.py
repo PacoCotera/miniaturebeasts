@@ -38,7 +38,7 @@ class T(unittest.TestCase):
             self.assertEqual(j["asset"]["extras"]["parts"][:2], ["head", "torso"])
             body = [m for m in j["meshes"] if m["name"] == "loika_L"][0]["primitives"][0]["attributes"]
             self.assertIn("_PART", body)
-            self.assertEqual(len(j["asset"]["extras"]["parts"]), 14)
+            self.assertEqual(len(j["asset"]["extras"]["parts"]), 10)      # head, torso, four legs, four paws (join B added four bridges)
         self.assertEqual(shas[0], shas[1])
 
 

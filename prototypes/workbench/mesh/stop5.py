@@ -5,7 +5,8 @@ from build import *
 import finish as FN
 
 def build_full(level=3, tex_dir=None, velvet=False):
-    H = House("S01"); cages, rep = make_cages(H, join="B", beans=False); sc = Scene(H, cages, rep, join="B")
+    # round 5: clean closed limbs resting in the torso (join A: no ports, no bridge loops, which were the flat ribbons); JOIN=B builds round 4's joined legs
+    JN = os.environ.get("JOIN", "A"); H = House("S01"); cages, rep = make_cages(H, join=JN, beans=False); sc = Scene(H, cages, rep, join=JN)
     sc.tex_dir = tex_dir
     FN.add_crest_bones(sc, H)
     sc.leaves = FN.new_leaf_object(sc, H)
