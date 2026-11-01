@@ -45,6 +45,7 @@ export const MEASURES = {
   "far-eye-inside/H": (r) => num(r.farEyeInside),
   "chin-overhang/H": (r) => num(r.chinOverhang),
   "nape-step/H": (r) => num(r.napeStep),
+  "back-rise/H": (r) => num(r.backRise),
   "back-70/S": (r) => num(r.back70),
   "back-85/S": (r) => num(r.back85),
   "back-95/S": (r) => num(r.back95),

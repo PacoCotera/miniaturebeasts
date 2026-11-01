@@ -17,7 +17,8 @@ test("Loika's type specimen holds the master's own numbers without the far-eye c
 });
 test("the head sits on the chest: the chin overhangs it by 0.04 to 0.12 H whatever the head's size, the outline steps down at the nape, the head is 1.45 to 1.8 H broad", () => {
   assert.ok(m["chin-overhang/H"] >= 0.04 && m["chin-overhang/H"] <= 0.12, `chin ${m["chin-overhang/H"]}`);
-  assert.ok(m["nape-step/H"] >= 0.3 && m["nape-step/H"] <= 0.9, `nape ${m["nape-step/H"]}`);
+  assert.ok(m["nape-step/H"] >= 0.33 && m["nape-step/H"] <= 0.53, `nape ${m["nape-step/H"]}`);
+  assert.ok(m["back-rise/H"] <= 0.02, `back rise ${m["back-rise/H"]}`);
   assert.ok(m["head-breadth/H"] >= 1.45 && m["head-breadth/H"] <= 1.8);
 });
 test("the nose is a skin mound on a round muzzle, not a bill: low relief, wider than tall, no ink, the muzzle wider than the nose by 0.3 E a side, the mouth wider than the nose by 0.3 E", () => {
@@ -49,7 +50,7 @@ test("the feet: round paws wider than the wrist, the leg tapers toward the paw, 
   const r = house.rig.A, L = r.fore;
   assert.ok(L.r[1] < L.r[0], "the leg tapers from the shoulder to the paw");
   const ratio = (r.paw[1] * 2) / (L.r[1] * 2); assert.ok(ratio >= 1.25 && ratio <= 1.7, `the paw is 1.25 to 1.7 x the wrist: ${ratio}`);
-  assert.ok(r["toe-radii"][2] > r["toe-radii"][0] && r["paw"][2] >= 0.08 && r["toe-reach"] <= 0.6 + 1e-9, "toes taller than long, tucked under the dome's front curve (0.6)");
+  const tr = r["toe-radii"]; assert.ok(Math.abs(tr[2] - tr[1]) / tr[1] <= 0.25 && tr[1] <= 0.6 * 0.062 + 0.006 && r["paw"][2] >= 0.08 && r["toe-reach"] <= 0.65, "fix round 4, must-fix 5: toes about as wide as tall and about 0.6 of fix 3's size, tucked under the dome's front curve (about 0.6)");
   assert.ok(r["toe-crease"] > 0);
   const l = loika.scene.extra.legs[0], t0 = l.toes[0], t1 = l.toes[1], mid = [(t0.c[0] + t1.c[0]) / 2, (t0.c[1] + t1.c[1]) / 2, (t0.c[2] + t1.c[2]) / 2];
   assert.ok(l.toeCrease(...mid) < r["toe-crease"] * loika.scene.S * 4, "between two toes the two fields are near equal: a crease");

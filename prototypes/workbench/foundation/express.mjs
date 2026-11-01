@@ -7,7 +7,7 @@ import { solvePose } from "./pose.mjs";
 import { buildScene } from "./scene.mjs";
 import { coarse } from "./render.mjs";
 import { headWorld, farEyeInside, headBreadth, noseFarEyeGap } from "./headview.mjs";
-import { chinOverhang, napeStep, backLine } from "./profile.mjs";
+import { chinOverhang, napeView, backLine } from "./profile.mjs";
 
 export const BODY_GENES = { A: [], D: ["form.body-length", "form.rise", "form.skirt", "form.antenna"] };
 
@@ -37,7 +37,7 @@ export function express(house0, specimen, { t = {}, seed = specimen.seed ?? spec
   // the rig's measures (H units) and the plan's rule inputs
   const hm = scene.head.measures;
   const rigm = { ...hm, S: scene.S, Wf: hm.W, yawBody: pose.yawBody, yawFace: pose.yawFace, yawHead: pose.yawHead, roll: Math.abs(pose.roll), pitch: pose.pitch, headBreadth: headBreadth(hw, cam), farEyeInside: farEyeInside(hw, cam), noseFarEye: noseFarEyeGap(hw, cam) };
-  if (plan === "D") rigm.T = body.thick; if (plan === "A") { rigm.backGap = scene.S - scene.extra.zBack; const aligned = buildScene(house, { plan, kinds: specimen.kinds, fp, body, pose: { ...pose, headYawSigned: 0, rollSigned: 0 } }); rigm.chinOverhang = chinOverhang(aligned) ?? undefined; rigm.napeStep = napeStep(aligned); const bl = backLine(scene, cam, [0.7, 0.85, 0.95]); rigm.back70 = bl.at[0.7] ?? undefined; rigm.back85 = bl.at[0.85] ?? undefined; rigm.back95 = bl.at[0.95] ?? undefined; } // the profile rules read the build, not the pose: the head square on the body
+  if (plan === "D") rigm.T = body.thick; if (plan === "A") { rigm.backGap = scene.S - scene.extra.zBack; const aligned = buildScene(house, { plan, kinds: specimen.kinds, fp, body, pose: { ...pose, headYawSigned: 0, rollSigned: 0 } }); rigm.chinOverhang = chinOverhang(aligned) ?? undefined;  const bl = backLine(scene, cam, [0.7, 0.85, 0.95]); const nv = napeView(scene, cam); rigm.napeStep = nv.step; rigm.backRise = nv.rise; rigm.back70 = bl.at[0.7] ?? undefined; rigm.back85 = bl.at[0.85] ?? undefined; rigm.back95 = bl.at[0.95] ?? undefined; } // the profile rules read the build, not the pose: the head square on the body
   rigm.eyeShare = eyeShare(scene, pose);
   const ts = {}; for (const g of Object.values(FP_GENES)) if (house.resolved[plan][g]) ts[g] = tOf(g);
   rigm.featuresPushed = featuresPushed(ts);

@@ -33,8 +33,8 @@ export function napeStep(scene, behind = 0.3) {
 
 // The back line in the stand view (AD fix round 2, ruling 1a): the top of the core silhouette (head and body, no headgear) in the house camera, at fractions of its width
 // from the front, in stature units, where the stature is the screen height from the floor to the crown. The master Loika: 0.79, 0.72 and 0.54 S at 0.7, 0.85 and 0.95.
-export function backLine(scene, camera, fractions = [0.7, 0.85, 0.95], { n = 150 } = {}) {
-  const B = cameraBasis(camera), f = scene.parts.core ?? scene.d, bb = scene.bounds, c = [0, 1, 2].map((i) => (bb.lo[i] + bb.hi[i]) / 2), R = Math.hypot(bb.hi[0] - bb.lo[0], bb.hi[1] - bb.lo[1], bb.hi[2] - bb.lo[2]) / 2;
+export function backLine(scene, camera, fractions = [0.7, 0.85, 0.95], { n = 150, field = null } = {}) {
+  const B = cameraBasis(camera), f = field ?? scene.parts.core ?? scene.d, bb = scene.bounds, c = [0, 1, 2].map((i) => (bb.lo[i] + bb.hi[i]) / 2), R = Math.hypot(bb.hi[0] - bb.lo[0], bb.hi[1] - bb.lo[1], bb.hi[2] - bb.lo[2]) / 2;
   const hit = (a, b) => march(f, c[0] + B.right[0] * a + B.up[0] * b + B.toward[0] * R, c[1] + B.right[1] * a + B.up[1] * b + B.toward[1] * R, c[2] + B.right[2] * a + B.up[2] * b + B.toward[2] * R, -B.toward[0], -B.toward[1], -B.toward[2], 0, 2 * R, 0.003, 80) >= 0;
   // the extents: columns over the screen, the top of each by a coarse scan down and a bisection
   const cell = (2 * R) / n, tops = [];
@@ -46,7 +46,20 @@ export function backLine(scene, camera, fractions = [0.7, 0.85, 0.95], { n = 150
   const cols = tops.map((t, i) => (t === null ? null : i)).filter((i) => i !== null), i0 = cols[0], i1 = cols[cols.length - 1], crown = Math.max(...tops.filter((t) => t !== null));
   // the floor: the lowest hit on the left, middle and right (the feet): the creature stands at world z 0, so the screen height of z 0 under each column is the same on all of them
   const floorB = (a) => { for (let j = 0; j < n; j++) { const b = -R + (j + 0.5) * cell; if (hit(a, b)) { let lo = b - cell, hi = b; for (let q = 0; q < 8; q++) { const m = (lo + hi) / 2; if (hit(a, m)) hi = m; else lo = m; } return hi; } } return null; };
-  const floor = Math.min(...cols.filter((_, k) => k % 3 === 0).map((i) => floorB(-R + (i + 0.5) * cell)).filter((v) => v !== null)), stature = crown - floor, a0 = -R + i0 * cell, a1 = -R + (i1 + 1) * cell, out = { stature, crown, floor, a0, a1, at: {} };
+  const floor = Math.min(...cols.filter((_, k) => k % 3 === 0).map((i) => floorB(-R + (i + 0.5) * cell)).filter((v) => v !== null)), stature = crown - floor, a0 = -R + i0 * cell, a1 = -R + (i1 + 1) * cell, out = { stature, crown, floor, a0, a1, at: {}, tops, cell, R, n };
   for (const fr of fractions) { const i = Math.min(n - 1, Math.max(0, Math.round(((a0 + fr * (a1 - a0)) + R) / cell - 0.5))); out.at[fr] = tops[i] === null ? null : (tops[i] - floor) / stature; }
   return out;
+}
+
+// The nape step and the back's second hump, read in the stand view as the AD reads the master (AD fix round 4, ruling 1d). The core's top outline is scanned in the house camera:
+// the nape step is how far it has fallen from the crown at `behind` (the house's nape-behind-S of the stature S, the master's 0.3 H, so the same place on a bigger or smaller head) behind the head's own rear edge on screen; the hump is the largest rise of the outline after it has begun to fall
+// behind the crown (0 on a back that only falls: no notch, no plateau that climbs, no second hump). World units are screen units, so both are in H.
+export function napeView(scene, camera, behind = scene.house.rig.A["nape-behind-S"] * scene.S) {
+  const core = backLine(scene, camera, []), head = backLine(scene, camera, [], { field: scene.parts.head });
+  const { tops, cell, a0 } = core, col = (a) => Math.min(tops.length - 1, Math.max(0, Math.round((a + core.R) / cell - 0.5)));
+  const rear = col(head.a1), cols = tops.map((t, i) => (t === null ? null : i)).filter((i) => i !== null);
+  let ci = cols[0]; for (const i of cols) if (i <= rear && tops[i] > tops[ci]) ci = i;
+  const at = col(head.a1 + behind), top = tops[at] ?? tops[cols[cols.length - 1]], step = Math.max(0, tops[ci] - top);
+  let run = Infinity, rise = 0; for (const i of cols) { if (i <= ci) continue; run = Math.min(run, tops[i]); rise = Math.max(rise, tops[i] - run); }
+  return { step, rise };
 }
