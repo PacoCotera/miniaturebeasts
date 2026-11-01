@@ -11,7 +11,7 @@ import { plainRender } from "../framework/plain.mjs";
 import { encodeRGBA } from "./pngrgba.mjs";
 import { buildScene } from "./mesh.mjs";
 import { renderForm, silhouette, SIZES } from "./render.mjs";
-import { SPECIES, ROUND3, ROUND3_LOG, ORDER } from "./species-trial.mjs";
+import { SPECIES, ROUND4, ROUND3_LOG, ROUND4_LOG, ORDER } from "./species-trial.mjs";
 import { TUNING, getPath, withinAllowance } from "./tuning.mjs";
 import { LEVERS, LOCKED, LEVER_CLASS, formOf, corner, cornerForm, cornerCount, single, typeCopies } from "./genome.mjs";
 import { maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, OVERLAP_TARGET, surfaceValue, SURFACE_TARGET, tuftBand, outlineMeasure } from "./checks.mjs";
@@ -181,9 +181,9 @@ export function visibility(key, ref) {
 
 export const sha = (buf) => createHash("sha256").update(buf).digest("hex").slice(0, 16);
 export function tuningReport() {
-  return TUNING.map((t) => { const before = getPath(ROUND3[t.species], t.path); return { species: t.species, path: t.path, before, after: t.after, change: before ? +(100 * (t.after / before - 1)).toFixed(1) + " %" : "", ok: withinAllowance(t.path, before, t.after), why: t.why }; });
+  return TUNING.map((t) => { const before = getPath(ROUND4[t.species], t.path); return { species: t.species, path: t.path, before, after: t.after, change: before ? +(100 * (t.after / before - 1)).toFixed(1) + " %" : "", ok: withinAllowance(t.path, before, t.after), why: t.why }; });
 }
-export { surfaceValue, SURFACE_TARGET, tuftBand, outlineMeasure, buildScene, renderForm, silhouette, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, OVERLAP_TARGET, SPECIES, ROUND3, ORDER, encodeRGBA, mkdirSync, writeFileSync, existsSync, readFileSync };
+export { surfaceValue, SURFACE_TARGET, tuftBand, outlineMeasure, buildScene, renderForm, silhouette, featureChecks, round2Checks, transMetrics, textureEnergy, guardsOf, maskOfAlpha, maskOfCoverage, boxOf, overlaps, overlap, OVERLAP_TARGET, SPECIES, ROUND4, ORDER, encodeRGBA, mkdirSync, writeFileSync, existsSync, readFileSync };
 
 // ---- more helpers for the sheets and the report ----------------------------------------------------------------------
 export const standMaskAt = (stands, s) => maskOfAlpha(stands[s]);
@@ -237,9 +237,12 @@ export function makeReport(rec, keys) {
   L(); L("## Round 3 numbers (design, with the reason; before and after)"); L();
   L("| species | number | before | after | reason |"); L("| --- | --- | --- | --- | --- |");
   for (const x of ROUND3_LOG.filter((y) => keys.includes(y.species))) L(`| ${x.species} | ${x.what} | ${String(x.before).replace(/\|/g, "/")} | ${String(x.after).replace(/\|/g, "/")} | ${x.why} |`);
+  L(); L("## Round 4 numbers (Loika, design with the reason; before and after)"); L();
+  L("| species | number | before | after | reason |"); L("| --- | --- | --- | --- | --- |");
+  for (const x of ROUND4_LOG.filter((y) => keys.includes(y.species))) L(`| ${x.species} | ${x.what} | ${String(x.before).replace(/\|/g, "/")} | ${String(x.after).replace(/\|/g, "/")} | ${x.why} |`);
   L(); L("## The design 8 verdicts as applied"); L();
   for (const v of ["plume knots (top, mid, end) added to Wickle's girth, build and mass: confirmed, in", "Wickle top delta-sigma +15 % (.5175): superseded by .60 (design 7), applied", "Wickle plume root +8 %, last knot u = d .24: confirmed, folded in", "Wickle arm root out .92 and dir +15 %: rejected, replaced by design 7's arms (root sigma .70, 120 degrees, out .85; dir .7 .8 -.7; blend .05)", "Wickle camera yaw 32 to 22, mouth w and t +15 %: confirmed, folded in", "Loika face sigma 1.26 to 1.075: superseded, the anchor is the head knot, phi_f 25", "Rupar e_x .13 to .12: moot, Rupar's eyes are placed by angle", "Rupar face sigma 1.98 to 1.70: rejected, anchor 2.12", "Rupar throat +15 %, stop w +10 %: confirmed (the throat is now design numbers, the stop folded in)", "Drapet face R and aspect +15 %: superseded by the face pod", "Curlop arm root 140 to 160, eye, nose and mouth +15 %: confirmed; e_x .52 a design number (the 3D separation test then reads 11.8 % under, bound 12 %)", "the region-join lever rule (sqrt m at a boundary knot whose outside neighbour has another part): applied in genome.mjs, unit-tested on a synthetic chain"]) L(`- ${v}`);
-  L(); L("## Round 3 tuning (each change of a ROUND3 number, before and after)"); L();
+  L(); L("## Tuning (each change of a round 3 or round 4 number, before and after)"); L();
   L("| species | number | before | after | change | reason |"); L("| --- | --- | --- | --- | --- | --- |");
   for (const t of tuningReport().filter((x) => keys.includes(x.species))) L(`| ${t.species} | ${t.path} | ${t.before} | ${t.after} | ${t.change}${t.ok ? "" : " OUTSIDE THE ALLOWANCE"} | ${t.why} |`);
   L(); L("## Visibility of the open ranges (design 6): face levers by face ink at 304, mark levers by mark pixels at 96, shape levers by the silhouette at 96"); L();

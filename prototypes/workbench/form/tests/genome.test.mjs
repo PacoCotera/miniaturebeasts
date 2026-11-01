@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { SPECIES, ROUND3, ORDER } from "../species-trial.mjs";
+import { SPECIES, ROUND4, ORDER } from "../species-trial.mjs";
 import { TUNING, getPath, withinAllowance } from "../tuning.mjs";
 import { LEVERS, KINDS, atRegionJoin, touchedKnots, formOf, typeCopies, corner, cornerForm, cornerCopies, cornerCount, valueOf, typeT, single } from "../genome.mjs";
 import { buildChains } from "../spine.mjs";
@@ -16,10 +16,10 @@ const diff = (a, b, path = "", out = []) => {
 test("the type specimen equals the base form", () => {
   for (const k of ORDER) assert.deepEqual(formOf(k, typeCopies(k)), SPECIES[k], k);
 });
-test("every tuning change is within +-15 % (the camera 10 degrees) of the ROUND3 number, and nothing else differs from ROUND3", () => {
-  for (const t of TUNING) { const before = getPath(ROUND3[t.species], t.path); assert.ok(withinAllowance(t.path, before, t.after) || t.owner, `${t.species} ${t.path}: ${before} -> ${t.after}`); }
+test("every tuning change is within +-15 % (the camera 10 degrees) of the base number (ROUND4), and nothing else differs from it", () => {
+  for (const t of TUNING) { const before = getPath(ROUND4[t.species], t.path); assert.ok(withinAllowance(t.path, before, t.after) || t.owner, `${t.species} ${t.path}: ${before} -> ${t.after}`); }
   for (const k of ORDER) {
-    const changed = diff(ROUND3[k], SPECIES[k]), listed = TUNING.filter((t) => t.species === k && t.after !== getPath(ROUND3[k], t.path)).map((t) => t.path);
+    const changed = diff(ROUND4[k], SPECIES[k]), listed = TUNING.filter((t) => t.species === k && t.after !== getPath(ROUND4[k], t.path)).map((t) => t.path);
     assert.deepEqual(changed.sort(), [...new Set(listed)].sort(), k);
   }
 });

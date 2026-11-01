@@ -39,9 +39,9 @@ test("the eyes of a lateral face (Rupar) are on opposite sides of the head, both
   const side = (e) => Math.sign(e.hit[1]); assert.notEqual(side(a), side(b));
   for (const e of f.eyes) assert.equal(f.at(e.hit, true).part, "head");
 });
-test("Loika's eyes stand out .20 r_e, her plate lies below the mouth line and the nostrils are at the face coordinates (+-.035, -.10)", () => {
+test("Loika's eyes stand out .15 r_e (round 4), her plate lies below the mouth line and the nostrils are at the face coordinates (+-.035, -.10)", () => {
   const { f } = make("loika"), fm = f.faceM;
-  for (const e of f.eyes) { assert.equal(e.protrude, 0.2); assert.ok(Math.abs(e.c.map((v, i) => v - e.hit[i]).reduce((a, v, i) => a + v * e.n[i], 0) + 0.8 * e.r) < 1e-6); }
+  for (const e of f.eyes) { assert.equal(e.protrude, 0.15); assert.ok(Math.abs(e.c.map((v, i) => v - e.hit[i]).reduce((a, v, i) => a + v * e.n[i], 0) + 0.85 * e.r) < 1e-6); }
   for (const x of [-0.2, 0, 0.2]) { const yl = fm.mouth.at(x); assert.ok(fm.plate(x, yl + 0.05) < 0.01 && fm.plate(x, yl - 0.06) > 0.2 || fm.R < 0.2, `x ${x}`); }
   assert.equal(fm.noses.length, 2); const xs = fm.noses.map((n) => n.xy[0]).sort((a, b) => a - b); assert.ok(Math.abs(xs[1] - xs[0] - 0.07) < 0.012, `${xs}`);
 });

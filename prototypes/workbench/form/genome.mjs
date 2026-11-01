@@ -121,7 +121,7 @@ export const LEVERS = {
     R("nose-size", "mult", "noseSize", [0.8, 1.3], {}, ["face.nose"], "Nose"),
   ],
   loika: [
-    R("eye-size", "mult", "eyeSize", [1, 1.3], {}, ["face.eyes"], "Eyes: large ... huge"),
+    R("eye-size", "mult", "eyeSize", [0.9, 1.15], {}, ["face.eyes"], "Eyes"),
   ],
   rupar: [
     R("build", "mult", "build", [0.9, 1.1], { knots: ["pelvis", "barrel", "withers"] }, ["front.pelvis", "front.barrel", "front.withers"], "Build"),

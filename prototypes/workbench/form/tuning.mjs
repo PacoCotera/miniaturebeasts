@@ -4,11 +4,6 @@
 export const TUNING = [
   { species: "rupar", path: "camera.yaw", after: 50, why: "overlap48 (floor .62): the design's 45/4 measured .610 at 48 px on this build (the design's .622 was run on a scratch copy): yaw +5 degrees" },
   { species: "rupar", path: "camera.pitch", after: 8, why: "same: pitch +4 degrees (a search over the allowance: .643 at 50/8 on the 1/150 silhouette against .606 at 50/4)" },
-  { species: "loika", path: "camera.yaw", after: -30, why: "face.place and overlap: at the design's -40/12 the eye separation was .203 (needs >= .226): yaw +10 degrees (the pitch stays 12: more pitch lifts the nose offset but costs the overlap floor)" },
-  { species: "loika", path: "face.eyes.ex", after: 0.48, why: "face.place: eye separation .227 H at e_x .46 against >= .226: +4 % for margin (the 3D separation test holds within 10 % of 2 e_x)" },
-  { species: "loika", path: "face.nose.y", after: -0.085, why: "face.order: the nostrils sat below the mouth's centroid (nose at 148 px, mouth at 145 at 304): -15 % (higher)" },
-  { species: "loika", path: "face.mouth.y", after: -0.069, why: "face.order and loika.head: the mouth line +15 % lower at the tip" },
-  { species: "loika", path: "face.mouth.yEnd", after: -0.253, why: "same: the corners +15 % lower" },
   { species: "rupar", path: "face.eyes.r", after: 0.086, why: "face.ink.304 and face.place: the eye's pupil was 12 px against >= 28 and its diameter with the ring .041 H against >= .053: +15 %" },
   { species: "rupar", path: "face.mouth.y", after: -0.115, why: "face.mouth and face.order: the mouth ink lay level with the nose (99 px) at 304: +15 % lower" },
   { species: "rupar", path: "face.mouth.w", after: 0.138, why: "face.mouth: the stroke was 5 px long against >= 10: +15 %" },

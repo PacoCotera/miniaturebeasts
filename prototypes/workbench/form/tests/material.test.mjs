@@ -53,8 +53,8 @@ test("the clump tufts show at 304 and 96 and are off at 48, on fur only", () => 
   for (const k of ["drapet", "loika", "rupar"]) assert.equal(makeMaterial(SPECIES[k], 304, 140).ampTuft, 0, k);
   assert.equal(SPECIES.curlop.look.material.clump, 0.1); assert.equal(SPECIES.wickle.look.material.clump, 0.13); assert.equal(SPECIES.wickle.look.material.clumpPlume, 0.09);
 });
-test("the tone ramp of each pigment: k0 .66 fur and hair (Wickle .70 tuned to .62), .58 skin, k1 1.04; skin gloss at most .10", () => {
-  assert.equal(SPECIES.curlop.look.material.k0, 0.66); assert.equal(SPECIES.loika.look.material.k0, 0.58); assert.ok(SPECIES.loika.look.material.gloss <= 0.1); assert.equal(SPECIES.rupar.look.material.k0, 0.66);
+test("the tone ramp of each pigment: k0 .66 fur and hair (Wickle .70 tuned to .62), skin .28 for Loika in round 4 (the light marks on their own floor .85), k1 1.04; skin gloss at most .10", () => {
+  assert.equal(SPECIES.curlop.look.material.k0, 0.66); assert.equal(SPECIES.loika.look.material.k0, 0.28); assert.equal(SPECIES.loika.look.ramp.light, 0.85); assert.ok(SPECIES.loika.look.material.gloss <= 0.1); assert.equal(SPECIES.rupar.look.material.k0, 0.66);
 });
 test("the belly edge follows the body: beta(sigma) = beta_max sin(pi t^.8)^.6 peaks at the lower belly and closes at both ends", async () => {
   const { buildChains } = await import("../spine.mjs"), { makeField } = await import("../field.mjs"), f = SPECIES.curlop, b = buildChains(f), fld = makeField({ front: b.front, tail: b.tail, floor: b.floor }, b.branches, f);

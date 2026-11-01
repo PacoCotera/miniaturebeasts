@@ -472,8 +472,55 @@ export const ROUND3_LOG = [];
 // every unnamed branch knot gets a name too
 for (const f of Object.values(ROUND3)) for (const b of f.branches) b.knots.forEach((k, i) => { if (!k.name) k.name = `${b.id}${i}`; });
 
-// SPECIES is ROUND3 with the round 3 tuning applied (tuning.mjs, listed with before and after in the report).
-export const SPECIES = Object.fromEntries(Object.entries(ROUND3).map(([k, f]) => [k, applyTuning(f, TUNING.filter((t) => t.species === k))]));
+// ---- ROUND4: Loika alone, designed to match its signed stand (round4/design-loika.md section 2); the other four are ROUND3, untouched ------------------
+// One block, each line logged with its reason as ROUND3_LOG is. Anything tuned beyond it stays within the allowance (+-15 % on a number, 10 degrees on a camera) and goes in tuning.mjs.
+export const ROUND4 = { ...ROUND3, loika: structuredClone(ROUND3.loika) };
+export const ROUND4_LOG = [];
+{
+  const L = ROUND4.loika, log = (what, before, after, why) => ROUND4_LOG.push({ species: "loika", what, before, after, why });
+  const fmt = (k) => `${k.ds} ${k.k} ${k.psi}|${+k.w.toFixed(4)} ${+k.u.toFixed(4)} ${+k.d.toFixed(4)}`, js = (v) => JSON.stringify(v);
+  const front = (name, str, why) => { const k = kn(L, name), before = fmt(k); setKnot(k, str); log(`front.${name}`, before, fmt(k), why); };
+  const tail = (i, str, why) => { const k = L.tail.knots[i], before = fmt(k); setKnot(k, str); log(`tail.${k.name}`, before, fmt(k), why); };
+  const branch = (id) => L.branches.find((b) => b.id === id);
+  const knot = (b, i, str, why) => { const k = b.knots[i], before = fmt(k); setKnot(k, str); log(`branches.${b.id}.knots.${i} (${k.name})`, before, fmt(k), why); };
+  const set = (path, v, why) => { const ps = path.split("."); let o = L; for (let i = 0; i < ps.length - 1; i++) o = o[ps[i]]; const before = o[ps.at(-1)]; o[ps.at(-1)] = v; log(path, js(before), js(v), why); };
+  // 1.4: a head of its own and a lower, flatter back
+  front("pelvis", "0|.74 .30 .64", "design 1.4: the back is dropped (pelvis u .44 to .30): the nape's concavity");
+  front("belly", ".30 0|.84 .34 .72", "design 1.4: belly u .48 to .34");
+  front("chest", ".30 20|.76 .40 .58", "design 1.4: chest u .52 to .40");
+  front("chin", ".30 140 8|.62 .52 .46", "design 1.4: the head is carried forward on a longer, flatter chin (ds .24 to .30, k 190 to 140); u .56 to .52, under the head's .58");
+  front("head", ".26 -140 12|.60 .58 .50", "design 1.4: the head curls down into a real snout (k -60 to -140)");
+  front("stop", ".20 -200|.52 .46 .42", "design 1.4: the stop curls further (k -120 to -200)");
+  front("snout", ".24 -100|.38 .26 .30", "design 1.4: a longer, curled snout (ds .14 to .24, k -60 to -100, w .34 to .38) that ends as the leftmost point");
+  tail(0, ".25 30|.50 .30 .44", "design 1.4: the tail stub is lowered (u .50 to .30): it set the back line with the thighs");
+  tail(1, ".10|.32 .20 .28", "design 1.4: the second stub knot lowered with the first (u .32 to .20)");
+  // 1.4, 1.5: legs, thicker, shorter and rooted deeper; toes that show
+  { const h = branch("hind"); const before = js({ root: h.root, dir: h.dir }); h.root = { sigma: -0.02, angle: 125, out: 0.76 }; h.dir = [0.1, 0.55, -1]; log("branches.hind.root/dir", before, js({ root: h.root, dir: h.dir }), "design 1.4, 1.5: root angle 120 to 125 (off the back line), out .85 to .76 (the root-depth guard for the thicker legs)");
+    knot(h, 0, "0|.324", "design 1.5: every leg knot x 1.2 (.27 to .324)"); knot(h, 1, ".16 -150|.276", "design 1.5: ds .22 to .16 (shorter), w x 1.2"); knot(h, 2, ".20|.288 .156 .132", "design 1.5: foot w, u, d x 1.2"); }
+  { const f = branch("fore"), before = js({ root: f.root, dir: f.dir }); f.root = { sigma: 0.62, angle: 140, out: 0.76 }; f.dir = [0.15, 0.55, -1];
+    log("branches.fore.root/dir", before, js({ root: f.root, dir: f.dir }), "design 1.4, 1.5: root angle 125 to 140 (off the back line), out .85 to .76");
+    knot(f, 0, "0|.30", "design 1.5: every leg knot x 1.2 (.25 to .30)"); knot(f, 1, ".26 -150|.264", "design 1.5: shin ds .34 to .26 (shorter), w x 1.2"); knot(f, 2, ".20|.276 .144 .132", "design 1.5: foot x 1.2"); }
+  for (const id of ["hind", "fore"]) { const b = branch(id), before = js(b.toes); b.toes = { count: 3, length: 0.18, r: 0.075, fan: 40, down: 15, nail: 0.7 }; log(`branches.${id}.toes`, before, js(b.toes), "design 1.5: toes that show past the foot (length .08 to .18, r .05 to .075, fan 30 to 40, down 25 to 15)"); }
+  // 1.6: broad leaves (the w of every knot x 1.3; u, d, ds, k, dirs and roots unchanged)
+  for (const [id, ws] of [["leafM", [0.052, 0.13, 0.169, 0.117, 0.013]], ["leafS", [0.047, 0.117, 0.152, 0.105, 0.012]]]) { const b = branch(id), before = js(b.knots.map((k) => +k.w.toFixed(4))); b.knots.forEach((k, i) => { k.w = ws[i]; }); log(`branches.${id}.knots.w`, before, js(ws), "design 1.6: the leaves widen (w x 1.3)"); }
+  set("camera.yaw", -36, "design 1.4: the yaw shows the chest flank as the leftmost part at -40 and -30; -36 turns the far eye to w/h .50");
+  // 1.2, 1.3: the face
+  { const f = L.face, before = js({ eyes: f.eyes, mouth: f.mouth, belly: f.belly });
+    f.eyes = { r: 0.28, ex: 0.44, ey: 0, protrude: 0.15 }; f.mouth = { kind: "line", y: -0.16, yEnd: -0.34, w: 0.30, s: 0.15, t: 0.02 }; f.belly = { beta: 55, s0: -0.1, s1: 1.3 };
+    log("face.eyes / mouth / belly", before, js({ eyes: f.eyes, mouth: f.mouth, belly: f.belly }), "design 1.2, 1.3: eye sphere r .28, protrusion .15 (the cap stands out .042 U), e_x .44 (the far eye turns to w/h .50); the mouth line lower (y -.16, yEnd -.34, w .30) so the plate stays clear of the eyes; the belly runs up the throat to the plate (s1 1.1 to 1.3)"); }
+  // 1.1: colour
+  { const p = L.look.pigments, before = js({ skin: p.skin, patch: p.patch, belly: p.belly, ring: p.ring, nail: p.nail, leaf: p.leaf });
+    p.skin = [93, 83, 85]; p.patch = p.belly = p.ring = p.nail = [244, 212, 173]; p.leaf = [118, 130, 61];
+    log("look.pigments", before, js({ skin: p.skin, patch: p.patch, belly: p.belly, ring: p.ring, nail: p.nail, leaf: p.leaf }), "design 1.1: the skin was blue over red (violet); cream warmer; leaf from the stand's median"); }
+  { const before = js(L.look.material); L.look.material = { kind: "skin", gloss: 0.10, k0: 0.28 }; log("look.material", before, js(L.look.material), "design 1.1: shadow floor k0 .58 to .28 (the stand's skin spans 27 L*, round 3's 16)"); }
+  L.look.ramp = { light: 0.85 }; log("look.ramp", "none", js(L.look.ramp), "design 1.1: the light marks (belly, plate, eye ring, nails) on their own floor .85");
+  { const e = L.look.eyes, before = js({ iris: e.iris, iris_r: e.iris_r, pupil_r: e.pupil_r }); Object.assign(e, { iris: [226, 118, 34], pupil: [24, 14, 12], iris_r: 1.0, pupil_r: 0.5, matte: 1.0 });
+    log("look.eyes", before, js({ iris: e.iris, iris_r: e.iris_r, pupil_r: e.pupil_r, matte: e.matte }), "design 1.1, 1.3: the iris fills the visible cap (no grey band) and is lit at matte 1.0 (it was halved to a brown)"); }
+  { const before = js(L.look.eyering); L.look.eyering = { inner: 0.45, outer: 0.77, soft: 0.04 }; log("look.eyering", before, js(L.look.eyering), "design 1.2: the ring is defined against the visible cap (1.46 x the iris radius), not the sphere"); }
+}
+
+// SPECIES is ROUND4 with the tuning applied (tuning.mjs, listed with before and after in the report).
+export const SPECIES = Object.fromEntries(Object.entries(ROUND4).map(([k, f]) => [k, applyTuning(f, TUNING.filter((t) => t.species === k))]));
 
 export const ORDER = ["curlop", "wickle", "drapet", "loika", "rupar"];
 export const cloneForm = (f) => structuredClone(f);

@@ -51,8 +51,8 @@ test("the eye ring honours inner and soft, and keeps .5 and .25 without them", (
 });
 test("look.ramp.light lifts the shadow floor on the light marks only", () => {
   const form = SPECIES.loika, ref = standRef(loadStands("loika")[304]), sc = buildScene(form, { extentDiv: 120 });
-  const f2 = structuredClone(form); f2.look.ramp = { light: 0.85 };
-  const a = renderForm(sc, form.camera, 96, { ref }), b = renderForm({ ...sc, form: f2 }, form.camera, 96, { ref });
+  const f0 = structuredClone(form); delete f0.look.ramp; // the same scene without and with the floor (the mesh does not depend on it)
+  const a = renderForm({ ...sc, form: f0 }, form.camera, 96, { ref }), b = renderForm(sc, form.camera, 96, { ref });
   let lifted = 0, bareChanged = 0;
   for (let i = 0; i < a.width * a.height; i++) {
     const d = b.data[i * 4] + b.data[i * 4 + 1] + b.data[i * 4 + 2] - a.data[i * 4] - a.data[i * 4 + 2] - a.data[i * 4 + 1];
