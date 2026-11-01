@@ -6,7 +6,8 @@ import { renderCreature, coarse, SIZES } from "./render.mjs";
 import { faceInk, gazeOf, faceContrast, noseValue, ringShade } from "./checks.mjs";
 import { checkRules, failures, tAt, bandOf, loadHouse } from "../form/house/house.mjs";
 import { measureAll } from "../form/house/measures.mjs";
-import { loadImage, saveImage, onBg, zoom, blank, paste, crop } from "./imgtools.mjs";
+import { loadImage, saveImage, onBg, zoom, blank, paste, crop, drawLine, fillDisc } from "./imgtools.mjs";
+import { imageProfile } from "./silhouette.mjs";
 import { seedUnit } from "./pose.mjs";
 import { sheet } from "./page.mjs";
 import { MASTER } from "./paths.mjs";
@@ -15,7 +16,7 @@ const alphaHeight = (img) => { let t = Infinity, b = -Infinity; for (let y = 0; 
 export const masterOf = (id) => ({ 304: loadImage(MASTER(id, 304)), 96: loadImage(MASTER(id, 96)), 48: loadImage(MASTER(id, 48)) });
 
 // one individual: express, render at the three sizes from one framing, measure the render, read the rules
-export function makeTile(house, specimen, { t = {}, label = "", seed = undefined, sizes = [304, 96, 48], shareClamp = true, clamps = true } = {}) {
+export function makeTile(house, specimen, { t = {}, label = "", seed = undefined, sizes = [304, 96, 48], shareClamp = true, clamps = true, outside = false } = {}) {
   const ref = { height: alphaHeight(loadImage(MASTER(specimen.id, 304))) };
   const ex = express(house, { ...specimen, seed: seed ?? specimen.seed }, { t, side: specimen.side, shareClamp, clamps });
   const camera = { yaw: ex.pose.cameraYaw, pitch: house.solver.camera["pitch-deg"] }, extents = coarse(ex.scene, camera, { n: 240 });
@@ -27,7 +28,7 @@ export function makeTile(house, specimen, { t = {}, label = "", seed = undefined
   rig.shadeRatio = house.light.shade.ratio; // the shade-to-lit ratio of the reference sphere, by construction (the renderer interpolates albedo x ratio to albedo)
   rig.sickCues = (rig.lid > 0.2 ? 1 : 0) + (rig.upturn < 0.05 ? 1 : 0);
   const measured = measureAll(rig), rules = checkRules(house, specimen.plan, measured, { kinds: specimen.kinds });
-  return { specimen, ex, camera, r, rig, measured, rules, fails: failures(rules), label, ms: Object.fromEntries(Object.entries(r).map(([k, v]) => [k, Math.round(v.meta.ms)])) };
+  return { specimen, ex, camera, r, rig, measured, rules, fails: failures(rules), label, forceOutside: outside, ms: Object.fromEntries(Object.entries(r).map(([k, v]) => [k, Math.round(v.meta.ms)])) };
 }
 
 const f2 = (v, d = 2) => Number(v).toFixed(d);
@@ -36,11 +37,11 @@ const WORDS = { "R1-face": "eye share", "R1-head": "head size", "R1-head-breadth
 const wordOf = (id) => WORDS[id] ?? id.replace(/^R/, "");
 // a tile's label: the name, the verdict in plain words, and the numbers on a last line (the page wraps whatever is long)
 export function tileLines(t) {
-  const m = t.measured, over = t.fails.some((x) => x.id === "R1-face" && x.value > x.range[1]), far = !!t.ex?.outside || t.fails.some((x) => x.id === "R-far-eye" || x.id === "R-nose-far-eye"), outside = over || far;
+  const m = t.measured, over = t.fails.some((x) => x.id === "R1-face" && x.value > x.range[1]), far = !!t.ex?.outside || t.fails.some((x) => x.id === "R-far-eye" || x.id === "R-nose-far-eye"), outside = over || far || !!t.forceOutside;
   const others = t.fails.filter((x) => !(over && x.id === "R1-face") && !(far && (x.id === "R-far-eye" || x.id === "R-nose-far-eye")));
   const lines = [];
   if (t.label) lines.push([t.label, "name"]);
-  if (outside) lines.push(["Outside the house", "bad"]);
+  if (outside) lines.push([t.forceOutside ? "Outside the house: clamps off" : "Outside the house", "bad"]);
   if (others.length) lines.push([others.length > 3 ? `Breaks ${others.length} rules` : `Breaks ${others.map((x) => wordOf(x.id)).join(", ")}`, "bad"]);
   if (!t.fails.length) lines.push(["Passes the house", "dim"]);
   if (m["H/S"] !== undefined) lines.push([`H/S ${f2(m["H/S"])}, E/W ${f2(m["E/Wf"] ?? 0)}, share ${f2(m["eye-share"] ?? 0, 3)}`, "dim"]);
@@ -53,15 +54,15 @@ const masterCell = (id, name, l2 = "Signed art") => ({ pics: masterPics(id), lin
 export const saveTile = (dir, name, t) => { mkdirSync(dir, { recursive: true }); for (const s of Object.keys(t.r)) saveImage(path.join(dir, `${name}-${SIZES[s].join("x")}.png`), t.r[s]); };
 
 // ---- the sheets: each returns { spec } (a sheet spec for page.mjs's renderSheet) and its tiles ---------------------------------------------
-export const HEAD_SIZES = [0.45, 0.52, 0.60], EYE_T = [0.35, 0.9]; // row 1 was t 0.3: with the master's own head (W/H 1.31) that sits 0.001 under the eye-share band at H/S 0.45
+export const HEAD_SIZES = [0.45, 0.52, 0.60], EYE_OUT = 0.9; // row 1: the type specimen's own eye size (the master's E/Wf 0.30); row 2: eye t 0.9, every clamp off, outside the house
 export function headSizeSheet(house, spec, outDir) {
-  const cells = [], tiles = [], hb = bandOf(house, "A", "form.head");
-  for (const et of EYE_T) {
-    cells.push(masterCell("S01", "Loika", `Row: eye size t ${et}`));
+  const cells = [], tiles = [], hb = bandOf(house, "A", "form.head"), et1 = spec.t["form.eye-size"];
+  for (const [et, open] of [[et1, false], [EYE_OUT, true]]) {
+    cells.push(masterCell("S01", "Loika", open ? `Row: eye size t ${et}, clamps off` : `Row: eye size t ${et} (E/W 0.30, the master's)`));
     for (const hs of HEAD_SIZES) {
-      const t = makeTile(house, spec, { t: { "form.head": tAt(hb, hs), "form.eye-size": et }, label: `H/S ${hs.toFixed(2)}, eye t ${et}` });
+      const t = makeTile(house, spec, { t: { "form.head": tAt(hb, hs), "form.eye-size": et }, label: `H/S ${hs.toFixed(2)}, eye t ${et}`, clamps: !open, shareClamp: !open, outside: open });
       tiles.push({ hs, et, tile: t }); cells.push({ pics: tilePics(t.r), lines: tileLines(t) });
-      saveTile(path.join(outDir, "tiles"), `loika-hs${Math.round(hs * 100)}-eye${Math.round(et * 10)}`, t);
+      saveTile(path.join(outDir, "tiles"), `loika-hs${Math.round(hs * 100)}-eye${Math.round(et * 100)}`, t);
     }
   }
   return { spec: sheet("Head size choice: Loika beside the master at 304, 96 and 48", cells, 4), tiles };
@@ -94,12 +95,46 @@ export function noseSheet(house, spec, outDir) {
 
 // the feet, master beside ours: crops of the native renders, enlarged with their pixels kept (3x at 304, 5x at 96)
 export function feetSheet(house, spec, outDir) {
-  const t = makeTile(house, spec, { label: "Loika feet", sizes: [304, 96] }), m = masterOf(spec.id), c = (img, x, y, w, h, k) => [[{ img: crop(img, x, y, w, h), scale: k }]];
+  const t = makeTile(house, spec, { label: "Loika feet", sizes: [304, 96] }), m = masterOf(spec.id);
+  // the crop follows each picture's own creature: its leftmost opaque column in the feet rows, then the same width for both
+  const left = (img, y0, y1) => { let x0 = img.width; for (let y = y0; y < y1; y++) for (let x = 0; x < img.width; x++) if (img.data[(y * img.width + x) * 4 + 3] > 200) { x0 = Math.min(x0, x); break; } return Math.max(0, x0 - 4); };
+  const c = (img, y, w, h, k) => [[{ img: crop(img, left(img, y, y + h), y, w, h), scale: k }]];
   const cells = [
-    { pics: c(m[304], 40, 238, 250, 66, 3), lines: [["Master feet at 304, 3x", "name"]] }, { pics: c(t.r[304], 40, 238, 250, 66, 3), lines: [["Build feet at 304, 3x", "name"]] },
-    { pics: c(m[96], 12, 66, 80, 20, 5), lines: [["Master feet at 96, 5x", "name"]] }, { pics: c(t.r[96], 12, 66, 80, 20, 5), lines: [["Build feet at 96, 5x", "name"]] }];
+    { pics: c(m[304], 238, 262, 66, 3), lines: [["Master feet at 304, 3x", "name"]] }, { pics: c(t.r[304], 238, 262, 66, 3), lines: [["Build feet at 304, 3x", "name"]] },
+    { pics: c(m[96], 66, 84, 20, 5), lines: [["Master feet at 96, 5x", "name"]] }, { pics: c(t.r[96], 66, 84, 20, 5), lines: [["Build feet at 96, 5x", "name"]] }];
   return { spec: sheet("The feet: the master beside the build", cells, 2) };
 }
+// ---- the back line: Loika's silhouette against the master's, at the three head sizes (AD fix round 2, ruling 1a) -------------------------------------------------------
+// The master's top per column, in stature units, as a curve over the fraction of its width; laid over each build's own extents and stature. The AD's marks (the red dots) are the
+// master's 0.79, 0.72 and 0.55 S at 0.7, 0.85 and 0.95 of the length. A second picture per cell: the same creature square to the camera (a true side view), as a filled silhouette.
+export const BACK_MARKS = { 0.7: 0.8, 0.85: 0.72, 0.95: 0.55 };
+const BG = [246, 243, 236], INKC = [36, 32, 40], RED = [205, 40, 40], BLUE = [30, 90, 200];
+const silhouetteOf = (img) => { const o = blank(img.width, img.height, BG); for (let i = 0; i < img.width * img.height; i++) if (img.data[i * 4 + 3] >= 128) { const r = img.data[i * 4], g = img.data[i * 4 + 1], b = img.data[i * 4 + 2]; const leaf = g >= r - 8 && g > b + 25; const c = leaf ? [120, 160, 90] : INKC; o.data[i * 4] = c[0]; o.data[i * 4 + 1] = c[1]; o.data[i * 4 + 2] = c[2]; } return o; };
+function masterCurve(crown = 85) {
+  const p = imageProfile(loadImage(MASTER("S01", 304)), { crown }), top = p.top;
+  return { p, at: (f) => { const x = Math.min(p.x1, Math.max(p.x0, Math.round(p.x0 + f * (p.x1 - p.x0)))); let v = top[x]; for (let d = 1; v === null && d < 6; d++) v = top[x - d] ?? top[x + d]; return v === null ? null : (p.floor - v) / p.stature; } };
+}
+const overlay = (img, p, curve, k = 1) => { // the master's back line over `img` (an RGBA picture), scaled to the picture's own profile p; returns a new picture
+  const o = onBg(img); let prev = null;
+  for (let f = 0; f <= 1.0001; f += 0.005) { const v = curve.at(f); if (v === null) { prev = null; continue; } const x = p.x0 + f * (p.x1 - p.x0), y = p.floor - v * p.stature; if (prev) drawLine(o, prev[0], prev[1], x, y, RED, 2); prev = [x, y]; }
+  for (const [f, v] of Object.entries(BACK_MARKS)) { const x = p.x0 + Number(f) * (p.x1 - p.x0), y = p.floor - v * p.stature; fillDisc(o, x, y, 3.2, BLUE); }
+  return o;
+};
+export function silhouetteSheet(house, spec, outDir) {
+  const hb = bandOf(house, "A", "form.head"), curve = masterCurve(), mp = curve.p, m = masterOf("S01"), cells = [], tiles = [];
+  const fm = (v) => (v === null || v === undefined ? "-" : v.toFixed(2));
+  const mAt = [0.7, 0.85, 0.95].map((f) => curve.at(f));
+  cells.push({ pics: [[{ img: overlay(m[304], mp, curve) }], [{ img: silhouetteOf(m[304]) }]], lines: [["Master Loika, stand view", "name"], [`Top at 0.7, 0.85, 0.95: ${mAt.map(fm).join(", ")} S`, "dim"], ["Red line: the master's back. Blue dots: the AD's 0.8, 0.72, 0.55", "dim"]] });
+  for (const hs of HEAD_SIZES) {
+    const t = makeTile(house, spec, { t: { "form.head": tAt(hb, hs) }, label: `H/S ${hs.toFixed(2)}`, sizes: [304] }), p = imageProfile(t.r[304]);
+    const side = renderCreature(t.ex.scene, { yaw: -90 * spec.side, pitch: 0 }, 304, { ref: { height: 220 }, look: spec.look, extents: coarse(t.ex.scene, { yaw: -90 * spec.side, pitch: 0 }, { n: 240 }), floor: false });
+    tiles.push({ hs, tile: t, profile: p });
+    saveTile(path.join(outDir, "tiles"), `silhouette-hs${Math.round(hs * 100)}`, t);
+    cells.push({ pics: [[{ img: overlay(t.r[304], p, curve) }], [{ img: silhouetteOf(side) }]], lines: [[`Loika at H/S ${hs.toFixed(2)}, stand view`, "name"], [`Top at 0.7, 0.85, 0.95: ${[0.7, 0.85, 0.95].map((f) => fm(p.at[f])).join(", ")} S`, "dim"], [`Side view below, square to the camera`, "dim"]] });
+  }
+  return { spec: sheet("Loika's back line against the master's, at the three head sizes", cells, 4, { note: "Top row: the stand view with the master's back line (red) laid over each build at its own length and stature; the blue dots are the AD's marks. Bottom row: silhouettes, the master's in the stand view and the builds square to the camera." }), tiles, master: mAt };
+}
+
 // twelve snails from t drawn round the specimen's own t over the open genes (the plan D litter check): three columns
 const LITTER_SPREAD = 0.6; // the width of each gene's pool in t, centred on the type specimen's t
 export function snailLitter(house, spec, outDir, n = 12) {

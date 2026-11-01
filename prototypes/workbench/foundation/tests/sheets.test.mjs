@@ -44,3 +44,16 @@ test("a tile's label: the name, the verdict in plain words, then the numbers", (
   assert.equal(tileLines({ ...t, fails: [] })[1][0], "Passes the house");
   assert.match(tileLines({ ...t, fails: Array.from({ length: 5 }, (_, i) => ({ id: `Rx${i}` })) })[1][0], /^Breaks 5 rules$/);
 });
+test("a tile built with the clamps off is labelled outside the house even when every rule passes (AD fix round 2, ruling 2)", () => {
+  const t = { label: "H/S 0.52, eye t 0.9", measured: { "H/S": 0.52, "E/Wf": 0.34, "eye-share": 0.219 }, fails: [], forceOutside: true };
+  const l = tileLines(t); assert.equal(l[1][0], "Outside the house: clamps off"); assert.equal(l[1][1], "bad");
+});
+test("the silhouette tools: the back line of a picture is the top of its body per column in stature units, leaves skipped, nothing above the crown", async () => {
+  const { imageProfile } = await import("../silhouette.mjs");
+  const W = 100, H = 100, img = { width: W, height: H, data: new Uint8ClampedArray(W * H * 4) };
+  const put = (x, y, c) => { const i = (y * W + x) * 4; img.data[i] = c[0]; img.data[i + 1] = c[1]; img.data[i + 2] = c[2]; img.data[i + 3] = 255; };
+  for (let x = 10; x < 90; x++) { const top = x < 40 ? 20 : 50; for (let y = top; y < 90; y++) put(x, y, [50, 46, 52]); }
+  for (let y = 5; y < 20; y++) put(20, y, [100, 150, 50]); // a leaf pixel column above the crown: not the back
+  const p = imageProfile(img, { fractions: [0.1, 0.9] });
+  assert.equal(p.crown, 20); assert.equal(p.floor, 89); assert.ok(Math.abs(p.at[0.1] - 1) < 1e-9 && Math.abs(p.at[0.9] - (89 - 50) / 69) < 1e-9, JSON.stringify(p.at));
+});

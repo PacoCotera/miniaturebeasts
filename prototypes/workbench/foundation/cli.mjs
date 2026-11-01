@@ -3,7 +3,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { loadHouseFile } from "../form/house/house-file.mjs";
 import { loadSpecimens } from "./specimens.mjs";
-import { headSizeSheet, snailSheet, gridSheet, noseSheet, feetSheet, snailLitter } from "./sheets.mjs";
+import { headSizeSheet, snailSheet, gridSheet, noseSheet, feetSheet, snailLitter, silhouetteSheet } from "./sheets.mjs";
 import { renderSheet, loadPlaywright } from "./page.mjs";
 import { RESULTS } from "./paths.mjs";
 
@@ -16,6 +16,7 @@ if (what === "snail" || what === "all") { const s = snailSheet(house, sp.S14, RE
 if (what === "grid" || what === "all") for (const k of ["eye-spacing", "muzzle-lid"]) { const g = gridSheet(house, sp.S01, RESULTS, k); await shot(g.spec, `3-grid-${k}`); rec[`grid-${k}`] = g.tiles.map((x) => rowOf(x.tile)); }
 if (what === "nose" || what === "all") { const n = noseSheet(house, sp.S01, RESULTS); await shot(n.spec, "4-nose-rule"); rec.nose = n.tiles.map(rowOf); }
 if (what === "feet" || what === "all") { const f = feetSheet(house, sp.S01, RESULTS); await shot(f.spec, "5-feet"); }
+if (what === "silhouette" || what === "all") { const q = silhouetteSheet(house, sp.S01, RESULTS); await shot(q.spec, "7-back-line"); rec.silhouette = q.tiles.map((x) => ({ hs: x.hs, at: x.profile.at, measured: x.tile.measured })); rec.silhouetteMaster = q.master; }
 if (what === "litter" || what === "all") { const l = snailLitter(house, sp.S14, RESULTS); await shot(l.spec, "6-snail-litter-96"); rec.litter = l.tiles.map(rowOf); }
 writeFileSync(path.join(RESULTS, `report-${what}.json`), JSON.stringify(rec, null, 1));
 console.log(`done in ${Math.round(performance.now() - T0)} ms ->`, RESULTS);

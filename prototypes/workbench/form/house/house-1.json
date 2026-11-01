@@ -1620,7 +1620,7 @@
       "mouth-soften": 0.012,
       "cheek-widen": 0.25,
       "cheek-eye": 0.3,
-      "cheek-eye-sigma": 0.44,
+      "cheek-eye-sigma": 0.8,
       "gaze-offset-max": 0.15,
       "gaze-full-at-deg": 40,
       "catch-radius": 0.17,
@@ -1647,7 +1647,7 @@
       "ad": "AD fix round 2, ruling 1 and must-fix 1: the minimal body pass. (a) The back is a rail that falls from the nape: the screen top is 0.8, 0.72 and 0.55 S at 0.7, 0.85 and 0.95 of the length (the master's profile; R-back). (b) The head is its own mass: a nape step, a jowl that overhangs the shoulder with a groove. (c) A round shoulder, an elbow, a taper to the paw; the chest's cream bulges forward under the chin. back-drop is gone: one number could not hold the curve",
       "chest": { "c": [-0.04, 0.5], "r": [0.34, 0.29, 0.3] },
       "pelvis": { "c": [-0.58, 0.38], "r": [0.32, 0.28, 0.28] },
-      "cheek-eye": 0.5,
+      "cheek-eye": 0.35,
       "cheek-forward": 0.1,
       "chin-overhang": 0.07,
       "chin-height": 0.12,
@@ -1673,10 +1673,10 @@
         "base-min": 0.24,
         "thick": 0.05
       },
-      "toe-radii": [0.044, 0.052, 0.06],
+      "toe-radii": [0.045, 0.052, 0.06],
       "toe-reach": 0.6,
-      "toe-fan": 0.8,
-      "paw-turn": 24
+      "toe-fan": 1.2,
+      "paw-turn": 40
     },
     "D": {
       "provisional": "the snail's body: four soft segments on a foot skirt, a round head raised on them",

@@ -54,3 +54,8 @@ test("the eye's ring is bright all the way round at lid t 0 (top no more than 8 
 test("the head is pitched up 8 to 10 degrees, as the master's chin-up carriage", () => {
   assert.ok(loika.pose.pitch >= 8 && loika.pose.pitch <= 10, `${loika.pose.pitch}`);
 });
+test("the back line read from the field agrees with the one read from the render (they are the same measure two ways)", async () => {
+  const { imageProfile } = await import("../silhouette.mjs");
+  const t = makeTile(house, sp.S01, { sizes: [304] }), p = imageProfile(t.r[304]);
+  for (const [f, k] of [[0.85, "back-85/S"], [0.95, "back-95/S"]]) assert.ok(Math.abs(p.at[f] - t.measured[k]) < 0.06, `${f}: render ${p.at[f]} field ${t.measured[k]}`);
+});

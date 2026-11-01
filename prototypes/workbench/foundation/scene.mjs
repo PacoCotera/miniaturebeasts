@@ -79,7 +79,7 @@ export function buildScene(house, spec) {
     parts.all = dAll; parts.core = dHeadBody;
     regionOf = (x, y, z) => {
       if (dCrestB(x, y, z) < 0.012 && dCrestB(x, y, z) < dHeadW(x, y, z)) return "crest";
-      if (z < 0.4) for (const l of legs) { const dt = l.dToes(x, y, z); if (dt < 0.014 && dt <= l.dPaw(x, y, z) + 0.004) return l.toeCrease(x, y, z) < rig["toe-crease"] ? "toecrease" : "toe"; }
+      if (z < 0.4) for (const l of legs) { const dt = l.dToes(x, y, z); if (dt < 0.014 * S && dt <= l.dPaw(x, y, z) + 0.012 * S) return l.toeCrease(x, y, z) < rig["toe-crease"] * S ? "toecrease" : "toe"; }
       const dh = dHeadW(x, y, z), db = dNoHead(x, y, z);
       return dh <= db + 0.02 ? "head" : "body";
     };
