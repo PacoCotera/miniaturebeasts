@@ -32,9 +32,10 @@ export function buildHead(house, plan, kinds, fp) {
   const hasM = kinds.muzzle !== "none" && fp.projection !== undefined && fp.muzzleW !== undefined;
   let M = null;
   if (hasM) {
-    const ry = (fp.muzzleW * W) / 2, rz = fp.muzzleH / 2, rx = 0.12 + 0.5 * fp.projection, zc = noseCz - rf["muzzle-centre-drop"] - 0.12 * fp.muzzleH;
+    // the forward projection saturates at `muzzle-projection-cap` (a snout, not a bill: AD fix round 2, must-fix 10) and what it gives up goes into width, so muzzle t 1 is a bigger round snout
+    const cap = rf["muzzle-projection-cap"], proj = cap * Math.tanh(fp.projection / cap), ry = ((fp.muzzleW * W) / 2) * (1 + rf["muzzle-widen"] * ((fp.projection - proj) / cap)), rz = fp.muzzleH / 2, rx = 0.12 + 0.5 * proj, zc = noseCz - rf["muzzle-centre-drop"] - 0.12 * fp.muzzleH;
     const xs = findFront(dK, 0, zc);
-    M = { c: [xs + fp.projection - rx, 0, zc], r: [rx, ry, rz] };
+    M = { c: [xs + proj - rx, 0, zc], r: [rx, ry, rz] };
   }
   const dM = M ? (x, y, z) => sdEllipsoid(x - M.c[0], y - M.c[1], z - M.c[2], M.r[0], M.r[1], M.r[2]) : null;
   const rM = rf["muzzle-union"];

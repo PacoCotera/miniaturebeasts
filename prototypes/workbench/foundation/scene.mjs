@@ -30,7 +30,7 @@ export function buildScene(house, spec) {
     const k = S, V = (a) => a.map((v) => v * k), tc = rig.chest, tp = rig.pelvis;
     // the body is placed under the head by the chin: its x is shifted until the jaw overhangs the chest's front by `chin-overhang` (H), whatever the head's size (the sheet's
     // three head sizes then differ by the head alone, the chin always resting on the chest)
-    const zJaw = -0.5 + rig["chin-height"], hfx = findFront(head.d0, 0, zJaw), zw = kc[2] + zJaw, zcl = clamp(zw, tc.c[1] * k - tc.r[2] * k * 0.9, tc.c[1] * k + tc.r[2] * k * 0.9);
+    const zJaw = -0.5 + rig["chin-height"], zw = kc[2] + zJaw, fa = frameOf(kc, Ry(-rad(pose.pitch))), hfx = findFront((x, y, z) => { const q = toLocal(fa, x, y, z); return head.d0(q[0], q[1], q[2]); }, 0, zw, kc[0]) - kc[0], zcl = clamp(zw, tc.c[1] * k - tc.r[2] * k * 0.9, tc.c[1] * k + tc.r[2] * k * 0.9);
     const chestFront0 = tc.c[0] * k + tc.r[0] * k * Math.sqrt(Math.max(0, 1 - ((zcl - tc.c[1] * k) / (tc.r[2] * k)) ** 2)), sx = hfx + kc[0] - rig["chin-overhang"] - chestFront0;
     const cc = [tc.c[0] * k + sx, 0, tc.c[1] * k], cr = V(tc.r), pc = [tp.c[0] * k + sx, 0, tp.c[1] * k], pr = V(tp.r), zb = Math.max(cc[2] + cr[2], pc[2] + pr[2]);
     const dC = ell(cc, cr), dP = ell(pc, pr), uB = rig["union-body"] * k;
@@ -63,7 +63,7 @@ export function buildScene(house, spec) {
       const c = [base[0] + dl[0] * len / 2, base[1] + dl[1] * len / 2, base[2] + dl[2] * len / 2], f = { c, ax: dl, aw: across, an };
       return { c, len, wid, thick: cr0.thick, f };
     });
-    const dLeaf = (l) => (x, y, z) => { const X = x - l.c[0], Y = y - l.c[1], Z = z - l.c[2], f = l.f, u = X * f.ax[0] + Y * f.ax[1] + Z * f.ax[2], v = X * f.aw[0] + Y * f.aw[1] + Z * f.aw[2], w = X * f.an[0] + Y * f.an[1] + Z * f.an[2]; const t = clamp(u / (l.len / 2), -1, 1), taper = 0.18 + 0.82 * Math.sqrt(Math.max(0, 1 - t * t)) ** 0.8; return sdEllipsoid(u, v, w, l.len / 2, (l.wid / 2) * Math.max(taper, 0.2), l.thick / 2) * 0.9; };
+    const dLeaf = (l) => (x, y, z) => { const X = x - l.c[0], Y = y - l.c[1], Z = z - l.c[2], f = l.f, u = X * f.ax[0] + Y * f.ax[1] + Z * f.ax[2], v = X * f.aw[0] + Y * f.aw[1] + Z * f.aw[2], w = X * f.an[0] + Y * f.an[1] + Z * f.an[2]; const t = clamp(u / (l.len / 2), -1, 1), cr = rig.crest["tip-power"], taper = Math.pow(Math.max(0, 1 - Math.abs(t) ** cr), 1 / cr) * (1 - rig.crest["tip-narrow"] * t); return sdEllipsoid(u, v, w, l.len / 2, (l.wid / 2) * Math.max(taper, rig.crest["base-min"]), l.thick / 2) * 0.9; };
     const dLeaves = leaves.map(dLeaf);
     const dCrestLocal = (x, y, z) => { let d = 1e9; for (const f of dLeaves) d = Math.min(d, f(x, y, z)); return d; };
     const dCrest = (x, y, z) => { const q = toLocal(hf, x, y, z); return dCrestLocal(q[0], q[1], q[2]); };

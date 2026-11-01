@@ -1383,6 +1383,24 @@
       "why": "AD, fix round 2 (ruling 1a): the back's top at 0.95 of the length: the rump is round, not boxed. The master is 0.54 S (the AD's 0.55)"
     },
     {
+      "id": "R-nose-value",
+      "measure": "nose-value/L",
+      "plans": {"A": [-5, null], "B": [-5, null]},
+      "enforce": ["check"],
+      "on": true,
+      "why": "AD, fix round 2 (must-fix 2): the nose is in the muzzle's own charcoal. At 304 its mean L* is no more than about 5 under the dark skin round it (the fix-2 nose was a near-black mound darker than the muzzle: the beak). The master's nose is about 6 lighter than its muzzle, lit from above",
+      "ad": "read from the render at 304 (checks.mjs noseValue): the nose's pixels against the dark skin pixels in a box round them"
+    },
+    {
+      "id": "R-ring-shade",
+      "measure": "ring-shade/L",
+      "plans": {"A": [null, 8], "B": [null, 8], "D": [null, 8], "E": [null, 8]},
+      "enforce": ["check"],
+      "on": true,
+      "why": "AD, fix round 2 (must-fix 5): at lid t 0 the eye's ring is bright all the way round, its top no more than about L* 8 darker than its bottom (the fix-2 ring's upper third was shaded grey: a heavy lid, the wary read)",
+      "ad": "read from the render at 304 (checks.mjs ringShade): the nearer eye's ring, lower third against upper third"
+    },
+    {
       "id": "R-nose-mouth",
       "measure": "nose-mouth/E",
       "plans": {"A": [0, null], "B": [0, null], "D": [0, null], "E": [0, null]},
@@ -1590,8 +1608,10 @@
       "socket-margin": 0.16,
       "socket-soften": 0.03,
       "muzzle-union": 0.15,
+      "muzzle-projection-cap": 0.22,
+      "muzzle-widen": 0.5,
       "muzzle-centre-drop": 0.02,
-      "mouth-tube": 0.02,
+      "mouth-tube": 0.024,
       "nose-gloss": 1.15,
       "nose-highlight": 0.7,
       "leaf-rib-width": 0.02,
@@ -1612,14 +1632,14 @@
       "brow-shadow": 0.06,
       "crescent": 0.6,
       "mouth-offset": 0.4,
-      "mouth-curl-from": 0.85,
-      "mouth-curl": 0.6,
-      "jaw-drop": 0.17,
+      "mouth-curl-from": 0.75,
+      "mouth-curl": 1.1,
+      "jaw-drop": 0.13,
       "jaw-rx": 0.2,
-      "jaw-rz": 0.13,
+      "jaw-rz": 0.1,
       "jaw-width-of-muzzle": 0.95,
       "jaw-forward": -0.02,
-      "jaw-union": 0.1,
+      "jaw-union": 0.16,
       "ad": "AD review: the iris was a flat light orange (L* 45-58 everywhere). The master: a dark amber iris (L* 13-33), its top darkest under the brow, a bright gold lower crescent (L* 62-70, C* 68). iris-top-dark 0.4 -> 0.7 and crescent 0.35 -> 0.6 here; the colours are the specimen's look. The eye stays painted: no lens"
     },
     "A": {
@@ -1629,7 +1649,7 @@
       "pelvis": { "c": [-0.58, 0.38], "r": [0.32, 0.28, 0.28] },
       "cheek-eye": 0.5,
       "cheek-forward": 0.1,
-      "chin-overhang": 0.045,
+      "chin-overhang": 0.07,
       "chin-height": 0.12,
       "union-torso": 0.12,
       "union-neck": 0.14,
@@ -1644,10 +1664,13 @@
       "crest": {
         "root": [0.0, 0.0, 0.44],
         "leaves": [
-          [-0.2, 0.5, 0.2, -58, 0.14, -30],
-          [0.0, 0.7, 0.26, -4, -0.04, 0],
-          [0.25, 0.54, 0.22, 54, 0.16, 32]
+          [-0.4, 0.6, 0.32, -66, 0.14, -24],
+          [0.0, 0.7, 0.37, -4, -0.04, 0],
+          [0.5, 0.62, 0.33, 62, 0.16, 26]
         ],
+        "tip-power": 2.3,
+        "tip-narrow": 0.12,
+        "base-min": 0.24,
         "thick": 0.05
       },
       "toe-radii": [0.044, 0.052, 0.06],
@@ -1661,7 +1684,7 @@
       "seg-x0": -0.55,
       "seg-step": 0.37,
       "seg-rx": 0.34,
-      "seg-radius": [0.45, 0.38, 0.3, 0.22],
+      "seg-radius": [0.45, 0.38, 0.31, 0.25],
       "skirt": [
         0.95,
         0.5,
@@ -1695,7 +1718,7 @@
           -0.12
         ]
       ],
-      "seg-overlap": 0.78,
+      "seg-overlap": 0.7,
       "neck-union": 0.3,
       "antenna-collar": 0.05
     },

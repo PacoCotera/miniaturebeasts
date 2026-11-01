@@ -41,3 +41,26 @@ export function faceContrast(r, scene) {
   const mean = (v) => (v.length ? v.reduce((p, q) => p + q, 0) / v.length : 0);
   return mean(face) / Math.max(1e-6, mean(body));
 }
+
+// ---- value checks on the render (AD fix round 2) -------------------------------------------------------------------------------------
+const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+const lstar = (r, g, b) => { const Y = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); return Y > 0.008856 ? 116 * Math.cbrt(Y) - 16 : 903.3 * Y; };
+const pixL = (r, i) => lstar(r.data[i * 4], r.data[i * 4 + 1], r.data[i * 4 + 2]);
+// the nose against the dark muzzle round it: the mean L* of the nose's pixels minus the mean L* of the dark skin pixels in a box round the nose. A mound is skin: never darker
+// than the muzzle's lit side by more than about L* 5 (the beak read: a near-black mound darker than the muzzle). null when the nose is not in the picture
+export function noseValue(r, darkBelow = 45) {
+  const nose = components(r, [INK.nose]).sort((a, b) => b.n - a.n)[0]; if (!nose || nose.n < 12) return null;
+  let ns = 0, nn = 0, ms = 0, mn = 0;
+  for (let y = Math.max(0, nose.y0 - 5); y <= Math.min(r.height - 1, nose.y1 + 10); y++) for (let x = Math.max(0, nose.x0 - 15); x <= Math.min(r.width - 1, nose.x1 + 15); x++) {
+    const i = y * r.width + x; if (r.data[i * 4 + 3] < 250) continue; const L = pixL(r, i);
+    if (r.ink[i] === INK.nose) { ns += L; nn++; } else if (L < darkBelow && r.ink[i] === INK.body) { ms += L; mn++; }
+  }
+  return nn && mn ? ns / nn - ms / mn : null;
+}
+// the ring of the nearer eye: its lower third's mean L* minus its upper third's (how much darker the top is). Bright all the way round at lid t 0: no more than about 8
+export function ringShade(r) {
+  const best = r.meta.eyes.map((e) => { const px = []; for (let y = Math.floor(e.at[1] - e.r * 2.2); y <= Math.ceil(e.at[1] + e.r * 2.2); y++) for (let x = Math.floor(e.at[0] - e.r * 2.2); x <= Math.ceil(e.at[0] + e.r * 2.2); x++) { if (x < 0 || y < 0 || x >= r.width || y >= r.height) continue; const i = y * r.width + x; if (r.ink[i] === INK.ring && r.data[i * 4 + 3] > 250) px.push([y, pixL(r, i)]); } return px; }).sort((a, b) => b.length - a.length)[0];
+  if (!best || best.length < 12) return null;
+  best.sort((a, b) => a[0] - b[0]); const k = Math.floor(best.length / 3), mean = (v) => v.reduce((s, q) => s + q[1], 0) / v.length;
+  return mean(best.slice(-k)) - mean(best.slice(0, k));
+}

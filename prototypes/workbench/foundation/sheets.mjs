@@ -3,7 +3,7 @@ import path from "node:path";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { express } from "./express.mjs";
 import { renderCreature, coarse, SIZES } from "./render.mjs";
-import { faceInk, gazeOf, faceContrast } from "./checks.mjs";
+import { faceInk, gazeOf, faceContrast, noseValue, ringShade } from "./checks.mjs";
 import { checkRules, failures, tAt, bandOf, loadHouse } from "../form/house/house.mjs";
 import { measureAll } from "../form/house/measures.mjs";
 import { loadImage, saveImage, onBg, zoom, blank, paste, crop } from "./imgtools.mjs";
@@ -22,7 +22,7 @@ export function makeTile(house, specimen, { t = {}, label = "", seed = undefined
   const r = {}; for (const s of sizes) r[s] = renderCreature(ex.scene, camera, s, { ref, look: specimen.look, extents });
   const rig = { ...ex.rig, px: {} };
   for (const s of [96, 48]) if (r[s]) { const f = faceInk(r[s]); rig.px[s] = f; }
-  if (r[304]) { const g = gazeOf(r[304], ex.scene); rig.gazeOffset = g.offsetE; rig.catchDisagreePx = g.catchDisagreePx; rig.gazeAngle = g.screenAngleBetween; rig.faceContrast = faceContrast(r[304], ex.scene); }
+  if (r[304]) { const g = gazeOf(r[304], ex.scene); rig.gazeOffset = g.offsetE; rig.catchDisagreePx = g.catchDisagreePx; rig.gazeAngle = g.screenAngleBetween; rig.faceContrast = faceContrast(r[304], ex.scene); rig.noseValue = noseValue(r[304]) ?? undefined; rig.ringShade = ringShade(r[304]) ?? undefined; }
   rig.eyeSizeDiff = 0; // the eyes are mirrored in the face frame: one E for both (plan 2.5, never 9)
   rig.shadeRatio = house.light.shade.ratio; // the shade-to-lit ratio of the reference sphere, by construction (the renderer interpolates albedo x ratio to albedo)
   rig.sickCues = (rig.lid > 0.2 ? 1 : 0) + (rig.upturn < 0.05 ? 1 : 0);
@@ -32,7 +32,7 @@ export function makeTile(house, specimen, { t = {}, label = "", seed = undefined
 
 const f2 = (v, d = 2) => Number(v).toFixed(d);
 // the rules in plain words, for a label
-const WORDS = { "R1-face": "eye share", "R1-head": "head size", "R1-head-breadth": "head breadth", "R3-size": "eye size", "R3-height": "eye height", "R3-spacing": "eye spacing", "R4-stack": "face stack", "R4-nose-drop": "nose drop", "R4-nose-width": "nose width", "R4-mouth-gap": "mouth gap", "R4-forehead": "forehead", "R-far-eye": "far eye", "R-nose-far-eye": "nose at eye", "R-chin": "chin", "R-nape": "nape", "R-push": "pushed features", "R-mouth": "mouth", "R15-iris-48": "iris at 48", "R15-iris-96": "iris at 96", "R15-pupil-48": "pupil at 48", "R15-nose-96": "nose at 96", "R15-mouth-96": "mouth at 96", "R13-face-contrast": "face value", "R18-cues": "sick cues", "R6-face-yaw": "face yaw", "R6-body-yaw": "body yaw", "R6-head-yaw": "head yaw", "R6-roll": "roll" };
+const WORDS = { "R1-face": "eye share", "R1-head": "head size", "R1-head-breadth": "head breadth", "R3-size": "eye size", "R3-height": "eye height", "R3-spacing": "eye spacing", "R4-stack": "face stack", "R4-nose-drop": "nose drop", "R4-nose-width": "nose width", "R4-mouth-gap": "mouth gap", "R4-forehead": "forehead", "R-far-eye": "far eye", "R-nose-far-eye": "nose at eye", "R-nose-mouth": "nose to smile", "R-nose-value": "nose value", "R-ring-shade": "ring shade", "R-back-70": "back line", "R-back-85": "back line", "R-back-95": "back line", "R-chin": "chin", "R-nape": "nape", "R-push": "pushed features", "R-mouth": "mouth", "R15-iris-48": "iris at 48", "R15-iris-96": "iris at 96", "R15-pupil-48": "pupil at 48", "R15-nose-96": "nose at 96", "R15-mouth-96": "mouth at 96", "R13-face-contrast": "face value", "R18-cues": "sick cues", "R6-face-yaw": "face yaw", "R6-body-yaw": "body yaw", "R6-head-yaw": "head yaw", "R6-roll": "roll" };
 const wordOf = (id) => WORDS[id] ?? id.replace(/^R/, "");
 // a tile's label: the name, the verdict in plain words, and the numbers on a last line (the page wraps whatever is long)
 export function tileLines(t) {
