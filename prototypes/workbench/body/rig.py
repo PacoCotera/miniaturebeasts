@@ -92,6 +92,8 @@ class Rig:
         W[torso, idx["spine.pelvis"]] = wp[torso]
         W[torso, idx["spine.chest"]] = 1 - wp[torso]
         for pn in ("head", "muzzle", "nose", "crown"):
+            if pn not in parts:
+                continue
             m = pid == parts[pn]
             if pn == "head":
                 wh = smooth(-0.1, 0.45, s[m])

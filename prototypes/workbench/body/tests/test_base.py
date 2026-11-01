@@ -30,7 +30,9 @@ def pole_kinds(b, V, F):
     hd = ctx["info"]["head"]
     for v in (hd["loop"][3], hd["loop"][5]):
         listed[m[v]] = "neck-socket"
-    for part in ("nose", "muzzle"):
+    for part in ("nose", "muzzle", "crown"):
+        if part not in b.parts:
+            continue
         pid = b.parts[part]
         for i in range(n0):
             if b.part[i] == pid:

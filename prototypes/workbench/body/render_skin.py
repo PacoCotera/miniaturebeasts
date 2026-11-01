@@ -71,12 +71,14 @@ def eye_frame_data(b):
     return c0, n, up, lat
 
 
-def decals(b, rest_obj, eye_frames=("open", "open"), mouth="content", palette="charcoal"):
+def decals(b, rest_obj, eye_frames=("open", "open"), mouth="content", palette="charcoal", face=None):
     """Decal meshes (verts, faces, sRGB colours or -1 for the coat) from ray casts onto the rest mesh. Eyes: [near, far] frames. Returns a list of dict."""
     ctx = b.ctx; H = ctx["H"]
     c0, n, up, lat = eye_frame_data(b)
     E = H.eyes[0]
-    Riris, Reye = E["Riris"], E["Reye"]
+    face = face or {}
+    Riris, Reye = E["Riris"] * face.get("eye_size", 1.0), E["Reye"] * face.get("eye_size", 1.0)
+    c0 = c0 + up * face.get("eye_height", 0.0)
     out = []
     for side, fr in ((1, eye_frames[0]), (-1, eye_frames[1])):
         pts2, cols, faces = SK.eye_disc(fr, Riris, Reye)
@@ -102,14 +104,14 @@ def decals(b, rest_obj, eye_frames=("open", "open"), mouth="content", palette="c
                 V2 = V2 * np.array([1, -1, 1]); F2 = [tuple(reversed(f)) for f in F2]
             out.append(dict(V=V2, F=F2, col=np.tile(np.array(SK.EYE["ink"], float), (len(V2), 1)), name=f"lid{side}"))
     if mouth == "content":
-        mw = H.mouth["w"]
+        mw = H.mouth["w"] * face.get("mouth_width", 1.0)
         # a smile along the nose's underside: 0.9 of the house's width, curling up at the corners
         ys = np.linspace(-0.5 * mw * 1.7, 0.5 * mw * 1.7, 40)
         Rfa = ctx["info"]["head"]["Rfa"]
         pts, nrm = [], []
         for y in ys:
             s = abs(y) / (0.5 * mw * 1.7)
-            zloc = H.M["c"][2] - 0.07 + 0.07 * s ** 2 + 0.05 * max(0, s - 0.6) ** 2
+            zloc = H.M["c"][2] - 0.07 + face.get("mouth_z", 0.0) + 0.07 * s ** 2 + 0.05 * max(0, s - 0.6) ** 2
             origin = from_local(H.kc, Rfa, np.array([1.3, y, zloc]))
             hit, nr = cast(rest_obj, origin, Rfa @ np.array([-1.0, 0, 0]), 3.0)
             if hit is None:
@@ -131,11 +133,11 @@ def ribbon(pts, nrm, w):
     return np.array(V), F
 
 
-def render_skin(b, Rg, Mpose, outpath, size, az=57.5, el=8.0, palette="charcoal", eye_frames=("open", "open"), mouth="content", level=3, samples=48, centre=None, alpha_only=False, align=None):
+def render_skin(b, Rg, Mpose, outpath, size, az=57.5, el=8.0, palette="charcoal", eye_frames=("open", "open"), mouth="content", level=3, samples=48, centre=None, alpha_only=False, align=None, zones=None, material=None, face=None):
     ctx = b.ctx
     Vf, Ff, attr, fp, cr, mir = b.full()
     V3, F3, _, attr3, _ = SD.subdivide(Vf, Ff, cr, attr, fp, levels=level)
-    colors = SK.vertex_colors(ctx, V3, attr3, palette)
+    colors = SK.vertex_colors(ctx, V3, attr3, palette, zones)
     W = Rg.weights(V3, attr3)
     Vp = Rg.skin(V3, W, Mpose)
     w, h, ppH = SIZES[size]
@@ -144,17 +146,18 @@ def render_skin(b, Rg, Mpose, outpath, size, az=57.5, el=8.0, palette="charcoal"
     sc.render.image_settings.color_mode = "RGBA"
     sc.cycles.samples = samples
     sc.cycles.max_bounces = 4
-    mat_body = _material("velvet", SK.VELVET["roughness"], SK.VELVET["sheen"], bump=0.35 * SK.VELVET["grain"])
+    vm = {**SK.VELVET, **(material or {})}
+    mat_body = _material("velvet", vm["roughness"], vm["sheen"], bump=0.35 * vm["grain"])
     mat_dec = _material("decal", 0.45, 0.0, 0.0, spec=0.35)
     decs = []
     if not alpha_only:
         rest = mesh_obj("rest", V3, F3, colors, mat_body)
-        decs = decals(b, rest, eye_frames, mouth, palette)
+        decs = decals(b, rest, eye_frames, mouth, palette, face)
         bpy.data.objects.remove(rest)
     # the head decals follow the head bone rigidly
     Mh = Mpose["head"]
     body_ob = mesh_obj("body", Vp, F3, colors, mat_body)
-    coat = SK.srgb_to_lin(SK.PALETTES[palette]["coat"])
+    coat = SK.srgb_to_lin((SK.PALETTES[palette] if isinstance(palette, str) else palette)["coat"])
     for d in decs:
         Vd = np.hstack([d["V"], np.ones((len(d["V"]), 1))]) @ Mh.T
         c = np.array(d["col"], float)

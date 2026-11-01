@@ -76,10 +76,13 @@ def validate(spec):
     return True
 
 
-def load(path=SPECIES, house=None, solve_sole=True):
+def load(path=SPECIES, house=None, solve_sole=True, raw=None):
     from housefield import House
-    with open(path) as fh:
-        spec = json.load(fh)
+    if raw is not None:
+        spec = copy.deepcopy(raw)
+    else:
+        with open(path) as fh:
+            spec = json.load(fh)
     validate(spec)
     H = house or House(spec["species"])
     names = house_names(H)

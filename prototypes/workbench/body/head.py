@@ -116,7 +116,7 @@ def build_head(body, ctx):
     T0 = info[0]["T"]
     waist = []
     for k, v in enumerate(loop):
-        p = cen + WAIST_SCALE * (V0[v] - cen) + WAIST_UP * T0
+        p = 0.5 * (V0[v] + np.array(cage.V[rings[0][k]]))          # the crease ring: halfway between the socket loop and the first head ring (the spec's lifted and shrunk loop zigzags where the head's front is lower than the loop)
         waist.append(body.add(p, "head", -0.1, a[k], target=p, centre=(k in (0, NA_ - 1))))
     for k in range(NA_ - 1):
         body.face(loop[k], loop[k + 1], waist[k + 1], waist[k], "head")

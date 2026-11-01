@@ -3,7 +3,7 @@ limit stencil of cage.py (the mirrored mesh, so the stencils see both halves). S
 import numpy as np
 
 
-def limit_fix(body, steps=16, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0):
+def limit_fix(body, steps=24, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0, lam=0.0):
     c = body.cage
     n = len(c.V)
     has = np.array([t is not None for t in body.target])
@@ -24,6 +24,13 @@ def limit_fix(body, steps=16, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0
     mask &= ~hold
     T = np.array([t if t is not None else (0, 0, 0) for t in body.target], float)
     cm = c.centre_mask()
+    nbrs = None
+    if lam > 0:
+        nb = [[] for _ in range(n)]
+        for f in c.F:
+            for k in range(4):
+                nb[f[k]].append(f[(k + 1) % 4]); nb[f[k]].append(f[(k - 1) % 4])
+        nbrs = [np.array(sorted(set(x)), int) for x in nb]
     hist = []
     for it in range(steps + 1):
         L, _ = c.limit_points()
@@ -41,6 +48,16 @@ def limit_fix(body, steps=16, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0
         nd = np.linalg.norm(dv, axis=1)
         k = np.where(mask & (nd > cmax), cmax / np.maximum(nd, 1e-12), 1.0)
         A = np.where(mask[:, None], T + dv * k[:, None], A)
+        if lam > 0:                      # smooth the displacement field (spikes are high-frequency displacements)
+            D = A - T
+            D2 = D.copy()
+            for i in np.where(mask)[0]:
+                nn = nbrs[i][mask[nbrs[i]]]
+                if len(nn):
+                    D2[i] = (1 - lam) * D[i] + lam * D[nn].mean(0)
+            A = np.where(mask[:, None], T + D2, A)
+            A[cm, 1] = 0.0
+            A[~cm, 1] = np.maximum(A[~cm, 1], 0.004)
         c.set_arr(A)
         for cp in getattr(body, 'caps', []):
             cp.replace(body)

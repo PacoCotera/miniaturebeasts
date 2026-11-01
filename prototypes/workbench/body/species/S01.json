@@ -35,9 +35,9 @@
       "socket": {"kind": "patch", "mass": "shoulder", "at": "lower-edge", "size": [2, 2], "push": 0.02},
       "joints": [
         {"name": "shoulder", "at": [-0.22, 0.44, 0.80], "r": [0.40, 0.42], "role": "mass"},
-        {"name": "elbow", "len": 0.23, "pitch": -100, "r": [0.34, 0.36], "apex": "back"},
-        {"name": "wrist", "len": 0.25, "pitch": -80, "r": [0.31, 0.30], "apex": "fwd"},
-        {"name": "sole", "len": 0.34, "pitch": -92, "r": [0.34, 0.40], "role": "end"}],
+        {"name": "elbow", "len": 0.23, "pitch": -100, "r": [0.32, 0.36], "apex": "back"},
+        {"name": "wrist", "len": 0.25, "pitch": -80, "r": [0.29, 0.30], "apex": "fwd"},
+        {"name": "sole", "len": 0.34, "pitch": -92, "r": [0.32, 0.40], "role": "end"}],
       "fillet": 1.25,
       "end": {"kind": "bead-foot", "height": 0.25, "flat": true, "toes": 3, "toe": 0.15, "toe-mid": 1.0, "turn": 14}},
     "hind.L": {"kind": "limb", "parent": "torso", "label": "limb", "ring": 8, "edge": 0.20,

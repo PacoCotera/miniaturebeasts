@@ -24,9 +24,11 @@ def smooth(a, b, x):
     return t * t * (3 - 2 * t)
 
 
-def zone_masks(ctx, V, attr):
+def zone_masks(ctx, V, attr, zones=None):
     """Soft masks per vertex: bib (cream), toes (cream beads), leaf, nose. Pure functions of the attributes and the head frame."""
     H = ctx["H"]
+    zones = zones or {}
+    reach = zones.get("bib_reach", 0.0)            # shifts the bib's back edge (H)
     parts = ctx["body_parts"]
     pid = np.rint(attr[:, 0]).astype(int)
     s, a, tag = attr[:, 1], attr[:, 2], attr[:, 3]
@@ -35,14 +37,18 @@ def zone_masks(ctx, V, attr):
     bib = np.zeros(len(V))
     t = pid == parts["torso"]
     # the chest and the belly: the belly side of the torso, from the brisket back to the waist, soft on the flank and at the back end
-    bib_t = smooth(0.62, 0.80, a) * smooth(-1.05, -0.60, x) + smooth(0.30, 0.55, a) * smooth(-0.35, -0.05, x) + smooth(-0.05, 0.08, x)
+    bib_t = smooth(0.62, 0.80, a) * smooth(-1.05 + reach, -0.60 + reach, x) + smooth(0.30, 0.55, a) * smooth(-0.35, -0.05, x) + smooth(-0.05, 0.08, x)
     bib[t] = np.clip(bib_t[t], 0, 1)
     h = pid == parts["head"]
     mouth_z = H.mouth["z"]
     bib_h = smooth(0.0, 0.06, -(loc[:, 2] - (mouth_z + 0.02))) * smooth(0.05, 0.25, loc[:, 0])      # under the mouth line, on the front
     bib[h] = np.clip(bib_h[h], 0, 1)
+    socks = np.zeros(len(V))
     for k in ("fore.L", "hind.L"):
         m = pid == parts[k]
+        hs = zones.get("socks", 0.0)
+        if hs > 0:
+            socks[m] = smooth(0.0, 0.05, V[m][:, 2] * 0 + (hs - V[m][:, 2]))       # cream from the sole up to hs H
         # the legs: the inner/front of the upper leg picks up a little cream where the chest's cream runs onto it
         bib[m] = np.clip(smooth(0.10, 0.35, 1.0 - np.abs(x[m] - (-0.22 if k == "fore.L" else -1.15)) / 0.5) * smooth(0.45, 0.2, y[m] * 0 + (z[m] / 0.7 - 0.0)) * 0.0, 0, 1)
     toe = np.where(tag > 0.01, np.clip(tag, 0, 1), 0.0)
@@ -51,7 +57,7 @@ def zone_masks(ctx, V, attr):
     bib_m = smooth(0.0, 0.07, -(loc[:, 2] - (H.M["c"][2] - 0.06)))           # the lobe's lower half is the cream under the smile
     bib[mz] = np.clip(bib_m[mz], 0, 1)
     nose = (pid == parts["nose"]).astype(float)
-    return dict(bib=bib, toe=toe, leaf=leaf, nose=nose)
+    return dict(bib=bib, toe=toe, leaf=leaf, nose=nose, socks=socks)
 
 
 # pigment tune: the rendered colour is pigment x light; these gains make the lit cream read 223/196/157 and the lit coat read as the master's (measure_skin.py, same masks on both)
@@ -59,14 +65,15 @@ CREAM_GAIN = np.array([2.40, 2.14, 1.79])
 COAT_GAIN = 0.5
 
 
-def vertex_colors(ctx, V, attr, palette="charcoal"):
-    P = PALETTES[palette]
-    M = zone_masks(ctx, V, attr)
+def vertex_colors(ctx, V, attr, palette="charcoal", zones=None):
+    P = PALETTES[palette] if isinstance(palette, str) else palette
+    M = zone_masks(ctx, V, attr, zones)
     coat, cream, toe, leaf, nose, rib = (srgb_to_lin(P[k]) for k in ("coat", "cream", "toe", "leaf", "nose", "leafRib"))
     coat = coat * COAT_GAIN; cream = cream * CREAM_GAIN
     col = np.tile(coat, (len(V), 1))
     col = col * (1 - M["nose"][:, None]) + nose * M["nose"][:, None]
     col = col * (1 - M["bib"][:, None]) + cream * M["bib"][:, None]
+    col = col * (1 - M["socks"][:, None]) + cream * M["socks"][:, None]
     col = col * (1 - M["toe"][:, None]) + toe * M["toe"][:, None]
     rr = np.clip(1 - np.abs(attr[:, 2] - 0.5) * 3, 0, 1) * 0.35                     # a lighter rib along the blade's middle
     lc = leaf * (1 - rr[:, None]) + rib * rr[:, None]
