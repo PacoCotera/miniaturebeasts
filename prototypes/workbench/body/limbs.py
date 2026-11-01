@@ -62,6 +62,7 @@ def grow_limb(body, ctx, name, p, i, c, tf, tr):
     L = pa.length
     st = list(pa.stations(p["edge"]))
     height = p["end"]["height"]
+    FOOT_BAND = p["end"].get("band", globals()["FOOT_BAND"])      # S20's feet are 0.12 H (the file's end.band); Loika's 0.17
     forced = [L - SUPPORT, L - FOOT_BAND]
     st = [s for s in st if all(abs(s - f) > 0.05 for f in forced) and s < L - FOOT_BAND - 0.001 or False]
     st = sorted(set(st + forced))
@@ -115,18 +116,36 @@ def grow_limb(body, ctx, name, p, i, c, tf, tr):
         ringinfo.append(dict(s=s, centre=pt, N=Nn, B=Bb, ra=float(ra), rf=float(rf), off=float(off)))
     rec["rings"], rec["ringinfo"] = rings, ringinfo
     rec["roll_total_deg"] = ROLL_FOOT
+    match = p["socket"].get("match", "angle")
     # ---- the bridge: loop -> (transition) -> ring 0
     Vn = cage.arr()
     perim = lambda ids: sum(np.linalg.norm(Vn[ids[m]] - Vn[ids[(m + 1) % nR]]) for m in range(nR))
     ratio = perim(rings[0]) / perim(loop)
     rec["perimeter_ratio"] = float(ratio)
     prev = loop
-    if max(ratio, 1 / ratio) > 1.3:
-        mid = [body.add(0.5 * (Vn[a] + Vn[b]), name, st[0], m / nR, target=0.5 * (Vn[a] + Vn[b])) for m, (a, b) in enumerate(zip(loop, rings[0]))]
-        rec["transition"] = mid
-        for m in range(nR):
-            body.face(prev[m], prev[(m + 1) % nR], mid[(m + 1) % nR], mid[m], name)
-        prev = mid
+    ntrans = int(p["socket"].get("transition", 0))
+    if match == "distance":
+        # S20: the loop sits on a near-vertical wall while the column leaves downward, so the loop's angles in the ring's frame are not a ring; pair each loop vertex with the ring vertex that keeps the cyclic order and the total distance least (shift and direction)
+        best = None
+        for d in (1, -1):
+            for sh in range(nR):
+                cand = [loop[(d * m + sh) % nR] for m in range(nR)]
+                cost = sum(float(np.sum((Vn[cand[m]] - Vn[rings[0][m]]) ** 2)) for m in range(nR))
+                if best is None or cost < best[0]:
+                    best = (cost, cand)
+        loop = best[1]
+        rec["loop"] = loop
+        prev = loop
+    if ntrans or max(ratio, 1 / ratio) > 1.3:
+        mids = []
+        for kk in range(1, max(ntrans, 1) + 1):
+            t = kk / (max(ntrans, 1) + 1)
+            mids.append([body.add((1 - t) * Vn[a] + t * Vn[b], name, st[0], m / nR, target=(1 - t) * Vn[a] + t * Vn[b]) for m, (a, b) in enumerate(zip(loop, rings[0]))])
+        rec["transition"] = mids[0] if len(mids) == 1 else mids
+        for mid in mids:
+            for m in range(nR):
+                body.face(prev[m], prev[(m + 1) % nR], mid[(m + 1) % nR], mid[m], name)
+            prev = mid
     for m in range(nR):
         body.face(prev[m], prev[(m + 1) % nR], rings[0][(m + 1) % nR], rings[0][m], name)
     for a, b in zip(rings, rings[1:]):

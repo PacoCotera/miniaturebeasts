@@ -27,6 +27,10 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
     ctx["volume"] = vol
     ctx["body_parts"] = dict(body.parts)
     ctx["n_before_details"] = len(body.cage.V)
+    if stage >= 1:
+        import beads as BD
+        BD.add_beads(body, ctx)                # three toe beads per foot, after the fit's frame is known (they follow it by hook)
+        body.cage.fix_winding()
     if fix:
         for cp in body.caps:              # the cap interiors are fitted to their own spots on the section profile (limit_fix free_caps=False)
             for v in cp.ids:

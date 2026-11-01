@@ -4,7 +4,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import views, subdiv as SD
 
-CENTRE = (0.0, 0.0, 1.2)
+CENTRE = (0.0, 0.0, 1.1)
 BUILD = "/home/mb/mb/iwq/results/T-20261101-mesh/newspecies/build"
 
 

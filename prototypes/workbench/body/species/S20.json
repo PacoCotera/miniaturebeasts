@@ -690,7 +690,9 @@
      2,
      2
     ],
-    "push": 0.02
+    "push": 0.02,
+    "transition": 1,
+    "match": "distance"
    },
    "joints": [
     {
@@ -745,7 +747,8 @@
     "toes": 3,
     "toe": 0.1,
     "toe-mid": 1.1,
-    "turn": 10
+    "turn": 10,
+    "band": 0.12
    }
   },
   "ear.L": {

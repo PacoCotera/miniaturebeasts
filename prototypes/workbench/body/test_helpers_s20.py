@@ -11,7 +11,7 @@ def rings_full(b):
     mirror = {e: n0 + k for k, e in enumerate(extra)}
     out = []
     for r in b.ctx["info"]["torso"]["rings"]:
-        ids = [m[v] for v in r]
+        ids = [m[v] for v in r if v in m]
         out.append(ids + [mirror[i] for i in ids if i in mirror])
     return V, out
 
