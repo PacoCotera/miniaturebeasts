@@ -91,13 +91,13 @@ def lin(c):
 RING_SCALE = 0.88      # the ring's painted brightness: the lit disc plus its emission would clip the house's ivory to white; the RENDERED ring then reads about the cream's L*
 
 
-def eye_texture(H, eye, toward_local, n=256):
+def eye_texture(H, eye, toward_local, n=256, span=1.0, crescent_gain=1.0, crescent_rho=(0.3, 0.95)):
     """RGBA float image (n, n, 4), sRGB, u along the eye's `lat`, v along its `up`, spanning +-R_eye. Gaze toward the camera as the SDF does."""
     look, rf = H.look, H.rf
     R, Reye = eye["Riris"], eye["Reye"]
     ys, xs = (np.mgrid[0:n, 0:n] + 0.5) / n * 2 - 1
-    u, v = xs * Reye, -ys * Reye
-    fw = Reye / n * 1.2
+    u, v = xs * Reye * span, -ys * Reye * span
+    fw = Reye * span / n * 1.2
     tl, tu = float(toward_local @ eye["lat"]), float(toward_local @ eye["up"])
     m = math.hypot(tl, tu)
     k = min(1.0, m / math.sin(math.radians(rf["gaze-full-at-deg"]))) * rf["gaze-offset-max"] * eye["E"]
@@ -110,7 +110,7 @@ def eye_texture(H, eye, toward_local, n=256):
     col = np.broadcast_to(srgb(look["iris"]), (n, n, 3)).copy()
     col = mix(col, srgb(look["irisTop"]), rf["iris-top-dark"] * sstep(-0.2, 0.9, vn))
     col = mix(col, srgb(look["irisLow"]), 0.35 * sstep(0.9, 0.0, np.hypot(pu, pv) / R * 1.6))
-    col = mix(col, srgb(look["irisLow"]), rf["crescent"] * sstep(0.3, 0.95, rho) * sstep(-0.1, 0.75, (u * 0.5 - v * 0.85) / R))
+    col = mix(col, srgb(look["irisLow"]), min(1.0, rf["crescent"] * crescent_gain) * sstep(crescent_rho[0], crescent_rho[1], rho) * sstep(-0.1, 0.75, (u * 0.5 - v * 0.85) / R))
     col = mix(col, srgb(look["iris"]) * 0.7, 0.8 * sstep(0.84, 0.99, rho))
     pr = np.hypot(pu, pv)
     pa = sstep(eye["pupilR"] + fw * 0.7, eye["pupilR"] - fw * 0.7, pr)
@@ -123,10 +123,12 @@ def eye_texture(H, eye, toward_local, n=256):
     ca = np.hypot(u - co[0] * R, v - cy)
     col = mix(col, srgb(look["catchLight"]), sstep(cr + fw * 0.6, cr - fw * 0.6, ca) * ia)
     col = col * (1 - rf["brow-shadow"] * sstep(0.35, 1.0, v / Reye))[..., None]
-    return np.dstack([np.clip(col, 0, 1), cover]).astype(np.float32)
+    # the disc sits sunk in the socket, wider than the eye: beyond the eye's edge it is the socket's own dark (the body's albedo), opaque
+    col = mix(np.broadcast_to(srgb(look["body"]) * 0.85, col.shape), col, cover)
+    return np.dstack([np.clip(col, 0, 1), np.ones_like(cover)]).astype(np.float32)
 
 
-def disc_cage(H, eye, grid=12):
+def disc_cage(H, eye, grid=12, span=1.0):
     """A flat disc (the eye's inset lens) as a quad cage: a subdivided square pushed to a circle of radius R_eye, in the eye frame (deterministic: no UV sphere).
     Returns (cage, uv) with u, v in 0..1 per vertex."""
     C = Cage("eye" + ("L" if eye["side"] > 0 else "R"), mirrored=False)
@@ -137,7 +139,7 @@ def disc_cage(H, eye, grid=12):
             a, b = i / grid * 2 - 1, j / grid * 2 - 1
             # square to disc (the elliptical grid mapping keeps the quads even)
             x, y = a * math.sqrt(1 - b * b / 2), b * math.sqrt(1 - a * a / 2)
-            p = eye["c"] + eye["Reye"] * (x * eye["lat"] + y * eye["up"])
+            p = eye["c"] + eye["Reye"] * span * (x * eye["lat"] + y * eye["up"])
             ids[(i, j)] = C.add(p)
             uv.append(((x + 1) / 2, (y + 1) / 2))
     for j in range(grid):

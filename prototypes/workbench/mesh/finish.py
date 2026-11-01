@@ -8,7 +8,11 @@ import paint as PT
 from build import lin, strip_png_text
 
 
-EYE_EMIT = 0.5
+EYE_SINK = 0.09     # the disc sits this far (H) below the skin along the eye's normal, in a socket the size of the disc
+EYE_HOLE = 1.04      # the socket's hole, in R_eye
+EYE_SPAN = 1.9      # the disc's own radius, in R_eye: wider than the hole, so nothing but the disc is seen through it
+EYE_CRESCENT_RHO = (0.1, 0.7)
+EYE_CRESCENT_GAIN = 1.7   # the amber crescent's strength over the house's rf.crescent (0.6): the house formula alone renders the crescent at about L* 53 (the SDF's own sprite), the AD's band is 62-70
 EYE_GAMMA = 1.0     # the emission is the texture raised to this power (below 1 it lifts the amber crescent more than the ivory ring)
 EYE_BASE = 1.0      # the texture's share of the eye's lit base colour (the ring would clip to white under the key at 1.0)
 
@@ -73,6 +77,127 @@ def add_crest_bones(sc, H):
     bpy.ops.object.mode_set(mode="OBJECT")
 
 
+def surf_height(H, e, u, v):
+    """The head's analytic surface (the house's K field, the same one the cage was fitted to and the sockets are seated on) over the eye's tangent plane, along the eye's
+    normal: height of the surface above the plane point (u, v). Smooth, with no dip: the disc is carried on it."""
+    from parts import bisect_surface
+    P0 = e["c"][None] + u[:, None] * e["lat"][None] + v[:, None] * e["up"][None]
+    S = bisect_surface(H.dK, P0, e["n"])
+    return (S - P0) @ e["n"]
+
+
+def skin_height(sc, H, e, u, v, g):
+    """Height of the (uncut) skin over the eye's tangent plane at the disc's grid points (a g x g grid in index order): a ray from outside along -n onto the baked skin; a ray that
+    finds nothing or another part (the muzzle's ridge) takes its neighbours' value; two passes of a 1-2-1 smoothing, so the disc carries no ray-cast noise."""
+    c = H.kc + e["c"]
+    n = Vector(e["n"])
+    hts = np.full(len(u), np.nan)
+    for i in range(len(u)):
+        p = Vector(c + u[i] * e["lat"] + v[i] * e["up"])
+        hit = sc.eye_bvh.ray_cast(p + n * 0.4, -n, 0.9)
+        if hit[0] is not None and Vector(hit[1]).dot(n) > 0.3:
+            hts[i] = 0.4 - (Vector(hit[0]) - (p + n * 0.4)).dot(-n)
+    hg = hts.reshape(g, g)
+    med = np.nanmedian(hg)
+    hg[np.abs(hg - med) > 0.25] = np.nan
+    for _ in range(8):
+        for j in range(g):
+            for i in range(g):
+                if np.isnan(hg[j, i]):
+                    nb = [hg[j + a, i + b] for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1)) if 0 <= j + a < g and 0 <= i + b < g and not np.isnan(hg[j + a, i + b])]
+                    if nb:
+                        hg[j, i] = np.mean(nb)
+    for _ in range(2):
+        p_ = np.pad(hg, 1, mode="edge")
+        hg = (p_[1:-1, 1:-1] * 4 + p_[:-2, 1:-1] * 2 + p_[2:, 1:-1] * 2 + p_[1:-1, :-2] * 2 + p_[1:-1, 2:] * 2 + p_[:-2, :-2] + p_[:-2, 2:] + p_[2:, :-2] + p_[2:, 2:]) / 16
+    return hg.reshape(-1)
+
+
+def eye_frames_world(H):
+    return [(H.kc + e["c"], e["lat"], e["up"], e["n"], e["Reye"]) for e in H.eyes]
+
+
+def cut_eye_sockets(sc, H, me):
+    """Round 2 (AD item 7): a socket as big as the disc. On the baked head (rest pose) each eye's disc area is cut out of the skin: the faces inside R_eye * EYE_HOLE are
+    deleted, the hole's rim (set on a true circle, seated on the skin) is walled down EYE_SINK + 0.004 along the eye's normal; the wall's foot is hidden under the disc. The uncut skin's
+    BVH goes to sc.eye_bvh, for the disc's heights."""
+    import bmesh
+    n = len(me.vertices)
+    P = np.empty(n * 3); me.vertices.foreach_get("co", P); P = P.reshape(-1, 3)
+    NN = np.empty(n * 3); me.vertices.foreach_get("normal", NN); NN = NN.reshape(-1, 3)
+    sc.eye_fit = []
+    cut_faces = set()
+    for e, (c, lat, up, nrm, R) in zip(H.eyes, eye_frames_world(H)):
+        d = P - c
+        u, v, h = d @ lat, d @ up, d @ nrm
+        r = np.hypot(u, v)
+        inside = (r < R * EYE_HOLE) & (h > -0.3) & (h < 0.4) & (NN @ nrm > 0.0)
+        near = np.where((r < 1.3 * R) & (r > 0.8 * R) & (np.abs(h) < 0.3) & (NN @ nrm > 0.3))[0]
+        dev = h[near] - surf_height(H, e, u[near], v[near])
+        sc.eye_fit.append(dict(inside=inside, surface_dev_max=float(np.abs(dev).max()), surface_dev_median=float(np.median(np.abs(dev)))))
+    inside_any = np.zeros(n, bool)
+    for f in sc.eye_fit:
+        inside_any |= f["inside"]
+    bm = bmesh.new(); bm.from_mesh(me)
+    bm.verts.ensure_lookup_table(); bm.faces.ensure_lookup_table()
+    sc.eye_bvh = BVHTree.FromPolygons([tuple(v.co) for v in bm.verts], [tuple(v.index for v in f.verts) for f in bm.faces])     # the uncut skin: the discs are seated on it
+    dl = bm.verts.layers.deform.active
+    kill = [f for f in bm.faces if all(inside_any[v.index] for v in f.verts)]
+    bmesh.ops.delete(bm, geom=kill, context="FACES")
+    bm.verts.index_update(); bm.verts.ensure_lookup_table()
+    # the rim loops, one per eye
+    rim = [e for e in bm.edges if e.is_boundary]
+    for (c, lat, up, nrm, R), fit in zip(eye_frames_world(H), sc.eye_fit):
+        mine = [e for e in rim if np.linalg.norm(((e.verts[0].co + e.verts[1].co) / 2 - Vector(c))[:]) < R * 1.6]
+        adj = {}
+        for e in mine:
+            a, b = e.verts
+            adj.setdefault(a.index, []).append(b.index); adj.setdefault(b.index, []).append(a.index)
+        start = min(adj)                                  # deterministic: the lowest vertex index, walked toward its lower neighbour
+        loop, prev, cur = [start], None, start
+        while True:
+            nx = sorted(adj[cur])
+            nxt = nx[0] if prev is None else (nx[0] if nx[0] != prev else nx[1])
+            if nxt == start:
+                break
+            loop.append(nxt); prev, cur = cur, nxt
+            if len(loop) > len(adj) + 2:
+                raise RuntimeError("eye rim is not a single loop")
+        fit['loop'] = (len(loop), len(adj), len(rim))
+        assert len(loop) == len(adj), f"eye rim: {len(loop)} walked, {len(adj)} boundary vertices"
+        bm.verts.ensure_lookup_table()
+        top = [bm.verts[i] for i in loop]
+        # the rim on a true circle in the eye's plane (the deleted faces left a staircase one quad deep), seated back on the uncut skin
+        nn = Vector(nrm)
+        for bv in top:
+            dd = bv.co - Vector(c)
+            uu, vv = dd.dot(Vector(lat)), dd.dot(Vector(up))
+            rr = math.hypot(uu, vv)
+            p = Vector(c) + (Vector(lat) * uu + Vector(up) * vv) * (R * EYE_HOLE / rr)
+            hit = sc.eye_bvh.ray_cast(p + nn * 0.4, -nn, 0.9)
+            if hit[0] is not None:
+                bv.co = Vector(hit[0])
+        bot = []
+        for bv in top:
+            nv = bm.verts.new(bv.co - Vector(nrm) * (EYE_SINK + 0.004))
+            if dl:
+                nv[dl] = bv[dl]
+            bot.append(nv)
+        cen = Vector(c)
+        k = len(loop)
+        for i in range(k):
+            a, b, a2, b2 = top[i], top[(i + 1) % k], bot[i], bot[(i + 1) % k]
+            fc = bm.faces.new((a, b, b2, a2))
+            mid = (a.co + b.co + a2.co + b2.co) / 4
+            if fc.normal.dot(cen - mid) < 0:          # the wall faces the hole's axis
+                fc.normal_flip()
+            fc.smooth = True
+        fit["rim_verts"] = k
+    bm.to_mesh(me)
+    bm.free()
+    me.update()
+
+
 def bake(sc, H, level=3, name="loika_L"):
     """Evaluate Mirror + Subsurf at `level` in the REST pose into a static mesh that keeps its vertex weights, then paint it (vertex colours) and rig it."""
     sc.pose_stand(False)
@@ -90,6 +215,7 @@ def bake(sc, H, level=3, name="loika_L"):
     me = bpy.data.meshes.new_from_object(tmp.evaluated_get(dg))
     bpy.data.objects.remove(tmp)
     me.name = name
+    cut_eye_sockets(sc, H, me)
     P = np.array([v.co[:] for v in me.vertices])
     N = np.array([v.normal[:] for v in me.vertices])
     ob = bpy.data.objects.new(name, me)
@@ -138,37 +264,18 @@ def bake(sc, H, level=3, name="loika_L"):
 
 
 def add_eyes(sc, H, level_obj, offset=0.005):
-    """Two eye discs conforming to the head surface (rest pose; ray cast onto the baked mesh), textured from the house's eye formula, bound to the head bone."""
-    dg = bpy.context.evaluated_depsgraph_get()
-    ev = level_obj.evaluated_get(dg)
-    bvh = BVHTree.FromObject(ev, dg)
+    """Two eye discs, each carried on the (smoothed) height of the uncut skin round its socket (rest pose), sunk EYE_SINK below it, wider than the socket's hole; textured from the house's
+    eye formula (unlit: the texture is the eye's own value), bound to the head bone."""
     B = sc.basis()
     towardL = H.Rh.T @ B[2]
     objs = []
-    for eye in H.eyes:
-        C = PT.disc_cage(H, eye)
-        V = np.array(C.V) + H.kc
-        n = eye["n"]
-        g = C.grid + 1
-        T = np.full(len(V), np.nan)
-        NR = np.zeros((len(V), 3))
-        for idx, p in enumerate(V):
-            hit = bvh.ray_cast(Vector(p + n * 0.35), Vector(-n), 0.7)
-            if hit[0] is not None:
-                T[idx] = float(np.dot(np.array(hit[0]) - (p + n * 0.35), -n)); NR[idx] = hit[1]
-        med = np.nanmedian(T)
-        bad = np.isnan(T) | (np.abs(T - med) > 0.06)        # a ray that found another part of the head (the muzzle's ridge, the far side): take its neighbours' depth
-        T[bad] = np.nan
-        for _ in range(6):
-            Tg, Ng = T.reshape(g, g), NR.reshape(g, g, 3)
-            for jj in range(g):
-                for ii in range(g):
-                    if np.isnan(Tg[jj, ii]):
-                        nb = [(jj + a, ii + b) for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1)) if 0 <= jj + a < g and 0 <= ii + b < g and not np.isnan(Tg[jj + a, ii + b])]
-                        if nb:
-                            Tg[jj, ii] = np.mean([Tg[q] for q in nb]); Ng[jj, ii] = np.mean([Ng[q] for q in nb], axis=0)
-            T, NR = Tg.reshape(-1), Ng.reshape(-1, 3)
-        P = [p + n * 0.35 - n * t + (nr / max(np.linalg.norm(nr), 1e-9)) * offset for p, t, nr in zip(V, T, NR)]
+    for eye, fit in zip(H.eyes, sc.eye_fit):
+        C = PT.disc_cage(H, eye, grid=20, span=EYE_SPAN)
+        V = np.array(C.V)
+        d = V - eye["c"]
+        u, v = d @ eye["lat"], d @ eye["up"]
+        h = skin_height(sc, H, eye, u, v, g=21)
+        P = [H.kc + eye["c"] + uu * eye["lat"] + vv * eye["up"] + eye["n"] * (hh - EYE_SINK) for uu, vv, hh in zip(u, v, h)]
         me = bpy.data.meshes.new(C.name)
         me.from_pydata([tuple(v) for v in P], [], [tuple(f) for f in C.F])
         me.update()
@@ -179,7 +286,7 @@ def add_eyes(sc, H, level_obj, offset=0.005):
         ob = bpy.data.objects.new(C.name, me)
         ob.parent = sc.root
         sc.scene.collection.objects.link(ob)
-        tex = PT.eye_texture(H, eye, towardL)
+        tex = PT.eye_texture(H, eye, towardL, span=EYE_SPAN, crescent_gain=EYE_CRESCENT_GAIN, crescent_rho=EYE_CRESCENT_RHO)
         # the texture is a PNG written by us (sRGB bytes), loaded as sRGB: the same file goes into the glb
         os.makedirs(sc.tex_dir, exist_ok=True)
         tp = os.path.join(sc.tex_dir, C.name + ".png")
@@ -191,21 +298,13 @@ def add_eyes(sc, H, level_obj, offset=0.005):
         nt = mat.node_tree
         b = nt.nodes["Principled BSDF"]
         tn = nt.nodes.new("ShaderNodeTexImage"); tn.image = img; tn.extension = "CLIP"
-        mx = nt.nodes.new("ShaderNodeMix"); mx.data_type = "RGBA"; mx.blend_type = "MULTIPLY"; mx.inputs["Factor"].default_value = 1.0
-        mx.inputs["B"].default_value = (EYE_BASE, EYE_BASE, EYE_BASE, 1)
-        nt.links.new(tn.outputs["Color"], mx.inputs["A"])
-        nt.links.new(mx.outputs["Result"], b.inputs["Base Color"])
-        nt.links.new(tn.outputs["Alpha"], b.inputs["Alpha"])
+        # unlit: base black, no specular, the texture as the emission (strength 1): the render shows the texture's own values (design 8.2)
+        b.inputs["Base Color"].default_value = (0, 0, 0, 1)
         b.inputs["Roughness"].default_value = 1.0
         if "Specular IOR Level" in b.inputs:
             b.inputs["Specular IOR Level"].default_value = 0.0
-        # the eye is painted, not a lit ball (design 8.2: emission off) but the house wants the crescent at L* 62-70 under the house light, which the lit disc
-        # does not reach: a little emission from the same texture (strength EYE_EMIT), reported on the sheet
-        if "Emission Color" in b.inputs:
-            gm = nt.nodes.new("ShaderNodeGamma"); gm.inputs["Gamma"].default_value = EYE_GAMMA
-            nt.links.new(tn.outputs["Color"], gm.inputs["Color"])
-            nt.links.new(gm.outputs["Color"], b.inputs["Emission Color"])
-            b.inputs["Emission Strength"].default_value = EYE_EMIT
+        nt.links.new(tn.outputs["Color"], b.inputs["Emission Color"])
+        b.inputs["Emission Strength"].default_value = 1.0
         me.materials.append(mat)
         vg = ob.vertex_groups.new(name="head")
         vg.add(list(range(len(P))), 1.0, "REPLACE")
@@ -381,7 +480,7 @@ def light_measures(sc, H, png, ob_final, eyes):
     vu = np.zeros((len(EP), 2)); [vu.__setitem__(l_.vertex_index, uv[l_.index]) for l_ in dm.loops]
     de.to_mesh_clear()
     e0 = H.eyes[0]; R, Ri = e0["Reye"], e0["Riris"]
-    uu, vv = (vu[:, 0] * 2 - 1) * R, (vu[:, 1] * 2 - 1) * R
+    uu, vv = (vu[:, 0] * 2 - 1) * R * EYE_SPAN, (vu[:, 1] * 2 - 1) * R * EYE_SPAN
     r = np.hypot(uu, vv)
     epx = project(sc, EP)
     def esample(mask):
@@ -393,7 +492,7 @@ def light_measures(sc, H, png, ob_final, eyes):
     ring = (r > Ri * 1.2) & (r < R * 0.92)
     top, xt = esample(ring & (vv > 0.6 * R)); bot, xb = esample(ring & (vv < -0.6 * R))
     out["ring_top_L"], out["ring_bottom_L"], out["ring_top_minus_bottom"] = top, bot, top - bot
-    cres, xcr = esample((r > Ri * 0.55) & (r < Ri * 0.9) & (vv < -0.35 * Ri) & (np.abs(uu) < 0.7 * Ri))
+    cres, xcr = esample((r > Ri * 0.5) & (r < Ri * 0.85) & ((uu * 0.5 - vv * 0.85) / R > 0.55 * Ri / R * 1.0) & (vv < -0.2 * Ri))
     ibody, xib = esample((r > e0["pupilR"] * 1.2) & (r < Ri * 0.85) & (vv > 0.25 * Ri))
     out["iris_crescent_L"], out["iris_body_L"] = cres, ibody
     pts["ring top"], pts["ring bottom"], pts["iris crescent"], pts["iris body"] = xt[:4], xb[:4], xcr[:4], xib[:4]
