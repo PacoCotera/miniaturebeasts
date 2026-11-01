@@ -10,12 +10,19 @@ def unit(v):
     return v / np.maximum(n, 1e-300)
 
 
-def fk(root, joints, plane="xz"):
-    """Joint centres from the root and each joint's len and pitch (degrees from +x in the limb plane x-z; -90 = straight down). joints[0] is the root joint (no len)."""
+def fk(root, joints, plane="xz", plane_yaw=0.0):
+    """Joint centres from the root and each joint's len and pitch (degrees from +x in the limb plane x-z; -90 = straight down). joints[0] is the root joint (no len).
+    plane_yaw (degrees, default 0): the plane is turned about the vertical, so the in-plane horizontal is (cos yaw, sin yaw, 0); yaw 0 is the plane x-z exactly (the old FK, bit for bit)."""
     P = [np.array(root, float)]
+    if plane_yaw == 0.0:
+        for j in joints[1:]:
+            a = math.radians(j["pitch"])
+            P.append(P[-1] + j["len"] * np.array([math.cos(a), 0.0, math.sin(a)]))
+        return np.array(P)
+    cy, sy = math.cos(math.radians(plane_yaw)), math.sin(math.radians(plane_yaw))
     for j in joints[1:]:
         a = math.radians(j["pitch"])
-        P.append(P[-1] + j["len"] * np.array([math.cos(a), 0.0, math.sin(a)]))
+        P.append(P[-1] + j["len"] * np.array([cy * math.cos(a), sy * math.cos(a), math.sin(a)]))
     return np.array(P)
 
 

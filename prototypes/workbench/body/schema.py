@@ -8,8 +8,8 @@ sys.path.append(os.path.join(os.path.dirname(HERE), "mesh"))
 import paths as PA
 
 SPECIES = os.path.join(HERE, "species", "S01.json")
-KINDS = {"loft", "limb", "socket-only"}
-PART_KEYS = {"loft": ["ring", "path", "section"], "limb": ["ring", "joints", "fillet", "socket"], "socket-only": ["socket"]}
+KINDS = {"loft", "limb", "socket-only", "tube"}
+PART_KEYS = {"loft": ["ring", "path", "section"], "limb": ["ring", "joints", "fillet", "socket"], "socket-only": ["socket"], "tube": ["ring", "socket", "mirror"]}
 
 
 class SchemaError(ValueError):
@@ -73,22 +73,58 @@ def validate(spec):
             for j in p["path"]["joints"]:
                 if "name" not in j or "at" not in j:
                     raise SchemaError(f"{name}: path joint missing name or at")
+            if p["path"].get("key", "x") not in ("x", "z"):
+                raise SchemaError(f"{name}: path.key must be x or z")
+            if p["path"].get("key") == "z" and p["path"].get("N") != "back":
+                raise SchemaError(f"{name}: a z-keyed loft needs N: back")
+        if p["kind"] == "tube":
+            if p["mirror"] not in ("lateral", "centre"):
+                raise SchemaError(f"{name}: tube mirror must be lateral or centre")
+            sets = list(p["families"].values()) if "families" in p else [p]
+            if not sets:
+                raise SchemaError(f"{name}: a tube needs joints or families")
+            for fam in sets:
+                if fam.get("sit"):
+                    for t in fam["tubes"]:
+                        for k in ("yaw", "pitch", "len", "r"):
+                            if k not in t:
+                                raise SchemaError(f"{name}: sitting tube missing {k}")
+                    continue
+                js = fam.get("joints")
+                if not js or len(js) < 3 or "at" not in js[0]:
+                    raise SchemaError(f"{name}: a tube needs a root joint with `at` and at least 2 more")
+                for j in js[1:]:
+                    for k in ("name", "len", "pitch", "r"):
+                        if k not in j:
+                            raise SchemaError(f"{name}.{j.get('name', '?')}: joint missing {k}")
     return True
 
 
 def load(path=SPECIES, house=None, solve_sole=True, raw=None):
-    from housefield import House
     if raw is not None:
         spec = copy.deepcopy(raw)
     else:
         with open(path) as fh:
             spec = json.load(fh)
     validate(spec)
-    H = house or House(spec["species"])
-    names = house_names(H)
+    if spec.get("house", {}).get("specimen", "x") is None:
+        H, names = None, {}          # a species with no house specimen (S20): housefield.House asserts plan A, so it is never called
+    else:
+        from housefield import House
+        H = house or House(spec["species"])
+        names = house_names(H)
     spec = resolve(spec, names)
     spec["_names"] = names
     for name, p in spec["parts"].items():
+        if p["kind"] == "tube":
+            sets = p["families"] if "families" in p else {"": p}
+            for fam in sets.values():
+                if fam.get("sit"):
+                    continue
+                js = fam["joints"]
+                fam["P"] = PA.fk(np.array(js[0]["at"], float), js, plane_yaw=float(fam.get("plane", {}).get("yaw", 0.0))).tolist()
+                fam["R"] = [j["r"] for j in js]
+            continue
         if p["kind"] != "limb":
             continue
         js = p["joints"]

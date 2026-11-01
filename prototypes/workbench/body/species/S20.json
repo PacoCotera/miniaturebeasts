@@ -1,0 +1,1800 @@
+{
+ "schema": "mb-body/1",
+ "species": "S20",
+ "name": "Tuliko",
+ "plan": "G",
+ "frame": "house",
+ "unit": "H",
+ "house": {
+  "file": "form/house/house-1.json",
+  "commit": "fix9",
+  "uses": [
+   "light",
+   "solver.camera",
+   "sprite sizes",
+   "mesh thresholds"
+  ],
+  "specimen": null
+ },
+ "anchors": {
+  "ears": "wide",
+  "tail": "wide",
+  "coat": "wide",
+  "body": "tight",
+  "face": "tight"
+ },
+ "parts": {
+  "torso": {
+   "kind": "loft",
+   "parent": null,
+   "label": "trunk",
+   "ring": 16,
+   "edge": 0.14,
+   "path": {
+    "plane": "xz",
+    "fillet": 1.25,
+    "key": "z",
+    "N": "back",
+    "joints": [
+     {
+      "name": "seat",
+      "at": [
+       0.0,
+       0.18
+      ]
+     },
+     {
+      "name": "belly",
+      "at": [
+       0.0,
+       0.72
+      ]
+     },
+     {
+      "name": "waist",
+      "at": [
+       0.0,
+       1.17
+      ]
+     },
+     {
+      "name": "K",
+      "at": [
+       0.0,
+       1.68
+      ]
+     },
+     {
+      "name": "crown",
+      "at": [
+       0.0,
+       2.2
+      ]
+     }
+    ]
+   },
+   "section": {
+    "kind": "egg",
+    "exp": 2.0,
+    "axes": [
+     "back",
+     "side",
+     "front"
+    ],
+    "stations": [
+     [
+      0.18,
+      [
+       0.04,
+       0.04,
+       0.04
+      ]
+     ],
+     [
+      0.2,
+      [
+       0.13,
+       0.15,
+       0.14
+      ]
+     ],
+     [
+      0.23,
+      [
+       0.22,
+       0.25,
+       0.23
+      ]
+     ],
+     [
+      0.27,
+      [
+       0.3,
+       0.34,
+       0.31
+      ]
+     ],
+     [
+      0.32,
+      [
+       0.37,
+       0.42,
+       0.39
+      ]
+     ],
+     [
+      0.4,
+      [
+       0.45,
+       0.51,
+       0.48
+      ]
+     ],
+     [
+      0.55,
+      [
+       0.52,
+       0.58,
+       0.56
+      ]
+     ],
+     [
+      0.72,
+      [
+       0.53,
+       0.59,
+       0.57
+      ]
+     ],
+     [
+      0.88,
+      [
+       0.5,
+       0.56,
+       0.54
+      ]
+     ],
+     [
+      1.04,
+      [
+       0.44,
+       0.5,
+       0.47
+      ]
+     ],
+     [
+      1.17,
+      [
+       0.4,
+       0.45,
+       0.42
+      ]
+     ],
+     [
+      1.3,
+      [
+       0.46,
+       0.52,
+       0.48
+      ]
+     ],
+     [
+      1.42,
+      [
+       0.52,
+       0.59,
+       0.54
+      ]
+     ],
+     [
+      1.54,
+      [
+       0.56,
+       0.63,
+       0.57
+      ]
+     ],
+     [
+      1.66,
+      [
+       0.57,
+       0.64,
+       0.58
+      ]
+     ],
+     [
+      1.78,
+      [
+       0.56,
+       0.62,
+       0.57
+      ]
+     ],
+     [
+      1.9,
+      [
+       0.51,
+       0.57,
+       0.52
+      ]
+     ],
+     [
+      2.02,
+      [
+       0.43,
+       0.48,
+       0.44
+      ]
+     ],
+     [
+      2.1,
+      [
+       0.34,
+       0.38,
+       0.34
+      ]
+     ],
+     [
+      2.16,
+      [
+       0.22,
+       0.25,
+       0.22
+      ]
+     ],
+     [
+      2.2,
+      [
+       0.04,
+       0.04,
+       0.04
+      ]
+     ]
+    ]
+   },
+   "rings_z": [
+    0.26,
+    0.33,
+    0.42,
+    0.55,
+    0.7,
+    0.86,
+    1.0,
+    1.12,
+    1.23,
+    1.34,
+    1.46,
+    1.58,
+    1.7,
+    1.82,
+    1.92,
+    2.01,
+    2.08,
+    2.14
+   ],
+   "regions": {
+    "body": [
+     0.18,
+     1.17
+    ],
+    "head": [
+     1.17,
+     2.2
+    ],
+    "K": [
+     0.0,
+     0.0,
+     1.68
+    ]
+   },
+   "masses": [
+    {
+     "name": "belly",
+     "z": 0.65,
+     "around": 0.95,
+     "rho": 0.63,
+     "ds": [
+      0.32,
+      0.34
+     ],
+     "da": 0.36
+    },
+    {
+     "name": "seat",
+     "z": 0.4,
+     "around": 0.08,
+     "rho": 0.54,
+     "ds": [
+      0.22,
+      0.3
+     ],
+     "da": 0.4
+    },
+    {
+     "name": "cheek",
+     "z": 1.48,
+     "around": 0.78,
+     "rho": 0.635,
+     "ds": [
+      0.24,
+      0.28
+     ],
+     "da": 0.3
+    }
+   ],
+   "column_keys": {
+    "leg": {
+     "station": 0.33,
+     "col": 5,
+     "around": 0.6
+    },
+    "tail": {
+     "station": 0.55,
+     "col": 1,
+     "around": 0.12
+    },
+    "ear": {
+     "station": 2.01,
+     "col": 3,
+     "around": 0.36
+    }
+   },
+   "caps": {
+    "seat": "grid-2x4",
+    "crown": "grid-2x4",
+    "cap_profile": "section"
+   },
+   "column_layouts": {
+    "body": [
+     0,
+     0.12,
+     0.24,
+     0.36,
+     0.48,
+     0.6,
+     0.73,
+     0.865,
+     1.0
+    ],
+    "head": [
+     0,
+     0.12,
+     0.24,
+     0.36,
+     0.49,
+     0.62,
+     0.745,
+     0.87,
+     1.0
+    ],
+    "blend": [
+     0.72,
+     1.5
+    ]
+   }
+  },
+  "leg.L": {
+   "kind": "limb",
+   "parent": "torso",
+   "label": "limb",
+   "ring": 8,
+   "edge": 0.1,
+   "socket": {
+    "kind": "patch",
+    "station": 0.33,
+    "col": 5,
+    "size": [
+     2,
+     2
+    ],
+    "push": 0.02
+   },
+   "joints": [
+    {
+     "name": "hip",
+     "at": [
+      0.1,
+      0.33,
+      0.46
+     ],
+     "r": [
+      0.25,
+      0.26
+     ],
+     "role": "mass"
+    },
+    {
+     "name": "knee",
+     "len": 0.18,
+     "pitch": -92,
+     "r": [
+      0.23,
+      0.24
+     ],
+     "apex": "fwd"
+    },
+    {
+     "name": "ankle",
+     "len": 0.14,
+     "pitch": -86,
+     "r": [
+      0.22,
+      0.23
+     ],
+     "apex": "back"
+    },
+    {
+     "name": "sole",
+     "len": 0.14,
+     "pitch": -90,
+     "r": [
+      0.26,
+      0.31
+     ],
+     "role": "end"
+    }
+   ],
+   "fillet": 1.25,
+   "end": {
+    "kind": "bead-foot",
+    "height": 0.12,
+    "flat": true,
+    "toes": 3,
+    "toe": 0.1,
+    "toe-mid": 1.1,
+    "turn": 10
+   }
+  },
+  "ear.L": {
+   "kind": "tube",
+   "parent": "torso",
+   "label": "appendage",
+   "ring": 8,
+   "edge": 0.1,
+   "mirror": "lateral",
+   "socket": {
+    "kind": "patch",
+    "station": 2.01,
+    "col": 3,
+    "size": [
+     2,
+     2
+    ],
+    "push": 0.01,
+    "transition": 2
+   },
+   "family": "@body.ear-family",
+   "default": "prick",
+   "families": {
+    "prick": {
+     "plane": {
+      "yaw": 100
+     },
+     "joints": [
+      {
+       "name": "root",
+       "at": [
+        -0.1,
+        0.28,
+        1.98
+       ],
+       "r": [
+        0.11,
+        0.17
+       ],
+       "role": "mass"
+      },
+      {
+       "name": "base",
+       "len": 0.26,
+       "pitch": 72,
+       "r": [
+        0.1,
+        0.16
+       ]
+      },
+      {
+       "name": "tip",
+       "len": 0.34,
+       "pitch": 84,
+       "r": [
+        0.07,
+        0.11
+       ],
+       "role": "end"
+      }
+     ]
+    },
+    "lop": {
+     "plane": {
+      "yaw": 95
+     },
+     "joints": [
+      {
+       "name": "root",
+       "at": [
+        -0.1,
+        0.28,
+        1.98
+       ],
+       "r": [
+        0.15,
+        0.1
+       ],
+       "role": "mass"
+      },
+      {
+       "name": "fold",
+       "len": 0.28,
+       "pitch": 35,
+       "r": [
+        0.15,
+        0.1
+       ]
+      },
+      {
+       "name": "drop",
+       "len": 0.3,
+       "pitch": -35,
+       "r": [
+        0.16,
+        0.1
+       ]
+      },
+      {
+       "name": "tip",
+       "len": 0.3,
+       "pitch": -60,
+       "r": [
+        0.13,
+        0.08
+       ],
+       "role": "end"
+      }
+     ]
+    },
+    "nub": {
+     "plane": {
+      "yaw": 95
+     },
+     "joints": [
+      {
+       "name": "root",
+       "at": [
+        -0.1,
+        0.28,
+        1.98
+       ],
+       "r": [
+        0.12,
+        0.17
+       ],
+       "role": "mass"
+      },
+      {
+       "name": "cup",
+       "len": 0.14,
+       "pitch": 55,
+       "r": [
+        0.11,
+        0.17
+       ]
+      },
+      {
+       "name": "tip",
+       "len": 0.1,
+       "pitch": 65,
+       "r": [
+        0.08,
+        0.13
+       ],
+       "role": "end"
+      }
+     ]
+    },
+    "frond": {
+     "sit": true,
+     "tubes": [
+      {
+       "yaw": 80,
+       "pitch": 25,
+       "len": 0.3,
+       "r": [
+        0.08,
+        0.06,
+        0.04
+       ],
+       "curl": -40
+      },
+      {
+       "yaw": 105,
+       "pitch": 38,
+       "len": 0.34,
+       "r": [
+        0.08,
+        0.06,
+        0.04
+       ],
+       "curl": -50
+      },
+      {
+       "yaw": 130,
+       "pitch": 30,
+       "len": 0.3,
+       "r": [
+        0.08,
+        0.06,
+        0.04
+       ],
+       "curl": -40
+      }
+     ],
+     "ring": 6,
+     "sink": 0.3,
+     "tip": "ball",
+     "tip_r": 0.05
+    }
+   },
+   "fillet": 1.25,
+   "end": {
+    "kind": "dome",
+    "cap": "grid-2x2",
+    "tip_ring": 0.6
+   }
+  },
+  "tail": {
+   "kind": "tube",
+   "parent": "torso",
+   "label": "tail",
+   "ring": 8,
+   "edge": 0.12,
+   "mirror": "centre",
+   "socket": {
+    "kind": "patch",
+    "station": 0.55,
+    "cols": [
+     0,
+     1
+    ],
+    "size": [
+     1,
+     2
+    ],
+    "on": "mirror",
+    "push": 0.02
+   },
+   "plane": {
+    "yaw": 0
+   },
+   "joints": [
+    {
+     "name": "root",
+     "at": [
+      -0.28,
+      0.0,
+      0.6
+     ],
+     "r": [
+      0.24,
+      0.24
+     ],
+     "role": "mass"
+    },
+    {
+     "name": "t1",
+     "len": 0.3,
+     "pitch": 190,
+     "r": [
+      0.21,
+      0.21
+     ]
+    },
+    {
+     "name": "t2",
+     "len": 0.28,
+     "pitch": 172,
+     "r": [
+      0.18,
+      0.18
+     ]
+    },
+    {
+     "name": "t3",
+     "len": 0.28,
+     "pitch": 145,
+     "r": [
+      0.15,
+      0.15
+     ]
+    },
+    {
+     "name": "t4",
+     "len": 0.27,
+     "pitch": 110,
+     "r": [
+      0.13,
+      0.13
+     ]
+    },
+    {
+     "name": "t5",
+     "len": 0.25,
+     "pitch": 80,
+     "r": [
+      0.11,
+      0.11
+     ]
+    },
+    {
+     "name": "tip",
+     "len": 0.22,
+     "pitch": 55,
+     "r": [
+      0.09,
+      0.09
+     ],
+     "role": "end"
+    }
+   ],
+   "curl": {
+    "turns_type": 0.375,
+    "spread": "linear over bends 1-5",
+    "clip": "room rule (A s3.3 step 1): the curl gene is clipped, never the radius"
+   },
+   "fillet": 1.25,
+   "end": {
+    "kind": "dome",
+    "cap": "half-grid-1x2",
+    "tip_ring": 0.6
+   }
+  }
+ },
+ "sockets": {
+  "ear.L": {
+   "on": "torso",
+   "station": 2.01,
+   "around": 0.36,
+   "families": [
+    "prick",
+    "lop",
+    "nub",
+    "frond"
+   ],
+   "default": "prick",
+   "required": true
+  },
+  "tail": {
+   "on": "torso",
+   "station": 0.55,
+   "around": 0.0,
+   "families": [
+    "curl"
+   ],
+   "default": "curl",
+   "required": true
+  },
+  "tail.tip": {
+   "on": "tail",
+   "at": "end",
+   "frame": "path-tangent",
+   "families": [
+    "plain",
+    "tuft",
+    "lantern"
+   ],
+   "default": "lantern",
+   "shapes": {
+    "plain": null,
+    "tuft": {
+     "kind": "dome",
+     "r": [
+      0.16,
+      0.14,
+      0.14
+     ],
+     "sink": 0.35,
+     "lobes": 3,
+     "lobe_r": 0.07
+    },
+    "lantern": {
+     "kind": "dome",
+     "r": [
+      0.15,
+      0.13,
+      0.13
+     ],
+     "sink": 0.3,
+     "neck": 0.04,
+     "emission": "glow"
+    }
+   }
+  },
+  "arm.L": {
+   "on": "torso",
+   "station": 0.9,
+   "around": 0.62,
+   "families": [
+    "nub"
+   ],
+   "default": "nub",
+   "required": true,
+   "shapes": {
+    "nub": {
+     "kind": "dome",
+     "r": [
+      0.24,
+      0.13,
+      0.12
+     ],
+     "axis": [
+      0.55,
+      0.45,
+      -0.7
+     ],
+     "sink": 0.3,
+     "bone": "arm"
+    }
+   }
+  },
+  "nose": {
+   "on": "torso",
+   "station": 1.52,
+   "around": 1.0,
+   "families": [
+    "button"
+   ],
+   "default": "button",
+   "required": true,
+   "shapes": {
+    "button": {
+     "kind": "dome",
+     "r": [
+      0.05,
+      0.08,
+      0.055
+     ],
+     "sink": 0.3
+    }
+   }
+  },
+  "crown": {
+   "on": "torso",
+   "cap": "crown",
+   "frame": "cap-normal",
+   "families": [
+    "none",
+    "cowlick"
+   ],
+   "default": "none",
+   "shapes": {
+    "cowlick": {
+     "kind": "tube",
+     "ring": 6,
+     "len": 0.3,
+     "r": [
+      0.06,
+      0.04,
+      0.02
+     ],
+     "pitch": 70,
+     "curl": -220,
+     "sink": 0.3
+    }
+   }
+  }
+ },
+ "face": {
+  "kind": "decal",
+  "on": "torso",
+  "island": "loft",
+  "eyes": {
+   "station": 1.6,
+   "around": 0.83,
+   "r": 0.15,
+   "kinds": [
+    "round",
+    "sleepy"
+   ],
+   "default": "round",
+   "catch": [
+    {
+     "at": [
+      -0.35,
+      0.4
+     ],
+     "r": 0.3
+    },
+    {
+     "at": [
+      0.38,
+      -0.36
+     ],
+     "r": 0.12
+    }
+   ],
+   "frames": [
+    "open",
+    "half",
+    "closed"
+   ]
+  },
+  "mouth": {
+   "station": 1.45,
+   "around": 1.0,
+   "width": 0.2,
+   "expressions": [
+    "content",
+    "smile",
+    "o",
+    "flat"
+   ],
+   "default": "content"
+  },
+  "cheeks": {
+   "station": 1.48,
+   "around": 0.72,
+   "r": 0.09,
+   "alpha": 0.45
+  }
+ },
+ "zones": {
+  "belly": {
+   "part": "torso",
+   "around_min": 0.7,
+   "z": [
+    0.26,
+    1.1
+   ],
+   "soft": 0.06,
+   "type": {
+    "on": true,
+    "reach": 0.3
+   }
+  },
+  "face": {
+   "part": "torso",
+   "centre": {
+    "station": 1.48,
+    "around": 1.0
+   },
+   "r": [
+    0.16,
+    0.3
+   ],
+   "soft": 0.05,
+   "type": {
+    "on": false
+   }
+  },
+  "ear-inner": {
+   "part": "ear",
+   "side": "front",
+   "inset": 0.025,
+   "soft": 0.03,
+   "type": {
+    "on": true
+   }
+  },
+  "points": {
+   "ends": [
+    "ear tips",
+    "tail tip",
+    "feet"
+   ],
+   "reach": 0.22,
+   "type": {
+    "on": false,
+    "strength": 0.6
+   }
+  },
+  "socks": {
+   "part": "leg",
+   "from_sole": 0.16,
+   "soft": 0.04,
+   "type": {
+    "on": false
+   }
+  },
+  "tail-bands": {
+   "part": "tail",
+   "lambda": 0.3,
+   "c": 0.35,
+   "type": {
+    "on": false
+   }
+  },
+  "spots": {
+   "host": "torso back (around <= 0.5)",
+   "size": [
+    0.07,
+    0.14
+   ],
+   "density": 0.5,
+   "source": "voronoi",
+   "type": {
+    "on": false
+   }
+  },
+  "cap": {
+   "part": "torso",
+   "z_min": 1.96,
+   "soft": 0.08,
+   "type": {
+    "on": false
+   }
+  }
+ },
+ "layouts": {
+  "plain": [
+   "belly",
+   "ear-inner"
+  ],
+  "masked": [
+   "belly",
+   "ear-inner",
+   "face"
+  ],
+  "points": [
+   "belly",
+   "ear-inner",
+   "points"
+  ],
+  "banded": [
+   "belly",
+   "ear-inner",
+   "tail-bands",
+   "socks"
+  ],
+  "spotted": [
+   "belly",
+   "ear-inner",
+   "spots"
+  ],
+  "capped": [
+   "belly",
+   "ear-inner",
+   "cap",
+   "socks"
+  ]
+ },
+ "palettes": {
+  "parts": [
+   "coat",
+   "belly",
+   "ear-inner",
+   "pad",
+   "mark",
+   "nose",
+   "glow"
+  ],
+  "accents": {
+   "eye": [
+    34,
+    26,
+    40
+   ],
+   "catch": [
+    255,
+    255,
+    255
+   ],
+   "mouth": [
+    60,
+    30,
+    44
+   ],
+   "blush": [
+    255,
+    140,
+    150
+   ]
+  },
+  "dusk": {
+   "coat": [
+    128,
+    92,
+    178
+   ],
+   "belly": [
+    244,
+    226,
+    236
+   ],
+   "ear-inner": [
+    246,
+    176,
+    206
+   ],
+   "pad": [
+    92,
+    62,
+    132
+   ],
+   "mark": [
+    84,
+    56,
+    128
+   ],
+   "nose": [
+    70,
+    46,
+    92
+   ],
+   "glow": [
+    255,
+    205,
+    96
+   ]
+  },
+  "lagoon": {
+   "coat": [
+    52,
+    160,
+    156
+   ],
+   "belly": [
+    226,
+    246,
+    232
+   ],
+   "ear-inner": [
+    255,
+    196,
+    170
+   ],
+   "pad": [
+    30,
+    108,
+    112
+   ],
+   "mark": [
+    24,
+    96,
+    104
+   ],
+   "nose": [
+    24,
+    74,
+    80
+   ],
+   "glow": [
+    214,
+    255,
+    120
+   ]
+  },
+  "ember": {
+   "coat": [
+    238,
+    120,
+    82
+   ],
+   "belly": [
+    255,
+    232,
+    204
+   ],
+   "ear-inner": [
+    255,
+    190,
+    170
+   ],
+   "pad": [
+    176,
+    72,
+    58
+   ],
+   "mark": [
+    168,
+    60,
+    50
+   ],
+   "nose": [
+    120,
+    44,
+    36
+   ],
+   "glow": [
+    255,
+    244,
+    176
+   ]
+  }
+ },
+ "material": {
+  "family": "velvet",
+  "limits": {
+   "grain": [
+    0.25,
+    0.45
+   ],
+   "fleck": [
+    0.8,
+    1.6
+   ],
+   "flow": [
+    2.0,
+    3.0
+   ],
+   "sheen": [
+    0.2,
+    0.4
+   ],
+   "roughness": [
+    0.6,
+    0.72
+   ],
+   "fuzz": [
+    0.5,
+    0.6
+   ]
+  },
+  "glow": {
+   "part": "glow",
+   "emission": [
+    0.6,
+    1.0
+   ],
+   "pulse": {
+    "period": 2.4,
+    "range": [
+     0.8,
+     1.0
+    ]
+   }
+  }
+ },
+ "genes": [
+  {
+   "locus": "body.torso-length",
+   "kind": "mult",
+   "band": [
+    0.95,
+    1.05
+   ],
+   "moves": [
+    "torso.stations[z <= 1.17].z",
+    "torso.masses[belly, seat].z",
+    "leg.L.joints[0].at.z",
+    "tail.joints[0].at.z"
+   ],
+   "note": "body height; the head rides on it",
+   "anchor": "body"
+  },
+  {
+   "locus": "body.torso-girth",
+   "kind": "mult",
+   "band": [
+    0.95,
+    1.06
+   ],
+   "moves": [
+    "torso.stations[z <= 1.17].axes",
+    "torso.masses[belly, seat].rho"
+   ],
+   "anchor": "body"
+  },
+  {
+   "locus": "body.head-size",
+   "kind": "mult",
+   "band": [
+    0.96,
+    1.05
+   ],
+   "moves": [
+    "torso.stations[z > 1.17] about K",
+    "torso.masses[cheek]",
+    "ear.L.joints[0].at",
+    "face.*.station about K"
+   ],
+   "note": "the head stays wider than the body (mass order)",
+   "anchor": "body"
+  },
+  {
+   "locus": "body.limb-length",
+   "kind": "mult",
+   "band": [
+    0.9,
+    1.1
+   ],
+   "moves": [
+    "leg.L.joints[1:].len"
+   ],
+   "anchor": "body"
+  },
+  {
+   "locus": "body.limb-girth",
+   "kind": "mult",
+   "band": [
+    0.94,
+    1.08
+   ],
+   "moves": [
+    "leg.L.joints[1:].r"
+   ],
+   "anchor": "body"
+  },
+  {
+   "locus": "growth.exterior-eye-size-ratio",
+   "kind": "mult",
+   "band": [
+    0.92,
+    1.1
+   ],
+   "moves": [
+    "face.eyes.r"
+   ],
+   "anchor": "face"
+  },
+  {
+   "locus": "growth.exterior-eye-height-ratio",
+   "kind": "off",
+   "band": [
+    -0.03,
+    0.03
+   ],
+   "moves": [
+    "face.eyes.station"
+   ],
+   "anchor": "face"
+  },
+  {
+   "locus": "growth.exterior-eye-spacing-ratio",
+   "kind": "off",
+   "band": [
+    -0.03,
+    0.03
+   ],
+   "moves": [
+    "face.eyes.around"
+   ],
+   "anchor": "face"
+  },
+  {
+   "locus": "face.mouth-width",
+   "kind": "mult",
+   "band": [
+    0.9,
+    1.12
+   ],
+   "moves": [
+    "face.mouth.width"
+   ],
+   "anchor": "face"
+  },
+  {
+   "locus": "face.mouth-height",
+   "kind": "off",
+   "band": [
+    -0.02,
+    0.02
+   ],
+   "moves": [
+    "face.mouth.station"
+   ],
+   "anchor": "face"
+  },
+  {
+   "locus": "face.blush",
+   "kind": "switch",
+   "moves": [
+    "face.cheeks.on"
+   ],
+   "map": {
+    "off": false,
+    "on": true
+   },
+   "anchor": "face"
+  },
+  {
+   "locus": "body.ear-family",
+   "kind": "pair-map",
+   "alleles": [
+    "prick",
+    "lop",
+    "nub",
+    "frond"
+   ],
+   "dominance": [
+    "prick",
+    "nub",
+    "lop",
+    "frond"
+   ],
+   "moves": [
+    "sockets.ear.L.family"
+   ],
+   "anchor": "ears"
+  },
+  {
+   "locus": "body.ear-length",
+   "kind": "mult",
+   "band": [
+    0.7,
+    1.5
+   ],
+   "moves": [
+    "ear.L.families.*.joints[1:].len",
+    "ear.L.families.frond.tubes[*].len"
+   ],
+   "clip": "frond <= 0.35 H (sitting rule)",
+   "anchor": "ears"
+  },
+  {
+   "locus": "body.ear-girth",
+   "kind": "mult",
+   "band": [
+    0.85,
+    1.2
+   ],
+   "moves": [
+    "ear.L.families.*.joints[*].r"
+   ],
+   "anchor": "ears"
+  },
+  {
+   "locus": "body.ear-splay",
+   "kind": "off",
+   "band": [
+    -20,
+    20
+   ],
+   "moves": [
+    "ear.L.families.*.plane.yaw"
+   ],
+   "note": "degrees; outside the face cone at every value",
+   "anchor": "ears"
+  },
+  {
+   "locus": "body.ear-droop",
+   "kind": "off",
+   "band": [
+    -15,
+    15
+   ],
+   "moves": [
+    "ear.L.families.*.joints[1:].pitch"
+   ],
+   "note": "degrees, added to every pitch below the root",
+   "anchor": "ears"
+  },
+  {
+   "locus": "body.tail-length",
+   "kind": "mult",
+   "band": [
+    0.7,
+    1.6
+   ],
+   "moves": [
+    "tail.joints[1:].len"
+   ],
+   "anchor": "tail"
+  },
+  {
+   "locus": "body.tail-girth",
+   "kind": "mult",
+   "band": [
+    0.8,
+    1.3
+   ],
+   "moves": [
+    "tail.joints[*].r"
+   ],
+   "anchor": "tail"
+  },
+  {
+   "locus": "body.tail-curl",
+   "kind": "off",
+   "band": [
+    -0.15,
+    0.45
+   ],
+   "moves": [
+    "tail.joints[k].pitch -= turns * 360 * (k - 1) / 5, k = 1..6"
+   ],
+   "clip": "room rule per bend; logged",
+   "anchor": "tail"
+  },
+  {
+   "locus": "body.tail-lift",
+   "kind": "off",
+   "band": [
+    -20,
+    20
+   ],
+   "moves": [
+    "tail.joints[1:].pitch"
+   ],
+   "note": "degrees, the whole tail swung about its root; + raises it (every pitch below the root decreases by the value)",
+   "anchor": "tail"
+  },
+  {
+   "locus": "body.tail-tip",
+   "kind": "pair-map",
+   "alleles": [
+    "plain",
+    "tuft",
+    "lantern"
+   ],
+   "dominance": [
+    "lantern",
+    "tuft",
+    "plain"
+   ],
+   "moves": [
+    "sockets.tail.tip.family"
+   ],
+   "anchor": "tail"
+  },
+  {
+   "locus": "body.tip-size",
+   "kind": "mult",
+   "band": [
+    0.8,
+    1.3
+   ],
+   "moves": [
+    "sockets.tail.tip.shapes.*.r"
+   ],
+   "anchor": "tail"
+  },
+  {
+   "locus": "appearance.body-palette",
+   "kind": "pair-map",
+   "alleles": [
+    "dusk",
+    "lagoon",
+    "ember"
+   ],
+   "moves": [
+    "palette"
+   ],
+   "anchor": "coat"
+  },
+  {
+   "locus": "appearance.coat-value",
+   "kind": "mult",
+   "band": [
+    0.8,
+    1.2
+   ],
+   "moves": [
+    "palette.coat",
+    "palette.mark"
+   ],
+   "anchor": "coat"
+  },
+  {
+   "locus": "appearance.marking-switch",
+   "kind": "switch",
+   "moves": [
+    "layout"
+   ],
+   "map": {
+    "off": "plain",
+    "on": "@appearance.marking-layout"
+   },
+   "anchor": "coat"
+  },
+  {
+   "locus": "appearance.marking-layout",
+   "kind": "pair-map",
+   "alleles": [
+    "masked",
+    "points",
+    "banded",
+    "spotted",
+    "capped"
+   ],
+   "moves": [
+    "layout"
+   ],
+   "anchor": "coat"
+  },
+  {
+   "locus": "appearance.bib-reach",
+   "kind": "off",
+   "band": [
+    -0.1,
+    0.12
+   ],
+   "moves": [
+    "zones.belly.reach"
+   ],
+   "anchor": "coat"
+  },
+  {
+   "locus": "appearance.glow",
+   "kind": "lin",
+   "band": [
+    0.6,
+    1.0
+   ],
+   "moves": [
+    "material.glow.emission"
+   ],
+   "anchor": "coat"
+  },
+  {
+   "locus": "skin.grain",
+   "kind": "lin",
+   "band": [
+    0.25,
+    0.45
+   ],
+   "moves": [
+    "material.grain"
+   ],
+   "anchor": "coat"
+  },
+  {
+   "locus": "skin.sheen",
+   "kind": "lin",
+   "band": [
+    0.2,
+    0.4
+   ],
+   "moves": [
+    "material.sheen"
+   ],
+   "anchor": "coat"
+  },
+  {
+   "locus": "anatomy.crown-presence",
+   "kind": "switch",
+   "moves": [
+    "sockets.crown.family"
+   ],
+   "map": {
+    "off": "none",
+    "on": "cowlick"
+   },
+   "anchor": "coat"
+  },
+  {
+   "locus": "movement.cycle-rate",
+   "kind": "mult",
+   "band": [
+    0.85,
+    1.15
+   ],
+   "moves": [
+    "motion.*.period (divided)"
+   ],
+   "anchor": "face"
+  }
+ ],
+ "counts": {
+  "limb": 2,
+  "ear": 2,
+  "tail": [
+   1,
+   1
+  ],
+  "arm": 2,
+  "crown": [
+   0,
+   1
+  ]
+ },
+ "motion": {
+  "walk": {
+   "kind": "waddle",
+   "period": 0.9,
+   "duty": 0.55,
+   "lift": 0.06,
+   "roll": 7,
+   "yaw": 4,
+   "tail_sway": 6
+  },
+  "breathe": {
+   "period": 3.0,
+   "amp": 0.02,
+   "band": [
+    0.3,
+    0.9
+   ]
+  },
+  "blink": {
+   "interval": [
+    3.0,
+    6.0
+   ],
+   "frames": [
+    "open",
+    "half",
+    "closed",
+    "half"
+   ]
+  },
+  "ear_sway": {
+   "amp": 5,
+   "lag": 0.15
+  },
+  "stand": {
+   "tail_yaw": 30,
+   "tail_yaw_per_curl_turn": 40,
+   "tail_yaw_max": 45,
+   "toward": "the camera's side",
+   "head_tilt": 6,
+   "note": "bone rotations after the Mirror (body-spec s5): the lantern shows beside the body in the house view"
+  },
+  "tail_idle": {
+   "amp": 8,
+   "period": 2.2
+  },
+  "glow_pulse": {
+   "period": 2.4,
+   "range": [
+    0.8,
+    1.0
+   ]
+  }
+ },
+ "poles": [
+  {
+   "where": "leg socket corners",
+   "valence": 5,
+   "per_half": 4
+  },
+  {
+   "where": "ear socket corners (flowing ear families)",
+   "valence": 5,
+   "per_half": 4
+  },
+  {
+   "where": "tail socket outer corners",
+   "valence": 5,
+   "per_half": 2
+  },
+  {
+   "where": "seat cap corners",
+   "valence": 3,
+   "per_half": 2
+  },
+  {
+   "where": "crown cap corners",
+   "valence": 3,
+   "per_half": 2
+  },
+  {
+   "where": "foot sole caps",
+   "valence": 3,
+   "per_half": 4
+  },
+  {
+   "where": "toe bead bases",
+   "valence": 5,
+   "per_half": 12
+  },
+  {
+   "where": "ear tip caps",
+   "valence": 3,
+   "per_half": 4
+  },
+  {
+   "where": "tail tip cap",
+   "valence": 3,
+   "per_half": 2
+  }
+ ],
+ "mesh_quality": {
+  "valence_poles": "listed",
+  "ring_ratio_max": 1.5,
+  "limit_err_max": 0.004,
+  "edge_ratio_max": 2.0,
+  "edge_ratio_face_max": 2.5,
+  "area_ratio_max": 2.5,
+  "nonplanar_max": 0.1,
+  "ring_aspect": {
+   "limb": [
+    0.6,
+    1.6
+   ],
+   "ear": [
+    0.6,
+    1.7
+   ]
+  }
+ }
+}
