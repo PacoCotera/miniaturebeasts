@@ -86,7 +86,7 @@ def render(prep, genome, path, size, az=57.5, el=10.0, centre=None, samples=48, 
     sc.cycles.samples = samples
     sc.cycles.max_bounces = 4
     mesh_obj(prep, genome, glow_scale)
-    if floor:
+    if floor and el > 0:                 # no floor under the creature when the camera looks up from below
         fl = bpy.data.meshes.new("floor"); fl.from_pydata([(-2.4, -1.6, 0), (1.2, -1.6, 0), (1.2, 1.6, 0), (-2.4, 1.6, 0)], [], [(0, 1, 2, 3)])
         fo = bpy.data.objects.new("floor", fl); sc.collection.objects.link(fo); fo.is_shadow_catcher = True
     ko = B.lights(sc, az)

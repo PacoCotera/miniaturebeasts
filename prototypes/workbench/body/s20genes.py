@@ -113,6 +113,11 @@ def specimen():
     return dict(t=t, pairs={k: [v, v] for k, v in TYPE_PAIRS.items()}, switches=dict(blush=True, brow=False), seed=20)
 
 
+EARS = ["lop", "nub", "prick"]
+PALS = ["dusk", "lagoon", "ember"]
+TIPS = ["lantern", "lantern", "tuft", "lantern", "lantern", "plain", "lantern", "lantern", "tuft", "lantern", "lantern"]
+
+
 def draw(i, seed0=2026):
     """Individual i of the variety sheet: 1 is the type specimen; the rest draw every locus (body and face inside tight bands, ears, tail and coat across theirs) and the alleles from the weights above."""
     if i == 1:
@@ -127,6 +132,11 @@ def draw(i, seed0=2026):
     pairs = {}
     for k, (al, w, dom) in PAIRS.items():
         pairs[k] = [str(rng.choice(al, p=w)), str(rng.choice(al, p=w))]
+    # the variety sheet is structured: ear families and palettes cycle, the tip is mostly the (dominant) lantern with a tuft and a plain tip as rarer finds
+    pairs["body.ear-family"] = [EARS[(i - 2) % 3]] * 2
+    pairs["appearance.body-palette"] = [PALS[(i - 1) % 3]] * 2
+    tipk = TIPS[(i - 2) % len(TIPS)]
+    pairs["body.tail-tip"] = [tipk, tipk] if tipk != "lantern" else ["lantern", str(rng.choice(["lantern", "tuft", "plain"]))]
     sw = dict(blush=bool(rng.random() < SWITCHES["face.blush"]), brow=bool(rng.random() < SWITCHES["coat.brow"]))
     return dict(t=t, pairs=pairs, switches=sw, seed=int(rng.integers(1, 10 ** 6)))
 
@@ -140,6 +150,9 @@ def creature(ind):
     """creature.json: every number resolved, no genes left but the record of them (canonical: sorted keys, 1e-6 rounding)."""
     v = {k: resolve_locus(k, ind["t"][k]) for k in GENES}
     ph = {k: phenotype(k, ind["pairs"][k]) for k in PAIRS}
+    clamped = v["body.head-size"] < 0.97 * v["body.torso-girth"]
+    if clamped:                                    # mass order: the head stays the wider mass (head 1.276 H, body 1.199 H at the type)
+        v["body.head-size"] = 0.97 * v["body.torso-girth"]
     c = dict(schema="mb-creature/1", species="S20",
              shape=dict(torsoGirth=v["body.torso-girth"], headSize=v["body.head-size"], legLen=v["body.limb-length"], legGirth=v["body.limb-girth"], ear=ph["body.ear-family"], earLen=v["body.ear-length"],
                         earGirth=v["body.ear-girth"], splay=v["body.ear-splay"], droop=v["body.ear-droop"], tailLen=v["body.tail-length"], tailGirth=v["body.tail-girth"], curl=v["body.tail-curl"],
@@ -152,7 +165,7 @@ def creature(ind):
                        mouth_z=v["face.mouth-height"], seed=int(ind["seed"])),
              motion=dict(speed=v["movement.cycle-rate"], walk_period=0.9 / v["movement.cycle-rate"]),
              genes=dict(t={k: ind["t"][k] for k in sorted(ind["t"])}, pairs={k: ind["pairs"][k] for k in sorted(ind["pairs"])}, switches=ind["switches"]),
-             notes=dict(torso_length="the body-height gene is not applied (it would move every ring and socket); the type's 1.0 is kept", frond="the frond ear family and the cowlick are not built"))
+             notes=dict(head_size_clamped=bool(clamped), torso_length="the body-height gene is not applied (it would move every ring and socket); the type's 1.0 is kept", frond="the frond ear family and the cowlick are not built"))
     return canon(c)
 
 
