@@ -16,6 +16,7 @@ class Body:
         self.face_part = []
         self.hold = set()
         self.caps = []
+        self.hooks = []       # callables(body): re-place detail vertices from the current cage, run each limit-fix step
 
     def pid(self, name):
         return self.parts.setdefault(name, len(self.parts))

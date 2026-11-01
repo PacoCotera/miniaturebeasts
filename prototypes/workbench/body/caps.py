@@ -2,6 +2,7 @@
 The interior is a Coons patch of the ring in the ring's own plane (lat, N), cast onto a dome along T: it is RE-PLACED from the current ring each limit-fix step, so the cap never
 fights the ring that the compensation moves (the fix targets only vertices that are not cap interiors)."""
 import numpy as np
+CAP_P = 2.2
 
 
 class HalfCap:
@@ -61,7 +62,7 @@ class HalfCap:
         for k in self.keys:
             a = uv[k]
             q = np.clip((a[0] / self.ry) ** 2 + ((a[1] - self.wc) / self.rz) ** 2, 0, 1)
-            off = self.sgn * self.depth * np.cos(np.pi / 2 * np.sqrt(q)) ** 2
+            off = self.sgn * self.depth * (1 - np.sqrt(q) ** CAP_P) ** (1.0 / CAP_P)      # a superelliptic dome: steep at the rim (a cos^2 profile gave a flat plateau with a sharp edge)
             p = self.pt + a[0] * self.lat + a[1] * self.Nn + off * self.Tg
             if k[0] == 0:
                 p[1] = 0.0

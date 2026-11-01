@@ -3,7 +3,7 @@ limit stencil of cage.py (the mirrored mesh, so the stencils see both halves). S
 import numpy as np
 
 
-def limit_fix(body, steps=8, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0):
+def limit_fix(body, steps=12, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0):
     c = body.cage
     n = len(c.V)
     has = np.array([t is not None for t in body.target])
@@ -13,6 +13,8 @@ def limit_fix(body, steps=8, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0)
         free[cp.ids] = True
     for cp in getattr(body, 'caps', []):
         cp.replace(body)
+    for h in getattr(body, 'hooks', []):
+        h(body)
     has = has & ~free
     mask = has.copy()
     if only is not None:
@@ -41,4 +43,6 @@ def limit_fix(body, steps=8, tol=0.004, only=None, omega=1.5, cmax=0.30, mu=0.0)
         c.set_arr(A)
         for cp in getattr(body, 'caps', []):
             cp.replace(body)
+        for h in getattr(body, 'hooks', []):
+            h(body)
     return dict(steps=it, max_err=hist[-1], hist=hist, converged=bool(hist[-1] < tol), n=int(mask.sum()))

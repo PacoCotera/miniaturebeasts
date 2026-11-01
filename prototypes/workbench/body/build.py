@@ -23,11 +23,14 @@ def make_body(spec=None, H=None, upto="torso", fix=True, beads=True):
     m, vol = body.finish()
     ctx["remap"] = m
     ctx["volume"] = vol
-    if fix:
-        ctx["log"]["limit"] = limit_fix(body)
+    ctx["n_before_details"] = len(body.cage.V)
     if upto in ("legs", "base", "all") and beads:
         import beads as BD
         BD.add_beads(body, ctx)
-        body.fix_winding_again = True
+        if upto in ("base", "all"):
+            import eyes as EY
+            EY.add_eyes(body, ctx)
         body.cage.fix_winding()
+    if fix:
+        ctx["log"]["limit"] = limit_fix(body)
     return body

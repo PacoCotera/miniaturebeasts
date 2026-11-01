@@ -5,7 +5,7 @@ import math
 import numpy as np
 import paths as PA
 
-SOCKETS = {"fore.L": (5, 5), "hind.L": (1, 6)}      # (torso ring index, column) of the patch centre, from the column keys of torso.py
+SOCKETS = {"fore.L": (6, 5), "hind.L": (1, 5)}      # (torso ring index, column) of the patch centre, from the column keys of torso.py
 SUPPORT = 0.03
 FOOT_BAND = 0.17      # height of the band above the support loop where the toe beads sit
 GAP = 0.10
@@ -102,6 +102,8 @@ def grow_limb(body, ctx, name, p, i, c, tf, tr):
     for k, s in enumerate(st):
         pt, Tg, Nn, Bb = pa.at([s])
         pt, Nn, Bb = pt[0], Nn[0], Bb[0]
+        if s >= s_foot - 1e-9:
+            Nn, Bb = np.array([1.0, 0, 0]), np.array([0, -1.0, 0])       # the foot's rings are level: a flat sole
         ra, rf = pa.radii([s])[0]
         if abs(s - (L - SUPPORT)) < 1e-6:
             ra, rf = ra * SUPPORT_R, rf * SUPPORT_R      # the sole's edge is rounded in the design surface (a sharp 90 degree corner cannot be carried by the cage)

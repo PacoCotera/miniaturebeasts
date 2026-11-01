@@ -26,6 +26,13 @@ def sole_on_floor(root, joints, tol_deg=10.0):
     P = fk(root, js)
     z0 = P[-1][2]
     log = dict(sole_z_before=float(z0), pitch_before=js[-1]["pitch"], dpitch=0.0, root_dz=0.0)
+    dz = -float(z0)
+    if abs(dz) <= 0.02:
+        # a column is flat in pitch near -90: a small residual is taken by moving the root, not by tilting the foot
+        root = np.array(root, float) + np.array([0, 0, dz])
+        log["root_dz"] = dz
+        log["sole_z_after"] = float(fk(root, js)[-1][2])
+        return js, root, log
     zw = P[-2][2]
     L = js[-1]["len"]
     p0 = js[-1]["pitch"]

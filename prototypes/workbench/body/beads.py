@@ -7,6 +7,21 @@ PROUD = 0.06
 TURN = 14.0
 
 
+def _bead_hook(corners, ins, top, out_h):
+    def hook(body):
+        A = body.cage.arr()
+        P = A[corners]
+        cc = P.mean(0)
+        nrm = np.cross(P[1] - P[0], P[2] - P[0]) + np.cross(P[2] - P[0], P[3] - P[0])
+        nrm /= np.linalg.norm(nrm)
+        nrm = nrm * np.sign(nrm @ out_h)
+        for k in range(4):
+            A[ins[k]] = cc + INSET * (P[k] - cc)
+            A[top[k]] = cc + INSET * (P[k] - cc) + PROUD * nrm
+        body.cage.set_arr(A)
+    return hook
+
+
 def add_beads(body, ctx):
     cage = body.cage
     m = ctx["remap"]
@@ -58,6 +73,7 @@ def add_beads(body, ctx):
             for k2 in range(4):
                 cage.set_crease(ins[k2], ins[(k2 + 1) % 4], 2)
             beads.append(dict(face=k, ins=ins, top=top, centre_ang=float(ang[k])))
+            body.hooks.append(_bead_hook(list(f), ins, top, out_h))
         out[name] = beads
     ctx["info"]["beads"] = out
     return out
