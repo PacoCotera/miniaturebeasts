@@ -280,11 +280,18 @@ def light_measures(sc, H, png, ob_final, eyes):
     names = {g.index: g.name for g in ev.vertex_groups}
     torso = np.array([any(names[g.group] in ("chest", "spine", "pelvis") and g.weight > 0.5 for g in v.groups) for v in me.vertices])
     head = np.array([any(names[g.group] == "head" and g.weight > 0.5 for g in v.groups) for v in me.vertices])
+    bvh = BVHTree.FromObject(ev, dg)
     ev.to_mesh_clear()
     B = [np.array(b) for b in sc.last_framing["B"]]
     toward, l = B[2], sc.light_dir
     px = project(sc, P)
     ok = (px[:, 0] > 2) & (px[:, 0] < 301) & (px[:, 1] > 2) & (px[:, 1] < 309)
+    # round 2: only points the camera sees (a ray toward the camera from just off the surface leaves the creature): round 1 sampled hidden points, which is how the lit
+    # median could land on a point inside the shade
+    cand = np.where(ok & (N @ toward > 0.3))[0]
+    seen = np.array([bvh.ray_cast(Vector(P[i] + N[i] * 0.004), Vector(toward), 10.0)[0] is None for i in cand], bool)
+    vis = np.zeros(len(P), bool); vis[cand[seen]] = True
+    ok &= vis
     def sample(idx, k=1):
         idx = idx[ok[idx]]
         if len(idx) == 0:

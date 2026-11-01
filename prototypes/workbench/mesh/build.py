@@ -12,6 +12,7 @@ from housefield import House, Rz, Ry, Rx, sstep, find_front
 from parts import build_head, head_features, build_torso, build_leg, build_paw, paw_beans, CAGE_A
 from cage import fit
 
+LIT, SHADE_RATIO = 1.1, 0.60      # the key scale and the fill ratio parameter: calibrated on a sphere (calib.py), then on Loika
 MASTER_ALPHA_H = 288      # px, the S01 master's alpha height at 304 (tools/master-height.mjs): framing reference
 
 
@@ -261,8 +262,11 @@ class Scene:
         sc.world = w
         w.use_nodes = True
         self.world_bg = w.node_tree.nodes["Background"]
-        tint = np.array(L["shade"]["tint"])
+        # round 2: the fill carries the house's warm light-field tint (R14: on light fields the shade stays warm), not the cool core tint, and it is not reflected by
+        # the glossy lobe: a dark albedo under a reflecting grey fill is what flattened the round-1 body (shade over lit 0.94 against 0.58 on a diffuse sphere)
+        tint = np.array(L["shade"]["light-tint"])
         self.world_bg.inputs["Color"].default_value = (*tint, 1)
+        w.cycles_visibility.glossy = False
         self.key = bpy.data.lights.new("key", "SUN")
         self.key.angle = math.radians(12)
         self.key.color = L["key"]["color"]
@@ -274,7 +278,7 @@ class Scene:
         for o in (self.key_o, self.rim_o):
             o.parent = self.root
             sc.collection.objects.link(o)
-        self.set_light_strength(1.0, 0.58)
+        self.set_light_strength(LIT, SHADE_RATIO)
         sc.render.film_transparent = True
         for a in dir(sc.render):
             if a.startswith("use_stamp"):
