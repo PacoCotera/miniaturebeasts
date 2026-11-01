@@ -32,7 +32,7 @@ class T(unittest.TestCase):
         used = (self.W > 1e-6).any(0)
         unused = [n for n, u in zip(self.R.names, used) if not u]
         print("bones with no vertex weight:", unused)
-        self.assertEqual(unused, ["root", "leg.lower.L", "leg.lower.R", "tail.1"])     # the root is the handle; the lower leg is buried in the stub; tail.1 is inside the body (its rotation still carries the chain)
+        self.assertEqual(unused, ["root", "leg.lower.L", "leg.lower.R"])     # the root is the handle; the lower leg is buried in the stub (the column is carried by the upper bone)
 
     def test_bones_per_the_plan(self):
         names = set(self.R.names)

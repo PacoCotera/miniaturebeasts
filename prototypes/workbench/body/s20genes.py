@@ -37,10 +37,13 @@ def apply_shape(raw, g=None):
     tail = r["parts"]["tail"]
     js = tail["joints"]
     base = [j.get("pitch", 0.0) for j in js]
+    nj = len(js)
     for k, j in enumerate(js):
-        j["r"] = [v * g["tailGirth"] for v in j["r"]]
-        if k > 0:
-            j["len"] *= g["tailLen"]
+        # the girth genes reshape the taper profile, not a uniform tube: the root (fixed by the socket it flows out of) takes 35 % of the change, the stalk under the lantern all of it
+        gk = 1.0 + (g["tailGirth"] - 1.0) * (0.35 + 0.65 * k / max(nj - 1, 1))
+        j["r"] = [v * gk for v in j["r"]]
+        if k > 1:
+            j["len"] *= g["tailLen"]            # the first segment (the root, fixed by the socket) keeps its length; the rest of the tail scales
     f = 1.0
     for _ in range(300):
         for k, j in enumerate(js):

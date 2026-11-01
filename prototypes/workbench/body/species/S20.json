@@ -633,7 +633,7 @@
      "around": 0.6
     },
     "tail": {
-     "station": 0.63,
+     "station": 0.74,
      "col": 1,
      "around": 0.12
     },
@@ -958,18 +958,20 @@
    "mirror": "centre",
    "socket": {
     "kind": "patch",
-    "station": 0.63,
+    "station": 0.74,
     "cols": [
      0,
      1
     ],
     "size": [
-     1,
-     2
+     4,
+     1
     ],
     "on": "mirror",
-    "push": 0.05,
-    "transition": 1
+    "push": 0.03,
+    "transition": 3,
+    "flare": 0.0,
+    "rows": 2
    },
    "plane": {
     "yaw": 0
@@ -978,50 +980,50 @@
     {
      "name": "root",
      "at": [
-      -0.28,
+      -0.3,
       0.0,
-      0.6
+      0.74
      ],
      "r": [
-      0.24,
-      0.24
+      0.36,
+      0.36
      ],
      "role": "mass"
     },
     {
      "name": "t1",
      "len": 0.3,
-     "pitch": 190,
+     "pitch": 198,
      "r": [
-      0.21,
-      0.21
+      0.29,
+      0.29
      ]
     },
     {
      "name": "t2",
      "len": 0.28,
-     "pitch": 172,
+     "pitch": 176,
+     "r": [
+      0.225,
+      0.225
+     ]
+    },
+    {
+     "name": "t3",
+     "len": 0.28,
+     "pitch": 148,
      "r": [
       0.18,
       0.18
      ]
     },
     {
-     "name": "t3",
-     "len": 0.28,
-     "pitch": 145,
-     "r": [
-      0.15,
-      0.15
-     ]
-    },
-    {
      "name": "t4",
      "len": 0.27,
-     "pitch": 110,
+     "pitch": 112,
      "r": [
-      0.13,
-      0.13
+      0.145,
+      0.145
      ]
     },
     {
@@ -1029,8 +1031,8 @@
      "len": 0.25,
      "pitch": 80,
      "r": [
-      0.11,
-      0.11
+      0.115,
+      0.115
      ]
     },
     {
@@ -1038,8 +1040,8 @@
      "len": 0.22,
      "pitch": 55,
      "r": [
-      0.09,
-      0.09
+      0.085,
+      0.085
      ],
      "role": "end"
     }
@@ -1054,7 +1056,8 @@
     "kind": "dome",
     "cap": "half-grid-1x2",
     "tip_ring": 0.6
-   }
+   },
+   "note": "the root is the widest point (0.36 H) and the radius falls steadily to a thin stalk (0.085 H) under the lantern; the 2 x 2 patch on the mirror is the first ring's size, blended through 3 transition rings"
   }
  },
  "sockets": {
@@ -1073,7 +1076,7 @@
   },
   "tail": {
    "on": "torso",
-   "station": 0.63,
+   "station": 0.74,
    "around": 0.0,
    "families": [
     "curl"
@@ -2083,7 +2086,13 @@
   {
    "where": "tail tip cap",
    "valence": 3,
-   "per_half": 2
+   "per_half": 3,
+   "note": "half ring of 7 closed by 3 half quads: the ring vertices between them"
+  },
+  {
+   "where": "tail tip centre",
+   "valence": 6,
+   "per_half": 1
   }
  ],
  "mesh_quality": {

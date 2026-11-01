@@ -104,11 +104,19 @@ if STAGE == "base":
                   f"<div class='cell'><div class='cap'>96 (4x)</div><img src='{TAG}/stand-96.png' width='384' style='image-rendering:pixelated'></div>" +
                   f"<div class='cell'><div class='cap'>48 (6x)</div><img src='{TAG}/stand-48.png' width='288' style='image-rendering:pixelated'></div></div>")
     json.dump(dict(head_w=head_w, body_w=body_w, waist_w=waist_w, under=under, foot_len=foot_len, col_w=col_w, arm_len=arm_len, head_px=head_px, waist_px=waist_px, ear_runs=n_ear_runs, ear_w=ear_w, hook=hook, min_dot=fl["min_adjacent_normal_dot"]), open(os.path.join(OUT, "4-base.json"), "w"))
+if STAGE in ("tubes", "base"):
+    root_views = [("tail-root-az090", 90.0, 10.0), ("tail-root-az135", 135.0, 15.0), ("tail-root-az180", 180.0, 10.0), ("tail-root-az270", 270.0, 10.0)]
+    views.render_views(b, os.path.join(OUT, TAG), views=root_views, tag="root-", width=560, height=420, pph=250.0, centre=(-0.75, 0, 0.85), mesh=mesh, pole_dots=True)
+    import tests.test_s20_tail as TT
+    md_root = TT.root_dot(b)[0]
+    close_html += ("<h2>The tail root (owner ruling: the body continued, not a tube plugged in): clay and wire at az 90, 135, 180, 270; root dihedral min dot " + f"{md_root:.2f}" + " (> 0.5)</h2>"
+                   + "<div class='row'>" + "".join(f"<div class='cell'><div class='cap'>{n}</div><img src='{TAG}/root-clay-{n}.png' width='400'><br><img src='{TAG}/root-wire-{n}.png' width='400'></div>" for n, _, _ in root_views) + "</div>")
+    extra.append(("tail root: min adjacent normal dot round the root > 0.5", f"{md_root:.3f}", md_root > 0.5))
 rr = TH.ring_ratio(b)
 extra.append(("loft ring ratio (adjacent half-widths and depths) <= 1.5", f"{rr:.3f}", rr <= 1.5))
 rows = SG.quality_rows(b, extra)
 notes = {"legs": "Leg socket: station 0.42, column 5 (the file's column key), one transition ring, loop-to-ring pairing by least distance (the loop sits on a near-vertical wall, so Loika's pairing by angle crossed). Toe beads and flat soles as Loika's.",
-         "tubes": "Tail: a centre tube (half 5-ring from the 1 x 2 patch on the mirror at station 0.63, one transition ring, tip closed by 2 half quads). Ears: lateral tubes (8-ring from the 2 x 2 patch at station 1.93, column 3, one transition ring, 4 tip quads). Rings are evenly spaced (0.11 H); transition vertices are lifted out of the loft along its normal so the bridge does not cut through it. The frond family is not built (cut order 2).", "base": "The bare base, the type specimen: gourd loft, two legs with toe beads, a tail, prick ears, two arm nubs, a nose button and the lantern. Form only: clay, rest pose, no face, colour or glow yet (chunk 5). The AD gates this sheet; chunks 5 to 7 continue meanwhile."}[STAGE]
+         "tubes": "Tail (owner ruling 1 Nov: the body continued, not a tube plugged in): a centre tube whose root is the widest point (0.36 H at the root joint, 0.26 at the first ring) and whose radius falls steadily to a thin stalk (0.085 H) under the lantern; it flows out of a tall socket on the mirror (rings 0.53 to 1.0 H, columns 0 and 1: 4 x 1 faces, a 7-vertex half loop the size of its first ring) through 3 transition rings. Ears: lateral tubes (8-ring from the 2 x 2 patch at station 1.93, column 3, one transition ring, 4 tip quads). Rings are evenly spaced (0.11 H); transition vertices are lifted out of the loft along its normal. The frond family is not built (cut order 2).", "base": "The bare base, the type specimen: gourd loft, two legs with toe beads, a tail, prick ears, two arm nubs, a nose button and the lantern. Form only: clay, rest pose, no face, colour or glow yet (chunk 5). The AD gates this sheet; chunks 5 to 7 continue meanwhile."}[STAGE]
 body = (f"<h1>S20 Tuliko, {TITLE}</h1><p>{notes}</p>" + chibi_html + close_html +
         "<h2>Clay, 10 views</h2>" + SL_grid("clay", TAG, names) +
         "<h2>Wireframe (valence 5 red, 6 orange, 3 green)</h2>" + SL_grid("wire", TAG, names) +

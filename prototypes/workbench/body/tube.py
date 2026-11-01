@@ -53,11 +53,14 @@ def grow_tube(body, ctx, name, p, fam, i, c, centre):
     tf = ctx["info"]["torso"]["faces"]
     tr = ctx["info"]["torso"]["rings"]
     rec = dict(name=name, centre=centre)
-    nR = 5 if centre else 8
+    nc = int(p["socket"].get("cols", [0, 1])[1]) if centre else 0          # centre tube: the patch covers columns 0 .. nc on the mirror
+    kr = int(p["socket"].get("rows", 1)) if centre else 1                  # and rings i - kr .. i + kr (kr = 1: the first design's patch; 2: a tall root the size of the tail's first ring)
+    nR = (2 * nc + 2 * kr + 1) if centre else 8
     if centre:
-        for key in ((i - 1, 0), (i, 0)):
-            body.kill(tf[key])
-        loop = [tr[i - 1][0], tr[i - 1][1], tr[i][1], tr[i + 1][1], tr[i + 1][0]]
+        for ci in range(nc):
+            for ri in range(i - kr, i + kr):
+                body.kill(tf[(ri, ci)])
+        loop = [tr[i - kr][ci] for ci in range(nc + 1)] + [tr[ri][nc] for ri in range(i - kr + 1, i + kr + 1)] + [tr[i + kr][ci] for ci in range(nc - 1, -1, -1)]
     else:
         for key in ((i - 1, c - 1), (i - 1, c), (i, c - 1), (i, c)):
             body.kill(tf[key])
@@ -101,7 +104,7 @@ def grow_tube(body, ctx, name, p, fam, i, c, centre):
     rec["first_s"], rec["rings_s"] = st[0], st
     # rings
     rings, info = [], []
-    psi = (np.radians([90, 45, 0, -45, -90]) if centre else np.arange(8) * (2 * math.pi / 8))
+    psi = (np.radians(np.linspace(90, -90, nR)) if centre else np.arange(8) * (2 * math.pi / 8))
     def ring_at(s, scale=1.0, shift=0.0):
         pt, Tg, Nn, Bb = pa.at([s])
         pt, Tg, Nn, Bb = pt[0], Tg[0], Nn[0], Bb[0]
@@ -144,7 +147,15 @@ def grow_tube(body, ctx, name, p, fam, i, c, centre):
     prev, mids = loop, []
     for kk in range(1, ntrans + 1):
         t = kk / (ntrans + 1)
-        pos = [_outward(G, (1 - t) * Vn[a] + t * Vn[b]) for a, b in zip(loop, rings[0])]
+        raw = np.array([(1 - t) * Vn[a] + t * Vn[b] for a, b in zip(loop, rings[0])])
+        flare = float(p["socket"].get("flare", 0.0))
+        if flare > 0:
+            # a fillet, not a plug: the transition rings flare wider than the straight blend (most at the loft, none at the first ring), so the band leaves the loft along its surface and turns into the tube
+            cl = 0.5 * (Vn[loop[0]] + Vn[loop[-1]]) if centre else Vn[loop].mean(0)
+            c0 = np.array(info[0]["centre"])
+            cu = (1 - t) * cl + t * c0
+            raw = cu + (raw - cu) * (1 + flare * (1 - t) ** 2)
+        pos = [_outward(G, raw[m]) for m in range(len(raw))]
         if centre:
             pos[0][1] = 0.0; pos[-1][1] = 0.0
         mid = [body.add(pos[m], name, st[0] - 0.04 * (kk), m / (nR - 1 if centre else nR), target=pos[m], centre=(centre and m in (0, nR - 1))) for m in range(nR)]
@@ -157,8 +168,8 @@ def grow_tube(body, ctx, name, p, fam, i, c, centre):
         _quads(body, a, b, name, centre)
     last = rings[-1]
     if centre:
-        body.face(last[0], last[1], last[2], cv, name)
-        body.face(last[2], last[3], last[4], cv, name)
+        for k0 in range(0, nR - 2, 2):
+            body.face(last[k0], last[k0 + 1], last[k0 + 2], cv, name)
     else:
         for m in range(0, 8, 2):
             body.face(last[m], last[m + 1], last[(m + 2) % 8], cv, name)

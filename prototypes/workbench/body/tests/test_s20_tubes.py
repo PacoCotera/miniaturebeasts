@@ -44,14 +44,15 @@ class T(unittest.TestCase):
             tl = raw["parts"]["tail"]
             self.assertIn("clip", tl)
             base = RAW["parts"]["tail"]["joints"]
-            for a, b in zip(tl["joints"], base):
-                self.assertAlmostEqual(a["r"][0], b["r"][0] * g.get("tailGirth", 1.0), 9)          # the radius is never shrunk by the clip
+            for k, (a, b) in enumerate(zip(tl["joints"], base)):
+                gk = 1.0 + (g.get("tailGirth", 1.0) - 1.0) * (0.35 + 0.65 * k / (len(base) - 1))       # the girth gene's taper profile
+                self.assertAlmostEqual(a["r"][0], b["r"][0] * gk, 9)          # the radius is never shrunk by the clip
             P = PA.fk(tl["joints"][0]["at"], tl["joints"])
             _, rep = PA.fillet_path(P, [j["r"] for j in tl["joints"]], tl["fillet"])
             self.assertTrue(all(x["ok"] for x in rep), g)
         raw = s20genes.apply_shape(RAW, dict(curl=0.45, tailGirth=1.15))
         self.assertLess(raw["parts"]["tail"]["clip"]["factor"], 1.0)         # a short thick tail is clipped earlier: logged
-        raw = s20genes.apply_shape(RAW, dict(curl=0.25))
+        raw = s20genes.apply_shape(RAW, dict(curl=0.2))
         self.assertEqual(raw["parts"]["tail"]["clip"]["factor"], 1.0)
 
     def test_ring_aspect(self):
@@ -110,7 +111,7 @@ class T(unittest.TestCase):
             for v in rec["rings"][-1]:
                 if val[m[v]] == 3:
                     census[kind + " tip cap 3"] += 1
-        want = {"ear socket corners 5": 4, "ear tip cap 3": 4, "tail socket corners 5": 2, "tail tip cap 3": 2}
+        want = {"ear socket corners 5": 4, "ear tip cap 3": 4, "tail socket corners 5": 2, "tail tip cap 3": 3}
         self.assertEqual(dict(census), want)
         for row in self.spec["poles"]:
             if row["where"].startswith("ear socket"):
@@ -119,8 +120,11 @@ class T(unittest.TestCase):
                 self.assertEqual(row["per_half"], want["tail socket corners 5"])
             if row["where"].startswith("ear tip"):
                 self.assertEqual(row["per_half"], want["ear tip cap 3"])
-            if row["where"].startswith("tail tip"):
+            if row["where"] == "tail tip cap":
                 self.assertEqual(row["per_half"], want["tail tip cap 3"])
+        self.assertTrue(any(r["where"] == "tail tip centre" and r["valence"] == 6 for r in self.spec["poles"]))
+        m = self.ctx["remap"]
+        self.assertEqual(int(val[m[self.rec["tail"]["tip_centre"]]]), 6)
 
     def test_every_pole_listed(self):
         sys.path.insert(0, HERE)
