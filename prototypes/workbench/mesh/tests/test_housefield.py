@@ -60,7 +60,7 @@ class T(unittest.TestCase):
         self.assertAlmostEqual(self.h.D, self.f["D"], delta=1e-6)
         for k in ("a", "b", "c", "n"):
             self.assertAlmostEqual(self.h.K[k], self.f["K"][k], delta=1e-6, msg=k)
-        self.assertAlmostEqual(self.h.rig["chin-overhang"], 0.12, delta=1e-12)
+        self.assertAlmostEqual(self.h.rig["chin-overhang"], 0.26, delta=1e-12)      # fix round 8 (frozen)
         self.assertEqual(self.h.house["kinds"]["head"][self.h.kinds["head"]]["rear-exponent"], 3.2)
         self.assertEqual(self.h.house["solver"]["roll-sign"], -1)
         self.assertAlmostEqual(self.h.pose["rollSigned"], self.f["pose"]["rollSigned"], delta=1e-9)

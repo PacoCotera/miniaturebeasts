@@ -30,19 +30,23 @@ class T(unittest.TestCase):
         self.assertEqual([[k.name for k in lid.data.shape_keys.key_blocks] for lid in self.sc.lids], [["Basis", "blink.L"], ["Basis", "blink.R"]])
         self.assertEqual(sorted(t.name for t in self.sc.rig.animation_data.nla_tracks), ["blink", "breathe", "stand", "walk"])
 
-    def test_lids_shut_in_front_of_the_discs(self):
-        """At the blink's peak each lid lies above its eye disc everywhere over the disc's own area, and below the skin: the socket is shut, not smeared."""
+    def test_lids_are_a_shell_on_the_eyeball(self):
+        """Round 4 (the blink): at the peak each lid lies over its eye disc, at most 0.02 H out of the disc's surface (the open eye's), and at rest it is folded under the skin over the hole's top rim."""
         for lid, eye, disc in zip(self.sc.lids, self.H.eyes, self.sc.eyes):
             kb = lid.data.shape_keys.key_blocks[1]
             rest = np.array([v.co[:] for v in lid.data.vertices]); shut = np.array([d.co[:] for d in kb.data])
-            n = eye["n"]
-            self.assertTrue(((shut - rest) @ n > 0.09).all())                       # raised by the sink and more
+            n, c = eye["n"], self.H.kc + eye["c"]
             D = np.array([v.co[:] for v in disc.data.vertices])
-            c = self.H.kc + eye["c"]
-            inside = np.hypot((shut - c) @ eye["lat"], (shut - c) @ eye["up"]) < eye["Reye"] * 1.04
-            hs = ((shut - c) @ n)[inside]
-            hd = ((D - c) @ n)
-            self.assertGreater(hs.min(), hd[np.hypot((D - c) @ eye["lat"], (D - c) @ eye["up"]) < eye["Reye"] * 1.04].max() - 0.05)   # the lid is not behind the disc plane's own range
+            dl, du = (D - c) @ eye["lat"], (D - c) @ eye["up"]
+            inside = np.hypot((shut - c) @ eye["lat"], (shut - c) @ eye["up"]) < eye["Reye"] * 1.0
+            # the disc's surface height at each lid point inside the iris + ring: the nearest disc vertex's
+            for p in shut[inside][::7]:
+                j = int(np.argmin(np.hypot(dl - (p - c) @ eye["lat"], du - (p - c) @ eye["up"])))
+                out = (p - D[j]) @ n
+                self.assertGreater(out, -0.006)    # the two height grids (21 and 15 points) differ by a few mm
+                self.assertLess(out, 0.02)
+            self.assertTrue((np.abs((rest - c) @ eye["up"] - 1.25 * eye["Reye"]) < 1e-6).all())      # folded to one line over the hole's top rim
+            self.assertEqual(lid.data.materials[0].node_tree.nodes["Image Texture"].image.size[0], 192)
 
     def test_sockets_are_closed_and_wide_as_the_disc(self):
         for f, eye in zip(self.sc.eye_fit, self.H.eyes):

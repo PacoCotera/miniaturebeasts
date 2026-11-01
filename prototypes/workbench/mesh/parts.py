@@ -176,7 +176,7 @@ def bisect_surface(dK, P, n):
 
 
 # ================================================================================================ the torso
-def build_torso(H, n_st=9):
+def build_torso(H, n_st=21):    # round 4: 21 stations (9 in round 3): fix 8 pulls the pelvis 0.24 S forward, and the fore and hind legs' ports (2 x 2 faces each) need two stations between them
     C = Cage("torso")
     pc, pr, cc, cr = H.pelvis["c"], H.pelvis["r"], H.chest["c"], H.chest["r"]
     x0, x1 = pc[0] - pr[0], cc[0] + cr[0]

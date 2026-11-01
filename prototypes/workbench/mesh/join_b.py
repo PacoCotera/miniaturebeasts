@@ -13,7 +13,7 @@ def port_ring(T, H, lg, st_k_target=None):
     """The 2 x 2 face port nearest the fore leg's top on the flank: returns (centre station i, column k, the 8 boundary vertices in loop order, the 4 faces)."""
     target = np.array([lg["top"][0], lg["top"][1], lg["top"][2] - 0.05])
     best = None
-    for i in range(1, 8):
+    for i in range(1, len(T.rings) - 1):
         ring = T.rings[f"st{i}"]
         for k in range(2, 7):
             d = np.linalg.norm(np.array(T.V[ring[k]]) - target)

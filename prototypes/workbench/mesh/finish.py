@@ -5,6 +5,7 @@ import bpy, bmesh
 from mathutils import Vector, Matrix
 from mathutils.bvhtree import BVHTree
 import paint as PT
+from housefield import sstep
 from build import lin, strip_png_text
 
 
@@ -203,6 +204,26 @@ def cut_eye_sockets(sc, H, me):
     me.update()
 
 
+def far_leg_shift(H, ob, me):
+    """Fix round 8 (frozen): the far fore leg steps forward and leans, which the Mirror cannot make (it only copies the near leg). The mirrored far leg's vertices, by their weight on the fore
+    leg's bones (the Mirror leaves the .L names on its copy, so the far side is y < 0), are moved forward along x: all of `far-forward` at the foot and `far-forward - far-lean` at the top, the SDF's own line from the paw back to the top (scene.mjs: cx0 - lean at the
+    top, cx0 at the ankle). The torso's own vertices near the shoulder carry a part of that weight and shear with it, which is the join."""
+    fo = H.rig["fore"]
+    far, lean, S = fo.get("far-forward", 0.0) * H.S, fo.get("far-lean", 0.0) * H.S, H.S
+    if not far and not lean:
+        return
+    legs = {lg["name"]: lg for lg in H.legs}
+    zt, za = legs["fore.L"]["top"][2], legs["fore.L"]["ank"][2]
+    gi = [ob.vertex_groups[n].index for n in ("fore_upper.L", "fore_lower.L", "fore_paw.L") if n in ob.vertex_groups]      # the Mirror leaves the .L names on its copy: the far side is y < 0
+    for v in me.vertices:
+        w = min(1.0, sum(g.weight for g in v.groups if g.group in gi)) * float(sstep(0.0, 0.12, -v.co.y))
+        if w <= 0:
+            continue
+        t = min(1.0, max(0.0, (zt - v.co.z) / (zt - za)))
+        v.co.x += w * (far - lean * (1 - t))
+    me.update()
+
+
 def bake(sc, H, level=3, name="loika_L"):
     """Evaluate Mirror + Subsurf at `level` in the REST pose into a static mesh that keeps its vertex weights, then paint it (vertex colours) and rig it."""
     sc.pose_stand(False)
@@ -221,8 +242,6 @@ def bake(sc, H, level=3, name="loika_L"):
     bpy.data.objects.remove(tmp)
     me.name = name
     cut_eye_sockets(sc, H, me)
-    P = np.array([v.co[:] for v in me.vertices])
-    N = np.array([v.normal[:] for v in me.vertices])
     ob = bpy.data.objects.new(name, me)
     ob.parent = sc.root
     sc.scene.collection.objects.link(ob)
@@ -231,6 +250,9 @@ def bake(sc, H, level=3, name="loika_L"):
         for n in names:
             if n not in ob.vertex_groups:
                 ob.vertex_groups.new(name=n)
+    far_leg_shift(H, ob, me)
+    P = np.array([v.co[:] for v in me.vertices])
+    N = np.array([v.normal[:] for v in me.vertices])
     hid = ob.vertex_groups["head"].index
     head_w = np.array([next((g.weight for g in v.groups if g.group == hid), 0.0) for v in me.vertices])
     toe = np.zeros(len(P))
@@ -417,23 +439,53 @@ def add_eyes(sc, H, level_obj, offset=0.005):
     return objs
 
 
+LID_SPAN = 1.45       # the lid's own radius, in R_eye: wider than the socket hole, so its rim is under the skin
+LID_LIFT = 0.009      # round 4: the shut lid's face stands this far (H) out of the open eye's surface (the AD's limit is 0.02): the lid is a shell on the eyeball inside the socket
+LID_TEX = 192
+LID_REST_EXTRA = 0.05   # the folded rest lid stands this much further out of the socket than the shut lid: the sweep between them is a chord across the dome's curve
+
+
+def lid_texture(H, n=LID_TEX):
+    """Round 4: the lid's skin, sRGB bytes (n, n, 4): the body's albedo with a lit top and a darker bottom (the lid shade), and one soft crease curved downwards (a content closed eye, a lash line
+    that sags in the middle), 2 px wide at 304 (1 px = 1/110 H). u along the eye's `lat`, v along its `up`, spanning +-LID_SPAN R_eye. The crease and the shade are part of the lid's texture."""
+    R = H.eyes[0]["Reye"]
+    ys, xs = (np.mgrid[0:n, 0:n] + 0.5) / n * 2 - 1
+    u, v = xs * LID_SPAN, -ys * LID_SPAN                        # in R_eye
+    body = PT.srgb(H.look["body"])
+    shade = 1.10 - 0.55 * sstep(0.55, -0.55, v)                  # lit top, shaded bottom (linear factor on the albedo)
+    base = lin(body * 255)[None, None] * shade[..., None]       # linear
+    sig = (0.85 / 110.0) / R                                      # a 2 px FWHM line: sigma 0.85 px of the 304 sprite (1 px = 1/110 H), in R_eye
+    cv = -0.08 + 0.30 * (u / 0.8) ** 2                           # the lash line: lowest in the middle, rising to both ends
+    d = np.abs(v - cv)
+    reach = 1 - sstep(0.55, 0.85, np.abs(u))
+    a = np.exp(-0.5 * (d / sig) ** 2) * reach
+    crease = base * 0.22
+    col = base * (1 - a[..., None]) + crease * a[..., None]
+    srgb = np.where(col <= 0.0031308, col * 12.92, 1.055 * np.maximum(col, 1e-9) ** (1 / 2.4) - 0.055)
+    return np.dstack([np.clip(srgb, 0, 1), np.ones((n, n))]).astype(np.float32)
+
+
 def add_lids(sc, H):
-    """Round 2 (AD item 6): each eye has a lid of its own, a dark disc lying in the socket just below the eye's disc (hidden by it at rest). Its `blink.L`/`blink.R` morph target raises
-    it to the skin (4 mm under it, with a small swell), so at the peak the socket is shut by a lid in front of the disc, whatever angle it is seen from. The skin itself does not move."""
+    """Round 4 (AD ruling 3, the blink): each eye has a lid, a shell on the eyeball inside the socket: a disc 0.009 H in front of the open eye's surface, which at rest is folded into a line over the hole's top rim
+    (under the skin) and at the blink's peak (`blink.L`/`blink.R` at 1) lies over the eye, so the key sweeps it down across the eye. It never leaves the socket, so the head's outline does not
+    move; its rim is under the socket's rim; its texture is the body's albedo with a lit top and a darker bottom and one soft crease curved downwards."""
     objs = []
     for eye, name in zip(H.eyes, ("L", "R")):
-        C = PT.disc_cage(H, eye, grid=14, span=1.45)
+        C = PT.disc_cage(H, eye, grid=14, span=LID_SPAN)
         V = np.array(C.V)
         d = V - eye["c"]
         u, v = d @ eye["lat"], d @ eye["up"]
-        h = skin_height(sc, H, eye, u, v, g=15)
-        rr = np.hypot(u, v) / (eye["Reye"] * 1.45)
-        base = [H.kc + eye["c"] + uu * eye["lat"] + vv * eye["up"] + eye["n"] * (hh - EYE_SINK - 0.014) for uu, vv, hh in zip(u, v, h)]
-        shut = [H.kc + eye["c"] + uu * eye["lat"] + vv * eye["up"] + eye["n"] * (hh - 0.004 + 0.007 * (1 - r * r)) for uu, vv, hh, r in zip(u, v, h, rr)]
+        v_rest = np.full(len(v), 1.25 * eye["Reye"])      # the rest position: the whole lid folded into a line just over the hole's top rim, under the skin
+        place = lambda vs, hs, up: [H.kc + eye["c"] + uu * eye["lat"] + vv * eye["up"] + eye["n"] * (hh - EYE_SINK + up) for uu, vv, hh in zip(u, vs, hs)]
+        shut = place(v, skin_height(sc, H, eye, u, v, g=15), LID_LIFT)
+        base = place(v_rest, skin_height(sc, H, eye, u, v_rest, g=15), LID_LIFT + LID_REST_EXTRA)      # the rest is a little further out (still under the skin), so the sweep's middle stays in front of the dome's sag
         me = bpy.data.meshes.new("lid." + name)
         me.from_pydata([tuple(x) for x in base], [], [tuple(f) for f in C.F])
         me.update()
         me.polygons.foreach_set("use_smooth", [True] * len(me.polygons))
+        uvl = me.uv_layers.new(name="UVMap")
+        for loop in me.loops:
+            uvl.data[loop.index].uv = tuple(C.uv[loop.vertex_index])
         ob = bpy.data.objects.new("lid." + name, me)
         ob.parent = sc.root
         sc.scene.collection.objects.link(ob)
@@ -442,10 +494,16 @@ def add_lids(sc, H):
         kb.value = 0.0            # a new key comes in at 1.0
         for i, p in enumerate(shut):
             kb.data[i].co = tuple(p)
+        os.makedirs(sc.tex_dir, exist_ok=True)
+        tp = os.path.join(sc.tex_dir, "lid." + name + ".png")
+        write_png(tp, np.round(lid_texture(H) * 255).astype(np.uint8))
+        img = bpy.data.images.load(tp)
         mat = bpy.data.materials.new("lid." + name)
         mat.use_nodes = True
-        b = mat.node_tree.nodes["Principled BSDF"]
-        b.inputs["Base Color"].default_value = (*lin(H.look["body"]), 1)
+        nt = mat.node_tree
+        b = nt.nodes["Principled BSDF"]
+        tn = nt.nodes.new("ShaderNodeTexImage"); tn.image = img; tn.extension = "CLIP"
+        nt.links.new(tn.outputs["Color"], b.inputs["Base Color"])
         b.inputs["Roughness"].default_value = H.light["vinyl"]["roughness"]
         b.inputs["Specular IOR Level"].default_value = 0.25
         me.materials.append(mat)
@@ -488,12 +546,15 @@ def add_beans(sc, H, g=10):
         for side in (1, -1):
             m = np.array([1, side, 1.0])
             tag = lg["name"].split(".")[0] + "_paw." + ("L" if side == 1 else "R")
-            for t in lg["toes"]:
+            src, mm = lg, m
+            if side == -1 and lg["fore"]:        # fix round 8: the far fore paw stands forward of the near one (far_leg_shift): its own toes, not the near paw's image
+                src, mm = next(q for q in H.legs if q["fore"] and q["side"] == -1), np.ones(3)
+            for t in src["toes"]:
                 R = np.asarray(t["R"]); c = np.asarray(t["c"])
                 loc = (V0 * np.asarray(t["r"])) @ R.T + c
                 n0 = len(P)
-                P += [tuple(p * m) for p in loc]
-                F += [tuple(i + n0 for i in (q if side == 1 else q[::-1])) for q in F0]
+                P += [tuple(p * mm) for p in loc]
+                F += [tuple(i + n0 for i in (q if mm[1] > 0 else q[::-1])) for q in F0]
                 W += [tag] * len(loc)
     me = bpy.data.meshes.new("beans")
     me.from_pydata(P, [], F)

@@ -177,6 +177,8 @@ class House:
         self.pose = seed_free_pose(house, self.plan, spec, fp["carriage"])
         self._head()
         self._body()
+        # the cream field's shape is the house's (rig.face cream-*); a species look may name a number of its own (paint.mjs creamHead)
+        self.cream_head = dict(below=rf["cream-below"], soft=rf["cream-soft"], fall=rf["cream-fall"], **{"fall-far": rf["cream-fall-far"]}, **(self.look.get("creamHead") or {}))
         # the stand camera's direction to the viewer (house axes) and the head's near side (paint.mjs nearSign): the side whose eye faces the camera most
         yaw, pit = math.radians(self.pose["yawBody"]), math.radians(self.solver["camera"]["pitch-deg"])
         self.toward = np.array([math.cos(yaw) * math.cos(pit), math.sin(yaw) * math.cos(pit), math.sin(pit)])
@@ -218,12 +220,13 @@ class House:
         proj = cap * math.tanh(fp["projection"] / cap)
         ry = fp["muzzleW"] * W / 2 * (1 + rf["muzzle-widen"] * ((fp["projection"] - proj) / cap))
         rz = fp["muzzleH"] / 2
-        rx = 0.12 + 0.5 * proj
+        rx = rf["muzzle-rx"][0] + rf["muzzle-rx"][1] * proj     # fix round 8: the muzzle's depth is the house's two numbers
         zc = noseCz - rf["muzzle-centre-drop"] - 0.12 * fp["muzzleH"]
         xs = float(find_front(dK, 0, zc))
         M = dict(c=np.array([xs + proj - rx, 0, zc]), r=(rx, ry, rz))
         self.dK = dK
-        self.dM = lambda p: sd_ellipsoid(p - M["c"], M["r"])
+        nM = (self.house["kinds"].get("muzzle", {}).get(self.kinds.get("muzzle"), {}) or {}).get("exponent", 2)   # the muzzle kind's section: 2 an ellipsoid, higher squarer
+        self.dM = (lambda p: sd_ellipsoid(p - M["c"], M["r"])) if nM == 2 else (lambda p: sd_super(p - M["c"], M["r"][0], M["r"][1], M["r"][2], nM))
         rM = rf["muzzle-union"]
         # the jaw: a chin mass under the mouth (head.mjs J), on in fc80e5312 (jaw-rz 0.12). Not frozen by the AD: fix round 8 re-sets its numbers in the house file, which this reads by name.
         mouthZ0 = noseCz - noseHalfH - fp["gap"]
@@ -245,11 +248,19 @@ class House:
             dRise = lambda p: sd_ellipsoid(p - self.rise["c"], self.rise["r"])
         else:
             dRise = None
+        # the far-field shortcut of head.mjs (fix round 8): beyond 0.4 of the skull the exact field is skipped, but not where the muzzle and the jaw stand off the skull
+        mj = [q for q in (M, self.J) if q is not None]
+        def dMJb(p):
+            b = np.full(p.shape[:-1], 1e9)
+            for q in mj:
+                b = np.minimum(b, np.sqrt(((p - q["c"]) ** 2).sum(-1)) - max(q["r"]) * 1.08)
+            return b
         def dh(p):
             d = dK(p)
+            far = (d > 0.4) & (dMJb(p) > 0.4)
             if dRise is not None:
                 d = np.where(d > 0.4, d, smin(d, dRise(p), self.rise["k"]))
-            return np.where(d > 0.4, d, uround(d, self.dMJ(p), rM))
+            return np.where(far, np.minimum(dK(p), dMJb(p)), uround(d, self.dMJ(p), rM))
         self.dh = dh
         self.K, self.M, self.W, self.D = K, M, W, D
         self.g = dict(E=E, zEye=zEye, noseCz=noseCz, mouthZ=mouthZ, noseHalfH=noseHalfH, ringW=ringW, Reye=Reye, Riris=Riris, yE=yE, lidOver=fp["lid"] * E)
@@ -311,11 +322,12 @@ class House:
         k = S
         V = lambda a: np.array(a, float) * k
         tc, tp = rig["chest"], rig["pelvis"]
-        zJaw = -0.5 + rig["chin-height"]
+        chinM = self.J
+        zJaw = chinM["c"][2] if chinM else -0.5 + rig["chin-height"]      # fix round 8: the body is placed under the jaw's own height
         zw = self.kc[2] + zJaw
         Rfa = Ry(-math.radians(pose["pitch"]))
         d0_world = lambda p: self.d0(to_local(self.kc, Rfa, p))
-        hfx = float(find_front(d0_world, 0, zw, self.kc[0])) - self.kc[0]
+        hfx = float(find_front(d0_world, 0, zw, self.kc[0] + (chinM["c"][0] if chinM else 0))) - self.kc[0]
         zcl = float(np.clip(zw, tc["c"][1] * k - tc["r"][2] * k * 0.9, tc["c"][1] * k + tc["r"][2] * k * 0.9))
         chestFront0 = tc["c"][0] * k + tc["r"][0] * k * math.sqrt(max(0, 1 - ((zcl - tc["c"][1] * k) / (tc["r"][2] * k)) ** 2))
         sx = hfx + self.kc[0] - rig["chin-overhang"] - chestFront0
@@ -335,9 +347,11 @@ class House:
         self.legs = []
         for fore, L in ((True, rig["fore"]), (False, rig["hind"])):
             for sd in (1, -1):
-                cx, y = L["x"] * k + sx, sd * L["y"] * k
+                far = (L.get("far-forward", 0) * k) if sd == -1 else 0       # fix round 8: the far leg steps forward and leans (its top stays far-lean behind its paw)
+                cx0 = L["x"] * k + sx + far
+                cx, y = cx0 - ((L.get("far-lean", 0) * k) if sd == -1 else 0), sd * L["y"] * k
                 lead = rig["lead-paw"] * k if (fore and sd == 1) else 0
-                px = cx + lead + L["paw-dx"] * k
+                px = cx0 + lead + L["paw-dx"] * k
                 zTop = L["top"] * k
                 mass = V(L["mass"])
                 top = np.array([cx, y, zTop])
@@ -396,12 +410,25 @@ class House:
         """scene.mjs legWeight: how much a point belongs to a leg rather than the torso."""
         x, a, b = self.leg_x(p)
         w = sstep(a, b, x)
+        lr = self.rig.get("leg-cream-reach")          # fix round 8: only where the leg's own skin is
+        if lr:
+            dl = np.min([lg["d"](p) for lg in self.legs], axis=0)
+            w = w * (1 - sstep(lr[0] * self.S, lr[1] * self.S, dl))
         return np.where(p[..., 2] > 0.75 * self.S, 0.0, w)
 
     def d_core_far(self, p):
         """parts.core where the head's carved field is just its bound sphere (the head far away): the union of that and the body."""
         hb = np.sqrt(((p - self.kc) ** 2).sum(-1)) - (0.5 * max(self.W, self.D) + 0.7)
         return uround(hb, self.dBody(p), self.rig["union-neck"]), hb
+
+    def chest_normal(self, p):
+        """paint.mjs chestNormal: the bib is read on the chest's own smooth surface, not on the surface the eye sees."""
+        return self.grad(self.dC, np.asarray(p, float), 0.002)
+
+    def near_flank(self, nt):
+        """paint.mjs nearFlank: the head's cream ends on the near flank where the body's bib does (the chest normal's lateral band)."""
+        cb = self.look["creamBody"]
+        return 1 - sstep(cb["n0"], cb["n1"], nt[:, 1] * self.near_sign) if cb.get("n1") else np.ones(len(nt))
 
     # ---- helpers for the build -------------------------------------------------------------------------------------------------
     def head_to_world(self, q):

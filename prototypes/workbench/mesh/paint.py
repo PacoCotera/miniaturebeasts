@@ -12,7 +12,7 @@ srgb = lambda c: np.asarray(c, float) / 255.0
 def cream_edge_z(H, q):
     """paint.mjs faceCreamAt's edge height zb at each head-local rest position q (N, 3), as fix round 7 has it: the edge is the smile's own curve out to the mouth corner, then carries on the
     smile's slope and eases off it on a parabola down to the side's fall (the near side `fall`, the far side `fall-far`), one curve with no kink and so no dark wedge into the cream."""
-    ch = H.look["creamHead"]
+    ch = H.cream_head
     hw = H.mouth["w"] / 2
     ay = np.abs(q[:, 1])
     fall = np.where(q[:, 1] * H.near_sign > 0, ch["fall"], ch.get("fall-far", ch["fall"]))
@@ -28,12 +28,13 @@ def cream_edge_z(H, q):
     return ze - ch["below"]
 
 
-def face_cream(H, q, nl):
+def face_cream(H, q, nl, nt=None):
     """paint.mjs faceCreamAt, q = head-local rest position (N, 3), nl = head-local normal. Gated by the mouth line and the fall only: head and neck are one surface to it."""
-    ch = H.look["creamHead"]
+    ch = H.cream_head
     zb = cream_edge_z(H, q)
     front = np.maximum(sstep(-0.1, 0.3, q[:, 0] / H.K["a"]), sstep(0.1, 0.5, -nl[:, 2]))
-    return sstep(zb + ch["soft"], zb - ch["soft"], q[:, 2]) * front
+    out = sstep(zb + ch["soft"], zb - ch["soft"], q[:, 2]) * front
+    return out if nt is None else out * H.near_flank(nt)
 
 
 def underside_cream(H, P, N):
@@ -93,8 +94,9 @@ def vertex_colours(H, P, N, head_w, toe, nose_attr=None, mouth=True, ink_half=No
     look = H.look
     body, cream = srgb(look["body"]), srgb(look["cream"])
     q = P - H.kc
-    fc = face_cream(H, q, N)
-    bc = body_cream(H, P, N)
+    nt = H.chest_normal(P)          # fix round 8: the bib and the head's cream end on the chest's own normal
+    fc = face_cream(H, q, N, nt)
+    bc = body_cream(H, P, nt)
     c = np.maximum(np.maximum(fc, bc), underside_cream(H, P, N)) * (1 - H.leg_weight(P))       # fix round 7: the head takes the same leg weight as the body, so no line is left where the head ends and the body begins
     col = mix(body[None], cream[None], c)
     if mouth:
@@ -147,8 +149,12 @@ def paint_fields(H, P, N, head_w, half, px):
     q = P - H.kc
     zb = cream_edge_z(H, q)
     lm = leg_margin(H, P)
+    nt = H.chest_normal(P)
+    cb = H.look["creamBody"]
     mA = np.minimum(np.maximum(margin(-0.1, 0.3, q[:, 0] / H.K["a"]), margin(0.1, 0.5, -N[:, 2])), lm)
-    mB = np.minimum(np.maximum(body_cream_margin(H, P, N), underside_margin(H, P, N)), lm)
+    if cb.get("n1"):
+        mA = np.minimum(mA, margin(cb["n1"], cb["n0"], nt[:, 1] * H.near_sign))
+    mB = np.minimum(np.maximum(body_cream_margin(H, P, nt), underside_margin(H, P, N)), lm)
     ax = mouth_axis(H)
     d = np.full(len(q), 1e9)
     for a, b in zip(ax[:-1], ax[1:]):
@@ -245,6 +251,7 @@ def leaf_cages(H, stations=9, around=6):
     """Three separate closed lenses from the crown socket, in head-local coordinates + kc (rest), width by the house's leaf formula."""
     cr = H.rig["crest"]
     cp, tn, bm = cr["tip-power"], cr["tip-narrow"], cr["base-min"]
+    cam = cr.get("camber", 0)
     out = []
     for li, l in enumerate(H.leaves):
         C = Cage(f"leaf.{li}", mirrored=False)
@@ -258,7 +265,8 @@ def leaf_cages(H, stations=9, around=6):
             ring = []
             for k in range(around):
                 a = 2 * math.pi * k / around
-                ring.append(C.add(c + l["aw"] * hw * math.cos(a) + l["an"] * ht * math.sin(a)))
+                cup = cam * l["thick"] * (hw * math.cos(a) / (l["wid"] / 2)) ** 2      # fix round 8: the leaf is cupped across (camber, in leaf thicknesses)
+                ring.append(C.add(c + l["aw"] * hw * math.cos(a) + l["an"] * (ht * math.sin(a) + cup)))
             rings.append(ring)
         grid_faces(C, rings, closed=True)
         for ring, sgn in ((rings[0], -1), (rings[-1], 1)):
