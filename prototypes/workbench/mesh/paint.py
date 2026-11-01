@@ -167,7 +167,7 @@ def lin(c):
 
 
 # ---------------------------------------------------------------- the eye, in disc space (paint.mjs eyePaint)
-RING_SCALE = 0.88      # the ring's painted brightness: the lit disc plus its emission would clip the house's ivory to white; the RENDERED ring then reads about the cream's L*
+RING_SCALE = np.array([0.98, 0.95, 0.86])      # the ring's painted brightness and warmth: the disc is unlit, so the house's ivory (240, 228, 214) would render as L* 78, b* 8 against the master's 86, b* 19 (the SDF's lit ring: 88, b* 16); round 2 had 0.88 flat
 
 
 def eye_texture(H, eye, toward_local, n=256, span=1.0, crescent_gain=1.0, crescent_rho=None):
@@ -241,7 +241,7 @@ def disc_cage(H, eye, grid=12, span=1.0):
 
 
 # ---------------------------------------------------------------- leaves (design §6)
-def leaf_cages(H, stations=7, around=6):
+def leaf_cages(H, stations=9, around=6):
     """Three separate closed lenses from the crown socket, in head-local coordinates + kc (rest), width by the house's leaf formula."""
     cr = H.rig["crest"]
     cp, tn, bm = cr["tip-power"], cr["tip-narrow"], cr["base-min"]
@@ -252,7 +252,7 @@ def leaf_cages(H, stations=7, around=6):
         rings = []
         for s in ss:
             taper = max((max(0.0, 1 - abs(s) ** cp)) ** (1 / cp) * (1 - tn * s), bm)
-            hw = l["wid"] / 2 * taper * 1.04
+            hw = l["wid"] / 2 * taper * math.sqrt(max(1 - s * s, 0.0)) * 1.04      # round 3: the SDF's leaf is a thin ellipsoid (the sqrt) whose width is further tapered by the house's formula; round 2 drew the taper alone, a blunt sausage
             ht = l["thick"] / 2 * math.sqrt(max(1 - s * s, 0.04)) * 1.5
             c = H.kc + l["base"] + l["ax"] * l["len"] * (s + 1) / 2
             ring = []
