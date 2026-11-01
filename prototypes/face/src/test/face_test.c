@@ -787,7 +787,7 @@ static void type_kit(void) {
     }
     resolved++;
   }
-  { char d[96]; snprintf(d, sizeof d, "%d roles, %d role-ground pairs, %d with a shadow, %d compared with v_line_at", resolved, pairs, shadows, same); check(resolved == 17 && same > 0 && shadows > 0, "role resolve: every role", d); printf("type kit: %s\n", d); }
+  { char d[128]; snprintf(d, sizeof d, "%d roles, %d role-ground pairs, %d with a shadow, %d compared with v_line_at", resolved, pairs, shadows, same); check(resolved == 17 && same > 0 && shadows > 0, "role resolve: every role", d); printf("type kit: %s\n", d); }
   /* a ground by palette name, a variant */
   prim_begin(); v_region("ty.v", LAYER_TYPE);
   int wp = v_say("ty.pal", "Hello", 10, 10, V_ANCHOR_CAP, "quiet", "panel", V_ALIGN_LEFT), wv = v_say("ty.var", "12", 10, 40, V_ANCHOR_CAP, "figure.price", "bar", V_ALIGN_LEFT);
