@@ -1,7 +1,7 @@
 {
   "schema": "mb-house/1",
   "id": "house-1",
-  "status": "chunk 1: the face, the head carriage and the head size. The bands below are the art director's first values (ad-chibi-anatomy.md section 1-3, as revised by ad-appeal-research.md), read from the masters on day 1 of chunk 1. They move with the owner's head-size pick and the art director's review: change them here, never in code.",
+  "status": "chunk 1: the face, the head carriage and the head size. The bands below are the art director's first values (ad-chibi-anatomy.md section 1-3, as revised by ad-appeal-research.md), read from the masters on day 1 of chunk 1. They move with the owner's head-size pick and the art director's review: change them here, never in code. Revised by the AD review of chunk 1, 1 Nov 2026 (iwq results/T-20261030-shape/foundation/chunk1/ad-review.md): the masters set the bands where they sat outside them; see each band's and rule's \"ad\" note.",
   "plans": {
     "A": "quadruped",
     "B": "upright biped",
@@ -75,14 +75,16 @@
       "form.head-width": {
         "measure": "W/H",
         "lo": 1.0,
-        "hi": 1.4,
-        "map": "lin"
+        "hi": 1.6,
+        "map": "lin",
+        "ad": "widened from 1.0-1.4: the Loika master reads 1.68 H wide on screen; at face yaw 28 a 1.4 x 1.1 skull gives only about 1.34 H, and that missing breadth is the turnip. Loika sits near 1.5"
       },
       "form.head-depth": {
         "measure": "D/H",
         "lo": 0.85,
-        "hi": 1.1,
-        "map": "lin"
+        "hi": 1.35,
+        "map": "lin",
+        "ad": "widened from 0.85-1.1: the master's skull runs well back behind the eyes before the nape; Loika near 1.25"
       },
       "form.cheek": {
         "measure": "cheek",
@@ -98,15 +100,17 @@
       },
       "form.eye-height": {
         "measure": "eye-drop/H",
-        "lo": 0.45,
+        "lo": 0.4,
         "hi": 0.62,
-        "map": "lin"
+        "map": "lin",
+        "ad": "floor lowered from 0.45: Loika 0.42 and the bee 0.41 sit above it, a systematic miss beyond the read error. R4-forehead (now 0.20 H, a clamp) is the guard that keeps the dome"
       },
       "form.eye-spacing": {
         "measure": "spacing/E",
         "lo": 1.5,
-        "hi": 2.2,
-        "map": "lin"
+        "hi": 2.4,
+        "map": "lin",
+        "ad": "cap raised from 2.2: Loika 2.28, the bee 2.26, Curlop 2.30 and Wickle 2.21 all sit over it. The far-eye rule (inside the outline by 0.05 H) is the guard against the fish look, not the spacing cap"
       },
       "form.pupil": {
         "measure": "pupil/E",
@@ -123,8 +127,9 @@
       "form.eye-ring": {
         "measure": "ring/E",
         "lo": 0.0,
-        "hi": 0.15,
-        "map": "lin"
+        "hi": 0.25,
+        "map": "lin",
+        "ad": "cap raised from 0.15: Loika's cream ring is 0.23 E and is what makes her eye read big and bright on a dark body. Above 0.15 E only on a dark body (lit body L* <= 40), in the cream field's colour (warm, L* 78-92, never white) and flat, so it reads as a spectacle mark and never as sclera"
       },
       "form.muzzle": {
         "measure": "projection/H",
@@ -147,8 +152,9 @@
       "form.nose": {
         "measure": "nose-w/W",
         "lo": 0.08,
-        "hi": 0.3,
-        "map": "geo"
+        "hi": 0.36,
+        "map": "geo",
+        "ad": "hi raised from 0.3 so a mound nose can reach about 1.0 E on a wide head; the width per kind is R4-nose-width"
       },
       "form.nose-drop": {
         "measure": "nose-drop/E",
@@ -266,7 +272,14 @@
         "form.muzzle": null,
         "form.muzzle-width": null,
         "form.muzzle-height": null,
-        "form.carriage": null
+        "form.carriage": null,
+        "form.eye-spacing": {
+          "measure": "spacing/E",
+          "lo": 1.6,
+          "hi": 3.2,
+          "map": "lin",
+          "ad": "plan C only: a mochi face is a small cluster on a big mass, with no head outline for the far eye to crowd, and wide-set small eyes read as the baby mochi face (the bean is 3.0 E). On a separate head, wide-set eyes still read as a fish or prey: plans A, B and E keep 1.5-2.4"
+        }
       }
     },
     "D": {
@@ -322,6 +335,41 @@
           "lo": 0.5,
           "hi": 1.2,
           "map": "lin"
+        },
+        "form.head-width": {
+          "measure": "W/H",
+          "lo": 1.0,
+          "hi": 1.4,
+          "map": "lin",
+          "ad": "plan D keeps the old band: the round heads (snail 1.0) do not need the quadruped's breadth, and the snail must not move"
+        },
+        "form.head-depth": {
+          "measure": "D/H",
+          "lo": 0.85,
+          "hi": 1.1,
+          "map": "lin",
+          "ad": "plan D keeps the old band"
+        },
+        "form.eye-height": {
+          "measure": "eye-drop/H",
+          "lo": 0.45,
+          "hi": 0.62,
+          "map": "lin",
+          "ad": "plan D keeps the old band (the snail is 0.48)"
+        },
+        "form.eye-spacing": {
+          "measure": "spacing/E",
+          "lo": 1.5,
+          "hi": 2.2,
+          "map": "lin",
+          "ad": "plan D keeps the old band (the snail is 1.77)"
+        },
+        "form.eye-ring": {
+          "measure": "ring/E",
+          "lo": 0.0,
+          "hi": 0.15,
+          "map": "lin",
+          "ad": "plan D keeps the old band: the wide ring is a dark-body mark"
         }
       }
     },
@@ -336,7 +384,28 @@
         },
         "form.muzzle": null,
         "form.muzzle-width": null,
-        "form.muzzle-height": null
+        "form.muzzle-height": null,
+        "form.head-width": {
+          "measure": "W/H",
+          "lo": 1.0,
+          "hi": 1.4,
+          "map": "lin",
+          "ad": "plan E keeps the old band: the bee's round head is 1.06"
+        },
+        "form.head-depth": {
+          "measure": "D/H",
+          "lo": 0.85,
+          "hi": 1.1,
+          "map": "lin",
+          "ad": "plan E keeps the old band"
+        },
+        "form.eye-ring": {
+          "measure": "ring/E",
+          "lo": 0.0,
+          "hi": 0.15,
+          "map": "lin",
+          "ad": "plan E keeps the old band"
+        }
       }
     }
   },
@@ -358,12 +427,12 @@
           0.16
         ],
         "D": [
-          0.1,
-          0.16
+          0.14,
+          0.22
         ],
         "C": [
           0.07,
-          0.12
+          0.15
         ]
       },
       "enforce": [
@@ -371,7 +440,8 @@
         "check"
       ],
       "on": true,
-      "why": "a big face is the main cuteness signal; measured on the core silhouette (no headgear, tail or wings)"
+      "why": "a big face is the main cuteness signal; measured on the core silhouette (no headgear, tail or wings)",
+      "ad": "D moved from 0.10-0.16 to 0.14-0.22: the snail is the only plan D master and sits at 0.19 (its build 0.195). C moved from 0.07-0.12 to 0.07-0.15: Wickle is 0.137. A and E hold 0.16-0.24: the eye t 0.9 tiles over 0.24 read startled, and the clamp must now act on both sides (clamps: eye-share)"
     },
     {
       "id": "R1-head",
@@ -440,18 +510,19 @@
         "band"
       ],
       "on": true,
-      "why": "big eyes are the face; too small hurts more than too big helps"
+      "why": "big eyes are the face; too small hurts more than too big helps",
+      "ad": "held for B: Curlop's 0.19 is measured against a Wf that includes the mane. On a coat with a mane or a ruff, Wf is the face window (bare or short fur), not the head with its mane; re-measure Curlop that way"
     },
     {
       "id": "R3-height",
       "measure": "eye-drop/H",
       "plans": {
         "A": [
-          0.45,
+          0.4,
           0.62
         ],
         "B": [
-          0.45,
+          0.4,
           0.62
         ],
         "D": [
@@ -459,7 +530,7 @@
           0.62
         ],
         "E": [
-          0.45,
+          0.4,
           0.62
         ]
       },
@@ -467,7 +538,8 @@
         "band"
       ],
       "on": true,
-      "why": "low eyes leave a big forehead; high eyes on the corners read as a frog"
+      "why": "low eyes leave a big forehead; high eyes on the corners read as a frog",
+      "ad": "A, B and E floor 0.45 -> 0.40 (Loika 0.42, the bee 0.41); D holds 0.45"
     },
     {
       "id": "R3-spacing",
@@ -475,11 +547,11 @@
       "plans": {
         "A": [
           1.5,
-          2.2
+          2.4
         ],
         "B": [
           1.5,
-          2.2
+          2.4
         ],
         "D": [
           1.5,
@@ -487,11 +559,11 @@
         ],
         "E": [
           1.5,
-          2.2
+          2.4
         ],
         "C": [
-          1.5,
-          2.2
+          1.6,
+          3.2
         ]
       },
       "enforce": [
@@ -499,7 +571,8 @@
         "band"
       ],
       "on": true,
-      "why": "too wide reads as a fish, too close as mean"
+      "why": "too wide reads as a fish, too close as mean",
+      "ad": "A, B and E cap 2.2 -> 2.4 (Loika 2.28, bee 2.26, Curlop 2.30); C 1.6-3.2 (the bean 3.0, Wickle 2.21); D holds 1.5-2.2"
     },
     {
       "id": "R4-stack",
@@ -580,7 +653,26 @@
         "clamp:nose-fit"
       ],
       "on": true,
-      "why": "a small nose (the AD's number; the signed Loika master falls outside it, see the calibration table)"
+      "why": "the nose reads as the end of a mass. A mound is skin: the body's own colour and value, modelled only by the light, and broad (Loika's master 0.97 E). A dark pad (soft triangle, disc) is small. The plan ranges are the default for a kind not listed",
+      "kinds": {
+        "mound": [
+          0.7,
+          1.1
+        ],
+        "soft-triangle": [
+          0,
+          0.6
+        ],
+        "disc": [
+          0,
+          0.6
+        ],
+        "bump": [
+          0,
+          0.35
+        ]
+      },
+      "ad": "spec changed by kind, not one cap: the master's nose is a skin mound about 1.0 E wide; a dark pad of that width is a seal's nose or a moustache (4-nose-rule.png, right). In the stand view the nose never overlaps the far eye"
     },
     {
       "id": "R4-mouth-gap",
@@ -614,11 +706,11 @@
       "measure": "forehead/H",
       "plans": {
         "A": [
-          0.25,
+          0.2,
           null
         ],
         "B": [
-          0.25,
+          0.2,
           null
         ],
         "D": [
@@ -626,15 +718,17 @@
           null
         ],
         "E": [
-          0.25,
+          0.2,
           null
         ]
       },
       "enforce": [
+        "clamp:forehead",
         "band"
       ],
       "on": true,
-      "why": "crown to eye top: the dome above the face"
+      "why": "crown to eye top: the dome above the face",
+      "ad": "A, B and E floor 0.25 -> 0.20 (Loika 0.224, with her big eye); D holds 0.25. Now a clamp: when a big eye set high would leave less than 0.20 H of dome, the eye drops, so the lower R3-height floor cannot make a low forehead"
     },
     {
       "id": "R5-pitch",
@@ -722,7 +816,7 @@
           40
         ],
         "C": [
-          15,
+          5,
           40
         ],
         "D": [
@@ -738,7 +832,8 @@
         "solver"
       ],
       "on": true,
-      "why": "the creature notices you"
+      "why": "the creature notices you",
+      "ad": "plan C 15 -> 5 deg (the bean faces us at 8): a mochi has no head to turn, so its gesture is the lean and the tilt. Under 15 deg it needs roll >= 3 deg and a lean of 3-10 deg toward the viewer, or it is dead symmetry"
     },
     {
       "id": "R6-head-yaw",
@@ -769,7 +864,8 @@
         "solver"
       ],
       "on": true,
-      "why": "the head is turned on the body"
+      "why": "the head is turned on the body",
+      "ad": "held: the snail's 52 against 50 is inside the +-5 deg read error, and its build is 48.7"
     },
     {
       "id": "R6-roll",
@@ -909,11 +1005,11 @@
           null
         ],
         "D": [
-          5,
+          3,
           null
         ],
         "E": [
-          5,
+          3,
           null
         ],
         "C": [
@@ -925,7 +1021,8 @@
         "glyph"
       ],
       "on": true,
-      "why": "readable at 48"
+      "why": "readable at 48",
+      "ad": "D and E 5 -> 3 px, for the same reason (snail 3.8, bee 3.2 px at 48)"
     },
     {
       "id": "R15-pupil-48",
@@ -971,11 +1068,11 @@
           null
         ],
         "D": [
-          10,
+          6,
           null
         ],
         "E": [
-          10,
+          6,
           null
         ],
         "C": [
@@ -987,7 +1084,8 @@
         "glyph"
       ],
       "on": true,
-      "why": "readable at 96"
+      "why": "readable at 96",
+      "ad": "D and E 10 -> 6 px, as plan C: the snail master's iris is about 7.6 px at 96 and the bee's 6.3, and both read as faces with catch lights at 96. A long body or a big abdomen makes the head small in the frame"
     },
     {
       "id": "R15-nose-96",
@@ -1198,7 +1296,8 @@
         "check"
       ],
       "on": true,
-      "why": "one light for the family"
+      "why": "one light for the family",
+      "ad": "R14 held, with an amendment. Measured on the master, Loika's dark body does shade cool: lit b* +2 to +6 (hue 20-50), shade b* -1 to -2 (hue 320-350). The warmth is in the cream: its half-tone is warmer and more saturated than its lit side (C* 19 -> 25). So: a slightly cool core shade, a warm chroma-raised half-tone at the terminator, and on light fields (L* > 70) the shade stays warm. The build had a neutral shade tint, which made the charcoal body brown"
     }
   ],
   "deferred": [
@@ -1241,6 +1340,42 @@
       "id": "R20",
       "chunk": 1,
       "why": "the kind-list test: no sclera, slit pupil or teeth kind exists"
+    },
+    {
+      "id": "R1-head-breadth",
+      "chunk": 1,
+      "measure": "head-breadth/H",
+      "plans": {
+        "A": [
+          1.45,
+          1.8
+        ],
+        "B": [
+          1.35,
+          1.8
+        ],
+        "D": [
+          0.95,
+          1.3
+        ],
+        "E": [
+          0.95,
+          1.3
+        ]
+      },
+      "why": "AD review: the head's breadth on screen in the stand view, from the front of the muzzle or cheek to the nape, in H. The master Loika is 1.68, the build 1.2: the turnip. Needs the stand-view measure; move it into rules (check) before the owner sees the head-size choice"
+    },
+    {
+      "id": "R-far-eye",
+      "chunk": 1,
+      "measure": "far-eye-inside/H",
+      "plans": {
+        "*": [
+          0.05,
+          null
+        ]
+      },
+      "why": "AD review: the far eye inside the outline by 0.05 H in the stand view (never-list 2). The clamp far-eye enforces it; the check needs the stand-view measure. Before the owner"
     }
   ],
   "clamps": [
@@ -1258,9 +1393,15 @@
       "order": 2.5,
       "on": true,
       "params": {
-        "max-nose-over-E": 0.6
+        "max-nose-over-E": 0.6,
+        "by-kind": {
+          "mound": 1.1,
+          "soft-triangle": 0.6,
+          "disc": 0.6,
+          "bump": 0.35
+        }
       },
-      "why": "R4: nose width at most 0.6 E (the signed Loika master is wider; the table says so)"
+      "why": "R4 by nose kind: a skin mound up to 1.1 E, a dark pad up to 0.6 E, a bump up to 0.35 E (max-nose-over-E is the default for a kind not listed). And the nose never overlaps the far eye in the stand view"
     },
     {
       "id": "face-stack",
@@ -1288,9 +1429,28 @@
       "on": true,
       "params": {
         "soft-width": 0.15,
-        "gain": 0.8
+        "gain": 0.8,
+        "two-sided": true
       },
-      "why": "if the eye share falls under its plan band, E grows within its own band first, then the head within its band"
+      "why": "if the eye share falls under its plan band, E grows within its own band first, then the head within its band; if it rises over the band, E shrinks within its own band (AD review: the t 0.9 eyes at H/S 0.52 and 0.60 read startled)"
+    },
+    {
+      "id": "forehead",
+      "order": 2.2,
+      "on": true,
+      "params": {
+        "min-forehead-H": 0.2
+      },
+      "why": "R4-forehead: the eye centre drops until crown to eye top is at least 0.20 H (AD review: the price of the lower eye-height floor)"
+    },
+    {
+      "id": "far-eye",
+      "order": 1.5,
+      "on": true,
+      "params": {
+        "inside-H": 0.05
+      },
+      "why": "R3 and never-list 2: in the stand view the far eye's outer edge stays at least 0.05 H inside the head outline, behind the muzzle when there is one. Spacing gives way first, then the face yaw within its band. The eye-fit clamp's 0.9 W does not see the outline at yaw"
     }
   ],
   "owner": [
@@ -1349,10 +1509,11 @@
         -0.2,
         -0.5
       ],
-      "iris-top-dark": 0.4,
+      "iris-top-dark": 0.7,
       "brow-shadow": 0.26,
-      "crescent": 0.35,
-      "mouth-offset": 0.4
+      "crescent": 0.6,
+      "mouth-offset": 0.4,
+      "ad": "AD review: the iris was a flat light orange (L* 45-58 everywhere). The master: a dark amber iris (L* 13-33), its top darkest under the brow, a bright gold lower crescent (L* 62-70, C* 68). iris-top-dark 0.4 -> 0.7 and crescent 0.35 -> 0.6 here; the colours are the specimen's look. The eye stays painted: no lens"
     },
     "A": {
       "provisional": "chunk 1 builds the quadruped's body only to judge proportion; chunk 2 replaces the legs, the stance and these numbers",
@@ -1489,10 +1650,11 @@
     "shade": {
       "ratio": 0.7,
       "tint": [
-        1.0,
-        0.99,
-        1.0
-      ]
+        0.96,
+        0.97,
+        1.04
+      ],
+      "ad": "was [1.0, 0.99, 1.0], neutral: the cool core shade of R14 (see the rule note). The warm terminator stays and carries the cream's warm half-tone"
     },
     "terminator": {
       "width": 0.16,
