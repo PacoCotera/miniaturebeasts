@@ -16,7 +16,7 @@ function topAt(f, x, zFrom) { const t = march(f, x, 0, zFrom, 0, 0, -1, 0, zFrom
 // chin overhang: the head's front minus the chest's front, at the jaw's height (jaw-height-of-H above the head's bottom), in H. The chest's front is taken at the
 // same height, or at the nearest height the chest reaches when it does not rise that high (it then does not stand in front of the chin at all).
 export function chinOverhang(scene, jawHeight = 0.12) {
-  const { head, kc } = scene, c = scene.extra.chest, z = kc[2] - 0.5 + jawHeight, hf = frontAt(scene.parts.head, z, kc[0]);
+  const { head, kc } = scene, c = scene.extra.chest, chin = head.J, z = kc[2] + (chin ? chin.c[2] : -0.5 + jawHeight), hf = frontAt(scene.parts.head, z, kc[0] + (chin ? chin.c[0] : 0));
   if (hf === null) return null;
   const zc = Math.min(Math.max(z, c.c[2] - c.r[2] * 0.9), c.c[2] + c.r[2] * 0.9), cf = frontAt(scene.parts.chest, zc, c.c[0]);
   return cf === null ? null : hf - cf;

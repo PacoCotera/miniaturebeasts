@@ -15,8 +15,9 @@ test("Loika's type specimen holds the master's own numbers without the far-eye c
   assert.ok(m["far-eye-inside/H"] >= 0 && m["far-eye-inside/H"] <= 0.03 + 1e-9 && m["nose-far-eye/H"] >= 0, JSON.stringify([m["far-eye-inside/H"], m["nose-far-eye/H"]]));
   assert.deepEqual(failures(checkRules(house, "A", m, { kinds: sp.S01.kinds })).map((r) => r.id), [], "every rule the build measures passes at the specimen");
 });
-test("the head sits on the chest: the chin overhangs it by 0.04 to 0.12 H whatever the head's size, the outline steps down at the nape, the head is 1.45 to 1.8 H broad", () => {
-  assert.ok(m["chin-overhang/H"] >= 0.04 && m["chin-overhang/H"] <= 0.12, `chin ${m["chin-overhang/H"]}`);
+test("the head sits on the chest: the chin overhangs it by the house's R-chin band (0.04 to 0.32 H since fix round 8, the jaw tucked under the lobe) whatever the head's size, the outline steps down at the nape, the head is 1.45 to 1.8 H broad", () => {
+  const band = house.rules.find((r) => r.id === "R-chin").plans.A; assert.deepEqual(band, [0.04, 0.32]);
+  assert.ok(m["chin-overhang/H"] >= band[0] && m["chin-overhang/H"] <= band[1], `chin ${m["chin-overhang/H"]}`);
   assert.ok(m["nape-step/H"] >= 0.44 && m["nape-step/H"] <= 0.64, `nape ${m["nape-step/H"]}`);
   assert.ok(m["back-rise/H"] <= 0.02, `back rise ${m["back-rise/H"]}`);
   assert.ok(m["head-breadth/H"] >= 1.45 && m["head-breadth/H"] <= 1.8);

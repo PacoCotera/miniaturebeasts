@@ -28,7 +28,7 @@ function squareView(house, spec, ex, camYaw) {
 export function headSheet(house, spec) {
   const t = makeTile(house, spec, { label: "x", sizes: [304, 96, 48] }), m = masterOf(spec.id), ref = masterBox(m[304]), sc = t.ex.scene;
   // the build's head silhouette (from its field) at 304 and 96, for the crops and the contract
-  const ext = coarse(sc, t.camera, { n: 240 }), sil304 = headSilhouette(sc, projector(sc, t.camera, 304, ref, ext)), sil96 = headSilhouette(sc, projector(sc, t.camera, 96, ref, ext), { W: 96, H: 88, step: 0.02 });
+  const ext = coarse(sc, t.camera, { n: 240 }), sil304 = headSilhouette(sc, projector(sc, t.camera, 304, ref, ext), { step: 0.012 }), sil96 = headSilhouette(sc, projector(sc, t.camera, 96, ref, ext), { W: 96, H: 88, step: 0.02 });
   const geo = contractFromOutline(sil304), fm = frameMeasures(sc.head), S = screenMeasures(t.r[304]), M = screenMeasures(m[304]), Ib = irisCentres(t.r[304]), Im = irisCentres(m[304]);
   // fix round 7: the two sets of eyes are the landmark the pictures are laid over (the front outline and the rear are read in the master's frame with the eye mid-points aligned; the raw columns differ by the body's length)
   const eyeShift = Math.round(((Im.far.x + Im.near.x) - (Ib.far.x + Ib.near.x)) / 2), gapPx = (I) => Math.hypot(I.near.x - I.far.x, I.near.y - I.far.y);

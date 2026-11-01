@@ -28,15 +28,16 @@ export function buildScene(house, spec) {
     // the stand-in body is in the stature's own units (every number in the rig's A block is a fraction of S), so the same body stands under every head size: only the head changes.
     // The back is a rail: the chest's top, then the pelvis's top, falling from the nape to a round rump; the torso is the smooth union of the two ellipsoids
     const k = S, V = (a) => a.map((v) => v * k), tc = rig.chest, tp = rig.pelvis;
-    // the body is placed under the head by the chin: its x is shifted until the jaw overhangs the chest's front by `chin-overhang` (H), whatever the head's size (the sheet's
+    // the body is placed under the head by the chin (the jaw's own height, or `chin-height` over the skull's bottom when there is no jaw): its x is shifted until the jaw overhangs the chest's front by `chin-overhang` (H), whatever the head's size (the sheet's
     // three head sizes then differ by the head alone, the chin always resting on the chest)
-    const zJaw = -0.5 + rig["chin-height"], zw = kc[2] + zJaw, fa = frameOf(kc, Ry(-rad(pose.pitch))), hfx = findFront((x, y, z) => { const q = toLocal(fa, x, y, z); return head.d0(q[0], q[1], q[2]); }, 0, zw, kc[0]) - kc[0], zcl = clamp(zw, tc.c[1] * k - tc.r[2] * k * 0.9, tc.c[1] * k + tc.r[2] * k * 0.9);
+    const chinM = head.J, zJaw = chinM ? chinM.c[2] : -0.5 + rig["chin-height"], zw = kc[2] + zJaw, fa = frameOf(kc, Ry(-rad(pose.pitch))), hfx = findFront((x, y, z) => { const q = toLocal(fa, x, y, z); return head.d0(q[0], q[1], q[2]); }, 0, zw, kc[0] + (chinM ? chinM.c[0] : 0)) - kc[0], zcl = clamp(zw, tc.c[1] * k - tc.r[2] * k * 0.9, tc.c[1] * k + tc.r[2] * k * 0.9);
     const chestFront0 = tc.c[0] * k + tc.r[0] * k * Math.sqrt(Math.max(0, 1 - ((zcl - tc.c[1] * k) / (tc.r[2] * k)) ** 2)), sx = hfx + kc[0] - rig["chin-overhang"] - chestFront0;
     const cc = [tc.c[0] * k + sx, 0, tc.c[1] * k], cr = V(tc.r), pc = [tp.c[0] * k + sx, 0, tp.c[1] * k], pr = V(tp.r), zb = Math.max(cc[2] + cr[2], pc[2] + pr[2]);
     const dC = ell(cc, cr), dP = ell(pc, pr), uB = rig["union-body"] * k;
     const pawR = V(rig.paw), nToe = rig["toe-count"], legs = [], turn = rad(rig["paw-turn"]), tr = V(rig["toe-radii"]);
     for (const [fore, L] of [[true, rig.fore], [false, rig.hind]]) for (const sd of [1, -1]) {
-      const cx = L.x * k + sx, y = sd * L.y * k, lead = fore && sd === 1 ? rig["lead-paw"] * k : 0, px = cx + lead + L["paw-dx"] * k, zTop = L.top * k;
+      // the far leg steps forward (`far-forward`, in S) and leans: its top stays `far-lean` behind its paw, so the leg's front runs from the throat down and out, as the master's does (fix round 8)
+      const far = sd === -1 ? (L["far-forward"] ?? 0) * k : 0, cx0 = L.x * k + sx + far, cx = cx0 - (sd === -1 ? (L["far-lean"] ?? 0) * k : 0), y = sd * L.y * k, lead = fore && sd === 1 ? rig["lead-paw"] * k : 0, px = cx0 + lead + L["paw-dx"] * k, zTop = L.top * k;
       const mass = V(L.mass), sh = ell([cx, y * 1.02, zTop], mass), top = [cx, y, zTop], ank = [px, y, pawR[2] * 1.7];
       // the elbow (or the hock): a round mass behind the leg's upper third, so the leg is not an even column: a shoulder, an elbow, a taper to the paw
       const el = L.elbow, dEl = ell([cx + el[0] * k, y, zTop + el[1] * k], V(el.slice(2, 5)));
@@ -74,7 +75,7 @@ export function buildScene(house, spec) {
     const hbCut = Math.max(0.35, 1.3 * Math.max(rig["union-neck-low"], rig["union-neck"]));
     const dHeadBody = (x, y, z) => { const hb = Math.sqrt((x - headBound[0][0]) ** 2 + (y - headBound[0][1]) ** 2 + (z - headBound[0][2]) ** 2) - headBound[1], dh = hb > hbCut ? hb : dHeadW(x, y, z); return uRound(dh, dNoHead(x, y, z), mix(rig["union-neck-low"], rig["union-neck"], sstep(rig["union-neck-z"][0], rig["union-neck-z"][1], z - kc[2]))); }; // the join is a tight turn above the eye line (the nape notch) and a full roll under the chin (the throat), by the height over the skull's centre
     parts.head = dHeadW;
-    
+
     bounds = { lo: [-2.3, -1.1, -0.02], hi: [1.2, 1.1, S + 1.0] };
     // the round union with the crest: the crest is a separate small part rooted in the head (smooth, small k)
     dAll = (x, y, z) => { const d = dHeadBody(x, y, z), c = dCrestB(x, y, z); return sMin(d, c, rig.crest["root-blend"]); };
