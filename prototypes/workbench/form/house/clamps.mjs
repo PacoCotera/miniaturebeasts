@@ -15,9 +15,27 @@ export function clampEyeFit(fp, c, ctx) {
   const e = fp.eW, hi = c.params["spacing-share-of-width"] / e - 1, sb = ctx?.house ? bandOf(ctx.house, ctx.plan, "form.eye-spacing") : { lo: 1.5, hi: 2.2 };
   return { ...fp, spacing: softClamp(fp.spacing, null, hi, 0.15 * (sb.hi - sb.lo)) };
 }
-export function clampNoseFit(fp, c) {
-  const hi = c.params["max-nose-over-E"] * fp.eW; // nose width in W units at most 0.6 E
+export function clampNoseFit(fp, c, ctx) {
+  const kind = ctx?.kinds?.nose, hiE = (kind && c.params["by-kind"]?.[kind]) ?? c.params["max-nose-over-E"]; // R4 by kind: a skin mound up to 1.1 E, a dark pad 0.6 E, a bump 0.35 E
+  const hi = hiE * fp.eW;
   return { ...fp, noseW: softClamp(fp.noseW, null, hi, 0.15 * hi) };
+}
+// R4-forehead: the eye centre drops until crown to eye top is at least min-forehead (a big eye set high cannot eat the dome)
+export function clampForehead(fp, c) {
+  const lo = c.params["min-forehead-H"] + 0.5 * eyeInH(fp);
+  return { ...fp, eyeDrop: softClamp(fp.eyeDrop, lo, null, 0.15 * 0.22) };
+}
+// the far eye stays at least `inside-H` inside the head's outline in the stand view: spacing gives way first (a soft compression toward the spacing that
+// just fits), then the face yaw within its band (flagged for the pose). farInside(fp) -> the far eye's margin in H, supplied by the expression.
+export function clampFarEye(fp, c, ctx) {
+  const { house, plan, farInside } = ctx; if (!farInside) return fp;
+  const tgt = c.params["inside-H"], sb = bandOf(house, plan, "form.eye-spacing");
+  if (farInside(fp) >= tgt) return fp;
+  const at = (s) => farInside({ ...fp, spacing: s });
+  if (at(sb.lo) < tgt) return { ...fp, spacing: softClamp(fp.spacing, sb.lo, null, 0.15 * (sb.hi - sb.lo)), turnFace: true };
+  let a = sb.lo, b = fp.spacing; for (let i = 0; i < 9; i++) { const m = (a + b) / 2; if (at(m) >= tgt) a = m; else b = m; }
+  const w = 0.15 * (sb.hi - sb.lo), over = fp.spacing - a;
+  return { ...fp, spacing: a + w * (1 - Math.exp(-over / w)) };
 }
 export function clampFaceStack(fp, c) {
   const lim = c.params["max-eye-to-mouth-H"], w = c.params["soft-width"] * lim;
@@ -39,13 +57,15 @@ export function clampCarriageLid(fp, c) {
 // the eye share: E grows within its own band first, then the head within its band; a partial correction (gain < 1) keeps it strictly monotone.
 // shareOf(fp) is the plan's eye share on the rig (E over the root of the core silhouette's area): supplied by the expression.
 export function clampEyeShare(fp, c, ctx) {
-  const { house, plan, shareOf, range } = ctx; if (!range || range[0] === null) return fp;
-  const lo = range[0], gain = c.params.gain ?? 0.8, s = shareOf(fp);
-  if (s >= lo) return fp;
-  const eb = bandOf(house, plan, "form.eye-size"), hb = bandOf(house, plan, "form.head");
+  const { house, plan, shareOf, range } = ctx; if (!range || !shareOf) return fp;
+  const lo = range[0], hi = range[1], gain = c.params.gain ?? 0.8, s = shareOf(fp);
+  const eb = bandOf(house, plan, "form.eye-size"), hb = bandOf(house, plan, "form.head"), out = { ...fp };
+  if (hi !== null && c.params["two-sided"] && s > hi) { // over the band: E shrinks within its own band (partial gain keeps it strictly monotone)
+    out.eW = Math.max(eb.lo + 1e-9 * (eb.hi - eb.lo), fp.eW - gain * (fp.eW - (fp.eW * hi) / s)); return out;
+  }
+  if (lo === null || s >= lo) return fp;
   // the share is proportional to E: the E that would reach the floor, and how far past the band's top that would be
   const need = fp.eW * lo / s, room = eb.hi - fp.eW;
-  const out = { ...fp };
   if (need <= eb.hi) out.eW = fp.eW + gain * (need - fp.eW);
   else {
     out.eW = fp.eW + gain * room; // E goes as far as its own band lets it, then the head makes up the rest, from the excess alone (continuous at the boundary)
@@ -55,14 +75,14 @@ export function clampEyeShare(fp, c, ctx) {
   return out;
 }
 
-const CLAMPS = { "eye-fit": clampEyeFit, "nose-fit": clampNoseFit, "face-stack": clampFaceStack, "carriage-lid": clampCarriageLid, "eye-share": clampEyeShare };
+const CLAMPS = { "eye-fit": clampEyeFit, "nose-fit": clampNoseFit, forehead: clampForehead, "far-eye": clampFarEye, "face-stack": clampFaceStack, "carriage-lid": clampCarriageLid, "eye-share": clampEyeShare };
 export function applyClamps(house, plan, fp, ctx = {}) {
   const log = []; let cur = fp;
   for (const c of clampsInOrder(house)) {
     const fn = CLAMPS[c.id]; if (!c.on || !fn) continue;
     const before = cur; cur = fn(cur, c, { house, plan, ...ctx });
     const moved = Object.keys(cur).filter((k) => cur[k] !== before[k]);
-    if (moved.length) log.push({ clamp: c.id, moved: moved.map((k) => `${k} ${before[k].toFixed?.(4) ?? before[k]} -> ${cur[k].toFixed?.(4) ?? cur[k]}`) });
+    if (moved.length) log.push({ clamp: c.id, moved: moved.map((k) => `${k} ${before[k]?.toFixed?.(4) ?? before[k]} -> ${cur[k]?.toFixed?.(4) ?? cur[k]}`) });
   }
   return { fp: cur, log };
 }

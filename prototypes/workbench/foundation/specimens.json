@@ -14,23 +14,23 @@
    },
    "t": {
     "form.head": 0.6,
-    "form.head-width": 0.8,
+    "form.head-width": 0.83,
     "form.head-depth": 0.8,
-    "form.cheek": 0.7,
-    "form.eye-size": 0.63,
-    "form.eye-height": 0.3,
-    "form.eye-spacing": 1.0,
+    "form.cheek": 0.8,
+    "form.eye-size": 0.3,
+    "form.eye-height": 0.09,
+    "form.eye-spacing": 0.3,
     "form.pupil": 0.1,
     "form.lid": 0.0,
-    "form.eye-ring": 0.8,
+    "form.eye-ring": 0.5,
     "form.muzzle": 0.4,
     "form.muzzle-width": 0.55,
     "form.muzzle-height": 0.35,
-    "form.nose": 0.8,
-    "form.nose-drop": 0.5,
-    "form.mouth-width": 0.47,
-    "form.mouth-upturn": 0.5,
-    "form.mouth-gap": 0.1,
+    "form.nose": 0.78,
+    "form.nose-drop": 0.85,
+    "form.mouth-width": 0.75,
+    "form.mouth-upturn": 0.85,
+    "form.mouth-gap": 0.05,
     "form.carriage": 0.45
    },
    "pool": {
@@ -53,41 +53,41 @@
     176
    ],
    "nose": [
-    70,
-    52,
-    54
+    64,
+    58,
+    62
    ],
-   "noseInk": 0.9,
+   "noseInk": 0,
    "mouth": [
-    30,
-    24,
-    28
+    22,
+    17,
+    20
    ],
    "mouthInk": 1.0,
    "iris": [
-    200,
-    100,
-    22
-   ],
-   "irisTop": [
-    100,
-    46,
+    112,
+    52,
     10
    ],
+   "irisTop": [
+    44,
+    19,
+    5
+   ],
    "irisLow": [
-    240,
-    160,
-    60
+    238,
+    170,
+    46
    ],
    "pupil": [
-    22,
-    16,
-    16
+    14,
+    10,
+    10
    ],
    "ring": [
-    232,
-    214,
-    186
+    236,
+    212,
+    178
    ],
    "catchLight": [
     255,
@@ -105,9 +105,8 @@
     165
    ],
    "creamHead": {
-    "reach": 0.35,
-    "lift": 0.03,
-    "soft": 0.04
+    "below": 0.05,
+    "soft": 0.045
    },
    "creamBody": {
     "down": 0.6,

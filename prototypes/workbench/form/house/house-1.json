@@ -1298,6 +1298,60 @@
       "on": true,
       "why": "one light for the family",
       "ad": "R14 held, with an amendment. Measured on the master, Loika's dark body does shade cool: lit b* +2 to +6 (hue 20-50), shade b* -1 to -2 (hue 320-350). The warmth is in the cream: its half-tone is warmer and more saturated than its lit side (C* 19 -> 25). So: a slightly cool core shade, a warm chroma-raised half-tone at the terminator, and on light fields (L* > 70) the shade stays warm. The build had a neutral shade tint, which made the charcoal body brown"
+    },
+    {
+      "id": "R1-head-breadth",
+      "measure": "head-breadth/H",
+      "plans": {
+        "A": [
+          1.45,
+          1.8
+        ],
+        "B": [
+          1.35,
+          1.8
+        ],
+        "D": [
+          0.95,
+          1.3
+        ],
+        "E": [
+          0.95,
+          1.3
+        ]
+      },
+      "enforce": [
+        "check"
+      ],
+      "on": true,
+      "why": "AD review: the head's breadth on screen in the stand view, from the front of the muzzle or cheek to the nape, in H. The master Loika is 1.68, the build 1.2: the turnip. Needs the stand-view measure; move it into rules (check) before the owner sees the head-size choice"
+    },
+    {
+      "id": "R-far-eye",
+      "measure": "far-eye-inside/H",
+      "plans": {
+        "A": [
+          0.05,
+          null
+        ],
+        "B": [
+          0.05,
+          null
+        ],
+        "D": [
+          0.05,
+          null
+        ],
+        "E": [
+          0.05,
+          null
+        ]
+      },
+      "enforce": [
+        "clamp:far-eye"
+      ],
+      "on": true,
+      "why": "AD review: the far eye inside the outline by 0.05 H in the stand view (never-list 2). The clamp far-eye enforces it; the check needs the stand-view measure. Before the owner"
     }
   ],
   "deferred": [
@@ -1340,42 +1394,6 @@
       "id": "R20",
       "chunk": 1,
       "why": "the kind-list test: no sclera, slit pupil or teeth kind exists"
-    },
-    {
-      "id": "R1-head-breadth",
-      "chunk": 1,
-      "measure": "head-breadth/H",
-      "plans": {
-        "A": [
-          1.45,
-          1.8
-        ],
-        "B": [
-          1.35,
-          1.8
-        ],
-        "D": [
-          0.95,
-          1.3
-        ],
-        "E": [
-          0.95,
-          1.3
-        ]
-      },
-      "why": "AD review: the head's breadth on screen in the stand view, from the front of the muzzle or cheek to the nape, in H. The master Loika is 1.68, the build 1.2: the turnip. Needs the stand-view measure; move it into rules (check) before the owner sees the head-size choice"
-    },
-    {
-      "id": "R-far-eye",
-      "chunk": 1,
-      "measure": "far-eye-inside/H",
-      "plans": {
-        "*": [
-          0.05,
-          null
-        ]
-      },
-      "why": "AD review: the far eye inside the outline by 0.05 H in the stand view (never-list 2). The clamp far-eye enforces it; the check needs the stand-view measure. Before the owner"
     }
   ],
   "clamps": [
@@ -1490,16 +1508,16 @@
   },
   "rig": {
     "face": {
-      "nose-aspect": 0.62,
-      "nose-relief": 1.1,
+      "nose-aspect": 0.8,
+      "nose-relief": 1.0,
       "nose-soften": 0.035,
       "socket-depth": 0.024,
       "socket-margin": 0.16,
       "socket-soften": 0.03,
       "muzzle-union": 0.15,
       "muzzle-centre-drop": 0.02,
-      "mouth-tube": 0.016,
-      "nose-gloss": 6,
+      "mouth-tube": 0.02,
+      "nose-gloss": 1.7,
       "mouth-soften": 0.012,
       "cheek-widen": 0.25,
       "gaze-offset-max": 0.15,
@@ -1627,7 +1645,7 @@
         "48": 0.9
       },
       "mouth-min-px": {
-        "96": 1.1,
+        "96": 1.7,
         "48": 0.0
       },
       "nose-min-px": {

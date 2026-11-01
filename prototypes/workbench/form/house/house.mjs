@@ -124,10 +124,11 @@ export function checkFrame(frame, house) {
 
 // ---- the rules ---------------------------------------------------------------------------------------------------------------
 // measured: { measureName: number | undefined }. A rule whose measure is absent is "not measured", never a pass.
-export function checkRules(house, plan, measured, { only = null } = {}) {
+export function checkRules(house, plan, measured, { only = null, kinds = null } = {}) {
   const rows = [];
   for (const r of house.rules) {
-    const range = r.plans?.[plan] ?? r.plans?.["*"];
+    let range = r.plans?.[plan] ?? r.plans?.["*"];
+    if (range && r.kinds && kinds?.nose && r.kinds[kinds.nose]) range = r.kinds[kinds.nose]; // a rule by kind (the nose: a mound is skin and broad, a pad is small)
     if (!range || (only && !only.includes(r.id))) continue;
     const v = measured[r.measure];
     const lo = range[0], hi = range[1];

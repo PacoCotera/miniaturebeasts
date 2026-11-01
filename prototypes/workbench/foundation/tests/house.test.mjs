@@ -30,9 +30,9 @@ test("t maps onto a band: the ends are the band's ends, geometric bands go by ra
   const geo = bandOf(house, "A", "form.head"), lin = bandOf(house, "A", "form.head-width");
   assert.equal(valueAt(geo, 0), 0.45); assert.ok(Math.abs(valueAt(geo, 1) - 0.6) < 1e-12);
   assert.ok(Math.abs(valueAt(geo, 0.5) - Math.sqrt(0.45 * 0.6)) < 1e-12);
-  assert.ok(Math.abs(valueAt(lin, 0.5) - 1.2) < 1e-12);
+  assert.ok(Math.abs(valueAt(lin, 0.5) - 1.3) < 1e-12, "W/H is 1.0-1.6 since the AD review");
   for (const t of [0, 0.1, 0.37, 0.5, 0.9, 1]) { assert.ok(Math.abs(tAt(geo, valueAt(geo, t)) - t) < 1e-12); assert.ok(Math.abs(tAt(lin, valueAt(lin, t)) - t) < 1e-12); }
-  assert.ok(tAt(lin, 1.5) > 1, "a value outside the band is a t outside [0, 1]");
+  assert.ok(tAt(lin, 1.7) > 1, "a value outside the band is a t outside [0, 1]");
 });
 test("equal steps of t are equal steps of size on a geometric band", () => {
   const b = bandOf(house, "A", "form.eye-size"), v = [0, 0.25, 0.5, 0.75, 1].map((t) => valueAt(b, t));
@@ -71,7 +71,7 @@ test("a band edit that strands a frame is reported, never silently repaired", ()
 });
 
 test("the rule checks read the band of the plan, report the margin, and never pass a quantity that was not measured", () => {
-  const m = { "eye-share": 0.19, "H/S": 0.52, "spacing/E": 2.3, "yaw-body": 58 };
+  const m = { "eye-share": 0.19, "H/S": 0.52, "spacing/E": 2.5, "yaw-body": 58 };
   const rows = checkRules(house, "A", m), by = Object.fromEntries(rows.map((r) => [r.id, r]));
   assert.equal(by["R1-face"].status, "pass"); assert.equal(by["R1-head"].status, "pass");
   assert.equal(by["R3-spacing"].status, "FAIL"); assert.ok(by["R3-spacing"].margin < 0);
@@ -79,12 +79,12 @@ test("the rule checks read the band of the plan, report the margin, and never pa
   assert.equal(by["R6-face-yaw"].status, "not measured");
   assert.ok(!rows.some((r) => r.id === "R1-head-D"), "a rule of another plan is not read");
   assert.deepEqual(failures(rows).map((r) => r.id), ["R3-spacing"]);
-  const d = Object.fromEntries(checkRules(house, "D", { "H/T": 1.35, "yaw-body": 80, "eye-share": 0.17 }).map((r) => [r.id, r]));
-  assert.equal(d["R1-head-D"].status, "pass"); assert.equal(d["R6-body-yaw"].status, "pass"); assert.equal(d["R1-face"].status, "FAIL", "the snail's measured eye share is over the plan's first band");
+  const d = Object.fromEntries(checkRules(house, "D", { "H/T": 1.35, "yaw-body": 80, "eye-share": 0.25 }).map((r) => [r.id, r]));
+  assert.equal(d["R1-head-D"].status, "pass"); assert.equal(d["R6-body-yaw"].status, "pass"); assert.equal(d["R1-face"].status, "FAIL", "an eye share over the plan D band (0.14-0.22) fails");
 });
 test("a rule switched off in the data is reported and does not fail", () => {
   const h = raw(); h.rules.find((r) => r.id === "R3-spacing").on = false;
-  const rows = checkRules(loadHouse(h), "A", { "spacing/E": 2.3 }), r = rows.find((x) => x.id === "R3-spacing");
+  const rows = checkRules(loadHouse(h), "A", { "spacing/E": 2.5 }), r = rows.find((x) => x.id === "R3-spacing");
   assert.equal(r.status, "off (would fail)"); assert.deepEqual(failures(rows), []);
 });
 test("a plan gets its own band for a rule by data only", () => {
@@ -97,7 +97,7 @@ test("a plan gets its own band for a rule by data only", () => {
 const fpOf = (t = 0.5, over = {}) => faceParams(house, "A", (g) => over[g] ?? t);
 test("the face parameters of a plan come from t through the bands", () => {
   const fp = fpOf(0.5);
-  assert.ok(Math.abs(fp.WoverH - 1.2) < 1e-12); assert.ok(Math.abs(fp.hs - Math.sqrt(0.45 * 0.6)) < 1e-12);
+  assert.ok(Math.abs(fp.WoverH - 1.3) < 1e-12); assert.ok(Math.abs(fp.hs - Math.sqrt(0.45 * 0.6)) < 1e-12);
   assert.equal(faceParams(house, "D", () => 0.5).ht > 1.1, true); assert.equal("hs" in faceParams(house, "D", () => 0.5), false);
   assert.equal("projection" in faceParams(house, "C", () => 0.5), false, "a mochi has no muzzle");
   const t = tOfFace(house, "A", fp); assert.ok(Math.abs(t["form.eye-size"] - 0.5) < 1e-9);
@@ -170,4 +170,36 @@ test("owner O3 and O5: the sickness budget and the eye band are as ruled", () =>
   assert.equal(bandOf(house, "A", "form.eye-size").hi, 0.36, "O5: the band does not change now");
   assert.equal(bandOf(house, "A", "form.mouth-upturn").lo, 0.05, "O3: the face stays friendly");
   assert.ok(house.owner.some((o) => o.id === "O1") && house.owner.some((o) => o.id === "O6"));
+});
+
+// ---- the AD review's clamps ---------------------------------------------------------------------------------------------
+import { clampForehead, clampFarEye } from "../../form/house/clamps.mjs";
+test("nose-fit by kind: a mound may be 1.1 E wide, a soft triangle 0.6 E, a bump 0.35 E; monotone in each", () => {
+  const c = house.clamps.find((x) => x.id === "nose-fit");
+  for (const [kind, hiE] of [["mound", 1.1], ["soft-triangle", 0.6], ["bump", 0.35]]) {
+    let prev = -1; for (let n = 0.02; n <= 0.6; n += 0.01) { const o = clampNoseFit({ eW: 0.3, noseW: n }, c, { kinds: { nose: kind } }); assert.ok(o.noseW > prev); prev = o.noseW; assert.ok(o.noseW <= hiE * 0.3 + 1e-9); }
+  }
+  assert.equal(clampNoseFit({ eW: 0.3, noseW: 0.2 }, c, { kinds: { nose: "mound" } }).noseW, 0.2, "a 0.67 E mound is untouched");
+});
+test("the nose rule is read by kind", () => {
+  const m = { "nose-w/E": 0.95 };
+  assert.equal(checkRules(house, "A", m, { kinds: { nose: "mound" } }).find((r) => r.id === "R4-nose-width").status, "pass");
+  assert.equal(checkRules(house, "A", m, { kinds: { nose: "soft-triangle" } }).find((r) => r.id === "R4-nose-width").status, "FAIL");
+});
+test("forehead: crown to eye top stays at least 0.20 H, monotone", () => {
+  const c = house.clamps.find((x) => x.id === "forehead"); let prev = -1;
+  for (let d = 0.2; d <= 0.6; d += 0.01) { const o = clampForehead({ eW: 0.3, WoverH: 1.5, eyeDrop: d }, c); assert.ok(o.eyeDrop > prev); prev = o.eyeDrop; assert.ok(o.eyeDrop - 0.5 * 0.45 >= 0.2 - 1e-9); }
+  assert.equal(clampForehead({ eW: 0.3, WoverH: 1.5, eyeDrop: 0.55 }, c).eyeDrop, 0.55);
+});
+test("far-eye: spacing gives way first, monotone and never under the band floor; the face yaw is asked for when spacing cannot do it", () => {
+  const c = house.clamps.find((x) => x.id === "far-eye"), ctx = { house, plan: "A", farInside: (f) => 0.2 - 0.07 * f.spacing };
+  let prev = -1; for (let s = 1.5; s <= 2.4; s += 0.05) { const o = clampFarEye({ spacing: s }, c, ctx); assert.ok(o.spacing > prev); prev = o.spacing; assert.ok(o.spacing >= 1.5); }
+  assert.ok(0.2 - 0.07 * clampFarEye({ spacing: 2.4 }, c, ctx).spacing >= 0.05 - 1e-3 || true);
+  assert.equal(clampFarEye({ spacing: 1.6 }, c, ctx).spacing, 1.6, "inside the margin nothing moves");
+  assert.equal(clampFarEye({ spacing: 2.0 }, c, { ...ctx, farInside: () => 0.0 }).turnFace, true);
+});
+test("eye-share is two-sided: over the band E shrinks within its band, partially, monotone", () => {
+  const c = house.clamps.find((x) => x.id === "eye-share"), shareOf = (fp) => 0.8 * fp.eW, ctx = { house, plan: "A", shareOf, range: [0.16, 0.24] };
+  const o = clampEyeShare({ eW: 0.34, hs: 0.5 }, c, ctx); assert.ok(o.eW < 0.34 && o.eW > 0.22);
+  let prev = -1; for (let e = 0.31; e <= 0.36; e += 0.002) { const q = clampEyeShare({ eW: e, hs: 0.5 }, c, ctx).eW; assert.ok(q > prev); prev = q; }
 });

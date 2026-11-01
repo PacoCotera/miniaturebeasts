@@ -28,6 +28,12 @@ export function makePaint(scene, look, view) {
   function distMouth(x, y, z) { let d = 1e9; for (let i = 0; i < mp.length - 1; i++) { const a = mp[i], b = mp[i + 1], bx = b[0] - a[0], by = b[1] - a[1], bz = b[2] - a[2], px = x - a[0], py = y - a[1], pz = z - a[2], h = clamp((px * bx + py * by + pz * bz) / (bx * bx + by * by + bz * bz), 0, 1); d = Math.min(d, Math.hypot(px - bx * h, py - by * h, pz - bz * h)); } return d; }
 
   // the eye at a local point: returns null when the point is off the eye, else { col, code } for the iris, the ring, the lid's edge or the catch light
+  const creamHeadAt = (q, hy, zb, ch) => sstep(zb + ch.soft, zb - ch.soft, q[2]) * sstep(-0.1, 0.3, q[0] / (scene.head.K.a)) * (1 - sstep(0.55, 0.85, Math.abs(hy) / (scene.W / 2)));
+  function creamBodyAt(wp, nrm) {
+    const cb = look.creamBody; if (!cb) return 0;
+    const s = -nrm[2] * cb.down + nrm[0] * cb.front, xf = sstep(cb.x0, cb.x1, wp[0]) * (1 - sstep(cb.x2, cb.x3, wp[0]));
+    return sstep(cb.t0, cb.t1, s) * xf * sstep(cb.z1, cb.z0, wp[2]) * (1 - sstep(cb.y0, cb.y1, Math.abs(wp[1])));
+  }
   function eyePaint(i, q, nrm, wp) {
     const e = eyes[i], X = q[0] - e.c[0], Y = q[1] - e.c[1], Z = q[2] - e.c[2], u = X * e.lat[0] + Y * e.lat[1] + Z * e.lat[2], v = X * e.up[0] + Y * e.up[1] + Z * e.up[2], w = X * e.n[0] + Y * e.n[1] + Z * e.n[2];
     if (w < -0.1 || w > 0.1) return null;
@@ -72,12 +78,10 @@ export function makePaint(scene, look, view) {
     if (region === "head") {
       const q = toLocal(hf, wp[0], wp[1], wp[2]), nl = [tl[0] * nrm[0] + tl[1] * nrm[1] + tl[2] * nrm[2], tl[3] * nrm[0] + tl[4] * nrm[1] + tl[5] * nrm[2], tl[6] * nrm[0] + tl[7] * nrm[1] + tl[8] * nrm[2]];
       const g = head.geometry, hy = q[1];
-      // the cream field: below a curve that follows the mouth, with a soft edge (0.03 to 0.1 H)
+      // the cream field: below the smile, its top edge 0.05 H under the mouth curve and soft (no fold, wedge or seam): one smooth field, shared with the body's
       if (look.creamHead) {
-        const ch = look.creamHead, zLow = g.mouthZ + ch.lift, zEyeLow = zLow + ch.reach * ((g.zEye - g.Reye) - zLow), yE = g.yE, a = (zEyeLow - zLow) / (yE * yE), zb = g.mouthZ + ch.lift + a * Math.min(hy * hy, yE * yE) + (Math.abs(hy) > yE ? 0.04 * (Math.abs(hy) - yE) : 0);
-        const wedge = sstep(-0.05, 0.22, q[0]) * sstep(0.0, ch.soft * 0.0 + 0.05, 0.5 - Math.abs(hy) / 0.5 * 0.0);
-        const cv = sstep(zb + ch.soft, zb - ch.soft, q[2]) * sstep(0.0, 0.22, q[0] + 0.1) * (1 - sstep(0.62, 0.9, Math.abs(hy) / (scene.W / 2)));
-        albedo = mixc(albedo, look.cream, cv);
+        const ch = look.creamHead, hw = mouth.w / 2, yy = Math.min(Math.abs(hy), hw), zs = mouth.z + mouth.upturn * hw * (yy / hw) ** 2, zb = zs - ch.below;
+        albedo = mixc(albedo, look.cream, Math.max(creamHeadAt(q, hy, zb, ch), creamBodyAt(wp, nrm)));
       }
       // the nose: its own ink (darker), set in the geometry of the nose ellipsoid
       if (head.nose.on) {
@@ -97,11 +101,8 @@ export function makePaint(scene, look, view) {
       }
       return { albedo, code, eye, gloss };
     }
-    // the body: cream bib by the normal and the position (a soft field in the mass's own coordinates), toes cream
-    if (look.creamBody) {
-      const cb = look.creamBody, s = -nrm[2] * cb.down + nrm[0] * cb.front, xf = sstep(cb.x0, cb.x1, wp[0]) * (1 - sstep(cb.x2, cb.x3, wp[0])), cv = sstep(cb.t0, cb.t1, s) * xf * sstep(cb.z1, cb.z0, wp[2]) * (1 - sstep(cb.y0, cb.y1, Math.abs(wp[1])));
-      albedo = mixc(albedo, look.cream, cv);
-    }
+    // the body: the cream chest-and-belly field, a soft field in the mass's own coordinates
+    albedo = mixc(albedo, look.cream, creamBodyAt(wp, nrm));
     if (look.spots && region === "seg") { /* marks: chunk 3 */ }
     return { albedo, code };
   }
