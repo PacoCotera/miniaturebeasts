@@ -3,7 +3,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { loadHouseFile } from "../form/house/house-file.mjs";
 import { loadSpecimens } from "./specimens.mjs";
-import { headSizeSheet, snailSheet, gridSheet, noseSheet } from "./sheets.mjs";
+import { headSizeSheet, snailSheet, gridSheet, noseSheet, feetSheet, snailLitter } from "./sheets.mjs";
 import { saveImage } from "./imgtools.mjs";
 import { RESULTS } from "./paths.mjs";
 
@@ -15,5 +15,7 @@ if (what === "head" || what === "all") { const h = headSizeSheet(house, sp.S01, 
 if (what === "snail" || what === "all") { const s = snailSheet(house, sp.S14, RESULTS); saveImage(path.join(RESULTS, "2-snail.png"), s.img); rec.snail = rowOf(s.tile); }
 if (what === "grid" || what === "all") for (const k of ["eye-spacing", "muzzle-lid"]) { const g = gridSheet(house, sp.S01, RESULTS, k); saveImage(path.join(RESULTS, `3-grid-${k}.png`), g.img); rec[`grid-${k}`] = g.tiles.map((x) => rowOf(x.tile)); }
 if (what === "nose" || what === "all") { const n = noseSheet(house, sp.S01, RESULTS); saveImage(path.join(RESULTS, "4-nose-rule.png"), n.img); rec.nose = n.tiles.map(rowOf); }
+if (what === "feet" || what === "all") { const f = feetSheet(house, sp.S01, RESULTS); saveImage(path.join(RESULTS, "5-feet.png"), f.img); }
+if (what === "litter" || what === "all") { const l = snailLitter(house, sp.S14, RESULTS); saveImage(path.join(RESULTS, "6-snail-litter-96.png"), l.img); rec.litter = l.tiles.map(rowOf); }
 writeFileSync(path.join(RESULTS, `report-${what}.json`), JSON.stringify(rec, null, 1));
 console.log(`done in ${Math.round(performance.now() - T0)} ms ->`, RESULTS);

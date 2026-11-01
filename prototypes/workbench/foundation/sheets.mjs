@@ -6,7 +6,8 @@ import { renderCreature, coarse, SIZES } from "./render.mjs";
 import { faceInk, gazeOf, faceContrast } from "./checks.mjs";
 import { checkRules, failures, tAt, bandOf, loadHouse } from "../form/house/house.mjs";
 import { measureAll } from "../form/house/measures.mjs";
-import { loadImage, saveImage, onBg, zoom, blank, paste, drawText, textWidth } from "./imgtools.mjs";
+import { loadImage, saveImage, onBg, zoom, blank, paste, drawText, textWidth, crop } from "./imgtools.mjs";
+import { seedUnit } from "./pose.mjs";
 import { MASTER } from "./paths.mjs";
 
 const alphaHeight = (img) => { let t = Infinity, b = -Infinity; for (let y = 0; y < img.height; y++) for (let x = 0; x < img.width; x++) if (img.data[(y * img.width + x) * 4 + 3] >= 128) { t = Math.min(t, y); b = Math.max(b, y); } return b - t; };
@@ -43,8 +44,8 @@ export function masterImage(id) {
 const f2 = (v, d = 2) => Number(v).toFixed(d);
 export function tileLines(t) {
   const m = t.measured, l1 = `${t.label}`, l2 = `H/S ${f2(m["H/S"] ?? 0)}  E/W ${f2(m["E/Wf"] ?? 0)}  EYE SHARE ${f2(m["eye-share"] ?? 0, 3)}`;
-  const bad = t.fails.map((x) => x.id.replace(/^R/, "")).join(" "), l3 = bad ? `FAIL ${t.fails.length}: ${bad.length > 40 ? bad.slice(0, 38) + ".." : bad}` : "RULES: ALL PASS";
-  return [[l1, INK_TXT], [l2, DIM], [l3, bad ? BAD : DIM]];
+  const bad = t.fails.map((x) => x.id.replace(/^R/, "")).join(" "), outside = t.fails.some((x) => x.id === "R1-face" && x.value > x.range[1]), l3 = bad ? `FAIL ${t.fails.length}: ${bad.length > 40 ? bad.slice(0, 38) + ".." : bad}` : "RULES: ALL PASS";
+  return [[outside ? l1 + "  OUTSIDE THE HOUSE" : l1, outside ? BAD : INK_TXT], [l2, DIM], [l3, bad ? BAD : DIM]];
 }
 export function sheet(title, cells, cols, { cellW = null, gap = 10, note = "" } = {}) {
   const imgs = cells.map((c) => c.img), cw = cellW ?? Math.max(...imgs.map((i) => i.width)), ch = Math.max(...imgs.map((i) => i.height)), lh = 14, labelH = lh * 3 + 6, rows = Math.ceil(cells.length / cols), head = 36;
@@ -100,4 +101,20 @@ export function noseSheet(house, spec, outDir) {
   saveTile(path.join(outDir, "tiles"), "nose-rule-on", a); saveTile(path.join(outDir, "tiles"), "nose-rule-off", b);
   const lines = (t, extra) => [[t.label, INK_TXT], [`NOSE W/E ${f2(t.measured["nose-w/E"])}  ${extra}`, DIM], [t.fails.length ? `FAIL ${t.fails.length}: ${t.fails.map((x) => x.id.replace(/^R/, "")).join(" ").slice(0, 38)}` : "RULES: ALL PASS", t.fails.length ? BAD : DIM]];
   return { img: sheet("THE NOSE: MASTER, THE HOUSE'S R4 RULE (0.6 E), AND THE RULE OFF", [{ img: masterImage("S01"), lines: [["MASTER S01 LOIKA", INK_TXT], ["NOSE W/E 0.97 (READ BY EYE)", DIM], ["", DIM]] }, { img: tileImage(a.r), lines: lines(a, "") }, { img: tileImage(b.r), lines: lines(b, "") }], 3), tiles: [a, b] };
+}
+
+// the feet, master beside ours, at 304 (4x) and 96 (6x)
+export function feetSheet(house, spec, outDir) {
+  const t = makeTile(house, spec, { label: "LOIKA FEET", sizes: [304, 96] }), m = masterOf(spec.id), cells = [];
+  const cr = (img, x, y, w, h, k) => zoom(onBg(crop(img, x, y, w, h)), k);
+  cells.push({ img: cr(m[304], 40, 238, 250, 66, 3), lines: [["MASTER FEET AT 304 (3X)", INK_TXT], ["", DIM], ["", DIM]] }, { img: cr(t.r[304], 40, 238, 250, 66, 3), lines: [["HOUSE BUILD FEET AT 304 (3X)", INK_TXT], ["", DIM], ["", DIM]] });
+  cells.push({ img: cr(m[96], 12, 66, 80, 20, 5), lines: [["MASTER FEET AT 96 (5X)", INK_TXT], ["", DIM], ["", DIM]] }, { img: cr(t.r[96], 12, 66, 80, 20, 5), lines: [["HOUSE BUILD FEET AT 96 (5X)", INK_TXT], ["", DIM], ["", DIM]] });
+  return { img: sheet("THE FEET: THE MASTER BESIDE THE BUILD", cells, 2) };
+}
+// twelve snails from random t over the open genes (the plan D litter check): the rule failures counted
+export function snailLitter(house, spec, outDir, n = 12) {
+  const genes = ["form.head-width", "form.head-depth", "form.eye-size", "form.eye-height", "form.eye-spacing", "form.pupil", "form.lid", "form.eye-ring", "form.mouth-width", "form.mouth-upturn", "form.carriage", "form.body-length", "form.rise", "form.skirt", "form.antenna", "form.head"];
+  const tiles = [], cells = [];
+  for (let i = 0; i < n; i++) { const t = {}; for (const g of genes) t[g] = seedUnit(`litter${i}`, g); const tile = makeTile(house, spec, { t, label: `LITTER ${i + 1}`, sizes: [96], seed: `S14-litter${i}` }); tiles.push(tile); cells.push({ img: zoom(onBg(tile.r[96]), 2), lines: tileLines(tile) }); }
+  return { img: sheet("SNAIL LITTER OF 12 RANDOM T, AT 96 (2X)", cells, 4), tiles };
 }

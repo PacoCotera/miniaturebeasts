@@ -27,9 +27,9 @@
     "form.muzzle-width": 0.55,
     "form.muzzle-height": 0.35,
     "form.nose": 0.78,
-    "form.nose-drop": 0.85,
+    "form.nose-drop": 0.8,
     "form.mouth-width": 0.75,
-    "form.mouth-upturn": 0.85,
+    "form.mouth-upturn": 0.8,
     "form.mouth-gap": 0.05,
     "form.carriage": 0.45
    },
@@ -223,7 +223,7 @@
     "form.mouth-upturn": 0.8,
     "form.mouth-gap": 1.0,
     "form.carriage": 0.33,
-    "form.body-length": 0.5,
+    "form.body-length": 0.3,
     "form.rise": 0.9,
     "form.skirt": 0.5,
     "form.antenna": 0.65
@@ -238,9 +238,9 @@
   },
   "look": {
    "body": [
-    188,
-    170,
-    226
+    168,
+    160,
+    232
    ],
    "cream": [
     170,
@@ -300,13 +300,13 @@
     165
    ],
    "skirt": [
-    184,
-    168,
-    222
+    166,
+    158,
+    226
    ],
    "lid": [
-    170,
-    152,
+    150,
+    142,
     206
    ]
   },
