@@ -7,6 +7,8 @@ import { loadImage } from "./imgtools.mjs";
 import { loadHouseFile } from "../form/house/house-file.mjs";
 import { checkRules } from "../form/house/house.mjs";
 import { measureAll } from "../form/house/measures.mjs";
+import { loadSpecimens } from "./specimens.mjs";
+import { express } from "./express.mjs";
 
 const rad = (d) => (d * Math.PI) / 180;
 export const loadMasters = () => JSON.parse(readFileSync(path.join(HERE, "calibration", "masters.json"), "utf8"));
@@ -65,8 +67,19 @@ export function toMarkdown(rows, house) {
   return L.join("\n");
 }
 
+// the type specimens as the house builds them, against the master each was read from
+export function specimenTable(house, rows) {
+  const sp = loadSpecimens(house), keys = ["H/S", "H/T", "W/H", "E/Wf", "eye-drop/H", "spacing/E", "forehead/H", "eye-to-mouth/H", "nose-w/E", "nose-drop/E", "mouth-w/E", "eye-share", "yaw-body", "yaw-face", "yaw-head", "roll"];
+  const L = ["", "## The type specimens, as the house builds them, against their masters", "", `| value | ${Object.keys(sp).map((id) => `${id} master | ${id} house build`).join(" | ")} |`, `| --- | ${Object.keys(sp).map(() => "--- | ---").join(" | ")} |`];
+  const built = Object.fromEntries(Object.keys(sp).map((id) => [id, express(house, sp[id]).measured]));
+  for (const k of keys) { const cells = Object.keys(sp).map((id) => { const m = rows.find((r) => r.id === id).measured[k], b = built[id][k]; return `${f(m, 2)} | ${f(b, 2)}`; }); if (cells.every((c) => c === "- | -")) continue; L.push(`| ${k} | ${cells.join(" | ")} |`); }
+  const R = Object.keys(sp).flatMap((id) => { const e = express(house, sp[id]); return checkRules(house, sp[id].plan, e.measured).filter((x) => x.on && x.status === "FAIL").map((x) => `${id} ${x.id} (${x.measure} ${f(x.value, 3)}, band ${x.range[0] ?? ""} to ${x.range[1] ?? ""})`); });
+  L.push("", "House build rule failures at the type specimen (the render-level rules are in the sheets' labels): " + (R.length ? R.join("; ") : "none") + ".", "");
+  return L.join("\n");
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const house = loadHouseFile(), rows = calibrate(house), md = toMarkdown(rows, house);
+  const house = loadHouseFile(), rows = calibrate(house), md = toMarkdown(rows, house) + specimenTable(house, rows);
   mkdirSync(RESULTS, { recursive: true });
   writeFileSync(path.join(RESULTS, "calibration.md"), md); writeFileSync(path.join(RESULTS, "calibration.json"), JSON.stringify(rows, null, 1));
   console.log(md);

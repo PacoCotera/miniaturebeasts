@@ -4,7 +4,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { express } from "./express.mjs";
 import { renderCreature, coarse, SIZES } from "./render.mjs";
 import { faceInk, gazeOf, faceContrast } from "./checks.mjs";
-import { checkRules, failures, tAt, bandOf } from "../form/house/house.mjs";
+import { checkRules, failures, tAt, bandOf, loadHouse } from "../form/house/house.mjs";
 import { measureAll } from "../form/house/measures.mjs";
 import { loadImage, saveImage, onBg, zoom, blank, paste, drawText, textWidth } from "./imgtools.mjs";
 import { MASTER } from "./paths.mjs";
@@ -91,4 +91,13 @@ export function gridSheet(house, spec, outDir, kind) {
     saveTile(path.join(outDir, "tiles"), `grid-${kind}-${tx}-${ty}`.replace(/\./g, "p"), t);
   }
   return { img: sheet(`GRID OF FACE GENE EXTREMES: ${nx} (ACROSS) BY ${ny} (DOWN), FROM T ALONE`, cells, 3), tiles };
+}
+
+// the AD's nose rule (R4: nose width at most 0.6 E) against the signed master: the same Loika with the nose-fit clamp on (the house as written) and off
+export function noseSheet(house, spec, outDir) {
+  const raw = JSON.parse(JSON.stringify({ ...house, resolved: undefined })); raw.clamps.find((c) => c.id === "nose-fit").on = false;
+  const open = loadHouse(raw), a = makeTile(house, spec, { label: "R4 NOSE RULE ON (HOUSE AS WRITTEN)" }), b = makeTile(open, spec, { label: "NOSE RULE OFF (CLAMP OFF)", t: { "form.nose": 1.0 } });
+  saveTile(path.join(outDir, "tiles"), "nose-rule-on", a); saveTile(path.join(outDir, "tiles"), "nose-rule-off", b);
+  const lines = (t, extra) => [[t.label, INK_TXT], [`NOSE W/E ${f2(t.measured["nose-w/E"])}  ${extra}`, DIM], [t.fails.length ? `FAIL ${t.fails.length}: ${t.fails.map((x) => x.id.replace(/^R/, "")).join(" ").slice(0, 38)}` : "RULES: ALL PASS", t.fails.length ? BAD : DIM]];
+  return { img: sheet("THE NOSE: MASTER, THE HOUSE'S R4 RULE (0.6 E), AND THE RULE OFF", [{ img: masterImage("S01"), lines: [["MASTER S01 LOIKA", INK_TXT], ["NOSE W/E 0.97 (READ BY EYE)", DIM], ["", DIM]] }, { img: tileImage(a.r), lines: lines(a, "") }, { img: tileImage(b.r), lines: lines(b, "") }], 3), tiles: [a, b] };
 }
