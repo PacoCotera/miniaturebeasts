@@ -36,6 +36,18 @@ const GLB = "%GLB%";
   const bin = Uint8Array.from(atob(GLB), (c) => c.charCodeAt(0)).buffer;
   const gltf = await new Promise((res, rej) => new GLTFLoader().parse(bin, "", res, rej));
   scene.add(gltf.scene);
+  // the cream's edge and the smile's ink come from smooth per-vertex fields (COLOR_1) thresholded here with the sprite's own smoothsteps, so the level-2 mesh shows no steps or stipple
+  const srgb = (r, g, b) => new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+  gltf.scene.traverse((o) => {
+    if (!(o.isMesh && o.geometry.attributes.color_1)) return;
+    o.material.onBeforeCompile = (sh) => {
+      sh.uniforms.cBody = { value: srgb(58, 53, 58) }; sh.uniforms.cCream = { value: srgb(240, 224, 198) }; sh.uniforms.cInk = { value: srgb(22, 17, 20) };
+      sh.vertexShader = sh.vertexShader.replace("#include <common>", "#include <common>\\nattribute vec4 color_1;\\nvarying vec4 vPaint;").replace("#include <begin_vertex>", "#include <begin_vertex>\\nvPaint = vec4(color_1.x, color_1.y, color_1.z * 0.2 - 0.1, color_1.w * 0.1 - 0.05);");
+      sh.fragmentShader = sh.fragmentShader.replace("#include <common>", "#include <common>\\nvarying vec4 vPaint;\\nuniform vec3 cBody, cCream, cInk;").replace("#include <color_fragment>",
+        "{ float e = smoothstep(-0.015, 0.015, vPaint.z) * vPaint.x; float c = max(e, vPaint.y); float px = 1.0 / 110.0; float ik = smoothstep(-0.6 * px, 0.6 * px, vPaint.w); diffuseColor.rgb = mix(mix(cBody, cCream, c), cInk, ik); }");
+    };
+    o.material.needsUpdate = true;
+  });
   const mixer = new THREE.AnimationMixer(gltf.scene), clips = {}, actions = {};
   for (const c of gltf.animations) { clips[c.name] = c; actions[c.name] = mixer.clipAction(c); }
   if (actions.stand) { actions.stand.play(); }

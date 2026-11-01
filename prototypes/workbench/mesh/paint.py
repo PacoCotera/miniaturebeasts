@@ -83,6 +83,33 @@ def vertex_colours(H, P, N, head_w, toe, nose_attr=None, mouth=True, ink_half=No
     return col, c
 
 
+def paint_fields(H, P, N, head_w, half, px):
+    """The glb's paint as smooth per-vertex fields, thresholded in the shader (AD item 5, design 8.3's fallback): the level-2 vertices carry values that interpolate linearly across
+    a triangle, and the viewer applies the same smoothsteps as the sprite's paint to them, so the cream's edge and the ink are not stepped at the mesh's resolution.
+    Returns (n, 4): A = face cream's gate (front x reach) x leg factor, B = body cream x leg factor, F = zb - z (the face cream's edge, signed), D = ink half-width minus the distance to
+    the smile's axis (-1 outside the ink's reach); F and D are encoded to 0..1, see the return.  Shader: cream = max(smoothstep(-soft, soft, F) * A, B); ink = smoothstep(-0.6 px, 0.6 px, D)."""
+    q = P - H.kc
+    ch = H.look["creamHead"]
+    hw = H.mouth["w"] / 2
+    ay = np.abs(q[:, 1])
+    zb = np.where(ay <= hw, H.mouth["zAt"](ay), H.mouth["zAt"](hw) - ch["fall"] * (ay - hw)) - ch["below"]
+    front = np.maximum(sstep(-0.1, 0.3, q[:, 0] / H.K["a"]), sstep(0.1, 0.5, -N[:, 2]))
+    reach = sstep(ch["reach"][0], ch["reach"][1], H.d0(q))
+    legfac = np.where(head_w > 0.5, 1.0, 1 - H.leg_weight(P))
+    A = front * reach * legfac
+    B = body_cream(H, P, N) * legfac
+    ax = mouth_axis(H)
+    d = np.full(len(q), 1e9)
+    for a, b in zip(ax[:-1], ax[1:]):
+        ab = b - a
+        h = np.clip(((q - a) @ ab) / (ab @ ab), 0, 1)
+        d = np.minimum(d, np.linalg.norm(q - (a + h[:, None] * ab), axis=1))
+    near = np.hypot(q[:, 0] - ax[7, 0], np.hypot(q[:, 1], q[:, 2] - H.mouth["z"])) < H.mouth["w"] / 2 + 0.2
+    D = np.where(near & (head_w > 0.5), half - d, -1.0)
+    # the exporter clamps colour attributes to 0..1: F is carried as (F + 0.1) / 0.2 and D as (D + 0.05) / 0.1 (the viewer decodes them)
+    return np.column_stack([A, B, np.clip((zb - q[:, 2] + 0.1) / 0.2, 0, 1), np.clip((D + 0.05) / 0.1, 0, 1)])
+
+
 def lin(c):
     c = np.asarray(c, float)
     return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)

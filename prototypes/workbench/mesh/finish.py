@@ -237,6 +237,9 @@ def bake(sc, H, level=3, name="loika_L"):
     nose = PT.nose_weight(H, P - H.kc) * (head_w > 0.5)
     ca = me.color_attributes.new("Col", "FLOAT_COLOR", "POINT")
     ca.data.foreach_set("color", np.column_stack([PT.lin(col), np.ones(len(P))]).ravel())
+    if level <= 2:      # the glb: smooth fields for the viewer's shader (the sprites bake the paint into the colours at level 4)
+        pf = me.attributes.new("_paint", "FLOAT_COLOR", "POINT")
+        pf.data.foreach_set("color", PT.paint_fields(H, P, N, head_w, 0.5 * INK_PX[304] / 110.0, 1 / 110.0).ravel())
     na = me.attributes.new("nose", "FLOAT", "POINT")
     na.data.foreach_set("value", nose)
     am = ob.modifiers.new("Armature", "ARMATURE"); am.object = sc.rig
