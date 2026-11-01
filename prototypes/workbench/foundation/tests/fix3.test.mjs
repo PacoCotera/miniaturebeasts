@@ -9,9 +9,9 @@ import { fromLocal } from "../sdf.mjs";
 
 const house = loadHouseFile(), sp = loadSpecimens(house), loika = express(house, sp.S01), snail = express(house, sp.S14);
 
-test("head kinds: the soft block is 2.5, the bean is the round head's 2.6 (AD mesh gate, ruling 0: 2.5 plus or minus 0.2) and the pear is 2.2: three kinds are not one exponent", () => {
+test("head kinds: the soft block is 2.5, the bean is 2.2 in front and 3.2 behind (fix round 7: the section is round, the back of the skull is fuller) and the pear is 2.2: the soft block is the only squarer kind", () => {
   const e = (k) => house.kinds.head[k].exponent;
-  assert.equal(e("soft-block"), 2.5); assert.equal(e("bean"), 2.6); assert.equal(e("pear"), 2.2);
+  assert.equal(e("soft-block"), 2.5); assert.equal(e("bean"), 2.2); assert.equal(house.kinds.head.bean["rear-exponent"], 3.2); assert.equal(e("pear"), 2.2);
   assert.ok(e("soft-block") !== e("bean") && e("round") !== e("bean"));
 });
 test("the type specimen holds the master's eye size without a clamp: E 0.354 H (E/Wf 0.30 of the old 1.18 head, 0.27 of the round head's 1.31), nothing moved by the far-eye clamp", () => {
@@ -21,7 +21,7 @@ test("the type specimen holds the master's eye size without a clamp: E 0.354 H (
 });
 test("the leaves are broad paddles about 2:1, and the fan is most of the head's width", () => {
   const c = house.rig.A.crest;
-  for (const [, len, wid] of c.leaves) { const r = len / wid; assert.ok(r >= 1.7 && r <= 2.4, `length to width ${r}`); }
+  for (const [, len, wid] of c.leaves) { const r = len / wid; assert.ok(r >= 1.5 && r <= 2.4, `length to width ${r}`); } // fix round 7: three broad leaves, the master's are about 1.7
   const sc = loika.scene; let lo = 9, hi = -9; // the head's own coordinates: the fan is measured across the head
   for (let y = -1.2; y <= 1.2; y += 0.02) for (let z = 0.4; z <= 1.4; z += 0.04) for (let x = -0.3; x <= 0.3; x += 0.1) { const p = fromLocal(sc.hf, [x, y, z]); if (sc.parts.crest(p[0], p[1], p[2]) < 0) { lo = Math.min(lo, y); hi = Math.max(hi, y); } }
   const fan = (hi - lo) / sc.W; assert.ok(fan >= 0.7 && fan <= 0.9, `fan ${fan} of the head's width`);

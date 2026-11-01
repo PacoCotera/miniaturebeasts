@@ -15,8 +15,9 @@
         "exponent": 2.0
       },
       "bean": {
-        "exponent": 2.6,
-        "crown-set-back": 0.03,
+        "exponent": 2.2,
+        "crown-set-back": -0.05,
+        "rear-exponent": 3.2,
         "top-taper": 0,
         "chin-taper": 0.05,
         "ad": "back to 2.2 (AD, fix round 2 ruling 3): three kinds sharing one exponent are not kinds. Fix round 4, must-fix 1: the bean is an egg tipped back: its top is shifted back by crown-set-back (H, over the full height) and narrowed by top-taper, so the crown is the highest point, behind the near eye, and one curve runs from the muzzle over the brow"
@@ -113,10 +114,10 @@
       },
       "form.eye-spacing": {
         "measure": "spacing/E",
-        "lo": 1.5,
-        "hi": 2.4,
+        "lo": 2.0,
+        "hi": 2.9,
         "map": "lin",
-        "ad": "cap raised from 2.2: Loika 2.28, the bee 2.26, Curlop 2.30 and Wickle 2.21 all sit over it. The far-eye rule (inside the outline by 0.05 H) is the guard against the fish look, not the spacing cap"
+        "ad": "fix round 7, ruling 0: re-based to the head frame, 2.0-2.9 E (the master's 0.98 H is 2.75 E at E/H 0.354; 1.5-2.4 was read on screen without the face yaw). Earlier: cap raised from 2.2: Loika 2.28, the bee 2.26, Curlop 2.30 and Wickle 2.21 all sit over it. The far-eye rule (inside the outline by 0.05 H) is the guard against the fish look, not the spacing cap"
       },
       "form.pupil": {
         "measure": "pupil/E",
@@ -555,20 +556,20 @@
       "measure": "spacing/E",
       "plans": {
         "A": [
-          1.5,
-          2.4
+          2.0,
+          2.9
         ],
         "B": [
-          1.5,
-          2.4
+          2.0,
+          2.9
         ],
         "D": [
           1.5,
           2.2
         ],
         "E": [
-          1.5,
-          2.4
+          2.0,
+          2.9
         ],
         "C": [
           1.6,
@@ -1354,10 +1355,10 @@
     {
       "id": "R-nape",
       "measure": "nape-step/H",
-      "plans": {"A": [0.33, 0.53]},
+      "plans": {"A": [0.44, 0.64]},
       "enforce": ["check"],
       "on": true,
-      "why": "AD, fix round 4 (ruling 1d): read from the master in the stand view at 304, as masters.json reads the rest: the head's top (the crown) is 0.43 H above the back 0.3 H (0.155 S) behind the head's own rear edge on screen, band 0.33-0.53 (the master +-0.1 H). By eye: from the nape to the rump the back is one falling outline, with no plateau and no second hump (R-back-rise measures the hump)",
+      "why": "Fix round 7: the band moves up 0.11 H because the AD read the master's crown at y 92 and it is at about y 80 (ad-review-fix6, section 0); was 0.33-0.53. AD, fix round 4 (ruling 1d): read from the master in the stand view at 304, as masters.json reads the rest: the head's top (the crown) is 0.43 H above the back 0.3 H (0.155 S) behind the head's own rear edge on screen, band 0.33-0.53 (the master +-0.1 H). By eye: from the nape to the rump the back is one falling outline, with no plateau and no second hump (R-back-rise measures the hump)",
       "ad": "fix 2 set 0.3-0.9 H in the body's side plane, which passed the two-ball notch at H/S 0.45; the measure is now the stand view's, the same one the master is read in"
     },
     {
@@ -1442,11 +1443,11 @@
       "measure": "far-eye-inside/H",
       "plans": {
         "A": [
-          0.05,
+          0.0,
           null
         ],
         "B": [
-          0.05,
+          0.0,
           null
         ],
         "D": [
@@ -1454,7 +1455,7 @@
           null
         ],
         "E": [
-          0.05,
+          0.0,
           null
         ]
       },
@@ -1513,9 +1514,9 @@
       "order": 1,
       "on": true,
       "params": {
-        "spacing-share-of-width": 0.9
+        "spacing-share-of-width": 1.0
       },
-      "why": "eye spacing x E must fit within 0.9 W"
+      "why": "eye spacing x E must fit within W (fix round 7, ruling 0: 0.9 -> 1.0, the master's far ring reaches the outline; the far-eye clamp holds the ring itself)"
     },
     {
       "id": "nose-fit",
@@ -1579,7 +1580,7 @@
       "order": 7,
       "on": true,
       "params": {
-        "inside-H": 0.05,
+        "inside-H": 0.0,
         "nose-gap-H": 0.0,
         "order": ["face-yaw", "spacing", "eye-size", "ring"],
         "yaw-floor-deg": 18,
@@ -1639,7 +1640,7 @@
       "muzzle-union": 0.08,
       "muzzle-projection-cap": 0.4,
       "muzzle-widen": 0.5,
-      "muzzle-centre-drop": 0.1,
+      "muzzle-centre-drop": 0.06,
       "mouth-tube": 0.024,
       "nose-gloss": 1.15,
       "nose-highlight": 0.42,
@@ -1676,12 +1677,12 @@
     "A": {
       "provisional": "chunk 1 builds the quadruped's body only to judge proportion and the head's mass; chunk 2 replaces the legs, the stance and these numbers. Every length here is a fraction of the stature S (the body is the same under every head size)",
       "ad": "AD fix round 2, ruling 1 and must-fix 1: the minimal body pass. (a) The back is a rail that falls from the nape: the screen top is 0.8, 0.72 and 0.55 S at 0.7, 0.85 and 0.95 of the length (the master's profile; R-back). (b) The head is its own mass: a nape step, a jowl that overhangs the shoulder with a groove. (c) A round shoulder, an elbow, a taper to the paw; the chest's cream bulges forward under the chin. back-drop is gone: one number could not hold the curve",
-      "chest": { "c": [-0.34, 0.48], "r": [0.62, 0.26, 0.325] },
+      "chest": { "c": [-0.34, 0.42], "r": [0.62, 0.26, 0.325] },
       "pelvis": { "c": [-0.78, 0.26], "r": [0.27, 0.25, 0.24] },
       "cheek-eye": 0.05,
-      "cheek-forward": 0.3,
+      "cheek-forward": 0.0,
       "cheek-eye-back": 1,
-      "chin-overhang": 0.11,
+      "chin-overhang": 0.12,
       "nape-behind-S": 0.155,
       "chin-height": 0.12,
       "union-torso": 0.12,
@@ -1701,9 +1702,9 @@
         "rise": [0.26, 0.24, 0.14, 0.14, 0.43],
         "root-blend": 0.1,
         "leaves": [
-          [-0.3, 0.69, 0.38, -41, 0.1, -24],
-          [0.0, 0.83, 0.46, -4, -0.04, 0],
-          [0.4, 0.72, 0.4, 39, 0.12, 26]
+          [-0.3, 0.55, 0.34, -62, 0.12, -20],
+          [0.0, 0.66, 0.38, -6, 0.0, 0],
+          [0.45, 0.6, 0.34, 66, 0.15, 20]
         ],
         "tip-power": 3.6,
         "tip-narrow": 0.12,

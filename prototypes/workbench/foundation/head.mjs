@@ -20,11 +20,11 @@ export function buildHead(house, plan, kinds, fp) {
   const kexp = house.kinds.head[kinds.head].exponent;
   const K = { a: D / 2, b: W / 2, c: 0.5, n: kexp };
   // the egg (AD fix round 4, must-fix 1): the kind's crown is set back and its top narrower, so the head is an egg tipped back, not a box (both numbers are the kind's, in the house file)
-  const kk = house.kinds.head[kinds.head], setBack = kk["crown-set-back"] ?? 0, topTaper = kk["top-taper"] ?? 0, chinTaper = kk["chin-taper"] ?? 0;
+  const kk = house.kinds.head[kinds.head], rearN = kk["rear-exponent"] ?? kexp, setBack = kk["crown-set-back"] ?? 0, topTaper = kk["top-taper"] ?? 0, chinTaper = kk["chin-taper"] ?? 0;
   // the width at height z: the old widening toward the chin, plus a cheek at the eye line, a bump of `cheek-eye` in the width that holds the far eye inside the outline
   const cw = rf["cheek-widen"], zEye0 = 0.5 - fp.eyeDrop, ce = rp["cheek-eye"] ?? rf["cheek-eye"], cs = rf["cheek-eye-sigma"], ceb = rp["cheek-eye-back"] ?? rf["cheek-eye-back"] ?? 1, latAt = (z, xe = 0) => 1 + cw * cheek * (-z) + ce * Math.exp(-(((z - zEye0) / cs) ** 2)) * (ceb + (1 - ceb) * sstep(-0.9 * K.a, 0.4 * K.a, xe)), cfw = rp["cheek-forward"] ?? rf["cheek-forward"] ?? 0;
   // and the width grows toward the face: a head that is fuller at the cheek than at the back of the skull, so the far cheek stands outside the far eye at the face yaw (the master's)
-  const dK = (x, y, z) => { const tz = 1 - topTaper * (z / K.c), tyz = tz * (1 - chinTaper * sstep(-0.05, -0.5, z)), xe = (x + setBack * z) / tz; return 0.92 * sdSuper(xe, y / (tyz * latAt(z, xe) * (1 + cfw * sstep(-0.3 * K.a, 0.9 * K.a, xe))), z, K.a, K.b, K.c, K.n); };
+  const dK = (x, y, z) => { const tz = 1 - topTaper * (z / K.c), tyz = tz * (1 - chinTaper * sstep(-0.05, -0.5, z)), xe = (x + setBack * z) / tz; return 0.92 * sdSuper(xe, y / (tyz * latAt(z, xe) * (1 + cfw * sstep(-0.3 * K.a, 0.9 * K.a, xe))), z, K.a, K.b, K.c, K.n + (rearN - K.n) * sstep(0.1 * K.a, -0.5 * K.a, xe)); };
   const E = fp.eW * W, Riris = E / 2, ringW = fp.ring * E, Reye = Riris + ringW, lidOver = fp.lid * E;
   const zEye = 0.5 - fp.eyeDrop, yE = (fp.spacing * E) / 2;
   const aspect = house.kinds.eye[kinds.eye]?.aspect ?? 1;

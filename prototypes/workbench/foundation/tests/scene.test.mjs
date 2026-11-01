@@ -94,8 +94,8 @@ test("the head's breadth on screen is a stand-view measure: Loika is wide (R1-he
   assert.ok(a.measured["head-breadth/H"] >= 1.45 && a.measured["head-breadth/H"] <= 1.8, `Loika ${a.measured["head-breadth/H"]}`);
   assert.ok(d.measured["head-breadth/H"] >= 0.95 && d.measured["head-breadth/H"] <= 1.3, `snail ${d.measured["head-breadth/H"]}`);
 });
-test("the far eye is held inside the outline by 0.05 H on Loika, by spacing and then the face yaw, and the clamp never leaves the yaw band", () => {
+test("the far ring is on the outline on Loika (0 to 0.03 H inside, fix round 7), by spacing and then the face yaw, and the clamp never leaves the yaw band", () => {
   const a = express(house, sp.S01);
-  assert.ok(a.measured["far-eye-inside/H"] >= 0.05 - 1e-9, `${a.measured["far-eye-inside/H"]}`);
+  assert.ok(a.measured["far-eye-inside/H"] >= -1e-9 && a.measured["far-eye-inside/H"] <= 0.03 + 1e-9, `${a.measured["far-eye-inside/H"]}`);
   assert.ok(a.pose.yawFace >= 15 - 1e-9 && a.pose.yawFace <= 40);
 });

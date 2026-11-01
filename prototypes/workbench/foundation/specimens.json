@@ -13,13 +13,13 @@
     "mouth": "smile"
    },
    "t": {
-    "form.head": 0.6,
-    "form.head-width": 0.5,
-    "form.head-depth": 0.5,
+    "form.head": 0.13,
+    "form.head-width": 0.633,
+    "form.head-depth": 0.8,
     "form.cheek": 0.04,
-    "form.eye-size": 0.433,
-    "form.eye-height": 0.09,
-    "form.eye-spacing": 0.867,
+    "form.eye-size": 0.312,
+    "form.eye-height": 0.59,
+    "form.eye-spacing": 0.87,
     "form.pupil": 0.1,
     "form.lid": 0.0,
     "form.eye-ring": 0.92,
@@ -138,7 +138,7 @@
    "pick": {
     "body-yaw": 0.93,
     "face-yaw": 0.53,
-    "roll": 0.1
+    "roll": 0.0
    }
   },
   "rig": {}

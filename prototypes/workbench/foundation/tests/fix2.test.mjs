@@ -8,16 +8,16 @@ import { checkRules, failures } from "../../form/house/house.mjs";
 
 const house = loadHouseFile(), sp = loadSpecimens(house), loika = express(house, sp.S01), m = loika.measured;
 
-test("Loika's type specimen holds the master's own numbers without the far-eye clamp: 2.28 E, ring 0.23 E, face yaw 28, the far eye 0.05 H inside, the nose clear of it", () => {
+test("Loika's type specimen holds the master's own numbers without the far-eye clamp: 2.78 E (0.98 H, fix round 7), ring 0.23 E, face yaw 28, the far ring on the outline (0 to 0.03 H inside), the nose clear of it", () => {
   assert.deepEqual(loika.log.filter((l) => l.clamp === "far-eye"), [], "no far-eye clamp ran");
-  assert.ok(Math.abs(m["spacing/E"] - 2.28) < 0.01 && Math.abs(m["ring/E"] - 0.23) < 0.005, `${m["spacing/E"]} ${m["ring/E"]}`);
+  assert.ok(Math.abs(m["spacing/E"] - 2.78) < 0.03 && Math.abs(m["ring/E"] - 0.23) < 0.005, `${m["spacing/E"]} ${m["ring/E"]}`);
   assert.equal(loika.pose.yawFace, 28);
-  assert.ok(m["far-eye-inside/H"] >= 0.05 && m["nose-far-eye/H"] >= 0, JSON.stringify([m["far-eye-inside/H"], m["nose-far-eye/H"]]));
+  assert.ok(m["far-eye-inside/H"] >= 0 && m["far-eye-inside/H"] <= 0.03 + 1e-9 && m["nose-far-eye/H"] >= 0, JSON.stringify([m["far-eye-inside/H"], m["nose-far-eye/H"]]));
   assert.deepEqual(failures(checkRules(house, "A", m, { kinds: sp.S01.kinds })).map((r) => r.id), [], "every rule the build measures passes at the specimen");
 });
 test("the head sits on the chest: the chin overhangs it by 0.04 to 0.12 H whatever the head's size, the outline steps down at the nape, the head is 1.45 to 1.8 H broad", () => {
   assert.ok(m["chin-overhang/H"] >= 0.04 && m["chin-overhang/H"] <= 0.12, `chin ${m["chin-overhang/H"]}`);
-  assert.ok(m["nape-step/H"] >= 0.33 && m["nape-step/H"] <= 0.53, `nape ${m["nape-step/H"]}`);
+  assert.ok(m["nape-step/H"] >= 0.44 && m["nape-step/H"] <= 0.64, `nape ${m["nape-step/H"]}`);
   assert.ok(m["back-rise/H"] <= 0.02, `back rise ${m["back-rise/H"]}`);
   assert.ok(m["head-breadth/H"] >= 1.45 && m["head-breadth/H"] <= 1.8);
 });
