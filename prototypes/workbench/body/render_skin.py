@@ -77,8 +77,8 @@ def decals(b, rest_obj, eye_frames=("open", "open"), mouth="content", palette="c
     c0, n, up, lat = eye_frame_data(b)
     E = H.eyes[0]
     face = face or {}
-    Riris = E["Riris"] * 1.3 * face.get("eye_size", 1.0)               # AD gate 1: the iris grows (orange >= 95 rows at 304), the ring stays thin and warm
-    Reye = Riris + 0.055 * face.get("eye_size", 1.0)
+    Riris = 0.27 * face.get("eye_size", 1.0)                           # chibi ball: big eyes, a thin warm ring
+    Reye = Riris + 0.06 * face.get("eye_size", 1.0)
     c0 = c0 + up * face.get("eye_height", 0.0)
     out = []
     for side, fr in ((1, eye_frames[0]), (-1, eye_frames[1])):
@@ -108,13 +108,12 @@ def decals(b, rest_obj, eye_frames=("open", "open"), mouth="content", palette="c
                 V2 = V2 * np.array([1, -1, 1]); F2 = [tuple(reversed(f)) for f in F2]
             out.append(dict(V=V2, F=F2, col=np.tile(np.array(SK.EYE["ink"], float), (len(V2), 1)), name=f"lid{side}"))
     if mouth == "content":
-        mw = H.mouth["w"] * face.get("mouth_width", 1.0)
-        # a smile along the nose's underside: 0.9 of the house's width, curling up at the corners
-        ys = np.linspace(-0.5 * mw * 1.7, 0.5 * mw * 1.7, 40)
+        mw = 0.62 * face.get("mouth_width", 1.0)
+        ys = np.linspace(-0.5 * mw, 0.5 * mw, 40)
         Rfa = ctx["info"]["head"]["Rfa"]
         pts, nrm = [], []
         for y in ys:
-            s = abs(y) / (0.5 * mw * 1.7)
+            s = abs(y) / (0.5 * mw)
             zloc = SK.SMILE_Z + 0.015 + face.get("mouth_z", 0.0) + 0.07 * s ** 2 + 0.05 * max(0, s - 0.6) ** 2
             origin = from_local(H.kc, Rfa, np.array([1.3, y, zloc]))
             hit, nr = cast(rest_obj, origin, Rfa @ np.array([-1.0, 0, 0]), 3.0)
@@ -174,6 +173,7 @@ def render_skin(b, Rg, Mpose, outpath, size, az=57.5, el=8.0, palette="charcoal"
     ko.data.angle = math.radians(2.5)
     c0 = np.array([-0.45, 0.0, 1.1]) if centre is None else np.array(centre)
     cam = B.camera(sc, az, el, w, h, c0, ppH=ppH)
+    os.makedirs(os.path.dirname(os.path.abspath(outpath)), exist_ok=True)
     sc.render.filepath = outpath
     bpy.ops.render.render(write_still=True)
     return gates.load_rgba(outpath), cam
@@ -189,6 +189,7 @@ def aligned_centre(b, Rg, Mpose, size, az=57.5, el=8.0):
     mb = gates.bbox(m[..., 3])
     c0 = np.array([-0.45, 0.0, 1.1])
     out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out", "_align.png")
+    os.makedirs(os.path.dirname(out), exist_ok=True)
     a, cam = gates.render_rgba(Mp, out, az, el, w, h, c0, ppH, samples=1)
     xb = gates.bbox(a[..., 3])
     return c0 - cam["right"] * (mb[0] - xb[0]) / ppH + cam["up"] * (mb[3] - xb[3]) / ppH

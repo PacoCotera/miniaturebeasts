@@ -6,17 +6,17 @@
     "torso": {
       "kind": "loft", "parent": null, "label": "trunk", "ring": 16, "edge": 0.25,
       "path": {"plane": "xz", "fillet": 1.25, "joints": [
-        {"name": "rump", "at": [-2.093, 0.80]}, {"name": "hip", "at": [-1.66, 0.90]},
+        {"name": "rump", "at": [-1.80, 0.80]}, {"name": "hip", "at": [-1.36, 0.90]},
         {"name": "waist", "at": [-0.70, 0.93]}, {"name": "shoulder", "at": [-0.25, 0.98]},
         {"name": "brisket", "at": [0.36, 1.04]}]},
       "section": {"kind": "egg", "exp": 2.0, "stations": [
-        [-2.093, [0.05, 0.05, 0.05]], [-1.95, [0.27, 0.70, 0.45]], [-1.66, [0.70, 0.88, 0.45]], [-1.40, [0.74, 0.948, 0.45]], [-1.15, [0.871, 0.95, 0.45]], [-0.92, [0.884, 0.94, 0.45]],
-        [-0.68, [0.74, 0.82, 0.44]], [-0.40, [0.48, 0.80, 0.48]], [-0.22, [0.28, 0.78, 0.55]], [-0.04, [0.20, 0.64, 0.52]],
+        [-1.80, [0.05, 0.05, 0.05]], [-1.54, [0.26, 0.66, 0.42]], [-1.36, [0.46, 0.90, 0.45]], [-1.18, [0.52, 0.94, 0.45]], [-0.98, [0.52, 0.92, 0.45]], [-0.78, [0.50, 0.86, 0.45]],
+        [-0.58, [0.42, 0.80, 0.45]], [-0.40, [0.24, 0.78, 0.48]], [-0.22, [0.18, 0.74, 0.52]], [-0.04, [0.22, 0.64, 0.52]],
         [0.36, [0.05, 0.05, 0.05]]]},
-      "rings_x": [-1.95, -1.66, -1.40, -1.15, -0.92, -0.68, -0.40, -0.22, -0.04],
+      "rings_x": [-1.54, -1.36, -1.18, -0.98, -0.78, -0.58, -0.40, -0.22, -0.04],
       "masses": [
-        {"name": "shoulder", "x": -0.40, "around": 0.62, "rho": 0.78, "ds": [0.40, 0.40], "da": 0.34},
-        {"name": "haunch", "x": -1.66, "around": 0.58, "rho": 0.80, "ds": [0.32, 0.50], "da": 0.30}],
+        {"name": "shoulder", "x": -0.40, "around": 0.62, "rho": 0.74, "ds": [0.40, 0.40], "da": 0.34},
+        {"name": "haunch", "x": -1.36, "around": 0.58, "rho": 0.76, "ds": [0.32, 0.50], "da": 0.30}],
       "column_keys": {"hip": {"col": 6, "around": 0.80}, "shoulder": {"col": 5, "around": 0.74}},
       "caps": {"rump": "grid-2x4", "brisket": "grid-2x4"}
     },
@@ -34,19 +34,19 @@
     "fore.L": {"kind": "limb", "parent": "torso", "label": "limb", "ring": 8, "edge": 0.20,
       "socket": {"kind": "patch", "mass": "shoulder", "at": "lower-edge", "size": [2, 2], "push": 0.02},
       "joints": [
-        {"name": "shoulder", "at": [-0.44, 0.50, 0.80], "r": [0.40, 0.42], "role": "mass"},
-        {"name": "elbow", "len": 0.23, "pitch": -100, "r": [0.33, 0.36], "apex": "back"},
-        {"name": "wrist", "len": 0.25, "pitch": -80, "r": [0.32, 0.30], "apex": "fwd"},
-        {"name": "sole", "len": 0.34, "pitch": -92, "r": [0.375, 0.36], "role": "end"}],
+        {"name": "shoulder", "at": [-0.45, 0.56, 0.80], "r": [0.40, 0.42], "role": "mass"},
+        {"name": "elbow", "len": 0.23, "pitch": -100, "r": [0.36, 0.38], "apex": "back"},
+        {"name": "wrist", "len": 0.25, "pitch": -80, "r": [0.35, 0.33], "apex": "fwd"},
+        {"name": "sole", "len": 0.34, "pitch": -92, "r": [0.40, 0.38], "role": "end"}],
       "fillet": 1.25,
       "end": {"kind": "bead-foot", "height": 0.25, "flat": true, "toes": 3, "toe": 0.15, "toe-mid": 1.0, "turn": 14}},
     "hind.L": {"kind": "limb", "parent": "torso", "label": "limb", "ring": 8, "edge": 0.20,
       "socket": {"kind": "patch", "mass": "haunch", "at": "lower-edge", "size": [2, 2], "push": 0.02},
       "joints": [
-        {"name": "hip", "at": [-1.633, 0.66, 0.86], "r": [0.46, 0.46], "role": "mass"},
-        {"name": "knee", "len": 0.29, "pitch": -74, "r": [0.325, 0.335], "apex": "fwd"},
-        {"name": "hock", "len": 0.30, "pitch": -113, "r": [0.31, 0.30], "apex": "back"},
-        {"name": "sole", "len": 0.30, "pitch": -82, "r": [0.27, 0.31], "role": "end"}],
+        {"name": "hip", "at": [-1.40, 0.68, 0.86], "r": [0.46, 0.46], "role": "mass"},
+        {"name": "knee", "len": 0.29, "pitch": -74, "r": [0.335, 0.335], "apex": "fwd"},
+        {"name": "hock", "len": 0.30, "pitch": -113, "r": [0.32, 0.31], "apex": "back"},
+        {"name": "sole", "len": 0.30, "pitch": -82, "r": [0.34, 0.34], "role": "end"}],
       "fillet": 1.25,
       "end": {"kind": "bead-foot", "height": 0.22, "flat": true, "toes": 3, "toe": 0.15, "toe-mid": 1.0, "turn": 14}},
     "tail": {"kind": "socket-only", "parent": "torso", "label": "tail", "socket": {"kind": "cap-centre", "cap": "rump"}}

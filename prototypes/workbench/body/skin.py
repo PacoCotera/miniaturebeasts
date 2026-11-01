@@ -33,7 +33,6 @@ def zone_masks(ctx, V, attr, zones=None):
     parts = ctx["body_parts"]
     pid = np.rint(attr[:, 0]).astype(int)
     s, a, tag = attr[:, 1], attr[:, 2], attr[:, 3]
-    loc = to_local(H.kc, ctx["info"]["head"]["Rfa"], V)
     x, y, z = V[:, 0], V[:, 1], V[:, 2]
     bib = np.zeros(len(V))
     t = pid == parts["torso"]
@@ -41,8 +40,8 @@ def zone_masks(ctx, V, attr, zones=None):
     bib_t = smooth(0.62, 0.80, a) * smooth(-1.05 + reach, -0.60 + reach, x) + smooth(0.30, 0.55, a) * smooth(-0.35, -0.05, x) + smooth(-0.05, 0.08, x)
     bib[t] = np.clip(bib_t[t], 0, 1)
     h = pid == parts["head"]
-    mouth_z = H.mouth["z"]
-    bib_h = smooth(0.0, 0.06, -(loc[:, 2] - (mouth_z + 0.02))) * smooth(0.05, 0.25, loc[:, 0])      # under the mouth line, on the front
+    sz = ctx["face"]["smile_z"]
+    bib_h = smooth(0.0, 0.06, sz - z) * smooth(0.0, 0.25, x)                                          # under the smile line, on the front of the ball
     bib[h] = np.clip(bib_h[h], 0, 1)
     socks = np.zeros(len(V))
     for k in ("fore.L", "hind.L"):
@@ -55,9 +54,10 @@ def zone_masks(ctx, V, attr, zones=None):
     toe = np.where(tag > 0.01, np.clip(tag, 0, 1), 0.0)
     leaf = (pid == parts["crown"]).astype(float) if "crown" in parts else np.zeros(len(V))
     mz = pid == parts["muzzle"]
-    bib_m = smooth(0.0, 0.05, -(loc[:, 2] - SMILE_Z))                          # the cream starts at the smile line under the nose and fills the lobe below it
+    bib_m = smooth(0.0, 0.05, sz - z)                          # the cream starts at the smile line under the nose and fills the lobe below it
     bib[mz] = np.clip(bib_m[mz], 0, 1)
-    bib[pid == parts["chin"]] = 1.0 if "chin" in parts else 0.0
+    if "chin" in parts:
+        bib[pid == parts["chin"]] = 1.0
     nose = (pid == parts["nose"]).astype(float)
     return dict(bib=bib, toe=toe, leaf=leaf, nose=nose, socks=socks)
 

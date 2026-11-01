@@ -25,6 +25,7 @@ def render_rgba(M, path, az, el, w, h, centre, ppH, samples=24, color=(0.55, 0.5
     B.make_mesh("body", M["V"], M["F"], color=color)
     B.lights(sc, az)
     cam = B.camera(sc, az, el, w, h, centre, ppH=ppH)
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
     return load_rgba(path), cam

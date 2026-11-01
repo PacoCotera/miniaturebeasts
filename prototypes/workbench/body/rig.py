@@ -51,7 +51,7 @@ class Rig:
             pa = ctx["info"]["limbs"][name]["path"]
             self.limb[name.split(".")[0]] = dict(P=P, js=pa.js, L=pa.length, r=np.array(p["R"]), first=ctx["info"]["limbs"][name]["first_s"])
         hd = ctx["info"]["head"]
-        self.kc = H.kc
+        self.kc = np.array(ctx["info"]["head"]["ringinfo"][-1]["centre"]) * 0 + np.array([0.0, 0.0, 2.05])
         self.neck_base = np.array(hd["ringinfo"][0]["centre"])
         self.bones = {}
         self.parent = {}

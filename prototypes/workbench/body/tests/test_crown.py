@@ -40,11 +40,12 @@ class T(unittest.TestCase):
                 c = it["centres"]
                 q0 = to_local(H.kc, Rfa, c[0] if it["kind"] != "leaf" else c[0])
                 # c is stored in the head-local frame already; sunk: the first centre is inside the skull field (dK < 0) or at most 0.02 outside
-                d = float(H.dK(np.array([c[0]]))[0])
+                d = float(b.ctx["info"]["head"]["fld"](np.array([c[0]]))[0])
                 stems = [x["centres"] for x in b.ctx["info"]["crown"]["items"] if x["kind"] == "stem"]
                 d_stem = min([np.linalg.norm(c[0] - P, axis=1).min() for P in stems] or [9.0])
                 self.assertTrue(d < 0.02 or d_stem < 0.2, (cr, it["kind"], d, d_stem))      # sunk into the head, or into its stem
-                ang = [math.degrees(math.acos(np.clip((p / np.linalg.norm(p))[0], -1, 1))) for p in np.array(c)]
+                from head import BALL_C
+                ang = [math.degrees(math.acos(np.clip(((p - BALL_C) / np.linalg.norm(p - BALL_C))[0], -1, 1))) for p in np.array(c)]
                 self.assertGreaterEqual(min(ang), 40.0, (cr, it["kind"]))
 
     def test_stem_kappa_r(self):

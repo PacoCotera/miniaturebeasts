@@ -144,10 +144,10 @@ def sweep(body, part, centres, Ts, Ns, Bs, hw, ht, camber, on_plane, from_l, clo
 def build_crown(body, ctx, crown=None):
     H = ctx["H"]
     crown = {**DEFAULT, **(crown or {})}
-    kc = H.kc
-    Rfa = ctx["info"]["head"]["Rfa"]
-    from_l = lambda p: from_local(kc, Rfa, p)
-    root_local = np.array(H.rig["crest"]["root"], float)
+    from_l = lambda p: np.asarray(p, float)                       # the crown is built in world coordinates on the ball's crown
+    from head import BALL_C, BALL_R
+    root_local = np.array([BALL_C[0] - 0.05, 0.0, BALL_C[2] + BALL_R[2] - 0.06])
+    kc = np.zeros(3); Rfa = np.eye(3)
     items = grow(crown)
     out = []
     for it in items:
