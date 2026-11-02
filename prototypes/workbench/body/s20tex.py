@@ -14,7 +14,7 @@ SIZE = 2048
 SHIP_LEVEL = 1                     # the shipped subdivision level (the owner: at most 3,500 vertices); the atlas is baked against THIS level's UVs
 PX = 400.0
 UV_C = 0.7
-ISLAND = {"app": (1000, 1600), "torso": (60, 60), "crown": (1560, 60), "tip": (1560, 520), "sole": (1560, 800), "leg.L": (60, 1330), "ear.L": (700, 1330), "arm.L": (1320, 1330)}
+ISLAND = {"app": (1000, 1600), "torso": (60, 60), "crown": (1560, 60), "tip": (1560, 520), "sole": (1560, 800), "toe": (1760, 1000), "leg.L": (60, 1330), "ear.L": (700, 1330), "arm.L": (1320, 1330)}
 
 
 def _frames_dense(pa, step=0.004):
@@ -99,11 +99,41 @@ def face_uv(b, V, F, fpart, attr):
             uv[sel_, :, 1] = 1600 + 100.0 * np.clip(tt, 0, 1) + np.array([0, 6, 6, 0])[None] * 0
             uv[sel_, :, 0] = 1000 + 12 * j_ + np.array([0, 6, 6, 0])[None]
             uv[sel_, :, 1] = 1600 + 100.0 * np.clip(tt, 0, 1) * 0 + 100.0 * np.clip(tt, 0, 1)
+    # ---- the toe shells (s = -1): one small island, a sphere map about each toe's own frame (u from the angle about its radial axis, v from the angle off its outer tip); the seam runs along the ground side, which is hidden
+    toes = ctx["info"].get("toes", {})
+    toe_f = np.zeros(nf, bool)
+    if toes and "leg.L" in b.parts:
+        cen, fr = [], []
+        for rec_ in toes.values():
+            for (u_, t_) in rec_["frames"]:
+                for sg in (1.0, -1.0):
+                    u3 = np.array(u_) * np.array([1.0, sg, 1.0]); t3 = np.array(t_) * np.array([1.0, sg, 1.0])
+                    c3 = np.array([rec_["cxy"][0], sg * rec_["cxy"][1], rec_["a"][2]]) + rec_["r0"] * u3
+                    cen.append(c3); fr.append((u3, t3))
+        cen = np.array(cen)
+        cand = np.where((fpart == b.parts["leg.L"]) & (attr[F][:, :, 1] < -0.5).all(1))[0]
+        if len(cand):
+            toe_f[cand] = True
+            isl[cand] = "toe"
+            P = V[F[cand]].reshape(-1, 3)
+            k = ((P[:, None, :] - cen[None]) ** 2).sum(2).argmin(1)
+            d = P - cen[k]
+            uu_ = np.array([fr[i][0] for i in k]); tt_ = np.array([fr[i][1] for i in k])
+            ax = (d * uu_).sum(1)
+            dt = (d * tt_).sum(1)
+            dz = d[:, 2]
+            phi = np.arctan2(np.hypot(dt, dz), ax)                              # 0 at the outer tip, pi at the buried end
+            psi = np.arctan2(dt, dz).reshape(-1, 4)                             # 0 at the top, +-pi at the ground side
+            base = psi[:, :1]
+            psi = base + (psi - base + math.pi) % (2 * math.pi) - math.pi
+            x0, y0 = ISLAND["toe"]
+            uv[cand, :, 0] = x0 + 12.0 + (psi + math.pi) / (2 * math.pi) * 96.0
+            uv[cand, :, 1] = y0 + 8.0 + phi.reshape(-1, 4) / math.pi * 40.0
     # ---- tubes (the left-hand island; the right side is folded onto it)
     for nm in ("leg.L", "ear.L", "arm.L"):
         if nm not in b.parts:
             continue
-        sel = np.where(fpart == b.parts[nm])[0]
+        sel = np.where((fpart == b.parts[nm]) & ~toe_f)[0]
         if not len(sel):
             continue
         isl[sel] = nm

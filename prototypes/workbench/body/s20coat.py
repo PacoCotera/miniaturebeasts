@@ -420,9 +420,9 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         col = col * (1 - m[:, None]) + mark * m[:, None]
     # legs: pads and bead toes; arms and the nose
     if leg.any():
-        pad = leg * sstep(-0.25, -0.6, N[:, 2]) * (1 - sstep(0.04, 0.12, z))
+        pad = leg * (1 - sstep(0.03, 0.09, z))                  # the paw's colour boundary is a smooth function of height (pass 3: it came from the vertex normals and stepped)
         col = col * (1 - pad[:, None]) + srgb_to_lin(pal["pad"]) * pad[:, None]
-        bead = leg * (tag > 0.5)
+        bead = leg * (1 - sstep(-0.9, -0.5, attr[:, 1]))              # the toe shells (arc length -1), not the sole's creased rim
         col = col * (1 - bead[:, None]) + belly_c * bead[:, None]
     if nose.any():
         col[nose] = srgb_to_lin(pal["nose"])

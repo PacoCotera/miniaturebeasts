@@ -9,7 +9,7 @@ and shifts the head forward of the spine by `d` of its depth (the skull dome is 
 """
 import numpy as np
 
-DEFAULTS = dict(R_scale=1.0, chest_gain=0.0, chest_window=(0.5, 0.85, 1.02, 1.2), z_keep=1.0, zc=1.68, z_neck=1.2, neck_ratio=0.66, b_dn=0.46, p=2.4, n=4.0, back_ratio=0.895, front_ratio=0.905, d=0.0, shift_lo=(1.28, 1.55), shift_lo_front=(1.5, 1.78), back_share=0.25, shift_hi=(1.78, 2.12), depth=1.143)
+DEFAULTS = dict(R_scale=1.0, chest_gain=0.0, chest_window=(0.5, 0.85, 1.02, 1.2), z_keep=1.0, zc=1.68, z_neck=1.2, neck_ratio=0.66, b_dn=0.46, p=2.4, n=4.0, back_ratio=0.895, front_ratio=0.905, d=0.0, shift_lo=(1.28, 1.55), shift_lo_front=(1.5, 1.78), back_share=0.25, shift_hi=(1.78, 2.12), shift_hi_front=(1.78, 2.12), brow=0.0, depth=1.143)
 
 
 def sstep(a, b, x):
@@ -54,7 +54,8 @@ def stations(base, **kw):
     # the forward shift of the head (a fraction of its depth), fading in over the neck and out over the dome
     hi = 1 - sstep(*P["shift_hi"], z)
     dzb = P["back_share"] * P["d"] * P["depth"] * sstep(*P["shift_lo"], z) * hi
-    dzf = P["d"] * P["depth"] * sstep(*P["shift_lo_front"], z) * hi          # the face's own window opens higher: the underside of the face stays round (no chin pushed forward, no muzzle)
+    hif = 1 - sstep(*P["shift_hi_front"], z)
+    dzf = P["d"] * P["depth"] * sstep(*P["shift_lo_front"], z) * hif          # the face's own window opens higher: the underside of the face stays round (no chin pushed forward, no muzzle)
     out[:, 0] = out[:, 0] - dzb
     out[:, 2] = out[:, 2] + dzf
     return [[float(zz), [round(float(v), 4) for v in row]] for zz, row in zip(z, out)]

@@ -72,8 +72,9 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
             for v_ in rec_["rings"][rec_["support_ring"]] + [rec_["sole_centre"]]:
                 if v_ in m:
                     body.tag[m[v_]] = 1.0
-        BD.add_beads(body, ctx)                # three toe beads per foot, after the fit's frame is known (they follow it by hook)
+        BD.add_toe_shells(body, ctx)          # three toe shells per foot, after the fit's frame is known (they follow it by hook)
         body.cage.fix_winding()
+        ctx["shells_flipped"] += orient_shells(body)
     if fix:
         for cp in body.caps:              # the cap interiors are fitted to their own spots on the section profile (limit_fix free_caps=False)
             for v in cp.ids:
