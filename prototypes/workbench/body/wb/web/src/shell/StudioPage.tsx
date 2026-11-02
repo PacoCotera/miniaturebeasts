@@ -12,6 +12,7 @@ import { Stage } from '../ui/Stage'
 import { Inspector } from '../ui/Inspector'
 import { Palette } from '../ui/Palette'
 import { HelpSheet } from '../ui/HelpSheet'
+import { Toasts } from '../ui/Toasts'
 
 export default function StudioPage() {
   const [url, go] = useStudioUrl()
@@ -31,6 +32,7 @@ export default function StudioPage() {
         nav={<Navigator rail={rail} />}
         stage={<Stage url={url} species={species} go={go} />}
         inspector={<Inspector species={species} id={url.species} sheet={sheet} open={inspOpen} />}
+        overlay={<Toasts species={url.species} />}
       />
       <Palette url={url} />
       <HelpSheet />

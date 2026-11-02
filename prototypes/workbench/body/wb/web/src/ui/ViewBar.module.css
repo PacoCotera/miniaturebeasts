@@ -1,0 +1,9 @@
+.bar { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: var(--r-pill); background: rgba(29, 35, 43, .82); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity var(--m-mid) var(--ease); z-index: 3; }
+.bar[data-show], .bar:focus-within { opacity: 1; pointer-events: auto; }
+.group { display: flex; gap: 2px; }
+.item { color: #d6d2e2; font-size: var(--t-14); padding: 5px 12px; border-radius: var(--r-pill); white-space: nowrap; min-height: 28px; }
+.item[data-state=on] { background: #f1ebdf; color: #1d232b; font-weight: 500; }
+.item:disabled { opacity: .4; cursor: default; }
+.item:focus-visible { outline-color: #ffe6ad; }
+.sep { width: 1px; align-self: stretch; background: rgba(255, 255, 255, .18); margin: 4px 4px; }
+@media (pointer: coarse) { .item { min-height: 40px; padding: 8px 14px; } }

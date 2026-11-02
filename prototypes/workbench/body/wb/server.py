@@ -26,6 +26,9 @@ CSP = "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-
 CT = {"woff2": "font/woff2", "ttf": "font/ttf", "ico": "image/x-icon", "png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
 
 
+K_VIEWS = [(m, a, 304) for m in K.MODES for a in K.AZ]
+
+
 class Hub:
     """Events, fanned out to every subscriber; a ring of the latest 500 for late readers."""
     def __init__(self):
@@ -191,6 +194,14 @@ class Server:
             self.submit(sp.id, "render", dict(genome="type", modes=["clay"], az=list(K.AZ), sizes=[304]), dict(name="auto", role="server"))
         except ApiError:
             pass
+
+    def current_views(self, sp):
+        """The proxy frames of the file as it is now (type genome, 304): each with its cache key and whether the picture exists yet. A read of the cache, never a job."""
+        try:
+            ck = K.cage_key(sp.spec, "type")
+        except Exception:
+            return []
+        return [dict(mode=m, az=a, size=304, key=k, ready=self.cas.has(k, "png")) for (m, a, s_), k in zip(K_VIEWS, K.frames(ck, K_VIEWS))]
 
     def patch_species(self, sid, ops, actor):
         sp = self.get_species(sid)
@@ -467,7 +478,7 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)", p)
             if m:
                 s = srv.get_species(m.group(1))
-                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=None, goldens=None, history=s.history(5)))
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=None, goldens=None, history=s.history(5), views=srv.current_views(s)))
             m = re.fullmatch(r"/api/jobs/(j\d+)", p)
             if m:
                 j = srv.queue.jobs.get(m.group(1))

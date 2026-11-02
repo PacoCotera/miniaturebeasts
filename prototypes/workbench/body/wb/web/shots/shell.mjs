@@ -34,6 +34,8 @@ const cases = [
   { name: 'shell-light-1440', theme: 'light', w: 1440, h: 900, ready: false },
   { name: 'shell-dark-1180', theme: 'dark', w: 1180, h: 820, ready: false, touch: true },
   { name: 'shell-light-1180', theme: 'light', w: 1180, h: 820, ready: false, touch: true },
+  { name: 'stage-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true },
+  { name: 'stage-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true },
 ]
 let failed = 0
 const fail = (m) => { failed++; console.log('FAIL', m) }

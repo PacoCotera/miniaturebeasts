@@ -1,0 +1,11 @@
+.plate { position: relative; background: var(--plate); border-radius: var(--r-3); box-shadow: var(--shadow-1), inset 0 0 0 1px var(--plate-edge); overflow: hidden; flex: none; }
+.clay { background: var(--plate); } /* the proxy frames carry their own light backdrop, so a clay plate sits on the plate colour; --plate-clay stays for cut-outs */
+.img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; }
+.incoming { animation: fade var(--m-slow) var(--ease) both; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.tag { position: absolute; left: 12px; top: 12px; font-size: var(--t-14); padding: 3px 10px; border-radius: var(--r-pill); background: rgba(255, 255, 255, .78); color: #3d3954; }
+.progress { position: absolute; left: 0; top: 0; height: 3px; background: var(--plate-ink); opacity: .7; z-index: 2; transition: width var(--m-mid) var(--ease); }
+.progress[data-indeterminate] { width: 35%; animation: sweep 1.1s var(--ease) infinite; }
+@keyframes sweep { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+.stale::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: repeating-linear-gradient(135deg, rgba(60, 50, 40, .07) 0 6px, transparent 6px 14px); }
+@media (prefers-reduced-motion: reduce) { .progress[data-indeterminate] { width: 100%; animation: none; opacity: .3; } }
