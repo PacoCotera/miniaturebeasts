@@ -126,6 +126,29 @@ class T(unittest.TestCase):
         for r in range(0, len(W), 4):
             self.assertTrue(np.array_equal(together[r], cast_plain(G, C[r], W[r])))
 
+    def test_a_cached_cast_is_the_cast_and_a_changed_surface_is_a_miss(self):
+        import copy, schema as SC
+        import spine as SP
+        spec, _ = SC.load(raw=SPEC)
+        G = SP.SpineLoft(spec)
+        pt, T_, N, B = G.pa.at([G.stations(spec)[3]])
+        th = np.pi * np.linspace(0, 1, 9)
+        W = np.cos(th)[:, None] * B[0][None] + np.sin(th)[:, None] * N[0][None]
+        C = np.broadcast_to(pt[0], W.shape)
+        h0, m0 = SP.CAST_STATS["hit"], SP.CAST_STATS["miss"]
+        a = G.cast_rays(C, W)
+        b = SP.SpineLoft(spec).cast_rays(C, W)                       # a second loft object of the same file: a hit
+        self.assertTrue(np.array_equal(a, b))
+        self.assertEqual((SP.CAST_STATS["hit"] - h0, SP.CAST_STATS["miss"] - m0), (1, 1))
+        b[0, 0] = 99.0                                               # the caller's copy is its own
+        self.assertTrue(np.array_equal(a, G.cast_rays(C, W)))
+        raw2 = copy.deepcopy(SPEC)
+        raw2["parts"]["torso"]["masses"][0]["rho"] += 0.02           # a different body: a different key
+        G2 = SP.SpineLoft(SC.load(raw=raw2)[0])
+        m1 = SP.CAST_STATS["miss"]
+        G2.cast_rays(C, W)
+        self.assertEqual(SP.CAST_STATS["miss"], m1 + 1)
+
     def test_the_twelve_individuals_keep_their_cage_hashes(self):
         import s20genes as GN
         base = json.load(open(os.path.join(HERE, "fixtures", "wb_s20_twelve.json")))["hashes"]

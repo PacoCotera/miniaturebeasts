@@ -13,6 +13,7 @@ from caps import HalfCap
 
 
 _CASTS = OrderedDict()
+CAST_STATS = dict(hit=0, miss=0)           # how many cast_rays calls were answered from _CASTS, for the build timings
 
 
 def smin(a, b, k):
@@ -164,7 +165,9 @@ class SpineLoft(Gourd):
         hit = _CASTS.get(key)
         if hit is not None:                                 # the same rays on the same design surface (the arm-fit pass, an ear or leg edit, a re-render): the same points
             _CASTS.move_to_end(key)
+            CAST_STATS["hit"] += 1
             return hit.copy()
+        CAST_STATS["miss"] += 1
         out = self._cast_rays(C, W, tmax, step, steps, block)
         _CASTS[key] = out.copy()
         while len(_CASTS) > 24:

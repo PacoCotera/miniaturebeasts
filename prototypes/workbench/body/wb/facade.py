@@ -133,6 +133,8 @@ def build(spec, genome="type", stage="base"):
         raise BuildError(str(e), _field_of(str(e)))
     T["validate"] = (time.perf_counter() - t) * 1000
     acc = {}
+    import spine as SP
+    cast0 = dict(SP.CAST_STATS)
     t = time.perf_counter()
     try:
         with timed(acc):
@@ -146,9 +148,10 @@ def build(spec, genome="type", stage="base"):
     T["hash"] = (time.perf_counter() - t) * 1000
     for k, (n, s) in acc.items():
         T["cage." + k] = s * 1000
+    cache = dict(cast_hit=SP.CAST_STATS["hit"] - cast0["hit"], cast_miss=SP.CAST_STATS["miss"] - cast0["miss"])
     T["total"] = (time.perf_counter() - t0) * 1000
     return Result(species=spec.get("species"), stage=stage, body=body, c=c, ind=ind, genome_hash=H.hash_of(ci), key=H.hash_of("cage", H.framework_id(), spec, ci, stage), cage_hash=ch,
-                  vertices=len(V), faces=len(F), timings_ms={k: round(v, 1) for k, v in T.items()}, calls={k: n for k, (n, s) in acc.items()},
+                  vertices=len(V), faces=len(F), timings_ms={k: round(v, 1) for k, v in T.items()}, calls=dict({k: n for k, (n, s) in acc.items()}, **cache),
                   parts={k: int(v) for k, v in body.parts.items()}, balance=H._norm(body.ctx.get("balance", {})))
 
 
