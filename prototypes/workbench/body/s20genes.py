@@ -328,6 +328,20 @@ def digest(c):
     return "S20-" + hashlib.sha256(dumps(c).encode()).hexdigest()[:8]
 
 
+_REF = {}
+
+
+def ring_ref(raw):
+    """The type's path length (`raw` is the species at its type values): the body's ring layout is the type's, laid from the crown, so a tail gene cannot slide a ring past a limb socket."""
+    import json as _j, schema as SC
+    from spine import SpineLoft
+    k = _j.dumps([raw["parts"]["tail"], raw["parts"]["torso"]["spine"], raw["parts"]["torso"].get("rings_z")], sort_keys=True, default=str)
+    if k not in _REF:
+        spec0, _ = SC.load(raw=raw)
+        _REF[k] = float(SpineLoft(spec0).L)
+    return _REF[k]
+
+
 def build_individual(raw, c, upto="base", balance=True, doc=None):
     """Body of one creature from its creature.json (the species raw dict, the shape genes applied, the loft/legs/tubes/sitting builders), then the balance rule (owner, 1 Nov: the centre of mass must fall inside the support polygon of the soles,
     at least 15 % of the sole length in front of the heel). The anatomy fixes, in order: the legs move under the centroid (the hip x, up to 0.12 H back toward it: the heel edge follows the hip), then the tail's length is clipped (x0.92 a step, down to x0.6). What was done is logged in b.ctx['balance']."""
@@ -345,7 +359,7 @@ def build_individual(raw, c, upto="base", balance=True, doc=None):
             fa_ = r["parts"]["arm.L"]["families"][r["parts"]["arm.L"]["default"]]
             fa_["visible_len"] = float(fa_["visible_len"]) + log["arm_bias"]
         spec, _ = SC.load(raw=r)
-        b = s20build.make_s20(spec, upto=upto, ear=c["shape"]["ear"], tip=c["shape"]["tip"], tip_size=c["shape"]["tipSize"], appendages=c.get("appendages") if upto == "base" else None)
+        b = s20build.make_s20(spec, upto=upto, ear=c["shape"]["ear"], tip=c["shape"]["tip"], tip_size=c["shape"]["tipSize"], appendages=c.get("appendages") if upto == "base" else None, ring_ref=ring_ref(raw))
         if not balance or upto != "base":
             return b
         m = s20balance.measure(b)

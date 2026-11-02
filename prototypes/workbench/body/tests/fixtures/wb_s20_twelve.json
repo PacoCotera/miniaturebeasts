@@ -1,17 +1,17 @@
 {
- "note": "S20 variety individuals 1..12 (s20genes.draw(i)) built by s20genes.build_individual at 930fc4253, before the cage speed work: the cage hash (wb.hashing.cage_hash) of each. Individual 1 is the type. Change only when the S20 cage is meant to change.",
+ "note": "S20 variety individuals 1..12 (s20genes.draw(i)) built by s20genes.build_individual at 930fc4253, before the cage speed work: the cage hash (wb.hashing.cage_hash) of each. Individual 1 is the type. Change only when the S20 cage is meant to change. Re-baselined 2 Nov 2026 (fix round after chunks 7-8): the body's rings are laid out from the crown, so a tail gene cannot slide them past a limb socket; every seed whose tail is not the type's length changed (sheet: build/fix78/twelve.html). The type's hash did not. Seeds that changed: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12.",
  "hashes": {
   "1": "dbebe2e3a0a3b27cf03a7e78fb671f4b3e401bcae8fb3ecf3144f2dd571b73fd",
-  "2": "b2c617306861ada66c4f400dbc5b84c456310ad54f080a324ab64e48d7fb4f72",
-  "3": "18f835dd057e5d8c14025f515d7ae2adcc296fdbf6a2f42cf2280da01335120e",
-  "4": "3a6f505156e8adfb0259ef71f55ecd9170b9e2fbc5b53a5e12c2d16a30db1b1c",
-  "5": "2148112c68130c0978b90058e49ef65f03d2ca480eb3de17c02e85a83a35e417",
-  "6": "35d846f120a1487265f3d2024c74f82c6b19f4b3a274cfbbd7cbf1a989c56019",
-  "7": "5953f84c177490dc990364a93e9597637c98d7e973648bf0379c8a48a559a955",
-  "8": "330aba8dd28b0ff424bd9a932dff6496e68849452b802f7b663b7c91008bcc6d",
-  "9": "f2e36e3705fc34041d68c81f7fe0e6449384b3a59a31bffb1659881debedfe8d",
-  "10": "fc70f1600dd23cbc84cb97da913ee7252d6cfe308e4f43fa05155c5db3395583",
-  "11": "fbd9890bb25ed90b1a8dffc97a2ccf608f2d1343e8fe9d5e54fef684e12188c8",
-  "12": "a90d7f319cf349853852e040eca27cf84352eb0c315150e4dde201db7c8a5c8b"
+  "2": "6207dcb80b353118a9c097466742da3eab5171e437b68d54f825092806792a01",
+  "3": "21b31262e6561ab5739afaa0081176e288ef7a793912bfa2fb8966a260b32054",
+  "4": "26b75e76e144d3ba473561e6885df20dc0f2319ee5fd7c69aef64ad9d2ca64d0",
+  "5": "07858ff904cbc6c18207dac26636954900e4ddd39382558a404d6afc3de10149",
+  "6": "be27eb2aac58c7322fb0c4aae0a72d8a6724dbffb80e46603684b0beebad3db1",
+  "7": "36b5bf9b4da35073353429cb397787b5a5ae8d8a8acec8ea2f9afad2601e7e32",
+  "8": "f744402a4c3279b42d0a6dc2325676e2a00ac57accd2cd2075be9dab0e16bfc4",
+  "9": "4a592a7945d469d3dd216929ab7cac47d7daec1bb0157d647ea24a04a1bec009",
+  "10": "4146522d4232092b742fc0b8e12ddfbe2f14c069aa77f7f60f501af17b4d324f",
+  "11": "faf8a95f4ca5c9d2d6286790e183aea2def09ab52c5dc4201c5cf8739b08cc9f",
+  "12": "23086764011d32d1ad9f6b7f1bfd62275ba27e60eddfec65b3b4f3c87b443879"
  }
 }

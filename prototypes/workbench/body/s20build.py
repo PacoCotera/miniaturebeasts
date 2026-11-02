@@ -45,7 +45,7 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
     if spec is None:
         spec, _ = SC.load(S20)
     body = Body("tuliko")
-    G = SpineLoft(spec, tip=kw.get("tip"), tip_size=kw.get("tip_size", 1.0))
+    G = SpineLoft(spec, tip=kw.get("tip"), tip_size=kw.get("tip_size", 1.0), ring_ref=kw.get("ring_ref"))
     ctx = dict(spec=spec, H=None, T=G, G=G, info={}, log={}, opts=kw)
     ctx["info"]["torso"] = build_spine_loft(body, spec, G)
     stage = STAGES.index(upto)

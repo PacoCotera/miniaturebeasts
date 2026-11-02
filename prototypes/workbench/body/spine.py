@@ -29,8 +29,9 @@ def tip_profile(shape, size=1.0):
 
 
 class SpineLoft(Gourd):
-    def __init__(self, spec, tip=None, tip_size=1.0):
-        super().__init__(spec)                              # the gourd lobes: sections and masses (the design surface of the body)
+    def __init__(self, spec, tip=None, tip_size=1.0, ring_ref=None):
+        super().__init__(spec)
+        self.ring_ref = ring_ref                            # the type's path length: the body's rings are laid out for it and move with the crown, so a tail gene does not slide them                              # the gourd lobes: sections and masses (the design surface of the body)
         self.tip_family = tip or spec["sockets"]["tail.tip"]["default"]
         self.tip_size = float(tip_size)
         shp = spec["sockets"]["tail.tip"]["shapes"].get(self.tip_family)
@@ -222,21 +223,49 @@ class SpineLoft(Gourd):
         return out
 
     def stations(self, spec):
-        """Ring stations (s values, ascending from the stalk): the cap ring, rings every `ring_gap` along the bend and the tail, then the vertical rings of the file (rings_z) with s from the crown."""
+        """Ring stations (s values, ascending from the stalk): the cap ring, rings every `ring_gap` along the bend and the tail, then the vertical rings of the file (rings_z) with s from the crown.
+        With `ring_ref` (the type's path length) the layout is the type's, cut where the tail's own rings end (0.5 H on the stalk side of the root): the rings from there to the crown keep their distance from the crown, so no tail gene moves them (a limb socket
+        sits between two rings and a ring that slid past it creased the limb); the stalk side keeps its distance from the stalk, and the gap the tail's change opens or closes is taken up between the two, in rings of about `ring_gap`. At the type this is the plain layout."""
+        if self.ring_ref is None:
+            return self._stations(spec, self.L)
+        ref = self._stations(spec, self.ring_ref)
+        nv = len(spec["parts"]["torso"]["rings_z"])
+        if self.L == self.ring_ref:
+            return ref
+        d = self.L - self.ring_ref
+        cut = self.s_root_ref - 0.5
+        gap = self.sp["ring_gap"]
+        tail = [x for x in ref[:-nv] if x < cut]
+        body = [x + d for x in ref[:-nv] if x >= cut]
+        vert = [x + d for x in ref[-nv:]]
+        if not tail or not body:
+            return self._stations(spec, self.L)
+        while body and body[0] - tail[-1] < 0.5 * gap:
+            if len(tail) > 1:
+                tail.pop()
+            else:
+                body.pop(0)
+        n = int(round((body[0] - tail[-1]) / gap))
+        fill = [tail[-1] + (body[0] - tail[-1]) * k / n for k in range(1, n)] if n > 1 else []
+        return tail + fill + body + vert
+
+    def _stations(self, spec, L):
         t = spec["parts"]["torso"]
         gap = self.sp["ring_gap"]
         zs = list(t["rings_z"])
-        s_v = [self.L - (2.2 - z) for z in zs]               # the vertical rings
+        s_v = [L - (2.2 - z) for z in zs]               # the vertical rings
         s_start = float(self.sp.get("tip_ring0", 0.06))
         s_stop = s_v[0] - 0.55 * gap
         gt = float(self.sp.get("ring_gap_tip", gap))         # finer rings along the tail's bends: a ring turns at most about 30 degrees from the one before (rings every gt where the bends are tight, wider as the stem straightens)
+        s_root = self.s_root + (L - self.L)                  # the root's s on a path of length L: its distance from the crown does not change
+        self.s_root_ref = s_root
         s_c = []
         s = s_start
         while s < s_stop - 0.5 * gt:
             s_c.append(s)
             step_ = gt if s < 0.5 else (gt * 1.3 if s < 0.7 else (gt * 1.6 if s < 0.9 else gap))
             rg_ = self.sp.get("root_ring_gap")
-            if rg_ is not None and abs(s - self.s_root) < float(self.sp.get("root_ring_reach", 0.45)):
+            if rg_ is not None and abs(s - s_root) < float(self.sp.get("root_ring_reach", 0.45)):
                 step_ = min(step_, float(rg_))                       # finer rings where the rump turns into the tail's root (pass 3: at 0.16 H the lower back was one straight ramp from the seat's bottom to the tail)
             s += step_
         s_c.append(s_stop)
