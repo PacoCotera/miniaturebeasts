@@ -39,7 +39,7 @@ for d in DS:
                      f"<div class='row'><img src='head-attach-grid/{t['tag']}clay.png' width='300'><img src='head-attach-grid/{t['tag']}nod.png' width='300'></div>"
                      f"<div class='row' style='justify-content:center'><img src='head-attach-grid/{t['tag']}house-304.png' width='304'><img src='head-attach-grid/{t['tag']}house-96.png' width='288' style='image-rendering:pixelated'></div>"
                      f"<div class='cap'>left: rest, spine polyline; second: nodded 15&deg; about the red dot; below: house view 304 px and 96 px (x3)</div></div>")
-body = ("<h1>S20 Tuliko pass 3, step 1: the head attachment grid</h1><p>Rows: the head's centre 0, 0.08, 0.15 of its depth forward of the spine axis. Columns: where the spine's end meets the head's underside, 0.35, 0.45, 0.50 of the head's depth from the back. "
+body = ("<h1>S20 Tuliko pass 3, step 1: the head attachment grid</h1><p>Rows: the head pushed forward of the spine axis by 0, 0.08, 0.15 of its depth (the face grows forward from the equator up, the back of the skull gives up a quarter of that; pass 3 fix after the owner's note on a flat back). Columns: where the spine's end meets the head's underside, 0.35, 0.45, 0.50 of the head's depth from the back. "
         "The head's shape follows the row (face forward, dome over the neck); the column moves the pivot (a nod swings the face about it).</p>"
         + "<div class='grid' style='grid-template-columns:repeat(3,640px)'>" + "".join(cells) + "</div>")
 open(os.path.join(OUT, "head-attach-grid.html"), "w").write(SL.page("head attach grid", body))
