@@ -1,4 +1,4 @@
-"""S20 pass 2 (lead, 2 Nov): the arms are nubs, not front legs. The tip stays at belly height, well above the knees (at least 0.35 H above the ground), the arm is at most 0.3 H long from the trunk surface, thick and rounded (root radius at least 0.09 H), and it does not reach past the head's silhouette from the front."""
+"""S20 pass 2 (lead, 2 Nov): the arms are nubs, not front legs. The tip stays at belly height, well above the knees (at least 0.35 H above the ground), the arm is at most 0.3 H long from the trunk surface, thick and rounded (root half-width at least 0.08 H; pass 4 sets the mitten's numbers in test_s20_p4_arms), and it does not reach past the head's silhouette from the front."""
 import os, sys, unittest
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -37,7 +37,7 @@ class T(unittest.TestCase):
         c, b, R = self.items[0]
         n = self.arm_numbers(b)
         rt = b.ctx["spec"]["parts"]["arm.L"]["families"]["nub"]["joints"]
-        self.assertGreaterEqual(rt[0]["r"][0], 0.09)
+        self.assertGreaterEqual(rt[0]["r"][0], 0.08)
         self.assertLessEqual(n["reach_y"], n["head_half"] + 0.02)
 
 

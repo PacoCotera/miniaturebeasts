@@ -69,6 +69,21 @@ def grow_hard(body, ctx, name, p, fam):
     yaw = float(fam.get("plane", {}).get("yaw", 0.0))
     P = np.array(fam["P"]); R = np.array(fam["R"])
     pa = _path(p, P, R, yaw, False)
+    if fam.get("visible_len"):
+        # pass 4: the visible length (from the skin to the tip, along the path) is a design number whatever the body genes do to the trunk: the last segment takes up the difference. The arm skims the chest at a shallow angle, so the crossing moves a lot with the girth.
+        for _ in range(3):
+            ss_ = np.linspace(0.0, pa.length, 400)
+            ins_ = G.d_body(pa.at(ss_)[0]) < 0.0
+            sc_ = float(ss_[np.where(ins_)[0].max()]) if ins_.any() else 0.0
+            vis_ = pa.length + 0.85 * float(max(pa.radii([pa.length])[0])) - sc_
+            dl = float(fam["visible_len"]) - vis_
+            if abs(dl) < 0.003:
+                break
+            lt_ = float(np.linalg.norm(P[-1] - P[-2]))
+            P = np.array(P, float)
+            P[-1] = P[-2] + (P[-1] - P[-2]) * (lt_ + dl) / lt_
+            pa = _path(p, P, R, yaw, False)
+        fam["P"] = P.tolist()
     L = pa.length
     bury = float(p["socket"].get("bury", 0.04))
     nR = 8
