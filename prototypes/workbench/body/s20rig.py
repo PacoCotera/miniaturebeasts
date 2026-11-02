@@ -34,8 +34,9 @@ def scale_about(s, about):
     return M
 
 
-SOCKET_R0, SOCKET_R1 = 0.35, 0.7
-TF_A, TF_B = 0.19, 0.07
+SOCKET_R0, SOCKET_R1 = 0.4, 0.75
+TF_A, TF_B = 0.30, 0.03
+FOOT_PITCH = 3.0            # degrees the swinging foot tips toe-up (a fold at the front of the ankle when large: see the waddle test)
 
 
 class Rig:
@@ -100,8 +101,15 @@ class Rig:
         pb = ctx["body_parts"]
         z = V[:, 2]
         side = np.where(V[:, 1] >= 0, "L", "R")
-        s = attr[:, 1]
+        s = np.array(attr[:, 1], float)
         sel = lambda nm: (part == pb[nm]) if nm in pb else np.zeros(n, bool)
+        # a tube's arc length from the geometry: the bridge band between the loft and the tube carries the loft's attribute at its loop, which is not an arc length along the tube (it made the foot bone claim the thigh)
+        import s20tex as _TX
+        for nm_ in ("leg.L", "ear.L", "arm.L"):
+            m_ = sel(nm_)
+            if m_.any():
+                if nm_ == "leg.L" or nm_ in ctx["info"].get("tubes", {}):
+                    s[m_] = _TX.tube_uv(ctx, nm_, np.stack([V[m_, 0], np.abs(V[m_, 1]), V[m_, 2]], 1))[1]
         torso = sel("torso")
         G = ctx["T"]
         nt = len(self.tail_P)
@@ -231,7 +239,7 @@ class Rig:
         return self.pose(tail_yaw=math.radians(yaw) * toward, head_nod=math.radians(-3.0))
 
     # ------------------------------------------------------------ the waddle
-    def waddle_pose(self, phase, A=0.07, duty=0.55, lift=0.06, roll=7.0, yaw=4.0, sway=6.0, period=0.9):
+    def waddle_pose(self, phase, A=0.04, duty=0.55, lift=0.03, roll=7.0, yaw=4.0, sway=6.0, period=0.9):
         """Two legs, diagonal-free: the legs alternate half a cycle apart; stance leads the foot back at constant speed, swing lifts it by `lift`; the body rolls over the stance foot; the tail counter-sways."""
         legs, st = {}, {}
         for sd, off in (("L", 0.0), ("R", 0.5)):
@@ -240,7 +248,7 @@ class Rig:
                 dx = A - 2 * A * u / duty; lf = 0.0; pp = 0.0; st[sd] = True
             else:
                 w = (u - duty) / (1 - duty)
-                dx = -A + 2 * A * w; lf = lift * math.sin(math.pi * w); pp = math.radians(10) * math.sin(math.pi * w); st[sd] = False
+                dx = -A + 2 * A * w; lf = lift * math.sin(math.pi * w); pp = math.radians(FOOT_PITCH) * math.sin(math.pi * w); st[sd] = False
             legs[sd] = (dx, lf, pp)
         c = math.cos(2 * math.pi * phase); s_ = math.sin(2 * math.pi * phase)
         return self.pose(body_roll=-math.radians(roll) * s_, body_yaw=math.radians(yaw) * c, bob=0.012 * abs(s_), legs=legs, tail_yaw=-math.radians(38.0), tail_sway=math.radians(sway) * s_,

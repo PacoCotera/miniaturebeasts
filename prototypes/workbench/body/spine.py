@@ -52,7 +52,7 @@ class SpineLoft(Gourd):
             for k in range(len(Pt) - 1, -1, -1):
                 if k < len(Pt) - 1:
                     run += float(np.linalg.norm(Pt[k + 1] - Pt[k]))
-                if run <= self.bulb[0] + 0.05:
+                if run < self.bulb[0] - 0.02:
                     R[len(P) - len(Pt) + k] = np.maximum(R[len(P) - len(Pt) + k], self.bulb[1])
         names = ["crown", "K", "waist", "back"][:len(body)] + [f"bend{i}" for i in range(len(arc))] + [j["name"] for j in tail["joints"]]
         self.joint_names = names
@@ -164,15 +164,15 @@ class SpineLoft(Gourd):
         s_v = [self.L - (2.2 - z) for z in zs]               # the vertical rings
         s_start = float(self.sp.get("tip_ring0", 0.06))
         s_stop = s_v[0] - 0.55 * gap
-        gt = float(self.sp.get("ring_gap_tip", gap))         # finer rings along the tip's bulb, so it is round
-        s_b = s_start + (self.bulb[0] + 0.05 if self.bulb[0] > 0 else 0.0)
+        gt = float(self.sp.get("ring_gap_tip", gap))         # finer rings along the tail's bends: a ring turns at most about 30 degrees from the one before (rings every gt where the bends are tight, wider as the stem straightens)
         s_c = []
-        if gt < gap and s_b > s_start:
-            nb = max(2, int(round((s_b - s_start) / gt)))
-            s_c = list(np.linspace(s_start, s_b, nb + 1))[:-1]
-            s_start = s_b
-        n = max(2, int(round((s_stop - s_start) / gap)))
-        s_c = s_c + list(np.linspace(s_start, s_stop, n + 1))
+        s = s_start
+        while s < s_stop - 0.5 * gt:
+            s_c.append(s)
+            s += gt if s < 0.5 else (gt * 1.3 if s < 0.7 else (gt * 1.6 if s < 0.9 else gap))
+        s_c.append(s_stop)
+        if len(s_c) > 2 and s_c[-1] - s_c[-2] < 0.5 * gt:
+            s_c.pop(-2)
         return s_c + s_v
 
 

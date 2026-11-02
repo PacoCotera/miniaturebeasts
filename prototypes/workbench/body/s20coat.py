@@ -10,7 +10,7 @@ import math
 import numpy as np
 
 COAT_DEFAULT = dict(
-    palette="dusk", hue=None, glow_hue=80.0, layout="plain", coat_value=1.0, belly_reach=0.0, glow=0.9, grain=0.35, sheen=0.3,
+    palette="dusk", hue=270.0, glow_hue=80.0, layout="plain", coat_value=1.0, belly_reach=0.0, glow=0.9, grain=0.35, sheen=0.3,
     gradient=0.25, hue_shift=0.0, fleck=0.35, freckle_density=0.35, freckle_glow=0.8, bleed=0.55,
     rd="none", rd_scale=1.0, rd_contrast=0.5, rosette=0.0, bands=5, brow=0.0, mark="none", mark_size=0.10, mark_where="forehead",
     blush=True, eye_size=1.0, eye_height=0.0, eye_spacing=0.0, mouth_width=1.0, mouth_z=0.0, expression="content",
@@ -149,6 +149,10 @@ def disc(u, v, r, soft):
     return 1 - sstep(r - soft, r + soft, np.hypot(u, v))
 
 
+def band_f(x, lo, hi, soft):
+    return sstep(lo - soft, lo + soft, x) * (1 - sstep(hi - soft, hi + soft, x))
+
+
 def band(x, lo, hi, soft):
     return sstep(lo - soft, lo + soft, x) * (1 - sstep(hi - soft, hi + soft, x))
 
@@ -214,13 +218,13 @@ def palette_from_hue(h, g):
     """The body palette from the hue gene: coat, belly, ear-inner, pad, mark, nose and the firefly glow (hue 70-90, every palette). A body hue of 10-35 degrees never has a cream belly: its belly is a deep plum or umber."""
     h = float(h) % 360.0
     cv = float(g.get("coat_value", 1.0))
-    L = float(np.clip(0.42 * cv, 0.2, 0.7))
-    coat = color_hl(h, 0.56, L)
+    L = float(np.clip(0.46 * cv, 0.2, 0.7))
+    coat = color_hl(h, 0.64, L)
     if hue_window(h):
         belly = color_hl(h - 40.0, 0.42, L * 0.55)                           # plum: darker than the body
     else:
         belly = color_hl(h + 8.0, 0.10, 0.93)
-    P = dict(coat=coat, belly=belly, **{"ear-inner": color_hl(h + 160.0, 0.40, 0.80)}, pad=color_hl(h, 0.62, L * 0.62), mark=color_hl(h + 8.0, 0.66, L * 0.50 if L > 0.3 else L * 0.4), nose=color_hl(h, 0.5, 0.13),
+    P = dict(coat=coat, belly=belly, **{"ear-inner": color_hl(h + 55.0, 0.42, 0.82)}, pad=color_hl(h, 0.62, L * 0.62), mark=color_hl(h + 8.0, 0.66, L * 0.50 if L > 0.3 else L * 0.4), nose=color_hl(h, 0.5, 0.13),
              glow=color_hl(float(g.get("glow_hue", 80.0)), 0.78, 0.86))
     return P
 
@@ -279,6 +283,12 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     tail = torso & (s_loft <= Lt)
     zeff = np.where(torso, 2.2 - (G_.L - s_loft), z)                # the height the same arc length would have on a straight spine: the zone bands (belly, brow...) are written in it
     s = np.where(tail, Lt - s_loft, attr[:, 1])                     # along the tail: arc length from its root (as the tail's zones were written)
+    # a tube's arc length from the geometry (the bridge band between the loft and the tube carries the loft's attribute at its loop, which is not an arc length along the tube)
+    import s20tex as _TX
+    for nm_, msk in (("ear.L", ear), ("arm.L", arm)):
+        if msk.any() and nm_ in ctx["info"]["tubes"]:
+            _, v_, _ = _TX.tube_uv(ctx, nm_, Vm[msk])
+            s = np.array(s, float); s[msk] = v_
     seed = int(g["seed"])
     col = srgb_to_lin(np.tile(pal["coat"], (n, 1)))
     emit = np.zeros((n, 3))
@@ -388,19 +398,32 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         rough[nose] = 0.35
     if arm.any():
         rec_a = ctx["info"]["tubes"]["arm.L"]
-        tt = np.clip((attr[:, 1] - rec_a["first_s"]) / max(rec_a["path"].length - rec_a["first_s"], 1e-3), 0, 1)
+        tt = np.clip((s - rec_a["first_s"]) / max(rec_a["path"].length - rec_a["first_s"], 1e-3), 0, 1)
         m = arm * sstep(0.55, 0.95, tt)
         col = col * (1 - 0.5 * m[:, None]) + mark * 0.5 * m[:, None]
     # ---- the glow: lantern, freckles, the bleed
     glow = srgb_to_lin(pal["glow"])
     gl = float(g["glow"])
     fam = ctx.get("tip_family", "lantern")
+    Lb = float(ctx["T"].bulb[0])
     if tip.any():
+        sb = np.clip(attr[:, 1], 0, None)                              # arc length from the bulb's end (the bottom) up its neck
+        ink = srgb_to_lin(pal["acc_eye"])
         if fam == "lantern":
-            core = glow * 0.55 + 0.45
-            col[tip] = core
-            emit[tip] = glow * gl * 2.2
+            # a firefly's abdomen: it glows on its lower 60 % in the glow hue (70-90 degrees, every palette); the upper 40 % is the unlit neck in the body's dark mark colour, set off by two dark bands 0.02 H wide
+            lit = (1 - sstep(0.60 * Lb - 0.012, 0.60 * Lb + 0.012, sb)) * tip
+            glow_n = glow / max(float(glow.max()), 1e-6)
+            core = glow * 0.35 + 0.60 * glow_n * 0.9 + 0.10
+            col[tip] = mark[None] * 1.0
+            col = col * (1 - lit[:, None]) + np.clip(core, 0, 1.2) * lit[:, None]
+            bnd = np.zeros(len(V))
+            for c_ in (0.64, 0.80):
+                bnd = np.maximum(bnd, band_f(sb, c_ * Lb - 0.011, c_ * Lb + 0.011, 0.004) * tip)
+            F["bands"] = bnd
+            col = col * (1 - bnd[:, None]) + ink * bnd[:, None]
+            emit = emit + glow_n * (lit * (0.9 + 0.7 * gl) * (1 - 0.3 * np.clip(sb / (0.6 * Lb), 0, 1)))[:, None]      # brightest at the bottom
             rough[tip] = 0.3
+            F["lit"] = lit
         elif fam == "tuft":
             col[tip] = srgb_to_lin(pal["belly"]) * 1.0
         else:
@@ -418,12 +441,12 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         emit = emit + glow * (m * g["freckle_glow"] * gl * warm * 0.85)[:, None]
     # the lantern's warm bleed down the tail: the base warms and a little light spills on the skin
     if fam == "lantern":
-        dist = np.where(tail, np.clip(Lt - s, 0, None), 9.0)
-        e = np.exp(-(dist / max(g["bleed"], 1e-3)) ** 2) * (tail * 1.0)
+        dist = np.where(tail, np.clip(attr[:, 1] - Lb, 0, None), 9.0)             # distance from the bulb's neck down the stalk: the light spills only a hand's breadth
+        e = np.exp(-(dist / max(0.12 * g["bleed"], 1e-3)) ** 2) * (tail * 1.0) * (attr[:, 1] > Lb)
         F["bleed"] = e
         if not (pal.get("_hue") is not None and is_warm(pal["_hue"])):          # no colour bleed on the warm hues: the tail stays the body's colour down to the stalk
-            col = col * (1 - 0.35 * e[:, None]) + glow * 0.35 * e[:, None]
-        emit = emit + glow * (0.30 * gl * e)[:, None]
+            col = col * (1 - 0.12 * e[:, None]) + glow * 0.12 * e[:, None]
+        emit = emit + (glow / max(float(glow.max()), 1e-6)) * (0.25 * gl * e)[:, None]
     # ---- the face (decals on the loft's own coordinates)
     f_eye = srgb_to_lin(pal["acc_eye"]); f_mouth = srgb_to_lin(pal["acc_mouth"]); f_blush = srgb_to_lin(pal["acc_blush"]); f_catch = srgb_to_lin(pal["acc_catch"])
     head = torso * (z > 1.2)

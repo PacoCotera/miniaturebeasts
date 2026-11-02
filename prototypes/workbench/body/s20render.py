@@ -140,7 +140,7 @@ def _tex_material(paths, rough_scale, sheen, grain, emit_strength=1.0):
     return m
 
 
-def tex_obj(M, paths, genome, glow_scale=1.0):
+def tex_obj(M, paths, genome, glow_scale=1.5):
     V, F = M["V"], M["F"]
     me = bpy.data.meshes.new("body")
     me.from_pydata([tuple(v) for v in V], [], [tuple(f) for f in F])
@@ -163,7 +163,7 @@ def tex_obj(M, paths, genome, glow_scale=1.0):
     return ob
 
 
-def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3), samples=48, glow_scale=1.0, floor=True):
+def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3), samples=48, glow_scale=1.5, floor=True):
     sc = B.reset()
     sc.render.film_transparent = True
     sc.render.image_settings.color_mode = "RGBA"

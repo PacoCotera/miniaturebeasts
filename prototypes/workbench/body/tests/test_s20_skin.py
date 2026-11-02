@@ -17,7 +17,7 @@ class T(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.b = s20build.make_s20(upto="base")
-        cls.g = dict(palette="dusk")
+        cls.g = dict(hue=270.0)
         cls.P = RN.prepare(cls.b, cls.g, level=3)
         out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "out", "s20")
         os.makedirs(out, exist_ok=True)
@@ -116,18 +116,18 @@ class T(unittest.TestCase):
         self.assertGreaterEqual(lt - lc, 40.0)
 
     def test_zones_and_layouts(self):
-        base = RN.prepare(self.b, dict(palette="dusk"), level=2)
+        base = RN.prepare(self.b, dict(hue=270.0), level=2)
         self.assertGreater(base["fields"]["belly"].max(), 0.9)
         self.assertGreater(base["fields"]["ear_inner"].max(), 0.5)
         for lay, key in (("masked", "face"), ("points", "points"), ("banded", "tail_bands"), ("spotted", "spots"), ("capped", "cap")):
-            p = RN.prepare(self.b, dict(palette="ember", layout=lay), level=2)
+            p = RN.prepare(self.b, dict(hue=20.0, layout=lay), level=2)
             self.assertGreater(p["fields"][key].max(), 0.5, lay)
-        for pal in ("dusk", "lagoon", "ember"):
-            p = RN.prepare(self.b, dict(palette=pal), level=2)
+        for pal in (270.0, 180.0, 20.0):
+            p = RN.prepare(self.b, dict(hue=pal), level=2)
             self.assertTrue(np.isfinite(p["col"]).all() and p["col"].max() <= 4)
 
     def test_freckles_brighten_toward_the_tail(self):
-        p = RN.prepare(self.b, dict(palette="dusk", freckle_density=0.6), level=3)
+        p = RN.prepare(self.b, dict(hue=270.0, freckle_density=0.6), level=3)
         t, m, e = p["fields"]["t"], p["fields"]["freckles"], p["emit"].sum(1)
         head = (t < 0.15) & (m > 0.5); tail = (t > 0.8) & (m > 0.5)
         print("freckle emission, head vs tail", round(float(e[head].mean()) if head.any() else 0, 3), round(float(e[tail].mean()) if tail.any() else 0, 3))

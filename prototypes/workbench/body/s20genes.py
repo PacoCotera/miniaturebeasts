@@ -27,6 +27,7 @@ def _tail_ok(joints, fillet, stations=None, margin=0.32):
 
 def apply_shape(raw, g=None):
     g = {**DEFAULT, **(g or {})}
+    g["curl"] = max(g["curl"], -0.03)          # the crook cannot open further than this (an open sweep folds the seat-to-tail seam together with a lift: logged in the sheet)
     r = copy.deepcopy(raw)
     t = r["parts"]["torso"]
     t["section"]["stations"] = [[z, [v * (g["headSize"] if z > t["regions"]["body"][1] else g["torsoGirth"]) if v > 0.05 else v for v in ax]] for z, ax in t["section"]["stations"]]
@@ -53,16 +54,38 @@ def apply_shape(raw, g=None):
         # the girth genes reshape the taper profile, not a uniform tube: the root (fixed by the socket it flows out of) takes 35 % of the change, the stalk under the lantern all of it
         gk = 1.0 + (g["tailGirth"] - 1.0) * (0.35 + 0.65 * k / max(nj - 1, 1))
         j["r"] = [v * gk for v in j["r"]]
-        if k > 1:
-            j["len"] *= g["tailLen"]            # the first segment (the root, fixed by the socket) keeps its length; the rest of the tail scales
+        if 1 < k < nj - 1:
+            j["len"] *= g["tailLen"]            # the first segment (the root, fixed by the socket) keeps its length; the stem and the hook scale; the last segment holds the hanging bulb and keeps its length
+    base_len0 = None
+    # the crook (pass 2): the stem rises behind the back, the hook turns away from the body and the bulb hangs. The curl gene opens or tightens the hook: it scales the hook's two bends' segment lengths (1 + 2.5 curl); lift tilts the whole tail.
+    # The room rule (every fillet fits its segments) and the clearance from the back wall clip it; the clip is logged.
+    hook = [k for k in range(len(js)) if k in (4, 5)]
+    base_len = [j.get("len", 0.0) for j in js]
     f = 1.0
     for _ in range(300):
         for k, j in enumerate(js):
             if k > 0:
-                j["pitch"] = base[k] - g["lift"] - f * g["curl"] * 360.0 * (k - 1) / 5
-        if g["curl"] <= 0 or _tail_ok(js, tail["fillet"], t["section"]["stations"]):
+                j["pitch"] = base[k] - g["lift"]
+            if k in hook:
+                j["len"] = base_len[k] * (1.0 + 2.5 * f * g["curl"])
+        if g["curl"] == 0 or _tail_ok(js, tail["fillet"], t["section"]["stations"] if g["curl"] > 0 else None, margin=0.08):
             break
         f *= 0.985
+    # the room rule for any gene: a fillet's tangent length must fit in half of each neighbouring segment (the last segments in full): a segment is never shorter than its fillets need (the radius is never shrunk); the lengthening is logged
+    P_ = PA.fk(js[0]["at"], js)
+    _, rep_ = PA.fillet_path(P_, [j["r"] for j in js], tail["fillet"])
+    need = [0.0] * len(js)
+    for r_ in rep_:
+        k_ = r_["joint"]
+        t_ = r_["tangent"]
+        need[k_] = max(need[k_], t_ / (1.0 if k_ == 1 else 0.5) + 0.004)            # the segment k ends at joint k
+        need[k_ + 1] = max(need[k_ + 1], t_ / (1.0 if k_ + 1 == len(js) - 1 else 0.5) + 0.004)
+    lengthened = 0.0
+    for k_ in range(1, len(js)):
+        if js[k_]["len"] < need[k_] - 1e-9:
+            lengthened += need[k_] - js[k_]["len"]
+            js[k_]["len"] = need[k_] + 1e-4
+    tail["room_fix"] = dict(lengthened=lengthened)
     tail["clip"] = dict(requested=g["curl"], applied=g["curl"] * f, factor=f)
     leg = r["parts"]["leg.L"]
     for j in leg["joints"][1:]:
@@ -83,25 +106,26 @@ GENES = {
     "growth.exterior-eye-size-ratio": ("mult", 0.92, 1.1, "face"), "growth.exterior-eye-height-ratio": ("off", -0.03, 0.03, "face"), "growth.exterior-eye-spacing-ratio": ("off", -0.03, 0.03, "face"),
     "face.mouth-width": ("mult", 0.9, 1.12, "face"), "face.mouth-height": ("off", -0.02, 0.02, "face"), "movement.cycle-rate": ("mult", 0.85, 1.15, "face"),
     "body.ear-length": ("mult", 0.7, 1.5, "ears"), "body.ear-girth": ("mult", 0.85, 1.2, "ears"), "body.ear-splay": ("off", -20.0, 20.0, "ears"), "body.ear-droop": ("off", -15.0, 15.0, "ears"),
-    "body.tail-length": ("mult", 0.8, 1.3, "tail"), "body.tail-girth": ("mult", 0.8, 1.2, "tail"), "body.tail-curl": ("off", -0.15, 0.2, "tail"), "body.tail-lift": ("off", -20.0, 20.0, "tail"), "body.tip-size": ("mult", 0.85, 1.2, "tail"),
+    "body.tail-length": ("mult", 0.8, 1.3, "tail"), "body.tail-girth": ("mult", 0.8, 1.2, "tail"), "body.tail-curl": ("off", -0.03, 0.2, "tail"), "body.tail-lift": ("off", -12.0, 12.0, "tail"), "body.tip-size": ("mult", 0.85, 1.2, "tail"),
     "appearance.coat-value": ("mult", 0.8, 1.2, "coat"), "appearance.bib-reach": ("off", -0.1, 0.12, "coat"), "appearance.glow": ("lin", 0.6, 1.0, "coat"), "skin.grain": ("lin", 0.25, 0.45, "coat"), "skin.sheen": ("lin", 0.2, 0.4, "coat"),
     # the coat's own genes (the owner's steer: the coat is where Tuliko becomes itself)
     "coat.gradient": ("lin", 0.1, 0.5, "coat"), "coat.hue-shift": ("off", -0.06, 0.06, "coat"), "coat.fleck": ("lin", 0.2, 0.8, "coat"), "coat.freckle-density": ("lin", 0.1, 1.0, "coat"),
     "coat.freckle-glow": ("lin", 0.5, 1.0, "coat"), "coat.bleed": ("lin", 0.3, 0.9, "coat"), "coat.rd-scale": ("lin", 0.8, 1.3, "coat"), "coat.rd-contrast": ("lin", 0.35, 0.7, "coat"),
     "coat.rosette": ("lin", 0.0, 1.0, "coat"), "coat.bands": ("int", 3, 7, "coat"), "coat.mark-size": ("lin", 0.07, 0.12, "coat"),
+    # the hue gene replaces the three fixed palettes (pass 2): the body hue in degrees, and the firefly glow hue (70-90 on every individual)
+    "appearance.body-hue": ("lin", 0.0, 360.0, "coat"), "appearance.glow-hue": ("lin", 70.0, 90.0, "coat"),
 }
 # pair-map loci: alleles with draw weights, and the dominance order the phenotype follows (the first dominant allele of the pair shows)
 PAIRS = {
     "body.ear-family": (["prick", "lop", "nub"], [0.4, 0.3, 0.3], ["prick", "nub", "lop"]),                       # frond is cut
     "body.tail-tip": (["lantern", "tuft", "plain"], [0.62, 0.22, 0.16], ["lantern", "tuft", "plain"]),           # lantern dominant in the cross: most Tulikos glow (owner's answer)
-    "appearance.body-palette": (["dusk", "lagoon", "ember"], [1 / 3, 1 / 3, 1 / 3], ["dusk", "lagoon", "ember"]),
     "appearance.marking-layout": (["plain", "masked", "points", "banded", "spotted", "capped"], [0.25, 0.15, 0.15, 0.15, 0.15, 0.15], ["plain", "masked", "points", "banded", "spotted", "capped"]),
     "coat.rd": (["none", "spots", "labyrinth", "rings"], [0.4, 0.25, 0.2, 0.15], ["none", "spots", "labyrinth", "rings"]),
     "coat.mark": (["none", "heart", "star"], [0.5, 0.25, 0.25], ["none", "heart", "star"]),
     "coat.mark-where": (["forehead", "cheek", "belly"], [0.5, 0.3, 0.2], ["forehead", "cheek", "belly"]),
 }
 SWITCHES = {"face.blush": 0.8, "coat.brow": 0.25}
-TYPE_PAIRS = {"body.ear-family": "prick", "body.tail-tip": "lantern", "appearance.body-palette": "dusk", "appearance.marking-layout": "plain", "coat.rd": "none", "coat.mark": "none", "coat.mark-where": "forehead"}
+TYPE_PAIRS = {"body.ear-family": "prick", "body.tail-tip": "lantern", "appearance.marking-layout": "plain", "coat.rd": "none", "coat.mark": "none", "coat.mark-where": "forehead"}
 TYPE_COAT_T = {"coat.gradient": 0.5, "coat.fleck": 0.5, "coat.freckle-density": 0.5, "coat.freckle-glow": 0.8, "coat.bleed": 0.5}      # the type specimen's modest coat (t of each lin locus)
 
 
@@ -122,13 +146,13 @@ def specimen():
     t = {k: 0.5 for k in GENES}
     t.update(TYPE_COAT_T)
     t["appearance.glow"] = 0.8
+    t["appearance.body-hue"] = 270.0 / 360.0; t["appearance.glow-hue"] = 0.5
     t["skin.grain"] = 0.5; t["skin.sheen"] = 0.5
     t["coat.bands"] = 0.5; t["coat.mark-size"] = 0.5; t["coat.rd-scale"] = 0.5; t["coat.rd-contrast"] = 0.5; t["coat.rosette"] = 0.0
     return dict(t=t, pairs={k: [v, v] for k, v in TYPE_PAIRS.items()}, switches=dict(blush=True, brow=False), seed=20)
 
 
 EARS = ["lop", "nub", "prick"]
-PALS = ["dusk", "lagoon", "ember"]
 TIPS = ["lantern", "lantern", "tuft", "lantern", "lantern", "plain", "lantern", "lantern", "tuft", "lantern", "lantern"]
 
 
@@ -148,7 +172,7 @@ def draw(i, seed0=2026):
         pairs[k] = [str(rng.choice(al, p=w)), str(rng.choice(al, p=w))]
     # the variety sheet is structured: ear families and palettes cycle, the tip is mostly the (dominant) lantern with a tuft and a plain tip as rarer finds
     pairs["body.ear-family"] = [EARS[(i - 2) % 3]] * 2
-    pairs["appearance.body-palette"] = [PALS[(i - 1) % 3]] * 2
+    t["appearance.body-hue"] = float(np.round(((270.0 + 30.0 * (i - 1) + 14.0 * (rng.random() - 0.5)) % 360.0) / 360.0, 3))          # twelve hues round the wheel, 30 degrees apart (the type is violet)
     tipk = TIPS[(i - 2) % len(TIPS)]
     pairs["body.tail-tip"] = [tipk, tipk] if tipk != "lantern" else ["lantern", str(rng.choice(["lantern", "tuft", "plain"]))]
     sw = dict(blush=bool(rng.random() < SWITCHES["face.blush"]), brow=bool(rng.random() < SWITCHES["coat.brow"]))
@@ -171,7 +195,7 @@ def creature(ind):
              shape=dict(torsoGirth=v["body.torso-girth"], headSize=v["body.head-size"], legLen=v["body.limb-length"], legGirth=v["body.limb-girth"], ear=ph["body.ear-family"], earLen=v["body.ear-length"],
                         earGirth=v["body.ear-girth"], splay=v["body.ear-splay"], droop=v["body.ear-droop"], tailLen=v["body.tail-length"], tailGirth=v["body.tail-girth"], curl=v["body.tail-curl"],
                         lift=v["body.tail-lift"], tip=ph["body.tail-tip"], tipSize=v["body.tip-size"]),
-             coat=dict(palette=ph["appearance.body-palette"], layout=ph["appearance.marking-layout"], coat_value=v["appearance.coat-value"], belly_reach=v["appearance.bib-reach"], glow=v["appearance.glow"],
+             coat=dict(hue=v["appearance.body-hue"], glow_hue=v["appearance.glow-hue"], layout=ph["appearance.marking-layout"], coat_value=v["appearance.coat-value"], belly_reach=v["appearance.bib-reach"], glow=v["appearance.glow"],
                        grain=v["skin.grain"], sheen=v["skin.sheen"], gradient=v["coat.gradient"], hue_shift=v["coat.hue-shift"], fleck=v["coat.fleck"], freckle_density=v["coat.freckle-density"],
                        freckle_glow=v["coat.freckle-glow"], bleed=v["coat.bleed"], rd=ph["coat.rd"], rd_scale=v["coat.rd-scale"], rd_contrast=v["coat.rd-contrast"], rosette=v["coat.rosette"] if ph["appearance.marking-layout"] == "spotted" else 0.0,
                        bands=v["coat.bands"], brow=1.0 if ind["switches"]["brow"] else 0.0, mark=ph["coat.mark"], mark_where=ph["coat.mark-where"], mark_size=v["coat.mark-size"], blush=bool(ind["switches"]["blush"]),

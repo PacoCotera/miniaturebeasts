@@ -8,6 +8,7 @@ import s20rig as RG
 import subdiv as SD
 
 FLOAT, USHORT, UINT = GO.FLOAT, GO.USHORT, GO.UINT
+GLOW_GAIN = 1.5                 # the emissive texture holds the glow colour at most 1; the material's emissive strength lifts it (the viewer and the Blender renders use the same gain)
 
 
 def decompose(M):
@@ -150,7 +151,8 @@ def build(b, rig, M, tex, path, clips=("stand", "waddle", "breathe", "idle"), ex
               meshes=[dict(name="tuliko", primitives=[prim])],
               samplers=[sampler], images=images, textures=[dict(sampler=0, source=k_) for k_ in range(len(images))],
               materials=[dict(name="coat", pbrMetallicRoughness=dict(baseColorTexture=dict(index=i_col), metallicRoughnessTexture=dict(index=i_rough), metallicFactor=0.0, roughnessFactor=1.0),
-                              emissiveTexture=dict(index=i_emit), emissiveFactor=[1.0, 1.0, 1.0])],
+                              emissiveTexture=dict(index=i_emit), emissiveFactor=[1.0, 1.0, 1.0], extensions={"KHR_materials_emissive_strength": {"emissiveStrength": GLOW_GAIN}})],
+              extensionsUsed=["KHR_materials_emissive_strength"],
               accessors=buf.acc, bufferViews=buf.views, buffers=[dict(byteLength=len(buf.data))], animations=anims)
     js = json.dumps(gl, sort_keys=True, separators=(",", ":")).encode()
     while len(js) % 4:

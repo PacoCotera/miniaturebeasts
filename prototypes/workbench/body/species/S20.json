@@ -629,9 +629,9 @@
      "around": 0.36
     },
     "arm": {
-     "u": 1.22,
-     "col": 5,
-     "around": 0.6
+     "u": 1.12,
+     "col": 6,
+     "around": 0.73
     }
    },
    "caps": {
@@ -1018,56 +1018,56 @@
     },
     {
      "name": "t1",
-     "len": 0.22,
-     "pitch": 192,
+     "len": 0.2,
+     "pitch": 195,
      "r": [
-      0.19,
-      0.19
+      0.17,
+      0.17
      ]
     },
     {
      "name": "t2",
-     "len": 0.2,
-     "pitch": 170,
+     "len": 0.21,
+     "pitch": 150,
      "r": [
-      0.15,
-      0.15
+      0.13,
+      0.13
      ]
     },
     {
      "name": "t3",
      "len": 0.2,
-     "pitch": 146,
+     "pitch": 105,
      "r": [
-      0.12,
-      0.12
+      0.1,
+      0.1
      ]
     },
     {
      "name": "t4",
-     "len": 0.2,
-     "pitch": 120,
+     "len": 0.18,
+     "pitch": 162,
      "r": [
-      0.09,
-      0.09
+      0.078,
+      0.078
      ]
     },
     {
      "name": "t5",
-     "len": 0.17,
-     "pitch": 94,
+     "len": 0.165,
+     "pitch": 206,
      "r": [
-      0.065,
-      0.065
+      0.062,
+      0.062
      ]
     },
     {
      "name": "tip",
-     "len": 0.14,
-     "pitch": 68,
+     "len": 0.195,
+     "pitch": 275,
      "r": [
-      0.05,
-      0.05
+      0.055,
+      0.055
      ],
      "role": "end"
     }
@@ -1083,7 +1083,7 @@
     "cap": "half-grid-1x2",
     "tip_ring": 0.6
    },
-   "note": "the tail range of the spine: its joints edit the far end of the one path, its radii the far end of the one profile (genes: length, girth, curl)"
+   "note": "the tail range of the spine: a shepherd's crook. The stem rises behind the back, the hook turns away from the body and the bulb (the tip family's radius profile on the last 0.26 H) hangs, its tip axis within 30 degrees of straight down."
   },
   "arm.L": {
    "kind": "tube",
@@ -1094,8 +1094,8 @@
    "mirror": "lateral",
    "socket": {
     "kind": "patch",
-    "u": 1.22,
-    "col": 5,
+    "u": 1.12,
+    "col": 6,
     "size": [
      2,
      2
@@ -1108,35 +1108,35 @@
    "families": {
     "nub": {
      "plane": {
-      "yaw": 80
+      "yaw": 20
      },
      "joints": [
       {
        "name": "root",
        "at": [
-        0.14,
         0.3,
+        0.4,
         1.0
        ],
        "r": [
-        0.14,
-        0.14
+        0.12,
+        0.12
        ],
        "role": "mass"
       },
       {
        "name": "upper",
-       "len": 0.6,
-       "pitch": -25,
+       "len": 0.5,
+       "pitch": -55,
        "r": [
-        0.13,
-        0.13
+        0.11,
+        0.11
        ]
       },
       {
        "name": "tip",
        "len": 0.25,
-       "pitch": -55,
+       "pitch": -60,
        "r": [
         0.095,
         0.095
@@ -1432,117 +1432,7 @@
     150
    ]
   },
-  "dusk": {
-   "coat": [
-    128,
-    92,
-    178
-   ],
-   "belly": [
-    244,
-    226,
-    236
-   ],
-   "ear-inner": [
-    246,
-    176,
-    206
-   ],
-   "pad": [
-    92,
-    62,
-    132
-   ],
-   "mark": [
-    84,
-    56,
-    128
-   ],
-   "nose": [
-    70,
-    46,
-    92
-   ],
-   "glow": [
-    255,
-    205,
-    96
-   ]
-  },
-  "lagoon": {
-   "coat": [
-    52,
-    160,
-    156
-   ],
-   "belly": [
-    226,
-    246,
-    232
-   ],
-   "ear-inner": [
-    255,
-    196,
-    170
-   ],
-   "pad": [
-    30,
-    108,
-    112
-   ],
-   "mark": [
-    24,
-    96,
-    104
-   ],
-   "nose": [
-    24,
-    74,
-    80
-   ],
-   "glow": [
-    214,
-    255,
-    120
-   ]
-  },
-  "ember": {
-   "coat": [
-    238,
-    120,
-    82
-   ],
-   "belly": [
-    255,
-    232,
-    204
-   ],
-   "ear-inner": [
-    255,
-    190,
-    170
-   ],
-   "pad": [
-    176,
-    72,
-    58
-   ],
-   "mark": [
-    168,
-    60,
-    50
-   ],
-   "nose": [
-    120,
-    44,
-    36
-   ],
-   "glow": [
-    255,
-    244,
-    176
-   ]
-  }
+  "note": "the three fixed palettes are gone: the body palette is a function of the hue gene (s20coat.palette_from_hue): coat, belly (cream, or a deep plum in the 10-35 degree window), ear-inner, pad, mark, nose and the firefly glow (hue 70-90 on every palette)"
  },
  "material": {
   "family": "velvet",
@@ -2025,10 +1915,12 @@
    "kind": "waddle",
    "period": 0.9,
    "duty": 0.55,
-   "lift": 0.06,
+   "lift": 0.03,
    "roll": 7,
    "yaw": 4,
-   "tail_sway": 6
+   "tail_sway": 6,
+   "swing": 0.04,
+   "note": "pass 2: the swing (hip travel) 0.07 -> 0.04 H and the lift 0.06 -> 0.03 H, the foot's toe-up 10 -> 3 degrees: at the file's first values the ankle folded at the front on the swinging leg for most individuals"
   },
   "breathe": {
    "period": 3.0,

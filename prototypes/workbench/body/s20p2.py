@@ -75,9 +75,20 @@ def joint_images(b, sub, level=2, size=400):
     return names
 
 
-def house_images(b, tex, sub, genome, paths):
+def posed(M, b, R, pose):
+    """The shipped mesh in a pose (linear blend skinning of the welded vertices, normals recomputed on the welded surface)."""
+    import gltf_out
+    W = R.weights(M["Vw"], M["attr"], M["part"])
+    Vp = R.skin(M["Vw"], W, pose)
+    Nw = gltf_out.vertex_normals(Vp, M["Fw"])
+    return dict(M, V=Vp[M["vid"]], N=Nw[M["vid"]])
+
+
+def house_images(b, tex, sub, genome, paths, R=None):
     import s20render as RN
     M = TX.render_mesh(b, 2)
+    if R is not None:
+        M = posed(M, b, R, R.stand_pose())                              # the stand pose: the tail yawed toward the camera, as the house view shows it
     out = {}
     for size, (w, h, ppH) in SL_.SIZES.items():
         a, cam = RN.render_tex(M, paths, genome, os.path.join(sub, f"house-{size}.png"), w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3 if size != 48 else 1.25), samples=48)
@@ -98,7 +109,7 @@ def write_tex(tex, d):
     paths = {}
     for k in ("col", "emit", "rough"):
         p = os.path.abspath(os.path.join(d, k + ".png"))
-        TX.write_png(p, tex[k])
+        TX.write_png(p, tex[k] * 255.0 if k == "rough" else tex[k])
         paths[k] = p
     return paths
 
@@ -117,8 +128,8 @@ def build_sheet(step, title, notes, rows, ind=1, extra_html="", wire=True, level
     ji = joint_images(b, sub) if joints else []
     house_html = ""
     if house:
-        house_images(b, tex, sub, c["coat"], paths)
-        house_html = ("<h2>The coat on its texture: the house view at 304 / 96 / 48 and four angles (the shipped level-2 mesh)</h2><div class='row'>"
+        house_images(b, tex, sub, c["coat"], paths, R)
+        house_html = ("<h2>The coat on its texture in the stand pose: the house view at 304 / 96 / 48 and four angles (the shipped level-2 mesh)</h2><div class='row'>"
                       + f"<div class='cell'><div class='cap'>304</div><img src='{step}/house-304.png' width='304'></div>"
                       + f"<div class='cell'><div class='cap'>96 (4x)</div><img src='{step}/house-96.png' width='384' style='image-rendering:pixelated'></div>"
                       + f"<div class='cell'><div class='cap'>48 (6x)</div><img src='{step}/house-48.png' width='288' style='image-rendering:pixelated'></div>"
@@ -133,3 +144,23 @@ def build_sheet(step, title, notes, rows, ind=1, extra_html="", wire=True, level
     open(p, "w").write(SL.page(f"S20 pass 2 {title}", body))
     SL.shoot(p, os.path.join(OUT, f"{step}.png"), 1960)
     return dict(seconds=time.time() - t0, html=p)
+
+
+def variety_block(step, srcdir, n=12, grey=False):
+    """The twelve individuals (renders made by run_s20_ind.py) as an HTML block: 304 stand view, 96 view (2x, pixel-exact), the back view, and a line of their genes; copies the pictures beside the sheet."""
+    import shutil
+    d = os.path.join(OUT, step, "ind")
+    os.makedirs(d, exist_ok=True)
+    cells = []
+    for i in range(1, n + 1):
+        sd = os.path.join(srcdir, f"ind{i:02d}")
+        for nm in ("a304", "a96", "back", "front"):
+            shutil.copy(os.path.join(sd, nm + ".png"), os.path.join(d, f"{i:02d}-{nm}.png"))
+        c = json.load(open(os.path.join(sd, "creature.json")))["creature"]
+        s, k = c["shape"], c["coat"]
+        h = (k["hue"] + 360.0 * k["hue_shift"]) % 360.0
+        txt = f"hue {h:.0f}, {s['ear']} ear, {s['tip']} tip, curl {s['curl']:+.2f}, tail x{s['tailLen']:.2f}, {k['layout']}"
+        style = "filter:grayscale(1)" if grey else ""
+        cells.append(f"<div class='cell'><div class='cap'><b>{i}</b> {txt}</div><img src='{step}/ind/{i:02d}-a304.png' width='304'><br>"
+                     f"<img src='{step}/ind/{i:02d}-a96.png' width='192' style='image-rendering:pixelated;{style}'> <img src='{step}/ind/{i:02d}-back.png' width='190'></div>")
+    return "<h2>The twelve in the stand pose (304 px; the 96 px render at 2x; the back view az 160)</h2><div class='grid' style='grid-template-columns:repeat(4,320px)'>" + "".join(cells) + "</div>"

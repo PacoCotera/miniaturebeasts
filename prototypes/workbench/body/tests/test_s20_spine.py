@@ -122,7 +122,7 @@ class T(unittest.TestCase):
         self.assertEqual(base["parts"]["torso"]["spine"], g["parts"]["torso"]["spine"])           # the body's side of the one path is untouched
         self.assertEqual(base["parts"]["torso"]["section"], g["parts"]["torso"]["section"])
         self.assertEqual(base["parts"]["tail"]["joints"][0]["at"], g["parts"]["tail"]["joints"][0]["at"])      # the root stays
-        self.assertNotEqual(base["parts"]["tail"]["joints"][3]["pitch"], g["parts"]["tail"]["joints"][3]["pitch"])
+        self.assertNotEqual(base["parts"]["tail"]["joints"][4]["len"], g["parts"]["tail"]["joints"][4]["len"])      # the curl gene opens or tightens the crook: it scales the hook's segments
 
     def test_girth_genes_reshape_the_taper_profile(self):
         base = s20genes.apply_shape(RAW, {})["parts"]["tail"]["joints"]

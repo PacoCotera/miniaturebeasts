@@ -110,6 +110,15 @@ def grow_tube(body, ctx, name, p, fam, i, c, centre):
         pt, Tg, Nn, Bb = pt[0], Tg[0], Nn[0], Bb[0]
         ra, rf = pa.radii([min(max(s, 0.0), L)])[0]
         X = pt + shift * Tg + (rf * scale * np.cos(psi))[:, None] * Nn + (ra * scale * np.sin(psi))[:, None] * Bb
+        cup = float(fam.get("cup", 0.0))
+        if cup > 0 and not centre:
+            # a cupped tube (the ear): the face toward the front is pressed in by `cup` H (at its deepest, in the middle of the tube, fading to nothing at the root and the tip), so the section is a crescent with a hollow inner face
+            fr = np.array([1.0, 0.0, 0.0])
+            off = X - (pt + shift * Tg)
+            wgt = np.maximum(off @ fr / max(np.linalg.norm(off, axis=1).max(), 1e-9), 0.0) ** 2
+            t_ = np.clip((s - st[0]) / max(L - st[0], 1e-9), 0, 1)
+            fade = np.sin(np.pi * np.clip(t_ * 1.15, 0, 1)) ** 0.8
+            X = X - (cup * fade) * wgt[:, None] * (off / np.maximum(np.linalg.norm(off, axis=1, keepdims=True), 1e-9)) * np.maximum(np.linalg.norm(off, axis=1, keepdims=True) / max(np.linalg.norm(off, axis=1).max(), 1e-9), 0.5)
         if centre:
             X[0, 1] = 0.0; X[-1, 1] = 0.0
         return X, dict(s=s, centre=pt + shift * Tg, N=Nn, B=Bb, T=Tg, ra=float(ra * scale), rf=float(rf * scale))
