@@ -211,7 +211,8 @@ def build_spine_loft(body, spec, G):
         W = np.cos(th)[:, None] * B[None] + np.sin(th)[:, None] * N[None]
         P = G.cast(pt, W)
         sb = float(G.s_root)                                    # beyond the tail's root the rings are exact circles of the radius profile (a cast onto the sphere chain's envelope is irregular, and the limit fit amplifies that into a zigzag); the cast takes over into the body
-        t_ana = 1.0 - float(np.clip((s - (sb - 0.30)) / 0.30, 0.0, 1.0))
+        rb_ = float(G.sp.get("root_blend", 0.30))
+        t_ana = 1.0 - float(np.clip((s - (sb - rb_)) / rb_, 0.0, 1.0))
         if t_ana > 0:
             rad = float(G.tail_radius(np.array([s]))[0])
             P = P * (1 - t_ana) + (pt + rad * W) * t_ana

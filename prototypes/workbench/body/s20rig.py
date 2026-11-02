@@ -95,6 +95,42 @@ class Rig:
         self.tail_pivot = np.array(spec["parts"]["tail"]["P"][0], float)      # the tail turns about its root joint (inside the body); a pivot on the loft swung the lantern too little
         self.curl = float(spec["parts"]["tail"].get("clip", {}).get("applied", 0.0))
 
+    # ------------------------------------------------------------ the bones overlay (the viewer's Bones toggle)
+    def overlay(self):
+        """Joint-to-joint bones for the viewer: points (name, the bone that carries each in a pose, rest position) and segments (a, b point indices, the named range or label for the colour). The spine is drawn as the named ranges: seat (belly to the tail's root), back (belly to waist), neck (waist to the head pivot = the spine's end),
+        head (the pivot up through the head to the crown), tail (the tail's joints to the lantern); legs, ears and arms by their bones. Returns dict(points, segs, ranges, spine_end)."""
+        pts, segs = [], []
+        def P(name, bone, p):
+            pts.append(dict(name=name, bone=bone, p=[float(x) for x in p])); return len(pts) - 1
+        def S(a, b, rng, name):
+            segs.append(dict(a=a, b=b, range=rng, name=name))
+        B = self.bones
+        hg = self.head_geom
+        seat0 = P("seat", "body", (0.0, 0.0, 0.18))
+        belly = P("belly", "body", self.belly)
+        waist = P("waist", "body", self.waist)
+        pivot = P("head pivot = spine end", "head", self.head_pivot)
+        crown = P("crown", "head", (hg["centre"][0] * 0.4, 0.0, 2.2))
+        S(seat0, belly, "seat", "seat")
+        S(belly, waist, "back", "back")
+        S(waist, pivot, "neck", "neck")
+        S(pivot, crown, "head", "head")
+        tail = self.tail_P
+        tp = [P("tail root", "tail.1", tail[0])]
+        S(belly, tp[0], "seat", "seat to tail root")
+        for k in range(1, len(tail)):
+            bone = f"tail.{k + 1}" if k + 1 < len(tail) else "tip"
+            tp.append(P(f"tail.{k}", f"tail.{k}", tail[k]))
+            S(tp[-2], tp[-1], "tail", f"tail.{k}")
+        for sd in SIDES:
+            for nm, rng in ((f"leg.upper.{sd}", "limb"), (f"leg.lower.{sd}", "limb"), (f"leg.foot.{sd}", "limb"), (f"arm.{sd}", "appendage"), (f"ear.1.{sd}", "appendage"), (f"ear.2.{sd}", "appendage")):
+                if nm not in B:
+                    continue
+                h, t = B[nm]
+                a = P(nm + " head", nm, h); b = P(nm + " tail", nm, t)
+                S(a, b, rng, nm)
+        return dict(points=pts, segs=segs, ranges=["head", "neck", "back", "seat", "tail", "limb", "appendage"], spine_end=pivot, pivot=pivot)
+
     # ------------------------------------------------------------ weights
     def weights(self, V, attr, part):
         ctx = self.ctx

@@ -125,7 +125,7 @@
      [
       0.23,
       [
-       0.2302,
+       0.2308,
        0.2572,
        0.2327
       ]
@@ -133,7 +133,7 @@
      [
       0.25,
       [
-       0.2695,
+       0.2755,
        0.3011,
        0.2725
       ]
@@ -141,7 +141,7 @@
      [
       0.28,
       [
-       0.3168,
+       0.3414,
        0.354,
        0.3204
       ]
@@ -149,7 +149,7 @@
      [
       0.32,
       [
-       0.3665,
+       0.4306,
        0.4094,
        0.3705
       ]
@@ -157,7 +157,7 @@
      [
       0.36,
       [
-       0.4057,
+       0.5121,
        0.4533,
        0.4103
       ]
@@ -165,7 +165,7 @@
      [
       0.4,
       [
-       0.4375,
+       0.5687,
        0.4888,
        0.4424
       ]
@@ -173,7 +173,7 @@
      [
       0.44,
       [
-       0.4632,
+       0.6022,
        0.5176,
        0.4684
       ]
@@ -181,7 +181,7 @@
      [
       0.48,
       [
-       0.484,
+       0.6292,
        0.5407,
        0.4894
       ]
@@ -189,7 +189,7 @@
      [
       0.52,
       [
-       0.5005,
+       0.6506,
        0.5592,
        0.5061
       ]
@@ -197,7 +197,7 @@
      [
       0.56,
       [
-       0.5142,
+       0.655,
        0.5746,
        0.5199
       ]
@@ -205,7 +205,7 @@
      [
       0.6,
       [
-       0.5253,
+       0.6356,
        0.587,
        0.5313
       ]
@@ -213,7 +213,7 @@
      [
       0.64,
       [
-       0.5338,
+       0.603,
        0.5964,
        0.5397
       ]
@@ -221,7 +221,7 @@
      [
       0.68,
       [
-       0.5391,
+       0.5686,
        0.6023,
        0.5451
       ]
@@ -229,7 +229,7 @@
      [
       0.72,
       [
-       0.5415,
+       0.5453,
        0.605,
        0.5476
       ]
@@ -1166,8 +1166,8 @@
     "body_r": [
      0.4,
      0.4,
-     0.5,
-     0.5
+     0.35,
+     0.3
     ],
     "fillet": 1.25,
     "union_k": 0.12,
@@ -1220,7 +1220,8 @@
      2.02,
      2.19
     ],
-    "neck_ratio": 0.69
+    "neck_ratio": 0.69,
+    "rump_gain": 0.3
    },
    "junction_radius": 0.3
   },
@@ -1518,7 +1519,7 @@
      "at": [
       -0.42,
       0.0,
-      0.66
+      0.72
      ],
      "r": [
       0.15,
@@ -1529,7 +1530,7 @@
     {
      "name": "t1",
      "len": 0.2,
-     "pitch": 195,
+     "pitch": 180,
      "r": [
       0.1335,
       0.1335
@@ -1538,7 +1539,7 @@
     {
      "name": "t2",
      "len": 0.21,
-     "pitch": 150,
+     "pitch": 138,
      "r": [
       0.1161,
       0.1161
@@ -1547,7 +1548,7 @@
     {
      "name": "t3",
      "len": 0.2,
-     "pitch": 105,
+     "pitch": 100,
      "r": [
       0.0996,
       0.0996
@@ -1593,7 +1594,7 @@
     "cap": "half-grid-1x2",
     "tip_ring": 0.6
    },
-   "note": "the tail range of the spine: a shepherd's crook. The stem rises behind the back, the hook turns away from the body and the bulb (the tip family's radius profile on the last 0.26 H) hangs, its tip axis within 30 degrees of straight down.",
+   "note": "the tail range of the spine: a shepherd's crook. The stem rises behind the back, the hook turns away from the body and the bulb (the tip family's radius profile on the last 0.26 H) hangs, its tip axis within 30 degrees of straight down. Pass 3: the root sits at z 0.72 (was 0.66) and the first segment runs level (180 degrees, was 195 down-back), with a fuller rump (head_profile.rump_gain) and a tighter bend radius at the seat (spine.body_r), so the tail leaves the upper back and the lower back is rounder; a straight ramp from the seat's bottom to the tail's underside still remains in profile (the loft's bend rings), see the pass 3 report.",
    "taper": {
     "note": "pass 3: the tail reads as ONE tube, gently thinning from the rump to the curl: a linear taper r = end + (root - end)(1 - u) over the arc fraction u of the joints (root radius at most 1.3 x the mid-tail radius; the old 0.25 / 0.17 / 0.15 / 0.115 steps read as a funnel, a pinch and a swelling); the lantern bulb is the tip family's own profile on the last 0.26 H",
     "root": 0.15,

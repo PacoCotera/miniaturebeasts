@@ -166,7 +166,7 @@ def build(b, rig, M, tex, path, clips=("stand", "waddle", "breathe", "idle"), ex
         sample(poses, T, "idle", weights=[0.5 - 0.5 * math.cos(2 * math.pi * i / 24 * (T / 3.3)) for i in range(24)])
     prim = dict(attributes=dict(POSITION=a_pos, NORMAL=a_nor, TEXCOORD_0=a_uv, JOINTS_0=a_j, WEIGHTS_0=a_w, _PART=a_part), indices=a_idx, material=0, targets=[dict(POSITION=a_morph)])
     sampler = dict(magFilter=9729, minFilter=9987, wrapS=33071, wrapT=33071)
-    gl = dict(asset=dict(version="2.0", generator="tuliko body build", extras=dict(parts=names, clips=[a["name"] for a in anims] + ["blink (eye patches over the atlas: open, half, closed, half)"],
+    gl = dict(asset=dict(version="2.0", generator="tuliko body build", extras=dict(bones=rig.overlay(), parts=names, clips=[a["name"] for a in anims] + ["blink (eye patches over the atlas: open, half, closed, half)"],
                                                                               glow_pulse=dict(period=2.4, range=[0.8, 1.0]), blink=dict(interval=[3.0, 6.0], patches=blink, base_image=i_col, atlas=int(tex["col"].shape[0])), counts=dict(cage_vertices=int(len(Cv)), render_vertices=int(len(V)), render_triangles=int(len(tris)), level=int((extras or {}).get("level", 0))), **(extras or {}))),
               scene=0, scenes=[dict(nodes=[bidx["root"], mesh_node, cage_node])], nodes=nodes, skins=[dict(joints=list(range(len(bn))), inverseBindMatrices=a_ibm, skeleton=bidx["root"])],
               meshes=[dict(name="tuliko", primitives=[prim], weights=[0.0], extras=dict(targetNames=["breathe"])), dict(name="cage", primitives=[dict(attributes=dict(POSITION=c_pos, JOINTS_0=c_j, WEIGHTS_0=c_w), indices=c_i, material=0)])],
