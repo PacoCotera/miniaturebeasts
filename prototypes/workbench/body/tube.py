@@ -46,13 +46,87 @@ def _outward(G, X, margin=0.02, step=0.01, n=40):
     return X
 
 
+def _ring_pts(pa, s, L, psi, fam, st0, centre=False):
+    pt, Tg, Nn, Bb = pa.at([s])
+    pt, Tg, Nn, Bb = pt[0], Tg[0], Nn[0], Bb[0]
+    ra, rf = pa.radii([min(max(s, 0.0), L)])[0]
+    X = pt + (rf * np.cos(psi))[:, None] * Nn + (ra * np.sin(psi))[:, None] * Bb
+    cup = float(fam.get("cup", 0.0))
+    if cup > 0 and not centre:
+        fr = np.array([1.0, 0.0, 0.0])
+        off = X - pt
+        wgt = np.maximum(off @ fr / max(np.linalg.norm(off, axis=1).max(), 1e-9), 0.0) ** 2
+        t_ = np.clip((s - st0) / max(L - st0, 1e-9), 0, 1)
+        fade = np.sin(np.pi * np.clip(t_ * 1.15, 0, 1)) ** 0.8
+        X = X - (cup * fade) * wgt[:, None] * (off / np.maximum(np.linalg.norm(off, axis=1, keepdims=True), 1e-9)) * np.maximum(np.linalg.norm(off, axis=1, keepdims=True) / max(np.linalg.norm(off, axis=1).max(), 1e-9), 0.5)
+    return X, dict(s=s, centre=pt, N=Nn, B=Bb, T=Tg, ra=float(ra), rf=float(rf))
+
+
+def grow_hard(body, ctx, name, p, fam):
+    """A HARD join (framework rule, 2 Nov): a separate closed shell sunk into the parent. No blending: the loft is not cut, nothing is bridged; the shell has its own rounded base, buried at least BURY H inside the loft, and every vertex is tagged as a crease
+    (tag 1: the normal test leaves the clean intersection line out). Same path, rings, cup and rounded tip as the soft tube."""
+    G = ctx["T"]
+    yaw = float(fam.get("plane", {}).get("yaw", 0.0))
+    P = np.array(fam["P"]); R = np.array(fam["R"])
+    pa = _path(p, P, R, yaw, False)
+    L = pa.length
+    bury = float(p["socket"].get("bury", 0.04))
+    nR = 8
+    psi = np.arange(nR) * (2 * math.pi / nR)
+    st = list(pa.stations(p["edge"]))
+    k0 = None
+    for frac in (0.9, 0.6, 0.35):                       # the deepest margin that finds a ring wholly buried (the shell's own base sits under the skin by at least this)
+        for k, s in enumerate(st):
+            X, inf = _ring_pts(pa, s, L, psi, fam, st[0])
+            if G.inside(X, margin=frac * bury).all():
+                k0 = k
+            elif k0 is not None:
+                break
+        if k0 is not None:
+            break
+    gap = float(p.get("ring_gap", 0.11))
+    if k0 is None:
+        # no full-width ring is buried (a wide ear on a round head): the shell starts with its own small rounded base, two rings that swell from 0.45 and 0.75 of the section at the path's start
+        s0 = st[0]
+        ss = [s0, s0 + 0.06] + list(np.linspace(s0 + 0.12, L, max(2, int(round((L - s0 - 0.12) / gap))) + 1))
+        scl = [0.45, 0.75] + [1.0] * (len(ss) - 2)
+    else:
+        s0 = st[k0]
+        n = max(2, int(round((L - s0) / gap)))
+        ss = list(np.linspace(s0, L, n + 1))
+        scl = [1.0] * len(ss)
+    rings, info = [], []
+    for s, sc_ in zip(ss, scl):
+        X, inf = _ring_pts(pa, s, L, psi, fam, s0)
+        X = inf["centre"] + (X - inf["centre"]) * sc_
+        ids = [body.add(X[m], name, s, m / nR, target=X[m]) for m in range(nR)]
+        for v in ids:
+            body.tag[v] = 1.0
+        rings.append(ids); info.append(inf)
+    for a, b_ in zip(rings, rings[1:]):
+        for m in range(nR):
+            body.face(a[m], a[(m + 1) % nR], b_[(m + 1) % nR], b_[m], name)
+    # the rounded base (inside the parent) and the rounded tip
+    for ring, inf, sgn in ((rings[0], info[0], -1), (rings[-1], info[-1], 1)):
+        rt = max(inf["ra"], inf["rf"])
+        v = body.add(inf["centre"] + sgn * 0.85 * rt * inf["T"], name, 0.0, 0.0, target=None)
+        body.tag[v] = 1.0
+        for m in range(0, nR, 2):
+            body.face(ring[m], ring[(m + 1) % nR], ring[(m + 2) % nR], v, name)
+        if sgn > 0:
+            tipv = v
+    return dict(name=name, centre=False, path=pa, first_s=s0, rings_s=ss, rings=rings, ringinfo=info, tip_centre=tipv, loop=[], transition=[], join="hard", hard=True)
+
+
 def grow_tube(body, ctx, name, p, fam, i, c, centre):
     """Grow one tube. p: the part; fam: the family dict (P, R, plane); (i, c): the loft ring index and column of the socket centre (lateral: the 2 x 2 patch around vertex (i, c); centre: rings i-1..i+1, columns 0..1)."""
+    if p["socket"].get("join") == "hard" and not centre:
+        return grow_hard(body, ctx, name, p, fam)
     G = ctx["T"]
     cage = body.cage
     tf = ctx["info"]["torso"]["faces"]
     tr = ctx["info"]["torso"]["rings"]
-    rec = dict(name=name, centre=centre)
+    rec = dict(name=name, centre=centre, join="soft")
     nc = int(p["socket"].get("cols", [0, 1])[1]) if centre else 0          # centre tube: the patch covers columns 0 .. nc on the mirror
     kr = int(p["socket"].get("rows", 1)) if centre else 1                  # and rings i - kr .. i + kr (kr = 1: the first design's patch; 2: a tall root the size of the tail's first ring)
     nR = (2 * nc + 2 * kr + 1) if centre else 8
@@ -128,6 +202,14 @@ def grow_tube(body, ctx, name, p, fam, i, c, centre):
         rings.append(ids); info.append(inf)
     # the tip: the last ring closed by 4 quads (2 on the half ring) round a centre vertex 0.85 of the tip radius beyond it; subdivision rounds it into the dome
     rt = max(info[-1]["ra"], info[-1]["rf"])
+    trs = float(p.get("end", {}).get("tip_ring_rows", 0.0))
+    if trs > 0 and not centre:
+        # a rounder dome (pass 2): one more ring, shrunk to `tip_ring` of the radius and set 0.6 of it beyond the last, before the 4-quad cap (the 4-quad cap alone turns the normal 25-30 degrees across one face at level 2)
+        tr_ = float(p["end"].get("tip_ring", 0.6))
+        X2, inf2 = ring_at(L, scale=tr_, shift=0.55 * rt)
+        ids2 = [body.add(X2[m], name, L + 0.55 * rt, m / nR, target=X2[m]) for m in range(nR)]
+        rings.append(ids2); info.append(inf2)
+        rt = max(inf2["ra"], inf2["rf"])
     Tg = info[-1]["T"]
     cvp = info[-1]["centre"] + (0.85 * rt) * Tg
     cv = body.add(cvp, name, L + rt, 0.0, target=None, centre=centre)      # no target: the limit surface of a 4-quad cap is a rounder, lower dome than its centre vertex, and a target would run the vertex out into a spike

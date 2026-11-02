@@ -6,6 +6,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import s20indiv as IN, s20tex as TX, s20pipe as PP, s20glb, s20coat as CT, s20normals as NM, s20p2 as P2, s20sil as SL, subdiv as SD
 
+SHIP_LEVEL = 1                         # the owner: ship subdivision level 1 of the relaxed cage, at most 3,500 vertices
+MAX_SHIPPED = 3500
 OLD_L3_VERTICES = 49162                 # the pass-1 glb: level 3 of the type specimen, the coat as vertex colours
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "out")
 
@@ -16,23 +18,24 @@ class T(unittest.TestCase):
         cls.c, cls.b, cls.R = IN.make(1)
         os.makedirs(OUT, exist_ok=True)
         cls.tex = PP.make_tex(cls.b, cls.c["coat"])
-        cls.M = TX.render_mesh(cls.b, 2)
+        cls.M = TX.render_mesh(cls.b, SHIP_LEVEL)
 
     def test_vertex_budget_and_level(self):
         n = P2.counts(self.b)
         shipped = len(self.M["V"])
         print("vertex counts: cage", n["cage_full"], "level 1", n["L1"], "level 2", n["L2"], "level 3", n["L3"], "; shipped (level 2 split at the UV seams)", shipped, "; pass-1 glb", OLD_L3_VERTICES)
+        self.assertLessEqual(shipped, MAX_SHIPPED)
         self.assertLessEqual(shipped, OLD_L3_VERTICES / 3.0)
-        self.assertEqual(len(self.M["Vw"]), n["L2"])
+        self.assertEqual(len(self.M["Vw"]), n["L1"])
 
     def test_silhouette_unchanged_by_the_density_drop(self):
         Vf, Ff, attr, fp, cr, mir = self.b.full()
         sil = {}
-        for L in (2, 3):
+        for L in (SHIP_LEVEL, 3):
             V, F, _, _, _ = SD.subdivide(Vf, Ff, cr, attr, fp, levels=L)
             sil[L] = SL.silhouette(V, np.array(F), 304)
-        i = SL.iou(sil[2], sil[3])
-        print("304 silhouette IoU, level 2 vs level 3 of the same cage", round(i, 4))
+        i = SL.iou(sil[SHIP_LEVEL], sil[3])
+        print("304 silhouette IoU, the shipped level vs level 3 of the same cage", round(i, 4))
         self.assertGreaterEqual(i, 0.98)
 
     def test_atlas_is_a_real_texture(self):

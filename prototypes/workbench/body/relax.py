@@ -46,13 +46,15 @@ def junction_loops(body, ctx):
     return out
 
 
-def smooth_junctions(body, ctx, iters=60, hops=8, lam=0.5, mu=-0.53, protect=None):
+def smooth_junctions(body, ctx, iters=60, hops=8, lam=0.5, mu=-0.53, protect=None, only=None):
     cage = body.cage
     V, F, mirror = cage.full()
     n = len(cage.V)
     nbr = full_adjacency(F, len(V))
     seeds = []
     for name, loop, nt in junction_loops(body, ctx):
+        if only is not None and name not in only:
+            continue
         for v in loop:
             seeds.append(v)
             if mirror[v] != v:

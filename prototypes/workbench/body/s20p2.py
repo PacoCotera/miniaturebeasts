@@ -86,7 +86,7 @@ def posed(M, b, R, pose):
 
 def house_images(b, tex, sub, genome, paths, R=None):
     import s20render as RN
-    M = TX.render_mesh(b, 2)
+    M = TX.render_mesh(b)
     if R is not None:
         M = posed(M, b, R, R.stand_pose())                              # the stand pose: the tail yawed toward the camera, as the house view shows it
     out = {}
@@ -164,3 +164,52 @@ def variety_block(step, srcdir, n=12, grey=False):
         cells.append(f"<div class='cell'><div class='cap'><b>{i}</b> {txt}</div><img src='{step}/ind/{i:02d}-a304.png' width='304'><br>"
                      f"<img src='{step}/ind/{i:02d}-a96.png' width='192' style='image-rendering:pixelated;{style}'> <img src='{step}/ind/{i:02d}-back.png' width='190'></div>")
     return "<h2>The twelve in the stand pose (304 px; the 96 px render at 2x; the back view az 160)</h2><div class='grid' style='grid-template-columns:repeat(4,320px)'>" + "".join(cells) + "</div>"
+
+
+def stand_back_views(b, R, sub, azs=(135, 180, 225), centre=(-0.4, 0.0, 1.1), width=380, height=460, pph=140.0):
+    """The stand pose (the tail yawed toward the camera's side, as the house view shows it) in clay and in the Normal view from behind: the rest pose is symmetric, so a tail from behind reads as a stub there; the stand pose shows its curve."""
+    import gltf_out
+    os.makedirs(sub, exist_ok=True)
+    V, F, at, fp2 = level_arrays(b, 2)
+    part = IN.part_of(b, F, fp2, len(V))
+    W = R.weights(V, at, part)
+    Vp = R.skin(V, W, R.stand_pose())
+    vn = NM.vertex_normals(Vp, F)
+    vs = [(f"az{a:03d}", float(a), 12.0) for a in azs]
+    mesh = dict(V=Vp, F=[tuple(f) for f in F], V0=Vp, F0=[tuple(f) for f in F])
+    views.render_views(b, sub, views=vs, tag="stand-", width=width, height=height, pph=pph, centre=centre, wire=False, mesh=mesh, samples=24)
+    for name, az, el in vs:
+        img = nview.render(Vp, F, vn, az, el, centre, pph, width, height)[0]
+        B.write_png(os.path.join(sub, f"stand-normal-{name}.png"), img)
+    return [v[0] for v in vs]
+
+
+def ear_join_report(b, name="ear.L"):
+    """The join rule's numbers for a tube socket: for a SOFT join the footprint (the socket loop's width across the ear) over the ear's mid width (needs 1.5-1.8), the narrowest ring between the loop and the middle of the ear over the mid width (never pinches below it), and the normal test inside the root zone;
+    for a HARD join the depth the shell's base is buried inside the parent (needs 0.03 H) and that every vertex is a tagged crease."""
+    ctx = b.ctx
+    rec = ctx["info"]["tubes"][name]
+    Vc = b.cage.arr(); m = ctx["remap"]
+    G = ctx["T"]
+    out = dict(join=rec.get("join", "soft"))
+    mid = rec["rings"][len(rec["rings"]) // 2]
+    _, _, vt = np.linalg.svd(Vc[mid] - Vc[mid].mean(0))
+    wax = vt[0]                                                           # the ear's width axis: the major axis of its middle ring
+    mid_w = float(np.ptp((Vc[mid] - Vc[mid].mean(0)) @ wax))
+    if out["join"] == "soft":
+        loop = [m[v] for v in rec["loop"] if v in m]
+        N0 = wax
+        foot = float(np.ptp((Vc[loop] - Vc[loop].mean(0)) @ N0))
+        bands = [[m[v] for v in tr if v in m] for tr in (rec["transition"] if rec["transition"] and isinstance(rec["transition"][0], (list, tuple)) else [rec["transition"]])]
+        chain = [loop] + bands + [list(rec["rings"][k]) for k in range(len(rec["rings"]) // 2 + 1)]
+        ws = [float(np.ptp((Vc[ids] - Vc[ids].mean(0)) @ N0)) for ids in chain if len(ids)]
+        out.update(footprint=foot, mid_width=mid_w, ratio=foot / mid_w, narrowest_over_mid=min(ws) / mid_w, loops=len(bands))
+    else:
+        base = rec["rings"][0]
+        # buried depth: how far inside the loft the shell's base ring lies (distance along the outward normal estimate from the design field)
+        Vt, Ft, att, fpt = level_arrays(b, 2)
+        tor = Vt[np.rint(att[:, 0]).astype(int) == b.parts["torso"]]
+        pts = Vc[[m[v] for v in base if v in m]]
+        dist = np.sqrt(((pts[:, None, :] - tor[None, ::2, :]) ** 2).sum(2).min(1))
+        out.update(buried=float(dist.min()), tagged=bool(all(b.tag.get(m[v], 0) >= 1.0 for r in rec["rings"] for v in r if v in m)))
+    return out

@@ -175,6 +175,9 @@ class Rig:
                 W[m, idx[f"ear.1.{sd}"]] = ((1 - t) * (1 - rbe))[m]
                 W[m, idx[f"ear.2.{sd}"]] = t[m] * (1 - rbe[m])
                 W[m, idx["head"]] += rbe[m]
+        for nm_ in pb:
+            if nm_.split(".")[0] in ("whisker", "fang", "horn", "tusk"):          # the face attachment families ride on the head
+                W[sel(nm_), idx["head"]] = 1.0
         arm = sel("arm.L")
         if arm.any():
             arec = ctx["info"]["tubes"]["arm.L"]
@@ -194,7 +197,7 @@ class Rig:
         M = {n: np.eye(4) for n in self.names}
         x = np.array([1.0, 0, 0]); y = np.array([0, 1.0, 0]); zz = np.array([0, 0, 1.0])
         piv = self.belly
-        Mb = trans([0, 0, bob]) @ rot(zz, body_yaw, piv) @ rot(x, body_roll, piv) @ rot(y, body_pitch, piv) @ scale_about(1 + breathe, piv)
+        Mb = trans([0, 0, bob]) @ rot(zz, body_yaw, piv) @ rot(x, body_roll, piv) @ rot(y, body_pitch, piv)       # the breath is a morph (Rig.breath), not a scale of the body bone
         M["body"] = Mb
         M["head"] = Mb @ rot(y, head_nod, B["head"][0]) @ rot(zz, head_yaw, B["head"][0])
         legs = legs or {}
@@ -224,6 +227,45 @@ class Rig:
             M[f"arm.{sd}"] = Mb @ rot(y, arm, B[f"arm.{sd}"][0])
         return M
 
+    # ------------------------------------------------------------ breathing (owner, 2 Nov): only the chest and belly inflate
+    RIB = (1.25, 0.22, 0.035)       # arc length from the crown (u) of the ribcage lobe's peak, its half width, its radial growth at full inhale (+3.5 %)
+    BELLY = (1.68, 0.26, 0.020)     # the belly lobe: +2 %
+
+    def breath_k(self, u):
+        k = np.zeros_like(np.asarray(u, float))
+        for c, w, a in (self.RIB, self.BELLY):
+            x = (np.asarray(u, float) - c) / w
+            k = k + np.where(np.abs(x) < 1, a * np.cos(0.5 * np.pi * x) ** 2, 0.0)
+        return k
+
+    def breath(self, V, attr, part, amount=1.0):
+        """The breath as a vertex offset (a morph target in the glb): the radial offset, in the section plane of the one spine, of the loft's vertices between the waist and the seat (the named back range and the chest above it), eased by arc length and zero at the neck, the seat, the tail, the head; the ears, legs, feet and lantern do
+        not move; the arms ride the chest (they take the offset of the surface under their root: moved, not scaled). Returns dV (n, 3)."""
+        ctx = self.ctx
+        G = ctx["T"]
+        pb = ctx["body_parts"]
+        n = len(V)
+        dV = np.zeros((n, 3))
+        tor = part == pb["torso"]
+        s = np.clip(np.asarray(attr[:, 1], float), 0.0, G.L)
+        u = G.L - s
+        pt, T, N_, B_ = G.pa.at(s[tor])
+        rad = V[tor] - pt
+        rad = rad - (rad * T).sum(1, keepdims=True) * T
+        dV[tor] = amount * self.breath_k(u[tor])[:, None] * rad
+        if "arm.L" in pb:
+            arm = part == pb["arm.L"]
+            if arm.any():
+                for sg in (1.0, -1.0):
+                    m = arm & (np.sign(V[:, 1] + 1e-12) == sg)
+                    if not m.any():
+                        continue
+                    c = V[m].mean(0)
+                    near = np.where(tor & (np.sign(V[:, 1] + 1e-12) == sg))[0]
+                    j = near[np.argsort(((V[near] - c) ** 2).sum(1))[:12]]
+                    dV[m] = dV[j].mean(0)
+        return dV
+
     def skin(self, V, W, M):
         Vh = np.hstack([V, np.ones((len(V), 1))])
         out = np.zeros_like(V)
@@ -235,7 +277,7 @@ class Rig:
 
     def stand_pose(self, toward=-1.0):
         """The tail yawed 44 degrees (plus 40 per turn of extra curl, up to 56; the file's 30 / 45 left the lantern half behind the head in the house view) toward the camera's side (+y is the creature's left: negative yaw about z swings the back-pointing tail toward +y), a 6 degree head tilt."""
-        yaw = min(44.0 + 40.0 * max(self.curl, 0.0), 56.0)
+        yaw = min(62.0 + 40.0 * max(self.curl, 0.0), 70.0)
         return self.pose(tail_yaw=math.radians(yaw) * toward, head_nod=math.radians(-3.0))
 
     # ------------------------------------------------------------ the waddle

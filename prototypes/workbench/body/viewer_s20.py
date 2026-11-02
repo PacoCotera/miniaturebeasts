@@ -12,8 +12,8 @@ HTML = r"""<!doctype html><html><head><meta charset="utf-8"><title>Tuliko (S20),
 #ui{position:fixed;left:12px;top:10px;z-index:2;max-width:820px}button{font:inherit;font-size:15px;padding:6px 14px;margin:2px;border:1px solid #888;background:#fff;border-radius:4px;cursor:pointer}
 button.on{background:#2b6fd6;color:#fff;border-color:#2b6fd6}#msg{margin:6px 4px;color:#555}canvas{display:block}
 #legend{display:none;position:fixed;right:12px;top:10px;font-size:14px;line-height:1.45;background:#fff;padding:6px 10px;border-radius:4px;border:1px solid #bbb}</style></head><body>
-<div id="ui"><b>Tuliko (S20)</b> (one continuous cage, level 2, coat on a texture) &nbsp;
-<span id="modes"><button data-m="coat" class="on">Coat</button><button data-m="normal">Normal</button><button data-m="parts">Parts in colours</button><button data-m="wire">Wireframe</button></span><br>
+<div id="ui"><b>Tuliko (S20)</b> (<span id="cnt"></span>) &nbsp;
+<span id="modes"><button data-m="coat" class="on">Coat</button><button data-m="normal">Normal</button><button data-m="parts">Parts in colours</button><button data-m="wire">Wireframe</button><button data-m="cage">Cage</button></span><br>
 <span id="clips"></span> <button id="blinkbtn">Blink: on</button><button id="glowbtn">Glow pulse: on</button>
 <div id="msg">Drag to orbit, wheel to zoom, right-drag to pan. Clips loop; Rest is the bind pose. The blink draws the eye patches (open, half, closed, half); the lantern and freckles pulse 0.8-1.0 over 2.4 s.</div></div>
 <div id="legend"></div>
@@ -40,7 +40,9 @@ const GLB = "%GLB%";
   const gltf = await new Promise((res, rej) => new GLTFLoader().parse(bin.buffer, "", res, rej));
   root.add(gltf.scene);
   const parts = gltf.parser.json.asset.extras.parts;
-  let mesh; gltf.scene.traverse(o => { if (o.isSkinnedMesh) mesh = o; });
+  let mesh, cageMesh; gltf.scene.traverse(o => { if (o.isSkinnedMesh) { if (o.name === "cage") cageMesh = o; else mesh = o; } });
+  { const c = gltf.parser.json.asset.extras.counts; document.getElementById("cnt").textContent = gltf.parser.json.asset.extras.build + " \u00b7 " + c.render_vertices + " verts (cage " + c.cage_vertices + "), " + c.render_triangles + " triangles, subdivision level " + c.level; }
+  cageMesh.frustumCulled = false; cageMesh.visible = false; cageMesh.material = new THREE.MeshBasicMaterial({ color: 0x0a2a7a, wireframe: true, depthTest: true });
   mesh.frustumCulled = false;
   const geo = mesh.geometry, pa = geo.getAttribute("_part");
   const pal = parts.map((_, i) => new THREE.Color().setHSL((i * 0.137) % 1, 0.62, 0.55));
@@ -48,7 +50,7 @@ const GLB = "%GLB%";
   for (let i = 0; i < pa.count; i++) { const c = pal[Math.round(pa.getX(i))] || pal[0]; pcol[3 * i] = c.r; pcol[3 * i + 1] = c.g; pcol[3 * i + 2] = c.b; }
   // the coat comes from the glb's own material (baseColor, emissive and roughness textures on the cage's UVs); Parts mode paints per-part colours as vertex colours
   const pcolAttr = new THREE.BufferAttribute(pcol, 3);
-  const coatMat = mesh.material; coatMat.roughness = 1.0; coatMat.metalness = 0; coatMat.needsUpdate = true;
+  const coatMat = mesh.material; coatMat.roughness = 1.3; coatMat.metalness = 0; coatMat.needsUpdate = true;
   const emissive0 = coatMat.emissiveIntensity;
   const ex = gltf.parser.json.asset.extras;
   // the blink: the eye patches are drawn over a canvas copy of the base atlas (open, half, closed, half)
@@ -66,11 +68,13 @@ const GLB = "%GLB%";
     coat: coatMat,
     normal: new THREE.MeshNormalMaterial({ flatShading: false }),
     parts: new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 }),
-    wire: new THREE.MeshBasicMaterial({ color: 0x1a3d8f, wireframe: true })
+    wire: new THREE.MeshBasicMaterial({ color: 0x1a3d8f, wireframe: true })        // the shipped (render) mesh's triangles
   };
   const setMode = (m) => {
     if (m === "parts") { geo.setAttribute("color", pcolAttr); mats.parts.needsUpdate = true; }
-    mesh.material = mats[m]; document.querySelectorAll("#modes button").forEach(b => b.classList.toggle("on", b.dataset.m === m));
+    mesh.material = mats[m === "cage" ? "coat" : m]; cageMesh.visible = (m === "cage");
+    if (m === "cage") { mats.coat.polygonOffset = true; mats.coat.polygonOffsetFactor = 1; mats.coat.polygonOffsetUnits = 1; } else { mats.coat.polygonOffset = false; }
+    document.querySelectorAll("#modes button").forEach(b => b.classList.toggle("on", b.dataset.m === m));
     const lg = document.getElementById("legend"); lg.style.display = m === "parts" ? "block" : "none";
     lg.innerHTML = parts.map((n, i) => `<div><span style="display:inline-block;width:14px;height:14px;background:#${pal[i % pal.length].getHexString()};margin-right:6px;vertical-align:middle"></span>${n}</div>`).join("");
     window.__mode = m; };

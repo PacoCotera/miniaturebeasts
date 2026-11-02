@@ -61,12 +61,17 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
     body.ctx = ctx
     m, vol = body.finish()
     ctx["remap"] = m
+    body.tag = {m[k]: v for k, v in body.tag.items() if k in m}          # tags set before the fit (hard shells) follow the vertex remap
     ctx["shells_flipped"] = orient_shells(body)
     ctx["volume"] = vol
     ctx["body_parts"] = dict(body.parts)
     ctx["n_before_details"] = len(body.cage.V)
     if stage >= 1:
         import beads as BD
+        for rec_ in ctx["info"].get("limbs", {}).values():          # the flat sole's rim is a deliberate sharp feature, like the toes: tagged as a crease (the normal test leaves it out)
+            for v_ in rec_["rings"][rec_["support_ring"]] + [rec_["sole_centre"]]:
+                if v_ in m:
+                    body.tag[m[v_]] = 1.0
         BD.add_beads(body, ctx)                # three toe beads per foot, after the fit's frame is known (they follow it by hook)
         body.cage.fix_winding()
     if fix:
@@ -90,6 +95,8 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
         if stage >= 1 and kw.get("smooth_junctions", True):
             import relax
             ctx["log"]["junctions"] = relax.smooth_junctions(body, ctx, **kw.get("junction_opts", {}))
+            for nm_, o_ in (kw.get("junction_extra") or {"ear.L": dict(iters=100, hops=10), "arm.L": dict(iters=90, hops=9)}).items():       # the ears and arms are thinner than the legs: a second, wider pass on their loops
+                ctx["log"]["junctions_" + nm_] = relax.smooth_junctions(body, ctx, only=[nm_], **o_)
             for h in body.hooks:
                 h(body)
         if stage >= 1 and kw.get("relax", True):
@@ -97,4 +104,9 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
             ctx["log"]["relax"] = relax.tangential_relax(body, ctx, **kw.get("relax_opts", {}))
             for h in body.hooks:
                 h(body)
+    if kw.get("appendages"):
+        import appendages as AP
+        ctx["log"]["appendages"] = AP.add_appendages(body, ctx, kw["appendages"])
+        ctx["shells_flipped"] += orient_shells(body)
+        ctx["body_parts"] = dict(body.parts)
     return body

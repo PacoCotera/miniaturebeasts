@@ -11,9 +11,10 @@ import numpy as np
 import s20coat as CT
 
 SIZE = 2048
+SHIP_LEVEL = 1                     # the shipped subdivision level (the owner: at most 3,500 vertices); the atlas is baked against THIS level's UVs
 PX = 400.0
 UV_C = 0.7
-ISLAND = {"torso": (60, 60), "crown": (1560, 60), "tip": (1560, 520), "sole": (1560, 800), "leg.L": (60, 1330), "ear.L": (700, 1330), "arm.L": (1320, 1330)}
+ISLAND = {"app": (1000, 1600), "torso": (60, 60), "crown": (1560, 60), "tip": (1560, 520), "sole": (1560, 800), "leg.L": (60, 1330), "ear.L": (700, 1330), "arm.L": (1320, 1330)}
 
 
 def _frames_dense(pa, step=0.004):
@@ -88,6 +89,16 @@ def face_uv(b, V, F, fpart, attr):
     x0, y0 = ISLAND["tip"]
     uv[fi, :, 0] = x0 + (d @ ri["N"] * 0 + (d @ ri["B"]) + 0.3) * PX
     uv[fi, :, 1] = y0 + (np.abs(d @ ri["N"]) * side[fi][:, None] + 0.3) * PX
+    # ---- the face attachment families: one colour strip each (100 x 6 px); u runs along the shell (its arc fraction), the coat colours it from that
+    for j_, (nm_, pid_) in enumerate(sorted((k, v) for k, v in b.parts.items() if k.split(".")[0] in ("whisker", "fang", "horn", "tusk"))):
+        sel_ = np.where(fpart == pid_)[0]
+        if len(sel_):
+            isl[sel_] = "app"
+            tt = attr[F[sel_]][:, :, 1]
+            uv[sel_, :, 0] = 1000 + 12 * j_ + 0.0 + np.array([0, 0, 6, 6])[None]
+            uv[sel_, :, 1] = 1600 + 100.0 * np.clip(tt, 0, 1) + np.array([0, 6, 6, 0])[None] * 0
+            uv[sel_, :, 0] = 1000 + 12 * j_ + np.array([0, 6, 6, 0])[None]
+            uv[sel_, :, 1] = 1600 + 100.0 * np.clip(tt, 0, 1) * 0 + 100.0 * np.clip(tt, 0, 1)
     # ---- tubes (the left-hand island; the right side is folded onto it)
     for nm in ("leg.L", "ear.L", "arm.L"):
         if nm not in b.parts:
@@ -231,7 +242,21 @@ def pad(img, covered, n=10):
     return img, cov
 
 
-def bake(b, genome, level=3, frames=("open",), size=SIZE, verbose=False):
+def refine_uv(uv, levels):
+    """The per-corner UVs of the children of each quad after `levels` Catmull-Clark steps (subdiv.py's face order: face i gives faces 4i .. 4i+3, child k = corner k, edge k to k+1, centre, edge k-1 to k): affine inside each parent face, so the baked texture matches the shipped mesh exactly."""
+    for _ in range(levels):
+        n = len(uv)
+        out = np.zeros((n * 4, 4, 2))
+        for k in range(4):
+            out[k::4, 0] = uv[:, k]
+            out[k::4, 1] = 0.5 * (uv[:, k] + uv[:, (k + 1) % 4])
+            out[k::4, 2] = uv.mean(1)
+            out[k::4, 3] = 0.5 * (uv[:, (k - 1) % 4] + uv[:, k])
+        uv = out
+    return uv
+
+
+def bake(b, genome, level=3, frames=("open",), size=SIZE, verbose=False, ship_level=None):
     """Bake the coat: returns dict(col (size,size,3) sRGB 0-255 float, emit, rough (size,size), covered, uv (faces of level 2 are made by the caller), face, tri, bary, mesh3). `frames` are the eye frames to evaluate: 'open' is the whole atlas, the others only
     the texels round the eyes (the rest equals 'open'); returns col per frame."""
     import subdiv as SD, gltf_out
@@ -240,7 +265,15 @@ def bake(b, genome, level=3, frames=("open",), size=SIZE, verbose=False):
     F3 = np.array(F3, int)
     fp3 = np.asarray(fp3).astype(int)
     N3 = gltf_out.vertex_normals(V3, F3)
-    uv, isl = face_uv(b, V3, F3, fp3, attr3)
+    sl = SHIP_LEVEL if ship_level is None else ship_level
+    if sl < level:
+        V1, F1, _, attr1, fp1 = SD.subdivide(Vf, Ff, cr, attr, fp, levels=sl)
+        F1 = np.array(F1, int)
+        uv1, isl1 = face_uv(b, V1, F1, np.asarray(fp1).astype(int), attr1)
+        uv = refine_uv(uv1, level - sl)
+        isl = np.repeat(isl1, 4 ** (level - sl))
+    else:
+        uv, isl = face_uv(b, V3, F3, fp3, attr3)
     face, tri, bary = rasterize(uv, size)
     cov = face >= 0
     fi = face[cov]
@@ -277,10 +310,11 @@ def bake(b, genome, level=3, frames=("open",), size=SIZE, verbose=False):
     return out
 
 
-def render_mesh(b, level=2):
+def render_mesh(b, level=None):
     """The shipped mesh: the cage's subdivision at `level`, smooth area-weighted vertex normals (computed on the welded surface, so they are continuous across a UV seam), and UVs. Vertices are split where the UV differs (a seam). Returns dict(V, F (quads),
     N, UV (0-1, v down like the image rows), vid (the welded vertex of each split vertex), part (per welded vertex), attr (welded), isl (per face), Vw, Fw, Nw, fpart)."""
     import subdiv as SD, gltf_out
+    level = SHIP_LEVEL if level is None else level
     Vf, Ff, attr, fp, cr, mir = b.full()
     V, F, _, at, fpp = SD.subdivide(Vf, Ff, cr, attr, fp, levels=level)
     F = np.array(F, int)

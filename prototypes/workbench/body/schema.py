@@ -77,6 +77,9 @@ def validate(spec):
                 raise SchemaError(f"{name}: path.key must be x or z")
             if p["path"].get("key") == "z" and p["path"].get("N") != "back":
                 raise SchemaError(f"{name}: a z-keyed loft needs N: back")
+        if p["kind"] in ("limb", "tube") and spec.get("species") == "S20" or (p["kind"] == "tube" and p.get("socket", {}).get("join")):
+            if p["socket"].get("join") not in ("soft", "hard"):
+                raise SchemaError(f"{name}: every socket declares its join type, 'soft' (grows out of the parent's skin) or 'hard' (a separate shell sunk into it); nothing in between")
         if p["kind"] == "tube":
             if p["mirror"] not in ("lateral", "centre"):
                 raise SchemaError(f"{name}: tube mirror must be lateral or centre")

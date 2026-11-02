@@ -3,8 +3,8 @@ import numpy as np
 import s20tex as TX
 
 
-def make_tex(b, genome, size=TX.SIZE, pad_px=12, frames=("open", "half", "closed")):
-    out = TX.bake(b, genome, level=3, frames=frames, size=size)
+def make_tex(b, genome, size=TX.SIZE, pad_px=12, frames=("open", "half", "closed"), ship_level=None):
+    out = TX.bake(b, genome, level=3, frames=frames, size=size, ship_level=ship_level)
     cov = out["cov"]
     col, _ = TX.pad(out["col"]["open"], cov, pad_px)
     em, _ = TX.pad(out["emit"], cov, pad_px)

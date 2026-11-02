@@ -695,7 +695,7 @@
     ],
     "fillet": 1.25,
     "union_k": 0.14,
-    "ring_gap": 0.1,
+    "ring_gap": 0.16,
     "cap_depth": 0.8,
     "ranges": {
      "head": [
@@ -720,7 +720,7 @@
      ]
     },
     "bend_n": 0,
-    "ring_gap_tip": 0.05
+    "ring_gap_tip": 0.062
    }
   },
   "leg.L": {
@@ -740,7 +740,8 @@
     "transition": 1,
     "match": "distance",
     "u": 1.55,
-    "gap": 0.05
+    "gap": 0.05,
+    "join": "soft"
    },
    "joints": [
     {
@@ -759,7 +760,7 @@
     {
      "name": "knee",
      "len": 0.2,
-     "pitch": -40,
+     "pitch": -90,
      "r": [
       0.23,
       0.24
@@ -769,7 +770,7 @@
     {
      "name": "ankle",
      "len": 0.12,
-     "pitch": -88,
+     "pitch": -90,
      "r": [
       0.22,
       0.23
@@ -818,7 +819,9 @@
      2
     ],
     "push": 0.005,
-    "transition": 2
+    "transition": 3,
+    "join": "soft",
+    "flare": 0.25
    },
    "family": "@body.ear-family",
    "default": "prick",
@@ -999,7 +1002,8 @@
    "end": {
     "kind": "dome",
     "cap": "grid-2x2",
-    "tip_ring": 0.6
+    "tip_ring": 0.6,
+    "tip_ring_rows": 1
    }
   },
   "tail": {
@@ -1021,8 +1025,8 @@
     },
     {
      "name": "t1",
-     "len": 0.223,
-     "pitch": 161,
+     "len": 0.2,
+     "pitch": 195,
      "r": [
       0.17,
       0.17
@@ -1030,44 +1034,44 @@
     },
     {
      "name": "t2",
-     "len": 0.239,
-     "pitch": 123,
+     "len": 0.21,
+     "pitch": 150,
      "r": [
-      0.13,
-      0.13
+      0.15,
+      0.15
      ]
     },
     {
      "name": "t3",
-     "len": 0.229,
-     "pitch": 85,
+     "len": 0.2,
+     "pitch": 105,
      "r": [
-      0.1,
-      0.1
+      0.115,
+      0.115
      ]
     },
     {
      "name": "t4",
-     "len": 0.199,
-     "pitch": 140,
+     "len": 0.18,
+     "pitch": 162,
      "r": [
-      0.067,
-      0.067
+      0.075,
+      0.075
      ]
     },
     {
      "name": "t5",
-     "len": 0.154,
-     "pitch": 213,
+     "len": 0.165,
+     "pitch": 206,
      "r": [
-      0.07,
-      0.07
+      0.062,
+      0.062
      ]
     },
     {
      "name": "tip",
-     "len": 0.184,
-     "pitch": 273,
+     "len": 0.195,
+     "pitch": 275,
      "r": [
       0.055,
       0.055
@@ -1106,7 +1110,9 @@
     "push": 0.01,
     "transition": 3,
     "flare": 0.15,
-    "gap": 0.04
+    "gap": 0.0,
+    "inside_frac": 0.3,
+    "join": "soft"
    },
    "default": "nub",
    "families": {
@@ -1139,7 +1145,7 @@
       },
       {
        "name": "tip",
-       "len": 0.14,
+       "len": 0.18,
        "pitch": -50,
        "r": [
         0.095,
@@ -1154,7 +1160,8 @@
    "end": {
     "kind": "dome",
     "cap": "grid-2x2",
-    "tip_ring": 0.6
+    "tip_ring": 0.6,
+    "tip_ring_rows": 1
    }
   }
  },
@@ -2035,5 +2042,43 @@
     1.7
    ]
   }
- }
+ },
+ "appendages": {
+  "note": "face attachment families (appendages.py): each is a set of small closed shells on the face, genome-driven (presence, count, size, curve, colour) with an `age` input where the family has one; a species lists the families it allows",
+  "allowed": [
+   "whisker",
+   "fang"
+  ],
+  "whisker": {
+   "per_side": [
+    0,
+    3
+   ],
+   "length": [
+    0.2,
+    0.45
+   ],
+   "droop": [
+    0.1,
+    0.5
+   ],
+   "curl": [
+    0.0,
+    0.6
+   ],
+   "glow_tips": "rare (about 1 in 7)"
+  },
+  "fang": {
+   "presence": "about 1 in 4",
+   "count": [
+    1,
+    2
+   ],
+   "length": 0.06
+  },
+  "horn": "framework only (tests and a bare-base render); not on Tuliko",
+  "tusk": "framework only (tests and a bare-base render); not on Tuliko",
+  "join": "hard"
+ },
+ "join_rule": "every socket declares its join: 'soft' (the appendage grows out of the parent's skin: footprint 1.5-1.8 x its width, a concave fillet over at least 3 loops, no pinch, no ridge, lip or notch; the normal test passes at the root) or 'hard' (a separate closed shell sunk at least 0.03 H into the parent: no blending, a clean intersection line, tagged as a crease). Nothing in between. Tuliko: legs, ears and arms soft; the face attachment families (whiskers, fangs, horns, tusks) hard."
 }

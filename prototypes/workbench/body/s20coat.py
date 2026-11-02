@@ -10,7 +10,7 @@ import math
 import numpy as np
 
 COAT_DEFAULT = dict(
-    palette="dusk", hue=270.0, glow_hue=80.0, layout="plain", coat_value=1.0, belly_reach=0.0, glow=0.9, grain=0.35, sheen=0.3,
+    palette="dusk", hue=270.0, glow_hue=80.0, glow_pattern="none", layout="plain", coat_value=1.0, belly_reach=0.0, glow=0.9, grain=0.35, sheen=0.3,
     gradient=0.25, hue_shift=0.0, fleck=0.35, freckle_density=0.35, freckle_glow=0.8, bleed=0.55,
     rd="none", rd_scale=1.0, rd_contrast=0.5, rosette=0.0, bands=5, brow=0.0, mark="none", mark_size=0.10, mark_where="forehead",
     blush=True, eye_size=1.0, eye_height=0.0, eye_spacing=0.0, mouth_width=1.0, mouth_z=0.0, expression="content",
@@ -228,9 +228,17 @@ def palette_from_hue(h, g):
     # brighter hues (yellow to cyan) get a lower value so the luma stays level across the wheel
     bright = max(0.0, 1.0 - abs(((h - 105.0 + 180.0) % 360.0) - 180.0) / 75.0)
     v = float(np.clip((0.78 - 0.17 * bright) * cv, 0.55, 0.85))
-    sat = float(np.clip(0.52 - 0.06 * bright, 0.35, 0.60))
+    hot = max(0.0, 1.0 - abs(((h - 245.0 + 180.0) % 360.0) - 180.0) / 45.0) + max(0.0, 1.0 - abs(((h - 320.0 + 180.0) % 360.0) - 180.0) / 40.0)      # blues and pinks read hot first
+    sat = float(np.clip(0.52 - 0.06 * bright - 0.11 * min(hot, 1.0), 0.35, 0.60))
     if hue_window(h):
         sat = float(np.clip(sat, 0.45, 0.58))
+    # look-dev (30ad1e70): the soft studio light and AgX Punchy take light off the coat, more at the cool hues. Measured medians of the rendered body at 96 px: violet S 0.33 V 0.60, rust S 0.47 V 0.67, green S 0.43 V 0.53. The palette folds in the gains so the rendered coat
+    # lands at about S 0.45-0.55, V 0.65-0.75 (the plush range, in the house light): value x1.0 on the warm hues up to x1.32 on the greens and cool hues, saturation x1.15-1.4 on the cool ones.
+    warm_w = max(0.0, 1.0 - min(abs(((h - 30.0 + 180.0) % 360.0) - 180.0), 120.0) / 80.0)
+    gv = 1.0 + 0.32 * (1.0 - min(1.0, warm_w * 1.4))
+    cool = max(0.0, 1.0 - abs(((h - 250.0 + 180.0) % 360.0) - 180.0) / 110.0)
+    gs = 1.12 + 0.28 * cool
+    v = float(np.clip(v * gv, 0.55, 1.0)); sat = float(np.clip(sat * gs, 0.35, 0.75))
     coat = hsv_plush(h, sat, v)
     cl = _luma(coat / 255.0)
     if hue_window(h):
@@ -324,6 +332,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     belly_lo = 0.70 - g["belly_reach"]
     zlo, zhi = spec["zones"]["belly"]["z"]
     soft = spec["zones"]["belly"]["soft"]
+    soft = soft * 1.5                                                                  # a plush belly fades into the coat over about 0.04 H at its edge
     belly = sstep(belly_lo - soft, belly_lo + soft, a_geo) * band(zeff, zlo, zhi, soft)
     belly = np.where(torso & ~tail, belly, 0.0)
     F["belly"] = belly
@@ -337,7 +346,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         grid = _rd(g["rd"], seed, sc)
         pat = sample_grid(grid, gx, gy)
         w = torso * (1 - belly) * (1 - sstep(1.95, 2.15, z))
-        m = w * sstep(0.46, 0.62, pat) * g["rd_contrast"]
+        m = w * sstep(0.46, 0.62, pat) * (0.55 + 0.45 * g["rd_contrast"])
         F["rd"] = m
         col = col * (1 - m[:, None]) + mark * m[:, None] * 1.0
     # ---- zones by layout
@@ -368,7 +377,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         pts = np.where(tail, sstep(Lt - 0.30, Lt - 0.10, s), pts)
         pts = np.where(leg, 1 - sstep(0.12, 0.2, z), pts)
         F["points"] = pts
-        col = col * (1 - 0.7 * pts[:, None]) + mark * 0.7 * pts[:, None]
+        col = col * (1 - 0.95 * pts[:, None]) + mark * 0.95 * pts[:, None]
     if "socks" in zones:
         m = np.where(leg, 1 - sstep(0.12, 0.2, z), 0.0)
         F["socks"] = m
@@ -438,14 +447,36 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
             rough[tip] = 0.3
             F["lit"] = lit
         elif fam == "tuft":
-            col[tip] = srgb_to_lin(pal["belly"]) * 1.0
+            col[tip] = srgb_to_lin(pal["ear-inner"]) * 1.0           # unlit, in the contrasting pastel of the inner ear: a pompom that tells apart from the lit bulb at 96
         else:
-            col[tip] = mark * 1.1
+            col[tip] = mark * 0.8 + srgb_to_lin(pal["pad"]) * 0.2        # a plain dome: a visible dark cap
+    # keep the freckles and the glowing pattern 0.08 H clear of the eyes and the mouth (they read as crumbs beside the mouth)
+    Re_ = spec["face"]["eyes"]["r"] * g["eye_size"]
+    Pe_ = surface_frame(G, spec["face"]["eyes"]["station"] + g["eye_height"], spec["face"]["eyes"]["around"] + g["eye_spacing"])[0]
+    Pm_ = surface_frame(G, spec["face"]["mouth"]["station"] + g["mouth_z"], 1.0)[0]
+    clear = ((np.linalg.norm(Vm - Pe_, axis=1) > Re_ + 0.08) & (np.linalg.norm(Vm - Pm_, axis=1) > 0.5 * spec["face"]["mouth"]["width"] * g["mouth_width"] + 0.08)).astype(float)
+    F["clear"] = clear
+    # one glowing pattern gene (the night-light species): emissive belly bands, or constellation dots on the back and head
+    gp = g.get("glow_pattern", "none")
+    glow_n0 = glow / max(float(glow.max()), 1e-6)
+    if gp == "belly-bands":
+        ph_ = (zeff / 0.15) % 1.0
+        bm = belly * band_f(ph_, 0.12, 0.52, 0.08) * clear
+        F["glow_pattern"] = bm
+        col = col * (1 - 0.7 * bm[:, None]) + (glow * 0.85 + 0.1) * 0.7 * bm[:, None]
+        emit = emit + glow_n0 * (bm * (0.55 + 0.45 * gl))[:, None]
+    elif gp == "constellation":
+        dd, cc = voronoi(V * (1.0 / 0.17), seed + 31)
+        host_ = (torso & ~tail) * (1 - belly) * band(zeff, 0.5, 2.05, 0.1) * clear
+        dots = host_ * (cc < 0.5) * (1 - sstep(0.07, 0.13, dd))
+        F["glow_pattern"] = dots
+        col = col * (1 - 0.8 * dots[:, None]) + np.clip(glow * 0.5 + 0.5, 0, 1.2) * 0.8 * dots[:, None]
+        emit = emit + glow_n0 * (dots * (0.6 + 0.4 * gl))[:, None]
     # freckles: tiny glowing dots that thicken and brighten toward the tail
     if g["freckle_density"] > 0:
         d, cell = voronoi(V * (1.0 / 0.075), seed + 11)
         dens = g["freckle_density"] * (0.12 + 0.88 * t ** 1.6)
-        host = (torso | tail | leg | arm | ear) * (1 - belly * 0.7)
+        host = (torso | tail | leg | arm | ear) * (1 - belly * 0.7) * clear
         rad = 0.16 + 0.07 * cell
         m = host * (cell < dens) * (1 - sstep(rad - 0.07, rad + 0.05, d))
         F["freckles"] = m
@@ -460,6 +491,33 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         if not (pal.get("_hue") is not None and is_warm(pal["_hue"])):          # no colour bleed on the warm hues: the tail stays the body's colour down to the stalk
             col = col * (1 - 0.12 * e[:, None]) + glow * 0.12 * e[:, None]
         emit = emit + (glow / max(float(glow.max()), 1e-6)) * (0.25 * gl * e)[:, None]
+    # ---- the face attachment families (appendages.py): colours by family, from the shell's arc fraction attr s
+    pnames = {v: k for k, v in ctx["body_parts"].items()}
+    for pid_, nm_ in pnames.items():
+        fam_ = nm_.split(".")[0]
+        if fam_ not in ("whisker", "fang", "horn", "tusk"):
+            continue
+        sel_ = part == pid_
+        if not sel_.any():
+            continue
+        tt = np.clip(attr[:, 1], 0, 1)
+        rec_ = ctx["info"].get("appendages", {}).get(nm_, {})
+        if fam_ == "whisker":
+            c0 = srgb_to_lin(pal["mark"]) * 0.8
+            col[sel_] = c0
+            if rec_.get("glow"):
+                gm = sel_ * sstep(0.55, 0.9, tt)
+                col = col * (1 - gm[:, None]) + (glow * 0.4 + 0.5) * gm[:, None]
+                emit = emit + (glow / max(float(glow.max()), 1e-6)) * (gm * (0.7 + 0.3 * gl))[:, None]
+        elif fam_ == "fang":
+            col[sel_] = srgb_to_lin(np.array([248.0, 244.0, 232.0]))
+        else:
+            wear = float(rec_.get("wear", 0.0))
+            base = srgb_to_lin(pal["mark"]) * (1.0 - 0.45 * wear)
+            tipc = srgb_to_lin(np.array([240.0, 232.0, 214.0])) if fam_ == "horn" else srgb_to_lin(np.array([246.0, 240.0, 226.0]))
+            mix_ = sstep(0.0, 0.7, tt) if fam_ == "horn" else sstep(0.0, 0.4, tt)
+            col[sel_] = (base[None] * (1 - mix_[sel_, None]) + tipc[None] * mix_[sel_, None])
+        rough[sel_] = 0.5
     # ---- the face (decals on the loft's own coordinates)
     f_eye = srgb_to_lin(pal["acc_eye"]); f_mouth = srgb_to_lin(pal["acc_mouth"]); f_blush = srgb_to_lin(pal["acc_blush"]); f_catch = srgb_to_lin(pal["acc_catch"])
     head = torso * (z > 1.2)
@@ -520,11 +578,22 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         sdf = np.where(np.abs(um) < W * 0.62, sdf, 1.0)
     elif expr == "o":
         sdf = np.abs(np.hypot(um, vm + 0.03) - 0.035) - 0.0
+    elif expr == "open":
+        sdf = np.full(len(V), 1.0)
     else:
         sdf = np.where(np.abs(um) < W * 0.5, vm, 1.0)
-    mm = head * (dm @ nm_ > -0.12) * (1 - sstep(0.012, 0.028, np.abs(sdf)))
-    F["mouth"] = mm
-    col = col * (1 - mm[:, None]) + f_mouth * mm[:, None]
+    mm = head * (dm @ nm_ > -0.12) * (1 - sstep(0.02, 0.034, np.abs(sdf)))          # a stroke about 0.05 H wide: it survives at 96 px
+    if expr == "open":
+        # the open-mouth expression: a dark oval with a pink tongue in its lower half (the plush bunnies have one)
+        e_ = np.hypot(um / (W * 0.30), (vm + 0.045) / 0.058)
+        mm = head * (dm @ nm_ > -0.12) * (1 - sstep(0.92, 1.04, e_))
+        F["mouth"] = mm
+        col = col * (1 - mm[:, None]) + f_mouth * 0.6 * mm[:, None]
+        tg = mm * (1 - sstep(-0.05, 0.0, (vm + 0.045) / 0.058 + 0.15)) * (1 - sstep(0.4, 0.8, e_))
+        col = col * (1 - tg[:, None]) + srgb_to_lin(np.array([235.0, 105.0, 125.0])) * tg[:, None]
+    else:
+        F["mouth"] = mm
+        col = col * (1 - mm[:, None]) + f_mouth * mm[:, None]
     # a small mark: a heart or a star
     if g["mark"] != "none":
         where = g["mark_where"]

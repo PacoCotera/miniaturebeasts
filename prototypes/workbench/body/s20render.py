@@ -163,20 +163,45 @@ def tex_obj(M, paths, genome, glow_scale=1.5):
     return ob
 
 
-def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3), samples=48, glow_scale=1.5, floor=True):
+def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3), samples=None, glow_scale=1.5, floor=True):
+    """The plush look (look-dev 30ad1e70, plush.py): the velvet material, the soft studio light, AgX Punchy, 256 samples with the denoiser; 96 px frames are rendered at 3x and 48 px at 4x and box-filtered down (native small renders streak). Returns the RGBA float array and the camera."""
+    import plush as PL
+    ss = PL.SS.get(int(w), 1)
     sc = B.reset()
-    sc.render.film_transparent = True
+    PL.plush_render(sc)
     sc.render.image_settings.color_mode = "RGBA"
-    sc.cycles.samples = samples
-    sc.cycles.max_bounces = 4
-    tex_obj(M, paths, genome, glow_scale)
+    if samples is not None and samples < 100:
+        sc.cycles.samples = min(PL.SOFT_RENDER["samples"], max(samples, 64))               # a quick render for the close-ups: fewer samples, same look
+    mat = PL.plush_material(paths)
+    V, F = M["V"], M["F"]
+    me = bpy.data.meshes.new("body")
+    me.from_pydata([tuple(v) for v in V], [], [tuple(f) for f in F])
+    me.update()
+    for p_ in me.polygons:
+        p_.use_smooth = True
+    uv = me.uv_layers.new(name="UVMap")
+    UV = np.asarray(M["UV"], float)
+    loops = np.array([v for f in F for v in f])
+    uv.data.foreach_set("uv", np.stack([UV[loops, 0], 1.0 - UV[loops, 1]], 1).ravel())
+    try:
+        me.normals_split_custom_set_from_vertices([tuple(n) for n in M["N"]])
+    except Exception:
+        pass
+    ob = bpy.data.objects.new("body", me)
+    sc.collection.objects.link(ob)
+    me.materials.append(mat)
     if floor and el > 0:
-        fl = bpy.data.meshes.new("floor"); fl.from_pydata([(-2.4, -1.6, 0), (1.2, -1.6, 0), (1.2, 1.6, 0), (-2.4, 1.6, 0)], [], [(0, 1, 2, 3)])
+        fl = bpy.data.meshes.new("floor"); fl.from_pydata([(-7, -5, 0), (5, -5, 0), (5, 5, 0), (-7, 5, 0)], [], [(0, 1, 2, 3)])
         fo = bpy.data.objects.new("floor", fl); sc.collection.objects.link(fo); fo.is_shadow_catcher = True
-    ko = B.lights(sc, az)
-    ko.data.angle = math.radians(2.5)
-    cam = B.camera(sc, az, el, w, h, np.array(centre, float), ppH=ppH)
+    PL.plush_light(sc, az)
+    cam = B.camera(sc, az, el, w * ss, h * ss, np.array(centre, float), ppH=ppH * ss)
     os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
-    return gates.load_rgba(path), cam
+    a = gates.load_rgba(path)
+    if ss > 1:                                    # box filter, premultiplied
+        pre = a.copy(); pre[..., :3] *= pre[..., 3:4]
+        pre = pre.reshape(h, ss, w, ss, 4).mean((1, 3))
+        al = pre[..., 3:4]
+        a = np.concatenate([np.where(al > 1e-6, pre[..., :3] / np.maximum(al, 1e-6), 0), al], 2)
+    return a, cam

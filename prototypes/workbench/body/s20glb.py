@@ -101,18 +101,35 @@ def build(b, rig, M, tex, path, clips=("stand", "waddle", "breathe", "idle"), ex
         nodes.append(nd)
     mesh_node = len(nodes)
     nodes.append(dict(name="tuliko", mesh=0, skin=0))
+    # the CAGE (the quad control mesh the surface is the subdivision of), skinned by the same skeleton: edges as degenerate triangles (a, b, b), drawn as lines by the viewer's Cage toggle
+    Cv, Cf, c_attr, c_fp, c_cr, c_mir = b.full()
+    cpart = np.rint(c_attr[:, 0]).astype(int)
+    Wc = rig.weights(Cv, c_attr, cpart)
+    Jc, Wtc = GO.top4(Wc)
+    ce = sorted({(min(f[k], f[(k + 1) % 4]), max(f[k], f[(k + 1) % 4])) for f in Cf for k in range(4)})
+    c_idx = np.array([[a_, b_, b_] for a_, b_ in ce], np.uint32).reshape(-1)
+    cage_node = len(nodes)
+    nodes.append(dict(name="cage", mesh=1, skin=0))
     ibm = np.zeros((len(bn), 4, 4), np.float32)
     for n in bn:
         T = np.eye(4); T[:3, 3] = -rig.bones[n][0]
         ibm[bidx[n]] = T.T.astype(np.float32)
     a_ibm = buf.add(ibm.reshape(-1, 16), None, FLOAT, "MAT4")
+    c_pos = buf.add(Cv.astype(np.float32), 34962, FLOAT, "VEC3", True)
+    c_j = buf.add(Jc, 34962, USHORT, "VEC4")
+    c_w = buf.add(Wtc, 34962, FLOAT, "VEC4")
+    c_i = buf.add(c_idx, 34963, UINT, "SCALAR")
     anims = []
 
     def world(M, n):
         T = np.eye(4); T[:3, 3] = rig.bones[n][0]
         return M[n] @ T
 
-    def sample(poses, period, name):
+    # the breath: a morph target (the chest and belly offset along the radial direction), driven by a weights channel
+    dVb = rig.breath(Vw, attr_w, part_w)[vid].astype(np.float32)
+    a_morph = buf.add(dVb, 34962, FLOAT, "VEC3", True)
+
+    def sample(poses, period, name, weights=None):
         times = np.linspace(0, period, len(poses), endpoint=False).astype(np.float32)
         times = np.append(times, np.float32(period)); poses = list(poses) + [poses[0]]
         t_acc = buf.add(times.reshape(-1, 1), None, FLOAT, "SCALAR", True)
@@ -127,6 +144,10 @@ def build(b, rig, M, tex, path, clips=("stand", "waddle", "breathe", "idle"), ex
             for tgt, arr in (("translation", tr), ("rotation", ro), ("scale", sc)):
                 a = buf.add(np.array(arr, np.float32), None, FLOAT, "VEC4" if tgt == "rotation" else "VEC3")
                 samp.append(dict(input=t_acc, output=a, interpolation="LINEAR")); chans.append(dict(sampler=len(samp) - 1, target=dict(node=bidx[n], path=tgt)))
+        if weights is not None:
+            w_ = np.append(np.asarray(weights, np.float32), np.float32(weights[0]))
+            a_w2 = buf.add(w_.reshape(-1, 1), None, FLOAT, "SCALAR")
+            samp.append(dict(input=t_acc, output=a_w2, interpolation="LINEAR")); chans.append(dict(sampler=len(samp) - 1, target=dict(node=mesh_node, path="weights")))
         anims.append(dict(name=name, channels=chans, samplers=samp))
 
     if "stand" in clips:
@@ -134,21 +155,21 @@ def build(b, rig, M, tex, path, clips=("stand", "waddle", "breathe", "idle"), ex
     if "waddle" in clips:
         sample([rig.waddle_pose(i / 16)[0] for i in range(16)], 0.9, "waddle")
     if "breathe" in clips:
-        sample([rig.pose(breathe=0.02 * math.sin(2 * math.pi * i / 16 - math.pi / 2) * 0.5 + 0.01, tail_yaw=-math.radians(38.0), head_nod=math.radians(-3.0)) for i in range(16)], 3.0, "breathe")
+        sample([rig.pose(tail_yaw=-math.radians(38.0), head_nod=math.radians(-3.0)) for i in range(16)], 3.3, "breathe", weights=[0.5 - 0.5 * math.cos(2 * math.pi * i / 16) for i in range(16)])          # about 0.3 Hz
     if "idle" in clips:
         T = 2.2
         poses = []
         for i in range(24):
             ph = i / 24
-            poses.append(rig.pose(breathe=0.01 + 0.01 * math.sin(2 * math.pi * ph * (T / 3.0) - 1.57), tail_yaw=-math.radians(38.0), tail_sway=math.radians(8) * math.sin(2 * math.pi * ph),
+            poses.append(rig.pose(tail_yaw=-math.radians(38.0), tail_sway=math.radians(8) * math.sin(2 * math.pi * ph),
                                   ear=math.radians(5) * math.sin(2 * math.pi * (ph - 0.07)), head_nod=math.radians(-3.0 + 2.0 * math.sin(2 * math.pi * ph * 0.5)), arm=math.radians(3) * math.sin(2 * math.pi * ph)))
-        sample(poses, T, "idle")
-    prim = dict(attributes=dict(POSITION=a_pos, NORMAL=a_nor, TEXCOORD_0=a_uv, JOINTS_0=a_j, WEIGHTS_0=a_w, _PART=a_part), indices=a_idx, material=0)
+        sample(poses, T, "idle", weights=[0.5 - 0.5 * math.cos(2 * math.pi * i / 24 * (T / 3.3)) for i in range(24)])
+    prim = dict(attributes=dict(POSITION=a_pos, NORMAL=a_nor, TEXCOORD_0=a_uv, JOINTS_0=a_j, WEIGHTS_0=a_w, _PART=a_part), indices=a_idx, material=0, targets=[dict(POSITION=a_morph)])
     sampler = dict(magFilter=9729, minFilter=9987, wrapS=33071, wrapT=33071)
     gl = dict(asset=dict(version="2.0", generator="tuliko body build", extras=dict(parts=names, clips=[a["name"] for a in anims] + ["blink (eye patches over the atlas: open, half, closed, half)"],
-                                                                              glow_pulse=dict(period=2.4, range=[0.8, 1.0]), blink=dict(interval=[3.0, 6.0], patches=blink, base_image=i_col, atlas=int(tex["col"].shape[0])), **(extras or {}))),
-              scene=0, scenes=[dict(nodes=[bidx["root"], mesh_node])], nodes=nodes, skins=[dict(joints=list(range(len(bn))), inverseBindMatrices=a_ibm, skeleton=bidx["root"])],
-              meshes=[dict(name="tuliko", primitives=[prim])],
+                                                                              glow_pulse=dict(period=2.4, range=[0.8, 1.0]), blink=dict(interval=[3.0, 6.0], patches=blink, base_image=i_col, atlas=int(tex["col"].shape[0])), counts=dict(cage_vertices=int(len(Cv)), render_vertices=int(len(V)), render_triangles=int(len(tris)), level=int((extras or {}).get("level", 0))), **(extras or {}))),
+              scene=0, scenes=[dict(nodes=[bidx["root"], mesh_node, cage_node])], nodes=nodes, skins=[dict(joints=list(range(len(bn))), inverseBindMatrices=a_ibm, skeleton=bidx["root"])],
+              meshes=[dict(name="tuliko", primitives=[prim], weights=[0.0], extras=dict(targetNames=["breathe"])), dict(name="cage", primitives=[dict(attributes=dict(POSITION=c_pos, JOINTS_0=c_j, WEIGHTS_0=c_w), indices=c_i, material=0)])],
               samplers=[sampler], images=images, textures=[dict(sampler=0, source=k_) for k_ in range(len(images))],
               materials=[dict(name="coat", pbrMetallicRoughness=dict(baseColorTexture=dict(index=i_col), metallicRoughnessTexture=dict(index=i_rough), metallicFactor=0.0, roughnessFactor=1.0),
                               emissiveTexture=dict(index=i_emit), emissiveFactor=[1.0, 1.0, 1.0], extensions={"KHR_materials_emissive_strength": {"emissiveStrength": GLOW_GAIN}})],
@@ -162,4 +183,4 @@ def build(b, rig, M, tex, path, clips=("stand", "waddle", "breathe", "idle"), ex
         bin_ += b"\0"
     out = b"glTF" + struct.pack("<II", 2, 12 + 8 + len(js) + 8 + len(bin_)) + struct.pack("<I", len(js)) + b"JSON" + js + struct.pack("<I", len(bin_)) + b"BIN\0" + bin_
     open(path, "wb").write(out)
-    return dict(bytes=len(out), parts=names, bones=bn, clips=[a["name"] for a in anims], verts=len(V), tris=len(tris), images=len(images))
+    return dict(bytes=len(out), cage_vertices=int(len(Cv)), parts=names, bones=bn, clips=[a["name"] for a in anims], verts=len(V), tris=len(tris), images=len(images))

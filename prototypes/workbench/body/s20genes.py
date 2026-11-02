@@ -110,9 +110,10 @@ GENES = {
     "appearance.coat-value": ("mult", 0.8, 1.2, "coat"), "appearance.bib-reach": ("off", -0.1, 0.12, "coat"), "appearance.glow": ("lin", 0.6, 1.0, "coat"), "skin.grain": ("lin", 0.25, 0.45, "coat"), "skin.sheen": ("lin", 0.2, 0.4, "coat"),
     # the coat's own genes (the owner's steer: the coat is where Tuliko becomes itself)
     "coat.gradient": ("lin", 0.1, 0.5, "coat"), "coat.hue-shift": ("off", -0.06, 0.06, "coat"), "coat.fleck": ("lin", 0.2, 0.8, "coat"), "coat.freckle-density": ("lin", 0.1, 1.0, "coat"),
-    "coat.freckle-glow": ("lin", 0.5, 1.0, "coat"), "coat.bleed": ("lin", 0.3, 0.9, "coat"), "coat.rd-scale": ("lin", 0.8, 1.3, "coat"), "coat.rd-contrast": ("lin", 0.35, 0.7, "coat"),
+    "coat.freckle-glow": ("lin", 0.5, 1.0, "coat"), "coat.bleed": ("lin", 0.3, 0.9, "coat"), "coat.rd-scale": ("lin", 0.8, 1.3, "coat"), "coat.rd-contrast": ("lin", 0.6, 1.0, "coat"),
     "coat.rosette": ("lin", 0.0, 1.0, "coat"), "coat.bands": ("int", 3, 7, "coat"), "coat.mark-size": ("lin", 0.07, 0.12, "coat"),
     # the hue gene replaces the three fixed palettes (pass 2): the body hue in degrees, and the firefly glow hue (70-90 on every individual)
+    "face.whisker-count": ("int", 0, 3, "face"), "face.whisker-length": ("lin", 0.2, 0.45, "face"), "face.whisker-droop": ("lin", 0.1, 0.5, "face"), "face.whisker-curl": ("lin", 0.0, 0.6, "face"),
     "appearance.body-hue": ("lin", 0.0, 360.0, "coat"), "appearance.glow-hue": ("lin", 70.0, 90.0, "coat"),
 }
 # pair-map loci: alleles with draw weights, and the dominance order the phenotype follows (the first dominant allele of the pair shows)
@@ -123,9 +124,13 @@ PAIRS = {
     "coat.rd": (["none", "spots", "labyrinth", "rings"], [0.4, 0.25, 0.2, 0.15], ["none", "spots", "labyrinth", "rings"]),
     "coat.mark": (["none", "heart", "star"], [0.5, 0.25, 0.25], ["none", "heart", "star"]),
     "coat.mark-where": (["forehead", "cheek", "belly"], [0.5, 0.3, 0.2], ["forehead", "cheek", "belly"]),
+    "coat.glow-pattern": (["none", "belly-bands", "constellation"], [0.34, 0.33, 0.33], ["none", "belly-bands", "constellation"]),        # the night-light species' one glowing pattern gene
+    "face.expression": (["content", "open"], [0.8, 0.2], ["content", "open"]),
+    "face.whisker-glow": (["off", "glow"], [0.85, 0.15], ["off", "glow"]),                     # a rare variant: glowing whisker tips
+    "face.fangs": (["none", "fangs"], [0.75, 0.25], ["none", "fangs"]),                        # tiny fangs: about 1 in 4
 }
 SWITCHES = {"face.blush": 0.8, "coat.brow": 0.25}
-TYPE_PAIRS = {"body.ear-family": "prick", "body.tail-tip": "lantern", "appearance.marking-layout": "plain", "coat.rd": "none", "coat.mark": "none", "coat.mark-where": "forehead"}
+TYPE_PAIRS = {"body.ear-family": "prick", "body.tail-tip": "lantern", "appearance.marking-layout": "plain", "coat.rd": "none", "coat.mark": "none", "coat.mark-where": "forehead", "coat.glow-pattern": "none", "face.expression": "content", "face.whisker-glow": "off", "face.fangs": "none"}
 TYPE_COAT_T = {"coat.gradient": 0.5, "coat.fleck": 0.5, "coat.freckle-density": 0.5, "coat.freckle-glow": 0.8, "coat.bleed": 0.5}      # the type specimen's modest coat (t of each lin locus)
 
 
@@ -146,6 +151,7 @@ def specimen():
     t = {k: 0.5 for k in GENES}
     t.update(TYPE_COAT_T)
     t["appearance.glow"] = 0.8
+    t["face.whisker-count"] = 0.0
     t["appearance.body-hue"] = 270.0 / 360.0; t["appearance.glow-hue"] = 0.5
     t["skin.grain"] = 0.5; t["skin.sheen"] = 0.5
     t["coat.bands"] = 0.5; t["coat.mark-size"] = 0.5; t["coat.rd-scale"] = 0.5; t["coat.rd-contrast"] = 0.5; t["coat.rosette"] = 0.0
@@ -175,6 +181,11 @@ def draw(i, seed0=2026):
     t["appearance.body-hue"] = float(np.round(((270.0 + 30.0 * (i - 1) + 14.0 * (rng.random() - 0.5)) % 360.0) / 360.0, 3))          # twelve hues round the wheel, 30 degrees apart (the type is violet)
     tipk = TIPS[(i - 2) % len(TIPS)]
     pairs["body.tail-tip"] = [tipk, tipk] if tipk != "lantern" else ["lantern", str(rng.choice(["lantern", "tuft", "plain"]))]
+    pairs["coat.glow-pattern"] = [["none", "belly-bands", "constellation"][(i - 1) % 3]] * 2                 # the sheet cycles the glowing pattern gene
+    pairs["face.expression"] = ["open"] * 2 if i in (4, 9) else ["content"] * 2
+    t["face.whisker-count"] = [0.0, 0.4, 0.7, 1.0][(i - 1) % 4] if i != 1 else 0.0               # the sheet shows 0, 1 .. 3 whiskers a side
+    pairs["face.whisker-glow"] = ["glow"] * 2 if i == 6 else ["off"] * 2
+    pairs["face.fangs"] = ["fangs"] * 2 if i in (3, 8, 11) else ["none"] * 2                          # and shows the open-mouth expression twice
     sw = dict(blush=bool(rng.random() < SWITCHES["face.blush"]), brow=bool(rng.random() < SWITCHES["coat.brow"]))
     return dict(t=t, pairs=pairs, switches=sw, seed=int(rng.integers(1, 10 ** 6)))
 
@@ -195,12 +206,14 @@ def creature(ind):
              shape=dict(torsoGirth=v["body.torso-girth"], headSize=v["body.head-size"], legLen=v["body.limb-length"], legGirth=v["body.limb-girth"], ear=ph["body.ear-family"], earLen=v["body.ear-length"],
                         earGirth=v["body.ear-girth"], splay=v["body.ear-splay"], droop=v["body.ear-droop"], tailLen=v["body.tail-length"], tailGirth=v["body.tail-girth"], curl=v["body.tail-curl"],
                         lift=v["body.tail-lift"], tip=ph["body.tail-tip"], tipSize=v["body.tip-size"]),
-             coat=dict(hue=v["appearance.body-hue"], glow_hue=v["appearance.glow-hue"], layout=ph["appearance.marking-layout"], coat_value=v["appearance.coat-value"], belly_reach=v["appearance.bib-reach"], glow=v["appearance.glow"],
+             coat=dict(glow_pattern=ph["coat.glow-pattern"], expression=ph["face.expression"], hue=v["appearance.body-hue"], glow_hue=v["appearance.glow-hue"], layout=ph["appearance.marking-layout"], coat_value=v["appearance.coat-value"], belly_reach=v["appearance.bib-reach"], glow=v["appearance.glow"],
                        grain=v["skin.grain"], sheen=v["skin.sheen"], gradient=v["coat.gradient"], hue_shift=v["coat.hue-shift"], fleck=v["coat.fleck"], freckle_density=v["coat.freckle-density"],
                        freckle_glow=v["coat.freckle-glow"], bleed=v["coat.bleed"], rd=ph["coat.rd"], rd_scale=v["coat.rd-scale"], rd_contrast=v["coat.rd-contrast"], rosette=v["coat.rosette"] if ph["appearance.marking-layout"] == "spotted" else 0.0,
                        bands=v["coat.bands"], brow=1.0 if ind["switches"]["brow"] else 0.0, mark=ph["coat.mark"], mark_where=ph["coat.mark-where"], mark_size=v["coat.mark-size"], blush=bool(ind["switches"]["blush"]),
                        eye_size=v["growth.exterior-eye-size-ratio"], eye_height=v["growth.exterior-eye-height-ratio"], eye_spacing=v["growth.exterior-eye-spacing-ratio"], mouth_width=v["face.mouth-width"],
                        mouth_z=v["face.mouth-height"], seed=int(ind["seed"])),
+             appendages=dict(whiskers=dict(count=int(v["face.whisker-count"]), length=v["face.whisker-length"], droop=v["face.whisker-droop"], curl=v["face.whisker-curl"], glow=ph["face.whisker-glow"] == "glow"),
+                             fangs=(1 + int(ind["seed"]) % 2) if ph["face.fangs"] == "fangs" else 0),
              motion=dict(speed=v["movement.cycle-rate"], walk_period=0.9 / v["movement.cycle-rate"]),
              genes=dict(t={k: ind["t"][k] for k in sorted(ind["t"])}, pairs={k: ind["pairs"][k] for k in sorted(ind["pairs"])}, switches=ind["switches"]),
              notes=dict(head_size_clamped=bool(clamped), torso_length="the body-height gene is not applied (it would move every ring and socket); the type's 1.0 is kept", frond="the frond ear family and the cowlick are not built"))
@@ -237,7 +250,7 @@ def build_individual(raw, c, upto="base", balance=True):
         r = apply_shape(raw, g)
         r["parts"]["leg.L"]["joints"][0]["at"][0] += log["leg_dx"]
         spec, _ = SC.load(raw=r)
-        b = s20build.make_s20(spec, upto=upto, ear=c["shape"]["ear"], tip=c["shape"]["tip"], tip_size=c["shape"]["tipSize"])
+        b = s20build.make_s20(spec, upto=upto, ear=c["shape"]["ear"], tip=c["shape"]["tip"], tip_size=c["shape"]["tipSize"], appendages=c.get("appendages") if upto == "base" else None)
         if not balance or upto != "base":
             return b
         m = s20balance.measure(b)

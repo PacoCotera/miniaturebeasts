@@ -52,7 +52,8 @@ def junction_zone(b, V, radius=0.22):
     C = []
     for kind in ("limbs", "tubes"):
         for name, rec in ctx["info"].get(kind, {}).items():
-            C.append(Vc[[m[v] for v in rec["loop"]]].mean(0))
+            if len(rec["loop"]):                                  # a hard join has no loop (its intersection line is a tagged crease)
+                C.append(Vc[[m[v] for v in rec["loop"] if v in m]].mean(0))
     G = ctx["T"]
     pt = G.path.at([float(G.s_root)])[0][0]
     C.append(pt)
