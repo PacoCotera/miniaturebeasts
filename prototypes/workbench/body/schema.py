@@ -8,8 +8,8 @@ sys.path.append(os.path.join(os.path.dirname(HERE), "mesh"))
 import paths as PA
 
 SPECIES = os.path.join(HERE, "species", "S01.json")
-KINDS = {"loft", "limb", "socket-only", "tube"}
-PART_KEYS = {"loft": ["ring", "path", "section"], "limb": ["ring", "joints", "fillet", "socket"], "socket-only": ["socket"], "tube": ["ring", "socket", "mirror"]}
+KINDS = {"loft", "limb", "socket-only", "tube", "spine-range"}
+PART_KEYS = {"loft": ["ring", "path", "section"], "limb": ["ring", "joints", "fillet", "socket"], "socket-only": ["socket"], "tube": ["ring", "socket", "mirror"], "spine-range": ["joints"]}
 
 
 class SchemaError(ValueError):
@@ -116,6 +116,14 @@ def load(path=SPECIES, house=None, solve_sole=True, raw=None):
     spec = resolve(spec, names)
     spec["_names"] = names
     for name, p in spec["parts"].items():
+        if p["kind"] == "spine-range":
+            js = p["joints"]
+            if len(js) < 3 or "at" not in js[0]:
+                raise SchemaError(f"{name}: a spine range needs a root joint with `at` and at least 2 more")
+        if p["kind"] == "spine-range":
+            p["P"] = PA.fk(np.array(p["joints"][0]["at"], float), p["joints"]).tolist()
+            p["R"] = [j["r"] for j in p["joints"]]
+            continue
         if p["kind"] == "tube":
             sets = p["families"] if "families" in p else {"": p}
             for fam in sets.values():
@@ -135,7 +143,7 @@ def load(path=SPECIES, house=None, solve_sole=True, raw=None):
         else:
             jj2, root2, log = jj, root, {}
         p["solve"] = log
-        p["P"] = PA.fk(root2, jj2).tolist()
+        p["P"] = PA.fk(root2, jj2, plane_yaw=float(p.get("plane", {}).get("yaw", 0.0))).tolist()
         p["pitch_solved"] = [j.get("pitch") for j in jj2]
         p["R"] = [j["r"] for j in js]
     return spec, H

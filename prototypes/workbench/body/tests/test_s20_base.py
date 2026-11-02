@@ -92,11 +92,11 @@ class T(unittest.TestCase):
         Vt = self.V2[torso]
         zt = np.arange(0.3, 2.1, 0.02)
         wt = np.array([2 * float(np.abs(Vt[np.abs(Vt[:, 2] - z) < 0.03, 1]).max()) for z in zt])
-        head, body = wt[zt > 1.17].max(), wt[zt < 1.17].max()
+        head, body = wt[zt > 1.17].max(), wt[(zt > 0.7) & (zt < 1.17)].max()
         print("head/body width", round(head, 3), round(body, 3), round(head / body, 3))
         self.assertGreater(head / body, 1.04)
         P = np.array(self.spec["parts"]["leg.L"]["P"])
-        self.assertAlmostEqual(P[0][2] - P[-1][2], 0.46, delta=0.01)       # short thick limbs
+        self.assertAlmostEqual(P[0][2] - P[-1][2], 0.48, delta=0.01)       # short thick limbs
         self.assertLessEqual(self.V2[:, 2].min(), 0.0 + 0.03)
 
     def test_mesh_quality_report(self):

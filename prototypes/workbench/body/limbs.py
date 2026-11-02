@@ -75,7 +75,7 @@ def grow_limb(body, ctx, name, p, i, c, tf, tr):
         X = ring_points(pt[0], Nn[0], Bb[0], ra, rf, ps)
         # wholly outside the torso AND below the loop by a gap (the band must have a height, or its quads are slivers)
         below = (pt[0] - centre) @ Tg[0] - ((V0[loop] - centre) @ Tg[0]).max()
-        if not T.inside(X, margin=-0.01).any() and below >= GAP:
+        if not T.inside(X, margin=-0.01).any() and below >= p["socket"].get("gap", GAP):
             first = k
             break
     assert first is not None, f"{name}: no ring clears the torso"
@@ -91,6 +91,8 @@ def grow_limb(body, ctx, name, p, i, c, tf, tr):
     order = list(np.argsort(ang))
     k0 = int(np.argmin(np.abs(ang[order])))
     order = order[k0:] + order[:k0]
+    if p["socket"].get("match") == "distance":
+        order = list(range(len(loop)))          # S20: the loop keeps its own cyclic order on the loft (on a tilted ring its angles in the leg's frame are not a polygon); the nearest pairing below chooses the shift and direction
     loop = [loop[o] for o in order]
     rec["loop"] = loop
     rec["loop_psi"] = [float(ang[o]) for o in order]
@@ -138,9 +140,35 @@ def grow_limb(body, ctx, name, p, i, c, tf, tr):
         prev = loop
     if ntrans or max(ratio, 1 / ratio) > 1.3:
         mids = []
+        circle = p["socket"].get("profile") == "circle"
+        if circle:
+            cl, c0 = Vn[loop].mean(0), Vn[rings[0]].mean(0)
         for kk in range(1, max(ntrans, 1) + 1):
             t = kk / (max(ntrans, 1) + 1)
-            mids.append([body.add((1 - t) * Vn[a] + t * Vn[b], name, st[0], m / nR, target=(1 - t) * Vn[a] + t * Vn[b]) for m, (a, b) in enumerate(zip(loop, rings[0]))])
+            if p["socket"].get("profile") == "extrude":
+                # S20: the band first leaves the loft along its own outward normal (a collar of height `extrude`), then runs to the column's first ring: the loft faces round the loop and the first band no longer overlap
+                ex = float(p["socket"].get("extrude", 0.1))
+                if kk == 1:
+                    nrm = []
+                    for a in loop:
+                        g = np.array([(float(T.d((Vn[a] + e)[None])[0]) - float(T.d((Vn[a] - e)[None])[0])) / 0.02 for e in 0.01 * np.eye(3)])
+                        nrm.append(g / max(np.linalg.norm(g), 1e-9))
+                    first = [Vn[a] + ex * nrm[i] for i, a in enumerate(loop)]
+                    pos = first
+                else:
+                    u_ = (kk - 1) / max(ntrans, 1)
+                    pos = [(1 - u_) * first[i] + u_ * Vn[b] for i, (a, b) in enumerate(zip(loop, rings[0]))]
+            elif circle:
+                # a fillet, not a straight blend: the band leaves the loft along its surface and turns into the column on a quarter circle (distance 1 - cos, size 1 - sin)
+                ph = 0.5 * math.pi * t
+                cu = cl + (c0 - cl) * (1 - math.cos(ph))
+                pos = [cu + (Vn[b] - c0) + ((Vn[a] - cl) - (Vn[b] - c0)) * (1 - math.sin(ph)) for a, b in zip(loop, rings[0])]
+            else:
+                pos = [(1 - t) * Vn[a] + t * Vn[b] for a, b in zip(loop, rings[0])]
+            if p["socket"].get("lift"):
+                import tube as _tube
+                pos = [_tube._outward(T, x, margin=float(p["socket"]["lift"])) for x in pos]       # S20: a transition vertex under the loft's skin makes the band fold back over it: lift it out along the loft's normal
+            mids.append([body.add(pos[m], name, st[0], m / nR, target=pos[m]) for m in range(nR)])
         rec["transition"] = mids[0] if len(mids) == 1 else mids
         for mid in mids:
             for m in range(nR):

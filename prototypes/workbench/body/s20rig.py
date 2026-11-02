@@ -34,6 +34,10 @@ def scale_about(s, about):
     return M
 
 
+SOCKET_R0, SOCKET_R1 = 0.35, 0.7
+TF_A, TF_B = 0.19, 0.07
+
+
 class Rig:
     def __init__(self, ctx):
         self.ctx = ctx
@@ -99,38 +103,53 @@ class Rig:
         s = attr[:, 1]
         sel = lambda nm: (part == pb[nm]) if nm in pb else np.zeros(n, bool)
         torso = sel("torso")
-        wh = sstep(1.0, 1.4, z)
-        W[torso, idx["head"]] = wh[torso]
-        W[torso, idx["body"]] = 1 - wh[torso]
+        G = ctx["T"]
+        nt = len(self.tail_P)
+        s_root = G.s_root                                   # arc length (from the stalk) of the tail root joint: the tail is the first range of the one loft
+        t_body = sstep(s_root - 0.05, s_root + 0.35, s)       # 0 along the tail, 1 in the body
+        wh = sstep(1.0, 1.4, z) * (s > s_root + 0.3)
+        W[torso, idx["head"]] = (t_body * wh)[torso]
+        W[torso, idx["body"]] = (t_body * (1 - wh))[torso]
+        # the tail range: hat functions between the segments' middles along the arc length
+        ja = np.array(G.js[:nt])[::-1]                         # joint arcs, root first
+        mids_k = 0.5 * (ja[:-1] + ja[1:])                      # bone k = 1 .. nt - 1 (root to tip); arcs from the stalk, so bone 1 has the largest
+        order = np.argsort(mids_k)                             # ascending arc = tip bone first
+        mm = mids_k[order]
+        sc = np.clip(s, 0, None)
+        for r_, k in enumerate(order):
+            lo = mm[r_ - 1] if r_ > 0 else -1e9
+            hi = mm[r_ + 1] if r_ < len(mm) - 1 else 1e9
+            w = np.where(sc < mm[r_], np.clip((sc - lo) / max(mm[r_] - lo, 1e-9), 0, 1) if r_ > 0 else 1.0, np.clip((hi - sc) / max(hi - mm[r_], 1e-9), 0, 1) if r_ < len(mm) - 1 else 1.0)
+            W[torso, idx[f"tail.{k + 1}"]] = ((1 - t_body) * w)[torso]
         for nm in ("nose",):
             W[sel(nm), idx["head"]] = 1.0
         # legs
         leg = sel("leg.L")
         rec = ctx["info"]["limbs"]["leg.L"]
         Lleg = rec["path"].length
-        tr = np.zeros(len(s))            # the leg part is only the column (its first ring is the foot band): the loft loop above it carries the blend with the body
-        tf = sstep(Lleg - 0.19, Lleg - 0.07, s)
+        tr = np.zeros(len(s))            # the leg part (the band and the column) is carried by the leg bones; the loft round the socket follows the thigh with a falling weight (below)
+        tf = sstep(Lleg - TF_A, Lleg - TF_B, s)
+        tf = np.maximum(tf, 1 - sstep(0.06, 0.11, z))            # the toe beads carry the first ring's arc length: every vertex on the foot band moves with the foot
         for sd in SIDES:
             m = leg & (side == sd)
             W[m, idx[f"leg.upper.{sd}"]] = ((1 - tr) * (1 - tf))[m]
             W[m, idx[f"leg.foot.{sd}"]] = ((1 - tr) * tf)[m]
             W[m, idx["body"]] += tr[m]
-        # tail: hat functions at the segment middles; the first rings blend with the body
-        tl = sel("tail")
-        trec = ctx["info"]["tubes"]["tail"]
-        pa = trec["path"]
-        tj = np.array(pa.js)
-        mids = 0.5 * (tj[:-1] + tj[1:])
-        nb = len(mids)
-        sc = np.clip(s, 0, pa.length)
-        for k in range(nb):
-            lo = mids[k - 1] if k > 0 else -1e9
-            hi = mids[k + 1] if k < nb - 1 else 1e9
-            w = np.where(sc < mids[k], np.clip((sc - lo) / max(mids[k] - lo, 1e-9), 0, 1) if k > 0 else 1.0, np.clip((hi - sc) / max(hi - mids[k], 1e-9), 0, 1) if k < nb - 1 else 1.0)
-            W[tl, idx[f"tail.{k + 1}"]] = w[tl]
-        rb = 1 - sstep(trec["first_s"] - 0.02, trec["first_s"] + 0.2, s)
-        W[tl] *= (1 - rb[tl])[:, None]
-        W[tl, idx["body"]] += rb[tl]
+        # the belly skin round each leg's socket follows the upper-leg bone (the visible leg is only the short column under the loop, so a bone that moved it alone folded the band)
+        lt = leg & (s <= float(rec["first_s"]) + 1e-6)
+        for sd in SIDES:
+            sgn = 1 if sd == "L" else -1
+            lc = V[lt & (side == sd)].mean(0) if (lt & (side == sd)).any() else None
+            if lc is None:
+                continue
+            d = np.linalg.norm(V - lc, axis=1)
+            wl = (1 - sstep(SOCKET_R0, SOCKET_R1, d)) * (side == sd) * torso
+            for nm in ("body", "head"):
+                W[:, idx[nm]] *= (1 - wl)
+            for nm in names:
+                if nm.startswith("tail."):
+                    W[:, idx[nm]] *= (1 - wl)
+            W[:, idx[f"leg.upper.{sd}"]] += wl
         W[sel("tail.tip"), idx["tip"]] = 1.0
         # ears
         ear = sel("ear.L")
@@ -199,8 +218,8 @@ class Rig:
         return out
 
     def stand_pose(self, toward=-1.0):
-        """The tail yawed 38 degrees (plus 40 per turn of extra curl, up to 52; the file's 30 / 45 left the lantern half behind the head in the house view) toward the camera's side (+y is the creature's left: negative yaw about z swings the back-pointing tail toward +y), a 6 degree head tilt."""
-        yaw = min(38.0 + 40.0 * max(self.curl, 0.0), 52.0)
+        """The tail yawed 44 degrees (plus 40 per turn of extra curl, up to 56; the file's 30 / 45 left the lantern half behind the head in the house view) toward the camera's side (+y is the creature's left: negative yaw about z swings the back-pointing tail toward +y), a 6 degree head tilt."""
+        yaw = min(44.0 + 40.0 * max(self.curl, 0.0), 56.0)
         return self.pose(tail_yaw=math.radians(yaw) * toward, head_nod=math.radians(-3.0))
 
     # ------------------------------------------------------------ the waddle

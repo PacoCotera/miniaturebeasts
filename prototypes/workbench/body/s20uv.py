@@ -37,13 +37,14 @@ def _merid(G):
     return _MER[id(G)]
 
 
-def torso_island(G, ctx, zmean):
-    zs = ctx["spec"]["parts"]["torso"]["rings_z"]
-    return "crown" if zmean >= zs[-1] - 1e-6 else ("seat" if zmean <= zs[0] + 1e-6 else "torso")
+def torso_island(G, ctx, smean):
+    """The one loft is one island (head, neck, back, seat and tail all in it, v = arc length); only its two end caps are planar islands."""
+    rs = ctx["info"]["torso"]["ring_s"]
+    return "crown" if smean >= rs[-1] - 1e-6 else ("tip" if smean <= rs[0] + 1e-6 else "torso")
 
 
 def _frames(ctx, pname):
-    if pname in ("tail", "ear.L"):
+    if pname in ("ear.L",):
         return ctx["info"]["tubes"][pname]["path"]
     if pname == "leg.L":
         return ctx["info"]["limbs"]["leg.L"]["path"]
@@ -68,20 +69,23 @@ def corner_uv(ctx, pname, V, attr, side):
     """(u, v) in H for the four (or n) corner vertices V of one face of part `pname`; `side` is +1 left, -1 right (decided by the face). Angles are unwrapped to the face's first corner."""
     G = ctx["T"]
     n = len(V)
-    if pname in ("crown", "seat"):                  # the two caps are planar islands: u = x, v = y (both halves in one piece)
+    if pname == "crown":                            # the caps are planar islands (both halves in one piece): the crown's u = x, v = y
         return V[:, 0].copy(), V[:, 1].copy()
+    if pname == "tip":                              # the stalk's cap, seen along the path: u across, v along the ring's back direction
+        ri = ctx["info"]["torso"]["ring_info"][0]
+        d = V - ri["centre"]
+        return d @ ri["N"], d @ ri["B"]
     if pname == "torso":
-        a = np.arctan2(np.abs(V[:, 1]), -V[:, 0]) / math.pi
-        z = np.clip(V[:, 2], G.ends[0] + 1e-6, G.ends[1] - 1e-6)
-        zs, s = _merid(G)
-        rho = G.rho(z, np.full(len(z), 0.5))
-        return side * (1 - a) * math.pi * (UV_C * 0.5 + (1 - UV_C) * rho), np.interp(z, zs, s)
+        info = ctx["info"]["torso"]
+        a = attr[:, 2]
+        sv = attr[:, 1]
+        rs = np.array(info["ring_s"])
+        rho = np.interp(sv, rs, np.array(info["ring_side"]))          # the ring's own half width (the section is cast from the path: no analytic rho along the bend)
+        return side * (1 - a) * math.pi * (UV_C * 0.5 + (1 - UV_C) * rho), sv
     psi, s = corner_psi(ctx, pname, V, attr)
-    if pname in ("tail", "ear.L", "leg.L"):
+    if pname in ("ear.L", "leg.L"):
         pa = _frames(ctx, pname)
         r = pa.radii(s).mean(1)
-        if pname == "tail":
-            return side * (math.pi / 2 - psi) * r, s
         psi = psi[0] + (psi - psi[0] + math.pi) % (2 * math.pi) - math.pi
         return psi * r, s
     sit = ctx["info"]["sitting"][pname]
@@ -154,8 +158,8 @@ def island_stretch_mesh(b, level=2):
         if (attr2[f][:, 3] > 0.01).any():
             continue                                  # toe beads
         if name == "torso":
-            name = torso_island(ctx["T"], ctx, float(P[:, 2].mean()))
-        elif name in ("tail", "ear.L", "leg.L"):
+            name = torso_island(ctx["T"], ctx, float(attr2[f][:, 1].mean()))
+        elif name in ("ear.L", "leg.L"):
             pa = _frames(ctx, name)
             sm = attr2[f][:, 1]
             first = (ctx["info"]["tubes"][name] if name != "leg.L" else ctx["info"]["limbs"]["leg.L"])["first_s"]
@@ -183,7 +187,7 @@ def island_stretch_mesh(b, level=2):
 
 
 PX = 380.0
-ORIGIN = {"torso": (1000, 1230), "crown": (1850, 220), "seat": (1850, 640), "tail": (300, 1330), "leg.L": (650, 1330), "ear.L": (1330, 1330), "arm.L": (1750, 1330), "tail.tip": (1350, 1750), "nose": (1750, 1750)}
+ORIGIN = {"torso": (1000, 1500), "crown": (1850, 220), "tip": (1850, 640), "leg.L": (150, 1500), "ear.L": (150, 1800), "arm.L": (700, 1800), "tail.tip": (1250, 1800), "nose": (1700, 1800)}
 
 
 def atlas_mesh(ctx, parts, prep):
@@ -199,7 +203,7 @@ def atlas_mesh(ctx, parts, prep):
         if name in ("leg.L", "ear.L", "arm.L") and sd < 0:
             continue
         if name == "torso":
-            name = torso_island(ctx["T"], ctx, float(P[:, 2].mean()))
+            name = torso_island(ctx["T"], ctx, float(attr[f][:, 1].mean()))
         if name not in ORIGIN:
             continue
         try:

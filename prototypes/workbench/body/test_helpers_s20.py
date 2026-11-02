@@ -18,7 +18,7 @@ def rings_full(b):
 
 def ring_ratio(b):
     V, rings = rings_full(b)
-    return M.ring_ratio_xy(V, rings)
+    return M.ring_ratio_frames(V, rings, b.ctx["info"]["torso"]["ring_info"])
 
 
 def crown_curv(b, V2):

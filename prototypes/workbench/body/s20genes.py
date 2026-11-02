@@ -8,10 +8,21 @@ DEFAULT = dict(torsoGirth=1.0, headSize=1.0, legLen=1.0, legGirth=1.0, ear="pric
                tailLen=1.0, tailGirth=1.0, curl=0.0, lift=0.0, tip="lantern", tipSize=1.0)
 
 
-def _tail_ok(joints, fillet):
+def _tail_ok(joints, fillet, stations=None, margin=0.32):
+    """The room rule (every fillet fits its segments) and, when the body's stations are given, the clearance: the curled tail stays `margin` H behind the body's back wall (beyond the first 0.5 H from its root: that stretch IS the body)."""
     P = PA.fk(joints[0]["at"], joints)
-    _, rep = PA.fillet_path(P, [j["r"] for j in joints], fillet)
-    return all(r["ok"] for r in rep)
+    pts, rep = PA.fillet_path(P, [j["r"] for j in joints], fillet)
+    if not all(r["ok"] for r in rep):
+        return False
+    if stations is not None:
+        zs = np.array([a[0] for a in stations]); back = np.array([a[1][0] for a in stations])
+        s = PA.arclen(pts)
+        rad = PA.mono_cubic(PA.arclen(P), [j["r"][0] for j in joints], s)
+        xb = PA.mono_cubic(zs, back, np.clip(pts[:, 2], zs[0], zs[-1]))
+        far = (s > 0.5) & (pts[:, 2] > 0.8)                 # the tail's rising curl (its root stretch IS the body)
+        if far.any() and ((-pts[far, 0] - rad[far]) - xb[far] < margin).any():
+            return False
+    return True
 
 
 def apply_shape(raw, g=None):
@@ -49,7 +60,7 @@ def apply_shape(raw, g=None):
         for k, j in enumerate(js):
             if k > 0:
                 j["pitch"] = base[k] - g["lift"] - f * g["curl"] * 360.0 * (k - 1) / 5
-        if g["curl"] <= 0 or _tail_ok(js, tail["fillet"]):
+        if g["curl"] <= 0 or _tail_ok(js, tail["fillet"], t["section"]["stations"]):
             break
         f *= 0.985
     tail["clip"] = dict(requested=g["curl"], applied=g["curl"] * f, factor=f)
@@ -72,7 +83,7 @@ GENES = {
     "growth.exterior-eye-size-ratio": ("mult", 0.92, 1.1, "face"), "growth.exterior-eye-height-ratio": ("off", -0.03, 0.03, "face"), "growth.exterior-eye-spacing-ratio": ("off", -0.03, 0.03, "face"),
     "face.mouth-width": ("mult", 0.9, 1.12, "face"), "face.mouth-height": ("off", -0.02, 0.02, "face"), "movement.cycle-rate": ("mult", 0.85, 1.15, "face"),
     "body.ear-length": ("mult", 0.7, 1.5, "ears"), "body.ear-girth": ("mult", 0.85, 1.2, "ears"), "body.ear-splay": ("off", -20.0, 20.0, "ears"), "body.ear-droop": ("off", -15.0, 15.0, "ears"),
-    "body.tail-length": ("mult", 0.7, 1.6, "tail"), "body.tail-girth": ("mult", 0.8, 1.3, "tail"), "body.tail-curl": ("off", -0.15, 0.45, "tail"), "body.tail-lift": ("off", -20.0, 20.0, "tail"), "body.tip-size": ("mult", 0.8, 1.3, "tail"),
+    "body.tail-length": ("mult", 0.8, 1.3, "tail"), "body.tail-girth": ("mult", 0.8, 1.2, "tail"), "body.tail-curl": ("off", -0.15, 0.2, "tail"), "body.tail-lift": ("off", -20.0, 20.0, "tail"), "body.tip-size": ("mult", 0.85, 1.2, "tail"),
     "appearance.coat-value": ("mult", 0.8, 1.2, "coat"), "appearance.bib-reach": ("off", -0.1, 0.12, "coat"), "appearance.glow": ("lin", 0.6, 1.0, "coat"), "skin.grain": ("lin", 0.25, 0.45, "coat"), "skin.sheen": ("lin", 0.2, 0.4, "coat"),
     # the coat's own genes (the owner's steer: the coat is where Tuliko becomes itself)
     "coat.gradient": ("lin", 0.1, 0.5, "coat"), "coat.hue-shift": ("off", -0.06, 0.06, "coat"), "coat.fleck": ("lin", 0.2, 0.8, "coat"), "coat.freckle-density": ("lin", 0.1, 1.0, "coat"),
@@ -190,8 +201,30 @@ def digest(c):
     return "S20-" + hashlib.sha256(dumps(c).encode()).hexdigest()[:8]
 
 
-def build_individual(raw, c, upto="base"):
-    """Body of one creature from its creature.json (the species raw dict, the shape genes applied, the loft/legs/tubes/sitting builders)."""
-    import schema as SC, s20build
-    spec, _ = SC.load(raw=apply_shape(raw, c["shape"]))
-    return s20build.make_s20(spec, upto=upto, ear=c["shape"]["ear"], tip=c["shape"]["tip"], tip_size=c["shape"]["tipSize"])
+def build_individual(raw, c, upto="base", balance=True):
+    """Body of one creature from its creature.json (the species raw dict, the shape genes applied, the loft/legs/tubes/sitting builders), then the balance rule (owner, 1 Nov: the centre of mass must fall inside the support polygon of the soles,
+    at least 15 % of the sole length in front of the heel). The anatomy fixes, in order: the legs move under the centroid (the hip x, up to 0.12 H back toward it: the heel edge follows the hip), then the tail's length is clipped (x0.92 a step, down to x0.6). What was done is logged in b.ctx['balance']."""
+    import schema as SC, s20build, s20balance
+    shape = dict(c["shape"])
+    log = dict(leg_dx=0.0, tail_len_factor=1.0, steps=0)
+    for step in range(12):
+        g = dict(shape)
+        g["tailLen"] = shape["tailLen"] * log["tail_len_factor"]
+        r = apply_shape(raw, g)
+        r["parts"]["leg.L"]["joints"][0]["at"][0] += log["leg_dx"]
+        spec, _ = SC.load(raw=r)
+        b = s20build.make_s20(spec, upto=upto, ear=c["shape"]["ear"], tip=c["shape"]["tip"], tip_size=c["shape"]["tipSize"])
+        if not balance or upto != "base":
+            return b
+        m = s20balance.measure(b)
+        log["margin"] = m["margin"]; log["inside"] = m["inside"]; log["com"] = [float(x) for x in m["com"]]; log["steps"] = step
+        if m["margin"] >= 0.15 + 0.03 and m["inside"]:
+            break
+        if log["leg_dx"] > -0.12 + 1e-9:
+            log["leg_dx"] = max(-0.12, log["leg_dx"] - 0.04)
+        elif log["tail_len_factor"] > 0.6:
+            log["tail_len_factor"] = round(log["tail_len_factor"] * 0.92, 4)
+        else:
+            break
+    b.ctx["balance"] = log
+    return b

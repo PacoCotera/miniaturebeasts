@@ -558,15 +558,6 @@
     "source": "sampled from two soft lobes (superellipse p 2.2, body z .68 h .50 down .64 up R .59; head z 1.68 h .60 down .52 up R .635) joined by a smooth union (n 4); back .895 and front .905 of the side radius"
    },
    "rings_z": [
-    0.31,
-    0.42,
-    0.53,
-    0.63,
-    0.74,
-    0.88,
-    1.0,
-    1.12,
-    1.23,
     1.34,
     1.46,
     1.58,
@@ -604,17 +595,6 @@
      "da": 0.55
     },
     {
-     "name": "seat",
-     "z": 0.4,
-     "around": 0.08,
-     "rho": 0.52,
-     "ds": [
-      0.3,
-      0.36
-     ],
-     "da": 0.55
-    },
-    {
      "name": "cheek",
      "z": 1.48,
      "around": 0.78,
@@ -628,14 +608,9 @@
    ],
    "column_keys": {
     "leg": {
-     "station": 0.42,
-     "col": 5,
-     "around": 0.6
-    },
-    "tail": {
-     "station": 0.74,
-     "col": 1,
-     "around": 0.12
+     "u": 1.55,
+     "col": 6,
+     "around": 0.73
     },
     "ear": {
      "station": 1.93,
@@ -644,8 +619,8 @@
     }
    },
    "caps": {
-    "seat": "grid-2x4",
     "crown": "grid-2x4",
+    "tip": "grid-2x4",
     "cap_profile": "section"
    },
    "column_layouts": {
@@ -675,6 +650,60 @@
      0.72,
      1.5
     ]
+   },
+   "spine": {
+    "note": "one path and one loft from the crown through the head, neck, back and seat to the lantern stalk; neck, back, seat and tail are named arc-length ranges on it (labels for the genes, the rig and the Parts colours), not parts. The sections are cast from the path onto the smooth union of the gourd lobes and the tail's radius profile. The spine leans back from the waist through the seat in two gentle bends (joints with fillets) and leaves the back of the seat as the tail.",
+    "body": [
+     [
+      0.0,
+      2.2
+     ],
+     [
+      0.0,
+      1.68
+     ],
+     [
+      0.0,
+      1.17
+     ],
+     [
+      -0.16,
+      0.9
+     ]
+    ],
+    "body_r": [
+     0.4,
+     0.4,
+     0.5,
+     0.5
+    ],
+    "fillet": 1.25,
+    "union_k": 0.14,
+    "ring_gap": 0.1,
+    "cap_depth": 0.8,
+    "ranges": {
+     "head": [
+      0.0,
+      0.75
+     ],
+     "neck": [
+      0.75,
+      1.3
+     ],
+     "back": [
+      1.3,
+      2.05
+     ],
+     "seat": [
+      2.05,
+      2.55
+     ],
+     "tail": [
+      2.55,
+      99.0
+     ]
+    },
+    "bend_n": 0
    }
   },
   "leg.L": {
@@ -685,7 +714,6 @@
    "edge": 0.1,
    "socket": {
     "kind": "patch",
-    "station": 0.42,
     "col": 5,
     "size": [
      2,
@@ -693,15 +721,17 @@
     ],
     "push": 0.02,
     "transition": 1,
-    "match": "distance"
+    "match": "distance",
+    "u": 1.55,
+    "gap": 0.05
    },
    "joints": [
     {
      "name": "hip",
      "at": [
       0.1,
-      0.33,
-      0.46
+      0.36,
+      0.48
      ],
      "r": [
       0.25,
@@ -711,8 +741,8 @@
     },
     {
      "name": "knee",
-     "len": 0.18,
-     "pitch": -92,
+     "len": 0.2,
+     "pitch": -40,
      "r": [
       0.23,
       0.24
@@ -721,8 +751,8 @@
     },
     {
      "name": "ankle",
-     "len": 0.14,
-     "pitch": -86,
+     "len": 0.12,
+     "pitch": -88,
      "r": [
       0.22,
       0.23
@@ -731,11 +761,11 @@
     },
     {
      "name": "sole",
-     "len": 0.14,
+     "len": 0.23,
      "pitch": -90,
      "r": [
-      0.26,
-      0.31
+      0.22,
+      0.26
      ],
      "role": "end"
     }
@@ -750,6 +780,9 @@
     "toe-mid": 1.1,
     "turn": 10,
     "band": 0.12
+   },
+   "plane": {
+    "yaw": 90
    }
   },
   "ear.L": {
@@ -767,8 +800,8 @@
      2,
      2
     ],
-    "push": 0.01,
-    "transition": 1
+    "push": 0.005,
+    "transition": 2
    },
    "family": "@body.ear-family",
    "default": "prick",
@@ -950,98 +983,74 @@
    }
   },
   "tail": {
-   "kind": "tube",
-   "parent": "torso",
+   "kind": "spine-range",
    "label": "tail",
-   "ring": 8,
-   "edge": 0.12,
-   "mirror": "centre",
-   "socket": {
-    "kind": "patch",
-    "station": 0.74,
-    "cols": [
-     0,
-     1
-    ],
-    "size": [
-     4,
-     1
-    ],
-    "on": "mirror",
-    "push": 0.03,
-    "transition": 3,
-    "flare": 0.0,
-    "rows": 2
-   },
-   "plane": {
-    "yaw": 0
-   },
    "joints": [
     {
      "name": "root",
      "at": [
-      -0.3,
+      -0.42,
       0.0,
-      0.74
+      0.66
      ],
      "r": [
-      0.36,
-      0.36
+      0.25,
+      0.25
      ],
      "role": "mass"
     },
     {
      "name": "t1",
-     "len": 0.3,
-     "pitch": 198,
+     "len": 0.22,
+     "pitch": 192,
      "r": [
-      0.29,
-      0.29
+      0.19,
+      0.19
      ]
     },
     {
      "name": "t2",
-     "len": 0.28,
-     "pitch": 176,
+     "len": 0.2,
+     "pitch": 170,
      "r": [
-      0.225,
-      0.225
+      0.15,
+      0.15
      ]
     },
     {
      "name": "t3",
-     "len": 0.28,
-     "pitch": 148,
+     "len": 0.2,
+     "pitch": 146,
      "r": [
-      0.18,
-      0.18
+      0.12,
+      0.12
      ]
     },
     {
      "name": "t4",
-     "len": 0.27,
-     "pitch": 112,
+     "len": 0.2,
+     "pitch": 120,
      "r": [
-      0.145,
-      0.145
+      0.09,
+      0.09
      ]
     },
     {
      "name": "t5",
-     "len": 0.25,
-     "pitch": 80,
+     "len": 0.17,
+     "pitch": 94,
      "r": [
-      0.115,
-      0.115
+      0.065,
+      0.065
      ]
     },
     {
      "name": "tip",
-     "len": 0.22,
-     "pitch": 55,
+     "len": 0.14,
+     "pitch": 68,
      "r": [
-      0.085,
-      0.085
+      0.05,
+      0.05
      ],
      "role": "end"
     }
@@ -1057,7 +1066,7 @@
     "cap": "half-grid-1x2",
     "tip_ring": 0.6
    },
-   "note": "the root is the widest point (0.36 H) and the radius falls steadily to a thin stalk (0.085 H) under the lantern; the 2 x 2 patch on the mirror is the first ring's size, blended through 3 transition rings"
+   "note": "the tail range of the spine: its joints edit the far end of the one path, its radii the far end of the one profile (genes: length, girth, curl)"
   }
  },
  "sockets": {
@@ -1072,16 +1081,6 @@
     "frond"
    ],
    "default": "prick",
-   "required": true
-  },
-  "tail": {
-   "on": "torso",
-   "station": 0.74,
-   "around": 0.0,
-   "families": [
-    "curl"
-   ],
-   "default": "curl",
    "required": true
   },
   "tail.tip": {
@@ -1099,20 +1098,20 @@
     "tuft": {
      "kind": "dome",
      "r": [
-      0.16,
-      0.14,
-      0.14
+      0.11,
+      0.1,
+      0.1
      ],
      "sink": 0.35,
      "lobes": 3,
-     "lobe_r": 0.07
+     "lobe_r": 0.055
     },
     "lantern": {
      "kind": "dome",
      "r": [
-      0.15,
-      0.13,
-      0.13
+      0.105,
+      0.095,
+      0.095
      ],
      "sink": 0.3,
      "neck": 0.04,
@@ -2054,12 +2053,7 @@
    "per_half": 4
   },
   {
-   "where": "tail socket outer corners",
-   "valence": 5,
-   "per_half": 2
-  },
-  {
-   "where": "seat cap corners",
+   "where": "stalk cap corners (the grid cap on the loft's first ring)",
    "valence": 3,
    "per_half": 2
   },
@@ -2082,17 +2076,6 @@
    "where": "ear tip caps",
    "valence": 3,
    "per_half": 4
-  },
-  {
-   "where": "tail tip cap",
-   "valence": 3,
-   "per_half": 3,
-   "note": "half ring of 7 closed by 3 half quads: the ring vertices between them"
-  },
-  {
-   "where": "tail tip centre",
-   "valence": 6,
-   "per_half": 1
   }
  ],
  "mesh_quality": {

@@ -26,6 +26,18 @@ def build(b, rig, prep, path, clips=("stand", "waddle", "breathe", "idle"), extr
     for nm, newid in (("arm.L", len(parts)), ("leg.L", len(parts) + 1)):
         m = (part == b.parts[nm]) & (V[:, 1] < 0)
         pid[m] = newid
+    # the loft is ONE part; neck, back, seat and tail are named arc-length ranges of its one path: the Parts colours read them from the arc length (s from the stalk, u from the crown)
+    G = ctx["T"]
+    tid = b.parts["torso"]
+    rng = list(G.ranges)                                  # head, neck, back, seat, tail
+    names[tid] = rng[0]
+    new_ids = {rng[0]: tid}
+    for r_ in rng[1:]:
+        names.append(r_); new_ids[r_] = len(names) - 1
+    lab = G.label_of(attr[:, 1])
+    for r_ in rng:
+        m = (part == tid) & (lab == r_)
+        pid[m] = new_ids[r_]
     W = rig.weights(V, attr, part)
     J, Wt = GO.top4(W)
     N = GO.vertex_normals(V, F)

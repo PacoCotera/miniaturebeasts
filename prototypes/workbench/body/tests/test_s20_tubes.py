@@ -1,4 +1,4 @@
-"""S20 chunk 3: the tail (centre tube) and the ears (lateral tubes). kappa r <= 0.8 on every path, the curl room clip logged and never shrinking a radius, ring aspect, a lop ear clear of the cheek, every ear and tail point outside the face cone, the poles exactly the file's list, quality rows (failing rows stay failing)."""
+"""S20 chunk 3: the ears (lateral tubes) and the tail's room rule. (The tail itself is a named range of the one loft: tests/test_s20_spine.py.) kappa r <= 0.8 on every path, the curl room clip logged and never shrinking a radius, ring aspect, a lop ear clear of the cheek, every ear and tail point outside the face cone, the poles exactly the file's list, quality rows (failing rows stay failing)."""
 import os, sys, json, unittest, collections, copy
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -52,7 +52,7 @@ class T(unittest.TestCase):
             self.assertTrue(all(x["ok"] for x in rep), g)
         raw = s20genes.apply_shape(RAW, dict(curl=0.45, tailGirth=1.15))
         self.assertLess(raw["parts"]["tail"]["clip"]["factor"], 1.0)         # a short thick tail is clipped earlier: logged
-        raw = s20genes.apply_shape(RAW, dict(curl=0.2))
+        raw = s20genes.apply_shape(RAW, dict(curl=0.0))
         self.assertEqual(raw["parts"]["tail"]["clip"]["factor"], 1.0)
 
     def test_ring_aspect(self):
@@ -82,7 +82,7 @@ class T(unittest.TestCase):
     def test_ears_and_tail_outside_the_face_cone(self):
         """The face cone: from the head centre K (0, 0, 1.68) forward (+x), half angle 35 degrees. No ear or tail point beyond the root lies in it."""
         K = np.array([0.0, 0.0, 1.68])
-        for nm in ("ear.L", "tail"):
+        for nm in ("ear.L",):
             P = self._tube_points(self.b, nm) - K
             ang = np.degrees(np.arccos(np.clip(P[:, 0] / np.linalg.norm(P, axis=1), -1, 1)))
             self.assertTrue((ang > 35).all(), (nm, ang.min()))
@@ -101,30 +101,21 @@ class T(unittest.TestCase):
     def test_poles_are_the_files_list(self):
         val = Q.valence(self.F, len(self.V))
         m = self.ctx["remap"]
-        n0 = len(self.b.cage.V)
         census = collections.Counter()
         for nm, rec in self.rec.items():
-            kind = "ear" if nm.startswith("ear") else "tail"
             for v in rec["loop"]:
                 if val[m[v]] == 5:
-                    census[kind + " socket corners 5"] += 1
+                    census["ear socket corners 5"] += 1
             for v in rec["rings"][-1]:
                 if val[m[v]] == 3:
-                    census[kind + " tip cap 3"] += 1
-        want = {"ear socket corners 5": 4, "ear tip cap 3": 4, "tail socket corners 5": 2, "tail tip cap 3": 3}
-        self.assertEqual(dict(census), want)
+                    census["ear tip cap 3"] += 1
+        self.assertEqual(dict(census), {"ear socket corners 5": 4, "ear tip cap 3": 4})
         for row in self.spec["poles"]:
             if row["where"].startswith("ear socket"):
-                self.assertEqual(row["per_half"], want["ear socket corners 5"])
-            if row["where"].startswith("tail socket"):
-                self.assertEqual(row["per_half"], want["tail socket corners 5"])
+                self.assertEqual(row["per_half"], 4)
             if row["where"].startswith("ear tip"):
-                self.assertEqual(row["per_half"], want["ear tip cap 3"])
-            if row["where"] == "tail tip cap":
-                self.assertEqual(row["per_half"], want["tail tip cap 3"])
-        self.assertTrue(any(r["where"] == "tail tip centre" and r["valence"] == 6 for r in self.spec["poles"]))
-        m = self.ctx["remap"]
-        self.assertEqual(int(val[m[self.rec["tail"]["tip_centre"]]]), 6)
+                self.assertEqual(row["per_half"], 4)
+        self.assertFalse(any(r["where"].startswith("tail") for r in self.spec["poles"]))          # no tail socket, no tail cap: the tail is the loft
 
     def test_every_pole_listed(self):
         sys.path.insert(0, HERE)
@@ -151,12 +142,12 @@ class T(unittest.TestCase):
 
     def test_mesh_quality_rows(self):
         mq = self.spec["mesh_quality"]
-        for nm in ("ear.L", "tail"):
+        for nm in ("ear.L",):
             er = Q.edge_ratio(self.V, self.F, self.fp, self.b.parts[nm])
             print(nm, "edge ratio", round(er, 2))
         ars, npl = Q.area_ratio(self.V, self.F), Q.nonplanarity(self.V, self.F)
         print("area", round(ars, 2), "nonplanar", round(npl, 2))
-        for nm in ("ear.L", "tail"):
+        for nm in ("ear.L",):
             self.assertLessEqual(Q.edge_ratio(self.V, self.F, self.fp, self.b.parts[nm]), mq["edge_ratio_face_max"], nm)
         self.assertLessEqual(ars, mq["area_ratio_max"])
         self.assertLessEqual(npl, mq["nonplanar_max"])

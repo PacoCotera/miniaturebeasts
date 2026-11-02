@@ -55,11 +55,13 @@ class T(unittest.TestCase):
         t = spec["parts"]["torso"]
         self.assertEqual((t["path"]["key"], t["path"]["N"]), ("z", "back"))
         self.assertEqual(spec["parts"]["ear.L"]["kind"], "tube")
-        self.assertEqual(spec["parts"]["tail"]["mirror"], "centre")
+        self.assertEqual(spec["parts"]["tail"]["kind"], "spine-range")          # the tail is a named range of the one spine, not a tube part
+        self.assertNotIn("tail", spec["sockets"])
+        self.assertIn("spine", t)
 
     def test_s20_rejects_bad_tubes(self):
         raw = json.load(open(S20))
-        bad = copy.deepcopy(raw); bad["parts"]["tail"]["mirror"] = "sideways"
+        bad = copy.deepcopy(raw); bad["parts"]["ear.L"]["mirror"] = "sideways"
         with self.assertRaises(SC.SchemaError):
             SC.load(raw=bad)
         bad = copy.deepcopy(raw); del bad["parts"]["ear.L"]["families"]["prick"]["joints"][1]["len"]

@@ -4,6 +4,7 @@ import numpy as np
 import schema as SC
 from body import Body
 from gourd import Gourd, build_loft
+from spine import SpineLoft, build_spine_loft
 from limitfix import limit_fix
 
 S20 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "species", "S20.json")
@@ -44,9 +45,9 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
     if spec is None:
         spec, _ = SC.load(S20)
     body = Body("tuliko")
-    G = Gourd(spec)
+    G = SpineLoft(spec)
     ctx = dict(spec=spec, H=None, T=G, G=G, info={}, log={}, opts=kw)
-    ctx["info"]["torso"] = build_loft(body, spec, G)
+    ctx["info"]["torso"] = build_spine_loft(body, spec, G)
     stage = STAGES.index(upto)
     if stage >= 1:
         import s20legs

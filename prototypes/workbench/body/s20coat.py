@@ -204,19 +204,24 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     side = np.where(y >= 0, 1.0, -1.0)
     Vm = V * np.array([1.0, 1.0, 1.0]); Vm = np.stack([x, np.abs(y), z], 1)         # folded to the left half
     Nm = N * np.stack([np.ones(n), side, np.ones(n)], 1)
-    torso, leg, ear, tail, arm, nose, tip = (isp(k) for k in ("torso", "leg.L", "ear.L", "tail", "arm.L", "nose", "tail.tip"))
+    torso, leg, ear, arm, nose, tip = (isp(k) for k in ("torso", "leg.L", "ear.L", "arm.L", "nose", "tail.tip"))
     r_xy = np.hypot(x, y)
-    a_geo = np.arctan2(np.abs(y), -x) / np.pi                       # the loft's `around` (0 back line, 1 front line)
-    s = attr[:, 1]
-    tails = ctx["info"]["tubes"]["tail"]
-    Lt = tails["path"].length
+    a_geo = np.arctan2(np.abs(y), -x) / np.pi                       # the straight gourd's `around` (0 back line, 1 front line): true on the upper body
+    # ONE spine, ONE loft: the tail is the first named range of the loft's arc length (s runs from the lantern stalk; u from the crown). Island coordinates of a loft vertex: the ring's `around` and its arc length.
+    G_ = ctx["T"]
+    s_loft = attr[:, 1]
+    a_geo = np.where(torso, attr[:, 2], a_geo)                      # along the bend and the tail the ring's own `around` (the dorsal line 0, the ventral line 1) is the truth
+    Lt = float(G_.s_root)                                            # length of the tail range (stalk to root)
+    tail = torso & (s_loft <= Lt)
+    zeff = np.where(torso, 2.2 - (G_.L - s_loft), z)                # the height the same arc length would have on a straight spine: the zone bands (belly, brow...) are written in it
+    s = np.where(tail, Lt - s_loft, attr[:, 1])                     # along the tail: arc length from its root (as the tail's zones were written)
     seed = int(g["seed"])
     col = srgb_to_lin(np.tile(pal["coat"], (n, 1)))
     emit = np.zeros((n, 3))
     rough = np.full(n, 0.66)
     F = {}
     # ---- position along the creature from the head (0) to the tail tip (1): the freckles and the bleed use it
-    t_body = np.clip(0.38 * (1 - (z - 0.2) / 1.9) + 0.12 * (1 - a_geo) * (1 - sstep(1.2, 2.2, z)), 0, 0.5)
+    t_body = np.clip(0.38 * (1 - (zeff - 0.2) / 1.9) + 0.12 * (1 - a_geo) * (1 - sstep(1.2, 2.2, zeff)), 0, 0.5)
     t_tail = 0.5 + 0.5 * np.clip(s / Lt, 0, 1)
     t = np.where(tail | tip, t_tail, t_body)
     t = np.where(tip, 1.0, t)
@@ -232,8 +237,8 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     belly_lo = 0.70 - g["belly_reach"]
     zlo, zhi = spec["zones"]["belly"]["z"]
     soft = spec["zones"]["belly"]["soft"]
-    belly = sstep(belly_lo - soft, belly_lo + soft, a_geo) * band(z, zlo, zhi, soft)
-    belly = np.where(torso, belly, 0.0)
+    belly = sstep(belly_lo - soft, belly_lo + soft, a_geo) * band(zeff, zlo, zhi, soft)
+    belly = np.where(torso & ~tail, belly, 0.0)
     F["belly"] = belly
     mark = srgb_to_lin(pal["mark"])
     if g["rd"] != "none":
@@ -241,7 +246,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         key = (g["rd"], seed)
         theta = np.where(y >= 0, 1.0 - a_geo, a_geo - 1.0)          # -1 .. 1 round the body from the front line; the back line is +-1
         gx = (theta * 0.5) % 1.0
-        gy = (z - 0.2) / 2.0
+        gy = (zeff - 0.2) / 2.0
         grid = _rd(g["rd"], seed, sc)
         pat = sample_grid(grid, gx, gy)
         w = torso * (1 - belly) * (1 - sstep(1.95, 2.15, z))
@@ -292,7 +297,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         size = 0.11
         d, cell = voronoi(V * (1.0 / size), seed + 5)
         r = 0.30 + 0.12 * cell
-        host = torso * (1 - sstep(0.45, 0.6, a_geo)) * band(z, 0.35, 1.95, 0.15) * (1 - belly)
+        host = torso * (1 - sstep(0.45, 0.6, a_geo)) * band(zeff, 0.35, 1.95, 0.15) * (1 - belly)
         m = host * (1 - sstep(r - 0.06, r + 0.04, d)) * (cell > (0.35 - 0.3 * 0.0))
         F["spots"] = m
         ring = host * band(d, r - 0.16, r, 0.04) * (cell > 0.35) * g["rosette"]

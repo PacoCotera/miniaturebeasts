@@ -4,7 +4,7 @@ import os, sys, unittest, collections, json
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import s20build, mquality as Q, subdiv as SD, s20measure as M, schema as SC
-from gourd import Gourd
+import test_helpers_s20 as TH
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -42,7 +42,7 @@ class T(unittest.TestCase):
         self.assertEqual(len(odd), 8)
 
     def test_ring_ratio(self):
-        rr = M.ring_ratio_xy(self.V, self._rings_full())
+        rr = TH.ring_ratio(self.b)
         print("ring ratio", round(rr, 3))
         self.assertLessEqual(rr, self.th["ring_ratio_max"], rr)
 
@@ -108,18 +108,24 @@ class T(unittest.TestCase):
         self.assertLessEqual(abs(cap / ring - 1), 0.25)
 
     def test_column_keys_through_sockets(self):
+        """A column of the loft goes through each socket centre: the ring named by the key (a vertical ring by its z, a ring of the bend by its arc length from the crown) has the key's `around` at the key's column."""
         t = self.spec["parts"]["torso"]
-        G = Gourd(self.spec)
+        G = self.ctx["T"]
+        info = self.ctx["info"]["torso"]
         for nm, k in t["column_keys"].items():
-            cols = G.column_angles(k["station"])
-            self.assertAlmostEqual(float(cols[k["col"]]), k["around"], delta=0.02, msg=nm)
-            self.assertIn(k["station"], t["rings_z"])
+            if "u" in k:
+                i = int(np.argmin([abs(G.L - r["s"] - k["u"]) for r in info["ring_info"]]))
+            else:
+                nv = info["n_vertical"]; zs = info["z"]
+                i = len(zs) - nv + int(np.argmin([abs(z - k["station"]) for z in zs[len(zs) - nv:]]))
+            a = self.b.around[info["rings"][i][k["col"]]]
+            self.assertAlmostEqual(float(a), k["around"], delta=0.02, msg=nm)
 
     def test_cage_on_the_section(self):
         """Every ring vertex's limit point lands on the loft's own surface (the section analytic): the limit error says it; here the profile at three heights against rho."""
-        G = Gourd(self.spec)
-        for z in (0.88, 1.17, 1.66):
-            sel = np.abs(self.V2[:, 2] - z) < 0.01
+        G = self.ctx["T"]
+        for z in (1.17, 1.66):
+            sel = (np.abs(self.V2[:, 2] - z) < 0.01) & (self.V2[:, 0] > -0.8)          # the upper loft (the tail's curl crosses these heights far behind)
             P = self.V2[sel]
             r = np.hypot(P[:, 0], P[:, 1])
             a = np.arctan2(np.abs(P[:, 1]), -P[:, 0]) / np.pi

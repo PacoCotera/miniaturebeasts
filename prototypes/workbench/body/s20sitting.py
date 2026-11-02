@@ -72,11 +72,10 @@ def build_sitting(body, ctx):
     size = float(ctx["opts"].get("tip_size", 1.0))
     sh = S["tail.tip"]["shapes"].get(fam)
     if sh is not None:
-        rec = ctx["info"]["tubes"]["tail"]
-        pa = rec["path"]
-        end = rec["ringinfo"][-1]
-        Tg = end["T"]
-        tip = end["centre"] + Tg * 0.5 * max(end["ra"], end["rf"])          # inside the tail's closed end
+        end = ctx["info"]["torso"]["ring_info"][0]                 # the first ring of the one loft: the stalk's end
+        Tg = -end["T"]                                              # the path's outward direction at the stalk
+        r_end = float(ctx["T"].tail_radius([end["s"]])[0])
+        tip = end["centre"] + Tg * (0.5 * r_end + ctx["T"].sp["cap_depth"] * r_end)          # inside the stalk's closed end
         ax, up, lat = _frame(Tg, (0.0, 0.0, 1.0))
         rx, ry, rz = [v * size for v in sh["r"]]
         c = _place(tip, Tg, rx, sh["sink"])

@@ -61,7 +61,7 @@ if STAGE == "base":
     Vt = mesh["V"][torso]
     zt = np.arange(0.3, 2.1, 0.02)
     wt = np.array([2 * float(np.abs(Vt[np.abs(Vt[:, 2] - z) < 0.03, 1]).max()) for z in zt])
-    head_w, body_w = wt[zt > 1.17].max(), wt[zt < 1.17].max()
+    head_w, body_w = wt[zt > 1.17].max(), wt[(zt > 0.7) & (zt < 1.17)].max()
     waist_w = wt[(zt > 0.9) & (zt < 1.45)].min()
     z_waist = float(zt[(zt > 0.9) & (zt < 1.45)][wt[(zt > 0.9) & (zt < 1.45)].argmin()])
     z_top, z_bot = float(Vt[:, 2].max()), float(Vt[:, 2].min())
@@ -93,8 +93,8 @@ if STAGE == "base":
     hook = max((r[1] - r[0] + 1) for y in ys for r in rows[y] if r[1] >= xr - 1)
     rows_c = [
         ("Big round head about the body's size", f"head {head_w:.3f} H wide, {z_top - z_waist:.3f} tall; body {body_w:.3f} wide, {z_waist - z_bot:.3f} tall; head / body width {head_w / body_w:.3f}", head_w / body_w > 1.04),
-        ("Short thick limbs", f"legs 0.46 H hip to sole; column above the foot {under - 0.12:.3f} H, {col_w:.3f} H across; foot {foot_len:.3f} H long; arm nubs {arm_len:.2f} H", abs(under - 0.12) < 0.2),
-        ("Round masses, no hard edges", f"level-2 min adjacent normal dot {fl['min_adjacent_normal_dot']:.2f} (the crotch fold at each leg; everywhere else the loft is smooth: see the clay)", fl["min_adjacent_normal_dot"] > -0.2),
+        ("Short thick limbs", f"legs 0.48 H hip to sole; column above the foot {under - 0.12:.3f} H, {col_w:.3f} H across; foot {foot_len:.3f} H long; arm nubs {arm_len:.2f} H", abs(under - 0.12) < 0.2),
+        ("Round masses, no hard edges", f"level-2 min adjacent normal dot {fl['min_adjacent_normal_dot']:.2f} (the ear roots are now the worst place; the leg crotch fold of -0.87 is gone since the hip moved out to y 0.36; the loft is smooth everywhere else: see the clay)", fl["min_adjacent_normal_dot"] > -0.2),
         ("Face readable at 96", f"no face in the bare base (decals arrive in chunk 5); the file: eyes 0.30 H = {0.30 * 30:.0f} px at 96, 0.61 H apart", None),
         ("Clean silhouette at 48", f"head {head_px} px wide, waist {waist_px} px, {n_ear_runs} ear runs at the top rows (each {ear_w[0]} px at 4 rows down), tail hook {hook} px", head_px >= 5 and waist_px >= 5 and n_ear_runs >= 2),
     ]
@@ -106,17 +106,34 @@ if STAGE == "base":
     json.dump(dict(head_w=head_w, body_w=body_w, waist_w=waist_w, under=under, foot_len=foot_len, col_w=col_w, arm_len=arm_len, head_px=head_px, waist_px=waist_px, ear_runs=n_ear_runs, ear_w=ear_w, hook=hook, min_dot=fl["min_adjacent_normal_dot"]), open(os.path.join(OUT, "4-base.json"), "w"))
 if STAGE in ("tubes", "base"):
     root_views = [("tail-root-az090", 90.0, 10.0), ("tail-root-az135", 135.0, 15.0), ("tail-root-az180", 180.0, 10.0), ("tail-root-az270", 270.0, 10.0)]
-    views.render_views(b, os.path.join(OUT, TAG), views=root_views, tag="root-", width=560, height=420, pph=250.0, centre=(-0.75, 0, 0.85), mesh=mesh, pole_dots=True)
-    import tests.test_s20_tail as TT
-    md_root = TT.root_dot(b)[0]
-    close_html += ("<h2>The tail root (owner ruling: the body continued, not a tube plugged in): clay and wire at az 90, 135, 180, 270; root dihedral min dot " + f"{md_root:.2f}" + " (> 0.5)</h2>"
-                   + "<div class='row'>" + "".join(f"<div class='cell'><div class='cap'>{n}</div><img src='{TAG}/root-clay-{n}.png' width='400'><br><img src='{TAG}/root-wire-{n}.png' width='400'></div>" for n, _, _ in root_views) + "</div>")
-    extra.append(("tail root: min adjacent normal dot round the root > 0.5", f"{md_root:.3f}", md_root > 0.5))
+    views.render_views(b, os.path.join(OUT, TAG), views=root_views, tag="root-", width=620, height=460, pph=210.0, centre=(-0.7, 0, 0.8), mesh=mesh, pole_dots=True)
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "tests"))
+    import test_s20_spine as TS
+    Gs = b.ctx["T"]
+    Vf_, Ff_, at_, fpp_, cr_, mir_ = b.full()
+    V2_, F2_, _, a2_, fp2_ = SD.subdivide(Vf_, Ff_, cr_, at_, fpp_, levels=2)
+    rng_rows = []
+    for nm, (lo_u, hi_u) in Gs.ranges.items():
+        lo, hi = Gs.L - min(hi_u, Gs.L), Gs.L - lo_u
+        md, where = TS.region_dot(b, lo, hi, V2_, F2_, a2_, fp2_)
+        rng_rows.append((nm, f"{lo_u:.2f} to {min(hi_u, Gs.L):.2f}", f"{md:.3f}", SL.status(md > 0.5 or nm == "head")))
+        extra.append((f"no ridge: min adjacent normal dot in the {nm} range > 0.5", f"{md:.3f}", md > 0.5 or nm == "head"))
+    close_html += ("<h2>The one spine (owner ruling): clay and wire at az 90, 135, 180, 270 round the seat-to-tail seam; the quads flow straight from the back and seat into the tail (the loft's rings are the tail's rings)</h2>"
+                   + "<div class='row'>" + "".join(f"<div class='cell'><div class='cap'>{n}</div><img src='{TAG}/root-clay-{n}.png' width='460'><br><img src='{TAG}/root-wire-{n}.png' width='460'></div>" for n, _, _ in root_views) + "</div>"
+                   + "<h2>Named arc-length ranges of the one path (labels, not parts): smoothness</h2>" + SL.table(rng_rows, ["range", "arc length from the crown (H)", "min adjacent normal dot", ""]))
+if STAGE == "base":
+    import s20balance as BAL
+    bal = BAL.measure(b)
+    SV.balance_views(b, bal, os.path.join(OUT, TAG), mesh)
+    close_html += ("<h2>Balance (owner rule): the centre of mass (red: ground disc, cross and the vertical to the centre) inside the support polygon of the two soles (blue), past the 15 % line (thin blue) from the heel; clay ghosted</h2><div class='row'>"
+                   + f"<div class='cell'><div class='cap'>side</div><img src='{TAG}/bal-side.png' width='620'></div><div class='cell'><div class='cap'>top</div><img src='{TAG}/bal-top.png' width='620'></div></div>"
+                   + SL.table([("centre of mass", f"x {bal['com'][0]:.3f}  y {bal['com'][1]:.3f}  z {bal['com'][2]:.3f} H", ""), ("sole span (x)", f"heel {bal['heel_x']:.3f} to toe {bal['toe_x']:.3f}", ""), ("margin in front of the heel", f"{bal['margin']*100:.1f} % of the sole length (needs 15 %)", SL.status(bal['margin'] >= 0.15 and bal['inside']))], ["measure", "value", ""]))
+    extra.append(("balance: centre of mass inside the soles' polygon, >= 15 % of the sole in front of the heel", f"{bal['margin']*100:.1f} %", bal['margin'] >= 0.15 and bal['inside']))
 rr = TH.ring_ratio(b)
 extra.append(("loft ring ratio (adjacent half-widths and depths) <= 1.5", f"{rr:.3f}", rr <= 1.5))
 rows = SG.quality_rows(b, extra)
-notes = {"legs": "Leg socket: station 0.42, column 5 (the file's column key), one transition ring, loop-to-ring pairing by least distance (the loop sits on a near-vertical wall, so Loika's pairing by angle crossed). Toe beads and flat soles as Loika's.",
-         "tubes": "Tail (owner ruling 1 Nov: the body continued, not a tube plugged in): a centre tube whose root is the widest point (0.36 H at the root joint, 0.26 at the first ring) and whose radius falls steadily to a thin stalk (0.085 H) under the lantern; it flows out of a tall socket on the mirror (rings 0.53 to 1.0 H, columns 0 and 1: 4 x 1 faces, a 7-vertex half loop the size of its first ring) through 3 transition rings. Ears: lateral tubes (8-ring from the 2 x 2 patch at station 1.93, column 3, one transition ring, 4 tip quads). Rings are evenly spaced (0.11 H); transition vertices are lifted out of the loft along its normal. The frond family is not built (cut order 2).", "base": "The bare base, the type specimen: gourd loft, two legs with toe beads, a tail, prick ears, two arm nubs, a nose button and the lantern. Form only: clay, rest pose, no face, colour or glow yet (chunk 5). The AD gates this sheet; chunks 5 to 7 continue meanwhile."}[STAGE]
+notes = {"legs": "Leg socket: on the bend ring 0.1 H spaced at u 1.55 from the crown, column 5/6 (the file's column key), one transition ring, loop-to-ring pairing by least distance (Loika's pairing by angle crossed on the tilted loop). The hip sits at y 0.36 so the column stands under the socket loop (at y 0.18 the band wrapped over the belly and folded: the dark slit at the front of the leg); sole 0.22 x 0.26. Toe beads and flat soles as Loika's.",
+         "tubes": "ONE spine, ONE loft: the tail is not built here (it is the first named range of the loft, spine.py). Ears: lateral tubes (8-ring from the 2 x 2 patch at the vertical ring z 1.93, column 3, two transition rings and push 0.005 (the ear-root fold of -0.37 is gone), 4 tip quads); rings evenly spaced (0.11 H); transition vertices lifted out of the loft along its normal. The frond family is not built (cut order 2).", "base": "The bare base, the type specimen: gourd loft, two legs with toe beads, a tail, prick ears, two arm nubs, a nose button and the lantern. Form only: clay, rest pose, no face, colour or glow yet (chunk 5). The AD gates this sheet; chunks 5 to 7 continue meanwhile."}[STAGE]
 body = (f"<h1>S20 Tuliko, {TITLE}</h1><p>{notes}</p>" + chibi_html + close_html +
         "<h2>Clay, 10 views</h2>" + SL_grid("clay", TAG, names) +
         "<h2>Wireframe (valence 5 red, 6 orange, 3 green)</h2>" + SL_grid("wire", TAG, names) +

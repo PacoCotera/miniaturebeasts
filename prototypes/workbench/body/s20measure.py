@@ -44,3 +44,16 @@ def ring_ratio_xy(V, rings):
         for k in range(2):
             worst = max(worst, a[k] / b[k], b[k] / a[k])
     return float(worst)
+
+
+def ring_ratio_frames(V, rings, infos):
+    """Adjacent-ring ratio of each ring's half width (along the lateral axis) and depth (along the back direction), both measured in the ring's own frame (the rings tilt along the bend)."""
+    ext = []
+    for r, f in zip(rings, infos):
+        d = V[list(r)] - f["centre"]
+        ext.append((max(np.abs(d @ f["N"]).max(), 1e-9), max(np.ptp(d @ f["B"]), 1e-9)))
+    worst = 1.0
+    for a, b in zip(ext, ext[1:]):
+        for k in range(2):
+            worst = max(worst, a[k] / b[k], b[k] / a[k])
+    return float(worst)

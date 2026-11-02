@@ -65,7 +65,7 @@ class T(unittest.TestCase):
     def test_leg_shape_numbers(self):
         """short thick limbs: hip to sole 0.46 H; the column 0.44-0.48 H across; first-ring and ring ratios."""
         P = np.array(self.spec["parts"]["leg.L"]["P"])
-        self.assertAlmostEqual(P[0][2] - P[-1][2], 0.46, delta=0.01)
+        self.assertAlmostEqual(P[0][2] - P[-1][2], 0.48, delta=0.01)
         ri = self.rec["ringinfo"]
         for a, b in zip(ri, ri[1:]):
             for k in ("ra", "rf"):
