@@ -17,7 +17,7 @@ class T(unittest.TestCase):
 
     def coat_at_vertices(self, genome):
         b = self.b
-        V, F, at, fp2 = P2.level_arrays(b, 2)
+        V, F, at, fp2 = P2.level_arrays(b, 3)                # level 3: the mouth stroke (0.054 H) and the dots are smaller than level 2's vertex spacing, so a count of vertices there is noise
         part = IN.part_of(b, F, fp2, len(V))
         N = gltf_out.vertex_normals(V, F)
         return V, part, CT.coat(b.ctx, V, at, part, N, at[:, 3], genome, "open")

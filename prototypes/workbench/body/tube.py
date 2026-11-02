@@ -123,7 +123,9 @@ def grow_hard(body, ctx, name, p, fam):
             body.face(ring[m], ring[(m + 1) % nR], ring[(m + 2) % nR], v, name)
         if sgn > 0:
             tipv = v
-    return dict(name=name, centre=False, path=pa, first_s=s0, rings_s=ss, rings=rings, ringinfo=info, tip_centre=tipv, loop=[], transition=[], join="hard", hard=True, sink=float(sink))
+        else:
+            basev = v
+    return dict(name=name, centre=False, path=pa, first_s=s0, rings_s=ss, rings=rings, ringinfo=info, tip_centre=tipv, base_pole=basev, loop=[], transition=[], join="hard", hard=True, sink=float(sink))
 
 
 def grow_tube(body, ctx, name, p, fam, i, c, centre):

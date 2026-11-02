@@ -111,7 +111,11 @@ class T(unittest.TestCase):
             for v in rec["rings"][-1]:
                 if val[m[v]] == 3:
                     census["ear tip cap 3"] += 1
-        self.assertEqual(dict(census), {"ear socket corners 5": 8, "ear tip cap 3": 8})          # the ear and the arm tube
+        soft = [r for r in self.rec.values() if not r.get("hard")]
+        want = {"ear tip cap 3": 8}                                                                  # the ear and the arm tube: pass 3 hard shells have no socket corners (a soft tube has 4 per half)
+        if soft:
+            want["ear socket corners 5"] = 4 * 2 * len(soft)
+        self.assertEqual(dict(census), want)
         for row in self.spec["poles"]:
             if row["where"].startswith("ear socket"):
                 self.assertEqual(row["per_half"], 4)

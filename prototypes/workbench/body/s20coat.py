@@ -382,7 +382,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         P, nrm, up, rgt = surface_frame(G, 1.48, 1.0)
         d = Vm - P
         u, v = d @ rgt, d @ up
-        m = (1 - sstep(0.85, 1.15, np.hypot(u / 0.30, v / 0.16))) * (d @ nrm > -0.15) * torso
+        m = (1 - sstep(0.85, 1.15, np.hypot(u / 0.38, v / 0.22))) * (d @ nrm > -0.15) * torso           # the muzzle mask: 0.38 x 0.22 H (pass 3: at 0.30 x 0.16 it differed from plain in under 3 % of a 96 px thumbnail)
         F["face"] = m
         col = col * (1 - m[:, None]) + srgb_to_lin(pal["pad"]) * 0.9 * m[:, None]
     if "points" in zones:
@@ -406,11 +406,11 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         F["tail_bands"] = m
         col = col * (1 - m[:, None]) + mark * m[:, None]
     if "spots" in zones and torso.any():
-        size = 0.11
+        size = 0.16
         d, cell = voronoi(V * (1.0 / size), seed + 5)
-        r = 0.30 + 0.12 * cell
-        host = torso * (1 - sstep(0.45, 0.6, a_geo)) * band(zeff, 0.35, 1.95, 0.15) * (1 - belly)
-        m = host * (1 - sstep(r - 0.06, r + 0.04, d)) * (cell > (0.35 - 0.3 * 0.0))
+        r = 0.36 + 0.14 * cell
+        host = torso * (1 - np.where(zeff > 1.35, sstep(0.72, 0.86, a_geo), sstep(0.90, 0.98, a_geo))) * band(zeff, 0.35, 1.95, 0.15) * (1 - belly)          # back and sides (pass 3: on the back alone the spots were invisible in the house view)
+        m = host * (1 - sstep(r - 0.06, r + 0.04, d)) * (cell > 0.12)
         F["spots"] = m
         ring = host * band(d, r - 0.16, r, 0.04) * (cell > 0.35) * g["rosette"]
         col = col * (1 - m[:, None]) + mark * m[:, None]
@@ -602,11 +602,11 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     mm = head * (dm @ nm_ > -0.12) * (1 - sstep(0.02, 0.034, np.abs(sdf)))          # a stroke about 0.05 H wide: it survives at 96 px
     if expr == "open":
         # the open-mouth expression: a dark oval with a pink tongue in its lower half (the plush bunnies have one)
-        e_ = np.hypot(um / (W * 0.30), (vm + 0.045) / 0.058)
+        e_ = np.hypot(um / (W * 0.40), (vm + 0.055) / 0.075)
         mm = head * (dm @ nm_ > -0.12) * (1 - sstep(0.92, 1.04, e_))
         F["mouth"] = mm
         col = col * (1 - mm[:, None]) + f_mouth * 0.6 * mm[:, None]
-        tg = mm * (1 - sstep(-0.05, 0.0, (vm + 0.045) / 0.058 + 0.15)) * (1 - sstep(0.4, 0.8, e_))
+        tg = mm * (1 - sstep(-0.05, 0.0, (vm + 0.055) / 0.075 + 0.15)) * (1 - sstep(0.4, 0.8, e_))
         col = col * (1 - tg[:, None]) + srgb_to_lin(np.array([235.0, 105.0, 125.0])) * tg[:, None]
     else:
         F["mouth"] = mm

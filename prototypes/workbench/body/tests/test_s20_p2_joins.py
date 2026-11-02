@@ -61,12 +61,15 @@ class T(unittest.TestCase):
             print(fam, "ear face angle max", round(worst, 1))
             self.assertLessEqual(worst, 20.0, fam)
 
-    def test_arm_socket_against_the_soft_rule(self):
+    def test_arm_is_a_hard_shell_at_the_shoulder_joint(self):
+        """Pass 3: the arms use the HARD join like the ears (a separate rounded nub sunk into the trunk at the shoulder joint): buried at least 0.04 H, tagged as a crease, nothing bridged. (The soft-join footprint rule is the legs' test.)"""
         c, b, R = IN.make(1)
         r = P2.ear_join_report(b, "arm.L")
-        print("arm soft", {k: (round(v, 3) if isinstance(v, float) else v) for k, v in r.items()})
-        self.assertGreaterEqual(r["loops"], 3)
-        self.assertTrue(1.5 <= r["ratio"] <= 1.8, ("arm footprint / mid width", r["ratio"]))
+        print("arm hard", {k: (round(v, 3) if isinstance(v, float) else v) for k, v in r.items()})
+        self.assertEqual(r["join"], "hard")
+        self.assertGreaterEqual(r["buried"], 0.04)
+        self.assertTrue(r["tagged"])
+        self.assertEqual(b.ctx["info"]["tubes"]["arm.L"]["loop"], [])
 
 
 if __name__ == "__main__":

@@ -51,7 +51,10 @@ class T(unittest.TestCase):
         self.assertIn("arm.L", self.ctx["info"]["tubes"])
         self.assertGreater(self.ctx["T"].bulb[0], 0.2)
         rec = self.ctx["info"]["tubes"]["arm.L"]
-        self.assertGreaterEqual(len(rec["transition"]), 3)                  # a filleted band of at least 3 loops
+        if rec.get("hard"):                                                  # pass 3: the arm is a hard-join shell at the shoulder joint (a clean contact line, no fillet: tested in test_s20_p2_joins)
+            self.assertEqual(rec["transition"], [])
+        else:
+            self.assertGreaterEqual(len(rec["transition"]), 3)              # a filleted band of at least 3 loops
 
     def test_arms_and_bulb_outside_the_face_cone(self):
         K = np.array([0.0, 0.0, 1.68])

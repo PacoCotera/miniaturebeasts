@@ -23,6 +23,15 @@ def classify_poles(b, V, F):
         last = rec["rings"][-1]
         for k in range(0, 8, 2):
             listed[m[last[k]]] = "sole-corner"
+    for rec in ctx["info"].get("tubes", {}).values():             # pass 3: a hard-join shell (the ears, the arms) is a closed shell: its rings and two poles are its own corners
+        if rec.get("hard"):
+            for ring in rec["rings"]:
+                for v in ring:
+                    if v in m:
+                        listed[m[v]] = "hard-shell"
+            for k_ in ("tip_centre", "base_pole"):
+                if rec.get(k_) in m:
+                    listed[m[rec[k_]]] = "hard-shell pole"
     bead_ids = set()
     for name, bl in ctx["info"].get("beads", {}).items():
         for bd in bl:

@@ -21,6 +21,15 @@ def pole_kinds(b, V, F):
             listed[m[rec["rings"][-1][k]]] = "sole-corner"
         for v in rec["rings"][rec["foot_band_ring"]] + rec["rings"][rec["support_ring"]]:
             listed[m[v]] = "bead-corner"
+    for rec in ctx["info"].get("tubes", {}).values():             # pass 3: a hard-join shell (the ears, the arms) is a closed shell whose rings and two poles are listed as its own corners
+        if rec.get("hard"):
+            for ring in rec["rings"]:
+                for v in ring:
+                    if v in m:
+                        listed[m[v]] = "hard-shell"
+            for k_ in ("tip_centre", "base_pole"):
+                if rec.get(k_) in m:
+                    listed[m[rec[k_]]] = "hard-shell pole"
     for bl in ctx["info"].get("beads", {}).values():
         for bd in bl:
             for v in bd["ins"]:

@@ -32,7 +32,7 @@ class T(unittest.TestCase):
         used = (self.W > 1e-6).any(0)
         unused = [n for n, u in zip(self.R.names, used) if not u]
         print("bones with no vertex weight:", unused)
-        self.assertEqual(unused, ["root", "leg.lower.L", "leg.lower.R", "tail.6"])     # the root is the handle; the lower leg is buried in the stub (the column is carried by the upper bone); the last tail bone's stretch is the bulb, carried by the tip bone
+        self.assertEqual(unused, ["root", "leg.lower.L", "leg.lower.R"])     # the root is the handle; the lower leg is buried in the stub (the column is carried by the upper bone); pass 3: the tip bone carries only the bulb's lower third, so tail.6 carries the last stalk (it carried nothing: the failure pass 2 left)
 
     def test_bones_per_the_plan(self):
         names = set(self.R.names)
