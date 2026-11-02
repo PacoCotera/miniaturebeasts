@@ -54,7 +54,11 @@ class Rig:
         self.belly = np.array([0.0, 0.0, 0.62])
         add("root", (0, 0, 0), (0, 0, 0.3), None)
         add("body", self.belly, self.waist, "root")
-        add("head", self.waist, self.K, "body")
+        import headshape as HS
+        hg = HS.head_geometry(spec)
+        self.head_geom = hg
+        self.head_pivot = np.array(hg["pivot"], float)          # the spine's end: the head turns about its underside (biped) or the back of the skull (quadruped / serpentine), not about the waist
+        add("head", self.head_pivot, (hg["centre"][0], 0.0, hg["centre"][1]), "body")
         leg = np.array(spec["parts"]["leg.L"]["P"])
         self.leg_P = leg
         for side in SIDES:

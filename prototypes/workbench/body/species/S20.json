@@ -189,6 +189,481 @@
      [
       0.52,
       [
+       0.5005,
+       0.5592,
+       0.5061
+      ]
+     ],
+     [
+      0.56,
+      [
+       0.5142,
+       0.5746,
+       0.5199
+      ]
+     ],
+     [
+      0.6,
+      [
+       0.5253,
+       0.587,
+       0.5313
+      ]
+     ],
+     [
+      0.64,
+      [
+       0.5338,
+       0.5964,
+       0.5397
+      ]
+     ],
+     [
+      0.68,
+      [
+       0.5391,
+       0.6023,
+       0.5451
+      ]
+     ],
+     [
+      0.72,
+      [
+       0.5415,
+       0.605,
+       0.5476
+      ]
+     ],
+     [
+      0.76,
+      [
+       0.5414,
+       0.605,
+       0.5475
+      ]
+     ],
+     [
+      0.8,
+      [
+       0.5383,
+       0.6014,
+       0.5443
+      ]
+     ],
+     [
+      0.84,
+      [
+       0.5317,
+       0.5941,
+       0.5376
+      ]
+     ],
+     [
+      0.88,
+      [
+       0.5217,
+       0.5829,
+       0.5275
+      ]
+     ],
+     [
+      0.92,
+      [
+       0.5091,
+       0.5688,
+       0.5148
+      ]
+     ],
+     [
+      0.96,
+      [
+       0.4938,
+       0.5517,
+       0.4993
+      ]
+     ],
+     [
+      1.0,
+      [
+       0.4756,
+       0.5314,
+       0.4809
+      ]
+     ],
+     [
+      1.04,
+      [
+       0.4455,
+       0.4978,
+       0.4505
+      ]
+     ],
+     [
+      1.08,
+      [
+       0.415,
+       0.4637,
+       0.4197
+      ]
+     ],
+     [
+      1.12,
+      [
+       0.3882,
+       0.4338,
+       0.3926
+      ]
+     ],
+     [
+      1.16,
+      [
+       0.3692,
+       0.4125,
+       0.3733
+      ]
+     ],
+     [
+      1.2,
+      [
+       0.362,
+       0.4044,
+       0.366
+      ]
+     ],
+     [
+      1.24,
+      [
+       0.372,
+       0.4157,
+       0.3762
+      ]
+     ],
+     [
+      1.28,
+      [
+       0.4103,
+       0.4584,
+       0.4148
+      ]
+     ],
+     [
+      1.32,
+      [
+       0.4435,
+       0.5016,
+       0.4593
+      ]
+     ],
+     [
+      1.36,
+      [
+       0.4623,
+       0.5381,
+       0.5063
+      ]
+     ],
+     [
+      1.4,
+      [
+       0.47,
+       0.5677,
+       0.5519
+      ]
+     ],
+     [
+      1.44,
+      [
+       0.4706,
+       0.591,
+       0.5931
+      ]
+     ],
+     [
+      1.48,
+      [
+       0.4687,
+       0.6088,
+       0.6272
+      ]
+     ],
+     [
+      1.52,
+      [
+       0.4683,
+       0.6219,
+       0.6511
+      ]
+     ],
+     [
+      1.56,
+      [
+       0.4733,
+       0.631,
+       0.6625
+      ]
+     ],
+     [
+      1.6,
+      [
+       0.4783,
+       0.6366,
+       0.6676
+      ]
+     ],
+     [
+      1.64,
+      [
+       0.4808,
+       0.6393,
+       0.67
+      ]
+     ],
+     [
+      1.68,
+      [
+       0.4813,
+       0.64,
+       0.6706
+      ]
+     ],
+     [
+      1.72,
+      [
+       0.4752,
+       0.6331,
+       0.6644
+      ]
+     ],
+     [
+      1.76,
+      [
+       0.4702,
+       0.6274,
+       0.6592
+      ]
+     ],
+     [
+      1.8,
+      [
+       0.4625,
+       0.6179,
+       0.6497
+      ]
+     ],
+     [
+      1.84,
+      [
+       0.4569,
+       0.6042,
+       0.6307
+      ]
+     ],
+     [
+      1.88,
+      [
+       0.4522,
+       0.5862,
+       0.6029
+      ]
+     ],
+     [
+      1.92,
+      [
+       0.4465,
+       0.5633,
+       0.5675
+      ]
+     ],
+     [
+      1.96,
+      [
+       0.4372,
+       0.5351,
+       0.5259
+      ]
+     ],
+     [
+      2.0,
+      [
+       0.4219,
+       0.5005,
+       0.4791
+      ]
+     ],
+     [
+      2.04,
+      [
+       0.3973,
+       0.4582,
+       0.4275
+      ]
+     ],
+     [
+      2.08,
+      [
+       0.3596,
+       0.4057,
+       0.3707
+      ]
+     ],
+     [
+      2.14,
+      [
+       0.265,
+       0.2961,
+       0.268
+      ]
+     ],
+     [
+      2.16,
+      [
+       0.2186,
+       0.2442,
+       0.221
+      ]
+     ],
+     [
+      2.175,
+      [
+       0.1741,
+       0.1945,
+       0.176
+      ]
+     ],
+     [
+      2.185,
+      [
+       0.1355,
+       0.1514,
+       0.137
+      ]
+     ],
+     [
+      2.193,
+      [
+       0.0929,
+       0.1038,
+       0.094
+      ]
+     ],
+     [
+      2.2,
+      [
+       0.0358,
+       0.04,
+       0.0362
+      ]
+     ]
+    ],
+    "source": "sampled from two soft lobes (superellipse p 2.2, body z .68 h .50 down .64 up R .59; head z 1.68 h .60 down .52 up R .635) joined by a smooth union (n 4); back .895 and front .905 of the side radius",
+    "stations_base": [
+     [
+      0.18,
+      [
+       0.0358,
+       0.04,
+       0.0362
+      ]
+     ],
+     [
+      0.185,
+      [
+       0.0745,
+       0.0832,
+       0.0753
+      ]
+     ],
+     [
+      0.19,
+      [
+       0.1051,
+       0.1174,
+       0.1063
+      ]
+     ],
+     [
+      0.2,
+      [
+       0.1479,
+       0.1652,
+       0.1495
+      ]
+     ],
+     [
+      0.215,
+      [
+       0.1941,
+       0.2169,
+       0.1963
+      ]
+     ],
+     [
+      0.23,
+      [
+       0.2302,
+       0.2572,
+       0.2327
+      ]
+     ],
+     [
+      0.25,
+      [
+       0.2695,
+       0.3011,
+       0.2725
+      ]
+     ],
+     [
+      0.28,
+      [
+       0.3168,
+       0.354,
+       0.3204
+      ]
+     ],
+     [
+      0.32,
+      [
+       0.3665,
+       0.4094,
+       0.3705
+      ]
+     ],
+     [
+      0.36,
+      [
+       0.4057,
+       0.4533,
+       0.4103
+      ]
+     ],
+     [
+      0.4,
+      [
+       0.4375,
+       0.4888,
+       0.4424
+      ]
+     ],
+     [
+      0.44,
+      [
+       0.4632,
+       0.5176,
+       0.4684
+      ]
+     ],
+     [
+      0.48,
+      [
+       0.484,
+       0.5407,
+       0.4894
+      ]
+     ],
+     [
+      0.52,
+      [
        0.5003,
        0.559,
        0.5059
@@ -554,18 +1029,19 @@
        0.0362
       ]
      ]
-    ],
-    "source": "sampled from two soft lobes (superellipse p 2.2, body z .68 h .50 down .64 up R .59; head z 1.68 h .60 down .52 up R .635) joined by a smooth union (n 4); back .895 and front .905 of the side radius"
+    ]
    },
    "rings_z": [
-    1.34,
-    1.46,
+    1.24,
+    1.32,
+    1.4,
+    1.49,
     1.58,
-    1.7,
-    1.83,
+    1.68,
+    1.8,
     1.93,
-    2.03,
-    2.11
+    2.04,
+    2.12
    ],
    "regions": {
     "body": [
@@ -629,7 +1105,7 @@
      "around": 0.36
     },
     "arm": {
-     "u": 1.12,
+     "u": 1.22,
      "col": 6,
      "around": 0.73
     }
@@ -721,7 +1197,22 @@
     },
     "bend_n": 0,
     "ring_gap_tip": 0.062
-   }
+   },
+   "junction_keep_above": 1.16,
+   "head_attach": {
+    "note": "body-plan head attachment (framework rule, 2 Nov): biped = the spine ends on the head's underside, `a` of the head's depth in from the back, and the head's centre lies `d` of its depth forward of the spine axis; quadruped and serpentine = the spine enters the back of the head on its own axis. The head turns about the spine's end. Pass 3 pick (head-attach-grid): a 0.45, d 0.08 -- d 0 reads as a blob on the chest, d 0.15 pushes a wedge-shaped muzzle past the chest; a only moves the pivot of the nod (the loft axis stays vertical).",
+    "attach": "underside",
+    "a": 0.45,
+    "d": 0.08,
+    "z_under": 1.27
+   },
+   "head_profile": {
+    "note": "headshape.py: the head ball's lower half, the neck band and the shoulders (the table section.stations is rebuilt from section.stations_base by these numbers)",
+    "R_scale": 0.965,
+    "chest_gain": 0.04,
+    "d": 0.08
+   },
+   "junction_radius": 0.3
   },
   "leg.L": {
    "kind": "limb",
@@ -820,8 +1311,10 @@
     ],
     "push": 0.005,
     "transition": 3,
-    "join": "soft",
-    "flare": 0.25
+    "join": "hard",
+    "flare": 0.25,
+    "bury": 0.05,
+    "note": "pass 3: the ears use the HARD join (a closed shell sunk 0.05 H, tagged as a crease, keeping its cup and its inner-ear colour). A SOFT ear join fails the footprint rule (0.65-0.92 against the needed 1.5-1.8, a pinch): it needs a wider socket patch on the loft (future framework work), so the type does not use it."
    },
    "family": "@body.ear-family",
    "default": "prick",
@@ -1101,7 +1594,7 @@
    "mirror": "lateral",
    "socket": {
     "kind": "patch",
-    "u": 1.12,
+    "u": 1.22,
     "col": 6,
     "size": [
      2,
@@ -1126,7 +1619,7 @@
        "at": [
         0.3,
         0.4,
-        1.0
+        0.92
        ],
        "r": [
         0.11,
@@ -2080,5 +2573,6 @@
   "tusk": "framework only (tests and a bare-base render); not on Tuliko",
   "join": "hard"
  },
- "join_rule": "every socket declares its join: 'soft' (the appendage grows out of the parent's skin: footprint 1.5-1.8 x its width, a concave fillet over at least 3 loops, no pinch, no ridge, lip or notch; the normal test passes at the root) or 'hard' (a separate closed shell sunk at least 0.03 H into the parent: no blending, a clean intersection line, tagged as a crease). Nothing in between. Tuliko: legs, ears and arms soft; the face attachment families (whiskers, fangs, horns, tusks) hard."
+ "join_rule": "every socket declares its join: 'soft' (the appendage grows out of the parent's skin: footprint 1.5-1.8 x its width, a concave fillet over at least 3 loops, no pinch, no ridge, lip or notch; the normal test passes at the root) or 'hard' (a separate closed shell sunk at least 0.03 H into the parent: no blending, a clean intersection line, tagged as a crease). Nothing in between. Tuliko: legs and arms soft, ears hard (a soft ear needs a wider socket patch: future framework work); the face attachment families (whiskers, fangs, horns, tusks) hard.",
+ "body_plan": "biped"
 }

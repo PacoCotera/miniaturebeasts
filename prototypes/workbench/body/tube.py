@@ -75,21 +75,24 @@ def grow_hard(body, ctx, name, p, fam):
     psi = np.arange(nR) * (2 * math.pi / nR)
     st = list(pa.stations(p["edge"]))
     k0 = None
-    for frac in (0.9, 0.6, 0.35):                       # the deepest margin that finds a ring wholly buried (the shell's own base sits under the skin by at least this)
-        for k, s in enumerate(st):
-            X, inf = _ring_pts(pa, s, L, psi, fam, st[0])
-            if G.inside(X, margin=frac * bury).all():
-                k0 = k
-            elif k0 is not None:
-                break
-        if k0 is not None:
+    for k, s in enumerate(st):                           # the last ring wholly buried by `bury` (true depth below the skin, G.depth), counting from the path's start
+        X, inf = _ring_pts(pa, s, L, psi, fam, st[0])
+        if float(G.depth(X).min()) >= bury:
+            k0 = k
+        elif k0 is not None or k > 0:
             break
     gap = float(p.get("ring_gap", 0.11))
+    sink = 0.0
     if k0 is None:
-        # no full-width ring is buried (a wide ear on a round head): the shell starts with its own small rounded base, two rings that swell from 0.45 and 0.75 of the section at the path's start
+        # no full-width ring is buried (a wide ear on a round head): the shell starts with its own small rounded base, two rings that swell from 0.45 and 0.75 of the section; the first is sunk back along the path (against its direction) until its true depth is `bury` everywhere
         s0 = st[0]
         ss = [s0, s0 + 0.06] + list(np.linspace(s0 + 0.12, L, max(2, int(round((L - s0 - 0.12) / gap))) + 1))
         scl = [0.45, 0.75] + [1.0] * (len(ss) - 2)
+        X0, inf0 = _ring_pts(pa, s0, L, psi, fam, s0)
+        for sink in np.arange(0.0, 0.40, 0.01):
+            Xs = inf0["centre"] - sink * inf0["T"] + (X0 - inf0["centre"]) * 0.45
+            if float(G.depth(Xs).min()) >= bury:
+                break
     else:
         s0 = st[k0]
         n = max(2, int(round((L - s0) / gap)))
@@ -99,6 +102,8 @@ def grow_hard(body, ctx, name, p, fam):
     for s, sc_ in zip(ss, scl):
         X, inf = _ring_pts(pa, s, L, psi, fam, s0)
         X = inf["centre"] + (X - inf["centre"]) * sc_
+        if k0 is None and len(rings) == 0:
+            X = X - sink * inf["T"]
         ids = [body.add(X[m], name, s, m / nR, target=X[m]) for m in range(nR)]
         for v in ids:
             body.tag[v] = 1.0
@@ -109,13 +114,16 @@ def grow_hard(body, ctx, name, p, fam):
     # the rounded base (inside the parent) and the rounded tip
     for ring, inf, sgn in ((rings[0], info[0], -1), (rings[-1], info[-1], 1)):
         rt = max(inf["ra"], inf["rf"])
-        v = body.add(inf["centre"] + sgn * 0.85 * rt * inf["T"], name, 0.0, 0.0, target=None)
+        apex = inf["centre"] + sgn * 0.85 * rt * inf["T"]
+        if sgn < 0 and k0 is None:
+            apex = apex - sink * inf["T"]
+        v = body.add(apex, name, 0.0, 0.0, target=None)
         body.tag[v] = 1.0
         for m in range(0, nR, 2):
             body.face(ring[m], ring[(m + 1) % nR], ring[(m + 2) % nR], v, name)
         if sgn > 0:
             tipv = v
-    return dict(name=name, centre=False, path=pa, first_s=s0, rings_s=ss, rings=rings, ringinfo=info, tip_centre=tipv, loop=[], transition=[], join="hard", hard=True)
+    return dict(name=name, centre=False, path=pa, first_s=s0, rings_s=ss, rings=rings, ringinfo=info, tip_centre=tipv, loop=[], transition=[], join="hard", hard=True, sink=float(sink))
 
 
 def grow_tube(body, ctx, name, p, fam, i, c, centre):

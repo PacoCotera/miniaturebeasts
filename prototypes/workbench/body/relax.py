@@ -46,7 +46,7 @@ def junction_loops(body, ctx):
     return out
 
 
-def smooth_junctions(body, ctx, iters=60, hops=8, lam=0.5, mu=-0.53, protect=None, only=None):
+def smooth_junctions(body, ctx, iters=60, hops=8, lam=0.5, mu=-0.53, protect=None, only=None, keep_above=None, radius=None):
     cage = body.cage
     V, F, mirror = cage.full()
     n = len(cage.V)
@@ -61,12 +61,18 @@ def smooth_junctions(body, ctx, iters=60, hops=8, lam=0.5, mu=-0.53, protect=Non
                 seeds.append(int(mirror[v]))
     d = hops_from(nbr, seeds, hops)
     w = np.clip(1.0 - d / float(hops + 1), 0, 1) ** 1.0
+    if radius is not None and len(seeds):            # pass 3: the reach is a distance in H, not a count of cage edges (a coarse cage's 8 hops reached the neck and fattened it from 0.40 to 0.50 H)
+        S = V[np.array(seeds, int)]
+        dd = np.sqrt(((V[:, None, :] - S[None]) ** 2).sum(2).min(1))
+        w = np.minimum(w, np.clip(1.0 - dd / float(radius), 0, 1))
     fixed = np.zeros(len(V), bool)
     for v in (protect or []):
         fixed[v] = True
         if mirror[v] != v:
             fixed[mirror[v]] = True
     w[fixed] = 0.0
+    if keep_above is not None:               # the head is shaped on purpose: the smoothing of an arm or leg junction never reaches into it (pass 3: it swelled the head from 1.28 H to 1.41 H wide)
+        w[V[:, 2] > keep_above] = 0.0
     for cp in getattr(body, "caps", []):
         w[cp.ids] = 0.0
     for k, v in body.tag.items():            # toe beads are added later; tag vertices are never touched

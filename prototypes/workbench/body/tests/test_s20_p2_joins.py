@@ -11,7 +11,7 @@ RAW = IN.RAW
 
 def build(fam, join):
     d = copy.deepcopy(RAW)
-    d["parts"]["ear.L"]["socket"].update(join=join, bury=0.04)
+    d["parts"]["ear.L"]["socket"].update(join=join)          # the species file's own bury (0.05 H)
     spec, _ = SC.load(raw=d)
     return s20build.make_s20(spec, upto="base", ear=fam)
 
@@ -26,15 +26,17 @@ class T(unittest.TestCase):
         d = copy.deepcopy(RAW); del d["parts"]["arm.L"]["socket"]["join"]
         with self.assertRaises(SC.SchemaError):
             SC.load(raw=d)
-        self.assertEqual(RAW["parts"]["ear.L"]["socket"]["join"], "soft")           # Tuliko's ears are soft, like the legs and the tail
+        self.assertEqual(RAW["parts"]["ear.L"]["socket"]["join"], "hard")           # pass 3: Tuliko's ears are hard shells (a soft ear needs a wider socket patch: framework work); the legs and arms stay soft
+        self.assertGreaterEqual(RAW["parts"]["ear.L"]["socket"]["bury"], 0.04)
+        self.assertLessEqual(RAW["parts"]["ear.L"]["socket"]["bury"], 0.055)
 
     def test_hard_join_is_a_buried_tagged_shell_for_both_ear_families(self):
-        for fam in ("prick", "lop"):
+        for fam in ("prick", "lop", "nub"):
             b = build(fam, "hard")
             r = P2.ear_join_report(b)
             print(fam, "hard", {k: (round(v, 3) if isinstance(v, float) else v) for k, v in r.items()})
             self.assertEqual(r["join"], "hard")
-            self.assertGreaterEqual(r["buried"], 0.03)
+            self.assertGreaterEqual(r["buried"], 0.04)          # the shell's base ring on the level-2 surface, true distance below the trunk skin
             self.assertTrue(r["tagged"])
             self.assertEqual(b.ctx["info"]["tubes"]["ear.L"]["loop"], [])             # nothing bridged, nothing blended
             self.assertEqual(b.ctx["log"]["limit"]["max_err"] <= 0.004, True)

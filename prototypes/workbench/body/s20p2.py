@@ -206,10 +206,15 @@ def ear_join_report(b, name="ear.L"):
         out.update(footprint=foot, mid_width=mid_w, ratio=foot / mid_w, narrowest_over_mid=min(ws) / mid_w, loops=len(bands))
     else:
         base = rec["rings"][0]
-        # buried depth: how far inside the loft the shell's base ring lies (distance along the outward normal estimate from the design field)
+        # buried depth: the true distance of the shell's base ring below the parent's skin (the nearest point of the level-2 trunk surface, every quad sampled 4 x 4)
         Vt, Ft, att, fpt = level_arrays(b, 2)
-        tor = Vt[np.rint(att[:, 0]).astype(int) == b.parts["torso"]]
-        pts = Vc[[m[v] for v in base if v in m]]
-        dist = np.sqrt(((pts[:, None, :] - tor[None, ::2, :]) ** 2).sum(2).min(1))
+        part = IN.part_of(b, Ft, fpt, len(Vt))
+        ftor = np.array([f for f in Ft if (part[f] == b.parts["torso"]).all()])
+        q = Vt[ftor]                                                          # (nf, 4, 3)
+        uu = np.linspace(0, 1, 5)
+        S = np.concatenate([((1 - u) * ((1 - v) * q[:, 0] + v * q[:, 3]) + u * ((1 - v) * q[:, 1] + v * q[:, 2])) for u in uu for v in uu])
+        pts = Vt[[m[v] for v in base if v in m]]                            # the base ring's own vertices on the level-2 surface (the subdivision keeps the cage's vertex numbers)
+        dist = np.sqrt(((pts[:, None, :] - S[None]) ** 2).sum(2).min(1))
+        out["sink"] = float(rec.get("sink", 0.0))
         out.update(buried=float(dist.min()), tagged=bool(all(b.tag.get(m[v], 0) >= 1.0 for r in rec["rings"] for v in r if v in m)))
     return out

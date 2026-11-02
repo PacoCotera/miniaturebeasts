@@ -77,6 +77,16 @@ def validate(spec):
                 raise SchemaError(f"{name}: path.key must be x or z")
             if p["path"].get("key") == "z" and p["path"].get("N") != "back":
                 raise SchemaError(f"{name}: a z-keyed loft needs N: back")
+            if "head_attach" in p:
+                ha = p["head_attach"]
+                plan = spec.get("body_plan")
+                want = {"biped": "underside", "quadruped": "back", "serpentine": "back"}.get(plan)
+                if want is None:
+                    raise SchemaError(f"{name}: head_attach needs a body_plan of biped, quadruped or serpentine")
+                if ha.get("attach") != want:
+                    raise SchemaError(f"{name}: a {plan}'s head attaches at the {want} (biped: the spine ends on the head's underside; quadruped and serpentine: the back of the head, on the spine axis), not at the {ha.get('attach')}")
+                if want == "underside" and not (0.2 <= float(ha.get("a", -1)) <= 0.6 and 0.0 <= float(ha.get("d", -1)) <= 0.3 and "z_under" in ha):
+                    raise SchemaError(f"{name}: a biped head_attach needs a (0.2-0.6 of the head's depth from the back), d (0-0.3 of the depth forward of the spine axis) and z_under")
         if p["kind"] in ("limb", "tube") and spec.get("species") == "S20" or (p["kind"] == "tube" and p.get("socket", {}).get("join")):
             if p["socket"].get("join") not in ("soft", "hard"):
                 raise SchemaError(f"{name}: every socket declares its join type, 'soft' (grows out of the parent's skin) or 'hard' (a separate shell sunk into it); nothing in between")

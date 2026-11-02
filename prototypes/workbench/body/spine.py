@@ -85,6 +85,20 @@ class SpineLoft(Gourd):
         P[a == 0, 1] = 0.0; P[a == 1, 1] = 0.0
         return P
 
+    def depth(self, X):
+        """Signed Euclidean depth of points below the design body's skin (positive inside), by the nearest point of a fine cloud of the gourd's surface (the trunk and head, not the tail). The hard joins use it: a shell is 'sunk 0.04-0.055 H' means this number."""
+        if not hasattr(self, "_cloud"):
+            zs = np.linspace(self.ends[0] + 0.01, self.ends[1] - 0.01, 90)
+            aa = np.linspace(0.0, 1.0, 41)
+            Z, A = np.meshgrid(zs, aa, indexing="ij")
+            P = self.point(Z.ravel(), A.ravel())
+            Q = P.copy(); Q[:, 1] *= -1
+            self._cloud = np.vstack([P, Q[Q[:, 1] != 0]])
+        X = np.atleast_2d(np.asarray(X, float))
+        d = np.sqrt(((X[:, None, :] - self._cloud[None]) ** 2).sum(2).min(1))
+        ins = self.d_body(X) < 0
+        return np.where(ins, d, -d)
+
     def tail_radius(self, s):
         """The tail's profile as a function of arc length: the joints' radii by a monotone cubic, held at the root's radius beyond it; the last stretch of the one spine is the tip family's bulb (a teardrop or a ball: its own radius profile on the path, so
         it flows out of the stalk with no join at all)."""

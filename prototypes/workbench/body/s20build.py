@@ -94,9 +94,12 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
         ctx["log"]["limit"] = limit_fix(body, free_caps=kw.get("free_caps", True))
         if stage >= 1 and kw.get("smooth_junctions", True):
             import relax
-            ctx["log"]["junctions"] = relax.smooth_junctions(body, ctx, **kw.get("junction_opts", {}))
+            keep = spec["parts"]["torso"].get("junction_keep_above")
+            rad = spec["parts"]["torso"].get("junction_radius")
+            base_ = dict(keep_above=keep, radius=rad)
+            ctx["log"]["junctions"] = relax.smooth_junctions(body, ctx, **{**base_, **kw.get("junction_opts", {})})
             for nm_, o_ in (kw.get("junction_extra") or {"ear.L": dict(iters=100, hops=10), "arm.L": dict(iters=90, hops=9)}).items():       # the ears and arms are thinner than the legs: a second, wider pass on their loops
-                ctx["log"]["junctions_" + nm_] = relax.smooth_junctions(body, ctx, only=[nm_], **o_)
+                ctx["log"]["junctions_" + nm_] = relax.smooth_junctions(body, ctx, only=[nm_], **{**base_, **o_})
             for h in body.hooks:
                 h(body)
         if stage >= 1 and kw.get("relax", True):
