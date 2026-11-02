@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import s20genes as GN, s20indiv as IN, mquality as Q, subdiv as SD, s20measure as M, test_helpers_s20 as TH, paths as PA
 from test_s20_base import part_is_closed
-from test_limbs import classify_poles
+from test_helpers_s20 import classify_poles
 
 
 class T(unittest.TestCase):

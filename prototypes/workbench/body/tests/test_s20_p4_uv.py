@@ -41,3 +41,37 @@ class T(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TStretch(unittest.TestCase):
+    """UV stretch (sigma_max / sigma_min of the 3D -> UV map) on the belly patch and the face only: the coat's two areas the eye reads. (The all-islands p95 of test_s20_skin stays reported there; the toe and the thin tail islands carry it.)"""
+    @classmethod
+    def setUpClass(cls):
+        cls.items = [IN.make(i) for i in (1, 2, 8)]
+
+    def stretch_of(self, b, sel_fn):
+        Vf, Ff, attr, fp, cr, mir = b.full()
+        V1, F1, _, attr1, fp1 = SD.subdivide(Vf, Ff, cr, attr, fp, levels=TX.SHIP_LEVEL)
+        F1 = np.array(F1, int)
+        uv, isl = TX.face_uv(b, V1, F1, np.asarray(fp1).astype(int), attr1)
+        P = V1[F1]; cen = P.mean(1)
+        m = (isl == "torso") & (cen[:, 1] > 0) & sel_fn(cen)
+        e3 = np.stack([P[:, 1] - P[:, 0], P[:, 3] - P[:, 0]], 1)
+        eu = np.stack([uv[:, 1] - uv[:, 0], uv[:, 3] - uv[:, 0]], 1)
+        out = []
+        for i in np.where(m)[0]:
+            A, B = e3[i], eu[i]
+            Mx = B.T @ np.linalg.pinv(A.T)
+            sv = np.linalg.svd(Mx, compute_uv=False)
+            if sv[1] > 1e-9:
+                out.append(sv[0] / sv[1])
+        return np.array(out)
+
+    def test_belly_and_face_stretch(self):
+        for c, b, R in self.items:
+            belly = self.stretch_of(b, lambda cen: (cen[:, 0] > 0.15) & (np.abs(cen[:, 1]) < 0.26) & (cen[:, 2] > 0.30) & (cen[:, 2] < 0.9))
+            face = self.stretch_of(b, lambda cen: (cen[:, 0] > 0.25) & (cen[:, 2] > 1.35) & (cen[:, 2] < 2.0))
+            print("belly stretch median %.2f p95 %.2f (%d faces); face median %.2f p95 %.2f (%d faces)" % (np.median(belly), np.percentile(belly, 95), len(belly), np.median(face), np.percentile(face, 95), len(face)))
+            self.assertGreater(len(belly), 6); self.assertGreater(len(face), 10)
+            self.assertLessEqual(float(np.percentile(belly, 95)), 2.0)
+            self.assertLessEqual(float(np.percentile(face, 95)), 2.0)

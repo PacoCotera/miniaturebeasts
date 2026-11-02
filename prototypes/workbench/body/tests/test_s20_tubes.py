@@ -125,7 +125,7 @@ class T(unittest.TestCase):
 
     def test_every_pole_listed(self):
         sys.path.insert(0, HERE)
-        from test_limbs import classify_poles
+        from test_helpers_s20 import classify_poles
         val, listed, unl = classify_poles(self.b, self.V, self.F)
         m = self.ctx["remap"]
         n0 = len(self.b.cage.V)

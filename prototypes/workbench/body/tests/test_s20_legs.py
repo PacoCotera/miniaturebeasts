@@ -4,7 +4,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import s20build, mquality as Q, subdiv as SD, paths as PA, s20measure as M
-from test_limbs import classify_poles
+from test_helpers_s20 import classify_poles
 
 
 class T(unittest.TestCase):

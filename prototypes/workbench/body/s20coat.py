@@ -244,11 +244,12 @@ def palette_from_hue(h, g):
     bs_ = float(np.clip(0.6 * sat, 0.2, 0.5))                                  # a lighter, slightly warmer tint of the base hue: value +20 %, saturation 0.6 x the base (never neutral grey)
     bv_ = float(min(1.0, v * 1.22 + 0.04))
     if hue_window(h):
-        belly = hsv_plush(h + 175.0, bs_ * 0.7, bv_)                           # pale COOL belly on the rust coat
+        belly = hsv_plush(h, min(0.6, sat * 0.9), v * 0.55)                      # pass 4 (the ember rule): the warm hues (10-35 degrees) get a DARK belly in the coat's own hue (a pale belly with a lit tail is the fire-tailed starter's likeness)
     else:
         warm_shift = ((40.0 - h + 180.0) % 360.0) - 180.0
         belly = hsv_plush(h + 0.12 * warm_shift, bs_, bv_)
-    P = dict(coat=coat, belly=belly, **{"ear-inner": hsv_plush(h + 55.0, 0.34, 0.95)}, pad=hsv_plush(h, min(0.6, sat + 0.05), v * 0.72), mark=hsv_plush(h + 8.0, min(0.6, sat + 0.08), v * 0.55), nose=hsv_plush(h, 0.45, 0.2),
+    muzzle = hsv_plush(h, float(np.clip(0.55 * sat, 0.18, 0.4)), float(min(0.97, v * 1.18 + 0.05)))      # the muzzle patch: a lighter tint of the coat's own hue, never a contrasting colour
+    P = dict(coat=coat, belly=belly, muzzle=muzzle, **{"ear-inner": hsv_plush(h + 55.0, 0.34, 0.95)}, pad=hsv_plush(h, min(0.6, sat + 0.05), v * 0.72), mark=hsv_plush(h + 8.0, min(0.6, sat + 0.08), v * 0.55), nose=hsv_plush(h, 0.45, 0.2),
              glow=color_hl(float(g.get("glow_hue", 80.0)), 0.78, 0.86))
     return P
 
@@ -401,7 +402,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     wid = Wb_ * np.clip(1 - np.abs(uu_) ** pw_, 0.0, 1.0) ** (1.0 / pw_)
     nz_ = fbm(V * 9.0, seed + 41, 2) - 0.5
     edge_ = 0.010
-    belly = (1 - sstep(wid - edge_, wid + edge_, lat + 0.006 * nz_)) * (np.abs(uu_) < 1.0) * sstep(0.10, 0.35, N[:, 0])
+    belly = (1 - sstep(wid - edge_, wid + edge_, lat + 0.006 * nz_)) * (np.abs(uu_) < 1.0) * sstep(0.04, 0.16, N[:, 0])
     F["belly_t"] = tt_; F["belly_wid"] = wid; F["belly_lat"] = lat; F["belly_u"] = uu_
     rec_a_ = ctx["info"]["tubes"].get("arm.L")
     arm_b = (arm * (1 - sstep(rec_a_["first_s"] + 0.02, rec_a_["first_s"] + 0.14, s))) if (rec_a_ and arm.any() and not rec_a_.get("hard")) else np.zeros(n)       # the arm's bridge band is the trunk's skin round its socket: the patch runs over it
@@ -443,7 +444,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         u, v = d @ rgt, d @ up
         m = (1 - sstep(0.85, 1.15, np.hypot(u / 0.38, v / 0.22))) * (d @ nrm > -0.15) * torso           # the muzzle mask: 0.38 x 0.22 H (pass 3: at 0.30 x 0.16 it differed from plain in under 3 % of a 96 px thumbnail)
         F["face"] = m
-        col = col * (1 - m[:, None]) + belly_c * 0.97 * m[:, None]          # pass 4: the muzzle is a lighter patch (the face clear zone: no mark darker than the coat by the mouth)
+        col = col * (1 - m[:, None]) + srgb_to_lin(pal["muzzle"]) * m[:, None]          # pass 4: the muzzle is a lighter tint of the coat's own hue (the face clear zone: no mark darker than the coat by the mouth)
     if "points" in zones:
         Le = ctx["info"]["tubes"].get("ear.L", {"path": None})
         pts = np.zeros(n)

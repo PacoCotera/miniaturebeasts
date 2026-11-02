@@ -161,7 +161,7 @@ def add_appendages(body, ctx, opts):
         n = int(w["count"])
         zs = np.linspace(1.50, 1.43, n) if n > 1 else [1.46]
         for k in range(n):
-            a = 0.955 - 0.012 * k
+            a = 0.886 - 0.010 * k                                    # pass 4: the bases sit 0.17 H out from the midline, 0.06 H clear of the mouth's corner (at 0.955 the two sides met at the mouth and read as one line across it)
             Pt = G.point(np.array([zs[k]]), np.array([a]))[0]
             spread = (k - (n - 1) / 2.0) * 0.22                      # fan the whiskers: up, level, down
             ax = np.array([0.25, 1.0, 0.0]) / np.linalg.norm([0.25, 1.0])

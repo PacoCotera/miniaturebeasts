@@ -123,8 +123,8 @@ PAIRS = {
     "appearance.marking-layout": (["plain", "masked", "points", "banded", "spotted", "capped"], [0.25, 0.15, 0.15, 0.15, 0.15, 0.15], ["plain", "masked", "points", "banded", "spotted", "capped"]),
     "coat.rd": (["none", "spots", "labyrinth", "rings"], [0.4, 0.25, 0.2, 0.15], ["none", "spots", "labyrinth", "rings"]),
     "coat.mark": (["none", "heart", "star"], [0.5, 0.25, 0.25], ["none", "heart", "star"]),
-    "coat.mark-where": (["forehead", "cheek", "belly"], [0.5, 0.3, 0.2], ["forehead", "cheek", "belly"]),
-    "coat.glow-pattern": (["none", "belly-arcs", "constellation"], [0.34, 0.33, 0.33], ["none", "belly-arcs", "constellation"]),        # the night-light species' one glowing pattern gene
+    "coat.mark-where": (["forehead", "belly"], [0.7, 0.3], ["forehead", "belly"]),            # (pass 4: no cheek emblems, they sat on the blush)
+    "coat.glow-pattern": (["none", "belly-arcs"], [0.6, 0.4], ["none", "belly-arcs"]),        # the night-light species' one glowing pattern gene
     "face.expression": (["content", "open"], [0.8, 0.2], ["content", "open"]),
     "face.whisker-glow": (["off", "glow"], [0.85, 0.15], ["off", "glow"]),                     # a rare variant: glowing whisker tips
     "face.fangs": (["none", "fangs"], [0.75, 0.25], ["none", "fangs"]),                        # tiny fangs: about 1 in 4
@@ -181,13 +181,46 @@ def draw(i, seed0=2026):
     t["appearance.body-hue"] = float(np.round(((270.0 + 30.0 * (i - 1) + 14.0 * (rng.random() - 0.5)) % 360.0) / 360.0, 3))          # twelve hues round the wheel, 30 degrees apart (the type is violet)
     tipk = TIPS[(i - 2) % len(TIPS)]
     pairs["body.tail-tip"] = [tipk, tipk] if tipk != "lantern" else ["lantern", str(rng.choice(["lantern", "tuft", "plain"]))]
-    pairs["coat.glow-pattern"] = [["none", "belly-arcs", "constellation"][(i - 1) % 3]] * 2                 # the sheet cycles the glowing pattern gene
+    pairs["coat.glow-pattern"] = [["none", "belly-arcs", "none"][(i - 1) % 3]] * 2                 # the sheet shows the glowing pattern (the firefly arcs) on every third individual; the constellation is retired (pass 4: it did not register at 96 px)
     pairs["face.expression"] = ["open"] * 2 if i in (4, 9) else ["content"] * 2
     t["face.whisker-count"] = [0.0, 0.4, 0.7, 1.0][(i - 1) % 4] if i != 1 else 0.0               # the sheet shows 0, 1 .. 3 whiskers a side
     pairs["face.whisker-glow"] = ["glow"] * 2 if i == 6 else ["off"] * 2
     pairs["face.fangs"] = ["fangs"] * 2 if i in (3, 8, 11) else ["none"] * 2                          # and shows the open-mouth expression twice
     sw = dict(blush=bool(rng.random() < SWITCHES["face.blush"]), brow=bool(rng.random() < SWITCHES["coat.brow"]))
-    return dict(t=t, pairs=pairs, switches=sw, seed=int(rng.integers(1, 10 ** 6)))
+    ind = dict(t=t, pairs=pairs, switches=sw, seed=int(rng.integers(1, 10 ** 6)))
+    return limit_loud(ind)
+
+
+LOUD = ("glow", "pattern", "emblem", "brow")          # in the order they are kept: at most two loud genes per individual (AD gate on pass 3, 5)
+
+
+def loud_genes(ind):
+    """The loud genes an individual shows, from coat pattern (a reaction-diffusion pattern or a banded / spotted / capped layout), glow pattern, emblem and brow."""
+    ph = {k: phenotype(k, ind["pairs"][k]) for k in PAIRS}
+    out = []
+    if ph["coat.glow-pattern"] != "none":
+        out.append("glow")
+    if ph["coat.rd"] != "none" or ph["appearance.marking-layout"] in ("banded", "spotted", "capped"):
+        out.append("pattern")
+    if ph["coat.mark"] != "none":
+        out.append("emblem")
+    if ind["switches"].get("brow"):
+        out.append("brow")
+    return out
+
+
+def limit_loud(ind):
+    """Drop loud genes beyond the first two (glow, pattern, emblem, brow in that order of keeping): the dropped gene is switched off, not rerolled, so the rest of the individual stays as drawn."""
+    for g in loud_genes(ind)[2:]:
+        if g == "glow":
+            ind["pairs"]["coat.glow-pattern"] = ["none", "none"]
+        elif g == "pattern":
+            ind["pairs"]["coat.rd"] = ["none", "none"]; ind["pairs"]["appearance.marking-layout"] = ["plain", "plain"]
+        elif g == "emblem":
+            ind["pairs"]["coat.mark"] = ["none", "none"]
+        else:
+            ind["switches"]["brow"] = False
+    return ind
 
 
 def phenotype(pair_name, pair):
@@ -212,7 +245,7 @@ def creature(ind):
                        bands=v["coat.bands"], brow=1.0 if ind["switches"]["brow"] else 0.0, mark=ph["coat.mark"], mark_where=ph["coat.mark-where"], mark_size=v["coat.mark-size"], blush=bool(ind["switches"]["blush"]),
                        eye_size=v["growth.exterior-eye-size-ratio"], eye_height=v["growth.exterior-eye-height-ratio"], eye_spacing=v["growth.exterior-eye-spacing-ratio"], mouth_width=v["face.mouth-width"],
                        mouth_z=v["face.mouth-height"], seed=int(ind["seed"])),
-             appendages=dict(whiskers=dict(count=int(v["face.whisker-count"]), length=v["face.whisker-length"], droop=v["face.whisker-droop"], curl=v["face.whisker-curl"], glow=ph["face.whisker-glow"] == "glow"),
+             appendages=dict(whiskers=dict(count=(lambda n_: 0 if n_ < 1 else max(n_, 2))(int(v["face.whisker-count"])), length=v["face.whisker-length"], droop=v["face.whisker-droop"], curl=v["face.whisker-curl"], glow=ph["face.whisker-glow"] == "glow"),
                              fangs=(1 + int(ind["seed"]) % 2) if ph["face.fangs"] == "fangs" else 0),
              motion=dict(speed=v["movement.cycle-rate"], walk_period=0.9 / v["movement.cycle-rate"]),
              genes=dict(t={k: ind["t"][k] for k in sorted(ind["t"])}, pairs={k: ind["pairs"][k] for k in sorted(ind["pairs"])}, switches=ind["switches"]),

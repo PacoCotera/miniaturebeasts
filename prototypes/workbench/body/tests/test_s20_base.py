@@ -95,7 +95,7 @@ class T(unittest.TestCase):
         self.assertGreater(fl["volume"], 0)
 
     def test_every_pole_listed(self):
-        from test_limbs import classify_poles
+        from test_helpers_s20 import classify_poles
         val, listed, unl = classify_poles(self.b, self.V, self.F)
         m = self.ctx["remap"]
         n0 = len(self.b.cage.V)

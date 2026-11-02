@@ -83,17 +83,17 @@ class T(unittest.TestCase):
         self.assertGreaterEqual(len(distinct), 6)
 
     def test_no_cream_belly_with_a_lit_tail_in_the_ember_window(self):
-        """A body hue of 10-35 degrees never has a cream belly with a lit tail: its coat is rust-ochre and its belly a pale COOL tint (hue in 150-260), still lighter than the coat."""
+        """The ember rule (pass 4, AD gate on pass 3): a body hue of 10-35 degrees never has a pale belly with a lit tail: its belly is DARK, in the coat's own hue (the pass 2 rule, a pale cool belly, still left no. 5 reading as the fire-tailed starter)."""
         for h in range(10, 36, 5):
             P = CT.palette_from_hue(h, {})
-            bh = hue_of(P["belly"])
-            self.assertTrue(150.0 <= bh <= 260.0, (h, bh))
-            self.assertGreaterEqual(luma(P["belly"]), 1.15 * luma(P["coat"]), h)
+            self.assertLess(luma(P["belly"]), 0.8 * luma(P["coat"]), h)
+            d = abs(((hue_of(P["belly"]) - hue_of(P["coat"]) + 180.0) % 360.0) - 180.0)
+            self.assertLessEqual(d, 12.0, (h, d))                                          # the coat's own hue, not a contrasting one
         for i, (c, b, R) in enumerate(self.items, 1):
             h = (c["coat"]["hue"] + 360.0 * c["coat"]["hue_shift"]) % 360.0
             P = CT.palette_from_hue(h, c["coat"])
             if 10.0 <= h <= 35.0 and c["shape"]["tip"] == "lantern":
-                self.assertTrue(150.0 <= hue_of(P["belly"]) <= 260.0, (i, h))
+                self.assertLess(luma(P["belly"]), 0.8 * luma(P["coat"]), (i, h))
 
     def test_plush_colour_range_and_a_lighter_belly_on_every_hue(self):
         """The design palette folds in the look-dev gains (S 0.35-0.75, V 0.55-1.0) so the RENDERED body is in the plush range (HSV S 0.35-0.60, V 0.55-0.85), and the belly is at least 15 % lighter than the coat on EVERY hue (the greens lost theirs)."""
@@ -103,6 +103,8 @@ class T(unittest.TestCase):
             hh, ss, vv = colorsys.rgb_to_hsv(*(np.array(P["coat"]) / 255.0))
             self.assertTrue(0.35 - 1e-6 <= ss <= 0.75 + 1e-6, (h, ss))          # the design palette; under the soft studio light and AgX the rendered body lands at S 0.35-0.60, V 0.55-0.85 (measured in the sheet)
             self.assertTrue(0.55 - 1e-6 <= vv <= 1.0 + 1e-6, (h, vv))
+            if 10 <= h <= 35:                                                          # the ember window: a dark belly (test above)
+                continue
             self.assertGreaterEqual(luma(P["belly"]), 1.15 * luma(P["coat"]), h)
 
     def test_no_tail_colour_bleed_on_warm_hues(self):
