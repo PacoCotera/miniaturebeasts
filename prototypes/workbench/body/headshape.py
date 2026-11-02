@@ -9,7 +9,7 @@ and shifts the head forward of the spine by `d` of its depth (the skull dome is 
 """
 import numpy as np
 
-DEFAULTS = dict(chest_front=0.0, chest_front_window=(0.72, 0.88, 1.04, 1.2), rump_gain=0.0, rump_window=(0.22, 0.40, 0.52, 0.74), R_scale=1.0, chest_gain=0.0, chest_window=(0.5, 0.85, 1.02, 1.2), z_keep=1.0, zc=1.68, z_neck=1.2, neck_ratio=0.66, b_dn=0.46, p=2.4, n=4.0, back_ratio=0.895, front_ratio=0.905, d=0.0, shift_lo=(1.28, 1.55), shift_lo_front=(1.5, 1.78), back_share=0.25, shift_hi=(1.78, 2.12), shift_hi_front=(1.78, 2.12), brow=0.0, depth=1.143)
+DEFAULTS = dict(chest_front=0.0, chest_front_window=(0.72, 0.88, 1.04, 1.2), rump_gain=0.0, rump_window=(0.22, 0.40, 0.52, 0.74), R_scale=1.0, chest_gain=0.0, chest_window=(0.5, 0.85, 1.02, 1.2), z_keep=1.0, zc=1.68, z_neck=1.2, neck_ratio=0.66, b_dn=0.46, p=2.4, n=4.0, back_ratio=0.895, front_ratio=0.905, d=0.0, shift_lo=(1.28, 1.55), shift_lo_front=(1.5, 1.78), back_share=0.25, shift_hi=(1.78, 2.12), shift_hi_front=(1.78, 2.12), brow=0.0, depth=1.143, p_up=None, b_up=0.5, z_up_end=2.04, z_up_blend=2.10)
 
 
 def sstep(a, b, x):
@@ -55,6 +55,18 @@ def stations(base, **kw):
         if zk < zz <= zc + 1e-9:
             s = float((r_c(zz) ** n + r_h(zz) ** n) ** (1.0 / n))
             out[i] = [s * P["back_ratio"], s, s * P["front_ratio"]]
+    if P["p_up"]:                                         # pass 4: the head's upper half as its own superellipse about the same equator (the base table's upper half left the equator at a slope: a kink, and with the lower half's flat side a band of flattened curvature round the head at the eye line)
+        zup = z[(z > zc + 1e-9) & (z <= P["z_up_blend"])]
+        s_c = float(out[np.argmin(np.abs(z - zc)), 1])
+        t_ = np.clip((zup - zc) / P["b_up"], 0, 1)
+        r_u = s_c * (1 - t_ ** P["p_up"]) ** (1.0 / P["p_up"])
+        side_b = np.interp(zup, z, side0)
+        w_ = 1.0 - sstep(P["z_up_end"], P["z_up_blend"], zup)
+        mult = (1 - w_) + w_ * r_u / np.maximum(side_b, 1e-6)
+        for k, zz in enumerate(z):
+            if zz in zup:
+                i_ = int(np.where(zup == zz)[0][0])
+                out[k] = out[k] * mult[i_]
     # the forward shift of the head (a fraction of its depth), fading in over the neck and out over the dome
     hi = 1 - sstep(*P["shift_hi"], z)
     dzb = P["back_share"] * P["d"] * P["depth"] * sstep(*P["shift_lo"], z) * hi

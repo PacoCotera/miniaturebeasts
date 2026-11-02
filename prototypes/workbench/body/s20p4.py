@@ -99,3 +99,30 @@ def seat_numbers(b, root=(-0.42, 0.72)):
     rear_z, rear_x = float(zs[iz]), float(xr[iz])
     line_x = heel + (root[0] - heel) * (rear_z - 0.05) / (root[1] - 0.05)
     return dict(heel=heel, back_angle_deg=ang, tuck=tuck, rear_z=rear_z, rear_x=rear_x, behind_heel=heel - rear_x, outside_line=line_x - rear_x, tail_z=zt, x_at_025=float(np.interp(0.25, zs, xr)), x_at_030=float(np.interp(0.30, zs, xr)))
+
+
+# ---- step 4: the head ring (AD gate on pass 3, mesh quality 1) ----
+def side_profile(b, zs, level=2):
+    """The head's half-width (max |y| of the torso part, from the edge crossings of its level-2 faces) at each height."""
+    V, F, at, fp = P2.level_arrays(b, level)
+    Fa = np.array(F, int)
+    part = IN.part_of(b, Fa, fp, len(V))
+    m = part[Fa[:, 0]] == b.parts["torso"]
+    Fa = Fa[m]
+    E = np.concatenate([Fa[:, [0, 1]], Fa[:, [1, 2]], Fa[:, [2, 3]], Fa[:, [3, 0]]])
+    A, B_ = V[E[:, 0]], V[E[:, 1]]
+    out = np.full(len(zs), np.nan)
+    for i, z in enumerate(zs):
+        k = ((A[:, 2] - z) * (B_[:, 2] - z) <= 0) & (A[:, 2] != B_[:, 2])
+        if k.any():
+            t = (z - A[k, 2]) / (B_[k, 2] - A[k, 2])
+            out[i] = np.abs(A[k, 1] + t * (B_[k, 1] - A[k, 1])).max()
+    return out
+
+
+def head_curvature(b, z0=1.40, z1=1.96, dz=0.04):
+    """Curvature (1/H) of the head's side profile between z0 and z1 by second differences of the half-width (dz = 0.04 H); returns zs, k."""
+    zs = np.arange(z0 - dz, z1 + dz + 1e-9, dz)
+    w = side_profile(b, zs)
+    k = -(w[2:] - 2 * w[1:-1] + w[:-2]) / dz ** 2
+    return zs[1:-1], k
