@@ -1,0 +1,17 @@
+{
+ "note": "S20 variety individuals 1..12 (s20genes.draw(i)) built by s20genes.build_individual at 930fc4253, before the cage speed work: the cage hash (wb.hashing.cage_hash) of each. Individual 1 is the type. Change only when the S20 cage is meant to change.",
+ "hashes": {
+  "1": "dbebe2e3a0a3b27cf03a7e78fb671f4b3e401bcae8fb3ecf3144f2dd571b73fd",
+  "2": "b2c617306861ada66c4f400dbc5b84c456310ad54f080a324ab64e48d7fb4f72",
+  "3": "18f835dd057e5d8c14025f515d7ae2adcc296fdbf6a2f42cf2280da01335120e",
+  "4": "3a6f505156e8adfb0259ef71f55ecd9170b9e2fbc5b53a5e12c2d16a30db1b1c",
+  "5": "2148112c68130c0978b90058e49ef65f03d2ca480eb3de17c02e85a83a35e417",
+  "6": "35d846f120a1487265f3d2024c74f82c6b19f4b3a274cfbbd7cbf1a989c56019",
+  "7": "5953f84c177490dc990364a93e9597637c98d7e973648bf0379c8a48a559a955",
+  "8": "330aba8dd28b0ff424bd9a932dff6496e68849452b802f7b663b7c91008bcc6d",
+  "9": "f2e36e3705fc34041d68c81f7fe0e6449384b3a59a31bffb1659881debedfe8d",
+  "10": "fc70f1600dd23cbc84cb97da913ee7252d6cfe308e4f43fa05155c5db3395583",
+  "11": "fbd9890bb25ed90b1a8dffc97a2ccf608f2d1343e8fe9d5e54fef684e12188c8",
+  "12": "a90d7f319cf349853852e040eca27cf84352eb0c315150e4dde201db7c8a5c8b"
+ }
+}
