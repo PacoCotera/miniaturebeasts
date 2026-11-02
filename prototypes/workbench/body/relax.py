@@ -15,6 +15,31 @@ def full_adjacency(F, n):
     return [np.array(sorted(s), int) for s in nb]
 
 
+def neighbour_mean(nbr):
+    """-> f(A): row i is A[nbr[i]].mean(0), for every vertex at once. The vertices are grouped by valence and each group's neighbours are added one column at a time, in the order of the list: the same additions in the same order
+    as the mean of each list (one numpy call per vertex, a million of them in a build), so the same bits. A vertex with no neighbour is nan, as the mean of nothing is."""
+    n = len(nbr)
+    deg = np.array([len(x) for x in nbr], int)
+    groups = []
+    for dg in np.unique(deg):
+        ids = np.where(deg == dg)[0]
+        idx = np.array([nbr[i] for i in ids], int).reshape(len(ids), int(dg))
+        groups.append((ids, idx, int(dg)))
+
+    def f(A):
+        M = np.empty((n, A.shape[1]))
+        for ids, idx, dg in groups:
+            if dg == 0:
+                M[ids] = np.nan
+                continue
+            acc = A[idx[:, 0]]
+            for j in range(1, dg):
+                acc = acc + A[idx[:, j]]
+            M[ids] = acc / dg
+        return M
+    return f
+
+
 def hops_from(nbr, seeds, maxh=8):
     d = np.full(len(nbr), maxh + 1)
     fr = list(seeds)
@@ -83,9 +108,13 @@ def smooth_junctions(body, ctx, iters=60, hops=8, lam=0.5, mu=-0.53, protect=Non
         w[k] = 0.0
     cm = np.abs(V[:, 1]) < 1e-12
     A = V.copy()
+    nmean = neighbour_mean(nbr)
+    lonely = np.array([len(nb) == 0 for nb in nbr])
     for it in range(iters):
         for f in (lam, mu):
-            M = np.array([A[nb].mean(0) if len(nb) else A[i] for i, nb in enumerate(nbr)])
+            M = nmean(A)
+            if lonely.any():
+                M[lonely] = A[lonely]
             A = A + f * w[:, None] * (M - A)
             A[cm, 1] = 0.0
     cage.set_arr(A[:n])
@@ -136,9 +165,10 @@ def tangential_relax(body, ctx, iters=6, step=0.5, region="torso", skip_hops=2):
         return float(np.quantile(e, 0.99) / np.quantile(e, 0.01))
     r0 = edge_ratio(V)
     A = V.copy()
+    nmean = neighbour_mean(nbr)
     for it in range(iters):
         fn = gltf_out.vertex_normals(A, nf)
-        M = np.array([A[nb].mean(0) for nb in nbr])
+        M = nmean(A)
         dl = M - A
         dl = dl - (dl * fn).sum(1, keepdims=True) * fn
         A = A + step * free[:, None] * dl
