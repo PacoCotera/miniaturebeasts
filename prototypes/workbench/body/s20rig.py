@@ -1,5 +1,5 @@
 """The S20 rig (chunk 6): a bone per path segment, weights from arc length, the stand pose, the waddle and the idle clips. Linear blend skinning in numpy (matrices may carry a scale for the breathe).
-Bones: root, body (pivot at the belly), head (pivot at the waist, K above), leg.{upper,lower,foot}.{L,R}, tail.1-6 and tip, ear.{1,2}.{L,R}, arm.{L,R}.
+Bones: root, body (pivot at the belly), head (pivot at the waist, K above), leg.{upper,lower,foot}.{L,R}, tail.1-6 and tip, ear.{1,2}.{L,R}, clav.{L,R}, arm.{L,R} (the upper arm: shoulder to elbow), arm.fore.{L,R} (elbow to wrist), arm.hand.{L,R} (wrist to the tip), hip.{L,R}.
 Rotations are about each bone's head joint. Poses are world-space matrices per bone (parent chain applied)."""
 import math
 import numpy as np
@@ -92,11 +92,27 @@ class Rig:
                 add(f"ear.2.{side}", Q[1], Q[-1], f"ear.1.{side}")
         ap = spec["parts"]["arm.L"]
         aP = np.array(ap["families"][ap["default"]]["P"])
+        # pass 4 (owner): the arm chain is shoulder -> upper arm -> elbow -> forearm -> wrist -> hand. The elbow sits half way along the visible arm (from where the arm's path leaves the skin to its tip), the wrist where the mitten hand begins (its last 0.11 H, the fuller end).
+        arec = ctx["info"]["tubes"]["arm.L"]
+        pa_ = arec["path"]
+        L_ = pa_.length
+        ss_ = np.linspace(0.0, L_, 400)
+        ins_ = ctx["T"].d_body(pa_.at(ss_)[0]) < 0.0
+        sc_ = float(ss_[np.where(ins_)[0].max()]) if ins_.any() else 0.0
+        end_ = L_ + 0.85 * float(max(pa_.radii([L_])[0]))
+        arm_len_ = ctx.get("balance", {}).get("arm_len")                      # the visible length measured on the shipped mesh (genes.build_individual): the skin crossing follows it
+        if arm_len_:
+            sc_ = end_ - float(arm_len_)
+        self.arm_s = dict(skin=sc_, elbow=sc_ + 0.43 * (end_ - sc_), wrist=end_ - 0.10, end=end_, length=L_)
+        self.arm_el = pa_.at([self.arm_s["elbow"]])[0][0]
+        self.arm_wr = pa_.at([self.arm_s["wrist"]])[0][0]
         for side in SIDES:
             sg = 1 if side == "L" else -1
             sh = aP[0] * np.array([1, sg, 1])                                       # the shoulder joint: the arm's hard-join shell is placed from it (the arm's root joint)
             add(f"clav.{side}", self.chest, sh, "body")                             # a short clavicle from the chest joint to the shoulder joint
-            add(f"arm.{side}", sh, aP[-1] * np.array([1, sg, 1]), f"clav.{side}")
+            add(f"arm.{side}", sh, self.arm_el * np.array([1, sg, 1]), f"clav.{side}")                       # the upper arm: shoulder joint to the elbow
+            add(f"arm.fore.{side}", self.arm_el * np.array([1, sg, 1]), self.arm_wr * np.array([1, sg, 1]), f"arm.{side}")       # the forearm: elbow to the wrist
+            add(f"arm.hand.{side}", self.arm_wr * np.array([1, sg, 1]), aP[-1] * np.array([1, sg, 1]), f"arm.fore.{side}")      # the mitten hand: wrist to the tip
         self.names = list(B)
         self.tail_pivot = np.array(spec["parts"]["tail"]["P"][0], float)      # the tail turns about its root joint (inside the body); a pivot on the loft swung the lantern too little
         self.curl = float(spec["parts"]["tail"].get("clip", {}).get("applied", 0.0))
@@ -106,6 +122,7 @@ class Rig:
         """Joint-to-joint bones for the viewer: points (name, the bone that carries each in a pose, rest position) and segments (a, b point indices, the named range or label for the colour). The spine is drawn as the named ranges: seat (belly to the tail's root), back (belly to waist), neck (waist to the head pivot = the spine's end),
         head (the pivot up through the head to the crown), tail (the tail's joints to the lantern); legs, ears and arms by their bones. Returns dict(points, segs, ranges, spine_end)."""
         pts, segs = [], []
+        pts_idx = {}
         def P(name, bone, p):
             pts.append(dict(name=name, bone=bone, p=[float(x) for x in p])); return len(pts) - 1
         def S(a, b, rng, name):
@@ -138,11 +155,19 @@ class Rig:
                 h, t = B[f"clav.{sd}"]; S(chest_p, P(f"shoulder {sd}", f"clav.{sd}", t), "shoulder", f"clav.{sd}")
             h, t = B[f"hip.{sd}"]; S(pelv_p, P(f"hip joint {sd}", f"hip.{sd}", t), "hip", f"hip.{sd}")
         for sd in SIDES:
-            for nm, rng in ((f"leg.upper.{sd}", "limb"), (f"leg.lower.{sd}", "limb"), (f"leg.foot.{sd}", "limb"), (f"arm.{sd}", "limb"), (f"ear.1.{sd}", "appendage"), (f"ear.2.{sd}", "appendage")):
+            for nm, rng in ((f"leg.upper.{sd}", "limb"), (f"leg.lower.{sd}", "limb"), (f"leg.foot.{sd}", "limb"), (f"arm.{sd}", "limb"), (f"arm.fore.{sd}", "limb"), (f"arm.hand.{sd}", "limb"), (f"ear.1.{sd}", "appendage"), (f"ear.2.{sd}", "appendage")):
                 if nm not in B:
                     continue
                 h, t = B[nm]
-                a = P(nm + " head", nm, h); b = P(nm + " tail", nm, t)
+                if nm == f"arm.{sd}":
+                    a = P(f"shoulder joint {sd}", nm, h); b = P(f"elbow.{sd}", f"arm.fore.{sd}", t)
+                elif nm == f"arm.fore.{sd}":
+                    a = pts_idx[f"elbow.{sd}"]; b = P(f"wrist.{sd}", f"arm.hand.{sd}", t)
+                elif nm == f"arm.hand.{sd}":
+                    a = pts_idx[f"wrist.{sd}"]; b = P(f"hand tip {sd}", nm, t)
+                else:
+                    a = P(nm + " head", nm, h); b = P(nm + " tail", nm, t)
+                pts_idx[pts[b]["name"]] = b
                 S(a, b, rng, nm)
         return dict(points=pts, segs=segs, ranges=["head", "neck", "back", "seat", "tail", "shoulder", "hip", "limb", "appendage"], spine_end=pivot, pivot=pivot)
 
@@ -237,9 +262,14 @@ class Rig:
         if arm.any():
             arec = ctx["info"]["tubes"]["arm.L"]
             rba = 1 - sstep(arec["first_s"] - 0.02, arec["first_s"] + 0.1, s)         # the band round the socket follows the body
+            ae = self.arm_s
+            w_f = sstep(ae["elbow"] - 0.11, ae["elbow"] + 0.11, s)           # smooth blends across the elbow and the wrist (linear blend skinning: a bend of 60 / 30 degrees shrinks the section by 13 / 3 % at the joint's middle, no fold)
+            w_h = sstep(ae["wrist"] - 0.035, ae["wrist"] + 0.035, s)
             for sd in SIDES:
                 m = arm & (side == sd)
-                W[m, idx[f"arm.{sd}"]] = (1 - rba)[m]
+                W[m, idx[f"arm.{sd}"]] = ((1 - rba) * (1 - w_f))[m]
+                W[m, idx[f"arm.fore.{sd}"]] = ((1 - rba) * w_f * (1 - w_h))[m]
+                W[m, idx[f"arm.hand.{sd}"]] = ((1 - rba) * w_f * w_h)[m]
                 W[m, idx["body"]] += rba[m]
         B = self.bones
         for sd in SIDES:                                   # the clavicle and the hip bone carry the trunk's skin round the shoulder and the hip joint (they move with the body)
@@ -254,9 +284,19 @@ class Rig:
         sm[sm == 0] = 1
         return W / sm[:, None]
 
+    def flex_axis(self, sd):
+        """The elbow and wrist flexion axis of the arm on side `sd`: horizontal, perpendicular to the arm's own direction; the sign is chosen so that a positive angle lifts the forearm (the hand comes up and forward)."""
+        h, t = self.bones[f"arm.{sd}"]
+        u = (t - h) / np.linalg.norm(t - h)
+        a = np.cross([0.0, 0.0, 1.0], u)
+        a = a / np.linalg.norm(a)
+        if (rot(a, 0.3, np.zeros(3))[:3, :3] @ u)[2] < u[2]:
+            a = -a
+        return a
+
     # ------------------------------------------------------------ poses
     def pose(self, body_roll=0.0, body_yaw=0.0, body_pitch=0.0, bob=0.0, breathe=0.0, head_nod=0.0, head_yaw=0.0, legs=None, tail_yaw=0.0, tail_sway=0.0, tail_pitch=0.0,
-             ear=0.0, arm=0.0):
+             ear=0.0, arm=0.0, elbow=0.0, wrist=0.0):
         B = self.bones
         M = {n: np.eye(4) for n in self.names}
         x = np.array([1.0, 0, 0]); y = np.array([0, 1.0, 0]); zz = np.array([0, 0, 1.0])
@@ -289,6 +329,8 @@ class Rig:
                 M[f"ear.1.{sd}"] = M["head"] @ rot(x, sg * ear, hd1)
                 M[f"ear.2.{sd}"] = M[f"ear.1.{sd}"] @ rot(x, sg * 0.7 * ear, hd2)
             M[f"arm.{sd}"] = Mb @ rot(y, arm, B[f"arm.{sd}"][0])
+            M[f"arm.fore.{sd}"] = M[f"arm.{sd}"] @ rot(self.flex_axis(sd), elbow, B[f"arm.fore.{sd}"][0])         # elbow flexion: the forearm swings up and forward about the elbow joint
+            M[f"arm.hand.{sd}"] = M[f"arm.fore.{sd}"] @ rot(self.flex_axis(sd), wrist, B[f"arm.hand.{sd}"][0])    # wrist flexion, the same way
             M[f"clav.{sd}"] = Mb
             M[f"hip.{sd}"] = Mb
         return M
