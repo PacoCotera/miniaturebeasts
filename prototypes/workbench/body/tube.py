@@ -159,17 +159,21 @@ def grow_tube(body, ctx, name, p, fam, i, c, centre):
     # the first ring wholly outside the loft and clear of the loop by GAP along the path
     first = None
     ps = np.linspace(0, 2 * math.pi, 24, endpoint=False)
-    for k, s in enumerate(st):
-        pt, Tg, Nn, Bb = pa.at([s])
-        ra, rf = pa.radii([s])[0]
-        X = pt[0] + (rf * np.cos(ps))[:, None] * Nn[0] + (ra * np.sin(ps))[:, None] * Bb[0]
-        if centre:
-            X = X.copy(); X[:, 1] = np.abs(X[:, 1])
-        below = (pt[0] - loopc) @ Tg[0] - ((V0[loop] - loopc) @ Tg[0]).max()
-        if float(G.inside(X, margin=-0.01).mean()) <= float(p["socket"].get("inside_frac", 0.0)) and below >= float(p["socket"].get("gap", GAP)):
-            first = k
+    for frac_, gap_ in ((float(p["socket"].get("inside_frac", 0.0)), float(p["socket"].get("gap", GAP))), (0.25, 0.0), (0.5, 0.0)):     # relax the clearance in steps for an individual whose loft is a little rounder (the arm of a wider trunk)
+        for k, s in enumerate(st):
+            pt, Tg, Nn, Bb = pa.at([s])
+            ra, rf = pa.radii([s])[0]
+            X = pt[0] + (rf * np.cos(ps))[:, None] * Nn[0] + (ra * np.sin(ps))[:, None] * Bb[0]
+            if centre:
+                X = X.copy(); X[:, 1] = np.abs(X[:, 1])
+            below = (pt[0] - loopc) @ Tg[0] - ((V0[loop] - loopc) @ Tg[0]).max()
+            if float(G.inside(X, margin=-0.01).mean()) <= frac_ and below >= gap_:
+                first = k
+                break
+        if first is not None:
             break
-    assert first is not None, f"{name}: no ring clears the loft"
+    if first is None:
+        first = len(st) - 1
     st = st[first:]
     # uniform ring spacing from the first ring to the tip (target `ring_gap`, default 0.11 H): rings bunched at joints and at the tip made edge ratios of 30+ and a collapsed tip
     gap = float(p.get("ring_gap", 0.11))

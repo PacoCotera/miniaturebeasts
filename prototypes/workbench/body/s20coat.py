@@ -238,13 +238,16 @@ def palette_from_hue(h, g):
     gv = 1.0 + 0.32 * (1.0 - min(1.0, warm_w * 1.4))
     cool = max(0.0, 1.0 - abs(((h - 250.0 + 180.0) % 360.0) - 180.0) / 110.0)
     gs = 1.12 + 0.28 * cool
-    v = float(np.clip(v * gv, 0.55, 1.0)); sat = float(np.clip(sat * gs, 0.35, 0.75))
+    v = float(np.clip(v * gv, 0.55, 0.86)); sat = float(np.clip(sat * gs, 0.35, 0.75))
     coat = hsv_plush(h, sat, v)
     cl = _luma(coat / 255.0)
+    bs_ = float(np.clip(0.6 * sat, 0.2, 0.5))                                  # a lighter, slightly warmer tint of the base hue: value +20 %, saturation 0.6 x the base (never neutral grey)
+    bv_ = float(min(1.0, v * 1.22 + 0.04))
     if hue_window(h):
-        belly = hsv_plush(h + 175.0, 0.12, 0.93)                               # pale cool belly on the rust coat
+        belly = hsv_plush(h + 175.0, bs_ * 0.7, bv_)                           # pale COOL belly on the rust coat
     else:
-        belly = hsv_plush(h + 8.0, 0.10, 0.96)
+        warm_shift = ((40.0 - h + 180.0) % 360.0) - 180.0
+        belly = hsv_plush(h + 0.12 * warm_shift, bs_, bv_)
     P = dict(coat=coat, belly=belly, **{"ear-inner": hsv_plush(h + 55.0, 0.34, 0.95)}, pad=hsv_plush(h, min(0.6, sat + 0.05), v * 0.72), mark=hsv_plush(h + 8.0, min(0.6, sat + 0.08), v * 0.55), nose=hsv_plush(h, 0.45, 0.2),
              glow=color_hl(float(g.get("glow_hue", 80.0)), 0.78, 0.86))
     return P
@@ -333,7 +336,13 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     zlo, zhi = spec["zones"]["belly"]["z"]
     soft = spec["zones"]["belly"]["soft"]
     soft = soft * 1.5                                                                  # a plush belly fades into the coat over about 0.04 H at its edge
-    belly = sstep(belly_lo - soft, belly_lo + soft, a_geo) * band(zeff, zlo, zhi, soft)
+    # the belly patch is a soft teardrop on the surface (not a UV rectangle): widest at the belly, narrowing up the chest to a soft point under the neck and rounding off between the legs; its edge is feathered over about 0.05 H with a little noise
+    lat = (1.0 - a_geo) * math.pi * 0.55                                   # arc across the front from the front line, in H
+    zt_ = np.clip((zeff - 0.26) / (1.14 - 0.26), 0.0, 1.0)
+    wid = (0.46 + 0.6 * g["belly_reach"]) * np.sin(math.pi * zt_ ** 0.8) ** 0.75                  # half width: zero at the hips' round-off and at the chest's soft point
+    nz_ = fbm(V * 9.0, seed + 41, 2) - 0.5
+    edge_ = 0.05
+    belly = (1 - sstep(wid - edge_, wid + edge_, lat + 0.04 * nz_)) * (zt_ > 0.0) * (zt_ < 1.0) * sstep(0.3, 0.5, a_geo)
     belly = np.where(torso & ~tail, belly, 0.0)
     F["belly"] = belly
     mark = srgb_to_lin(pal["mark"])
