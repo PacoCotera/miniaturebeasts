@@ -23,7 +23,7 @@ def main():
     from wb import cas as C, facade as F, keys as K, proxy as P
     cas = C.Cas(a.cas)
     pr = P.ProxyRenderer()
-    warm = pr.warm(cas.tmp("png"))
+    warm = pr.warm(cas.tmp("png")) + F.warm()
 
     def send(o):
         out.write(json.dumps(o) + "\n")

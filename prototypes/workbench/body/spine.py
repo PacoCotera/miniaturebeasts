@@ -2,11 +2,17 @@
 and no separate grow(): `neck`, `back`, `seat` and `tail` are named arc-length ranges of this one path (labels for the genes, the rig and the Parts colours). One ring sequence runs along it; the section of each ring is cast from the path onto the
 design surface: the gourd lobes (gourd.Gourd: egg sections, masses) and the tail's radius profile (a chain of spheres along the same path), joined by a smooth union so the back flows into the tail as a fillet.
 Arc length s runs from the lantern stalk (0) to the crown. Ring vertices are placed by ray casting from the path point in the ring plane (the cage is cast on its target, as in the head of Loika's build)."""
+import hashlib
+import json
 import math
+from collections import OrderedDict
 import numpy as np
 import paths as PA
 from gourd import Gourd, SectionCap
 from caps import HalfCap
+
+
+_CASTS = OrderedDict()
 
 
 def smin(a, b, k):
@@ -154,6 +160,27 @@ class SpineLoft(Gourd):
         """cast for many rays at once, each from its own start C[r] along W[r]: the same marching steps, the same bisection, the same numbers as one ray at a time (every point is evaluated by the same element-wise arithmetic);
         the march goes on in blocks of `block` steps and stops for a ray at its first exit, the bisection runs on all rays together."""
         C, W = np.asarray(C, float), np.asarray(W, float)
+        key = self._cast_key(C, W, tmax, step, steps)
+        hit = _CASTS.get(key)
+        if hit is not None:                                 # the same rays on the same design surface (the arm-fit pass, an ear or leg edit, a re-render): the same points
+            _CASTS.move_to_end(key)
+            return hit.copy()
+        out = self._cast_rays(C, W, tmax, step, steps, block)
+        _CASTS[key] = out.copy()
+        while len(_CASTS) > 24:
+            _CASTS.popitem(last=False)
+        return out
+
+    def _cast_key(self, C, W, tmax, step, steps):
+        """Everything the signed distance reads, and the rays: the casts of two builds are the same exactly when this is the same."""
+        h = hashlib.sha256()
+        for a in (C, W, self.tail_pts, self.tail_r, self.tail_e, self.st_s, self.st_r):
+            a = np.ascontiguousarray(a, float)
+            h.update(str(a.shape).encode() + a.tobytes())
+        h.update(json.dumps([self.k, self.ends, self.exp, self.masses, tmax, step, steps], sort_keys=True, default=float).encode())
+        return h.digest()
+
+    def _cast_rays(self, C, W, tmax, step, steps, block):
         ts = np.arange(step, tmax + step, step)
         n = len(W)
         k_exit = np.full(n, -1)

@@ -70,6 +70,15 @@ _TARGETS = [
 ]
 
 
+def warm():
+    """Import everything a build touches (the stage modules, the schema, the cage and subdivision code) so a worker pays for it once at start and not in the first edit's build. Returns the milliseconds it took."""
+    import importlib
+    t = time.perf_counter()
+    for name in sorted({m for m, _, _ in _TARGETS} | {"s20genes", "schema", "s20build", "subdiv", "gltf_out", "caps", "spine", "gourd", "torso", "limitfix", "s20p2", "s20p4", "s20indiv"}):
+        importlib.import_module(name)
+    return (time.perf_counter() - t) * 1000
+
+
 @contextlib.contextmanager
 def timed(acc):
     """acc: dict name -> [calls, seconds]. Patches the S20 stage functions for the length of the block."""
