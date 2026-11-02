@@ -1,5 +1,6 @@
 import { queryOptions } from '@tanstack/react-query'
 import type { Entry } from './api'
+import { dottedPath } from './edits'
 
 // The check rows the server measured (spec 9) and what the page says about each: one place for the counts, so the pill and the drawer are the same number (studio-ui 8.3).
 export type Proof = { mode: string; az: number; key: string; ready: boolean; path?: string | null }
@@ -30,9 +31,9 @@ export function stateOfPart(rows: CheckRow[], metas: Record<string, CheckMeta>, 
   return hit.some((r) => r.state === 'fail') ? 'fail' : hit.length ? 'warn' : null
 }
 
-// Who last moved a driving field: the last undo-log entry at or under its pointer; none means the plan's default (or the file as it came).
-export function lastMover(history: Entry[], ptr: string): Entry | null {
-  for (let i = history.length - 1; i >= 0; i--) if (history[i].path === ptr || history[i].path.startsWith(ptr + '/')) return history[i]
+// Who last moved a driving field (a dotted path): the last undo-log entry at or under it; none means the plan's default (or the file as it came).
+export function lastMover(history: Entry[], field: string, file: unknown): Entry | null {
+  for (let i = history.length - 1; i >= 0; i--) { const d = dottedPath(history[i].path, file); if (d === field || d.startsWith(field + '.')) return history[i] }
   return null
 }
 

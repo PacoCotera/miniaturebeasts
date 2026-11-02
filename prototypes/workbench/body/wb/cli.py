@@ -50,22 +50,32 @@ def call(method, path, body=None, timeout=60):
 
 
 def resolve_path(doc, dotted):
-    """'parts.tail.joints.t2.len' -> (JSON pointer, current value). A list element is picked by index or by its `name`."""
+    """'spine.tail.length' -> (JSON pointer, current value). A list element is picked by position, or by its id, name or joint, which may itself hold dots ('parts.leg.L.chain.1.len': the part 'leg.L')."""
     ptr, cur = "", doc
-    for tok in dotted.split("."):
+    toks = dotted.split(".")
+    i = 0
+    while i < len(toks):
+        tok = toks[i]
         if isinstance(cur, list):
             if tok.isdigit() and int(tok) < len(cur):
-                i = int(tok)
+                k, i = int(tok), i + 1
             else:
-                idx = [k for k, v in enumerate(cur) if isinstance(v, dict) and v.get("name") == tok]
-                if not idx:
-                    raise Fail(2, f"{dotted}: no list element '{tok}'", dotted)
-                i = idx[0]
-            cur, ptr = cur[i], f"{ptr}/{i}"
+                k = None
+                for n in (3, 2, 1):                                   # the longest dotted name first
+                    name = ".".join(toks[i:i + n])
+                    hit = [j for j, v in enumerate(cur) if isinstance(v, dict) and name in (v.get("id"), v.get("name"), v.get("joint"))]
+                    if hit:
+                        k, i = hit[0], i + n
+                        break
+                if k is None:
+                    names = [str(v.get("id") or v.get("name") or v.get("joint")) for v in cur if isinstance(v, dict)]
+                    raise Fail(2, f"{dotted}: no list element '{tok}' (have: {', '.join(names[:8])})", dotted)
+            cur, ptr = cur[k], f"{ptr}/{k}"
         elif isinstance(cur, dict):
             if tok not in cur:
                 raise Fail(2, f"{dotted}: no field '{tok}' (have: {', '.join(list(cur)[:8])})", dotted)
             cur, ptr = cur[tok], f"{ptr}/{tok.replace('~', '~0').replace('/', '~1')}"
+            i += 1
         else:
             raise Fail(2, f"{dotted}: '{tok}' is inside a value that has no fields", dotted)
     return ptr, cur
@@ -143,7 +153,39 @@ def cmd_set(a):
     return 0
 
 
+def cmd_convert(a):
+    sys.path.insert(0, BODY)
+    import species_v1 as V1
+    with open(a.src) as fh:
+        d = json.load(fh)
+    doc = V1.from_internal(d)
+    errs = V1.validate(doc)
+    if errs:
+        raise Fail(2, errs[0][1], errs[0][0])
+    dst = a.out or a.src.rsplit(".json", 1)[0] + ".v1.json"
+    with open(dst, "w") as fh:
+        json.dump(doc, fh, indent=1, ensure_ascii=False)
+    out(a, dict(ok=True, src=a.src, out=dst, schema=V1.SCHEMA_ID), f"{a.src} -> {dst} ({V1.SCHEMA_ID})")
+    return 0
+
+
+def validate_file(a):
+    """Offline: every problem of a file, one line each, naming the field. Exit 2 when there is one."""
+    sys.path.insert(0, BODY)
+    import species_v1 as V1
+    try:
+        with open(a.file) as fh:
+            doc = json.load(fh)
+    except (OSError, ValueError) as e:
+        raise Fail(2, f"{a.file}: {e}")
+    errs = V1.validate(doc)
+    out(a, dict(ok=not errs, file=a.file, errors=[dict(field=p, message=m) for p, m in errs]), "\n".join(f"FAIL  {m}" for p, m in errs) or f"{a.file}: valid {V1.SCHEMA_ID}")
+    return 2 if errs else 0
+
+
 def cmd_validate(a):
+    if a.file:
+        return validate_file(a)
     j = run_job(a, "check", dict(stage="file"))
     r = j["result"]
     lines = [f"{'PASS' if x['state'] == 'pass' else 'FAIL'}  {x['id']:12} {x['value']}" + (f"   [{x['field']}]" if x.get("field") else "") for x in r["rows"]]
@@ -269,7 +311,8 @@ def main(argv=None):
     p = sub.add_parser("render"); p.add_argument("species"); common(p)
     p.add_argument("--mode", default="clay"); p.add_argument("--az", default="0,32,90,180"); p.add_argument("--size", default="304"); p.add_argument("--sheet", action="store_true"); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_render)
     p = sub.add_parser("set"); p.add_argument("species"); p.add_argument("path"); p.add_argument("value"); common(p, genome=False); p.set_defaults(f=cmd_set)
-    p = sub.add_parser("validate"); p.add_argument("species"); common(p, genome=False); p.set_defaults(f=cmd_validate)
+    p = sub.add_parser("validate"); p.add_argument("species", nargs="?", default=""); p.add_argument("--file", default=""); common(p, genome=False); p.set_defaults(f=cmd_validate)
+    p = sub.add_parser("convert"); p.add_argument("src"); p.add_argument("--out", default=""); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_convert)
     p = sub.add_parser("check"); p.add_argument("species"); common(p); p.add_argument("--stage", default="all", choices=STAGES); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_check)
     p = sub.add_parser("explain"); p.add_argument("check"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_explain)
     p = sub.add_parser("watch"); p.add_argument("species"); p.add_argument("--json", action="store_true"); p.add_argument("--count", type=int, default=0); p.add_argument("--timeout", type=float, default=0); p.set_defaults(f=cmd_watch)

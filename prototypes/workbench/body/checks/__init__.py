@@ -4,7 +4,7 @@ import hashlib
 import json
 
 REGISTRY = []                  # the checks, in the order the drawer lists them
-VERSION_SALT = "checks-5"      # bump to re-measure everything
+VERSION_SALT = "checks-6"      # bump to re-measure everything
 
 
 class Check:

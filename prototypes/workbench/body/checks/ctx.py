@@ -2,8 +2,9 @@
 
 
 class Ctx:
-    def __init__(self, spec, body=None, summ=None, mesh=None):
+    def __init__(self, spec, body=None, summ=None, mesh=None, doc=None):
         self.spec, self.body, self.summ, self.mesh = spec, body, summ, mesh
+        self.doc = doc if doc is not None else spec              # the file as written (v1); `spec` is it as the cage builder reads it
         self._lv = {}
 
     @property

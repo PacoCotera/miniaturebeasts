@@ -23,9 +23,53 @@ export function newEntries(seen: Set<string> | null, history: Entry[]): Entry[] 
 const PART: Record<string, string> = { torso: 'body', 'leg.L': 'leg', 'leg.R': 'leg', 'arm.L': 'arm', 'arm.R': 'arm', 'ear.L': 'ear', 'ear.R': 'ear', tail: 'tail', crown: 'crown', face: 'face' }
 const FIELD: Record<string, string> = { len: 'length', r: 'radius', pitch: 'bend', yaw: 'turn', at: 'place', ring: 'rings', edge: 'edge', fillet: 'roundness', push: 'sink', size: 'size', width: 'width', amp: 'sway', period: 'period', lift: 'lift', curl: 'curl', taper: 'taper', root: 'root', length: 'length', tip_r: 'tip radius', root_flare: 'root flare' }
 export const dotted = (path: string) => path.split('/').filter(Boolean).join('.')
-export function fieldLabel(path: string, labels?: Record<string, string>): string {
-  const exact = labels?.[dotted(path)]
-  if (exact) return exact.toLowerCase()
+
+// The undo log's pointer (/parts/0/chain/1/len) as the schema's dotted path (parts.leg.L.chain.1.len): a list element is written by its id, name or joint when it has one, else by position.
+export function dottedPath(ptr: string, file: unknown): string {
+  let cur: unknown = file
+  const out: string[] = []
+  for (const raw of ptr.split('/').filter(Boolean)) {
+    const t = raw.replace(/~1/g, '/').replace(/~0/g, '~')
+    if (Array.isArray(cur)) {
+      const el = cur[Number(t)] as Record<string, unknown> | undefined
+      const name = el && typeof el === 'object' ? (el.id ?? el.name ?? el.joint) : undefined
+      out.push(typeof name === 'string' ? name : t)
+      cur = el
+    } else {
+      out.push(t)
+      cur = cur && typeof cur === 'object' ? (cur as Record<string, unknown>)[t] : undefined
+    }
+  }
+  return out.join('.')
+}
+
+// The schema's label for a dotted path. `labels` has `*` for a list item (an item may be a position or an id with dots in it), as the server writes it.
+export function labelOf(path: string, labels: Record<string, string>): string | null {
+  const toks = path.split('.')
+  const keys = Object.keys(labels).sort((a, b) => b.length - a.length)
+  for (let i = toks.length; i > 0; i--) {
+    const cand = toks.slice(0, i).join('.')
+    for (const k of keys) if (new RegExp('^' + k.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '[^.]+(?:\\.[^.]+){0,2}') + '$').test(cand)) return labels[k]
+  }
+  return null
+}
+
+// What a toast calls the field: the schema's label when the file has one for it (with the part and joint it sits in: "leg ankle length"); else the part and field words from words.md.
+export function fieldLabel(path: string, labels?: Record<string, string>, file?: unknown): string {
+  if (labels && file) {
+    const d = dottedPath(path, file)
+    const lab = labelOf(d, labels)
+    if (lab) {
+      const items: string[] = []
+      let cur: unknown = file
+      for (const raw of path.split('/').filter(Boolean)) {
+        const t = raw.replace(/~1/g, '/').replace(/~0/g, '~')
+        if (Array.isArray(cur)) { const el = cur[Number(t)] as Record<string, unknown>; const n = el?.id ?? el?.name ?? el?.joint; if (typeof n === 'string') items.push(PART[n] ?? n); cur = el } else cur = (cur as Record<string, unknown> | undefined)?.[t]
+      }
+      const l = lab.toLowerCase()
+      return [...items.filter((x) => !l.startsWith(x)), l].join(' ')
+    }
+  }
   const toks = path.split('/').filter(Boolean).map((t) => t.replace(/~1/g, '/').replace(/~0/g, '~'))
   const words: string[] = []
   for (let i = 0; i < toks.length; i++) {

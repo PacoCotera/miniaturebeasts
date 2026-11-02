@@ -1,6 +1,6 @@
 """The checks of the biped plan for the file and cage stages (spec 9), ported from the S20 tests with the owner's words (decisions.md; date and time as written there). Limits come from the plan (BIPED below) and a species file may only tighten them (`limits`).
 Each check function takes a Ctx (the species file as the cage builder reads it, and for cage checks the built body) and returns a row: state, value, limit, the one measure line, a proof (mode, az, svg) and the nav rows it concerns.
-Fields are JSON pointers into the file as it is today; chunk 6 renames them to the schema's paths."""
+Fields are the schema's dotted paths (mb-species/1)."""
 import copy
 
 import numpy as np
@@ -50,7 +50,11 @@ def f2(v):
        rule=R("2026-11-02 21:26", "Fields that are not listed are rejected, not ignored: the species file must pass its schema."), limit=dict(text="valid", value=None))
 def c_schema(ctx):
     import schema as SC
+    import species_v1 as V1
     from wb import facade as F
+    errs = V1.validate(ctx.doc) if V1.is_v1(ctx.doc) else []
+    if errs:
+        return row("fail", f"{len(errs)} problem{'s' if len(errs) > 1 else ''}", "valid", errs[0][1] + (f" (and {len(errs) - 1} more)" if len(errs) > 1 else ""), extra=dict(field=errs[0][0]))
     try:
         SC.validate(copy.deepcopy(ctx.spec))
     except Exception as e:                                                       # noqa: BLE001
@@ -59,7 +63,7 @@ def c_schema(ctx):
 
 
 # 2 -------------------------------------------------------------------------------------------------------------------------------------------------------- ranges
-@check(id="ranges", name="Spine ranges", fail="Spine ranges don't match the plan", stage="file", version=1, part=["head", "neck", "back", "seat", "tail"], fields=["/parts/torso/spine/ranges"],
+@check(id="ranges", name="Spine ranges", fail="Spine ranges don't match the plan", stage="file", version=1, part=["head", "neck", "back", "seat", "tail"], fields=["spine.ranges"],
        rule=R("2026-11-02 17:43", "The spine is one object. The neck, back and its parts, and the tail are named segments of one path and one loft, not attached parts."),
        limit=dict(text="head, neck, back, seat, tail, each inside its band", value=None), az=90)
 def c_ranges(ctx):
@@ -98,7 +102,7 @@ def PR_ranges(rg, bad):
 
 
 # 3 --------------------------------------------------------------------------------------------------------------------------------------------------------- joins
-@check(id="joins", name="Joins", fail="{part} join is half-blended", stage="cage", version=1, part=["ears", "arms", "legs"], fields=["/parts/ear.L/socket/join", "/parts/arm.L/socket/join", "/parts/leg.L/socket/join"],
+@check(id="joins", name="Joins", fail="{part} join is half-blended", stage="cage", version=1, part=["ears", "arms", "legs"], fields=["parts.ear.L.socket.join", "parts.arm.L.socket.join", "parts.leg.L.socket.join"],
        rule=R("2026-11-02 23:02", "Every attachment is either a hard overlay (a separate shell sunk in, with a clean intersection line, like the toes) or a soft taper (it grows from the parent's skin with a wide filleted base). A half-blend is never allowed. Each socket declares join hard or soft in the species file."),
        limit=dict(text="hard: buried 0.04 H or more and tagged · soft: footprint 1.5-1.8 × the middle, no pinch", value=None), az=32)
 def c_joins(ctx):
@@ -140,7 +144,7 @@ def c_joins(ctx):
 
 
 # 4 ------------------------------------------------------------------------------------------------------------------------------------------------------------ head.attach
-@check(id="head.attach", name="Head on the spine", fail="Head sits off the end of the spine", stage="cage", version=1, part=["head"], fields=["/parts/torso/head_attach/a", "/parts/torso/head_attach/d", "/parts/torso/head_attach/z_under"],
+@check(id="head.attach", name="Head on the spine", fail="Head sits off the end of the spine", stage="cage", version=1, part=["head"], fields=["spine.head_attach.a", "spine.head_attach.d", "spine.head_attach.z_under"],
        rule=R("2026-11-02 23:57", "The head sits at the end of the spine on top of the neck, and its attachment follows the body plan."),
        limit=dict(text="biped: underside; a 0.2-0.6, d 0-0.3 of the head's depth", value=None), az=90)
 def c_head_attach(ctx):
@@ -170,7 +174,7 @@ def c_head_attach(ctx):
 
 
 # 5 -------------------------------------------------------------------------------------------------------------------------------------------------------- head.neck
-@check(id="head.neck", name="Head, neck and chest", fail="Neck band too wide", stage="cage", version=1, part=["head", "neck"], fields=["/parts/torso/head_profile", "/parts/torso/spine/ranges"],
+@check(id="head.neck", name="Head, neck and chest", fail="Neck band too wide", stage="cage", version=1, part=["head", "neck"], fields=["spine.ranges", "spine.loft.head_profile"],
        rule=R("2026-11-02 23:38", "Head, neck and torso need a clearer transition even when they are one skin: a round head with an under-curve at the jaw and cheeks, a short concave neck band narrower than both, then the shoulders and chest. (And 2026-11-02 01:01: the back of the head must be a full round dome, never flattened into the neck.)"),
        limit=dict(text="neck under 0.85 of the head and of the chest; the back of the head overhangs the neck by 0.12 H or more", value=BIPED["neck_ratio"]), az=90,
        play="My head needs a neck to sit on.")
@@ -200,7 +204,7 @@ def c_head_neck(ctx):
 
 
 # 6 -------------------------------------------------------------------------------------------------------------------------------------------------------- tail.taper
-@check(id="tail.taper", name="Tail taper", fail="Tail bulges on the way down", stage="cage", version=1, part=["tail"], fields=["/parts/tail/taper", "/parts/tail/joints", "/parts/torso/spine/root_flare"],
+@check(id="tail.taper", name="Tail taper", fail="Tail bulges on the way down", stage="cage", version=1, part=["tail"], fields=["spine.tail.segments", "spine.tail.taper", "spine.tail.root", "spine.tail.tip_r"],
        rule=R("2026-11-02 01:01", "Tails taper monotonically from root to tip, with no bulge, pinch and bulge again (\"looks like stuffed intestines, not cute\"); the seat flows into the tail root as one soft curve."),
        limit=dict(text="the radius only grows from the stalk to the root; the root is at least 1.8 × the stalk", value=0), az=90,
        play="My tail likes to get thinner at the end.")
@@ -234,7 +238,7 @@ def c_tail_taper(ctx):
 
 
 # 7 ---------------------------------------------------------------------------------------------------------------------------------------------------------- tail.size
-@check(id="tail.size", name="Tail size", fail="Tail too big for the body", stage="cage", version=1, part=["tail"], fields=["/parts/tail/joints", "/parts/torso/spine"],
+@check(id="tail.size", name="Tail size", fail="Tail too big for the body", stage="cage", version=1, part=["tail"], fields=["spine.tail.length", "spine.tail.root", "spine.tail.tip_r"],
        rule=R("2026-11-02 18:26", "The S20 tail is too big for its legs and body. The tail is scaled to the creature: root about 0.45 of the seat radius, a thin stalk, the bulb about eye size, side area at most about 1/4 of the trunk."),
        limit=dict(text="side area at most 1/4 of the trunk · root at most 0.47 of the seat radius", value=BIPED["tail_side_area"]), az=90,
        play="Any longer and I'd tip over backwards!")
@@ -265,7 +269,7 @@ def c_tail_size(ctx):
 
 
 # 8 ---------------------------------------------------------------------------------------------------------------------------------------------------------- balance
-@check(id="balance", name="Balance", fail="Tips over at {end}", stage="cage", version=1, part=["legs"], fields=["/parts/leg.L/joints", "/parts/tail/joints", "/parts/torso/skeleton"],
+@check(id="balance", name="Balance", fail="Tips over at {end}", stage="cage", version=1, part=["legs"], fields=["parts.leg.L.chain", "spine.tail.length", "skeleton.pelvis"],
        rule=R("2026-11-02 18:25", "Balance is a body rule. The centre of mass, the volume centroid including tails and tips, must project inside the soles' support polygon with margin, for every individual at the extreme genes too. Fix it with anatomy (tail weight, spine lean, leg placement), not by sliding the feet."),
        limit=dict(text="the centre of mass inside the soles, at least 15 % of the sole length in front of the heel (the type; the extremes are checked in chunk 8)", value=BIPED["balance_margin"]), az=90,
        play="Whoa, I need my feet under me.")
@@ -290,7 +294,7 @@ def c_balance(ctx):
 
 
 # 9 ------------------------------------------------------------------------------------------------------------------------------------------------------------- limbs
-@check(id="limbs", name="Shoulders and hips", fail="{limb} floats off its girdle", stage="cage", version=1, part=["arms", "legs"], fields=["/parts/torso/skeleton", "/parts/arm.L/families", "/parts/leg.L/joints"],
+@check(id="limbs", name="Shoulders and hips", fail="{limb} floats off its girdle", stage="cage", version=1, part=["arms", "legs"], fields=["skeleton", "parts.arm.L.families", "parts.leg.L.chain"],
        rule=R("2026-11-02 02:07", "Rigs must have shoulders and hips. Arm and leg chains must not float: a shoulder girdle (a chest joint on the spine, a clavicle to each shoulder joint) and a pelvis (a seat joint, a hip bone to each hip joint) anchor the limbs. Limb sockets are placed from those joints, so the mesh follows the skeleton. (And 2026-11-02 10:35: legs are hip, knee, ankle; arms must match: shoulder, elbow, wrist.)"),
        limit=dict(text="each limb has three joints and its root on its girdle joint · the chest joint is on the back range", value=None), az=32)
 def c_limbs(ctx):
@@ -343,7 +347,7 @@ def c_limbs(ctx):
 
 
 # 10 ------------------------------------------------------------------------------------------------------------------------------------------------------------ verts
-@check(id="verts", name="Vertex budget", fail="{n} vertices, over 3,500", stage="cage", version=1, part=[], fields=["/parts/torso/rings_z", "/parts/torso/edge", "/parts/leg.L/ring"],
+@check(id="verts", name="Vertex budget", fail="{n} vertices, over 3,500", stage="cage", version=1, part=[], fields=["spine.loft.rings_z", "spine.loft.edge", "parts.leg.L.topology"],
        rule=R("2026-11-02 23:17", "'15,000 vertices for a simple creature? you're crazy. simplify the mesh.' Budget: a shipped creature mesh is at most about 3,500 vertices (subdivision level 1 of a lean cage, smooth normals). Finer detail goes to the texture or a baked normal map."),
        limit=dict(text="3,500 or fewer · amber up to 3,850 · fails above", value=BIPED["verts"]), az=32, mode="wire")
 def c_verts(ctx):
@@ -364,7 +368,7 @@ def c_verts(ctx):
 
 
 # 11 ------------------------------------------------------------------------------------------------------------------------------------------------------------ normals
-@check(id="normals", name="Smooth normals", fail="Sharp crease in {part}", stage="cage", version=1, part=[], fields=["/parts/torso/junction_radius", "/parts/torso/section", "/parts/arm.L/socket"],
+@check(id="normals", name="Smooth normals", fail="Sharp crease in {part}", stage="cage", version=1, part=[], fields=["spine.loft.junction_radius", "spine.loft.section", "parts.arm.L.socket"],
        rule=R("2026-11-02 20:25", "Normals must never change abruptly. A junction is either a deliberate sharp crease (like the toes) or a smooth filleted transition. This is tested for every species."),
        limit=dict(text="no visible edge over 20° between faces (30° along the tail); tagged creases excepted", value=BIPED["normal_deg"]), az=32, mode="normal")
 def c_normals(ctx):
@@ -403,7 +407,7 @@ def c_normals(ctx):
 
 
 # 12 -------------------------------------------------------------------------------------------------------------------------------------------------------------- mesh
-@check(id="mesh", name="Mesh quality", fail="Thin or bent faces in {range}", stage="cage", version=1, part=[], fields=["/parts/torso/rings_z", "/parts/torso/column_layouts", "/parts/torso/edge"],
+@check(id="mesh", name="Mesh quality", fail="Thin or bent faces in {range}", stage="cage", version=1, part=[], fields=["spine.loft.rings_z", "spine.loft.column_layouts", "spine.loft.edge"],
        rule=R("2026-11-01 13:40", "'You're smashing blobs.' The mesh body is to be box-modelled as one continuous cage grown from the skeleton: one continuous all-quad surface with edge flow from torso into limbs."),
        limit=dict(text="edge-length, face-area and planarity ratios by spine range inside the species file's mesh_quality", value=None), az=32, mode="wire")
 def c_mesh(ctx):

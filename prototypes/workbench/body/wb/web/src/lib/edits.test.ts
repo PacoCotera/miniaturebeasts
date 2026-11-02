@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Entry } from './api'
-import { clock, entryKey, fieldLabel, fmtValue, initials, leaseFrom, newEntries } from './edits'
+import { clock, dottedPath, entryKey, fieldLabel, fmtValue, initials, leaseFrom, newEntries } from './edits'
 
 const e = (over: Partial<Entry> = {}): Entry => ({ t: '2026-11-02T14:02:00.000-06:00', actor: 'agent-3', role: 'maker', agent: true, via: 'api', op: 'replace', path: '/parts/tail/joints/2/len', old: 0.21, new: 0.33, hash_before: 'a', hash_after: 'b', ...over })
 
@@ -37,6 +37,12 @@ describe('toasts for other hands', () => {
     expect(fieldLabel('/parts/leg.L/joints/1/r')).toBe('leg joint 1 radius')
     expect(fieldLabel('/spine/tail/length')).toBe('tail length')
     expect(fieldLabel('/spine/tail/length', { 'spine.tail.length': 'Tail length' })).toBe('tail length')
+    const file = { spine: { tail: { length: 1.25 }, ranges: [{ name: 'head' }, { name: 'neck', length: 0.25 }] }, parts: [{ id: 'leg.L', chain: [{ joint: 'knee' }, { joint: 'ankle', len: 0.12 }] }] }
+    const labels = { 'spine.tail.length': 'Tail length', 'spine.ranges.*.length': 'Length', 'parts.*.chain.*.len': 'Length' }
+    expect(fieldLabel('/spine/tail/length', labels, file)).toBe('tail length')
+    expect(fieldLabel('/spine/ranges/1/length', labels, file)).toBe('neck length')
+    expect(fieldLabel('/parts/0/chain/1/len', labels, file)).toBe('leg ankle length')
+    expect(dottedPath('/parts/0/chain/1/len', file)).toBe('parts.leg.L.chain.ankle.len')
     expect(fmtValue(1.2400000001)).toBe('1.24')
     expect(fmtValue('soft')).toBe('soft')
     expect(initials('agent-3')).toBe('a3')

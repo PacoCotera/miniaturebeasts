@@ -81,7 +81,7 @@ function Detail({ row, meta, species, go }: { row: CheckRow; meta: CheckMeta; sp
       {meta.play && <span className={s.play}>In play: “{meta.play}”</span>}
       {meta.fields.length > 0 && (
         <div className={s.flds}>
-          {meta.fields.map((f) => { const e = lastMover(species.history, f); return (<span key={f} className={s.frow}><code>{dotted(f)}</code><span>{e ? `${e.actor}, ${clock(e.t)}` : 'plan default'}</span></span>) })}
+          {meta.fields.map((f) => { const e = lastMover(species.history, f, species.file); return (<span key={f} className={s.frow}><code>{dotted(f)}</code><span>{e ? `${e.actor}, ${clock(e.t)}` : 'plan default'}</span></span>) })}
         </div>
       )}
     </div>

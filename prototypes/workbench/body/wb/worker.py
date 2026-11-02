@@ -75,15 +75,16 @@ def main():
         """The checks of a stage on the cage of this request, each with its proof's SVG and the 608 frame it draws on."""
         from checks import run as crun, proof as PR
         from checks.ctx import Ctx
-        spec, genome, stage = req["spec"], req.get("genome", "type"), req.get("stage", "all")
+        raw, genome, stage = req["spec"], req.get("genome", "type"), req.get("stage", "all")
+        spec = F.internal(raw)
         t = time.perf_counter()
         rows = []
         if stage in ("file", "all"):
-            rows += crun("file", Ctx(spec))
+            rows += crun("file", Ctx(spec, doc=raw))
         if stage in ("cage", "all"):
             if last["ck"] != ck:
-                last.update(ck=ck, r=F.build(spec, genome, "base"))
-            rows += crun("cage", Ctx(spec, last["r"].body, summ, mesh))
+                last.update(ck=ck, r=F.build(raw, genome, "base"))
+            rows += crun("cage", Ctx(spec, last["r"].body, summ, mesh, doc=raw))
         T["checks_ms"] = round((time.perf_counter() - t) * 1000, 1)
         t = time.perf_counter()
         need = sorted({(r["proof"]["mode"], r["proof"]["az"], 608) for r in rows if r.get("proof")})

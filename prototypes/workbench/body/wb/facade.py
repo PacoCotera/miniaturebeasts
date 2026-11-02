@@ -25,6 +25,17 @@ class BuildError(Exception):
         self.message, self.field = message, field
 
 
+def internal(spec):
+    """The species file as the cage builder reads it. A v1 file (mb-species/1) is converted (species_v1.to_internal); a file in today's shape is used as it is. A v1 file that is not valid is a build error naming its field."""
+    import species_v1 as V1
+    if not V1.is_v1(spec):
+        return spec
+    errs = V1.validate(spec)
+    if errs:
+        raise BuildError(errs[0][1], errs[0][0])
+    return V1.to_internal(spec)
+
+
 def resolve_genome(g):
     """A genome string or dict -> the individual dict (t, pairs, switches, seed) that s20genes builds from.
     type = the type specimen; seed:N = the variety sheet's individual N; low:<locus> / high:<locus> = the type with that locus at 0 or 1 (its catalogue ends)."""
@@ -57,6 +68,7 @@ def cage_inputs(spec, ind):
 
 
 def cage_key(spec, genome, stage="base"):
+    spec = internal(spec)
     ind = resolve_genome(genome)
     _, ci = cage_inputs(spec, ind)
     return H.hash_of("cage", H.framework_id(), spec, ci, stage)
@@ -119,6 +131,7 @@ class Result:
 def build(spec, genome="type", stage="base"):
     """Build the cage of `spec` for `genome` up to `stage`. Returns a Result with the Body (result.body), the cage hash, the vertex count and the timings in ms."""
     import s20genes as GN, schema as SC
+    spec = internal(spec)
     if stage not in STAGES:
         raise BuildError(f"stage '{stage}': one of {', '.join(STAGES)}", "stage")
     T = {}

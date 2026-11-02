@@ -27,6 +27,11 @@ CSP = "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-
 CT = {"woff2": "font/woff2", "ttf": "font/ttf", "ico": "image/x-icon", "png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
 
 
+def V1_labels():
+    import species_v1 as V1
+    return V1.labels()
+
+
 def count_rows(rows):
     """What the pill and the drawer both say, from one place: fails and warnings need you; passes never do."""
     n = lambda st: sum(1 for r in rows if r["state"] == st)
@@ -226,11 +231,20 @@ class Server:
 
     # ---- instant (file-stage) checks, in this process
     def check_file(self, spec, raise_on_fail=False):
-        import schema as SC, s20genes as GN
+        import schema as SC, s20genes as GN, species_v1 as V1
         rows = []
 
         def row(id_, ok, value, limit, words, field=None):
             rows.append(dict(id=id_, state="pass" if ok else "fail", value=value, limit=limit, words=words, field=field, proof=None))
+        if V1.is_v1(spec) or (isinstance(spec, dict) and spec.get("schema") != "mb-body/1"):
+            errs = V1.validate(spec)
+            for path, msg in errs:
+                row("schema", False, msg, "valid", "The species file must pass the schema: fields that are not listed are rejected, not ignored.", path)
+            if errs:
+                if raise_on_fail:
+                    raise ApiError(400, errs[0][1], errs[0][0])
+                return rows
+            spec = V1.to_internal(spec)
         try:
             SC.validate(copy.deepcopy(spec))
             row("schema", True, "valid", "valid", "The species file must pass the schema.")
@@ -612,7 +626,7 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)", p)
             if m:
                 s = srv.get_species(m.group(1))
-                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), goldens=None, history=s.history(5), views=srv.current_views(s)))
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), goldens=None, history=s.history(5), views=srv.current_views(s), labels=V1_labels()))
             m = re.fullmatch(r"/api/jobs/(j\d+)", p)
             if m:
                 j = srv.queue.jobs.get(m.group(1))
@@ -724,7 +738,7 @@ def main():
     ap.add_argument("--cache-limit-gb", type=float, default=30.0)
     ap.add_argument("--proxy-workers", type=int, default=1)
     a = ap.parse_args()
-    dirs = a.species or [os.path.join(BODY, "species")]
+    dirs = a.species or [os.path.join(BODY, "species_v1")]
     srv = Server(a.home, dirs, a.static or None, a.host, a.port, a.cache_limit_gb, a.proxy_workers)
     srv.start()
     import signal
