@@ -363,8 +363,8 @@ class Server:
             if job is None:
                 continue
             self.hub.emit("running", job.species, job=job.id, kind="sheet")
-            try:
-                rj = self.submit(job.species, "render", dict(genome=job.args["genome"], views=job.args["views"]), job.actor, priority=min(job.priority, 1), spec=job.spec, spec_hash=job.spec_hash)
+            try:                                          # the sheet's renders are P3 too: pinned to the hash the sheet was asked for, never superseded under it
+                rj = self.submit(job.species, "render", dict(genome=job.args["genome"], views=job.args["views"]), job.actor, priority=job.priority, spec=job.spec, spec_hash=job.spec_hash)
                 rj.event.wait(900)
                 if rj.state != "done":
                     self.finish_failed(job, rj.error or f"the render job ended {rj.state}", rj.field)

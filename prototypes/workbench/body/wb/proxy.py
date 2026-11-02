@@ -41,6 +41,20 @@ def basis(az, el):
     return right, np.cross(right, fwd), fwd, pos_dir
 
 
+def strip_png_text(path):
+    """Blender writes the render time into a text chunk, so two identical renders differ by a byte. Drop the text chunks: the same view is then the same bytes (the cache and the goldens need that)."""
+    import struct
+    d = open(path, "rb").read()
+    out, pos = [d[:8]], 8
+    while pos < len(d):
+        n, t = struct.unpack(">I4s", d[pos:pos + 8])
+        if t not in (b"tEXt", b"iTXt", b"zTXt", b"tIME"):
+            out.append(d[pos:pos + 12 + n])
+        pos += 12 + n
+    with open(path, "wb") as fh:
+        fh.write(b"".join(out))
+
+
 class ProxyRenderer:
     def __init__(self):
         bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -173,4 +187,5 @@ class ProxyRenderer:
             self.wire.modifiers["wf"].thickness = 1.3 / ppH
         self.sc.render.filepath = path
         bpy.ops.render.render(write_still=True)
+        strip_png_text(path)
         return (time.perf_counter() - t) * 1000

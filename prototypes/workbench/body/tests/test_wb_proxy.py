@@ -63,6 +63,11 @@ class T(unittest.TestCase):
         self.pr.set_mesh(box(), "box")
         self.assertEqual(a, open(self.png("clay", 0, 96)[0], "rb").read())
 
+    def test_png_has_no_text_chunks(self):
+        d = open(self.png("clay", 0, 48)[0], "rb").read()
+        for t in (b"tEXt", b"iTXt", b"zTXt", b"tIME"):
+            self.assertNotIn(t, d)
+
     def test_bad_mode_and_size_are_refused(self):
         with self.assertRaises(ValueError):
             self.pr.render("plush", 0, 96, os.path.join(SCRATCH, "n.png"))
