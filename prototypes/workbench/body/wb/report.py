@@ -39,3 +39,29 @@ def timing_sheet(summary, outdir, name="timing", extra=None):
     if ex.get("note"):
         body += "<p>" + ex["note"] + "</p>"
     return write(outdir, name, "Chunk 1 timings", body, 1100)
+
+
+def proxy_sheet(tiles, outdir, name="proxy", summary=None, cold_ms=None, note=""):
+    """The chunk 2 done-picture. tiles: {(mode, az, size): (png path inside outdir, ms)}. 304 px tiles in a grid of mode rows by azimuth columns; the 96 and 48 px renders of the same views beside each other under it."""
+    import shutil
+    modes = ("clay", "normal", "parts", "wire")
+    azs = (0, 32, 90, 180)
+
+    def cell(k, w):
+        pth, ms = tiles[k]
+        return f"<div class='cell'><img src='{os.path.basename(pth)}' width='{w}'><div class='cap'>{k[0]} az {k[1]} &middot; {k[2]} px &middot; <b>{ms:.0f} ms</b></div></div>"
+
+    def grid(size, w, gap=6):
+        h = f"<div class='grid' style='grid-template-columns:repeat(4,{w + 8}px)'>"
+        for m in modes:
+            for a in azs:
+                h += cell((m, a, size), w)
+        return h + "</div>"
+    tot = {s: sum(tiles[(m, a, s)][1] for m in modes for a in azs) for s in (304, 96, 48)}
+    body = "<h1>Chunk 2: warm proxy renderer, S20 type</h1>"
+    body += f"<p>Blender Workbench engine in one persistent bpy process, the house cameras (az 0, 32, 90, 180; elevation 10), level-1 proxy mesh ({summary['vertices_l1']:,} vertices). Milliseconds are per view, written as a PNG, after the engine's first render" + (f" (that first render took {cold_ms:.0f} ms)" if cold_ms else "") + f". All 16 views at 304: {tot[304]:.0f} ms; at 96: {tot[96]:.0f} ms; at 48: {tot[48]:.0f} ms.</p>"
+    body += "<h2>304 &times; 312</h2>" + grid(304, 304)
+    body += "<h2>96 &times; 88 and 48 &times; 48 (shown at 1x)</h2><div class='row'>" + grid(96, 96) + grid(48, 48) + "</div>"
+    if note:
+        body += "<p>" + note + "</p>"
+    return write(outdir, name, "Chunk 2 proxy renderer", body, 1380)
