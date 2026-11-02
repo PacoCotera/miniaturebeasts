@@ -155,13 +155,13 @@ def build(b, rig, M, tex, path, clips=("stand", "waddle", "breathe", "idle"), ex
     if "waddle" in clips:
         sample([rig.waddle_pose(i / 16)[0] for i in range(16)], 0.9, "waddle")
     if "breathe" in clips:
-        sample([rig.pose(tail_yaw=-math.radians(38.0), head_nod=math.radians(-3.0)) for i in range(16)], 3.3, "breathe", weights=[0.5 - 0.5 * math.cos(2 * math.pi * i / 16) for i in range(16)])          # about 0.3 Hz
+        sample([rig.pose(head_nod=math.radians(-3.0)) for i in range(16)], 3.3, "breathe", weights=[0.5 - 0.5 * math.cos(2 * math.pi * i / 16) for i in range(16)])          # about 0.3 Hz
     if "idle" in clips:
         T = 2.2
         poses = []
         for i in range(24):
             ph = i / 24
-            poses.append(rig.pose(tail_yaw=-math.radians(38.0), tail_sway=math.radians(8) * math.sin(2 * math.pi * ph),
+            poses.append(rig.pose(tail_sway=math.radians(8) * math.sin(2 * math.pi * ph),
                                   ear=math.radians(5) * math.sin(2 * math.pi * (ph - 0.07)), head_nod=math.radians(-3.0 + 2.0 * math.sin(2 * math.pi * ph * 0.5)), arm=math.radians(3) * math.sin(2 * math.pi * ph)))
         sample(poses, T, "idle", weights=[0.5 - 0.5 * math.cos(2 * math.pi * i / 24 * (T / 3.3)) for i in range(24)])
     prim = dict(attributes=dict(POSITION=a_pos, NORMAL=a_nor, TEXCOORD_0=a_uv, JOINTS_0=a_j, WEIGHTS_0=a_w, _PART=a_part), indices=a_idx, material=0, targets=[dict(POSITION=a_morph)])

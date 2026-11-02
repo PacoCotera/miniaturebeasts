@@ -83,7 +83,7 @@ class T(unittest.TestCase):
         self.assertGreaterEqual(margin, 0.99)
 
     def test_lantern_brighter_than_coat_at_96(self):
-        """In the stand pose (tail yawed toward the camera so the lantern shows beside the head): the visible lantern pixels are >= 40 levels brighter than the coat's at 96 px."""
+        """In the stand pose (the tail on the midline, its crook reaching behind the body so the lantern shows beside it at az 32): the visible lantern pixels are >= 40 levels brighter than the coat's at 96 px."""
         import s20rig
         from mathutils import Vector
         R = s20rig.Rig(self.b.ctx)

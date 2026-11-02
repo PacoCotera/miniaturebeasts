@@ -39,14 +39,15 @@ class T(unittest.TestCase):
         for need in ("root", "body", "head", "tip", "arm.L", "arm.R", "leg.upper.L", "leg.lower.R", "leg.foot.L", "ear.1.L", "ear.2.R") + tuple(f"tail.{k}" for k in range(1, 7)):
             self.assertIn(need, names)
 
-    def test_stand_pose_lantern_beside_the_head(self):
+    def test_stand_pose_keeps_the_tail_on_the_midline_and_the_lantern_visible_at_az_32(self):
         M = self.R.stand_pose()
         V = self.R.skin(self.V2, self.W, M)
         tip = (self.part2 == self.b.ctx["body_parts"]["torso"]) & (self.attr2[:, 1] <= self.b.ctx["T"].bulb[0])         # the bulb: the last stretch of the one spine
         c = V[tip].mean(0)
         c0 = self.V2[tip].mean(0)
         print("lantern centre rest", c0.round(2), "stand", c.round(2))
-        self.assertGreater(c[1], c0[1] + 0.25)             # swung toward the creature's left (the camera's side)
+        self.assertAlmostEqual(float(c[1]), 0.0, delta=0.03)          # pass 4 (owner): the tail stays on the body's midline (no yaw hack); the lantern shows by the tail's own shape
+        self.assertLess(float(c[0]), -1.0)                              # the crook reaches far enough behind the body to show beside it at az 32
         # in the house view (az 32) the lantern is not hidden behind the head: a ray from the camera reaches most of its vertices
         sc = B.reset()
         P = RN.prepare(self.b, dict(), level=2, pose=M, rig=self.R)

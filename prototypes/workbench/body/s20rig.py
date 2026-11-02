@@ -278,7 +278,7 @@ class Rig:
         prev = Mb
         for k in range(1, len(self.tail_P)):
             hd = B[f"tail.{k}"][0]
-            R = rot(zz, tail_yaw if k == 1 else 0.0, self.tail_pivot) @ rot(zz, tail_sway / (len(self.tail_P) - 1), hd) @ rot(y, tail_pitch / (len(self.tail_P) - 1), hd)
+            R = rot(zz, (tail_yaw + tail_sway) / (len(self.tail_P) - 1), hd) @ rot(y, tail_pitch / (len(self.tail_P) - 1), hd)        # pass 4 (owner): a yaw or a sway is spread evenly over every tail joint, never concentrated at the root; the pose keeps the tail on the midline
             prev = prev @ R
             M[f"tail.{k}"] = prev
         M["tip"] = prev
@@ -342,9 +342,8 @@ class Rig:
         return out
 
     def stand_pose(self, toward=-1.0):
-        """The tail yawed 44 degrees (plus 40 per turn of extra curl, up to 56; the file's 30 / 45 left the lantern half behind the head in the house view) toward the camera's side (+y is the creature's left: negative yaw about z swings the back-pointing tail toward +y), a 6 degree head tilt."""
-        yaw = min(62.0 + 40.0 * max(self.curl, 0.0), 70.0)
-        return self.pose(tail_yaw=math.radians(yaw) * toward, head_nod=math.radians(-3.0))
+        """The stand pose: the head nodded 3 degrees, the tail on the body's midline (pass 4, owner: the tail was yawed 40-70 degrees at its first joint so that the lantern showed in the house view; the lantern is shown by the tail's own shape now). `toward` is kept for old callers."""
+        return self.pose(head_nod=math.radians(-3.0))
 
     # ------------------------------------------------------------ the waddle
     def waddle_pose(self, phase, A=0.04, duty=0.55, lift=0.03, roll=7.0, yaw=4.0, sway=6.0, period=0.9):
@@ -359,7 +358,7 @@ class Rig:
                 dx = -A + 2 * A * w; lf = lift * math.sin(math.pi * w); pp = math.radians(FOOT_PITCH) * math.sin(math.pi * w); st[sd] = False
             legs[sd] = (dx, lf, pp)
         c = math.cos(2 * math.pi * phase); s_ = math.sin(2 * math.pi * phase)
-        return self.pose(body_roll=-math.radians(roll) * s_, body_yaw=math.radians(yaw) * c, bob=0.012 * abs(s_), legs=legs, tail_yaw=-math.radians(38.0), tail_sway=math.radians(sway) * s_,
+        return self.pose(body_roll=-math.radians(roll) * s_, body_yaw=math.radians(yaw) * c, bob=0.012 * abs(s_), legs=legs, tail_sway=math.radians(sway) * s_,
                          head_nod=math.radians(-3.0)), st
 
 
