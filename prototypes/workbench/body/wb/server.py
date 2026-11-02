@@ -18,12 +18,19 @@ BODY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if BODY not in sys.path:
     sys.path.insert(0, BODY)
 
+import checks as CH
 from wb import cas as C, facade as F, hashing as H, jobs as J, keys as K, report as R, store as S
 from wb.store import ApiError
 
 STATIC_APP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "app")
 CSP = "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
 CT = {"woff2": "font/woff2", "ttf": "font/ttf", "ico": "image/x-icon", "png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
+
+
+def count_rows(rows):
+    """What the pill and the drawer both say, from one place: fails and warnings need you; passes never do."""
+    n = lambda st: sum(1 for r in rows if r["state"] == st)
+    return dict(total=len(rows), fail=n("fail"), warn=n("warn"), need=n("fail") + n("warn"), passed=n("pass"))
 
 
 K_VIEWS = [(m, a, z) for z in (304, 608) for m in K.MODES for a in K.AZ]
@@ -76,7 +83,7 @@ class ProxyWorker:
         srv = self.srv
         self.start_proc()
         while not srv.stopping:
-            job = srv.queue.pop(("render", "build"), timeout=0.5)
+            job = srv.queue.pop(("render", "build", "check"), timeout=0.5)
             if job is None:
                 continue
             srv.hub.emit("running", job.species, job=job.id, kind=job.kind, actor=(job.actor or {}).get("name"))
@@ -84,7 +91,7 @@ class ProxyWorker:
                 if self.proc.poll() is not None:
                     self.start_proc()
                 views = job.args.get("views", [])
-                self.proc.stdin.write(json.dumps(dict(id=job.id, op=job.kind, spec=job.spec, genome=job.args["genome"], views=views)) + "\n")
+                self.proc.stdin.write(json.dumps(dict(id=job.id, op=job.kind, spec=job.spec, genome=job.args["genome"], views=views, stage=job.args.get("stage", "all"))) + "\n")
                 self.proc.stdin.flush()
                 while True:
                     line = self.proc.stdout.readline()
@@ -133,6 +140,9 @@ class Server:
         self.workers = [ProxyWorker(self, i) for i in range(proxy_workers)]
         self.sheeter = threading.Thread(target=self.sheet_loop, daemon=True, name="sheets")
         self.watcher = threading.Thread(target=self.watch_loop, daemon=True, name="watcher")
+        self.proofs = queue.Queue()
+        self.proofer = threading.Thread(target=self.proof_loop, daemon=True, name="proofs")
+        self.checks_seen = {}                                   # species id -> the last check rows computed for it (shown hatched when the file has moved on)
         self.httpd = ThreadingHTTPServer((host, port), make_handler(self))
         self.httpd.daemon_threads = True
         self.port = self.httpd.server_address[1]
@@ -192,6 +202,7 @@ class Server:
             self.hub.emit("failed", sp.id, job=j.id, kind=j.kind, superseded=True, error=j.error)
         try:
             self.submit(sp.id, "render", dict(genome="type", modes=["clay"], az=list(K.AZ), sizes=[304, 608]), dict(name="auto", role="server"))
+            self.submit(sp.id, "check", dict(genome="type", stage="all"), dict(name="auto", role="server"))
         except ApiError:
             pass
 
@@ -246,6 +257,11 @@ class Server:
         except F.BuildError as e:
             raise ApiError(400, e.message, "genome")
         out = dict(genome=genome)
+        if kind == "check":
+            st = (args or {}).get("stage", "all")
+            if st not in ("file", "cage", "all"):
+                raise ApiError(400, f"check stage '{st}': one of file, cage, all (extremes, rig and coat arrive with their chunks)", "stage")
+            return dict(out, stage=st)
         if kind == "build":
             return out
         if kind == "render" and args.get("views"):
@@ -278,7 +294,7 @@ class Server:
 
     def submit(self, sid, kind, args, actor, priority=None, spec=None, spec_hash=None):
         sp = self.get_species(sid)
-        if kind == "check":
+        if kind == "check" and (args or {}).get("stage", "all") == "file":
             return self.run_check(sp, args, actor)
         a = self.norm_args(kind, args)
         spec = copy.deepcopy(sp.spec) if spec is None else spec
@@ -287,11 +303,15 @@ class Server:
         views = [tuple(v) for v in a.get("views", [])]
         if kind == "build":
             key = ck
+        elif kind == "check":
+            key = self.check_key(ck, a["stage"])
         elif kind == "render":
             key = K.render_key(ck, views)
         else:
             key = K.sheet_key(K.render_key(ck, views))
         job = J.Job(self.queue.new_id(), sid, kind, a, key, J.PRIORITY[kind] if priority is None else priority, spec, spec_hash, actor)
+        if kind == "check":
+            return self.submit_check(job, ck, actor)
         cached = self.cached_result(kind, key, ck, views)
         if cached is not None:
             job.cached, job.state = True, "done"
@@ -338,8 +358,6 @@ class Server:
 
     def run_check(self, sp, args, actor):
         stage = (args or {}).get("stage", "file")
-        if stage != "file":
-            raise ApiError(400, f"check stage '{stage}' is a later chunk; only 'file' exists", "stage")
         rows = self.check_file(sp.spec)
         job = J.Job(self.queue.new_id(), sp.id, "check", dict(stage="file"), H.hash_of("check", "file", sp.hash), 0, None, sp.hash, actor)
         job.state, job.result = "done", dict(stage="file", rows=rows, fail=[r for r in rows if r["state"] == "fail"], passed=sum(1 for r in rows if r["state"] == "pass"))
@@ -348,6 +366,119 @@ class Server:
         self.queue.add(job)
         return job
 
+    # ---- the checks (cage stage in the worker; the pictures here, off the worker's time)
+    def check_key(self, ck, stage):
+        return H.hash_of("check", stage, ck, CH.version_id(stage))
+
+    def submit_check(self, job, ck, actor):
+        cached = self.cas.get_json(job.key)
+        if cached is not None:
+            job.cached, job.state, job.result = True, "done", self.with_proof_state(cached)
+            job.t_start = job.t_end = time.time()
+            job.event.set()
+            self.queue.add(job)
+            self.hub.emit("done", job.species, job=job.id, kind="check", cached=True, key=job.key, actor=(actor or {}).get("name"))
+            return job
+        active = self.queue.find_active(job.species, "check", job.key)
+        if active:
+            return active
+        self.queue.add(job)
+        self.hub.emit("queued", job.species, job=job.id, kind="check", priority=job.priority, key=job.key, actor=(actor or {}).get("name"), spec_hash=job.spec_hash)
+        return job
+
+    def with_proof_state(self, res):
+        """The stored rows with each proof's `ready` read from the cache now (the picture may still be on its way)."""
+        res = copy.deepcopy(res)
+        for r in res["rows"]:
+            if r.get("proof"):
+                r["proof"]["ready"] = self.cas.has(r["proof"]["key"], "png")
+                r["proof"]["path"] = self.cas.path(r["proof"]["key"], "png") if r["proof"]["ready"] else None
+        res["counts"] = count_rows(res["rows"])
+        return res
+
+    def finish_check(self, job, result):
+        """Rows from the worker: the SVGs go to the picture thread, the rows (with the key of each picture) are stored and answered."""
+        rows, tasks = result["rows"], []
+        for r in rows:
+            p = r.get("proof")
+            if not p:
+                continue
+            svg = p.pop("svg")
+            p["key"] = H.hash_of("proof", p["frame"], svg, CH.VERSION_SALT)
+            tasks.append(dict(key=p["key"], svg=svg, frame_path=p.pop("frame_path"), species=job.species))
+            p.pop("frame")
+        out = dict(stage=result["stage"], rows=rows, cage=result["cage"], timings_ms=result["timings_ms"])
+        self.cas.put_json(job.key, out)
+        for t in tasks:
+            self.proofs.put(t)
+        return self.with_proof_state(out)
+
+    def proof_loop(self):
+        """Composes the proof pictures: the SVG over the proxy frame, in the browser, a batch at a time."""
+        while not self.stopping:
+            try:
+                t = self.proofs.get(timeout=0.5)
+            except queue.Empty:
+                continue
+            batch = [t]
+            time.sleep(0.2)
+            while True:
+                try:
+                    batch.append(self.proofs.get_nowait())
+                except queue.Empty:
+                    break
+            try:
+                self.compose(batch)
+            except Exception as e:                                          # noqa: BLE001
+                print("proofs:", type(e).__name__, e, file=sys.stderr)
+
+    def compose(self, batch):
+        todo = [t for t in {t["key"]: t for t in batch}.values() if not self.cas.has(t["key"], "png")]
+        if not todo:
+            return
+        d = os.path.join(self.cas.root, ".tmp", f"proofs-{int(time.time() * 1000)}")
+        os.makedirs(d, exist_ok=True)
+        font = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web", "src", "fonts", "Inter-Medium-tnum.ttf")
+        jobs = []
+        for i, t in enumerate(todo):
+            h = os.path.join(d, f"p{i}.html")
+            with open(h, "w") as fh:
+                fh.write(f'<!doctype html><meta charset="utf-8"><style>@font-face{{font-family:Inter;src:url("file://{font}")}}html,body{{margin:0;background:#f7f6f3;width:608px;height:780px;overflow:hidden}}img,svg{{position:absolute;left:0;top:0;display:block}}</style>'
+                         f'<img src="file://{t["frame_path"]}" width="608" height="624">{t["svg"]}')
+            jobs.append(dict(html=h, png=os.path.join(d, f"p{i}.png"), w=608, h=780))
+        with open(os.path.join(d, "jobs.json"), "w") as fh:
+            json.dump(jobs, fh)
+        env = dict(os.environ, PLAYWRIGHT_BROWSERS_PATH="/home/mb/pw156/browsers")
+        subprocess.run(["node", os.path.join(os.path.dirname(os.path.abspath(__file__)), "proof.cjs"), os.path.join(d, "jobs.json")], check=True, env=env, timeout=120)
+        for t, j in zip(todo, jobs):
+            self.cas.adopt(j["png"], t["key"], "png")
+        import shutil
+        shutil.rmtree(d, ignore_errors=True)
+        for sid in {t["species"] for t in todo}:
+            self.hub.emit("done", sid, job="proofs", kind="proof", cached=False, urls=[f"/cas/{t['key']}.png" for t in todo if t["species"] == sid])
+
+    def current_checks(self, sp):
+        """The check rows for the file as it is now: from the cache when they are there, else the last rows we had, marked stale; None when nothing has been measured. Starts a check job when there is neither."""
+        try:
+            ck = K.cage_key(sp.spec, "type")
+        except Exception:                                                   # noqa: BLE001
+            return None
+        key = self.check_key(ck, "all")
+        res = self.cas.get_json(key)
+        if res is not None:
+            res = self.with_proof_state(res)
+            self.checks_seen[sp.id] = res
+            return dict(hash=sp.hash, fresh=True, rows=res["rows"], counts=res["counts"])
+        if not self.queue.find_active(sp.id, "check", key):
+            try:
+                self.submit(sp.id, "check", dict(genome="type", stage="all"), dict(name="auto", role="server"))
+            except ApiError:
+                pass
+        old = self.checks_seen.get(sp.id)
+        if old:
+            return dict(hash=sp.hash, fresh=False, rows=old["rows"], counts=old["counts"])
+        return None
+
     def finish_ok(self, job, result):
         cache = dict(job_hit=False)
         if job.kind == "render":
@@ -355,6 +486,8 @@ class Server:
             cache.update(views_hit=sum(1 for v in vs if v["cached"]), views_total=len(vs))
             self.cas.put_json(job.key, dict(result, cache=None))
         result["cache"] = cache
+        if job.kind == "check":
+            result = dict(self.finish_check(job, result), cache=cache)
         self.queue.finish(job, "done", result)
         self.hub.emit("done", job.species, job=job.id, kind=job.kind, key=job.key, cached=False, ms=round((job.t_end - job.t_start) * 1000, 1),
                       urls=[f"/cas/{v['key']}.png" for v in result.get("views", [])], actor=(job.actor or {}).get("name"))
@@ -403,6 +536,7 @@ class Server:
         for w in self.workers:
             w.thread.start()
         self.sheeter.start()
+        self.proofer.start()
         self.watcher.start()
         self.cas.evict(self.cache_limit)
         with open(os.path.join(self.home, "server.json"), "w") as fh:
@@ -478,7 +612,7 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)", p)
             if m:
                 s = srv.get_species(m.group(1))
-                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=None, goldens=None, history=s.history(5), views=srv.current_views(s)))
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), goldens=None, history=s.history(5), views=srv.current_views(s)))
             m = re.fullmatch(r"/api/jobs/(j\d+)", p)
             if m:
                 j = srv.queue.jobs.get(m.group(1))
@@ -489,7 +623,9 @@ def make_handler(srv):
                 return self.send_json(j.public())
             if p == "/api/stats":
                 return self.send_json(dict(jobs=srv.queue.counts(), cache_bytes=srv.cas.size(), framework=H.framework_id(), workers=len(srv.workers)))
-            if p in ("/api/plans", "/api/families", "/api/styles", "/api/checks"):
+            if p == "/api/checks":
+                return self.send_json(CH.metas())
+            if p in ("/api/plans", "/api/families", "/api/styles"):
                 return self.send_json([])
             if p == "/events":
                 return self.events(q.get("species", [None])[0])

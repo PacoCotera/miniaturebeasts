@@ -244,12 +244,13 @@ class TestServer(unittest.TestCase):
         self.assertIn("edited", got)
 
     def test_h_registries_and_unbuilt_kinds(self):
-        for p in ("plans", "families", "styles", "checks"):
+        for p in ("plans", "families", "styles"):
             self.assertEqual(json.load(urllib.request.urlopen(os.environ["WB_URL"] + "/api/" + p)), [])
         with self.assertRaises(S.ApiError):
             self.srv.submit("S20x", "variety", {}, None)
         with self.assertRaises(S.ApiError):
-            self.srv.submit("S20x", "check", {"stage": "cage"}, None)
+            self.srv.submit("S20x", "check", {"stage": "extremes"}, None)
+        self.assertEqual([m["id"] for m in json.load(urllib.request.urlopen(os.environ["WB_URL"] + "/api/checks"))][:3], ["schema", "ranges", "joins"])
 
 
 class TestKeys(unittest.TestCase):

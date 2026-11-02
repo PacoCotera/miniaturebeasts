@@ -4,7 +4,7 @@ import itertools
 import threading
 import time
 
-PRIORITY = {"render": 0, "build": 1, "check": 0, "sheet": 3}
+PRIORITY = {"render": 0, "build": 1, "check": 2, "sheet": 3}
 STATES = ("queued", "running", "done", "failed", "superseded")
 
 

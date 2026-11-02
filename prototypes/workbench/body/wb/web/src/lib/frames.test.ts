@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { Species } from './api'
 import { useFrames } from './frames'
 
-const sp = (key: string, ready: boolean): Species => ({ id: 'S20', hash: 'h', error: null, lease: null, history: [], file: {}, views: [{ mode: 'clay', az: 32, size: 304, key, ready }] })
+const sp = (key: string, ready: boolean): Species => ({ id: 'S20', hash: 'h', error: null, lease: null, history: [], file: {}, checks: null, views: [{ mode: 'clay', az: 32, size: 304, key, ready }] })
 
 describe('the pictures of the stage', () => {
   it('keep the last good picture, stale, until the new one exists; then keep the old one as "before"', () => {

@@ -1,19 +1,39 @@
+import { useQuery } from '@tanstack/react-query'
 import type { Species } from '../lib/api'
+import { checkMetas, needsYou, partsOf, ORDER } from '../lib/checks'
 import { clock, leaseFrom } from '../lib/edits'
+import { partLabel } from '../lib/outline'
+import type { StudioUrl } from '../lib/url'
+import { AttentionCard } from './AttentionCard'
 import { Banner } from './Banner'
 import s from './Inspector.module.css'
 
 // Shows only the selection. With nothing selected: the species overview (st.insp.empty). The version ("v5 draft") is not in the file yet, so it is left out.
-export function Inspector({ species, id, sheet, open }: { species: Species | undefined; id: string; sheet: boolean; open: boolean }) {
+// Under it, one card for each check the selection touches (all that need you when nothing is selected), then a quiet count of the passes (st.card.passes).
+export function Inspector({ species, id, sheet, open, url, go }: { species: Species | undefined; id: string; sheet: boolean; open: boolean; url: StudioUrl; go: (p: Partial<StudioUrl>) => void }) {
   const lease = species ? leaseFrom(species.lease, species.history) : null
   const last = species?.history[species.history.length - 1]
   const name = species?.file.name ?? `${id} · no name yet`
   const line = [species?.file.body_plan, last && `last edit ${clock(last.t)} by ${last.actor}`].filter(Boolean).join(' · ')
+  const metas = useQuery(checkMetas()).data ?? []
+  const byId = Object.fromEntries(metas.map((m) => [m.id, m]))
+  const rows = species?.checks?.rows ?? []
+  const touching = url.sel ? rows.filter((r) => partsOf(r, byId[r.id]).includes(url.sel!)) : rows
+  const cards = needsYou(touching).sort((a, b) => ORDER[a.state] - ORDER[b.state])
+  const passes = touching.filter((r) => r.state === 'pass').length
   return (
     <aside className={`${s.insp} ${sheet ? s.sheet : ''}`} data-open={open || undefined} aria-label="Inspector">
       {lease && <Banner who={lease.holder} />}
-      <div className={s.title}><b>{name}</b></div>
-      {line && <p className={s.line}>{line}</p>}
+      <div className={s.title}><b>{url.sel ? partLabel(url.sel) : name}</b>{url.sel && <span className={s.kind}>{['head', 'neck', 'back', 'seat', 'tail'].includes(url.sel) ? 'spine range' : 'appendage'}</span>}</div>
+      {!url.sel && line && <p className={s.line}>{line}</p>}
+      {cards.length > 0 && (
+        <div className={s.cards}>
+          {cards.map((r) => (
+            <AttentionCard key={r.id} row={r} meta={byId[r.id]} proofShown={url.proof === r.id} onProof={() => go({ proof: url.proof === r.id ? null : r.id })} onWhy={() => go({ drawer: 'checks', proof: r.id })} />
+          ))}
+        </div>
+      )}
+      {url.sel && passes > 0 && <p className={s.passes}><i />{passes} other {partLabel(url.sel)?.toLowerCase()} {passes === 1 ? 'check passes' : 'checks pass'}</p>}
     </aside>
   )
 }

@@ -13,6 +13,8 @@ import { Inspector } from '../ui/Inspector'
 import { Palette } from '../ui/Palette'
 import { HelpSheet } from '../ui/HelpSheet'
 import { Toasts } from '../ui/Toasts'
+import { ChecksDrawer } from '../ui/ChecksDrawer'
+import { checkMetas, needsYou, partsOf } from '../lib/checks'
 
 export default function StudioPage() {
   const [url, go] = useStudioUrl()
@@ -24,15 +26,28 @@ export default function StudioPage() {
   const setInsp = useUI((u) => u.setInsp)
   useEffect(() => { setInsp(!sheet) }, [sheet, setInsp]) // the inspector is a sheet in portrait, closed until asked for
   const available = useMemo(() => (v: string) => v === 'clay' || !!species?.views.some((x) => x.mode === v && x.ready), [species])
-  useKeys(url, go, available)
+  const metas = useQuery(checkMetas()).data ?? []
+  const byId = useMemo(() => Object.fromEntries(metas.map((m) => [m.id, m])), [metas])
+  const rows = species?.checks?.rows ?? []
+  const drawerH = useUI((u) => u.drawerH)
+  const open = url.drawer === 'checks' && !!species
+  // C opens the drawer; V puts the proof of the selection's first failing check (or the selected row) on the stage; G goes to the check's part; Esc steps back one layer.
+  const firstFor = () => { const hit = needsYou(url.sel ? rows.filter((r) => partsOf(r, byId[r.id]).includes(url.sel!)) : rows); return hit[0]?.id ?? null }
+  const checkKeys = useMemo(() => ({
+    toggleDrawer: () => go({ drawer: open ? null : 'checks' }),
+    proof: () => { const id = url.proof ?? firstFor(); if (id) go({ proof: url.proof ? null : id }) },
+    field: () => { const r = rows.find((x) => x.id === url.proof); const part = r && partsOf(r, byId[r.id])[0]; if (part) go({ sel: part, drawer: null }) },
+    escape: () => { if (url.proof) { go({ proof: null }); return true } if (open) { go({ drawer: null }); return true } return false },
+  }), [open, url, rows, byId, go]) // eslint-disable-line react-hooks/exhaustive-deps
+  useKeys(url, go, available, checkKeys)
   return (
     <>
       <AppShell
-        top={<TopBar url={url} species={species} />}
-        nav={<Navigator rail={rail} />}
-        stage={<Stage url={url} species={species} go={go} />}
-        inspector={<Inspector species={species} id={url.species} sheet={sheet} open={inspOpen} />}
-        overlay={<Toasts species={url.species} />}
+        top={<TopBar url={url} species={species} go={go} />}
+        nav={<Navigator rail={rail} url={url} go={go} rows={rows} metas={byId} />}
+        stage={<Stage url={url} species={species} go={go} inset={open ? drawerH : 0} />}
+        inspector={<Inspector species={species} id={url.species} sheet={sheet} open={inspOpen} url={url} go={go} />}
+        overlay={<><Toasts species={url.species} />{open && species && <ChecksDrawer species={species} url={url} go={go} />}</>}
       />
       <Palette url={url} />
       <HelpSheet />

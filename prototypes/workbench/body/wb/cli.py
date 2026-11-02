@@ -151,6 +151,61 @@ def cmd_validate(a):
     return 1 if r["fail"] else 0
 
 
+STAGES = ("file", "cage", "extremes", "rig", "coat", "all")
+LATER = dict(extremes="chunk 8", rig="chunk 23", coat="chunk 23")
+
+
+def check_rows(a, job):
+    """The rows of a finished check job with the owner's words and the proof pictures' paths (waits for the pictures when --wait)."""
+    metas = {m["id"]: m for m in call("GET", "/api/checks")}
+    rows = job["result"]["rows"]
+    end = time.time() + 90
+    while a.wait and any(r.get("proof") and not r["proof"].get("ready") for r in rows) and time.time() < end:
+        time.sleep(0.5)
+        cur = call("GET", f"/api/species/{a.species}").get("checks")
+        if cur and cur.get("fresh"):
+            rows = cur["rows"]
+    out = []
+    for r in rows:
+        m = metas.get(r["id"], {})
+        out.append(dict(id=r["id"], name=m.get("name"), state=r["state"], value=r["value"], limit=r["limit"], measure=r["measure"], words=(m.get("rule") or {}).get("words"), rule_date=(m.get("rule") or {}).get("date"),
+                        stage=r["stage"], proof=(r.get("proof") or {}).get("path"), fail_line=(r.get("extra") or {}).get("fail") or m.get("fail")))
+    return out
+
+
+def cmd_check(a):
+    if a.stage in LATER:
+        raise Fail(2, f"check stage '{a.stage}' arrives with {LATER[a.stage]}; the stages that exist are file, cage and all", "stage")
+    j = run_job(a, "check", dict(stage=a.stage, genome=a.genome), wait=a.wait)
+    if j["state"] in ("queued", "running"):
+        out(a, dict(ok=True, species=a.species, job=j["id"], state=j["state"], key=j["key"]), f"queued {j['id']} (key {j['key'][:12]}); wb check {a.species} --wait to see the rows")
+        return 0
+    rows = check_rows(a, j)
+    fails = [r for r in rows if r["state"] == "fail"]
+    warns = [r for r in rows if r["state"] == "warn"]
+    lines = []
+    for r in rows:
+        tag = {"pass": "PASS", "warn": "WARN", "fail": "FAIL"}[r["state"]]
+        head = f"{tag}  {r['id']:12} {str(r['value']):>8} / {str(r['limit']):<8} {r['measure']}"
+        lines.append(head)
+        if r["state"] != "pass":
+            lines.append(f"      {r['fail_line']}  ·  owner, {r['rule_date']}: {r['words']}")
+        if r["proof"]:
+            lines.append(f"      proof {r['proof']}")
+    lines.append(f"{len(rows) - len(fails) - len(warns)} pass · {len(warns)} warn · {len(fails)} fail")
+    out(a, dict(ok=not fails, species=a.species, stage=a.stage, rows=rows, fail=fails, warn=warns, passed=len(rows) - len(fails) - len(warns), job=j["id"], cached=j["cached"]), "\n".join(lines))
+    return 1 if fails else 0
+
+
+def cmd_explain(a):
+    m = next((x for x in call("GET", "/api/checks") if x["id"] == a.check), None)
+    if not m:
+        raise Fail(2, f"no check '{a.check}' (have: {', '.join(x['id'] for x in call('GET', '/api/checks'))})", "check")
+    text = f"{m['id']}  {m['name']}  (stage {m['stage']}, version {m['version']})\nfails as: {m['fail']}\nowner, {m['rule']['date']}: {m['rule']['words']}\nlimit: {m['limit']['text']}\nfields: {', '.join(m['fields']) or '(none)'}" + (f"\nin play: {m['play']}" if m.get("play") else "")
+    out(a, dict(ok=True, **m), text)
+    return 0
+
+
 def cmd_watch(a):
     req = urllib.request.Request(server_url() + f"/events?species={a.species}")
     n, end = 0, time.time() + a.timeout if a.timeout else None
@@ -215,6 +270,8 @@ def main(argv=None):
     p.add_argument("--mode", default="clay"); p.add_argument("--az", default="0,32,90,180"); p.add_argument("--size", default="304"); p.add_argument("--sheet", action="store_true"); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_render)
     p = sub.add_parser("set"); p.add_argument("species"); p.add_argument("path"); p.add_argument("value"); common(p, genome=False); p.set_defaults(f=cmd_set)
     p = sub.add_parser("validate"); p.add_argument("species"); common(p, genome=False); p.set_defaults(f=cmd_validate)
+    p = sub.add_parser("check"); p.add_argument("species"); common(p); p.add_argument("--stage", default="all", choices=STAGES); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_check)
+    p = sub.add_parser("explain"); p.add_argument("check"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_explain)
     p = sub.add_parser("watch"); p.add_argument("species"); p.add_argument("--json", action="store_true"); p.add_argument("--count", type=int, default=0); p.add_argument("--timeout", type=float, default=0); p.set_defaults(f=cmd_watch)
     p = sub.add_parser("serve"); p.add_argument("--port", type=int, default=0); p.add_argument("--species", action="append", default=[]); p.add_argument("--static", default=""); p.set_defaults(f=cmd_serve)
     a = ap.parse_args(argv)

@@ -1,10 +1,11 @@
 import { queryOptions } from '@tanstack/react-query'
+import type { ChecksState } from './checks'
 
 export type Entry = { t: string; actor: string; role: string | null; agent: boolean; via: string; op: string; path: string; old: unknown; new: unknown; hash_before: string; hash_after: string }
 export type ViewRef = { mode: string; az: number; size: number; key: string; ready: boolean }
 export type Lease = { holder: string; agent: boolean; since: string }
 export type Species = {
-  id: string; hash: string; error: string | null; lease: Lease | null; history: Entry[]; views: ViewRef[]; labels?: Record<string, string>
+  id: string; hash: string; error: string | null; lease: Lease | null; history: Entry[]; views: ViewRef[]; checks: ChecksState | null; labels?: Record<string, string>
   file: { name?: string; species?: string; body_plan?: string; plan?: string }
 }
 export type SpeciesRow = { id: string; name?: string; hash: string; error: string | null }

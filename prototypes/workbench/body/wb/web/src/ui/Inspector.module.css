@@ -4,3 +4,7 @@
 .line { color: var(--text-2); font-size: var(--t-14); }
 .sheet { position: absolute; top: 0; right: 0; bottom: 0; width: 344px; z-index: 6; box-shadow: var(--shadow-2); transform: translateX(105%); transition: transform var(--m-mid) var(--ease); }
 .sheet[data-open] { transform: none; }
+.kind { margin-left: 10px; color: var(--text-3); font-size: var(--t-14); }
+.cards { display: grid; gap: var(--s-3); margin-top: var(--s-4); }
+.passes { display: flex; align-items: center; gap: 10px; margin: var(--s-3) 0 0; color: var(--text-2); font-size: var(--t-14); }
+.passes i { width: 9px; height: 9px; border-radius: 50%; background: var(--pass-dot); flex: none; }

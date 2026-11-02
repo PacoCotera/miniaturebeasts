@@ -15,7 +15,12 @@ const MAX_DIFF = 0.002 // fraction of pixels allowed to differ
 
 const frame = readFileSync(join(here, 'fixture/frame.png'))
 const view = (mode, az, ready) => ({ mode, az, size: 304, key: `${mode}${az}`.padEnd(64, '0'), ready })
-const species = (ready) => ({ id: 'S20', hash: 'h', error: null, lease: null, history: [], file: { name: 'Tuliko', body_plan: 'biped' }, checks: null, goldens: null, path: 'S20.json',
+const row = (id, state, value, limit, measure, extra) => ({ id, state, value, limit, measure, stage: 'cage', version: 1, extra, proof: { mode: 'clay', az: 90, key: ('proof' + id).padEnd(64, '0'), ready: true } })
+const rows = [row('tail.size', 'fail', 0.2874, 0.25, 'Side area 0.287 of the trunk, limit 0.25'), row('verts', 'warn', 3606, 3500, '3,606 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)', { fail: '3,606 vertices, over 3,500' }), row('balance', 'pass', 0.2636, 0.15, 'Centre of mass 26% of the sole length in front of the heel, limit 15%')]
+const metas = [['tail.size', 'Tail size', 'Tail too big for the body', ['tail'], 'Any longer and I\'d tip over backwards!'], ['verts', 'Vertex budget', '{n} vertices, over 3,500', [], null], ['balance', 'Balance', 'Tips over at {end}', ['legs'], 'Whoa, I need my feet under me.']]
+  .map(([id, name, fail, part, play]) => ({ id, name, fail, stage: 'cage', version: 1, rule: { date: '2026-11-02 18:26', words: 'The tail is scaled to the creature: root about 0.45 of the seat radius, a thin stalk, the bulb about eye size, side area at most about 1/4 of the trunk.' }, limit: { text: 'side area at most 1/4 of the trunk', value: 0.25 }, part, fields: ['/parts/tail/joints'], play, az: 90, mode: 'clay' }))
+const checks = { hash: 'h', fresh: true, rows, counts: { total: 3, fail: 1, warn: 1, need: 2, passed: 1 } }
+const species = (ready, withChecks) => ({ checks: withChecks ? checks : null, id: 'S20', hash: 'h', error: null, lease: null, history: [], file: { name: 'Tuliko', body_plan: 'biped' }, checks: null, goldens: null, path: 'S20.json',
   views: ['clay', 'normal', 'parts', 'wire'].flatMap((m) => [0, 32, 90, 180].map((a) => view(m, a, ready && m === 'clay'))) })
 
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.ttf': 'font/ttf' }
@@ -35,6 +40,8 @@ const cases = [
   { name: 'shell-dark-1180', theme: 'dark', w: 1180, h: 820, ready: false, touch: true },
   { name: 'shell-light-1180', theme: 'light', w: 1180, h: 820, ready: false, touch: true },
   { name: 'stage-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true },
+  { name: 'checks-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, checks: true, q: '&sel=tail&drawer=checks&proof=tail.size' },
+  { name: 'checks-light-1180', theme: 'light', w: 1180, h: 820, ready: true, checks: true, touch: true, q: '&sel=tail' },
   { name: 'stage-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true },
 ]
 let failed = 0
@@ -43,10 +50,11 @@ for (const c of cases) {
   const ctx = await browser.newContext({ viewport: { width: c.w, height: c.h }, hasTouch: !!c.touch, reducedMotion: 'reduce' })
   const page = await ctx.newPage()
   await page.route('**/api/species', (r) => r.fulfill({ json: [{ id: 'S20', name: 'Tuliko', hash: 'h', error: null }] }))
-  await page.route('**/api/species/S20', (r) => r.fulfill({ json: species(c.ready) }))
+  await page.route('**/api/species/S20', (r) => r.fulfill({ json: species(c.ready, c.checks) }))
+  await page.route('**/api/checks', (r) => r.fulfill({ json: metas }))
   await page.route('**/cas/*.png', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
   await page.route('**/events*', (r) => r.fulfill({ body: ': connected\n\n', contentType: 'text/event-stream' }))
-  await page.goto(`${base}/studio/S20/shape?theme=${c.theme}`)
+  await page.goto(`${base}/studio/S20/shape?theme=${c.theme}${c.q ?? ''}`)
   await page.waitForSelector('main')
   await page.evaluate(() => document.fonts.ready)
   await page.waitForTimeout(c.ready ? 700 : 300)

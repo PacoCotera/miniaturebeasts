@@ -23,6 +23,7 @@ def main():
     from wb import cas as C, facade as F, keys as K, proxy as P
     cas = C.Cas(a.cas)
     pr = P.ProxyRenderer()
+    last = dict(ck=None, r=None)                                   # the last cage's Body: a check job right after a build reuses it
     warm = pr.warm(cas.tmp("png")) + F.warm()
 
     def send(o):
@@ -41,6 +42,7 @@ def main():
             return ck, summ, dict(V=z["V"], F=z["F"], part=z["part"], names={int(k): v for k, v in names.items()}), True
         t = time.perf_counter()
         r = F.build(spec, genome, "base")
+        last.update(ck=ck, r=r)
         T["build_ms"] = round((time.perf_counter() - t) * 1000, 1)
         t = time.perf_counter()
         m = F.proxy_mesh(r.body, 1)
@@ -54,12 +56,55 @@ def main():
         cas.put_json(ck, summ)
         return ck, summ, m, False
 
+    def frames(ck, mesh, views, res_views=None):
+        """Render the views that are not in the cache; returns {(mode, az, size): (key, path, cached, ms)}."""
+        pr.set_mesh(mesh, ck)
+        out = {}
+        for mode, az, size in views:
+            fk = K.frame_key(ck, mode, az, size)
+            if cas.has(fk, "png"):
+                out[(mode, az, size)] = (fk, cas.path(fk, "png"), True, 0.0)
+            else:
+                tmp = cas.tmp("png")
+                ms = pr.render(mode, az, size, tmp)
+                cas.adopt(tmp, fk, "png")
+                out[(mode, az, size)] = (fk, cas.path(fk, "png"), False, round(ms, 1))
+        return out
+
+    def do_check(req, ck, summ, mesh, T):
+        """The checks of a stage on the cage of this request, each with its proof's SVG and the 608 frame it draws on."""
+        from checks import run as crun, proof as PR
+        from checks.ctx import Ctx
+        spec, genome, stage = req["spec"], req.get("genome", "type"), req.get("stage", "all")
+        t = time.perf_counter()
+        rows = []
+        if stage in ("file", "all"):
+            rows += crun("file", Ctx(spec))
+        if stage in ("cage", "all"):
+            if last["ck"] != ck:
+                last.update(ck=ck, r=F.build(spec, genome, "base"))
+            rows += crun("cage", Ctx(spec, last["r"].body, summ, mesh))
+        T["checks_ms"] = round((time.perf_counter() - t) * 1000, 1)
+        t = time.perf_counter()
+        need = sorted({(r["proof"]["mode"], r["proof"]["az"], 608) for r in rows if r.get("proof")})
+        fr = frames(ck, mesh, need)
+        for r in rows:
+            p = r.get("proof")
+            if p:
+                fk, path, _, _ = fr[(p["mode"], p["az"], 608)]
+                p["frame"], p["frame_path"] = fk, path
+                p["svg"] = PR.svg(p["svg"])
+        T["proof_frames_ms"] = round((time.perf_counter() - t) * 1000, 1)
+        return rows
+
     def handle(req):
         T = {}
         t0 = time.perf_counter()
         ck, summ, mesh, cage_hit = ensure_cage(req, T)
         res = dict(cage=dict(key=ck, cage_hash=summ["cage_hash"], vertices=summ["vertices"], vertices_l1=summ.get("vertices_l1"), faces=summ["faces"], cached=cage_hit,
                              timings_ms=summ["timings_ms"], balance=summ.get("balance")), views=[])
+        if req["op"] == "check":
+            res["rows"], res["stage"] = do_check(req, ck, summ, mesh, T), req.get("stage", "all")
         if req["op"] == "render":
             views = [tuple(v) for v in req["views"]]
             t = time.perf_counter()

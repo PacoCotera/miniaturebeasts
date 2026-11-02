@@ -9,3 +9,4 @@
 @keyframes sweep { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
 .stale::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: repeating-linear-gradient(135deg, rgba(60, 50, 40, .07) 0 6px, transparent 6px 14px); }
 @media (prefers-reduced-motion: reduce) { .progress[data-indeterminate] { width: 100%; animation: none; opacity: .3; } }
+.proofTag { background: #fff; color: #c93440; border: 1.5px solid #c93440; font-weight: 500; z-index: 3; }

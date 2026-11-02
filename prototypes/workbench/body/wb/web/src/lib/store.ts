@@ -16,6 +16,7 @@ type UI = {
   paletteOpen: boolean; setPalette: (v: boolean) => void
   helpOpen: boolean; setHelp: (v: boolean) => void
   before: boolean; setBefore: (v: boolean) => void
+  drawerH: number; setDrawerH: (h: number) => void
   toasts: ToastItem[]; pushToast: (e: Entry) => void; dropToast: (id: number) => void
 }
 let toastId = 0
@@ -29,6 +30,7 @@ export const useUI = create<UI>((set) => ({
   paletteOpen: false, setPalette: (paletteOpen) => set({ paletteOpen }),
   helpOpen: false, setHelp: (helpOpen) => set({ helpOpen }),
   before: false, setBefore: (before) => set({ before }),
+  drawerH: Number(localStorage.getItem('wb.drawerH')) || 320, setDrawerH: (h) => { const drawerH = Math.round(Math.min(Math.max(h, 180), window.innerHeight - 200)); localStorage.setItem('wb.drawerH', String(drawerH)); set({ drawerH }) },
   toasts: [], pushToast: (entry) => set((s) => ({ toasts: [...s.toasts, { id: ++toastId, entry }].slice(-3) })),
   dropToast: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
 }))

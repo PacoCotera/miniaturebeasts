@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
 import { speciesList } from '../lib/api'
+import { checkMetas } from '../lib/checks'
 import { MODES, buildStudioUrl, type StudioUrl } from '../lib/url'
 import { useUI } from '../lib/store'
 import { W } from '../lib/words'
@@ -13,12 +14,17 @@ export function Palette({ url }: { url: StudioUrl }) {
   const { paletteOpen, setPalette } = useUI()
   const navigate = useNavigate()
   const list = useQuery(speciesList())
+  const metas = useQuery(checkMetas()).data ?? []
   const run = (to: string) => { setPalette(false); navigate(to) }
   return (
     <Command.Dialog open={paletteOpen} onOpenChange={setPalette} label="Palette" overlayClassName={s.scrim} contentClassName={s.palette}>
       <Dialog.Title className="sr">Palette</Dialog.Title>
       <Command.Input className={s.input} autoFocus />
       <Command.List className={s.list}>
+        <Command.Group heading="Checks">
+          <Command.Item value="Checks drawer" onSelect={() => run(buildStudioUrl({ ...url, drawer: 'checks' }))} className={s.item}>Checks<span className={s.k}><kbd>C</kbd></span></Command.Item>
+          {metas.map((m) => (<Command.Item key={m.id} value={`check ${m.name}`} onSelect={() => run(buildStudioUrl({ ...url, drawer: 'checks', proof: m.id }))} className={s.item}>{m.name}<span className={s.k}>{m.stage}</span></Command.Item>))}
+        </Command.Group>
         <Command.Group heading={W.help.go}>
           {MODES.map((m, i) => (
             <Command.Item key={m} value={W.modes[i]} onSelect={() => run(buildStudioUrl({ ...url, mode: m }))} className={s.item}>{W.modes[i]}<span className={s.k}><kbd>{i + 1}</kbd></span></Command.Item>

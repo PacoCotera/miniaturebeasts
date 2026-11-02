@@ -1,2 +1,14 @@
 .nav { border-right: 1px solid var(--line); padding: var(--s-4) var(--s-2); overflow: hidden; background: var(--bg); min-width: 0; }
 .rail { padding-left: var(--s-1); padding-right: var(--s-1); }
+.tree { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border-radius: var(--r-1); font-size: var(--t-16); color: var(--text); text-align: left; min-height: 36px; border-left: 2px solid transparent; }
+.row:hover { background: color-mix(in srgb, var(--sel) 55%, transparent); }
+.sel { background: var(--sel); border-left-color: var(--sel-line); }
+.sw { width: 10px; height: 10px; border-radius: 3px; flex: none; background: transparent; }
+.label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--attn-dot); flex: none; }
+.dot[data-kind=fail] { background: var(--fail); }
+.rail .label { display: none; }
+.rail .row { justify-content: center; padding: 8px 4px; }
+.rail .dot { position: absolute; margin: -14px -14px 0 0; }
+.rail .sw { width: 16px; height: 16px; }
