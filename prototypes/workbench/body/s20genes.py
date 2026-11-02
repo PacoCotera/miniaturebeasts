@@ -124,7 +124,7 @@ PAIRS = {
     "coat.rd": (["none", "spots", "labyrinth", "rings"], [0.4, 0.25, 0.2, 0.15], ["none", "spots", "labyrinth", "rings"]),
     "coat.mark": (["none", "heart", "star"], [0.5, 0.25, 0.25], ["none", "heart", "star"]),
     "coat.mark-where": (["forehead", "cheek", "belly"], [0.5, 0.3, 0.2], ["forehead", "cheek", "belly"]),
-    "coat.glow-pattern": (["none", "belly-bands", "constellation"], [0.34, 0.33, 0.33], ["none", "belly-bands", "constellation"]),        # the night-light species' one glowing pattern gene
+    "coat.glow-pattern": (["none", "belly-arcs", "constellation"], [0.34, 0.33, 0.33], ["none", "belly-arcs", "constellation"]),        # the night-light species' one glowing pattern gene
     "face.expression": (["content", "open"], [0.8, 0.2], ["content", "open"]),
     "face.whisker-glow": (["off", "glow"], [0.85, 0.15], ["off", "glow"]),                     # a rare variant: glowing whisker tips
     "face.fangs": (["none", "fangs"], [0.75, 0.25], ["none", "fangs"]),                        # tiny fangs: about 1 in 4
@@ -181,7 +181,7 @@ def draw(i, seed0=2026):
     t["appearance.body-hue"] = float(np.round(((270.0 + 30.0 * (i - 1) + 14.0 * (rng.random() - 0.5)) % 360.0) / 360.0, 3))          # twelve hues round the wheel, 30 degrees apart (the type is violet)
     tipk = TIPS[(i - 2) % len(TIPS)]
     pairs["body.tail-tip"] = [tipk, tipk] if tipk != "lantern" else ["lantern", str(rng.choice(["lantern", "tuft", "plain"]))]
-    pairs["coat.glow-pattern"] = [["none", "belly-bands", "constellation"][(i - 1) % 3]] * 2                 # the sheet cycles the glowing pattern gene
+    pairs["coat.glow-pattern"] = [["none", "belly-arcs", "constellation"][(i - 1) % 3]] * 2                 # the sheet cycles the glowing pattern gene
     pairs["face.expression"] = ["open"] * 2 if i in (4, 9) else ["content"] * 2
     t["face.whisker-count"] = [0.0, 0.4, 0.7, 1.0][(i - 1) % 4] if i != 1 else 0.0               # the sheet shows 0, 1 .. 3 whiskers a side
     pairs["face.whisker-glow"] = ["glow"] * 2 if i == 6 else ["off"] * 2

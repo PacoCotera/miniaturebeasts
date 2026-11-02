@@ -533,12 +533,23 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     # one glowing pattern gene (the night-light species): emissive belly bands, or constellation dots on the back and head
     gp = g.get("glow_pattern", "none")
     glow_n0 = glow / max(float(glow.max()), 1e-6)
-    if gp == "belly-bands":
-        ph_ = (zeff / 0.15) % 1.0
-        bm = belly * band_f(ph_, 0.12, 0.52, 0.08) * clear
+    if gp == "belly-arcs":
+        # a firefly's abdomen (pass 4, the AD's 5e): 2-3 thin arcs on the lower 60 % of the belly patch, 0.025 H thick and 0.07 H apart, sagging (lowest on the midline, rising toward their ends), inset 0.04 H from the patch edge and fading out at their ends; ONE hue, the lantern's;
+        # emission at 0.45 of the lantern's peak. The count is the bands gene (3-4: two arcs, 5-7: three).
+        n_arc = 2 + int(g["bands"] >= 5)
+        zc0 = zb_ + 0.50 * Hb_
+        x_ = tz_ - 0.09 * (lat / Wb_) ** 2
+        arcs = np.zeros(n)
+        for k_ in range(n_arc):
+            zk_ = zc0 - 0.07 * k_
+            arcs = np.maximum(arcs, band_f(x_, zk_ - 0.0125, zk_ + 0.0125, 0.0045))
+        rr_ = np.sqrt((lat / Wb_) ** 2 + uu_ ** 2)                               # the egg's own radial coordinate: 1 on its edge
+        inset = sstep(0.04, 0.075, (1.0 - rr_) * 0.24)
+        low60 = 1.0 - sstep(0.58, 0.62, tt_)
+        bm = belly * arcs * inset * low60 * clear
         F["glow_pattern"] = bm
-        col = col * (1 - 0.7 * bm[:, None]) + (glow * 0.85 + 0.1) * 0.7 * bm[:, None]
-        emit = emit + glow_n0 * (bm * (0.55 + 0.45 * gl))[:, None]
+        col = col * (1 - 0.85 * bm[:, None]) + (glow * 0.85 + 0.1) * 0.85 * bm[:, None]
+        emit = emit + glow_n0 * (bm * 0.45 * (0.9 + 0.7 * gl))[:, None]
     elif gp == "constellation":
         dd, cc = voronoi(V * (1.0 / 0.17), seed + 31)
         host_ = (torso & ~tail) * (1 - belly) * band(zeff, 0.5, 2.05, 0.1) * clear * (1 - fc)

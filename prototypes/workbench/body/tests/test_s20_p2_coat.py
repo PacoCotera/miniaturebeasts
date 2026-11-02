@@ -61,14 +61,14 @@ class T(unittest.TestCase):
         self.assertGreater(float(np.linalg.norm(Vm[fr | gp] - Pm, axis=1).min()), 0.5 * spec["face"]["mouth"]["width"] + 0.08 - 0.02)
 
     def test_one_glowing_pattern_gene(self):
-        for gp in ("belly-bands", "constellation"):
+        for gp in ("belly-arcs", "constellation"):
             V, part, o = self.coat_at_vertices({**self.c["coat"], "glow_pattern": gp})
             self.assertGreater(float((o["fields"]["glow_pattern"] > 0.5).sum()), 20, gp)
             self.assertGreater(float(o["emit"].max()), 0.3)
         import s20genes as GN
         self.assertIn("coat.glow-pattern", GN.PAIRS)
         pats = {IN.make(i)[0]["coat"]["glow_pattern"] for i in (2, 3, 4)}
-        self.assertEqual(pats, {"none", "belly-bands", "constellation"})
+        self.assertEqual(pats, {"none", "belly-arcs", "constellation"})
 
     def test_mouth_stroke_and_the_open_mouth(self):
         V, part, o = self.coat_at_vertices({**self.c["coat"], "expression": "content"})
