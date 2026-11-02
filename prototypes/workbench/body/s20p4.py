@@ -126,3 +126,24 @@ def head_curvature(b, z0=1.40, z1=1.96, dz=0.04):
     w = side_profile(b, zs)
     k = -(w[2:] - 2 * w[1:-1] + w[:-2]) / dz ** 2
     return zs[1:-1], k
+
+
+# ---- step 7: the tail root from behind ----
+def root_numbers(b):
+    """The lateral width of the loft's rings at the seat end of the tail (the ring at the root, s_root) against the mid-stalk's (the widest ring in 0.35-0.5 from the stalk's end), and the smallest radius of the concave fillet in the plan contour (z between 0.55 and 0.95) where the root meets the seat."""
+    info = b.ctx["info"]["torso"]
+    m = b.ctx["remap"]
+    Vc = np.array(b.cage.V, float)
+    G = b.ctx["T"]
+    wid = []
+    for ring, ri in zip(info["rings"], info["ring_info"]):
+        ids = [m[v] for v in ring if v in m]
+        wid.append((ri["s"], 2 * float(np.abs(Vc[ids][:, 1]).max())))
+    wid = np.array(wid)
+    root = float(np.interp(G.s_root, wid[:, 0], wid[:, 1]))
+    mid = float(wid[(wid[:, 0] >= 0.35) & (wid[:, 0] <= 0.5)][:, 1].max())
+    V, F, at, fp = P2.level_arrays(b, 2)
+    band = (V[:, 2] > 0.55) & (V[:, 2] < 0.95) & (V[:, 0] < -0.1)
+    xs = np.arange(-1.0, -0.2, 0.02)
+    yw = np.array([np.abs(V[band & (np.abs(V[:, 0] - x) < 0.015)][:, 1]).max() if (band & (np.abs(V[:, 0] - x) < 0.015)).any() else np.nan for x in xs])
+    return dict(root_width=root, stalk_width=mid, ratio=root / mid, xs=xs, yw=yw)

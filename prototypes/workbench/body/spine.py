@@ -71,6 +71,14 @@ class SpineLoft(Gourd):
         s = np.arange(0.0, knots[-1] + 0.30, 0.01)
         pt, _, _, _ = self.pa.at(s)
         self.tail_pts, self.tail_r = pt, self.tail_radius(s)
+        self.tail_s = s
+        rf_ = sp.get("root_flare")                          # pass 4: the root widens sideways only (a soft mound, the way a tail grows out of a seat seen from behind); from the side nothing changes, so the monotone taper holds
+        if rf_:
+            sr = float(self.js[len(tail["P"]) - 1])
+            t_ = np.clip((s - (sr - float(rf_["from"]))) / max(float(rf_["from"]) - float(rf_["to"]), 1e-9), 0.0, 1.0)
+            self.tail_e = 1.0 + (float(rf_["E"]) - 1.0) * t_ * t_ * (3 - 2 * t_)
+        else:
+            self.tail_e = np.ones(len(s))
         self.k = sp["union_k"]
         self.s_root = float(self.js[len(tail["P"]) - 1])    # s of the tail root joint (E)
         z = np.array([self.pa.at([x])[0][0][2] for x in np.linspace(0, self.L, 5)])
@@ -126,7 +134,8 @@ class SpineLoft(Gourd):
         return np.maximum(d, np.maximum(self.ends[0] - z, z - self.ends[1]))
 
     def d_tail(self, P):
-        D = np.linalg.norm(P[:, None, :] - self.tail_pts[None, :, :], axis=2) - self.tail_r[None, :]
+        dd = (P[:, None, :] - self.tail_pts[None, :, :]) * np.stack([np.ones(len(self.tail_e)), 1.0 / self.tail_e, np.ones(len(self.tail_e))], 1)[None]
+        D = np.linalg.norm(dd, axis=2) - self.tail_r[None, :]
         return D.min(1)
 
     def d(self, P):
@@ -219,7 +228,8 @@ def build_spine_loft(body, spec, G):
         t_ana = 1.0 - float(np.clip((s - (sb - rb_)) / rb_, 0.0, 1.0))
         if t_ana > 0:
             rad = float(G.tail_radius(np.array([s]))[0])
-            P = P * (1 - t_ana) + (pt + rad * W) * t_ana
+            ey = float(np.interp(s, G.tail_s, G.tail_e))                  # the root's sideways widening (spine.root_flare): the circle is an ellipse, wider across the body than along it
+            P = P * (1 - t_ana) + (pt + rad * W * np.array([1.0, ey, 1.0])) * t_ana
         P[a == 0, 1] = 0.0; P[a == 1, 1] = 0.0
         rings.append([body.add(P[c], "torso", float(s), a[c], target=P[c], centre=(c in (0, n - 1))) for c in range(n)])
         rz.append(float(pt[2])); info.append(dict(s=float(s), centre=pt, T=T, N=N, B=B))

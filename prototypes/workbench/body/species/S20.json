@@ -1205,6 +1205,11 @@
      "iters": 20,
      "hops": 4,
      "radius": 0.3
+    },
+    "root_flare": {
+     "E": 1.6,
+     "from": 0.5,
+     "to": 0.05
     }
    },
    "junction_keep_above": 1.16,
