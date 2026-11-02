@@ -149,15 +149,44 @@ def place_rings(pts, s, R, js, edge=0.2, max_turn=20.0, merge=0.04):
     return np.array(out)
 
 
+_MONO = {}
+
+
+def _mono_prep(x, y):
+    """The knot spacings and the Fritsch-Carlson slopes of (x, y): they do not depend on where the curve is evaluated, so one build pays for them once per curve (keyed by the knots' bytes; same numbers as computing them on every call)."""
+    key = (x.tobytes(), y.tobytes())
+    r = _MONO.get(key)
+    if r is None:
+        h = np.diff(x)
+        d = np.diff(y) / h
+        if len(x) == 2:
+            m = np.array([d[0], d[0]])
+        else:
+            m = np.r_[d[0], [(0 if d[i - 1] * d[i] <= 0 else 2 / (1 / d[i - 1] + 1 / d[i])) for i in range(1, len(d))], d[-1]]
+        if len(_MONO) > 4096:
+            _MONO.clear()
+        r = _MONO[key] = (h, m)
+    return r
+
+
+def mono_cubic_cols(x, Y, q):
+    """mono_cubic of every column of Y at once (one clamp, one search, one set of Hermite weights for all of them): shape q.shape + (Y.shape[1],), the same numbers as stacking mono_cubic(x, Y[:, k], q)."""
+    x, Y = np.asarray(x, float), np.asarray(Y, float)
+    hm = [_mono_prep(x, np.ascontiguousarray(Y[:, k])) for k in range(Y.shape[1])]
+    h = hm[0][0]
+    M = np.stack([a[1] for a in hm], -1)
+    q = np.clip(np.asarray(q, float), x[0], x[-1])
+    i = np.clip(np.searchsorted(x, q) - 1, 0, len(h) - 1)
+    t = (q - x[i]) / h[i]
+    h00, h10, h01, h11 = 2 * t ** 3 - 3 * t ** 2 + 1, t ** 3 - 2 * t ** 2 + t, -2 * t ** 3 + 3 * t ** 2, t ** 3 - t ** 2
+    hi = h[i][..., None]
+    return h00[..., None] * Y[i] + h10[..., None] * hi * M[i] + h01[..., None] * Y[i + 1] + h11[..., None] * hi * M[i + 1]
+
+
 def mono_cubic(x, y, q):
     """Fritsch-Carlson monotone cubic through (x, y), evaluated at q (clamped to the ends)."""
     x, y = np.asarray(x, float), np.asarray(y, float)
-    h = np.diff(x)
-    d = np.diff(y) / h
-    if len(x) == 2:
-        m = np.array([d[0], d[0]])
-    else:
-        m = np.r_[d[0], [(0 if d[i - 1] * d[i] <= 0 else 2 / (1 / d[i - 1] + 1 / d[i])) for i in range(1, len(d))], d[-1]]
+    h, m = _mono_prep(x, y)
     q = np.clip(np.asarray(q, float), x[0], x[-1])
     i = np.clip(np.searchsorted(x, q) - 1, 0, len(h) - 1)
     t = (q - x[i]) / h[i]

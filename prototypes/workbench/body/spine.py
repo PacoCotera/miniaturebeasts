@@ -147,25 +147,37 @@ class SpineLoft(Gourd):
 
     def cast(self, c, W, tmax=1.8, step=0.02, steps=40):
         """The first exit of each ray from the design surface (the surface is not star-shaped from a path point once the tail curls back toward the body): march in `step`, then bisect."""
-        c = np.asarray(c, float)
+        W = np.asarray(W, float)
+        return self.cast_rays(np.broadcast_to(np.asarray(c, float), W.shape), W, tmax, step, steps)
+
+    def cast_rays(self, C, W, tmax=1.8, step=0.02, steps=40, block=15):
+        """cast for many rays at once, each from its own start C[r] along W[r]: the same marching steps, the same bisection, the same numbers as one ray at a time (every point is evaluated by the same element-wise arithmetic);
+        the march goes on in blocks of `block` steps and stops for a ray at its first exit, the bisection runs on all rays together."""
+        C, W = np.asarray(C, float), np.asarray(W, float)
         ts = np.arange(step, tmax + step, step)
-        out = np.zeros((len(W), 3))
-        pts = c[None, None, :] + ts[None, :, None] * W[:, None, :]
-        dd = self.d(pts.reshape(-1, 3)).reshape(len(W), len(ts))
-        for r in range(len(W)):
-            ex = np.where(dd[r] > 0)[0]
-            if len(ex) == 0:
-                raise RuntimeError("a ray never leaves the surface")
-            k = int(ex[0])
-            lo, hi = (ts[k - 1] if k > 0 else 0.0), ts[k]
-            for _ in range(steps):
-                m = 0.5 * (lo + hi)
-                if float(self.d((c + m * W[r])[None])[0]) < 0:
-                    lo = m
-                else:
-                    hi = m
-            out[r] = c + 0.5 * (lo + hi) * W[r]
-        return out
+        n = len(W)
+        k_exit = np.full(n, -1)
+        act = np.arange(n)
+        for b0 in range(0, len(ts), block):
+            if len(act) == 0:
+                break
+            tb = ts[b0:b0 + block]
+            pts = C[act][:, None, :] + tb[None, :, None] * W[act][:, None, :]
+            dd = self.d(pts.reshape(-1, 3)).reshape(len(act), len(tb))
+            hit = dd > 0
+            found = hit.any(1)
+            k_exit[act[found]] = b0 + hit[found].argmax(1)
+            act = act[~found]
+        if (k_exit < 0).any():
+            raise RuntimeError("a ray never leaves the surface")
+        lo = np.where(k_exit > 0, ts[np.maximum(k_exit - 1, 0)], 0.0)
+        hi = ts[k_exit]
+        for _ in range(steps):
+            m = 0.5 * (lo + hi)
+            inside = self.d(C + m[:, None] * W) < 0
+            lo = np.where(inside, m, lo)
+            hi = np.where(inside, hi, m)
+        return C + (0.5 * (lo + hi))[:, None] * W
 
     def label_of(self, s):
         """The named range an arc length belongs to (u = distance from the crown)."""
@@ -215,14 +227,21 @@ def build_spine_loft(body, spec, G):
     ss = G.stations(spec)
     nv = len(spec["parts"]["torso"]["rings_z"])
     rings, rz, info = [], [], []
-    for k, s in enumerate(ss):
+    geo = []
+    for k, s in enumerate(ss):                                  # the rings' frames and rays first: the casts of all rings then run together
         pt, T, N, B = G.pa.at([s])
         pt, T, N, B = pt[0], T[0], N[0], B[0]
         vertical = k >= len(ss) - nv
         a = column_angles_at(G, float(pt[2]), vertical)
         th = np.pi * a
         W = np.cos(th)[:, None] * B[None] + np.sin(th)[:, None] * N[None]
-        P = G.cast(pt, W)
+        geo.append((pt, T, N, B, a, W))
+    casts = G.cast_rays(np.concatenate([np.broadcast_to(g[0], g[5].shape) for g in geo]), np.concatenate([g[5] for g in geo]))
+    off = 0
+    for k, s in enumerate(ss):
+        pt, T, N, B, a, W = geo[k]
+        P = casts[off:off + len(W)]
+        off += len(W)
         sb = float(G.s_root)                                    # beyond the tail's root the rings are exact circles of the radius profile (a cast onto the sphere chain's envelope is irregular, and the limit fit amplifies that into a zigzag); the cast takes over into the body
         rb_ = float(G.sp.get("root_blend", 0.30))
         t_ana = 1.0 - float(np.clip((s - (sb - rb_)) / rb_, 0.0, 1.0))

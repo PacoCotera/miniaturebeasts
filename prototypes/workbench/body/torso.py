@@ -43,7 +43,7 @@ class Torso:
 
     def axes(self, s):
         s = np.asarray(s, float)
-        return np.stack([PA.mono_cubic(self.st_s, self.st_r[:, k], s) for k in range(3)], -1)
+        return PA.mono_cubic_cols(self.st_s, self.st_r[:, :3], s)
 
     def base_rho(self, s, a):
         ax = self.axes(s)
@@ -59,8 +59,11 @@ class Torso:
         r = self.base_rho(s, a)
         if masses:
             b = np.zeros_like(r)
-            for m in self.masses:
-                tgt = m["rho"] - float(self.base_rho(m["s"], m["a"]))
+            tg = self.__dict__.setdefault("_mass_tgt", {})
+            for j, m in enumerate(self.masses):
+                tgt = tg.get(j)                             # a mass's height above the bare section at its own centre: the same number on every call
+                if tgt is None:
+                    tgt = tg[j] = m["rho"] - float(self.base_rho(m["s"], m["a"]))
                 u = np.where(s < m["s"], (s - m["s"]) / m["ds"][0], (s - m["s"]) / m["ds"][1])
                 bump = tgt * wcos(u) * wcos((a - m["a"]) / m["da"])
                 b = b + np.maximum(bump, 0)
