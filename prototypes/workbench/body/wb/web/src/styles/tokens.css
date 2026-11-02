@@ -15,7 +15,7 @@
   --special: #d89b14;
   --sel: #ece6d8; --sel-line: #c8541a;
   --focus: #d89b14;
-  --plate: #edebe6; --plate-clay: #9a9c9f; --plate-ink: #5d5974; --plate-edge: rgba(40, 30, 20, .08);
+  --plate: #edebe6; --plate-proxy: #f7f6f3; --plate-clay: #9a9c9f; --plate-ink: #5d5974; --plate-edge: rgba(40, 30, 20, .08);
   --shadow-1: 0 1px 2px rgba(40, 30, 20, .06), 0 2px 8px rgba(40, 30, 20, .05);
   --shadow-2: 0 8px 32px rgba(30, 20, 10, .16), 0 2px 6px rgba(30, 20, 10, .08);
   --scrim: rgba(31, 28, 41, .28);

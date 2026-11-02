@@ -26,7 +26,7 @@ CSP = "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-
 CT = {"woff2": "font/woff2", "ttf": "font/ttf", "ico": "image/x-icon", "png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
 
 
-K_VIEWS = [(m, a, 304) for m in K.MODES for a in K.AZ]
+K_VIEWS = [(m, a, z) for z in (304, 608) for m in K.MODES for a in K.AZ]
 
 
 class Hub:
@@ -191,17 +191,17 @@ class Server:
         for j in self.queue.supersede(sp.id, sp.hash):
             self.hub.emit("failed", sp.id, job=j.id, kind=j.kind, superseded=True, error=j.error)
         try:
-            self.submit(sp.id, "render", dict(genome="type", modes=["clay"], az=list(K.AZ), sizes=[304]), dict(name="auto", role="server"))
+            self.submit(sp.id, "render", dict(genome="type", modes=["clay"], az=list(K.AZ), sizes=[304, 608]), dict(name="auto", role="server"))
         except ApiError:
             pass
 
     def current_views(self, sp):
-        """The proxy frames of the file as it is now (type genome, 304): each with its cache key and whether the picture exists yet. A read of the cache, never a job."""
+        """The proxy frames of the file as it is now (type genome, 304 for the strip and 608 for the hero): each with its cache key and whether the picture exists yet. A read of the cache, never a job."""
         try:
             ck = K.cage_key(sp.spec, "type")
         except Exception:
             return []
-        return [dict(mode=m, az=a, size=304, key=k, ready=self.cas.has(k, "png")) for (m, a, s_), k in zip(K_VIEWS, K.frames(ck, K_VIEWS))]
+        return [dict(mode=m, az=a, size=z, key=k, ready=self.cas.has(k, "png")) for (m, a, z), k in zip(K_VIEWS, K.frames(ck, K_VIEWS))]
 
     def patch_species(self, sid, ops, actor):
         sp = self.get_species(sid)
@@ -268,7 +268,7 @@ class Server:
             for s in sizes:
                 if s not in K.SIZES:
                     raise ApiError(400, f"size {s}: one of {', '.join(map(str, K.SIZES))}", "size")
-            out["views"] = [[m, a, s] for m in modes for a in azs for s in sizes]
+            out["views"] = [[m, a, s] for s in sizes for m in modes for a in azs]
             out["modes"], out["az"], out["sizes"] = modes, azs, sizes
             return out
         if kind == "sheet":

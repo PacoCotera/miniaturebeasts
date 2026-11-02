@@ -14,6 +14,13 @@ describe('the pictures of the stage', () => {
     rerender({ s: sp('b', true) })
     expect(result.current[32]).toEqual({ src: '/cas/b.png', stale: false, before: '/cas/a.png' })
   })
+  it('a larger size of the same picture lands without becoming "before"', () => {
+    const two = (small: boolean, big: boolean): Species => ({ ...sp('s', false), views: [{ mode: 'clay', az: 32, size: 304, key: 's', ready: small }, { mode: 'clay', az: 32, size: 608, key: 'L', ready: big }] })
+    const { result, rerender } = renderHook(({ s }) => useFrames(s, 'clay', [608, 304]), { initialProps: { s: two(true, false) } })
+    expect(result.current[32]).toEqual({ src: '/cas/s.png', stale: false, before: null })
+    rerender({ s: two(true, true) })
+    expect(result.current[32]).toEqual({ src: '/cas/L.png', stale: false, before: null })
+  })
   it('an angle never rendered has no picture', () => {
     const { result } = renderHook(() => useFrames(sp('a', false), 'clay'))
     expect(result.current[0]).toEqual({ src: null, stale: true, before: null })

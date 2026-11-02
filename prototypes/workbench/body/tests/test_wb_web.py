@@ -79,7 +79,7 @@ class T(unittest.TestCase):
         self.assertEqual((status, h["Content-Type"]), (200, "application/json"))
         d = json.loads(body)
         self.assertEqual(sorted(d), ["checks", "error", "file", "goldens", "hash", "history", "id", "lease", "path", "views"])
-        self.assertEqual(len(d["views"]), 16)  # 4 modes x 4 angles at 304
+        self.assertEqual(len(d["views"]), 32)  # 4 modes x 4 angles at 304 (strip) and 608 (hero)
         self.assertTrue(all(v["ready"] is False for v in d["views"]))
         self.assertEqual(get(self.url + "/api/nothing")[0], 404)
         self.assertEqual(get(self.url + "/cas/" + "0" * 64 + ".png")[0], 404)

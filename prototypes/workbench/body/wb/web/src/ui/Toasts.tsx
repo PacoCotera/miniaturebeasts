@@ -29,7 +29,7 @@ export function Toasts({ species }: { species: string }) {
         <Toast.Root key={t.id} className={s.toast} onOpenChange={(o) => !o && dropToast(t.id)}>
           <span className={s.avatar} data-agent={t.entry.agent || undefined}>{initials(t.entry.actor)}</span>
           <Toast.Description className={s.text}>
-            <b>{t.entry.actor}</b> set {fieldLabel(t.entry.path)} <span className="num">{fmtValue(t.entry.old)} → {fmtValue(t.entry.new)}</span>
+            <b>{t.entry.actor}</b> set {fieldLabel(t.entry.path, data?.labels)} <span className="num">{fmtValue(t.entry.old)} → {fmtValue(t.entry.new)}</span>
           </Toast.Description>
           {getToken() && <Toast.Action altText={W.undo} className={s.undo} onClick={() => void undo(t.entry.path, t.entry.old, t.entry.new)}>{W.undo}</Toast.Action>}
         </Toast.Root>

@@ -258,9 +258,10 @@ class TestKeys(unittest.TestCase):
         src = open(os.path.join(BODY, "wb", "proxy.py")).read()
         self.assertIn('MODES = ("clay", "normal", "parts", "wire")', src)
         self.assertIn("AZ = (0, 32, 90, 180)", src)
-        self.assertIn("SIZES = {304:", src)
+        self.assertIn("304: (304, 312, 95.0)", src)
+        self.assertIn("608: (608, 624, 190.0)", src)
         self.assertEqual(K.MODES, ("clay", "normal", "parts", "wire"))
-        self.assertEqual(K.SIZES, (304, 96, 48))
+        self.assertEqual(K.SIZES, (304, 96, 48, 608))
         self.assertIn(f'LOOK = "{K.LOOK}"', src)
 
     def test_frame_keys_follow_every_part(self):

@@ -1,6 +1,6 @@
 """The proxy renderer (bpy, Blender Workbench engine): one scene, one camera and one mesh object kept alive between jobs ("warm"), the house cameras, four modes.
 Modes: clay (the clay matcap), normal (view-space smooth normals as colour, as the viewer's Normal mode), parts (one colour per part, from the `_PART` attribute, under the same matcap), wire (clay with the proxy mesh's edges drawn as thin geometry, hidden where the surface hides them).
-The house cameras are the 304x312 / 96x88 / 48x48 stand views of gates.SIZES (95, 30, 15 px per H), elevation 10, centre (-0.35, 0, 1.3), azimuth 0 = the front, 90 = the creature's left.
+The house cameras are the 304x312 / 96x88 / 48x48 stand views of gates.SIZES (95, 30, 15 px per H), and the same framing at 608x624 (190 px per H) for the studio's hero, elevation 10, centre (-0.35, 0, 1.3), azimuth 0 = the front, 90 = the creature's left.
 Under the bpy venv only."""
 import math
 import os
@@ -14,7 +14,7 @@ import numpy as np
 import bpy
 from mathutils import Matrix
 
-SIZES = {304: (304, 312, 95.0), 96: (96, 88, 30.0), 48: (48, 48, 15.0)}
+SIZES = {608: (608, 624, 190.0), 304: (304, 312, 95.0), 96: (96, 88, 30.0), 48: (48, 48, 15.0)}          # 608 is the hero's: the 304 framing at twice the pixels
 AZ = (0, 32, 90, 180)
 MODES = ("clay", "normal", "parts", "wire")
 EL = 10.0

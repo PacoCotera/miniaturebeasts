@@ -4,7 +4,7 @@ export type Entry = { t: string; actor: string; role: string | null; agent: bool
 export type ViewRef = { mode: string; az: number; size: number; key: string; ready: boolean }
 export type Lease = { holder: string; agent: boolean; since: string }
 export type Species = {
-  id: string; hash: string; error: string | null; lease: Lease | null; history: Entry[]; views: ViewRef[]
+  id: string; hash: string; error: string | null; lease: Lease | null; history: Entry[]; views: ViewRef[]; labels?: Record<string, string>
   file: { name?: string; species?: string; body_plan?: string; plan?: string }
 }
 export type SpeciesRow = { id: string; name?: string; hash: string; error: string | null }
@@ -40,5 +40,5 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
 export const speciesList = () => queryOptions({ queryKey: ['species-list'], queryFn: () => call<SpeciesRow[]>('GET', '/api/species'), staleTime: 30_000 })
 export const speciesOne = (id: string) => queryOptions({ queryKey: ['species', id], queryFn: () => call<Species>('GET', `/api/species/${encodeURIComponent(id)}`), staleTime: Infinity })
 export const patchSpecies = (id: string, ops: unknown[]) => call('PATCH', `/api/species/${encodeURIComponent(id)}`, ops)
-export const renderViews = (id: string, mode: string) => call('POST', `/api/species/${encodeURIComponent(id)}/jobs`, { kind: 'render', args: { modes: [mode], az: [0, 32, 90, 180], sizes: [304] } })
+export const renderViews = (id: string, mode: string) => call('POST', `/api/species/${encodeURIComponent(id)}/jobs`, { kind: 'render', args: { modes: [mode], az: [0, 32, 90, 180], sizes: [304, 608] } })
 export const casUrl = (key: string) => `/cas/${key}.png`

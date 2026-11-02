@@ -1,5 +1,5 @@
 .plate { position: relative; background: var(--plate); border-radius: var(--r-3); box-shadow: var(--shadow-1), inset 0 0 0 1px var(--plate-edge); overflow: hidden; flex: none; }
-.clay { background: var(--plate); } /* the proxy frames carry their own light backdrop, so a clay plate sits on the plate colour; --plate-clay stays for cut-outs */
+.clay { background: var(--plate-proxy); } /* the proxy frames carry their own backdrop (#f7f6f3), so the plate's footer band under a figure matches it; --plate-clay stays for cut-outs */
 .img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; }
 .incoming { animation: fade var(--m-slow) var(--ease) both; }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }

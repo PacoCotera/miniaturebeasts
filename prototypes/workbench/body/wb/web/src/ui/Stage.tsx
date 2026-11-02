@@ -12,8 +12,10 @@ import { AngleStrip } from './AngleStrip'
 import { W } from '../lib/words'
 import s from './Stage.module.css'
 
-const RATIO = 304 / 312 // the proxy frame, 304 x 312, on its own light backdrop
+const RATIO = 304 / 312 // the proxy frame, on its own light backdrop; the hero is its 608 x 624 render, the strip and the goldens use 304
+const HERO_SIZES = [608, 304] // the hero shows the 304 until the 608 lands
 const HERO = { w: 480, h: Math.round(480 / RATIO) }
+const FOOT = 52 // the plate's own band under the figure, where the view bar floats, so it never covers the mibi's feet
 const STRIP_W = 92, STRIP_H = Math.round(STRIP_W / RATIO)
 
 export function Stage({ url, species, go }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>, replace?: boolean) => void }) {
@@ -31,7 +33,7 @@ export function Stage({ url, species, go }: { url: StudioUrl; species: Species |
   const touch = useTouch()
   useEffect(() => { if (!tapped) return; const t = setTimeout(() => setTapped(false), 4000); return () => clearTimeout(t) }, [tapped])
 
-  const frames = useFrames(species, url.view)
+  const frames = useFrames(species, url.view, HERO_SIZES)
   const clay = useFrames(species, 'clay')
   const jobs = useJobs(url.species)
   const before = useUI((u) => u.before)
@@ -40,7 +42,7 @@ export function Stage({ url, species, go }: { url: StudioUrl; species: Species |
   if (url.mode !== 'shape') return <main className={s.stage} ref={ref} />
 
   const pad = 24, gap = 16, label = 22
-  const availH = Math.max(0, box.h - 2 * pad - gap - STRIP_H - label)
+  const availH = Math.max(0, box.h - 2 * pad - gap - STRIP_H - label - FOOT)
   const availW = Math.max(0, box.w - 2 * pad)
   const scale = Math.min(1, availW / HERO.w, availH / HERO.h)
   const hw = Math.round(HERO.w * scale), hh = Math.round(HERO.h * scale)
@@ -57,7 +59,7 @@ export function Stage({ url, species, go }: { url: StudioUrl; species: Species |
   return (
     <main className={s.stage} ref={ref}>
       <div className={s.hero}>
-        <Plate onPointerEnter={() => setHover(true)} onPointerLeave={() => setHover(false)} onPointerDown={() => touch && setTapped(true)} src={src} kind="clay" width={hw} height={hh} stale={!!hero?.src && hero.stale && !showBefore} progress={hero?.stale ? progress : null} tag={showBefore ? W.before : undefined} alt={`${species?.file.name ?? url.species}, ${url.view}, az ${url.az}`} className={s.heroPlate}>
+        <Plate onPointerEnter={() => setHover(true)} onPointerLeave={() => setHover(false)} onPointerDown={() => touch && setTapped(true)} src={src} kind="clay" width={hw} height={hh + FOOT} footer={FOOT} stale={!!hero?.src && hero.stale && !showBefore} progress={hero?.stale ? progress : null} tag={showBefore ? W.before : undefined} alt={`${species?.file.name ?? url.species}, ${url.view}, az ${url.az}`} className={s.heroPlate}>
           <ViewBar view={url.view} onView={pick} available={ready} onBefore={setBefore} canBefore={!!hero?.before} show={tapped || hover} />
         </Plate>
       </div>

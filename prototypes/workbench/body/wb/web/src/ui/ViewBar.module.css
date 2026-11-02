@@ -1,4 +1,4 @@
-.bar { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: var(--r-pill); background: rgba(29, 35, 43, .82); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity var(--m-mid) var(--ease); z-index: 3; }
+.bar { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: var(--r-pill); background: rgba(29, 35, 43, .82); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity var(--m-mid) var(--ease); z-index: 3; }
 .bar[data-show], .bar:focus-within { opacity: 1; pointer-events: auto; }
 .group { display: flex; gap: 2px; }
 .item { color: #d6d2e2; font-size: var(--t-14); padding: 5px 12px; border-radius: var(--r-pill); white-space: nowrap; min-height: 28px; }

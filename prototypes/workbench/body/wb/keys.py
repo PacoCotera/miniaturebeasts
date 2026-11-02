@@ -27,6 +27,6 @@ def sheet_key(rk, version="sheet-1"):
 
 MODES = ("clay", "normal", "parts", "wire")
 AZ = (0, 32, 90, 180)
-SIZES = (304, 96, 48)
+SIZES = (304, 96, 48, 608)
 # the contact sheet's views: the four clay azimuths, and the other three modes at the house angle
 SHEET_VIEWS = [("clay", a, 304) for a in AZ] + [(m, 32, 304) for m in ("normal", "parts", "wire")]
