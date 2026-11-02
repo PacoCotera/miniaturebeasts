@@ -1095,7 +1095,7 @@
    ],
    "column_keys": {
     "leg": {
-     "u": 1.55,
+     "u": 1.45,
      "col": 6,
      "around": 0.73
     },
@@ -1201,8 +1201,8 @@
     "root_ring_gap": 0.11,
     "root_smooth": {
      "before": 0.15,
-     "after": 0.45,
-     "iters": 40,
+     "after": 0.25,
+     "iters": 20,
      "hops": 4,
      "radius": 0.3
     }
@@ -1270,7 +1270,7 @@
     "push": 0.02,
     "transition": 1,
     "match": "distance",
-    "u": 1.55,
+    "u": 1.45,
     "gap": 0.05,
     "join": "soft"
    },
@@ -1704,7 +1704,8 @@
       }
      ],
      "note": "pass 4: a mitten, 0.34 H from the skin to the tip (measured along the arm's own path), 0.17 H across at the root and 0.176 at the palm (width : depth 1.3 : 1, the wide side along the flank), a rounded end; pitched 31 degrees forward of vertical and turned out 17 degrees; the hard-join shell's root joint (the shoulder) sits inside the chest 0.17 H under the neck band, the first segment runs almost level out to the skin and the visible arm runs along the straight tail of the path",
-     "visible_len": 0.312
+     "visible_len": 0.312,
+     "measured_len": 0.34
     }
    },
    "fillet": 1.4,

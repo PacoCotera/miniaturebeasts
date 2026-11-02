@@ -247,7 +247,7 @@ class Rig:
                 if jt is None:
                     continue
                 dd = np.linalg.norm(V - jt, axis=1)
-                wg = (1 - sstep(0.06, 0.28, dd)) * torso * (np.sign(V[:, 1] + 1e-12) == (1 if sd == "L" else -1))
+                wg = (1 - sstep(0.06 if nm_.startswith('clav') else 0.12, 0.28 if nm_.startswith('clav') else 0.42, dd)) * torso * (np.sign(V[:, 1] + 1e-12) == (1 if sd == "L" else -1))
                 W[:, idx[nm_]] = 0.35 * wg * W[:, idx["body"]]
                 W[:, idx["body"]] *= (1 - 0.35 * wg)
         sm = W.sum(1)

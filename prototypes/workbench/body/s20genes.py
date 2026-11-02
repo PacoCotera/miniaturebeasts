@@ -243,12 +243,17 @@ def build_individual(raw, c, upto="base", balance=True):
     at least 15 % of the sole length in front of the heel). The anatomy fixes, in order: the legs move under the centroid (the hip x, up to 0.12 H back toward it: the heel edge follows the hip), then the tail's length is clipped (x0.92 a step, down to x0.6). What was done is logged in b.ctx['balance']."""
     import schema as SC, s20build, s20balance
     shape = dict(c["shape"])
-    log = dict(leg_dx=0.0, tail_len_factor=1.0, steps=0)
-    for step in range(12):
+    log = dict(leg_dx=0.0, tail_len_factor=1.0, steps=0, arm_bias=0.0)
+    arm_target = float(raw["parts"]["arm.L"]["families"][raw["parts"]["arm.L"]["default"]].get("measured_len", 0.0))     # pass 4: the arm's visible length is measured on the shipped mesh (from the skin to the tip) and fitted to this number
+    arm_pass = 0
+    for step in range(16):
         g = dict(shape)
         g["tailLen"] = shape["tailLen"] * log["tail_len_factor"]
         r = apply_shape(raw, g)
         r["parts"]["leg.L"]["joints"][0]["at"][0] += log["leg_dx"]
+        if log["arm_bias"]:
+            fa_ = r["parts"]["arm.L"]["families"][r["parts"]["arm.L"]["default"]]
+            fa_["visible_len"] = float(fa_["visible_len"]) + log["arm_bias"]
         spec, _ = SC.load(raw=r)
         b = s20build.make_s20(spec, upto=upto, ear=c["shape"]["ear"], tip=c["shape"]["tip"], tip_size=c["shape"]["tipSize"], appendages=c.get("appendages") if upto == "base" else None)
         if not balance or upto != "base":
@@ -256,6 +261,14 @@ def build_individual(raw, c, upto="base", balance=True):
         m = s20balance.measure(b)
         log["margin"] = m["margin"]; log["inside"] = m["inside"]; log["com"] = [float(x) for x in m["com"]]; log["steps"] = step
         if m["margin"] >= 0.15 + 0.03 and m["inside"]:
+            if arm_target > 0 and arm_pass < 2:                      # the balance is settled: fit the arm's visible length on the real mesh (the trunk's surface differs from the design body by a few cm where the arm skims it)
+                import s20p4 as P4
+                vis = P4.arm_numbers(b)["visible_len"]
+                log["arm_len"] = vis
+                if abs(vis - arm_target) > 0.012:
+                    log["arm_bias"] += arm_target - vis
+                    arm_pass += 1
+                    continue
             break
         if log["leg_dx"] > -0.12 + 1e-9:
             log["leg_dx"] = max(-0.12, log["leg_dx"] - 0.04)

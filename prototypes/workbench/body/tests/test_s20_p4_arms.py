@@ -15,7 +15,7 @@ class T(unittest.TestCase):
     def test_length_pitch_and_turn(self):
         for k_, n in enumerate(self.nums):
             print({k: (round(v, 3) if isinstance(v, float) else np.round(v, 3).tolist()) for k, v in n.items()})
-            tol = 0.02 if k_ == 0 else 0.09                                 # the type specimen (individual 1) at 0.34 +-0.02; the others +-0.09: the arm skims the chest at a shallow angle, so a few percent of body gene move where it leaves the skin (0.34-0.42 measured)
+            tol = 0.02                                                       # the length is fitted on the shipped mesh for every individual (s20genes.build_individual: the arm skims the chest, so the design body is not accurate enough)
             self.assertTrue(abs(n["visible_len"] - 0.34) <= tol, n["visible_len"])
             self.assertTrue(25.0 <= n["pitch_fwd"] <= 35.0, n["pitch_fwd"])
             self.assertTrue(15.0 <= n["out"] <= 20.5, n["out"])
