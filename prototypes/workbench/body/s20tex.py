@@ -13,8 +13,10 @@ import s20coat as CT
 SIZE = 2048
 SHIP_LEVEL = 1                     # the shipped subdivision level (the owner: at most 3,500 vertices); the atlas is baked against THIS level's UVs
 PX = 400.0
-UV_C = 0.7
-ISLAND = {"app": (1000, 1600), "torso": (60, 60), "crown": (1560, 60), "tip": (1560, 520), "sole": (1560, 800), "toe": (1760, 1000), "leg.L": (60, 1330), "ear.L": (700, 1330), "arm.L": (1320, 1330)}
+TAIL_SCALE = 0.5            # the seat and the tail island is drawn at half the body's density (200 px per H): it would not fit the atlas beside the other islands, and it is the least seen surface
+EAR_SCALE = 0.9
+UV_C = 0.4
+ISLAND = {"app": (1700, 1700), "torso": (170, 60), "tail": (1000, 1090), "crown": (1700, 60), "tip": (1700, 520), "sole": (1700, 800), "toe": (1760, 1000), "leg.L": (60, 1360), "ear.L": (770, 1360), "arm.L": (1320, 1360)}
 
 
 def _frames_dense(pa, step=0.004):
@@ -48,6 +50,83 @@ def tube_uv(ctx, pname, P, Cmean=None):
     return out_psi, out_v, out_r
 
 
+def loft_v_table(b, na=33):
+    """v of the loft's UV as the true distance down the surface (pass 4: texel density of the belly patch). The rings of the bend and the seat are tilted planes of the one spine, so on the belly's outer side two rings are up to 1.8 x farther apart than their arc length
+    on the path (the old v = G.L - s): the front of the belly was painted at 212 px per H against 400. Here E[k, a] is the cumulative length, from the crown ring down, of the polyline through the cage's ring vertices at `around` a (each ring read as a polyline of its own vertices).
+    Returns (ring_s (ascending), agrid, E)."""
+    if "_loft_v" in b.ctx:
+        return b.ctx["_loft_v"]
+    info = b.ctx["info"]["torso"]
+    m = b.ctx["remap"]
+    Vc = np.array(b.cage.V, float)
+    around = np.array(b.around, float)
+    ag = np.linspace(0.0, 1.0, na)
+    P = []
+    for ring in info["rings"]:
+        ids = [m[v] for v in ring if v in m]
+        a_ = around[ids]
+        o = np.argsort(a_)
+        a_ = a_[o]; X = Vc[np.array(ids)[o]]
+        P.append(np.stack([np.interp(ag, a_, X[:, k]) for k in range(3)], 1))
+    P = np.array(P)                                                  # (rings, na, 3), tail tip first, crown last
+    seg = np.linalg.norm(np.diff(P, axis=0), axis=2)                 # distance between ring k and k+1 at each a
+    E = np.zeros((len(P), na))
+    E[:-1] = np.cumsum(seg[::-1], axis=0)[::-1]                      # from the crown ring (E = 0) down to the tail tip
+    ur = np.linalg.norm(np.diff(P, axis=1), axis=2)                  # along each ring: the lateral distance from the front line (a = 1) back to a
+    U = np.zeros((len(P), na))
+    U[:, :-1] = np.cumsum(ur[:, ::-1], axis=1)[:, ::-1]
+    out = (np.array(info["ring_s"], float), ag, E, U)
+    b.ctx["_loft_v"] = out
+    return out
+
+
+S_BLEND = (0.0, 0.0)          # (the blend toward the old map is gone: it folded where the belly's front met the seat's underside)
+A_BLEND = (0.0, 0.0)
+
+
+def loft_v(b, s, a):
+    """The loft's v (in H, from the crown) at arc length s and around a (arrays of one shape): the true surface distance on the belly's front (bilinear in the table), blended into the old v = G.L - s toward the tail
+    (the front line's true distance to the lantern is 4.2 H, which would not fit the atlas beside the other islands; the seat's underside and the tail keep the old map)."""
+    s = np.asarray(s, float); a = np.clip(np.asarray(a, float), 0.0, 1.0)
+    old = b.ctx["T"].L - s
+    w = np.ones_like(old)
+    if float(np.max(w)) <= 0.0:
+        return old
+    return old + w * (loft_v_true(b, s, a) - old)
+
+
+def loft_u(b, s, a):
+    """The loft's u magnitude (distance round the section from the front line, in H): true lateral distance on the body (s >= 0.8), the old proportional map toward the tail (whose small radius it blows up on purpose)."""
+    s = np.asarray(s, float); a = np.clip(np.asarray(a, float), 0.0, 1.0)
+    rs, ag, E, U = loft_v_table(b)
+    rho = np.interp(s, np.array(b.ctx["info"]["torso"]["ring_s"]), np.array(b.ctx["info"]["torso"]["ring_side"]))
+    old = (1 - a) * math.pi * (UV_C * 0.5 + (1 - UV_C) * rho)
+    w = np.ones_like(old)
+    return old + w * (_interp(rs, ag, U, s, a) - old)
+
+
+def _sstep(a, b, x):
+    t = np.clip((np.asarray(x, float) - a) / (b - a), 0, 1)
+    return t * t * (3 - 2 * t)
+
+
+def loft_v_true(b, s, a):
+    rs, ag, E, U = loft_v_table(b)
+    return _interp(rs, ag, E, s, a)
+
+
+def _interp(rs, ag, E, s, a):
+    s = np.asarray(s, float); a = np.clip(np.asarray(a, float), 0.0, 1.0)
+    k = np.clip(np.searchsorted(rs, s) - 1, 0, len(rs) - 2)
+    t = np.clip((s - rs[k]) / np.maximum(rs[k + 1] - rs[k], 1e-9), 0.0, 1.0)
+    fa = a * (len(ag) - 1)
+    j = np.clip(np.floor(fa).astype(int), 0, len(ag) - 2)
+    w = fa - j
+    e0 = E[k, j] * (1 - w) + E[k, j + 1] * w
+    e1 = E[k + 1, j] * (1 - w) + E[k + 1, j + 1] * w
+    return e0 * (1 - t) + e1 * t
+
+
 def face_uv(b, V, F, fpart, attr):
     """UV of every face corner in atlas px (nf, 4, 2) and the island name of each face. V (n,3) level mesh, F quads, fpart (nf,) part id of each face, attr (n,4)."""
     ctx = b.ctx
@@ -65,19 +144,29 @@ def face_uv(b, V, F, fpart, attr):
     tor = fpart == tid
     crown = tor & (smean >= rs[-1] - 1e-6)
     tip = tor & (smean <= rs[0] + 1e-6)
-    body = tor & ~crown & ~tip
+    s_cut = float(rs[15])                                          # the tail range (the first sixteen rings: the tail, the seat and the underside up to the crotch) is its own island with the old arc-length v and the true u: there the rings flare like an annulus and the surface distance parametrisation folds; the body above is one island of true distances
+    tailf = tor & ~crown & ~tip & (smean <= s_cut)
+    body = tor & ~crown & ~tip & ~tailf
     ym = V[F][:, :, 1].mean(1)
     side = np.where(ym >= 0, 1.0, -1.0)
-    for nm, sel in (("torso", body), ("crown", crown), ("tip", tip)):
+    for nm, sel in (("torso", body), ("crown", crown), ("tip", tip), ("tail", tailf)):
         isl[sel] = nm
+    fi = np.where(tailf)[0]
+    if len(fi):
+        a_t = attr[F[fi]][:, :, 2]; s_t = attr[F[fi]][:, :, 1]
+        rs_, ag_, E_, U_ = loft_v_table(b)
+        u_t = side[fi][:, None] * _interp(rs_, ag_, U_, s_t, a_t)
+        x0, y0 = ISLAND["tail"]
+        uv[fi, :, 0] = x0 + (u_t + 1.75) * PX * TAIL_SCALE
+        uv[fi, :, 1] = y0 + (s_cut - s_t) * PX * TAIL_SCALE
     fi = np.where(body)[0]
     a = attr[F[fi]][:, :, 2]
     sv = attr[F[fi]][:, :, 1]
     rho = np.interp(sv, rs, rside)
-    u = side[fi][:, None] * (1 - a) * math.pi * (UV_C * 0.5 + (1 - UV_C) * rho)
+    u = side[fi][:, None] * loft_u(b, sv, a)
     x0, y0 = ISLAND["torso"]
     ux = x0 + (u + 1.75) * PX
-    uy = y0 + (G.L - sv) * PX
+    uy = y0 + loft_v(b, sv, a) * PX
     uv[fi, :, 0], uv[fi, :, 1] = ux, uy
     fi = np.where(crown)[0]
     x0, y0 = ISLAND["crown"]
@@ -95,10 +184,10 @@ def face_uv(b, V, F, fpart, attr):
         if len(sel_):
             isl[sel_] = "app"
             tt = attr[F[sel_]][:, :, 1]
-            uv[sel_, :, 0] = 1000 + 12 * j_ + 0.0 + np.array([0, 0, 6, 6])[None]
-            uv[sel_, :, 1] = 1600 + 100.0 * np.clip(tt, 0, 1) + np.array([0, 6, 6, 0])[None] * 0
-            uv[sel_, :, 0] = 1000 + 12 * j_ + np.array([0, 6, 6, 0])[None]
-            uv[sel_, :, 1] = 1600 + 100.0 * np.clip(tt, 0, 1) * 0 + 100.0 * np.clip(tt, 0, 1)
+            uv[sel_, :, 0] = 1700 + 12 * j_ + 0.0 + np.array([0, 0, 6, 6])[None]
+            uv[sel_, :, 1] = 1700 + 100.0 * np.clip(tt, 0, 1) + np.array([0, 6, 6, 0])[None] * 0
+            uv[sel_, :, 0] = 1700 + 12 * j_ + np.array([0, 6, 6, 0])[None]
+            uv[sel_, :, 1] = 1700 + 100.0 * np.clip(tt, 0, 1) * 0 + 100.0 * np.clip(tt, 0, 1)
     # ---- the toe shells (s = -1): one small island, a sphere map about each toe's own frame (u from the angle about its radial axis, v from the angle off its outer tip); the seam runs along the ground side, which is hidden
     toes = ctx["info"].get("toes", {})
     toe_f = np.zeros(nf, bool)
@@ -160,8 +249,9 @@ def face_uv(b, V, F, fpart, attr):
         k = np.floor(uu.mean(1, keepdims=True) / (2 * math.pi * r.mean(1, keepdims=True)))
         uu = uu - k * C
         x0, y0 = ISLAND[nm]
-        uv[sel, :, 0] = x0 + uu * PX
-        uv[sel, :, 1] = y0 + v * PX + 0.3 * PX
+        pxs = PX * (EAR_SCALE if nm == "ear.L" else 1.0)
+        uv[sel, :, 0] = x0 + uu * pxs
+        uv[sel, :, 1] = y0 + v * pxs + 0.3 * pxs
     return uv, isl
 
 
@@ -176,7 +266,7 @@ def stretch(V, F, uv, isl):
     det = eu[:, 0, 0] * eu[:, 1, 1] - eu[:, 0, 1] * eu[:, 1, 0]
     ok = np.abs(det) > 1e-12
     for nm in sorted(set(isl)):
-        sel = (isl == nm) & ok & (left | (nm in ("torso", "crown", "tip")))
+        sel = (isl == nm) & ok & (left | (nm in ("torso", "crown", "tip", "tail")))
         idx = np.where(sel)[0]
         vals = []
         for i in idx:

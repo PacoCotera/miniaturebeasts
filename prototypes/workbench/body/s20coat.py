@@ -387,17 +387,22 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     zlo, zhi = spec["zones"]["belly"]["z"]
     soft = spec["zones"]["belly"]["soft"]
     soft = soft * 1.5                                                                  # a plush belly fades into the coat over about 0.04 H at its edge
-    # the belly patch is a soft teardrop on the surface (not a UV rectangle): widest at the belly, narrowing up the chest to a soft point under the neck and rounding off between the legs; its edge is feathered over about 0.05 H with a little noise
-    lat = np.abs(y) * 1.12                                                 # distance from the mirror plane, from the geometry itself (pass 3: the ring attributes made the patch's edge a polygon at 3x)
-    zt_ = np.clip((np.where(torso, z, zeff) - 0.50) / (0.98 - 0.50), 0.0, 1.0)             # the patch ends in a round bottom above the leg sockets (below, its edge was the mesh edge where the leg part begins: a straight V)
-    Wb_ = 0.31 + 0.6 * g["belly_reach"]
-    tm_ = 0.34                                                                           # the widest height (fraction of the patch): a circle below it, a cosine taper above it, so the bottom is round and the top a soft point
-    low_ = np.sqrt(np.clip(1 - ((tm_ - zt_) / tm_) ** 2, 0, 1))
-    up_ = np.cos(0.5 * math.pi * np.clip((zt_ - tm_) / (1 - tm_), 0, 1)) ** 1.35
-    wid = Wb_ * np.where(zt_ < tm_, low_, up_)                                           # half width
+    # the belly patch (pass 4): an upright egg on the front midline, as seen from the front 0.46 x 0.58 H (the width gene moves it a little): a round top (the top's radius of curvature 0.18 H), a convex lower edge that stops 0.06 H above the crotch, centred on the midline, a soft edge 0.02 H wide
+    # (crisp: at the atlas's 380 px per H that is 8 texels). The coordinates are the geometry's own (|y| and z), so the edge is a curve, not the mesh's rings.
+    lat = np.abs(y)
+    Wb_ = 0.24 + 0.4 * g["belly_reach"]                                     # the egg's half width (0.48 H wide, +-0.04 with the gene)
+    Hb_ = 1.26 * 2.0 * Wb_                                                  # its height: 1.26 x the width
+    zb_ = 0.29                                                              # the bottom: 0.06 H above the crotch (the arch between the legs tops out at 0.23 H)
+    tz_ = np.where(torso, z, zeff)
+    tt_ = (tz_ - zb_) / Hb_
+    tm_ = 0.48                                                              # the widest height as a fraction of the egg: a little below the middle (an egg, wider at the bottom)
+    uu_ = np.where(tt_ < tm_, (tt_ - tm_) / tm_, (tt_ - tm_) / (1 - tm_))
+    pw_ = np.where(tt_ < tm_, 2.0, 2.2)                                     # the top a touch blunter than an ellipse: its radius of curvature stays above 0.18 H
+    wid = Wb_ * np.clip(1 - np.abs(uu_) ** pw_, 0.0, 1.0) ** (1.0 / pw_)
     nz_ = fbm(V * 9.0, seed + 41, 2) - 0.5
-    edge_ = 0.075
-    belly = (1 - sstep(wid - edge_, wid + edge_, lat + 0.04 * nz_)) * (zt_ > 0.0) * (zt_ < 1.0) * sstep(-0.35, -0.05, N[:, 0])             # faces forward, smoothly (the ring `around` made a straight edge)
+    edge_ = 0.010
+    belly = (1 - sstep(wid - edge_, wid + edge_, lat + 0.006 * nz_)) * (np.abs(uu_) < 1.0) * sstep(0.10, 0.35, N[:, 0])
+    F["belly_t"] = tt_; F["belly_wid"] = wid; F["belly_lat"] = lat; F["belly_u"] = uu_
     rec_a_ = ctx["info"]["tubes"].get("arm.L")
     arm_b = (arm * (1 - sstep(rec_a_["first_s"] + 0.02, rec_a_["first_s"] + 0.14, s))) if (rec_a_ and arm.any() and not rec_a_.get("hard")) else np.zeros(n)       # the arm's bridge band is the trunk's skin round its socket: the patch runs over it
     leg_b = leg * sstep(0.5, 0.62, z)
