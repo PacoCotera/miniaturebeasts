@@ -46,7 +46,7 @@ def junction_loops(body, ctx):
     return out
 
 
-def smooth_junctions(body, ctx, iters=60, hops=8, lam=0.5, mu=-0.53, protect=None, only=None, keep_above=None, radius=None):
+def smooth_junctions(body, ctx, iters=60, hops=8, lam=0.5, mu=-0.53, protect=None, only=None, keep_above=None, radius=None, extra_seeds=None):
     cage = body.cage
     V, F, mirror = cage.full()
     n = len(cage.V)
@@ -59,6 +59,10 @@ def smooth_junctions(body, ctx, iters=60, hops=8, lam=0.5, mu=-0.53, protect=Non
             seeds.append(v)
             if mirror[v] != v:
                 seeds.append(int(mirror[v]))
+    for v in (extra_seeds or []):
+        seeds.append(int(v))
+        if mirror[v] != v:
+            seeds.append(int(mirror[v]))
     d = hops_from(nbr, seeds, hops)
     w = np.clip(1.0 - d / float(hops + 1), 0, 1) ** 1.0
     if radius is not None and len(seeds):            # pass 3: the reach is a distance in H, not a count of cage edges (a coarse cage's 8 hops reached the neck and fattened it from 0.40 to 0.50 H)

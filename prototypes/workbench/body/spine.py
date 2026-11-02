@@ -183,7 +183,11 @@ class SpineLoft(Gourd):
         s = s_start
         while s < s_stop - 0.5 * gt:
             s_c.append(s)
-            s += gt if s < 0.5 else (gt * 1.3 if s < 0.7 else (gt * 1.6 if s < 0.9 else gap))
+            step_ = gt if s < 0.5 else (gt * 1.3 if s < 0.7 else (gt * 1.6 if s < 0.9 else gap))
+            rg_ = self.sp.get("root_ring_gap")
+            if rg_ is not None and abs(s - self.s_root) < float(self.sp.get("root_ring_reach", 0.45)):
+                step_ = min(step_, float(rg_))                       # finer rings where the rump turns into the tail's root (pass 3: at 0.16 H the lower back was one straight ramp from the seat's bottom to the tail)
+            s += step_
         s_c.append(s_stop)
         if len(s_c) > 2 and s_c[-1] - s_c[-2] < 0.5 * gt:
             s_c.pop(-2)

@@ -101,6 +101,12 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
             ctx["log"]["junctions"] = relax.smooth_junctions(body, ctx, **{**base_, **kw.get("junction_opts", {})})
             for nm_, o_ in (kw.get("junction_extra") or {"ear.L": dict(iters=100, hops=10), "arm.L": dict(iters=90, hops=9)}).items():       # the ears and arms are thinner than the legs: a second, wider pass on their loops
                 ctx["log"]["junctions_" + nm_] = relax.smooth_junctions(body, ctx, only=[nm_], **{**base_, **o_})
+            rs_ = spec["parts"]["torso"]["spine"].get("root_smooth")
+            if rs_:                                          # the tail's root: the rings that turn the rump into the tail are smoothed (a corner under the root, a knob)
+                Gs = ctx["T"]
+                lo_, hi_ = Gs.s_root - float(rs_["before"]), Gs.s_root + float(rs_["after"])
+                ids_ = [v for v in range(len(body.cage.V)) if body.part[v] == body.parts["torso"] and lo_ <= body.s[v] <= hi_]
+                ctx["log"]["root_smooth"] = relax.smooth_junctions(body, ctx, only=[], extra_seeds=ids_, iters=int(rs_["iters"]), hops=int(rs_["hops"]), radius=float(rs_["radius"]), keep_above=spec["parts"]["torso"].get("junction_keep_above"))
             for h in body.hooks:
                 h(body)
         if stage >= 1 and kw.get("relax", True):

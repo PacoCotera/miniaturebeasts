@@ -1144,7 +1144,7 @@
     ]
    },
    "spine": {
-    "note": "one path and one loft from the crown through the head, neck, back and seat to the lantern stalk; neck, back, seat and tail are named arc-length ranges on it (labels for the genes, the rig and the Parts colours), not parts. The sections are cast from the path onto the smooth union of the gourd lobes and the tail's radius profile. The spine leans back from the waist through the seat in two gentle bends (joints with fillets) and leaves the back of the seat as the tail. Pass 3: the tail's body union fillet k is 0.12 (was 0.14): short, so the join adds no volume (no knob under the root); with the thin tube the root flows out of the seat without a funnel. Pass 3: the named ranges follow the head's attachment: the head range ends at the spine's end (the head's underside, z 1.27), the neck range is the concave band under it (z 1.27 to 1.02), then back and seat.",
+    "note": "one path and one loft from the crown through the head, neck, back and seat to the lantern stalk; neck, back, seat and tail are named arc-length ranges on it (labels for the genes, the rig and the Parts colours), not parts. The sections are cast from the path onto the smooth union of the gourd lobes and the tail's radius profile. The spine leans back from the waist through the seat in two gentle bends (joints with fillets) and leaves the back of the seat as the tail. Pass 3: the tail's body union fillet k is 0.12 (was 0.14): short, so the join adds no volume (no knob under the root); with the thin tube the root flows out of the seat without a funnel. Pass 3: the named ranges follow the head's attachment: the head range ends at the spine's end (the head's underside, z 1.27), the neck range is the concave band under it (z 1.27 to 1.02), then back and seat. Pass 3 diagnosis of the 'ramp' in profile: between the last full body ring and the first tail-circle ring (0.16 H apart, blended over 0.30) the loft shrinks from the rump's size to the tail's, one straight cone from the seat's bottom to the tail root; rings every 0.08 H near the root with a 0.16 blend (root_blend, root_ring_gap) let the buttock bulge before it turns into the tail. The knob under the root was the first tail-circle ring: its underside vertex is a blend between the thin tail circle and the far cast surface of the rump (a corner in the cage); the root_smooth pass relaxes the rings round the root.",
     "body": [
      [
       0.0,
@@ -1196,7 +1196,16 @@
      ]
     },
     "bend_n": 0,
-    "ring_gap_tip": 0.062
+    "ring_gap_tip": 0.062,
+    "root_blend": 0.16,
+    "root_ring_gap": 0.08,
+    "root_smooth": {
+     "before": 0.15,
+     "after": 0.45,
+     "iters": 40,
+     "hops": 4,
+     "radius": 0.3
+    }
    },
    "junction_keep_above": 1.16,
    "head_attach": {
