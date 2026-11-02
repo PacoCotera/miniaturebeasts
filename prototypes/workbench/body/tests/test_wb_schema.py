@@ -22,6 +22,7 @@ class TestConverter(unittest.TestCase):
         v1 = V.from_internal(V0)
         self.assertEqual(V.validate(v1), [])
         back = V.to_internal(v1)
+        self.assertEqual(back.pop("genome"), v1["genome"])                                       # the typed genome block travels with the file the cage builder reads
         self.assertEqual(back, V0)
         self.assertEqual(list(back), list(V0))
         self.assertEqual(list(back["parts"]), list(V0["parts"]))                                    # the part order is the cage's part ids
@@ -31,8 +32,8 @@ class TestConverter(unittest.TestCase):
         v1 = V.from_internal(V0)
         r1, r0 = F.build(v1, "type", "base"), F.build(V0, "type", "base")
         self.assertEqual(r1.cage_hash, BASE["type_cage_hash"])
-        self.assertEqual((r1.cage_hash, r1.key, r1.vertices), (r0.cage_hash, r0.key, r0.vertices))
-        self.assertEqual(F.cage_key(v1, "type"), F.cage_key(V0, "type"))
+        self.assertEqual((r1.cage_hash, r1.vertices), (r0.cage_hash, r0.vertices))
+        self.assertNotEqual(F.cage_key(v1, "type"), F.cage_key(V0, "type"))                      # the file's limits are cage inputs, so the keys differ; the cages do not
         r12 = F.build(v1, "seed:7", "base")
         self.assertEqual(r12.cage_hash, F.build(V0, "seed:7", "base").cage_hash)
 
@@ -44,7 +45,9 @@ class TestConverter(unittest.TestCase):
         self.assertAlmostEqual(sum(lens), 1.4, places=6)
         self.assertNotEqual(F.cage_key(v1, "type"), F.cage_key(V0, "type"))
         v1["spine"]["tail"]["length"] = 1.25
-        self.assertEqual(V.to_internal(v1), V0)
+        back = V.to_internal(v1)
+        back.pop("genome")
+        self.assertEqual(back, V0)
 
 
 class TestMessages(unittest.TestCase):

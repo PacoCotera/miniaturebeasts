@@ -23,6 +23,13 @@ const checks = { hash: 'h', fresh: true, rows, counts: { total: 3, fail: 1, warn
 const species = (ready, withChecks) => ({ checks: withChecks ? checks : null, id: 'S20', hash: 'h', error: null, lease: null, history: [], file: { name: 'Tuliko', body_plan: 'biped' }, checks: null, goldens: null, path: 'S20.json',
   views: ['clay', 'normal', 'parts', 'wire'].flatMap((m) => [0, 32, 90, 180].map((a) => view(m, a, ready && m === 'clay'))) })
 
+const genome = JSON.parse(readFileSync(join(here, '../../../species_v1/S20.json'), 'utf8')).genome
+const fails = [{ id: 'normals', fail: 'Sharp crease in leg.L', measure: '24 visible edges over 20°', value: 24, limit: 0 }]
+const proofKey = 'proofend'.padEnd(64, '0')
+const end = (locus, e, genome_, value, state, extra = {}) => ({ id: `${locus}:${e}`, locus, end: e, genome: genome_, value, label: 'Tail length', state, fails: state === 'fail' ? fails : [], unit: '×', cage: 'c' + e, ...extra })
+const extremes = { fresh: true, running: false, key: 'k', rows: [], ends: [end('body.tail-length', 'low', 'low:body.tail-length', 0.8, 'pass'), end('body.tail-length', 'high', 'high:body.tail-length', 1.3, 'fail', { fix: { value: 1.19, path: 'genome.loci.body.tail-length.limits.1', end: 'high' }, proof: { mode: 'normal', az: 90, key: proofKey, ready: true } }),
+  end('body.tail-curl', 'low', 'low:body.tail-curl', -0.03, 'fail', { label: 'Tail curl', unit: 'turns' })] }
+
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.ttf': 'font/ttf' }
 const server = createServer((req, res) => {
   const p = new URL(req.url, 'http://x').pathname
@@ -42,6 +49,8 @@ const cases = [
   { name: 'stage-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true },
   { name: 'checks-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, checks: true, q: '&sel=tail&drawer=checks&proof=tail.size' },
   { name: 'checks-light-1180', theme: 'light', w: 1180, h: 820, ready: true, checks: true, touch: true, q: '&sel=tail' },
+  { name: 'genes-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, q: '&sel=body.tail-length' },
+  { name: 'genes-light-1180', theme: 'light', w: 1180, h: 820, ready: true, genes: true, touch: true, q: '&sel=body.tail-length&proof=none' },
   { name: 'stage-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true },
 ]
 let failed = 0
@@ -50,11 +59,12 @@ for (const c of cases) {
   const ctx = await browser.newContext({ viewport: { width: c.w, height: c.h }, hasTouch: !!c.touch, reducedMotion: 'reduce' })
   const page = await ctx.newPage()
   await page.route('**/api/species', (r) => r.fulfill({ json: [{ id: 'S20', name: 'Tuliko', hash: 'h', error: null }] }))
-  await page.route('**/api/species/S20', (r) => r.fulfill({ json: species(c.ready, c.checks) }))
+  await page.route('**/api/species/S20', (r) => { const j = species(c.ready, c.checks); if (c.genes) { j.file.genome = genome; j.extremes = extremes }; r.fulfill({ json: j }) })
+  await page.route('**/api/species/S20/jobs', (r) => r.fulfill({ json: { id: 'j1', state: 'done', result: { views: [{ mode: 'clay', az: 32, size: 304, key: 'clayend'.padEnd(64, '0') }] } } }))
   await page.route('**/api/checks', (r) => r.fulfill({ json: metas }))
   await page.route('**/cas/*.png', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
   await page.route('**/events*', (r) => r.fulfill({ body: ': connected\n\n', contentType: 'text/event-stream' }))
-  await page.goto(`${base}/studio/S20/shape?theme=${c.theme}${c.q ?? ''}`)
+  await page.goto(`${base}/studio/S20/${c.genes ? 'genes' : 'shape'}?theme=${c.theme}${c.q ?? ''}`)
   await page.waitForSelector('main')
   await page.evaluate(() => document.fonts.ready)
   await page.waitForTimeout(c.ready ? 700 : 300)

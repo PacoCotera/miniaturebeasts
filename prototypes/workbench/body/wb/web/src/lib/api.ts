@@ -1,12 +1,13 @@
 import { queryOptions } from '@tanstack/react-query'
 import type { ChecksState } from './checks'
+import type { ExtremesState, Genome } from './genes'
 
 export type Entry = { t: string; actor: string; role: string | null; agent: boolean; via: string; op: string; path: string; old: unknown; new: unknown; hash_before: string; hash_after: string }
 export type ViewRef = { mode: string; az: number; size: number; key: string; ready: boolean }
 export type Lease = { holder: string; agent: boolean; since: string }
 export type Species = {
-  id: string; hash: string; error: string | null; lease: Lease | null; history: Entry[]; views: ViewRef[]; checks: ChecksState | null; labels?: Record<string, string>
-  file: { name?: string; species?: string; body_plan?: string; plan?: string }
+  id: string; hash: string; error: string | null; lease: Lease | null; history: Entry[]; views: ViewRef[]; checks: ChecksState | null; extremes?: ExtremesState | null; labels?: Record<string, string>
+  file: { name?: string; species?: string; body_plan?: string; plan?: string; genome?: Genome }
 }
 export type SpeciesRow = { id: string; name?: string; hash: string; error: string | null }
 
@@ -43,3 +44,16 @@ export const speciesOne = (id: string) => queryOptions({ queryKey: ['species', i
 export const patchSpecies = (id: string, ops: unknown[]) => call('PATCH', `/api/species/${encodeURIComponent(id)}`, ops)
 export const renderViews = (id: string, mode: string) => call('POST', `/api/species/${encodeURIComponent(id)}/jobs`, { kind: 'render', args: { modes: [mode], az: [0, 32, 90, 180], sizes: [304, 608] } })
 export const casUrl = (key: string) => `/cas/${key}.png`
+export type JobAnswer = { id: string; state: string; error?: string; result?: { views?: { mode: string; az: number; size: number; key: string }[] } }
+export const postJob = (id: string, kind: string, args: unknown) => call<JobAnswer>('POST', `/api/species/${encodeURIComponent(id)}/jobs`, { kind, args })
+export const getJob = (jid: string, wait = 20) => call<JobAnswer>('GET', `/api/jobs/${jid}?wait=${wait}`)
+// The clay of one genome at one angle: a render job (a cache hit answers at once), then the key of its picture.
+export async function genomePicture(id: string, genome: string, az: number): Promise<string | null> {
+  let j = await postJob(id, 'render', { genome, modes: ['clay'], az: [az], sizes: [304] })
+  for (let n = 0; j.state !== 'done' && n < 12; n++) {
+    if (j.state === 'failed' || j.state === 'superseded') return null
+    j = await getJob(j.id)
+  }
+  return j.result?.views?.[0]?.key ?? null
+}
+export const checkEnds = (id: string) => postJob(id, 'check', { stage: 'extremes' })

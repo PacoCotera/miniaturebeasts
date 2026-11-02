@@ -95,6 +95,56 @@ def apply_shape(raw, g=None):
     return r
 
 
+# ======================================================================== the generic apply (chunk 7): a gene moves typed paths of the v1 file
+SHAPE_KEY = {"body.torso-girth": "torsoGirth", "body.head-size": "headSize", "body.limb-length": "legLen", "body.limb-girth": "legGirth", "body.ear-family": "ear", "body.ear-length": "earLen", "body.ear-girth": "earGirth",
+             "body.ear-splay": "splay", "body.ear-droop": "droop", "body.tail-length": "tailLen", "body.tail-girth": "tailGirth", "body.tail-curl": "curl", "body.tail-lift": "lift"}
+COAT_KEY = {"growth.exterior-eye-size-ratio": "eye_size", "growth.exterior-eye-height-ratio": "eye_height", "growth.exterior-eye-spacing-ratio": "eye_spacing", "face.mouth-width": "mouth_width", "face.mouth-height": "mouth_z"}
+
+
+def apply_genes(doc, g, coat=None):
+    """The cage builder's file (today's S20.json shape) from the v1 file `doc` with the genes at the shape values `g` (what `apply_shape` takes) applied by their typed moves.
+    The framework rules that follow the moves are the same as apply_shape's: the crook cannot open past -0.03 turns, the tail's curl is clipped by the room rule (looped), a segment is lengthened where its fillets need room, the clip is logged."""
+    import genomeapply as GA, species_v1 as V1
+    genome = doc["genome"]
+    g = {**DEFAULT, **(g or {})}
+    g["curl"] = max(g["curl"], -0.03)
+    values = {loc: g[k] for loc, k in SHAPE_KEY.items()}
+    for loc, k in COAT_KEY.items():
+        if coat and k in coat:
+            values[loc] = coat[k]
+    base = GA.apply_values(doc, genome, values, skip=("body.tail-curl",))
+    curl_e = GA.by_locus(genome).get("body.tail-curl")
+    f = 1.0
+    for _ in range(300):
+        d = copy.deepcopy(base)
+        if curl_e and g["curl"] != 0:
+            GA.apply_locus(d, curl_e, g["curl"] * f)
+        r = V1.to_internal(d, check=False)
+        tail = r["parts"]["tail"]
+        t = r["parts"]["torso"]
+        if g["curl"] == 0 or _tail_ok(tail["joints"], tail["fillet"], t["section"]["stations"] if g["curl"] > 0 else None, margin=0.08):
+            break
+        f *= 0.985
+    js = tail["joints"]
+    P_ = PA.fk(js[0]["at"], js)
+    _, rep_ = PA.fillet_path(P_, [j["r"] for j in js], tail["fillet"])
+    need = [0.0] * len(js)
+    for r_ in rep_:
+        k_ = r_["joint"]
+        t_ = r_["tangent"]
+        need[k_] = max(need[k_], t_ / (1.0 if k_ == 1 else 0.5) + 0.004)
+        need[k_ + 1] = max(need[k_ + 1], t_ / (1.0 if k_ + 1 == len(js) - 1 else 0.5) + 0.004)
+    lengthened = 0.0
+    for k_ in range(1, len(js)):
+        if js[k_]["len"] < need[k_] - 1e-9:
+            lengthened += need[k_] - js[k_]["len"]
+            js[k_]["len"] = need[k_] + 1e-4
+    tail["room_fix"] = dict(lengthened=lengthened)
+    tail["clip"] = dict(requested=g["curl"], applied=g["curl"] * f, factor=f)
+    r["_genes"] = g
+    return r
+
+
 # ======================================================================== the gene table and the individuals (chunk 7)
 import hashlib, json
 import numpy as np
@@ -134,8 +184,8 @@ TYPE_PAIRS = {"body.ear-family": "prick", "body.tail-tip": "lantern", "appearanc
 TYPE_COAT_T = {"coat.gradient": 0.5, "coat.fleck": 0.5, "coat.freckle-density": 0.5, "coat.freckle-glow": 0.8, "coat.bleed": 0.5}      # the type specimen's modest coat (t of each lin locus)
 
 
-def resolve_locus(name, t):
-    kind, lo, hi, _ = GENES[name]
+def resolve_locus(name, t, G=None):
+    kind, lo, hi, _ = (G or GENES)[name]
     if kind == "mult":
         return lo ** ((0.5 - t) / 0.5) if t <= 0.5 else hi ** ((t - 0.5) / 0.5)
     if kind == "off":
@@ -147,7 +197,13 @@ def resolve_locus(name, t):
     raise KeyError(kind)
 
 
-def specimen():
+def specimen(tbl=None):
+    """The type specimen. With the file's tables (genomeapply.tables) its values are the file's types; without, the tables this module was written with."""
+    if tbl is not None:
+        import genomeapply as GA
+        G, P, S, T = tbl
+        t = {k: (0.5 if f in ("mult", "off") else round(GA.t_of(f, lo, hi, T[k]), 9)) for k, (f, lo, hi, _) in G.items()}
+        return dict(t=t, pairs={k: [T[k], T[k]] for k in P}, switches=dict(blush=T.get("face.blush") == "on", brow=T.get("coat.brow") == "on"), seed=20)
     t = {k: 0.5 for k in GENES}
     t.update(TYPE_COAT_T)
     t["appearance.glow"] = 0.8
@@ -223,15 +279,16 @@ def limit_loud(ind):
     return ind
 
 
-def phenotype(pair_name, pair):
-    al, w, dom = PAIRS[pair_name]
+def phenotype(pair_name, pair, P=None):
+    al, w, dom = (P or PAIRS)[pair_name]
     return min(pair, key=lambda a: dom.index(a))
 
 
-def creature(ind):
-    """creature.json: every number resolved, no genes left but the record of them (canonical: sorted keys, 1e-6 rounding)."""
-    v = {k: resolve_locus(k, ind["t"][k]) for k in GENES}
-    ph = {k: phenotype(k, ind["pairs"][k]) for k in PAIRS}
+def creature(ind, tbl=None):
+    """creature.json: every number resolved, no genes left but the record of them (canonical: sorted keys, 1e-6 rounding). `tbl`: the file's tables (genomeapply.tables); without it the module's own."""
+    G, P = (tbl[0], tbl[1]) if tbl else (GENES, PAIRS)
+    v = {k: resolve_locus(k, ind["t"][k], G) for k in G}
+    ph = {k: phenotype(k, ind["pairs"][k], P) for k in P}
     clamped = v["body.head-size"] < 0.97 * v["body.torso-girth"]
     if clamped:                                    # mass order: the head stays the wider mass (head 1.276 H, body 1.199 H at the type)
         v["body.head-size"] = 0.97 * v["body.torso-girth"]
@@ -271,7 +328,7 @@ def digest(c):
     return "S20-" + hashlib.sha256(dumps(c).encode()).hexdigest()[:8]
 
 
-def build_individual(raw, c, upto="base", balance=True):
+def build_individual(raw, c, upto="base", balance=True, doc=None):
     """Body of one creature from its creature.json (the species raw dict, the shape genes applied, the loft/legs/tubes/sitting builders), then the balance rule (owner, 1 Nov: the centre of mass must fall inside the support polygon of the soles,
     at least 15 % of the sole length in front of the heel). The anatomy fixes, in order: the legs move under the centroid (the hip x, up to 0.12 H back toward it: the heel edge follows the hip), then the tail's length is clipped (x0.92 a step, down to x0.6). What was done is logged in b.ctx['balance']."""
     import schema as SC, s20build, s20balance
@@ -282,7 +339,7 @@ def build_individual(raw, c, upto="base", balance=True):
     for step in range(16):
         g = dict(shape)
         g["tailLen"] = shape["tailLen"] * log["tail_len_factor"]
-        r = apply_shape(raw, g)
+        r = apply_genes(doc, g, c["coat"]) if doc is not None else apply_shape(raw, g)
         r["parts"]["leg.L"]["joints"][0]["at"][0] += log["leg_dx"]
         if log["arm_bias"]:
             fa_ = r["parts"]["arm.L"]["families"][r["parts"]["arm.L"]["default"]]

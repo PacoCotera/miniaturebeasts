@@ -1,0 +1,10 @@
+.stage { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-4); padding: var(--s-5); min-width: 0; min-height: 0; overflow: hidden; background: var(--bg); }
+.ends { display: flex; align-items: center; justify-content: center; gap: var(--s-5); transform-origin: center; }
+.fig { margin: 0; display: grid; gap: var(--s-2); justify-items: center; }
+.cap { display: flex; align-items: baseline; gap: 10px; font-size: var(--t-16); min-height: 24px; }
+.val { font-weight: 500; font-variant-numeric: tabular-nums; }
+.word { color: var(--text-3); font-size: var(--t-14); }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; align-self: center; background: var(--pass-dot); }
+.dot[data-kind=fail] { background: var(--fail); }
+.dot[data-kind=stale] { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
+.note { margin: 0; color: var(--text-2); font-size: var(--t-14); font-variant-numeric: tabular-nums; }

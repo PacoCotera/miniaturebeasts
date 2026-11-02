@@ -36,40 +36,99 @@ def internal(spec):
     return V1.to_internal(spec)
 
 
-def resolve_genome(g):
+def tables(spec):
+    """The file's gene tables (genomeapply.tables) or None for a file without a genome block (today's v0 S20.json, which keeps s20genes' own tables)."""
+    import genomeapply as GA
+    g = spec.get("genome") if isinstance(spec, dict) else None
+    return GA.tables(g) if isinstance(g, dict) and "loci" in g else None
+
+
+def locus_entry(spec, name):
+    g = (spec or {}).get("genome") or {}
+    return next((e for e in g.get("loci", []) if e["locus"] == name), None)
+
+
+def resolve_genome(g, spec=None):
     """A genome string or dict -> the individual dict (t, pairs, switches, seed) that s20genes builds from.
-    type = the type specimen; seed:N = the variety sheet's individual N; low:<locus> / high:<locus> = the type with that locus at 0 or 1 (its catalogue ends)."""
-    import s20genes as GN
+    type = the type specimen; seed:N = the variety sheet's individual N;
+    low:<locus> / high:<locus> = the type with that blend at its low or high limit (t = 0 or 1); allele:<locus>=<allele> = the type with that pair or switch set to an allowed allele;
+    value:<locus>=<v> = a blend at a value (the computed fix builds these; the value may lie outside the limits); corner:<loud>+<loud> = the type with those loud genes on (glow, pattern, emblem, brow)."""
+    import s20genes as GN, genomeapply as GA
     if isinstance(g, dict):
         return g
     g = g or "type"
+    tbl = tables(spec)
     if g == "type":
-        return GN.specimen()
+        return GN.specimen(tbl)
     kind, _, arg = g.partition(":")
     if kind == "seed":
         try:
             return GN.draw(int(arg))
         except ValueError:
             raise BuildError(f"genome '{g}': seed needs a whole number", "genome")
+    G = tbl[0] if tbl else GN.GENES
+    loci = ", ".join(sorted(G)[:6])
     if kind in ("low", "high"):
-        ind = GN.specimen()
-        if arg not in GN.GENES:
-            raise BuildError(f"genome '{g}': no locus '{arg}' (loci: {', '.join(sorted(GN.GENES)[:6])} ...)", "genome")
+        ind = GN.specimen(tbl)
+        if arg not in G:
+            raise BuildError(f"genome '{g}': no blend locus '{arg}' in the file (blends: {loci} ...)", "genome")
         ind["t"][arg] = 0.0 if kind == "low" else 1.0
         return GN.limit_loud(ind)
-    raise BuildError(f"genome '{g}': use type, seed:N, low:<locus> or high:<locus>", "genome")
+    if kind == "value":
+        name, _, v = arg.partition("=")
+        if name not in G:
+            raise BuildError(f"genome '{g}': no blend locus '{name}' in the file (blends: {loci} ...)", "genome")
+        try:
+            val = float(v)
+        except ValueError:
+            raise BuildError(f"genome '{g}': value needs a number after '='", "genome")
+        form, lo, hi, _ = G[name]
+        ind = GN.specimen(tbl)
+        ind["t"][name] = GA.t_of(form, lo, hi, val)
+        return GN.limit_loud(ind)
+    if kind == "allele":
+        name, _, v = arg.partition("=")
+        ind = GN.specimen(tbl)
+        if name in ind["pairs"]:
+            pool = (tbl[1][name][0] if tbl else GN.PAIRS[name][0])
+            if v not in pool:
+                raise BuildError(f"genome '{g}': '{v}' is not an allowed allele of {name} (allowed: {', '.join(pool)})", "genome")
+            ind["pairs"][name] = [v, v]
+        elif name in ("face.blush", "coat.brow"):
+            if v not in ("on", "off"):
+                raise BuildError(f"genome '{g}': {name} is on or off", "genome")
+            ind["switches"][name.split(".")[1]] = v == "on"
+        else:
+            raise BuildError(f"genome '{g}': no pair or switch locus '{name}' in the file", "genome")
+        return GN.limit_loud(ind)
+    if kind == "corner":
+        bad = [x for x in arg.split("+") if x and x not in GN.LOUD]
+        if bad:
+            raise BuildError(f"genome '{g}': loud genes are {', '.join(GN.LOUD)}", "genome")
+        ind = GN.specimen(tbl)
+        on = set(x for x in arg.split("+") if x)
+        if "glow" in on:
+            ind["pairs"]["coat.glow-pattern"] = ["belly-arcs"] * 2
+        if "pattern" in on:
+            ind["pairs"]["coat.rd"] = ["spots"] * 2
+        if "emblem" in on:
+            ind["pairs"]["coat.mark"] = ["star"] * 2
+        if "brow" in on:
+            ind["switches"]["brow"] = True
+        return ind
+    raise BuildError(f"genome '{g}': use type, seed:N, low:<locus>, high:<locus>, allele:<locus>=<allele>, value:<locus>=<v> or corner:<loud>+<loud>", "genome")
 
 
 def cage_inputs(spec, ind):
     """What the cage builder reads from a creature: the shape genes and the appendages (whiskers, fangs). The coat genes are not here, so a palette edit keeps the cage key."""
     import s20genes as GN
-    c = GN.creature(ind)
+    c = GN.creature(ind, tables(spec))
     return c, dict(shape=c["shape"], appendages=c["appendages"])
 
 
 def cage_key(spec, genome, stage="base"):
     spec = internal(spec)
-    ind = resolve_genome(genome)
+    ind = resolve_genome(genome, spec)
     _, ci = cage_inputs(spec, ind)
     return H.hash_of("cage", H.framework_id(), spec, ci, stage)
 
@@ -130,13 +189,14 @@ class Result:
 
 def build(spec, genome="type", stage="base"):
     """Build the cage of `spec` for `genome` up to `stage`. Returns a Result with the Body (result.body), the cage hash, the vertex count and the timings in ms."""
-    import s20genes as GN, schema as SC
+    import s20genes as GN, schema as SC, species_v1 as V1
+    doc = spec if V1.is_v1(spec) else None
     spec = internal(spec)
     if stage not in STAGES:
         raise BuildError(f"stage '{stage}': one of {', '.join(STAGES)}", "stage")
     T = {}
     t0 = time.perf_counter()
-    ind = resolve_genome(genome)
+    ind = resolve_genome(genome, spec)
     c, ci = cage_inputs(spec, ind)
     T["genome"] = (time.perf_counter() - t0) * 1000
     t = time.perf_counter()
@@ -151,7 +211,7 @@ def build(spec, genome="type", stage="base"):
     t = time.perf_counter()
     try:
         with timed(acc):
-            body = GN.build_individual(spec, c, upto=stage, balance=(stage == "base"))
+            body = GN.build_individual(spec, c, upto=stage, balance=(stage == "base"), doc=doc)
     except (SC.SchemaError, KeyError, ValueError, AssertionError, IndexError, np.linalg.LinAlgError) as e:
         raise BuildError(f"{type(e).__name__}: {e}", _field_of(str(e)))
     T["cage"] = (time.perf_counter() - t) * 1000

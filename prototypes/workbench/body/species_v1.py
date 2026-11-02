@@ -83,7 +83,9 @@ SCHEMA = dict(
     sockets=dict(type="list", label="Sockets", help="Where attachments grow: each declares a join and the families it allows.", stage="shape", id_key="id", item=dict(id=text("Socket", "The socket's id.", stage="shape"), spec=free("Socket details", "On, station, frame, families, default and shapes.")), required=["id"], rest=True),
     face=free("Face", "Eyes, mouth and cheeks.", stage="face"),
     coat=obj("Coat", "Zones, layouts, palettes and material.", dict(zones=free("Zones", "The coat's zones.", stage="coat"), layouts=free("Layouts", "The coat's layouts.", stage="coat"), palettes=free("Palettes", "The coat's palettes.", stage="coat"), material=free("Material", "The material family and its limits.", stage="coat")), stage="coat"),
-    genome=obj("Genome", "The genes: typed paths and the game's species frame arrive in chunk 7.", dict(genes=free("Genes", "The gene list as it is today.", stage="meta"), counts=free("Counts", "How many of each family the type has.", stage="meta")), stage="meta"),
+    genome=obj("Genome", "The game's species frame: the catalogue pin, the chapters, and each locus with its kind, pool, limits, type and the typed paths it moves.", dict(
+        catalogue=free("Catalogue pin", "The catalogue this frame is valid against: id and version.", stage="meta"), chapters=free("Chapters", "The chapters the loci are grouped in.", stage="meta"),
+        loci=free("Loci", "Each locus: kind, op, limits, type, bins and moves (typed paths into this file).", stage="meta")), stage="meta", required=["catalogue", "chapters", "loci"]),
     motion=free("Motion", "Walk, breathe, blink and idle clips.", stage="motion"),
     limits=obj("Limits", "Overrides of the plan's limits. A file may only tighten them, never loosen.", dict(vertices=num("Vertex budget", "Vertices at subdivision level 1.", rng=(1000, 3500), unit=""), balance_margin=num("Balance margin", "Share of the sole in front of the heel.", rng=(0.15, 0.5), unit=""),
                                                                                             tail_side_area=num("Tail side area", "Tail silhouette over the trunk's.", rng=(0.02, 0.25), unit=""), neck_ratio=num("Neck ratio", "Neck over head and chest.", rng=(0.3, 0.85), unit=""),
@@ -252,6 +254,9 @@ def validate(doc):
             if isinstance(ch, list) and plan and len(ch) != plan["limb_joints"]:
                 errs.append((f"parts.{p.get('id')}.chain", f"parts.{p.get('id')}.chain: a limb has {plan['limb_joints']} joints after its root, got {len(ch)}"))
     # a socket's join is the owner's rule (2 Nov 23:02): required, hard or soft, nothing in between
+    if isinstance(doc.get("genome"), dict) and not errs:
+        import genomeapply as GA
+        errs += GA.validate(doc)
     return errs
 
 
@@ -309,16 +314,31 @@ def from_internal(d):
     sockets = [dict(id=k, spec=v) for k, v in d["sockets"].items()]
     doc = dict(schema=SCHEMA_ID, id=d["species"], name=d["name"], plan=d["body_plan"], plan_version=1, anchors=d["anchors"],
                spine=dict(ranges=[dict(name=k, length=None if k == "tail" else r9(v[1] - v[0])) for k, v in rg.items()], head_attach=dict(a=ha["a"], d=ha["d"], z_under=ha["z_under"]), seat=dict(radius=seat_r), tail=tl, loft=torso),
-               skeleton=skel, parts=parts, sockets=sockets, face=d["face"], coat=dict(zones=d["zones"], layouts=d["layouts"], palettes=d["palettes"], material=d["material"]), genome=dict(genes=d["genes"], counts=d["counts"]), motion=d["motion"], legacy=legacy)
+               skeleton=skel, parts=parts, sockets=sockets, face=d["face"], coat=dict(zones=d["zones"], layouts=d["layouts"], palettes=d["palettes"], material=d["material"]), genome=None, motion=d["motion"], legacy=legacy)
+    legacy["genome_v0"] = dict(genes=d["genes"], counts=d["counts"])
     legacy["head_attach_extra"] = {k: v for k, v in ha.items() if k not in ("a", "d", "z_under", "attach")}
     legacy["tail_range_end"] = rg["tail"][1]
     assert rg["head"][0] == 0.0 and all(abs(rg[a][1] - rg[b][0]) < 1e-9 for a, b in zip(list(rg), list(rg)[1:])), "the ranges are not contiguous"
+    from wb import make_genome_block as MG
+    doc["genome"] = MG.block()
     return doc
 
 
-def to_internal(doc):
-    """A v1 document -> the dict the cage builder reads (today's S20.json shape). Raises ValueError naming the field when the file is not valid."""
-    errs = validate(doc)
+def materialise(doc):
+    """A working copy of a v1 file with the tail's derived fields written out: each segment's `len` (share x length, to 9 places: what the cage builder is given) and the root's radii `root_r`.
+    Genes move these (a gene scales a segment's length, not its share of a total that would then no longer add up to 1), and the working copy gives the same numbers apply_shape worked on."""
+    d = copy.deepcopy(doc)
+    t, lg = d["spine"]["tail"], d["legacy"]
+    for s in t["segments"]:
+        s["len"] = r9(s["share"] * t["length"])
+    seat_r = d["spine"]["seat"]["radius"]
+    t["root_r"] = list(lg["tail_root_r"]) if abs(t["root"] - lg["tail_root_r"][0] / seat_r) < 1e-9 else [r9(t["root"] * seat_r)] * 2
+    return d
+
+
+def to_internal(doc, check=True):
+    """A v1 document -> the dict the cage builder reads (today's S20.json shape). Raises ValueError naming the field when the file is not valid. `check=False` skips the validation: the generic apply converts a file whose genes have moved fields past their bands."""
+    errs = validate(doc) if check else []
     if errs:
         raise ValueError(errs[0][1])
     doc = copy.deepcopy(doc)
@@ -336,10 +356,10 @@ def to_internal(doc):
     # the segments' lengths: share x length, rounded to 9 places (a file edits `length`; the shares keep the tail's shape)
     t = sp["tail"]
     seat_r = sp["seat"]["radius"]
-    root_r = lg["tail_root_r"] if abs(t["root"] - lg["tail_root_r"][0] / seat_r) < 1e-9 else [r9(t["root"] * seat_r)] * 2
+    root_r = t["root_r"] if "root_r" in t else lg["tail_root_r"] if abs(t["root"] - lg["tail_root_r"][0] / seat_r) < 1e-9 else [r9(t["root"] * seat_r)] * 2
     joints = [{**lg["tail_root_joint"], "at": t["root_at"], "r": root_r}]
     for i, s in enumerate(t["segments"]):
-        j = dict(name=s["name"], len=r9(s["share"] * t["length"]), pitch=s["pitch"], r=list(s["r"]))
+        j = dict(name=s["name"], len=s["len"] if "len" in s else r9(s["share"] * t["length"]), pitch=s["pitch"], r=list(s["r"]))
         if "role" in s:
             j["role"] = s["role"]
         joints.append(j)
@@ -373,8 +393,9 @@ def to_internal(doc):
         parts[k] = torso if k == "torso" else tail if k == "tail" else pdict[k]
     d = dict(schema="mb-body/1", species=doc["id"], name=doc["name"], plan=lg["plan_code"], frame=lg["frame"], unit=lg["unit"], house=lg["house"], anchors=doc["anchors"], parts=parts,
              sockets={s["id"]: s["spec"] for s in doc["sockets"]}, face=doc["face"], zones=doc["coat"]["zones"], layouts=doc["coat"]["layouts"], palettes=doc["coat"]["palettes"], material=doc["coat"]["material"],
-             genes=doc["genome"]["genes"], counts=doc["genome"]["counts"], motion=doc["motion"], poles=lg["poles"], mesh_quality=lg["mesh_quality"], appendages=lg["appendages"], join_rule=lg["join_rule"], body_plan=doc["plan"])
+             genes=lg["genome_v0"]["genes"], counts=lg["genome_v0"]["counts"], motion=doc["motion"], poles=lg["poles"], mesh_quality=lg["mesh_quality"], appendages=lg["appendages"], join_rule=lg["join_rule"], body_plan=doc["plan"])
     out = {k: d[k] for k in lg["top_order"]}
+    out["genome"] = doc["genome"]                       # the typed genome block travels with the file the cage builder reads
     if "limits" in doc:
         out["limits"] = doc["limits"]
     return out

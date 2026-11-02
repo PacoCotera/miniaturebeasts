@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { Species } from '../lib/api'
 import { checkMetas, needsYou, partsOf, ORDER } from '../lib/checks'
@@ -10,7 +11,7 @@ import s from './Inspector.module.css'
 
 // Shows only the selection. With nothing selected: the species overview (st.insp.empty). The version ("v5 draft") is not in the file yet, so it is left out.
 // Under it, one card for each check the selection touches (all that need you when nothing is selected), then a quiet count of the passes (st.card.passes).
-export function Inspector({ species, id, sheet, open, url, go }: { species: Species | undefined; id: string; sheet: boolean; open: boolean; url: StudioUrl; go: (p: Partial<StudioUrl>) => void }) {
+export function Inspector({ species, id, sheet, open, url, go, genes }: { species: Species | undefined; id: string; sheet: boolean; open: boolean; url: StudioUrl; go: (p: Partial<StudioUrl>) => void; genes?: ReactNode }) {
   const lease = species ? leaseFrom(species.lease, species.history) : null
   const last = species?.history[species.history.length - 1]
   const name = species?.file.name ?? `${id} · no name yet`
@@ -24,6 +25,7 @@ export function Inspector({ species, id, sheet, open, url, go }: { species: Spec
   return (
     <aside className={`${s.insp} ${sheet ? s.sheet : ''}`} data-open={open || undefined} aria-label="Inspector">
       {lease && <Banner who={lease.holder} />}
+      {genes ?? <>
       <div className={s.title}><b>{url.sel ? partLabel(url.sel) : name}</b>{url.sel && <span className={s.kind}>{['head', 'neck', 'back', 'seat', 'tail'].includes(url.sel) ? 'spine range' : 'appendage'}</span>}</div>
       {!url.sel && line && <p className={s.line}>{line}</p>}
       {cards.length > 0 && (
@@ -34,6 +36,7 @@ export function Inspector({ species, id, sheet, open, url, go }: { species: Spec
         </div>
       )}
       {url.sel && passes > 0 && <p className={s.passes}><i />{passes} other {partLabel(url.sel)?.toLowerCase()} {passes === 1 ? 'check passes' : 'checks pass'}</p>}
+      </>}
     </aside>
   )
 }
