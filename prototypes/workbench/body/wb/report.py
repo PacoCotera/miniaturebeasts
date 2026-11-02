@@ -1,5 +1,6 @@
 """Sheets for the workbench: small HTML pages with real text (sheetlib's house CSS: system sans, 14 px and up), screenshotted with the installed Playwright. The HTML sits beside the PNG."""
 import html
+import json
 import os
 import sys
 
@@ -65,3 +66,27 @@ def proxy_sheet(tiles, outdir, name="proxy", summary=None, cold_ms=None, note=""
     if note:
         body += "<p>" + note + "</p>"
     return write(outdir, name, "Chunk 2 proxy renderer", body, 1380)
+
+
+def contact_sheet(info, outdir, name):
+    """The `wb render --sheet` page: the four clay views at the house angles, the normal, parts and wire views at az 32, the numbers, the recent edits.
+    info: dict(species, genome, spec_hash, cage, views {(mode, az, size): (path, ms, cached)}, edits [undo entries], job_ms)."""
+    v = info["views"]
+    c = info["cage"]
+
+    def cell(k):
+        pth, ms, cached = v[k]
+        tag = "cache hit" if cached else f"{ms:.0f} ms"
+        return f"<div class='cell'><img src='file://{pth}' width='304'><div class='cap'>{k[0]} az {k[1]} &middot; {tag}</div></div>"
+    body = f"<h1>{html.escape(info['species'])} &middot; {html.escape(info['genome'])} &middot; proxy views</h1>"
+    body += "<div class='grid' style='grid-template-columns:repeat(4,312px)'>" + "".join(cell(("clay", a, 304)) for a in (0, 32, 90, 180)) + "</div><div style='height:6px'></div>"
+    rows = [("species file hash", f"<span class='mono'>{info['spec_hash'][:16]}…</span>"), ("cage hash", f"<span class='mono'>{c['cage_hash'][:16]}…</span>"), ("cage vertices", f"{c['vertices']:,}"),
+            ("level-1 proxy vertices", f"{c['vertices_l1']:,}"), ("cage", "from the cache (an earlier job built it)" if c["cached"] else f"built in {c['timings_ms']['total'] / 1000:.1f} s"),
+            ("views", f"{sum(1 for x in v.values() if x[2])} of {len(v)} from the cache")]
+    ed = info.get("edits") or []
+    erows = [(html.escape(e["actor"]) + (" (agent)" if e.get("agent") else ""), html.escape(e["via"]), "<span class='mono'>" + html.escape(e["path"]) + "</span>", html.escape(json.dumps(e["old"])) + " &rarr; " + html.escape(json.dumps(e["new"]))) for e in ed[-5:]]
+    body += "<div class='grid' style='grid-template-columns:repeat(3,312px) 640px'>" + "".join(cell(k) for k in (("normal", 32, 304), ("parts", 32, 304), ("wire", 32, 304)))
+    body += "<div><h2>Numbers</h2>" + SL.table(rows) + "</div></div>"
+    if erows:
+        body += "<h2>Last edits (the undo log)</h2>" + SL.table(erows, ["who", "how", "field", "change"])
+    return write(outdir, name, "contact sheet", body, 1300)
