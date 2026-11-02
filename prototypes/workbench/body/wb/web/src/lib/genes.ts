@@ -86,3 +86,14 @@ export function proofEnd(x: ExtremesState | null | undefined, locus: string, par
   const bad = endsOf(x, locus).filter((e) => e.state === 'fail' && e.proof?.ready)
   return bad.find((e) => e.id === param) ?? bad[0] ?? null
 }
+
+// The camera a locus is judged from: the part it moves, seen from where it shows. The house camera is fixed, so a view is an azimuth and a crop of the 608 render (zoom about a point, in percent of the tile).
+export type StageView = { az: number; zoom: { s: number; ox: number; oy: number }; part: string }
+export function stageView(l: Locus): StageView {
+  const id = l.locus
+  if (l.chapter === 'tail') return { az: 90, zoom: { s: 1.4, ox: 62, oy: 60 }, part: 'tail, from the side' }
+  if (/ear-/.test(id)) return { az: 0, zoom: { s: 1.9, ox: 50, oy: 24 }, part: 'ears, from the front' }
+  if (l.chapter === 'face') return { az: 0, zoom: { s: 2.0, ox: 50, oy: 27 }, part: 'face, from the front' }
+  if (/limb-/.test(id)) return { az: 90, zoom: { s: 1.5, ox: 50, oy: 78 }, part: 'legs, from the side' }
+  return { az: 32, zoom: { s: 1.3, ox: 50, oy: 50 }, part: 'whole body' }
+}

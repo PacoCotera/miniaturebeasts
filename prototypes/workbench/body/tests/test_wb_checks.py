@@ -36,13 +36,14 @@ def run_cage(spec):
 class TestRegistry(unittest.TestCase):
     def test_twelve_checks_with_the_owners_words(self):
         metas = {m["id"]: m for m in CH.metas()}
-        self.assertEqual(len(metas), 12)
+        self.assertEqual(len(metas), 13)                              # twelve of the file and cage stages, and the extremes stage's limits (chunk 8)
+        self.assertEqual([m for m in metas if metas[m]["stage"] == "extremes"], ["limits"])
         for i, (name, fail) in WORDS.items():
             self.assertEqual((metas[i]["name"], metas[i]["fail"]), (name, fail), i)
         for m in metas.values():
             self.assertRegex(m["rule"]["date"], r"^2026-11-0[12] \d\d:\d\d$")
             self.assertGreater(len(m["rule"]["words"]), 40, m["id"])
-            self.assertIn(m["stage"], ("file", "cage"))
+            self.assertIn(m["stage"], ("file", "cage", "extremes"))
         self.assertEqual({m["id"] for m in metas.values() if m["play"]}, {"head.neck", "tail.taper", "tail.size", "balance"})        # words.md 5.2: the limit sentences
 
     def test_file_stage_on_s20(self):
@@ -154,10 +155,10 @@ class TestServer(unittest.TestCase):
 
     def test_the_stage_a_later_chunk_owns_is_refused_with_its_name(self):
         from wb import cli
-        a = type("A", (), dict(stage="extremes", species="S20x", genome="type", wait=True, json=True, timeout=5.0))()
+        a = type("A", (), dict(stage="rig", species="S20x", genome="type", wait=True, json=True, timeout=5.0))()
         with self.assertRaises(cli.Fail) as e:
             cli.cmd_check(a)
-        self.assertIn("chunk 8", e.exception.message)
+        self.assertIn("chunk 23", e.exception.message)
 
 
 if __name__ == "__main__":

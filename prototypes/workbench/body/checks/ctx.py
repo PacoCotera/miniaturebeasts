@@ -2,8 +2,9 @@
 
 
 class Ctx:
-    def __init__(self, spec, body=None, summ=None, mesh=None, doc=None):
+    def __init__(self, spec, body=None, summ=None, mesh=None, doc=None, ends=None):
         self.spec, self.body, self.summ, self.mesh = spec, body, summ, mesh
+        self.ends = ends                                           # the extremes stage: one entry per build (checks/extremes.py)
         self.doc = doc if doc is not None else spec              # the file as written (v1); `spec` is it as the cage builder reads it
         self._lv = {}
 

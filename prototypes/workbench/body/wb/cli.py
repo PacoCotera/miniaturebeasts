@@ -63,12 +63,12 @@ def resolve_path(doc, dotted):
                 k = None
                 for n in (3, 2, 1):                                   # the longest dotted name first
                     name = ".".join(toks[i:i + n])
-                    hit = [j for j, v in enumerate(cur) if isinstance(v, dict) and name in (v.get("id"), v.get("name"), v.get("joint"))]
+                    hit = [j for j, v in enumerate(cur) if isinstance(v, dict) and name in (v.get("id"), v.get("name"), v.get("joint"), v.get("locus"))]
                     if hit:
                         k, i = hit[0], i + n
                         break
                 if k is None:
-                    names = [str(v.get("id") or v.get("name") or v.get("joint")) for v in cur if isinstance(v, dict)]
+                    names = [str(v.get("id") or v.get("name") or v.get("joint") or v.get("locus")) for v in cur if isinstance(v, dict)]
                     raise Fail(2, f"{dotted}: no list element '{tok}' (have: {', '.join(names[:8])})", dotted)
             cur, ptr = cur[k], f"{ptr}/{k}"
         elif isinstance(cur, dict):
@@ -194,19 +194,27 @@ def cmd_validate(a):
 
 
 STAGES = ("file", "cage", "extremes", "rig", "coat", "all")
-LATER = dict(extremes="chunk 8", rig="chunk 23", coat="chunk 23")
+LATER = dict(rig="chunk 23", coat="chunk 23")
+
+
+def unit_text(v, unit):
+    return f"{v:g}{unit}" if unit in ("×", "°", "") or not isinstance(v, (int, float)) else f"{v:g} {unit}"
 
 
 def check_rows(a, job):
-    """The rows of a finished check job with the owner's words and the proof pictures' paths (waits for the pictures when --wait)."""
+    """The rows of a finished check job with the owner's words and the proof pictures' paths (waits for the pictures when --wait). The extremes stage's rows and ends are read back from the species answer, where the pictures' paths are filled in."""
     metas = {m["id"]: m for m in call("GET", "/api/checks")}
     rows = job["result"]["rows"]
+    ext = job["result"].get("stage") == "extremes"
     end = time.time() + 90
-    while a.wait and any(r.get("proof") and not r["proof"].get("ready") for r in rows) and time.time() < end:
+    while a.wait and any(r.get("proof") and not r["proof"].get("ready") for r in rows + (job["result"].get("ends") or [])) and time.time() < end:
         time.sleep(0.5)
-        cur = call("GET", f"/api/species/{a.species}").get("checks")
+        sp = call("GET", f"/api/species/{a.species}")
+        cur = sp.get("extremes") if ext else sp.get("checks")
         if cur and cur.get("fresh"):
             rows = cur["rows"]
+            if ext:
+                job["result"]["ends"] = cur["ends"]
     out = []
     for r in rows:
         m = metas.get(r["id"], {})
@@ -217,8 +225,11 @@ def check_rows(a, job):
 
 def cmd_check(a):
     if a.stage in LATER:
-        raise Fail(2, f"check stage '{a.stage}' arrives with {LATER[a.stage]}; the stages that exist are file, cage and all", "stage")
-    j = run_job(a, "check", dict(stage=a.stage, genome=a.genome), wait=a.wait)
+        raise Fail(2, f"check stage '{a.stage}' arrives with {LATER[a.stage]}; the stages that exist are file, cage, extremes and all", "stage")
+    args = dict(stage=a.stage, genome=a.genome)
+    if getattr(a, "locus", None):
+        args["loci"] = a.locus
+    j = run_job(a, "check", args, wait=a.wait)
     if j["state"] in ("queued", "running"):
         out(a, dict(ok=True, species=a.species, job=j["id"], state=j["state"], key=j["key"]), f"queued {j['id']} (key {j['key'][:12]}); wb check {a.species} --wait to see the rows")
         return 0
@@ -234,8 +245,20 @@ def cmd_check(a):
             lines.append(f"      {r['fail_line']}  ·  owner, {r['rule_date']}: {r['words']}")
         if r["proof"]:
             lines.append(f"      proof {r['proof']}")
+    ends = j["result"].get("ends") or []
+    bad_ends = [e for e in ends if e["state"] == "fail"]
+    for e in bad_ends:
+        f0 = e["fails"][0]
+        lines.append(f"      {e['locus'] or e['id']} {e['end']} {unit_text(e['value'], e.get('unit') or '')}: {f0['fail'] or f0['id']} ({f0['measure']})")
+        if e.get("fix"):
+            lines.append(f"      Set limit to {e['fix']['value']:g}:  wb set {a.species} {e['fix']['path']} {e['fix']['value']:g}")
+        if (e.get("proof") or {}).get("path"):
+            lines.append(f"      proof {e['proof']['path']}")
+    if ends:
+        lines.append(f"{len(ends)} ends and corners · {len({e['cage'] for e in ends})} distinct cages · {len(bad_ends)} fail")
     lines.append(f"{len(rows) - len(fails) - len(warns)} pass · {len(warns)} warn · {len(fails)} fail")
-    out(a, dict(ok=not fails, species=a.species, stage=a.stage, rows=rows, fail=fails, warn=warns, passed=len(rows) - len(fails) - len(warns), job=j["id"], cached=j["cached"]), "\n".join(lines))
+    extra = dict(ends=[dict(id=e["id"], locus=e["locus"], end=e["end"], value=e["value"], state=e["state"], fails=e["fails"], fix=e.get("fix"), proof=(e.get("proof") or {}).get("path")) for e in ends]) if ends else {}
+    out(a, dict(ok=not fails, species=a.species, stage=a.stage, rows=rows, fail=fails, warn=warns, passed=len(rows) - len(fails) - len(warns), job=j["id"], cached=j["cached"], **extra), "\n".join(lines))
     return 1 if fails else 0
 
 
@@ -313,7 +336,7 @@ def main(argv=None):
     p = sub.add_parser("set"); p.add_argument("species"); p.add_argument("path"); p.add_argument("value"); common(p, genome=False); p.set_defaults(f=cmd_set)
     p = sub.add_parser("validate"); p.add_argument("species", nargs="?", default=""); p.add_argument("--file", default=""); common(p, genome=False); p.set_defaults(f=cmd_validate)
     p = sub.add_parser("convert"); p.add_argument("src"); p.add_argument("--out", default=""); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_convert)
-    p = sub.add_parser("check"); p.add_argument("species"); common(p); p.add_argument("--stage", default="all", choices=STAGES); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_check)
+    p = sub.add_parser("check"); p.add_argument("species"); common(p); p.add_argument("--stage", default="all", choices=STAGES); p.add_argument("--locus", action="append", default=[], help="extremes only: build just this locus (repeat for more)"); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_check)
     p = sub.add_parser("explain"); p.add_argument("check"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_explain)
     p = sub.add_parser("watch"); p.add_argument("species"); p.add_argument("--json", action="store_true"); p.add_argument("--count", type=int, default=0); p.add_argument("--timeout", type=float, default=0); p.set_defaults(f=cmd_watch)
     p = sub.add_parser("serve"); p.add_argument("--port", type=int, default=0); p.add_argument("--species", action="append", default=[]); p.add_argument("--static", default=""); p.set_defaults(f=cmd_serve)

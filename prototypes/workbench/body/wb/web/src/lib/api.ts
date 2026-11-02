@@ -48,8 +48,8 @@ export type JobAnswer = { id: string; state: string; error?: string; result?: { 
 export const postJob = (id: string, kind: string, args: unknown) => call<JobAnswer>('POST', `/api/species/${encodeURIComponent(id)}/jobs`, { kind, args })
 export const getJob = (jid: string, wait = 20) => call<JobAnswer>('GET', `/api/jobs/${jid}?wait=${wait}`)
 // The clay of one genome at one angle: a render job (a cache hit answers at once), then the key of its picture.
-export async function genomePicture(id: string, genome: string, az: number): Promise<string | null> {
-  let j = await postJob(id, 'render', { genome, modes: ['clay'], az: [az], sizes: [304] })
+export async function genomePicture(id: string, genome: string, az: number, size = 608): Promise<string | null> {
+  let j = await postJob(id, 'render', { genome, modes: ['clay'], az: [az], sizes: [size] })
   for (let n = 0; j.state !== 'done' && n < 12; n++) {
     if (j.state === 'failed' || j.state === 'superseded') return null
     j = await getJob(j.id)

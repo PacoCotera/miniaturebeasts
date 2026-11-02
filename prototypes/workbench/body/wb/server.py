@@ -96,7 +96,7 @@ class ProxyWorker:
                 if self.proc.poll() is not None:
                     self.start_proc()
                 views = job.args.get("views", [])
-                self.proc.stdin.write(json.dumps(dict(id=job.id, op=job.kind, spec=job.spec, genome=job.args["genome"], views=views, stage=job.args.get("stage", "all"))) + "\n")
+                self.proc.stdin.write(json.dumps(dict(id=job.id, op=job.kind, spec=job.spec, genome=job.args["genome"], views=views, stage=job.args.get("stage", "all"), loci=job.args.get("loci"))) + "\n")
                 self.proc.stdin.flush()
                 while True:
                     line = self.proc.stdout.readline()
@@ -148,6 +148,7 @@ class Server:
         self.proofs = queue.Queue()
         self.proofer = threading.Thread(target=self.proof_loop, daemon=True, name="proofs")
         self.checks_seen = {}                                   # species id -> the last check rows computed for it (shown hatched when the file has moved on)
+        self.extremes_seen = {}                                 # species id -> the last extremes result (shown stale when the file has moved on)
         self.httpd = ThreadingHTTPServer((host, port), make_handler(self))
         self.httpd.daemon_threads = True
         self.port = self.httpd.server_address[1]
@@ -263,18 +264,27 @@ class Server:
         return rows
 
     # ---- jobs
-    def norm_args(self, kind, args):
+    def norm_args(self, kind, args, spec=None):
         args = dict(args or {})
         genome = args.get("genome", "type")
         try:
-            F.resolve_genome(genome)
+            F.resolve_genome(genome, F.internal(spec) if spec else None)
         except F.BuildError as e:
             raise ApiError(400, e.message, "genome")
         out = dict(genome=genome)
         if kind == "check":
             st = (args or {}).get("stage", "all")
-            if st not in ("file", "cage", "all"):
-                raise ApiError(400, f"check stage '{st}': one of file, cage, all (extremes, rig and coat arrive with their chunks)", "stage")
+            if st not in ("file", "cage", "extremes", "all"):
+                raise ApiError(400, f"check stage '{st}': one of file, cage, extremes, all (rig and coat arrive with their chunks)", "stage")
+            if st == "extremes":
+                out = dict(genome="type")                        # the stage builds its own genomes
+                loci = args.get("loci")
+                if loci:
+                    known = {e["locus"] for e in F.internal(spec)["genome"]["loci"]} if spec else set()
+                    miss = [x for x in loci if known and x not in known]
+                    if miss:
+                        raise ApiError(400, f"no locus '{miss[0]}' in the file", "loci")
+                    return dict(out, stage=st, loci=sorted(loci))
             return dict(out, stage=st)
         if kind == "build":
             return out
@@ -310,15 +320,15 @@ class Server:
         sp = self.get_species(sid)
         if kind == "check" and (args or {}).get("stage", "all") == "file":
             return self.run_check(sp, args, actor)
-        a = self.norm_args(kind, args)
         spec = copy.deepcopy(sp.spec) if spec is None else spec
+        a = self.norm_args(kind, args, spec)
         spec_hash = spec_hash or H.hash_of(spec)
         ck = K.cage_key(spec, a["genome"])
         views = [tuple(v) for v in a.get("views", [])]
         if kind == "build":
             key = ck
         elif kind == "check":
-            key = self.check_key(ck, a["stage"])
+            key = self.check_key(ck, a["stage"], a.get("loci"))
         elif kind == "render":
             key = K.render_key(ck, views)
         else:
@@ -381,8 +391,8 @@ class Server:
         return job
 
     # ---- the checks (cage stage in the worker; the pictures here, off the worker's time)
-    def check_key(self, ck, stage):
-        return H.hash_of("check", stage, ck, CH.version_id(stage))
+    def check_key(self, ck, stage, loci=None):
+        return H.hash_of("check", stage, ck, CH.version_id(stage), *([loci] if loci else []))
 
     def submit_check(self, job, ck, actor):
         cached = self.cas.get_json(job.key)
@@ -403,7 +413,7 @@ class Server:
     def with_proof_state(self, res):
         """The stored rows with each proof's `ready` read from the cache now (the picture may still be on its way)."""
         res = copy.deepcopy(res)
-        for r in res["rows"]:
+        for r in list(res["rows"]) + list(res.get("ends") or []):
             if r.get("proof"):
                 r["proof"]["ready"] = self.cas.has(r["proof"]["key"], "png")
                 r["proof"]["path"] = self.cas.path(r["proof"]["key"], "png") if r["proof"]["ready"] else None
@@ -413,15 +423,19 @@ class Server:
     def finish_check(self, job, result):
         """Rows from the worker: the SVGs go to the picture thread, the rows (with the key of each picture) are stored and answered."""
         rows, tasks = result["rows"], []
-        for r in rows:
+        ends = result.get("ends") or []
+        for r in list(rows) + ends:
             p = r.get("proof")
             if not p:
                 continue
-            svg = p.pop("svg")
-            p["key"] = H.hash_of("proof", p["frame"], svg, CH.VERSION_SALT)
-            tasks.append(dict(key=p["key"], svg=svg, frame_path=p.pop("frame_path"), species=job.species))
-            p.pop("frame")
+            if "svg" in p:
+                svg = p.pop("svg")
+                p["key"] = H.hash_of("proof", p["frame"], svg, CH.VERSION_SALT)
+                tasks.append(dict(key=p["key"], svg=svg, frame_path=p.pop("frame_path"), species=job.species))
+                p.pop("frame")
         out = dict(stage=result["stage"], rows=rows, cage=result["cage"], timings_ms=result["timings_ms"])
+        if ends:
+            out["ends"] = ends
         self.cas.put_json(job.key, out)
         for t in tasks:
             self.proofs.put(t)
@@ -492,6 +506,22 @@ class Server:
         if old:
             return dict(hash=sp.hash, fresh=False, rows=old["rows"], counts=old["counts"])
         return None
+
+    def current_extremes(self, sp):
+        """The extremes result for the file as it is now (fresh), else the last one we had (stale), else nothing; `running` when a job is on it. It never starts the job: the stage builds about fifty cages, so the page or `wb check --stage extremes` asks for it."""
+        try:
+            ck = K.cage_key(sp.spec, "type")
+        except Exception:                                                   # noqa: BLE001
+            return None
+        key = self.check_key(ck, "extremes")
+        running = bool(self.queue.find_active(sp.id, "check", key))
+        res = self.cas.get_json(key)
+        if res is not None:
+            res = self.with_proof_state(res)
+            self.extremes_seen[sp.id] = res
+            return dict(fresh=True, running=running, ends=res["ends"], rows=res["rows"], key=key)
+        old = self.extremes_seen.get(sp.id)
+        return dict(fresh=False, running=running, ends=old["ends"] if old else None, rows=old["rows"] if old else None, key=key)
 
     def finish_ok(self, job, result):
         cache = dict(job_hit=False)
@@ -626,7 +656,7 @@ def make_handler(srv):
             m = re.fullmatch(r"/api/species/([^/]+)", p)
             if m:
                 s = srv.get_species(m.group(1))
-                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), goldens=None, history=s.history(5), views=srv.current_views(s), labels=V1_labels()))
+                return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), views=srv.current_views(s), labels=V1_labels()))
             m = re.fullmatch(r"/api/jobs/(j\d+)", p)
             if m:
                 j = srv.queue.jobs.get(m.group(1))

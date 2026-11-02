@@ -194,9 +194,9 @@ def c_head_neck(ctx):
     nx = float(np.mean(Vt[np.abs(Vt[:, 2] - n["neck_z"]) < 0.03, 0]))
     cx, cy = Pj(np.array([nx, 0, n["neck_z"]]))[0]
     bad = wide or flat
-    out = [PR.ring(cx, cy, 44, PR.RED if bad else PR.SAGE, 4), PR.panel(24, 640, 560, 128),
-           PR.bar(40, 672, 300, 1.0, "head", f"{n['head_w']:.2f} H", PR.INK),
-           PR.bar(40, 722, 300, n["neck_w"] / n["head_w"], "neck", f"{n['neck_w']:.2f} H", PR.RED if wide else PR.INK, lim_, f"limit {lim_:.2f} of head"),
+    out = [PR.ring(cx, cy, 44, PR.RED if bad else PR.SAGE, 4), PR.panel(24, 628, 560, 140),
+           PR.bar(40, 664, 300, 1.0, "head", f"{n['head_w']:.2f} H", PR.INK),
+           PR.bar(40, 712, 300, n["neck_w"] / n["head_w"], "neck", f"{n['neck_w']:.2f} H", PR.RED if wide else PR.INK, lim_, f"limit {lim_:.2f} of head"),
            PR.label(370, 690, f"neck is {r_head:.2f} of the head", PR.RED if wide else PR.INK, "start", 17, bg=False), PR.label(370, 722, f"and {r_chest:.2f} of the chest", PR.RED if wide else PR.INK, "start", 17, bg=False),
            PR.label(370, 760, f"skull overhangs {dome:.2f} H", PR.RED if flat else PR.INK, "start", 17, bg=False)]
     st = "fail" if bad else "pass"
@@ -261,9 +261,9 @@ def c_tail_size(ctx):
     Pj = PR.projector(90)
     q = Pj(V[np.unique(F[tail_f])])
     cx, cy, rr = float(q[:, 0].mean()), float(q[:, 1].mean()), max(36.0, float(max(np.ptp(q[:, 0]), np.ptp(q[:, 1])) * 0.62))
-    out = [PR.box(q[:, 0].min(), q[:, 1].min(), q[:, 0].max(), q[:, 1].max(), PR.RED if bad else PR.SAGE), PR.panel(24, 640, 560, 128),
-           PR.bar(40, 676, 400, 1.0, "trunk", f"{a_trunk:,} px", PR.INK),
-           PR.bar(40, 724, 400, share, "tail", f"{share * 100:.0f}% of the trunk", PR.RED if bad else PR.SAGE, limit, f"limit {limit * 100:.0f}%")]
+    out = [PR.box(q[:, 0].min(), q[:, 1].min(), q[:, 0].max(), q[:, 1].max(), PR.RED if bad else PR.SAGE), PR.panel(24, 628, 560, 140),
+           PR.bar(40, 664, 400, 1.0, "trunk", f"{a_trunk:,} px", PR.INK),
+           PR.bar(40, 712, 400, share, "tail", f"{share * 100:.0f}% of the trunk", PR.RED if bad else PR.SAGE, limit, f"limit {limit * 100:.0f}%")]
     meas = f"Side area {share:.3f} of the trunk, limit {limit:.2f}" + (f"; root {root_ratio:.2f} of the seat radius" if root_ratio > 0.47 else "")
     return row("fail" if bad or root_ratio > 0.47 else "pass", f2(share), limit, meas, dict(mode="clay", az=90, svg="".join(out)), dict(share=share, tail_px=a_tail, trunk_px=a_trunk, root_ratio=root_ratio))
 
@@ -452,3 +452,24 @@ def c_mesh(ctx):
         out.append(PR.label(110, 692 + 26 * i, f"edge {r['along']:.1f} ({BIPED['ratio_along']:.0f})  ring {r['around']:.1f} ({BIPED['ratio_around']:.0f})  area {r['area']:.1f} ({th['area_ratio_max'] * 2:.0f})  flat {r['nonplanar']:.2f} ({th['nonplanar_max'] * 6:.1f})", PR.INK, "start", 15, bg=False))
     meas = (f"{bad[0]}: " + ", ".join(f"{k} {rows_[bad[0]][k]:.2f}" for k in rows_[bad[0]]['bad'])) if bad else "Edge, area and planarity ratios are inside the limits in every range"
     return row("fail" if bad else "pass", len(bad), 0, meas, dict(mode="wire", az=32, svg="".join(out)), dict(parts=[], fail=(f"Thin or bent faces in {bad[0]}" if bad else None)))
+
+
+# 13 ------------------------------------------------------------------------------------------------------------------------------------------------------- limits (the extremes stage)
+@check(id="limits", name="Both ends", fail="{trait} fails at its {end} end", stage="extremes", version=1, part=[], fields=["genome.loci"],
+       rule=R("2026-11-02 18:25", "Balance, folds, tail scale, normals, the head-neck transition and the vertex count hold for every individual at the extreme genes too: each locus's limits are built at both ends on the clay, with the corners of the loud genes."),
+       limit=dict(text="every locus builds and passes at both ends of its limits, and at the corners of the loud genes", value=0), az=32)
+def c_limits(ctx):
+    ends = ctx.ends or []
+    bad = [e for e in ends if e["state"] == "fail"]
+    n_cages = len({e.get("cage") for e in ends})
+    if not bad:
+        return row("pass", 0, 0, f"{len(ends)} ends and corners build and pass ({n_cages} distinct cages)")
+    e = bad[0]
+    unit = e.get("unit") or ""
+    f0 = e["fails"][0]
+    what = "Loud genes" if e["end"] == "corner" else e["label"]
+    where = f"at {e['value']:g}{unit if unit in ('×', '°', '') else ' ' + unit}" if isinstance(e["value"], (int, float)) else f"at {e['value']}"
+    line = f"{what} fails at its {e['end']} end" if e["end"] in ("low", "high") else f"{what} fails with {e['value']}"
+    meas = f"{where}: {f0['fail'] or f0['id']}" + (f" ({f0['measure']})" if f0.get("measure") else "") + (f"; {len(bad) - 1} more end{'s' if len(bad) > 2 else ''} fail" if len(bad) > 1 else "")
+    r = row("fail", len(bad), 0, meas, e.get("proof"), dict(fail=line, ends=[x["id"] for x in bad]))
+    return r

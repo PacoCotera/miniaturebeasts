@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { binIndex, proofEnd, endLine, endMeasure, fixPointer, locusDot, rangeBar, selectedLocus, stageEnds, unitText, type End, type ExtremesState, type Genome, type Locus } from './genes'
+import { stageView, binIndex, proofEnd, endLine, endMeasure, fixPointer, locusDot, rangeBar, selectedLocus, stageEnds, unitText, type End, type ExtremesState, type Genome, type Locus } from './genes'
 
 const tail: Locus = { locus: 'body.tail-length', label: 'Tail length', short: 'Length', chapter: 'tail', scope: 'own', kind: 'heritable-look', op: 'blend', form: 'mult', unit: '×', range: [0.5, 2], limits: [0.8, 1.3], type: 1, bins: ['short', 'between', 'long'], moves: [] }
 const eye: Locus = { ...tail, locus: 'growth.exterior-eye-size-ratio', label: 'Exterior eye size ratio', short: 'Eye size', chapter: 'face', scope: 'shared', limits: [0.92, 1.1], catalogue: { range: [0.24, 0.44], type: 0.32, operator: 'copy-mean' } }
@@ -41,6 +41,12 @@ describe('genes', () => {
     expect(proofEnd(ext(true, [e]), 'body.tail-length', null)?.id).toBe('x')
     expect(proofEnd(ext(true, [e]), 'body.tail-length', 'none')).toBeNull()
     expect(proofEnd(ext(true, [end({})]), 'body.tail-length', null)).toBeNull()
+  })
+  it('judges each locus from the camera that shows its part', () => {
+    expect(stageView(tail).az).toBe(90)
+    expect(stageView(eye).az).toBe(0)
+    expect(stageView(eye).zoom.s).toBeGreaterThanOrEqual(2)
+    expect(stageView(g.loci[0]).az).toBe(32)
   })
   it('turns a fix into the pointer it writes to', () => {
     expect(fixPointer(g, { path: 'genome.loci.body.tail-length.limits.1' })).toBe('/genome/loci/1/limits/1')

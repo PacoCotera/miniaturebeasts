@@ -4,7 +4,7 @@ import hashlib
 import json
 
 REGISTRY = []                  # the checks, in the order the drawer lists them
-VERSION_SALT = "checks-6"      # bump to re-measure everything
+VERSION_SALT = "checks-9"      # bump to re-measure everything
 
 
 class Check:
@@ -30,12 +30,13 @@ def by_id(i):
 
 
 def stages(stage):
-    """The stage names a request covers: file, cage, or all (file then cage)."""
-    return {"file": ("file",), "cage": ("cage",), "all": ("file", "cage")}[stage]
+    """The stage names a request covers: file, cage, extremes, or all (file then cage: the extremes stage builds about fifty cages, so it runs when asked)."""
+    return {"file": ("file",), "cage": ("cage",), "extremes": ("extremes",), "all": ("file", "cage")}[stage]
 
 
 def version_id(stage="all"):
     """A hash of the ids and versions of the checks a stage runs: part of every result's cache key."""
+    from . import biped  # noqa: F401  (the registry fills when the checks are imported: a key made before that would differ from one made after)
     s = [(c.id, c.version, c.stage) for c in REGISTRY if c.stage in stages(stage)]
     return hashlib.sha256(json.dumps([VERSION_SALT, s]).encode()).hexdigest()[:12]
 

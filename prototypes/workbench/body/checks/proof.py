@@ -68,7 +68,7 @@ def bar(x, y, w, frac, name, value_text, color=INK, limit_frac=None, limit_text=
     if limit_frac is not None:
         lx = x + limit_frac * w
         out.append(line((lx, y - 7), (lx, y + 21), INK, 3))
-        out.append(label(lx, y + 44, limit_text or "limit", INK, "middle"))
+        out.append(label(lx, y + 40, limit_text or "limit", INK, "middle"))
     out.append(label(x, y - 10, f"{name}  {value_text}", INK))
     return "".join(out)
 

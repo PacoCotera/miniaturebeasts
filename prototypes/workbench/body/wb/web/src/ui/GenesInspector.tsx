@@ -53,7 +53,8 @@ export function GenesInspector({ species, url, go }: { species: Species; url: St
         <div className={s.lock}>
           <div className={s.field}><label>Copies</label><span className={s.v}>{copyRule(l)}</span></div>
           <p className={s.help}>Shared trait: the catalogue sets how it shows.</p>
-          <button className={s.mod} disabled title="A modifier is a gene of this species that changes how a shared trait shows. Modifiers arrive with expressions (chunk 9).">Add a modifier</button>
+          <button className={s.mod} disabled aria-disabled title="A modifier is a gene of this species that changes how a shared trait shows. Modifiers arrive with expressions.">Add a modifier</button>
+          <p className={s.help}>Not yet: modifiers arrive with expressions.</p>
         </div>
       ) : l.pin_note ? <p className={s.help} title={l.pin_note}>This species' own trait; the catalogue has a different one with the same id.</p> : null}
       {!ext?.ends || !ext.fresh ? (

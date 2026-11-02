@@ -98,13 +98,67 @@ def main():
         T["proof_frames_ms"] = round((time.perf_counter() - t) * 1000, 1)
         return rows
 
+    def cage_rows(raw, spec, genome, req):
+        """The cage-stage rows (proofs as SVG, no frames yet) of one genome, with its cage key, summary and mesh. Cached cages are rebuilt for their body only when a check has to run."""
+        ck, summ, mesh, _ = ensure_cage(dict(req, genome=genome), {})
+        if last["ck"] != ck:
+            last.update(ck=ck, r=F.build(raw, genome, "base"))
+        from checks import run as crun
+        from checks.ctx import Ctx
+        summ = dict(summ, vertices_l1=len(mesh["V"]))
+        return ck, mesh, crun("cage", Ctx(spec, last["r"].body, summ, mesh, doc=raw))
+
+    def do_extremes(req, T):
+        """Every end of every locus's limits and the loud corners, built and run through the cage checks; a failing end keeps its first failing check's proof and, for a blend, the highest value that passes."""
+        from checks import extremes as EX, run as crun, proof as PR
+        from checks.ctx import Ctx
+        raw = req["spec"]
+        spec = F.internal(raw)
+        t0 = time.perf_counter()
+        _, _, base_rows = cage_rows(raw, spec, "type", req)
+        base = {r["id"]: r["state"] for r in base_rows}
+        entries = {e["locus"]: e for e in spec["genome"]["loci"]}
+        ends, seen, n = [], {}, 0
+        todo = EX.list_ends(spec, req.get("loci"))
+        for i, e in enumerate(todo):
+            ck = K.cage_key(raw, e["genome"])
+            if ck not in seen:
+                ck, mesh, rows = cage_rows(raw, spec, e["genome"], req)
+                state, fails = EX.judge(rows, base)
+                seen[ck] = dict(state=state, fails=fails, mesh=mesh, rows=rows)
+                n += 1
+            s = seen[ck]
+            ent = entries.get(e["locus"]) or {}
+            end = dict(e, cage=ck, state=s["state"], unit=ent.get("unit", ""), fails=[EX.summary_row(r) for r in s["fails"]], scope=ent.get("scope"))
+            if s["fails"]:
+                p = dict(s["fails"][0]["proof"]) if s["fails"][0].get("proof") else None
+                if p:
+                    fr = frames(ck, s["mesh"], [(p["mode"], p["az"], 608)])
+                    p["frame"], p["frame_path"] = fr[(p["mode"], p["az"], 608)][0], fr[(p["mode"], p["az"], 608)][1]
+                    p["svg"] = PR.svg(p["svg"])
+                    end["proof"] = p
+                if e["end"] in ("low", "high") and ent:
+                    def fails_at(v, e=e):
+                        g = f"value:{e['locus']}={v}"
+                        _, _, rows = cage_rows(raw, spec, g, req)
+                        return EX.judge(rows, base)[0] == "fail"
+                    end["fix"] = EX.bisect_fix(ent, e["end"], fails_at)
+            ends.append(end)
+            send(dict(id=req["id"], progress=dict(done=i + 1, of=len(todo))))
+        T["extremes_ms"] = round((time.perf_counter() - t0) * 1000, 1)
+        T["extremes_builds"] = n
+        return crun("extremes", Ctx(spec, doc=raw, ends=ends)), ends
+
     def handle(req):
         T = {}
         t0 = time.perf_counter()
         ck, summ, mesh, cage_hit = ensure_cage(req, T)
         res = dict(cage=dict(key=ck, cage_hash=summ["cage_hash"], vertices=summ["vertices"], vertices_l1=summ.get("vertices_l1"), faces=summ["faces"], cached=cage_hit,
                              timings_ms=summ["timings_ms"], balance=summ.get("balance")), views=[])
-        if req["op"] == "check":
+        if req["op"] == "check" and req.get("stage") == "extremes":
+            res["rows"], res["ends"] = do_extremes(req, T)
+            res["stage"] = "extremes"
+        elif req["op"] == "check":
             res["rows"], res["stage"] = do_check(req, ck, summ, mesh, T), req.get("stage", "all")
         if req["op"] == "render":
             views = [tuple(v) for v in req["views"]]
