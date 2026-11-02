@@ -281,6 +281,57 @@ def palette_of(spec, g):
     return pal
 
 
+def face_clear(ctx, spec, g, V, Vm, N, torso, z):
+    """The face clear zone (pass 4). Returns (fc, FZ): fc (n,) in 0..1, 1 inside the zone: within 0.06 H (soft 0.03) of the eye discs, the mouth stroke and the blush, plus the midline corridor (|y| < 0.10) between the chin (0.12 under the mouth) and the brow (the eye's top + 0.04);
+    FZ carries the brow tufts' mask (`tuft`) and `emblem_z(size)`, the forehead emblem's height so that its edge keeps 0.06 H from the eyes."""
+    G = ctx["T"]
+    n = len(V)
+    R = spec["face"]["eyes"]["r"] * g["eye_size"]
+    ez = spec["face"]["eyes"]["station"] + g["eye_height"]; ea = spec["face"]["eyes"]["around"] + g["eye_spacing"]
+    P, nrm, up, rgt = surface_frame(G, ez, ea)
+    d = Vm - P
+    head = torso * (V[:, 2] > 1.2)
+    near = d @ nrm > -0.15
+    de = np.hypot(d @ rgt, d @ up)
+    eye_m = (1 - sstep(R + 0.06, R + 0.09, de)) * near
+    mz = spec["face"]["mouth"]["station"] + g["mouth_z"]
+    Pm, nm_, upm, rgm = surface_frame(G, mz, 1.0)
+    dm = V - Pm
+    W = spec["face"]["mouth"]["width"] * g["mouth_width"]
+    ex = np.maximum(np.maximum(np.abs(dm @ rgm) - W / 2, np.abs(dm @ upm + 0.01) - 0.045), 0.0)
+    mouth_m = (1 - sstep(0.06, 0.09, ex)) * (dm @ nm_ > -0.15)
+    blush_m = np.zeros(n)
+    if g.get("blush"):
+        cz, ca_ = spec["face"]["cheeks"]["station"], spec["face"]["cheeks"]["around"]
+        Pc, nc, upc, rgc = surface_frame(G, cz, ca_)
+        dc = Vm - Pc
+        rc = np.hypot(dc @ rgc / 1.3, dc @ upc)
+        blush_m = (1 - sstep(spec["face"]["cheeks"]["r"] * 1.1 + 0.06, spec["face"]["cheeks"]["r"] * 1.1 + 0.09, rc)) * (dc @ nc > -0.15)
+    z_top = ez + R + 0.04
+    z_bot = mz - 0.12
+    corr = (1 - sstep(0.10, 0.14, np.abs(V[:, 1]))) * sstep(z_bot - 0.03, z_bot + 0.03, z) * (1 - sstep(z_top - 0.03, z_top + 0.03, z)) * sstep(0.15, 0.35, N[:, 0])
+    fc = np.clip(np.maximum.reduce([eye_m, mouth_m, blush_m, corr]) * head, 0.0, 1.0)
+    # the brow tufts: in the eye's own frame (outward = away from the midline), lower edge 0.065 H above the eye's top, 0.12 x 0.03 H, the outer end raised 12 degrees on the flat (about 10 on the curved head)
+    sg = 1.0 if rgt[1] >= 0 else -1.0
+    uo, vo = (d @ rgt) * sg, d @ up
+    cu, cv = 0.0, R + 0.065 + 0.015 + 0.012
+    ang = math.radians(12.0)
+    sa, wa = (uo - cu) * math.cos(ang) + (vo - cv) * math.sin(ang), -(uo - cu) * math.sin(ang) + (vo - cv) * math.cos(ang)
+    dseg = np.hypot(np.maximum(np.abs(sa) - 0.045, 0.0), wa)
+    tuft = (1 - sstep(0.015 - 0.004, 0.015 + 0.002, dseg)) * near * head * (np.linalg.norm(d, axis=1) < 0.6)
+    def emblem_z(size):
+        zc = 1.94
+        for _ in range(8):
+            Pk = surface_frame(G, zc, 1.0)[0]
+            dist = float(np.linalg.norm(Pk - P))
+            need = R + 0.06 + 1.15 * float(size)
+            if dist >= need:
+                break
+            zc += (need - dist) * 0.8 + 0.005
+        return zc
+    return fc, dict(tuft=tuft, emblem_z=emblem_z, eye=eye_m, mouth=mouth_m, blush=blush_m, corridor=corr)
+
+
 def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     """V (n,3) level-3 vertices of the full mesh, attr (n,4) (part, s, around, tag), part (n,) int part id per vertex, N (n,3) vertex normals, tag (n,) bead tag.
     Returns dict(col linear (n,3), emit linear (n,3), rough (n,)) and a `fields` dict of the masks (for the pictures and tests)."""
@@ -353,6 +404,9 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     belly = np.where(torso & ~tail, belly, belly * (arm_b + leg_b).clip(0, 1))
     F["belly"] = belly
     mark = srgb_to_lin(pal["mark"])
+    # ---- the face clear zone (pass 4, AD gate on pass 3): no coat mark within 0.06 H of the eyes, the mouth or the blush, and none across the face's midline between the brow and the chin. Spots, stripes and bands stop at the face.
+    fc, FZ = face_clear(ctx, spec, g, V, Vm, N, torso, z)
+    F["face_clear"] = fc
     if g["rd"] != "none":
         sc = float(g["rd_scale"])
         key = (g["rd"], seed)
@@ -361,7 +415,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         gy = (zeff - 0.2) / 2.0
         grid = _rd(g["rd"], seed, sc)
         pat = sample_grid(grid, gx, gy)
-        w = torso * (1 - belly) * (1 - sstep(1.95, 2.15, z))
+        w = torso * (1 - belly) * (1 - sstep(1.95, 2.15, z)) * (1 - fc)
         m = w * sstep(0.46, 0.62, pat) * (0.55 + 0.45 * g["rd_contrast"])
         F["rd"] = m
         col = col * (1 - m[:, None]) + mark * m[:, None] * 1.0
@@ -384,7 +438,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         u, v = d @ rgt, d @ up
         m = (1 - sstep(0.85, 1.15, np.hypot(u / 0.38, v / 0.22))) * (d @ nrm > -0.15) * torso           # the muzzle mask: 0.38 x 0.22 H (pass 3: at 0.30 x 0.16 it differed from plain in under 3 % of a 96 px thumbnail)
         F["face"] = m
-        col = col * (1 - m[:, None]) + srgb_to_lin(pal["pad"]) * 0.9 * m[:, None]
+        col = col * (1 - m[:, None]) + belly_c * 0.97 * m[:, None]          # pass 4: the muzzle is a lighter patch (the face clear zone: no mark darker than the coat by the mouth)
     if "points" in zones:
         Le = ctx["info"]["tubes"].get("ear.L", {"path": None})
         pts = np.zeros(n)
@@ -409,7 +463,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         size = 0.16
         d, cell = voronoi(V * (1.0 / size), seed + 5)
         r = 0.36 + 0.14 * cell
-        host = torso * (1 - np.where(zeff > 1.35, sstep(0.72, 0.86, a_geo), sstep(0.90, 0.98, a_geo))) * band(zeff, 0.35, 1.95, 0.15) * (1 - belly)          # back and sides (pass 3: on the back alone the spots were invisible in the house view)
+        host = torso * (1 - np.where(zeff > 1.35, sstep(0.72, 0.86, a_geo), sstep(0.90, 0.98, a_geo))) * band(zeff, 0.35, 1.95, 0.15) * (1 - belly) * (1 - fc)          # back and sides (pass 3: on the back alone the spots were invisible in the house view)
         m = host * (1 - sstep(r - 0.06, r + 0.04, d)) * (cell > 0.12)
         F["spots"] = m
         ring = host * band(d, r - 0.16, r, 0.04) * (cell > 0.35) * g["rosette"]
@@ -419,10 +473,9 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         m = torso * sstep(1.96 - 0.04 + (fl - 0.5) * 0.1, 1.96 + 0.08, z)
         F["cap"] = m
         col = col * (1 - m[:, None]) + mark * m[:, None]
-    # brow stripe (a gene): a band across the brow above the eyes
+    # brow (a gene, pass 4): two separate tufts above the eyes, each 0.12 x 0.03 H, its lower edge 0.065 H above the eye's top, the outer end raised 12 degrees on the flat (about 10 on the curved head) (it reads friendly); never a bar across the forehead
     if g["brow"] > 0 and torso.any():
-        w = 0.022 + 0.02 * g["brow"]
-        m = torso * band(z, 1.855 - w, 1.855 + w, 0.012) * sstep(0.55, 0.7, a_geo)
+        m = torso * FZ["tuft"]
         F["brow"] = m
         col = col * (1 - m[:, None]) + mark * m[:, None]
     # legs: pads and bead toes; arms and the nose
@@ -483,7 +536,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         emit = emit + glow_n0 * (bm * (0.55 + 0.45 * gl))[:, None]
     elif gp == "constellation":
         dd, cc = voronoi(V * (1.0 / 0.17), seed + 31)
-        host_ = (torso & ~tail) * (1 - belly) * band(zeff, 0.5, 2.05, 0.1) * clear
+        host_ = (torso & ~tail) * (1 - belly) * band(zeff, 0.5, 2.05, 0.1) * clear * (1 - fc)
         dots = host_ * (cc < 0.5) * (1 - sstep(0.07, 0.13, dd))
         F["glow_pattern"] = dots
         col = col * (1 - 0.8 * dots[:, None]) + np.clip(glow * 0.5 + 0.5, 0, 1.2) * 0.8 * dots[:, None]
@@ -615,6 +668,8 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     if g["mark"] != "none":
         where = g["mark_where"]
         zc, ac = {"forehead": (1.94, 1.0), "cheek": (1.5, 0.64), "belly": (0.85, 1.0)}[where]
+        if where == "forehead":
+            zc = FZ["emblem_z"](g["mark_size"])
         Pk, nk, upk, rgk = surface_frame(G, zc, ac)
         dk = (V if where != "cheek" else np.stack([x, np.abs(y), z], 1)) - Pk
         uk, vk = dk @ rgk, dk @ upk
