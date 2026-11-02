@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import s20indiv as IN, s20tex as TX, s20pipe as PP, s20glb, s20coat as CT, s20normals as NM, s20p2 as P2, s20sil as SL, subdiv as SD
 
 SHIP_LEVEL = 1                         # the owner: ship subdivision level 1 of the relaxed cage, at most 3,500 vertices
-MAX_SHIPPED = 3500
+MAX_SHIPPED = 4000          # pass 3 brief: a total of about 4,000 or less (the toes, the root rings and the hard arm shells are the detail the owner asked for; pass 2 was 3,500)
 OLD_L3_VERTICES = 49162                 # the pass-1 glb: level 3 of the type specimen, the coat as vertex colours
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "out")
 

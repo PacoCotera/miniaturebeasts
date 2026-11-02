@@ -93,7 +93,7 @@ const GLB = "%GLB%";
   // ---- Bones: joint-to-joint bones with joint dots, drawn on top of every mode (depthTest off), coloured by the spine's named ranges (and limb / appendage), the head pivot = the spine's end highlighted,
   // names on hover and in a legend, following the playing clip (each point is carried by its bone: local = rest point - the bone's rest head, to world through the bone's current matrix)
   const BN = ex.bones;
-  const RC = { head: 0xe8452c, neck: 0xf0a020, back: 0x3aa655, seat: 0x1c9aa8, tail: 0x8a4fd0, limb: 0x2b6fd6, appendage: 0xd8509a };
+  const RC = { head: 0xe8452c, neck: 0xf0a020, back: 0x3aa655, seat: 0x1c9aa8, tail: 0x8a4fd0, limb: 0x2b6fd6, appendage: 0xd8509a, shoulder: 0xe0b020, hip: 0x20a0e0 };
   const bonesGroup = new THREE.Group(); bonesGroup.visible = false; scene.add(bonesGroup);
   const sane = (n) => n.replace(/\s/g, "_").replace(/[\[\]\.:\/]/g, "");        // GLTFLoader strips dots from node names
   const boneObj = {}; gltf.scene.traverse(o => { if (o.isBone) boneObj[o.name] = o; });

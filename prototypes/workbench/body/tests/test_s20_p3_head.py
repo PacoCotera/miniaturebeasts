@@ -67,3 +67,31 @@ class T(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TSkeleton(unittest.TestCase):
+    def test_limb_sockets_are_placed_from_the_girdle_joints(self):
+        c, b, R = IN.make(1)
+        sk = RAW["parts"]["torso"]["skeleton"]
+        arm_root = RAW["parts"]["arm.L"]["families"]["nub"]["joints"][0]["at"]
+        self.assertTrue(np.allclose(arm_root, sk["shoulder"]))                       # the arm shell sits at the shoulder joint
+        self.assertEqual(RAW["parts"]["arm.L"]["socket"]["join"], "hard")
+        for sd in "LR":
+            self.assertTrue(np.allclose(R.bones["arm." + sd][0] * np.array([1, 1, 1]), np.array(sk["shoulder"]) * np.array([1, 1 if sd == "L" else -1, 1])))
+            self.assertEqual(R.parent["arm." + sd], "clav." + sd)                      # arm chain <- clavicle <- chest joint on the spine
+            self.assertTrue(np.allclose(R.bones["clav." + sd][0], sk["chest"]))
+            self.assertEqual(R.parent["leg.upper." + sd], "hip." + sd)                 # leg chain <- hip bone <- pelvis joint in the seat range
+            self.assertTrue(np.allclose(R.bones["hip." + sd][0], sk["pelvis"]))
+            self.assertTrue(np.allclose(R.bones["hip." + sd][1], R.bones["leg.upper." + sd][0]))
+        self.assertTrue(0.9 <= sk["chest"][2] <= 1.17)                                 # top of the back range, under the neck band
+        G = b.ctx["T"]
+        self.assertLessEqual(sk["pelvis"][2], 2.2 - G.ranges["seat"][0] + 0.5)
+
+    def test_every_bone_but_the_root_and_the_leg_column_carries_weight(self):
+        c, b, R = IN.make(1)
+        V, F, at, fp2 = P2.level_arrays(b, 2)
+        part = IN.part_of(b, F, fp2, len(V))
+        W = R.weights(V, at, part)
+        unused = [n for i, n in enumerate(R.names) if W[:, i].max() <= 1e-9]
+        self.assertEqual(sorted(unused), ["leg.lower.L", "leg.lower.R", "root"])       # the root is static and the lower leg is the same column as the upper: tail.6 now carries the last stalk
+        self.assertLess(float(np.abs(W.sum(1) - 1).max()), 1e-9)

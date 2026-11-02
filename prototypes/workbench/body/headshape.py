@@ -9,7 +9,7 @@ and shifts the head forward of the spine by `d` of its depth (the skull dome is 
 """
 import numpy as np
 
-DEFAULTS = dict(rump_gain=0.0, rump_window=(0.22, 0.40, 0.52, 0.74), R_scale=1.0, chest_gain=0.0, chest_window=(0.5, 0.85, 1.02, 1.2), z_keep=1.0, zc=1.68, z_neck=1.2, neck_ratio=0.66, b_dn=0.46, p=2.4, n=4.0, back_ratio=0.895, front_ratio=0.905, d=0.0, shift_lo=(1.28, 1.55), shift_lo_front=(1.5, 1.78), back_share=0.25, shift_hi=(1.78, 2.12), shift_hi_front=(1.78, 2.12), brow=0.0, depth=1.143)
+DEFAULTS = dict(chest_front=0.0, chest_front_window=(0.72, 0.88, 1.04, 1.2), rump_gain=0.0, rump_window=(0.22, 0.40, 0.52, 0.74), R_scale=1.0, chest_gain=0.0, chest_window=(0.5, 0.85, 1.02, 1.2), z_keep=1.0, zc=1.68, z_neck=1.2, neck_ratio=0.66, b_dn=0.46, p=2.4, n=4.0, back_ratio=0.895, front_ratio=0.905, d=0.0, shift_lo=(1.28, 1.55), shift_lo_front=(1.5, 1.78), back_share=0.25, shift_hi=(1.78, 2.12), shift_hi_front=(1.78, 2.12), brow=0.0, depth=1.143)
 
 
 def sstep(a, b, x):
@@ -27,6 +27,8 @@ def stations(base, **kw):
     w0, w1, w2, w3 = P["chest_window"]
     g = 1.0 + P["chest_gain"] * sstep(w0, w1, z) * (1 - sstep(w2, w3, z))         # the shoulders and the upper chest swell out a little (the head is 1.28 H and the trunk's mesh is narrower than its design)
     out = out * np.where(z < P["z_keep"] + 1e-9, g, 1.0)[:, None]
+    c0_, c1_, c2_, c3_ = P["chest_front_window"]
+    out[:, 2] = out[:, 2] * (1.0 + P["chest_front"] * sstep(c0_, c1_, z) * (1 - sstep(c2_, c3_, z)))        # a round swell of the chest's front under the neck band
     r0_, r1_, r2_, r3_ = P["rump_window"]
     out[:, 0] = out[:, 0] * (1.0 + P["rump_gain"] * sstep(r0_, r1_, z) * (1 - sstep(r2_, r3_, z)))      # a fuller, rounder rump: the back radius swells at the seat so the back wall bulges and curves in under the tail (it was a straight ramp from the seat's bottom to the tail's underside)
     side0 = out[:, 1].copy()

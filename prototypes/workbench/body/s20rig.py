@@ -59,12 +59,16 @@ class Rig:
         self.head_geom = hg
         self.head_pivot = np.array(hg["pivot"], float)          # the spine's end: the head turns about its underside (biped) or the back of the skull (quadruped / serpentine), not about the waist
         add("head", self.head_pivot, (hg["centre"][0], 0.0, hg["centre"][1]), "body")
+        sk = spec["parts"]["torso"].get("skeleton", {})
+        self.chest = np.array(sk.get("chest", (0.0, 0.0, 1.0)), float)          # a joint on the spine at the top of the back range, just under the neck: the shoulder girdle starts here
+        self.pelvis = np.array(sk.get("pelvis", (0.0, 0.0, 0.5)), float)         # a joint in the seat range: the hip bones start here
         leg = np.array(spec["parts"]["leg.L"]["P"])
         self.leg_P = leg
         for side in SIDES:
             sg = 1 if side == "L" else -1
             Q = leg * np.array([1, sg, 1])
-            add(f"leg.upper.{side}", Q[0], Q[1], "body")
+            add(f"hip.{side}", self.pelvis, Q[0], "body")                          # a short hip bone from the pelvis joint to the hip joint
+            add(f"leg.upper.{side}", Q[0], Q[1], f"hip.{side}")
             add(f"leg.lower.{side}", Q[1], Q[2], f"leg.upper.{side}")
             add(f"leg.foot.{side}", Q[2], Q[3], f"leg.lower.{side}")
         tail = np.array(spec["parts"]["tail"]["P"])
@@ -90,7 +94,9 @@ class Rig:
         aP = np.array(ap["families"][ap["default"]]["P"])
         for side in SIDES:
             sg = 1 if side == "L" else -1
-            add(f"arm.{side}", aP[0] * np.array([1, sg, 1]), aP[-1] * np.array([1, sg, 1]), "body")
+            sh = aP[0] * np.array([1, sg, 1])                                       # the shoulder joint: the arm's hard-join shell is placed from it (the arm's root joint)
+            add(f"clav.{side}", self.chest, sh, "body")                             # a short clavicle from the chest joint to the shoulder joint
+            add(f"arm.{side}", sh, aP[-1] * np.array([1, sg, 1]), f"clav.{side}")
         self.names = list(B)
         self.tail_pivot = np.array(spec["parts"]["tail"]["P"][0], float)      # the tail turns about its root joint (inside the body); a pivot on the loft swung the lantern too little
         self.curl = float(spec["parts"]["tail"].get("clip", {}).get("applied", 0.0))
@@ -124,6 +130,13 @@ class Rig:
             bone = f"tail.{k + 1}" if k + 1 < len(tail) else "tip"
             tp.append(P(f"tail.{k}", f"tail.{k}", tail[k]))
             S(tp[-2], tp[-1], "tail", f"tail.{k}")
+        chest_p = P("chest (top of the back range)", "body", self.chest)
+        pelv_p = P("pelvis (seat range)", "body", self.pelvis)
+        S(seat0, pelv_p, "seat", "seat to pelvis")
+        for sd in SIDES:
+            if f"clav.{sd}" in B:
+                h, t = B[f"clav.{sd}"]; S(chest_p, P(f"shoulder {sd}", f"clav.{sd}", t), "shoulder", f"clav.{sd}")
+            h, t = B[f"hip.{sd}"]; S(pelv_p, P(f"hip joint {sd}", f"hip.{sd}", t), "hip", f"hip.{sd}")
         for sd in SIDES:
             for nm, rng in ((f"leg.upper.{sd}", "limb"), (f"leg.lower.{sd}", "limb"), (f"leg.foot.{sd}", "limb"), (f"arm.{sd}", "appendage"), (f"ear.1.{sd}", "appendage"), (f"ear.2.{sd}", "appendage")):
                 if nm not in B:
@@ -131,7 +144,7 @@ class Rig:
                 h, t = B[nm]
                 a = P(nm + " head", nm, h); b = P(nm + " tail", nm, t)
                 S(a, b, rng, nm)
-        return dict(points=pts, segs=segs, ranges=["head", "neck", "back", "seat", "tail", "limb", "appendage"], spine_end=pivot, pivot=pivot)
+        return dict(points=pts, segs=segs, ranges=["head", "neck", "back", "seat", "tail", "shoulder", "hip", "limb", "appendage"], spine_end=pivot, pivot=pivot)
 
     # ------------------------------------------------------------ weights
     def weights(self, V, attr, part):
@@ -199,7 +212,7 @@ class Rig:
                     W[:, idx[nm]] *= (1 - wl)
             W[:, idx[f"leg.upper.{sd}"]] += wl
         lb = float(G.bulb[0])                                    # the bulb on the last stretch of the one spine is carried by the tip bone, blended into the stalk over 0.1 H
-        wt = (1 - sstep(lb, lb + 0.10, s)) * torso
+        wt = (1 - sstep(0.35 * lb, lb + 0.05, s)) * torso               # the tip bone carries the bulb's lower third and hands over to tail.6 (the last stalk segment lies wholly under the bulb: it carried nothing)
         if lb > 0:
             for nm in names:
                 if nm.startswith("tail.") or nm == "body":
@@ -228,6 +241,15 @@ class Rig:
                 m = arm & (side == sd)
                 W[m, idx[f"arm.{sd}"]] = (1 - rba)[m]
                 W[m, idx["body"]] += rba[m]
+        B = self.bones
+        for sd in SIDES:                                   # the clavicle and the hip bone carry the trunk's skin round the shoulder and the hip joint (they move with the body)
+            for nm_, jt in ((f"clav.{sd}", B[f"arm.{sd}"][0] if f"arm.{sd}" in B else None), (f"hip.{sd}", B[f"leg.upper.{sd}"][0])):
+                if jt is None:
+                    continue
+                dd = np.linalg.norm(V - jt, axis=1)
+                wg = (1 - sstep(0.06, 0.28, dd)) * torso * (np.sign(V[:, 1] + 1e-12) == (1 if sd == "L" else -1))
+                W[:, idx[nm_]] = 0.35 * wg * W[:, idx["body"]]
+                W[:, idx["body"]] *= (1 - 0.35 * wg)
         sm = W.sum(1)
         sm[sm == 0] = 1
         return W / sm[:, None]
@@ -267,6 +289,8 @@ class Rig:
                 M[f"ear.1.{sd}"] = M["head"] @ rot(x, sg * ear, hd1)
                 M[f"ear.2.{sd}"] = M[f"ear.1.{sd}"] @ rot(x, sg * 0.7 * ear, hd2)
             M[f"arm.{sd}"] = Mb @ rot(y, arm, B[f"arm.{sd}"][0])
+            M[f"clav.{sd}"] = Mb
+            M[f"hip.{sd}"] = Mb
         return M
 
     # ------------------------------------------------------------ breathing (owner, 2 Nov): only the chest and belly inflate

@@ -39,7 +39,7 @@ class T(unittest.TestCase):
         self.assertGreater(r["min_inner_gap_H"], 0)
 
     def test_room_clip_is_logged_and_never_shrinks_the_radius(self):
-        for g in (dict(curl=0.45), dict(curl=0.45, tailGirth=1.15), dict(curl=0.45, tailGirth=1.1, tailLen=0.8)):
+        for g in (dict(curl=0.45), dict(curl=0.45, tailGirth=1.5), dict(curl=0.45, tailGirth=1.4, tailLen=0.8)):
             raw = s20genes.apply_shape(RAW, g)
             tl = raw["parts"]["tail"]
             self.assertIn("clip", tl)
@@ -50,7 +50,7 @@ class T(unittest.TestCase):
             P = PA.fk(tl["joints"][0]["at"], tl["joints"])
             _, rep = PA.fillet_path(P, [j["r"] for j in tl["joints"]], tl["fillet"])
             self.assertTrue(all(x["ok"] for x in rep), g)
-        raw = s20genes.apply_shape(RAW, dict(curl=0.45, tailGirth=1.15))
+        raw = s20genes.apply_shape(RAW, dict(curl=0.45, tailGirth=1.5))
         self.assertLess(raw["parts"]["tail"]["clip"]["factor"], 1.0)         # a short thick tail is clipped earlier: logged
         raw = s20genes.apply_shape(RAW, dict(curl=0.0))
         self.assertEqual(raw["parts"]["tail"]["clip"]["factor"], 1.0)
@@ -66,6 +66,8 @@ class T(unittest.TestCase):
     def test_first_ring_outside_loft(self):
         G = self.ctx["T"]
         for nm, rec in self.rec.items():
+            if rec.get("hard"):                        # a hard join is a shell sunk into the parent: its first ring is buried by design (tested in test_s20_p2_joins)
+                continue
             ri = rec["ringinfo"][0]
             ps = np.linspace(0, 2 * np.pi, 24, endpoint=False)
             X = ri["centre"] + (ri["rf"] * np.cos(ps))[:, None] * ri["N"] + (ri["ra"] * np.sin(ps))[:, None] * ri["B"]
