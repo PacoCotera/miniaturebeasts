@@ -108,7 +108,9 @@ class Rig:
         hg = self.head_geom
         seat0 = P("seat", "body", (0.0, 0.0, 0.18))
         belly = P("belly", "body", self.belly)
-        waist = P("waist", "body", self.waist)
+        rng = ctx_ranges = self.ctx["T"].ranges
+        z_nb = 2.2 - float(rng["neck"][1])                                  # the neck range's lower end (the vertical run: u = 2.2 - z): the concave band under the head
+        waist = P("neck base (waist)", "body", (0.0, 0.0, z_nb))
         pivot = P("head pivot = spine end", "head", self.head_pivot)
         crown = P("crown", "head", (hg["centre"][0] * 0.4, 0.0, 2.2))
         S(seat0, belly, "seat", "seat")
