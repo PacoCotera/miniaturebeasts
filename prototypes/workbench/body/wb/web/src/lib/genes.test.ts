@@ -38,7 +38,8 @@ describe('genes', () => {
   })
   it('shows the first failing end\'s proof unless the URL says none', () => {
     const e = end({ proof: { mode: 'clay', az: 90, key: 'k', ready: true } })
-    expect(proofEnd(ext(true, [e]), 'body.tail-length', null)?.id).toBe('x')
+    expect(proofEnd(ext(true, [e]), 'body.tail-length', null)).toBeNull()
+    expect(proofEnd(ext(true, [e]), 'body.tail-length', 'x')?.id).toBe('x')
     expect(proofEnd(ext(true, [e]), 'body.tail-length', 'none')).toBeNull()
     expect(proofEnd(ext(true, [end({})]), 'body.tail-length', null)).toBeNull()
   })

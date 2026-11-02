@@ -36,10 +36,10 @@ def main():
         spec, genome = req["spec"], req.get("genome", "type")
         ck = K.cage_key(spec, genome)
         summ = cas.get_json(ck)
-        if summ is not None and cas.has(ck, "npz"):
+        if summ is not None and cas.has(ck, "npz") and "face_V" in np.load(cas.path(ck, "npz")).files:
             z = np.load(cas.path(ck, "npz"))
             names = json.loads(str(z["names"]))
-            return ck, summ, dict(V=z["V"], F=z["F"], part=z["part"], names={int(k): v for k, v in names.items()}), True
+            return ck, summ, dict(V=z["V"], F=z["F"], part=z["part"], names={int(k): v for k, v in names.items()}, face_V=z["face_V"], face_F=json.loads(str(z["face_F"]))), True
         t = time.perf_counter()
         r = F.build(spec, genome, "base")
         last.update(ck=ck, r=r)
@@ -49,9 +49,13 @@ def main():
         T["mesh_ms"] = round((time.perf_counter() - t) * 1000, 1)
         summ = r.summary()
         summ["vertices_l1"] = int(len(m["V"]))
+        from wb import clayface as CF
+        cx = r.body.ctx
+        m["face_V"], fF = CF.face_mesh(cx["T"], cx["spec"], dict(r.c.get("coat") or {}), m)
+        m["face_F"] = fF
         tmp = cas.tmp("npz")
         with open(tmp, "wb") as fh:
-            np.savez(fh, V=m["V"], F=m["F"], part=m["part"], names=json.dumps({str(k): v for k, v in m["names"].items()}))
+            np.savez(fh, V=m["V"], F=m["F"], part=m["part"], names=json.dumps({str(k): v for k, v in m["names"].items()}), face_V=m["face_V"], face_F=json.dumps(fF))
         cas.adopt(tmp, ck, "npz")
         cas.put_json(ck, summ)
         return ck, summ, m, False

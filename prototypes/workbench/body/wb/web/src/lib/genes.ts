@@ -9,7 +9,9 @@ export type Locus = {
 export type Genome = { catalogue: { id: string; version: number }; chapters: { id: string; name: string }[]; loci: Locus[] }
 export type EndFail = { id: string; fail: string | null; measure: string | null; value: number | string | null; limit: number | string | null }
 export type End = { id: string; locus: string | null; end: 'low' | 'high' | 'allele' | 'corner'; genome: string; value: number | string; label: string; state: 'pass' | 'fail'; fails: EndFail[]; unit?: string; fix?: { value: number; path: string; end: 'low' | 'high' } | null; proof?: Proof; cage: string }
-export type ExtremesState = { fresh: boolean; running: boolean; ends: End[] | null; rows: CheckRow[] | null; key: string }
+export type ExtremesState = { fresh: boolean; running: boolean; ends: End[] | null; rows: CheckRow[] | null; key: string; at?: number | null }
+export const failingEnds = (x: ExtremesState | null | undefined) => (x?.ends ?? []).filter((e) => e.state === 'fail')
+export const runTime = (at: number | null | undefined) => (at ? new Date(at * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'an earlier run')
 
 export const locusById = (g: Genome | undefined, id: string | null) => g?.loci.find((l) => l.locus === id) ?? null
 
@@ -82,9 +84,9 @@ export function rangeBar(l: Locus) {
 
 // The failing end whose proof is on the stage: the one the URL names, else the first that fails (the mock shows it by default); `proof=none` puts the clay back.
 export function proofEnd(x: ExtremesState | null | undefined, locus: string, param: string | null): End | null {
-  if (param === 'none') return null
+  if (!param || param === 'none') return null
   const bad = endsOf(x, locus).filter((e) => e.state === 'fail' && e.proof?.ready)
-  return bad.find((e) => e.id === param) ?? bad[0] ?? null
+  return bad.find((e) => e.id === param) ?? null          // on demand: the failing end keeps its clay until "Show proof" names it
 }
 
 // The camera a locus is judged from: the part it moves, seen from where it shows. The house camera is fixed, so a view is an azimuth and a crop of the 608 render (zoom about a point, in percent of the tile).

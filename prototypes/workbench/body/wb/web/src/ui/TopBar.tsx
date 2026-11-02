@@ -9,6 +9,7 @@ import { ModeSwitch } from './ModeSwitch'
 import { JobIndicator } from './JobIndicator'
 import { LeaseAvatar } from './LeaseAvatar'
 import { AttentionPill } from './AttentionPill'
+import { failingEnds } from '../lib/genes'
 import { useUI } from '../lib/store'
 import { usePortraitSheet } from '../lib/useStudio'
 import s from './TopBar.module.css'
@@ -43,7 +44,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
       <ModeSwitch url={url} />
       <div className={s.right}>
         <JobIndicator species={url.species} />
-        <AttentionPill rows={species?.checks?.rows ?? null} onOpen={() => go({ drawer: 'checks' })} />
+        <AttentionPill rows={species?.checks?.rows ?? (species?.extremes?.ends ? [] : null)} ends={failingEnds(species?.extremes).length} onOpen={() => go({ drawer: 'checks' })} />
         <LeaseAvatar species={species} />
         {sheet && <button className={s.iconbtn} onClick={toggleInsp} aria-label="Inspector"><span className={s.panelIcon} /></button>}
         <button className={s.quiet} disabled>{W.play}</button>

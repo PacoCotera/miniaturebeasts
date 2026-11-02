@@ -6,6 +6,7 @@ import { clock } from '../lib/edits'
 import { useJobs } from '../lib/events'
 import { useUI } from '../lib/store'
 import type { StudioUrl } from '../lib/url'
+import { endLine, endMeasure, failingEnds, locusById, runTime } from '../lib/genes'
 import s from './ChecksDrawer.module.css'
 
 // The Checks drawer: the full table grouped by state, over the navigator and the stage. It opens on "Needs you" (fails and warnings: the same number as the pill); "All" shows every row.
@@ -19,6 +20,8 @@ export function ChecksDrawer({ species, url, go }: { species: Species; url: Stud
   const checks = species.checks
   const rows = checks?.rows ?? []
   const need = needsYou(rows)
+  const badEnds = failingEnds(species.extremes)
+  const g = species.file.genome
   const shown = (tab === 'needs' ? need : rows).slice().sort((a, b) => ORDER[a.state] - ORDER[b.state])
   const sel = rows.find((r) => r.id === url.proof) ?? shown[0]
   const measuring = jobs.some((j) => j.kind === 'check')
@@ -37,7 +40,7 @@ export function ChecksDrawer({ species, url, go }: { species: Species; url: Stud
       <div className={s.head}>
         <b>Checks</b>
         <span className={s.seg} role="tablist">
-          <button role="tab" aria-selected={tab === 'needs'} className={tab === 'needs' ? s.on : ''} onClick={() => setTab('needs')}>Needs you <span className="num">{need.length}</span></button>
+          <button role="tab" aria-selected={tab === 'needs'} className={tab === 'needs' ? s.on : ''} onClick={() => setTab('needs')}>Needs you <span className="num">{need.length + badEnds.length}</span></button>
           <button role="tab" aria-selected={tab === 'all'} className={tab === 'all' ? s.on : ''} onClick={() => setTab('all')}>All <span className="num">{rows.length}</span></button>
         </span>
         <span className={s.quiet}>{quiet}</span>
@@ -45,7 +48,13 @@ export function ChecksDrawer({ species, url, go }: { species: Species; url: Stud
       </div>
       <div className={s.body}>
         <div className={s.tablewrap}>
-          {rows.length === 0 ? <p className={s.empty}>{measuring ? 'Measuring…' : 'Not measured yet.'}</p> : shown.length === 0 ? <p className={s.empty}>Nothing needs you. “All” shows every check.</p> : (
+          {badEnds.length > 0 && (
+            <div className={s.ends} aria-label="Failing ends from the last extremes run">
+              <p><b>From the last extremes run, {runTime(species.extremes?.at)}</b>{species.extremes && !species.extremes.fresh ? ' (the file has changed since)' : ''}</p>
+              <ul>{badEnds.map((e) => { const l = locusById(g, e.locus); return <li key={e.id}><i className={s.dot} data-kind="fail" data-stale={!species.extremes?.fresh || undefined} /> {l ? endLine(l, e) : e.label} <span className="num">{endMeasure(e)}</span></li> })}</ul>
+            </div>
+          )}
+          {rows.length === 0 && badEnds.length === 0 ? <p className={s.empty}>{measuring ? 'Measuring…' : 'Not measured yet.'}</p> : shown.length === 0 ? <p className={s.empty}>Nothing needs you. “All” shows every check.</p> : (
             <table className={s.table}>
               <thead><tr><th style={{ width: 28 }} /><th>Check</th><th className={s.r}>Value</th><th className={s.r}>Limit</th><th>Stage</th><th className={s.r}>Measured</th></tr></thead>
               <tbody>

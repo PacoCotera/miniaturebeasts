@@ -1,7 +1,7 @@
 """Cache keys, in one place so the server and the workers agree. Cage key: framework id + the cage inputs (facade.cage_key). Frame key: cage key + mode, azimuth, size, elevation and the proxy's look version. Job keys: hashes of the frame keys they need."""
 from wb import hashing as H, facade as F
 
-LOOK = "proxy-1"
+LOOK = "proxy-2"
 EL = 10.0
 
 

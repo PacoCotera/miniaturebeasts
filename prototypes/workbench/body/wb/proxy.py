@@ -85,7 +85,10 @@ class ProxyRenderer:
             m = bpy.data.materials.new(nm)
             m.diffuse_color = (*col, 1.0)
             self.mats[nm] = m
-        self.body = self.wire = None
+        fm = bpy.data.materials.new("face")
+        fm.diffuse_color = (0.045, 0.04, 0.05, 1.0)
+        self.mats["face"] = fm
+        self.body = self.wire = self.face = None
         self.mesh = None
         self.mesh_key = None
 
@@ -139,6 +142,18 @@ class ProxyRenderer:
         self.wire.data = me
         self.wire.material_slots[0].link = "OBJECT"
         self.wire.material_slots[0].material = self.mats["wire"]
+        if self.face is not None:
+            old_f = self.face.data
+            bpy.data.objects.remove(self.face)
+            bpy.data.meshes.remove(old_f)
+            self.face = None
+        if mesh.get("face_V") is not None and len(mesh["face_V"]):          # the clay's face: flat dark eyes and mouth (wb/clayface.py), seen in the clay view only
+            fme = bpy.data.meshes.new("face")
+            fme.from_pydata(np.asarray(mesh["face_V"], float).tolist(), [], [list(map(int, p)) for p in mesh["face_F"]])
+            fme.update()
+            fme.materials.append(self.mats["face"])
+            self.face = bpy.data.objects.new("face", fme)
+            self.sc.collection.objects.link(self.face)
         self.mesh = dict(V=V, F=F, part=part)
         from gltf_out import vertex_normals
         self.mesh["N"] = vertex_normals(V, F)
@@ -168,6 +183,8 @@ class ProxyRenderer:
         sh = self.sc.display.shading
         me = self.body.data
         self.wire.hide_render = mode != "wire"
+        if self.face is not None:
+            self.face.hide_render = mode != "clay"
         if mode == "normal":
             N = self.mesh["N"]
             col = np.clip(0.5 + 0.5 * np.stack([N @ right, N @ up, -(N @ fwd)], 1), 0, 1)

@@ -518,10 +518,14 @@ class Server:
         res = self.cas.get_json(key)
         if res is not None:
             res = self.with_proof_state(res)
-            self.extremes_seen[sp.id] = res
-            return dict(fresh=True, running=running, ends=res["ends"], rows=res["rows"], key=key)
-        old = self.extremes_seen.get(sp.id)
-        return dict(fresh=False, running=running, ends=old["ends"] if old else None, rows=old["rows"] if old else None, key=key)
+            try:
+                at = os.path.getmtime(self.cas.path(key, "json"))             # when the run finished: the pill and the drawer say "from the last extremes run, at ..."
+            except OSError:
+                at = None
+            self.extremes_seen[sp.id] = (res, at)
+            return dict(fresh=True, running=running, ends=res["ends"], rows=res["rows"], key=key, at=at)
+        old, at = self.extremes_seen.get(sp.id, (None, None))
+        return dict(fresh=False, running=running, ends=old["ends"] if old else None, rows=old["rows"] if old else None, key=key, at=at)
 
     def finish_ok(self, job, result):
         cache = dict(job_hit=False)

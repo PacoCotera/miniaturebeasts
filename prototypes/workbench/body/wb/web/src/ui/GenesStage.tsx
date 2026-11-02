@@ -7,7 +7,7 @@ import { Plate } from './Plate'
 import s from './GenesStage.module.css'
 
 const RATIO = 304 / 312
-const END = { w: 240, h: Math.round(240 / RATIO) }, MID = { w: 300, h: Math.round(300 / RATIO) }
+const END = { w: 268, h: Math.round(268 / RATIO) }, MID = END // one scale for all three tiles: a difference in length reads as a length, and no tile crops the figure
 const BAND = 156 / 608, FRAME = 624 / 608 // a proof picture is 608 wide: the frame, then a band for its chart
 
 function useEndPicture(species: Species | undefined, genome: string, az: number) {
@@ -16,7 +16,7 @@ function useEndPicture(species: Species | undefined, genome: string, az: number)
 
 function TypeTile({ species, view }: { species: Species; view: StageView }) {
   const key = useEndPicture(species, 'type', view.az)
-  return <Plate src={key ? casUrl(key) : null} kind="clay" width={MID.w} height={MID.h} zoom={view.zoom} alt={`${species.file.name}, the type, az ${view.az}`} />
+  return <Plate src={key ? casUrl(key) : null} kind="clay" width={MID.w} height={MID.h} alt={`${species.file.name}, the type, az ${view.az}`} />
 }
 
 function Caption({ dot, value, word }: { dot: Dot; value: string; word: string }) {
@@ -28,13 +28,13 @@ function Caption({ dot, value, word }: { dot: Dot; value: string; word: string }
   )
 }
 
-// A tile: the genome's clay from the locus's camera, cropped to the part. With a proof, the tile takes the proof's picture part (the frame with its callouts); its chart band goes under the row, where the labels are readable.
+// A tile: the genome's clay from the locus's camera, the whole figure (the house frame, no crop). With a proof shown, the tile takes the proof's picture part (the frame with its callouts); its chart band goes under the row, where the labels are readable.
 function End({ species, genome, view, w, h, value, caption, dot, proofSrc, stale }: { species: Species; genome: string; view: StageView; w: number; h: number; value: string; caption: string; dot: Dot; proofSrc: string | null; stale: boolean }) {
   const key = useEndPicture(species, genome, view.az)
   return (
     <figure className={s.fig}>
-      <Plate src={proofSrc ? null : key ? casUrl(key) : null} kind="clay" width={w} height={h} stale={stale} zoom={view.zoom} tag={proofSrc ? 'proof' : undefined} tagKind={proofSrc ? 'proof' : undefined} alt={`${genome}, az ${view.az}`}>
-        {proofSrc && <img src={proofSrc} alt="" draggable={false} style={{ position: 'absolute', left: 0, top: 0, width: '100%', transform: 'scale(1.3)', transformOrigin: '50% 45%' }} />}
+      <Plate src={proofSrc ? null : key ? casUrl(key) : null} kind="clay" width={w} height={h} stale={stale} tag={proofSrc ? 'proof' : undefined} tagKind={proofSrc ? 'proof' : undefined} alt={`${genome}, az ${view.az}`}>
+        {proofSrc && <img src={proofSrc} alt="" draggable={false} style={{ position: 'absolute', left: 0, top: 0, width: '100%' }} />}
       </Plate>
       <Caption dot={dot} value={value} word={caption} />
     </figure>

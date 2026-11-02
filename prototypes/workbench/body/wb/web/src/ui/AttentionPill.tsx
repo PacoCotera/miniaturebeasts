@@ -3,8 +3,10 @@ import { pillWords, type CheckRow } from '../lib/checks'
 import s from './AttentionPill.module.css'
 
 // "2 need you": fails and warnings, never passes. Absent when nothing needs you. It pulses once when an edit makes the count go up. Opens the Checks drawer on "Needs you".
-export function AttentionPill({ rows, onOpen }: { rows: CheckRow[] | null; onOpen: () => void }) {
-  const w = rows ? pillWords(rows) : null
+export function AttentionPill({ rows, ends = 0, onOpen }: { rows: CheckRow[] | null; ends?: number; onOpen: () => void }) {
+  const base = rows ? pillWords(rows) : null
+  // The failing ends of the last extremes run count too (they are on request, so they are in the number only once it has been run).
+  const w = ends ? { n: (base?.n ?? 0) + ends, kind: 'fail' as const, text: `${(base?.n ?? 0) + ends} to fix` } : base
   const prev = useRef<number | null>(null)
   const [pulse, setPulse] = useState(0)
   useEffect(() => {
