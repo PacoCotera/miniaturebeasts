@@ -85,27 +85,27 @@ class TestExtremesJob(unittest.TestCase):
 
     def test_the_failing_end_has_its_proof_and_a_fix_that_passes(self):
         import time
-        j = self.srv.submit("S20", "check", dict(stage="extremes", loci=["body.tail-length"]), None)
+        j = self.srv.submit("S20", "check", dict(stage="extremes", loci=["body.tail-lift"]), None)
         self.srv.wait(j, 240)
         self.assertEqual(j.state, "done", j.error)
         ends = j.result["ends"]
-        self.assertEqual([(e["id"], e["state"]) for e in ends], [("body.tail-length:low", "pass"), ("body.tail-length:high", "fail")])
-        hi = ends[1]
+        self.assertEqual([(e["id"], e["state"]) for e in ends], [("body.tail-lift:low", "fail"), ("body.tail-lift:high", "pass")])
+        hi = ends[0]
         self.assertIn(hi["fails"][0]["id"], ("normals", "mesh", "tail.size", "balance"))
-        self.assertEqual(hi["fix"]["path"], "genome.loci.body.tail-length.limits.1")
-        self.assertTrue(1.0 < hi["fix"]["value"] < 1.3, hi["fix"])
+        self.assertEqual(hi["fix"]["path"], "genome.loci.body.tail-lift.limits.0")
+        self.assertTrue(-12.0 < hi["fix"]["value"] < 0.0, hi["fix"])
         row = j.result["rows"][0]
-        self.assertEqual((row["id"], row["state"], row["extra"]["fail"]), ("limits", "fail", "Tail length fails at its high end"))
+        self.assertEqual((row["id"], row["state"], row["extra"]["fail"]), ("limits", "fail", "Tail lift fails at its low end"))
         end = time.time() + 90
         while time.time() < end and not all(e["proof"]["ready"] for e in self.srv.with_proof_state(j.result)["ends"] if e.get("proof")):
             time.sleep(0.5)
         res = self.srv.with_proof_state(j.result)
-        self.assertTrue(res["ends"][1]["proof"]["ready"])
-        self.assertEqual(open(res["ends"][1]["proof"]["path"], "rb").read(8), b"\x89PNG\r\n\x1a\n")
+        self.assertTrue(res["ends"][0]["proof"]["ready"])
+        self.assertEqual(open(res["ends"][0]["proof"]["path"], "rb").read(8), b"\x89PNG\r\n\x1a\n")
         # the fix really passes: write it and build the end again
         d = copy.deepcopy(DOC)
-        locus(d, "body.tail-length")["limits"][1] = hi["fix"]["value"]
-        r = F.build(d, "high:body.tail-length")
+        locus(d, "body.tail-lift")["limits"][0] = hi["fix"]["value"]
+        r = F.build(d, "low:body.tail-lift")
         from wb import server as SV
         rows = crun("cage", Ctx(F.internal(d), r.body, dict(r.summary(), vertices_l1=len(F.proxy_mesh(r.body, 1)["V"])), F.proxy_mesh(r.body, 1), doc=d))
         self.assertEqual([x["id"] for x in rows if x["state"] == "fail"], [])

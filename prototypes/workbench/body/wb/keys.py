@@ -5,8 +5,17 @@ LOOK = "proxy-2"
 EL = 10.0
 
 
+FACE = dict(eye_size=1.0, eye_height=0.0, eye_spacing=0.0, mouth_width=1.0, mouth_z=0.0)
+
+
 def cage_key(spec, genome, stage="base"):
-    return F.cage_key(spec, genome, stage)
+    """The cache key of a cage's proxy mesh. The clay's face (the eyes and mouth drawn on the proxy) comes from coat genes that the cage hash leaves out, so a genome whose face differs from the type's gets its own key: eye size low and high must not share one cached mesh."""
+    ck = F.cage_key(spec, genome, stage)
+    spec_ = F.internal(spec)
+    c, _ = F.cage_inputs(spec_, F.resolve_genome(genome, spec_))
+    coat = c.get("coat") or {}
+    face = {k: round(float(coat.get(k, d)) + 0.0, 6) for k, d in FACE.items()}
+    return ck if all(abs(face[k] - d) < 1e-6 for k, d in FACE.items()) else H.hash_of("cage-face", ck, face)
 
 
 def frame_key(ck, mode, az, size):
