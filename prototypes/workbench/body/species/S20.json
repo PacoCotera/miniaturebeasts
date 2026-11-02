@@ -604,6 +604,17 @@
       0.3
      ],
      "da": 0.34
+    },
+    {
+     "name": "nose",
+     "z": 1.52,
+     "around": 1.0,
+     "rho": 0.592,
+     "ds": [
+      0.12,
+      0.12
+     ],
+     "da": 0.22
     }
    ],
    "column_keys": {
@@ -616,6 +627,11 @@
      "station": 1.93,
      "col": 3,
      "around": 0.36
+    },
+    "arm": {
+     "u": 1.22,
+     "col": 5,
+     "around": 0.6
     }
    },
    "caps": {
@@ -703,7 +719,8 @@
       99.0
      ]
     },
-    "bend_n": 0
+    "bend_n": 0,
+    "ring_gap_tip": 0.05
    }
   },
   "leg.L": {
@@ -1067,6 +1084,74 @@
     "tip_ring": 0.6
    },
    "note": "the tail range of the spine: its joints edit the far end of the one path, its radii the far end of the one profile (genes: length, girth, curl)"
+  },
+  "arm.L": {
+   "kind": "tube",
+   "parent": "torso",
+   "label": "appendage",
+   "ring": 8,
+   "edge": 0.1,
+   "mirror": "lateral",
+   "socket": {
+    "kind": "patch",
+    "u": 1.22,
+    "col": 5,
+    "size": [
+     2,
+     2
+    ],
+    "push": 0.01,
+    "transition": 3,
+    "flare": 0.15
+   },
+   "default": "nub",
+   "families": {
+    "nub": {
+     "plane": {
+      "yaw": 80
+     },
+     "joints": [
+      {
+       "name": "root",
+       "at": [
+        0.14,
+        0.3,
+        1.0
+       ],
+       "r": [
+        0.14,
+        0.14
+       ],
+       "role": "mass"
+      },
+      {
+       "name": "upper",
+       "len": 0.6,
+       "pitch": -25,
+       "r": [
+        0.13,
+        0.13
+       ]
+      },
+      {
+       "name": "tip",
+       "len": 0.25,
+       "pitch": -55,
+       "r": [
+        0.095,
+        0.095
+       ],
+       "role": "end"
+      }
+     ]
+    }
+   },
+   "fillet": 1.4,
+   "end": {
+    "kind": "dome",
+    "cap": "grid-2x2",
+    "tip_ring": 0.6
+   }
   }
  },
  "sockets": {
@@ -1094,76 +1179,24 @@
    ],
    "default": "lantern",
    "shapes": {
-    "plain": null,
+    "plain": {
+     "kind": "profile",
+     "len": 0.14,
+     "width": 0.13,
+     "u_m": 0.55
+    },
     "tuft": {
-     "kind": "dome",
-     "r": [
-      0.11,
-      0.1,
-      0.1
-     ],
-     "sink": 0.35,
-     "lobes": 3,
-     "lobe_r": 0.055
+     "kind": "profile",
+     "len": 0.2,
+     "width": 0.22,
+     "u_m": 0.5
     },
     "lantern": {
-     "kind": "dome",
-     "r": [
-      0.105,
-      0.095,
-      0.095
-     ],
-     "sink": 0.3,
-     "neck": 0.04,
+     "kind": "profile",
+     "len": 0.26,
+     "width": 0.2,
+     "u_m": 0.5,
      "emission": "glow"
-    }
-   }
-  },
-  "arm.L": {
-   "on": "torso",
-   "station": 0.9,
-   "around": 0.62,
-   "families": [
-    "nub"
-   ],
-   "default": "nub",
-   "required": true,
-   "shapes": {
-    "nub": {
-     "kind": "dome",
-     "r": [
-      0.24,
-      0.13,
-      0.12
-     ],
-     "axis": [
-      0.55,
-      0.45,
-      -0.7
-     ],
-     "sink": 0.3,
-     "bone": "arm"
-    }
-   }
-  },
-  "nose": {
-   "on": "torso",
-   "station": 1.52,
-   "around": 1.0,
-   "families": [
-    "button"
-   ],
-   "default": "button",
-   "required": true,
-   "shapes": {
-    "button": {
-     "kind": "dome",
-     "r": [
-      0.05,
-      0.08,
-      0.055
-     ],
-     "sink": 0.3
     }
    }
   },
@@ -2074,6 +2107,16 @@
   },
   {
    "where": "ear tip caps",
+   "valence": 3,
+   "per_half": 4
+  },
+  {
+   "where": "arm socket corners (tube)",
+   "valence": 5,
+   "per_half": 4
+  },
+  {
+   "where": "arm tip caps",
    "valence": 3,
    "per_half": 4
   }

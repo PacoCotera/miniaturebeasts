@@ -55,8 +55,8 @@ class T(unittest.TestCase):
         edges = [rs[k] for k in rs]
         self.assertTrue(all(edges[i][1] == edges[i + 1][0] for i in range(len(edges) - 1)))
         lab = self.G.label_of(self.info["ring_s"])
-        self.assertEqual(lab[0], "tail"); self.assertEqual(lab[-1], "head")
-        order = [list(rs).index(x) for x in lab[::-1]]
+        self.assertEqual(lab[0], "lantern"); self.assertEqual(lab[-1], "head")      # the bulb is the last stretch of the tail range
+        order = [list(rs).index("tail" if x == "lantern" else x) for x in lab[::-1]]
         self.assertEqual(order, sorted(order))                      # head to tail along the arc length, never back
 
     def test_one_ring_sequence_cage_loft(self):
@@ -83,7 +83,7 @@ class T(unittest.TestCase):
     def test_radius_non_increasing_from_the_seat_to_the_stalk(self):
         """The tail's design radius (a monotone cubic through the joints' radii) never rises toward the stalk; the measured surface, its distance from the path binned along the arc, never grows either."""
         G = self.G
-        s = np.linspace(0.0, G.s_root, 60)
+        s = np.linspace(G.bulb[0] + 0.02, G.s_root, 60)               # the bulb (the tip family's teardrop) is the last stretch; the stalk and the tail taper beyond it
         r = G.tail_radius(s)
         self.assertTrue(np.all(np.diff(r) >= -1e-9))                  # stalk (s = 0) to root: non-decreasing, i.e. non-increasing from root to stalk
         Vf, Ff, at, fpp, cr, mir = self.b.full()
@@ -91,10 +91,10 @@ class T(unittest.TestCase):
         sel = (fp2[np.minimum(np.arange(len(V2)), len(fp2) - 1)] >= 0)
         sv = a2[:, 1]
         tor = np.rint(a2[:, 0]).astype(int) == self.b.parts["torso"]
-        m = tor & (sv > 0.12) & (sv < G.s_root + 0.25)
+        m = tor & (sv > G.bulb[0] + 0.1) & (sv < G.s_root + 0.25)
         pt, T, N, B = G.pa.at(sv[m])
         d = np.linalg.norm(V2[m] - pt, axis=1)
-        bins = np.linspace(0.12, G.s_root + 0.25, 11)
+        bins = np.linspace(G.bulb[0] + 0.1, G.s_root + 0.25, 11)
         prof = [float(np.median(d[(sv[m] >= lo) & (sv[m] < hi)])) for lo, hi in zip(bins, bins[1:])]
         print("surface radius by arc from the stalk", [round(x, 3) for x in prof])
         self.assertTrue(all(prof[k + 1] >= prof[k] * 0.97 for k in range(len(prof) - 1)))      # from the stalk toward the seat the radius only grows

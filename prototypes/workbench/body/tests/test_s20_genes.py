@@ -49,8 +49,7 @@ class T(unittest.TestCase):
             zs, w = M.widths(V2)
             torso = np.rint(at[:, 0]).astype(int) == b.parts["torso"]
             self.assertGreater(w[zs > 1.17].max() if False else 0, -1)
-            for nm in ("arm.L", "nose") + (("tail.tip",) if c["shape"]["tip"] != "plain" else ()):
-                self.assertTrue(part_is_closed(b, nm), (i, nm))
+            self.assertIn("arm.L", ctx["info"]["tubes"])                       # the arms are tubes on sockets; the nose is a mound and the tip the bulb of the one spine (nothing to close separately)
             self.assertGreater(Q.flips(V2, F2)["volume"], 0, i)
             val, listed, unl = classify_poles(b, V, F)
             m = ctx["remap"]; n0 = len(b.cage.V)
@@ -58,9 +57,6 @@ class T(unittest.TestCase):
             ok = set()
             for rec in ctx["info"]["tubes"].values():
                 ok |= {m[v] for v in rec["loop"]} | {m[v] for v in rec["rings"][-1]} | {m[rec["tip_centre"]]}
-            for nm in ("arm.L", "nose", "tail.tip"):
-                if nm in b.parts:
-                    ok |= {k for k in range(n0) if b.part[k] == b.parts[nm]}
             left = [v for v in unl if (v if v < n0 else extra[v - n0]) not in ok]
             self.assertEqual(len(left), 0, (i, len(left)))
 

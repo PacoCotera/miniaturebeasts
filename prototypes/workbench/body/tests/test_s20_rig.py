@@ -32,7 +32,7 @@ class T(unittest.TestCase):
         used = (self.W > 1e-6).any(0)
         unused = [n for n, u in zip(self.R.names, used) if not u]
         print("bones with no vertex weight:", unused)
-        self.assertEqual(unused, ["root", "leg.lower.L", "leg.lower.R"])     # the root is the handle; the lower leg is buried in the stub (the column is carried by the upper bone)
+        self.assertEqual(unused, ["root", "leg.lower.L", "leg.lower.R", "tail.6"])     # the root is the handle; the lower leg is buried in the stub (the column is carried by the upper bone); the last tail bone's stretch is the bulb, carried by the tip bone
 
     def test_bones_per_the_plan(self):
         names = set(self.R.names)
@@ -42,7 +42,7 @@ class T(unittest.TestCase):
     def test_stand_pose_lantern_beside_the_head(self):
         M = self.R.stand_pose()
         V = self.R.skin(self.V2, self.W, M)
-        tip = self.part2 == self.b.ctx["body_parts"]["tail.tip"]
+        tip = (self.part2 == self.b.ctx["body_parts"]["torso"]) & (self.attr2[:, 1] <= self.b.ctx["T"].bulb[0])         # the bulb: the last stretch of the one spine
         c = V[tip].mean(0)
         c0 = self.V2[tip].mean(0)
         print("lantern centre rest", c0.round(2), "stand", c.round(2))

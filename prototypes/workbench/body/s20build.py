@@ -45,7 +45,7 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
     if spec is None:
         spec, _ = SC.load(S20)
     body = Body("tuliko")
-    G = SpineLoft(spec)
+    G = SpineLoft(spec, tip=kw.get("tip"), tip_size=kw.get("tip_size", 1.0))
     ctx = dict(spec=spec, H=None, T=G, G=G, info={}, log={}, opts=kw)
     ctx["info"]["torso"] = build_spine_loft(body, spec, G)
     stage = STAGES.index(upto)
@@ -87,4 +87,14 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
                     if val[m[v]] == 5:
                         body.target[m[v]] = None
         ctx["log"]["limit"] = limit_fix(body, free_caps=kw.get("free_caps", True))
+        if stage >= 1 and kw.get("smooth_junctions", True):
+            import relax
+            ctx["log"]["junctions"] = relax.smooth_junctions(body, ctx, **kw.get("junction_opts", {}))
+            for h in body.hooks:
+                h(body)
+        if stage >= 1 and kw.get("relax", True):
+            import relax
+            ctx["log"]["relax"] = relax.tangential_relax(body, ctx, **kw.get("relax_opts", {}))
+            for h in body.hooks:
+                h(body)
     return body

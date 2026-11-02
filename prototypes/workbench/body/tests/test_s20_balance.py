@@ -56,16 +56,16 @@ class T(unittest.TestCase):
         self.assertLessEqual(root_r, 1.2 * leg_r)
         stalk = tail["joints"][-1]["r"][0]
         self.assertLessEqual(abs(stalk - 0.05), 0.012)
-        lan = spec["sockets"]["tail.tip"]["shapes"]["lantern"]["r"]
+        lan_w = spec["sockets"]["tail.tip"]["shapes"]["lantern"]["width"]
         ear = spec["parts"]["ear.L"]["families"]["prick"]["joints"][-1]["r"]
-        print("lantern diameter", 2 * max(lan), "ear tip width", 2 * max(ear))
-        self.assertLessEqual(2 * max(lan), 2 * max(ear))
-        self.assertAlmostEqual(2 * max(lan), 0.30, delta=0.10)                      # about the eye's size (0.30 H)
+        print("lantern width", lan_w, "ear tip width", 2 * max(ear))
+        self.assertLessEqual(lan_w, 2 * max(ear))
+        self.assertAlmostEqual(lan_w, 0.20, delta=0.03)                              # the owner's bulb: 0.26 x 0.20 H
         pa = PA_len(tail)
         print("tail arc length", round(pa, 3))
         self.assertTrue(1.0 <= pa <= 1.2, pa)
         P = np.array(tail["P"])
-        self.assertLessEqual(float(P[:, 2].max() + stalk + max(lan)), 2.4)           # no higher than the ears' tops
+        self.assertLessEqual(float(P[:, 2].max() + stalk + lan_w / 2), 2.4)           # no higher than the ears' tops
 
     def test_tail_silhouette_share_at_az090(self):
         """The tail's side silhouette (its range and the lantern) over the trunk's (head, neck, back and seat), in pixels at 304, az 090: at most 1/4."""
@@ -76,8 +76,7 @@ class T(unittest.TestCase):
         sm = m["attr"][F][:, :, 1].mean(1)
         pid = m["fp"].astype(int)
         torso = pid == b.parts["torso"]
-        tip = pid == b.parts["tail.tip"]
-        tailsel = (torso & (sm < G.s_root + 0.02)) | tip
+        tailsel = torso & (sm < G.s_root + 0.02)                       # the bulb is the last stretch of the loft
         trunk = torso & (sm >= G.s_root + 0.02)
         out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "out")
         os.makedirs(out, exist_ok=True)

@@ -42,38 +42,24 @@ class T(unittest.TestCase):
         self.assertEqual(Q.mirror_plane(self.V)["near_but_off"], 0)
         self.assertLessEqual(self.ctx["log"]["limit"]["max_err"], self.spec["mesh_quality"]["limit_err_max"])
 
-    def test_each_sitting_shape_is_closed(self):
-        for nm in ("arm.L", "nose", "tail.tip"):
-            self.assertTrue(part_is_closed(self.b, nm), nm)
+    def test_appendages_are_tubes_on_sockets_and_the_tip_is_the_spine(self):
+        """Pass 2 (owner rule: a junction is a filleted transition, not a pasted shell): the arms are tubes grown from a socket patch (like the ears), the nose is a mound in the loft with a painted button, and the lantern is the bulb on the last stretch of
+        the one spine. No sitting shell is left, so nothing intersects the loft."""
+        self.assertEqual(self.ctx["info"]["sitting"], {})
+        for nm in ("nose", "tail.tip"):
+            self.assertNotIn(nm, self.b.parts)
+        self.assertIn("arm.L", self.ctx["info"]["tubes"])
+        self.assertGreater(self.ctx["T"].bulb[0], 0.2)
+        rec = self.ctx["info"]["tubes"]["arm.L"]
+        self.assertGreaterEqual(len(rec["transition"]), 3)                  # a filleted band of at least 3 loops
 
-    def test_sunk_into_the_loft(self):
-        """The fraction of each shape's axis (centre line, base to tip) that lies inside the loft is its sink (>= 0.3 minus a sampling tolerance)."""
-        G = self.ctx["T"]
-        for nm, rec in self.ctx["info"]["sitting"].items():
-            if nm == "tail.tip":
-                continue                 # the tip sits on the tail's own closed end, not on the loft: checked by the tail's tube
-            ax, c, rx = np.asarray(rec["axis"]), np.asarray(rec["c"] if "c" in rec else rec["rings"][0][0] * 0), rec.get("rx", None)
-        arm = self.ctx["info"]["sitting"]["arm.L"]
-        rx = self.spec["sockets"]["arm.L"]["shapes"]["nub"]["r"][0]
-        t = np.linspace(-1, 1, 201)
-        line = arm["c"][None] + arm["axis"][None] * rx * t[:, None]
-        frac = float(G.inside(line).mean())
-        print("arm: fraction of its length inside the loft", round(frac, 3))
-        self.assertGreaterEqual(frac, 0.25)
-        nose = self.ctx["info"]["sitting"]["nose"]
-        rx = self.spec["sockets"]["nose"]["shapes"]["button"]["r"][0]
-        c = nose["P"] + nose["axis"] * rx * (1 - 2 * nose["sink"])
-        line = c[None] + nose["axis"][None] * rx * t[:, None]
-        frac = float(G.inside(line).mean())
-        print("nose: fraction of its length inside the loft", round(frac, 3))
-        self.assertGreaterEqual(frac, 0.25)
-
-    def test_arms_and_tail_tip_outside_the_face_cone(self):
+    def test_arms_and_bulb_outside_the_face_cone(self):
         K = np.array([0.0, 0.0, 1.68])
-        for nm in ("arm.L", "tail.tip"):
-            pid = self.b.parts[nm]
-            sel = np.rint(self.attr[:, 0]).astype(int) == pid
-            P = self.V[sel] - K
+        G = self.ctx["T"]
+        sel = np.rint(self.attr[:, 0]).astype(int) == self.b.parts["arm.L"]
+        sel2 = (np.rint(self.attr[:, 0]).astype(int) == self.b.parts["torso"]) & (self.attr[:, 1] <= G.bulb[0])
+        for nm, s_ in (("arm.L", sel), ("bulb", sel2)):
+            P = self.V[s_] - K
             ang = np.degrees(np.arccos(np.clip(P[:, 0] / np.linalg.norm(P, axis=1), -1, 1)))
             self.assertTrue((ang > 35).all(), (nm, ang.min()))
 
@@ -82,8 +68,6 @@ class T(unittest.TestCase):
             b = build(dict(tip=fam))
             V, F, attr, fp = Q.full_topology(b)
             self.assertEqual(Q.manifold(V, F), dict(non_manifold_edges=0, loose_verts=0, inconsistent_winding=0), fam)
-            if fam != "plain":
-                self.assertTrue(part_is_closed(b, "tail.tip"), fam)
             self.assertLessEqual(b.ctx["log"]["limit"]["max_err"], 0.004, fam)
 
     def test_chibi_numbers(self):
@@ -116,9 +100,6 @@ class T(unittest.TestCase):
         ok = set()
         for rec in self.ctx["info"]["tubes"].values():
             ok |= {m[v] for v in rec["loop"]} | {m[v] for v in rec["rings"][-1]} | {m[rec["tip_centre"]]}
-        for nm in ("arm.L", "nose", "tail.tip"):
-            pid = self.b.parts[nm]
-            ok |= {i for i in range(n0) if self.b.part[i] == pid}
         left = [v for v in unl if (v if v < n0 else extra[v - n0]) not in ok]
         self.assertEqual(len(left), 0, f"unlisted poles: {len(left)}")
 

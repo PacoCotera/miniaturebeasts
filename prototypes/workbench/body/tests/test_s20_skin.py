@@ -24,15 +24,20 @@ class T(unittest.TestCase):
         cls.out = out
 
     def test_uv_island_stretch(self):
-        res = UV.island_stretch_mesh(self.b, 2)
+        import s20tex as TX
+        V, F, at, fp2 = __import__("s20p2").level_arrays(self.b, 2)
+        uv, isl = TX.face_uv(self.b, V, F, np.asarray(fp2).astype(int), at)
+        res = TX.stretch(V, F, uv, isl)
         for k, v in res.items():
             print("island", k, {a: round(c, 2) for a, c in v.items()})
         bad = {k: round(v["p95"], 2) for k, v in res.items() if v["p95"] > 1.3}
         self.assertEqual(bad, {}, bad)
 
     def test_every_island_has_an_origin(self):
-        res = UV.island_stretch_mesh(self.b, 2)
-        self.assertTrue(set(res) <= set(UV.ORIGIN), set(res) - set(UV.ORIGIN))
+        import s20tex as TX
+        V, F, at, fp2 = __import__("s20p2").level_arrays(self.b, 2)
+        uv, isl = TX.face_uv(self.b, V, F, np.asarray(fp2).astype(int), at)
+        self.assertTrue(set(isl) <= set(TX.ISLAND), set(isl) - set(TX.ISLAND))
 
     def test_blink_outline_diff_zero(self):
         for size, smp in ((304, 12), (96, 12)):
@@ -97,7 +102,7 @@ class T(unittest.TestCase):
                 if (not hit[0]) or (Vector(hit[1]) - o).length >= 20.0 - 0.03:
                     keep.append(i)
             return np.array(keep, int)
-        tip = P["part"] == pn["tail.tip"]
+        tip = (P["part"] == pn["torso"]) & (P["attr"][:, 1] <= self.b.ctx["T"].bulb[0])
         coatsel = (P["part"] == pn["torso"]) & (V[:, 2] > 1.3) & (V[:, 2] < 1.9) & (P["N"][:, 1] > 0.2) & (sum(P["fields"].get(k, 0) for k in ("eye", "mouth", "blush", "mark", "brow")) < 0.01)
         def meanlum(idx):
             p2, depth = B.project(cam, V[idx])

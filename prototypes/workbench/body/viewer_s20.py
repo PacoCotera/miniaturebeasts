@@ -12,10 +12,10 @@ HTML = r"""<!doctype html><html><head><meta charset="utf-8"><title>Tuliko (S20),
 #ui{position:fixed;left:12px;top:10px;z-index:2;max-width:820px}button{font:inherit;font-size:15px;padding:6px 14px;margin:2px;border:1px solid #888;background:#fff;border-radius:4px;cursor:pointer}
 button.on{background:#2b6fd6;color:#fff;border-color:#2b6fd6}#msg{margin:6px 4px;color:#555}canvas{display:block}
 #legend{display:none;position:fixed;right:12px;top:10px;font-size:14px;line-height:1.45;background:#fff;padding:6px 10px;border-radius:4px;border:1px solid #bbb}</style></head><body>
-<div id="ui"><b>Tuliko (S20)</b> (one continuous cage, level 3) &nbsp;
+<div id="ui"><b>Tuliko (S20)</b> (one continuous cage, level 2, coat on a texture) &nbsp;
 <span id="modes"><button data-m="coat" class="on">Coat</button><button data-m="normal">Normal</button><button data-m="parts">Parts in colours</button><button data-m="wire">Wireframe</button></span><br>
 <span id="clips"></span> <button id="blinkbtn">Blink: on</button><button id="glowbtn">Glow pulse: on</button>
-<div id="msg">Drag to orbit, wheel to zoom, right-drag to pan. Clips loop; Rest is the bind pose. The blink swaps the eye decal colours (open, half, closed, half); the lantern and freckles pulse 0.8-1.0 over 2.4 s.</div></div>
+<div id="msg">Drag to orbit, wheel to zoom, right-drag to pan. Clips loop; Rest is the bind pose. The blink draws the eye patches (open, half, closed, half); the lantern and freckles pulse 0.8-1.0 over 2.4 s.</div></div>
 <div id="legend"></div>
 <script>
 const SRC = %SRC%;
@@ -46,20 +46,22 @@ const GLB = "%GLB%";
   const pal = parts.map((_, i) => new THREE.Color().setHSL((i * 0.137) % 1, 0.62, 0.55));
   const pcol = new Float32Array(pa.count * 3);
   for (let i = 0; i < pa.count; i++) { const c = pal[Math.round(pa.getX(i))] || pal[0]; pcol[3 * i] = c.r; pcol[3 * i + 1] = c.g; pcol[3 * i + 2] = c.b; }
-  const coat = geo.getAttribute("color");
-  const baseCol = Float32Array.from(coat.array);                       // COLOR_0 may carry alpha: keep the stride the loader made
-  const stride = coat.itemSize;
-  const setColours = (arr3) => { for (let i = 0; i < coat.count; i++) { coat.array[i * stride] = arr3[3 * i]; coat.array[i * stride + 1] = arr3[3 * i + 1]; coat.array[i * stride + 2] = arr3[3 * i + 2]; } coat.needsUpdate = true; };
-  const frame = (nm) => { const a = geo.getAttribute(nm); return a ? Float32Array.from(a.array) : null; };
-  const half = frame("_colhalf"), closed = frame("_colclosed");
-  const base3 = new Float32Array(coat.count * 3); for (let i = 0; i < coat.count; i++) { base3[3 * i] = baseCol[i * stride]; base3[3 * i + 1] = baseCol[i * stride + 1]; base3[3 * i + 2] = baseCol[i * stride + 2]; }
+  // the coat comes from the glb's own material (baseColor, emissive and roughness textures on the cage's UVs); Parts mode paints per-part colours as vertex colours
+  const pcolAttr = new THREE.BufferAttribute(pcol, 3);
+  const coatMat = mesh.material; coatMat.roughness = 1.0; coatMat.metalness = 0; coatMat.needsUpdate = true;
+  const emissive0 = coatMat.emissiveIntensity;
+  const ex = gltf.parser.json.asset.extras;
+  // the blink: the eye patches are drawn over a canvas copy of the base atlas (open, half, closed, half)
+  let blinkCanvas = null, blinkCtx = null, blinkTex = null, patches = [], baseImage = coatMat.map ? coatMat.map.image : null;
+  if (ex.blink && ex.blink.patches && baseImage) {
+    const A = ex.blink.atlas;
+    blinkCanvas = document.createElement("canvas"); blinkCanvas.width = A; blinkCanvas.height = A; blinkCtx = blinkCanvas.getContext("2d"); blinkCtx.drawImage(baseImage, 0, 0);
+    blinkTex = new THREE.CanvasTexture(blinkCanvas); blinkTex.flipY = false; blinkTex.colorSpace = THREE.SRGBColorSpace; blinkTex.wrapS = blinkTex.wrapT = THREE.ClampToEdgeWrapping; blinkTex.anisotropy = 4;
+    for (const p of ex.blink.patches) { const t = await gltf.parser.getDependency("texture", p.image); patches[p.name] = { img: t.image, rect: p.rect }; }
+  }
+  const showFrame = (name) => { if (!blinkCtx) return; blinkCtx.drawImage(baseImage, 0, 0); if (name && patches[name]) { const p = patches[name]; blinkCtx.drawImage(p.img, p.rect[0], p.rect[1]); }
+    coatMat.map = blinkTex; coatMat.needsUpdate = true; blinkTex.needsUpdate = true; };
   const glowU = { value: 1.0 };
-  const coatMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.66, metalness: 0 });
-  coatMat.onBeforeCompile = (sh) => {
-    sh.uniforms.uGlow = glowU;
-    sh.vertexShader = "attribute vec3 _emit; varying vec3 vEmitCol;\n" + sh.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\n vEmitCol = _emit;");
-    sh.fragmentShader = "varying vec3 vEmitCol; uniform float uGlow;\n" + sh.fragmentShader.replace("#include <emissivemap_fragment>", "#include <emissivemap_fragment>\n totalEmissiveRadiance += pow(vEmitCol, vec3(0.45)) * uGlow * 0.9;");
-  };
   const mats = {
     coat: coatMat,
     normal: new THREE.MeshNormalMaterial({ flatShading: false }),
@@ -67,7 +69,7 @@ const GLB = "%GLB%";
     wire: new THREE.MeshBasicMaterial({ color: 0x1a3d8f, wireframe: true })
   };
   const setMode = (m) => {
-    if (m === "parts") setColours(pcol); else setColours(base3);
+    if (m === "parts") { geo.setAttribute("color", pcolAttr); mats.parts.needsUpdate = true; }
     mesh.material = mats[m]; document.querySelectorAll("#modes button").forEach(b => b.classList.toggle("on", b.dataset.m === m));
     const lg = document.getElementById("legend"); lg.style.display = m === "parts" ? "block" : "none";
     lg.innerHTML = parts.map((n, i) => `<div><span style="display:inline-block;width:14px;height:14px;background:#${pal[i % pal.length].getHexString()};margin-right:6px;vertical-align:middle"></span>${n}</div>`).join("");
@@ -86,12 +88,12 @@ const GLB = "%GLB%";
   window.__ready = true;
   addEventListener("resize", () => { cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
   const clock = new THREE.Clock(); let nextBlink = 3.0, blinkT = -1;
-  const seq = [null, half, closed, half];
+  const seq = [null, "half", "closed", "half"];
   (function loop() { requestAnimationFrame(loop); const dt = clock.getDelta(), t = clock.elapsedTime; mixer.update(dt); ctl.update();
-    glowU.value = glowOn ? 0.9 + 0.1 * Math.sin(2 * Math.PI * t / 2.4) : 1.0;
-    if (window.__mode === "coat" && blinkOn && half && closed) {
+    coatMat.emissiveIntensity = emissive0 * (glowOn ? 0.9 + 0.1 * Math.sin(2 * Math.PI * t / 2.4) : 1.0);
+    if (window.__mode === "coat" && blinkOn && blinkCtx) {
       if (blinkT < 0 && t > nextBlink) { blinkT = 0; }
-      if (blinkT >= 0) { blinkT += dt; const k = Math.floor(blinkT / 0.07); if (k < 4) { const f = seq[k]; setColours(f ? f : base3); } else { setColours(base3); blinkT = -1; nextBlink = t + 3 + 3 * Math.random(); } }
+      if (blinkT >= 0) { blinkT += dt; const k = Math.floor(blinkT / 0.07); if (k < 4) { showFrame(seq[k]); } else { showFrame(null); blinkT = -1; nextBlink = t + 3 + 3 * Math.random(); } }
     }
     renderer.render(scene, cam); })();
 })();

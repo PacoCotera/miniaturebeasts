@@ -16,46 +16,74 @@ def decompose(M):
     return M[:3, 3].copy(), GO.quat_from_matrix(R), S
 
 
-def build(b, rig, prep, path, clips=("stand", "waddle", "breathe", "idle"), extras=None, frames=None):
-    """prep: s20render.prepare(...) at the level to write (rest pose). Returns dict(bytes, parts, bones, clips)."""
+def _png_bytes(arr):
+    import tempfile, os
+    import s20tex as TX
+    fd, p = tempfile.mkstemp(suffix=".png", dir=os.path.join(os.path.dirname(os.path.abspath(__file__)), "out"))
+    os.close(fd)
+    TX.write_png(p, arr)
+    data = open(p, "rb").read()
+    os.remove(p)
+    return data
+
+
+def build(b, rig, M, tex, path, clips=("stand", "waddle", "breathe", "idle"), extras=None):
+    """M: s20tex.render_mesh(b, level) (the shipped mesh: smooth normals, UVs, split at the seams). tex: dict(col, emit, rough (padded float arrays 0-255, (h,w,3) / (h,w,3) / (h,w)), frames: {name: (rect (x, y, w, h), patch (h,w,3))}).
+    Writes the glb: level-L mesh with NORMAL and TEXCOORD_0, a skin, the sampled clips, the baked atlas as three PNGs (baseColor, emissive, roughness in G) and the blink's eye patches as extra images (asset.extras.blink)."""
     ctx = b.ctx
-    V, F, attr, part = prep["V0"], prep["F"], prep["attr"], prep["part"]
+    V, F4 = M["V"], M["F"]
+    vid = M["vid"]
+    attr_w, part_w = M["attr"], M["part"]
     parts = {v: k for k, v in b.parts.items()}
     names = [parts[i] for i in range(len(parts))] + ["arm.R", "leg.R"]
-    pid = part.astype(np.float32).copy()
+    pidw = part_w.astype(np.float32).copy()
+    Vw = M["Vw"]
     for nm, newid in (("arm.L", len(parts)), ("leg.L", len(parts) + 1)):
-        m = (part == b.parts[nm]) & (V[:, 1] < 0)
-        pid[m] = newid
-    # the loft is ONE part; neck, back, seat and tail are named arc-length ranges of its one path: the Parts colours read them from the arc length (s from the stalk, u from the crown)
+        m = (part_w == b.parts[nm]) & (Vw[:, 1] < 0)
+        pidw[m] = newid
+    # the loft is ONE part; neck, back, seat and tail are named arc-length ranges of its one path (and the lantern is the bulb on its last stretch)
     G = ctx["T"]
     tid = b.parts["torso"]
-    rng = list(G.ranges)                                  # head, neck, back, seat, tail
+    rng = list(G.ranges) + (["lantern"] if G.bulb[0] > 0 else [])
     names[tid] = rng[0]
     new_ids = {rng[0]: tid}
     for r_ in rng[1:]:
         names.append(r_); new_ids[r_] = len(names) - 1
-    lab = G.label_of(attr[:, 1])
+    lab = G.label_of(attr_w[:, 1])
     for r_ in rng:
-        m = (part == tid) & (lab == r_)
-        pid[m] = new_ids[r_]
-    W = rig.weights(V, attr, part)
-    J, Wt = GO.top4(W)
-    N = GO.vertex_normals(V, F)
-    tris = np.array([[f[0], f[1], f[2]] for f in F] + [[f[0], f[2], f[3]] for f in F], np.uint32)
-    col_srgb = np.clip(prep["col"], 0, 1).astype(np.float32)          # linear (glTF vertex colours are linear)
-    emit = np.clip(prep["emit"], 0, 4).astype(np.float32)
+        m = (part_w == tid) & (lab == r_)
+        pidw[m] = new_ids[r_]
+    Ww = rig.weights(Vw, attr_w, part_w)
+    Jw, Wtw = GO.top4(Ww)
+    pid = pidw[vid]
+    J, Wt = Jw[vid], Wtw[vid]
+    N = M["N"]
+    tris = np.array([[f[0], f[1], f[2]] for f in F4] + [[f[0], f[2], f[3]] for f in F4], np.uint32)
     buf = GO.Buf()
     a_pos = buf.add(V.astype(np.float32), 34962, FLOAT, "VEC3", True)
     a_nor = buf.add(N.astype(np.float32), 34962, FLOAT, "VEC3")
-    a_col = buf.add(np.hstack([col_srgb, np.ones((len(V), 1), np.float32)]), 34962, FLOAT, "VEC4")
+    a_uv = buf.add(np.asarray(M["UV"], np.float32), 34962, FLOAT, "VEC2")
     a_j = buf.add(J, 34962, USHORT, "VEC4")
     a_w = buf.add(Wt, 34962, FLOAT, "VEC4")
     a_part = buf.add(pid.reshape(-1, 1), 34962, FLOAT, "SCALAR")
-    a_emit = buf.add(emit, 34962, FLOAT, "VEC3")
-    extra_attr = {}
-    for fr, arr in (frames or {}).items():       # the blink's decal frames as extra colour sets (the viewer swaps them)
-        extra_attr["_COL" + fr.upper()] = buf.add(np.clip(arr, 0, 1).astype(np.float32), 34962, FLOAT, "VEC3")
     a_idx = buf.add(tris.reshape(-1), 34963, UINT, "SCALAR")
+    images = []
+    def add_image(arr):
+        data = _png_bytes(arr)
+        while len(buf.data) % 4:
+            buf.data.append(0)
+        off = len(buf.data)
+        buf.data += data
+        buf.views.append(dict(buffer=0, byteOffset=off, byteLength=len(data)))
+        images.append(dict(bufferView=len(buf.views) - 1, mimeType="image/png"))
+        return len(images) - 1
+    i_col = add_image(tex["col"])
+    i_emit = add_image(tex["emit"])
+    rr = np.zeros(tex["rough"].shape + (3,), np.float32); rr[..., 1] = tex["rough"] * 255.0; rr[..., 0] = 255.0
+    i_rough = add_image(rr)
+    blink = []
+    for fr, (rect, patch) in (tex.get("frames") or {}).items():
+        blink.append(dict(name=fr, image=add_image(patch), rect=[int(x) for x in rect]))
     bn = rig.names
     bidx = {n: i for i, n in enumerate(bn)}
     children = {n: [] for n in bn}
@@ -114,12 +142,15 @@ def build(b, rig, prep, path, clips=("stand", "waddle", "breathe", "idle"), extr
             poses.append(rig.pose(breathe=0.01 + 0.01 * math.sin(2 * math.pi * ph * (T / 3.0) - 1.57), tail_yaw=-math.radians(38.0), tail_sway=math.radians(8) * math.sin(2 * math.pi * ph),
                                   ear=math.radians(5) * math.sin(2 * math.pi * (ph - 0.07)), head_nod=math.radians(-3.0 + 2.0 * math.sin(2 * math.pi * ph * 0.5)), arm=math.radians(3) * math.sin(2 * math.pi * ph)))
         sample(poses, T, "idle")
-    prim = dict(attributes=dict(POSITION=a_pos, NORMAL=a_nor, COLOR_0=a_col, JOINTS_0=a_j, WEIGHTS_0=a_w, _PART=a_part, _EMIT=a_emit, **extra_attr), indices=a_idx, material=0)
-    gl = dict(asset=dict(version="2.0", generator="tuliko body build", extras=dict(parts=names, clips=[a["name"] for a in anims] + ["blink (decal frames: open, half, closed, half)"],
-                                                                              glow_pulse=dict(period=2.4, range=[0.8, 1.0]), blink=dict(interval=[3.0, 6.0]), **(extras or {}))),
+    prim = dict(attributes=dict(POSITION=a_pos, NORMAL=a_nor, TEXCOORD_0=a_uv, JOINTS_0=a_j, WEIGHTS_0=a_w, _PART=a_part), indices=a_idx, material=0)
+    sampler = dict(magFilter=9729, minFilter=9987, wrapS=33071, wrapT=33071)
+    gl = dict(asset=dict(version="2.0", generator="tuliko body build", extras=dict(parts=names, clips=[a["name"] for a in anims] + ["blink (eye patches over the atlas: open, half, closed, half)"],
+                                                                              glow_pulse=dict(period=2.4, range=[0.8, 1.0]), blink=dict(interval=[3.0, 6.0], patches=blink, base_image=i_col, atlas=int(tex["col"].shape[0])), **(extras or {}))),
               scene=0, scenes=[dict(nodes=[bidx["root"], mesh_node])], nodes=nodes, skins=[dict(joints=list(range(len(bn))), inverseBindMatrices=a_ibm, skeleton=bidx["root"])],
               meshes=[dict(name="tuliko", primitives=[prim])],
-              materials=[dict(name="coat", pbrMetallicRoughness=dict(baseColorFactor=[1, 1, 1, 1], roughnessFactor=0.66, metallicFactor=0.0))],
+              samplers=[sampler], images=images, textures=[dict(sampler=0, source=k_) for k_ in range(len(images))],
+              materials=[dict(name="coat", pbrMetallicRoughness=dict(baseColorTexture=dict(index=i_col), metallicRoughnessTexture=dict(index=i_rough), metallicFactor=0.0, roughnessFactor=1.0),
+                              emissiveTexture=dict(index=i_emit), emissiveFactor=[1.0, 1.0, 1.0])],
               accessors=buf.acc, bufferViews=buf.views, buffers=[dict(byteLength=len(buf.data))], animations=anims)
     js = json.dumps(gl, sort_keys=True, separators=(",", ":")).encode()
     while len(js) % 4:
@@ -129,4 +160,4 @@ def build(b, rig, prep, path, clips=("stand", "waddle", "breathe", "idle"), extr
         bin_ += b"\0"
     out = b"glTF" + struct.pack("<II", 2, 12 + 8 + len(js) + 8 + len(bin_)) + struct.pack("<I", len(js)) + b"JSON" + js + struct.pack("<I", len(bin_)) + b"BIN\0" + bin_
     open(path, "wb").write(out)
-    return dict(bytes=len(out), parts=names, bones=bn, clips=[a["name"] for a in anims])
+    return dict(bytes=len(out), parts=names, bones=bn, clips=[a["name"] for a in anims], verts=len(V), tris=len(tris), images=len(images))

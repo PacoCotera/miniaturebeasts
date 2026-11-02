@@ -104,3 +104,79 @@ def to_png(rgba, path, bg=(0.93, 0.92, 0.90)):
     a = rgba[..., 3:4]
     rgb = rgba[..., :3] * a + np.array(bg) * (1 - a)
     B.write_png(path, B.to_srgb8(np.dstack([rgb, np.ones(rgb.shape[:2] + (1,))])))
+
+
+# ---------------------------------------------------------------------- the textured mesh (pass 2): the render of what the glb ships
+def _tex_material(paths, rough_scale, sheen, grain, emit_strength=1.0):
+    m = bpy.data.materials.new("coat")
+    m.use_nodes = True
+    nt = m.node_tree
+    bs = nt.nodes["Principled BSDF"]
+    def img(path, nonc=False):
+        n = nt.nodes.new("ShaderNodeTexImage")
+        n.image = bpy.data.images.load(path)
+        n.image.colorspace_settings.name = "Non-Color" if nonc else "sRGB"
+        n.interpolation = "Linear"
+        return n
+    c = img(paths["col"]); e = img(paths["emit"]); r = img(paths["rough"], True)
+    nt.links.new(c.outputs["Color"], bs.inputs["Base Color"])
+    nt.links.new(e.outputs["Color"], bs.inputs["Emission Color"])
+    bs.inputs["Emission Strength"].default_value = emit_strength
+    mr = nt.nodes.new("ShaderNodeMath"); mr.operation = "MULTIPLY"; mr.inputs[1].default_value = rough_scale / 0.66
+    nt.links.new(r.outputs["Color"], mr.inputs[0])
+    nt.links.new(mr.outputs["Value"], bs.inputs["Roughness"])
+    if "Specular IOR Level" in bs.inputs:
+        bs.inputs["Specular IOR Level"].default_value = 0.25
+    if "Sheen Weight" in bs.inputs:
+        bs.inputs["Sheen Weight"].default_value = sheen
+        bs.inputs["Sheen Roughness"].default_value = 0.5
+    if grain > 0:
+        nz = nt.nodes.new("ShaderNodeTexNoise"); nz.inputs["Scale"].default_value = 260.0; nz.inputs["Detail"].default_value = 6.0
+        bp = nt.nodes.new("ShaderNodeBump"); bp.inputs["Strength"].default_value = 0.35 * grain; bp.inputs["Distance"].default_value = 0.004
+        tc = nt.nodes.new("ShaderNodeTexCoord")
+        nt.links.new(tc.outputs["Object"], nz.inputs["Vector"])
+        nt.links.new(nz.outputs["Fac"], bp.inputs["Height"])
+        nt.links.new(bp.outputs["Normal"], bs.inputs["Normal"])
+    return m
+
+
+def tex_obj(M, paths, genome, glow_scale=1.0):
+    V, F = M["V"], M["F"]
+    me = bpy.data.meshes.new("body")
+    me.from_pydata([tuple(v) for v in V], [], [tuple(f) for f in F])
+    me.update()
+    for p in me.polygons:
+        p.use_smooth = True
+    uv = me.uv_layers.new(name="UVMap")
+    UV = np.asarray(M["UV"], float)
+    loops = np.array([v for f in F for v in f])
+    uvl = np.stack([UV[loops, 0], 1.0 - UV[loops, 1]], 1)               # Blender's v runs up the image
+    uv.data.foreach_set("uv", uvl.ravel())
+    try:
+        me.normals_split_custom_set_from_vertices([tuple(n) for n in M["N"]])
+    except Exception:
+        pass
+    ob = bpy.data.objects.new("body", me)
+    bpy.context.scene.collection.objects.link(ob)
+    g = {**CT.COAT_DEFAULT, **genome}
+    me.materials.append(_tex_material(paths, 0.66, g["sheen"], g["grain"], glow_scale))
+    return ob
+
+
+def render_tex(M, paths, genome, path, w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3), samples=48, glow_scale=1.0, floor=True):
+    sc = B.reset()
+    sc.render.film_transparent = True
+    sc.render.image_settings.color_mode = "RGBA"
+    sc.cycles.samples = samples
+    sc.cycles.max_bounces = 4
+    tex_obj(M, paths, genome, glow_scale)
+    if floor and el > 0:
+        fl = bpy.data.meshes.new("floor"); fl.from_pydata([(-2.4, -1.6, 0), (1.2, -1.6, 0), (1.2, 1.6, 0), (-2.4, 1.6, 0)], [], [(0, 1, 2, 3)])
+        fo = bpy.data.objects.new("floor", fl); sc.collection.objects.link(fo); fo.is_shadow_catcher = True
+    ko = B.lights(sc, az)
+    ko.data.angle = math.radians(2.5)
+    cam = B.camera(sc, az, el, w, h, np.array(centre, float), ppH=ppH)
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    sc.render.filepath = path
+    bpy.ops.render.render(write_still=True)
+    return gates.load_rgba(path), cam

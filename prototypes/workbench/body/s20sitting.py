@@ -50,49 +50,7 @@ def build_sitting(body, ctx):
     body._from_local = lambda p: np.asarray(p, float)
     S = spec["sockets"]
     out = {}
-    # arms (off the mirror plane: full rings)
-    a = S["arm.L"]
-    sh = a["shapes"]["nub"]
-    P = G.point(np.array([a["station"]]), np.array([a["around"]]))[0]
-    ax, up, lat = _frame(sh["axis"])
-    rx, ry, rz = sh["r"]
-    ctx_arm = dome_full(body, "arm.L", _place(P, ax, rx, sh["sink"]), ax, up, lat, rx, ry, rz)
-    ctx_arm.update(sink=sh["sink"], P=P, up=up, lat=lat, r=(rx, ry, rz))
-    out["arm.L"] = ctx_arm
-    # nose button (on the mirror line: half rings)
-    n = S["nose"]
-    sh = n["shapes"]["button"]
-    P = G.point(np.array([n["station"]]), np.array([n["around"]]))[0]
-    rx, ry, rz = sh["r"]
-    rings = sitting_dome(body, "nose", _place(P, np.array([1.0, 0, 0]), rx, sh["sink"]), np.array([1.0, 0, 0]), np.array([0, 0, 1.0]), np.array([0, 1.0, 0]), rx, ry, rz)
-    out["nose"] = dict(rings=rings, P=P, sink=sh["sink"], axis=np.array([1.0, 0, 0]), rx=rx, c=_place(P, np.array([1.0, 0, 0]), rx, sh["sink"]), up=np.array([0, 0, 1.0]), lat=np.array([0, 1.0, 0]), r=(rx, ry, rz))
-    # the tail tip
-    fam = ctx["opts"].get("tip", S["tail.tip"]["default"])
-    ctx["tip_family"] = fam
-    size = float(ctx["opts"].get("tip_size", 1.0))
-    sh = S["tail.tip"]["shapes"].get(fam)
-    if sh is not None:
-        end = ctx["info"]["torso"]["ring_info"][0]                 # the first ring of the one loft: the stalk's end
-        Tg = -end["T"]                                              # the path's outward direction at the stalk
-        r_end = float(ctx["T"].tail_radius([end["s"]])[0])
-        tip = end["centre"] + Tg * (0.5 * r_end + ctx["T"].sp["cap_depth"] * r_end)          # inside the stalk's closed end
-        ax, up, lat = _frame(Tg, (0.0, 0.0, 1.0))
-        rx, ry, rz = [v * size for v in sh["r"]]
-        c = _place(tip, Tg, rx, sh["sink"])
-        # the shape's up is the world's in the tail's mirror plane; lat is the mirror normal (+y) by construction
-        lat = np.array([0.0, 1.0, 0.0])
-        up = np.cross(ax, lat) * -1.0
-        up /= np.linalg.norm(up)
-        rings = sitting_dome(body, "tail.tip", c, ax, up, lat, rx, ry, rz)
-        rec_t = dict(rings=rings, c=c, axis=ax, rx=rx, sink=sh["sink"], family=fam, emissive=(sh.get("emission") == "glow"), lobes=[], up=up, lat=lat, r=(rx, ry, rz))
-        if fam == "tuft":
-            lr = sh["lobe_r"] * size
-            # three lobes round the tip: one up on the mirror line, one each side (the left one here, its mirror image the right)
-            front = c + ax * rx
-            lobe_up = front - ax * lr * 0.3 + up * ry * 0.55
-            r1 = sitting_dome(body, "tail.tip", lobe_up, ax, up, lat, lr, lr, lr)
-            lobe_l = front - ax * lr * 0.3 - up * ry * 0.25 + lat * ry * 0.75
-            r2 = dome_full(body, "tail.tip", lobe_l, ax, up, lat, lr, lr, lr)
-            rec_t["lobes"] = [r1, r2]
-        out["tail.tip"] = rec_t
+    # the nose is a soft mound in the loft itself (the torso mass `nose`) with a painted button; the arms are tubes (s20tubes); the tail tip is the bulb of the one spine
+    # the tail tip is not a shell any more: it is the bulb on the last stretch of the one spine (spine.SpineLoft.tail_radius)
+    ctx["tip_family"] = ctx["T"].tip_family
     ctx["info"]["sitting"] = out

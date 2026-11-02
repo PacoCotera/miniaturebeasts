@@ -81,11 +81,11 @@ class Rig:
                 Q = P * np.array([1, sg, 1])
                 add(f"ear.1.{side}", Q[0], Q[1], "head")
                 add(f"ear.2.{side}", Q[1], Q[-1], f"ear.1.{side}")
-        arm = ctx["info"]["sitting"]["arm.L"]
+        ap = spec["parts"]["arm.L"]
+        aP = np.array(ap["families"][ap["default"]]["P"])
         for side in SIDES:
             sg = 1 if side == "L" else -1
-            hd = arm["P"] * np.array([1, sg, 1]); tl = (np.asarray(arm["c"]) + np.asarray(arm["axis"]) * arm["r"][0]) * np.array([1, sg, 1])
-            add(f"arm.{side}", hd, tl, "body")
+            add(f"arm.{side}", aP[0] * np.array([1, sg, 1]), aP[-1] * np.array([1, sg, 1]), "body")
         self.names = list(B)
         self.tail_pivot = np.array(spec["parts"]["tail"]["P"][0], float)      # the tail turns about its root joint (inside the body); a pivot on the loft swung the lantern too little
         self.curl = float(spec["parts"]["tail"].get("clip", {}).get("applied", 0.0))
@@ -121,8 +121,6 @@ class Rig:
             hi = mm[r_ + 1] if r_ < len(mm) - 1 else 1e9
             w = np.where(sc < mm[r_], np.clip((sc - lo) / max(mm[r_] - lo, 1e-9), 0, 1) if r_ > 0 else 1.0, np.clip((hi - sc) / max(hi - mm[r_], 1e-9), 0, 1) if r_ < len(mm) - 1 else 1.0)
             W[torso, idx[f"tail.{k + 1}"]] = ((1 - t_body) * w)[torso]
-        for nm in ("nose",):
-            W[sel(nm), idx["head"]] = 1.0
         # legs
         leg = sel("leg.L")
         rec = ctx["info"]["limbs"]["leg.L"]
@@ -150,7 +148,13 @@ class Rig:
                 if nm.startswith("tail."):
                     W[:, idx[nm]] *= (1 - wl)
             W[:, idx[f"leg.upper.{sd}"]] += wl
-        W[sel("tail.tip"), idx["tip"]] = 1.0
+        lb = float(G.bulb[0])                                    # the bulb on the last stretch of the one spine is carried by the tip bone, blended into the stalk over 0.1 H
+        wt = (1 - sstep(lb, lb + 0.10, s)) * torso
+        if lb > 0:
+            for nm in names:
+                if nm.startswith("tail.") or nm == "body":
+                    W[:, idx[nm]] *= (1 - wt)
+            W[:, idx["tip"]] += wt
         # ears
         ear = sel("ear.L")
         if ear.any() and self.ear_P is not None:
@@ -164,9 +168,13 @@ class Rig:
                 W[m, idx[f"ear.2.{sd}"]] = t[m] * (1 - rbe[m])
                 W[m, idx["head"]] += rbe[m]
         arm = sel("arm.L")
-        for sd in SIDES:
-            m = arm & (side == sd)
-            W[m, idx[f"arm.{sd}"]] = 1.0
+        if arm.any():
+            arec = ctx["info"]["tubes"]["arm.L"]
+            rba = 1 - sstep(arec["first_s"] - 0.02, arec["first_s"] + 0.1, s)         # the band round the socket follows the body
+            for sd in SIDES:
+                m = arm & (side == sd)
+                W[m, idx[f"arm.{sd}"]] = (1 - rba)[m]
+                W[m, idx["body"]] += rba[m]
         sm = W.sum(1)
         sm[sm == 0] = 1
         return W / sm[:, None]

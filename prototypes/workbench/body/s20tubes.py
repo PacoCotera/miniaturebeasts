@@ -12,4 +12,7 @@ def build_tubes(body, ctx):
     if not ear["families"][fam].get("sit"):
         i, c = s20legs.socket_index(spec, "ear", ctx)
         out["ear.L"] = tube.grow_tube(body, ctx, "ear.L", ear, ear["families"][fam], i, c, False)
+    arm = spec["parts"]["arm.L"]
+    i, c = s20legs.socket_index(spec, "arm", ctx)
+    out["arm.L"] = tube.grow_tube(body, ctx, "arm.L", arm, arm["families"][arm["default"]], i, c, False)
     ctx["info"]["tubes"] = out

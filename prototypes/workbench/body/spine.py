@@ -14,9 +14,20 @@ def smin(a, b, k):
     return np.minimum(a, b) - h * h * k * 0.25
 
 
+def tip_profile(shape, size=1.0):
+    """The tail-tip family as a radius profile on the last stretch of the one spine (no separate shell): returns (length, Rmax, u_m, neck) of a teardrop or ball that lies on the path from its end. u_m is where the widest point sits (fraction of the length from the end)."""
+    L = float(shape["len"]) * size
+    R = 0.5 * float(shape["width"]) * size
+    return L, R, float(shape.get("u_m", 0.45))
+
+
 class SpineLoft(Gourd):
-    def __init__(self, spec):
+    def __init__(self, spec, tip=None, tip_size=1.0):
         super().__init__(spec)                              # the gourd lobes: sections and masses (the design surface of the body)
+        self.tip_family = tip or spec["sockets"]["tail.tip"]["default"]
+        self.tip_size = float(tip_size)
+        shp = spec["sockets"]["tail.tip"]["shapes"].get(self.tip_family)
+        self.bulb = tip_profile(shp, self.tip_size) if shp else (0.0, 0.0, 0.5)
         t = spec["parts"]["torso"]
         sp = t["spine"]
         self.sp = sp
@@ -35,6 +46,14 @@ class SpineLoft(Gourd):
             self.bend = None
         P = np.array(body + arc + [list(p) for p in tail["P"]], float)
         R = np.array([[r, r] for r in sp["body_r"]] + [[0.04, 0.04]] * len(arc) + [list(r) for r in tail["R"]], float)
+        if self.bulb[0] > 0:                                # a bend round the bulb must be wider than the bulb: the fillet radius of the last joints counts the bulb's radius (the cross-section never crosses itself on the inside of the bend)
+            Pt = np.array(tail["P"], float)
+            run = 0.0
+            for k in range(len(Pt) - 1, -1, -1):
+                if k < len(Pt) - 1:
+                    run += float(np.linalg.norm(Pt[k + 1] - Pt[k]))
+                if run <= self.bulb[0] + 0.05:
+                    R[len(P) - len(Pt) + k] = np.maximum(R[len(P) - len(Pt) + k], self.bulb[1])
         names = ["crown", "K", "waist", "back"][:len(body)] + [f"bend{i}" for i in range(len(arc))] + [j["name"] for j in tail["joints"]]
         self.joint_names = names
         self.n_body = len(body) + len(arc)
@@ -67,8 +86,20 @@ class SpineLoft(Gourd):
         return P
 
     def tail_radius(self, s):
-        """The tail's profile as a function of arc length: the joints' radii by a monotone cubic, held at the root's radius beyond it."""
-        return PA.mono_cubic(self.tail_knots, self.tail_radii, np.asarray(s, float))
+        """The tail's profile as a function of arc length: the joints' radii by a monotone cubic, held at the root's radius beyond it; the last stretch of the one spine is the tip family's bulb (a teardrop or a ball: its own radius profile on the path, so
+        it flows out of the stalk with no join at all)."""
+        s = np.asarray(s, float)
+        r = PA.mono_cubic(self.tail_knots, self.tail_radii, s)
+        Lb, Rb, um = self.bulb
+        if Lb > 0:
+            u = np.clip(s / Lb, 0.0, 1.0)
+            neck = float(PA.mono_cubic(self.tail_knots, self.tail_radii, np.array([Lb]))[0])
+            low = Rb * np.sqrt(np.clip(1 - ((um - u) / um) ** 2, 0, 1))
+            t = np.clip((u - um) / (1 - um), 0, 1)
+            up = neck + (Rb - neck) * np.cos(0.5 * np.pi * t) ** 2
+            bulb = np.where(u <= um, low, up)
+            r = np.where(s <= Lb, bulb, r)
+        return r
 
     # -- the design surface: signed distance (approximately)
     def d_body(self, P):
@@ -121,6 +152,8 @@ class SpineLoft(Gourd):
         out = np.empty(np.shape(u), dtype=object)
         for nm, (a, b) in self.ranges.items():
             out[(u >= a) & (u < b)] = nm
+        if self.bulb[0] > 0:
+            out[np.asarray(s, float) <= self.bulb[0]] = "lantern"
         return out
 
     def stations(self, spec):
@@ -129,10 +162,17 @@ class SpineLoft(Gourd):
         gap = self.sp["ring_gap"]
         zs = list(t["rings_z"])
         s_v = [self.L - (2.2 - z) for z in zs]               # the vertical rings
-        s_start = 0.06
+        s_start = float(self.sp.get("tip_ring0", 0.06))
         s_stop = s_v[0] - 0.55 * gap
+        gt = float(self.sp.get("ring_gap_tip", gap))         # finer rings along the tip's bulb, so it is round
+        s_b = s_start + (self.bulb[0] + 0.05 if self.bulb[0] > 0 else 0.0)
+        s_c = []
+        if gt < gap and s_b > s_start:
+            nb = max(2, int(round((s_b - s_start) / gt)))
+            s_c = list(np.linspace(s_start, s_b, nb + 1))[:-1]
+            s_start = s_b
         n = max(2, int(round((s_stop - s_start) / gap)))
-        s_c = list(np.linspace(s_start, s_stop, n + 1))
+        s_c = s_c + list(np.linspace(s_start, s_stop, n + 1))
         return s_c + s_v
 
 
@@ -156,6 +196,11 @@ def build_spine_loft(body, spec, G):
         th = np.pi * a
         W = np.cos(th)[:, None] * B[None] + np.sin(th)[:, None] * N[None]
         P = G.cast(pt, W)
+        sb = float(G.s_root)                                    # beyond the tail's root the rings are exact circles of the radius profile (a cast onto the sphere chain's envelope is irregular, and the limit fit amplifies that into a zigzag); the cast takes over into the body
+        t_ana = 1.0 - float(np.clip((s - (sb - 0.30)) / 0.30, 0.0, 1.0))
+        if t_ana > 0:
+            rad = float(G.tail_radius(np.array([s]))[0])
+            P = P * (1 - t_ana) + (pt + rad * W) * t_ana
         P[a == 0, 1] = 0.0; P[a == 1, 1] = 0.0
         rings.append([body.add(P[c], "torso", float(s), a[c], target=P[c], centre=(c in (0, n - 1))) for c in range(n)])
         rz.append(float(pt[2])); info.append(dict(s=float(s), centre=pt, T=T, N=N, B=B))

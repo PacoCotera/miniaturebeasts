@@ -10,7 +10,7 @@ import math
 import numpy as np
 
 COAT_DEFAULT = dict(
-    palette="dusk", layout="plain", coat_value=1.0, belly_reach=0.0, glow=0.9, grain=0.35, sheen=0.3,
+    palette="dusk", hue=None, glow_hue=80.0, layout="plain", coat_value=1.0, belly_reach=0.0, glow=0.9, grain=0.35, sheen=0.3,
     gradient=0.25, hue_shift=0.0, fleck=0.35, freckle_density=0.35, freckle_glow=0.8, bleed=0.55,
     rd="none", rd_scale=1.0, rd_contrast=0.5, rosette=0.0, bands=5, brow=0.0, mark="none", mark_size=0.10, mark_where="forehead",
     blush=True, eye_size=1.0, eye_height=0.0, eye_spacing=0.0, mouth_width=1.0, mouth_z=0.0, expression="content",
@@ -170,7 +170,70 @@ def surface_frame(G, z, a):
 
 
 # ---------------------------------------------------------------- the coat
+def _hsv(h, s_, v):
+    h = (h % 360.0) / 60.0
+    i = int(h) % 6
+    f = h - int(h)
+    p, q, t = v * (1 - s_), v * (1 - f * s_), v * (1 - (1 - f) * s_)
+    return [(v, t, p), (q, v, p), (p, v, t), (p, q, v), (t, p, v), (v, p, q)][i]
+
+
+def _luma(c):
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+
+
+def color_hl(h, s_, L):
+    """An sRGB colour (0-255) of hue h (degrees), saturation s_ and the given Rec.709 luma L (0-1, on the gamma values): the value is found by bisection; where full value is still too dark the saturation drops."""
+    lo, hi = 0.0, 1.0
+    for _ in range(40):
+        m = 0.5 * (lo + hi)
+        if _luma(_hsv(h, s_, m)) < L:
+            lo = m
+        else:
+            hi = m
+    v = hi
+    ss = s_
+    while _luma(_hsv(h, ss, v)) < L - 0.01 and ss > 0.02:
+        ss -= 0.02
+    return np.array(_hsv(h, ss, v)) * 255.0
+
+
+WARM_BELLY = (10.0, 35.0)      # the hue window where a cream belly (with a lit tail) would read as the famous fire-tailed starter: there the belly is dark, darker than the body
+
+
+def hue_window(h):
+    return WARM_BELLY[0] <= (h % 360.0) <= WARM_BELLY[1]
+
+
+def is_warm(h):
+    h = h % 360.0
+    return h <= 70.0 or h >= 340.0
+
+
+def palette_from_hue(h, g):
+    """The body palette from the hue gene: coat, belly, ear-inner, pad, mark, nose and the firefly glow (hue 70-90, every palette). A body hue of 10-35 degrees never has a cream belly: its belly is a deep plum or umber."""
+    h = float(h) % 360.0
+    cv = float(g.get("coat_value", 1.0))
+    L = float(np.clip(0.42 * cv, 0.2, 0.7))
+    coat = color_hl(h, 0.56, L)
+    if hue_window(h):
+        belly = color_hl(h - 40.0, 0.42, L * 0.55)                           # plum: darker than the body
+    else:
+        belly = color_hl(h + 8.0, 0.10, 0.93)
+    P = dict(coat=coat, belly=belly, **{"ear-inner": color_hl(h + 160.0, 0.40, 0.80)}, pad=color_hl(h, 0.62, L * 0.62), mark=color_hl(h + 8.0, 0.66, L * 0.50 if L > 0.3 else L * 0.4), nose=color_hl(h, 0.5, 0.13),
+             glow=color_hl(float(g.get("glow_hue", 80.0)), 0.78, 0.86))
+    return P
+
+
 def palette_of(spec, g):
+    if g.get("hue") is not None:
+        pal = palette_from_hue(float(g["hue"]) + 360.0 * float(g.get("hue_shift", 0.0)), g)
+        pal = {k: np.array(v, float) for k, v in pal.items()}
+        pal["_hue"] = float(g["hue"]) + 360.0 * float(g.get("hue_shift", 0.0))
+        acc = spec["palettes"]["accents"]
+        for k in acc:
+            pal["acc_" + k] = np.array(acc[k], float)
+        return pal
     P = spec["palettes"][g["palette"]]
     pal = {k: np.array(P[k], float) for k in P}
     pal["coat"] = np.clip(pal["coat"] * g["coat_value"], 0, 255)
@@ -179,7 +242,6 @@ def palette_of(spec, g):
         c = pal["coat"] / 255.0
         h = g["hue_shift"]
         cr, sr = math.cos(h * 2 * math.pi), math.sin(h * 2 * math.pi)
-        # a rotation about the grey axis (cheap hue shift)
         k = 1 / 3.0; s3 = math.sqrt(1 / 3.0)
         R = np.array([[cr + (1 - cr) * k, k * (1 - cr) - s3 * sr, k * (1 - cr) + s3 * sr],
                       [k * (1 - cr) + s3 * sr, cr + k * (1 - cr), k * (1 - cr) - s3 * sr],
@@ -204,7 +266,9 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     side = np.where(y >= 0, 1.0, -1.0)
     Vm = V * np.array([1.0, 1.0, 1.0]); Vm = np.stack([x, np.abs(y), z], 1)         # folded to the left half
     Nm = N * np.stack([np.ones(n), side, np.ones(n)], 1)
-    torso, leg, ear, arm, nose, tip = (isp(k) for k in ("torso", "leg.L", "ear.L", "arm.L", "nose", "tail.tip"))
+    torso, leg, ear, arm = (isp(k) for k in ("torso", "leg.L", "ear.L", "arm.L"))
+    nose = np.zeros(len(V), bool)
+    tip = torso & (attr[:, 1] <= float(ctx["T"].bulb[0]) + 1e-9) & (ctx["T"].bulb[0] > 0)          # the bulb is the last stretch of the one spine
     r_xy = np.hypot(x, y)
     a_geo = np.arctan2(np.abs(y), -x) / np.pi                       # the straight gourd's `around` (0 back line, 1 front line): true on the upper body
     # ONE spine, ONE loft: the tail is the first named range of the loft's arc length (s runs from the lantern stalk; u from the crown). Island coordinates of a loft vertex: the ring's `around` and its arc length.
@@ -323,7 +387,8 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         col[nose] = srgb_to_lin(pal["nose"])
         rough[nose] = 0.35
     if arm.any():
-        tt = np.clip((attr[:, 1] + 1) / 2, 0, 1)
+        rec_a = ctx["info"]["tubes"]["arm.L"]
+        tt = np.clip((attr[:, 1] - rec_a["first_s"]) / max(rec_a["path"].length - rec_a["first_s"], 1e-3), 0, 1)
         m = arm * sstep(0.55, 0.95, tt)
         col = col * (1 - 0.5 * m[:, None]) + mark * 0.5 * m[:, None]
     # ---- the glow: lantern, freckles, the bleed
@@ -356,7 +421,8 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         dist = np.where(tail, np.clip(Lt - s, 0, None), 9.0)
         e = np.exp(-(dist / max(g["bleed"], 1e-3)) ** 2) * (tail * 1.0)
         F["bleed"] = e
-        col = col * (1 - 0.35 * e[:, None]) + glow * 0.35 * e[:, None]
+        if not (pal.get("_hue") is not None and is_warm(pal["_hue"])):          # no colour bleed on the warm hues: the tail stays the body's colour down to the stalk
+            col = col * (1 - 0.35 * e[:, None]) + glow * 0.35 * e[:, None]
         emit = emit + glow * (0.30 * gl * e)[:, None]
     # ---- the face (decals on the loft's own coordinates)
     f_eye = srgb_to_lin(pal["acc_eye"]); f_mouth = srgb_to_lin(pal["acc_mouth"]); f_blush = srgb_to_lin(pal["acc_blush"]); f_catch = srgb_to_lin(pal["acc_catch"])
