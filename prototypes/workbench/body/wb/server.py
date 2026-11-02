@@ -1,5 +1,5 @@
 """The job server: standard-library HTTP + Server-Sent Events over the species files, a priority queue with superseding, the content-addressed cache, a file watcher, and the proxy worker(s).
-JSON API as spec 6.3 (species, jobs, events, cas; gate routes answer 403 to makers and 501 until their chunk). A static folder can be served from a configurable path (empty by default). No page is built here.
+JSON API as spec 6.3 (species, jobs, events, cas; gate routes answer 403 to makers and 501 until their chunk). The studio app (body/wb/static/app, built from body/wb/web and committed) is served by default: /assets/* immutable, any other page GET answers index.html (the single-page fallback).
 python -m wb.server --home DIR [--species DIR ...] [--static DIR] [--port N]"""
 import argparse
 import copy
@@ -21,7 +21,9 @@ if BODY not in sys.path:
 from wb import cas as C, facade as F, hashing as H, jobs as J, keys as K, report as R, store as S
 from wb.store import ApiError
 
-CT = {"png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
+STATIC_APP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "app")
+CSP = "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+CT = {"woff2": "font/woff2", "ttf": "font/ttf", "ico": "image/x-icon", "png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
 
 
 class Hub:
@@ -119,7 +121,7 @@ class Server:
         self.cache_limit = int(cache_limit_gb * 1e9)
         self.tokens = S.Tokens(os.path.join(self.home, "tokens.json"))
         self.species_dirs = [os.path.abspath(d) for d in species_dirs]
-        self.static = os.path.abspath(static) if static else None
+        self.static = os.path.abspath(static) if static else (STATIC_APP if os.path.isfile(os.path.join(STATIC_APP, "index.html")) else None)
         self.hub = Hub()
         self.queue = J.JobQueue()
         self.stopping = False
@@ -493,19 +495,27 @@ def make_handler(srv):
                 self.send_header("Cache-Control", "public, max-age=31536000, immutable")
                 self.end_headers()
                 return self.wfile.write(data)
-            if srv.static and not p.startswith("/api"):
+            if srv.static and not p.startswith(("/api", "/cas", "/events")):
                 return self.static(p)
             raise ApiError(404, "no such route", None)
 
         def static(self, p):
-            rel = os.path.normpath(p.lstrip("/") or "index.html")
+            """/assets/* are content-hashed files: immutable for a year. Any other path that is not a file of the app is a page of the single-page app: index.html, never cached."""
+            rel = os.path.normpath(p.lstrip("/"))
             full = os.path.join(srv.static, rel)
-            if rel.startswith("..") or not os.path.isfile(full):
+            is_file = not rel.startswith("..") and rel != "." and os.path.isfile(full)
+            if p.startswith("/assets/") and not is_file:
                 raise ApiError(404, "not found", None)
-            data = open(full, "rb").read()
+            if not is_file:
+                full = os.path.join(srv.static, "index.html")
+            with open(full, "rb") as fh:
+                data = fh.read()
             self.send_response(200)
             self.send_header("Content-Type", CT.get(full.rsplit(".", 1)[-1], "application/octet-stream"))
             self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", "public, max-age=31536000, immutable" if p.startswith("/assets/") else "no-cache")
+            self.send_header("Content-Security-Policy", CSP)
+            self.send_header("X-Content-Type-Options", "nosniff")
             self.end_headers()
             self.wfile.write(data)
 

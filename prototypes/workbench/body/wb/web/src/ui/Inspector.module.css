@@ -1,0 +1,6 @@
+.insp { border-left: 1px solid var(--line); background: var(--panel); padding: var(--s-5) var(--s-5) var(--s-4); overflow: auto; display: flex; flex-direction: column; gap: var(--s-2); min-width: 0; }
+.title { margin-top: var(--s-3); }
+.title b { font-size: var(--t-20); font-weight: 600; }
+.line { color: var(--text-2); font-size: var(--t-14); }
+.sheet { position: absolute; top: 0; right: 0; bottom: 0; width: 344px; z-index: 6; box-shadow: var(--shadow-2); transform: translateX(105%); transition: transform var(--m-mid) var(--ease); }
+.sheet[data-open] { transform: none; }

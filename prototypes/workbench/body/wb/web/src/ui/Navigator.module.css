@@ -1,0 +1,2 @@
+.nav { border-right: 1px solid var(--line); padding: var(--s-4) var(--s-2); overflow: hidden; background: var(--bg); min-width: 0; }
+.rail { padding-left: var(--s-1); padding-right: var(--s-1); }
