@@ -2,10 +2,11 @@
 import numpy as np
 import nview
 
+AZ_HOUSE = 32.0
 SIZES = {304: (304, 312, 95.0), 96: (96, 88, 30.0), 48: (48, 48, 15.0)}
 
 
-def silhouette(V, F, size=304, az=57.5, el=10.0, centre=(-0.35, 0.0, 1.3)):
+def silhouette(V, F, size=304, az=32.0, el=10.0, centre=(-0.35, 0.0, 1.3)):
     w, h, ppH = SIZES[size]
     img, zb, px, dep = nview.render(V, F, None, az, el, centre, ppH, w, h)
     return zb < 1e8

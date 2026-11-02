@@ -92,7 +92,7 @@ def grow_tube(body, ctx, name, p, fam, i, c, centre):
         if centre:
             X = X.copy(); X[:, 1] = np.abs(X[:, 1])
         below = (pt[0] - loopc) @ Tg[0] - ((V0[loop] - loopc) @ Tg[0]).max()
-        if not G.inside(X, margin=-0.01).any() and below >= GAP:
+        if float(G.inside(X, margin=-0.01).mean()) <= float(p["socket"].get("inside_frac", 0.0)) and below >= float(p["socket"].get("gap", GAP)):
             first = k
             break
     assert first is not None, f"{name}: no ring clears the loft"

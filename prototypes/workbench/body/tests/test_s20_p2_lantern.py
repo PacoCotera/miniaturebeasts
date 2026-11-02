@@ -31,9 +31,9 @@ class T(unittest.TestCase):
             if c["shape"]["tip"] != "lantern":
                 continue
             G = b.ctx["T"]
-            s = np.linspace(0.02, 0.6 * G.bulb[0], 9)                          # the glowing lower 60 % of the bulb: its tip axis
-            T = G.pa.at(s)[1]
-            ang = np.degrees(np.arccos(np.clip(T[:, 2], -1, 1)))              # the path runs from the bulb's end (s = 0) to the crown: T points up the bulb, so the angle to straight down is acos(T_z)
+            P0, P1 = G.pa.at([0.0])[0][0], G.pa.at([0.6 * G.bulb[0]])[0][0]            # the bulb's axis over its glowing lower 60 %: from its end to the 60 % point
+            ax = P1 - P0
+            ang = np.array([math.degrees(math.acos(float(np.clip(ax[2] / np.linalg.norm(ax), -1, 1))))])      # the path runs from the bulb's end up the stalk: +z along the axis is straight down for the bulb
             print("individual", i, "tip axis from straight down", ang.round(1).tolist())
             self.assertLess(float(ang.max()), 30.0, i)
 
@@ -83,17 +83,27 @@ class T(unittest.TestCase):
         self.assertGreaterEqual(len(distinct), 6)
 
     def test_no_cream_belly_with_a_lit_tail_in_the_ember_window(self):
+        """A body hue of 10-35 degrees never has a cream belly with a lit tail: its coat is rust-ochre and its belly a pale COOL tint (hue in 150-260), still lighter than the coat."""
+        for h in range(10, 36, 5):
+            P = CT.palette_from_hue(h, {})
+            bh = hue_of(P["belly"])
+            self.assertTrue(150.0 <= bh <= 260.0, (h, bh))
+            self.assertGreaterEqual(luma(P["belly"]), 1.15 * luma(P["coat"]), h)
         for i, (c, b, R) in enumerate(self.items, 1):
             h = (c["coat"]["hue"] + 360.0 * c["coat"]["hue_shift"]) % 360.0
             P = CT.palette_from_hue(h, c["coat"])
-            lit_tail = c["shape"]["tip"] == "lantern"
-            cream = luma(P["belly"]) > luma(P["coat"]) + 0.25
-            if 10.0 <= h <= 35.0:
-                self.assertFalse(cream and lit_tail, (i, h))
-                self.assertLess(luma(P["belly"]), luma(P["coat"]))        # a dark belly, darker than the body
-        for h in range(10, 36, 5):
+            if 10.0 <= h <= 35.0 and c["shape"]["tip"] == "lantern":
+                self.assertTrue(150.0 <= hue_of(P["belly"]) <= 260.0, (i, h))
+
+    def test_plush_colour_range_and_a_lighter_belly_on_every_hue(self):
+        """The coat sits in a plush range (HSV saturation 0.35-0.60, value 0.55-0.85), never hot or flat, and the belly is at least 15 % lighter than the coat on EVERY hue (the greens lost theirs)."""
+        import colorsys
+        for h in range(0, 360, 5):
             P = CT.palette_from_hue(h, {})
-            self.assertLess(luma(P["belly"]), luma(P["coat"]), h)
+            hh, ss, vv = colorsys.rgb_to_hsv(*(np.array(P["coat"]) / 255.0))
+            self.assertTrue(0.35 - 1e-6 <= ss <= 0.60 + 1e-6, (h, ss))
+            self.assertTrue(0.55 - 1e-6 <= vv <= 0.85 + 1e-6, (h, vv))
+            self.assertGreaterEqual(luma(P["belly"]), 1.15 * luma(P["coat"]), h)
 
     def test_no_tail_colour_bleed_on_warm_hues(self):
         c, b, R = self.items[0]

@@ -91,7 +91,7 @@ def house_images(b, tex, sub, genome, paths, R=None):
         M = posed(M, b, R, R.stand_pose())                              # the stand pose: the tail yawed toward the camera, as the house view shows it
     out = {}
     for size, (w, h, ppH) in SL_.SIZES.items():
-        a, cam = RN.render_tex(M, paths, genome, os.path.join(sub, f"house-{size}.png"), w, h, ppH, az=57.5, el=10.0, centre=(-0.35, 0, 1.3 if size != 48 else 1.25), samples=48)
+        a, cam = RN.render_tex(M, paths, genome, os.path.join(sub, f"house-{size}.png"), w, h, ppH, az=32.0, el=10.0, centre=(-0.35, 0, 1.3 if size != 48 else 1.25), samples=48)
         RN.to_png(a, os.path.join(sub, f"house-{size}.png"))
         out[size] = f"house-{size}.png"
     for az in (0, 90, 135, 180):

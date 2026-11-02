@@ -214,17 +214,30 @@ def is_warm(h):
     return h <= 70.0 or h >= 340.0
 
 
+def hsv_plush(h, s_, v):
+    """An sRGB colour (0-255) from hue (deg), HSV saturation and value: the plush range (saturation 0.35-0.60, value 0.55-0.85) is enforced by the callers' clamps."""
+    return np.array(_hsv(h, s_, v)) * 255.0
+
+
 def palette_from_hue(h, g):
-    """The body palette from the hue gene: coat, belly, ear-inner, pad, mark, nose and the firefly glow (hue 70-90, every palette). A body hue of 10-35 degrees never has a cream belly: its belly is a deep plum or umber."""
+    """The body palette from the hue gene, in a plush range (not hot, not flat): the coat's HSV saturation 0.35-0.60 and value 0.55-0.85 (value lower at hues that read bright: yellow-green, cyan), the belly always at least 15 % lighter than the coat (a pale tint of
+    the hue; in the 10-35 degree window a pale COOL belly, never cream, with a rust-ochre coat: the fire-tailed starter's cream belly with a warm coat and a lit tail is the likeness to avoid), ear-inner a lighter contrasting pastel, pad, mark and nose darker, and the
+    firefly glow (hue 70-90 on every palette)."""
     h = float(h) % 360.0
     cv = float(g.get("coat_value", 1.0))
-    L = float(np.clip(0.46 * cv, 0.2, 0.7))
-    coat = color_hl(h, 0.64, L)
+    # brighter hues (yellow to cyan) get a lower value so the luma stays level across the wheel
+    bright = max(0.0, 1.0 - abs(((h - 105.0 + 180.0) % 360.0) - 180.0) / 75.0)
+    v = float(np.clip((0.78 - 0.17 * bright) * cv, 0.55, 0.85))
+    sat = float(np.clip(0.52 - 0.06 * bright, 0.35, 0.60))
     if hue_window(h):
-        belly = color_hl(h - 40.0, 0.42, L * 0.55)                           # plum: darker than the body
+        sat = float(np.clip(sat, 0.45, 0.58))
+    coat = hsv_plush(h, sat, v)
+    cl = _luma(coat / 255.0)
+    if hue_window(h):
+        belly = hsv_plush(h + 175.0, 0.12, 0.93)                               # pale cool belly on the rust coat
     else:
-        belly = color_hl(h + 8.0, 0.10, 0.93)
-    P = dict(coat=coat, belly=belly, **{"ear-inner": color_hl(h + 55.0, 0.42, 0.82)}, pad=color_hl(h, 0.62, L * 0.62), mark=color_hl(h + 8.0, 0.66, L * 0.50 if L > 0.3 else L * 0.4), nose=color_hl(h, 0.5, 0.13),
+        belly = hsv_plush(h + 8.0, 0.10, 0.96)
+    P = dict(coat=coat, belly=belly, **{"ear-inner": hsv_plush(h + 55.0, 0.34, 0.95)}, pad=hsv_plush(h, min(0.6, sat + 0.05), v * 0.72), mark=hsv_plush(h + 8.0, min(0.6, sat + 0.08), v * 0.55), nose=hsv_plush(h, 0.45, 0.2),
              glow=color_hl(float(g.get("glow_hue", 80.0)), 0.78, 0.86))
     return P
 
