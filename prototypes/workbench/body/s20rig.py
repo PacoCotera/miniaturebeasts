@@ -138,7 +138,7 @@ class Rig:
                 h, t = B[f"clav.{sd}"]; S(chest_p, P(f"shoulder {sd}", f"clav.{sd}", t), "shoulder", f"clav.{sd}")
             h, t = B[f"hip.{sd}"]; S(pelv_p, P(f"hip joint {sd}", f"hip.{sd}", t), "hip", f"hip.{sd}")
         for sd in SIDES:
-            for nm, rng in ((f"leg.upper.{sd}", "limb"), (f"leg.lower.{sd}", "limb"), (f"leg.foot.{sd}", "limb"), (f"arm.{sd}", "appendage"), (f"ear.1.{sd}", "appendage"), (f"ear.2.{sd}", "appendage")):
+            for nm, rng in ((f"leg.upper.{sd}", "limb"), (f"leg.lower.{sd}", "limb"), (f"leg.foot.{sd}", "limb"), (f"arm.{sd}", "limb"), (f"ear.1.{sd}", "appendage"), (f"ear.2.{sd}", "appendage")):
                 if nm not in B:
                     continue
                 h, t = B[nm]

@@ -130,7 +130,10 @@ def sweep_shell(body, part, P, R, n=N_AROUND, tag=1.0, attr_t=True):
         body.tag[v] = tag
         poles.append(v)
         for k in range(0, n, 2):
-            body.face(ring[k], ring[(k + 1) % n], ring[(k + 2) % n], v, part)
+            if sgn < 0:                                      # the base cap's fan runs the other way round (pass 3: with the tip's order its 48 faces folded against the sides, at every key of the waddle)
+                body.face(v, ring[(k + 2) % n], ring[(k + 1) % n], ring[k], part)
+            else:
+                body.face(ring[k], ring[(k + 1) % n], ring[(k + 2) % n], v, part)
     return dict(rings=rings, poles=poles)
 
 
