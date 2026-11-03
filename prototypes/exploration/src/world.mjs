@@ -649,10 +649,10 @@ function g2Attempt(seed, t, B) {
     const up = new Int16Array(Z.n); for (let z = 0; z < Z.n; z++) up[z] = z;
     const find = z => { while (up[z] !== z) z = up[z]; return z; };
     for (const e of cand) { const ra = find(Z.id[e.a]), rb = find(Z.id[e.b]); if (ra === rb) continue; up[ra < rb ? rb : ra] = ra < rb ? ra : rb; edge[e.i] = EDGE.RAMP; }
-    if (B && B.extraStairs) {   // a biome's own stairs besides the spanning tree's: extraStairs times as many again, on cliff edges, each clear of a stair beside it on the same wall
+    if (B && B.extraStairs) {   // a biome's own stairs besides the spanning tree's: extraStairs percent as many again, on cliff edges, each clear of a stair beside it on the same wall
       let have = 0; for (let i = 0; i < 2 * NC; i++) if (edge[i] === EDGE.RAMP) have++;
       const along = i => (i & 1) ? [i - 2, i + 2] : [i - 2 * MW, i + 2 * MW];
-      for (let k = 0, want = Math.round(have * B.extraStairs); k < want;) {
+      for (let k = 0, want = ((have * B.extraStairs + 50) / 100) | 0; k < want;) {
         const pick = cand.filter(e => edge[e.i] === EDGE.CLIFF && land[e.a] !== L.WATER && land[e.b] !== L.WATER && along(e.i).every(j => j < 0 || j >= 2 * NC || edge[j] !== EDGE.RAMP))
           .sort((p, q) => hash(s0, 'xramp', p.i) - hash(s0, 'xramp', q.i) || p.i - q.i)[0];
         if (!pick) break; edge[pick.i] = EDGE.RAMP; k++;
@@ -1120,13 +1120,13 @@ export const BIOMES = ['mixed', 'woods', 'fells', 'marsh'];
 //   lakes, lakeTwo: extra small lakes and the percent of them with a second cell; pondP, ring8: the pond edge (generator 2: 35 percent, 4 sides);
 //   hP1, hP2, rampQ, lv, zoneMin: the height noise lattices, the slope toward the mountain edge, the level shares by rank and the smallest zone kept
 //   (generator 2: 8, 4, 16384, 15 45 40, 4). Fells: a valley (the slope rises on both sides of the river by its distance from it, rampQ at 8 cells),
-//   the rock ranked on the high ground (rockHigh), the wood on the low (woodLow), a few small tarns, and extraStairs: that many stairs again on cliff
+//   the rock ranked on the high ground (rockHigh), the wood on the low (woodLow), a few small tarns, and extraStairs: that percent of stairs again on cliff
 //   edges besides the spanning tree's, so the walls stay long and the stairs are twice generator 2's. Marsh: its ground is low, so its ranks put most of it on the top level.
 const RIVER_G2 = { axis: 'ns', lo: 8, hi: 13, turnP: 45, iy: [3, 16], n: 1, ford: 2 };   // generator 2's river band, with the island row drawn from 3 to 16
 export const BIOME_GROUND = {
   mixed: null,
   woods: { name: 'woods', river: { axis: 'pick', lo: 2, hi: 13, turnP: 60, iy: [3, 16], n: 1, ford: 1 }, mP1: 16, mP2: 8, wood: 200, rock: 36, fords: 0, lakes: 0, lakeTwo: 0, pondP: 50, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
-  fells: { name: 'fells', river: { axis: 'ns', lo: 5, hi: 10, turnP: 6, iy: [3, 16], n: 1, ford: 2, lake: 0 }, valley: true, rockHigh: true, woodLow: 6, extraStairs: 1.1, wood: 66, rock: 128, fords: 0, lakes: 5, lakeTwo: 80, pondP: 0, ring8: false, hP1: 8, hP2: 4, rampQ: 24576, lv: [20, 35, 45], zoneMin: 4 },
+  fells: { name: 'fells', river: { axis: 'ns', lo: 5, hi: 10, turnP: 6, iy: [3, 16], n: 1, ford: 2, lake: 0 }, valley: true, rockHigh: true, woodLow: 6, extraStairs: 110, wood: 66, rock: 128, fords: 0, lakes: 5, lakeTwo: 80, pondP: 0, ring8: false, hP1: 8, hP2: 4, rampQ: 24576, lv: [20, 35, 45], zoneMin: 4 },
   marsh: { name: 'marsh', river: RIVER_G2, wood: 62, rock: 28, fords: 2, lakes: 16, lakeTwo: 50, pondP: 25, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
 };
 export const WALK_MIN = 260;   // a biome world holds at least this many walkable cells on its reachable component
