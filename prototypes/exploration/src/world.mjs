@@ -436,6 +436,26 @@ const nearWater = (land, c) => { const x = c % MW, y = (c / MW) | 0;
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (onMapXY(x + dx, y + dy) && land[(y + dy) * MW + x + dx] === L.WATER) return true;
   return false; };
 
+// A biome's river setting (generator 4): B.river = { axis, lo, hi, turnP, iy, n, ford } -- 'ns', 'we' or 'pick' (north or west, by the
+// biome's own stream), the band the water stays in, the percent chance of a bend a step, the along-axis rows the island may take, the
+// channels (the second and later each on a stream of their own) and the ford lines. It draws on streams of its own, so generators 2 and 3
+// never see it.
+function g4Course(sub, J) {
+  const RV = makeRng(sub('rv4')), axis = J.axis === 'pick' ? (RV.int(2) ? 'ns' : 'we') : J.axis;
+  const len = axis === 'ns' ? MH : MW, cross = axis === 'ns' ? MW : MH, cell = (t, a) => axis === 'ns' ? t * MW + a : a * MW + t;
+  const chans = [], water = [];
+  for (let k = 0; k < (J.n || 1); k++) {
+    const R = makeRng(sub('rc' + k)), pos = new Int32Array(len); let p = J.lo + R.int(J.hi - J.lo + 1);
+    for (let t = 0; t < len; t++) {
+      if (t > 0 && R.int(100) < J.turnP) { const np = clamp(p + (R.int(2) ? 1 : -1), J.lo, J.hi); if (np !== p) { water.push(cell(t - 1, np)); p = np; } }
+      pos[t] = p; water.push(cell(t, p));
+    }
+    chans.push(pos);
+  }
+  const it = J.iy[0] + RV.int(Math.min(J.iy[1], len - 3) - J.iy[0] + 1);
+  return { axis, len, cross, cell, chans, water, RV, it, ix: chans[0][it] };
+}
+
 // Stage 1: base land, today's meadow made integer.
 // B is a biome's ground (generator 4, BIOME_GROUND); without one this is generator 2's land to the bit.
 function g2Land(sub, B) {
@@ -446,28 +466,49 @@ function g2Land(sub, B) {
   for (let c = 0; c < NC; c++) all.push(c);
   for (const c of rankTop(m, all, B ? B.wood : G2.WOOD_N)) land[c] = L.WOOD;
   for (const c of rankTop(r, all.filter(c => land[c] !== L.WOOD), B ? B.rock : G2.ROCK_N)) land[c] = L.ROCK;
-  const R = makeRng(sub('river')), rxs = new Int32Array(MH);
-  let rx = 9 + R.int(3);
-  for (let y = 0; y < MH; y++) {
-    if (y > 0 && R.int(100) < 45) { const nx = clamp(rx + (R.int(2) ? 1 : -1), 8, 13); if (nx !== rx) { land[at(nx, y - 1)] = L.WATER; rx = nx; } }
-    land[at(rx, y)] = L.WATER; rxs[y] = rx;
-  }
-  const iy = 11 + R.int(3), ix = rxs[iy];
-  for (let y = iy - 1; y <= iy + 1; y++) for (let x = ix - 1; x <= ix + 2; x++) land[at(clamp(x, 0, MW - 1), y)] = L.WATER;
-  land[at(rxs[iy - 2], iy - 1)] = L.WATER; land[at(rxs[iy + 2], iy + 1)] = L.WATER;
-  land[at(ix, iy)] = L.MEADOW; land[at(ix + 1, iy)] = R.int(2) ? L.WOOD : L.MEADOW;
-  island[at(ix, iy)] = 1; island[at(ix + 1, iy)] = 1;
-  for (const fy of [1 + R.int(3), 16 + R.int(3)]) for (let x = 0; x < MW; x++) if (land[at(x, fy)] === L.WATER) ford[at(x, fy)] = 1;
-  const lx = 1 + R.int(5), ly = 12 + R.int(6);
-  land[at(lx, ly)] = L.WATER;
-  if (B) {   // a biome's own streams, so nothing above moves: more fords, then small lakes
-    const RF = makeRng(sub('fords')), RL = makeRng(sub('lakes'));
-    for (let k = 0; k < B.fords; k++) { const fy = 4 + 3 * k + RF.int(2); for (let x = 0; x < MW; x++) if (land[at(x, fy)] === L.WATER) ford[at(x, fy)] = 1; }
+  const R = makeRng(sub('river'));
+  const smallLakes = RL => {   // a biome's small lakes of one or two cells
     for (let k = 0, tries = 0; k < B.lakes && tries < 400; tries++) {
       const x = 1 + RL.int(MW - 2), y = 1 + RL.int(MH - 2), c = at(x, y), two = RL.int(100) < B.lakeTwo, dx = RL.int(2), c2 = dx ? c + 1 : c + MW;
       const free = d => land[d] !== L.WATER && !island[d] && !ford[d] && land[d] !== L.CLIFF;
       if (!free(c) || (two && (!free(c2) || (dx && x + 1 >= MW - 1) || (!dx && y + 1 >= MH - 1)))) continue;
       land[c] = L.WATER; if (two) land[c2] = L.WATER; k++;
+    }
+  };
+  if (B && B.river) {   // the biome's own course, island row and fords
+    const J = B.river, C = g4Course(sub, J), { RV, it, ix } = C, pos0 = C.chans[0];
+    for (const c of C.water) land[c] = L.WATER;
+    for (let t = it - 1; t <= it + 1; t++) for (let a = ix - 1; a <= ix + 2; a++) land[C.cell(t, clamp(a, 0, C.cross - 1))] = L.WATER;
+    land[C.cell(it - 1, pos0[it - 2])] = L.WATER; land[C.cell(it + 1, pos0[it + 2])] = L.WATER;
+    land[C.cell(it, ix)] = L.MEADOW; land[C.cell(it, ix + 1)] = RV.int(2) ? L.WOOD : L.MEADOW;
+    island[C.cell(it, ix)] = 1; island[C.cell(it, ix + 1)] = 1;
+    // a ford line is a whole row (or column) of the water; it keeps two lines clear of the island
+    const fordLine = a => { for (let b = 0; b < C.cross; b++) { const c = C.cell(a, b); if (land[c] === L.WATER) ford[c] = 1; } };
+    const clear = a => { a = clamp(a, 1, C.len - 2); while (Math.abs(a - it) <= 2) a += a >= it ? 1 : -1; return clamp(a, 1, C.len - 2); };
+    for (let k = 0; k < J.ford; k++) fordLine(clear((J.ford > 1 ? 1 + ((k * (C.len - 5) / (J.ford - 1)) | 0) : (C.len >> 1) - 1) + RV.int(3)));
+    const RF = makeRng(sub('fords'));
+    for (let k = 0; k < B.fords; k++) fordLine(clear(4 + 3 * k + RF.int(2)));
+    land[at(1 + RV.int(5), 12 + RV.int(6))] = L.WATER;
+    smallLakes(makeRng(sub('lakes')));
+  } else {
+    const rxs = new Int32Array(MH);
+    let rx = 9 + R.int(3);
+    for (let y = 0; y < MH; y++) {
+      if (y > 0 && R.int(100) < 45) { const nx = clamp(rx + (R.int(2) ? 1 : -1), 8, 13); if (nx !== rx) { land[at(nx, y - 1)] = L.WATER; rx = nx; } }
+      land[at(rx, y)] = L.WATER; rxs[y] = rx;
+    }
+    const iy = 11 + R.int(3), ix = rxs[iy];
+    for (let y = iy - 1; y <= iy + 1; y++) for (let x = ix - 1; x <= ix + 2; x++) land[at(clamp(x, 0, MW - 1), y)] = L.WATER;
+    land[at(rxs[iy - 2], iy - 1)] = L.WATER; land[at(rxs[iy + 2], iy + 1)] = L.WATER;
+    land[at(ix, iy)] = L.MEADOW; land[at(ix + 1, iy)] = R.int(2) ? L.WOOD : L.MEADOW;
+    island[at(ix, iy)] = 1; island[at(ix + 1, iy)] = 1;
+    for (const fy of [1 + R.int(3), 16 + R.int(3)]) for (let x = 0; x < MW; x++) if (land[at(x, fy)] === L.WATER) ford[at(x, fy)] = 1;
+    const lx = 1 + R.int(5), ly = 12 + R.int(6);
+    land[at(lx, ly)] = L.WATER;
+    if (B) {   // a biome's own streams, so nothing above moves: more fords, then small lakes
+      const RF = makeRng(sub('fords')), RL = makeRng(sub('lakes'));
+      for (let k = 0; k < B.fords; k++) { const fy = 4 + 3 * k + RF.int(2); for (let x = 0; x < MW; x++) if (land[at(x, fy)] === L.WATER) ford[at(x, fy)] = 1; }
+      smallLakes(RL);
     }
   }
   const wetRing = B && B.ring8 ? NB8 : SIDES.map(([, dx, dy]) => [dx, dy]);
@@ -1057,11 +1098,12 @@ export const BIOMES = ['mixed', 'woods', 'fells', 'marsh'];
 //   lakes, lakeTwo: extra small lakes and the percent of them with a second cell; pondP, ring8: the pond edge (generator 2: 35 percent, 4 sides);
 //   hP1, hP2, rampQ, lv, zoneMin: the height noise lattices, the slope toward the mountain edge, the level shares by rank and the smallest zone kept
 //   (generator 2: 8, 4, 16384, 15 45 40, 4). Fells: finer, steeper-noised height; Marsh: its ground is low, so its ranks put most of it on the top level.
+const RIVER_G2 = { axis: 'ns', lo: 8, hi: 13, turnP: 45, iy: [3, 16], n: 1, ford: 2 };   // generator 2's river band, with the island row drawn from 3 to 16
 export const BIOME_GROUND = {
   mixed: null,
-  woods: { name: 'woods', wood: 200, rock: 36, fords: 0, lakes: 0, lakeTwo: 0, pondP: 50, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
-  fells: { name: 'fells', wood: 55, rock: 152, fords: 0, lakes: 0, lakeTwo: 0, pondP: 40, ring8: false, hP1: 2, hP2: 2, rampQ: 4096, lv: [15, 45, 40], zoneMin: 2 },
-  marsh: { name: 'marsh', wood: 62, rock: 28, fords: 2, lakes: 16, lakeTwo: 50, pondP: 25, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
+  woods: { name: 'woods', river: RIVER_G2, wood: 200, rock: 36, fords: 0, lakes: 0, lakeTwo: 0, pondP: 50, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
+  fells: { name: 'fells', river: RIVER_G2, wood: 55, rock: 152, fords: 0, lakes: 0, lakeTwo: 0, pondP: 40, ring8: false, hP1: 2, hP2: 2, rampQ: 4096, lv: [15, 45, 40], zoneMin: 2 },
+  marsh: { name: 'marsh', river: RIVER_G2, wood: 62, rock: 28, fords: 2, lakes: 16, lakeTwo: 50, pondP: 25, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
 };
 export const WALK_MIN = 260;   // a biome world holds at least this many walkable cells on its reachable component
 // The land a biome's habitat herds stand on: a species whose habitat holds it has its herds there doubled.
