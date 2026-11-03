@@ -39,6 +39,10 @@ const press = (f) => { f.key("confirm", "down"); }, lift = (f) => { f.key("confi
 
 test("the spec: 96 px, 3000 ms to fill, 300 ms to empty, quarters", () => { assert.equal(H.size, 96); assert.equal(H.ms, 3000); assert.equal(H.emptyMs, 300); assert.equal(H.quarters, 4); });
 
+test("the quarters are read from the spec", { skip }, async () => {
+  const f = await setup({ motion: false }); assert.equal(f.send({ t: "spec", screen: "frame", json: { ...frameSpec, hold: { ...H, quarters: 2 } } }), 0); assert.equal(f.props(props({ motion: false })), 0); press(f); f.frame(T0 + 16); f.frame(T0 + 16 + 1499); assert.equal(count(f).fill, 0, "two steps: none before 1500 ms"); f.frame(T0 + 16 + 1500); assert.ok(Math.abs(share(f) - 0.5) < 0.02, "a half at 1500 ms: " + share(f));
+});
+
 test("at rest the ring is an empty track at the plate's centre", { skip }, async () => {
   const f = await setup(); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
   const c = count(f); assert.equal(c.fill, 0); assert.ok(c.track > 1000, "the track is drawn: " + c.track);
@@ -62,7 +66,37 @@ test("confirm:held is sent once, however long ✓ stays down", { skip }, async (
   for (let t = T0 + 16; t <= T0 + 9000; t += 50) { f.frame(t); said.push(...intents(f)); }
   assert.deepEqual(said, ["confirm:held"]);
   press(f); f.frame(T0 + 9100); f.frame(T0 + 15000); assert.deepEqual(intents(f), [], "a key repeat does not begin another hold");
-  lift(f); f.frame(T0 + 15100); f.frame(T0 + 15400); assert.deepEqual(intents(f), [], "letting go after it completed says nothing more"); assert.equal(count(f).fill, 0, "and the ring is empty");
+  lift(f); f.frame(T0 + 15100); f.frame(T0 + 15400); assert.deepEqual(intents(f), [], "letting go after it completed says nothing more"); assert.equal(count(f).track, 0, "and the ring is still full");
+});
+
+test("full stays full: after confirm:held, letting go keeps the ring full until the frame stops sending the hold", { skip }, async () => {
+  const f = await setup(); press(f); const t0 = T0 + 16; f.frame(t0); f.frame(t0 + 3000); assert.deepEqual(intents(f), ["confirm:held"]); assert.equal(count(f).track, 0, "full at 3000 ms");
+  lift(f); f.frame(t0 + 3000);
+  for (const dt of [3150, 3300, 3600, 8000]) { f.frame(t0 + dt); assert.equal(count(f).track, 0, "full at +" + (dt - 3000) + " ms after letting go"); assert.deepEqual(intents(f), [], "nothing more is said"); }
+  f.key("library"); assert.deepEqual(intents(f), ["room:library"]); f.frame(t0 + 8100); f.frame(t0 + 8500); assert.equal(count(f).track, 0, "another key does not empty a full ring either");
+  assert.equal(f.props(props({ hold: false })), 0); f.frame(t0 + 8600); const c = count(f); assert.equal(c.fill + c.track, 0, "the frame stops sending hold: the ring goes");
+  assert.equal(f.props(props()), 0); f.frame(t0 + 8700); assert.equal(count(f).fill, 0, "and comes back empty");
+});
+
+test("a fresh press is needed: a ✓ already down when the hold arrives fills nothing", { skip }, async () => {
+  const f = await setup({ hold: false }); press(f); f.frame(T0 + 100);   // ✓ down while the frame has no hold (step 1's Continue)
+  assert.equal(f.props(props()), 0); f.frame(T0 + 116); f.frame(T0 + 2000); f.frame(T0 + 4000); f.frame(T0 + 4116);
+  assert.equal(count(f).fill, 0, "no fill"); assert.deepEqual(intents(f), [], "no confirm:held");
+  lift(f); f.frame(T0 + 4200); f.frame(T0 + 4600); assert.equal(count(f).fill, 0); assert.deepEqual(intents(f), []);
+  press(f); f.frame(T0 + 4600); f.frame(T0 + 5600); assert.ok(Math.abs(share(f) - 1 / 3) < 0.02, "pressed again, the ring fills: " + share(f));
+  f.frame(T0 + 7600); assert.deepEqual(intents(f), ["confirm:held"]);
+});
+
+test("the ring stands on clear ground: nothing under it or within 16 px of its box but the stage ground", { skip }, async () => {
+  const f = await setup(); const px = f.rgba(), W = f.size[0], g = [...px.slice(((BOX[1] - 16) * W + BOX[0] - 16) * 4, ((BOX[1] - 16) * W + BOX[0] - 16) * 4 + 3)];
+  for (const [label, fillRing] of [["empty", false], ["full", true]]) {
+    if (fillRing) { press(f); f.frame(T0 + 16); f.frame(T0 + 3016); }
+    const p = f.rgba(); let odd = 0;
+    for (let y = BOX[1] - 16; y < BOX[1] + H.size + 16; y++) for (let x = BOX[0] - 16; x < BOX[0] + H.size + 16; x++) {
+      const i = (y * W + x) * 4, c = [p[i], p[i + 1], p[i + 2]]; if (!same(c, g) && !same(c, FILL) && !same(c, TRACK)) odd++;
+    }
+    assert.equal(odd, 0, label + ": pixels of another colour in the ring's box and its 16 px margin: " + odd);
+  }
 });
 
 test("letting go empties the ring over 300 ms and says nothing: release +0, +150 and +300 ms", { skip }, async () => {

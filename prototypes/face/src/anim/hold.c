@@ -31,7 +31,9 @@ int hold_fill(void) {
   uint32_t now = anim_now(); int el = (int)(now - g_t0);
   if (g_state == H_HOLDING) {
     int ms = hold_ms(); if (el < 0) el = 0; if (el >= ms) return 1000;
-    return motion() ? el * 1000 / ms : (el * 4 / ms) * 250;
+    if (motion()) return el * 1000 / ms;
+    int q = spec_int("frame", "hold.quarters", 4); if (q < 1) q = 4;   /* the steps with reduced motion: a step every ms / quarters */
+    return (el * q / ms) * (1000 / q);
   }
   if (g_state == H_FULL) return 1000;
   if (g_state == H_EMPTYING) { int em = empty_ms(); if (!motion() || el >= em) return 0; if (el < 0) el = 0; return g_from * (em - el) / em; }
@@ -39,6 +41,7 @@ int hold_fill(void) {
 }
 int hold_up(void) {
   if (g_state == H_IDLE || g_state == H_EMPTYING) return 0;
+  if (g_state == H_FULL) return 1;   /* a full ring stays full until the frame stops sending the hold: the sleep's writes run after it, and an emptying ring would say cancelled */
   g_from = hold_fill(); g_t0 = anim_now(); g_state = motion() && g_from > 0 ? H_EMPTYING : H_IDLE; screens_redraw(); return 1;
 }
 void hold_cancel(void) { hold_up(); }

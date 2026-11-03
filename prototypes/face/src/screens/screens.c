@@ -16,6 +16,7 @@
 static void not_built(void) {
   char c[24], s[V_STR];
   kit_stage("frame", "regions.stage.rect", v_scol("frame", "colours.stageGround"), "notBuilt.stage", "notBuilt.stage", NULL, NULL);
+  if (spec_len("props", "frame.hold") >= 0) return;   /* a frame that holds draws the ring on clear ground: the line would run through it */
   spec_str("frame", "notBuilt.strings.line", s, sizeof s);
   int px = spec_int("frame", "notBuilt.regions.line.px", 20);
   spec_str("frame", "notBuilt.colours.line", c, sizeof c);
