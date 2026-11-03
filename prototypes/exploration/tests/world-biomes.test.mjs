@@ -206,7 +206,7 @@ const fellsStairPlaces = function* (seeds, dir) { for (const s of seeds) { const
   for (let c = 0; c < N; c++) { if (!G.comp[c] || G.land[c] !== L.ROCK) continue; const lay = W.genPlace(G, s, String(c)), st = stairOf(lay); if (st && st.dir === dir) yield { seed: s, c, lay, st }; } } };
 const first64 = function* (dir) { let n = 0; for (const p of fellsStairPlaces(Array.from({ length: 400 }, (_, i) => i), dir)) { yield p; if (++n === 64) return; } };
 
-test("Fells stair place, on each of the four stair sides: the stair's columns stay clear below the foot rows, and at least 58 of 64 places pass every per-place gate (10 to 20 stones, side share, 3 far groups, no group above 4, no overhang on the screen, no stone on a square); seed 42 passes", { skip: "parked: the per-place gates need more stones on the stair's screen than the foot-row single tiles leave" }, () => {
+test("Fells stair place, on each of the four stair sides: the stair's columns stay clear below the foot rows, and at least 58 of 64 places pass every per-place gate (10 to 20 stones, side share, 3 far groups, no group above 4, no overhang on the screen, no stone on a square); seed 42 passes", { skip: "parked: measured 43, 53, 57 and 54 of 64 places pass every gate (north, south, west, east) against the 58 wanted" }, () => {
   for (const dir of SIDES4) {
     let n = 0, pass = 0, sum = 0, left = 0, right = 0; const per = Object.fromEntries(GATES.map(k => [k, 0]));
     for (const { seed, c, lay, st } of first64(dir)) { n++;

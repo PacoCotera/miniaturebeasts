@@ -976,16 +976,20 @@ export function genPatch2(G, seed, cell) {
     feats.push({ id: 'o' + k, kind: 'o', x: ox, y: oy }); k++;
   }
   // Generator 4's Fells: a rock place has four times the stone placements (about three times the stone tiles once they overlap), half of them gathered at the foot of a cliff on the stair's side (north when there is a cliff but no stair).
-  const rockN = land === L.ROCK ? (6 + R.int(4)) * (fellsRock ? 4 : 1) : R.int(2) + (land === L.MEADOW ? 1 : 0);
+  const rockN = land === L.ROCK ? (6 + R.int(4)) * (fellsRock ? 8 : 1) : R.int(2) + (land === L.MEADOW ? 1 : 0);
   const fdir = fanSt ? fanSt.dir : footN ? 'up' : null, fvert = fdir === 'up' || fdir === 'down', fspan = fvert ? PW : PH, fext = fvert ? PH : PW;
   const fxy = (k, d) => ({ x: fdir === 'left' ? d : fdir === 'right' ? PW - 1 - d : k, y: fdir === 'up' ? d : fdir === 'down' ? PH - 1 - d : k });
   const edDepth = fanSt ? (fdir === 'up' ? fanSt.entry.y : fdir === 'down' ? PH - 1 - fanSt.entry.y : fdir === 'left' ? fanSt.entry.x : PW - 1 - fanSt.entry.x) : 0;
-  let fanN = 0;
+  let fanN = 0, footN2 = 0;
+  // the foot-row stones of a stair place alternate sides of the stair's columns too, each at a random column of its side (a side with fewer than 3 columns of room is skipped), so neither side of the screen is bare
+  const footLo = fanSt ? 2 : 0, footHi = fanSt ? fspan - 3 : 0, roomL = fanSt ? fanSt.s - footLo : 0, roomR = fanSt ? footHi - (fanSt.s + 2) + 1 : 0;
   for (let k = 0; k < rockN; k++) {
     const footRow = footN || fanSt ? k % 2 : 0, fan = fanSt && !footRow;
     let kk, dd, s = 0;
     if (fan) { dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3); const w = 1 + dd - edDepth;
       kk = fanN++ % 2 ? fanSt.s + 2 + R.int(w) : fanSt.s - 1 - R.int(w); }
+    else if (fanSt) { const left = footN2++ % 2 ? roomR < 3 : roomL >= 3;
+      kk = left ? footLo + R.int(roomL) : fanSt.s + 2 + R.int(roomR); dd = 2 + R.int(3); }
     else { kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4); s = R.int(100) < 45 && !footRow ? 1 : 0; }   // a foot-row stone is a single tile
     const { x, y } = fdir ? fxy(kk, dd) : { x: kk, y: dd };
     for (let dy = -s; dy <= s; dy++) for (let dx = -s; dx <= s; dx++) if (walk(x + dx, y + dy) && (s === 0 || R.int(100) < 80)) setT(x + dx, y + dy, T.ROCK); }
