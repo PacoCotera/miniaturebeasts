@@ -1,4 +1,4 @@
-"""V9 (arch-viability-2): the normals check holds 36 degrees on the tail's 8-column stalk rings (rings of 5 half columns, V5), 30 on the rest of the tail and 20 on the body, all at level 2. The 36 is the lead's ruling of 3 Nov 2026, provisional until the art director has seen the five worst stalk bends (the V13 sheet). The 31 genomes below failed the check at 30.0 to 35.9 degrees on the stalk at V8 (every one of them on the tail at level 2); they pass now, and crossed 384 (35.92) is the worst of them."""
+"""V9 (arch-viability-2): the normals check holds 36 degrees on the tail's 8-column stalk rings (rings of 5 half columns, V5), 30 on the rest of the tail and 20 on the body, all at level 2. The 36 is the lead's ruling of 3 Nov 2026, ratified by the art director's sign of 3 Nov 2026 (ad-viability-2). The 31 genomes below failed the check at 30.0 to 35.9 degrees on the stalk at V8 (every one of them on the tail at level 2); they pass now, and crossed 384 (35.92) is the worst of them."""
 import json
 import multiprocessing as mp
 import os
@@ -48,8 +48,9 @@ class TestStalkNormals(unittest.TestCase):
         import checks.biped as B
         self.assertEqual(B.BIPED["stalk_normal_deg"], 36.0)
         t = checks.by_id("normals").limit["text"]
-        for s in ("36°", "8-column stalk", "20° at level 2 is about 40° at level 1", "provisional"):
+        for s in ("36°", "8-column stalk", "20° at level 2 is about 40° at level 1", "art director's sign of 3 Nov 2026 (ad-viability-2)"):
             self.assertIn(s, t)
+        self.assertNotIn("provisional", t)
 
 
 if __name__ == "__main__":
