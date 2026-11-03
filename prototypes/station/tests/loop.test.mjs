@@ -110,10 +110,10 @@ test("the journey holds from other worlds: five seeds, every step accepted, the 
   }
 });
 
-test("the bench trickle, opted in: a watched minute and a compared pair earn +1 Data each inside the day's cap; off, the journey is as it was", () => {
+test("the habit watch, opted in: a watched minute pays +1 Data for a habit not yet seen; off, the journey is as it was", () => {
   const on = playJourney({ seed: 4242, bench: true }).P, off = playJourney({ seed: 4242 }).P;
-  const rows = on.steps.filter((x) => /^(watch|compare) /.test(x.name)); assert.equal(rows.length, 2);
+  const rows = on.steps.filter((x) => /^watch /.test(x.name)); assert.equal(rows.length, 1);
   assert.ok(rows.every((x) => x.ok && x.d <= 1 && x.d >= 0), "at most +1 Data a row");
-  assert.equal(off.steps.filter((x) => /^(watch|compare) /.test(x.name)).length, 0);
+  assert.equal(off.steps.filter((x) => /^watch /.test(x.name)).length, 0);
   assert.ok(on.steps.every((x) => x.ok && x.stock.every((v) => v >= 0)));
 });

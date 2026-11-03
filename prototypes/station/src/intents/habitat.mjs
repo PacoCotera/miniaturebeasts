@@ -94,13 +94,13 @@ export function returnNow(h) {
   if (next) { a.id = next.id; a.f = S.isCarried(h.st, h.sv, next) ? "name" : "resident"; play(h, "release"); }
   else { a.id = null; h.goto("vivarium", h.motion() ? ev.hold : 0); }
 }
-// What the watch says (events: a host rule, not an event): the shown mibi is watched while this level shows and the face is awake; the first habit it has not been seen doing is recorded at 60 s, once a mibi a day, with the Data trickle and the plate.
+// What the watch says (events: a host rule, not an event): the shown mibi is watched while this level shows and the face is awake; the first habit it has not been seen doing is recorded at 60 s, with +1 Data and the plate.
 export function watch(h, dt) {
-  const m = shown(h), d0 = h.st.d;
-  const w = watchFrame({ st: h.st, sv: h.sv, settings: h.settings, screen: h.ui.screen, idle: h.ui.idle, habId: h.ui.hab.id, dt, now: h.now() });
+  const m = shown(h);
+  const w = watchFrame({ st: h.st, sv: h.sv, settings: h.settings, screen: h.ui.screen, idle: h.ui.idle, habId: h.ui.hab.id, dt });
   if (!w || !m) return null;
   const habit = w.habit ? h.specs.habitat.strings.watchHabits[w.habit] : null;   // a habit with no words shows no plate (it is still recorded, the tick counts)
   if (habit) h.say(fill(h.specs.habitat.strings.watchPlate, { name: m.name, habit }));
-  if (w.earned || w.habit || h.st.d !== d0) h.save();
+  if (w.earned || w.habit) h.save();
   return w;
 }

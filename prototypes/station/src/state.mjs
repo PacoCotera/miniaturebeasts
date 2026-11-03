@@ -68,7 +68,7 @@ export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock fie
 export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
 export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried", shed: "of {name}'s line" };   // shed: a returned mibi's pod; the words are a placeholder until the copywriter's C18 lands (owed)
 // Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
-export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, rooms: null, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, elderTurns: ELDER_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, trickleCap: 2 };
+export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, rooms: null, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, elderTurns: ELDER_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000 };
 
 export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 export const plural = (n, w, p) => n + " " + (n === 1 ? w : p || w + "s");
@@ -171,6 +171,7 @@ export function normalize(st, now = Date.now()) {
     if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && st.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; } }   /* a bond made on the Station before the care rules: the marker is bonded with no bondCare, only old bonds match, and after this it is false (idempotent) */
   if (!Array.isArray(st.roomMeta)) st.roomMeta = []; if (!Array.isArray(st.finds)) st.finds = [];   /* each room's theme and settling, and the themed finds held at home (rooms-rules.json; additive, no schema bump): a room with no entry is the i-th theme, settled */
   if (!Array.isArray(st.carryReqs)) st.carryReqs = []; if (!(st.carrySeq >= 0)) st.carrySeq = 0; if (!(st.carryRefusedSeen >= 0)) st.carryRefusedSeen = 0;
+  delete st.bench;   /* the bench's day ledger is gone (2026-11-03): an older save's copy is dropped, nothing else changes */
   syncKnown(st);
   claimExisting(st); renameDigits(st);
   return st;
@@ -446,50 +447,29 @@ export function recordWalk(st, m, place) {
 export function watchResident(st, m, habit, focusedMs) {
   if (!m || m.released) return { ok: false };
   if (!(focusedMs >= WATCH_MS)) return { ok: false, short: true };
-  return recordHabit(st, m, habit);
+  return seeAtHome(st, m, habit);
 }
 
-// --- the bench Data trickle (the game designer's brief): a little Data a day for residents watched and pairs compared ----------------------------------------------------------------
-// st.bench = { day: "YYYY-MM-DD", d (earned today), watchMs: { id: ms }, watched: [ids], compared: ["lo-hi"] }. The day is the local calendar date of `now` on the Station's clock (wall time: no bud scale, sitting wait,
-// Grow now, skip or economy preset touches it); a later date resets the ledger, an earlier one keeps it. Numbers (illus., to tune): +1 Data a watch or a compare, 60 s a watch (settings.watchMs), 2 Data a day
-// (settings.trickleCap; 0 is off). Nothing here reads a screen: the page calls it each frame (trickle.mjs) and the Node host can too.
-export const BENCH_DATA = 1;
-const dayOf = (now) => { const d = new Date(now), p = (n) => String(n).padStart(2, "0"); return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()); };
-function benchLedger(st, now) {
-  const day = dayOf(now);
-  if (!st.bench || typeof st.bench !== "object") st.bench = { day, d: 0, watchMs: {}, watched: [], compared: [] };
-  else if (day > st.bench.day) st.bench = { day, d: 0, watchMs: {}, watched: [], compared: [] };   // a later date resets; an earlier one keeps the ledger
-  return st.bench;
+// --- Data for a habit seen (the owner's rule, 2026-11-03): Data comes only when something happens ----------------------------------------------------------------
+// The first time a habit is seen (recordHabit says ok) the Station pays HABIT_DATA; a habit already seen pays nothing again. There is no day, no cap and no ledger in the save.
+// The watch clock below is memory only: a resident shown up close for settings.watchMs (60 s) records its first unseen habit. Nothing here reads a screen: the page calls it each frame (trickle.mjs) and the Node host can too.
+export const HABIT_DATA = 1;
+// A habit seen at home: recordHabit says ok for a first sighting and that pays; a habit already seen pays nothing. (A habit the Companion's mibi did on a walk is recorded at the dock and is paid in the walk's yield, not here.)
+export function seeAtHome(st, m, habit) {
+  const r = recordHabit(st, m, habit); if (r.ok) { st.d += HABIT_DATA; }
+  return r;
 }
-export function benchToday(st, now = Date.now(), settings = DEFAULT_SETTINGS) {
-  const L = benchLedger(st, now), cap = settings.trickleCap ?? 2; return { d: L.d, cap, full: L.d >= cap };
-}
-function benchEarn(st, L, settings, text) {
-  const cap = settings.trickleCap ?? 2; if (L.d >= cap) return { earned: 0, full: true };
-  L.d += BENCH_DATA; st.d += BENCH_DATA; logEv(st, "Bench · " + text + " · +" + BENCH_DATA + " Data"); return { earned: BENCH_DATA, full: L.d >= cap };
-}
-// The resident shown on Habitat, watched for dtMs (clamped to 250 ms a frame). At watchMs of awake time today it earns once and, once, records the first of the frame's habits it has not been seen doing.
-export function benchWatch(st, sv, m, dtMs, settings = DEFAULT_SETTINGS, now = Date.now()) {
-  const none = { ok: false, earned: 0, full: false };
+const watchClocks = new WeakMap();   // st -> { id: ms }, never saved
+// The resident shown on Habitat, watched for dtMs (clamped to 250 ms a frame). At watchMs of awake time it records the first of the frame's habits it has not been seen doing (and so earns); the clock then starts over for the next one.
+export function benchWatch(st, sv, m, dtMs, settings = DEFAULT_SETTINGS) {
+  const none = { ok: false, earned: 0 };
   if (!m || m.released || carriedIds(st, sv).includes(m.id)) return none;
-  const L = benchLedger(st, now), need = settings.watchMs ?? WATCH_MS; if (L.watched.includes(m.id)) return { ok: true, earned: 0, full: L.d >= (settings.trickleCap ?? 2) };
-  const dt = Math.max(0, Math.min(250, +dtMs || 0)); L.watchMs[m.id] = (L.watchMs[m.id] || 0) + dt;
-  if (L.watchMs[m.id] < need) return { ok: true, earned: 0, full: L.d >= (settings.trickleCap ?? 2) };
-  L.watched.push(m.id);
-  const fr = frameFor(m), habit = fr && (fr.habits || []).find((h) => !FIELD_ONLY_HABITS.includes(h) && !habitsOf(m).includes(h)); if (habit) recordHabit(st, m, habit);   // the first unseen habit, in frame order
-  const r = settings.trickleCap === 0 ? { earned: 0, full: false } : benchEarn(st, L, settings, "watched " + m.name);
-  return { ok: true, earned: r.earned, full: r.full, habit: habit ?? null };
-}
-// A pair compared on Cross: once per unordered pair a day. The caller says when a compare happens (the page: after a key, the cross at state 1 or more); here the pair must be two at home of one species with a chapter read on both.
-export function benchCompare(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.now()) {
-  const none = { ok: false, earned: 0, full: false };
-  if (!a || !b || a === b || a.id === b.id || a.released || b.released || speciesOf(a) !== speciesOf(b)) return none;
-  const c = carriedIds(st, sv); if (c.includes(a.id) || c.includes(b.id)) return none;
-  if (!(a.read || []).some((c) => (b.read || []).includes(c))) return none;
-  const L = benchLedger(st, now), key = Math.min(a.id, b.id) + "-" + Math.max(a.id, b.id);
-  if (L.compared.includes(key) || settings.trickleCap === 0) return { ok: false, earned: 0, full: L.d >= (settings.trickleCap ?? 2) };
-  if (L.d >= (settings.trickleCap ?? 2)) return { ok: false, earned: 0, full: true };
-  L.compared.push(key); const r = benchEarn(st, L, settings, "compared " + a.name + " and " + b.name); return { ok: true, earned: r.earned, full: r.full };
+  const fr = frameFor(m), habit = fr && (fr.habits || []).find((h) => !FIELD_ONLY_HABITS.includes(h) && !habitsOf(m).includes(h)); if (!habit) return { ok: true, earned: 0, habit: null };
+  let C = watchClocks.get(st); if (!C) watchClocks.set(st, C = {});
+  const need = settings.watchMs ?? WATCH_MS, dt = Math.max(0, Math.min(250, +dtMs || 0)); C[m.id] = (C[m.id] || 0) + dt;
+  if (C[m.id] < need) return { ok: true, earned: 0, habit: null };
+  C[m.id] = 0; const r = seeAtHome(st, m, habit);
+  return { ok: true, earned: r.ok ? HABIT_DATA : 0, habit: r.ok ? habit : null };
 }
 
 // --- pods: identify, read, glint, compare, return ----------------------------------------------------

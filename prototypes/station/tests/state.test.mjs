@@ -545,11 +545,10 @@ test("T6 stageAt (Station): care grows a bonded mibi; the clock grows an unbonde
   assert.equal(S.stageAt({ born: 0, grownTurn: null, bonded: false }, 2, 3, E), "juvenile"); assert.equal(S.stageAt({ born: 0, grownTurn: null, bonded: false }, 3, 3, E), "adult"); assert.equal(S.stageAt({ born: 0, grownTurn: null, bonded: false }, 19, 3, E), "elder", "elder follows adultTurns on the clock path");
   const st = adults(1); st.turn = 19; st.mibis[0].born = 0; assert.equal(S.mibiStage(st, st.mibis[0], { ...settings, adultTurns: 3 }), "elder"); assert.equal(S.mibiStage(st, st.mibis[0]), "elder");
 });
-test("the Station's own care rules: a carried, pending or bonded mibi is not returned; carried mibis are not watched or compared; there is no bond line in need()", () => {
+test("the Station's own care rules: a carried, pending or bonded mibi is not returned; carried mibis are not watched; there is no bond line in need()", () => {
   const st = adults(4), [a, b, c, d] = st.mibis, sv = svOf({ carried: [a.id] }); st.carryReqs = [{ seq: 1, op: "add", id: b.id }]; st.carrySeq = 1; c.bonded = true; c.grownTurn = 2;
   assert.equal(S.returnMibiBlock(st, sv, a), "already with you"); assert.equal(S.returnMibiBlock(st, sv, b), "goes at the next dock"); assert.match(S.returnMibiBlock(st, sv, c), /bonded/); assert.equal(S.returnMibiBlock(st, sv, d), "", "an unbonded adult at home may be returned");
-  assert.equal(S.benchWatch(st, sv, a, 250, settings, 1000).ok, false, "a carried mibi is not watched"); assert.equal(S.benchWatch(st, sv, d, 250, settings, 1000).ok, true);
-  assert.equal(S.benchCompare(st, sv, a, d, settings, 1000).ok, false, "nor compared");
+  assert.equal(S.benchWatch(st, sv, a, 250, settings).ok, false, "a carried mibi is not watched"); assert.equal(S.benchWatch(st, sv, d, 250, settings).ok, true);
   a.outings = 3; assert.ok(!/bond/i.test(S.need(st, sv, settings).text), "an offered bond is not a need"); assert.equal("bond" in S, false); assert.equal("bondOffered" in S, false); for (const k of ["withId", "effWithId", "atHome", "pendingWith", "takeWith"]) assert.equal(k in S, false, k + " is gone");
 });
 test("the migration of an older write defaults the care fields and back-fills a legacy bond once", () => {

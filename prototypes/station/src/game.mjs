@@ -94,7 +94,7 @@ export function resetSave() {
 }
 // --- developer settings, under their own key ---
 export function loadSettings() {
-  try { const o = JSON.parse(localStorage.getItem(S.DEV_KEY) || "null"); if (o && typeof o === "object") Object.assign(G.settings, o); } catch { /* defaults */ }
+  try { const o = JSON.parse(localStorage.getItem(S.DEV_KEY) || "null"); if (o && typeof o === "object") Object.assign(G.settings, o); delete G.settings.trickleCap; } catch { /* defaults */ }
   return G.settings;
 }
 export function saveSettings(patch) { Object.assign(G.settings, patch || {}); try { localStorage.setItem(S.DEV_KEY, JSON.stringify(G.settings)); } catch { /* in memory */ } changed(); }

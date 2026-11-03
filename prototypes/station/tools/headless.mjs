@@ -84,11 +84,10 @@ export class Player {
   growUp(m) { let n = 0; while (!S.isAdult(this.st, m, this.settings) && n < 10) { this.takeWalk(); n++; } return n; }
   cross(a, b) { const c = S.crossCost(this.settings); this.afford(c.e, c.d, c.s); return this.step("cross " + a.name + " × " + b.name, () => { this.with = null; this.sv.carried = [];   /* R4b: no breeding while a mibi is carried, so the pair is brought home first */ const was = S.docked(this.st); this.st.dock = { ...(this.st.dock || {}), docked: true }; const r = S.doCross(this.st, this.sv, a, b, this.settings, this.now, mulberry(this.seed)); this.st.dock.docked = was; return r; }); }   // a mibi out with the Companion cannot be crossed until it docks: the cross is made at the dock
   readMibi(m, ch) { this.afford(0, S.mibiReadCost(this.st, m, ch, this.settings) || 0); return this.step("read " + ch + " on " + m.name, () => S.readMibi(this.st, m, ch, this.settings)); }
-  // The bench's Data trickle (opt-in, as it is a minute of the player's day): one mibi watched for its minute, one pair compared; each earns what the day's cap allows.
-  benchDay(m, a, b) {
+  // The habit watch (opt-in, as it is a minute of the player's day): one mibi watched for its minute; the first habit it has not been seen doing pays 1 Data.
+  benchDay(m) {
     const need = this.settings.watchMs ?? 60000;
-    const w = this.step("watch " + m.name + " (" + Math.round(need / 1000) + " s)", () => { let r; for (let t = 0; t < need; t += 250) r = S.benchWatch(this.st, this.sv, m, 250, this.settings, this.now); return r; }, { wait: need });
-    const c = this.step("compare " + a.name + " and " + b.name, () => S.benchCompare(this.st, this.sv, a, b, this.settings, this.now)); return { w, c };
+    return this.step("watch " + m.name + " (" + Math.round(need / 1000) + " s)", () => { let r; for (let t = 0; t < need; t += 250) r = S.benchWatch(this.st, this.sv, m, 250, this.settings); return r; }, { wait: need });
   }
   // The sitting: the held sitting (from the welcome), a ceremony, a wait that overlaps the rest, the crate.
   // The sitting is begun at the dock (a mibi that is out with the Companion sits only while it is docked; the sitting goes on after the Companion sets out again).
@@ -114,7 +113,7 @@ export function playJourney(opts = {}) {
   P.identify(podB); P.grow(podB, {}, "grow the second founder (unshaped)"); P.growUp(a); P.waitBud(); const b = P.open().mibi; P.growUp(b);
   P.cross(a, b); P.waitBud(); const child = P.open().mibi;
   for (const ch of chapters) if (!child.read.includes(ch)) P.readMibi(child, ch);
-  if (P.bench) P.benchDay(b, b, child);   // a minute of watching b, then the pair compared
+  if (P.bench) P.benchDay(b);   // a minute of watching b
   P.waitCrate(crate); P.openCrate(crate);
   return { P, a, b, child, podA, podB, choices, chapters, held, welcome: w.welcome, crate };
 }

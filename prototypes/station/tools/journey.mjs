@@ -594,13 +594,13 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
   await toHome( 300); }
 // from the room view, the card's Look plate by keys: ▼ from the ring's mibi to its card's first live plate (Look), ✓ (the card reach rule; ✓ on a mibi picks it up)
 const toLook = async () => { await press("confirm", 300); await press("confirm", 700); };   // ✓ on the portrait opens the card on Look, ✓ looks
-// the bench trickle's watch: a resident on the Vivarium for the dev timer's 5 s earns +1 Data once (after the dev panel's New bench day)
-{ stepOf("vivarium-trickle"); await page.evaluate(() => { window.__st.settings.watchMs = 5000; window.__st.settings.trickleCap = 2; window.__st.ST.bench = null; });   // a new bench day (the dev button's reset)
-  const watched = await page.evaluate(() => { const st = window.__st.ST, sv = window.__st.SV, c = sv.carried ?? (sv.with != null ? [sv.with] : []), m = st.mibis.find((x) => !x.released && !c.includes(x.id) && !(st.bench?.watched || []).includes(x.id)); window.__st.UI.hab.id = m.id; window.__st.UI.viv.f = null; window.__st.goto("home"); return m.id; });
+// the habit watch: a resident on the Vivarium for the dev timer's 5 s sees its first unseen habit and earns +1 Data
+{ stepOf("vivarium-trickle"); await page.evaluate(() => { window.__st.settings.watchMs = 5000; window.__st.ST.d = window.__st.ST.d | 0; });
+  const watched = await page.evaluate(() => { const st = window.__st.ST, sv = window.__st.SV, c = sv.carried ?? (sv.with != null ? [sv.with] : []), m = st.mibis.find((x) => !x.released && !c.includes(x.id) && (x.habits || []).length < 2); window.__st.UI.hab.id = m.id; window.__st.UI.viv.f = null; window.__st.goto("home"); return m.id; });
   await said(); await press("habitat", 500); await toLook(); { const u = await ui(), p = await props(); cur.push({ screen: u.screen, state: p.state, ring: p.focus?.cur ?? null, habId: u.habId }); expect(u.screen === "habitat" && u.habId === watched && p.state === "rest", "vivarium-trickle: the Vivarium key, then ✓ Look on its card: up close on the mibi to watch: " + JSON.stringify([u.screen, u.habId, p.state])); }
   const dW = (await st()).d; await page.waitForTimeout(5800); const after = await st();
-  expect(after.d === dW + 1 && after.bench.watched.includes(watched), "a resident watched for 5 s on the Vivarium earns +1 Data once: " + JSON.stringify([dW, after.d, after.bench]));
-  await page.waitForTimeout(1500); expect((await st()).d === after.d, "and no more from the same resident that day"); }
+  expect(after.d === dW + 1 && after.mibis.find((x) => x.id === watched).habits.length >= 1, "a resident watched for 5 s on the Vivarium sees a habit and earns +1 Data: " + JSON.stringify([dW, after.d]));
+  await page.waitForTimeout(1500); expect((await st()).d === after.d, "and no more until the next minute of watching"); }
 // siblings: kinship a quarter, the forecast narrowed
 await page.evaluate(() => { window.__st.settings.rooms = 2; });   // room for the siblings and their parents, and a place for their child
 const sib = await page.evaluate(() => window.__st.seedSiblings("S01", 4242));
