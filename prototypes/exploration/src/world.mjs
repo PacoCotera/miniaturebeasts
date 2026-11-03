@@ -976,7 +976,7 @@ export function genPatch2(G, seed, cell) {
     feats.push({ id: 'o' + k, kind: 'o', x: ox, y: oy }); k++;
   }
   // Generator 4's Fells: a rock place has four times the stone placements (eight times on a stair place), half of them gathered at the foot of a cliff on the stair's side (north when there is a cliff but no stair).
-  const rockN = land === L.ROCK ? (6 + R.int(4)) * (fellsRock ? (fanSt ? 8 : 4) : 1) : R.int(2) + (land === L.MEADOW ? 1 : 0);
+  const rockN = land === L.ROCK ? (6 + R.int(4)) * (fellsRock ? (fanSt ? 8 : 7) : 1) : R.int(2) + (land === L.MEADOW ? 1 : 0);
   const fdir = fanSt ? fanSt.dir : footN ? 'up' : null, fvert = fdir === 'up' || fdir === 'down', fspan = fvert ? PW : PH, fext = fvert ? PH : PW;
   const fxy = (k, d) => ({ x: fdir === 'left' ? d : fdir === 'right' ? PW - 1 - d : k, y: fdir === 'up' ? d : fdir === 'down' ? PH - 1 - d : k });
   const edDepth = fanSt ? (fdir === 'up' ? fanSt.entry.y : fdir === 'down' ? PH - 1 - fanSt.entry.y : fdir === 'left' ? fanSt.entry.x : PW - 1 - fanSt.entry.x) : 0;
@@ -1021,6 +1021,17 @@ export function genPatch2(G, seed, cell) {
       }
       continue;
     }
+    else if (fellsRock) {   // a plain Fells rock place: 55% single tiles and 45% small heaps (a tile and 1 to 3 of its 8 neighbours), a heap tile under the line rule and no tile completing a full 2 x 2
+      kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4);
+      const { x, y } = fdir ? fxy(kk, dd) : { x: kk, y: dd }, heap = R.int(100) >= 55, cells = [[0, 0]];
+      if (heap) { const nb = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]], take = 1 + R.int(3);
+        for (let j = 0; j < take; j++) { const m = j + R.int(nb.length - j), t = nb[m]; nb[m] = nb[j]; nb[j] = t; cells.push(t); } }
+      for (const [dx, dy] of cells) { const X = x + dx, Y = y + dy;
+        if (!walk(X, Y) || tiles[I(X, Y)] === T.ROCK || (heap && lineBad(X, Y))) continue;
+        const rk = (u, v) => tiles[I(u, v)] === T.ROCK && !ovTiles.has(I(u, v)) || (u === X && v === Y);
+        let full = false; for (const [ax, ay] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) if (rk(X + ax, Y + ay) && rk(X + ax + 1, Y + ay) && rk(X + ax, Y + ay + 1) && rk(X + ax + 1, Y + ay + 1)) full = true;
+        if (!full) setT(X, Y, T.ROCK); }
+      continue; }
     else { kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4); s = R.int(100) < 45 && !footRow ? 1 : 0; }   // a foot-row stone is a single tile
     const { x, y } = fdir ? fxy(kk, dd) : { x: kk, y: dd };
     for (let dy = -s; dy <= s; dy++) for (let dx = -s; dx <= s; dx++) if (walk(x + dx, y + dy) && (s === 0 || R.int(100) < 80)) setT(x + dx, y + dy, T.ROCK); }

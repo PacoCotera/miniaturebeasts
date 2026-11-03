@@ -169,7 +169,15 @@ test("Fells rock places hold about three times the stones of generator 2's, gath
   for (let sd = 0; sd < 10; sd++) { const GF = W.genWorld(sd, 4, "fells"); for (let c = 0; c < N; c++) if (GF.comp[c] && GF.land[c] === L.ROCK) { const lay = W.genPlace(GF, sd, String(c)), n = lay.tiles.reduce((m, t) => m + (t === W.T.ROCK ? 1 : 0), 0);
     if (lay.stairs && lay.stairs.some(t => t.role === "lo")) { st += n; nst++; } else { pl += n; npl++; } } }
   console.log(`# fells plain rock places ${(pl / npl).toFixed(1)} stone tiles, stair places ${(st / nst).toFixed(1)}`);
-  assert.ok(pl / npl <= 130 && pl / npl >= 2.4 * (g / ng), "plain places keep 4x placements");
+  assert.ok(pl / npl >= 95 && pl / npl <= 120, `plain places: a mean of 95 to 120 stone tiles, got ${(pl / npl).toFixed(1)}`);
+  // the plain mix: small heaps and singles, no full 2 x 2 outside an overhang, a mean biggest group of 8 or less
+  let big = 0, np2 = 0, full = 0;
+  for (let sd = 0; sd < 10; sd++) { const GF = W.genWorld(sd, 4, "fells"); for (let c = 0; c < N; c++) if (GF.comp[c] && GF.land[c] === L.ROCK) { const lay = W.genPlace(GF, sd, String(c)); if (lay.stairs && lay.stairs.some(t => t.role === "lo")) continue;
+    const S = new Set(); for (let i = 0; i < W.PW * W.PH; i++) if (lay.tiles[i] === W.T.ROCK && !inOverhang(lay, i % W.PW, (i / W.PW) | 0)) S.add(i);
+    const seen = new Set(); let b = 0; for (const i of S) { if (seen.has(i)) continue; let m = 0; const q = [i]; seen.add(i); while (q.length) { const j = q.pop(); m++; for (const d of [1, -1, W.PW, -W.PW]) { const k = j + d; if (S.has(k) && !seen.has(k) && Math.abs(k % W.PW - j % W.PW) <= 1) { seen.add(k); q.push(k); } } } b = Math.max(b, m); }
+    big += b; np2++; for (const i of S) if (S.has(i + 1) && S.has(i + W.PW) && S.has(i + W.PW + 1) && i % W.PW < W.PW - 1) full++; } }
+  console.log(`# fells plain rock places: mean biggest group ${(big / np2).toFixed(1)}, full 2 x 2: ${full}`);
+  assert.ok(big / np2 <= 8, "a mean biggest group of 8 or less"); assert.equal(full, 0, "no full 2 x 2 outside an overhang");
   console.log(`# fells rock places: ${(f / nf).toFixed(1)} stone tiles a place against generator 2's ${(g / ng).toFixed(1)}; ${(100 * foot / footAll).toFixed(0)}% of the stones in rows 0 to 4 under a cliff`);
   assert.ok(f / nf >= 2.4 * (g / ng), "about three times the stones");
   assert.ok(foot / footAll >= .2, "stones gathered at the cliff foot: rows 0 to 4 are 16 percent of a place, so 20 percent is a quarter above its share (foot-row stones are single tiles)");
