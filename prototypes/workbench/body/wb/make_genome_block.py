@@ -63,8 +63,12 @@ UNITS = {"form.ear-splay": "°", "form.ear-droop": "°", "form.tail-carry": "°"
 SHORT = {"appearance.body-hue": "Hue", "appearance.body-value": "Value", "appearance.emission-hue": "Glow hue", "appearance.cream-extent": "Cream reach", "appearance.marking-layout": "Layout",
          "appearance.marking-switch": "Marks", "anatomy.tail-tip-form": "Tip", "form.tail-tip-size": "Tip size", "appearance.surface-grain": "Grain", "anatomy.whisker-presence": "Whiskers"}
 LOUD = {"appearance.glow-pattern": "glow", "appearance.pattern-kind": "pattern", "appearance.marking-layout": "pattern", "appearance.emblem": "emblem", "anatomy.brow-tuft-presence": "brow"}
+# Whiskers are rare (owner, 3 Nov 2026): this share of the sampler's draws shows them. The game designer sets the figure here (or `weight` of the locus in the species file, the same number as a chance for each copy). The Whiskers switch is dominant-enable, so one copy shows them: a share p of draws needs each copy on with the chance 1 - sqrt(1 - p). It was 5/6 for each copy (97 percent of draws, 177 level-1 vertices for each whiskered genome).
+WHISKER_SHARE = 0.10
+WHISKER_WEIGHT = round(1 - (1 - WHISKER_SHARE) ** 0.5, 6)
+WHISKER_NOTE = "Whiskers are rare (owner, 3 Nov 2026): this weight is the chance each copy is on; with one copy enough to show them (dominant-enable), %.6f makes about %d percent of the sampler's draws show whiskers. To change the share p, set the weight to 1 - sqrt(1 - p)." % (WHISKER_WEIGHT, round(WHISKER_SHARE * 100))
 # the switches: record -> (the sampler's draw weight of `on`, the type's allele)
-SWITCH_DRAW = {"appearance.marking-switch": (0.75, "off"), "appearance.blush": (0.8, "on"), "anatomy.fang-presence": (0.25, "off"), "anatomy.whisker-presence": (5 / 6, "off"),
+SWITCH_DRAW = {"appearance.marking-switch": (0.75, "off"), "appearance.blush": (0.8, "on"), "anatomy.fang-presence": (0.25, "off"), "anatomy.whisker-presence": (WHISKER_WEIGHT, "off"),
                "appearance.whisker-glow": (0.15, "off"), "anatomy.brow-tuft-presence": (0.25, "off")}
 
 
@@ -109,6 +113,8 @@ def block():
             elif i in GN.SWITCH_DRAW_RECORDS:
                 w, t = SWITCH_DRAW[i]
                 e.update(op="switch", operator=pl["operator"], limits=["off", "on"], type=t, weight=w, map={"off": False, "on": True})
+                if i == GN.WHISKER_SWITCH:
+                    e["note"] = WHISKER_NOTE
             elif i == GN.MARKING_LAYOUT:
                 al, w, dom = GN.PAIRS["appearance.marking-layout"]
                 keep = [a for a in al if a != "plain"]
