@@ -741,7 +741,7 @@ test("generator 2 play: the side tail draws no ink on its high-side column; a pl
 const fnSrc = name => { const i = PAGE.indexOf("\nfunction " + name + "("); assert.ok(i >= 0, name); return PAGE.slice(i, PAGE.indexOf("\nfunction ", i + 1)); };
 const fnv = a => { let h = 2166136261; for (const v of a) { h ^= v & 0xffff; h = Math.imul(h, 16777619) >>> 0; } return h; };
 // main's generator 1 map, captured from main's page with this harness (seed 7 saved without gen, no pods, creatures or signs, every cell seen, the gate and the mouth visited)
-const MAIN_G1 = { mapCv: 2730365212, frame: 3568652280 };   // main 5e287081
+const MAIN_G1 = { mapCv: 3936681958, frame: 2163068169 };   // main 5e287081, with the round water corners
 // a save written without gen, as every save before generators: a world started, then saved with its gen dropped
 const g1Save = () => { const m = page(); m.run("newWorld(7)"); const o = JSON.parse(m.store[m.KEY]); o.regions[0].gen = 1; return { [m.KEY]: JSON.stringify(o), "mb-companion-A": m.store["mb-companion-A"] }; };   // v9 names the generator in the region: gen 1
 // one page per generator, shared by the tests below (each sets the state it reads), so the map and fog are built once

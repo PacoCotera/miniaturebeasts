@@ -3249,7 +3249,7 @@ function buildMapPB() {
       const land = (X, Y) => X >= 0 && Y >= 0 && X < MW && Y < MH && G.land[Y * MW + X] !== L.WATER;
       if (land(x, y - 1)) pb.rect(px, py, CELL, 2, C.ice); if (land(x, y + 1)) pb.rect(px, py + CELL - 2, CELL, 2, C.ice);
       if (land(x - 1, y)) pb.rect(px, py, 2, CELL, C.ice); if (land(x + 1, y)) pb.rect(px + CELL - 2, py, 2, CELL, C.ice);
-      if (G.gen === 4) for (const sy of [1, -1]) for (const sx of [1, -1]) {   // generator 4: every outward corner (both side neighbours land) is cut as a 7 px quarter disc of the ground across it, with the 2 px foam along the arc
+      for (const sy of [1, -1]) for (const sx of [1, -1]) {   // every generation: every outward corner (both side neighbours land) is cut as a 7 px quarter disc of the ground across it, with the 2 px foam along the arc
         if (!land(x, y - sy) || !land(x - sx, y)) continue;
         const cx = sx > 0 ? px : px + CELL, cy = sy > 0 ? py : py + CELL, diag = land(x - sx, y - sy), cut = [];
         for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { const d = Math.hypot(i + .5, j + .5), X = sx > 0 ? cx + i : cx - 1 - i, Y = sy > 0 ? cy + j : cy - 1 - j;
