@@ -107,3 +107,31 @@ export function startClient() {
 }
 export const wake = () => { land(); poll().catch(() => {}); };
 export const queued = (st) => st.outbox.length;
+
+// ---- realms put to sleep (sleep.mjs): the calls the sleep sequence makes of the Caddy ----
+// Each answers { status, body }; a service that is not there throws, and so does a 5xx (the proxy is up and the service is not), so a caller treats both as "the Caddy is quiet".
+// `fetch` is a parameter so the tests run the Caddy app in process.
+export function sleepClient({ fetch: f = (...a) => globalThis.fetch(...a), base = BASE, timeoutMs = 20000 } = {}) {
+  async function call(method, path, { json, bytes } = {}) {
+    const init = { method, cache: "no-store", headers: {} };
+    if (json !== undefined) { init.headers["content-type"] = "application/json"; init.body = JSON.stringify(json); }
+    if (bytes !== undefined) { init.headers["content-type"] = "application/octet-stream"; init.body = bytes; }
+    let timer = null;
+    if (typeof AbortController === "function") { const ac = new AbortController(); init.signal = ac.signal; timer = setTimeout(() => ac.abort(), timeoutMs); }
+    try {
+      const r = await f(base + path, init);
+      if (r.status >= 500) throw Object.assign(new Error("the service answered " + r.status), { status: r.status });
+      return { status: r.status, body: await r.json().catch(() => ({})) };
+    } finally { if (timer) clearTimeout(timer); }
+  }
+  const wid = encodeURIComponent;
+  return {
+    identity: () => call("GET", "/identity"),                                                       // { caddy, recovery: { kid, pub } | null }
+    realm: (w) => call("GET", "/realm?world=" + wid(w)),                                            // the realm's live records, the body's Caddy part
+    put: (w, bytes) => call("PUT", "/realms/asleep/" + wid(w), { bytes }),                          // keeps a sleep file: { sha }
+    list: (companion) => call("GET", "/realms/asleep" + (companion ? "?companion=" + wid(companion) : "")),   // the headers, newest first
+    commit: (w, sha) => call("POST", "/realms/commit", { json: { wid: w, sha } }),
+    drop: (w, sha) => call("DELETE", "/realms/asleep/" + wid(w) + "?sha=" + wid(sha)),              // a rollback, only a file not committed
+    clear: (w, sha) => call("POST", "/realm/clear", { json: { wid: w, sha } }),                     // only for a committed sha
+  };
+}

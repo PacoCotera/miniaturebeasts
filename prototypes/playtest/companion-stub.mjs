@@ -24,3 +24,35 @@ export function trip(session, rng, turn) {
   session.game.storageChanged();
   return cur.bay[cur.bay.length - 1];
 }
+
+// ---- the Companion that puts a realm to sleep ----
+// The real responder (exploration/src/sleeper.mjs) on a small stand-in for the page: a v9 save in the shared store, the page's save() that stops writing while locked, and a
+// newRealm that stores a fresh v9 save under the new wid (the Station's part is left out, as the page leaves it). `store` is the shared localStorage; `keys` a key store (memoryStore).
+// Boot it with boot(): the page's own order (holdAtBoot, then start). seat(on) is the Caddy's cradle; ask(op, fields) is the shell's relay and answers `lifted` unless seated.
+import { makeSleeper } from "../exploration/src/sleeper.mjs";
+
+export const freshV9 = (id, wid, seed, now) => ({ v: 9, wid, seed: seed >>> 0, companionId: id, began: now, here: "g1", turn: 0, expN: 0, mibis: [], bay: [], hold: null,
+  regions: [{ id: "g1", n: 1, kind: "home", biome: "mixed", slot: [0, 0], ev: null, name: null, seed: seed >>> 0, gen: 3, opened: now, openedTurn: 0, turnSeen: 0, closed: false, closes: null, exploredN: 0, seenN: 0, map: { pods: [] } }] });
+
+export function sleepingCompanion({ store, keys, id = "cstubcompan1", slot = "A", now = () => 1800000000000, hooks = {} }) {
+  const rt = { readOnly: false, sleepLock: false }, saveKey = "mb-save-v8@" + id;
+  const S = { wid: null };
+  const load = () => { try { const o = JSON.parse(store.getItem(saveKey)); S.wid = o && o.wid ? o.wid : null; } catch { S.wid = null; } };
+  const host = {
+    store, rt, keyStore: () => keys, companion: () => ({ id, slot }), wid: () => S.wid, saveKey: () => saveKey,
+    save() { if (rt.sleepLock) return; const raw = store.getItem(saveKey); if (raw != null) store.setItem(saveKey, raw); },   // the page rewrites what it holds; a lock stops it
+    newRealm(seed, wid) { S.wid = wid; store.setItem(saveKey, JSON.stringify(freshV9(id, wid, seed, now()))); },
+  };
+  const sleeper = makeSleeper(host);
+  return {
+    id, slot, rt, saveKey, sleeper, S,
+    // the page boots: it loads its save, a pending sleep keeps it from writing, then the key and a committed sleep finished
+    async boot() { load(); if (!store.getItem("mb-companion-" + slot)) store.setItem("mb-companion-" + slot, JSON.stringify({ id, name: "Companion " + slot, slot, at: now() })); sleeper.holdAtBoot(); await sleeper.start(); return sleeper.pub(); },
+    seat: (on) => sleeper.seat(on),
+    pub: () => sleeper.pub(),
+    // the shell's relay: a request reaches the Companion only while it is seated
+    async ask(op, fields = {}) { if (!sleeper.seated) return { ok: false, why: "lifted" }; if (hooks.beforeHandle) await hooks.beforeHandle(op); return sleeper.handle({ op, nonce: 1, ...fields }); },
+    wid: () => S.wid,
+    canWrite: () => !rt.sleepLock,
+  };
+}
