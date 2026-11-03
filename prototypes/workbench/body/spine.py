@@ -339,7 +339,7 @@ def band_faces(body, big, small, big_first):
         if big_first:           # L = big, U = small
             qs = [(A[0], M[0], M[1], A[1]), (A[1], M[1], A[3], A[2]), (A[3], M[1], M[2], A[4])]
         else:                   # L = small, U = big
-            qs = [(M[0], A[0], A[1], M[1]), (M[1], A[1], A[2], A[3]), (M[1], A[3], A[4], M[2])]
+            qs = [(M[0], A[0], A[1], M[1]), (A[3], M[1], A[1], A[2]), (M[1], A[3], A[4], M[2])]          # the middle quad is a dart (three vertices on the full ring): listed from A3 as the tip band lists it (A1 M1 A3 A2), the same cycle and winding; the mesh check reads the fourth vertex against the plane of the first three, and from M1 that plane tilts with the stalk's bend (0.89 against 0.42)
         out += [body.face(*q, "torso") for q in qs]
     return out
 
