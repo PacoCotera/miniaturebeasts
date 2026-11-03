@@ -308,7 +308,7 @@ def column_angles_at(G, center_z, vertical):
 def thin_rings(G, ss):
     """Which rings of the stations `ss` are lofted on 5 half columns (V5): the stalk, between the tip's end and the root's s minus `thin.end` (0.6 H; the stalk's bend at 0.7 is left to 16 columns), where the radius is under the species file's `thin.r_max`."""
     th = G.sp.get("thin")
-    if not th:
+    if not th or not th.get("enabled"):
         return [False] * len(ss)
     lo = G.bulb[0] + float(th["after_bulb"])
     hi = G.s_root - float(th.get("end", 0.6))

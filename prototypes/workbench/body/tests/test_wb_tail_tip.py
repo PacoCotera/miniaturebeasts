@@ -31,7 +31,7 @@ class TestTip(unittest.TestCase):
             self.assertEqual([c for c in self.res[n]["ids"] if c in ("mesh", "normals")], [], n)
 
     def test_the_shortest_tail_with_a_large_tip_passes(self):
-        for n in ("short tuft 1.2", "short tuft 1.2 curl 0.2", "short tuft 1.0"):          # short lantern 1.2 passes normals; its mesh fails by 0.73 in the seat range since V5 (a known case, test_wb_viability)
+        for n in ("short tuft 1.2", "short tuft 1.2 curl 0.2", "short lantern 1.2", "short tuft 1.0"):
             self.assertEqual([c for c in self.res[n]["ids"] if c in ("mesh", "normals")], [], n)
 
     def test_the_tail_length_is_held_for_a_large_tip_only(self):
@@ -41,11 +41,11 @@ class TestTip(unittest.TestCase):
         self.assertAlmostEqual(GN.tail_len_min(raw, dict(tip="tuft", tipSize=1.2)), 0.8 + 9.0 * (0.121 - 0.105), 6)          # a tuft is built at 1.1 at most
         self.assertAlmostEqual(GN.tail_len_min(raw, dict(tip="lantern", tipSize=1.2)), 0.8 + 9.0 * (0.12 - 0.105), 6)
 
-    def test_the_type_keeps_its_cage_since_v5(self):
-        self.assertEqual(self.res["type"]["verts"], 3446)               # 3,606 before V5
+    def test_the_type_keeps_its_cage(self):
+        self.assertEqual(self.res["type"]["verts"], 3606)
         import hashlib  # noqa: F401
         from wb import facade as F
-        self.assertTrue(F.build(DOC, "type").cage_hash.startswith("f73d798bc765fad9"))          # dbebe2e3a0a3b27c until V5
+        self.assertTrue(F.build(DOC, "type").cage_hash.startswith("dbebe2e3a0a3b27c"))
 
 
 class TestTheTwentyTwo(unittest.TestCase):

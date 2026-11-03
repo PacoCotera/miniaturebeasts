@@ -220,9 +220,8 @@ def run_all(doc, samples=200, workers=None, seed=20, only=None):
         return pool.map(_built, jobs, chunksize=4)
 
 
-def run_viability(doc, samples=200, workers=None, seed=20):
-    """`samples` genomes drawn from the pools and `samples` children of crosses between them, each built and checked. Returns the frame's `viability` block."""
-    res = run_all(doc, samples, workers, seed)
+def viability_block(res, samples):
+    """The frame's `viability` block from the results of `_built` (sampled first, then crossed)."""
     count = lambda kind, pred: sum(1 for r in res if r["id"].startswith(kind) and pred(r["built"], r["ids"]))
     rates = pass_rates(res)
     fails = [dict(genome=r["id"], checks=r["ids"], why=r["why"], where=r["where"]) for r in res if r["ids"]]
@@ -230,6 +229,11 @@ def run_viability(doc, samples=200, workers=None, seed=20):
                 crossedPassed=count("crossed", lambda b, ids: b and not ids), failuresByCheck=rates["failByCheck"], passRate=rates["passAllRate"], passRateByCheck=rates["passRateByCheck"], vertices=rates["verts"],
                 failures=fails[:40], failureCount=len(fails),
                 rule="random copies from the species pools at every open locus (the body and face anchors tight), and children of crosses between them (their blends on the step); each built by the body engine and checked by the cage checks of the workbench. `constructed` counts builds with no error, `passed` those with no failing check")
+
+
+def run_viability(doc, samples=200, workers=None, seed=20):
+    """`samples` genomes drawn from the pools and `samples` children of crosses between them, each built and checked. Returns the frame's `viability` block."""
+    return viability_block(run_all(doc, samples, workers, seed), samples)
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------- strings
@@ -241,7 +245,7 @@ def node(req, frame_file=None):
     return json.loads(p.stdout)
 
 
-def write(doc, path=None, samples=200, draft=False, workers=None, keep_viability=False):
+def write(doc, path=None, samples=200, draft=False, workers=None, keep_viability=False, results=None):
     path = path or os.path.join(FRAMES, f"species-{doc['id']}.json")
     errs = GA.validate(doc)
     if errs:
@@ -249,6 +253,8 @@ def write(doc, path=None, samples=200, draft=False, workers=None, keep_viability
     via = None
     if keep_viability and os.path.exists(path):                                  # the same file, only the frame's layout changed: the builds are the same builds
         via = json.load(open(path)).get("viability")
+    if results is not None:                                                       # the results of a run already made on this file (`--from-json`)
+        via = viability_block(results, samples)
     f = build_frame(doc, via or (run_viability(doc, samples, workers) if samples else None), draft)
 
     def save():
@@ -273,6 +279,7 @@ def main(argv=None):
     ap.add_argument("--workers", type=int, default=0)
     ap.add_argument("--draft", action="store_true")
     ap.add_argument("--viability-json", default="", help="build and check the genomes only, write every genome's result and the rate per check to this file, write no frame")
+    ap.add_argument("--from-json", default="", help="write the frame from the results of a `--viability-json` run on this same file (with the same --samples), instead of building the genomes again")
     ap.add_argument("--keep-viability", action="store_true", help="reuse the viability block of the frame already written (only when the file's genomes have not changed)")
     a = ap.parse_args(argv)
     with open(a.file) as fh:
@@ -285,7 +292,7 @@ def main(argv=None):
         print(json.dumps({k: v for k, v in rates.items() if k != "verts"}), json.dumps({k: v for k, v in rates["verts"].items() if k != "byPart"}), sep="\n")
         return 0
     try:
-        f, path = write(doc, a.out or None, a.samples, a.draft, a.workers or None, a.keep_viability)
+        f, path = write(doc, a.out or None, a.samples, a.draft, a.workers or None, a.keep_viability, json.load(open(a.from_json))["results"] if a.from_json else None)
     except Refused as e:
         print(f"wb frame: {e}", file=sys.stderr)
         return 2

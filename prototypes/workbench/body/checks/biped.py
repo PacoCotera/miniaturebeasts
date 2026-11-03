@@ -2,6 +2,7 @@
 Each check function takes a Ctx (the species file as the cage builder reads it, and for cage checks the built body) and returns a row: state, value, limit, the one measure line, a proof (mode, az, svg) and the nav rows it concerns.
 Fields are the schema's dotted paths (mb-species/1)."""
 import copy
+import os
 
 import numpy as np
 
@@ -389,7 +390,7 @@ def c_verts(ctx):
 def c_normals(ctx):
     import s20indiv as IN, s20normals as NM
     b = ctx.body
-    V, F, at, fp2 = ctx.level(2)
+    V, F, at, fp2 = ctx.level(int(os.environ.get("WB_NORMALS_LEVEL", "2")))                  # the owner's rule is held at level 2; WB_NORMALS_LEVEL=1 measures the shipped level once (the harness, not a gate)
     F = np.array(F, int)
     part = IN.part_of(b, F, fp2, len(V))
     m = NM.measure(V, F, at[:, 3])

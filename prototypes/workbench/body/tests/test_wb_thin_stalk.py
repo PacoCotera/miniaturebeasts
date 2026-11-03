@@ -1,4 +1,4 @@
-"""V5 (arch-viability): the tail stalk on 8 columns. Rings of the stalk (radius under `thin.r_max`, behind the tip's end, ending 0.6 H before the root) have 5 half columns; a band of three quads for each 4 columns turns 16 columns into 8 at each end, with no triangle. The band's vertices are not fitted to their targets. The type keeps its silhouette within 1 px at 304 on five views (fixture: the type before V5, rendered by the same code)."""
+"""V5 (arch-viability): the tail stalk on 8 columns, built behind `spine.loft.spine.thin.enabled` (off in the file: with it on 27% of wild genomes fail the mesh check's planarity at the root-end band). Rings of the stalk (radius under `thin.r_max`, behind the tip's end, ending 0.6 H before the root) have 5 half columns; a band of three quads for each 4 columns turns 16 columns into 8 at each end, with no triangle. The band's vertices are not fitted to their targets. The type keeps its silhouette within 1 px at 304 on five views (fixture: the type before V5, rendered by the same code)."""
 import json
 import os
 import sys
@@ -8,7 +8,10 @@ import numpy as np
 
 BODY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BODY)
-from tests.test_wb_viability import DOC  # noqa: E402
+import copy  # noqa: E402
+from tests.test_wb_viability import DOC as FILE  # noqa: E402
+DOC = copy.deepcopy(FILE)
+DOC["spine"]["loft"]["spine"]["thin"]["enabled"] = True            # the species file ships it off (see its note); these tests build the file with it on
 from wb import facade as F  # noqa: E402
 import spine as SP  # noqa: E402
 import mquality as Q  # noqa: E402
@@ -38,6 +41,12 @@ class TestThinStalk(unittest.TestCase):
         self.assertGreaterEqual(sum(self.thin), 5)
         k = [i for i, t in enumerate(self.thin) if t]
         self.assertEqual(k, list(range(k[0], k[-1] + 1)))                    # one stalk, two bands
+
+    def test_the_file_ships_it_off_and_the_type_is_unchanged_then(self):
+        self.assertFalse(FILE["spine"]["loft"]["spine"]["thin"]["enabled"])
+        r = F.build(FILE, "type")
+        self.assertTrue(r.cage_hash.startswith("dbebe2e3a0a3b27c"))
+        self.assertEqual(len(F.proxy_mesh(r.body, 1)["V"]), 3606)
 
     def test_the_type_loses_vertices(self):
         """3,606 before (3,446 as built here); the design asked for 350, which a stalk of this length cannot give: five rings of 32."""
