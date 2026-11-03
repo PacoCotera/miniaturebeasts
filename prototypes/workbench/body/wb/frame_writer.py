@@ -145,27 +145,60 @@ _DOC = None
 
 
 def _built(job):
-    """One genome built by the body engine and checked by the cage checks: (ok, why)."""
+    """One genome built by the body engine and checked by the cage checks: a dict of id, built, the failing check ids, the one line why, the vertex total and per-part counts (level 1), and for each failing check where it failed (the part, the spine range)."""
     i, copies = job
     from wb import facade as F
     import s20genes as GN
     from checks import run as crun
     from checks.ctx import Ctx
     try:
-        ind = GN.individual_of(copies)
+        ind = copies if isinstance(copies, dict) and "pairs" in copies else GN.individual_of(copies)          # copies at the loci, or an individual already (the viability test's fixed genomes)
         r = F.build(_DOC, ind)
         summ = r.summary()
         mesh = F.proxy_mesh(r.body, 1)
         summ["vertices_l1"] = int(len(mesh["V"]))
         rows = crun("cage", Ctx(F.internal(_DOC), r.body, summ, mesh, doc=_DOC))
     except Exception as e:                                                       # noqa: BLE001
-        return i, False, ["build"], f"{type(e).__name__}: {str(e)[:160]}"
+        return dict(id=i, built=False, ids=["build"], why=f"{type(e).__name__}: {str(e)[:160]}", verts=0, parts={}, where={})
     bad = [x for x in rows if x["state"] == "fail"]
-    return i, True, [x["id"] for x in bad], "; ".join(f"{x['id']}: {x['measure']}" for x in bad)[:240]
+    parts = next((x["extra"].get("parts_count") for x in rows if x["id"] == "verts"), None) or {}
+    where = {}
+    for x in bad:
+        e = x.get("extra") or {}
+        if x["id"] == "normals":
+            where["normals"] = dict(parts=e.get("by_part"), ranges=e.get("by_range"), worst=e.get("worst"))
+        elif x["id"] == "mesh":
+            where["mesh"] = dict(ranges=e.get("bad_ranges"), detail={k: v for k, v in (e.get("ranges") or {}).items() if v.get("bad")})
+        elif x["id"] == "verts":
+            where["verts"] = dict(total=summ["vertices_l1"], parts=parts)
+    return dict(id=i, built=True, ids=[x["id"] for x in bad], why="; ".join(f"{x['id']}: {x['measure']}" for x in bad)[:240], verts=int(summ["vertices_l1"]), parts=parts, where=where)
 
 
-def run_viability(doc, samples=200, workers=None, seed=20):
-    """`samples` genomes drawn from the pools and `samples` children of crosses between them, each built and checked. Returns the frame's `viability` block."""
+def pass_rates(res):
+    """The rate per check over the results of `_built`: how many of all genomes fail each check, and how many pass every check (a genome that does not build fails every check and is counted under `build`)."""
+    n = len(res)
+    by = {}
+    for r in res:
+        for k in r["ids"]:
+            by[k] = by.get(k, 0) + 1
+    ok = sum(1 for r in res if r["built"] and not r["ids"])
+    return dict(genomes=n, passAll=ok, passAllRate=round(ok / n, 4) if n else 0.0, failByCheck=by, passRateByCheck={k: round(1 - v / n, 4) for k, v in by.items()},
+                verts=_verts_summary(res))
+
+
+def _verts_summary(res):
+    import numpy as np
+    ok = [r for r in res if r["built"]]
+    if not ok:
+        return {}
+    v = np.array([r["verts"] for r in ok], float)
+    names = sorted({k for r in ok for k in r["parts"]})
+    part = {k: dict(mean=round(float(np.mean([r["parts"].get(k, 0) for r in ok])), 1), max=max(r["parts"].get(k, 0) for r in ok)) for k in names}
+    return dict(median=int(np.median(v)), p5=int(np.percentile(v, 5)), p95=int(np.percentile(v, 95)), max=int(v.max()), within3500=round(float((v <= 3500).mean()), 4), within3850=round(float((v <= 3850).mean()), 4), byPart=part)
+
+
+def run_all(doc, samples=200, workers=None, seed=20):
+    """The built-and-checked results of `samples` genomes drawn from the pools and `samples` children of crosses between them (the frame writer's exact genomes), in order: sampled first, then crossed."""
     import multiprocessing as mp
     import numpy as np
     global _DOC
@@ -177,15 +210,18 @@ def run_viability(doc, samples=200, workers=None, seed=20):
     jobs = [(f"sampled {k + 1}", c) for k, c in enumerate(drawn[:samples])] + [(f"crossed {k + 1}", c) for k, c in enumerate(kids)]
     workers = workers or max(1, min(10, (os.cpu_count() or 2) - 2))
     with mp.get_context("fork").Pool(workers) as pool:
-        res = pool.map(_built, jobs, chunksize=4)
-    count = lambda kind, pred: sum(1 for i, built, ids, _ in res if i.startswith(kind) and pred(built, ids))
-    by = {}
-    for i, built, ids, _ in res:
-        for k in ids:
-            by[k] = by.get(k, 0) + 1
-    fails = [dict(genome=i, checks=ids, why=why) for i, built, ids, why in res if ids]
+        return pool.map(_built, jobs, chunksize=4)
+
+
+def run_viability(doc, samples=200, workers=None, seed=20):
+    """`samples` genomes drawn from the pools and `samples` children of crosses between them, each built and checked. Returns the frame's `viability` block."""
+    res = run_all(doc, samples, workers, seed)
+    count = lambda kind, pred: sum(1 for r in res if r["id"].startswith(kind) and pred(r["built"], r["ids"]))
+    rates = pass_rates(res)
+    fails = [dict(genome=r["id"], checks=r["ids"], why=r["why"], where=r["where"]) for r in res if r["ids"]]
     return dict(sampled=samples, constructed=count("sampled", lambda b, ids: b), passed=count("sampled", lambda b, ids: b and not ids), crossed=samples, crossedBuilt=count("crossed", lambda b, ids: b),
-                crossedPassed=count("crossed", lambda b, ids: b and not ids), failuresByCheck=by, failures=fails[:40], failureCount=len(fails),
+                crossedPassed=count("crossed", lambda b, ids: b and not ids), failuresByCheck=rates["failByCheck"], passRate=rates["passAllRate"], passRateByCheck=rates["passRateByCheck"], vertices=rates["verts"],
+                failures=fails[:40], failureCount=len(fails),
                 rule="random copies from the species pools at every open locus (the body and face anchors tight), and children of crosses between them (their blends on the step); each built by the body engine and checked by the cage checks of the workbench. `constructed` counts builds with no error, `passed` those with no failing check")
 
 
@@ -229,17 +265,25 @@ def main(argv=None):
     ap.add_argument("--samples", type=int, default=200, help="genomes drawn and children crossed for the viability block (0: skip)")
     ap.add_argument("--workers", type=int, default=0)
     ap.add_argument("--draft", action="store_true")
+    ap.add_argument("--viability-json", default="", help="build and check the genomes only, write every genome's result and the rate per check to this file, write no frame")
     ap.add_argument("--keep-viability", action="store_true", help="reuse the viability block of the frame already written (only when the file's genomes have not changed)")
     a = ap.parse_args(argv)
     with open(a.file) as fh:
         doc = json.load(fh)
+    if a.viability_json:
+        res = run_all(doc, a.samples, a.workers or None)
+        rates = pass_rates(res)
+        with open(a.viability_json, "w") as fh:
+            json.dump(dict(samples=a.samples, rates=rates, results=res), fh)
+        print(json.dumps({k: v for k, v in rates.items() if k != "verts"}), json.dumps({k: v for k, v in rates["verts"].items() if k != "byPart"}), sep="\n")
+        return 0
     try:
         f, path = write(doc, a.out or None, a.samples, a.draft, a.workers or None, a.keep_viability)
     except Refused as e:
         print(f"wb frame: {e}", file=sys.stderr)
         return 2
     v = f["viability"]
-    print(f"{path}: {f['counts']['open']} open loci in {len(f['chapters'])} chapters; built {v['constructed']}/{v['sampled']} sampled and {v['crossedBuilt']}/{v['crossed']} crossed, passing every cage check {v.get('passed', 0)} and {v.get('crossedPassed', 0)} (failing checks: {v.get('failuresByCheck')}); the type's string is {f['counts']['stringLength']} characters")
+    print(f"{path}: {f['counts']['open']} open loci in {len(f['chapters'])} chapters; built {v['constructed']}/{v['sampled']} sampled and {v['crossedBuilt']}/{v['crossed']} crossed, passing every cage check {v.get('passed', 0)} and {v.get('crossedPassed', 0)} (rate {v.get('passRate')}; failing checks: {v.get('failuresByCheck')}); the type's string is {f['counts']['stringLength']} characters")
     print(f["counts"]["typeString"])
     return 0
 

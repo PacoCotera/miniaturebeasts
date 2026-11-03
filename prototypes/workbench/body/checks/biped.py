@@ -417,7 +417,14 @@ def c_normals(ctx):
     out.append(PR.label(40, 718, f"steepest visible edge {worst:.1f}°", PR.INK, "start", 19, bg=False))
     where = max(by, key=by.get) if by else ""
     meas = f"{n} visible edges over {lim_:.0f}° (steepest {worst:.1f}°)" + (f"; most in {where}" if where else "")
-    r = row("fail" if n else "pass", n, 0, meas, dict(mode="normal", az=32, svg="".join(out)), dict(parts=[], fail=(f"Sharp crease in {where}" if where else None)))
+    where_u = {}                                                                     # where along the spine the failing edges lie, by range name: the harness records it for each failing genome
+    if n:
+        u_bad = ctx.G.L - np.clip(s_edge[bad], 0, ctx.G.L)
+        for nm_, (lo_, hi_) in ctx.G.ranges.items():
+            k_ = int(((u_bad >= lo_ - 1e-9) & (u_bad <= hi_ + 1e-9)).sum())
+            if k_:
+                where_u[nm_] = k_
+    r = row("fail" if n else "pass", n, 0, meas, dict(mode="normal", az=32, svg="".join(out)), dict(parts=[], fail=(f"Sharp crease in {where}" if where else None), by_part=by, by_range=where_u, worst=round(worst, 2)))
     return r
 
 
@@ -466,7 +473,7 @@ def c_mesh(ctx):
         out.append(PR.label(36, 692 + 26 * i, f"{nm}", PR.RED if nm in bad else PR.INK, "start", 18, bg=False))
         out.append(PR.label(110, 692 + 26 * i, f"edge {r['along']:.1f} ({BIPED['ratio_along']:.0f})  ring {r['around']:.1f} ({BIPED['ratio_around']:.0f})  area {r['area']:.1f} ({th['area_ratio_max'] * 2:.0f})  flat {r['nonplanar']:.2f} ({th['nonplanar_max'] * 6:.1f})", PR.INK, "start", 15, bg=False))
     meas = (f"{bad[0]}: " + ", ".join(f"{k} {rows_[bad[0]][k]:.2f}" for k in rows_[bad[0]]['bad'])) if bad else "Edge, area and planarity ratios are inside the limits in every range"
-    return row("fail" if bad else "pass", len(bad), 0, meas, dict(mode="wire", az=32, svg="".join(out)), dict(parts=[], fail=(f"Thin or bent faces in {bad[0]}" if bad else None)))
+    return row("fail" if bad else "pass", len(bad), 0, meas, dict(mode="wire", az=32, svg="".join(out)), dict(parts=[], fail=(f"Thin or bent faces in {bad[0]}" if bad else None), bad_ranges=list(bad), ranges={k: {a: round(float(b_), 3) for a, b_ in v.items() if a != "bad"} | dict(bad=list(v["bad"])) for k, v in rows_.items()}))
 
 
 # 13 ------------------------------------------------------------------------------------------------------------------------------------------------------- limits (the extremes stage)
