@@ -4,7 +4,7 @@
 // The file also holds `view`: literal cases for src/view.mjs (the place camera and coordinates), each input with its output; and `atlas`:
 // src/atlas.mjs on a fixed synthetic catalogue (stored in the file, so the vectors test the logic, not the art): literal cases, and
 // an FNV-1a digest of every place's layers (generator 2 seeds 1, 7, 42 and generator 1 seed 7, both water frames).
-//   node prototypes/exploration/tools/world-vectors.mjs                         the whole file from ../src/world.mjs, JSON to stdout:
+//   node prototypes/exploration/tools/world-vectors.mjs                         the whole file from ../src/world.mjs, JSON to stdout (generator 4 by biome):
 //        gens["1"] is checked against the stored file and never re-captured (exits non-zero if it differs); gens["2"] is captured
 //   node prototypes/exploration/tools/world-vectors.mjs --page <index.html>     generator 1 from that page's own script, run in a vm
 //   node prototypes/exploration/tools/world-vectors.mjs --compare <index.html> [--seeds N]
@@ -71,6 +71,7 @@ export function worldDigest(api, G) {
   };
   if (G.gen >= 2) Object.assign(d, { gen: G.gen, attempt: G.attempt, orient: G.orient, level: H("level", G.level), edge: H("edge", G.edge),
     cross: G.cross.map(e => e.c + ":" + e.side + ":" + e.kind) });
+  if (G.gen >= 4) Object.assign(d, { biome: G.biome, shade: H("shade", G.shade) });
   return d;
 }
 export function placeDigest(api, lay, gen = 1) {
@@ -120,9 +121,9 @@ export function rosterColumn(api, G, seed) {
   });
 }
 
-export async function moduleApi(gen = 1) {
+export async function moduleApi(gen = 1, biome = "mixed") {
   const W = await import(new URL("../src/world.mjs", import.meta.url));
-  return { gen, hash: W.hash, L: W.L, EDGE: W.EDGE, genWorld: s => W.genWorld(s, gen), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells,
+  return { gen, hash: W.hash, L: W.L, EDGE: W.EDGE, genWorld: s => W.genWorld(s, gen, biome), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells,
     roster: W.ROSTER, genLife: (G, seed) => W.genLife(G, seed, W.ROSTER) };
 }
 // The page's whole script in a vm with the browser stubbed (the stub of freeze.test.mjs's page()); its own genWorld,
@@ -150,13 +151,15 @@ export function pageApi(file) {
 }
 
 // One seed object per line; inside it, one line per place. capturedFrom is generator 1's; generator 2 carries its own.
-export function format(seedObjs, capturedFrom, gen2 = null, view = null, atlas = null, gen3 = null) {
+export function format(seedObjs, capturedFrom, gen2 = null, view = null, atlas = null, gen3 = null, gen4 = null) {
   const seedLine = d => "{ \"seed\": " + JSON.stringify(d.seed) + ", \"world\": " + JSON.stringify(d.world) + ", \"places\": [\n" +
     d.places.map(p => "  " + JSON.stringify(p)).join(",\n") + " ]" + (d.roster ? ",\n  \"roster\": " + JSON.stringify(d.roster) : "") + " }";
   return "{ \"format\": 1, \"hash\": " + JSON.stringify(HASH_NOTE) + ",\n  \"capturedFrom\": " + JSON.stringify(capturedFrom) +
     ", \"gens\": { \"1\": { \"seeds\": [\n" + seedObjs.map(seedLine).join(",\n") + "\n] }" +
     (gen2 ? ",\n  \"2\": { \"capturedFrom\": " + JSON.stringify(gen2.capturedFrom) + ", \"seeds\": [\n" + gen2.seeds.map(seedLine).join(",\n") + "\n] }" : "") +
-    (gen3 ? ",\n  \"3\": { \"capturedFrom\": " + JSON.stringify(gen3.capturedFrom) + ", \"seeds\": [\n" + gen3.seeds.map(seedLine).join(",\n") + "\n] }" : "") + " }" +
+    (gen3 ? ",\n  \"3\": { \"capturedFrom\": " + JSON.stringify(gen3.capturedFrom) + ", \"seeds\": [\n" + gen3.seeds.map(seedLine).join(",\n") + "\n] }" : "") +
+    (gen4 ? ",\n  \"4\": { \"capturedFrom\": " + JSON.stringify(gen4.capturedFrom) + ", \"biomes\": {\n" +
+      Object.keys(gen4.biomes).map(b => "  " + JSON.stringify(b) + ": { \"seeds\": [\n" + gen4.biomes[b].map(seedLine).join(",\n") + "\n] }").join(",\n") + "\n} }" : "") + " }" +
     (view ? ",\n  \"view\": [\n" + view.map(c => "  " + JSON.stringify(c)).join(",\n") + "\n]" : "") +
     (atlas ? ",\n  \"atlas\": { \"levelTone\": " + JSON.stringify(atlas.levelTone) + ",\n  \"catalogue\": [\n" + atlas.catalogue.map(c => "  " + JSON.stringify(c)).join(",\n") +
       "\n],\n  \"cases\": [\n" + atlas.cases.map(c => "  " + JSON.stringify(c)).join(",\n") + "\n],\n  \"places\": [\n" + atlas.places.map(c => "  " + JSON.stringify(c)).join(",\n") +
@@ -340,8 +343,11 @@ async function main(argv) {
   if (st2 && withRoster(st2.seeds) && JSON.stringify(g2) !== JSON.stringify(st2.seeds)) { console.error("generator 2 differs from tests/world-vectors.json; it is never re-captured"); process.exitCode = 1; return; }
   const same2 = st2 && core(g2) === core(st2.seeds);
   const api3 = await moduleApi(3), g3 = SEEDS.map(s => seedDigest(api3, s)), st3 = stored.gens["3"], same3 = st3 && JSON.stringify(g3) === JSON.stringify(st3.seeds);
+  const BIOMES = (await import(new URL("../src/world.mjs", import.meta.url))).BIOMES, g4 = {};
+  for (const b of BIOMES) { const api = await moduleApi(4, b); g4[b] = SEEDS.map(s => seedDigest(api, s)); }
+  const st4 = stored.gens["4"], same4 = st4 && JSON.stringify(g4) === JSON.stringify(Object.fromEntries(Object.keys(st4.biomes).map(b => [b, st4.biomes[b].seeds])));
   const V = await import(new URL("../src/view.mjs", import.meta.url)), A = await import(new URL("../src/atlas.mjs", import.meta.url)), W = await import(new URL("../src/world.mjs", import.meta.url));
-  process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: same2 ? st2.capturedFrom : headCommit(), seeds: g2 }, viewVectors(V), atlasVectors(A, W, stored), { capturedFrom: same3 ? st3.capturedFrom : headCommit(), seeds: g3 }));
+  process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: same2 ? st2.capturedFrom : headCommit(), seeds: g2 }, viewVectors(V), atlasVectors(A, W, stored), { capturedFrom: same3 ? st3.capturedFrom : headCommit(), seeds: g3 }, { capturedFrom: same4 ? st4.capturedFrom : headCommit(), biomes: g4 }));
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) await main(process.argv.slice(2));
