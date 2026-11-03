@@ -1,17 +1,17 @@
 {
- "note": "S20 variety individuals 1..12 (s20genes.draw(i)) built by s20genes.build_individual at 930fc4253, before the cage speed work: the cage hash (wb.hashing.cage_hash) of each. Individual 1 is the type. Change only when the S20 cage is meant to change. Re-baselined 2 Nov 2026 (fix round after chunks 7-8): the body's rings are laid out from the crown, so a tail gene cannot slide them past a limb socket; every seed whose tail is not the type's length changed (sheet: build/fix78/twelve.html). The type's hash did not. Seeds that changed: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12.",
+ "note": "S20 variety individuals 1..12 (s20genes.draw(i)) built by s20genes.build_individual at 930fc4253, before the cage speed work: the cage hash (wb.hashing.cage_hash) of each. Individual 1 is the type. Change only when the S20 cage is meant to change. Re-baselined 2 Nov 2026 (fix round after chunks 7-8): the body's rings are laid out from the crown, so a tail gene cannot slide them past a limb socket; every seed whose tail is not the type's length changed (sheet: build/fix78/twelve.html). The type's hash did not. Seeds that changed: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12. Re-baselined 3 Nov 2026 (W9): the twelve are drawn on the 59-step grid of the genome string (every blend t is a step k/59 or the bin between), with the AD's hue bands (body 180-360, glow 60-100) and hues of ad-hue.md. Individual 1, the type, did not change (dbebe2e3a0a3b27c); the cages of 2 to 12 changed by at most 1/118 of a band on each shape and face blend.",
  "hashes": {
   "1": "dbebe2e3a0a3b27cf03a7e78fb671f4b3e401bcae8fb3ecf3144f2dd571b73fd",
-  "2": "6207dcb80b353118a9c097466742da3eab5171e437b68d54f825092806792a01",
-  "3": "21b31262e6561ab5739afaa0081176e288ef7a793912bfa2fb8966a260b32054",
-  "4": "26b75e76e144d3ba473561e6885df20dc0f2319ee5fd7c69aef64ad9d2ca64d0",
-  "5": "07858ff904cbc6c18207dac26636954900e4ddd39382558a404d6afc3de10149",
-  "6": "be27eb2aac58c7322fb0c4aae0a72d8a6724dbffb80e46603684b0beebad3db1",
-  "7": "36b5bf9b4da35073353429cb397787b5a5ae8d8a8acec8ea2f9afad2601e7e32",
-  "8": "f744402a4c3279b42d0a6dc2325676e2a00ac57accd2cd2075be9dab0e16bfc4",
-  "9": "4a592a7945d469d3dd216929ab7cac47d7daec1bb0157d647ea24a04a1bec009",
-  "10": "4146522d4232092b742fc0b8e12ddfbe2f14c069aa77f7f60f501af17b4d324f",
-  "11": "faf8a95f4ca5c9d2d6286790e183aea2def09ab52c5dc4201c5cf8739b08cc9f",
-  "12": "23086764011d32d1ad9f6b7f1bfd62275ba27e60eddfec65b3b4f3c87b443879"
+  "2": "7ddbe279b88b24561c9855202e3181080f0e40c1ce03f86b5d465f400b5fff70",
+  "3": "2feb1f211ccb431aeddc02b45159c32bea710bab92f5af805cc4aafa0632d9fb",
+  "4": "b8df6bcc969ea892224f4719700180c59781a3b6f7b217e243cbc4bcf9e90173",
+  "5": "8a882ecf7a43becf81ee0d1d26f27060be504f463ca5602c2b67a62237aa9c56",
+  "6": "f92bdfd3c7cb88feb6ab7a3a1c1900e21ec90763fbe835d1866d95bce03afd46",
+  "7": "1492d0a51ee77aefcb22c1c638163a19d84c01892693601f052094e0d2643c1e",
+  "8": "f45b7759f1a2905c59da8de0b0942e10828796b4f1cac58bff56b9c858521a9e",
+  "9": "ef1e7444a064ecdcc6ece73646ea5da1f35d2030f139e985f1d8d5512b37d252",
+  "10": "5d7ea5fc8a25f04b0c12e84ddbc7c60c3e0663a61d4fed3d359d5a64ec14e70e",
+  "11": "3e414c0a36ba2973756d4e55d13cf9a24698a651659c6d470835fb15630ca1b5",
+  "12": "405ef23806d6660f1c57b49e92441b0ca8da8deb3590f4d3c503f794f3afd2c2"
  }
 }

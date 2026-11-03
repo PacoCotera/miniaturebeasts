@@ -169,8 +169,31 @@ class TestAdapter(unittest.TestCase):
 
     def test_the_hue_shift_is_folded_into_the_hue_copy(self):
         ind = GN.draw(5)
-        want = (ind["t"]["appearance.body-hue"] + ind["t"]["coat.hue-shift"]) % 1.0
+        self.assertEqual(ind["t"]["coat.hue-shift"], 0.5)                                    # the twelve carry no shift: their hue is the effective hue
+        ind["t"]["coat.hue-shift"] = 0.5 + 0.5 * (18.0 / 360.0) / 0.06                         # +18 degrees
+        want = ((180.0 + 180.0 * ind["t"]["appearance.body-hue"]) + 18.0 - 180.0) / 180.0
         self.assertAlmostEqual(GN.genome_of(ind)["appearance.body-hue"][0], want, places=5)
+
+    def test_the_twelve_sit_on_the_grid_and_on_the_ad_hues(self):
+        steps = {i: GN.HUE_STEP[i] for i in range(2, 13)}
+        for i in range(1, 13):
+            ind = GN.draw(i)
+            for k, t in ind["t"].items():
+                if k in (GN.FOLDED,) or k in GN.ABS_RANGE:
+                    continue
+                self.assertTrue(t == 0.5 or abs(t * 59 - round(t * 59)) < 1e-4, f"individual {i} {k} {t}")
+            if i > 1:
+                h = 180.0 + 180.0 * ind["t"]["appearance.body-hue"]
+                self.assertAlmostEqual(h, 180.0 + 180.0 * steps[i] / 59, places=3)
+        self.assertEqual(GN.draw(1)["t"]["appearance.body-hue"], 0.5)
+        self.assertEqual(GN.draw(1)["t"]["appearance.glow-hue"], 0.5)
+        want = {2: 314.2, 3: 323.4, 4: 360.0, 5: 341.7, 6: 216.6, 7: 289.8, 8: 256.3, 9: 180.0, 10: 192.2, 11: 231.9, 12: 241.0}
+        for i, h in want.items():
+            self.assertAlmostEqual(180.0 + 180.0 * GN.draw(i)["t"]["appearance.body-hue"], h, delta=0.06)
+        self.assertEqual([GN.genome_of(GN.draw(i))["appearance.body-hue"][0] for i in (4, 9)], ["high", "low"])
+        for i in range(2, 13):
+            g = 60.0 + 40.0 * GN.draw(i)["t"]["appearance.glow-hue"]
+            self.assertTrue(70.0 <= g <= 90.5, g)
 
     def test_no_whiskers_is_the_switch_off_and_the_sleepers_at_between(self):
         g = GN.genome_of(GN.draw(1))

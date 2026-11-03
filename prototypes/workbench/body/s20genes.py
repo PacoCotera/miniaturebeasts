@@ -164,7 +164,7 @@ GENES = {
     "coat.rosette": ("lin", 0.0, 1.0, "coat"), "coat.bands": ("int", 3, 7, "coat"), "coat.mark-size": ("lin", 0.07, 0.12, "coat"),
     # the hue gene replaces the three fixed palettes (pass 2): the body hue in degrees, and the firefly glow hue (70-90 on every individual)
     "face.whisker-count": ("int", 0, 3, "face"), "face.whisker-length": ("lin", 0.2, 0.45, "face"), "face.whisker-droop": ("lin", 0.1, 0.5, "face"), "face.whisker-curl": ("lin", 0.0, 0.6, "face"),
-    "appearance.body-hue": ("lin", 0.0, 360.0, "coat"), "appearance.glow-hue": ("lin", 70.0, 90.0, "coat"),
+    "appearance.body-hue": ("lin", 180.0, 360.0, "coat"), "appearance.glow-hue": ("lin", 60.0, 100.0, "coat"),            # the AD's bands of 2 Nov (ad-hue.md): teal to violet to red, the type 270; lemon to lime to green, the type 80
 }
 # pair-map loci: alleles with draw weights, and the dominance order the phenotype follows (the first dominant allele of the pair shows)
 PAIRS = {
@@ -262,11 +262,17 @@ def genome_of(ind, tbl=None):
 
     for old, new in RECORD.items():
         t = ind["t"][old]
-        if old == "appearance.body-hue":
-            t = (t + ind["t"].get(FOLDED, 0.0)) % 1.0
+        if old == "appearance.body-hue" and FOLDED in ind["t"]:                  # the shift is a fraction of the circle (value of the `off` form); the hue copy takes it, kept inside the band
+            f_, lo_, hi_, _ = G[old]
+            shift = 360.0 * resolve_locus(FOLDED, ind["t"][FOLDED], {**G, FOLDED: GENES[FOLDED]})
+            t = min(max((resolve_locus(old, t, G) + shift - lo_) / (hi_ - lo_), 0.0), 1.0)
         if old in ABSOLUTE:
             f, lo, hi, _ = G[old]
-            put(new, round(GA.value_of(f, lo, hi, t), 6))
+            v = round(GA.value_of(f, lo, hi, t), 6)
+            if new == "movement.cycle-rate" and v == 1.0:               # the type's rate, 1.0, is the mean of the bins low and high, not a step: its copies are low and high
+                out[new] = ["low", "high"]
+            else:
+                put(new, v)
         else:
             put(new, t_copy(new, t))
     none = int(round(GA.value_of(*G["face.whisker-count"][:3], ind["t"]["face.whisker-count"]))) < 1
@@ -314,11 +320,55 @@ def specimen(tbl=None):
     t.update(TYPE_COAT_T)
     t["appearance.glow"] = 0.8
     t["face.whisker-count"] = 0.0
-    t["appearance.body-hue"] = 270.0 / 360.0; t["appearance.glow-hue"] = 0.5
+    t["appearance.body-hue"] = 0.5; t["appearance.glow-hue"] = 0.5
     t["skin.grain"] = 0.5; t["skin.sheen"] = 0.5
     t["coat.bands"] = 0.5; t["coat.mark-size"] = 0.5; t["coat.rd-scale"] = 0.5; t["coat.rd-contrast"] = 0.5; t["coat.rosette"] = 0.0
+    to_grid(t)
     return dict(t=t, pairs={k: [v, v] for k, v in TYPE_PAIRS.items()}, switches=dict(blush=True, brow=False), seed=20)
 
+
+
+# ======================================================================== the 59-step grid (genome-string proposal A.6, W9)
+# A string holds a blend on the grid of `BLEND_STEPS` = 59 steps (genome-stamp codec): t = k / 59, or the named bin `between` (0.5), with t = 0 and t = 1 the bins `low` and `high`. The three absolute records
+# (the cycle rate, the sheen, the glow's brightness) sit on the same grid over the catalogue's own range. The twelve are drawn on the grid; a bred child's copies are, in the game, always on it.
+GRID = 59
+ABS_RANGE = {"movement.cycle-rate": (0.6, 1.4), "skin.sheen": (0.0, 1.0), "appearance.glow": (0.4, 1.0)}          # the catalogue's values of the three absolute records (pin 11)
+
+
+def grid_t(t):
+    """The nearest allowed t: a step k / 59 (0 and 1 are the bins low and high), or 0.5 (the bin between)."""
+    k = min(max(int(round(t * GRID)), 0), GRID)
+    g = round(k / GRID, 6)
+    return 0.5 if abs(t - 0.5) <= abs(t - g) else g
+
+
+def grid_abs(name, t, G=None):
+    """t for the nearest step of the record's own range that lies inside the sampler's band (the type's own value, t = 0.5, is the bin pair low/high or between and is kept)."""
+    if abs(t - 0.5) < 1e-9 and name == "movement.cycle-rate":
+        return t
+    import math
+    import genomeapply as GA
+    G = G or GENES
+    f, lo, hi, _ = G[name]
+    c_lo, c_hi = ABS_RANGE[name]
+    step = (c_hi - c_lo) / GRID
+    v0, v1 = resolve_locus(name, 0.0, G), resolve_locus(name, 1.0, G)
+    v = resolve_locus(name, t, G)
+    k = round((v - c_lo) / step)
+    k = min(max(k, math.ceil((min(v0, v1) - c_lo) / step - 1e-9)), math.floor((max(v0, v1) - c_lo) / step + 1e-9))
+    return round(GA.t_of(f, lo, hi, round(c_lo + k * step, 6)), 9)
+
+
+def to_grid(t, G=None):
+    """Move every blend t of an individual onto the grid, in place (the hue shift has no record: it is folded before this)."""
+    for k in list(t):
+        if k == FOLDED:
+            continue
+        t[k] = grid_abs(k, t[k], G) if k in ABS_RANGE else grid_t(t[k])
+    return t
+
+
+HUE_STEP = {2: 44, 3: 47, 4: 59, 5: 53, 6: 12, 7: 36, 8: 25, 9: 0, 10: 4, 11: 17, 12: 20}       # ad-hue.md: the twelve's effective hues on the new band, as steps of 59 (59 and 0 are the bins high and low)
 
 EARS = ["lop", "nub", "prick"]
 TIPS = ["lantern", "lantern", "tuft", "lantern", "lantern", "plain", "lantern", "lantern", "tuft", "lantern", "lantern"]
@@ -349,6 +399,10 @@ def draw(i, seed0=2026):
     pairs["face.whisker-glow"] = ["glow"] * 2 if i == 6 else ["off"] * 2
     pairs["face.fangs"] = ["fangs"] * 2 if i in (3, 8, 11) else ["none"] * 2                          # and shows the open-mouth expression twice
     sw = dict(blush=bool(rng.random() < SWITCHES["face.blush"]), brow=bool(rng.random() < SWITCHES["coat.brow"]))
+    t["appearance.body-hue"] = HUE_STEP[i] / GRID if i in HUE_STEP else t["appearance.body-hue"]          # the AD's hues on the band (the sheet's old hue and its shift are folded: the shift is zero)
+    t["coat.hue-shift"] = 0.5
+    t["appearance.glow-hue"] = round(0.25 + 0.5 * t["appearance.glow-hue"], 6)                          # the glow keeps its degrees (70-90) on the wider band (60-100)
+    to_grid(t)
     ind = dict(t=t, pairs=pairs, switches=sw, seed=int(rng.integers(1, 10 ** 6)))
     return limit_loud(ind)
 
