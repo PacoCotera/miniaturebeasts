@@ -422,6 +422,8 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         grid = _rd(g["rd"], seed, sc)
         pat = sample_grid(grid, gx, gy)
         w = torso * (1 - belly) * (1 - sstep(1.95, 2.15, z)) * (1 - fc)
+        if g["rd"] in ("labyrinth", "rings"):                       # AD limit 1 (ad-tuliko-worst.md): stripes and loops stay below the neck (the chin sits at 1.40 H); the head stays clear. Spots keep their reach
+            w = w * (1 - sstep(1.30, 1.42, z))
         m = w * sstep(0.46, 0.62, pat) * (0.55 + 0.45 * g["rd_contrast"])
         F["rd"] = m
         col = col * (1 - m[:, None]) + mark * m[:, None] * 1.0
@@ -465,7 +467,7 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
         # a few bands carry on over the seat: the body's bands are faint
         F["tail_bands"] = m
         col = col * (1 - m[:, None]) + mark * m[:, None]
-    if "spots" in zones and torso.any():
+    if "spots" in zones and torso.any() and g["rd"] == "none":      # AD limit 2: under a shown pattern the spotted layout's spots and rosettes are not drawn (the pattern is the picture)
         size = 0.16
         d, cell = voronoi(V * (1.0 / size), seed + 5)
         r = 0.36 + 0.14 * cell
@@ -684,6 +686,8 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     # a small mark: a heart or a star
     if g["mark"] != "none":
         where = g["mark_where"]
+        if where == "belly" and g.get("glow_pattern", "none") == "belly-arcs":       # AD limit 3: with the belly arcs showing the emblem draws on the forehead (the arcs fill the belly)
+            where = "forehead"
         zc, ac = {"forehead": (1.94, 1.0), "cheek": (1.5, 0.64), "belly": (0.85, 1.0)}[where]
         if where == "forehead":
             zc = FZ["emblem_z"](g["mark_size"])
