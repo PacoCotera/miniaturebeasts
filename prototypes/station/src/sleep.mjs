@@ -142,6 +142,7 @@ export function makeSleep(h) {
   // Each part is safe to repeat. The journal goes only when every part is done; the Companion's unlock waits for the next dock, and the Caddy's drop for the Caddy.
   // Returns { done, pending: [...] }.
   async function rollback(j) {
+    if (at(j.state) >= COMMIT) return { done: false, pending: ["committed"] };   // a committed sleep is never undone: the one way on is forward
     const pending = [];
     try {
       if (j.sha) { const k = copyKey(j.wid, j.sha.slice(0, 8)); if (store.getItem(k) != null) drop(k); }
@@ -206,7 +207,11 @@ export function makeSleep(h) {
     });
   }
   async function settle(c) {   // a failed or abandoned hold: back to the realm as it was; what cannot be undone now (a lifted Companion, a quiet Caddy) is left to recover()
-    try { const j = readJournal(); return await rollback(j && !j.damaged ? j : c.j); } finally { c.settled = true; }
+    try {
+      const j = readJournal();
+      if (j && !j.damaged && at(j.state) >= COMMIT) { const f = await finish(j); return { forward: true, finish: f, done: !!f.done, pending: [] }; }   // the commit stands: roll forward
+      return await rollback(j && !j.damaged ? j : c.j);
+    } finally { c.settled = true; }
   }
 
   // Let go mid-hold: nothing lasts. The Companion is unlocked, its tombstone dropped, the journal removed; the Caddy was never touched.
@@ -249,11 +254,12 @@ export function makeSleep(h) {
         if (!cur || cur.wid !== j.wid || !cur.st || !(await sameParts(cur, c.prep.header.parts))) throw new Abort("the realm changed while it was being kept");
       } catch (e) {
         const why = e instanceof Abort ? e.why : "error: " + (e && e.message), o = await settle(c);
+        if (o.forward) return o.finish;   // the journal says commit: it is finished, not rolled back
         return { ok: false, rolledBack: true, why, pending: o.pending };
       }
       // step 6: the commit, one atomic journal write
       let committed = false;
-      try { j = step(j, "commit"); committed = true; } catch (e) { const now = readJournal(); committed = !!now && !now.damaged && at(now.state) >= COMMIT; if (!committed) { const o = await settle(c); return { ok: false, rolledBack: true, why: "store", pending: o.pending }; } }
+      try { j = step(j, "commit"); committed = true; } catch (e) { const now = readJournal(); committed = !!now && !now.damaged && at(now.state) >= COMMIT; if (!committed) { const o = await settle(c); return o.forward ? o.finish : { ok: false, rolledBack: true, why: "store", pending: o.pending }; } }
       c.settled = true;   // from the commit on the journal is recover()'s as much as ours
       return finish(readJournal() || j);
     });

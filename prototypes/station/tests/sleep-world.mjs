@@ -83,8 +83,8 @@ function storeFor(w, owner, life) {
   };
   return {
     get length() { return disk.size; }, key: (i) => keys()[i] ?? null,
-    getItem: (k) => (disk.has(k) ? disk.get(k) : null),
-    setItem(k, v) { v = String(v); life.point(owner, "set", label("set", k, v), { journal: () => w.journalState(), state: k === JOURNAL_KEY ? JSON.parse(v).state : null }); disk.set(k, v); },
+    getItem: (k) => { const v = disk.has(k) ? disk.get(k) : null; return w.tamper && w.tamper.get && v != null ? w.tamper.get(k, v) : v; },
+    setItem(k, v) { v = String(v); life.point(owner, "set", label("set", k, v), { journal: () => w.journalState(), state: k === JOURNAL_KEY ? JSON.parse(v).state : null }); disk.set(k, v); if (k === JOURNAL_KEY && JSON.parse(v).state === "commit") w.atCommit(JSON.parse(v)); },
     removeItem(k) { if (!disk.has(k)) return; life.point(owner, "remove", label("remove", k), { journal: () => w.journalState() }); disk.delete(k); },
   };
 }
@@ -117,6 +117,17 @@ export async function makeWorld({ realmSleep = true } = {}) {
   mkdirSync(SCRATCH, { recursive: true });
   const dir = mkdtempSync(path.join(SCRATCH, "w-"));
   const w = { dir, disk: new Map(), keys: memoryStore(), docked: true, settings: { realmSleep }, offline: false, fetchLog: [], saveKey: "mb-save-v8@" + COMPANION_ID, newWidSeen: null, companion: null, caddy: null, life: null, quota: undefined, pub: null, clock: T0 + 1000 };
+  // The rule that must hold the instant the journal says commit: the Caddy holds the file (and its ledger says kept), the Station holds its copy, and they are the same bytes. Misses are kept for the tests.
+  w.commitMisses = [];
+  w.atCommit = (j) => {
+    const name = `${j.wid}.${j.sha.slice(0, 8)}.mbr`, f = path.join(dir, "realms", "asleep", name), copy = w.disk.get(COPY_PREFIX + `${j.wid}.${j.sha.slice(0, 8)}`);
+    const onCard = existsSync(f) ? readFileSync(f, "utf8") : null, ledger = path.join(dir, "realms", "ledger.jsonl");
+    const kept = existsSync(ledger) && readFileSync(ledger, "utf8").split("\n").filter(Boolean).some((l) => { const o = JSON.parse(l); return o.sha === j.sha && o.state === "kept"; });
+    if (onCard == null) w.commitMisses.push("the card has no file at the commit");
+    if (!kept) w.commitMisses.push("the card's ledger has no kept line at the commit");
+    if (copy == null) w.commitMisses.push("the Station has no copy at the commit");
+    if (onCard != null && copy != null && onCard !== copy) w.commitMisses.push("the two copies differ at the commit");
+  };
   w.journalState = () => { try { const j = JSON.parse(w.disk.get(JOURNAL_KEY)); return j.state; } catch { return null; } };
   w.close = () => { try { rmSync(dir, { recursive: true, force: true }); } catch { /* left for the sweep */ } };
   const pair = await pairFromSeed(hexDecode(V.companion.seed)); w.pub = pair.pub;

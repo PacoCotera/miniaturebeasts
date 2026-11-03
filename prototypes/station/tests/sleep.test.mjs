@@ -105,6 +105,7 @@ async function scenario({ mode, i, rebootLifted = false, second = null }) {
     const fired = life.fired; assert.ok(fired, `${mode} #${i}: the point was never reached`);
     const row = { mode, i, owner: fired.owner, label: fired.label, journal: fired.journal ?? null };
     const where = `${mode} #${i} (${fired.label})`;
+    assert.deepEqual(w.commitMisses, [], where + ": two verified copies exist whenever the journal says commit");
     noTwoLives(w, where + " at the instant");
     const stateThen = stateIdx(w);
     if (CRASHES.has(mode)) {
@@ -124,6 +125,7 @@ async function scenario({ mode, i, rebootLifted = false, second = null }) {
     }
     if (!w.docked) await W.dock(w);
     await settle(st, where);
+    assert.deepEqual(w.commitMisses, [], where + ": two verified copies exist whenever the journal says commit");
     row.outcome = await assertSettled(w, where);
     // what the outcome must be
     if (CRASHES.has(mode)) assert.equal(row.outcome, stateThen >= COMMIT ? "asleep" : "back", where + ": the journal at the crash decides");
@@ -163,7 +165,7 @@ test("the whole sequence, nothing armed: the ten steps in order, then the realm 
     const order = ["journal open", "Companion lock", "save rewritten", "Companion sign", "tombstone pending", "journal signed", "Station copy", "journal keptStation", "PUT /realms/asleep/<wid>", "journal keptCaddy", "journal commit",
       "POST /realms/commit", "Station ledger", "Companion clear", "tombstone committed", "Companion's new realm", "tombstone done", "journal companion", "Station part fresh", "journal station", "POST /realm/clear", "journal caddy", "Station index", "journal closed"];
     let at = -1; for (const s of order) { const n = steps.indexOf(s, at + 1); assert.ok(n > at, `step "${s}" comes in its place`); at = n; }
-    assert.equal(await assertSettled(w, "happy"), "asleep");
+    assert.equal(await assertSettled(w, "happy"), "asleep"); assert.deepEqual(w.commitMisses, []);
     // what the sleep file says
     const sha = W.stationLedger(w)[0].sha, bytes = readFileSync(path.join(w.dir, "realms", "asleep", `${OLD}.${sha.slice(0, 8)}.mbr`));
     const v = await verifySleepFile(bytes, { pub: w.pub }); assert.equal(v.ok, true);
@@ -429,6 +431,52 @@ test("the card lost the file between keeping and committing: the commit finds no
     assert.deepEqual(W.caddyFiles(w), [], "the card has no file");
     const st = w.stationFor(w.newLife()); await settle(st, "lost file");
     assert.equal(await assertSettled(w, "lost file"), "asleep");
+  } finally { w.close(); }
+});
+
+test("recover() during a hold in progress answers running and changes nothing; the hold then completes", async () => {
+  const w = await W.makeWorld();
+  try {
+    const st = w.stationFor(w.setupLife), hold = await st.sleep.begin(); await hold.ready;
+    const before = W.snapshot(w), fetches = w.fetchLog.length;
+    assert.equal((await st.sleep.recover()).phase, "running");
+    assert.deepEqual(W.snapshot(w), before, "the store and the card are as they were");
+    assert.equal(w.fetchLog.length, fetches, "and the Caddy was not asked anything");
+    const res = await hold.complete(); assert.equal(res.done, true);
+    assert.equal(await assertSettled(w, "recover during the hold"), "asleep");
+  } finally { w.close(); }
+});
+
+test("a store that hands back a damaged copy makes the sleep roll back, and the realm is back", async () => {
+  for (const reads of ["every read", "the read-back after the write"]) {
+    const w = await W.makeWorld();
+    try {
+      let n = 0;
+      w.tamper = { get: (k, v) => (k.startsWith("mb-sleep@") && (reads === "every read" || ++n >= 2) ? v.slice(0, -5) + (v.slice(-5, -4) === "0" ? "1" : "0") + v.slice(-4) : v) };
+      const st = w.stationFor(w.setupLife), out = await drive(st);
+      assert.deepEqual([out.res.ok, out.res.rolledBack], [false, true], reads);
+      assert.match(out.res.why, /Station's copy|read back/, reads);
+      assert.deepEqual(W.caddyFiles(w), [], reads + ": the card holds nothing"); assert.equal(W.caddyLedger(w).length, 0);
+      w.tamper = null; await settle(st, reads);
+      assert.equal(await assertSettled(w, reads), "back");
+    } finally { w.close(); }
+  }
+});
+
+test("rotation keeps the oldest copy when the Caddy lists it but not as committed", async () => {
+  const w = await W.makeWorld();
+  try {
+    let st = w.stationFor(w.setupLife);
+    for (const t of ["one", "two"]) assert.equal((await drive(st)).res.done, true, t);
+    const oldest = W.stationLedger(w)[0];
+    w.tamper = { fetch: (label, r) => (label === "GET /realms/asleep" ? { status: r.status, json: async () => { const b = await r.json(); return { ...b, realms: b.realms.map((x) => (x.sha === oldest.sha ? { ...x, state: "kept" } : x)) }; } } : r) };
+    assert.equal((await drive(st)).res.done, true, "three");
+    assert.equal(W.copyKeys(w).length, 3, "the oldest stays: listed, but kept and not committed");
+    assert.ok(W.copyKeys(w).some((k) => k.includes(oldest.wid + ".")));
+    assert.deepEqual(JSON.parse(w.disk.get(INDEX_KEY)).map((e) => e.wid).includes(oldest.wid), false, "the index is the newest 2");
+    assert.equal(JSON.parse(w.disk.get(INDEX_KEY)).length, 2);
+    w.tamper = null; assert.equal((await st.sleep.recover()).phase, "none");
+    assert.equal(W.copyKeys(w).length, 2, "the card says committed: it goes");
   } finally { w.close(); }
 });
 
