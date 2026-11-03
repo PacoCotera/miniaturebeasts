@@ -1734,7 +1734,7 @@
     "on"
    ],
    "type": "off",
-   "weight": 0.8333333333333334
+   "weight": 0.051317
   },
   {
    "id": "form.whisker-count",
@@ -2923,31 +2923,29 @@
  "viability": {
   "sampled": 500,
   "constructed": 500,
-  "passed": 379,
+  "passed": 495,
   "crossed": 500,
   "crossedBuilt": 500,
-  "crossedPassed": 412,
+  "crossedPassed": 497,
   "failuresByCheck": {
-   "verts": 181,
-   "normals": 18,
-   "mesh": 29
+   "normals": 2,
+   "verts": 6
   },
-  "passRate": 0.791,
+  "passRate": 0.992,
   "passRateByCheck": {
-   "verts": 0.819,
-   "normals": 0.982,
-   "mesh": 0.971
+   "normals": 0.998,
+   "verts": 0.994
   },
   "vertices": {
-   "median": 3718,
-   "p5": 3526,
-   "p95": 3974,
-   "max": 4270,
-   "within3500": 0.027,
-   "within3850": 0.819,
+   "median": 3414,
+   "p5": 3222,
+   "p95": 3670,
+   "max": 3942,
+   "within3500": 0.701,
+   "within3850": 0.994,
    "byPart": {
     "arm.L": {
-     "mean": 389.3,
+     "mean": 389.6,
      "max": 452
     },
     "ear.L": {
@@ -2959,7 +2957,7 @@
      "max": 52
     },
     "fang.1": {
-     "mean": 1.6,
+     "mean": 1.0,
      "max": 52
     },
     "leg.L": {
@@ -2967,252 +2965,24 @@
      "max": 670
     },
     "torso": {
-     "mean": 2090.4,
-     "max": 2352
+     "mean": 1923.6,
+     "max": 2096
     },
     "whisker.0": {
-     "mean": 84.8,
+     "mean": 8.3,
      "max": 88
     },
     "whisker.1": {
-     "mean": 84.8,
+     "mean": 8.3,
      "max": 88
     },
     "whisker.2": {
-     "mean": 0.6,
+     "mean": 0.2,
      "max": 88
     }
    }
   },
   "failures": [
-   {
-    "genome": "sampled 2",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,014 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4014,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 606,
-       "ear.L": 708,
-       "arm.L": 324,
-       "whisker.0": 88,
-       "whisker.1": 88,
-       "fang.0": 52,
-       "fang.1": 52
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 3",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,270 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4270,
-      "parts": {
-       "torso": 2352,
-       "leg.L": 670,
-       "ear.L": 580,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88,
-       "fang.0": 52,
-       "fang.1": 52
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 4",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 606,
-       "ear.L": 644,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 7",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 606,
-       "ear.L": 644,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 12",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,206 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4206,
-      "parts": {
-       "torso": 2224,
-       "leg.L": 606,
-       "ear.L": 708,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88,
-       "fang.0": 52,
-       "fang.1": 52
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 13",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,974 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3974,
-      "parts": {
-       "torso": 2160,
-       "leg.L": 606,
-       "ear.L": 644,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 15",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,014 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4014,
-      "parts": {
-       "torso": 2032,
-       "leg.L": 670,
-       "ear.L": 580,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88,
-       "fang.0": 52,
-       "fang.1": 52
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 19",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,038 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4038,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 606,
-       "ear.L": 708,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 20",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2224,
-       "leg.L": 670,
-       "ear.L": 452,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 23",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 670,
-       "ear.L": 644,
-       "arm.L": 324,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 25",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,166 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4166,
-      "parts": {
-       "torso": 2032,
-       "leg.L": 670,
-       "ear.L": 836,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
    {
     "genome": "sampled 28",
     "checks": [
@@ -3236,36 +3006,16 @@
     }
    },
    {
-    "genome": "sampled 33",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,038 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4038,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 670,
-       "ear.L": 644,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
     "genome": "sampled 42",
     "checks": [
      "verts"
     ],
-    "why": "verts: 3,998 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
+    "why": "verts: 3,870 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
     "where": {
      "verts": {
-      "total": 3998,
+      "total": 3870,
       "parts": {
-       "torso": 2032,
+       "torso": 1904,
        "leg.L": 670,
        "ear.L": 708,
        "arm.L": 324,
@@ -3277,566 +3027,29 @@
     }
    },
    {
-    "genome": "sampled 44",
-    "checks": [
-     "verts",
-     "mesh"
-    ],
-    "why": "verts: 4,090 vertices at subdivision level 1, limit 3,500 (amber up to 3,850); mesh: neck: along 12.32, nonplanar 0.64",
-    "where": {
-     "verts": {
-      "total": 4090,
-      "parts": {
-       "torso": 2288,
-       "leg.L": 606,
-       "ear.L": 516,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88,
-       "fang.0": 52
-      }
-     },
-     "mesh": {
-      "ranges": [
-       "neck"
-      ],
-      "detail": {
-       "neck": {
-        "faces": 32.0,
-        "along": 12.325,
-        "around": 2.342,
-        "area": 2.174,
-        "nonplanar": 0.638,
-        "bad": [
-         "along",
-         "nonplanar"
-        ]
-       }
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 48",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,102 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4102,
-      "parts": {
-       "torso": 2160,
-       "leg.L": 606,
-       "ear.L": 772,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 50",
-    "checks": [
-     "verts",
-     "mesh"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850); mesh: neck: nonplanar 0.68",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2288,
-       "leg.L": 670,
-       "ear.L": 452,
-       "arm.L": 324,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     },
-     "mesh": {
-      "ranges": [
-       "neck"
-      ],
-      "detail": {
-       "neck": {
-        "faces": 32.0,
-        "along": 8.825,
-        "around": 2.243,
-        "area": 2.221,
-        "nonplanar": 0.677,
-        "bad": [
-         "nonplanar"
-        ]
-       }
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 60",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2032,
-       "leg.L": 670,
-       "ear.L": 580,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 61",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,974 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3974,
-      "parts": {
-       "torso": 2032,
-       "leg.L": 670,
-       "ear.L": 644,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 63",
-    "checks": [
-     "verts",
-     "mesh"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850); mesh: neck: nonplanar 0.63",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2288,
-       "leg.L": 670,
-       "ear.L": 324,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     },
-     "mesh": {
-      "ranges": [
-       "neck"
-      ],
-      "detail": {
-       "neck": {
-        "faces": 32.0,
-        "along": 11.938,
-        "around": 2.348,
-        "area": 2.174,
-        "nonplanar": 0.633,
-        "bad": [
-         "nonplanar"
-        ]
-       }
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 70",
-    "checks": [
-     "verts",
-     "mesh"
-    ],
-    "why": "verts: 3,974 vertices at subdivision level 1, limit 3,500 (amber up to 3,850); mesh: neck: nonplanar 0.62",
-    "where": {
-     "verts": {
-      "total": 3974,
-      "parts": {
-       "torso": 2224,
-       "leg.L": 606,
-       "ear.L": 580,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     },
-     "mesh": {
-      "ranges": [
-       "neck"
-      ],
-      "detail": {
-       "neck": {
-        "faces": 32.0,
-        "along": 11.447,
-        "around": 2.348,
-        "area": 2.172,
-        "nonplanar": 0.615,
-        "bad": [
-         "nonplanar"
-        ]
-       }
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 76",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,166 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4166,
-      "parts": {
-       "torso": 2352,
-       "leg.L": 670,
-       "ear.L": 580,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 77",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,974 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3974,
-      "parts": {
-       "torso": 2224,
-       "leg.L": 606,
-       "ear.L": 644,
-       "arm.L": 324,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 80",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,974 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3974,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 670,
-       "ear.L": 580,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 81",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,974 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3974,
-      "parts": {
-       "torso": 2160,
-       "leg.L": 670,
-       "ear.L": 516,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 82",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 670,
-       "ear.L": 580,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 83",
-    "checks": [
-     "verts",
-     "mesh"
-    ],
-    "why": "verts: 3,898 vertices at subdivision level 1, limit 3,500 (amber up to 3,850); mesh: neck: nonplanar 0.62",
-    "where": {
-     "verts": {
-      "total": 3898,
-      "parts": {
-       "torso": 2224,
-       "leg.L": 606,
-       "ear.L": 452,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88,
-       "fang.0": 52
-      }
-     },
-     "mesh": {
-      "ranges": [
-       "neck"
-      ],
-      "detail": {
-       "neck": {
-        "faces": 32.0,
-        "along": 10.584,
-        "around": 2.365,
-        "area": 2.172,
-        "nonplanar": 0.621,
-        "bad": [
-         "nonplanar"
-        ]
-       }
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 92",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 606,
-       "ear.L": 580,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 93",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,078 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4078,
-      "parts": {
-       "torso": 2160,
-       "leg.L": 670,
-       "ear.L": 580,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88,
-       "fang.0": 52,
-       "fang.1": 52
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 113",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,974 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3974,
-      "parts": {
-       "torso": 2160,
-       "leg.L": 606,
-       "ear.L": 644,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 115",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2160,
-       "leg.L": 670,
-       "ear.L": 516,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 116",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,858 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3858,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 606,
-       "ear.L": 452,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88,
-       "whisker.2": 88,
-       "fang.0": 52
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 117",
-    "checks": [
-     "verts",
-     "mesh"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850); mesh: neck: nonplanar 0.64",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 2160,
-       "leg.L": 606,
-       "ear.L": 580,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     },
-     "mesh": {
-      "ranges": [
-       "neck"
-      ],
-      "detail": {
-       "neck": {
-        "faces": 32.0,
-        "along": 11.631,
-        "around": 2.353,
-        "area": 2.175,
-        "nonplanar": 0.638,
-        "bad": [
-         "nonplanar"
-        ]
-       }
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 119",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 4,230 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 4230,
-      "parts": {
-       "torso": 2224,
-       "leg.L": 606,
-       "ear.L": 772,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 120",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,886 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3886,
-      "parts": {
-       "torso": 2096,
-       "leg.L": 670,
-       "ear.L": 516,
-       "arm.L": 324,
-       "whisker.0": 88,
-       "whisker.1": 88,
-       "fang.0": 52,
-       "fang.1": 52
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 122",
+    "genome": "sampled 275",
     "checks": [
      "normals"
     ],
-    "why": "normals: 4 visible edges over 20° (steepest 31.0°); most in torso",
+    "why": "normals: 2 visible edges over 20° (steepest 22.7°); most in leg.L",
     "where": {
      "normals": {
       "parts": {
-       "torso": 4
+       "leg.L": 2
       },
       "ranges": {
-       "seat": 4
+       "tail": 2
       },
-      "worst": 31.01,
+      "worst": 22.65,
       "s": [
-       0.52,
-       0.52
+       0.298,
+       0.298
       ]
      }
     }
    },
    {
-    "genome": "sampled 123",
+    "genome": "sampled 347",
     "checks": [
      "verts"
     ],
@@ -3845,9 +3058,9 @@
      "verts": {
       "total": 3910,
       "parts": {
-       "torso": 2096,
-       "leg.L": 670,
-       "ear.L": 580,
+       "torso": 1968,
+       "leg.L": 606,
+       "ear.L": 772,
        "arm.L": 388,
        "whisker.0": 88,
        "whisker.1": 88
@@ -3856,94 +3069,83 @@
     }
    },
    {
-    "genome": "sampled 128",
+    "genome": "sampled 361",
     "checks": [
      "verts"
     ],
-    "why": "verts: 4,038 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
+    "why": "verts: 3,926 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
     "where": {
      "verts": {
-      "total": 4038,
+      "total": 3926,
       "parts": {
-       "torso": 2160,
+       "torso": 2032,
        "leg.L": 670,
-       "ear.L": 580,
-       "arm.L": 452,
-       "whisker.0": 88,
-       "whisker.1": 88
+       "ear.L": 772,
+       "arm.L": 452
       }
      }
     }
    },
    {
-    "genome": "sampled 139",
+    "genome": "crossed 21",
     "checks": [
-     "mesh"
+     "verts"
     ],
-    "why": "mesh: neck: nonplanar 0.67",
-    "where": {
-     "mesh": {
-      "ranges": [
-       "neck"
-      ],
-      "detail": {
-       "neck": {
-        "faces": 32.0,
-        "along": 9.221,
-        "around": 2.257,
-        "area": 2.224,
-        "nonplanar": 0.669,
-        "bad": [
-         "nonplanar"
-        ]
-       }
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 143",
-    "checks": [
-     "verts",
-     "mesh"
-    ],
-    "why": "verts: 3,974 vertices at subdivision level 1, limit 3,500 (amber up to 3,850); mesh: neck: along 12.19, nonplanar 0.63",
+    "why": "verts: 3,942 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
     "where": {
      "verts": {
-      "total": 3974,
+      "total": 3942,
       "parts": {
-       "torso": 2224,
-       "leg.L": 606,
-       "ear.L": 516,
-       "arm.L": 452,
+       "torso": 2000,
+       "leg.L": 670,
+       "ear.L": 708,
+       "arm.L": 388,
        "whisker.0": 88,
        "whisker.1": 88
       }
-     },
-     "mesh": {
-      "ranges": [
-       "neck"
-      ],
-      "detail": {
-       "neck": {
-        "faces": 32.0,
-        "along": 12.19,
-        "around": 2.344,
-        "area": 2.173,
-        "nonplanar": 0.625,
-        "bad": [
-         "along",
-         "nonplanar"
-        ]
-       }
+     }
+    }
+   },
+   {
+    "genome": "crossed 181",
+    "checks": [
+     "verts"
+    ],
+    "why": "verts: 3,862 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
+    "where": {
+     "verts": {
+      "total": 3862,
+      "parts": {
+       "torso": 2032,
+       "leg.L": 670,
+       "ear.L": 772,
+       "arm.L": 388
+      }
+     }
+    }
+   },
+   {
+    "genome": "crossed 447",
+    "checks": [
+     "verts"
+    ],
+    "why": "verts: 3,942 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
+    "where": {
+     "verts": {
+      "total": 3942,
+      "parts": {
+       "torso": 2064,
+       "leg.L": 670,
+       "ear.L": 644,
+       "arm.L": 388,
+       "whisker.0": 88,
+       "whisker.1": 88
       }
      }
     }
    }
   ],
-  "failureCount": 209,
+  "failureCount": 8,
   "rule": "random copies from the species pools at every open locus (the body and face anchors tight), and children of crosses between them (their blends on the step); each built by the body engine and checked by the cage checks of the workbench. `constructed` counts builds with no error, `passed` those with no failing check"
- },
- "draft": true,
- "draftReasons": []
+ }
 }
