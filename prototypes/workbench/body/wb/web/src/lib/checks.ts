@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query'
-import type { Entry } from './api'
+import { call, type Entry } from './api'
 import { dottedPath } from './edits'
 
 // The check rows the server measured (spec 9) and what the page says about each: one place for the counts, so the pill and the drawer are the same number (studio-ui 8.3).
@@ -8,7 +8,7 @@ export type CheckRow = { id: string; state: 'pass' | 'warn' | 'fail'; value: num
 export type CheckMeta = { id: string; name: string; fail: string; stage: string; rule: { date: string; words: string }; limit: { text: string; value: unknown }; part: string[]; fields: string[]; play: string | null; az: number; mode: string }
 export type ChecksState = { hash: string; fresh: boolean; rows: CheckRow[]; counts: { total: number; fail: number; warn: number; need: number; passed: number } }
 
-export const checkMetas = () => queryOptions({ queryKey: ['checks-meta'], queryFn: async () => (await fetch('/api/checks')).json() as Promise<CheckMeta[]>, staleTime: Infinity })
+export const checkMetas = () => queryOptions({ queryKey: ['checks-meta'], queryFn: () => call<CheckMeta[]>('GET', '/api/checks'), staleTime: Infinity })
 
 export const needsYou = (rows: CheckRow[]) => rows.filter((r) => r.state === 'fail' || r.state === 'warn')
 

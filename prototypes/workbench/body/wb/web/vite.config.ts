@@ -38,8 +38,9 @@ const buildJson = () => ({
 })
 
 export default defineConfig({
+  base: '/studio/',
   plugins: [react(), buildJson()],
   build: { outDir: '../static/app', emptyOutDir: true, sourcemap: false, target: 'es2022' },
-  server: { port: 5173, proxy: { '/api': 'http://127.0.0.1:8765', '/events': 'http://127.0.0.1:8765', '/cas': 'http://127.0.0.1:8765' } },
+  server: { port: 5173, proxy: { '/studio/api': 'http://127.0.0.1:8765', '/studio/events': 'http://127.0.0.1:8765', '/studio/cas': 'http://127.0.0.1:8765' } },
   test: { environment: 'jsdom', include: ['src/**/*.test.ts', 'src/**/*.test.tsx'] },
 })

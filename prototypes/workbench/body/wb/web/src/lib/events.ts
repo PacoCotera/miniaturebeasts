@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query'
+import { apiPath } from './prefix'
 
 // The server's events (spec 6.3, wb/server.py): queued, running, done, failed, edited.
 export type WbEvent = { id: number; type: 'queued' | 'running' | 'done' | 'failed' | 'edited'; species: string; t: string; job?: string; kind?: string; actor?: string | null; progress?: number; superseded?: boolean; key?: string; urls?: string[]; error?: string; field?: string }
@@ -30,7 +31,7 @@ export function useSpeciesEvents(species: string): void {
   const qc = useQueryClient()
   useEffect(() => {
     qc.setQueryData<JobsState>(['jobs', species], NO_JOBS)
-    const es = new EventSource(`/events?species=${encodeURIComponent(species)}`)
+    const es = new EventSource(apiPath(`/events?species=${encodeURIComponent(species)}`))
     const on = (e: MessageEvent) => applyEvent(qc, species, JSON.parse(e.data) as WbEvent)
     for (const t of EVENT_TYPES) es.addEventListener(t, on as EventListener)
     es.onopen = () => qc.setQueryData(['connected', species], true)

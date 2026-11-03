@@ -23,6 +23,7 @@ export default function App() {
         <Suspense fallback={null}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/studio" element={<Home />} />
             <Route path="/studio/:species/*" element={<StudioPage />} />
             <Route path="*" element={null} />
           </Routes>
