@@ -73,12 +73,12 @@ test("purity, by source: no page state, DOM, storage, clock, randomness, drawing
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /import /]) assert.doesNotMatch(code, re);
 });
 
-test("unknown generators are refused; the page plays generators 1, 2 and 3, and new worlds take generator 3", () => {
-  assert.throws(() => W.genWorld(1, 4), RangeError);
+test("unknown generators are refused; the page plays generators 1, 2, 3 and 4 (biomes), and new worlds take generator 3", () => {
+  assert.throws(() => W.genWorld(1, 5), RangeError);
   assert.throws(() => W.genWorld(1, 0), RangeError);
-  assert.deepEqual(W.GENS, [1, 2, 3]);
+  assert.deepEqual(W.GENS, [1, 2, 3, 4]);
   assert.equal(W.genWorld(1, 2).gen, 2);
-  assert.equal(W.genWorld(1, 3).gen, 3);
+  assert.equal(W.genWorld(1, 3).gen, 3); assert.equal(W.genWorld(1, 4).gen, 4);
   assert.equal(W.NEW_GEN, 3);
 });
 
@@ -125,8 +125,8 @@ test("a world of generator 2 (asked for by a test; players have them in saves) w
   assert.deepEqual(placeDigest(API2, p.run("layout(String(G.spawns[0]))"), 2), want.places[0]);
 });
 
-test("a save from a newer generator (gen 4) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
-  const raw = JSON.stringify(Object.assign(FIXTURE(), { gen: 4 })), writes = [];
+test("a save from a newer generator (gen 5) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
+  const raw = JSON.stringify(Object.assign(FIXTURE(), { gen: 5 })), writes = [];
   const old = { "mb-exploration-v1": "{}", "mb-exploration-v6": "{}" };   // the saves before v7 stay too: read-only boot removes nothing
   const store = new Proxy({ "mb-save-v8": raw, ...old }, { set: (o, k, v) => { writes.push(k); o[k] = v; return true; }, deleteProperty: (o, k) => { writes.push(k); delete o[k]; return true; } });
   const p = page(store);
@@ -147,7 +147,7 @@ test("a save from a newer generator (gen 4) is read-only: load() says 'newer', b
   assert.deepEqual(writes, [], "nothing was written");
   assert.doesNotThrow(() => p.els.copyNotes.on.click(), "Copy notes is a no-op while read-only");
   assert.deepEqual(writes, [], "Copy notes wrote nothing");
-  for (const gen of [4, 0, "1"]) { const q = page({ "mb-save-v8": JSON.stringify(Object.assign(FIXTURE(), { gen })) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
+  for (const gen of [5, 0, "1"]) { const q = page({ "mb-save-v8": JSON.stringify(Object.assign(FIXTURE(), { gen })) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
 });
 
 test("the Station's save reader adopts the save and keeps gen as it is (absent, 1, 2)", async () => {

@@ -2,7 +2,7 @@
 // storage, the clock or Math.random, and never draws. Generator 1 is frozen; a new generator is added beside it, never in its place.
 
 export const NEW_GEN = 3;          // the generator newWorld gives a new world (old saves keep theirs)
-export const GENS = [1, 2, 3];     // the generators the page can play
+export const GENS = [1, 2, 3, 4];  // the generators the page can play
 
 export const MW = 16, MH = 20;                       // world map, cells
 export const PW = 28, PH = 32;
@@ -54,7 +54,8 @@ export const cdist = (a, b) => man(cxy(a), cxy(b));
 
 export function passableIn(G, c) { const l = G.land[c]; return (l !== L.WATER || G.ford[c] === 1) && l !== L.CLIFF; }
 
-export function genWorld(seed, gen = 1) {
+export function genWorld(seed, gen = 1, biome = 'mixed') {
+  if (gen === 4) return genWorld4(seed, biome);
   if (gen === 2) return genWorld2(seed);
   if (gen === 3) return { ...genWorld2(seed), gen: 3 };   // generator 3: generator 2's ground, and the herd floor in its life (genLife3)
   if (gen !== 1) throw new RangeError('unknown world generator: ' + gen);
@@ -408,7 +409,7 @@ export function noiseQ(s, x, y, P) {
   const ix = (x / P) | 0, iy = (y / P) | 0, fx = (((x % P) * 32768) / P) | 0, fy = (((y % P) * 32768) / P) | 0;
   const v = (i, j) => hash(s, i, j) >>> 17, sx = sm(fx), sy = sm(fy);
   return lerpQ(lerpQ(v(ix, iy), v(ix + 1, iy), sx), lerpQ(v(ix, iy + 1), v(ix + 1, iy + 1), sx), sy); }
-const n2 = (s, x, y) => ((2 * noiseQ(hash(s, 1), x, y, G2.P1) + noiseQ(hash(s, 2), x, y, G2.P2)) / 3) | 0;   // two octaves, lattices 8 and 4
+const n2 = (s, x, y, P1 = G2.P1, P2 = G2.P2) => ((2 * noiseQ(hash(s, 1), x, y, P1) + noiseQ(hash(s, 2), x, y, P2)) / 3) | 0;   // two octaves, lattices 8 and 4
 // noiseQ over a place's tiles (0 <= x < PW, 0 <= y < PH) with each lattice value hashed once: the same numbers as noiseQ(s, x, y, P).
 function noiseTab(s, P) {
   const gw = (((PW - 1) / P) | 0) + 2, gh = (((PH - 1) / P) | 0) + 2, g = new Int32Array(gw * gh);
@@ -436,14 +437,15 @@ const nearWater = (land, c) => { const x = c % MW, y = (c / MW) | 0;
   return false; };
 
 // Stage 1: base land, today's meadow made integer.
-function g2Land(sub) {
+// B is a biome's ground (generator 4, BIOME_GROUND); without one this is generator 2's land to the bit.
+function g2Land(sub, B) {
   const at = (x, y) => y * MW + x;
   const land = new Uint8Array(NC), ford = new Uint8Array(NC), island = new Uint8Array(NC);
   const m = new Int32Array(NC), r = new Int32Array(NC), sM = sub('m'), sR = sub('r'), all = [];
   for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { m[at(x, y)] = n2(sM, x, y); r[at(x, y)] = n2(sR, x, y); }
   for (let c = 0; c < NC; c++) all.push(c);
-  for (const c of rankTop(m, all, G2.WOOD_N)) land[c] = L.WOOD;
-  for (const c of rankTop(r, all.filter(c => land[c] !== L.WOOD), G2.ROCK_N)) land[c] = L.ROCK;
+  for (const c of rankTop(m, all, B ? B.wood : G2.WOOD_N)) land[c] = L.WOOD;
+  for (const c of rankTop(r, all.filter(c => land[c] !== L.WOOD), B ? B.rock : G2.ROCK_N)) land[c] = L.ROCK;
   const R = makeRng(sub('river')), rxs = new Int32Array(MH);
   let rx = 9 + R.int(3);
   for (let y = 0; y < MH; y++) {
@@ -458,11 +460,22 @@ function g2Land(sub) {
   for (const fy of [1 + R.int(3), 16 + R.int(3)]) for (let x = 0; x < MW; x++) if (land[at(x, fy)] === L.WATER) ford[at(x, fy)] = 1;
   const lx = 1 + R.int(5), ly = 12 + R.int(6);
   land[at(lx, ly)] = L.WATER;
+  if (B) {   // a biome's own streams, so nothing above moves: more fords, then small lakes
+    const RF = makeRng(sub('fords')), RL = makeRng(sub('lakes'));
+    for (let k = 0; k < B.fords; k++) { const fy = 4 + 3 * k + RF.int(2); for (let x = 0; x < MW; x++) if (land[at(x, fy)] === L.WATER) ford[at(x, fy)] = 1; }
+    for (let k = 0, tries = 0; k < B.lakes && tries < 400; tries++) {
+      const x = 1 + RL.int(MW - 2), y = 1 + RL.int(MH - 2), c = at(x, y), two = RL.int(100) < B.lakeTwo, dx = RL.int(2), c2 = dx ? c + 1 : c + MW;
+      const free = d => land[d] !== L.WATER && !island[d] && !ford[d] && land[d] !== L.CLIFF;
+      if (!free(c) || (two && (!free(c2) || (dx && x + 1 >= MW - 1) || (!dx && y + 1 >= MH - 1)))) continue;
+      land[c] = L.WATER; if (two) land[c2] = L.WATER; k++;
+    }
+  }
+  const wetRing = B && B.ring8 ? NB8 : SIDES.map(([, dx, dy]) => [dx, dy]);
   for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) {
     const c = at(x, y); if (land[c] === L.WATER || island[c]) continue;
     let wet = false;
-    for (const [, dx, dy] of SIDES) { const X = x + dx, Y = y + dy; if (onMapXY(X, Y) && land[at(X, Y)] === L.WATER && !ford[at(X, Y)]) wet = true; }
-    if (wet && (land[c] === L.MEADOW || R.int(100) < 35)) land[c] = L.POND;
+    for (const [dx, dy] of wetRing) { const X = x + dx, Y = y + dy; if (onMapXY(X, Y) && land[at(X, Y)] === L.WATER && !ford[at(X, Y)]) wet = true; }
+    if (wet && (land[c] === L.MEADOW || R.int(100) < (B ? B.pondP : 35))) land[c] = L.POND;
   }
   return { land, ford, island };
 }
@@ -501,11 +514,11 @@ function g2Zones(Gp, lv) {
   return { id, cells, lvOf, n: cells.length };
 }
 // Stage 3 step 5: a small zone whose bordering zones all have one level takes it (not upward beside water). Up to 4 rounds.
-function g2SmallZones(Gp, lv) {
+function g2SmallZones(Gp, lv, zoneMin = G2.ZONE_MIN) {
   for (let round = 0; round < 4; round++) {
     const Z = g2Zones(Gp, lv); let changed = false;
     for (let z = 0; z < Z.n; z++) {
-      if (Z.cells[z].length >= G2.ZONE_MIN) continue;
+      if (Z.cells[z].length >= zoneMin) continue;
       let to = -1, mixed = false, wet = false;
       for (const c of Z.cells[z]) { const x = c % MW, y = (c / MW) | 0; if (nearWater(Gp.land, c)) wet = true;
         for (const [, dx, dy] of SIDES) { const X = x + dx, Y = y + dy; if (!onMapXY(X, Y)) continue; const o = Z.id[Y * MW + X];
@@ -542,25 +555,25 @@ function g2ReachCount(Gp, c0, r) {
 }
 
 // One attempt t (0–7; 8 is the fallback). Returns the world, or null when a set piece has no cell.
-function g2Attempt(seed, t) {
-  const s0 = hash(seed, 'g2', t), sub = k => hash(s0, k), fallback = t === G2.TRIES;
-  const { land, ford, island } = g2Land(sub);
+function g2Attempt(seed, t, B) {
+  const s0 = B && B.name ? hash(seed, 'g4', B.name, t) : hash(seed, 'g2', t), sub = k => hash(s0, k), fallback = t === G2.TRIES;
+  const { land, ford, island } = g2Land(sub, B);
   const orient = hash(s0, 'orient') & 3, lv = new Uint8Array(NC), edge = new Uint8Array(2 * NC);
   const Gp = { land, ford, island, edge };
   let Z = null;
   if (!fallback) {
     // Stage 2: height, rising toward the mountain edge (east, or west when orient bit 0 is set).
     const H = new Int32Array(NC), sH = sub('h');
-    for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { const xr = (orient & 1) ? MW - 1 - x : x; H[y * MW + x] = n2(sH, x, y) + ((G2.RAMP_Q * xr / 15) | 0); }
+    for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { const xr = (orient & 1) ? MW - 1 - x : x; H[y * MW + x] = (B ? n2(sH, x, y, B.hP1, B.hP2) : n2(sH, x, y)) + (((B ? B.rampQ : G2.RAMP_Q) * xr / 15) | 0); }
     // Stage 3: levels by rank, the water ring, the closure, saddles, small zones.
     const dry = []; for (let c = 0; c < NC; c++) if (land[c] !== L.WATER) dry.push(c);
     dry.sort((a, b) => H[a] - H[b] || a - b);
-    const q0 = (dry.length * G2.LV_PCT[0] / 100) | 0, q1 = (dry.length * (G2.LV_PCT[0] + G2.LV_PCT[1]) / 100) | 0;
+    const lvp = B ? B.lv : G2.LV_PCT, q0 = (dry.length * lvp[0] / 100) | 0, q1 = (dry.length * (lvp[0] + lvp[1]) / 100) | 0;
     dry.forEach((c, i) => { lv[c] = i < q0 ? 0 : i < q1 ? 1 : 2; });
     for (let c = 0; c < NC; c++) if (nearWater(land, c)) lv[c] = 0;
     g2Close(lv);
     g2Saddles(lv);
-    g2SmallZones(Gp, lv);
+    g2SmallZones(Gp, lv, B ? B.zoneMin : G2.ZONE_MIN);
     Z = g2Zones(Gp, lv);
   } else {
     // The fallback: every level 0, one mouth cell raised to 1.
@@ -957,7 +970,7 @@ export const groundName = (land, cave) => cave ? 'cave' : ['meadow', 'pond', 'ro
 // A realm is a pure function of (seed, generator, roster); it reads G only, never a save. Generators 1 and 2 keep their life as it was
 // (genLife12, frozen); generator 3 has the herd floor (genLife3).
 export function genLife(G, seed, roster = ROSTER) {
-  return G.gen >= 3 ? genLife3(G, seed, roster) : genLife12(G, seed, roster);
+  return G.gen >= 4 ? genLife3(G, seed, roster, G.biome) : G.gen >= 3 ? genLife3(G, seed, roster) : genLife12(G, seed, roster);
 }
 
 // Generators 1 and 2: each cell draws from its habitat's pool, so a species can be missing from a realm. Frozen: saves and vectors depend on it.
@@ -991,7 +1004,7 @@ function genLife12(G, seed, roster) {
 // ids or its pods. Each species draws its herds over its own habitat; then the floor tops it up to at least HERD.FLOOR herds of
 // HERD.SIZE or more on the reachable component, placed by construction, never rerolled: herd k comes from hash(seed, 'herd', species, k).
 export const HERD = { SIZE: 3, FLOOR: 2, PODS: 2 };   // a herd is 3 or more in one cell (the sweep's tracks threshold); 2 buried pods a species
-export function genLife3(G, seed, roster) {
+export function genLife3(G, seed, roster, biome) {
   const N = MW * MH, pct = (...a) => hash(seed, ...a) % 100, cr = [], pods = [];
   roster.forEach((r, sp) => {
     const live = c => passableIn(G, c) && G.land[c] !== L.WATER && r.hab.includes(G.land[c]), n = new Array(N).fill(0);
@@ -1009,6 +1022,17 @@ export function genLife3(G, seed, roster) {
       const R = makeRng(hash(seed, 'herd', sp, k)), c = open.splice(R.int(open.length), 1)[0];
       n[c] = Math.max(n[c], HERD.SIZE + R.int(3));
     }
+    // Generator 4: a biome's habitat herds doubled. A species that lives on the biome's land gets as many more herds there as it has
+    // (at least the floor's), on its own stream, placed by construction on the reachable component.
+    const hl = BIOME_HABITAT[biome];
+    if (hl !== undefined && r.hab.includes(hl)) {
+      let there = 0; const room = [];
+      for (let c = 0; c < N; c++) if (G.land[c] === hl && live(c) && G.comp[c] === 1) { if (n[c] >= HERD.SIZE) there++; else room.push(c); }
+      for (let k = 0, more = Math.max(there, HERD.FLOOR); k < more && room.length; k++) {
+        const R = makeRng(hash(seed, 'herd4', sp, k)), c = room.splice(R.int(room.length), 1)[0];
+        n[c] = HERD.SIZE + R.int(3);
+      }
+    }
     let i = 0; const mine = (c, cv) => cr.push({ id: 0, sp, c, cv, b: pct('bold', sp, i++) / 100, s: 0 });
     for (let c = 0; c < N; c++) for (let j = 0; j < n[c]; j++) mine(c, 0);
     if (r.nest && G.gate >= 0) for (let j = 0; j < 4; j++) mine(G.gate, 1);   // the nest under the cliff
@@ -1023,3 +1047,49 @@ export function genLife3(G, seed, roster) {
   pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, bur: 1, g: 'cave', how: 'ground' });   // a Loika sheltered here once
   return { cr, pods };
 }
+
+// ---- generator 4 (integer only): biomes ----
+// Generator 2's ground with a land-weight table per biome, and generator 3's life with the biome's habitat herds doubled. `mixed` is
+// generator 3's ground to the bit. Every other biome re-weights generator 2's own stages (BIOME_GROUND) and draws on its own seed streams.
+// No cell is L.CLIFF here, as in generator 2: a cliff is an edge between levels, so the Fells' cliffs are their doubled height changes.
+export const BIOMES = ['mixed', 'woods', 'fells', 'marsh'];
+//   wood, rock: how many cells the noise ranks take for each land (generator 2: 80 and 48); fords: extra ford rows (generator 2 has 2 rows);
+//   lakes, lakeTwo: extra small lakes and the percent of them with a second cell; pondP, ring8: the pond edge (generator 2: 35 percent, 4 sides);
+//   hP1, hP2, rampQ, lv, zoneMin: the height noise lattices, the slope toward the mountain edge, the level shares by rank and the smallest zone kept
+//   (generator 2: 8, 4, 16384, 15 45 40, 4). Fells: finer, steeper-noised height; Marsh: its ground is low, so its ranks put most of it on the top level.
+export const BIOME_GROUND = {
+  mixed: null,
+  woods: { name: 'woods', wood: 200, rock: 36, fords: 0, lakes: 0, lakeTwo: 0, pondP: 50, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
+  fells: { name: 'fells', wood: 55, rock: 152, fords: 0, lakes: 0, lakeTwo: 0, pondP: 40, ring8: false, hP1: 2, hP2: 2, rampQ: 4096, lv: [15, 45, 40], zoneMin: 2 },
+  marsh: { name: 'marsh', wood: 62, rock: 28, fords: 2, lakes: 16, lakeTwo: 50, pondP: 25, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
+};
+export const WALK_MIN = 260;   // a biome world holds at least this many walkable cells on its reachable component
+// The land a biome's habitat herds stand on: a species whose habitat holds it has its herds there doubled.
+export const BIOME_HABITAT = { woods: L.WOOD, fells: L.ROCK, marsh: L.POND };
+
+function walkCells(G) { let n = 0; for (let c = 0; c < NC; c++) n += G.comp[c]; return n; }
+export function genWorld4(seed, biome = 'mixed') {
+  if (!BIOMES.includes(biome)) throw new RangeError('unknown biome: ' + biome);
+  const B = BIOME_GROUND[biome];
+  const done = G => ({ ...G, gen: 4, biome, shade: shadeCells(G, seed, biome) });
+  for (let t = 0; t < G2.TRIES; t++) { const G = g2Attempt(seed, t, B); if (G && !g2Check(G, false).length && walkCells(G) >= WALK_MIN) return done(G); }
+  const G = g2Attempt(seed, G2.TRIES, B);
+  if (G && !g2Check(G, true).length) return done(G);
+  throw new RangeError('generator 4: no valid ' + biome + ' world for seed ' + seed);
+}
+// The Shade (deep wood under a closed canopy): one in three of a Woods world's reachable wood places, the most enclosed first (a wood place
+// with the most wood around it), ties by a hash and then the lower cell. Other biomes have none.
+function shadeCells(G, seed, biome) {
+  const shade = new Uint8Array(NC);
+  if (biome !== 'woods') return shade;
+  const wood = [];
+  for (let c = 0; c < NC; c++) if (G.land[c] === L.WOOD && G.comp[c] && !G.island[c]) {
+    const x = c % MW, y = (c / MW) | 0; let n = 0;
+    for (const [dx, dy] of NB8) if (onMapXY(x + dx, y + dy) && G.land[(y + dy) * MW + x + dx] === L.WOOD) n++;
+    wood.push({ c, n, k: hash(seed, 'shade', c) });
+  }
+  wood.sort((a, b) => b.n - a.n || a.k - b.k || a.c - b.c);
+  for (let i = 0, k = (wood.length / 3) | 0; i < k; i++) shade[wood[i].c] = 1;
+  return shade;
+}
+// ---- end generator 4 ----

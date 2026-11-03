@@ -252,12 +252,14 @@ test("11. seeds and ids: region 1 keeps the realm's seed and its pod ids; region
   }
 });
 
-test("11b. generators: 3 is taken (the herd floor), so biomes are generator 4", () => {
-  assert.equal(W.NEW_GEN, 3); assert.deepEqual(W.GENS, [1, 2, 3]);
+test("11b. generators: 3 is the herd floor, 4 is the biomes; new realms still take 3", () => {
+  assert.equal(W.NEW_GEN, 3); assert.deepEqual(W.GENS, [1, 2, 3, 4]);
   assert.equal(W.genWorld(7, 3).gen, 3, "generator 3 is the herd floor on generator 2's ground");
-  assert.ok(!W.GENS.includes(4), "4 is free for the biomes");
+  assert.ok(W.GENS.includes(4), "the page knows the biomes' generator");
   const second = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 4, opened: 1 });
-  assert.equal(R.realmStatus({ v: 9, regions: [second] }), "newer", "until the page knows generator 4, a realm that holds one is read-only");
+  assert.notEqual(R.realmStatus({ v: 9, regions: [second] }), "newer", "a realm that holds a generator 4 region is playable");
+  const later = R.regionRecord({ n: 2, slot: [2, 1], biome: "woods", seed: 9, gen: 5, opened: 1 });
+  assert.equal(R.realmStatus({ v: 9, regions: [later] }), "newer", "a generator the page does not know is read-only");
 });
 
 test("12. regionRecord and blankMap: the shape of a record, and a new region's map is a new world's", () => {
