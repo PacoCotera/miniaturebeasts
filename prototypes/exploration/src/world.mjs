@@ -1,8 +1,8 @@
 // The seeded world of the Companion: the map, the places and the RNG. Pure: it never reads the page's state, the DOM,
 // storage, the clock or Math.random, and never draws. Generator 1 is frozen; a new generator is added beside it, never in its place.
 
-export const NEW_GEN = 2;          // the generator newWorld gives a new world (old saves keep theirs)
-export const GENS = [1, 2];        // the generators the page can play
+export const NEW_GEN = 3;          // the generator newWorld gives a new world (old saves keep theirs)
+export const GENS = [1, 2, 3];     // the generators the page can play
 
 export const MW = 16, MH = 20;                       // world map, cells
 export const PW = 28, PH = 32;
@@ -56,6 +56,7 @@ export function passableIn(G, c) { const l = G.land[c]; return (l !== L.WATER ||
 
 export function genWorld(seed, gen = 1) {
   if (gen === 2) return genWorld2(seed);
+  if (gen === 3) return { ...genWorld2(seed), gen: 3 };   // generator 3: generator 2's ground, and the herd floor in its life (genLife3)
   if (gen !== 1) throw new RangeError('unknown world generator: ' + gen);
   const passable = c => passableIn(G, c);
   const R = makeRng(hash(seed, 'world'));
@@ -377,7 +378,7 @@ export function genCave(seed, cell) {
 }
 
 export function genPlace(G, seed, key) {
-  if (G.gen === 2) return key[0] === 'c' ? genCave2(seed, +key.slice(1)) : genPatch2(G, seed, +key);
+  if (G.gen >= 2) return key[0] === 'c' ? genCave2(seed, +key.slice(1)) : genPatch2(G, seed, +key);
   return key[0] === 'c' ? genCave(seed, +key.slice(1)) : genPatch(G, seed, +key);
 }
 
@@ -943,3 +944,82 @@ export function genCave2(seed, cell) {
   return lay;
 }
 // ---- end generator 2 ----
+
+// ---- life: the creatures and the world's buried pods ----
+// The roster, in species-id order (an id is a slot: new species are appended, never inserted). `hab` is the lands a species lives on;
+// `nest` marks the species that holds the glow cells and the cave under the cliff. The page's SPECIES rows take their `hab` from here.
+export const ROSTER = [
+  { name: 'Loika', hab: [L.MEADOW, L.POND] },
+  { name: 'Tuikis', hab: [L.WOOD, L.ROCK], nest: true },
+  { name: 'Untuva', hab: [L.WOOD, L.MEADOW, L.POND] },
+];
+export const groundName = (land, cave) => cave ? 'cave' : ['meadow', 'pond', 'rock', 'wood', 'pond', 'rock'][land];
+// A realm is a pure function of (seed, generator, roster); it reads G only, never a save. Generators 1 and 2 keep their life as it was
+// (genLife12, frozen); generator 3 has the herd floor (genLife3).
+export function genLife(G, seed, roster = ROSTER) {
+  return G.gen >= 3 ? genLife3(G, seed, roster) : genLife12(G, seed, roster);
+}
+
+// Generators 1 and 2: each cell draws from its habitat's pool, so a species can be missing from a realm. Frozen: saves and vectors depend on it.
+function genLife12(G, seed, roster) {
+  const cr = [], pods = []; let id = 1;
+  const add = (sp, c, cv) => { cr.push({ id, sp, c, cv: cv ? 1 : 0, b: Math.round(rnd(seed, 'bold', id) * 100) / 100, s: 0 }); id++; };
+  for (let c = 0; c < MW * MH; c++) {
+    const l = G.land[c]; if (!passableIn(G, c) || l === L.WATER) continue;
+    const pool = roster.map((_, i) => i).filter(s => roster[s].hab.includes(l)); if (!pool.length) continue;
+    const r = rnd(seed, 'pop', c); let n = 0;
+    if (G.spawns.includes(c)) n = 4 + Math.floor(rnd(seed, 'pn', c) * 3);
+    else if (r < .3) n = 4 + Math.floor(rnd(seed, 'pn', c) * 5);
+    else if (r < .55) n = 1 + (rnd(seed, 'pm', c) < .5 ? 1 : 0);
+    const a = pool[Math.floor(rnd(seed, 'pa', c) * pool.length)], b = pool[Math.floor(rnd(seed, 'pb', c) * pool.length)];
+    for (let i = 0; i < n; i++) add(i % 3 === 2 ? b : a, c, 0);
+  }
+  for (const c of G.glow) { const have = cr.filter(w => w.c === c && w.sp === 1).length; for (let i = have; i < 3; i++) add(1, c, 0); }
+  for (let i = 0; i < 2; i++) add(1, G.gate, 0);
+  for (let i = 0; i < 4; i++) add(1, G.gate, 1);   // Tuikis nest under the cliff
+  const R = makeRng(hash(seed, 'pods'));
+  const homes = R.shuffle([...new Set(cr.filter(w => !w.cv && !G.spawns.includes(w.c) && G.comp[w.c]).map(w => w.c))]);
+  for (let i = 0; i < Math.min(7, homes.length); i++) {
+    const c = homes[i], here = cr.filter(w => w.c === c);
+    pods.push({ id: 'w' + i, k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' });
+  }
+  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, bur: 1, g: 'cave', how: 'ground' }); // a Loika sheltered here once
+  return { cr, pods };
+}
+
+// Generator 3 (integer only): every species has its own seed stream, so a species added to the roster never moves another's herds, its
+// ids or its pods. Each species draws its herds over its own habitat; then the floor tops it up to at least HERD.FLOOR herds of
+// HERD.SIZE or more on the reachable component, placed by construction, never rerolled: herd k comes from hash(seed, 'herd', species, k).
+export const HERD = { SIZE: 3, FLOOR: 2, PODS: 2 };   // a herd is 3 or more in one cell (the sweep's tracks threshold); 2 buried pods a species
+export function genLife3(G, seed, roster) {
+  const N = MW * MH, pct = (...a) => hash(seed, ...a) % 100, cr = [], pods = [];
+  roster.forEach((r, sp) => {
+    const live = c => passableIn(G, c) && G.land[c] !== L.WATER && r.hab.includes(G.land[c]), n = new Array(N).fill(0);
+    for (let c = 0; c < N; c++) {
+      if (!live(c)) continue;
+      if (G.spawns.includes(c)) { if (pct('spawn', sp, c) < 70) n[c] = 4 + pct('pn', sp, c) % 3; continue; }
+      const q = pct('pop', sp, c);
+      if (q < 15) n[c] = 4 + pct('pn', sp, c) % 5; else if (q < 35) n[c] = 1 + pct('pm', sp, c) % 2;
+    }
+    if (r.nest) { for (const c of G.glow) n[c] = Math.max(n[c], 3); if (G.gate >= 0) n[G.gate] += 2; }
+    const herd = c => G.comp[c] === 1 && n[c] >= HERD.SIZE;
+    let have = 0; const open = [];
+    for (let c = 0; c < N; c++) { if (herd(c)) have++; else if (live(c) && G.comp[c] === 1) open.push(c); }
+    for (let k = 0; have < HERD.FLOOR && open.length; k++, have++) {
+      const R = makeRng(hash(seed, 'herd', sp, k)), c = open.splice(R.int(open.length), 1)[0];
+      n[c] = Math.max(n[c], HERD.SIZE + R.int(3));
+    }
+    let i = 0; const mine = (c, cv) => cr.push({ id: 0, sp, c, cv, b: pct('bold', sp, i++) / 100, s: 0 });
+    for (let c = 0; c < N; c++) for (let j = 0; j < n[c]; j++) mine(c, 0);
+    if (r.nest && G.gate >= 0) for (let j = 0; j < 4; j++) mine(G.gate, 1);   // the nest under the cliff
+    const R = makeRng(hash(seed, 'pods', sp));
+    const homes = R.shuffle([...new Set(cr.filter(w => w.sp === sp && !w.cv && !G.spawns.includes(w.c) && G.comp[w.c]).map(w => w.c))]);
+    for (let j = 0; j < Math.min(HERD.PODS, homes.length); j++) {
+      const c = homes[j];
+      pods.push({ id: 'w' + sp + 'p' + j, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' });
+    }
+  });
+  cr.forEach((w, i) => { w.id = i + 1; });
+  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, bur: 1, g: 'cave', how: 'ground' });   // a Loika sheltered here once
+  return { cr, pods };
+}

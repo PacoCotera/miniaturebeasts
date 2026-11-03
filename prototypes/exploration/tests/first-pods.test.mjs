@@ -136,7 +136,9 @@ test("4. the world is unchanged: genLife's output and generator 2's frozen vecto
   for (const s of SEEDS) h.update(JSON.stringify(life(s)) + "\n");
   assert.equal(h.digest("hex"), GENLIFE_DIGEST);
   const v = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
-  assert.equal(createHash("sha256").update(JSON.stringify({ format: v.format, hash: v.hash, capturedFrom: v.capturedFrom, gens: v.gens })).digest("hex"), VECTORS_SHA);
+  // generators 1 and 2 as pinned, without the roster column that came later; generator 3 is beside them, not among them
+  const old = Object.fromEntries(["1", "2"].map(g => [g, { ...v.gens[g], seeds: v.gens[g].seeds.map(({ roster, ...rest }) => rest) }]));
+  assert.equal(createHash("sha256").update(JSON.stringify({ format: v.format, hash: v.hash, capturedFrom: v.capturedFrom, gens: old })).digest("hex"), VECTORS_SHA);
 });
 
 // ---- test 5 ----

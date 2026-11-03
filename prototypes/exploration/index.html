@@ -253,7 +253,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module">
 "use strict";
-import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
+import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 /* =====================================================================
@@ -361,13 +361,13 @@ const SIGHT_FOG = 4, SIGHT_GLOW = 6;
 // Three wild species. notice = [creep, walk] distance in tiles at which they notice you.
 // how = the shed trigger; ab = what a partner of this species can do.
 const SPECIES = [
-  { name: 'Loika', plural: 'Loikas', hab: [L.MEADOW, L.POND], notice: [2, 5], flee: 2, eats: true, shedP: .1, how: 'shake',
+  { name: 'Loika', plural: 'Loikas', hab: ROSTER[0].hab, notice: [2, 5], flee: 2, eats: true, shedP: .1, how: 'shake',
     ab: 'calm', abText: 'calms wary creatures', born: 'a long-eared Loika', learn: 'Loikas sometimes shed when they shake dry, more often for someone they trust.',
     col: { body: 'lilac', light: 'lavender', shade: 'plum', dark: 'plumD' } },
-  { name: 'Tuikis', plural: 'Tuikis', hab: [L.WOOD, L.ROCK], notice: [2, 4], flee: 2, eats: false, shedP: .1, how: 'calm',
+  { name: 'Tuikis', plural: 'Tuikis', hab: ROSTER[1].hab, notice: [2, 4], flee: 2, eats: false, shedP: .1, how: 'calm',
     ab: 'dig', abText: 'digs narrow burrows', born: 'a small burrower', learn: 'Tuikis sometimes shed when they feel safe by their burrow, more often for someone they trust.', learnCurl: 'Tuikis sometimes shed when they curl up out of the rain, more often for someone they trust.',
     col: { body: 'aqua', light: 'mint', shade: 'teal', dark: 'tealD' } },
-  { name: 'Untuva', plural: 'Untuvas', hab: [L.WOOD, L.MEADOW, L.POND], notice: [1, 3], flee: 1, eats: true, shedP: .1, how: 'meal',
+  { name: 'Untuva', plural: 'Untuvas', hab: ROSTER[2].hab, notice: [1, 3], flee: 1, eats: true, shedP: .1, how: 'meal',
     ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas sometimes shed after a full meal, more often for someone they trust.',
     col: { body: 'coral', light: 'peach', shade: 'red', dark: 'wine' } },
 ];
@@ -411,32 +411,8 @@ function canStep(a, dir) { return canStepIn(G, a, dir); }   // a step from cell 
 function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
 
 
-function genLife(seed) {
-  const cr = [], pods = []; let id = 1;
-  const add = (sp, c, cv) => { cr.push({ id, sp, c, cv: cv ? 1 : 0, b: Math.round(rnd(seed, 'bold', id) * 100) / 100, s: 0 }); id++; };
-  for (let c = 0; c < MW * MH; c++) {
-    const l = G.land[c]; if (!passable(c) || l === L.WATER) continue;
-    const pool = SPECIES.map((_, i) => i).filter(s => spOf(s).hab.includes(l)); if (!pool.length) continue;
-    const r = rnd(seed, 'pop', c); let n = 0;
-    if (G.spawns.includes(c)) n = 4 + Math.floor(rnd(seed, 'pn', c) * 3);
-    else if (r < .3) n = 4 + Math.floor(rnd(seed, 'pn', c) * 5);
-    else if (r < .55) n = 1 + (rnd(seed, 'pm', c) < .5 ? 1 : 0);
-    const a = pool[Math.floor(rnd(seed, 'pa', c) * pool.length)], b = pool[Math.floor(rnd(seed, 'pb', c) * pool.length)];
-    for (let i = 0; i < n; i++) add(i % 3 === 2 ? b : a, c, 0);
-  }
-  for (const c of G.glow) { const have = cr.filter(w => w.c === c && w.sp === 1).length; for (let i = have; i < 3; i++) add(1, c, 0); }
-  for (let i = 0; i < 2; i++) add(1, G.gate, 0);
-  for (let i = 0; i < 4; i++) add(1, G.gate, 1);   // Tuikis nest under the cliff
-  const R = makeRng(hash(seed, 'pods'));
-  const homes = R.shuffle([...new Set(cr.filter(w => !w.cv && !G.spawns.includes(w.c) && G.comp[w.c]).map(w => w.c))]);
-  for (let i = 0; i < Math.min(7, homes.length); i++) {
-    const c = homes[i], here = cr.filter(w => w.c === c);
-    pods.push({ id: 'w' + i, k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' });
-  }
-  pods.push({ id: 'cv', k: 'c' + G.gate, x: -1, y: -1, sp: 0, h: 0, bur: 1, g: 'cave', how: 'ground' }); // a Loika sheltered here once
-  return { cr, pods };
-}
-function groundName(land, cave) { return cave ? 'cave' : ['meadow', 'pond', 'rock', 'wood', 'pond', 'rock'][land]; }
+// The world's creatures and buried pods: src/world.mjs, by the world's generator (the herd floor is generator 3's).
+function genLife(seed) { return genLifeIn(G, seed, ROSTER); }
 // The first expedition of a new world finds two buried pods in tier 1 reach of the start glint (design/world-and-exploration.md,
 // Pods, "The first expedition finds pods"): pod A, a Loika's, at distance 1 unless a buried Loika pod is already there; pod B,
 // a Tuikis's, at the reach's edge while the reach holds fewer than 2. Pure: reads G, never S, and never mutates `pods`;
@@ -871,10 +847,9 @@ function worldFields(seed, gen) {
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
     exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
 }
-function newWorld(seed) {
+function newWorld(seed, gen = NEW_GEN) {   // a new world takes the newest generator (a test may ask for an older one)
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
-  const gen = NEW_GEN;
   G = genWorld(seed, gen);
   S = worldFields(seed, gen);
   const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
@@ -1011,12 +986,20 @@ function stoneWarm(key, f) {
   const s = fs(key, f.id); if (s.wt === S.turn) return 0;
   return s.ws === S.turn || !!(S.exp && S.exp.warm && S.exp.warm.includes(key + ':' + f.id)) ? 1 : 0;
 }
+// The arrival guard (design/world-and-exploration.md, "The arrival guard"): every new thing arrives away from where the
+// last expedition was, and every arrival asks this one helper. `last` is what that expedition left, { trail, entered }
+// (a world turn passes its own; the default is the save's). 'steps': more than ARRIVE_GAP steps (Manhattan) from every
+// cell it walked: pods, young, blooms. 'places': outside every place it entered: warm stones.
+const ARRIVE_GAP = 4;
+const lastWalked = () => ({ trail: S.lastTrail ? S.lastTrail.cells : [], entered: S.lastEntered || [] });
+function awayFromLast(c, last = lastWalked(), mode = 'steps') {
+  return mode === 'places' ? !(last.entered || []).includes(c) : (last.trail || []).every(t => cdist(t, c) > ARRIVE_GAP);
+}
 // Pick this turn's warm stones in reach (3–5, seeded), and veil the 3×3 around each again so a surveyed place
 // doesn't show them on arrival: a Call finds them.
 function chooseWarm(ex) {
-  const cand = [];
-  const away = new Set(S.lastEntered || []);   // new warmth arrives away from where you just were: never in a place you entered last expedition
-  for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER || away.has(c)) continue; const key = String(c);
+  const cand = [], last = lastWalked();   // new warmth arrives away from where you just were: never in a place you entered last expedition
+  for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER || !awayFromLast(c, last, 'places')) continue; const key = String(c);
     for (const f of layout(key).feats) if (f.kind === 'k' && stormCharge(key, f) <= 0 && fs(key, f.id).wt !== S.turn) cand.push({ c, key, f, r: rnd(S.seed, 'warm', S.turn, key, f.id) + WARM_NEAR * cdist(c, ex.start) }); }
   cand.sort((a, b) => a.r - b.r);
   const n = WARM_MIN + hash(S.seed, 'warmN', S.turn) % (WARM_MAX - WARM_MIN + 1);
@@ -1276,12 +1259,12 @@ function revealAround(c, r) { const p = cxy(c); r = r || 1; for (let dy = -r; dy
 // warm stone. When there is none, the sun warms one stone close to a place's way in near the start (no sign;
 // the survey finds it). Warm stones usually cover this on their own.
 function ensureCharge(ex) {
-  const stones = []; let have = 0, away = new Set(S.lastEntered || []);
+  const stones = [], last = lastWalked(); let have = 0;
   for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER) continue; const key = String(c);
     const a = cxy(ex.start), b = cxy(c), dx = Math.sign(b.x - a.x), dy = Math.sign(b.y - a.y);
     const lay = layout(key), doors = c === ex.start ? [{ x: PW / 2, y: PH - 3 }] : [];
     if (dx) doors.push({ x: dx > 0 ? 0 : PW - 1, y: PH / 2 }); if (dy) doors.push({ x: PW / 2, y: dy > 0 ? 0 : PH - 1 });
-    for (const f of lay.feats) if (f.kind === 'k') { if (stoneCharge(key, f) > 0) have++; if (!away.has(c)) stones.push({ c, key, f, d: cdist(c, ex.start), w: Math.min(...doors.map(q => man(f, q))) }); } }
+    for (const f of lay.feats) if (f.kind === 'k') { if (stoneCharge(key, f) > 0) have++; if (awayFromLast(c, last, 'places')) stones.push({ c, key, f, d: cdist(c, ex.start), w: Math.min(...doors.map(q => man(f, q))) }); } }
   ex.stats.srcAtStart = have; ex.stats.preCharged = 0;
   if (have) return;
   stones.sort((a, b) => (a.w > 12) - (b.w > 12) || a.d - b.d || a.w - b.w || a.c - b.c);
@@ -2378,8 +2361,8 @@ const placePhrase = cells => PLACE_PHRASE[placeKind(cells)];
 // The land most of some cells lie on, as a kind (a new pod's place, a bloom's centre): any of the six lands.
 function mainLand(cells) { const n = PLACE_KIND.map(() => 0); for (const c of cells) if (G.land[c] >= 0 && G.land[c] < n.length) n[G.land[c]]++; return PLACE_KIND[n.indexOf(Math.max(...n))]; }
 function worldTurn(pending) {
-  const R = makeRng(hash(S.seed, 'turn', S.turn)), trail = pending.trail;
-  const farFromPlayer = c => trail.every(t => cdist(t, c) > 4);
+  const R = makeRng(hash(S.seed, 'turn', S.turn)), last = { trail: pending.trail, entered: S.lastEntered || [] };
+  const farFromPlayer = c => awayFromLast(c, last);
   const mv = [0, 1, 2].map(() => ({ dx: 0, dy: 0, n: 0 }));
   let charged = [], bushes = 0, bloom = -1; const newPods = [], young = [];
   // Creatures roam within their habitat.
@@ -2446,7 +2429,7 @@ function worldTurn(pending) {
   if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' were born ' + placePhrase([y0.c]) + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
   if (!lines.length) say('A quiet turn. Little changed.', ['quiet', null, null, 0]);
   logEv('World turn ' + wTurn());
-  return { lines: lines.slice(0, 3), ev: ev.slice(0, 3) };   // the same three, in the same order
+  return { lines: lines.slice(0, 3), ev: ev.slice(0, 3), arrived: { pods: newPods, young: young.map(y => y.c), bloom } };   // the same three, in the same order; `arrived` names the cells the guard placed things in
 }
 
 // ===================== 10. Pixel graphics core =====================

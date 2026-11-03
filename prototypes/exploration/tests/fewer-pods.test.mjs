@@ -140,8 +140,11 @@ test("5. why: the pod carries 'new' or 'bond' (or nothing) into the hold and the
   assert.equal(n, 3);
 });
 
-// Pinned on station-gate a1b778eb, before the change: the world vectors file, byte for byte (world.test.mjs runs them; this says none were added).
-const VECTORS_FILE_SHA = "6daf5a01a95e79c0445fa95bea7e3cf2c858b581f37dc1dfe680c8dd059e7b59";
-test("6. the world is unchanged: world-vectors.json holds no new vectors", () => {
-  assert.equal(createHash("sha256").update(readFileSync(new URL("./world-vectors.json", import.meta.url))).digest("hex"), VECTORS_FILE_SHA);
+// Pinned on station-gate before the herd floor: the world vectors of generators 1 and 2 (and the view and atlas cases), without the roster
+// column and generator 3 that came after; world.test.mjs runs them, this says the old ones did not change.
+const VECTORS_OLD_SHA = "8d879ffaa01534be5c70fc2f0ac1ebfa71923bfe51d2714565ed4882f7132abf";
+test("6. the world is unchanged: the vectors of generators 1 and 2 are as they were", () => {
+  const v = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
+  const old = Object.fromEntries(["1", "2"].map(g => [g, { ...v.gens[g], seeds: v.gens[g].seeds.map(({ roster, ...rest }) => rest) }]));
+  assert.equal(createHash("sha256").update(JSON.stringify({ ...v, gens: old })).digest("hex"), VECTORS_OLD_SHA);
 });

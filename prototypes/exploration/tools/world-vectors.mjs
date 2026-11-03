@@ -64,12 +64,12 @@ export function placeKeys2(G, L, beacons, depots, EDGE) {
 export function worldDigest(api, G) {
   const H = (name, values) => hex(api.hash(name, ...values));
   const d = {
-    keys: G.gen === 2 ? Object.keys(G).join(",") : Object.keys(G).filter(k => k !== "beacons" && k !== "depots").join(","),
+    keys: G.gen >= 2 ? Object.keys(G).join(",") : Object.keys(G).filter(k => k !== "beacons" && k !== "depots").join(","),
     land: H("land", G.land), ford: H("ford", G.ford), island: H("island", G.island), comp: H("comp", G.comp),
     gate: G.gate, mouth: G.mouth, deep: G.deep === undefined ? null : G.deep, swim: G.swim,
     swimDir: G.swimDir == null ? null : G.swimDir, spawns: [...G.spawns], glow: [...G.glow],
   };
-  if (G.gen === 2) Object.assign(d, { gen: G.gen, attempt: G.attempt, orient: G.orient, level: H("level", G.level), edge: H("edge", G.edge),
+  if (G.gen >= 2) Object.assign(d, { gen: G.gen, attempt: G.attempt, orient: G.orient, level: H("level", G.level), edge: H("edge", G.edge),
     cross: G.cross.map(e => e.c + ":" + e.side + ":" + e.kind) });
   return d;
 }
@@ -92,7 +92,7 @@ export function placeDigest(api, lay, gen = 1) {
     key: lay.key, cell: lay.cell, cave: lay.cave, land: lay.land, base: lay.base, spawnPt: [lay.spawnPt.x, lay.spawnPt.y],
     tiles: H("tiles", lay.tiles), shelter: H("shelter", lay.shelter), reach: H("reach", lay.reach), sdist: H("sdist", lay.sdist),
     feats: lay.feats.length, featsHash: H("feats", stream),
-    ...(gen === 2 ? { terr: H("terr", lay.terr || new Uint8Array(lay.tiles.length)), tmask: H("tmask", lay.tmask || new Uint8Array(lay.tiles.length)),
+    ...(gen >= 2 ? { terr: H("terr", lay.terr || new Uint8Array(lay.tiles.length)), tmask: H("tmask", lay.tmask || new Uint8Array(lay.tiles.length)),
       stairs: lay.stairs || [] } : {}),
   };
 }
@@ -101,14 +101,29 @@ export function seedDigest(api, seed) {
   const world = worldDigest(api, G);
   world.beacons = [...api.beaconCells(G, seed)];
   world.depots = [...api.depotCells(G, seed)];
-  const keys = api.gen === 2 ? placeKeys2(G, api.L, world.beacons, world.depots, api.EDGE) : placeKeys(G, api.L, world.beacons, world.depots);
+  const keys = api.gen >= 2 ? placeKeys2(G, api.L, world.beacons, world.depots, api.EDGE) : placeKeys(G, api.L, world.beacons, world.depots);
   const places = keys.map(key => placeDigest(api, api.genPlace(G, seed, key), api.gen || 1));
-  return { seed, world, places };
+  return { seed, world, places, ...(api.genLife ? { roster: rosterColumn(api, G, seed) } : {}) };
+}
+
+// The roster column: for each species of the roster, in slot order, what the world's life holds of it: its creatures (outside the
+// nest), its herds (3 or more in one cell on the reachable component), its buried world pods, and a digest of where they all are.
+// Generators 1 and 2 keep the life they always had; generator 3 holds the herd floor, so every `herds` there is 2 or more.
+export function rosterColumn(api, G, seed) {
+  const H = (name, values) => hex(api.hash(name, ...values)), { cr, pods } = api.genLife(G, seed);
+  return api.roster.map((r, sp) => {
+    const mine = cr.filter(w => w.sp === sp), out = mine.filter(w => !w.cv), at = new Map();
+    for (const w of out) at.set(w.c, (at.get(w.c) || 0) + 1);
+    const herds = [...at].filter(([c, n]) => G.comp[c] === 1 && n >= 3).length, own = pods.filter(q => q.sp === sp).map(q => q.k);
+    return { name: r.name, creatures: out.length, nest: mine.length - out.length, herds, pods: own.length,
+      digest: H("life", [...mine.flatMap(w => [w.c, w.cv, Math.round(w.b * 100)]), ...own.map(k => (k[0] === "c" ? -1 : 1) * (parseInt(k.replace("c", ""), 10) + 1))]) };
+  });
 }
 
 export async function moduleApi(gen = 1) {
   const W = await import(new URL("../src/world.mjs", import.meta.url));
-  return { gen, hash: W.hash, L: W.L, EDGE: W.EDGE, genWorld: s => W.genWorld(s, gen), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells };
+  return { gen, hash: W.hash, L: W.L, EDGE: W.EDGE, genWorld: s => W.genWorld(s, gen), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells,
+    roster: W.ROSTER, genLife: (G, seed) => W.genLife(G, seed, W.ROSTER) };
 }
 // The page's whole script in a vm with the browser stubbed (the stub of freeze.test.mjs's page()); its own genWorld,
 // genPatch, genCave, beaconCells and depotCells, which read the page's globals G and S.
@@ -135,12 +150,13 @@ export function pageApi(file) {
 }
 
 // One seed object per line; inside it, one line per place. capturedFrom is generator 1's; generator 2 carries its own.
-export function format(seedObjs, capturedFrom, gen2 = null, view = null, atlas = null) {
+export function format(seedObjs, capturedFrom, gen2 = null, view = null, atlas = null, gen3 = null) {
   const seedLine = d => "{ \"seed\": " + JSON.stringify(d.seed) + ", \"world\": " + JSON.stringify(d.world) + ", \"places\": [\n" +
-    d.places.map(p => "  " + JSON.stringify(p)).join(",\n") + " ] }";
+    d.places.map(p => "  " + JSON.stringify(p)).join(",\n") + " ]" + (d.roster ? ",\n  \"roster\": " + JSON.stringify(d.roster) : "") + " }";
   return "{ \"format\": 1, \"hash\": " + JSON.stringify(HASH_NOTE) + ",\n  \"capturedFrom\": " + JSON.stringify(capturedFrom) +
     ", \"gens\": { \"1\": { \"seeds\": [\n" + seedObjs.map(seedLine).join(",\n") + "\n] }" +
-    (gen2 ? ",\n  \"2\": { \"capturedFrom\": " + JSON.stringify(gen2.capturedFrom) + ", \"seeds\": [\n" + gen2.seeds.map(seedLine).join(",\n") + "\n] }" : "") + " }" +
+    (gen2 ? ",\n  \"2\": { \"capturedFrom\": " + JSON.stringify(gen2.capturedFrom) + ", \"seeds\": [\n" + gen2.seeds.map(seedLine).join(",\n") + "\n] }" : "") +
+    (gen3 ? ",\n  \"3\": { \"capturedFrom\": " + JSON.stringify(gen3.capturedFrom) + ", \"seeds\": [\n" + gen3.seeds.map(seedLine).join(",\n") + "\n] }" : "") + " }" +
     (view ? ",\n  \"view\": [\n" + view.map(c => "  " + JSON.stringify(c)).join(",\n") + "\n]" : "") +
     (atlas ? ",\n  \"atlas\": { \"levelTone\": " + JSON.stringify(atlas.levelTone) + ",\n  \"catalogue\": [\n" + atlas.catalogue.map(c => "  " + JSON.stringify(c)).join(",\n") +
       "\n],\n  \"cases\": [\n" + atlas.cases.map(c => "  " + JSON.stringify(c)).join(",\n") + "\n],\n  \"places\": [\n" + atlas.places.map(c => "  " + JSON.stringify(c)).join(",\n") +
@@ -307,20 +323,25 @@ async function main(argv) {
     const bad = []; let places = 0;
     for (const s of seeds) {
       const a = seedDigest(page, s), b = seedDigest(mod, s); places += a.places.length;
-      if (JSON.stringify(a) !== JSON.stringify(b)) bad.push(s);
+      if (JSON.stringify({ ...a, roster: 0 }) !== JSON.stringify({ ...b, roster: 0 })) bad.push(s);   // the page has no roster column
     }
     console.log("compare: " + seeds.length + " seeds, " + places + " places, " + bad.length + " differ" + (bad.length ? " (first: " + bad.slice(0, 3).join(", ") + ")" : ""));
     process.exitCode = bad.length ? 1 : 0;
     return;
   }
   if (opt("--page")) { process.stdout.write(format(SEEDS.map(s => seedDigest(pageApi(opt("--page")), s)), headCommit())); return; }
-  // Generator 1 is never re-captured: the module's digests must equal the stored ones, which are kept with their capturedFrom.
-  const stored = JSON.parse(readFileSync(VECTORS_FILE, "utf8")), api1 = await moduleApi(1), g1 = SEEDS.map(s => seedDigest(api1, s));
-  if (JSON.stringify(g1) !== JSON.stringify(stored.gens["1"].seeds)) { console.error("generator 1 differs from tests/world-vectors.json; it is never re-captured"); process.exitCode = 1; return; }
-  // generator 2 keeps its stored capture (and its capturedFrom) while the module still gives the same digests
-  const api2 = await moduleApi(2), g2 = SEEDS.map(s => seedDigest(api2, s)), same2 = stored.gens["2"] && JSON.stringify(g2) === JSON.stringify(stored.gens["2"].seeds);
+  // Generators 1 and 2 are never re-captured: the module's world and places must equal the stored ones, which are kept with their
+  // capturedFrom; their roster column is their life as it always was, so a stored column must match too (a missing one is added).
+  const core = seeds => JSON.stringify(seeds.map(d => ({ ...d, roster: 0 }))), withRoster = seeds => seeds.every(d => d.roster);
+  const stored = JSON.parse(readFileSync(VECTORS_FILE, "utf8"));
+  const api1 = await moduleApi(1), g1 = SEEDS.map(s => seedDigest(api1, s));
+  if (core(g1) !== core(stored.gens["1"].seeds) || (withRoster(stored.gens["1"].seeds) && JSON.stringify(g1) !== JSON.stringify(stored.gens["1"].seeds))) { console.error("generator 1 differs from tests/world-vectors.json; it is never re-captured"); process.exitCode = 1; return; }
+  const api2 = await moduleApi(2), g2 = SEEDS.map(s => seedDigest(api2, s)), st2 = stored.gens["2"];
+  if (st2 && withRoster(st2.seeds) && JSON.stringify(g2) !== JSON.stringify(st2.seeds)) { console.error("generator 2 differs from tests/world-vectors.json; it is never re-captured"); process.exitCode = 1; return; }
+  const same2 = st2 && core(g2) === core(st2.seeds);
+  const api3 = await moduleApi(3), g3 = SEEDS.map(s => seedDigest(api3, s)), st3 = stored.gens["3"], same3 = st3 && JSON.stringify(g3) === JSON.stringify(st3.seeds);
   const V = await import(new URL("../src/view.mjs", import.meta.url)), A = await import(new URL("../src/atlas.mjs", import.meta.url)), W = await import(new URL("../src/world.mjs", import.meta.url));
-  process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: same2 ? stored.gens["2"].capturedFrom : headCommit(), seeds: g2 }, viewVectors(V), atlasVectors(A, W, stored)));
+  process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: same2 ? st2.capturedFrom : headCommit(), seeds: g2 }, viewVectors(V), atlasVectors(A, W, stored), { capturedFrom: same3 ? st3.capturedFrom : headCommit(), seeds: g3 }));
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) await main(process.argv.slice(2));

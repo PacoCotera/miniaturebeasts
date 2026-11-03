@@ -36,7 +36,7 @@ function load(names, stubs) {
 // values made in the sandbox carry its own Array and Object, so they are compared as plain data
 const plain = x => JSON.parse(JSON.stringify(x));
 const TRIP = ["TRIP_KINDS", "tripPlace", "tripRecord", "tripsWith"];
-const LAND = ["groundName"];
+const LAND = [];   // groundName is src/world.mjs's now (the page imports it): handed to the sandbox as it is
 
 // endExpedition with the world stubbed: `explored` decides the branch, worldTurn moves the counter as the page does.
 function ending({ explored, trips, ex, world = { lines: [], ev: [] } }) {
@@ -102,9 +102,9 @@ test("places: the kinds entered, each once, only the five", () => {
   const t = load([...TRIP, ...LAND], {});
   assert.deepEqual(plain(t.TRIP_KINDS), ["meadow", "pond", "rock", "wood", "cave"]);
   // every land the page has (meadow, pond edge, rock field, wood, shallows, cliff) names one of the five
-  for (let land = 0; land < 6; land++) assert.ok(t.TRIP_KINDS.includes(t.groundName(land, false)), "land " + land);
+  for (let land = 0; land < 6; land++) assert.ok(t.TRIP_KINDS.includes(W.groundName(land, false)), "land " + land);
   const ex = expedition();
-  for (const land of [3, 0, 3, 1, 4, 2, 5]) t.tripPlace(ex, t.groundName(land, false));
+  for (const land of [3, 0, 3, 1, 4, 2, 5]) t.tripPlace(ex, W.groundName(land, false));
   t.tripPlace(ex, "cave"); t.tripPlace(ex, "cave"); t.tripPlace(ex, "shallows"); t.tripPlace(ex, undefined);
   assert.deepEqual(plain(t.tripRecord(ex).places), ["wood", "meadow", "pond", "rock", "cave"]);
   assert.deepEqual(plain(t.tripRecord(expedition({ tripPlaces: ["wood", "wood", "lava"] })).places), ["wood"]);
