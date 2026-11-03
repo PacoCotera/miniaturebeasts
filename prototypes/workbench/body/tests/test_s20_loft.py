@@ -28,15 +28,21 @@ class T(unittest.TestCase):
         self.assertEqual(mp["near_but_off"], 0)
 
     def test_valence_caps_only(self):
+        """Valence 3 at the cap corners (2 per cap per half) and, on the stalk only, the band's own poles (V5: valence 3 on the big ring, 5 on the small one, 16 on the whole body for the type's two bands). Nothing else."""
         val = Q.valence(self.F, len(self.V))
         odd = [i for i in range(len(self.V)) if val[i] != 4]
+        n0 = len(self.b.cage.V)
+        extra = [i for i in range(n0) if abs(self.V[i][1]) > 1e-12]
+        band = TH.stalk_band_poles(self.b)
+        isband = [i for i in odd if (i if i < n0 else extra[i - n0]) in band]
+        self.assertTrue(all(val[i] == band[i if i < n0 else extra[i - n0]][1] for i in isband))        # a band pole has exactly its band valence
+        self.assertEqual(len(isband), 16 if self.b.ctx["T"].sp["thin"]["enabled"] else 0)
+        odd = [i for i in odd if i not in isband]
         self.assertTrue(all(val[i] == 3 for i in odd))
         corners = set()
         for cp in self.b.caps:
             for k in ((cp.na, 0), (cp.na, cp.nb)):
                 corners.add(cp.G[k])
-        n0 = len(self.b.cage.V)
-        extra = [i for i in range(n0) if abs(self.V[i][1]) > 1e-12]
         base = {v if v < n0 else extra[v - n0] for v in odd}
         self.assertEqual(base, corners)                      # 2 per cap per half: seat and crown
         self.assertEqual(len(odd), 8)

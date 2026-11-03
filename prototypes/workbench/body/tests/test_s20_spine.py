@@ -5,7 +5,7 @@ import os, sys, json, unittest
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import s20build, s20genes, mquality as Q, subdiv as SD, schema as SC, paths as PA
+import s20build, s20genes, mquality as Q, subdiv as SD, schema as SC, paths as PA, spine
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = json.load(open(os.path.join(os.path.dirname(HERE), "species", "S20.json")))
@@ -61,9 +61,15 @@ class T(unittest.TestCase):
 
     def test_one_ring_sequence_cage_loft(self):
         rings = self.info["rings"]
-        self.assertTrue(all(len(r) == 9 for r in rings))
+        thin = [len(r) == 5 for r in rings]
+        self.assertTrue(all(len(r) == (5 if t else 9) for r, t in zip(rings, thin)))        # 9 half columns, except the stalk's rings of 5 (V5, on since V8) that the file's thin rule picks and that lie in the tail range; nothing else
+        self.assertEqual(thin, list(spine.thin_rings(self.G, self.info["ring_s"])))
+        self.assertTrue(all(self.info["ring_s"][i] <= self.G.s_root for i, t in enumerate(thin) if t))
         faces = self.info["faces"]
-        self.assertEqual(len(faces), (len(rings) - 1) * 8)           # every ring joined to the next, no socket and no half loop anywhere on the spine
+        nb = sum(1 for i in range(len(rings) - 1) if thin[i] != thin[i + 1])               # a 9 to 9 pair is 8 quads, a 5 to 5 pair 4, a 9 to 5 pair is an all-quad band of 6 (3 to each 4 columns)
+        n55 = sum(1 for i in range(len(rings) - 1) if thin[i] and thin[i + 1])
+        self.assertEqual(len(faces), (len(rings) - 1 - nb - n55) * 8 + n55 * 4 + nb * 6)           # every ring joined to the next, no socket and no half loop anywhere on the spine
+        self.assertEqual(sum(1 for k in faces if len(k) == 3 and k[1] == "band"), nb * 6)
         self.assertEqual(sorted(self.info["caps"]), ["crown", "tip"])
 
     def test_tangent_continuous_from_crown_to_stalk(self):
