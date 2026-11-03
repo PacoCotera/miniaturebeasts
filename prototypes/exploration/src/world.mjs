@@ -456,6 +456,15 @@ function g4Course(sub, J) {
   return { axis, len, cross, cell, chans, water, RV, it, ix: chans[0][it] };
 }
 
+// A biome's height (stage 2): the noise on its lattices and a slope. The slope rises toward the mountain edge, or, for a valley, on both
+// sides of the river by the cell's distance from it (rxs, the river's column in each row).
+function g4Height(sub, B, rxs) {
+  const H = new Int32Array(NC), sH = sub('h'), orient = sub('orient') & 3;
+  for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { const xr = (orient & 1) ? MW - 1 - x : x;
+    H[y * MW + x] = n2(sH, x, y, B.hP1, B.hP2) + (B.valley ? ((B.rampQ * Math.abs(x - rxs[y]) / 8) | 0) : ((B.rampQ * xr / 15) | 0)); }
+  return H;
+}
+
 // Stage 1: base land, today's meadow made integer.
 // B is a biome's ground (generator 4, BIOME_GROUND); without one this is generator 2's land to the bit.
 function g2Land(sub, B) {
@@ -464,7 +473,10 @@ function g2Land(sub, B) {
   const m = new Int32Array(NC), r = new Int32Array(NC), sM = sub('m'), sR = sub('r'), all = [];
   for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { m[at(x, y)] = n2(sM, x, y, B ? B.mP1 : undefined, B ? B.mP2 : undefined); r[at(x, y)] = n2(sR, x, y); }
   for (let c = 0; c < NC; c++) all.push(c);
+  const C = B && B.river ? g4Course(sub, B.river) : null, H = C ? g4Height(sub, B, C.chans[0]) : null;   // a biome's height is made here: its rock may stand on the high ground
+  if (H && B.woodLow) for (let c = 0; c < NC; c++) m[c] -= (H[c] * B.woodLow) >> 3;   // wood prefers the low ground
   for (const c of rankTop(m, all, B ? B.wood : G2.WOOD_N)) land[c] = L.WOOD;
+  if (H && B.rockHigh) for (let c = 0; c < NC; c++) r[c] += H[c];
   for (const c of rankTop(r, all.filter(c => land[c] !== L.WOOD), B ? B.rock : G2.ROCK_N)) land[c] = L.ROCK;
   const R = makeRng(sub('river'));
   const smallLakes = RL => {   // a biome's small lakes of one or two cells
@@ -476,7 +488,7 @@ function g2Land(sub, B) {
     }
   };
   if (B && B.river) {   // the biome's own course, island row and fords
-    const J = B.river, C = g4Course(sub, J), { RV, it, ix } = C, pos0 = C.chans[0];
+    const J = B.river, { RV, it, ix } = C, pos0 = C.chans[0];
     for (const c of C.water) land[c] = L.WATER;
     for (let t = it - 1; t <= it + 1; t++) for (let a = ix - 1; a <= ix + 2; a++) land[C.cell(t, clamp(a, 0, C.cross - 1))] = L.WATER;
     land[C.cell(it - 1, pos0[it - 2])] = L.WATER; land[C.cell(it + 1, pos0[it + 2])] = L.WATER;
@@ -488,7 +500,7 @@ function g2Land(sub, B) {
     for (let k = 0; k < J.ford; k++) fordLine(clear((J.ford > 1 ? 1 + ((k * (C.len - 5) / (J.ford - 1)) | 0) : (C.len >> 1) - 1) + RV.int(3)));
     const RF = makeRng(sub('fords'));
     for (let k = 0; k < B.fords; k++) fordLine(clear(4 + 3 * k + RF.int(2)));
-    land[at(1 + RV.int(5), 12 + RV.int(6))] = L.WATER;
+    const lx = 1 + RV.int(5), ly = 12 + RV.int(6); if (J.lake !== 0) land[at(lx, ly)] = L.WATER;   // generator 2's one-cell lake, unless the biome has none
     smallLakes(makeRng(sub('lakes')));
   } else {
     const rxs = new Int32Array(MH);
@@ -518,7 +530,7 @@ function g2Land(sub, B) {
     for (const [dx, dy] of wetRing) { const X = x + dx, Y = y + dy; if (onMapXY(X, Y) && land[at(X, Y)] === L.WATER && !ford[at(X, Y)]) wet = true; }
     if (wet && (land[c] === L.MEADOW || R.int(100) < (B ? B.pondP : 35))) land[c] = L.POND;
   }
-  return { land, ford, island };
+  return { land, ford, island, H };
 }
 
 // The exact closure: two raster passes, so that every pair of 8-neighbours differs by at most 1. It only lowers cells.
@@ -598,14 +610,14 @@ function g2ReachCount(Gp, c0, r) {
 // One attempt t (0–7; 8 is the fallback). Returns the world, or null when a set piece has no cell.
 function g2Attempt(seed, t, B) {
   const s0 = B && B.name ? hash(seed, 'g4', B.name, t) : hash(seed, 'g2', t), sub = k => hash(s0, k), fallback = t === G2.TRIES;
-  const { land, ford, island } = g2Land(sub, B);
+  const { land, ford, island, H: H4 } = g2Land(sub, B);
   const orient = hash(s0, 'orient') & 3, lv = new Uint8Array(NC), edge = new Uint8Array(2 * NC);
   const Gp = { land, ford, island, edge };
   let Z = null;
   if (!fallback) {
     // Stage 2: height, rising toward the mountain edge (east, or west when orient bit 0 is set).
-    const H = new Int32Array(NC), sH = sub('h');
-    for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { const xr = (orient & 1) ? MW - 1 - x : x; H[y * MW + x] = (B ? n2(sH, x, y, B.hP1, B.hP2) : n2(sH, x, y)) + (((B ? B.rampQ : G2.RAMP_Q) * xr / 15) | 0); }
+    const H = H4 || new Int32Array(NC), sH = sub('h');
+    if (!H4) for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { const xr = (orient & 1) ? MW - 1 - x : x; H[y * MW + x] = n2(sH, x, y) + ((G2.RAMP_Q * xr / 15) | 0); }
     // Stage 3: levels by rank, the water ring, the closure, saddles, small zones.
     const dry = []; for (let c = 0; c < NC; c++) if (land[c] !== L.WATER) dry.push(c);
     dry.sort((a, b) => H[a] - H[b] || a - b);
@@ -637,6 +649,15 @@ function g2Attempt(seed, t, B) {
     const up = new Int16Array(Z.n); for (let z = 0; z < Z.n; z++) up[z] = z;
     const find = z => { while (up[z] !== z) z = up[z]; return z; };
     for (const e of cand) { const ra = find(Z.id[e.a]), rb = find(Z.id[e.b]); if (ra === rb) continue; up[ra < rb ? rb : ra] = ra < rb ? ra : rb; edge[e.i] = EDGE.RAMP; }
+    if (B && B.extraStairs) {   // a biome's own stairs besides the spanning tree's: extraStairs times as many again, on cliff edges, each clear of a stair beside it on the same wall
+      let have = 0; for (let i = 0; i < 2 * NC; i++) if (edge[i] === EDGE.RAMP) have++;
+      const along = i => (i & 1) ? [i - 2, i + 2] : [i - 2 * MW, i + 2 * MW];
+      for (let k = 0, want = Math.round(have * B.extraStairs); k < want;) {
+        const pick = cand.filter(e => edge[e.i] === EDGE.CLIFF && land[e.a] !== L.WATER && land[e.b] !== L.WATER && along(e.i).every(j => j < 0 || j >= 2 * NC || edge[j] !== EDGE.RAMP))
+          .sort((p, q) => hash(s0, 'xramp', p.i) - hash(s0, 'xramp', q.i) || p.i - q.i)[0];
+        if (!pick) break; edge[pick.i] = EDGE.RAMP; k++;
+      }
+    }
   }
   const cross = [];
   for (let i = 0; i < 2 * NC; i++) if (edge[i] === EDGE.RAMP) cross.push({ c: i >> 1, side: (i & 1) ? 's' : 'e', kind: 'ramp' });
@@ -1098,12 +1119,14 @@ export const BIOMES = ['mixed', 'woods', 'fells', 'marsh'];
 //   wood, rock: how many cells the noise ranks take for each land (generator 2: 80 and 48); fords: extra ford rows (generator 2 has 2 rows);
 //   lakes, lakeTwo: extra small lakes and the percent of them with a second cell; pondP, ring8: the pond edge (generator 2: 35 percent, 4 sides);
 //   hP1, hP2, rampQ, lv, zoneMin: the height noise lattices, the slope toward the mountain edge, the level shares by rank and the smallest zone kept
-//   (generator 2: 8, 4, 16384, 15 45 40, 4). Fells: finer, steeper-noised height; Marsh: its ground is low, so its ranks put most of it on the top level.
+//   (generator 2: 8, 4, 16384, 15 45 40, 4). Fells: a valley (the slope rises on both sides of the river by its distance from it, rampQ at 8 cells),
+//   the rock ranked on the high ground (rockHigh), the wood on the low (woodLow), a few small tarns, and extraStairs: that many stairs again on cliff
+//   edges besides the spanning tree's, so the walls stay long and the stairs are twice generator 2's. Marsh: its ground is low, so its ranks put most of it on the top level.
 const RIVER_G2 = { axis: 'ns', lo: 8, hi: 13, turnP: 45, iy: [3, 16], n: 1, ford: 2 };   // generator 2's river band, with the island row drawn from 3 to 16
 export const BIOME_GROUND = {
   mixed: null,
   woods: { name: 'woods', river: { axis: 'pick', lo: 2, hi: 13, turnP: 60, iy: [3, 16], n: 1, ford: 1 }, mP1: 16, mP2: 8, wood: 200, rock: 36, fords: 0, lakes: 0, lakeTwo: 0, pondP: 50, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
-  fells: { name: 'fells', river: RIVER_G2, wood: 55, rock: 152, fords: 0, lakes: 0, lakeTwo: 0, pondP: 40, ring8: false, hP1: 2, hP2: 2, rampQ: 4096, lv: [15, 45, 40], zoneMin: 2 },
+  fells: { name: 'fells', river: { axis: 'ns', lo: 5, hi: 10, turnP: 6, iy: [3, 16], n: 1, ford: 2, lake: 0 }, valley: true, rockHigh: true, woodLow: 6, extraStairs: 1.1, wood: 66, rock: 128, fords: 0, lakes: 5, lakeTwo: 80, pondP: 0, ring8: false, hP1: 8, hP2: 4, rampQ: 24576, lv: [20, 35, 45], zoneMin: 4 },
   marsh: { name: 'marsh', river: RIVER_G2, wood: 62, rock: 28, fords: 2, lakes: 16, lakeTwo: 50, pondP: 25, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
 };
 export const WALK_MIN = 260;   // a biome world holds at least this many walkable cells on its reachable component

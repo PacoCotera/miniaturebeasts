@@ -68,12 +68,30 @@ test("every biome keeps generator 2's invariants: levels, a start near the gate,
   }
 });
 
-test("Fells: about twice the stairs of generator 2 and half as many again cliff edges; Marsh: twice the fords; Woods and Meadows keep generator 2's", () => {
+// the share of the cliff edges that lie in a straight wall of 4 or more edges (a wall is the run of cliff and stair edges along one line)
+const wallShare = gs => { let cliffs = 0, inWall = 0;
+  for (const g of gs) { const e = g.edge, wall = k => k !== EDGE.OPEN;
+    for (let c = 0; c < N; c++) for (const o of [0, 1]) if (e[2 * c + o] === EDGE.CLIFF) cliffs++;
+    for (const [idx, step] of [[c => 2 * c, MW], [c => 2 * c + 1, 1]]) { const seen = new Uint8Array(N);
+      for (let c = 0; c < N; c++) { if (seen[c] || !wall(e[idx(c)])) continue; let n = 0, k = c, cl = 0;
+        while (k < N && wall(e[idx(k)])) { seen[k] = 1; n++; if (e[idx(k)] === EDGE.CLIFF) cl++; if (step === 1 && (k + 1) % MW === 0) break; k += step; }
+        if (n >= 4) inWall += cl; } } }
+  return 100 * inWall / cliffs; };
+
+test("Fells: a valley river with long walls and at least twice the stairs of Meadows; Marsh: twice the fords; Woods and Meadows keep generator 2's", () => {
   const count = (gs, kind) => gs.reduce((n, g) => n + g.edge.reduce((m, e) => m + (e === kind ? 1 : 0), 0), 0) / gs.length;
   const g2 = seeds200.map(s => W.genWorld(s, 2)), fells = worldsOf("fells");
-  const r = count(fells, EDGE.RAMP) / count(g2, EDGE.RAMP), c = count(fells, EDGE.CLIFF) / count(g2, EDGE.CLIFF);
-  console.log(`# fells against generator 2: stairs x${r.toFixed(2)}, cliff edges x${c.toFixed(2)}`);
-  assert.ok(r >= 1.8 && r <= 2.6, `stairs x${r}`); assert.ok(c >= 1.45, `cliff edges x${c}`);
+  const r = count(fells, EDGE.RAMP) / count(g2, EDGE.RAMP), runs = wallShare(fells), meadows = wallShare(worldsOf("mixed"));
+  console.log(`# fells against generator 2: stairs x${r.toFixed(2)}, cliff edges x${(count(fells, EDGE.CLIFF) / count(g2, EDGE.CLIFF)).toFixed(2)}; cliff edge in walls of 4+: fells ${runs.toFixed(1)}%, meadows ${meadows.toFixed(1)}%`);
+  assert.ok(r >= 2, `stairs x${r}`); assert.ok(runs >= 43, `walls of 4+: ${runs}%`);
+  // the valley: the river's two banks rise, so the high ground is on both sides of it and the low ground along it
+  for (const g of fells.slice(0, 40)) { const wx = [...Array(MH).keys()].map(y => [...Array(MW).keys()].filter(x => g.land[y * MW + x] === L.WATER));
+    const lvAt = (y, x) => (x >= 0 && x < MW ? g.level[y * MW + x] : 0), lo = y => wx[y].length ? wx[y][0] : -1, hi = y => wx[y].length ? wx[y][wx[y].length - 1] : -1;
+    let both = 0, rows = 0; for (let y = 0; y < MH; y++) { if (lo(y) < 0) continue; rows++; if (lvAt(y, Math.max(0, lo(y) - 6)) > lvAt(y, lo(y) - 1) && lvAt(y, Math.min(MW - 1, hi(y) + 6)) > lvAt(y, hi(y) + 1)) both++; }
+    assert.ok(both >= rows / 3, `seed ${g.seed}: the ground rises on both banks in ${both} of ${rows} rows`); }
+  // rock stands on the high ground: its mean level is above the wood's and the meadow's
+  let rk = 0, ot = 0, nr = 0, no = 0; for (const g of fells) for (let c = 0; c < N; c++) { if (g.land[c] === L.ROCK) { rk += g.level[c]; nr++; } else if (g.land[c] === L.MEADOW || g.land[c] === L.WOOD) { ot += g.level[c]; no++; } }
+  assert.ok(rk / nr > ot / no + .3, `rock level ${(rk / nr).toFixed(2)} against ${(ot / no).toFixed(2)}`);
   const fords = gs => gs.reduce((n, g) => n + g.ford.reduce((m, x) => m + x, 0), 0) / gs.length;
   const f = fords(worldsOf("marsh")) / fords(g2); console.log(`# marsh fords x${f.toFixed(2)}`);
   assert.ok(f >= 1.8, `fords x${f}`);

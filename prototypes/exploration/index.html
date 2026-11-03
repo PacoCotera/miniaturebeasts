@@ -3531,9 +3531,22 @@ const EDGE_MARK = {
 };
 // One cell's marks, as an overlay at the cell's own size: -1 where nothing is drawn. sides: [dir, kind, the neighbour is higher].
 // ground(x, y) is the cell's own ground (null in fog); parity is the screen parity of the cell's origin, for the shadow's checkerboard.
-function edgeMarkPB(cs, sides, ground, parity) {
+function edgeMarkPB(cs, sides, ground, parity, heavy) {
   const P = EDGE_MARK[cs], pb = new PB(cs, cs), lit = new Uint8Array(cs * cs), dk = new Uint8Array(cs * cs);
   const cur = (x, y) => { const v = pb.get(x, y); return v >= 0 ? v : ground(x, y); };
+  if (heavy) {   // the Fells on the full map: a cliff is a dark face of 4 px on the low side, a stair a light notch across it; the high side keeps its lip
+    const F = 4, span = a => a >= P.s0 && a < P.s0 + P.w, face = [C.ink, C.slate, C.slate, C.night], notch = [C.stone, C.rockL, C.stone, C.rockL];
+    const put = (dir, d, a, col) => { const x = dir === 'left' ? d : dir === 'right' ? cs - 1 - d : a, y = dir === 'up' ? d : dir === 'down' ? cs - 1 - d : a; pb.set(x, y, col); };
+    for (const [dir, kind, hi] of sides) { if (!hi) continue;
+      for (let a = 0; a < cs; a++) for (let d = 0; d < F; d++) put(dir, d, a, kind === EDGE.RAMP && span(a) ? notch[d] : face[d]); }
+    if (ground) for (const [dir, kind, hi] of sides) { if (hi) continue;
+      const ramp = kind === EDGE.RAMP, px = (x, y) => { const i = y * cs + x; if (lit[i]) return; lit[i] = 1; const v = ground(x, y); if (v >= 0) pb.set(x, y, TINT[v]); };
+      if (dir === 'up') for (let y = 0; y < P.lip; y++) for (let x = 0; x < cs; x++) { if (ramp && span(x)) continue; px(x, y); }
+      else if (dir === 'down') for (let y = cs - P.lip; y < cs; y++) for (let x = 0; x < cs; x++) { if (ramp && span(x)) continue; px(x, y); }
+      else if (dir === 'left') for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = 0; x < P.lip; x++) px(x, y); }
+      else for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = cs - P.lip; x < cs; x++) px(x, y); } }
+    return pb;
+  }
   const span = a => a >= P.s0 && a < P.s0 + P.w;
   const wedge = (x0, y0, w, h, dOf, aOf) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const d = dOf(x, y), a = aOf(x, y) - P.s0;
     pb.set(x, y, a < P.wall || a >= P.w - P.wall || d % P.p === P.p - 1 ? C.stone : C.rockL); } };
@@ -3574,10 +3587,11 @@ function drawEdgeMarks(q) {
       sides.push([dir, kind, G.level[n] > G.level[c]]); }
     if (!sides.length) continue;
     const fog = !S.revealed[c], parity = (x + y) & 1, rm = fog ? 3 : q.map ? q.rmOf(c) : (!S.visited[c] ? 4 : (ex.storm && stormCovers(c % MW)) ? 1 : 0);
-    const key = 'em' + cs + ':' + c + ':' + sides.map(sd => sd[0][0] + sd[1]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed + ':' + (S.gen || 1);
+    const heavy = q.map && G.biome === 'fells';   // generator 4's Fells, on the full map only
+    const key = 'em' + cs + ':' + c + ':' + sides.map(sd => sd[0][0] + sd[1]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed + ':' + (S.gen || 1); + (heavy ? ':F' : '');
     const pb = art(key, () => {
       const gp = fog ? null : q.map ? mapPB : landPatchPB(c, cs, 0), gx = q.map ? (c % MW) * CELL : 0, gy = q.map ? ((c / MW) | 0) * CELL : 0;
-      return edgeMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity); });
+      return edgeMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity, heavy); });
     blit(pb, x, y, rm);
   }
 }
