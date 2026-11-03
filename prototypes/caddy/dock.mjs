@@ -61,7 +61,17 @@ export function createDock({ dataDir, now = Date.now, write = writeAndRename } =
     for (const [world, rec] of worlds) if (rec.cradles.companion.state !== "seated" && t - rec.seatedAt >= SWEEP_MS) { worlds.delete(world); rmSync(fileOf(world), { force: true }); gone.push(world); }
     return gone;
   }
+  // The world's whole record as it is stored (a copy), or null for a world the Caddy has not seen: the Caddy's part of a sleep file.
+  const record = (world) => (worlds.has(world) ? copy(worlds.get(world)) : null);
+  // A realm that has gone to sleep: its record and its file go (a world never seen changes nothing; a repeat changes nothing). { ok: true, changed } or { ok: false, error } when the file could not be removed.
+  function clear(world) {
+    if (typeof world !== "string" || !WORLD_RE.test(world)) return { ok: false, error: "a world id is required (letters, digits, - and _)" };
+    try { rmSync(fileOf(world), { force: true }); } catch (e) { return { ok: false, error: "the Caddy could not remove it: " + e.message }; }
+    const had = worlds.delete(world);
+    if (had) emit(world, "cleared", { world });
+    return { ok: true, changed: had };
+  }
   const list = () => [...worlds.values()].map((r) => ({ world: r.world, seq: r.seq, companion: r.cradles.companion.state, seats: r.cradles.companion.seats, fault: r.face.fault }));
   const counts = () => ({ worlds: worlds.size, seated: [...worlds.values()].filter((r) => r.cradles.companion.state === "seated").length, faults: [...worlds.values()].filter((r) => r.face.fault).length });
-  return { seat, snapshot, subscribe, sweep, list, counts, dir };
+  return { seat, snapshot, subscribe, sweep, list, counts, record, clear, dir };
 }

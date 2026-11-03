@@ -169,7 +169,8 @@ function layout() {
   else { xS = centre(sw); xC = centre(cw); yC = yS + shH + trS + GAPV; }
   const cradleY = yC + shH + trC;
   if (row) { caddyX = xS + sw - caddyW; caddyY = yS + shH + trS + GAPV; } else { caddyX = centre(caddyW); caddyY = cradleY + cradleH + GAPV; }
-  h = narrow ? Math.max(yS + shH + trS, yC + shH + trC + cradleH) + BOT : Math.max(row ? caddyY + caddyH : 0, cradleY + cradleH, row ? 0 : caddyY + caddyH) + BOT;
+  const printH = print.id && print.h && !narrow ? print.h * f + 24 : 0, printGap = printH ? 12 : 0;   // the recovery print's strip under the Caddy's block, while a print waits
+  h = narrow ? Math.max(yS + shH + trS, yC + shH + trC + cradleH) + BOT : Math.max(row ? caddyY + caddyH + printGap + printH : 0, cradleY + cradleH, row ? 0 : caddyY + caddyH + printGap + printH) + BOT;
   geom.station = { x: xS, y: yS, w: sw, h: shH + trS }; geom.companion = { x: xC, y: yC, w: cw, h: shH + trC }; geom.height = h;
   const seatPx = seatOff * f;
   placeC(shS, xS, yS, sw, shH, true); place(frames.station, 8, 8, 1024, 600);
@@ -187,6 +188,8 @@ function layout() {
   // the Caddy's screen: always shown (e-paper keeps its last lines), not in the narrow tier
   caddyBlock.classList.toggle("hidden", narrow);
   if (!narrow) { placeC(caddyBlock, caddyX, caddyY, caddyW, caddyH, true); place(view, 8, 8, 792, 272); }
+  printBox.classList.toggle("hidden", !printH);
+  if (printH) { placeC(printBox, caddyX, caddyY + caddyH + printGap, caddyW, printH, true); printImg.style.width = px(384); printImg.style.height = px(print.h); }
   // the two cradle lamps beside the block, bottom-aligned at its left: a 12 lp dot and its label each; with no room for the labels, the dots alone
   lampsEl.classList.toggle("hidden", narrow);
   if (!narrow) { for (const d of [dotC, dotS]) { d.style.width = px(12); d.style.height = px(12); } lampsEl.classList.remove("bare"); let lw = lampsEl.offsetWidth, x = caddyX - 8 - lw;
@@ -233,7 +236,7 @@ function layoutDock(iconOnly) {
   if (!c.canDock) dockCtl.setAttribute("aria-description", title); else dockCtl.removeAttribute("aria-description");
   dockCtl.classList.toggle("pressed", pressed || c.pending);
 }
-const rects = () => { const o = {}; for (const [n, el] of Object.entries({ station: frames.station, companion: frames.companion, shStation: shS, shCompanion: shC, trayStation: trayEl.station, trayCompanion: trayEl.companion, dock: dockCtl, cradle, lamp, caddy: caddyBlock, lamps: lampsEl, dev, ring })) { const r = el.getBoundingClientRect(); o[n] = [r.left, r.top, r.width, r.height]; } return o; };
+const rects = () => { const o = {}; for (const [n, el] of Object.entries({ station: frames.station, companion: frames.companion, shStation: shS, shCompanion: shC, trayStation: trayEl.station, trayCompanion: trayEl.companion, dock: dockCtl, cradle, lamp, caddy: caddyBlock, print: printBox, lamps: lampsEl, dev, ring })) { const r = el.getBoundingClientRect(); o[n] = [r.left, r.top, r.width, r.height]; } return o; };
 
 // ---- animation (the seat and the scroll: one curve, whole physical pixels) ----
 const bez = (t) => { const [x1, y1, x2, y2] = EASE; let u = t; for (let i = 0; i < 8; i++) { const x = 3 * (1 - u) ** 2 * u * x1 + 3 * (1 - u) * u * u * x2 + u ** 3 - t, d = 3 * (1 - u) ** 2 * x1 + 6 * (1 - u) * u * (x2 - x1) + 3 * u * u * (1 - x2); if (Math.abs(d) < 1e-6) break; u -= x / d; } return 3 * (1 - u) ** 2 * u * y1 + 3 * (1 - u) * u * u * y2 + u ** 3; };
@@ -494,6 +497,38 @@ function caddyEvent(f) {
   if (tier !== "narrow") return;
   noteCaddy = "Caddy: " + f.lines.l1 + (f.lines.l2 ? " · " + f.lines.l2 : ""); clearTimeout(noteTimer); noteTimer = setTimeout(() => { noteCaddy = ""; layout(); }, NOTE_MS); layout();
 }
+
+// ---- the Caddy's recovery print (sandbox) ----
+// At its first start the Caddy queues one print of its recovery key (GET /print/pending, the print as a 384-dot picture, its id in x-print). The strip under the Caddy's block shows it as the printer
+// set it, once, with an "I have it" button; it tells the Caddy (POST /print/taken with the id) and the strip goes for good. The page looks at start and every 10 s, so a Caddy restarted before it is pressed shows
+// its new print (the id is the Caddy's, and a press for an old print is refused). The strip is page chrome: nothing of the key is kept in the page but the picture.
+const printBox = $("caddyPrint"), printImg = $("printImg"), printTaken = $("printTaken"), printStatus = $("printStatus");
+const print = { id: null, url: null, h: 0, busy: false, note: "" };
+function printClear() { if (print.url) URL.revokeObjectURL(print.url); print.id = null; print.url = null; print.h = 0; printImg.removeAttribute("src"); printStatus.textContent = ""; layout(); }
+async function printLook() {
+  if (print.busy) return;
+  try {
+    const r = await fetch(API + "/print/pending", { cache: "no-store" });
+    if (r.status === 404) { if (print.id) printClear(); return; }
+    if (r.status !== 200) return;
+    const id = r.headers.get("x-print"); if (!id || id === print.id) return;
+    const url = URL.createObjectURL(await r.blob());
+    printImg.onload = () => { if (print.url) URL.revokeObjectURL(print.url); print.id = id; print.url = url; print.h = printImg.naturalHeight; printStatus.textContent = print.note; print.note = ""; layout(); };
+    printImg.src = url;
+  } catch { /* no service, or no print: the strip stays as it is */ }
+}
+async function printDone() {
+  if (!print.id || print.busy) return;
+  print.busy = true; printTaken.setAttribute("aria-disabled", "true"); printStatus.textContent = "";
+  try {
+    const r = await fetch(API + "/print/taken", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ print: print.id }) });
+    if (r.ok) { print.busy = false; printClear(); say("Recovery key taken"); }
+    else { print.busy = false; if (r.status === 409) { print.note = "The Caddy printed a new key. Keep this one instead."; print.id = null; layout(); await printLook(); } else printStatus.textContent = "The Caddy could not save that. Try again."; }
+  } catch { printStatus.textContent = "The Caddy did not answer. Try again."; }
+  print.busy = false; printTaken.removeAttribute("aria-disabled");
+}
+printTaken.addEventListener("click", () => { printDone(); if (document.activeElement === printTaken) printTaken.blur(); giveKeys(owner); });
+printLook(); setInterval(printLook, 10000);
 
 // ---- boot ----
 buildKeys();

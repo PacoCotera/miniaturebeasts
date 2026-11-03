@@ -10,7 +10,7 @@
 //   node prototypes/play/tools/journey.mjs          (PW_DIR=/path/with/node_modules/playwright when playwright is not local)
 //   PLAY_CAPTURES=1 node prototypes/play/tools/journey.mjs     also writes the captures of img/ (clipped to the page)
 import { createServer } from "node:http";
-import { readFileSync, existsSync, statSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { readFileSync, existsSync, statSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import http from "node:http";
 import path from "node:path";
@@ -26,6 +26,7 @@ const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/ja
 // the Caddy service in mock mode (its dock and its portraits), restartable on the same data directory
 loadCaddyFrames();
 const caddyData = mkdtempSync(path.join(tmpdir(), "mb-caddy-play-"));
+writeFileSync(path.join(caddyData, "identity.json"), JSON.stringify({ v: 1, caddy: "k0000000000000000", recovery: { kid: "TEST", pub: "A".repeat(43) }, printedAt: 0 }));   // a card whose recovery print was taken: no strip under the Caddy's screen until R removes it
 let caddy = null, caddyServer = null, caddyPort = 0;
 async function caddyStart() { caddy = createApp({ dataDir: caddyData, painter: "mock", mockDelay: 1, tickMs: 200 }); caddyServer = createServer((req, res) => caddy.handle(req, res)); await new Promise((r) => caddyServer.listen(0, "127.0.0.1", r)); caddy.start(); caddyPort = caddyServer.address().port; }
 async function caddyStop() { caddy.stop(); caddyServer.closeAllConnections(); await new Promise((r) => caddyServer.close(r)); }
@@ -601,6 +602,28 @@ const screenAt = (frame, W) => frame().evaluate(() => { const el = document.quer
     if (fails.length === failsBefore) console.log("E2: ok (5 ratios)");
     await ctx.close();
   }
+}
+
+// R: the recovery print's strip. A Caddy on a card that was never printed queues one print; the page shows it once under the Caddy's screen at 1x (the 384-dot picture as it is, an "I have it" button), it tells the
+// Caddy and the strip goes for good; the card then holds only the public key and the key id
+{
+  await caddyStop(); rmSync(path.join(caddyData, "identity.json")); await caddyStart();
+  const { ctx, page } = await open(1920, 1300);
+  await page.waitForFunction(() => { const b = document.getElementById("caddyPrint"), i = document.getElementById("printImg"); return b && !b.classList.contains("hidden") && i.complete && i.naturalWidth === 384; }, null, { timeout: 30000 }).catch(() => {});
+  const shown = await page.evaluate(() => { const b = document.getElementById("caddyPrint"), i = document.getElementById("printImg"); return { hidden: b.classList.contains("hidden"), w: i.naturalWidth, h: i.naturalHeight, css: [i.getBoundingClientRect().width, i.getBoundingClientRect().height], btn: document.getElementById("printTaken").getBoundingClientRect().height }; });
+  expect(!shown.hidden, "R: the strip shows while a print waits");
+  near(shown.css, [384, shown.h], "R: the print is drawn dot for dot at 1x", 0.01);
+  expect(shown.btn >= 40, "R: the I-have-it button is at least 40 px tall: " + shown.btn);
+  const cb = await box(page, "#caddySheet"), sb = await box(page, "#caddyPrint");
+  near([sb[0], sb[2]], [cb[0], cb[2]], "R: the strip lines up with the Caddy's screen", 0.6);
+  expect(sb[1] >= cb[1] + cb[3], "R: the strip sits under the Caddy's screen");
+  await page.locator("#printTaken").click(); await page.waitForTimeout(800);
+  expect(await page.evaluate(() => document.getElementById("caddyPrint").classList.contains("hidden")), "R: I have it takes the strip away");
+  const id = JSON.parse(readFileSync(path.join(caddyData, "identity.json"), "utf8"));
+  eq(Object.keys(id.recovery).sort(), ["kid", "pub"], "R: the card holds the public key and the key id");
+  eq((await fetch(`http://127.0.0.1:${caddyPort}/status`).then((r) => r.json())).identity, "printed", "R: the Caddy says printed");
+  console.log("R: " + (fails.length ? "see above" : "ok (the recovery strip)"));
+  await ctx.close();
 }
 
 await browser.close(); server.close(); await caddyStop(); rmSync(caddyData, { recursive: true, force: true });
