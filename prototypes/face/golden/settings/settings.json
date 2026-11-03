@@ -1,0 +1,37 @@
+{
+ "_note": "The hold ring (frame.json hold) on a calm screen, behind the developer setting realmSleep: at 0, 1000, 2000 and 3000 ms of ✓ held, 150 ms after letting go, and the reduced-motion quarters: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "states": {
+  "hold-0ms": {
+   "hash": "97b921b0",
+   "png": "hold-0ms.png"
+  },
+  "hold-1000ms": {
+   "hash": "3e2d605c",
+   "png": "hold-1000ms.png"
+  },
+  "hold-2000ms": {
+   "hash": "335442a2",
+   "png": "hold-2000ms.png"
+  },
+  "hold-3000ms": {
+   "hash": "0a4be278",
+   "png": "hold-3000ms.png"
+  },
+  "hold-release-150ms": {
+   "hash": "6826028a",
+   "png": "hold-release-150ms.png"
+  },
+  "hold-quarter-1": {
+   "hash": "6826028a",
+   "png": "hold-quarter-1.png"
+  },
+  "hold-quarter-2": {
+   "hash": "6fccae24",
+   "png": "hold-quarter-2.png"
+  },
+  "hold-quarter-3": {
+   "hash": "32507cce",
+   "png": "hold-quarter-3.png"
+  }
+ }
+}

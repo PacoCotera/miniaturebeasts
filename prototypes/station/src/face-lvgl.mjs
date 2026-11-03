@@ -19,7 +19,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     poll: () => { const p = M._face_poll(); return p ? M.UTF8ToString(p) : null; },
     // a picture's RGBA bytes (straight alpha) into the slot the face gave the last asset, stored as B, G, R, A
     pixels: (d, w, h) => { const hd = M._face_last_asset(), p = M._face_asset_pixels(hd), out = M.HEAPU8.subarray(p, p + w * h * 4); for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; } return hd; },
-    frame: (ms) => M._face_frame(ms), key: (code) => { M._face_key(code, 1); M._face_key(code, 0); }, hash: () => M._face_hash() >>> 0,
+    frame: (ms) => M._face_frame(ms), key: (code, phase) => { if (phase !== "up") M._face_key(code, 1); if (phase !== "down") M._face_key(code, 0); }, hash: () => M._face_hash() >>> 0,
     objects: () => M._face_object_count(), refused: () => M._face_node_refused(),
   };
   const f = faceTransport(wire, { test });
@@ -112,7 +112,7 @@ export function faceTransport(wire, { test = false } = {}) {
     version, ready, objects: () => wire.objects(), refused: () => wire.refused(), beginScene: () => ++sceneNo,
     size: [W, H], send, props, poll, drain, errors, handleOf, pin, drop,
     frame: (ms) => { frames++; wire.frame(Math.floor(ms)); drain(); },
-    key: (name) => { const code = LV_KEYS[name]; if (code == null) return; wire.key(code); },
+    key: (name, phase) => { const code = LV_KEYS[name]; if (code == null) return; wire.key(code, phase); },   // phase "down" or "up": a press or a release alone (a held ✓, anim/hold.c); none: both
     hash: () => (wire.hash() >>> 0).toString(16).padStart(8, "0"),
     frames: () => frames, pictures: () => handles.size,
   };

@@ -5,6 +5,7 @@
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
+#include "../anim/hold.h"
 #include "../layout/layout.h"
 #include "moving.h"
 #include "room.h"
@@ -33,10 +34,12 @@ static void build_idleLine(void) {
 static int is_not_built(void) { char st[24]; spec_str("props", "state", st, sizeof st); return strcmp(st, "notBuilt") == 0; }
 /* Which screens the face draws with words. */
 static void frame_words(void) {
+  hold_arm(spec_len("props", "frame.hold") >= 0 && !spec_bool("props", "idle", 0));   /* the frame carries a hold: the face keeps ✓ down for the ring (anim/hold.c) */
   if (spec_bool("props", "idle", 0)) return;                 /* Idle is the whole 1024x600: no top bar, no bottom line, no plate */
   if (spec_len("props", "frame.top") >= 0) word_topBar();
   if (spec_len("props", "frame.line") >= 0) word_bottomLine();
   if (spec_len("props", "frame.plate") >= 0) word_messagePlate();
+  if (spec_len("props", "frame.hold") >= 0) word_holdRing();
 }
 /* The screen change (180 ms): a Bayer dither of `void` laid over the stage and cleared in 16 levels, whole pixels, no opacity (§2.7). Level L = 16 - floor(16 t / ms); a pixel is covered where BAYER[(y & 3) * 4 + (x & 3)] < L. */
 static void stage_dither(void) {

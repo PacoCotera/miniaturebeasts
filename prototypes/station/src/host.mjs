@@ -263,6 +263,9 @@ export function enterSitting(h, m, { state = "pose", from = "habitat" } = {}) {
 
 // ---- the props of the screen on the page ----
 // { msg: the props message (without seq), ids: every picture the face needs before them, light, lit: the graded residents, owed: the ids of the requests that carry an owed habit key }
+// A plate that holds ✓ (the hold ring, frame.json hold): UI.hold names it, and the developer setting realmSleep lets it show; with either off the frame carries no hold and ✓ is an ordinary key.
+export const holdOn = () => !!(UI.hold && G.settings.realmSleep);
+const withHold = (frame) => (holdOn() ? { ...frame, hold: { on: 1 } } : frame);
 export function screenProps(plate) {
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
   if (UI.screen === "habitat" && !S.housed(G.st).length) goScreen("vivarium");   // one mibi up close always shows one mibi: with none housed the whole shows its empty state
@@ -275,9 +278,9 @@ export function screenProps(plate) {
     return { msg: { screen, ...body.props }, ids: [...ids], light, lit: litOf(body.requests), owed: owedOf(body.requests) };
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
-  if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
+  if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: withHold({ top, line: notBuiltLine(screen), plate: pl }) }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
   const fam = screen === "library.family" ? familyBody() : null;
-  if (screen === "library.family" && !fam) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };   // no found species shown: as any screen not built
+  if (screen === "library.family" && !fam) return { msg: { screen, state: "notBuilt", frame: withHold({ top, line: notBuiltLine(screen), plate: pl }) }, ids: [], light };   // no found species shown: as any screen not built
   if (screen === "sitting" && !UI.sit) { goScreen("habitat"); return screenProps(plate); }   // no visit to show: one mibi up close
   const sat = screen === "sitting" ? sittingBody(light) : null; if (screen === "sitting" && !sat) { UI.sit = null; goScreen("habitat"); return screenProps(plate); }
   const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
@@ -288,11 +291,11 @@ export function screenProps(plate) {
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   if (screen === "sitting") for (const id of [UI.sit.prev.glass, UI.sit.prev.resident]) if (id) ids.add(id);   // the pictures the window's dithers start from stay on the face until their events end
-  if (screen === "home") return { msg: { screen, ...body.props, frame: { plate: pl } }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // Home's top bar and line are its own (home.json): the frame sends only the plate
+  if (screen === "home") return { msg: { screen, ...body.props, frame: withHold({ plate: pl }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
   for (const k of ["ok", "subject", "need"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);   // each of the line's three is a line and takes its capital, once, here (views/words.mjs capLine)
   if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
-  return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
+  return { msg: { screen, ...body.props, frame: withHold({ top, line, plate: pl }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
 }
 let shownLight = null;   // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read
 const litOf = (reqs) => reqs.filter((r) => r.kind === "mibi" && r.light).map((r) => r.id);   // the graded residents the props name
@@ -321,7 +324,7 @@ const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "re
 // The light of the moment, read once for both screens that show it (the Vivarium by the clock: Home's glass and bed, Idle's painting): the host's, so a view never reads a clock.
 let lightNow = () => { throw new Error("the host has no light: createHost({ light }) names it"); };
 let timeNow = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };   // the Station time in seconds of the day: createHost({ time }) names it (main.mjs: the developer's Station time, else the clock)
-export function createHost({ send, nowMs, light, time = null, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h) }) {
+export function createHost({ send, nowMs, light, time = null, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h), key = () => {} }) {
   lightNow = light; if (time) timeNow = time;
   let holdUntil = 0, skipUntil = 0, arrivalUntil = 0; const timers = [];   // skipUntil: a skippable event's hold, kept apart from the rest so ✓ can end it alone (lvgl-switch.md §2.1)
   const holding = () => nowMs() < holdUntil || nowMs() < skipUntil;
@@ -343,8 +346,10 @@ export function createHost({ send, nowMs, light, time = null, afterSave = () => 
     for (const x of mine) x.fn();
     return true;
   };
+  const downKeys = new Set();
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
+    keyUp: (k) => { if (downKeys.delete(k)) key(k, "up"); }, keyDown: (k) => { if (!holdOn() || k !== "confirm") return false; downKeys.add(k); key(k, "down"); return true; },   // a held ✓ reaches the face as a press and, later, a release (anim/hold.c); only while the frame carries a hold
     now: () => Date.now(), motion, say: msg, play, at, skip, showRoom: (i) => showRoom(h, i), save: () => { save(); afterSave(); }, holding, arriving, light: () => shownLight ?? lightNow(), vivBuild: () => vivariumModel(shownLight ?? lightNow()), enterSitting: (m, o) => enterSitting(h, m, o),
     // The frame loop's call: what was scheduled and is due runs, in order; then the room key kept through a hold is dispatched once the hold is over.
     frame: () => {
@@ -376,6 +381,7 @@ function habitatFocus(h, target) {
 // While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends, after a kept Dock key; Home's rest drops it too (home.json events.rest.keys).
 export function onFaceMessage(h, m) {
   if (m.t === "done") { if (m.kind === "hatch" && cuttingHatch(h) && !h.holding()) landHatch(h); return; }   // informative only, but for the hatch with a moving set: a key the face acted on after the hold ended it (its cut), and that key lands the meet
+  if (m.t === "intent" && m.verb === "confirm:held") { h.held?.(); return; }   // the hold ring is full (anim/hold.c); the plate that holds acts on it, no plate does yet
   if (m.t === "intent" && m.verb === "skip") { h.skip(); return; }   // ✓ in a skippable hold (lvgl-switch.md §2.1): before every other rule, so it is never a cutting key; a late one, after the hold, does nothing
   if (m.screen === "incubator" && UI.screen !== "incubator") return;   // a key the cut already spent (the meet has landed): the Incubator's intent after the screen left is dropped
   if (m.screen === "incubator" && cuttingHatch(h) && !h.holding() && m.t === "intent") { landHatch(h); return; }   // the cutting key lands the meet and does nothing else
