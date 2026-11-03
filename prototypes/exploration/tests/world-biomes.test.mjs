@@ -5,6 +5,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import * as W from "../src/world.mjs";
+import { viewOf, camAt, TS } from "../src/view.mjs";
 import { seedDigest, SEEDS, placeKeys2, placeDigest } from "../tools/world-vectors.mjs";
 
 const { L, EDGE, MW, MH } = W, N = MW * MH;
@@ -164,6 +165,27 @@ test("Fells rock places hold about three times the stones of generator 2's, gath
   console.log(`# fells rock places: ${(f / nf).toFixed(1)} stone tiles a place against generator 2's ${(g / ng).toFixed(1)}; ${(100 * foot / footAll).toFixed(0)}% of the stones in rows 0 to 4 under a cliff`);
   assert.ok(f / nf >= 2.4 * (g / ng), "about three times the stones");
   assert.ok(foot / footAll >= .3, "stones gathered at the cliff foot: rows 0 to 4 are 16 percent of a place, so 30 percent is about twice its share");
+});
+
+// the stone groups (4-connected stone tiles) in the lower two thirds of the screen a pawn on a stair's entry tile sees, and the stair places of the Fells' rock
+const stairScreen = (lay, st) => { const v = viewOf(TS, 0, 32, 450, 532), cam = camAt(v, st.entry.x * TS, st.entry.y * TS), y0 = v.y + Math.floor(v.h / 3);
+  const inLow = i => { const sx = (i % W.PW) * TS - cam.x + TS / 2, sy = v.y + ((i / W.PW) | 0) * TS - cam.y + TS / 2; return sx >= 0 && sx < v.w && sy >= y0 && sy < v.y + v.h; };
+  const seen = new Set(); let groups = 0;
+  for (let i = 0; i < W.PW * W.PH; i++) { if (seen.has(i) || lay.tiles[i] !== W.T.ROCK || !inLow(i)) continue; groups++; const q = [i]; seen.add(i);
+    while (q.length) { const j = q.pop(), x = j % W.PW, y = (j / W.PW) | 0;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy, k = Y * W.PW + X; if (X >= 0 && Y >= 0 && X < W.PW && Y < W.PH && !seen.has(k) && lay.tiles[k] === W.T.ROCK && inLow(k)) { seen.add(k); q.push(k); } } } }
+  return groups; };
+const fellsStairPlaces = function* (seeds) { for (const s of seeds) { const G = W.genWorld(s, 4, "fells");
+  for (let c = 0; c < N; c++) { if (!G.comp[c] || G.land[c] !== L.ROCK) continue; const lay = W.genPlace(G, s, String(c)), st = lay.stairs && lay.stairs.find(t => t.dir === "up" && t.role === "lo"); if (st) yield { seed: s, c, lay, st }; } } };
+
+test("Fells stair place: the stones not at the cliff foot fall in a fan below the stair, the stair's two columns stay clear, and its screen holds 3 stone groups or more in the lower two thirds", () => {
+  let n = 0, ok = 0, min = 99;
+  for (const { seed, c, lay, st } of fellsStairPlaces(Array.from({ length: 60 }, (_, i) => i))) { n++;
+    for (let y = 6; y < W.PH; y++) for (const x of [st.s, st.s + 1]) if (!lay.feats.some(f => f.kind === "o" && x >= f.x && x < f.x + 3 && y >= f.y && y < f.y + 2)) assert.notEqual(lay.tiles[y * W.PW + x], W.T.ROCK, `seed ${seed} cell ${c}: stone in the stair's column ${x}, row ${y} (outside the foot rows and the overhangs)`);
+    const g = stairScreen(lay, st); if (g >= 3) ok++; min = Math.min(min, g); }
+  console.log(`# fells stair places: ${ok} of ${n} hold 3 stone groups or more in the lower two thirds of the stair's screen (fewest ${min})`);
+  assert.ok(n >= 40 && ok >= .9 * n, `${ok} of ${n}`);
+  const [one] = [...fellsStairPlaces([42])]; assert.ok(one, "seed 42 has a Fells stair place"); assert.ok(stairScreen(one.lay, one.st) >= 3, "seed 42");
 });
 
 test("Woods: one in three reachable wood places is the Shade, on the most enclosed wood; the others have none", () => {
