@@ -14,7 +14,7 @@
 //   node tools/extract-frames.mjs            # write
 //   node tools/extract-frames.mjs --check    # fail if the snapshot would change (exit 1), writing nothing
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { CATALOGUE as WORKBENCH, LOCI } from "../../workbench/framework/catalogue.mjs";
+import { CATALOGUE as WORKBENCH, LOCI, lookConflicts } from "../../workbench/framework/catalogue.mjs";
 import { FRAME_VERSION } from "../../workbench/framework/species.mjs";
 
 const registryUrl = new URL("../../workbench/frames/", import.meta.url);
@@ -26,6 +26,9 @@ if (existsSync(snapshot)) carried = (await import(snapshot.href)).FRAME_DATA.fra
 const frames = index.species.map((s) => {
   const d = JSON.parse(readFileSync(new URL(s.file, registryUrl), "utf8"));
   const byId = new Map(d.loci.map((l) => [l.id, l]));
+  // One look, one record (catalogue LOOK_PAIRS): a frame that opens both records of a pair is not carried
+  const twice = lookConflicts(d.loci.filter((l) => l.kind !== "locked").map((l) => l.id));
+  if (twice.length) throw new Error(`${d.species.id}: opens two records for one look: ${twice.map((c) => `${c.look} (${c.ids.join(" and ")})`).join("; ")}`);
   const version = d.frameVersion ?? FRAME_VERSION;
   const locusOf = (id) => {
     const cat = LOCI.get(id), row = byId.get(id);

@@ -6,7 +6,7 @@
 // else by seed and opens its traits by tier. Individuals vary only at the open loci, from the
 // species' pools. The three authored frames (the files hopper, puffcap and glowtail in frames.py, here S01, S02
 // and S03: Loika, Untuva and Tuikis) keep their open traits and fixed values.
-import { CATALOGUE, LOCI, inClan, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, catalogueHeader, isContinuous, valueRange, samePair } from "./catalogue.mjs";
+import { CATALOGUE, LOCI, inClan, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, catalogueHeader, isContinuous, valueRange, samePair, lookConflicts } from "./catalogue.mjs";
 import { poolBound } from "./envelope.mjs";
 import { cross } from "./cross.mjs";
 import { planFacts } from "./plans.mjs";
@@ -313,9 +313,10 @@ function finishFrame(frame, spec) {
       const [onNow] = ownerOn(id, vOn), [offNow] = ownerOn(id, vOff);
       if (!onNow) throw new Error(`${frame.species.id}: open locus ${id} is switched off by the frame (an invisible trait)`);
       const shapeable = SELF_CHANGING[t.id] ? false : t.shapeable ?? nature === "look";
-      const kind = t.chapter in sealed ? "sealed" : !offNow && !isPartSwitch(id) ? "sleeping" : `heritable-${nature}`;
+      const kind = t.chapter in sealed ? "sealed" : (!offNow && !isPartSwitch(id)) || locus.wakesWhen ? "sleeping" : `heritable-${nature}`;
       row.kind = kind; row.nature = nature; row.chapter = t.chapter; row.trait = t.id; row.shapeable = shapeable; row.alleles = pools[id]; row.looks = looksFor(locus, pools[id]);
-      row.guard = kind === "sleeping" ? `asleep in any individual whose ${t.loci.find((x) => isPartSwitch(x)) ?? "owner switch"} is off; drawn when it is on` : locus.consumer;
+      row.guard = kind === "sleeping" ? (locus.wakesWhen ? `asleep unless the shown look is one of: ${Object.entries(locus.wakesWhen).map(([k, looks]) => `${k} ${looks.join(" or ")}`).join("; ")}` : `asleep in any individual whose ${t.loci.find((x) => isPartSwitch(x)) ?? "owner switch"} is off; drawn when it is on`) : locus.consumer;
+      if (locus.wakesWhen) row.wakesWhen = locus.wakesWhen;
       row.changedBy = changedByOf(row, { id: t.id, shapeable });
       if (spec.legacy?.[id]) row.legacy = [...spec.legacy[id]];   // alleles a living line may still carry from an earlier frame version: legal, never drawn for a new pod
       if (typical[id]) row.typical = typical[id];
@@ -327,6 +328,9 @@ function finishFrame(frame, spec) {
     rows.push(row);
   }
   frame.loci = rows;
+  // One look, one record: a frame opens at most one record of each pair the catalogue lists (LOOK_PAIRS).
+  const conflicts = lookConflicts(rows.filter((r) => r.kind !== "locked").map((r) => r.id));
+  if (conflicts.length) throw new Error(`${frame.species.id}: opens two records for one look: ${conflicts.map((c) => `${c.look} (${c.ids.join(" and ")})`).join("; ")}`);
   const chapters = [];
   for (const ch of RING) {
     const ts = traits.filter((t) => t.chapter === ch);
