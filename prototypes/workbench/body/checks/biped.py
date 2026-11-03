@@ -62,6 +62,21 @@ def c_schema(ctx):
     return row("pass", "valid", "valid", "The file passes its schema")
 
 
+# 1b ------------------------------------------------------------------------------------------------------------------------------------------------ expressions
+@check(id="express", name="Looks can show", fail="{look} can never show", stage="file", version=1, part=[], fields=["expressions", "genome.loci"],
+       rule=R("2026-11-02", "A look is only a look if some mibi inside the limits can show it: every need can be met, no look is unreachable, at most two loud looks show together at the wild rate, the ember rule holds, and a look that waits for an age has art at every age it shows."),
+       limit=dict(text="every look can show", value=None))
+def c_express(ctx):
+    import expressions as X
+    if not isinstance(ctx.doc.get("genome"), dict) or "loci" not in ctx.doc["genome"]:
+        return row("pass", "no genome", "every look can show", "The file has no genome block, so it has no looks to check")
+    probs, facts = X.express_report(ctx.doc)
+    n = facts["expressions"]
+    if probs:
+        return row("fail", f"{len(probs)} problem{'s' if len(probs) > 1 else ''}", "every look can show", probs[0][1] + (f" (and {len(probs) - 1} more)" if len(probs) > 1 else ""), extra=dict(field=probs[0][0]))
+    return row("pass", f"{n} expression{'s' if n != 1 else ''}", "every look can show", f"{n} expression{'s' if n != 1 else ''} can show; at most {facts['loud_kept']} loud looks together at the wild rate ({facts['wild_over_loud']:g} % of raw draws would show more)")
+
+
 # 2 -------------------------------------------------------------------------------------------------------------------------------------------------------- ranges
 @check(id="ranges", name="Spine ranges", fail="Spine ranges don't match the plan", stage="file", version=1, part=["head", "neck", "back", "seat", "tail"], fields=["spine.ranges"],
        rule=R("2026-11-02 17:43", "The spine is one object. The neck, back and its parts, and the tail are named segments of one path and one loft, not attached parts."),

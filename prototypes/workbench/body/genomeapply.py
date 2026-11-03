@@ -285,7 +285,7 @@ def apply_values(doc, genome, values, skip=()):
 # ----------------------------------------------------------------------------------------------------------------------------- validation
 OP_OF = {"copy-mean": "blend", "pair-map": "pair-map", "dominant-enable": "switch", "recessive-enable": "switch"}
 KNOWN = {"locus", "label", "short", "chapter", "scope", "kind", "op", "operator", "band", "absolute", "range", "limits", "type", "bins", "order", "weights", "map", "moves", "consumer", "shapeable", "note",
-         "weight", "loud", "requires", "wakesWhen", "borrowed"}
+         "weight", "loud", "requires", "wakesWhen", "borrowed", "modifier"}
 
 
 def _check_form(errs, label, key, b, e):
@@ -356,6 +356,16 @@ def validate(doc):
             errs.append((f"{label}.kind", f"{label}.kind: '{e.get('kind')}' is not one of {', '.join(KINDS)}"))
         if e.get("op") not in OPS:
             errs.append((f"{label}.op", f"{label}.op: '{e.get('op')}' is not one of {', '.join(OPS)}"))
+            continue
+        if "modifier" in e:                                                       # chapter 9: a species' own modifier gene is not a record of the pin; the expressions module checks what it changes
+            if e.get("scope") != "modifier":
+                errs.append((f"{label}.scope", f"{label}.scope: a modifier gene's scope is 'modifier' (this file says '{e.get('scope')}')"))
+            if e.get("chapter") not in chapters:
+                errs.append((f"{label}.chapter", f"{label}.chapter: '{e.get('chapter')}' is not one of the chapters ({', '.join(map(str, chapters))})"))
+            if e.get("limits") != ["off", "on"] or e.get("type") not in ("off", "on"):
+                errs.append((f"{label}.limits", f"{label}.limits: a modifier is off or on (limits [off, on], and a type of one of them)"))
+            if not isinstance(e.get("moves"), list) or (not e["moves"] and not e.get("consumer")):
+                errs.append((f"{label}.moves", f"{label}.moves: empty, so the locus needs a `consumer` that names who reads it"))
             continue
         pl = pin_locus(i)
         if pl is None:
@@ -441,4 +451,5 @@ def validate(doc):
                 errs.append((f"{mp}.op", f"{mp}.op: only a blend can scale or add; this locus is {e['op']}"))
             if mvv["op"] == "set" and e["op"] == "blend":
                 errs.append((f"{mp}.op", f"{mp}.op: a blend scales or adds; set is for switches and pairs"))
-    return errs
+    import expressions as EX
+    return errs + EX.validate(full)

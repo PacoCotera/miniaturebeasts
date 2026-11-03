@@ -36,19 +36,19 @@ def run_cage(spec):
 class TestRegistry(unittest.TestCase):
     def test_twelve_checks_with_the_owners_words(self):
         metas = {m["id"]: m for m in CH.metas()}
-        self.assertEqual(len(metas), 13)                              # twelve of the file and cage stages, and the extremes stage's limits (chunk 8)
+        self.assertEqual(len(metas), 14)                              # thirteen of the file and cage stages (chunk 9 adds the expressions check), and the extremes stage's limits (chunk 8)
         self.assertEqual([m for m in metas if metas[m]["stage"] == "extremes"], ["limits"])
         for i, (name, fail) in WORDS.items():
             self.assertEqual((metas[i]["name"], metas[i]["fail"]), (name, fail), i)
         for m in metas.values():
-            self.assertRegex(m["rule"]["date"], r"^2026-11-0[12] \d\d:\d\d$")
+            self.assertRegex(m["rule"]["date"], r"^2026-11-0[12]( \d\d:\d\d)?$")
             self.assertGreater(len(m["rule"]["words"]), 40, m["id"])
             self.assertIn(m["stage"], ("file", "cage", "extremes"))
         self.assertEqual({m["id"] for m in metas.values() if m["play"]}, {"head.neck", "tail.taper", "tail.size", "balance"})        # words.md 5.2: the limit sentences
 
     def test_file_stage_on_s20(self):
         rows = CH.run("file", CX.Ctx(s20()))
-        self.assertEqual([(r["id"], r["state"]) for r in rows], [("schema", "pass"), ("ranges", "pass")])
+        self.assertEqual([(r["id"], r["state"]) for r in rows], [("schema", "pass"), ("express", "pass"), ("ranges", "pass")])
 
     def test_a_check_that_raises_is_a_failing_row_not_a_crash(self):
         rows = CH.run("cage", CX.Ctx(s20()))                # no body: every cage check raises
@@ -97,7 +97,7 @@ class TestMeasures(unittest.TestCase):
         for rows in (self.ok, self.bad):
             for r in rows.values():
                 p = r["proof"]
-                if r["id"] == "schema":
+                if r["id"] in ("schema", "express"):                       # file checks with no picture: the field is named instead
                     self.assertIsNone(p)
                     continue
                 self.assertIn(p["mode"], ("clay", "wire", "normal"), r["id"])
@@ -133,8 +133,8 @@ class TestServer(unittest.TestCase):
         self.srv.wait(j, 180)
         self.assertEqual(j.state, "done", j.error)
         rows = j.result["rows"]
-        self.assertEqual(len(rows), 12)
-        self.assertEqual(j.result["counts"], dict(total=12, fail=2, warn=0, need=2, passed=10))
+        self.assertEqual(len(rows), 13)
+        self.assertEqual(j.result["counts"], dict(total=13, fail=2, warn=0, need=2, passed=11))
         j2 = self.srv.submit("S20x", "check", dict(stage="all"), None)
         self.assertEqual((j2.state, j2.cached), ("done", True))
         import time
@@ -151,7 +151,7 @@ class TestServer(unittest.TestCase):
             if r.get("proof"):
                 self.assertTrue(r["proof"]["ready"], r["id"])
                 self.assertEqual(open(r["proof"]["path"], "rb").read(8), b"\x89PNG\r\n\x1a\n")
-        self.assertEqual(len(self.srv.current_checks(sp)["rows"]), 12)
+        self.assertEqual(len(self.srv.current_checks(sp)["rows"]), 13)
 
     def test_the_stage_a_later_chunk_owns_is_refused_with_its_name(self):
         from wb import cli

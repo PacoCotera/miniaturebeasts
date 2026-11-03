@@ -4381,5 +4381,13 @@
     ]
    }
   }
- }
+ },
+ "expressions": [
+  {
+   "id": "lantern-tail",
+   "label": "Lantern tail",
+   "locus": "anatomy.tail-tip-form",
+   "look": "lantern"
+  }
+ ]
 }

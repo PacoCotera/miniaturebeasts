@@ -87,6 +87,7 @@ SCHEMA = dict(
         catalogue=free("Catalogue pin", "The catalogue this frame is valid against: id, version and content digest.", stage="meta"), clan=free("Clan", "The species' clan: its branch records are open to it.", stage="meta"),
         borrows=free("Borrowed records", "Branch records of another clan this species lists.", stage="meta"), chapters=free("Chapters", "The chapters the loci are grouped in.", stage="meta"),
         loci=free("Loci", "Each locus: kind, op, limits, type, bins and moves (typed paths into this file).", stage="meta")), stage="meta", required=["catalogue", "chapters", "loci"]),
+    expressions=free("Expressions", "The looks the species can draw with their rules: the age a look shows from and the other looks it needs (checked in expressions.py; how copies show is the catalogue's, or a modifier gene's).", stage="meta"),
     motion=free("Motion", "Walk, breathe, blink and idle clips.", stage="motion"),
     limits=obj("Limits", "Overrides of the plan's limits. A file may only tighten them, never loosen.", dict(vertices=num("Vertex budget", "Vertices at subdivision level 1.", rng=(1000, 3500), unit=""), balance_margin=num("Balance margin", "Share of the sole in front of the heel.", rng=(0.15, 0.5), unit=""),
                                                                                             tail_side_area=num("Tail side area", "Tail silhouette over the trunk's.", rng=(0.02, 0.25), unit=""), neck_ratio=num("Neck ratio", "Neck over head and chest.", rng=(0.3, 0.85), unit=""),

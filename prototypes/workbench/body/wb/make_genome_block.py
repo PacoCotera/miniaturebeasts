@@ -68,6 +68,9 @@ SWITCH_DRAW = {"appearance.marking-switch": (0.75, "off"), "appearance.blush": (
                "appearance.whisker-glow": (0.15, "off"), "anatomy.brow-tuft-presence": (0.25, "off")}
 
 
+EXPRESSIONS = [dict(id="lantern-tail", label="Lantern tail", locus="anatomy.tail-tip-form", look="lantern")]       # S20's own looks need no rule beyond the catalogue's (the order lantern, tuft, plain); a species with age gates or needs lists them here
+
+
 def block():
     pin = GA.pin()
     spec = GN.specimen()
@@ -130,12 +133,13 @@ def main():
         doc = json.load(fh)
     b = block()
     if "--check" in sys.argv:
-        print("same" if doc["genome"] == b else "differs")
+        print("same" if doc["genome"] == b and doc.get("expressions") == EXPRESSIONS else "differs")
         return
     legacy = doc["legacy"]
     if "genes" in doc["genome"]:
         legacy["genome_v0"] = dict(genes=doc["genome"]["genes"], counts=doc["genome"]["counts"])
     doc["genome"] = b
+    doc["expressions"] = EXPRESSIONS
     with open(FILE, "w") as fh:
         json.dump(doc, fh, indent=1)
         fh.write("\n")
