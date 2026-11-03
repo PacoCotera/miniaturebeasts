@@ -35,7 +35,7 @@ MOVES = {
     "form.tail-length": [dict(path="spine.tail.segments[1:5].len", op="scale")],
     "form.tail-girth": [dict(path="spine.tail.root_r", op="scale", share=0.35), dict(path="spine.tail.segments[*].r", op="scale", share=GIRTH_SHARE), dict(path="spine.tail.tip_r", op="scale")],
     "form.tail-curl": [dict(path="spine.tail.segments[3:5].len", op="scale", share=2.5)],
-    "form.tail-carry": [dict(path="spine.tail.segments[*].pitch", op="add", share=-1.0)],
+    "form.tail-carry": [dict(path="spine.tail.segments[1:].pitch", op="add", share=-1.0)],
 }
 CONSUMER = {
     "form.tail-tip-size": "the tail-tip family builder (it reads the size from the creature)",

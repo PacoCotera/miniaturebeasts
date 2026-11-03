@@ -1,4 +1,4 @@
-"""A locus changes only its own region of the cage: sweeping each tail locus across its limits (and tail length through x1.10, which used to crease leg.L) leaves the arm identical and leg.L within 1e-4 H (the limit fit is one global solve) for tail length and curl; girth and lift still couple through the smoothing passes (an expected failure below). The body's rings are laid out from the crown (spine.SpineLoft.stations with ring_ref, the type's path length), so a tail gene cannot slide a ring past a limb socket."""
+"""A locus changes only its own region of the cage: sweeping each tail locus across its limits (and tail length through x1.10, which used to crease leg.L) leaves the arm identical and leg.L within 1e-4 H (the limit fit is one global solve) for tail length, curl and lift (V4: the lift turns the tail past its root segment); girth still couples through the smoothing passes (an expected failure below). The body's rings are laid out from the crown (spine.SpineLoft.stations with ring_ref, the type's path length), so a tail gene cannot slide a ring past a limb socket."""
 import json
 import os
 import sys
@@ -37,10 +37,14 @@ class TestOwnRegion(unittest.TestCase):
     def test_tail_length_and_curl_leave_the_limbs_alone(self):
         self.assertEqual(moved(("form.tail-length", "form.tail-curl"), 1e-4, extra=(1.1, 1.19)), {})
 
+    def test_tail_lift_leaves_the_limbs_alone(self):
+        """V4: the lift turns the tail from its second segment on (the root segment keeps its pitch), so the root does not turn under the seat and the hip's soft join is not creased: leg.L moves 8e-5 H at the ends of the lift, the arm not at all."""
+        self.assertEqual(moved(("form.tail-carry",), 1e-4), {})
+
     @unittest.expectedFailure
-    def test_tail_girth_and_lift_leave_the_limbs_alone(self):
-        """Known gap: girth and lift move leg.L by up to 0.014 H and the arm by 0.0016 (the limit fit, the junction smoothing and the relax are one coupled pass over the cage, and the lift turns the tail's root under the seat). Neither creases a limb."""
-        self.assertEqual(moved(("form.tail-girth", "form.tail-carry"), 1e-4), {})
+    def test_tail_girth_leaves_the_limbs_alone(self):
+        """Known gap: girth moves leg.L by 0.0055 H and the arm by 0.0016 (the limit fit, the junction smoothing and the relax are one coupled pass over the cage). It creases no limb."""
+        self.assertEqual(moved(("form.tail-girth",), 1e-3), {})
 
     def test_tail_girth_and_lift_move_the_limbs_less_than_a_hundredth_of_the_height(self):
         self.assertEqual(moved(("form.tail-girth", "form.tail-carry"), 0.02), {})

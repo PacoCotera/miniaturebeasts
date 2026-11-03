@@ -242,7 +242,7 @@ class SpineLoft(Gourd):
         vert = [x + d for x in ref[-nv:]]
         if not tail or not body:
             return self._stations(spec, self.L)
-        while body and body[0] - tail[-1] < 0.6 * gap:
+        while body and body[0] - tail[-1] < 0.5 * gap:
             if len(tail) > 1:
                 tail.pop()
             else:

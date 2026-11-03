@@ -65,7 +65,7 @@ class TestExtremes(unittest.TestCase):
 
 
 class TestExtremesJob(unittest.TestCase):
-    """A real extremes job on S20's tail length (the `loci` option builds just that locus): its high limit fails, with its proof and a computed fix that passes."""
+    """A real extremes job on S20's tail-tip size (the `loci` option builds just that locus) with its high limit written as 1.37 (the file's is 1.2): that end fails, with its proof and a computed fix that passes. (It was the tail carriage's low end until V4 made the lowered tail leave the legs alone.)"""
     @classmethod
     def setUpClass(cls):
         import shutil
@@ -73,7 +73,9 @@ class TestExtremesJob(unittest.TestCase):
         cls.scratch = os.path.join(BODY, "scratch", "t_genome")
         shutil.rmtree(cls.scratch, ignore_errors=True)
         os.makedirs(os.path.join(cls.scratch, "species"))
-        shutil.copy(os.path.join(BODY, "species_v1", "S20.json"), os.path.join(cls.scratch, "species", "S20.json"))
+        wide = copy.deepcopy(DOC)
+        locus(wide, "form.tail-tip-size")["band"]["hi"] = 1.37
+        json.dump(wide, open(os.path.join(cls.scratch, "species", "S20.json"), "w"), indent=1)
         cls.srv = SV.Server(os.path.join(cls.scratch, "home"), [os.path.join(cls.scratch, "species")], proxy_workers=1)
         cls.srv.start()
 
@@ -85,27 +87,27 @@ class TestExtremesJob(unittest.TestCase):
 
     def test_the_failing_end_has_its_proof_and_a_fix_that_passes(self):
         import time
-        j = self.srv.submit("S20", "check", dict(stage="extremes", loci=["form.tail-carry"]), None)
+        j = self.srv.submit("S20", "check", dict(stage="extremes", loci=["form.tail-tip-size"]), None)
         self.srv.wait(j, 240)
         self.assertEqual(j.state, "done", j.error)
         ends = j.result["ends"]
-        self.assertEqual([(e["id"], e["state"]) for e in ends], [("form.tail-carry:low", "fail"), ("form.tail-carry:high", "pass")])
-        hi = ends[0]
-        self.assertIn(hi["fails"][0]["id"], ("normals", "mesh", "tail.size", "balance"))
-        self.assertEqual(hi["fix"]["path"], "genome.loci.form.tail-carry.band.lo")
-        self.assertTrue(-12.0 < hi["fix"]["value"] < 0.0, hi["fix"])
+        self.assertEqual([(e["id"], e["state"]) for e in ends], [("form.tail-tip-size:low", "pass"), ("form.tail-tip-size:high", "fail")])
+        hi = ends[1]
+        self.assertIn(hi["fails"][0]["id"], ("verts", "normals", "mesh", "tail.size", "balance"))
+        self.assertEqual(hi["fix"]["path"], "genome.loci.form.tail-tip-size.band.hi")
+        self.assertTrue(1.0 < hi["fix"]["value"] < 1.37, hi["fix"])
         row = j.result["rows"][0]
-        self.assertEqual((row["id"], row["state"], row["extra"]["fail"]), ("limits", "fail", "Tail carriage fails at its low end"))
+        self.assertEqual((row["id"], row["state"], row["extra"]["fail"]), ("limits", "fail", "Tip size fails at its high end"))
         end = time.time() + 90
         while time.time() < end and not all(e["proof"]["ready"] for e in self.srv.with_proof_state(j.result)["ends"] if e.get("proof")):
             time.sleep(0.5)
         res = self.srv.with_proof_state(j.result)
-        self.assertTrue(res["ends"][0]["proof"]["ready"])
-        self.assertEqual(open(res["ends"][0]["proof"]["path"], "rb").read(8), b"\x89PNG\r\n\x1a\n")
+        self.assertTrue(res["ends"][1]["proof"]["ready"])
+        self.assertEqual(open(res["ends"][1]["proof"]["path"], "rb").read(8), b"\x89PNG\r\n\x1a\n")
         # the fix really passes: write it and build the end again
         d = copy.deepcopy(DOC)
-        locus(d, "form.tail-carry")["band"]["lo"] = hi["fix"]["value"]
-        r = F.build(d, "low:form.tail-carry")
+        locus(d, "form.tail-tip-size")["band"]["hi"] = hi["fix"]["value"]
+        r = F.build(d, "high:form.tail-tip-size")
         from wb import server as SV
         rows = crun("cage", Ctx(F.internal(d), r.body, dict(r.summary(), vertices_l1=len(F.proxy_mesh(r.body, 1)["V"])), F.proxy_mesh(r.body, 1), doc=d))
         self.assertEqual([x["id"] for x in rows if x["state"] == "fail"], [])

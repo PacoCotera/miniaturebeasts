@@ -3648,7 +3648,7 @@
     ],
     "moves": [
      {
-      "path": "spine.tail.segments[*].pitch",
+      "path": "spine.tail.segments[1:].pitch",
       "op": "add",
       "share": -1.0
      }

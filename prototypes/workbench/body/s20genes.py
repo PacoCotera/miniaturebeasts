@@ -65,7 +65,7 @@ def apply_shape(raw, g=None):
     for _ in range(300):
         for k, j in enumerate(js):
             if k > 0:
-                j["pitch"] = base[k] - g["lift"]
+                j["pitch"] = base[k] - (g["lift"] if k > 1 else 0.0)                 # V4: the lift turns the tail from its second segment on (spine.tail.segments[1:].pitch in the file), so the root does not turn under the seat
             if k in hook:
                 j["len"] = base_len[k] * (1.0 + 2.5 * f * g["curl"])
         if g["curl"] == 0 or _tail_ok(js, tail["fillet"], t["section"]["stations"] if g["curl"] > 0 else None, margin=0.08):
