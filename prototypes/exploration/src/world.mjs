@@ -953,19 +953,30 @@ export function genPatch2(G, seed, cell) {
   }
   const walk = (x, y) => inb(x, y) && !T_BLOCK[tiles[I(x, y)]] && free(I(x, y));
   // 6. Overhangs, boulders, trees.
+  const fellsRock = G.biome === 'fells' && land === L.ROCK, footN = fellsRock && cy > 0 && G.level[cell - MW] > G.level[cell];
+  // Under a stair from a cliff (the north one first, then south, west, east), the other half of the stones falls as a fan below the stair, opening away from the cliff: a row is the stair's foot row plus the smallest of three rolls over the place's depth, and the stones are single tiles, alternately on the two sides of the stair's columns, within the fan's width.
+  const fanSt = fellsRock ? ['up', 'down', 'left', 'right'].map(dn => stairs.find(st => st.dir === dn && st.role === 'lo')).find(Boolean) || null : null;
+  // On a Fells stair place no overhang stands within 5 columns and 6 rows of the stair's entry or on its screen, and none lies on a path that step 9 will carve (a cut overhang reads as two pillars).
+  const ovBar = new Set();
+  if (fanSt) {
+    for (let dy = -6; dy <= 6; dy++) for (let dx = -5; dx <= 5; dx++) if (inb(fanSt.entry.x + dx, fanSt.entry.y + dy)) ovBar.add(I(fanSt.entry.x + dx, fanSt.entry.y + dy));
+    const cx0 = Math.max(0, Math.min(PW * 48 - 450, fanSt.entry.x * 48 + 24 - 225)), cy0 = Math.max(0, Math.min(PH * 48 - 532, fanSt.entry.y * 48 + 24 - 266));   // the stair's screen (450 x 532, the camera clamped to the place): no overhang on it either
+    for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) { const sx = x * 48 + 24 - cx0, sy = y * 48 + 24 - cy0; if (sx >= 0 && sx < 450 && sy >= 0 && sy < 532) ovBar.add(I(x, y)); }
+    const mark = (x0, y0, x1, y1) => { for (let y = Math.min(y0, y1); y <= Math.max(y0, y1); y++) ovBar.add(I(x0, y)); for (let x = Math.min(x0, x1); x <= Math.max(x0, x1); x++) ovBar.add(I(x, y1)); };
+    for (const st of stairs) { const k = st.s, p = st.dir === 'up' ? { x: k, y: 3 } : st.dir === 'down' ? { x: k, y: PH - 4 } : st.dir === 'left' ? { x: 3, y: k } : { x: PW - 4, y: k };
+      mark(st.entry.x, st.entry.y, p.x, p.y); mark(p.x, p.y, 14, p.y); mark(14, p.y, 14, PH - 3); }
+  }
   const ovN = Math.max(G.glow.includes(cell) ? 1 : 0, land === L.ROCK ? 2 : land === L.MEADOW ? 1 : R.int(100) < 45 ? 1 : 0);
   for (let k = 0, tries = 0; k < ovN && tries < 400; tries++) {
     const ox = 2 + R.int(PW - 7), oy = 2 + R.int(PH - 8); let okO = true;
     for (let dy = 0; dy <= 3 && okO; dy++) for (let dx = -1; dx <= 3; dx++) if (!walk(ox + dx, oy + dy)) { okO = false; break; }
+    if (okO && fanSt) for (let dy = 0; dy <= 2 && okO; dy++) for (let dx = 0; dx < 3; dx++) if (ovBar.has(I(ox + dx, oy + dy))) { okO = false; break; }
     if (!okO) continue;
     for (let dx = 0; dx < 3; dx++) { setT(ox + dx, oy, T.ROCK); setT(ox + dx, oy + 1, T.ROCK); shelter[I(ox + dx, oy + 2)] = 1; occ[I(ox + dx, oy + 2)] = 1; }
     feats.push({ id: 'o' + k, kind: 'o', x: ox, y: oy }); k++;
   }
   // Generator 4's Fells: a rock place has four times the stone placements (about three times the stone tiles once they overlap), half of them gathered at the foot of a cliff on the stair's side (north when there is a cliff but no stair).
-  const fellsRock = G.biome === 'fells' && land === L.ROCK, footN = fellsRock && cy > 0 && G.level[cell - MW] > G.level[cell];
   const rockN = land === L.ROCK ? (6 + R.int(4)) * (fellsRock ? 4 : 1) : R.int(2) + (land === L.MEADOW ? 1 : 0);
-  // Under a stair from a cliff (the north one first, then south, west, east), the other half falls as a fan below the stair, opening away from the cliff: a row is the stair's foot row plus the smallest of three rolls over the place's depth, and the stones are single tiles, alternately on the two sides of the stair's columns, within the fan's width.
-  const fanSt = fellsRock ? ['up', 'down', 'left', 'right'].map(dn => stairs.find(st => st.dir === dn && st.role === 'lo')).find(Boolean) || null : null;
   const fdir = fanSt ? fanSt.dir : footN ? 'up' : null, fvert = fdir === 'up' || fdir === 'down', fspan = fvert ? PW : PH, fext = fvert ? PH : PW;
   const fxy = (k, d) => ({ x: fdir === 'left' ? d : fdir === 'right' ? PW - 1 - d : k, y: fdir === 'up' ? d : fdir === 'down' ? PH - 1 - d : k });
   const edDepth = fanSt ? (fdir === 'up' ? fanSt.entry.y : fdir === 'down' ? PH - 1 - fanSt.entry.y : fdir === 'left' ? fanSt.entry.x : PW - 1 - fanSt.entry.x) : 0;
@@ -975,7 +986,7 @@ export function genPatch2(G, seed, cell) {
     let kk, dd, s = 0;
     if (fan) { dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3); const w = 1 + dd - edDepth;
       kk = fanN++ % 2 ? fanSt.s + 2 + R.int(w) : fanSt.s - 1 - R.int(w); }
-    else { kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4); s = R.int(100) < 45 ? 1 : 0; }
+    else { kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4); s = R.int(100) < 45 && !footRow ? 1 : 0; }   // a foot-row stone is a single tile
     const { x, y } = fdir ? fxy(kk, dd) : { x: kk, y: dd };
     for (let dy = -s; dy <= s; dy++) for (let dx = -s; dx <= s; dx++) if (walk(x + dx, y + dy) && (s === 0 || R.int(100) < 80)) setT(x + dx, y + dy, T.ROCK); }
   const treeN = land === L.WOOD ? 11 + R.int(5) : land === L.MEADOW ? 1 + R.int(2) : R.int(2);

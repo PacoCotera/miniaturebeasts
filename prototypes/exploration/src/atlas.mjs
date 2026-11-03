@@ -289,7 +289,7 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
     const g = kind === TERR.SHADOW || mac ? lay.base : GRASSY.includes(t) ? T.GRASS : t === T.DARK ? T.DARK : t === T.SAND ? T.SAND : WETT(t) ? -1 : lay.base;   // terrain pieces and shore macros sit on the place's base
     if (g === T.SAND) { const p = pick(cat.sand, hash(seed, 'sd', key, x, y)); if (p) L.push(cellLayer(p, 0, 0)); }
     else if (g !== -1) { const p = cat.lawn[lawnIdx(i)]; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone })); if (g === T.DARK) tile.dark = 1; }
-    const sandGround = g === T.SAND && (t === T.SAND || t === T.REEDS);
+    const sandGround = g === T.SAND && (t === T.SAND || t === T.REEDS || (t === T.ROCK && lay.scree));   // on a scree place a stone on grass sits on a small scree skirt with round corners
     if (sandGround && rules.sandShore) {   // the sand shore: quarters toward other ground (water counts as sand; off the place too)
       const sandish = (xx, yy) => { const n = at(xx, yy); return n === -1 || WETT(n) || n === T.SAND || (n === T.REEDS && lay.base === T.SAND) || (n === T.ROCK && lay.scree); };   // on a scree place a stone stands on the scree: no grass rim toward it
       let sm = 0; [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]].forEach(([dx, dy], b) => { if (!sandish(x + dx, y + dy)) sm |= 1 << b; });
