@@ -131,7 +131,7 @@ def _nearest(P, R, chunk=1500):
     return out
 
 
-def tangential_relax(body, ctx, iters=6, step=0.5, region="torso", skip_hops=2):
+def tangential_relax(body, ctx, iters=6, step=0.5, region="torso", skip_hops=2, back_step=None):
     """Even the edge lengths of the loft (the ring bunching at the seat-to-tail step): move each free vertex of `region` along the surface toward the mean of its neighbours, then pull it back onto the limit surface of the cage as it was before the pass
     (nearest point of its level-2 subdivision, along that point's normal). Caps, socket loops (and the vertices within `skip_hops` edges of them) and the mirror-plane's y = 0 stay put in y. Returns the edge-length ratio before and after and the largest shape change."""
     import subdiv as SD, gltf_out
@@ -156,6 +156,12 @@ def tangential_relax(body, ctx, iters=6, step=0.5, region="torso", skip_hops=2):
         free[cp.ring] = False
     for k, v in body.tag.items():
         free[k] = False
+    stepv = np.full(len(V), float(step))
+    if back_step is not None:                                # the back's rings are long in the tail's direction and short round: the smoothing evens the edge lengths along the loft but widens the ratio round the ring (the spread of the circle's edges), so the back range takes a gentler step
+        Gb = ctx["T"]
+        lo_b, hi_b = Gb.ranges["back"]
+        u_b = Gb.L - np.clip(attr[:, 1], 0, Gb.L)
+        stepv[(u_b >= lo_b) & (u_b <= hi_b)] = float(back_step)
     cm = np.abs(V[:, 1]) < 1e-12
     nf = np.array(F, int)
     def edge_ratio(A):
@@ -171,7 +177,7 @@ def tangential_relax(body, ctx, iters=6, step=0.5, region="torso", skip_hops=2):
         M = nmean(A)
         dl = M - A
         dl = dl - (dl * fn).sum(1, keepdims=True) * fn
-        A = A + step * free[:, None] * dl
+        A = A + stepv[:, None] * free[:, None] * dl
         A[cm, 1] = 0.0
         # keep the cage's limit surface on the old one: the limit points of the moved cage against the reference
         for _ in range(2):

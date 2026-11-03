@@ -111,7 +111,8 @@ def make_s20(spec=None, upto="base", fix=True, **kw):
                 h(body)
         if stage >= 1 and kw.get("relax", True):
             import relax
-            ctx["log"]["relax"] = relax.tangential_relax(body, ctx, **kw.get("relax_opts", {}))
+            rb_ = spec["parts"]["torso"]["spine"].get("relax_back")          # V10: a gentler relax step on the back range (the species file's spine.loft.spine.relax_back.step)
+            ctx["log"]["relax"] = relax.tangential_relax(body, ctx, **{**({"back_step": float(rb_["step"])} if rb_ else {}), **kw.get("relax_opts", {})})
             for h in body.hooks:
                 h(body)
     if kw.get("appendages"):

@@ -45,7 +45,7 @@ class TestTip(unittest.TestCase):
         self.assertEqual(self.res["type"]["verts"], 3446)               # 3,606 before V5
         import hashlib  # noqa: F401
         from wb import facade as F
-        self.assertTrue(F.build(DOC, "type").cage_hash.startswith("5d2afa766b1d2b5e"))          # dbebe2e3a0a3b27c until V5; f73d798bc765fad9 for V5 as first built
+        self.assertTrue(F.build(DOC, "type").cage_hash.startswith("3c614113e6b27172"))          # dbebe2e3a0a3b27c until V5; f73d798bc765fad9 for V5 as first built, 5d2afa766b1d2b5e for V8 (V10: the back relax step)
 
 
 class TestTheTwentyTwo(unittest.TestCase):
