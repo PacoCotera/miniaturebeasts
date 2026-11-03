@@ -51,7 +51,7 @@ const PRESSED = {
 };
 async function enter(page, sc) {
   await page.evaluate(([setSrc, spec]) => {
-    const w = window.__world; w.reset(); eval(`(${setSrc})`)(w); const S = window.__st, ST = S.ST; S.UI.idle = false; S.UI.hab.namer = null; S.settings.light = spec.light ?? "day";
+    const w = window.__world; w.reset(); eval(`(${setSrc})`)(w); const S = window.__st, ST = S.ST; S.UI.idle = false; S.UI.lastInput = performance.now(); S.UI.hab.namer = null; S.settings.light = spec.light ?? "day";
     const id = ST.mibis[spec.shown].id; S.UI.hab.id = id; S.UI.meet = spec.meet ? id : null; S.UI.hab.f = spec.f.startsWith("tile:") ? "tile." + ST.mibis[+spec.f.slice(5)].id : spec.f;
     if (spec.pictured) { const r = S.portraitSource(spec.digest, eval(`(${spec.fixture})`)()); if (!r.ok) throw new Error("portrait fixture: " + r.error); ST.mibis[spec.shown].portrait = { state: "delivered", digest: spec.digest }; }   // the session store only (pixels, never the save); the digest goes on ST as every scene sets ST
     S.goto("habitat"); S.UI.hab.f = spec.f.startsWith("tile:") ? "tile." + ST.mibis[+spec.f.slice(5)].id : spec.f; S.UI.hab.id = spec.f.startsWith("tile:") ? ST.mibis[+spec.f.slice(5)].id : id;

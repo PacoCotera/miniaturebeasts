@@ -389,6 +389,7 @@ async function zBad(page, sel, W, z, capture) {
   eq([away.id, away.lines.l1, away.lines.l2, away.log.map((l) => l.kind)], ["C0", "Companion out", "exploring", ["full"]], "K: at boot one full refresh draws C0");
   eq([away.marks.companion, away.marks.station, away.lamp.companion, away.lamp.stationDot], ["lifted", "seated", "off", "warm"], "K: the Station sits in its cradle (its lamp a dim warm white), the Companion's is empty and dark");
   eq([...new Set(await page.evaluate(() => __play.caddySheet.pixels()))].sort((a, b) => a - b), [0, 255], "K: the panel holds ink and paper only");
+  await page.waitForFunction((at) => Date.now() - at >= 1450, away.log[0].at);   // the boot's full refresh (4 s, drawn at 2/3) has ended and the panel is idle: the seat then waits the partial's 0.8 s alone, not what is left of the full
   const t0 = Date.now(); await page.click("#dockCtl");
   await page.waitForFunction(() => __play.caddySheet.id === "C2", null, { timeout: 3000 }); const dt = Date.now() - t0;
   const k = await sheet(); eq([k.lines.l1, k.lines.l2, k.crates], ["Companion home", "one crate", 1], "K: its lines read the docked state, with one crate icon");
@@ -508,7 +509,7 @@ async function zBad(page, sel, W, z, capture) {
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(700); await page.evaluate(() => __play.setSwitch("silent", false)); await page.waitForTimeout(400);
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(700);
   eq(await st().evaluate(() => [window.__st.ST.dock.docked, window.__st.UI.screen]), [true, "cargo"], "P8: seated again with the switch off, the arrival plays");
-  expect(await waitFace("C2", 3000), "P8: and the face reads C2");
+  expect(await waitFace("C2", 6500), "P8: and the face reads C2");   // up to 4 s for a full refresh already running (the fifth partial is followed by one at the first quiet moment, which C4a's may be), then the next tick and the partial's 0.8 s
   // C4b and C4c, briefly: the Station quiet crosses the link after 15 s; the Caddy fault refuses the seat
   await page.keyboard.press("Enter"); await page.waitForTimeout(800); await page.keyboard.press("Shift+D"); await page.waitForTimeout(800);
   await page.evaluate(() => __play.setSwitch("fault", true)); await page.keyboard.press("Shift+D"); await page.waitForTimeout(400);

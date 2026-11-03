@@ -110,9 +110,10 @@ const SCENES = {
   // all full with a bud waiting (§7): the notice "Full · a bud waits", four full rooms
   "full-bud": { f: null, state: "rest", set: (w) => { window.__viv.forty(); window.__world.bud(true); window.__st.ST.face.room = 0; } },
 };
+// each scene is a press (UI.lastInput): a group of sixty scenes lasts about a minute, and the Station goes to Idle after a minute without one (intents/frame.mjs idleTick)
 async function enter(page, sc) {
   await page.evaluate(([setSrc, f, light, panel, viv, time]) => {
-    const w = window.__world; w.reset(); const S = window.__st; S.ST.rooms = 1; S.ST.e = 6; S.ST.tuckSeq = 0; delete S.settings.roomRules; eval(`(${setSrc})`)(w); S.UI.idle = false; S.settings.light = light ?? "day"; S.settings.stationTime = time ?? "12:00";
+    const w = window.__world; w.reset(); const S = window.__st; S.ST.rooms = 1; S.ST.e = 6; S.ST.tuckSeq = 0; delete S.settings.roomRules; eval(`(${setSrc})`)(w); S.UI.idle = false; S.UI.lastInput = performance.now(); S.settings.light = light ?? "day"; S.settings.stationTime = time ?? "12:00";
     const mid = (i) => S.ST.mibis[+i].id;
     const fid = (f) => (/^(room|plate|rail|sort|band|pill)/.test(f) ? f : f.startsWith("cell:") ? "cell." + mid(f.slice(5)) : f.startsWith("swap:") ? "swap." + mid(f.slice(5)) : "resident." + mid(f.slice(f.indexOf(":") + 1)));
     const o = { ...(viv ?? {}) }; if (o.moveI != null) { o.move = { id: mid(o.moveI) }; delete o.moveI; } if (o.lastI != null) { o.last = mid(o.lastI); delete o.lastI; } if (o.pairI != null) { o.pair = { a: mid(o.pairI) }; delete o.pairI; } if (o.pickI) { o.pick = { on: true, ids: o.pickI.map(mid) }; delete o.pickI; } if (o.moveMany) { o.move = { ids: o.pick.ids.slice() }; delete o.moveMany; } if (o.swapRoom != null) { o.move = { ...o.move, swap: { room: o.swapRoom, chosen: (o.chosenI ?? []).map(mid) } }; delete o.swapRoom; delete o.chosenI; }

@@ -72,7 +72,7 @@ export async function homeStates(visit, { motion = false } = {}) {
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
   const apply = (sc) => page.evaluate(([setSrc, f, lt, tm]) => {
     const w = window.__world; w.reset(); eval(`(${setSrc})`)(w);
-    const S = window.__st; S.settings.light = lt; S.settings.stationTime = tm; S.settings.stationDate = "2026-10-17"; S.UI.home.f = f; S.UI.idle = false; S.goto("home");
+    const S = window.__st; S.settings.light = lt; S.settings.stationTime = tm; S.settings.stationDate = "2026-10-17"; S.UI.home.f = f; S.UI.idle = false; S.UI.lastInput = performance.now(); S.goto("home");
   }, [sc.set.toString(), sc.f, sc.light ?? "day", sc.time ?? "12:00"]);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {

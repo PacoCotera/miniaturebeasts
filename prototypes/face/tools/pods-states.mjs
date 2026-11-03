@@ -14,7 +14,8 @@ export async function podsStates(visit) {
   };
   // a scene: the tray emptied, `pods` seeded ([species, seed, identify?, chapters read]), the materials and the world turn set; then the Pods UI as `to` says (podsAt), twice (the targets are known after the first frame)
   const scene = (pods, o = {}) => page.evaluate(([pods, o]) => window.__st.podsScene(pods, o), [pods, o]);
-  const to = async (o) => { for (let i = 0; i < 2; i++) { await page.evaluate((o) => window.__st.podsAt(o), o); await page.waitForTimeout(250); } };
+  // every setting of a scene counts as a press: the fifty scenes run for over a minute, and the Station goes to Idle after a minute without one (intents/frame.mjs idleTick)
+  const to = async (o) => { for (let i = 0; i < 2; i++) { await page.evaluate((o) => { window.__st.UI.lastInput = performance.now(); window.__st.podsAt(o); }, o); await page.waitForTimeout(250); } };
   const key = async (k) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(250); };
   const TWELVE = [["S01", 11, 1, 2], ["S01", 12, 1, 0], ["S02", 13, 1, 1], ["S01", 14, 0, 0], ["S03", 15, 1, 8], ["S02", 16, 1, 0], ["S04", 17, 1, 0], ["S01", 18, 1, 4], ["S02", 19, 0, 0], ["S03", 20, 1, 0], ["S04", 21, 1, 2], ["S01", 22, 1, 1]];
   try {

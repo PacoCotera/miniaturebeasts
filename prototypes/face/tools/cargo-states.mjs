@@ -63,7 +63,7 @@ const TIMED = {
 };
 
 async function apply(page, sc) {
-  await page.evaluate(([setSrc]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.UI.cargo.state = "bay"; S.UI.cargo.run = null; S.UI.cargo.shown = null; S.goto("cargo"); }, [sc.set.toString()]);
+  await page.evaluate(([setSrc]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.UI.lastInput = performance.now(); S.UI.cargo.state = "bay"; S.UI.cargo.run = null; S.UI.cargo.shown = null; S.goto("cargo"); }, [sc.set.toString()]);
 }
 export async function cargoStates(visit, { motion = false, timed = true } = {}) {
   const r = await still(visit); if (motion || !timed) return r;
