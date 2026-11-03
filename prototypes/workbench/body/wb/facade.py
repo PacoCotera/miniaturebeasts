@@ -37,10 +37,10 @@ def internal(spec):
 
 
 def tables(spec):
-    """The file's gene tables (genomeapply.tables) or None for a file without a genome block (today's v0 S20.json, which keeps s20genes' own tables)."""
-    import genomeapply as GA
+    """The file's gene tables in the sampler's ids (s20genes.sampler_tables, from the block's catalogue records) or None for a file without a genome block (today's v0 S20.json, which keeps s20genes' own tables)."""
+    import s20genes as GN
     g = spec.get("genome") if isinstance(spec, dict) else None
-    return GA.tables(g) if isinstance(g, dict) and "loci" in g else None
+    return GN.sampler_tables(g) if isinstance(g, dict) and "loci" in g else None
 
 
 def locus_entry(spec, name):
@@ -67,39 +67,54 @@ def resolve_genome(g, spec=None):
         except ValueError:
             raise BuildError(f"genome '{g}': seed needs a whole number", "genome")
     G = tbl[0] if tbl else GN.GENES
-    loci = ", ".join(sorted(G)[:6])
+    loci = ", ".join(sorted(GN.RECORD.values())[:6])
     if kind in ("low", "high"):
         ind = GN.specimen(tbl)
-        if arg not in G:
+        old = GN.SAMPLER_OF.get(arg)
+        if old not in G or old in GN.PAIR_RECORD:
             raise BuildError(f"genome '{g}': no blend locus '{arg}' in the file (blends: {loci} ...)", "genome")
-        ind["t"][arg] = 0.0 if kind == "low" else 1.0
+        ind["t"][old] = 0.0 if kind == "low" else 1.0
         return GN.limit_loud(ind)
     if kind == "value":
         name, _, v = arg.partition("=")
-        if name not in G:
+        old = GN.SAMPLER_OF.get(name)
+        if old not in G or old in GN.PAIR_RECORD:
             raise BuildError(f"genome '{g}': no blend locus '{name}' in the file (blends: {loci} ...)", "genome")
         try:
             val = float(v)
         except ValueError:
             raise BuildError(f"genome '{g}': value needs a number after '='", "genome")
-        form, lo, hi, _ = G[name]
+        form, lo, hi, _ = G[old]
         ind = GN.specimen(tbl)
-        ind["t"][name] = GA.t_of(form, lo, hi, val)
+        ind["t"][old] = GA.t_of(form, lo, hi, val)
         return GN.limit_loud(ind)
     if kind == "allele":
         name, _, v = arg.partition("=")
         ind = GN.specimen(tbl)
-        if name in ind["pairs"]:
-            pool = (tbl[1][name][0] if tbl else GN.PAIRS[name][0])
-            if v not in pool:
-                raise BuildError(f"genome '{g}': '{v}' is not an allowed allele of {name} (allowed: {', '.join(pool)})", "genome")
-            ind["pairs"][name] = [v, v]
-        elif name in ("face.blush", "coat.brow"):
-            if v not in ("on", "off"):
-                raise BuildError(f"genome '{g}': {name} is on or off", "genome")
-            ind["switches"][name.split(".")[1]] = v == "on"
-        else:
+        entry = locus_entry(spec, name)
+        if entry is None or entry["op"] == "blend":
             raise BuildError(f"genome '{g}': no pair or switch locus '{name}' in the file", "genome")
+        if v not in entry["limits"]:
+            raise BuildError(f"genome '{g}': '{v}' is not an allowed allele of {name} (allowed: {', '.join(map(str, entry['limits']))})", "genome")
+        on = v == "on"
+        old = GN.SAMPLER_OF.get(name)
+        if old in GN.PAIR_RECORD:
+            ind["pairs"][old] = [v, v]
+        elif name == GN.MARKING_LAYOUT:
+            ind["pairs"]["appearance.marking-layout"] = [GN.LAYOUT_BACK.get(v, v)] * 2
+        elif name == GN.MARKING_SWITCH:
+            lay = [a for a in ind["pairs"]["appearance.marking-layout"] if a != "plain"]
+            ind["pairs"]["appearance.marking-layout"] = [lay[0] if lay else "banded"] * 2 if on else ["plain", "plain"]
+        elif name == GN.WHISKER_SWITCH:
+            none = GN.resolve_locus("face.whisker-count", ind["t"]["face.whisker-count"], G) < 1
+            ind["t"]["face.whisker-count"] = 0.0 if not on else 0.4 if none else ind["t"]["face.whisker-count"]            # on from none: the lowest count the engine draws (1 is 2 a side)
+        else:
+            sw = next((k for k, (_, rec) in GN.SWITCH_RECORD.items() if rec == name), None)
+            pr = next((o for o, (rec, _, _) in GN.PAIR_SWITCH.items() if rec == name), None)
+            if sw:
+                ind["switches"][sw] = on
+            else:
+                ind["pairs"][pr] = [GN.PAIR_SWITCH[pr][2 if on else 1]] * 2
         return GN.limit_loud(ind)
     if kind == "corner":
         bad = [x for x in arg.split("+") if x and x not in GN.LOUD]

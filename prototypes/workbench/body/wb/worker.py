@@ -133,7 +133,7 @@ def main():
                 n += 1
             s = seen[ck]
             ent = entries.get(e["locus"]) or {}
-            end = dict(e, cage=ck, state=s["state"], unit=ent.get("unit", ""), fails=[EX.summary_row(r) for r in s["fails"]], scope=ent.get("scope"))
+            end = dict(e, cage=ck, state=s["state"], unit=(ent.get("band") or ent.get("absolute") or {}).get("unit", ""), fails=[EX.summary_row(r) for r in s["fails"]], scope=ent.get("scope"))
             if s["fails"]:
                 p = dict(s["fails"][0]["proof"]) if s["fails"][0].get("proof") else None
                 if p:

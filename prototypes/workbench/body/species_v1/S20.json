@@ -2052,24 +2052,29 @@
  "genome": {
   "catalogue": {
    "id": "mb-genome-framework",
-   "version": 10
+   "version": 11,
+   "digest": "96e79573c5033ca1ad3fabf6c47e45e05753ef8624a201df062db48f7ff48865"
   },
+  "clan": "C20",
+  "borrows": [
+   "anatomy.brow-tuft-presence"
+  ],
   "chapters": [
    {
-    "id": "body",
-    "name": "Body"
-   },
-   {
-    "id": "tail",
-    "name": "Tail"
+    "id": "coat",
+    "name": "Coat"
    },
    {
     "id": "face",
     "name": "Face"
    },
    {
-    "id": "coat",
-    "name": "Coat"
+    "id": "shape",
+    "name": "Shape"
+   },
+   {
+    "id": "legs-tail",
+    "name": "Legs & tail"
    },
    {
     "id": "movement",
@@ -2078,69 +2083,1283 @@
   ],
   "loci": [
    {
-    "locus": "body.torso-girth",
-    "label": "Torso girth",
-    "short": "Torso girth",
-    "chapter": "body",
-    "scope": "own",
+    "locus": "appearance.body-hue",
+    "label": "Body hue",
+    "short": "Hue",
+    "chapter": "coat",
+    "scope": "trunk",
     "kind": "heritable-look",
     "shapeable": true,
-    "anchor": "body",
     "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.95,
-     1.06
-    ],
-    "type": 1.0,
+    "band": {
+     "form": "lin",
+     "lo": 0.0,
+     "hi": 360.0,
+     "unit": "\u00b0"
+    },
+    "type": 270.0,
     "range": [
-     0.895,
-     1.115
+     -180.0,
+     540.0
     ],
     "bins": [
-     "slim",
+     "low",
      "between",
-     "round"
+     "high"
     ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.body-value",
+    "label": "Coat value",
+    "short": "Value",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.8,
+     "hi": 1.2,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.6,
+     1.4
+    ],
+    "bins": [
+     "dark",
+     "between",
+     "light"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.countershade",
+    "label": "Countershade",
+    "short": "Countershade",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.1,
+     "hi": 0.5,
+     "unit": ""
+    },
+    "type": 0.3,
+    "range": [
+     -0.1,
+     0.7
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.surface-grain",
+    "label": "Skin grain",
+    "short": "Grain",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.25,
+     "hi": 0.45,
+     "unit": ""
+    },
+    "type": 0.35,
+    "range": [
+     0.15,
+     0.55
+    ],
+    "bins": [
+     "fine",
+     "between",
+     "coarse"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.sheen",
+    "label": "Sheen",
+    "short": "Sheen",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "absolute": {
+     "form": "lin",
+     "lo": 0.2,
+     "hi": 0.4,
+     "unit": ""
+    },
+    "type": 0.3,
+    "range": [
+     0.1,
+     0.5
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.fleck",
+    "label": "Fleck",
+    "short": "Fleck",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.2,
+     "hi": 0.8,
+     "unit": ""
+    },
+    "type": 0.5,
+    "range": [
+     -0.1,
+     1.1
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.cream-extent",
+    "label": "Cream reach",
+    "short": "Cream reach",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -0.1,
+     "hi": 0.12,
+     "unit": "H"
+    },
+    "type": 0.0,
+    "range": [
+     -0.21,
+     0.23
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.marking-switch",
+    "label": "Marking switch",
+    "short": "Marks",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "switch",
+    "operator": "recessive-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.75,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record: off is the `plain` look (marks need both copies)"
+   },
+   {
+    "locus": "appearance.marking-layout",
+    "label": "Marking layout",
+    "short": "Layout",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "appearance.marking-switch"
+    ],
+    "op": "pair-map",
+    "limits": [
+     "masked",
+     "points",
+     "bands",
+     "spotted",
+     "capped"
+    ],
+    "weights": [
+     0.2,
+     0.2,
+     0.2,
+     0.2,
+     0.2
+    ],
+    "order": [
+     "masked",
+     "points",
+     "bands",
+     "spotted",
+     "capped"
+    ],
+    "type": "bands",
+    "loud": "pattern",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.pattern-kind",
+    "label": "Pattern",
+    "short": "Pattern",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "none",
+     "spots",
+     "labyrinth",
+     "rings"
+    ],
+    "weights": [
+     0.4,
+     0.25,
+     0.2,
+     0.15
+    ],
+    "order": [
+     "none",
+     "spots",
+     "labyrinth",
+     "rings"
+    ],
+    "type": "none",
+    "loud": "pattern",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.pattern-scale",
+    "label": "Pattern scale",
+    "short": "Pattern scale",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.pattern-kind": [
+      "spots",
+      "labyrinth",
+      "rings"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.8,
+     "hi": 1.3,
+     "unit": ""
+    },
+    "type": 1.05,
+    "range": [
+     0.55,
+     1.55
+    ],
+    "bins": [
+     "small",
+     "between",
+     "large"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.pattern-contrast",
+    "label": "Pattern contrast",
+    "short": "Pattern contrast",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.pattern-kind": [
+      "spots",
+      "labyrinth",
+      "rings"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.6,
+     "hi": 1.0,
+     "unit": ""
+    },
+    "type": 0.8,
+    "range": [
+     0.4,
+     1.2
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.marking-rosette",
+    "label": "Rosette",
+    "short": "Rosette",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.marking-layout": [
+      "spotted"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.0,
+     "hi": 1.0,
+     "unit": ""
+    },
+    "type": 0.0,
+    "range": [
+     -0.5,
+     1.5
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.band-count",
+    "label": "Band count",
+    "short": "Band count",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.marking-layout": [
+      "bands",
+      "bands-and-patches"
+     ],
+     "appearance.glow-pattern": [
+      "belly-arcs"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "int",
+     "lo": 3,
+     "hi": 7,
+     "unit": ""
+    },
+    "type": 5,
+    "range": [
+     1.0,
+     9.0
+    ],
+    "bins": [
+     "few",
+     "between",
+     "many"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.emblem",
+    "label": "Emblem",
+    "short": "Emblem",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "none",
+     "heart",
+     "star"
+    ],
+    "weights": [
+     0.5,
+     0.25,
+     0.25
+    ],
+    "order": [
+     "none",
+     "heart",
+     "star"
+    ],
+    "type": "none",
+    "loud": "emblem",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.emblem-place",
+    "label": "Emblem place",
+    "short": "Emblem place",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.emblem": [
+      "heart",
+      "star"
+     ]
+    },
+    "op": "pair-map",
+    "limits": [
+     "forehead",
+     "belly"
+    ],
+    "weights": [
+     0.7,
+     0.3
+    ],
+    "order": [
+     "forehead",
+     "belly"
+    ],
+    "type": "forehead",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.emblem-size",
+    "label": "Emblem size",
+    "short": "Emblem size",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "appearance.emblem": [
+      "heart",
+      "star"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.07,
+     "hi": 0.12,
+     "unit": ""
+    },
+    "type": 0.095,
+    "range": [
+     0.045,
+     0.145
+    ],
+    "bins": [
+     "small",
+     "between",
+     "large"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.freckle-density",
+    "label": "Freckle density",
+    "short": "Freckle density",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.1,
+     "hi": 1.0,
+     "unit": ""
+    },
+    "type": 0.55,
+    "range": [
+     -0.35,
+     1.45
+    ],
+    "bins": [
+     "sparse",
+     "between",
+     "dense"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.freckle-glow",
+    "label": "Freckle glow",
+    "short": "Freckle glow",
+    "chapter": "coat",
+    "scope": "branch",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.5,
+     "hi": 1.0,
+     "unit": ""
+    },
+    "type": 0.9,
+    "range": [
+     0.25,
+     1.25
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.emission-brightness",
+    "label": "Glow brightness",
+    "short": "Glow brightness",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-doing",
+    "shapeable": true,
+    "op": "blend",
+    "absolute": {
+     "form": "lin",
+     "lo": 0.6,
+     "hi": 1.0,
+     "unit": ""
+    },
+    "type": 0.92,
+    "range": [
+     0.4,
+     1.2
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.emission-hue",
+    "label": "Glow hue",
+    "short": "Glow hue",
+    "chapter": "coat",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 70.0,
+     "hi": 90.0,
+     "unit": "\u00b0"
+    },
+    "type": 80.0,
+    "range": [
+     60.0,
+     100.0
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.lantern-bleed",
+    "label": "Lantern bleed",
+    "short": "Lantern bleed",
+    "chapter": "coat",
+    "scope": "branch",
+    "kind": "sleeping",
+    "shapeable": true,
+    "wakesWhen": {
+     "anatomy.tail-tip-form": [
+      "lantern"
+     ]
+    },
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.3,
+     "hi": 0.9,
+     "unit": ""
+    },
+    "type": 0.6,
+    "range": [
+     -0.0,
+     1.2
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.glow-pattern",
+    "label": "Glow pattern",
+    "short": "Glow pattern",
+    "chapter": "coat",
+    "scope": "branch",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "none",
+     "belly-arcs"
+    ],
+    "weights": [
+     0.6,
+     0.4
+    ],
+    "order": [
+     "none",
+     "belly-arcs"
+    ],
+    "type": "none",
+    "loud": "glow",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "form.eye-size",
+    "label": "Eye size",
+    "short": "Eye size",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.92,
+     "hi": 1.1,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.83,
+     1.19
+    ],
+    "bins": [
+     "small",
+     "between",
+     "large"
+    ],
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "form.eye-height",
+    "label": "Eye height",
+    "short": "Eye height",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -0.03,
+     "hi": 0.03,
+     "unit": "H"
+    },
+    "type": 0.0,
+    "range": [
+     -0.06,
+     0.06
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "form.eye-spacing",
+    "label": "Eye spacing",
+    "short": "Eye spacing",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -0.03,
+     "hi": 0.03,
+     "unit": "H"
+    },
+    "type": 0.0,
+    "range": [
+     -0.06,
+     0.06
+    ],
+    "bins": [
+     "close",
+     "between",
+     "wide"
+    ],
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "form.mouth-width",
+    "label": "Mouth width",
+    "short": "Mouth width",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.9,
+     "hi": 1.12,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.79,
+     1.23
+    ],
+    "bins": [
+     "narrow",
+     "between",
+     "wide"
+    ],
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "form.mouth-height",
+    "label": "Mouth height",
+    "short": "Mouth height",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -0.02,
+     "hi": 0.02,
+     "unit": "H"
+    },
+    "type": 0.0,
+    "range": [
+     -0.04,
+     0.04
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "appearance.mouth-rest",
+    "label": "Mouth at rest",
+    "short": "Mouth at rest",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "content",
+     "open"
+    ],
+    "weights": [
+     0.8,
+     0.2
+    ],
+    "order": [
+     "content",
+     "open"
+    ],
+    "type": "content",
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "appearance.blush",
+    "label": "Blush",
+    "short": "Blush",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "switch",
+    "operator": "dominant-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "on",
+    "weight": 0.8,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "moves": [],
+    "consumer": "the face decal, through the creature record"
+   },
+   {
+    "locus": "anatomy.fang-presence",
+    "label": "Fangs",
+    "short": "Fangs",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "switch",
+    "operator": "recessive-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.25,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "anatomy.whisker-presence",
+    "label": "Whiskers",
+    "short": "Whiskers",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "switch",
+    "operator": "dominant-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.8333333333333334,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "moves": [],
+    "consumer": "the whisker appendages (a count of none is the switch off; the sampler's engine turns a count of 1 into 2 a side)"
+   },
+   {
+    "locus": "form.whisker-count",
+    "label": "Whisker count",
+    "short": "Whisker count",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "anatomy.whisker-presence"
+    ],
+    "op": "blend",
+    "band": {
+     "form": "int",
+     "lo": 0,
+     "hi": 3,
+     "unit": ""
+    },
+    "type": 0,
+    "range": [
+     -1.5,
+     4.5
+    ],
+    "bins": [
+     "few",
+     "between",
+     "many"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "form.whisker-length",
+    "label": "Whisker length",
+    "short": "Whisker length",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "anatomy.whisker-presence"
+    ],
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.2,
+     "hi": 0.45,
+     "unit": "H"
+    },
+    "type": 0.325,
+    "range": [
+     0.075,
+     0.575
+    ],
+    "bins": [
+     "short",
+     "between",
+     "long"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "form.whisker-droop",
+    "label": "Whisker droop",
+    "short": "Whisker droop",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "anatomy.whisker-presence"
+    ],
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.1,
+     "hi": 0.5,
+     "unit": ""
+    },
+    "type": 0.3,
+    "range": [
+     -0.1,
+     0.7
+    ],
+    "bins": [
+     "level",
+     "between",
+     "drooping"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "form.whisker-curl",
+    "label": "Whisker curl",
+    "short": "Whisker curl",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "anatomy.whisker-presence"
+    ],
+    "op": "blend",
+    "band": {
+     "form": "lin",
+     "lo": 0.0,
+     "hi": 0.6,
+     "unit": ""
+    },
+    "type": 0.3,
+    "range": [
+     -0.3,
+     0.9
+    ],
+    "bins": [
+     "straight",
+     "between",
+     "curled"
+    ],
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "appearance.whisker-glow",
+    "label": "Whisker glow",
+    "short": "Whisker glow",
+    "chapter": "face",
+    "scope": "branch",
+    "kind": "sleeping",
+    "shapeable": true,
+    "requires": [
+     "anatomy.whisker-presence"
+    ],
+    "op": "switch",
+    "operator": "recessive-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.15,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "anatomy.brow-tuft-presence",
+    "label": "Brow tufts",
+    "short": "Brow tufts",
+    "chapter": "face",
+    "scope": "branch",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "borrowed": "C18",
+    "op": "switch",
+    "operator": "dominant-enable",
+    "limits": [
+     "off",
+     "on"
+    ],
+    "type": "off",
+    "weight": 0.25,
+    "map": {
+     "off": false,
+     "on": true
+    },
+    "loud": "brow",
+    "moves": [],
+    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+   },
+   {
+    "locus": "form.ear-kind",
+    "label": "Ear kind",
+    "short": "Ear kind",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "pair-map",
+    "limits": [
+     "prick",
+     "lop",
+     "nub"
+    ],
+    "weights": [
+     0.4,
+     0.3,
+     0.3
+    ],
+    "order": [
+     "prick",
+     "nub",
+     "lop"
+    ],
+    "type": "prick",
     "moves": [
      {
-      "path": "spine.loft.section.stations[*].1",
-      "op": "scale",
-      "where": {
-       "item": 0,
-       "op": "<=",
-       "ref": "spine.loft.regions.body.1"
-      },
-      "above": 0.05
-     },
-     {
-      "path": "spine.loft.masses[*].rho",
-      "op": "scale",
-      "where": {
-       "item": "z",
-       "op": "<=",
-       "ref": "spine.loft.regions.body.1"
-      }
+      "path": "parts[ear.L].default",
+      "op": "set"
      }
     ]
    },
    {
-    "locus": "body.head-size",
-    "label": "Head size",
-    "short": "Head size",
-    "chapter": "body",
-    "scope": "own",
+    "locus": "form.ear-length",
+    "label": "Ear length",
+    "short": "Ear length",
+    "chapter": "face",
+    "scope": "trunk",
     "kind": "heritable-look",
     "shapeable": true,
-    "anchor": "body",
     "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.96,
-     1.05
+    "band": {
+     "form": "mult",
+     "lo": 0.7,
+     "hi": 1.5,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.3,
+     1.9
     ],
+    "bins": [
+     "short",
+     "between",
+     "long"
+    ],
+    "moves": [
+     {
+      "path": "parts[ear.L].families.*.joints[1:].len",
+      "op": "scale"
+     },
+     {
+      "path": "parts[ear.L].families.*.tubes[*].len",
+      "op": "scale",
+      "max": 0.35
+     }
+    ]
+   },
+   {
+    "locus": "form.ear-width",
+    "label": "Ear width",
+    "short": "Ear width",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.85,
+     "hi": 1.2,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.675,
+     1.375
+    ],
+    "bins": [
+     "slim",
+     "between",
+     "broad"
+    ],
+    "moves": [
+     {
+      "path": "parts[ear.L].families.*.joints[*].r",
+      "op": "scale"
+     }
+    ]
+   },
+   {
+    "locus": "form.ear-splay",
+    "label": "Ear splay",
+    "short": "Ear splay",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -20.0,
+     "hi": 20.0,
+     "unit": "\u00b0"
+    },
+    "type": 0.0,
+    "range": [
+     -40.0,
+     40.0
+    ],
+    "bins": [
+     "low",
+     "between",
+     "high"
+    ],
+    "moves": [
+     {
+      "path": "parts[ear.L].families.*.plane.yaw",
+      "op": "add"
+     },
+     {
+      "path": "parts[ear.L].families.*.tubes[*].yaw",
+      "op": "add"
+     }
+    ]
+   },
+   {
+    "locus": "form.ear-droop",
+    "label": "Ear droop",
+    "short": "Ear droop",
+    "chapter": "face",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "off",
+     "lo": -15.0,
+     "hi": 15.0,
+     "unit": "\u00b0"
+    },
+    "type": 0.0,
+    "range": [
+     -30.0,
+     30.0
+    ],
+    "bins": [
+     "upright",
+     "between",
+     "drooping"
+    ],
+    "moves": [
+     {
+      "path": "parts[ear.L].families.*.joints[1:].pitch",
+      "op": "add",
+      "share": -1.0
+     }
+    ]
+   },
+   {
+    "locus": "form.head",
+    "label": "Head size",
+    "short": "Head size",
+    "chapter": "shape",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.96,
+     "hi": 1.05,
+     "unit": "\u00d7"
+    },
     "type": 1.0,
     "range": [
      0.915,
@@ -2174,21 +3393,67 @@
     ]
    },
    {
-    "locus": "body.limb-length",
-    "label": "Limb length",
-    "short": "Limb length",
-    "chapter": "body",
-    "scope": "own",
+    "locus": "form.torso-girth",
+    "label": "Torso girth",
+    "short": "Torso girth",
+    "chapter": "shape",
+    "scope": "trunk",
     "kind": "heritable-look",
     "shapeable": true,
-    "anchor": "body",
     "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.9,
-     1.1
+    "band": {
+     "form": "mult",
+     "lo": 0.95,
+     "hi": 1.06,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.895,
+     1.115
     ],
+    "bins": [
+     "slim",
+     "between",
+     "round"
+    ],
+    "moves": [
+     {
+      "path": "spine.loft.section.stations[*].1",
+      "op": "scale",
+      "where": {
+       "item": 0,
+       "op": "<=",
+       "ref": "spine.loft.regions.body.1"
+      },
+      "above": 0.05
+     },
+     {
+      "path": "spine.loft.masses[*].rho",
+      "op": "scale",
+      "where": {
+       "item": "z",
+       "op": "<=",
+       "ref": "spine.loft.regions.body.1"
+      }
+     }
+    ]
+   },
+   {
+    "locus": "form.leg-length",
+    "label": "Leg length",
+    "short": "Leg length",
+    "chapter": "legs-tail",
+    "scope": "trunk",
+    "kind": "heritable-look",
+    "shapeable": true,
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.9,
+     "hi": 1.1,
+     "unit": "\u00d7"
+    },
     "type": 1.0,
     "range": [
      0.8,
@@ -2207,21 +3472,20 @@
     ]
    },
    {
-    "locus": "body.limb-girth",
-    "label": "Limb girth",
-    "short": "Limb girth",
-    "chapter": "body",
-    "scope": "own",
+    "locus": "form.leg-girth",
+    "label": "Leg girth",
+    "short": "Leg girth",
+    "chapter": "legs-tail",
+    "scope": "trunk",
     "kind": "heritable-look",
     "shapeable": true,
-    "anchor": "body",
     "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.94,
-     1.08
-    ],
+    "band": {
+     "form": "mult",
+     "lo": 0.94,
+     "hi": 1.08,
+     "unit": "\u00d7"
+    },
     "type": 1.0,
     "range": [
      0.87,
@@ -2240,315 +3504,20 @@
     ]
    },
    {
-    "locus": "growth.exterior-eye-size-ratio",
-    "label": "Eye size",
-    "short": "Eye size",
-    "chapter": "face",
-    "scope": "shared",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "face",
-    "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.92,
-     1.1
-    ],
-    "type": 1.0,
-    "range": [
-     0.83,
-     1.19
-    ],
-    "catalogue": {
-     "range": [
-      0.24,
-      0.44
-     ],
-     "type": 0.32,
-     "operator": "copy-mean"
-    },
-    "moves": [],
-    "consumer": "the face decal, through the creature record"
-   },
-   {
-    "locus": "growth.exterior-eye-height-ratio",
-    "label": "Eye height",
-    "short": "Eye height",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "face",
-    "op": "blend",
-    "form": "off",
-    "unit": "H",
-    "limits": [
-     -0.03,
-     0.03
-    ],
-    "type": 0.0,
-    "range": [
-     -0.06,
-     0.06
-    ],
-    "pin_note": "The pin's eye height is a branch locus of clan C01 (middle or high, 0 to 0.2); S20 moves the eye up and down either way, so it is S20's own.",
-    "moves": [],
-    "consumer": "the face decal, through the creature record"
-   },
-   {
-    "locus": "growth.exterior-eye-spacing-ratio",
-    "label": "Eye spacing",
-    "short": "Eye spacing",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "face",
-    "op": "blend",
-    "form": "off",
-    "unit": "H",
-    "limits": [
-     -0.03,
-     0.03
-    ],
-    "type": 0.0,
-    "range": [
-     -0.06,
-     0.06
-    ],
-    "pin_note": "The pin's eye spacing is a ratio of 0.40 to 0.55 of the head's width; S20 moves the eyes by an offset in head units, so it is S20's own.",
-    "moves": [],
-    "consumer": "the face decal, through the creature record"
-   },
-   {
-    "locus": "face.mouth-width",
-    "label": "Mouth width",
-    "short": "Mouth width",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "face",
-    "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.9,
-     1.12
-    ],
-    "type": 1.0,
-    "range": [
-     0.79,
-     1.23
-    ],
-    "moves": [],
-    "consumer": "the face decal, through the creature record"
-   },
-   {
-    "locus": "face.mouth-height",
-    "label": "Mouth height",
-    "short": "Mouth height",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "face",
-    "op": "blend",
-    "form": "off",
-    "unit": "H",
-    "limits": [
-     -0.02,
-     0.02
-    ],
-    "type": 0.0,
-    "range": [
-     -0.04,
-     0.04
-    ],
-    "moves": [],
-    "consumer": "the face decal, through the creature record"
-   },
-   {
-    "locus": "movement.cycle-rate",
-    "label": "Cycle rate",
-    "short": "Cycle rate",
-    "chapter": "movement",
-    "scope": "shared",
-    "kind": "heritable-doing",
-    "shapeable": true,
-    "anchor": "face",
-    "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.85,
-     1.15
-    ],
-    "type": 1.0,
-    "range": [
-     0.7,
-     1.3
-    ],
-    "catalogue": {
-     "range": [
-      0.6,
-      1.4
-     ],
-     "type": 1.0,
-     "operator": "copy-mean"
-    },
-    "moves": [],
-    "consumer": "the rig's clips (motion periods are divided by it)"
-   },
-   {
-    "locus": "body.ear-length",
-    "label": "Ear length",
-    "short": "Ear length",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "ears",
-    "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.7,
-     1.5
-    ],
-    "type": 1.0,
-    "range": [
-     0.3,
-     1.9
-    ],
-    "bins": [
-     "short",
-     "between",
-     "long"
-    ],
-    "moves": [
-     {
-      "path": "parts[ear.L].families.*.joints[1:].len",
-      "op": "scale"
-     },
-     {
-      "path": "parts[ear.L].families.*.tubes[*].len",
-      "op": "scale",
-      "max": 0.35
-     }
-    ]
-   },
-   {
-    "locus": "body.ear-girth",
-    "label": "Ear girth",
-    "short": "Ear girth",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "ears",
-    "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.85,
-     1.2
-    ],
-    "type": 1.0,
-    "range": [
-     0.675,
-     1.375
-    ],
-    "bins": [
-     "slim",
-     "between",
-     "broad"
-    ],
-    "moves": [
-     {
-      "path": "parts[ear.L].families.*.joints[*].r",
-      "op": "scale"
-     }
-    ]
-   },
-   {
-    "locus": "body.ear-splay",
-    "label": "Ear splay",
-    "short": "Ear splay",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "ears",
-    "op": "blend",
-    "form": "off",
-    "unit": "\u00b0",
-    "limits": [
-     -20.0,
-     20.0
-    ],
-    "type": 0.0,
-    "range": [
-     -40.0,
-     40.0
-    ],
-    "moves": [
-     {
-      "path": "parts[ear.L].families.*.plane.yaw",
-      "op": "add"
-     },
-     {
-      "path": "parts[ear.L].families.*.tubes[*].yaw",
-      "op": "add"
-     }
-    ]
-   },
-   {
-    "locus": "body.ear-droop",
-    "label": "Ear droop",
-    "short": "Ear droop",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "ears",
-    "op": "blend",
-    "form": "off",
-    "unit": "\u00b0",
-    "limits": [
-     -15.0,
-     15.0
-    ],
-    "type": 0.0,
-    "range": [
-     -30.0,
-     30.0
-    ],
-    "moves": [
-     {
-      "path": "parts[ear.L].families.*.joints[1:].pitch",
-      "op": "add",
-      "share": -1.0
-     }
-    ]
-   },
-   {
-    "locus": "body.tail-length",
+    "locus": "form.tail-length",
     "label": "Tail length",
-    "short": "Length",
-    "chapter": "tail",
-    "scope": "own",
+    "short": "Tail length",
+    "chapter": "legs-tail",
+    "scope": "trunk",
     "kind": "heritable-look",
     "shapeable": true,
-    "anchor": "tail",
     "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.8,
-     1.3
-    ],
+    "band": {
+     "form": "mult",
+     "lo": 0.8,
+     "hi": 1.3,
+     "unit": "\u00d7"
+    },
     "type": 1.0,
     "range": [
      0.5,
@@ -2567,21 +3536,20 @@
     ]
    },
    {
-    "locus": "body.tail-girth",
+    "locus": "form.tail-girth",
     "label": "Tail girth",
-    "short": "Girth",
-    "chapter": "tail",
-    "scope": "own",
+    "short": "Tail girth",
+    "chapter": "legs-tail",
+    "scope": "trunk",
     "kind": "heritable-look",
     "shapeable": true,
-    "anchor": "tail",
     "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.8,
-     1.2
-    ],
+    "band": {
+     "form": "mult",
+     "lo": 0.8,
+     "hi": 1.2,
+     "unit": "\u00d7"
+    },
     "type": 1.0,
     "range": [
      0.6,
@@ -2617,21 +3585,20 @@
     ]
    },
    {
-    "locus": "body.tail-curl",
+    "locus": "form.tail-curl",
     "label": "Tail curl",
-    "short": "Curl",
-    "chapter": "tail",
-    "scope": "own",
+    "short": "Tail curl",
+    "chapter": "legs-tail",
+    "scope": "trunk",
     "kind": "heritable-look",
     "shapeable": true,
-    "anchor": "tail",
     "op": "blend",
-    "form": "off",
-    "unit": "turns",
-    "limits": [
-     -0.03,
-     0.2
-    ],
+    "band": {
+     "form": "off",
+     "lo": -0.03,
+     "hi": 0.2,
+     "unit": "turns"
+    },
     "type": 0.0,
     "range": [
      -0.145,
@@ -2651,21 +3618,20 @@
     ]
    },
    {
-    "locus": "body.tail-lift",
-    "label": "Tail lift",
-    "short": "Lift",
-    "chapter": "tail",
-    "scope": "own",
+    "locus": "form.tail-carry",
+    "label": "Tail carriage",
+    "short": "Tail carriage",
+    "chapter": "legs-tail",
+    "scope": "trunk",
     "kind": "heritable-look",
     "shapeable": true,
-    "anchor": "tail",
     "op": "blend",
-    "form": "off",
-    "unit": "\u00b0",
-    "limits": [
-     -12.0,
-     12.0
-    ],
+    "band": {
+     "form": "off",
+     "lo": -12.0,
+     "hi": 12.0,
+     "unit": "\u00b0"
+    },
     "type": 0.0,
     "range": [
      -24.0,
@@ -2685,604 +3651,13 @@
     ]
    },
    {
-    "locus": "body.tip-size",
-    "label": "Tip size",
-    "short": "Tip size",
-    "chapter": "tail",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "tail",
-    "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.85,
-     1.2
-    ],
-    "type": 1.0,
-    "range": [
-     0.675,
-     1.375
-    ],
-    "bins": [
-     "small",
-     "between",
-     "large"
-    ],
-    "moves": [],
-    "consumer": "the tail-tip family builder (it reads the size from the creature)"
-   },
-   {
-    "locus": "appearance.coat-value",
-    "label": "Coat value",
-    "short": "Value",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "mult",
-    "unit": "\u00d7",
-    "limits": [
-     0.8,
-     1.2
-    ],
-    "type": 1.0,
-    "range": [
-     0.6,
-     1.4
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "appearance.bib-reach",
-    "label": "Belly reach",
-    "short": "Belly reach",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "off",
-    "unit": "H",
-    "limits": [
-     -0.1,
-     0.12
-    ],
-    "type": 0.0,
-    "range": [
-     -0.21,
-     0.23
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "appearance.glow",
-    "label": "Glow",
-    "short": "Glow",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.6,
-     1.0
-    ],
-    "type": 0.92,
-    "range": [
-     0.4,
-     1.2
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "skin.grain",
-    "label": "Skin grain",
-    "short": "Grain",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.25,
-     0.45
-    ],
-    "type": 0.35,
-    "range": [
-     0.15,
-     0.55
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "skin.sheen",
-    "label": "Skin sheen",
-    "short": "Sheen",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.2,
-     0.4
-    ],
-    "type": 0.3,
-    "range": [
-     0.1,
-     0.5
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.gradient",
-    "label": "Gradient",
-    "short": "Gradient",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.1,
-     0.5
-    ],
-    "type": 0.3,
-    "range": [
-     -0.1,
-     0.7
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.hue-shift",
-    "label": "Hue shift",
-    "short": "Hue shift",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "off",
-    "unit": "",
-    "limits": [
-     -0.06,
-     0.06
-    ],
-    "type": 0.0,
-    "range": [
-     -0.12,
-     0.12
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.fleck",
-    "label": "Fleck",
-    "short": "Fleck",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.2,
-     0.8
-    ],
-    "type": 0.5,
-    "range": [
-     -0.1,
-     1.1
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.freckle-density",
-    "label": "Freckle density",
-    "short": "Freckle density",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.1,
-     1.0
-    ],
-    "type": 0.55,
-    "range": [
-     -0.35,
-     1.45
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.freckle-glow",
-    "label": "Freckle glow",
-    "short": "Freckle glow",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.5,
-     1.0
-    ],
-    "type": 0.9,
-    "range": [
-     0.25,
-     1.25
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.bleed",
-    "label": "Bleed",
-    "short": "Bleed",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.3,
-     0.9
-    ],
-    "type": 0.6,
-    "range": [
-     -0.0,
-     1.2
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.rd-scale",
-    "label": "Rd scale",
-    "short": "Rd scale",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.8,
-     1.3
-    ],
-    "type": 1.05,
-    "range": [
-     0.55,
-     1.55
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.rd-contrast",
-    "label": "Rd contrast",
-    "short": "Rd contrast",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.6,
-     1.0
-    ],
-    "type": 0.8,
-    "range": [
-     0.4,
-     1.2
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.rosette",
-    "label": "Rosette",
-    "short": "Rosette",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.0,
-     1.0
-    ],
-    "type": 0.0,
-    "range": [
-     -0.5,
-     1.5
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.bands",
-    "label": "Bands",
-    "short": "Bands",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "int",
-    "unit": "",
-    "limits": [
-     3,
-     7
-    ],
-    "type": 5,
-    "range": [
-     1.0,
-     9.0
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.mark-size",
-    "label": "Mark size",
-    "short": "Mark size",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.07,
-     0.12
-    ],
-    "type": 0.095,
-    "range": [
-     0.045,
-     0.145
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "face.whisker-count",
-    "label": "Whisker count",
-    "short": "Whisker count",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "face",
-    "op": "blend",
-    "form": "int",
-    "unit": "",
-    "limits": [
-     0,
-     3
-    ],
-    "type": 0,
-    "range": [
-     -1.5,
-     4.5
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "face.whisker-length",
-    "label": "Whisker length",
-    "short": "Whisker length",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "face",
-    "op": "blend",
-    "form": "lin",
-    "unit": "H",
-    "limits": [
-     0.2,
-     0.45
-    ],
-    "type": 0.325,
-    "range": [
-     0.075,
-     0.575
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "face.whisker-droop",
-    "label": "Whisker droop",
-    "short": "Whisker droop",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "face",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.1,
-     0.5
-    ],
-    "type": 0.3,
-    "range": [
-     -0.1,
-     0.7
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "face.whisker-curl",
-    "label": "Whisker curl",
-    "short": "Whisker curl",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "face",
-    "op": "blend",
-    "form": "lin",
-    "unit": "",
-    "limits": [
-     0.0,
-     0.6
-    ],
-    "type": 0.3,
-    "range": [
-     -0.3,
-     0.9
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "appearance.body-hue",
-    "label": "Body hue",
-    "short": "Hue",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "\u00b0",
-    "limits": [
-     0.0,
-     360.0
-    ],
-    "type": 270.0,
-    "range": [
-     -180.0,
-     540.0
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "appearance.glow-hue",
-    "label": "Glow hue",
-    "short": "Glow hue",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "blend",
-    "form": "lin",
-    "unit": "\u00b0",
-    "limits": [
-     70.0,
-     90.0
-    ],
-    "type": 80.0,
-    "range": [
-     60.0,
-     100.0
-    ],
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "body.ear-family",
-    "label": "Ear family",
-    "short": "Ear family",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "pair-map",
-    "limits": [
-     "prick",
-     "lop",
-     "nub"
-    ],
-    "weights": [
-     0.4,
-     0.3,
-     0.3
-    ],
-    "order": [
-     "prick",
-     "nub",
-     "lop"
-    ],
-    "type": "prick",
-    "moves": [
-     {
-      "path": "parts[ear.L].default",
-      "op": "set"
-     }
-    ]
-   },
-   {
-    "locus": "body.tail-tip",
+    "locus": "anatomy.tail-tip-form",
     "label": "Tail tip",
     "short": "Tip",
-    "chapter": "tail",
-    "scope": "own",
+    "chapter": "legs-tail",
+    "scope": "branch",
     "kind": "heritable-look",
     "shapeable": true,
-    "anchor": "coat",
     "op": "pair-map",
     "limits": [
      "lantern",
@@ -3304,283 +3679,55 @@
     "consumer": "the tail-tip family builder (it reads the look from the creature)"
    },
    {
-    "locus": "appearance.marking-layout",
-    "label": "Marking layout",
-    "short": "Layout",
-    "chapter": "coat",
-    "scope": "own",
+    "locus": "form.tail-tip-size",
+    "label": "Tip size",
+    "short": "Tip size",
+    "chapter": "legs-tail",
+    "scope": "trunk",
     "kind": "heritable-look",
     "shapeable": true,
-    "anchor": "coat",
-    "op": "pair-map",
-    "limits": [
-     "plain",
-     "masked",
-     "points",
-     "banded",
-     "spotted",
-     "capped"
+    "op": "blend",
+    "band": {
+     "form": "mult",
+     "lo": 0.85,
+     "hi": 1.2,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
+     0.675,
+     1.375
     ],
-    "weights": [
-     0.25,
-     0.15,
-     0.15,
-     0.15,
-     0.15,
-     0.15
+    "bins": [
+     "small",
+     "between",
+     "large"
     ],
-    "order": [
-     "plain",
-     "masked",
-     "points",
-     "banded",
-     "spotted",
-     "capped"
-    ],
-    "type": "plain",
-    "pin_note": "The pin's marking layout has two looks (bands, patches); S20 draws six, so it is S20's own until the pin is changed.",
-    "loud": "pattern",
     "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+    "consumer": "the tail-tip family builder (it reads the size from the creature)"
    },
    {
-    "locus": "coat.rd",
-    "label": "Rd",
-    "short": "Rd",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
+    "locus": "movement.cycle-rate",
+    "label": "Cycle rate",
+    "short": "Cycle rate",
+    "chapter": "movement",
+    "scope": "trunk",
+    "kind": "heritable-doing",
     "shapeable": true,
-    "anchor": "coat",
-    "op": "pair-map",
-    "limits": [
-     "none",
-     "spots",
-     "labyrinth",
-     "rings"
-    ],
-    "weights": [
-     0.4,
-     0.25,
-     0.2,
-     0.15
-    ],
-    "order": [
-     "none",
-     "spots",
-     "labyrinth",
-     "rings"
-    ],
-    "type": "none",
-    "loud": "pattern",
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.mark",
-    "label": "Mark",
-    "short": "Mark",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "pair-map",
-    "limits": [
-     "none",
-     "heart",
-     "star"
-    ],
-    "weights": [
-     0.5,
-     0.25,
-     0.25
-    ],
-    "order": [
-     "none",
-     "heart",
-     "star"
-    ],
-    "type": "none",
-    "loud": "emblem",
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.mark-where",
-    "label": "Mark where",
-    "short": "Mark where",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "pair-map",
-    "limits": [
-     "forehead",
-     "belly"
-    ],
-    "weights": [
+    "op": "blend",
+    "absolute": {
+     "form": "mult",
+     "lo": 0.85,
+     "hi": 1.15,
+     "unit": "\u00d7"
+    },
+    "type": 1.0,
+    "range": [
      0.7,
-     0.3
+     1.3
     ],
-    "order": [
-     "forehead",
-     "belly"
-    ],
-    "type": "forehead",
     "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "coat.glow-pattern",
-    "label": "Glow pattern",
-    "short": "Glow pattern",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "pair-map",
-    "limits": [
-     "none",
-     "belly-arcs"
-    ],
-    "weights": [
-     0.6,
-     0.4
-    ],
-    "order": [
-     "none",
-     "belly-arcs"
-    ],
-    "type": "none",
-    "loud": "glow",
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "face.expression",
-    "label": "Expression",
-    "short": "Expression",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "pair-map",
-    "limits": [
-     "content",
-     "open"
-    ],
-    "weights": [
-     0.8,
-     0.2
-    ],
-    "order": [
-     "content",
-     "open"
-    ],
-    "type": "content",
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "face.whisker-glow",
-    "label": "Whisker glow",
-    "short": "Whisker glow",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "pair-map",
-    "limits": [
-     "off",
-     "glow"
-    ],
-    "weights": [
-     0.85,
-     0.15
-    ],
-    "order": [
-     "off",
-     "glow"
-    ],
-    "type": "off",
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "face.fangs",
-    "label": "Fangs",
-    "short": "Fangs",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "anchor": "coat",
-    "op": "pair-map",
-    "limits": [
-     "none",
-     "fangs"
-    ],
-    "weights": [
-     0.75,
-     0.25
-    ],
-    "order": [
-     "none",
-     "fangs"
-    ],
-    "type": "none",
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
-   },
-   {
-    "locus": "face.blush",
-    "label": "Blush",
-    "short": "Blush",
-    "chapter": "face",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "op": "switch",
-    "limits": [
-     "off",
-     "on"
-    ],
-    "type": "on",
-    "weight": 0.8,
-    "map": {
-     "off": false,
-     "on": true
-    },
-    "moves": [],
-    "consumer": "the face decal, through the creature record"
-   },
-   {
-    "locus": "coat.brow",
-    "label": "Brow",
-    "short": "Brow",
-    "chapter": "coat",
-    "scope": "own",
-    "kind": "heritable-look",
-    "shapeable": true,
-    "op": "switch",
-    "limits": [
-     "off",
-     "on"
-    ],
-    "type": "off",
-    "weight": 0.25,
-    "map": {
-     "off": false,
-     "on": true
-    },
-    "loud": "brow",
-    "moves": [],
-    "consumer": "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)"
+    "consumer": "the rig's clips (motion periods are divided by it)"
    }
   ]
  },

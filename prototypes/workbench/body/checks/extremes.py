@@ -19,7 +19,8 @@ def list_ends(spec, only=None):
         if only and i not in only:
             continue
         if e["op"] == "blend":
-            for end, v in (("low", e["limits"][0]), ("high", e["limits"][1])):
+            b = e.get("band") or e["absolute"]
+            for end, v in (("low", b["lo"]), ("high", b["hi"])):
                 out.append(dict(id=f"{i}:{end}", locus=i, end=end, genome=f"{end}:{i}", value=v, label=e["label"]))
         else:
             for a in e["limits"]:
@@ -53,8 +54,9 @@ def bisect_fix(entry, end, fails_at, steps=5, grid=6):
     """The highest value up to which everything passes, for a failing end. The cage is not monotonic in a gene (S20's tail length creases leg.L at 1.1, not at 1.19, again at 1.25), so the walk from the type to the end samples `grid` evenly spaced values first,
     stops at the first that fails, then halves the gap `steps` times. fails_at(value) -> bool builds that value and says whether it fails. Returns dict(value, path, end), or None when nothing between the type and the end passes at two decimals."""
     typ = entry["type"]
-    v_end = entry["limits"][1] if end == "high" else entry["limits"][0]
-    if entry["form"] == "int":
+    b = entry.get("band") or entry["absolute"]
+    v_end = b["hi"] if end == "high" else b["lo"]
+    if b["form"] == "int":
         return None
     ok, bad = typ, v_end
     for k in range(1, grid + 1):
@@ -74,7 +76,7 @@ def bisect_fix(entry, end, fails_at, steps=5, grid=6):
         if (cand - typ) * (1 if end == "high" else -1) <= 0.0:
             return None
         if not fails_at(cand):
-            idx = 1 if end == "high" else 0
-            return dict(value=cand, path=f"genome.loci.{entry['locus']}.limits.{idx}", end=end)
+            key = "band" if "band" in entry else "absolute"
+            return dict(value=cand, path=f"genome.loci.{entry['locus']}.{key}.{'hi' if end == 'high' else 'lo'}", end=end)
         cand = round(cand - 0.01 * (1 if end == "high" else -1), 2)
     return None

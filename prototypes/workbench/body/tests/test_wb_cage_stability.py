@@ -11,7 +11,8 @@ sys.path.insert(0, BODY)
 from wb import facade as F  # noqa: E402
 
 DOC = json.load(open(os.path.join(BODY, "species_v1", "S20.json")))
-TAIL = [e for e in DOC["genome"]["loci"] if e["locus"].startswith("body.tail-") and e["op"] == "blend"]
+TAIL = [e for e in DOC["genome"]["loci"] if e["locus"] in ("form.tail-length", "form.tail-girth", "form.tail-curl", "form.tail-carry")]
+assert len(TAIL) == 4
 
 
 def part_vertices(b, name):
@@ -24,7 +25,7 @@ def moved(loci, tol, extra=()):
     for e in TAIL:
         if e["locus"] not in loci:
             continue
-        for v in (e["limits"][0], e["limits"][1]) + tuple(extra if e["locus"] == "body.tail-length" else ()):
+        for v in (e["band"]["lo"], e["band"]["hi"]) + tuple(extra if e["locus"] == "form.tail-length" else ()):
             b = F.build(DOC, f"value:{e['locus']}={v}").body
             for part in ("leg.L", "arm.L"):
                 a, c = part_vertices(base, part), part_vertices(b, part)
@@ -34,15 +35,15 @@ def moved(loci, tol, extra=()):
 
 class TestOwnRegion(unittest.TestCase):
     def test_tail_length_and_curl_leave_the_limbs_alone(self):
-        self.assertEqual(moved(("body.tail-length", "body.tail-curl"), 1e-4, extra=(1.1, 1.19)), {})
+        self.assertEqual(moved(("form.tail-length", "form.tail-curl"), 1e-4, extra=(1.1, 1.19)), {})
 
     @unittest.expectedFailure
     def test_tail_girth_and_lift_leave_the_limbs_alone(self):
         """Known gap: girth and lift move leg.L by up to 0.014 H and the arm by 0.0016 (the limit fit, the junction smoothing and the relax are one coupled pass over the cage, and the lift turns the tail's root under the seat). Neither creases a limb."""
-        self.assertEqual(moved(("body.tail-girth", "body.tail-lift"), 1e-4), {})
+        self.assertEqual(moved(("form.tail-girth", "form.tail-carry"), 1e-4), {})
 
     def test_tail_girth_and_lift_move_the_limbs_less_than_a_hundredth_of_the_height(self):
-        self.assertEqual(moved(("body.tail-girth", "body.tail-lift"), 0.02), {})
+        self.assertEqual(moved(("form.tail-girth", "form.tail-carry"), 0.02), {})
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ import * as m from "../../framework/catalogue.mjs";
 const c = m.CATALOGUE;
 const loci = c.loci.map((l) => ({
   id: l.id, operator: l.operator, scope: l.scope, clan: l.clan ?? null, family: l.family, label: l.label, nature: l.nature ?? "look",
+  owner: l.owner ?? null, requires: l.requires ?? null, switch: l.switch ?? null, measure: l.measure ?? null,
+  sleepsWhen: l.sleepsWhen ?? null, wakesWhen: l.wakesWhen ?? null,
   alleles: l.alleles.map((a) => (typeof a.value === "number" ? { id: a.id, value: a.value } : { id: a.id })),
 }));
-process.stdout.write(JSON.stringify({ id: c.id, version: c.version, schema: c.schema, loci }, null, 1) + "\n");
+process.stdout.write(JSON.stringify({ id: c.id, version: c.version, schema: c.schema, digest: c.digest, lookPairs: m.LOOK_PAIRS, loci }, null, 1) + "\n");

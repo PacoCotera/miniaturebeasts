@@ -1,6 +1,7 @@
-"""Builds S20's `genome` block (chunk 7) from the gene tables that S20's individuals were drawn from (s20genes) and the typed moves below, and writes it into species_v1/S20.json.
+"""Builds S20's `genome` block (chunk 7, pin 11) from the gene tables that S20's individuals were drawn from (s20genes) and the typed moves below, and writes it into species_v1/S20.json.
 python -m wb.make_genome_block [--check]   (--check only reports whether the file already holds this block)
-The limits, types, pools and orders are exactly the tables the twelve were drawn from, so the twelve's cages stay as they were."""
+The block names the catalogue's records (genome-string proposal A.3, with the game designer's pin 11 rulings: the whisker switch added, the hue shift folded into the hue, the rosette renamed),
+in the frame's ring order, in the chapters coat, face, shape, legs-tail and movement. The bands, types, pools and orders are exactly the tables the twelve were drawn from, so their cages stay as they were."""
 import json
 import os
 import sys
@@ -12,6 +13,8 @@ import genomeapply as GA
 import s20genes as GN
 
 FILE = os.path.join(BODY, "species_v1", "S20.json")
+CLAN = "C20"
+BORROWS = ["anatomy.brow-tuft-presence"]                       # C18's brow tufts: the same thing, borrowed through the spec's `borrows` (genome-review change 4)
 EAR = "parts[ear.L].families.*"
 TORSO_BODY = dict(item=0, op="<=", ref="spine.loft.regions.body.1")
 TORSO_HEAD = dict(item=0, op=">", ref="spine.loft.regions.body.1")
@@ -20,125 +23,106 @@ MASS_HEAD = dict(item="z", op=">", ref="spine.loft.regions.body.1")
 GIRTH_SHARE = [0.35 + 0.65 * k / 6 for k in range(1, 7)]       # the tail's girth gene: the root takes 35 % of the change, the stalk under the tip all of it
 
 MOVES = {
-    "body.torso-girth": [dict(path="spine.loft.section.stations[*].1", op="scale", where=TORSO_BODY, above=0.05), dict(path="spine.loft.masses[*].rho", op="scale", where=MASS_BODY)],
-    "body.head-size": [dict(path="spine.loft.section.stations[*].1", op="scale", where=TORSO_HEAD, above=0.05), dict(path="spine.loft.masses[*].rho", op="scale", where=MASS_HEAD)],
-    "body.limb-length": [dict(path="parts[leg.L].chain[*].len", op="scale")],
-    "body.limb-girth": [dict(path="parts[leg.L].chain[*].r", op="scale")],
-    "body.ear-length": [dict(path=EAR + ".joints[1:].len", op="scale"), dict(path=EAR + ".tubes[*].len", op="scale", max=0.35)],
-    "body.ear-girth": [dict(path=EAR + ".joints[*].r", op="scale")],
-    "body.ear-splay": [dict(path=EAR + ".plane.yaw", op="add"), dict(path=EAR + ".tubes[*].yaw", op="add")],
-    "body.ear-droop": [dict(path=EAR + ".joints[1:].pitch", op="add", share=-1.0)],
-    "body.ear-family": [dict(path="parts[ear.L].default", op="set")],
-    "body.tail-length": [dict(path="spine.tail.segments[1:5].len", op="scale")],
-    "body.tail-girth": [dict(path="spine.tail.root_r", op="scale", share=0.35), dict(path="spine.tail.segments[*].r", op="scale", share=GIRTH_SHARE), dict(path="spine.tail.tip_r", op="scale")],
-    "body.tail-curl": [dict(path="spine.tail.segments[3:5].len", op="scale", share=2.5)],
-    "body.tail-lift": [dict(path="spine.tail.segments[*].pitch", op="add", share=-1.0)],
+    "form.torso-girth": [dict(path="spine.loft.section.stations[*].1", op="scale", where=TORSO_BODY, above=0.05), dict(path="spine.loft.masses[*].rho", op="scale", where=MASS_BODY)],
+    "form.head": [dict(path="spine.loft.section.stations[*].1", op="scale", where=TORSO_HEAD, above=0.05), dict(path="spine.loft.masses[*].rho", op="scale", where=MASS_HEAD)],
+    "form.leg-length": [dict(path="parts[leg.L].chain[*].len", op="scale")],
+    "form.leg-girth": [dict(path="parts[leg.L].chain[*].r", op="scale")],
+    "form.ear-length": [dict(path=EAR + ".joints[1:].len", op="scale"), dict(path=EAR + ".tubes[*].len", op="scale", max=0.35)],
+    "form.ear-width": [dict(path=EAR + ".joints[*].r", op="scale")],
+    "form.ear-splay": [dict(path=EAR + ".plane.yaw", op="add"), dict(path=EAR + ".tubes[*].yaw", op="add")],
+    "form.ear-droop": [dict(path=EAR + ".joints[1:].pitch", op="add", share=-1.0)],
+    "form.ear-kind": [dict(path="parts[ear.L].default", op="set")],
+    "form.tail-length": [dict(path="spine.tail.segments[1:5].len", op="scale")],
+    "form.tail-girth": [dict(path="spine.tail.root_r", op="scale", share=0.35), dict(path="spine.tail.segments[*].r", op="scale", share=GIRTH_SHARE), dict(path="spine.tail.tip_r", op="scale")],
+    "form.tail-curl": [dict(path="spine.tail.segments[3:5].len", op="scale", share=2.5)],
+    "form.tail-carry": [dict(path="spine.tail.segments[*].pitch", op="add", share=-1.0)],
 }
 CONSUMER = {
-    "body.tip-size": "the tail-tip family builder (it reads the size from the creature)",
-    "body.tail-tip": "the tail-tip family builder (it reads the look from the creature)",
+    "form.tail-tip-size": "the tail-tip family builder (it reads the size from the creature)",
+    "anatomy.tail-tip-form": "the tail-tip family builder (it reads the look from the creature)",
     "movement.cycle-rate": "the rig's clips (motion periods are divided by it)",
+    "anatomy.whisker-presence": "the whisker appendages (a count of none is the switch off; the sampler's engine turns a count of 1 into 2 a side)",
+    "appearance.marking-switch": "the coat resolver, through the creature record: off is the `plain` look (marks need both copies)",
 }
-# loci shared with the pin: the type in the pin's units (value = type * factor) and why a locus that shares an id with the pin is not shared
-SHARED = {"growth.exterior-eye-size-ratio": 0.32, "movement.cycle-rate": 1.0}
-PIN_NOTES = {
-    "growth.exterior-eye-height-ratio": "The pin's eye height is a branch locus of clan C01 (middle or high, 0 to 0.2); S20 moves the eye up and down either way, so it is S20's own.",
-    "growth.exterior-eye-spacing-ratio": "The pin's eye spacing is a ratio of 0.40 to 0.55 of the head's width; S20 moves the eyes by an offset in head units, so it is S20's own.",
-    "appearance.marking-layout": "The pin's marking layout has two looks (bands, patches); S20 draws six, so it is S20's own until the pin is changed.",
+# A.3's ring order, five chapters: (record, chapter id)
+RING = {
+    "coat": ["appearance.body-hue", "appearance.body-value", "appearance.countershade", "appearance.surface-grain", "appearance.sheen", "appearance.fleck", "appearance.cream-extent",
+             "appearance.marking-switch", "appearance.marking-layout", "appearance.pattern-kind", "appearance.pattern-scale", "appearance.pattern-contrast", "appearance.marking-rosette", "appearance.band-count",
+             "appearance.emblem", "appearance.emblem-place", "appearance.emblem-size", "appearance.freckle-density", "appearance.freckle-glow", "appearance.emission-brightness", "appearance.emission-hue",
+             "appearance.lantern-bleed", "appearance.glow-pattern"],
+    "face": ["form.eye-size", "form.eye-height", "form.eye-spacing", "form.mouth-width", "form.mouth-height", "appearance.mouth-rest", "appearance.blush", "anatomy.fang-presence", "anatomy.whisker-presence",
+             "form.whisker-count", "form.whisker-length", "form.whisker-droop", "form.whisker-curl", "appearance.whisker-glow", "anatomy.brow-tuft-presence", "form.ear-kind", "form.ear-length", "form.ear-width",
+             "form.ear-splay", "form.ear-droop"],
+    "shape": ["form.head", "form.torso-girth"],
+    "legs-tail": ["form.leg-length", "form.leg-girth", "form.tail-length", "form.tail-girth", "form.tail-curl", "form.tail-carry", "anatomy.tail-tip-form", "form.tail-tip-size"],
+    "movement": ["movement.cycle-rate"],
 }
-CHAPTERS = [("body", "Body"), ("tail", "Tail"), ("face", "Face"), ("coat", "Coat"), ("movement", "Movement")]
-CHAPTER_OF = {"body": "body", "ears": "face", "tail": "tail", "face": "face", "coat": "coat"}
-FACE_BODY = {"body.ear-length", "body.ear-girth", "body.ear-splay", "body.ear-droop", "body.ear-family"}
-UNITS = {"body.ear-splay": "°", "body.ear-droop": "°", "body.tail-lift": "°", "body.tail-curl": "turns", "appearance.body-hue": "°", "appearance.glow-hue": "°",
-         "growth.exterior-eye-height-ratio": "H", "growth.exterior-eye-spacing-ratio": "H", "face.mouth-height": "H", "face.whisker-length": "H", "appearance.bib-reach": "H"}
-BINS = {"body.tail-length": ["short", "between", "long"], "body.tail-girth": ["slim", "between", "stout"], "body.tail-curl": ["straight", "between", "curled"], "body.tail-lift": ["low", "between", "raised"],
-        "body.tip-size": ["small", "between", "large"], "body.torso-girth": ["slim", "between", "round"], "body.head-size": ["small", "between", "big"], "body.limb-length": ["short", "between", "long"],
-        "body.limb-girth": ["slim", "between", "sturdy"], "body.ear-length": ["short", "between", "long"], "body.ear-girth": ["slim", "between", "broad"]}
-WORDS = {"short": "Short", "length": "Length"}
-LOUD = {"coat.glow-pattern": "glow", "coat.rd": "pattern", "appearance.marking-layout": "pattern", "coat.mark": "emblem", "coat.brow": "brow"}
-
-
-NAMES = {"growth.exterior-eye-size-ratio": ("Eye size", "Eye size"), "growth.exterior-eye-height-ratio": ("Eye height", "Eye height"), "growth.exterior-eye-spacing-ratio": ("Eye spacing", "Eye spacing"),
-         "movement.cycle-rate": ("Cycle rate", "Cycle rate"), "appearance.body-hue": ("Body hue", "Hue"), "appearance.glow-hue": ("Glow hue", "Glow hue"), "appearance.coat-value": ("Coat value", "Value"),
-         "appearance.bib-reach": ("Belly reach", "Belly reach"), "appearance.marking-layout": ("Marking layout", "Layout"), "body.ear-family": ("Ear family", "Ear family"), "body.tail-tip": ("Tail tip", "Tip"),
-         "body.tip-size": ("Tip size", "Tip size"), "skin.grain": ("Skin grain", "Grain"), "skin.sheen": ("Skin sheen", "Sheen")}
-
-
-def label_of(i, ch):
-    if i in NAMES:
-        return NAMES[i]
-    name = i.split(".", 1)[1].replace("-", " ")
-    full = name[0].upper() + name[1:]
-    short = name
-    for w in ("tail ", "face ", "coat ", "body "):
-        if short.startswith(w) and len(short) > len(w):
-            short = short[len(w):]
-            break
-    return full, short[0].upper() + short[1:]
+CHAPTERS = [("coat", "Coat"), ("face", "Face"), ("shape", "Shape"), ("legs-tail", "Legs & tail"), ("movement", "Movement")]
+UNITS = {"form.ear-splay": "°", "form.ear-droop": "°", "form.tail-carry": "°", "form.tail-curl": "turns", "appearance.body-hue": "°", "appearance.emission-hue": "°",
+         "form.eye-height": "H", "form.eye-spacing": "H", "form.mouth-height": "H", "form.whisker-length": "H", "appearance.cream-extent": "H"}
+SHORT = {"appearance.body-hue": "Hue", "appearance.body-value": "Value", "appearance.emission-hue": "Glow hue", "appearance.cream-extent": "Cream reach", "appearance.marking-layout": "Layout",
+         "appearance.marking-switch": "Marks", "anatomy.tail-tip-form": "Tip", "form.tail-tip-size": "Tip size", "appearance.surface-grain": "Grain", "anatomy.whisker-presence": "Whiskers"}
+LOUD = {"appearance.glow-pattern": "glow", "appearance.pattern-kind": "pattern", "appearance.marking-layout": "pattern", "appearance.emblem": "emblem", "anatomy.brow-tuft-presence": "brow"}
+# the switches: record -> (the sampler's draw weight of `on`, the type's allele)
+SWITCH_DRAW = {"appearance.marking-switch": (0.75, "off"), "appearance.blush": (0.8, "on"), "anatomy.fang-presence": (0.25, "off"), "anatomy.whisker-presence": (5 / 6, "off"),
+               "appearance.whisker-glow": (0.15, "off"), "anatomy.brow-tuft-presence": (0.25, "off")}
 
 
 def block():
     pin = GA.pin()
-    loci = []
-    order = list(GN.GENES) + [k for k in GN.PAIRS] + list(GN.SWITCHES)
     spec = GN.specimen()
-    for i in order:
-        anchor = None
-        if i in GN.GENES:
-            form, lo, hi, anchor = GN.GENES[i]
-        elif i in GN.PAIRS:
-            anchor = "coat"
-        ch = CHAPTER_OF.get(anchor, "coat")
-        if i in FACE_BODY:
-            ch = "face"
-        if i.startswith("face.") or i.startswith("growth.exterior"):
-            ch = "face"
-        if i.startswith("body.tail") or i == "body.tip-size":
-            ch = "tail"
-        if i == "movement.cycle-rate":
-            ch = "movement"
-        full, short = label_of(i, ch)
-        pl = GA.pin_locus(i)
-        e = dict(locus=i, label=full, short=short, chapter=ch, scope="own", kind="heritable-doing" if i == "movement.cycle-rate" else "heritable-look", shapeable=True)
-        if anchor:
-            e["anchor"] = anchor
-        if i in GN.GENES:
-            e.update(op="blend", form=form, unit=UNITS.get(i, "×" if form == "mult" else ""), limits=[lo, hi])
-            tt = spec["t"][i]
-            typ = 1.0 if form == "mult" else 0.0 if form == "off" else round(GA.value_of(form, lo, hi, tt), 9)
-            if form == "int":
-                typ = int(typ)
-            e["type"] = typ
-            span = hi - lo
-            e["range"] = [round(max(lo - span / 2, 0.1) if form == "mult" else lo - span / 2, 4), round(hi + span / 2, 4)]
-            if i == "body.tail-length":
-                e["range"] = [0.5, 2.0]
-            if i in BINS:
-                e["bins"] = BINS[i]
-            if i in SHARED:
-                e["scope"] = "shared"
-                lo_c = min(a["value"] for a in pl["alleles"] if "value" in a)
-                hi_c = max(a["value"] for a in pl["alleles"] if "value" in a)
-                e["catalogue"] = dict(range=[lo_c, hi_c], type=SHARED[i], operator=pl["operator"])
-        elif i in GN.PAIRS:
-            al, w, dom = GN.PAIRS[i]
-            e.update(op="pair-map", limits=list(al), weights=list(w), order=list(dom), type=GN.TYPE_PAIRS[i])
-        else:
-            e.update(op="switch", limits=["off", "on"], type="on" if i == "face.blush" else "off", weight=GN.SWITCHES[i], map={"off": False, "on": True})
-        if pl is not None and e["scope"] == "own":
-            e["pin_note"] = PIN_NOTES.get(i, "The pin has a locus with this id; S20's differs, so it is S20's own.")
-        if i in LOUD:
-            e["loud"] = LOUD[i]
-        mv = MOVES.get(i)
-        if mv:
-            e["moves"] = mv
-        else:
-            e["moves"] = []
-            e["consumer"] = CONSUMER.get(i) or ("the cage builder, through the creature record" if i in ("body.tail-tip",) else "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)")
-            if i == "face.blush" or i.startswith("face.mouth") or i.startswith("growth.exterior-eye"):
-                e["consumer"] = "the face decal, through the creature record"
-        loci.append(e)
-    return dict(catalogue=dict(id=pin["id"], version=pin["version"]), chapters=[dict(id=c, name=n) for c, n in CHAPTERS], loci=loci)
+    ids = {r for chapter in RING.values() for r in chapter}
+    loci = []
+    for ch, records in RING.items():
+        for i in records:
+            pl = GA.pin_locus(i)
+            label = pl["label"][0].upper() + pl["label"][1:]
+            kind = "heritable-doing" if pl["nature"] == "doing" else "heritable-look"
+            e = dict(locus=i, label=label, short=SHORT.get(i, label), chapter=ch, scope=pl["scope"], kind=kind, shapeable=True)
+            if pl["scope"] == "branch" and pl["clan"] != CLAN:
+                e["borrowed"] = pl["clan"]
+            req = [r for r in (pl.get("requires") or []) if r in ids]
+            if req or pl.get("wakesWhen"):
+                e["kind"] = "sleeping"
+                if req:
+                    e["requires"] = req
+                if pl.get("wakesWhen"):
+                    e["wakesWhen"] = pl["wakesWhen"]
+            old = GN.SAMPLER_OF.get(i)
+            if old in GN.GENES and i in GN.RECORD.values():
+                form, lo, hi, _ = GN.GENES[old]
+                e["op"] = "blend"
+                unit = UNITS.get(i, "×" if form == "mult" else "")
+                pool = dict(form=form, lo=lo, hi=hi, unit=unit)
+                e["absolute" if old in GN.ABSOLUTE else "band"] = pool
+                typ = 1.0 if form == "mult" else 0.0 if form == "off" else round(GA.value_of(form, lo, hi, spec["t"][old]), 9)
+                e["type"] = int(typ) if form == "int" else typ
+                span = hi - lo
+                e["range"] = [round(max(lo - span / 2, 0.1) if form == "mult" else lo - span / 2, 4), round(hi + span / 2, 4)]
+                if i == "form.tail-length":
+                    e["range"] = [0.5, 2.0]
+                if pl.get("measure") == "position":
+                    e["bins"] = [a["id"] for a in pl["alleles"]]
+            elif i in GN.SWITCH_DRAW_RECORDS:
+                w, t = SWITCH_DRAW[i]
+                e.update(op="switch", operator=pl["operator"], limits=["off", "on"], type=t, weight=w, map={"off": False, "on": True})
+            elif i == GN.MARKING_LAYOUT:
+                al, w, dom = GN.PAIRS["appearance.marking-layout"]
+                keep = [a for a in al if a != "plain"]
+                e.update(op="pair-map", limits=[GN.LAYOUT_ALLELE.get(a, a) for a in keep], weights=[round(w[al.index(a)] / 0.75, 6) for a in keep], order=[GN.LAYOUT_ALLELE.get(a, a) for a in dom if a != "plain"], type="bands")
+            else:
+                al, w, dom = GN.PAIRS[old]
+                e.update(op="pair-map", limits=list(al), weights=list(w), order=list(dom), type=GN.TYPE_PAIRS[old])
+            if i in LOUD:
+                e["loud"] = LOUD[i]
+            mv = MOVES.get(i)
+            if mv:
+                e["moves"] = mv
+            else:
+                e["moves"] = []
+                e["consumer"] = CONSUMER.get(i) or ("the face decal, through the creature record" if i.startswith(("form.eye", "form.mouth", "appearance.blush", "appearance.mouth")) else "the coat resolver, through the creature record (coat plug-ins arrive in chunk 28)")
+            loci.append(e)
+    return dict(catalogue=dict(id=pin["id"], version=pin["version"], digest=pin["digest"]), clan=CLAN, borrows=list(BORROWS), chapters=[dict(id=c, name=n) for c, n in CHAPTERS], loci=loci)
 
 
 def main():

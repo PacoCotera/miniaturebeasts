@@ -96,9 +96,9 @@ def apply_shape(raw, g=None):
 
 
 # ======================================================================== the generic apply (chunk 7): a gene moves typed paths of the v1 file
-SHAPE_KEY = {"body.torso-girth": "torsoGirth", "body.head-size": "headSize", "body.limb-length": "legLen", "body.limb-girth": "legGirth", "body.ear-family": "ear", "body.ear-length": "earLen", "body.ear-girth": "earGirth",
-             "body.ear-splay": "splay", "body.ear-droop": "droop", "body.tail-length": "tailLen", "body.tail-girth": "tailGirth", "body.tail-curl": "curl", "body.tail-lift": "lift"}
-COAT_KEY = {"growth.exterior-eye-size-ratio": "eye_size", "growth.exterior-eye-height-ratio": "eye_height", "growth.exterior-eye-spacing-ratio": "eye_spacing", "face.mouth-width": "mouth_width", "face.mouth-height": "mouth_z"}
+SHAPE_KEY = {"form.torso-girth": "torsoGirth", "form.head": "headSize", "form.leg-length": "legLen", "form.leg-girth": "legGirth", "form.ear-kind": "ear", "form.ear-length": "earLen", "form.ear-width": "earGirth",
+             "form.ear-splay": "splay", "form.ear-droop": "droop", "form.tail-length": "tailLen", "form.tail-girth": "tailGirth", "form.tail-curl": "curl", "form.tail-carry": "lift"}
+COAT_KEY = {"form.eye-size": "eye_size", "form.eye-height": "eye_height", "form.eye-spacing": "eye_spacing", "form.mouth-width": "mouth_width", "form.mouth-height": "mouth_z"}
 
 
 def apply_genes(doc, g, coat=None):
@@ -112,8 +112,8 @@ def apply_genes(doc, g, coat=None):
     for loc, k in COAT_KEY.items():
         if coat and k in coat:
             values[loc] = coat[k]
-    base = GA.apply_values(doc, genome, values, skip=("body.tail-curl",))
-    curl_e = GA.by_locus(genome).get("body.tail-curl")
+    base = GA.apply_values(doc, genome, values, skip=("form.tail-curl",))
+    curl_e = GA.by_locus(genome).get("form.tail-curl")
     f = 1.0
     for _ in range(300):
         d = copy.deepcopy(base)
@@ -182,6 +182,112 @@ PAIRS = {
 SWITCHES = {"face.blush": 0.8, "coat.brow": 0.25}
 TYPE_PAIRS = {"body.ear-family": "prick", "body.tail-tip": "lantern", "appearance.marking-layout": "plain", "coat.rd": "none", "coat.mark": "none", "coat.mark-where": "forehead", "coat.glow-pattern": "none", "face.expression": "content", "face.whisker-glow": "off", "face.fangs": "none"}
 TYPE_COAT_T = {"coat.gradient": 0.5, "coat.fleck": 0.5, "coat.freckle-density": 0.5, "coat.freckle-glow": 0.8, "coat.bleed": 0.5}      # the type specimen's modest coat (t of each lin locus)
+
+
+# ======================================================================== the catalogue records (genome-string proposal A.3, pin 11)
+# The sampler keeps its own ids, tables and random stream. Each of its loci is a record of the catalogue pin; the file's genome block names the records, `sampler_tables` turns a block back
+# into the sampler's tables, and `genome_of` turns a drawn individual into two copies per record.
+RECORD = {
+    "appearance.body-hue": "appearance.body-hue", "appearance.coat-value": "appearance.body-value", "coat.gradient": "appearance.countershade", "skin.grain": "appearance.surface-grain",
+    "skin.sheen": "appearance.sheen", "coat.fleck": "appearance.fleck", "appearance.bib-reach": "appearance.cream-extent", "coat.rd-scale": "appearance.pattern-scale",
+    "coat.rd-contrast": "appearance.pattern-contrast", "coat.rosette": "appearance.marking-rosette", "coat.bands": "appearance.band-count", "coat.mark-size": "appearance.emblem-size",
+    "coat.freckle-density": "appearance.freckle-density", "coat.freckle-glow": "appearance.freckle-glow", "appearance.glow": "appearance.emission-brightness", "appearance.glow-hue": "appearance.emission-hue",
+    "coat.bleed": "appearance.lantern-bleed",
+    "growth.exterior-eye-size-ratio": "form.eye-size", "growth.exterior-eye-height-ratio": "form.eye-height", "growth.exterior-eye-spacing-ratio": "form.eye-spacing",
+    "face.mouth-width": "form.mouth-width", "face.mouth-height": "form.mouth-height", "face.whisker-count": "form.whisker-count", "face.whisker-length": "form.whisker-length",
+    "face.whisker-droop": "form.whisker-droop", "face.whisker-curl": "form.whisker-curl",
+    "body.ear-length": "form.ear-length", "body.ear-girth": "form.ear-width", "body.ear-splay": "form.ear-splay", "body.ear-droop": "form.ear-droop",
+    "body.head-size": "form.head", "body.torso-girth": "form.torso-girth", "body.limb-length": "form.leg-length", "body.limb-girth": "form.leg-girth", "body.tail-length": "form.tail-length",
+    "body.tail-girth": "form.tail-girth", "body.tail-curl": "form.tail-curl", "body.tail-lift": "form.tail-carry", "body.tip-size": "form.tail-tip-size", "movement.cycle-rate": "movement.cycle-rate",
+}                                                                    # the blends (GENES), but coat.hue-shift: the catalogue has no such record, the adapter folds it into the hue copy
+PAIR_RECORD = {"body.ear-family": "form.ear-kind", "body.tail-tip": "anatomy.tail-tip-form", "coat.rd": "appearance.pattern-kind", "coat.mark": "appearance.emblem", "coat.mark-where": "appearance.emblem-place",
+               "coat.glow-pattern": "appearance.glow-pattern", "face.expression": "appearance.mouth-rest"}
+MARKING_SWITCH, MARKING_LAYOUT = "appearance.marking-switch", "appearance.marking-layout"                  # the sampler's one layout pair (with `plain`) is a switch and a layout
+PAIR_SWITCH = {"face.fangs": ("anatomy.fang-presence", "none", "fangs"), "face.whisker-glow": ("appearance.whisker-glow", "off", "glow")}           # a two-allele pair that is a recessive switch
+SWITCH_RECORD = {"blush": ("face.blush", "appearance.blush"), "brow": ("coat.brow", "anatomy.brow-tuft-presence")}
+WHISKER_SWITCH = "anatomy.whisker-presence"
+SWITCH_DRAW_RECORDS = {MARKING_SWITCH, WHISKER_SWITCH, *(v[0] for v in PAIR_SWITCH.values()), *(v[1] for v in SWITCH_RECORD.values())}
+FOLDED = "coat.hue-shift"
+LAYOUT_ALLELE = {"banded": "bands"}                                  # the sampler's name -> the catalogue's
+LAYOUT_BACK = {v: k for k, v in LAYOUT_ALLELE.items()}
+SAMPLER_OF = {**{v: k for k, v in RECORD.items()}, **{v: k for k, v in PAIR_RECORD.items()}}       # a record's sampler id, for the blends and the plain pairs
+
+
+def sampler_tables(genome):
+    """(GENES, PAIRS, SWITCHES, TYPE) in the sampler's ids, from a file's genome block (records of the catalogue). The hue shift is the sampler's own and stays as drawn (the coat does not move the cage)."""
+    import genomeapply as GA
+    G, P, S, T = GA.tables(genome)
+    g, p, s, t = {}, {}, {}, {}
+    for old, new in RECORD.items():
+        if new in G:
+            g[old] = (*G[new][:3], GENES[old][3])
+            t[old] = T[new]
+    g[FOLDED] = GENES[FOLDED]
+    t[FOLDED] = 0.0
+    for old, new in PAIR_RECORD.items():
+        if new in P:
+            p[old] = P[new]
+            t[old] = T[new]
+    if MARKING_LAYOUT in P:
+        al, w, dom = P[MARKING_LAYOUT]
+        w_on = S.get(MARKING_SWITCH, 0.75)
+        p["appearance.marking-layout"] = (["plain"] + [LAYOUT_BACK.get(a, a) for a in al], [1.0 - w_on] + [x * w_on for x in w], ["plain"] + [LAYOUT_BACK.get(a, a) for a in dom])
+        t["appearance.marking-layout"] = "plain" if T.get(MARKING_SWITCH) == "off" else LAYOUT_BACK.get(T[MARKING_LAYOUT], T[MARKING_LAYOUT])
+    for old, (new, a_off, a_on) in PAIR_SWITCH.items():
+        if new in S:
+            p[old] = ([a_off, a_on], [1.0 - S[new], S[new]], [a_off, a_on])
+            t[old] = a_on if T[new] == "on" else a_off
+    for key, (old, new) in SWITCH_RECORD.items():
+        if new in S:
+            s[old] = S[new]
+            t[old] = T[new]
+    return g, p, s, t
+
+
+def genome_of(ind, tbl=None):
+    """The adapter: an individual as the sampler draws it -> a genome of the catalogue's records, two copies each ({record: [copy, copy]}; a continuous copy is t, or the record's own number
+    for the three absolute records; a t that is a bin exactly is that bin's id). The copies are not on the blend grid yet (the string writer quantizes them). The hue shift is folded into the hue
+    copy. A whisker count of none is the switch off/off, and the sleeping whisker records sit at `between`. A `plain` marking is the switch off with a layout copy (the other copy's, else bands)."""
+    import genomeapply as GA
+    G = tbl[0] if tbl else GENES
+    out = {}
+
+    def t_copy(record, t):
+        t = round(float(t), 6)
+        named = {a["value"]: a["id"] for a in GA.pin_locus(record)["alleles"]}
+        return named.get(t, t)
+
+    def put(record, value):
+        out[record] = [value, value]
+
+    for old, new in RECORD.items():
+        t = ind["t"][old]
+        if old == "appearance.body-hue":
+            t = (t + ind["t"].get(FOLDED, 0.0)) % 1.0
+        if old in ABSOLUTE:
+            f, lo, hi, _ = G[old]
+            put(new, round(GA.value_of(f, lo, hi, t), 6))
+        else:
+            put(new, t_copy(new, t))
+    none = int(round(GA.value_of(*G["face.whisker-count"][:3], ind["t"]["face.whisker-count"]))) < 1
+    put(WHISKER_SWITCH, "off" if none else "on")
+    if none:
+        for r in ("form.whisker-count", "form.whisker-length", "form.whisker-droop", "form.whisker-curl"):
+            put(r, "between")
+    for old, new in PAIR_RECORD.items():
+        out[new] = list(ind["pairs"][old])
+    lay = list(ind["pairs"]["appearance.marking-layout"])
+    shown = [LAYOUT_ALLELE.get(a, a) for a in lay if a != "plain"]
+    out[MARKING_SWITCH] = ["off", "off"] if "plain" in lay else ["on", "on"]
+    out[MARKING_LAYOUT] = [LAYOUT_ALLELE.get(a, a) if a != "plain" else (shown[0] if shown else "bands") for a in lay]
+    for old, (new, a_off, a_on) in PAIR_SWITCH.items():
+        out[new] = ["on" if a == a_on else "off" for a in ind["pairs"][old]]
+    for key, (old, new) in SWITCH_RECORD.items():
+        out[new] = ["on", "on"] if ind["switches"][key] else ["off", "off"]
+    return out
+
+
+ABSOLUTE = ("movement.cycle-rate", "skin.sheen", "appearance.glow")             # the three records whose copy is the record's own number
 
 
 def resolve_locus(name, t, G=None):
@@ -287,6 +393,7 @@ def phenotype(pair_name, pair, P=None):
 def creature(ind, tbl=None):
     """creature.json: every number resolved, no genes left but the record of them (canonical: sorted keys, 1e-6 rounding). `tbl`: the file's tables (genomeapply.tables); without it the module's own."""
     G, P = (tbl[0], tbl[1]) if tbl else (GENES, PAIRS)
+    G = {**G, FOLDED: G.get(FOLDED, GENES[FOLDED])}
     v = {k: resolve_locus(k, ind["t"][k], G) for k in G}
     ph = {k: phenotype(k, ind["pairs"][k], P) for k in P}
     clamped = v["body.head-size"] < 0.97 * v["body.torso-girth"]

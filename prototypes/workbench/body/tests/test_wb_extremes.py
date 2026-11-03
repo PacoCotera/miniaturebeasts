@@ -29,7 +29,7 @@ class TestExtremes(unittest.TestCase):
         self.assertEqual(len([e for e in ends if e["end"] == "allele"]), sum(len(e["limits"]) - 1 for e in others))
         self.assertEqual(len([e for e in ends if e["end"] == "corner"]), 10)
         self.assertLessEqual(len([e for e in ends if e["end"] == "corner"]), 16)
-        self.assertEqual(len(ends), 113)
+        self.assertEqual(len(ends), 112)
 
     def test_an_end_fails_only_on_what_passes_at_the_type(self):
         rows = [dict(id="verts", state="fail"), dict(id="normals", state="fail"), dict(id="mesh", state="warn")]
@@ -37,10 +37,10 @@ class TestExtremes(unittest.TestCase):
         self.assertEqual(EX.judge(rows, dict(verts="fail", normals="fail", mesh="pass"))[0], "pass")
 
     def test_the_computed_fix_is_the_highest_passing_value_at_two_decimals(self):
-        e = locus(DOC, "body.tail-length")
+        e = locus(DOC, "form.tail-length")
         fix = EX.bisect_fix(e, "high", lambda v: v > 1.1937)
-        self.assertEqual(fix, dict(value=1.19, path="genome.loci.body.tail-length.limits.1", end="high"))
-        low = EX.bisect_fix(locus(DOC, "body.tail-lift"), "low", lambda v: v < -11.04)
+        self.assertEqual(fix, dict(value=1.19, path="genome.loci.form.tail-length.band.hi", end="high"))
+        low = EX.bisect_fix(locus(DOC, "form.tail-carry"), "low", lambda v: v < -11.04)
         self.assertAlmostEqual(low["value"], -11.04, delta=0.06)
         # not monotonic: passes at 1.02 and 1.19, fails at 1.1 and above 1.25: the fix stops before the first failure on the way out
         weird = lambda v: 1.08 < v < 1.15 or v > 1.25
@@ -48,7 +48,7 @@ class TestExtremes(unittest.TestCase):
         self.assertLessEqual(fx["value"], 1.08)
         self.assertFalse(weird(fx["value"]))
         self.assertIsNone(EX.bisect_fix(e, "high", lambda v: v > 1.0))                              # nothing above the type passes
-        self.assertIsNone(EX.bisect_fix(locus(DOC, "face.whisker-count"), "high", lambda v: True))
+        self.assertIsNone(EX.bisect_fix(locus(DOC, "form.whisker-count"), "high", lambda v: True))
         self.assertEqual(EX.round_toward(1.1937, 1.0), 1.19)
         self.assertEqual(EX.round_toward(-11.0399, 0.0), -11.03)
 
@@ -56,7 +56,7 @@ class TestExtremes(unittest.TestCase):
         spec = F.internal(DOC)
         ok = crun("extremes", Ctx(spec, doc=DOC, ends=[dict(id="a", cage="c", state="pass", fails=[], value=1, label="x", end="low")]))[0]
         self.assertEqual((ok["id"], ok["state"], ok["stage"]), ("limits", "pass", "extremes"))
-        end = dict(id="body.tail-length:high", locus="body.tail-length", end="high", value=1.3, unit="×", label="Tail length", state="fail", cage="c", proof=dict(mode="normal", az=90, svg="<g/>"),
+        end = dict(id="form.tail-length:high", locus="form.tail-length", end="high", value=1.3, unit="×", label="Tail length", state="fail", cage="c", proof=dict(mode="normal", az=90, svg="<g/>"),
                    fails=[dict(id="normals", fail="Sharp crease in leg.L", measure="24 visible edges over 20°", value=24, limit=0)])
         bad = crun("extremes", Ctx(spec, doc=DOC, ends=[end]))[0]
         self.assertEqual((bad["state"], bad["value"], bad["extra"]["fail"]), ("fail", 1, "Tail length fails at its high end"))
@@ -85,17 +85,17 @@ class TestExtremesJob(unittest.TestCase):
 
     def test_the_failing_end_has_its_proof_and_a_fix_that_passes(self):
         import time
-        j = self.srv.submit("S20", "check", dict(stage="extremes", loci=["body.tail-lift"]), None)
+        j = self.srv.submit("S20", "check", dict(stage="extremes", loci=["form.tail-carry"]), None)
         self.srv.wait(j, 240)
         self.assertEqual(j.state, "done", j.error)
         ends = j.result["ends"]
-        self.assertEqual([(e["id"], e["state"]) for e in ends], [("body.tail-lift:low", "fail"), ("body.tail-lift:high", "pass")])
+        self.assertEqual([(e["id"], e["state"]) for e in ends], [("form.tail-carry:low", "fail"), ("form.tail-carry:high", "pass")])
         hi = ends[0]
         self.assertIn(hi["fails"][0]["id"], ("normals", "mesh", "tail.size", "balance"))
-        self.assertEqual(hi["fix"]["path"], "genome.loci.body.tail-lift.limits.0")
+        self.assertEqual(hi["fix"]["path"], "genome.loci.form.tail-carry.band.lo")
         self.assertTrue(-12.0 < hi["fix"]["value"] < 0.0, hi["fix"])
         row = j.result["rows"][0]
-        self.assertEqual((row["id"], row["state"], row["extra"]["fail"]), ("limits", "fail", "Tail lift fails at its low end"))
+        self.assertEqual((row["id"], row["state"], row["extra"]["fail"]), ("limits", "fail", "Tail carriage fails at its low end"))
         end = time.time() + 90
         while time.time() < end and not all(e["proof"]["ready"] for e in self.srv.with_proof_state(j.result)["ends"] if e.get("proof")):
             time.sleep(0.5)
@@ -104,8 +104,8 @@ class TestExtremesJob(unittest.TestCase):
         self.assertEqual(open(res["ends"][0]["proof"]["path"], "rb").read(8), b"\x89PNG\r\n\x1a\n")
         # the fix really passes: write it and build the end again
         d = copy.deepcopy(DOC)
-        locus(d, "body.tail-lift")["limits"][0] = hi["fix"]["value"]
-        r = F.build(d, "low:body.tail-lift")
+        locus(d, "form.tail-carry")["band"]["lo"] = hi["fix"]["value"]
+        r = F.build(d, "low:form.tail-carry")
         from wb import server as SV
         rows = crun("cage", Ctx(F.internal(d), r.body, dict(r.summary(), vertices_l1=len(F.proxy_mesh(r.body, 1)["V"])), F.proxy_mesh(r.body, 1), doc=d))
         self.assertEqual([x["id"] for x in rows if x["state"] == "fail"], [])

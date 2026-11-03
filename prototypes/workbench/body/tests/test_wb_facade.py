@@ -45,8 +45,8 @@ class T(unittest.TestCase):
 
     def test_genome_strings(self):
         self.assertEqual(F.resolve_genome("type")["seed"], 20)
-        self.assertEqual(F.resolve_genome("low:body.tail-length")["t"]["body.tail-length"], 0.0)
-        self.assertEqual(F.resolve_genome("high:body.tail-length")["t"]["body.tail-length"], 1.0)
+        self.assertEqual(F.resolve_genome("low:form.tail-length")["t"]["body.tail-length"], 0.0)
+        self.assertEqual(F.resolve_genome("high:form.tail-length")["t"]["body.tail-length"], 1.0)
         for bad in ("seed:x", "low:nope", "wide"):
             with self.assertRaises(F.BuildError):
                 F.resolve_genome(bad)

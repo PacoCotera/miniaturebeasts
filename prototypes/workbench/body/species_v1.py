@@ -84,7 +84,8 @@ SCHEMA = dict(
     face=free("Face", "Eyes, mouth and cheeks.", stage="face"),
     coat=obj("Coat", "Zones, layouts, palettes and material.", dict(zones=free("Zones", "The coat's zones.", stage="coat"), layouts=free("Layouts", "The coat's layouts.", stage="coat"), palettes=free("Palettes", "The coat's palettes.", stage="coat"), material=free("Material", "The material family and its limits.", stage="coat")), stage="coat"),
     genome=obj("Genome", "The game's species frame: the catalogue pin, the chapters, and each locus with its kind, pool, limits, type and the typed paths it moves.", dict(
-        catalogue=free("Catalogue pin", "The catalogue this frame is valid against: id and version.", stage="meta"), chapters=free("Chapters", "The chapters the loci are grouped in.", stage="meta"),
+        catalogue=free("Catalogue pin", "The catalogue this frame is valid against: id, version and content digest.", stage="meta"), clan=free("Clan", "The species' clan: its branch records are open to it.", stage="meta"),
+        borrows=free("Borrowed records", "Branch records of another clan this species lists.", stage="meta"), chapters=free("Chapters", "The chapters the loci are grouped in.", stage="meta"),
         loci=free("Loci", "Each locus: kind, op, limits, type, bins and moves (typed paths into this file).", stage="meta")), stage="meta", required=["catalogue", "chapters", "loci"]),
     motion=free("Motion", "Walk, breathe, blink and idle clips.", stage="motion"),
     limits=obj("Limits", "Overrides of the plan's limits. A file may only tighten them, never loosen.", dict(vertices=num("Vertex budget", "Vertices at subdivision level 1.", rng=(1000, 3500), unit=""), balance_margin=num("Balance margin", "Share of the sole in front of the heel.", rng=(0.15, 0.5), unit=""),

@@ -1,14 +1,15 @@
 """The genome block of a v1 species file (mb-species/1, spec 4 and 8.2) and the generic apply that replaces `s20genes.apply_shape`.
 
-A locus entry (`genome.loci[]`):
-  locus, label, short, chapter, scope (`shared`: in the catalogue pin; `own`: the species' branch locus), kind (locked, heritable-look, heritable-doing, sleeping, sealed), op (blend, switch, pair-map, pigment)
-  blend:     form (mult | off | lin | int: how t in [0, 1] becomes a value), unit, range (the widest it may be set), limits [lo, hi] (the pool's ends: t = 0 and t = 1), type (the type specimen's value), bins [names, low to high]
-  others:    limits = the allowed alleles, type = the type's allele, order = how a pair shows (first-ranked wins), map = a switch's off and on values
+A locus entry (`genome.loci[]`): one record of the catalogue pin (pin 11; every locus is in the pin, the ids are the pin's):
+  locus, label, short, chapter, scope (`trunk`, or `branch`: the species' clan, `genome.clan`, or a record of `genome.borrows`), kind (locked, heritable-look, heritable-doing, sleeping, sealed), op (blend, switch, pair-map, pigment)
+  blend:     a position record (the pin's `measure`) carries `band` {form, lo, hi, unit}: how t in [0, 1] becomes a value (form mult | off | lin | int; lo and hi are the values at t = 0 and 1); an absolute record
+             (cycle rate, sheen, glow brightness: its copy is the record's own number) carries `absolute` {form, lo, hi, unit}, the pool the type was drawn from, in the record's numbers.
+             Both: range (the widest it may be set), type (the type specimen's value), bins [the pin's words, low to high]
+  others:    limits = the allowed alleles (ids of the pin's), type = the type's allele, order = how a pair shows (first-ranked wins), map = a switch's off and on values, `operator` (a switch names the pin's: dominant-enable or recessive-enable), weight
+  sleeping:  `requires` (the switch records that must show for the record to draw) and `wakesWhen` {record: [looks]}, as the pin has them; the kind is `sleeping`
   moves:     [{path, op: scale | add | set, share, where?, above?, max?, min?}]  typed paths into the v1 file (below); `consumer` names the reader when a locus moves no path yet
-  shared:    catalogue {range [lo, hi], type}: the pin's copy-mean values; the species' limits mapped into them (type + (value - type) * scale) must lie inside the range
-
 Paths: `a.b[sel].c`, dotted; a number indexes a list; `*` in place of a key takes every value of an object; `[sel]` selects list items: `*`, `n`, `a:b` (slice), an id (the item's `id`, `name` or `joint`); `@a.b` is never a path segment.
-Moves: `scale` multiplies the field (and each number of a list field) by 1 + share * (value - type); `add` adds share * (value - type); `set` writes the value (a switch's map applied). `share` is a number, or one number per selected item.
+Moves: `scale` multiplies the field (and each number of a list field) by 1 + share * (value / type - 1); `add` adds share * (value - type); `set` writes the value (a switch's map applied). `share` is a number, or one number per selected item.
 `where: {item, op, ref}` keeps the items whose `item` (a key or an index) compares with the number at path `ref`; `above` leaves numbers at or below it alone; `min` and `max` clip the new value.
 Framework rules that follow the moves stay in code (the room rule that clips the tail's curl, the sitting clip), as the spec keeps them in the plan."""
 import copy
@@ -78,7 +79,7 @@ def tables(genome):
     for e in genome["loci"]:
         i = e["locus"]
         if e["op"] == "blend":
-            G[i] = (e["form"], e["limits"][0], e["limits"][1], e.get("anchor", e["chapter"]))
+            G[i] = (*blend_map(e), e["chapter"])
             T[i] = e["type"]
         elif e["op"] == "switch":
             S[i] = e.get("weight", 0.5)
@@ -89,9 +90,15 @@ def tables(genome):
     return G, P, S, T
 
 
+def blend_map(e):
+    """(form, lo, hi) of a blend locus: the frame's `band`, or an absolute record's own `absolute` pool."""
+    b = e.get("band") or e["absolute"]
+    return b["form"], b["lo"], b["hi"]
+
+
 def type_t(entry):
     """t of the type specimen at a blend locus."""
-    f, (lo, hi) = entry["form"], entry["limits"]
+    f, lo, hi = blend_map(entry)
     if f == "mult":
         return 0.5
     if f == "off":
@@ -220,16 +227,16 @@ def _num(x):
     return isinstance(x, (int, float)) and not isinstance(x, bool)
 
 
-def _apply_one(old, move, new_value, delta, share, above, direct):
+def _apply_one(old, move, new_value, typ, delta, share, above, direct):
     op = move["op"]
     if isinstance(old, list):
-        return [_apply_one(v, move, new_value, delta, share, above, direct) if _num(v) else v for v in old]
+        return [_apply_one(v, move, new_value, typ, delta, share, above, direct) if _num(v) else v for v in old]
     if not _num(old):
         return old
     if above is not None and not old > above:
         return old
     if op == "scale":
-        v = old * (new_value if direct else 1.0 + share * delta)        # a whole-share move of a factor locus multiplies by the factor itself (exact, no 1 + (f - 1) round trip)
+        v = old * (new_value / typ if direct else 1.0 + share * delta)        # a whole-share move multiplies by value / type (exact, no 1 + (f - 1) round trip)
     elif op == "add":
         v = old + share * delta
     else:
@@ -245,16 +252,17 @@ def apply_move(doc, entry, move, value):
     """Apply one move of a locus at `value` to `doc` (in place)."""
     ts = _targets_where(doc, move)
     typ = entry.get("type")
-    delta = (value - typ) if _num(value) and _num(typ) else 0.0
     sh = move.get("share", 1.0)
-    direct = move["op"] == "scale" and sh == 1 and typ == 1 and _num(value)
+    rel = move["op"] == "scale" and _num(value) and _num(typ) and typ != 0         # a scale is the value over the type (the type is 1 for a factor locus, so the move is the factor itself)
+    delta = (value / typ - 1.0 if rel else value - typ) if _num(value) and _num(typ) else 0.0
+    direct = rel and sh == 1
     for pos, (cont, key, k) in enumerate(ts):
         s = sh[k if k is not None else pos] if isinstance(sh, list) else sh
         if move["op"] == "set":
             v = entry.get("map", {}).get(value, value) if not _num(value) else value
             cont[key] = v
         else:
-            cont[key] = _apply_one(cont[key], move, value, delta, s, move.get("above"), direct)
+            cont[key] = _apply_one(cont[key], move, value, typ, delta, s, move.get("above"), direct)
 
 
 def apply_locus(doc, entry, value):
@@ -275,6 +283,37 @@ def apply_values(doc, genome, values, skip=()):
 
 
 # ----------------------------------------------------------------------------------------------------------------------------- validation
+OP_OF = {"copy-mean": "blend", "pair-map": "pair-map", "dominant-enable": "switch", "recessive-enable": "switch"}
+KNOWN = {"locus", "label", "short", "chapter", "scope", "kind", "op", "operator", "band", "absolute", "range", "limits", "type", "bins", "order", "weights", "map", "moves", "consumer", "shapeable", "note",
+         "weight", "loud", "requires", "wakesWhen", "borrowed"}
+
+
+def _check_form(errs, label, key, b, e):
+    """The checks of a blend's band (or an absolute pool): form, lo and hi, the type and the range."""
+    if not (isinstance(b, dict) and b.get("form") in FORMS):
+        errs.append((f"{label}.{key}", f"{label}.{key}: {{form: one of {', '.join(FORMS)}, lo, hi, unit}}"))
+        return False
+    lo, hi = b.get("lo"), b.get("hi")
+    if not (_num(lo) and _num(hi) and lo < hi):
+        errs.append((f"{label}.{key}", f"{label}.{key}: lo and hi are two numbers, low below high"))
+        return False
+    if not _num(e.get("type")):
+        errs.append((f"{label}.type", f"{label}.type: the type's value, a number"))
+        return False
+    rg = e.get("range")
+    if not (isinstance(rg, list) and len(rg) == 2 and all(_num(x) for x in rg)):
+        errs.append((f"{label}.range", f"{label}.range: two numbers, the widest the locus may be set"))
+    elif lo < rg[0] - 1e-9 or hi > rg[1] + 1e-9:
+        errs.append((f"{label}.{key}", f"{label}.{key}: {lo} to {hi} lies outside the range {rg[0]} to {rg[1]}"))
+    if not lo <= e["type"] <= hi:
+        errs.append((f"{label}.type", f"{label}.type: {e['type']} lies outside the band {lo} to {hi}"))
+    if b["form"] == "mult" and (lo <= 0 or not (lo <= 1 <= hi)):
+        errs.append((f"{label}.{key}", f"{label}.{key}: a mult locus needs 0 < lo <= 1 <= hi"))
+    if b["form"] == "off" and not (lo <= 0 <= hi):
+        errs.append((f"{label}.{key}", f"{label}.{key}: an off locus needs lo <= 0 <= hi"))
+    return True
+
+
 def validate(doc):
     """Problems of the genome block as (path, message), each message naming the field. Needs the pin."""
     g = doc.get("genome")
@@ -291,11 +330,15 @@ def validate(doc):
     p = pin()
     if not isinstance(cat, dict) or cat.get("id") != p["id"] or cat.get("version") != p["version"]:
         errs.append(("genome.catalogue", f"genome.catalogue: the pin is {p['id']}@{p['version']}; a frame is valid only against its pin (this file says {cat.get('id') if isinstance(cat, dict) else cat}@{cat.get('version') if isinstance(cat, dict) else ''})"))
+    elif p.get("digest") and cat.get("digest") != p["digest"]:
+        errs.append(("genome.catalogue.digest", f"genome.catalogue.digest: the pin's content digest is {p['digest'][:8]}...; this file says {str(cat.get('digest'))[:8]}..."))
+    clan, borrows = g.get("clan"), g.get("borrows") or []
     loci = g.get("loci")
     if not isinstance(loci, list):
         return errs + [("genome.loci", "genome.loci: must be a list of loci")]
-    seen = set()
+    seen = {}
     chapters = {c.get("id"): c for c in g.get("chapters", [])}
+    ids = {e.get("locus") for e in loci if isinstance(e, dict)}
     for n, e in enumerate(loci):
         base = f"genome.loci[{n}]"
         i = e.get("locus")
@@ -305,58 +348,69 @@ def validate(doc):
             continue
         if i in seen:
             errs.append((label, f"{label}: the locus appears twice"))
-        seen.add(i)
-        known = {"locus", "label", "short", "chapter", "scope", "kind", "op", "form", "unit", "range", "limits", "type", "bins", "order", "weights", "map", "moves", "consumer", "shapeable", "anchor", "note", "pin_note", "catalogue", "weight", "loud"}
+        seen[i] = n
         for k in e:
-            if k not in known:
-                errs.append((f"{label}.{k}", f"{label}.{k}: not a field of a locus (fields: {', '.join(sorted(known)[:8])} ...)"))
+            if k not in KNOWN:
+                errs.append((f"{label}.{k}", f"{label}.{k}: not a field of a locus (fields: {', '.join(sorted(KNOWN)[:8])} ...)"))
         if e.get("kind") not in KINDS:
             errs.append((f"{label}.kind", f"{label}.kind: '{e.get('kind')}' is not one of {', '.join(KINDS)}"))
         if e.get("op") not in OPS:
             errs.append((f"{label}.op", f"{label}.op: '{e.get('op')}' is not one of {', '.join(OPS)}"))
             continue
-        if e.get("scope") not in ("shared", "own"):
-            errs.append((f"{label}.scope", f"{label}.scope: 'shared' (in the catalogue pin) or 'own'"))
         pl = pin_locus(i)
-        if e.get("scope") == "shared" and pl is None:
-            errs.append((f"{label}.scope", f"{label}.scope: '{i}' is not in the catalogue pin, so it cannot be a shared locus"))
+        if pl is None:
+            errs.append((f"{label}.locus", f"{label}.locus: '{i}' is not a record of the catalogue pin ({p['id']}@{p['version']}); every locus of a frame is a record of the pin"))
+            continue
+        if e.get("scope") != pl["scope"]:
+            errs.append((f"{label}.scope", f"{label}.scope: '{i}' is a {pl['scope']} record in the pin (this file says '{e.get('scope')}')"))
+        elif pl["scope"] == "branch" and pl["clan"] != clan and i not in borrows:
+            errs.append((f"{label}.scope", f"{label}.scope: '{i}' is a record of clan {pl['clan']}; this species is {clan or 'of no clan'} (genome.clan) and does not borrow it (genome.borrows)"))
+        want = OP_OF.get(pl["operator"])
+        if want and e["op"] != want:
+            errs.append((f"{label}.op", f"{label}.op: the pin's operator for {i} is {pl['operator']}, which is a {want}, not a {e['op']}"))
+            continue
+        if e["op"] == "switch" and e.get("operator") != pl["operator"]:
+            errs.append((f"{label}.operator", f"{label}.operator: a switch names its catalogue operator; the pin's for {i} is {pl['operator']} (this file says {e.get('operator')})"))
         if e.get("chapter") not in chapters:
             errs.append((f"{label}.chapter", f"{label}.chapter: '{e.get('chapter')}' is not one of the chapters ({', '.join(map(str, chapters))})"))
+        # a record sleeps behind the switches of its `requires` that this frame opens (a switch the frame locks on, such as the eyes', does not put anything to sleep), or until its `wakesWhen` looks show
+        req = [r for r in (pl.get("requires") or []) if r in ids]
+        want_sleep = dict(requires=req or None, wakesWhen=pl.get("wakesWhen") or None)
+        if (req or pl.get("wakesWhen")) and e.get("kind") != "sleeping":
+            errs.append((f"{label}.kind", f"{label}.kind: the pin puts {i} to sleep (it needs {', '.join(req or list(pl['wakesWhen']))}), so its kind is 'sleeping'"))
+        for key, w in want_sleep.items():
+            if w != (e.get(key) or None):
+                errs.append((f"{label}.{key}", f"{label}.{key}: the pin's is {json.dumps(w)}; a frame carries it as the pin has it (this file says {json.dumps(e.get(key) or None)})"))
+        for r in list(pl.get("wakesWhen") or {}):
+            if r not in ids:
+                errs.append((f"{label}.wakesWhen", f"{label}.wakesWhen: {i} wakes on {r}, which is not a locus of this frame, so it could never wake"))
+        for lab, a, b in p.get("lookPairs", []):
+            if i == b and a in seen:
+                errs.append((label, f"{label}: '{lab}' is already open as {a}; a frame opens one record per look, not both {a} and {b}"))
+            if i == a and b in seen:
+                errs.append((label, f"{label}: '{lab}' is already open as {b}; a frame opens one record per look, not both {b} and {a}"))
         lim = e.get("limits")
         if e["op"] == "blend":
-            if e.get("form") not in FORMS:
-                errs.append((f"{label}.form", f"{label}.form: one of {', '.join(FORMS)}"))
-                continue
-            if not (isinstance(lim, list) and len(lim) == 2 and all(_num(x) for x in lim) and lim[0] < lim[1]):
-                errs.append((f"{label}.limits", f"{label}.limits: two numbers, low then high, low below high"))
-                continue
-            if not _num(e.get("type")):
-                errs.append((f"{label}.type", f"{label}.type: the type's value, a number"))
-                continue
-            rg = e.get("range")
-            if not (isinstance(rg, list) and len(rg) == 2 and all(_num(x) for x in rg)):
-                errs.append((f"{label}.range", f"{label}.range: two numbers, the widest the locus may be set"))
-            elif lim[0] < rg[0] - 1e-9 or lim[1] > rg[1] + 1e-9:
-                errs.append((f"{label}.limits", f"{label}.limits: {lim[0]} to {lim[1]} lies outside the range {rg[0]} to {rg[1]}"))
-            if not lim[0] <= e["type"] <= lim[1]:
-                errs.append((f"{label}.type", f"{label}.type: {e['type']} lies outside the limits {lim[0]} to {lim[1]}"))
-            if e["form"] == "mult" and (lim[0] <= 0 or not (lim[0] <= 1 <= lim[1])):
-                errs.append((f"{label}.limits", f"{label}.limits: a mult locus needs 0 < low <= 1 <= high"))
-            if e["form"] == "off" and not (lim[0] <= 0 <= lim[1]):
-                errs.append((f"{label}.limits", f"{label}.limits: an off locus needs low <= 0 <= high"))
-            ca = e.get("catalogue")
-            if e.get("scope") == "shared" and pl is not None:
-                vals = [a["value"] for a in pl["alleles"] if "value" in a]
-                if not isinstance(ca, dict) or not vals:
-                    errs.append((f"{label}.catalogue", f"{label}.catalogue: a shared blend names the pin's range and the type in the pin's units"))
-                else:
-                    plo, phi = min(vals), max(vals)
-                    sc = ca["type"] if e["form"] == "mult" else 1.0
-                    a, b = ((ca["type"] * lim[0], ca["type"] * lim[1]) if e["form"] == "mult" else (ca["type"] + lim[0], ca["type"] + lim[1]))
-                    if ca.get("range") != [plo, phi]:
-                        errs.append((f"{label}.catalogue.range", f"{label}.catalogue.range: the pin's range for {i} is {plo} to {phi}"))
-                    elif a < plo - 1e-9 or b > phi + 1e-9:
-                        errs.append((f"{label}.limits", f"{label}.limits: in the catalogue's units these limits are {a:.3f} to {b:.3f}, outside the catalogue range {plo} to {phi}"))
+            position = pl.get("measure") == "position"
+            vals = [a["value"] for a in pl["alleles"] if "value" in a]
+            if position:
+                if "absolute" in e:
+                    errs.append((f"{label}.absolute", f"{label}.absolute: {i} is a position record, so its size is a `band`"))
+                if "band" not in e:
+                    errs.append((f"{label}.band", f"{label}.band: each continuous locus carries a band {{form, lo, hi, unit}}: what t stands for in this species"))
+                    continue
+                if not _check_form(errs, label, "band", e["band"], e):
+                    continue
+            else:
+                if "band" in e:
+                    errs.append((f"{label}.band", f"{label}.band: {i} is in the record's own units (its copy is the number), so it has no band"))
+                if "absolute" not in e or not _check_form(errs, label, "absolute", e["absolute"], e):
+                    if "absolute" not in e:
+                        errs.append((f"{label}.absolute", f"{label}.absolute: {i} is an absolute record: the pool the type was drawn from, {{form, lo, hi, unit}}, in the record's numbers"))
+                    continue
+                a = e["absolute"]
+                if vals and (a["lo"] < min(vals) - 1e-9 or a["hi"] > max(vals) + 1e-9):
+                    errs.append((f"{label}.absolute", f"{label}.absolute: {a['lo']} to {a['hi']} lies outside the pin's range for {i}, {min(vals)} to {max(vals)}"))
         else:
             if not (isinstance(lim, list) and lim and all(isinstance(x, (str, bool)) for x in lim)):
                 errs.append((f"{label}.limits", f"{label}.limits: the allowed alleles, a list of names"))
@@ -365,10 +419,9 @@ def validate(doc):
                 errs.append((f"{label}.type", f"{label}.type: '{e.get('type')}' is not one of the allowed alleles"))
             if e["op"] == "pair-map" and e.get("order") is not None and sorted(map(str, e["order"])) != sorted(map(str, lim)):
                 errs.append((f"{label}.order", f"{label}.order: must rank exactly the allowed alleles"))
-            if e.get("scope") == "shared" and pl is not None:
-                extra = [a for a in lim if a not in [x["id"] for x in pl["alleles"]]]
-                if extra:
-                    errs.append((f"{label}.limits", f"{label}.limits: {', '.join(map(str, extra))} {'is' if len(extra) == 1 else 'are'} not alleles of the shared locus in the pin"))
+            extra = [a for a in lim if a not in [x["id"] for x in pl["alleles"]]]
+            if extra:
+                errs.append((f"{label}.limits", f"{label}.limits: {', '.join(map(str, extra))} {'is' if len(extra) == 1 else 'are'} not alleles of {i} in the pin"))
         mv = e.get("moves")
         if not isinstance(mv, list):
             errs.append((f"{label}.moves", f"{label}.moves: a list (empty when the locus moves no path)"))
