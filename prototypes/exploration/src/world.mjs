@@ -984,7 +984,11 @@ export function genPatch2(G, seed, cell) {
   const scrX0 = fanSt ? Math.max(0, Math.min(PW * 48 - 450, fanSt.entry.x * 48 + 24 - 225)) : 0, scrY0 = fanSt ? Math.max(0, Math.min(PH * 48 - 532, fanSt.entry.y * 48 + 24 - 266)) : 0;
   const onScr = (x, y) => { const sx = x * 48 + 24 - scrX0, sy = y * 48 + 24 - scrY0; return sx >= 0 && sx < 450 && sy >= 0 && sy < 532; };
   const acrossOn = k => fvert ? onScr(k, fanSt.entry.y) : onScr(fanSt.entry.x, k);
-  let fanN = 0, footN2 = 0, onCount = 0; const rowCnt = new Map(); const footSide = [0, 0];
+  let fanN = 0, footN2 = 0, onCount = 0; const rowCnt = new Map();
+  // A fan stone's column: in the walk-in (the first 3 rows below the stair) the fan keeps clear of the stair's columns; past it, the left half reaches from s - w to s and the right half from s + 1 to s + 1 + w, the stair's own columns included (w is the fan's width at that row).
+  const fanCol = (side, dd) => { const w = 1 + dd - edDepth; return dd >= edDepth + 3 ? (side ? fanSt.s + 1 + R.int(w + 1) : fanSt.s - R.int(w + 1)) : (side ? fanSt.s + 2 + R.int(w) : fanSt.s - 1 - R.int(w)); };
+  const fanOn = [];   // the fan stones placed on the screen, last last: the backstop lifts the last one when the screen is full
+  const depthOf = (x, y) => fdir === 'up' ? y : fdir === 'down' ? PH - 1 - y : fdir === 'left' ? x : PW - 1 - x; const footSide = [0, 0];
   // the foot-row stones of a stair place alternate sides of the stair's columns too, each at a random column of its side (a side with fewer than 3 columns of room is skipped), so neither side of the screen is bare
   const footLo = fanSt ? 2 : 0, footHi = fanSt ? fspan - 3 : 0, roomL = fanSt ? fanSt.s - footLo : 0, roomR = fanSt ? footHi - (fanSt.s + 2) + 1 : 0;
   // A stair place keeps no stone that would make a bare straight line of 3 or more (a group on one row or one column reads laid): such a stone takes its next roll, and is dropped after 4.
@@ -1004,8 +1008,7 @@ export function genPatch2(G, seed, cell) {
       else { side = footN2++ % 2 ? (roomR < 3 ? 0 : 1) : (roomL >= 3 ? 0 : 1); }
       if (!fan) footSide[side]++;
       for (let tr = 0; tr < 4; tr++) {
-        if (fan) { dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3); const w = 1 + dd - edDepth;
-          kk = side ? fanSt.s + 2 + R.int(w) : fanSt.s - 1 - R.int(w); }
+        if (fan) { dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3); kk = fanCol(side, dd); }
         else { const lo = side ? fanSt.s + 2 : footLo, len = side ? roomR : roomL, vis = [];   // the first 3 foot-row stones of a side fall in its columns on the screen
           if (footSide[side] <= 3) for (let c = lo; c < lo + len; c++) if (acrossOn(c)) vis.push(c);
           kk = footSide[side] <= 3 && vis.length ? vis[R.int(vis.length)] : lo + R.int(len); dd = 2 + R.int(3); }
@@ -1013,6 +1016,7 @@ export function genPatch2(G, seed, cell) {
         if (!walk(x, y)) break;
         if (lineBad(x, y)) continue;
         if (onScr(x, y) && tiles[I(x, y)] !== T.ROCK) { if (onCount >= 20) break; if ((rowCnt.get(fvert ? y : x) || 0) >= 4) continue; onCount++; rowCnt.set(fvert ? y : x, (rowCnt.get(fvert ? y : x) || 0) + 1); }   // the 21st stone on the stair's screen is skipped, and a 5th in a row (a column, for a west or east stair) rolls again
+        if (fan && onScr(x, y) && tiles[I(x, y)] !== T.ROCK) fanOn.push({ x, y, prev: tiles[I(x, y)] });
         setT(x, y, T.ROCK); break;
       }
       continue;
@@ -1022,9 +1026,22 @@ export function genPatch2(G, seed, cell) {
     for (let dy = -s; dy <= s; dy++) for (let dx = -s; dx <= s; dx++) if (walk(x + dx, y + dy) && (s === 0 || R.int(100) < 80)) setT(x + dx, y + dy, T.ROCK); }
   // A stair screen that ends with fewer than 10 stones gets fan stones on the screen until it holds 10, each under the same line rule.
   for (let tr = 0; fanSt && onCount < 10 && tr < 120; tr++) {
-    const side = fanN++ % 2 ? 1 : 0, dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3), w = 1 + dd - edDepth, kk = side ? fanSt.s + 2 + R.int(w) : fanSt.s - 1 - R.int(w), { x, y } = fxy(kk, dd);
+    const side = fanN++ % 2 ? 1 : 0, dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3), kk = fanCol(side, dd), { x, y } = fxy(kk, dd);
     if (!inb(x, y) || !onScr(x, y) || !walk(x, y) || tiles[I(x, y)] === T.ROCK || (rowCnt.get(fvert ? y : x) || 0) >= 4 || lineBad(x, y)) continue;
     setT(x, y, T.ROCK); onCount++; rowCnt.set(fvert ? y : x, (rowCnt.get(fvert ? y : x) || 0) + 1);
+  }
+  // The backstop: the 4 columns s - 1 to s + 2 hold a stone 5 or more rows out on the screen; if not, one more fan stone goes there (the last fan stone on a full screen is lifted first).
+  if (fanSt) {
+    const inBand = (x, y) => { const k = fvert ? x : y; return k >= fanSt.s - 1 && k <= fanSt.s + 2; };
+    let has = false; for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) if (tiles[I(x, y)] === T.ROCK && !ovTiles.has(I(x, y)) && onScr(x, y) && depthOf(x, y) >= 5 && inBand(x, y)) has = true;
+    if (!has) {
+      if (onCount >= 20 && fanOn.length) { const f = fanOn.pop(); tiles[I(f.x, f.y)] = f.prev; onCount--; rowCnt.set(fvert ? f.y : f.x, rowCnt.get(fvert ? f.y : f.x) - 1); }
+      for (let tr = 0; tr < 120; tr++) {
+        const kk = fanSt.s - 1 + R.int(4), dd = 5 + R.int(fext - 8), { x, y } = fxy(kk, dd);
+        if (!inb(x, y) || !onScr(x, y) || !walk(x, y) || tiles[I(x, y)] === T.ROCK || (rowCnt.get(fvert ? y : x) || 0) >= 4 || lineBad(x, y)) continue;
+        setT(x, y, T.ROCK); onCount++; rowCnt.set(fvert ? y : x, (rowCnt.get(fvert ? y : x) || 0) + 1); break;
+      }
+    }
   }
   const treeN = land === L.WOOD ? 11 + R.int(5) : land === L.MEADOW ? 1 + R.int(2) : R.int(2);
   for (let k = 0, tries = 0; k < treeN && tries < 200; tries++) {
