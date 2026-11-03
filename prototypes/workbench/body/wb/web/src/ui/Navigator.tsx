@@ -35,7 +35,7 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
         <section key={c.id}>
           <h6 className={s.head}>{c.name}</h6>
           <ul className={s.tree}>
-            {g.loci.filter((l) => l.chapter === c.id).map((l) => {
+            {g.loci.filter((l) => l.chapter === c.id && !l.modifier).map((l) => {
               const dot = locusDot(species?.extremes, l.locus)
               const asleep = isAsleep(g, l)
               return (
@@ -46,6 +46,12 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
                     {asleep && <span className={s.zz}>asleep</span>}
                     {dot && <i className={s.dot} data-kind={dot === 'stale' ? 'stale' : 'fail'} aria-label={dot === 'fail' ? 'an end fails' : 'measured on an older file'} />}
                   </button>
+                  {g.loci.filter((m) => m.modifier?.of === l.locus).map((m) => (
+                    <button key={m.locus} className={`${s.row} ${s.nested} ${cur?.locus === m.locus ? s.sel : ''}`} onClick={() => go({ sel: m.locus, proof: null })} aria-pressed={cur?.locus === m.locus} title={`${m.label} · a modifier gene of this species`}>
+                      <span className={s.label}>{m.label}</span>
+                      <span className={s.zz}>modifier</span>
+                    </button>
+                  ))}
                 </li>
               )
             })}

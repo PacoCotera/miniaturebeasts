@@ -165,7 +165,9 @@ def wild(g, n=1000, seed=20, limit=True):
         for e in g["loci"]:
             i = e["locus"]
             if e["op"] == "blend":
-                t = GN.grid_t(float(rng.random()))
+                old = GN.SAMPLER_OF.get(i)
+                tight = old in GN.GENES and GN.GENES[old][3] in ("body", "face")            # the body and face anchors are tight: the sampler keeps their blends inside the middle 70 % of the band
+                t = GN.grid_t(0.5 + (float(rng.random()) - 0.5) * 0.7 if tight else float(rng.random()))
                 c[i] = [t, t]
             elif e["op"] == "switch":
                 w = float(e.get("weight", 0.5))
@@ -211,24 +213,42 @@ def sheet(g, doc_id=None):
     return out
 
 
+ABS_RECORD = {"movement.cycle-rate": (0.6, 1.4), "appearance.sheen": (0.0, 1.0), "appearance.emission-brightness": (0.4, 1.0)}      # the three records whose copy is their own number: the catalogue's range
+
+
+def _value(record, c):
+    """A copy's number: a t for a position record, the record's own number for an absolute one (a named copy is its allele's value in the pin)."""
+    import genomeapply as GA
+    if isinstance(c, (int, float)):
+        return float(c)
+    return float({a["id"]: a["value"] for a in GA.pin_locus(record)["alleles"] if "value" in a}[c])
+
+
+def cross(g, a, b, rng):
+    """A child of two genomes: one copy from each parent at every locus; a blend is the mean of the two copies it took, on the 59-step grid, in both copies (the cross, decision 3)."""
+    import s20genes as GN
+    out = {}
+    for e in g["loci"]:
+        i = e["locus"]
+        ca, cb = a[i][int(rng.integers(2))], b[i][int(rng.integers(2))]
+        if e["op"] != "blend":
+            out[i] = [ca, cb]
+        elif i in ABS_RECORD:
+            lo, hi = ABS_RECORD[i]
+            k = round(((_value(i, ca) + _value(i, cb)) / 2.0 - lo) / ((hi - lo) / GN.GRID))
+            out[i] = [round(lo + k * (hi - lo) / GN.GRID, 6)] * 2
+        else:
+            t = GN.grid_t((_value(i, ca) + _value(i, cb)) / 2.0)
+            out[i] = [t, t]
+    return out
+
+
 def forecast(g, mate_seed=1, seeds=4):
-    """The four-seed forecast of the type with a sample mate (a wild draw): four children, each copy from one parent's pair by a fixed seed, so every share is a quarter (the Cross screen's form)."""
+    """The four-seed forecast of the type with a sample mate (a wild draw): four children by fixed seeds, so every share is a quarter (the Cross screen's form)."""
     typ = type_copies(g)
     mate = wild(g, 1, seed=1000 + mate_seed)[0]
     rng = np.random.Generator(np.random.PCG64([20, 4, mate_seed]))
-    kids = []
-    for _ in range(seeds):
-        c = {}
-        for e in g["loci"]:
-            i = e["locus"]
-            a, b = typ[i][int(rng.integers(2))], mate[i][int(rng.integers(2))]
-            if e["op"] == "blend":
-                t = (_t_of(e, a) + _t_of(e, b)) / 2
-                c[i] = [t, t]
-            else:
-                c[i] = [a, b]
-        kids.append(c)
-    return kids, mate
+    return [cross(g, typ, mate, rng) for _ in range(seeds)], mate
 
 
 def _pct(k, n):

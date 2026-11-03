@@ -7,7 +7,7 @@ export type ViewRef = { mode: string; az: number; size: number; key: string; rea
 export type Lease = { holder: string; agent: boolean; since: string }
 export type Species = {
   id: string; hash: string; error: string | null; lease: Lease | null; history: Entry[]; views: ViewRef[]; checks: ChecksState | null; extremes?: ExtremesState | null; labels?: Record<string, string>
-  file: { name?: string; species?: string; body_plan?: string; plan?: string; genome?: Genome }
+  file: { name?: string; species?: string; body_plan?: string; plan?: string; genome?: Genome; expressions?: import("./genes").Expression[] }
 }
 export type SpeciesRow = { id: string; name?: string; hash: string; error: string | null }
 
@@ -57,3 +57,8 @@ export async function genomePicture(id: string, genome: string, az: number, size
   return j.result?.views?.[0]?.key ?? null
 }
 export const checkEnds = (id: string) => postJob(id, 'check', { stage: 'extremes' })
+
+// Chapter 9: how often each look shows (spec 4.2) and a mibi's genome string. Both are computed on the server from the file alone (no build, no render), keyed by the file's hash so an edit refetches.
+export const freqOne = (id: string, hash: string) => queryOptions({ queryKey: ['freq', id, hash], queryFn: () => call<import('./genes').Freq>('GET', `/api/species/${encodeURIComponent(id)}/freq`), staleTime: 60_000 })
+export type GenomeText = { species: string; genome: string; string: string; code: string | null; length: number; version: number }
+export const stringOne = (id: string, hash: string, genome: string) => queryOptions({ queryKey: ['string', id, hash, genome], queryFn: () => call<GenomeText>('GET', `/api/species/${encodeURIComponent(id)}/string?genome=${encodeURIComponent(genome)}`), staleTime: 60_000, retry: false })

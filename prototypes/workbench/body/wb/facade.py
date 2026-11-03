@@ -131,7 +131,33 @@ def resolve_genome(g, spec=None):
         if "brow" in on:
             ind["switches"]["brow"] = True
         return ind
-    raise BuildError(f"genome '{g}': use type, seed:N, low:<locus>, high:<locus>, allele:<locus>=<allele>, value:<locus>=<v> or corner:<loud>+<loud>", "genome")
+    if kind in ("string", "code"):
+        return individual_from_text(g, arg, spec, tbl)
+    raise BuildError(f"genome '{g}': use type, seed:N, string:<G1-...>, code:<S20v1-...>, low:<locus>, high:<locus>, allele:<locus>=<allele>, value:<locus>=<v> or corner:<loud>+<loud>", "genome")
+
+
+def individual_from_text(selector, text, spec=None, tbl=None):
+    """`string:G1-S20v1-...` or `code:S20v1-<mask>-...`: the one codec (genome-stamp, through node) reads it; a string of another species or frame version is refused with its stage; a stamp code that leaves a chapter unread starts that chapter at the type."""
+    import s20genes as GN
+    from wb import frame_writer as FW
+    r = FW.node(dict(op="decode", text=text))
+    if not r["ok"]:
+        raise BuildError(f"genome '{selector[:48]}': {r['detail']}" + (f" ({r['stage']})" if r.get("stage") else ""), "genome")
+    sid = (spec or {}).get("species") or "S20"
+    if r["id"] != sid or r["version"] != 1:
+        raise BuildError(f"genome '{selector[:48]}': this is a {r['name']} of frame version {r['version']}; this file is {sid} (frame version 1)", "genome")
+    copies = {k: list(v) for k, v in GN.genome_of(GN.specimen(tbl)).items()}
+    copies.update(r["copies"])
+    ind = GN.individual_of(copies, tbl)
+    ind["from"] = dict(kind=r["kind"], unread=r.get("unread") or [])
+    return ind
+
+
+def genome_copies(ind, spec=None):
+    """The two copies of every record of an individual (the catalogue's records, the file's tables)."""
+    import s20genes as GN
+    tbl = tables(spec)
+    return {k: list(v) for k, v in GN.genome_of(ind, tbl).items()}
 
 
 def cage_inputs(spec, ind):

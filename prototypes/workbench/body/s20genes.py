@@ -249,6 +249,8 @@ def genome_of(ind, tbl=None):
     for the three absolute records; a t that is a bin exactly is that bin's id). The copies are not on the blend grid yet (the string writer quantizes them). The hue shift is folded into the hue
     copy. A whisker count of none is the switch off/off, and the sleeping whisker records sit at `between`. A `plain` marking is the switch off with a layout copy (the other copy's, else bands)."""
     import genomeapply as GA
+    if ind.get("copies"):
+        return {k: list(v) for k, v in ind["copies"].items()}
     G = tbl[0] if tbl else GENES
     out = {}
 
@@ -291,6 +293,38 @@ def genome_of(ind, tbl=None):
     for key, (old, new) in SWITCH_RECORD.items():
         out[new] = ["on", "on"] if ind["switches"][key] else ["off", "off"]
     return out
+
+
+def individual_of(copies, tbl=None):
+    """The inverse of `genome_of`: a genome of the catalogue's records (two copies each) -> the individual the sampler's tables and the builders read (t, pairs, switches, seed). A blend's two copies are mixed (their mean); a pair
+    is as its copies say; a switch shows on with one copy on. A marking copy is `plain` where its switch copy is off, so a layout carried under `plain` is not drawn (it is the same mibi to look at). The hue shift is zero, a whisker
+    switch that is off puts the count at none. The coat's seed is not genetic: it is taken from the copies, so one genome always draws the same coat."""
+    import genomeapply as GA
+    G = tbl[0] if tbl else GENES
+    pinv = lambda r: {a["id"]: a["value"] for a in GA.pin_locus(r)["alleles"] if "value" in a}
+
+    def value(record, c):
+        return float(c) if isinstance(c, (int, float)) else float(pinv(record)[c])
+
+    t = {FOLDED: 0.5}
+    for old, new in RECORD.items():
+        a, b = (value(new, c) for c in copies[new])
+        if old in ABSOLUTE:
+            f, lo, hi, _ = G[old]
+            t[old] = round(GA.t_of(f, lo, hi, (a + b) / 2.0), 9)
+        else:
+            t[old] = round((a + b) / 2.0, 9)
+    on = lambda c: c == "on"
+    if not any(on(c) for c in copies[WHISKER_SWITCH]):
+        t["face.whisker-count"] = 0.0
+    pairs = {old: list(copies[new]) for old, new in PAIR_RECORD.items()}
+    sw = copies[MARKING_SWITCH]
+    pairs["appearance.marking-layout"] = [LAYOUT_BACK.get(l, l) if on(s) else "plain" for s, l in zip(sw, copies[MARKING_LAYOUT])]
+    for old, (new, a_off, a_on) in PAIR_SWITCH.items():
+        pairs[old] = [a_on if on(c) else a_off for c in copies[new]]
+    switches = {key: any(on(c) for c in copies[new]) for key, (old, new) in SWITCH_RECORD.items()}
+    seed = int(hashlib.sha256(json.dumps(copies, sort_keys=True).encode()).hexdigest()[:8], 16) % 999999 + 1
+    return dict(t=t, pairs=pairs, switches=switches, seed=seed, copies={k: list(v) for k, v in copies.items()})          # the exact copies ride along: a genome read from a string writes back as it was
 
 
 ABSOLUTE = ("movement.cycle-rate", "skin.sheen", "appearance.glow")             # the three records whose copy is the record's own number

@@ -30,6 +30,12 @@ const end = (locus, e, genome_, value, state, extra = {}) => ({ id: `${locus}:${
 const extremes = { fresh: true, running: false, key: 'k', rows: [], ends: [end('form.tail-length', 'low', 'low:form.tail-length', 0.8, 'pass'), end('form.tail-length', 'high', 'high:form.tail-length', 1.3, 'fail', { fix: { value: 1.19, path: 'genome.loci.form.tail-length.band.hi', end: 'high' }, proof: { mode: 'normal', az: 90, key: proofKey, ready: true } }),
   end('form.tail-curl', 'low', 'low:form.tail-curl', -0.03, 'fail', { label: 'Tail curl', unit: 'turns' })] }
 
+const s20file = JSON.parse(readFileSync(join(here, '../../../species_v1/S20.json'), 'utf8'))
+const demoFile = JSON.parse(readFileSync(join(here, 'fixture/demo-file.json'), 'utf8'))
+const freqS20 = JSON.parse(readFileSync(join(here, 'fixture/freq-s20.json'), 'utf8'))
+const freqDemo = JSON.parse(readFileSync(join(here, 'fixture/freq-demo.json'), 'utf8'))
+const TYPE_STRING = 'G1-S20v1-20A00R61GC3A86100430R210861WQB0R4GC30R61621GC30G10R61GC30R61GC30R442008YR'     // the type's genome string (wb frame writes it into frames/species-S20.json)
+
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.ttf': 'font/ttf' }
 const server = createServer((req, res) => {
   const p = new URL(req.url, 'http://x').pathname
@@ -50,6 +56,11 @@ const cases = [
   { name: 'checks-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, checks: true, q: '&sel=tail&drawer=checks&proof=tail.size' },
   { name: 'checks-light-1180', theme: 'light', w: 1180, h: 820, ready: true, checks: true, touch: true, q: '&sel=tail' },
   { name: 'genes-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, q: '&sel=form.tail-length' },
+  { name: 'express-lantern-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, demo: true, q: '&sel=anatomy.tail-tip-form&proof=none', act: async (p) => { await p.locator('aside[aria-label=Navigator] >> text=Tail tip order').scrollIntoViewIfNeeded() } },
+  { name: 'express-horn-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, demo: true, q: '&sel=anatomy.horn-presence&proof=none' },
+  { name: 'express-sparkle-light-1440', theme: 'light', w: 1440, h: 900, ready: true, genes: true, demo: true, q: '&sel=appearance.freckle-glow&proof=none' },
+  { name: 'express-copy-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, demo: true, q: '&sel=appearance.glow-pattern&proof=none', act: async (p) => { await p.click('text=Copy'); await p.waitForSelector('text=Copied'); await p.locator('aside[aria-label=Inspector]').evaluate((e) => e.scrollTo(0, e.scrollHeight)) } },
+  { name: 'express-modifier-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, demo: true, token: true, q: '&sel=appearance.glow-pattern&proof=none', act: async (p) => { await p.click('text=Add a modifier'); await p.waitForSelector('text=Which look comes first?'); await p.locator('aside[aria-label=Inspector]').evaluate((e) => e.scrollTo(0, 400)) } },
   { name: 'genes-light-1180', theme: 'light', w: 1180, h: 820, ready: true, genes: true, touch: true, q: '&sel=form.tail-length&proof=none' },
   { name: 'stage-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true },
 ]
@@ -57,9 +68,12 @@ let failed = 0
 const fail = (m) => { failed++; console.log('FAIL', m) }
 for (const c of cases) {
   const ctx = await browser.newContext({ viewport: { width: c.w, height: c.h }, hasTouch: !!c.touch, reducedMotion: 'reduce' })
+  if (c.token) await ctx.addInitScript(() => sessionStorage.setItem('wb.token', 'shots'))
   const page = await ctx.newPage()
   await page.route('**/api/species', (r) => r.fulfill({ json: [{ id: 'S20', name: 'Tuliko', hash: 'h', error: null }] }))
-  await page.route('**/api/species/S20', (r) => { const j = species(c.ready, c.checks); if (c.genes) { j.file.genome = genome; j.extremes = extremes }; r.fulfill({ json: j }) })
+  await page.route('**/api/species/S20', (r) => { const j = species(c.ready, c.checks); if (c.genes) { j.file.genome = c.demo ? demoFile.genome : genome; j.file.expressions = c.demo ? demoFile.expressions : s20file.expressions; j.extremes = extremes }; r.fulfill({ json: j }) })
+  await page.route('**/api/species/S20/freq*', (r) => r.fulfill({ json: c.demo ? freqDemo : freqS20 }))
+  await page.route('**/api/species/S20/string*', (r) => r.fulfill({ json: { species: 'S20', genome: 'type', string: TYPE_STRING, code: null, length: TYPE_STRING.length, version: 1, hash: 'h' } }))
   await page.route('**/api/species/S20/jobs', (r) => r.fulfill({ json: { id: 'j1', state: 'done', result: { views: [{ mode: 'clay', az: 32, size: 304, key: 'clayend'.padEnd(64, '0') }] } } }))
   await page.route('**/api/checks', (r) => r.fulfill({ json: metas }))
   await page.route('**/cas/*.png', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
@@ -68,6 +82,7 @@ for (const c of cases) {
   await page.waitForSelector('main')
   await page.evaluate(() => document.fonts.ready)
   await page.waitForTimeout(c.ready ? 700 : 300)
+  if (c.act) { await c.act(page); await page.waitForTimeout(300) }
   const geo = await page.evaluate(() => ({ nav: document.querySelector('aside[aria-label=Navigator]').getBoundingClientRect().width, insp: document.querySelector('aside[aria-label=Inspector]').getBoundingClientRect().width, theme: document.documentElement.dataset.theme }))
   if (geo.theme !== c.theme) fail(`${c.name}: theme ${geo.theme}`)
   if (geo.nav !== (c.w >= 1280 ? 232 : 56)) fail(`${c.name}: navigator ${geo.nav}px`)

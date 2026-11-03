@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { checkEnds, getToken, patchSpecies, type Species } from '../lib/api'
-import { bandOf, binIndex, copyRule, endLine, endMeasure, endsOf, fixPointer, proofEnd, selectedLocus, unitOf, unitText, wakeLine } from '../lib/genes'
+import { bandOf, binIndex, copyRule, endLine, endMeasure, endsOf, fixPointer, proofEnd, modifierLine, selectedLocus, unitOf, unitText, wakeLine } from '../lib/genes'
 import type { StudioUrl } from '../lib/url'
 import { RangeBar } from './RangeBar'
+import { ExpressionRules, GenomeString, HowOften, ModifierBox } from './Expressions'
 import s from './GenesInspector.module.css'
 
 // The gene's inspector (studio-ui 4.3): the range bar, the limits and the type, the looks, how the copies show (locked on a shared trait), then a card for each end that fails with the fix it computed.
-// How often each look shows arrives with `wb freq` (chunk 9).
+// Chapter 9 adds how often each look shows, the looks with rules (age, needs), a live "Add a modifier" and the genome string.
 export function GenesInspector({ species, url, go }: { species: Species; url: StudioUrl; go: (p: Partial<StudioUrl>) => void }) {
   const qc = useQueryClient()
   const [busy, setBusy] = useState(false)
@@ -56,11 +57,13 @@ export function GenesInspector({ species, url, go }: { species: Species; url: St
           <p className={s.help}>{sleep.line}</p>
         </div>
       )}
+      {l.modifier && <div className={s.lock}><div className={s.field}><label>Changes</label><span className={s.v}>{modifierLine(g, l)}</span></div><p className={s.help}>A modifier is a gene of this species. A cross that carries it behaves like this species.</p></div>}
+      <HowOften species={species} l={l} />
+      <ExpressionRules species={species} l={l} />
       <div className={s.lock}>
         <div className={s.field}><label>Copies</label><span className={s.v}>{copyRule(l)}</span></div>
-        <p className={s.help}>The catalogue sets how the copies show.</p>
-        <button className={s.mod} disabled aria-disabled title="A modifier is a gene of this species that changes how a shared trait shows. Modifiers arrive with expressions.">Add a modifier</button>
-        <p className={s.help}>Not yet: modifiers arrive with expressions.</p>
+        <p className={s.help}>{l.modifier ? 'Inherited like any gene.' : 'Shared trait: the catalogue sets how it shows.'}</p>
+        {!l.modifier && <ModifierBox species={species} l={l} />}
       </div>
       {!ext?.ends || !ext.fresh ? (
         <div className={s.measure}>
@@ -82,6 +85,7 @@ export function GenesInspector({ species, url, go }: { species: Species; url: St
           ))}
         </div>
       )}
+      <GenomeString species={species} ind={url.ind} />
     </>
   )
 }

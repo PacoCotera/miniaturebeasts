@@ -7,7 +7,8 @@ export type Band = { form: 'mult' | 'off' | 'lin' | 'int'; lo: number; hi: numbe
 export type Locus = {
   locus: string; label: string; short: string; chapter: string; scope: 'trunk' | 'branch'; kind: string; op: 'blend' | 'switch' | 'pair-map' | 'pigment'; operator?: string; borrowed?: string
   band?: Band; absolute?: Band; range?: [number, number]; limits?: (string | boolean)[]; type: number | string; bins?: string[]; order?: string[]; moves: unknown[]; consumer?: string
-  requires?: string[]; wakesWhen?: Record<string, string[]>; loud?: string; shapeable?: boolean
+  requires?: string[]; wakesWhen?: Record<string, string[]>; loud?: string; shapeable?: boolean; weight?: number
+  modifier?: { of: string; show: string; order?: string[] }
 }
 export type Genome = { catalogue: { id: string; version: number; digest?: string }; clan?: string; borrows?: string[]; chapters: { id: string; name: string }[]; loci: Locus[] }
 export const bandOf = (l: Locus): Band | null => l.band ?? l.absolute ?? null
@@ -109,7 +110,7 @@ export function stageView(l: Locus): StageView {
 // A sleeping record is carried and crossed all the same; only its drawing waits. At the type it is asleep unless the switch it needs is on, or the shown look of a record it names is one of the looks that wake it
 // (a record that is itself asleep shows nothing and wakes nothing). Studio voice; no string for this is in words.md yet (listed for the copywriter in the W7 notes).
 const lookWord = (a: string) => a.replace(/-/g, ' ')
-const labelOf = (g: Genome, id: string) => locusById(g, id)?.label ?? id
+export const labelOf = (g: Genome, id: string) => locusById(g, id)?.label ?? id
 export function isAsleep(g: Genome, l: Locus, seen: string[] = []): boolean {
   if (l.kind !== 'sleeping' || seen.includes(l.locus)) return false
   const shown = (id: string) => { const o = locusById(g, id); return !o || isAsleep(g, o, [...seen, l.locus]) ? undefined : String(o.type) }
@@ -125,3 +126,55 @@ export function wakeLine(g: Genome, l: Locus): { asleep: boolean; head: string; 
   ].join(' and ')
   return { asleep, head: asleep ? 'Asleep at the type' : 'Awake at the type', line: asleep ? `Wakes when ${cond}.` : `Sleeps unless ${cond}.` }
 }
+
+
+// ---- chapter 9: expressions, how often, modifiers, the genome string.
+export type Stage = 'juvenile' | 'adult' | 'elder'
+export const STAGES: { id: Stage; word: string }[] = [{ id: 'juvenile', word: 'Young' }, { id: 'adult', word: 'Grown' }, { id: 'elder', word: 'Elder' }]
+export type Need = { locus: string; is?: string; in?: string[] }
+export type Expression = { id: string; label?: string; locus: string; look: string; age?: { from: Stage; grow?: number }; needs?: Need[]; loud?: boolean; art?: Stage[] }
+export type Group = Record<string, number>
+export type LocusFreq = { looks: string[]; rule: string; rule_words: string; modifiers: string[]; wild: Group; sheet?: Group; cross?: Group }
+export type ExprFreq = { label: string; locus: string; look: string; age: Stage | null; needs: Need[]; loud: boolean; wild: Record<Stage, number>; sheet?: Record<Stage, number>; cross?: Record<Stage, number> }
+export type Freq = { species: string; n: { wild: number; sheet: number; cross: number }; loci: Record<string, LocusFreq>; expressions: Record<string, ExprFreq> }
+export const GROUPS = [{ id: 'wild', word: 'Wild' }, { id: 'sheet', word: 'Sheet' }, { id: 'cross', word: 'Cross' }] as const
+export const pct = (v: number) => (v >= 10 || Number.isInteger(v) ? String(Math.round(v)) : v.toFixed(1)) + '%'
+
+// words.md: an age is "from age · grown". The stage ids are the game's (juvenile, adult, elder); the words are the player's.
+export const stageWord = (s: Stage) => STAGES.find((x) => x.id === s)!.word.toLowerCase()
+export const ageLine = (x: Expression) => (x.age ? `From age · ${stageWord(x.age.from)}` : null)
+export const needLine = (g: Genome, x: Expression) =>
+  x.needs?.length ? `Needs · ${x.needs.map((n) => `${labelOf(g, n.locus)} shows ${n.is ?? n.in!.join(' or ')}`).join(' and ')}` : null
+export const expressionsOf = (xs: Expression[] | undefined, locus: string) => (xs ?? []).filter((x) => x.locus === locus)
+export const modifiersOf = (g: Genome, locus: string) => g.loci.filter((m) => m.modifier?.of === locus)
+export const isModifier = (l: Locus) => !!l.modifier
+export const orderLine = (order: string[] | undefined) => (order ?? []).join(' over ')
+
+// How a locus's looks split in a group: one segment per look (and the asleep share), widths in percent. A look with nothing shows no segment.
+export function barSegments(f: LocusFreq | undefined, group: 'wild' | 'sheet' | 'cross'): { look: string; pct: number; tone: number }[] {
+  const g = f?.[group]
+  if (!g || !f) return []
+  return [...f.looks, 'asleep'].map((look, i) => ({ look, pct: g[look] ?? 0, tone: look === 'asleep' ? -1 : i })).filter((x) => x.pct > 0)
+}
+
+// A modifier gene a species may add to a shared locus (owner ruling 1): a pair map is given a new first look, a switch the other copy rule. The id begins `mod.`, the gene is a switch that one copy turns on.
+export function newModifier(g: Genome, l: Locus, pick: string): Locus | null {
+  if (l.op === 'blend' || l.modifier) return null
+  const slug = l.locus.split('.').pop()!
+  const id = `mod.${slug}-${l.op === 'pair-map' ? 'order' : 'rule'}`
+  if (g.loci.some((o) => o.locus === id)) return null
+  const mod: Locus['modifier'] = l.op === 'pair-map'
+    ? { of: l.locus, show: 'first-ranked', order: [pick, ...(l.order ?? (l.limits as string[])).map(String).filter((a) => a !== pick)] }
+    : { of: l.locus, show: l.operator === 'recessive-enable' ? 'dominant' : 'recessive' }
+  return {
+    locus: id, label: `${l.label} ${l.op === 'pair-map' ? 'order' : 'rule'}`, short: l.short, chapter: l.chapter, scope: 'modifier' as 'trunk', kind: 'heritable-look', op: 'switch', operator: 'dominant-enable', limits: ['off', 'on'], type: 'off',
+    moves: [], consumer: 'the cross: a carrier shows ' + l.label + ' by this gene\'s rule', shapeable: true, weight: 0.25, modifier: mod,
+  } as Locus
+}
+export const modifierLine = (g: Genome, m: Locus) => {
+  const t = locusById(g, m.modifier!.of)
+  return m.modifier!.show === 'first-ranked' ? `${t?.label ?? m.modifier!.of}: ${orderLine(m.modifier!.order)}` : `${t?.label ?? m.modifier!.of}: ${m.modifier!.show === 'recessive' ? 'Needs both' : 'One is enough'}`
+}
+
+// The genome string in groups of five, as it is read aloud; the reader ignores the spaces.
+export const grouped = (s: string) => { const m = /^(G\d+-S\d+v\d+-)(.*)$/i.exec(s); return m ? `${m[1]} ${m[2].replace(/(.{5})/g, '$1 ').trim()}` : s }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isAsleep, wakeLine, stageView, binIndex, proofEnd, endLine, endMeasure, fixPointer, locusDot, rangeBar, selectedLocus, stageEnds, unitText, type End, type ExtremesState, type Genome, type Locus } from './genes'
+import { isAsleep, wakeLine, stageView, binIndex, proofEnd, endLine, endMeasure, fixPointer, locusDot, rangeBar, selectedLocus, stageEnds, unitText, ageLine, needLine, barSegments, expressionsOf, grouped, modifiersOf, newModifier, modifierLine, pct, type Expression, type LocusFreq, type End, type ExtremesState, type Genome, type Locus } from './genes'
 
 const tail: Locus = { locus: 'form.tail-length', label: 'Tail length', short: 'Length', chapter: 'legs-tail', scope: 'trunk', kind: 'heritable-look', op: 'blend', band: { form: 'mult', lo: 0.8, hi: 1.3, unit: '×' }, range: [0.5, 2], type: 1, bins: ['short', 'between', 'long'], moves: [] }
 const eye: Locus = { ...tail, locus: 'form.eye-size', label: 'Eye size', short: 'Eye size', chapter: 'face', band: { form: 'mult', lo: 0.92, hi: 1.1, unit: '×' }, bins: ['small', 'between', 'large'] }
@@ -68,5 +68,45 @@ describe('genes', () => {
     expect(wakeLine(g, tail)).toBeNull()
     const on = { ...g, loci: g.loci.map((l) => (l.locus === 'anatomy.whisker-presence' ? { ...l, type: 'on' } : l)) }
     expect(wakeLine(on, whiskerLength)).toEqual({ asleep: false, head: 'Awake at the type', line: 'Sleeps unless Whiskers is on.' })
+  })
+})
+
+
+describe('chapter 9: expressions, how often, modifiers, the string', () => {
+  const horn: Expression = { id: 'horn', label: 'Horn', locus: 'anatomy.horn-presence', look: 'on', age: { from: 'adult', grow: 0.5 }, art: ['adult', 'elder'] }
+  const sparkle: Expression = { id: 'sparkle', label: 'Sparkle spots', locus: 'appearance.freckle-glow', look: 'high', needs: [{ locus: 'anatomy.tail-tip-form', is: 'lantern' }, { locus: 'appearance.marking-layout', in: ['bands', 'spotted'] }] }
+  it('says an age and the needs in the studio words', () => {
+    expect(ageLine(horn)).toBe('From age · grown')
+    expect(ageLine({ ...horn, age: { from: 'elder' } })).toBe('From age · elder')
+    expect(ageLine(sparkle)).toBeNull()
+    expect(needLine(g, sparkle)).toBe('Needs · Tail length shows lantern and Marking layout shows bands or spotted')
+    expect(needLine(g, horn)).toBeNull()
+    expect(expressionsOf([horn, sparkle], 'anatomy.horn-presence')).toEqual([horn])
+  })
+  it('cuts a bar into the looks that show, the sleeping share last, and leaves out what is nothing', () => {
+    const f: LocusFreq = { looks: ['lantern', 'tuft', 'plain'], rule: 'first-ranked', rule_words: 'First in the order', modifiers: [], wild: { lantern: 85.1, tuft: 12.8, plain: 2.1 }, cross: { lantern: 100, tuft: 0, plain: 0 } }
+    expect(barSegments(f, 'wild').map((x) => x.look)).toEqual(['lantern', 'tuft', 'plain'])
+    expect(barSegments(f, 'cross')).toEqual([{ look: 'lantern', pct: 100, tone: 0 }])
+    expect(barSegments(f, 'sheet')).toEqual([])
+    expect(barSegments({ ...f, wild: { lantern: 0, tuft: 0, plain: 0, asleep: 100 } }, 'wild')).toEqual([{ look: 'asleep', pct: 100, tone: -1 }])
+    expect([pct(85.1), pct(2.1), pct(0), pct(100)]).toEqual(['85%', '2.1%', '0%', '100%'])
+  })
+  it('makes a modifier for a pair map (a new first look) and a switch (the other rule), once, and never for a blend', () => {
+    const m = newModifier(g, tip, 'tuft')!
+    expect(m.locus).toBe('mod.tail-tip-form-order')
+    expect(m.modifier).toEqual({ of: 'anatomy.tail-tip-form', show: 'first-ranked', order: ['tuft', 'plain', 'lantern'] })
+    expect(m.op === 'switch' && m.limits).toEqual(['off', 'on'])
+    const sw = newModifier(g, marks, '')!
+    expect(sw.modifier).toEqual({ of: 'appearance.marking-switch', show: 'recessive' })
+    expect(newModifier(g, { ...marks, operator: 'recessive-enable' }, '')!.modifier!.show).toBe('dominant')
+    expect(newModifier(g, tail, '')).toBeNull()
+    const g2: Genome = { ...g, loci: [...g.loci, m] }
+    expect(newModifier(g2, tip, 'plain')).toBeNull()
+    expect(modifiersOf(g2, 'anatomy.tail-tip-form')).toEqual([m])
+    expect(modifierLine(g2, m)).toBe('Tail length: tuft over plain over lantern')
+  })
+  it('writes the genome string in groups of five after its opening', () => {
+    expect(grouped('G1-S20v1-20A00XY1GC30TJ1G8010R60G821GF5TR6')).toBe('G1-S20v1- 20A00 XY1GC 30TJ1 G8010 R60G8 21GF5 TR6')
+    expect(grouped('hello')).toBe('hello')
   })
 })

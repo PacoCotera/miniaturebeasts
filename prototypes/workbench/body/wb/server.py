@@ -485,6 +485,35 @@ class Server:
         for sid in {t["species"] for t in todo}:
             self.hub.emit("done", sid, job="proofs", kind="proof", cached=False, urls=[f"/cas/{t['key']}.png" for t in todo if t["species"] == sid])
 
+    def string_of(self, sp, selector="type"):
+        """The genome string (and the stamp code, when the frame fits a stamp) of one mibi of the species: `type`, `seed:N`, or a string or code read back. Written by the one codec, through node."""
+        from wb import facade as F, frame_writer as FW
+        import s20genes as GN
+        try:
+            spec = F.internal(sp.spec)
+            ind = F.resolve_genome(selector, spec)
+            r = FW.node(dict(op="encode", copies=F.genome_copies(ind, sp.spec)))
+        except F.BuildError as e:
+            raise ApiError(400, e.message, e.field or "genome")
+        if not r["ok"]:
+            raise ApiError(400, r["detail"], "genome")
+        return dict(species=sp.id, genome=selector, string=r["string"], code=r["code"], length=r["length"], version=r["version"], hash=sp.hash)
+
+    def freq(self, sp, n=1000):
+        """How often each look shows (spec 4.2): wild, this sheet, a cross; per life stage for an expression. No build and no render: instant, and cached by the file's hash."""
+        import expressions as X
+        n = max(10, min(int(n), 5000))
+        key = (sp.id, sp.hash, n)
+        cache = self.__dict__.setdefault("_freq", {})
+        if key not in cache:
+            doc = sp.spec
+            if not isinstance(doc.get("genome"), dict) or "loci" not in doc["genome"]:
+                raise ApiError(400, "this file has no genome block", "genome")
+            if len(cache) > 40:
+                cache.clear()
+            cache[key] = X.freq(doc["genome"], doc.get("expressions") or [], n, doc_id=doc.get("id"))
+        return dict(species=sp.id, hash=sp.hash, **cache[key])
+
     def current_checks(self, sp):
         """The check rows for the file as it is now: from the cache when they are there, else the last rows we had, marked stale; None when nothing has been measured. Starts a check job when there is neither."""
         try:
@@ -661,6 +690,12 @@ def make_handler(srv):
             if m:
                 s = srv.get_species(m.group(1))
                 return self.send_json(dict(id=s.id, path=s.path, hash=s.hash, file=s.spec, error=s.error, lease=None, checks=srv.current_checks(s), extremes=srv.current_extremes(s), goldens=None, history=s.history(5), views=srv.current_views(s), labels=V1_labels()))
+            m = re.fullmatch(r"/api/species/([^/]+)/freq", p)
+            if m:
+                return self.send_json(srv.freq(srv.get_species(m.group(1)), int(q.get("n", ["1000"])[0])))
+            m = re.fullmatch(r"/api/species/([^/]+)/string", p)
+            if m:
+                return self.send_json(srv.string_of(srv.get_species(m.group(1)), q.get("genome", ["type"])[0]))
             m = re.fullmatch(r"/api/jobs/(j\d+)", p)
             if m:
                 j = srv.queue.jobs.get(m.group(1))

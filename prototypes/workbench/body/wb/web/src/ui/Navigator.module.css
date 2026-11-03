@@ -21,3 +21,5 @@ section:first-child .head { margin-top: 0; }
 .mono { display: none; font-size: var(--t-14); font-weight: 500; color: var(--text-2); }
 .rail .mono { display: inline; }
 .rail .head { display: none; }
+.nested { padding-left: 32px; color: var(--text-2); font-size: var(--t-14); }
+.rail .nested { display: none; }

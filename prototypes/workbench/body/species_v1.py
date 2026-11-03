@@ -323,6 +323,7 @@ def from_internal(d):
     assert rg["head"][0] == 0.0 and all(abs(rg[a][1] - rg[b][0]) < 1e-9 for a, b in zip(list(rg), list(rg)[1:])), "the ranges are not contiguous"
     from wb import make_genome_block as MG
     doc["genome"] = MG.block()
+    doc["expressions"] = copy.deepcopy(MG.EXPRESSIONS)
     return doc
 
 

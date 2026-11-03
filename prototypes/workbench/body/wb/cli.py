@@ -4,9 +4,11 @@ Server: WB_URL, else the server.json in WB_HOME (default <body>/scratch/wb-home)
 import argparse
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 BODY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -262,6 +264,52 @@ def cmd_check(a):
     return 1 if fails else 0
 
 
+def cmd_freq(a):
+    """How often each look shows, wild / this sheet / a cross, by life stage (spec 4.2). --file reads a species file offline; otherwise the server's species."""
+    if a.file:
+        sys.path.insert(0, BODY)
+        import expressions as X
+        try:
+            with open(a.file) as fh:
+                doc = json.load(fh)
+            res = X.freq(doc["genome"], doc.get("expressions") or [], a.n, doc_id=doc.get("id"))
+        except (OSError, ValueError, KeyError) as e:
+            raise Fail(2, f"{a.file}: {e}")
+        res["species"] = doc.get("id")
+    else:
+        res = call("GET", f"/api/species/{a.species}/freq?n={a.n}")
+    lines = [f"{res['species']}  wild {res['n']['wild']} · sheet {res['n']['sheet']} · cross {res['n']['cross']}   (percent of mibis)"]
+    groups = [g for g in ("wild", "sheet", "cross") if res["n"][g]]
+    for i, x in res["expressions"].items():
+        lines.append(f"{x['label']}  ({x['locus']} {x['look']}{', from ' + x['age'] if x['age'] else ''}{', needs ' + ' and '.join(n['locus'] + ' ' + str(n.get('is') or '/'.join(n['in'])) for n in x['needs']) if x['needs'] else ''})")
+        for g in groups:
+            lines.append(f"    {g:6} " + "  ".join(f"{st} {v:g}" for st, v in x[g].items()))
+    if a.locus:
+        for l in a.locus:
+            r = res["loci"].get(l)
+            if not r:
+                raise Fail(2, f"no pair, switch or named blend locus '{l}' in the file", "locus")
+            lines.append(f"{l}  ({r['rule_words']}{', modifier ' + ', '.join(r['modifiers']) if r['modifiers'] else ''})")
+            for g in groups:
+                lines.append(f"    {g:6} " + "  ".join(f"{k} {v:g}" for k, v in r[g].items()))
+    out(a, dict(ok=True, **res), "\n".join(lines))
+    return 0
+
+
+def cmd_string(a):
+    """The genome string of one mibi: `wb string seed:3`, `wb string type`, `wb string string:G1-S20v1-...` (read back), `wb string code:S20v1-...`. The string alone on one line (so `$(wb string seed:3)` works); --json has more; --code adds the stamp code."""
+    sp = a.species
+    if not sp:
+        m = re.match(r"(?:string|code):[GS](\d+)", a.selector.strip(), re.I) if a.selector.lower().startswith(("string:", "code:")) else None
+        names = [s["id"] for s in call("GET", "/api/species")]
+        sp = f"S{int(m.group(1)):02d}" if m and f"S{int(m.group(1)):02d}" in names else names[0] if len(names) == 1 else None
+        if not sp:
+            raise Fail(2, f"which species? (--species {', '.join(names)})", "species")
+    r = call("GET", f"/api/species/{sp}/string?genome={urllib.parse.quote(a.selector)}")
+    out(a, dict(ok=True, **r), r["string"] + (f"\n{r['code']}" if a.code and r.get("code") else ""))
+    return 0
+
+
 def cmd_explain(a):
     m = next((x for x in call("GET", "/api/checks") if x["id"] == a.check), None)
     if not m:
@@ -337,6 +385,8 @@ def main(argv=None):
     p = sub.add_parser("validate"); p.add_argument("species", nargs="?", default=""); p.add_argument("--file", default=""); common(p, genome=False); p.set_defaults(f=cmd_validate)
     p = sub.add_parser("convert"); p.add_argument("src"); p.add_argument("--out", default=""); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_convert)
     p = sub.add_parser("check"); p.add_argument("species"); common(p); p.add_argument("--stage", default="all", choices=STAGES); p.add_argument("--locus", action="append", default=[], help="extremes only: build just this locus (repeat for more)"); p.add_argument("--wait", action="store_true"); p.set_defaults(f=cmd_check)
+    p = sub.add_parser("freq"); p.add_argument("species", nargs="?", default=""); p.add_argument("--file", default=""); p.add_argument("-n", type=int, default=1000, help="wild draws"); p.add_argument("--locus", action="append", default=[], help="also print this locus's looks"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_freq)
+    p = sub.add_parser("string"); p.add_argument("selector", nargs="?", default="type"); p.add_argument("--species", default=""); p.add_argument("--code", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_string)
     p = sub.add_parser("explain"); p.add_argument("check"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_explain)
     p = sub.add_parser("watch"); p.add_argument("species"); p.add_argument("--json", action="store_true"); p.add_argument("--count", type=int, default=0); p.add_argument("--timeout", type=float, default=0); p.set_defaults(f=cmd_watch)
     p = sub.add_parser("serve"); p.add_argument("--port", type=int, default=0); p.add_argument("--species", action="append", default=[]); p.add_argument("--static", default=""); p.set_defaults(f=cmd_serve)
