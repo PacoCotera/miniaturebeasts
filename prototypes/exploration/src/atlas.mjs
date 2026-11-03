@@ -310,8 +310,8 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
     else if (t === T.FLOWERS) { const p = pick(cat.prop.flowers, hash(seed, 'pf', key, x, y)); if (p) { const l = atLayer(p, (TS48 - p.w) >> 1, TS48 - p.h); if (l) L.push(l); } }
     else if (t === T.ROCK) { const p = pick(cat.prop.boulder.filter(q => q.w <= TS48 && q.h <= TS48), hash(seed, 'pb', key, x, y));
       if (p) {   // on a scree place a stone with no stone to its left or right stands off the tile centre, by up to 6 px across and 3 px up
-        const lone = lay.scree && at(x - 1, y) !== T.ROCK && at(x + 1, y) !== T.ROCK, h = lone ? hash(seed, 'bx', key, x, y) : 0;
-        const l = atLayer(p, ((TS48 - p.w) >> 1) + (lone ? (h % 13) - 6 : 0), TS48 - p.h - (lone ? (h % 7) - 3 : 0)); if (l) L.push(l); } }
+        const lone = lay.scree && at(x - 1, y) !== T.ROCK && at(x + 1, y) !== T.ROCK, heap = lay.scree && !lone, h = lone || heap ? hash(seed, 'bx', key, x, y) : 0;   // a stone beside a stone moves too, by half the range
+        const l = atLayer(p, ((TS48 - p.w) >> 1) + (lone ? (h % 13) - 6 : heap ? (h % 7) - 3 : 0), TS48 - p.h - (lone ? (h % 7) - 3 : heap ? (h % 5) - 2 : 0)); if (l) L.push(l); } }
     else if (t === T.REEDS) { const p = pick(cat.prop.reeds, hash(seed, 'pr', key, x, y)), on = !rules.reedStagger || (hash(seed, 'rk', key, x, y) & 1), off = rules.reedStagger ? (hash(seed, 'rx', key, x, y) % 17) - 8 : 0;
       if (p && on) sprites.push({ id: p.name, tx: x, ty: y, x: x * TS48 + (TS48 >> 1) - (p.w >> 1) + off, y: y * TS48 + TS48 - p.h, sortY: y * TS48 + 2 }); }
     else if (t === T.TRUNK) L.push({ stand: 'trunk', dx: 8, dy: 16 });

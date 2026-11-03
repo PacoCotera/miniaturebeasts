@@ -285,14 +285,18 @@ test("Fells stair place art: on a scree place every stone tile with a non-sandis
 test("Fells stair place art: a stone with no stone to its left or right stands off the tile centre by up to 6 px across and 3 px up, by hash; seed 42 shows 3 offsets or more", () => {
   const cat = A.catalogue(syntheticPieces(), SYNTH_TONE), boulder = l => /boulder/.test(l.id);
   const [one] = [...fellsStairPlaces([42], "up")], { stones } = stairView(one.lay, one.st), r = screeLayers(one.lay, 42), at = (x, y) => (x < 0 || y < 0 || x >= W.PW || y >= W.PH ? -1 : one.lay.tiles[y * W.PW + x]);
-  const offs = new Set(); let lone = 0;
+  const offs = new Set(), heapOffs = new Set(); let lone = 0;
   for (const t of stones) { const l = r.tiles[t.y * W.PW + t.x].layers.find(boulder); assert.ok(l, "a stone draws a boulder");
     const isLone = at(t.x - 1, t.y) !== W.T.ROCK && at(t.x + 1, t.y) !== W.T.ROCK, centred = l.dx - l.sx;
     const piece = syntheticPieces().find(q => q.name === l.id), cx = (48 - piece.w) >> 1;
     if (isLone) { lone++; offs.add(centred - cx); assert.ok(Math.abs(centred - cx) <= 6, "within 6 px across"); const up = 48 - piece.h - (l.dy - l.sy); assert.ok(up >= -3 && up <= 3, "within 3 px up"); }
-    else { assert.equal(centred, cx, "a stone beside a stone stays centred"); assert.equal(l.dy - l.sy, 48 - piece.h); } }
+    else { heapOffs.add(centred - cx); assert.ok(Math.abs(centred - cx) <= 3, "a stone beside a stone: within 3 px across"); const up = 48 - piece.h - (l.dy - l.sy); assert.ok(up >= -2 && up <= 2, "within 2 px up"); } }
   console.log(`# seed 42 stair screen: ${lone} lone stones of ${stones.length}, x offsets ${[...offs].sort((a, b) => a - b).join(" ")}`);
   assert.ok(offs.size >= 3, "at least 3 distinct x offsets: " + [...offs]);
+  // a stone beside a stone moves by half the range: the heaps on the east screen of seed 42 show at least 3 distinct x offsets
+  { const [e] = [...fellsStairPlaces([42], "right")].filter(q => q.c === 77), r2 = screeLayers(e.lay, 42), seen = new Set(), at2 = (x, y) => (x < 0 || y < 0 || x >= W.PW || y >= W.PH ? -1 : e.lay.tiles[y * W.PW + x]);
+    for (const t of stairView(e.lay, e.st).stones) if (at2(t.x - 1, t.y) === W.T.ROCK || at2(t.x + 1, t.y) === W.T.ROCK) { const l = r2.tiles[t.y * W.PW + t.x].layers.find(boulder), piece = syntheticPieces().find(q => q.name === l.id); seen.add((l.dx - l.sx) - ((48 - piece.w) >> 1)); }
+    assert.ok(seen.size >= 3, "heap stones show at least 3 distinct x offsets: " + [...seen]); }
   // not a scree place: every stone stays centred
   const off = A.placeLayers(Object.assign({}, one.lay, { scree: false }), 42, cat, 0, null);
   for (const t of stones) { const l = off.tiles[t.y * W.PW + t.x].layers.find(boulder), piece = syntheticPieces().find(q => q.name === l.id); assert.equal(l.dx - l.sx, (48 - piece.w) >> 1); }
