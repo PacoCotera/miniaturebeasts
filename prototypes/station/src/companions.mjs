@@ -17,7 +17,7 @@ export const slotName = (slot) => "Companion " + slot;
 const ID_RE = /^c[0-9a-z]{12}$/;
 export const newCompanionId = (rand = Math.random) => "c" + Array.from({ length: 12 }, () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(rand() * 36)]).join("");
 const read = (store, key) => { try { const v = store.getItem(key); return v == null ? null : JSON.parse(v); } catch { return null; } };
-// A legacy save that a Companion can load: a v8 object with its world's seed, creatures and mibis.
+// A legacy save that a Companion can load: a v8 object with its world's seed, creatures and mibis. The shared key never holds a v9 save: the Companion writes v9 under its own key, so the move below stays v8 only.
 export const loadableV8 = (o) => !!o && typeof o === "object" && !Array.isArray(o) && o.v === 8 && typeof o.seed === "number" && Array.isArray(o.cr) && Array.isArray(o.mibis);
 
 // The Companion's own identity in a slot: made once and kept. Slot A, made while the legacy save is still there, takes the id that save already carries, if any.

@@ -1,0 +1,174 @@
+{
+ "note": "Recorded on the v8 page by tools/realm-run.mjs: 20 expeditions, seed 7, generator 3, no mibis. The v9 page with one region must give the same digest.",
+ "seed": 7,
+ "gen": 3,
+ "expeditions": 20,
+ "mibis": 0,
+ "dock": 0,
+ "stopMid": false,
+ "presses": 3026,
+ "digest": "ae97667548c641cac665d4b694cc814c2a0f68353252134433f749c5b5c495c9",
+ "steps": [
+  {
+   "n": 1,
+   "presses": 139,
+   "turn": 1,
+   "bay": 1,
+   "d": "a3a98338d1a5fa06"
+  },
+  {
+   "n": 2,
+   "presses": 191,
+   "turn": 2,
+   "bay": 1,
+   "d": "e9d19a71d31e35bc"
+  },
+  {
+   "n": 3,
+   "presses": 475,
+   "turn": 3,
+   "bay": 1,
+   "d": "e79464941b6ea2bb"
+  },
+  {
+   "n": 4,
+   "presses": 637,
+   "turn": 4,
+   "bay": 2,
+   "d": "ae876b6964e98d9e"
+  },
+  {
+   "n": 5,
+   "presses": 797,
+   "turn": 5,
+   "bay": 3,
+   "d": "bb59f2bb2e839f84"
+  },
+  {
+   "n": 6,
+   "presses": 824,
+   "turn": 6,
+   "bay": 3,
+   "d": "84aac5d5ed5d6bc0"
+  },
+  {
+   "n": 7,
+   "presses": 924,
+   "turn": 7,
+   "bay": 1,
+   "d": "f65c51b9062be192"
+  },
+  {
+   "n": 8,
+   "presses": 1090,
+   "turn": 8,
+   "bay": 2,
+   "d": "56b2f74d1e58fc50"
+  },
+  {
+   "n": 9,
+   "presses": 1259,
+   "turn": 9,
+   "bay": 3,
+   "d": "f87ed819cbc6cf0c"
+  },
+  {
+   "n": 10,
+   "presses": 1395,
+   "turn": 10,
+   "bay": 3,
+   "d": "3458392cd451e96b"
+  },
+  {
+   "n": 11,
+   "presses": 1434,
+   "turn": 11,
+   "bay": 3,
+   "d": "05887e8d33c84e93"
+  },
+  {
+   "n": 12,
+   "presses": 1640,
+   "turn": 12,
+   "bay": 1,
+   "d": "85321102fddd6672"
+  },
+  {
+   "n": 13,
+   "presses": 1888,
+   "turn": 13,
+   "bay": 2,
+   "d": "46742641041fcadb"
+  },
+  {
+   "n": 14,
+   "presses": 2038,
+   "turn": 14,
+   "bay": 3,
+   "d": "8df823db97681f6c"
+  },
+  {
+   "n": 15,
+   "presses": 2185,
+   "turn": 15,
+   "bay": 3,
+   "d": "e65ead4983615d47"
+  },
+  {
+   "n": 16,
+   "presses": 2408,
+   "turn": 16,
+   "bay": 3,
+   "d": "d5b99214ae8a5446"
+  },
+  {
+   "n": 17,
+   "presses": 2531,
+   "turn": 17,
+   "bay": 3,
+   "d": "d0d166ffb394f8da"
+  },
+  {
+   "n": 18,
+   "presses": 2686,
+   "turn": 18,
+   "bay": 3,
+   "d": "84846dd451709619"
+  },
+  {
+   "n": 19,
+   "presses": 2913,
+   "turn": 19,
+   "bay": 3,
+   "d": "c324710e44e19b87"
+  },
+  {
+   "n": 20,
+   "presses": 3026,
+   "turn": 20,
+   "bay": 3,
+   "d": "ae97667548c641ca"
+  }
+ ],
+ "summary": {
+  "turn": 20,
+  "expN": 21,
+  "gen": 3,
+  "revealed": 126,
+  "visited": 29,
+  "called": 28,
+  "pods": 68,
+  "creatures": 735,
+  "bay": 3,
+  "hold": {
+   "e": 0,
+   "d": 20,
+   "s": 0,
+   "pods": 0
+  },
+  "mibis": 0,
+  "carried": 0,
+  "known": 0,
+  "exp": null
+ }
+}

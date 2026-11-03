@@ -46,9 +46,13 @@ export function switchCompanion(who) {
 export function readStored() {
   try {
     const raw = localStorage.getItem(saveKey());
-    if (raw) { const o = JSON.parse(raw); if (o && o.v === S.SAVE_V) return o; }
+    if (raw) { const o = JSON.parse(raw); if (o && S.SAVE_VS.includes(o.v)) return o; }
   } catch { /* unreadable: a fresh Station */ }
   return null;
+}
+// A save from a newer page (its v is above what this Station knows) is read as no save and never written over: the bytes stay as they are.
+function storedNewer() {
+  try { const raw = localStorage.getItem(saveKey()); if (!raw) return false; const o = JSON.parse(raw); return !!o && typeof o.v === "number" && o.v > S.SAVE_V; } catch { return false; }
 }
 function adopt(sv) {
   if (!sv.st || sv.st.wid !== sv.wid) sv.st = S.freshSt(sv.wid, sv.turn || 0);   // a new world on the Companion: a fresh Station
@@ -69,6 +73,7 @@ export function load() {
 // Re-read before writing and keep the Companion's part as stored; only `st` is ours.
 export function save() {
   if (G.resetting) return;
+  if (storedNewer()) { changed(); return; }
   try {
     const cur = readStored();
     if (cur && cur.wid === G.st.wid) G.sv = cur;
@@ -90,7 +95,7 @@ export function storageChanged() {
 }
 export function resetSave() {
   G.resetting = true;
-  try { for (const k of [saveKey(), S.SAVE_KEY].concat(S.OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch { /* nothing to erase */ }
+  try { for (const k of [saveKey(), S.SAVE_KEY, saveKey() + ".pre9"].concat(S.OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch { /* nothing to erase */ }
 }
 // --- developer settings, under their own key ---
 export function loadSettings() {

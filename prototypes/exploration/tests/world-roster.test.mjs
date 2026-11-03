@@ -4,11 +4,8 @@
 //   node --test prototypes/exploration/tests/world-roster.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import vm from "node:vm";
+import { makePage } from "./page-harness.mjs";
 import * as W from "../src/world.mjs";
-import * as A from "../src/atlas.mjs";
-import * as V from "../src/view.mjs";
 
 const SEEDS = Array.from({ length: 1000 }, (_, i) => i);
 const worldOf = {};   // gen -> seed -> G, built once
@@ -75,20 +72,7 @@ test("4. the nest and the glow cells are the Tuikis's, whatever the roster; the 
 });
 
 // The page is the player's: its SPECIES rows take their habitat from the roster, new worlds take generator 3, and its genLife is the module's.
-const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-const MODS = { world: W, view: V, atlas: A };
-const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
-const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
-const SCRIPT = MODULE.replace(IMPORT_RE, "");
-function page(store = {}) {
-  const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any, apply: () => any, construct: () => any, set: () => true });
-  const ctx = { console, URLSearchParams, Date, fetch: () => new Promise(() => {}), document: any, location: any, navigator: any,
-    matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
-    performance: { now: () => 1000 }, setTimeout: () => 0, clearTimeout: () => {}, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-  ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
-  return src => vm.runInContext(src, ctx);
-}
+const page = (store = {}) => makePage({ store }).run;
 test("5. the page: SPECIES matches the roster slot for slot, and a new world holds the floor", () => {
   const p = page();
   assert.deepEqual(JSON.parse(JSON.stringify(p("SPECIES.map(s => [s.name, s.hab])"))), W.ROSTER.map(r => [r.name, r.hab]));
@@ -104,16 +88,16 @@ test("6. old saves load unchanged: a save of each generator keeps its generator 
   const plain = x => JSON.parse(JSON.stringify(x));
   for (const gen of [1, 2, 3]) {
     const store = {}, a = page(store);
-    a(`newWorld(7, ${gen}); ${gen === 1 ? "delete S.gen;" : ""} save()`);
-    const key = Object.keys(store).find(k => store[k].includes('"seed":7')), saved = JSON.parse(store[key]);
-    assert.equal(saved.gen, gen === 1 ? undefined : gen);
+    a(`newWorld(7, ${gen}); save()`);
+    const key = Object.keys(store).find(k => store[k].includes('"seed":7')), saved = JSON.parse(store[key]), g1 = saved.regions[0];
+    assert.equal(g1.gen, gen, "v9 names the generator in the region"); assert.equal("gen" in saved, false);
     const b = page(store);   // a new page boots by loading the save
-    assert.equal(b("S.gen"), saved.gen); assert.deepEqual(plain(b("S.cr")), saved.cr); assert.deepEqual(plain(b("S.pods")), saved.pods);
-    assert.equal(b("G.gen"), saved.gen);
+    assert.equal(b("S.gen"), gen); assert.deepEqual(plain(b("S.cr")), g1.map.cr); assert.deepEqual(plain(b("S.pods")), g1.map.pods);
+    assert.equal(b("G.gen"), gen === 1 ? undefined : gen);
     // a save whose pods are missing is refilled from its own generator's life, never another's
-    const lost = JSON.parse(store[key]); delete lost.pods; store[key] = JSON.stringify(lost);
+    const lost = JSON.parse(store[key]); delete lost.regions[0].map.pods; store[key] = JSON.stringify(lost);
     const c = page(store), mine = W.genLife(W.genWorld(7, gen), 7, W.ROSTER).pods;
     assert.deepEqual(plain(c("S.pods")), mine.map(p => ({ ...p })), `generator ${gen}: refilled pods`);
-    assert.equal(c("S.gen"), saved.gen);
+    assert.equal(c("S.gen"), gen);
   }
 });

@@ -6,7 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import vm from "node:vm";
+import { loadPage, fakeCanvas, PAGE, MODULE, SCRIPT } from "./page-harness.mjs";
 import { blank } from "../../face/tools/blank.mjs";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
@@ -23,29 +23,6 @@ const API = { hash: W.hash, L: W.L, genWorld: s => W.genWorld(s, 1), genPlace: W
 const vectorOf = seed => VECTORS.gens["1"].seeds.find(s => s.seed === seed);
 
 // The page in a sandbox, as in freeze.test.mjs: the module script with its import bound to the real module's exports.
-const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports
-const MODS = { world: W, view: V, atlas: A };
-const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
-const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
-const SCRIPT = MODULE.replace(IMPORT_RE, "");
-// A canvas that keeps palette indices (-1 transparent): fillRect, drawImage (2, 4 and 8 arguments, nearest), image data; clips are ignored.
-function fakeCanvas(look) {
-  const t = { width: 0, height: 0 }; let p = null;
-  const buf = () => { if (!p || p.length !== t.width * t.height) p = new Int16Array(t.width * t.height).fill(-1); return p; };
-  const put = (x, y, v) => { x = Math.floor(x); y = Math.floor(y); if (x >= 0 && y >= 0 && x < t.width && y < t.height) buf()[y * t.width + x] = v; };
-  const ctx = { fillStyle: "", imageSmoothingEnabled: false, save() {}, restore() {}, beginPath() {}, rect() {}, clip() {}, setTransform() {},
-    fillRect(x, y, w, h) { const v = look.hex(this.fillStyle); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) put(x + i, y + j, v); },
-    drawImage(src, ...a) { const sp = src.px(); let [sx, sy, sw, sh] = [0, 0, src.width, src.height], dx, dy, dw, dh;
-      if (a.length === 2) [dx, dy, dw, dh] = [a[0], a[1], sw, sh]; else if (a.length === 4) [dx, dy, dw, dh] = a; else [sx, sy, sw, sh, dx, dy, dw, dh] = a;
-      for (let j = 0; j < dh; j++) for (let i = 0; i < dw; i++) { const v = sp[(sy + Math.floor(j * sh / dh)) * src.width + sx + Math.floor(i * sw / dw)]; if (v >= 0) put(dx + i, dy + j, v); } },
-    createImageData: (w, h) => ({ width: w, height: h, data: new Uint8ClampedArray(w * h * 4) }),
-    putImageData(id, x, y) { for (let j = 0; j < id.height; j++) for (let i = 0; i < id.width; i++) { const o = (j * id.width + i) * 4; put(x + i, y + j, id.data[o + 3] ? look.rgb(id.data[o], id.data[o + 1], id.data[o + 2]) : -1); } },
-    getImageData(x, y, w, h) { const d = new Uint8ClampedArray(w * h * 4); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const v = buf()[(y + j) * t.width + x + i];
-      if (v >= 0) { const c = look.rgbOf(v), o = (j * w + i) * 4; d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = 255; } } return { width: w, height: h, data: d }; } };
-  return Object.assign(t, { getContext: () => ctx, px: buf, style: {}, toDataURL: () => "" });
-}
 // `search` is the page's query string; the page's elements record their listeners (els[id].on.click). opts.canvas: canvases are
 // fakeCanvas, so a drawing can be read back (p.run("scr").px()). opts.script: a variant of the page script.
 function page(store = {}, search, opts = {}) {
@@ -60,8 +37,7 @@ function page(store = {}, search, opts = {}) {
     matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-  ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx);
-  run = src => vm.runInContext(src, ctx); run(opts.script || SCRIPT);
+  run = loadPage(ctx, opts.script || SCRIPT);
   return { run, store, els, ctx, clock, KEY: run("SAVE_KEY") };
 }
 const withoutMemo = w => { const o = { ...w }; delete o.beacons; delete o.depots; return o; };
@@ -122,14 +98,17 @@ test("a save without gen loads as generator 1 and is saved without gen", () => {
   assert.equal(p.run("load()"), true);
   assert.deepEqual(worldDigest(API, p.run("G")), worldDigest(API, W.genWorld(fx.seed, 1)));
   p.run("save()");
-  assert.equal("gen" in JSON.parse(p.store[p.KEY]), false);
+  const v9 = JSON.parse(p.store[p.KEY]);
+  assert.equal("gen" in v9, false, "v9 has no gen at the top");
+  assert.equal(v9.regions[0].gen, 1, "region 1 is generator 1");
+  assert.equal(v9.regions[0].seed, fx.seed); assert.equal(v9.seed, fx.seed);
 });
 
 test("a new world writes gen 3, and its world and first place match generator 3's vectors", () => {
   const p = page();
   p.run("newWorld(42)");
   assert.equal(p.run("S.gen"), 3);
-  assert.match(p.store[p.KEY], /"seed":42,"gen":3,/);
+  const v9 = JSON.parse(p.store[p.KEY]); assert.equal(v9.v, 9); assert.equal(v9.seed, 42); assert.equal(v9.regions[0].seed, 42); assert.equal(v9.regions[0].gen, 3); assert.equal("gen" in v9, false);
   const want = VECTORS.gens["3"].seeds.find(s => s.seed === 42), G = p.run("G");
   assert.deepEqual(Object.assign(worldDigest(API3, G), { beacons: [...W.beaconCells(G, 42)], depots: [...W.depotCells(G, 42)] }), want.world);
   assert.deepEqual(placeDigest(API3, p.run("layout(String(G.spawns[0]))"), 2), want.places[0]);
@@ -139,7 +118,7 @@ test("a world of generator 2 (asked for by a test; players have them in saves) w
   const p = page();
   p.run("newWorld(42, 2)");
   assert.equal(p.run("S.gen"), 2);
-  assert.match(p.store[p.KEY], /"seed":42,"gen":2,/);
+  assert.equal(JSON.parse(p.store[p.KEY]).regions[0].gen, 2);
   const want = VECTORS.gens["2"].seeds.find(s => s.seed === 42), G = p.run("G");
   assert.deepEqual(Object.assign(worldDigest(API2, G), { beacons: [...W.beaconCells(G, 42)], depots: [...W.depotCells(G, 42)] }), want.world);
   assert.equal(want.places[0].key, String(G.spawns[0]));
@@ -711,7 +690,7 @@ test("generator 2 play: Ahead names the edge, the edge word alone comes before h
 
 test("generator 2 play: a save without gen is generator 1, canStep is passable everywhere it reaches; new worlds take the newest generator whatever the address says", () => {
   const fx = FIXTURE(), p = page({ "mb-save-v8": JSON.stringify(fx) });
-  assert.equal(p.run("S.gen"), undefined); assert.equal(p.run("G.gen"), undefined);
+  assert.equal(p.run("S.gen"), 1, "region 1 is generator 1"); assert.equal(p.run("G.gen"), undefined);
   for (let c = 0; c < NC; c++) for (const [dir, dx, dy] of SIDE4) { const x = c % MW + dx, y = ((c / MW) | 0) + dy; if (!onMap(x, y)) continue;
     assert.equal(p.run(`canStep(${c}, ${JSON.stringify(dir)})`), p.run(`passable(${y * MW + x})`), `${c} ${dir}`); }
   for (const q of ["?gen=1", "?gen=2", "?gen=3", "?gen=4", "?seed=5&gen=1"]) { const r = page({}, q); r.run("newWorld(5)"); assert.equal(r.run("S.gen"), 3, q); assert.equal(r.run("G.gen"), 3, q); }
@@ -764,7 +743,7 @@ const fnv = a => { let h = 2166136261; for (const v of a) { h ^= v & 0xffff; h =
 // main's generator 1 map, captured from main's page with this harness (seed 7 saved without gen, no pods, creatures or signs, every cell seen, the gate and the mouth visited)
 const MAIN_G1 = { mapCv: 2730365212, frame: 3568652280 };   // main 5e287081
 // a save written without gen, as every save before generators: a world started, then saved with its gen dropped
-const g1Save = () => { const m = page(); m.run("newWorld(7); delete S.gen; save();"); assert.ok(!("gen" in JSON.parse(m.store[m.KEY]))); return { [m.KEY]: m.store[m.KEY], "mb-companion-A": m.store["mb-companion-A"] }; };
+const g1Save = () => { const m = page(); m.run("newWorld(7)"); const o = JSON.parse(m.store[m.KEY]); o.regions[0].gen = 1; return { [m.KEY]: JSON.stringify(o), "mb-companion-A": m.store["mb-companion-A"] }; };   // v9 names the generator in the region: gen 1
 // one page per generator, shared by the tests below (each sets the state it reads), so the map and fog are built once
 let G1P = null, G2P = null;
 const g1Page = () => G1P || (G1P = page(g1Save(), undefined, { canvas: true }));
@@ -814,7 +793,7 @@ test("M3: generator 2's burrow hole draws on the gate cell's face each frame, th
 
 test("M3: generator 1's map and its burrow hole are unchanged, pixel for pixel against main", () => {
   const p = g1Map();
-  assert.equal(p.run("G.gen"), undefined);
+  assert.equal(p.run("G.gen"), undefined); assert.equal(p.run("S.gen"), 1);
   assert.equal(fnv(p.run("mapCv").px()), MAIN_G1.mapCv, "the baked map, hole included");
   assert.equal(fnv(p.run("scr").px()), MAIN_G1.frame, "the drawn full map");
   assert.equal(p.run("ART.has('g2hole')"), false, "no per-frame hole on generator 1");
@@ -824,7 +803,7 @@ test("M3: the gen-1 hint shows on a generator 1 save between expeditions, never 
   const sandIn = (p, setup) => { p.run(`${setup}; ensureMap(); scr.px().fill(-1); drawSetup(0);`); const f = p.run("scr").px(), W_ = p.run("SCR_W"), sand = p.run("C.sand"); let n = 0, x1 = 0;
     for (let y = 462; y < 482; y++) for (let x = 136; x < 442; x++) if (f[y * W_ + x] === sand) { n++; x1 = Math.max(x1, x); } return { n, x1 }; };
   const g1 = g1Page();
-  assert.equal(g1.run("S.gen"), undefined);
+  assert.equal(g1.run("S.gen"), 1);
   const hint = "Flat world · New world has stairs", w = g1.run(`textW(${JSON.stringify(hint)}, 2)`);
   assert.ok(w <= 306, "fits 306 at 2×");
   const shown = sandIn(g1, "S.exp = null; S.phase = 'setup'; FX.msg = ''");
@@ -1348,7 +1327,7 @@ for (const ts of [32, 48]) {
     const pod = "S.pods.push({ k: S.exp.patch.key, x: 22, y: 13, h: 1, g: 0, sp: 0, id: 'tp' });";
     const a = cuePlace(ts), b = cuePlace(ts, { script: strip });
     for (const p of [a, b]) p.run(pod + " callPlace();");
-    const sOf = p => p.run("JSON.stringify(Object.assign({}, S, { wid: 0 }))");   // the world id is drawn from the clock
+    const sOf = p => p.run("JSON.stringify(Object.assign({}, S, { wid: 0, began: 0, regions: S.regions.map(r => ({ ...r, opened: 0 })) }))");   // the world id and the realm's start are drawn from the clock
     assert.equal(sOf(a), sOf(b), "S as without the cue");
     const cue = js(a, "FX.cue"), mine = t => t.id === "f22,13";
     assert.deepEqual([cue.key, cue.at, cue.until, cue.r], [a.run("S.exp.patch.key"), 5000, 3, 11]);

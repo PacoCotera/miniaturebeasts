@@ -2,7 +2,7 @@
 // function over it. No drawing, no DOM: the tests run this in Node. Screens call these and read
 // the results; presentation events come back as return values, never as side effects on a renderer.
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
-// accepted, dockN, known, probe, carryReqs, returned (with species, gs), and each mibi's id, name, sp, species, spName, born, since, sinceFloor, from, bonded.
+// accepted, dockN, known, probe, carryReqs, returned (with species, gs, and rg, the region it goes back to; none means region 1), and each mibi's id, name, sp, species, spName, born, since, sinceFloor, from, bonded.
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
 import { currentLooks } from "../../workbench/framework/describe.mjs";
@@ -15,7 +15,8 @@ import ROOM_RULES from "../../ui/specs/station/rooms-rules.json" with { type: "j
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 4;
-export const SAVE_KEY = "mb-save-v8", SAVE_V = 8, V7_KEY = "mb-exploration-v7";
+// The save is v9 (a realm of regions, written by the Companion); a v8 save is read as it is. The Station writes only `st`, keeps every other byte, and never writes over a save whose v is above SAVE_V.
+export const SAVE_KEY = "mb-save-v8", SAVE_V = 9, SAVE_VS = [8, 9], V7_KEY = "mb-exploration-v7";
 export const OLD_SAVE_KEYS = ["mb-exploration-v1", "mb-exploration-v2", "mb-exploration-v3", "mb-exploration-v4", "mb-exploration-v5", "mb-exploration-v6", V7_KEY];
 export const DEV_KEY = "mb-station-dev";
 // The decided prices (research-economy.md §2).
@@ -405,7 +406,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
     for (const q of c.pods || []) {
       const species = q.species ?? speciesId(q.sp), fr = frameOf(species);
       if (!fr) { skipped.push(q.id); continue; }   // a malformed record never breaks the bay; it is named, never dropped silently
-      const pod = { id: c.id + ":" + q.id, sp: q.sp ?? speciesIndex(species), species, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k ?? null, n: c.n, idd: 0, newSp: 0, read: [], fresh: 1, homeTurn: home, dryAt: home + POD_LIFE, genome: q.genome && !checkGenome(fr, q.genome).length ? q.genome : podGenome(fr, q.gs >>> 0), shed: q.shed ?? null, ...(q.shed != null ? { of: q.of ?? (st.sheds || []).find((r) => r.id === q.shed)?.name ?? null } : {}), ...(q.why === "new" || q.why === "bond" ? { why: q.why } : {}) };   // why a shed pod is special (the Companion says it: a new species, you fed it); the card that shows it is not built
+      const pod = { id: c.id + ":" + q.id, sp: q.sp ?? speciesIndex(species), species, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k ?? null, ...(c.rg ? { rg: c.rg } : {}), n: c.n, idd: 0, newSp: 0, read: [], fresh: 1, homeTurn: home, dryAt: home + POD_LIFE, genome: q.genome && !checkGenome(fr, q.genome).length ? q.genome : podGenome(fr, q.gs >>> 0), shed: q.shed ?? null, ...(q.shed != null ? { of: q.of ?? (st.sheds || []).find((r) => r.id === q.shed)?.name ?? null } : {}), ...(q.why === "new" || q.why === "bond" ? { why: q.why } : {}) };   // why a shed pod is special (the Companion says it: a new species, you fed it); the card that shows it is not built
       if (q.shed != null) { const rec = (st.sheds || []).find((r) => r.id === q.shed); if (rec) rec.state = "found"; }   // a shed pod opened: its record is kept for the Library
       st.tray.push(pod);   // no rack: every pod comes home
       ids.push(pod.id);
@@ -545,7 +546,7 @@ export const canCompare = (st, a, b) => compareDiff(st, a, b) !== null;
 export function returnPod(st, p) {
   if (!st.tray.includes(p)) return { ok: false };
   leavePod(st, p);
-  st.returned.push({ id: p.id, sp: p.sp, species: speciesOf(p), g: p.g, gs: p.gs >>> 0, k: p.k || null }); if (st.returned.length > 30) st.returned.shift();
+  st.returned.push({ id: p.id, sp: p.sp, species: speciesOf(p), g: p.g, gs: p.gs >>> 0, k: p.k || null, ...(p.rg ? { rg: p.rg } : {}) }); if (st.returned.length > 30) st.returned.shift();
   logEv(st, "Let " + aAn(podName(p)) + " pod go · its reads stay in the field guide");
   return { ok: true, msg: "Back to the " + (PLACE_WORD[p.g] || "wild") + " · its reads stay in the field guide" };
 }

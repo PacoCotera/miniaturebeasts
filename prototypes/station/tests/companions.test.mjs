@@ -64,5 +64,5 @@ test("docking Companion B switches the Station to B's world; docking A again swi
   assert.deepEqual([G.sv.wid, game.saveKey(), G.st.e, JSON.stringify(G.st.mibis)], [wA, keyA, 41, stA], "back to A's world as it was");
   assert.equal(JSON.parse(st.getItem(C.saveKeyOf(b.id))).seed, 99, "B's save is kept");
   assert.equal(game.switchCompanion({ id: a.id, name: a.name }), false, "the same Companion: nothing switches");
-  assert.ok(S.SAVE_V === 8);
+  assert.ok(S.SAVE_V === 9 && S.SAVE_KEY === "mb-save-v8", "v9; the storage key keeps its name");
 });

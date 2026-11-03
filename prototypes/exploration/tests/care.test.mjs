@@ -8,6 +8,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import vm from "node:vm";
+import { makePage } from "./page-harness.mjs";
 import { decodePNG } from "../tools/atlas-check.mjs";
 import { decodeExact } from "../src/atlas.mjs";
 
@@ -324,10 +325,10 @@ test("normalizeCare: defaults for the additive fields; ids not in S.mibis droppe
   assert.deepEqual(plain(S.mibis[2]), { id: 3, name: "Fig", born: 0, care: 0, tends: 0, outings: 0, notches: 0, tendDay: null, grownTurn: null });
   const once = JSON.stringify(S); t.normalizeCare(S); assert.equal(JSON.stringify(S), once);
 });
-test("a new world: the carried set, no `with`; SAVE_V stays 8", () => {
+test("a new world: the carried set, no `with`; SAVE_V is 9 and the storage key keeps its name", () => {
   assert.match(source("worldFields"), /mibis: \[\], carried: \[\], lead: null, carrySeen: 0, carryRefused: \[\]/);
   assert.ok(!/\bwith: null\b|withSeen: 0, probeSeen/.test(source("worldFields")));
-  assert.match(PAGE, /LEGACY_KEY = 'mb-save-v8', SAVE_V = 8/);
+  assert.match(PAGE, /LEGACY_KEY = 'mb-save-v8', SAVE_V = 9/);
 });
 
 // ---- §1: the Station's requests, applied at the dock (T3 and T7, the Companion's half) ----
@@ -746,29 +747,8 @@ test("the Lead card's context: docked with no one carried reads 'no one with you
 // The whole page script in a sandbox (as freeze.test.mjs runs it), with the Station's real code and frames: seedAdults S05 and S10
 // (sp -1 on the Station: a species beyond the Companion's three), then dockKey, then the Companion reads the save.
 const X1 = await (async () => {
-  const W = await import("../src/world.mjs"), A = await import("../src/atlas.mjs"), V = await import("../src/view.mjs"), { frameOf } = await import("../../station/src/genome.mjs");
-  // every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports
-  const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1], MODS = { world: W, view: V, atlas: A };
-  const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
-  const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
-  const SCRIPT = MODULE.replace(IMPORT_RE, "");
-  function page(store = {}) {
-    const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
-      apply: () => any, construct: () => any, set: () => true });
-    const clock = { t: 1000, timers: [] };
-    const ctx = { console, URLSearchParams, Date, fetch: () => new Promise(() => {}), document: any, location: any, navigator: any,
-      matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
-      performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
-      localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-    ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
-    const run = src => vm.runInContext(src, ctx), KEY = run("SAVE_KEY");
-    const p = { run, store, KEY, get S() { return run("S"); },
-      pass(ms) { const end = clock.t + ms; for (;;) { clock.timers.sort((a, b) => a.at - b.at); const n = clock.timers[0]; if (!n || n.at > end) break; clock.timers.shift(); clock.t = n.at; n.f(); } clock.t = end; },
-      key(k, n = 1) { for (let i = 0; i < n; i++) { p.pass(400); run("act(" + JSON.stringify(k) + ")"); } },
-      sv: () => JSON.parse(store[KEY]),
-      putSt(st) { const o = JSON.parse(store[KEY]); o.st = JSON.parse(JSON.stringify(st)); store[KEY] = JSON.stringify(o); } };
-    return p;
-  }
+  const { frameOf } = await import("../../station/src/genome.mjs");
+  const page = (store = {}) => { const p = makePage({ store }); p.putSt = st => { const o = JSON.parse(store[p.KEY]); o.st = JSON.parse(JSON.stringify(st)); store[p.KEY] = JSON.stringify(o); }; return p; };
   // The Companion's world, the Station's write (S05 Dot and Moss, S10 Bean and Fig, docked), normalized as the Station does before every save,
   // so each mibi carries the spName the Station's own normalize writes; `oldSave` drops it (a Station save from before the field).
   function docked({ oldSave = false, seed = true } = {}) {
