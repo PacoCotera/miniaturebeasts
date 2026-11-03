@@ -7,7 +7,7 @@ import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { CATALOGUE, LOCI, VALIDATED, inClan, isContinuous, resolveCopies, stepValue, stepOf, BLEND_STEPS, digestAt, alleleIds, catalogueHeader } from "../framework/catalogue.mjs";
+import { CATALOGUE, LOCI, VALIDATED, PART_SWITCHES, inClan, isContinuous, resolveCopies, wakesFor, lookConflicts, LOOK_PAIRS, stepValue, stepOf, BLEND_STEPS, digestAt, alleleIds, catalogueHeader } from "../framework/catalogue.mjs";
 import { sha256hex } from "../framework/sha256.mjs";
 import { CLANS, SPECIES, specOf } from "../framework/roster.mjs";
 import { buildFrame } from "../framework/species.mjs";
@@ -19,17 +19,17 @@ const sha16 = (s) => createHash("sha256").update(s).digest("hex").slice(0, 16);
 // The 54 records of the proposal's table A.3, in the frame's ring order (Coat, Face, Shape, Legs & tail, Movement): [Chunk 7 locus, record, how the record stands].
 // "existing" is in pin 10; "new" is added in pin 11; "C20" is a new branch record of the Tuliko's clan; "borrowed" is a branch record of C18 the Tuliko borrows.
 const A3 = [
-  ["appearance.body-hue", "appearance.body-hue", "new"], ["coat.hue-shift", "appearance.body-hue-shift", "new"], ["appearance.coat-value", "appearance.body-value", "new"],
+  ["appearance.body-hue", "appearance.body-hue", "new"], ["appearance.coat-value", "appearance.body-value", "new"],
   ["coat.gradient", "appearance.countershade", "new"], ["skin.grain", "appearance.surface-grain", "new"], ["skin.sheen", "appearance.sheen", "existing"],
   ["coat.fleck", "appearance.fleck", "new"], ["appearance.bib-reach", "appearance.cream-extent", "new"], ["appearance.marking-layout (plain)", "appearance.marking-switch", "existing"],
   ["appearance.marking-layout (five)", "appearance.marking-layout", "existing"], ["coat.rd", "appearance.pattern-kind", "new"], ["coat.rd-scale", "appearance.pattern-scale", "new"],
-  ["coat.rd-contrast", "appearance.pattern-contrast", "new"], ["coat.rosette", "appearance.pattern-rosette", "new"], ["coat.bands", "appearance.band-count", "new"],
+  ["coat.rd-contrast", "appearance.pattern-contrast", "new"], ["coat.rosette", "appearance.marking-rosette", "new"], ["coat.bands", "appearance.band-count", "new"],
   ["coat.mark", "appearance.emblem", "new"], ["coat.mark-where", "appearance.emblem-place", "new"], ["coat.mark-size", "appearance.emblem-size", "new"],
   ["coat.freckle-density", "appearance.freckle-density", "new"], ["coat.freckle-glow", "appearance.freckle-glow", "C20"], ["appearance.glow", "appearance.emission-brightness", "existing"],
   ["appearance.glow-hue", "appearance.emission-hue", "new"], ["coat.bleed", "appearance.lantern-bleed", "C20"], ["coat.glow-pattern", "appearance.glow-pattern", "C20"],
   ["growth.exterior-eye-size-ratio", "form.eye-size", "new"], ["growth.exterior-eye-height-ratio", "form.eye-height", "new"], ["growth.exterior-eye-spacing-ratio", "form.eye-spacing", "new"],
   ["face.mouth-width", "form.mouth-width", "new"], ["face.mouth-height", "form.mouth-height", "new"], ["face.expression", "appearance.mouth-rest", "new"],
-  ["face.blush", "appearance.blush", "new"], ["face.fangs", "anatomy.fang-presence", "new"], ["face.whisker-count", "form.whisker-count", "new"],
+  ["face.blush", "appearance.blush", "new"], ["face.fangs", "anatomy.fang-presence", "new"], ["face.whisker-count (zero)", "anatomy.whisker-presence", "new"], ["face.whisker-count", "form.whisker-count", "new"],
   ["face.whisker-length", "form.whisker-length", "new"], ["face.whisker-droop", "form.whisker-droop", "new"], ["face.whisker-curl", "form.whisker-curl", "new"],
   ["face.whisker-glow", "appearance.whisker-glow", "C20"], ["coat.brow", "anatomy.brow-tuft-presence", "borrowed"], ["body.ear-family", "form.ear-kind", "new"],
   ["body.ear-length", "form.ear-length", "new"], ["body.ear-girth", "form.ear-width", "new"], ["body.ear-splay", "form.ear-splay", "new"], ["body.ear-droop", "form.ear-droop", "new"],
@@ -39,7 +39,7 @@ const A3 = [
   ["movement.cycle-rate", "movement.cycle-rate", "existing"],
 ];
 const NAMED = ["appearance.marking-switch", "appearance.marking-layout", "appearance.pattern-kind", "appearance.emblem", "appearance.emblem-place", "appearance.glow-pattern", "appearance.mouth-rest",
-  "appearance.blush", "anatomy.fang-presence", "appearance.whisker-glow", "anatomy.brow-tuft-presence", "form.ear-kind", "anatomy.tail-tip-form"];
+  "appearance.blush", "anatomy.fang-presence", "anatomy.whisker-presence", "appearance.whisker-glow", "anatomy.brow-tuft-presence", "form.ear-kind", "anatomy.tail-tip-form"];
 const C20 = A3.filter((r) => r[2] === "C20").map((r) => r[1]);
 const NEW = A3.filter((r) => r[2] === "new" || r[2] === "C20").map((r) => r[1]);
 
@@ -48,7 +48,7 @@ test("pin 11: version 11, 226 records, and a content digest that is the SHA-256 
   assert.equal(CATALOGUE.loci.length, 178 + 48); assert.equal(VALIDATED.length, 172 + 48);
   assert.match(CATALOGUE.digest, /^[0-9a-f]{64}$/);
   assert.equal(CATALOGUE.digest, digestAt(7)); assert.equal(CATALOGUE.digest, digestAt(Infinity));
-  assert.equal(CATALOGUE.digest, "e7dddda92e5605c4f307feabe86c3c1927b7191a513713270dbaad001ad4a94f", "pin 11 names this content: a change to a record, an allele, a pair map or a scope is a new pin");
+  assert.equal(CATALOGUE.digest, "c2c9ba5288d241aef2ffcc8f8089fe9778fb5d1fdaf6462b4826a5164b0ed462", "pin 11 names this content: a change to a record, an allele, a pair map or a scope is a new pin");
   assert.equal(digestAt(6), "f87c59ca5d17e77e51993bb9d15fc70d0c2f2ea959c10bbd98445019514283a7", "the 178 records pin 10 holds on the build branches, digested the same way (this was computed on the code before pin 11 and is what a frame of version 6 or older sees)");
   assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 6)).length, 178);
   assert.notEqual(digestAt(6), digestAt(7));
@@ -74,13 +74,14 @@ test("A.3: the 54 records exist; 6 stand in pin 10 (one of them C18's, borrowed)
   assert.deepEqual(branch.sort(), [...C20].sort()); for (const id of C20) assert.equal(LOCI.get(id).clan, "C20", id);
   assert.deepEqual([...C20].sort(), ["anatomy.tail-tip-form", "appearance.freckle-glow", "appearance.glow-pattern", "appearance.lantern-bleed", "appearance.whisker-glow"], "the lantern and its glow family");
   const cont = A3.filter((r) => isContinuous(LOCI.get(r[1])));
-  assert.equal(cont.length, 41, "41 continuous"); assert.equal(54 - cont.length, 13, "13 named");
+  assert.equal(cont.length, 40, "40 continuous"); assert.equal(54 - cont.length, 14, "14 named");
+  assert.ok(!LOCI.has("appearance.body-hue-shift") && !LOCI.has("appearance.pattern-rosette"), "the hue shift is dropped (a second gene for one colour) and the rosette has its new name");
   assert.deepEqual(A3.filter((r) => !isContinuous(LOCI.get(r[1]))).map((r) => r[1]).sort(), [...NAMED].sort());
 });
 
 test("owner ruling 3: Tuliko's generic looks (whiskers, fangs, blush, emblems, coat patterns, shape measures) are trunk, open to every clan; only C20 sees the lantern family", () => {
   for (const id of ["form.whisker-count", "form.whisker-length", "form.whisker-droop", "form.whisker-curl", "anatomy.fang-presence", "appearance.blush", "appearance.emblem", "appearance.emblem-place", "appearance.emblem-size",
-    "appearance.pattern-kind", "appearance.pattern-scale", "appearance.pattern-contrast", "appearance.pattern-rosette", "appearance.band-count", "form.eye-size", "form.leg-length", "form.tail-length", "form.head", "form.torso-girth"]) {
+    "appearance.pattern-kind", "appearance.pattern-scale", "appearance.pattern-contrast", "appearance.marking-rosette", "appearance.band-count", "anatomy.whisker-presence", "form.eye-size", "form.leg-length", "form.tail-length", "form.head", "form.torso-girth"]) {
     assert.equal(LOCI.get(id).scope, "trunk", id); assert.ok(inClan(LOCI.get(id), "C04") && inClan(LOCI.get(id), "C20"), id);
   }
   for (const id of C20) { assert.ok(inClan(LOCI.get(id), "C20"), id); assert.ok(!inClan(LOCI.get(id), "C04") && !inClan(LOCI.get(id), "C03"), `${id} is no other clan's`); }
@@ -126,9 +127,43 @@ test("pair maps are complete for every pair-map record, the new ones too, and ea
   // switches: blush dominant, fangs and whisker glow recessive, the marking switch recessive
   assert.equal(resolveCopies(LOCI.get("appearance.blush"), ["on", "off"]), true);
   for (const id of ["anatomy.fang-presence", "appearance.whisker-glow", "appearance.marking-switch"]) { assert.equal(LOCI.get(id).operator, "recessive-enable", id); assert.equal(resolveCopies(LOCI.get(id), ["on", "off"]), false, id); assert.equal(resolveCopies(LOCI.get(id), ["on", "on"]), true, id); }
-  // the sleeping records name what wakes them
-  assert.deepEqual(["pattern-scale", "pattern-contrast", "pattern-rosette"].map((k) => LOCI.get(`appearance.${k}`).sleepsWhen), Array(3).fill({ "appearance.pattern-kind": "none" }));
-  assert.deepEqual(["emblem-place", "emblem-size"].map((k) => LOCI.get(`appearance.${k}`).sleepsWhen), Array(2).fill({ "appearance.emblem": "none" }));
+  // the whisker switch: dominant, so whiskerless (off/off) is the recessive look
+  assert.equal(LOCI.get("anatomy.whisker-presence").operator, "dominant-enable"); assert.equal(resolveCopies(LOCI.get("anatomy.whisker-presence"), ["on", "off"]), true); assert.equal(resolveCopies(LOCI.get("anatomy.whisker-presence"), ["off", "off"]), false);
+});
+
+test("sleep rules: every one names the SHOWN look in a wakesWhen (any look listed wakes the record), none is left in the old sleepsWhen form, and each rule is the review's", () => {
+  assert.ok(CATALOGUE.loci.every((l) => !("sleepsWhen" in l)), "the sleepsWhen form is gone");
+  const wakes = Object.fromEntries(CATALOGUE.loci.filter((l) => l.wakesWhen).map((l) => [l.id, l.wakesWhen]));
+  assert.deepEqual(wakes, {
+    "appearance.pattern-scale": { "appearance.pattern-kind": ["spots", "labyrinth", "rings"] },
+    "appearance.pattern-contrast": { "appearance.pattern-kind": ["spots", "labyrinth", "rings"] },
+    "appearance.marking-rosette": { "appearance.marking-layout": ["spotted"] },
+    "appearance.band-count": { "appearance.marking-layout": ["bands", "bands-and-patches"], "appearance.glow-pattern": ["belly-arcs"] },
+    "appearance.emblem-place": { "appearance.emblem": ["heart", "star"] },
+    "appearance.emblem-size": { "appearance.emblem": ["heart", "star"] },
+    "appearance.lantern-bleed": { "anatomy.tail-tip-form": ["lantern"] },
+  });
+  // the listed looks are shown looks: the layout shows "bands-and-patches" for a bands copy with a patches copy, not a copy name
+  assert.equal(resolveCopies(LOCI.get("appearance.marking-layout"), ["bands", "patches"]), "bands-and-patches");
+  // wakesFor: awake when any named record shows a listed look; a record that shows nothing (not carried, or asleep) wakes nothing; no rule is always awake
+  const shown = (m) => (id) => m[id];
+  const band = LOCI.get("appearance.band-count"), rosette = LOCI.get("appearance.marking-rosette");
+  assert.equal(wakesFor(band, shown({ "appearance.marking-layout": "bands" })), true); assert.equal(wakesFor(band, shown({ "appearance.marking-layout": "bands-and-patches" })), true);
+  assert.equal(wakesFor(band, shown({ "appearance.marking-layout": "spotted", "appearance.glow-pattern": "belly-arcs" })), true, "the belly arcs wake it too");
+  assert.equal(wakesFor(band, shown({ "appearance.marking-layout": "spotted", "appearance.glow-pattern": "none" })), false);
+  assert.equal(wakesFor(band, shown({})), false); assert.equal(wakesFor(rosette, shown({ "appearance.marking-layout": "patches" })), false); assert.equal(wakesFor(rosette, shown({ "appearance.marking-layout": "spotted" })), true);
+  assert.equal(wakesFor(LOCI.get("form.eye-size"), shown({})), true);
+  assert.equal(digestAt(6), "f87c59ca5d17e77e51993bb9d15fc70d0c2f2ea959c10bbd98445019514283a7", "no record of pin 10 carries a rule");
+});
+
+test("owners: the three eye records ride the eye switch, form.head needs a head, and the whisker records sleep without the whisker switch", () => {
+  for (const k of ["size", "height", "spacing"]) assert.equal(LOCI.get(`form.eye-${k}`).owner, "anatomy.exterior-eye-presence", `form.eye-${k}`);
+  assert.equal(LOCI.get("form.head").owner, "head");
+  const sw = LOCI.get("anatomy.whisker-presence");
+  assert.deepEqual([sw.scope, sw.family, sw.owner, sw.operator], ["trunk", "structure", "head", "dominant-enable"]); assert.ok(PART_SWITCHES.has("anatomy.whisker-presence"));
+  for (const id of ["form.whisker-count", "form.whisker-length", "form.whisker-droop", "form.whisker-curl", "appearance.whisker-glow"]) assert.equal(LOCI.get(id).owner, "anatomy.whisker-presence", id);
+  assert.equal(CATALOGUE.loci.filter((l) => l.sinceFrame === 7).length, 48);
+  assert.equal(CATALOGUE.loci.filter((l) => l.sinceFrame === 7 && l.scope === "trunk").length, 43); assert.equal(CATALOGUE.loci.filter((l) => l.sinceFrame === 7 && l.scope === "branch").length, 5);
 });
 
 test("the marking layout gains masked, points, spotted and capped after bands and patches; an older copy keeps its index, bands with patches stays co-dominant", () => {
@@ -172,7 +207,7 @@ test("every S01 to S19 frame is byte for byte what pin 10 built, and none of the
 test("a frame of version 7 names pin 11 and its digest, carries the generic records of an open clan, and lists C20's records as another clan's branch loci", () => {
   assert.deepEqual(catalogueHeader(6), { id: CATALOGUE.id, version: 10, parent: CATALOGUE.parent });
   assert.equal(catalogueHeader(7).version, 11); assert.equal(catalogueHeader(7).digest, CATALOGUE.digest);
-  const frame = buildFrame({ ...specOf(SPECIES.find((s) => s.id === "S04")), frameVersion: 7 }, { samples: 5 });
+  const frame = buildFrame({ ...specOf(SPECIES.find((s) => s.id === "S04")), frameVersion: 7, openSwitches: ["anatomy.whisker-presence"] }, { samples: 5 });
   assert.equal(frame.catalogue.version, 11); assert.equal(frame.catalogue.digest, CATALOGUE.digest);
   assert.equal(frame.viability.constructed, frame.viability.sampled);
   for (const id of ["form.ear-kind", "form.whisker-count", "appearance.blush", "form.tail-length"]) assert.ok(frame.loci.some((l) => l.id === id), `${id} is open to a C04 species at version 7`);

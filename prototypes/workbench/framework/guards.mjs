@@ -105,6 +105,7 @@ export const SWITCH_TARGETS = {
   "physiology.charged-body": "charged.enabled",
   "anatomy.tail-tip-bulb": "tailBulb.enabled", "anatomy.top-cap-sheet": "cap.enabled", "appearance.belly-field": "belly.enabled",
   "anatomy.tail-curl-presence": "tailCurl.enabled", "anatomy.fur-skirt-presence": "furSkirt.enabled", "anatomy.brow-tuft-presence": "browTufts.enabled",
+  "anatomy.whisker-presence": "whiskers.enabled",   // pin 11 (frame version 7): the whisker switch; its records sleep without it
 };
 
 // Is this locus's owner on, given plan facts `v` (with the part-switch targets already set)?

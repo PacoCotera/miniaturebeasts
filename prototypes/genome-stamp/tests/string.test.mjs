@@ -7,7 +7,7 @@ import { FRAMES_LIST, byName, frameFor, TEST_SPECIES } from "../src/frames.mjs";
 import { genomeString, decodeGenomeString, STRING_FORMAT, STRING_FORMATS, STRING_HEADER_FIELDS, stringFormats } from "../src/string.mjs";
 import { CODE_ALPHABET, STEP_BITS, BLEND_STEPS, crc10, charsOf, toBits, stepValue, stampCode, decodeStampCode, copyIndex } from "../src/codec.mjs";
 import { rng } from "../src/frames.mjs";
-import { tulikoFrame } from "./tuliko-frame.mjs";
+import { tulikoFrame, tulikoType } from "./tuliko-frame.mjs";
 
 // --- helpers -----------------------------------------------------------------------------------------------------------------------------------------------
 // A genome of random copies for a frame: a named locus from its pool, a continuous one a named bin or a step, equal copies about half the time (a blended child).
@@ -43,26 +43,6 @@ const sameCopies = (frame, a, b) => frame.heritable.every((l) => a[l.id].join() 
 const LOIKA = () => frameFor(1, 4);
 const LOIKA_TYPE = { "appearance.body-palette": ["charcoal", "charcoal"], "appearance.marking-switch": ["on", "on"], "appearance.marking-layout": ["bands", "bands"], "anatomy.crown-presence": ["on", "on"],
   "growth.exterior-eye-size-ratio": ["huge", "huge"], "movement.cycle-rate": ["low", "high"], "energy.action-efficiency": ["low", "high"] };
-// The Tuliko's type, as table A.3 and B.4 describe it: every shape and face blend at `between` (t 0.5); the coat blends at the type's t moved onto the step (the hue 270 of 0..360 is
-// t 0.75, step 44; the sheen 0.3 is step 18 of 0..1; the glow 0.92 of 0.4..1 is step 51; the freckle glow 0.9 of 0.5..1 is t 0.8, step 47); a t that is a bin exactly (0, 0.5, 1) is that
-// bin (a rosette of 0 is `low`, 5 bands of 3..7 is `between`); prick ears, a lantern tip, blush on, no marks (the switch off, so no layout shows: bands), no pattern, no emblem, cycle low/high.
-function tulikoType(f) {
-  const c = {};
-  for (const l of f.heritable) c[l.id] = l.values ? ["between", "between"] : [l.alleles[0], l.alleles[0]];
-  Object.assign(c, {
-    "appearance.body-hue": [stepValue(f.heritable.find((l) => l.id === "appearance.body-hue"), 44), stepValue(f.heritable.find((l) => l.id === "appearance.body-hue"), 44)],
-    "appearance.sheen": [stepValue(f.heritable.find((l) => l.id === "appearance.sheen"), 18), stepValue(f.heritable.find((l) => l.id === "appearance.sheen"), 18)],
-    "appearance.emission-brightness": [stepValue(f.heritable.find((l) => l.id === "appearance.emission-brightness"), 51), stepValue(f.heritable.find((l) => l.id === "appearance.emission-brightness"), 51)],
-    "appearance.freckle-glow": [stepValue(f.heritable.find((l) => l.id === "appearance.freckle-glow"), 47), stepValue(f.heritable.find((l) => l.id === "appearance.freckle-glow"), 47)],
-    "appearance.pattern-rosette": ["low", "low"], "form.whisker-count": ["few", "few"],
-    "appearance.marking-switch": ["off", "off"], "appearance.marking-layout": ["bands", "bands"], "appearance.pattern-kind": ["none", "none"], "appearance.emblem": ["none", "none"],
-    "appearance.emblem-place": ["forehead", "forehead"], "appearance.glow-pattern": ["none", "none"], "appearance.mouth-rest": ["content", "content"], "appearance.blush": ["on", "on"],
-    "anatomy.fang-presence": ["off", "off"], "appearance.whisker-glow": ["off", "off"], "anatomy.brow-tuft-presence": ["off", "off"], "form.ear-kind": ["prick", "prick"],
-    "anatomy.tail-tip-form": ["lantern", "lantern"], "movement.cycle-rate": ["low", "high"],
-  });
-  return { copies: c };
-}
-
 // --- the format ----------------------------------------------------------------------------------------------------------------------------------------
 test("the format list: G1 is the only format and the one the encoder writes; the header is format 4, species 12 and frame version 10 bits", () => {
   assert.deepEqual(STRING_FORMATS, [1]); assert.equal(STRING_FORMAT, 1); assert.ok(STRING_FORMATS.includes(STRING_FORMAT));
@@ -86,12 +66,12 @@ test("B.4, the Loika (S01 frame version 4): the type is G1-S1v4-200G201KGG010049
   assert.equal(code, "S1v4-0F-400G22D8XZG000040000000000000014040200800G020QA"); assert.equal(code.length, 55);
 });
 
-test("B.4, the Tuliko (a test frame of S20, version 1, the 54 records of A.3): the type is an 83-character string and the bred Tuliko the next, and both decode back", () => {
+test("B.4, the Tuliko (a test frame of S20, version 1, the 54 records of A.3): the type is an 82-character string and the bred Tuliko the next, and both decode back", () => {
   const f = tulikoFrame();
-  assert.equal(f.heritable.length, 54); assert.equal(f.heritable.filter((l) => l.values).length, 41, "41 continuous"); assert.equal(f.heritable.filter((l) => !l.values).length, 13, "13 named");
+  assert.equal(f.heritable.length, 54); assert.equal(f.heritable.filter((l) => l.values).length, 40, "40 continuous"); assert.equal(f.heritable.filter((l) => !l.values).length, 14, "14 named");
   const type = tulikoType(f);
   const s = genomeString(f, type);
-  assert.equal(s, "G1-S20v1-20A00XY1GC30TJ1G8010R60G821GF5TR61430R61G9J0GC30G10R61GC30R61GC30R442008JD"); assert.equal(s.length, 83);
+  assert.equal(s, "G1-S20v1-20A00XY1GC3A86100430R210861WQB0R4GC30R61621GC30G10R61GC30R61GC30R44200836"); assert.equal(s.length, 82);
   const bred = structuredClone(type);
   const step = (id, k) => stepValue(f.heritable.find((l) => l.id === id), k);
   Object.assign(bred.copies, {
@@ -100,18 +80,18 @@ test("B.4, the Tuliko (a test frame of S20, version 1, the 54 records of A.3): t
   });
   assert.equal(bred.copies["form.tail-length"][0], 0.79661); assert.equal(bred.copies["appearance.body-hue"][0], 0.20339);
   const b = genomeString(f, bred);
-  assert.equal(b, "G1-S20v1-20A00SY1GC30TJ1GA210R60G821GF5TR61430R61G9J0GC30GB0R61GC30R61WM30R542008EX"); assert.equal(b.length, 83);
+  assert.equal(b, "G1-S20v1-20A00SY1GC3A86188430R210861WQB0R4GC30R61621GC30GB0R61GC30R61WM30R5420080H"); assert.equal(b.length, 82);
   for (const [str, g] of [[s, type], [b, bred]]) { const d = decodeGenomeString(str, (sp, v) => (sp === 20 && v === 1 ? f : null)); assert.ok(d.ok, d.detail); assert.deepEqual(d.genome.copies, g.copies); }
 });
 
-test("the length claims of B.3: 23 to 26 characters for the Loika, 68 to 109 for the Tuikis, 64 to 101 for the Belatz, 82 to 131 for the Tuliko (the type, with its unequal cycle rate, is 83)", () => {
+test("the length claims of B.3: 23 to 26 characters for the Loika, 68 to 109 for the Tuikis, 64 to 101 for the Belatz, 81 to 129 for the Tuliko (the type, with its unequal cycle rate, is 83)", () => {
   const range = (f) => {
     let lo = 26, hi = 26;
     for (const l of f.heritable) { if (l.values) { lo += 1 + STEP_BITS; hi += 1 + 2 * STEP_BITS; } else { lo += 2 * l.bits; hi += 2 * l.bits; } }
     const open = `G1-S${f.species}v${f.version}-`.length;
     return [open + Math.ceil(lo / 5) + 2, open + Math.ceil(hi / 5) + 2];
   };
-  assert.deepEqual(range(byName("S01")), [23, 26]); assert.deepEqual(range(byName("S03")), [68, 109]); assert.deepEqual(range(byName("S09")), [64, 101]); assert.deepEqual(range(tulikoFrame()), [82, 131]);
+  assert.deepEqual(range(byName("S01")), [23, 26]); assert.deepEqual(range(byName("S03")), [68, 109]); assert.deepEqual(range(byName("S09")), [64, 101]); assert.deepEqual(range(tulikoFrame()), [81, 129]);
   // and the extremes are reached: all blends equal, none equal
   for (const f of [byName("S01"), byName("S03"), byName("S09"), tulikoFrame()]) {
     const [lo, hi] = range(f), eq = { copies: {} }, ne = { copies: {} };
