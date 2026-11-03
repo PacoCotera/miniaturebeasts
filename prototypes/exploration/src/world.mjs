@@ -991,14 +991,13 @@ export function genPatch2(G, seed, cell) {
   const depthOf = (x, y) => fdir === 'up' ? y : fdir === 'down' ? PH - 1 - y : fdir === 'left' ? x : PW - 1 - x; const footSide = [0, 0];
   // the foot-row stones of a stair place alternate sides of the stair's columns too, each at a random column of its side (a side with fewer than 3 columns of room is skipped), so neither side of the screen is bare
   const footLo = fanSt ? 2 : 0, footHi = fanSt ? fspan - 3 : 0, roomL = fanSt ? fanSt.s - footLo : 0, roomR = fanSt ? footHi - (fanSt.s + 2) + 1 : 0;
-  // A stair place keeps no stone that would make a bare straight line of 3 or more (a group on one row or one column reads laid): such a stone takes its next roll, and is dropped after 4.
+  // No stone of a Fells rock place makes a straight run of 3 or more on one row or one column, inside any group (a run reads laid even with a stone hanging off its end): such a stone takes its next roll, and is dropped after 4. Carved-path tiles count as clear and overhang tiles are left out.
   const ovTiles = new Set(); for (const f of feats) if (f.kind === 'o') for (let dx = 0; dx < 3; dx++) for (let dy = 0; dy < 2; dy++) ovTiles.add(I(f.x + dx, f.y + dy));
-  const lineBad = (x, y) => { const i0 = I(x, y), prev = tiles[i0]; if (prev === T.ROCK) return false; tiles[i0] = T.ROCK;
-    if (pathCells.has(i0)) { tiles[i0] = prev; return true; }   // a stone on the path is carved away: roll again
-    const seen = new Set([i0]), q = [i0]; let sx = true, sy = true;
-    while (q.length) { const j = q.pop(), jx = j % PW, jy = (j / PW) | 0; if (jx !== x) sx = false; if (jy !== y) sy = false;
-      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = jx + dx, Y = jy + dy; if (!inb(X, Y)) continue; const n = I(X, Y); if (tiles[n] === T.ROCK && !ovTiles.has(n) && !pathCells.has(n) && !seen.has(n)) { seen.add(n); q.push(n); } } }
-    tiles[i0] = prev; return seen.size >= 3 && (sx || sy); };
+  const lineBad = (x, y) => { const i0 = I(x, y); if (tiles[i0] === T.ROCK) return false;
+    if (pathCells.has(i0)) return true;   // a stone on the path is carved away: roll again
+    const rock = (u, v) => inb(u, v) && tiles[I(u, v)] === T.ROCK && !ovTiles.has(I(u, v)) && !pathCells.has(I(u, v));
+    let h = 1, w = 1; for (let u = x - 1; rock(u, y); u--) h++; for (let u = x + 1; rock(u, y); u++) h++; for (let v = y - 1; rock(x, v); v--) w++; for (let v = y + 1; rock(x, v); v++) w++;
+    return h >= 3 || w >= 3; };
   for (let k = 0; k < rockN; k++) {
     const footRow = footN || fanSt ? k % 2 : 0, fan = fanSt && !footRow;
     let kk, dd, s = 0;
@@ -1021,16 +1020,20 @@ export function genPatch2(G, seed, cell) {
       }
       continue;
     }
-    else if (fellsRock) {   // a plain Fells rock place: 55% single tiles and 45% small heaps (a tile and 1 to 3 of its 8 neighbours), a heap tile under the line rule and no tile completing a full 2 x 2
-      kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4);
-      const { x, y } = fdir ? fxy(kk, dd) : { x: kk, y: dd }, heap = R.int(100) >= 55, cells = [[0, 0]];
-      if (heap) { const nb = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]], take = 1 + R.int(3);
-        for (let j = 0; j < take; j++) { const m = j + R.int(nb.length - j), t = nb[m]; nb[m] = nb[j]; nb[j] = t; cells.push(t); } }
-      for (const [dx, dy] of cells) { const X = x + dx, Y = y + dy;
-        if (!walk(X, Y) || tiles[I(X, Y)] === T.ROCK || (heap && lineBad(X, Y))) continue;
-        const rk = (u, v) => tiles[I(u, v)] === T.ROCK && !ovTiles.has(I(u, v)) || (u === X && v === Y);
-        let full = false; for (const [ax, ay] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) if (rk(X + ax, Y + ay) && rk(X + ax + 1, Y + ay) && rk(X + ax, Y + ay + 1) && rk(X + ax + 1, Y + ay + 1)) full = true;
-        if (!full) setT(X, Y, T.ROCK); }
+    else if (fellsRock) {   // a plain Fells rock place: 55% single tiles and 45% small heaps (a tile and 1 to 3 of its 8 neighbours), no tile making a straight run of 3 and none completing a full 2 x 2
+      const heap = R.int(100) >= 55, fullAt = (X, Y) => { const rk = (u, v) => (tiles[I(u, v)] === T.ROCK && !ovTiles.has(I(u, v))) || (u === X && v === Y);
+        for (const [ax, ay] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) if (rk(X + ax, Y + ay) && rk(X + ax + 1, Y + ay) && rk(X + ax, Y + ay + 1) && rk(X + ax + 1, Y + ay + 1)) return true; return false; };
+      let sx = -1, sy = -1;
+      for (let tr = 0; tr < 4; tr++) {
+        kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4);
+        const { x, y } = fdir ? fxy(kk, dd) : { x: kk, y: dd };
+        if (!walk(x, y)) break;
+        if (tiles[I(x, y)] === T.ROCK || lineBad(x, y) || fullAt(x, y)) continue;
+        setT(x, y, T.ROCK); sx = x; sy = y; break;
+      }
+      if (heap && sx >= 0) { const nb = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]], take = 1 + R.int(3);
+        for (let j = 0, got = 0; j < nb.length && got < take; j++) { const m = j + R.int(nb.length - j), t = nb[m]; nb[m] = nb[j]; nb[j] = t;
+          const X = sx + t[0], Y = sy + t[1]; if (!walk(X, Y) || tiles[I(X, Y)] === T.ROCK || lineBad(X, Y) || fullAt(X, Y)) continue; setT(X, Y, T.ROCK); got++; } }
       continue; }
     else { kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4); s = R.int(100) < 45 && !footRow ? 1 : 0; }   // a foot-row stone is a single tile
     const { x, y } = fdir ? fxy(kk, dd) : { x: kk, y: dd };

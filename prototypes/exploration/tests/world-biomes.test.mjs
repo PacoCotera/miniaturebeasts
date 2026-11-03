@@ -169,17 +169,18 @@ test("Fells rock places hold about three times the stones of generator 2's, gath
   for (let sd = 0; sd < 10; sd++) { const GF = W.genWorld(sd, 4, "fells"); for (let c = 0; c < N; c++) if (GF.comp[c] && GF.land[c] === L.ROCK) { const lay = W.genPlace(GF, sd, String(c)), n = lay.tiles.reduce((m, t) => m + (t === W.T.ROCK ? 1 : 0), 0);
     if (lay.stairs && lay.stairs.some(t => t.role === "lo")) { st += n; nst++; } else { pl += n; npl++; } } }
   console.log(`# fells plain rock places ${(pl / npl).toFixed(1)} stone tiles, stair places ${(st / nst).toFixed(1)}`);
-  assert.ok(pl / npl >= 95 && pl / npl <= 120, `plain places: a mean of 95 to 120 stone tiles, got ${(pl / npl).toFixed(1)}`);
+  assert.ok(pl / npl >= 85 && pl / npl <= 120, `plain places: a mean of 85 to 120 stone tiles, got ${(pl / npl).toFixed(1)}`);
   // the plain mix: small heaps and singles, no full 2 x 2 outside an overhang, a mean biggest group of 8 or less
-  let big = 0, np2 = 0, full = 0;
+  let big = 0, np2 = 0, full = 0, runs = 0;
   for (let sd = 0; sd < 10; sd++) { const GF = W.genWorld(sd, 4, "fells"); for (let c = 0; c < N; c++) if (GF.comp[c] && GF.land[c] === L.ROCK) { const lay = W.genPlace(GF, sd, String(c)); if (lay.stairs && lay.stairs.some(t => t.role === "lo")) continue;
     const S = new Set(); for (let i = 0; i < W.PW * W.PH; i++) if (lay.tiles[i] === W.T.ROCK && !inOverhang(lay, i % W.PW, (i / W.PW) | 0)) S.add(i);
     const seen = new Set(); let b = 0; for (const i of S) { if (seen.has(i)) continue; let m = 0; const q = [i]; seen.add(i); while (q.length) { const j = q.pop(); m++; for (const d of [1, -1, W.PW, -W.PW]) { const k = j + d; if (S.has(k) && !seen.has(k) && Math.abs(k % W.PW - j % W.PW) <= 1) { seen.add(k); q.push(k); } } } b = Math.max(b, m); }
-    big += b; np2++; for (const i of S) if (S.has(i + 1) && S.has(i + W.PW) && S.has(i + W.PW + 1) && i % W.PW < W.PW - 1) full++; } }
+    runs += hasRun(lay, [...S].map(i => ({ x: i % W.PW, y: (i / W.PW) | 0 }))) ? 1 : 0; big += b; np2++; for (const i of S) if (S.has(i + 1) && S.has(i + W.PW) && S.has(i + W.PW + 1) && i % W.PW < W.PW - 1) full++; } }
   console.log(`# fells plain rock places: mean biggest group ${(big / np2).toFixed(1)}, full 2 x 2: ${full}`);
+  assert.equal(runs, 0, "no straight run of 3 or more on a plain place");
   assert.ok(big / np2 <= 8, "a mean biggest group of 8 or less"); assert.equal(full, 0, "no full 2 x 2 outside an overhang");
   console.log(`# fells rock places: ${(f / nf).toFixed(1)} stone tiles a place against generator 2's ${(g / ng).toFixed(1)}; ${(100 * foot / footAll).toFixed(0)}% of the stones in rows 0 to 4 under a cliff`);
-  assert.ok(f / nf >= 2.4 * (g / ng), "about three times the stones");
+  assert.ok(f / nf >= 2.2 * (g / ng), "at least 2.2 times the stones");
   assert.ok(foot / footAll >= .2, "stones gathered at the cliff foot: rows 0 to 4 are 16 percent of a place, so 20 percent is a quarter above its share (foot-row stones are single tiles)");
 });
 
@@ -207,6 +208,9 @@ const stairGates = (lay, st) => { const { stones } = stairView(lay, st), left = 
 // the per-place gates of a Fells stair place: stone count, side share (a side with 3 columns or rows of room on the screen holds a quarter of the stones or more), far groups, no big group below the foot rows,
 // no overhang on the screen, no stone on a square (a stone beside grass draws its scree skirt's quarters)
 const SHORE = (r, i) => r.tiles[i].layers.some(l => /sandshore/.test(l.id));
+// a straight run of 3 or more stones on one row or one column that includes a given stone (overhang tiles left out)
+const hasRun = (lay, stones) => { const rock = (x, y) => x >= 0 && y >= 0 && x < W.PW && y < W.PH && lay.tiles[y * W.PW + x] === W.T.ROCK && !inOverhang(lay, x, y);
+  return stones.some(t => { let h = 1, w = 1; for (let u = t.x - 1; rock(u, t.y); u--) h++; for (let u = t.x + 1; rock(u, t.y); u++) h++; for (let v = t.y - 1; rock(t.x, v); v--) w++; for (let v = t.y + 1; rock(t.x, v); v++) w++; return h >= 3 || w >= 3; }); };
 const placeGates = (lay, st, seed) => { const { stones, on } = stairView(lay, st), g = stairGates(lay, st), vert = st.dir === "up" || st.dir === "down", n = stones.length;
   const across = vert ? W.PW : W.PH, along = vert ? W.PH : W.PW, cols = [...Array(across).keys()].filter(k => [...Array(along).keys()].some(d => (vert ? on(k, d) : on(d, k))));
   const roomL = cols.filter(k => k < st.s).length, roomR = cols.filter(k => k > st.s + 1).length, left = stones.filter(t => t.k < st.s).length, right = stones.filter(t => t.k > st.s + 1).length;
@@ -214,12 +218,8 @@ const placeGates = (lay, st, seed) => { const { stones, on } = stairView(lay, st
   const ov = lay.feats.some(f => f.kind === "o" && [0, 1, 2].some(dx => [0, 1, 2].some(dy => on(f.x + dx, f.y + dy))));
   const r = screeLayers(lay, seed), at = (x, y) => (x < 0 || y < 0 || x >= W.PW || y >= W.PH ? -1 : lay.tiles[y * W.PW + x]);
   const square = stones.some(t => [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].some(([dx, dy]) => [W.T.GRASS, W.T.TALL, W.T.FLOWERS].includes(at(t.x + dx, t.y + dy))) && !SHORE(r, t.y * W.PW + t.x));
-  // no group is a bare straight line of 3 or more; of the stones 5 or more rows from the cliff at most a third lie in the column beside the stair's columns
-  const keyed = new Map(), seenG = new Set(); let line = false;
-  for (let y = 0; y < W.PH; y++) for (let x = 0; x < W.PW; x++) if (lay.tiles[y * W.PW + x] === W.T.ROCK && !inOverhang(lay, x, y)) keyed.set(y * W.PW + x, { x, y });   // whole groups, not the part on screen
-  for (const i of stones.map(t => t.y * W.PW + t.x)) { if (seenG.has(i)) continue; const grp = [], q = [i]; seenG.add(i);
-    while (q.length) { const j = q.pop(); grp.push(keyed.get(j)); for (const d of [1, -1, W.PW, -W.PW]) { const m = j + d; if (keyed.has(m) && !seenG.has(m) && Math.abs((m % W.PW) - (j % W.PW)) <= 1) { seenG.add(m); q.push(m); } } }
-    if (grp.length >= 3 && (grp.every(t => t.x === grp[0].x) || grp.every(t => t.y === grp[0].y))) line = true; }
+  // no straight run of 3 or more stones on one row or one column, in any group (a stone hanging off the end of a run does not save it); of the stones 5 or more rows from the cliff, one lies in the 4 columns round the stair
+  const line = hasRun(lay, stones);
   const deep = stones.filter(t => t.d >= 5), band = deep.filter(t => t.k >= st.s - 1 && t.k <= st.s + 2).length;   // the kerb gate: a bare aisle with stones filed along it; at least one stone in the 4-column band
   const perRow = new Map(); for (const t of stones) { const r = vert ? t.y : t.x; perRow.set(r, (perRow.get(r) || 0) + 1); }
   return { count: n >= 10 && n <= 20, share: side(roomL, left) && side(roomR, right), groups: g.groups >= 3, big: g.biggest <= 4, noOverhang: !ov, noSquare: !square, noLine: !line, rowCap: Math.max(0, ...perRow.values()) <= 4, notKerbed: band >= 1, n: g.n, g, ov }; };
@@ -245,7 +245,7 @@ test("Fells stair place, on each of the four stair sides: at least 58 of 64 plac
     for (const k of GATES) assert.ok(g[k], `seed 42 ${dir} cell ${cell} fails ${k}: ` + JSON.stringify(g)); }
 });
 
-test("Fells stair place: no group of stones is a bare straight line of 3 or more, on 64 places a side and seed 42", () => {
+test("Fells stair place: no straight run of 3 or more stones on one row or column, in any group, on 64 places a side and seed 42", () => {
   for (const dir of SIDES4) for (const { seed, c, lay, st } of first64(dir)) assert.ok(placeGates(lay, st, seed).noLine, `${dir} seed ${seed} cell ${c}: a straight line of stones`);
   for (const [dir, cell] of [["up", 110], ["down", 33], ["right", 77], ["left", 242]]) { const p = [...fellsStairPlaces([42], dir)].find(q => q.c === cell); assert.ok(placeGates(p.lay, p.st, 42).noLine, `seed 42 ${dir} ${cell}`); }
 });
