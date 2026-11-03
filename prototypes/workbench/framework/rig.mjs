@@ -219,7 +219,9 @@ export function buildBody(resolved) {
     const drooping = v["anatomy.ear-tilt"] === "drooping";
     // Ear set: the root's lateral offset over the head's half width; a side-set ear leans outward.
     const set = v["growth.auricular-set-ratio"] ?? 0.62;
-    const dir = unit([0, side * set, Math.sqrt(Math.max(0.1, 1 - set * set))]);
+    // From frame version 6 the ear roots a little behind the crest's side leaves (+x is back), as in the book; older frames keep the root level with them.
+    const back = (resolved.frameVersion ?? 0) >= 6 ? 0.25 : 0;
+    const dir = unit([back, side * set, Math.sqrt(Math.max(0.1, 1 - set * set))]);
     const rt = rootOn(head, headCenter, dir, 0.08 * length, envOf(head));
     const lean = 0.1 + 0.4 * Math.max(0, Math.min(1, (set - 0.42) / 0.36));
     const upAxis = drooping ? unit([-0.1, side * 0.95, -0.4]) : unit([-0.15, side * lean, 1]);

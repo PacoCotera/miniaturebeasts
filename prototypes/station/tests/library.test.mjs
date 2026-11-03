@@ -177,7 +177,7 @@ test("a version-4-only Loika save with every current look seen is complete; plai
   fillCurrent(st, "S01");
   const fg = L.fieldGuide(st, "S01", settings); assert.equal(fg.unseen, 0); assert.ok(fg.complete); assert.ok(S.guideComplete(st, "S01", settings));
   const ft = fg.chapters.flatMap((c) => c.traits).find((x) => x.id === t.id); assert.ok(!ft.possible.includes("plain")); assert.deepEqual(ft.legacy, []);
-  assert.equal(fg.chapters.flatMap((c) => c.traits).reduce((n, x) => n + x.possible.length, 0), 20, "S01 counts 20 looks, not 21");
+  assert.equal(fg.chapters.flatMap((c) => c.traits).reduce((n, x) => n + x.possible.length, 0), 23, "S01 counts 23 looks (the three ear looks since frame version 6), not 24");
   const bare = fresh(); bare.knownIds.push("S01"); const f0 = L.fieldGuide(bare, "S01", settings);
   assert.ok(f0.chapters.flatMap((c) => c.traits).every((x) => !x.possible.includes("plain")), "unseen plain is never listed as unseen");
 });

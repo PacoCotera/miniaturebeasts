@@ -6,7 +6,7 @@
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
 import { currentLooks } from "../../workbench/framework/describe.mjs";
-import { shedPod, SELF_KINSHIP } from "../../workbench/framework/cross.mjs";
+import { shedPod, SELF_KINSHIP, versionRefusal } from "../../workbench/framework/cross.mjs";
 import { MIBI_NAMES as NAME_LIST_NOW, NAME_LISTS } from "../../play/src/names.mjs";
 import { fill, capLine } from "./views/words.mjs";
 import FRAME from "../../ui/specs/station/frame.json" with { type: "json" };
@@ -1042,6 +1042,7 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!a || !b) return "pick two";
   if (a === b || a.id === b.id) return "one mibi is not a pair";
   if (speciesOf(a) !== speciesOf(b)) return "another species";
+  if (a.genome && b.genome && versionRefusal(frameFor(a), a.genome, b.genome)) return "born on different frame versions";   // a version-4 and a version-5 Loika carry different loci: never crossed, never a crash
   if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (a.released || b.released) return "gone to the wild";
   if (isCarried(st, sv, a) || isCarried(st, sv, b)) return "away";
@@ -1058,7 +1059,7 @@ export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 
 // and which chapter to read; a sealed chapter's traits stay `sealed`. `missing` counts the readable traits still unknown, `sealedTraits` the sealed ones, `unknown` both; the genome-wide
 // likeness is shown only when nothing is unknown. The cross itself (`doCross`) still draws on the whole genomes: the mask is only what the screen may say.
 export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
-  const fr = frameFor(a); if (!fr || crossBlock(st, null, a, b, settings) === "another species") return null;
+  const fr = frameFor(a); if (!fr || ["another species", "born on different frame versions"].includes(crossBlock(st, null, a, b, settings))) return null;
   const k = kinshipOf(st, a, b), opts = { kinship: k, lookup: genomeLookup(st) }, full = crossForecast(fr, a, b, opts);   // the mibi records: by id
   const traitOf = (id) => fr.chapters.flatMap((c) => c.traits).find((t) => t.id === id), chapterName = (id) => fr.chapters.find((c) => c.id === id)?.name || id;
   let loci = null;   // every locus's own outcome, computed once and only read for a trait whose chapter both parents have read

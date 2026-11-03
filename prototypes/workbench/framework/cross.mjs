@@ -32,7 +32,7 @@
 // a range for blends (the parents' shown values widened by the spread, clamped, as bins), never a
 // promise; a trait where both parents hold the same copies is known for sure before any read.
 import { LOCI, resolveCopies, isContinuous, copyValue, binFor, valueRange, quantize, samePair } from "./catalogue.mjs";
-import { genomeDigest, frameVersionOf, buildIndividual } from "./species.mjs";
+import { genomeDigest, frameVersionOf, buildIndividual, FRAME_VERSION } from "./species.mjs";
 import { isDoing } from "./guards.mjs";
 import { resolveIndividual } from "./resolve.mjs";
 
@@ -127,9 +127,20 @@ export function relatedness(frame, a, b, lookup = () => null) {
 // --- the cross ----------------------------------------------------------------------------------------
 // The same individual (by id; a bare genome is its own individual) is not a pair; two individuals
 // whose genomes are equal are. A locked pair is compared in either order (samePair, as checkGenome).
+// Two mibi born on different frame versions of a species are not crossed (their genomes carry different loci, and a frame change is not an upgrade of the older one): a plain refusal that
+// names the versions. So is a genome that lacks a locus the frame carries (a copy is never invented), whatever its version; it never reaches the draw.
+const versionOf = (g) => g.frameVersion ?? FRAME_VERSION;
+function missingLoci(frame, g) { return frame.loci.filter((l) => !Array.isArray(g.loci?.[l.id]) || g.loci[l.id].length !== 2).map((l) => l.id); }
+function refuseMissing(frame, g, who) {
+  const missing = missingLoci(frame, g);
+  if (missing.length) throw new Error(`${frame.species.name} ${who} was born on frame version ${versionOf(g)}, which lacks ${missing.length === 1 ? missing[0] : `${missing.length} loci (${missing.slice(0, 3).join(", ")}${missing.length > 3 ? ", ..." : ""})`} of version ${frameVersionOf(frame)}: it cannot be bred with this frame`);
+}
+export const versionRefusal = (frame, a, b) => (versionOf(a) !== versionOf(b) ? `${frame.species.name} born on frame version ${versionOf(a)} cannot be bred with one born on version ${versionOf(b)}: a cross needs two of the same version` : null);
 function refuse(frame, x, y) {
   const a = genomeOf(x), b = genomeOf(y);
   if (a.species !== frame.species.id || b.species !== frame.species.id) throw new Error("breeding is same-species only");
+  const split = versionRefusal(frame, a, b); if (split) throw new Error(split);
+  refuseMissing(frame, a, "the first parent"); refuseMissing(frame, b, "the second parent");
   if (x === y || (idOf(x) != null && idOf(x) === idOf(y)) || (idOf(x) == null && idOf(y) == null && a === b)) throw new Error("one mibi is not a pair");
   for (const l of frame.loci) if (l.kind === "locked" && (!samePair(a.loci[l.id], l.copies) || !samePair(b.loci[l.id], l.copies))) throw new Error(`${l.id}: a parent's locked copy differs from the frame (not this species)`);
 }
@@ -193,6 +204,7 @@ export function shedPod(frame, x, opts = {}) {
   const { rng = Math.random, spread = SPREAD, penalty = PENALTY, strength = 1, kinship = SELF_KINSHIP } = opts;
   const a = genomeOf(x);
   if (a.species !== frame.species.id) throw new Error("a shed pod is of its parent's species");
+  refuseMissing(frame, a, "the parent");
   for (const l of frame.loci) if (l.kind === "locked" && !samePair(a.loci[l.id], l.copies)) throw new Error(`${l.id}: the parent's locked copy differs from the frame (not this species)`);
   const parentKey = valuesKey(frame, a), d = genomeDigest(a), id = idOf(x);
   for (let i = 0; i < SHED_TRIES; i++) {
@@ -234,6 +246,8 @@ export function children(frame, a, b, n, opts = {}) {
 export function forecast(frame, x, y, opts = {}) {
   const { spread = SPREAD, penalty = PENALTY, strength = 1, lookup = () => null } = opts;
   const a = genomeOf(x), b = genomeOf(y);
+  const split = versionRefusal(frame, a, b); if (split) throw new Error(split);
+  refuseMissing(frame, a, "the first parent"); refuseMissing(frame, b, "the second parent");
   const k = clamp(opts.kinship ?? kinship(x, y, lookup), 0, 0.5);
   const narrow = penalty.includes("A") ? Math.max(0, 1 - 4 * k * strength) : 1;
   const surface = penalty.includes("B") ? clamp(2 * k * strength, 0, 1) : 0;

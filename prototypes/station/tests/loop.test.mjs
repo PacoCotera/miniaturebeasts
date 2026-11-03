@@ -33,7 +33,7 @@ test("identify: ◆1 each, no Energy and no free first one (owner 2026-10-11 15:
 
 test("read: the first read ever is free, then 1 Data a trait; a read chapter is free to look at again", () => {
   const pod = by(/^read /).filter((s) => s.name.endsWith(" on " + podA.id));
-  assert.equal(pod[0].d, 0, "the first read ever is free"); assert.equal(pod[1].d, -2, "Face is two traits");
+  assert.equal(pod[0].d, 0, "the first read ever is free"); assert.equal(pod[1].d, -3, "Face is three traits (Crown, Ears and Eyes since frame version 6)");
   assert.ok(S.read(st, podA, J.chapters[0], P.settings).again, "a read chapter is free to look at again");
 });
 

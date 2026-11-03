@@ -217,9 +217,9 @@ test("backward compatibility: no old frame lists or carries a new record, the re
   assert.equal(NEW.length, 9);
   assert.ok(NEW.every((id) => LOCI.get(id).sinceFrame === 6));
   for (const f of frames.filter((x) => Number(x.species.id.slice(1)) <= 16)) {
-    assert.ok(frameVersionOf(f) < 6);
+    assert.ok(frameVersionOf(f) < 6 || f.species.id === "S01");   // the Loika is the one older species at version 6 (the ears, 2026-11-03): it carries ear loci of the catalogue pin 10, not the fluffy records
     assert.ok(!f.loci.some((l) => NEW.includes(l.id)), `${f.species.id} carries no new locus`);
-    assert.ok(!f.absent.some((a) => NEW.includes(a.id)), `${f.species.id} lists no new absent line`);
+    if (f.species.id !== "S01") assert.ok(!f.absent.some((a) => NEW.includes(a.id)), `${f.species.id} lists no new absent line`);   // the Loika at version 6 sees them, so it lists them absent as the fluffy three do
   }
   for (const id of ["S17", "S18", "S19"]) { assert.equal(frameVersionOf(frameOf(id)), 6); assert.equal(frameOf(id).catalogue.version, 10); }
   assert.equal(LOCI.get("anatomy.tail-tip-bulb").clan, "C03", "the C03 record is exactly as it was");

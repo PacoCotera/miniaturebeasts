@@ -40,9 +40,9 @@ test("the species: none found is null (the starter's empty form shows); the only
   for (const id of ["S03", "S04"]) { const t = frameOf(id).chapters[0].traits[0]; a.wish[id] = { [t.id]: t.looks[0] }; }
   a.knownIds = ["S04", "S03"]; assert.equal(pick(a), "S04", "no mibi of either: learnt order"); a.knownIds = ["S03", "S04"]; assert.equal(pick(a), "S03");
 });
-test("the counts: every trait's current looks count, 20 for the version-4 Loika; a plain look is a found bead once seen and never counts as new", () => {
-  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); assert.equal(total(st, "S01"), 20);
-  S.guideAdd(st, "S01", "markings", ["plain"]); assert.equal(total(st, "S01"), 20, "a legacy look moves nothing");
+test("the counts: every trait's current looks count, 23 for the Loika at frame version 6 (20 before the ears); a plain look is a found bead once seen and never counts as new", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); assert.equal(total(st, "S01"), 23);
+  S.guideAdd(st, "S01", "markings", ["plain"]); assert.equal(total(st, "S01"), 23, "a legacy look moves nothing");
   st.libSeen = S.libSnapshot(st); S.guideAdd(st, "S01", "markings", ["plain"]);
   assert.equal(newLooksOf(st, "S01", settings).size, 0);
   warmLibrary(st, settings); const r = libraryOf(st, settings, spec).region; assert.ok(!("new" in r), "nothing new");

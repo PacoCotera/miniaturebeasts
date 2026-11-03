@@ -120,15 +120,18 @@ export const HABITS = {
 
 export const SPECIES = [
   { ...row("S01", "C01", "medium", "starter", "a round frog-hare, Pip (frame hopper)", "hops", "meadow, pond edge", null, "fruit", "calms wary creatures", "gentle and curious, a little shy"),
-    summary: "The starter: Pip as in the approved art, fine-tuned (owner, 2026-10-17 13:15: \"yes, finetune loikas. / also coat marks can be different between individuals\"). Frame version 4: a three-pigment Colour, and every new Loika marked in stripes, patches or both; a plain Loika only from a version-3 line. Frame version 5 (owner, 2026-11-01 14:26 and the refinement after it): every Loika carries the crown's size, leaf count and form, whether or not it shows a crown; they sleep when the crown switch is off and are still handed down.",
-    frameVersion: 5,   // the crown's size, leaf count and form carried by every Loika (sleeping behind the crown switch)
-    fixed: S01_FIXED, typical: { "growth.exterior-eye-size-ratio": "huge", "growth.crown-height-ratio": "high", "growth.crest-leaf-count": "three", "anatomy.crown-form": "leaf" }, openSwitches: ["appearance.marking-switch", "anatomy.crown-presence"],
+    summary: "The starter: Pip as in the approved art, fine-tuned (owner, 2026-10-17 13:15: \"yes, finetune loikas. / also coat marks can be different between individuals\"). Frame version 4: a three-pigment Colour, and every new Loika marked in stripes, patches or both; a plain Loika only from a version-3 line. Frame version 5 (owner, 2026-11-01 14:26 and the refinement after it): every Loika carries the crown's size, leaf count and form, whether or not it shows a crown; they sleep when the crown switch is off and are still handed down. Frame version 6 (art director, 2026-11-03): every Loika has ears, round, upright and set on the side of the head, their length heritable (small, short or larger), their width following the length.",
+    frameVersion: 6,   // 5: the crown's size, leaf count and form carried by every Loika (sleeping behind the crown switch); 6: every Loika has ears, their size heritable (AD ad-ears.md)
+    features: { "anatomy.auricular-presence": "on" },   // the head-owned ear switch, locked on (not heritable)
+    fixed: { ...S01_FIXED, "anatomy.auricular-form": "rounded", "anatomy.ear-tilt": "upright", "growth.auricular-width-ratio": "broad", "growth.auricular-set-ratio": "side" },
+    typical: { "growth.exterior-eye-size-ratio": "huge", "growth.crown-height-ratio": "high", "growth.crest-leaf-count": "three", "anatomy.crown-form": "leaf", "growth.auricular-length-ratio": "short" }, openSwitches: ["appearance.marking-switch", "anatomy.crown-presence"],
     legacy: { "appearance.marking-switch": ["off"] },   // a version-3 Loika may carry "off" (plain): legal for inheritance, never drawn for a new pod
     open: [
       { chapter: "coat", id: "colour", name: "Colour", loci: ["appearance.body-palette"], pool: { "appearance.body-palette": ["charcoal", "russet", "ash"] } },
       { chapter: "coat", id: "markings", name: "Markings", loci: ["appearance.marking-switch", "appearance.marking-layout"], looks: ["plain", "stripes", "patches", "stripes and patches"], pool: { "appearance.marking-switch": ["on"], "appearance.marking-layout": ["bands", "patches"] } },
       { chapter: "face", id: "crown", name: "Crown", loci: ["anatomy.crown-presence", "growth.crown-height-ratio", "growth.crest-leaf-count", "anatomy.crown-form"], looks: ["bare head", "leaf crest"],
         pool: { "growth.crown-height-ratio": ["low", "high"], "growth.crest-leaf-count": ["two", "three"], "anatomy.crown-form": ["leaf", "pointed"] } },   // the whole range the catalogue holds for each; the switch keeps its two alleles
+      { chapter: "face", id: "ears", name: "Ears", loci: ["growth.auricular-length-ratio"], looks: ["small ears", "between", "larger ears"], pool: { "growth.auricular-length-ratio": ["small", "short", "medium"] } },   // the AD's band: 0.45, 0.60 (the type), 0.75 of the head's half height
       { chapter: "face", id: "eye-rings", name: "Eyes", loci: ["growth.exterior-eye-size-ratio"], looks: ["thin rings", "between", "wide pale rings"], pool: { "growth.exterior-eye-size-ratio": ["large", "huge"] } },
       { chapter: "movement", id: "drive", name: "Drive", loci: ["movement.cycle-rate"], looks: ["steady", "between", "bursts"] },
       { chapter: "stamina", id: "efficiency", name: "Efficiency", loci: ["energy.action-efficiency"], looks: ["thrifty", "between", "ordinary"] },
@@ -213,12 +216,12 @@ export function specOf(species) {
   const member = SPECIES.filter((s) => s.clan === species.clan).indexOf(species) + 1;
   // Proportions by kind (proportions.mjs): locked where the trait is closed, the type specimen's
   // typical copies where it is open; the clan finish sits under them, an authored species list above.
-  const proportions = proportionPairs(species.id);
+  const proportions = proportionPairs(species.id, species.frameVersion ?? 4);   // the frame version the species builds at (the registry's 4 unless it names one): an allele appended later is not its to name
   return {
     ...species,
     ...(clan.borrows ? { borrows: [...clan.borrows] } : {}),
     plan: { key: clan.plan, extras: clan.extras }, anchor: clan.anchor, second: clan.second, feature: clan.feature,
-    features: { ...clan.features },
+    features: { ...clan.features, ...(species.features ?? {}) },
     fixed: { "growth.core-half-length": species.size, ...clan.finish, ...proportions, ...(species.fixed ?? {}) }, finish: clan.finish,
     typical: { ...proportions, ...(species.typical ?? {}) },
     neverOpen: [...(GLOW_CLANS.has(species.clan) ? [] : ["glow", "glow-length"]), ...(species.neverOpen ?? [])],

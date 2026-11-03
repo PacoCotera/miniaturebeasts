@@ -19,9 +19,9 @@
    "rig": "B1",
    "tier": "starter",
    "file": "species-S01.json",
-   "open": 10,
-   "traits": 6,
-   "carried": 50
+   "open": 11,
+   "traits": 7,
+   "carried": 56
   },
   {
    "id": "S02",

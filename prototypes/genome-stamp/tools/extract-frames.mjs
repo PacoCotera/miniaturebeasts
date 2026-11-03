@@ -33,9 +33,16 @@ const frames = index.species.map((s) => {
   const locusOf = (id) => {
     const cat = LOCI.get(id), row = byId.get(id);
     // the alleles this frame's version knows (pin 11 appends alleles with a later `sinceFrame`; they are not in an older frame, so its bit widths never move)
-    const known = cat.alleles.filter((a) => !(a.sinceFrame > version));
-    const alleles = known.map((a) => a.id);
+    let known = cat.alleles.filter((a) => !(a.sinceFrame > version));
     const numeric = cat.operator === "copy-mean" && known.every((a) => typeof a.value === "number");
+    // A blended copy is 6 bits: 59 + 1 steps leave 4 codes for names. A record with more names than that (the ear length at frame version 6: short, long, tall, small, medium) names only
+    // what the species can carry (its pool) and the two ends of the catalogue's range, which keep the step grid the catalogue's; in catalogue order. A frame that fits is untouched.
+    if (numeric && known.length + 60 > 64) {
+      const lo = Math.min(...known.map((a) => a.value)), hi = Math.max(...known.map((a) => a.value));
+      known = known.filter((a) => row.alleles.includes(a.id) || a.value === lo || a.value === hi);
+      if (known.length + 60 > 64) throw new Error(`${d.species.id}: ${id} has ${known.length} names to keep beside the 60 steps of a blended copy (4 at most)`);
+    }
+    const alleles = known.map((a) => a.id);
     return { id, trait: row.trait, alleles, ...(numeric ? { values: known.map((a) => a.value) } : {}), pool: row.alleles, copies: 2 };
   };
   return {

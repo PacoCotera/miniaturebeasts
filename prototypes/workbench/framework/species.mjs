@@ -422,6 +422,7 @@ export function checkGenome(frame, genome) {
 export function buildIndividual(frame, genome) {
   const resolved = resolveIndividual(frame, genome);
   resolved.species = frame.species.id; // the kind, for the envelope's caps by kind
+  resolved.frameVersion = frameVersionOf(frame); // a drawing change that must not move older frames reads it (the ear's root at frame version 6)
   const scene = buildBody(resolved);
   const validation = validateBody(scene);
   return { resolved, scene, validation };

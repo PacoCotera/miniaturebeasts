@@ -1,4 +1,4 @@
-// The Loika's crown at frame version 5 in the Station (owner, 2026-11-01 14:26, refined: all Loikas carry the crown's genes, not all show a crown): seeds 1 to 12 draw a crest exactly
+// The Loika's crown (frame version 5, still as version 6 left it) in the Station (owner, 2026-11-01 14:26, refined: all Loikas carry the crown's genes, not all show a crown): seeds 1 to 12 draw a crest exactly
 // when their crown switch shows one, a bare pod still carries its crown's size, leaf count and form, and its trait line says what it carries asleep in at most six words.
 //   node --test prototypes/station/tests/loika-crown.test.mjs
 import { test, before, after } from "node:test";
@@ -27,7 +27,7 @@ test("seeds 1 to 12: a pod draws the crest exactly when its crown switch shows o
   let crowned = 0, bare = 0;
   for (let gs = 1; gs <= 12; gs++) {
     const g = podGenome(fr, gs), looks = drawnLooks(fr, { genome: g, read: allRead });
-    assert.equal(g.frameVersion, 5);
+    assert.equal(g.frameVersion, 6);
     assert.equal(looks.crown, shows(g) ? "leaf crest" : "bare head", `seed ${gs}`);
     assert.equal(layersFor(st, looks).some((l) => l.trait === "crown"), shows(g), `seed ${gs}: the crest layer`);
     assert.equal(traitState(fr, crown, g).shows, looks.crown);
@@ -50,7 +50,7 @@ test("a bare pod's Crown trait is asleep, says what it carries in the player's w
   assert.ok(n > 10);
 });
 
-test("a version-4 Loika still stamps as version 4 and a version-5 one as version 5", () => {
+test("a version-4 Loika still stamps as version 4, a version-5 one as version 5 and a new one as version 6", () => {
   const g = podGenome(fr, 1);
-  assert.equal(stampFrameOf(fr, g).version, 5); assert.equal(stampFrameOf(fr, { ...g, frameVersion: 4 }).version, 4);
+  assert.equal(stampFrameOf(fr, g).version, 6); assert.equal(stampFrameOf(fr, { ...g, frameVersion: 5 }).version, 5); assert.equal(stampFrameOf(fr, { ...g, frameVersion: 4 }).version, 4);
 });

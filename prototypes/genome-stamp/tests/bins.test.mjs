@@ -37,8 +37,8 @@ test("the registry carries the sixteen species of the workbench at frame version
     assert.equal(old.borderSeed, f.borderSeed, `${f.id}: the border is the species'`);
     assert.deepEqual(old.heritable.map((l) => l.id), f.heritable.map((l) => l.id), `${f.id}: same loci`);
   }
-  assert.equal(byName("S01").version, 5, "the encoder's default frame is the newest: the Loika at version 5 (the crown's parameters carried); version 4, the fine-tuned Loika (T-20261016-200), is carried beside it");
-  assert.equal(byName("S01", 4).version, 4);
+  assert.equal(byName("S01").version, 6, "the encoder's default frame is the newest: the Loika at version 6 (the ears); version 5 (the crown's parameters carried) and version 4, the fine-tuned Loika (T-20261016-200), are carried beside it");
+  assert.equal(byName("S01", 5).version, 5); assert.equal(byName("S01", 4).version, 4);
   assert.equal(byName("S01", 3).version, 3, "and the Loika's version 3 is carried, so every version-3 print still decodes");
   const l3 = frameFor(1, 3).heritable.map((l) => l.id), l4 = frameFor(1, 4).heritable.map((l) => l.id);
   assert.ok(l3.every((id) => l4.includes(id)), "version 4 keeps every version-3 heritable locus and adds Colour and the marking layout");
@@ -48,6 +48,7 @@ test("the registry carries the sixteen species of the workbench at frame version
   assert.deepEqual(claws.pool, ["rounded", "pad", "wedge"], "the Tuikis at version 5: its claws drawn from the three digging forms (T-20261016-194)");
   assert.equal(claws.alleles.length, 6, "the copy still indexes the catalogue's six forms, so a legacy hoof, webbed or root copy stamps and reads");
   assert.deepEqual(FRAMES_LIST.filter((f) => f.version === 5).map((f) => f.id).sort(), ["S01", "S03"]);
+  assert.deepEqual(FRAMES_LIST.filter((f) => f.version === 6 && f.species <= 16).map((f) => f.id), ["S01"]);
   assert.equal(byName("S03").version, 5); assert.equal(byName("S03", 4).version, 4);
   for (const f of v4) if (f.id !== "S01") { const old = frameFor(f.species, 3); assert.deepEqual(old.heritable.map((l) => [l.id, l.bits]), f.heritable.map((l) => [l.id, l.bits]), `${f.id}: same loci and bits at v4`); }
   assert.equal(byName("S01", 2).version, 2);
@@ -100,7 +101,7 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   const rows = [];
   for (const id of ROSTER) {
     const f = byName(id), wf = stationFrame(id);
-    assert.equal(f.version, id === "S03" || id === "S01" ? 5 : 4);
+    assert.equal(f.version, id === "S01" ? 6 : id === "S03" ? 5 : 4);
     const blended = f.heritable.filter((l) => l.values);
     for (const l of blended) {
       assert.ok(l.alleles.length + BLEND_STEPS + 1 <= 2 ** STEP_BITS, `${l.id}: its names and steps fit ${STEP_BITS} bits`);
@@ -117,7 +118,7 @@ test("the step's cost, measured: bits per blended copy and the stamp size per sp
   for (const r of rows) t.diagnostic(`${r.id} ${r.name}: ${r.open} open, ${r.blended} blended, ${r.bits[0]} -> ${r.bits[1]} bits, ${r.before.join("/")} -> ${r.after.join("/")}`);
   // pinned so a change of the step or the frames shows here
   assert.deepEqual(Object.fromEntries(rows.map((r) => [r.id, r.after.join("/")])), {
-    S01: "25/25", S02: "29/33", S03: "37/37", S04: "25/29", S05: "29/29", S06: "29/33", S07: "33/33", S08: "29/33",
+    S01: "25/29", S02: "29/33", S03: "37/37", S04: "25/29", S05: "29/29", S06: "29/33", S07: "33/33", S08: "29/33",
     S09: "37/37", S10: "29/33", S11: "33/33", S12: "25/25", S13: "29/33", S14: "25/29", S15: "33/33", S16: "33/33",
   });
 });

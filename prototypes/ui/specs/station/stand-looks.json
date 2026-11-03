@@ -34,6 +34,15 @@
       "bare head": 0.247
      }
     },
+    "ears": {
+     "chapter": "face",
+     "modal": "between",
+     "share": {
+      "between": 0.527,
+      "larger ears": 0.343,
+      "small ears": 0.13
+     }
+    },
     "eye-rings": {
      "chapter": "face",
      "modal": "between",

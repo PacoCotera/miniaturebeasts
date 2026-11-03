@@ -122,12 +122,12 @@ test("the registry is append-only: every frame it held before frame version 6 is
   const frames = FRAME_DATA.frames, before = Object.keys(FRAME_DIGESTS);
   assert.deepEqual(frames.slice(0, before.length).map((f) => `${f.species}.${f.version}`), before, "the earlier frames come first, in their order");
   frames.slice(0, before.length).forEach((f) => assert.equal(sha(JSON.stringify(f)), FRAME_DIGESTS[`${f.species}.${f.version}`], `${f.id} ${f.species}.${f.version} is unchanged`));
-  assert.deepEqual(frames.slice(before.length).map((f) => `${f.id}.${f.version}`), ["S17.6", "S18.6", "S19.6", "S01.5"], "Wickle, Drapet and Curlop, appended at frame version 6, then the Loika at frame version 5 (appended last: a frame never moves)");
-  assert.deepEqual(frames.slice(before.length).map((f) => f.name), ["Wickle", "Drapet", "Curlop", "Loika"]);
+  assert.deepEqual(frames.slice(before.length).map((f) => `${f.id}.${f.version}`), ["S17.6", "S18.6", "S19.6", "S01.5", "S01.6"], "Wickle, Drapet and Curlop, appended at frame version 6, then the Loika at frame versions 5 and 6 (appended last: a frame never moves)");
+  assert.deepEqual(frames.slice(before.length).map((f) => f.name), ["Wickle", "Drapet", "Curlop", "Loika", "Loika"]);
 });
 
 test("every S01-S16 stamp encodes to the same bytes as before and decodes to the same genome", () => {
-  const real = FRAMES_LIST.filter((f) => !f.synthetic && !f.legacy && f.species <= 16 && `${f.species}.${f.version}` in STAMP_DIGESTS);   // the frames that existed then; the Loika's version 5 is held by s01v5.test.mjs
+  const real = FRAMES_LIST.filter((f) => !f.synthetic && !f.legacy && f.species <= 16 && `${f.species}.${f.version}` in STAMP_DIGESTS);   // the frames that existed then; the Loika's versions 5 and 6 are held by s01v5.test.mjs and s01v6.test.mjs
   assert.equal(real.length, Object.keys(STAMP_DIGESTS).length);
   for (const f of real) {
     const g = individual(f, 7, { read: f.chapters.filter((c) => !c.sealed).map((c) => c.name) });

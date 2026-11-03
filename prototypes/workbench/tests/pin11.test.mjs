@@ -48,8 +48,8 @@ test("pin 11: version 11, 226 records, and a content digest that is the SHA-256 
   assert.equal(CATALOGUE.loci.length, 178 + 48); assert.equal(VALIDATED.length, 172 + 48);
   assert.match(CATALOGUE.digest, /^[0-9a-f]{64}$/);
   assert.equal(CATALOGUE.digest, digestAt(7)); assert.equal(CATALOGUE.digest, digestAt(Infinity));
-  assert.equal(CATALOGUE.digest, "c2c9ba5288d241aef2ffcc8f8089fe9778fb5d1fdaf6462b4826a5164b0ed462", "pin 11 names this content: a change to a record, an allele, a pair map or a scope is a new pin");
-  assert.equal(digestAt(6), "f87c59ca5d17e77e51993bb9d15fc70d0c2f2ea959c10bbd98445019514283a7", "the 178 records pin 10 holds on the build branches, digested the same way (this was computed on the code before pin 11 and is what a frame of version 6 or older sees)");
+  assert.equal(CATALOGUE.digest, "96e79573c5033ca1ad3fabf6c47e45e05753ef8624a201df062db48f7ff48865", "pin 11 names this content: a change to a record, an allele, a pair map or a scope is a new pin");
+  assert.equal(digestAt(6), "6a7c24741d9898d7ab72f5bda64a4b34cfe638ff2cf394a98d2ff2537dc0a4d9", "the 178 records pin 10 holds on the build branches, digested the same way (computed on the code before pin 11; it moved once, when the Loika's small and medium ears were appended with sinceFrame 6, which a frame of version 6 sees: a frame of version 5 or older sees none of it)");
   assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 6)).length, 178);
   assert.notEqual(digestAt(6), digestAt(7));
 });
@@ -153,7 +153,7 @@ test("sleep rules: every one names the SHOWN look in a wakesWhen (any look liste
   assert.equal(wakesFor(band, shown({ "appearance.marking-layout": "spotted", "appearance.glow-pattern": "none" })), false);
   assert.equal(wakesFor(band, shown({})), false); assert.equal(wakesFor(rosette, shown({ "appearance.marking-layout": "patches" })), false); assert.equal(wakesFor(rosette, shown({ "appearance.marking-layout": "spotted" })), true);
   assert.equal(wakesFor(LOCI.get("form.eye-size"), shown({})), true);
-  assert.equal(digestAt(6), "f87c59ca5d17e77e51993bb9d15fc70d0c2f2ea959c10bbd98445019514283a7", "no record of pin 10 carries a rule");
+  assert.equal(digestAt(6), "6a7c24741d9898d7ab72f5bda64a4b34cfe638ff2cf394a98d2ff2537dc0a4d9", "no record of pin 10 carries a rule");
 });
 
 test("owners: the three eye records ride the eye switch, form.head needs a head, and the whisker records sleep without the whisker switch", () => {
@@ -184,13 +184,14 @@ test("the marking layout gains masked, points, spotted and capped after bands an
 });
 
 // sha256 (first 16 hex) of each frame file as the registry held it at pin 10 (HEAD 6cecf8ed4), before any of the work above. Two entries have moved since, on purpose:
-// species-S01.json and index.json, when the Loika went to frame version 5 (the crown's size, leaf count and form carried by every Loika; version 4 is held in the stamp registry, genome-stamp/tests/s01v5.test.mjs).
+// species-S01.json and index.json, when the Loika went to frame version 5 (the crown's size, leaf count and form carried by every Loika; version 4 is held in the stamp registry, genome-stamp/tests/s01v5.test.mjs)
+// and again to frame version 6 (the ears; versions 4 and 5 are held in the stamp registry, genome-stamp/tests/s01v6.test.mjs).
 // S02 to S19 are the pin 10 bytes.
 const PIN10_FRAME_FILES = {
-  "species-S01.json": "f14dc80a47a18b44", "species-S02.json": "1a06670bcc1c309a", "species-S03.json": "06c763b399fd818b", "species-S04.json": "65cb5f7ea69abca1", "species-S05.json": "b392c8124f11410e",
+  "species-S01.json": "030a825e0dcbfe39", "species-S02.json": "1a06670bcc1c309a", "species-S03.json": "06c763b399fd818b", "species-S04.json": "65cb5f7ea69abca1", "species-S05.json": "b392c8124f11410e",
   "species-S06.json": "e86d02f267e29bf5", "species-S07.json": "dedcddf8f5a55c90", "species-S08.json": "0789557101c9f86a", "species-S09.json": "3832d5ab35ed4210", "species-S10.json": "572e8d2f43ea8125",
   "species-S11.json": "01ab6dc706482e4f", "species-S12.json": "2630e433df2550f6", "species-S13.json": "0c5870f74731d937", "species-S14.json": "f3816621c487aec0", "species-S15.json": "a06340efc6cc45d6",
-  "species-S16.json": "8f35a24c8e90ceff", "species-S17.json": "8393eaf96050a867", "species-S18.json": "0ba959d388ce0d70", "species-S19.json": "0242a2bc27b1f963", "index.json": "0966f4f0cfd24aa3",
+  "species-S16.json": "8f35a24c8e90ceff", "species-S17.json": "8393eaf96050a867", "species-S18.json": "0ba959d388ce0d70", "species-S19.json": "0242a2bc27b1f963", "index.json": "029a4aa6d204c03c",
 };
 
 test("every S01 to S19 frame is byte for byte what pin 10 built, and none of them lists or sees a pin 11 record", () => {

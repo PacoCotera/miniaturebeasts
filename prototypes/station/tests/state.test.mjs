@@ -126,9 +126,9 @@ test("reads: 1 Data a trait, the first read ever free, half rounded up once the 
   const [a, b, t] = st.tray, tuikis = frameOf("S03");
   assert.equal(S.readCost(st, a, "coat", settings), 0, "the first read ever is free");
   assert.equal(S.read(st, a, "coat", settings).first, true); assert.equal(st.d, 10);
-  assert.equal(S.readCost(st, a, "face", settings), 2, "Face has two traits");
-  assert.equal(S.read(st, a, "face", settings).cost, 2); assert.equal(st.d, 8);
-  assert.equal(S.readCost(st, b, "face", settings), 1, "half, rounded up, on a later Loika");
+  assert.equal(S.readCost(st, a, "face", settings), 3, "Face has three traits (Crown, Ears and Eyes, since frame version 6)");
+  assert.equal(S.read(st, a, "face", settings).cost, 3); assert.equal(st.d, 7);
+  assert.equal(S.readCost(st, b, "face", settings), 2, "half, rounded up, on a later Loika");
   assert.equal(S.readCost(st, b, "coat", settings), 1, "one trait halves to one");
   assert.equal(S.readCost(st, a, "face", settings), 0, "read: free to look at again");
   assert.equal(S.read(st, a, "face", settings).again, true);
@@ -138,7 +138,7 @@ test("reads: 1 Data a trait, the first read ever free, half rounded up once the 
   st.d = 1; assert.equal(S.read(st, t, "face", settings).ok, false);
   assert.match(S.readBlock(st, t, "face", settings), /needs ◆ 2 more/);
   assert.equal(S.readBlock(st, { ...t, idd: 0 }, "face", settings), "identify it first");
-  assert.equal(S.progress(a, settings), 4 / 6);   // the Loika at frame version 4 (T-20261016-200): Coat holds Colour and Markings, so Coat and Face read are 4 of its 6 traits
+  assert.equal(S.progress(a, settings), 5 / 7);   // the Loika at frame version 6: Coat holds Colour and Markings and Face holds Crown, Ears and Eyes, so Coat and Face read are 5 of its 7 traits
   assert.equal(S.readCost(st, a, "face", { ...settings, economy: "free" }), 0);
 });
 
@@ -330,7 +330,7 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.deepEqual(S.crossPartners(st, null, a, settings).map((m) => m.id), [b.id]);
   assert.equal(S.kinshipOf(st, a, b), 0, "two founders are unrelated");
   const fc = S.forecastOf(st, a, b, settings);
-  assert.equal(fc.kinship, 0); assert.equal(fc.traits.length, 6);   // the Loika at frame version 4 (T-20261016-200): six traits
+  assert.equal(fc.kinship, 0); assert.equal(fc.traits.length, 7);   // the Loika at frame version 6: seven traits (the ears)
   for (const t of fc.traits) { if (t.kind === "switch") { assert.equal(t.seeds.length, 4); assert.ok(Math.abs(t.seeds.reduce((s2, x) => s2 + x.weight, 0) - 1) < 1e-6); } else { assert.equal(t.kind, "blend"); assert.ok(t.range[0] <= t.range[1]); assert.equal(t.firm, false); } }
   const e0 = st.e, s0 = st.s;
   let seed = 7; const rng = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x80000000; };
@@ -397,15 +397,15 @@ test("a starting mibi reads every open chapter, never a shut sealed one: its sta
   assert.ok(!back.read.includes(sealed.id));
 });
 
-test("a mibi keeps the frame version it was born with: v2-, v3- and v4-born genomes stamp S1v2, S1v3 and S1v4 after the Loika moved to v5", () => {
-  // the Loika at frame version 5 (the crown's parameters carried): a genome sampled now is born at v5; an older one keeps its own version on its stamp
-  const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born5 = podGenome(fr, 4242), born4 = { ...born5, frameVersion: 4 }, born3 = { ...born5, frameVersion: 3 }, born2 = { ...born5, frameVersion: 2 };
-  assert.equal(born5.frameVersion, 5, "a genome sampled now is born at the Loika's current frame version");
-  for (const [g, v] of [[born2, 2], [born3, 3], [born4, 4], [born5, 5]]) {
+test("a mibi keeps the frame version it was born with: v2-, v3-, v4- and v5-born genomes stamp S1v2 to S1v5 after the Loika moved to v6", () => {
+  // the Loika at frame version 6 (the ears): a genome sampled now is born at v6; an older one keeps its own version on its stamp
+  const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born6 = podGenome(fr, 4242), born5 = { ...born6, frameVersion: 5 }, born4 = { ...born6, frameVersion: 4 }, born3 = { ...born6, frameVersion: 3 }, born2 = { ...born6, frameVersion: 2 };
+  assert.equal(born6.frameVersion, 6, "a genome sampled now is born at the Loika's current frame version");
+  for (const [g, v] of [[born2, 2], [born3, 3], [born4, 4], [born5, 5], [born6, 6]]) {
     assert.equal(stampFrameOf(fr, g).version, v); assert.equal(stampGenome(fr, g, []).version, v);
     assert.match(S.stampCodeOf({ species: fr.species.id, genome: g, read: [] }) ?? "", new RegExp(`^S1v${v}-`));
   }
-  assert.equal(stampFrameOf(fr).version, 5, "with no genome the frame's own version stands");
+  assert.equal(stampFrameOf(fr).version, 6, "with no genome the frame's own version stands");
 });
 
 test("p.first: written once per trait at read time, only when the look is new; an older save loads with none and shows no mark", () => {

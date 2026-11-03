@@ -18,8 +18,8 @@ const row = (id) => loika.loci.find((l) => l.id === id);
 const withCrown = (g, sw, p = {}) => ({ ...g, loci: { ...g.loci, [SWITCH]: sw, ...p } });
 const crownNodes = (g) => buildIndividual(loika, g).scene.nodes.filter((n) => n.role === "crown");
 
-test("the Loika is at frame version 5: the crown switch is still an open heritable switch, and its size, leaf count and form are open, sleeping behind it, with the catalogue's whole range", () => {
-  assert.equal(frameVersionOf(loika), 5);
+test("the Loika is at frame version 5 or later (6 added the ears; the crown is as version 5 left it): the crown switch is still an open heritable switch, and its size, leaf count and form are open, sleeping behind it, with the catalogue's whole range", () => {
+  assert.ok(frameVersionOf(loika) >= 5);
   assert.equal(row(SWITCH).kind, "heritable-look"); assert.equal(row(SWITCH).switch, true); assert.deepEqual(row(SWITCH).alleles, ["off", "on"]);
   for (const id of PARAMS) { assert.equal(row(id).kind, "sleeping", id); assert.match(row(id).guard, /asleep in any individual whose anatomy.crown-presence is off/); assert.equal(row(id).chapter, "face"); assert.equal(row(id).trait, "crown"); }
   assert.deepEqual(row(HEIGHT).alleles, ["low", "high"]); assert.deepEqual(row(LEAVES).alleles, ["two", "three"]); assert.deepEqual(row(FORM).alleles, ["leaf", "pointed"]);
@@ -35,7 +35,7 @@ test("every frame-5 Loika carries all the crown's parameter copies, crown on or 
   for (let i = 0; i < 60; i++) all.push(cross(loika, { id: 1, genome: a }, { id: 2, genome: b }, { rng: r, kinship: 0 }));
   for (let i = 0; i < 20; i++) { const p = shedPod(loika, { id: 3, genome: a }, { rng: r }); if (p) all.push(p); }
   for (const g of all) {
-    assert.equal(g.frameVersion, 5);
+    assert.equal(g.frameVersion, frameVersionOf(loika));
     for (const id of [SWITCH, ...PARAMS]) assert.ok(Array.isArray(g.loci[id]) && g.loci[id].length === 2 && g.loci[id].every((c) => c != null), `${id}: both copies`);
     assert.deepEqual(checkGenome(loika, g), []);
     seen[resolveCopies(LOCI.get(SWITCH), g.loci[SWITCH]) ? "on" : "off"]++;
