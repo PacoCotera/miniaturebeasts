@@ -957,12 +957,12 @@ export function genPatch2(G, seed, cell) {
   // Under a stair from a cliff (the north one first, then south, west, east), the other half of the stones falls as a fan below the stair, opening away from the cliff: a row is the stair's foot row plus the smallest of three rolls over the place's depth, and the stones are single tiles, alternately on the two sides of the stair's columns, within the fan's width.
   const fanSt = fellsRock ? ['up', 'down', 'left', 'right'].map(dn => stairs.find(st => st.dir === dn && st.role === 'lo')).find(Boolean) || null : null;
   // On a Fells stair place no overhang stands within 5 columns and 6 rows of the stair's entry or on its screen, and none lies on a path that step 9 will carve (a cut overhang reads as two pillars).
-  const ovBar = new Set();
+  const ovBar = new Set(), pathCells = new Set();   // pathCells: the tiles step 9 will carve, which clear any stone on them
   if (fanSt) {
     for (let dy = -6; dy <= 6; dy++) for (let dx = -5; dx <= 5; dx++) if (inb(fanSt.entry.x + dx, fanSt.entry.y + dy)) ovBar.add(I(fanSt.entry.x + dx, fanSt.entry.y + dy));
     const cx0 = Math.max(0, Math.min(PW * 48 - 450, fanSt.entry.x * 48 + 24 - 225)), cy0 = Math.max(0, Math.min(PH * 48 - 532, fanSt.entry.y * 48 + 24 - 266));   // the stair's screen (450 x 532, the camera clamped to the place): no overhang on it either
     for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) { const sx = x * 48 + 24 - cx0, sy = y * 48 + 24 - cy0; if (sx >= 0 && sx < 450 && sy >= 0 && sy < 532) ovBar.add(I(x, y)); }
-    const mark = (x0, y0, x1, y1) => { for (let y = Math.min(y0, y1); y <= Math.max(y0, y1); y++) ovBar.add(I(x0, y)); for (let x = Math.min(x0, x1); x <= Math.max(x0, x1); x++) ovBar.add(I(x, y1)); };
+    const mark = (x0, y0, x1, y1) => { for (let y = Math.min(y0, y1); y <= Math.max(y0, y1); y++) { ovBar.add(I(x0, y)); pathCells.add(I(x0, y)); } for (let x = Math.min(x0, x1); x <= Math.max(x0, x1); x++) { ovBar.add(I(x, y1)); pathCells.add(I(x, y1)); } };
     for (const st of stairs) { const k = st.s, p = st.dir === 'up' ? { x: k, y: 3 } : st.dir === 'down' ? { x: k, y: PH - 4 } : st.dir === 'left' ? { x: 3, y: k } : { x: PW - 4, y: k };
       mark(st.entry.x, st.entry.y, p.x, p.y); mark(p.x, p.y, 14, p.y); mark(14, p.y, 14, PH - 3); }
   }
@@ -983,13 +983,32 @@ export function genPatch2(G, seed, cell) {
   let fanN = 0, footN2 = 0;
   // the foot-row stones of a stair place alternate sides of the stair's columns too, each at a random column of its side (a side with fewer than 3 columns of room is skipped), so neither side of the screen is bare
   const footLo = fanSt ? 2 : 0, footHi = fanSt ? fspan - 3 : 0, roomL = fanSt ? fanSt.s - footLo : 0, roomR = fanSt ? footHi - (fanSt.s + 2) + 1 : 0;
+  // A stair place keeps no stone that would make a bare straight line of 3 or more (a group on one row or one column reads laid): such a stone takes its next roll, and is dropped after 4.
+  const ovTiles = new Set(); for (const f of feats) if (f.kind === 'o') for (let dx = 0; dx < 3; dx++) for (let dy = 0; dy < 2; dy++) ovTiles.add(I(f.x + dx, f.y + dy));
+  const lineBad = (x, y) => { const i0 = I(x, y), prev = tiles[i0]; if (prev === T.ROCK) return false; tiles[i0] = T.ROCK;
+    if (pathCells.has(i0)) { tiles[i0] = prev; return true; }   // a stone on the path is carved away: roll again
+    const seen = new Set([i0]), q = [i0]; let sx = true, sy = true;
+    while (q.length) { const j = q.pop(), jx = j % PW, jy = (j / PW) | 0; if (jx !== x) sx = false; if (jy !== y) sy = false;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = jx + dx, Y = jy + dy; if (!inb(X, Y)) continue; const n = I(X, Y); if (tiles[n] === T.ROCK && !ovTiles.has(n) && !pathCells.has(n) && !seen.has(n)) { seen.add(n); q.push(n); } } }
+    tiles[i0] = prev; return seen.size >= 3 && (sx || sy); };
   for (let k = 0; k < rockN; k++) {
     const footRow = footN || fanSt ? k % 2 : 0, fan = fanSt && !footRow;
     let kk, dd, s = 0;
-    if (fan) { dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3); const w = 1 + dd - edDepth;
-      kk = fanN++ % 2 ? fanSt.s + 2 + R.int(w) : fanSt.s - 1 - R.int(w); }
-    else if (fanSt) { const left = footN2++ % 2 ? roomR < 3 : roomL >= 3;
-      kk = left ? footLo + R.int(roomL) : fanSt.s + 2 + R.int(roomR); dd = 2 + R.int(3); }
+    if (fanSt) {
+      let side;
+      if (fan) { side = fanN++ % 2 ? 1 : 0; }
+      else { side = footN2++ % 2 ? (roomR < 3 ? 0 : 1) : (roomL >= 3 ? 0 : 1); }
+      for (let tr = 0; tr < 4; tr++) {
+        if (fan) { dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3); const w = 1 + dd - edDepth;
+          kk = side ? fanSt.s + 2 + R.int(w) : fanSt.s - 1 - R.int(w); }
+        else { kk = side ? fanSt.s + 2 + R.int(roomR) : footLo + R.int(roomL); dd = 2 + R.int(3); }
+        const { x, y } = fxy(kk, dd);
+        if (!walk(x, y)) break;
+        if (lineBad(x, y)) continue;
+        setT(x, y, T.ROCK); break;
+      }
+      continue;
+    }
     else { kk = 2 + R.int(fdir ? fspan - 4 : PW - 4); dd = footRow ? 2 + R.int(3) : 2 + R.int(fdir ? fext - 4 : PH - 4); s = R.int(100) < 45 && !footRow ? 1 : 0; }   // a foot-row stone is a single tile
     const { x, y } = fdir ? fxy(kk, dd) : { x: kk, y: dd };
     for (let dy = -s; dy <= s; dy++) for (let dx = -s; dx <= s; dx++) if (walk(x + dx, y + dy) && (s === 0 || R.int(100) < 80)) setT(x + dx, y + dy, T.ROCK); }

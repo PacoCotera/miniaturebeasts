@@ -206,8 +206,15 @@ const placeGates = (lay, st, seed) => { const { stones, on } = stairView(lay, st
   const ov = lay.feats.some(f => f.kind === "o" && [0, 1, 2].some(dx => [0, 1, 2].some(dy => on(f.x + dx, f.y + dy))));
   const r = screeLayers(lay, seed), at = (x, y) => (x < 0 || y < 0 || x >= W.PW || y >= W.PH ? -1 : lay.tiles[y * W.PW + x]);
   const square = stones.some(t => [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]].some(([dx, dy]) => [W.T.GRASS, W.T.TALL, W.T.FLOWERS].includes(at(t.x + dx, t.y + dy))) && !SHORE(r, t.y * W.PW + t.x));
-  return { count: n >= 10 && n <= 20, share: side(roomL, left) && side(roomR, right), groups: g.groups >= 3, big: g.biggest <= 4, noOverhang: !ov, noSquare: !square, n: g.n, g, ov }; };
-const GATES = ["count", "share", "groups", "big", "noOverhang", "noSquare"];
+  // no group is a bare straight line of 3 or more; of the stones 5 or more rows from the cliff at most a third lie in the column beside the stair's columns
+  const keyed = new Map(), seenG = new Set(); let line = false;
+  for (let y = 0; y < W.PH; y++) for (let x = 0; x < W.PW; x++) if (lay.tiles[y * W.PW + x] === W.T.ROCK && !inOverhang(lay, x, y)) keyed.set(y * W.PW + x, { x, y });   // whole groups, not the part on screen
+  for (const i of stones.map(t => t.y * W.PW + t.x)) { if (seenG.has(i)) continue; const grp = [], q = [i]; seenG.add(i);
+    while (q.length) { const j = q.pop(); grp.push(keyed.get(j)); for (const d of [1, -1, W.PW, -W.PW]) { const m = j + d; if (keyed.has(m) && !seenG.has(m) && Math.abs((m % W.PW) - (j % W.PW)) <= 1) { seenG.add(m); q.push(m); } } }
+    if (grp.length >= 3 && (grp.every(t => t.x === grp[0].x) || grp.every(t => t.y === grp[0].y))) line = true; }
+  const deep = stones.filter(t => t.d >= 5), beside = deep.filter(t => t.k === st.s - 1 || t.k === st.s + 2).length;
+  return { count: n >= 10 && n <= 20, share: side(roomL, left) && side(roomR, right), groups: g.groups >= 3, big: g.biggest <= 4, noOverhang: !ov, noSquare: !square, noLine: !line, notKerbed: beside * 3 <= deep.length, n: g.n, g, ov }; };
+const GATES = ["count", "share", "groups", "big", "noOverhang", "noSquare", "noLine", "notKerbed"];
 const fellsStairPlaces = function* (seeds, dir) { for (const s of seeds) { const G = W.genWorld(s, 4, "fells");
   for (let c = 0; c < N; c++) { if (!G.comp[c] || G.land[c] !== L.ROCK) continue; const lay = W.genPlace(G, s, String(c)), st = stairOf(lay); if (st && st.dir === dir) yield { seed: s, c, lay, st }; } } };
 const first64 = function* (dir) { let n = 0; for (const p of fellsStairPlaces(Array.from({ length: 400 }, (_, i) => i), dir)) { yield p; if (++n === 64) return; } };
@@ -230,6 +237,11 @@ test("Fells stair place, on each of the four stair sides: the stair's columns st
     const p = [...fellsStairPlaces([42], dir)].find(q => q.c === cell); assert.ok(p, `seed 42 ${dir} cell ${cell}`);
     const g = placeGates(p.lay, p.st, 42); console.log(`# fells seed 42 ${dir} cell ${cell}: ` + JSON.stringify(g));
     for (const k of GATES) assert.ok(g[k], `seed 42 ${dir} cell ${cell} fails ${k}: ` + JSON.stringify(g)); }
+});
+
+test("Fells stair place: no group of stones is a bare straight line of 3 or more, on 64 places a side and seed 42", () => {
+  for (const dir of SIDES4) for (const { seed, c, lay, st } of first64(dir)) assert.ok(placeGates(lay, st, seed).noLine, `${dir} seed ${seed} cell ${c}: a straight line of stones`);
+  for (const [dir, cell] of [["up", 110], ["down", 33], ["right", 77], ["left", 242]]) { const p = [...fellsStairPlaces([42], dir)].find(q => q.c === cell); assert.ok(placeGates(p.lay, p.st, 42).noLine, `seed 42 ${dir} ${cell}`); }
 });
 
 test("Fells stair place: no overhang tile lies within 5 columns and 6 rows of the stair's entry, in 64 places a side", () => {
