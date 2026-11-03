@@ -14,7 +14,7 @@ This is the general guideline. Every screen on both devices, new or changed, is 
 
 ### The feel
 
-A small, well-made field kit for keeping living things. You hold it, and it is warm, calm and a little worn from use. The life inside it is the point: soft, bright and full of character. The device around that life is quiet and practical.
+A small, well-made field kit for keeping living things. You hold it, and it is warm, calm and a little worn from use, from the explorer's own use; the explorer built it. The life inside it is the point: soft, bright and full of character. The device around that life is quiet and practical.
 
 **Why.** The game is care and curiosity about animals you made and raised. The player's attention and affection belong to the mibis, so everything else has to be trustworthy and out of the way: a naturalist's instrument made by someone who loves animals. It is not a gadget showing off, and it is not a toy.
 
@@ -195,6 +195,18 @@ saved Pip and a pale-marked comparison, at Companion and Station size.
 ### Mibis are tiny
 
 Miniature beasts are small in their world, on every screen. The world is large around them, and the camera never zooms a mibi up to fill a view. Home, the Vivarium, Idle and the decision panels show one world at one scale, so one sprite size serves them all. The table gives a mibi's height at 1×, from crest top to feet.
+
+Size words rank mibis against each other and are never compared with the explorer. Crossing scales the explorer by about 1 : 10.
+
+| Word | Inside (explorer's standing height = 1) | At home |
+| --- | --- | --- |
+| small | up to 0.15 (ankle) | on a fingertip, up to 2.5 cm |
+| medium | up to 0.30 (shin) | sits in the hand, up to 5 cm |
+| large | up to 0.45 (knee) | fills a cupped palm, up to 8 cm |
+| huge | up to 0.50 (never past the hip) | a palm, up to 8.5 cm |
+
+No mibi is drawn taller than the pawn's knee line in a place view.
+
 
 | View | Adult | Juvenile | Note |
 | --- | --- | --- | --- |

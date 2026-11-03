@@ -4,7 +4,7 @@ How to play the exploration game on your Companion, and what happens at the Stat
 
 ## 1. What you are doing
 
-You send your **Probe** out on **expeditions**. An expedition starts on one cell of a big, foggy world map. From there you walk the map, go down into the places you find, and look for **pods**: sealed seeds that hold a new mibi. You also gather **Energy**, **Data** and **Essence**, the three materials that make things happen. Each expedition reaches only so far from where it starts, and you choose when to come back.
+You go in on **expeditions** with your **Probe** in hand. An expedition starts on one cell of a big, foggy world map. From there you walk the map, go down into the places you find, and look for **pods**: sealed seeds that hold a new mibi. You also gather **Energy**, **Data** and **Essence**, the three materials that make things happen. Each expedition reaches only so far from where it starts, and you choose when to come back.
 
 When you choose **End expedition**, the Companion seals what it carries into a crate, and the world turns once: creatures move and have young, storms leave charged stones behind, and new pods appear. Nothing comes back on its own between turns, so every expedition finds a slightly different world. Back at home you dock the Companion at the **Station**, which opens the crates. There you find out which species a pod holds, study it, shape a mibi from it, and watch it grow.
 
@@ -81,7 +81,7 @@ A pod you saw and left behind shows the pod sign. Outposts and beacons look the 
 | Tier 1 | 2 cells (a 5×5 square) | 2 | 3 bars |
 | Tier 2 | 4 cells (a 9×9 square) | 3 | 4 bars, and it can read the deep "?" |
 
-**Starting anywhere seen.** Before each expedition, choose its kind (**Weather**: charge stones, pods in the rain; or **Deep ground**: caves and burrow pods, with a digging partner) and pick where to start. The very first time you choose a glint; after that, any cell you have seen. The choice screen's header shows "Expedition N", the turn clock and the battery; under it a strip reads "World · turn 1 · Probe tier 1 · Shield 3/3". Below the two expedition cards are your partner's card (✓ on it opens Mibis) and a small map of your world with your last start and "Explored N of 320 cells". ← opens a short menu: Mibis, Full map, New world. Placing your Probe reveals the cells around it. A Deep ground expedition starts at the burrow under the cliff.
+**Starting anywhere seen.** Before each expedition, choose its kind (**Weather**: charge stones, pods in the rain; or **Deep ground**: caves and burrow pods, with a digging partner) and pick where to start. The very first time you choose a glint; after that, any cell you have seen. The choice screen's header shows "Expedition N", the turn clock and the battery; under it a strip reads "World · turn 1 · Probe tier 1 · Shield 3/3". Below the two expedition cards are your partner's card (✓ on it opens Mibis) and a small map of your world with your last start and "Explored N of 320 cells". ← opens a short menu: Mibis, Full map, New world. Starting there reveals the cells around it. A Deep ground expedition starts at the burrow under the cliff.
 
 **Walking off a place's edge** puts you on the next map cell in that direction. Press ✓ and you go down into it from that side. A held walk stops at the edge first; tap again to step off.
 

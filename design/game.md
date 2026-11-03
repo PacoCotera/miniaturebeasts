@@ -204,7 +204,7 @@ References for these patterns, not to copy: the check-in pleasure of *Neko Atsum
 
 - **Punishing absence:** nothing dies, sickens, decays or leaves while the player is away (the Tamagotchi pattern).
 - **Streaks and daily-login rewards.**
-- **Fear of missing out:** no limited-time events, vanishing offers or countdowns to loss.
+- **Fear of missing out:** events are releases. An event may release species, maps, items or anything else. A species released at an event stays: it joins the catalogue and is available in every world from then on. Everything else an event brings is time-limited, and only that. No offers vanish and nothing counts down to a loss.
 - **Paid randomness and paid speed.**
 - **Nagging:** the devices signal what is new; they never hurry, scold or guilt.
 - **Comparison pressure:** no global rankings and no "first to find".
@@ -283,4 +283,5 @@ A naturalist's expedition that ends in a home full of life: curious, unhurried a
 - **The first session:** how a new player meets the loop, and how soon their first mibi arrives.
 - **Printing in play:** whether the Caddy's print and scan are part of play or keepsakes only.
 - **The economy's pacing** in the finished game.
-- **The pod a returned mibi's place sheds:** chosen, not built yet. It is a new genome drawn from the mibi's own two copies, by an explicit selfing path at a fixed, mild kinship, and redrawn if it would copy the parent. Its origin records the mibi as both parents. It carries no self-changing mark and is identified and read like any pod. When the place sheds it is not designed yet.
+- **Drive and Efficiency, weighed at home:** Drive scales the locomotion rate and divides the bout length; Efficiency sets the share of a resident's routine spent resting (25% x drive x efficiency, 9% to 35%). It is a look in the vivarium, with no meter and no field effect until partner abilities take traits. Nocturnal behaviour belongs here, where the vivarium has real nights.
+- **The pod a mibi let go leaves:** chosen, not built yet. It is a new genome drawn from the mibi's own two copies, by an explicit selfing path at a fixed, mild kinship, and redrawn if it would copy the parent. Its origin records the mibi as both parents. It carries no self-changing mark and is identified and read like any pod. The place sheds it at the first world turn at least 2 turns after the release (for a young mibi, once it would have grown up), in a cell of its species' habitat chosen from the seed, under the arrival guard. It is buried and asleep, under the veil.

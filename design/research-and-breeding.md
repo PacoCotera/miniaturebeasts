@@ -106,6 +106,14 @@ and a shard of storm glass left by a storm.*
 - The page says where the find turns up. Often that is where a partner of a
   named species can reach it: the Untuva's Character chapter opens with a
   crystal, dug up where an Untuva partner sniffs out a buried pod.
+- A find forms by its own process. A crystal comes up when a pod is dug after an
+  Untuva partner sniffed it out: the first such dig in a realm always brings one,
+  then 1 in 4. A shard of storm glass is left where a warned or stray strike
+  lands on open sand, at most one per place per storm pass, and never at a world
+  turn. A pearl comes from deep water, once a swimmer partner and a pearl seal
+  exist.
+- A find turns up only while a species the explorer has identified still has that
+  seal shut, so a species not yet met gives no cue.
 - A find comes home in a crate like other cargo, and the Station keeps it until
   it is used.
 - Using a find opens that chapter **for the whole species, for good**. Every pod
@@ -117,6 +125,8 @@ and a shard of storm glass left by a storm.*
   reads that chapter afterwards, at the usual price.
 
 ## The field guide
+
+Each species' Library page opens with a **manuscript leaf**: an old leaf with a mibi drawing, illegible lettering and the species' one name. It shows from the moment the species is identified, and identification is the explorer matching the pod to its leaf. A leaf gates nothing: no name, read or price.
 
 The **field guide** is the Library's record of a species. It holds every look the
 player has seen for each trait, from read pods and from mibis, and shows "more?"
@@ -180,7 +190,7 @@ inherits is in [Genomics](creatures-and-genomics.md); this section covers the
 play.
 
 - **Who can cross.** Adults and elders of the same species. A juvenile cannot
-  cross, and a mibi cannot cross with itself. Any other pair is refused when it
+  cross, and a mibi cannot be paired with itself on the Cross screen (the pod a mibi let go leaves is the world's, not a cross: see the game doc). Any other pair is refused when it
   is picked, before any price. A mibi out with the Companion is away: it shows
   dimmed and comes back.
 - **Price.** A cross costs **2 Energy and 4 Essence**. Its bud grows for 20

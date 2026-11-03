@@ -1,5 +1,7 @@
 # Exploration, round 3: energy, survey and reading the world
 
+> Night inside the world is the Shade, a place and never a time.
+
 All five points below stand, with
 one condition on Energy: warm stones must not be abundant. Energy stays a
 sought-for resource, and Energy and pods both stay somewhat scarce, so a player

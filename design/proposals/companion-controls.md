@@ -133,7 +133,7 @@ Expedition 1, Weather, no partner, 0 Energy.
 | 4 | Pad up | One cell north, fog lifts. Line: "✓ Go down   meadow · slow beat (often a pod)   ← Wait · Send home" |
 | 5 | Confirm | The meadow place. Message: "))) Call sends a signal · things answer". Line: "✓ Nothing here   meadow   ← Wait · Leave". HUD: `))) call` |
 | 6 | Call | A ring spreads. A buried pod glints and a Loika hides. Line unchanged |
-| 7 | Pad right (held) | The Probe walks to the pod. Line: "✓ Dig up the pod   meadow   ← Wait · Leave" |
+| 7 | Pad right (held) | You walk to the pod. Line: "✓ Dig up the pod   meadow   ← Wait · Leave" |
 | 8 | Confirm | The pod fills an outline in the HUD. Message: "Pods open at the Station · ← Send home when you're ready" |
 | 9 | Back | Menu over the place: Wait (focused), Leave this place, Send home, Probe, Cargo, Companions. Line: "✓ Wait one action   ← close" |
 | 10 | Pad down | Focus on Leave this place, with Send home just below. Line: "✓ Leave this place   ← close". One more press down, then Confirm, opens the Cargo preview of what goes home |

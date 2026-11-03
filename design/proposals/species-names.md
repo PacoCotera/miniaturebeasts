@@ -21,7 +21,7 @@ The tome is written by a field naturalist for a child and the parent reading wit
 | --- | --- | --- | --- | --- | --- |
 | S01 | **Loika** | LOY-kah | *loikka* · Finnish | a leap, a bound | A hopper. The soft sound suits a shy creature that calms wary ones |
 | S02 | **Untuva** | OON-too-vah | *untuva* · Finnish | down, the softest feathers | A round fluff under a cap. Sleepy, and nothing startles it |
-| S03 | **Tuikis** | TWEE-kiss | *tuike* · Finnish | a twinkle, a glimmer | Its tail glows gold at dusk: a small torchbearer for fog and night |
+| S03 | **Tuikis** | TWEE-kiss | *tuike* · Finnish | a twinkle, a glimmer | Its tail glows gold in shade and fog: a small torchbearer for fog and shade |
 | S04 | **Hiljan** | HILL-yahn | *hiljaa* · Finnish | quietly, silently | Creeps up without startling anything |
 | S05 | **Tepor** | TEH-por | *tepor* · Latin | gentle warmth | Senses warm stones (Energy) |
 | S06 | **Pesko** | PESS-koh | *pestä* · Finnish | to wash | The masked tinkerer washes whatever it finds before it pokes at it |

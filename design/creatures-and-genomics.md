@@ -47,7 +47,7 @@ never change its body, and only breeding changes them.
 | **chapter** | A group of traits, read together. Chapters organise the genome for reading; they say nothing about linkage |
 | **frame** | One species' definition: what it fixes, what it leaves open, and the values it allows |
 | **pool** | The alleles a species allows at an open locus |
-| **doing** | A trait that shapes behaviour: movement, stamina, character, glow and charge. Every other trait shapes the body |
+| **doing** | A trait that shapes behaviour: movement, stamina, character, glow and charge. In the vivarium it sets the tempo and the rest share. Every other trait shapes the body |
 
 ## The catalogue: one genome that grows
 
