@@ -3603,7 +3603,7 @@ function drawEdgeMarks(q) {
     if (!sides.length) continue;
     const fog = !S.revealed[c], parity = (x + y) & 1, rm = fog ? 3 : q.map ? q.rmOf(c) : (!S.visited[c] ? 4 : (ex.storm && stormCovers(c % MW)) ? 1 : 0);
     const heavy = q.map && G.biome === 'fells';   // generator 4's Fells, on the full map only
-    const key = 'em' + cs + ':' + c + ':' + sides.map(sd => sd[0][0] + sd[1]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed + ':' + (S.gen || 1); + (heavy ? ':F' : '');
+    const key = 'em' + cs + ':' + c + ':' + sides.map(sd => sd[0][0] + sd[1]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed + ':' + (S.gen || 1) + (heavy ? ':F' : '');
     const pb = art(key, () => {
       const gp = fog ? null : q.map ? mapPB : landPatchPB(c, cs, 0), gx = q.map ? (c % MW) * CELL : 0, gy = q.map ? ((c / MW) | 0) * CELL : 0;
       return edgeMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity, heavy); });
