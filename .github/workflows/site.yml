@@ -111,6 +111,8 @@ jobs:
             cp -r "$p". "_site/sandbox/$n/"
           done
           mkdir -p _site/ops && cp -r ops/ledger _site/ops/
+          # the web server's Caddyfile and the studio login's code travel in the release: deploy.sh checks the Caddyfile before it goes live, the login unit runs from the release
+          mkdir -p _site/ops/sandbox/login && cp ops/sandbox/Caddyfile _site/ops/sandbox/ && cp ops/sandbox/login/mb_login.py ops/sandbox/login/mb-studio-passwd _site/ops/sandbox/login/
           # the Companion's 48 px place art, from where it lives: the shipping folder only (sheets, palette and manifest)
           mkdir -p _site/art/companion-48/terrain && cp -r art/companion-48/terrain/meadow _site/art/companion-48/terrain/
           printf '{"commit":"%s","short":"%s","built":"%s"}\n' "$GITHUB_SHA" "${GITHUB_SHA:0:7}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > _site/build.json
@@ -159,6 +161,22 @@ jobs:
         run: |
           set -euo pipefail
           MB_CI_FAST=1 PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
+      - name: Site server (the studio login, deploy.sh, the Caddyfile)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
+        timeout-minutes: 5
+        # ops/sandbox/tests: the login's unit tests (lockouts and their doubling, the global brake, Origin, cookie flags, next= open redirects, the password never in the journal, sessions across a restart,
+        # a password change ends sessions), deploy.sh against a local release server (a good, a bad and a missing Caddyfile, a failed reload, the pin, pruning) and, with the real Caddy from Caddy's own
+        # apt repository (the version the web server runs), the shipped Caddyfile validated and a broken one refused. The Caddy service is stopped after the install: nothing here needs port 80.
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y -q debian-keyring debian-archive-keyring apt-transport-https gpg >/dev/null
+          curl -fsSL https://dl.cloudsmith.io/public/caddy/stable/gpg.key | sudo gpg --dearmor --yes -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+          curl -fsSL https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt | sudo tee /etc/apt/sources.list.d/caddy-stable.list >/dev/null
+          sudo apt-get update -q >/dev/null
+          sudo apt-get install -y -q caddy >/dev/null
+          sudo systemctl stop caddy || true
+          caddy version
+          python3 -m unittest discover -s ops/sandbox/tests -v
       - name: Station journey
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.station == 'true'
         timeout-minutes: 10   # measured about 4 minutes
