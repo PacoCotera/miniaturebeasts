@@ -5,10 +5,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import * as W from "../src/world.mjs";
+import * as A from "../src/atlas.mjs";
 import { viewOf, camAt, TS } from "../src/view.mjs";
-import { seedDigest, SEEDS, placeKeys2, placeDigest } from "../tools/world-vectors.mjs";
+import { seedDigest, SEEDS, placeKeys2, placeDigest, syntheticPieces, SYNTH_TONE } from "../tools/world-vectors.mjs";
 
 const { L, EDGE, MW, MH } = W, N = MW * MH;
+const GATE = { groups: 51, big: 61 };   // of 64 places on a side: 3 groups in the far two thirds (80%), no group above 4 below the foot rows (95%); the counts and the balance are held on the 64 together
 const VECTORS = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
 const api = (gen, biome) => ({ gen, hash: W.hash, L, EDGE, genWorld: s => W.genWorld(s, gen, biome), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells,
   roster: W.ROSTER, genLife: (G, seed) => W.genLife(G, seed, W.ROSTER) });
@@ -167,25 +169,81 @@ test("Fells rock places hold about three times the stones of generator 2's, gath
   assert.ok(foot / footAll >= .3, "stones gathered at the cliff foot: rows 0 to 4 are 16 percent of a place, so 30 percent is about twice its share");
 });
 
-// the stone groups (4-connected stone tiles) in the lower two thirds of the screen a pawn on a stair's entry tile sees, and the stair places of the Fells' rock
-const stairScreen = (lay, st) => { const v = viewOf(TS, 0, 32, 450, 532), cam = camAt(v, st.entry.x * TS, st.entry.y * TS), y0 = v.y + Math.floor(v.h / 3);
-  const inLow = i => { const sx = (i % W.PW) * TS - cam.x + TS / 2, sy = v.y + ((i / W.PW) | 0) * TS - cam.y + TS / 2; return sx >= 0 && sx < v.w && sy >= y0 && sy < v.y + v.h; };
-  const seen = new Set(); let groups = 0;
-  for (let i = 0; i < W.PW * W.PH; i++) { if (seen.has(i) || lay.tiles[i] !== W.T.ROCK || !inLow(i)) continue; groups++; const q = [i]; seen.add(i);
-    while (q.length) { const j = q.pop(), x = j % W.PW, y = (j / W.PW) | 0;
-      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy, k = Y * W.PW + X; if (X >= 0 && Y >= 0 && X < W.PW && Y < W.PH && !seen.has(k) && lay.tiles[k] === W.T.ROCK && inLow(k)) { seen.add(k); q.push(k); } } } }
-  return groups; };
-const fellsStairPlaces = function* (seeds) { for (const s of seeds) { const G = W.genWorld(s, 4, "fells");
-  for (let c = 0; c < N; c++) { if (!G.comp[c] || G.land[c] !== L.ROCK) continue; const lay = W.genPlace(G, s, String(c)), st = lay.stairs && lay.stairs.find(t => t.dir === "up" && t.role === "lo"); if (st) yield { seed: s, c, lay, st }; } } };
+// A Fells stair place is a rock place with a stair up to a cliff; the stair that rules it is the north one, else south, west, east. The stones of its screen (a pawn on the stair's entry tile, the page's 450 x 532 view)
+// leave out the overhangs, which are drawn as their own feature. "Across" is the stair's own columns (rows for a west or east stair); "depth" is the distance from the cliff's edge.
+const SIDES4 = ["up", "down", "left", "right"];
+const stairOf = lay => SIDES4.map(d => lay.stairs.find(t => t.dir === d && t.role === "lo")).find(Boolean);
+const inOverhang = (lay, x, y) => lay.feats.some(f => f.kind === "o" && x >= f.x && x < f.x + 3 && y >= f.y && y < f.y + 2);
+const stairView = (lay, st) => { const v = viewOf(TS, 0, 32, 450, 532), cam = camAt(v, st.entry.x * TS, st.entry.y * TS), vert = st.dir === "up" || st.dir === "down";
+  const scr = (x, y) => ({ sx: x * TS - cam.x + TS / 2, sy: v.y + y * TS - cam.y + TS / 2 }), on = (x, y) => { const { sx, sy } = scr(x, y); return sx >= 0 && sx < v.w && sy >= v.y && sy < v.y + v.h; };
+  // the two thirds of the screen farthest from the cliff
+  const far = (x, y) => { const { sx, sy } = scr(x, y); return st.dir === "up" ? sy >= v.y + v.h / 3 : st.dir === "down" ? sy < v.y + 2 * v.h / 3 : st.dir === "left" ? sx >= v.w / 3 : sx < 2 * v.w / 3; };
+  const depth = (x, y) => st.dir === "up" ? y : st.dir === "down" ? W.PH - 1 - y : st.dir === "left" ? x : W.PW - 1 - x, across = (x, y) => vert ? x : y;
+  const stones = []; for (let y = 0; y < W.PH; y++) for (let x = 0; x < W.PW; x++) if (lay.tiles[y * W.PW + x] === W.T.ROCK && !inOverhang(lay, x, y) && on(x, y)) stones.push({ x, y, d: depth(x, y), k: across(x, y), far: far(x, y) });
+  return { v, cam, stones }; };
+const groupsOf = tiles => { const at = new Map(tiles.map(t => [t.y * W.PW + t.x, t])), seen = new Set(), sizes = [];
+  for (const i of at.keys()) { if (seen.has(i)) continue; let n = 0; const q = [i]; seen.add(i);
+    while (q.length) { const j = q.pop(); n++; const x = j % W.PW, y = (j / W.PW) | 0;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy, k = Y * W.PW + X; if (X >= 0 && Y >= 0 && X < W.PW && Y < W.PH && at.has(k) && !seen.has(k)) { seen.add(k); q.push(k); } } }
+    sizes.push(n); }
+  return sizes; };
+const stairGates = (lay, st) => { const { stones } = stairView(lay, st), left = stones.filter(t => t.k < st.s).length, right = stones.filter(t => t.k > st.s + 1).length;
+  const lowGroups = groupsOf(stones.filter(t => t.far)).length, deep = groupsOf(stones.filter(t => t.d >= 6));
+  return { n: stones.length, share: left + right ? left / (left + right) : .5, groups: lowGroups, biggest: Math.max(0, ...deep) }; };
+const fellsStairPlaces = function* (seeds, dir) { for (const s of seeds) { const G = W.genWorld(s, 4, "fells");
+  for (let c = 0; c < N; c++) { if (!G.comp[c] || G.land[c] !== L.ROCK) continue; const lay = W.genPlace(G, s, String(c)), st = stairOf(lay); if (st && st.dir === dir) yield { seed: s, c, lay, st }; } } };
+const first64 = function* (dir) { let n = 0; for (const p of fellsStairPlaces(Array.from({ length: 400 }, (_, i) => i), dir)) { yield p; if (++n === 64) return; } };
 
-test("Fells stair place: the stones not at the cliff foot fall in a fan below the stair, the stair's two columns stay clear, and its screen holds 3 stone groups or more in the lower two thirds", () => {
-  let n = 0, ok = 0, min = 99;
-  for (const { seed, c, lay, st } of fellsStairPlaces(Array.from({ length: 60 }, (_, i) => i))) { n++;
-    for (let y = 6; y < W.PH; y++) for (const x of [st.s, st.s + 1]) if (!lay.feats.some(f => f.kind === "o" && x >= f.x && x < f.x + 3 && y >= f.y && y < f.y + 2)) assert.notEqual(lay.tiles[y * W.PW + x], W.T.ROCK, `seed ${seed} cell ${c}: stone in the stair's column ${x}, row ${y} (outside the foot rows and the overhangs)`);
-    const g = stairScreen(lay, st); if (g >= 3) ok++; min = Math.min(min, g); }
-  console.log(`# fells stair places: ${ok} of ${n} hold 3 stone groups or more in the lower two thirds of the stair's screen (fewest ${min})`);
-  assert.ok(n >= 40 && ok >= .9 * n, `${ok} of ${n}`);
-  const [one] = [...fellsStairPlaces([42])]; assert.ok(one, "seed 42 has a Fells stair place"); assert.ok(stairScreen(one.lay, one.st) >= 3, "seed 42");
+test("Fells stair place, on each of the four stair sides: the stair's columns stay clear below the foot rows, and the screen holds 10 to 20 stones, balanced across the stair, in 3 groups or more in its far two thirds, none above 4 tiles below the foot rows", () => {
+  for (const dir of SIDES4) {
+    let n = 0, count = 0, balanced = 0, groups = 0, big = 0, sum = 0, left = 0, right = 0;
+    for (const { seed, c, lay, st } of first64(dir)) { n++;
+      for (let d = 6; d < (dir === "up" || dir === "down" ? W.PH : W.PW); d++) for (const k of [st.s, st.s + 1]) {
+        const x = dir === "left" ? d : dir === "right" ? W.PW - 1 - d : k, y = dir === "up" ? d : dir === "down" ? W.PH - 1 - d : k;
+        if (!inOverhang(lay, x, y)) assert.notEqual(lay.tiles[y * W.PW + x], W.T.ROCK, `${dir} seed ${seed} cell ${c}: stone in the stair's column below the foot rows`); }
+      const g = stairGates(lay, st); sum += g.n; if (g.n >= 10 && g.n <= 20) count++; if (g.share >= .35 && g.share <= .65) balanced++; if (g.groups >= 3) groups++; if (g.biggest <= 4) big++;
+      const sv = stairView(lay, st).stones; left += sv.filter(t => t.k < st.s).length; right += sv.filter(t => t.k > st.s + 1).length; }
+    console.log(`# fells ${dir} stair places (${n}): ${count} with 10 to 20 stones (mean ${(sum / n).toFixed(1)}), ${balanced} with each side 35 to 65%, ${groups} with 3 groups or more in the far two thirds, ${big} with no group above 4 below the foot rows; ${(100 * left / (left + right)).toFixed(0)}% of the stones left of the stair`);
+    assert.equal(n, 64, dir);
+    assert.ok(sum / n >= 10 && sum / n <= 20, `${dir}: mean stones ${sum / n}`);
+    assert.ok(left / (left + right) >= .35 && left / (left + right) <= .65, `${dir}: side share`);
+    assert.ok(groups >= GATE.groups && big >= GATE.big, `${dir}: ${groups} places with 3 groups, ${big} with no group above 4, of ${n}`);
+  }
+  const [one] = [...fellsStairPlaces([42], "up")]; assert.ok(one, "seed 42 has a Fells stair place"); const g = stairGates(one.lay, one.st);
+  console.log("# fells seed 42 stair place: " + JSON.stringify(g));
+  assert.ok(g.n >= 10 && g.n <= 20 && g.groups >= 3 && g.biggest <= 4, "seed 42: " + JSON.stringify(g));
+});
+
+// The art of a Fells stair place on the synthetic catalogue: a scree place draws no sand-shore quarter toward a stone, and a lone stone stands off the tile centre.
+const screeLayers = (lay, seed, tiles = lay.tiles) => { const l = Object.assign({}, lay, { tiles, scree: true, fells: true }); return A.placeLayers(l, seed, A.catalogue(syntheticPieces(), SYNTH_TONE), 0, null); };
+test("Fells stair place art: no sand-shore quarter faces a stone on 64 places a side, and a rock neighbour does not count as sand on a place that is not scree", () => {
+  const shore = (r, i) => r.tiles[i].layers.filter(l => /sandshore/.test(l.id)).map(l => l.id + "@" + l.dx + "," + l.dy);
+  let places = 0, withStone = 0;
+  for (const dir of SIDES4) for (const { seed, lay } of first64(dir)) { places++;
+    const stones = []; for (let i = 0; i < lay.tiles.length; i++) if (lay.tiles[i] === W.T.ROCK) stones.push(i);
+    if (stones.length) withStone++;
+    const asSand = Uint8Array.from(lay.tiles, (t, i) => stones.includes(i) ? W.T.SAND : t), a = screeLayers(lay, seed), b = screeLayers(lay, seed, asSand);   // the same place with its stones turned to scree: the shores must not differ
+    for (let i = 0; i < lay.tiles.length; i++) if (lay.tiles[i] !== W.T.ROCK) assert.deepEqual(shore(a, i), shore(b, i), `${dir} seed ${seed} tile ${i}: a sand-shore quarter faces a stone`); }
+  assert.equal(places, 256); assert.equal(withStone, 256);
+  // off scree, the old rule: a stone on sand still draws the rim toward it
+  const { lay, seed } = first64("up").next().value, off = Object.assign({}, lay, { scree: false }), r = A.placeLayers(off, seed, A.catalogue(syntheticPieces(), SYNTH_TONE), 0, null);
+  const rimmed = [...lay.tiles.keys()].filter(i => lay.tiles[i] !== W.T.ROCK && r.tiles[i].layers.some(l => /sandshore/.test(l.id)) && !shore(screeLayers(lay, seed), i).length);
+  assert.ok(rimmed.length > 0, "without scree, stones still rim the sand");
+});
+test("Fells stair place art: a stone with no stone to its left or right stands off the tile centre by up to 6 px across and 3 px up, by hash; seed 42 shows 3 offsets or more", () => {
+  const cat = A.catalogue(syntheticPieces(), SYNTH_TONE), boulder = l => /boulder/.test(l.id);
+  const [one] = [...fellsStairPlaces([42], "up")], { stones } = stairView(one.lay, one.st), r = screeLayers(one.lay, 42), at = (x, y) => (x < 0 || y < 0 || x >= W.PW || y >= W.PH ? -1 : one.lay.tiles[y * W.PW + x]);
+  const offs = new Set(); let lone = 0;
+  for (const t of stones) { const l = r.tiles[t.y * W.PW + t.x].layers.find(boulder); assert.ok(l, "a stone draws a boulder");
+    const isLone = at(t.x - 1, t.y) !== W.T.ROCK && at(t.x + 1, t.y) !== W.T.ROCK, centred = l.dx - l.sx;
+    const piece = syntheticPieces().find(q => q.name === l.id), cx = (48 - piece.w) >> 1;
+    if (isLone) { lone++; offs.add(centred - cx); assert.ok(Math.abs(centred - cx) <= 6, "within 6 px across"); const up = 48 - piece.h - (l.dy - l.sy); assert.ok(up >= -3 && up <= 3, "within 3 px up"); }
+    else { assert.equal(centred, cx, "a stone beside a stone stays centred"); assert.equal(l.dy - l.sy, 48 - piece.h); } }
+  console.log(`# seed 42 stair screen: ${lone} lone stones of ${stones.length}, x offsets ${[...offs].sort((a, b) => a - b).join(" ")}`);
+  assert.ok(offs.size >= 3, "at least 3 distinct x offsets: " + [...offs]);
+  // not a scree place: every stone stays centred
+  const off = A.placeLayers(Object.assign({}, one.lay, { scree: false }), 42, cat, 0, null);
+  for (const t of stones) { const l = off.tiles[t.y * W.PW + t.x].layers.find(boulder), piece = syntheticPieces().find(q => q.name === l.id); assert.equal(l.dx - l.sx, (48 - piece.w) >> 1); }
 });
 
 test("Woods: one in three reachable wood places is the Shade, on the most enclosed wood; the others have none", () => {
