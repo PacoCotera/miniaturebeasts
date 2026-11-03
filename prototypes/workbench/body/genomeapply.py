@@ -361,7 +361,9 @@ def validate(doc):
         if pl is None:
             errs.append((f"{label}.locus", f"{label}.locus: '{i}' is not a record of the catalogue pin ({p['id']}@{p['version']}); every locus of a frame is a record of the pin"))
             continue
-        if e.get("scope") != pl["scope"]:
+        if e.get("scope") == "own":
+            errs.append((f"{label}.scope", f"{label}.scope: there are no species-own loci; '{i}' is a {pl['scope']} record of the pin, so its scope is '{pl['scope']}'"))
+        elif e.get("scope") != pl["scope"]:
             errs.append((f"{label}.scope", f"{label}.scope: '{i}' is a {pl['scope']} record in the pin (this file says '{e.get('scope')}')"))
         elif pl["scope"] == "branch" and pl["clan"] != clan and i not in borrows:
             errs.append((f"{label}.scope", f"{label}.scope: '{i}' is a record of clan {pl['clan']}; this species is {clan or 'of no clan'} (genome.clan) and does not borrow it (genome.borrows)"))
