@@ -980,7 +980,11 @@ export function genPatch2(G, seed, cell) {
   const fdir = fanSt ? fanSt.dir : footN ? 'up' : null, fvert = fdir === 'up' || fdir === 'down', fspan = fvert ? PW : PH, fext = fvert ? PH : PW;
   const fxy = (k, d) => ({ x: fdir === 'left' ? d : fdir === 'right' ? PW - 1 - d : k, y: fdir === 'up' ? d : fdir === 'down' ? PH - 1 - d : k });
   const edDepth = fanSt ? (fdir === 'up' ? fanSt.entry.y : fdir === 'down' ? PH - 1 - fanSt.entry.y : fdir === 'left' ? fanSt.entry.x : PW - 1 - fanSt.entry.x) : 0;
-  let fanN = 0, footN2 = 0;
+  // the stair's screen (450 x 532, the camera centred on the entry and clamped to the place), as the columns (rows, for a west or east stair) across the stair it shows
+  const scrX0 = fanSt ? Math.max(0, Math.min(PW * 48 - 450, fanSt.entry.x * 48 + 24 - 225)) : 0, scrY0 = fanSt ? Math.max(0, Math.min(PH * 48 - 532, fanSt.entry.y * 48 + 24 - 266)) : 0;
+  const onScr = (x, y) => { const sx = x * 48 + 24 - scrX0, sy = y * 48 + 24 - scrY0; return sx >= 0 && sx < 450 && sy >= 0 && sy < 532; };
+  const acrossOn = k => fvert ? onScr(k, fanSt.entry.y) : onScr(fanSt.entry.x, k);
+  let fanN = 0, footN2 = 0; const footSide = [0, 0];
   // the foot-row stones of a stair place alternate sides of the stair's columns too, each at a random column of its side (a side with fewer than 3 columns of room is skipped), so neither side of the screen is bare
   const footLo = fanSt ? 2 : 0, footHi = fanSt ? fspan - 3 : 0, roomL = fanSt ? fanSt.s - footLo : 0, roomR = fanSt ? footHi - (fanSt.s + 2) + 1 : 0;
   // A stair place keeps no stone that would make a bare straight line of 3 or more (a group on one row or one column reads laid): such a stone takes its next roll, and is dropped after 4.
@@ -998,10 +1002,13 @@ export function genPatch2(G, seed, cell) {
       let side;
       if (fan) { side = fanN++ % 2 ? 1 : 0; }
       else { side = footN2++ % 2 ? (roomR < 3 ? 0 : 1) : (roomL >= 3 ? 0 : 1); }
+      if (!fan) footSide[side]++;
       for (let tr = 0; tr < 4; tr++) {
         if (fan) { dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3); const w = 1 + dd - edDepth;
           kk = side ? fanSt.s + 2 + R.int(w) : fanSt.s - 1 - R.int(w); }
-        else { kk = side ? fanSt.s + 2 + R.int(roomR) : footLo + R.int(roomL); dd = 2 + R.int(3); }
+        else { const lo = side ? fanSt.s + 2 : footLo, len = side ? roomR : roomL, vis = [];   // the first 3 foot-row stones of a side fall in its columns on the screen
+          if (footSide[side] <= 3) for (let c = lo; c < lo + len; c++) if (acrossOn(c)) vis.push(c);
+          kk = footSide[side] <= 3 && vis.length ? vis[R.int(vis.length)] : lo + R.int(len); dd = 2 + R.int(3); }
         const { x, y } = fxy(kk, dd);
         if (!walk(x, y)) break;
         if (lineBad(x, y)) continue;

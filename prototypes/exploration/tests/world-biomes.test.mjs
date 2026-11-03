@@ -244,6 +244,10 @@ test("Fells stair place: no group of stones is a bare straight line of 3 or more
   for (const [dir, cell] of [["up", 110], ["down", 33], ["right", 77], ["left", 242]]) { const p = [...fellsStairPlaces([42], dir)].find(q => q.c === cell); assert.ok(placeGates(p.lay, p.st, 42).noLine, `seed 42 ${dir} ${cell}`); }
 });
 
+test("Fells stair place: each side of the stair with 3 columns of room on its screen holds a quarter of the stones or more on 64 places a side (north and south at 58 or more)", () => {
+  for (const dir of ["up", "down"]) { let ok = 0; for (const { seed, lay, st } of first64(dir)) if (placeGates(lay, st, seed).share) ok++; assert.ok(ok >= 58, `${dir}: ${ok} of 64`); }
+});
+
 test("Fells stair place: no overhang tile lies within 5 columns and 6 rows of the stair's entry, in 64 places a side", () => {
   for (const dir of SIDES4) { let n = 0;
     for (const { seed, c, lay, st } of first64(dir)) { n++;
