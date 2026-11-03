@@ -305,11 +305,51 @@ def column_angles_at(G, center_z, vertical):
     return G.column_angles(center_z)
 
 
+def thin_rings(G, ss):
+    """Which rings of the stations `ss` are lofted on 5 half columns (V5): the stalk, between the tip's end and the root's s minus `thin.end` (0.6 H; the stalk's bend at 0.7 is left to 16 columns), where the radius is under the species file's `thin.r_max`."""
+    th = G.sp.get("thin")
+    if not th:
+        return [False] * len(ss)
+    lo = G.bulb[0] + float(th["after_bulb"])
+    hi = G.s_root - float(th.get("end", 0.6))
+    r = G.tail_radius(np.array(ss, float))
+    flag = [bool(lo < s < hi and r[k] < float(th["r_max"])) for k, s in enumerate(ss)]
+    r = r * np.maximum(1.0, np.interp(np.array(ss, float), G.tail_s, G.tail_e))           # the root's flare widens the ring sideways: the ring's size is its width
+    ratio = float(th.get("ratio_max", 1.3))
+    idx = [k for k, f_ in enumerate(flag) if f_]
+    while idx and idx[-1] + 1 < len(ss) and r[idx[-1] + 1] / r[idx[-1]] > ratio:          # a band joins rings of about one size: the quads of a 2 to 1 band twist when the next ring is much wider (the root's flare)
+        flag[idx.pop()] = False
+    gap = float(th.get("gap_min", 0.045))
+    while idx and idx[-1] + 1 < len(ss) and ss[idx[-1] + 1] - ss[idx[-1]] < gap:               # nor are the rings of a band close together: the band's long edge against a short ring-to-ring one
+        flag[idx.pop()] = False
+    while idx and idx[0] > 0 and ss[idx[0]] - ss[idx[0] - 1] < gap:
+        flag[idx.pop(0)] = False
+    while idx and idx[0] > 0 and max(r[idx[0] - 1] / r[idx[0]], r[idx[0]] / r[idx[0] - 1]) > ratio:
+        flag[idx.pop(0)] = False
+    return flag
+
+
+def band_faces(body, big, small, big_first):
+    """The all-quad band from a ring of 9 half columns to one of 5 (a stalk ring next to a full ring): for each 4 columns of the big ring (A0..A4) and 2 of the small (M0..M2) three quads, no triangle: (A0 A1 M1 M0), (A1 A2 A3 M1), (A3 A4 M2 M1). The small ring's columns are at the angles of the big ring's columns 0, 2, 4, 6, 8, so M1 stands behind A2.
+    The vertices of valence 3 and 5 of the band are A2 (3) and M1 (5), two to a pair. `big_first` says whether the big ring comes first along the spine (it is `rings[i]`), which fixes the winding of the quads as the plain strip has it: (ring i c, ring i+1 c, ring i+1 c+1, ring i c+1)."""
+    out = []
+    for p in range(2):
+        A = [big[4 * p + j] for j in range(5)]
+        M = [small[2 * p + j] for j in range(3)]
+        if big_first:           # L = big, U = small
+            qs = [(A[0], M[0], M[1], A[1]), (A[1], M[1], A[3], A[2]), (A[3], M[1], M[2], A[4])]
+        else:                   # L = small, U = big
+            qs = [(M[0], A[0], A[1], M[1]), (M[1], A[1], A[2], A[3]), (M[1], A[3], A[4], M[2])]
+        out += [body.face(*q, "torso") for q in qs]
+    return out
+
+
 def build_spine_loft(body, spec, G):
-    """The one ring sequence: 9 half columns per ring, rings from the stalk's cap ring to the crown, a grid cap at each end. Returns dict(rings, faces, caps, ring_s, ring_z, vertical)."""
+    """The one ring sequence: 9 half columns per ring (5 on the stalk: `thin_rings`), rings from the stalk's cap ring to the crown, a grid cap at each end. Returns dict(rings, faces, caps, ring_s, ring_z, vertical)."""
     n = 9
     ss = G.stations(spec)
     nv = len(spec["parts"]["torso"]["rings_z"])
+    thin = thin_rings(G, ss)
     rings, rz, info = [], [], []
     geo = []
     for k, s in enumerate(ss):                                  # the rings' frames and rays first: the casts of all rings then run together
@@ -334,12 +374,21 @@ def build_spine_loft(body, spec, G):
             ey = float(np.interp(s, G.tail_s, G.tail_e))                  # the root's sideways widening (spine.root_flare): the circle is an ellipse, wider across the body than along it
             P = P * (1 - t_ana) + (pt + rad * W * np.array([1.0, ey, 1.0])) * t_ana
         P[a == 0, 1] = 0.0; P[a == 1, 1] = 0.0
-        rings.append([body.add(P[c], "torso", float(s), a[c], target=P[c], centre=(c in (0, n - 1))) for c in range(n)])
+        cols = [0, 2, 4, 6, 8] if thin[k] else list(range(n))
+        rings.append([body.add(P[c], "torso", float(s), a[c], target=P[c], centre=(c in (0, n - 1))) for c in cols])
         rz.append(float(pt[2])); info.append(dict(s=float(s), centre=pt, T=T, N=N, B=B))
     faces = {}
     for i in range(len(rings) - 1):
-        for c in range(n - 1):
-            faces[(i, c)] = body.face(rings[i][c], rings[i + 1][c], rings[i + 1][c + 1], rings[i][c + 1], "torso")
+        lo_, hi_ = rings[i], rings[i + 1]
+        if len(lo_) == len(hi_):
+            for c in range(len(lo_) - 1):
+                faces[(i, c)] = body.face(lo_[c], hi_[c], hi_[c + 1], lo_[c + 1], "torso")
+        else:
+            assert {len(lo_), len(hi_)} == {n, 5}, "a band joins a ring of 9 half columns to one of 5"
+            for v_ in lo_ + hi_:                                    # the band's vertices are not fitted to their targets: the limit surface of a 2 to 1 band is not a plain tube's, and the fit chasing the targets zigzags the full ring beside it
+                body.target[v_] = None
+            for j, f_ in enumerate(band_faces(body, lo_ if len(lo_) == n else hi_, hi_ if len(lo_) == n else lo_, len(lo_) == n)):
+                faces[(i, "band", j)] = f_
     caps = {}
     # the crown: the section cap of the gourd (the top of the vertical run)
     caps["crown"] = SectionCap(body, rings[-1], "torso", G, rz[-1], G.ends[1], +1)
