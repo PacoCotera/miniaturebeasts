@@ -2347,9 +2347,9 @@
     "plain"
    ],
    "weights": [
-    0.62,
-    0.22,
-    0.16
+    0.75,
+    0.2,
+    0.05
    ]
   },
   {
@@ -2929,41 +2929,43 @@
  "viability": {
   "sampled": 500,
   "constructed": 500,
-  "passed": 495,
+  "passed": 496,
   "crossed": 500,
   "crossedBuilt": 500,
-  "crossedPassed": 497,
+  "crossedPassed": 499,
   "failuresByCheck": {
    "normals": 2,
-   "verts": 6
+   "verts": 2,
+   "mesh": 1
   },
-  "passRate": 0.992,
+  "passRate": 0.995,
   "passRateByCheck": {
    "normals": 0.998,
-   "verts": 0.994
+   "verts": 0.998,
+   "mesh": 0.999
   },
   "vertices": {
-   "median": 3414,
+   "median": 3376,
    "p5": 3222,
-   "p95": 3670,
+   "p95": 3614,
    "max": 3942,
-   "within3500": 0.701,
-   "within3850": 0.994,
+   "within3500": 0.84,
+   "within3850": 0.998,
    "byPart": {
     "arm.L": {
-     "mean": 389.6,
+     "mean": 388.1,
      "max": 452
     },
     "ear.L": {
-     "mean": 452.9,
-     "max": 836
+     "mean": 416.0,
+     "max": 772
     },
     "fang.0": {
      "mean": 3.1,
      "max": 52
     },
     "fang.1": {
-     "mean": 1.0,
+     "mean": 1.5,
      "max": 52
     },
     "leg.L": {
@@ -2971,7 +2973,7 @@
      "max": 670
     },
     "torso": {
-     "mean": 1923.6,
+     "mean": 1918.4,
      "max": 2096
     },
     "whisker.0": {
@@ -3033,11 +3035,37 @@
     }
    },
    {
+    "genome": "sampled 235",
+    "checks": [
+     "mesh"
+    ],
+    "why": "mesh: seat: along 12.03",
+    "where": {
+     "mesh": {
+      "ranges": [
+       "seat"
+      ],
+      "detail": {
+       "seat": {
+        "faces": 64.0,
+        "along": 12.029,
+        "around": 4.938,
+        "area": 4.028,
+        "nonplanar": 0.451,
+        "bad": [
+         "along"
+        ]
+       }
+      }
+     }
+    }
+   },
+   {
     "genome": "sampled 275",
     "checks": [
      "normals"
     ],
-    "why": "normals: 2 visible edges over 20° (steepest 22.7°); most in leg.L",
+    "why": "normals: 2 visible edges over 20° (steepest 22.6°); most in leg.L",
     "where": {
      "normals": {
       "parts": {
@@ -3046,49 +3074,11 @@
       "ranges": {
        "tail": 2
       },
-      "worst": 22.65,
+      "worst": 22.59,
       "s": [
        0.298,
        0.298
       ]
-     }
-    }
-   },
-   {
-    "genome": "sampled 347",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,910 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3910,
-      "parts": {
-       "torso": 1968,
-       "leg.L": 606,
-       "ear.L": 772,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
-   },
-   {
-    "genome": "sampled 361",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,926 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3926,
-      "parts": {
-       "torso": 2032,
-       "leg.L": 670,
-       "ear.L": 772,
-       "arm.L": 452
-      }
      }
     }
    },
@@ -3111,47 +3101,9 @@
       }
      }
     }
-   },
-   {
-    "genome": "crossed 181",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,862 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3862,
-      "parts": {
-       "torso": 2032,
-       "leg.L": 670,
-       "ear.L": 772,
-       "arm.L": 388
-      }
-     }
-    }
-   },
-   {
-    "genome": "crossed 447",
-    "checks": [
-     "verts"
-    ],
-    "why": "verts: 3,942 vertices at subdivision level 1, limit 3,500 (amber up to 3,850)",
-    "where": {
-     "verts": {
-      "total": 3942,
-      "parts": {
-       "torso": 2064,
-       "leg.L": 670,
-       "ear.L": 644,
-       "arm.L": 388,
-       "whisker.0": 88,
-       "whisker.1": 88
-      }
-     }
-    }
    }
   ],
-  "failureCount": 8,
+  "failureCount": 5,
   "rule": "random copies from the species pools at every open locus (the body and face anchors tight), and children of crosses between them (their blends on the step); each built by the body engine and checked by the cage checks of the workbench. `constructed` counts builds with no error, `passed` those with no failing check"
  }
 }

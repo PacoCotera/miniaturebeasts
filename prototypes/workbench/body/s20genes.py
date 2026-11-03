@@ -169,7 +169,7 @@ GENES = {
 # pair-map loci: alleles with draw weights, and the dominance order the phenotype follows (the first dominant allele of the pair shows)
 PAIRS = {
     "body.ear-family": (["prick", "lop", "nub"], [0.4, 0.3, 0.3], ["prick", "nub", "lop"]),                       # frond is cut
-    "body.tail-tip": (["lantern", "tuft", "plain"], [0.62, 0.22, 0.16], ["lantern", "tuft", "plain"]),           # lantern dominant in the cross: most Tulikos glow (owner's answer)
+    "body.tail-tip": (["lantern", "tuft", "plain"], [0.75, 0.20, 0.05], ["lantern", "tuft", "plain"]),           # lantern dominant in the cross: most Tulikos glow (owner's answer)
     "appearance.marking-layout": (["plain", "masked", "points", "banded", "spotted", "capped"], [0.25, 0.15, 0.15, 0.15, 0.15, 0.15], ["plain", "masked", "points", "banded", "spotted", "capped"]),
     "coat.rd": (["none", "spots", "labyrinth", "rings"], [0.4, 0.25, 0.2, 0.15], ["none", "spots", "labyrinth", "rings"]),
     "coat.mark": (["none", "heart", "star"], [0.5, 0.25, 0.25], ["none", "heart", "star"]),

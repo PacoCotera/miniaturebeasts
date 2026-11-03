@@ -104,9 +104,17 @@ class TestGuard(unittest.TestCase):
 
     def test_the_eyes_have_a_lantern_green_iris_ring_round_a_dark_pupil(self):
         import s20coat as C
-        self.assertEqual(DOC["face"]["eyes"]["iris"], dict(ring=0.62, pupil=0.55, value=0.45))
+        self.assertEqual(DOC["face"]["eyes"]["iris"], dict(ring=0.74, pupil=0.46, value=0.70))
         import inspect
         self.assertIn('spec["face"]["eyes"].get("iris")', inspect.getsource(C))
+
+    def test_the_lop_ear_spreads_and_hangs_and_the_lantern_is_lit_more_often(self):
+        ear = [p for p in DOC["parts"] if p.get("id") == "ear.L"][0]
+        lop = ear["families"]["lop"]
+        self.assertEqual(lop["plane"]["yaw"], 108)
+        self.assertEqual([j.get("pitch") for j in lop["joints"][1:]], [15, -40, -70])
+        import s20genes as GN
+        self.assertEqual(GN.PAIRS["body.tail-tip"][1], [0.75, 0.20, 0.05])
 
 
 if __name__ == "__main__":
