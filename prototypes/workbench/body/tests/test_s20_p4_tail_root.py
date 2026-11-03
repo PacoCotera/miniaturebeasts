@@ -11,8 +11,17 @@ class T(unittest.TestCase):
         cls.items = [IN.make(i) for i in (1, 4, 8, 12)]
 
     def widths(self, b):
+        """(s, lateral width, height) of each ring, measured on the level-2 surface: the torso's vertices at the ring's own arc length s that lie within 1.25 ring radii of the ring's centre (the legs and arms share s values and must not count). Not on the cage ring's vertices: the stalk's rings have 8 columns (V5), the relax slides them round the ring, and the largest |y| of 8 points sampling a circle wobbles by up to 8 percent of the width from the sampling alone (0.009 on the stalk), which is not a waist in the surface."""
         info = b.ctx["info"]["torso"]; m = b.ctx["remap"]; Vc = np.array(b.cage.V, float)
-        return np.array([(ri["s"], 2 * float(np.abs(Vc[[m[v] for v in ring if v in m]][:, 1]).max()), float(np.ptp(Vc[[m[v] for v in ring if v in m]][:, 2]))) for ring, ri in zip(info["rings"], info["ring_info"])])
+        V, F, at, fp = P2.level_arrays(b, 2)
+        tor = np.rint(at[:, 0]).astype(int) == b.parts["torso"]
+        out = []
+        for ring, ri in zip(info["rings"], info["ring_info"]):
+            ctr = np.asarray(ri["centre"], float)
+            rc = float(np.linalg.norm(Vc[[m[v] for v in ring if v in m]] - ctr, axis=1).max())
+            sel = tor & (np.abs(at[:, 1] - ri["s"]) < 1e-3) & (np.linalg.norm(V - ctr, axis=1) <= 1.25 * rc)
+            out.append((ri["s"], 2 * float(np.abs(V[sel][:, 1]).max()), float(np.ptp(V[sel][:, 2]))))
+        return np.array(out)
 
     def test_root_width_at_the_seat_and_a_monotone_widening(self):
         for c, b, R in self.items:
