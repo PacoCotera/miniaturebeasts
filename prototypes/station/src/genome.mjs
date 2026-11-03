@@ -3,7 +3,7 @@
 // (species.mjs), looks in words from describe.mjs, the stamp from the genome stamp's codec. The
 // Station page fetches the frames beside it (the sandbox publishes prototypes/* side by side); the
 // tests read them from disk and call setFrames.
-import { LOCI, resolveCopies, isContinuous, quantize, valueRange } from "../../workbench/framework/catalogue.mjs";
+import { LOCI, resolveCopies, isContinuous, quantize, valueRange, binFor } from "../../workbench/framework/catalogue.mjs";
 import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genomeDigest, FRAME_VERSION } from "../../workbench/framework/species.mjs";
 import { lookOf } from "../../workbench/framework/describe.mjs";
 import { cross, forecast, kinship, relatedness, identity, SPREAD, blendRange } from "../../workbench/framework/cross.mjs";
@@ -54,6 +54,8 @@ export const traitState = (frame, trait, genome) => memo(genome, "t:" + frame.sp
 export const heritableTraits = (frame) => frame.chapters.flatMap((ch) => ch.traits.filter((t) => t.loci.every((id) => { const l = frame.loci.find((q) => q.id === id); return !!l && l.kind !== "locked" && l.changedBy !== "self"; })).map((t) => ({ chapter: ch.id, trait: t })));
 // The Pods line stays within six words (trait-names.md §2): a pair of colours is written with a comma, no leading "shows" on a hides line, a blend is "A to B", no apology on an asleep line.
 const LINE_LOOKS = { pairSep: ", " };
+// What a sleeping locus carries, in the player's words, where its copies are not themselves words (the Loika's bare head still carries a crest of some size).
+const SLEEP_WORDS = { "growth.crown-height-ratio": { low: "low crest", high: "tall crest", mixed: "crest" } };   // short, for the six-word lines: a mixed pair is "crest"
 function traitStateOf(frame, trait, genome) {
   const shows = lookOf(frame, trait, genome, LINE_LOOKS);
   const a = lookOf(frame, trait, shapeTrait(frame, genome, trait.id, 1), LINE_LOOKS);
@@ -62,8 +64,9 @@ function traitStateOf(frame, trait, genome) {
   const first = trait.loci[0], row = frame.loci.find((l) => l.id === first), locus = LOCI.get(first);
   let asleep = null;
   if (row?.switch && trait.loci.length > 1 && locus && resolveCopies(locus, genome.loci[first]) === false) {
-    const layout = trait.loci.slice(1).map((id) => genome.loci[id]).find((c) => c && typeof c[0] === "string");
-    asleep = layout ? [...new Set(layout)].join(" or ") : "what they carry";
+    const said = trait.loci.slice(1).find((id) => SLEEP_WORDS[id] && genome.loci[id]);   // a sleeping size has its own plain words (the Loika's crest)
+    const layout = said ? null : trait.loci.slice(1).map((id) => genome.loci[id]).find((c) => c && typeof c[0] === "string");
+    asleep = said ? ((w) => (w.size === 1 ? [...w][0] : SLEEP_WORDS[said].mixed))(new Set(genome.loci[said].map((c) => SLEEP_WORDS[said][binFor(LOCI.get(said), c)]))) : layout ? [...new Set(layout)].join(" or ") : "what they carry";
   }
   const carried = [...new Set([shows, a, b].filter(Boolean))];
   let kind, hides = null, line;

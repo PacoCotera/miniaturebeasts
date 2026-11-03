@@ -95,7 +95,7 @@ const PROPORTION_WORDS = {
   "growth.muzzle-projection-ratio": { short: "a short muzzle", long: "a long muzzle" },
   "growth.beak-length-ratio": { short: "a short beak", long: "a long beak" },
   "growth.exterior-eye-size-ratio": { small: "small eyes", large: "big eyes" },
-  "growth.auricular-length-ratio": { short: "short ears", long: "long ears", tall: "tall ears" },
+  "growth.auricular-length-ratio": { small: "small ears", short: "short ears", medium: "larger ears", long: "long ears", tall: "tall ears" },
   "growth.antenna-length-ratio": { short: "short antennae", long: "long antennae" },
   "growth.crown-height-ratio": { low: "a low crest", high: "a tall crest" },
   "growth.feather-crest": { low: "a low feather crest", tall: "a tall feather crest" },

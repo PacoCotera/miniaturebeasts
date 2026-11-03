@@ -58,10 +58,13 @@ export function synthetic(nOpen, species, name, glyph) {
   return finish({ species, version: 1, id: `future${nOpen}`, name, glyph, chapters, locked, synthetic: true });
 }
 
+// The two synthetic test frames live at species 4094 and 4095, the top of the 12-bit species field: numbers 4000 to 4095 are kept for tests, so a test frame never
+// collides with a real species (they stood at 21 and 22, which are S21 and S22 version 1 once those species exist). The ids future100 and future150 are unchanged.
+export const TEST_SPECIES = [4094, 4095];
 export const FRAMES_LIST = [
   ...REAL,
-  synthetic(100, 21, "Future, 100 open loci", [".#.#.", "#####", ".###.", "#.#.#", ".#.#."]),
-  synthetic(150, 22, "Future, 150 open loci", ["#.#.#", ".###.", "##.##", ".###.", "#.#.#"]),
+  synthetic(100, TEST_SPECIES[0], "Future, 100 open loci", [".#.#.", "#####", ".###.", "#.#.#", ".#.#."]),
+  synthetic(150, TEST_SPECIES[1], "Future, 150 open loci", ["#.#.#", ".###.", "##.##", ".###.", "#.#.#"]),
 ];
 export const FRAMES = new Map(FRAMES_LIST.map((f) => [`${f.species}.${f.version}`, f]));
 export const frameFor = (species, version) => FRAMES.get(`${species}.${version}`) ?? null;

@@ -219,18 +219,20 @@ export function buildBody(resolved) {
     const drooping = v["anatomy.ear-tilt"] === "drooping";
     // Ear set: the root's lateral offset over the head's half width; a side-set ear leans outward.
     const set = v["growth.auricular-set-ratio"] ?? 0.62;
-    const dir = unit([0, side * set, Math.sqrt(Math.max(0.1, 1 - set * set))]);
+    // From frame version 6 the ear roots low and behind the crest's side leaves (+x is back), as in the book, turned 35 degrees and with a body (art director and UI/UX sign-off); older frames keep the root level with them.
+    const v6 = (resolved.frameVersion ?? 0) >= 6;
+    const dir = v6 ? unit([0.5, side * set, 0.15]) : unit([0, side * set, Math.sqrt(Math.max(0.1, 1 - set * set))]);
     const rt = rootOn(head, headCenter, dir, 0.08 * length, envOf(head));
     const lean = 0.1 + 0.4 * Math.max(0, Math.min(1, (set - 0.42) / 0.36));
     const upAxis = drooping ? unit([-0.1, side * 0.95, -0.4]) : unit([-0.15, side * lean, 1]);
     // The ear plane sits at 45° between facing forward and facing out, as a cupped ear does, so the
     // ear shows its width from the side as well as from the front.
-    const across = unit(cross(upAxis, unit([-0.7, side * 0.7, 0])));
+    const across = unit(cross(upAxis, v6 ? unit([-0.819, side * 0.574, 0]) : unit([-0.7, side * 0.7, 0])));
     const pointed = v["ears.form"] === "pointed";
     const outline = pointed ? [[-0.12, 0], [-0.5, 0.38], [-0.36, 0.75], [0, 1], [0.36, 0.75], [0.5, 0.38], [0.12, 0]] : [[-0.12, 0], [-0.5, 0.32], [-0.48, 0.73], [-0.24, 0.96], [0.24, 0.96], [0.48, 0.73], [0.5, 0.32], [0.12, 0]];
     const corners = outline.map(([a, b]) => add(rt.inner, add(mul(across, a * width), mul(upAxis, b * length))));
     const ear = newNode(`ear-${side < 0 ? "L" : "R"}`, "auricular-sheet", head.id, "body"); ear.part = "ear";
-    sheet(ear, corners, cross(across, upAxis), 0.03 * length);
+    sheet(ear, corners, cross(across, upAxis), (v6 ? 0.22 : 0.03) * length);
     push(ear, head, rt.inner);
   }
   if (v["browTufts.enabled"]) for (const side of [-1, 1]) {

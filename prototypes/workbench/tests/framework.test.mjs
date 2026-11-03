@@ -28,8 +28,9 @@ test("catalogue 10 carries catalogue6 plus the taxonomy's switches and loci, the
   assert.equal(kinds.filter((l) => l.switch !== "part").length, 27, "twenty-five new loci");
   assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
-  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 16, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, the six of the Loika's calibration to Pip, and ash");
-  assert.equal(CATALOGUE.version, 10, "pin 10: ash for the fine-tuned Loika (T-20261016-200)");
+  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles && l.addedAlleles.since <= 10).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 18, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, the six of the Loika's calibration to Pip, ash, and the Loika's small and medium ears (frame version 6)");
+  assert.equal(CATALOGUE.version, 11, "pin 11: the genome string's records (tests/pin11.test.mjs); pin 10 was ash for the fine-tuned Loika (T-20261016-200), and its 178 records are what a frame of version 6 or older sees");
+  assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 6)).length, 178, "the pin-10 view is the 178 records of the build branches");
   assert.deepEqual(LOCI.get("appearance.body-palette").alleles.at(-1), { id: "ash", label: "ash", value: "#8e98a4" }, "ash appended last, so every older copy keeps its index");
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 10).length === 1);
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 8).length === 3);
@@ -74,9 +75,9 @@ test("every frame carries only trunk loci its plan owns plus its clan's branch; 
   assert.ok(loika.absent.some((a) => a.id === "growth.wing-span-ratio"), "a Loika has no wing locus at all");
   assert.ok(loika.loci.some((l) => l.id === "appearance.belly-field" && l.scope === "branch"), "but its clan's belly field");
   assert.ok(loika.absent.some((a) => a.id === "anatomy.tail-tip-bulb" && a.why.includes("C03")));
-  assert.equal(frameVersionOf(loika), 4, "the Loika fine-tuned (owner 2026-10-17): frame version 4, with every frame on catalogue 10");
-  assert.equal(loika.counts.traits, 6, "six traits: the starter tier counts traits");
-  assert.equal(loika.counts.open, 7, "Colour, the marking switch and layout, Crown, Eyes, Drive, Efficiency");
+  assert.equal(frameVersionOf(loika), 6, "the Loika at frame version 6 (art director 2026-11-03): every Loika has ears, their length heritable; version 5 carried the crown's size, leaf count and form, version 4 was the fine-tuned Loika, on catalogue 10 as every frame");
+  assert.equal(loika.counts.traits, 7, "seven traits: the starter tier counts traits");
+  assert.equal(loika.counts.open, 11, "Colour, the marking switch and layout, Crown (the switch and its size, leaf count and form), Ears (the length), Eyes, Drive, Efficiency");
   assert.deepEqual(loika.loci.find((l) => l.id === "appearance.marking-switch").legacy, ["off"], "plain stays legal for a version-3 line");
   const s03 = frameOf("S03");
   assert.ok(s03.chapters.some((c) => c.id === "glow" && c.traits.every((t) => !t.shapeable)), "the glow is a doing");
@@ -308,9 +309,9 @@ test("C2: a trait is firm only when every locus of it is certain; a firm lead wi
   const t = forecast(f, a, b).traits.find((x) => x.trait === "markings");
   assert.equal(t.locus, "appearance.marking-switch", "the lead is the switch, held off/off by both parents");
   assert.equal(t.firm, false, "the sleeping layout differs between the parents: the child's is not known without a read");
-  // a trait of switch loci only, the same equal pair in both parents at every locus, is firm
+  // the Loika's Crown carries a crown size that blends (frame version 5), so even with the switch on/on in both parents it is not firm
   const crown = frameOf("S01"), cb = typeSpecimen(crown), c1 = { ...cb, loci: { ...cb.loci, "anatomy.crown-presence": ["on", "on"] } }, c2 = { ...cb, loci: { ...cb.loci, "anatomy.crown-presence": ["on", "on"] } };
-  assert.equal(forecast(crown, c1, c2).traits.find((x) => x.trait === "crown").firm, true);
+  assert.equal(forecast(crown, c1, c2).traits.find((x) => x.trait === "crown").firm, false);
   // a sleeping locus that blends is never certain, so a trait carrying one is never firm
   const same = { ...a, loci: { ...a.loci } };
   assert.equal(forecast(f, a, same).traits.find((x) => x.trait === "markings").firm, false);

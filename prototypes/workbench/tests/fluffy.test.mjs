@@ -78,7 +78,7 @@ test("change 3: the new records are branch records of C18 and C19 (the hand's si
   for (const id of ["anatomy.tail-curl-presence", "growth.tail-curl-turn", "growth.tail-rise"]) assert.deepEqual(scopeOf(id), ["branch", "C19"], id);
   for (const id of ["anatomy.fur-skirt-presence", "growth.fur-skirt-drop", "growth.fur-skirt-flare", "anatomy.brow-tuft-presence", "growth.brow-tuft-length"]) assert.deepEqual(scopeOf(id), ["branch", "C18"], id);
   assert.equal(LOCI.get("growth.hand-size-ratio").owner, "arms");
-  assert.deepEqual(VALIDATED.slice(-NEW.length).map((l) => l.id), NEW, "the new records are the last nine, appended");
+  assert.deepEqual(VALIDATED.filter((l) => !(l.sinceFrame > 6)).slice(-NEW.length).map((l) => l.id), NEW, "the new records are the last nine of the frame-6 catalogue, appended (pin 11 appends its own after them)");
   // a generated species of another clan, even at frame version 6, carries none of them and lists them as absent branch loci
   const spec = { ...specOf(SPECIES.find((s) => s.id === "S04")), frameVersion: 6, features: { ...specOf(SPECIES.find((s) => s.id === "S04")).features, "anatomy.tail-curl-presence": "on", "anatomy.fur-skirt-presence": "on", "anatomy.brow-tuft-presence": "on" } };
   const other = buildFrame(spec, { samples: 5 });
@@ -217,9 +217,9 @@ test("backward compatibility: no old frame lists or carries a new record, the re
   assert.equal(NEW.length, 9);
   assert.ok(NEW.every((id) => LOCI.get(id).sinceFrame === 6));
   for (const f of frames.filter((x) => Number(x.species.id.slice(1)) <= 16)) {
-    assert.ok(frameVersionOf(f) < 6);
+    assert.ok(frameVersionOf(f) < 6 || f.species.id === "S01");   // the Loika is the one older species at version 6 (the ears, 2026-11-03): it carries ear loci of the catalogue pin 10, not the fluffy records
     assert.ok(!f.loci.some((l) => NEW.includes(l.id)), `${f.species.id} carries no new locus`);
-    assert.ok(!f.absent.some((a) => NEW.includes(a.id)), `${f.species.id} lists no new absent line`);
+    if (f.species.id !== "S01") assert.ok(!f.absent.some((a) => NEW.includes(a.id)), `${f.species.id} lists no new absent line`);   // the Loika at version 6 sees them, so it lists them absent as the fluffy three do
   }
   for (const id of ["S17", "S18", "S19"]) { assert.equal(frameVersionOf(frameOf(id)), 6); assert.equal(frameOf(id).catalogue.version, 10); }
   assert.equal(LOCI.get("anatomy.tail-tip-bulb").clan, "C03", "the C03 record is exactly as it was");

@@ -28,7 +28,7 @@ const timed = (name, p) => { console.log(`# ${name}: rendered in ${p.ms.toFixed(
 
 // ---- geometry, all 16 species ----
 const SFORM = { S01: 0.94, S02: 0.94, S07: 0.94, S11: 0.94, S03: 0.871, S04: 0.878, S05: 0.884, S06: 0.876, S08: 0.887, S09: 0.879, S10: 0.803, S12: 0.799, S13: 0.807, S14: 0.789, S15: 0.851, S16: 0.851 };
-const TIER = { S01: ["L", 1], S04: ["L", 1], S05: ["L", 2], S06: ["L", 2], S12: ["L", 2], S14: ["L", 2], S02: ["S", 2], S08: ["S", 2], S10: ["S", 2], S13: ["S", 2], S07: ["S", 3], S11: ["S", 3], S15: ["S", 3], S16: ["S", 3], S03: ["S", 4], S09: ["S", 4] };
+const TIER = { S01: ["L", 2], S04: ["L", 1], S05: ["L", 2], S06: ["L", 2], S12: ["L", 2], S14: ["L", 2], S02: ["S", 2], S08: ["S", 2], S10: ["S", 2], S13: ["S", 2], S07: ["S", 3], S11: ["S", 3], S15: ["S", 3], S16: ["S", 3], S03: ["S", 4], S09: ["S", 4] };
 const ROUTES = { 4: "LLLZ", 5: "ILLII", 6: "ILLIII", 7: "ILLIZZI", 8: "LLLIIIZZ" };
 
 test("S_form, a fact of the species, is min(0.94, floor(1000 * 152 / N) / 1000) and comes out as the ruled values", () => {
@@ -95,21 +95,24 @@ test("plates are bezel pixels: exactly libPanel, libHead and libWell (b 25) wher
     for (let i = 6; i < w - 6; i++) { assert.deepEqual(at(p, x + i, y + 26), tok("libWell"), "the rule row"); assert.deepEqual(at(p, x + i, y), tok("libPanel"), "row 0 is the panel"); }
     assert.deepEqual(at(p, x + 150, y + 10), tok("libHead")); assert.deepEqual(at(p, x + 150, y + 40), tok("libPanel")); }
 });
-test("the Loika at mid: tier L, its 20 cells exactly at x 252-663, y 502-518; the colours band named; the layout facts in the picture's coordinates", () => {
+test("the Loika at mid: tier L, its first 20 cells exactly at x 252-663, y 502-518 and the ears' three below them at x 252-308, y 522-538; the colours band named; the layout facts in the picture's coordinates", () => {
   const p = loikaMid(), f = p.facts, cellsX = [];
   assert.deepEqual([f.tier, f.sForm, f.colours], ["L", 0.94, "named"]);
   assert.deepEqual(f.plates.coat, [0, 10, 156, 70]);
   const bg = at(p, 245 - SX, 510 - SY);
   for (let x = 248; x < 672; x++) if (at(p, x - SX, 510 - SY).join() !== bg.join()) cellsX.push(x);
   assert.equal(Math.min(...cellsX), 252); assert.equal(Math.max(...cellsX), 663);
-  assert.notDeepEqual(at(p, 252 - SX, 502 - SY), bg); assert.notDeepEqual(at(p, 252 - SX, 518 - SY), bg); assert.deepEqual(at(p, 252 - SX, 519 - SY), bg); assert.deepEqual(at(p, 252 - SX, 522 - SY), bg, "nothing at (252,522) before the plain is found");
+  assert.notDeepEqual(at(p, 252 - SX, 502 - SY), bg); assert.notDeepEqual(at(p, 252 - SX, 518 - SY), bg); assert.deepEqual(at(p, 252 - SX, 519 - SY), bg);
+  assert.deepEqual(L.tierOf(F.S01).rowsUsed, 2, "23 slot looks: the Ears (frame version 6) are the second row's three cells");
+  const row2 = []; for (let x = 248; x < 672; x++) if (at(p, x - SX, 530 - SY).join() !== bg.join()) row2.push(x);
+  assert.equal(Math.min(...row2), 252); assert.equal(Math.max(...row2), 308); assert.deepEqual(at(p, 315 - SX, 522 - SY), bg, "nothing at (315,522) before the plain is found");
 });
-test("the Loika's legacy 'plain', once found, is its own trailing group at (252,522), 17 x 17; the 20 slot cells do not move; its glint centre (269,522) and the Coat's lit outline", () => {
+test("the Loika's legacy 'plain', once found, is its own trailing group at (315,522), 17 x 17; the 23 slot cells do not move; its glint centre (332,522) and the Coat's lit outline", () => {
   const f = { ...mid.S01, markings: [...(mid.S01.markings || []), "plain"] }, inp = found("S01", f, { fresh: ["markings|plain"] }), a = loikaMid(), b = pic("Loika plain", () => L.renderSheet(F.S01, inp, { lit: "coat" }));
   const bg = at(a, 245 - SX, 510 - SY);
-  assert.notDeepEqual(at(b, 252 - SX, 522 - SY), bg); assert.notDeepEqual(at(b, 268 - SX, 538 - SY), bg); assert.deepEqual(at(b, 273 - SX, 530 - SY), bg); assert.deepEqual(at(b, 270 - SX, 530 - SY), tok("bone"));
-  assert.deepEqual(at(b, 250 - SX, 530 - SY), tok("bone"), "the lit outline, 1 px out");
-  assert.deepEqual(L.sheetFacts(F.S01, inp).glints, [[269 - SX, 522 - SY]]);
+  assert.notDeepEqual(at(b, 315 - SX, 522 - SY), bg); assert.notDeepEqual(at(b, 331 - SX, 538 - SY), bg); assert.deepEqual(at(b, 336 - SX, 530 - SY), bg); assert.deepEqual(at(b, 333 - SX, 530 - SY), tok("bone"));
+  assert.deepEqual(at(b, 313 - SX, 530 - SY), tok("bone"), "the lit outline, 1 px out");
+  assert.deepEqual(L.sheetFacts(F.S01, inp).glints, [[332 - SX, 522 - SY]]);
   assert.equal(L.tierOf(F.S01).id, "L");
 });
 test("the lit variant: the lit chapter's found cells outlined in bone 1 px out; the other plates' type at 30 % pre-mixed; the plates never dim", () => {

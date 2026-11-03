@@ -266,7 +266,7 @@ await frameShot("page-identified");
   await press("back", 400); const to = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create }));
   expect(to.screen === "pods" && to.view === "overview", "← from Create is the pod's overview: " + JSON.stringify(to));
   await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika.id); await page.waitForTimeout(300); }
-// 4. read Coat (the fixture spent the free read): 1 Data; then Face: 2 Data; a second Loika's Face costs 1
+// 4. read Coat (the fixture spent the free read): 1 Data; then Face: 3 Data (Crown, Ears, Eyes); a second Loika's Face costs 2
 await press("up", 300);
 l = await line(); expect(/Turn to Coat/.test(l.ok) && !l.price, "on the overview a tab opens its page, free: " + JSON.stringify(l));
 await press("confirm", 300); expect((await page.evaluate(() => window.__st.UI.pods.view)) === "chapter", "✓ on a tab opens the chapter page");
@@ -276,9 +276,9 @@ await press("confirm", 2400);
 s = await st(); expect(s.tray.find((p) => p.id === loika.id).read.includes("coat") && s.d === d0 - 2, "Coat read for 2 Data");
 expect(s.tray.find((p) => p.id === loika.id).first !== undefined, "the first-shown looks are saved on the pod at read time");
 await press("right", 300);
-l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 2", "Face costs 2 Data: " + JSON.stringify(l));
+l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 3", "Face costs 3 Data: " + JSON.stringify(l));
 await press("confirm", 2400);
-s = await st(); expect(s.d === d0 - 4, "Face read for 2 Data");
+s = await st(); expect(s.d === d0 - 5, "Face read for 3 Data");
 await frameShot("page-read");
 // the art layer is on the palette exactly (pass 2 of the face's test mode); the type is the face's own
 { const r = await page.evaluate(() => window.__st.snapshot()); expect(r.pass1 === 0 && r.pass2 === 0, "chrome and art read 0 off-palette pixels: " + JSON.stringify([r.pass1, r.pass2])); }
@@ -294,11 +294,11 @@ await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika.id); await page
   for (let y = 0; y < L[3]; y++) for (let x = 0; x < L[2]; x++) for (let k = 0; k < 4; k++) data[(y * L[2] + x) * 4 + k] = cap.data[((L[1] + y) * 1024 + L[0] + x) * 4 + k];
   const onScreen = decode({ width: L[2], height: L[3], data });
   expect(onScreen.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, onScreen.stamps[0].genome), "the stamp on its 120 label, as the face drew it, decodes to the genome"); }
-// the second Loika: identify (◆ 1), its Face costs 1 (half of two, rounded up)
+// the second Loika: identify (◆ 1), its Face costs 2 (half of three, rounded up)
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id); await page.waitForTimeout(300);
 await press("confirm", 2200);
 await page.evaluate((id) => window.__st.podsGo(id, "rail.1"), loika2.id); await page.waitForTimeout(300);   // to its Face on the page
-l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 1", "a second Loika's Face costs 1: the lower number, no word, on the bottom line: " + JSON.stringify(l));
+l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 2", "a second Loika's Face costs 2: the lower number, no word, on the bottom line: " + JSON.stringify(l));
 await press("confirm", 2400);
 // 5. Compare: from the second Loika's pod, → to its kin, ✓
 s = await st();
@@ -560,7 +560,7 @@ await page.evaluate((id) => window.__st.openCross(id), dot.id); await page.waitF
 expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "the Cross screen, reached through the test hook (openCross), not a press (not built)");
 await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(300);
 const fc = await page.evaluate(([a, b]) => window.__st.forecastOf(a, b), [dot.id, adult3.id]);
-expect(fc.traits.filter((t) => t.kind === "switch").length === 3 && fc.traits.filter((t) => t.kind === "blend").length === 3, "four seeds for colour, markings and crown, a range for eye rings, drive and efficiency");
+expect(fc.traits.filter((t) => t.kind === "switch").length === 3 && fc.traits.filter((t) => t.kind === "blend").length === 4, "four seeds for colour, markings and crown, a range for eye rings, ears, drive and efficiency");
 expect(fc.traits.filter((t) => t.kind === "switch").every((t) => t.seeds.length === 4), "four seeds each");
 { await press("research", 300); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, cross: window.__st.UI.cross }));
   expect(at.screen === "pods" && at.cross === null, "a room key on Cross drops the unpaid choices: " + JSON.stringify(at));

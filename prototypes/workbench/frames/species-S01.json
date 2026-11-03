@@ -1,11 +1,12 @@
 {
+ "frameVersion": 6,
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S01",
   "name": "Loika",
   "plural": "Loika",
   "order": 1,
-  "summary": "The starter: Pip as in the approved art, fine-tuned (owner, 2026-10-17 13:15: \"yes, finetune loikas. / also coat marks can be different between individuals\"). Frame version 4: a three-pigment Colour, and every new Loika marked in stripes, patches or both; a plain Loika only from a version-3 line."
+  "summary": "The starter: Pip as in the approved art, fine-tuned (owner, 2026-10-17 13:15: \"yes, finetune loikas. / also coat marks can be different between individuals\"). Frame version 4: a three-pigment Colour, and every new Loika marked in stripes, patches or both; a plain Loika only from a version-3 line. Frame version 5 (owner, 2026-11-01 14:26 and the refinement after it): every Loika carries the crown's size, leaf count and form, whether or not it shows a crown; they sleep when the crown switch is off and are still handed down. Frame version 6 (art director, 2026-11-03): every Loika has ears, round, upright and set on the side of the head, their length heritable (small, short or larger), their width following the length."
  },
  "taxonomy": {
   "code": "S01",
@@ -86,7 +87,8 @@
    "anatomy.exterior-eye-presence": "on",
    "anatomy.muzzle-presence": "on",
    "anatomy.crown-presence": "on",
-   "appearance.belly-field": "on"
+   "appearance.belly-field": "on",
+   "anatomy.auricular-presence": "on"
   },
   "finish": {
    "anatomy.crown-form": "leaf",
@@ -172,11 +174,29 @@
      "id": "crown",
      "name": "Crown",
      "loci": [
-      "anatomy.crown-presence"
+      "anatomy.crown-presence",
+      "growth.crown-height-ratio",
+      "growth.crest-leaf-count",
+      "anatomy.crown-form"
      ],
      "looks": [
       "bare head",
       "leaf crest"
+     ],
+     "nature": "look",
+     "shapeable": true,
+     "verdict": null
+    },
+    {
+     "id": "ears",
+     "name": "Ears",
+     "loci": [
+      "growth.auricular-length-ratio"
+     ],
+     "looks": [
+      "small ears",
+      "between",
+      "larger ears"
      ],
      "nature": "look",
      "shapeable": true,
@@ -701,21 +721,25 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: crown.form",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
+   "kind": "sleeping",
+   "nature": "look",
+   "chapter": "face",
+   "trait": "crown",
+   "shapeable": true,
+   "alleles": [
     "leaf",
-    "leaf"
+    "pointed"
    ],
    "looks": [
-    "leaf"
+    "leaf",
+    "pointed"
    ],
-   "guard": "rig: crown.form",
-   "nature": "look",
-   "changedBy": "species"
+   "guard": "asleep in any individual whose anatomy.crown-presence is off; drawn when it is on",
+   "changedBy": "player",
+   "typical": [
+    "leaf",
+    "leaf"
+   ]
   },
   {
    "id": "growth.core-half-length",
@@ -1080,21 +1104,26 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: crown.heightOverHeadRz",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "high",
+   "kind": "sleeping",
+   "nature": "look",
+   "chapter": "face",
+   "trait": "crown",
+   "shapeable": true,
+   "alleles": [
+    "low",
     "high"
    ],
    "looks": [
+    "low",
+    "between low and high",
     "high"
    ],
-   "guard": "rig: crown.heightOverHeadRz",
-   "nature": "look",
-   "changedBy": "species"
+   "guard": "asleep in any individual whose anatomy.crown-presence is off; drawn when it is on",
+   "changedBy": "player",
+   "typical": [
+    "high",
+    "high"
+   ]
   },
   {
    "id": "anatomy.region-cross-exponent",
@@ -1163,6 +1192,80 @@
    "changedBy": "species"
   },
   {
+   "id": "anatomy.auricular-presence",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": true,
+   "consumer": "rig: ears.enabled",
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "on",
+    "on"
+   ],
+   "looks": [
+    "on"
+   ],
+   "guard": "rig: ears.enabled",
+   "nature": "look",
+   "changedBy": "species"
+  },
+  {
+   "id": "anatomy.auricular-form",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: ears.form",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "rounded",
+    "rounded"
+   ],
+   "looks": [
+    "rounded"
+   ],
+   "guard": "rig: ears.form",
+   "nature": "look",
+   "changedBy": "species"
+  },
+  {
+   "id": "growth.auricular-length-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: ears.lengthOverHeadRz",
+   "kind": "heritable-look",
+   "nature": "look",
+   "chapter": "face",
+   "trait": "ears",
+   "shapeable": true,
+   "alleles": [
+    "small",
+    "short",
+    "medium"
+   ],
+   "looks": [
+    "small",
+    "between small and short",
+    "between small and medium",
+    "between short and medium",
+    "medium"
+   ],
+   "guard": "rig: ears.lengthOverHeadRz",
+   "changedBy": "player",
+   "typical": [
+    "short",
+    "short"
+   ]
+  },
+  {
    "id": "cognition.exploration-tendency",
    "family": "cognition-tendencies",
    "scope": "trunk",
@@ -1204,6 +1307,72 @@
    ],
    "guard": "rig: innate.arousalThreshold",
    "nature": "doing",
+   "changedBy": "species"
+  },
+  {
+   "id": "anatomy.ear-tilt",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: ears upright or drooping",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "upright",
+    "upright"
+   ],
+   "looks": [
+    "upright"
+   ],
+   "guard": "rig: ears upright or drooping",
+   "nature": "look",
+   "changedBy": "species"
+  },
+  {
+   "id": "growth.auricular-set-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: the ear root's lateral offset over the head's half width (side or crown)",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "side",
+    "side"
+   ],
+   "looks": [
+    "side"
+   ],
+   "guard": "rig: the ear root's lateral offset over the head's half width (side or crown)",
+   "nature": "look",
+   "changedBy": "species"
+  },
+  {
+   "id": "growth.auricular-width-ratio",
+   "family": "structure",
+   "scope": "trunk",
+   "switch": false,
+   "consumer": "rig: ear width over ear length",
+   "kind": "locked",
+   "lockReason": "fixed",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "broad",
+    "broad"
+   ],
+   "looks": [
+    "broad"
+   ],
+   "guard": "rig: ear width over ear length",
+   "nature": "look",
    "changedBy": "species"
   },
   {
@@ -1302,21 +1471,25 @@
    "clan": "C01",
    "switch": false,
    "consumer": "rig: two or three crest leaves",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "three",
+   "kind": "sleeping",
+   "nature": "look",
+   "chapter": "face",
+   "trait": "crown",
+   "shapeable": true,
+   "alleles": [
+    "two",
     "three"
    ],
    "looks": [
+    "2",
     "3"
    ],
-   "guard": "rig: two or three crest leaves",
-   "nature": "look",
-   "changedBy": "species"
+   "guard": "asleep in any individual whose anatomy.crown-presence is off; drawn when it is on",
+   "changedBy": "player",
+   "typical": [
+    "three",
+    "three"
+   ]
   },
   {
    "id": "growth.belly-field-extent",
@@ -1531,18 +1704,6 @@
    "why": "absent: no fur field"
   },
   {
-   "id": "anatomy.auricular-presence",
-   "why": "absent: the plan and clan never have this part"
-  },
-  {
-   "id": "anatomy.auricular-form",
-   "why": "absent: no head-owned ears"
-  },
-  {
-   "id": "growth.auricular-length-ratio",
-   "why": "absent: no head-owned ears"
-  },
-  {
    "id": "anatomy.axial-tail-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -1579,18 +1740,6 @@
    "why": "absent: no appearance.tail-rings on"
   },
   {
-   "id": "anatomy.ear-tilt",
-   "why": "absent: no head-owned ears"
-  },
-  {
-   "id": "growth.auricular-set-ratio",
-   "why": "absent: no head-owned ears"
-  },
-  {
-   "id": "growth.auricular-width-ratio",
-   "why": "absent: no head-owned ears"
-  },
-  {
    "id": "anatomy.antenna-presence",
    "why": "absent: the plan and clan never have this part"
   },
@@ -1609,6 +1758,10 @@
   {
    "id": "appearance.flap-translucency",
    "why": "absent: no thin-surface owner"
+  },
+  {
+   "id": "growth.hand-size-ratio",
+   "why": "absent: no free front pair (hands)"
   },
   {
    "id": "anatomy.horn-presence",
@@ -1725,33 +1878,65 @@
   {
    "id": "appearance.cap-spots",
    "why": "absent: a C02 branch locus"
+  },
+  {
+   "id": "anatomy.tail-curl-presence",
+   "why": "absent: a C19 branch locus"
+  },
+  {
+   "id": "growth.tail-curl-turn",
+   "why": "absent: a C19 branch locus"
+  },
+  {
+   "id": "growth.tail-rise",
+   "why": "absent: a C19 branch locus"
+  },
+  {
+   "id": "anatomy.fur-skirt-presence",
+   "why": "absent: a C18 branch locus"
+  },
+  {
+   "id": "growth.fur-skirt-drop",
+   "why": "absent: a C18 branch locus"
+  },
+  {
+   "id": "growth.fur-skirt-flare",
+   "why": "absent: a C18 branch locus"
+  },
+  {
+   "id": "anatomy.brow-tuft-presence",
+   "why": "absent: a C18 branch locus"
+  },
+  {
+   "id": "growth.brow-tuft-length",
+   "why": "absent: a C18 branch locus"
   }
  ],
  "counts": {
-  "carried": 50,
-  "trunk": 46,
+  "carried": 56,
+  "trunk": 52,
   "branch": 4,
-  "absent": 90,
-  "locked": 43,
+  "absent": 93,
+  "locked": 45,
   "lockedBy": {
-   "switch": 3,
-   "fixed": 40
+   "switch": 4,
+   "fixed": 41
   },
-  "heritableLook": 4,
+  "heritableLook": 5,
   "heritableDoing": 2,
   "selfChanging": 0,
-  "sleeping": 1,
+  "sleeping": 4,
   "sealed": 0,
-  "open": 7,
-  "traits": 6,
+  "open": 11,
+  "traits": 7,
   "byChapter": {
    "Coat": {
     "loci": 3,
     "traits": 2
    },
    "Face": {
-    "loci": 2,
-    "traits": 2
+    "loci": 6,
+    "traits": 3
    },
    "Movement": {
     "loci": 1,
@@ -1762,8 +1947,8 @@
     "traits": 1
    }
   },
-  "fieldGuideLooks": 22,
-  "stampBitsPerCopy": 11
+  "fieldGuideLooks": 34,
+  "stampBitsPerCopy": 18
  },
  "notYet": {
   "domains": [
@@ -1794,7 +1979,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S01",
-   "frameVersion": 4,
+   "frameVersion": 6,
    "loci": {
     "structure.attachment-position": [
      "high",
@@ -1960,6 +2145,18 @@
      "rounded",
      "rounded"
     ],
+    "anatomy.auricular-presence": [
+     "on",
+     "on"
+    ],
+    "anatomy.auricular-form": [
+     "rounded",
+     "rounded"
+    ],
+    "growth.auricular-length-ratio": [
+     "short",
+     "short"
+    ],
     "cognition.exploration-tendency": [
      "seeking",
      "seeking"
@@ -1967,6 +2164,18 @@
     "cognition.arousal-threshold": [
      "low",
      "low"
+    ],
+    "anatomy.ear-tilt": [
+     "upright",
+     "upright"
+    ],
+    "growth.auricular-set-ratio": [
+     "side",
+     "side"
+    ],
+    "growth.auricular-width-ratio": [
+     "broad",
+     "broad"
     ],
     "appearance.sheen": [
      "glossy",
@@ -2002,7 +2211,7 @@
    }
   },
   "rule": "every open part switch on; an open locus at the species' typical copies where the frame names them (its proportions by kind), else numeric loci at the middle of their pool and categorical loci at the first allele",
-  "brief": "Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, 4 legs; skin, bands; plantigrade, fused head.",
+  "brief": "Loika: 1 body region (B1), a head, a snout, 2 eyes, a 3-leaf crest, two ears, 4 legs; skin, bands; plantigrade, fused head.",
   "bounds": {
    "min": [
     -1.113871769379756,
@@ -2016,16 +2225,16 @@
    ]
   },
   "counts": {
-   "nodes": 27,
-   "edges": 26,
-   "vertices": 1201
+   "nodes": 29,
+   "edges": 28,
+   "vertices": 1233
   }
  },
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 195,
-  "crossedBuilt": 195,
+  "crossed": 191,
+  "crossedBuilt": 191,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },
@@ -2045,6 +2254,23 @@
   "anatomy.crown-presence": [
    "off",
    "on"
+  ],
+  "growth.crown-height-ratio": [
+   "low",
+   "high"
+  ],
+  "growth.crest-leaf-count": [
+   "two",
+   "three"
+  ],
+  "anatomy.crown-form": [
+   "leaf",
+   "pointed"
+  ],
+  "growth.auricular-length-ratio": [
+   "small",
+   "short",
+   "medium"
   ],
   "growth.exterior-eye-size-ratio": [
    "large",
@@ -2116,10 +2342,6 @@
    "on",
    "on"
   ],
-  "anatomy.crown-form": [
-   "leaf",
-   "leaf"
-  ],
   "growth.core-half-length": [
    "medium",
    "medium"
@@ -2180,10 +2402,6 @@
    "wide",
    "wide"
   ],
-  "growth.crown-height-ratio": [
-   "high",
-   "high"
-  ],
   "anatomy.region-cross-exponent": [
    "round",
    "round"
@@ -2196,6 +2414,14 @@
    "rounded",
    "rounded"
   ],
+  "anatomy.auricular-presence": [
+   "on",
+   "on"
+  ],
+  "anatomy.auricular-form": [
+   "rounded",
+   "rounded"
+  ],
   "cognition.exploration-tendency": [
    "seeking",
    "seeking"
@@ -2203,6 +2429,18 @@
   "cognition.arousal-threshold": [
    "low",
    "low"
+  ],
+  "anatomy.ear-tilt": [
+   "upright",
+   "upright"
+  ],
+  "growth.auricular-set-ratio": [
+   "side",
+   "side"
+  ],
+  "growth.auricular-width-ratio": [
+   "broad",
+   "broad"
   ],
   "appearance.sheen": [
    "glossy",
@@ -2219,10 +2457,6 @@
   "appearance.belly-field": [
    "on",
    "on"
-  ],
-  "growth.crest-leaf-count": [
-   "three",
-   "three"
   ],
   "growth.belly-field-extent": [
    "high",

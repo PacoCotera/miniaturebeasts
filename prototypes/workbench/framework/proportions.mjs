@@ -101,10 +101,11 @@ export function rigTargets(k) {
 }
 
 // The copy pair of a copy-mean locus closest to a target value: homozygous or a mixed pair.
-export function nearestPair(id, target) {
+// An allele appended later (`sinceFrame`) is not one a frame of an earlier version can name, so it is left out of that frame's choice. No version named: the registry's 4.
+export function nearestPair(id, target, frameVersion = 4) {
   const locus = LOCI.get(id);
   if (!locus) throw new Error(`no locus ${id}`);
-  const alleles = locus.alleles.filter((a) => typeof a.value === "number");
+  const alleles = locus.alleles.filter((a) => typeof a.value === "number" && !(a.sinceFrame > frameVersion));
   let best = null, bestD = Infinity;
   for (let i = 0; i < alleles.length; i++) for (let j = i; j < alleles.length; j++) {
     const value = (alleles[i].value + alleles[j].value) / 2, d = Math.abs(value - target);
@@ -114,8 +115,8 @@ export function nearestPair(id, target) {
 }
 
 // The locus copies a species' kind asks for: { locus: [copy, copy] }.
-export function proportionPairs(id) {
+export function proportionPairs(id, frameVersion = 4) {
   const k = KINDS[id];
   if (!k) return {};
-  return Object.fromEntries(Object.entries(rigTargets(k)).map(([locus, target]) => [locus, typeof target === "number" ? nearestPair(locus, target) : [target, target]]));
+  return Object.fromEntries(Object.entries(rigTargets(k)).map(([locus, target]) => [locus, typeof target === "number" ? nearestPair(locus, target, frameVersion) : [target, target]]));
 }
