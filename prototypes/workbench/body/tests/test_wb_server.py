@@ -250,7 +250,7 @@ class TestServer(unittest.TestCase):
             self.srv.submit("S20x", "variety", {}, None)
         with self.assertRaises(S.ApiError):
             self.srv.submit("S20x", "check", {"stage": "rig"}, None)
-        self.assertEqual([m["id"] for m in json.load(urllib.request.urlopen(os.environ["WB_URL"] + "/api/checks"))][:3], ["schema", "ranges", "joins"])
+        self.assertEqual([m["id"] for m in json.load(urllib.request.urlopen(os.environ["WB_URL"] + "/api/checks"))][:3], ["schema", "express", "ranges"])
 
 
 class TestKeys(unittest.TestCase):
