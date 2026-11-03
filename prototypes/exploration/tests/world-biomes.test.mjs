@@ -335,3 +335,40 @@ test("every species in every biome: a herd floor of 2 or more, creatures and bur
   const G = worldsOf("fells")[3], l4 = W.genLife(G, 3, W.ROSTER), l3 = W.genLife({ ...G, gen: 3 }, 3, W.ROSTER);
   assert.deepEqual(l4.cr.filter(w => w.sp === 0), l3.cr.filter(w => w.sp === 0), "Loika is not a Fells habitat species");
 });
+
+// ---- code gate additions: old saves, bounded re-rolls, reach and stairs ----
+test("an old save draws the same realm: generators 1 to 3 match their station-gate vectors on all 16 seeds (world, every place, life), and take no biome", () => {
+  const a1 = { gen: 1, hash: W.hash, L, genWorld: s => W.genWorld(s, 1), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells, roster: W.ROSTER, genLife: (G, s) => W.genLife(G, s, W.ROSTER) };
+  for (const [gen, a] of [[1, a1], [2, api(2)], [3, api(3)]]) for (const want of VECTORS.gens[String(gen)].seeds) assert.deepEqual(seedDigest(a, want.seed), want, `gen ${gen} seed ${want.seed}`);
+  for (const gen of [1, 2, 3]) for (const seed of [0, 7, 42]) {
+    const G = W.genWorld(seed, gen), H = W.genWorld(seed, gen, "fells");   // a biome asked of an older generator changes nothing
+    assert.ok(gen === 1 || G.gen === gen); assert.ok(!("biome" in G) && !("shade" in G), `gen ${gen} carries no biome field`);
+    assert.deepEqual(H.land, G.land); assert.deepEqual(H.edge, G.edge);
+  }
+});
+
+test("bounded re-rolls: 400 seeds a biome never throw, never exceed the 8 attempts plus the one fallback, and a fallback world still holds the walkable floor", () => {
+  for (const b of W.BIOMES) for (let i = 0; i < 400; i++) {
+    const seed = (i * 2654435761) % 4294967296, G = W.genWorld(seed, 4, b);
+    assert.ok(G.attempt >= 0 && G.attempt <= W.G2.TRIES, `${b} ${seed} attempt ${G.attempt}`);
+    assert.ok(G.comp.reduce((n, x) => n + x, 0) >= W.WALK_MIN - 5, `${b} ${seed} walkable`);
+  }
+  for (const seed of [34579798, 1654719049]) { const G = W.genWorld(seed, 4, "marsh"); assert.equal(G.attempt, W.G2.TRIES, "known marsh seeds that use the fallback"); assert.ok(G.comp.reduce((n, x) => n + x, 0) >= 250); }
+});
+
+test("every place of every biome is walkable: spawn, stair entries and features reachable, every ramp edge has a stair on both places", () => {
+  const { PW, PH } = W;
+  for (const b of W.BIOMES) for (let s = 0; s < 6; s++) {
+    const seed = s * 104729 + 3, G = W.genWorld(seed, 4, b), lays = new Map();
+    for (let c = 0; c < N; c++) if (G.comp[c]) {
+      const lay = W.genPlace(G, seed, String(c)); lays.set(c, lay); const r = lay.reach, at = p => r[p.y * PW + p.x];
+      assert.ok(at(lay.spawnPt), `${b} ${seed} ${c} spawn`);
+      for (const st of lay.stairs) assert.ok(at(st.entry), `${b} ${seed} ${c} stair ${st.dir}`);
+      for (const f of lay.feats) if (!"oemi".includes(f.kind)) assert.ok(at(f) || Object.values(W.DIRS).some(([dx, dy]) => f.x + dx >= 0 && f.y + dy >= 0 && f.x + dx < PW && f.y + dy < PH && r[(f.y + dy) * PW + f.x + dx]), `${b} ${seed} ${c} feature ${f.kind}`);
+    }
+    for (const c of lays.keys()) for (const [o, d, dir, back] of [[1, MW, "down", "up"], [0, 1, "right", "left"]]) {
+      if (G.edge[2 * c + o] !== EDGE.RAMP || !lays.has(c + d)) continue;
+      assert.ok(lays.get(c).stairs.some(t => t.dir === dir) && lays.get(c + d).stairs.some(t => t.dir === back), `${b} ${seed} ${c} ramp ${dir}`);
+    }
+  }
+});
