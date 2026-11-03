@@ -52,7 +52,10 @@ for (const f of frames) {
   if (old && JSON.stringify(old) !== JSON.stringify(f)) throw new Error(`frame ${keyOf(f)} (${f.id}) is already in the registry with different content: the registry is append-only, bump the frame version`);
 }
 const fresh = new Set(frames.map(keyOf));
-const all = [...carried.filter((f) => !fresh.has(keyOf(f))), ...frames];
+// Append-only means in place, too: a frame already in the snapshot keeps its position (it was checked above to be the same bytes), a frame the registry builds that the snapshot lacks is
+// appended after the last one, in registry order, and a carried frame the registry no longer builds stays where it was.
+const held = new Set(carried.map(keyOf));
+const all = [...carried, ...frames.filter((f) => !held.has(keyOf(f)))];
 const dup = all.map((f) => `${f.species}.${f.version}`).filter((k, i, a) => a.indexOf(k) !== i);
 if (dup.length) throw new Error(`frame keys collide: ${dup.join(", ")}`);
 const outKeys = new Set(all.map(keyOf));

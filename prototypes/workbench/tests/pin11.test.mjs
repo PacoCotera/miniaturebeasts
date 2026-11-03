@@ -183,12 +183,14 @@ test("the marking layout gains masked, points, spotted and capped after bands an
   assert.equal(resolveCopies(LOCI.get("appearance.marking-switch"), ["on", "off"]), false, "plain is the marking switch off");
 });
 
-// sha256 (first 16 hex) of each frame file as the registry held it at pin 10 (HEAD 6cecf8ed4), before any of the work above
+// sha256 (first 16 hex) of each frame file as the registry held it at pin 10 (HEAD 6cecf8ed4), before any of the work above. Two entries have moved since, on purpose:
+// species-S01.json and index.json, when the Loika went to frame version 5 (the crown's size, leaf count and form carried by every Loika; version 4 is held in the stamp registry, genome-stamp/tests/s01v5.test.mjs).
+// S02 to S19 are the pin 10 bytes.
 const PIN10_FRAME_FILES = {
-  "species-S01.json": "2864cee6f21d1582", "species-S02.json": "1a06670bcc1c309a", "species-S03.json": "06c763b399fd818b", "species-S04.json": "65cb5f7ea69abca1", "species-S05.json": "b392c8124f11410e",
+  "species-S01.json": "f14dc80a47a18b44", "species-S02.json": "1a06670bcc1c309a", "species-S03.json": "06c763b399fd818b", "species-S04.json": "65cb5f7ea69abca1", "species-S05.json": "b392c8124f11410e",
   "species-S06.json": "e86d02f267e29bf5", "species-S07.json": "dedcddf8f5a55c90", "species-S08.json": "0789557101c9f86a", "species-S09.json": "3832d5ab35ed4210", "species-S10.json": "572e8d2f43ea8125",
   "species-S11.json": "01ab6dc706482e4f", "species-S12.json": "2630e433df2550f6", "species-S13.json": "0c5870f74731d937", "species-S14.json": "f3816621c487aec0", "species-S15.json": "a06340efc6cc45d6",
-  "species-S16.json": "8f35a24c8e90ceff", "species-S17.json": "8393eaf96050a867", "species-S18.json": "0ba959d388ce0d70", "species-S19.json": "0242a2bc27b1f963", "index.json": "9d94b28a497baef4",
+  "species-S16.json": "8f35a24c8e90ceff", "species-S17.json": "8393eaf96050a867", "species-S18.json": "0ba959d388ce0d70", "species-S19.json": "0242a2bc27b1f963", "index.json": "0966f4f0cfd24aa3",
 };
 
 test("every S01 to S19 frame is byte for byte what pin 10 built, and none of them lists or sees a pin 11 record", () => {

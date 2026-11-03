@@ -1,11 +1,12 @@
 {
+ "frameVersion": 5,
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S01",
   "name": "Loika",
   "plural": "Loika",
   "order": 1,
-  "summary": "The starter: Pip as in the approved art, fine-tuned (owner, 2026-10-17 13:15: \"yes, finetune loikas. / also coat marks can be different between individuals\"). Frame version 4: a three-pigment Colour, and every new Loika marked in stripes, patches or both; a plain Loika only from a version-3 line."
+  "summary": "The starter: Pip as in the approved art, fine-tuned (owner, 2026-10-17 13:15: \"yes, finetune loikas. / also coat marks can be different between individuals\"). Frame version 4: a three-pigment Colour, and every new Loika marked in stripes, patches or both; a plain Loika only from a version-3 line. Frame version 5 (owner, 2026-11-01 14:26 and the refinement after it): every Loika carries the crown's size, leaf count and form, whether or not it shows a crown; they sleep when the crown switch is off and are still handed down."
  },
  "taxonomy": {
   "code": "S01",
@@ -172,7 +173,10 @@
      "id": "crown",
      "name": "Crown",
      "loci": [
-      "anatomy.crown-presence"
+      "anatomy.crown-presence",
+      "growth.crown-height-ratio",
+      "growth.crest-leaf-count",
+      "anatomy.crown-form"
      ],
      "looks": [
       "bare head",
@@ -701,21 +705,25 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: crown.form",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
+   "kind": "sleeping",
+   "nature": "look",
+   "chapter": "face",
+   "trait": "crown",
+   "shapeable": true,
+   "alleles": [
     "leaf",
-    "leaf"
+    "pointed"
    ],
    "looks": [
-    "leaf"
+    "leaf",
+    "pointed"
    ],
-   "guard": "rig: crown.form",
-   "nature": "look",
-   "changedBy": "species"
+   "guard": "asleep in any individual whose anatomy.crown-presence is off; drawn when it is on",
+   "changedBy": "player",
+   "typical": [
+    "leaf",
+    "leaf"
+   ]
   },
   {
    "id": "growth.core-half-length",
@@ -1080,21 +1088,26 @@
    "scope": "trunk",
    "switch": false,
    "consumer": "rig: crown.heightOverHeadRz",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "high",
+   "kind": "sleeping",
+   "nature": "look",
+   "chapter": "face",
+   "trait": "crown",
+   "shapeable": true,
+   "alleles": [
+    "low",
     "high"
    ],
    "looks": [
+    "low",
+    "between low and high",
     "high"
    ],
-   "guard": "rig: crown.heightOverHeadRz",
-   "nature": "look",
-   "changedBy": "species"
+   "guard": "asleep in any individual whose anatomy.crown-presence is off; drawn when it is on",
+   "changedBy": "player",
+   "typical": [
+    "high",
+    "high"
+   ]
   },
   {
    "id": "anatomy.region-cross-exponent",
@@ -1302,21 +1315,25 @@
    "clan": "C01",
    "switch": false,
    "consumer": "rig: two or three crest leaves",
-   "kind": "locked",
-   "lockReason": "fixed",
-   "chapter": null,
-   "trait": null,
-   "shapeable": false,
-   "copies": [
-    "three",
+   "kind": "sleeping",
+   "nature": "look",
+   "chapter": "face",
+   "trait": "crown",
+   "shapeable": true,
+   "alleles": [
+    "two",
     "three"
    ],
    "looks": [
+    "2",
     "3"
    ],
-   "guard": "rig: two or three crest leaves",
-   "nature": "look",
-   "changedBy": "species"
+   "guard": "asleep in any individual whose anatomy.crown-presence is off; drawn when it is on",
+   "changedBy": "player",
+   "typical": [
+    "three",
+    "three"
+   ]
   },
   {
    "id": "growth.belly-field-extent",
@@ -1732,17 +1749,17 @@
   "trunk": 46,
   "branch": 4,
   "absent": 90,
-  "locked": 43,
+  "locked": 40,
   "lockedBy": {
    "switch": 3,
-   "fixed": 40
+   "fixed": 37
   },
   "heritableLook": 4,
   "heritableDoing": 2,
   "selfChanging": 0,
-  "sleeping": 1,
+  "sleeping": 4,
   "sealed": 0,
-  "open": 7,
+  "open": 10,
   "traits": 6,
   "byChapter": {
    "Coat": {
@@ -1750,7 +1767,7 @@
     "traits": 2
    },
    "Face": {
-    "loci": 2,
+    "loci": 5,
     "traits": 2
    },
    "Movement": {
@@ -1762,8 +1779,8 @@
     "traits": 1
    }
   },
-  "fieldGuideLooks": 22,
-  "stampBitsPerCopy": 11
+  "fieldGuideLooks": 29,
+  "stampBitsPerCopy": 15
  },
  "notYet": {
   "domains": [
@@ -1794,7 +1811,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S01",
-   "frameVersion": 4,
+   "frameVersion": 5,
    "loci": {
     "structure.attachment-position": [
      "high",
@@ -2046,6 +2063,18 @@
    "off",
    "on"
   ],
+  "growth.crown-height-ratio": [
+   "low",
+   "high"
+  ],
+  "growth.crest-leaf-count": [
+   "two",
+   "three"
+  ],
+  "anatomy.crown-form": [
+   "leaf",
+   "pointed"
+  ],
   "growth.exterior-eye-size-ratio": [
    "large",
    "huge"
@@ -2116,10 +2145,6 @@
    "on",
    "on"
   ],
-  "anatomy.crown-form": [
-   "leaf",
-   "leaf"
-  ],
   "growth.core-half-length": [
    "medium",
    "medium"
@@ -2180,10 +2205,6 @@
    "wide",
    "wide"
   ],
-  "growth.crown-height-ratio": [
-   "high",
-   "high"
-  ],
   "anatomy.region-cross-exponent": [
    "round",
    "round"
@@ -2219,10 +2240,6 @@
   "appearance.belly-field": [
    "on",
    "on"
-  ],
-  "growth.crest-leaf-count": [
-   "three",
-   "three"
   ],
   "growth.belly-field-extent": [
    "high",

@@ -230,9 +230,9 @@ test("compare (l3.compare.compute): the heritable traits only (never a locked lo
   assert.ok(!ids(frameOf("S15")).includes("Basking") && !ids(frameOf("S16")).includes("Phase"), "never Basking or Phase");
   for (const id of ["S01", "S09", "S16"]) { const fr = frameOf(id); for (const { trait } of heritableTraits(fr)) for (const l of trait.loci) { const q = fr.loci.find((x) => x.id === l); assert.ok(q.kind !== "locked" && q.changedBy !== "self", `${id} ${trait.id}`); } }
   const { st, by, lin } = world(), fr = frameOf("S01"), c = compareLooks(fr, by.Dot, by.Moss);
-  assert.deepEqual(c.read, ["colour", "markings", "crown", "eye-rings", "drive", "efficiency"]); assert.deepEqual(c.same.map((t) => t.id), ["crown", "eye-rings", "drive"]); assert.deepEqual(c.lit, ["face", "movement"]);
+  assert.deepEqual(c.read, ["colour", "markings", "crown", "eye-rings", "drive", "efficiency"]); assert.deepEqual(c.same.map((t) => t.id), ["colour", "eye-rings", "drive", "efficiency"]); assert.deepEqual(c.lit, ["movement", "stamina"]);
   for (const t of c.same) assert.equal(traitState(fr, t, by.Dot.genome).shows, traitState(fr, t, by.Moss.genome).shows);
-  assert.equal(traitState(fr, fr.chapters[0].traits[0], by.Dot.genome).shows, "charcoal and ash"); assert.ok(!c.same.some((t) => t.id === "colour"), "charcoal and ash is not ash (Moss): whole looks");
+  assert.equal(traitState(fr, fr.chapters[0].traits[1], by.Dot.genome).shows, "patches"); assert.ok(!c.same.some((t) => t.id === "markings"), "patches is not stripes and patches (Moss): whole looks"); assert.ok(!c.same.some((t) => t.id === "crown"), "a bare head is not a leaf crest (Moss)");
   const h = compareLooks(fr, by.Hazel, by.Dot); assert.ok(!h.read.includes("colour") && !h.lit.includes("coat"), "Hazel's Coat is unread: not read on both, never lit");
   assert.deepEqual(compareLooks(fr, by.Nettle, by.Yarrow).same, [], "no read look in common");
   const B = stampBlocks(fr, by.Dot.genome), { cell, size } = stampSizing(fr, by.Dot.genome); assert.deepEqual(Object.keys(B), fr.chapters.map((ch) => ch.id)); for (const r of Object.values(B)) assert.ok(r[0] >= cell && r[1] >= cell && r[0] + r[2] <= size - cell && r[1] + r[3] <= size - cell && r.every((v) => v % cell === 0), "a block inside the stamp's quiet margin, on its cells");

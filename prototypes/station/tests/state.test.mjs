@@ -397,16 +397,15 @@ test("a starting mibi reads every open chapter, never a shut sealed one: its sta
   assert.ok(!back.read.includes(sealed.id));
 });
 
-test("a mibi keeps the frame version it was born with: v2- and v3-born genomes stamp S1v2 and S1v3 after the Loika moved to v4", () => {
-  // the Loika at frame version 4 (T-20261016-200): a genome sampled now is born at v4; an older one keeps its own version on its stamp
-  const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born4 = podGenome(fr, 4242), born3 = { ...born4, frameVersion: 3 }, born2 = { ...born4, frameVersion: 2 };
-  assert.equal(born4.frameVersion, 4, "a genome sampled now is born at the Loika's current frame version");
-  assert.equal(stampFrameOf(fr, born2).version, 2); assert.equal(stampFrameOf(fr, born3).version, 3); assert.equal(stampFrameOf(fr, born4).version, 4);
-  assert.equal(stampGenome(fr, born2, []).version, 2); assert.equal(stampGenome(fr, born3, []).version, 3); assert.equal(stampGenome(fr, born4, []).version, 4);
-  assert.match(S.stampCodeOf({ species: fr.species.id, genome: born2, read: [] }) ?? "", /^S1v2-/);
-  assert.match(S.stampCodeOf({ species: fr.species.id, genome: born3, read: [] }) ?? "", /^S1v3-/);
-  assert.match(S.stampCodeOf({ species: fr.species.id, genome: born4, read: [] }) ?? "", /^S1v4-/);
-  assert.equal(stampFrameOf(fr).version, 4, "with no genome the frame's own version stands");
+test("a mibi keeps the frame version it was born with: v2-, v3- and v4-born genomes stamp S1v2, S1v3 and S1v4 after the Loika moved to v5", () => {
+  // the Loika at frame version 5 (the crown's parameters carried): a genome sampled now is born at v5; an older one keeps its own version on its stamp
+  const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born5 = podGenome(fr, 4242), born4 = { ...born5, frameVersion: 4 }, born3 = { ...born5, frameVersion: 3 }, born2 = { ...born5, frameVersion: 2 };
+  assert.equal(born5.frameVersion, 5, "a genome sampled now is born at the Loika's current frame version");
+  for (const [g, v] of [[born2, 2], [born3, 3], [born4, 4], [born5, 5]]) {
+    assert.equal(stampFrameOf(fr, g).version, v); assert.equal(stampGenome(fr, g, []).version, v);
+    assert.match(S.stampCodeOf({ species: fr.species.id, genome: g, read: [] }) ?? "", new RegExp(`^S1v${v}-`));
+  }
+  assert.equal(stampFrameOf(fr).version, 5, "with no genome the frame's own version stands");
 });
 
 test("p.first: written once per trait at read time, only when the look is new; an older save loads with none and shows no mark", () => {

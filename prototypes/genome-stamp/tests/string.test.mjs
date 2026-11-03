@@ -91,9 +91,9 @@ test("the length claims of B.3: 23 to 26 characters for the Loika, 68 to 109 for
     const open = `G1-S${f.species}v${f.version}-`.length;
     return [open + Math.ceil(lo / 5) + 2, open + Math.ceil(hi / 5) + 2];
   };
-  assert.deepEqual(range(byName("S01")), [23, 26]); assert.deepEqual(range(byName("S03")), [68, 109]); assert.deepEqual(range(byName("S09")), [64, 101]); assert.deepEqual(range(tulikoFrame()), [81, 129]);
+  assert.deepEqual(range(frameFor(1, 4)), [23, 26]); assert.deepEqual(range(byName("S01")), [25, 30], "the Loika at version 5 carries the crown's size, leaf count and form: two to four characters more"); assert.deepEqual(range(byName("S03")), [68, 109]); assert.deepEqual(range(byName("S09")), [64, 101]); assert.deepEqual(range(tulikoFrame()), [81, 129]);
   // and the extremes are reached: all blends equal, none equal
-  for (const f of [byName("S01"), byName("S03"), byName("S09"), tulikoFrame()]) {
+  for (const f of [frameFor(1, 4), byName("S01"), byName("S03"), byName("S09"), tulikoFrame()]) {
     const [lo, hi] = range(f), eq = { copies: {} }, ne = { copies: {} };
     for (const l of f.heritable) { const p = l.pool ?? l.alleles; eq.copies[l.id] = [p[0], p[0]]; ne.copies[l.id] = l.values ? [l.alleles[0], l.alleles.at(-1)] : [p[0], p[0]]; }
     assert.equal(genomeString(f, eq).length, lo, `${f.id} shortest`); assert.equal(genomeString(f, ne).length, hi, `${f.id} longest`);
@@ -102,7 +102,7 @@ test("the length claims of B.3: 23 to 26 characters for the Loika, 68 to 109 for
 
 // --- every frame in the registry --------------------------------------------------------------------------------------------------------------------
 test("a round trip for every frame in the registry (the real ones at every version, the legacy frames and the two synthetic test frames): string, decode, the same copies, and the same string again", () => {
-  assert.equal(FRAMES_LIST.length, 16 * 3 + 1 + 3 + 3 + 2, "sixteen species at frame versions 2, 3 and 4, the Tuikis at 5, S17 to S19 at 6, the three legacy frames and the two synthetic frames");
+  assert.equal(FRAMES_LIST.length, 16 * 3 + 1 + 1 + 3 + 3 + 2, "sixteen species at frame versions 2, 3 and 4, the Tuikis and the Loika at 5, S17 to S19 at 6, the three legacy frames and the two synthetic frames");
   let n = 0;
   for (const f of FRAMES_LIST) {
     for (const seed of [1, 2, 3, 4, 5]) {
@@ -181,7 +181,7 @@ test("an unknown format is refused before anything is read: G2, G0 and G15, with
 
 test("an unknown frame version or species is refused with the studio's words: valid check, no frame", () => {
   const payload = payloadOf(LOIKA(), { copies: LOIKA_TYPE });
-  for (const [species, version] of [[1, 99], [1, 5], [1, 0], [999, 1], [20, 1], [3000, 1], [21, 1], [22, 1]]) {
+  for (const [species, version] of [[1, 99], [1, 6], [1, 0], [999, 1], [20, 1], [3000, 1], [21, 1], [22, 1]]) {
     const d = decodeGenomeString(assemble({ species, version, payload }));
     assert.equal(d.ok, false, `${species}.${version}`); assert.equal(d.stage, "species", `${species}.${version}`); assert.match(d.detail, /isn't in the studio yet/);
   }
