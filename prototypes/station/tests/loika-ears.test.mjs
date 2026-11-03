@@ -39,3 +39,12 @@ test("a version-5 and a version-6 Loika are not crossed: the Cross refuses befor
   assert.equal(S.forecastOf({}, a, b), null);
   assert.equal(versionRefusal(fr, a.genome, c.genome), null, "two of one version are not refused for it");
 });
+
+test("the Ears have their own colours and their own glyph in the Library: teal, aqua, mint, and a head with two filled ears that grow with the look", async () => {
+  const { pictogram, lookColours } = await import("../src/specimen.mjs");
+  assert.deepEqual(ears.looks.map((l, i) => lookColours({ ...ears, sid: "S01" }, l, i)[0]), ["#1f9d8f", "#45d8be", "#adf6e0"]);
+  const draws = ears.looks.map((look) => { const log = []; const ctx = new Proxy({}, { get: (_, k) => (k === "arc" ? (...a) => log.push(a) : k === "fill" ? () => log.push("fill") : () => {}), set: () => true }); pictogram(ctx, ears, look, 0, 0, 10, "#000", 1); return log; });
+  const radii = draws.map((l) => l.filter((a) => Array.isArray(a)).map((a) => a[2] / 10));
+  assert.deepEqual(radii.map((r) => r.slice(1).map((x) => +x.toFixed(2))), [[0.18, 0.18], [0.25, 0.25], [0.32, 0.32]], "two ears of 0.18, 0.25 and 0.32; the first arc is the head");
+  assert.ok(draws.every((l) => l.filter((a) => a === "fill").length === 2), "both ears filled");
+});

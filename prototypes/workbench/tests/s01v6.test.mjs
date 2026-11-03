@@ -145,3 +145,13 @@ test("a shed pod of a parent that lacks the frame's loci is refused in words; a 
   const kid = cross(loika, { id: 1, genome: a }, { id: 2, genome: b }, { rng: rng("k"), kinship: 0 }); assert.equal(kid.frameVersion, 6); assert.deepEqual(checkGenome(loika, kid), []);
   assert.ok(shedPod(loika, { id: 3, genome: a }, { rng: rng("s6") }), "a version-6 parent sheds");
 });
+
+test("from frame version 6 the near ear is rooted low and back, turned 35 degrees, and both ears have a body of 0.22 of their length; version 5 keeps the thin sheet at 45 degrees", () => {
+  const typ = typeSpecimen(loika), thick = (f) => { const n = buildIndividual(f, typ).scene.nodes.find((x) => x.id === "ear-L"), zs = n.mesh.vertices; const len = 1.3 * 0.6 * buildIndividual(f, typ).scene.nodes.find((x) => x.id.includes("head") && x.radii).radii[2]; return { n, len }; };
+  const six = thick(loika), five = thick({ ...loika, frameVersion: 5 });
+  const bbox = (n) => [0, 1, 2].map((k) => { const c = n.mesh.vertices.map((p) => p[k]); return Math.max(...c) - Math.min(...c); });
+  assert.notDeepEqual(bbox(six.n), bbox(five.n), "the ear's body and plane differ from version 5");
+  const sc6 = buildIndividual(loika, typ).scene, root = sc6.nodes.find((n) => n.id === "ear-R").attachment.position, hd = sc6.nodes.find((n) => n.id.includes("head") && n.radii);
+  assert.ok(root[0] > hd.center[0] + 0.2 * hd.radii[0], "rooted behind the head's middle");
+  assert.ok(root[2] - hd.center[2] < 0.5 * hd.radii[2], "and low on its side");
+});
