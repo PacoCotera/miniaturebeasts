@@ -305,6 +305,7 @@ const sw = { silent: false, quiet: false, fault: false };   // the developer dra
 const now = () => Date.now();
 const sensed = { companion: { state: "lifted", seats: 0, seq: 0, at: now() }, station: { state: "lifted", seats: 0, seq: 0, at: now() } };   // the cradles as this page senses them
 const svc = { up: null, snap: null, es: null, esWorld: null, retry: 0, timer: 0, heardAt: 0, stationWorld: null };   // up: null until the service answers or fails once
+let handedPub = null;   // the Companion's public key as last handed to the Station in `mb-dock`
 let comp = null, hold = null, heard = null, heardAt = 0, fault = false, inflight = 0, pressOwner = null, lastSeen = null, beat = false;
 const cradles = () => (svc.up && svc.snap && !fault ? svc.snap.cradles : sensed);
 const seatedNow = () => cradles().companion.state === "seated";
@@ -342,7 +343,7 @@ function cradleChanged(mine) {
   const c = cradles().companion, first = lastSeen === null, edge = first || c.state !== lastSeen.state || c.seats !== lastSeen.seats, seated = c.state === "seated";
   if (edge) {
     hold = hold && hold.seat === c.seats ? hold : null;
-    if (seated) askCompanion(c.seats);
+    if (seated) askCompanion(c.seats); else liftCompanion();
     if (!first) beat = true;
     if (mine === undefined && !pressed && !seatBusy) seatOff = seated ? 8 : 0;   // an external change: cut, nothing animates and the keys do not move
   }
@@ -354,14 +355,26 @@ function cradleChanged(mine) {
   lastSeen = { state: c.state, seats: c.seats };
   caddy = derive(); reconcile(); layout(); faceTick();
 }
+// The cradle is empty: the Companion is told, so it answers no more sleep requests (an unsigned lock lets go; a committed sleep it finishes on its own).
+function liftCompanion() { try { frames.companion.contentWindow.postMessage({ t: "mb-lift" }, location.origin); } catch { /* reloading: it boots lifted */ } }
+// The Station's sleep requests reach the Companion only while it is seated, and the Companion's answers go back to the Station (a signature is asked for only at the dock).
+// The page passes the words on and reads none of them; a lifted or faulted cradle answers the Station itself, so a request never waits on a Companion that is not there.
+function relaySleep(m) {
+  const toStation = (a) => { try { frames.station.contentWindow.postMessage({ t: "mb-sleep-ack", nonce: m.nonce, op: m.op, ...a }, location.origin); } catch { /* reloading */ } };
+  if (!["lock", "sign", "clear", "unlock"].includes(m.op)) { toStation({ ok: false, why: "bad request" }); return; }
+  if (!seatedNow() || fault || sw.silent) { toStation({ ok: false, why: sw.silent ? "silent" : "lifted" }); return; }
+  const { t, nonce, op, ...rest } = m;
+  try { frames.companion.contentWindow.postMessage({ t: "mb-sleep", nonce, op, ...rest }, location.origin); } catch { toStation({ ok: false, why: "lifted" }); }
+}
 function askCompanion(seat) { try { frames.companion.contentWindow.postMessage({ t: "mb-seat", seat }, location.origin); } catch { /* reloading: it answers when it tells the page who it is */ } }
 // The Station follows the cradle: docked while the Companion is seated, no fault, and its word for this seat is in; never while the Station is quiet.
 function reconcile() {
   if (sw.quiet || !heard || svc.up === null || inflight > now() || heard.pending) return;
   const c = cradles().companion, want = c.state === "seated" && !fault && !!hold && hold.seat === c.seats;
-  if (want === !!heard.docked && (!want || activeHere())) return;
-  inflight = now() + 1500;
-  try { frames.station.contentWindow.postMessage({ t: "mb-dock", want, keysElsewhere: (pressOwner ?? owner) !== "station", companion: comp ? { id: comp.id, name: comp.name } : null }, location.origin); } catch { inflight = 0; }
+  const pubStale = want && !!comp && !!comp.pub && comp.pub !== handedPub;   // the Companion's key came after the dock: the Station is told again
+  if (want === !!heard.docked && (!want || activeHere()) && !pubStale) return;
+  inflight = now() + 1500; handedPub = comp && comp.pub ? comp.pub : null;
+  try { frames.station.contentWindow.postMessage({ t: "mb-dock", want, keysElsewhere: (pressOwner ?? owner) !== "station", companion: comp ? { id: comp.id, name: comp.name, pub: comp.pub || null } : null }, location.origin); } catch { inflight = 0; }
 }
 dockCtl.addEventListener("click", () => { dockPress(); giveKeysBack(); });
 cradle.addEventListener("click", () => dockPress());
@@ -374,6 +387,11 @@ window.addEventListener("message", (e) => {
     if (lastSeen && lastSeen.state === "seated" && m.seat !== c.seats) askCompanion(c.seats);   // a frame that reloaded while seated is asked again
     caddy = derive(); reconcile(); layout(); faceTick(); return;
   }
+  if (e.source === frames.companion.contentWindow && m.t === "mb-sleep-ack") {   // the Companion's answer to a sleep request, on to the Station
+    try { frames.station.contentWindow.postMessage({ t: "mb-sleep-ack", nonce: m.nonce, op: m.op, ok: m.ok === true, why: m.why, sig: m.sig, parts: m.parts, wid: m.wid }, location.origin); } catch { /* reloading */ }
+    return;
+  }
+  if (e.source === frames.station.contentWindow && m.t === "mb-sleep") { relaySleep(m); return; }
   if (e.source !== frames.station.contentWindow || m.t !== "mb-caddy") return;
   if (sw.quiet) return;   // the Station quiet: its link is down, the page hears nothing from it
   heard = m; heardAt = now(); inflight = 0;

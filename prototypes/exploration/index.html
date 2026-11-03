@@ -257,6 +257,7 @@ import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, c
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById } from "./src/regions.mjs";
+import { makeSleeper } from "./src/sleeper.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -842,20 +843,20 @@ const tierOf = () => TIER[S.tier] || TIER[1];
 function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
 // A new world's fields, before its life is placed: newRealm starts from them, and load() fills from them what a save lacks.
 // They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk (v9) keeps each region's map in regions[].map.
-function worldFields(seed, gen) {
+function worldFields(seed, gen, wid) {
   return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
-    bay: [], hold: null, wid: 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
+    bay: [], hold: null, wid: wid || 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
     exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
 }
 // The world on S becomes a realm of one region, the Meadows (g1), mounted: the save of one map, read as the realm it is (migrate8, pure).
 function realmOf(flat) { const r = migrate8({ ...flat, v: 8 }, { now: Date.now() }); mount(r, 'g1'); return r; }
-function newRealm(seed, gen = NEW_GEN) {   // a new realm takes the newest generator (a test may ask for an older one)
+function newRealm(seed, gen = NEW_GEN, wid) {   // a new realm takes the newest generator (a test may ask for an older one); a realm that follows a sleep is given its wid
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
   G = genWorld(seed, gen);
-  S = worldFields(seed, gen);
+  S = worldFields(seed, gen, wid);
   const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
   S = realmOf(S);
   indexCreatures(); logEv('New world · seed ' + seed); save();
@@ -888,7 +889,7 @@ const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
 // The Station's part as last stored, if it belongs to this world.
 function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && (o.v === 8 || o.v === SAVE_V) && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
 function save() {
-  if (window.__mbResetting || RT.readOnly || RT.bootHold) return;   // a reset is reloading, the save is read-only, or the loaded save has not drawn yet: nothing may write it
+  if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
   if (fieldFrozen() && FX.shieldAtDock == null) FX.shieldAtDock = S.exp.shield;   // the Shield as docked, before the cradle mends it
@@ -3333,7 +3334,7 @@ function tween(o, tx, ty, dur) {
   o.x = o.fx + (o.tx - o.fx) * k; o.y = o.fy + (o.ty - o.fy) * k;
   o.rx = Math.round(o.x); o.ry = Math.round(o.y); return o;   // rx, ry: the whole-pixel position the camera and the map pawn read; x, y stay exact (a retarget starts from them, and the floored overlays take them)
 }
-const RT = { key: null, ts: 32, remap: REMAP, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
+const RT = { sleepLock: false, key: null, ts: 32, remap: REMAP, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
 const bgArt = () => art('bg', () => { const pb = new PB(64, 64); pb.rect(0, 0, 64, 64, C.night); for (let i = 0; i < 64; i += 8) for (let j = 0; j < 64; j += 8) if (((i + j) / 8) % 2 === 0) pb.set(i + 3, j + 3, C.slate); return pb; });
 function viewBg(col) {
   if (col != null) { R(0, VIEW_Y, SCR_W, VIEW_H, col); return; }
@@ -5339,16 +5340,25 @@ const EMBED = document.documentElement.classList.contains('embed');
 // the Caddy's seat with that word for the seat's number (the page's stand-in for the hold). The developer's "Companion silent" holds the answer back.
 const SHELL = EMBED && window.parent && window.parent !== window ? window.parent : null;
 let shellSeat = 0, shellSilent = false, shellSaid = '';
+// Putting a realm to sleep, the Companion's side (src/sleeper.mjs): its signing key (made once, at the first boot, kept in IndexedDB and never exported), its public key
+// in `mb-companion-<slot>` and in what it tells the shell, and the answers to the Station's `mb-sleep` requests. Nothing here is on a screen.
+let KEY_STORE = null;   // a test hands in a store for the key pairs here; the page uses IndexedDB
+const LS = { getItem: k => localStorage.getItem(k), setItem: (k, v) => localStorage.setItem(k, v), removeItem: k => localStorage.removeItem(k) };
+const SLEEP = makeSleeper({ store: LS, rt: RT, keyStore: () => KEY_STORE, companion: () => COMPANION, wid: () => S.wid, saveKey: () => SAVE_KEY, save,
+  newRealm: (seed, wid) => { newRealm(seed, NEW_GEN, wid); RT.mp = null; RT.key = null; mapCv = null; transition(); },
+  onPub: pub => { if (COMPANION.pub !== pub) { COMPANION = { ...COMPANION, pub }; tellShell(true); } } });
 function tellShell(force) {
   if (!SHELL || shellSilent) return;
-  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, wid: S && !RT.readOnly ? S.wid : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, seat: shellSeat };
+  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, pub: COMPANION.pub || null, wid: S && !RT.readOnly ? S.wid : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, seat: shellSeat };
   const k = JSON.stringify(m); if (!force && k === shellSaid) return; shellSaid = k;
   try { SHELL.postMessage(m, location.origin); } catch (e) { }
 }
 if (SHELL) {
   window.addEventListener('message', e => {
     if (e.origin !== location.origin || e.source !== SHELL) return; const m = e.data || {};
-    if (m.t === 'mb-seat' && !shellSilent) { shellSeat = m.seat | 0; tellShell(true); }
+    if (m.t === 'mb-seat' && !shellSilent) { shellSeat = m.seat | 0; SLEEP.seat(true); tellShell(true); }
+    else if (m.t === 'mb-lift') SLEEP.seat(false);   // the cradle is empty: no request is answered (and an unsigned lock lets go)
+    else if (m.t === 'mb-sleep' && !shellSilent) SLEEP.handle(m).then(a => { try { SHELL.postMessage({ t: 'mb-sleep-ack', nonce: m.nonce, op: m.op, ...a }, location.origin); } catch (e) { } });
     else if (m.t === 'mb-silent') { shellSilent = !!m.on; if (!shellSilent) tellShell(true); }
   });
   const beat = () => { tellShell(false); setTimeout(beat, 250); }; beat();
@@ -5541,7 +5551,9 @@ if (ld === true) { try { if (S.exp && S.exp.shield <= 0) endExpedition('break');
   if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; render(NOW / 1000); }
   catch (e) { console.error(e); readOnlyBroken(); } }
 else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';
+SLEEP.holdAtBoot();   // a sleep still pending keeps this page from writing
 RT.bootHold = false; save();
+if (!RT.readOnly) SLEEP.start().catch(() => { });   // the key at the first boot (and its pub), and a committed sleep finished
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
 try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(true); } catch (e) { }   // ?dev=1 opens the Observer, the page's developer panel
 fit();

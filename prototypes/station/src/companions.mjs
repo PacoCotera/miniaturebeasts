@@ -2,8 +2,11 @@
 //
 //   the Companion's id   made once per Companion, a stable random id, kept under `mb-companion-<slot>` as { id, name, slot, at } (the sandbox's second Companion is slot B)
 //   its save             the v8 save, unchanged in shape, under `mb-save-v8@<id>`; the save carries the id as its top-level `companionId` (the Companion's field)
-//   the Station's map    `mb-station-companions`: { v: 1, active, known: [{ id, name, at }] } in the Station's own storage; the active id is the last Companion docked,
-//                        and the Station (and the Caddy beside it) show that player's world until another Companion docks
+//   the Station's map    `mb-station-companions`: { v: 1, active, known: [{ id, name, at, pub?, pubMismatch? }], pubLog? } in the Station's own storage; the active id is the last Companion
+//                        docked, and the Station (and the Caddy beside it) show that player's world until another Companion docks
+//   its public key       `pub`, the Companion's Ed25519 key as 32 bytes in base64url, kept beside its id in `mb-companion-<slot>` and passed at the dock. The Station keeps it in
+//                        `known[].pub` the first time it sees one (trust on first use). A different `pub` for a known id is refused: the stored one stays, the entry is marked
+//                        `pubMismatch` (a sleep stays dimmed) and the refusal is logged in `pubLog`; docking itself goes on
 //
 // The single shared save of earlier builds (`mb-save-v8`) moves under Companion A's id at the first load of either page, byte for byte, so nothing is lost; bytes that
 // are not a v8 save a Companion can load stay where they are (the Companion page shows them read-only, as before). In the sandbox both devices share one origin's
@@ -15,6 +18,7 @@ export const SLOTS = ["A", "B"];
 export const saveKeyOf = (id) => SAVE_PREFIX + id;
 export const slotName = (slot) => "Companion " + slot;
 const ID_RE = /^c[0-9a-z]{12}$/;
+const PUB_RE = /^[A-Za-z0-9_-]{43}$/;   // 32 bytes in base64url, no padding
 export const newCompanionId = (rand = Math.random) => "c" + Array.from({ length: 12 }, () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(rand() * 36)]).join("");
 const read = (store, key) => { try { const v = store.getItem(key); return v == null ? null : JSON.parse(v); } catch { return null; } };
 // A legacy save that a Companion can load: a v8 object with its world's seed, creatures and mibis. The shared key never holds a v9 save: the Companion writes v9 under its own key, so the move below stays v8 only.
@@ -57,13 +61,26 @@ export const activeSaveKey = (store, opts) => saveKeyOf(activeId(store, opts));
 // A Companion docked: it becomes the active one, and joins the known list the first time. Returns { map, switched }.
 export function companionDocked(store, who, { now = Date.now } = {}) {
   const map = stationMap(store);
-  if (!who || !ID_RE.test(who.id)) return { map, switched: false };
+  if (!who || !ID_RE.test(who.id)) return { map, switched: false, pub: "none" };
   const known = map.known.find((k) => k.id === who.id);
   if (!known) map.known.push({ id: who.id, name: typeof who.name === "string" ? who.name.slice(0, 24) : null, at: now() });
   else if (typeof who.name === "string" && who.name && known.name !== who.name) known.name = who.name.slice(0, 24);
+  const entry = known || map.known[map.known.length - 1], pub = trustPub(map, entry, who.pub, now);
   const switched = map.active !== who.id; map.active = who.id;
-  writeMap(store, map); return { map, switched };
+  writeMap(store, map); return { map, switched, pub };
 }
+// Trust on first use. Returns "new" (first sight: kept), "same", "mismatch" (refused, logged) or "none" (the Companion gave no usable key; what is kept stays).
+function trustPub(map, entry, pub, now) {
+  if (typeof pub !== "string" || !PUB_RE.test(pub)) return "none";
+  if (entry.pub == null) { entry.pub = pub; delete entry.pubMismatch; return "new"; }
+  if (entry.pub === pub) { delete entry.pubMismatch; return "same"; }
+  entry.pubMismatch = true;
+  map.pubLog = [...(map.pubLog || []), { id: entry.id, pub, at: now() }].slice(-8);
+  try { console.warn("Companion " + entry.id + " docked with a key that is not the one first seen: refused"); } catch { /* no console */ }
+  return "mismatch";
+}
+// The key the Station trusts for a Companion, or null: none seen yet, or the last dock offered a different one (a sleep stays dimmed).
+export const trustedPub = (store, id) => { const k = knownCompanion(store, id); return k && k.pub && !k.pubMismatch ? k.pub : null; };
 export const knownCompanion = (store, id) => stationMap(store).known.find((k) => k.id === id) ?? null;
 // The seam for a lost Companion: a new Companion would take over `lostId`'s save and its place in the map. Not built yet.
 export function replaceCompanion(store, lostId, newId) { throw new Error("replacing a lost Companion is not built yet (" + lostId + " → " + newId + ")"); }

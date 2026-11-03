@@ -111,9 +111,9 @@ function updateCaddy() {
 }
 if (EMBED) window.addEventListener("message", (e) => {   // the play page's shell: the dock by postMessage, the developer panel's visibility; both ends check the origin and the parent
   if (e.origin !== location.origin || e.source !== parent) return; const m = e.data || {};
-  if (m.t === "mb-dock") {   // the Caddy's seat or lift, handed over by the play page: `want` is the cradle's state (absent: a press); `companion` is who docked, the active player from now on
+  if (m.t === "mb-dock") {   // the Caddy's seat or lift, handed over by the play page: `want` is the cradle's state (absent: a press); `companion` is who docked ({ id, name, pub }), the active player from now on
     dockElsewhere = !!m.keysElsewhere;
-    if (m.want === true && m.companion) switchCompanion(m.companion);
+    if (m.want === true && m.companion) switchCompanion({ id: m.companion.id, name: m.companion.name, pub: m.companion.pub });   // who docked and the key it signs with (trust on first use, companions.mjs)
     if (typeof m.want !== "boolean" || docked() !== m.want) act("dock"); else dockElsewhere = false;
     postCaddy(true);
   }
