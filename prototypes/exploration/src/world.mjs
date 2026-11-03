@@ -462,7 +462,7 @@ function g2Land(sub, B) {
   const at = (x, y) => y * MW + x;
   const land = new Uint8Array(NC), ford = new Uint8Array(NC), island = new Uint8Array(NC);
   const m = new Int32Array(NC), r = new Int32Array(NC), sM = sub('m'), sR = sub('r'), all = [];
-  for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { m[at(x, y)] = n2(sM, x, y); r[at(x, y)] = n2(sR, x, y); }
+  for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { m[at(x, y)] = n2(sM, x, y, B ? B.mP1 : undefined, B ? B.mP2 : undefined); r[at(x, y)] = n2(sR, x, y); }
   for (let c = 0; c < NC; c++) all.push(c);
   for (const c of rankTop(m, all, B ? B.wood : G2.WOOD_N)) land[c] = L.WOOD;
   for (const c of rankTop(r, all.filter(c => land[c] !== L.WOOD), B ? B.rock : G2.ROCK_N)) land[c] = L.ROCK;
@@ -1094,6 +1094,7 @@ export function genLife3(G, seed, roster, biome) {
 // generator 3's ground to the bit. Every other biome re-weights generator 2's own stages (BIOME_GROUND) and draws on its own seed streams.
 // No cell is L.CLIFF here, as in generator 2: a cliff is an edge between levels, so the Fells' cliffs are their doubled height changes.
 export const BIOMES = ['mixed', 'woods', 'fells', 'marsh'];
+//   river: the river setting (g4Course); mP1, mP2: the wood noise lattices (generator 2: 8, 4; Woods ranks on a coarser noise for one body of forest);
 //   wood, rock: how many cells the noise ranks take for each land (generator 2: 80 and 48); fords: extra ford rows (generator 2 has 2 rows);
 //   lakes, lakeTwo: extra small lakes and the percent of them with a second cell; pondP, ring8: the pond edge (generator 2: 35 percent, 4 sides);
 //   hP1, hP2, rampQ, lv, zoneMin: the height noise lattices, the slope toward the mountain edge, the level shares by rank and the smallest zone kept
@@ -1101,7 +1102,7 @@ export const BIOMES = ['mixed', 'woods', 'fells', 'marsh'];
 const RIVER_G2 = { axis: 'ns', lo: 8, hi: 13, turnP: 45, iy: [3, 16], n: 1, ford: 2 };   // generator 2's river band, with the island row drawn from 3 to 16
 export const BIOME_GROUND = {
   mixed: null,
-  woods: { name: 'woods', river: RIVER_G2, wood: 200, rock: 36, fords: 0, lakes: 0, lakeTwo: 0, pondP: 50, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
+  woods: { name: 'woods', river: { axis: 'pick', lo: 2, hi: 13, turnP: 60, iy: [3, 16], n: 1, ford: 1 }, mP1: 16, mP2: 8, wood: 200, rock: 36, fords: 0, lakes: 0, lakeTwo: 0, pondP: 50, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
   fells: { name: 'fells', river: RIVER_G2, wood: 55, rock: 152, fords: 0, lakes: 0, lakeTwo: 0, pondP: 40, ring8: false, hP1: 2, hP2: 2, rampQ: 4096, lv: [15, 45, 40], zoneMin: 2 },
   marsh: { name: 'marsh', river: RIVER_G2, wood: 62, rock: 28, fords: 2, lakes: 16, lakeTwo: 50, pondP: 25, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
 };

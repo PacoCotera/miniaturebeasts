@@ -80,6 +80,32 @@ test("Fells: about twice the stairs of generator 2 and half as many again cliff 
   assert.ok(Math.abs(count(worldsOf("woods"), EDGE.RAMP) / count(g2, EDGE.RAMP) - 1) < .25);
 });
 
+// the 4-connected bodies of the cells whose land is in `set`, largest first
+const bodies = (G, set) => { const seen = new Uint8Array(N), out = [];
+  for (let s = 0; s < N; s++) { if (seen[s] || !set.includes(G.land[s])) continue; const q = [s]; seen[s] = 1; let n = 0;
+    while (q.length) { const c = q.pop(); n++; const x = c % MW, y = (c / MW) | 0;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; const d = Y * MW + X; if (!seen[d] && set.includes(G.land[d])) { seen[d] = 1; q.push(d); } } }
+    out.push(n); }
+  return out.sort((a, b) => b - a); };
+
+test("Woods: a brook from the north or the west with one ford line; one forest body with 2 to 4 glades", () => {
+  let north = 0, west = 0, big = 0, glades = 0;
+  for (const g of worldsOf("woods")) {
+    const top = [...Array(MW).keys()].filter(x => g.land[x] === L.WATER && x >= 2 && x <= 13).length, left = [...Array(MH).keys()].filter(y => g.land[y * MW] === L.WATER && y >= 2 && y <= 13).length;
+    assert.ok(top || left, "the brook enters on the north or the west edge, in columns or rows 2 to 13");
+    north += top ? 1 : 0; west += left ? 1 : 0;
+    const fc = [...Array(N).keys()].filter(c => g.ford[c]);
+    assert.ok(fc.length >= 1 && (new Set(fc.map(c => c % MW)).size === 1 || new Set(fc.map(c => (c / MW) | 0)).size === 1), "one ford line");
+    const wood = bodies(g, [L.WOOD]), open = bodies(g, [L.MEADOW, L.ROCK, L.POND]);
+    big += wood[0] / wood.reduce((a, v) => a + v, 0);
+    const k = open.filter(n => n >= 6).length; if (k >= 2 && k <= 4) glades++;
+  }
+  console.log(`# woods: brook north ${north}, west ${west}; biggest wood body ${(100 * big / 200).toFixed(0)}% of the wood; 2 to 4 glades in ${glades} of 200`);
+  assert.ok(north >= 40 && west >= 40, "both entries occur");
+  assert.ok(big / 200 >= .6, "one forest body");
+  assert.ok(glades >= 150, "2 to 4 glades in three of four seeds");
+});
+
 test("Woods: one in three reachable wood places is the Shade, on the most enclosed wood; the others have none", () => {
   for (const g of worldsOf("woods").slice(0, 50)) {
     const wood = [...Array(N).keys()].filter(c => g.land[c] === L.WOOD && g.comp[c] && !g.island[c]), sh = wood.filter(c => g.shade[c]);

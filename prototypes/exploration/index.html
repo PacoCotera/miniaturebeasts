@@ -2514,6 +2514,7 @@ const LEVEL_LIGHT = LIGHT.map((l, c) => [C.orange, C.amber, C.white].includes(l)
 const DARK2 = DARK.map(i => DARK[i]);
 const LIGHT_GRASS = PALETTE.map((_, i) => i), DARK_GRASS = PALETTE.map((_, i) => i);   // the level tone's grass-only steps: identity until a biome palette marks its grass
 const TINT = LEVEL_LIGHT.map((l, c) => c === C.lime ? c : l);   // the level tint's step: LEVEL_LIGHT capped at lime, so green never steps on to cream
+const SHADE_LUT = DARK.slice(); SHADE_LUT[C.pine] = C.pine;   // the Shade's step: one value darker, the tuft bases stay pine so the green never goes black
 function tintLevel(pb, x0, y0, w, h, lv) { for (let k = 0; k < lv; k++) for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const v = pb.get(x, y); if (v >= 0) pb.set(x, y, TINT[v]); } }
 function nearestPal(r, g, b) { let best = 0, bd = 1e9; RGB.forEach(([R, G2, B], i) => { const d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } }); return best; }
 function mixLUT(target, t) { const [tr, tg, tb] = RGB[C[target]]; return RGB.map(([r, g, b]) => nearestPal(r + (tr - r) * t, g + (tg - g) * t, b + (tb - b) * t)); }
@@ -3225,6 +3226,7 @@ function buildMapPB() {
         break;
     }
     if (G.level) tintLevel(pb, px, py, CELL, CELL, G.level[c]);   // generator 2: the level tint, baked with the ground (the marks never are)
+    if (G.shade && G.shade[c]) for (let yy = py; yy < py + CELL; yy++) for (let xx = px; xx < px + CELL; xx++) { const v = pb.get(xx, yy); if (v >= 0) pb.set(xx, yy, SHADE_LUT[v]); }   // generator 4: the Shade, one value darker than wood
   }
   for (let c = 0; c < MW * MH; c++) {
     const { x, y } = cxy(c), px = x * CELL, py = y * CELL, l = G.land[c];
