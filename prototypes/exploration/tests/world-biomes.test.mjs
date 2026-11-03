@@ -124,6 +124,30 @@ test("Woods: a brook from the north or the west with one ford line; one forest b
   assert.ok(glades >= 150, "2 to 4 glades in three of four seeds");
 });
 
+test("Marsh: braided channels from edge to edge, six grown pools of 3 to 6 cells, no straight one-wide run of 3 or more", () => {
+  let braids = 0;
+  for (const g of worldsOf("marsh")) {
+    const seen = new Uint8Array(N), comps = [];
+    for (let s = 0; s < N; s++) { if (seen[s] || g.land[s] !== L.WATER) continue; const q = [s], cells = new Set([s]); seen[s] = 1;
+      while (q.length) { const c = q.pop(), x = c % MW, y = (c / MW) | 0;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; const d = Y * MW + X; if (!seen[d] && g.land[d] === L.WATER) { seen[d] = 1; cells.add(d); q.push(d); } } }
+      comps.push(cells); }
+    const pools = comps.filter(c => c.size <= 6), chans = comps.filter(c => c.size > 6);
+    assert.equal(pools.length, 6, `seed ${g.seed}: ${pools.length} pools`);
+    for (const P of pools) { assert.ok(P.size >= 3, `seed ${g.seed}: a pool of ${P.size}`);
+      const has = (x, y) => P.has(y * MW + x);
+      for (const c of P) { const x = c % MW, y = (c / MW) | 0;
+        assert.ok(!(has(x + 1, y) && has(x + 2, y) && [0, 1, 2].every(i => !has(x + i, y - 1) && !has(x + i, y + 1))), `seed ${g.seed}: a straight run along row ${y}`);
+        assert.ok(!(has(x, y + 1) && has(x, y + 2) && [0, 1, 2].every(i => !has(x - 1, y + i) && !has(x + 1, y + i))), `seed ${g.seed}: a straight run down column ${x}`); } }
+    const top = [...chans].some(c => [...c].some(w => w < MW)), bottom = chans.some(c => [...c].some(w => w >= N - MW));
+    assert.ok(top && bottom, `seed ${g.seed}: water reaches both ends`);
+    const rows = []; for (let y = 0; y < MH; y++) { let n = 0, prev = false; for (let x = 0; x < MW; x++) { const w = g.land[y * MW + x] === L.WATER && !pools.some(P => P.has(y * MW + x)); if (w && !prev) n++; prev = w; } rows.push(n); }
+    if (rows.some(n => n >= 2)) braids++;
+  }
+  console.log(`# marsh: ${braids} of 200 worlds have a row crossed by two channels`);
+  assert.ok(braids >= 150, "the channels braid");
+});
+
 test("Woods: one in three reachable wood places is the Shade, on the most enclosed wood; the others have none", () => {
   for (const g of worldsOf("woods").slice(0, 50)) {
     const wood = [...Array(N).keys()].filter(c => g.land[c] === L.WOOD && g.comp[c] && !g.island[c]), sh = wood.filter(c => g.shade[c]);
