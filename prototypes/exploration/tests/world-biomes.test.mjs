@@ -219,7 +219,7 @@ const fellsStairPlaces = function* (seeds, dir) { for (const s of seeds) { const
   for (let c = 0; c < N; c++) { if (!G.comp[c] || G.land[c] !== L.ROCK) continue; const lay = W.genPlace(G, s, String(c)), st = stairOf(lay); if (st && st.dir === dir) yield { seed: s, c, lay, st }; } } };
 const first64 = function* (dir) { let n = 0; for (const p of fellsStairPlaces(Array.from({ length: 400 }, (_, i) => i), dir)) { yield p; if (++n === 64) return; } };
 
-test("Fells stair place, on each of the four stair sides: the stair's columns stay clear below the foot rows, and at least 58 of 64 places pass every per-place gate (10 to 20 stones, side share, 3 far groups, no group above 4, no overhang on the screen, no stone on a square); seed 42 passes", { skip: "parked: measured 43, 53, 57 and 54 of 64 places pass every gate (north, south, west, east) against the 58 wanted" }, () => {
+test("Fells stair place, on each of the four stair sides: the stair's columns stay clear below the foot rows, and at least 58 of 64 places pass every per-place gate (10 to 20 stones, side share, 3 far groups, no group above 4, no overhang on the screen, no stone on a square); seed 42 passes", { skip: "parked: measured 45, 43, 48 and 46 of 64 places pass every gate (north, south, west, east) against the 58 wanted; the stones beside the stair's columns (notKerbed) fail on 14 to 19 places a side" }, () => {
   for (const dir of SIDES4) {
     let n = 0, pass = 0, sum = 0, left = 0, right = 0; const per = Object.fromEntries(GATES.map(k => [k, 0]));
     for (const { seed, c, lay, st } of first64(dir)) { n++;
@@ -246,6 +246,10 @@ test("Fells stair place: no group of stones is a bare straight line of 3 or more
 
 test("Fells stair place: each side of the stair with 3 columns of room on its screen holds a quarter of the stones or more on 64 places a side (north and south at 58 or more)", () => {
   for (const dir of ["up", "down"]) { let ok = 0; for (const { seed, lay, st } of first64(dir)) if (placeGates(lay, st, seed).share) ok++; assert.ok(ok >= 58, `${dir}: ${ok} of 64`); }
+});
+
+test("Fells stair place: the stair's screen holds 10 to 20 stones on every one of 64 places a side", () => {
+  for (const dir of SIDES4) for (const { seed, c, lay, st } of first64(dir)) { const n = placeGates(lay, st, seed).n; assert.ok(n >= 10 && n <= 20, `${dir} seed ${seed} cell ${c}: ${n} stones`); }
 });
 
 test("Fells stair place: no overhang tile lies within 5 columns and 6 rows of the stair's entry, in 64 places a side", () => {
