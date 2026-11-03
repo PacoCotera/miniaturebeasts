@@ -48,7 +48,7 @@ test("pin 11: version 11, 226 records, and a content digest that is the SHA-256 
   assert.equal(CATALOGUE.loci.length, 178 + 48); assert.equal(VALIDATED.length, 172 + 48);
   assert.match(CATALOGUE.digest, /^[0-9a-f]{64}$/);
   assert.equal(CATALOGUE.digest, digestAt(7)); assert.equal(CATALOGUE.digest, digestAt(Infinity));
-  assert.equal(CATALOGUE.digest, "96e79573c5033ca1ad3fabf6c47e45e05753ef8624a201df062db48f7ff48865", "pin 11 names this content: a change to a record, an allele, a pair map or a scope is a new pin");
+  assert.equal(CATALOGUE.digest, "2666ebb3e6be79739a49f45aa840a876e87737e27361c01e1be5722d0cd8ada4", "pin 11 names this content: a change to a record, an allele, a pair map or a scope is a new pin");
   assert.equal(digestAt(6), "6a7c24741d9898d7ab72f5bda64a4b34cfe638ff2cf394a98d2ff2537dc0a4d9", "the 178 records pin 10 holds on the build branches, digested the same way (computed on the code before pin 11; it moved once, when the Loika's small and medium ears were appended with sinceFrame 6, which a frame of version 6 sees: a frame of version 5 or older sees none of it)");
   assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 6)).length, 178);
   assert.notEqual(digestAt(6), digestAt(7));
@@ -121,11 +121,13 @@ test("pair maps are complete for every pair-map record, the new ones too, and ea
   assert.equal(win("appearance.emblem", "star", "heart"), "heart"); assert.equal(win("appearance.emblem", "star", "none"), "none");
   assert.equal(win("appearance.emblem-place", "belly", "forehead"), "forehead"); assert.equal(win("appearance.glow-pattern", "belly-arcs", "none"), "none");
   assert.equal(win("appearance.mouth-rest", "open", "content"), "content");
+  assert.deepEqual(LOCI.get("appearance.mouth-rest").alleles.map((a) => a.id), ["content", "open", "smile"], "smile is appended: content and open keep their indexes in every copy");
+  assert.equal(win("appearance.mouth-rest", "smile", "content"), "smile"); assert.equal(win("appearance.mouth-rest", "open", "smile"), "smile");
   assert.deepEqual(LOCI.get("form.ear-kind").alleles.map((a) => a.id), ["prick", "lop", "nub"], "the allele order is the Tuliko's (an index in every copy); dominance is another thing");
   assert.equal(win("form.ear-kind", "lop", "nub"), "nub"); assert.equal(win("form.ear-kind", "nub", "prick"), "prick"); assert.equal(win("form.ear-kind", "lop", "prick"), "prick");
   assert.equal(win("anatomy.tail-tip-form", "plain", "tuft"), "tuft"); assert.equal(win("anatomy.tail-tip-form", "tuft", "lantern"), "lantern"); assert.equal(win("anatomy.tail-tip-form", "plain", "lantern"), "lantern");
-  // switches: blush dominant, fangs and whisker glow recessive, the marking switch recessive
-  assert.equal(resolveCopies(LOCI.get("appearance.blush"), ["on", "off"]), true);
+  // switches: blush, fangs and whisker glow recessive (blush since 3 Nov 2026), the marking switch recessive
+  assert.equal(LOCI.get("appearance.blush").operator, "recessive-enable"); assert.equal(resolveCopies(LOCI.get("appearance.blush"), ["on", "off"]), false); assert.equal(resolveCopies(LOCI.get("appearance.blush"), ["on", "on"]), true);
   for (const id of ["anatomy.fang-presence", "appearance.whisker-glow", "appearance.marking-switch"]) { assert.equal(LOCI.get(id).operator, "recessive-enable", id); assert.equal(resolveCopies(LOCI.get(id), ["on", "off"]), false, id); assert.equal(resolveCopies(LOCI.get(id), ["on", "on"]), true, id); }
   // the whisker switch: dominant, so whiskerless (off/off) is the recessive look
   assert.equal(LOCI.get("anatomy.whisker-presence").operator, "dominant-enable"); assert.equal(resolveCopies(LOCI.get("anatomy.whisker-presence"), ["on", "off"]), true); assert.equal(resolveCopies(LOCI.get("anatomy.whisker-presence"), ["off", "off"]), false);

@@ -32,7 +32,7 @@ class TestDominance(unittest.TestCase):
         fang = lambda a, b: X.looks_of(g, with_copies(g, **{"anatomy.fang-presence": [a, b]}))["anatomy.fang-presence"]
         self.assertEqual((fang("on", "off"), fang("on", "on")), ("off", "on"))           # needs both copies
         blush = lambda a, b: X.looks_of(g, with_copies(g, **{"appearance.blush": [a, b]}))["appearance.blush"]
-        self.assertEqual((blush("on", "off"), blush("off", "off")), ("on", "off"))       # one is enough
+        self.assertEqual((blush("on", "off"), blush("on", "on")), ("off", "on"))           # needs both copies (since 3 Nov 2026: a rare find)
 
     def test_a_modifier_gene_changes_it_and_only_in_a_carrier(self):
         doc = D.demo(with_modifier=True)

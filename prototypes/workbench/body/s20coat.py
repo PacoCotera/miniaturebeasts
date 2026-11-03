@@ -623,6 +623,13 @@ def coat(ctx, V, attr, part, N, tag, genome, frame="open"):
     eye_col = np.tile(f_eye, (n, 1))
     lowrim = sstep(-0.1, 0.85, -v / R) * (1 - sstep(0.55, 1.0, rr))
     eye_col = eye_col * (1 - 0.30 * lowrim[:, None]) + (glow * 0.35 + f_eye * 0.4) * 0.30 * lowrim[:, None]
+    ir = spec["face"]["eyes"].get("iris")
+    if ir:
+        # the lantern in the eyes: a ring in the glow hue (at value `value`) around the dark pupil (the pupil is `pupil` of the ring's radius), the dark bead showing outside it
+        gs = np.array(pal["glow"], float)
+        ring_c = srgb_to_lin(gs / max(float(gs.max()), 1e-6) * 255.0 * float(ir["value"]))
+        ring_m = (1 - sstep(ir["ring"] - 0.05, ir["ring"] + 0.02, rr)) * (sstep(ir["ring"] * ir["pupil"] - 0.03, ir["ring"] * ir["pupil"] + 0.03, rr))
+        eye_col = eye_col * (1 - ring_m[:, None]) + ring_c * ring_m[:, None]
     for (cu, cv, cr) in ((-0.35, 0.4, 0.3), (0.38, -0.36, 0.12)):
         cm = near * disc(u / R - cu, v / R - cv, cr, 0.05)
         eye_col = eye_col * (1 - cm[:, None]) + f_catch * cm[:, None]

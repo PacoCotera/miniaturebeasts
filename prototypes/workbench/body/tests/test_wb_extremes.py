@@ -29,7 +29,7 @@ class TestExtremes(unittest.TestCase):
         self.assertEqual(len([e for e in ends if e["end"] == "allele"]), sum(len(e["limits"]) - 1 for e in others))
         self.assertEqual(len([e for e in ends if e["end"] == "corner"]), 10)
         self.assertLessEqual(len([e for e in ends if e["end"] == "corner"]), 16)
-        self.assertEqual(len(ends), 112)
+        self.assertEqual(len(ends), 113)                          # 112 before smile became a third mouth allele
 
     def test_an_end_fails_only_on_what_passes_at_the_type(self):
         rows = [dict(id="verts", state="fail"), dict(id="normals", state="fail"), dict(id="mesh", state="warn")]

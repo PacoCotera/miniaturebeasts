@@ -212,7 +212,7 @@ class TestAdapter(unittest.TestCase):
 
     def test_booleans_pairs_and_the_type(self):
         g = GN.genome_of(GN.draw(1))
-        self.assertEqual(g["appearance.blush"], ["on", "on"])
+        self.assertEqual(g["appearance.blush"], ["off", "off"])                 # the type has no blush (3 Nov 2026)
         self.assertEqual(g["anatomy.fang-presence"], ["off", "off"])
         self.assertEqual(g["form.tail-length"], ["between", "between"])                 # the type: every shape blend is a bin exactly
         g3 = GN.genome_of(GN.draw(3))

@@ -70,7 +70,7 @@ class TestThinStalk(unittest.TestCase):
     def test_the_type_loses_vertices(self):
         """3,606 before (3,446 as built here); the design asked for 350, which a stalk of this length cannot give: five rings of 32."""
         n = len(F.proxy_mesh(self.b, 1)["V"])
-        self.assertEqual(n, 3446)
+        self.assertEqual(n, 3382)                                  # 3,446 until the cat ear of 3 Nov 2026
 
     def test_the_cage_has_no_triangle_and_irregular_vertices_only_in_the_bands(self):
         V, Fc, attr, fp, cr, mir = self.b.full()

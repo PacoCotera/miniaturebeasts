@@ -1,5 +1,5 @@
 {
- "note": "S20 type cage at 930fc4253, before the workbench: wb facade hash and the mirrored cage vertex count. Re-baselined 3 Nov 2026 (V8): the tail stalk is lofted on 8 columns and the root band's dart is listed from the full ring; the type's hash was dbebe2e3a0a3b27c (f73d798bc765fad9 for V5 as first built) and its cage had 918 vertices. Renewed again 3 Nov 2026 (V10): the relax takes a gentler step on the back range; the hash was 5d2afa766b1d2b5e after V8.",
- "type_cage_hash": "3c614113e6b27172eea51d1369d41e32699a505cb0b7359402541c5f4c329991",
- "type_cage_vertices": 878
+ "note": "S20 type cage at 930fc4253, before the workbench: wb facade hash and the mirrored cage vertex count. Re-baselined 3 Nov 2026 (V8): the tail stalk is lofted on 8 columns and the root band's dart is listed from the full ring; the type's hash was dbebe2e3a0a3b27c (f73d798bc765fad9 for V5 as first built) and its cage had 918 vertices. Renewed again 3 Nov 2026 (V10): the relax takes a gentler step on the back range; the hash was 5d2afa766b1d2b5e after V8. Renewed again 3 Nov 2026 (Tuliko away from Pikachu): the cat ear and the ear-length band.",
+ "type_cage_hash": "fb55f911a25dae050b3538ada8d9b2e1fdadd34d8c01a21c8f005ef8f49f6d95",
+ "type_cage_vertices": 862
 }

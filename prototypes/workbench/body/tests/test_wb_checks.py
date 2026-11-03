@@ -72,7 +72,7 @@ class TestMeasures(unittest.TestCase):
         self.assertEqual(self.ok_r.cage_hash, BASE["type_cage_hash"])
         st = {i: r["state"] for i, r in self.ok.items()}
         self.assertEqual({i for i, s in st.items() if s != "pass"}, set())
-        self.assertEqual(self.ok["verts"]["value"], 3446)             # spec 9: Tuliko was 3,606 and amber; the stalk on 8 columns (V5) and the shells at cage level (V2) bring it under 3,500
+        self.assertEqual(self.ok["verts"]["value"], 3382)             # 3,446 until the cat ear of 3 Nov 2026 (the ear tube is slimmer); spec 9: Tuliko was 3,606 and amber; the stalk on 8 columns (V5) and the shells at cage level (V2) bring it under 3,500
         self.assertEqual(self.ok["balance"]["value"], round(self.ok_r.balance["margin"], 4))
 
     def test_the_long_tail_fails_tail_size_with_its_numbers(self):
@@ -81,7 +81,7 @@ class TestMeasures(unittest.TestCase):
         self.assertGreater(r["value"], 0.25)
         self.assertAlmostEqual(r["value"], 0.2874, delta=0.003)
         self.assertEqual(r["measure"], f"Side area {r['extra']['share']:.3f} of the trunk, limit 0.25")
-        self.assertEqual(self.bad["verts"]["state"], "warn")          # amber since V2 and V5 (it was over 3,850)
+        self.assertEqual(self.bad["verts"]["state"], "pass")          # amber since V2 and V5 (it was over 3,850); under the 3,500 budget with the cat ear of 3 Nov 2026
         self.assertEqual(self.bad["balance"]["state"], "pass")
         self.assertEqual(self.ok["tail.size"]["state"], "pass")
 
@@ -133,7 +133,7 @@ class TestServer(unittest.TestCase):
         self.assertEqual(j.state, "done", j.error)
         rows = j.result["rows"]
         self.assertEqual(len(rows), 13)
-        self.assertEqual(j.result["counts"], dict(total=13, fail=1, warn=1, need=2, passed=11))          # the long tail's mesh failed in the seat range with the root dart listed from the stalk vertex (V5); it passes since V8
+        self.assertEqual(j.result["counts"], dict(total=13, fail=1, warn=0, need=1, passed=12))          # the long tail's mesh failed in the seat range with the root dart listed from the stalk vertex (V5); it passes since V8
         j2 = self.srv.submit("S20x", "check", dict(stage="all"), None)
         self.assertEqual((j2.state, j2.cached), ("done", True))
         import time

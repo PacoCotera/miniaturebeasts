@@ -68,10 +68,12 @@ WHISKER_SHARE = 0.10
 WHISKER_WEIGHT = round(1 - (1 - WHISKER_SHARE) ** 0.5, 6)
 WHISKER_NOTE = "Whiskers are rare (owner, 3 Nov 2026): this weight is the chance each copy is on; with one copy enough to show them (dominant-enable), %.6f makes about %d percent of the sampler's draws show whiskers. To change the share p, set the weight to 1 - sqrt(1 - p)." % (WHISKER_WEIGHT, round(WHISKER_SHARE * 100))
 # the switches: record -> (the sampler's draw weight of `on`, the type's allele)
-SWITCH_DRAW = {"appearance.marking-switch": (0.75, "off"), "appearance.blush": (0.8, "on"), "anatomy.fang-presence": (0.25, "off"), "anatomy.whisker-presence": (WHISKER_WEIGHT, "off"),
+SWITCH_DRAW = {"appearance.marking-switch": (0.75, "off"), "appearance.blush": (0.3, "off"), "anatomy.fang-presence": (0.25, "off"), "anatomy.whisker-presence": (WHISKER_WEIGHT, "off"),
                "appearance.whisker-glow": (0.15, "off"), "anatomy.brow-tuft-presence": (0.25, "off")}
 
 
+# ranges set by hand (owner, 3 Nov 2026): no yellow or orange Tuliko in any cross (hue 150 to 375), and no lance ear (ear length 0.6 to 1.5)
+RANGE_OF = {"appearance.body-hue": (150.0, 375.0), "form.ear-length": (0.6, 1.5)}
 EXPRESSIONS = [dict(id="lantern-tail", label="Lantern tail", locus="anatomy.tail-tip-form", look="lantern")]       # S20's own looks need no rule beyond the catalogue's (the order lantern, tuft, plain); a species with age gates or needs lists them here
 
 
@@ -108,6 +110,8 @@ def block():
                 e["range"] = [round(max(lo - span / 2, 0.1) if form == "mult" else lo - span / 2, 4), round(hi + span / 2, 4)]
                 if i == "form.tail-length":
                     e["range"] = [0.5, 2.0]
+                if i in RANGE_OF:
+                    e["range"] = list(RANGE_OF[i])
                 if pl.get("measure") == "position":
                     e["bins"] = [a["id"] for a in pl["alleles"]]
             elif i in GN.SWITCH_DRAW_RECORDS:

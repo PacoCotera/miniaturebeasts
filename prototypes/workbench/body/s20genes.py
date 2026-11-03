@@ -155,7 +155,7 @@ GENES = {
     "body.torso-girth": ("mult", 0.95, 1.06, "body"), "body.head-size": ("mult", 0.96, 1.05, "body"), "body.limb-length": ("mult", 0.9, 1.1, "body"), "body.limb-girth": ("mult", 0.94, 1.08, "body"),
     "growth.exterior-eye-size-ratio": ("mult", 0.92, 1.1, "face"), "growth.exterior-eye-height-ratio": ("off", -0.03, 0.03, "face"), "growth.exterior-eye-spacing-ratio": ("off", -0.03, 0.03, "face"),
     "face.mouth-width": ("mult", 0.9, 1.12, "face"), "face.mouth-height": ("off", -0.02, 0.02, "face"), "movement.cycle-rate": ("mult", 0.85, 1.15, "face"),
-    "body.ear-length": ("mult", 0.7, 1.5, "ears"), "body.ear-girth": ("mult", 0.85, 1.2, "ears"), "body.ear-splay": ("off", -20.0, 20.0, "ears"), "body.ear-droop": ("off", -15.0, 15.0, "ears"),
+    "body.ear-length": ("mult", 0.8, 1.3, "ears"), "body.ear-girth": ("mult", 0.85, 1.2, "ears"), "body.ear-splay": ("off", -20.0, 20.0, "ears"), "body.ear-droop": ("off", -15.0, 15.0, "ears"),
     "body.tail-length": ("mult", 0.8, 1.3, "tail"), "body.tail-girth": ("mult", 0.8, 1.2, "tail"), "body.tail-curl": ("off", -0.03, 0.2, "tail"), "body.tail-lift": ("off", -12.0, 12.0, "tail"), "body.tip-size": ("mult", 0.85, 1.2, "tail"),
     "appearance.coat-value": ("mult", 0.8, 1.2, "coat"), "appearance.bib-reach": ("off", -0.1, 0.12, "coat"), "appearance.glow": ("lin", 0.6, 1.0, "coat"), "skin.grain": ("lin", 0.25, 0.45, "coat"), "skin.sheen": ("lin", 0.2, 0.4, "coat"),
     # the coat's own genes (the owner's steer: the coat is where Tuliko becomes itself)
@@ -175,12 +175,13 @@ PAIRS = {
     "coat.mark": (["none", "heart", "star"], [0.5, 0.25, 0.25], ["none", "heart", "star"]),
     "coat.mark-where": (["forehead", "belly"], [0.7, 0.3], ["forehead", "belly"]),            # (pass 4: no cheek emblems, they sat on the blush)
     "coat.glow-pattern": (["none", "belly-arcs"], [0.6, 0.4], ["none", "belly-arcs"]),        # the night-light species' one glowing pattern gene
-    "face.expression": (["content", "open"], [0.8, 0.2], ["content", "open"]),
+    "face.expression": (["content", "open", "smile"], [0.2, 0.2, 0.6], ["smile", "content", "open"]),
     "face.whisker-glow": (["off", "glow"], [0.85, 0.15], ["off", "glow"]),                     # a rare variant: glowing whisker tips
     "face.fangs": (["none", "fangs"], [0.75, 0.25], ["none", "fangs"]),                        # tiny fangs: about 1 in 4
 }
-SWITCHES = {"face.blush": 0.8, "coat.brow": 0.25}
-TYPE_PAIRS = {"body.ear-family": "prick", "body.tail-tip": "lantern", "appearance.marking-layout": "plain", "coat.rd": "none", "coat.mark": "none", "coat.mark-where": "forehead", "coat.glow-pattern": "none", "face.expression": "content", "face.whisker-glow": "off", "face.fangs": "none"}
+SWITCHES = {"face.blush": 0.09, "coat.brow": 0.25}          # the chance a drawn individual shows it: blush is a recessive switch of weight 0.3 (0.3 squared)
+RECESSIVE_SWITCHES = ("blush",)                                  # the switches that show only on two copies (the draw weight is the allele frequency)
+TYPE_PAIRS = {"body.ear-family": "prick", "body.tail-tip": "lantern", "appearance.marking-layout": "plain", "coat.rd": "none", "coat.mark": "none", "coat.mark-where": "forehead", "coat.glow-pattern": "none", "face.expression": "smile", "face.whisker-glow": "off", "face.fangs": "none"}
 TYPE_COAT_T = {"coat.gradient": 0.5, "coat.fleck": 0.5, "coat.freckle-density": 0.5, "coat.freckle-glow": 0.8, "coat.bleed": 0.5}      # the type specimen's modest coat (t of each lin locus)
 
 
@@ -239,7 +240,7 @@ def sampler_tables(genome):
             t[old] = a_on if T[new] == "on" else a_off
     for key, (old, new) in SWITCH_RECORD.items():
         if new in S:
-            s[old] = S[new]
+            s[old] = S[new] ** 2 if key in RECESSIVE_SWITCHES else S[new]
             t[old] = T[new]
     return g, p, s, t
 
@@ -322,7 +323,7 @@ def individual_of(copies, tbl=None):
     pairs["appearance.marking-layout"] = [LAYOUT_BACK.get(l, l) if on(s) else "plain" for s, l in zip(sw, copies[MARKING_LAYOUT])]
     for old, (new, a_off, a_on) in PAIR_SWITCH.items():
         pairs[old] = [a_on if on(c) else a_off for c in copies[new]]
-    switches = {key: any(on(c) for c in copies[new]) for key, (old, new) in SWITCH_RECORD.items()}
+    switches = {key: (all if key in RECESSIVE_SWITCHES else any)(on(c) for c in copies[new]) for key, (old, new) in SWITCH_RECORD.items()}
     seed = int(hashlib.sha256(json.dumps(copies, sort_keys=True).encode()).hexdigest()[:8], 16) % 999999 + 1
     return dict(t=t, pairs=pairs, switches=switches, seed=seed, copies={k: list(v) for k, v in copies.items()})          # the exact copies ride along: a genome read from a string writes back as it was
 
@@ -358,7 +359,7 @@ def specimen(tbl=None):
     t["skin.grain"] = 0.5; t["skin.sheen"] = 0.5
     t["coat.bands"] = 0.5; t["coat.mark-size"] = 0.5; t["coat.rd-scale"] = 0.5; t["coat.rd-contrast"] = 0.5; t["coat.rosette"] = 0.0
     to_grid(t)
-    return dict(t=t, pairs={k: [v, v] for k, v in TYPE_PAIRS.items()}, switches=dict(blush=True, brow=False), seed=20)
+    return dict(t=t, pairs={k: [v, v] for k, v in TYPE_PAIRS.items()}, switches=dict(blush=False, brow=False), seed=20)
 
 
 
@@ -428,7 +429,7 @@ def draw(i, seed0=2026):
     tipk = TIPS[(i - 2) % len(TIPS)]
     pairs["body.tail-tip"] = [tipk, tipk] if tipk != "lantern" else ["lantern", str(rng.choice(["lantern", "tuft", "plain"]))]
     pairs["coat.glow-pattern"] = [["none", "belly-arcs", "none"][(i - 1) % 3]] * 2                 # the sheet shows the glowing pattern (the firefly arcs) on every third individual; the constellation is retired (pass 4: it did not register at 96 px)
-    pairs["face.expression"] = ["open"] * 2 if i in (4, 9) else ["content"] * 2
+    pairs["face.expression"] = ["open"] * 2 if i in (4, 9) else ["smile"] * 2
     t["face.whisker-count"] = [0.0, 0.4, 0.7, 1.0][(i - 1) % 4] if i != 1 else 0.0               # the sheet shows 0, 1 .. 3 whiskers a side
     pairs["face.whisker-glow"] = ["glow"] * 2 if i == 6 else ["off"] * 2
     pairs["face.fangs"] = ["fangs"] * 2 if i in (3, 8, 11) else ["none"] * 2                          # and shows the open-mouth expression twice

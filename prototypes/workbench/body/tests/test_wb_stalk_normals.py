@@ -41,7 +41,7 @@ class TestStalkNormals(unittest.TestCase):
     def test_crossed_384_is_the_worst_and_just_under_36(self):
         name, _, w = max(self.res, key=lambda r: r[2])
         self.assertEqual(name, "crossed 384")
-        self.assertAlmostEqual(w, 35.86, delta=0.02)          # 35.92 at V9, 35.86 since the back relax step (V10)
+        self.assertAlmostEqual(w, 35.83, delta=0.02)          # 35.92 at V9, 35.86 since the back relax step (V10), 35.83 with the cat ear (3 Nov 2026)
 
     def test_the_rule_text_names_the_stalk_limit_and_the_level_one_equivalent(self):
         import checks

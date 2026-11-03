@@ -2,7 +2,7 @@
  "id": "mb-genome-framework",
  "version": 11,
  "schema": "mb-catalogue/11",
- "digest": "96e79573c5033ca1ad3fabf6c47e45e05753ef8624a201df062db48f7ff48865",
+ "digest": "2666ebb3e6be79739a49f45aa840a876e87737e27361c01e1be5722d0cd8ada4",
  "lookPairs": [
   [
    "Ear kind",
@@ -5423,12 +5423,15 @@
     },
     {
      "id": "open"
+    },
+    {
+     "id": "smile"
     }
    ]
   },
   {
    "id": "appearance.blush",
-   "operator": "dominant-enable",
+   "operator": "recessive-enable",
    "scope": "trunk",
    "clan": null,
    "family": "appearance",

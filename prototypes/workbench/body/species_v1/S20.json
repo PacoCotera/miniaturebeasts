@@ -1455,43 +1455,43 @@
    "families": {
     "prick": {
      "plane": {
-      "yaw": 100
+      "yaw": 106
      },
      "joints": [
       {
        "name": "root",
        "at": [
-        -0.2,
-        0.38,
-        1.86
+        -0.16,
+        0.42,
+        1.84
        ],
        "r": [
         0.12,
-        0.24
+        0.3
        ],
        "role": "mass"
       },
       {
        "name": "base",
        "len": 0.26,
-       "pitch": 58,
+       "pitch": 60,
        "r": [
         0.09,
-        0.18
+        0.21
        ]
       },
       {
        "name": "tip",
-       "len": 0.34,
-       "pitch": 80,
+       "len": 0.24,
+       "pitch": 70,
        "r": [
-        0.045,
-        0.095
+        0.03,
+        0.05
        ],
        "role": "end"
       }
      ],
-     "cup": 0.04
+     "cup": 0.05
     },
     "lop": {
      "plane": {
@@ -1832,6 +1832,11 @@
     "sleepy"
    ],
    "default": "round",
+   "iris": {
+    "ring": 0.62,
+    "pupil": 0.55,
+    "value": 0.45
+   },
    "catch": [
     {
      "at": [
@@ -1864,13 +1869,13 @@
     "o",
     "flat"
    ],
-   "default": "content"
+   "default": "smile"
   },
   "cheeks": {
    "station": 1.56,
    "around": 0.72,
-   "r": 0.09,
-   "alpha": 0.45
+   "r": 0.075,
+   "alpha": 0.3
   }
  },
  "coat": {
@@ -1914,7 +1919,6 @@
    },
    "points": {
     "ends": [
-     "ear tips",
      "tail tip",
      "feet"
     ],
@@ -2076,7 +2080,7 @@
   "catalogue": {
    "id": "mb-genome-framework",
    "version": 11,
-   "digest": "96e79573c5033ca1ad3fabf6c47e45e05753ef8624a201df062db48f7ff48865"
+   "digest": "2666ebb3e6be79739a49f45aa840a876e87737e27361c01e1be5722d0cd8ada4"
   },
   "clan": "C20",
   "borrows": [
@@ -2122,8 +2126,8 @@
     },
     "type": 270.0,
     "range": [
-     90.0,
-     450.0
+     150.0,
+     375.0
     ],
     "bins": [
      "low",
@@ -2940,17 +2944,20 @@
     "op": "pair-map",
     "limits": [
      "content",
-     "open"
+     "open",
+     "smile"
     ],
     "weights": [
-     0.8,
-     0.2
+     0.2,
+     0.2,
+     0.6
     ],
     "order": [
+     "smile",
      "content",
      "open"
     ],
-    "type": "content",
+    "type": "smile",
     "moves": [],
     "consumer": "the face decal, through the creature record"
    },
@@ -2963,13 +2970,13 @@
     "kind": "heritable-look",
     "shapeable": true,
     "op": "switch",
-    "operator": "dominant-enable",
+    "operator": "recessive-enable",
     "limits": [
      "off",
      "on"
     ],
-    "type": "on",
-    "weight": 0.8,
+    "type": "off",
+    "weight": 0.3,
     "map": {
      "off": false,
      "on": true
@@ -3242,14 +3249,14 @@
     "op": "blend",
     "band": {
      "form": "mult",
-     "lo": 0.7,
-     "hi": 1.5,
+     "lo": 0.8,
+     "hi": 1.3,
      "unit": "\u00d7"
     },
     "type": 1.0,
     "range": [
-     0.3,
-     1.9
+     0.6,
+     1.5
     ],
     "bins": [
      "short",
@@ -3968,10 +3975,6 @@
    0.15,
    0.15
   ],
-  "head_attach_extra": {
-   "note": "body-plan head attachment (framework rule, 2 Nov): biped = the spine ends on the head's underside, `a` of the head's depth in from the back, and the head's centre lies `d` of its depth forward of the spine axis; quadruped and serpentine = the spine enters the back of the head on its own axis. The head turns about the spine's end. Pass 3 pick (head-attach-grid): a 0.45, d 0.08 -- d 0 reads as a blob on the chest, d 0.15 pushes a wedge-shaped muzzle past the chest; a only moves the pivot of the nod (the loft axis stays vertical)."
-  },
-  "tail_range_end": 99.0,
   "genome_v0": {
    "genes": [
     {
@@ -4139,8 +4142,8 @@
      "locus": "body.ear-length",
      "kind": "mult",
      "band": [
-      0.7,
-      1.5
+      0.8,
+      1.3
      ],
      "moves": [
       "ear.L.families.*.joints[1:].len",
@@ -4406,7 +4409,11 @@
      1
     ]
    }
-  }
+  },
+  "head_attach_extra": {
+   "note": "body-plan head attachment (framework rule, 2 Nov): biped = the spine ends on the head's underside, `a` of the head's depth in from the back, and the head's centre lies `d` of its depth forward of the spine axis; quadruped and serpentine = the spine enters the back of the head on its own axis. The head turns about the spine's end. Pass 3 pick (head-attach-grid): a 0.45, d 0.08 -- d 0 reads as a blob on the chest, d 0.15 pushes a wedge-shaped muzzle past the chest; a only moves the pivot of the nod (the loft axis stays vertical)."
+  },
+  "tail_range_end": 99.0
  },
  "expressions": [
   {
