@@ -296,14 +296,14 @@ export function parseMessage(msgBits, N, { postmark = false } = {}, frameLookup 
 // and read mask in plain text (S1v3-03-), which must agree with the bytes. It decodes to what a scan
 // of the stamp gives; a code only shows a mibi, it never creates or moves one.
 export const CODE_ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
-const LOOKALIKE = { O: "0", I: "1", L: "1" };
+export const LOOKALIKE = { O: "0", I: "1", L: "1" };
 // CRC-10 (poly 0x233, the ATM HEC-10 polynomial), bitwise, init 0: it catches every burst of up to 10 bits.
 export function crc10(bits) {
   let c = 0;
   for (const b of bits) { const top = ((c >> 9) & 1) ^ (b & 1); c = (c << 1) & 0x3ff; if (top) c ^= 0x233; }
   return c;
 }
-const charsOf = (bits) => { const out = []; for (let i = 0; i < bits.length; i += 5) out.push(CODE_ALPHABET[fromBits([...bits.slice(i, i + 5), 0, 0, 0, 0, 0].slice(0, 5))]); return out.join(""); };
+export const charsOf = (bits) => { const out = []; for (let i = 0; i < bits.length; i += 5) out.push(CODE_ALPHABET[fromBits([...bits.slice(i, i + 5), 0, 0, 0, 0, 0].slice(0, 5))]); return out.join(""); };
 // The message bytes of a stamp (the codeword before its parity), as encodeCells lays them.
 export function stampBytes(frame, genome) {
   const { L, cells, mask } = encodeCells(frame, genome);

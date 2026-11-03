@@ -3,17 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stamp code inspector</title>
+<title>Stamp code and genome string inspector</title>
 </head>
 <body>
 <!-- The inspector: paste a stamp code (the stamp's own bytes as text, src/codec.mjs stampCode) and read
-     what the stamp holds, exactly as a scan does. It only shows: nothing here creates or moves a mibi.
+     what the stamp holds, exactly as a scan does, or paste a genome string (the whole genome as text, src/string.mjs
+     genomeString) and read every chapter. It only shows: nothing here creates or moves a mibi.
      Served beside src/ (the sandbox publishes prototypes/* side by side). Unstyled on purpose: a working
      page for the genome, not a designed screen. -->
-<h1>Stamp code inspector</h1>
-<p>Paste a stamp code. It shows what the stamp holds; it never creates or moves a mibi.</p>
-<p><textarea id="code" rows="4" cols="60" spellcheck="false" autocomplete="off" aria-label="Stamp code"></textarea></p>
-<p><button id="read" type="button">Read the code</button></p>
+<h1>Stamp code and genome string inspector</h1>
+<p>Paste a stamp code (it opens S1v4-…) or a genome string (it opens G1-S1v4-…). A stamp code shows what its keeper has read; a genome string holds the whole genome. It only shows: it never creates or moves a mibi.</p>
+<p><textarea id="code" rows="4" cols="60" spellcheck="false" autocomplete="off" aria-label="Stamp code or genome string"></textarea></p>
+<p><button id="read" type="button">Read it</button></p>
 <pre id="out" aria-live="polite"></pre>
 <script type="module" src="./inspect.mjs"></script>
 </body>
