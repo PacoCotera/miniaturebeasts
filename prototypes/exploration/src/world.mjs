@@ -984,7 +984,7 @@ export function genPatch2(G, seed, cell) {
   const scrX0 = fanSt ? Math.max(0, Math.min(PW * 48 - 450, fanSt.entry.x * 48 + 24 - 225)) : 0, scrY0 = fanSt ? Math.max(0, Math.min(PH * 48 - 532, fanSt.entry.y * 48 + 24 - 266)) : 0;
   const onScr = (x, y) => { const sx = x * 48 + 24 - scrX0, sy = y * 48 + 24 - scrY0; return sx >= 0 && sx < 450 && sy >= 0 && sy < 532; };
   const acrossOn = k => fvert ? onScr(k, fanSt.entry.y) : onScr(fanSt.entry.x, k);
-  let fanN = 0, footN2 = 0, onCount = 0; const footSide = [0, 0];
+  let fanN = 0, footN2 = 0, onCount = 0; const rowCnt = new Map(); const footSide = [0, 0];
   // the foot-row stones of a stair place alternate sides of the stair's columns too, each at a random column of its side (a side with fewer than 3 columns of room is skipped), so neither side of the screen is bare
   const footLo = fanSt ? 2 : 0, footHi = fanSt ? fspan - 3 : 0, roomL = fanSt ? fanSt.s - footLo : 0, roomR = fanSt ? footHi - (fanSt.s + 2) + 1 : 0;
   // A stair place keeps no stone that would make a bare straight line of 3 or more (a group on one row or one column reads laid): such a stone takes its next roll, and is dropped after 4.
@@ -1012,7 +1012,7 @@ export function genPatch2(G, seed, cell) {
         const { x, y } = fxy(kk, dd);
         if (!walk(x, y)) break;
         if (lineBad(x, y)) continue;
-        if (onScr(x, y) && tiles[I(x, y)] !== T.ROCK) { if (onCount >= 20) break; onCount++; }   // the 21st stone on the stair's screen is skipped
+        if (onScr(x, y) && tiles[I(x, y)] !== T.ROCK) { if (onCount >= 20) break; if ((rowCnt.get(fvert ? y : x) || 0) >= 4) continue; onCount++; rowCnt.set(fvert ? y : x, (rowCnt.get(fvert ? y : x) || 0) + 1); }   // the 21st stone on the stair's screen is skipped, and a 5th in a row (a column, for a west or east stair) rolls again
         setT(x, y, T.ROCK); break;
       }
       continue;
@@ -1023,8 +1023,8 @@ export function genPatch2(G, seed, cell) {
   // A stair screen that ends with fewer than 10 stones gets fan stones on the screen until it holds 10, each under the same line rule.
   for (let tr = 0; fanSt && onCount < 10 && tr < 120; tr++) {
     const side = fanN++ % 2 ? 1 : 0, dd = Math.min(edDepth + Math.min(R.int(fext - 4), R.int(fext - 4), R.int(fext - 4)), fext - 3), w = 1 + dd - edDepth, kk = side ? fanSt.s + 2 + R.int(w) : fanSt.s - 1 - R.int(w), { x, y } = fxy(kk, dd);
-    if (!inb(x, y) || !onScr(x, y) || !walk(x, y) || tiles[I(x, y)] === T.ROCK || lineBad(x, y)) continue;
-    setT(x, y, T.ROCK); onCount++;
+    if (!inb(x, y) || !onScr(x, y) || !walk(x, y) || tiles[I(x, y)] === T.ROCK || (rowCnt.get(fvert ? y : x) || 0) >= 4 || lineBad(x, y)) continue;
+    setT(x, y, T.ROCK); onCount++; rowCnt.set(fvert ? y : x, (rowCnt.get(fvert ? y : x) || 0) + 1);
   }
   const treeN = land === L.WOOD ? 11 + R.int(5) : land === L.MEADOW ? 1 + R.int(2) : R.int(2);
   for (let k = 0, tries = 0; k < treeN && tries < 200; tries++) {
