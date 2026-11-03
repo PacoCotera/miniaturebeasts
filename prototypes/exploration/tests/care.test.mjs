@@ -182,8 +182,8 @@ test("T6: a bonded juvenile never grows on the clock: no grownTurn, no clock gro
   for (let turn = 0; turn <= 20; turn++) { S.turn = turn;
     for (const m of [dot, moss]) { assert.equal(t.grownNow(m), false); assert.equal(t.agedNow(m), false); assert.equal(t.mibiStage(m), "juvenile"); assert.equal(m.grownTurn, null); } }
   // the world-turn advance writes its lines from grownNow and agedNow, and nothing on the turn or at the expedition's end grows a mibi
-  assert.match(source("worldTurn"), /const grown = liveMibis\(\)\.filter\(grownNow\), aged = liveMibis\(\)\.filter\(agedNow\)/);
-  for (const fn of ["worldTurn", "endExpedition"]) assert.ok(!/growCheck\(|bondCheck\(|grownTurn =/.test(source(fn)), fn + " never grows or bonds");
+  assert.match(source("realmTurn"), /const grown = liveMibis\(\)\.filter\(grownNow\), aged = liveMibis\(\)\.filter\(agedNow\)/);
+  for (const fn of ["worldTurn", "regionTurn", "realmTurn", "endExpedition"]) assert.ok(!/growCheck\(|bondCheck\(|grownTurn =/.test(source(fn)), fn + " never grows or bonds");
   // an unbonded mibi grows on the clock as built: the line at born + 2, elder at born + 18
   const fig = S.mibis[2]; S.turn = 2; assert.equal(t.grownNow(fig), true); S.turn = 18; assert.equal(t.agedNow(fig), true);
 });
@@ -625,7 +625,7 @@ test("released mibis: hidden from every list and count; the dock read marks them
   const once = JSON.stringify(S); t.normalizeCare(S, new Set([2, 4])); assert.equal(JSON.stringify(S), once, "idempotent");
   t.normalizeCare(S); assert.equal(S.mibis[1].released, true, "without the Station's ids nothing is un-released");
   // the world turn's lines never name a released mibi; the screens count only the others
-  assert.match(source("worldTurn"), /liveMibis\(\)\.filter\(grownNow\)/);
+  assert.match(source("realmTurn"), /liveMibis\(\)\.filter\(grownNow\)/);
   for (const fn of ["drawMibis", "drawActive", "partnerRow", "drawSetup"]) assert.match(source(fn), /liveMibis\(\)/, fn + " counts only the mibis not released");
   assert.ok(!/S\.mibis\.length/.test(source("drawMibis") + source("drawSetup") + source("partnerRow")), "no count over released mibis");
 });

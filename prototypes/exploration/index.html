@@ -253,10 +253,10 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
 <script type="module">
 "use strict";
-import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
+import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, keepPre9, prefixPods, regionById } from "./src/regions.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -867,6 +867,16 @@ function mountRegion(id) {
   unmount(S); const R = mount(S, id);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; RT.mp = null; RT.key = null; mapCv = null;
   G = genWorld(R.seed, R.gen); indexCreatures();
+  catchUp(R);
+}
+// A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
+// storm or trail, and no line written. Older turns are let go (the world is permanent, not a ledger). With one region, turnSeen is always S.turn.
+const CATCH_UP = 3;
+function catchUp(R) {
+  if (!(R.turnSeen < S.turn)) return;
+  const last = { trail: [], entered: S.lastEntered || [] }, far = c => awayFromLast(c, last);
+  for (let t = Math.max(R.turnSeen, S.turn - CATCH_UP); t < S.turn; t++) regionTurn(R, t, { trail: [], storm: [] }, far);
+  R.turnSeen = S.turn;
 }
 function inRegion(id, fn) {
   if (id === S.here) return fn();
@@ -1054,9 +1064,9 @@ function cellSigns(c) {
   const gt = c === G.gate && !S.opened[G.gate] && S.pods.some(p => p.k === 'c' + c) ? 1 : 0;   // the cave below holds a pod
   return { tr, b, k, pd, d: c === G.deep && !S.deepRead ? 1 : 0, g: gt };
 }
-function recordSigns(c) {
+function recordSigns(c, turn = S.turn) {
   const s = cellSigns(c);
-  if (s.tr.length || s.b || s.k || s.d || s.g || s.pd) S.signs[c] = Object.assign({ t: S.turn }, s); else delete S.signs[c];
+  if (s.tr.length || s.b || s.k || s.d || s.g || s.pd) S.signs[c] = Object.assign({ t: turn }, s); else delete S.signs[c];
 }
 function revealCell(c) { if (!S.revealed[c]) { S.revealed[c] = 1; if (S.exp) S.exp.stats.rev++; } recordSigns(c); }
 // ---------- Survey: every place starts under a veil that Call lifts (lightning too, 3×3 around a struck stone) ----------
@@ -2389,21 +2399,33 @@ function placeKind(cells) {
 const placePhrase = cells => PLACE_PHRASE[placeKind(cells)];
 // The land most of some cells lie on, as a kind (a new pod's place, a bloom's centre): any of the six lands.
 function mainLand(cells) { const n = PLACE_KIND.map(() => 0); for (const c of cells) if (G.land[c] >= 0 && G.land[c] < n.length) n[G.land[c]]++; return PLACE_KIND[n.indexOf(Math.max(...n))]; }
+// The world turns once per expedition ended: the region the Companion is in turns (regionTurn), then the realm (realmTurn), and the region has seen the turn.
+// A region that was away is not turned meanwhile; mounting it catches it up (catchUp).
 function worldTurn(pending) {
-  const R = makeRng(hash(S.seed, 'turn', S.turn)), last = { trail: pending.trail, entered: S.lastEntered || [] };
+  const last = { trail: pending.trail, entered: S.lastEntered || [] }, here = regionById(S, S.here);
   const farFromPlayer = c => awayFromLast(c, last);
+  const turned = regionTurn(here, S.turn, pending, farFromPlayer), out = realmTurn(turned, pending);
+  here.turnSeen = S.turn;
+  return out;
+}
+// What touches the map, for region R (the one mounted) at turn t: creatures roam, the storm leaves marks, a bloom, arrivals and young, and a species the region
+// lacks surfaces. It draws on hash(R.seed, 'turn', t), which for region 1 is the world's own hash, and writes no line and no log; it hands back what the
+// realm turn's lines are made of. farFromPlayer is the arrival guard for where the player last walked.
+function regionTurn(R, t, pending, farFromPlayer) {
+  if (R.id !== S.here) throw new Error('regionTurn: region ' + R.id + ' is not mounted');
+  const rng = makeRng(hash(R.seed, 'turn', t));
   const mv = [0, 1, 2].map(() => ({ dx: 0, dy: 0, n: 0 }));
   let charged = [], bushes = 0, bloom = -1; const newPods = [], young = [];
   // Creatures roam within their habitat.
   for (const w of S.cr) {
-    if (w.cv) { if (R.chance(.12)) w.cv = 0; continue; }
-    if (w.sp === 1 && w.c === G.gate) { if (R.chance(.3)) w.cv = 1; continue; }
-    if (!R.chance(.45)) continue;
+    if (w.cv) { if (rng.chance(.12)) w.cv = 0; continue; }
+    if (w.sp === 1 && w.c === G.gate) { if (rng.chance(.3)) w.cv = 1; continue; }
+    if (!rng.chance(.45)) continue;
     const p = cxy(w.c), opts = [];
     for (const [dir, [dx, dy]] of Object.entries(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
       const c = y * MW + x; if (canStep(w.c, dir) && G.land[c] !== L.WATER && G.island[c] === G.island[w.c]) opts.push(c); }
     const good = opts.filter(c => spOf(w.sp).hab.includes(G.land[c]));
-    const pick = (good.length && R.chance(.8)) ? R.pick(good) : opts.length ? R.pick(opts) : -1;
+    const pick = (good.length && rng.chance(.8)) ? rng.pick(good) : opts.length ? rng.pick(opts) : -1;
     if (pick >= 0) { const q = cxy(pick); mv[w.sp].dx += q.x - p.x; mv[w.sp].dy += q.y - p.y; mv[w.sp].n++; w.c = pick; }
   }
   // The storm leaves marks: struck stones hold charge, rain fills leaf cups.
@@ -2412,31 +2434,50 @@ function worldTurn(pending) {
     const key = String(c), lay = layout(key); let hit = false;
     for (const f of lay.feats) {
       // fresh charge is hidden again: the quarter it lies in goes back under the veil
-      if (f.kind === 'k' && R.chance(.6)) { setFS(key, f.id, { ch: Math.max(2, stormCharge(key, f)) }); reveil(c, qOf(f.x, f.y)); hit = true; }
+      if (f.kind === 'k' && rng.chance(.6)) { setFS(key, f.id, { ch: Math.max(2, stormCharge(key, f)) }); reveil(c, qOf(f.x, f.y)); hit = true; }
       if (f.kind === 'u') setFS(key, f.id, { full: true });
     }
     if (hit) charged.push(c);
   }
   // A bloom passes through somewhere the player wasn't; bare bushes bear fruit again.
   const far = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && farFromPlayer(c)) far.push(c);
-  if (far.length) { const ctr = R.pick(far); bloom = ctr;
+  if (far.length) { const ctr = rng.pick(far); bloom = ctr;
     for (let c = 0; c < MW * MH; c++) { if (cdist(c, ctr) > 3) continue; const key = String(c), cs = S.cells[key]; if (!cs) continue;
       for (const id in cs) if (cs[id].bare) { delete cs[id].bare; bushes++; } } }
   // New arrivals, away from where the player just was.
   const occupied = [...new Set(S.cr.filter(w => !w.cv && G.comp[w.c] && farFromPlayer(w.c)).map(w => w.c))];
-  const nPods = 2 + R.int(2);
-  for (let i = 0; i < nPods && occupied.length; i++) { const c = R.pick(occupied), here = S.cr.filter(w => w.c === c && !w.cv);
-    S.pods.push({ id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: R.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); newPods.push(c); reveil(c); }
+  const nPods = 2 + rng.int(2);
+  for (let i = 0; i < nPods && occupied.length; i++) { const c = rng.pick(occupied), here = S.cr.filter(w => w.c === c && !w.cv);
+    S.pods.push({ id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: rng.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); newPods.push(c); reveil(c); }
   const families = occupied.filter(c => [0, 1, 2].some(sp => S.cr.filter(w => w.c === c && w.sp === sp && !w.cv).length >= 2));
-  const nYoung = 1 + R.int(2);
+  const nYoung = 1 + rng.int(2);
   let nextCr = S.cr.reduce((m, w) => Math.max(m, w.id), 0) + 1;
-  for (let i = 0; i < nYoung && families.length; i++) { const c = R.pick(families), here = S.cr.filter(w => w.c === c && !w.cv);
+  for (let i = 0; i < nYoung && families.length; i++) { const c = rng.pick(families), here = S.cr.filter(w => w.c === c && !w.cv);
     const counts = [0, 1, 2].map(sp => here.filter(w => w.sp === sp).length), sp = counts.indexOf(Math.max(...counts));
     S.cr.push({ id: nextCr, sp, c, cv: 0, b: Math.round(rnd(S.seed, 'bold', nextCr) * 100) / 100, s: 0, young: 1 }); nextCr++; young.push({ sp, c }); }
-  S.turn++; S.expN++;
+  for (const c of newPods) if (S.revealed[c]) recordSigns(c, t + 1);   // a sign carries the turn that has just been made
+  surfaceMissing(R, t, farFromPlayer);
   indexCreatures();
+  return { mv, charged, bushes, bloom, newPods, young };
+}
+// A species with no creature in this region at all (an old save from before every realm held every species, or a species released since) surfaces as one
+// herd of three or more on the reachable ground of its habitat, away from where the player last walked, and nothing is said. It draws on a stream of its own,
+// so the turn's other draws never move; a region that holds every species draws nothing.
+function surfaceMissing(R, t, farFromPlayer) {
+  ROSTER.forEach((r, sp) => {
+    if (S.cr.some(w => w.sp === sp && !w.cv)) return;
+    const ok = [], rg = makeRng(hash(R.seed, 'surface', t, sp));
+    for (let c = 0; c < MW * MH; c++) if (G.comp[c] === 1 && passable(c) && G.land[c] !== L.WATER && r.hab.includes(G.land[c]) && farFromPlayer(c)) ok.push(c);
+    if (!ok.length) return;   // nowhere away from the trail this turn: it waits for the next
+    const c = rg.pick(ok), n = HERD.SIZE + rg.int(3); let id = S.cr.reduce((m, w) => Math.max(m, w.id), 0) + 1;
+    for (let i = 0; i < n; i++, id++) S.cr.push({ id, sp, c, cv: 0, b: Math.round(rnd(R.seed, 'bold', id) * 100) / 100, s: 0 });
+  });
+}
+// The turn of the realm: the counters, the mibi clock, the outposts and the lines a player cares about. It runs with the region the Companion is in mounted.
+function realmTurn(turned, pending) {
+  const { mv, charged, bushes, bloom, newPods, young } = turned;
+  S.turn++; S.expN++;
   const grown = liveMibis().filter(grownNow), aged = liveMibis().filter(agedNow);   // the clock: never a bonded juvenile (it grows through care); elder from grownTurn when it has one
-  for (const c of newPods) if (S.revealed[c]) recordSigns(c);
   // Two or three plain lines a player would care about, each beside the record of what happened (specs/world-events.md): [kind, place, who, n]. The Companion decides which; the Station draws them.
   const lines = [], ev = [], say = (line, e) => { lines.push(line); ev.push(e); };
   for (const m of grown) say((!isCarried(m) ? CARE_TEXT.clockGrownHome : partnerMibi() === m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(m.name), ['grown', null, m.id, !isCarried(m) ? 0 : partnerMibi() === m ? 1 : 2]);
