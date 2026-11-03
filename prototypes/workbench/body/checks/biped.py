@@ -19,7 +19,7 @@ BIPED = dict(
     dome_overhang=0.12,         # S20 test: the skull overhangs the neck at the back by at least 0.12 H
     balance_margin=0.15,        # S20 test: at least 15 % of the sole length in front of the heel
     verts=3500, verts_warn=3850,    # owner, 2 Nov 23:17: about 3,500; "about" is up to 3,850
-    normal_deg=20.0, tail_normal_deg=30.0,   # owner, 2 Nov 20:25 (S20 test: 20 degrees, 30 along the tail)
+    normal_deg=20.0, tail_normal_deg=30.0, stalk_normal_deg=36.0,   # owner, 2 Nov 20:25 (S20 test: 20 degrees, 30 along the tail); the 36 on the 8-column stalk is the lead's ruling of 3 Nov (V9), provisional until the art director has seen the five worst stalk bends (V13 sheet)
     head_attach=dict(attach="underside", a=(0.2, 0.6), d=(0.0, 0.3)),
     ratio_along=12.0, ratio_around=10.0, area_ratio=2.5 * 2.0, nonplanar=0.1 * 6.0, ring_ratio=2.2,    # S20 test thresholds for mesh quality by range
 )
@@ -386,7 +386,7 @@ def c_verts(ctx):
 # 11 ------------------------------------------------------------------------------------------------------------------------------------------------------------ normals
 @check(id="normals", name="Smooth normals", fail="Sharp crease in {part}", stage="cage", version=1, part=[], fields=["spine.loft.junction_radius", "spine.loft.section", "parts.arm.L.socket"],
        rule=R("2026-11-02 20:25", "Normals must never change abruptly. A junction is either a deliberate sharp crease (like the toes) or a smooth filleted transition. This is tested for every species."),
-       limit=dict(text="no visible edge over 20° between faces (30° along the tail); tagged creases excepted", value=BIPED["normal_deg"]), az=32, mode="normal")
+       limit=dict(text="no visible edge over 20° between faces at level 2 (30° along the tail, 36° on the tail's 8-column stalk rings); tagged creases, the underside and the hard-overlay shells excepted. Level 2 is where the crease rule is read, on a surface close to the limit one; the mesh ships at level 1, whose edges are twice as long, so 20° at level 2 is about 40° at level 1 (60° on the tail). The 36° on the stalk is provisional until the art director has seen the five worst stalk bends", value=BIPED["normal_deg"]), az=32, mode="normal")
 def c_normals(ctx):
     import s20indiv as IN, s20normals as NM
     b = ctx.body
@@ -402,7 +402,13 @@ def c_normals(ctx):
     tail = (part[E[:, 0]] == b.parts["torso"]) & (s_edge <= ctx.G.s_root)
     vis = ~under & ~m["crease"]
     lim_ = lim(ctx, "normal_deg", BIPED["normal_deg"])
-    bad = vis & np.where(tail, m["ang"] > BIPED["tail_normal_deg"], m["ang"] > lim_)
+    stalk = np.zeros(len(E), bool)                                                      # edges between rings of 5 half columns (the 8-column stalk, V5): their L2 edges are longer round the bends
+    rg = b.ctx["info"]["torso"]
+    ks = [k for k, r in enumerate(rg["rings"]) if len(r) == 5]
+    if ks:
+        lo_s, hi_s = min(rg["ring_s"][k] for k in ks), max(rg["ring_s"][k] for k in ks)
+        stalk = tail & (s_edge >= lo_s - 1e-6) & (s_edge <= hi_s + 1e-6)
+    bad = vis & np.where(stalk, m["ang"] > BIPED["stalk_normal_deg"], np.where(tail, m["ang"] > BIPED["tail_normal_deg"], m["ang"] > lim_))
     names = {v: k for k, v in b.parts.items()}
     by = {names[int(p)]: int((bad & (part[E[:, 0]] == p)).sum()) for p in set(part[E[:, 0]][bad])}
     n = int(bad.sum())
