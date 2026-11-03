@@ -1,4 +1,4 @@
-# Species frame schema (`mb-species-frame/1`)
+# Species frame schema (`mb-species-frame/3`)
 
 Companion to [species-frames.md](../species-frames.md). One JSON file per species (`species-<id>.json`), written by [frames.py](frames.py) from the real authoring catalogue (catalogue6 of `v1/prototype/generator-workbench`, 114 paired loci plus six drafts). Every locus id, allele id and guard comes from that catalogue and its resolver; nothing here is typed by hand except the species' choices. The file names and ids keep the earlier working words *hopper*, *puffcap* and *glowtail*; the names are in `species.name` and `species.clan`. Regenerate with `python3 frames.py`, and verify with `python3 frames.py --check`, which fails if a file is stale.
 
@@ -6,7 +6,7 @@ Companion to [species-frames.md](../species-frames.md). One JSON file per specie
 
 | Field | Meaning |
 | --- | --- |
-| `schema` | `"mb-species-frame/1"` |
+| `schema` | `"mb-species-frame/3"` (the schema this note describes). The registry's files under `prototypes/workbench/frames/` are written by `framework/species.mjs` at `"mb-species-frame/2"` today and stay as they are: /3 only adds `engine` and `band` (section "Schema /3" below), so a /2 file reads as a /3 file with `engine: "form"` and no `band`. The first /3 file is the body engine's (workbench chunk 9). The first generation, written by `frames.py` against catalogue6, was /1 |
 | `species` | `id` (the working id; it is also the file name), `name` and `plural` (the approved species name: Loika, Untuva, Tuikis), `clan` (the clan name: Lophessa, Kausida, Stilbera), `order` (the order the player is expected to meet it), `summary` (one line) |
 | `catalogue` | `id`, `version`, `foundationDigest` (the workbench's foundation pin), `pairs` (114), `drafts` (6). A frame is valid only against this exact pin |
 | `glyph` | Five strings of five characters, `#` marked and `.` empty, each mirrored left to right. The mark at the centre of the genome ring and on the pod cap. Draft: the art director redraws it |
@@ -54,3 +54,16 @@ Then by kind:
 ## Catalogue ranges beyond catalogue6
 
 The workbench's catalogue (`prototypes/workbench/framework/catalogue.mjs`, pin `mb-genome-framework@9`) keeps every catalogue6 record exact and adds alleles under its own pin, listed in `ADDED_ALLELES` with the reason for each: hoof, webbed and root feet; one pair of legs; a huge size; tall ears; and, since pin 8, a **tiny** allele on the three head ratios (`growth.head-length-ratio` 0.22, `growth.head-width-ratio` 0.25, `growth.head-depth-ratio` 0.25), which lowers the head floor from 0.3–0.36 of a region to a quarter so a turtle's head fits (set by the programme lead). A changed range is a new pin: frames and genomes record the pin and frame version (`frameVersion` 2 from pin 8) they were built against, and a saved mibi keeps its own. Pin 9 (an owner ruling: the rig as structure and proportion calibrated to the accepted art) adds six alleles for the Loika's measures taken from Pip (a **huge** eye 0.44, a **stub** snout 0.32 that is a **full** 0.85 lower face, a **wide** 0.65 and **deep** 0.70 body, a **leaf** crown form) and two C01 branch loci (`growth.belly-field-extent`, how far up the body the belly field reaches; `growth.exterior-eye-height-ratio`, how high the eyes sit on the head); genomes keep `frameVersion` 2, since no range narrowed.
+
+## Schema /3: `engine` and `band` (pin 11)
+
+Written for the genome string and Tuliko's genes (the owner's rulings of 2026-11-02: a shared gene means the same name, direction and two-copy rule in every species, and each species sets its own size band). Two fields, nothing else changes.
+
+| Field | Where | Meaning |
+| --- | --- | --- |
+| `engine` | frame header | `"form"` or `"body"`: the engine that draws the species. A frame on the form engine leaves it out and reads as `"form"`, so every /2 file stays valid and byte for byte as it is |
+| `band` | every continuous locus row in `loci[]` of a `"body"` frame | `{ "form", "lo", "hi", "unit" }`: what the position t stands for in this species. `form` is how the engine turns t into a value (`mult`: a factor, 1 at the type; `off`: an offset, 0 at the type; `lin`: a straight line; `int`: a whole number), `lo` and `hi` are the values at t = 0 and t = 1, and `unit` is the unit the engine reads (`×`, `H`, `°`, `turns` or empty). A frame on the form engine leaves `band` out and takes the house band from the framework (foundation plan, section 1.6) |
+
+A continuous record holds a **position**, not a size (catalogue pin 11, `measure: "position"`): its copies are t on [0, 1], either a named bin (0, 0.5, 1: the player's words, lowest to highest) or one of the 59 steps of `BLEND_STEPS`. The record fixes the id, the direction (higher t is more of the last word), the words and how two copies show; the frame's `band` fixes the size, so a Tuliko's biggest eye is not a Loika's biggest eye. A record already in absolute units (`movement.cycle-rate`, `appearance.sheen`, `appearance.emission-brightness`) has no `band`: its copy is the record's own number, in every species.
+
+A frame names the catalogue pin it was built against in `catalogue`. From pin 11 the header also carries `digest`, the catalogue's content digest (`catalogue.mjs` `digestAt`): pin 10 named two contents (169 records on `main`, 178 on the build branches), pin 11 names one. A frame of version 6 or older names pin 10 exactly as before and has no digest. Records and alleles added at pin 11 carry `sinceFrame: 7`: a frame of version 6 or older lists none of them and sees none of the appended alleles (`appearance.marking-layout` keeps its two alleles and one bit in every older frame), which is why no existing frame or stamp code moves.

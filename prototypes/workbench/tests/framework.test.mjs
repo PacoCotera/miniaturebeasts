@@ -28,8 +28,9 @@ test("catalogue 10 carries catalogue6 plus the taxonomy's switches and loci, the
   assert.equal(kinds.filter((l) => l.switch !== "part").length, 27, "twenty-five new loci");
   assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
-  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 16, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, the six of the Loika's calibration to Pip, and ash");
-  assert.equal(CATALOGUE.version, 10, "pin 10: ash for the fine-tuned Loika (T-20261016-200)");
+  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles && l.addedAlleles.since <= 10).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 16, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, the six of the Loika's calibration to Pip, and ash");
+  assert.equal(CATALOGUE.version, 11, "pin 11: the genome string's records (tests/pin11.test.mjs); pin 10 was ash for the fine-tuned Loika (T-20261016-200), and its 178 records are what a frame of version 6 or older sees");
+  assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 6)).length, 178, "the pin-10 view is the 178 records of the build branches");
   assert.deepEqual(LOCI.get("appearance.body-palette").alleles.at(-1), { id: "ash", label: "ash", value: "#8e98a4" }, "ash appended last, so every older copy keeps its index");
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 10).length === 1);
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 8).length === 3);

@@ -1,4 +1,4 @@
-// The genome framework's catalogue, version 9: the v1 authoring catalogue6 (114 validated pairs
+// The genome framework's catalogue, version 11 (pin 11 adds the genome string's records: see the block before NEW_LOCI ends): the v1 authoring catalogue6 (114 validated pairs
 // and six drafts, snapshotted with provenance in catalogue6-data.mjs) plus the records the
 // taxonomy proposal lists as missing for the V1 roster (design/proposals/taxonomy.md §3, "What the
 // catalogue needs": 11 switches · 25 loci + 6 alleles) and the three gaps the species frames list
@@ -10,6 +10,7 @@
 // leaves open (sleeping copies). Plan switches are frame facts: they pick the rig and are never
 // carried per individual (species-frames.md §1, "plan switches are always locked").
 import { CATALOGUE6 } from "./catalogue6-data.mjs";
+import { sha256hex } from "./sha256.mjs";
 
 export const PLAN_SWITCHES = new Set([
   "development.axial-repeat", "development.symmetry", "development.attachment-repeat",
@@ -48,6 +49,74 @@ const dominance = (order) => { const map = {}; for (const a of order) for (const
 // New records. `scope` is trunk or branch (with its clan); `owner` is what must be on: a part
 // switch, "head", "flaps", "contact" (contact chains), "tail", "ears", "fur", or null (any body);
 // `consumer` names what draws or weighs it.
+// Pin 11 (frame version 7): Tuliko's genes become catalogue records, the genome string's first user (the proposal T-20261102-genome-string, A.2 and A.3; the owner's
+// rulings of 2026-11-02: a shared gene means the same name, direction and two-copy rule in every species with each species setting its own size band; the generic
+// looks are trunk, open to every species; only the lantern and its glow family are clan C20, Tuliko only). 43 trunk records and 5 branch records of C20, the
+// marking layout's four alleles, and a content digest. Every record carries `sinceFrame: 7`: a frame of version 6 or older lists none of it and sees none of the new
+// alleles, so every frame S01 to S19 builds byte for byte as at pin 10. A species opens a record only when its frame version is 7 or later.
+const F7 = { sinceFrame: 7, provenance: { catalogue: "mb-genome-framework@11 (frame version 7)", proposal: "T-20261102-genome-string proposal, A.3" } };
+// A POSITION: a continuous record whose copies are a position t on [0, 1] (not a size). Three named bins sit at 0, 0.5 and 1 (the player's words, lowest to highest: the
+// direction is that order, higher t is more of the last word); between them a copy lies on the 59-step grid (BLEND_STEPS). The record fixes the name, the direction, the
+// words and how two copies show (copy-mean); the size t stands for comes from the engine that draws it (the house band in the form engine, a species band in the body
+// engine, written in the frame as `band`, frames-schema.md). The words are working words for the copywriter.
+const position = (lo, mid, hi) => ({ operator: "copy-mean", measure: "position", alleles: [[lo, 0], [mid, 0.5], [hi, 1]].map(([id, value]) => ({ id, label: id, value })) });
+const renable = () => ({ operator: "recessive-enable", alleles: [{ id: "off", label: "off", value: false }, { id: "on", label: "on", value: true }] });
+// Tuliko's marking layout alleles, appended after bands and patches so every older copy keeps its index (and a frame of version 6 or older its bit width).
+const MARKING_ORDER = ["masked", "points", "bands", "patches", "spotted", "capped"];
+const NEW_LOCI_11 = [
+  // Coat (appearance). A pattern or an emblem wakes the records marked `sleepsWhen`; the owner is any body.
+  { id: "appearance.body-hue", ...F7, family: "appearance", label: "Body hue", scope: "trunk", owner: null, consumer: "engine: the coat's base hue, a position on the engine's hue band", ...position("low", "between", "high") },
+  { id: "appearance.body-hue-shift", ...F7, family: "appearance", label: "Hue shift", scope: "trunk", owner: null, consumer: "engine: a shift added to the body hue", ...position("low", "between", "high") },
+  { id: "appearance.body-value", ...F7, family: "appearance", label: "Coat value", scope: "trunk", owner: null, consumer: "engine: the coat's lightness", ...position("dark", "between", "light") },
+  { id: "appearance.countershade", ...F7, family: "appearance", label: "Countershade", scope: "trunk", owner: null, consumer: "engine: a dark back and a light underside", ...position("low", "between", "high") },
+  { id: "appearance.surface-grain", ...F7, family: "appearance", label: "Skin grain", scope: "trunk", owner: null, consumer: "engine: the continuous partner of the surface-texture kind", ...position("fine", "between", "coarse") },
+  { id: "appearance.fleck", ...F7, family: "appearance", label: "Fleck", scope: "trunk", owner: null, consumer: "engine: small flecks over the coat", ...position("low", "between", "high") },
+  { id: "appearance.cream-extent", ...F7, family: "appearance", label: "Cream reach", scope: "trunk", owner: null, consumer: "engine: how far the cream field reaches (C01's belly-field-extent stays the Loika's)", ...position("low", "between", "high") },
+  { id: "appearance.pattern-kind", ...F7, family: "appearance", label: "Pattern", scope: "trunk", owner: null, consumer: "engine: a reaction-diffusion pattern, or none", ...pairMap({ none: "none", spots: "spots", labyrinth: "labyrinth", rings: "rings" }, dominance(["none", "spots", "labyrinth", "rings"])) },
+  { id: "appearance.pattern-scale", ...F7, family: "appearance", label: "Pattern scale", scope: "trunk", owner: null, sleepsWhen: { "appearance.pattern-kind": "none" }, consumer: "engine: the pattern's scale; asleep when the pattern is none", ...position("small", "between", "large") },
+  { id: "appearance.pattern-contrast", ...F7, family: "appearance", label: "Pattern contrast", scope: "trunk", owner: null, sleepsWhen: { "appearance.pattern-kind": "none" }, consumer: "engine: the pattern's contrast; asleep when the pattern is none", ...position("low", "between", "high") },
+  { id: "appearance.pattern-rosette", ...F7, family: "appearance", label: "Rosette", scope: "trunk", owner: null, sleepsWhen: { "appearance.pattern-kind": "none" }, consumer: "engine: how far the pattern closes into rosettes; asleep when the pattern is none", ...position("low", "between", "high") },
+  { id: "appearance.band-count", ...F7, family: "appearance", label: "Band count", scope: "trunk", owner: null, consumer: "engine: the number of bands (a whole number when drawn)", ...position("few", "between", "many") },
+  { id: "appearance.emblem", ...F7, family: "appearance", label: "Emblem", scope: "trunk", owner: null, consumer: "engine: a small emblem on the coat, or none", ...pairMap({ none: "none", heart: "heart", star: "star" }, dominance(["none", "heart", "star"])) },
+  { id: "appearance.emblem-place", ...F7, family: "appearance", label: "Emblem place", scope: "trunk", owner: null, sleepsWhen: { "appearance.emblem": "none" }, consumer: "engine: where the emblem sits; asleep with no emblem", ...pairMap({ forehead: "forehead", belly: "belly" }, dominance(["forehead", "belly"])) },
+  { id: "appearance.emblem-size", ...F7, family: "appearance", label: "Emblem size", scope: "trunk", owner: null, sleepsWhen: { "appearance.emblem": "none" }, consumer: "engine: the emblem's size; asleep with no emblem", ...position("small", "between", "large") },
+  { id: "appearance.freckle-density", ...F7, family: "appearance", label: "Freckle density", scope: "trunk", owner: null, consumer: "engine: freckles over the face and back", ...position("sparse", "between", "dense") },
+  { id: "appearance.freckle-glow", ...F7, family: "appearance", label: "Freckle glow", scope: "branch", clan: "C20", owner: null, consumer: "engine: glowing freckles (Tuliko's glow family)", ...position("low", "between", "high") },
+  { id: "appearance.emission-hue", ...F7, family: "appearance", label: "Glow hue", scope: "trunk", owner: null, consumer: "engine: the colour of any glow", ...position("low", "between", "high") },
+  { id: "appearance.lantern-bleed", ...F7, family: "appearance", label: "Lantern bleed", scope: "branch", clan: "C20", owner: null, consumer: "engine: the lantern's warm bleed down the tail", ...position("low", "between", "high") },
+  { id: "appearance.glow-pattern", ...F7, family: "appearance", label: "Glow pattern", scope: "branch", clan: "C20", owner: null, consumer: "engine: the firefly arcs on the belly, or none", ...pairMap({ none: "none", "belly-arcs": "belly-arcs" }, dominance(["none", "belly-arcs"])) },
+  // Face.
+  { id: "form.eye-size", ...F7, family: "structure", label: "Eye size", scope: "trunk", owner: "head", consumer: "engine: eye size over the head, a position on the engine's band", ...position("small", "between", "large") },
+  { id: "form.eye-height", ...F7, family: "structure", label: "Eye height", scope: "trunk", owner: "head", consumer: "engine: how high the eyes sit on the head", ...position("low", "between", "high") },
+  { id: "form.eye-spacing", ...F7, family: "structure", label: "Eye spacing", scope: "trunk", owner: "head", consumer: "engine: how far apart the eyes sit", ...position("close", "between", "wide") },
+  { id: "form.mouth-width", ...F7, family: "structure", label: "Mouth width", scope: "trunk", owner: "head", consumer: "engine: the mouth's width", ...position("narrow", "between", "wide") },
+  { id: "form.mouth-height", ...F7, family: "structure", label: "Mouth height", scope: "trunk", owner: "head", consumer: "engine: how high the mouth sits on the face", ...position("low", "between", "high") },
+  { id: "appearance.mouth-rest", ...F7, family: "appearance", label: "Mouth at rest", scope: "trunk", owner: "head", consumer: "engine: the mouth's resting look", ...pairMap({ content: "content", open: "open" }, dominance(["content", "open"])) },
+  { id: "appearance.blush", ...F7, family: "appearance", label: "Blush", scope: "trunk", owner: "head", consumer: "engine: blush on the cheeks", ...enable() },
+  { id: "anatomy.fang-presence", ...F7, family: "structure", label: "Fangs", scope: "trunk", owner: "head", consumer: "engine: small fangs (a face family, 2026-11-02 20:27); both copies on to show", ...renable() },
+  { id: "form.whisker-count", ...F7, family: "structure", label: "Whisker count", scope: "trunk", owner: "head", consumer: "engine: the number of whiskers (a whole number when drawn; 0 is none)", ...position("few", "between", "many") },
+  { id: "form.whisker-length", ...F7, family: "structure", label: "Whisker length", scope: "trunk", owner: "head", consumer: "engine: whisker length", ...position("short", "between", "long") },
+  { id: "form.whisker-droop", ...F7, family: "structure", label: "Whisker droop", scope: "trunk", owner: "head", consumer: "engine: how far the whiskers hang", ...position("level", "between", "drooping") },
+  { id: "form.whisker-curl", ...F7, family: "structure", label: "Whisker curl", scope: "trunk", owner: "head", consumer: "engine: how far the whiskers curl", ...position("straight", "between", "curled") },
+  { id: "appearance.whisker-glow", ...F7, family: "appearance", label: "Whisker glow", scope: "branch", clan: "C20", owner: "head", consumer: "engine: glowing whisker tips (Tuliko's glow family)", ...renable() },
+  { id: "form.ear-kind", ...F7, family: "structure", label: "Ear kind", scope: "trunk", owner: "ears", consumer: "engine: prick, nub or lop ears", ...pairMap({ prick: "prick", lop: "lop", nub: "nub" }, dominance(["prick", "nub", "lop"])) },   // allele order is the Tuliko's (prick, lop, nub: permanent, an index in every copy); dominance is prick > nub > lop
+  { id: "form.ear-length", ...F7, family: "structure", label: "Ear length", scope: "trunk", owner: "ears", consumer: "engine: ear length", ...position("short", "between", "long") },
+  { id: "form.ear-width", ...F7, family: "structure", label: "Ear width", scope: "trunk", owner: "ears", consumer: "engine: ear width", ...position("slim", "between", "broad") },
+  { id: "form.ear-splay", ...F7, family: "structure", label: "Ear splay", scope: "trunk", owner: "ears", consumer: "engine: how far the ears tilt out (one name for the ear tilt of the foundation list; anatomy.ear-tilt means upright or drooping)", ...position("low", "between", "high") },
+  { id: "form.ear-droop", ...F7, family: "structure", label: "Ear droop", scope: "trunk", owner: "ears", consumer: "engine: how far the ears droop", ...position("upright", "between", "drooping") },
+  // Shape, legs and tail.
+  { id: "form.head", ...F7, family: "structure", label: "Head size", scope: "trunk", owner: null, consumer: "engine: head size over the body", ...position("small", "between", "big") },
+  { id: "form.torso-girth", ...F7, family: "structure", label: "Torso girth", scope: "trunk", owner: null, consumer: "engine: the torso's girth", ...position("slim", "between", "round") },
+  { id: "form.leg-length", ...F7, family: "structure", label: "Leg length", scope: "trunk", owner: "contact", consumer: "engine: leg length", ...position("short", "between", "long") },
+  { id: "form.leg-girth", ...F7, family: "structure", label: "Leg girth", scope: "trunk", owner: "contact", consumer: "engine: leg girth", ...position("slim", "between", "sturdy") },
+  { id: "form.tail-length", ...F7, family: "structure", label: "Tail length", scope: "trunk", owner: "tail", consumer: "engine: tail length", ...position("short", "between", "long") },
+  { id: "form.tail-girth", ...F7, family: "structure", label: "Tail girth", scope: "trunk", owner: "tail", consumer: "engine: tail girth (the root, 35 %, and the taper together)", ...position("slim", "between", "stout") },
+  { id: "form.tail-curl", ...F7, family: "structure", label: "Tail curl", scope: "trunk", owner: "tail", consumer: "engine: the tail's curl (not C19's fiddlehead growth.tail-curl-turn)", ...position("straight", "between", "curled") },
+  { id: "form.tail-carry", ...F7, family: "structure", label: "Tail carriage", scope: "trunk", owner: "tail", consumer: "engine: how high the tail is carried", ...position("low", "between", "raised") },
+  { id: "anatomy.tail-tip-form", ...F7, family: "structure", label: "Tail tip", scope: "branch", clan: "C20", owner: "tail", consumer: "engine: a lantern, a tuft or a plain tail tip (the lantern is Tuliko's signature)", ...pairMap({ lantern: "lantern", tuft: "tuft", plain: "plain" }, dominance(["lantern", "tuft", "plain"])) },
+  { id: "form.tail-tip-size", ...F7, family: "structure", label: "Tip size", scope: "trunk", owner: "tail", consumer: "engine: the tail tip's size", ...position("small", "between", "large") },
+];
+
 const F6 = { sinceFrame: 6, provenance: { catalogue: "mb-genome-framework@10 (frame version 6)", proposal: "design/proposals/genome-fluffy.md" } };
 const NEW_LOCI = [
   // Mammal look (S04–S08, S10; trunk): fur on tail and ears, a face mask, tail rings, ear tilt. 2 · 4.
@@ -125,6 +194,7 @@ const NEW_LOCI = [
   { id: "anatomy.brow-tuft-presence", ...F6, family: "structure", label: "Brow tufts", scope: "branch", clan: "C18", owner: "head", consumer: "rig: a tuft of fur over each eye", ...enable() },
   { id: "growth.brow-tuft-length", ...F6, family: "structure", label: "Brow tuft length", scope: "branch", clan: "C18", owner: "anatomy.brow-tuft-presence", consumer: "rig: tuft length over head height; at long the tip stops above the eye's upper rim", ...mean({ short: 0.4 }, { long: 1 }) },
   { id: "growth.hand-size-ratio", ...F6, family: "structure", label: "Hand size", scope: "trunk", owner: "arms", consumer: "rig: the hand's size over the arm's thickness (a palm and three fingers); fixed per species", ...mean({ small: 0.7 }, { plump: 1.3 }) },
+  ...NEW_LOCI_11,
 ];
 
 // Alleles added to v1 records (taxonomy §3: "+ 6 alleles"). A changed record is a new record
@@ -147,6 +217,10 @@ const ADDED_ALLELES = {
   "growth.core-depth-ratio": { alleles: [{ id: "deep", label: "deep", value: 0.7 }], since: 9, why: "Pip's body is 0.92 as tall as it is long; high (0.61) gave 0.82" },
   // Catalogue 10: a light, muted body pigment for the fine-tuned Loika (the owner's decision 2026-10-17 13:15; T-20261016-200), appended so every older copy keeps its index and its 4 bits.
   "appearance.body-palette": { alleles: [{ id: "ash", label: "ash", value: "#8e98a4" }], since: 10, why: "a dove grey-blue a value step above russet, natural on the moss: the Loika's third colour" },
+  // Catalogue 11 (frame version 7): the Tuliko's four marking layouts, appended after bands and patches. The record's version moves; bands|patches stays co-dominant; a pair with a new
+  // layout follows the order masked > points > bands > patches > spotted > capped (the Tuliko's order, with patches placed beside bands: the proposal is silent on patches).
+  // Each new allele is known only from frame version 7 (`sinceFrame`), so an older frame keeps its two alleles and its one bit.
+  "appearance.marking-layout": { alleles: ["masked", "points", "spotted", "capped"].map((id) => ({ id, label: id, value: id, sinceFrame: 7 })), pairMap: (map) => ({ ...dominance(MARKING_ORDER), ...map }), since: 11, why: "the Tuliko's four layouts (masked, points, spotted, capped) beside bands and patches; the plain look is the marking switch off" },
   "anatomy.crown-form": { alleles: [{ id: "leaf", label: "leaf", value: "leaf" }], pairMap: (map) => ({ ...map, "leaf|leaf": "leaf", "leaf|pointed": "leaf", "leaf|rounded": "leaf" }), since: 9, why: "Pip's crest is three leaf sheets, not spikes" },
 };
 
@@ -195,8 +269,8 @@ function newLocus(l) {
 
 export const CATALOGUE = {
   // Pin 8: 7 plus the tiny head alleles (a changed range is a new pin; frames and genomes carry the pin
-  // they were built against, and a saved mibi keeps its own).
-  id: "mb-genome-framework", version: 10, schema: "mb-catalogue/10",
+  // they were built against, and a saved mibi keeps its own). Pin 11 names one content: `digest`, below.
+  id: "mb-genome-framework", version: 11, schema: "mb-catalogue/11",
   parent: { id: CATALOGUE6.id, version: CATALOGUE6.version, foundationDigest: CATALOGUE6.foundationDigest, source: CATALOGUE6.source },
   families: CATALOGUE6.families,
   loci: [...CATALOGUE6.loci.map(v1Locus), ...NEW_LOCI.map(newLocus)],
@@ -205,6 +279,22 @@ export const CATALOGUE = {
 for (const l of CATALOGUE.loci) if (CATALOGUE.loci.filter((m) => m.id === l.id).length !== 1) throw new Error(`duplicate locus ${l.id}`);
 for (const l of CATALOGUE.loci) if (l.operator === "pair-map") for (const a of l.alleles) for (const b of l.alleles) if (!Object.hasOwn(l.pairMap, [a.id, b.id].sort().join("|"))) throw new Error(`${l.id}: incomplete pair map at ${a.id}|${b.id}`);
 export const LOCI = new Map(CATALOGUE.loci.map((l) => [l.id, l]));
+// The catalogue's content digest (pin 11; V9 of the genome-string proposal: pin 10 named two contents, 169 records on main and 178 on the build branches). SHA-256 of the
+// canonical text of what a genome's meaning rests on: each record's id, status, family, operator, scope, clan, owner, sleepsWhen, since-frame, its alleles (id, value,
+// since-frame) and its pair map with sorted keys, in catalogue order. Words (labels, consumers, provenance) and the record version are left out: a copywriter's edit
+// moves no genome. `digestAt(v)` is the digest of the content a frame of version v sees (records and alleles with a later `sinceFrame` left out): digestAt(6) is the
+// 178-record content of pin 10 on the build branches, digestAt(7) is pin 11.
+const canon = (l, v) => JSON.stringify([l.id, l.status, l.family, l.operator, l.scope, l.clan ?? null, l.owner ?? null, l.sleepsWhen ?? null, l.sinceFrame ?? 0,
+  l.alleles.filter((a) => !(a.sinceFrame > v)).map((a) => [a.id, a.value, a.sinceFrame ?? 0]),
+  l.pairMap ? Object.keys(l.pairMap).sort().filter((k) => k.split("|").every((id) => l.alleles.some((a) => a.id === id && !(a.sinceFrame > v)))).map((k) => [k, l.pairMap[k]]) : null]);
+export const digestAt = (frameVersion) => sha256hex(CATALOGUE.loci.filter((l) => !(l.sinceFrame > frameVersion)).map((l) => canon(l, frameVersion)).join("\n"));
+CATALOGUE.digest = digestAt(Infinity);
+// The pin a frame of this version names, as its header records it: frames of version 6 and older name pin 10 exactly as they always did (no digest: they are unchanged
+// bytes); a frame of version 7 or later names pin 11 and its content digest.
+export const PIN_OF_FRAME_VERSION = (frameVersion) => (frameVersion >= 7 ? 11 : 10);
+export const catalogueHeader = (frameVersion) => (frameVersion >= 7
+  ? { id: CATALOGUE.id, version: 11, digest: CATALOGUE.digest, parent: CATALOGUE.parent }
+  : { id: CATALOGUE.id, version: 10, parent: CATALOGUE.parent });
 export const VALIDATED = CATALOGUE.loci.filter((l) => l.status === "validated");
 export const DRAFTS = CATALOGUE.loci.filter((l) => l.status !== "validated").map((l) => l.id);
 export const V1_DEFAULTS = CATALOGUE6.defaults;
@@ -213,7 +303,8 @@ export const PIGMENTS = Object.fromEntries(
 export const BODY_PIGMENTS = Object.fromEntries(LOCI.get("appearance.body-palette").alleles.map((a) => [a.id, a.value]));
 export const SECOND_PIGMENTS = Object.fromEntries(LOCI.get("appearance.underside-palette").alleles.map((a) => [a.id, a.value]));
 export const locusById = (id) => { const l = LOCI.get(id); if (!l) throw new Error(`unknown locus ${id}`); return l; };
-export const alleleIds = (id) => locusById(id).alleles.map((a) => a.id);
+// The allele ids of a record as a frame of this version sees them (an allele appended later is not there; no version: all of them).
+export const alleleIds = (id, frameVersion = Infinity) => locusById(id).alleles.filter((a) => !(a.sinceFrame > frameVersion)).map((a) => a.id);
 
 // Operator semantics, as v1's resolver applies them (compositional-vocabulary-adapter.mjs:
 // copy-mean, dominant-enable, recessive-enable, pair-map keyed by the sorted copy pair;

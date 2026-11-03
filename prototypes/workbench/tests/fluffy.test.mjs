@@ -78,7 +78,7 @@ test("change 3: the new records are branch records of C18 and C19 (the hand's si
   for (const id of ["anatomy.tail-curl-presence", "growth.tail-curl-turn", "growth.tail-rise"]) assert.deepEqual(scopeOf(id), ["branch", "C19"], id);
   for (const id of ["anatomy.fur-skirt-presence", "growth.fur-skirt-drop", "growth.fur-skirt-flare", "anatomy.brow-tuft-presence", "growth.brow-tuft-length"]) assert.deepEqual(scopeOf(id), ["branch", "C18"], id);
   assert.equal(LOCI.get("growth.hand-size-ratio").owner, "arms");
-  assert.deepEqual(VALIDATED.slice(-NEW.length).map((l) => l.id), NEW, "the new records are the last nine, appended");
+  assert.deepEqual(VALIDATED.filter((l) => !(l.sinceFrame > 6)).slice(-NEW.length).map((l) => l.id), NEW, "the new records are the last nine of the frame-6 catalogue, appended (pin 11 appends its own after them)");
   // a generated species of another clan, even at frame version 6, carries none of them and lists them as absent branch loci
   const spec = { ...specOf(SPECIES.find((s) => s.id === "S04")), frameVersion: 6, features: { ...specOf(SPECIES.find((s) => s.id === "S04")).features, "anatomy.tail-curl-presence": "on", "anatomy.fur-skirt-presence": "on", "anatomy.brow-tuft-presence": "on" } };
   const other = buildFrame(spec, { samples: 5 });

@@ -41,6 +41,11 @@ export const CLANS = {
   C19: { number: 19, resembles: "an upright crescent with a curled tail and small hands", parts: ["tail","arm","leg","head"], plan: "one|serial|bilateral|mixed|one|two|one|off|fur", extras: { join: "broad", upright: true }, anchor: "lagoon", second: "cream", feature: "a curled tail and two small three-fingered hands held at the chest; the fiddlehead of the ferns", features: { ...EYES, ...sw("anatomy.muzzle-presence", "anatomy.axial-tail-presence", "anatomy.tail-curl-presence", "appearance.belly-field") }, finish: { "growth.tail-rise": "rear", "anatomy.contact-terminal-form": "rounded", "growth.terminal-length-ratio": "broad", "growth.terminal-depth-ratio": "high" },
     borrows: ["appearance.belly-field", "growth.belly-field-extent"] },
   C16: { number: 16, resembles: "a wisp of lightning", parts: ["body","head"], plan: "three|fan|bilateral|none|zero|one|two|off|skin", extras: { join: "narrow", wave: true, float: true, stand: true }, anchor: "periwinkle", second: "ice", feature: "a body of charge; storm-born", features: { ...EYES, ...sw("physiology.charged-body") }, finish: { "appearance.sheen": "glossy", "growth.branch-angle": "close", "growth.region-taper": "strong", "appearance.emission-brightness": "bright" } },
+  // C20, the Tuliko's clan (pin 11, genome-string proposal A.2): a clan with no form-engine plan and no generated species. It exists so the lantern and its glow family
+  // (appearance.freckle-glow, appearance.lantern-bleed, appearance.glow-pattern, appearance.whisker-glow, anatomy.tail-tip-form) have an owner; Tuliko (S20) is drawn by the
+  // body engine, and its frame arrives with the workbench's chunk 9 and ticket G3. No `plan`, so nothing here can build a species: the page's new-species list skips it
+  // (`engine: "body"`), and the clan name is the copywriter's (CLAN_NAMES has none yet).
+  C20: { number: 20, engine: "body", resembles: "a small upright biped with a lantern at the end of its tail", parts: ["tail", "head", "ear"], feature: "a lantern tail tip that glows like a firefly" },
 };
 
 // The three authored frames, as frames.py defines them (open traits, pools, fixed values).
