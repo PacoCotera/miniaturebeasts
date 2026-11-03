@@ -35,6 +35,8 @@ class SpineLoft(Gourd):
         self.tip_family = tip or spec["sockets"]["tail.tip"]["default"]
         self.tip_size = float(tip_size)
         shp = spec["sockets"]["tail.tip"]["shapes"].get(self.tip_family)
+        self.tip_turn_max = float(shp["ring_turn_max"]) if shp and "ring_turn_max" in shp else None          # a tip family may set the rings-by-curvature limit for itself (see _by_curvature)
+        self.tip_ring0 = float(shp["ring0"]) if shp and "ring0" in shp else None         # where the first ring sits behind the end of the tip: a tip family may bring it closer (the tuft's blunt end: its cap warps when the ring is further out)
         self.bulb = tip_profile(shp, self.tip_size) if shp else (0.0, 0.0, 0.5)
         t = spec["parts"]["torso"]
         sp = t["spine"]
@@ -240,7 +242,7 @@ class SpineLoft(Gourd):
         vert = [x + d for x in ref[-nv:]]
         if not tail or not body:
             return self._stations(spec, self.L)
-        while body and body[0] - tail[-1] < 0.5 * gap:
+        while body and body[0] - tail[-1] < 0.6 * gap:
             if len(tail) > 1:
                 tail.pop()
             else:
@@ -254,7 +256,7 @@ class SpineLoft(Gourd):
         gap = self.sp["ring_gap"]
         zs = list(t["rings_z"])
         s_v = [L - (2.2 - z) for z in zs]               # the vertical rings
-        s_start = float(self.sp.get("tip_ring0", 0.06))
+        s_start = self.tip_ring0 if self.tip_ring0 is not None else float(self.sp.get("tip_ring0", 0.06))
         s_stop = s_v[0] - 0.55 * gap
         gt = float(self.sp.get("ring_gap_tip", gap))         # finer rings along the tail's bends: a ring turns at most about 30 degrees from the one before (rings every gt where the bends are tight, wider as the stem straightens)
         s_root = self.s_root + (L - self.L)                  # the root's s on a path of length L: its distance from the crown does not change
@@ -271,7 +273,30 @@ class SpineLoft(Gourd):
         s_c.append(s_stop)
         if len(s_c) > 2 and s_c[-1] - s_c[-2] < 0.5 * gt:
             s_c.pop(-2)
-        return s_c + s_v
+        return self._by_curvature(s_c) + s_v
+
+    def _by_curvature(self, s_c):
+        """Rings by how fast the tail's profile changes (V3a): a ring is added between two rings until no ring turns the profile (its radius against arc length, in H) more than `spine.ring_turn_max` degrees from the ring before. Nothing happens
+        without that value. The interval next to the cap is left as it is (a ring close to the cap makes thin, twisted faces); rings are never closer than 0.025 H."""
+        lim = self.tip_turn_max if self.tip_turn_max is not None else self.sp.get("ring_turn_max")
+        if lim is None or len(s_c) < 3:
+            return s_c
+        s_c = list(s_c)
+        for _ in range(40):
+            s_ = np.array([x for x in s_c if x < self.s_root])
+            if len(s_) < 3:
+                break
+            r = self.tail_radius(s_)
+            ph = np.degrees(np.arctan2(np.diff(r), np.diff(s_)))
+            turn = np.abs(np.diff(ph))                                # at ring i+1 of s_
+            gaps = np.diff(s_)
+            todo = [i for i in range(len(turn)) if turn[i] > float(lim) and gaps[i + 1] >= 0.05]
+            if not todo:
+                break
+            i = max(todo, key=lambda k: turn[k])
+            s_c.append(0.5 * (s_[i + 1] + s_[i + 2]))               # split the interval on the stalk's side of the ring
+            s_c.sort()
+        return s_c
 
 
 def column_angles_at(G, center_z, vertical):

@@ -1748,6 +1748,7 @@
     "lantern"
    ],
    "default": "lantern",
+   "min_tail": {"note": "a large tip may not come within its own size of the seat (V3c): the tail length gene, a multiplier, is held at least base + slope x (tip radius - from_radius), never above cap; the type's lantern (radius 0.10) is not held", "base": 0.8, "from_radius": 0.105, "slope": 9.0, "cap": 1.0},
    "shapes": {
     "plain": {
      "kind": "profile",
@@ -1757,9 +1758,12 @@
     },
     "tuft": {
      "kind": "profile",
-     "len": 0.2,
+     "len": 0.26,
      "width": 0.22,
-     "u_m": 0.5
+     "u_m": 0.5,
+     "ring0": 0.04,
+       "ring_turn_max": 20,
+       "max_size": 1.1
     },
     "lantern": {
      "kind": "profile",

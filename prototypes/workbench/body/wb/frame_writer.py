@@ -166,7 +166,7 @@ def _built(job):
     for x in bad:
         e = x.get("extra") or {}
         if x["id"] == "normals":
-            where["normals"] = dict(parts=e.get("by_part"), ranges=e.get("by_range"), worst=e.get("worst"))
+            where["normals"] = dict(parts=e.get("by_part"), ranges=e.get("by_range"), worst=e.get("worst"), s=e.get("s_range"))
         elif x["id"] == "mesh":
             where["mesh"] = dict(ranges=e.get("bad_ranges"), detail={k: v for k, v in (e.get("ranges") or {}).items() if v.get("bad")})
         elif x["id"] == "verts":
@@ -197,19 +197,26 @@ def _verts_summary(res):
     return dict(median=int(np.median(v)), p5=int(np.percentile(v, 5)), p95=int(np.percentile(v, 95)), max=int(v.max()), within3500=round(float((v <= 3500).mean()), 4), within3850=round(float((v <= 3850).mean()), 4), byPart=part)
 
 
-def run_all(doc, samples=200, workers=None, seed=20):
-    """The built-and-checked results of `samples` genomes drawn from the pools and `samples` children of crosses between them (the frame writer's exact genomes), in order: sampled first, then crossed."""
-    import multiprocessing as mp
+def jobs_of(doc, samples=200, seed=20):
+    """The frame writer's genomes: `samples` drawn from the pools, then `samples` children of crosses between them, as (name, copies) in order."""
     import numpy as np
-    global _DOC
-    _DOC = doc
     g = doc["genome"]
     drawn = X.wild(g, 2 * samples, seed=seed + 1)
     rng = np.random.Generator(np.random.PCG64([seed, 11]))
     kids = [X.cross(g, drawn[2 * k], drawn[2 * k + 1], rng) for k in range(samples)]
-    jobs = [(f"sampled {k + 1}", c) for k, c in enumerate(drawn[:samples])] + [(f"crossed {k + 1}", c) for k, c in enumerate(kids)]
+    return [(f"sampled {k + 1}", c) for k, c in enumerate(drawn[:samples])] + [(f"crossed {k + 1}", c) for k, c in enumerate(kids)]
+
+
+def run_all(doc, samples=200, workers=None, seed=20, only=None):
+    """The built-and-checked results of `samples` genomes drawn from the pools and `samples` children of crosses between them (the frame writer's exact genomes), in order: sampled first, then crossed. `only` is a list of genome names to build (the rest are drawn, not built)."""
+    import multiprocessing as mp
+    global _DOC
+    _DOC = doc
+    jobs = jobs_of(doc, samples, seed)
+    if only is not None:
+        jobs = [j for j in jobs if j[0] in set(only)]
     workers = workers or max(1, min(10, (os.cpu_count() or 2) - 2))
-    with mp.get_context("fork").Pool(workers) as pool:
+    with mp.get_context("fork").Pool(min(workers, max(1, len(jobs)))) as pool:
         return pool.map(_built, jobs, chunksize=4)
 
 

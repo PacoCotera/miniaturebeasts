@@ -537,6 +537,22 @@ def ring_ref(raw):
     return _REF[k]
 
 
+def tip_size_of(raw, shape):
+    """The tip's size as built: the gene's multiplier, held at the family's `max_size` where the species file sets one (the tuft's flare warps the mesh above 1.1)."""
+    shp = (((raw.get("sockets") or {}).get("tail.tip") or {}).get("shapes") or {}).get(shape["tip"]) or {}
+    return min(float(shape["tipSize"]), float(shp.get("max_size", 99.0)))
+
+
+def tail_len_min(raw, shape):
+    """The shortest tail a tip allows (the species file's `sockets.tail.tip.min_tail`): a big tip on the shortest tail folds into the seat, so the tail length multiplier is held at base + slope x (the tip's radius - from_radius), never above cap (the type's own length). 0 when the file sets none."""
+    sk = (raw.get("sockets") or {}).get("tail.tip") or {}
+    mt, shp = sk.get("min_tail"), (sk.get("shapes") or {}).get(shape["tip"])
+    if not mt or not shp:
+        return 0.0
+    R = 0.5 * float(shp["width"]) * tip_size_of(raw, shape)
+    return min(float(mt.get("cap", 9.9)), float(mt["base"]) + float(mt["slope"]) * max(0.0, R - float(mt["from_radius"])))
+
+
 def build_individual(raw, c, upto="base", balance=True, doc=None):
     """Body of one creature from its creature.json (the species raw dict, the shape genes applied, the loft/legs/tubes/sitting builders), then the balance rule (owner, 1 Nov: the centre of mass must fall inside the support polygon of the soles,
     at least 15 % of the sole length in front of the heel). The anatomy fixes, in order: the legs move under the centroid (the hip x, up to 0.12 H back toward it: the heel edge follows the hip), then the tail's length is clipped (x0.92 a step, down to x0.6). What was done is logged in b.ctx['balance']."""
@@ -547,14 +563,14 @@ def build_individual(raw, c, upto="base", balance=True, doc=None):
     arm_pass = 0
     for step in range(16):
         g = dict(shape)
-        g["tailLen"] = shape["tailLen"] * log["tail_len_factor"]
+        g["tailLen"] = max(shape["tailLen"] * log["tail_len_factor"], tail_len_min(raw, shape))
         r = apply_genes(doc, g, c["coat"]) if doc is not None else apply_shape(raw, g)
         r["parts"]["leg.L"]["joints"][0]["at"][0] += log["leg_dx"]
         if log["arm_bias"]:
             fa_ = r["parts"]["arm.L"]["families"][r["parts"]["arm.L"]["default"]]
             fa_["visible_len"] = float(fa_["visible_len"]) + log["arm_bias"]
         spec, _ = SC.load(raw=r)
-        b = s20build.make_s20(spec, upto=upto, ear=c["shape"]["ear"], tip=c["shape"]["tip"], tip_size=c["shape"]["tipSize"], appendages=c.get("appendages") if upto == "base" else None, ring_ref=ring_ref(raw))
+        b = s20build.make_s20(spec, upto=upto, ear=c["shape"]["ear"], tip=c["shape"]["tip"], tip_size=tip_size_of(raw, c["shape"]), appendages=c.get("appendages") if upto == "base" else None, ring_ref=ring_ref(raw))
         if not balance or upto != "base":
             return b
         m = s20balance.measure(b)

@@ -424,7 +424,7 @@ def c_normals(ctx):
             k_ = int(((u_bad >= lo_ - 1e-9) & (u_bad <= hi_ + 1e-9)).sum())
             if k_:
                 where_u[nm_] = k_
-    r = row("fail" if n else "pass", n, 0, meas, dict(mode="normal", az=32, svg="".join(out)), dict(parts=[], fail=(f"Sharp crease in {where}" if where else None), by_part=by, by_range=where_u, worst=round(worst, 2)))
+    r = row("fail" if n else "pass", n, 0, meas, dict(mode="normal", az=32, svg="".join(out)), dict(parts=[], fail=(f"Sharp crease in {where}" if where else None), by_part=by, by_range=where_u, worst=round(worst, 2), s_range=([round(float(s_edge[bad].min()), 3), round(float(s_edge[bad].max()), 3)] if n else None)))
     return r
 
 

@@ -1,16 +1,16 @@
 {
- "note": "S20 variety individuals 1..12 (s20genes.draw(i)) built by s20genes.build_individual at 930fc4253, before the cage speed work: the cage hash (wb.hashing.cage_hash) of each. Individual 1 is the type. Change only when the S20 cage is meant to change. Re-baselined 2 Nov 2026 (fix round after chunks 7-8): the body's rings are laid out from the crown, so a tail gene cannot slide them past a limb socket; every seed whose tail is not the type's length changed (sheet: build/fix78/twelve.html). The type's hash did not. Seeds that changed: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12. Re-baselined 3 Nov 2026 (W9): the twelve are drawn on the 59-step grid of the genome string (every blend t is a step k/59 or the bin between), with the AD's hue bands (body 180-360, glow 60-100) and hues of ad-hue.md. Individual 1, the type, did not change (dbebe2e3a0a3b27c); the cages of 2 to 12 changed by at most 1/118 of a band on each shape and face blend. Re-baselined 3 Nov 2026 (V2): a whisker and a fang are shown at their cage, one subdivision level less than the body (the species file's subdiv_offset -1), so their cage radii are fitted to where the level-1 shell stood. Seeds that changed: 2, 3, 4, 6, 7, 8, 10, 11, 12 (whiskers; 3, 8 and 11 also fangs). The type, 5 and 9 did not.",
+ "note": "S20 variety individuals 1..12 (s20genes.draw(i)) built by s20genes.build_individual at 930fc4253, before the cage speed work: the cage hash (wb.hashing.cage_hash) of each. Individual 1 is the type. Change only when the S20 cage is meant to change. Re-baselined 2 Nov 2026 (fix round after chunks 7-8): the body's rings are laid out from the crown, so a tail gene cannot slide them past a limb socket; every seed whose tail is not the type's length changed (sheet: build/fix78/twelve.html). The type's hash did not. Seeds that changed: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12. Re-baselined 3 Nov 2026 (W9): the twelve are drawn on the 59-step grid of the genome string (every blend t is a step k/59 or the bin between), with the AD's hue bands (body 180-360, glow 60-100) and hues of ad-hue.md. Individual 1, the type, did not change (dbebe2e3a0a3b27c); the cages of 2 to 12 changed by at most 1/118 of a band on each shape and face blend. Re-baselined 3 Nov 2026 (V2): a whisker and a fang are shown at their cage, one subdivision level less than the body (the species file's subdiv_offset -1), so their cage radii are fitted to where the level-1 shell stood. Seeds that changed: 2, 3, 4, 6, 7, 8, 10, 11, 12 (whiskers; 3, 8 and 11 also fangs). The type, 5 and 9 did not. Re-baselined 3 Nov 2026 (V3): the tuft is 0.26 H long (was 0.20, a flare steeper than the lantern's), its first ring sits 0.04 H from its end, its rings follow the profile (ring_turn_max 20) and it is built at size 1.1 at most (max_size); a large tip holds the tail length at least min_tail (the type's lantern is not held). Seeds that changed: 2, 3, 4, 10 (the ones with a tuft). The type and the rest did not.",
  "hashes": {
   "1": "dbebe2e3a0a3b27cf03a7e78fb671f4b3e401bcae8fb3ecf3144f2dd571b73fd",
-  "2": "2adf6ceae03514ce61c19c17f03b7ca2354d8dd4b0453b7dae8c639ed01333a5",
-  "3": "2af52293005ff04d50b929c8c1cfe678ddd3d056b7aaa04b8010714abb200768",
-  "4": "feac479a4ac5ce5320a26b9580147ecac9eafb00a62dbf829f86145ec3867371",
+  "2": "4438574f30d680576e5af0784bd6fb2e88e11d9bcc8f3cfa7a4c9db8a3efeb4a",
+  "3": "00e0695b634138335120aaecce64d60f8275eacc0e51dcbbb7c6b2c67666e41e",
+  "4": "4b16454c29b8cec13d9f6f81751675c9af4812259f4057dc0c52820f80153387",
   "5": "8a882ecf7a43becf81ee0d1d26f27060be504f463ca5602c2b67a62237aa9c56",
   "6": "dbfc53a7b6bf4f30c68d854f8ced9378e122e0e983bff449980a94a785f5de8b",
   "7": "025369da78029bca17a12afb84f61115126ca190a6738e1c43a6dea883c023f1",
   "8": "1bda954125b5c02e77a32eb442a5980b46bfd7109fe95175c066d4d337e0956f",
   "9": "ef1e7444a064ecdcc6ece73646ea5da1f35d2030f139e985f1d8d5512b37d252",
-  "10": "ccbf9bdb8b48df4f12f0635b0ac9737479928bcb88b2ecf431c4dd2ce8ca4bf1",
+  "10": "eab75535d0c7dc4116492628cbec6142f4eaf9d2a666112c78cb792135fc4407",
   "11": "2dc05df91fe4376a65cd0514429efdce3115314e04fa5048eec12b774b4dcd05",
   "12": "1f282a20811f8ff8b2a1db748a3177f6f7c468e4a4e6b74f71dfc0fa63d10d19"
  }
