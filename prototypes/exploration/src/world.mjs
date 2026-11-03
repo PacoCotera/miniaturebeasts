@@ -975,8 +975,8 @@ export function genPatch2(G, seed, cell) {
     for (let dx = 0; dx < 3; dx++) { setT(ox + dx, oy, T.ROCK); setT(ox + dx, oy + 1, T.ROCK); shelter[I(ox + dx, oy + 2)] = 1; occ[I(ox + dx, oy + 2)] = 1; }
     feats.push({ id: 'o' + k, kind: 'o', x: ox, y: oy }); k++;
   }
-  // Generator 4's Fells: a rock place has four times the stone placements (about three times the stone tiles once they overlap), half of them gathered at the foot of a cliff on the stair's side (north when there is a cliff but no stair).
-  const rockN = land === L.ROCK ? (6 + R.int(4)) * (fellsRock ? 8 : 1) : R.int(2) + (land === L.MEADOW ? 1 : 0);
+  // Generator 4's Fells: a rock place has four times the stone placements (eight times on a stair place), half of them gathered at the foot of a cliff on the stair's side (north when there is a cliff but no stair).
+  const rockN = land === L.ROCK ? (6 + R.int(4)) * (fellsRock ? (fanSt ? 8 : 4) : 1) : R.int(2) + (land === L.MEADOW ? 1 : 0);
   const fdir = fanSt ? fanSt.dir : footN ? 'up' : null, fvert = fdir === 'up' || fdir === 'down', fspan = fvert ? PW : PH, fext = fvert ? PH : PW;
   const fxy = (k, d) => ({ x: fdir === 'left' ? d : fdir === 'right' ? PW - 1 - d : k, y: fdir === 'up' ? d : fdir === 'down' ? PH - 1 - d : k });
   const edDepth = fanSt ? (fdir === 'up' ? fanSt.entry.y : fdir === 'down' ? PH - 1 - fanSt.entry.y : fdir === 'left' ? fanSt.entry.x : PW - 1 - fanSt.entry.x) : 0;

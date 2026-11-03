@@ -164,6 +164,12 @@ test("Fells rock places hold about three times the stones of generator 2's, gath
     for (let c = 0; c < N; c++) if (GF.comp[c] && GF.land[c] === L.ROCK) { f += stones(GF, s, c); nf++;
       if (c >= MW && GF.level[c - MW] > GF.level[c]) { const lay = W.genPlace(GF, s, String(c)); let near = 0, all = 0; for (let i = 0; i < W.PW * W.PH; i++) if (lay.tiles[i] === W.T.ROCK) { all++; if (((i / W.PW) | 0) <= 4) near++; } foot += near; footAll += all; } }
     for (let c = 0; c < N; c++) if (G2.comp[c] && G2.land[c] === L.ROCK) { g += stones(G2, s, c); ng++; } }
+  // the stair places hold 8x placements and the plain ones 4x: a plain place keeps about 110 stone tiles
+  let pl = 0, npl = 0, st = 0, nst = 0;
+  for (let sd = 0; sd < 10; sd++) { const GF = W.genWorld(sd, 4, "fells"); for (let c = 0; c < N; c++) if (GF.comp[c] && GF.land[c] === L.ROCK) { const lay = W.genPlace(GF, sd, String(c)), n = lay.tiles.reduce((m, t) => m + (t === W.T.ROCK ? 1 : 0), 0);
+    if (lay.stairs && lay.stairs.some(t => t.role === "lo")) { st += n; nst++; } else { pl += n; npl++; } } }
+  console.log(`# fells plain rock places ${(pl / npl).toFixed(1)} stone tiles, stair places ${(st / nst).toFixed(1)}`);
+  assert.ok(pl / npl <= 130 && pl / npl >= 2.4 * (g / ng), "plain places keep 4x placements");
   console.log(`# fells rock places: ${(f / nf).toFixed(1)} stone tiles a place against generator 2's ${(g / ng).toFixed(1)}; ${(100 * foot / footAll).toFixed(0)}% of the stones in rows 0 to 4 under a cliff`);
   assert.ok(f / nf >= 2.4 * (g / ng), "about three times the stones");
   assert.ok(foot / footAll >= .2, "stones gathered at the cliff foot: rows 0 to 4 are 16 percent of a place, so 20 percent is a quarter above its share (foot-row stones are single tiles)");
