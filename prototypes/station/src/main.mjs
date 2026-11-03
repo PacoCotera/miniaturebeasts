@@ -22,7 +22,7 @@ import { onFaceMessage } from "./host.mjs";
 import { listOf } from "./views/pods-props.mjs";
 import { warmLibraryNext, libraryWaiting } from "./pictures.mjs";
 import { manifest as manifestOf, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
-import { CORE, hooks, loadFrames, bootAssets, startFace, pump, tick, act, dockKey, LIB_ENV } from "./core.mjs";   // the loop, shared with the headless harness (prototypes/playtest)
+import { CORE, hooks, loadFrames, bootAssets, startFace, pump, tick, act, release, dockKey, LIB_ENV } from "./core.mjs";   // the loop, shared with the headless harness (prototypes/playtest)
 
 const $ = (id) => document.getElementById(id);
 const vis = $("screen");   // the page's screen: the face copies what it redrew onto it (face.display)
@@ -44,7 +44,7 @@ const stationEl = $("station");
 function bindKeys(root) {
   root.querySelectorAll(".k").forEach((btn) => { const k = btn.dataset.key;
     btn.addEventListener("pointerdown", (e) => { e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch { /* no capture */ } btn.classList.add("is-down"); act(k); });
-    const up = () => btn.classList.remove("is-down"); btn.addEventListener("pointerup", up); btn.addEventListener("pointercancel", up); btn.addEventListener("lostpointercapture", up);
+    const up = () => { btn.classList.remove("is-down"); release(k); }; btn.addEventListener("pointerup", up); btn.addEventListener("pointercancel", up); btn.addEventListener("lostpointercapture", up);
     btn.addEventListener("click", (e) => e.preventDefault()); });
 }
 bindKeys(stationEl);
@@ -64,8 +64,8 @@ window.addEventListener("keydown", (e) => {
   const b = document.querySelector(`.k[data-key="${k}"]`); if (b) b.classList.add("is-down");
   act(k);
 });
-window.addEventListener("keyup", (e) => { const k = KEYMAP[e.code]; if (!k) return; const b = document.querySelector(`.k[data-key="${k}"]`); if (b) b.classList.remove("is-down"); });
-window.addEventListener("blur", () => document.querySelectorAll(".k.is-down").forEach((b) => b.classList.remove("is-down")));
+window.addEventListener("keyup", (e) => { const k = KEYMAP[e.code]; if (!k) return; release(k); const b = document.querySelector(`.k[data-key="${k}"]`); if (b) b.classList.remove("is-down"); });
+window.addEventListener("blur", () => { document.querySelectorAll(".k.is-down").forEach((b) => b.classList.remove("is-down")); release("confirm"); });
 
 // --- the page: fit, the Caddy, the shared save, the developer panel, the build stamp ---
 function fit() {
@@ -181,7 +181,7 @@ const podsAt = (o = {}) => {
   u.from = o.from ?? "home"; u.roomFrom = o.roomFrom ?? "inventory"; u.focus.set(o.focus ?? null); if (UI.screen !== "pods") CORE.host.goto("pods"); save();
 };
 window.__st = { ready, useLongNames: (advance) => { const l = S.longestNames(undefined, 12, advance); S.useNameList(l); G.st.mibis.forEach((m, i) => { m.name = l[l.length - 1 - (i % l.length)]; }); G.st.namesUsed = [...new Set([...(G.st.namesUsed ?? []), ...G.st.mibis.map((m) => S.nameKey(m.name))])]; return l; }, renderErrors: CORE.renderErrors, portraitSource: (digest, rgba) => { const r = injectPortraitSource(digest, rgba); if (r.error) CORE.renderErrors.push("portrait " + digest + ": " + r.error); return r; }, faceErrors: CORE.faceErrors, said: () => CORE.said.splice(0), pendingRoom: () => CORE.host.pendingRoom ?? null, get props() { return CORE.lastProps ? JSON.parse(CORE.lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
-  say: (t) => msg(t), act: (k) => act(k), press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(CORE.host, fromIdle), openBay: () => { const r = S.openBay(G.st, G.sv, G.settings, Date.now()); save(); return r; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => CORE.host.goto(s),
+  say: (t) => msg(t), act: (k) => act(k), release: (k) => release(k), press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(CORE.host, fromIdle), openBay: () => { const r = S.openBay(G.st, G.sv, G.settings, Date.now()); save(); return r; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => CORE.host.goto(s),
   get face() { return CORE.face ? { refused: () => CORE.face.refused(), objects: () => CORE.face.objects(), version: CORE.face.version, size: CORE.face.size, loadMs: CORE.face.loadMs, hash: CORE.face.hash(), stats: CORE.face.stats(), pixel: CORE.face.pixel, invOverflows: () => CORE.face.invOverflows(), invCap: () => CORE.face.invCap(), pass: CORE.face.pass, hide: CORE.face.hide, offPalette: CORE.face.offPalette, forceFull: CORE.face.forceFull, errors: CORE.faceErrors.slice(), log: () => CORE.lastLog,
     frameTable: () => { const P = CORE.lastProps ? JSON.parse(CORE.lastProps) : null; if (!P) return null; CORE.face.props({ ...P, regions: undefined, motion: motion() }); CORE.face.frame(clock.now); pump(); const n = CORE.lastLog?.table ?? null; CORE.face.props({ ...P, motion: motion() }); CORE.face.frame(clock.now); pump(); return n; } } : null; },   // the layer check: the node table of the frame alone (the same props with no regions), the scene's own then put back,
   // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, the ids of the scene's requests that carry an owed habit key,

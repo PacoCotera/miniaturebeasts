@@ -4,6 +4,7 @@
 #include "../prim/prim.h"
 #include "../spec/spec.h"
 #include "../face.h"
+#include "../anim/hold.h"
 #include "../screens/moving.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,7 +25,7 @@ static uint32_t g_seq; static int g_seq_set;
 static char g_props_screen[32]; static char *g_props;
 static char g_ids[MAX_IDS][96]; static int g_nids;
 
-void wire_init(void) { g_dropped = g_unreported = 0; if (!g_in) g_in = (char *)malloc(WIRE_IN_CAP + 1); g_hello = 0; g_test = 0; g_qh = g_qn = 0; g_last_asset = -1; g_nprops = g_nevents = 0; g_seq_set = 0; g_nids = 0; anim_reset(); }
+void wire_init(void) { g_dropped = g_unreported = 0; if (!g_in) g_in = (char *)malloc(WIRE_IN_CAP + 1); g_hello = 0; g_test = 0; g_qh = g_qn = 0; g_last_asset = -1; g_nprops = g_nevents = 0; g_seq_set = 0; g_nids = 0; anim_reset(); hold_reset(); }
 char *wire_in_buf(void) { return g_in; }
 int wire_test_mode(void) { return g_test; }
 void wire_changed(void) { g_dirty_log = 1; }
@@ -218,7 +219,13 @@ static int on_event(const msg_t *m) {
 static const struct { const char *name; int code; } KEYS[] = { { "up", 17 }, { "down", 18 }, { "right", 19 }, { "left", 20 }, { "confirm", 10 }, { "back", 27 }, { "home", 2 }, { "research", 114 }, { "library", 108 }, { "habitat", 98 }, { "dock", 100 } };
 static int on_key(const msg_t *m) {
   char k[16]; if (!str(m, key(m, "k"), k, sizeof k)) return fail("key: k is required");
-  for (size_t i = 0; i < sizeof KEYS / sizeof *KEYS; i++) if (strcmp(KEYS[i].name, k) == 0) { face_key(KEYS[i].code, 1); face_key(KEYS[i].code, 0); g_dirty_log = 1; return 0; }
+  char ph[8] = ""; if (key(m, "phase") >= 0 && !str(m, key(m, "phase"), ph, sizeof ph)) return fail("key: phase is down or up");
+  if (ph[0] && strcmp(ph, "down") && strcmp(ph, "up")) return fail("key: phase is down or up");
+  for (size_t i = 0; i < sizeof KEYS / sizeof *KEYS; i++) if (strcmp(KEYS[i].name, k) == 0) {
+    int code = KEYS[i].code;
+    if (!ph[0]) { face_key(code, 1); face_key(code, 0); }   /* a press and its release at once */
+    else face_key(code, strcmp(ph, "down") == 0);   /* a press or a release alone (a held ✓: face_key) */
+    g_dirty_log = 1; return 0; }
   char b[60]; snprintf(b, sizeof b, "key: unknown key %s", k); return fail(b);
 }
 static int on_props(const msg_t *m, int len) {

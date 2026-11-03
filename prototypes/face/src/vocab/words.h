@@ -45,6 +45,7 @@ void word_livingWindow(const char *spec, const char *region, const char *bezel, 
 /* common/ */
 void word_ribbon(const char *id, const int rect[4], const char *text, int pad, const char *fill, const char *edge, const char *role);   /* the ribbon (pad: the room each side of the words; role: the words' role on the band, NULL for "heading"): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
 void word_topBar(void);
+void word_holdRing(void);   /* the hold ring (frame.json hold): a track and the part of it the hold has filled, one composed picture at the spec's centre; drawn when props.frame.hold is present (common/holdRing.c) */
 int frame_material_centre(int i, int out[2]);   /* the centre of a counter's icon in the top bar (0 Energy, 1 Data, 2 Essence) as the bar lays it out now: where Cargo's materials travel */
 void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, int away);   /* a face picture's holder ring (art layer, regions.marks.face.ringWidth), until the picture is painted: not a focus mark */
 void word_bottomLine(void);

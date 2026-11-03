@@ -9,6 +9,7 @@
 #define JSMN_STRICT
 #include "../vendor/jsmn.h"
 #include "../spec/jnum.h"
+#include "../anim/hold.h"
 
 extern const lv_font_t face_inter_14, face_inter_15, face_inter_16, face_inter_16m, face_inter_18, face_inter_20, face_inter_28;
 #define MAX_OBJ 1024            /* the table is larger than the 400-object budget so a breach is measured, not refused (lvgl-switch.md §2.2) */
@@ -180,6 +181,20 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
       uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
       if (hasf) { if (ring_mask(mask, bw, bh, 4000, radius, 0) < 0) { free(mask); return -1; } for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, fillc); }
       if (hase) { if (ring_mask(mask, bw, bh, 1, radius, 0) < 0) { free(mask); return -1; } for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, edgec); }
+      free(mask);
+    } else if (nl == 3 && strncmp(name, "arc", 3) == 0 && tok[i].size == 8) {   /* ["arc", x, y, w, h, width, fill, colour]: the part of an ellipse ring `width` thick that a clockwise sweep from twelve o'clock covers, fill thousandths of a turn (0 to 1000); integers only (hold_sin), not a focus ring */
+      if (!COL(6)) return -1;
+      int x = A(0), y = A(1), bw = A(2), bh = A(3), width = A(4), fill = A(5);
+      if (g_bad || width < 1 || width > 4096 || fill < 0 || fill > 1000 || bw < 1 || bh < 1 || x < 0 || y < 0 || x + bw > w || y + bh > h || (long)bw * bh > 1024L * 600) return -1;
+      uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
+      if (ring_mask(mask, bw, bh, width, 0, 1) < 0) { free(mask); return -1; }
+      int mirror = fill > 500, k = mirror ? 1000 - fill : fill; int64_t ux = hold_sin(k), uy = -(int64_t)hold_cos(k);   /* the sweep's end direction (screen y down); past a half turn the part left out is the mirror of the sweep of 1000 - fill */
+      for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) {
+        int64_t X = 2 * xx + 1 - bw, Y = 2 * yy + 1 - bh; if (mirror) X = -X;
+        int in = fill >= 1000 || (fill > 0 && (X > 0 || (X == 0 && Y < 0)) && X * uy - Y * ux >= 0);
+        if (mirror && fill < 1000) in = !in;
+        if (in) put(px, w, h, x + xx, y + yy, rgb);
+      }
       free(mask);
     } else if (nl == 4 && strncmp(name, "oval", 4) == 0 && tok[i].size == 6) {   /* ["oval", x, y, w, h, colour]: a 1 px ellipse outline inside the box (the collection's drop spots); not a focus ring, so it sets no ring flag */
       if (!COL(4)) return -1;

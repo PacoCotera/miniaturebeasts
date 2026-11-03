@@ -63,7 +63,7 @@ export async function startFace({ test = false, face = null } = {}) {
   for (const [screen, json] of Object.entries(SPECS)) f.send({ t: "spec", screen, json });
   f.pin(pinned(), picture);
   CORE.face = f;
-  CORE.host = createHost({ send: sendEvent, nowMs: () => performance.now(), light: () => G.settings.light ?? lightAt(Math.floor(stationSeconds() / 3600), SPECS.frame.light), time: stationSeconds, motion, onDock: dockKey, afterSave: () => hooks.afterSave() });   // a Grow hands its genome to the Caddy at once
+  CORE.host = createHost({ send: sendEvent, nowMs: () => performance.now(), light: () => G.settings.light ?? lightAt(Math.floor(stationSeconds() / 3600), SPECS.frame.light), time: stationSeconds, motion, onDock: dockKey, key: (k, phase) => CORE.face.key(k, phase), afterSave: () => hooks.afterSave() });   // a Grow hands its genome to the Caddy at once
   return f;
 }
 // What the face said since the last call: its intents and its focus become the rules (host.mjs), its errors are kept, its log is the checks'.
@@ -140,5 +140,7 @@ export function act(k) {
   if (k === "dock") { dockKey(); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
   if (k !== "back") UI.arrival = null;   // the Incubator's ← returns to Pods only until another key (the arrival mode of the jump flag)
+  if (H.keyDown(k)) { pump(); return; }   // ✓ on a plate that holds: the face keeps it down until release
   FACE.key(k); pump();
 }
+export function release(k) { const H = CORE.host; if (!H || !CORE.face) return; H.keyUp(k); pump(); }   // the page's key-up (a held ✓)

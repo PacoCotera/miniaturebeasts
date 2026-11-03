@@ -21,6 +21,7 @@ import { habitatStates } from "./habitat-states.mjs";
 import { libraryStates } from "./library-states.mjs";
 import { benchStates } from "./bench-states.mjs";
 import { sittingStates } from "./sitting-states.mjs";
+import { settingsStates } from "./settings-states.mjs";
 
 const golden = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golden"), longNames = process.argv.includes("--long-names"), check = process.argv.includes("--check") || longNames;   // --long-names: the states drawn again with the longest names of the live list (station-page.mjs), for the layout check's long-names pass only: nothing written, no hash compared (the hashes are not the goldens')
 if (longNames) { process.env.LONG_NAMES = "1"; if (!process.argv.includes("--logs")) { console.error("--long-names needs --logs <dir>"); process.exit(2); } }
@@ -37,6 +38,7 @@ const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' gold
   library: { states: libraryStates, prefix: "", note: "The Library. Level 1: only the Loika met, a mid-game catalogue (the wish alone on a found species and beside the Loika's face chip), glints and three new looks, the room key (the ring on the last species visited), and the Home to Level 1 dither at its midpoint (motion on, virtual clock). Level 2: the Loika at mid, its Coat lit with its page, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat lit complete, the Blikur and the Loika late (colour chips). Level 3, far: a Loika lineage of two blocks (the ring on Moss) and of one (on Dot); close: on Moss, links leaving every edge, a tree that fits the view, a pan's three steps (motion on, virtual clock) and FAR to CLOSE at the dither's midpoint" },
   bench: { states: benchStates, prefix: "", note: "The Probe bench: docked with the ring on the plates, the upgrade armed, the Probe away, and the upgrade fitted" },
   sitting: { states: sittingStates, prefix: "", note: "The sitting (S01 adult Dot, noon, reduced motion unless timed): the pose step (three habits, the curl, one habit, a juvenile), the place step (two places, at night, five places), the confirm step (at rest, armed), begin at 150 ms (motion on, virtual clock), the portrait (the bone canvas at 528×392) and a long name" },
+  settings: { states: settingsStates, prefix: "", note: "The hold ring (frame.json hold) on a calm screen, behind the developer setting realmSleep: at 0, 1000, 2000 and 3000 ms of ✓ held, 150 ms after letting go, and the reduced-motion quarters" },
   idle: { states: idleStates, prefix: "", note: "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk" } };
 const want = process.argv.slice(2).filter((a) => SCREENS[a]), run = want.length ? want : Object.keys(SCREENS);
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
