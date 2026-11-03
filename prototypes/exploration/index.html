@@ -452,7 +452,7 @@ function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state 
 const layoutCache = new Map();
 function layout(key) {
   let lay = layoutCache.get(key);
-  if (!lay) { lay = genPlace(G, S.seed, key); layoutCache.set(key, lay); }
+  if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
 
@@ -3167,7 +3167,19 @@ function layers48(lay, fr) {
 function placeTs(lay) { return !lay.cave && ART48.ready && layers48(lay, 0).ok ? 48 : 32; }
 const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP;
 const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.' + base + '@' + l.dx + ',' + l.dy : l.id + ':' + l.sx + ',' + l.sy + ',' + l.w + ',' + l.h + '@' + l.dx + ',' + l.dy + (l.tone ? '~' + l.tone : '')).join(';');
-function tile48Key(lay, i, fr) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : ''); }
+function tile48Key(lay, i, fr) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : '') + (lay.scree ? '|S' : '') + (lay.fells ? '|F' : ''); }
+// The Fells' two colour steps at 48 px, found by colour so they follow the palette file: the earth family to greys, and the stair's treads up and risers down.
+const FELLS_STEPS = {
+  scree: [['#c2a376', '#a4999f'], ['#a68d65', '#7a717e'], ['#a78f4c', '#828176'], ['#cbbc56', '#a4999f'], ['#9a734b', '#7a717e'], ['#8a7456', '#635967'], ['#857541', '#5c564b'], ['#7a583d', '#635967'], ['#e6c98c', '#a4999f'], ['#bf9157', '#7a717e']],
+  stair: [['#a4999f', '#dbeee5'], ['#828176', '#a4999f'], ['#7a717e', '#828176'], ['#49414d', '#332c38'], ['#332c38', '#18211a'], ['#635967', '#49414d'], ['#3e3248', '#18211a']],
+};
+const fellsLutCache = {};
+function fellsLut(kind) {
+  const k = kind + ':' + ART48.ver; if (fellsLutCache[k]) return fellsLutCache[k];
+  const lut = PALETTE.map((_, i) => i); for (let i = lut.length; i < HEX.length; i++) lut[i] = i;
+  for (const [a, b] of FELLS_STEPS[kind]) { const x = HEX.indexOf(a), y = HEX.indexOf(b); if (x >= 0 && y >= 0) lut[x] = y; }
+  return (fellsLutCache[k] = lut);
+}
 // A 48 px tile composed as an indexed PB: each layer's opaque pixels through its level tone (grass colours only), the 32 px stand-ins, then the dark of
 // a wood place. Identical tiles share one buffer (and one canvas per light level).
 function tile48(lay, i, fr) {
@@ -3176,7 +3188,10 @@ function tile48(lay, i, fr) {
   const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; pb = new PB(48, 48);
   for (const l of t.layers) {
     if (l.stand) { const s32 = stand32(l.stand, lay.base); for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const c = s32.p[y * 32 + x]; if (c >= 0) pb.p[(l.dy + y) * 48 + l.dx + x] = c; } continue; }
-    const pc = ART48.pieces.get(l.id), lut = l.tone === 'light' ? LIGHT_GRASS : l.tone === 'dark' ? DARK_GRASS : null; if (!pc) continue;   // the level tone moves grass only
+    const pc = ART48.pieces.get(l.id); if (!pc) continue;
+    let lut = l.tone === 'light' ? LIGHT_GRASS : l.tone === 'dark' ? DARK_GRASS : null;   // the level tone moves grass only
+    if (lay.scree && /^meadow\/(ground\/sand|shore\/sand-|stair\/(foot|landing|apron-top))/.test(l.id)) lut = fellsLut('scree');   // the Fells' rock ground: grey scree for the brown earth
+    else if (lay.fells && /^meadow\/stair\/(wide|side|top)/.test(l.id)) lut = fellsLut('stair');   // a Fells stair: lighter treads, darker risers
     for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) { let c = pc.px[(l.sy + y) * pc.w + l.sx + x]; if (c < 0) continue; if (lut) c = lut[c]; pb.p[(l.dy + y) * 48 + l.dx + x] = c; }
   }
   if (t.dark) for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = DARK[pb.p[k]];

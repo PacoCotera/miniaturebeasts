@@ -148,6 +148,18 @@ test("Marsh: braided channels from edge to edge, six grown pools of 3 to 6 cells
   assert.ok(braids >= 150, "the channels braid");
 });
 
+test("Fells rock places hold about three times the stones of generator 2's, gathered at the foot of a cliff to the north", () => {
+  const stones = (G, seed, c) => W.genPlace(G, seed, String(c)).tiles.reduce((n, t) => n + (t === W.T.ROCK ? 1 : 0), 0);
+  let f = 0, g = 0, nf = 0, ng = 0, foot = 0, footAll = 0;
+  for (let s = 0; s < 40; s++) { const GF = W.genWorld(s, 4, "fells"), G2 = W.genWorld(s, 2);
+    for (let c = 0; c < N; c++) if (GF.comp[c] && GF.land[c] === L.ROCK) { f += stones(GF, s, c); nf++;
+      if (c >= MW && GF.level[c - MW] > GF.level[c]) { const lay = W.genPlace(GF, s, String(c)); let near = 0, all = 0; for (let i = 0; i < W.PW * W.PH; i++) if (lay.tiles[i] === W.T.ROCK) { all++; if (((i / W.PW) | 0) <= 4) near++; } foot += near; footAll += all; } }
+    for (let c = 0; c < N; c++) if (G2.comp[c] && G2.land[c] === L.ROCK) { g += stones(G2, s, c); ng++; } }
+  console.log(`# fells rock places: ${(f / nf).toFixed(1)} stone tiles a place against generator 2's ${(g / ng).toFixed(1)}; ${(100 * foot / footAll).toFixed(0)}% of the stones in rows 0 to 4 under a cliff`);
+  assert.ok(f / nf >= 2.4 * (g / ng), "about three times the stones");
+  assert.ok(foot / footAll >= .3, "stones gathered at the cliff foot: rows 0 to 4 are 16 percent of a place, so 30 percent is about twice its share");
+});
+
 test("Woods: one in three reachable wood places is the Shade, on the most enclosed wood; the others have none", () => {
   for (const g of worldsOf("woods").slice(0, 50)) {
     const wood = [...Array(N).keys()].filter(c => g.land[c] === L.WOOD && g.comp[c] && !g.island[c]), sh = wood.filter(c => g.shade[c]);

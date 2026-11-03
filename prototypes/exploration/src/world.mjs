@@ -958,8 +958,10 @@ export function genPatch2(G, seed, cell) {
     for (let dx = 0; dx < 3; dx++) { setT(ox + dx, oy, T.ROCK); setT(ox + dx, oy + 1, T.ROCK); shelter[I(ox + dx, oy + 2)] = 1; occ[I(ox + dx, oy + 2)] = 1; }
     feats.push({ id: 'o' + k, kind: 'o', x: ox, y: oy }); k++;
   }
-  const rockN = land === L.ROCK ? 6 + R.int(4) : R.int(2) + (land === L.MEADOW ? 1 : 0);
-  for (let k = 0; k < rockN; k++) { const x = 2 + R.int(PW - 4), y = 2 + R.int(PH - 4), s = R.int(100) < 45 ? 1 : 0;
+  // Generator 4's Fells: a rock place has four times the stone placements (about three times the stone tiles once they overlap), half of them gathered at the foot of a cliff to its north.
+  const fellsRock = G.biome === 'fells' && land === L.ROCK, footN = fellsRock && cy > 0 && G.level[cell - MW] > G.level[cell];
+  const rockN = land === L.ROCK ? (6 + R.int(4)) * (fellsRock ? 4 : 1) : R.int(2) + (land === L.MEADOW ? 1 : 0);
+  for (let k = 0; k < rockN; k++) { const x = 2 + R.int(PW - 4), y = footN && k % 2 ? 2 + R.int(3) : 2 + R.int(PH - 4), s = R.int(100) < 45 ? 1 : 0;
     for (let dy = -s; dy <= s; dy++) for (let dx = -s; dx <= s; dx++) if (walk(x + dx, y + dy) && (s === 0 || R.int(100) < 80)) setT(x + dx, y + dy, T.ROCK); }
   const treeN = land === L.WOOD ? 11 + R.int(5) : land === L.MEADOW ? 1 + R.int(2) : R.int(2);
   for (let k = 0, tries = 0; k < treeN && tries < 200; tries++) {
