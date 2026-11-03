@@ -124,8 +124,8 @@ test("Woods: a brook from the north or the west with one ford line; one forest b
   assert.ok(glades >= 150, "2 to 4 glades in three of four seeds");
 });
 
-test("Marsh: braided channels from edge to edge, six grown pools of 3 to 6 cells, no straight one-wide run of 3 or more", () => {
-  let braids = 0;
+test("Marsh: braided channels from edge to edge, six pools of 3 to 6 cells grown by sides: no cross, no T, no corner join, no straight one-wide run of 3 or more", () => {
+  let braids = 0, forks = 0;
   for (const g of worldsOf("marsh")) {
     const seen = new Uint8Array(N), comps = [];
     for (let s = 0; s < N; s++) { if (seen[s] || g.land[s] !== L.WATER) continue; const q = [s], cells = new Set([s]); seen[s] = 1;
@@ -136,6 +136,11 @@ test("Marsh: braided channels from edge to edge, six grown pools of 3 to 6 cells
     assert.equal(pools.length, 6, `seed ${g.seed}: ${pools.length} pools`);
     for (const P of pools) { assert.ok(P.size >= 3, `seed ${g.seed}: a pool of ${P.size}`);
       const has = (x, y) => P.has(y * MW + x);
+      // grown by sides: one 4-connected body (no cell joined on a corner), and no cross or T (a cell with 3 or more pool sides, two of whose side cells have only one pool side)
+      const sides = c => [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([dx, dy]) => has((c % MW) + dx, ((c / MW) | 0) + dy)).map(([dx, dy]) => c + dy * MW + dx);
+      const q4 = [[...P][0]], body = new Set(q4); while (q4.length) for (const d of sides(q4.pop())) if (!body.has(d)) { body.add(d); q4.push(d); }
+      assert.equal(body.size, P.size, `seed ${g.seed}: a pool joined on a corner`);
+      for (const c of P) { const sd = sides(c); if (sd.length >= 3 && sd.filter(d => sides(d).length === 1).length >= 2) forks++; }
       for (const c of P) { const x = c % MW, y = (c / MW) | 0;
         assert.ok(!(has(x + 1, y) && has(x + 2, y) && [0, 1, 2].every(i => !has(x + i, y - 1) && !has(x + i, y + 1))), `seed ${g.seed}: a straight run along row ${y}`);
         assert.ok(!(has(x, y + 1) && has(x, y + 2) && [0, 1, 2].every(i => !has(x - 1, y + i) && !has(x + 1, y + i))), `seed ${g.seed}: a straight run down column ${x}`); } }
@@ -144,7 +149,8 @@ test("Marsh: braided channels from edge to edge, six grown pools of 3 to 6 cells
     const rows = []; for (let y = 0; y < MH; y++) { let n = 0, prev = false; for (let x = 0; x < MW; x++) { const w = g.land[y * MW + x] === L.WATER && !pools.some(P => P.has(y * MW + x)); if (w && !prev) n++; prev = w; } rows.push(n); }
     if (rows.some(n => n >= 2)) braids++;
   }
-  console.log(`# marsh: ${braids} of 200 worlds have a row crossed by two channels`);
+  console.log(`# marsh: ${braids} of 200 worlds have a row crossed by two channels; ${forks} crosses and Ts`);
+  assert.equal(forks, 0, "no cross or T in any pool");
   assert.ok(braids >= 150, "the channels braid");
 });
 

@@ -507,7 +507,7 @@ function g2Land(sub, B) {
     for (let k = 0; k < B.fords; k++) fordLine(clear(4 + 3 * k + RF.int(2)));
     const lx = 1 + RV.int(5), ly = 12 + RV.int(6); if (J.lake !== 0) land[at(lx, ly)] = L.WATER;   // generator 2's one-cell lake, unless the biome has none
     smallLakes(makeRng(sub('lakes')));
-    if (B.pools) {   // grown pools: each from a seed cell on the low ground or two cells from the water, by 8-neighbour steps that prefer a cell touching two or more of its own cells
+    if (B.pools) {   // grown pools: each from a seed cell on the low ground or two cells from the water, by 4-neighbour steps that prefer the cell with the most of its own pool on its sides (twice) and around it
       const RP = makeRng(sub('pools')), inner = c => { const x = c % MW, y = (c / MW) | 0; return x >= 1 && y >= 1 && x < MW - 1 && y < MH - 1; };
       const nb8 = c => NB8.map(([dx, dy]) => [c % MW + dx, ((c / MW) | 0) + dy]).filter(([x, y]) => onMapXY(x, y)).map(([x, y]) => y * MW + x);
       const dry = []; for (let c = 0; c < NC; c++) if (inner(c) && land[c] !== L.WATER && !island[c]) dry.push(c);
@@ -520,18 +520,21 @@ function g2Land(sub, B) {
           if (has(x + 1, y) && has(x + 2, y) && [0, 1, 2].every(i => !has(x + i, y - 1) && !has(x + i, y + 1))) return true;
           if (has(x, y + 1) && has(x, y + 2) && [0, 1, 2].every(i => !has(x - 1, y + i) && !has(x + 1, y + i))) return true; }
         return false; };
+      const nb4 = c => NB8.filter((_, i) => i % 2 === 0).map(([dx, dy]) => [c % MW + dx, ((c / MW) | 0) + dy]).filter(([x, y]) => onMapXY(x, y)).map(([x, y]) => y * MW + x);
+      // a cross or a T: a cell with 3 or more pool sides, two of whose side cells have only the one pool side of their own
+      const fork = P => { for (const c of P) { const sd = nb4(c).filter(d => P.has(d)); if (sd.length >= 3 && sd.filter(d => nb4(d).filter(e => P.has(e)).length === 1).length >= 2) return true; } return false; };
       for (let k = 0, tries = 0; k < B.pools && tries < 400; tries++) {
         const none = new Set(), seeds = dry.filter(c => okCell(c, none) && (lowest.has(c) || nb8(c).some(d => nb8(d).some(e => land[e] === L.WATER))));
         if (!seeds.length) break;
         const P = new Set([seeds[RP.int(seeds.length)]]), size = B.poolMin + RP.int(B.poolMax - B.poolMin + 1);
         while (P.size < size) {
           const score = new Map();
-          for (const c of P) for (const d of nb8(c)) if (!P.has(d) && okCell(d, P)) score.set(d, nb8(d).filter(e => P.has(e)).length);
+          for (const c of P) for (const d of nb4(c)) if (!P.has(d) && okCell(d, P) && !score.has(d)) score.set(d, 2 * nb4(d).filter(e => P.has(e)).length + nb8(d).filter(e => P.has(e)).length);
           if (!score.size) break;
           const best = Math.max(...score.values()), top = [...score].filter(([, v]) => v === best).map(([d]) => d).sort((a, b) => a - b);
           P.add(top[RP.int(top.length)]);
         }
-        if (P.size < B.poolMin || bar(P)) continue;
+        if (P.size < B.poolMin || bar(P) || fork(P)) continue;
         for (const c of P) land[c] = L.WATER;
         k++;
       }
