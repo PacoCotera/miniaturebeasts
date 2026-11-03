@@ -1162,7 +1162,7 @@ const RIVER_G2 = { axis: 'ns', lo: 8, hi: 13, turnP: 45, iy: [3, 16], n: 1, ford
 export const BIOME_GROUND = {
   mixed: null,
   woods: { name: 'woods', river: { axis: 'pick', lo: 2, hi: 13, turnP: 60, iy: [3, 16], n: 1, ford: 1 }, mP1: 16, mP2: 8, wood: 200, rock: 36, fords: 0, lakes: 0, lakeTwo: 0, pondP: 50, ring8: false, hP1: 8, hP2: 4, rampQ: 16384, lv: [15, 45, 40], zoneMin: 4 },
-  fells: { name: 'fells', river: { axis: 'ns', lo: 5, hi: 10, turnP: 6, iy: [3, 16], n: 1, ford: 2, lake: 0 }, valley: true, rockHigh: true, woodLow: 6, extraStairs: 110, wood: 66, rock: 128, fords: 0, lakes: 5, lakeTwo: 80, pondP: 0, ring8: false, hP1: 8, hP2: 4, rampQ: 24576, lv: [20, 35, 45], zoneMin: 4 },
+  fells: { name: 'fells', river: { axis: 'ns', lo: 5, hi: 10, turnP: 15, iy: [3, 16], n: 1, ford: 2, lake: 0 }, valley: true, rockHigh: true, woodLow: 6, extraStairs: 110, wood: 66, rock: 128, fords: 0, lakes: 5, lakeTwo: 80, pondP: 0, ring8: false, hP1: 8, hP2: 4, rampQ: 24576, lv: [20, 35, 45], zoneMin: 4 },
   marsh: { name: 'marsh', river: { axis: 'ns', lo: 2, hi: 13, turnP: 40, iy: [3, 16], n: 2, span: 11, ford: 2, lake: 0 }, pools: 6, poolMin: 3, poolMax: 6, wood: 78, rock: 44, fords: 2, lakes: 0, lakeTwo: 0, pondP: 50, ring8: true, hP1: 8, hP2: 4, rampQ: 16384, lv: [0, 10, 90], zoneMin: 4 },
 };
 export const WALK_MIN = 260;   // a biome world holds at least this many walkable cells on its reachable component
