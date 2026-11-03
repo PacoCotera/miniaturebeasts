@@ -1,6 +1,7 @@
 """The job server: standard-library HTTP + Server-Sent Events over the species files, a priority queue with superseding, the content-addressed cache, a file watcher, and the proxy worker(s).
 JSON API as spec 6.3 (species, jobs, events, cas; gate routes answer 403 to makers and 501 until their chunk). The studio app (body/wb/static/app, built from body/wb/web and committed) is served by default: /assets/* immutable, any other page GET answers index.html (the single-page fallback).
-python -m wb.server --home DIR [--species DIR ...] [--static DIR] [--port N]"""
+Behind the site's proxy the app lives under /studio/: a leading /studio is stripped from every path, so one build works there and locally. --trusted-proxy ADDR makes the X-Studio-User header count, from that peer address only.
+python -m wb.server --home DIR [--species DIR ...] [--static DIR] [--host ADDR] [--port N] [--trusted-proxy ADDR]"""
 import argparse
 import copy
 import json
@@ -24,7 +25,20 @@ from wb.store import ApiError
 
 STATIC_APP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "app")
 CSP = "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+PREFIX = "/studio"
+IMMUTABLE = "private, max-age=31536000, immutable"                  # a picture fetched behind the login must never be kept by a shared cache
 CT = {"woff2": "font/woff2", "ttf": "font/ttf", "ico": "image/x-icon", "png": "image/png", "json": "application/json", "glb": "model/gltf-binary", "html": "text/html; charset=utf-8", "js": "text/javascript", "css": "text/css", "svg": "image/svg+xml"}
+
+
+def strip_prefix(path):
+    """The path the routes see: a leading /studio (the public prefix) is dropped, so /studio/api/stats and /api/stats are one route."""
+    if path == PREFIX:
+        return "/"
+    return path[len(PREFIX):] if path.startswith(PREFIX + "/") else path
+
+
+def peer_ip(addr):
+    return addr[7:] if addr.startswith("::ffff:") else addr
 
 
 def V1_labels():
@@ -129,7 +143,8 @@ class ProxyWorker:
 
 
 class Server:
-    def __init__(self, home, species_dirs, static=None, host="127.0.0.1", port=0, cache_limit_gb=30.0, proxy_workers=1):
+    def __init__(self, home, species_dirs, static=None, host="127.0.0.1", port=0, cache_limit_gb=30.0, proxy_workers=1, trusted_proxy=None):
+        self.trusted_proxy = trusted_proxy or None
         self.home = os.path.abspath(home)
         os.makedirs(self.home, exist_ok=True)
         self.cas = C.Cas(os.path.join(self.home, "cas"))
@@ -639,7 +654,15 @@ def make_handler(srv):
         def log_message(self, fmt, *a):
             print(f"{S.now()} {self.address_string()} {fmt % a}", file=sys.stderr)
 
+        def route_path(self):
+            return strip_prefix(urlparse(self.path).path)
+
         def actor(self, need=False):
+            """Who is asking. The proxy's X-Studio-User counts only on a connection from the trusted proxy's address (and then acts as that user with the owner's role);
+            from any other peer the header is ignored and a tokens.json token is needed, so nothing else on the network can pose as the owner."""
+            user = (self.headers.get("X-Studio-User") or "").strip()
+            if user and srv.trusted_proxy and peer_ip(self.client_address[0]) == srv.trusted_proxy:
+                return dict(name="".join(c for c in user if c.isprintable())[:64] or "studio", role="owner", agent=False)
             tok = (self.headers.get("Authorization") or "").removeprefix("Bearer ").strip()
             who = srv.tokens.who(tok)
             if need and who is None:
@@ -683,7 +706,7 @@ def make_handler(srv):
         # -- GET
         def get(self):
             u = urlparse(self.path)
-            p, q = u.path, parse_qs(u.query)
+            p, q = strip_prefix(u.path), parse_qs(u.query)
             if p == "/api/species":
                 return self.send_json([dict(id=s.id, name=s.spec.get("name"), path=s.path, hash=s.hash, error=s.error) for s in srv.species.values()])
             m = re.fullmatch(r"/api/species/([^/]+)", p)
@@ -722,7 +745,7 @@ def make_handler(srv):
                 self.send_response(200)
                 self.send_header("Content-Type", CT[ext])
                 self.send_header("Content-Length", str(len(data)))
-                self.send_header("Cache-Control", "public, max-age=31536000, immutable")
+                self.send_header("Cache-Control", IMMUTABLE)
                 self.end_headers()
                 return self.wfile.write(data)
             if srv.static and not p.startswith(("/api", "/cas", "/events")):
@@ -743,7 +766,7 @@ def make_handler(srv):
             self.send_response(200)
             self.send_header("Content-Type", CT.get(full.rsplit(".", 1)[-1], "application/octet-stream"))
             self.send_header("Content-Length", str(len(data)))
-            self.send_header("Cache-Control", "public, max-age=31536000, immutable" if p.startswith("/assets/") else "no-cache")
+            self.send_header("Cache-Control", IMMUTABLE if p.startswith("/assets/") else "no-cache")
             self.send_header("Content-Security-Policy", CSP)
             self.send_header("X-Content-Type-Options", "nosniff")
             self.end_headers()
@@ -770,7 +793,7 @@ def make_handler(srv):
 
         # -- PATCH
         def patch(self):
-            m = re.fullmatch(r"/api/species/([^/]+)", urlparse(self.path).path)
+            m = re.fullmatch(r"/api/species/([^/]+)", self.route_path())
             if not m:
                 raise ApiError(404, "no such route", None)
             actor = self.actor(need=True)
@@ -781,7 +804,7 @@ def make_handler(srv):
 
         # -- POST
         def post(self):
-            p = urlparse(self.path).path
+            p = self.route_path()
             m = re.fullmatch(r"/api/species/([^/]+)/jobs", p)
             if m:
                 actor = self.actor(need=True)
@@ -806,9 +829,10 @@ def main():
     ap.add_argument("--port", type=int, default=0)
     ap.add_argument("--cache-limit-gb", type=float, default=30.0)
     ap.add_argument("--proxy-workers", type=int, default=1)
+    ap.add_argument("--trusted-proxy", default="", help="the address of the proxy whose X-Studio-User header is believed (it acts as the owner); empty: the header is never believed")
     a = ap.parse_args()
     dirs = a.species or [os.path.join(BODY, "species_v1")]
-    srv = Server(a.home, dirs, a.static or None, a.host, a.port, a.cache_limit_gb, a.proxy_workers)
+    srv = Server(a.home, dirs, a.static or None, a.host, a.port, a.cache_limit_gb, a.proxy_workers, a.trusted_proxy)
     srv.start()
     import signal
     signal.signal(signal.SIGTERM, lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))          # a stop request ends the workers and removes server.json

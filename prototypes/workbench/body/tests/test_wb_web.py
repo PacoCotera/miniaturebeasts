@@ -70,7 +70,7 @@ class T(unittest.TestCase):
         js = next(a for a in assets if a.endswith(".js"))
         status, h, body = get(f"{self.url}/assets/{js}")
         self.assertEqual((status, h["Content-Type"].split(";")[0]), (200, "text/javascript"))
-        self.assertEqual(h["Cache-Control"], "public, max-age=31536000, immutable")
+        self.assertEqual(h["Cache-Control"], "private, max-age=31536000, immutable")
         self.assertEqual(get(f"{self.url}/assets/nothing-1234.js")[0], 404)
         self.assertEqual(get(f"{self.url}/assets/../index.html")[0] in (200, 404), True)
 

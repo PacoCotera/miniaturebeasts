@@ -363,7 +363,7 @@ def fmt_event(ev):
 def cmd_serve(a):
     py = os.environ.get("WB_PYTHON", "/home/mb/mb/tools-3d/bpyvenv/bin/python")
     os.makedirs(HOME, exist_ok=True)
-    argv = [py, "-m", "wb.server", "--home", HOME, "--port", str(a.port)] + sum([["--species", d] for d in a.species], []) + (["--static", a.static] if a.static else [])
+    argv = [py, "-m", "wb.server", "--home", HOME, "--host", a.host, "--port", str(a.port)] + (["--trusted-proxy", a.trusted_proxy] if a.trusted_proxy else []) + sum([["--species", d] for d in a.species], []) + (["--static", a.static] if a.static else [])
     os.chdir(BODY)
     os.environ["PYTHONPATH"] = BODY
     os.execv(py, argv)
@@ -389,7 +389,7 @@ def main(argv=None):
     p = sub.add_parser("string"); p.add_argument("selector", nargs="?", default="type"); p.add_argument("--species", default=""); p.add_argument("--code", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_string)
     p = sub.add_parser("explain"); p.add_argument("check"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_explain)
     p = sub.add_parser("watch"); p.add_argument("species"); p.add_argument("--json", action="store_true"); p.add_argument("--count", type=int, default=0); p.add_argument("--timeout", type=float, default=0); p.set_defaults(f=cmd_watch)
-    p = sub.add_parser("serve"); p.add_argument("--port", type=int, default=0); p.add_argument("--species", action="append", default=[]); p.add_argument("--static", default=""); p.set_defaults(f=cmd_serve)
+    p = sub.add_parser("serve"); p.add_argument("--host", default="127.0.0.1"); p.add_argument("--port", type=int, default=0); p.add_argument("--trusted-proxy", default=""); p.add_argument("--species", action="append", default=[]); p.add_argument("--static", default=""); p.set_defaults(f=cmd_serve)
     a = ap.parse_args(argv)
     try:
         return a.f(a)
