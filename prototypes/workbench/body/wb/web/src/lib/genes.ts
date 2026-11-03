@@ -1,12 +1,17 @@
 import type { CheckRow, Proof } from './checks'
 
 // The genome block of a species file (spec 4.1 and 8.2) and what Genes mode says about it. Pure, so it is tested alone.
+export type Band = { form: 'mult' | 'off' | 'lin' | 'int'; lo: number; hi: number; unit: string }
+// One record of the catalogue pin (pin 11). A position record carries `band` (what t stands for in this species); an absolute record (its copy is the record's own number) carries `absolute`, the pool its type was drawn from.
+// A sleeping record names the switches it needs (`requires`) or the looks that wake it (`wakesWhen`: record -> looks).
 export type Locus = {
-  locus: string; label: string; short: string; chapter: string; scope: 'shared' | 'own'; kind: string; op: 'blend' | 'switch' | 'pair-map' | 'pigment'
-  form?: 'mult' | 'off' | 'lin' | 'int'; unit?: string; range?: [number, number]; limits: (number | string | boolean)[]; type: number | string; bins?: string[]; order?: string[]; moves: unknown[]; consumer?: string
-  catalogue?: { range: [number, number]; type: number; operator?: string }; pin_note?: string; loud?: string; shapeable?: boolean
+  locus: string; label: string; short: string; chapter: string; scope: 'trunk' | 'branch'; kind: string; op: 'blend' | 'switch' | 'pair-map' | 'pigment'; operator?: string; borrowed?: string
+  band?: Band; absolute?: Band; range?: [number, number]; limits?: (string | boolean)[]; type: number | string; bins?: string[]; order?: string[]; moves: unknown[]; consumer?: string
+  requires?: string[]; wakesWhen?: Record<string, string[]>; loud?: string; shapeable?: boolean
 }
-export type Genome = { catalogue: { id: string; version: number }; chapters: { id: string; name: string }[]; loci: Locus[] }
+export type Genome = { catalogue: { id: string; version: number; digest?: string }; clan?: string; borrows?: string[]; chapters: { id: string; name: string }[]; loci: Locus[] }
+export const bandOf = (l: Locus): Band | null => l.band ?? l.absolute ?? null
+export const unitOf = (l: Locus) => bandOf(l)?.unit
 export type EndFail = { id: string; fail: string | null; measure: string | null; value: number | string | null; limit: number | string | null }
 export type End = { id: string; locus: string | null; end: 'low' | 'high' | 'allele' | 'corner'; genome: string; value: number | string; label: string; state: 'pass' | 'fail'; fails: EndFail[]; unit?: string; fix?: { value: number; path: string; end: 'low' | 'high' } | null; proof?: Proof; cage: string }
 export type ExtremesState = { fresh: boolean; running: boolean; ends: End[] | null; rows: CheckRow[] | null; key: string; at?: number | null }
@@ -15,22 +20,23 @@ export const runTime = (at: number | null | undefined) => (at ? new Date(at * 10
 
 export const locusById = (g: Genome | undefined, id: string | null) => g?.loci.find((l) => l.locus === id) ?? null
 
-// The selection in Genes mode: a locus id; a part or chapter name from Shape (the tail becomes the tail genes) takes that chapter's first locus; nothing takes the first of the tail chapter, else of the first.
+// The selection in Genes mode: a locus id; the tail from Shape takes the tail length; a chapter name takes that chapter's first locus; nothing takes the first of the legs & tail chapter, else of the first.
 export function selectedLocus(g: Genome | undefined, sel: string | null): Locus | null {
   if (!g) return null
   const hit = locusById(g, sel)
   if (hit) return hit
-  const ch = g.chapters.find((c) => c.id === sel) ?? g.chapters.find((c) => c.id === 'tail') ?? g.chapters[0]
+  if (sel === 'tail') return locusById(g, 'form.tail-length') ?? g.loci[0] ?? null
+  const ch = g.chapters.find((c) => c.id === sel) ?? g.chapters.find((c) => c.id === 'legs-tail') ?? g.chapters[0]
   return g.loci.find((l) => l.chapter === ch?.id) ?? g.loci[0] ?? null
 }
 
 export const unitText = (v: number | string, unit?: string) => (typeof v !== 'number' ? String(v) : `${Number.isInteger(v) && !unit ? v : fmt(v)}${!unit ? '' : unit === '×' || unit === '°' ? unit : ' ' + unit}`)
 export const fmt = (v: number) => (Math.round(v * 100) / 100).toFixed(2)
-export const fmtInt = (l: { form?: string }, v: number) => (l.form === 'int' ? String(v) : fmt(v))
+export const fmtInt = (l: Locus, v: number) => (bandOf(l)?.form === 'int' ? String(v) : fmt(v))
 
 // Which of a blend's named looks a value falls in: the limits cut into as many equal parts as there are names.
 export function binIndex(l: Locus, v: number): number {
-  const [lo, hi] = l.limits as number[]
+  const { lo, hi } = bandOf(l)!
   const n = l.bins?.length ?? 0
   if (!n || hi <= lo) return -1
   return Math.max(0, Math.min(n - 1, Math.floor(((v - lo) / (hi - lo)) * n)))
@@ -38,7 +44,7 @@ export function binIndex(l: Locus, v: number): number {
 
 // The ends the stage shows round the type: a blend's low and high limit; for a pair or a switch the first two alleles that are not the type.
 export function stageEnds(l: Locus): { genome: string; value: number | string; caption: string }[] {
-  if (l.op === 'blend') { const [lo, hi] = l.limits as number[]; return [{ genome: `low:${l.locus}`, value: lo, caption: 'low' }, { genome: `high:${l.locus}`, value: hi, caption: 'high' }] }
+  if (l.op === 'blend') { const { lo, hi } = bandOf(l)!; return [{ genome: `low:${l.locus}`, value: lo, caption: 'low' }, { genome: `high:${l.locus}`, value: hi, caption: 'high' }] }
   return (l.limits as string[]).filter((a) => a !== l.type).slice(0, 2).map((a) => ({ genome: `allele:${l.locus}=${a}`, value: a, caption: 'look' }))
 }
 
@@ -64,20 +70,20 @@ export const endMeasure = (e: End) => {
   return `${at}: ${f?.fail ?? f?.id ?? 'a check fails'}${f?.measure ? ` (${f.measure})` : ''}.${e.fix ? ` Passes up to ${unitText(e.fix.value, e.unit)}.` : ''}`
 }
 
-// The JSON pointer a computed fix writes to: genome.loci.<locus>.limits.<0|1>.
+// The JSON pointer a computed fix writes to: genome.loci.<locus>.<band|absolute>.<lo|hi>.
 export function fixPointer(g: Genome, fix: { path: string }): string | null {
-  const m = /^genome\.loci\.(.+)\.limits\.([01])$/.exec(fix.path)
+  const m = /^genome\.loci\.(.+)\.(band|absolute)\.(lo|hi)$/.exec(fix.path)
   const i = m ? g.loci.findIndex((l) => l.locus === m[1]) : -1
-  return i < 0 ? null : `/genome/loci/${i}/limits/${m![2]}`
+  return i < 0 ? null : `/genome/loci/${i}/${m![2]}/${m![3]}`
 }
 
 // How the catalogue says two copies show (words.md: One is enough, Needs both, Mixes).
 export const COPY_RULE: Record<string, string> = { 'copy-mean': 'Mixes', 'pair-map': 'Needs both', 'dominant-enable': 'One is enough', 'partition-map': 'Mixes' }
-export const copyRule = (l: Locus) => COPY_RULE[l.catalogue?.operator ?? (l.op === 'pair-map' ? 'pair-map' : l.op === 'switch' ? 'dominant-enable' : 'copy-mean')]
+export const copyRule = (l: Locus) => (l.op === 'switch' && l.operator === 'recessive-enable' ? 'Needs both' : COPY_RULE[l.operator ?? (l.op === 'pair-map' ? 'pair-map' : l.op === 'switch' ? 'dominant-enable' : 'copy-mean')])
 
 // The range bar's positions, in percent of the range.
 export function rangeBar(l: Locus) {
-  const [r0, r1] = l.range ?? (l.limits as number[]), [lo, hi] = l.limits as number[]
+  const { lo, hi } = bandOf(l)!, [r0, r1] = l.range ?? [lo, hi]
   const pos = (v: number) => Math.round(((v - r0) / (r1 - r0)) * 1000) / 10
   return { r0, r1, lo, hi, band: [pos(lo), pos(hi)] as [number, number], mark: pos(l.type as number) }
 }
@@ -93,9 +99,29 @@ export function proofEnd(x: ExtremesState | null | undefined, locus: string, par
 export type StageView = { az: number; zoom: { s: number; ox: number; oy: number }; part: string }
 export function stageView(l: Locus): StageView {
   const id = l.locus
-  if (l.chapter === 'tail') return { az: 90, zoom: { s: 1.4, ox: 62, oy: 60 }, part: 'tail, from the side' }
+  if (/tail-/.test(id)) return { az: 90, zoom: { s: 1.4, ox: 62, oy: 60 }, part: 'tail, from the side' }
   if (/ear-/.test(id)) return { az: 0, zoom: { s: 1.9, ox: 50, oy: 24 }, part: 'ears, from the front' }
   if (l.chapter === 'face') return { az: 0, zoom: { s: 2.0, ox: 50, oy: 27 }, part: 'face, from the front' }
-  if (/limb-/.test(id)) return { az: 90, zoom: { s: 1.5, ox: 50, oy: 78 }, part: 'legs, from the side' }
+  if (/leg-/.test(id)) return { az: 90, zoom: { s: 1.5, ox: 50, oy: 78 }, part: 'legs, from the side' }
   return { az: 32, zoom: { s: 1.3, ox: 50, oy: 50 }, part: 'whole body' }
+}
+
+// A sleeping record is carried and crossed all the same; only its drawing waits. At the type it is asleep unless the switch it needs is on, or the shown look of a record it names is one of the looks that wake it
+// (a record that is itself asleep shows nothing and wakes nothing). Studio voice; no string for this is in words.md yet (listed for the copywriter in the W7 notes).
+const lookWord = (a: string) => a.replace(/-/g, ' ')
+const labelOf = (g: Genome, id: string) => locusById(g, id)?.label ?? id
+export function isAsleep(g: Genome, l: Locus, seen: string[] = []): boolean {
+  if (l.kind !== 'sleeping' || seen.includes(l.locus)) return false
+  const shown = (id: string) => { const o = locusById(g, id); return !o || isAsleep(g, o, [...seen, l.locus]) ? undefined : String(o.type) }
+  if (l.requires?.some((r) => shown(r) !== 'on')) return true
+  return !!l.wakesWhen && !Object.entries(l.wakesWhen).some(([id, looks]) => { const v = shown(id); return v !== undefined && looks.includes(v) })
+}
+export function wakeLine(g: Genome, l: Locus): { asleep: boolean; head: string; line: string } | null {
+  if (l.kind !== 'sleeping') return null
+  const asleep = isAsleep(g, l)
+  const cond = [
+    ...(l.requires ?? []).map((r) => `${labelOf(g, r)} is on`),
+    ...(l.wakesWhen ? [Object.entries(l.wakesWhen).map(([id, looks]) => `${labelOf(g, id)} shows ${looks.map(lookWord).join(' or ')}`).join(', or ')] : []),
+  ].join(' and ')
+  return { asleep, head: asleep ? 'Asleep at the type' : 'Awake at the type', line: asleep ? `Wakes when ${cond}.` : `Sleeps unless ${cond}.` }
 }

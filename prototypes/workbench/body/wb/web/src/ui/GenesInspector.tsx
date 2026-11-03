@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { checkEnds, getToken, patchSpecies, type Species } from '../lib/api'
-import { binIndex, copyRule, endLine, endMeasure, endsOf, fixPointer, proofEnd, selectedLocus, unitText } from '../lib/genes'
+import { bandOf, binIndex, copyRule, endLine, endMeasure, endsOf, fixPointer, proofEnd, selectedLocus, unitOf, unitText, wakeLine } from '../lib/genes'
 import type { StudioUrl } from '../lib/url'
 import { RangeBar } from './RangeBar'
 import s from './GenesInspector.module.css'
@@ -19,14 +19,15 @@ export function GenesInspector({ species, url, go }: { species: Species; url: St
   const bad = ends.filter((e) => e.state === 'fail')
   const blend = l.op === 'blend'
   const shown = proofEnd(ext, l.locus, url.proof)
-  const lim = l.limits as number[]
+  const band = bandOf(l)
+  const sleep = wakeLine(g, l)
   const chapter = g.chapters.find((c) => c.id === l.chapter)?.name
   const setLimit = async (e: (typeof bad)[number]) => {
     const ptr = e.fix && fixPointer(g, e.fix)
     if (!ptr || !e.fix) return
     setBusy(true)
     try {
-      await patchSpecies(species.id, [{ op: 'test', path: ptr, value: (e.end === 'high' ? lim[1] : lim[0]) }, { op: 'replace', path: ptr, value: e.fix.value }])
+      await patchSpecies(species.id, [{ op: 'test', path: ptr, value: (e.end === 'high' ? band!.hi : band!.lo) }, { op: 'replace', path: ptr, value: e.fix.value }])
       await qc.invalidateQueries({ queryKey: ['species', species.id] })
     } finally { setBusy(false) }
   }
@@ -34,29 +35,33 @@ export function GenesInspector({ species, url, go }: { species: Species; url: St
   return (
     <>
       <div className={s.title}><b>{l.label}</b><span className={s.kind}>{blend ? 'blend' : l.op} · {l.kind === 'heritable-doing' ? 'doing' : 'look'}</span></div>
-      <p className={s.where}>{chapter}{l.scope === 'shared' ? ' · shared trait' : ''}</p>
+      <p className={s.where}>{chapter}{l.scope === 'branch' ? ` · ${l.borrowed ? `borrowed from ${l.borrowed}` : 'clan trait'}` : ''}</p>
       {blend && <RangeBar locus={l} failing={bad.filter((e) => e.end === 'low' || e.end === 'high').map((e) => e.end as 'low' | 'high')} />}
       {blend ? (
         <>
-          <div className={s.field}><label>Limits</label><span className={s.v}>{unitText(lim[0], '')} – {unitText(lim[1], l.unit)}</span></div>
-          <div className={s.field}><label>Type</label><span className={s.v}>{unitText(l.type as number, l.unit)}</span></div>
+          <div className={s.field}><label>Limits</label><span className={s.v}>{unitText(band!.lo, '')} – {unitText(band!.hi, unitOf(l))}</span></div>
+          <div className={s.field}><label>Type</label><span className={s.v}>{unitText(l.type as number, unitOf(l))}</span></div>
           {l.bins && <div className={s.field}><label>Looks</label><span className={s.seg}>{l.bins.map((b, i) => <span key={b} className={i === binIndex(l, l.type as number) ? s.on : ''}>{b[0].toUpperCase() + b.slice(1)}</span>)}</span></div>}
         </>
       ) : (
         <>
           <div className={s.field}><label>Type</label><span className={s.v}>{String(l.type)}</span></div>
           <div className={s.field}><label>Looks</label><span className={s.seg}>{(l.limits as string[]).map((b) => <span key={b} className={b === l.type ? s.on : ''}>{b}</span>)}</span></div>
-          {l.op === 'pair-map' && l.order && <div className={s.field}><label>Shows</label><span className={s.v}>{l.scope === 'shared' ? copyRule(l) : `One is enough · ${l.order.join(' over ')}`}</span></div>}
+          {l.op === 'pair-map' && l.order && <div className={s.field}><label>Shows</label><span className={s.v}>{`${copyRule(l)} · ${l.order.join(' over ')}`}</span></div>}
         </>
       )}
-      {l.scope === 'shared' ? (
-        <div className={s.lock}>
-          <div className={s.field}><label>Copies</label><span className={s.v}>{copyRule(l)}</span></div>
-          <p className={s.help}>Shared trait: the catalogue sets how it shows.</p>
-          <button className={s.mod} disabled aria-disabled title="A modifier is a gene of this species that changes how a shared trait shows. Modifiers arrive with expressions.">Add a modifier</button>
-          <p className={s.help}>Not yet: modifiers arrive with expressions.</p>
+      {sleep && (
+        <div className={s.lock} data-asleep={sleep.asleep || undefined}>
+          <div className={s.field}><label>Sleep</label><span className={s.v}>{sleep.head}</span></div>
+          <p className={s.help}>{sleep.line}</p>
         </div>
-      ) : l.pin_note ? <p className={s.help} title={l.pin_note}>This species' own trait; the catalogue has a different one with the same id.</p> : null}
+      )}
+      <div className={s.lock}>
+        <div className={s.field}><label>Copies</label><span className={s.v}>{copyRule(l)}</span></div>
+        <p className={s.help}>The catalogue sets how the copies show.</p>
+        <button className={s.mod} disabled aria-disabled title="A modifier is a gene of this species that changes how a shared trait shows. Modifiers arrive with expressions.">Add a modifier</button>
+        <p className={s.help}>Not yet: modifiers arrive with expressions.</p>
+      </div>
       {!ext?.ends || !ext.fresh ? (
         <div className={s.measure}>
           <p className={s.help}>{ext?.running ? 'Building both ends…' : ext?.ends ? 'Measured on an older file.' : 'The ends have not been built yet.'}</p>

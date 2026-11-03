@@ -24,3 +24,5 @@
 .measureLine { margin: 0 0 0 19px; font-size: var(--t-14); color: var(--text-2); font-variant-numeric: tabular-nums; }
 .acts { margin-left: 19px; display: flex; gap: var(--s-4); flex-wrap: wrap; }
 @media (pointer: coarse) { .act, .acts button { min-height: 44px; padding: 10px 4px; } }
+
+.lock[data-asleep] .v { color: var(--text-2); font-style: italic; }

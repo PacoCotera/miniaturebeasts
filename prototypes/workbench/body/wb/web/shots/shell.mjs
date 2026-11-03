@@ -27,8 +27,8 @@ const genome = JSON.parse(readFileSync(join(here, '../../../species_v1/S20.json'
 const fails = [{ id: 'normals', fail: 'Sharp crease in leg.L', measure: '24 visible edges over 20°', value: 24, limit: 0 }]
 const proofKey = 'proofend'.padEnd(64, '0')
 const end = (locus, e, genome_, value, state, extra = {}) => ({ id: `${locus}:${e}`, locus, end: e, genome: genome_, value, label: 'Tail length', state, fails: state === 'fail' ? fails : [], unit: '×', cage: 'c' + e, ...extra })
-const extremes = { fresh: true, running: false, key: 'k', rows: [], ends: [end('body.tail-length', 'low', 'low:body.tail-length', 0.8, 'pass'), end('body.tail-length', 'high', 'high:body.tail-length', 1.3, 'fail', { fix: { value: 1.19, path: 'genome.loci.body.tail-length.limits.1', end: 'high' }, proof: { mode: 'normal', az: 90, key: proofKey, ready: true } }),
-  end('body.tail-curl', 'low', 'low:body.tail-curl', -0.03, 'fail', { label: 'Tail curl', unit: 'turns' })] }
+const extremes = { fresh: true, running: false, key: 'k', rows: [], ends: [end('form.tail-length', 'low', 'low:form.tail-length', 0.8, 'pass'), end('form.tail-length', 'high', 'high:form.tail-length', 1.3, 'fail', { fix: { value: 1.19, path: 'genome.loci.form.tail-length.band.hi', end: 'high' }, proof: { mode: 'normal', az: 90, key: proofKey, ready: true } }),
+  end('form.tail-curl', 'low', 'low:form.tail-curl', -0.03, 'fail', { label: 'Tail curl', unit: 'turns' })] }
 
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.ttf': 'font/ttf' }
 const server = createServer((req, res) => {
@@ -49,8 +49,8 @@ const cases = [
   { name: 'stage-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true },
   { name: 'checks-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, checks: true, q: '&sel=tail&drawer=checks&proof=tail.size' },
   { name: 'checks-light-1180', theme: 'light', w: 1180, h: 820, ready: true, checks: true, touch: true, q: '&sel=tail' },
-  { name: 'genes-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, q: '&sel=body.tail-length' },
-  { name: 'genes-light-1180', theme: 'light', w: 1180, h: 820, ready: true, genes: true, touch: true, q: '&sel=body.tail-length&proof=none' },
+  { name: 'genes-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, q: '&sel=form.tail-length' },
+  { name: 'genes-light-1180', theme: 'light', w: 1180, h: 820, ready: true, genes: true, touch: true, q: '&sel=form.tail-length&proof=none' },
   { name: 'stage-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true },
 ]
 let failed = 0

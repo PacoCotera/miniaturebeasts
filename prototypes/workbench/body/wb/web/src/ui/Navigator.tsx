@@ -3,7 +3,7 @@ import type { CheckRow, CheckMeta } from '../lib/checks'
 import { stateOfPart } from '../lib/checks'
 import type { StudioUrl } from '../lib/url'
 import type { Species } from '../lib/api'
-import { locusDot, selectedLocus } from '../lib/genes'
+import { isAsleep, locusDot, selectedLocus } from '../lib/genes'
 import s from './Navigator.module.css'
 
 const mono = (w: string) => { const p = w.split(' '); return p.length > 1 ? p[0][0] + p[1][0] : w.slice(0, 2) } // the rail's two letters: Limb length -> Ll, Limb girth -> Lg, Lift -> Li
@@ -37,11 +37,13 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
           <ul className={s.tree}>
             {g.loci.filter((l) => l.chapter === c.id).map((l) => {
               const dot = locusDot(species?.extremes, l.locus)
+              const asleep = isAsleep(g, l)
               return (
                 <li key={l.locus}>
-                  <button className={`${s.row} ${cur?.locus === l.locus ? s.sel : ''}`} onClick={() => go({ sel: l.locus, proof: null })} aria-pressed={cur?.locus === l.locus} title={`${l.label} · ${l.locus}`}>
+                  <button className={`${s.row} ${cur?.locus === l.locus ? s.sel : ''}`} onClick={() => go({ sel: l.locus, proof: null })} aria-pressed={cur?.locus === l.locus} title={`${l.label} · ${l.locus}${asleep ? ' · asleep' : ''}`} data-asleep={asleep || undefined}>
                     <span className={s.mono}>{mono(l.short)}</span>
                     <span className={s.label}>{l.short}</span>
+                    {asleep && <span className={s.zz}>asleep</span>}
                     {dot && <i className={s.dot} data-kind={dot === 'stale' ? 'stale' : 'fail'} aria-label={dot === 'fail' ? 'an end fails' : 'measured on an older file'} />}
                   </button>
                 </li>

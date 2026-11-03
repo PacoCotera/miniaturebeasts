@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { casUrl, genomePicture, type Species } from '../lib/api'
-import { endDot, endsOf, fmt, proofEnd, selectedLocus, stageEnds, stageView, unitText, type Dot, type StageView } from '../lib/genes'
+import { bandOf, endDot, endsOf, fmt, proofEnd, selectedLocus, stageEnds, stageView, unitOf, unitText, type Dot, type StageView } from '../lib/genes'
 import type { StudioUrl } from '../lib/url'
 import { Plate } from './Plate'
 import s from './GenesStage.module.css'
@@ -59,7 +59,7 @@ export function GenesStage({ url, species, inset = 0 }: { url: StudioUrl; specie
   const slot = (e: (typeof ends)[number]) => {
     const hit = endsOf(ext, l.locus).find((n) => n.genome === e.genome)
     const proof = hit && hit.id === shown?.id && hit.proof?.ready ? casUrl(hit.proof.key) : null
-    return <End key={e.genome} species={species} genome={e.genome} view={view} w={END.w} h={END.h} value={typeof e.value === 'number' ? unitText(e.value, l.unit) : e.value} caption={e.caption} dot={endDot(ext, e, l.locus)} proofSrc={proof} stale={!!ext && !ext.fresh && !!hit} />
+    return <End key={e.genome} species={species} genome={e.genome} view={view} w={END.w} h={END.h} value={typeof e.value === 'number' ? unitText(e.value, unitOf(l)) : e.value} caption={e.caption} dot={endDot(ext, e, l.locus)} proofSrc={proof} stale={!!ext && !ext.fresh && !!hit} />
   }
   return (
     <main className={s.stage} ref={ref} style={inset ? { paddingBottom: inset + 8, justifyContent: 'flex-start' } : undefined}>
@@ -67,7 +67,7 @@ export function GenesStage({ url, species, inset = 0 }: { url: StudioUrl; specie
         {first && slot(first)}
         <figure className={s.fig}>
           <TypeTile species={species} view={view} />
-          <Caption dot={null} value={typeof l.type === 'number' ? unitText(l.type, l.unit) : String(l.type)} word="type" />
+          <Caption dot={null} value={typeof l.type === 'number' ? unitText(l.type, unitOf(l)) : String(l.type)} word="type" />
         </figure>
         {second && slot(second)}
       </div>
@@ -76,7 +76,7 @@ export function GenesStage({ url, species, inset = 0 }: { url: StudioUrl; specie
           <img src={casUrl(shown.proof.key)} alt="" draggable={false} style={{ width: 560, marginTop: -Math.round(560 * FRAME) }} />
         </div>
       )}
-      {l.op === 'blend' && <p className={s.note}>Limits {fmt((l.limits as number[])[0])} – {unitText((l.limits as number[])[1], l.unit)}; every other trait stays at its type value.</p>}
+      {l.op === 'blend' && <p className={s.note}>Limits {fmt(bandOf(l)!.lo)} – {unitText(bandOf(l)!.hi, unitOf(l))}; every other trait stays at its type value.</p>}
     </main>
   )
 }
