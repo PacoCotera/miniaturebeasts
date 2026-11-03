@@ -16,7 +16,7 @@ void word_holdRing(void) {
   cx = spec_int("frame", "hold.centre.0", -1); cy = spec_int("frame", "hold.centre.1", -1);
   if (size < 8 || width < 1 || width * 2 > size || cx < 0 || cy < 0 || !track[0] || !fill[0]) { v_error("word holdRing: frame hold needs size, centre, width, track and fill"); return; }
   int f = hold_fill(); char ops[200];
-  int n = snprintf(ops, sizeof ops, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]", size, size, width, track);
+  int n = snprintf(ops, sizeof ops, "[[\"arc\",0,0,%d,%d,%d,1000,\"%s\"]", size, size, width, track);   /* the track: the whole band */
   if (f > 0) snprintf(ops + n, sizeof ops - (size_t)n, ",[\"arc\",0,0,%d,%d,%d,%d,\"%s\"]]", size, size, width, f, fill); else snprintf(ops + n, sizeof ops - (size_t)n, "]");
   v_region("hold", LAYER_CHROME); v_composed("hold.ring", cx - size / 2, cy - size / 2, size, size, ops);
 }
