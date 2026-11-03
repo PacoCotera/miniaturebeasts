@@ -3249,6 +3249,16 @@ function buildMapPB() {
       const land = (X, Y) => X >= 0 && Y >= 0 && X < MW && Y < MH && G.land[Y * MW + X] !== L.WATER;
       if (land(x, y - 1)) pb.rect(px, py, CELL, 2, C.ice); if (land(x, y + 1)) pb.rect(px, py + CELL - 2, CELL, 2, C.ice);
       if (land(x - 1, y)) pb.rect(px, py, 2, CELL, C.ice); if (land(x + 1, y)) pb.rect(px + CELL - 2, py, 2, CELL, C.ice);
+      if (G.gen === 4) for (const sy of [1, -1]) for (const sx of [1, -1]) {   // generator 4: every outward corner (both side neighbours land) is cut as a 7 px quarter disc of the ground across it, with the 2 px foam along the arc
+        if (!land(x, y - sy) || !land(x - sx, y)) continue;
+        const cx = sx > 0 ? px : px + CELL, cy = sy > 0 ? py : py + CELL, diag = land(x - sx, y - sy), cut = [];
+        for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { const d = Math.hypot(i + .5, j + .5), X = sx > 0 ? cx + i : cx - 1 - i, Y = sy > 0 ? cy + j : cy - 1 - j;
+          if (d >= 9) continue;
+          if (d >= 7) { cut.push([X, Y, C.ice]); continue; }
+          const mx = sx > 0 ? cx - 1 - i : cx + i, my = sy > 0 ? cy - 1 - j : cy + j;   // the pixel mirrored through the corner point, else mirrored across the nearer side
+          cut.push([X, Y, diag ? pb.get(mx, my) : i < j ? pb.get(mx, Y) : pb.get(X, my)]); }
+        for (const [X, Y, v] of cut) pb.set(X, Y, v);
+      }
     }
     if (l === L.CLIFF && y + 1 < MH && G.land[c + MW] !== L.CLIFF) { // the shadow a cliff throws on the cell below
       pb.rect(px, py + CELL, CELL, 2, C.soil); for (let i = 0; i < CELL; i++) if (i % 2 === 0) pb.set(px + i, py + CELL + 2, C.soil);
