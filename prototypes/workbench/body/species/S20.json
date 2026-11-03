@@ -2615,7 +2615,8 @@
     0.0,
     0.6
    ],
-   "glow_tips": "rare (about 1 in 7)"
+   "glow_tips": "rare (about 1 in 7)",
+   "subdiv_offset": -1
   },
   "fang": {
    "presence": "about 1 in 4",
@@ -2623,7 +2624,8 @@
     1,
     2
    ],
-   "length": 0.06
+   "length": 0.06,
+   "subdiv_offset": -1
   },
   "horn": "framework only (tests and a bare-base render); not on Tuliko",
   "tusk": "framework only (tests and a bare-base render); not on Tuliko",

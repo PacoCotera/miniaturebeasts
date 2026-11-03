@@ -255,6 +255,10 @@ def validate(doc):
             ch = p.get("chain")
             if isinstance(ch, list) and plan and len(ch) != plan["limb_joints"]:
                 errs.append((f"parts.{p.get('id')}.chain", f"parts.{p.get('id')}.chain: a limb has {plan['limb_joints']} joints after its root, got {len(ch)}"))
+    ap = (doc.get("legacy") or {}).get("appendages") if isinstance(doc.get("legacy"), dict) else None
+    for fam, v in (ap.items() if isinstance(ap, dict) else []):                  # an appendage family is shown at the body's subdivision level or one level less (a few pixels wide: whiskers, fangs)
+        if isinstance(v, dict) and "subdiv_offset" in v and (isinstance(v["subdiv_offset"], bool) or v["subdiv_offset"] not in (0, -1)):
+            errs.append((f"legacy.appendages.{fam}.subdiv_offset", f"legacy.appendages.{fam}.subdiv_offset: must be 0 (the body's level) or -1 (one level less), got {v['subdiv_offset']!r}"))
     # a socket's join is the owner's rule (2 Nov 23:02): required, hard or soft, nothing in between
     if isinstance(doc.get("genome"), dict) and not errs:
         import genomeapply as GA

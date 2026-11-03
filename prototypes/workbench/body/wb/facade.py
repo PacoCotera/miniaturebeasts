@@ -279,7 +279,7 @@ def proxy_mesh(body, level=1):
     """The proxy mesh: the cage subdivided to `level`, with the part of each vertex. Returns dict(V, F, part, names)."""
     import subdiv as SD
     Vf, Ff, attr, fp, cr, mir = body.full()
-    V, F, _, at, fpp = SD.subdivide(Vf, Ff, cr, attr, fp, levels=level)
+    V, F, _, at, fpp = SD.subdivide_body(body, Vf, Ff, cr, attr, fp, levels=level)
     F = np.array(F, int)
     fpp = np.asarray(fpp).astype(int)
     cnt = np.zeros((len(V), len(body.parts) + 1))

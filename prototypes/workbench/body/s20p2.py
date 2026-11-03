@@ -12,7 +12,7 @@ VIEWS10 = views.VIEWS
 
 def level_arrays(b, level=2):
     Vf, Ff, attr, fp, cr, mir = b.full()
-    V, F, _, at, fp2 = SD.subdivide(Vf, Ff, cr, attr, fp, levels=level)
+    V, F, _, at, fp2 = SD.subdivide_body(b, Vf, Ff, cr, attr, fp, levels=level)
     F = np.array(F, int)
     return V, F, at, fp2
 
@@ -21,7 +21,7 @@ def counts(b):
     Vf, Ff, attr, fp, cr, mir = b.full()
     out = dict(cage_half=len(b.cage.V), cage_full=len(Vf))
     for L in (1, 2, 3):
-        V, F, _, _, _ = SD.subdivide(Vf, Ff, cr, attr, fp, levels=L)
+        V, F, _, _, _ = SD.subdivide_body(b, Vf, Ff, cr, attr, fp, levels=L)
         out[f"L{L}"] = len(V)
     return out
 

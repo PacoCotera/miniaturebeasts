@@ -44,7 +44,7 @@ def measure(b, V2=None, F2=None, part2=None, z_sole=0.03):
     """dict(com, volume, heel_x, toe_x, sole_len, margin (com_x - heel_x) / sole_len, inside (the ground projection lies in the hull of both soles), hull)."""
     if V2 is None:
         Vf, Ff, at, fpp, cr, mir = b.full()
-        V2, F2, _, a2, fp2 = SD.subdivide(Vf, Ff, cr, at, fpp, levels=2)
+        V2, F2, _, a2, fp2 = SD.subdivide_body(b, Vf, Ff, cr, at, fpp, levels=2)
         F2 = np.array(F2, int)
         cnt = np.zeros((len(V2), len(b.parts) + 1))
         for k in range(4):

@@ -138,7 +138,7 @@ def island_stretch_mesh(b, level=2):
     import subdiv as SD
     ctx = b.ctx
     Vf, Ff, attr, fp, cr, mir = b.full()
-    V2, F2, _, attr2, fp2 = SD.subdivide(Vf, Ff, cr, attr, fp, levels=level)
+    V2, F2, _, attr2, fp2 = SD.subdivide_body(b, Vf, Ff, cr, attr, fp, levels=level)
     F2 = np.array(F2, int)
     pn = {v: k for k, v in b.parts.items()}
     pid = np.rint(attr[:, 0]).astype(int)

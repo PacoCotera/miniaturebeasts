@@ -137,12 +137,57 @@ def sweep_shell(body, part, P, R, n=N_AROUND, tag=1.0, attr_t=True):
     return dict(rings=rings, poles=poles)
 
 
+class _Stub:
+    """Just enough of a Body for sweep_shell: the shell's vertices and faces on their own."""
+    def __init__(self):
+        self.V, self.F, self.tag = [], [], {}
+
+    def add(self, p, part, s=0.0, a=0.0, target=None):
+        self.V.append(np.array(p, float))
+        return len(self.V) - 1
+
+    def face(self, a, b, c, d, part):
+        self.F.append((a, b, c, d))
+
+
+HEX = math.sqrt(3.0 * math.sqrt(3.0) / (2.0 * math.pi))      # the radius of the circle with the area of a regular hexagon of radius 1
+
+
+def cage_fit(P, R, n=N_AROUND):
+    """The centre line and radii of a shell that is shown at its cage (the species file's `subdiv_offset` -1: a whisker or a fang is a few pixels wide, so it is not subdivided with the body), fitted so that its cage stands where the shell stood one
+    subdivision level in: each ring's centre and mean radius are taken from the subdivided shell, and the cage's ring (a hexagon) gets the radius of the equal-area circle. At the whisker's girth the cage is within 0.001 H of the old level-1 width and centre line."""
+    from subdiv import subdivide
+    P = np.asarray(P, float)
+    R = np.asarray(R, float)
+    st = _Stub()
+    rec = sweep_shell(st, "fit", P, R, n=n)
+    m = len(P)
+    attr = np.full((len(st.V), 1), -1.0e6)                                 # the poles: no mean of their parents lands on a ring number
+    for i, ring in enumerate(rec["rings"]):
+        attr[ring, 0] = float(i)
+    V1, F1, _, a1, _ = subdivide(np.array(st.V), st.F, None, attr, None, levels=1)
+    a1 = a1[:, 0]
+    P2, R2 = P.copy(), R.copy()
+    for i in range(m):
+        pts = V1[a1 == float(i)]
+        c = pts.mean(0)
+        P2[i] = c
+        R2[i] = float(np.linalg.norm(pts - c, axis=1).mean()) / HEX
+    return P2, R2
+
+
 def add_shell(body, ctx, family, name, P, R, **info):
-    """Register `name` as a part of the body and sweep its shell; the record goes to ctx['info']['appendages'][name]."""
+    """Register `name` as a part of the body and sweep its shell; the record goes to ctx['info']['appendages'][name]. A family whose `subdiv_offset` in the species file is -1 is swept at its fitted cage radii and subdivided one level less than the body
+    (subdiv.subdivide_body reads `body.subdiv_offset`)."""
     P = np.array(P, float)
     P[:, 1] = np.maximum(P[:, 1], 0.004)
+    fam = ((ctx.get("spec") or {}).get("appendages") or {}).get(family)
+    off = int(fam.get("subdiv_offset", 0)) if isinstance(fam, dict) else 0
+    if off < 0:
+        P, R = cage_fit(P, R)
+        body.subdiv_offset[name] = off
     rec = sweep_shell(body, name, P, R)
-    rec.update(family=family, P=P, R=np.asarray(R, float), **info)
+    rec.update(family=family, P=P, R=np.asarray(R, float), subdiv_offset=off, **info)
     ctx.setdefault("info", {}).setdefault("appendages", {})[name] = rec
     return rec
 

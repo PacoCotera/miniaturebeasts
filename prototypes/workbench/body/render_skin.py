@@ -139,7 +139,7 @@ def ribbon(pts, nrm, w):
 def render_skin(b, Rg, Mpose, outpath, size, az=57.5, el=8.0, palette="charcoal", eye_frames=("open", "open"), mouth="content", level=3, samples=48, centre=None, alpha_only=False, align=None, zones=None, material=None, face=None):
     ctx = b.ctx
     Vf, Ff, attr, fp, cr, mir = b.full()
-    V3, F3, _, attr3, _ = SD.subdivide(Vf, Ff, cr, attr, fp, levels=level)
+    V3, F3, _, attr3, _ = SD.subdivide_body(b, Vf, Ff, cr, attr, fp, levels=level)
     colors = SK.vertex_colors(ctx, V3, attr3, palette, zones)
     W = Rg.weights(V3, attr3)
     Vp = Rg.skin(V3, W, Mpose)

@@ -17,6 +17,7 @@ class Body:
         self.hold = set()
         self.caps = []
         self.tag = {}         # vertex id (after finish) -> zone tag (1 = toe bead)
+        self.subdiv_offset = {}  # part name -> -1 for a closed shell shown one level less (the species file's appendage `subdiv_offset`)
         self.hooks = []       # callables(body): re-place detail vertices from the current cage, run each limit-fix step
 
     def pid(self, name):

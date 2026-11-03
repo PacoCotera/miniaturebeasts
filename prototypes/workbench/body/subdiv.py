@@ -118,3 +118,34 @@ def _once(V, F, creases, attr, fattr):
         ea_ = 0.5 * (attr[E[:, 0]] + attr[E[:, 1]])
         nattr = np.vstack([attr, fa, ea_])
     return newV, newF, nc, nattr, (np.repeat(np.asarray(fattr), 4) if fattr is not None else None)
+
+
+def subdivide_body(b, V, F, creases, attr, fattr, levels=1):
+    """`subdivide` for a built body: a part that declares `subdiv_offset` -1 (a closed shell on vertices of its own: the species file's whiskers and fangs) is subdivided one level less than the rest. The rest comes first in the result (faces and vertices in their
+    old order), then the shells; every face of a level keeps its four children together, so a coarser level's faces refine into a finer one's by repetition. With no such part, or at level 0, it is `subdivide` itself."""
+    shallow = {b.parts[n] for n, o in (getattr(b, "subdiv_offset", None) or {}).items() if o < 0 and n in b.parts}
+    if not shallow or levels < 1:
+        return subdivide(V, F, creases, attr, fattr, levels)
+    V = np.asarray(V, float)
+    fa = np.asarray(fattr).astype(int)
+    sf = np.isin(fa, sorted(shallow))
+    if not sf.any():
+        return subdivide(V, F, creases, attr, fattr, levels)
+    Fa = np.array(F, int)
+    sv = np.zeros(len(V), bool)
+    sv[np.unique(Fa[sf])] = True
+    if (sv[np.unique(Fa[~sf])]).any():
+        raise ValueError("a shell with subdiv_offset -1 shares a vertex with the rest of the cage")
+    out = []
+    for keep_f, keep_v, lv in ((~sf, ~sv, levels), (sf, sv, levels - 1)):
+        remap = np.full(len(V), -1, int)
+        remap[keep_v] = np.arange(int(keep_v.sum()))
+        cr = {(int(remap[a]), int(remap[c])): s for (a, c), s in (creases or {}).items() if keep_v[a] and keep_v[c]}
+        cr = {(min(a, c), max(a, c)): s for (a, c), s in cr.items()}
+        out.append(subdivide(V[keep_v], remap[Fa[keep_f]], cr, None if attr is None else np.asarray(attr, float)[keep_v], fa[keep_f], lv))
+    (V0, F0, c0, a0, f0), (V1, F1, c1, a1, f1) = out
+    n0 = len(V0)
+    F_ = list(F0) + [tuple(int(x) + n0 for x in f) for f in F1]
+    c = dict(c0)
+    c.update({(a + n0, b_ + n0): s for (a, b_), s in c1.items()})
+    return (np.vstack([V0, V1]), F_, c, None if a0 is None else np.vstack([a0, a1]), np.concatenate([f0, f1]))

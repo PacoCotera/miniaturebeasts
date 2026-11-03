@@ -65,7 +65,7 @@ def cases():
     return out
 
 
-# The checks each fixed genome fails at 0d7a64e82 (measured before any fix; the order is cases()).
+# The checks each fixed genome fails now (at 0d7a64e82, before any fix, 38 of the 40 failed one; each chunk takes names off).
 KNOWN = {
     'carry -12 lantern': ['normals'],
     'carry -12 tuft': ['normals'],
@@ -84,17 +84,13 @@ KNOWN = {
     'short lantern 1.2': ['mesh', 'normals'],
     'whiskers 3 fangs lantern': ['verts'],
     'whiskers 3 glow lantern': ['verts'],
-    'whiskers 1 lantern': ['verts'],
     'whiskers 3 fangs tuft': ['verts'],
     'whiskers 3 glow tuft': ['verts'],
-    'whiskers 1 tuft': ['verts'],
     'whiskers 3 fangs plain': ['verts'],
     'whiskers 3 glow plain': ['verts'],
-    'whiskers 1 plain': ['verts'],
-    'whiskers 2 fangs lantern': ['verts'],
-    'carry -12 girth 1.2 lantern 1.2': ['normals'],
     'whiskers 3 fangs carry -12 tuft 1.2': ['mesh', 'normals', 'verts'],
     'whiskers 3 fangs short tuft 1.2': ['mesh', 'normals', 'verts'],
+    'carry -12 girth 1.2 lantern 1.2': ['normals'],
     'girth 1.2 tuft 1.2': ['mesh'],
 }
 

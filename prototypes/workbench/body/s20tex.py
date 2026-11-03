@@ -381,13 +381,13 @@ def bake(b, genome, level=3, frames=("open",), size=SIZE, verbose=False, ship_le
     the texels round the eyes (the rest equals 'open'); returns col per frame."""
     import subdiv as SD, gltf_out
     Vf, Ff, attr, fp, cr, mir = b.full()
-    V3, F3, _, attr3, fp3 = SD.subdivide(Vf, Ff, cr, attr, fp, levels=level)
+    V3, F3, _, attr3, fp3 = SD.subdivide_body(b, Vf, Ff, cr, attr, fp, levels=level)
     F3 = np.array(F3, int)
     fp3 = np.asarray(fp3).astype(int)
     N3 = gltf_out.vertex_normals(V3, F3)
     sl = SHIP_LEVEL if ship_level is None else ship_level
     if sl < level:
-        V1, F1, _, attr1, fp1 = SD.subdivide(Vf, Ff, cr, attr, fp, levels=sl)
+        V1, F1, _, attr1, fp1 = SD.subdivide_body(b, Vf, Ff, cr, attr, fp, levels=sl)
         F1 = np.array(F1, int)
         uv1, isl1 = face_uv(b, V1, F1, np.asarray(fp1).astype(int), attr1)
         uv = refine_uv(uv1, level - sl)
@@ -436,7 +436,7 @@ def render_mesh(b, level=None):
     import subdiv as SD, gltf_out
     level = SHIP_LEVEL if level is None else level
     Vf, Ff, attr, fp, cr, mir = b.full()
-    V, F, _, at, fpp = SD.subdivide(Vf, Ff, cr, attr, fp, levels=level)
+    V, F, _, at, fpp = SD.subdivide_body(b, Vf, Ff, cr, attr, fp, levels=level)
     F = np.array(F, int)
     fpp = np.asarray(fpp).astype(int)
     Nw = gltf_out.vertex_normals(V, F)

@@ -11,7 +11,7 @@ VIEWS = [(f"az{a:03d}", float(a), 15.0) for a in range(0, 360, 45)] + [("top", 0
 
 def level_mesh(body, level=2):
     V, F, attr, fp, cr, mirror = body.full()
-    V2, F2, cr2, attr2, fp2 = SD.subdivide(V, F, cr, attr, fp, levels=level)
+    V2, F2, cr2, attr2, fp2 = SD.subdivide_body(body, V, F, cr, attr, fp, levels=level)
     return dict(V0=V, F0=F, V=V2, F=F2, attr=attr2, fp=fp2, cr=cr2)
 
 

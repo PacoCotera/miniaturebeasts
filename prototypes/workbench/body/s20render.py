@@ -12,7 +12,7 @@ SIZES = gates.SIZES
 def prepare(b, genome, level=3, frame="open", pose=None, rig=None):
     ctx = b.ctx
     Vf, Ff, attr, fp, cr, mir = b.full()
-    V3, F3, _, attr3, fp3 = SD.subdivide(Vf, Ff, cr, attr, fp, levels=level)
+    V3, F3, _, attr3, fp3 = SD.subdivide_body(b, Vf, Ff, cr, attr, fp, levels=level)
     F3a = np.array(F3, int)
     npart = len(b.parts) + 1
     cnt = np.zeros((len(V3), npart))
