@@ -67,8 +67,7 @@ def cases():
 
 # The checks each fixed genome fails now (at 0d7a64e82, before any fix, 38 of the 40 failed one; each chunk takes names off).
 KNOWN = {
-    'whiskers 3 fangs carry -12 tuft 1.2': ['verts'],
-    'whiskers 3 fangs short tuft 1.2': ['verts'],
+    'whiskers 3 fangs tuft': ['verts'],
 }
 
 

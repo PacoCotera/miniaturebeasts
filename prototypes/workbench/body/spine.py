@@ -263,13 +263,15 @@ class SpineLoft(Gourd):
         self.s_root_ref = s_root
         s_c = []
         s = s_start
+        s_def = float(self.sp.get("tip_ring0", 0.06))
         while s < s_stop - 0.5 * gt:
+            first = not s_c
             s_c.append(s)
             step_ = gt if s < 0.5 else (gt * 1.3 if s < 0.7 else (gt * 1.6 if s < 0.9 else gap))
             rg_ = self.sp.get("root_ring_gap")
             if rg_ is not None and abs(s - s_root) < float(self.sp.get("root_ring_reach", 0.45)):
                 step_ = min(step_, float(rg_))                       # finer rings where the rump turns into the tail's root (pass 3: at 0.16 H the lower back was one straight ramp from the seat's bottom to the tail)
-            s += step_
+            s = (s_def + step_) if (first and s_start != s_def) else s + step_          # V11: a tip with its own first ring (the tuft's 0.04 H) moves that ring only; the rest of the sequence keeps the phase of the default start, because the last stepped ring before the vertical rings lands where the phase puts it (a 0.02 H shift of the first ring moved the ring under the head by 0.02 H and pushed 23 tuft genomes' neck quads over the planarity limit)
         s_c.append(s_stop)
         if len(s_c) > 2 and s_c[-1] - s_c[-2] < 0.5 * gt:
             s_c.pop(-2)
