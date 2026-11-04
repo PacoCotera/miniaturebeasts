@@ -86,9 +86,9 @@ test("the marks: one a portrait, the first that applies (companion, coming out, 
   const w = wallBuild({ st, sv, settings, docked: true, light: "day", focus: null }, spec, frameSpec, home, pods), ca = w.props.regions.wall.cells.find((x) => x.id === String(a.id)); assert.match(ca.mark, /mark-companion-solid-16/);
 });
 
-test("the card: the ringed mibi's name, looks, plates in their order (Look, Move to, Take along, Tuck away, Breed, Return), its room band; the footer names the act and where it lives", () => {
+test("the card: the ringed mibi's name, looks, plates in their order (Look, Move to, Take along, Tuck away, Cross, Return), its room band; the footer names the act and where it lives", () => {
   const st = world(2); const ms = fillRooms(st, [3, 2]); const b = build(st, { focus: "cell." + ms[1].id }), C = b.props.regions.card;
-  assert.deepEqual([C.state, C.name, C.id], ["mibi", ms[1].name, String(ms[1].id)]); assert.deepEqual(C.plates.map((p) => p.verb), ["Look", "Move to", "Take along", "Tuck away", "Breed", "Return"]); assert.equal(C.plates[3].price, "⚡ 2");
+  assert.deepEqual([C.state, C.name, C.id], ["mibi", ms[1].name, String(ms[1].id)]); assert.deepEqual(C.plates.map((p) => p.verb), ["Look", "Move to", "Take along", "Tuck away", "Cross", "Return"]); assert.equal(C.plates[3].price, "⚡ 2");
   assert.deepEqual([C.room.kind, C.room.name, C.room.n, C.room.of, C.room.opens], ["room", "Roots", 3, 8, true]); assert.match(C.picture, /:120x124(:|$)/);
   assert.equal(b.line.ok, "Open " + ms[1].name); assert.equal(b.line.subject, ms[1].name + " · Roots 3 of 8"); assert.equal(b.line.back, "Vivarium");
   assert.equal(build(st, { focus: "plate.0" , last: ms[1].id }).line.ok, "Look at " + ms[1].name);
@@ -249,21 +249,21 @@ test("several picked into a room with too little space: the row reads '1 free ·
   assert.deepEqual([S.mibiById(st, inB[0]).room, S.mibiById(st, inB[1]).room], [0, 0], "the chosen left"); assert.deepEqual([v.move, v.pick], [null, null]); assert.match(h.said.at(-1), /3 are in Reeds/);
 });
 
-// ---- Breed opens the partner pick (the breeding design §3.1, §3.2) ----
+// ---- Cross opens the partner pick (the breeding design §3.1, §3.2) ----
 const pairWorld = () => {   // Roots: Fen (A, a child of Oak and Elm), Wren (a child of Oak and Pip: half kin of Fen), Oak, Elm; Reeds: Moss, Pip (founders), Bud (young), Sky (on a breather)
   const st = world(2); const ms = fillRooms(st, [4, 4]); const [oak, elm, fen, wren, moss, pip, bud, sky] = ms;
   oak.name = "Oak"; elm.name = "Elm"; fen.name = "Fen"; wren.name = "Wren"; moss.name = "Moss"; pip.name = "Pip"; bud.name = "Bud"; sky.name = "Sky";
   fen.parents = [{ id: oak.id, name: "Oak" }, { id: elm.id, name: "Elm" }]; wren.parents = [{ id: oak.id, name: "Oak" }, { id: pip.id, name: "Pip" }]; oak.born = 1; elm.born = 2; moss.born = 3; pip.born = 3; bud.born = st.turn; sky.restUntil = st.turn + 2; st.turn += 1; sky.restUntil = st.turn + 2;
   return { st, ms, fen, wren, oak, elm, moss, pip, bud, sky };
 };
-test("the partner pick: A's species only with A left out; those who can breed now first, furthest kin first and the oldest on a tie, then those who cannot, dimmed; rail and toolbar held; Back is Cancel", () => {
+test("the partner pick: A's species only with A left out; those who can cross now first, furthest kin first and the oldest on a tie, then those who cannot, dimmed; rail and toolbar held; Back is Cancel", () => {
   const { st, fen, wren, oak, elm, moss, pip, bud, sky } = pairWorld();
   const b = build(st, { pair: { a: fen.id }, focus: null }); const W = b.props.regions.wall;
   assert.deepEqual(validate(b.props, schema), []);
   assert.deepEqual(W.cells.map((c) => +c.id), [moss, pip, wren, sky, bud, oak, elm].map((x) => x.id), "unrelated first (the older first on a tie, then by id), half kin next, then those who cannot yet: the one resting, the young, then family, the oldest first: Fen's parents");
   assert.deepEqual(b.props.focus.targets.map((t) => t.group).filter((g, i, a) => a.indexOf(g) === i).sort(), ["cell", "plate"], "the rail and the toolbar are held: no ring lands on them");
   assert.equal(b.props.focus.cur, "cell." + moss.id, "the ring starts on the first partner in rank order"); assert.equal(b.line.back, "Cancel");
-  const C = b.props.regions.card; assert.equal(C.state, "pair"); assert.equal(C.head, "Breed Fen with…"); assert.equal(C.name, "Moss"); assert.match(C.headFace, /:36x37(:|$)/);
+  const C = b.props.regions.card; assert.equal(C.state, "pair"); assert.equal(C.head, "Cross Fen with…"); assert.equal(C.name, "Moss"); assert.match(C.headFace, /:36x37(:|$)/);
   assert.deepEqual(C.lines, [spec.strings.pair.kin.wild]); assert.deepEqual(C.stateLines, []); assert.deepEqual(C.long, ["nothing shared, so nothing shifts"]); assert.match(C.pairLine, /^Fen rests 1 turn · Moss 1$/); assert.equal(C.plates.length, 1); assert.deepEqual([C.plates[0].verb, C.plates[0].held], ["See this pair", true]);
   const kin = build(st, { pair: { a: fen.id }, focus: "cell." + wren.id }).props.regions.card; assert.deepEqual(kin.lines, ["half kin"]);
   assert.deepEqual(kin.long, ["hidden looks show more, blends drift toward the middle"]); assert.ok(!kin.long.join(" ").includes("half kin"), "the kin word is printed once");
@@ -277,19 +277,19 @@ test("the partner pick: A's species only with A left out; those who can breed no
   assert.deepEqual([rel(fen), rel(wren), rel(elm)], [1, 2].map(() => spec.strings.pair.rel.child.replace("{name}", "Oak")).concat(spec.strings.pair.kin.wild), "the co-parent is not family");
   assert.deepEqual(Object.keys(spec.strings.pair.rel), ["parent", "grandparent", "greatGrandparent", "child", "grandchild", "greatGrandchild", "sameParents"]);
   const young = build(st, { pair: { a: fen.id }, focus: "cell." + bud.id }).props.regions.card; assert.equal(young.stateLines[0], "young"); assert.match(young.stateLines[1], /^grows up in \d+ turns?$/);
-  const rest = build(st, { pair: { a: fen.id }, focus: "cell." + sky.id }); assert.deepEqual(rest.props.regions.card.stateLines, ["on a breather", "breeds in 2 turns"]); assert.match(rest.props.regions.card.mark, /mark-breather-16/, "the breather's mark leads the state"); assert.equal(rest.props.regions.card.why, "", "the why line shows with the ring on the plate");
-  const onPlate = build(st, { pair: { a: fen.id }, focus: "plate.0", last: sky.id }); assert.equal(onPlate.props.regions.card.why, "on a breather · can breed in 2 turns", "an unpickable partner: the plate is held with its reason");
+  const rest = build(st, { pair: { a: fen.id }, focus: "cell." + sky.id }); assert.deepEqual(rest.props.regions.card.stateLines, ["on a breather", "can cross in 2 turns"]); assert.match(rest.props.regions.card.mark, /mark-breather-16/, "the breather's mark leads the state"); assert.equal(rest.props.regions.card.why, "", "the why line shows with the ring on the plate");
+  const onPlate = build(st, { pair: { a: fen.id }, focus: "plate.0", last: sky.id }); assert.equal(onPlate.props.regions.card.why, "on a breather · can cross in 2 turns", "an unpickable partner: the plate is held with its reason");
   assert.equal(build(st, { pair: { a: fen.id }, focus: "plate.0", last: moss.id }).props.regions.card.why, "The forecast is not open yet", "a pickable one: the cross is the breeding screens' (held here)");
   assert.equal(build(st, { pair: { a: fen.id }, focus: "cell." + moss.id }).line.ok, null, "held: no ✓ act on any partner"); assert.equal(build(st, { pair: { a: fen.id }, focus: "cell." + sky.id }).line.ok, null);
   assert.equal(build(st, { pair: { a: fen.id }, focus: "cell." + moss.id, forecastOpen: true }).line.ok, "See Fen and Moss", "when the forecast lands: See {A} and {B} on a pickable partner"); assert.equal(build(st, { pair: { a: fen.id }, focus: "cell." + sky.id, forecastOpen: true }).line.ok, null, "and none on one who cannot be picked");
 });
 
-test("Breed on the card: held on a breather with the spec's words, live otherwise; no partner free now names who can breed soonest; ✓ opens the pick and Cancel returns with the card on Breed", () => {
+test("Cross on the card: held on a breather with the spec's words, live otherwise; no partner free now names who can cross soonest; ✓ opens the pick and Cancel returns with the card on Cross", () => {
   const { st, fen, moss, pip, oak, elm, wren, bud, sky } = pairWorld(); const h = hostFor(st), v = hv(h);
   const plates = (x) => build(st, { focus: "cell." + x.id, last: x.id }).props.regions.card.plates; assert.equal(plates(fen)[4].held, false);
-  fen.restUntil = st.turn + 1; const nb = build(st, { focus: "plate.4", last: fen.id }); assert.equal(nb.props.regions.card.why, "on a breather · can breed next turn"); assert.equal(plates(fen)[4].held, true);
+  fen.restUntil = st.turn + 1; const nb = build(st, { focus: "plate.4", last: fen.id }); assert.equal(nb.props.regions.card.why, "on a breather · can cross next turn"); assert.equal(plates(fen)[4].held, true);
   fen.restUntil = 0; for (const x of [oak, elm, wren, moss, pip]) x.restUntil = st.turn + 3; sky.restUntil = st.turn + 2;
-  assert.equal(build(st, { focus: "plate.4", last: fen.id }).props.regions.card.why, "no partner free now · Sky can breed in 2 turns");
+  assert.equal(build(st, { focus: "plate.4", last: fen.id }).props.regions.card.why, "no partner free now · Sky can cross in 2 turns");
   for (const x of [oak, elm, wren, moss, pip, sky]) x.restUntil = 0; v.last = fen.id; v.f = "plate.4"; INTENTS.vivarium.intent(h, "plate.4", "confirm");
   assert.deepEqual([v.pair, v.f, v.last], [{ a: fen.id }, "cell." + moss.id, moss.id], "the pick opens on the first partner");
   press(h, "left"); assert.equal(v.nudge, "left", "the rail is held: ◀ at the wall's edge nudges"); press(h, "up"); assert.equal(v.nudge, "up", "and so is the toolbar");
@@ -301,11 +301,11 @@ test("the crumb: the top bar reads Vivarium | Mibis on the Wall", () => {
   const st = world(1); fillRooms(st, [3]); assert.deepEqual(build(st).top, { readout: { text: "| Mibis", mark: null } });
 });
 
-test("the breather (spec §3, §5): the disc after coming out and before asleep, the card's state on two lines with the mark, Breed held with its turns right-aligned", () => {
+test("the breather (spec §3, §5): the disc after coming out and before asleep, the card's state on two lines with the mark, Cross held with its turns right-aligned", () => {
   const { st, fen, sky } = pairWorld(); sky.restUntil = st.turn + 2;
   const b = build(st, { focus: "cell." + sky.id, last: sky.id }), cell = b.props.regions.wall.cells.find((c) => c.id === String(sky.id)); assert.match(cell.mark, /mark-breather-16/, "the disc on the wall portrait");
-  assert.deepEqual(b.props.regions.card.stateLines, ["on a breather", "breeds in 2 turns"]); assert.match(b.props.regions.card.mark, /mark-breather-16/);
-  assert.deepEqual([b.props.regions.card.plates[4].held, b.props.regions.card.plates[4].price], [true, "2 turns"], "Breed held, its turns on the plate"); sky.restUntil = st.turn + 1; assert.equal(build(st, { focus: "cell." + sky.id, last: sky.id }).props.regions.card.stateLines[1], "breeds next turn");
+  assert.deepEqual(b.props.regions.card.stateLines, ["on a breather", "can cross in 2 turns"]); assert.match(b.props.regions.card.mark, /mark-breather-16/);
+  assert.deepEqual([b.props.regions.card.plates[4].held, b.props.regions.card.plates[4].price], [true, "2 turns"], "Cross held, its turns on the plate"); sky.restUntil = st.turn + 1; assert.equal(build(st, { focus: "cell." + sky.id, last: sky.id }).props.regions.card.stateLines[1], "can cross next turn");
   sky.restUntil = st.turn + 2; assert.equal(S.mibiStage(st, sky, settings) === "juvenile" ? "x" : markOf(st, sv0(), sky, settings, true), "breather", "before asleep");
   sky.bonded = true; assert.equal(markOf(st, sv0(), sky, settings, false), "breather", "and before the heart");
   sky.tucked = { turn: st.turn, seq: 1, from: 0, out: st.turn + 2, shift: 2, spot: 0 }; assert.equal(markOf(st, sv0(), sky, settings, false), "comingOut", "after coming out"); void fen;
@@ -313,7 +313,7 @@ test("the breather (spec §3, §5): the disc after coming out and before asleep,
 test("the partner's state on the pair card: each part between · its own line, no line ends in a hanging word; the breather leads with its mark", () => {
   const { st, fen, bud, sky } = pairWorld();
   const lines = (x) => build(st, { pair: { a: fen.id }, focus: "cell." + x.id }).props.regions.card.stateLines;
-  assert.deepEqual(lines(sky), ["on a breather", "breeds in 2 turns"]); assert.equal(lines(bud)[0], "young"); assert.match(lines(bud)[1], /^grows up in 1 turn$|^grows up in \d+ turns$/);
+  assert.deepEqual(lines(sky), ["on a breather", "can cross in 2 turns"]); assert.equal(lines(bud)[0], "young"); assert.match(lines(bud)[1], /^grows up in 1 turn$|^grows up in \d+ turns$/);
   for (const l of [...lines(sky), ...lines(bud)]) assert.ok(!/(·|can|in)$/.test(l), l);
   const away = pairWorld(); away.moss.tucked = { turn: away.st.turn, seq: 1, from: 1 }; assert.deepEqual(build(away.st, { pair: { a: away.fen.id }, focus: "cell." + away.moss.id }).props.regions.card.stateLines, ["tucked away"]);
 });

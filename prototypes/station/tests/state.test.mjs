@@ -40,7 +40,7 @@ test("a pod's genome comes from its seed, builds, and is the same on every load"
   assert.match(nameCode(genomeSha(a)), /^[0-9A-Z]{9}$/);
 });
 
-test("a trait reads as shows and hides, only, a blend's halves, or breed to change; never a locus id", () => {
+test("a trait reads as shows and hides, only, a blend's halves, or cross to change; never a locus id", () => {
   const fr = frameOf("S01");
   for (let gs = 1; gs < 40; gs++) {
     const g = podGenome(fr, gs);
@@ -48,7 +48,7 @@ test("a trait reads as shows and hides, only, a blend's halves, or breed to chan
       const s = traitState(fr, t, g);
       assert.ok(["only", "hides", "blend", "asleep"].includes(s.kind), s.kind);
       assert.ok(!/\./.test(s.line), s.line);
-      if (t.nature === "doing") assert.equal(s.sub, "breed to change");
+      if (t.nature === "doing") assert.equal(s.sub, "cross to change");
       if (s.kind === "hides") { assert.notEqual(s.shows, s.hides); assert.equal(s.carried.length, 2); }
       if (s.kind === "blend") { assert.equal(s.carried.length, 3); assert.match(s.line, / to /); }
       assert.ok(!/^shows /.test(s.line) && !/if they wake/.test(s.line), s.line);

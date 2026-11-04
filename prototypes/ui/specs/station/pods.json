@@ -1705,7 +1705,7 @@
     "hides": "needs both copies: one hides",
     "blend": "mixes: it falls between its copies",
     "asleep": "sleeping: it can wake in a child",
-    "doing": "only breeding changes it",
+    "doing": "only a cross changes it",
     "goal": "your goal: it carries {look}"
    },
    "complete": "{chapter} · complete",

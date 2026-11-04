@@ -1163,7 +1163,7 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
 }
 // The partners of an adult or an elder, in place order. A carried partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
 export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => { const kin = directKinOf(st, a, m), away = isCarried(st, sv, m) || inStore(m) || comingOut(st, m); return kin || away ? { ...m, ...(away ? { away: true } : {}), ...(kin ? { family: kin.rel } : {}) } : m; });   // tucked away or on its way back: listed dimmed, never picked (the put-away rules); family: listed, marked with the relation, never picked
-// A child of close kin or the same line: its parents' kinship is a quarter or more (the card says "bred close"); a founder or a pod has no parents
+// A child of close kin or the same line: its parents' kinship is a quarter or more (the card says "from close kin"); a founder or a pod has no parents
 export const bredClose = (st, m) => Array.isArray(m?.parents) && m.parents.length === 2 && pedigreeKinship(m.parents[0], m.parents[1], genomeLookup(st)) >= 0.25;
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
 export const kinshipWord = (k) => (k <= 0 ? "no kin in common" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");

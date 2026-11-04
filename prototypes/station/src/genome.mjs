@@ -44,7 +44,7 @@ export const traitCount = (chapter) => chapter.traits.length;
 export const chapterSeal = (frame, chapter) => (chapter.sealed ? chapter.opensWith ?? frame.sealed?.[chapter.id] ?? "a find" : null);
 
 // A trait as the player reads it (research-loop.md §4): X, X · hides Y, only X, asleep, A to B for a blend,
-// breed to change (a doing), and for a blended trait the two halves it carries.
+// cross to change (a doing), and for a blended trait the two halves it carries.
 // Read states are memoised per genome object (a pod's genome is never edited in place; a changed genome is a new object): the screen asks every frame.
 const MEMO = new WeakMap();
 const memo = (genome, key, fn) => { let m = MEMO.get(genome); if (!m) MEMO.set(genome, (m = new Map())); if (!m.has(key)) m.set(key, fn()); return m.get(key); };
@@ -72,7 +72,7 @@ function traitStateOf(frame, trait, genome) {
   if (asleep) { kind = "asleep"; line = `${shows} · asleep: ${asleep}`; }
   // hiddenChoice: the shapeTrait choice (1: only the first copy, 2: only the second) that shows the hidden look
   return { id: trait.id, name: trait.name, shows, hides, halves: kind === "blend" ? [a, b] : null, hiddenChoice: hides == null ? null : shows === a ? 2 : 1, kind, doing, shapeable: !!trait.shapeable && !doing, asleep, carried, line,
-    sub: doing ? "breed to change" : kind === "blend" ? line : null };
+    sub: doing ? "cross to change" : kind === "blend" ? line : null };
 }
 // A trait's kind, the same on every pod of the species (the use line and the overlay's rule teach it, so it never follows a pod's pair): a mean of the copies mixes ("blend"); a switch on two copies
 // needs both ("hides"); one copy that switches it on is enough ("only"); a map of pairs is a look that can hide another ("hides").

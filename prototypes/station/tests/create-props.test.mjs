@@ -92,7 +92,7 @@ test("the trait line: as the pod is, only <look> with the tag, one look, doing w
     list.forEach(({ t }, f) => {
       m.cr.f = f; m.cr.choices = {}; m.cr.clash = []; const opts = S.rollOptions(m.p, t.id), own = traitState(fr, t, m.p.genome); let L = m.build().props.regions.traitLine;
       const words = (s) => s.replace(/^✕ /, "").split(/\s+/).length;
-      if (t.nature === "doing") { assert.equal(L.text, `${t.name}: breed to change`); assert.equal(L.doing, true); assert.equal(L.changed, false); }
+      if (t.nature === "doing") { assert.equal(L.text, `${t.name}: cross to change`); assert.equal(L.doing, true); assert.equal(L.changed, false); }
       else if (opts.length <= 1) assert.equal(L.text, `${t.name}: one look in this pod`);
       else if (own.kind === "asleep") assert.equal(L.text, `${t.name}: ${own.shows}, ${own.asleep} asleep`);
       else assert.equal(L.text, `${t.name}: as the pod is`);
