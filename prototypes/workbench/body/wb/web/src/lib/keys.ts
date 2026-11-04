@@ -28,6 +28,7 @@ export function useKeys(url: StudioUrl, go: (p: Partial<StudioUrl>, replace?: bo
         const vs = VIEWS.filter((v) => v !== 'plush' && availableViews(v))
         go({ view: vs[(vs.indexOf(url.view) + 1) % vs.length] ?? 'clay' }, true)
       } else if (k === ' ' && url.mode === 'shape') { e.preventDefault(); if (!e.repeat) ui.setBefore(true) }
+      else if ((k === 'd' || k === 'D') && url.mode === 'goldens') go({ gv: url.gv === 'diff' ? 'split' : 'diff' }, true)
       else if (k === 't' || k === 'T') ui.toggleTheme()
       else if ((k === 'c' || k === 'C') && ck) ck.toggleDrawer()
       else if ((k === 'v' || k === 'V') && ck) ck.proof()

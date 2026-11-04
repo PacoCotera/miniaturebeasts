@@ -6,6 +6,7 @@ import type { Species } from '../lib/api'
 import { isAsleep, locusDot, selectedLocus } from '../lib/genes'
 import { useQuery } from '@tanstack/react-query'
 import { lookOf, ready, varietyOne, type VLook } from '../lib/variety'
+import { goldensOne, groupsOf, pick, totalsLine } from '../lib/goldens'
 import s from './Navigator.module.css'
 
 const mono = (w: string) => { const p = w.split(' '); return p.length > 1 ? p[0][0] + p[1][0] : w.slice(0, 2) } // the rail's two letters: Limb length -> Ll, Limb girth -> Lg, Lift -> Li
@@ -17,6 +18,9 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
   const cur = selectedLocus(g, url.sel)
   const vq = useQuery({ ...varietyOne(url.species, species?.hash ?? '', url.seed), enabled: !!species && url.mode === 'variety' })
   const sheet = vq.data
+  const gq = useQuery({ ...goldensOne(url.species, species?.hash ?? ''), enabled: !!species && url.mode === 'goldens' })
+  const gold = gq.data
+  const gsel = url.mode === 'goldens' ? pick(gold, url.sel) : null
   return (
     <aside className={`${s.nav} ${rail ? s.rail : ''}`} aria-label="Navigator">
       {url.mode === 'shape' && (
@@ -60,6 +64,27 @@ export function Navigator({ rail, url, go, rows, metas, species }: { rail: boole
               <li><span className={`${s.row} ${s.plain}`}><span className={s.label}>{sheet.seed}</span><span className={s.num}>{ready(sheet)} of {sheet.n}</span></span></li>
             </ul>
           </section>
+        </>
+      )}
+      {url.mode === 'goldens' && gold && (
+        <>
+          <p className={s.totals}>{totalsLine(gold.totals) || 'No goldens yet'}</p>
+          {groupsOf(gold).map((grp) => (
+            <section key={grp.name}>
+              <h6 className={s.head}>{grp.name}</h6>
+              <ul className={s.tree}>
+                {grp.rows.map((e) => (
+                  <li key={e.id}>
+                    <button className={`${s.row} ${gsel?.id === e.id ? s.sel : ''}`} onClick={() => go({ sel: e.id })} aria-pressed={gsel?.id === e.id} title={`${e.label} · ${e.state}`}>
+                      <span className={s.mono}>{e.output === 'turn' ? `${e.style?.[0]}${e.az}` : (e.label ?? e.id).slice(0, 2)}</span>
+                      <span className={s.label}>{e.label}</span>
+                      <i className={s.gdot} data-kind={e.state} aria-label={e.state} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
         </>
       )}
       {url.mode === 'genes' && g && g.chapters.map((c) => (

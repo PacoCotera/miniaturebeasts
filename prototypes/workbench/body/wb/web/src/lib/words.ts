@@ -3,6 +3,7 @@ export const W = {
   modes: ['Shape', 'Genes', 'Variety', 'Goldens', 'Gate'], // st.modes
   play: 'Open in play', // st.play
   newSheet: 'New sheet', // st.var.new
+  gold: { make: 'Make goldens', ask: 'Ask for a look-change round', draft: 'Draft golden · remake freely', golden: 'Golden', now: 'Now', views: ['Split', 'Side by side', 'Diff'], state: 'State', moved: 'Pixels moved', because: 'Because of', from: 'Golden made from', file: 'File', framework: 'Framework', lookdev: 'Look-dev', by: 'Made by' }, // st.gold.* and mocks/studio/05-goldens
   jobsWait: 'Waiting for a worker', // st.jobs.wait
   leaseBanner: (who: string) => `${who} is editing`, // st.lease.banner
   takeOver: 'Take over', // st.lease.banner

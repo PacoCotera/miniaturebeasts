@@ -34,6 +34,8 @@ const s20file = JSON.parse(readFileSync(join(here, '../../../species_v1/S20.json
 const demoFile = JSON.parse(readFileSync(join(here, 'fixture/demo-file.json'), 'utf8'))
 const freqS20 = JSON.parse(readFileSync(join(here, 'fixture/freq-s20.json'), 'utf8'))
 const varietyS20 = JSON.parse(readFileSync(join(here, 'fixture/variety-s20.json'), 'utf8'))
+const goldensSame = JSON.parse(readFileSync(join(here, 'fixture/goldens-same.json'), 'utf8'))
+const goldensChanged = JSON.parse(readFileSync(join(here, 'fixture/goldens-changed.json'), 'utf8'))
 const freqDemo = JSON.parse(readFileSync(join(here, 'fixture/freq-demo.json'), 'utf8'))
 const TYPE_STRING = 'G1-S20v1-20A00R61GC3A86100430R210861WQB0R4GC30R61621GC30G10R61GC30R61GC30R442008YR'     // the type's genome string (wb frame writes it into frames/species-S20.json)
 
@@ -66,6 +68,9 @@ const cases = [
   { name: 'express-copy-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, demo: true, q: '&sel=appearance.glow-pattern&proof=none', act: async (p) => { await p.click('text=Copy'); await p.waitForSelector('text=Copied'); await p.locator('aside[aria-label=Inspector]').evaluate((e) => e.scrollTo(0, e.scrollHeight)) } },
   { name: 'express-modifier-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, genes: true, demo: true, token: true, q: '&sel=appearance.glow-pattern&proof=none', act: async (p) => { await p.click('text=Add a modifier'); await p.waitForSelector('text=Which look comes first?'); await p.locator('aside[aria-label=Inspector]').evaluate((e) => e.scrollTo(0, 400)) } },
   { name: 'genes-light-1180', theme: 'light', w: 1180, h: 820, ready: true, genes: true, touch: true, q: '&sel=form.tail-length&proof=none' },
+  { name: 'goldens-dark-1440', theme: 'dark', w: 1440, h: 900, ready: true, mode: 'goldens', goldens: goldensSame, q: '&sel=stand%2Fadult-calm' },
+  { name: 'goldens-light-1440', theme: 'light', w: 1440, h: 900, ready: true, mode: 'goldens', goldens: goldensChanged, q: '&sel=stand%2Fadult-calm&gv=diff' },
+  { name: 'goldens-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true, mode: 'goldens', goldens: goldensSame, q: '&sel=turn%2Fadult-calm-az90-plush' },
   { name: 'stage-light-1180', theme: 'light', w: 1180, h: 820, ready: true, touch: true },
 ]
 let failed = 0
@@ -80,6 +85,8 @@ for (const c of cases) {
   await page.route('**/api/species/S20/string*', (r) => r.fulfill({ json: { species: 'S20', genome: 'type', string: TYPE_STRING, code: null, length: TYPE_STRING.length, version: 1, hash: 'h' } }))
   await page.route('**/api/species/S20/jobs', (r) => r.fulfill({ json: { id: 'j1', state: 'done', result: { views: [{ mode: 'clay', az: 32, size: 304, key: 'clayend'.padEnd(64, '0') }] } } }))
   await page.route('**/api/species/S20/variety*', (r) => r.fulfill({ json: varietyS20 }))
+  await page.route('**/api/species/S20/goldens', (r) => r.fulfill({ json: c.goldens ?? goldensSame }))
+  await page.route('**/api/species/S20/goldens/file*', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
   await page.route('**/api/checks', (r) => r.fulfill({ json: metas }))
   await page.route('**/cas/*.png', (r) => r.fulfill({ body: frame, contentType: 'image/png' }))
   await page.route('**/events*', (r) => r.fulfill({ body: ': connected\n\n', contentType: 'text/event-stream' }))

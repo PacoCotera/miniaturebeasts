@@ -14,6 +14,7 @@ import { useUI } from '../lib/store'
 import { usePortraitSheet } from '../lib/useStudio'
 import { nextSeed, runSheet, varietyOne } from '../lib/variety'
 import { getToken } from '../lib/api'
+import { goldenJob, goldensOne } from '../lib/goldens'
 import s from './TopBar.module.css'
 
 export function TopBar({ url, species, go }: { url: StudioUrl; species: Species | undefined; go: (p: Partial<StudioUrl>) => void }) {
@@ -30,6 +31,10 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
     go({ seed, ind: null, cmp: false })
     await runSheet(url.species, seed)
   }
+  // Goldens' one primary action: remake the goldens (a draft); for a changed release golden it becomes the ask for a look-change round (the gate arrives in a later chunk, so it waits).
+  const gold = useQuery({ ...goldensOne(url.species, species?.hash ?? ''), enabled: !!species && url.mode === 'goldens' }).data
+  const ask = !!gold?.release && (gold?.totals.changed ?? 0) > 0
+  const makeGoldens = async () => { await goldenJob(url.species, 'make') }
   return (
     <header className={s.top}>
       <Popover.Root>
@@ -58,6 +63,7 @@ export function TopBar({ url, species, go }: { url: StudioUrl; species: Species 
         <LeaseAvatar species={species} />
         {sheet && <button className={s.iconbtn} onClick={toggleInsp} aria-label="Inspector"><span className={s.panelIcon} /></button>}
         <button className={s.quiet} disabled>{W.play}</button>
+        {url.mode === 'goldens' && (ask ? <button className={s.primary} disabled>{W.gold.ask}</button> : <button className={s.primary} onClick={makeGoldens} disabled={!getToken() || !species}>{W.gold.make}</button>)}
         {url.mode === 'variety' && <button className={s.primary} onClick={newSheet} disabled={!getToken() || !species}>{W.newSheet}</button>}
       </div>
     </header>

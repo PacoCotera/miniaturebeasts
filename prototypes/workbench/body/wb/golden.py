@@ -87,13 +87,21 @@ def label_of(e, looks):
     look = looks.get(e.get("look") or "", e.get("look") or "")
     if o == "stand":
         if e.get("part") == "shadow":
-            return f"Stand · {age} · shadow"
+            return f"Shadow · {age}"
         if e.get("part"):
-            return f"Stand · {age} · {looks.get(e['part'].replace('-erase', ''), e['part'])}" + (" off" if e["part"].endswith("-erase") else "")
+            return f"Layer · {looks.get(e['part'].replace('-erase', ''), e['part'].replace('-erase', '').replace('-', ' ')).lower()}" + (" off" if e["part"].endswith("-erase") else "")
         return f"Stand · {age}"
     return {"resident": f"Resident {w}", "habitat": "Habitat figure" if age == "adult" else f"Habitat figure · {age}", "incubator": "Incubator figure", "sleeper": f"Sleeper {w}", "card": f"Card {w}",
-            "trait": f"Trait pictures · {look}" if look else "Trait pictures", "thumb": f"Thumb {w}", "silhouette": f"Silhouette {w}",
-            "turn": f"Turnaround · {e.get('style')} · {e.get('az')}°", "walk": "Walk", "model": "Model"}.get(o, o)
+            "trait": f"Trait · {look.lower()}" if look else "Trait pictures", "thumb": f"Thumb {w}", "silhouette": f"Silhouette {w}",
+            "turn": f"Turnaround · {e.get('style')} {e.get('az')}°", "walk": "Walk", "model": "Model"}.get(o, o)
+
+
+def order_key(e):
+    """The navigator's order: the groups in the order the game's places run, the outputs in the set's order, the stand's base before its layers and its shadow, the turnaround by angle then style."""
+    groups = list(dict.fromkeys(GROUPS.values()))
+    outs = list(RS.GAME_V1)
+    part = 0 if e["output"] != "stand" or not e.get("part") else (2 if e["part"] == "shadow" else 1)
+    return (groups.index(GROUPS.get(e["output"], e["output"])) if e["output"] in GROUPS else 99, outs.index(e["output"]) if e["output"] in outs else 99, e.get("age") or "", part, e.get("az") or 0, e.get("style") or "", e["id"])
 
 
 def entries_of(spec, setdir):
@@ -376,7 +384,7 @@ def state(species_path, home, history=()):
         source = None
     rows, have = [], {e["id"] for e in man["entries"]}
     for e in man["entries"]:
-        row = {k: e[k] for k in ("id", "output", "variant", "style", "age", "pose", "az", "size", "kind", "group", "label", "file", "sha256", "pixels")}
+        row = {k: e.get(k) for k in ("id", "output", "variant", "style", "age", "pose", "az", "size", "kind", "group", "label", "file", "sha256", "pixels", "part")}
         if cur["key"] == man["key"]:
             row["state"] = "same"
         elif d and e["id"] in d["entries"]:
@@ -385,6 +393,7 @@ def state(species_path, home, history=()):
         else:
             row["state"] = "stale"
         rows.append(row)
+    rows.sort(key=lambda r: order_key(r))
     rows += [dict(id=i, state="missing") for i in expected if i not in have]
     return dict(base, entries=rows, totals=totals(rows), causes=causes(spec, man, source, history) if cur["key"] != man["key"] else [], diffed=d and dict(at=d["at"], by=d.get("by")),
                 stamp=dict(file=man["file_hash"], framework=man["framework"], lookdev=man["lookdev"], key=man["key"], made_by=man["made_by"], made_at=man["made_at"], set=man.get("set")))

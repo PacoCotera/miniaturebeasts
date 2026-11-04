@@ -368,7 +368,10 @@ def golden_files(a):
 
 def golden_tools(a):
     sys.path.insert(0, BODY)
-    from wb import golden as G, cas as C
+    try:
+        from wb import golden as G, cas as C
+    except ImportError as e:
+        raise Fail(2, f"wb golden needs numpy ({e}); run it with the Blender python, for example WB_BPY=... $WB_BPY -m wb golden ...")
     return G, C
 
 
