@@ -29,12 +29,17 @@ CAMERAS = {
     (128, 160): (38.0, (-0.35, 0.0, 1.3 + 36 / (38.0 * 0.985))),
 }
 SIL = (0.10, 0.10, 0.12)
+# where the figure stands in each canvas (art director, 4 Nov; the signed masters S01 to S16 stand so): the ink's centre column and the feet line's row. The 304 stand is centred on x 152 with its feet on row 304 (303 to 306);
+# the card and the thumb are centred with the feet 3 px off the bottom (2 to 4).
+TARGETS = {(304, 312): (152.0, 304), (96, 96): (48.0, 92), (48, 48): (24.0, 44)}
+FRAMES = {}                                                      # (canvas, angle) -> the camera's centre that puts the figure on its target (solved from the silhouette)
 
 
-def camera(size):
+def camera(size, az=32):
     if tuple(size) not in CAMERAS:
         raise KeyError(f"no camera for {size[0]}x{size[1]}")
-    return CAMERAS[tuple(size)]
+    ppH, centre = CAMERAS[tuple(size)]
+    return ppH, FRAMES.get((tuple(size), int(az)), FRAMES.get((tuple(size), 32), centre))
 
 
 def alpha_png(path):
@@ -112,9 +117,9 @@ class Proxy:
         key = ("clay", subject.r.key)
         if self.pr.mesh_key != key:
             self.pr.set_mesh(self._clay_mesh(subject), key)
-        return self._render("clay", az, size, path, camera(size)[1])
+        return self._render("clay", az, size, path, camera(size, az)[1])
 
-    def silhouette(self, subject, az, size, path):
+    def silhouette(self, subject, az, size, path, centre=None):
         key = ("sil", subject.r.key)
         if self.pr.mesh_key != key:
             m = subject.welded()
@@ -125,7 +130,7 @@ class Proxy:
         sc = pr.sc
         saved = (sc.render.film_transparent, sc.render.image_settings.color_mode, self.P.CENTRE, sh.light, sh.color_type)
         sc.render.film_transparent, sc.render.image_settings.color_mode = True, "RGBA"
-        self.P.CENTRE = np.array(camera(size)[1], float)
+        self.P.CENTRE = np.array(camera(size, az)[1] if centre is None else centre, float)
         pr._camera(float(az), self.ids[tuple(size)])
         pr.wire.hide_render = True
         sh.light, sh.color_type = "FLAT", "MATERIAL"
@@ -138,6 +143,27 @@ class Proxy:
         a = pngio.read(path)
         a[..., :3] = [round(c * 255) for c in SIL]                      # one flat fill: only the alpha is the picture
         return a
+
+
+def solve_frames(px, subject, scratch, sizes, azs=(32, 0, 90, 180), tol=0.75, tries=6):
+    """Put the figure on its target in each canvas: the camera's centre moved in the picture's own right and up until the silhouette's ink is centred on the target column with its feet on the target row (within `tol` px).
+    Every angle of the turnaround is framed alone (the feet's row moves with the angle at the house's 10 degrees of elevation), and the turn at az 32 is framed as the stand is, so the two are one picture."""
+    for size, az in ((s_, a_) for s_ in sizes for a_ in (azs if s_ == (304, 312) else (32,))):
+        if size not in TARGETS:
+            continue
+        w, h = size
+        ppH, centre = CAMERAS[size]
+        tx, feet = TARGETS[size]
+        right, up, fwd, _ = px.P.basis(float(az), EL)
+        centre = np.array(FRAMES.get((size, 32), centre), float)
+        for _ in range(tries):
+            img = px.silhouette(subject, az, size, os.path.join(scratch, "frame.png"), centre=centre)
+            fig = ST.ink_box(img)
+            dx, dy = tx - (fig[0] + fig[2] / 2.0), feet - (fig[1] + fig[3] - 1)
+            if abs(dx) <= tol and abs(dy) <= tol:
+                break
+            centre = centre - right * dx / ppH + up * dy / ppH
+        FRAMES[(size, int(az))] = tuple(float(c) for c in centre)
 
 
 # ---------------------------------------------------------------- plush (Cycles)
@@ -158,7 +184,7 @@ def plush(subject, az, size, path, floor="bounce", body_visible=True, samples=No
     import s20render as RN, plush as PL
     for w, ss in ((96, 3), (128, 3)):
         PL.SS.setdefault(w, ss)
-    ppH, centre = camera(size)
+    ppH, centre = camera(size, az)
     a, cam = RN.render_tex(subject.posed(), subject.tex(), subject.c["coat"], path, size[0], size[1], ppH, az=float(az), el=EL, centre=centre, samples=samples, floor=floor, body_visible=body_visible, light=PL.GAME_LIGHT)
     px = np.clip(a * 255 + 0.5, 0, 255).astype(np.uint8)
     if shadow:
@@ -256,6 +282,7 @@ def main():
     typ = Subject(spec, "type", scratch)
     # Workbench styles first (Cycles resets the scene)
     px = Proxy(scratch)
+    solve_frames(px, typ, scratch, sorted({tuple(r["size"]) for r in rows if r["size"]}))
     for r in rows:
         if r["style"] not in ("clay", "silhouette"):
             continue
