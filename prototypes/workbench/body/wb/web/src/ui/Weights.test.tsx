@@ -1,9 +1,8 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { controlFor, rebalance, stepOf, type FieldDesc } from '../lib/forms'
+import { controlFor, rebalance, type FieldDesc } from '../lib/forms'
 import { PlayPanel } from './PlayPanel'
 import { WeightsField } from './WeightsField'
-import type { Species } from '../lib/api'
 
 afterEach(cleanup)
 const w: FieldDesc = { id: 'genome.loci.form.ear-kind.weights', ptr: '/genome/loci/3/weights', label: 'How often', full: 'Ear shape', help: '', type: 'weights', unit: '', options: ['prick', 'lop', 'nub'] }
@@ -37,13 +36,24 @@ describe('the families\' weights', () => {
 })
 
 describe('as the player sees it', () => {
-  const file = { spine: { tail: { length: 1.2 } } } as unknown as Species['file']
-  it('names the toy, lights the family in force and puts the slider on its step of 7', () => {
-    render(<PlayPanel toy={{ toy: 'Tail', chips: [{ family: 'plain', word: 'plain', on: false, ptr: '/p' }, { family: 'lantern', word: 'lantern', on: true, ptr: '/p' }], slider: { ptr: '/spine/tail/length', range: [0.6, 1.8], steps: 7 } }} species={{ file } as Species} />)
+  const axis = { id: 'length', locus: 'form.tail-length', kind: 'range' as const, label: 'length', cage: true, home: 2, steps: Array.from({ length: 7 }, (_, i) => ({ i, value: 0.8 + i * 0.1, ok: i < 5, why: i < 5 ? [] : ['tail.size'], end: { genome: 'x' } })) }
+  const tip = { id: 'tip', locus: 'anatomy.tail-tip-form', kind: 'choice' as const, label: 'tip', cage: true, home: 'lantern', options: [{ id: 'lantern', word: 'lantern', ok: true, why: [], end: { genome: 'x' } }, { id: 'plain', word: 'plain', ok: false, why: ['tail.size'], end: { genome: 'x' } }] }
+  const toy = { id: 'tail', label: 'Tail', plain: 'Tail', hidden: false, kind: 'slider+chips', parts: ['tail'], axes: [axis, tip] }
+  it('names the toy, lights the chip in force, strikes a trimmed chip and puts the slider on its step of 7', () => {
+    render(<PlayPanel toys={[toy]} sentences={{ 'tail.size': "Any longer and I'd tip over backwards!" }} />)
     expect(screen.getByText('Tail')).toBeTruthy()
     expect(screen.getByText('lantern').getAttribute('data-on')).toBe('true')
-    expect(screen.getByText('plain').getAttribute('data-on')).toBeNull()
-    expect(screen.getByRole('img').getAttribute('aria-label')).toBe('Slider, step 4 of 7')
-    expect(stepOf(0.6, [0.6, 1.8], 7)).toBe(0); expect(stepOf(1.8, [0.6, 1.8], 7)).toBe(6)
+    expect(screen.getByText('plain').getAttribute('data-trimmed')).toBe('true')
+    expect(screen.getByRole('img').getAttribute('aria-label')).toBe('length: step 3 of 7, 2 trimmed')
+  })
+  it('says the mibi\'s sentence under the steps the sweep trimmed', () => {
+    render(<PlayPanel toys={[toy]} sentences={{ 'tail.size': "Any longer and I'd tip over backwards!" }} />)
+    expect(screen.getAllByText(/Any longer and I'd tip over backwards!/).length).toBe(2)
+  })
+  it('draws the paint pots and lights the one the mibi has', () => {
+    const paint = { ...toy, id: 'paint', label: 'Paint', kind: 'pots', axes: [{ ...axis, id: 'hue', steps: Array.from({ length: 8 }, (_, i) => ({ i, value: 180 + i * 25, ok: true, why: [], end: { genome: 'x' } })), home: 3 }] }
+    render(<PlayPanel toys={[paint]} />)
+    expect(screen.getAllByRole('listitem').length).toBe(8)
+    expect(screen.getAllByRole('listitem')[3].getAttribute('data-on')).toBe('true')
   })
 })

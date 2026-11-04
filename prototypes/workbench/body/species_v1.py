@@ -97,6 +97,7 @@ SCHEMA = dict(
     expressions=free("Expressions", "The looks the species can draw with their rules: the age a look shows from and the other looks it needs (checked in expressions.py; how copies show is the catalogue's, or a modifier gene's).", stage="meta"),
     variety=free("Variety", "The Variety sheet's rules: how many individuals, the seed, the loci whose looks cycle, the most loud looks one individual shows, and the species rules as data: {id, label, when: [conditions], then: [conditions], fail}. A condition is {field, is | not | in: [lo, hi]} or {any: [conditions]}.", stage="meta"),
     renders=free("Renders", "The render set: {base: 'game-v1', add: {name: {size, style, az, pose, age, kind, from, genome}}}. A species adds to the game's set and never removes from it.", stage="meta"),
+    play=free("Play", "What play may change: {toys: [{id, label, hide, narrow}], words: {check: sentence}, state: {gene: value}, starter}. A species may relabel a toy, hide it or narrow it, never widen it; `state` is the mibi's own setting of each toy (checked in wb/play.py).", stage="meta"),
     motion=free("Motion", "Walk, breathe, blink and idle clips.", stage="motion"),
     limits=obj("Limits", "Overrides of the plan's limits. A file may only tighten them, never loosen.", dict(vertices=num("Vertex budget", "Vertices at subdivision level 1.", rng=(1000, 3500), unit=""), balance_margin=num("Balance margin", "Share of the sole in front of the heel.", rng=(0.15, 0.5), unit=""),
                                                                                             tail_side_area=num("Tail side area", "Tail silhouette over the trunk's.", rng=(0.02, 0.25), unit=""), neck_ratio=num("Neck ratio", "Neck over head and chest.", rng=(0.3, 0.85), unit=""),
@@ -259,6 +260,9 @@ def validate(doc):
             tot = sum(s["share"] for s in segs)
             if abs(tot - 1.0) > 1e-6:
                 errs.append(("spine.tail.segments", f"spine.tail.segments: the shares add up to {tot:.4g}, they must add up to 1"))
+    if "play" in doc and isinstance(doc.get("genome"), dict) and plan:
+        from wb import play as PL
+        errs += PL.validate(doc)
     for p in (doc.get("parts") or []) if isinstance(doc.get("parts"), list) else []:
         if isinstance(p, dict) and p.get("kind") == "limb":
             ch = p.get("chain")

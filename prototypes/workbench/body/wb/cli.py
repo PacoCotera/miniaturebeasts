@@ -46,7 +46,7 @@ def call(method, path, body=None, timeout=60):
             d = {}
         msg = d.get("error", f"HTTP {e.code}")
         code = 4 if e.code in (401, 403) else 2
-        raise Fail(code, msg, d.get("field"), dict(status=e.code))
+        raise Fail(code, msg, d.get("field"), dict(status=e.code, body=d))
     except urllib.error.URLError as e:
         raise Fail(2, f"cannot reach the server: {e.reason}")
 
@@ -497,6 +497,66 @@ def cmd_serve(a):
     os.execv(py, argv)
 
 
+def toy_lines(t):
+    lines = []
+    for toy in t["toys"]:
+        lines.append(f"{toy['label']}" + ("  (hidden)" if toy["hidden"] else ""))
+        for ax in toy["axes"]:
+            if ax["kind"] == "range":
+                cells = " ".join(("[" if i == ax["home"] else " ") + f"{s['value']:g}" + ("]" if i == ax["home"] else " ") + ("" if s["ok"] else "x") for i, s in enumerate(ax["steps"]))
+                lines.append(f"  {ax['id']:7} {len(ax['steps'])} steps  {cells}   (x = trimmed)")
+            else:
+                cells = " ".join(("[" if o["id"] == ax["home"] else "") + o["id"] + ("]" if o["id"] == ax["home"] else "") + ("" if o["ok"] else " x") for o in ax["options"])
+                lines.append(f"  {ax['id']:7} chips  {cells}")
+    return lines
+
+
+def cmd_toys(a):
+    """wb toys S20: the toys play shows for this file (each toy's steps, the one the mibi sits on, the steps the sweep trimmed) and, with --slots, every sentence slot."""
+    t = call("GET", f"/api/species/{a.species}/toys")
+    lines = toy_lines(t)
+    sw = t["sweep"]
+    lines.append(f"sweep: {sw['state']}" + (f" ({sw['summary']['builds']} cages in {sw['summary']['seconds']} s)" if sw.get("summary") and not sw["summary"].get("unbuilt") else "") + ("" if t["built"] else f"  this plan has no cage builder yet"))
+    if a.slots:
+        for s in t["slots"]:
+            lines.append(f"slot {s['check']:12} {str(s['toy']):8} {s['source']:11} {s['sentence']}")
+    out(a, dict(t, ok=True, species=a.species), "\n".join(lines))
+    return 0
+
+
+def cmd_sweep(a):
+    """wb sweep S20 [--wait]: the safe-step sweep, a background job that builds the corners of the toys' step box as clay and trims any step that fails a check at a corner."""
+    j = run_job(a, "sweep", {}, wait=a.wait)
+    if j["state"] in ("queued", "running"):
+        out(a, dict(ok=True, species=a.species, job=j["id"], state=j["state"], key=j["key"]), f"queued {j['id']}; wb sweep {a.species} --wait to see it through")
+        return 0
+    r = j["result"]
+    t = call("GET", f"/api/species/{a.species}/toys")
+    lines = toy_lines(t)
+    if r.get("unbuilt"):
+        lines.append(r["note"])
+    else:
+        n = sum(len(ax.get("trimmed", [])) + len(ax.get("banned", [])) for toy in r["toys"].values() for ax in toy.values())
+        lines.append(f"{r['builds']} cages in {r['seconds']} s, {r['corners']} corners in the final box, {r['rounds']} rounds, {n} steps trimmed, {r['still_failing']} corners still failing" + (" (from the cache)" if j["cached"] else ""))
+    out(a, dict(ok=not r.get("still_failing"), species=a.species, job=j["id"], cached=j["cached"], sweep=r), "\n".join(lines))
+    return 1 if r.get("still_failing") else 0
+
+
+def cmd_step(a):
+    """wb step S20 tail length 5: one play move (a toy's axis to a step number, or a chip's name), saved the way play saves: a check that fails refuses it, nothing is saved, and the mibi's sentence comes back (exit 1)."""
+    to = int(a.to) if re.fullmatch(r"\d+", a.to) else a.to
+    try:
+        res = call("POST", f"/api/species/{a.species}/play", dict(toy=a.toy, axis=a.axis, to=to))
+    except Fail as e:
+        body = e.extra.get("body") or {}
+        if e.extra.get("status") == 409 and body.get("refused"):
+            out(a, dict(body, ok=False, species=a.species), f"refused ({body['why']}): \"{body['sentence']}\"  " + ", ".join(c["check"] for c in body["checks"]) + f"  nothing saved; the toy stays at {body['back_to']}")
+            return 1
+        raise
+    out(a, dict(res, species=a.species), f"{a.toy}.{a.axis} -> {a.to}  saved ({res['genome']})")
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="wb")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -519,6 +579,9 @@ def main(argv=None):
     p = sub.add_parser("golden"); p.add_argument("action", choices=("make", "diff", "list", "precommit")); p.add_argument("species", nargs="?", default="S20"); p.add_argument("--file", default="", help="the species file (default: the framework's own species_v1 folder)"); p.add_argument("--home", default="", help="the server's home (cache and last diff)")
     p.add_argument("--release", action="store_true", help="make: refused (the release export makes release goldens); diff: only release goldens, exit 1 when one changed"); p.add_argument("--all", action="store_true", help="diff: every species of the framework's folder"); p.add_argument("--only", default="", help="diff: only these outputs or ids")
     p.add_argument("--set", default="", help="use a set folder already drawn by wb.renderset instead of drawing"); p.add_argument("--no-commit", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=600.0); p.set_defaults(f=cmd_golden)
+    p = sub.add_parser("toys"); p.add_argument("species"); p.add_argument("--slots", action="store_true", help="also list every sentence slot"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_toys)
+    p = sub.add_parser("sweep"); p.add_argument("species"); p.add_argument("--wait", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=900.0); p.set_defaults(f=cmd_sweep)
+    p = sub.add_parser("step"); p.add_argument("species"); p.add_argument("toy"); p.add_argument("axis"); p.add_argument("to", help="a step number, or a chip's name"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=300.0); p.set_defaults(f=cmd_step)
     p = sub.add_parser("string"); p.add_argument("selector", nargs="?", default="type"); p.add_argument("--species", default=""); p.add_argument("--code", action="store_true"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_string)
     p = sub.add_parser("explain"); p.add_argument("check"); p.add_argument("--json", action="store_true"); p.add_argument("--timeout", type=float, default=60.0); p.set_defaults(f=cmd_explain)
     p = sub.add_parser("watch"); p.add_argument("species"); p.add_argument("--json", action="store_true"); p.add_argument("--count", type=int, default=0); p.add_argument("--timeout", type=float, default=0); p.set_defaults(f=cmd_watch)

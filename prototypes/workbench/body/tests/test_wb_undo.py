@@ -31,9 +31,10 @@ class TestSocketForms(unittest.TestCase):
         self.assertEqual(d["options"], ["none", "cowlick"])
 
     def test_the_play_column_shows_the_toy_with_the_chips_play_has_words_for(self):
-        p = FM.forms(S20)["parts"]["ears"]["play"]
-        self.assertEqual((p["toy"], [(c["word"], c["on"]) for c in p["chips"]]), ("Ears", [("pointy", True), ("floppy", False), ("nub", False)]))
-        self.assertEqual(p["slider"]["steps"], 7)
+        (p,) = FM.forms(S20)["parts"]["ears"]["play"]
+        kind, size = p["axes"]
+        self.assertEqual((p["label"], [(o["word"], o["id"] == kind["home"]) for o in kind["options"]]), ("Ears", [("pointy", True), ("floppy", False), ("nub", False)]))
+        self.assertEqual(len(size["steps"]), 7)
         self.assertIsNone(FM.forms(S20)["parts"]["legs"]["play"])
 
     def test_the_families_carry_the_copywriters_look_names_and_the_ids_stay(self):

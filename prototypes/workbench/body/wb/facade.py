@@ -78,44 +78,24 @@ def resolve_genome(g, spec=None):
         return GN.limit_loud(ind)
     if kind == "value":
         name, _, v = arg.partition("=")
-        old = GN.SAMPLER_OF.get(name)
-        if old not in G or old in GN.PAIR_RECORD:
-            raise BuildError(f"genome '{g}': no blend locus '{name}' in the file (blends: {loci} ...)", "genome")
-        try:
-            val = float(v)
-        except ValueError:
-            raise BuildError(f"genome '{g}': value needs a number after '='", "genome")
-        form, lo, hi, _ = G[old]
         ind = GN.specimen(tbl)
-        ind["t"][old] = GA.t_of(form, lo, hi, val)
+        _set_value(ind, tbl, g, name, v)
         return GN.limit_loud(ind)
     if kind == "allele":
         name, _, v = arg.partition("=")
         ind = GN.specimen(tbl)
-        entry = locus_entry(spec, name)
-        if entry is None or entry["op"] == "blend":
-            raise BuildError(f"genome '{g}': no pair or switch locus '{name}' in the file", "genome")
-        if v not in entry["limits"]:
-            raise BuildError(f"genome '{g}': '{v}' is not an allowed allele of {name} (allowed: {', '.join(map(str, entry['limits']))})", "genome")
-        on = v == "on"
-        old = GN.SAMPLER_OF.get(name)
-        if old in GN.PAIR_RECORD:
-            ind["pairs"][old] = [v, v]
-        elif name == GN.MARKING_LAYOUT:
-            ind["pairs"]["appearance.marking-layout"] = [GN.LAYOUT_BACK.get(v, v)] * 2
-        elif name == GN.MARKING_SWITCH:
-            lay = [a for a in ind["pairs"]["appearance.marking-layout"] if a != "plain"]
-            ind["pairs"]["appearance.marking-layout"] = [lay[0] if lay else "banded"] * 2 if on else ["plain", "plain"]
-        elif name == GN.WHISKER_SWITCH:
-            none = GN.resolve_locus("face.whisker-count", ind["t"]["face.whisker-count"], G) < 1
-            ind["t"]["face.whisker-count"] = 0.0 if not on else 0.4 if none else ind["t"]["face.whisker-count"]            # on from none: the lowest count the engine draws (1 is 2 a side)
-        else:
-            sw = next((k for k, (_, rec) in GN.SWITCH_RECORD.items() if rec == name), None)
-            pr = next((o for o, (rec, _, _) in GN.PAIR_SWITCH.items() if rec == name), None)
-            if sw:
-                ind["switches"][sw] = on
+        _set_allele(ind, spec, tbl, g, name, v)
+        return GN.limit_loud(ind)
+    if kind == "set":
+        # set:<locus>=<value or allele>;<locus>=...  several loci at once: a play mibi's toys (a number sets a blend, anything else an allele)
+        ind = GN.specimen(tbl)
+        for item in filter(None, arg.split(";")):
+            name, _, v = item.partition("=")
+            entry = locus_entry(spec, name)
+            if entry is not None and entry["op"] != "blend":
+                _set_allele(ind, spec, tbl, g, name, v)
             else:
-                ind["pairs"][pr] = [GN.PAIR_SWITCH[pr][2 if on else 1]] * 2
+                _set_value(ind, tbl, g, name, v)
         return GN.limit_loud(ind)
     if kind == "corner":
         bad = [x for x in arg.split("+") if x and x not in GN.LOUD]
@@ -134,7 +114,52 @@ def resolve_genome(g, spec=None):
         return ind
     if kind in ("string", "code"):
         return individual_from_text(g, arg, spec, tbl)
-    raise BuildError(f"genome '{g}': use type, seed:N, string:<G1-...>, code:<S20v1-...>, low:<locus>, high:<locus>, allele:<locus>=<allele>, value:<locus>=<v> or corner:<loud>+<loud>", "genome")
+    raise BuildError(f"genome '{g}': use type, seed:N, set:<locus>=<v>;..., string:<G1-...>, code:<S20v1-...>, low:<locus>, high:<locus>, allele:<locus>=<allele>, value:<locus>=<v> or corner:<loud>+<loud>", "genome")
+
+
+def _set_value(ind, tbl, g, name, v):
+    """A blend at a value (the value may lie outside the limits)."""
+    import s20genes as GN, genomeapply as GA
+    G = tbl[0] if tbl else GN.GENES
+    loci = ", ".join(sorted(GN.RECORD.values())[:6])
+    old = GN.SAMPLER_OF.get(name)
+    if old not in G or old in GN.PAIR_RECORD:
+        raise BuildError(f"genome '{g}': no blend locus '{name}' in the file (blends: {loci} ...)", "genome")
+    try:
+        val = float(v)
+    except ValueError:
+        raise BuildError(f"genome '{g}': value needs a number after '='", "genome")
+    form, lo, hi, _ = G[old]
+    ind["t"][old] = GA.t_of(form, lo, hi, val)
+
+
+def _set_allele(ind, spec, tbl, g, name, v):
+    """A pair or switch locus set to an allowed allele."""
+    import s20genes as GN
+    entry = locus_entry(spec, name)
+    if entry is None or entry["op"] == "blend":
+        raise BuildError(f"genome '{g}': no pair or switch locus '{name}' in the file", "genome")
+    if v not in entry["limits"]:
+        raise BuildError(f"genome '{g}': '{v}' is not an allowed allele of {name} (allowed: {', '.join(map(str, entry['limits']))})", "genome")
+    on = v == "on"
+    old = GN.SAMPLER_OF.get(name)
+    if old in GN.PAIR_RECORD:
+        ind["pairs"][old] = [v, v]
+    elif name == GN.MARKING_LAYOUT:
+        ind["pairs"]["appearance.marking-layout"] = [GN.LAYOUT_BACK.get(v, v)] * 2
+    elif name == GN.MARKING_SWITCH:
+        lay = [a for a in ind["pairs"]["appearance.marking-layout"] if a != "plain"]
+        ind["pairs"]["appearance.marking-layout"] = [lay[0] if lay else "banded"] * 2 if on else ["plain", "plain"]
+    elif name == GN.WHISKER_SWITCH:
+        none = GN.resolve_locus("face.whisker-count", ind["t"]["face.whisker-count"], (tbl[0] if tbl else GN.GENES)) < 1
+        ind["t"]["face.whisker-count"] = 0.0 if not on else 0.4 if none else ind["t"]["face.whisker-count"]
+    else:
+        sw = next((k for k, (_, rec) in GN.SWITCH_RECORD.items() if rec == name), None)
+        pr = next((o for o, (rec, _, _) in GN.PAIR_SWITCH.items() if rec == name), None)
+        if sw:
+            ind["switches"][sw] = on
+        else:
+            ind["pairs"][pr] = [GN.PAIR_SWITCH[pr][2 if on else 1]] * 2
 
 
 def individual_from_text(selector, text, spec=None, tbl=None):

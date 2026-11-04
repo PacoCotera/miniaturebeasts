@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getToken, type Species } from '../lib/api'
-import { formsOne, getAt } from '../lib/forms'
+import { formsOne, getAt, toysOne } from '../lib/forms'
 import { Field } from './Field'
 import { checkMetas, needsYou, partsOf, ORDER } from '../lib/checks'
 import { clock, leaseFrom } from '../lib/edits'
@@ -33,7 +33,9 @@ export function Inspector({ species, id, sheet, open, url, go, genes }: { specie
   const editable = !!getToken() && !lease
   const asPlayer = useUI((u) => u.player)
   const setPlayer = useUI((u) => u.setPlayer)
-  const toy = part?.play ?? null
+  const toysQ = useQuery({ ...toysOne(id, species?.hash ?? ''), enabled: !!species && !genes && asPlayer && !!part?.play }).data
+  // the file's toys for this part, with the sweep's trims laid over them when the server has them
+  const toy = part?.play ? part.play.map((t) => toysQ?.toys.find((x) => x.id === t.id) ?? t) : null
   const showToy = asPlayer && !!toy
   const touching = url.sel ? rows.filter((r) => partsOf(r, byId[r.id]).includes(url.sel!)) : rows
   const cards = needsYou(touching).sort((a, b) => ORDER[a.state] - ORDER[b.state])
@@ -52,7 +54,7 @@ export function Inspector({ species, id, sheet, open, url, go, genes }: { specie
           </Popover.Root>
         )}</div>
       {!url.sel && line && <p className={s.line}>{line}</p>}
-      {species && showToy && toy && <PlayPanel toy={toy} species={species} />}
+      {species && showToy && toy && <PlayPanel toys={toy} sentences={toysQ?.sentences} hold={toysQ?.hold} />}
       {species && part && !showToy && part.fields.some((d) => getAt(species.file, d.ptr) !== undefined) && (
         <div className={s.fields}>{part.fields.filter((d) => getAt(species.file, d.ptr) !== undefined).map((d) => <Field key={d.id} species={species} id={id} desc={d} editable={editable} rows={rows} metas={byId} />)}</div>
       )}

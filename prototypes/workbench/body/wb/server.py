@@ -161,6 +161,8 @@ class Server:
         self.sheeter = threading.Thread(target=self.sheet_loop, daemon=True, name="sheets")
         self.varieter = threading.Thread(target=self.variety_loop, daemon=True, name="variety")
         self.golder = threading.Thread(target=self.golden_loop, daemon=True, name="goldens")
+        self.sweeper = threading.Thread(target=self.sweep_loop, daemon=True, name="sweeps")
+        self.sweeps_seen = {}                                   # species id -> (the last sweep result, its key): shown stale when the file has moved on
         self.runs_lock = threading.Lock()
         self.watcher = threading.Thread(target=self.watch_loop, daemon=True, name="watcher")
         self.proofs = queue.Queue()
@@ -349,6 +351,8 @@ class Server:
             return self.submit_variety(sp, args, actor)
         if kind == "golden":
             return self.submit_golden(sp, args, actor)
+        if kind == "sweep":
+            return self.submit_sweep(sp, args, actor)
         spec = copy.deepcopy(sp.spec) if spec is None else spec
         a = self.norm_args(kind, args, spec)
         spec_hash = spec_hash or H.hash_of(spec)
@@ -753,6 +757,146 @@ class Server:
             except Exception as e:
                 self.finish_failed(job, f"{type(e).__name__}: {e}", None)
 
+    # ---- play (chunk 13): the toys, the safe-step sweep, and a play save
+    def sweep_key(self, spec):
+        from wb import play as PL
+        return H.hash_of("sweep", spec, CH.version_id("cage"), PL.VERSION, H.framework_id())
+
+    def sweep_state(self, sp):
+        """The sweep for the file as it is now: {state: fresh | stale | none | running, result, key, at}. It never starts the job."""
+        key = self.sweep_key(sp.spec)
+        res = self.cas.get_json(key)
+        running = self.queue.find_active(sp.id, "sweep", key)
+        if res is not None:
+            self.sweeps_seen[sp.id] = (res, key)
+            return dict(state="fresh", result=res, key=key, running=bool(running))
+        old = self.sweeps_seen.get(sp.id)
+        return dict(state="running" if running else ("stale" if old else "none"), result=old[0] if old else None, key=key, running=bool(running))
+
+    def toys(self, sp):
+        """What the page and `wb toys` show: the effective toys with the sweep's trims (a stale sweep's trims are shown, marked), the sentence slots, the genome that builds the mibi as its toys have it."""
+        from wb import play as PL
+        sw = self.sweep_state(sp)
+        res = sw["result"]
+        return dict(plan=sp.spec.get("plan"), built=PL.BUILT.get(sp.spec.get("plan"), False), toys=PL.toys_of(sp.spec, res), slots=PL.slots(sp.spec), genome=PL.state_genome(sp.spec),
+                    sentences={**{m["id"]: PL.sentence_of(sp.spec, m["id"])[1] for m in CH.metas() if m["stage"] == "cage"}, "build": PL.HOLD, "default": PL.sentence_of(sp.spec, "default")[1]},
+                    sweep=dict(state=sw["state"], key=sw["key"], summary=None if res is None else {k: v for k, v in res.items() if k != "toys"}), hold=PL.HOLD)
+
+    def submit_sweep(self, sp, args, actor):
+        spec = copy.deepcopy(sp.spec)
+        key = self.sweep_key(spec)
+        job = J.Job(self.queue.new_id(), sp.id, "sweep", dict(), key, J.PRIORITY["sweep"], spec, H.hash_of(spec), actor)
+        res = self.cas.get_json(key)
+        if res is not None:
+            job.cached, job.state, job.result = True, "done", dict(res, cache=dict(job_hit=True))
+            job.t_start = job.t_end = time.time()
+            job.event.set()
+            self.queue.add(job)
+            self.hub.emit("done", sp.id, job=job.id, kind="sweep", cached=True, key=key, actor=(actor or {}).get("name"))
+            return job
+        active = self.queue.find_active(sp.id, "sweep", key)
+        if active:
+            return active
+        self.queue.add(job)
+        self.hub.emit("queued", sp.id, job=job.id, kind="sweep", priority=job.priority, key=key, actor=(actor or {}).get("name"), spec_hash=job.spec_hash)
+        return job
+
+    def cage_fails(self, sid, spec, spec_hash, genome, actor, priority=2, timeout=900):
+        """The ids of the cage checks that fail on the clay of `genome`, or ["build"] when the cage did not build."""
+        j = self.submit(sid, "check", dict(genome=genome, stage="cage"), actor, priority=priority, spec=spec, spec_hash=spec_hash)
+        j.event.wait(timeout)
+        return self.fails_of_job(j)
+
+    @staticmethod
+    def fails_of_job(j):
+        if j.state == "failed":
+            return ["build"]
+        if j.state != "done":
+            raise ApiError(409, f"the check job ended {j.state}: {j.error or 'the file changed'}", None)
+        return sorted(r["id"] for r in j.result["rows"] if r["state"] == "fail")
+
+    def sweep_loop(self):
+        from wb import play as PL
+        while not self.stopping:
+            job = self.queue.pop(("sweep",), timeout=0.5)
+            if job is None:
+                continue
+            self.hub.emit("running", job.species, job=job.id, kind="sweep", actor=(job.actor or {}).get("name"))
+            try:
+                spec = job.spec
+                if not PL.BUILT.get(spec.get("plan")):
+                    res = PL.unbuilt(spec)
+                else:
+                    base_ids = set(self.cage_fails(job.species, spec, job.spec_hash, PL.state_genome(spec), job.actor))
+
+                    def fails_of(states):
+                        jobs = [self.submit(job.species, "check", dict(genome=PL.genome_of(s), stage="cage"), job.actor, priority=2, spec=spec, spec_hash=job.spec_hash) for s in states]
+                        out = []
+                        for j in jobs:
+                            j.event.wait(900)
+                            out.append([c for c in self.fails_of_job(j) if c not in base_ids])
+                        return out
+
+                    def progress(n):
+                        job.progress = dict(done=n)
+                        self.hub.emit("running", job.species, job=job.id, kind="sweep", progress=job.progress)
+                    t0 = time.time()
+                    res = PL.sweep(spec, fails_of, progress=progress)
+                    res["seconds"] = round(time.time() - t0, 2)
+                    res["base_fails"] = sorted(base_ids)
+                self.cas.put_json(job.key, res)
+                self.queue.finish(job, "done", dict(res, cache=dict(job_hit=False)))
+                self.hub.emit("done", job.species, job=job.id, kind="sweep", key=job.key, cached=False, actor=(job.actor or {}).get("name"))
+            except ApiError as e:
+                self.finish_failed(job, e.message if hasattr(e, "message") else str(e), None)
+            except Exception as e:
+                self.finish_failed(job, f"{type(e).__name__}: {e}", None)
+
+    def play_save(self, sid, b, actor):
+        """A play edit (spec 2.4): one toy axis moved to one step. The file is checked, then the clay of the new mibi is built and checked; a failure is refused, nothing is saved, the toy springs back to where it was
+        and the answer carries the one sentence the mibi says. Studio's own save (PATCH) never refuses a failing check, only a file that is not valid."""
+        from wb import play as PL
+        import species_v1 as V1
+        sp = self.get_species(sid)
+        spec = copy.deepcopy(sp.spec)
+        toy, axis, to = b.get("toy"), b.get("axis"), b.get("to")
+        try:
+            ops = PL.edit_ops(spec, toy, axis, to)
+        except ValueError as e:
+            raise ApiError(400, str(e), f"play.{toy}.{axis}")
+        cur_toy = next((t for t in PL.toys_of(spec) if t["id"] == toy), None)
+        cur_ax = next((a for a in (cur_toy or {}).get("axes", []) if a["id"] == axis), None)
+        back = None if cur_ax is None else cur_ax["home"]
+
+        def refuse(why, check_ids, field=None, src=None):
+            sent = [dict(check=c, source=PL.sentence_of(spec, c)[0], sentence=PL.sentence_of(spec, c)[1] if c != "build" else PL.HOLD) for c in check_ids]
+            return dict(ok=False, refused=True, why=why, checks=sent, sentence=(sent[0]["sentence"] if sent else PL.HOLD), back_to=back, toy=toy, axis=axis, field=field, hash=sp.hash)
+        new = S.apply_patch(spec, ops)
+        errs = V1.validate(new)
+        if errs:
+            return refuse("file", [], errs[0][0])
+        sw = self.sweep_state(sp)
+        if sw["state"] == "fresh":
+            t = next((t for t in PL.toys_of(spec, sw["result"]) if t["id"] == toy), None)
+            a = next((a for a in (t or {}).get("axes", []) if a["id"] == axis), None)
+            if a:
+                st = (a["steps"][to] if a["kind"] == "range" else next((o for o in a["options"] if o["id"] == to), None))
+                if st and not st["ok"]:
+                    return refuse("trimmed", st["why"] or ["default"])
+        if not PL.BUILT.get(spec.get("plan")):
+            return refuse("unbuilt", [], "plan")
+        base = set(self.cage_fails(sid, spec, H.hash_of(spec), PL.state_genome(spec), actor, priority=1))
+        fails = [c for c in self.cage_fails(sid, new, H.hash_of(new), PL.state_genome(new), actor, priority=1) if c not in base]
+        if fails:
+            return refuse("check", fails)
+        res = self.patch_species(sid, ops, actor, via="play")
+        rj = None
+        try:
+            rj = self.submit(sid, "render", dict(genome=PL.state_genome(new), views=[["clay", 32, 304]]), actor, priority=0)
+        except ApiError:
+            pass
+        return dict(ok=True, refused=False, hash=res["hash"], genome=PL.state_genome(new), state=PL.state_of(new), render=rj.public() if rj else None, toys=PL.toys_of(new, sw["result"] if sw["state"] == "fresh" else None))
+
     # ---- goldens (chunk 12): the state is read from files alone (instant); `make` and `diff` are jobs that draw the set in a Blender process of their own
     def goldens(self, sp):
         from wb import golden as G
@@ -807,6 +951,7 @@ class Server:
         self.sheeter.start()
         self.varieter.start()
         self.golder.start()
+        self.sweeper.start()
         self.proofer.start()
         self.watcher.start()
         self.cas.evict(self.cache_limit)
@@ -909,6 +1054,9 @@ def make_handler(srv):
             if m:
                 from wb import forms as FM
                 return self.send_json(FM.forms(srv.get_species(m.group(1)).spec))
+            m = re.fullmatch(r"/api/species/([^/]+)/toys", p)
+            if m:
+                return self.send_json(srv.toys(srv.get_species(m.group(1))))
             m = re.fullmatch(r"/api/species/([^/]+)/spine", p)
             if m:
                 from wb import spine as SPN
@@ -1037,6 +1185,10 @@ def make_handler(srv):
                 b = self.body() or {}
                 job = srv.submit(m.group(1), b.get("kind"), b.get("args"), actor)
                 return self.send_json(job.public(), 200 if job.state == "done" else 202)
+            m = re.fullmatch(r"/api/species/([^/]+)/play", p)
+            if m:
+                res = srv.play_save(m.group(1), self.body() or {}, self.actor(need=True))
+                return self.send_json(res, 200 if res["ok"] else 409)
             m = re.fullmatch(r"/api/species/([^/]+)/(undo|redo)", p)
             if m:
                 return self.send_json(srv.revert(m.group(1), m.group(2), self.actor(need=True)))

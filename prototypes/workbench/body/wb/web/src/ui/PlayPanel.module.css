@@ -7,3 +7,13 @@
 .stop { height: 10px; border-radius: 5px; background: var(--line-2); }
 .stop[data-on] { background: var(--text-3); }
 .stop[data-here] { background: var(--text); height: 18px; }
+.stop[data-trimmed] { background: repeating-linear-gradient(135deg, var(--line-2) 0 3px, transparent 3px 6px); border: 1px dashed var(--text-3); opacity: .7; }
+.chip[data-trimmed] { text-decoration: line-through; opacity: .55; }
+.pots { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.pot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; box-shadow: var(--shadow-1); }
+.pot[data-on] { border-color: var(--text); }
+.pot[data-trimmed] { opacity: .35; }
+.says { margin: 0; font-size: var(--t-16); color: var(--text-2); font-style: italic; }
+.head small { font-weight: 400; color: var(--text-3); }
+.toy[data-hidden] { opacity: .6; }
+.axis { color: var(--text-3); font-size: 14px; margin-bottom: -10px; }

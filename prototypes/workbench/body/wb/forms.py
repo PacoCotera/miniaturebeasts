@@ -127,13 +127,8 @@ def fields_of(doc, part):
 # ---------------------------------------------------------------------------------------------- chunk 21B: sockets, joins and families
 # Which locus holds how often each family shows (the weights of its pair-map), for a part or socket of the outline.
 FAMILY_LOCUS = {"ears": "form.ear-kind", "tip": "anatomy.tail-tip-form"}
-# The play surface (spec 2.3): the toy a part feeds, its picture chips (the family and the short word play shows) and its size slider (the field that moves). The words are `pl.toy.*` of the copywriter's list.
-PLAY = {
-    "ears": dict(toy="Ears", chips={"prick": "pointy", "lop": "floppy", "nub": "nubs"}, slider="/genome/loci/{locus:form.ear-length}/type"),
-    "tip": dict(toy="Tail", chips={"lantern": "lantern", "tuft": "tuft", "plain": "plain"}, slider="/spine/tail/length"),
-    "tail": dict(toy="Tail", chips={"lantern": "lantern", "tuft": "tuft", "plain": "plain"}, slider="/spine/tail/length"),
-}
-PLAY_STEPS = 7
+# The toys each part of the outline feeds in play (spec 2.3). What a toy is, its steps and its trims come from wb/play.py (the plan's declaration, narrowed by the file).
+PLAY_OF_PART = {"ears": ["ears"], "tail": ["tail"], "tip": ["tail"], "back": ["body"], "coat": ["paint", "pattern"]}
 
 
 def _socket_index(doc, sid):
@@ -186,39 +181,16 @@ def socket_fields(doc, part):
 
 
 def play_of(doc, part):
-    """What the player sees of a part: the toy's head, its picture chips (the families the socket allows that play has a word for, the one in force marked) and the slider with its 7 steps. None when no toy reads this part."""
-    p = PLAY.get(part)
-    if not p:
+    """What the player sees of a part: the toys it feeds, as the file leaves them (wb.play.toys_of, without a sweep: the page lays the sweep's trims over them). None when no toy reads this part."""
+    ids = PLAY_OF_PART.get(part)
+    if not ids:
         return None
-    chips = []
-    nest = {i: m for i, _, _, m in NESTED.get(doc.get("plan"), NESTED["biped"])}
-    m = nest.get(part, {})
-    sid = {"ears": "ear.L"}.get(part, m.get("socket", "tail.tip" if part == "tail" else None))
-    k = _socket_index(doc, sid) if sid else None
-    spec = (doc["sockets"][k].get("spec") or {}) if k is not None else {}
-    fam = [f for f in spec.get("families") or [] if f in p["chips"]]
-    names = look_names(doc, FAMILY_LOCUS.get(part) or ("anatomy.tail-tip-form" if part == "tail" else None), fam)
-    chips = [dict(family=f, word=names[f][1] if f in names else p["chips"][f], on=f == spec.get("default"), ptr=f"/sockets/{k}/spec/default") for f in fam]
-    sl = p["slider"]
-    if "{locus:" in sl:
-        loc = sl[sl.index("{locus:") + 7:sl.index("}")]
-        li = _locus_index(doc, loc)
-        if li is None:
-            ptr, rng = None, None
-        else:
-            l = doc["genome"]["loci"][li]
-            ptr = f"/genome/loci/{li}/type"
-            rng = (l.get("band") or l.get("absolute") or {})
-            rng = [rng.get("lo"), rng.get("hi")] if rng else l.get("range")
-    else:
-        ptr = sl
-        plan = V1.PLANS.get(doc.get("plan")) or V1.PLANS["biped"]
-        r = V1._range(spec_at("spine.tail.length"), plan)
-        rng = [r[0], r[1]] if r else None
-    return dict(toy=p["toy"], chips=chips, slider=dict(ptr=ptr, range=rng, steps=PLAY_STEPS) if ptr and rng else None)
+    from wb import play as PL
+    toys = [t for t in PL.toys_of(doc) if t["id"] in ids]
+    return toys or None
 
 
 def forms(doc):
     """Everything Shape mode needs of a file: the outline and each part's fields (the socket's join, default family and family weights after the numbers), and what the player sees of it."""
     rows = outline(doc)
-    return dict(plan=doc.get("plan"), outline=rows, parts={r["id"]: dict(label=r["label"], kind=r["kind"], fields=fields_of(doc, r["id"]) + socket_fields(doc, r["id"]), play=play_of(doc, r["id"])) for r in rows if r["kind"] != "section"})
+    return dict(plan=doc.get("plan"), outline=rows, parts={r["id"]: dict(label=r["label"], kind=r["kind"], fields=fields_of(doc, r["id"]) + socket_fields(doc, r["id"]), play=play_of(doc, r["id"])) for r in rows if r["kind"] != "section" or PLAY_OF_PART.get(r["id"])})

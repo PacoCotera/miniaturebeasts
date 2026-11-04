@@ -14,10 +14,19 @@ export type FieldDesc = {
   names?: Record<string, [string, string]> // an option's name for the eye and its short word, where the file has them (looks)
 }
 export type OutlineRow = { id: string; label: string; kind: 'range' | 'part' | 'section'; under: string | null; sw: string | null }
-// What the player sees of a part (spec 2.3): the toy it feeds, the picture chips (family and the short word play shows, the one in force on) and the slider with its steps.
-export type PlayToy = { toy: string; chips: { family: string; word: string; on: boolean; ptr: string }[]; slider: { ptr: string; range: [number, number]; steps: number } | null }
-export type PartForm = { label: string; kind: 'range' | 'part'; fields: FieldDesc[]; play?: PlayToy | null }
+// What the player sees of a part (spec 2.3): the toys it feeds, each with its axes. A range axis is a slider (or the paint pots) of steps between the gene's hard limits; a choice axis is picture chips. `ok` is false for a step the safe-step sweep trimmed,
+// `why` the checks that failed at a corner, `end.genome` the genome that builds the picture of that step.
+export type PlayStep = { i: number; value: number; ok: boolean; why: string[]; end: { genome: string } }
+export type PlayOption = { id: string; word: string; ok: boolean; why: string[]; end: { genome: string } }
+export type PlayAxis = { id: string; locus: string; kind: 'range' | 'choice'; label: string; cage: boolean; unit?: string; home: number | string; steps?: PlayStep[]; options?: PlayOption[] }
+export type PlayToy = { id: string; label: string; plain: string; hidden: boolean; kind: string; parts: string[]; axes: PlayAxis[] }
+export type PartForm = { label: string; kind: 'range' | 'part' | 'section'; fields: FieldDesc[]; play?: PlayToy[] | null }
 export type Forms = { plan: string; outline: OutlineRow[]; parts: Record<string, PartForm> }
+
+export type PlaySlot = { check: string; name: string; toy: string | null; axis: string | null; situation: string; source: 'file' | 'check' | 'placeholder'; sentence: string }
+export type Toys = { plan: string; built: boolean; toys: PlayToy[]; slots: PlaySlot[]; sentences: Record<string, string>; genome: string; hold: string; sweep: { state: 'fresh' | 'stale' | 'none' | 'running'; key: string; summary: { builds: number; seconds: number; corners: number; rounds: number; unbuilt?: boolean; note?: string } | null } }
+// The toys with the sweep's trims laid over them (`GET /api/species/<id>/toys`). It is asked again when the file's hash moves.
+export const toysOne = (id: string, hash: string) => queryOptions({ queryKey: ['toys', id, hash], queryFn: () => call<Toys>('GET', `/api/species/${encodeURIComponent(id)}/toys`), staleTime: 15_000 })
 
 export const formsOne = (id: string) => queryOptions({ queryKey: ['forms', id], queryFn: () => call<Forms>('GET', `/api/species/${encodeURIComponent(id)}/forms`), staleTime: Infinity })
 
@@ -104,4 +113,3 @@ export function rebalance(weights: number[], i: number, to: number): number[] {
 export const optName = (d: Pick<FieldDesc, 'names'>, o: string) => d.names?.[o]?.[0] ?? o.charAt(0).toUpperCase() + o.slice(1).replace(/-/g, ' ')
 export const pct = (w: number) => `${Math.round(w * 100)}%`
 // The step a slider of `steps` stops is on (0 to steps-1), for a value in its band.
-export const stepOf = (v: number, r: [number, number], steps: number) => Math.round(Math.min(1, Math.max(0, (v - r[0]) / (r[1] - r[0]))) * (steps - 1))
