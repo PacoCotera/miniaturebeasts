@@ -23,3 +23,14 @@
 .sw[aria-checked=true]::after { transform: translateX(16px); }
 .sw:disabled { cursor: default; opacity: .6; }
 @media (pointer: coarse) { .num { min-height: 44px; display: inline-flex; align-items: center; } .seg button { min-height: 44px; } .sw { height: 32px; width: 52px; border-radius: 16px; } .sw::after { top: 4px; left: 4px; width: 24px; height: 24px; } .sw[aria-checked=true]::after { transform: translateX(20px); } }
+.wts { display: grid; gap: 2px; padding-bottom: 4px; }
+.wt { display: grid; grid-template-columns: 76px 1fr 44px; align-items: center; column-gap: var(--s-3); min-height: 32px; color: var(--text-2); }
+.wv { text-align: right; font-variant-numeric: tabular-nums; color: var(--text); }
+.wt input[type=range] { appearance: none; -webkit-appearance: none; height: 24px; background: transparent; margin: 0; width: 100%; cursor: pointer; }
+.wt input[type=range]::-webkit-slider-runnable-track { height: 2px; border-radius: 1px; background: linear-gradient(to right, var(--text-2) var(--p), var(--line-2) var(--p)); }
+.wt input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 4px; height: 14px; margin-top: -6px; border-radius: 2px; background: var(--text); }
+.wt input[type=range]::-moz-range-track { height: 2px; background: var(--line-2); }
+.wt input[type=range]::-moz-range-thumb { width: 4px; height: 14px; border: 0; border-radius: 2px; background: var(--text); }
+.wt input[type=range]:disabled { cursor: default; opacity: .7; }
+.wt input[type=range]:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+@media (pointer: coarse) { .wt input[type=range] { height: 44px; } .wt { min-height: 44px; } }

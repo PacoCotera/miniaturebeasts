@@ -1,0 +1,22 @@
+.tabs { display: inline-flex; padding: 3px; border-radius: var(--r-1); background: var(--sunken); }
+.tabs button { font: 500 var(--t-14)/1 var(--font); padding: 7px 12px; border-radius: 5px; color: var(--text-2); min-height: 32px; }
+.tabs .on { background: var(--raised); color: var(--text); box-shadow: var(--shadow-1); }
+.body { border-top: 1px solid var(--line); min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+.acts { display: inline-flex; gap: var(--s-2); margin-left: auto; margin-right: var(--s-2); }
+.act { font: 500 var(--t-14)/1 var(--font); padding: 9px 14px; border-radius: var(--r-1); border: 1px solid var(--line-2); color: var(--text); min-height: 36px; }
+.act:disabled { color: var(--text-3); border-color: var(--line); cursor: default; }
+.err { margin: 0; padding: 8px var(--s-5); color: var(--fail); font-size: var(--t-14); border-bottom: 1px solid var(--line); }
+.list { list-style: none; margin: 0; padding: 0; font-size: var(--t-14); }
+.row { display: grid; grid-template-columns: 56px 30px minmax(0, 1fr) auto; align-items: center; column-gap: var(--s-3); padding: 9px var(--s-5); border-top: 1px solid var(--line); }
+.row:first-child { border-top: 0; }
+.time { color: var(--text-3); }
+.avatar { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 600; border: 1px solid var(--line-2); color: var(--text-2); }
+.avatar[data-agent] { border-color: var(--special); color: var(--special); }
+.what { color: var(--text-2); overflow-wrap: anywhere; }
+.what b { color: var(--text); font-weight: 600; }
+.tag { font-size: 12px; color: var(--text-2); border: 1px solid var(--line-2); border-radius: 10px; padding: 2px 9px; }
+.row[data-via=undo] .what, .row[data-via=redo] .what { font-style: normal; }
+.file { display: grid; grid-template-columns: auto minmax(0, 1fr); font: 400 13px/1.5 var(--mono); min-height: 0; overflow: auto; }
+.nums, .code { margin: 0; padding: var(--s-3) 0; white-space: pre; }
+.nums { padding-left: var(--s-5); padding-right: var(--s-3); text-align: right; color: var(--text-3); user-select: none; position: sticky; left: 0; background: var(--panel); }
+.code { color: var(--text); padding-right: var(--s-5); }

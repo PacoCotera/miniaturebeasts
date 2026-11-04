@@ -6,7 +6,7 @@ import { useRail } from './useStudio'
 const typing = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))
 
 // The keys of studio-ui.md 4.5 that exist so far, plus T for the theme (the design names no key for it).
-export type CheckKeys = { toggleDrawer: () => void; proof: () => void; field: () => void; escape: () => boolean }
+export type CheckKeys = { toggleDrawer: () => void; history: () => void; file: () => void; undo: () => void; redo: () => void; proof: () => void; field: () => void; escape: () => boolean }
 export function useKeys(url: StudioUrl, go: (p: Partial<StudioUrl>, replace?: boolean) => void, availableViews: (v: string) => boolean, ck?: CheckKeys) {
   const ui = useUI()
   const rail = useRail()
@@ -31,6 +31,9 @@ export function useKeys(url: StudioUrl, go: (p: Partial<StudioUrl>, replace?: bo
       else if ((k === 'd' || k === 'D') && url.mode === 'goldens') go({ gv: url.gv === 'diff' ? 'split' : 'diff' }, true)
       else if (k === 't' || k === 'T') ui.toggleTheme()
       else if ((k === 'c' || k === 'C') && ck) ck.toggleDrawer()
+      else if ((k === 'h' || k === 'H') && ck) ck.history()
+      else if ((k === 'j' || k === 'J') && ck) ck.file()
+      else if ((k === 'z' || k === 'Z') && ck) { if (e.shiftKey) ck.redo(); else ck.undo() }
       else if ((k === 'v' || k === 'V') && ck) ck.proof()
       else if ((k === 'g' || k === 'G') && ck) ck.field()
       else if (k === 'Escape' && ck) ck.escape()

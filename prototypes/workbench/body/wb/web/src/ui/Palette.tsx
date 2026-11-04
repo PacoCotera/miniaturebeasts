@@ -7,6 +7,7 @@ import { checkMetas } from '../lib/checks'
 import { MODES, buildStudioUrl, type StudioUrl } from '../lib/url'
 import { useUI } from '../lib/store'
 import { W } from '../lib/words'
+import { useRevert } from '../lib/undo'
 import s from './Palette.module.css'
 
 // The command palette (Ctrl K or /): parts, genes, outputs, checks and actions arrive with their chunks. For now: the modes and the species.
@@ -15,6 +16,7 @@ export function Palette({ url }: { url: StudioUrl }) {
   const navigate = useNavigate()
   const list = useQuery(speciesList())
   const metas = useQuery(checkMetas()).data ?? []
+  const rev = useRevert(url.species)
   const run = (to: string) => { setPalette(false); navigate(to) }
   return (
     <Command.Dialog open={paletteOpen} onOpenChange={setPalette} label="Palette" overlayClassName={s.scrim} contentClassName={s.palette}>
@@ -24,6 +26,12 @@ export function Palette({ url }: { url: StudioUrl }) {
         <Command.Group heading="Checks">
           <Command.Item value="Checks drawer" onSelect={() => run(buildStudioUrl({ ...url, drawer: 'checks' }))} className={s.item}>Checks<span className={s.k}><kbd>C</kbd></span></Command.Item>
           {metas.map((m) => (<Command.Item key={m.id} value={`check ${m.name}`} onSelect={() => run(buildStudioUrl({ ...url, drawer: 'checks', proof: m.id }))} className={s.item}>{m.name}<span className={s.k}>{m.stage}</span></Command.Item>))}
+        </Command.Group>
+        <Command.Group heading={W.help.do}>
+          <Command.Item value="History" onSelect={() => run(buildStudioUrl({ ...url, drawer: 'history' }))} className={s.item}>{W.drawer.history}<span className={s.k}><kbd>H</kbd></span></Command.Item>
+          <Command.Item value="File JSON" onSelect={() => run(buildStudioUrl({ ...url, drawer: 'file' }))} className={s.item}>{W.drawer.file}<span className={s.k}><kbd>J</kbd></span></Command.Item>
+          <Command.Item value="Undo" onSelect={() => { setPalette(false); void rev.run('undo') }} className={s.item}>{W.undo}<span className={s.k}><kbd>Z</kbd></span></Command.Item>
+          <Command.Item value="Redo" onSelect={() => { setPalette(false); void rev.run('redo') }} className={s.item}>{W.redo}<span className={s.k}><kbd>Shift Z</kbd></span></Command.Item>
         </Command.Group>
         <Command.Group heading={W.help.go}>
           {MODES.map((m, i) => (

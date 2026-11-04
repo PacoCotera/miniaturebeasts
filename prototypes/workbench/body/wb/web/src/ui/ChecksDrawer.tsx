@@ -7,6 +7,7 @@ import { useJobs } from '../lib/events'
 import { useUI } from '../lib/store'
 import type { StudioUrl } from '../lib/url'
 import { endLine, endMeasure, failingEnds, locusById, runTime } from '../lib/genes'
+import { DrawerTabs } from './Drawers'
 import s from './ChecksDrawer.module.css'
 
 // The Checks drawer: the full table grouped by state, over the navigator and the stage. It opens on "Needs you" (fails and warnings: the same number as the pill); "All" shows every row.
@@ -38,7 +39,7 @@ export function ChecksDrawer({ species, url, go }: { species: Species; url: Stud
     <section className={s.drawer} style={{ height: drawerH }} aria-label="Checks">
       <span className={s.grip} onPointerDown={drag} role="separator" aria-orientation="horizontal" aria-label="Resize the drawer" />
       <div className={s.head}>
-        <b>Checks</b>
+        <DrawerTabs url={url} go={go} />
         <span className={s.seg} role="tablist">
           <button role="tab" aria-selected={tab === 'needs'} className={tab === 'needs' ? s.on : ''} onClick={() => setTab('needs')}>Needs you <span className="num">{need.length + badEnds.length}</span></button>
           <button role="tab" aria-selected={tab === 'all'} className={tab === 'all' ? s.on : ''} onClick={() => setTab('all')}>All <span className="num">{rows.length}</span></button>

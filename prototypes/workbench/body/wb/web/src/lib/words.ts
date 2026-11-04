@@ -8,6 +8,9 @@ export const W = {
   leaseBanner: (who: string) => `${who} is editing`, // st.lease.banner
   takeOver: 'Take over', // st.lease.banner
   undo: 'Undo', // st.toast.edit
+  asPlayer: 'Show as player sees it', // ui 4.3 (the Inspector's ⋯ menu); owed to the copywriter
+  redo: 'Redo', // ui 4.5 (Z, Shift Z)
+  drawer: { checks: 'Checks', history: 'History', file: 'File (JSON)' }, // ui 3.2 Drawer
   viewBar: ['Plush', 'Clay', 'Normal', 'Parts', 'Wire'], // ui 3.2 ViewBar
   before: 'Before', // ui 3.2 ViewBar
   help: { go: 'Go to', do: 'Do', choose: 'choose', run: 'run', everyKey: 'every key' }, // ui mock 10

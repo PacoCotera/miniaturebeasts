@@ -7,7 +7,7 @@ export type Entry = { t: string; actor: string; role: string | null; agent: bool
 export type ViewRef = { mode: string; az: number; size: number; key: string; ready: boolean }
 export type Lease = { holder: string; agent: boolean; since: string }
 export type Species = {
-  id: string; hash: string; error: string | null; lease: Lease | null; history: Entry[]; views: ViewRef[]; checks: ChecksState | null; extremes?: ExtremesState | null; labels?: Record<string, string>
+  id: string; hash: string; error: string | null; lease: Lease | null; history: Entry[]; undo?: { undo: boolean; redo: boolean }; views: ViewRef[]; checks: ChecksState | null; extremes?: ExtremesState | null; labels?: Record<string, string>
   file: { name?: string; species?: string; body_plan?: string; plan?: string; genome?: Genome; expressions?: import("./genes").Expression[]; variety?: { look_words?: Record<string, Record<string, [string, string]>> } }
 }
 export type SpeciesRow = { id: string; name?: string; hash: string; error: string | null }
@@ -75,3 +75,8 @@ export const checkEnds = (id: string) => postJob(id, 'check', { stage: 'extremes
 export const freqOne = (id: string, hash: string) => queryOptions({ queryKey: ['freq', id, hash], queryFn: () => call<import('./genes').Freq>('GET', `/api/species/${encodeURIComponent(id)}/freq`), staleTime: 60_000 })
 export type GenomeText = { species: string; genome: string; string: string; code: string | null; length: number; version: number }
 export const stringOne = (id: string, hash: string, genome: string) => queryOptions({ queryKey: ['string', id, hash, genome], queryFn: () => call<GenomeText>('GET', `/api/species/${encodeURIComponent(id)}/string?genome=${encodeURIComponent(genome)}`), staleTime: 60_000, retry: false })
+
+// Chapter 21B: the undo log in full (newest last) and undo and redo through it. An undo is a save of its own with the actor who asked, so History shows it beside the edit it took back.
+export type HistoryAnswer = { entries: Entry[]; undo: boolean; redo: boolean }
+export const historyOne = (id: string, hash: string) => queryOptions({ queryKey: ['history', id, hash], queryFn: () => call<HistoryAnswer>('GET', `/api/species/${encodeURIComponent(id)}/history?n=200`), staleTime: Infinity })
+export const revertSpecies = (id: string, kind: 'undo' | 'redo') => call<{ hash: string; changed: { path: string; old: unknown; new: unknown }[]; undo: boolean; redo: boolean }>('POST', `/api/species/${encodeURIComponent(id)}/${kind}`)
