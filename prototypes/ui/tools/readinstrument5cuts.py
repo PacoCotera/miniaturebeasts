@@ -27,10 +27,10 @@ CH = {"coat": "#f08a6a", "face": "#7ec8f0", "movement": "#9ad27a", "stamina": "#
 AMBER, CREAM = (240, 180, 90), (239, 233, 220)
 def hexrgb(h): n = int(h[1:], 16); return (n >> 16, (n >> 8) & 255, n & 255)
 def F(img): return np.asarray(img.convert("RGBA")).astype(float) / 255
-def save(name, a, slice_=None):
+def save(name, a, slice_=None, optimize=True):
     a = np.clip(a, 0, 1); im = Image.fromarray((a * 255 + 0.5).astype(np.uint8), "RGBA" if a.shape[2] == 4 else "RGB")
     if im.mode == "RGBA" and a[..., 3].min() >= 1: im = im.convert("RGB")
-    path = os.path.join(OUT, name + ".png"); im.save(path, optimize=True); MADE.append((name, path, im.size, slice_))
+    path = os.path.join(OUT, name + ".png"); im.save(path, optimize=optimize); MADE.append((name, path, im.size, slice_))
 MADE = []
 def over(dst, rgb, alpha):            # src-over of a colour (or picture) at alpha onto an opaque RGB float picture
     a = alpha[..., None] if np.ndim(alpha) == 2 else alpha
@@ -144,6 +144,120 @@ def chamber(floorY, floorW, warm, ruler):
 save("reading-chamber-overview-548x356", chamber(394, 170, 1.0, True))
 save("reading-chamber-close-548x356", chamber(410, 200, 0.8, False))
 
+# ---------------- the dew gleam (the glint): a lit dew bead, ice above and sky below, edged in its own deep blue, with one level gleam of white through its upper half, fading along two level arms ----------------
+DEW_RGB = {"sea": (30, 81, 150), "river": (48, 132, 216), "sky": (91, 185, 243), "ice": (169, 230, 255), "white": (255, 255, 255)}
+DEW_KEY = {
+    'e': ('sea', 0.85),    # the bead's edge: its own deep blue, so it holds on the light grounds
+    's': ('sky', 1.0),
+    'i': ('ice', 1.0),
+    'w': ('white', 1.0),   # the gleam's core, through the bead's upper half
+    'S': ('sky', 0.90),    # the gleam fading out along its two level arms
+    'R': ('river', 0.75),
+    'r': ('river', 0.45),  # the tips: darker blue, so the arms still read on bone
+}
+
+DEW_MAPS = {
+    11: [
+        "...........",
+        "...........",
+        "...........",
+        "....eee....",
+        "...eiiie...",
+        "rRiwwwwwiRr",
+        "...esise...",
+        "...essse...",
+        "....eee....",
+        "...........",
+        "...........",
+    ],
+    12: [
+        "............",
+        "............",
+        "............",
+        "....eeee....",
+        "...eeiiee...",
+        "rRiwwwwwwiRr",
+        "...esiise...",
+        "...eessee...",
+        "....eeee....",
+        "............",
+        "............",
+        "............",
+    ],
+    13: [
+        ".............",
+        ".............",
+        ".............",
+        ".....eee.....",
+        "....eiiie....",
+        "rRSiiwwwiiSRr",
+        "....esise....",
+        "....essse....",
+        ".....eee.....",
+        ".............",
+        ".............",
+        ".............",
+        ".............",
+    ],
+    14: [
+        "..............",
+        "..............",
+        "..............",
+        "..............",
+        ".....eeee.....",
+        "....eeiiee....",
+        "rRSiwwwwwwiSRr",
+        "....esiise....",
+        "....eessee....",
+        ".....eeee.....",
+        "..............",
+        "..............",
+        "..............",
+        "..............",
+    ],
+    16: [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "......eeee......",
+        ".....eeiiee.....",
+        "rRSSiwwwwwwiSSRr",
+        ".....esiise.....",
+        ".....eessee.....",
+        "......eeee......",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+    ],
+}
+
+
+def dew_glyph(n):
+    rows = DEW_MAPS[n]; assert len(rows) == n and all(len(r) == n for r in rows), n
+    a = np.zeros((n, n, 4), np.uint8)
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch in DEW_KEY: c, al = DEW_KEY[ch]; a[y, x] = DEW_RGB[c] + (round(al * 255),)
+    return a.astype(float) / 255
+def dew_disc(n, inset=0.0, ss=16):
+    c = (np.arange(n * ss) + 0.5) / ss; X, Y = np.meshgrid(c, c); r = n / 2 - inset
+    return (np.hypot(X - n / 2, Y - n / 2) <= r).astype(float).reshape(n, ss, n, ss).mean((1, 3))
+def dew_rrect(w, h, r, inset=0, ss=8):
+    cy = (np.arange(h * ss) + 0.5) / ss; cx = (np.arange(w * ss) + 0.5) / ss; X, Y = np.meshgrid(cx, cy)
+    x0, y0, x1, y1 = inset, inset, w - inset, h - inset; rr = r - inset; qx = np.clip(X, x0 + rr, x1 - rr); qy = np.clip(Y, y0 + rr, y1 - rr)
+    m = ((np.hypot(X - qx, Y - qy) <= rr) & (X >= x0) & (X <= x1) & (Y >= y0) & (Y <= y1)).astype(float)
+    return m.reshape(h, ss, w, ss).mean((1, 3))
+def dew_badge():                                                                                                            # the 20 px badge: a dark disc (8, 20, 24) at 0.9, a sky hairline ring at 0.55, the 13 cut at (3, 3)
+    d = dew_disc(20); inner = dew_disc(20, inset=1.0)
+    b = rgba_of((8, 20, 24), d * 0.9); b = comp(b, rgba_of(DEW_RGB["sky"], np.clip(d - inner, 0, 1) * 0.55))
+    b[3:16, 3:16] = comp(b[3:16, 3:16], dew_glyph(13)); return b
+def dew_chip():                                                                                                             # the reward chip: amber plate at 0.14, rim at 0.4, radius 8, the 14 gleam at (10, 9)
+    m = dew_rrect(86, 32, 8); c = rgba_of(AMBER, m * 0.14); c = comp(c, rgba_of(AMBER, np.clip(m - dew_rrect(86, 32, 7, inset=1), 0, 1) * 0.4))
+    c[9:23, 10:24] = comp(c[9:23, 10:24], dew_glyph(14)); return c
 # ---------------- the right frame's pieces ----------------
 def plate_lit():                                                                                                            # the soft lit plate (12 px corners): a 7.5 % to 3 % teal-white wash, a 1 px rim, a top light
     w = h = 40; m = rrect_mask(w, h, 12); a = np.zeros((h, w, 4)); a[..., :3] = np.array([170, 225, 215]) / 255; a[..., 3] = 0.052 * m
@@ -167,14 +281,6 @@ def key(state):                                                                 
     hi = np.zeros((h, w)); hi[dy + 1, 6:w - 6] = 0.22 if state != "dim" else 0.1; out = comp(out, rgba_of((255, 230, 190), hi * m))
     lo = np.zeros((h, w)); lo[dy + kh - 3:dy + kh - 1, 6:w - 6] = 0.35; out = comp(out, rgba_of((0, 0, 0), lo * m)); return out
 for k in ("lit", "dim", "pressed"): save(f"reading-key-{k}-104x49", key(k))
-def glint_a(s, ss=8):                                                                                                       # the glint: a four-point curved star, cream
-    def dr(d, S):
-        r = s / 2 * S; c = (r, r); pts = []
-        for q in range(4):
-            a0 = q * np.pi / 2
-            for t in np.linspace(0, 1, 12): ang = a0 + t * np.pi / 2; rr = r * (1 - np.sin(t * np.pi) * 0.78); pts.append((c[0] + rr * np.sin(ang), c[1] - rr * np.cos(ang)))
-        d.polygon(pts, fill=255)
-    return ss_draw(s, s, dr, ss)
 def star_a(s, ss=8):
     def dr(d, S):
         r = s / 2 * S; pts = [(r + (r if i % 2 == 0 else r * 0.45) * np.cos(-np.pi / 2 + i * np.pi / 5), r + (r if i % 2 == 0 else r * 0.45) * np.sin(-np.pi / 2 + i * np.pi / 5)) for i in range(10)]; d.polygon(pts, fill=255)
@@ -182,17 +288,16 @@ def star_a(s, ss=8):
 def diamond_a(s, ss=8): return ss_draw(s, s, lambda d, S: d.polygon([(s / 2 * S, 0.5 * S), ((s - 0.5) * S, s / 2 * S), (s / 2 * S, (s - 0.5) * S), (0.5 * S, s / 2 * S)], fill=255), ss)
 def edge_of(a, px=1.0): return np.clip(blur(a, px * 0.8) * 1.0 - a * 0, 0, 1)
 for s in (11, 12, 13, 16):
-    save(f"reading-glint-{s}x{s}", rgba_of(CREAM, glint_a(s)))
+    save(f"reading-glint-{s}x{s}", dew_glyph(s), optimize=False)
     st = star_a(s); ring = np.clip(blur(st, 0.7) * 1.6, 0, 1); out = comp(rgba_of((6, 16, 18), ring * 0.8), rgba_of(AMBER, st)); save(f"reading-star-{s}x{s}", out)
     save(f"reading-diamond-{s}x{s}", rgba_of(AMBER, diamond_a(s)))
-for kind, ring_col, ring_a, glyph in (("glint", CREAM, 0.5, lambda: rgba_of(CREAM, glint_a(13))), ("star", AMBER, 0.6, None)):   # the badges: 20 px, a dark disc with a hairline ring, the glyph at 13
+for kind, ring_col, ring_a in (("star", AMBER, 0.6),):   # the star badge: 20 px, a dark disc with a hairline ring, the star at 13 (the glint badge is the dew gleam, below)
     disc = ss_draw(20, 20, lambda d, S: d.ellipse((0, 0, 20 * S - 1, 20 * S - 1), fill=255)); inner = ss_draw(20, 20, lambda d, S: d.ellipse((S, S, 19 * S - 1, 19 * S - 1), fill=255))
     b = comp(rgba_of((8, 20, 24), disc * 0.9), rgba_of(ring_col, np.clip(disc - inner, 0, 1) * ring_a))
-    if kind == "glint": g = glyph()
-    else: st = star_a(13); g = comp(rgba_of((6, 16, 18), np.clip(blur(st, 0.7) * 1.6, 0, 1) * 0.8), rgba_of(AMBER, st))
+    st = star_a(13); g = comp(rgba_of((6, 16, 18), np.clip(blur(st, 0.7) * 1.6, 0, 1) * 0.8), rgba_of(AMBER, st))
     b[3:16, 3:16] = comp(b[3:16, 3:16], g); save(f"reading-badge-{kind}-20x20", b)
-chip = np.zeros((32, 86, 4)); m = rrect_mask(86, 32, 8); chip = comp(chip, rgba_of(AMBER, m * 0.14)); chip = comp(chip, rgba_of(AMBER, np.clip(m - rrect_mask(86, 32, 7, inset=1), 0, 1) * 0.4))
-g = glint_a(14); chip[9:23, 10:24] = comp(chip[9:23, 10:24], rgba_of(CREAM, g)); save("reading-chip-86x32", chip)
+save("reading-badge-glint-20x20", dew_badge(), optimize=False)
+save("reading-chip-86x32", dew_chip(), optimize=False)
 X = np.arange(28)[None, :] + 0.5; prof = np.exp(-((X - 14) / 6.5) ** 2); core = np.exp(-((X - 14) / 2.2) ** 2)                 # the sweep: a warm bar, an amber glow round a pale core
 sweep = comp(rgba_of(AMBER, np.repeat(prof * 0.42, 356, 0)), rgba_of((255, 236, 200), np.repeat(core * 0.35, 356, 0))); save("reading-sweep-28x356", sweep)
 X = (np.arange(40)[None, :] + 0.5) / 40; save("reading-shine-40x63", rgba_of((255, 255, 255), np.repeat(np.interp(X, [0, 0.4, 0.92, 1], [0, 0, 0.22, 0]), 63, 0)))
