@@ -14,7 +14,7 @@ Branch `build/glint-dew` at `940bac418` is clean, and nothing in the worktree wa
 **2. Cut script: pass.**
 - I rebuilt the cuts with `readinstrument5cuts.py` into a scratch folder, using the layers from `<design folder>`.
 - All 73 cuts match the committed files byte for byte. The script is the reason `reading-chip-86x32` and the others rebuild identically.
-- There is no `iwq`, `<internal>` or `/home/mb` in the script, `art.mjs`, `specimen.mjs` or `wall.c`.
+- There is no internal paths in the script, `art.mjs`, `specimen.mjs` or `wall.c`.
 - The script needs numpy. The VM's default `python3` lacks it, so I used the editorial venv.
 
 **3. No four-point drawers left: pass.**
@@ -43,7 +43,7 @@ public-guard                 rc=0    0s | public guard ok
 TOTAL 402s; 162 jobs, 1 failed
 ```
 - The 12 failures were all E2 rect-times-dpr lines (1.25 to 2), the same as the builder's.
-- `paths.sh` already points the gate at the 1.56.1 install in `/home/mb/pw156`. So the failure happened under 1.56.1 and full-core load, not under the VM's 1.64.
+- `paths.sh` already points the gate at the 1.56.1 install in the pinned Playwright install. So the failure happened under 1.56.1 and full-core load, not under the VM's 1.64.
 - Run alone with 1.56.1, the branch prints `E2: ok (5 ratios)` and `play journey ok`.
 - Run alone with 1.56.1, station-gate's head (`f837b000c`, built in a scratch clone) also passes.
 - Station-gate's head fails the same way in the full gate: `play-journey rc=1 469s | play journey FAILED: 9`. The first failure line is `E2: the Station's rect × dpr at 1.25: 1280, wanted 1024`.
