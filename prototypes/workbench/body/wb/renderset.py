@@ -37,7 +37,7 @@ def supersample(size):
     return 1 if size[0] >= 304 else SUPER
 # where the figure stands in each canvas (art director, 4 Nov; the signed masters S01 to S16 stand so): the ink's centre column and the feet line's row. The 304 stand is centred on x 152 with its feet on row 304 (303 to 306);
 # the card and the thumb are centred with the feet 3 px off the bottom (2 to 4).
-TRAIT = dict(left=6.0, up=5.0)         # the close-up's content, nudged left and up (px of the picture) so the lamp, not the layer's box, is at the centre
+TRAIT = dict(left=5.0, up=0.0)         # the close-up's content, nudged left and up (px of the picture) so the lamp, not the layer's box, is at the centre
 TARGETS = {(304, 312): (152.0, 304), (96, 96): (48.0, 92), (48, 48): (24.0, 44)}
 FRAMES = {}                                                      # (canvas, angle) -> the camera's centre that puts the figure on its target (solved from the silhouette)
 
@@ -47,6 +47,22 @@ def camera(size, az=32):
         raise KeyError(f"no camera for {size[0]}x{size[1]}")
     ppH, centre = CAMERAS[tuple(size)]
     return ppH, FRAMES.get((tuple(size), int(az)), FRAMES.get((tuple(size), 32), centre))
+
+
+CREASE = (80.0, 125.0)                                           # luminance (0..255) over which the clay's shade turns from the matcap's own tint to a neutral cool grey
+COOL = np.array([-2.0, 0.0, 4.0])                                # the cool lean of the neutral shade
+
+
+def neutral_shade(px):
+    """The clay's darkest band as a neutral to cool grey: the matcap's own shade leans maroon between the legs, and the scene has nothing red to bounce. Below CREASE the colour is replaced by a grey of the same luminance with a slight cool lean; above it the clay is untouched. Straight-alpha RGBA uint8 in and out."""
+    out = px.copy()
+    rgb = px[..., :3].astype(float)
+    y = rgb @ np.array([0.299, 0.587, 0.114])
+    t = np.clip((y - CREASE[0]) / (CREASE[1] - CREASE[0]), 0, 1)
+    keep = (t * t * (3 - 2 * t))[..., None]                       # 0 in the shade, 1 in the lit clay
+    grey = y[..., None] + COOL * np.clip(y / CREASE[1], 0, 1)[..., None]
+    out[..., :3] = np.clip(np.round(rgb * keep + grey * (1 - keep)), 0, 255).astype(np.uint8)
+    return out
 
 
 def alpha_png(path):
@@ -229,9 +245,30 @@ def smoothstep(a, b, x):
     return t * t * (3 - 2 * t)
 
 
+TRAIT_AZ = 125.0                      # the camera that shows the curl whole, with the lamp hanging at its end
+TRAIT_CUT = -0.70                     # the tail is cut here (world x, towards the back): nothing of the body is drawn
+TRAIT_CAP = 0.20                      # the cut end closes in a round tip over this length, so the edge is crisp all round
+
+
+def tail_only(M, cut=TRAIT_CUT, cap=TRAIT_CAP):
+    """The posed mesh with the body left out: the faces of the tail behind `cut`, the end closed to a round tip (no open edge, no alpha ramp)."""
+    V = np.asarray(M["V"], float)
+    F = np.asarray(M["F"], int)
+    keep = V[F][:, :, 0].max(1) < cut
+    V2 = V.copy()
+    sel = V[:, 0] > cut - cap
+    ring = sel & (V[:, 0] < cut) & (V[:, 2] < 1.3)
+    cen = V[ring].mean(0)
+    t = np.clip((V[:, 0] - (cut - cap)) / cap, 0, 1)
+    f = np.sqrt(np.clip(1 - t * t, 0, 1))
+    for ax in (1, 2):
+        V2[sel, ax] = cen[ax] + (V[sel, ax] - cen[ax]) * f[sel]
+    return dict(M, V=V2, F=F[keep])
+
+
 def trait_picture(subject, r, layers, path):
-    """The trait picture of a look: a close-up of the look itself (the tail curl and its lamp, with the hip they grow from), rendered at its own size and scale, never cut from the stand and enlarged.
-    The camera is centred on the look's layer (where the stand draws it), at the scale that makes its lamp TRAIT_LAMP px across; the hip fades out softly toward the rim of the ellipse inscribed in TRAIT_BOX, so no ink touches the canvas."""
+    """The trait picture of a look: the tail curl and its lamp alone, the body left out of the render (a close-up of the look itself, rendered at its own size and scale, never cut from the stand and enlarged).
+    The lamp is TRAIT_LAMP px across, near the centre, and everything lies inside TRAIT_BOX; the picture has a crisp edge all round (no fade of any kind)."""
     over = [l for l in layers if l["op"] == "over" and l["file"].endswith(f"-{r['look']}.png")]
     if not over:
         raise ValueError(f"the stand has no layer for the look '{r['look']}'")
@@ -239,18 +276,16 @@ def trait_picture(subject, r, layers, path):
     bw, bh = xs.max() - xs.min() + 1, ys.max() - ys.min() + 1
     lamp_px = max(8.0, float(min(bw, bh)) - 10.0)                  # the layer's box less the soft edge it was widened by and the tip's curl
     ppH0, centre0 = camera((304, 312), 32)
-    ppH = float(np.clip(ppH0 * TRAIT_LAMP / lamp_px, 40.0, 160.0))
+    ppH = float(np.clip(ppH0 * TRAIT_LAMP / lamp_px * 0.9, 40.0, 160.0))
     import s20render as RN, plush as PL
     from wb import proxy as P
-    right, up, fwd, _ = P.basis(32.0, EL)
-    lx, ly = (xs.min() + xs.max() + 1) / 2.0, (ys.min() + ys.max() + 1) / 2.0
-    centre = np.array(centre0, float) + right * (lx - 152.0) / ppH0 - up * (ly - 156.0) / ppH0
-    centre = centre + (right * TRAIT["left"] + up * TRAIT["up"]) / ppH
-    a, cam = RN.render_tex(subject.posed(), subject.tex(), subject.c["coat"], path, r["size"][0], r["size"][1], ppH, az=32.0, el=EL, centre=tuple(centre), floor="bounce", light=PL.GAME_LIGHT, ss=supersample(r["size"]))
+    right, up, fwd, _ = P.basis(TRAIT_AZ, EL)
+    M = tail_only(subject.posed())
+    V = np.asarray(M["V"], float)[np.unique(np.asarray(M["F"], int))]
+    c = (V.min(0) + V.max(0)) / 2.0
+    centre = c + (right * TRAIT["left"] + up * TRAIT["up"]) / ppH
+    a, cam = RN.render_tex(M, subject.tex(), subject.c["coat"], path, r["size"][0], r["size"][1], ppH, az=TRAIT_AZ, el=EL, centre=tuple(centre), floor="bounce", light=PL.GAME_LIGHT, ss=supersample(r["size"]))
     px = np.clip(a * 255 + 0.5, 0, 255).astype(np.uint8)
-    h, w = px.shape[:2]
-    d = np.sqrt((np.abs(np.arange(w)[None, :] + 0.5 - w / 2) / (TRAIT_BOX[0] / 2)) ** 2 + (np.abs(np.arange(h)[:, None] + 0.5 - h / 2) / (TRAIT_BOX[1] / 2)) ** 2)
-    px[..., 3] = np.round(px[..., 3] * (1 - smoothstep(0.7, 1.0, d))).astype(np.uint8)
     pngio.write(path, px)
     return px, ppH
 
@@ -351,6 +386,8 @@ def main():
         fn = os.path.join(out, f"{sid}-{r['output']}-{r['variant']}.png")
         t = time.time()
         img = px.clay(typ, r["az"], r["size"], fn) if r["style"] == "clay" else px.silhouette(typ, r["az"], r["size"], fn, ss=supersample(r["size"]))
+        if r["style"] == "clay":
+            img = neutral_shade(img)
         pngio.write(fn, img)
         res.append(dict(r, file=os.path.basename(fn), ms=round((time.time() - t) * 1000)))
         log(f"{r['output']} {r['variant']}")
