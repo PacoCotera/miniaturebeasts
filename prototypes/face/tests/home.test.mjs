@@ -91,7 +91,7 @@ const SCENES = {
 for (const [name, o] of Object.entries(SCENES)) {
   test(`Home, ${name}: draws without an error or a refusal inside the budgets, with no region leaving home.json's rectangle`, { skip }, async () => {
     const b = scene(o), f = await start(b); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
-    const lg = logOf(f); assert.deepEqual(departures(lg, homeSpec, frameSpec, b.props.focus.cur), []);
+    const lg = logOf(f); assert.deepEqual(departures(lg, homeSpec, frameSpec, b.props.focus.cur, b.props), []);
     const st = f.stats(); assert.ok(st.pictures <= 200, `${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${f.objects()} objects (the table holds 1,024; at most 400 on a screen)`);
     assert.ok(JSON.stringify(b.props).length < 32 * 1024, "props under 32 KiB");
   });

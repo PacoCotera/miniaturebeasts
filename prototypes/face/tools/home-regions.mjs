@@ -4,7 +4,8 @@ const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 export const STATIONS = ["pods", "incubator", "companion", "bay"], BEZELS = ["vivarium", "library"], TARGETS = [...BEZELS, ...STATIONS, "settings"];
 
-export function departures(log, spec, frame, cur = "room") {
+// props: the Home props the log was drawn from (the Settings knob is drawn exactly when its target is listed: behind the developer setting realmSleep); without them the knob is held to its rectangle when drawn.
+export function departures(log, spec, frame, cur = "room", props = null) {
   const out = [], R = spec.regions, regions = log.regions ?? [], type = log.type ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer));
   const must = (ok, m) => { if (!ok) out.push(m); };
   for (const r of got("stage")) must(eq(r.rect, R.stage.rect), `stage ${r.rect} is not ${R.stage.rect}`);
@@ -39,7 +40,7 @@ export function departures(log, spec, frame, cur = "room") {
     if (k === "companion") { const pl = R.companion.plates, box = [S[0] + pl.at[0], S[1] + pl.at[1], pl.max * pl.size[0] + (pl.max - 1) * pl.gap, pl.size[1]]; for (const r of regions.filter((x) => x.id === "companion.plates")) must(within(r.rect, box), `the plates ${r.rect} leave their place ${box}`); }
   }
   // the Settings knob (regions.settings): one art-layer picture of exactly its rectangle, on every Home state
-  { const k = got("settings"); must(k.length === 1 && k[0].layer === "art" && eq(k[0].rect, R.settings.rect), `the Settings knob ${k[0]?.rect} is not ${R.settings.rect} on the art layer`); }
+  { const k = got("settings"), want = props ? (props.focus?.targets ?? []).some((t) => t.id === "settings") : k.length > 0; must(k.length === (want ? 1 : 0) && k.every((r) => r.layer === "art" && eq(r.rect, R.settings.rect)), `the Settings knob ${k[0]?.rect ?? "not drawn"} is ${want ? "not " + R.settings.rect + " on the art layer" : "drawn without its target"}`); }
   for (const r of got("focus")) must(within(r.rect, [0, 0, 1024, 600]), `the ring ${r.rect} leaves the screen`);
   // the ring is the object as drawn grown by 5 (frame.json focus.ring.reach), on a target only; at rest none
   { const rings = got("focus"), reach = frame.focus.ring.reach;
