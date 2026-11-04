@@ -11,7 +11,7 @@
    "crates": { "type": "integer", "description": "Bay: the berths that show a crate (at most three), first" },
    "pictures": { "type": "object", "required": ["shut", "crate", "portrait"], "additionalProperties": false, "properties": { "shut": { "type": "string" }, "crate": { "type": "string" }, "portrait": { "type": "string" } }, "description": "Bay: the berth pictures" } } },
   "goal": { "type": "object", "required": ["text", "icons", "plain"], "additionalProperties": false, "properties": { "text": { "type": "string" }, "icons": { "type": "string" }, "plain": { "type": "string" } } },
-  "target": { "type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": { "id": { "enum": ["vivarium", "library", "pods", "incubator", "companion", "bay"] }, "group": { "enum": ["vivarium", "library", "pods", "incubator", "companion", "bay"] }, "enabled": { "type": "boolean" } } }
+  "target": { "type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": { "id": { "enum": ["vivarium", "library", "pods", "incubator", "companion", "bay", "settings"] }, "group": { "enum": ["vivarium", "library", "pods", "incubator", "companion", "bay", "settings"] }, "enabled": { "type": "boolean" } } }
  },
  "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
  "properties": {

@@ -16,6 +16,7 @@ export const SCENES = {
   "focus-companion":   { f: "companion", set: (w) => { w.adults(3); w.carry([0]); } },
   "focus-companion-away": { f: "companion", set: (w) => { w.adults(3); w.carry([0]); w.away(); } },
   "focus-bay":         { f: "bay", set: (w) => { w.adults(3); w.crates(2); } },
+  "focus-settings":    { f: "settings", set: (w) => { w.adults(3); w.carry([0]); } },   // the Settings knob focused: its ring and the line "Go to Settings"
   "vivarium-all-home":   { f: "room", set: (w) => { w.adults(4); w.young(2); } },
   "vivarium-some-away":  { f: "room", set: (w) => { w.adults(4); w.young(2); w.carry([0, 1]); w.away(); } },
   "window-dawn":         { f: "room", light: "dawn", time: "06:30", set: (w) => { w.adults(4); w.young(2); } },   // the window in each light (day is the scenes above)

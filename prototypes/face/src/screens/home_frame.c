@@ -14,7 +14,7 @@
 
 #define H "home"
 static const char *STATIONS[4] = { "pods", "incubator", "companion", "bay" };
-static const char *TARGETS[6] = { "vivarium", "library", "pods", "incubator", "companion", "bay" };
+static const char *TARGETS[7] = { "vivarium", "library", "pods", "incubator", "companion", "bay", "settings" };
 
 /* ---- the top bar and the line ---- */
 static void bar_words(void) {
@@ -161,6 +161,18 @@ static void bezel_words(const char *key) {
   if (strcmp(key, "library") == 0) library_captions();
 }
 
+/* ---- the Settings knob: a slate tab on the Vivarium bezel's lower lip (regions.settings) ----
+   One composed picture of the region's box in the art layer, palette-exact: the first row `lit`, the rows below it `fill`, the last row `shade` inset `inset` px each side (the rounded bottom corners). Never lit; no word on it.
+   It is drawn after the bezels, so it covers the bezel's edge row, and before the ring. */
+static void settings_knob(void) {
+  int r[4]; v_srect(H, "regions.settings.rect", r); if (r[2] < 3 || r[3] < 3) return;
+  char lit[24], fill[24], shade[24], ops[480]; spec_str(H, "regions.settings.lit", lit, sizeof lit); spec_str(H, "regions.settings.fill", fill, sizeof fill); spec_str(H, "regions.settings.shade", shade, sizeof shade);
+  int in = v_si(H, "regions.settings.inset", 1), n = snprintf(ops, sizeof ops, "[[\"h\",0,0,%d,\"%s\"]", r[2], lit);
+  for (int y = 1; y < r[3] - 1; y++) n += snprintf(ops + n, sizeof ops - (size_t)n, ",[\"h\",0,%d,%d,\"%s\"]", y, r[2], fill);
+  snprintf(ops + n, sizeof ops - (size_t)n, ",[\"h\",%d,%d,%d,\"%s\"]]", in, r[3] - 1, r[2] - 2 * in, shade);
+  v_region("settings", LAYER_ART); v_composed("settings.knob", r[0], r[1], r[2], r[3], ops);
+}
+
 /* ---- the console and its stations ---- */
 /* the Pods station's slots (3 x 2 on the spec's form): the slot holds its rack pod or, empty, a hairline outline; the glint star over a pod's top right corner is the second pass */
 static void pod_slot(int i, const int b[4], void *ctx) {
@@ -241,7 +253,7 @@ static void station_words(const char *key) {
 /* ---- the ring on the focused target: the house ring follows the outline (the spec's shape: radius 10 on a bezel, 8 on a station) ---- */
 static void ring(const char *cur) {
   if (!cur[0] || strcmp(cur, "room") == 0 || anim_holding()) return;   /* at rest there is no ring; it goes when the rest begins and stays away while it holds */
-  for (int i = 0; i < 6; i++) if (strcmp(cur, TARGETS[i]) == 0) { int box[4]; v_srect(H, v_fmt("regions.%s.rect", cur), box); v_region("focus", LAYER_CHROME); word_focusRing("focus", H, v_fmt("focus.targets.%s", cur), box); return; }
+  for (int i = 0; i < 7; i++) if (strcmp(cur, TARGETS[i]) == 0) { int box[4]; v_srect(H, v_fmt("regions.%s.rect", cur), box); v_region("focus", LAYER_CHROME); word_focusRing("focus", H, v_fmt("focus.targets.%s", cur), box); return; }
 }
 
 void home_words(void) {
@@ -251,6 +263,7 @@ void home_words(void) {
   line_words();
   bezel_words("vivarium");
   bezel_words("library");
+  settings_knob();
   { int c[4]; v_srect(H, "regions.console.rect", c); v_region("console", LAYER_CHROME);
     kit_bezel("console", c[0], c[1], c[2], c[3], v_si(H, "regions.console.radius", 10), v_scol(H, "regions.console.fill"), v_scol(H, "regions.console.edge"), NULL, NULL); }
   for (int i = 0; i < 4; i++) station_words(STATIONS[i]);

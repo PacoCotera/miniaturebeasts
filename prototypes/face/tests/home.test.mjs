@@ -108,7 +108,7 @@ test("the departure check bites: a station's lamp, the line and the panel of a b
 
 // ---- the keys ----
 test("the pad is home.json's graph on the boxes the words drew: every vector of the spec is played on the face, and the focus is said on the frame of the key", { skip }, async () => {
-  assert.equal(homeSpec.focus.vectors.length, 28, "seven places, four keys each");
+  assert.equal(homeSpec.focus.vectors.length, 32, "eight places, four keys each");
   for (const v of homeSpec.focus.vectors) {
     const f = await start(scene({ adults: 2, focus: v.from === "room" ? null : v.from }), { motion: false }), before = f.hash(), out = key(f, v.key);   /* reduced motion: the Library's glints and breathing are time, and a key that moves nothing must change no pixel */
     if (v.to === v.from) { assert.deepEqual(out, [], `${v.from} ${v.key} stays`); assert.equal(f.hash(), before, `${v.from} ${v.key}: nothing redrawn`); }

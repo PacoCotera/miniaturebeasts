@@ -68,8 +68,8 @@ test("Home's props validate against home.props.json in every scene, name no rect
   }
 });
 
-test("the targets are the two bezels and the four stations, in that order; the ring is on the focus or on the room, and at rest on nothing", () => {
-  const { st, sv } = scenes().docked, b = build(st, sv), ids = ["vivarium", "library", "pods", "incubator", "companion", "bay"];
+test("the targets are the two bezels, the four stations and the Settings knob, in that order; the ring is on the focus or on the room, and at rest on nothing", () => {
+  const { st, sv } = scenes().docked, b = build(st, sv), ids = ["vivarium", "library", "pods", "incubator", "companion", "bay", "settings"];
   assert.deepEqual(b.props.focus.targets, ids.map((id) => ({ id, group: id }))); assert.equal(b.props.focus.cur, "room");
   for (const id of ids) assert.equal(build(st, sv, { focus: id }).props.focus.cur, id);
   for (const gone of ["resident.1", "knob", "cargo", "probe", "nobody"]) assert.equal(build(st, sv, { focus: gone }).props.focus.cur, "room", `${gone} is not a target: the ring goes to the room`);

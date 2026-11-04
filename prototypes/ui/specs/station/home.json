@@ -150,6 +150,17 @@
    "build": "station",
    "picture": {"berth":[26,24],"portrait":[18,24],"gap":2,"berths":3,"withPortrait":4,"top":32,"note": "the crates come first (up to three), then shut berths, the portrait berth last; 82 wide, 102 with the portrait"}
   },
+  "settings": {
+   "rect": [588,446,32,6],
+   "component": "panel",
+   "build": "tab",
+   "offGrid": "ruled by UI/UX: a tab on the Vivarium bezel's lower lip, 4 px out into the gap above the console; its right edge lines up with the expand mark, under the bed corner (the walk's keep-out)",
+   "lit": "enamel",
+   "fill": "bevel",
+   "shade": "hairline",
+   "inset": 1,
+   "note": "the Settings knob: row 446 the lit lip (enamel), rows 447 to 450 bevel, row 451 hairline inset 1 px each side. Art layer, palette-exact, no word on it; never lit. It covers the bezel's edge row, so it is drawn after the bezel and before the ring"
+  },
   "window": {
    "rect": [24,78,604,362],
    "offGrid": "the build spec's numbers: the Vivarium bezel's window",
@@ -221,7 +232,8 @@
    "library": {"up":"none","down":"bay","left":"vivarium","right":"none"},
    "pods": {"up":"vivarium","down":"none","left":"none","right":"incubator"},
    "incubator": {"up":"vivarium","down":"none","left":"pods","right":"companion"},
-   "companion": {"up":"vivarium","down":"none","left":"incubator","right":"bay"},
+   "companion": {"up":"settings","down":"none","left":"incubator","right":"bay"},
+   "settings": {"up":"vivarium","down":"companion","left":"none","right":"none"},
    "bay": {"up":"library","down":"none","left":"companion","right":"none"}
   },
   "targets": {
@@ -230,7 +242,8 @@
    "pods": {"group":"pods","shape":{"rect":8},"box":"regions.pods.rect","lift":0},
    "incubator": {"group":"incubator","shape":{"rect":8},"box":"regions.incubator.rect","lift":0},
    "companion": {"group":"companion","shape":{"rect":8},"box":"regions.companion.rect","lift":0},
-   "bay": {"group":"bay","shape":{"rect":8},"box":"regions.bay.rect","lift":0}
+   "bay": {"group":"bay","shape":{"rect":8},"box":"regions.bay.rect","lift":0},
+   "settings": {"group":"settings","shape":{"rect":2},"box":"regions.settings.rect","lift":0}
   },
   "vectors": [
    {"from":"room","key":"up","to":"vivarium"},
@@ -253,14 +266,18 @@
    {"from":"incubator","key":"down","to":"incubator"},
    {"from":"incubator","key":"left","to":"pods"},
    {"from":"incubator","key":"right","to":"companion"},
-   {"from":"companion","key":"up","to":"vivarium"},
+   {"from":"companion","key":"up","to":"settings"},
    {"from":"companion","key":"down","to":"companion"},
    {"from":"companion","key":"left","to":"incubator"},
    {"from":"companion","key":"right","to":"bay"},
    {"from":"bay","key":"up","to":"library"},
    {"from":"bay","key":"down","to":"bay"},
    {"from":"bay","key":"left","to":"companion"},
-   {"from":"bay","key":"right","to":"bay"}
+   {"from":"bay","key":"right","to":"bay"},
+   {"from":"settings","key":"up","to":"vivarium"},
+   {"from":"settings","key":"down","to":"companion"},
+   {"from":"settings","key":"left","to":"settings"},
+   {"from":"settings","key":"right","to":"settings"}
   ],
   "held": "while events.rest holds, the face moves no focus and sends no intent but room:<x>, which the host drops (events.rest.keys)"
  },
@@ -304,7 +321,8 @@
    "pods": "Go to Pods",
    "incubator": "Go to the Incubator",
    "companion": "Go to the Probe bench",
-   "bay": "Open the Bay"
+   "bay": "Open the Bay",
+   "settings": "Go to Settings"
   },
   "away": "away",
   "library": {"new": "{n} new", "genome": "{Species} genome"},
