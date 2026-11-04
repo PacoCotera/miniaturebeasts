@@ -46,8 +46,72 @@ export const ICON = {
   star: (n = 14) => (n >= 18 ? starArt(true) : starArt(false)),
   comp: () => art("i-comp", () => { const pb = new PB(14, 20); pb.rect(1, 0, 12, 20, C.sand); pb.rect(3, 2, 8, 9, C.ink); pb.ell(9.5, 15, 2, 2, C.orange); pb.ell(4.5, 15, 1.6, 1.6, C.teal); pb.outline(() => C.bar); return pb; }),
 };
-export const starArt = (big) => art("star" + big, () => { const r = big ? 9 : 5, pb = new PB(r * 2 + 1, r * 2 + 1);
-  pb.poly([[r, 0], [r + r * 0.28, r - r * 0.28], [r * 2, r], [r + r * 0.28, r + r * 0.28], [r, r * 2], [r - r * 0.28, r + r * 0.28], [0, r], [r - r * 0.28, r - r * 0.28]], C.cream); pb.ell(r + 0.5, r + 0.5, r * 0.3, r * 0.3, C.white); pb.outline(() => C.gold); return pb; });
+// The glint: the dew gleam, a lit dew bead (ice above, sky below, edged in sea) with one level white gleam through its upper half and two level arms (e sea, i ice, s sky, w white, S sky, R river). Opaque: the master carries the arms' fade.
+const DEW = {
+  11: [
+    "...........",
+    "...........",
+    "...........",
+    "....eee....",
+    "...eiiie...",
+    "rRiwwwwwiRr",
+    "...esise...",
+    "...essse...",
+    "....eee....",
+    "...........",
+    "...........",
+  ],
+  12: [
+    "............",
+    "............",
+    "............",
+    "....eeee....",
+    "...eeiiee...",
+    "rRiwwwwwwiRr",
+    "...esiise...",
+    "...eessee...",
+    "....eeee....",
+    "............",
+    "............",
+    "............",
+  ],
+  13: [
+    ".............",
+    ".............",
+    ".............",
+    ".....eee.....",
+    "....eiiie....",
+    "rRSiiwwwiiSRr",
+    "....esise....",
+    "....essse....",
+    ".....eee.....",
+    ".............",
+    ".............",
+    ".............",
+    ".............",
+  ],
+  16: [
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+    "......eeee......",
+    ".....eeiiee.....",
+    "rRSSiwwwwwwiSSRr",
+    ".....esiise.....",
+    ".....eessee.....",
+    "......eeee......",
+    "................",
+    "................",
+    "................",
+    "................",
+    "................",
+  ],
+};
+const DEW_C = { e: "sea", s: "sky", i: "ice", w: "white", S: "sky", R: "river", r: "river" };
+export const dewArt = (n) => art("dew" + n, () => { const pb = new PB(n, n); DEW[n].forEach((row, y) => [...row].forEach((ch, x) => { if (DEW_C[ch]) pb.set(x, y, C[DEW_C[ch]]); })); return pb; });
+export const starArt = (big) => dewArt(big ? 16 : 11);
 export const famArt = () => art("fam", () => { const pb = new PB(26, 16); pb.ring(8, 8, 7, 7, C.focus, 2); pb.ring(17, 8, 7, 7, C.focus, 2); pb.outline(() => C.panel); return pb; });
 export const baseArt = () => art("base", () => { const pb = new PB(70, 10); pb.rect(2, 0, 66, 7, C.bevel); pb.rect(2, 0, 66, 2, C.metal); pb.rect(0, 7, 70, 3, C.bar); return pb; });
 

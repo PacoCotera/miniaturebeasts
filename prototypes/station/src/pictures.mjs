@@ -13,7 +13,7 @@ import { drawnLooks } from "./looks.mjs";
 import { portraitSource, portraitOpening } from "./portrait-source.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus, rackPodFromLayers, rackLayersPlaced, rackBase, rackPatternId, leastFinal } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
-import { emblemArt, ICON, beamArt, mibiArt, founderArt, speciesArt } from "./art.mjs";
+import { emblemArt, dewArt, ICON, beamArt, mibiArt, founderArt, speciesArt } from "./art.mjs";
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { dimPicture, labelPlate } from "./stamplook.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
@@ -55,7 +55,7 @@ const placePB = (place, size = 16) => { const pb = new PB(size, size), c = C[PLA
 const kinRingPB = (size, band) => { const pb = new PB(size, size), R = size / 2; for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) { const d = Math.hypot(x + 0.5 - R, y + 0.5 - R); if (d <= R && d > R - band) pb.set(x, y, C.hairline); } return pb; };
 const growPB = () => { const pb = new PB(16, 16); pb.rect(7, 6, 2, 9, C.leaf); pb.poly([[7, 8], [1, 3], [7, 5]], C.sprout); pb.poly([[9, 6], [15, 1], [9, 3]], C.sprout); pb.outline(() => C.ink); return pb; };
 const waitingPB = () => { const pb = new PB(24, 24); for (const x of [6, 12, 18]) { pb.ell(x, 12, 3, 4, C.mist); } pb.outline(() => C.slate); return pb; };
-const starPB = () => { const pb = new PB(12, 12), r = 6; pb.poly([[r, 0], [r + 1.7, r - 1.7], [12, r], [r + 1.7, r + 1.7], [r, 12], [r - 1.7, r + 1.7], [0, r], [r - 1.7, r - 1.7]], C.cream); pb.rect(5, 5, 2, 2, C.white); pb.outline(() => C.gold); return pb; };
+const starPB = () => dewArt(12);
 // The stamp on its label: cells of whole pixels, cell = floor(104 / (N + 2)) and at least 2, drawn with its quiet margin, centred on the 120 label.
 export function stampPicture(frame, genome, readIds) {
   const sg = stampGenome(frame, genome, readIds); if (!sg) return null;
