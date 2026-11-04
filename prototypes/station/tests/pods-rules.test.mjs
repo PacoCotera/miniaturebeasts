@@ -37,6 +37,12 @@ test("an older save's waiting pods join the inventory on load, after the ones at
   assert.ok(st.tray.every((p) => Number.isInteger(p.dryAt)), "each with a life"); assert.equal(st.tray.at(-1).dryAt, st.turn + S.POD_LIFE, "a pod from before freshness keeps a full life from now");
 });
 
+test("letting a shed pod go keeps its line in the record; a wild pod keeps only its seed", () => {
+  const { st } = home(2); const [a, b] = st.tray; a.shed = 5; a.of = "Fig"; a.genome = { ...a.genome, origin: { kind: "shed", parents: ["d", "d"], parentIds: [9, 9] } };
+  S.returnPod(st, a); S.returnPod(st, b);
+  const [ra, rb] = st.returned.slice(-2); assert.deepEqual([ra.shed, ra.of, ra.genome.origin.parentIds], [5, "Fig", [9, 9]]); assert.deepEqual(a.genome.origin.parentIds, [9, 9]);
+  assert.ok(!("shed" in rb) && !("genome" in rb), "a wild pod comes back as itself from its seed");
+});
 test("letting a pod go pays nothing and keeps its reads on the species; the Companion's record stays", () => {
   const { st } = home(2); st.d = 20; const [a] = st.tray; S.identify(st, a, settings); S.read(st, a, "coat", settings);
   const looks = JSON.stringify(st.guide.S01), s0 = st.s, e0 = st.e, d0 = st.d, r = S.returnPod(st, a);

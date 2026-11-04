@@ -426,7 +426,7 @@ test("the Vivarium (vivarium.json, the collection v2 design §8): the field, the
   assert.ok(played >= 15, "the vectors are played: " + played);
   // the words: verbs of four words or fewer; the plates' verbs and the strings §10 names; nothing amber but full
   for (const k of ["pickUp", "setDown", "swap", "tuck", "bringOut", "breed"]) assert.ok(wordsIn(vv.strings.foot[k]) <= 4, k);
-  assert.deepEqual(Object.values(vv.strings.plate).slice(0, 7), ["Look", "Take along", "Bring home", "Tuck away", "Bring out", "Breed", "Return"]);
+  assert.deepEqual(Object.values(vv.strings.plate).slice(0, 7), ["Look", "Take along", "Bring home", "Tuck away", "Bring out", "Cross", "Return"]);
   assert.equal(vv.strings.chip.all, "All rooms"); assert.equal(vv.strings.card.only, "your only {Species}"); assert.equal(vv.strings.need.bud, "Full · a bud waits");
   assert.ok(!JSON.stringify(vv.colours).includes("amber")); assert.deepEqual(paletteBad(vv.colours), []); assert.equal(vv.colours.coldVeil, "coldVeil");
 });

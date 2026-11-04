@@ -149,7 +149,7 @@ function detailOf(m, spec, req, p, fr, ch, ti) {
   const plate = { trait: t.name, kind: Sg.kinds[KIND_LINE[s.kind === "asleep" ? "asleep" : traitKind(fr, t)] ?? "hides"] ?? "", shown: { pic: discReq(req, sid, t, ch, 112, t.nature === "doing" ? { glyph: `${glyphOf(t)}${lookIndex(fr, t, two[0])}` } : { look: two[0] }), caption: String(two[0] ?? "") },
     carried: { pic: discReq(req, sid, t, ch, 74, t.nature === "doing" ? { glyph: `${glyphOf(t)}${lookIndex(fr, t, two[1] ?? two[0])}`, veil: 0.28 } : { look: two[1] ?? two[0], veil: 0.28 }), caption: differs ? String(two[1]) : "" },
     glint: !!(p.first && p.first.includes(t.id)), goal: !!(want && s.carried.includes(want)) };
-  const mate = st.mibis.find((x) => !x.released && S.speciesOf(x) === sid && S.isAdult(st, x, settings));
+  const kid = { id: "pod:" + p.id, genome: p.genome }, mate = st.mibis.find((x) => !x.released && S.speciesOf(x) === sid && S.isAdult(st, x, settings) && !S.directKinOf(st, kid, x));   // the pod's line is read from its recorded parents: a shed pod shows no odds with its own parent or grandparent
   let odds = null;
   if (mate && mate.genome && t.nature !== "doing") { const rows = childOdds(fr, t, p.genome, mate.genome).slice(0, 2);
     odds = { name: mate.name, glyph: slot(req, "reading-podline-23x29", [23, 29]), rows: rows.map((rw) => ({ pic: discReq(req, sid, t, ch, 44, { look: rw.look }), seeds: Math.round(rw.p * 8), odds: oddsWords(rw.p, Sg), goal: !!want && rw.look === want })) }; }

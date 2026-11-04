@@ -122,7 +122,7 @@ test("the card (§2): the focused mibi's portrait at 144/304, its name, the look
   { const { w, sv } = scenes().empty, b = build(w, sv); assert.equal(b.props.regions.card.state, "empty"); assert.deepEqual(b.props.regions.card.plates.map((p) => p.id), ["plate.incubator"]); assert.equal(b.props.focus.cur, "plate.incubator", "the ring on it"); assert.equal(b.line.ok, "Go to the Incubator"); }
   { const { w, sv } = scenes().one, b = build(w, sv), C = b.props.regions.card, m = w.st.mibis[0];
     assert.deepEqual([C.state, C.name, C.looks], ["mibi", m.name, ["your only Loika"]]);
-    assert.deepEqual(C.plates.map((p) => p.verb), ["Look", "Take along", "Tuck away", "Breed", "Return"]); assert.deepEqual(C.plates.map((p) => p.held), [false, false, true, true, true], "one mibi: Tuck away and Return held (the last at home), Breed held");
+    assert.deepEqual(C.plates.map((p) => p.verb), ["Look", "Take along", "Tuck away", "Cross", "Return"]); assert.deepEqual(C.plates.map((p) => p.held), [false, false, true, true, true], "one mibi: Tuck away and Return held (the last at home), Breed held");
     assert.equal(C.plates[2].price, "⚡ 2"); assert.equal(C.plates[4].price, "", "Return has no price");
     assert.equal(build(w, sv, { focus: "plate.2" }).props.regions.card.why, "Your last mibi at home stays"); assert.equal(build(w, sv, { focus: "plate.3" }).props.regions.card.why, "no partner at home yet"); }
   { const w = roomsWorld(1), [a, b2] = inRoom(w, 0, 2); const looks = (m) => build(w, sv0(), { focus: "resident." + m.id }).props.regions.card.looks;

@@ -27,33 +27,35 @@ const podPic = (req, st, p, size, state = p.idd ? "identified" : "sealed") => { 
 
 // ---- what a pod is worth (the pods design): the tags in their order, at most two -------------------------------------------------------------------------------------------------
 const living = (st) => st.mibis.filter((m) => !m.released);
-// a species whose best pair at home is close kin (a quarter or more): a wild pod of it is new blood
-function closeKinSpecies(st) {
-  const out = new Set(), by = new Map();
+// Species at home that need a partner from a walk, each with the mibi to name (the most recently born of those in need): a living mibi of it has no allowed partner (none of its species at home, or all of them its direct kin), or its best allowed pair is close kin (a quarter or more)
+function needsPartnerSpecies(st) {
+  const out = new Map(), by = new Map(), newest = (list) => list.reduce((x, y) => ((y.born | 0) > (x.born | 0) || ((y.born | 0) === (x.born | 0) && y.id > x.id) ? y : x));
   for (const m of living(st)) { const sp = S.speciesOf(m); if (!by.has(sp)) by.set(sp, []); by.get(sp).push(m); }
   for (const [sp, ms] of by) {
-    if (ms.length < 2) continue;
-    let best = Infinity; for (let i = 0; i < ms.length; i++) for (let j = i + 1; j < ms.length; j++) { const k = S.kinshipOf(st, ms[i], ms[j]); if (k < best) best = k; }
-    if (best >= 0.25) out.add(sp);
+    const lone = ms.filter((m) => !ms.some((o) => o !== m && !S.directKinOf(st, m, o)));
+    if (lone.length) { out.set(sp, newest(lone)); continue; }
+    let best = Infinity, pair = null;
+    for (let i = 0; i < ms.length; i++) for (let j = i + 1; j < ms.length; j++) { if (S.directKinOf(st, ms[i], ms[j])) continue; const k = S.kinshipOf(st, ms[i], ms[j]); if (k < best) { best = k; pair = [ms[i], ms[j]]; } }
+    if (pair && best >= 0.25) out.set(sp, newest(pair));
   }
   return out;
 }
-// The tags of a pod, most useful first: [{ key, text }]. `ctx` holds what every pod shares (the close-kin species).
-export function worthTags(st, p, spec, ctx = { closeKin: closeKinSpecies(st) }, settings = S.DEFAULT_SETTINGS) {
+// The tags of a pod, most useful first: [{ key, text }]. `ctx` holds what every pod shares (the species that need a partner).
+export function worthTags(st, p, spec, ctx = { needPartner: needsPartnerSpecies(st) }, settings = S.DEFAULT_SETTINGS) {
   const W = spec.strings.inv.worth, out = [], fr = p.idd ? podFrame(p) : null;
   if (!p.idd) return [{ key: "sealed", text: fill(W.sealed, { n: S.identifyCost(st, settings) }) }];
   const goal = S.podGoalTraits(st, p);
   if (goal.length) { const want = st.wish[S.speciesOf(p)] || {}; out.push({ key: "goal", text: fill(W.goal, { look: want[goal[0]] }) }); }
   if (!living(st).some((m) => S.speciesOf(m) === S.speciesOf(p))) out.push({ key: "newSpecies", text: W.newSpecies });
-  if (p.shed != null) out.push({ key: "line", text: fill(W.line, { name: p.of || "a returned mibi" }) });   // of a home mibi's line: it wins over new blood, and the two never share a card ()
-  else if (ctx.closeKin.has(S.speciesOf(p))) out.push({ key: "newBlood", text: W.newBlood });
+  if (p.shed != null) out.push({ key: "line", text: fill(W.line, { name: p.of || "a returned mibi" }) });   // of a home mibi's line: it wins over the partner tag, and the two never share a card ()
+  else if (ctx.needPartner.has(S.speciesOf(p))) out.push({ key: "partner", text: fill(W.partner, { name: ctx.needPartner.get(S.speciesOf(p)).name }) });
   const glints = fr ? fr.chapters.filter((c) => S.glint(st, p, c.id)).length : 0;
   if (glints) out.push({ key: "glints", text: glints === 1 ? W.glintsOne : fill(W.glints, { n: glints }) });
   if (S.fullyRead(p, settings)) out.push({ key: "full", text: W.full });
   if (!out.length) out.push({ key: "nothing", text: W.nothing });
   return out.slice(0, 2);
 }
-const USE_RANK = { goal: 0, newSpecies: 1, newBlood: 2, line: 2, glints: 3, sealed: 4, full: 5, nothing: 6 };
+const USE_RANK = { goal: 0, newSpecies: 1, partner: 2, line: 2, glints: 3, sealed: 4, full: 5, nothing: 6 };
 const useRank = (tags) => Math.min(...tags.map((t) => USE_RANK[t.key] ?? 4));
 
 // ---- the mini rail and the freshness strip, as the card draws them ----
@@ -101,7 +103,7 @@ export function findWords(st, spec) {
 export const findLetter = (w) => w.word[0].toUpperCase();
 // The pods the inventory shows, in order. ui: { sort, chips: [chip ids], word: { word, kind } | null }.
 export function listOf(st, spec, ui, settings = S.DEFAULT_SETTINGS) {
-  const ctx = { closeKin: closeKinSpecies(st) }, chips = ui.chips ?? [], rows = { reading: chips.filter((c) => READING.includes(c)), marks: chips.filter((c) => MARKS.includes(c)), species: chips.filter((c) => /^S\d\d$/.test(c)) };
+  const ctx = { needPartner: needsPartnerSpecies(st) }, chips = ui.chips ?? [], rows = { reading: chips.filter((c) => READING.includes(c)), marks: chips.filter((c) => MARKS.includes(c)), species: chips.filter((c) => /^S\d\d$/.test(c)) };
   const found = ui.word ? new Set(findWords(st, spec).find((w) => w.word === ui.word.word && w.kind === ui.word.kind)?.ids ?? []) : null;
   let pods = st.tray.map((p, i) => ({ p, i, tags: worthTags(st, p, spec, ctx, settings) }));
   pods = pods.filter(({ p }) => (!rows.reading.length || rows.reading.includes(readingOf(p, settings))) && (!rows.marks.length || marksOf(st, p).some((m) => rows.marks.includes(m))) && (!rows.species.length || (p.idd && rows.species.includes(S.speciesOf(p)))) && (!found || found.has(p.id)));

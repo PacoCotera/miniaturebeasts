@@ -47,9 +47,10 @@ export function looksOf(st, m, Sg) {
   for (const t of Object.keys(mine)) if (all.some((l) => l[t] !== mine[t])) out.push(String(mine[t]));
   return out;
 }
-// The partner pick (the Wall in a mode): why a mibi of A's species cannot be picked as B now, { key, text }, or null when it can. A traveller, one tucked away or coming out, one still young, one on a breather
-export function pairWhy(st, sv, x, settings, Sg) {
-  const W = Sg.why, P = Sg.pair, w = whereOf(st, sv, x);
+// The partner pick (the Wall in a mode): why a mibi of A's species cannot be picked as B now, { key, text }, or null when it can. Family first (a reason that never changes: waiting will not help), then a traveller, one tucked away or coming out, one still young, one on a breather
+export function pairWhy(st, sv, x, settings, Sg, a = null) {
+  const W = Sg.why, P = Sg.pair, w = whereOf(st, sv, x), kin = a ? S.directKinOf(st, a, x) : null;
+  if (kin) return { key: "family", text: W.partnerFamily, rel: kin.rel };
   if (w === "carried") return { key: "onboard", text: P.onboard };
   if (w === "store") return { key: "tucked", text: P.tucked };
   if (w === "coming") { const n = S.backIn(st, x); return { key: "coming", text: n === 1 ? W.comingOne : fill(W.coming, { n }) }; }
@@ -57,13 +58,13 @@ export function pairWhy(st, sv, x, settings, Sg) {
   const b = breatherLeft(st, x); if (b > 0) return { key: "breather", text: breatherWords(W, b) };
   return null;
 }
-// The order of the pick: A's species only, A left out; first those who can breed now, then those who cannot, each furthest kin first and, on a tie, the oldest
+// The order of the pick: A's species only, A left out; first those who can cross now, then those who cannot yet, each furthest kin first and, on a tie, the oldest; family last, the oldest first
 export function pairOrder(st, sv, a, settings, Sg) {
   const kin = living(st).filter((x) => x.id !== a.id && S.speciesOf(x) === S.speciesOf(a)), k = new Map(kin.map((x) => [x.id, S.kinshipOf(st, a, x)]));
-  const by = (x, y) => k.get(x.id) - k.get(y.id) || (x.born | 0) - (y.born | 0) || x.id - y.id, can = (x) => !pairWhy(st, sv, x, settings, Sg);
-  return [...kin.filter(can).sort(by), ...kin.filter((x) => !can(x)).sort(by)];
+  const by = (x, y) => k.get(x.id) - k.get(y.id) || (x.born | 0) - (y.born | 0) || x.id - y.id, why = (x) => pairWhy(st, sv, x, settings, Sg, a), can = (x) => !why(x), fam = (x) => why(x)?.key === "family", old = (x, y) => (x.born | 0) - (y.born | 0) || x.id - y.id;
+  return [...kin.filter(can).sort(by), ...kin.filter((x) => !can(x) && !fam(x)).sort(by), ...kin.filter(fam).sort(old)];
 }
-// The state of a mibi as the card's lines (spec §5): each part its own line, the mark leading the first; the breather takes two ("on a breather" / "breeds in {n} turns")
+// The state of a mibi as the card's lines (spec §5): each part its own line, the mark leading the first; the breather takes two ("on a breather" / "can cross in {n} turns")
 export function stateLinesOf(st, sv, m, settings, Sg) {
   const S2 = Sg.state;
   if (!S.inStore(m) && !S.comingOut(st, m) && !S.isCarried(st, sv, m) && breatherLeft(st, m) > 0) { const n = breatherLeft(st, m); return n === 1 ? S2.breatherNext : S2.breather.map((l) => fill(l, { n })); }
@@ -112,7 +113,7 @@ export function wallBuild(m, spec, frame, home, pods) {
   const view = step.view, size = step.size, targets = [], regions = {};
   const add = (id, group, extra = {}) => targets.push({ id, group, ...extra });
   const cells = ordered.slice(row0 * cols, (row0 + vis) * cols).map((mb, k) => {
-    const w = whereOf(st, sv, mb), tucked = w === "store" || (pairing && !!pairWhy(st, sv, mb, settings, Sg)), base = mibiRequest(st, mb, size, settings, light, view);   // in the pick those who cannot breed now are dimmed as tucked ones are
+    const w = whereOf(st, sv, mb), tucked = w === "store" || (pairing && !!pairWhy(st, sv, mb, settings, Sg, pairA)), base = mibiRequest(st, mb, size, settings, light, view);   // in the pick those who cannot breed now are dimmed as tucked ones are
     const picture = tucked ? mibiVariantReq(req, base, "dark") : req(base);
     const key = markOf(st, sv, mb, settings, rest[String(mb.id)] === "asleep");
     const cell = { id: String(mb.id), picture, figure: figureOf(st, mb, size, settings, view) ?? [0, 0, size[0], size[1]], mark: markPic(key), tick: tucked ? null : tickOf(mb.room), dim: tucked, picked: picked.has(String(mb.id)), index: row0 * cols + k };
@@ -200,11 +201,11 @@ export function wallBuild(m, spec, frame, home, pods) {
     plates = [{ act: "moveTo", verb: Sg.plate.moveTo, price: "", held: false, why: "" }, { act: "tuckAway", verb: Sg.plate.tuck, price: S.priceText(total, 0, 0), ...tuckHeld }, { act: "clearPicks", verb: Sg.plate.clearPicks, price: "", held: false, why: "" }].map((p, k) => ({ ...p, id: "plate." + k }));
     card = { state: "picks", name: out ? fill(Sg.card.pickedOut, { n: picked.size, m: out }) : fill(Sg.card.picked, { n: picked.size }), looks: [], faces: mine.slice(0, 4).map((x) => req(mibiRequest(st, x, [36, 37], settings, light, "vivariumFace36"))), more: Math.max(0, mine.length - 4), plates: plates.map((p) => ({ id: p.id, verb: p.verb, price: p.price, held: p.held })), why: "" };
   }
-  if (pairing && cmb) {   // the pair card (the partner pick): "Breed {A} with…" and A's face, the ringed partner with its kinship, its state and the pair's breathers; the plate "See this pair"
-    const P = Sg.pair, Wh = Sg.why, why = pairWhy(st, sv, cmb, settings, Sg), k = S.kinshipOf(st, pairA, cmb), band = kinBand(k), n = breatherAfter(pairA), q = breatherAfter(cmb);
-    const lines = [P.kin[band], ...(S.bredClose(st, cmb) ? [Sg.card.bredClose] : [])], open = !!m.forecastOpen && !why;   // the forecast is the breeding screens': until it opens See this pair is held
+  if (pairing && cmb) {   // the pair card (the partner pick): "Cross {A} with…" and A's face, the ringed partner with its kinship, its state and the pair's breathers; the plate "See this pair"
+    const P = Sg.pair, Wh = Sg.why, why = pairWhy(st, sv, cmb, settings, Sg, pairA), fam = why?.key === "family", k = S.kinshipOf(st, pairA, cmb), band = kinBand(k), n = breatherAfter(pairA), q = breatherAfter(cmb);
+    const lines = fam ? [fill(P.rel[why.rel.replace(/-(\w)/g, (_, c) => c.toUpperCase())], { name: pairA.name })] : [P.kin[band], ...(S.bredClose(st, cmb) ? [Sg.card.bredClose] : [])], open = !!m.forecastOpen && !why;   // the forecast is the breeding screens': until it opens See this pair is held
     plates = [{ act: "seePair", verb: Sg.plate.seePair, price: "", held: !open, why: why ? why.text : open ? "" : Wh.pairSoon, plate: "pairHeld", id: "plate.0" }];
-    card = { state: "pair", id: String(cmb.id), name: cmb.name, head: fill(P.head, { A: pairA.name }), headFace: req(mibiRequest(st, pairA, [36, 37], settings, light, "vivariumFace36")), looks: [], lines, stateLines: why ? pairStateLines(why, st, cmb, settings, Sg) : [], mark: why?.key === "breather" ? markPic("breather") : "", pairLine: fill(n === 1 ? P.restOne : P.restLine, { A: pairA.name, n, B: cmb.name, m: q }), long: P.long[band] ?? [],
+    card = { state: "pair", id: String(cmb.id), name: cmb.name, head: fill(P.head, { A: pairA.name }), headFace: req(mibiRequest(st, pairA, [36, 37], settings, light, "vivariumFace36")), looks: [], lines, stateLines: why && !fam ? pairStateLines(why, st, cmb, settings, Sg) : [], mark: why?.key === "breather" ? markPic("breather") : "", pairLine: fam ? "" : fill(n === 1 ? P.restOne : P.restLine, { A: pairA.name, n, B: cmb.name, m: q }), long: fam ? [] : P.long[band] ?? [],
       picture: req(mibiRequest(st, cmb, CS, settings, light, CV)), figure: figureOf(st, cmb, CS, settings, CV) ?? [0, 0, CS[0], CS[1]], plates: [{ id: "plate.0", verb: Sg.plate.seePair, price: "", held: !open }], why: "" };
   }
   regions.card = card;
@@ -217,6 +218,7 @@ export function wallBuild(m, spec, frame, home, pods) {
   if (!cur) cur = cardFor(lastId) ?? (ordered.length ? "cell." + ordered[0].id : !all.length ? "plate.0" : "rail." + lit);
   if (swapInfo) { const w = swapInfo.held[/^swap\.(\d+)$/.exec(cur ?? "")?.[1]]; regions.move.swap.why = w ? regions.move.swap.cells.find((c) => "swap." + c.id === cur).why : ""; }
   const p0 = plates.find((x) => x.id === cur); card.why = p0 ? p0.why ?? "" : "";
+  if (pairing && cmb && pairWhy(st, sv, cmb, settings, Sg, pairA)?.key === "family") card.why = Sg.why.partnerFamily;   // a family card always says why, wherever the ring is (the plate's own refusal line is the same text)
   const props = { state: !all.length ? "none" : "wall", view: "wall", regions, focus: { cur, targets, resolve: {} } };
   const firstLive = (plates.find((p) => !p.held) ?? plates[0])?.id ?? null;
   const nav = { sort, filter, cols, vis, rows: rowsN, row0, first, order: ordered.map((x) => x.id), rail: rows.map((r) => r.id), canAdd, lit, card: cmb ? cmb.id : null, settling, picked: [...picked], moving: !!moving, swap: swapInfo, pair: pairing ? pairA.id : null, hasBand: !!card.room?.opens && !moving, moveRows: moveAll, moveFirst: moving ? regions.move.first : 0, plates: plates.map((p) => ({ id: p.id, act: p.act, held: !!p.held, why: p.why, plate: p.plate })), firstLive };

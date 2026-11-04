@@ -5,6 +5,7 @@
 import { currentLooks } from "../../workbench/framework/describe.mjs";
 import { frameOf, chapterLooks, traitState } from "./genome.mjs";
 import { frameFor, speciesOf, guideLooks, mibiById, forecastOf, DEFAULT_SETTINGS, logEv } from "./state.mjs";
+import { fourSlots } from "./splice.mjs";
 
 // Every look a new pod of the frame's current version can show, in the words a read gives (describe.currentLooks: the frame's own looks, never the catalogue's pair labels where the frame names its bins).
 // A legacy look (the Loika's plain, the Tuikis's old feet: kept in the pool only for inheritance) is never in this list, so it never counts toward completion and never shows as unseen (T-20261016-204).
@@ -131,7 +132,7 @@ export const wishGlint = (st, x, chapterId, settings = DEFAULT_SETTINGS) => wish
 
 // The wish in the cross forecast (research-loop.md §5, §8; the-portrait.md §8): for each pinned trait, a switch lights the seeds among the four that show the pinned look; a blend marks
 // the pinned bin on the range picture when the range reaches it. How close a pairing gets is the pinned traits lit (`lit`), never a number or a percentage. Data only: no art.
-// Seeds are read against the first parent's other loci (the forecast gives the trait's own locus).
+// Seeds are read against the first parent's other loci (the forecast gives the trait's own locus); the seeds are the four drawn slots (fourSlots), never the raw list, which under kinship holds up to six.
 export function wishForecast(st, a, b, settings = DEFAULT_SETTINGS) {
   if (!a || !b) return null;
   const id = speciesOf(a), w = wishOf(st, id), keys = Object.keys(w); if (!keys.length) return null;
@@ -144,7 +145,7 @@ export function wishForecast(st, a, b, settings = DEFAULT_SETTINGS) {
     if (ft.kind === "missing") return { trait: traitId, name: ft.name, look, kind: "missing", missing: ft.missing, lit: false };   // an unread chapter says nothing of the wish
     if (ft.kind === "sealed") return { trait: traitId, name: ft.name, look, kind: "sealed", lit: false };
     if (ft.kind === "switch") {
-      const seeds = ft.seeds.map((sd, i) => (traitState(fr, t, withLoci({ [ft.locus]: sd.copies })).shows === look ? i : -1)).filter((i) => i >= 0);
+      const seeds = fourSlots(ft.seeds).map((sd, i) => (traitState(fr, t, withLoci({ [ft.locus]: sd.copies })).shows === look ? i : -1)).filter((i) => i >= 0);
       return { trait: traitId, name: ft.name, look, kind: "switch", seeds, lit: seeds.length > 0 };
     }
     const bins = (ft.bins || []).filter((bin) => traitState(fr, t, withLoci({ [ft.locus]: [bin, bin] })).shows === look);

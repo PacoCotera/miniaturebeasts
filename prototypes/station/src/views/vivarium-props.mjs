@@ -49,7 +49,8 @@ export function partnersOf(st, sv, a, settings) {
     if (m.id === a.id) continue;
     const w = whereOf(st, sv, m), stage = S.mibiStage(st, m, settings);
     const why = S.speciesOf(m) !== S.speciesOf(a) ? "kind" : w === "store" || w === "coming" ? "tucked" : w === "carried" ? "out" : stage === "juvenile" ? "young" : null;
-    out.push({ m, why, k: why ? null : S.kinshipOf(st, a, m) });
+    const fam = !why || why === "young" || why === "tucked" || why === "out" ? S.directKinOf(st, a, m) : null;   // family comes before any wait: waiting will not help
+    out.push({ m, why: fam ? "family" : why, rel: fam ? fam.rel : null, k: why || fam ? null : S.kinshipOf(st, a, m) });
   }
   return { all: out, ranked: out.filter((p) => !p.why).sort((x, y) => x.k - y.k || x.m.id - y.m.id) };
 }
@@ -96,7 +97,7 @@ export function platesOf(st, sv, m, settings, Sg, docked) {
     else if (st.bud) h = held(W.breedBusy, "busy");
     else if (S.vivFull(st, settings)) h = held(four ? W.breedNoPlace4 : W.breedNoPlace, four ? "noPlace4" : "noPlace");
     else if (!partnersOf(st, sv, m, settings).all.some((p) => p.why !== "kind")) h = held(W.breedOne, "one");
-    else if (!partnersOf(st, sv, m, settings).ranked.length) h = held(W.breedNone, "none");
+    else if (!partnersOf(st, sv, m, settings).ranked.length) h = partnersOf(st, sv, m, settings).all.every((p) => p.why === "kind" || p.why === "family") ? held(W.breedFamily, "family") : held(W.breedNone, "none");
     else { const free = partnersOf(st, sv, m, settings).ranked.filter((p) => breatherLeft(st, p.m) === 0); if (!free.length) { const soon = partnersOf(st, sv, m, settings).ranked.slice().sort((x, y) => breatherLeft(st, x.m) - breatherLeft(st, y.m) || x.k - y.k || x.m.id - y.m.id)[0]; h = held(fill(W.breedNoneFree, { name: soon.m.name, n: breatherLeft(st, soon.m) }), "noneFree"); } }
     out.push({ act: "breed", verb: P.breed, price: h && h.plate === "breather" ? (breatherLeft(st, m) === 1 ? W.turnsOne : fill(W.turns, { n: breatherLeft(st, m) })) : "", ...(h ?? { held: false, why: "" }) }); }   // a breather: its turns right-aligned on the held plate
   { const b = S.returnMibiBlock(st, sv, m); let h = null;

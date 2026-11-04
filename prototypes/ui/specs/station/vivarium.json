@@ -1308,14 +1308,14 @@
    "swap": "Swap {a} and {b}",
    "tuck": "Tuck {name} away ⚡{p}",
    "bringOut": "Bring {name} out ⚡{p}",
-   "breed": "Breed {a} and {b}",
+   "breed": "Cross {a} and {b}",
    "plate": {
     "look": "Look at {name}",
     "takealong": "Take {name} along",
     "bringhome": "Bring {name} home",
     "tuck": "Tuck {name} away ⚡{p}",
     "out": "Bring {name} out ⚡{p}",
-    "breed": "Breed {name}",
+    "breed": "Cross {name} with…",
     "return": "Return {name}",
     "incubator": "Go to the Incubator",
     "moveTo": "Move {name} to",
@@ -1335,7 +1335,7 @@
    "bringhome": "Bring home",
    "tuck": "Tuck away",
    "out": "Bring out",
-   "breed": "Breed",
+   "breed": "Cross",
    "return": "Return",
    "incubator": "Go to the Incubator",
    "moveTo": "Move to",
@@ -1345,7 +1345,7 @@
   "card": {
    "only": "your only {Species}",
    "empty": "No mibis yet",
-   "bredClose": "bred close",
+   "bredClose": "from close kin",
    "picked": "{n} picked",
    "pickedOut": "{n} picked ({m} out of view)"
   },
@@ -1360,11 +1360,11 @@
    "tucked": "since turn {n}",
    "breather": [
     "on a breather",
-    "breeds in {n} turns"
+    "can cross in {n} turns"
    ],
    "breatherNext": [
     "on a breather",
-    "breeds next turn"
+    "can cross next turn"
    ]
   },
   "why": {
@@ -1397,6 +1397,8 @@
    "breedNoPlace4": "No place free · return one to make room",
    "breedOne": "no partner at home yet",
    "breedNone": "No partner of its kind at home",
+   "breedFamily": "only its family at home · try a walk",
+   "partnerFamily": "family · find a partner on walks",
    "returnBond": "A bond is for good",
    "return": "{name} goes back to the wild · asks first",
    "incubator": "Your first mibi hatches there",
@@ -1410,16 +1412,16 @@
    "moveOne": "No other room yet · add a room",
    "moveOne4": "No other room to move to",
    "swapStays": "{name} is one of the picks · it stays in {Room}",
-   "breather": "on a breather · can breed in {n} turns",
-   "breatherNext": "on a breather · can breed next turn",
-   "breedNoneFree": "no partner free now · {name} can breed in {n} turns",
+   "breather": "on a breather · can cross in {n} turns",
+   "breatherNext": "on a breather · can cross next turn",
+   "breedNoneFree": "no partner free now · {name} can cross in {n} turns",
    "pairSoon": "The forecast is not open yet",
    "pairCannot": "this pair cannot cross this turn",
    "turns": "{n} turns",
    "turnsOne": "1 turn"
   },
   "kin": {
-   "none": "wild founders",
+   "none": "no kin in common",
    "line": "the same line",
    "close": "close kin",
    "half": "half kin",
@@ -1488,6 +1490,10 @@
     "none": [
      "No partner of its kind at home"
     ],
+    "family": [
+     "Only {name}'s family is at home",
+     "A walk can find a partner"
+    ],
     "move1": [
      "There is no other room yet",
      "Add a room to move"
@@ -1507,7 +1513,7 @@
     ],
     "kind": [
      "Another kind",
-     "Breeding needs two of one kind"
+     "A cross needs two of one kind"
     ],
     "stays": [
      "{name} is one of the picks",
@@ -1577,14 +1583,23 @@
   },
   "crumb": "| Mibis",
   "pair": {
-   "head": "Breed {A} with…",
+   "head": "Cross {A} with…",
    "foot": "See {A} and {B}",
    "restLine": "{A} rests {n} turns · {B} {m}",
    "restOne": "{A} rests 1 turn · {B} {m}",
    "onboard": "on the Companion",
    "tucked": "tucked away",
+   "rel": {
+    "parent": "{name}'s parent",
+    "grandparent": "{name}'s grandparent",
+    "greatGrandparent": "{name}'s great-grandparent",
+    "child": "{name}'s child",
+    "grandchild": "{name}'s grandchild",
+    "greatGrandchild": "{name}'s great-grandchild",
+    "sameParents": "same parents as {name}"
+   },
    "kin": {
-    "wild": "wild blood",
+    "wild": "no kin in common",
     "distant": "distant kin",
     "cousins": "cousins",
     "half": "half kin",
@@ -1616,11 +1631,11 @@
    "state": {
     "breather": [
      "on a breather",
-     "breeds in {n} turns"
+     "can cross in {n} turns"
     ],
     "breatherNext": [
      "on a breather",
-     "breeds next turn"
+     "can cross next turn"
     ],
     "young": [
      "young",

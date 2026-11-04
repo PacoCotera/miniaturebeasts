@@ -63,6 +63,7 @@ const SCENES = {
   "wall-pair-rest":   WALL({ viv: { view: "wall", pairI: 2 }, f: "cell:7", set: (w) => { window.__viv.pairs(); } }),
   "wall-pair-young":  WALL({ viv: { view: "wall", pairI: 2 }, f: "cell:6", set: (w) => { window.__viv.pairs(); } }),
   "wall-pair-plate":  WALL({ viv: { view: "wall", pairI: 2 }, f: "plate.0", set: (w) => { window.__viv.pairs(); } }),
+  "wall-breed-family": WALL({ viv: { view: "wall", lastI: 2 }, f: "plate.4", set: (w) => { w.rooms(1); w.adults(3); const ms = window.__st.ST.mibis; ms[2].parents = [{ id: ms[0].id, name: ms[0].name }, { id: ms[1].id, name: ms[1].name }]; } }),
   "wall-breed-held":  WALL({ viv: { view: "wall", lastI: 2 }, f: "plate.4", set: (w) => { window.__viv.pairs(); window.__st.ST.mibis[2].restUntil = (window.__st.ST.turn | 0) + 2; } }),
   "wall-swap-keep":   WALL({ viv: { view: "wall", pickI: [0, 1, 2], moveMany: true, swapRoom: 1, chosenI: [3] }, f: "swap:3", set: (w) => { window.__viv.fill([3, 7]); } }),
   "wall-swap-stays":  WALL({ viv: { view: "wall", pickI: [0, 1, 3], moveMany: true, swapRoom: 1 }, f: "swap:3", set: (w) => { window.__viv.fill([3, 7]); } }),

@@ -108,6 +108,17 @@ test("the worth line: at most two tags, from what the game holds, in their order
   assert.deepEqual(worthTags(st, p, spec).map((t) => t.text), ["your goal · " + look + " may be here", "known in full"], "the goal first");
   const shed = st.tray[1]; shed.shed = 7; shed.of = "Fig"; assert.ok(worthTags(st, shed, spec).some((t) => t.text === "of Fig's line"));
 });
+test("the partner tag: a lone mibi of the species, or a home of one family, names the newest in need; a pair of unrelated founders needs nothing; a shed pod keeps its line tag", () => {
+  const st = mixed(); ident(st); const p = st.tray[0]; st.firstMibi = false;
+  const founders = S.seedAdults(st, "S01", 9, 1, settings).mibis, lone = founders[0];
+  const tag = () => worthTags(st, p, spec).find((t) => t.key === "partner");
+  assert.equal(tag()?.text, spec.strings.inv.worth.partner.replace("{name}", lone.name), "one mibi of the species: it needs a partner");
+  const sib = S.seedSiblings(st, "S01", 4242, { ...settings, rooms: 3 }); assert.equal(sib.ok, true, sib.msg);
+  assert.equal(tag(), undefined, "two unrelated founders and their children: a pair is allowed");
+  st.mibis = st.mibis.filter((m) => sib.mibis.includes(m)); st.mibis[0].born = 1; st.mibis[1].born = 2;
+  assert.equal(tag()?.text, spec.strings.inv.worth.partner.replace("{name}", st.mibis[1].name), "all of the species is one family: the newest is named");
+  const shed = st.tray[1]; shed.shed = 7; shed.of = "Fig"; assert.ok(!worthTags(st, shed, spec).some((t) => t.key === "partner"));
+});
 test("sort by use puts the goal first and nothing new last; by species groups each species under its label; drying soon puts the fewest turns first and the bench pod last", () => {
   const st = mixed(); ident(st); read(st, 0); st.firstMibi = false; S.seedAdults(st, "S01", 9, 2, settings); S.seedAdults(st, "S02", 9, 2, settings);
   const ch = frameOf("S01").chapters[0], t = ch.traits[0]; st.wish.S01 = { [t.id]: chapterLooks(frameOf("S01"), ch, st.tray[0].genome).find(([id]) => id === t.id)[1][0] };
@@ -185,6 +196,15 @@ test("the reading screen (ux-reading-v2.md): the ground, the chamber of its plac
   assert.equal(rd.props.regions.read.right.form, "read"); assert.ok(rd.props.regions.read.right.plates.every((p) => p.shown.caption && p.kind), "the read form: captions and kind lines"); assert.equal(rd.line.ok, "Closer look at Colour");
   const dt = body(model(st, { view: "room", lane: 0, at: "detail", trait: 0 }, "trait")); assert.equal(dt.props.regions.read.right.form, "detail"); assert.equal(dt.props.regions.read.rail.trait, 0); assert.equal(dt.line.back, "Coat"); assert.equal(dt.line.ok, null);
   st.tray[0].why = "a new species"; assert.equal(P(model(st, { view: "room" }, "rail")).regions.read.why, "a new species", "the pod's reason when it carries one");
+});
+test("the reading room's mate: a shed pod shows no odds with its own parent, and takes an adult that is not its direct kin", () => {
+  const st = home(2); S.putOnBench(st, st.tray[0]); ident(st); st.d = 40; read(st, 0, 1); st.firstMibi = false;
+  const [fa, fb] = S.seedAdults(st, "S01", 9, 2, settings).mibis, pod = st.tray[0];
+  const mate = () => body(model(st, { view: "room", lane: 0, at: "detail", trait: 0 }, "trait")).props.regions.read.right.mate;
+  assert.ok(mate() && [fa.name, fb.name].includes(mate().name), "a wild pod: any adult of its species");
+  pod.genome = { ...pod.genome, origin: { ...pod.genome.origin, kind: "shed", parents: ["x", "x"], parentIds: [fa.id, fa.id] } };
+  assert.equal(mate()?.name, fb.name, "the shed pod of Fa is shown with Fb, never with Fa");
+  st.mibis = st.mibis.filter((m) => m !== fb); assert.ok(!mate(), "no one but its parent at home: no odds");
 });
 test("the stamp in progress: the view on ▲ once taught, its plate and stamp at the reading screen's cell, the blocks lane by lane", () => {
   const st = home(2); S.putOnBench(st, st.tray[0]); ident(st); read(st, 0, 1); st.stampTaught = true;

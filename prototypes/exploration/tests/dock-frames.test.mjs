@@ -76,6 +76,14 @@ test("a crate sealed in region 1 names no region; one sealed elsewhere names it;
   assert.equal(p.run("S.exp.rg"), "g2"); assert.equal(p.run("S.here"), "g2");
   assert.equal(JSON.parse(p.store[p.KEY]).here, "g2");
 });
+test("a shed pod the Station returns is buried again with its line: shed, of and genome", () => {
+  const { p, st } = world(0);
+  const genome = { schema: "mb-genome/2", species: "S01", loci: {}, origin: { kind: "shed", parents: ["d", "d"], parentIds: [4, 4] } };
+  st.returned = [{ id: "c9:s0", sp: 0, species: null, g: "meadow", gs: 77, k: String(p.run("G.spawns[0]")), shed: 3, of: "Fig", genome }];
+  seat(p, st);
+  const q = p.sv().regions[0].map.pods.find((x) => x.id[0] === "r"); assert.ok(q, "buried again");
+  assert.deepEqual([q.shed, q.of, q.genome], [3, "Fig", genome]);
+});
 test("a pod the Station returns goes back to the region it came from, with the realm's next id; the region in hand is put back", () => {
   const { p, st } = world(0);
   p.run(`S.regions.push(${region2(p.run("S.seed"))})`);
