@@ -44,6 +44,7 @@ The child is **validated whole**, built by the rig against its frame before anyt
 | --- | --- |
 | **Different species** | Only members of one frame share the locked pair at every locus, so a cross of two frames has no frame to be valid against (taxonomy §4). The Cross screen lists only members of the first pick's species; a clan is a resemblance, not a breeding group |
 | **The same individual** | One mibi is not a pair. Its disc greys when it is the first pick |
+| **Direct kin** | A parent, grandparent or great-grandparent, or two children of the same pair (owner 11-03). Half kin, cousins and anything further cross, with the penalty |
 | **Not adult** | A juvenile or an elder of the four life stages is not shown as a pick. Ageing and death come later; until then a mibi is adult from the end of its juvenile stage and stays so |
 
 A mibi out with the Companion as the partner is away, not ineligible: it shows in its place, dimmed, and comes back.

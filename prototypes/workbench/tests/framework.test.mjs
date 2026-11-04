@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, stepOf, stepValue, BLEND_STEPS } from "../framework/catalogue.mjs";
 import { planFacts, rigOf, parsePlanKey } from "../framework/plans.mjs";
 import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK, frameVersionOf } from "../framework/species.mjs";
-import { cross, forecast, kinship, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY } from "../framework/cross.mjs";
+import { cross, forecast, kinship, directKin, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
 
@@ -207,20 +207,24 @@ test("pedigree kinship from recorded parents, genome identity as the fallback, a
   const rel = relatedness(f, stranger, s2, lookup);
   assert.equal(rel.kinship, 0, "an unknown parent counts as a wild founder"); assert.equal(rel.pedigreeKnown, false); assert.ok(rel.identity >= 0 && rel.identity <= 1);
   assert.equal(identity(f, s1, s1), 1);
-  // the penalty on a sibling cross (kinship 1/4): B surfaces a hidden copy with chance 1/2, A draws the blend at the parents' midpoint
-  const sib1 = { ...s1, loci: { ...s1.loci, "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": [0.3, 0.3] } };
-  const sib2 = { ...s2, loci: { ...s2.loci, "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": [0.4, 0.4] } };
-  assert.equal(kinship(sib1, sib2, lookup), 0.25);
-  const fc = forecast(f, sib1, sib2, { lookup }); const mk = fc.traits.find((t) => t.trait === "markings"), ey = fc.traits.find((t) => t.trait === "eye-rings");
+  // two children of one pair, and a parent with its child, are direct kin: neither crosses nor is forecast
+  assert.throws(() => cross(f, s1, s2, { rng: r, lookup }), /direct kin \(same-parents\)/);
+  assert.throws(() => forecast(f, s1, s2, { lookup }), /direct kin/);
+  assert.throws(() => cross(f, a, s1, { rng: r, lookup }), /direct kin \(child\)/);
+  assert.equal(directKin(s1, h, lookup), null, "half kin cross");
+  // the penalty at kinship 1/4, as a studio picture passes it on two unrelated genomes: B surfaces a hidden copy with chance 1/2, A draws the blend at the parents' midpoint
+  const sib1 = { ...a, loci: { ...a.loci, "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": [0.3, 0.3] } };
+  const sib2 = { ...b, loci: { ...b.loci, "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": [0.4, 0.4] } };
+  const fc = forecast(f, sib1, sib2, { lookup, kinship: 0.25 }); const mk = fc.traits.find((t) => t.trait === "markings"), ey = fc.traits.find((t) => t.trait === "eye-rings");
   assert.equal(fc.kinship, 0.25);
   assert.deepEqual(mk.looks, { off: 0.5, on: 0.5 }, "half of the carrier outcomes turn pale: two in four");
   const eyeMid = quantize(LOCI.get("growth.exterior-eye-size-ratio"), 0.35); // the midpoint, on the blend step
   assert.deepEqual(ey.range, [eyeMid, eyeMid], "the range narrows to the midpoint");
   const N = 4000; let pale = 0, mid = 0;
-  for (let i = 0; i < N; i++) { const ch = cross(f, sib1, sib2, { rng: r, lookup }); if (resolveCopies(LOCI.get("appearance.marking-switch"), ch.loci["appearance.marking-switch"])) pale++; if (ch.loci["growth.exterior-eye-size-ratio"][0] === eyeMid) mid++; }
+  for (let i = 0; i < N; i++) { const ch = cross(f, sib1, sib2, { kinship: 0.25, rng: r, lookup }); if (resolveCopies(LOCI.get("appearance.marking-switch"), ch.loci["appearance.marking-switch"])) pale++; if (ch.loci["growth.exterior-eye-size-ratio"][0] === eyeMid) mid++; }
   assert.ok(Math.abs(pale / N - 0.5) < 0.03, `pale ${pale / N}`); assert.equal(mid, N, "under A at 1/4 every blend sits on the midpoint");
-  const none = cross(f, sib1, sib2, { rng: r, lookup, penalty: "none" }); assert.equal(none.origin.penalty, "none");
-  let paleNone = 0; for (let i = 0; i < N; i++) if (resolveCopies(LOCI.get("appearance.marking-switch"), cross(f, sib1, sib2, { rng: r, lookup, penalty: "none" }).loci["appearance.marking-switch"])) paleNone++;
+  const none = cross(f, sib1, sib2, { kinship: 0.25, rng: r, lookup, penalty: "none" }); assert.equal(none.origin.penalty, "none");
+  let paleNone = 0; for (let i = 0; i < N; i++) if (resolveCopies(LOCI.get("appearance.marking-switch"), cross(f, sib1, sib2, { kinship: 0.25, rng: r, lookup, penalty: "none" }).loci["appearance.marking-switch"])) paleNone++;
   assert.ok(Math.abs(paleNone / N - 0.25) < 0.03, `without the penalty one in four: ${paleNone / N}`);
   // whole-genome validation: children of two Loikas build; the count of rejections is reported
   const kids = children(f, a, b, 30, { rng: r, lookup });
@@ -335,11 +339,59 @@ test("C3: two mibis with identical genomes and different ids may cross, with kin
   assert.equal(kinship(s1, s2, lookup), 0.25, "full siblings by their recorded parents");
   assert.equal(kinship(s1, s1, lookup), 0.5, "a mibi with itself");
   assert.equal(kinship(s1, p, lookup), 0.25, "parent and child");
-  assert.equal(forecast(f, s1, s2, { lookup }).kinship, 0.25);
-  assert.equal(cross(f, s1, s2, { rng: r, lookup }).origin.kinship, 0.25);
+  // ...and being two children of one pair, they are direct kin: refused; a half kin of s1 is not
+  assert.throws(() => cross(f, s1, s2, { rng: r, lookup }), /direct kin \(same-parents\)/);
+  assert.throws(() => forecast(f, s1, s2, { lookup }), /direct kin/);
+  const w = { id: 15, genome: sampleIndividual(f, r) }; book.set(15, w);
+  const s3 = { id: 16, genome: structuredClone(sg), parents: [{ id: 10 }, { id: 15 }] }; book.set(16, s3);
+  assert.equal(forecast(f, s1, s3, { lookup }).kinship, 0.125);
+  assert.equal(cross(f, s1, s3, { rng: r, lookup }).origin.kinship, 0.125);
   // a parent known only by the snapshot the child holds still counts
   const orphan = { id: 14, genome: sg, parents: [{ id: 10, genome: p.genome }, { id: 99, genome: q.genome }] };
   assert.equal(kinship(orphan, p, lookup), 0.25);
+});
+
+test("direct kin: the line to three generations, the same two parents, and what is not family", () => {
+  const f = frameOf("S01"), r = rng("dk");
+  const book = new Map(), lookup = (id) => book.get(id) ?? null;
+  const mk = (id, ps) => { const m = { id, genome: sampleIndividual(f, r), ...(ps ? { parents: ps.map((i) => ({ id: i })) } : {}) }; book.set(id, m); return m; };
+  const a = mk(1), b = mk(2), c = mk(3), d = mk(4);
+  const k1 = mk(10, [1, 2]), k2 = mk(11, [2, 1]), k3 = mk(12, [1, 3]);       // k1, k2: same parents in either order; k3: half kin of k1
+  const g1 = mk(20, [10, 4]), gg = mk(30, [20, 3]), ggg = mk(40, [30, 3]), g4 = mk(50, [40, 3]);
+  assert.equal(directKin(a, k1, lookup).rel, "child"); assert.equal(directKin(k1, a, lookup).rel, "parent");
+  assert.equal(directKin(a, g1, lookup).rel, "grandchild"); assert.equal(directKin(g1, a, lookup).rel, "grandparent");
+  assert.equal(directKin(a, gg, lookup).rel, "great-grandchild"); assert.equal(directKin(gg, a, lookup).rel, "great-grandparent");
+  assert.equal(directKin(a, ggg, lookup), null, "a great-great-grandparent is allowed"); assert.equal(directKin(ggg, a, lookup), null);
+  assert.equal(directKin(k1, k2, lookup).rel, "same-parents", "either order");
+  const twin = { id: 13, genome: structuredClone(k1.genome), parents: [{ id: 1 }, { id: 2 }] }; book.set(13, twin);
+  assert.equal(directKin(k1, twin, lookup).rel, "same-parents", "equal genomes, two mibis");
+  assert.equal(directKin(k1, k3, lookup), null, "half kin");
+  const cousin1 = mk(60, [10, 4]), cousin2 = mk(61, [12, 4]); assert.equal(directKin(cousin1, cousin2, lookup), null, "cousins");
+  assert.equal(directKin(mk(62, [10, 4]), mk(63, [12, 3]), lookup), null, "aunt or uncle line");
+  assert.equal(directKin(k3, mk(64, [10, 4]), lookup), null, "uncle and nephew");
+  assert.equal(directKin(a, b, lookup), null, "founders");
+  // through a let-go record, and by id when the record is gone
+  book.get(10).released = true; assert.equal(directKin(a, g1, lookup).rel, "grandchild");
+  book.delete(10); assert.equal(directKin(g1, k1, lookup).rel, "parent", "a missing record counts by its id");
+  assert.equal(directKin(g1, a, lookup), null, "its own parents are then unknown");
+  // null never matches
+  const n1 = { id: 70, genome: sampleIndividual(f, r), parents: [{ id: 1 }, { id: null }] }, n2 = { id: 71, genome: sampleIndividual(f, r), parents: [{ id: 1 }, { id: null }] };
+  assert.equal(directKin(n1, n2, lookup), null);
+  assert.equal(directKin(n1, { id: 72, genome: sampleIndividual(f, r), parents: [null, null] }, lookup), null);
+  // a shed pod of a let-go mibi: refused with the parent, allowed with the parent's other child at exactly 1/4
+  const pod = shedPod(f, a, { rng: r }); assert.deepEqual(pod.origin.parentIds, [1, 1]);
+  const p1 = { id: 80, genome: pod, parents: [{ id: 1 }, { id: 1 }] }; book.set(80, p1);
+  assert.equal(directKin(p1, a, lookup).rel, "parent"); assert.equal(directKin(p1, k1, lookup), null, "k1 is not on the pod's line");
+  assert.equal(directKin(p1, k3, lookup), null, "the parent's other child");
+  assert.equal(kinship(p1, k3, lookup), 0.25, "exactly 1/4, a line folded back on itself");
+  assert.throws(() => cross(f, p1, a, { rng: r, lookup }), /direct kin/);
+  // bare genomes by digest
+  const ba = sampleIndividual(f, r), bb = sampleIndividual(f, r), bc = sampleIndividual(f, r);
+  const dbook = new Map(); const keep = (g) => (dbook.set(genomeDigest(g), g), g); const dl = (x) => dbook.get(x) ?? null;
+  keep(ba); keep(bb); keep(bc);
+  const c1 = keep(cross(f, ba, bb, { rng: r, lookup: dl })), c2 = keep(cross(f, bb, ba, { rng: r, lookup: dl })), c3 = keep(cross(f, ba, bc, { rng: r, lookup: dl }));
+  assert.equal(directKin(c1, ba, dl).rel, "parent"); assert.equal(directKin(c1, c2, dl).rel, "same-parents"); assert.equal(directKin(c1, c3, dl), null);
+  assert.equal(directKin(ba, bb, dl), null); assert.equal(directKin(ba, structuredClone(ba), dl), null, "a genome is never compared");
 });
 
 test("C4: a locked pair in either order passes checkGenome and the cross alike", () => {
@@ -390,7 +442,7 @@ test("C2: `sure` is the shown look certain (one look at weight 1, one bin for a 
   assert.equal(by.markings.sure, false, "one in four pale"); assert.equal(by.markings.firm, false);
   assert.equal(by["eye-rings"].sure, by["eye-rings"].bins.length === 1); assert.equal(by["eye-rings"].firm, false, "a blend is never firm");
   const sib = forecast(l, p, q, { kinship: 0.25 }).traits.find((t) => t.trait === "eye-rings");
-  assert.equal(sib.range[0], sib.range[1]); assert.equal(sib.sure, true, "a sibling cross of equal eyes lands on one value"); assert.equal(sib.firm, false);
+  assert.equal(sib.range[0], sib.range[1]); assert.equal(sib.sure, true, "a cross at kinship 1/4 of equal eyes lands on one value"); assert.equal(sib.firm, false);
   for (const t of forecast(frameOf("S02"), sampleIndividual(frameOf("S02"), rng("s")), sampleIndividual(frameOf("S02"), rng("t"))).traits) if (t.kind === "sealed") assert.equal(t.sure, false);
 });
 
