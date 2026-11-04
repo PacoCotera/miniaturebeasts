@@ -35,10 +35,10 @@ def basis(az, el):
     return right, np.cross(right, fwd)
 
 
-def camera(az=90.0):
+def camera(az=90.0, centre=CENTRE, ppH=None):
     right, up = basis(az, EL)
-    w, h, ppH = HERO
-    return dict(az=az, el=EL, w=w, h=h, ppH=ppH, centre=list(CENTRE), right=[round(float(x), 6) for x in right], up=[round(float(x), 6) for x in up])
+    w, h, house = HERO
+    return dict(az=az, el=EL, w=w, h=h, ppH=ppH or house, centre=list(centre), right=[round(float(x), 6) for x in right], up=[round(float(x), 6) for x in up])
 
 
 # ---- the biped: the spine runs from the crown down through the head, neck, back and seat and out along the tail (the one path the cage is lofted on)
@@ -94,7 +94,7 @@ def biped(doc):
     rows, ks = biped_knobs(doc)
     knobs = [dict(name=k["name"], at=[round(k["x"], 5), 0.0, k["z"]], axis=[1.0, 0.0, 0.0], gain=round(k["gain"], 5)) for k in ks]
     outline = dict(back=[[round(-r[1][0], 4), r[0]] for r in rows], front=[[round(r[1][2], 4), r[0]] for r in rows])
-    return u, pts, knobs, outline, True
+    return u, pts, knobs, outline, True, None
 
 
 # ---- the quadruped: a horizontal spine, the head entered from behind on the spine axis. No cage builder yet, so the path is the plan's own formula (a straight run at the shoulder height, head at the front) and the
@@ -120,7 +120,8 @@ def quadruped(doc):
             r_axis = 0.3 + 0.35 * float(hp[k]) / max(band[1], 1e-9)                   # the radius the handle rides at: a share of the band, in H
             knobs.append(dict(name=k, at=[round(x0 - at - L / 2, 5), 0.0, round(QUAD_AXIS_Z + r_axis, 5)], axis=[0.0, 0.0, 1.0], gain=round(band[1] / 0.35, 5)))
         at += L or 0.0
-    return u, pts, knobs, None, False
+    ppH = min(HERO[2], HERO[0] * 0.64 / total)                                           # until the plan frames its own clay, the spine is fitted to the left of the plate, the names' column free on the right
+    return u, pts, knobs, None, False, camera(centre=(x0 - total / 2 - 0.1 * HERO[0] / ppH, 0.0, QUAD_AXIS_Z + 0.2), ppH=ppH)
 
 
 PLANS = dict(biped=biped, quadruped=quadruped)
@@ -132,7 +133,7 @@ def spine_view(doc):
     fn = PLANS.get(plan)
     if fn is None:
         return None
-    u, pts, knobs, outline, built = fn(doc)
+    u, pts, knobs, outline, built, cam = fn(doc)
     total = float(u[-1]) + STEP if len(u) else 0.0
     ranges, at = [], 0.0
     for i, r in enumerate(doc["spine"]["ranges"]):
@@ -153,4 +154,4 @@ def spine_view(doc):
         t = pts[min(j + 1, len(pts) - 1)] - pts[max(j - 1, 0)]
         n = float(np.linalg.norm(t)) or 1.0
         r["tangent"] = [round(float(x), 5) for x in (t / n)]
-    return dict(plan=plan, built=built, camera=camera(), step=STEP, path=[[round(float(x), 4) for x in p] for p in pts], ranges=ranges, knobs=kn, outline=outline)
+    return dict(plan=plan, built=built, camera=cam or camera(), step=STEP, path=[[round(float(x), 4) for x in p] for p in pts], ranges=ranges, knobs=kn, outline=outline)

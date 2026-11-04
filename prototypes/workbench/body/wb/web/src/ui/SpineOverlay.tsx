@@ -15,7 +15,7 @@ export function SpineOverlay({ species, id, sel, scale, editable, go }: { specie
   const q = useQuery({ ...spineOne(id, species.hash), enabled: !!species.hash })
   const live = useLive((l) => l.live)
   const v = q.data
-  if (!v || !v.built) return null
+  if (!v) return null
   const val = (ptr: string, fallback: number) => { const l = live[ptr]; return typeof l?.v === 'number' ? l.v : Number(getAt(species.file, ptr) ?? fallback) }
   const total = v.ranges[v.ranges.length - 1].hi
   const lens = v.ranges.map((r) => (r.ptr ? val(r.ptr, r.value ?? 0) : null))
