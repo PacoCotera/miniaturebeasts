@@ -1,4 +1,5 @@
 {
+ "frameVersion": 5,
  "schema": "mb-species-frame/2",
  "species": {
   "id": "S12",
@@ -42,7 +43,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 11,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -59,7 +60,7 @@
    "float": false,
    "stand": false,
    "flapPairs": 2,
-   "flapRest": "flat"
+   "flapRest": "sail"
   },
   "code": "B3·L6·flaps",
   "rig": "B3",
@@ -89,10 +90,11 @@
   "feature": "patterned flaps; fliers of the flowers",
   "features": {
    "anatomy.exterior-eye-presence": "on",
-   "anatomy.antenna-presence": "on"
+   "anatomy.antenna-presence": "on",
+   "anatomy.dew-tongue": "on"
   },
   "finish": {
-   "anatomy.antenna-form": "feather",
+   "anatomy.antenna-form": "curl",
    "growth.wing-span-ratio": "long",
    "growth.wing-chord-ratio": "wide",
    "growth.support-radius-ratio": "fine"
@@ -361,11 +363,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "ridged",
-    "ridged"
+    "smooth",
+    "smooth"
    ],
    "looks": [
-    "fine-ridged"
+    "smooth"
    ],
    "guard": "sketch: fine ridges as a surface grain",
    "nature": "look",
@@ -1237,20 +1239,20 @@
    "family": "structure",
    "scope": "trunk",
    "switch": false,
-   "consumer": "rig: thread, club or feather tip",
+   "consumer": "rig: thread, club or fern-tip curl",
    "kind": "locked",
    "lockReason": "fixed",
    "chapter": null,
    "trait": null,
    "shapeable": false,
    "copies": [
-    "feather",
-    "feather"
+    "curl",
+    "curl"
    ],
    "looks": [
-    "feather"
+    "curl"
    ],
-   "guard": "rig: thread, club or feather tip",
+   "guard": "rig: thread, club or fern-tip curl",
    "nature": "look",
    "changedBy": "species"
   },
@@ -1277,7 +1279,11 @@
     "bars-and-spots"
    ],
    "guard": "sketch: marking field on thin surfaces",
-   "changedBy": "player"
+   "changedBy": "player",
+   "typical": [
+    "plain",
+    "spots"
+   ]
   },
   {
    "id": "appearance.flap-translucency",
@@ -1301,6 +1307,29 @@
    ],
    "guard": "sketch: thin-surface opacity (the transparency draft, validated for flaps)",
    "changedBy": "player"
+  },
+  {
+   "id": "anatomy.dew-tongue",
+   "family": "structure",
+   "scope": "branch",
+   "clan": "C12",
+   "switch": true,
+   "consumer": "rig: a coiled tongue under the head",
+   "kind": "locked",
+   "lockReason": "switch",
+   "chapter": null,
+   "trait": null,
+   "shapeable": false,
+   "copies": [
+    "on",
+    "on"
+   ],
+   "looks": [
+    "on"
+   ],
+   "guard": "rig: a coiled tongue under the head",
+   "nature": "look",
+   "changedBy": "species"
   },
   {
    "id": "appearance.sheen",
@@ -1736,13 +1765,13 @@
   }
  ],
  "counts": {
-  "carried": 49,
+  "carried": 50,
   "trunk": 49,
-  "branch": 0,
+  "branch": 1,
   "absent": 91,
-  "locked": 42,
+  "locked": 43,
   "lockedBy": {
-   "switch": 2,
+   "switch": 3,
    "fixed": 40
   },
   "heritableLook": 5,
@@ -1796,7 +1825,7 @@
   "genome": {
    "schema": "mb-genome/2",
    "species": "S12",
-   "frameVersion": 4,
+   "frameVersion": 5,
    "loci": {
     "structure.attachment-position": [
      "low",
@@ -1811,8 +1840,8 @@
      "butter"
     ],
     "appearance.surface-texture": [
-     "ridged",
-     "ridged"
+     "smooth",
+     "smooth"
     ],
     "movement.contact-phase": [
      "low",
@@ -1971,16 +2000,20 @@
      "long"
     ],
     "anatomy.antenna-form": [
-     "feather",
-     "feather"
+     "curl",
+     "curl"
     ],
     "appearance.flap-marking": [
      "plain",
-     "plain"
+     "spots"
     ],
     "appearance.flap-translucency": [
      "opaque",
      "clear"
+    ],
+    "anatomy.dew-tongue": [
+     "on",
+     "on"
     ],
     "appearance.sheen": [
      "matte",
@@ -2003,20 +2036,20 @@
   "brief": "Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head.",
   "bounds": {
    "min": [
-    -0.9264922294878046,
+    -0.8882825453843751,
     -0.6113644403355432,
     0
    ],
    "max": [
-    0.7489559383699457,
+    0.7450361353259142,
     0.6113644403355433,
-    1.217546242307253
+    1.3539624396278374
    ]
   },
   "counts": {
-   "nodes": 47,
-   "edges": 46,
-   "vertices": 1901
+   "nodes": 73,
+   "edges": 72,
+   "vertices": 3563
   }
  },
  "viability": {
@@ -2067,8 +2100,8 @@
    "low"
   ],
   "appearance.surface-texture": [
-   "ridged",
-   "ridged"
+   "smooth",
+   "smooth"
   ],
   "movement.contact-phase": [
    "low",
@@ -2215,8 +2248,12 @@
    "long"
   ],
   "anatomy.antenna-form": [
-   "feather",
-   "feather"
+   "curl",
+   "curl"
+  ],
+  "anatomy.dew-tongue": [
+   "on",
+   "on"
   ],
   "appearance.sheen": [
    "matte",

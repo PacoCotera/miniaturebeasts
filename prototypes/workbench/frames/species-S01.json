@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 11,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -81,7 +81,7 @@
  "signature": {
   "anchor": "charcoal",
   "second": "cream",
-  "feature": "a leaf crest and a snout; charcoal",
+  "feature": "a leaf crest and a flat face; charcoal",
   "features": {
    "anatomy.exterior-eye-presence": "on",
    "anatomy.muzzle-presence": "on",
@@ -1667,6 +1667,10 @@
    "why": "absent: a C13 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.foot-skirt-presence",
    "why": "absent: a C14 branch locus"
   },
@@ -1731,7 +1735,7 @@
   "carried": 50,
   "trunk": 46,
   "branch": 4,
-  "absent": 90,
+  "absent": 91,
   "locked": 43,
   "lockedBy": {
    "switch": 3,

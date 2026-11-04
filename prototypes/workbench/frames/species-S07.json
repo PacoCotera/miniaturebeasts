@@ -41,7 +41,7 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 10,
+  "version": 11,
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -1881,6 +1881,10 @@
    "why": "absent: a C13 branch locus"
   },
   {
+   "id": "anatomy.dew-tongue",
+   "why": "absent: a C12 branch locus"
+  },
+  {
    "id": "anatomy.foot-skirt-presence",
    "why": "absent: a C14 branch locus"
   },
@@ -1961,7 +1965,7 @@
   "carried": 48,
   "trunk": 48,
   "branch": 0,
-  "absent": 92,
+  "absent": 93,
   "locked": 22,
   "lockedBy": {
    "switch": 4,

@@ -97,7 +97,7 @@ export const SWITCH_TARGETS = {
   "anatomy.exterior-eye-presence": "modules.exteriorEyePair", "anatomy.auricular-presence": "ears.enabled",
   "anatomy.axial-tail-presence": "tail.enabled", "appearance.marking-switch": "markings.enabled",
   "anatomy.antenna-presence": "antennae.enabled", "anatomy.leaf-presence": "leaves.enabled",
-  "anatomy.foot-skirt-presence": "skirt.enabled", "anatomy.wing-case-presence": "wingCases.enabled",
+  "anatomy.foot-skirt-presence": "skirt.enabled", "anatomy.dew-tongue": "tongue.enabled", "anatomy.wing-case-presence": "wingCases.enabled",
   "appearance.face-mask": "mask.enabled", "appearance.tail-rings": "tailRings.enabled", "anatomy.horn-presence": "horns.enabled",
   "anatomy.beak-presence": "beak.enabled", "appearance.feather-presence": "feathers.enabled", "anatomy.shell-presence": "shell.enabled",
   "physiology.charged-body": "charged.enabled",
