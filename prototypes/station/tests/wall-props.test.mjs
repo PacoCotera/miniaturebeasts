@@ -270,7 +270,9 @@ test("the partner pick: A's species only with A left out; those who can breed no
   // family: dimmed with the relation in place of the kin word, the refusal on the held plate, no forecast line, never a state line or a rest line
   const fam = build(st, { pair: { a: fen.id }, focus: "cell." + oak.id, forecastOpen: true }), fc = fam.props.regions.card;
   assert.deepEqual([fc.lines, fc.stateLines, fc.long, fc.pairLine], [[spec.strings.pair.rel.parent.replace("{name}", "Fen")], [], [], ""]); assert.equal(fc.plates[0].held, true); assert.equal(fam.line.ok, null);
-  assert.equal(build(st, { pair: { a: fen.id }, focus: "plate.0", last: oak.id }).props.regions.card.why, spec.strings.why.partnerFamily); assert.equal(S.FAMILY, spec.strings.why.partnerFamily, "the rule and the spec say the same line");
+  assert.equal(build(st, { pair: { a: fen.id }, focus: "plate.0", last: oak.id }).props.regions.card.why, spec.strings.why.partnerFamily);
+  assert.equal(fc.why, spec.strings.why.partnerFamily, "the ring on the family cell: the card still says why");
+  assert.equal(build(st, { pair: { a: fen.id }, focus: "cell." + moss.id }).props.regions.card.why, "", "an allowed partner's card says nothing here"); assert.equal(S.FAMILY, spec.strings.why.partnerFamily, "the rule and the spec say the same line");
   const rel = (x) => build(st, { pair: { a: oak.id }, focus: "cell." + x.id }).props.regions.card.lines[0];
   assert.deepEqual([rel(fen), rel(wren), rel(elm)], [1, 2].map(() => spec.strings.pair.rel.child.replace("{name}", "Oak")).concat(spec.strings.pair.kin.wild), "the co-parent is not family");
   assert.deepEqual(Object.keys(spec.strings.pair.rel), ["parent", "grandparent", "greatGrandparent", "child", "grandchild", "greatGrandchild", "sameParents"]);

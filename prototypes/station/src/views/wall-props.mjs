@@ -218,6 +218,7 @@ export function wallBuild(m, spec, frame, home, pods) {
   if (!cur) cur = cardFor(lastId) ?? (ordered.length ? "cell." + ordered[0].id : !all.length ? "plate.0" : "rail." + lit);
   if (swapInfo) { const w = swapInfo.held[/^swap\.(\d+)$/.exec(cur ?? "")?.[1]]; regions.move.swap.why = w ? regions.move.swap.cells.find((c) => "swap." + c.id === cur).why : ""; }
   const p0 = plates.find((x) => x.id === cur); card.why = p0 ? p0.why ?? "" : "";
+  if (pairing && cmb && pairWhy(st, sv, cmb, settings, Sg, pairA)?.key === "family") card.why = Sg.why.partnerFamily;   // a family card always says why, wherever the ring is (the plate's own refusal line is the same text)
   const props = { state: !all.length ? "none" : "wall", view: "wall", regions, focus: { cur, targets, resolve: {} } };
   const firstLive = (plates.find((p) => !p.held) ?? plates[0])?.id ?? null;
   const nav = { sort, filter, cols, vis, rows: rowsN, row0, first, order: ordered.map((x) => x.id), rail: rows.map((r) => r.id), canAdd, lit, card: cmb ? cmb.id : null, settling, picked: [...picked], moving: !!moving, swap: swapInfo, pair: pairing ? pairA.id : null, hasBand: !!card.room?.opens && !moving, moveRows: moveAll, moveFirst: moving ? regions.move.first : 0, plates: plates.map((p) => ({ id: p.id, act: p.act, held: !!p.held, why: p.why, plate: p.plate })), firstLive };

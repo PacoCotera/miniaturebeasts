@@ -130,7 +130,7 @@
    "png": "vivarium-wall-pair.png"
   },
   "vivarium-wall-pair-kin": {
-   "hash": "fcb2619e",
+   "hash": "6385a8a8",
    "png": "vivarium-wall-pair-kin.png"
   },
   "vivarium-wall-pair-rest": {
@@ -144,6 +144,10 @@
   "vivarium-wall-pair-plate": {
    "hash": "f30f6bc8",
    "png": "vivarium-wall-pair-plate.png"
+  },
+  "vivarium-wall-breed-family": {
+   "hash": "355a7bc7",
+   "png": "vivarium-wall-breed-family.png"
   },
   "vivarium-wall-breed-held": {
    "hash": "ccfcac81",
